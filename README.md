@@ -1,2 +1,2 @@
 # Devpedia
-A website build to present and explain my knowledge about various dev topics that could help me getting deep into my understanding of theses topics, practice a web interface code, and making this knowledge available to everyone who would like to learn what i learned.
+Devpedia is a website created to document, explain, and share my knowledge of various software development topics. The project helps me deepen my understanding through research and teaching, practice building modern web interfaces, and make this knowledge accessible to anyone interested in learning about the concepts and technologies I have explored.
