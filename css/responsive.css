@@ -1,0 +1,12 @@
+@media (max-width: 850px) {
+    .burger {
+        display: block;
+    }
+    .categories {
+        display: none;
+    }
+    .navBar {
+        display: flex;
+        justify-content: space-between;
+    }
+}

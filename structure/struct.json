@@ -1,0 +1,52 @@
+{
+  "categories": [
+    {
+      "id": "acceuil",
+      "label": "Acceuil",
+      "chapters": [ 
+            { "id": "acceuil", "label": "Acceuil" }
+          ]
+    },
+    {
+      "id": "langages-programmation",
+      "label": "Langages de programmation",
+      "subjects": [
+        {
+          "id": "c",
+          "label": "C",
+          "chapters": [
+            { "id": "arbres-binaires", "label": "Arbres binaires" },
+            { "id": "bibliotheques", "label": "Bibliothèques" },
+            { "id": "boucles", "label": "Boucles" },
+            { "id": "compilation", "label": "Compilation" },
+            { "id": "conditions", "label": "Conditions" },
+            { "id": "description", "label": "Description" },
+            { "id": "headers", "label": "Headers" },
+            { "id": "makefiles", "label": "Makefiles" },
+            { "id": "memoire", "label": "Mémoire" },
+            { "id": "pointeurs", "label": "Pointeurs" },
+            { "id": "processus", "label": "Processus" },
+            { "id": "threads", "label": "Threads" },
+            { "id": "variables", "label": "Variables" }
+          ]
+        },
+        { "id": "cpp", "label": "C++", "chapters": [] },
+        { "id": "javascript", "label": "JavaScript", "chapters": [] },
+        { "id": "python", "label": "Python", "chapters": [] }
+      ]
+    },
+    {
+      "id": "langages-balisage",
+      "label": "Langages de balisage",
+      "subjects": [
+        { "id": "html", "label": "HTML", "chapters": [] },
+        { "id": "css", "label": "CSS", "chapters": [] }
+      ]
+    },
+    {
+      "id": "bash",
+      "label": "Bash",
+      "subjects": []
+    }
+  ]
+}

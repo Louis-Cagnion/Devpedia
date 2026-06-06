@@ -1,0 +1,5 @@
+/* Global CSS rules to standardize default HTML element behavior */
+
+a {
+    text-decoration: none;
+}
