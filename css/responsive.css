@@ -1,4 +1,7 @@
 @media (max-width: 850px) {
+    .NavBarButton {
+        display: block;
+    }
     .menuDiv.visible {
         position: absolute;
         display: grid;
