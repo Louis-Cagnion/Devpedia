@@ -2,7 +2,7 @@ import { parseAppendText, parseMdContent } from "./parser.js";
 import { createTag } from "./tags.js";
 
 /**
- * Create and attach categories to navBar, returns a burger div that contains
+ * Create and attach categories to navBar, returns a menu div that contains
  * categories, it will be displayed for low width screens
  * @param {HTMLElement} navBar 
  * @param {Object} categories
@@ -11,7 +11,7 @@ import { createTag } from "./tags.js";
  */
 function createAppendCategories(navBar, categories = []) {
     const categoriesDiv = createTag("div", {class: "categories"});
-    const burgerDiv = createTag("div", {class: "burger"});
+    const menuDiv = createTag("div", {class: "menuDiv"});
     categories.forEach(category => {
         const link = createTag(
             "a",
@@ -19,14 +19,14 @@ function createAppendCategories(navBar, categories = []) {
                 class: `${category.id}-link`,
                 href: `${category.id}.html`
             },
-            `${category.label}`
+            {textContent: `${category.label}`}
         )
-        const linkDup = link.cloneNode();
+        const linkDup = link.cloneNode(true);
         categoriesDiv.appendChild(link);
-        burgerDiv.appendChild(linkDup);
+        menuDiv.appendChild(linkDup);
     })
     navBar.append(categoriesDiv);
-    return burgerDiv;
+    return menuDiv;
 }
 
 /**
@@ -34,28 +34,59 @@ function createAppendCategories(navBar, categories = []) {
  * @param {HTMLElement} navBar 
  */
 function createAppendLogo(navBar) {
-    const logo = createTag("div", {class: "logo"}, "Devpedia");
+    const logo = createTag("div", {class: "logo"}, {textContent: "Devpedia"});
     navBar.append(logo);
 }
 
 /**
  * 
- * @param {HTMLElement} navBar 
+ * @param {HTMLElement} navBarRightSide 
+ * @param {HTMLElement} menuDiv
  */
-function createAppendSearchbar(navBar) {
-    const searchBar = createTag("input", {class: "navBarSearch", type:"search", name: "search"});
-    navBar.append(searchBar);
+function createAppendSearchbarButton(navBarRightSide, menuDiv) {
+    const searchBar = createTag("input", {
+            class: "navBarSearch",
+            type:"search",
+            name: "search",
+            placeholder: "Rechercher..."
+        });
+    navBarRightSide.append(searchBar);
+
+    const menuButton = createTag("button", {class: "NavBarButton"}, {textContent: '☰'})
+    navBarRightSide.append(menuButton);
+    menuButton.addEventListener("click", e => {
+        menuDiv.classList.toggle("visible");
+    })
 }
 
+/**
+ * Generate the navigation bar and append it to the body
+ * 
+ * Also creates a menu div for phone format that will be shown when the menu
+ * button on the right will be pressed
+ * 
+ * @param {Object} categories The category list of what will be in the website
+ */
 function generateNavBar(categories = []) {
+    //navbar
     const navBar = createTag("div", {class: "navBar"});
+
+    ////logo
     createAppendLogo(navBar);
-    const burgerDiv = createAppendCategories(navBar, categories);
-    const searchBurgerDiv = createTag("div", {class: "searchBurgerDiv"});
-    createAppendSearchbar(searchBurgerDiv);
-    searchBurgerDiv.append(burgerDiv);
-    navBar.append(searchBurgerDiv);
+
+    ////categories (pc format)
+    const menuDiv = createAppendCategories(navBar, categories);
+
+    ////search bar and menu button (phone format)  
+    const searchAndButtonDiv = createTag("div", {class: "searchAndButtonDiv"});
+    createAppendSearchbarButton(searchAndButtonDiv, menuDiv);
+    navBar.append(searchAndButtonDiv);
+
+    //attach navbar to body
     document.body.append(navBar);
+
+    //attach menu, will be displayed when menu button is pressed
+    document.body.append(menuDiv);
 }
 
 async function generateHomePage(homeFileName) {

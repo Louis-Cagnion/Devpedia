@@ -3,3 +3,10 @@
 a {
     text-decoration: none;
 }
+
+ul, ol {
+    margin: 0;
+}
+li:first-child {
+    margin-top: -1rem;
+}
