@@ -5,6 +5,7 @@
     font-family: sans-serif;
 }
 
+/** navbar ---- **/
 .navBar {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -37,7 +38,7 @@
     border: none;
 }
 
-.searchBurgerDiv {
+.searchAndButtonDiv {
     margin-left: auto;
     margin-right: 0;
     display: flex;
@@ -45,11 +46,23 @@
     background-color: rgb(18, 18, 18);
 }
 
+/* search bar */
 .navBarSearch {
     max-width: 100%;
     background-color: rgb(62, 62, 62);
 }
 
+/* menu button */
+.NavBarButton {
+    font-size: 1.4rem;
+    aspect-ratio: 1;
+}
+
+.navBarSearch::placeholder {
+    padding-left: 10px;
+}
+
+/* navBar categories */
 .categories > a {
     padding: 10px;
     background-color: rgb(41, 41, 41);
@@ -64,6 +77,13 @@ a:hover {
     background-color: rgba(148, 148, 148, 0.392);
 }
 
+/** ---- navbar **/
+
+.menuDiv {
+    display: none;
+}
+
+/* website body */
 .acceuilDiv {
-    margin: 2rem;
+    margin: 0 10%;
 }

@@ -1,6 +1,19 @@
 @media (max-width: 850px) {
-    .burger {
-        display: block;
+    .menuDiv.visible {
+        position: absolute;
+        display: grid;
+        width: 100% - 1px;
+        left: 0;
+        right: 0;
+        border: 1px solid white;
+    }
+    .menuDiv.visible > a {
+        border-bottom: 1px solid white;
+        padding: 10px;
+        background-color: rgb(41, 41, 41);
+    }
+    .menuDiv.visible > a:hover {
+        background-color: rgba(148, 148, 148, 0.392);
     }
     .categories {
         display: none;

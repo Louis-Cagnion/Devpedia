@@ -1,5 +1,7 @@
 import { createTag } from "./tags.js";
 
+let openList = false
+
 /**
  * Parse the content of a md file
  * 
@@ -19,7 +21,7 @@ export function parseMdContent(homeInfos) {
         fileStruct[content] = type;
     });
     text = text.trim();
-    console.log(text);
+    console.log("test = ", text);
     console.log(fileStruct);
     return [fileStruct, text]
 }
@@ -30,7 +32,25 @@ export function parseMdContent(homeInfos) {
  * @param {*} line 
  */
 function assignTag(type, title, content) {
-    return createTag(type, {class: `${title}${type}`}, content)
+    return createTag(type, {class: `${title}${type}`}, {textContent: content})
+}
+
+function mdToHtmlFormatting(line) {
+    line = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    line = line.replace(/\*(.*?)\*/g, "<em>$1</em>")    
+    return line;
+}
+
+function createList(line, homeDiv, title, listDiv, listRegex) {
+    if (!openList) {
+        openList = true;
+        const type = /^\d+\) /.test(line) ? 'ol' : 'ul';
+        listDiv = createTag(type, {class: `${title}${type}`});
+        homeDiv.append(listDiv);
+    }
+    line = line.replace(listRegex, "")
+    listDiv.append(createTag("li", {}, {innerHTML: line}))
+    return listDiv;
 }
 
 /**
@@ -42,17 +62,29 @@ function assignTag(type, title, content) {
 export function parseAppendText(homeDiv, homeFileName, yaml, text) {
     const summary = Object.keys(yaml);
     const title = summary[0];
-    const fileTitle = createTag("h2", {class: `${homeFileName}Title`}, title)
+    const fileTitle = createTag("h2", {class: `${homeFileName}Title`}, {textContent: title})
     homeDiv.append(fileTitle)
     const lengths = summary.map(title => title.length)
     const keyMaxlenght = Math.max(...lengths);
-    const lines = text.split("\n");
+    const lines = text.split("\n").filter(line => line.trim() !== "");
+
+    const listRegex = /^(\* |- |\d+\) )/;
+    let listDiv = null;
+    
     lines.forEach(line => {
-        if (line.length <= keyMaxlenght && summary.find(line)) {
+        if (line.length <= keyMaxlenght && summary.includes(line)) {
             const type = yaml[line];
-            homeDiv.append(createTag(type, {class: `${homeFileName}${type}`}, line));
+            homeDiv.append(createTag(type, {class: `${homeFileName}${type}`}, {textContent: line}));
         } else {
-            homeDiv.append(createTag('p', {class: `${homeFileName}P`}, line));
+            line = mdToHtmlFormatting(line);
+            if (listRegex.test(line)) {
+                listDiv = createList(line, homeDiv, title, listDiv, listRegex);
+            } else {
+                if (openList)
+                    openList = false;
+                console.log(`|${line}|`);
+                homeDiv.append(createTag('p', {class: `${homeFileName}P`}, {innerHTML: line}));
+            }
         }
     })
 }
