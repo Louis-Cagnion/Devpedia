@@ -1,9 +1,8 @@
 import { parseAppendText } from "./parser.js";
 import { generateHomePage, loadCategory } from "./router.js";
+import { appState } from "./state.js";
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson, findCategory } from "./utils.js";
-
-export let currentCategory = ""
 
 /**
  * Create and attach categories to navBar, returns a menu div that contains
@@ -19,7 +18,7 @@ function createAppendCategories(navBar, categories = []) {
     categories.forEach(category => {
         const link = createTag("button", { class: `${category.id}-button`}, {textContent: category.label})
         const linkDup = link.cloneNode(true);
-        const categoryLoader = () => {currentCategory = loadCategory(category.id, category.label, currentCategory, categories);}
+        const categoryLoader = () => {loadCategory(category.id, category.label, categories);}
         link.addEventListener("click", categoryLoader);
         linkDup.addEventListener("click", categoryLoader);
         categoriesDiv.appendChild(link);
@@ -92,8 +91,8 @@ function generateNavBar(categories = []) {
 async function fetchStructJson(structPath = "./structure/struct.json") {
     const dataJson = await fetchFileToTextOrJson(structPath, 'json')
     generateNavBar(dataJson.categories);
-    currentCategory = findCategory(dataJson.categories, "acceuil").id;
-    generateHomePage(currentCategory);
+    appState.curCategory = findCategory(dataJson.categories, "acceuil").id;
+    generateHomePage(appState.curCategory);
 }
 
 fetchStructJson();

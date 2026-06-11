@@ -10,5 +10,10 @@ li:first-child {
 }
 
 li {
-    margin-top: 0.4rem;
+    margin: 0.4rem;
+    padding-right: 1.2rem;
+}
+
+p {
+    margin: 1rem;
 }
