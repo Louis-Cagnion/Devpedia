@@ -39,7 +39,7 @@ function mdToHtmlFormatting(line) {
     return line;
 }
 
-function createList(line, homeDiv, title, listDiv, listRegex) {
+function createListFromText(line, homeDiv, title, listDiv, listRegex) {
     if (!openList) {
         openList = true;
         const type = /^\d+\) /.test(line) ? 'ol' : 'ul';
@@ -76,7 +76,7 @@ export function parseAppendText(homeDiv, homeFileName, yaml, text) {
         } else {
             line = mdToHtmlFormatting(line);
             if (listRegex.test(line)) {
-                listDiv = createList(line, homeDiv, title, listDiv, listRegex);
+                listDiv = createListFromText(line, homeDiv, title, listDiv, listRegex);
             } else {
                 if (openList)
                     openList = false;

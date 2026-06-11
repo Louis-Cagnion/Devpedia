@@ -4,9 +4,11 @@ a {
     text-decoration: none;
 }
 
-ul, ol {
-    margin: 0;
-}
+
 li:first-child {
-    margin-top: -1rem;
+    margin-top: -0.7rem;
+}
+
+li {
+    margin-top: 0.4rem;
 }

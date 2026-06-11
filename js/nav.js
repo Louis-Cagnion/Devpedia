@@ -19,7 +19,7 @@ function createAppendCategories(navBar, categories = []) {
     categories.forEach(category => {
         const link = createTag("button", { class: `${category.id}-button`}, {textContent: category.label})
         const linkDup = link.cloneNode(true);
-        const categoryLoader = () => {currentCategory = loadCategory(category.id, category.label, currentCategory);}
+        const categoryLoader = () => {currentCategory = loadCategory(category.id, category.label, currentCategory, categories);}
         link.addEventListener("click", categoryLoader);
         linkDup.addEventListener("click", categoryLoader);
         categoriesDiv.appendChild(link);
