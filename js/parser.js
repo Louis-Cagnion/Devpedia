@@ -21,8 +21,6 @@ export function parseMdContent(homeInfos) {
         fileStruct[content] = type;
     });
     text = text.trim();
-    console.log("test = ", text);
-    console.log(fileStruct);
     return [fileStruct, text]
 }
 
@@ -82,7 +80,6 @@ export function parseAppendText(homeDiv, homeFileName, yaml, text) {
             } else {
                 if (openList)
                     openList = false;
-                console.log(`|${line}|`);
                 homeDiv.append(createTag('p', {class: `${homeFileName}P`}, {innerHTML: line}));
             }
         }

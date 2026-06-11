@@ -1,5 +1,9 @@
-import { parseAppendText, parseMdContent } from "./parser.js";
+import { parseAppendText } from "./parser.js";
+import { generateHomePage, loadCategory } from "./router.js";
 import { createTag } from "./tags.js";
+import { fetchFileToTextOrJson, findCategory } from "./utils.js";
+
+export let currentCategory = ""
 
 /**
  * Create and attach categories to navBar, returns a menu div that contains
@@ -13,15 +17,11 @@ function createAppendCategories(navBar, categories = []) {
     const categoriesDiv = createTag("div", {class: "categories"});
     const menuDiv = createTag("div", {class: "menuDiv"});
     categories.forEach(category => {
-        const link = createTag(
-            "a",
-            {
-                class: `${category.id}-link`,
-                href: `${category.id}.html`
-            },
-            {textContent: `${category.label}`}
-        )
+        const link = createTag("button", { class: `${category.id}-button`}, {textContent: category.label})
         const linkDup = link.cloneNode(true);
+        const categoryLoader = () => {currentCategory = loadCategory(category.id, category.label, currentCategory);}
+        link.addEventListener("click", categoryLoader);
+        linkDup.addEventListener("click", categoryLoader);
         categoriesDiv.appendChild(link);
         menuDiv.appendChild(linkDup);
     })
@@ -89,28 +89,11 @@ function generateNavBar(categories = []) {
     document.body.append(menuDiv);
 }
 
-async function generateHomePage(homeFileName) {
-    const homeFile = await fetch(`./content/${homeFileName}.md`, {
-        headers: {
-            Accept: "text/plain"
-        }
-    });
-    const homeInfos = await homeFile.text();
-    const [yaml, text] = parseMdContent(homeInfos);
-    const homeDiv = createTag("div", {class: `${homeFileName}Div`});
-    parseAppendText(homeDiv, homeFileName, yaml, text);
-    document.body.append(homeDiv);
-}
-
 async function fetchStructJson(structPath = "./structure/struct.json") {
-    const struct = await fetch(structPath, {
-        headers: {
-            Accept: "application/json"
-        }
-    });
-    let dataJson = await struct.json();
+    const dataJson = await fetchFileToTextOrJson(structPath, 'json')
     generateNavBar(dataJson.categories);
-    generateHomePage(dataJson.categories[0].id);
+    currentCategory = findCategory(dataJson.categories, "acceuil").id;
+    generateHomePage(currentCategory);
 }
 
 fetchStructJson();

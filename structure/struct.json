@@ -20,7 +20,7 @@
             { "id": "boucles", "label": "Boucles" },
             { "id": "compilation", "label": "Compilation" },
             { "id": "conditions", "label": "Conditions" },
-            { "id": "description", "label": "Description" },
+            { "id": "c", "label": "C" },
             { "id": "headers", "label": "Headers" },
             { "id": "makefiles", "label": "Makefiles" },
             { "id": "memoire", "label": "Mémoire" },
