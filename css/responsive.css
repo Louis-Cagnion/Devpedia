@@ -10,12 +10,13 @@
         right: 0;
         border: 1px solid white;
     }
-    .menuDiv.visible > a {
+    .menuDiv.visible > button {
         border-bottom: 1px solid white;
         padding: 10px;
         background-color: rgb(41, 41, 41);
+        text-align: left;
     }
-    .menuDiv.visible > a:hover {
+    .menuDiv.visible > button:hover {
         background-color: rgba(148, 148, 148, 0.392);
     }
     .categories {

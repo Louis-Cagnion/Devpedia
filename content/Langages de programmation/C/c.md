@@ -1,5 +1,5 @@
 ---
-title: Description
+title: C
 ---
 
 Le langage C est considéré comme un langage de programmation de **bas niveau**, car il offre un accès direct à de nombreux mécanismes fondamentaux de la machine. Contrairement aux langages de plus **haut niveau** qui masquent une grande partie de ces détails, le C permet au développeur de contrôler précisément le comportement du programme et son utilisation des ressources système.

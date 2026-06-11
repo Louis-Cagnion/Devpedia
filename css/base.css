@@ -64,7 +64,7 @@
 }
 
 /* navBar categories */
-.categories > a {
+.categories > button {
     padding: 10px;
     background-color: rgb(41, 41, 41);
     white-space: nowrap;
@@ -74,7 +74,7 @@
     display: none;
 }
 
-a:hover {
+.categories > button:hover {
     background-color: rgba(148, 148, 148, 0.392);
 }
 
