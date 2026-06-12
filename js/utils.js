@@ -1,12 +1,13 @@
+import { appState } from "./state.js";
+
 /**
  * Find and return the category
  * 
- * @param {Array} categories 
  * @param {string} idToFind 
  * @returns The category
  */
-export function findCategory(categories, idToFind) {
-    return categories.find(category => category.id === idToFind);
+export function findCategory(idToFind) {
+    return appState.categories.find(category => category.id === idToFind);
 }
 
 /**
