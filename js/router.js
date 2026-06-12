@@ -3,6 +3,11 @@ import { parseAppendText, parseMdContent } from "./parser.js ";
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson, findCategory } from "./utils.js";
 
+/**
+ * @param {string} textInfos 
+ * @param {string} fileName 
+ * @returns {HTMLElement} page div
+ */
 function generatePageContent(textInfos, fileName) {
     const [yaml, text] = parseMdContent(textInfos);
     const pageDiv = createTag("div", {class: `${fileName}Div`});
@@ -11,19 +16,31 @@ function generatePageContent(textInfos, fileName) {
     return pageDiv;
 }
 
-async function selectSubject(pageDiv, subject, categoryId, categoryName) {
+/**
+ * @param {HTMLElement} pageDiv 
+ * @param {Object} subject 
+ * @param {string} categoryId 
+ * @param {string} path path to subject
+ */
+async function selectSubject(pageDiv, subject, categoryId, path) {
     appState.navigationStack.push({categoryId: appState.curCategory, subjectId: null})
     pageDiv.replaceChildren();
-    const subjectInfos = await fetchFileToTextOrJson(`./content/${categoryName}/${subject.label}/${subject.id}.md`, 'text');
+    const subjectInfos = await fetchFileToTextOrJson(path, 'text');
     generatePageContent(subjectInfos, subject.label);
 }
 
+/**
+ * @param {HTMLElement} pageDiv where the list will be attached to
+ * @param {Array} subjects subjects of category
+ * @param {string} categoryId 
+ * @param {string} categoryName 
+ */
 function generateSubjectList(pageDiv, subjects, categoryId, categoryName) {
     const ul = createTag("ul", {class: `${categoryId}List`})
     subjects.forEach(subject => {
         const button = createTag("button", {class: `${subject.id}button`}, {textContent: subject.label})
         button.addEventListener("click", (e) => {
-            selectSubject(pageDiv, subject, categoryId, categoryName);
+            selectSubject(pageDiv, subject, categoryId, `./content/${categoryName}/${subject.label}/${subject.id}.md`);
         })
         const li = createTag("li", {class: `${categoryId}List`})
         li.append(button);
@@ -32,11 +49,18 @@ function generateSubjectList(pageDiv, subjects, categoryId, categoryName) {
     pageDiv.append(ul);
 }
 
+/**
+ * @param {string} homeFileName the name of home file
+ */
 export async function generateHomePage(homeFileName) {
     const homeInfos = await fetchFileToTextOrJson(`./content/${homeFileName}.md`, 'text');
     generatePageContent(homeInfos, homeFileName);
 }
-
+/**
+ * @param {string} categoryId 
+ * @param {string} categoryName 
+ * @param {Array} categories 
+ */
 async function generatePage(categoryId, categoryName, categories) {
     const pageInfos = await fetchFileToTextOrJson(`./content/${categoryName}/description.md`, 'text');
     const pageDiv = generatePageContent(pageInfos, categoryId);
