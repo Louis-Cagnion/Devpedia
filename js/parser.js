@@ -54,13 +54,14 @@ function createListFromText(line, homeDiv, title, listDiv, listRegex) {
 /**
  * 
  * @param {HTMLElement} homeDiv 
+ * @param {string} fileName
  * @param {Object<string, string>} yaml 
  * @param {string} text 
  */
-export function parseAppendText(homeDiv, homeFileName, yaml, text) {
+export function parseAppendText(homeDiv, fileName, yaml, text) {
     const summary = Object.keys(yaml);
     const title = summary[0];
-    const fileTitle = createTag("h2", {class: `${homeFileName}Title`}, {textContent: title})
+    const fileTitle = createTag("h2", {class: `${fileName}Title`}, {textContent: title})
     homeDiv.append(fileTitle)
     const lengths = summary.map(title => title.length)
     const keyMaxlenght = Math.max(...lengths);
@@ -72,7 +73,7 @@ export function parseAppendText(homeDiv, homeFileName, yaml, text) {
     lines.forEach(line => {
         if (line.length <= keyMaxlenght && summary.includes(line)) {
             const type = yaml[line];
-            homeDiv.append(createTag(type, {class: `${homeFileName}${type}`}, {textContent: line}));
+            homeDiv.append(createTag(type, {class: `${fileName}${type}`}, {textContent: line}));
         } else {
             line = mdToHtmlFormatting(line);
             if (listRegex.test(line)) {
@@ -80,7 +81,7 @@ export function parseAppendText(homeDiv, homeFileName, yaml, text) {
             } else {
                 if (openList)
                     openList = false;
-                homeDiv.append(createTag('p', {class: `${homeFileName}P`}, {innerHTML: line}));
+                homeDiv.append(createTag('p', {class: `${fileName}P`}, {innerHTML: line}));
             }
         }
     })
