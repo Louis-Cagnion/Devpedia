@@ -4,6 +4,24 @@ import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson, findCategory } from "./utils.js";
 
 /**
+ * @param {HTMLElement} pageDiv where the return button will be attached to 
+ * @param {string} fileName
+ */
+function createAppendReturnButton(pageDiv, fileName) {
+    const returnButton = createTag("button", {class: `${fileName}ReturnButton`}, {textContent: "← Retour"});
+    returnButton.addEventListener("click", (e) => {
+        console.log(appState.navigationStack);
+        const lastConnexion = appState.navigationStack.at(-1);
+        const categoryId = lastConnexion.categoryId;
+        const categoryLabel = lastConnexion.categoryLabel;
+        appState.navigationStack.pop();
+        console.log(categoryId, categoryLabel);
+        loadCategory(categoryId, categoryLabel, true);
+    })
+    pageDiv.append(returnButton);
+}
+
+/**
  * @param {string} textInfos 
  * @param {string} fileName 
  * @returns {HTMLElement} page div
@@ -11,6 +29,8 @@ import { fetchFileToTextOrJson, findCategory } from "./utils.js";
 function generatePageContent(textInfos, fileName) {
     const [yaml, text] = parseMdContent(textInfos);
     const pageDiv = createTag("div", {class: `${fileName}Div`});
+    if (fileName !== "acceuil")
+        createAppendReturnButton(pageDiv, fileName);
     parseAppendText(pageDiv, fileName, yaml, text);
     document.body.append(pageDiv);
     return pageDiv;
@@ -23,10 +43,9 @@ function generatePageContent(textInfos, fileName) {
  * @param {string} path path to subject
  */
 async function selectSubject(pageDiv, subject, categoryId, path) {
-    appState.navigationStack.push({categoryId: appState.curCategory, subjectId: null})
     pageDiv.replaceChildren();
     const subjectInfos = await fetchFileToTextOrJson(path, 'text');
-    generatePageContent(subjectInfos, subject.label);
+    pageDiv.append(generatePageContent(subjectInfos, subject.label));
 }
 
 /**
@@ -40,6 +59,7 @@ function generateSubjectList(pageDiv, subjects, categoryId, categoryName) {
     subjects.forEach(subject => {
         const button = createTag("button", {class: `${subject.id}button`}, {textContent: subject.label})
         button.addEventListener("click", (e) => {
+            appState.navigationStack.push({categoryId: appState.curCategory, categoryLabel: categoryName, subjectId: null})
             selectSubject(pageDiv, subject, categoryId, `./content/${categoryName}/${subject.label}/${subject.id}.md`);
         })
         const li = createTag("li", {class: `${categoryId}List`})
@@ -59,12 +79,11 @@ export async function generateHomePage(homeFileName) {
 /**
  * @param {string} categoryId 
  * @param {string} categoryName 
- * @param {Array} categories 
  */
-async function generatePage(categoryId, categoryName, categories) {
+async function generatePage(categoryId, categoryName) {
     const pageInfos = await fetchFileToTextOrJson(`./content/${categoryName}/description.md`, 'text');
     const pageDiv = generatePageContent(pageInfos, categoryId);
-    generateSubjectList(pageDiv, findCategory(categories, categoryId).subjects, categoryId, categoryName);
+    generateSubjectList(pageDiv, findCategory(categoryId).subjects, categoryId, categoryName);
 }
 
 /**
@@ -73,22 +92,23 @@ async function generatePage(categoryId, categoryName, categories) {
  * 
  * @param {string} categoryId
  * @param {string} categoryLabel
- * @param {Array} categories All the categories in struct.json
+ * @param {Boolean} returnButton
  * 
  * @returns {string} The current category
  */
-export function loadCategory(categoryId, categoryLabel, categories) {
+export function loadCategory(categoryId, categoryLabel, returnButton = false) {
     document.querySelector(".menuDiv").classList.remove("visible");
-    if (categoryId === appState.curCategory)
+    if (categoryId === appState.curCategory && !returnButton)
         return ;
+    console.log(appState.curCategory);
     const currentDiv = document.querySelector(`.${appState.curCategory}Div`)
     if (currentDiv)
         currentDiv.remove();
-    appState.navigationStack.push({categoryId: appState.curCategory, subjectId: null})
+    appState.navigationStack.push({categoryId: appState.curCategory, categoryLabel: categoryLabel, subjectId: null})
     appState.curCategory = categoryId;
     if (appState.curCategory === 'acceuil') {
         generateHomePage(appState.curCategory);
     } else {
-        generatePage(categoryId, categoryLabel, categories);
+        generatePage(categoryId, categoryLabel);
     }
 }

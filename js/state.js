@@ -1,4 +1,5 @@
 export const appState = {
     curCategory: "",
-    navigationStack: []
+    navigationStack: [],
+    categories: []
 }

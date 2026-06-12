@@ -18,7 +18,7 @@ function createAppendCategories(navBar, categories = []) {
     categories.forEach(category => {
         const link = createTag("button", { class: `${category.id}-button`}, {textContent: category.label})
         const linkDup = link.cloneNode(true);
-        const categoryLoader = () => {loadCategory(category.id, category.label, categories);}
+        const categoryLoader = () => {loadCategory(category.id, category.label);}
         link.addEventListener("click", categoryLoader);
         linkDup.addEventListener("click", categoryLoader);
         categoriesDiv.appendChild(link);
@@ -90,8 +90,9 @@ function generateNavBar(categories = []) {
 
 async function fetchStructJson(structPath = "./structure/struct.json") {
     const dataJson = await fetchFileToTextOrJson(structPath, 'json')
-    generateNavBar(dataJson.categories);
-    appState.curCategory = findCategory(dataJson.categories, "acceuil").id;
+    appState.categories = dataJson.categories;
+    generateNavBar(appState.categories);
+    appState.curCategory = findCategory("acceuil").id;
     generateHomePage(appState.curCategory);
 }
 
