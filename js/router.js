@@ -10,12 +10,10 @@ import { fetchFileToTextOrJson, findCategory } from "./utils.js";
 function createAppendReturnButton(pageDiv, fileName) {
     const returnButton = createTag("button", {class: `${fileName}ReturnButton`}, {textContent: "← Retour"});
     returnButton.addEventListener("click", (e) => {
-        console.log(appState.navigationStack);
         const lastConnexion = appState.navigationStack.at(-1);
         const categoryId = lastConnexion.categoryId;
         const categoryLabel = lastConnexion.categoryLabel;
         appState.navigationStack.pop();
-        console.log(categoryId, categoryLabel);
         loadCategory(categoryId, categoryLabel, true);
     })
     pageDiv.append(returnButton);
@@ -83,7 +81,7 @@ export async function generateHomePage(homeFileName) {
 async function generatePage(categoryId, categoryName) {
     const pageInfos = await fetchFileToTextOrJson(`./content/${categoryName}/description.md`, 'text');
     const pageDiv = generatePageContent(pageInfos, categoryId);
-    generateSubjectList(pageDiv, findCategory(categoryId).subjects, categoryId, categoryName);
+    generateSubjectList(pageDiv, findCategory({id: categoryId}).subjects, categoryId, categoryName);
 }
 
 /**
@@ -100,7 +98,6 @@ export function loadCategory(categoryId, categoryLabel, returnButton = false) {
     document.querySelector(".menuDiv").classList.remove("visible");
     if (categoryId === appState.curCategory && !returnButton)
         return ;
-    console.log(appState.curCategory);
     const currentDiv = document.querySelector(`.${appState.curCategory}Div`)
     if (currentDiv)
         currentDiv.remove();
