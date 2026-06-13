@@ -33,7 +33,13 @@ function createAppendCategories(navBar, categories = []) {
  * @param {HTMLElement} navBar 
  */
 function createAppendLogo(navBar) {
-    const logo = createTag("div", {class: "logo"}, {textContent: "Devpedia"});
+    const logo = createTag("button", {class: "logo"}, {textContent: "Devpedia"});
+    logo.addEventListener("click", (e) => {
+        if (appState.curCategory !== 'acceuil') {
+            const home = findCategory({id: "acceuil"});
+            loadCategory(home.id, home.label)
+        }
+    })
     navBar.append(logo);
 }
 
@@ -92,7 +98,9 @@ async function fetchStructJson(structPath = "./structure/struct.json") {
     const dataJson = await fetchFileToTextOrJson(structPath, 'json')
     appState.categories = dataJson.categories;
     generateNavBar(appState.categories);
-    appState.curCategory = findCategory("acceuil").id;
+    const home = findCategory({id: "acceuil"});
+    appState.curCategory = home.id;
+    appState.navigationStack.push({categoryId: appState.curCategory, categoryLabel: home.label, subjectId: null})
     generateHomePage(appState.curCategory);
 }
 

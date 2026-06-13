@@ -3,11 +3,16 @@ import { appState } from "./state.js";
 /**
  * Find and return the category
  * 
- * @param {string} idToFind 
+ * @param {string} toFind 
  * @returns The category
  */
-export function findCategory(idToFind) {
-    return appState.categories.find(category => category.id === idToFind);
+export function findCategory(toFind = {}) {
+    return appState.categories.find(category => {
+        if (toFind.id !== undefined)
+            return category.id === toFind.id
+        else
+            return category.label === toFind.label
+    });
 }
 
 /**
