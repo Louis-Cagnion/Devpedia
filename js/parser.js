@@ -24,15 +24,6 @@ export function parseMdContent(homeInfos) {
     return [fileStruct, text]
 }
 
-/**
- * 
- * @param {*} yaml 
- * @param {*} line 
- */
-function assignTag(type, title, content) {
-    return createTag(type, {class: `${title}${type}`}, {textContent: content})
-}
-
 function mdToHtmlFormatting(line) {
     line = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
     line = line.replace(/\*(.*?)\*/g, "<em>$1</em>")    
