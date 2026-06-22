@@ -31,9 +31,11 @@ if ($connecte) {
 
 ```php
 <?php if ($connecte): ?>
-    <p>Bienvenue !</p>
+    <p>Bienvenue <?= $user ?>!</p>
 <?php endif; ?>
 ```
+
+> **Note :** `<?= $user ?>` est un raccourci pour `<?php echo $user; ?>`, de cette manière vous pouvez utiliser les variables PHP dans le HTML.
 
 Les deux écritures font exactement la même chose :
 - Avec les accolades `{ }`, tout est écrit en PHP, et le HTML doit être affiché via `echo`.

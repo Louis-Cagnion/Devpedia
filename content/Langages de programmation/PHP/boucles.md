@@ -109,5 +109,3 @@ Comme pour les conditions, les boucles peuvent s'écrire avec `:` et `end...` :
     <p><?= $fruit ?></p>
 <?php endforeach; ?>
 ```
-
-> **Note :** `<?= $fruit ?>` est un raccourci pour `<?php echo $fruit; ?>`, de cette manière vous pouvez utiliser les variables PHP dans le HTML.
