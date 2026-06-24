@@ -61,20 +61,25 @@ Si vous insérez directement une donnée utilisateur dans une requête SQL, un v
 ?>
 ```
 
-La solution est d'utiliser des **requêtes préparées**, via PDO, qui séparent la requête SQL des données :
+La solution est d'utiliser des **requêtes préparées**, via PDO (*PHP Data Objects*, l'outil intégré à PHP pour communiquer avec une base de données), qui séparent la requête SQL des données :
 
 ```php
 <?php
+    // Connexion à la base de données (type, adresse, nom de la base, identifiant, mot de passe)
     $pdo = new PDO('mysql:host=localhost;dbname=mabase', 'utilisateur', 'motdepasse');
 
+    // Préparation de la requête : ":email" est un espace réservé, pas encore une vraie valeur
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+
+    // Exécution de la requête avec la vraie valeur, envoyée par l'utilisateur
     $stmt->execute(['email' => $_POST['email']]);
 
+    // Récupération du résultat sous forme de tableau PHP
     $user = $stmt->fetch();
 ?>
 ```
 
-Avec cette méthode, la donnée envoyée par l'utilisateur n'est jamais interprétée comme du code SQL, quoi qu'elle contienne.
+Avec cette méthode, la donnée envoyée par l'utilisateur via `$_POST` n'est jamais interprétée comme du code SQL, quoi qu'elle contienne. Elle sera toujours considérée comme une valeur de la requête.
 
 ## `password_hash()` et `password_verify()` — stocker des mots de passe
 
@@ -82,11 +87,23 @@ Un mot de passe ne doit **jamais** être stocké en clair dans une base de donn�
 
 ```php
 <?php
-    // À l'inscription : on hache le mot de passe avant de le stocker
+    // On hash le mot de passe
     $motDePasseHache = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // À la connexion : on compare le mot de passe saisi avec le hash stocké
-    if (password_verify($_POST['password'], $motDePasseHache)) {
+    // On enregistre le hash en base de données (pas le mot de passe en clair)
+    $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :password)");
+    $stmt->execute([
+        'email' => $_POST['email'],
+        'password' => $motDePasseHache,
+    ]);
+
+    // On récupère le hash stocké en base, à partir de l'email saisi
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+    $stmt->execute(['email' => $_POST['email']]);
+    $user = $stmt->fetch();
+
+    // On compare le mot de passe saisi avec le hash récupéré de la base
+    if (password_verify($_POST['password'], $user['password'])) {
         echo "Connexion réussie.";
     } else {
         echo "Mot de passe incorrect.";
