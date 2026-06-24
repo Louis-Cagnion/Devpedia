@@ -15,6 +15,7 @@ Pour déclarer une variable en PHP, il faut mettre un `$` avant le nom de votre 
 
     // Chaîne de caractères (string)
     $str = "Hello world";
+    $str = 'Hello world';
 
     // Booléen (bool)
     $bool = false;
@@ -24,9 +25,11 @@ Pour déclarer une variable en PHP, il faut mettre un `$` avant le nom de votre 
 
     // Tableau indexé (array)
     $fruits = ["pomme", "banane", "cerise"];
+    $fruits = array("pomme", "banane", "cerise");
 
     // Tableau associatif (array)
     $personne = ["nom" => "Dupont", "age" => 25];
+    $personne = array("nom" => "Dupont", "age" => 25);
 
     // Objet (object)
     $date = new DateTime();
