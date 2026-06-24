@@ -125,6 +125,8 @@ Les variables ci-dessous permettent de récupérer les éléments d'un formulair
 <?php
     $_GET['nom_du_champ'];
     $_POST['nom_du_champ'];
+
+    //nom_du_champ = attribut 'name' dans les balises HTML
 ?>
 ```
 

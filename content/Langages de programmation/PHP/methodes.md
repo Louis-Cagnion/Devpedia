@@ -8,13 +8,20 @@ Une **fonction** est un bloc de code réutilisable, qui porte un nom, et qui peu
 
 ```php
 <?php
+    //fonction classique
     function addition($a, $b) {
         return $a + $b;
     }
 
     echo addition(2, 3); // affiche 5
+
+    //fonction fléchée
+    $double = fn($n) => $n * 2;
+
+    echo $double(5); // affiche 10
 ?>
 ```
+> **Note :** contrairement à JavaScript, où une fonction fléchée peut s'écrire avec des accolades et un `return` (`(n) => { return n * 2; }`), PHP n'autorise que la forme courte avec une seule expression, sans accolades ni `return` (`fn($n) => $n * 2;`).
 
 Une **méthode**, c'est exactement la même chose qu'une fonction, à une différence près : elle est définie **à l'intérieur d'une classe**, et elle s'utilise sur un objet (cf. les chapitres sur les classes et la programmation orientée objet).
 
