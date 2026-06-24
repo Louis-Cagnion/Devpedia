@@ -3,17 +3,37 @@ title: Les variables en PHP
 ---
 
 ## Les variables classiques
-Pour déclarer une variable en PHP, il faut mettre un `$` avant le nom de votre variable :
+Pour déclarer une variable en PHP, il faut mettre un `$` avant le nom de votre variable. PHP est faiblement typé : vous n'indiquez pas le type, il est déduit automatiquement selon la valeur assignée.
 
 ```php
 <?php
+    // Entier (int)
     $nb = 2;
-    $str = "Hello world";
+
+    // Nombre à virgule flottante (float)
     $pi = 3.14;
+
+    // Chaîne de caractères (string)
+    $str = "Hello world";
+
+    // Booléen (bool)
     $bool = false;
+
+    // Valeur nulle (null)
     $null = null;
+
+    // Tableau indexé (array)
+    $fruits = ["pomme", "banane", "cerise"];
+
+    // Tableau associatif (array)
+    $personne = ["nom" => "Dupont", "age" => 25];
+
+    // Objet (object)
+    $date = new DateTime();
 ?>
 ```
+
+> **Note :** vous pouvez vérifier le type d'une variable avec la fonction `var_dump($variable);` ou `gettype($variable);`.
 
 Ensuite pour comparer ou manipuler vos variables entre elles, il vous faudra utiliser plusieurs opérateurs différents :
 
@@ -96,7 +116,6 @@ Si vous souhaitez concaténer des chaînes de caractères, vous avez 2 méthodes
 ```
 
 ## Les variables globales
-
 Les variables ci-dessous permettent de récupérer les éléments d'un formulaire en fonction de sa méthode d'envoi (`GET` ou `POST`) :
 
 ```php
