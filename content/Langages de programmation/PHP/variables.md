@@ -2,6 +2,7 @@
 title: Les variables en PHP
 ---
 
+## Les variables classiques
 Pour déclarer une variable en PHP, il faut mettre un `$` avant le nom de votre variable :
 
 ```php
@@ -93,3 +94,20 @@ Si vous souhaitez concaténer des chaînes de caractères, vous avez 2 méthodes
     //les deux résultats donnent "Le thème du jour est : Hello world".
 ?>
 ```
+
+## Les variables globales
+
+Les variables ci-dessous permettent de récupérer les éléments d'un formulaire en fonction de sa méthode d'envoi (`GET` ou `POST`) :
+
+```php
+<?php
+    $_GET['nom_du_champ'];
+    $_POST['nom_du_champ'];
+?>
+```
+
+Quand la méthode `GET` est utilisée, les données du formulaire sont visibles directement dans l'URL, sous forme de *query string* (ex : `?nom=Jean&age=25`).
+
+La méthode `POST` est plutôt utilisée pour envoyer des données sensibles (mots de passe, informations personnelles...), car elles ne sont pas affichées dans l'URL et ne sont pas limitées en taille comme peut l'être une URL.
+
+> **Note :** `GET` et `POST` ne servent pas à sécuriser des données — les données restent visibles via les outils de développement du navigateur ou par interception réseau si le site n'utilise pas HTTPS. Pour de vraies données sensibles (mots de passe...), il faut aussi penser au chiffrement et à HTTPS.
