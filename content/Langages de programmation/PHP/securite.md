@@ -88,13 +88,13 @@ Un mot de passe ne doit **jamais** être stocké en clair dans une base de donn�
 ```php
 <?php
     // On hash le mot de passe
-    $motDePasseHache = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $user['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
     // On enregistre le hash en base de données (pas le mot de passe en clair)
     $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :password)");
     $stmt->execute([
         'email' => $_POST['email'],
-        'password' => $motDePasseHache,
+        'password' => $user['password'],
     ]);
 
     // On récupère le hash stocké en base, à partir de l'email saisi
@@ -112,6 +112,19 @@ Un mot de passe ne doit **jamais** être stocké en clair dans une base de donn�
 ```
 
 `password_hash()` génère un hash différent à chaque appel (même avec le même mot de passe), grâce à un "sel" (*salt*) intégré automatiquement. Il est donc impossible de revenir au mot de passe d'origine à partir du hash.
+
+Ce sel n'est pas perdu : il est inclus directement dans le hash généré, par exemple :
+
+```
+2y $10 N9qo8uLOickgx2ZMRZoMye IjZAgcfl7p92ldGxad68LJZdL17lhWy
+```
+
+- `$2y$` → l'algorithme utilisé (bcrypt)
+- `$10$` → le coût (la difficulté du calcul)
+- Les 22 caractères suivants → le sel utilisé pour ce hash précis
+- Le reste → le résultat du hachage, calculé avec ce sel
+
+C'est pour ça que `password_verify($_POST['password'], $user['password'])` fonctionne malgré tout : elle lit le sel déjà présent dans `$user['password']`, hache `$_POST['password']` avec **ce même sel**, puis compare le résultat obtenu au reste de `$user['password']` en utilisant le même algorithme et coût. C'est pour cette raison qu'on utilise toujours `password_verify()` pour comparer, et jamais un nouveau `password_hash()` comparé directement au hash stocké — ce dernier donnerait toujours un résultat différent, même avec le bon mot de passe.
 
 ## Résumé
 
