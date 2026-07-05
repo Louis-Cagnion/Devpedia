@@ -71,7 +71,30 @@ Certains prototypes de l'objet string acceptent une regex en paramètre pour eff
 
 **`matchAll`** fonctionne comme `match` avec le flag `g`, mais nécessite obligatoirement ce flag. Elle renvoie un itérateur donnant accès aux détails de chaque correspondance, y compris les groupes capturés.
 ```javascript
-    str.matchAll(/o/g);
+    const str = "Jean:25 Marie:30";
+    const resultat = [...str.matchAll(/(\w+):(\d+)/g)];
+
+    console.log(resultat);
+    /*  
+    [
+        [
+            "Jean:25",           // correspondance complète
+            "Jean",              // groupe 1
+            "25",                // groupe 2
+            index: 0,
+            input: "Jean:25 Marie:30",
+            groups: undefined
+        ],
+        [
+            "Marie:30",
+            "Marie",
+            "30",
+            index: 8,
+            input: "Jean:25 Marie:30",
+            groups: undefined
+        ]
+    ]
+    */
 ```
 
 **`search`** renvoie l'index de la première correspondance à la regex dans la string, ou `-1` si aucune correspondance n'est trouvée.
