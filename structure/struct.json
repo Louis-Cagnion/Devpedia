@@ -11,7 +11,199 @@
       ]
     },
     {
-      "id": "langages-programmation",
+      "id": "bash",
+      "label": "Bash",
+      "chapters": [
+        {
+          "id": "architecture-dun-shell",
+          "label": "Comment fonctionne un shell (architecture interne)"
+        },
+        {
+          "id": "boucles",
+          "label": "Les boucles en Bash"
+        },
+        {
+          "id": "conditions",
+          "label": "Les conditions en Bash"
+        },
+        {
+          "id": "expansion-et-jokers",
+          "label": "Expansion et jokers (globbing)"
+        },
+        {
+          "id": "fonctions",
+          "label": "Les fonctions en Bash"
+        },
+        {
+          "id": "gestion-des-processus",
+          "label": "La gestion des processus"
+        },
+        {
+          "id": "permissions-et-fichiers",
+          "label": "Permissions et manipulation de fichiers"
+        },
+        {
+          "id": "redirections-et-pipes",
+          "label": "Redirections et pipes"
+        },
+        {
+          "id": "scripts-et-shebang",
+          "label": "Écrire et exécuter un script Bash"
+        },
+        {
+          "id": "traitement-de-texte",
+          "label": "Traitement de texte (grep, sed, awk...)"
+        },
+        {
+          "id": "variables-denvironnement",
+          "label": "Variables d'environnement"
+        },
+        {
+          "id": "variables",
+          "label": "Les variables en Bash"
+        }
+      ]
+    },
+    {
+      "id": "domain-specific-languages-dsl",
+      "label": "Domain-specific Languages (DSL)",
+      "chapters": [
+        {
+          "id": "regex",
+          "label": "La regex"
+        },
+        {
+          "id": "sql",
+          "label": "SQL"
+        }
+      ]
+    },
+    {
+      "id": "git",
+      "label": "Git",
+      "chapters": [
+        {
+          "id": "annuler-et-historique",
+          "label": "Annuler des changements et naviguer l'historique"
+        },
+        {
+          "id": "architecture-interne",
+          "label": "L'architecture interne de Git"
+        },
+        {
+          "id": "branches",
+          "label": "Les branches"
+        },
+        {
+          "id": "commandes-essentielles",
+          "label": "Les commandes essentielles"
+        },
+        {
+          "id": "concepts-de-base",
+          "label": "Les concepts de base de Git"
+        },
+        {
+          "id": "gitignore",
+          "label": "Le fichier .gitignore"
+        },
+        {
+          "id": "rebase",
+          "label": "Le rebase"
+        },
+        {
+          "id": "remotes",
+          "label": "Les dépôts distants (remotes)"
+        },
+        {
+          "id": "resoudre-conflits",
+          "label": "Résoudre un conflit de fusion"
+        },
+        {
+          "id": "stash",
+          "label": "Le stash"
+        },
+        {
+          "id": "tags",
+          "label": "Les tags"
+        }
+      ]
+    },
+    {
+      "id": "langages-de-balisage",
+      "label": "Langages de balisage",
+      "subjects": [
+        {
+          "id": "css",
+          "label": "CSS",
+          "chapters": [
+            {
+              "id": "box-model",
+              "label": "Le modèle de boîte (box model)"
+            },
+            {
+              "id": "flexbox",
+              "label": "Flexbox"
+            },
+            {
+              "id": "grid",
+              "label": "CSS Grid"
+            },
+            {
+              "id": "positionnement",
+              "label": "Le positionnement (position, z-index)"
+            },
+            {
+              "id": "responsive-et-media-queries",
+              "label": "Le responsive design et les media queries"
+            },
+            {
+              "id": "selecteurs",
+              "label": "Les sélecteurs"
+            },
+            {
+              "id": "variables-et-cascade",
+              "label": "Variables CSS et la cascade"
+            }
+          ]
+        },
+        {
+          "id": "html",
+          "label": "HTML",
+          "chapters": [
+            {
+              "id": "attributs-data-et-accessibilite",
+              "label": "Attributs data-* et accessibilité (ARIA)"
+            },
+            {
+              "id": "balises-de-texte",
+              "label": "Les balises de texte"
+            },
+            {
+              "id": "formulaires",
+              "label": "Les formulaires"
+            },
+            {
+              "id": "liens-et-images",
+              "label": "Les liens et les images"
+            },
+            {
+              "id": "semantique-html5",
+              "label": "La sémantique HTML5"
+            },
+            {
+              "id": "structure-dun-document",
+              "label": "La structure d'un document HTML"
+            },
+            {
+              "id": "tableaux",
+              "label": "Les tableaux HTML"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "langages-de-programmation",
       "label": "Langages de programmation",
       "subjects": [
         {
@@ -127,6 +319,60 @@
             {
               "id": "templates",
               "label": "Les templates (programmation générique)"
+            }
+          ]
+        },
+        {
+          "id": "javascript",
+          "label": "JavaScript",
+          "chapters": [
+            {
+              "id": "HTMLElements",
+              "label": "Les HTMLElements en JavaScript"
+            },
+            {
+              "id": "asynchrone",
+              "label": "La programmation asynchrone (callbacks, Promises, async/await)"
+            },
+            {
+              "id": "boucles",
+              "label": "Les boucles en JavaScript"
+            },
+            {
+              "id": "conditions",
+              "label": "Les conditions en JavaScript"
+            },
+            {
+              "id": "dom-et-evenements",
+              "label": "Le DOM et la gestion des événements"
+            },
+            {
+              "id": "fonctions",
+              "label": "Les fonctions en JavaScript"
+            },
+            {
+              "id": "gestion-des-erreurs",
+              "label": "La gestion des erreurs"
+            },
+            {
+              "id": "objets",
+              "label": "Les objets en Javascript"
+            },
+            {
+              "id": "poo",
+              "label": "Les classes et la programmation orientée objet"
+            },
+            {
+              "id": "regex",
+              "label": "Les regex en Javascript"
+            },
+            {
+              "id": "strings",
+              "label": "Les strings en Javascript"
+            },
+            {
+              "id": "tableaux",
+              "label": "Les tableaux en Javascript"
             }
           ]
         },
@@ -281,252 +527,6 @@
               "label": "Les variables et types de base"
             }
           ]
-        },
-        {
-          "id": "javascript",
-          "label": "JavaScript",
-          "chapters": [
-            {
-              "id": "HTMLElements",
-              "label": "Les HTMLElements en JavaScript"
-            },
-            {
-              "id": "asynchrone",
-              "label": "La programmation asynchrone (callbacks, Promises, async/await)"
-            },
-            {
-              "id": "boucles",
-              "label": "Les boucles en JavaScript"
-            },
-            {
-              "id": "conditions",
-              "label": "Les conditions en JavaScript"
-            },
-            {
-              "id": "dom-et-evenements",
-              "label": "Le DOM et la gestion des événements"
-            },
-            {
-              "id": "fonctions",
-              "label": "Les fonctions en JavaScript"
-            },
-            {
-              "id": "gestion-des-erreurs",
-              "label": "La gestion des erreurs"
-            },
-            {
-              "id": "objets",
-              "label": "Les objets en Javascript"
-            },
-            {
-              "id": "poo",
-              "label": "Les classes et la programmation orientée objet"
-            },
-            {
-              "id": "regex",
-              "label": "Les regex en Javascript"
-            },
-            {
-              "id": "strings",
-              "label": "Les strings en Javascript"
-            },
-            {
-              "id": "tableaux",
-              "label": "Les tableaux en Javascript"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "langages-balisage",
-      "label": "Langages de balisage",
-      "subjects": [
-        {
-          "id": "html",
-          "label": "HTML",
-          "chapters": [
-            {
-              "id": "attributs-data-et-accessibilite",
-              "label": "Attributs data-* et accessibilité (ARIA)"
-            },
-            {
-              "id": "balises-de-texte",
-              "label": "Les balises de texte"
-            },
-            {
-              "id": "formulaires",
-              "label": "Les formulaires"
-            },
-            {
-              "id": "liens-et-images",
-              "label": "Les liens et les images"
-            },
-            {
-              "id": "semantique-html5",
-              "label": "La sémantique HTML5"
-            },
-            {
-              "id": "structure-dun-document",
-              "label": "La structure d'un document HTML"
-            },
-            {
-              "id": "tableaux",
-              "label": "Les tableaux HTML"
-            }
-          ]
-        },
-        {
-          "id": "css",
-          "label": "CSS",
-          "chapters": [
-            {
-              "id": "box-model",
-              "label": "Le modèle de boîte (box model)"
-            },
-            {
-              "id": "flexbox",
-              "label": "Flexbox"
-            },
-            {
-              "id": "grid",
-              "label": "CSS Grid"
-            },
-            {
-              "id": "positionnement",
-              "label": "Le positionnement (position, z-index)"
-            },
-            {
-              "id": "responsive-et-media-queries",
-              "label": "Le responsive design et les media queries"
-            },
-            {
-              "id": "selecteurs",
-              "label": "Les sélecteurs"
-            },
-            {
-              "id": "variables-et-cascade",
-              "label": "Variables CSS et la cascade"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "dsl",
-      "label": "Domain-specific Languages (DSL)",
-      "chapters": [
-        {
-          "id": "regex",
-          "label": "La regex"
-        },
-        {
-          "id": "sql",
-          "label": "SQL"
-        }
-      ]
-    },
-    {
-      "id": "bash",
-      "label": "Bash",
-      "chapters": [
-        {
-          "id": "architecture-dun-shell",
-          "label": "Comment fonctionne un shell (architecture interne)"
-        },
-        {
-          "id": "boucles",
-          "label": "Les boucles en Bash"
-        },
-        {
-          "id": "conditions",
-          "label": "Les conditions en Bash"
-        },
-        {
-          "id": "expansion-et-jokers",
-          "label": "Expansion et jokers (globbing)"
-        },
-        {
-          "id": "fonctions",
-          "label": "Les fonctions en Bash"
-        },
-        {
-          "id": "gestion-des-processus",
-          "label": "La gestion des processus"
-        },
-        {
-          "id": "permissions-et-fichiers",
-          "label": "Permissions et manipulation de fichiers"
-        },
-        {
-          "id": "redirections-et-pipes",
-          "label": "Redirections et pipes"
-        },
-        {
-          "id": "scripts-et-shebang",
-          "label": "Écrire et exécuter un script Bash"
-        },
-        {
-          "id": "traitement-de-texte",
-          "label": "Traitement de texte (grep, sed, awk...)"
-        },
-        {
-          "id": "variables-denvironnement",
-          "label": "Variables d'environnement"
-        },
-        {
-          "id": "variables",
-          "label": "Les variables en Bash"
-        }
-      ]
-    },
-    {
-      "id": "git",
-      "label": "Git",
-      "chapters": [
-        {
-          "id": "annuler-et-historique",
-          "label": "Annuler des changements et naviguer l'historique"
-        },
-        {
-          "id": "architecture-interne",
-          "label": "L'architecture interne de Git"
-        },
-        {
-          "id": "branches",
-          "label": "Les branches"
-        },
-        {
-          "id": "commandes-essentielles",
-          "label": "Les commandes essentielles"
-        },
-        {
-          "id": "concepts-de-base",
-          "label": "Les concepts de base de Git"
-        },
-        {
-          "id": "gitignore",
-          "label": "Le fichier .gitignore"
-        },
-        {
-          "id": "rebase",
-          "label": "Le rebase"
-        },
-        {
-          "id": "remotes",
-          "label": "Les dépôts distants (remotes)"
-        },
-        {
-          "id": "resoudre-conflits",
-          "label": "Résoudre un conflit de fusion"
-        },
-        {
-          "id": "stash",
-          "label": "Le stash"
-        },
-        {
-          "id": "tags",
-          "label": "Les tags"
         }
       ]
     }
