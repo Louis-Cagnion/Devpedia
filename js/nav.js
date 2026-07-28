@@ -1,8 +1,7 @@
-import { parseAppendText } from "./parser.js";
-import { generateHomePage, loadCategory } from "./router.js";
+import { loadCategory } from "./router.js";
 import { appState } from "./state.js";
 import { createTag } from "./tags.js";
-import { fetchFileToTextOrJson, findCategory } from "./utils.js";
+import { fetchFileToTextOrJson } from "./utils.js";
 
 /**
  * Create and attach categories to navBar, returns a menu div that contains
@@ -18,7 +17,7 @@ function createAppendCategories(navBar, categories = []) {
     categories.forEach(category => {
         const link = createTag("button", { class: `${category.id}-button`}, {textContent: category.label})
         const linkDup = link.cloneNode(true);
-        const categoryLoader = () => {loadCategory(category.id, category.label);}
+        const categoryLoader = () => {loadCategory(category.id);}
         link.addEventListener("click", categoryLoader);
         linkDup.addEventListener("click", categoryLoader);
         categoriesDiv.appendChild(link);
@@ -35,10 +34,8 @@ function createAppendCategories(navBar, categories = []) {
 function createAppendLogo(navBar) {
     const logo = createTag("button", {class: "logo"}, {textContent: "Devpedia"});
     logo.addEventListener("click", (e) => {
-        if (appState.curCategory !== 'acceuil') {
-            const home = findCategory({id: "acceuil"});
-            loadCategory(home.id, home.label)
-        }
+        if (appState.curCategory !== 'acceuil')
+            loadCategory('acceuil');
     })
     navBar.append(logo);
 }
@@ -98,10 +95,7 @@ async function fetchStructJson(structPath = "./structure/struct.json") {
     const dataJson = await fetchFileToTextOrJson(structPath, 'json')
     appState.categories = dataJson.categories;
     generateNavBar(appState.categories);
-    const home = findCategory({id: "acceuil"});
-    appState.curCategory = home.id;
-    appState.navigationStack.push({categoryId: appState.curCategory, categoryLabel: home.label, subjectId: null})
-    generateHomePage(appState.curCategory);
+    loadCategory('acceuil');
 }
 
 fetchStructJson();
