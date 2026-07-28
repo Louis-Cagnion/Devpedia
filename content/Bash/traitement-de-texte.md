@@ -76,7 +76,7 @@ wc -c fichier.txt    # nombre d'octets
 ## Combiner ces outils
 
 ```bash
-cat access.log | grep "404" | awk '{ print $1 }' | sort | uniq -c | sort -rn
+grep "404" access.log | awk '{ print $1 }' | sort | uniq -c | sort -rn
 # 1) garde les lignes d'erreur 404
 # 2) extrait l'adresse IP (1er champ)
 # 3) trie pour regrouper les IP identiques

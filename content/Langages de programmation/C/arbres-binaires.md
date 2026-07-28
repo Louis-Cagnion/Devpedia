@@ -36,6 +36,9 @@ Noeud *inserer(Noeud *racine, int valeur)
 {
     if (racine == NULL) {
         Noeud *nouveau = malloc(sizeof(Noeud));
+        if (nouveau == NULL) {
+            return NULL; // cf. chapitre sur la gestion de la mémoire : toujours vérifier malloc
+        }
         nouveau->valeur = valeur;
         nouveau->gauche = NULL;
         nouveau->droit  = NULL;

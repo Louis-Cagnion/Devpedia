@@ -2,6 +2,6 @@
 title: Description
 ---
 
-Bash est un langage de lignes de commandes, il permet d'executer des commandes dans un terminal
+Bash est un langage de lignes de commandes, il permet d'exécuter des commandes dans un terminal.
 
-Vous retrouverez les differentes commandes ci-dessous :
+Vous retrouverez les différentes commandes ci-dessous :

@@ -20,10 +20,11 @@ try {
 
 ```javascript
 function calculerAge(anneeNaissance) {
-    if (anneeNaissance > 2026) {
+    const anneeCourante = new Date().getFullYear();
+    if (anneeNaissance > anneeCourante) {
         throw new Error("L'année de naissance ne peut pas être dans le futur");
     }
-    return 2026 - anneeNaissance;
+    return anneeCourante - anneeNaissance;
 }
 
 try {

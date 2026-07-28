@@ -95,6 +95,8 @@ donnees["categorie"] = donnees["age"].apply(lambda age: "jeune" if age < 30 else
 # apply() : exécute une fonction sur chaque valeur de la colonne
 ```
 
+> **Note (performance) :** `.apply()` exécute la fonction Python ligne par ligne, sans profiter de la vectorisation NumPy (cf. chapitre dédié) — pour une condition simple comme celle-ci, `np.where(donnees["age"] < 30, "jeune", "senior")` fait exactement la même chose, en bien plus rapide sur un grand jeu de données. `.apply()` reste utile pour une logique trop complexe à exprimer avec les fonctions vectorisées de pandas/NumPy.
+
 ## Valeurs manquantes
 
 ```python

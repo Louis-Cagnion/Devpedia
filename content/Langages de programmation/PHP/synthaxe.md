@@ -31,11 +31,11 @@ if ($connecte) {
 
 ```php
 <?php if ($connecte): ?>
-    <p>Bienvenue <?= $user ?>!</p>
+    <p>Bienvenue <?= htmlspecialchars($user) ?>!</p>
 <?php endif; ?>
 ```
 
-> **Note :** `<?= $user ?>` est un raccourci pour `<?php echo $user; ?>`, de cette manière vous pouvez utiliser les variables PHP dans le HTML.
+> **Note :** `<?= $user ?>` est un raccourci pour `<?php echo $user; ?>`, de cette manière vous pouvez utiliser les variables PHP dans le HTML. Dès que la variable affichée peut provenir d'une saisie utilisateur (un pseudo, par exemple), il faut l'entourer de `htmlspecialchars()` comme ci-dessus — cf. chapitre sur la sécurité pour la faille XSS que ça évite.
 
 Les deux écritures font exactement la même chose :
 - Avec les accolades `{ }`, tout est écrit en PHP, et le HTML doit être affiché via `echo`.

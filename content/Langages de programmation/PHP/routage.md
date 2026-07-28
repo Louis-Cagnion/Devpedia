@@ -73,6 +73,8 @@ return true;
 
 > **Note :** l'ordre des blocs compte. Si le test `is_file()` était placé **avant** les blocages, une requête sur un fichier sensible mais physiquement présent (ex. `/data/config.php`) passerait ce test avec `true` et retournerait `false` — laissant le serveur intégré **exécuter** ce fichier directement, sans passer par les protections.
 
+> **Note (sécurité) :** `$uri` vient directement de la requête (`$_SERVER['REQUEST_URI']`) — sans normalisation, une valeur contenant des remontées de répertoire (`/../../etc/passwd`) pourrait faire échapper `is_file(__DIR__ . $uri)` à la racine web. En pratique, il faut résoudre le chemin réel (ex. `realpath()`) et vérifier qu'il reste bien à l'intérieur de `__DIR__` avant de le servir, plutôt que de faire confiance à `$uri` tel quel.
+
 ## Rediriger et arrêter l'exécution
 
 `header('Location: ...')` ne fait qu'ajouter une information à la réponse HTTP — elle n'interrompt **pas** le script. Sans `exit` juste après, le code suivant continue de s'exécuter (et de produire du contenu) même après une redirection :

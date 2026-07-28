@@ -64,6 +64,8 @@ Promise.all([
     fetch("/api/produits"),
 ]).then(([reponseUtilisateurs, reponseProduits]) => {
     console.log("Les deux requêtes sont terminées");
+}).catch(erreur => {
+    console.log("Au moins une des deux requêtes a échoué :", erreur);
 });
 ```
 

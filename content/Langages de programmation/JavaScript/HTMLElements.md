@@ -32,11 +32,13 @@ parent.prepend('texte brut', p, autreElement);
 
 **`insertAdjacentHTML`** insère du HTML brut à une position précise autour d'un élément, sans écraser le contenu existant.
 ```javascript
-element.insertAdjacentHTML('beforebegin', '<p>avant l'élément</p>');
-element.insertAdjacentHTML('afterbegin',  '<p>au début du contenu</p>');
-element.insertAdjacentHTML('beforeend',   '<p>à la fin du contenu</p>');
-element.insertAdjacentHTML('afterend',    '<p>après l'élément</p>');
+element.insertAdjacentHTML('beforebegin', "<p>avant l'élément</p>");
+element.insertAdjacentHTML('afterbegin',  "<p>au début du contenu</p>");
+element.insertAdjacentHTML('beforeend',   "<p>à la fin du contenu</p>");
+element.insertAdjacentHTML('afterend',    "<p>après l'élément</p>");
 ```
+
+> **Note (sécurité) :** comme `innerHTML` (voir plus bas), `insertAdjacentHTML` interprète son argument comme du HTML — ne jamais y insérer une donnée provenant de l'utilisateur sans l'avoir échappée, sous peine de faille XSS (cf. chapitre sur la sécurité en PHP, même principe).
 
 **`remove`** supprime l'élément du DOM.
 ```javascript
@@ -71,6 +73,8 @@ document.getElementById('mon-id');
 document.getElementsByClassName('ma-classe'); // HTMLCollection (live)
 document.getElementsByTagName('p');           // HTMLCollection (live)
 ```
+
+> **Note :** une `HTMLCollection` (renvoyée par `getElementsByClassName`/`getElementsByTagName`) est **live** : elle se met à jour automatiquement si le DOM change, contrairement à la `NodeList` renvoyée par `querySelectorAll` (figée au moment de l'appel). Modifier le DOM (ajouter/retirer des éléments correspondants) **pendant** qu'on parcourt une collection live peut donc sauter ou repasser sur des éléments de façon inattendue — une bonne raison de préférer `querySelectorAll` dès qu'on prévoit de modifier la page pendant le parcours.
 
 ---
 
@@ -132,6 +136,8 @@ element.textContent = 'Nouveau';  // remplace tout le contenu par du texte
 element.innerHTML;                        // '<strong>Mon texte</strong>'
 element.innerHTML = '<em>Nouveau</em>';   // ⚠️ écrase tout, interprète le HTML
 ```
+
+> **Note (sécurité) :** assigner à `innerHTML` une donnée provenant de l'utilisateur (non fiable) est une faille XSS classique — le contenu est interprété comme du vrai HTML/JavaScript exécutable, pas comme du texte. `textContent` (ci-dessus) reste sûr par défaut, puisqu'il n'interprète jamais son contenu.
 
 ---
 

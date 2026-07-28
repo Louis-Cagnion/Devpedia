@@ -61,7 +61,7 @@ entrees = [1.0, 2.0]
 # Neurone 1 de la couche cachée
 poids_n1 = [0.5, -0.3]
 biais_n1 = 0.1
-sortie_n1 = relu(1.0 * 0.5 + 2.0 * -0.3 + 0.1)   # relu(-0.1) = 0
+sortie_n1 = relu(1.0 * 0.5 + 2.0 * -0.3 + 0.1)   # relu(0.0) = 0
 
 # Neurone 2 de la couche cachée
 poids_n2 = [0.2, 0.4]

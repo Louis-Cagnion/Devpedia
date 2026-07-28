@@ -49,9 +49,9 @@ Le modèle n'est ensuite évalué **que** sur `X_test`/`y_test`, jamais sur les 
 Quel que soit l'algorithme choisi, scikit-learn expose systématiquement la même interface :
 
 ```python
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression   # classification : y est catégoriel ("oui"/"non")
 
-modele = LinearRegression()
+modele = LogisticRegression()
 modele.fit(X_entrainement, y_entrainement)   # "apprend" à partir des données d'entraînement
 
 predictions = modele.predict(X_test)           # applique ce qui a été appris à de nouvelles données
@@ -61,7 +61,9 @@ modele.score(X_test, y_test)                    # évalue la qualité des prédi
 
 - `fit(X, y)` : ajuste les paramètres internes du modèle pour qu'il colle au mieux aux données fournies.
 - `predict(X)` : utilise ces paramètres appris pour produire une prédiction sur de nouvelles données.
-- Cette interface (`fit`/`predict`) reste identique en changeant simplement `LinearRegression()` pour un autre algorithme (`RandomForestClassifier()`, `KMeans()`...) — ce qui rend très facile de tester rapidement plusieurs approches sur le même problème.
+- Cette interface (`fit`/`predict`) reste identique en changeant simplement `LogisticRegression()` pour un autre algorithme (`RandomForestClassifier()`, `KMeans()`...) — ce qui rend très facile de tester rapidement plusieurs approches sur le même problème.
+
+> **Note :** le choix de l'algorithme dépend du type de `y`. Ici `y` est **catégoriel** (`"oui"`/`"non"`) : c'est un problème de classification, d'où `LogisticRegression` (malgré son nom, un algorithme de classification, pas de régression). `LinearRegression` s'utilise quand `y` est une valeur **numérique continue** à prédire (un prix, une température...) — l'utiliser sur des étiquettes textuelles comme ici provoquerait une erreur.
 
 ## Mesurer la qualité d'un modèle
 

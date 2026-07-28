@@ -70,6 +70,8 @@ git rebase main
 git push --force
 ```
 
+> **Note :** quand un force-push est réellement légitime (rebaser puis re-pousser une branche qu'on est seul à utiliser), `git push --force-with-lease` est plus sûr que `--force` : il vérifie d'abord que personne d'autre n'a poussé de commit sur cette branche depuis le dernier `fetch`, et refuse l'opération dans ce cas plutôt que d'écraser aveuglément un travail qu'on n'a pas vu passer.
+
 Puisque le rebase crée de **nouveaux** commits avec des hash différents, le pousser en écrasant l'historique distant (`--force`) désynchronise brutalement quiconque avait déjà basé du travail sur les anciens commits — leurs branches locales référenceraient des commits qui n'existent plus côté serveur. Le rebase est sûr sur des commits **strictement locaux**, jamais encore partagés.
 
 Voir aussi le chapitre sur les branches (merge, l'alternative la plus sûre pour un historique déjà partagé) et celui sur la résolution de conflits.

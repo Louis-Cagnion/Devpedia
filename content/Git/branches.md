@@ -59,4 +59,6 @@ git branch -d feature    # supprime, seulement si la branche a déjà été fusi
 git branch -D feature    # force la suppression, même si elle n'a jamais été fusionnée
 ```
 
+> **Note :** `git branch -D` sur une branche jamais fusionnée peut faire perdre l'accès à des commits qui n'existent plus nulle part ailleurs. Ils restent généralement retrouvables un moment via `git reflog` (cf. chapitre sur l'annulation et l'historique), mais mieux vaut vérifier avec `git log feature` (ou une fusion/`git branch -d`) avant de forcer la suppression.
+
 Voir aussi le chapitre sur le rebase, une alternative au merge pour intégrer des changements sans commit de fusion, et celui sur la résolution de conflits, pour le cas où les deux branches ont modifié les mêmes lignes.

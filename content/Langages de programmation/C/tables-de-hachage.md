@@ -71,6 +71,9 @@ void inserer(TableHachage *table, const char *cle, int valeur)
     unsigned long indice = hash_chaine(cle) % table->taille;
 
     Entree *nouvelle = malloc(sizeof(Entree));
+    if (nouvelle == NULL) {
+        return; // échec d'allocation (cf. chapitre sur la gestion de la mémoire) : on renonce à l'insertion
+    }
     nouvelle->cle = strdup(cle);
     nouvelle->valeur = valeur;
     nouvelle->suivant = table->cases[indice]; // insertion en tête de la liste de ce bucket

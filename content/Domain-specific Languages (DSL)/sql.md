@@ -88,7 +88,7 @@ Les espaces réservés nommés (`:ville`) empêchent ça structurellement : la v
 <?php
 // Construire dynamiquement une clause WHERE reste sûr,
 // tant que seuls les NOMS de placeholders sont concaténés — jamais les valeurs elles-mêmes :
-function construireOu(array $criteres): array
+function construireEt(array $criteres): array
 {
     $clauses = [];
     $params  = [];
@@ -98,11 +98,13 @@ function construireOu(array $criteres): array
     }
     return [implode(' AND ', $clauses), $params];
 }
-// construireOu(['ville' => 'Lyon']) -> ["ville = :ville", [':ville' => 'Lyon']]
+// construireEt(['ville' => 'Lyon']) -> ["ville = :ville", [':ville' => 'Lyon']]
 ?>
 ```
 
 Le texte SQL généré ne contient jamais la valeur réelle, seulement le nom littéral du placeholder (`:ville`) — la vraie valeur part séparément dans `$params`, utilisée par `execute($params)`.
+
+> **Note (sécurité) :** ce mécanisme protège les **valeurs** (`$valeur`), mais pas les **noms de colonnes** (`$colonne`) — ceux-ci sont concaténés directement dans le SQL, sans passer par un placeholder (ce n'est techniquement pas possible : PDO ne permet de paramétrer que des valeurs, jamais des noms de colonnes ou de tables). Si `$criteres` provenait directement d'une entrée utilisateur non filtrée (ex. `construireEt($_GET)`), un nom de colonne forgé pourrait réintroduire une injection SQL. `$colonne` doit donc toujours provenir d'une liste blanche de colonnes autorisées à l'avance, jamais directement d'une entrée externe.
 
 ## Pour aller plus loin
 

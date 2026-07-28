@@ -48,7 +48,7 @@ Un pipe connecte la sortie standard d'une commande à l'entrée standard de la s
 
 ```bash
 ls -l | grep ".txt"          # ne garde que les lignes contenant ".txt"
-cat access.log | grep "404" | wc -l   # compte les lignes contenant "404" dans le fichier
+grep "404" access.log | wc -l   # compte les lignes contenant "404" dans le fichier
 ps aux | sort -k 3 -nr | head -5      # les 5 processus qui consomment le plus de CPU
 ```
 

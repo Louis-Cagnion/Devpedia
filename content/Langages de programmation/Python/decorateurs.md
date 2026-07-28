@@ -77,8 +77,15 @@ def chronometrer(fonction):
         return fonction(*args, **kwargs)
     return enveloppe
 
+@chronometrer   # redécoré avec cette nouvelle version de chronometrer
+def calcul_long():
+    total = sum(x ** 2 for x in range(1000000))
+    return total
+
 print(calcul_long.__name__)   # "calcul_long" -> corrigé
 ```
+
+> **Note :** redéfinir `chronometrer` ne change rien rétroactivement à une fonction déjà décorée par son ancienne version — `calcul_long` doit être redécorée ici pour que `@wraps` s'applique réellement.
 
 ## Un décorateur avec ses propres arguments
 

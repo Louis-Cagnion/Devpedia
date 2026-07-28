@@ -24,7 +24,7 @@ echo "Bonjour $nom"   # Bonjour Jean -> les guillemets doubles interprètent les
 echo 'Bonjour $nom'   # Bonjour $nom -> les guillemets simples désactivent toute interprétation
 ```
 
-> **Note :** toujours entourer une variable de guillemets doubles à l'usage (`"$nom"`), sauf besoin précis du contraire — sans guillemets, une valeur contenant des espaces est découpée en plusieurs mots par Bash, ce qui casse silencieusement de nombreux scripts (`rm $fichier` avec un nom de fichier contenant une espace peut supprimer autre chose que prévu).
+> **Note :** toujours entourer une variable de guillemets doubles à l'usage (`"$nom"`), sauf besoin précis du contraire — sans guillemets, une valeur contenant des espaces est découpée en plusieurs mots par Bash, ce qui casse silencieusement de nombreux scripts (`rm $fichier` avec un nom de fichier contenant une espace peut supprimer autre chose que prévu). L'exception la plus courante : à l'intérieur d'un contexte numérique explicite (`[ $i -lt 5 ]`, `$(( i + 1 ))`), Bash ne fait aucun découpage en mots sur la valeur — les guillemets y sont donc inutiles, ce qui explique pourquoi les chapitres sur les conditions et les boucles ne les utilisent pas dans ces cas précis.
 
 ## Substitution de commande
 

@@ -38,6 +38,7 @@ La plupart des appels système signalent un échec en renvoyant `-1` (ou `NULL` 
 
 ```
 #include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 

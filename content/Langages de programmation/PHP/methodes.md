@@ -110,7 +110,7 @@ PHP fournit énormément de fonctions natives déjà prêtes à l'emploi, class�
 ```php
 <?php
     count([1, 2, 3]);                  // 3 -> nombre d'éléments
-    array_push($tab, "valeur");        // ajoute un élément à la fin
+    $tab[] = "valeur";                  // ajoute un élément à la fin (préféré à array_push() pour un seul élément)
     array_pop($tab);                   // retire et renvoie le dernier élément
     array_merge($tab1, $tab2);         // fusionne deux tableaux
     in_array("pomme", $fruits);        // true/false -> vérifie la présence d'une valeur
@@ -173,4 +173,4 @@ ex :
 ?>
 ```
 
-> **Note :** vous trouverez la liste complète des fonctions natives de PHP dans la documentation officielle : [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php).
+> **Note :** vous trouverez la liste complète des fonctions natives de PHP dans la documentation officielle : [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). Pour ajouter un **seul** élément, `$tab[] = "valeur";` est aussi préféré à `array_push($tab, "valeur")` : même résultat, sans le coût d'un appel de fonction — `array_push()` ne devient réellement utile que pour ajouter plusieurs éléments en un seul appel (`array_push($tab, "a", "b", "c")`).

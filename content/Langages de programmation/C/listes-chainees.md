@@ -19,7 +19,7 @@ Comme pour un arbre binaire (cf. chapitre dédié), `struct Maillon *suivant` do
 ## Créer et chaîner des maillons
 
 ```
-Maillon *premier = malloc(sizeof(Maillon));
+Maillon *premier = malloc(sizeof(Maillon));   // à vérifier contre NULL en pratique (cf. chapitre mémoire)
 premier->valeur = 10;
 
 Maillon *second = malloc(sizeof(Maillon));
@@ -56,6 +56,9 @@ void afficher(Maillon *tete)
 Maillon *insererEnTete(Maillon *tete, int valeur)
 {
     Maillon *nouveau = malloc(sizeof(Maillon));
+    if (nouveau == NULL) {
+        return tete; // échec d'allocation : renvoyer la liste inchangée plutôt que planter
+    }
     nouveau->valeur = valeur;
     nouveau->suivant = tete; // le nouveau maillon pointe vers l'ancienne tête
     return nouveau;          // devient la nouvelle tête
