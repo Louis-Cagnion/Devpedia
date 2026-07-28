@@ -104,6 +104,8 @@ Ensuite pour comparer ou manipuler vos variables entre elles, il vous faudra uti
 ?>
 ```
 
+> **Note :** `==`/`!=` convertissent les types avant de comparer, ce qui peut donner des résultats surprenants selon les valeurs comparées (source de bugs historiques bien connus en PHP). `===`/`!==` exigent le même type ET la même valeur — à privilégier systématiquement, en particulier pour comparer des chaînes de caractères.
+
 Si vous souhaitez concaténer des chaînes de caractères, vous avez 2 méthodes :
 
 ```php
@@ -135,3 +137,58 @@ Quand la méthode `GET` est utilisée, les données du formulaire sont visibles 
 La méthode `POST` est plutôt utilisée pour envoyer des données sensibles (mots de passe, informations personnelles...), car elles ne sont pas affichées dans l'URL et ne sont pas limitées en taille comme peut l'être une URL.
 
 > **Note :** `GET` et `POST` ne servent pas à sécuriser des données — les données restent visibles via les outils de développement du navigateur ou par interception réseau si le site n'utilise pas HTTPS. Pour de vraies données sensibles (mots de passe...), il faut aussi penser au chiffrement et à HTTPS.
+
+## Les superglobales
+
+`$_GET` et `$_POST` font partie d'une famille plus large de tableaux associatifs, appelés **superglobales**, que PHP pré-remplit automatiquement dès le début de l'exécution — accessibles depuis n'importe quelle fonction ou méthode, sans rien à importer :
+
+| Superglobale | Contenu |
+|---|---|
+| `$_GET` / `$_POST` | Données envoyées par un formulaire |
+| `$_SERVER` | Informations sur la requête et le serveur (URL demandée, méthode HTTP...) |
+| `$_SESSION` | Données stockées côté serveur pour l'utilisateur courant (nécessite `session_start()`) |
+| `$_COOKIE` | Cookies envoyés par le navigateur |
+
+> **Note :** contrairement à une variable classique (portée locale, invisible dans une fonction sans la repasser en paramètre), les superglobales sont visibles **partout**, exactement comme une constante — mais elles contiennent des données qui changent à chaque requête, pas des réglages fixes.
+
+## Constantes avec `define()`
+
+`define('NOM', valeur)` crée une **constante globale**, elle aussi accessible depuis n'importe quel fichier, fonction ou méthode :
+
+```php
+<?php
+define('TVA_TAUX', 0.20);
+
+function prixTTC(float $prixHT): float
+{
+    return $prixHT * (1 + TVA_TAUX); // visible ici sans rien importer
+}
+?>
+```
+
+> **Note :** une `$variable` classique, elle, reste locale même si le fichier qui la déclare a été chargé avec `require` — elle n'est pas automatiquement visible à l'intérieur d'une fonction ou d'une méthode définie dans un autre fichier. C'est pour ça que les fichiers de configuration utilisent souvent `define()` plutôt que de simples variables : ça garantit que le réglage reste lisible partout dans le projet.
+
+## Accéder à une clé de tableau qui n'existe pas
+
+Lire une clé de tableau totalement absente déclenche un **warning** ("Undefined array key") — pas un crash, mais un signal d'erreur à ne pas ignorer :
+
+```php
+<?php
+$personne = ["nom" => "Dupont"];
+
+echo $personne["age"]; // Warning: Undefined array key "age"
+?>
+```
+
+`isset()` et `empty()` sont des constructions spéciales du langage qui tolèrent l'absence totale de la clé, sans déclencher ce warning :
+
+```php
+<?php
+if (!empty($personne["age"])) {
+    echo $personne["age"];
+}
+// équivalent à : la clé existe ET sa valeur n'est ni vide, ni null, ni false, ni 0...
+?>
+```
+
+> **Note :** `empty($x)` renvoie `true` si la variable/clé n'existe pas du tout, OU si elle contient une valeur "vide" (`''`, `0`, `null`, `false`, tableau vide...). C'est différent de `array_key_exists()` (cf. chapitre sur les fonctions), qui vérifie uniquement l'existence de la clé, même si sa valeur est `null`.

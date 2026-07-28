@@ -129,17 +129,4 @@ Les principaux types de données en C sont :
 | `struct` | Ensemble de données personnalisées |
 | `pointer` | Adresse mémoire |
 
-La maîtrise de ces types est indispensable avant d'aborder des concepts plus avancés comme les listes chaînées, les arbres binaires, les threads ou la gestion des processus.
-
-Je te suggère ensuite de créer des pages séparées :
-
-- **Pointeurs**
-- **Chaînes de caractères**
-- **Structures**
-- **Listes chaînées**
-- **Arbres binaires**
-- **Gestion des processus (`pid_t`)**
-- **Threads (`pthread`)**
-- **Fonctions variadiques (`va_list`)**
-
-Cela donnera une documentation beaucoup plus progressive et pédagogique.
+La maîtrise de ces types est indispensable avant d'aborder des concepts plus avancés comme les listes chaînées, les arbres binaires, les threads ou la gestion des processus — voir les chapitres dédiés à chacun de ces sujets.

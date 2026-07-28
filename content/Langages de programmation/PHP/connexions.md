@@ -187,3 +187,59 @@ Le principe :
 | Persistance | Peut durer des jours/mois | Généralement jusqu'à la fermeture du navigateur | Peut durer des jours/mois |
 | Révocable à tout moment | Non | Oui (`session_destroy()`) | Oui (suppression du hash en base) |
 | Usage typique | Préférences, langue, thème | Connexion utilisateur (courte durée), panier, données sensibles | Connexion utilisateur (longue durée), "se souvenir de moi" |
+
+## Ce que contient réellement le cookie de session
+
+Erreur fréquente : croire que `$_SESSION` est stocké dans le cookie du navigateur. En réalité :
+
+- `session_start()` génère un **identifiant aléatoire opaque** (ex. `a3f9c1...`), envoyé au client dans un cookie (`PHPSESSID` par défaut). C'est tout ce que le cookie contient.
+- Les données (`$_SESSION['...'] = ...`) sont écrites **côté serveur** (fichier ou base), associées à cet identifiant.
+- À chaque requête suivante, le navigateur renvoie le cookie ; PHP relit l'identifiant, retrouve le stockage serveur correspondant, recharge `$_SESSION`.
+
+> **Analogie :** un ticket de vestiaire. Le numéro sur le ticket est tiré au hasard **au moment du dépôt du manteau** — il n'a aucun rapport avec le manteau lui-même. Le lien numéro ↔ manteau n'existe que dans le registre de l'employé (le stockage serveur), jamais dans le numéro.
+
+### Le risque du vol de session
+
+Si un attaquant devinait ou volait l'identifiant d'une session déjà ouverte, il en hériterait le contenu — mais il ne peut pas *choisir* la cible : l'identifiant est généré par un CSPRNG (générateur aléatoire cryptographiquement sûr) avec une entropie énorme, comparable à un mot de passe de plusieurs centaines de bits. `session_set_cookie_params(['httponly' => true])` ajoute une protection complémentaire : elle empêche le JavaScript de la page de lire ce cookie, ce qui limite les dégâts en cas de faille XSS.
+
+### Pourquoi ne pas simplement dériver l'identifiant par hash d'une donnée connue ?
+
+Un hash simple (`sha256($identifiant_connu)`) est **déterministe et sans secret** : n'importe qui peut le recalculer. S'il existe un nombre limité de valeurs possibles (ex. une trentaine de comptes), un attaquant n'a même pas besoin de bruteforcer un grand espace — il lui suffit de hasher chaque valeur possible pour obtenir tous les identifiants valides. Un hash seul n'ajoute **aucune entropie** au-delà de celle déjà présente dans l'entrée.
+
+## Jetons signés (HMAC) : porter une donnée en restant infalsifiable
+
+Le jeton de connexion vu plus haut est un secret **opaque** (aléatoire, sans signification), vérifié par correspondance avec un hash stocké en base. Mais parfois, on a besoin d'un jeton qui **porte lui-même une information** (ex. un identifiant), tout en restant impossible à falsifier sans accès au serveur. On utilise alors `hash_hmac()` : un hash calculé avec une **clé secrète**, connue uniquement du serveur.
+
+```php
+<?php
+function creerToken(string $donnee, string $secret): string
+{
+    $encode = base64_encode($donnee);                 // encodé, PAS chiffré : lisible si décodé
+    $signature = hash_hmac('sha256', $encode, $secret);
+    return $encode . '.' . $signature;
+}
+
+function verifierToken(string $token, string $secret): ?string
+{
+    [$encode, $signature] = explode('.', $token, 2);
+    $attendu = hash_hmac('sha256', $encode, $secret);
+
+    if (!hash_equals($attendu, $signature)) {
+        return null; // signature invalide -> donnée rejetée, même si elle semble correcte
+    }
+    return base64_decode($encode);
+}
+?>
+```
+
+Si la partie `$encode` est modifiée par quelqu'un qui ne connaît pas `$secret`, la signature recalculée à la vérification ne correspondra plus jamais : la modification n'est pas empêchée physiquement, mais **détectée**.
+
+### Identifiant de session vs jeton signé : deux besoins différents
+
+| | Identifiant de session | Jeton signé (HMAC) |
+|---|---|---|
+| Contient l'information ? | Non — clé opaque, aucune donnée | Oui — la donnée est encodée dedans |
+| Nécessite un stockage serveur ? | Oui — la donnée vit dans un fichier/base associé à la clé | Non — auto-suffisant, vérifiable par recalcul de la signature à tout moment |
+| Cas d'usage typique | Utilisateur déjà identifié, session en cours | Donnée à transmettre de façon vérifiable sans base à consulter (lien d'activation, invité sans compte...) |
+
+> **Note :** `hash_equals()` plutôt qu'un simple `===` pour comparer deux hashs : elle compare en temps constant, ce qui évite qu'un attaquant déduise progressivement la bonne valeur en mesurant le temps de réponse (attaque par timing).

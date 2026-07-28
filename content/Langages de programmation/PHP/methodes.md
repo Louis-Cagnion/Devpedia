@@ -40,6 +40,53 @@ Une **méthode**, c'est exactement la même chose qu'une fonction, à une diffé
 
 En résumé : **fonction** = autonome, appelée directement par son nom. **méthode** = appartient à un objet, appelée via `->` (ou `::` pour une méthode statique).
 
+## Typer les paramètres et le retour d'une fonction
+
+PHP est typé dynamiquement par défaut, mais accepte des annotations de type sur les paramètres et la valeur de retour. Contrairement à un langage compilé, ces types ne sont pas vérifiés avant l'exécution : ils le sont **à l'exécution**, à chaque appel.
+
+```php
+<?php
+function calculerRemise(float $prix, int $pourcentage): float
+{
+    return $prix - ($prix * $pourcentage / 100);
+}
+
+calculerRemise(100, 10);      // OK -> 90.0
+calculerRemise("cent", 10);   // TypeError : "cent" n'est pas un float
+?>
+```
+
+## Types nullables (`?Type`)
+
+Une fonction déclarée `: array` (sans `?`) n'autorise **pas** `null` comme valeur de retour — le tenter provoque un `TypeError` à l'exécution. Pour autoriser explicitement `null` en plus du type déclaré, on préfixe le type d'un `?` :
+
+```php
+<?php
+function trouverUtilisateur(int $id): ?array
+{
+    if ($id <= 0) {
+        return null; // OK : ?array autorise explicitement null
+    }
+    return ['id' => $id, 'nom' => 'Dupont'];
+}
+?>
+```
+
+> **Note :** `?array` est une déclaration de contrat, pas une simple habitude d'écriture — c'est l'équivalent PHP de `std::optional<T>` en C++ moderne ou de `Optional[T]` en Python : la fonction peut renvoyer ce type précis, OU `null`, rien d'autre.
+
+## Supprimer un warning attendu avec `@`
+
+Beaucoup de fonctions natives de PHP renvoient `false` en cas d'échec plutôt que de lever une exception (un style proche du C, où `fopen()` renvoie un pointeur nul et positionne `errno`). Quand cet échec est déjà prévu et géré par la suite du code, l'opérateur `@` placé devant l'appel supprime le warning que PHP émettrait sinon :
+
+```php
+<?php
+$mtime = @filemtime('fichier_qui_peut_ne_pas_exister.txt');
+$version = $mtime ? "v{$mtime}" : 'v-inconnue';
+?>
+```
+
+> **Note :** `@` masque le warning, il ne change rien au comportement de la fonction elle-même (`filemtime()` renvoie toujours `false` si le fichier n'existe pas). À réserver aux cas où l'échec est réellement anticipé et testé juste après — l'utiliser partout masquerait aussi de vraies erreurs.
+
 PHP fournit énormément de fonctions natives déjà prêtes à l'emploi, classées ci-dessous par catégorie.
 
 ## Fonctions sur les chaînes de caractères
