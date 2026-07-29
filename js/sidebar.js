@@ -58,10 +58,16 @@ function renderTree(container, openState) {
         const li = createTag("li", { class: "sidebarCategoryItem" });
         const button = createTag("button", { class: `sidebarCategoryButton${isOpen ? " open" : ""}${isCategoryCurrent ? " current" : ""}` }, { textContent: category.label });
         button.addEventListener("click", () => {
-            openState.categoryId = isOpen ? null : category.id;
-            openState.subjectId = null;
-            loadCategory(category.id);
-            renderTree(container, openState);
+            if (isOpen) {
+                // already open: just collapse it, without navigating away from the current page
+                openState.categoryId = null;
+                renderTree(container, openState);
+            } else {
+                openState.categoryId = category.id;
+                openState.subjectId = null;
+                loadCategory(category.id);
+                renderTree(container, openState);
+            }
         });
         li.append(button);
 
@@ -75,9 +81,14 @@ function renderTree(container, openState) {
                     const subjectCurrent = subjectOpen && appState.curPageId === entry.id;
                     const subjectButton = createTag("button", { class: `sidebarSubjectButton${subjectOpen ? " open" : ""}${subjectCurrent ? " current" : ""}` }, { textContent: entry.label });
                     subjectButton.addEventListener("click", () => {
-                        openState.subjectId = subjectOpen ? null : entry.id;
-                        navigateToSubject(category.id, entry.id);
-                        renderTree(container, openState);
+                        if (subjectOpen) {
+                            openState.subjectId = null;
+                            renderTree(container, openState);
+                        } else {
+                            openState.subjectId = entry.id;
+                            navigateToSubject(category.id, entry.id);
+                            renderTree(container, openState);
+                        }
                     });
                     childLi.append(subjectButton);
                     if (subjectOpen) {

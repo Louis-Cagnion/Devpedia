@@ -3,6 +3,7 @@ import { appState } from "./state.js";
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson } from "./utils.js";
 import { initSidebars } from "./sidebar.js";
+import { initSearch } from "./search.js";
 
 /**
  * @param {string} label
@@ -64,11 +65,12 @@ function createAppendLogo(navBar) {
 }
 
 /**
- * 
- * @param {HTMLElement} navBarRightSide 
+ *
+ * @param {HTMLElement} navBarRightSide
  * @param {HTMLElement} menuDiv
+ * @param {Object} categories
  */
-function createAppendSearchbarButton(navBarRightSide, menuDiv) {
+function createAppendSearchbarButton(navBarRightSide, menuDiv, categories) {
     const searchBar = createTag("input", {
             class: "navBarSearch",
             type:"search",
@@ -76,6 +78,7 @@ function createAppendSearchbarButton(navBarRightSide, menuDiv) {
             placeholder: "Rechercher..."
         });
     navBarRightSide.append(searchBar);
+    initSearch(navBarRightSide, searchBar, categories);
 
     const menuButton = createTag("button", {class: "NavBarButton"}, {textContent: '☰'})
     navBarRightSide.append(menuButton);
@@ -105,7 +108,7 @@ function generateNavBar(categories = []) {
     ////search bar and menu button (phone format)
     const searchAndButtonDiv = createTag("div", {class: "searchAndButtonDiv"});
     const menuDiv = initSidebars(categories);
-    createAppendSearchbarButton(searchAndButtonDiv, menuDiv);
+    createAppendSearchbarButton(searchAndButtonDiv, menuDiv, categories);
     navBar.append(searchAndButtonDiv);
 
     //attach navbar to body
