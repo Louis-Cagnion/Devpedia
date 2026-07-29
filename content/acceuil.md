@@ -8,4 +8,4 @@ Ce site regroupe mes notes et apprentissages sur différents sujets :
 * scripting Bash,
 * et plus encore.
 
-Vous retrouverez les différentes catégories dans la barre de navigation ci-dessus.
+Vous retrouverez les différentes catégories dans la barre de navigation ci-dessus et sur la gauche.

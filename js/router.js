@@ -1,7 +1,7 @@
 import { appState } from "./state.js";
 import { parseAppendText, parseMdContent } from "./parser.js";
 import { createTag } from "./tags.js";
-import { fetchFileToTextOrJson, findCategory } from "./utils.js";
+import { fetchFileToTextOrJson, findCategory, getContentDir } from "./utils.js";
 import { setPageOutline, syncSidebars } from "./sidebar.js";
 
 /**
@@ -83,7 +83,7 @@ export async function generateHomePage() {
     appState.curCategory = 'acceuil';
     appState.curSubject = null;
     appState.curPageId = 'acceuil';
-    const homeInfos = await fetchFileToTextOrJson(`./content/acceuil.md`, 'text');
+    const homeInfos = await fetchFileToTextOrJson(`./${getContentDir()}/acceuil.md`, 'text');
     generatePageContent(homeInfos, 'acceuil', false);
 }
 
@@ -112,12 +112,12 @@ async function renderSubject(category, subject) {
     clearCurrentPage();
     appState.curSubject = subject.id;
     appState.curPageId = subject.id;
-    const path = `./content/${category.label}/${subject.label}/${subject.id}.md`;
+    const path = `./${getContentDir()}/${category.folder}/${subject.folder}/${subject.id}.md`;
     const subjectInfos = await fetchFileToTextOrJson(path, 'text');
     const pageDiv = generatePageContent(subjectInfos, subject.id, true);
     generateChildList(pageDiv, subject.chapters ?? [], subject.id, (chapter) => {
         appState.navigationStack.push({type: 'subject', categoryId: category.id, subjectId: subject.id});
-        renderChapter(`./content/${category.label}/${subject.label}/${chapter.id}.md`, chapter, subject.id);
+        renderChapter(`./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subject.id);
     });
 }
 
@@ -132,7 +132,7 @@ async function renderCategory(category) {
     appState.curCategory = category.id;
     appState.curSubject = null;
     appState.curPageId = category.id;
-    const pageInfos = await fetchFileToTextOrJson(`./content/${category.label}/description.md`, 'text');
+    const pageInfos = await fetchFileToTextOrJson(`./${getContentDir()}/${category.folder}/description.md`, 'text');
     const pageDiv = generatePageContent(pageInfos, category.id, true);
     if (category.subjects) {
         generateChildList(pageDiv, category.subjects, category.id, (subject) => {
@@ -142,7 +142,7 @@ async function renderCategory(category) {
     } else if (category.chapters) {
         generateChildList(pageDiv, category.chapters, category.id, (chapter) => {
             appState.navigationStack.push({type: 'category', categoryId: category.id});
-            renderChapter(`./content/${category.label}/${chapter.id}.md`, chapter);
+            renderChapter(`./${getContentDir()}/${category.folder}/${chapter.id}.md`, chapter);
         });
     }
 }
@@ -211,10 +211,10 @@ export function navigateToChapter(categoryId, subjectId, chapterId) {
         const subject = findSubject(category, subjectId);
         const chapter = subject.chapters.find(c => c.id === chapterId);
         appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}, {type: 'subject', categoryId, subjectId}];
-        renderChapter(`./content/${category.label}/${subject.label}/${chapter.id}.md`, chapter, subjectId);
+        renderChapter(`./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subjectId);
     } else {
         const chapter = category.chapters.find(c => c.id === chapterId);
         appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}];
-        renderChapter(`./content/${category.label}/${chapter.id}.md`, chapter);
+        renderChapter(`./${getContentDir()}/${category.folder}/${chapter.id}.md`, chapter);
     }
 }

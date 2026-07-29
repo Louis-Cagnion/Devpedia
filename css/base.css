@@ -146,6 +146,65 @@ html, body {
     font-size: 0.9rem;
 }
 
+/* language switcher */
+.langButton {
+    background-color: var(--bg-elevated-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 0.45rem 0.7rem;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.langButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+.langDropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    min-width: 140px;
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    z-index: 30;
+}
+
+.langDropdown.visible {
+    display: block;
+}
+
+.langOption {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    padding: 0.5rem 0.6rem;
+    margin: 0.1rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.langOption:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+.langOption.current {
+    color: var(--accent);
+    font-weight: 600;
+}
+
 /* menu button */
 .NavBarButton {
     display: none;

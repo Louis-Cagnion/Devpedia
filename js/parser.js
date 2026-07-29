@@ -16,11 +16,32 @@ export function parseMdContent(rawContent) {
     return body.trim();
 }
 
+/**
+ * Pulls `code` spans out of `line` before `transform` runs on the rest (so a literal `*`
+ * or `**` inside a code span, e.g. `` `*` ``, can never be mistaken for emphasis markers),
+ * then reinserts each span — wrapped by `wrapCode` — at its original position. Uses a null
+ * character as the placeholder delimiter so it can never collide with real text.
+ *
+ * @param {string} line
+ * @param {(withoutCode: string) => string} transform
+ * @param {(code: string) => string} wrapCode
+ * @returns {string}
+ */
+function withProtectedCodeSpans(line, transform, wrapCode) {
+    const spans = [];
+    const withoutCode = line.replace(/`([^`]+)`/g, (_, code) => {
+        spans.push(code);
+        return "\0" + (spans.length - 1) + "\0";
+    });
+    return transform(withoutCode).replace(/\0(\d+)\0/g, (_, i) => wrapCode(spans[Number(i)]));
+}
+
 function mdToHtmlFormatting(line) {
-    line = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    line = line.replace(/\*(.*?)\*/g, "<em>$1</em>")
-    line = line.replace(/`([^`]+)`/g, "<code>$1</code>")
-    return line;
+    return withProtectedCodeSpans(
+        line,
+        text => text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>"),
+        code => `<code>${code}</code>`
+    );
 }
 
 /**
@@ -28,10 +49,11 @@ function mdToHtmlFormatting(line) {
  * @returns {string} the line with markdown emphasis/code markers removed, as plain text
  */
 function stripMdFormatting(line) {
-    line = line.replace(/\*\*(.*?)\*\*/g, "$1")
-    line = line.replace(/\*(.*?)\*/g, "$1")
-    line = line.replace(/`([^`]+)`/g, "$1")
-    return line;
+    return withProtectedCodeSpans(
+        line,
+        text => text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1"),
+        code => code
+    );
 }
 
 const codeFenceRegex = /^```(\w*)/;

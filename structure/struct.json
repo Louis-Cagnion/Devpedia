@@ -13,6 +13,7 @@
     {
       "id": "bash",
       "label": "Bash",
+      "folder": "Bash",
       "chapters": [
         {
           "id": "scripts-et-shebang",
@@ -67,6 +68,7 @@
     {
       "id": "domain-specific-languages-dsl",
       "label": "Domain-specific Languages (DSL)",
+      "folder": "Domain-specific Languages (DSL)",
       "chapters": [
         {
           "id": "regex",
@@ -81,6 +83,7 @@
     {
       "id": "git",
       "label": "Git",
+      "folder": "Git",
       "chapters": [
         {
           "id": "concepts-de-base",
@@ -131,10 +134,12 @@
     {
       "id": "langages-de-balisage",
       "label": "Langages de balisage",
+      "folder": "Langages de balisage",
       "subjects": [
         {
           "id": "css",
           "label": "CSS",
+          "folder": "CSS",
           "chapters": [
             {
               "id": "selecteurs",
@@ -169,6 +174,7 @@
         {
           "id": "html",
           "label": "HTML",
+          "folder": "HTML",
           "chapters": [
             {
               "id": "structure-dun-document",
@@ -205,10 +211,12 @@
     {
       "id": "langages-de-programmation",
       "label": "Langages de programmation",
+      "folder": "Langages de programmation",
       "subjects": [
         {
           "id": "c",
           "label": "C",
+          "folder": "C",
           "chapters": [
             {
               "id": "variables",
@@ -279,6 +287,7 @@
         {
           "id": "cpp",
           "label": "C++",
+          "folder": "C++",
           "chapters": [
             {
               "id": "references",
@@ -325,6 +334,7 @@
         {
           "id": "javascript",
           "label": "JavaScript",
+          "folder": "JavaScript",
           "chapters": [
             {
               "id": "conditions",
@@ -379,6 +389,7 @@
         {
           "id": "php",
           "label": "PHP",
+          "folder": "PHP",
           "chapters": [
             {
               "id": "synthaxe",
@@ -437,6 +448,7 @@
         {
           "id": "python",
           "label": "Python",
+          "folder": "Python",
           "chapters": [
             {
               "id": "variables",

@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 /**
- * Scans content/ and (re)generates structure/struct.json to match what's on disk.
+ * Scans a content directory and (re)generates its struct.json to match what's on disk.
  *
  * Run with: node scripts/generate-struct.js
+ * (also importable — see buildStruct/writeStruct — used by translate-content.mjs to build
+ * a struct.json for each translated content-<lang>/ directory)
  *
  * Conventions this relies on (matching how content/ is authored):
- * - content/acceuil.md is the home page, always mapped to the fixed "acceuil" category.
- * - a category is a top-level folder under content/. It has a description.md.
+ * - <content>/acceuil.md is the home page, always mapped to the fixed "acceuil" category.
+ * - a category is a top-level folder under <content>. It has a description.md.
  * - if a category folder contains subfolders, each subfolder is a "subject" (e.g. C, C++, PHP)
  *   and its own chapters are the .md files directly inside it.
  * - if a category folder has no subfolders, its .md files (except description.md) are its
@@ -20,11 +22,11 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CONTENT_DIR = path.join(__dirname, "..", "content");
-const STRUCT_PATH = path.join(__dirname, "..", "structure", "struct.json");
+const DEFAULT_CONTENT_DIR = path.join(__dirname, "..", "content");
+const DEFAULT_STRUCT_PATH = path.join(__dirname, "..", "structure", "struct.json");
 
 /**
  * @param {string} filePath
@@ -132,19 +134,22 @@ function buildSubject(categoryDir, subjectFolder) {
     return {
         id: mainFile ? mainFile.slice(0, -3) : slugify(subjectFolder),
         label: subjectFolder,
+        folder: subjectFolder,
         chapters: buildChapterList(subjectDir, chapterFiles)
     };
 }
 
 /**
+ * @param {string} contentDir
  * @param {string} categoryFolder
  */
-function buildCategory(categoryFolder) {
-    const categoryDir = path.join(CONTENT_DIR, categoryFolder);
+function buildCategory(contentDir, categoryFolder) {
+    const categoryDir = path.join(contentDir, categoryFolder);
     const subjectFolders = listSubdirectories(categoryDir);
     const category = {
         id: slugify(categoryFolder),
-        label: categoryFolder
+        label: categoryFolder,
+        folder: categoryFolder
     };
     if (subjectFolders.length > 0) {
         category.subjects = subjectFolders.map(subjectFolder => buildSubject(categoryDir, subjectFolder));
@@ -155,17 +160,33 @@ function buildCategory(categoryFolder) {
     return category;
 }
 
-function buildStruct() {
+/**
+ * @param {string} [contentDir] defaults to the project's content/ directory
+ * @returns {{categories: Array}}
+ */
+export function buildStruct(contentDir = DEFAULT_CONTENT_DIR) {
     const home = {
         id: "acceuil",
         label: "Acceuil",
-        chapters: [{ id: "acceuil", label: readTitle(path.join(CONTENT_DIR, "acceuil.md")) }]
+        chapters: [{ id: "acceuil", label: readTitle(path.join(contentDir, "acceuil.md")) }]
     };
-    const categoryFolders = listSubdirectories(CONTENT_DIR);
-    const categories = [home, ...categoryFolders.map(buildCategory)];
+    const categoryFolders = listSubdirectories(contentDir);
+    const categories = [home, ...categoryFolders.map(folder => buildCategory(contentDir, folder))];
     return { categories };
 }
 
-const struct = buildStruct();
-fs.writeFileSync(STRUCT_PATH, JSON.stringify(struct, null, 2) + "\n", "utf-8");
-console.log(`structure/struct.json généré avec ${struct.categories.length} catégories.`);
+/**
+ * @param {{categories: Array}} struct
+ * @param {string} [outputPath] defaults to the project's structure/struct.json
+ */
+export function writeStruct(struct, outputPath = DEFAULT_STRUCT_PATH) {
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    fs.writeFileSync(outputPath, JSON.stringify(struct, null, 2) + "\n", "utf-8");
+}
+
+const isMainModule = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isMainModule) {
+    const struct = buildStruct();
+    writeStruct(struct);
+    console.log(`structure/struct.json généré avec ${struct.categories.length} catégories.`);
+}

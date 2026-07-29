@@ -4,6 +4,7 @@ import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson } from "./utils.js";
 import { initSidebars } from "./sidebar.js";
 import { initSearch } from "./search.js";
+import { initLanguageSwitcher, getStoredLanguage } from "./lang.js";
 
 /**
  * @param {string} label
@@ -79,6 +80,7 @@ function createAppendSearchbarButton(navBarRightSide, menuDiv, categories) {
         });
     navBarRightSide.append(searchBar);
     initSearch(navBarRightSide, searchBar, categories);
+    initLanguageSwitcher(navBarRightSide);
 
     const menuButton = createTag("button", {class: "NavBarButton"}, {textContent: '☰'})
     navBarRightSide.append(menuButton);
@@ -125,7 +127,9 @@ function generateNavBar(categories = []) {
     new ResizeObserver(setNavBarHeightVar).observe(navBar);
 }
 
-async function fetchStructJson(structPath = "./structure/struct.json") {
+async function fetchStructJson() {
+    appState.lang = getStoredLanguage();
+    const structPath = appState.lang ? `./structure/struct-${appState.lang}.json` : "./structure/struct.json";
     const dataJson = await fetchFileToTextOrJson(structPath, 'json')
     appState.categories = dataJson.categories;
     generateNavBar(appState.categories);
