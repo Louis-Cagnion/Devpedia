@@ -145,6 +145,7 @@ html, body {
 h3, h4, h5, h6 {
     color: var(--text);
     margin: 1.5rem 0 0.5rem 0;
+    scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem);
 }
 
 h3 {
@@ -341,13 +342,15 @@ blockquote p + p {
     padding-left: calc(0.5rem - 3px);
 }
 
-.sidebarIntroButton {
-    font-style: italic;
-}
-
 .sidebarCategoryButton:hover, .sidebarSubjectButton:hover, .sidebarChapterButton:hover {
     background-color: var(--bg-hover);
     color: var(--accent);
+}
+
+.pageOutlineList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 .pageOutlineList a {
@@ -359,12 +362,18 @@ blockquote p + p {
     line-height: 1.3;
 }
 
+.pageOutlineList a::before {
+    content: "•";
+    color: var(--accent);
+    margin-right: 0.5em;
+}
+
 .pageOutlineList a:hover {
     background-color: var(--bg-hover);
     color: var(--accent);
     text-decoration: none;
 }
 
-.pageOutlineList .outline-h4 a { padding-left: 1.5rem; }
-.pageOutlineList .outline-h5 a { padding-left: 2.5rem; }
-.pageOutlineList .outline-h6 a { padding-left: 3.5rem; }
+.pageOutlineList .outline-h4 { margin-left: 1rem; }
+.pageOutlineList .outline-h5 { margin-left: 2rem; }
+.pageOutlineList .outline-h6 { margin-left: 3rem; }
