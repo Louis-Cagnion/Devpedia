@@ -1,6 +1,8 @@
 ---
-title: Les objets en Javascript
+order: 6
 ---
+
+# Les objets
 
 Un objet en JavaScript est une structure permettant de stocker des données sous forme de paires clé/valeur. Contrairement au tableau, l'ordre n'est pas l'élément important : on accède à une valeur via son nom (la clé), pas via un index numérique.
 

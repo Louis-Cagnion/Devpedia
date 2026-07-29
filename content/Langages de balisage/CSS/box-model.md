@@ -1,6 +1,8 @@
 ---
-title: Le modèle de boîte (box model)
+order: 3
 ---
+
+# Le modèle de boîte (box model)
 
 Chaque élément HTML est représenté par CSS comme une boîte rectangulaire, composée de quatre couches concentriques — comprendre ce modèle est indispensable pour maîtriser tailles, espacements et alignements.
 

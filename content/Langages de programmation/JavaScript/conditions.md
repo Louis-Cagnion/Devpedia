@@ -1,6 +1,8 @@
 ---
-title: Les conditions en JavaScript
+order: 1
 ---
+
+# Les conditions
 
 JavaScript utilise `if`/`else if`/`else` et `switch`, avec une particularité de taille par rapport à PHP ou Python : ses règles de comparaison "souples" (`==`) sont réputées pour leurs conversions de type surprenantes.
 

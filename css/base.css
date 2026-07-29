@@ -1,95 +1,370 @@
 /* Base styles - mobile-first approach (360px) */
-* {
-    background-color: black;
-    color: white;
+
+:root {
+    --bg: #2e3440;
+    --bg-elevated: #3b4252;
+    --bg-elevated-2: #434c5e;
+    --bg-hover: #4c566a;
+    --border: #4c566a;
+    --text: #eceff4;
+    --text-muted: #b7bfcc;
+    --accent: #88c0d0;
+    --accent-strong: #8fbcbb;
+    --accent-contrast: #2e3440;
+    --radius: 10px;
+}
+
+html, body {
+    background-color: var(--bg);
+    color: var(--text);
     font-family: sans-serif;
 }
 
 /** navbar ---- **/
 .navBar {
-    display: grid;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    grid-template-columns: repeat(3, auto);
-    background-color: rgb(18, 18, 18);
-    padding: 5px;
-    margin: -8px -8px 0 -8px;
-    height: 52.5px;
-}
-
-.navBar * {
-    border-radius:15px;
-    margin: 0.2rem;
-    border: 1px solid white;
-    width: fit-content;
+    gap: 0.5rem;
+    background-color: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    margin: 0;
 }
 
 .logo {
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.1rem;
-    padding: 10px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: transparent;
+    border: none;
+    padding: 0.5rem 0.9rem;
     margin: 0;
+    cursor: pointer;
 }
 
 .categories {
     display: flex;
     justify-content: center;
-    width: fit-content;
-    background-color: rgb(18, 18, 18);
-    border: none;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow-x: auto;
+    background: transparent;
 }
 
 .searchAndButtonDiv {
     margin-left: auto;
     margin-right: 0;
     display: flex;
-    border: none;
-    background-color: rgb(18, 18, 18);
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    background: transparent;
 }
 
 /* search bar */
 .navBarSearch {
     max-width: 100%;
-    background-color: rgb(62, 62, 62);
+    background-color: var(--bg-elevated-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.45rem 0.7rem;
+    color: var(--text);
+}
+
+.navBarSearch::placeholder {
+    color: var(--text-muted);
+}
+
+.navBarSearch:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 /* menu button */
 .NavBarButton {
-    font-size: 1.4rem;
+    display: none;
+    font-size: 1.3rem;
     aspect-ratio: 1;
+    background-color: var(--bg-elevated-2);
+    border: none;
+    border-radius: var(--radius);
+    color: var(--text);
+    cursor: pointer;
 }
 
-.navBarSearch::placeholder {
-    padding-left: 10px;
+.NavBarButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
 }
 
 /* navBar categories */
 .categories > button {
-    padding: 10px;
-    background-color: rgb(41, 41, 41);
+    padding: 0.5rem 0.9rem;
+    background-color: var(--bg-elevated-2);
+    color: var(--text);
+    border: none;
+    border-radius: var(--radius);
     white-space: nowrap;
-}
-
-.burger {
-    display: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .categories > button:hover {
-    background-color: rgba(148, 148, 148, 0.392);
+    background-color: var(--bg-hover);
+    color: var(--accent);
 }
-
-.NavBarButton {
-    display: none;
-}
-
-/** ---- navbar **/
 
 .menuDiv {
     display: none;
 }
 
-/* website body */
-.acceuilDiv {
-    margin: 0 10%;
+/** ---- navbar **/
+
+/* page layout, common to home / category / subject / chapter pages */
+.page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 4rem;
 }
+
+.pageTitle {
+    color: var(--accent);
+    font-size: 1.6rem;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+}
+
+h3, h4, h5, h6 {
+    color: var(--text);
+    margin: 1.5rem 0 0.5rem 0;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+h4, h5, h6 {
+    font-size: 1.1rem;
+    color: var(--accent-strong);
+}
+
+p {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+strong {
+    color: var(--text);
+}
+
+em {
+    color: var(--accent-strong);
+    font-style: italic;
+}
+
+/* return button */
+.returnButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.9rem;
+    margin-bottom: 1.2rem;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.returnButton:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* markdown content lists (bullet/numbered lists inside a page's text) */
+.content-list {
+    margin: 0.5rem 0 1.5rem 0;
+    padding-left: 1.4rem;
+}
+
+.content-list li {
+    margin: 0.4rem 0;
+    padding-right: 1.2rem;
+    color: var(--text-muted);
+}
+
+.content-list li:first-child {
+    margin-top: -0.2rem;
+}
+
+.content-list li::marker {
+    color: var(--accent);
+}
+
+/* inline code and fenced code blocks */
+code {
+    font-family: monospace;
+    background-color: var(--bg-elevated-2);
+    color: var(--accent-strong);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+}
+
+pre {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 0.5rem 0 1.5rem 0;
+    overflow: hidden;
+}
+
+/* notes / callouts (markdown blockquotes) */
+blockquote {
+    margin: 0.5rem 0 1.5rem 0;
+    padding: 0.7rem 1rem;
+    border-left: 3px solid var(--accent);
+    background-color: var(--bg-elevated);
+    border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+blockquote p {
+    margin: 0;
+}
+
+blockquote p + p {
+    margin-top: 0.5rem;
+}
+
+/* navigation lists: subjects of a category, chapters of a subject/category */
+.childList {
+    list-style: none;
+    margin: 1.5rem 0 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+
+.childList > li {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.childButton {
+    width: 100%;
+    height: 100%;
+    display: block;
+    text-align: left;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.childButton:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.childButton:active {
+    transform: translateY(0);
+}
+
+/** ---- sidebars (categories tree + on-page outline) ---- **/
+
+.leftSidebar, .rightSidebar {
+    display: none;
+}
+
+.sidebarSectionTitle {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.6rem 0;
+}
+
+.sidebarTree, .sidebarChildList, .sidebarChapterList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebarChildList, .sidebarChapterList {
+    margin: 0.3rem 0 0.5rem 0.5rem;
+    padding-left: 0.6rem;
+    border-left: 2px solid var(--border);
+}
+
+.sidebarCategoryButton, .sidebarSubjectButton, .sidebarChapterButton {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.4rem 0.5rem;
+    margin: 0.1rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebarCategoryButton {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.sidebarCategoryButton.open, .sidebarSubjectButton.open {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+.sidebarCategoryButton.current, .sidebarSubjectButton.current, .sidebarChapterButton.current {
+    background-color: color-mix(in srgb, var(--accent) 18%, transparent);
+    color: var(--accent);
+    border-left: 3px solid var(--accent);
+    padding-left: calc(0.5rem - 3px);
+}
+
+.sidebarIntroButton {
+    font-style: italic;
+}
+
+.sidebarCategoryButton:hover, .sidebarSubjectButton:hover, .sidebarChapterButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+.pageOutlineList a {
+    display: block;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+.pageOutlineList a:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.pageOutlineList .outline-h4 a { padding-left: 1.5rem; }
+.pageOutlineList .outline-h5 a { padding-left: 2.5rem; }
+.pageOutlineList .outline-h6 a { padding-left: 3.5rem; }

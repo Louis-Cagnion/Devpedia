@@ -1,6 +1,8 @@
 ---
-title: Les pointeurs
+order: 4
 ---
+
+# Les pointeurs
 
 Un pointeur est une variable qui ne stocke pas une valeur directement, mais l'**adresse mémoire** d'une autre variable. C'est le mécanisme central qui permet en C de manipuler la mémoire directement, de passer des données aux fonctions sans les copier, et de construire des structures de données dynamiques (listes chaînées, arbres...).
 

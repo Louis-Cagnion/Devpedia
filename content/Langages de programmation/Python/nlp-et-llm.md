@@ -1,6 +1,8 @@
 ---
-title: Traitement du langage naturel (NLP) et grands modèles de langage (LLM)
+order: 22
 ---
+
+# Traitement du langage naturel (NLP) et grands modèles de langage (LLM)
 
 Un réseau de neurones (cf. chapitre dédié) manipule des nombres, jamais directement du texte. Le traitement du langage naturel (NLP, *Natural Language Processing*) regroupe les techniques qui convertissent du texte en représentations numériques exploitables — l'étape préalable indispensable à tout modèle de langage, jusqu'aux grands modèles de langage (LLM) modernes.
 

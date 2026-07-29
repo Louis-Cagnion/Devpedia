@@ -1,6 +1,8 @@
 ---
-title: Le stash
+order: 6
 ---
+
+# Le stash
 
 `git stash` met de côté temporairement des modifications non commitées, pour retrouver un dossier de travail propre — utile quand il faut changer de branche en urgence (ex. corriger un bug critique) sans vouloir ni perdre son travail en cours, ni le commiter dans un état incomplet.
 
@@ -26,7 +28,7 @@ git stash apply stash@{1} # réapplique un stash précis
 git stash pop             # réapplique le stash le plus récent, ET le retire de la pile
 ```
 
-> **Note :** `apply` garde le stash dans la pile après l'avoir réappliqué (utile pour l'appliquer sur plusieurs branches successivement), tandis que `pop` le retire — le choix dépend de si on est certain de ne plus en avoir besoin ailleurs.
+> **Note :** `apply` garde le stash dans la pile après l'avoir réappliqué (utile pour l'appliquer sur plusieurs branches successivement), tandis que `pop` le retire — le choix dépend du fait qu'on soit certain de ne plus en avoir besoin ailleurs.
 
 ## Supprimer un stash
 

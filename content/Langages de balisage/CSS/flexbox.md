@@ -1,6 +1,8 @@
 ---
-title: Flexbox
+order: 5
 ---
+
+# Flexbox
 
 **Flexbox** (*Flexible Box Layout*) organise des éléments le long d'un **seul axe** (horizontal ou vertical), en distribuant l'espace disponible entre eux — la solution moderne pour aligner, centrer et répartir des éléments, remplaçant des techniques historiques bien plus fragiles (flottants, tableaux détournés de leur usage, cf. chapitre HTML sur les tableaux).
 

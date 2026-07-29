@@ -1,6 +1,8 @@
 ---
-title: Sécuriser vos données en PHP
+order: 13
 ---
+
+# Sécuriser vos données
 
 Lorsque vous récupérez des données venant de l'utilisateur (formulaires, URL, cookies...), il faut toujours les considérer comme **non fiables**, même si elles semblent correctes. Un visiteur malveillant peut envoyer n'importe quoi : du code HTML, du JavaScript, ou des requêtes SQL malformées. PHP fournit plusieurs fonctions pour filtrer, valider et échapper ces données.
 

@@ -1,6 +1,8 @@
 ---
-title: Traitement de texte (grep, sed, awk...)
+order: 9
 ---
+
+# Traitement de texte (grep, sed, awk...)
 
 Une grande partie de la puissance du terminal Unix vient d'une poignée d'outils spécialisés dans le traitement de texte, conçus pour être combinés entre eux via des pipes (cf. chapitre sur les redirections). Ce chapitre présente les plus utilisés au quotidien.
 

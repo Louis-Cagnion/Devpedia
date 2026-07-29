@@ -15,52 +15,52 @@
       "label": "Bash",
       "chapters": [
         {
-          "id": "architecture-dun-shell",
-          "label": "Comment fonctionne un shell (architecture interne)"
-        },
-        {
-          "id": "boucles",
-          "label": "Les boucles en Bash"
-        },
-        {
-          "id": "conditions",
-          "label": "Les conditions en Bash"
-        },
-        {
-          "id": "expansion-et-jokers",
-          "label": "Expansion et jokers (globbing)"
-        },
-        {
-          "id": "fonctions",
-          "label": "Les fonctions en Bash"
-        },
-        {
-          "id": "gestion-des-processus",
-          "label": "La gestion des processus"
-        },
-        {
-          "id": "permissions-et-fichiers",
-          "label": "Permissions et manipulation de fichiers"
-        },
-        {
-          "id": "redirections-et-pipes",
-          "label": "Redirections et pipes"
-        },
-        {
           "id": "scripts-et-shebang",
           "label": "Écrire et exécuter un script Bash"
         },
         {
-          "id": "traitement-de-texte",
-          "label": "Traitement de texte (grep, sed, awk...)"
+          "id": "variables",
+          "label": "Les variables"
         },
         {
           "id": "variables-denvironnement",
           "label": "Variables d'environnement"
         },
         {
-          "id": "variables",
-          "label": "Les variables en Bash"
+          "id": "conditions",
+          "label": "Les conditions"
+        },
+        {
+          "id": "boucles",
+          "label": "Les boucles"
+        },
+        {
+          "id": "fonctions",
+          "label": "Les fonctions"
+        },
+        {
+          "id": "expansion-et-jokers",
+          "label": "Expansion et jokers (globbing)"
+        },
+        {
+          "id": "redirections-et-pipes",
+          "label": "Redirections et pipes"
+        },
+        {
+          "id": "traitement-de-texte",
+          "label": "Traitement de texte (grep, sed, awk...)"
+        },
+        {
+          "id": "permissions-et-fichiers",
+          "label": "Permissions et manipulation de fichiers"
+        },
+        {
+          "id": "gestion-des-processus",
+          "label": "La gestion des processus"
+        },
+        {
+          "id": "architecture-dun-shell",
+          "label": "Comment fonctionne un shell (architecture interne)"
         }
       ]
     },
@@ -83,32 +83,32 @@
       "label": "Git",
       "chapters": [
         {
-          "id": "annuler-et-historique",
-          "label": "Annuler des changements et naviguer l'historique"
-        },
-        {
-          "id": "architecture-interne",
-          "label": "L'architecture interne de Git"
-        },
-        {
-          "id": "branches",
-          "label": "Les branches"
+          "id": "concepts-de-base",
+          "label": "Les concepts de base de Git"
         },
         {
           "id": "commandes-essentielles",
           "label": "Les commandes essentielles"
         },
         {
-          "id": "concepts-de-base",
-          "label": "Les concepts de base de Git"
-        },
-        {
           "id": "gitignore",
           "label": "Le fichier .gitignore"
         },
         {
-          "id": "rebase",
-          "label": "Le rebase"
+          "id": "branches",
+          "label": "Les branches"
+        },
+        {
+          "id": "annuler-et-historique",
+          "label": "Annuler des changements et naviguer dans l'historique"
+        },
+        {
+          "id": "stash",
+          "label": "Le stash"
+        },
+        {
+          "id": "tags",
+          "label": "Les tags"
         },
         {
           "id": "remotes",
@@ -119,12 +119,12 @@
           "label": "Résoudre un conflit de fusion"
         },
         {
-          "id": "stash",
-          "label": "Le stash"
+          "id": "rebase",
+          "label": "Le rebase"
         },
         {
-          "id": "tags",
-          "label": "Les tags"
+          "id": "architecture-interne",
+          "label": "L'architecture interne de Git"
         }
       ]
     },
@@ -137,8 +137,20 @@
           "label": "CSS",
           "chapters": [
             {
+              "id": "selecteurs",
+              "label": "Les sélecteurs"
+            },
+            {
+              "id": "variables-et-cascade",
+              "label": "Variables CSS et la cascade"
+            },
+            {
               "id": "box-model",
               "label": "Le modèle de boîte (box model)"
+            },
+            {
+              "id": "positionnement",
+              "label": "Le positionnement (position, z-index)"
             },
             {
               "id": "flexbox",
@@ -149,20 +161,8 @@
               "label": "CSS Grid"
             },
             {
-              "id": "positionnement",
-              "label": "Le positionnement (position, z-index)"
-            },
-            {
               "id": "responsive-et-media-queries",
               "label": "Le responsive design et les media queries"
-            },
-            {
-              "id": "selecteurs",
-              "label": "Les sélecteurs"
-            },
-            {
-              "id": "variables-et-cascade",
-              "label": "Variables CSS et la cascade"
             }
           ]
         },
@@ -171,32 +171,32 @@
           "label": "HTML",
           "chapters": [
             {
-              "id": "attributs-data-et-accessibilite",
-              "label": "Attributs data-* et accessibilité (ARIA)"
+              "id": "structure-dun-document",
+              "label": "La structure d'un document HTML"
             },
             {
               "id": "balises-de-texte",
               "label": "Les balises de texte"
             },
             {
-              "id": "formulaires",
-              "label": "Les formulaires"
-            },
-            {
               "id": "liens-et-images",
               "label": "Les liens et les images"
+            },
+            {
+              "id": "tableaux",
+              "label": "Les tableaux HTML"
+            },
+            {
+              "id": "formulaires",
+              "label": "Les formulaires"
             },
             {
               "id": "semantique-html5",
               "label": "La sémantique HTML5"
             },
             {
-              "id": "structure-dun-document",
-              "label": "La structure d'un document HTML"
-            },
-            {
-              "id": "tableaux",
-              "label": "Les tableaux HTML"
+              "id": "attributs-data-et-accessibilite",
+              "label": "Attributs data-* et accessibilité (ARIA)"
             }
           ]
         }
@@ -211,68 +211,68 @@
           "label": "C",
           "chapters": [
             {
-              "id": "appels-systeme-et-descripteurs",
-              "label": "Les appels système et les descripteurs de fichiers"
-            },
-            {
-              "id": "arbres-binaires",
-              "label": "Les arbres binaires"
-            },
-            {
-              "id": "bibliotheques",
-              "label": "Les bibliothèques"
-            },
-            {
-              "id": "boucles",
-              "label": "Les boucles"
-            },
-            {
-              "id": "compilation",
-              "label": "Le processus de compilation"
+              "id": "variables",
+              "label": "Les variables et types de données"
             },
             {
               "id": "conditions",
               "label": "Les conditions"
             },
             {
-              "id": "fonctions-variadiques",
-              "label": "Les fonctions variadiques (va_list)"
-            },
-            {
-              "id": "headers",
-              "label": "Les fichiers d'en-tête (.h)"
-            },
-            {
-              "id": "listes-chainees",
-              "label": "Les listes chaînées"
-            },
-            {
-              "id": "makefiles",
-              "label": "Les Makefiles"
-            },
-            {
-              "id": "memoire",
-              "label": "La gestion de la mémoire"
+              "id": "boucles",
+              "label": "Les boucles"
             },
             {
               "id": "pointeurs",
               "label": "Les pointeurs"
             },
             {
-              "id": "processus",
-              "label": "La gestion des processus"
+              "id": "memoire",
+              "label": "La gestion de la mémoire"
+            },
+            {
+              "id": "headers",
+              "label": "Les fichiers d'en-tête (.h)"
+            },
+            {
+              "id": "compilation",
+              "label": "Le processus de compilation"
+            },
+            {
+              "id": "makefiles",
+              "label": "Les Makefiles"
+            },
+            {
+              "id": "bibliotheques",
+              "label": "Les bibliothèques"
+            },
+            {
+              "id": "fonctions-variadiques",
+              "label": "Les fonctions variadiques (va_list)"
+            },
+            {
+              "id": "listes-chainees",
+              "label": "Les listes chaînées"
+            },
+            {
+              "id": "arbres-binaires",
+              "label": "Les arbres binaires"
             },
             {
               "id": "tables-de-hachage",
               "label": "Les tables de hachage (hash tables)"
             },
             {
-              "id": "threads",
-              "label": "Les threads (pthread)"
+              "id": "processus",
+              "label": "La gestion des processus"
             },
             {
-              "id": "variables",
-              "label": "Les variables et types de données"
+              "id": "appels-systeme-et-descripteurs",
+              "label": "Les appels système et les descripteurs de fichiers"
+            },
+            {
+              "id": "threads",
+              "label": "Les threads (pthread)"
             }
           ]
         },
@@ -281,12 +281,24 @@
           "label": "C++",
           "chapters": [
             {
-              "id": "classes-et-objets",
-              "label": "Les classes et objets"
+              "id": "references",
+              "label": "Les références"
             },
             {
               "id": "espaces-de-noms",
               "label": "Les espaces de noms (namespaces)"
+            },
+            {
+              "id": "classes-et-objets",
+              "label": "Les classes et objets"
+            },
+            {
+              "id": "heritage-et-polymorphisme",
+              "label": "Héritage et polymorphisme"
+            },
+            {
+              "id": "surcharge-d-operateurs",
+              "label": "La surcharge d'opérateurs"
             },
             {
               "id": "exceptions",
@@ -297,24 +309,12 @@
               "label": "RAII et les pointeurs intelligents"
             },
             {
-              "id": "heritage-et-polymorphisme",
-              "label": "Héritage et polymorphisme"
-            },
-            {
-              "id": "references",
-              "label": "Les références"
-            },
-            {
-              "id": "stl-algorithmes-et-iterateurs",
-              "label": "La STL — itérateurs, algorithmes et lambdas"
-            },
-            {
               "id": "stl-conteneurs",
               "label": "La STL — les conteneurs"
             },
             {
-              "id": "surcharge-d-operateurs",
-              "label": "La surcharge d'opérateurs"
+              "id": "stl-algorithmes-et-iterateurs",
+              "label": "La STL — itérateurs, algorithmes et lambdas"
             },
             {
               "id": "templates",
@@ -327,36 +327,28 @@
           "label": "JavaScript",
           "chapters": [
             {
-              "id": "HTMLElements",
-              "label": "Les HTMLElements en JavaScript"
-            },
-            {
-              "id": "asynchrone",
-              "label": "La programmation asynchrone (callbacks, Promises, async/await)"
+              "id": "conditions",
+              "label": "Les conditions"
             },
             {
               "id": "boucles",
-              "label": "Les boucles en JavaScript"
-            },
-            {
-              "id": "conditions",
-              "label": "Les conditions en JavaScript"
-            },
-            {
-              "id": "dom-et-evenements",
-              "label": "Le DOM et la gestion des événements"
+              "label": "Les boucles"
             },
             {
               "id": "fonctions",
-              "label": "Les fonctions en JavaScript"
+              "label": "Les fonctions"
             },
             {
-              "id": "gestion-des-erreurs",
-              "label": "La gestion des erreurs"
+              "id": "strings",
+              "label": "Les strings"
+            },
+            {
+              "id": "tableaux",
+              "label": "Les tableaux"
             },
             {
               "id": "objets",
-              "label": "Les objets en Javascript"
+              "label": "Les objets"
             },
             {
               "id": "poo",
@@ -364,15 +356,23 @@
             },
             {
               "id": "regex",
-              "label": "Les regex en Javascript"
+              "label": "Les regex"
             },
             {
-              "id": "strings",
-              "label": "Les strings en Javascript"
+              "id": "gestion-des-erreurs",
+              "label": "La gestion des erreurs"
             },
             {
-              "id": "tableaux",
-              "label": "Les tableaux en Javascript"
+              "id": "HTMLElements",
+              "label": "Les HTMLElements"
+            },
+            {
+              "id": "dom-et-evenements",
+              "label": "Le DOM et la gestion des événements"
+            },
+            {
+              "id": "asynchrone",
+              "label": "La programmation asynchrone (callbacks, Promises, async/await)"
             }
           ]
         },
@@ -381,36 +381,48 @@
           "label": "PHP",
           "chapters": [
             {
-              "id": "autoloading",
-              "label": "L'autoloading des classes en PHP"
+              "id": "synthaxe",
+              "label": "La syntaxe de PHP"
             },
             {
-              "id": "boucles",
-              "label": "Les boucles en PHP"
+              "id": "variables",
+              "label": "Les variables"
             },
             {
               "id": "conditions",
-              "label": "Les conditions en PHP"
+              "label": "Les conditions"
             },
             {
-              "id": "connexions",
-              "label": "Gérer les connexions en PHP"
+              "id": "boucles",
+              "label": "Les boucles"
             },
             {
-              "id": "http",
-              "label": "Faire des appels HTTP en PHP natif"
-            },
-            {
-              "id": "include",
-              "label": "Inclure des fonctions en PHP"
+              "id": "structuresDeLangagues",
+              "label": "Les structures de langage"
             },
             {
               "id": "methodes",
-              "label": "Les fonctions et méthodes les plus utiles en PHP"
+              "label": "Les fonctions et méthodes les plus utiles"
+            },
+            {
+              "id": "include",
+              "label": "Inclure des fonctions"
             },
             {
               "id": "poo",
-              "label": "La programmation orientée objet (POO) en PHP"
+              "label": "La programmation orientée objet (POO)"
+            },
+            {
+              "id": "autoloading",
+              "label": "L'autoloading des classes"
+            },
+            {
+              "id": "connexions",
+              "label": "Gérer les connexions"
+            },
+            {
+              "id": "http",
+              "label": "Faire des appels HTTP en natif"
             },
             {
               "id": "routage",
@@ -418,19 +430,7 @@
             },
             {
               "id": "securite",
-              "label": "Sécuriser vos données en PHP"
-            },
-            {
-              "id": "structuresDeLangagues",
-              "label": "Les structures de langage en PHP"
-            },
-            {
-              "id": "synthaxe",
-              "label": "La syntaxe de PHP"
-            },
-            {
-              "id": "variables",
-              "label": "Les variables en PHP"
+              "label": "Sécuriser vos données"
             }
           ]
         },
@@ -439,32 +439,24 @@
           "label": "Python",
           "chapters": [
             {
-              "id": "architectures-cnn-rnn-transformers",
-              "label": "Architectures — CNN, RNN et Transformers"
-            },
-            {
-              "id": "boucles",
-              "label": "Les boucles"
+              "id": "variables",
+              "label": "Les variables et types de base"
             },
             {
               "id": "conditions",
               "label": "Les conditions"
             },
             {
-              "id": "decorateurs",
-              "label": "Les décorateurs"
+              "id": "boucles",
+              "label": "Les boucles"
             },
             {
-              "id": "deep-learning-pytorch",
-              "label": "Deep learning avec PyTorch"
+              "id": "listes-et-tuples",
+              "label": "Les listes et les tuples"
             },
             {
               "id": "dictionnaires-et-ensembles",
               "label": "Les dictionnaires et les ensembles"
-            },
-            {
-              "id": "entrainement-descente-de-gradient",
-              "label": "L'entraînement d'un modèle et la descente de gradient"
             },
             {
               "id": "fonctions",
@@ -479,52 +471,60 @@
               "label": "Itérateurs et générateurs"
             },
             {
-              "id": "jupyter-notebooks",
-              "label": "Les notebooks Jupyter"
-            },
-            {
-              "id": "listes-et-tuples",
-              "label": "Les listes et les tuples"
-            },
-            {
-              "id": "machine-learning-scikit-learn",
-              "label": "Introduction au machine learning (scikit-learn)"
-            },
-            {
-              "id": "matplotlib",
-              "label": "Matplotlib — visualiser des données"
-            },
-            {
-              "id": "modules-et-environnements",
-              "label": "Modules, pip et environnements virtuels"
-            },
-            {
-              "id": "nlp-et-llm",
-              "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
-            },
-            {
-              "id": "numpy",
-              "label": "NumPy — le calcul numérique en Python"
-            },
-            {
-              "id": "pandas",
-              "label": "pandas — manipuler des données tabulaires"
+              "id": "decorateurs",
+              "label": "Les décorateurs"
             },
             {
               "id": "poo",
               "label": "La programmation orientée objet"
             },
             {
-              "id": "reseaux-de-neurones",
-              "label": "Les réseaux de neurones — les fondamentaux"
-            },
-            {
               "id": "typage-avec-annotations",
               "label": "Le typage avec les annotations"
             },
             {
-              "id": "variables",
-              "label": "Les variables et types de base"
+              "id": "modules-et-environnements",
+              "label": "Modules, pip et environnements virtuels"
+            },
+            {
+              "id": "jupyter-notebooks",
+              "label": "Les notebooks Jupyter"
+            },
+            {
+              "id": "numpy",
+              "label": "NumPy — le calcul numérique"
+            },
+            {
+              "id": "pandas",
+              "label": "pandas — manipuler des données tabulaires"
+            },
+            {
+              "id": "matplotlib",
+              "label": "Matplotlib — visualiser des données"
+            },
+            {
+              "id": "machine-learning-scikit-learn",
+              "label": "Introduction au machine learning (scikit-learn)"
+            },
+            {
+              "id": "reseaux-de-neurones",
+              "label": "Les réseaux de neurones — les fondamentaux"
+            },
+            {
+              "id": "entrainement-descente-de-gradient",
+              "label": "L'entraînement d'un modèle et la descente de gradient"
+            },
+            {
+              "id": "deep-learning-pytorch",
+              "label": "Deep learning avec PyTorch"
+            },
+            {
+              "id": "architectures-cnn-rnn-transformers",
+              "label": "Architectures — CNN, RNN et Transformers"
+            },
+            {
+              "id": "nlp-et-llm",
+              "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
             }
           ]
         }

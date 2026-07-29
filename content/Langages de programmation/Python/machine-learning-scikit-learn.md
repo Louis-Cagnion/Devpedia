@@ -1,6 +1,8 @@
 ---
-title: Introduction au machine learning (scikit-learn)
+order: 17
 ---
+
+# Introduction au machine learning (scikit-learn)
 
 Le **machine learning** (apprentissage automatique) consiste à faire apprendre à un programme un comportement à partir de **données**, plutôt que de coder explicitement chaque règle. Ce chapitre pose le vocabulaire et le déroulement général d'un projet de ML, avant les chapitres plus avancés sur les réseaux de neurones.
 

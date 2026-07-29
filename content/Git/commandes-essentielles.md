@@ -1,6 +1,8 @@
 ---
-title: Les commandes essentielles
+order: 2
 ---
+
+# Les commandes essentielles
 
 Ce chapitre couvre le cycle de travail Git le plus courant : initialiser un dépôt (ou en récupérer un existant), suivre des modifications, et les enregistrer sous forme de commits.
 

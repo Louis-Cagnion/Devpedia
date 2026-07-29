@@ -1,6 +1,4 @@
----
-title: La regex
----
+# La regex
 
 ## Qu'est-ce qu'une regex ?
 

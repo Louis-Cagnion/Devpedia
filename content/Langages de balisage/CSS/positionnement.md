@@ -1,6 +1,8 @@
 ---
-title: Le positionnement (position, z-index)
+order: 4
 ---
+
+# Le positionnement (position, z-index)
 
 La propriété `position` change fondamentalement la façon dont un élément est placé sur la page — au-delà du flux normal (chaque élément l'un après l'autre) que gèrent déjà Flexbox et Grid (cf. chapitres dédiés).
 

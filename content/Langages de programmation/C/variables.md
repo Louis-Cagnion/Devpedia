@@ -1,6 +1,8 @@
 ---
-title: Les variables et types de données
+order: 1
 ---
+
+# Les variables et types de données
 
 Les variables sont utilisées pour stocker des données en mémoire afin qu'un programme puisse les manipuler. En langage C, chaque variable possède un type qui détermine :
 

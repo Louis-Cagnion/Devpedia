@@ -1,6 +1,8 @@
 ---
-title: Les boucles en JavaScript
+order: 2
 ---
+
+# Les boucles
 
 JavaScript propose les boucles classiques (`for`, `while`, `do...while`), plus deux boucles dédiées au parcours de collections (`for...of`, `for...in`) — et, dans la pratique quotidienne, les méthodes fonctionnelles des tableaux (`map`, `filter`...) remplacent souvent une boucle explicite.
 

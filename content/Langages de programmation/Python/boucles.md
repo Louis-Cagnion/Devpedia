@@ -1,6 +1,8 @@
 ---
-title: Les boucles
+order: 3
 ---
+
+# Les boucles
 
 Python propose `for` et `while`, mais la boucle `for` fonctionne différemment de PHP/C/JS : elle parcourt toujours directement les éléments d'un itérable, jamais un compteur numérique manipulé manuellement.
 

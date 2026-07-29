@@ -1,6 +1,8 @@
 ---
-title: La gestion des processus
+order: 11
 ---
+
+# La gestion des processus
 
 Chaque commande lancée dans un terminal démarre un **processus**. Bash permet de lancer des commandes en arrière-plan, de surveiller les processus en cours, et de les arrêter proprement (ou non) quand nécessaire.
 

@@ -1,6 +1,8 @@
 ---
-title: Les fonctions et méthodes les plus utiles en PHP
+order: 6
 ---
+
+# Les fonctions et méthodes les plus utiles
 
 ## Qu'est-ce qu'une fonction / méthode ?
 
@@ -38,7 +40,7 @@ Une **méthode**, c'est exactement la même chose qu'une fonction, à une diffé
 ?>
 ```
 
-En résumé : **fonction** = autonome, appelée directement par son nom. **méthode** = appartient à un objet, appelée via `->` (ou `::` pour une méthode statique).
+En résumé : **fonction** = autonome, appelée directement par son nom. **Méthode** = appartient à un objet, appelée via `->` (ou `::` pour une méthode statique).
 
 ## Typer les paramètres et le retour d'une fonction
 

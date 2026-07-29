@@ -1,6 +1,8 @@
 ---
-title: RAII et les pointeurs intelligents
+order: 7
 ---
+
+# RAII et les pointeurs intelligents
 
 En C (cf. chapitre sur la gestion de la mémoire), chaque `malloc()` doit être suivi d'un `free()` manuel — oublié une seule fois, c'est une fuite mémoire ; appelé deux fois, un crash. **RAII** (*Resource Acquisition Is Initialization*) est le principe central de C++ pour éliminer cette classe entière de bugs, en s'appuyant sur un mécanisme déjà vu : le destructeur (cf. chapitre sur les classes et objets).
 

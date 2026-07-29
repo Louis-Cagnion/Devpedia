@@ -1,6 +1,8 @@
 ---
-title: Les boucles en Bash
+order: 5
 ---
+
+# Les boucles
 
 Bash propose trois structures de boucle (`for`, `while`, `until`), utilisées aussi bien pour répéter des commandes que pour parcourir des listes de fichiers, de lignes ou de résultats de commande.
 

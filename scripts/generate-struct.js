@@ -11,9 +11,12 @@
  *   and its own chapters are the .md files directly inside it.
  * - if a category folder has no subfolders, its .md files (except description.md) are its
  *   chapters directly (e.g. Bash, Git).
- * - a subject's own description page is the .md file inside it whose frontmatter `title`
- *   matches the subject folder name (case-insensitive) — e.g. cpp.md titled "C++" inside
- *   the "C++" folder. The rest of the .md files in that folder are its chapters.
+ * - a subject's own description page is the .md file inside it whose first line (a `# Title`
+ *   heading) matches the subject folder name (case-insensitive) — e.g. cpp.md titled "C++"
+ *   inside the "C++" folder. The rest of the .md files in that folder are its chapters.
+ * - a file's title is its first line, a `# Title` markdown heading — not frontmatter.
+ * - an optional `---`-fenced frontmatter block may precede that heading, holding build-time
+ *   metadata only (currently just `order`, an integer used to sort chapters).
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -25,14 +28,38 @@ const STRUCT_PATH = path.join(__dirname, "..", "structure", "struct.json");
 
 /**
  * @param {string} filePath
- * @returns {string} the value of the first frontmatter line (`title: X` → "X")
+ * @returns {string} the markdown body (frontmatter, if any, stripped off)
+ */
+function readBody(filePath) {
+    const raw = fs.readFileSync(filePath, "utf-8");
+    return raw.startsWith("---") ? raw.split("---").slice(2).join("---").trim() : raw.trim();
+}
+
+/**
+ * @param {string} filePath
+ * @returns {Object<string, string>} the optional frontmatter's `key: value` pairs
+ */
+function readFrontmatter(filePath) {
+    const raw = fs.readFileSync(filePath, "utf-8");
+    const fields = {};
+    if (!raw.startsWith("---")) return fields;
+    const yaml = raw.split("---")[1].trim();
+    yaml.split("\n").forEach(line => {
+        const sepIndex = line.indexOf(": ");
+        if (sepIndex === -1) return;
+        fields[line.slice(0, sepIndex).trim()] = line.slice(sepIndex + 2).trim();
+    });
+    return fields;
+}
+
+/**
+ * @param {string} filePath
+ * @returns {string} the file's title — its first line, a `# Title` heading
  */
 function readTitle(filePath) {
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const yaml = raw.split("---")[1].trim();
-    const firstLine = yaml.split("\n")[0];
-    const sepIndex = firstLine.indexOf(": ");
-    return (sepIndex === -1 ? firstLine : firstLine.slice(sepIndex + 2)).trim();
+    const firstLine = readBody(filePath).split("\n")[0];
+    const match = firstLine.match(/^#\s+(.*)/);
+    return match ? match[1].trim() : firstLine.trim();
 }
 
 /**
@@ -61,15 +88,31 @@ function listSubdirectories(dir) {
 }
 
 /**
+ * Chapters are ordered from most fundamental to most niche/advanced using each file's
+ * `order` frontmatter field (a small integer, unique within its folder). Files without
+ * an `order` field are pushed to the end, in their alphabetical (filename) order.
+ *
  * @param {string} dir
  * @param {string[]} fileNames
  * @returns {Array<{id: string, label: string}>}
  */
 function buildChapterList(dir, fileNames) {
-    return fileNames.map(fileName => ({
-        id: fileName.slice(0, -3),
-        label: readTitle(path.join(dir, fileName))
-    }));
+    const chapters = fileNames.map(fileName => {
+        const filePath = path.join(dir, fileName);
+        const order = readFrontmatter(filePath).order;
+        return {
+            id: fileName.slice(0, -3),
+            label: readTitle(filePath),
+            order: order === undefined ? null : Number(order)
+        };
+    });
+    chapters.sort((a, b) => {
+        if (a.order === null && b.order === null) return 0;
+        if (a.order === null) return 1;
+        if (b.order === null) return -1;
+        return a.order - b.order;
+    });
+    return chapters.map(({id, label}) => ({id, label}));
 }
 
 /**

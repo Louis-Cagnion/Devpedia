@@ -1,6 +1,8 @@
 ---
-title: Les fonctions en JavaScript
+order: 3
 ---
+
+# Les fonctions
 
 JavaScript propose trois façons d'écrire une fonction — déclaration, expression, fonction fléchée — qui ne sont **pas** de simples variantes stylistiques : elles diffèrent par le *hoisting* et par la gestion de `this`.
 

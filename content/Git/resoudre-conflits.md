@@ -1,6 +1,8 @@
 ---
-title: Résoudre un conflit de fusion
+order: 9
 ---
+
+# Résoudre un conflit de fusion
 
 Un **conflit** survient quand Git ne peut pas fusionner automatiquement deux versions d'un même fichier — typiquement, quand les **mêmes lignes** ont été modifiées différemment de part et d'autre (lors d'un `merge`, d'un `rebase`, ou d'un `pull`).
 

@@ -1,6 +1,8 @@
 ---
-title: La sémantique HTML5
+order: 6
 ---
+
+# La sémantique HTML5
 
 Avant HTML5, structurer une page reposait presque uniquement sur des `<div>` génériques, distinguées seulement par leur `class`/`id` — HTML5 a introduit des balises **sémantiques**, qui décrivent explicitement le **rôle** de chaque section, compréhensible aussi bien par un humain lisant le code que par un navigateur, un moteur de recherche ou un lecteur d'écran.
 

@@ -1,6 +1,8 @@
 ---
-title: La gestion des processus
+order: 14
 ---
+
+# La gestion des processus
 
 Un **processus** est une instance d'un programme en cours d'exécution, avec son propre espace mémoire, isolé de celui des autres processus. En C, la bibliothèque standard POSIX (`unistd.h`, `sys/wait.h`) permet de créer de nouveaux processus, de lancer d'autres programmes, et d'attendre leur fin.
 

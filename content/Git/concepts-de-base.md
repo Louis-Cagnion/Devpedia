@@ -1,6 +1,8 @@
 ---
-title: Les concepts de base de Git
+order: 1
 ---
+
+# Les concepts de base de Git
 
 Git suit l'évolution d'un projet en enregistrant, à chaque instant choisi, un **instantané** (snapshot) complet de l'état des fichiers — contrairement à l'idée reçue, ce n'est pas une simple liste de différences ligne par ligne, même si c'est souvent ainsi qu'on le visualise (`git diff`).
 

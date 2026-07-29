@@ -1,6 +1,8 @@
 ---
-title: Gérer les connexions en PHP
+order: 10
 ---
+
+# Gérer les connexions
 
 Lorsqu'un utilisateur navigue sur un site, le serveur a souvent besoin de se souvenir de lui d'une page à l'autre, voire d'une visite à l'autre : rester connecté, retrouver ses préférences, son panier... Pour cela, PHP propose plusieurs outils, chacun avec ses propres usages : les **cookies** (stockés chez l'utilisateur), les **sessions** (stockées sur le serveur), et les **jetons de connexion** (pour une connexion longue durée). Ce chapitre présente ces trois outils et explique quand utiliser l'un plutôt que l'autre.
 

@@ -1,6 +1,8 @@
 ---
-title: Les templates (programmation générique)
+order: 10
 ---
+
+# Les templates (programmation générique)
 
 Un **template** permet d'écrire une fonction ou une classe **une seule fois**, valable pour n'importe quel type, sans sacrifier la vérification de type à la compilation ni les performances (contrairement à des langages dynamiquement typés comme Python ou PHP, cf. chapitres dédiés).
 

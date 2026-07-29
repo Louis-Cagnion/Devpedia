@@ -1,6 +1,8 @@
 ---
-title: Inclure des fonctions en PHP
+order: 7
 ---
+
+# Inclure des fonctions
 
 Pour insérer des fonctions PHP dans du code HTML, on va pouvoir se servir de la structure de langage *include* :
 

@@ -1,6 +1,8 @@
 ---
-title: La STL — les conteneurs
+order: 8
 ---
+
+# La STL — les conteneurs
 
 La **STL** (*Standard Template Library*) fournit des structures de données génériques (cf. chapitre sur les templates), prêtes à l'emploi — plutôt que de réimplémenter à la main une liste chaînée ou une table de hachage (cf. chapitres dédiés, rubrique C), la quasi-totalité des projets C++ modernes s'appuient sur ces conteneurs standard.
 

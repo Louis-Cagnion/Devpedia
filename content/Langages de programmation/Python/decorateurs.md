@@ -1,6 +1,8 @@
 ---
-title: Les décorateurs
+order: 9
 ---
+
+# Les décorateurs
 
 Un **décorateur** enveloppe une fonction dans une autre, pour lui ajouter un comportement (chronométrage, journalisation, vérification de droits...) sans modifier son code — ce mécanisme s'appuie directement sur les fonctions de première classe et les closures (cf. chapitre sur les fonctions).
 

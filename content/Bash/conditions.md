@@ -1,6 +1,8 @@
 ---
-title: Les conditions en Bash
+order: 4
 ---
+
+# Les conditions
 
 Bash n'a pas d'opérateurs de comparaison intégrés au langage comme en PHP ou en C — les tests s'appuient sur des **commandes** (`test`, `[`, `[[`) dont le code de sortie (`$?`) détermine si la condition est vraie (`0`) ou fausse (non nul).
 

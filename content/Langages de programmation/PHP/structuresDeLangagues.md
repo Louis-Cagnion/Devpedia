@@ -1,6 +1,8 @@
 ---
-title: Les structures de langage en PHP
+order: 5
 ---
+
+# Les structures de langage
 
 Une **structure de langage** (*language construct*) est une instruction intégrée directement au cœur du langage PHP. Contrairement à une fonction, elle n'est pas définie par du code, elle fait partie de la syntaxe même du langage — au même titre que `if`, `for`, ou `;`.
 
@@ -24,7 +26,7 @@ Cette nature particulière donne aux structures de langage certaines libertés d
 
 À l'inverse, une fonction comme `strlen()` doit toujours être appelée avec ses parenthèses, et ne peut pas utiliser ces libertés.
 
-## Pourquoi cette distinction existe-t-il ?
+## Pourquoi cette distinction existe-t-elle ?
 
 Les structures de langage sont traitées par PHP au moment de l'analyse du code (avant même son exécution), car elles influencent directement le déroulement du script — par exemple, `include` insère du code à un endroit précis, ou `return` interrompt l'exécution d'une fonction. C'est pour ça qu'elles ne peuvent pas être manipulées comme de simples fonctions : on ne peut pas les stocker dans une variable, ni les passer en argument d'une autre fonction.
 

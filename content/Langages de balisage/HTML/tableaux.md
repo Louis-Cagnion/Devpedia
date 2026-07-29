@@ -1,6 +1,8 @@
 ---
-title: Les tableaux HTML
+order: 4
 ---
+
+# Les tableaux HTML
 
 Un tableau HTML sert à représenter des données **tabulaires** (lignes/colonnes réellement liées entre elles, comme un export de base de données, cf. chapitre sur SQL) — jamais pour mettre en page visuellement une page entière, un usage historique aujourd'hui remplacé par CSS (`flexbox`/`grid`, cf. chapitres dédiés).
 

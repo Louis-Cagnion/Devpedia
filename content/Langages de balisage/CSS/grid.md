@@ -1,6 +1,8 @@
 ---
-title: CSS Grid
+order: 6
 ---
+
+# CSS Grid
 
 Contrairement à Flexbox (cf. chapitre dédié), pensé pour un seul axe à la fois, **CSS Grid** organise des éléments sur une véritable grille à **deux dimensions** — lignes et colonnes définies simultanément, avec un contrôle précis de la position de chaque élément.
 
@@ -52,7 +54,7 @@ Contrairement à Flexbox (cf. chapitre dédié), pensé pour un seul axe à la f
 }
 ```
 
-`auto-fit` calcule automatiquement combien de colonnes de **au moins** `200px` tiennent dans l'espace disponible, et les étire (`1fr`) pour combler l'espace restant — le nombre de colonnes s'adapte donc à la largeur de l'écran, sans écrire une seule media query (cf. chapitre dédié).
+`auto-fit` calcule automatiquement combien de colonnes **d'au moins** `200px` tiennent dans l'espace disponible, et les étire (`1fr`) pour combler l'espace restant — le nombre de colonnes s'adapte donc à la largeur de l'écran, sans écrire une seule media query (cf. chapitre dédié).
 
 ## Placer un élément précisément
 

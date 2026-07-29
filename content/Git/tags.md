@@ -1,6 +1,8 @@
 ---
-title: Les tags
+order: 7
 ---
+
+# Les tags
 
 Un **tag** est un pointeur vers un commit précis, comme une branche — mais contrairement à une branche, un tag ne **bouge jamais** une fois créé. Il sert typiquement à marquer une version publiée d'un projet (`v1.0.0`, `v2.3.1`...).
 
@@ -49,4 +51,4 @@ git push origin --delete v1.0.0       # supprime aussi côté remote
 git checkout v1.0.0
 ```
 
-> **Note :** ceci place le dépôt en état de **"detached HEAD"** (`HEAD` pointe directement sur un commit, plus sur une branche) — utile pour inspecter cette version précise, mais tout nouveau commit fait dans cet état n'appartiendrait à aucune branche et serait facilement perdu. Pour continuer à travailler à partir de là, créer d'abord une branche : `git checkout -b nouvelle-branche v1.0.0`.
+> **Note :** ceci place le dépôt en état de **"detached HEAD"** (`HEAD` pointe directement sur un commit, non plus sur une branche) — utile pour inspecter cette version précise, mais tout nouveau commit fait dans cet état n'appartiendrait à aucune branche et serait facilement perdu. Pour continuer à travailler à partir de là, créer d'abord une branche : `git checkout -b nouvelle-branche v1.0.0`.

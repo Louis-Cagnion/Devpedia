@@ -1,6 +1,8 @@
 ---
-title: Les classes et objets
+order: 3
 ---
+
+# Les classes et objets
 
 Une **classe** C++ regroupe ce qu'un `struct` C (cf. chapitre dédié) sépare en deux : les données ET les fonctions qui les manipulent, au même endroit — avec en plus un contrôle explicite de ce qui est visible depuis l'extérieur.
 

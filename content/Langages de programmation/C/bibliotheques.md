@@ -1,6 +1,8 @@
 ---
-title: Les bibliothèques
+order: 9
 ---
+
+# Les bibliothèques
 
 Une **bibliothèque** (*library*) regroupe des fonctions déjà compilées, réutilisables par n'importe quel programme sans en recompiler le code source — c'est ainsi que fonctionne par exemple la bibliothèque standard C (`printf`, `malloc`...). Il existe deux façons de lier une bibliothèque à un programme : statiquement, ou dynamiquement.
 

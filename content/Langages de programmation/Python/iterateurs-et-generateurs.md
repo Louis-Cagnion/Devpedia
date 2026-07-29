@@ -1,6 +1,8 @@
 ---
-title: Itérateurs et générateurs
+order: 8
 ---
+
+# Itérateurs et générateurs
 
 Une boucle `for` fonctionne sur les listes, les dictionnaires, les fichiers, et bien d'autres objets — parce qu'ils implémentent tous le même **protocole d'itération**. Comprendre ce protocole permet de créer ses propres objets "parcourables", et d'utiliser les générateurs pour traiter de grandes quantités de données sans tout charger en mémoire.
 

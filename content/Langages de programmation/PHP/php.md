@@ -1,6 +1,4 @@
----
-title: PHP
----
+# PHP
 
 PHP est considéré comme un langage de programmation de **haut niveau**, car il masque une grande partie des détails techniques liés à la machine et à la gestion de la mémoire. Contrairement aux langages de **bas niveau** comme le C, qui demandent au développeur de gérer manuellement la mémoire et les adresses, PHP automatise ces aspects grâce à un ramasse-miettes (*garbage collector*), permettant de se concentrer sur la logique applicative.
 

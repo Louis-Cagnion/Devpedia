@@ -1,6 +1,8 @@
 ---
-title: Les sélecteurs
+order: 1
 ---
+
+# Les sélecteurs
 
 Un **sélecteur** détermine à quels éléments HTML une règle CSS s'applique — du plus simple (une balise) au plus précis (une combinaison d'attributs et de position dans l'arbre du document).
 

@@ -1,6 +1,8 @@
 ---
-title: Héritage et polymorphisme
+order: 4
 ---
+
+# Héritage et polymorphisme
 
 L'**héritage** permet à une classe de réutiliser (et d'étendre ou de modifier) le comportement d'une autre. Le **polymorphisme** permet de traiter des objets de classes différentes de façon uniforme, à travers une interface commune — le mécanisme le plus puissant, et le plus souvent mal compris, de la POO en C++.
 

@@ -1,6 +1,8 @@
 ---
-title: Les appels système et les descripteurs de fichiers
+order: 15
 ---
+
+# Les appels système et les descripteurs de fichiers
 
 Un programme ne peut pas lire un fichier, créer un processus ou envoyer des données sur le réseau en manipulant directement le matériel — cela pourrait être catastrophique pour la stabilité et la sécurité du système si n'importe quel programme y avait un accès libre. À la place, il doit passer par une porte étroite et contrôlée : l'**appel système** (*syscall*). Ce chapitre explique ce mécanisme et le **descripteur de fichier**, la "poignée" que le noyau remet en échange, tous deux utilisés en permanence dès qu'on touche à des fichiers, des processus ou des pipes (cf. chapitres sur la gestion des processus, les threads, et l'architecture d'un shell).
 
@@ -79,7 +81,7 @@ dup2(fd, STDOUT_FILENO); // désormais, écrire sur "stdout" (1) écrit en réal
 close(fd); // l'original peut être fermé : la cible (1) reste valide, pointant vers la même ressource
 ```
 
-C'est exactement ce mécanisme que le chapitre sur l'architecture d'un shell utilise pour implémenter aussi bien les redirections (`>`, `<`) que les pipes (`|`) — dans les deux cas, on fait pointer un descriptor standard (`0`, `1`, `2`) vers une ressource différente juste avant d'exécuter le programme cible.
+C'est exactement ce mécanisme que le chapitre sur l'architecture d'un shell utilise pour implémenter aussi bien les redirections (`>`, `<`) que les pipes (`|`) — dans les deux cas, on fait pointer un descripteur standard (`0`, `1`, `2`) vers une ressource différente juste avant d'exécuter le programme cible.
 
 ## Pourquoi `fork()` duplique aussi la table des descripteurs
 

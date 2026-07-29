@@ -4,20 +4,21 @@
     }
     .menuDiv.visible {
         position: absolute;
-        display: grid;
-        width: 100% - 1px;
+        display: block;
         left: 0;
         right: 0;
-        border: 1px solid white;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+        padding: 1rem;
+        background-color: var(--bg-elevated);
+        border-top: 1px solid var(--border);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        z-index: 20;
     }
-    .menuDiv.visible > button {
-        border-bottom: 1px solid white;
-        padding: 10px;
-        background-color: rgb(41, 41, 41);
-        text-align: left;
-    }
-    .menuDiv.visible > button:hover {
-        background-color: rgba(148, 148, 148, 0.392);
+    .menuDiv .sidebarOutlineContainer {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
     }
     .categories {
         display: none;
@@ -25,5 +26,40 @@
     .navBar {
         display: flex;
         justify-content: space-between;
+    }
+    .childList {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 1100px) {
+    body {
+        padding-left: 240px;
+        padding-right: 240px;
+    }
+    /* the navbar "breaks out" of body's padding so it still spans the full width,
+       edge to edge, above both sidebars, with its own content free to use that
+       full width (categories centered across the whole page, not just the middle column) */
+    .navBar {
+        box-sizing: border-box;
+        width: calc(100% + 480px);
+        margin-left: -240px;
+    }
+    .leftSidebar, .rightSidebar {
+        display: block;
+        position: fixed;
+        top: var(--navbar-height, 57px);
+        bottom: 0;
+        width: 240px;
+        overflow-y: auto;
+        padding: 1.25rem 1rem;
+    }
+    .leftSidebar {
+        left: 0;
+        border-right: 1px solid var(--border);
+    }
+    .rightSidebar {
+        right: 0;
+        border-left: 1px solid var(--border);
     }
 }

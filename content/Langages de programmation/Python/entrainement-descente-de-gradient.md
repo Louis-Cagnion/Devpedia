@@ -1,6 +1,8 @@
 ---
-title: L'entraînement d'un modèle et la descente de gradient
+order: 19
 ---
+
+# L'entraînement d'un modèle et la descente de gradient
 
 Un réseau de neurones (cf. chapitre dédié) commence avec des poids **aléatoires** — ses prédictions initiales n'ont donc aucun sens. **L'entraînement** est le processus qui ajuste progressivement ces poids pour que les prédictions se rapprochent des bonnes réponses, à partir d'exemples.
 

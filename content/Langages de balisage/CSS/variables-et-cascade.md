@@ -1,6 +1,8 @@
 ---
-title: Variables CSS et la cascade
+order: 2
 ---
+
+# Variables CSS et la cascade
 
 Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables personnalisées** (réutiliser une valeur à plusieurs endroits), et la **cascade** (comment CSS résout un conflit entre plusieurs règles qui ciblent le même élément) — le "C" de CSS (*Cascading*) fait directement référence à ce second mécanisme.
 

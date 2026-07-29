@@ -1,6 +1,8 @@
 ---
-title: Les fonctions
+order: 6
 ---
+
+# Les fonctions
 
 Une fonction Python se déclare avec `def`. Les fonctions sont des **objets de première classe** : elles peuvent être stockées dans une variable, passées en argument à une autre fonction, ou renvoyées par une fonction — exactement comme n'importe quelle autre valeur.
 
@@ -101,7 +103,7 @@ def compteur():
 
 compter = compteur()
 compter()   # 1
-compter()   # 2 -> "total" a bien été conservée entre les appels
+compter()   # 2 -> "total" a bien été conservé entre les appels
 ```
 
 Voir aussi le chapitre sur les décorateurs, qui s'appuie directement sur ce mécanisme de closure.

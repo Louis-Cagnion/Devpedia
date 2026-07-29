@@ -1,6 +1,8 @@
 ---
-title: La gestion des erreurs
+order: 9
 ---
+
+# La gestion des erreurs
 
 JavaScript signale une erreur en levant une **exception** (`throw`), interceptable avec `try`/`catch` — un mécanisme proche de celui de PHP ou Python.
 

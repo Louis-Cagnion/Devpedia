@@ -1,6 +1,8 @@
 ---
-title: Attributs data-* et accessibilité (ARIA)
+order: 7
 ---
+
+# Attributs data-* et accessibilité (ARIA)
 
 Ce chapitre couvre deux familles d'attributs transversales, utilisables sur presque n'importe quelle balise : les attributs `data-*` (stocker une donnée personnalisée) et les attributs `aria-*` (améliorer l'accessibilité au-delà de ce que la sémantique HTML5 seule permet).
 

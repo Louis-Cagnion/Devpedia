@@ -1,6 +1,8 @@
 ---
-title: Comment fonctionne un shell (architecture interne)
+order: 12
 ---
+
+# Comment fonctionne un shell (architecture interne)
 
 Tout ce que Bash fait en surface (variables, boucles, pipes, redirections) repose sur une mécanique assez simple à décrire : une boucle qui lit une ligne, la découpe, l'interprète, puis lance des processus via les appels système standards du chapitre sur la gestion des processus en C (`fork`, `execve`, `wait`). Ce chapitre décrit cette mécanique, dans l'optique de comprendre — voire de reconstruire — un shell minimal.
 

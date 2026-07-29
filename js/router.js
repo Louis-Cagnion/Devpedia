@@ -2,14 +2,19 @@ import { appState } from "./state.js";
 import { parseAppendText, parseMdContent } from "./parser.js";
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson, findCategory } from "./utils.js";
+import { setPageOutline, syncSidebars } from "./sidebar.js";
 
 /**
  * @param {Object} category
  * @param {string} subjectId
  * @returns {Object} the subject
  */
-function findSubject(category, subjectId) {
+export function findSubject(category, subjectId) {
     return category.subjects?.find(subject => subject.id === subjectId);
+}
+
+function closeMobileMenu() {
+    document.querySelector(".menuDiv").classList.remove("visible");
 }
 
 /**
@@ -26,7 +31,7 @@ function clearCurrentPage() {
  * @param {string} pageId
  */
 function createAppendReturnButton(pageDiv, pageId) {
-    const returnButton = createTag("button", {class: `${pageId}ReturnButton`}, {textContent: "← Retour"});
+    const returnButton = createTag("button", {class: `returnButton ${pageId}ReturnButton`}, {textContent: "← Retour"});
     returnButton.addEventListener("click", (e) => {
         const previousEntry = appState.navigationStack.pop();
         renderEntry(previousEntry);
@@ -41,12 +46,14 @@ function createAppendReturnButton(pageDiv, pageId) {
  * @returns {HTMLElement} page div
  */
 function generatePageContent(textInfos, pageId, withReturnButton) {
-    const [yaml, text] = parseMdContent(textInfos);
-    const pageDiv = createTag("div", {class: `${pageId}Div`});
+    const text = parseMdContent(textInfos);
+    const pageDiv = createTag("div", {class: `page ${pageId}Div`});
     if (withReturnButton)
         createAppendReturnButton(pageDiv, pageId);
-    parseAppendText(pageDiv, pageId, yaml, text);
+    const outline = parseAppendText(pageDiv, pageId, text);
     document.body.append(pageDiv);
+    setPageOutline(outline);
+    syncSidebars();
     return pageDiv;
 }
 
@@ -57,9 +64,9 @@ function generatePageContent(textInfos, pageId, withReturnButton) {
  * @param {Function} onSelect called with the selected item
  */
 function generateChildList(pageDiv, items, listId, onSelect) {
-    const ul = createTag("ul", {class: `${listId}List`})
+    const ul = createTag("ul", {class: `childList ${listId}List`})
     items.forEach(item => {
-        const button = createTag("button", {class: `${item.id}button`}, {textContent: item.label})
+        const button = createTag("button", {class: `childButton ${item.id}button`}, {textContent: item.label})
         button.addEventListener("click", (e) => onSelect(item));
         const li = createTag("li", {class: `${listId}List`});
         li.append(button);
@@ -74,6 +81,7 @@ function generateChildList(pageDiv, items, listId, onSelect) {
 export async function generateHomePage() {
     clearCurrentPage();
     appState.curCategory = 'acceuil';
+    appState.curSubject = null;
     appState.curPageId = 'acceuil';
     const homeInfos = await fetchFileToTextOrJson(`./content/acceuil.md`, 'text');
     generatePageContent(homeInfos, 'acceuil', false);
@@ -84,9 +92,11 @@ export async function generateHomePage() {
  *
  * @param {string} path path to the chapter's markdown file
  * @param {Object} chapter
+ * @param {string} [subjectId] the subject this chapter belongs to, if any
  */
-async function renderChapter(path, chapter) {
+async function renderChapter(path, chapter, subjectId = null) {
     clearCurrentPage();
+    appState.curSubject = subjectId;
     appState.curPageId = chapter.id;
     const chapterInfos = await fetchFileToTextOrJson(path, 'text');
     generatePageContent(chapterInfos, chapter.id, true);
@@ -100,13 +110,14 @@ async function renderChapter(path, chapter) {
  */
 async function renderSubject(category, subject) {
     clearCurrentPage();
+    appState.curSubject = subject.id;
     appState.curPageId = subject.id;
     const path = `./content/${category.label}/${subject.label}/${subject.id}.md`;
     const subjectInfos = await fetchFileToTextOrJson(path, 'text');
     const pageDiv = generatePageContent(subjectInfos, subject.id, true);
     generateChildList(pageDiv, subject.chapters ?? [], subject.id, (chapter) => {
         appState.navigationStack.push({type: 'subject', categoryId: category.id, subjectId: subject.id});
-        renderChapter(`./content/${category.label}/${subject.label}/${chapter.id}.md`, chapter);
+        renderChapter(`./content/${category.label}/${subject.label}/${chapter.id}.md`, chapter, subject.id);
     });
 }
 
@@ -119,6 +130,7 @@ async function renderSubject(category, subject) {
 async function renderCategory(category) {
     clearCurrentPage();
     appState.curCategory = category.id;
+    appState.curSubject = null;
     appState.curPageId = category.id;
     const pageInfos = await fetchFileToTextOrJson(`./content/${category.label}/description.md`, 'text');
     const pageDiv = generatePageContent(pageInfos, category.id, true);
@@ -160,7 +172,7 @@ function renderEntry(entry) {
  * @param {string} categoryId
  */
 export function loadCategory(categoryId) {
-    document.querySelector(".menuDiv").classList.remove("visible");
+    closeMobileMenu();
     if (categoryId === appState.curCategory && categoryId === appState.curPageId)
         return ;
     if (categoryId === 'acceuil') {
@@ -169,5 +181,40 @@ export function loadCategory(categoryId) {
     } else {
         appState.navigationStack = [{type: 'home'}];
         renderCategory(findCategory({id: categoryId}));
+    }
+}
+
+/**
+ * Navigate directly to a subject's page (used by the sidebar tree)
+ *
+ * @param {string} categoryId
+ * @param {string} subjectId
+ */
+export function navigateToSubject(categoryId, subjectId) {
+    closeMobileMenu();
+    const category = findCategory({id: categoryId});
+    appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}];
+    renderSubject(category, findSubject(category, subjectId));
+}
+
+/**
+ * Navigate directly to a chapter's page (used by the sidebar tree)
+ *
+ * @param {string} categoryId
+ * @param {string} [subjectId] the subject this chapter belongs to, if any
+ * @param {string} chapterId
+ */
+export function navigateToChapter(categoryId, subjectId, chapterId) {
+    closeMobileMenu();
+    const category = findCategory({id: categoryId});
+    if (subjectId) {
+        const subject = findSubject(category, subjectId);
+        const chapter = subject.chapters.find(c => c.id === chapterId);
+        appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}, {type: 'subject', categoryId, subjectId}];
+        renderChapter(`./content/${category.label}/${subject.label}/${chapter.id}.md`, chapter, subjectId);
+    } else {
+        const chapter = category.chapters.find(c => c.id === chapterId);
+        appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}];
+        renderChapter(`./content/${category.label}/${chapter.id}.md`, chapter);
     }
 }

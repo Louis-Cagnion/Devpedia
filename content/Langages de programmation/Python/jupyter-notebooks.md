@@ -1,6 +1,8 @@
 ---
-title: Les notebooks Jupyter
+order: 13
 ---
+
+# Les notebooks Jupyter
 
 Un **notebook Jupyter** est un document interactif mêlant code exécutable, résultats (y compris des graphiques affichés directement), et texte explicatif (Markdown) — le format de travail dominant en data science et en apprentissage automatique, pour l'exploration itérative de données.
 

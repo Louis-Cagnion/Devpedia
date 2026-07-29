@@ -1,6 +1,8 @@
 ---
-title: Deep learning avec PyTorch
+order: 20
 ---
+
+# Deep learning avec PyTorch
 
 **PyTorch** est l'un des deux frameworks de deep learning les plus utilisés (avec TensorFlow). Il fournit le **tenseur** (proche du `ndarray` NumPy, cf. chapitre dédié, mais avec support GPU et différenciation automatique), et automatise toute la mécanique du chapitre sur la descente de gradient.
 

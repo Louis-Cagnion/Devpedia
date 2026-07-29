@@ -1,6 +1,8 @@
 ---
-title: Les strings en Javascript
+order: 4
 ---
+
+# Les strings
 
 Une string est une suite de caractères, utilisée pour représenter du texte. En JavaScript, elle peut être écrite de 3 manières différentes :
 ```javascript
@@ -87,4 +89,4 @@ Les prototypes sont des fonctions intégrées à l'objet string par défaut, per
 
 ### Les regex
 
-on peut utiliser les regex pour rechercher ou collecter des informations dans des strings (cf regex).
+On peut utiliser les regex pour rechercher ou collecter des informations dans des strings (cf regex).

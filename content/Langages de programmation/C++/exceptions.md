@@ -1,6 +1,8 @@
 ---
-title: Les exceptions
+order: 6
 ---
+
+# Les exceptions
 
 C++ propose un mécanisme d'erreurs structuré (`try`/`catch`/`throw`), une alternative au style "à la C" (une fonction renvoie une valeur spéciale comme `-1` ou `NULL`, et positionne `errno`, cf. chapitre sur les appels système, rubrique C) — le même principe que les exceptions PHP, Python ou JavaScript déjà vues dans les rubriques correspondantes.
 
@@ -27,7 +29,7 @@ try {
 #include <stdexcept>
 
 std::exception              // classe de base de toutes les exceptions standard
-  ├── std::logic_error        // erreur détectable avant exécution (ex: argument invalide)
+  ├── std::logic_error        // erreur détectable avant l'exécution (ex: argument invalide)
   │     ├── std::invalid_argument
   │     └── std::out_of_range
   └── std::runtime_error       // erreur détectable seulement à l'exécution

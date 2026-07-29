@@ -1,6 +1,8 @@
 ---
-title: Les branches
+order: 4
 ---
+
+# Les branches
 
 Une **branche** est simplement un pointeur mobile vers un commit — elle permet de faire évoluer une version du code (une nouvelle fonctionnalité, un correctif) sans toucher à la branche principale, puis de réunir les deux lignes de travail plus tard.
 

@@ -1,6 +1,4 @@
----
-title: C++
----
+# C++
 
 C++ est né comme une extension du C ("C with Classes"), et reste aujourd'hui rétro-compatible avec la quasi-totalité du C (cf. rubrique C) — presque tout ce qui a déjà été vu là-bas (pointeurs, mémoire, structs, compilation) s'applique directement en C++. Ce que C++ ajoute par-dessus, c'est essentiellement la **programmation orientée objet**, la **gestion automatique de ressources** (RAII), et la **programmation générique** (templates).
 

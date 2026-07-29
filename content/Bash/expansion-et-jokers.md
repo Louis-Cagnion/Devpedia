@@ -1,6 +1,8 @@
 ---
-title: Expansion et jokers (globbing)
+order: 7
 ---
+
+# Expansion et jokers (globbing)
 
 Avant d'exécuter une commande, Bash remplace certains motifs qu'elle contient par leur valeur réelle — variables (`$nom`, cf. chapitre dédié), mais aussi motifs de fichiers (*globbing*) et expansions d'accolades. Comprendre cette étape (invisible mais systématique) explique pourquoi certaines commandes se comportent différemment selon les guillemets utilisés.
 

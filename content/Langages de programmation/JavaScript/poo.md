@@ -1,6 +1,8 @@
 ---
-title: Les classes et la programmation orientée objet
+order: 7
 ---
+
+# Les classes et la programmation orientée objet
 
 Contrairement à PHP ou Python, l'objet en JavaScript ne repose pas fondamentalement sur des classes : il repose sur des **prototypes**. La syntaxe `class` (depuis ES6) n'est que du sucre syntaxique par-dessus ce mécanisme plus ancien — comprendre les deux aide à ne pas être surpris par certains comportements.
 

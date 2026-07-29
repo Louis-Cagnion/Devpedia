@@ -1,6 +1,8 @@
 ---
-title: Variables d'environnement
+order: 3
 ---
+
+# Variables d'environnement
 
 Une variable d'environnement est une variable transmise automatiquement aux processus qu'un shell lance — contrairement à une variable Bash classique, qui reste locale au script qui la déclare, sauf si elle est explicitement **exportée**.
 

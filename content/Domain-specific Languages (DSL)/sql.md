@@ -1,6 +1,4 @@
----
-title: SQL
----
+# SQL
 
 SQL (*Structured Query Language*) est un langage à but unique : interroger et manipuler des données stockées sous forme de tables. Comme la regex, ce n'est pas un langage de programmation généraliste — il n'a ni boucles, ni fonctions définies par l'utilisateur, ni variables au sens classique. Il est interprété par un moteur de base de données (MySQL, PostgreSQL, SQL Server, SQLite...), généralement piloté depuis un langage hôte (PHP, Python, JS...) via un connecteur.
 

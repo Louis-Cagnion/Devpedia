@@ -1,6 +1,8 @@
 ---
-title: Les formulaires
+order: 5
 ---
+
+# Les formulaires
 
 Un formulaire HTML collecte des données saisies par l'utilisateur, pour les envoyer à un serveur (via `GET` ou `POST`, cf. chapitre sur les variables globales en PHP) — c'est le point d'entrée principal de toute donnée utilisateur dans une application web.
 

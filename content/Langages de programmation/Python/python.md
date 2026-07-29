@@ -1,6 +1,4 @@
----
-title: Python
----
+# Python
 
 Python est considéré comme un langage de programmation de **haut niveau**, dynamiquement typé et interprété : il masque presque entièrement la gestion de la mémoire et les détails machine, au profit de la lisibilité — la syntaxe s'appuie sur l'indentation elle-même pour délimiter les blocs de code, plutôt que sur des accolades.
 

@@ -1,6 +1,8 @@
 ---
-title: La surcharge d'opérateurs
+order: 5
 ---
+
+# La surcharge d'opérateurs
 
 C++ permet de redéfinir le comportement des opérateurs standards (`+`, `==`, `<<`...) pour des types personnalisés — ce qui permet à un objet créé par l'utilisateur de se comporter, en apparence, comme un type natif du langage.
 

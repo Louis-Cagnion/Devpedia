@@ -1,6 +1,8 @@
 ---
-title: Les regex en Javascript
+order: 8
 ---
+
+# Les regex
 
 Une regex (expression régulière) est un modèle utilisé pour rechercher, valider ou remplacer des portions de texte dans une string.
 

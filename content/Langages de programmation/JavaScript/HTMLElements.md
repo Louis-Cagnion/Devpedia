@@ -1,6 +1,8 @@
 ---
-title: Les HTMLElements en JavaScript
+order: 10
 ---
+
+# Les HTMLElements
 
 Un `HTMLElement` est la représentation JavaScript d'une balise HTML dans le DOM. Chaque balise (`<div>`, `<p>`, `<a>`...) devient un objet `HTMLElement` accessible et manipulable en JavaScript.
 

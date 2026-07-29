@@ -1,6 +1,8 @@
 ---
-title: La programmation orientée objet (POO) en PHP
+order: 8
 ---
+
+# La programmation orientée objet (POO)
 
 La **programmation orientée objet** (POO) organise le code autour d'objets qui regroupent à la fois des données (propriétés) et des comportements (méthodes), plutôt que de manipuler des tableaux et des fonctions séparément. Une classe joue le rôle de "moule" : elle décrit quelles propriétés existeront et quelles méthodes seront disponibles, et chaque `new` produit une instance indépendante de ce moule.
 

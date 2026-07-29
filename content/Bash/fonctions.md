@@ -1,6 +1,8 @@
 ---
-title: Les fonctions en Bash
+order: 6
 ---
+
+# Les fonctions
 
 Une fonction Bash regroupe une suite de commandes sous un nom réutilisable. Contrairement à PHP ou C, une fonction Bash ne déclare **jamais** de liste de paramètres nommés : elle reçoit ses arguments exactement comme un script reçoit les siens, via `$1`, `$2`, etc.
 

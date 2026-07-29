@@ -1,6 +1,8 @@
 ---
-title: Les threads (pthread)
+order: 16
 ---
+
+# Les threads (pthread)
 
 Un **thread** (fil d'exécution) est, comme un processus, une suite d'instructions exécutée de façon indépendante — mais contrairement à `fork()` (cf. chapitre sur les processus), plusieurs threads d'un même programme **partagent la même mémoire**. C'est plus léger à créer qu'un processus, mais ça introduit un risque nouveau : deux threads peuvent modifier la même donnée en même temps.
 

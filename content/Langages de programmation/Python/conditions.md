@@ -1,6 +1,8 @@
 ---
-title: Les conditions
+order: 2
 ---
+
+# Les conditions
 
 Python utilise `if`/`elif`/`else`, sans aucune accolade — c'est l'**indentation** elle-même qui délimite les blocs de code, contrairement à PHP, C ou JavaScript.
 

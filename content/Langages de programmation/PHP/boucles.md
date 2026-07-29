@@ -1,6 +1,8 @@
 ---
-title: Les boucles en PHP
+order: 4
 ---
+
+# Les boucles
 
 Les boucles permettent de répéter un bloc de code plusieurs fois, tant qu'une condition est vraie ou pour chaque élément d'une collection. En PHP, on utilise principalement `while`, `do while`, `for` et `foreach`.
 

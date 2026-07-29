@@ -1,6 +1,8 @@
 ---
-title: La gestion de la mémoire
+order: 5
 ---
+
+# La gestion de la mémoire
 
 Contrairement à des langages comme PHP ou JavaScript, qui gèrent automatiquement la mémoire via un ramasse-miettes (*garbage collector*), le C laisse au développeur la responsabilité complète d'allouer et de libérer la mémoire dont son programme a besoin. C'est ce qui permet des performances élevées et un contrôle fin des ressources, au prix d'une vigilance de tous les instants.
 

@@ -1,6 +1,8 @@
 ---
-title: La programmation orientée objet
+order: 10
 ---
+
+# La programmation orientée objet
 
 Python est un langage orienté objet de bout en bout — même un `int` ou une `str` est en réalité un objet, instance d'une classe. La syntaxe des classes personnalisées ressemble à celle de PHP, avec une différence immédiate : `self` (l'équivalent de `$this`) est un paramètre **explicite** de chaque méthode, jamais implicite.
 

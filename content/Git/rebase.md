@@ -1,6 +1,8 @@
 ---
-title: Le rebase
+order: 10
 ---
+
+# Le rebase
 
 `git rebase` propose une alternative à `git merge` (cf. chapitre sur les branches) pour intégrer des changements entre deux branches : au lieu de créer un commit de fusion à deux parents, il **rejoue** les commits d'une branche par-dessus une autre, produisant un historique linéaire.
 

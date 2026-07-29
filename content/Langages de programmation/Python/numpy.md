@@ -1,6 +1,8 @@
 ---
-title: NumPy — le calcul numérique en Python
+order: 14
 ---
+
+# NumPy — le calcul numérique
 
 **NumPy** (*Numerical Python*) fournit le type `ndarray` : un tableau multidimensionnel de valeurs **d'un seul type**, stockées de façon contiguë en mémoire — exactement comme un tableau C (cf. chapitre sur les pointeurs et la mémoire en C), plutôt que comme une liste Python (où chaque élément est une référence séparée vers un objet). C'est la brique de base sur laquelle reposent pandas, scikit-learn et la quasi-totalité de l'écosystème data science Python.
 

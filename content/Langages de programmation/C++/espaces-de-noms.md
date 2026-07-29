@@ -1,6 +1,8 @@
 ---
-title: Les espaces de noms (namespaces)
+order: 2
 ---
+
+# Les espaces de noms (namespaces)
 
 Un **espace de noms** (*namespace*) regroupe des identifiants (fonctions, classes, variables) sous un préfixe commun, pour éviter les collisions de noms entre différentes parties d'un projet ou différentes bibliothèques — le même besoin que les namespaces déjà vus en PHP (cf. chapitre dédié).
 

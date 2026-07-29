@@ -1,6 +1,8 @@
 ---
-title: Les boucles
+order: 3
 ---
+
+# Les boucles
 
 Les boucles permettent de répéter un bloc de code plusieurs fois. En C, on dispose de trois structures : `while`, `do while` et `for` — il n'existe pas de `foreach` natif, un tableau se parcourt toujours via un index ou un pointeur.
 

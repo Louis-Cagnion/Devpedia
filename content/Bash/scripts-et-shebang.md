@@ -1,6 +1,8 @@
 ---
-title: Écrire et exécuter un script Bash
+order: 1
 ---
+
+# Écrire et exécuter un script Bash
 
 Un script Bash est un simple fichier texte contenant une suite de commandes, exécutées dans l'ordre comme si elles avaient été tapées une à une dans le terminal.
 

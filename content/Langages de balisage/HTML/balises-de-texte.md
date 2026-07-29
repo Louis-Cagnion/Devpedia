@@ -1,6 +1,8 @@
 ---
-title: Les balises de texte
+order: 2
 ---
+
+# Les balises de texte
 
 Le contenu textuel d'une page HTML s'organise autour de quelques balises fondamentales — titres, paragraphes, listes — dont le choix doit toujours refléter le **sens** du contenu, pas seulement l'apparence visuelle souhaitée (l'apparence relève de CSS, cf. chapitre dédié).
 

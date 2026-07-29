@@ -1,6 +1,8 @@
 ---
-title: Le fichier .gitignore
+order: 3
 ---
+
+# Le fichier .gitignore
 
 `.gitignore` liste les fichiers et dossiers que Git doit **ignorer** — ne jamais proposer à l'ajout, ne jamais suivre, même avec un `git add .`. Indispensable pour ne pas polluer l'historique avec des fichiers générés, des dépendances, ou des secrets.
 

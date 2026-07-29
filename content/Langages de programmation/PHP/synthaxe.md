@@ -1,6 +1,8 @@
 ---
-title: La syntaxe de PHP
+order: 1
 ---
+
+# La syntaxe de PHP
 
 Pour écrire et manipuler du code en PHP, vous aurez besoin d'ouvrir des balises :
 

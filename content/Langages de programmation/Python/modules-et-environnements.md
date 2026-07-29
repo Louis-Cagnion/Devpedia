@@ -1,6 +1,8 @@
 ---
-title: Modules, pip et environnements virtuels
+order: 12
 ---
+
+# Modules, pip et environnements virtuels
 
 Un projet Python dépasse rarement un seul fichier bien longtemps : ce chapitre couvre comment organiser du code en plusieurs fichiers (modules), installer des bibliothèques externes (`pip`), et isoler les dépendances d'un projet à l'autre (environnements virtuels).
 
@@ -38,7 +40,7 @@ if __name__ == "__main__":
     print("Test rapide :", addition(2, 3))   # ne s'exécute QUE si on lance "python calculs.py" directement
 ```
 
-> **Note :** ce garde-fou permet à un fichier de servir à la fois de module réutilisable (importé sans rien exécuter d'inattendu) et de script autonome (testable directement), sans que ces deux usages n'interfèrent.
+> **Note :** ce garde-fou permet à un fichier de servir à la fois de module réutilisable (importé sans rien exécuter d'inattendu) et de script autonome (testable directement), sans que ces deux usages interfèrent.
 
 ## `pip` : installer des bibliothèques externes
 

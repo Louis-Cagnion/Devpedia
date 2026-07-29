@@ -1,6 +1,8 @@
 ---
-title: Le DOM et la gestion des événements
+order: 11
 ---
+
+# Le DOM et la gestion des événements
 
 Le **DOM** (*Document Object Model*) est la représentation en mémoire d'une page HTML, sous forme d'un arbre d'objets manipulables par JavaScript — chaque balise devient un nœud de cet arbre, avec ses propres propriétés et méthodes.
 

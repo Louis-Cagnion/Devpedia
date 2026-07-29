@@ -1,6 +1,8 @@
 ---
-title: Permissions et manipulation de fichiers
+order: 10
 ---
+
+# Permissions et manipulation de fichiers
 
 Sous Linux/Unix, chaque fichier et dossier porte des **permissions** qui déterminent qui peut le lire, le modifier ou l'exécuter. Ce chapitre couvre à la fois ce système de permissions et les commandes de base pour manipuler des fichiers et dossiers en ligne de commande.
 
@@ -76,7 +78,7 @@ rm fichier.txt              # supprime un fichier (définitif, pas de corbeille)
 rm -r dossier               # supprime un dossier et tout son contenu
 ```
 
-> **Note :** `rm -rf` (récursif + `-f` pour ignorer les confirmations/erreurs) est irréversible et ne demande aucune confirmation — une cible mal ciblée (ex. un chemin avec une espace en trop, `rm -rf ~ /dossier` au lieu de `rm -rf ~/dossier`) peut supprimer bien plus que prévu.
+> **Note :** `rm -rf` (récursif + `-f` pour ignorer les confirmations/erreurs) est irréversible et ne demande aucune confirmation — une cible mal ciblée (ex. un chemin avec un espace en trop, `rm -rf ~ /dossier` au lieu de `rm -rf ~/dossier`) peut supprimer bien plus que prévu.
 
 ## `find` : rechercher des fichiers
 

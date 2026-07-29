@@ -1,6 +1,8 @@
 ---
-title: Le routage sans framework (front controller)
+order: 12
 ---
+
+# Le routage sans framework (front controller)
 
 Sans framework (Laravel, Symfony...), PHP ne fournit aucun routeur intégré comparable à Express (`app.get('/chemin', callback)`). Un projet "PHP pur" doit organiser lui-même la correspondance entre une URL demandée et le code à exécuter.
 

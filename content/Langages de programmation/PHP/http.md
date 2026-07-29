@@ -1,8 +1,10 @@
 ---
-title: Faire des appels HTTP en PHP natif
+order: 11
 ---
 
-PHP propose au moins deux façons natives de faire des requêtes HTTP sortantes (interroger une API externe, par exemple), sans dépendre d'aucune librairie tierce : l'extension cURL, et les flux (streams).
+# Faire des appels HTTP en natif
+
+PHP propose au moins deux façons natives de faire des requêtes HTTP sortantes (interroger une API externe, par exemple), sans dépendre d'aucune bibliothèque tierce : l'extension cURL, et les flux (streams).
 
 ## cURL
 

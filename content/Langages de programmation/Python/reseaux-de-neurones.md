@@ -1,6 +1,8 @@
 ---
-title: Les réseaux de neurones — les fondamentaux
+order: 18
 ---
+
+# Les réseaux de neurones — les fondamentaux
 
 Un **réseau de neurones artificiels** est un modèle de machine learning (cf. chapitre dédié) composé de nombreuses unités de calcul simples ("neurones"), organisées en couches, et connectées entre elles — une structure vaguement inspirée du fonctionnement biologique, mais qui reste avant tout un objet mathématique : une fonction complexe, dont les paramètres sont ajustés automatiquement à partir de données.
 

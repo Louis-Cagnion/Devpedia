@@ -1,6 +1,8 @@
 ---
-title: Le responsive design et les media queries
+order: 7
 ---
+
+# Le responsive design et les media queries
 
 Le **responsive design** consiste à concevoir une page qui s'adapte à n'importe quelle taille d'écran (mobile, tablette, ordinateur) — une nécessité depuis que la majorité du trafic web se fait sur mobile, et la principale raison d'être des **media queries**.
 

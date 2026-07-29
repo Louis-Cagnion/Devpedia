@@ -1,6 +1,8 @@
 ---
-title: Les conditions
+order: 2
 ---
+
+# Les conditions
 
 Les conditions permettent d'exécuter un bloc de code selon qu'une expression est vraie ou fausse. En C, on utilise `if`/`else`/`else if`, l'opérateur ternaire, et `switch`.
 

@@ -1,6 +1,8 @@
 ---
-title: Les listes chaînées
+order: 11
 ---
+
+# Les listes chaînées
 
 Une **liste chaînée** est une structure de données où chaque élément (un **maillon**, ou *nœud*) contient une valeur et un pointeur vers l'élément suivant. Contrairement à un tableau, ses éléments ne sont pas stockés de façon contiguë en mémoire — c'est ce qui permet d'ajouter ou de retirer un élément sans avoir à déplacer tous les autres.
 

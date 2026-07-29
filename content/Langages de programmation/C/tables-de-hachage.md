@@ -1,6 +1,8 @@
 ---
-title: Les tables de hachage (hash tables)
+order: 13
 ---
+
+# Les tables de hachage (hash tables)
 
 Une **table de hachage** est une structure de données qui permet d'insérer, chercher et supprimer une valeur à partir d'une clé en temps quasi constant en moyenne (`O(1)`), là où une liste chaînée (cf. chapitre dédié) demanderait de parcourir tous les éléments un par un. Le principe : calculer une "adresse" numérique à partir de la clé, et stocker/retrouver la valeur directement à cet endroit dans un tableau.
 

@@ -1,6 +1,8 @@
 ---
-title: Le typage avec les annotations
+order: 11
 ---
+
+# Le typage avec les annotations
 
 Python reste **dynamiquement typé** même avec des annotations de type : contrairement à PHP (cf. chapitre sur les fonctions typées en PHP), où un type déclaré est vérifié et appliqué **à l'exécution**, les annotations Python ne sont que des indications **facultatives**, jamais vérifiées par l'interpréteur lui-même.
 

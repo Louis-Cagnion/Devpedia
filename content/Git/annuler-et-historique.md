@@ -1,6 +1,8 @@
 ---
-title: Annuler des changements et naviguer l'historique
+order: 5
 ---
+
+# Annuler des changements et naviguer dans l'historique
 
 Git propose plusieurs commandes pour revenir en arrière, à des niveaux différents : annuler une modification non commitée, un commit déjà fait, ou même retrouver un commit qui semble avoir disparu.
 

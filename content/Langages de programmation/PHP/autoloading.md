@@ -1,6 +1,8 @@
 ---
-title: L'autoloading des classes en PHP
+order: 9
 ---
+
+# L'autoloading des classes
 
 Sans autoloading, chaque fichier qui utilise une classe doit faire un `require` explicite du fichier qui la contient — lourd et fragile dès qu'un projet a beaucoup de classes. `spl_autoload_register()` permet de déléguer ce chargement au moteur PHP lui-même.
 
@@ -59,6 +61,6 @@ Exemple de résolution, avec `$classe = 'App\Services\Facturation\Calculateur'` 
 
 > **Note :** `'App\\Modeles\\'` dans une string à guillemets simples : `\\` représente **un seul** caractère `\` (il doit être doublé pour être écrit littéralement) — c'est la string `App\Modeles\`, le séparateur de namespace.
 
-Le `return;` après le `if` s'exécute que le fichier existe ou non (il est placé après le `if (file_exists(...))`, pas dedans) : les préfixes de namespaces étant mutuellement exclusifs sur leur premier segment, une fois le bon préfixe trouvé, continuer à tester les autres serait toujours inutile.
+Le `return;` après le `if` s'exécute, que le fichier existe ou non (il est placé après le `if (file_exists(...))`, pas dedans) : les préfixes de namespaces étant mutuellement exclusifs sur leur premier segment, une fois le bon préfixe trouvé, continuer à tester les autres serait toujours inutile.
 
 > **Convention indispensable pour que ça fonctionne :** le nom du namespace + le nom de la classe doivent encoder littéralement le chemin du fichier — un fichier par classe, arborescence de dossiers = arborescence de namespaces.

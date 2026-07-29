@@ -1,6 +1,8 @@
 ---
-title: Les fonctions variadiques (va_list)
+order: 10
 ---
+
+# Les fonctions variadiques (va_list)
 
 Une fonction **variadique** accepte un nombre variable d'arguments — `printf("%d %s\n", 42, "texte")` en est l'exemple le plus connu : `printf` accepte 1, 2, ou 10 arguments selon le format fourni. En C, ce mécanisme est rendu possible par les macros de `<stdarg.h>`.
 

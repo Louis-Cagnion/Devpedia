@@ -1,6 +1,8 @@
 ---
-title: Les tableaux en Javascript
+order: 5
 ---
+
+# Les tableaux
 
 Un tableau (array) en JavaScript est une structure permettant de stocker plusieurs valeurs dans une seule variable, sous forme de liste ordonnée. Chaque valeur est accessible via son index, qui commence toujours à 0.
 

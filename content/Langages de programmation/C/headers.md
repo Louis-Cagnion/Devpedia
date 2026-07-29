@@ -1,6 +1,8 @@
 ---
-title: Les fichiers d'en-tête (.h)
+order: 6
 ---
+
+# Les fichiers d'en-tête (.h)
 
 Un fichier d'en-tête (*header*, extension `.h`) contient des **déclarations** — il annonce "cette fonction/variable/structure existe et voici sa signature", sans fournir son implémentation. Il permet à plusieurs fichiers `.c` de partager les mêmes définitions sans les dupliquer, et sert de contrat entre un fichier qui fournit une fonctionnalité et les fichiers qui l'utilisent.
 

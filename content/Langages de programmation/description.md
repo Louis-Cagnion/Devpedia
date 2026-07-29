@@ -1,8 +1,6 @@
----
-title: Description
----
+# Description
 
-Les differents languages prepertorier dans cette categorie servent a generer du code fonctionel et ont leur propre
-type de synthaxe.
+Les différents langages répertoriés dans cette catégorie servent à générer du code fonctionnel et ont leur propre
+type de syntaxe.
 
-Vous retrouverez les differents langagues de programmation ci-dessous :
+Vous retrouverez les différents langages de programmation ci-dessous :

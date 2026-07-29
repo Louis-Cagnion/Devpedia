@@ -1,6 +1,8 @@
 ---
-title: L'architecture interne de Git
+order: 11
 ---
+
+# L'architecture interne de Git
 
 Les commandes vues dans les autres chapitres (`add`, `commit`, `branch`...) ne sont que la partie visible ("porcelaine") d'un mécanisme de stockage étonnamment simple : une base de données clé-valeur **adressée par contenu**, où la clé de chaque donnée est le hash de son propre contenu. Comprendre ce modèle permet de "voir à travers" n'importe quelle commande Git, et donne les briques nécessaires pour concevoir un système de versionnement similaire.
 
@@ -19,7 +21,7 @@ echo "Bonjour" | git hash-object --stdin
 
 > **Note :** une **fonction de hachage** (ici SHA-1) transforme une entrée de taille quelconque en un nombre de taille fixe, de façon déterministe (même entrée → toujours le même résultat) et bien répartie (deux contenus, même très proches, produisent des résultats très différents — c'est ce qui rend une collision accidentelle extrêmement improbable). Voir le chapitre sur les tables de hachage (rubrique C) pour ce mécanisme appliqué à une structure de données concrète.
 
-Concrètement, chaque objet est compressé (zlib, un algorithme de compression sans perte) et stocké dans `.git/objects/`, sous un chemin dérivé de son hash : les 2 premiers caractères hexadécimaux forment un sous-dossier, les 38 restants le nom du fichier (`.git/objects/c6/b7f4a2...`). C'est ni plus ni moins qu'une **table de hachage** (cf. chapitre dédié, rubrique C) stockée directement sur le système de fichiers — le sous-dossier joue le rôle d'une case (*bucket*).
+Concrètement, chaque objet est compressé (zlib, un algorithme de compression sans perte) et stocké dans `.git/objects/`, sous un chemin dérivé de son hash : les 2 premiers caractères hexadécimaux forment un sous-dossier, les 38 restants le nom du fichier (`.git/objects/c6/b7f4a2...`). Ce n'est ni plus ni moins qu'une **table de hachage** (cf. chapitre dédié, rubrique C) stockée directement sur le système de fichiers — le sous-dossier joue le rôle d'une case (*bucket*).
 
 > **Conséquence directe :** deux fichiers avec un contenu strictement identique produisent le **même** hash, et donc le **même** objet stocké une seule fois — une déduplication automatique et gratuite, propriété inhérente au modèle, pas une optimisation ajoutée après coup.
 

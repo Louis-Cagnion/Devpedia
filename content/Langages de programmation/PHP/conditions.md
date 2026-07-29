@@ -1,6 +1,8 @@
 ---
-title: Les conditions en PHP
+order: 3
 ---
+
+# Les conditions
 
 Les conditions permettent d'exécuter un bloc de code uniquement si une expression est vraie (ou fausse). En PHP, on utilise principalement `if`, `else`, `elseif` et `switch`.
 

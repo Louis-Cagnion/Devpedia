@@ -1,6 +1,8 @@
 ---
-title: Les arbres binaires
+order: 12
 ---
+
+# Les arbres binaires
 
 Un **arbre binaire** est une structure de données où chaque élément (appelé **nœud**) pointe vers au maximum deux autres nœuds : un enfant **gauche** et un enfant **droit**. C'est une généralisation d'une liste chaînée (un nœud, un seul "suivant") à deux directions possibles, ce qui permet d'organiser des données de façon hiérarchique et de les rechercher efficacement.
 

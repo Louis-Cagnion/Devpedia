@@ -1,19 +1,21 @@
 ---
-title: Les variables en Bash
+order: 2
 ---
+
+# Les variables
 
 Bash n'a qu'un seul type de données réel : la **chaîne de caractères** — même un nombre est manipulé comme du texte, sauf dans un contexte arithmétique explicite. Les variables ne sont pas typées, et leur syntaxe de déclaration/lecture est particulière : sans `$` à l'assignation, avec `$` à la lecture.
 
 ## Déclarer et lire une variable
 
 ```bash
-nom="Jean"        # aucune espace autour du '=' : "nom = Jean" est une erreur de syntaxe
+nom="Jean"        # aucun espace autour du '=' : "nom = Jean" est une erreur de syntaxe
 echo $nom          # Jean
 echo "${nom}"       # Jean -> les accolades délimitent explicitement le nom de variable
 echo "Bonjour ${nom} !"
 ```
 
-> **Note :** `nom= "Jean"` (avec une espace après `=`) ne fonctionne **pas** comme attendu : Bash comprend "exécuter la commande `Jean` avec la variable d'environnement `nom` vide", pas "assigner Jean à nom". L'absence totale d'espace autour du `=` est stricte.
+> **Note :** `nom= "Jean"` (avec un espace après `=`) ne fonctionne **pas** comme attendu : Bash comprend "exécuter la commande `Jean` avec la variable d'environnement `nom` vide", pas "assigner Jean à nom". L'absence totale d'espace autour du `=` est stricte.
 
 ## Guillemets simples vs doubles
 
@@ -24,7 +26,7 @@ echo "Bonjour $nom"   # Bonjour Jean -> les guillemets doubles interprètent les
 echo 'Bonjour $nom'   # Bonjour $nom -> les guillemets simples désactivent toute interprétation
 ```
 
-> **Note :** toujours entourer une variable de guillemets doubles à l'usage (`"$nom"`), sauf besoin précis du contraire — sans guillemets, une valeur contenant des espaces est découpée en plusieurs mots par Bash, ce qui casse silencieusement de nombreux scripts (`rm $fichier` avec un nom de fichier contenant une espace peut supprimer autre chose que prévu). L'exception la plus courante : à l'intérieur d'un contexte numérique explicite (`[ $i -lt 5 ]`, `$(( i + 1 ))`), Bash ne fait aucun découpage en mots sur la valeur — les guillemets y sont donc inutiles, ce qui explique pourquoi les chapitres sur les conditions et les boucles ne les utilisent pas dans ces cas précis.
+> **Note :** toujours entourer une variable de guillemets doubles à l'usage (`"$nom"`), sauf besoin précis du contraire — sans guillemets, une valeur contenant des espaces est découpée en plusieurs mots par Bash, ce qui casse silencieusement de nombreux scripts (`rm $fichier` avec un nom de fichier contenant un espace peut supprimer autre chose que prévu). L'exception la plus courante : à l'intérieur d'un contexte numérique explicite (`[ $i -lt 5 ]`, `$(( i + 1 ))`), Bash ne fait aucun découpage en mots sur la valeur — les guillemets y sont donc inutiles, ce qui explique pourquoi les chapitres sur les conditions et les boucles ne les utilisent pas dans ces cas précis.
 
 ## Substitution de commande
 

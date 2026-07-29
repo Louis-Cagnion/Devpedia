@@ -1,6 +1,8 @@
 ---
-title: Les listes et les tuples
+order: 4
 ---
+
+# Les listes et les tuples
 
 Python distingue deux structures ordonnées de collections : la **liste**, mutable, et le **tuple**, immuable. Toutes deux peuvent mélanger librement des éléments de types différents.
 

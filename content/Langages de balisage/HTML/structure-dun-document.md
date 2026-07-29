@@ -1,6 +1,8 @@
 ---
-title: La structure d'un document HTML
+order: 1
 ---
+
+# La structure d'un document HTML
 
 Tout document HTML repose sur un squelette minimal, quasiment identique d'une page à l'autre — comprendre chaque partie de ce squelette est le point de départ indispensable avant tout le reste.
 

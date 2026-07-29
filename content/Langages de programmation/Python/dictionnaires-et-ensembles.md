@@ -1,6 +1,8 @@
 ---
-title: Les dictionnaires et les ensembles
+order: 5
 ---
+
+# Les dictionnaires et les ensembles
 
 Le **dictionnaire** (`dict`) associe des clés à des valeurs, exactement comme un tableau associatif en PHP. L'**ensemble** (`set`) stocke des valeurs uniques, sans ordre ni doublons. Les deux structures s'appuient en interne sur une **table de hachage** (cf. chapitre dédié, rubrique C) — c'est ce qui permet à `dico["cle"]` ou `"valeur" in ensemble` d'être quasi instantané, même sur une très grande collection.
 

@@ -1,6 +1,8 @@
 ---
-title: Les dépôts distants (remotes)
+order: 8
 ---
+
+# Les dépôts distants (remotes)
 
 Un **remote** est une référence vers une copie du dépôt hébergée ailleurs (GitHub, GitLab, un serveur d'entreprise...), utilisée pour synchroniser du travail entre plusieurs personnes ou plusieurs machines.
 
@@ -39,7 +41,7 @@ git branch -vv                     # montre quelle branche distante chaque branc
 git push -u origin ma-branche       # établit ce lien de suivi dès le premier push
 ```
 
-## Cloner, un remote déjà configuré
+## Cloner un remote déjà configuré
 
 ```bash
 git clone https://exemple.com/projet.git

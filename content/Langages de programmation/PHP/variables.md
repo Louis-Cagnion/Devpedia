@@ -1,6 +1,8 @@
 ---
-title: Les variables en PHP
+order: 2
 ---
+
+# Les variables
 
 ## Les variables classiques
 Pour déclarer une variable en PHP, il faut mettre un `$` avant le nom de votre variable. PHP est faiblement typé : vous n'indiquez pas le type, il est déduit automatiquement selon la valeur assignée.

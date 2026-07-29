@@ -1,6 +1,8 @@
 ---
-title: Les liens et les images
+order: 3
 ---
+
+# Les liens et les images
 
 Les liens (`<a>`) et les images (`<img>`) sont deux balises fondamentales du web — l'une relie des documents entre eux (l'origine même du mot "*hypertexte*"), l'autre insère un contenu visuel.
 

@@ -1,6 +1,8 @@
 ---
-title: Redirections et pipes
+order: 8
 ---
+
+# Redirections et pipes
 
 Chaque commande Unix communique par défaut via trois flux : l'**entrée standard** (`stdin`, ce qu'elle lit), la **sortie standard** (`stdout`, ce qu'elle affiche normalement) et la **sortie d'erreur** (`stderr`, où vont les messages d'erreur). Les redirections et les pipes permettent de rediriger ces flux vers un fichier ou vers une autre commande, plutôt que vers le terminal.
 
