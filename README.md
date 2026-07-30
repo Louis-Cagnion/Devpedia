@@ -2,16 +2,23 @@
 
 Devpedia is a website created to document, explain, and share my knowledge of various software development topics. The project helps me deepen my understanding through research and teaching, practice building modern web interfaces, and make this knowledge accessible to anyone interested in learning about the concepts and technologies I have explored.
 
+Live at: https://louis-cagnion.github.io/Devpedia/
+
 ## Content
 
-Chapters live under `content/`, grouped by category and subject. Currently covered:
+Chapters live under `content/`, grouped by category and, when relevant, by subject. Currently covered:
 
 - **Programming languages**: C, C++, PHP, Python (including data science / AI: NumPy, pandas, Matplotlib, scikit-learn, neural networks, gradient descent, CNN/RNN/Transformers, PyTorch, NLP & LLMs), JavaScript
 - **Markup & style languages**: HTML, CSS
 - **Domain-specific languages**: Regex, SQL
-- **Tools**: Bash, Git (both include a dedicated "internals" chapter — syscalls for Bash, the object model for Git — for anyone who wants to understand them well enough to build something similar)
+- **Shells**: Bash, PowerShell (both include a dedicated "internals" chapter — syscalls and the REPL loop for Bash, the .NET pipeline for PowerShell — for anyone who wants to understand them well enough to build something similar)
+- **Git**: from everyday commands to its internal object model
 
-Each chapter is a plain Markdown file with a small frontmatter (`title`), rendered by a Markdown-to-HTML parser I wrote myself for this project (`js/parser.js`), rather than an existing library.
+Each chapter is a plain Markdown file, its title given by a regular `# Heading` at the top of the file (an optional `---`-fenced frontmatter block above it can carry build-time metadata, currently just `order`, used to sort chapters pedagogically). Markdown is rendered by a parser I wrote myself for this project (`js/parser.js`), rather than an existing library.
+
+## Translations
+
+`content/` is the French source of truth. `scripts/translate-content.mjs` translates it into `content-<lang>/` via the DeepL API — natural language only, never code (comments are detected per language, code identifiers are matched against `scripts/variable-glossary.json` so they read naturally in each target language too). Currently translated: English, Spanish, Portuguese (Brazil) — see `structure/languages.json`. The language switcher lives in the navbar (`js/lang.js`).
 
 ## Running locally
 
@@ -33,4 +40,12 @@ then open `http://localhost:8000`. Node is only needed for that regeneration ste
 node scripts/generate-struct.js
 ```
 
-A subject's own description page is the `.md` file inside its folder whose frontmatter `title` matches the folder name (e.g. `cpp.md` titled "C++" inside `content/Langages de programmation/C++/`); every other `.md` file in that folder becomes one of its chapters. Categories without subject subfolders (Bash, Git, the DSL category) list their `.md` files as chapters directly.
+A subject's own description page is the `.md` file inside its folder whose title (its `# Heading`) matches the folder name (e.g. `cpp.md` titled "C++" inside `content/Langages de programmation/C++/`); every other `.md` file in that folder becomes one of its chapters. Categories without subject subfolders (Git, the DSL category) list their `.md` files as chapters directly.
+
+## Interface
+
+Besides Markdown rendering, the site includes a few hand-built pieces worth knowing about if you're navigating the code:
+
+- `js/sidebar.js`: left sidebar (category → subject → chapter tree) and right sidebar (on-page outline), merged into a single mobile menu below a breakpoint
+- `js/search.js`: navbar search over every category/subject/chapter title, accent-insensitive
+- `js/lang.js`: language switcher, keeps you on the equivalent page after reloading in a new language
