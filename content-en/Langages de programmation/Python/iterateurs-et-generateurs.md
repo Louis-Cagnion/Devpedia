@@ -8,10 +8,10 @@ An `for` loop works on lists, dictionaries, files, and many other objects—beca
 
 ## The Iteration Protocol
 
-`for element in objet:` Here's how it actually works behind the scenes:
+`for element in object:` Here's how it actually works behind the scenes:
 
 ```python
-iterateur = iter(objet)       # calls object.__iter__()
+iterateur = iter(object)       # calls object.__iter__()
 while True:
     try:
         element = next(iterateur)  # calls iterator.__next__()
@@ -25,7 +25,7 @@ An object is **iterable** if it implements `__iter__()` (returns an iterator). A
 ## Create a custom iterator
 
 ```python
-class Compteur:
+class Counter:
     def __init__(self, limite):
         self.limite = limite
         self.actuel = 0
@@ -39,8 +39,8 @@ class Compteur:
         self.actuel += 1
         return self.actuel
 
-for nombre in Compteur(5):
-    print(nombre)   # 1 2 3 4 5
+for number in Counter(5):
+    print(number)   # 1 2 3 4 5
 ```
 
 ## Generators: An Easier Way to Write an Iterator
@@ -48,14 +48,14 @@ for nombre in Compteur(5):
 A function containing `yield` automatically becomes a **generator**: Python implements the entire `__iter__` / `__next__` protocol described above for it, without requiring you to write a class.
 
 ```python
-def compteur(limite):
+def counter(limite):
     actuel = 0
     while actuel < limite:
         actuel += 1
         yield actuel
 
-for nombre in compteur(5):
-    print(nombre)   # 1 2 3 4 5
+for number in counter(5):
+    print(number)   # 1 2 3 4 5
 ```
 
 `yield` "pauses" the function and returns a value, **without losing its state**—the next time `next()` is called, execution resumes immediately after `yield`, with all local variables intact.

@@ -10,7 +10,7 @@ Python remains **dynamically typed** even with type annotations: unlike PHP (see
 
 ```python
 age: int = 25
-nom: str = "Jean"
+name: str = "Jean"
 
 def addition(a: int, b: int) -> int:
     return a + b

@@ -17,7 +17,7 @@ A C program has two main memory areas for its data:
 | Size | Limited, set at program startup | Limited by available RAM/swap |
 | Speed | Very fast (simply moving a pointer) | Slower (searching for a free location) |
 
-```
+```c
 void exemple(void)
 {
     int x = 5;            // sur la stack, libéré automatiquement à la fin de la fonction
@@ -31,7 +31,7 @@ void exemple(void)
 
 `malloc()` allocates a block of raw memory on the heap, the size of which is expressed in bytes:
 
-```
+```c
 int *tab = malloc(5 * sizeof(int)); // réserve la place pour 5 entiers
 
 if (tab == NULL) {
@@ -44,15 +44,15 @@ for (int i = 0; i < 5; i++) {
 }
 ```
 
-> **Note:** `malloc()` **does not** **reset** the allocated memory; it may contain any residual values ("garbage"). `calloc(nombre, taille)` does the same thing as `malloc(nombre * taille)`, but also sets all bytes to zero.
+> **Note:** `malloc()` **does not** **reset** the allocated memory; it may contain any residual values ("garbage"). `calloc(number, taille)` does the same thing as `malloc(number * taille)`, but also sets all bytes to zero.
 
-```
+```c
 int *tab = calloc(5, sizeof(int)); // 5 entiers, tous initialisés à 0
 ```
 
 ## Resizing a block: `realloc()`
 
-```
+```c
 int *tab = malloc(3 * sizeof(int));
 // ... on a besoin de plus de place ...
 int *nouveauTab = realloc(tab, 6 * sizeof(int));
@@ -71,7 +71,7 @@ tab = nouveauTab; // le bloc a pu être déplacé ailleurs en mémoire
 
 Each successful `malloc()` / `calloc()` / `realloc()` must correspond to exactly one `free()`, when the block is no longer needed:
 
-```
+```c
 int *p = malloc(sizeof(int));
 *p = 42;
 free(p);
@@ -87,7 +87,7 @@ p = NULL; // bonne pratique : empêche une utilisation accidentelle après libé
 | **Use-after-free** | The program dereferences a pointer after it has been "`free()`" | Undefined behavior: corrupted data, crash, or worse, it silently "works" |
 | **Double free** | `free()` called twice on the same pointer | Memory manager corruption, often resulting in a delayed crash that is difficult to trace |
 
-```
+```c
 int *p = malloc(sizeof(int));
 free(p);
 free(p); // double free : comportement indéfini
@@ -99,7 +99,7 @@ free(p); // double free : comportement indéfini
 
 `sizeof` is not a function but an operator evaluated at compile time: it returns the size in bytes of a type or variable, which is essential for correctly calculating the amount of memory to allocate:
 
-```
+```c
 sizeof(int);      // généralement 4
 sizeof(char);      // toujours 1, par définition du standard C
 sizeof(int) * 10;  // taille nécessaire pour 10 entiers -> à passer à malloc()

@@ -9,22 +9,22 @@ Much of the power of the Unix terminal comes from a handful of specialized text-
 ## `grep` : Search for text
 
 ```bash
-grep "erreur" fichier.log         # displays the lines containing "error"
-grep -i "erreur" fichier.log      # case-insensitive (-i)
-grep -v "erreur" fichier.log      # reverse: displays the rows that do NOT contain "error"
+grep "erreur" file.log         # displays the lines containing "error"
+grep -i "erreur" file.log      # case-insensitive (-i)
+grep -v "erreur" file.log      # reverse: displays the rows that do NOT contain "error"
 grep -r "TODO" .                  # Recursive search of all files in a folder
-grep -n "erreur" fichier.log      # also displays the line number
-grep -c "erreur" fichier.log      # counts the number of matching lines without displaying them
-grep -E "erreur|warning" fichier.log  # -E enables extended regular expressions (see the chapter on regular expressions)
+grep -n "erreur" file.log      # also displays the line number
+grep -c "erreur" file.log      # counts the number of matching lines without displaying them
+grep -E "erreur|warning" file.log  # -E enables extended regular expressions (see the chapter on regular expressions)
 ```
 
 ## `sed` : Find and Replace
 
 ```bash
-sed 's/ancien/nouveau/' fichier.txt        # Replaces the first occurrence on each line and displays the result
-sed 's/ancien/nouveau/g' fichier.txt        # 'g' (global): replaces ALL occurrences on each line
-sed -i 's/ancien/nouveau/g' fichier.txt     # -i: modifies the file directly (in place)
-sed -n '2,4p' fichier.txt                    # displays only lines 2 through 4
+sed 's/ancien/nouveau/' file.txt        # Replaces the first occurrence on each line and displays the result
+sed 's/ancien/nouveau/g' file.txt        # 'g' (global): replaces ALL occurrences on each line
+sed -i 's/ancien/nouveau/g' file.txt     # -i: modifies the file directly (in place)
+sed -n '2,4p' file.txt                    # displays only lines 2 through 4
 ```
 
 > **Note:** `sed` processes the text line by line and uses regular expressions (see the dedicated chapter) for the search pattern—`s/motif/remplacement/` is its most commonly used command ("s" stands for *"substitute"*).
@@ -37,13 +37,13 @@ sed -n '2,4p' fichier.txt                    # displays only lines 2 through 4
 echo "Jean Dupont 25" | awk '{ print $1 }'        # Jean -> first field
 echo "Jean Dupont 25" | awk '{ print $3, $1 }'    # 25 John
 
-awk -F ',' '{ print $2 }' donnees.csv    # -F ',' : changes the field separator to a comma
+awk -F ',' '{ print $2 }' data.csv    # -F ',' : changes the field separator to a comma
 ```
 
 `$0` refers to the entire row; `$NF` refers to the **last** field in the row (`NF` = *Number of Fields*):
 
 ```bash
-awk '{ print $NF }' fichier.txt   # displays the last word of each line
+awk '{ print $NF }' file.txt   # displays the last word of each line
 ```
 
 ## `cut` : Easily Extract Columns
@@ -51,18 +51,18 @@ awk '{ print $NF }' fichier.txt   # displays the last word of each line
 More limited than `awk`, but sufficient for simple cases:
 
 ```bash
-cut -d ',' -f 2 donnees.csv       # -d: separator, -f: number of the field to extract
-cut -c 1-5 fichier.txt            # extracts characters 1 through 5 from each line
+cut -d ',' -f 2 data.csv       # -d: separator, -f: number of the field to extract
+cut -c 1-5 file.txt            # extracts characters 1 through 5 from each line
 ```
 
 ## `sort` and `uniq`: Sort and deduplicate
 
 ```bash
-sort fichier.txt                  # alphabetical order
-sort -n nombres.txt                # numeric sorting (essential for numbers; otherwise, sort by string)
-sort -r fichier.txt                 # descending order
-sort fichier.txt | uniq            # removes only CONSECUTIVE duplicate lines
-sort fichier.txt | uniq -c          # counts the number of occurrences of each line
+sort file.txt                  # alphabetical order
+sort -n numbers.txt                # numeric sorting (essential for numbers; otherwise, sort by string)
+sort -r file.txt                 # descending order
+sort file.txt | uniq            # removes only CONSECUTIVE duplicate lines
+sort file.txt | uniq -c          # counts the number of occurrences of each line
 ```
 
 > **Note:** `uniq` only detects **adjacent** duplicates—that's why it's almost always used in combination with `sort` first, which groups identical lines together.
@@ -70,9 +70,9 @@ sort fichier.txt | uniq -c          # counts the number of occurrences of each l
 ## `wc` : to count
 
 ```bash
-wc -l fichier.txt   # number of lines
-wc -w fichier.txt    # word count
-wc -c fichier.txt    # number of bytes
+wc -l file.txt   # number of lines
+wc -w file.txt    # word count
+wc -c file.txt    # number of bytes
 ```
 
 ## Combining these tools

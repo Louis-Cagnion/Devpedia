@@ -12,13 +12,13 @@ A **decorator** wraps one function inside another to add behavior (timing, loggi
 def mon_decorateur(fonction):
     def enveloppe(*args, **kwargs):
         print("Avant l'appel")
-        resultat = fonction(*args, **kwargs)
+        result = fonction(*args, **kwargs)
         print("Après l'appel")
-        return resultat
+        return result
     return enveloppe
 
-def dire_bonjour(nom):
-    print(f"Bonjour {nom}")
+def dire_bonjour(name):
+    print(f"Bonjour {name}")
 
 dire_bonjour = mon_decorateur(dire_bonjour)   # replaces the function with its wrapped version
 dire_bonjour("Jean")
@@ -33,8 +33,8 @@ dire_bonjour("Jean")
 
 ```python
 @mon_decorateur
-def dire_bonjour(nom):
-    print(f"Bonjour {nom}")
+def dire_bonjour(name):
+    print(f"Bonjour {name}")
 
 dire_bonjour("Jean")   # exactly the same result as in the previous example
 ```
@@ -47,10 +47,10 @@ import time
 def chronometrer(fonction):
     def enveloppe(*args, **kwargs):
         debut = time.time()
-        resultat = fonction(*args, **kwargs)
+        result = fonction(*args, **kwargs)
         duree = time.time() - debut
         print(f"{fonction.__name__} a pris {duree:.4f}s")
-        return resultat
+        return result
     return enveloppe
 
 @chronometrer
@@ -98,8 +98,8 @@ def repeter(nombre_de_fois):
     def decorateur(fonction):
         def enveloppe(*args, **kwargs):
             for _ in range(nombre_de_fois):
-                resultat = fonction(*args, **kwargs)
-            return resultat
+                result = fonction(*args, **kwargs)
+            return result
         return enveloppe
     return decorateur
 

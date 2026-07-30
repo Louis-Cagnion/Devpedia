@@ -28,7 +28,7 @@ fi
 [ $age -ge 18 ] && [ $age -lt 65 ]  # [ ]: POSIX; requires combining two separate tests
 ```
 
-`[[ ]]` (Bash-specific; not portable to a strictly POSIX-`sh`) accepts `&&` / `||` directly within the command, handles undefined variables better, and supports `[[ $nom == J* ]]`.
+`[[ ]]` (Bash-specific; not portable to a strictly POSIX-`sh`) accepts `&&` / `||` directly within the command, handles undefined variables better, and supports `[[ $name == J* ]]`.
 
 ## Comparing Numbers
 
@@ -50,13 +50,13 @@ if [ $age -eq 18 ]; then echo "Exactement 18"; fi
 ## Compare Channels
 
 ```bash
-nom="Jean"
+name="Jean"
 
-if [ "$nom" == "Jean" ]; then
+if [ "$name" == "Jean" ]; then
     echo "Bonjour Jean"
 fi
 
-if [ -z "$nom" ]; then
+if [ -z "$name" ]; then
     echo "nom est vide"
 fi
 ```
@@ -82,10 +82,10 @@ fi
 
 | Operator | True if... |
 |---|---|
-| `-f chemin` | ...this is an existing file |
-| `-d chemin` | ...this is an existing folder |
-| `-e chemin` | ...something exists at this path (file or folder) |
-| `-x chemin` | ...the file is executable |
+| `-f path` | ...this is an existing file |
+| `-d path` | ...this is an existing folder |
+| `-e path` | ...something exists at this path (file or folder) |
+| `-x path` | ...the file is executable |
 | `-r` / `-w` | ...the file is readable/writable |
 
 ## Combining Conditions

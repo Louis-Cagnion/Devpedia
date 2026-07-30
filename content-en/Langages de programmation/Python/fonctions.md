@@ -12,14 +12,14 @@ A Python function is declared using `def`. Functions are **first-class objects**
 def addition(a, b):
     return a + b
 
-resultat = addition(2, 3)   # 5
+result = addition(2, 3)   # 5
 ```
 
 ## Default Settings
 
 ```python
-def saluer(nom, message="Bonjour"):
-    return f"{message} {nom}"
+def saluer(name, message="Bonjour"):
+    return f"{message} {name}"
 
 saluer("Jean")               # "Hello, Jean"
 saluer("Jean", "Salut")       # "Hi, Jean"
@@ -28,9 +28,9 @@ saluer("Jean", "Salut")       # "Hi, Jean"
 > **Common pitfall: Never use a mutable object (list, dict) as a default value.** The default value is evaluated **only once**, when the function is defined—not on every call:
 
 ```python
-def ajouter_a_liste(element, liste=[]):  # WARNING: This list is SHARED across all calls
-    liste.append(element)
-    return liste
+def ajouter_a_liste(element, list=[]):  # WARNING: This list is SHARED across all calls
+    list.append(element)
+    return list
 
 ajouter_a_liste(1)   # [1]
 ajouter_a_liste(2)   # [1, 2] -> not [2]! The same default list was reused
@@ -39,26 +39,26 @@ ajouter_a_liste(2)   # [1, 2] -> not [2]! The same default list was reused
 Best practice:
 
 ```python
-def ajouter_a_liste(element, liste=None):
-    if liste is None:
-        liste = []   # a NEW list, created with each call
-    liste.append(element)
-    return liste
+def ajouter_a_liste(element, list=None):
+    if list is None:
+        list = []   # a NEW list, created with each call
+    list.append(element)
+    return list
 ```
 
 ## `*args` and `**kwargs`: a variable number of arguments
 
 ```python
-def somme(*nombres):          # *args: groups any excess positional arguments into a tuple
-    return sum(nombres)
+def somme(*numbers):          # *args: groups any excess positional arguments into a tuple
+    return sum(numbers)
 
 somme(1, 2, 3, 4)   # 10
 
 def afficher_infos(**options):  # **kwargs: groups excess named arguments into a dict**
-    for cle, valeur in options.items():
-        print(f"{cle} : {valeur}")
+    for key, value in options.items():
+        print(f"{key} : {value}")
 
-afficher_infos(nom="Jean", age=25)
+afficher_infos(name="Jean", age=25)
 ```
 
 ## Keyword-only arguments
@@ -66,8 +66,8 @@ afficher_infos(nom="Jean", age=25)
 A `*` alone in the signature forces everything that follows to be passed by name, never by position:
 
 ```python
-def creer_utilisateur(nom, *, email, actif=True):
-    return {"nom": nom, "email": email, "actif": actif}
+def creer_utilisateur(name, *, email, actif=True):
+    return {"nom": name, "email": email, "actif": actif}
 
 creer_utilisateur("Jean", email="jean@exemple.com")   # OK
 creer_utilisateur("Jean", "jean@exemple.com")           # TypeError: "email" must be named
@@ -82,8 +82,8 @@ double = lambda x: x * 2
 double(5)   # 10
 
 # Typical use: as an argument to a function that expects a callback
-nombres = [5, 2, 8, 1]
-nombres_tries = sorted(nombres, key=lambda x: -x)  # descending order
+numbers = [5, 2, 8, 1]
+nombres_tries = sorted(numbers, key=lambda x: -x)  # descending order
 ```
 
 ## Closures and `nonlocal`
@@ -91,7 +91,7 @@ nombres_tries = sorted(nombres, key=lambda x: -x)  # descending order
 A nested function can read the variables of the enclosing function—to **modify** them, `nonlocal` is required:
 
 ```python
-def compteur():
+def counter():
     total = 0
 
     def incrementer():
@@ -101,7 +101,7 @@ def compteur():
 
     return incrementer
 
-compter = compteur()
+compter = counter()
 compter()   # 1
 compter()   # 2 -> "total" was indeed preserved between calls
 ```

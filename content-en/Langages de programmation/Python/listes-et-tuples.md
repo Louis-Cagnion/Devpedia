@@ -29,12 +29,12 @@ len(fruits)                  # number of items
 ## Slicing in Detail
 
 ```python
-nombres = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-nombres[2:5]     # [2, 3, 4] -> from index 2 (inclusive) to 5 (exclusive)
-nombres[:3]       # [0, 1, 2] -> from the beginning
-nombres[7:]       # [7, 8, 9] -> until the end
-nombres[::2]       # [0, 2, 4, 6, 8] -> every other element
+numbers[2:5]     # [2, 3, 4] -> from index 2 (inclusive) to 5 (exclusive)
+numbers[:3]       # [0, 1, 2] -> from the beginning
+numbers[7:]       # [7, 8, 9] -> until the end
+numbers[::2]       # [0, 2, 4, 6, 8] -> every other element
 ```
 
 ## Tuples: Immutable Lists

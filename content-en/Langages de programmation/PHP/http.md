@@ -21,7 +21,7 @@ curl_setopt_array($ch, [
     CURLOPT_TIMEOUT        => 10,
 ]);
 
-$reponse  = curl_exec($ch);        // false in case of a network failure (C-style error)
+$response  = curl_exec($ch);        // false in case of a network failure (C-style error)
 $codeHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 ?>
@@ -35,7 +35,7 @@ curl_close($ch);
 
 ```php
 <?php
-if ($reponse === false || $codeHttp !== 200) {
+if ($response === false || $codeHttp !== 200) {
     throw new \RuntimeException("HTTP $codeHttp");
 }
 ?>
@@ -57,7 +57,7 @@ $options = [
     ],
 ];
 $contexte = stream_context_create($options);
-$reponse  = file_get_contents($url, false, $contexte); // false if the operation fails; same behavior as `curl_exec`
+$response  = file_get_contents($url, false, $contexte); // false if the operation fails; same behavior as `curl_exec`
 ?>
 ```
 
@@ -67,7 +67,7 @@ $reponse  = file_get_contents($url, false, $contexte); // false if the operation
 
 ```php
 <?php
-$donnees = json_decode($reponse, true);
+$data = json_decode($response, true);
 
 if (json_last_error() !== JSON_ERROR_NONE) {
     throw new \RuntimeException('Réponse JSON invalide');
@@ -75,7 +75,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 ?>
 ```
 
-`json_decode()` on an invalid string returns `null` — but a **valid** JSON string containing the literal `"null"` also decodes to `null`. A simple `if ($donnees === null)` would therefore not distinguish between "invalid JSON" and "JSON that actually was `null`". Hence `json_last_error()`: a separate function that returns whether the last conversion actually failed, regardless of the value obtained—the same logic as `isset()` / `empty()` when dealing with an array key (see the chapter on variables): never rely on an ambiguous value when a dedicated mechanism exists to resolve the ambiguity.
+`json_decode()` on an invalid string returns `null` — but a **valid** JSON string containing the literal `"null"` also decodes to `null`. A simple `if ($data === null)` would therefore not distinguish between "invalid JSON" and "JSON that actually was `null`". Hence `json_last_error()`: a separate function that returns whether the last conversion actually failed, regardless of the value obtained—the same logic as `isset()` / `empty()` when dealing with an array key (see the chapter on variables): never rely on an ambiguous value when a dedicated mechanism exists to resolve the ambiguity.
 
 `json_encode()` / `json_decode(..., true)` are the PHP equivalents of `JSON.stringify()` / `JSON.parse()` in JavaScript (`true` requires an associative array rather than a `stdClass` object).
 

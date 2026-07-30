@@ -4,37 +4,37 @@ order: 5
 
 # Dictionaries and Sets
 
-The **dictionary** (`dict`) associates keys with values, just like an associative array in PHP. The set (`set`) stores unique values, in no particular order and without duplicates. Both structures are internally based on a **hash table** (see the dedicated chapter, section C)—this is what allows `dico["cle"]` or `"valeur" in ensemble` to be nearly instantaneous, even with a very large collection.
+The **dictionary** (`dict`) associates keys with values, just like an associative array in PHP. The set (`set`) stores unique values, in no particular order and without duplicates. Both structures are internally based on a **hash table** (see the dedicated chapter, section C)—this is what allows `dico["key"]` or `"value" in ensemble` to be nearly instantaneous, even with a very large collection.
 
 ## Dictionaries
 
 ```python
-personne = {"nom": "Dupont", "age": 25}
+person = {"nom": "Dupont", "age": 25}
 
-personne["nom"]          # "Dupont"
-personne["email"] = "jean@exemple.com"  # add a new key
-personne["age"] = 26      # modifies an existing key
-del personne["age"]         # deletes a key
+person["nom"]          # "Dupont"
+person["email"] = "jean@exemple.com"  # add a new key
+person["age"] = 26      # modifies an existing key
+del person["age"]         # deletes a key
 
-personne.get("telephone")           # None if the key does not exist (no error)
-personne.get("telephone", "inconnu") # "unknown" -> default value if missing
+person.get("telephone")           # None if the key does not exist (no error)
+person.get("telephone", "inconnu") # "unknown" -> default value if missing
 
-"nom" in personne            # True -> checks for the presence of a KEY (not a value)
+"nom" in person            # True -> checks for the presence of a KEY (not a value)
 ```
 
-> **Note:** `personne["telephone"]` (direct access using square brackets) raises an `KeyError` if the key does not exist—unlike `.get()`, which returns `None` (or a specified default value) without ever crashing. Use `.get()` whenever the absence of the key is expected behavior, not an error.
+> **Note:** `person["telephone"]` (direct access using square brackets) raises an `KeyError` if the key does not exist—unlike `.get()`, which returns `None` (or a specified default value) without ever crashing. Use `.get()` whenever the absence of the key is expected behavior, not an error.
 
 ### Browse a dictionary
 
 ```python
-for cle in personne:
-    print(cle)                      # scans only the keys
+for key in person:
+    print(key)                      # scans only the keys
 
-for cle, valeur in personne.items():
-    print(f"{cle} : {valeur}")       # key concepts AND values together
+for key, value in person.items():
+    print(f"{key} : {value}")       # key concepts AND values together
 
-for valeur in personne.values():
-    print(valeur)                    # iterates only through the values
+for value in person.values():
+    print(value)                    # iterates only through the values
 ```
 
 ### Dictionary Comprehension

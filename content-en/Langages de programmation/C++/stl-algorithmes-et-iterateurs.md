@@ -9,10 +9,10 @@ An **iterator** is an abstraction that allows you to iterate over any STL contai
 ## The Principle of the Iterator
 
 ```cpp
-std::vector<int> nombres = {1, 2, 3};
+std::vector<int> numbers = {1, 2, 3};
 
-std::vector<int>::iterator it = nombres.begin();
-while (it != nombres.end()) {
+std::vector<int>::iterator it = numbers.begin();
+while (it != numbers.end()) {
     std::cout << *it << " ";   // "*it" dereferences the iterator, just like a pointer (see the relevant chapter, under the C section)
     ++it;
 }
@@ -25,7 +25,7 @@ while (it != nombres.end()) {
 ## The Modern for-each Loop (C++11+)
 
 ```cpp
-for (int n : nombres) {
+for (int n : numbers) {
     std::cout << n << " ";
 }
 ```
@@ -39,16 +39,16 @@ Rather than manually writing a loop for each common operation, the STL provides 
 ```cpp
 #include <algorithm>
 
-std::vector<int> nombres = {5, 3, 1, 4, 2};
+std::vector<int> numbers = {5, 3, 1, 4, 2};
 
-std::sort(nombres.begin(), nombres.end());               // sort in place -> {1, 2, 3, 4, 5}
+std::sort(numbers.begin(), numbers.end());               // sort in place -> {1, 2, 3, 4, 5}
 
-auto it = std::find(nombres.begin(), nombres.end(), 3);    // iterator pointing to the value 3
-bool trouve = (it != nombres.end());
+auto it = std::find(numbers.begin(), numbers.end(), 3);    // iterator pointing to the value 3
+bool trouve = (it != numbers.end());
 
-int somme = std::accumulate(nombres.begin(), nombres.end(), 0);  // 15 -> requires <numeric>
+int somme = std::accumulate(numbers.begin(), numbers.end(), 0);  // 15 -> requires <numeric>
 
-std::for_each(nombres.begin(), nombres.end(), [](int n) {
+std::for_each(numbers.begin(), numbers.end(), [](int n) {
     std::cout << n * 2 << " ";
 });
 ```
@@ -66,7 +66,7 @@ std::cout << carre(5);   // 25
 int seuil = 3;
 auto estAuDessusDuSeuil = [seuil](int x) { return x > seuil; };   // "threshold" capture by value
 
-int compte = std::count_if(nombres.begin(), nombres.end(), estAuDessusDuSeuil);
+int compte = std::count_if(numbers.begin(), numbers.end(), estAuDessusDuSeuil);
 ```
 
 - `[]` : capture list — which external variables the lambda can use, and how (`[seuil]` by value, `[&seuil]` by reference, `[&]` all by reference, `[=]` all by value).

@@ -24,8 +24,8 @@ Displays which files have been modified, which are in the staging area, and whic
 ## Add changes to the staging environment
 
 ```bash
-git add fichier.txt        # add a specific file
-git add dossier/            # adds an entire folder
+git add file.txt        # add a specific file
+git add folder/            # adds an entire folder
 git add .                   # adds everything that has changed in the current folder and its subfolders
 git add -p                  # Interactive mode: Choose exactly which blocks of lines to add
 ```
@@ -49,7 +49,7 @@ A good commit message explains **why** the change was made, not just what was ch
 git log                     # Complete history, from most recent to oldest
 git log --oneline            # One line per commit, which makes it easier to read at a glance
 git log --oneline --graph --all   # also displays the branches and their divergence/merge points
-git log -p fichier.txt        # Detailed history (with diff) of a specific file
+git log -p file.txt        # Detailed history (with diff) of a specific file
 ```
 
 ## See the differences

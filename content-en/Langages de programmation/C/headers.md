@@ -8,12 +8,12 @@ A header file (`.h`) contains **declarations**—it states, “This function/var
 
 ## Statement vs. Definition
 
-```
+```c
 // calculs.h — déclaration : "cette fonction existe, voici sa signature"
 int addition(int a, int b);
 ```
 
-```
+```c
 // calculs.c — définition : le vrai corps de la fonction
 #include "calculs.h"
 
@@ -23,7 +23,7 @@ int addition(int a, int b)
 }
 ```
 
-```
+```c
 // main.c — utilisation, via le header
 #include "calculs.h"
 
@@ -37,7 +37,7 @@ int main(void)
 
 ## `#include <...>` vs`#include "..."`
 
-```
+```c
 #include <stdio.h>   // chevrons : cherche dans les répertoires système (bibliothèque standard)
 #include "calculs.h" // guillemets : cherche d'abord dans le répertoire courant du projet
 ```
@@ -46,7 +46,7 @@ int main(void)
 
 The same header can be included indirectly multiple times (e.g., `a.h` includes `commun.h`, and `b.h` also includes `commun.h`, and `main.c` includes `a.h` and `b.h`) — without protection, its declarations would be duplicated and cause a compilation error ("redefinition"). An **include guard** prevents a header from being processed more than once by the preprocessor:
 
-```
+```c
 #ifndef CALCULS_H
 #define CALCULS_H
 
@@ -60,7 +60,7 @@ int addition(int a, int b);
 
 A shorter alternative, supported by virtually all modern compilers although not guaranteed by the C standard:
 
-```
+```c
 #pragma once
 
 int addition(int a, int b);

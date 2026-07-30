@@ -11,9 +11,9 @@ Without autoloading, every file that uses a class must explicitly use `require` 
 ```php
 <?php
 spl_autoload_register(function (string $classe) {
-    $fichier = __DIR__ . '/' . $classe . '.php';
-    if (file_exists($fichier)) {
-        require $fichier;
+    $file = __DIR__ . '/' . $classe . '.php';
+    if (file_exists($file)) {
+        require $file;
     }
 });
 
@@ -26,7 +26,7 @@ $obj = new MaClasse(); // PHP automatically calls the resolver with "MyClass"
 
 ## The function passed as an argument is a closure
 
-The argument in `spl_autoload_register()` is neither a function name nor a variable: it is an **anonymous function (closure)**, defined directly where it is used. This is the PHP equivalent of a JavaScript callback (`tableau.map(function(x) { ... })` or `x => ...`) or a C++11 lambda. It is not executed on the line where it is written; instead, it is stored and **called later**, whenever an unknown class is referenced.
+The argument in `spl_autoload_register()` is neither a function name nor a variable: it is an **anonymous function (closure)**, defined directly where it is used. This is the PHP equivalent of a JavaScript callback (`array.map(function(x) { ... })` or `x => ...`) or a C++11 lambda. It is not executed on the line where it is written; instead, it is stored and **called later**, whenever an unknown class is referenced.
 
 ## Map a namespace to a folder
 
@@ -42,9 +42,9 @@ spl_autoload_register(function (string $classe): void {
 
     foreach ($namespaces as $prefixe => $dossierBase) {
         if (str_starts_with($classe, $prefixe)) {
-            $chemin = $dossierBase . str_replace('\\', '/', substr($classe, strlen($prefixe))) . '.php';
-            if (file_exists($chemin)) {
-                require $chemin;
+            $path = $dossierBase . str_replace('\\', '/', substr($classe, strlen($prefixe))) . '.php';
+            if (file_exists($path)) {
+                require $path;
             }
             return;
         }

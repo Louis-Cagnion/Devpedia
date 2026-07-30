@@ -11,61 +11,6 @@
       ]
     },
     {
-      "id": "bash",
-      "label": "Bash",
-      "folder": "Bash",
-      "chapters": [
-        {
-          "id": "scripts-et-shebang",
-          "label": "Écrire et exécuter un script Bash"
-        },
-        {
-          "id": "variables",
-          "label": "Les variables"
-        },
-        {
-          "id": "variables-denvironnement",
-          "label": "Variables d'environnement"
-        },
-        {
-          "id": "conditions",
-          "label": "Les conditions"
-        },
-        {
-          "id": "boucles",
-          "label": "Les boucles"
-        },
-        {
-          "id": "fonctions",
-          "label": "Les fonctions"
-        },
-        {
-          "id": "expansion-et-jokers",
-          "label": "Expansion et jokers (globbing)"
-        },
-        {
-          "id": "redirections-et-pipes",
-          "label": "Redirections et pipes"
-        },
-        {
-          "id": "traitement-de-texte",
-          "label": "Traitement de texte (grep, sed, awk...)"
-        },
-        {
-          "id": "permissions-et-fichiers",
-          "label": "Permissions et manipulation de fichiers"
-        },
-        {
-          "id": "gestion-des-processus",
-          "label": "La gestion des processus"
-        },
-        {
-          "id": "architecture-dun-shell",
-          "label": "Comment fonctionne un shell (architecture interne)"
-        }
-      ]
-    },
-    {
       "id": "domain-specific-languages-dsl",
       "label": "Domain-specific Languages (DSL)",
       "folder": "Domain-specific Languages (DSL)",
@@ -537,6 +482,123 @@
             {
               "id": "nlp-et-llm",
               "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "shells",
+      "label": "Shells",
+      "folder": "Shells",
+      "subjects": [
+        {
+          "id": "bash",
+          "label": "Bash",
+          "folder": "Bash",
+          "chapters": [
+            {
+              "id": "scripts-et-shebang",
+              "label": "Écrire et exécuter un script Bash"
+            },
+            {
+              "id": "variables",
+              "label": "Les variables"
+            },
+            {
+              "id": "variables-denvironnement",
+              "label": "Variables d'environnement"
+            },
+            {
+              "id": "conditions",
+              "label": "Les conditions"
+            },
+            {
+              "id": "boucles",
+              "label": "Les boucles"
+            },
+            {
+              "id": "fonctions",
+              "label": "Les fonctions"
+            },
+            {
+              "id": "expansion-et-jokers",
+              "label": "Expansion et jokers (globbing)"
+            },
+            {
+              "id": "redirections-et-pipes",
+              "label": "Redirections et pipes"
+            },
+            {
+              "id": "traitement-de-texte",
+              "label": "Traitement de texte (grep, sed, awk...)"
+            },
+            {
+              "id": "permissions-et-fichiers",
+              "label": "Permissions et manipulation de fichiers"
+            },
+            {
+              "id": "gestion-des-processus",
+              "label": "La gestion des processus"
+            },
+            {
+              "id": "architecture-dun-shell",
+              "label": "Comment fonctionne un shell (architecture interne)"
+            }
+          ]
+        },
+        {
+          "id": "powershell",
+          "label": "PowerShell",
+          "folder": "PowerShell",
+          "chapters": [
+            {
+              "id": "ecrire-et-executer-un-script",
+              "label": "Écrire et exécuter un script PowerShell"
+            },
+            {
+              "id": "variables",
+              "label": "Les variables"
+            },
+            {
+              "id": "variables-denvironnement",
+              "label": "Variables d'environnement"
+            },
+            {
+              "id": "conditions",
+              "label": "Les conditions"
+            },
+            {
+              "id": "boucles",
+              "label": "Les boucles"
+            },
+            {
+              "id": "fonctions",
+              "label": "Les fonctions"
+            },
+            {
+              "id": "expansion-et-jokers",
+              "label": "Expansion et jokers (wildcards)"
+            },
+            {
+              "id": "redirections-et-pipes",
+              "label": "Redirections et pipes"
+            },
+            {
+              "id": "traitement-de-texte",
+              "label": "Traitement de texte et d'objets"
+            },
+            {
+              "id": "permissions-et-fichiers",
+              "label": "Permissions et manipulation de fichiers"
+            },
+            {
+              "id": "gestion-des-processus",
+              "label": "La gestion des processus"
+            },
+            {
+              "id": "architecture-dun-shell",
+              "label": "Comment fonctionne PowerShell (architecture interne)"
             }
           ]
         }

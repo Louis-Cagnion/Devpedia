@@ -10,12 +10,12 @@ Python is an end-to-end object-oriented language—even a `int` or `str` is actu
 
 ```python
 class Vehicule:
-    def __init__(self, marque, modele):
-        self.marque = marque   # self.xxx: equivalent to $this->xxx in PHP
-        self.modele = modele
+    def __init__(self, brand, model):
+        self.brand = brand   # self.xxx: equivalent to $this->xxx in PHP
+        self.model = model
 
     def description(self):
-        return f"{self.marque} {self.modele}"
+        return f"{self.brand} {self.model}"
 
 v = Vehicule("Peugeot", "308")
 print(v.description())   # "Peugeot 308"
@@ -26,16 +26,16 @@ print(v.description())   # "Peugeot 308"
 ## Class Attributes vs. Instance Attributes
 
 ```python
-class Compteur:
+class Counter:
     total_crees = 0   # CLASS attribute: shared by all instances
 
     def __init__(self):
-        Compteur.total_crees += 1
-        self.id = Compteur.total_crees   # INSTANCE attribute: specific to each object
+        Counter.total_crees += 1
+        self.id = Counter.total_crees   # INSTANCE attribute: specific to each object
 
-c1 = Compteur()
-c2 = Compteur()
-print(Compteur.total_crees)   # 2 -> shared
+c1 = Counter()
+c2 = Counter()
+print(Counter.total_crees)   # 2 -> shared
 print(c1.id, c2.id)             # 1 2 -> unique to each person
 ```
 
@@ -43,19 +43,19 @@ print(c1.id, c2.id)             # 1 2 -> unique to each person
 
 ```python
 class Animal:
-    def __init__(self, nom):
-        self.nom = nom
+    def __init__(self, name):
+        self.name = name
 
     def parler(self):
         return "..."
 
 class Chien(Animal):
     def parler(self):
-        return f"{self.nom} aboie"
+        return f"{self.name} aboie"
 
 class Chat(Animal):
     def parler(self):
-        return f"{self.nom} miaule"
+        return f"{self.name} miaule"
 
 animaux = [Chien("Rex"), Chat("Félix")]
 for animal in animaux:
@@ -105,7 +105,7 @@ print(p1 == Point(1, 2))  # True -> thanks to __eq__
 | `__repr__` | Console/debugger output, `repr(obj)` |
 | `__eq__` | `obj1 == obj2` |
 | `__len__` | `len(obj)` |
-| `__getitem__` | `obj[cle]` |
+| `__getitem__` | `obj[key]` |
 
 ## `@property` : a computed attribute accessed without parentheses
 

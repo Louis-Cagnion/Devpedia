@@ -21,8 +21,8 @@ std::cout << age;    // 30 -> Changing refAge directly changes age
 ## Passing a Function by Reference
 
 ```cpp
-void incrementer(int &nombre) {
-    nombre++;   // You don't need to dereference with *, unlike a pointer in C
+void incrementer(int &number) {
+    number++;   // You don't need to dereference with *, unlike a pointer in C
 }
 
 int x = 5;
@@ -33,8 +33,8 @@ std::cout << x;   // 6
 Compared to the C equivalent (see the chapter on pointers):
 
 ```c
-void incrementer(int *nombre) {
-    (*nombre)++;
+void incrementer(int *number) {
+    (*number)++;
 }
 incrementer(&x);
 ```
@@ -46,8 +46,8 @@ The reference avoids the syntax `*` / `&` when calling the function and within t
 Passing a large object by value (a complete copy) with each function call consumes time and memory. Passing by reference avoids the copy, but allows the function to modify the original—`const &` combines both advantages:
 
 ```cpp
-void afficher(const std::string &texte) {   // No copying, AND the text cannot be edited here
-    std::cout << texte;
+void afficher(const std::string &text) {   // No copying, AND the text cannot be edited here
+    std::cout << text;
 }
 ```
 

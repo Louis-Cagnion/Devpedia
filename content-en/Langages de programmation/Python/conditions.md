@@ -69,8 +69,8 @@ if calculer_resultat() > 10:
     print(calculer_resultat())
 
 # with the Morse operator: calculated only once, AND usable thereafter
-if (resultat := calculer_resultat()) > 10:
-    print(resultat)
+if (result := calculer_resultat()) > 10:
+    print(result)
 ```
 
 ## No standard `switch` (prior to Python 3.10)

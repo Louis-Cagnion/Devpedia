@@ -9,24 +9,24 @@ Bash has only one true data type: the **string**—even a number is treated as t
 ## Declare and read a variable
 
 ```bash
-nom="Jean"        # No spaces around the '=': "name = Jean" is a syntax error
-echo $nom          # Jean
-echo "${nom}"       # Jean -> Curly braces explicitly delimit the variable name
-echo "Bonjour ${nom} !"
+name="Jean"        # No spaces around the '=': "name = Jean" is a syntax error
+echo $name          # Jean
+echo "${name}"       # Jean -> Curly braces explicitly delimit the variable name
+echo "Bonjour ${name} !"
 ```
 
-> **Note:** `nom= "Jean"` (with a space after `=`) does **not** work as expected: Bash interprets this as "run the command `Jean` with the environment variable `nom` set to empty," not "assign Jean to `nom`." There must be absolutely no spaces around `=`.
+> **Note:** `name= "Jean"` (with a space after `=`) does **not** work as expected: Bash interprets this as "run the command `Jean` with the environment variable `name` set to empty," not "assign Jean to `name`." There must be absolutely no spaces around `=`.
 
 ## Single vs. Double Quotes
 
 ```bash
-nom="Jean"
+name="Jean"
 
-echo "Bonjour $nom"   # Hello Jean -> double quotation marks are interpreted as variables
+echo "Bonjour $name"   # Hello Jean -> double quotation marks are interpreted as variables
 echo 'Bonjour $nom'   # Hello $name -> single quotes prevent any interpretation
 ```
 
-> **Note:** Always enclose a variable in double quotes when using it (`"$nom"`), unless there is a specific reason not to—without quotes, a value containing spaces is split into multiple words by Bash, which silently breaks many scripts (`rm $fichier` with a filename containing a space may delete something other than what was intended). The most common exception: within an explicit numeric context (`[ $i -lt 5 ]`, `$(( i + 1 ))`), Bash does not split the value into words—quotes are therefore unnecessary, which explains why the chapters on conditions and loops do not use them in these specific cases.
+> **Note:** Always enclose a variable in double quotes when using it (`"$name"`), unless there is a specific reason not to—without quotes, a value containing spaces is split into multiple words by Bash, which silently breaks many scripts (`rm $file` with a filename containing a space may delete something other than what was intended). The most common exception: within an explicit numeric context (`[ $i -lt 5 ]`, `$(( i + 1 ))`), Bash does not split the value into words—quotes are therefore unnecessary, which explains why the chapters on conditions and loops do not use them in these specific cases.
 
 ## Order Substitution
 
@@ -72,7 +72,7 @@ echo "Script : $0"
 echo "Premier argument : $1"
 echo "Nombre d'arguments : $#"
 
-ls /chemin/inexistant
+ls /path/inexistant
 echo "Code de sortie : $?"  # not null, because the previous command failed
 ```
 

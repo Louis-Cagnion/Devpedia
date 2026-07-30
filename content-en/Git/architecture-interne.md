@@ -46,7 +46,7 @@ commit ---> tree (racine du projet)
 
 ## What `git add` and `git commit` Actually Do
 
-1. `git add fichier.txt`: calculates the SHA-1 hash of the file's contents, compresses it, writes it as a **blob** object to `.git/objects/`, and creates an entry in the index (`.git/index`, the actual filename of the staging area) that associates the file path with this blob hash.
+1. `git add file.txt`: calculates the SHA-1 hash of the file's contents, compresses it, writes it as a **blob** object to `.git/objects/`, and creates an entry in the index (`.git/index`, the actual filename of the staging area) that associates the file path with this blob hash.
 2. `git commit`: Recursively constructs `**tree`** objects corresponding to the current state of the index (one `tree` per folder), creates a **`commit`** object pointing to the root `tree` and to the current `commit` from `HEAD` (which becomes its parent), and then updates the current branch's reference so that it points to this new `commit`.
 
 ## Refs: Simple Text Files

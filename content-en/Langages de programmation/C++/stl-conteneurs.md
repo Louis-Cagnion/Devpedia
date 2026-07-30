@@ -11,14 +11,14 @@ The **STL** (*Standard Template Library*) provides ready-to-use generic data str
 ```cpp
 #include <vector>
 
-std::vector<int> nombres = {1, 2, 3};
+std::vector<int> numbers = {1, 2, 3};
 
-nombres.push_back(4);        // add at the end
-nombres[0];                     // direct access via index, like a C array
-nombres.size();                  // number of items
-nombres.pop_back();                // removes the last element
+numbers.push_back(4);        // add at the end
+numbers[0];                     // direct access via index, like a C array
+numbers.size();                  // number of items
+numbers.pop_back();                // removes the last element
 
-for (int n : nombres) {              // simple loop, like a for-each loop
+for (int n : numbers) {              // simple loop, like a for-each loop
     std::cout << n << " ";
 }
 ```
@@ -30,11 +30,11 @@ for (int n : nombres) {              // simple loop, like a for-each loop
 ```cpp
 #include <list>
 
-std::list<int> liste = {1, 2, 3};
-liste.push_front(0);   // Insertion at the beginning in constant time -> std::vector would be O(n) here
+std::list<int> list = {1, 2, 3};
+list.push_front(0);   // Insertion at the beginning in constant time -> std::vector would be O(n) here
 ```
 
-Unlike `std::vector`, inserting in the middle or at the beginning of a `std::list` does not require any reordering of the other elements (see the chapter on linked lists, section C)—at the cost of making index-based access impossible in constant time (there is no `liste[2]`; you must iterate through the list).
+Unlike `std::vector`, inserting in the middle or at the beginning of a `std::list` does not require any reordering of the other elements (see the chapter on linked lists, section C)—at the cost of making index-based access impossible in constant time (there is no `list[2]`; you must iterate through the list).
 
 ## `std::map` : The Organized Dictionary
 
@@ -48,8 +48,8 @@ ages["Marie"] = 30;
 ages["Jean"];                       // 25
 ages.find("Ali") != ages.end();       // checks for the existence of a key (there is no direct "in" operator in C++)
 
-for (const auto &[nom, age] : ages) {   // Process: Pairs are ALWAYS sorted by key
-    std::cout << nom << " : " << age << "\n";
+for (const auto &[name, age] : ages) {   // Process: Pairs are ALWAYS sorted by key
+    std::cout << name << " : " << age << "\n";
 }
 ```
 
@@ -60,10 +60,10 @@ for (const auto &[nom, age] : ages) {   // Process: Pairs are ALWAYS sorted by k
 ```cpp
 #include <set>
 
-std::set<int> valeurs = {3, 1, 2, 1};   // {1, 2, 3} -> automatically sorted AND deduplicated
+std::set<int> values = {3, 1, 2, 1};   // {1, 2, 3} -> automatically sorted AND deduplicated
 
-valeurs.insert(4);
-valeurs.count(2);   // 1 if present, 0 otherwise (a set never contains duplicates)
+values.insert(4);
+values.count(2);   // 1 if present, 0 otherwise (a set never contains duplicates)
 ```
 
 `std::unordered_set` is the hash table-based equivalent—faster on average, but with no guaranteed order.

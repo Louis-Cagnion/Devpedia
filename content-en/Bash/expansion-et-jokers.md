@@ -4,15 +4,15 @@ order: 7
 
 # Expansion and wildcards (globbing)
 
-Before executing a command, Bash replaces certain patterns within it with their actual values—variables (`$nom`; see the dedicated chapter), as well as file patterns (*globbing*) and curly brace expansions. Understanding this step—which is invisible but always occurs—explains why certain commands behave differently depending on the type of quotes used.
+Before executing a command, Bash replaces certain patterns within it with their actual values—variables (`$name`; see the dedicated chapter), as well as file patterns (*globbing*) and curly brace expansions. Understanding this step—which is invisible but always occurs—explains why certain commands behave differently depending on the type of quotes used.
 
 ## Globbing: `*`, `?`, `[]`
 
 ```bash
 ls *.txt        # all files ending in .txt
-ls fichier?.txt  # file1.txt, fileA.txt... ('?' = exactly 1 character, any character)
-ls fichier[123].txt  # file1.txt, file2.txt, or file3.txt only
-ls fichier[a-z].txt  # a single lowercase letter in that position
+ls file?.txt  # file1.txt, fileA.txt... ('?' = exactly 1 character, any character)
+ls file[123].txt  # file1.txt, file2.txt, or file3.txt only
+ls file[a-z].txt  # a single lowercase letter in that position
 ```
 
 | Pattern | Meaning |
@@ -39,7 +39,7 @@ This is a common source of bugs: a script that assumes `*.xyz` always refers to 
 Generates multiple strings from a single pattern **before** searching for actual files on the disk:
 
 ```bash
-echo fichier{1,2,3}.txt
+echo file{1,2,3}.txt
 # file1.txt file2.txt file3.txt
 
 mkdir -p projet/{src,tests,docs}
@@ -52,7 +52,7 @@ echo {a..e}
 # a b c d e
 ```
 
-> **Note:** Unlike globbing, brace expansion does not depend on any existing files—`fichier{1,2,3}.txt` always generates these three strings, regardless of whether the corresponding files exist.
+> **Note:** Unlike globbing, brace expansion does not depend on any existing files—`file{1,2,3}.txt` always generates these three strings, regardless of whether the corresponding files exist.
 
 ## The Tilde Expansion (`~`)
 

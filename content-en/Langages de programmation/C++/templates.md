@@ -37,7 +37,7 @@ The compiler **generates** a separate version of the function for each type that
 template <typename T>
 class Pile {
 public:
-    void empiler(T valeur) { elements.push_back(valeur); }
+    void empiler(T value) { elements.push_back(value); }
     T depiler() {
         if (estVide()) {
             throw std::out_of_range("Pile vide"); // See the chapter on exceptions: Never unload an empty stack

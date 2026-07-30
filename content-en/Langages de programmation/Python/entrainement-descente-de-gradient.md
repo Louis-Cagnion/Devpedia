@@ -70,8 +70,8 @@ Sens de la rétropropagation :      Entrée <- Couche 1 <- Couche 2 <- Sortie <-
 
 ```python
 for epoque in range(nombre_epoques):        # one "period" = a complete run through ALL the data
-    for lot in donnees_par_lots(donnees, taille_lot=32):  # A "batch" = a small subset
-        predictions = modele.forward(lot)
+    for lot in donnees_par_lots(data, taille_lot=32):  # A "batch" = a small subset
+        predictions = model.forward(lot)
         perte = calculer_perte(predictions, vraies_valeurs)
         gradients = retropropager(perte)
         ajuster_poids(gradients, taux_apprentissage)

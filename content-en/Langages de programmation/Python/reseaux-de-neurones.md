@@ -73,7 +73,7 @@ sortie_n2 = relu(1.0 * 0.2 + 2.0 * 0.4 + 0.0)     # relu(1.0) = 1.0
 # Output layer (1 neuron, based on the 2 previous outputs)
 poids_sortie = [0.6, 0.9]
 biais_sortie = 0.05
-resultat = sigmoide(sortie_n1 * 0.6 + sortie_n2 * 0.9 + 0.05)  # sigmoid(0.95) ≈ 0.72
+result = sigmoide(sortie_n1 * 0.6 + sortie_n2 * 0.9 + 0.05)  # sigmoid(0.95) ≈ 0.72
 ```
 
 This calculation—multiplying, summing, and applying an activation function, layer by layer—is **all** a neural network does to produce a prediction. What makes the network “intelligent” is never this mechanism (which is fixed and purely arithmetic), but rather the **values of the weights and biases**, which are automatically adjusted through training (see the chapter on gradient descent) based on a large number of examples.

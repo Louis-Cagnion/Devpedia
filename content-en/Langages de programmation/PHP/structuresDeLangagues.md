@@ -20,7 +20,7 @@ This particular nature gives language structures certain writing freedoms that a
     echo "Bonjour ", $prenom, " !";
 
     // print always returns 1, so it can be used in an expression
-    $resultat = print "Hello"; // prints "Hello", then $result = 1
+    $result = print "Hello"; // prints "Hello", then $result = 1
 ?>
 ```
 

@@ -15,16 +15,24 @@
  * - A per-language manifest (content-<lang>/.translation-cache.json) maps each source file
  *   to a hash of its content; unchanged files are skipped on re-runs, to save API quota.
  *
+ * - Recurring French variable names in code (`nom`, `valeur`, `fichier`...) are renamed to
+ *   their target-language equivalent via scripts/variable-glossary.json, so a translated
+ *   example doesn't leave French identifiers sitting in the middle of foreign-language prose.
+ *
  * Requires a DEEPL_API_KEY in a local .env file (untracked — see .gitignore).
  */
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { buildStruct, writeStruct } from "./generate-struct.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
+// True only when this file is run directly (`node scripts/translate-content.mjs ...`), as
+// opposed to imported for its pure helpers — e.g. by apply-variable-glossary.mjs, which
+// reuses segmentBody() to rewrite already-translated files without calling the DeepL API.
+const isMainModule = !!process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url;
 // TRANSLATE_SOURCE_DIR lets a dry run point at a small throwaway folder instead of content/,
 // to sanity-check the script (and API quota usage) on a couple of files before a full run.
 const SOURCE_CONTENT_DIR = process.env.TRANSLATE_SOURCE_DIR
@@ -33,7 +41,7 @@ const SOURCE_CONTENT_DIR = process.env.TRANSLATE_SOURCE_DIR
 
 const lang = process.argv[2];
 const langLabel = process.argv[3] ?? lang?.toUpperCase();
-if (!lang) {
+if (isMainModule && !lang) {
     console.error("Usage: node scripts/translate-content.mjs <lang-code> [\"Display name\"]  (e.g. en \"English\")");
     process.exit(1);
 }
@@ -43,11 +51,86 @@ const CACHE_PATH = path.join(TARGET_CONTENT_DIR, ".translation-cache.json");
 const STRUCT_OUTPUT_PATH = path.join(ROOT, "structure", `struct-${lang}.json`);
 const LANGUAGES_MANIFEST_PATH = path.join(ROOT, "structure", "languages.json");
 
-/** Comment markers recognized per fenced-code-block language tag. */
+/** Comment markers recognized per fenced-code-block language tag (a language may accept more than one — PHP allows both `//` and `#`). */
 const LINE_COMMENT_MARKERS = {
-    bash: "#", sh: "#", shell: "#", python: "#", py: "#",
-    javascript: "//", js: "//", php: "//", c: "//", cpp: "//", "c++": "//", java: "//",
+    bash: ["#"], sh: ["#"], shell: ["#"], python: ["#"], py: ["#"], makefile: ["#"],
+    javascript: ["//"], js: ["//"], php: ["//", "#"], c: ["//"], cpp: ["//"], "c++": ["//"], java: ["//"],
+    sql: ["--"],
 };
+
+/**
+ * @param {string} text
+ * @returns {string} `text` lowercased with diacritics removed (e.g. "Âge" -> "age")
+ */
+function stripAccents(text) {
+    return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+}
+
+// Keyed by the accent-stripped form of each French entry, since real identifiers in code
+// (`age`, `element`, `cle`...) never carry the accents their dictionary spelling would have
+// (`âge`, `élément`, `clé`) — most languages don't allow accented characters in identifiers.
+const VARIABLE_GLOSSARY = Object.fromEntries(
+    Object.entries(JSON.parse(fs.readFileSync(path.join(__dirname, "variable-glossary.json"), "utf-8")))
+        .map(([word, translations]) => [stripAccents(word), translations])
+);
+
+/**
+ * @param {string} word a bare identifier token
+ * @param {string} targetLang
+ * @returns {string|null} its `targetLang` equivalent per the glossary, or null if not listed
+ */
+function glossaryTranslation(word, targetLang) {
+    return VARIABLE_GLOSSARY[stripAccents(word)]?.[targetLang] ?? null;
+}
+
+/**
+ * Reapplies `original`'s case convention to `translated` — ALL CAPS stays ALL CAPS (e.g. the
+ * PHP constant-naming convention `NOM` -> `NAME`), Capitalized stays Capitalized, otherwise
+ * `translated` is returned as-is (glossary entries are already lowercase snake_case).
+ *
+ * @param {string} original
+ * @param {string} translated
+ * @returns {string}
+ */
+function matchCase(original, translated) {
+    if (original === original.toUpperCase() && original !== original.toLowerCase())
+        return translated.toUpperCase();
+    if (original[0] === original[0].toUpperCase() && original.slice(1) === original.slice(1).toLowerCase())
+        return translated[0].toUpperCase() + translated.slice(1);
+    return translated;
+}
+
+/**
+ * Renames every bare identifier token found in `text` that matches a French variable name in
+ * the glossary to its `targetLang` equivalent (e.g. `nom` -> `name`). Used on inline code spans
+ * in prose, where any embedded quotes are already never sent to DeepL (ignore_tags on `<code>`),
+ * so there's no separate natural-language content to protect from this substitution.
+ *
+ * @param {string} text
+ * @param {string} targetLang
+ * @returns {string}
+ */
+export function localizeIdentifiers(text, targetLang) {
+    return text.replace(/[A-Za-zÀ-ÿ_][A-Za-zÀ-ÿ0-9_]*/g, word => {
+        const translated = glossaryTranslation(word, targetLang);
+        return translated ? matchCase(word, translated) : word;
+    });
+}
+
+/**
+ * Applies {@link localizeIdentifiers} to the `literal`-kind parts of a fenced-code-block line
+ * already split by {@link extractCodeLineParts} — `translate`-kind parts (natural-language
+ * string content headed to DeepL) are left untouched, and interpolated variable references
+ * inside a string (e.g. `$nom` in `"Bonjour $nom"`) are `literal`-kind already, so renaming
+ * them here keeps them in sync with a same-line identifier declared outside any string.
+ *
+ * @param {Array<{kind: string, text?: string, xmlText?: string}>} parts
+ * @param {string} targetLang
+ * @returns {Array<{kind: string, text?: string, xmlText?: string}>}
+ */
+function localizeCodePartsIdentifiers(parts, targetLang) {
+    return parts.map(part => part.kind === "literal" ? { ...part, text: localizeIdentifiers(part.text, targetLang) } : part);
+}
 
 function readEnvFile() {
     const envPath = path.join(ROOT, ".env");
@@ -68,7 +151,7 @@ function readEnvFile() {
 
 const env = { ...readEnvFile(), ...process.env };
 const DEEPL_API_KEY = env.DEEPL_API_KEY;
-if (!DEEPL_API_KEY) {
+if (isMainModule && !DEEPL_API_KEY) {
     console.error("Missing DEEPL_API_KEY. Create a .env file at the project root with:\nDEEPL_API_KEY=your_key_here");
     process.exit(1);
 }
@@ -129,10 +212,10 @@ function unescapeXml(text) {
  * a null-char placeholder, which can't collide with real text) so a literal `*` inside one,
  * e.g. `` `*` ``, can never be mistaken for an emphasis marker.
  */
-function mdInlineToXml(text) {
+function mdInlineToXml(text, targetLang) {
     const codeSpans = [];
     const withoutCode = text.replace(/`([^`]+)`/g, (_, code) => {
-        codeSpans.push(code);
+        codeSpans.push(localizeIdentifiers(code, targetLang));
         return "\0" + (codeSpans.length - 1) + "\0";
     });
     const withEmphasis = escapeXml(withoutCode)
@@ -147,13 +230,40 @@ function mdInlineToXml(text) {
  * pair of backticks — the trailing replace collapses any resulting double-backtick span
  * (`` ``for`` ``) down to a single one.
  */
-function xmlToMdInline(text) {
+export function xmlToMdInline(text) {
     const md = text
         .replace(/<code>(.*?)<\/code>/g, "`$1`")
         .replace(/<b>(.*?)<\/b>/g, "**$1**")
         .replace(/<i>(.*?)<\/i>/g, "*$1*")
         .replace(/``([^`]+)``/g, "`$1`");
     return unescapeXml(md);
+}
+
+/**
+ * Applies identifier localization to `parts`' literal pieces, then decides how the segment
+ * should be emitted: as `code-parts` (reconstructed from `parts`) if anything needs DeepL
+ * translation or the identifier renaming actually changed something, otherwise as `raw` — the
+ * original `line` verbatim, byte-for-byte, for every line that needs no rewriting at all.
+ *
+ * @param {Array<{kind: string, text?: string, xmlText?: string}>} parts
+ * @param {string} line the original, unmodified source line `parts` was derived from
+ * @param {string} targetLang
+ * @param {boolean} applyGlossary whether identifier renaming is safe here — false for a fenced
+ *   block whose language has no registered comment marker (untagged, or e.g. html/css/sql/json),
+ *   since without a reliable way to split code from a trailing comment, a glossary word could
+ *   land inside natural-language comment prose instead of an actual identifier and corrupt it
+ *   (e.g. renaming "chaîne" to "string" inside the French comment "chaîne le premier au second")
+ * @returns {{type: string, line?: string, parts?: Array}}
+ */
+function finalizeCodeParts(parts, line, targetLang, applyGlossary) {
+    if (!applyGlossary)
+        return parts.some(p => p.kind === "translate") ? { type: "code-parts", parts } : { type: "raw", line };
+    const literalTextBefore = parts.filter(p => p.kind === "literal").map(p => p.text).join("");
+    const localizedParts = localizeCodePartsIdentifiers(parts, targetLang);
+    const literalTextAfter = localizedParts.filter(p => p.kind === "literal").map(p => p.text).join("");
+    return localizedParts.some(p => p.kind === "translate") || literalTextAfter !== literalTextBefore
+        ? { type: "code-parts", parts: localizedParts }
+        : { type: "raw", line };
 }
 
 const headingRegex = /^(#{1,6}\s+)(.*)/;
@@ -166,34 +276,93 @@ const codeFenceRegex = /^```(\w*)/;
  * untouched, or `{type: "translate", prefix, xmlText}` for a piece of text to send to DeepL.
  *
  * @param {string} body
+ * @param {string} targetLang
  * @returns {Array<{type: string, line?: string, prefix?: string, xmlText?: string}>}
  */
-function segmentBody(body) {
+export function segmentBody(body, targetLang) {
     const segments = [];
     let inCodeBlock = false;
-    let commentMarker = null;
+    let commentMarkers = null;
+    let codeLang = null;
+    // Tracks a JS template literal (`...`) opened on an earlier line and not yet closed —
+    // e.g. `` const s = ` `` followed by prose lines and a closing `` ` `` on its own line.
+    let inTemplateLiteral = false;
 
     body.split("\n").forEach(line => {
         const fenceMatch = line.match(codeFenceRegex);
         if (fenceMatch) {
             inCodeBlock = !inCodeBlock;
-            commentMarker = inCodeBlock ? LINE_COMMENT_MARKERS[fenceMatch[1].toLowerCase()] ?? null : null;
+            codeLang = inCodeBlock ? fenceMatch[1].toLowerCase() : null;
+            commentMarkers = inCodeBlock ? LINE_COMMENT_MARKERS[codeLang] ?? null : null;
+            inTemplateLiteral = false;
             segments.push({ type: "raw", line });
             return;
         }
         if (inCodeBlock) {
-            if (commentMarker && !line.trimStart().startsWith(commentMarker + "!")) {
-                const markerIndex = findCommentMarker(line, commentMarker);
-                if (markerIndex !== -1) {
-                    const prefix = line.slice(0, markerIndex + commentMarker.length) + " ";
-                    const commentText = line.slice(markerIndex + commentMarker.length).trimStart();
-                    if (commentText) {
-                        segments.push({ type: "translate", prefix, xmlText: escapeXml(commentText) });
-                        return;
-                    }
+            if (inTemplateLiteral) {
+                const closeIndex = line.indexOf("`");
+                if (closeIndex === -1) {
+                    // still inside the template literal: the whole line is its content
+                    segments.push(/[a-zA-ZÀ-ÿ]/.test(line)
+                        ? { type: "code-parts", parts: [{ kind: "translate", xmlText: escapeXml(line) }] }
+                        : { type: "raw", line });
+                    return;
+                }
+                inTemplateLiteral = false;
+                const before = line.slice(0, closeIndex);
+                const after = line.slice(closeIndex + 1);
+                const parts = [];
+                if (before)
+                    parts.push(/[a-zA-ZÀ-ÿ]/.test(before)
+                        ? { kind: "translate", xmlText: escapeXml(before) }
+                        : { kind: "literal", text: before });
+                parts.push({ kind: "literal", text: "`" });
+                if (after)
+                    parts.push(...extractCodeLineParts(after, codeLang));
+                segments.push(finalizeCodeParts(parts, line, targetLang, commentMarkers !== null));
+                return;
+            }
+
+            let codePart = line;
+            let commentXml = null;
+            for (const marker of commentMarkers ?? []) {
+                if (line.trimStart().startsWith(marker + "!"))
+                    continue;
+                const markerIndex = findCommentMarker(line, marker);
+                if (markerIndex === -1)
+                    continue;
+                const commentText = line.slice(markerIndex + marker.length).trimStart();
+                if (commentText) {
+                    codePart = line.slice(0, markerIndex + marker.length);
+                    commentXml = escapeXml(commentText);
+                    break;
                 }
             }
-            segments.push({ type: "raw", line });
+
+            let parts;
+            const isJs = ["js", "javascript", "ts", "typescript"].includes((codeLang ?? "").toLowerCase());
+            const backtickCount = (codePart.match(/`/g) ?? []).length;
+            if (isJs && backtickCount % 2 === 1) {
+                // an odd number of backticks means the last one opens a template literal
+                // that isn't closed on this same line — it continues on the next line(s).
+                const openIndex = codePart.lastIndexOf("`");
+                parts = extractCodeLineParts(codePart.slice(0, openIndex), codeLang);
+                parts.push({ kind: "literal", text: "`" });
+                const rest = codePart.slice(openIndex + 1);
+                if (rest)
+                    parts.push(/[a-zA-ZÀ-ÿ]/.test(rest)
+                        ? { kind: "translate", xmlText: escapeXml(rest) }
+                        : { kind: "literal", text: rest });
+                inTemplateLiteral = true;
+            } else {
+                parts = extractCodeLineParts(codePart, codeLang);
+            }
+
+            if (commentXml !== null) {
+                parts.push({ kind: "literal", text: " " });
+                parts.push({ kind: "translate", xmlText: commentXml });
+            }
+            segments.push(finalizeCodeParts(parts, line, targetLang, commentMarkers !== null));
             return;
         }
         if (line.trim() === "") {
@@ -203,11 +372,11 @@ function segmentBody(body) {
         for (const regex of [headingRegex, quoteRegex, listRegex]) {
             const match = line.match(regex);
             if (match) {
-                segments.push({ type: "translate", prefix: match[1], xmlText: mdInlineToXml(match[2]) });
+                segments.push({ type: "translate", prefix: match[1], xmlText: mdInlineToXml(match[2], targetLang) });
                 return;
             }
         }
-        segments.push({ type: "translate", prefix: "", xmlText: mdInlineToXml(line) });
+        segments.push({ type: "translate", prefix: "", xmlText: mdInlineToXml(line, targetLang) });
     });
     return segments;
 }
@@ -233,11 +402,99 @@ function findCommentMarker(line, marker) {
     return -1;
 }
 
+// Group 1: optional 0-2 letter prefix (f/F for Python f-strings, r/b/rb combos).
+// Group 2: quote character (', ", or ` for JS template literals).
+// Group 3: string content.
+const stringLiteralRegex = /([a-zA-Z]{0,2})(["'`])((?:\\.|(?!\2).)*)\2/g;
+
+/**
+ * Returns the regex matching interpolation expressions for a given fenced-code-block
+ * language and quote style, or null if that combination doesn't support interpolation
+ * (e.g. PHP single-quoted strings, JS strings using ' or ", Python strings with no f-prefix).
+ */
+function getInterpolationRegex(codeLang, quoteChar, prefix) {
+    const lang = (codeLang ?? "").toLowerCase();
+    if (["js", "javascript", "ts", "typescript"].includes(lang) && quoteChar === "`")
+        return /\$\{[^}]*\}/g;
+    if (lang === "php" && quoteChar === '"')
+        return /\{\$[^}]*\}|\$\{[^}]*\}|\$[A-Za-z_][A-Za-z0-9_]*(?:\[[^\]]*\]|->[A-Za-z_][A-Za-z0-9_]*)*/g;
+    if (["python", "py"].includes(lang) && /f/i.test(prefix ?? ""))
+        return /\{[^{}]*\}/g;
+    // Bash/shell double-quoted strings interpolate $var, ${var} and $(command) — single-quoted
+    // strings don't interpolate at all, so they're excluded (quoteChar === '"' only).
+    if (["bash", "sh", "shell"].includes(lang) && quoteChar === '"')
+        return /\$\{[^}]*\}|\$\([^)]*\)|\$[A-Za-z_][A-Za-z0-9_]*/g;
+    return null;
+}
+
+/**
+ * Splits string content into literal runs (interpolation expressions, kept as-is) and
+ * text runs (surrounding natural language, to be translated).
+ */
+function splitInterpolatedContent(content, interpRegex) {
+    if (!interpRegex)
+        return [{ kind: "text", text: content }];
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    interpRegex.lastIndex = 0;
+    while ((match = interpRegex.exec(content)) !== null) {
+        if (match.index > lastIndex)
+            parts.push({ kind: "text", text: content.slice(lastIndex, match.index) });
+        parts.push({ kind: "literal", text: match[0] });
+        lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < content.length)
+        parts.push({ kind: "text", text: content.slice(lastIndex) });
+    return parts;
+}
+
+/**
+ * Splits a line of code into literal pieces (kept as-is) and translatable pieces (the
+ * natural-language runs inside quoted strings). Strings with no letters (IDs, format
+ * specifiers, codes) are left untouched. Interpolation expressions inside JS template
+ * literals (`${x}`), PHP double-quoted strings ($x, {$x}), and Python f-strings ({x})
+ * are detected via getInterpolationRegex and excluded from translation.
+ */
+function extractCodeLineParts(line, codeLang) {
+    const parts = [];
+    let lastIndex = 0;
+    let match;
+    stringLiteralRegex.lastIndex = 0;
+    while ((match = stringLiteralRegex.exec(line)) !== null) {
+        const [full, prefix, quote, content] = match;
+        const start = match.index;
+        if (start > lastIndex)
+            parts.push({ kind: "literal", text: line.slice(lastIndex, start) });
+
+        const interpRegex = getInterpolationRegex(codeLang, quote, prefix);
+        const subParts = splitInterpolatedContent(content, interpRegex);
+        const hasTranslatableText = subParts.some(p => p.kind === "text" && /[a-zA-ZÀ-ÿ]/.test(p.text));
+
+        if (!hasTranslatableText) {
+            parts.push({ kind: "literal", text: full });
+        } else {
+            parts.push({ kind: "literal", text: prefix + quote });
+            subParts.forEach(p => {
+                if (p.kind === "literal" || p.text.trim() === "" || !/[a-zA-ZÀ-ÿ]/.test(p.text))
+                    parts.push({ kind: "literal", text: p.text });
+                else
+                    parts.push({ kind: "translate", xmlText: escapeXml(p.text) });
+            });
+            parts.push({ kind: "literal", text: quote });
+        }
+        lastIndex = start + full.length;
+    }
+    if (lastIndex < line.length)
+        parts.push({ kind: "literal", text: line.slice(lastIndex) });
+    return parts;
+}
+
 /**
  * @param {string} filePath
  * @returns {{frontmatter: string, body: string}}
  */
-function readFrontmatterAndBody(filePath) {
+export function readFrontmatterAndBody(filePath) {
     const raw = fs.readFileSync(filePath, "utf-8");
     if (!raw.startsWith("---"))
         return { frontmatter: "", body: raw.trim() };
@@ -245,7 +502,7 @@ function readFrontmatterAndBody(filePath) {
     return { frontmatter: `---${parts[1]}---\n\n`, body: parts.slice(2).join("---").trim() };
 }
 
-function listMarkdownFilesRecursive(dir) {
+export function listMarkdownFilesRecursive(dir) {
     let files = [];
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const fullPath = path.join(dir, entry.name);
@@ -271,16 +528,24 @@ async function translateFile(filePath, cache) {
     }
 
     const { frontmatter, body } = readFrontmatterAndBody(filePath);
-    const segments = segmentBody(body);
-    const toTranslate = segments.filter(s => s.type === "translate");
-    const translated = await translateBatch(toTranslate.map(s => s.xmlText));
+    const segments = segmentBody(body, lang);
 
-    let translationIndex = 0;
+    const toTranslate = [];
+    segments.forEach(seg => {
+        if (seg.type === "translate")
+            toTranslate.push(seg.xmlText);
+        else if (seg.type === "code-parts")
+            seg.parts.forEach(p => { if (p.kind === "translate") toTranslate.push(p.xmlText); });
+    });
+    const translated = await translateBatch(toTranslate);
+
+    let ti = 0;
     const outputLines = segments.map(segment => {
         if (segment.type === "raw")
             return segment.line;
-        const translatedText = xmlToMdInline(translated[translationIndex++]);
-        return segment.prefix + translatedText;
+        if (segment.type === "code-parts")
+            return segment.parts.map(p => p.kind === "literal" ? p.text : xmlToMdInline(translated[ti++])).join("");
+        return segment.prefix + xmlToMdInline(translated[ti++]);
     });
 
     const outputPath = path.join(TARGET_CONTENT_DIR, relativePath);
@@ -340,7 +605,9 @@ async function main() {
     console.log(`Done. Translated content in content-${lang}/, structure in structure/struct-${lang}.json`);
 }
 
-main().catch(err => {
-    console.error(err);
-    process.exit(1);
-});
+if (isMainModule) {
+    main().catch(err => {
+        console.error(err);
+        process.exit(1);
+    });
+}

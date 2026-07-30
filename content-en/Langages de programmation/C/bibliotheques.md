@@ -10,7 +10,7 @@ A **library** is a collection of precompiled functions that can be reused by any
 
 The library code is **copied directly** into the final executable during the linking process (see the chapter on compilation).
 
-```
+```bash
 // 1. compiler chaque fichier source en .o
 gcc -c calculs.c -o calculs.o
 
@@ -18,7 +18,7 @@ gcc -c calculs.c -o calculs.o
 ar rcs libcalculs.a calculs.o
 
 // 3. lier le programme à cette bibliothèque
-gcc main.c -L. -lcalculs -o programme
+gcc main.c -L. -lcalculs -o program
 ```
 
 - `ar` (*archive*) combines one or more files `.o` into a single archive `.a`.
@@ -34,12 +34,12 @@ gcc main.c -L. -lcalculs -o programme
 
 The library code remains in a **separate** file, which is loaded into memory when the program starts (or even while it is running). Multiple programs can then share a single copy of the library in memory.
 
-```
+```bash
 gcc -shared -fPIC calculs.c -o libcalculs.so
-gcc main.c -L. -lcalculs -o programme
+gcc main.c -L. -lcalculs -o program
 
 // au lancement, le système doit savoir où trouver libcalculs.so :
-LD_LIBRARY_PATH=. ./programme
+LD_LIBRARY_PATH=. ./program
 ```
 
 - `-fPIC` (*Position-Independent Code*) generates code that can run regardless of the memory address where it is loaded—a requirement for a shared library, which is loaded at a different location depending on the program.

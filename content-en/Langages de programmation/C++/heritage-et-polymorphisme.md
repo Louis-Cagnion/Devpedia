@@ -11,16 +11,16 @@ order: 4
 ```cpp
 class Animal {
 public:
-    Animal(std::string nom) : nom(nom) {}
+    Animal(std::string name) : name(name) {}
     std::string parler() const { return "..."; }
 protected:
-    std::string nom;
+    std::string name;
 };
 
 class Chien : public Animal {
 public:
-    Chien(std::string nom) : Animal(nom) {}   // explicitly calls the parent constructor
-    std::string parler() const { return nom + " aboie"; }
+    Chien(std::string name) : Animal(name) {}   // explicitly calls the parent constructor
+    std::string parler() const { return name + " aboie"; }
 };
 ```
 
@@ -38,17 +38,17 @@ std::cout << a->parler();   // "..." poster -> NOT "Rex barks"!
 ```cpp
 class Animal {
 public:
-    Animal(std::string nom) : nom(nom) {}
+    Animal(std::string name) : name(name) {}
     virtual std::string parler() const { return "..."; }   // "virtual" enables DYNAMIC LINKING
     virtual ~Animal() {}   // virtual shredder: see note below
 protected:
-    std::string nom;
+    std::string name;
 };
 
 class Chien : public Animal {
 public:
-    Chien(std::string nom) : Animal(nom) {}
-    std::string parler() const override { return nom + " aboie"; }   // "override": checked by the compiler
+    Chien(std::string name) : Animal(name) {}
+    std::string parler() const override { return name + " aboie"; }   // "override": checked by the compiler
 };
 
 Animal *a = new Chien("Rex");

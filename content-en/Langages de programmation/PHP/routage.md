@@ -4,7 +4,7 @@ order: 12
 
 # Routing Without a Framework (Front Controller)
 
-Without a framework (Laravel, Symfony, etc.), PHP does not provide a built-in router comparable to Express (`app.get('/chemin', callback)`). A "pure PHP" project must handle the mapping between a requested URL and the code to be executed on its own.
+Without a framework (Laravel, Symfony, etc.), PHP does not provide a built-in router comparable to Express (`app.get('/path', callback)`). A "pure PHP" project must handle the mapping between a requested URL and the code to be executed on its own.
 
 ## The front controller and the dispatch table
 
@@ -54,8 +54,8 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // 1) Explicit blocks first
 $dossiersBloques = ['/data/', '/src/'];
-foreach ($dossiersBloques as $dossier) {
-    if (str_starts_with($uri, $dossier)) {
+foreach ($dossiersBloques as $folder) {
+    if (str_starts_with($uri, $folder)) {
         http_response_code(403);
         echo 'Accès interdit.';
         return true; // Already answered—no further action needed

@@ -48,9 +48,9 @@ PHP is dynamically typed by default, but supports type annotations on parameters
 
 ```php
 <?php
-function calculerRemise(float $prix, int $pourcentage): float
+function calculerRemise(float $price, int $pourcentage): float
 {
-    return $prix - ($prix * $pourcentage / 100);
+    return $price - ($price * $pourcentage / 100);
 }
 
 calculerRemise(100, 10);      // OK -> 90.0
@@ -126,27 +126,27 @@ PHP provides a vast number of built-in functions that are ready to use, listed b
 
 ```php
 <?php
-    $personne = ["nom" => "Dupont", "age" => 25];
+    $person = ["nom" => "Dupont", "age" => 25];
 
-    array_keys($personne);             // ["name", "age"] -> returns all keys
-    array_values($personne);           // ["Dupont", 25] -> returns all values
-    array_key_exists("nom", $personne); // true/false -> checks whether a key exists
-    unset($personne["age"]);            // removes a key (and its value) from the array
-    ksort($personne);                   // sorts the table by the keys
-    asort($personne);                   // sorts the array by values (while preserving the keys)
+    array_keys($person);             // ["name", "age"] -> returns all keys
+    array_values($person);           // ["Dupont", 25] -> returns all values
+    array_key_exists("nom", $person); // true/false -> checks whether a key exists
+    unset($person["age"]);            // removes a key (and its value) from the array
+    ksort($person);                   // sorts the table by the keys
+    asort($person);                   // sorts the array by values (while preserving the keys)
     array_combine(["a", "b"], [1, 2]);  // ["a" => 1, "b" => 2] -> creates an associative array from two arrays
-    array_flip($personne);              // key-value pairs
+    array_flip($person);              // key-value pairs
 ?>
 ```
 
-> **Note:** `array_key_exists()` checks whether a key exists, even if its value is `null`. `isset($personne["nom"])` returns `false` in this case, because it also checks that the value is not `null`.
+> **Note:** `array_key_exists()` checks whether a key exists, even if its value is `null`. `isset($person["name"])` returns `false` in this case, because it also checks that the value is not `null`.
 e.g.,:
 ```php
 <?php
-    $personne = ["nom" => "Dupont", "age" => null];
+    $person = ["nom" => "Dupont", "age" => null];
 
-    array_key_exists("age", $personne); // true
-    isset($personne["age"]);             // false
+    array_key_exists("age", $person); // true
+    isset($person["age"]);             // false
 ?>
 ```
 
@@ -175,4 +175,4 @@ e.g.,:
 ?>
 ```
 
-> **Note:** You can find the complete list of PHP's built-in functions in the official documentation: [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). To add a **single** element, `$tab[] = "valeur";` is also preferred over `array_push($tab, "valeur")`: same result, without the overhead of a function call—`array_push()` is only truly useful for adding multiple elements in a single call (`array_push($tab, "a", "b", "c")`).
+> **Note:** You can find the complete list of PHP's built-in functions in the official documentation: [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). To add a **single** element, `$tab[] = "value";` is also preferred over `array_push($tab, "value")`: same result, without the overhead of a function call—`array_push()` is only truly useful for adding multiple elements in a single call (`array_push($tab, "a", "b", "c")`).

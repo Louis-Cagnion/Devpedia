@@ -13,15 +13,15 @@ A resource (memory, file, network connection, etc.) is acquired in an object's *
 ```cpp
 class GestionnaireFichier {
 public:
-    GestionnaireFichier(const std::string &chemin) {
-        fichier.open(chemin);
-        if (!fichier.is_open()) {
-            throw std::runtime_error("Impossible d'ouvrir : " + chemin); // cf. chapitre sur les exceptions
+    GestionnaireFichier(const std::string &path) {
+        file.open(path);
+        if (!file.is_open()) {
+            throw std::runtime_error("Impossible d'ouvrir : " + path); // cf. chapitre sur les exceptions
         }
     }
-    ~GestionnaireFichier() { fichier.close(); }   // called automatically, even if an exception occurs!
+    ~GestionnaireFichier() { file.close(); }   // called automatically, even if an exception occurs!
 private:
-    std::ifstream fichier;
+    std::ifstream file;
 };
 
 void traiterFichier() {
@@ -38,8 +38,8 @@ void traiterFichier() {
 int *p = new int(42);   // allocates AND initializes in a single operation
 delete p;                 // releases
 
-int *tableau = new int[10];   // allocates a dynamic array
-delete[] tableau;               // "[]" is required to free an array; otherwise, behavior is undefined
+int *array = new int[10];   // allocates a dynamic array
+delete[] array;               // "[]" is required to free an array; otherwise, behavior is undefined
 ```
 
 `new` / `delete` replace `malloc` / `free` but are subject to exactly the same risks (forgetting `delete`, duplicate `delete`, *use-after-free*; see Chapter C on memory)—which is why, in modern C++, they are rarely used **directly**.

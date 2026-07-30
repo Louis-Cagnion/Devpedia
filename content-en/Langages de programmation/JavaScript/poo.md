@@ -10,13 +10,13 @@ Unlike PHP or Python, objects in JavaScript are not fundamentally based on class
 
 ```javascript
 class Vehicule {
-    constructor(marque, modele) {
-        this.marque = marque;
-        this.modele = modele;
+    constructor(brand, model) {
+        this.brand = brand;
+        this.model = model;
     }
 
     description() {
-        return `${this.marque} ${this.modele}`;
+        return `${this.brand} ${this.model}`;
     }
 }
 
@@ -28,8 +28,8 @@ console.log(v.description());   // "Peugeot 308"
 
 ```javascript
 class Animal {
-    constructor(nom) {
-        this.nom = nom;
+    constructor(name) {
+        this.name = name;
     }
     parler() {
         return "...";
@@ -38,7 +38,7 @@ class Animal {
 
 class Chien extends Animal {
     parler() {
-        return `${this.nom} aboie`;
+        return `${this.name} aboie`;
     }
 }
 
@@ -73,8 +73,8 @@ class Cercle {
         return Math.PI * this.rayon ** 2;
     }
 
-    set diametre(valeur) {        // "circle.diameter = 10" calls this method
-        this.rayon = valeur / 2;
+    set diametre(value) {        // "circle.diameter = 10" calls this method
+        this.rayon = value / 2;
     }
 }
 
@@ -87,21 +87,21 @@ c.diametre = 10;            // is equivalent to c.radius = 5
 
 ```javascript
 class CompteBancaire {
-    #solde = 0;   // The "#" makes this property inaccessible from outside the class
+    #balance = 0;   // The "#" makes this property inaccessible from outside the class
 
     deposer(montant) {
-        this.#solde += montant;
+        this.#balance += montant;
     }
 
-    get solde() {
-        return this.#solde;
+    get balance() {
+        return this.#balance;
     }
 }
 
 const compte = new CompteBancaire();
 compte.deposer(100);
-console.log(compte.solde);    // 100
-console.log(compte.#solde);    // SyntaxError: #balance is not accessible here
+console.log(compte.balance);    // 100
+console.log(compte.#balance);    // SyntaxError: #balance is not accessible here
 ```
 
 ## What's Behind "`class`": The Prototype

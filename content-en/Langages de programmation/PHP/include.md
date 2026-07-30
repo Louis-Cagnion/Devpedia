@@ -81,4 +81,4 @@ require __DIR__ . '/../config.php'; // always correct, regardless of where the s
 ?>
 ```
 
-> **Note:** Building paths using `__DIR__ . '/chemin/relatif'` rather than a fixed path helps avoid errors depending on the execution context (built-in server, Apache, command line, etc.), which may not necessarily have the same "current directory."
+> **Note:** Building paths using `__DIR__ . '/path/relatif'` rather than a fixed path helps avoid errors depending on the execution context (built-in server, Apache, command line, etc.), which may not necessarily have the same "current directory."

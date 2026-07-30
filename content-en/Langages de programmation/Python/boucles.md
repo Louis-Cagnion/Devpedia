@@ -41,8 +41,8 @@ for index, fruit in enumerate(fruits):
 noms = ["Jean", "Marie"]
 ages = [25, 30]
 
-for nom, age in zip(noms, ages):
-    print(f"{nom} a {age} ans")
+for name, age in zip(noms, ages):
+    print(f"{name} a {age} ans")
 ```
 
 `zip()` stops as soon as the **shortest** collection is exhausted, even if the others still contain elements.
@@ -75,9 +75,9 @@ for i in range(10):
 A loop such as ``for` / `while` can include a block `else`, which is executed only if the loop has completed **normally**, without `break``:
 
 ```python
-nombres = [1, 3, 5, 7]
+numbers = [1, 3, 5, 7]
 
-for n in nombres:
+for n in numbers:
     if n % 2 == 0:
         print("Nombre pair trouvé")
         break
@@ -89,4 +89,4 @@ else:
 
 ## No direct access to the index in a `for`
 
-Unlike a C `for` loop (`for (int i = 0; i < taille; i++)`), the Python loop never explicitly manipulates an index—`enumerate()` is the idiomatic way to obtain one when necessary, rather than iterating over `range(len(liste))` and then manually indexing.
+Unlike a C `for` loop (`for (int i = 0; i < taille; i++)`), the Python loop never explicitly manipulates an index—`enumerate()` is the idiomatic way to obtain one when necessary, rather than iterating over `range(len(list))` and then manually indexing.

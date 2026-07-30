@@ -38,7 +38,7 @@ double tva = calculerTVA(100);
 ## `std` : the standard library namespace
 
 ```cpp
-std::vector<int> nombres;   // "vector" is in the "std" namespace, hence the prefix
+std::vector<int> numbers;   // "vector" is in the "std" namespace, hence the prefix
 std::cout << "Bonjour";      // Same goes for "cost"
 ```
 

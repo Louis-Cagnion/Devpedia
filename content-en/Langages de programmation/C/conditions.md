@@ -10,7 +10,7 @@ Conditional statements allow you to execute a block of code depending on whether
 
 In C, any **non-zero** value is considered true; only the value `0` is false—there was no native Boolean type prior to C99 (`stdbool.h`, see the chapter on variables):
 
-```
+```c
 int age = 18;
 
 if (age >= 18) {
@@ -20,7 +20,7 @@ if (age >= 18) {
 
 ## `if` / `else` / `else if`
 
-```
+```c
 int note = 12;
 
 if (note >= 16) {
@@ -38,7 +38,7 @@ if (note >= 16) {
 
 ## The ternary operator
 
-```
+```c
 int age = 20;
 const char *statut = (age >= 18) ? "majeur" : "mineur";
 
@@ -49,7 +49,7 @@ printf("%s\n", statut);
 
 Useful for comparing a single variable to multiple integer or enumerated values:
 
-```
+```c
 int jour = 3;
 
 switch (jour) {
@@ -70,7 +70,7 @@ switch (jour) {
 
 > **Note:** Don't forget to include `break;` at the end of each `case`—otherwise, execution will continue into the next `case` (*fall-through*), even if its condition does not match. This behavior is sometimes intentionally used to group together several identical cases:
 
-```
+```c
 switch (jour) {
     case 6:
     case 7:

@@ -44,8 +44,8 @@ function attendre(millisecondes) {
 }
 
 attendre(1000)
-    .then(resultat => console.log(resultat))   // enforced if the promise is rescinded
-    .catch(erreur => console.log(erreur));      // carried out if it is rejected
+    .then(result => console.log(result))   // enforced if the promise is rescinded
+    .catch(error => console.log(error));      // carried out if it is rejected
 ```
 
 ### Chaining Promises
@@ -55,7 +55,7 @@ lireFichierPromise("a.txt")
     .then(contenuA => lireFichierPromise("b.txt"))
     .then(contenuB => lireFichierPromise("c.txt"))
     .then(contenuC => console.log("Tout est chargé"))
-    .catch(erreur => console.log("Une étape a échoué :", erreur));
+    .catch(error => console.log("Une étape a échoué :", error));
 ```
 
 ### `Promise.all` : waiting for several promises to complete at the same time
@@ -66,8 +66,8 @@ Promise.all([
     fetch("/api/produits"),
 ]).then(([reponseUtilisateurs, reponseProduits]) => {
     console.log("Les deux requêtes sont terminées");
-}).catch(erreur => {
-    console.log("Au moins une des deux requêtes a échoué :", erreur);
+}).catch(error => {
+    console.log("Au moins une des deux requêtes a échoué :", error);
 });
 ```
 
@@ -77,9 +77,9 @@ Promise.all([
 
 ```javascript
 async function chargerUtilisateur(id) {
-    const reponse = await fetch(`/api/utilisateurs/${id}`);   // "waits" for the Promise, without blocking the thread
-    const donnees = await reponse.json();
-    return donnees;
+    const response = await fetch(`/api/utilisateurs/${id}`);   // "waits" for the Promise, without blocking the thread
+    const data = await response.json();
+    return data;
 }
 ```
 

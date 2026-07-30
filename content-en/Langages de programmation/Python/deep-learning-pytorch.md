@@ -52,7 +52,7 @@ class ReseauSimple(nn.Module):
         x = self.couche2(x)
         return x
 
-modele = ReseauSimple()
+model = ReseauSimple()
 ```
 
 `nn.Linear(entrees, sorties)` automatically creates the corresponding weights and biases (see the chapter on neural networks); `forward()` describes the path of the data through the layers, exactly as the "forward pass" is detailed manually in that same chapter.
@@ -63,10 +63,10 @@ modele = ReseauSimple()
 import torch.optim as optim
 
 fonction_perte = nn.MSELoss()                             # mean square error (see the dedicated chapter)
-optimiseur = optim.SGD(modele.parameters(), lr=0.01)        # stochastic gradient descent
+optimiseur = optim.SGD(model.parameters(), lr=0.01)        # stochastic gradient descent
 
 for epoque in range(100):
-    predictions = modele(X_entrainement)                    # is equivalent to model.forward(X_training)
+    predictions = model(X_entrainement)                    # is equivalent to model.forward(X_training)
     perte = fonction_perte(predictions, y_entrainement)
 
     optimiseur.zero_grad()   # resets the gradients (otherwise they accumulate from one iteration to the next)
@@ -84,13 +84,13 @@ This loop is the nearly universal structure of any PyTorch training process: pre
 ## Assessment Mode vs. Training Mode
 
 ```python
-modele.eval()    # disables specific training behaviors (e.g., dropout)
+model.eval()    # disables specific training behaviors (e.g., dropout)
 with torch.no_grad():   # Turn off gradient tracking: faster, unnecessary outside of training
-    predictions = modele(X_test)
+    predictions = model(X_test)
 
-modele.train()   # Reactivates training mode for the rest of the session
+model.train()   # Reactivates training mode for the rest of the session
 ```
 
-> **Note:** **Dropout** is a regularization technique that randomly deactivates a portion of the neurons at each iteration, but only during training—this prevents the network from becoming overly dependent on a few specific neurons and reduces overfitting (see the chapter on scikit-learn). It is disabled in `modele.eval()` mode: in this case, we want a stable prediction that uses all the neurons.
+> **Note:** **Dropout** is a regularization technique that randomly deactivates a portion of the neurons at each iteration, but only during training—this prevents the network from becoming overly dependent on a few specific neurons and reduces overfitting (see the chapter on scikit-learn). It is disabled in `model.eval()` mode: in this case, we want a stable prediction that uses all the neurons.
 
 See also the chapter on CNN/RNN/Transformer architectures: PyTorch provides ready-to-use layers for each (`nn.Conv2d`, `nn.LSTM`, `nn.TransformerEncoder`...), built on top of the same basic building blocks discussed here.

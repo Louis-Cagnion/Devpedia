@@ -12,20 +12,20 @@ order: 8
 <?php
 class Vehicule
 {
-    private string $marque;
-    private string $modele;
+    private string $brand;
+    private string $model;
     private int $annee;
 
-    public function __construct(string $marque, string $modele, int $annee)
+    public function __construct(string $brand, string $model, int $annee)
     {
-        $this->marque = $marque;
-        $this->modele = $modele;
+        $this->brand = $brand;
+        $this->model = $model;
         $this->annee  = $annee;
     }
 
     public function description(): string
     {
-        return "{$this->marque} {$this->modele} ({$this->annee})";
+        return "{$this->brand} {$this->model} ({$this->annee})";
     }
 }
 
@@ -35,7 +35,7 @@ echo $v->description(); // "Peugeot 308 (2022)"
 ```
 
 - `__construct` is the reserved name of the method automatically called by `new`.
-- `$this` always refers to the current instance, and is **always** used with `->`—including when reading a property (`$this->marque`) or calling a method (`$this->description()`). The only visual difference between the two is the presence of `()`.
+- `$this` always refers to the current instance, and is **always** used with `->`—including when reading a property (`$this->brand`) or calling a method (`$this->description()`). The only visual difference between the two is the presence of `()`.
 - `private` = accessible only from inside the classroom; `public` = also accessible from outside.
 
 > **Note:** Unlike an array, where you can create a new key on the fly (`$arr['nouvelle_cle'] = 5;`, without any declaration), a **typed** object property will reject a value of the wrong type—assigning a `int` to a property declared as `string` triggers a `TypeError`. Typed properties define a true contract: they specify which properties exist and what type each must always contain.

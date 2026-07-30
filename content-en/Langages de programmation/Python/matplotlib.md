@@ -39,9 +39,9 @@ fig, ax = plt.subplots()
 ```python
 ax.plot(x, y)              # curve (solid line)
 ax.scatter(x, y)            # scatter plot
-ax.bar(categories, valeurs)  # bar chart
-ax.hist(donnees, bins=20)     # histogram (distribution of a variable)
-ax.boxplot(donnees)            # box-and-whisker plot (median, quartiles, outliers)
+ax.bar(categories, values)  # bar chart
+ax.hist(data, bins=20)     # histogram (distribution of a variable)
+ax.boxplot(data)            # box-and-whisker plot (median, quartiles, outliers)
 ```
 
 ## Formatting a Chart
@@ -64,7 +64,7 @@ fig, axes = plt.subplots(1, 2, figsize=(10, 4))  # 1 row, 2 columns -> 2 drawing
 axes[0].plot(x, y)
 axes[0].set_title("Courbe")
 
-axes[1].hist(donnees)
+axes[1].hist(data)
 axes[1].set_title("Distribution")
 
 plt.tight_layout()   # automatically adjusts spacing to prevent overlaps
@@ -79,7 +79,7 @@ fig.savefig("graphique.png", dpi=300)   # dpi: resolution of the exported image
 ## Link to pandas
 
 ```python
-donnees["age"].plot(kind="hist")   # pandas delegates directly to Matplotlib internally
+data["age"].plot(kind="hist")   # pandas delegates directly to Matplotlib internally
 ```
 
 The pandas "`.plot()`" (see the dedicated chapter) is simply a convenient wrapper around Matplotlib—understanding Matplotlib allows you to customize any plot generated in this way.

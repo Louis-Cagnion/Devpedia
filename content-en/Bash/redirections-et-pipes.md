@@ -11,8 +11,8 @@ By default, every Unix command communicates via three streams: **standard** inpu
 ## Redirect output to a file
 
 ```bash
-echo "Bonjour" > fichier.txt    # Overwrites file.txt (or creates it) with this content
-echo "Encore" >> fichier.txt    # Append to the end of file.txt without overwriting
+echo "Bonjour" > file.txt    # Overwrites file.txt (or creates it) with this content
+echo "Encore" >> file.txt    # Append to the end of file.txt without overwriting
 ```
 
 > **Note:** `>` silently overwrites the existing contents of the target file—a common mistake is to use `>` when you meant to use `>>`, resulting in the loss of the previous contents without warning.
@@ -20,7 +20,7 @@ echo "Encore" >> fichier.txt    # Append to the end of file.txt without overwrit
 ## Redirect input from a file
 
 ```bash
-sort < liste.txt   # Reads "liste.txt" as standard input for "sort," rather than waiting for keyboard input
+sort < list.txt   # Reads "liste.txt" as standard input for "sort," rather than waiting for keyboard input
 ```
 
 ## Redirect error output
@@ -29,12 +29,12 @@ The streams are numbered as follows: `0` = standard input, `1` = standard output
 
 ```bash
 commande_qui_echoue 2> erreurs.log     # Only the error output goes into errors.log
-commande 1> sortie.log 2> erreurs.log  # separates normal output and errors into two files
+commande 1> output.log 2> erreurs.log  # separates normal output and errors into two files
 commande > tout.log 2>&1               # Redirects stdout to tout.log, THEN redirects stderr to wherever stdout is going
 commande &> tout.log                    # Bash shortcut equivalent to "> everything.log 2>&1"
 ```
 
-> **Note:** The order matters for `2>&1`. `2>&1 > fichier` does **not** work as expected: at that point, `2` is still redirected to the terminal (the standard output at that time), and only `1` is then sent to `fichier`. You must write `> fichier 2>&1`: first redirect `1` to `fichier`, then have `2` point to the same destination as `1` **at that exact moment**.
+> **Note:** The order matters for `2>&1`. `2>&1 > file` does **not** work as expected: at that point, `2` is still redirected to the terminal (the standard output at that time), and only `1` is then sent to `file`. You must write `> file 2>&1`: first redirect `1` to `file`, then have `2` point to the same destination as `1` **at that exact moment**.
 
 ## `/dev/null` : Skip an output
 

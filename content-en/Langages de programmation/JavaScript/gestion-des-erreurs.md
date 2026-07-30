@@ -10,9 +10,9 @@ JavaScript signals an error by throwing an **exception** (`throw`), which can be
 
 ```javascript
 try {
-    const resultat = JSON.parse("{ invalide");
-} catch (erreur) {
-    console.log("Erreur de parsing :", erreur.message);
+    const result = JSON.parse("{ invalide");
+} catch (error) {
+    console.log("Erreur de parsing :", error.message);
 } finally {
     console.log("Tentative terminée");   // carried out in all cases
 }
@@ -31,8 +31,8 @@ function calculerAge(anneeNaissance) {
 
 try {
     calculerAge(3000);
-} catch (erreur) {
-    console.log(erreur.message);
+} catch (error) {
+    console.log(error.message);
 }
 ```
 
@@ -46,20 +46,20 @@ class SoldeInsuffisantError extends Error {
     }
 }
 
-function retirer(solde, montant) {
-    if (montant > solde) {
-        throw new SoldeInsuffisantError(`Solde de ${solde}€ insuffisant`);
+function retirer(balance, montant) {
+    if (montant > balance) {
+        throw new SoldeInsuffisantError(`Solde de ${balance}€ insuffisant`);
     }
-    return solde - montant;
+    return balance - montant;
 }
 
 try {
     retirer(100, 150);
-} catch (erreur) {
-    if (erreur instanceof SoldeInsuffisantError) {
-        console.log("Solde insuffisant :", erreur.message);
+} catch (error) {
+    if (error instanceof SoldeInsuffisantError) {
+        console.log("Solde insuffisant :", error.message);
     } else {
-        throw erreur;   // unexpected error: let it show up rather than hide it
+        throw error;   // unexpected error: let it show up rather than hide it
     }
 }
 ```
@@ -71,13 +71,13 @@ A standard `try` / `catch` **does not catch** an error from an asynchronous func
 ```javascript
 async function chargerDonnees() {
     try {
-        const reponse = await fetch("/api/donnees");
-        if (!reponse.ok) {
-            throw new Error(`HTTP ${reponse.status}`);
+        const response = await fetch("/api/donnees");
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
         }
-        return await reponse.json();
-    } catch (erreur) {
-        console.log("Échec du chargement :", erreur.message);
+        return await response.json();
+    } catch (error) {
+        console.log("Échec du chargement :", error.message);
     }
 }
 ```
@@ -86,8 +86,8 @@ For a non-`await`ed `Promise`, `.catch()` serves the same purpose:
 
 ```javascript
 fetch("/api/donnees")
-    .then(reponse => reponse.json())
-    .catch(erreur => console.log("Échec :", erreur.message));
+    .then(response => response.json())
+    .catch(error => console.log("Échec :", error.message));
 ```
 
 > **Note:** An error thrown within a `async` function does not immediately become a standard JavaScript exception—it transforms the returned `Promise` into a **rejected** promise, which can only be retrieved via `await` in a `try` or `catch`, or via `.catch()`.

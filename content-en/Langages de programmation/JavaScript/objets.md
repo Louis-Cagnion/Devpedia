@@ -9,16 +9,16 @@ A JavaScript object is a structure used to store data as key-value pairs. Unlike
 It can be created in two different ways:
 ```javascript
     // literal, the most common
-    const obj1 = { nom: 'Jean', age: 25 };
+    const obj1 = { name: 'Jean', age: 25 };
 
     // using the Object constructor
     const obj2 = new Object();
-    obj2.nom = 'Jean';
+    obj2.name = 'Jean';
 
     // A value can be of any type, including a function or another object
     const obj3 = {
-        nom: 'Jean',
-        adresse: { ville: 'Paris', code: 75000 },
+        name: 'Jean',
+        adresse: { city: 'Paris', code: 75000 },
         direBonjour: function () { console.log('bonjour'); }
     };
 ```
@@ -27,13 +27,13 @@ It can be created in two different ways:
 
 There are two ways to access an object's property: dot notation and square bracket notation (useful when the key name is dynamic or contains special characters).
 ```javascript
-    const obj = { nom: 'Jean', age: 25 };
+    const obj = { name: 'Jean', age: 25 };
 
-    obj.nom; // 'Jean'
+    obj.name; // 'Jean'
     obj['nom']; // 'Jean', equivalent to obj.nom
 
     // Adding or modifying a property
-    obj.ville = 'Paris';
+    obj.city = 'Paris';
     obj.age = 26;
 
     // Deleting a property
@@ -45,7 +45,7 @@ There are two ways to access an object's property: dot notation and square brack
 Unlike string or array prototypes, these functions are not used directly on the object but on `Object`, by passing the object as a parameter.
 
 ```javascript
-    const obj = { nom: 'Jean', age: 25 };
+    const obj = { name: 'Jean', age: 25 };
 ```
 
 **`Object.keys`** Returns an array containing only the object's keys.
@@ -58,7 +58,7 @@ Unlike string or array prototypes, these functions are not used directly on the 
     Object.values(obj); // ['Jean', 25]
 ```
 
-**`Object.entries`** Returns an array of `[clé, valeur]` pairs, which is useful for iterating over an object using a loop or `forEach`.
+**`Object.entries`** Returns an array of `[key, value]` pairs, which is useful for iterating over an object using a loop or `forEach`.
 ```javascript
     Object.entries(obj); // [['name', 'Jean'], ['age', 25]]
 ```
@@ -66,7 +66,7 @@ Unlike string or array prototypes, these functions are not used directly on the 
 **`Object.assign`** Copies the properties of one or more source objects into a target object and returns that target object. Often used to merge objects or create a copy of them.
 ```javascript
     const copie = Object.assign({}, obj); // copy of obj
-    const fusion = Object.assign({}, obj, { ville: 'Paris' }); // { name: 'Jean', age: 25, city: 'Paris' }
+    const fusion = Object.assign({}, obj, { city: 'Paris' }); // { name: 'Jean', age: 25, city: 'Paris' }
 ```
 
 **`Object.freeze`** Prevents any modification of the object (adding, removing, or changing ownership). Any attempt to modify it is silently ignored (or causes an error in strict mode).
@@ -75,7 +75,7 @@ Unlike string or array prototypes, these functions are not used directly on the 
     obj.age = 30; // has no effect; obj.age remains 25
 ```
 
-**`Object.fromEntries`** does the opposite of `Object.entries`: it converts an array of pairs `[clé, valeur]` into an object.
+**`Object.fromEntries`** does the opposite of `Object.entries`: it converts an array of pairs `[key, value]` into an object.
 ```javascript
     Object.fromEntries([['nom', 'Jean'], ['age', 25]]); // { name: 'Jean', age: 25 }
 ```
@@ -97,15 +97,15 @@ Unlike string or array prototypes, these functions are not used directly on the 
 
 **Destructuring** allows you to directly extract certain properties of an object into variables using key names.
 ```javascript
-    const obj = { nom: 'Jean', age: 25 };
-    const { nom, age } = obj; // name = 'Jean', age = 25
+    const obj = { name: 'Jean', age: 25 };
+    const { name, age } = obj; // name = 'Jean', age = 25
 
     // You can rename a variable during destructuring
-    const { nom: prenom } = obj; // first_name = 'Jean'
+    const { name: prenom } = obj; // first_name = 'Jean'
 ```
 
 The `...` allows you to "expand" an object, which is useful for copying it or merging multiple objects together.
 ```javascript
     const copie = { ...obj }; // independent copy of obj
-    const fusion = { ...obj, ville: 'Paris' }; // { name: 'Jean', age: 25, city: 'Paris' }
+    const fusion = { ...obj, city: 'Paris' }; // { name: 'Jean', age: 25, city: 'Paris' }
 ```

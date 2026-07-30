@@ -12,7 +12,7 @@ A **process** is an instance of a running program, with its own memory space, is
 
 `fork()` creates a nearly identical copy of the calling process. After the call, **two** processes exist, and both continue execution immediately after the `fork()`—the only difference is the return value:
 
-```
+```c
 #include <unistd.h>
 #include <stdio.h>
 
@@ -44,7 +44,7 @@ int main(void)
 
 `fork()` duplicates the current process but does not change the program being executed. To launch **another** program in the child process, you use a function from the `exec` family (e.g., `execve`, `execlp`)—it completely replaces the code of the current process with that of a new program:
 
-```
+```c
 #include <unistd.h>
 
 int main(void)
@@ -66,7 +66,7 @@ int main(void)
 
 Without synchronization, the parent continues to run independently of the child. `wait()` blocks the parent until one of its children finishes:
 
-```
+```c
 #include <sys/wait.h>
 
 int main(void)

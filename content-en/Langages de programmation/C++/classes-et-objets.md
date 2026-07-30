@@ -12,15 +12,15 @@ A C++ **class** combines what a C-`struct`e (see the dedicated chapter) separate
 class Vehicule {
 public:
     // const&: prevents the received strings from being copied (see the chapter on references)
-    Vehicule(const std::string &marque, const std::string &modele) : marque(marque), modele(modele) {}
+    Vehicule(const std::string &brand, const std::string &model) : brand(brand), model(model) {}
 
     std::string description() const {
-        return marque + " " + modele;
+        return brand + " " + model;
     }
 
 private:
-    std::string marque;
-    std::string modele;
+    std::string brand;
+    std::string model;
 };
 
 Vehicule v("Peugeot", "308");
@@ -37,12 +37,12 @@ std::cout << v.description();   // "Peugeot 308"
 
 ```cpp
 // Initialization list (preferred): initializes directly, without using an assignment
-Vehicule(std::string marque, std::string modele) : marque(marque), modele(modele) {}
+Vehicule(std::string brand, std::string model) : brand(brand), model(model) {}
 
 // Equivalent with assignment within the body (works, but is less idiomatic)
-Vehicule(std::string marque, std::string modele) {
-    this->marque = marque;
-    this->modele = modele;
+Vehicule(std::string brand, std::string model) {
+    this->brand = brand;
+    this->model = model;
 }
 ```
 
@@ -53,16 +53,16 @@ The initialization list (after the `:`) directly initializes each member with th
 ```cpp
 class GestionnaireFichier {
 public:
-    GestionnaireFichier(const std::string &chemin) {
-        fichier.open(chemin);
+    GestionnaireFichier(const std::string &path) {
+        file.open(path);
     }
 
     ~GestionnaireFichier() {   // called AUTOMATICALLY when the object goes out of scope
-        fichier.close();
+        file.close();
     }
 
 private:
-    std::ifstream fichier;
+    std::ifstream file;
 };
 ```
 
@@ -72,7 +72,7 @@ The `~NomClasse()` is automatically executed as soon as the object is destroyed 
 
 ```cpp
 std::string description() const {   // "const" here: ensures that this method does NOT modify the object
-    return marque + " " + modele;
+    return brand + " " + model;
 }
 ```
 
@@ -81,13 +81,13 @@ Marking a method as `const` documents and ensures that the compiler enforces the
 ## Static members and methods
 
 ```cpp
-class Compteur {
+class Counter {
 public:
-    Compteur() { totalCrees++; }
+    Counter() { totalCrees++; }
     static int totalCrees;   // shared by ALL instances, not one per object
 };
 
-int Compteur::totalCrees = 0;   // Required definition outside the class
+int Counter::totalCrees = 0;   // Required definition outside the class
 ```
 
 See also the chapters on inheritance and polymorphism, and on operator overloading, to extend a class's behavior beyond simple named methods.

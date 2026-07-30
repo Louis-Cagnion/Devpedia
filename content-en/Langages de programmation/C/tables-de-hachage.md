@@ -22,13 +22,13 @@ Rather than checking sequentially—"Is the key here? And here? And there?"—th
 
 A **hash function** transforms an input of any size (a string, a structure, etc.) into a number of fixed size, in a deterministic manner: the same input always produces the same number, and ideally, different inputs produce numbers that are well-distributed (to prevent too many keys from ending up in the same place).
 
-```
-unsigned long hash_chaine(const char *chaine)
+```c
+unsigned long hash_chaine(const char *string)
 {
     unsigned long hash = 5381;
     int c;
 
-    while ((c = *chaine++)) {
+    while ((c = *string++)) {
         hash = hash * 33 + c;
     }
     return hash;
@@ -37,8 +37,8 @@ unsigned long hash_chaine(const char *chaine)
 
 The resulting number is then scaled to the actual size of the array using a modulo operation:
 
-```
-unsigned long indice = hash_chaine(cle) % taille_tableau;
+```c
+unsigned long index = hash_chaine(key) % taille_tableau;
 ```
 
 ## Collisions
@@ -50,51 +50,51 @@ The number of possible keys is infinite (any string), but the array has a finite
 
 ## Implementation via chaining
 
-```
-typedef struct Entree
+```c
+typedef struct Entry
 {
-    char *cle;
-    int valeur;
-    struct Entree *suivant; // plusieurs entrées peuvent partager le même indice
-} Entree;
+    char *key;
+    int value;
+    struct Entry *suivant; // plusieurs entrées peuvent partager le même indice
+} Entry;
 
 typedef struct TableHachage
 {
-    Entree **cases; // tableau de pointeurs vers des listes chaînées
+    Entry **cases; // tableau de pointeurs vers des listes chaînées
     int taille;
 } TableHachage;
 ```
 
 ### Insertion
 
-```
-void inserer(TableHachage *table, const char *cle, int valeur)
+```c
+void inserer(TableHachage *table, const char *key, int value)
 {
-    unsigned long indice = hash_chaine(cle) % table->taille;
+    unsigned long index = hash_chaine(key) % table->taille;
 
-    Entree *nouvelle = malloc(sizeof(Entree));
+    Entry *nouvelle = malloc(sizeof(Entry));
     if (nouvelle == NULL) {
         return; // échec d'allocation (cf. chapitre sur la gestion de la mémoire) : on renonce à l'insertion
     }
-    nouvelle->cle = strdup(cle);
-    nouvelle->valeur = valeur;
-    nouvelle->suivant = table->cases[indice]; // insertion en tête de la liste de ce bucket
-    table->cases[indice] = nouvelle;
+    nouvelle->key = strdup(key);
+    nouvelle->value = value;
+    nouvelle->suivant = table->cases[index]; // insertion en tête de la liste de ce bucket
+    table->cases[index] = nouvelle;
 }
 ```
 
 ### Search
 
-```
-int rechercher(TableHachage *table, const char *cle, int *trouve)
+```c
+int rechercher(TableHachage *table, const char *key, int *trouve)
 {
-    unsigned long indice = hash_chaine(cle) % table->taille;
-    Entree *courant = table->cases[indice];
+    unsigned long index = hash_chaine(key) % table->taille;
+    Entry *courant = table->cases[index];
 
     while (courant != NULL) {
-        if (strcmp(courant->cle, cle) == 0) {
+        if (strcmp(courant->key, key) == 0) {
             *trouve = 1;
-            return courant->valeur;
+            return courant->value;
         }
         courant = courant->suivant;
     }

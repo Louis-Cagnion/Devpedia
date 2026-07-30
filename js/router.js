@@ -13,6 +13,49 @@ export function findSubject(category, subjectId) {
     return category.subjects?.find(subject => subject.id === subjectId);
 }
 
+// Session-only: read once at startup by resumePendingNavigation(), then cleared — carries the
+// current page across a language switch's location.reload(), since ids (category/subject/chapter
+// folder names) are language-independent while only their displayed `label` gets translated.
+export const PENDING_NAV_KEY = "devpedia-pending-nav";
+
+/**
+ * Call right before switching language (and reloading) to remember the page the user is
+ * currently on, so {@link resumePendingNavigation} can restore it after the reload completes
+ * in the new language, instead of dropping the user back on the home page.
+ */
+export function rememberCurrentPageForLanguageSwitch() {
+    sessionStorage.setItem(PENDING_NAV_KEY, JSON.stringify({
+        categoryId: appState.curCategory,
+        subjectId: appState.curSubject,
+        pageId: appState.curPageId
+    }));
+}
+
+/**
+ * Restores the page saved by {@link rememberCurrentPageForLanguageSwitch}, if any (consuming
+ * it — it's a one-shot flag for the reload that follows a language switch), otherwise renders
+ * the home page. Safe to call on every startup.
+ */
+export function resumePendingNavigation() {
+    const raw = sessionStorage.getItem(PENDING_NAV_KEY);
+    sessionStorage.removeItem(PENDING_NAV_KEY);
+    if (!raw) {
+        generateHomePage();
+        return;
+    }
+    const { categoryId, subjectId, pageId } = JSON.parse(raw);
+    const category = findCategory({ id: categoryId });
+    if (!category || categoryId === "acceuil") {
+        generateHomePage();
+    } else if (pageId === categoryId) {
+        loadCategory(categoryId);
+    } else if (pageId === subjectId) {
+        navigateToSubject(categoryId, subjectId);
+    } else {
+        navigateToChapter(categoryId, subjectId, pageId);
+    }
+}
+
 function closeMobileMenu() {
     document.querySelector(".menuDiv").classList.remove("visible");
 }
@@ -31,7 +74,8 @@ function clearCurrentPage() {
  * @param {string} pageId
  */
 function createAppendReturnButton(pageDiv, pageId) {
-    const returnButton = createTag("button", {class: `returnButton ${pageId}ReturnButton`}, {textContent: "← Retour"});
+    const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
+    const returnButton = createTag("button", {class: `returnButton ${pageId}ReturnButton`}, {textContent: `${arrow} Retour`});
     returnButton.addEventListener("click", (e) => {
         const previousEntry = appState.navigationStack.pop();
         renderEntry(previousEntry);

@@ -46,7 +46,7 @@ if ([]) {}               // TRUTHY! (unlike PHP, where an empty array is falsy)
 if ({}) {}                // TRUTHY!
 ```
 
-> **Note:** A common pitfall for those coming from PHP: an **empty** array or object is `truthy` in JavaScript, whereas it is `falsy` in PHP—always explicitly test `tableau.length === 0` rather than `if (!tableau)`.
+> **Note:** A common pitfall for those coming from PHP: an **empty** array or object is `truthy` in JavaScript, whereas it is `falsy` in PHP—always explicitly test `array.length === 0` rather than `if (!array)`.
 
 ## The ternary operator
 
@@ -57,10 +57,10 @@ const statut = age >= 18 ? "majeur" : "mineur";
 ## `??` and `?.`
 
 ```javascript
-const pseudo = utilisateur.pseudo ?? "Invité";
+const pseudo = user.pseudo ?? "Invité";
 // "??" falls back to the default value ONLY if the value is null or undefined (not 0, "", or false)
 
-const ville = utilisateur?.adresse?.ville ?? "Inconnue";
+const city = user?.adresse?.city ?? "Inconnue";
 // "?.": If "user" or "address" is null or undefined, it stops immediately and returns undefined
 // -> prevents a cascading "Cannot read properties of undefined" TypeError
 ```

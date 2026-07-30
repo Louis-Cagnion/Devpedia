@@ -58,7 +58,7 @@ p.replaceWith(autreElement);
 
 **`querySelector`** Returns the first element that matches the given CSS selector, or `null` if no such element exists.
 ```javascript
-const titre = document.querySelector('h1');
+const title = document.querySelector('h1');
 const div = document.querySelector('.ma-classe');
 const lien = document.querySelector('#mon-id a');
 ```

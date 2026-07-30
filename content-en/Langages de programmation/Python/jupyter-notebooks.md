@@ -10,18 +10,18 @@ A **Jupyter notebook** is an interactive document that combines executable code,
 
 A notebook (`.ipynb` file) is a collection of **cells** of two types:
 
-- **Code block**: Python code that can be run independently (use `Shift+Entrée` to run it).
+- **Code block**: Python code that can be run independently (use `Shift+Enter` to run it).
 - **Markdown cell**: formatted text (headings, lists, mathematical formulas using LaTeX) to document the process alongside the code.
 
 ```python
 # Cell 1 (code)
 import pandas as pd
-donnees = pd.read_csv("ventes.csv")
+data = pd.read_csv("ventes.csv")
 ```
 
 ```python
 # Cell 2 (code)
-donnees.describe()   # The result appears directly below the cell
+data.describe()   # The result appears directly below the cell
 ```
 
 ## The kernel: the Python process behind the notebook

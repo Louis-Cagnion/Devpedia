@@ -10,7 +10,7 @@ Python signals an error by raising an **exception**, which interrupts the progra
 
 ```python
 try:
-    resultat = 10 / 0
+    result = 10 / 0
 except ZeroDivisionError:
     print("Impossible de diviser par zéro")
 ```
@@ -19,14 +19,14 @@ except ZeroDivisionError:
 
 ```python
 try:
-    nombre = int(input("Entrez un nombre : "))
-    resultat = 10 / nombre
+    number = int(input("Entrez un nombre : "))
+    result = 10 / number
 except ValueError:
     print("Ce n'est pas un nombre valide")
 except ZeroDivisionError:
     print("Impossible de diviser par zéro")
-except Exception as erreur:   # "catch everything else" -> place this LAST
-    print(f"Erreur inattendue : {erreur}")
+except Exception as error:   # "catch everything else" -> place this LAST
+    print(f"Erreur inattendue : {error}")
 ```
 
 > **Note:** Intercepting `Exception` too broadly (or worse, a bare, untyped `except:`) hides programming errors that should instead cause the program to crash so they can be corrected—this should be reserved for cases where a failure is truly expected and is already handled immediately afterward.
@@ -35,12 +35,12 @@ except Exception as erreur:   # "catch everything else" -> place this LAST
 
 ```python
 try:
-    fichier = open("donnees.txt")
+    file = open("donnees.txt")
 except FileNotFoundError:
     print("Fichier introuvable")
 else:
     print("Fichier ouvert avec succès")   # executed ONLY if no exception has occurred
-    fichier.close()
+    file.close()
 finally:
     print("Tentative terminée")            # executed IN ALL CASES, whether there is an exception or not
 ```
@@ -62,15 +62,15 @@ def calculer_age(annee_naissance):
 class SoldeInsuffisantError(Exception):
     pass
 
-def retirer(solde, montant):
-    if montant > solde:
-        raise SoldeInsuffisantError(f"Solde de {solde}€ insuffisant pour retirer {montant}€")
-    return solde - montant
+def retirer(balance, montant):
+    if montant > balance:
+        raise SoldeInsuffisantError(f"Solde de {balance}€ insuffisant pour retirer {montant}€")
+    return balance - montant
 
 try:
     retirer(100, 150)
-except SoldeInsuffisantError as erreur:
-    print(erreur)
+except SoldeInsuffisantError as error:
+    print(error)
 ```
 
 A custom exception inherits from `Exception` (or a more specific subclass), which allows it to be distinguished from others in a targeted `except`, rather than relying on a generic error message.
@@ -80,8 +80,8 @@ A custom exception inherits from `Exception` (or a more specific subclass), whic
 `with` ensures that a resource is properly released, **even if an exception occurs**—a file opened with `with` always closes automatically when the block ends:
 
 ```python
-with open("donnees.txt") as fichier:
-    contenu = fichier.read()
+with open("donnees.txt") as file:
+    content = file.read()
 # file.close() is called automatically here, regardless of whether everything went well or not
 ```
 

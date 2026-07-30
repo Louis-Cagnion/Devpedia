@@ -17,8 +17,8 @@ done
 Browse the files in a folder using globbing (see the chapter on expansion):
 
 ```bash
-for fichier in *.txt; do
-    echo "Traitement de $fichier"
+for file in *.txt; do
+    echo "Traitement de $file"
 done
 ```
 
@@ -56,13 +56,13 @@ done
 The most common combination of commands in Bash scripting for processing a text file:
 
 ```bash
-while read -r ligne; do
-    echo "Ligne lue : $ligne"
-done < fichier.txt
+while read -r line; do
+    echo "Ligne lue : $line"
+done < file.txt
 ```
 
-- `read -r` Reads a line from standard input into the variable `ligne` on each iteration (`-r` prevents `\` from being interpreted as escape characters, which is almost always what you want).
-- `< fichier.txt` redirects the file's contents to the standard input of the entire loop (see the chapter on redirection).
+- `read -r` Reads a line from standard input into the variable `line` on each iteration (`-r` prevents `\` from being interpreted as escape characters, which is almost always what you want).
+- `< file.txt` redirects the file's contents to the standard input of the entire loop (see the chapter on redirection).
 
 ## `until` Loop
 

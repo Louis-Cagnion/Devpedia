@@ -19,15 +19,15 @@ document.querySelectorAll(".carte");          // ALL matching elements (NodeList
 ## Edit an item
 
 ```javascript
-const titre = document.querySelector("h1");
+const title = document.querySelector("h1");
 
-titre.textContent = "Nouveau titre";     // Replaces the text (automatically escapes HTML)
-titre.innerHTML = "<em>Titre</em>";       // Inserts raw HTML -> DANGER if the source is not trusted (XSS)
-titre.style.color = "red";                  // modifies a CSS style directly
-titre.classList.add("actif");                // add a CSS class
-titre.classList.remove("actif");
-titre.classList.toggle("actif");              // Add if missing, remove if present
-titre.setAttribute("data-id", "42");
+title.textContent = "Nouveau titre";     // Replaces the text (automatically escapes HTML)
+title.innerHTML = "<em>Titre</em>";       // Inserts raw HTML -> DANGER if the source is not trusted (XSS)
+title.style.color = "red";                  // modifies a CSS style directly
+title.classList.add("actif");                // add a CSS class
+title.classList.remove("actif");
+title.classList.toggle("actif");              // Add if missing, remove if present
+title.setAttribute("data-id", "42");
 ```
 
 > **Note:** `innerHTML` with user-supplied data is a classic XSS vulnerability (see the chapter on PHP security; same principle)—an attacker could inject executable code into it. `textContent` remains secure by default, since it always treats its content as plain text.

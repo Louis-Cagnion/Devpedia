@@ -1,10 +1,10 @@
-import { loadCategory } from "./router.js";
+import { loadCategory, resumePendingNavigation } from "./router.js";
 import { appState } from "./state.js";
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson } from "./utils.js";
 import { initSidebars } from "./sidebar.js";
 import { initSearch } from "./search.js";
-import { initLanguageSwitcher, getStoredLanguage } from "./lang.js";
+import { initLanguageSwitcher, getStoredLanguage, applyDocumentLanguage } from "./lang.js";
 
 /**
  * @param {string} label
@@ -129,11 +129,12 @@ function generateNavBar(categories = []) {
 
 async function fetchStructJson() {
     appState.lang = getStoredLanguage();
+    applyDocumentLanguage(appState.lang);
     const structPath = appState.lang ? `./structure/struct-${appState.lang}.json` : "./structure/struct.json";
     const dataJson = await fetchFileToTextOrJson(structPath, 'json')
     appState.categories = dataJson.categories;
     generateNavBar(appState.categories);
-    loadCategory('acceuil');
+    resumePendingNavigation();
 }
 
 fetchStructJson();

@@ -53,12 +53,12 @@ Regardless of the algorithm chosen, scikit-learn consistently exposes the same i
 ```python
 from sklearn.linear_model import LogisticRegression   # classification: y is categorical ("yes"/"no")
 
-modele = LogisticRegression()
-modele.fit(X_entrainement, y_entrainement)   # "learns" from the training data
+model = LogisticRegression()
+model.fit(X_entrainement, y_entrainement)   # "learns" from the training data
 
-predictions = modele.predict(X_test)           # applies what has been learned to new data
+predictions = model.predict(X_test)           # applies what has been learned to new data
 
-modele.score(X_test, y_test)                    # evaluates the quality of the predictions on the test
+model.score(X_test, y_test)                    # evaluates the quality of the predictions on the test
 ```
 
 - `fit(X, y)` : adjusts the model's internal parameters so that it best fits the provided data.

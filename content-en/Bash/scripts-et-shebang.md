@@ -88,7 +88,7 @@ By default, Bash continues to execute the following lines even if a command fail
 #!/bin/bash
 set -e   # immediately stops the script if a command fails (non-zero exit code)
 
-cd /dossier/inexistant   # If this folder does not exist, the script stops here
+cd /folder/inexistant   # If this folder does not exist, the script stops here
 echo "Cette ligne ne s'exécute jamais si cd a échoué"
 ```
 

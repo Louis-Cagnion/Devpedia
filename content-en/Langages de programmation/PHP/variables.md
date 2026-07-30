@@ -30,8 +30,8 @@ To declare a variable in PHP, you must place a `$` before the variable name. PHP
     $fruits = array("pomme", "banane", "cerise");
 
     // Array
-    $personne = ["nom" => "Dupont", "age" => 25];
-    $personne = array("nom" => "Dupont", "age" => 25);
+    $person = ["nom" => "Dupont", "age" => 25];
+    $person = array("nom" => "Dupont", "age" => 25);
 
     // Object
     $date = new DateTime();
@@ -134,7 +134,7 @@ The variables below allow you to retrieve form fields based on the form's submis
 ?>
 ```
 
-When the `GET` method is used, the form data is visible directly in the URL as a *query string* (e.g., `?nom=Jean&age=25`).
+When the `GET` method is used, the form data is visible directly in the URL as a *query string* (e.g., `?name=Jean&age=25`).
 
 The `POST` method is typically used to send sensitive data (passwords, personal information, etc.), since this data is not displayed in the URL and is not subject to the same size limitations as a URL.
 
@@ -155,7 +155,7 @@ The `POST` method is typically used to send sensitive data (passwords, personal 
 
 ## Constants with `define()`
 
-`define('NOM', valeur)` creates a **global constant**, which is also accessible from any file, function, or method:
+`define('NAME', value)` creates a **global constant**, which is also accessible from any file, function, or method:
 
 ```php
 <?php
@@ -176,9 +176,9 @@ Reading an array key that doesn't exist triggers a **warning** ("Undefined array
 
 ```php
 <?php
-$personne = ["nom" => "Dupont"];
+$person = ["nom" => "Dupont"];
 
-echo $personne["age"]; // Warning: Undefined array key "age"
+echo $person["age"]; // Warning: Undefined array key "age"
 ?>
 ```
 
@@ -186,8 +186,8 @@ echo $personne["age"]; // Warning: Undefined array key "age"
 
 ```php
 <?php
-if (!empty($personne["age"])) {
-    echo $personne["age"];
+if (!empty($person["age"])) {
+    echo $person["age"];
 }
 // equivalent to: the key exists AND its value is neither empty, nor null, nor false, nor 0...
 ?>

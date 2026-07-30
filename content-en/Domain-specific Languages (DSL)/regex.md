@@ -92,7 +92,7 @@ In JavaScript, flags are placed after the last `/` in the regex:
 
 ## A complete example, built step by step
 
-Objective: Identify a line that contains **only** a Markdown link, such as `[texte](url)`.
+Objective: Identify a line that contains **only** a Markdown link, such as `[text](url)`.
 
 ### Step 1 — Literal Brackets
 
@@ -136,7 +136,7 @@ We also want **to retrieve** this text later (to see what's inside the square br
 \[([^\]]*)\]
 ```
 
-This results in: a literal "`[`," followed by the captured text, followed by a literal "`]`." It matches, for example, `[texte]`, `[]` (empty text), `[mon super lien]`...
+This results in: a literal "`[`," followed by the captured text, followed by a literal "`]`." It matches, for example, `[text]`, `[]` (empty text), `[mon super lien]`...
 
 ### Step 4 — The same logic applies to parentheses
 

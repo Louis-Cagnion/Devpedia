@@ -16,7 +16,7 @@ Understanding the different types of data is essential for writing efficient pro
 
 The `int` type is used to store positive or negative integers.
 
-```
+```c
 int age = 25;
 int temperature = -5;
 ```
@@ -27,7 +27,7 @@ The size of a `int` depends on the machine's architecture, but it is generally 4
 
 The `char` type is used to store a single character.
 
-```
+```c
 char letter = 'A';
 char digit = '5';
 ```
@@ -38,7 +38,7 @@ A `char` typically occupies 1 byte of memory and contains the ASCII value of the
 
 Since the C99 standard, the language has provided the `bool` type through the `stdbool.h` library.
 
-```
+```c
 #include <stdbool.h>
 
 bool isConnected = true;
@@ -56,7 +56,7 @@ Before C99, it was common to use integers (`0` for false, non-zero for true).
 
 C offers several types for representing decimal numbers:
 
-```
+```c
 float price = 9.99f;
 double pi = 3.1415926535;
 ```
@@ -68,7 +68,7 @@ double pi = 3.1415926535;
 
 The C language does not have a native "string" type. A string is represented by an array of characters terminated by a `\0`.
 
-```
+```c
 char name[] = "Devpedia";
 ```
 
@@ -86,7 +86,7 @@ Pointers are one of the most important features of the C language.
 
 They are used to store the memory address of a variable.
 
-```
+```c
 int age = 25;
 int *ptr = &age;
 ```
@@ -106,7 +106,7 @@ Pointers are used for:
 
 Structures allow you to group multiple pieces of data into a single object.
 
-```
+```c
 struct User
 {
     int id;

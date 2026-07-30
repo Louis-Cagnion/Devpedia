@@ -8,25 +8,25 @@ A **thread** is, like a process, a sequence of instructions executed independent
 
 ## Create and wait for a thread
 
-The POSIX threads library (`pthread`) provides the basic functions; compilation requires the "`-pthread`" option (`gcc -pthread main.c -o programme`).
+The POSIX threads library (`pthread`) provides the basic functions; compilation requires the "`-pthread`" option (`gcc -pthread main.c -o program`).
 
-```
+```c
 #include <pthread.h>
 #include <stdio.h>
 
 void *tache(void *argument)
 {
-    int *nombre = (int *)argument;
-    printf("Thread : je reçois %d\n", *nombre);
+    int *number = (int *)argument;
+    printf("Thread : je reçois %d\n", *number);
     return NULL;
 }
 
 int main(void)
 {
     pthread_t thread;
-    int valeur = 42;
+    int value = 42;
 
-    pthread_create(&thread, NULL, tache, &valeur); // lance le thread, exécute "tache" en parallèle
+    pthread_create(&thread, NULL, tache, &value); // lance le thread, exécute "tache" en parallèle
     pthread_join(thread, NULL);                    // attend que ce thread se termine
 
     return 0;
@@ -40,37 +40,37 @@ int main(void)
 
 Unlike two processes that originate from a single "`fork()`" (with separate memory), two threads of the same program can see and modify the **same global variables**:
 
-```
+```c
 #include <pthread.h>
 
-int compteur = 0; // partagé par tous les threads
+int counter = 0; // partagé par tous les threads
 
 void *incrementer(void *argument)
 {
     for (int i = 0; i < 1000000; i++) {
-        compteur++; // DANGER : plusieurs threads modifient la même variable en même temps
+        counter++; // DANGER : plusieurs threads modifient la même variable en même temps
     }
     return NULL;
 }
 ```
 
-If two threads execute `incrementer()` in parallel, the final result of `compteur` is **unpredictable**: `compteur++` is not a single atomic operation at the processor level (it breaks down into read, add, and write), and two threads may read the same value before either of them has had time to write it back—one of the two increments is then silently lost. This phenomenon is called a **race condition**.
+If two threads execute `incrementer()` in parallel, the final result of `counter` is **unpredictable**: `counter++` is not a single atomic operation at the processor level (it breaks down into read, add, and write), and two threads may read the same value before either of them has had time to write it back—one of the two increments is then silently lost. This phenomenon is called a **race condition**.
 
 ## Protecting Shared Data with a Mutex
 
 A **mutex** (*mutual exclusion*) ensures that only one section of code at a time can access shared data: the first thread to reach it **locks** it, and the others wait for it **to unlock** it:
 
-```
+```c
 #include <pthread.h>
 
-int compteur = 0;
+int counter = 0;
 pthread_mutex_t verrou = PTHREAD_MUTEX_INITIALIZER;
 
 void *incrementer(void *argument)
 {
     for (int i = 0; i < 1000000; i++) {
         pthread_mutex_lock(&verrou);
-        compteur++;                    // une seule thread à la fois peut exécuter cette ligne
+        counter++;                    // une seule thread à la fois peut exécuter cette ligne
         pthread_mutex_unlock(&verrou);
     }
     return NULL;

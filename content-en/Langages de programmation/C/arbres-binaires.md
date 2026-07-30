@@ -8,10 +8,10 @@ A **binary tree** is a data structure in which each element (called **a node**) 
 
 ## Declare a node
 
-```
+```c
 typedef struct Noeud
 {
-    int valeur;
+    int value;
     struct Noeud *gauche;
     struct Noeud *droit;
 } Noeud;
@@ -33,47 +33,47 @@ A** binary search*** ***tree** enforces an ordering rule for each node: everythi
 
 ## Recursive insertion
 
-```
-Noeud *inserer(Noeud *racine, int valeur)
+```c
+Noeud *inserer(Noeud *root, int value)
 {
-    if (racine == NULL) {
+    if (root == NULL) {
         Noeud *nouveau = malloc(sizeof(Noeud));
         if (nouveau == NULL) {
             return NULL; // cf. chapitre sur la gestion de la mémoire : toujours vérifier malloc
         }
-        nouveau->valeur = valeur;
+        nouveau->value = value;
         nouveau->gauche = NULL;
         nouveau->droit  = NULL;
         return nouveau;
     }
 
-    if (valeur < racine->valeur) {
-        racine->gauche = inserer(racine->gauche, valeur);
-    } else if (valeur > racine->valeur) {
-        racine->droit = inserer(racine->droit, valeur);
+    if (value < root->value) {
+        root->gauche = inserer(root->gauche, value);
+    } else if (value > root->value) {
+        root->droit = inserer(root->droit, value);
     }
     // valeur == racine->valeur : déjà présente, on ne fait rien
 
-    return racine;
+    return root;
 }
 ```
 
-- The base case for recursion is`racine == NULL`: we have found the empty slot where to insert.
+- The base case for recursion is`root == NULL`: we have found the empty slot where to insert.
 - Each recursive call returns the root of the subtree (whether modified or not), which is reassigned to `->gauche` or `->droit` by the caller—this is what connects the new node to the rest of the tree.
 
 ## Search
 
-```
-Noeud *rechercher(Noeud *racine, int valeur)
+```c
+Noeud *rechercher(Noeud *root, int value)
 {
-    if (racine == NULL || racine->valeur == valeur) {
-        return racine; // trouvé, ou NULL si l'arbre est vide/épuisé
+    if (root == NULL || root->value == value) {
+        return root; // trouvé, ou NULL si l'arbre est vide/épuisé
     }
 
-    if (valeur < racine->valeur) {
-        return rechercher(racine->gauche, valeur);
+    if (value < root->value) {
+        return rechercher(root->gauche, value);
     }
-    return rechercher(racine->droit, valeur);
+    return rechercher(root->droit, value);
 }
 ```
 
@@ -83,29 +83,29 @@ At each step, the comparison eliminates **an entire subtree** from the search—
 
 Traversing a tree means visiting each of its nodes once. There are three possible orders, depending on when the current node is "processed" relative to its children:
 
-```
-void parcoursInfixe(Noeud *racine)   // gauche, nœud, droit -> ordre croissant sur un ABR
+```c
+void parcoursInfixe(Noeud *root)   // gauche, nœud, droit -> ordre croissant sur un ABR
 {
-    if (racine == NULL) return;
-    parcoursInfixe(racine->gauche);
-    printf("%d ", racine->valeur);
-    parcoursInfixe(racine->droit);
+    if (root == NULL) return;
+    parcoursInfixe(root->gauche);
+    printf("%d ", root->value);
+    parcoursInfixe(root->droit);
 }
 
-void parcoursPrefixe(Noeud *racine)  // nœud, gauche, droit
+void parcoursPrefixe(Noeud *root)  // nœud, gauche, droit
 {
-    if (racine == NULL) return;
-    printf("%d ", racine->valeur);
-    parcoursPrefixe(racine->gauche);
-    parcoursPrefixe(racine->droit);
+    if (root == NULL) return;
+    printf("%d ", root->value);
+    parcoursPrefixe(root->gauche);
+    parcoursPrefixe(root->droit);
 }
 
-void parcoursSuffixe(Noeud *racine)  // gauche, droit, nœud
+void parcoursSuffixe(Noeud *root)  // gauche, droit, nœud
 {
-    if (racine == NULL) return;
-    parcoursSuffixe(racine->gauche);
-    parcoursSuffixe(racine->droit);
-    printf("%d ", racine->valeur);
+    if (root == NULL) return;
+    parcoursSuffixe(root->gauche);
+    parcoursSuffixe(root->droit);
+    printf("%d ", root->value);
 }
 ```
 
@@ -115,13 +115,13 @@ In the example tree above, `parcoursInfixe` displays `2 5 7 10 15 20`—the valu
 
 As with a linked list, each node allocated with `malloc()` must be freed individually—a suffix traversal is naturally suited for this, since it processes the children before the node itself:
 
-```
-void libererArbre(Noeud *racine)
+```c
+void libererArbre(Noeud *root)
 {
-    if (racine == NULL) return;
-    libererArbre(racine->gauche);
-    libererArbre(racine->droit);
-    free(racine);
+    if (root == NULL) return;
+    libererArbre(root->gauche);
+    libererArbre(root->droit);
+    free(root);
 }
 ```
 

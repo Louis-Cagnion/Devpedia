@@ -1,8 +1,25 @@
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson } from "./utils.js";
+import { rememberCurrentPageForLanguageSwitch } from "./router.js";
 
 const STORAGE_KEY = "devpedia-lang";
 const FRENCH_OPTION = { code: "", label: "Français" };
+
+// Among the languages this site targets, only Arabic is written right-to-left.
+const RTL_LANGUAGE_CODES = new Set(["ar"]);
+
+/**
+ * Sets `<html lang>` and `<html dir>` to match the active language, so the browser and screen
+ * readers apply the right script direction and per-language rendering rules — right-to-left
+ * layout for Arabic, correct hyphenation/line-breaking hints for every other language (Latin
+ * scripts as well as CJK, which browsers already break and wrap correctly by default).
+ *
+ * @param {string} langCode "" for French, or one of structure/languages.json's codes
+ */
+export function applyDocumentLanguage(langCode) {
+    document.documentElement.lang = langCode || "fr";
+    document.documentElement.dir = RTL_LANGUAGE_CODES.has(langCode) ? "rtl" : "ltr";
+}
 
 /**
  * @returns {string} the language code stored from a previous visit, or "" (French)
@@ -36,9 +53,9 @@ export async function initLanguageSwitcher(container) {
         return;
 
     const currentCode = getStoredLanguage();
-    const button = createTag("button", { class: "langButton" }, {
-        textContent: languages.find(l => l.code === currentCode)?.label ?? "Français"
-    });
+    const currentLabel = languages.find(l => l.code === currentCode)?.label ?? "Français";
+    const button = createTag("button", { class: "langButton" }, { title: "Language / Langue" });
+    button.append("🌐 ", createTag("span", { class: "langLabel" }, { textContent: currentLabel }));
     const dropdown = createTag("ul", { class: "langDropdown" });
     languages.forEach(language => {
         const li = createTag("li");
@@ -46,7 +63,10 @@ export async function initLanguageSwitcher(container) {
             class: `langOption${language.code === currentCode ? " current" : ""}`
         }, { textContent: language.label });
         optionButton.addEventListener("click", () => {
+            if (language.code === currentCode)
+                return;
             localStorage.setItem(STORAGE_KEY, language.code);
+            rememberCurrentPageForLanguageSwitch();
             location.reload();
         });
         li.append(optionButton);

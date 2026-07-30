@@ -20,8 +20,8 @@ node_modules/       # ignore ce dossier entier, à la racine ou ailleurs
 | Pattern | Meaning |
 |---|---|
 | `*.ext` | Any file with this extension, at any level |
-| `dossier/` | This file and all of its contents |
-| `/chemin` | Only at the root of the repository (not in a subfolder with the same name) |
+| `folder/` | This file and all of its contents |
+| `/path` | Only at the root of the repository (not in a subfolder with the same name) |
 | `!motif` | Exception to a Previous Rule |
 
 ## What You Should Typically Ignore

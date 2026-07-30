@@ -29,7 +29,7 @@ tant que vrai :
 A typed command is not executed as-is: Bash performs several expansion steps, in a fixed and non-negotiable order, before executing anything:
 
 1. **Brace expansion** (`{1,2,3}` → `1 2 3`)
-2. **Tilde expansion** (`~` → `/home/utilisateur`)
+2. **Tilde expansion** (`~` → `/home/user`)
 3. **Parameter/variable expansion, command substitution, and arithmetic** (`$var`, `$(commande)`, `$((1+1))`), evaluated from left to right
 4. **Word*** ***splitting**: The result of the previous expansions is split **into words** based on spaces, unless it was enclosed in double quotation marks
 5. **Path expansion** (*globbing*: `*.txt` → actual list of files)
@@ -65,7 +65,7 @@ if (pid == 0) {
 
 ## How the shell determines which executable to run
 
-If the command entered contains a `/` (e.g., `./script.sh`, `/bin/ls`), the shell uses it directly. Otherwise, it iterates through each directory listed in `$PATH` (see the chapter on environment variables), in order, and stops at the **first** executable file found with that name—this is a simple `access(chemin, X_OK)` test repeated on each candidate.
+If the command entered contains a `/` (e.g., `./script.sh`, `/bin/ls`), the shell uses it directly. Otherwise, it iterates through each directory listed in `$PATH` (see the chapter on environment variables), in order, and stops at the **first** executable file found with that name—this is a simple `access(path, X_OK)` test repeated on each candidate.
 
 ## Implement a pipe (`cmd1 | cmd2`)
 
@@ -97,7 +97,7 @@ waitpid(p1, NULL, 0);
 waitpid(p2, NULL, 0);
 ```
 
-`dup2(source, cible)` makes the descriptor `cible` (e.g., `STDOUT_FILENO`, which resolves to `1`) point to the same resource as `source` — it is precisely this mechanism, applied to a pipe descriptor rather than a file, that connects the output of one command to the input of the next.
+`dup2(source, target)` makes the descriptor `target` (e.g., `STDOUT_FILENO`, which resolves to `1`) point to the same resource as `source` — it is precisely this mechanism, applied to a pipe descriptor rather than a file, that connects the output of one command to the input of the next.
 
 ## Implement a redirect (`>`, `<`)
 

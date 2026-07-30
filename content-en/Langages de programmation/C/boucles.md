@@ -10,7 +10,7 @@ Loops allow you to repeat a block of code multiple times. In C, there are three 
 
 The condition is checked **before** each turn:
 
-```
+```c
 int i = 0;
 
 while (i < 5) {
@@ -23,7 +23,7 @@ while (i < 5) {
 
 A variant where the condition is checked **after** each iteration: the block therefore always executes at least once, even if the condition is false from the start:
 
-```
+```c
 int i = 0;
 
 do {
@@ -36,7 +36,7 @@ do {
 
 Combines the initialization, the condition, and the increment into a single line—useful whenever the number of iterations is known in advance:
 
-```
+```c
 for (int i = 0; i < 5; i++) {
     printf("%d\n", i);
 }
@@ -46,21 +46,21 @@ The three parts are independent and optional (`for (;;)` is a valid infinite loo
 
 ## Iterate through an array (no "`foreach`")
 
-```
-int tableau[5] = {10, 20, 30, 40, 50};
+```c
+int array[5] = {10, 20, 30, 40, 50};
 
 for (int i = 0; i < 5; i++) {
-    printf("%d\n", tableau[i]);
+    printf("%d\n", array[i]);
 }
 ```
 
-> **Note:** Unlike PHP or JavaScript, there is no **native way** to determine the size of an array based on the pointer alone—`tableau[5]` "knows" how many elements it contains as long as it is treated as a static array, but this information is lost as soon as it is passed to a function (at which point it behaves like a simple pointer; see the chapter on pointers). The size must therefore be passed separately.
+> **Note:** Unlike PHP or JavaScript, there is no **native way** to determine the size of an array based on the pointer alone—`array[5]` "knows" how many elements it contains as long as it is treated as a static array, but this information is lost as soon as it is passed to a function (at which point it behaves like a simple pointer; see the chapter on pointers). The size must therefore be passed separately.
 
-```
-void afficher(int *tableau, int taille) // la taille doit être passée explicitement
+```c
+void afficher(int *array, int taille) // la taille doit être passée explicitement
 {
     for (int i = 0; i < taille; i++) {
-        printf("%d\n", tableau[i]);
+        printf("%d\n", array[i]);
     }
 }
 ```
@@ -70,7 +70,7 @@ void afficher(int *tableau, int taille) // la taille doit être passée explicit
 - `break;` completely stops the enclosing loop.
 - `continue;` skips directly to the next iteration without executing the rest of the current loop body.
 
-```
+```c
 for (int i = 0; i < 10; i++) {
     if (i == 5) {
         break; // arrête la boucle dès que i vaut 5
@@ -86,7 +86,7 @@ for (int i = 0; i < 10; i++) {
 
 `break` It only exits the **nearest** loop that encloses it—to exit multiple nested loops at once, you need a control variable or a "`goto`" (which is rare but sometimes used for this specific case in C):
 
-```
+```c
 int trouve = 0;
 
 for (int i = 0; i < 10 && !trouve; i++) {

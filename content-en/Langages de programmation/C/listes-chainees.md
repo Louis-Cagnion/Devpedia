@@ -8,10 +8,10 @@ A **linked list** is a data structure in which each element (a **link**, or *nod
 
 ## Report a link
 
-```
+```c
 typedef struct Maillon
 {
-    int valeur;
+    int value;
     struct Maillon *suivant;
 } Maillon;
 ```
@@ -20,12 +20,12 @@ As with a binary tree (see the relevant chapter), `struct Maillon *suivant` must
 
 ## Creating and Linking Chains
 
-```
+```c
 Maillon *premier = malloc(sizeof(Maillon));   // à vérifier contre NULL en pratique (cf. chapitre mémoire)
-premier->valeur = 10;
+premier->value = 10;
 
 Maillon *second = malloc(sizeof(Maillon));
-second->valeur = 20;
+second->value = 20;
 
 premier->suivant = second; // chaîne le premier vers le second
 second->suivant = NULL;    // NULL marque la fin de la liste
@@ -38,13 +38,13 @@ premier -> second -> NULL
 
 ## Browse the list
 
-```
+```c
 void afficher(Maillon *tete)
 {
     Maillon *courant = tete;
 
     while (courant != NULL) {
-        printf("%d\n", courant->valeur);
+        printf("%d\n", courant->value);
         courant = courant->suivant;
     }
 }
@@ -54,14 +54,14 @@ void afficher(Maillon *tete)
 
 ## Insert at the top of the list
 
-```
-Maillon *insererEnTete(Maillon *tete, int valeur)
+```c
+Maillon *insererEnTete(Maillon *tete, int value)
 {
     Maillon *nouveau = malloc(sizeof(Maillon));
     if (nouveau == NULL) {
         return tete; // échec d'allocation : renvoyer la liste inchangée plutôt que planter
     }
-    nouveau->valeur = valeur;
+    nouveau->value = value;
     nouveau->suivant = tete; // le nouveau maillon pointe vers l'ancienne tête
     return nouveau;          // devient la nouvelle tête
 }
@@ -76,7 +76,7 @@ Inserting at the beginning is a constant-time operation (no other links are move
 
 Each link allocated with `malloc()` must be freed individually—freeing `tete` directly without retaining a reference to the rest would result in the loss of access to all subsequent links (memory leak; see the chapter on memory management):
 
-```
+```c
 void libererListe(Maillon *tete)
 {
     Maillon *courant = tete;

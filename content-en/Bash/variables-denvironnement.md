@@ -9,15 +9,15 @@ An environment variable is a variable that is automatically passed to processes 
 ## Local Variable vs. Exported Variable
 
 ```bash
-NOM="Jean"          # Standard shell variable: visible only in this script/session
-export NOM          # from now on, passed to child processes (other scripts, commands, etc.)
+NAME="Jean"          # Standard shell variable: visible only in this script/session
+export NAME          # from now on, passed to child processes (other scripts, commands, etc.)
 
 export EMAIL="jean@exemple.com"  # Declaration and export in a single line
 ```
 
 ```bash
 # sous_script.sh
-echo "$NOM"    # Returns "Jean" if NAME was exported by the calling script; otherwise, returns an empty string
+echo "$NAME"    # Returns "Jean" if NAME was exported by the calling script; otherwise, returns an empty string
 ```
 
 > **Note:** Exporting works only in one direction: from parent to child. A child script that modifies an exported variable cannot propagate that change back to the script that launched it—each process has its own copy of the environment.

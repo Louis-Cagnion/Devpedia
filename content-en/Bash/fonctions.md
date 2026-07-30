@@ -60,8 +60,8 @@ addition() {
     echo $(($1 + $2))
 }
 
-resultat=$(addition 4 6)
-echo "Résultat : $resultat"  # Result: 10
+result=$(addition 4 6)
+echo "Résultat : $result"  # Result: 10
 ```
 
 > **Note:** Never confuse the two mechanisms. `return` returns a status (0–255, for flow control with `if`), while `echo` + `$(...)` returns actual data (to be stored or reused). Mixing the two in the same function is a common source of confusion.
@@ -72,8 +72,8 @@ Without `local`, a variable assigned within a function remains **globally** visi
 
 ```bash
 calculer() {
-    local resultat=$(($1 * 2))  # local: exists only within `calculate()`
-    echo $resultat
+    local result=$(($1 * 2))  # local: exists only within `calculate()`
+    echo $result
 }
 ```
 

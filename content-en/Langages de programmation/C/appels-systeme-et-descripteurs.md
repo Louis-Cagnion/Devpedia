@@ -38,7 +38,7 @@ A standard C function call (`addition(2, 3)`) executes entirely in **user** spac
 
 Most system calls signal a failure by returning `-1` (or `NULL` for those that return a pointer), and by setting the global variable `errno` to a code describing the specific cause—the same principle as the historical C functions discussed in the chapter on functions (PHP’s `@` follows the same kind of “C-style” error convention):
 
-```
+```c
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -63,7 +63,7 @@ Every process starts with three descriptors that are already open:
 | `1` | `STDOUT_FILENO` | Standard Output |
 | `2` | `STDERR_FILENO` | Error Output |
 
-```
+```c
 int fd = open("fichier.txt", O_RDONLY); // renvoie par ex. 3 : le prochain emplacement libre de CE processus
 read(fd, tampon, taille);
 close(fd);
@@ -73,9 +73,9 @@ close(fd);
 
 ## `dup2()` : Make a descriptor point to another resource
 
-`dup2(source, cible)` Makes descriptor number `cible` point to the same open resource as `source`, while closing whatever `cible` previously pointed to:
+`dup2(source, target)` Makes descriptor number `target` point to the same open resource as `source`, while closing whatever `target` previously pointed to:
 
-```
+```c
 int fd = open("sortie.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 dup2(fd, STDOUT_FILENO); // désormais, écrire sur "stdout" (1) écrit en réalité dans "sortie.txt"
 close(fd); // l'original peut être fermé : la cible (1) reste valide, pointant vers la même ressource

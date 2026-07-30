@@ -59,7 +59,7 @@ If you insert user data directly into an SQL query, a visitor could manipulate t
 ```php
 <?php
     // ❌ Dangerous: The data is inserted directly into the query
-    $requete = "SELECT * FROM users WHERE email = '" . $_POST['email'] . "'";
+    $query = "SELECT * FROM users WHERE email = '" . $_POST['email'] . "'";
 ?>
 ```
 

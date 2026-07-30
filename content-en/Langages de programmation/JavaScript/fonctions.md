@@ -44,19 +44,19 @@ const saluer = () => { console.log("Bonjour"); }  // multi-line body: curly brac
 ### The Real Difference: `this`
 
 ```javascript
-const objet = {
-    nom: "Compteur",
-    valeurs: [1, 2, 3],
+const object = {
+    name: "Compteur",
+    values: [1, 2, 3],
 
     afficherClassique: function () {
-        this.valeurs.forEach(function (v) {
-            console.log(this.nom, v);   // "this" here is undefined (or the global object): NOT "object"!
+        this.values.forEach(function (v) {
+            console.log(this.name, v);   // "this" here is undefined (or the global object): NOT "object"!
         });
     },
 
     afficherFlechee: function () {
-        this.valeurs.forEach((v) => {
-            console.log(this.nom, v);   // "this" uses the same value as afficherFlechee -> works
+        this.values.forEach((v) => {
+            console.log(this.name, v);   // "this" uses the same value as afficherFlechee -> works
         });
     },
 };
@@ -67,12 +67,12 @@ const objet = {
 ## Default settings, rest, and spread
 
 ```javascript
-function saluer(nom, message = "Bonjour") {   // default value if the argument is omitted or undefined
-    return `${message} ${nom}`;
+function saluer(name, message = "Bonjour") {   // default value if the argument is omitted or undefined
+    return `${message} ${name}`;
 }
 
-function somme(...nombres) {                    // "rest": groups the remaining arguments into an array
-    return nombres.reduce((total, n) => total + n, 0);
+function somme(...numbers) {                    // "rest": groups the remaining arguments into an array
+    return numbers.reduce((total, n) => total + n, 0);
 }
 somme(1, 2, 3, 4);   // 10
 
@@ -85,7 +85,7 @@ const b = [...a, 4, 5];   // "spread": spreads the elements of an array -> [1, 2
 A nested function retains access to the variables of the outer function, even after the outer function has finished executing:
 
 ```javascript
-function compteur() {
+function counter() {
     let total = 0;
     return function () {
         total++;
@@ -93,7 +93,7 @@ function compteur() {
     };
 }
 
-const compter = compteur();
+const compter = counter();
 compter();   // 1
 compter();   // 2 -> "total" was retained between calls; specific to THIS instance of counter()
 ```

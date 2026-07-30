@@ -11,12 +11,12 @@ order: 14
 ```python
 import numpy as np
 
-liste = [1, 2, 3, 4, 5]
-tableau = np.array([1, 2, 3, 4, 5])
+list = [1, 2, 3, 4, 5]
+array = np.array([1, 2, 3, 4, 5])
 
 # Multiply each element by 2:
-[x * 2 for x in liste]     # requires a Python loop that processes each element individually
-tableau * 2                  # "* 2" applies directly to the ENTIRE array -> [2, 4, 6, 8, 10]
+[x * 2 for x in list]     # requires a Python loop that processes each element individually
+array * 2                  # "* 2" applies directly to the ENTIRE array -> [2, 4, 6, 8, 10]
 ```
 
 > **Note:** A Python list stores **pointers** to objects `int` that may be scattered throughout memory (see the chapter on pointers, C section); a `ndarray` stores **raw values** one after another, like a C array. NumPy operations are executed by internally compiled C code on this contiguous memory—often 10 to 100 times faster than an equivalent Python loop, while also using significantly less memory.
@@ -35,11 +35,11 @@ np.random.rand(3, 3)                    # 3x3 table of random values between 0 a
 ## `shape` and `dtype`
 
 ```python
-tableau = np.array([[1, 2, 3], [4, 5, 6]])
+array = np.array([[1, 2, 3], [4, 5, 6]])
 
-tableau.shape   # (2, 3) -> 2 rows, 3 columns
-tableau.dtype    # dtype('int64') -> ALL elements share this same type
-tableau.ndim      # 2 -> number of dimensions
+array.shape   # (2, 3) -> 2 rows, 3 columns
+array.dtype    # dtype('int64') -> ALL elements share this same type
+array.ndim      # 2 -> number of dimensions
 ```
 
 > **Note:** Unlike a Python list (which can contain mixed types), a `ndarray` requires all its elements to be of the **same type**—and that is precisely what enables contiguous storage and the resulting performance optimizations.
@@ -47,12 +47,12 @@ tableau.ndim      # 2 -> number of dimensions
 ## Indexing and Slicing
 
 ```python
-tableau = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+array = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-tableau[0]        # [1, 2, 3] -> first line
-tableau[0, 2]      # 3 -> row 0, column 2
-tableau[:, 1]       # [2, 5, 8] -> the entire column at index 1
-tableau[0:2, 0:2]    # subtable: the first 2 rows and columns
+array[0]        # [1, 2, 3] -> first line
+array[0, 2]      # 3 -> row 0, column 2
+array[:, 1]       # [2, 5, 8] -> the entire column at index 1
+array[0:2, 0:2]    # subtable: the first 2 rows and columns
 ```
 
 ## *Broadcasting*: Working with Tables of Different Sizes
@@ -60,10 +60,10 @@ tableau[0:2, 0:2]    # subtable: the first 2 rows and columns
 NumPy automatically "extends" a smaller array to match a larger one, without actually duplicating the data in memory:
 
 ```python
-tableau = np.array([[1, 2, 3], [4, 5, 6]])
+array = np.array([[1, 2, 3], [4, 5, 6]])
 vecteur = np.array([10, 20, 30])
 
-tableau + vecteur
+array + vecteur
 # [[11, 22, 33],
 # [14, 25, 36]]  -> "vector" is applied to EVERY row of "array"
 ```

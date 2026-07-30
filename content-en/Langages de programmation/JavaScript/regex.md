@@ -74,9 +74,9 @@ Some prototypes of the `string` object accept a regular expression as a paramete
 **`matchAll`** Works like `match` with the `g` flag, but requires this flag. It returns an iterator that provides access to the details of each match, including captured groups.
 ```javascript
     const str = "Jean:25 Marie:30";
-    const resultat = [...str.matchAll(/(\w+):(\d+)/g)];
+    const result = [...str.matchAll(/(\w+):(\d+)/g)];
 
-    console.log(resultat);
+    console.log(result);
     /*  
     [
         [

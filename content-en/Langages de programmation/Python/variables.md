@@ -10,8 +10,8 @@ Python is **dynamically typed**: a variable does not have a type declared in adv
 
 ```python
 age = 25            # int
-prix = 9.99          # float
-nom = "Devpedia"      # str
+price = 9.99          # float
+name = "Devpedia"      # str
 actif = True          # bool
 rien = None           # equivalent to null/NULL
 
@@ -52,25 +52,25 @@ not a     # Logical "NOT" (not '!')
 ## F-strings: Inserting Variables into Text
 
 ```python
-nom = "Jean"
+name = "Jean"
 age = 25
 
-print(f"{nom} a {age} ans")           # Jean is 25 years old
+print(f"{name} a {age} ans")           # Jean is 25 years old
 print(f"Dans 10 ans : {age + 10} ans") # a real expression, not just a variable
 ```
 
-F-strings (with the prefix `f` before the quotation marks) are the recommended modern method, replacing `"{} a {} ans".format(nom, age)` or concatenation with `+`.
+F-strings (with the prefix `f` before the quotation marks) are the recommended modern method, replacing `"{} a {} ans".format(name, age)` or concatenation with `+`.
 
 ## Immutability of Strings
 
 Just like in PHP, a Python string is **immutable**: any "modification" actually creates a new string; it never modifies the original one in memory.
 
 ```python
-texte = "bonjour"
-texte.upper()      # returns "HELLO", DOES NOT MODIFY the text
-print(texte)        # always "hello"
+text = "bonjour"
+text.upper()      # returns "HELLO", DOES NOT MODIFY the text
+print(text)        # always "hello"
 
-texte = texte.upper()  # You need to reassign it to "save" the change
+text = text.upper()  # You need to reassign it to "save" the change
 ```
 
 ## Summary of Basic Types
@@ -79,7 +79,7 @@ texte = texte.upper()  # You need to reassign it to "save" the change
 |---|---|---|
 | `int` | `25` | `int` |
 | `float` | `9.99` | `float` |
-| `str` | `"texte"` | `string` |
+| `str` | `"text"` | `string` |
 | `bool` | `True` / `False` | `bool` |
 | `None` | `None` | `null` |
 

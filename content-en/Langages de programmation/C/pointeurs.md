@@ -8,7 +8,7 @@ A pointer is a variable that does not store a value directly, but rather the** m
 
 ## Registration, Address, and Delisting
 
-```
+```c
 int age = 25;
 int *ptr = &age;
 
@@ -24,7 +24,7 @@ printf("%d\n", *ptr);  // 25          -> la valeur pointée par ptr
 
 Editing `*ptr` directly modifies `age`, since both refer to the same memory location:
 
-```
+```c
 *ptr = 30;
 printf("%d\n", age); // 30
 ```
@@ -33,7 +33,7 @@ printf("%d\n", age); // 30
 
 Adding 1 to a pointer does not advance it by one byte, but by `sizeof(type)` bytes:
 
-```
+```c
 int tab[3] = {10, 20, 30};
 int *p = tab;
 
@@ -48,7 +48,7 @@ printf("%d\n", *(p + 2)); // 30
 
 A pointer can itself be pointed to, which is useful for modifying a pointer from within a function (see "passing by address" below):
 
-```
+```c
 int age = 25;
 int *ptr = &age;
 int **ptrPtr = &ptr;
@@ -60,10 +60,10 @@ printf("%d\n", **ptrPtr); // 25 -> déréférence deux fois : ptrPtr -> ptr -> a
 
 In C, arguments are passed **by value** (as a copy) by default—so a function cannot modify the caller's original variable, unless it is passed the address of that variable directly:
 
-```
-void incrementer(int *nombre)
+```c
+void incrementer(int *number)
 {
-    (*nombre)++; // modifie la valeur à l'adresse pointée, donc la variable d'origine
+    (*number)++; // modifie la valeur à l'adresse pointée, donc la variable d'origine
 }
 
 int main(void)
@@ -74,13 +74,13 @@ int main(void)
 }
 ```
 
-Without the `*`, `incrementer(int nombre)` would only modify a local copy, with no effect on `x`.
+Without the `*`, `incrementer(int number)` would only modify a local copy, with no effect on `x`.
 
 ## Function pointers
 
 A function also has a memory address, which can be stored in a pointer—useful for dynamically choosing which function to call (callbacks, dispatch tables):
 
-```
+```c
 int addition(int a, int b) { return a + b; }
 int soustraction(int a, int b) { return a - b; }
 
@@ -95,7 +95,7 @@ printf("%d\n", operation(4, 2)); // 2
 
 An un`NULL` pointer contains a **random** address ("wild pointer")—dereferencing it results in undefined behavior, often a crash (`segmentation fault`). A pointer that has not yet been used must be explicitly  and checked before dereferencing:
 
-```
+```c
 int *ptr = NULL;
 
 if (ptr != NULL) {
@@ -111,7 +111,7 @@ if (ptr != NULL) {
 
 Two very distinct uses of "`const`" that are often confused:
 
-```
+```c
 const int *p1;  // p1 peut changer d'adresse, mais pas modifier la valeur pointée
 int *const p2 = &x; // p2 ne peut plus changer d'adresse, mais peut modifier la valeur pointée
 ```

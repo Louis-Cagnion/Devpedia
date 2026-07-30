@@ -17,9 +17,9 @@ double diviser(double a, double b) {
 }
 
 try {
-    double resultat = diviser(10, 0);
-} catch (const std::runtime_error &erreur) {
-    std::cout << "Erreur : " << erreur.what() << "\n";
+    double result = diviser(10, 0);
+} catch (const std::runtime_error &error) {
+    std::cout << "Erreur : " << error.what() << "\n";
 }
 ```
 
@@ -44,13 +44,13 @@ Intercepting `const std::exception &` catches any exception derived from this st
 ```cpp
 class SoldeInsuffisantException : public std::runtime_error {
 public:
-    SoldeInsuffisantException(double solde)
-        : std::runtime_error("Solde insuffisant : " + std::to_string(solde)) {}
+    SoldeInsuffisantException(double balance)
+        : std::runtime_error("Solde insuffisant : " + std::to_string(balance)) {}
 };
 
-void retirer(double solde, double montant) {
-    if (montant > solde) {
-        throw SoldeInsuffisantException(solde);
+void retirer(double balance, double montant) {
+    if (montant > balance) {
+        throw SoldeInsuffisantException(balance);
     }
 }
 

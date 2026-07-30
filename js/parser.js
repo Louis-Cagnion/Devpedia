@@ -17,10 +17,32 @@ export function parseMdContent(rawContent) {
 }
 
 /**
+ * Pulls a backslash-escaped punctuation character (e.g. `` \` ``, `\*`) out of `line` before
+ * `transform` runs, so it can never be mistaken for a markdown delimiter, then puts back the
+ * bare literal character (the backslash is consumed, per commonmark escaping) at its original
+ * position. Uses \x01-delimited placeholders so they can never collide with real text.
+ *
+ * @param {string} line
+ * @param {(withoutEscapes: string) => string} transform
+ * @returns {string}
+ */
+function withProtectedEscapes(line, transform) {
+    const escaped = [];
+    const withoutEscapes = line.replace(/\\([\\`*_{}\[\]()#+\-.!>])/g, (_, char) => {
+        escaped.push(char);
+        return "\x01" + (escaped.length - 1) + "\x01";
+    });
+    return transform(withoutEscapes).replace(/\x01(\d+)\x01/g, (_, i) => escaped[Number(i)]);
+}
+
+/**
  * Pulls `code` spans out of `line` before `transform` runs on the rest (so a literal `*`
  * or `**` inside a code span, e.g. `` `*` ``, can never be mistaken for emphasis markers),
  * then reinserts each span — wrapped by `wrapCode` — at its original position. Uses a null
  * character as the placeholder delimiter so it can never collide with real text.
+ *
+ * Delimiters can be one or two backticks (`` `code` `` or ``` ``code`` ```) — the longer form
+ * lets a code span contain a literal backtick, e.g. `` ```date` `` `` renders as `` `date` ``.
  *
  * @param {string} line
  * @param {(withoutCode: string) => string} transform
@@ -29,18 +51,20 @@ export function parseMdContent(rawContent) {
  */
 function withProtectedCodeSpans(line, transform, wrapCode) {
     const spans = [];
-    const withoutCode = line.replace(/`([^`]+)`/g, (_, code) => {
-        spans.push(code);
+    const withoutCode = line.replace(/(`{1,2})([\s\S]+?)\1/g, (_, fence, code) => {
+        spans.push(code.trim());
         return "\0" + (spans.length - 1) + "\0";
     });
     return transform(withoutCode).replace(/\0(\d+)\0/g, (_, i) => wrapCode(spans[Number(i)]));
 }
 
 function mdToHtmlFormatting(line) {
-    return withProtectedCodeSpans(
-        line,
-        text => text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>"),
-        code => `<code>${code}</code>`
+    return withProtectedEscapes(line, withoutEscapes =>
+        withProtectedCodeSpans(
+            withoutEscapes,
+            text => text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>"),
+            code => `<code>${code}</code>`
+        )
     );
 }
 
@@ -49,10 +73,12 @@ function mdToHtmlFormatting(line) {
  * @returns {string} the line with markdown emphasis/code markers removed, as plain text
  */
 function stripMdFormatting(line) {
-    return withProtectedCodeSpans(
-        line,
-        text => text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1"),
-        code => code
+    return withProtectedEscapes(line, withoutEscapes =>
+        withProtectedCodeSpans(
+            withoutEscapes,
+            text => text.replace(/\*\*(.*?)\*\*/g, "$1").replace(/\*(.*?)\*/g, "$1"),
+            code => code
+        )
     );
 }
 
@@ -123,6 +149,67 @@ function createQuoteFromText(line, homeDiv, fileName, quoteDiv) {
 }
 
 /**
+ * @param {string} line a single markdown table row, e.g. `| a | b |`
+ * @returns {Array<string>} the row's cells, trimmed, without the leading/trailing pipe
+ */
+function splitTableRow(line) {
+    return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(cell => cell.trim());
+}
+
+/**
+ * @param {string} line the line right after a table header row
+ * @returns {boolean} whether it's a valid markdown table separator (e.g. `|---|:--:|`)
+ */
+function isTableSeparatorRow(line) {
+    if (!line.includes("|") && !line.includes("-"))
+        return false;
+    const cells = splitTableRow(line);
+    return cells.length > 0 && cells.every(cell => /^:?-+:?$/.test(cell));
+}
+
+/**
+ * @param {string} cell a separator cell, e.g. `:--:`
+ * @returns {string|null} the CSS text-align implied by the cell's colons, or null for the default
+ */
+function tableColumnAlign(cell) {
+    const left = cell.startsWith(":");
+    const right = cell.endsWith(":");
+    if (left && right) return "center";
+    if (right) return "right";
+    if (left) return "left";
+    return null;
+}
+
+function createTableFromLines(headerLine, separatorLine, bodyLines, homeDiv, fileName) {
+    const aligns = splitTableRow(separatorLine).map(tableColumnAlign);
+    const table = createTag("table", {class: `${fileName}Table`});
+
+    const headRow = createTag("tr");
+    splitTableRow(headerLine).forEach((cell, i) => {
+        const th = createTag("th", aligns[i] ? {style: `text-align:${aligns[i]}`} : {}, {innerHTML: mdToHtmlFormatting(cell)});
+        headRow.append(th);
+    });
+    const thead = createTag("thead");
+    thead.append(headRow);
+    table.append(thead);
+
+    const tbody = createTag("tbody");
+    bodyLines.forEach(bodyLine => {
+        const tr = createTag("tr");
+        splitTableRow(bodyLine).forEach((cell, i) => {
+            const td = createTag("td", aligns[i] ? {style: `text-align:${aligns[i]}`} : {}, {innerHTML: mdToHtmlFormatting(cell)});
+            tr.append(td);
+        });
+        tbody.append(tr);
+    });
+    table.append(tbody);
+
+    const wrapper = createTag("div", {class: "tableWrapper"});
+    wrapper.append(table);
+    homeDiv.append(wrapper);
+}
+
+/**
  * Render a markdown body into `homeDiv`. Its first line must be a `# ` heading,
  * used as the page's title (`h2`); further `##`-`######` headings render as `h3`-`h6`,
  * each given an anchor id.
@@ -133,7 +220,16 @@ function createQuoteFromText(line, homeDiv, fileName, quoteDiv) {
  * @returns {Array<{level: number, id: string, text: string}>} the page's `h3`-`h6` headings, in order
  */
 export function parseAppendText(homeDiv, fileName, text) {
-    const lines = text.split("\n").filter(line => line.trim() !== "");
+    // Blank lines are noise between blocks, but significant inside a fenced code block
+    // (they're part of the code) — so fence state must gate the filter, not run after it.
+    let inFence = false;
+    const lines = text.split("\n").filter(line => {
+        if (isCodeFence(line)) {
+            inFence = !inFence;
+            return true;
+        }
+        return inFence || line.trim() !== "";
+    });
 
     const listRegex = /^(\* |- |\d+\) )/;
     let listDiv = null;
@@ -142,7 +238,10 @@ export function parseAppendText(homeDiv, fileName, text) {
     const usedIds = new Set();
     const outline = [];
 
-    lines.forEach(line => {
+    let i = 0;
+    while (i < lines.length) {
+        const line = lines[i];
+
         if (isCodeFence(line)) {
             if (!inCodeBlock) {
                 inCodeBlock = true;
@@ -156,11 +255,26 @@ export function parseAppendText(homeDiv, fileName, text) {
                 window.hljs.highlightElement(codeDiv);
                 codeDiv = null;
             }
-            return;
+            i++;
+            continue;
         }
         if (inCodeBlock) {
             codeDiv.append(document.createTextNode(line + "\n"));
-            return;
+            i++;
+            continue;
+        }
+        if (line.includes("|") && i + 1 < lines.length && isTableSeparatorRow(lines[i + 1])) {
+            openList = false;
+            openQuote = false;
+            const bodyLines = [];
+            let j = i + 2;
+            while (j < lines.length && lines[j].includes("|") && !isCodeFence(lines[j])) {
+                bodyLines.push(lines[j]);
+                j++;
+            }
+            createTableFromLines(line, lines[i + 1], bodyLines, homeDiv, fileName);
+            i = j;
+            continue;
         }
         const headingMatch = line.match(headingRegex);
         if (headingMatch) {
@@ -176,20 +290,21 @@ export function parseAppendText(homeDiv, fileName, text) {
             if (!isPageTitle)
                 outline.push({level, id, text: stripMdFormatting(rawText)});
         } else {
-            line = mdToHtmlFormatting(line);
-            if (quoteRegex.test(line)) {
+            const formatted = mdToHtmlFormatting(line);
+            if (quoteRegex.test(formatted)) {
                 openList = false;
-                quoteDiv = createQuoteFromText(line, homeDiv, fileName, quoteDiv);
-            } else if (listRegex.test(line)) {
+                quoteDiv = createQuoteFromText(formatted, homeDiv, fileName, quoteDiv);
+            } else if (listRegex.test(formatted)) {
                 openQuote = false;
-                listDiv = createListFromText(line, homeDiv, fileName, listDiv, listRegex);
+                listDiv = createListFromText(formatted, homeDiv, fileName, listDiv, listRegex);
             } else {
                 openList = false;
                 openQuote = false;
-                homeDiv.append(createTag('p', {class: `${fileName}P`}, {innerHTML: line}));
+                homeDiv.append(createTag('p', {class: `${fileName}P`}, {innerHTML: formatted}));
             }
         }
-    })
+        i++;
+    }
 
     return outline;
 }

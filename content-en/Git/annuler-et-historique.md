@@ -9,13 +9,13 @@ Git offers several commands for undoing changes at different levels: undoing an 
 ## Discard uncommitted changes
 
 ```bash
-git checkout -- fichier.txt   # Restores a file to its last committed state, overwriting local changes
-git restore fichier.txt        # the modern equivalent of the command above
+git checkout -- file.txt   # Restores a file to its last committed state, overwriting local changes
+git restore file.txt        # the modern equivalent of the command above
 
-git restore --staged fichier.txt  # Remove a file from the staging area WITHOUT affecting its changes in the working directory
+git restore --staged file.txt  # Remove a file from the staging area WITHOUT affecting its changes in the working directory
 ```
 
-> **Note:** `git checkout -- fichier.txt` and `git restore fichier.txt` are **irreversible**: uncommitted changes are permanently lost, unlike a commit, which can always be recovered (see `git reflog` below).
+> **Note:** `git checkout -- file.txt` and `git restore file.txt` are **irreversible**: uncommitted changes are permanently lost, unlike a commit, which can always be recovered (see `git reflog` below).
 
 ## `git reset` : Move the current branch backward
 
