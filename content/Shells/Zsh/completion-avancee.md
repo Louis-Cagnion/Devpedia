@@ -8,7 +8,7 @@ Bash complète les noms de fichiers et, pour certaines commandes, propose une li
 
 ## Activer le système de complétion
 
-```zsh
+```bash
 autoload -Uz compinit
 compinit
 ```
@@ -19,7 +19,7 @@ Ces deux lignes, placées dans `~/.zshrc` (cf. chapitre sur les fichiers de dém
 
 ## Ce que ça change concrètement
 
-```zsh
+```bash
 git checkout <Tab>        # propose les branches locales, pas les fichiers du dossier
 kill -9 <Tab>              # propose les PID de processus en cours, avec leur nom
 ssh <Tab>                  # propose les hôtes connus (~/.ssh/config, ~/.ssh/known_hosts)
@@ -31,7 +31,7 @@ Sans `compsys`, chacune de ces commandes se contenterait de compléter des noms 
 
 Quand plusieurs résultats sont possibles, zsh peut afficher un **menu** navigable aux flèches plutôt que de simplement lister les possibilités :
 
-```zsh
+```bash
 zstyle ':completion:*' menu select
 ```
 
@@ -39,7 +39,7 @@ Une fois cette ligne ajoutée à `~/.zshrc`, appuyer sur Tab avec plusieurs rés
 
 ## Complétion insensible à la casse
 
-```zsh
+```bash
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 ```
 

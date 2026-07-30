@@ -8,7 +8,7 @@ Bash active des comportements optionnels au cas par cas (`shopt -s nom`, `set -o
 
 ## Activer et désactiver une option
 
-```zsh
+```bash
 setopt AUTO_CD          # active une option
 unsetopt AUTO_CD         # la désactive
 
@@ -19,7 +19,7 @@ setopt                   # liste toutes les options actuellement actives
 
 ## Quelques options utiles au quotidien
 
-```zsh
+```bash
 setopt AUTO_CD           # taper un nom de dossier seul (sans "cd") y déplace directement
 setopt EXTENDED_GLOB      # active le globbing étendu (cf. chapitre dédié)
 setopt SHARE_HISTORY       # partage l'historique de commandes en temps réel entre tous les terminaux ouverts

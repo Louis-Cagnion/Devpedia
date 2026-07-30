@@ -8,7 +8,7 @@ Configurer manuellement le prompt (cf. chapitre précédent), la complétion (cf
 
 ## Installation
 
-```zsh
+```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
@@ -16,7 +16,7 @@ L'installateur sauvegarde l'ancien `~/.zshrc` (en `~/.zshrc.pre-oh-my-zsh`), ins
 
 ## La structure d'un `.zshrc` avec Oh My Zsh
 
-```zsh
+```bash
 export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="robbyrussell"
@@ -43,7 +43,7 @@ source $ZSH/oh-my-zsh.sh
 
 ## Alias fournis par le plugin `git`
 
-```zsh
+```bash
 gst    # git status
 gco    # git checkout
 gaa    # git add --all
@@ -55,7 +55,7 @@ Ces alias (cf. chapitre Bash sur les variables d'environnement pour le mécanism
 
 ## Personnaliser sans toucher au cœur d'Oh My Zsh
 
-```zsh
+```bash
 # ~/.oh-my-zsh/custom/mes-alias.zsh
 alias monalias="ma_commande --avec --options"
 ```
@@ -64,7 +64,7 @@ Tout fichier `.zsh` déposé dans `~/.oh-my-zsh/custom/` est automatiquement cha
 
 ## Mettre à jour Oh My Zsh
 
-```zsh
+```bash
 omz update
 ```
 

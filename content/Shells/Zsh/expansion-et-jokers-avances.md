@@ -8,7 +8,7 @@ Le globbing de base (`*`, `?`, `[abc]`) fonctionne à l'identique en zsh (cf. ch
 
 ## Activer le globbing étendu
 
-```zsh
+```bash
 setopt EXTENDED_GLOB
 ```
 
@@ -16,7 +16,7 @@ Sans cette option (cf. chapitre précédent), les motifs de ce chapitre ne sont 
 
 ## `**` : recherche récursive dans les sous-dossiers
 
-```zsh
+```bash
 ls **/*.txt
 # tous les fichiers .txt, à n'importe quelle profondeur sous le dossier courant
 ```
@@ -25,7 +25,7 @@ ls **/*.txt
 
 ## Négation : exclure un motif
 
-```zsh
+```bash
 ls *.^txt
 # tous les fichiers, SAUF ceux qui se terminent par .txt (Bash n'a pas d'équivalent direct)
 ```
@@ -34,7 +34,7 @@ ls *.^txt
 
 Entre parenthèses après un motif, un **qualificatif** filtre les résultats sans passer par une commande séparée comme `find` :
 
-```zsh
+```bash
 ls *(.)          # uniquement les fichiers réguliers (pas les dossiers, pas les liens)
 ls *(/)           # uniquement les dossiers
 ls *(*)           # uniquement les fichiers exécutables
@@ -57,7 +57,7 @@ ls *.log(.Lm-7)     # fichiers .log de plus de 7 jours de modification
 
 Comme en Bash, entourer un motif de guillemets désactive son interprétation (cf. chapitre Bash sur les variables pour la logique guillemets simples/doubles) :
 
-```zsh
+```bash
 echo *(.)      # liste réelle des fichiers réguliers
 echo "*(.)"     # affiche littéralement *(.)
 ```

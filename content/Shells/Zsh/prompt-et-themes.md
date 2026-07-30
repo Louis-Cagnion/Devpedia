@@ -8,7 +8,7 @@ Bash construit son invite via la variable `PS1`, avec des codes d'échappement c
 
 ## La variable `PROMPT`
 
-```zsh
+```bash
 PROMPT='%n@%m %~ %# '
 ```
 
@@ -25,7 +25,7 @@ PROMPT='%n@%m %~ %# '
 
 ## Coloration du prompt
 
-```zsh
+```bash
 PROMPT='%F{green}%n@%m%f %F{blue}%~%f %# '
 ```
 
@@ -35,7 +35,7 @@ PROMPT='%F{green}%n@%m%f %F{blue}%~%f %# '
 
 Sans équivalent en Bash : zsh peut afficher une seconde invite, alignée sur le bord droit du terminal, qui disparaît automatiquement dès qu'on commence à taper :
 
-```zsh
+```bash
 RPROMPT='%D{%H:%M:%S}'
 # affiche l'heure courante à droite, tant que la ligne de commande est vide
 ```
@@ -44,7 +44,7 @@ RPROMPT='%D{%H:%M:%S}'
 
 Zsh fournit nativement une fonction capable d'afficher la branche Git courante dans le prompt, sans dépendance externe :
 
-```zsh
+```bash
 autoload -Uz vcs_info
 precmd() { vcs_info }
 setopt PROMPT_SUBST

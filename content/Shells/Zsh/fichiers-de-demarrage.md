@@ -19,7 +19,7 @@ Bash charge selon le cas `~/.bashrc`, `~/.bash_profile` ou `~/.profile` (cf. cha
 
 ## Où mettre quoi
 
-```zsh
+```bash
 # ~/.zshenv : variables nécessaires même dans un script non interactif
 export EDITOR="vim"
 
@@ -34,7 +34,7 @@ export PROMPT='%n@%m %~ %# '
 
 Comme `source ~/.bashrc` en Bash :
 
-```zsh
+```bash
 source ~/.zshrc
 # équivalent, plus court :
 . ~/.zshrc
