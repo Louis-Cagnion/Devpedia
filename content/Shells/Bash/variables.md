@@ -42,6 +42,20 @@ echo "Il y a $nombre_fichiers fichiers ici"
 
 `$(...)` est la syntaxe moderne, préférée aux anciens \`backticks\` (`` `date` ``), moins lisibles et impossibles à imbriquer facilement.
 
+## Injection de commande : ne jamais interpoler une entrée non fiable
+
+Si un script construit une commande en y interpolant directement une valeur externe (saisie utilisateur, argument, contenu d'un fichier téléchargé...), cette valeur peut contenir des caractères spéciaux du shell (`;`, `|`, `` ` ``, `$(...)`) qui **changent la structure de la commande exécutée**, au lieu de rester une simple donnée :
+
+```bash
+nom_fichier="rapport.txt; rm -rf ~"   # valeur reçue de l'extérieur, non contrôlée
+
+eval "cat $nom_fichier"    # DANGER : exécute réellement "cat rapport.txt" PUIS "rm -rf ~"
+```
+
+`eval` réinterprète sa chaîne comme une nouvelle ligne de commande complète — c'est exactement ce mécanisme qui transforme un `;` contenu dans la donnée en un véritable **second ordre**, plutôt qu'un caractère inoffensif dans un nom de fichier. Même sans `eval`, la substitution de commande (`$(...)`, ci-dessus) ou une variable non protégée par des guillemets dans une commande qui accepte elle-même du code (ex. `ssh hote "$commande"`) créent le même risque.
+
+> **Note :** conceptuellement, c'est l'équivalent Bash d'une injection SQL (cf. chapitre PHP sur la sécurité) — une entrée non contrôlée qui modifie la structure de ce qui est exécuté, plutôt que de rester une donnée. La protection est la même dans l'esprit : ne jamais faire confiance à une valeur externe pour construire du code exécutable, et quand c'est inévitable, la traiter comme une donnée pure — jamais assemblée textuellement dans une commande, encore moins repassée à `eval`.
+
 ## Arithmétique
 
 Bash ne calcule pas nativement sur des chaînes — un contexte arithmétique explicite est nécessaire :

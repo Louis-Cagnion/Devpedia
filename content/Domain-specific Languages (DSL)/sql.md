@@ -104,6 +104,18 @@ Le texte SQL généré ne contient jamais la valeur réelle, seulement le nom li
 
 > **Note (sécurité) :** ce mécanisme protège les **valeurs** (`$valeur`), mais pas les **noms de colonnes** (`$colonne`) — ceux-ci sont concaténés directement dans le SQL, sans passer par un placeholder (ce n'est techniquement pas possible : PDO ne permet de paramétrer que des valeurs, jamais des noms de colonnes ou de tables). Si `$criteres` provenait directement d'une entrée utilisateur non filtrée (ex. `construireEt($_GET)`), un nom de colonne forgé pourrait réintroduire une injection SQL. `$colonne` doit donc toujours provenir d'une liste blanche de colonnes autorisées à l'avance, jamais directement d'une entrée externe.
 
+## Le principe du moindre privilège
+
+Au-delà de l'injection SQL (qui protège le *comment* on interroge la base), une bonne pratique de sécurité porte sur le *qui* : le compte utilisé par une application pour se connecter à la base ne devrait jamais avoir plus de droits que ce dont elle a réellement besoin.
+
+```sql
+-- au lieu de donner tous les droits à un seul compte applicatif :
+GRANT SELECT, INSERT, UPDATE ON boutique.commandes TO 'app_boutique'@'%';
+-- pas de DROP, DELETE, ni accès aux autres tables/bases, si l'application n'en a jamais besoin
+```
+
+Concrètement, un compte applicatif compromis (via une faille dans le code, une fuite d'identifiants...) ne peut faire de dégâts qu'à la mesure de ses propres droits — un compte limité à `SELECT`/`INSERT`/`UPDATE` sur une seule table ne permet pas à un attaquant de supprimer toute une base de données, même s'il parvient à exécuter des requêtes arbitraires. C'est une protection **complémentaire** aux requêtes préparées, pas un substitut : elle limite les dégâts *si* une injection a quand même lieu (bug non détecté, requête dynamique mal construite...), plutôt que d'empêcher l'injection elle-même.
+
 ## Pour aller plus loin
 
 - [Documentation PDO — php.net](https://www.php.net/manual/fr/book.pdo.php)

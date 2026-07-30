@@ -44,6 +44,8 @@ L'attribut `for` du `<label>` doit correspondre à l'`id` du champ — cliquer s
 <input type="hidden" name="token" value="abc123">
 ```
 
+> **Note (sécurité) :** un champ caché portant un jeton (comme `token` ci-dessus) est le mécanisme habituel de protection contre le **CSRF** (*Cross-Site Request Forgery*) — cf. chapitre sur la sécurité en PHP pour le détail de cette attaque et de sa protection. Le champ est invisible pour l'utilisateur, mais bien envoyé avec le reste du formulaire à la soumission.
+
 > **Note :** deux boutons radio partageant le même `name` forment un **groupe** — un seul peut être sélectionné à la fois parmi eux, contrairement aux cases à cocher (`checkbox`), indépendantes les unes des autres même avec le même `name`.
 
 ## `<textarea>` et `<select>`

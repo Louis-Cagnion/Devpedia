@@ -95,3 +95,32 @@ Repository::trouver(1);
 `use` ne charge pas le fichier lui-même — il indique seulement au moteur PHP à quel nom complet correspond le nom court utilisé plus bas. C'est un mécanisme d'autoloading (cf. chapitre dédié) qui se charge de retrouver et charger le fichier correspondant, au moment où la classe est réellement utilisée.
 
 > **Note :** `Classe::methode()` (avec `::`) ressemble à `Classe->methode()` mais ne s'utilise jamais avec une instance — c'est l'équivalent quasi direct d'un namespace + méthode statique en C++.
+
+## Injection de dépendances
+
+Plutôt que de créer elle-même les objets dont elle a besoin (`new`), une classe peut les recevoir "de l'extérieur", en paramètres de son constructeur — c'est l'**injection de dépendances**. La classe qui les reçoit n'a pas besoin de savoir comment ces objets sont construits, seulement quel contrat (quelles méthodes) ils respectent.
+
+```php
+<?php
+class ServiceNotification
+{
+    private Mailer $mailer;
+    private Logger $logger;
+
+    public function __construct(?Mailer $mailer = null, ?Logger $logger = null)
+    {
+        $this->mailer = $mailer ?? new SmtpMailer();  // valeur par défaut si rien n'est fourni
+        $this->logger = $logger ?? new FileLogger();
+    }
+}
+
+// usage normal : dépendances par défaut
+$service = new ServiceNotification();
+
+// pour les tests, ou un besoin ponctuel : dépendances remplacées explicitement
+$service = new ServiceNotification(new MailerDeTest(), new LoggerEnMemoire());
+```
+
+Les paramètres nullables avec un repli `??` (cf. chapitre sur les fonctions) rendent chaque dépendance **optionnelle** : le code appelant peut soit laisser le comportement par défaut, soit fournir explicitement une implémentation différente — typiquement une version simulée (*mock*) dans un test automatisé, sans jamais toucher au code de `ServiceNotification` lui-même.
+
+> **Note :** cette technique est ce qui rend une classe *testable* sans dépendre d'un vrai service externe (envoi d'email réel, écriture de vrais fichiers de log) à chaque exécution des tests.

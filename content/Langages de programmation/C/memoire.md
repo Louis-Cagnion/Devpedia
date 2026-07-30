@@ -79,13 +79,14 @@ free(p);
 p = NULL; // bonne pratique : empêche une utilisation accidentelle après libération
 ```
 
-## Les trois bugs mémoire classiques
+## Les quatre bugs mémoire classiques
 
 | Bug | Cause | Conséquence |
 |---|---|---|
 | **Fuite mémoire** (*memory leak*) | Un bloc `malloc`é n'est jamais `free()` | La mémoire utilisée par le programme augmente sans jamais redescendre |
 | **Use-after-free** | Le programme déréférence un pointeur après son `free()` | Comportement indéfini : donnée corrompue, crash, ou pire, silencieusement "ça marche" |
 | **Double free** | `free()` appelé deux fois sur le même pointeur | Corruption du gestionnaire de mémoire, crash souvent différé et difficile à tracer |
+| **Débordement de tampon** (*buffer overflow*) | Écriture au-delà de la taille réellement allouée d'un buffer | Corruption de mémoire adjacente — et une porte ouverte à l'exécution de code arbitraire (cf. plus bas) |
 
 ```
 int *p = malloc(sizeof(int));
@@ -94,6 +95,38 @@ free(p); // double free : comportement indéfini
 ```
 
 > **Note :** ces bugs ne provoquent pas toujours un crash immédiat et visible — c'est ce qui les rend difficiles à détecter. Un outil comme **Valgrind** (`valgrind ./mon_programme`) exécute le programme et rapporte précisément les fuites mémoire et les accès invalides, avec la ligne de code responsable.
+
+## Le débordement de tampon (*buffer overflow*), un bug avec des conséquences de sécurité
+
+Contrairement aux trois bugs précédents (qui corrompent la mémoire du programme lui-même, sans intention extérieure), un débordement de tampon est souvent **le résultat d'une entrée contrôlée par un attaquant** — ce qui en fait historiquement l'une des failles de sécurité les plus exploitées en C/C++.
+
+```c
+char buffer[16];
+strcpy(buffer, entree_utilisateur); // AUCUNE vérification de la taille de entree_utilisateur
+```
+
+Si `entree_utilisateur` dépasse 16 octets, `strcpy()` continue d'écrire au-delà des limites de `buffer` — dans la mémoire qui suit immédiatement sur la pile, qui peut contenir d'autres variables locales, ou l'**adresse de retour** de la fonction courante (l'endroit où le programme doit reprendre son exécution après le `return`). Un attaquant qui maîtrise précisément le contenu écrit peut, dans le pire cas, remplacer cette adresse de retour par l'adresse de son choix — détournant le flux d'exécution du programme vers du code qu'il contrôle (*stack smashing*).
+
+> **Note :** c'est le même principe qu'une injection SQL (cf. chapitre PHP sur la sécurité) ou une injection de commande Bash (cf. chapitre Bash sur les variables) — une entrée non contrôlée qui modifie la **structure** de ce qui va s'exécuter, au lieu de rester une donnée passive.
+
+### S'en protéger
+
+```c
+strcpy(buffer, entree);                    // dangereux : aucune limite
+strncpy(buffer, entree, sizeof(buffer) - 1); // borné à la taille réelle du buffer
+buffer[sizeof(buffer) - 1] = '\0';           // strncpy ne garantit pas la terminaison si la source est trop longue
+
+fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, plutôt que de corriger après coup
+```
+
+| Fonction risquée | Alternative bornée |
+|---|---|
+| `strcpy()` | `strncpy()` (attention à la terminaison, cf. ci-dessus) |
+| `strcat()` | `strncat()` |
+| `sprintf()` | `snprintf()` (tronque plutôt que déborder) |
+| `gets()` | `fgets()` (`gets()` est d'ailleurs retiré du standard C depuis C11, précisément pour cette raison) |
+
+> **Note :** borner la taille ne suffit qu'à moitié — il faut aussi vérifier que la donnée tronquée reste cohérente pour la suite du programme (un nom de fichier coupé à mi-chemin par `strncpy` reste un nom de fichier syntaxiquement valide, juste incorrect). Le bon réflexe reste de toujours connaître, à chaque écriture, la taille réelle du buffer de destination — jamais de supposer qu'une entrée respectera une taille attendue sans le vérifier.
 
 ## `sizeof`
 
