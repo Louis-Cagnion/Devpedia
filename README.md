@@ -11,10 +11,12 @@ Chapters live under `content/`, grouped by category and, when relevant, by subje
 - **Programming languages**: C, C++, PHP, Python (including data science / AI: NumPy, pandas, Matplotlib, scikit-learn, neural networks, gradient descent, CNN/RNN/Transformers, PyTorch, NLP & LLMs), JavaScript
 - **Markup & style languages**: HTML, CSS
 - **Domain-specific languages**: Regex, SQL
-- **Shells**: Bash, PowerShell (both include a dedicated "internals" chapter — syscalls and the REPL loop for Bash, the .NET pipeline for PowerShell — for anyone who wants to understand them well enough to build something similar)
+- **Shells**: Bash, PowerShell, Zsh (Bash and PowerShell each include a dedicated "internals" chapter — syscalls and the REPL loop for Bash, the .NET pipeline for PowerShell; Zsh instead points back to Bash for everything shared and only covers what's genuinely different — startup files, `setopt`, extended globbing, completion, prompt theming, and Oh My Zsh)
 - **Git**: from everyday commands to its internal object model
 
 Each chapter is a plain Markdown file, its title given by a regular `# Heading` at the top of the file (an optional `---`-fenced frontmatter block above it can carry build-time metadata, currently just `order`, used to sort chapters pedagogically). Markdown is rendered by a parser I wrote myself for this project (`js/parser.js`), rather than an existing library.
+
+Security isn't its own category — it's woven into whichever chapter it concretely applies to (PHP's `securite.md` for the web attack taxonomy — CSRF, XSS, SQL injection, MITM, session hijacking...; command injection in Bash; buffer overflows in C; least-privilege database accounts in SQL), each cross-referencing the others rather than repeating the same explanation.
 
 ## Translations
 
