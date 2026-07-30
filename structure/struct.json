@@ -601,6 +601,37 @@
               "label": "Comment fonctionne PowerShell (architecture interne)"
             }
           ]
+        },
+        {
+          "id": "zsh",
+          "label": "Zsh",
+          "folder": "Zsh",
+          "chapters": [
+            {
+              "id": "fichiers-de-demarrage",
+              "label": "Les fichiers de démarrage"
+            },
+            {
+              "id": "options-du-shell",
+              "label": "Le système d'options (`setopt`)"
+            },
+            {
+              "id": "expansion-et-jokers-avances",
+              "label": "Expansion et jokers avancés"
+            },
+            {
+              "id": "completion-avancee",
+              "label": "La complétion avancée"
+            },
+            {
+              "id": "prompt-et-themes",
+              "label": "Personnaliser le prompt"
+            },
+            {
+              "id": "oh-my-zsh",
+              "label": "Oh My Zsh"
+            }
+          ]
         }
       ]
     }
