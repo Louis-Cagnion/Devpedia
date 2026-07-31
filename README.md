@@ -46,7 +46,9 @@ then open `http://localhost:8000`. Node is only needed for that regeneration ste
 node scripts/generate-struct.js
 ```
 
-A subject's own description page is the `.md` file inside its folder whose title (its `# Heading`) matches the folder name (e.g. `cpp.md` titled "C++" inside `content/Langages de programmation/C++/`); every other `.md` file in that folder becomes one of its chapters. Categories without subject subfolders (Git, the DSL category) list their `.md` files as chapters directly.
+A subject's own description page is the `.md` file inside its folder whose title (its `# Heading`) matches the folder name (e.g. `cpp.md` titled "C++" inside `content/Langages de programmation/C++/`); every other `.md` file in that folder becomes one of its chapters. Categories without subject subfolders (Git, Performance, Data representation, the DSL category) list their `.md` files as chapters directly, and take their intro text from `description.md`.
+
+Ids are slugified from folder and file names, with diacritics transliterated — an accented folder name like `Représentation des données` yields `representation-des-donnees`, so it can be linked to from other chapters. Cross-chapter links are plain query strings (`?c=<category>&s=<subject>&p=<chapter>`, the `&s=` part only for categories that have subjects) and are not validated at build time, so a renamed folder silently breaks inbound links — worth grepping for the old id after a rename.
 
 ## Interface
 
