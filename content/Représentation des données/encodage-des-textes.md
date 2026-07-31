@@ -8,7 +8,7 @@ Un ordinateur ne stocke pas des lettres, seulement des nombres. Un **encodage** 
 
 ## ASCII : 128 caractères, 7 bits
 
-ASCII (1963) associe un nombre de 0 à 127 aux caractères de l'anglais. Il tient donc sur 7 bits, stockés dans un octet.
+**ASCII** (*American Standard Code for Information Interchange*), normalisé en 1963, associe un nombre de 0 à 127 aux caractères de l'anglais. Il tient donc sur 7 bits, stockés dans un octet.
 
 | Caractère | Code |
 |---|---|

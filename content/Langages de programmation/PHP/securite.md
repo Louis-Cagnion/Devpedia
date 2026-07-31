@@ -207,6 +207,12 @@ Les protections précédentes couvrent le code applicatif PHP lui-même. D'autre
 
 ### Attaques réseau
 
+Trois sigles reviennent dans tout ce qui suit :
+
+- **SSL** (*Secure Sockets Layer*) et son successeur **TLS** (*Transport Layer Security*) : les protocoles qui chiffrent une connexion réseau et permettent au client de vérifier l'identité du serveur via un **certificat**. SSL est obsolète depuis longtemps, mais le nom est resté dans l'usage courant — quand on dit "certificat SSL", il s'agit en pratique de TLS.
+- **HTTPS** : simplement HTTP transporté dans une connexion chiffrée par TLS. Rien d'autre ne change côté protocole applicatif.
+- **DNS** (*Domain Name System*) : l'annuaire qui traduit un nom de domaine en adresse IP. C'est une étape indispensable avant toute connexion, et donc une cible.
+
 - **Man-in-the-middle (MITM)** : l'attaquant s'intercale entre le client et le serveur légitime, et relaie (ou altère) la conversation sans qu'aucune des deux parties ne s'en aperçoive. Le chiffrement seul (TLS) ne suffit pas à l'empêcher : un attaquant peut chiffrer *sa propre* conversation avec le client, pendant qu'il chiffre une autre conversation avec le vrai serveur. **Protection :** la vérification du certificat SSL/TLS présenté par le serveur (`verify_peer`/`verify_peer_name`, cf. chapitre sur les appels HTTP) — sans elle, un certificat forgé par l'attaquant serait accepté sans broncher.
 - **DNS spoofing / cache poisoning** : l'attaquant corrompt la résolution DNS pour qu'un nom de domaine légitime pointe vers son IP à lui. La vérification de certificat reste une protection même si le DNS est compromis, car elle ne dépend pas de la résolution DNS mais de l'identité cryptographique présentée par le serveur.
 - **Sniffing (écoute passive)** : simple lecture du trafic réseau non chiffré. Ne nécessite aucune interaction active avec le trafic — juste l'observer, par exemple sur un réseau Wi-Fi public non maîtrisé. **Protection :** HTTPS partout, sans exception pour une donnée jugée "pas si sensible".

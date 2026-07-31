@@ -220,7 +220,7 @@ element.offsetHeight;
 
 ## Ressources
 
-- [MDN — HTMLElement](https://developer.mozilla.org/fr/docs/Web/API/HTMLElement)
+- [MDN (*Mozilla Developer Network*, la documentation de référence du web) — HTMLElement](https://developer.mozilla.org/fr/docs/Web/API/HTMLElement)
 - [MDN — Document.querySelector](https://developer.mozilla.org/fr/docs/Web/API/Document/querySelector)
 - [MDN — Element.classList](https://developer.mozilla.org/fr/docs/Web/API/Element/classList)
 - [MDN — Element.setAttribute](https://developer.mozilla.org/fr/docs/Web/API/Element/setAttribute)

@@ -6,6 +6,8 @@ order: 11
 
 Chaque commande lancée dans un terminal démarre un **processus**. Bash permet de lancer des commandes en arrière-plan, de surveiller les processus en cours, et de les arrêter proprement (ou non) quand nécessaire.
 
+> Les outils de ce chapitre affichent la consommation **CPU** (*Central Processing Unit*, le processeur) de chaque processus, en pourcentage d'un cœur. Une valeur supérieure à 100 % n'est donc pas une anomalie : elle signifie que le processus occupe plusieurs cœurs en parallèle.
+
 ## Premier plan vs arrière-plan
 
 Par défaut, une commande s'exécute au **premier plan** : le terminal attend qu'elle se termine avant d'accepter une nouvelle commande.

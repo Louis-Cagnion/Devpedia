@@ -6,6 +6,10 @@ order: 11
 
 PHP propose au moins deux façons natives de faire des requêtes HTTP sortantes (interroger une API externe, par exemple), sans dépendre d'aucune bibliothèque tierce : l'extension cURL, et les flux (streams).
 
+> Une **API** (*Application Programming Interface*, interface de programmation) est le contrat par lequel un logiciel expose ses fonctionnalités à un autre : quelles requêtes envoyer, sous quel format, et quelles réponses attendre. Le terme désigne aussi bien un service web interrogeable par HTTP (le cas ici) que l'ensemble des fonctions publiques d'une bibliothèque.
+>
+> Les réponses d'une API web sont le plus souvent au format **JSON** (*JavaScript Object Notation*) : un format texte de représentation de données structurées, lisible par un humain, né dans JavaScript mais aujourd'hui indépendant de tout langage. PHP le convertit avec `json_encode()` / `json_decode()`.
+
 ## cURL
 
 API en 4 étapes : créer un handle, configurer des options, exécuter, libérer.

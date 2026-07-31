@@ -189,5 +189,5 @@ Avec `"[mon lien](https://exemple.com)".match(regex)`, tu obtiens `match[1] = "m
 
 ## Pour aller plus loin
 
-- [MDN — Expressions régulières](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Regular_expressions)
+- [MDN (*Mozilla Developer Network*, la documentation de référence du web) — Expressions régulières](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Regular_expressions)
 - [regex101.com](https://regex101.com) — testeur de regex interactif avec explications en direct

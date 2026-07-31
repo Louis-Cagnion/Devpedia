@@ -31,6 +31,8 @@ Chaque commit référence :
 - Un auteur, une date, et un message décrivant le changement.
 - Un identifiant unique : un **hash SHA-1** (ex. `a3f9c1d...`), calculé à partir du contenu — deux commits identiques auraient le même hash, et modifier un commit passé change son hash (et celui de tous ses descendants).
 
+> **SHA-1** (*Secure Hash Algorithm 1*) est une fonction de hachage : elle transforme une donnée de taille quelconque en une empreinte de taille fixe (40 caractères hexadécimaux ici). Deux propriétés la rendent utile à Git : la même entrée donne toujours la même empreinte, et le moindre changement dans l'entrée produit une empreinte totalement différente. C'est ce qui permet d'identifier un contenu par son empreinte, et de détecter toute altération de l'historique.
+
 ```
 commit A <-- commit B <-- commit C (HEAD)
 ```
