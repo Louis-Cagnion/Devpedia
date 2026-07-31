@@ -49,6 +49,45 @@ not a     # NON logique (pas '!')
 
 > **Note :** Python utilise les mots-clés `and`/`or`/`not` plutôt que les symboles `&&`/`||`/`!` retrouvés en PHP, JavaScript ou C.
 
+## `==` et `is` : la valeur ou l'objet ?
+
+Ces deux opérateurs sont souvent confondus alors qu'ils posent deux questions différentes :
+
+| Opérateur | Compare | Question posée |
+|---|---|---|
+| `==` | la **valeur** | "leur contenu est-il identique ?" |
+| `is` | l'**identité** | "est-ce le même objet en mémoire ?" |
+
+```python
+a = [1, 2, 3]
+b = [1, 2, 3]
+c = a
+
+a == b   # True  -> meme contenu
+a is b   # False -> deux listes distinctes en memoire
+a is c   # True  -> c et a designent le meme objet
+```
+
+C'est exactement la distinction entre comparaison par **valeur** et comparaison par **référence** que l'on retrouve en C avec les pointeurs : `*p1 == *p2` (les valeurs pointées) contre `p1 == p2` (les adresses). Voir le chapitre [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) de C.
+
+### Pourquoi `is None` et pas `== None`
+
+Pour tester si une variable vaut `None`, la convention Python est `is None` :
+
+```python
+if valeur is None:      # recommande
+if valeur == None:      # a eviter
+```
+
+Deux raisons :
+
+- `None` est un **singleton** : il n'en existe qu'une seule instance dans tout le programme. Tester l'identité est donc exact par construction, et légèrement plus rapide.
+- `==` peut être **redéfini** par une classe via `__eq__`. Un objet peut donc parfaitement répondre `True` à `== None` tout en n'étant pas `None`, ce qui rend le test peu fiable.
+
+C'est ce qui explique le motif de la sentinelle `None` utilisé pour les arguments par défaut mutables — voir le chapitre [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions).
+
+> Le même raisonnement s'applique à `True`/`False`, qui sont aussi des singletons. En pratique on écrit rarement `is True` : on teste directement `if condition:`.
+
 ## Les f-strings : insérer des variables dans du texte
 
 ```python

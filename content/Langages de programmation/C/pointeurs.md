@@ -44,6 +44,26 @@ printf("%d\n", *(p + 2)); // 30
 
 > **Note :** un tableau `tab` se comporte comme un pointeur vers son premier élément. `tab[i]` et `*(tab + i)` sont deux écritures strictement équivalentes en C — c'est pour ça que l'indexation de tableau (`[]`) fonctionne aussi sur un pointeur brut.
 
+### `[]` n'est que du sucre syntaxique
+
+L'équivalence ci-dessus est plus profonde qu'une simple commodité d'écriture : l'opérateur `[]` n'a en C **aucune notion** de "tableau" ni d'"index". Le compilateur le traduit mécaniquement, toujours, par :
+
+```
+a[b]  ≡  *(a + b)
+```
+
+Comme l'addition est commutative (`tab + 2` et `2 + tab` désignent la même adresse), on obtient une conséquence surprenante mais parfaitement légale :
+
+```
+int tab[5] = {1, 2, 3, 4, 5};
+
+printf("%d\n", tab[2]);   // 3
+printf("%d\n", *(tab + 2)); // 3
+printf("%d\n", 2[tab]);   // 3 aussi !
+```
+
+> `2[tab]` ne sert à rien en pratique et n'a sa place que dans les questions pièges d'entretien. En revanche, comprendre *pourquoi* ça compile est utile : cela ancre le fait qu'en C, indexer un tableau **est** une arithmétique de pointeurs, et rien d'autre.
+
 ## Pointeur vers pointeur
 
 Un pointeur peut lui-même être pointé, ce qui est utile pour modifier un pointeur depuis une fonction (cf. passage par adresse ci-dessous) :
@@ -106,6 +126,27 @@ if (ptr != NULL) {
 ```
 
 > **Note :** un pointeur qui pointait vers une zone mémoire libérée (`free()`, cf. chapitre sur la gestion de la mémoire) est appelé **dangling pointer**. Le déréférencer est un bug classique (*use-after-free*) : la mémoire peut sembler encore contenir la bonne valeur par coïncidence, jusqu'à ce qu'elle soit réutilisée ailleurs.
+
+## Comparer des pointeurs : l'adresse ou la valeur ?
+
+Avec un pointeur, il y a deux choses distinctes à comparer, et confondre les deux est une source d'erreurs :
+
+```
+int a = 5;   // stockee a l'adresse 0x1000
+int b = 5;   // stockee a l'adresse 0x2000
+int *p1 = &a;
+int *p2 = &b;
+
+p1 == p2     // faux : les adresses sont differentes
+*p1 == *p2   // vrai : les valeurs pointees sont identiques
+```
+
+- `p1 == p2` compare les **adresses** : "ces deux pointeurs désignent-ils le même emplacement mémoire ?"
+- `*p1 == *p2` compare les **valeurs pointées** : "le contenu est-il le même ?"
+
+Deux pointeurs peuvent donc parfaitement contenir la même valeur sans être égaux, et inversement.
+
+> Cette distinction — comparaison par **référence** ou par **valeur** — n'est pas propre au C, elle se retrouve dans la plupart des langages. En Python, `is` compare l'identité (l'équivalent de `p1 == p2`) et `==` compare la valeur (l'équivalent de `*p1 == *p2`) ; voir le chapitre [Variables](/?c=langages-de-programmation&s=python&p=variables) de Python. Comparer des chaînes en C illustre le même piège : `str1 == str2` compare deux adresses, pas deux textes — il faut `strcmp()`.
 
 ## `const` avec les pointeurs
 

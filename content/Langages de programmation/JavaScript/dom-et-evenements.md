@@ -1,5 +1,5 @@
 ---
-order: 11
+order: 12
 ---
 
 # Le DOM et la gestion des événements

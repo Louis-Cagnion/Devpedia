@@ -70,6 +70,11 @@ function readTitle(filePath) {
  */
 function slugify(name) {
     return name
+        // Décompose chaque lettre accentuée en "lettre + accent", puis retire les
+        // accents : sans cette étape, "Représentation" donnerait "repr-sentation",
+        // les accents n'étant pas dans [a-z0-9].
+        .normalize("NFD")
+        .replace(/\p{Diacritic}/gu, "")
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");

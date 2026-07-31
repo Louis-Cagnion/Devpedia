@@ -220,6 +220,10 @@
               "label": "La gestion des processus"
             },
             {
+              "id": "operateurs-binaires",
+              "label": "Les opérateurs binaires"
+            },
+            {
               "id": "appels-systeme-et-descripteurs",
               "label": "Les appels système et les descripteurs de fichiers"
             },
@@ -300,6 +304,10 @@
             {
               "id": "tableaux",
               "label": "Les tableaux"
+            },
+            {
+              "id": "nombres",
+              "label": "Les nombres"
             },
             {
               "id": "objets",
@@ -484,6 +492,60 @@
               "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "performance",
+      "label": "Performance",
+      "folder": "Performance",
+      "chapters": [
+        {
+          "id": "mesurer-avant-d-optimiser",
+          "label": "Mesurer avant d'optimiser"
+        },
+        {
+          "id": "attentes-et-temps-morts",
+          "label": "Attendre sans perdre de temps"
+        },
+        {
+          "id": "limiter-les-aller-retours",
+          "label": "Limiter les allers-retours"
+        },
+        {
+          "id": "parallelisme",
+          "label": "Parallélisme : trouver la contrainte réelle"
+        },
+        {
+          "id": "traitements-longs",
+          "label": "Les traitements longs"
+        }
+      ]
+    },
+    {
+      "id": "representation-des-donnees",
+      "label": "Représentation des données",
+      "folder": "Représentation des données",
+      "chapters": [
+        {
+          "id": "entiers-et-debordements",
+          "label": "Les entiers, les bits et les débordements"
+        },
+        {
+          "id": "nombres-flottants",
+          "label": "Les nombres à virgule flottante (IEEE 754)"
+        },
+        {
+          "id": "encodage-des-textes",
+          "label": "L'encodage des textes (ASCII, Unicode, UTF-8)"
+        },
+        {
+          "id": "organisation-en-memoire",
+          "label": "L'organisation des données en mémoire"
+        },
+        {
+          "id": "aleatoire-et-generateurs",
+          "label": "L'aléatoire et les générateurs"
         }
       ]
     },

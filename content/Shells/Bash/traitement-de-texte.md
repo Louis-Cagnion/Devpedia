@@ -16,9 +16,45 @@ grep -r "TODO" .                  # recherche récursive dans tous les fichiers 
 grep -n "erreur" fichier.log      # affiche aussi le numéro de ligne
 grep -c "erreur" fichier.log      # compte le nombre de lignes correspondantes, sans les afficher
 grep -E "erreur|warning" fichier.log  # -E active les regex étendues (cf. chapitre sur les regex)
+grep -l "TODO" *.md               # affiche seulement les NOMS des fichiers qui contiennent le motif
+grep -q "TODO" *.md               # n'affiche rien : sert uniquement à tester la présence (voir plus bas)
 ```
 
-Comme beaucoup de commandes Unix, ces drapeaux sont des initiales de mots anglais plutôt que des lettres arbitraires : `-i` = *ignore case*, `-v` = *invert*, `-r` = *recursive*, `-n` = *line number*, `-c` = *count*, `-E` = *extended (regex)*. Une fois ces mots connus, retenir le drapeau devient naturel — ce principe revient dans la plupart des commandes de ce chapitre et du suivant.
+Comme beaucoup de commandes Unix, ces drapeaux sont des initiales de mots anglais plutôt que des lettres arbitraires : `-i` = *ignore case*, `-v` = *invert*, `-r` = *recursive*, `-n` = *line number*, `-c` = *count*, `-E` = *extended (regex)*, `-l` = *files with matches (list)*, `-q` = *quiet*. Une fois ces mots connus, retenir le drapeau devient naturel — ce principe revient dans la plupart des commandes de ce chapitre et du suivant.
+
+Les drapeaux se combinent, avec parfois des interactions à connaître : `grep -rln "motif" *.md` cumule récursif + liste de fichiers + numéro de ligne, mais `-l` **l'emporte sur `-n`** (on ne peut pas afficher un numéro de ligne quand on n'affiche que des noms de fichiers). Le drapeau ignoré ne provoque aucun avertissement.
+
+### Chercher plusieurs motifs : `\|` ou `-E`
+
+`grep` utilise par défaut les regex **basiques** (BRE), dans lesquelles l'alternance doit être échappée. Avec `-E` (regex étendues), elle s'écrit naturellement :
+
+```bash
+grep "erreur\|warning" fichier.log    # BRE : l'alternance s'ecrit \|
+grep -E "erreur|warning" fichier.log  # ERE : plus lisible, a preferer
+```
+
+Un `|` non échappé sans `-E` est cherché **littéralement** : `grep "a|b"` cherche la chaîne `a|b`, et ne trouve donc rien la plupart du temps — sans erreur ni avertissement. C'est un piège classique. Voir le chapitre [La regex](/?c=domain-specific-languages-dsl&p=regex) pour la différence BRE/ERE.
+
+### Le code de retour de `grep`
+
+`grep` ne sert pas qu'à afficher : son **code de sortie** répond à la question « as-tu trouvé quelque chose ? ».
+
+| Code | Signification |
+|---|---|
+| `0` | au moins une correspondance trouvée |
+| `1` | aucune correspondance (ce n'est **pas** une erreur) |
+| `2` | une vraie erreur (fichier illisible, motif invalide) |
+
+C'est ce qui permet de l'enchaîner avec `&&` ou `||` (cf. chapitre sur les redirections et pipes) :
+
+```bash
+grep -rl "motif" *.md || echo "absent"   # message de repli si rien n'est trouve
+grep -q "motif" f.txt && traiter f.txt   # ne traite le fichier que s'il contient le motif
+```
+
+Avec `-q`, `grep` s'arrête dès la première correspondance et n'affiche rien : c'est la forme à privilégier quand seul le résultat du test compte, notamment sur de gros fichiers.
+
+> Ce code de retour `1` explique un comportement déroutant sous `set -e` : un `grep` qui ne trouve rien fait échouer un script entier. La parade habituelle est `grep motif fichier || true`.
 
 > **`grep` vs `pgrep`** : malgré le nom similaire, ce sont deux commandes indépendantes qui ne cherchent pas dans la même chose. `grep` cherche un motif dans du **texte** (fichier, sortie d'une commande...). `pgrep` (*process grep*, cf. chapitre sur la gestion des processus) cherche un motif dans la **liste des processus en cours** et renvoie des PID, pas des lignes de texte — `ps aux | grep motif` et `pgrep motif` répondent d'ailleurs à peu près à la même question, en passant par deux chemins différents.
 

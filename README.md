@@ -13,6 +13,10 @@ Chapters live under `content/`, grouped by category and, when relevant, by subje
 - **Domain-specific languages**: Regex, SQL
 - **Shells**: Bash, PowerShell, Zsh (Bash and PowerShell each include a dedicated "internals" chapter — syscalls and the REPL loop for Bash, the .NET pipeline for PowerShell; Zsh instead points back to Bash for everything shared and only covers what's genuinely different — startup files, `setopt`, extended globbing, completion, prompt theming, and Oh My Zsh)
 - **Git**: from everyday commands to its internal object model
+- **Data representation**: what a value actually looks like in memory, and the behaviours that follow from it — integers and overflow (two's complement), IEEE 754 floats, text encodings (ASCII/Unicode/UTF-8), memory layout (alignment, padding, endianness), pseudo-randomness and CSPRNGs
+- **Performance**: language-agnostic optimisation principles — profiling before optimising, replacing fixed delays with condition-based waits, cutting round trips (the N+1 pattern), when parallelism helps and when it backfires, and what changes once a job runs for minutes
+
+The last two categories are deliberately cross-cutting: they explain once what would otherwise be repeated (and half-explained) in every language section. `0.1 + 0.2 != 0.3` is not a JavaScript quirk, so it is documented as an encoding property, and the language chapters link to it instead of re-deriving it.
 
 Each chapter is a plain Markdown file, its title given by a regular `# Heading` at the top of the file (an optional `---`-fenced frontmatter block above it can carry build-time metadata, currently just `order`, used to sort chapters pedagogically). Markdown is rendered by a parser I wrote myself for this project (`js/parser.js`), rather than an existing library.
 

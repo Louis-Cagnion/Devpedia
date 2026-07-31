@@ -130,6 +130,31 @@ Ce sel n'est pas perdu : il est inclus directement dans le hash généré, par e
 
 C'est pour ça que `password_verify($_POST['password'], $user['password'])` fonctionne malgré tout : elle lit le sel déjà présent dans `$user['password']`, hache `$_POST['password']` avec **ce même sel**, puis compare le résultat obtenu au reste de `$user['password']` en utilisant le même algorithme et coût. C'est pour cette raison qu'on utilise toujours `password_verify()` pour comparer, et jamais un nouveau `password_hash()` comparé directement au hash stocké — ce dernier donnerait toujours un résultat différent, même avec le bon mot de passe.
 
+### Comparer des hash : le piège du `==`
+
+Une raison supplémentaire de ne jamais comparer un hash soi-même : la **comparaison lâche** de PHP (voir le chapitre [Les conditions](/?c=langages-de-programmation&s=php&p=conditions)) convertit les chaînes numériques en nombres avant de les comparer.
+
+Or PHP interprète une chaîne comme `"0e123456"` en notation scientifique : `0` élevé à une puissance, donc **zéro**. Deux hash totalement différents commençant par `0e` suivi de chiffres sont donc tous les deux convertis en `0`, et considérés comme égaux :
+
+```php
+<?php
+    var_dump("0e123456" == "0e999999");   // true !  0 == 0
+    var_dump("0e123456" === "0e999999");  // false, comme attendu
+?>
+```
+
+Ce n'est pas théorique : cette faille (*magic hash*) a permis de contourner de vraies authentifications, en fournissant un mot de passe dont le hash MD5 ou SHA-1 tombe sur cette forme. Il suffisait que le code compare avec `==`.
+
+Trois protections, cumulables :
+
+- utiliser `password_verify()`, qui ne fait aucune conversion de type ;
+- pour comparer deux chaînes sensibles, utiliser `hash_equals()`, qui compare en **temps constant** et évite en plus les attaques temporelles ;
+- ne jamais comparer de données sensibles avec `==`.
+
+```php
+if (hash_equals($jeton_attendu, $jeton_recu)) { /* ... */ }
+```
+
 ## CSRF — Cross-Site Request Forgery
 
 Un site malveillant fait exécuter, à l'insu de l'utilisateur, une action sur un autre site où celui-ci est déjà authentifié — en s'appuyant sur le fait que le navigateur renvoie automatiquement les cookies de session à ce site, quelle que soit la page d'origine de la requête.

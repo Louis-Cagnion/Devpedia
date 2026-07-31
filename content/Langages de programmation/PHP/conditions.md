@@ -18,6 +18,36 @@ Les conditions permettent d'exécuter un bloc de code uniquement si une expressi
 ?>
 ```
 
+## Comparer des valeurs : `==` et `===`
+
+PHP propose deux opérateurs d'égalité, et le choix entre les deux n'est pas cosmétique.
+
+| Opérateur | Nom | Comportement |
+|---|---|---|
+| `==` | égalité **lâche** | convertit les types avant de comparer |
+| `===` | égalité **stricte** | compare le type **et** la valeur, sans conversion |
+
+```php
+<?php
+    $a = "10";
+    $b = "1e1";   // notation scientifique : vaut 10
+    $c = 10;
+
+    var_dump($a == $b);    // true  -> les deux chaines sont numeriques : 10 == 10
+    var_dump($a === $b);   // false -> meme type (string) mais contenu litteral different
+    var_dump($a == $c);    // true  -> "10" convertie en entier
+    var_dump($a === $c);   // false -> string et int sont des types differents
+?>
+```
+
+Cette conversion automatique s'appelle le **type juggling**. Elle est commode quand on traite des données de formulaire (toujours reçues sous forme de chaînes), mais elle produit des résultats difficiles à prévoir dès que les types se mélangent.
+
+**Règle pratique :** utilisez `===` par défaut, et réservez `==` aux cas où vous voulez explicitement une conversion.
+
+> Attention, le `switch` de PHP compare avec `==` (comparaison lâche), pas avec `===`. Pour une comparaison stricte, préférez une chaîne de `if`/`elseif`, ou `match` (PHP 8+) qui utilise `===`.
+
+Le type juggling a aussi une conséquence directe en sécurité lors de la comparaison de chaînes de hachage — voir le chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite).
+
 ## `if` / `else`
 
 Le bloc `else` permet d'exécuter du code lorsque la condition du `if` est fausse :

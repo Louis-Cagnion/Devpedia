@@ -61,8 +61,12 @@ float price = 9.99f;
 double pi = 3.1415926535;
 ```
 
-- `float` : précision simple
-- `double` : précision double
+- `float` : précision simple (32 bits)
+- `double` : précision double (64 bits)
+
+Ces types stockent une **approximation** : `0.1 + 0.2` ne vaut pas exactement `0.3`, et deux flottants ne se comparent donc jamais avec `==`. Ce comportement n'est pas propre au C — il découle de la norme IEEE 754 imposée par le processeur, et se retrouve à l'identique en Python, JavaScript ou PHP. Voir le chapitre [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants) pour l'explication de l'encodage et la façon correcte de comparer.
+
+De même, la plage de valeurs des entiers et leur comportement en cas de débordement découlent du nombre de bits alloués : voir [Les entiers, les bits et les débordements](/?c=representation-des-donnees&p=entiers-et-debordements).
 
 ## Les chaînes de caractères
 
