@@ -87,3 +87,25 @@ sum(x ** 2 for x in range(1000000))    # calcule la somme SANS jamais stocker le
 ```
 
 Voir aussi le chapitre sur les fonctions (closures) et sur NumPy/pandas, où la distinction mémoire immédiate vs paresseuse redevient centrale à grande échelle.
+
+## Générateur vs thread : un seul flux à la fois
+
+Un générateur donne parfois l'impression de "faire deux choses en même temps" (le code appelant, et le générateur qui progresse en arrière-plan). C'est trompeur : contrairement à un thread (voir [Les threads (pthread)](/?c=langages-de-programmation&s=c&p=threads)), où deux flux d'exécution peuvent réellement avancer en parallèle sans se coordonner explicitement, un générateur ne fait jamais rien "en arrière-plan".
+
+`next()` est un appel de fonction comme un autre : il **bloque** le code appelant jusqu'à ce que le générateur atteigne le `yield` suivant (ou se termine). Un seul des deux flux avance à un instant donné — jamais les deux en même temps :
+
+```python
+def taches():
+    print("Démarrage")
+    yield "A"
+    print("Reprise après A")
+    yield "B"
+
+t = taches()
+print("Avant le premier next")
+print(next(t))     # "Démarrage" s'affiche ICI, au moment de l'appel — pas avant, pas en arrière-plan
+print("Avant le deuxième next")
+print(next(t))     # "Reprise après A" s'affiche ICI, jamais entre-temps
+```
+
+L'ordre d'affichage est **entièrement déterministe** et reproductible à chaque exécution — à l'inverse de deux threads indépendants, dont l'ordre d'exécution relatif n'est pas prévisible sans synchronisation explicite (mutex, `pthread_join`...). C'est pour ça qu'on parle de **coroutine** plutôt que de parallélisme pour décrire `yield` : la fonction "coopère" avec son appelant en lui rendant explicitement la main à chaque `yield`, au lieu d'être interrompue de force par un ordonnanceur comme le ferait un thread.
