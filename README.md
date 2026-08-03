@@ -15,7 +15,7 @@ Chapters live under `content/`, grouped by category and, when relevant, by subje
 - **Git**: from everyday commands to its internal object model
 - **Docker**: images and containers, Dockerfiles, volumes and networking, Compose, and container-specific security practices
 - **Data representation**: what a value actually looks like in memory, and the behaviours that follow from it — integers and overflow (two's complement), IEEE 754 floats, text encodings (ASCII/Unicode/UTF-8), memory layout (alignment, padding, endianness), pseudo-randomness and CSPRNGs
-- **Performance**: language-agnostic optimisation principles — profiling before optimising, replacing fixed delays with condition-based waits, cutting round trips (the N+1 pattern), when parallelism helps and when it backfires, and what changes once a job runs for minutes
+- **Performance**: language-agnostic optimisation principles — profiling before optimising, replacing fixed delays with condition-based waits, cutting round trips (the N+1 pattern), when parallelism helps and when it backfires, what changes once a job runs for minutes, and why CPU cache locality and SIMD vectorisation (not raw operation count) drive compute-bound speed
 
 The last two categories are deliberately cross-cutting: they explain once what would otherwise be repeated (and half-explained) in every language section. `0.1 + 0.2 != 0.3` is not a JavaScript quirk, so it is documented as an encoding property, and the language chapters link to it instead of re-deriving it.
 
@@ -49,7 +49,7 @@ node scripts/generate-struct.js
 
 A subject's own description page is the `.md` file inside its folder whose title (its `# Heading`) matches the folder name (e.g. `cpp.md` titled "C++" inside `content/Langages de programmation/C++/`); every other `.md` file in that folder becomes one of its chapters. Categories without subject subfolders (Git, Performance, Data representation, the DSL category) list their `.md` files as chapters directly, and take their intro text from `description.md`.
 
-Ids are slugified from folder and file names, with diacritics transliterated — an accented folder name like `Représentation des données` yields `representation-des-donnees`, so it can be linked to from other chapters. Cross-chapter links are plain query strings (`?c=<category>&s=<subject>&p=<chapter>`, the `&s=` part only for categories that have subjects) and are not validated at build time, so a renamed folder silently breaks inbound links — worth grepping for the old id after a rename.
+Ids are slugified from folder and file names, with diacritics transliterated — an accented folder name like `Représentation des données` yields `representation-des-donnees`, so it can be linked to from other chapters. Cross-chapter links are plain query strings (`?c=<category>&s=<subject>&p=<chapter>`, the `&s=` part only for categories that have subjects). Running `node scripts/generate-struct.js` validates every such link found in `content/` against the freshly built structure and throws (listing each broken link) if a rename left any dangling — no silent breakage.
 
 ## Interface
 

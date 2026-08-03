@@ -165,6 +165,76 @@ function buildCategory(contentDir, categoryFolder) {
     return category;
 }
 
+/** Matches internal chapter links as written in .md files, e.g. "/?c=git&s=bash&p=stash" or,
+ *  for categories without subjects, "/?c=git&p=stash". */
+const INTERNAL_LINK_PATTERN = /\/\?c=([a-z0-9-]+)(?:&s=([a-z0-9-]+))?&p=([a-z0-9-]+)/g;
+
+/**
+ * @param {{categories: Array}} struct
+ * @returns {Map<string, {chapters: Set<string>, subjects: Map<string, Set<string>>}>}
+ *   valid chapter/subject ids per category id, for validating internal links against
+ */
+function indexStructForLinkLookup(struct) {
+    const index = new Map();
+    for (const category of struct.categories) {
+        const subjects = new Map();
+        for (const subject of category.subjects ?? []) {
+            subjects.set(subject.id, new Set(subject.chapters.map(chapter => chapter.id)));
+        }
+        index.set(category.id, { chapters: new Set((category.chapters ?? []).map(chapter => chapter.id)), subjects });
+    }
+    return index;
+}
+
+/**
+ * Walks every .md file under contentDir and validates each internal "?c=...&s=...&p=..." link
+ * against the freshly built struct. Without this, renaming a category/subject folder (which
+ * changes its slugified id) silently breaks every link pointing to it — no error anywhere on
+ * the site, the broken chapter just never opens.
+ * @param {string} contentDir
+ * @param {{categories: Array}} struct
+ * @throws {Error} listing every broken link found (file + link), if any
+ */
+function validateInternalLinks(contentDir, struct) {
+    const index = indexStructForLinkLookup(struct);
+    const broken = [];
+
+    const walk = (dir) => {
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+            const entryPath = path.join(dir, entry.name);
+            if (entry.isDirectory()) {
+                walk(entryPath);
+                continue;
+            }
+            if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
+
+            const text = fs.readFileSync(entryPath, "utf-8");
+            for (const [link, categoryId, subjectId, chapterId] of text.matchAll(INTERNAL_LINK_PATTERN)) {
+                const category = index.get(categoryId);
+                if (!category) {
+                    broken.push(`${entryPath} -> ${link} (catégorie "${categoryId}" introuvable)`);
+                } else if (subjectId) {
+                    const subjectChapters = category.subjects.get(subjectId);
+                    if (!subjectChapters) {
+                        broken.push(`${entryPath} -> ${link} (sujet "${subjectId}" introuvable dans "${categoryId}")`);
+                    } else if (chapterId !== subjectId && !subjectChapters.has(chapterId)) {
+                        // p=<subjectId> (same value as s=) links to the subject's own intro page
+                        // (its "main file", excluded from `chapters` — see buildSubject), not a chapter.
+                        broken.push(`${entryPath} -> ${link} (chapitre "${chapterId}" introuvable dans le sujet "${subjectId}")`);
+                    }
+                } else if (!category.chapters.has(chapterId)) {
+                    broken.push(`${entryPath} -> ${link} (chapitre "${chapterId}" introuvable dans "${categoryId}")`);
+                }
+            }
+        }
+    };
+    walk(contentDir);
+
+    if (broken.length > 0) {
+        throw new Error(`${broken.length} lien(s) interne(s) cassé(s) :\n` + broken.map(line => `  - ${line}`).join("\n"));
+    }
+}
+
 /**
  * @param {string} [contentDir] defaults to the project's content/ directory
  * @returns {{categories: Array}}
@@ -192,6 +262,7 @@ export function writeStruct(struct, outputPath = DEFAULT_STRUCT_PATH) {
 const isMainModule = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMainModule) {
     const struct = buildStruct();
+    validateInternalLinks(DEFAULT_CONTENT_DIR, struct);
     writeStruct(struct);
     console.log(`structure/struct.json généré avec ${struct.categories.length} catégories.`);
 }
