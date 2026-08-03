@@ -57,7 +57,7 @@ Le cas le plus coûteux est l'attente d'un évènement **facultatif**. Chercher 
 
 Deux parades se combinent :
 
-**Mémoïser ce qui ne peut plus changer.** Une fois le consentement réglé pour un site, aucune bannière ne réapparaîtra sur ses autres pages : inutile de vérifier à chaque navigation.
+**Mémoïser ce qui ne peut plus changer.** La **mémoïsation** consiste à garder en mémoire le résultat d'une vérification coûteuse pour ne plus jamais la refaire dès lors que la réponse ne peut plus changer. Une fois le consentement réglé pour un site, aucune bannière ne réapparaîtra sur ses autres pages : inutile de vérifier à chaque navigation.
 
 ```python
 def fermer_banniere(page, sites_deja_traites):

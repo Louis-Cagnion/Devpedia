@@ -46,7 +46,7 @@ D'où une progression typique :
 | 4 (2 par cible) | 8 min | **2×** | risque acheté |
 | 6 (3 par cible) | ~7 min | **3×** | contre-productif |
 
-Le passage de 4 à 6 illustre le point : le temps ne baisse presque plus (contention machine) mais la charge continue de croître linéairement.
+Le passage de 4 à 6 illustre le point : le temps ne baisse presque plus mais la charge continue de croître linéairement — symptôme de **contention** (plusieurs workers qui se disputent une même ressource limitée, ici la machine elle-même : processeur, mémoire), qui annule le bénéfice attendu du parallélisme.
 
 ## Contraintes pratiques à anticiper
 

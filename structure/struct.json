@@ -577,6 +577,10 @@
         {
           "id": "traitements-longs",
           "label": "Les traitements longs"
+        },
+        {
+          "id": "cache-cpu-et-simd",
+          "label": "Cache CPU et vectorisation (SIMD)"
         }
       ]
     },
