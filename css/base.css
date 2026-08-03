@@ -56,7 +56,7 @@ html, body {
     gap: 0.4rem;
     min-width: 0;
     flex: 1 1 auto;
-    overflow-x: auto;
+    overflow: hidden;
     background: transparent;
 }
 
@@ -242,6 +242,70 @@ html, body {
 }
 
 .categories > button:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+/* "Voir plus" button: hidden until the categories row overflows even in compact form */
+.categoriesMoreButton {
+    display: none;
+    flex-shrink: 0;
+    padding: 0.5rem 0.9rem;
+    background-color: var(--bg-elevated-2);
+    color: var(--text);
+    border: none;
+    border-radius: var(--radius);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.categoriesMoreButton.overflowing {
+    display: inline-flex;
+}
+
+.categoriesMoreButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+/* full category list, alphabetical, opened by .categoriesMoreButton */
+.categoriesDropdown {
+    display: none;
+    position: fixed;
+    top: var(--navbar-height, 57px);
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - var(--navbar-height, 57px));
+    overflow-y: auto;
+    margin: 0;
+    padding: 1rem;
+    list-style: none;
+    background-color: var(--bg-elevated);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    z-index: 20;
+}
+
+.categoriesDropdown.visible {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.categoriesDropdownOption {
+    padding: 0.5rem 0.9rem;
+    background-color: var(--bg-elevated-2);
+    color: var(--text);
+    border: none;
+    border-radius: var(--radius);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.categoriesDropdownOption:hover {
     background-color: var(--bg-hover);
     color: var(--accent);
 }

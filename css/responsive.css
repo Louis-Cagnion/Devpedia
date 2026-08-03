@@ -28,6 +28,10 @@
     .categories {
         display: none;
     }
+    /* mobile already lists every category in the hamburger menu's sidebar tree */
+    .categoriesMoreButton, .categoriesDropdown {
+        display: none !important;
+    }
     /* two-row mobile header: "Devpedia" alone on its own full-width row, then a
        second row with the menu button on the left, the search bar filling the
        middle, and the language switcher on the right */
