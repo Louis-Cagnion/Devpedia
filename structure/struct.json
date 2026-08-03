@@ -11,6 +11,37 @@
       ]
     },
     {
+      "id": "docker",
+      "label": "Docker",
+      "folder": "Docker",
+      "chapters": [
+        {
+          "id": "concepts-de-base",
+          "label": "Les concepts de base"
+        },
+        {
+          "id": "dockerfile",
+          "label": "Le Dockerfile"
+        },
+        {
+          "id": "commandes-essentielles",
+          "label": "Les commandes essentielles"
+        },
+        {
+          "id": "volumes-et-reseaux",
+          "label": "Volumes et réseaux"
+        },
+        {
+          "id": "docker-compose",
+          "label": "Docker Compose"
+        },
+        {
+          "id": "bonnes-pratiques-et-securite",
+          "label": "Bonnes pratiques et sécurité"
+        }
+      ]
+    },
+    {
       "id": "domain-specific-languages-dsl",
       "label": "Domain-specific Languages (DSL)",
       "folder": "Domain-specific Languages (DSL)",
@@ -340,6 +371,33 @@
           ]
         },
         {
+          "id": "ocaml",
+          "label": "OCaml",
+          "folder": "OCaml",
+          "chapters": [
+            {
+              "id": "programmation-fonctionnelle-vs-imperative",
+              "label": "Programmation fonctionnelle vs impérative"
+            },
+            {
+              "id": "immuabilite-et-fonctions-pures",
+              "label": "Immuabilité et fonctions pures"
+            },
+            {
+              "id": "filtrage-par-motif-et-types-algebriques",
+              "label": "Filtrage par motif et types algébriques"
+            },
+            {
+              "id": "recursion-et-fonctions-dordre-superieur",
+              "label": "Récursion et fonctions d'ordre supérieur"
+            },
+            {
+              "id": "inference-de-types",
+              "label": "L'inférence de types"
+            }
+          ]
+        },
+        {
           "id": "php",
           "label": "PHP",
           "folder": "PHP",
@@ -606,6 +664,10 @@
             {
               "id": "architecture-dun-shell",
               "label": "Comment fonctionne un shell (architecture interne)"
+            },
+            {
+              "id": "automatisation-cron",
+              "label": "Automatiser des tâches avec cron"
             }
           ]
         },

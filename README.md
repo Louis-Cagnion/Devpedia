@@ -8,11 +8,12 @@ Live at: https://louis-cagnion.github.io/Devpedia/
 
 Chapters live under `content/`, grouped by category and, when relevant, by subject. Currently covered:
 
-- **Programming languages**: C, C++, PHP, Python (including data science / AI: NumPy, pandas, Matplotlib, scikit-learn, neural networks, gradient descent, CNN/RNN/Transformers, PyTorch, NLP & LLMs), JavaScript
+- **Programming languages**: C, C++, PHP, Python (including data science / AI: NumPy, pandas, Matplotlib, scikit-learn, neural networks, gradient descent, CNN/RNN/Transformers, PyTorch, NLP & LLMs), JavaScript, OCaml (functional programming, contrasted throughout with the imperative style of every other language above)
 - **Markup & style languages**: HTML, CSS
 - **Domain-specific languages**: Regex, SQL
-- **Shells**: Bash, PowerShell, Zsh (Bash and PowerShell each include a dedicated "internals" chapter — syscalls and the REPL loop for Bash, the .NET pipeline for PowerShell; Zsh instead points back to Bash for everything shared and only covers what's genuinely different — startup files, `setopt`, extended globbing, completion, prompt theming, and Oh My Zsh)
+- **Shells**: Bash (including task scheduling with cron), PowerShell, Zsh (Bash and PowerShell each include a dedicated "internals" chapter — syscalls and the REPL loop for Bash, the .NET pipeline for PowerShell; Zsh instead points back to Bash for everything shared and only covers what's genuinely different — startup files, `setopt`, extended globbing, completion, prompt theming, and Oh My Zsh)
 - **Git**: from everyday commands to its internal object model
+- **Docker**: images and containers, Dockerfiles, volumes and networking, Compose, and container-specific security practices
 - **Data representation**: what a value actually looks like in memory, and the behaviours that follow from it — integers and overflow (two's complement), IEEE 754 floats, text encodings (ASCII/Unicode/UTF-8), memory layout (alignment, padding, endianness), pseudo-randomness and CSPRNGs
 - **Performance**: language-agnostic optimisation principles — profiling before optimising, replacing fixed delays with condition-based waits, cutting round trips (the N+1 pattern), when parallelism helps and when it backfires, and what changes once a job runs for minutes
 

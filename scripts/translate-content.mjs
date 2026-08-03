@@ -53,9 +53,18 @@ const LANGUAGES_MANIFEST_PATH = path.join(ROOT, "structure", "languages.json");
 
 /** Comment markers recognized per fenced-code-block language tag (a language may accept more than one — PHP allows both `//` and `#`). */
 const LINE_COMMENT_MARKERS = {
-    bash: ["#"], sh: ["#"], shell: ["#"], python: ["#"], py: ["#"], makefile: ["#"],
-    javascript: ["//"], js: ["//"], php: ["//", "#"], c: ["//"], cpp: ["//"], "c++": ["//"], java: ["//"],
+    bash: ["#"], sh: ["#"], shell: ["#"], python: ["#"], py: ["#"], makefile: ["#"], yaml: ["#"], yml: ["#"],
+    javascript: ["//"], js: ["//"], php: ["//", "#"], c: ["//"], cpp: ["//"], "c++": ["//"], java: ["//"], dockerfile: ["#"],
     sql: ["--"],
+};
+
+/**
+ * Block-style comment delimiters recognized per fenced-code-block language tag — as opposed to
+ * {@link LINE_COMMENT_MARKERS}' line-prefix style. Only OCaml today: it has no line-comment
+ * syntax at all, comments are always `(* ... *)`, possibly spanning several lines.
+ */
+const BLOCK_COMMENT_MARKERS = {
+    ocaml: { open: "(*", close: "*)" },
 };
 
 /**
@@ -283,6 +292,10 @@ export function segmentBody(body, targetLang) {
     const segments = [];
     let inCodeBlock = false;
     let commentMarkers = null;
+    let blockMarkers = null;
+    // Tracks a block comment (e.g. OCaml's `(* ... *)`) opened on an earlier line and not yet
+    // closed — the block-comment equivalent of `inTemplateLiteral` below.
+    let inBlockComment = false;
     let codeLang = null;
     // Tracks a JS template literal (`...`) opened on an earlier line and not yet closed —
     // e.g. `` const s = ` `` followed by prose lines and a closing `` ` `` on its own line.
@@ -294,11 +307,19 @@ export function segmentBody(body, targetLang) {
             inCodeBlock = !inCodeBlock;
             codeLang = inCodeBlock ? fenceMatch[1].toLowerCase() : null;
             commentMarkers = inCodeBlock ? LINE_COMMENT_MARKERS[codeLang] ?? null : null;
+            blockMarkers = inCodeBlock ? BLOCK_COMMENT_MARKERS[codeLang] ?? null : null;
+            inBlockComment = false;
             inTemplateLiteral = false;
             segments.push({ type: "raw", line });
             return;
         }
         if (inCodeBlock) {
+            if (blockMarkers) {
+                const { parts, stillInComment } = splitByBlockComment(line, blockMarkers, inBlockComment, codeLang);
+                inBlockComment = stillInComment;
+                segments.push(finalizeCodeParts(parts, line, targetLang, true));
+                return;
+            }
             if (inTemplateLiteral) {
                 const closeIndex = line.indexOf("`");
                 if (closeIndex === -1) {
@@ -379,6 +400,54 @@ export function segmentBody(body, targetLang) {
         segments.push({ type: "translate", prefix: "", xmlText: mdInlineToXml(line, targetLang) });
     });
     return segments;
+}
+
+/**
+ * Splits a code-block line for a block-comment language (only OCaml today, see
+ * {@link BLOCK_COMMENT_MARKERS}) into alternating code/comment parts, tracking whether a
+ * comment opened on this line (or an earlier one) is still open at its end — a block comment
+ * can span multiple lines, mirroring how `inTemplateLiteral` tracks a multi-line JS template
+ * literal above. Comments are not nested here, unlike OCaml itself (the first `close` marker
+ * always ends the comment): none of this project's own OCaml snippets nest a comment inside
+ * another, so the extra bookkeeping isn't needed today.
+ *
+ * @param {string} line
+ * @param {{open: string, close: string}} markers
+ * @param {boolean} startInComment whether a comment opened on an earlier line is still open
+ * @param {string} codeLang
+ * @returns {{parts: Array<{kind: string, text?: string, xmlText?: string}>, stillInComment: boolean}}
+ */
+function splitByBlockComment(line, markers, startInComment, codeLang) {
+    const parts = [];
+    let inComment = startInComment;
+    let cursor = 0;
+
+    while (cursor < line.length) {
+        if (inComment) {
+            const closeIndex = line.indexOf(markers.close, cursor);
+            const text = closeIndex === -1 ? line.slice(cursor) : line.slice(cursor, closeIndex);
+            if (/[a-zA-ZÀ-ÿ]/.test(text))
+                parts.push({ kind: "translate", xmlText: escapeXml(text) });
+            else if (text)
+                parts.push({ kind: "literal", text });
+            if (closeIndex === -1)
+                break;
+            parts.push({ kind: "literal", text: markers.close });
+            cursor = closeIndex + markers.close.length;
+            inComment = false;
+        } else {
+            const openIndex = line.indexOf(markers.open, cursor);
+            const codeText = openIndex === -1 ? line.slice(cursor) : line.slice(cursor, openIndex);
+            if (codeText)
+                parts.push(...extractCodeLineParts(codeText, codeLang));
+            if (openIndex === -1)
+                break;
+            parts.push({ kind: "literal", text: markers.open });
+            cursor = openIndex + markers.open.length;
+            inComment = true;
+        }
+    }
+    return { parts, stillInComment: inComment };
 }
 
 /**
