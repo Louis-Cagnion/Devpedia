@@ -88,6 +88,39 @@ git update-ref refs/heads/main a3f9c1d           # déplace manuellement une bra
 
 Un `git commit` "normal" n'est, sous le capot, rien de plus qu'un enchaînement de `write-tree`, `commit-tree` et `update-ref`.
 
+## Réécrire tout l'historique : purger un fichier de chaque commit
+
+Un `rebase` ou un `commit --amend` ne réécrivent que les commits **après** le point modifié. Parfois il faut aller plus loin : retirer un fichier (secret, gros binaire...) de **chaque** commit où il a existé, du tout premier au dernier — un simple `rm` + nouveau commit ne suffit pas, puisque le fichier reste lisible dans les commits précédents.
+
+```bash
+git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" --prune-empty -- --all
+```
+
+`--index-filter` rejoue cette commande sur l'index de **chaque** commit de l'historique (sur toutes les refs, via `--all`), reconstruit un nouveau tree sans le fichier, puis un nouveau commit — ce qui, par la mécanique vue plus haut (le hash d'un commit dépend de celui de son parent), change le hash de **tous** les commits à partir du premier concerné.
+
+> **Note :** `git filter-branch` est officiellement déprécié au profit de [`git filter-repo`](https://github.com/newren/git-filter-repo) (plus rapide, moins de pièges), mais ce dernier n'est pas fourni avec Git — installation séparée (Python) nécessaire. `filter-branch` reste disponible partout où Git est installé, suffisant pour une opération ponctuelle.
+
+Conséquences directes de ce changement de hash en cascade :
+- Tout clone ou fork existant du dépôt divergera irrémédiablement de la nouvelle version — un push normal sera rejeté, un `push --force`/`--force-with-lease` (cf. chapitre "Les dépôts distants") est nécessaire, et quiconque a déjà cloné le dépôt doit re-cloner ou réinitialiser durement sa copie.
+- Toujours faire une sauvegarde complète (`git bundle create ... --all`, cf. chapitre "Les dépôts distants") **avant** de lancer une réécriture de ce type — une erreur dans le filtre est aussi irréversible que l'opération elle-même.
+
+## Objets inaccessibles : une suppression n'est jamais immédiate
+
+Après une réécriture d'historique (ou un simple `reset --hard`), les anciens commits ne sont plus référencés par aucune branche — mais leurs objets restent physiquement présents dans `.git/objects/`. Deux mécanismes les retiennent encore en vie :
+
+- `git filter-branch` conserve lui-même une sauvegarde automatique dans `refs/original/` (à supprimer explicitement — `git update-ref -d refs/original/refs/heads/main` — une fois certain de ne plus en avoir besoin).
+- Le **reflog** (cf. chapitre "Annuler des changements") garde une trace de chaque ancien commit pendant plusieurs semaines par défaut, même sans aucune ref pointant dessus.
+
+Un objet n'est réellement supprimé du dépôt local que lorsque plus rien ne le retient :
+
+```bash
+git reflog expire --expire=now --all   # vide immédiatement le reflog de toutes les refs (au lieu d'attendre l'expiration par défaut)
+git gc --prune=now                      # supprime tout objet devenu inaccessible ("unreachable")
+git fsck --unreachable                  # liste les objets encore présents mais non référencés par aucune branche/tag/reflog
+```
+
+> **Note :** ce nettoyage ne concerne que le dépôt **local**. Un dépôt distant (GitHub, GitLab...) applique son propre `gc` selon son propre calendrier — après un `push --force` qui retire un fichier sensible de l'historique, l'ancien commit peut rester accessible côté serveur via son hash exact (une requête ciblée, pas une navigation normale) jusqu'à ce que le serveur fasse son propre nettoyage. Pour une garantie de suppression immédiate côté serveur, seul le support de la plateforme peut agir.
+
 ## Concevoir son propre système de versionnement
 
 Les briques nécessaires à un système minimal, dans cet ordre logique :

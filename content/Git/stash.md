@@ -37,6 +37,12 @@ git stash drop stash@{0}   # supprime un stash précis, sans le réappliquer
 git stash clear             # supprime TOUS les stash de la pile
 ```
 
+## Sous le capot : un stash est un commit un peu particulier
+
+Un stash n'est ni plus ni moins qu'un commit (cf. chapitre "Architecture interne" pour la structure objet sous-jacente), pointé par la ref `refs/stash`. Son premier parent est le commit courant au moment du stash, et un second parent capture l'état de l'index (un troisième si `-u` a été utilisé, pour les fichiers non suivis) — c'est cette structure à plusieurs parents que `git stash apply`/`pop` interprètent pour reconstruire séparément l'index et le dossier de travail.
+
+> **Piège :** un outil qui réécrit l'historique sans connaître cette convention (`git filter-branch`, cf. "Architecture interne") peut aplatir ce commit à un seul parent — `apply`/`pop` deviennent alors inutilisables (`fatal: ... is not a stash-like commit`). Le contenu reste néanmoins récupérable directement, puisque le tree du commit reflète l'état complet du dossier de travail au moment du stash : `git checkout refs/stash -- fichier.txt`.
+
 ## Cas d'usage typique
 
 ```bash
