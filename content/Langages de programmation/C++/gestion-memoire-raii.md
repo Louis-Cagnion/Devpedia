@@ -77,7 +77,7 @@ std::shared_ptr<int> p2 = p1;   // OK, copie autorisée : p1 ET p2 partagent la 
 
 Chaque `shared_ptr` incrémente un compteur de références partagé ; la ressource n'est libérée automatiquement que lorsque ce compteur retombe à zéro.
 
-> **Note :** `shared_ptr` a un coût (le compteur de références, mis à jour de façon thread-safe) supérieur à `unique_ptr` — à réserver aux cas où une ressource a réellement plusieurs propriétaires légitimes, pas par défaut.
+> **Note :** `shared_ptr` a un coût (le compteur de références, mis à jour de façon **thread-safe** — sans risque de [race condition](/?c=langages-de-programmation&s=c&p=threads) si plusieurs threads le modifient en même temps) supérieur à `unique_ptr` — à réserver aux cas où une ressource a réellement plusieurs propriétaires légitimes, pas par défaut.
 
 ## Résumé
 
