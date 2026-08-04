@@ -36,24 +36,81 @@ export function rememberCurrentPageForLanguageSwitch() {
  * it — it's a one-shot flag for the reload that follows a language switch), otherwise renders
  * the home page. Safe to call on every startup.
  */
-export function resumePendingNavigation() {
-    const raw = sessionStorage.getItem(PENDING_NAV_KEY);
-    sessionStorage.removeItem(PENDING_NAV_KEY);
-    if (!raw) {
-        generateHomePage();
-        return;
-    }
-    const { categoryId, subjectId, pageId } = JSON.parse(raw);
+/**
+ * @param {string} url an absolute or root-relative URL, e.g. "/?c=shells&s=bash&p=variables"
+ * @returns {{categoryId: string, subjectId: string|null, pageId: string}|null} the target
+ *   described by its `c`/`s`/`p` query params, or null if it has no `c` param to navigate to
+ */
+function parseNavParams(url) {
+    const params = new URLSearchParams(new URL(url, window.location.origin).search);
+    const categoryId = params.get("c");
+    if (!categoryId) return null;
+    return { categoryId, subjectId: params.get("s"), pageId: params.get("p") ?? categoryId };
+}
+
+/**
+ * Navigate to whatever `target` describes — a category's own page, a subject's own page, or a
+ * chapter — the same dispatch {@link resumePendingNavigation} already did for a language-switch
+ * restore, reused here for URL query params and in-content link clicks.
+ *
+ * @param {{categoryId: string, subjectId: string|null, pageId: string}} target
+ * @returns {boolean} whether the category (and subject, if relevant) exist and navigation happened
+ */
+function navigateToTarget({ categoryId, subjectId, pageId }) {
     const category = findCategory({ id: categoryId });
-    if (!category || categoryId === "acceuil") {
-        generateHomePage();
-    } else if (pageId === categoryId) {
+    if (!category) return false;
+    if (pageId === categoryId) {
         loadCategory(categoryId);
-    } else if (pageId === subjectId) {
+    } else if (subjectId && pageId === subjectId) {
         navigateToSubject(categoryId, subjectId);
     } else {
         navigateToChapter(categoryId, subjectId, pageId);
     }
+    return true;
+}
+
+export function resumePendingNavigation() {
+    const raw = sessionStorage.getItem(PENDING_NAV_KEY);
+    sessionStorage.removeItem(PENDING_NAV_KEY);
+    if (raw) {
+        const { categoryId, subjectId, pageId } = JSON.parse(raw);
+        const category = findCategory({ id: categoryId });
+        if (!category || categoryId === "acceuil") {
+            generateHomePage();
+        } else if (pageId === categoryId) {
+            loadCategory(categoryId);
+        } else if (pageId === subjectId) {
+            navigateToSubject(categoryId, subjectId);
+        } else {
+            navigateToChapter(categoryId, subjectId, pageId);
+        }
+        return;
+    }
+    const target = parseNavParams(window.location.href);
+    if (!target || !navigateToTarget(target))
+        generateHomePage();
+}
+
+/**
+ * Intercepts a plain click on an in-content cross-chapter link (`<a class="contentLink">`,
+ * cf. parser.js) so it navigates through the SPA router instead of triggering a full page
+ * reload — which would land back on the home page for any URL the user didn't just arrive
+ * on, since {@link resumePendingNavigation} only runs once, at startup. A click carrying a
+ * modifier key (Ctrl/Cmd/Shift, or a non-primary button) is left alone so "open in a new
+ * tab" still works — the reload it causes there now resolves correctly too, via the same
+ * URL-param handling in {@link resumePendingNavigation}. Sidebar navigation doesn't push
+ * history entries either, so this doesn't call `history.pushState`, for consistency.
+ *
+ * @param {HTMLElement} pageDiv
+ */
+function attachContentLinkHandler(pageDiv) {
+    pageDiv.addEventListener("click", (e) => {
+        const link = e.target.closest("a.contentLink");
+        if (!link || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        const target = parseNavParams(link.href);
+        if (!target || !navigateToTarget(target)) return;
+        e.preventDefault();
+    });
 }
 
 function closeMobileMenu() {
@@ -95,6 +152,7 @@ function generatePageContent(textInfos, pageId, withReturnButton) {
     if (withReturnButton)
         createAppendReturnButton(pageDiv, pageId);
     const outline = parseAppendText(pageDiv, pageId, text);
+    attachContentLinkHandler(pageDiv);
     document.body.append(pageDiv);
     setPageOutline(outline);
     syncSidebars();

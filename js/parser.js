@@ -58,11 +58,28 @@ function withProtectedCodeSpans(line, transform, wrapCode) {
     return transform(withoutCode).replace(/\0(\d+)\0/g, (_, i) => wrapCode(spans[Number(i)]));
 }
 
+/**
+ * Renders `[label](url)` as a real `<a>`. An internal cross-chapter link (`/?c=...`, cf.
+ * README) gets `class="contentLink"` so router.js can intercept its clicks and navigate through
+ * the SPA instead of reloading the page; anything else is treated as an external link and opens
+ * in a new tab, `rel="noopener noreferrer"` guarding against tabnabbing (cf. HTML liens-et-images.md).
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function renderLinks(text) {
+    return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, url) =>
+        url.startsWith("/")
+            ? `<a class="contentLink" href="${url}">${label}</a>`
+            : `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
+    );
+}
+
 function mdToHtmlFormatting(line) {
     return withProtectedEscapes(line, withoutEscapes =>
         withProtectedCodeSpans(
             withoutEscapes,
-            text => text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>"),
+            text => renderLinks(text).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>"),
             code => `<code>${code}</code>`
         )
     );

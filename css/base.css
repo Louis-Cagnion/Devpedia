@@ -323,6 +323,13 @@ html, body {
     padding: 1.5rem 1.25rem 4rem;
 }
 
+/* underlined even at rest (unlike the global `a`) — a link whose label is itself an inline
+   code span has no color of its own to read as a link by (`code` sets its own text color,
+   overriding the inherited one), so the underline is what actually marks it as clickable */
+.page a {
+    text-decoration: underline;
+}
+
 .pageTitle {
     color: var(--accent);
     font-size: 1.6rem;
