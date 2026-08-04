@@ -10,7 +10,7 @@ Bash charge selon le cas `~/.bashrc`, `~/.bash_profile` ou `~/.profile` (cf. cha
 
 | Fichier | Chargé pour... |
 |---|---|
-| `~/.zshenv` | **Toute** invocation de zsh, y compris les scripts non interactifs et les sous-shells — même chose que le comportement de `~/.bashrc` serait si Bash le chargeait systématiquement, ce qu'il ne fait pas |
+| `~/.zshenv` | **Toute** invocation de zsh, y compris les scripts non interactifs et les [sous-shells](/?c=shells&s=bash&p=architecture-dun-shell) — même chose que le comportement de `~/.bashrc` serait si Bash le chargeait systématiquement, ce qu'il ne fait pas |
 | `~/.zprofile` | Uniquement un shell de connexion (*login shell*) — équivalent de `~/.bash_profile` |
 | `~/.zshrc` | Uniquement un shell interactif — équivalent de `~/.bashrc`, c'est le fichier le plus modifié en pratique (alias, `PROMPT`, plugins Oh My Zsh, cf. chapitre dédié) |
 | `~/.zlogin` | Uniquement un shell de connexion, **après** `~/.zshrc` — rarement utilisé, pour des commandes qui doivent s'exécuter après que l'environnement interactif soit prêt |

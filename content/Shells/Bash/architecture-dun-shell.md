@@ -37,6 +37,23 @@ Une ligne tapée n'est **pas** exécutée telle quelle : Bash applique plusieurs
 
 > **Note :** c'est cet ordre précis qui explique pourquoi `"$var"` (avec guillemets) protège du découpage en mots (étape 4) alors que `$var` seul y est exposé — les guillemets ne sont retirés qu'à la toute dernière étape, après que le découpage a déjà eu lieu (ou non) sur le contenu qu'ils protégeaient.
 
+## Les sous-shells : fork() sans execve()
+
+Dans l'exemple de commande externe ci-dessous, l'enfant issu de `fork()` appelle `execve()` : il remplace aussitôt son image mémoire par un autre programme et cesse d'être un shell. Un **sous-shell** est l'autre cas de figure : un enfant qui **reste** un shell et continue d'interpréter des commandes, sans jamais appeler `execve()`. Bash en crée un automatiquement pour :
+
+- une commande entre parenthèses : `(cd /tmp && ls)`
+- chaque étage d'un pipeline (cf. section suivante)
+- une substitution de commande : `resultat=$(commande)`
+- une commande en arrière-plan : `commande &`
+
+Un sous-shell hérite d'une **copie** des variables du shell parent au moment où il démarre — mais c'est une copie à sens unique, comme pour l'export d'une variable d'environnement (cf. chapitre dédié) : toute modification qu'il fait (`cd`, variable...) disparaît avec lui à sa terminaison, sans jamais atteindre le parent.
+
+```bash
+cd /tmp
+(cd /var && pwd)   # affiche /var, dans le sous-shell
+pwd                # affiche toujours /tmp : le cd du sous-shell n'a pas survécu
+```
+
 ## Exécuter une commande : builtin vs externe
 
 Une fois la ligne découpée et expansée, le shell doit distinguer deux cas :
