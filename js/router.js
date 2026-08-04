@@ -127,30 +127,81 @@ function clearCurrentPage() {
 }
 
 /**
- * @param {HTMLElement} pageDiv where the return button will be attached to
- * @param {string} pageId
+ * Builds a prev/next chapter button as two separate elements — an arrow pinned to the
+ * button's outer edge, and a label that can wrap onto several lines on its own without
+ * dragging the arrow along with it.
+ *
+ * @param {string} className
+ * @param {string} label
+ * @param {string} arrow
+ * @param {Boolean} arrowFirst true for the previous-chapter button (arrow, then label),
+ *   false for the next-chapter button (label, then arrow)
+ * @returns {HTMLElement} button
  */
-function createAppendReturnButton(pageDiv, pageId) {
-    const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
-    const returnButton = createTag("button", {class: `returnButton ${pageId}ReturnButton`}, {textContent: `${arrow} Retour`});
-    returnButton.addEventListener("click", (e) => {
-        const previousEntry = appState.navigationStack.pop();
-        renderEntry(previousEntry);
-    })
-    pageDiv.append(returnButton);
+function createChapterNavButton(className, label, arrow, arrowFirst) {
+    const button = createTag("button", {class: className});
+    const arrowSpan = createTag("span", {class: "chapterNavArrow"}, {textContent: arrow});
+    const labelSpan = createTag("span", {class: "chapterNavLabel"}, {textContent: label});
+    button.append(...(arrowFirst ? [arrowSpan, labelSpan] : [labelSpan, arrowSpan]));
+    return button;
+}
+
+/**
+ * @param {HTMLElement} pageDiv where the nav row will be attached to
+ * @param {string} pageId
+ * @param {Boolean} withReturnButton
+ * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} previousChapter
+ * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} nextChapter
+ */
+function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter, nextChapter) {
+    const nav = createTag("div", {class: "pageNav"});
+    if (withReturnButton) {
+        const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
+        const returnButton = createTag("button", {class: `returnButton ${pageId}ReturnButton`}, {textContent: `${arrow} Retour`});
+        returnButton.addEventListener("click", (e) => {
+            const previousEntry = appState.navigationStack.pop();
+            renderEntry(previousEntry);
+        })
+        nav.append(returnButton);
+    }
+    if (previousChapter || nextChapter) {
+        // previous chapter stacked above next chapter, both right-aligned, rather than
+        // side by side — two chapter titles on one row can get uncomfortably long
+        const chapterNav = createTag("div", {class: "chapterNav"});
+        if (previousChapter) {
+            const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
+            const prevButton = createChapterNavButton(`prevButton ${pageId}PrevButton`, previousChapter.label, arrow, true);
+            prevButton.addEventListener("click", (e) => {
+                navigateToChapter(previousChapter.categoryId, previousChapter.subjectId, previousChapter.id);
+            })
+            chapterNav.append(prevButton);
+        }
+        if (nextChapter) {
+            const arrow = document.documentElement.dir === "rtl" ? "←" : "→";
+            const nextButton = createChapterNavButton(`nextButton ${pageId}NextButton`, nextChapter.label, arrow, false);
+            nextButton.addEventListener("click", (e) => {
+                navigateToChapter(nextChapter.categoryId, nextChapter.subjectId, nextChapter.id);
+            })
+            chapterNav.append(nextButton);
+        }
+        nav.append(chapterNav);
+    }
+    pageDiv.append(nav);
 }
 
 /**
  * @param {string} textInfos
  * @param {string} pageId
  * @param {Boolean} withReturnButton
+ * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [previousChapter]
+ * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [nextChapter]
  * @returns {HTMLElement} page div
  */
-function generatePageContent(textInfos, pageId, withReturnButton) {
+function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null) {
     const text = parseMdContent(textInfos);
     const pageDiv = createTag("div", {class: `page ${pageId}Div`});
-    if (withReturnButton)
-        createAppendReturnButton(pageDiv, pageId);
+    if (withReturnButton || previousChapter || nextChapter)
+        createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter, nextChapter);
     const outline = parseAppendText(pageDiv, pageId, text);
     attachContentLinkHandler(pageDiv);
     document.body.append(pageDiv);
@@ -192,16 +243,27 @@ export async function generateHomePage() {
 /**
  * Render a chapter page (leaf content, belonging to a subject or a flat category)
  *
+ * @param {string} categoryId
  * @param {string} path path to the chapter's markdown file
  * @param {Object} chapter
  * @param {string} [subjectId] the subject this chapter belongs to, if any
  */
-async function renderChapter(path, chapter, subjectId = null) {
+async function renderChapter(categoryId, path, chapter, subjectId = null) {
     clearCurrentPage();
+    appState.curCategory = categoryId;
     appState.curSubject = subjectId;
     appState.curPageId = chapter.id;
     const chapterInfos = await fetchFileToTextOrJson(path, 'text');
-    generatePageContent(chapterInfos, chapter.id, true);
+    const category = findCategory({id: categoryId});
+    const chapters = (subjectId ? findSubject(category, subjectId).chapters : category.chapters) ?? [];
+    const curIndex = chapters.findIndex(c => c.id === chapter.id);
+    const previousChapter = chapters[curIndex - 1];
+    const nextChapter = chapters[curIndex + 1];
+    generatePageContent(
+        chapterInfos, chapter.id, true,
+        previousChapter && {categoryId, subjectId, id: previousChapter.id, label: previousChapter.label},
+        nextChapter && {categoryId, subjectId, id: nextChapter.id, label: nextChapter.label}
+    );
 }
 
 /**
@@ -212,6 +274,7 @@ async function renderChapter(path, chapter, subjectId = null) {
  */
 async function renderSubject(category, subject) {
     clearCurrentPage();
+    appState.curCategory = category.id;
     appState.curSubject = subject.id;
     appState.curPageId = subject.id;
     const path = `./${getContentDir()}/${category.folder}/${subject.folder}/${subject.id}.md`;
@@ -219,7 +282,7 @@ async function renderSubject(category, subject) {
     const pageDiv = generatePageContent(subjectInfos, subject.id, true);
     generateChildList(pageDiv, subject.chapters ?? [], subject.id, (chapter) => {
         appState.navigationStack.push({type: 'subject', categoryId: category.id, subjectId: subject.id});
-        renderChapter(`./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subject.id);
+        renderChapter(category.id, `./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subject.id);
     });
 }
 
@@ -244,7 +307,7 @@ async function renderCategory(category) {
     } else if (category.chapters) {
         generateChildList(pageDiv, category.chapters, category.id, (chapter) => {
             appState.navigationStack.push({type: 'category', categoryId: category.id});
-            renderChapter(`./${getContentDir()}/${category.folder}/${chapter.id}.md`, chapter);
+            renderChapter(category.id, `./${getContentDir()}/${category.folder}/${chapter.id}.md`, chapter);
         });
     }
 }
@@ -313,10 +376,10 @@ export function navigateToChapter(categoryId, subjectId, chapterId) {
         const subject = findSubject(category, subjectId);
         const chapter = subject.chapters.find(c => c.id === chapterId);
         appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}, {type: 'subject', categoryId, subjectId}];
-        renderChapter(`./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subjectId);
+        renderChapter(categoryId, `./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subjectId);
     } else {
         const chapter = category.chapters.find(c => c.id === chapterId);
         appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}];
-        renderChapter(`./${getContentDir()}/${category.folder}/${chapter.id}.md`, chapter);
+        renderChapter(categoryId, `./${getContentDir()}/${category.folder}/${chapter.id}.md`, chapter);
     }
 }

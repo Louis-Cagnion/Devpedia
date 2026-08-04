@@ -367,8 +367,28 @@ em {
     font-style: italic;
 }
 
-/* return button */
-.returnButton {
+/* top-of-page nav row: return button on one side, previous/next chapter buttons on the
+   other. align-items: flex-start (not center) because that other side is a two-row stack
+   (previous chapter above next chapter) taller than the return button alone */
+.pageNav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.2rem;
+}
+
+/* previous chapter above next chapter, both right-aligned — a single row would make two
+   chapter titles side by side uncomfortably long */
+.chapterNav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.returnButton, .nextButton, .prevButton {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -377,14 +397,35 @@ em {
     color: var(--text-muted);
     border-radius: var(--radius);
     padding: 0.5rem 0.9rem;
-    margin-bottom: 1.2rem;
     cursor: pointer;
     transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-.returnButton:hover {
+.returnButton:hover, .nextButton:hover, .prevButton:hover {
     color: var(--accent);
     border-color: var(--accent);
+}
+
+/* the arrow stays pinned to the button's outer edge (start for previous, end for next) while
+   the label can wrap onto a second line on its own, rather than growing the row/column past
+   the page — align-items: center (inherited from the shared rule above) keeps the arrow
+   centered against the label's full height even when it wraps to two lines. min-width: 0
+   overrides a flex item's default min-width: auto, which otherwise keeps this button at its
+   label's full one-line width regardless of max-width below */
+.nextButton, .prevButton {
+    min-width: 0;
+    max-width: 22rem;
+}
+
+.chapterNavArrow {
+    flex-shrink: 0;
+}
+
+.chapterNavLabel {
+    min-width: 0;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.35;
 }
 
 /* markdown content lists (bullet/numbered lists inside a page's text) */
@@ -417,6 +458,13 @@ code {
     border-radius: 4px;
     direction: ltr;
     unicode-bidi: embed;
+    vertical-align: middle;
+}
+
+/* td already uses --bg-elevated-2 (cf. below) — a plain `code` span there would be
+   invisible against its own background, so it needs a lighter shade to stand out */
+td code {
+    background-color: var(--bg-hover);
 }
 
 pre {

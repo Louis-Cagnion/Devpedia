@@ -28,7 +28,7 @@ export function parseMdContent(rawContent) {
  */
 function withProtectedEscapes(line, transform) {
     const escaped = [];
-    const withoutEscapes = line.replace(/\\([\\`*_{}\[\]()#+\-.!>])/g, (_, char) => {
+    const withoutEscapes = line.replace(/\\([\\`*_{}\[\]()#+\-.!>|])/g, (_, char) => {
         escaped.push(char);
         return "\x01" + (escaped.length - 1) + "\x01";
     });
@@ -170,7 +170,24 @@ function createQuoteFromText(line, homeDiv, fileName, quoteDiv) {
  * @returns {Array<string>} the row's cells, trimmed, without the leading/trailing pipe
  */
 function splitTableRow(line) {
-    return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(cell => cell.trim());
+    const trimmed = line.trim().replace(/^\|/, "").replace(/\|$/, "");
+    // A `\|` (e.g. inside a code span like `` `\|` `` to render a literal pipe character)
+    // is an escaped separator, not a column boundary — mdToHtmlFormatting unescapes it later.
+    const cells = [];
+    let cell = "";
+    for (let i = 0; i < trimmed.length; i++) {
+        if (trimmed[i] === "\\" && trimmed[i + 1] === "|") {
+            cell += "\\|";
+            i++;
+        } else if (trimmed[i] === "|") {
+            cells.push(cell.trim());
+            cell = "";
+        } else {
+            cell += trimmed[i];
+        }
+    }
+    cells.push(cell.trim());
+    return cells;
 }
 
 /**

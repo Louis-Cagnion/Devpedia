@@ -21,6 +21,19 @@ Le nombre de valeurs ne change pas selon qu'on soit signé ou non : c'est la **p
 
 **Le calcul à retenir :** pour *n* bits, la valeur maximale non signée est `2ⁿ − 1` (le `− 1` parce que le zéro occupe une combinaison). En signé, la plage est `−2ⁿ⁻¹` à `2ⁿ⁻¹ − 1`.
 
+## Le poids d'un bit
+
+Chaque bit contribue à la valeur totale selon sa position, une puissance de 2 croissante de droite à gauche — son **poids** :
+
+```
+bit :    1    0    1    1    0    0    1    0
+poids : 128   64   32   16   8    4    2    1
+         ^                                  ^
+    poids fort                        poids faible
+```
+
+Le **bit de poids faible** (le plus à droite) est celui qui vaut 1 (2⁰) ; le **bit de poids fort** (le plus à gauche) est celui qui pèse le plus dans la valeur finale, 2ⁿ⁻¹ sur *n* bits. Cette distinction revient dans deux contextes courants : le bit de poids fort sert d'indicateur de signe en complément à deux (voir plus bas), et le bit de poids faible seul suffit à tester la parité d'un nombre (`n & 1`, voir le chapitre [Les opérateurs binaires](/?c=langages-de-programmation&s=c&p=operateurs-binaires)).
+
 ## Les nombres négatifs : le complément à deux
 
 Comment stocker un signe alors qu'on ne dispose que de 0 et de 1 ? L'idée naïve serait de réserver un bit pour le signe. C'est ce que fait le flottant, mais pas l'entier, car cela poserait deux problèmes : deux représentations du zéro (`+0` et `−0`), et une addition qui devrait traiter les signes à part.
@@ -82,7 +95,7 @@ Les débordements d'entiers ne sont pas une curiosité académique :
 | JavaScript | Pas de vrai type entier : tout est flottant, donc exact seulement jusqu'à 2⁵³ (voir [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` pour aller au-delà |
 | PHP | Entier natif ; en cas de débordement, conversion automatique en `float` (donc perte de précision) |
 
-Python illustre bien le compromis : ne jamais déborder est confortable, mais chaque entier est un objet plus lourd et plus lent qu'un entier machine. C'est l'une des raisons pour lesquelles les bibliothèques de calcul comme NumPy utilisent des types à taille fixe (`int32`, `int64`) — voir le chapitre [NumPy](/?c=langages-de-programmation&s=python&p=numpy).
+Python illustre bien le compromis : ne jamais déborder est confortable, mais chaque entier est un objet plus lourd et plus lent qu'un entier machine. C'est l'une des raisons pour lesquelles les bibliothèques de calcul comme NumPy utilisent des types à taille fixe (`int32`, `int64`) — voir le chapitre [NumPy](/?c=data-science&p=numpy).
 
 ## Manipuler les bits directement
 

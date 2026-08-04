@@ -11,6 +11,33 @@
       ]
     },
     {
+      "id": "data-science",
+      "label": "Data Science",
+      "folder": "Data Science",
+      "chapters": [
+        {
+          "id": "jupyter-notebooks",
+          "label": "Les notebooks Jupyter"
+        },
+        {
+          "id": "numpy",
+          "label": "NumPy — le calcul numérique"
+        },
+        {
+          "id": "pandas",
+          "label": "pandas — manipuler des données tabulaires"
+        },
+        {
+          "id": "matplotlib",
+          "label": "Matplotlib — visualiser des données"
+        },
+        {
+          "id": "machine-learning-scikit-learn",
+          "label": "Introduction au machine learning (scikit-learn)"
+        }
+      ]
+    },
+    {
       "id": "docker",
       "label": "Docker",
       "folder": "Docker",
@@ -104,6 +131,61 @@
         {
           "id": "architecture-interne",
           "label": "L'architecture interne de Git"
+        }
+      ]
+    },
+    {
+      "id": "ia",
+      "label": "IA",
+      "folder": "IA",
+      "chapters": [
+        {
+          "id": "reseaux-de-neurones",
+          "label": "Les réseaux de neurones — les fondamentaux"
+        },
+        {
+          "id": "entrainement-descente-de-gradient",
+          "label": "L'entraînement d'un modèle et la descente de gradient"
+        },
+        {
+          "id": "architectures-cnn-rnn-transformers",
+          "label": "Architectures — CNN, RNN et Transformers"
+        },
+        {
+          "id": "deep-learning-pytorch",
+          "label": "Deep learning avec PyTorch"
+        },
+        {
+          "id": "nlp-et-llm",
+          "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
+        },
+        {
+          "id": "llm-en-production",
+          "label": "LLM en production : cas d'usage et limites"
+        },
+        {
+          "id": "agents",
+          "label": "Agents : boucle outil/réflexion et orchestration"
+        },
+        {
+          "id": "rag",
+          "label": "RAG : augmenter un LLM avec des données externes"
+        },
+        {
+          "id": "gestion-dun-llm",
+          "label": "Monitoring et gestion opérationnelle d'un LLM"
+        },
+        {
+          "id": "gouvernance-des-donnees",
+          "label": "Gouvernance des données pour un système IA"
+        },
+        {
+          "id": "reglementation-europeenne-ia",
+          "label": "Réglementation européenne de l'IA : l'AI Act"
+        },
+        {
+          "id": "chatbot",
+          "label": "Construire un chatbot : architecture, configuration et mise à l'échelle"
         }
       ]
     },
@@ -508,46 +590,6 @@
             {
               "id": "modules-et-environnements",
               "label": "Modules, pip et environnements virtuels"
-            },
-            {
-              "id": "jupyter-notebooks",
-              "label": "Les notebooks Jupyter"
-            },
-            {
-              "id": "numpy",
-              "label": "NumPy — le calcul numérique"
-            },
-            {
-              "id": "pandas",
-              "label": "pandas — manipuler des données tabulaires"
-            },
-            {
-              "id": "matplotlib",
-              "label": "Matplotlib — visualiser des données"
-            },
-            {
-              "id": "machine-learning-scikit-learn",
-              "label": "Introduction au machine learning (scikit-learn)"
-            },
-            {
-              "id": "reseaux-de-neurones",
-              "label": "Les réseaux de neurones — les fondamentaux"
-            },
-            {
-              "id": "entrainement-descente-de-gradient",
-              "label": "L'entraînement d'un modèle et la descente de gradient"
-            },
-            {
-              "id": "deep-learning-pytorch",
-              "label": "Deep learning avec PyTorch"
-            },
-            {
-              "id": "architectures-cnn-rnn-transformers",
-              "label": "Architectures — CNN, RNN et Transformers"
-            },
-            {
-              "id": "nlp-et-llm",
-              "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
             }
           ]
         }
@@ -581,6 +623,41 @@
         {
           "id": "cache-cpu-et-simd",
           "label": "Cache CPU et vectorisation (SIMD)"
+        },
+        {
+          "id": "eviter-le-recalcul-redondant",
+          "label": "Éviter le recalcul redondant"
+        }
+      ]
+    },
+    {
+      "id": "qualite-et-architecture-du-code",
+      "label": "Qualité et architecture du code",
+      "folder": "Qualité et architecture du code",
+      "chapters": [
+        {
+          "id": "responsabilite-unique-et-couplage",
+          "label": "Responsabilité unique et faible couplage"
+        },
+        {
+          "id": "eviter-la-repetition-structures-indexees",
+          "label": "Éviter la répétition : structures indexées plutôt que du code dupliqué"
+        },
+        {
+          "id": "source-unique-de-verite",
+          "label": "Source unique de vérité"
+        },
+        {
+          "id": "sens-des-dependances-avant-de-centraliser",
+          "label": "Vérifier le sens des dépendances avant de centraliser"
+        },
+        {
+          "id": "genericite-dependre-de-la-structure",
+          "label": "Généricité : dépendre de la structure plutôt que de valeurs figées"
+        },
+        {
+          "id": "un-seul-mecanisme-par-information",
+          "label": "Un seul mécanisme par information"
         }
       ]
     },
