@@ -6,7 +6,7 @@ order: 6
 
 ## Une image minimale
 
-Chaque paquet installé dans une image est une surface d'attaque et un poids supplémentaire au téléchargement. Préférer une image de base minimale (`alpine`, ou une variante `-slim`) et un build multi-étapes (cf. chapitre sur le Dockerfile) pour ne livrer que le strict nécessaire à l'exécution, jamais les outils de compilation.
+Chaque paquet installé dans une image est une **surface d'attaque** (un point d'entrée potentiel de plus qu'un attaquant pourrait exploiter — une vulnérabilité dans un paquet jamais utilisé reste une vulnérabilité) et un poids supplémentaire au téléchargement. Préférer une image de base minimale (`alpine`, ou une variante `-slim`) et un build multi-étapes (cf. chapitre sur le Dockerfile) pour ne livrer que le strict nécessaire à l'exécution, jamais les outils de compilation.
 
 ## Épingler les versions, ne jamais utiliser `latest` en production
 

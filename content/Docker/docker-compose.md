@@ -4,7 +4,7 @@ order: 5
 
 # Docker Compose
 
-Un projet réel implique rarement un seul conteneur : une API, sa base de données, un cache, un reverse proxy... Enchaîner les `docker run` à la main devient vite ingérable. **Docker Compose** décrit tous ces services dans un unique fichier déclaratif au format **YAML** (*YAML Ain't Markup Language* — un format texte structuré par indentation, largement utilisé pour la configuration), `docker-compose.yml`, et les démarre ensemble.
+Un projet réel implique rarement un seul conteneur : une API, sa base de données, un cache, un **reverse proxy** (un serveur qui reçoit toutes les requêtes entrantes et les redirige vers le bon service interne — Nginx ou Traefik, par exemple —, servant de point d'entrée unique)... Enchaîner les `docker run` à la main devient vite ingérable. **Docker Compose** décrit tous ces services dans un unique fichier déclaratif au format **YAML** (*YAML Ain't Markup Language* — un format texte structuré par indentation, largement utilisé pour la configuration), `docker-compose.yml`, et les démarre ensemble.
 
 ## Un exemple complet
 
