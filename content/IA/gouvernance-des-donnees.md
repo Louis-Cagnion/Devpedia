@@ -4,7 +4,7 @@ order: 10
 
 # Gouvernance des données pour un système IA
 
-Envoyer une donnée à un LLM n'est pas neutre : contrairement à une base de données interne, la donnée transite souvent vers un service tiers, peut apparaître dans des journaux qu'on n'avait pas prévu de constituer (voir [Monitoring et gestion opérationnelle d'un LLM](/?c=ia&p=gestion-dun-llm)), et peut être conservée par le fournisseur selon des conditions contractuelles qu'il faut connaître avant d'envoyer quoi que ce soit. La gouvernance des données appliquée à un système IA reprend les principes classiques (RGPD, contrôle d'accès, traçabilité) en les adaptant à ce trajet supplémentaire.
+Envoyer une donnée à un LLM n'est pas neutre : contrairement à une base de données interne, la donnée transite souvent vers un service tiers, peut apparaître dans des journaux qu'on n'avait pas prévu de constituer (voir [Monitoring et gestion opérationnelle d'un LLM](/?c=ia&p=gestion-dun-llm)), et peut être conservée par le fournisseur selon des conditions contractuelles qu'il faut connaître avant d'envoyer quoi que ce soit. La gouvernance des données appliquée à un système IA reprend les principes classiques (RGPD, contrôle d'accès, traçabilité) en les adaptant à ce trajet supplémentaire — des obligations qui se cumulent avec celles, propres au système IA lui-même, de la [réglementation européenne de l'IA](/?c=ia&p=reglementation-europeenne-ia).
 
 ## Classer une donnée avant de l'envoyer à un modèle
 

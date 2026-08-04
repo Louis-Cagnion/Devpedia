@@ -1,5 +1,5 @@
 ---
-order: 11
+order: 12
 ---
 
 # Construire un chatbot : architecture, configuration et mise à l'échelle
@@ -42,6 +42,7 @@ Un chatbot plus riche ajoute un appel [RAG](/?c=ia&p=rag) avant l'appel au modè
 - **La dérive de persona.** Sur une conversation longue, un modèle peut progressivement s'éloigner du ton ou du rôle défini au départ — rappeler le system prompt à intervalles réguliers (pas seulement une fois au premier tour) limite ce glissement.
 - **L'injection différée.** Une instruction malveillante n'a pas besoin d'arriver dans le premier message : elle peut être glissée plusieurs tours plus tard, une fois la conversation "installée", en espérant que le modèle lui accorde plus de poids qu'au system prompt initial.
 - **L'absence de porte de sortie.** Un chatbot qui ne sait pas dire *"je ne suis pas sûr, voici comment contacter un humain"* pousse l'utilisateur à insister jusqu'à obtenir une réponse — potentiellement une hallucination (voir [LLM en production](/?c=ia&p=llm-en-production)) plutôt qu'un renvoi honnête vers une escalade humaine. Prévoir explicitement ce mécanisme de bascule fait partie de la conception, pas seulement du filet de sécurité.
+- **La transparence n'est pas optionnelle.** Dans l'Union européenne, un chatbot relève typiquement du risque "limité" de l'[AI Act](/?c=ia&p=reglementation-europeenne-ia) : l'utilisateur doit toujours pouvoir savoir qu'il interagit avec une IA, pas un humain — une obligation légale, pas seulement une bonne pratique d'UX.
 
 ## Déployer à l'échelle de nombreux utilisateurs simultanés
 
