@@ -51,6 +51,8 @@ A subject's own description page is the `.md` file inside its folder whose title
 
 Ids are slugified from folder and file names, with diacritics transliterated — an accented folder name like `Représentation des données` yields `representation-des-donnees`, so it can be linked to from other chapters. Cross-chapter links are plain query strings (`?c=<category>&s=<subject>&p=<chapter>`, the `&s=` part only for categories that have subjects). Running `node scripts/generate-struct.js` validates every such link found in `content/` against the freshly built structure and throws (listing each broken link) if a rename left any dangling — no silent breakage.
 
+A `[label](url)` written in a chapter renders as a real link: `js/parser.js` turns it into an `<a>` (external URLs open in a new tab; internal ones get a `contentLink` class), and `js/router.js` makes it actually navigate — reading `?c=&s=&p=` from the URL at startup, and intercepting a plain click on a `contentLink` to route through the SPA instead of reloading the page.
+
 ## Interface
 
 Besides Markdown rendering, the site includes a few hand-built pieces worth knowing about if you're navigating the code:
