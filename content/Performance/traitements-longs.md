@@ -69,7 +69,7 @@ except Timeout:
     break              # on sort avec des donnees partielles, sans rien signaler
 ```
 
-Le correctif n'est pas d'empêcher l'échec — c'est impossible — mais de garantir qu'il soit **visible**. La méthode la plus fiable est de vérifier un invariant à la fin, indépendamment de la raison de l'échec :
+Le correctif n'est pas d'empêcher l'échec — c'est impossible — mais de garantir qu'il soit **visible**. La méthode la plus fiable est de vérifier un **invariant** à la fin — une propriété qui doit toujours être vraie à ce point du programme, quel que soit le chemin emprunté pour y arriver (ici : "le nombre d'éléments obtenus correspond au nombre annoncé") — indépendamment de la raison de l'échec :
 
 ```python
 if total_annonce is not None and len(charge) < total_annonce:

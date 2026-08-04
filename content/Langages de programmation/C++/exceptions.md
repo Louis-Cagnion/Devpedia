@@ -83,4 +83,4 @@ void fonctionSure() noexcept {
 }
 ```
 
-> **Best practice :** ne lever une exception que pour une situation réellement **exceptionnelle** (erreur imprévue, invariant violé) — jamais pour un flux de contrôle normal (une exception a un coût non négligeable à l'exécution comparé à un simple `if`, contrairement à un retour d'erreur classique).
+> **Best practice :** ne lever une exception que pour une situation réellement **exceptionnelle** (erreur imprévue, [invariant](/?c=performance&p=traitements-longs) violé) — jamais pour un flux de contrôle normal (une exception a un coût non négligeable à l'exécution comparé à un simple `if`, contrairement à un retour d'erreur classique).
