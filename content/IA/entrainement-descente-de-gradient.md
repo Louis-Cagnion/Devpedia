@@ -1,10 +1,10 @@
 ---
-order: 19
+order: 2
 ---
 
 # L'entraînement d'un modèle et la descente de gradient
 
-Un réseau de neurones (cf. chapitre dédié) commence avec des poids **aléatoires** — ses prédictions initiales n'ont donc aucun sens. **L'entraînement** est le processus qui ajuste progressivement ces poids pour que les prédictions se rapprochent des bonnes réponses, à partir d'exemples.
+Un [réseau de neurones](/?c=ia&p=reseaux-de-neurones) commence avec des poids **aléatoires** — ses prédictions initiales n'ont donc aucun sens. **L'entraînement** est le processus qui ajuste progressivement ces poids pour que les prédictions se rapprochent des bonnes réponses, à partir d'exemples.
 
 ## La fonction de perte (*loss function*)
 
@@ -64,7 +64,7 @@ Sens du calcul normal (forward) :  Entrée -> Couche 1 -> Couche 2 -> Sortie -> 
 Sens de la rétropropagation :      Entrée <- Couche 1 <- Couche 2 <- Sortie <- Perte
 ```
 
-> **Note :** ce n'est pas une opération à comprendre en profondeur mathématique pour utiliser un framework comme PyTorch (cf. chapitre dédié) — `autograd` (différenciation automatique) effectue ce calcul automatiquement. Comprendre le **principe** (propager l'erreur en arrière, couche par couche, via la règle de dérivation en chaîne) suffit pour raisonner sur pourquoi certains problèmes d'entraînement surviennent (ex. le "vanishing gradient", cf. chapitre sur les architectures CNN/RNN/Transformer).
+> **Note :** ce n'est pas une opération à comprendre en profondeur mathématique pour utiliser un framework comme [PyTorch](/?c=ia&p=deep-learning-pytorch) — `autograd` (différenciation automatique) effectue ce calcul automatiquement. Comprendre le **principe** (propager l'erreur en arrière, couche par couche, via la règle de dérivation en chaîne) suffit pour raisonner sur pourquoi certains problèmes d'entraînement surviennent (ex. le "vanishing gradient", voir [Architectures — CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers)).
 
 ## Époques, batches, et descente de gradient stochastique
 
@@ -79,4 +79,4 @@ for epoque in range(nombre_epoques):        # une "époque" = un passage complet
 
 Plutôt que de recalculer le gradient sur l'**intégralité** des données à chaque étape (coûteux, surtout avec des millions d'exemples), on utilise généralement de petits lots (*mini-batch*) — d'où le nom **descente de gradient stochastique** (SGD) : chaque ajustement de poids est basé sur un échantillon, pas sur la totalité des données, ce qui introduit un peu de bruit mais accélère considérablement chaque étape.
 
-Voir aussi le chapitre sur PyTorch, qui automatise entièrement cette boucle d'entraînement (`loss.backward()`, `optimizer.step()`).
+Voir aussi [Deep learning avec PyTorch](/?c=ia&p=deep-learning-pytorch), qui automatise entièrement cette boucle d'entraînement (`loss.backward()`, `optimizer.step()`).

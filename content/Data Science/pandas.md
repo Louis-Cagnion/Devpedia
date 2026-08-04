@@ -1,5 +1,5 @@
 ---
-order: 15
+order: 3
 ---
 
 # pandas — manipuler des données tabulaires

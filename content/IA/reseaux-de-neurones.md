@@ -1,10 +1,10 @@
 ---
-order: 18
+order: 1
 ---
 
 # Les réseaux de neurones — les fondamentaux
 
-Un **réseau de neurones artificiels** est un modèle de machine learning (cf. chapitre dédié) composé de nombreuses unités de calcul simples ("neurones"), organisées en couches, et connectées entre elles — une structure vaguement inspirée du fonctionnement biologique, mais qui reste avant tout un objet mathématique : une fonction complexe, dont les paramètres sont ajustés automatiquement à partir de données.
+Un **réseau de neurones artificiels** est un modèle de machine learning (voir [Introduction au machine learning (scikit-learn)](/?c=data-science&p=machine-learning-scikit-learn)) composé de nombreuses unités de calcul simples ("neurones"), organisées en couches, et connectées entre elles — une structure vaguement inspirée du fonctionnement biologique, mais qui reste avant tout un objet mathématique : une fonction complexe, dont les paramètres sont ajustés automatiquement à partir de données.
 
 ## Le neurone artificiel
 
@@ -20,7 +20,7 @@ def neurone(entrees, poids, biais, activation):
     return activation(somme_ponderee)
 ```
 
-- Les **poids** (`w1`, `w2`...) déterminent l'importance de chaque entrée — ce sont eux, avec le biais, que l'entraînement va ajuster (cf. chapitre sur la descente de gradient).
+- Les **poids** (`w1`, `w2`...) déterminent l'importance de chaque entrée — ce sont eux, avec le biais, que l'entraînement va ajuster (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient)).
 - Le **biais** permet à la sortie d'être décalée même quand toutes les entrées valent zéro (comme l'ordonnée à l'origine d'une droite).
 
 ## Pourquoi une fonction d'activation est indispensable
@@ -76,10 +76,10 @@ biais_sortie = 0.05
 resultat = sigmoide(sortie_n1 * 0.6 + sortie_n2 * 0.9 + 0.05)  # sigmoide(0.95) ≈ 0.72
 ```
 
-Ce calcul — multiplier, sommer, appliquer une activation, couche après couche — est **tout** ce qu'un réseau de neurones fait pour produire une prédiction. Ce qui rend le réseau "intelligent" n'est jamais ce mécanisme (fixe, purement arithmétique), mais les **valeurs des poids et des biais**, ajustées automatiquement par l'entraînement (cf. chapitre sur la descente de gradient) à partir d'un grand nombre d'exemples.
+Ce calcul — multiplier, sommer, appliquer une activation, couche après couche — est **tout** ce qu'un réseau de neurones fait pour produire une prédiction. Ce qui rend le réseau "intelligent" n'est jamais ce mécanisme (fixe, purement arithmétique), mais les **valeurs des poids et des biais**, ajustées automatiquement par l'entraînement (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient)) à partir d'un grand nombre d'exemples.
 
 ## Un réseau = une fonction approximatrice
 
 Vu sous cet angle, un réseau de neurones n'est rien d'autre qu'une fonction mathématique paramétrée (par ses poids et biais), suffisamment flexible pour approximer une relation complexe entre une entrée (une image, un texte...) et une sortie (une catégorie, une suite de mots...) — à condition d'avoir suffisamment de données représentatives pour ajuster correctement ces paramètres.
 
-Voir aussi les chapitres sur la descente de gradient (comment ces poids sont concrètement ajustés) et sur les architectures CNN/RNN/Transformer (des façons spécifiques d'organiser ces couches selon le type de données traité).
+Voir aussi [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient) (comment ces poids sont concrètement ajustés) et [Architectures — CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (des façons spécifiques d'organiser ces couches selon le type de données traité).

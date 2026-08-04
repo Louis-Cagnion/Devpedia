@@ -99,7 +99,7 @@ C'est aussi pourquoi `pointeur + 1` avance de `sizeof(type)` octets et non de 1 
 Python, JavaScript ou PHP masquent tout cela : vous ne choisissez pas la disposition mémoire. Mais elle ne disparaît pas, et se manifeste autrement :
 
 - une liste Python de 1 000 entiers occupe beaucoup plus que 4 000 octets, car chaque entier est un **objet** avec son en-tête ;
-- c'est précisément pour cette raison que NumPy existe : un tableau NumPy stocke des valeurs brutes contiguës, alignées, sans en-tête par élément — d'où des gains de vitesse d'un ordre de grandeur sur du calcul numérique (voir [NumPy](/?c=langages-de-programmation&s=python&p=numpy)).
+- c'est précisément pour cette raison que NumPy existe : un tableau NumPy stocke des valeurs brutes contiguës, alignées, sans en-tête par élément — d'où des gains de vitesse d'un ordre de grandeur sur du calcul numérique (voir [NumPy](/?c=data-science&p=numpy)).
 
 ## Résumé
 

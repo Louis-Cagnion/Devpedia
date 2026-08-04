@@ -1,10 +1,10 @@
 ---
-order: 22
+order: 5
 ---
 
 # Traitement du langage naturel (NLP) et grands modèles de langage (LLM)
 
-Un réseau de neurones (cf. chapitre dédié) manipule des nombres, jamais directement du texte. Le traitement du langage naturel (NLP, *Natural Language Processing*) regroupe les techniques qui convertissent du texte en représentations numériques exploitables — l'étape préalable indispensable à tout modèle de langage, jusqu'aux grands modèles de langage (LLM) modernes.
+Un [réseau de neurones](/?c=ia&p=reseaux-de-neurones) manipule des nombres, jamais directement du texte. Le traitement du langage naturel (NLP, *Natural Language Processing*) regroupe les techniques qui convertissent du texte en représentations numériques exploitables — l'étape préalable indispensable à tout modèle de langage, jusqu'aux grands modèles de langage (LLM) modernes.
 
 ## La tokenisation : découper le texte
 
@@ -32,7 +32,7 @@ Cette propriété permet des opérations devenues classiques pour illustrer le c
 
 ## L'attention appliquée au texte
 
-Le mécanisme d'attention (cf. chapitre sur les architectures Transformer) permet à chaque token de "regarder" les autres tokens de la séquence pour ajuster sa propre représentation selon le contexte :
+Le mécanisme d'attention (voir [Architectures — CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers)) permet à chaque token de "regarder" les autres tokens de la séquence pour ajuster sa propre représentation selon le contexte :
 
 ```
 "La banque au bord de la rivière"      vs      "La banque a augmenté ses taux"
@@ -45,14 +45,14 @@ Le même mot ("banque") obtient une représentation numérique **différente** s
 
 ## Qu'est-ce qu'un grand modèle de langage (LLM) ?
 
-Un **LLM** (*Large Language Model*) est, dans son principe le plus simple, un modèle Transformer (cf. chapitre dédié) entraîné sur d'immenses quantités de texte, avec un objectif d'entraînement remarquablement simple : **prédire le mot (ou token) suivant**, étant donné tout ce qui précède.
+Un **LLM** (*Large Language Model*) est, dans son principe le plus simple, un modèle [Transformer](/?c=ia&p=architectures-cnn-rnn-transformers) entraîné sur d'immenses quantités de texte, avec un objectif d'entraînement remarquablement simple : **prédire le mot (ou token) suivant**, étant donné tout ce qui précède.
 
 ```
 "Le chat dort sur le" -> le modèle prédit une distribution de probabilité sur le token suivant
                           ("canapé" : 45%, "tapis" : 20%, "lit" : 15%, ...)
 ```
 
-Ce qui rend un LLM impressionnant n'est pas la simplicité de cet objectif, mais l'**échelle** : des milliards de paramètres, entraînés sur une fraction significative du texte disponible publiquement, avec suffisamment de puissance de calcul (cf. chapitre sur PyTorch/GPU) pour que cette tâche de prédiction, poussée à cette échelle, fasse émerger des capacités qui n'ont pas été explicitement programmées (répondre à des questions, résumer, traduire, raisonner étape par étape...) — un phénomène qualifié de **capacités émergentes**.
+Ce qui rend un LLM impressionnant n'est pas la simplicité de cet objectif, mais l'**échelle** : des milliards de paramètres, entraînés sur une fraction significative du texte disponible publiquement, avec suffisamment de puissance de calcul (voir [Deep learning avec PyTorch](/?c=ia&p=deep-learning-pytorch)) pour que cette tâche de prédiction, poussée à cette échelle, fasse émerger des capacités qui n'ont pas été explicitement programmées (répondre à des questions, résumer, traduire, raisonner étape par étape...) — un phénomène qualifié de **capacités émergentes**.
 
 ## Du modèle brut à un assistant utilisable : fine-tuning vs prompting
 
@@ -65,4 +65,4 @@ Un LLM fraîchement entraîné à "prédire le mot suivant" ne répond pas natur
 
 > **Note :** le prompting exploite uniquement les capacités déjà acquises pendant l'entraînement initial — c'est pour ça qu'une bonne formulation de question ("prompt engineering") peut considérablement améliorer un résultat, sans qu'aucune donnée d'entraînement supplémentaire ni aucun calcul de gradient n'entre en jeu.
 
-Voir aussi les chapitres sur les architectures Transformer (le mécanisme d'attention sous-jacent) et sur PyTorch (comment un tel modèle est concrètement entraîné, à une échelle bien plus modeste dans les exemples de ce chapitre).
+Voir aussi [Architectures — CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (le mécanisme d'attention sous-jacent) et [Deep learning avec PyTorch](/?c=ia&p=deep-learning-pytorch) (comment un tel modèle est concrètement entraîné, à une échelle bien plus modeste dans les exemples de ce chapitre).

@@ -1,5 +1,5 @@
 ---
-order: 21
+order: 3
 ---
 
 # Architectures — CNN, RNN et Transformers
@@ -39,7 +39,7 @@ Chaque étape reçoit à la fois l'élément courant **et** l'état caché de l'
 
 ### Le problème du gradient qui s'évanouit
 
-Pour une séquence longue, la rétropropagation (cf. chapitre sur la descente de gradient) doit remonter à travers **toutes** les étapes précédentes — le gradient peut devenir extrêmement petit (ou extrêmement grand) au fur et à mesure, rendant l'apprentissage de dépendances **lointaines** dans la séquence très difficile. Des variantes comme **LSTM** et **GRU** ajoutent des mécanismes de portes (*gates*) pour mieux contrôler quelle information conserver ou oublier, atténuant ce problème.
+Pour une séquence longue, la rétropropagation (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient)) doit remonter à travers **toutes** les étapes précédentes — le gradient peut devenir extrêmement petit (ou extrêmement grand) au fur et à mesure, rendant l'apprentissage de dépendances **lointaines** dans la séquence très difficile. Des variantes comme **LSTM** et **GRU** ajoutent des mécanismes de portes (*gates*) pour mieux contrôler quelle information conserver ou oublier, atténuant ce problème.
 
 ## Les Transformers — le mécanisme d'attention
 
@@ -53,7 +53,7 @@ Un RNN traite une séquence **séquentiellement** (impossible de calculer l'éta
 ```
 
 - L'attention peut se calculer **en parallèle** pour toute la séquence (contrairement à un RNN), ce qui a permis d'entraîner des modèles bien plus grands, sur bien plus de données.
-- C'est cette architecture qui est à la base des grands modèles de langage (LLM) modernes (cf. chapitre sur le NLP et les LLM).
+- C'est cette architecture qui est à la base des grands modèles de langage (LLM) modernes (voir [NLP et LLM](/?c=ia&p=nlp-et-llm)).
 
 ## Comparatif rapide
 
@@ -63,4 +63,4 @@ Un RNN traite une séquence **séquentiellement** (impossible de calculer l'éta
 | **RNN** (LSTM/GRU) | Séquences (texte, séries temporelles) | Modélise l'ordre et la mémoire courte | Difficile à paralléliser, dépendances lointaines fragiles |
 | **Transformer** | Séquences, texte, de plus en plus d'images aussi | Parallélisable, capture les dépendances longues via l'attention | Coût mémoire/calcul élevé sur de très longues séquences |
 
-Voir aussi le chapitre sur le NLP et les LLM pour l'application de l'architecture Transformer au traitement du langage.
+Voir aussi [NLP et LLM](/?c=ia&p=nlp-et-llm) pour l'application de l'architecture Transformer au traitement du langage.

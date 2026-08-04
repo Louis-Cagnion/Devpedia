@@ -32,7 +32,7 @@ int tirage = rand() % 100;
 
 **Ce déterminisme est souvent une qualité**, pas un défaut :
 
-- **reproductibilité scientifique** : fixer la graine permet de rejouer exactement un entraînement de modèle (voir [L'entraînement et la descente de gradient](/?c=langages-de-programmation&s=python&p=entrainement-descente-de-gradient)) ;
+- **reproductibilité scientifique** : fixer la graine permet de rejouer exactement un entraînement de modèle (voir [L'entraînement et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient)) ;
 - **tests** : un test qui utilise du hasard doit être reproductible pour être diagnosticable ;
 - **génération procédurale** : un monde de jeu entier peut être régénéré à l'identique à partir d'une seule graine.
 

@@ -1,5 +1,5 @@
 ---
-order: 17
+order: 5
 ---
 
 # Introduction au machine learning (scikit-learn)

@@ -1,5 +1,5 @@
 ---
-order: 16
+order: 4
 ---
 
 # Matplotlib — visualiser des données
