@@ -40,7 +40,7 @@ Stop-Process -Id 1234 -Force        # arrêt forcé, sans attendre une fermeture
 Stop-Process -Name "notepad"         # cible par nom plutôt que par PID
 ```
 
-> **Note :** Windows n'a pas de véritable équivalent des signaux Unix (`SIGTERM`, `SIGKILL`, `SIGINT`...) — `Stop-Process` sans `-Force` demande au processus de se terminer, mais le mécanisme sous-jacent reste différent de l'envoi d'un signal interceptable comme sous Unix ; la plupart des applications Windows n'ont d'ailleurs pas de gestionnaire dédié pour "se fermer proprement" à la manière d'un `trap SIGTERM` en Bash.
+> **Note :** Windows n'a pas de véritable équivalent des signaux Unix (`SIGTERM`, `SIGKILL`, `SIGINT`...) — `Stop-Process` sans `-Force` demande au processus de se terminer, mais le mécanisme sous-jacent reste différent de l'envoi d'un signal interceptable comme sous Unix ; la plupart des applications Windows n'ont d'ailleurs pas de gestionnaire dédié pour "se fermer proprement" à la manière d'un [`trap SIGTERM`](/?c=shells&s=bash&p=gestion-des-processus) en Bash.
 
 | Action | Bash (signal) | PowerShell |
 |---|---|---|

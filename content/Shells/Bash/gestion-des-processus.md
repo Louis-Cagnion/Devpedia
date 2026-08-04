@@ -56,6 +56,16 @@ kill -9 1234      # envoie SIGKILL (9) : force l'arrêt immédiat, sans laisser 
 
 > **Note :** `kill -9` doit rester un dernier recours — un processus tué avec `SIGKILL` n'a aucune chance de nettoyer derrière lui (fichiers temporaires, connexions ouvertes, verrous...). Toujours essayer `kill` (SIGTERM) en premier.
 
+## Intercepter un signal (`trap`)
+
+`trap` permet à un script d'exécuter du code en réponse à un signal reçu, au lieu de subir l'arrêt par défaut :
+
+```bash
+trap 'echo "Arrêt propre"; rm -f fichier.tmp' SIGTERM
+```
+
+Un signal non interceptable comme `SIGKILL` ignore totalement `trap` — c'est justement pour ça qu'il reste le dernier recours vu plus haut.
+
 ## Détacher un processus du terminal (`nohup`)
 
 Un processus lancé en arrière-plan avec `&` reçoit tout de même un signal d'arrêt si le terminal qui l'a lancé se ferme. `nohup` (*no hang up*) l'en protège :
