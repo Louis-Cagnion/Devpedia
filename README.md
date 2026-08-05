@@ -4,6 +4,8 @@ Devpedia is a website created to document, explain, and share my knowledge of va
 
 Live at: https://louis-cagnion.github.io/Devpedia/
 
+Deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`: a plain static-file deploy (`upload-pages-artifact` + `deploy-pages`), with no Jekyll build step — the site is a JS SPA that fetches Markdown at runtime, so a Jekyll build isn't just unnecessary, it actively breaks on any file with the wrong Liquid-looking syntax.
+
 ## Content
 
 Chapters live under `content/`, grouped by category and, when relevant, by subject. Currently covered:
