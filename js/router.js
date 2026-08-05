@@ -117,6 +117,41 @@ function closeMobileMenu() {
     document.querySelector(".menuDiv").classList.remove("visible");
 }
 
+// Current chapter's neighbors, kept in sync by renderChapter/clearChapterNeighbors so the
+// ArrowLeft/ArrowRight handler below can navigate without re-deriving them from the DOM.
+let currentPreviousChapter = null;
+let currentNextChapter = null;
+
+function clearChapterNeighbors() {
+    currentPreviousChapter = null;
+    currentNextChapter = null;
+}
+
+/**
+ * @param {HTMLElement} target the keydown event's target
+ * @returns {boolean} whether `target` is where arrow keys should type a character
+ *   (a text field) rather than navigate between chapters
+ */
+function isTextInput(target) {
+    return target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+}
+
+/**
+ * ArrowLeft/ArrowRight moves to the previous/next chapter, mirroring the arrow glyphs used by
+ * the on-screen prevButton/nextButton (which already flip in RTL, cf. createAppendPageNav) —
+ * same left/right meaning, just from the keyboard instead of a click.
+ */
+document.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+    if (isTextInput(e.target)) return;
+    const isRtl = document.documentElement.dir === "rtl";
+    const wantsPrevious = (e.key === "ArrowLeft") !== isRtl;
+    const chapter = wantsPrevious ? currentPreviousChapter : currentNextChapter;
+    if (!chapter) return;
+    navigateToChapter(chapter.categoryId, chapter.subjectId, chapter.id);
+});
+
 /**
  * Remove the page currently displayed, if any
  */
@@ -233,6 +268,7 @@ function generateChildList(pageDiv, items, listId, onSelect) {
  */
 export async function generateHomePage() {
     clearCurrentPage();
+    clearChapterNeighbors();
     appState.curCategory = 'acceuil';
     appState.curSubject = null;
     appState.curPageId = 'acceuil';
@@ -259,11 +295,9 @@ async function renderChapter(categoryId, path, chapter, subjectId = null) {
     const curIndex = chapters.findIndex(c => c.id === chapter.id);
     const previousChapter = chapters[curIndex - 1];
     const nextChapter = chapters[curIndex + 1];
-    generatePageContent(
-        chapterInfos, chapter.id, true,
-        previousChapter && {categoryId, subjectId, id: previousChapter.id, label: previousChapter.label},
-        nextChapter && {categoryId, subjectId, id: nextChapter.id, label: nextChapter.label}
-    );
+    currentPreviousChapter = previousChapter && {categoryId, subjectId, id: previousChapter.id, label: previousChapter.label};
+    currentNextChapter = nextChapter && {categoryId, subjectId, id: nextChapter.id, label: nextChapter.label};
+    generatePageContent(chapterInfos, chapter.id, true, currentPreviousChapter, currentNextChapter);
 }
 
 /**
@@ -274,6 +308,7 @@ async function renderChapter(categoryId, path, chapter, subjectId = null) {
  */
 async function renderSubject(category, subject) {
     clearCurrentPage();
+    clearChapterNeighbors();
     appState.curCategory = category.id;
     appState.curSubject = subject.id;
     appState.curPageId = subject.id;
@@ -294,6 +329,7 @@ async function renderSubject(category, subject) {
  */
 async function renderCategory(category) {
     clearCurrentPage();
+    clearChapterNeighbors();
     appState.curCategory = category.id;
     appState.curSubject = null;
     appState.curPageId = category.id;

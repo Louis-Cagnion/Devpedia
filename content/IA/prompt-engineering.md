@@ -1,0 +1,80 @@
+---
+order: 6
+---
+
+# Le prompt engineering : structurer une requête pour de meilleurs résultats
+
+Le chapitre sur le [NLP et les LLM](/?c=ia&p=nlp-et-llm) distingue le *prompting* du fine-tuning : sans toucher un seul poids du modèle, la façon de formuler l'entrée influence fortement la qualité de la sortie. Le **prompt engineering** est la pratique, en grande partie empirique, qui consiste à concevoir cette entrée méthodiquement plutôt qu'à l'improviser — quelques techniques reviennent suffisamment souvent pour être traitées comme un vocabulaire de base, pas comme de simples astuces isolées.
+
+## Donner un rôle et des instructions explicites
+
+Un modèle auquel on ne précise ni rôle ni contraintes doit deviner le registre attendu (ton, niveau de détail, format) à partir du seul contenu de la question. Le lever explicitement dans les instructions (souvent en tête de prompt, dans un rôle "système") réduit cette ambiguïté :
+
+```
+Mauvais prompt :  "Explique les index en base de données."
+
+Meilleur prompt :  "Tu es un formateur qui s'adresse à des développeurs juniors.
+                    Explique les index en base de données en 3 phrases maximum,
+                    avec une analogie concrète, sans jargon SQL non expliqué."
+```
+
+Voir la configuration d'un system prompt dans [Construire un chatbot](/?c=ia&p=chatbot) pour ce même principe appliqué à un assistant conversationnel complet.
+
+## Le few-shot prompting : montrer plutôt que décrire
+
+Plutôt que de décrire abstraitement le format ou le style attendu, donner directement un ou plusieurs exemples entrée → sortie dans le prompt (le *few-shot prompting*) exploite la capacité du modèle à repérer un motif et à le reproduire :
+
+```
+Classe le sentiment de chaque avis en positif/negatif/neutre.
+
+Avis : "Livraison rapide, produit conforme."       -> positif
+Avis : "Correct sans plus, rien d'exceptionnel."    -> neutre
+Avis : "Colis arrivé abîmé, aucune réponse du SAV."  -> negatif
+
+Avis : "Le produit fonctionne mais l'emballage était déchiré." -> ?
+```
+
+Un prompt sans exemple (*zero-shot*) fonctionne pour des tâches simples ou déjà bien représentées dans l'entraînement du modèle ; ajouter 2 à 5 exemples bien choisis améliore nettement la fiabilité sur un format ou un style spécifique, sans coûter le temps ni les données d'un fine-tuning.
+
+## Le raisonnement étape par étape (*chain-of-thought*)
+
+Un LLM génère sa réponse token par token, chaque token s'appuyant sur tous ceux déjà produits (voir [LLM en production](/?c=ia&p=llm-en-production)) — y compris ceux de sa propre réponse en train de s'écrire. Demander explicitement au modèle de détailler son raisonnement avant de conclure ("réfléchis étape par étape avant de répondre") lui donne ainsi, concrètement, plus de tokens intermédiaires sur lesquels s'appuyer pour construire une conclusion — un gain surtout net sur les tâches à plusieurs étapes (calcul, logique, décomposition d'un problème) :
+
+```
+Sans chain-of-thought :  "Un train part à 14h12 à 80km/h, un autre à 14h27
+                          à 100km/h sur la même voie. À quelle heure le second
+                          rattrape-t-il le premier ?"
+                          -> risque de sortir un résultat directement, sans le vérifier
+
+Avec chain-of-thought :  "... Détaille ton raisonnement étape par étape,
+                          puis donne la réponse finale sur la dernière ligne."
+                          -> le modèle pose les calculs intermédiaires avant de conclure
+```
+
+## Structurer le prompt : séparer instructions, contexte et données
+
+Un prompt qui mélange instructions, contexte et données à traiter dans un seul bloc de texte laisse au modèle la charge de deviner où s'arrête l'un et où commence l'autre. Délimiter clairement chaque partie (balises, guillemets triples, titres) réduit cette ambiguïté — et rend aussi plus difficile qu'une donnée injectée dans le contexte soit interprétée comme une instruction (voir la *prompt injection* dans [Monitoring et gestion opérationnelle d'un LLM](/?c=ia&p=gestion-dun-llm)) :
+
+```
+### Instructions
+Résume le texte ci-dessous en 2 phrases, en français.
+
+### Texte à résumer
+"""
+{texte_utilisateur}
+"""
+```
+
+Préciser le format de sortie attendu (JSON avec des clés nommées, une liste à puces, un tableau) dans les instructions elles-mêmes évite de surcroît d'avoir à re-parser une réponse en langage libre.
+
+## Décomposer une tâche complexe plutôt qu'un seul prompt monolithique
+
+Un prompt unique qui demande à la fois d'analyser, de calculer et de rédiger cumule les risques d'erreur de chaque sous-tâche. Découper en plusieurs prompts plus petits et enchaînés (*prompt chaining* — la sortie de l'un devient l'entrée du suivant) permet de vérifier un résultat intermédiaire avant de poursuivre, plutôt que de découvrir une erreur uniquement dans le résultat final. C'est le même principe, non automatisé ici, qui motive la boucle des [agents](/?c=ia&p=agents) — un agent n'est rien d'autre que ce chaînage devenu piloté par le modèle plutôt que par un développeur qui enchaîne les prompts à la main.
+
+## Itérer et évaluer plutôt que juger sur un seul essai
+
+Le non-déterminisme d'un LLM (voir [LLM en production](/?c=ia&p=llm-en-production)) rend un seul essai peu fiable pour juger qu'un prompt "fonctionne" : une bonne réponse une fois ne garantit pas qu'elle se reproduira sur un cas légèrement différent. Rejouer systématiquement un prompt candidat sur un petit jeu de cas représentatifs — le même *golden set* que celui utilisé pour évaluer un système en production (voir [Monitoring et gestion opérationnelle d'un LLM](/?c=ia&p=gestion-dun-llm)) — avant de le considérer stable est ce qui distingue le prompt engineering d'un simple bricolage par essais-erreurs.
+
+## Les limites du prompt engineering
+
+Aucune de ces techniques n'ajoute de connaissance ou de capacité que le modèle n'a pas déjà acquise pendant son entraînement — elles ne font qu'exploiter au mieux ce qui existe déjà (voir la distinction fine-tuning vs prompting dans [NLP et LLM](/?c=ia&p=nlp-et-llm)). Un modèle qui n'a jamais vu de données pertinentes sur un sujet, ou qui ignore des événements postérieurs à sa date de coupure, ne produira pas une meilleure réponse parce que le prompt est mieux écrit — c'est le rôle du [RAG](/?c=ia&p=rag) (données externes) ou du fine-tuning (nouvelles capacités), pas du prompt engineering.

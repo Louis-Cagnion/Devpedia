@@ -82,4 +82,4 @@ fig.savefig("graphique.png", dpi=300)   # dpi : résolution de l'image exportée
 donnees["age"].plot(kind="hist")   # pandas délègue directement à Matplotlib en interne
 ```
 
-Le `.plot()` de pandas (cf. chapitre dédié) n'est qu'un raccourci pratique au-dessus de Matplotlib — comprendre ce dernier permet de personnaliser n'importe quel graphique généré ainsi.
+Le `.plot()` de [pandas](/?c=data-science&p=pandas) n'est qu'un raccourci pratique au-dessus de Matplotlib — comprendre ce dernier permet de personnaliser n'importe quel graphique généré ainsi.

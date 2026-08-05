@@ -160,6 +160,10 @@
           "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
         },
         {
+          "id": "prompt-engineering",
+          "label": "Le prompt engineering : structurer une requête pour de meilleurs résultats"
+        },
+        {
           "id": "llm-en-production",
           "label": "LLM en production : cas d'usage et limites"
         },

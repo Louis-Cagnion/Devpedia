@@ -78,7 +78,7 @@ mean_squared_error(y_test, predictions)    # erreur quadratique moyenne -> pour 
 
 ## Le déroulement type d'un projet de machine learning
 
-1. Collecter et nettoyer les données (valeurs manquantes, cf. chapitre sur pandas).
+1. Collecter et nettoyer les données (valeurs manquantes, voir [pandas](/?c=data-science&p=pandas)).
 2. Séparer en ensembles d'entraînement et de test.
 3. Choisir un ou plusieurs algorithmes candidats, les entraîner (`fit`).
 4. Évaluer sur l'ensemble de test (`predict` + une métrique adaptée au problème).
