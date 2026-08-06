@@ -1,5 +1,5 @@
 ---
-order: 1
+order: 2
 ---
 
 # Écrire et exécuter un script PowerShell

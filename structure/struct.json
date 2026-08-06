@@ -631,6 +631,10 @@
         {
           "id": "eviter-le-recalcul-redondant",
           "label": "Éviter le recalcul redondant"
+        },
+        {
+          "id": "heap-des-runtimes-manages",
+          "label": "Le heap d'un runtime managé"
         }
       ]
     },
@@ -761,6 +765,10 @@
           "label": "PowerShell",
           "folder": "PowerShell",
           "chapters": [
+            {
+              "id": "commandes-de-base",
+              "label": "Commandes de base"
+            },
             {
               "id": "ecrire-et-executer-un-script",
               "label": "Écrire et exécuter un script PowerShell"

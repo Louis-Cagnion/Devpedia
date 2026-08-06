@@ -10,6 +10,8 @@ Un [réseau de neurones](/?c=ia&p=reseaux-de-neurones) commence avec des poids *
 
 Une **fonction de perte** mesure numériquement à quel point les prédictions du modèle sont éloignées des bonnes réponses — plus la perte est faible, meilleur est le modèle sur ces exemples précis.
 
+> **Perte vs métrique d'évaluation :** la perte doit être **dérivable**, puisque la descente de gradient calcule son gradient à chaque étape (voir plus bas) — c'est une contrainte mathématique, pas un choix de lisibilité. Une fois le modèle entraîné, on juge en revanche sa qualité avec des métriques pensées pour être comprises par un humain (exactitude, précision, rappel, F1-score...), pas nécessairement dérivables — voir [Mesurer la qualité d'un modèle](/?c=data-science&p=machine-learning-scikit-learn).
+
 ```python
 # Erreur quadratique moyenne (MSE) : courante pour une tâche de régression (prédire un nombre)
 def erreur_quadratique_moyenne(predictions, vraies_valeurs):

@@ -20,6 +20,18 @@ Meilleur prompt :  "Tu es un formateur qui s'adresse à des développeurs junior
 
 Voir la configuration d'un system prompt dans [Construire un chatbot](/?c=ia&p=chatbot) pour ce même principe appliqué à un assistant conversationnel complet.
 
+### Anticiper l'information manquante
+
+Face à une information manquante, un modèle ne s'arrête pas de lui-même pour la demander : il comble le vide par une hypothèse silencieuse, qui peut diverger de ce qui était réellement voulu sans que rien ne le signale. Préciser dans les instructions la conduite à tenir dans ce cas retire ce choix implicite au modèle :
+
+```
+Si une information nécessaire manque, indique-le explicitement au lieu
+de faire une hypothèse silencieuse — ou pose la question, si le contexte
+s'y prête.
+```
+
+Le choix entre poser une question et avancer sur une hypothèse explicite dépend du contexte : un usage interactif (chat) profite de la question directe, alors qu'un usage automatisé (pipeline, agent, sans humain pour répondre en temps réel) a besoin que le modèle avance malgré tout, en indiquant clairement quelle hypothèse a été prise plutôt qu'en la laissant implicite.
+
 ## Le few-shot prompting : montrer plutôt que décrire
 
 Plutôt que de décrire abstraitement le format ou le style attendu, donner directement un ou plusieurs exemples entrée → sortie dans le prompt (le *few-shot prompting*) exploite la capacité du modèle à repérer un motif et à le reproduire :
@@ -51,6 +63,8 @@ Avec chain-of-thought :  "... Détaille ton raisonnement étape par étape,
                           -> le modèle pose les calculs intermédiaires avant de conclure
 ```
 
+Demander en plus une étape de vérification avant de conclure ("relis ta réponse et vérifie qu'elle respecte bien [contrainte]") prolonge le même principe : ça donne au modèle l'occasion de détecter lui-même une contrainte non respectée avant qu'elle n'atteigne la sortie finale, plutôt que de découvrir l'écart seulement en la relisant après coup soi-même.
+
 ## Structurer le prompt : séparer instructions, contexte et données
 
 Un prompt qui mélange instructions, contexte et données à traiter dans un seul bloc de texte laisse au modèle la charge de deviner où s'arrête l'un et où commence l'autre. Délimiter clairement chaque partie (balises, guillemets triples, titres) réduit cette ambiguïté — et rend aussi plus difficile qu'une donnée injectée dans le contexte soit interprétée comme une instruction (voir la *prompt injection* dans [Monitoring et gestion opérationnelle d'un LLM](/?c=ia&p=gestion-dun-llm)) :
@@ -70,6 +84,18 @@ Préciser le format de sortie attendu (JSON avec des clés nommées, une liste �
 ## Décomposer une tâche complexe plutôt qu'un seul prompt monolithique
 
 Un prompt unique qui demande à la fois d'analyser, de calculer et de rédiger cumule les risques d'erreur de chaque sous-tâche. Découper en plusieurs prompts plus petits et enchaînés (*prompt chaining* — la sortie de l'un devient l'entrée du suivant) permet de vérifier un résultat intermédiaire avant de poursuivre, plutôt que de découvrir une erreur uniquement dans le résultat final. C'est le même principe, non automatisé ici, qui motive la boucle des [agents](/?c=ia&p=agents) — un agent n'est rien d'autre que ce chaînage devenu piloté par le modèle plutôt que par un développeur qui enchaîne les prompts à la main.
+
+Sur un projet de taille significative, ce découpage se structure en étapes successives, chacune limitée à un objectif précis avant de passer à la suivante :
+
+1. **Cadrage** — objectifs, contraintes, ressources disponibles ; demander au modèle d'identifier les informations manquantes et les risques, sans encore rien produire.
+2. **Conception** — découpage en sous-tâches, dépendances entre elles, architecture générale ; toujours sans coder.
+3. **Plan d'implémentation** — pour chaque sous-tâche : entrées, sortie attendue, critères de réussite, tests à effectuer.
+4. **Réalisation**, une sous-tâche à la fois — en rappelant à chaque prompt le contexte pertinent et l'architecture validée, pour ne pas la faire redéduire au modèle à chaque étape.
+5. **Vérification indépendante** — un prompt séparé où le modèle endosse un rôle de reviewer plutôt que d'auteur : cette séparation réduit le risque qu'il valide son propre travail sans esprit critique, un biais plus marqué quand rédaction et relecture se mélangent dans le même prompt.
+6. **Correction**, ciblée sur les seuls problèmes relevés à l'étape précédente.
+7. **Tests**, puis **finalisation** — une dernière revue globale qui compare le résultat aux exigences de départ.
+
+> **Note :** demander explicitement au modèle de ne rien produire ("ne code pas encore") aux étapes de cadrage et de conception évite qu'il se précipite vers une implémentation avant que les bases ne soient validées — un empressement fréquent, cette instruction reste donc rarement superflue.
 
 ## Itérer et évaluer plutôt que juger sur un seul essai
 
