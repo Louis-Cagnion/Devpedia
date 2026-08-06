@@ -38,6 +38,18 @@ CMD ["node", "server.js"]    # commande exécutée quand le CONTENEUR démarre, 
 
 `RUN` exécute sa commande via un shell (cf. chapitre [Scripts et shebang](/?c=shells&s=bash&p=scripts-et-shebang)) : les mêmes pièges s'appliquent, notamment l'injection de commande si une valeur externe est interpolée sans précaution dans une instruction `RUN`.
 
+## Le conteneur vit exactement aussi longtemps que son processus principal (PID 1)
+
+Le processus lancé par `CMD`/`ENTRYPOINT` reçoit le PID 1 à l'intérieur du conteneur (cf. les [namespaces](/?c=docker&p=concepts-de-base)) : dès qu'il se termine, le conteneur s'arrête, quel que soit le nombre d'autres processus encore actifs à l'intérieur.
+
+C'est pourquoi une commande qui ne se termine jamais mais ne fait par ailleurs **rien** (`tail -f /dev/null`, `sleep infinity`, `while true; do sleep 1; done`) est un mauvais réflexe pour "garder le conteneur en vie" : ça masque le vrai problème (le service qu'on veut réellement faire tourner s'est arrêté, ou n'a jamais été lancé) plutôt que de le résoudre. La bonne pratique est de lancer directement, en PID 1, le service voulu **au premier plan** (*foreground*) — la plupart des daemons ont une option dédiée pour ça, qui les empêche de se détacher en arrière-plan comme ils le feraient nativement (`nginx -g 'daemon off;'`, par exemple) :
+
+```dockerfile
+CMD ["nginx", "-g", "daemon off;"]   # nginx reste au premier plan : Docker a un processus à surveiller
+```
+
+> **Note :** PID 1 a un rôle particulier sous Linux, indépendamment de Docker (cf. chapitre [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash) : le noyau ne lui applique pas l'action par défaut d'un signal comme `SIGTERM` s'il n'a pas explicitement installé son propre gestionnaire — `docker stop` peut donc sembler ne rien faire sur un processus qui ne gère pas ce signal lui-même. C'est aussi PID 1 qui doit récupérer (*reap*) les processus zombies qu'il lance ; un point à surveiller si l'image lance elle-même plusieurs sous-processus.
+
 ## Chaque instruction crée une couche, et l'ordre compte
 
 Chaque `RUN`/`COPY`/`ADD` ajoute une couche, mise en cache : si une instruction et tout ce qui la précède n'ont pas changé depuis le dernier build, Docker réutilise la couche en cache plutôt que de la reconstruire.

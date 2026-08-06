@@ -1,5 +1,5 @@
 ---
-order: 12
+order: 13
 ---
 
 # Comment fonctionne un shell (architecture interne)
@@ -79,6 +79,25 @@ if (pid == 0) {
     waitpid(pid, &statut, 0);
 }
 ```
+
+## Comment le noyau reconnaît un script exécutable (le shebang)
+
+Quand `execve()` reçoit le chemin d'un fichier, le noyau lit ses tout premiers octets pour savoir comment le lancer. S'ils valent `#!` (le [shebang](/?c=shells&s=bash&p=scripts-et-shebang)), le noyau ne tente pas d'exécuter le fichier comme du code machine : il relance lui-même `execve()`, cette fois sur l'interpréteur indiqué après `#!`, en lui passant le chemin du script d'origine comme premier argument.
+
+```
+./script.sh
+      │
+      ▼
+execve("./script.sh", ...)
+      │
+      ▼
+Le noyau lit les 2 premiers octets du fichier : "#!"
+      │
+      ▼
+Relance : execve("/bin/bash", ["/bin/bash", "./script.sh", ...], ...)
+```
+
+C'est pourquoi un script sans droit d'exécution (`chmod +x`, cf. chapitre sur les permissions) ne peut pas être lancé directement (`./script.sh` échoue), mais reste exécutable en invoquant l'interpréteur explicitement (`bash script.sh`) : dans ce second cas, c'est `bash` lui-même (déjà exécutable) qui est lancé par `execve()` — c'est lui, et non le noyau, qui ouvre ensuite le script comme un simple fichier texte à lire ligne par ligne.
 
 ## Comment le shell trouve quel exécutable lancer
 

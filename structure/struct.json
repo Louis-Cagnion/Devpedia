@@ -11,6 +11,37 @@
       ]
     },
     {
+      "id": "bases-de-l-informatique",
+      "label": "Bases de l'informatique",
+      "folder": "Bases de l'informatique",
+      "chapters": [
+        {
+          "id": "code-programmes-et-fichiers",
+          "label": "Qu'est-ce qu'un ordinateur exécute ?"
+        },
+        {
+          "id": "le-terminal",
+          "label": "Le terminal : donner des instructions par écrit"
+        },
+        {
+          "id": "editeur-de-code-et-ide",
+          "label": "L'éditeur de code et l'IDE"
+        },
+        {
+          "id": "arborescence-et-chemins",
+          "label": "Arborescence de fichiers et chemins"
+        },
+        {
+          "id": "la-variable",
+          "label": "La variable"
+        },
+        {
+          "id": "le-bug",
+          "label": "Le bug"
+        }
+      ]
+    },
+    {
       "id": "data-science",
       "label": "Data Science",
       "folder": "Data Science",
@@ -176,6 +207,10 @@
           "label": "RAG : augmenter un LLM avec des données externes"
         },
         {
+          "id": "prompt-injection",
+          "label": "Prompt injection : quand une donnée se fait passer pour une instruction"
+        },
+        {
           "id": "gestion-dun-llm",
           "label": "Monitoring et gestion opérationnelle d'un LLM"
         },
@@ -190,6 +225,29 @@
         {
           "id": "chatbot",
           "label": "Construire un chatbot : architecture, configuration et mise à l'échelle"
+        }
+      ]
+    },
+    {
+      "id": "infrastructure",
+      "label": "Infrastructure",
+      "folder": "Infrastructure",
+      "chapters": [
+        {
+          "id": "api-et-http",
+          "label": "Les échanges de données : API et HTTP"
+        },
+        {
+          "id": "json",
+          "label": "Le format JSON"
+        },
+        {
+          "id": "cpu-vs-gpu",
+          "label": "CPU vs GPU : le calcul parallèle"
+        },
+        {
+          "id": "le-cloud",
+          "label": "Qu'est-ce que le cloud ?"
         }
       ]
     },
@@ -600,6 +658,33 @@
       ]
     },
     {
+      "id": "mathematiques",
+      "label": "Mathématiques",
+      "folder": "Mathématiques",
+      "chapters": [
+        {
+          "id": "la-fonction-mathematique",
+          "label": "La fonction mathématique"
+        },
+        {
+          "id": "vecteurs-et-produit-scalaire",
+          "label": "Vecteurs et produit scalaire"
+        },
+        {
+          "id": "le-logarithme",
+          "label": "Le logarithme"
+        },
+        {
+          "id": "les-probabilites-de-base",
+          "label": "Les probabilités de base"
+        },
+        {
+          "id": "la-derivee-et-le-gradient",
+          "label": "La dérivée et le gradient"
+        }
+      ]
+    },
+    {
       "id": "performance",
       "label": "Performance",
       "folder": "Performance",
@@ -706,6 +791,10 @@
           "label": "Bash",
           "folder": "Bash",
           "chapters": [
+            {
+              "id": "commandes-de-base",
+              "label": "Commandes de base"
+            },
             {
               "id": "scripts-et-shebang",
               "label": "Écrire et exécuter un script Bash"

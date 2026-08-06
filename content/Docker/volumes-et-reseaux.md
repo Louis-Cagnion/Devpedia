@@ -51,3 +51,13 @@ docker run -p 8080:80 mon-app:1.0
 ```
 
 Deux conteneurs sur le même réseau communiquent déjà entre eux sans `-p` (ils se voient directement sur le réseau interne) ; `-p` n'est nécessaire que pour exposer un service **hors** de Docker, vers la machine hôte ou l'extérieur.
+
+## Le mode `host` : partager directement le réseau de l'hôte
+
+```bash
+docker run --network host mon-app:1.0
+```
+
+Ce mode ne crée aucune interface réseau propre au conteneur : il réutilise directement celle de la machine hôte, sans passer par le [namespace réseau](/?c=docker&p=concepts-de-base) qui isole normalement chaque conteneur. Un port ouvert par l'application à l'intérieur est donc immédiatement un port ouvert sur l'hôte lui-même, sans mapping `-p` ni traduction d'adresse.
+
+> **Note :** ce gain de simplicité (et d'un peu de performance réseau) se paie par la perte d'une des deux barrières d'isolation vues au chapitre sur les concepts de base — un conteneur compromis en mode `host` voit et peut potentiellement atteindre tout ce qui écoute sur le réseau de l'hôte, exactement comme un processus classique de ce même hôte. C'est pourquoi ce mode est généralement évité pour un service exposé publiquement, au profit du réseau bridge par défaut.

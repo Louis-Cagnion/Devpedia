@@ -4,6 +4,8 @@ order: 2
 
 # Les variables
 
+Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable) — ce qui suit couvre uniquement ce qui est spécifique à PHP.
+
 ## Les variables classiques
 Pour déclarer une variable en PHP, il faut mettre un `$` avant le nom de votre variable. PHP est faiblement typé : vous n'indiquez pas le type, il est déduit automatiquement selon la valeur assignée.
 

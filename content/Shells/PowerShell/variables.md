@@ -4,6 +4,8 @@ order: 3
 
 # Les variables
 
+Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable) — ce qui suit couvre uniquement ce qui est spécifique à PowerShell.
+
 Contrairement à Bash, où tout est manipulé comme du texte, une variable PowerShell conserve le **vrai type** de sa valeur — un nombre reste un nombre, une liste reste une liste d'objets, sans conversion implicite en chaîne. Toute variable commence par `$`, y compris à l'assignation (pas de règle "sans `$` pour écrire, avec `$` pour lire" comme en Bash).
 
 ## Déclarer et lire une variable

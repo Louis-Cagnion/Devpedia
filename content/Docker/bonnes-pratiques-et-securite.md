@@ -39,6 +39,23 @@ ARG DB_PASSWORD=motdepasse123
 
 Les secrets doivent être injectés **à l'exécution** (variables d'environnement passées à `docker run -e`, fichiers montés via un volume, ou un gestionnaire de secrets dédié), jamais gravés dans une couche de l'image — le même principe que ne jamais committer une clé d'API dans le code source (cf. chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite), rubrique PHP).
 
+### Secrets Docker Compose vs simples variables d'environnement
+
+Une variable d'environnement (`environment:` en Compose) reste lisible par quiconque peut inspecter le conteneur (`docker inspect`, ou lire `/proc/<pid>/environ` depuis l'hôte) — suffisant pour une configuration ordinaire, mais peu adapté à un mot de passe. Les **secrets** de Compose passent plutôt par un fichier, monté en lecture seule uniquement dans les conteneurs qui le déclarent explicitement :
+
+```yaml
+services:
+  base:
+    secrets:
+      - db_password        # monté en lecture seule dans /run/secrets/db_password
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt   # jamais commité, cf. .gitignore
+```
+
+L'application lit alors le mot de passe comme un fichier ordinaire (`cat /run/secrets/db_password`) plutôt que comme une variable d'environnement — un secret ainsi monté n'apparaît ni dans `docker inspect`, ni dans les variables d'environnement du processus.
+
 ## `.dockerignore` systématique
 
 Sans `.dockerignore` (cf. chapitre sur le Dockerfile), un `COPY . .` embarque tout ce qui se trouve dans le dossier — y compris un `.env` local, un `.git/` complet, ou des identifiants de configuration oubliés. La liste minimale à exclure : `.git/`, `.env`, `node_modules/` (ou équivalent), tout fichier de log.

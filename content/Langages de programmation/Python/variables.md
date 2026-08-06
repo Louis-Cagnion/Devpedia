@@ -4,7 +4,7 @@ order: 1
 
 # Les variables et types de base
 
-Python est **dynamiquement typé** : une variable n'a pas de type déclaré à l'avance, elle prend simplement le type de la valeur qui lui est assignée — et peut changer de type librement au cours du programme (contrairement à PHP ou C où le type d'une propriété/variable typée reste fixe une fois déclaré).
+Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable). Python est **dynamiquement typé** : une variable n'a pas de type déclaré à l'avance, elle prend simplement le type de la valeur qui lui est assignée — et peut changer de type librement au cours du programme (contrairement à PHP ou C où le type d'une propriété/variable typée reste fixe une fois déclaré).
 
 ## Déclarer une variable
 

@@ -1,5 +1,5 @@
 ---
-order: 12
+order: 13
 ---
 
 # Réglementation européenne de l'IA : l'AI Act
@@ -17,6 +17,10 @@ Le **règlement européen sur l'intelligence artificielle** (*AI Act*, règlemen
 
 Un chatbot (voir [Construire un chatbot](/?c=ia&p=chatbot)) tombe typiquement dans la catégorie "risque limité" : son obligation principale est de ne jamais laisser l'utilisateur croire qu'il parle à un humain sans le préciser.
 
+> **Piège :** sous-estimer le niveau de risque de son propre système par optimisme ou par méconnaissance — un chatbot qui semble anodin peut basculer en "risque élevé" s'il intervient par exemple dans une décision de recrutement ou de scoring de crédit, deux cas explicitement listés à ce niveau.
+>
+> **Bonne pratique :** évaluer le niveau de risque à partir de l'usage réel du système (le domaine dans lequel il intervient), pas seulement de sa technologie sous-jacente — deux chatbots techniquement identiques peuvent relever de deux niveaux de risque différents selon leur usage.
+
 ## Le calendrier d'application
 
 Contrairement à un règlement qui s'appliquerait d'un bloc, l'AI Act entre en vigueur **par étapes**, chacune ajoutant de nouvelles obligations :
@@ -31,6 +35,10 @@ Contrairement à un règlement qui s'appliquerait d'un bloc, l'AI Act entre en v
 
 > **Une tension concrète, encore ouverte à l'heure actuelle :** les obligations pour les systèmes à risque élevé sont légalement exigibles depuis août 2026, mais les **normes techniques harmonisées** censées préciser comment s'y conformer concrètement (élaborées par les organismes de normalisation CEN-CENELEC, groupe JTC 21) sont encore en cours de finalisation. Une entreprise peut donc se retrouver à devoir respecter une obligation légale avant que le mode d'emploi technique officiel n'existe pleinement — une situation à surveiller plutôt qu'un simple détail administratif.
 
+> **Piège :** supposer qu'aucune obligation ne s'applique tant que l'échéance de 2026 n'est pas atteinte. Les interdictions de pratiques à risque inacceptable et les obligations pour les modèles GPAI sont, elles, déjà en vigueur depuis 2025.
+>
+> **Bonne pratique :** vérifier la date d'application propre à **chaque** catégorie d'obligation concernée (interdictions, GPAI, risque élevé, risque limité), plutôt que de retenir une seule date pour l'ensemble du règlement.
+
 ## Les modèles d'IA à usage général (GPAI)
 
 Un grand modèle de langage (voir [NLP et LLM](/?c=ia&p=nlp-et-llm)) n'est pas conçu pour un usage unique — il sert de base à des usages très variés. L'AI Act crée pour cette catégorie ("*General-Purpose AI*", GPAI) des obligations spécifiques, applicables depuis le 2 août 2025 :
@@ -40,6 +48,10 @@ Un grand modèle de langage (voir [NLP et LLM](/?c=ia&p=nlp-et-llm)) n'est pas c
 - Transparence sur le contenu utilisé pour l'entraînement (un résumé suffisamment détaillé, sans exiger la divulgation complète des données).
 
 Les modèles jugés à **risque systémique** (au-delà d'un seuil de puissance de calcul d'entraînement) portent des obligations renforcées : évaluation contradictoire (*red teaming*), reporting des incidents graves, cybersécurité renforcée. Un **Code de bonnes pratiques** volontaire pour les fournisseurs de GPAI a été publié en 2025 pour aider à anticiper ces obligations avant que la supervision réglementaire ne monte en puissance.
+
+> **Piège :** confondre les obligations du **fournisseur** d'un modèle GPAI (documentation technique, conformité au droit d'auteur...) avec celles d'une entreprise qui ne fait qu'**utiliser** ce modèle déjà existant (via une API, par exemple) — les obligations GPAI pèsent sur qui construit et distribue le modèle, pas sur qui l'utilise pour construire un produit dessus.
+>
+> **Bonne pratique :** identifier clairement son propre rôle (fournisseur de modèle, ou simple utilisateur d'un modèle tiers) avant de déterminer quelles obligations de l'AI Act s'appliquent réellement à son cas.
 
 ## Supervision humaine : une obligation, pas une option
 
@@ -52,3 +64,12 @@ L'AI Act ne remplace **pas** le RGPD — il s'y ajoute. La [gouvernance des donn
 ## Sanctions
 
 Les amendes sont échelonnées selon la gravité de l'infraction, jusqu'à 35 millions d'euros ou 7 % du chiffre d'affaires mondial annuel pour une pratique interdite (le plafond le plus élevé des deux) — un niveau comparable, volontairement, à celui du RGPD.
+
+## Ce qu'il faut retenir
+
+| | |
+|---|---|
+| **À retenir** | L'AI Act classe les systèmes IA par niveau de risque (inacceptable, élevé, limité, minimal), avec des obligations croissantes, appliquées par étapes entre 2024 et 2027. Il s'ajoute au RGPD plutôt que de le remplacer, et impose une supervision humaine effective pour tout système à risque élevé. |
+| **Outils utilisables** | Le Code de bonnes pratiques volontaire pour les fournisseurs de GPAI, publié en 2025, pour anticiper les obligations avant la montée en puissance de la supervision réglementaire. |
+| **Pièges à éviter** | Sous-estimer le niveau de risque de son système selon son seul usage réel. Supposer qu'aucune obligation ne s'applique avant 2026 alors que certaines sont déjà en vigueur. Confondre les obligations d'un fournisseur de modèle GPAI avec celles d'un simple utilisateur. |
+| **Bonnes pratiques** | Évaluer le niveau de risque à partir de l'usage réel du système, pas de sa seule technologie. Vérifier la date d'application propre à chaque catégorie d'obligation. Identifier clairement son rôle (fournisseur ou utilisateur) avant de déterminer les obligations applicables. |

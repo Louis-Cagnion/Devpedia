@@ -51,3 +51,38 @@ Compose ne reconstruit pas une image automatiquement à chaque `up` si elle exis
 ```bash
 docker compose up -d --build   # force la reconstruction des images avant de démarrer
 ```
+
+## Redémarrage automatique en cas de crash
+
+Par défaut, un conteneur qui plante reste arrêté — `restart` définit la conduite à tenir :
+
+| Valeur | Comportement |
+|---|---|
+| `no` (défaut) | Ne redémarre jamais automatiquement |
+| `on-failure` | Redémarre uniquement si le processus principal se termine avec un code d'erreur |
+| `always` | Redémarre toujours, y compris après un `docker stop` suivi d'un redémarrage du daemon Docker |
+| `unless-stopped` | Comme `always`, sauf si le conteneur a été explicitement arrêté (`docker stop`) avant le redémarrage du daemon |
+
+```yaml
+services:
+  api:
+    build: .
+    restart: unless-stopped   # redémarre après un crash ou un reboot de la machine hôte
+```
+
+## Déclarer explicitement son réseau
+
+Compose crée un réseau par défaut même sans rubrique `networks:` (cf. plus haut) — le déclarer explicitement reste préférable dès qu'on veut lui donner un nom clair ou plusieurs réseaux distincts (ex. isoler la base de données du reste) :
+
+```yaml
+services:
+  api:
+    networks:
+      - mon-reseau
+  base:
+    networks:
+      - mon-reseau
+
+networks:
+  mon-reseau:
+```

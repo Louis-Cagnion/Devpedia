@@ -32,6 +32,10 @@ s'y prête.
 
 Le choix entre poser une question et avancer sur une hypothèse explicite dépend du contexte : un usage interactif (chat) profite de la question directe, alors qu'un usage automatisé (pipeline, agent, sans humain pour répondre en temps réel) a besoin que le modèle avance malgré tout, en indiquant clairement quelle hypothèse a été prise plutôt qu'en la laissant implicite.
 
+> **Piège :** ne rien préciser sur ce cas, en supposant que le modèle demandera de lui-même une clarification si besoin. Sans instruction explicite, il complète le plus souvent silencieusement par l'hypothèse la plus plausible statistiquement — pas nécessairement celle que l'utilisateur avait en tête.
+>
+> **Bonne pratique :** toujours préciser explicitement la conduite attendue face à une information manquante, plutôt que de compter sur le bon sens du modèle.
+
 ## Le few-shot prompting : montrer plutôt que décrire
 
 Plutôt que de décrire abstraitement le format ou le style attendu, donner directement un ou plusieurs exemples entrée → sortie dans le prompt (le *few-shot prompting*) exploite la capacité du modèle à repérer un motif et à le reproduire :
@@ -47,6 +51,10 @@ Avis : "Le produit fonctionne mais l'emballage était déchiré." -> ?
 ```
 
 Un prompt sans exemple (*zero-shot*) fonctionne pour des tâches simples ou déjà bien représentées dans l'entraînement du modèle ; ajouter 2 à 5 exemples bien choisis améliore nettement la fiabilité sur un format ou un style spécifique, sans coûter le temps ni les données d'un fine-tuning.
+
+> **Piège :** choisir des exemples non représentatifs ou biaisés (tous positifs, tous écrits sur le même ton, tous très courts). Le modèle reproduit fidèlement le motif des exemples fournis — y compris leurs biais, pas seulement leur format.
+>
+> **Bonne pratique :** choisir des exemples qui couvrent la diversité réelle des cas attendus (styles, longueurs, cas limites), pas seulement des cas faciles ou similaires entre eux.
 
 ## Le raisonnement étape par étape (*chain-of-thought*)
 
@@ -65,9 +73,13 @@ Avec chain-of-thought :  "... Détaille ton raisonnement étape par étape,
 
 Demander en plus une étape de vérification avant de conclure ("relis ta réponse et vérifie qu'elle respecte bien [contrainte]") prolonge le même principe : ça donne au modèle l'occasion de détecter lui-même une contrainte non respectée avant qu'elle n'atteigne la sortie finale, plutôt que de découvrir l'écart seulement en la relisant après coup soi-même.
 
+> **Piège :** prendre le raisonnement affiché par le modèle pour un compte-rendu fidèle de ce qui a réellement produit la réponse. Rien ne garantit que les étapes affichées correspondent exactement au mécanisme interne qui a mené à la conclusion — un raisonnement qui *semble* cohérent peut accompagner une conclusion fausse, ou l'inverse.
+>
+> **Bonne pratique :** traiter un raisonnement chain-of-thought comme une aide à la fiabilité de la réponse (et à sa relecture par un humain), pas comme une preuve garantie de son exactitude.
+
 ## Structurer le prompt : séparer instructions, contexte et données
 
-Un prompt qui mélange instructions, contexte et données à traiter dans un seul bloc de texte laisse au modèle la charge de deviner où s'arrête l'un et où commence l'autre. Délimiter clairement chaque partie (balises, guillemets triples, titres) réduit cette ambiguïté — et rend aussi plus difficile qu'une donnée injectée dans le contexte soit interprétée comme une instruction (voir la *prompt injection* dans [Monitoring et gestion opérationnelle d'un LLM](/?c=ia&p=gestion-dun-llm)) :
+Un prompt qui mélange instructions, contexte et données à traiter dans un seul bloc de texte laisse au modèle la charge de deviner où s'arrête l'un et où commence l'autre. Délimiter clairement chaque partie (balises, guillemets triples, titres) réduit cette ambiguïté — et rend aussi plus difficile qu'une donnée injectée dans le contexte soit interprétée comme une instruction (voir la [prompt injection](/?c=ia&p=prompt-injection)) :
 
 ```
 ### Instructions
@@ -133,7 +145,9 @@ Sur un projet de taille significative, ce découpage se structure en étapes suc
 6. **Correction**, ciblée sur les seuls problèmes relevés à l'étape précédente.
 7. **Tests**, puis **finalisation** — une dernière revue globale qui compare le résultat aux exigences de départ.
 
-> **Note :** demander explicitement au modèle de ne rien produire ("ne code pas encore") aux étapes de cadrage et de conception évite qu'il se précipite vers une implémentation avant que les bases ne soient validées — un empressement fréquent, cette instruction reste donc rarement superflue.
+> **Piège :** laisser le modèle se précipiter vers une implémentation avant que le cadrage et la conception ne soient validés — un empressement fréquent, qui produit un résultat technique avant même que le problème ne soit correctement posé.
+>
+> **Bonne pratique :** demander explicitement au modèle de ne rien produire ("ne code pas encore") aux étapes de cadrage et de conception, cette instruction reste rarement superflue.
 
 ### Template : une chaîne de prompts pour un projet complexe
 
@@ -174,6 +188,19 @@ Résultat de la vérification : """[sortie de l'étape 5]"""
 
 Le non-déterminisme d'un LLM (voir [LLM en production](/?c=ia&p=llm-en-production)) rend un seul essai peu fiable pour juger qu'un prompt "fonctionne" : une bonne réponse une fois ne garantit pas qu'elle se reproduira sur un cas légèrement différent. Rejouer systématiquement un prompt candidat sur un petit jeu de cas représentatifs — le même *golden set* que celui utilisé pour évaluer un système en production (voir [Monitoring et gestion opérationnelle d'un LLM](/?c=ia&p=gestion-dun-llm)) — avant de le considérer stable est ce qui distingue le prompt engineering d'un simple bricolage par essais-erreurs.
 
+> **Piège :** valider un prompt sur un seul essai réussi, puis le considérer fiable. Le non-déterminisme du modèle signifie qu'un même prompt peut produire une sortie différente d'un appel à l'autre — un seul succès ne prouve rien sur la fiabilité générale.
+>
+> **Bonne pratique :** rejouer systématiquement un prompt candidat sur plusieurs cas représentatifs (un *golden set*) avant de le considérer stable, plutôt que de juger sur un seul essai.
+
 ## Les limites du prompt engineering
 
 Aucune de ces techniques n'ajoute de connaissance ou de capacité que le modèle n'a pas déjà acquise pendant son entraînement — elles ne font qu'exploiter au mieux ce qui existe déjà (voir la distinction fine-tuning vs prompting dans [NLP et LLM](/?c=ia&p=nlp-et-llm)). Un modèle qui n'a jamais vu de données pertinentes sur un sujet, ou qui ignore des événements postérieurs à sa date de coupure, ne produira pas une meilleure réponse parce que le prompt est mieux écrit — c'est le rôle du [RAG](/?c=ia&p=rag) (données externes) ou du fine-tuning (nouvelles capacités), pas du prompt engineering.
+
+## Ce qu'il faut retenir
+
+| | |
+|---|---|
+| **À retenir** | Le prompt engineering formule l'entrée d'un LLM méthodiquement : rôle et instructions explicites, exemples (few-shot), raisonnement étape par étape (chain-of-thought), séparation instructions/contexte/données, décomposition d'une tâche complexe en étapes vérifiables. Il n'ajoute aucune capacité que le modèle n'a pas déjà. |
+| **Outils utilisables** | Un gabarit de prompt réutilisable (voir le template ci-dessus) ; un *golden set* de cas représentatifs pour évaluer un prompt avant de le considérer stable. |
+| **Pièges à éviter** | Ne pas préciser la conduite à tenir face à une information manquante. Des exemples few-shot non représentatifs ou biaisés. Prendre un raisonnement chain-of-thought pour une preuve d'exactitude. Valider un prompt sur un seul essai réussi. |
+| **Bonnes pratiques** | Toujours préciser la conduite attendue en cas d'ambiguïté. Choisir des exemples few-shot représentatifs de la diversité réelle des cas. Rejouer un prompt sur plusieurs cas avant de le considérer fiable. |

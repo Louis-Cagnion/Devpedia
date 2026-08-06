@@ -4,7 +4,7 @@ order: 1
 
 # Les variables et types de données
 
-Les variables sont utilisées pour stocker des données en mémoire afin qu'un programme puisse les manipuler. En langage C, chaque variable possède un type qui détermine :
+Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable). En langage C, chaque variable possède en plus un type qui détermine :
 
 - La quantité de mémoire allouée.
 - Les valeurs qu'elle peut contenir.

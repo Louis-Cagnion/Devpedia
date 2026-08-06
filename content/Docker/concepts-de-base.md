@@ -9,15 +9,17 @@ order: 1
 Une **machine virtuelle** (VM) virtualise du matériel : elle embarque son propre noyau (*kernel*) et démarre comme un ordinateur complet, ce qui la rend lourde (plusieurs Go, démarrage en dizaines de secondes) mais totalement isolée de l'hôte. Un **conteneur** est plus léger : c'est un processus classique du système hôte, qui **partage le noyau** de cet hôte mais s'exécute dans un environnement isolé du reste du système.
 
 ```
-Machine virtuelle                    Conteneur
-┌─────────────────┐                  ┌─────────────────┐
-│   Application    │                  │   Application    │
-│   Bibliothèques   │                  │   Bibliothèques   │
-│   Noyau invité    │                  ├─────────────────┤
-├─────────────────┤                  │  Moteur Docker    │
-│   Hyperviseur     │                  ├─────────────────┤
-├─────────────────┤                  │  Noyau de l'hôte  │
-│  Noyau de l'hôte  │                  └─────────────────┘
+Machine virtuelle      Conteneur
+┌─────────────────┐    ┌─────────────────┐
+│   Application   │    │   Application   │
+├─────────────────┤    ├─────────────────┤
+│  Bibliothèques  │    │  Bibliothèques  │
+├─────────────────┤    ├─────────────────┤
+│  Noyau invité   │    │  Moteur Docker  │
+├─────────────────┤    ├─────────────────┤
+│   Hyperviseur   │    │ Noyau de l'hôte │
+├─────────────────┤    └─────────────────┘
+│ Noyau de l'hôte │
 └─────────────────┘
 ```
 
