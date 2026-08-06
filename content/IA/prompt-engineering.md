@@ -81,6 +81,44 @@ Résume le texte ci-dessous en 2 phrases, en français.
 
 Préciser le format de sortie attendu (JSON avec des clés nommées, une liste à puces, un tableau) dans les instructions elles-mêmes évite de surcroît d'avoir à re-parser une réponse en langage libre.
 
+## Template : un prompt unique pour une tâche simple
+
+Le squelette ci-dessous rassemble toutes les techniques précédentes dans un seul gabarit réutilisable, à adapter tâche par tâche — chaque section correspond à une technique vue plus haut (rôle, gestion de l'ambiguïté, few-shot, vérification, format) :
+
+```
+## Rôle
+Tu es [rôle / expertise attendue].
+Ta mission : [objectif principal, en une phrase].
+
+## Instructions
+1. [instruction précise]
+2. [instruction précise]
+
+Contraintes : [contenu à respecter] ; [ce qu'il faut éviter].
+Si une information nécessaire manque : [pose une question / signale l'hypothèse prise].
+
+## Contexte
+"""
+[informations nécessaires pour réaliser la tâche]
+"""
+
+## Données à traiter
+"""
+[texte / code / fichier / problème concerné]
+"""
+
+## Exemple(s)
+Entrée : [exemple d'entrée]  ->  Sortie attendue : [exemple de sortie]
+
+## Méthode
+Avant de conclure, vérifie que le résultat respecte bien les contraintes ci-dessus.
+
+## Format de sortie
+[format exact attendu — court / détaillé / structuré / directement utilisable]
+```
+
+Toutes ces sections ne sont pas systématiquement nécessaires : une question simple et déjà sans ambiguïté n'a besoin ni d'exemple, ni de rubrique "Contexte" séparée. Le gabarit sert de liste de vérification, pas de formulaire à remplir intégralement à chaque fois.
+
 ## Décomposer une tâche complexe plutôt qu'un seul prompt monolithique
 
 Un prompt unique qui demande à la fois d'analyser, de calculer et de rédiger cumule les risques d'erreur de chaque sous-tâche. Découper en plusieurs prompts plus petits et enchaînés (*prompt chaining* — la sortie de l'un devient l'entrée du suivant) permet de vérifier un résultat intermédiaire avant de poursuivre, plutôt que de découvrir une erreur uniquement dans le résultat final. C'est le même principe, non automatisé ici, qui motive la boucle des [agents](/?c=ia&p=agents) — un agent n'est rien d'autre que ce chaînage devenu piloté par le modèle plutôt que par un développeur qui enchaîne les prompts à la main.
@@ -96,6 +134,41 @@ Sur un projet de taille significative, ce découpage se structure en étapes suc
 7. **Tests**, puis **finalisation** — une dernière revue globale qui compare le résultat aux exigences de départ.
 
 > **Note :** demander explicitement au modèle de ne rien produire ("ne code pas encore") aux étapes de cadrage et de conception évite qu'il se précipite vers une implémentation avant que les bases ne soient validées — un empressement fréquent, cette instruction reste donc rarement superflue.
+
+### Template : une chaîne de prompts pour un projet complexe
+
+Chaque étape ci-dessous devient un prompt séparé, dont la sortie (validée avant de continuer) alimente le prompt suivant :
+
+```
+[1. Cadrage]
+Objectifs : [...]  —  Contraintes : [...]  —  Ressources disponibles : """[...]"""
+-> N'implémente rien : liste risques, informations manquantes, questions à trancher.
+
+[2. Conception]
+Cadrage validé : """[sortie de l'étape 1]"""
+-> Découpage en sous-tâches, dépendances entre elles, architecture générale. Toujours sans coder.
+
+[3. Plan d'implémentation]
+Conception validée : """[sortie de l'étape 2]"""
+-> Pour chaque sous-tâche : entrées, sortie attendue, fichiers concernés, critères de réussite.
+
+[4. Réalisation d'une sous-tâche]
+Contexte pertinent + architecture validée : """[...]"""  —  Sous-tâche actuelle : """[...]"""
+-> Réalise uniquement cette sous-tâche ; signale sans corriger un problème détecté ailleurs.
+
+[5. Vérification indépendante]
+Résultat à vérifier : """[sortie de l'étape 4]"""  —  Critères de réussite : """[...]"""
+-> Agis comme un reviewer indépendant. Ne modifie rien. Classe les problèmes trouvés
+   (CRITIQUE / IMPORTANT / MINEUR), conclus par VALIDÉ ou À CORRIGER.
+
+[6. Correction]
+Résultat de la vérification : """[sortie de l'étape 5]"""
+-> Corrige uniquement les problèmes listés, sans toucher au reste.
+
+[7. Tests et finalisation]
+État final : """[...]"""  —  Exigences initiales : """[sortie de l'étape 1]"""
+-> Vérifie que chaque exigence est satisfaite ; liste ce qui reste, s'il y a lieu.
+```
 
 ## Itérer et évaluer plutôt que juger sur un seul essai
 
