@@ -86,6 +86,6 @@ Voir aussi [Les tables de hachage](/?c=langages-de-programmation&s=c&p=tables-de
 | | |
 |---|---|
 | **À retenir** | Un `dict` associe des clés à des valeurs, un `set` stocke des valeurs uniques sans ordre — les deux reposent sur une table de hachage, donc quasi instantanés en accès/test. |
-| **Outils utilisables** | `.get()` (sans erreur), compréhensions de dict/set, opérations d'ensembles (`|`, `&`, `-`, `^`). |
+| **Outils utilisables** | `.get()` (sans erreur), compréhensions de dict/set, opérations d'ensembles (`\|`, `&`, `-`, `^`). |
 | **Pièges à éviter** | Accéder à une clé absente par crochets (`dico["x"]`) plutôt que par `.get()` — lève une `KeyError`. |
 | **Bonnes pratiques** | Utiliser `.get()` dès que l'absence d'une clé est un cas normal, pas une erreur ; `list(set(ma_liste))` pour dédupliquer rapidement. |

@@ -176,4 +176,4 @@ Voir aussi le chapitre sur la gestion des processus pour ce qui se passe après 
 | **À retenir** | Le shebang indique au système quel interpréteur exécute le script. `chmod +x` + `./script.sh` ou `bash script.sh` le lance. `$1`, `$@`, `$#`... donnent accès à ses arguments. Chaque script se termine avec un code de sortie (`0` = succès), consultable via `$?`. |
 | **Outils utilisables** | `set -euo pipefail` en tête de script pour arrêter à la première erreur plutôt que de continuer sur un état incohérent. |
 | **Pièges à éviter** | Confondre `$@` et `$*` une fois quotés (voir plus haut). Écrire `#!/bin/sh` puis utiliser une extension Bash (tableaux, `[[ ]]`...) : le script échoue sur tout système où `/bin/sh` n'est pas `bash`. |
-| **Bonnes pratiques** | Toujours vérifier `$?` (ou utiliser `&&`/`||`) après une commande dont l'échec doit changer le comportement du script, plutôt que de supposer qu'elle a réussi. |
+| **Bonnes pratiques** | Toujours vérifier `$?` (ou utiliser `&&`/`\|\|`) après une commande dont l'échec doit changer le comportement du script, plutôt que de supposer qu'elle a réussi. |

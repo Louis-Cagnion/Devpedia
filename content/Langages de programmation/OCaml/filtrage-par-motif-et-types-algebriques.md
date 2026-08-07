@@ -73,6 +73,6 @@ La différence avec `None` en Python (cf. chapitre [Les variables](/?c=langages-
 | | |
 |---|---|
 | **À retenir** | Un type variant énumère toutes les formes possibles d'une valeur ; `match` décompose et extrait ses données. Le compilateur vérifie l'exhaustivité d'un `match` — un cas oublié est détecté avant l'exécution, pas seulement le jour où il se présente en production. |
-| **Outils utilisables** | `type ... = | ...`, `match ... with`, le type `option` (`Some`/`None`) comme alternative structurelle à `null`. |
+| **Outils utilisables** | `type ... = \| ...`, `match ... with`, le type `option` (`Some`/`None`) comme alternative structurelle à `null`. |
 | **Pièges à éviter** | Laisser un `match` non exhaustif en simple avertissement plutôt qu'en erreur bloquante. |
 | **Bonnes pratiques** | Activer l'option qui transforme un `match` non exhaustif en erreur de compilation ; utiliser `option` plutôt qu'une valeur qui pourrait être absente sans que le type le signale. |
