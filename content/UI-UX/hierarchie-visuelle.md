@@ -69,15 +69,13 @@ L'utilisateur lit en entier les premières lignes, puis se contente de scanner l
 **Z-pattern** — pour une page simple et peu dense (page d'accueil, landing page) :
 
 ```
-[Logo]───────────────────►[Menu / Connexion]
-                                          ╲
-                                           ╲
-                                            ╲
-[Argument clé]                              ╲
-        ╲                                    ╲
-         ╲                                    ╲
-          ╲                                    ▼
-           ▼────────────────────────►[Bouton d'action]
+[Logo]──────────────────────►[Menu / Connexion]
+                                            ╱
+                                         ╱
+                                      ╱
+                                   ╱
+                                ╱
+[Argument clé]──────────────►[Bouton d'action]
 ```
 
 L'œil part en haut à gauche, balaie vers la droite, redescend en diagonale, puis balaie une dernière fois vers la droite — où se place naturellement le bouton d'action principal (le point primaire défini plus haut).
