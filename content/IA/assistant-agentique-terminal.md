@@ -27,7 +27,7 @@ Certains modèles génèrent, avant la réponse finale, une phase de **raisonnem
 
 Il ne faut pas confondre ce mécanisme avec le [*chain-of-thought* du prompt engineering](/?c=ia&p=prompt-engineering) : là, le raisonnement détaillé est une **technique de prompt**, demandée explicitement par l'utilisateur dans sa question. Le raisonnement interne étendu, lui, est une **phase de génération distincte et native**, qui existe indépendamment de toute instruction du prompt à ce sujet :
 
-```
+```text
 Chain-of-thought (prompte)       Raisonnement interne etendu (natif)
 -------------------------------  -------------------------------------
 Demande explicitement par le     Genere par defaut selon le modele,
@@ -75,7 +75,7 @@ Le [RAG](/?c=ia&p=rag) interroge une base **pré-indexée à l'avance** et stati
 
 Le tableau des [patrons de coordination multi-agents](/?c=ia&p=agents) couvre l'enchaînement séquentiel, l'orchestrateur/travailleurs et l'état partagé. Un quatrième patron, tout aussi courant pour un assistant qui produit du contenu (code, texte, plan) : l'**évaluateur-optimiseur**.
 
-```
+```text
 1. Generation  -> une premiere version de la reponse/du code
 2. Evaluation  -> critique selon des criteres explicites (checklist,
                   tests, format attendu)
@@ -112,7 +112,7 @@ La [fenêtre de contexte](/?c=ia&p=llm-en-production) reste bornée quel que soi
 
 Le chapitre [NLP et LLM](/?c=ia&p=nlp-et-llm) distingue, de façon générique, le fine-tuning (ré-entraîner) du prompting (ne rien modifier). Un assistant conversationnel moderne passe en réalité par plusieurs étapes de fine-tuning distinctes, chacune publiquement documentée par les principaux fournisseurs :
 
-```
+```text
 1. Pre-entrainement    -> predire le mot suivant sur un immense corpus
                           de texte (voir NLP et LLM) - le modele "brut"
 2. SFT (Supervised     -> fine-tuning sur des exemples soigneusement

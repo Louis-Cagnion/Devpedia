@@ -10,7 +10,7 @@ Les chapitres précédents couvrent chacun un mécanisme : [entraîner un résea
 
 ## Les couches, de bas en haut
 
-```
+```text
 Application       -> chatbot, assistant en ligne de commande...
       |               (voir Construire un chatbot, L'assistant IA
       |                agentique en terminal)
