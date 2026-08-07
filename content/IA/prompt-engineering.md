@@ -36,6 +36,31 @@ Le choix entre poser une question et avancer sur une hypothèse explicite dépen
 >
 > **Bonne pratique :** toujours préciser explicitement la conduite attendue face à une information manquante, plutôt que de compter sur le bon sens du modèle.
 
+## Repérer un prompt imprécis et proposer une version affinée
+
+La section précédente traite le cas où une information manque *au milieu* de la tâche, une fois celle-ci commencée. Un prompt peut aussi être imprécis *dès le départ* — un objectif vague, un format non précisé, un choix qui appartient en réalité à la personne qui demande — au point qu'aucune tentative, même prudente, n'a de bonne raison de partir dans une direction plutôt qu'une autre. Dans ce cas, la meilleure réponse n'est ni de deviner, ni de produire un résultat générique : c'est de renvoyer une **version affinée du prompt**, qui liste précisément ce qui manque et propose une reformulation concrète, avant de s'engager dans un travail qui a de bonnes chances d'être à refaire :
+
+```text
+Prompt reçu :  "Fais un rapport sur les ventes."
+
+Sans affinage  ->  un rapport produit au hasard des hypothèses implicites
+                    (quelle période ? quels produits ? quel format ? pour qui ?)
+
+Avec affinage  ->  "Pour ce rapport, précises-tu :
+                    - la période couverte (mois en cours ? année ? comparaison
+                      à l'an dernier ?)
+                    - le format attendu (synthèse d'une page ? tableau détaillé ?)
+                    - le destinataire (direction ? équipe commerciale ?)
+                    Sinon, je pars sur : le mois en cours, une synthèse d'une
+                    page, pour la direction."
+```
+
+Une question concrète, formulée en options identifiables (comme ci-dessus), s'obtient une réponse plus vite et plus utilement qu'une question ouverte du type "peux-tu préciser ?" — qui laisse à la personne la charge de deviner elle-même ce qui manquait.
+
+> **Piège :** demander un affinage sur un prompt déjà suffisamment précis pour être exécuté sans ambiguïté réelle. Systématiser la question au lieu de la réserver aux cas qui le justifient ralentit l'échange et donne l'impression que le modèle esquive la tâche plutôt qu'il ne cherche à bien la faire.
+>
+> **Bonne pratique :** réserver l'affinage aux cas où plusieurs interprétations restent également plausibles, ou où un choix (portée, format, contrainte) appartient clairement à la personne qui demande — et toujours proposer, en même temps que la question, une hypothèse par défaut raisonnable pour ne pas bloquer totalement l'avancement si elle ne répond pas.
+
 ## Le few-shot prompting : montrer plutôt que décrire
 
 Plutôt que de décrire abstraitement le format ou le style attendu, donner directement un ou plusieurs exemples entrée → sortie dans le prompt (le *few-shot prompting*) exploite la capacité du modèle à repérer un motif et à le reproduire :
@@ -200,7 +225,7 @@ Aucune de ces techniques n'ajoute de connaissance ou de capacité que le modèle
 
 | | |
 |---|---|
-| **À retenir** | Le prompt engineering formule l'entrée d'un LLM méthodiquement : rôle et instructions explicites, exemples (few-shot), raisonnement étape par étape (chain-of-thought), séparation instructions/contexte/données, décomposition d'une tâche complexe en étapes vérifiables. Il n'ajoute aucune capacité que le modèle n'a pas déjà. |
+| **À retenir** | Le prompt engineering formule l'entrée d'un LLM méthodiquement : rôle et instructions explicites, repérage d'un prompt imprécis avant de s'engager, exemples (few-shot), raisonnement étape par étape (chain-of-thought), séparation instructions/contexte/données, décomposition d'une tâche complexe en étapes vérifiables. Il n'ajoute aucune capacité que le modèle n'a pas déjà. |
 | **Outils utilisables** | Un gabarit de prompt réutilisable (voir le template ci-dessus) ; un *golden set* de cas représentatifs pour évaluer un prompt avant de le considérer stable. |
-| **Pièges à éviter** | Ne pas préciser la conduite à tenir face à une information manquante. Des exemples few-shot non représentatifs ou biaisés. Prendre un raisonnement chain-of-thought pour une preuve d'exactitude. Valider un prompt sur un seul essai réussi. |
-| **Bonnes pratiques** | Toujours préciser la conduite attendue en cas d'ambiguïté. Choisir des exemples few-shot représentatifs de la diversité réelle des cas. Rejouer un prompt sur plusieurs cas avant de le considérer fiable. |
+| **Pièges à éviter** | Ne pas préciser la conduite à tenir face à une information manquante. Systématiser une demande d'affinage même sur un prompt déjà précis. Des exemples few-shot non représentatifs ou biaisés. Prendre un raisonnement chain-of-thought pour une preuve d'exactitude. Valider un prompt sur un seul essai réussi. |
+| **Bonnes pratiques** | Toujours préciser la conduite attendue en cas d'ambiguïté. Réserver l'affinage aux cas d'ambiguïté réelle, avec une hypothèse par défaut en plus de la question. Choisir des exemples few-shot représentatifs de la diversité réelle des cas. Rejouer un prompt sur plusieurs cas avant de le considérer fiable. |

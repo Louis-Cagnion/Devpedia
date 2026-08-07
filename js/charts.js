@@ -463,7 +463,7 @@ export function renderChartBlock(language, rawText) {
     const renderer = CHART_RENDERERS[language];
     if (!renderer) return null;
 
-    const wrapper = createTag("div", {class: "chartWrapper"});
+    const wrapper = createTag("div", {class: `chartWrapper chartWrapper-${language}`});
     try {
         wrapper.append(renderer(parseSpec(rawText)));
     } catch (error) {

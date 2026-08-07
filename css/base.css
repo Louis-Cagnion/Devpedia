@@ -506,6 +506,13 @@ pre code {
     height: auto;
 }
 
+/* The color wheel is a simple illustrative shape (no ticks/labels to read at
+   distance, unlike plot-fonction) -- much smaller than the default chart size
+   keeps it proportionate to the surrounding paragraph text. */
+.chartWrapper-roue-chromatique .chartSvg {
+    max-width: 15rem;
+}
+
 .chartAxis {
     stroke: var(--text-muted);
     stroke-width: 1;
