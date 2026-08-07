@@ -977,6 +977,10 @@
         {
           "id": "accessibilite-ux",
           "label": "Accessibilité de base (UX)"
+        },
+        {
+          "id": "recherche-utilisateur",
+          "label": "La recherche utilisateur"
         }
       ]
     }
