@@ -1,8 +1,10 @@
 import { createTag } from "./tags.js";
+import { renderChartBlock } from "./charts.js";
 
 let openList = false
 let openQuote = false
 let inCodeBlock = false
+let codeLanguage = null
 
 /**
  * Strip a file's optional `---`-fenced frontmatter (used for build-time metadata
@@ -99,7 +101,7 @@ function stripMdFormatting(line) {
     );
 }
 
-const codeFenceRegex = /^```(\w*)/;
+const codeFenceRegex = /^```([\w-]*)/;
 
 /**
  * @param {string} line
@@ -279,17 +281,21 @@ export function parseAppendText(homeDiv, fileName, text) {
         if (isCodeFence(line)) {
             if (!inCodeBlock) {
                 inCodeBlock = true;
-                const language = line.match(codeFenceRegex)[1];
+                codeLanguage = line.match(codeFenceRegex)[1];
                 const pre = createTag("pre", {class: `${fileName}Pre`});
-                codeDiv = createTag("code", language ? {class: `language-${language}`} : {});
+                codeDiv = createTag("code", codeLanguage ? {class: `language-${codeLanguage}`} : {});
                 pre.append(codeDiv);
                 homeDiv.append(pre);
             } else {
                 inCodeBlock = false;
-                // Only highlight when a language was explicitly given: without a `language-*`
-                // class, hljs falls back to auto-detection, which guesses a near-random
-                // language (and colors accordingly) on plain-text/ASCII diagram blocks.
-                if (codeDiv.className) {
+                const chart = renderChartBlock(codeLanguage, codeDiv.textContent);
+                if (chart) {
+                    codeDiv.parentElement.replaceWith(chart);
+                } else if (codeDiv.className) {
+                    // Only highlight when a language was explicitly given: without a
+                    // `language-*` class, hljs falls back to auto-detection, which guesses
+                    // a near-random language (and colors accordingly) on plain-text/ASCII
+                    // diagram blocks.
                     window.hljs.highlightElement(codeDiv);
                 }
                 codeDiv = null;

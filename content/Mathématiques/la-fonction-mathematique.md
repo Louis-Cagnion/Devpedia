@@ -41,18 +41,15 @@ Chaque entrée supplémentaire est un nouveau paramètre de la fonction — exac
 
 ## Représenter une fonction par une courbe
 
-Sur un graphique, chaque paire (entrée, sortie) devient un point — relier tous ces points dessine la **courbe** de la fonction :
+Sur un graphique, chaque paire (entrée, sortie) devient un point — relier tous ces points dessine la **courbe** de la fonction, ici pour `f(x) = x²` :
 
-```
-sortie
-  |              .
-  |          .
-  |      .
-  |  .
-  +---------------------- entrée
+```plot-fonction
+fn: x => x^2
+domaine: -4, 4
+label: f(x) = x²
 ```
 
-Une courbe qui monte signifie que la sortie augmente avec l'entrée ; une courbe qui redescend signifie l'inverse. Cette lecture visuelle sera reprise telle quelle dans le chapitre sur [la dérivée et le gradient](/?c=mathematiques&p=la-derivee-et-le-gradient), pour expliquer comment un ordinateur "descend" une courbe afin de trouver son point le plus bas.
+Une courbe qui monte signifie que la sortie augmente avec l'entrée ; une courbe qui redescend signifie l'inverse — ici, la courbe descend jusqu'à `x = 0` puis remonte, exactement le genre de creux que le chapitre sur [la dérivée et le gradient](/?c=mathematiques&p=la-derivee-et-le-gradient) apprend à repérer, pour expliquer comment un ordinateur "descend" une courbe afin de trouver son point le plus bas.
 
 ## Ce qu'il faut retenir
 

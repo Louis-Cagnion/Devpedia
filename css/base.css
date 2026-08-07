@@ -476,6 +476,56 @@ pre {
     text-align: left;
 }
 
+/* Charts (js/charts.js): declarative fenced blocks (```plot-fonction...) rendered as
+   inline SVG instead of a code block — same outer framing as `pre` for visual consistency. */
+.chartWrapper {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 0.5rem 0 1.5rem 0;
+    padding: 1rem;
+    background-color: var(--bg-elevated);
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+.chartSvg {
+    width: 100%;
+    max-width: 30rem;
+    height: auto;
+}
+
+.chartAxis {
+    stroke: var(--text-muted);
+    stroke-width: 1;
+}
+
+.chartTick {
+    stroke: var(--text-muted);
+    stroke-width: 1;
+}
+
+.chartTickLabel {
+    fill: var(--text-muted);
+    font-size: 9px;
+}
+
+.chartCurve {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+}
+
+.chartLabel {
+    fill: var(--text);
+    font-size: 11px;
+}
+
+.chartError {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
 /* markdown tables */
 .tableWrapper {
     overflow-x: auto;
