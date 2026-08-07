@@ -537,6 +537,37 @@ pre code {
     font-style: italic;
 }
 
+.chartHarmonyLine {
+    fill: none;
+    stroke: var(--text);
+    stroke-width: 2;
+    stroke-dasharray: 4 3;
+}
+
+.chartHueMarker {
+    stroke: var(--text);
+    stroke-width: 2;
+}
+
+.chartVectorArrow {
+    stroke-width: 2;
+}
+
+.chartVector0 {
+    stroke: var(--accent);
+    fill: var(--accent);
+}
+
+.chartVector1 {
+    stroke: var(--accent-strong);
+    fill: var(--accent-strong);
+}
+
+.chartVector2 {
+    stroke: var(--text);
+    fill: var(--text);
+}
+
 /* markdown tables */
 .tableWrapper {
     overflow-x: auto;

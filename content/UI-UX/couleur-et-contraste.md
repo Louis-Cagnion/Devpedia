@@ -10,11 +10,8 @@ La couleur est l'un des leviers de la [hiérarchie visuelle](/?c=ui-ux&p=hierarc
 
 La **roue chromatique** place les couleurs en cercle, dans l'ordre où elles se dégradent les unes vers les autres :
 
-```
-                Rouge
-        Violet        Orange
-        Bleu          Jaune
-                Vert
+```roue-chromatique
+label: La roue chromatique
 ```
 
 Leur position relative sur ce cercle détermine des combinaisons ("harmonies") qui fonctionnent visuellement :
@@ -24,6 +21,23 @@ Leur position relative sur ce cercle détermine des combinaisons ("harmonies") q
 | Complémentaire | Deux couleurs à l'opposé l'une de l'autre | Rouge / Vert | Fort contraste, dynamique — peut fatiguer l'œil si sur-utilisé |
 | Analogue | Plusieurs couleurs voisines | Jaune / Vert / Bleu | Douce et cohérente, peu de contraste |
 | Triadique | Trois couleurs régulièrement espacées | Rouge / Jaune / Bleu | Vive et équilibrée, plus difficile à doser |
+
+Le même principe géométrique, indépendamment des noms de couleurs précis (leur position exacte sur la roue varie selon le modèle de couleur utilisé) :
+
+```roue-chromatique
+hues: 30, 210
+label: Complementaire (opposees)
+```
+
+```roue-chromatique
+hues: 90, 120, 150
+label: Analogue (voisines)
+```
+
+```roue-chromatique
+hues: 30, 150, 270
+label: Triadique (espacees de 120 degres)
+```
 
 > **Piège :** choisir une harmonie (par exemple triadique) puis utiliser ses couleurs à parts égales. Le résultat perd toute [hiérarchie visuelle](/?c=ui-ux&p=hierarchie-visuelle) et devient criard — aucune des trois ne se distingue comme la plus importante.
 >

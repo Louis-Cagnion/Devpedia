@@ -8,11 +8,16 @@ Un nombre seul suffit pour représenter une information isolée (voir [la variab
 
 Un vecteur est une liste ordonnée de nombres, traitée comme une seule entité.
 
-```
+```text
 Position d'un point sur un plan :  [3, 5]
                                      |  |
                                      |  deuxième coordonnée (hauteur, y)
                                      première coordonnée (largeur, x)
+```
+
+```vecteurs
+vecteurs: (3, 5)
+label: Le vecteur [3, 5]
 ```
 
 > **Analogie :** une liste de courses où l'ordre a un sens précis (2 kg de pommes, puis 3 baguettes) — inverser l'ordre changerait ce que chaque nombre représente, pas seulement leur position dans la liste.
@@ -33,8 +38,13 @@ Chaque composante supplémentaire ajoute une **dimension**. Un vecteur à 3 comp
 
 ## Additionner deux vecteurs
 
-```
+```text
 [1, 2] + [3, 4] = [1+3, 2+4] = [4, 6]
+```
+
+```vecteurs
+vecteurs: (1, 2), (3, 4), (4, 6)
+label: [1, 2] + [3, 4] = [4, 6]
 ```
 
 On additionne les composantes une à une, à la même position.

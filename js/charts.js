@@ -289,8 +289,167 @@ function renderFunctionPlot(spec) {
     return svg;
 }
 
+const WHEEL_SIZE = 280;
+const WHEEL_RADIUS = 95;
+const WHEEL_CENTER_X = WHEEL_SIZE / 2;
+const WHEEL_CENTER_Y = WHEEL_SIZE / 2 + 15; // leaves room for the top caption
+const WHEEL_SLICE_COUNT = 60;
+
+// Angle convention: 0deg (hue 0, red) at 12 o'clock, increasing clockwise --
+// the usual layout for a "color wheel" in design tools.
+function hueToPoint(hueDegrees, radius) {
+    const angleRad = (hueDegrees * Math.PI) / 180;
+    return {
+        x: WHEEL_CENTER_X + radius * Math.sin(angleRad),
+        y: WHEEL_CENTER_Y - radius * Math.cos(angleRad),
+    };
+}
+
+function parseHueList(huesSpec) {
+    const hues = huesSpec.split(",").map(part => parseFloat(part.trim()));
+    if (hues.length === 0 || !hues.every(Number.isFinite)) {
+        throw new Error(`liste de teintes invalide : "${huesSpec}" (attendu une liste d'angles en degrés, ex: "200, 20")`);
+    }
+    return hues;
+}
+
+/**
+ * @param {{hues?: string, label?: string}} spec `hues`: an optional comma-separated
+ *   list of hue angles (0-360°) to mark and connect on the wheel -- 2 for a
+ *   complementary harmony, 3 for a triadic one, etc. Omit it for a bare wheel.
+ * @returns {SVGElement} a full hue wheel, with any given hues marked and connected
+ */
+function renderColorWheel(spec) {
+    const hues = spec.hues ? parseHueList(spec.hues) : [];
+
+    const svg = svgTag("svg", {
+        viewBox: `0 0 ${WHEEL_SIZE} ${WHEEL_SIZE}`,
+        class: "chartSvg",
+        role: "img",
+        "aria-label": spec.label || `Roue chromatique, teintes ${hues.join(", ")}`,
+    });
+
+    for (let i = 0; i < WHEEL_SLICE_COUNT; i++) {
+        const startAngle = (i * 360) / WHEEL_SLICE_COUNT;
+        const endAngle = ((i + 1) * 360) / WHEEL_SLICE_COUNT;
+        const midHue = (startAngle + endAngle) / 2;
+        const p1 = hueToPoint(startAngle, WHEEL_RADIUS);
+        const p2 = hueToPoint(endAngle, WHEEL_RADIUS);
+        const d = `M ${WHEEL_CENTER_X} ${WHEEL_CENTER_Y} L ${p1.x.toFixed(2)} ${p1.y.toFixed(2)} A ${WHEEL_RADIUS} ${WHEEL_RADIUS} 0 0 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)} Z`;
+        svg.append(svgTag("path", {d, fill: `hsl(${midHue}, 70%, 50%)`}));
+    }
+
+    if (hues.length >= 2) {
+        const points = hues.map(hue => hueToPoint(hue, WHEEL_RADIUS));
+        const d = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(" ") + " Z";
+        svg.append(svgTag("path", {d, class: "chartHarmonyLine"}));
+    }
+
+    for (const hue of hues) {
+        const p = hueToPoint(hue, WHEEL_RADIUS);
+        svg.append(svgTag("circle", {
+            cx: p.x.toFixed(2), cy: p.y.toFixed(2), r: 7, fill: `hsl(${hue}, 70%, 50%)`, class: "chartHueMarker",
+        }));
+    }
+
+    if (spec.label) {
+        const caption = svgTag("text", {x: WHEEL_SIZE / 2, y: 14, class: "chartLabel", "text-anchor": "middle"});
+        caption.textContent = spec.label;
+        svg.append(caption);
+    }
+
+    return svg;
+}
+
+const VECTOR_WIDTH = 300;
+const VECTOR_HEIGHT = 300;
+const VECTOR_MARGIN = 30;
+const VECTOR_COLOR_CLASSES = ["chartVector0", "chartVector1", "chartVector2"];
+
+/**
+ * @param {string} vectorsSpec a list of 2D vectors, e.g. "(3, 2), (1, 4)"
+ * @returns {Array<{x: number, y: number}>}
+ */
+function parseVectorList(vectorsSpec) {
+    const matches = [...vectorsSpec.matchAll(/\(([^,()]+),([^,()]+)\)/g)];
+    if (matches.length === 0) {
+        throw new Error(`liste de vecteurs invalide : "${vectorsSpec}" (attendu "(x, y), (x, y)...")`);
+    }
+    return matches.map(([, x, y]) => {
+        const point = {x: parseFloat(x.trim()), y: parseFloat(y.trim())};
+        if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) {
+            throw new Error(`composante de vecteur invalide dans "${vectorsSpec}"`);
+        }
+        return point;
+    });
+}
+
+/**
+ * @param {{vecteurs: string, label?: string}} spec
+ * @returns {SVGElement} 2D vectors drawn as arrows from the origin, same scale on both axes
+ */
+function renderVectorDiagram(spec) {
+    if (!spec.vecteurs) throw new Error('le champ "vecteurs" est requis (ex: "vecteurs: (3, 2), (1, 4)")');
+    const vectors = parseVectorList(spec.vecteurs);
+
+    const maxComponent = Math.max(1, ...vectors.flatMap(v => [Math.abs(v.x), Math.abs(v.y)]));
+    const domainMax = maxComponent * 1.2;
+
+    const plotSize = Math.min(VECTOR_WIDTH, VECTOR_HEIGHT) - VECTOR_MARGIN * 2;
+    const centerX = VECTOR_WIDTH / 2;
+    const centerY = VECTOR_HEIGHT / 2 + 10; // leaves room for the top caption
+    const scale = plotSize / (2 * domainMax);
+    const toSvg = point => ({x: centerX + point.x * scale, y: centerY - point.y * scale});
+
+    const svg = svgTag("svg", {
+        viewBox: `0 0 ${VECTOR_WIDTH} ${VECTOR_HEIGHT}`,
+        class: "chartSvg",
+        role: "img",
+        "aria-label": spec.label || `Vecteurs ${vectors.map(v => `(${v.x}, ${v.y})`).join(", ")}`,
+    });
+
+    const defs = svgTag("defs");
+    VECTOR_COLOR_CLASSES.forEach((colorClass, i) => {
+        const marker = svgTag("marker", {
+            id: `chartArrowhead${i}`, markerWidth: 8, markerHeight: 8, refX: 8, refY: 4, orient: "auto",
+        });
+        marker.append(svgTag("path", {d: "M 0 0 L 8 4 L 0 8 Z", class: colorClass}));
+        defs.append(marker);
+    });
+    svg.append(defs);
+
+    svg.append(svgTag("line", {x1: VECTOR_MARGIN, x2: VECTOR_WIDTH - VECTOR_MARGIN, y1: centerY, y2: centerY, class: "chartAxis"}));
+    svg.append(svgTag("line", {x1: centerX, x2: centerX, y1: VECTOR_MARGIN, y2: VECTOR_HEIGHT - VECTOR_MARGIN, class: "chartAxis"}));
+
+    vectors.forEach((vector, i) => {
+        const tip = toSvg(vector);
+        const colorClass = VECTOR_COLOR_CLASSES[i % VECTOR_COLOR_CLASSES.length];
+        svg.append(svgTag("line", {
+            x1: centerX, y1: centerY, x2: tip.x.toFixed(2), y2: tip.y.toFixed(2),
+            class: `chartVectorArrow ${colorClass}`, "marker-end": `url(#chartArrowhead${i % VECTOR_COLOR_CLASSES.length})`,
+        }));
+        const pointsRight = tip.x >= centerX;
+        const label = svgTag("text", {
+            x: (tip.x + (pointsRight ? 6 : -6)).toFixed(2), y: (tip.y - 4).toFixed(2),
+            class: `chartLabel ${colorClass}`, "text-anchor": pointsRight ? "start" : "end",
+        });
+        label.textContent = `(${vector.x}, ${vector.y})`;
+        svg.append(label);
+    });
+
+    if (spec.label) {
+        const caption = svgTag("text", {x: VECTOR_WIDTH / 2, y: 14, class: "chartLabel", "text-anchor": "middle"});
+        caption.textContent = spec.label;
+        svg.append(caption);
+    }
+
+    return svg;
+}
+
 const CHART_RENDERERS = {
     "plot-fonction": renderFunctionPlot,
+    "roue-chromatique": renderColorWheel,
+    "vecteurs": renderVectorDiagram,
 };
 
 /**
