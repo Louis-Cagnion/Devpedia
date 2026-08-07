@@ -981,6 +981,10 @@
         {
           "id": "recherche-utilisateur",
           "label": "La recherche utilisateur"
+        },
+        {
+          "id": "wireframing-et-prototypage",
+          "label": "Wireframing et prototypage"
         }
       ]
     }
