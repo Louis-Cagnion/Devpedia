@@ -225,6 +225,10 @@
         {
           "id": "chatbot",
           "label": "Construire un chatbot : architecture, configuration et mise à l'échelle"
+        },
+        {
+          "id": "assistant-agentique-terminal",
+          "label": "L'assistant IA agentique en terminal : au-delà du prompt simple"
         }
       ]
     },
