@@ -229,6 +229,10 @@
         {
           "id": "assistant-agentique-terminal",
           "label": "L'assistant IA agentique en terminal : au-delà du prompt simple"
+        },
+        {
+          "id": "stack-ia",
+          "label": "Le stack IA : les couches d'une application en production"
         }
       ]
     },
