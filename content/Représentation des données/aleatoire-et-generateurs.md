@@ -104,3 +104,14 @@ Le même raisonnement s'applique à `Math.random()` en JavaScript ou `mt_rand()`
 | Graine = horloge | Prévisible : jamais pour de la sécurité |
 | Valeur devant être secrète | CSPRNG obligatoire (`secrets`, `random_bytes`, `crypto`) |
 | Ramener dans un intervalle | Éviter `%` brut : biais du modulo |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un PRNG classique est une suite déterministe (même graine = même suite) — utile pour les tests et la reproductibilité, mais jamais pour une valeur qui doit rester secrète. Un CSPRNG puise sa graine dans l'entropie du système, ce qui le rend imprévisible. |
+| **Outils utilisables** | `secrets`/`random_bytes()`/`crypto.getRandomValues()` (CSPRNG) vs `random`/`rand()`/`Math.random()` (PRNG classique). |
+| **Pièges à éviter** | Utiliser un PRNG classique (ou une graine prévisible comme l'horloge) pour un jeton de session, un sel, ou toute valeur devant rester secrète. |
+| **Bonnes pratiques** | CSPRNG systématique dès qu'une valeur doit être imprévisible ; utiliser une fonction dédiée (`randint`, `randbelow`) plutôt qu'un `%` improvisé pour ramener un tirage dans un intervalle. |

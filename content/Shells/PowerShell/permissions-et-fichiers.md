@@ -66,4 +66,15 @@ Get-ChildItem -Recurse -Directory -Filter "node_modules"                  # tous
 Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item                       # trouve ET supprime en une seule chaîne
 ```
 
-Voir aussi le chapitre sur le traitement de texte et d'objets (`Select-String`, `-replace`, `ConvertFrom-Json`) pour aller plus loin dans l'exploitation du contenu de ces fichiers.
+Voir aussi [Traitement de texte et d'objets](/?c=shells&s=powershell&p=traitement-de-texte) (`Select-String`, `-replace`, `ConvertFrom-Json`) pour aller plus loin dans l'exploitation du contenu de ces fichiers.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Windows utilise des ACL (listes de contrôle d'accès) plutôt que le modèle propriétaire/groupe/autres d'Unix — plus verbeux, mais permet des droits différents pour un nombre arbitraire d'utilisateurs. |
+| **Outils utilisables** | `Get-Acl`/`Set-Acl`, `icacls` (plus concis), `New-Item`/`Copy-Item`/`Move-Item`/`Remove-Item`. |
+| **Pièges à éviter** | `Remove-Item -Recurse -Force` est irréversible en ligne de commande, contrairement à une suppression via l'explorateur (corbeille). |
+| **Bonnes pratiques** | Utiliser `icacls` pour une modification rapide et lisible d'ACL, `Get-Acl`/`Set-Acl` quand un contrôle fin par script est nécessaire. |

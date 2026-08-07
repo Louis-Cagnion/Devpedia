@@ -19,9 +19,9 @@ echo "Bonjour" | git hash-object --stdin
 # c6b7f... -> toujours le même hash pour le même contenu, peu importe où/quand
 ```
 
-> **Note :** une **fonction de hachage** (ici SHA-1) transforme une entrée de taille quelconque en un nombre de taille fixe, de façon déterministe (même entrée → toujours le même résultat) et bien répartie (deux contenus, même très proches, produisent des résultats très différents — c'est ce qui rend une collision accidentelle extrêmement improbable). Voir le chapitre sur les tables de hachage (rubrique C) pour ce mécanisme appliqué à une structure de données concrète.
+> **Note :** une **fonction de hachage** (ici SHA-1) transforme une entrée de taille quelconque en un nombre de taille fixe, de façon déterministe (même entrée → toujours le même résultat) et bien répartie (deux contenus, même très proches, produisent des résultats très différents — c'est ce qui rend une collision accidentelle extrêmement improbable). Voir [Les tables de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage) pour ce mécanisme appliqué à une structure de données concrète.
 
-Concrètement, chaque objet est compressé (zlib, un algorithme de compression sans perte) et stocké dans `.git/objects/`, sous un chemin dérivé de son hash : les 2 premiers caractères hexadécimaux forment un sous-dossier, les 38 restants le nom du fichier (`.git/objects/c6/b7f4a2...`). Ce n'est ni plus ni moins qu'une **table de hachage** (cf. chapitre dédié, rubrique C) stockée directement sur le système de fichiers — le sous-dossier joue le rôle d'une case (*bucket*).
+Concrètement, chaque objet est compressé (zlib, un algorithme de compression sans perte) et stocké dans `.git/objects/`, sous un chemin dérivé de son hash : les 2 premiers caractères hexadécimaux forment un sous-dossier, les 38 restants le nom du fichier (`.git/objects/c6/b7f4a2...`). Ce n'est ni plus ni moins qu'une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage) stockée directement sur le système de fichiers — le sous-dossier joue le rôle d'une case (*bucket*).
 
 > **Conséquence directe :** deux fichiers avec un contenu strictement identique produisent le **même** hash, et donc le **même** objet stocké une seule fois — une déduplication automatique et gratuite, propriété inhérente au modèle, pas une optimisation ajoutée après coup.
 
@@ -63,11 +63,11 @@ cat .git/HEAD
 # ref: refs/heads/main   -> HEAD ne contient pas un hash, mais le CHEMIN vers la ref courante
 ```
 
-`HEAD` est un pointeur vers un pointeur : changer de branche (`git checkout autre-branche`) ne modifie qu'une seule ligne dans `.git/HEAD`, qui se met à référencer un autre fichier de `refs/heads/`. En mode *detached HEAD* (cf. chapitre sur les tags), `.git/HEAD` contient directement un hash de commit, sans passer par une ref nommée.
+`HEAD` est un pointeur vers un pointeur : changer de branche (`git checkout autre-branche`) ne modifie qu'une seule ligne dans `.git/HEAD`, qui se met à référencer un autre fichier de `refs/heads/`. En mode *detached HEAD* (voir [Les tags](/?c=git&p=tags)), `.git/HEAD` contient directement un hash de commit, sans passer par une ref nommée.
 
 ## Pourquoi modifier un commit change tous ses descendants
 
-Le hash d'un commit dépend de **tout son contenu**, y compris le hash de son commit parent. Modifier un commit ancien (via un rebase ou un `commit --amend`) change donc son propre hash — et comme chaque commit suivant référence le hash de son parent, leur contenu (et donc leur hash à eux aussi) change en cascade. C'est ce mécanisme exact qui explique pourquoi un rebase (cf. chapitre dédié) produit des commits aux hash différents des originaux, même à contenu de fichier identique.
+Le hash d'un commit dépend de **tout son contenu**, y compris le hash de son commit parent. Modifier un commit ancien (via un rebase ou un `commit --amend`) change donc son propre hash — et comme chaque commit suivant référence le hash de son parent, leur contenu (et donc leur hash à eux aussi) change en cascade. C'est ce mécanisme exact qui explique pourquoi un [rebase](/?c=git&p=rebase) produit des commits aux hash différents des originaux, même à contenu de fichier identique.
 
 ## Objets isolés vs packfiles
 
@@ -101,15 +101,15 @@ git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" -
 > **Note :** `git filter-branch` est officiellement déprécié au profit de [`git filter-repo`](https://github.com/newren/git-filter-repo) (plus rapide, moins de pièges), mais ce dernier n'est pas fourni avec Git — installation séparée (Python) nécessaire. `filter-branch` reste disponible partout où Git est installé, suffisant pour une opération ponctuelle.
 
 Conséquences directes de ce changement de hash en cascade :
-- Tout clone ou fork existant du dépôt divergera irrémédiablement de la nouvelle version — un push normal sera rejeté, un `push --force`/`--force-with-lease` (cf. chapitre "Les dépôts distants") est nécessaire, et quiconque a déjà cloné le dépôt doit re-cloner ou réinitialiser durement sa copie.
-- Toujours faire une sauvegarde complète (`git bundle create ... --all`, cf. chapitre "Les dépôts distants") **avant** de lancer une réécriture de ce type — une erreur dans le filtre est aussi irréversible que l'opération elle-même.
+- Tout clone ou fork existant du dépôt divergera irrémédiablement de la nouvelle version — un push normal sera rejeté, un `push --force`/`--force-with-lease` (voir [Les dépôts distants](/?c=git&p=remotes)) est nécessaire, et quiconque a déjà cloné le dépôt doit re-cloner ou réinitialiser durement sa copie.
+- Toujours faire une sauvegarde complète (`git bundle create ... --all`, voir [Les dépôts distants](/?c=git&p=remotes)) **avant** de lancer une réécriture de ce type — une erreur dans le filtre est aussi irréversible que l'opération elle-même.
 
 ## Objets inaccessibles : une suppression n'est jamais immédiate
 
 Après une réécriture d'historique (ou un simple `reset --hard`), les anciens commits ne sont plus référencés par aucune branche — mais leurs objets restent physiquement présents dans `.git/objects/`. Deux mécanismes les retiennent encore en vie :
 
 - `git filter-branch` conserve lui-même une sauvegarde automatique dans `refs/original/` (à supprimer explicitement — `git update-ref -d refs/original/refs/heads/main` — une fois certain de ne plus en avoir besoin).
-- Le **reflog** (cf. chapitre "Annuler des changements") garde une trace de chaque ancien commit pendant plusieurs semaines par défaut, même sans aucune ref pointant dessus.
+- Le **reflog** (voir [Annuler des changements et naviguer dans l'historique](/?c=git&p=annuler-et-historique)) garde une trace de chaque ancien commit pendant plusieurs semaines par défaut, même sans aucune ref pointant dessus.
 
 Un objet n'est réellement supprimé du dépôt local que lorsque plus rien ne le retient :
 
@@ -130,3 +130,14 @@ Les briques nécessaires à un système minimal, dans cet ordre logique :
 3. **Des objets commit chaînés** par un pointeur vers leur(s) parent(s) — c'est cette chaîne qui constitue l'historique.
 4. **Des pointeurs nommés et mutables** (les branches) pointant vers un commit, plus un pointeur spécial (`HEAD`) indiquant "où on en est" actuellement.
 5. **Un algorithme de diff** — nécessaire uniquement pour afficher des différences lisibles ou fusionner des branches, mais pas pour le modèle de stockage lui-même, qui n'en a structurellement pas besoin. L'algorithme de Myers, utilisé par Git, trouve la plus courte suite d'ajouts/suppressions de lignes transformant un texte en un autre — c'est ce qui fait qu'un `git diff` affiche un changement minimal et lisible plutôt que "tout supprimer puis tout réécrire".
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Git stocke chaque donnée comme un objet identifié par le hash de son propre contenu (blob, tree, commit, tag). Les commandes du quotidien ("porcelaine") ne sont qu'une interface au-dessus de ce modèle de stockage bas niveau ("plomberie"). |
+| **Outils utilisables** | `git hash-object`, `git cat-file`, `git write-tree`, `git commit-tree`, `git update-ref`, `git fsck --unreachable`. |
+| **Pièges à éviter** | Réécrire l'historique (`filter-branch`) sans sauvegarde préalable — une erreur dans le filtre est aussi irréversible que l'opération elle-même. |
+| **Bonnes pratiques** | Toujours sauvegarder (`git bundle`) avant une réécriture d'historique ; vérifier `git fsck --unreachable` avant de supposer un objet définitivement perdu. |

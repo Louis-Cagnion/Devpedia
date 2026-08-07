@@ -61,3 +61,14 @@ Dans le cas ci-dessus, comparer la sortie octet par octet avant et après chaque
 ## Le piège de la mesure unique
 
 Un seul relevé ne dit rien : le réseau, le cache et la charge de la machine font varier les résultats de dizaines de pourcents. Prenez plusieurs mesures et regardez si l'écart entre deux configurations dépasse leur variation naturelle. Sinon, vous mesurez du bruit.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Ne jamais optimiser sans avoir mesuré — l'intuition sur "ce qui est lent" cible en général le code qui semble compliqué, pas celui qui coûte réellement cher. |
+| **Outils utilisables** | Un profileur classique (par fonction), une instrumentation manuelle par phase quand le programme passe son temps à attendre. |
+| **Pièges à éviter** | Se fier à une mesure unique — le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation. |
+| **Bonnes pratiques** | Toujours re-mesurer après une optimisation (temps ET exactitude du résultat) ; prendre plusieurs mesures pour distinguer un vrai gain du bruit. |

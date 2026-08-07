@@ -4,7 +4,7 @@ order: 6
 
 # Oh My Zsh
 
-Configurer manuellement le prompt (cf. chapitre précédent), la complétion (cf. chapitre dédié) et des dizaines d'options (cf. chapitre sur `setopt`) demande du temps. **Oh My Zsh** est un framework open source qui fournit tout ça préconfiguré, avec des centaines de thèmes et de plugins prêts à l'emploi — le moyen le plus courant d'avoir un `~/.zshrc` confortable sans tout écrire soi-même.
+Configurer manuellement [le prompt](/?c=shells&s=zsh&p=prompt-et-themes), [la complétion](/?c=shells&s=zsh&p=completion-avancee) et [des dizaines d'options](/?c=shells&s=zsh&p=options-du-shell) demande du temps. **Oh My Zsh** est un framework open source qui fournit tout ça préconfiguré, avec des centaines de thèmes et de plugins prêts à l'emploi — le moyen le plus courant d'avoir un `~/.zshrc` confortable sans tout écrire soi-même.
 
 ## Installation
 
@@ -26,7 +26,7 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 ```
 
-- `ZSH_THEME` sélectionne un thème parmi ceux fournis (dans `~/.oh-my-zsh/themes/`) — il configure `PROMPT`/`RPROMPT` à votre place (cf. chapitre précédent), inutile de les redéfinir soi-même en plus.
+- `ZSH_THEME` sélectionne un thème parmi ceux fournis (dans `~/.oh-my-zsh/themes/`) — il configure `PROMPT`/`RPROMPT` à votre place (voir [Personnaliser le prompt](/?c=shells&s=zsh&p=prompt-et-themes)), inutile de les redéfinir soi-même en plus.
 - `plugins=(...)` active une liste de plugins, chacun ajoutant des alias, fonctions ou complétions spécifiques.
 - `source $ZSH/oh-my-zsh.sh` doit rester la **dernière** ligne pertinente : c'est cette ligne qui charge effectivement le thème et les plugins déclarés au-dessus.
 
@@ -51,7 +51,7 @@ gcmsg  # git commit -m
 gp     # git push
 ```
 
-Ces alias (cf. chapitre Bash sur les variables d'environnement pour le mécanisme `alias` lui-même, identique en zsh) sont définis par le plugin, pas par zsh ni Oh My Zsh eux-mêmes — leur liste complète dépend de la version du plugin installée.
+Ces alias (voir [Variables d'environnement](/?c=shells&s=bash&p=variables-denvironnement) en Bash pour le mécanisme `alias` lui-même, identique en zsh) sont définis par le plugin, pas par zsh ni Oh My Zsh eux-mêmes — leur liste complète dépend de la version du plugin installée.
 
 ## Personnaliser sans toucher au cœur d'Oh My Zsh
 
@@ -69,3 +69,14 @@ omz update
 ```
 
 Oh My Zsh se mettant à jour via son propre dépôt Git interne (`~/.oh-my-zsh/` est un clone Git), cette commande fait l'équivalent d'un `git pull` dessus, sans avoir à s'en soucier manuellement.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Oh My Zsh préconfigure prompt, complétion et options via un framework de thèmes et plugins, plutôt que de tout régler manuellement. |
+| **Outils utilisables** | `ZSH_THEME`, `plugins=(...)`, `~/.oh-my-zsh/custom/` pour personnaliser sans toucher au cœur du framework, `omz update`. |
+| **Pièges à éviter** | Modifier directement les fichiers internes d'Oh My Zsh — écrasés à la prochaine mise à jour. |
+| **Bonnes pratiques** | Déposer ses propres alias/fonctions dans `~/.oh-my-zsh/custom/` ; garder `source $ZSH/oh-my-zsh.sh` comme dernière ligne pertinente du `.zshrc`. |

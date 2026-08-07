@@ -69,3 +69,14 @@ if len(resultats) < attendu:
 ## Une alternative souvent meilleure : étaler dans le temps
 
 Quand la contrainte est un quota, la solution n'est pas toujours d'aller plus vite. Découper le travail en lots répartis sur la journée expose beaucoup moins qu'un gros traitement d'un seul coup, pour un résultat identique — et ne demande aucune parallélisation. Si la latence n'a pas d'importance (un traitement nocturne, un rapport périodique), c'est le choix le plus sûr.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un programme ne va jamais plus vite que sa ressource la plus contrainte. Paralléliser sur des cibles indépendantes est un gain gratuit ; paralléliser sur une même cible concentre la charge plutôt que de la répartir. |
+| **Outils utilisables** | Un worker par cible indépendante, vérification explicite des codes de retour et du volume de résultats obtenu. |
+| **Pièges à éviter** | Ajouter des workers au-delà de la contrainte réelle (dégrade les performances) ; supposer qu'un worker qui échoue silencieusement fera échouer le programme principal. |
+| **Bonnes pratiques** | Identifier la ressource limitante avant de paralléliser ; étaler le travail dans le temps plutôt que de paralléliser quand la contrainte est un quota et que la latence importe peu. |

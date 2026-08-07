@@ -40,7 +40,7 @@ element.insertAdjacentHTML('beforeend',   "<p>à la fin du contenu</p>");
 element.insertAdjacentHTML('afterend',    "<p>après l'élément</p>");
 ```
 
-> **Note (sécurité) :** comme `innerHTML` (voir plus bas), `insertAdjacentHTML` interprète son argument comme du HTML — ne jamais y insérer une donnée provenant de l'utilisateur sans l'avoir échappée, sous peine de faille XSS (cf. chapitre sur la sécurité en PHP, même principe).
+> **Note (sécurité) :** comme `innerHTML` (voir plus bas), `insertAdjacentHTML` interprète son argument comme du HTML — ne jamais y insérer une donnée provenant de l'utilisateur sans l'avoir échappée, sous peine de faille XSS (voir [La sécurité](/?c=langages-de-programmation&s=php&p=securite), même principe).
 
 **`remove`** supprime l'élément du DOM.
 ```javascript
@@ -140,6 +140,17 @@ element.innerHTML = '<em>Nouveau</em>';   // ⚠️ écrase tout, interprète le
 ```
 
 > **Note (sécurité) :** assigner à `innerHTML` une donnée provenant de l'utilisateur (non fiable) est une faille XSS classique — le contenu est interprété comme du vrai HTML/JavaScript exécutable, pas comme du texte. `textContent` (ci-dessus) reste sûr par défaut, puisqu'il n'interprète jamais son contenu.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un `HTMLElement` représente une balise HTML manipulable en JavaScript : le créer (`createElement`), le sélectionner (`querySelector`), modifier son contenu (`textContent`/`innerHTML`), ses attributs, ses classes ou son style. |
+| **Outils utilisables** | `querySelector`/`querySelectorAll`, `classList`, `setAttribute`/`getAttribute`, `getBoundingClientRect`. |
+| **Pièges à éviter** | Assigner une donnée utilisateur non échappée à `innerHTML`/`insertAdjacentHTML` (faille XSS) ; modifier une `HTMLCollection` live pendant qu'on la parcourt. |
+| **Bonnes pratiques** | Préférer `textContent` à `innerHTML` dès que le contenu est du texte brut ; préférer `querySelectorAll` (figé) à `getElementsByClassName`/`getElementsByTagName` (live) si le DOM est modifié pendant le parcours. |
 
 ---
 

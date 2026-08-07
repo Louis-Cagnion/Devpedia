@@ -8,7 +8,7 @@ Une **bibliothèque** (*library*) regroupe des fonctions déjà compilées, réu
 
 ## Bibliothèque statique (`.a`)
 
-Le code de la bibliothèque est **copié directement** dans l'exécutable final, au moment de l'édition de liens (cf. chapitre sur la compilation).
+Le code de la bibliothèque est **copié directement** dans l'exécutable final, au moment de [l'édition de liens](/?c=langages-de-programmation&s=c&p=compilation).
 
 ```
 // 1. compiler chaque fichier source en .o
@@ -57,3 +57,14 @@ LD_LIBRARY_PATH=. ./programme
 | Copiée dans l'exécutable ? | Oui | Non — chargée séparément |
 | Quand est-elle liée ? | À la compilation | Au lancement du programme (ou pendant son exécution) |
 | Mise à jour de la bibliothèque | Nécessite de recompiler le programme | Le programme profite de la mise à jour sans recompilation |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une bibliothèque statique (`.a`) est copiée dans l'exécutable à la compilation ; une bibliothèque dynamique (`.so`/`.dll`) reste séparée, chargée au lancement, et peut être partagée entre programmes. |
+| **Outils utilisables** | `ar` (archive statique), `gcc -shared -fPIC` (bibliothèque dynamique), `-L`/`-l` pour lier. |
+| **Pièges à éviter** | Oublier `LD_LIBRARY_PATH` (ou une installation système) : le programme refuse de démarrer, ne trouvant pas la bibliothèque dynamique. |
+| **Bonnes pratiques** | Choisir statique pour un exécutable autonome sans dépendance à gérer, dynamique pour économiser mémoire/taille quand plusieurs programmes partagent la même bibliothèque. |

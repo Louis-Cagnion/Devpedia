@@ -4,7 +4,7 @@ order: 8
 
 # La STL — les conteneurs
 
-La **STL** (*Standard Template Library*) fournit des structures de données génériques (cf. chapitre sur les templates), prêtes à l'emploi — plutôt que de réimplémenter à la main une liste chaînée ou une table de hachage (cf. chapitres dédiés, rubrique C), la quasi-totalité des projets C++ modernes s'appuient sur ces conteneurs standard.
+La **STL** (*Standard Template Library*) fournit des structures de données génériques (voir [Les templates](/?c=langages-de-programmation&s=cpp&p=templates)), prêtes à l'emploi — plutôt que de réimplémenter à la main une [liste chaînée](/?c=langages-de-programmation&s=c&p=listes-chainees) ou une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage), la quasi-totalité des projets C++ modernes s'appuient sur ces conteneurs standard.
 
 ## `std::vector` : le tableau dynamique
 
@@ -23,7 +23,7 @@ for (int n : nombres) {              // parcours simple, comme un for-each
 }
 ```
 
-> **Note :** `std::vector` est, en interne, un tableau contigu en mémoire (cf. chapitre sur les pointeurs et la mémoire, rubrique C) qui se redimensionne automatiquement (souvent en doublant sa capacité) quand il est plein — le même principe qu'une liste Python ou un `ArrayList` Java, mais sans la couche d'indirection d'un langage à ramasse-miettes.
+> **Note :** `std::vector` est, en interne, un tableau contigu en mémoire (voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) et [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) qui se redimensionne automatiquement (souvent en doublant sa capacité) quand il est plein — le même principe qu'une liste Python ou un `ArrayList` Java, mais sans la couche d'indirection d'un langage à ramasse-miettes.
 
 ## `std::list` : la liste doublement chaînée
 
@@ -34,7 +34,7 @@ std::list<int> liste = {1, 2, 3};
 liste.push_front(0);   // insertion en tête en temps constant -> std::vector serait en O(n) ici
 ```
 
-Contrairement à `std::vector`, insérer au milieu ou en tête d'une `std::list` ne nécessite aucun déplacement des autres éléments (cf. chapitre sur les listes chaînées, rubrique C) — au prix d'un accès par index impossible en temps constant (`liste[2]` n'existe pas, il faut parcourir).
+Contrairement à `std::vector`, insérer au milieu ou en tête d'une `std::list` ne nécessite aucun déplacement des autres éléments (voir [Les listes chaînées](/?c=langages-de-programmation&s=c&p=listes-chainees)) — au prix d'un accès par index impossible en temps constant (`liste[2]` n'existe pas, il faut parcourir).
 
 ## `std::map` : le dictionnaire ordonné
 
@@ -53,7 +53,7 @@ for (const auto &[nom, age] : ages) {   // parcours : les paires sont TOUJOURS t
 }
 ```
 
-> **Note :** `std::map` est en interne un arbre équilibré (souvent un arbre rouge-noir, une variante de l'arbre binaire de recherche vu au chapitre dédié, rubrique C) — les clés sont donc toujours parcourues **triées**, contrairement à un tableau associatif PHP ou un `dict` Python (ordre d'insertion). `std::unordered_map` propose l'équivalent basé sur une table de hachage (cf. chapitre dédié, rubrique C), plus rapide en moyenne mais sans ordre garanti.
+> **Note :** `std::map` est en interne un arbre équilibré (souvent un arbre rouge-noir, une variante de [l'arbre binaire de recherche](/?c=langages-de-programmation&s=c&p=arbres-binaires)) — les clés sont donc toujours parcourues **triées**, contrairement à un tableau associatif PHP ou un `dict` Python (ordre d'insertion). `std::unordered_map` propose l'équivalent basé sur une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage), plus rapide en moyenne mais sans ordre garanti.
 
 ## `std::set` : les valeurs uniques, ordonnées
 
@@ -79,4 +79,15 @@ valeurs.count(2);   // 1 si présent, 0 sinon (un set ne contient jamais de doub
 | Valeurs uniques, triées | `std::set` |
 | Valeurs uniques, ordre indifférent, vitesse prioritaire | `std::unordered_set` |
 
-Voir aussi le chapitre sur les itérateurs et algorithmes STL, qui permettent de manipuler n'importe lequel de ces conteneurs de façon uniforme.
+Voir aussi [La STL — itérateurs, algorithmes et lambdas](/?c=langages-de-programmation&s=cpp&p=stl-algorithmes-et-iterateurs), qui permettent de manipuler n'importe lequel de ces conteneurs de façon uniforme.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | La STL fournit des conteneurs génériques prêts à l'emploi : `vector` (tableau dynamique), `list` (liste doublement chaînée), `map`/`set` (triés), `unordered_map`/`unordered_set` (table de hachage, plus rapides mais non triés). |
+| **Outils utilisables** | `push_back`/`push_front`, `size`, `find`, parcours for-each. |
+| **Pièges à éviter** | Choisir `vector` pour des insertions fréquentes en tête (coût `O(n)`, `list` serait en temps constant). |
+| **Bonnes pratiques** | Choisir le conteneur selon l'opération dominante (accès par index, insertion fréquente, association triée...) plutôt que par habitude. |

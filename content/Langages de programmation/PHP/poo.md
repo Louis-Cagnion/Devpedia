@@ -92,7 +92,7 @@ Repository::trouver(1);
 ?>
 ```
 
-`use` ne charge pas le fichier lui-même — il indique seulement au moteur PHP à quel nom complet correspond le nom court utilisé plus bas. C'est un mécanisme d'autoloading (cf. chapitre dédié) qui se charge de retrouver et charger le fichier correspondant, au moment où la classe est réellement utilisée.
+`use` ne charge pas le fichier lui-même — il indique seulement au moteur PHP à quel nom complet correspond le nom court utilisé plus bas. C'est un mécanisme d'[autoloading](/?c=langages-de-programmation&s=php&p=autoloading) qui se charge de retrouver et charger le fichier correspondant, au moment où la classe est réellement utilisée.
 
 > **Note :** `Classe::methode()` (avec `::`) ressemble à `Classe->methode()` mais ne s'utilise jamais avec une instance — c'est l'équivalent quasi direct d'un namespace + méthode statique en C++.
 
@@ -121,6 +121,17 @@ $service = new ServiceNotification();
 $service = new ServiceNotification(new MailerDeTest(), new LoggerEnMemoire());
 ```
 
-Les paramètres nullables avec un repli `??` (cf. chapitre sur les fonctions) rendent chaque dépendance **optionnelle** : le code appelant peut soit laisser le comportement par défaut, soit fournir explicitement une implémentation différente — typiquement une version simulée (*mock*) dans un test automatisé, sans jamais toucher au code de `ServiceNotification` lui-même.
+Les paramètres nullables avec un repli `??` (voir [Les fonctions et méthodes les plus utiles](/?c=langages-de-programmation&s=php&p=methodes)) rendent chaque dépendance **optionnelle** : le code appelant peut soit laisser le comportement par défaut, soit fournir explicitement une implémentation différente — typiquement une version simulée (*mock*) dans un test automatisé, sans jamais toucher au code de `ServiceNotification` lui-même.
 
 > **Note :** cette technique est ce qui rend une classe *testable* sans dépendre d'un vrai service externe (envoi d'email réel, écriture de vrais fichiers de log) à chaque exécution des tests.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une classe regroupe propriétés et méthodes ; `new` en crée une instance. Un namespace évite les collisions de noms entre modules. L'injection de dépendances reçoit les objets nécessaires en paramètre plutôt que de les créer soi-même. |
+| **Outils utilisables** | `__construct`, propriétés typées, méthodes `static`, `namespace`/`use`. |
+| **Pièges à éviter** | Créer directement (`new`) les dépendances d'une classe plutôt que de les recevoir en paramètre — rend la classe difficile à tester isolément. |
+| **Bonnes pratiques** | Typer les propriétés pour qu'elles définissent un vrai contrat ; injecter les dépendances plutôt que de les instancier en dur, pour faciliter les tests. |

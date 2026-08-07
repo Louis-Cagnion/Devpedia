@@ -4,7 +4,7 @@ order: 7
 
 # RAII et les pointeurs intelligents
 
-En C (cf. chapitre sur la gestion de la mémoire), chaque `malloc()` doit être suivi d'un `free()` manuel — oublié une seule fois, c'est une fuite mémoire ; appelé deux fois, un crash. **RAII** (*Resource Acquisition Is Initialization*) est le principe central de C++ pour éliminer cette classe entière de bugs, en s'appuyant sur un mécanisme déjà vu : le destructeur (cf. chapitre sur les classes et objets).
+En C (voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)), chaque `malloc()` doit être suivi d'un `free()` manuel — oublié une seule fois, c'est une fuite mémoire ; appelé deux fois, un crash. **RAII** (*Resource Acquisition Is Initialization*) est le principe central de C++ pour éliminer cette classe entière de bugs, en s'appuyant sur un mécanisme déjà vu : le destructeur (voir [Les classes et objets](/?c=langages-de-programmation&s=cpp&p=classes-et-objets)).
 
 ## Le principe RAII
 
@@ -16,7 +16,7 @@ public:
     GestionnaireFichier(const std::string &chemin) {
         fichier.open(chemin);
         if (!fichier.is_open()) {
-            throw std::runtime_error("Impossible d'ouvrir : " + chemin); // cf. chapitre sur les exceptions
+            throw std::runtime_error("Impossible d'ouvrir : " + chemin); // voir Les exceptions
         }
     }
     ~GestionnaireFichier() { fichier.close(); }   // appelé automatiquement, même en cas d'exception !
@@ -42,7 +42,7 @@ int *tableau = new int[10];   // alloue un tableau dynamique
 delete[] tableau;               // "[]" obligatoire pour libérer un tableau, sinon comportement indéfini
 ```
 
-`new`/`delete` remplacent `malloc`/`free` mais souffrent exactement des mêmes risques (oubli de `delete`, double `delete`, *use-after-free*, cf. chapitre C sur la mémoire) — c'est pour ça qu'en C++ moderne, on les utilise rarement **directement**.
+`new`/`delete` remplacent `malloc`/`free` mais souffrent exactement des mêmes risques (oubli de `delete`, double `delete`, *use-after-free*, voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire) en C) — c'est pour ça qu'en C++ moderne, on les utilise rarement **directement**.
 
 ## Les pointeurs intelligents (*smart pointers*)
 
@@ -88,3 +88,14 @@ Chaque `shared_ptr` incrémente un compteur de références partagé ; la ressou
 | Coût | Minimal | Quasi nul (pas de surcoût à l'exécution) | Comptage de références (léger surcoût) |
 
 > **Best practice C++ moderne :** ne jamais utiliser `new`/`delete` directement dans du code applicatif — préférer systématiquement `unique_ptr` (par défaut) ou `shared_ptr` (si le partage est réellement nécessaire), pour bénéficier de RAII sans y penser à chaque fois.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | RAII lie l'acquisition d'une ressource au constructeur et sa libération au destructeur — la ressource est forcément libérée dès que l'objet sort de portée, même en cas d'exception. `unique_ptr`/`shared_ptr` appliquent ce principe à la mémoire. |
+| **Outils utilisables** | `unique_ptr` (propriété exclusive), `shared_ptr` (propriété partagée, comptage de références), `std::move`. |
+| **Pièges à éviter** | Utiliser `new`/`delete` directement dans du code applicatif moderne — mêmes risques que `malloc`/`free` (fuite, double libération, use-after-free). |
+| **Bonnes pratiques** | Préférer systématiquement `unique_ptr` par défaut, `shared_ptr` seulement si un partage réel est nécessaire. |

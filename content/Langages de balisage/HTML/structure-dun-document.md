@@ -26,7 +26,7 @@ Tout document HTML repose sur un squelette minimal, quasiment identique d'une pa
 ## Ligne par ligne
 
 - `<!DOCTYPE html>` : indique au navigateur qu'il doit interpréter la page selon les standards HTML5 modernes (mode "*standards*"), plutôt qu'un mode de compatibilité historique ("*quirks mode*") hérité des vieux navigateurs.
-- `<html lang="fr">` : la racine du document ; `lang` indique la langue principale du contenu — utilisé par les lecteurs d'écran (cf. chapitre sur l'accessibilité) et les moteurs de recherche.
+- `<html lang="fr">` : la racine du document ; `lang` indique la langue principale du contenu — utilisé par les lecteurs d'écran (voir [Attributs data-* et accessibilité](/?c=langages-de-balisage&s=html&p=attributs-data-et-accessibilite)) et les moteurs de recherche.
 - `<head>` : les métadonnées de la page, jamais affichées directement dans le corps visible.
   - `<meta charset="UTF-8">` : l'encodage des caractères — sans cette ligne (ou avec un encodage incorrect), les caractères accentués ou spéciaux peuvent s'afficher de façon corrompue.
   - `<meta name="viewport" ...>` : indispensable pour un affichage correct sur mobile — sans elle, un navigateur mobile affiche souvent la page comme si elle était conçue pour un écran d'ordinateur, puis la réduit (zoom illisible).
@@ -68,4 +68,15 @@ Une balise ouverte en dernier doit être fermée en premier — un chevauchement
 <!-- Ce commentaire n'est jamais affiché sur la page -->
 ```
 
-Voir aussi le chapitre sur la sémantique HTML5, qui détaille l'organisation typique du contenu à l'intérieur de `<body>`.
+Voir aussi [La sémantique HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5), qui détaille l'organisation typique du contenu à l'intérieur de `<body>`.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un document HTML suit un squelette fixe (`<!DOCTYPE>`, `<html>`, `<head>`, `<body>`). Les balises s'imbriquent dans l'ordre inverse de leur ouverture ; un chevauchement produit un résultat imprévisible. |
+| **Outils utilisables** | `<meta charset>`, `<meta name="viewport">`, `<title>` — les métadonnées indispensables de tout document. |
+| **Pièges à éviter** | Oublier `<meta name="viewport">` : la page s'affiche alors sur mobile comme pensée pour un écran d'ordinateur, puis réduite illisiblement. |
+| **Bonnes pratiques** | Toujours fermer une balise ouverte, dans l'ordre inverse de l'ouverture, même quand un navigateur tolère silencieusement le contraire. |

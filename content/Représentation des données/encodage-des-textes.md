@@ -123,3 +123,14 @@ Il reste néanmoins courant sous Windows, où certains outils (dont Excel) s'en 
 | Caractère ≠ octet | `strlen` en C compte des octets, pas des lettres |
 | Mojibake `Ã©` | UTF-8 lu comme du Latin-1 : corriger la déclaration, pas le texte |
 | BOM | Inutile en UTF-8, mais attendu par Excel, néfaste en tête d'un source PHP |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un encodage associe chaque caractère à un nombre (Unicode : le catalogue) puis à des octets (UTF-8 : le format). UTF-8 est compatible ASCII et code un caractère sur 1 à 4 octets — un caractère n'est donc pas forcément un octet. |
+| **Outils utilisables** | `<meta charset="utf-8">`, `utf8mb4` pour MySQL, une bibliothèque dédiée pour compter des graphèmes. |
+| **Pièges à éviter** | Lire un fichier UTF-8 avec le mauvais encodage déclaré (mojibake, `Ã©`) ; découper une chaîne à l'octet près sans tenir compte des caractères multi-octets. |
+| **Bonnes pratiques** | Déclarer le bon encodage à chaque couche (fichier, HTTP, base de données) plutôt que de "réparer" des caractères déjà corrompus. |

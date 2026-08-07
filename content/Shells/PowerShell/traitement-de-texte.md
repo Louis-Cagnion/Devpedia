@@ -4,7 +4,7 @@ order: 10
 
 # Traitement de texte et d'objets
 
-Là où Bash s'appuie sur des outils texte spécialisés (`grep`, `sed`, `awk`, cf. chapitre équivalent), PowerShell fait le même travail avec des cmdlets génériques qui filtrent, transforment et sélectionnent des **objets** — le texte n'est qu'un cas particulier, celui où l'objet manipulé est une chaîne.
+Là où Bash s'appuie sur des [outils texte spécialisés](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`), PowerShell fait le même travail avec des cmdlets génériques qui filtrent, transforment et sélectionnent des **objets** — le texte n'est qu'un cas particulier, celui où l'objet manipulé est une chaîne.
 
 ## `Select-String` : rechercher du texte (équivalent de `grep`)
 
@@ -87,3 +87,14 @@ Select-String "404" access.log |
 # 3) regroupe les IP identiques
 # 4) trie par nombre d'occurrences décroissant -> les IP les plus fréquentes en premier
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | PowerShell traite le texte comme un cas particulier d'objet : `Select-String` (grep), `-replace` (sed), `ConvertFrom-Csv`/`Json` (awk sur des données structurées) manipulent des objets typés, pas juste des lignes. |
+| **Outils utilisables** | `Select-String`, `-replace`, `-split`, `Sort-Object -Unique`, `Group-Object`, `Measure-Object`. |
+| **Pièges à éviter** | Oublier que `Select-String` interprète son motif comme une regex par défaut (contrairement à `grep`, qui demande `-E`). |
+| **Bonnes pratiques** | Utiliser `Sort-Object -Unique`/`Group-Object` plutôt qu'un tri manuel suivi d'une déduplication — fonctionnent sur toute la collection, sans ordre préalable requis. |

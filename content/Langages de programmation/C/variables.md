@@ -136,3 +136,14 @@ Les principaux types de données en C sont :
 | `pointer` | Adresse mémoire |
 
 La maîtrise de ces types est indispensable avant d'aborder des concepts plus avancés comme les listes chaînées, les arbres binaires, les threads ou la gestion des processus — voir les chapitres dédiés à chacun de ces sujets.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Chaque variable C a un type fixe qui détermine sa taille en mémoire, les valeurs possibles et les opérations autorisées : `int`, `char`, `bool` (C99), `float`/`double`, tableau de `char` (chaîne), `struct`, pointeur. |
+| **Outils utilisables** | `stdbool.h` pour un vrai type booléen ; `sizeof` pour connaître la taille réelle d'un type. |
+| **Pièges à éviter** | Comparer deux flottants avec `==` — ce sont des approximations, jamais des valeurs exactes. |
+| **Bonnes pratiques** | Choisir le type le plus étroit qui couvre réellement les valeurs attendues, plutôt qu'un `int`/`double` par défaut systématique. |

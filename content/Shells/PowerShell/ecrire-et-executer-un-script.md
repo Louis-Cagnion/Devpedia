@@ -24,7 +24,7 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 | `RemoteSigned` | Les scripts locaux s'exécutent librement ; ceux téléchargés doivent être signés |
 | `Unrestricted` | Tous les scripts s'exécutent, avec un simple avertissement pour ceux téléchargés |
 
-> **Note :** cette politique est propre à Windows (`RemoteSigned` est un choix courant en développement) — sur Linux/macOS avec `pwsh`, elle n'a aucun effet, la sécurité reposant alors sur les permissions du fichier comme pour un script Bash (cf. chapitre sur les permissions).
+> **Note :** cette politique est propre à Windows (`RemoteSigned` est un choix courant en développement) — sur Linux/macOS avec `pwsh`, elle n'a aucun effet, la sécurité reposant alors sur les permissions du fichier comme pour un script Bash (voir [Permissions et manipulation de fichiers](/?c=shells&s=powershell&p=permissions-et-fichiers)).
 
 ## Exécuter un script
 
@@ -94,4 +94,15 @@ Set-Location "C:\dossier\inexistant"   # si ce dossier n'existe pas, le script s
 Write-Output "Cette ligne ne s'exécute jamais si Set-Location a échoué"
 ```
 
-Voir aussi le chapitre sur la gestion des processus pour ce qui se passe après le lancement d'un script en arrière-plan.
+Voir aussi [La gestion des processus](/?c=shells&s=powershell&p=gestion-des-processus) pour ce qui se passe après le lancement d'un script en arrière-plan.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un script `.ps1` s'exécute sous une politique d'exécution (`Get-ExecutionPolicy`), pas via un shebang. Les paramètres se déclarent avec `param()`, nommés et typés — contrairement aux `$1`/`$2` positionnels de Bash. |
+| **Outils utilisables** | `param()`, `$args`, `$LASTEXITCODE`, `try`/`catch`/`throw`, `$ErrorActionPreference = "Stop"`. |
+| **Pièges à éviter** | Confondre `Write-Error` (n'interrompt pas le script) et `throw` (lève une exception qui l'arrête). |
+| **Bonnes pratiques** | Utiliser `param()` pour des arguments nommés et typés plutôt que de se reposer sur `$args` positionnel ; définir `$ErrorActionPreference = "Stop"` pour un comportement proche de `set -e`. |

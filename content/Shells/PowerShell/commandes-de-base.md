@@ -63,3 +63,14 @@ Get-Help Get-ChildItem -Full         # description complète, tous les paramètr
 ```
 
 > **Note :** au premier lancement, `Get-Help` peut demander d'exécuter `Update-Help` (télécharge la documentation à jour) — sans réseau disponible, une version minimale déjà installée reste utilisable.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Les cmdlets PowerShell suivent la convention `Verbe-Nom` (`Get-ChildItem`, `Set-Location`) — plus longues que les commandes Bash, mais prévisibles une fois le verbe compris. Des alias familiers (`cd`, `ls`, `cat`) restent disponibles. |
+| **Outils utilisables** | `Get-Location`/`Set-Location`, `Get-ChildItem`, `Get-Content`, `Get-Help`. |
+| **Pièges à éviter** | Supposer qu'un alias (`cp`) accepte exactement les mêmes paramètres que la commande Unix du même nom — il relaie en réalité `Copy-Item`. |
+| **Bonnes pratiques** | Utiliser `Get-Help <cmdlet> -Examples` pour découvrir rapidement l'usage d'une commande inconnue. |

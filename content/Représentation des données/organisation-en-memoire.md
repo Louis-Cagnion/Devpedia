@@ -111,3 +111,14 @@ Python, JavaScript ou PHP masquent tout cela : vous ne choisissez pas la disposi
 | `sizeof` | Toujours mesurer, jamais calculer à la main |
 | Endianness | Ordre des octets ; le réseau impose le big-endian |
 | Écrire de la mémoire brute | À éviter : sérialiser dans un format défini |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | La mémoire s'adresse par octet, mais le processeur préfère lire des valeurs alignées sur des multiples de leur taille — d'où le *padding* qui agrandit une structure au-delà de la somme de ses champs. L'ordre des octets (*endianness*) varie selon l'architecture. |
+| **Outils utilisables** | `sizeof` pour mesurer une taille réelle, réordonner les champs d'une structure (plus grand au plus petit) pour réduire le padding. |
+| **Pièges à éviter** | Calculer la taille d'une structure à la main plutôt que d'utiliser `sizeof` ; écrire la mémoire brute d'une structure dans un fichier/réseau, sans tenir compte du padding ni de l'endianness. |
+| **Bonnes pratiques** | Sérialiser dans un format défini (JSON, Protobuf...) plutôt que copier la mémoire brute d'une structure entre machines. |

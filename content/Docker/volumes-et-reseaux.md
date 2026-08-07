@@ -6,7 +6,7 @@ order: 4
 
 ## Le système de fichiers d'un conteneur est éphémère
 
-La couche inscriptible d'un conteneur (cf. chapitre sur les concepts de base) disparaît avec lui : supprimer un conteneur perd toutes les données qu'il a écrites, à moins qu'elles ne vivent dans un **volume**.
+La couche inscriptible d'un conteneur (voir [Les concepts de base](/?c=docker&p=concepts-de-base)) disparaît avec lui : supprimer un conteneur perd toutes les données qu'il a écrites, à moins qu'elles ne vivent dans un **volume**.
 
 ```bash
 docker run -v mes-donnees:/var/lib/mysql mysql:8
@@ -43,7 +43,7 @@ Depuis le conteneur `api`, se connecter à la base de données se fait en visant
 
 ## Publier un port vers l'extérieur
 
-`EXPOSE` dans un Dockerfile (cf. chapitre dédié) ne fait que **documenter** un port ; seul `-p` sur `docker run` le rend réellement accessible depuis l'extérieur du conteneur :
+`EXPOSE` dans un [Dockerfile](/?c=docker&p=dockerfile) ne fait que **documenter** un port ; seul `-p` sur `docker run` le rend réellement accessible depuis l'extérieur du conteneur :
 
 ```bash
 docker run -p 8080:80 mon-app:1.0
@@ -60,4 +60,15 @@ docker run --network host mon-app:1.0
 
 Ce mode ne crée aucune interface réseau propre au conteneur : il réutilise directement celle de la machine hôte, sans passer par le [namespace réseau](/?c=docker&p=concepts-de-base) qui isole normalement chaque conteneur. Un port ouvert par l'application à l'intérieur est donc immédiatement un port ouvert sur l'hôte lui-même, sans mapping `-p` ni traduction d'adresse.
 
-> **Note :** ce gain de simplicité (et d'un peu de performance réseau) se paie par la perte d'une des deux barrières d'isolation vues au chapitre sur les concepts de base — un conteneur compromis en mode `host` voit et peut potentiellement atteindre tout ce qui écoute sur le réseau de l'hôte, exactement comme un processus classique de ce même hôte. C'est pourquoi ce mode est généralement évité pour un service exposé publiquement, au profit du réseau bridge par défaut.
+> **Note :** ce gain de simplicité (et d'un peu de performance réseau) se paie par la perte d'une des deux barrières d'isolation vues dans [Les concepts de base](/?c=docker&p=concepts-de-base) — un conteneur compromis en mode `host` voit et peut potentiellement atteindre tout ce qui écoute sur le réseau de l'hôte, exactement comme un processus classique de ce même hôte. C'est pourquoi ce mode est généralement évité pour un service exposé publiquement, au profit du réseau bridge par défaut.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Le système de fichiers d'un conteneur est éphémère — seul un volume (nommé ou bind mount) persiste après sa suppression. Les conteneurs d'un même réseau Docker se joignent directement par leur nom. |
+| **Outils utilisables** | `-v` (volume/bind mount), `docker network create`, `-p` pour publier un port vers l'extérieur. |
+| **Pièges à éviter** | Un bind mount qui masque un dossier déjà peuplé par l'image (ex. `node_modules` installé au build, écrasé par le bind mount) ; le mode `--network host` qui supprime l'isolation réseau du conteneur. |
+| **Bonnes pratiques** | Utiliser un volume nommé pour des données persistantes (base de données), un bind mount pour le code source en développement ; éviter `--network host` pour un service exposé publiquement. |

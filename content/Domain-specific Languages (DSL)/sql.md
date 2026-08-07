@@ -2,9 +2,9 @@
 
 SQL (*Structured Query Language*) est un langage à but unique : interroger et manipuler des données stockées sous forme de tables. Comme la regex, ce n'est pas un langage de programmation généraliste — il n'a ni boucles, ni fonctions définies par l'utilisateur, ni variables au sens classique. Il est interprété par un moteur de base de données (MySQL, PostgreSQL, SQL Server, SQLite...), généralement piloté depuis un langage hôte (PHP, Python, JS...) via un connecteur.
 
-## Une table = un tableau de structs / une liste de dicts
+## Une table, comme une feuille de tableur
 
-Une table relationnelle a des colonnes fixes (comme les champs d'un `struct` en C, ou les clés d'un dict en Python) ; chaque ligne est une instance de cette structure.
+Une table relationnelle ressemble à une feuille de tableur : des colonnes fixes, nommées à l'avance (`id`, `nom`, `ville`...), et chaque ligne représente un enregistrement complet qui remplit toutes ces colonnes.
 
 ```sql
 SELECT id, nom FROM clients WHERE ville = 'Lyon';
@@ -48,6 +48,10 @@ LEFT JOIN ventes v ON v.client_id = c.id; -- garde TOUTES les lignes de gauche, 
 - `c`/`v` sont des alias de table, indispensables dès que deux tables partagent un nom de colonne (`c.nom` vs un éventuel `v.nom`, sans ambiguïté).
 - `JOIN` (ou `INNER JOIN`) : ne garde que les lignes qui matchent des deux côtés.
 - `LEFT JOIN` : garde toutes les lignes de la table de gauche, colonnes de droite à `NULL` si aucune correspondance — utile quand on veut lister *tout le monde*, correspondance trouvée ou pas (ex : tous les clients, qu'ils aient déjà acheté ou non).
+
+> **Piège :** utiliser `JOIN` (INNER) quand on veut en réalité *tout le monde* — un client sans aucune vente disparaîtrait silencieusement du résultat, alors qu'un `LEFT JOIN` l'aurait gardé avec des colonnes à `NULL`.
+>
+> **Bonne pratique :** se demander explicitement, avant d'écrire la jointure, si les lignes sans correspondance doivent disparaître (`JOIN`) ou rester visibles (`LEFT JOIN`) — les deux produisent un résultat syntaxiquement valide, mais sémantiquement différent.
 
 ## Piloter SQL depuis PHP avec PDO
 
@@ -120,3 +124,14 @@ Concrètement, un compte applicatif compromis (via une faille dans le code, une 
 
 - [Documentation PDO — php.net](https://www.php.net/manual/fr/book.pdo.php)
 - [W3Schools SQL (en anglais, bon aide-mémoire syntaxe)](https://www.w3schools.com/sql/)
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | SQL interroge et manipule des tables (colonnes fixes, lignes = enregistrements). `JOIN` combine deux tables sur une colonne commune ; `INNER JOIN` élimine les lignes sans correspondance, `LEFT JOIN` les garde. |
+| **Outils utilisables** | `SELECT`/`WHERE`, fonctions d'agrégation (`COUNT`/`SUM`/`AVG`), `JOIN`/`LEFT JOIN`, requêtes préparées via PDO. |
+| **Pièges à éviter** | Concaténer une valeur externe directement dans une requête SQL (injection SQL) ; utiliser `INNER JOIN` quand on veut garder les lignes sans correspondance. |
+| **Bonnes pratiques** | Toujours passer par une requête préparée (`prepare`/`execute`) pour une valeur externe ; limiter les droits du compte applicatif au strict nécessaire (principe du moindre privilège). |

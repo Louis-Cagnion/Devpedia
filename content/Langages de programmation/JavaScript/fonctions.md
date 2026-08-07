@@ -97,3 +97,14 @@ const compter = compteur();
 compter();   // 1
 compter();   // 2 -> "total" a persisté entre les appels, propre à CETTE instance de compteur()
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une déclaration de fonction est *hoisted* (utilisable avant sa définition), une expression ne l'est pas. Une fonction fléchée n'a pas son propre `this` — elle réutilise celui de la fonction englobante. Une closure conserve l'accès aux variables de sa fonction englobante après l'exécution de celle-ci. |
+| **Outils utilisables** | Paramètres par défaut, `...` (rest/spread). |
+| **Pièges à éviter** | Utiliser une fonction classique (`function`) comme callback dans une méthode, en s'attendant à ce que `this` désigne l'objet englobant — une fonction fléchée est nécessaire pour ça. |
+| **Bonnes pratiques** | Préférer les fonctions fléchées pour un callback interne à une méthode, afin de conserver le bon `this`. |

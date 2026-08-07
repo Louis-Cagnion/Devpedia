@@ -79,7 +79,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 ?>
 ```
 
-`json_decode()` sur une string invalide renvoie `null` — mais une string JSON **valide** contenant littéralement `"null"` se décode elle aussi en `null`. Un simple `if ($donnees === null)` ne permettrait donc pas de distinguer "JSON invalide" de "JSON valait effectivement `null`". D'où `json_last_error()` : une fonction séparée qui rapporte si la dernière conversion a réellement échoué, indépendamment de la valeur obtenue — même logique que `isset()`/`empty()` face à une clé de tableau (cf. chapitre sur les variables) : ne jamais se fier à une valeur ambiguë quand un mécanisme dédié existe pour lever le doute.
+`json_decode()` sur une string invalide renvoie `null` — mais une string JSON **valide** contenant littéralement `"null"` se décode elle aussi en `null`. Un simple `if ($donnees === null)` ne permettrait donc pas de distinguer "JSON invalide" de "JSON valait effectivement `null`". D'où `json_last_error()` : une fonction séparée qui rapporte si la dernière conversion a réellement échoué, indépendamment de la valeur obtenue — même logique que `isset()`/`empty()` face à une clé de tableau (voir [Les variables](/?c=langages-de-programmation&s=php&p=variables)) : ne jamais se fier à une valeur ambiguë quand un mécanisme dédié existe pour lever le doute.
 
 `json_encode()` / `json_decode(..., true)` sont l'équivalent PHP de `JSON.stringify()` / `JSON.parse()` en JavaScript (le `true` demande un tableau associatif, plutôt qu'un objet `stdClass`).
 
@@ -101,7 +101,7 @@ $options = [
 - `verify_peer` : le certificat présenté par le serveur est-il signé par une autorité de certification (CA) reconnue ? Désactivé, un certificat auto-signé — fabriqué en quelques secondes avec `openssl` — est accepté sans problème.
 - `verify_peer_name` : le nom inscrit dans ce certificat correspond-il au nom de domaine réellement appelé ? Un certificat parfaitement valide (signé par une vraie CA) mais délivré pour un *autre* domaine échoue ce test.
 
-Désactiver `verify_peer` est la faille la plus large des deux : elle ouvre la porte à une attaque **man-in-the-middle** sans le moindre effort de la part d'un attaquant, qui n'a même pas besoin d'obtenir un certificat signé par une vraie CA (cf. chapitre sur la sécurité pour le détail de cette attaque). `verify_peer_name` seul, désactivé, est un cran moins grave — il faudrait quand même un certificat signé par une CA, juste pour le mauvais domaine — mais reste une faille.
+Désactiver `verify_peer` est la faille la plus large des deux : elle ouvre la porte à une attaque **man-in-the-middle** sans le moindre effort de la part d'un attaquant, qui n'a même pas besoin d'obtenir un certificat signé par une vraie CA (voir [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite) pour le détail de cette attaque). `verify_peer_name` seul, désactivé, est un cran moins grave — il faudrait quand même un certificat signé par une CA, juste pour le mauvais domaine — mais reste une faille.
 
 > **Note :** désactiver les deux est un compromis courant en développement local (une API auto-hébergée avec un certificat auto-signé, par exemple), mais redevient un vrai risque de sécurité si le même code tourne en production sans distinction d'environnement. cURL a l'équivalent exact via `CURLOPT_SSL_VERIFYPEER` et `CURLOPT_SSL_VERIFYHOST`.
 
@@ -121,4 +121,15 @@ $reponse = file_get_contents($url, false, $contexte);
 
 Conséquence directe sur une conversion "valeur de retour → exception" comme celle vue plus haut (`if ($reponse === false) { throw ... }`) : avec `ignore_errors => true`, ce test ne se déclenche plus **du tout** pour une erreur HTTP (4xx/5xx) — seulement pour un échec de communication plus radical (serveur injoignable, DNS ne résout pas, timeout réseau — un cas où PHP ne reçoit rien, pas même des en-têtes).
 
-> **Note :** les deux mécanismes sont complémentaires, pas redondants. Une fois `ignore_errors` activé, chaque appelant doit recontrôler lui-même le code HTTP réel (`$http_response_header`, cf. documentation PHP) pour distinguer "communication réussie mais réponse d'erreur applicative" de "tout s'est bien passé" — ce que le `throw` initial (réservé à l'échec réseau) ne couvre plus.
+> **Note :** les deux mécanismes sont complémentaires, pas redondants. Une fois `ignore_errors` activé, chaque appelant doit recontrôler lui-même le code HTTP réel (`$http_response_header`, voir la documentation PHP) pour distinguer "communication réussie mais réponse d'erreur applicative" de "tout s'est bien passé" — ce que le `throw` initial (réservé à l'échec réseau) ne couvre plus.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | PHP fait des requêtes HTTP sortantes nativement via cURL ou les flux (streams), sans bibliothèque tierce. Les deux renvoient `false` en cas d'échec réseau, style d'erreur "à la C" plutôt qu'une exception. |
+| **Outils utilisables** | `curl_init`/`curl_setopt_array`/`curl_exec`, `stream_context_create`/`file_get_contents`, `json_encode`/`json_decode`, `json_last_error()`. |
+| **Pièges à éviter** | Désactiver `verify_peer`/`verify_peer_name` en production (ouvre la porte à un MITM) ; confondre un `json_decode()` qui renvoie `null` par échec avec un JSON valide contenant littéralement `null`. |
+| **Bonnes pratiques** | Convertir un retour "à la C" (`false`) en exception à un seul endroit du code ; vérifier `json_last_error()` plutôt que de tester directement la valeur décodée. |

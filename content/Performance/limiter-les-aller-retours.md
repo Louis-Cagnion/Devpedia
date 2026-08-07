@@ -79,3 +79,14 @@ for lot in decouper_en_lots(identifiants, taille=1000):
 ```
 
 La bonne question n'est donc pas "un seul échange ou *n* ?" mais "quel est le plus gros lot que je peux traiter sans risque ?".
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Chaque échange entre deux composants (réseau, base de données, DOM) a un coût fixe indépendant du volume — une boucle qui redemande quelque chose à chaque tour ("N+1") multiplie ce coût fixe par le nombre d'éléments. |
+| **Outils utilisables** | Ramener toutes les données en un seul échange (jointure SQL, évaluation groupée côté page), traitement par lots pour les très gros volumes. |
+| **Pièges à éviter** | Une requête par élément dans une boucle (problème N+1) ; ramener un volume si grand qu'il sature la mémoire du processus. |
+| **Bonnes pratiques** | Déplacer la boucle du côté où sont les données plutôt que de faire des allers-retours répétés ; découper en lots de taille raisonnable entre "un seul échange" et "un par élément". |

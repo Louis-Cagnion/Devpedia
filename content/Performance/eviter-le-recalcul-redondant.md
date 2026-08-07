@@ -118,3 +118,14 @@ Dès que la comparaison "légère" (les champs déjà présents sur la carte de 
 | Comparaison de deux enregistrements | Ouvre systématiquement le détail coûteux | S'arrête dès qu'une donnée légère a déjà tranché |
 
 Dans les quatre cas, le gain ne vient pas d'un calcul rendu plus rapide, mais d'un calcul **qui n'a pas eu lieu** parce que rien ne pouvait en changer le résultat.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Ne jamais recalculer un résultat que rien n'a pu changer depuis son dernier calcul — mémoïsation, retraitement incrémental, ou dirty rectangle appliquent tous la même idée à des échelles différentes. |
+| **Outils utilisables** | Un cache en mémoire par entrée (mémoïsation), une marque de progression pour ne retraiter que le nouveau, une comparaison "légère" avant une vérification coûteuse. |
+| **Pièges à éviter** | Mémoïser sans identifier ce qui invaliderait le résultat — un cache jamais invalidé devient une source de données périmées. |
+| **Bonnes pratiques** | Toujours définir la condition d'invalidation avant de mémoïser ; distinguer un recalcul évitable (ce principe) d'une pause volontaire de protection (à conserver). |

@@ -1,6 +1,6 @@
 # CSS
 
-CSS (*Cascading Style Sheets*) est le langage qui décrit l'**apparence** d'un document HTML (cf. rubrique dédiée) — couleurs, tailles, positionnement, mise en page — en séparant volontairement cette présentation de la structure (HTML) et du comportement (JavaScript).
+CSS (*Cascading Style Sheets*) est le langage qui décrit l'**apparence** d'un document [HTML](/?c=langages-de-balisage&s=html&p=html) — couleurs, tailles, positionnement, mise en page — en séparant volontairement cette présentation de la structure (HTML) et du comportement (JavaScript).
 
 Parmi les concepts essentiels de CSS, on retrouve notamment :
 
@@ -42,4 +42,4 @@ h1 {
 <h1 style="color: blue;">Titre</h1>
 ```
 
-> **Note (best practice) :** un fichier `.css` externe (`<link>`) est presque toujours préférable — il est mis en cache par le navigateur, réutilisable sur plusieurs pages, et sépare clairement structure et présentation. Le style en ligne (`style="..."` directement sur une balise) a la spécificité la plus élevée (cf. chapitre sur la cascade), ce qui le rend difficile à surcharger ensuite — à réserver à des cas très ponctuels, souvent générés dynamiquement en JavaScript.
+> **Note (best practice) :** un fichier `.css` externe (`<link>`) est presque toujours préférable — il est mis en cache par le navigateur, réutilisable sur plusieurs pages, et sépare clairement structure et présentation. Le style en ligne (`style="..."` directement sur une balise) a la spécificité la plus élevée (voir [Variables CSS et la cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade)), ce qui le rend difficile à surcharger ensuite — à réserver à des cas très ponctuels, souvent générés dynamiquement en JavaScript.

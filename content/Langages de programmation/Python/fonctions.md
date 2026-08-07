@@ -106,4 +106,15 @@ compter()   # 1
 compter()   # 2 -> "total" a bien été conservé entre les appels
 ```
 
-Voir aussi le chapitre sur les décorateurs, qui s'appuie directement sur ce mécanisme de closure.
+Voir aussi [Les décorateurs](/?c=langages-de-programmation&s=python&p=decorateurs), qui s'appuie directement sur ce mécanisme de closure.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une fonction Python est un objet de première classe (stockable, passable en argument). `*args`/`**kwargs` gèrent un nombre variable d'arguments ; une closure conserve l'accès aux variables de sa fonction englobante. |
+| **Outils utilisables** | Paramètres par défaut, arguments uniquement par mot-clé (`*`), lambdas, `nonlocal`. |
+| **Pièges à éviter** | Utiliser un objet mutable (liste, dict) comme valeur par défaut — elle est partagée entre tous les appels, pas recréée à chaque fois. |
+| **Bonnes pratiques** | Utiliser `None` comme valeur par défaut pour un paramètre mutable, puis créer l'objet réel à l'intérieur de la fonction. |

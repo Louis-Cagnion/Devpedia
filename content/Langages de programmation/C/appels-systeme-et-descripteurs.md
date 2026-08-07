@@ -4,7 +4,7 @@ order: 16
 
 # Les appels système et les descripteurs de fichiers
 
-Un programme ne peut pas lire un fichier, créer un processus ou envoyer des données sur le réseau en manipulant directement le matériel — cela pourrait être catastrophique pour la stabilité et la sécurité du système si n'importe quel programme y avait un accès libre. À la place, il doit passer par une porte étroite et contrôlée : l'**appel système** (*syscall*). Ce chapitre explique ce mécanisme et le **descripteur de fichier**, la "poignée" que le noyau remet en échange, tous deux utilisés en permanence dès qu'on touche à des fichiers, des processus ou des pipes (cf. chapitres sur la gestion des processus, les threads, et l'architecture d'un shell).
+Un programme ne peut pas lire un fichier, créer un processus ou envoyer des données sur le réseau en manipulant directement le matériel — cela pourrait être catastrophique pour la stabilité et la sécurité du système si n'importe quel programme y avait un accès libre. À la place, il doit passer par une porte étroite et contrôlée : l'**appel système** (*syscall*). Ce chapitre explique ce mécanisme et le **descripteur de fichier**, la "poignée" que le noyau remet en échange, tous deux utilisés en permanence dès qu'on touche à des fichiers, des processus ou des pipes (voir [La gestion des processus](/?c=langages-de-programmation&s=c&p=processus), [Les threads](/?c=langages-de-programmation&s=c&p=threads), et [Comment fonctionne un shell](/?c=shells&s=bash&p=architecture-dun-shell)).
 
 ## Espace utilisateur vs espace noyau
 
@@ -29,10 +29,10 @@ Un appel de fonction C classique (`addition(2, 3)`) s'exécute entièrement dans
 |---|---|
 | `open()` / `close()` | Ouvrir / fermer un fichier |
 | `read()` / `write()` | Lire / écrire des octets sur un descripteur |
-| `fork()` / `execve()` / `wait()` | Créer un processus / remplacer son programme / attendre sa fin (cf. chapitre sur la gestion des processus) |
-| `pipe()` | Créer un tube de communication entre deux processus (cf. chapitre sur l'architecture d'un shell) |
+| `fork()` / `execve()` / `wait()` | Créer un processus / remplacer son programme / attendre sa fin (voir [La gestion des processus](/?c=langages-de-programmation&s=c&p=processus)) |
+| `pipe()` | Créer un tube de communication entre deux processus (voir [Comment fonctionne un shell](/?c=shells&s=bash&p=architecture-dun-shell)) |
 | `dup2()` | Faire pointer un descripteur vers une autre ressource déjà ouverte |
-| `mmap()` / `brk()` | Demander de la mémoire au système (utilisés en interne par `malloc()`, cf. chapitre sur la gestion de la mémoire) |
+| `mmap()` / `brk()` | Demander de la mémoire au système (utilisés en interne par `malloc()`, voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) |
 
 ## Signaler une erreur : `errno`
 
@@ -85,4 +85,15 @@ C'est exactement ce mécanisme que le chapitre sur l'architecture d'un shell uti
 
 ## Pourquoi `fork()` duplique aussi la table des descripteurs
 
-Quand `fork()` (cf. chapitre sur la gestion des processus) crée un processus enfant, celui-ci reçoit une **copie** de la table des descripteurs de son parent — les mêmes numéros, pointant vers les mêmes ressources ouvertes. C'est précisément ce qui permet à un shell de faire un `dup2()` sur un descripteur de pipe **dans l'enfant**, juste avant l'appel à `execve()` : le nouveau programme hérite de ce descripteur déjà repointé, sans rien savoir du mécanisme qui l'a mis en place.
+Quand [`fork()`](/?c=langages-de-programmation&s=c&p=processus) crée un processus enfant, celui-ci reçoit une **copie** de la table des descripteurs de son parent — les mêmes numéros, pointant vers les mêmes ressources ouvertes. C'est précisément ce qui permet à un shell de faire un `dup2()` sur un descripteur de pipe **dans l'enfant**, juste avant l'appel à `execve()` : le nouveau programme hérite de ce descripteur déjà repointé, sans rien savoir du mécanisme qui l'a mis en place.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un appel système demande au noyau d'agir à la place du programme (fichiers, processus, réseau) — un changement contrôlé d'espace utilisateur vers l'espace noyau. Un descripteur de fichier est un simple entier, indice d'une table par processus. |
+| **Outils utilisables** | `open`/`close`/`read`/`write`, `dup2`, `errno`/`strerror` pour diagnostiquer un échec. |
+| **Pièges à éviter** | Confondre une fonction de bibliothèque (`printf`) avec un appel système réel (`write`) — la première encapsule le second. |
+| **Bonnes pratiques** | Toujours vérifier la valeur de retour d'un appel système (`-1` ou `NULL`) et consulter `errno`/`strerror()` pour diagnostiquer un échec. |

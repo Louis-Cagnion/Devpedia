@@ -107,4 +107,15 @@ donnees.dropna()              # supprime les lignes contenant au moins une valeu
 donnees.fillna(0)               # remplace les valeurs manquantes par une valeur par défaut
 ```
 
-Voir aussi le chapitre sur NumPy (les colonnes d'un DataFrame sont en réalité des `ndarray`) et sur SQL, dont les concepts (`WHERE`, `GROUP BY`, `JOIN`) se retrouvent presque à l'identique ici.
+Voir aussi le chapitre sur [NumPy](/?c=data-science&p=numpy) (les colonnes d'un DataFrame sont en réalité des `ndarray`) et sur [SQL](/?c=domain-specific-languages-dsl&p=sql), dont les concepts (`WHERE`, `GROUP BY`, `JOIN`) se retrouvent presque à l'identique ici.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | pandas manipule des données tabulaires via `Series` (une colonne) et `DataFrame` (un tableau), avec des opérations proches de SQL (`WHERE` → masque booléen, `GROUP BY` → `groupby`, `JOIN` → `merge`). |
+| **Outils utilisables** | `read_csv`, `loc`/`iloc`, `groupby`, `merge`, `isna`/`dropna`/`fillna`. |
+| **Pièges à éviter** | Confondre `loc` (par étiquette) et `iloc` (par position) — ils divergent dès que l'index a été personnalisé. |
+| **Bonnes pratiques** | Préférer une fonction vectorisée (`np.where`) à `.apply()` pour une condition simple sur un grand jeu de données. |

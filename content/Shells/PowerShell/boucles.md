@@ -32,7 +32,7 @@ foreach ($i in 1..5) {
 
 ## `ForEach-Object` : la même idée, mais via le pipeline
 
-Contrairement à `foreach` (un mot-clé du langage), `ForEach-Object` est une cmdlet qui reçoit ses éléments **via le pipeline** (cf. chapitre sur les redirections et pipes) — la forme la plus idiomatique en PowerShell pour enchaîner un traitement après une autre commande :
+Contrairement à `foreach` (un mot-clé du langage), `ForEach-Object` est une cmdlet qui reçoit ses éléments **via le pipeline** (voir [Redirections et pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) — la forme la plus idiomatique en PowerShell pour enchaîner un traitement après une autre commande :
 
 ```powershell
 Get-ChildItem -Filter "*.txt" | ForEach-Object {
@@ -112,3 +112,14 @@ foreach ($i in 1..10) {
     Write-Output $i
 }
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `foreach` parcourt une collection d'objets ; `ForEach-Object` fait la même chose via le pipeline. `do`/`while` et `do`/`until` garantissent au moins un passage, contrairement à `while`/`until` seuls. |
+| **Outils utilisables** | `1..5` (plage), `$_` (élément courant du pipeline), `break`/`continue`. |
+| **Pièges à éviter** | Confondre `foreach` (mot-clé) et `ForEach-Object` (cmdlet du pipeline) — syntaxe et contexte d'usage différents. |
+| **Bonnes pratiques** | Préférer `ForEach-Object` dans une chaîne de pipeline, `foreach` pour une boucle autonome sur une collection déjà en mémoire. |

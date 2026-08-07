@@ -37,7 +37,7 @@ if ($connecte) {
 <?php endif; ?>
 ```
 
-> **Note :** `<?= $user ?>` est un raccourci pour `<?php echo $user; ?>`, de cette manière vous pouvez utiliser les variables PHP dans le HTML. Dès que la variable affichée peut provenir d'une saisie utilisateur (un pseudo, par exemple), il faut l'entourer de `htmlspecialchars()` comme ci-dessus — cf. chapitre sur la sécurité pour la faille XSS que ça évite.
+> **Note :** `<?= $user ?>` est un raccourci pour `<?php echo $user; ?>`, de cette manière vous pouvez utiliser les variables PHP dans le HTML. Dès que la variable affichée peut provenir d'une saisie utilisateur (un pseudo, par exemple), il faut l'entourer de `htmlspecialchars()` comme ci-dessus — voir [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite) pour la faille XSS que ça évite.
 
 Les deux écritures font exactement la même chose :
 - Avec les accolades `{ }`, tout est écrit en PHP, et le HTML doit être affiché via `echo`.
@@ -73,3 +73,14 @@ Pour écrire des commentaires en PHP, vous avez 2 options :
 ```
 
 > **Note :** `//` est la convention la plus répandue pour écrire un commentaire sur une seule ligne.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Le code PHP s'écrit entre `<?php ?>` ; la syntaxe alternative (`:`/`end...`) facilite le mélange avec du HTML. Chaque instruction se termine par `;`. |
+| **Outils utilisables** | `<?= $var ?>` (raccourci d'affichage), commentaires `//`, `#`, `/* */`. |
+| **Pièges à éviter** | Afficher une donnée utilisateur sans `htmlspecialchars()` — risque de faille XSS. |
+| **Bonnes pratiques** | Omettre la balise fermante `?>` en fin de fichier 100% PHP ; utiliser la syntaxe alternative dans les templates qui mélangent PHP et HTML. |

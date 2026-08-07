@@ -86,3 +86,14 @@ switch (jour) {
 ```
 
 `switch` compare avec l'égalité **stricte** (`===`) — pas de conversion de type surprise ici, contrairement à `if (x == y)`.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `if`/`else if`/`else` et `switch` (comparaison stricte `===`) structurent le contrôle de flux. `??` et `?.` gèrent proprement les valeurs `null`/`undefined`. |
+| **Outils utilisables** | Opérateur ternaire `? :`, coalescence nulle `??`, chaînage optionnel `?.`. |
+| **Pièges à éviter** | Utiliser `==` (conversions de type surprenantes) ; tester `if (tableau)` en pensant qu'un tableau vide est falsy — il est truthy en JavaScript, contrairement à PHP. |
+| **Bonnes pratiques** | Toujours préférer `===`/`!==` à `==`/`!=` ; utiliser `tableau.length === 0` pour tester un tableau vide. |

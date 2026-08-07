@@ -76,8 +76,19 @@ Avant HTML5, structurer une page reposait presque uniquement sur des `<div>` gé
 
 ## Pourquoi la sémantique compte, au-delà du style
 
-- **Accessibilité** (cf. chapitre dédié) : un lecteur d'écran peut proposer de sauter directement à `<nav>` ou `<main>`, ce qu'aucune `<div class="nav">` ne permet aussi fiablement.
+- **Accessibilité** (voir [Attributs data-* et accessibilité](/?c=langages-de-balisage&s=html&p=attributs-data-et-accessibilite)) : un lecteur d'écran peut proposer de sauter directement à `<nav>` ou `<main>`, ce qu'aucune `<div class="nav">` ne permet aussi fiablement.
 - **SEO** : les moteurs de recherche comprennent mieux la structure et l'importance relative du contenu.
 - **Lisibilité du code** : `<header>`/`<main>`/`<footer>` documentent la structure directement dans le HTML, sans avoir à lire les noms de classes CSS pour deviner le rôle de chaque bloc.
 
 > **Best practice :** utiliser une balise sémantique dès qu'elle correspond au rôle réel du contenu, et ne retomber sur `<div>` (purement générique, sans sens) que pour un simple conteneur technique nécessaire à la mise en page CSS, sans signification propre.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Les balises sémantiques HTML5 (`<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, `<footer>`) décrivent le rôle d'une section, contrairement à une `<div>` générique. `<article>` a un sens isolé, `<section>` seulement dans son contexte. |
+| **Outils utilisables** | Les 7 balises structurelles principales, à combiner selon le rôle réel de chaque section. |
+| **Pièges à éviter** | Confondre `<article>` et `<section>` ; tout structurer avec des `<div class="...">` alors qu'une balise sémantique existe pour ce rôle. |
+| **Bonnes pratiques** | Utiliser une balise sémantique dès qu'elle correspond au rôle réel du contenu ; réserver `<div>` aux conteneurs purement techniques, sans signification propre. |

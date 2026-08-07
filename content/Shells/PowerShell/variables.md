@@ -95,4 +95,15 @@ Incrementer
 Write-Output $total   # 1
 ```
 
-Voir aussi le chapitre sur les fonctions, et celui sur les variables d'environnement (`$env:`) pour partager une valeur avec des processus enfants.
+Voir aussi [Les fonctions](/?c=shells&s=powershell&p=fonctions), et [Variables d'environnement](/?c=shells&s=powershell&p=variables-denvironnement) (`$env:`) pour partager une valeur avec des processus enfants.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une variable PowerShell conserve le vrai type de sa valeur (pas de conversion implicite en texte comme en Bash). Une variable typée (`[int]$age`) échoue immédiatement si on lui assigne une valeur incompatible. |
+| **Outils utilisables** | Interpolation dans les guillemets doubles, `$(...)` pour une expression/propriété, portées (`$script:`). |
+| **Pièges à éviter** | Écrire `"$objet.Propriete"` en pensant accéder à la propriété — sans `$(...)`, `.Propriete` est traité comme du texte littéral. |
+| **Bonnes pratiques** | Utiliser `$(...)` dès qu'on interpole autre chose qu'une simple variable dans une chaîne. |

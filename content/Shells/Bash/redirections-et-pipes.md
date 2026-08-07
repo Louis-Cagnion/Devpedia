@@ -58,7 +58,7 @@ Chaque commande d'un pipe s'exécute simultanément, la sortie de l'une alimenta
 
 ## Enchaîner des commandes selon leur résultat : `;`, `&&`, `||`
 
-Un pipe fait circuler des **données**. Ces trois opérateurs, eux, contrôlent l'**exécution** : ils décident si la commande suivante est lancée, en fonction du code de sortie de la précédente (`0` = succès, cf. chapitre sur l'écriture de scripts).
+Un pipe fait circuler des **données**. Ces trois opérateurs, eux, contrôlent l'**exécution** : ils décident si la commande suivante est lancée, en fonction du code de sortie de la précédente (`0` = succès, voir [Écrire et exécuter un script Bash](/?c=shells&s=bash&p=scripts-et-shebang)).
 
 ```bash
 commande1 ; commande2      # lance commande2 dans tous les cas
@@ -117,3 +117,14 @@ ls -l | tee resultats.txt   # affiche le résultat à l'écran ET l'enregistre d
 | `;` | Enchaîne deux commandes, sans condition |
 | `&&` | Exécute la suivante seulement si la précédente a réussi |
 | `\|\|` | Exécute la suivante seulement si la précédente a échoué |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `>`/`>>`/`<` redirigent les flux stdin/stdout/stderr vers ou depuis un fichier ; `\|` connecte la sortie d'une commande à l'entrée de la suivante. `&&`/`\|\|`/`;` enchaînent des commandes selon leur code de sortie. |
+| **Outils utilisables** | `2>&1` (fusionner stderr dans stdout), `/dev/null` (ignorer une sortie), `tee` (afficher et sauvegarder à la fois). |
+| **Pièges à éviter** | `>` qui écrase silencieusement un fichier existant ; l'ordre de `2>&1` par rapport à `>` (`2>&1 > fichier` ne fait pas ce qu'on attend). |
+| **Bonnes pratiques** | Écrire `> fichier 2>&1` (jamais l'inverse) ; préférer un `if` explicite à un `&& ... \|\| ...` dès que la logique conditionnelle est réellement importante. |

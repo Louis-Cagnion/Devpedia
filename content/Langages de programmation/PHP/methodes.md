@@ -25,7 +25,7 @@ Une **fonction** est un bloc de code réutilisable, qui porte un nom, et qui peu
 ```
 > **Note :** contrairement à JavaScript, où une fonction fléchée peut s'écrire avec des accolades et un `return` (`(n) => { return n * 2; }`), PHP n'autorise que la forme courte avec une seule expression, sans accolades ni `return` (`fn($n) => $n * 2;`).
 
-Une **méthode**, c'est exactement la même chose qu'une fonction, à une différence près : elle est définie **à l'intérieur d'une classe**, et elle s'utilise sur un objet (cf. les chapitres sur les classes et la programmation orientée objet).
+Une **méthode**, c'est exactement la même chose qu'une fonction, à une différence près : elle est définie **à l'intérieur d'une classe**, et elle s'utilise sur un objet (voir [La programmation orientée objet](/?c=langages-de-programmation&s=php&p=poo)).
 
 ```php
 <?php
@@ -176,3 +176,14 @@ ex :
 ```
 
 > **Note :** vous trouverez la liste complète des fonctions natives de PHP dans la documentation officielle : [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). Pour ajouter un **seul** élément, `$tab[] = "valeur";` est aussi préféré à `array_push($tab, "valeur")` : même résultat, sans le coût d'un appel de fonction — `array_push()` ne devient réellement utile que pour ajouter plusieurs éléments en un seul appel (`array_push($tab, "a", "b", "c")`).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une fonction est un bloc de code réutilisable ; une méthode est une fonction définie dans une classe, appelée via `->`/`::`. PHP vérifie les types annotés à l'exécution, pas à la compilation. |
+| **Outils utilisables** | Fonctions natives sur les chaînes, tableaux, tableaux associatifs, math, vérification de type ; `?Type` pour un type nullable. |
+| **Pièges à éviter** | Utiliser `@` pour masquer systématiquement les warnings — à réserver aux échecs réellement anticipés et testés juste après. |
+| **Bonnes pratiques** | Typer les paramètres et le retour d'une fonction dès que possible ; utiliser `$tab[] = valeur` plutôt que `array_push()` pour un seul élément. |

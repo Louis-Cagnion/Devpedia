@@ -52,7 +52,7 @@ kill -9 1234      # envoie SIGKILL (9) : force l'arrêt immédiat, sans laisser 
 | `SIGKILL` | 9 | Arrêt immédiat et inconditionnel, impossible à intercepter ou ignorer |
 | `SIGINT` | 2 | Signal envoyé par `Ctrl+C` depuis le terminal |
 | `SIGTSTP` | 20 | Signal envoyé par `Ctrl+Z` : suspend le processus (contrôlable, contrairement à `SIGKILL`) sans le terminer |
-| `SIGCONT` | 18 | Reprend l'exécution d'un processus suspendu par `SIGTSTP` (c'est ce qu'envoie `bg`/`fg`, cf. chapitre sur l'architecture d'un shell) |
+| `SIGCONT` | 18 | Reprend l'exécution d'un processus suspendu par `SIGTSTP` (c'est ce qu'envoie `bg`/`fg`, voir [Comment fonctionne un shell](/?c=shells&s=bash&p=architecture-dun-shell)) |
 
 > **Note :** `kill -9` doit rester un dernier recours — un processus tué avec `SIGKILL` n'a aucune chance de nettoyer derrière lui (fichiers temporaires, connexions ouvertes, verrous...). Toujours essayer `kill` (SIGTERM) en premier.
 
@@ -84,3 +84,14 @@ pkill -f "long_traitement.sh"    # trouve ET termine en une seule commande (envo
 ```
 
 > **`kill` vs `pkill`** : `kill` a besoin d'un **PID** déjà connu (`kill 1234`) — c'est le seul moyen d'envoyer un signal à un processus précis sans se tromper de cible. `pkill` évite d'avoir à chercher ce PID à la main : il envoie le signal à tout processus dont le nom (ou la ligne de commande complète avec `-f`) correspond au motif donné, ce qui revient à enchaîner `pgrep` puis `kill` sur chaque PID trouvé. Le risque de `pkill` est donc de cibler plus de processus que prévu si le motif est trop large (ex. `pkill -f script.sh` sur une machine où plusieurs scripts contiennent "script.sh" dans leur nom).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un `&` final lance une commande en arrière-plan. `kill` envoie un signal (SIGTERM par défaut, SIGKILL en dernier recours) ; `trap` permet d'intercepter un signal pour un nettoyage propre. |
+| **Outils utilisables** | `jobs`/`fg`/`bg`, `ps`/`top`, `pgrep`/`pkill`, `nohup`. |
+| **Pièges à éviter** | Utiliser `kill -9` (SIGKILL) par réflexe — le processus n'a alors aucune chance de nettoyer derrière lui. |
+| **Bonnes pratiques** | Toujours essayer `kill` (SIGTERM) avant `kill -9` ; vérifier le motif de `pkill` avant de l'exécuter, pour ne pas cibler plus de processus que prévu. |

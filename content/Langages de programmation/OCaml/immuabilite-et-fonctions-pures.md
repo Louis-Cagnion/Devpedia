@@ -56,3 +56,14 @@ let carre_impur x =
 - **Un piège structurellement impossible** : l'argument par défaut mutable en Python (cf. chapitre [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions)) n'existe que parce qu'un objet mutable partagé peut être capturé silencieusement entre plusieurs appels. Sans mutation implicite, ce piège précis n'a simplement aucune prise.
 
 > **Nuance :** aucun programme réel n'est composé à 100 % de fonctions pures — afficher un résultat, lire un fichier, répondre à une requête réseau sont des effets de bord par nature. L'objectif n'est pas de les éliminer, mais de les **isoler** : réduire au minimum la part de code qui en dépend, pour concentrer l'effort de test et de relecture là où les bugs sont les plus probables.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une liaison OCaml est immuable par défaut ; `ref`/`:=`/`!` rendent toute mutation explicite et visible. Une fonction pure ne dépend que de ses arguments et n'a aucun effet de bord — sa sortie est donc prévisible et testable isolément. |
+| **Outils utilisables** | `ref`, `:=`, `!`, les structures de données persistantes (listes immuables partageant leur mémoire). |
+| **Pièges à éviter** | S'attendre à ce qu'une fonction avec effet de bord (via `ref`) donne le même résultat à chaque appel, indépendamment de l'ordre d'exécution. |
+| **Bonnes pratiques** | Isoler les effets de bord dans une petite partie du code plutôt que de les éliminer entièrement — concentrer l'effort de test là où ils se trouvent. |

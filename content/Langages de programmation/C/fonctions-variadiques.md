@@ -54,3 +54,14 @@ printf("%d %d %d\n", 1, 2, 3); // la chaîne annonce 3 valeurs -> printf lit 3 a
 ## Une limite : le nombre d'arguments doit être communiqué autrement
 
 Contrairement à `printf` (guidé par la chaîne de format), l'exemple `somme()` ci-dessus doit recevoir explicitement le nombre d'arguments en premier paramètre (`nombre`) — `va_list` ne permet pas de savoir "combien d'arguments restent" tout seul, il faut toujours un moyen externe de le communiquer (un compteur, une valeur sentinelle comme `NULL` en dernier argument, ou une chaîne de format).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une fonction variadique (`...`) accepte un nombre variable d'arguments, lus via les macros de `<stdarg.h>` (`va_list`, `va_start`, `va_arg`, `va_end`). Le nombre d'arguments doit toujours être communiqué par un moyen externe. |
+| **Outils utilisables** | `va_list`, `va_start`, `va_arg`, `va_end`. |
+| **Pièges à éviter** | Passer à `va_arg()` un type différent de celui réellement fourni par l'appelant — comportement indéfini, non détecté à la compilation. |
+| **Bonnes pratiques** | Ne jamais construire une chaîne de format à partir d'une entrée utilisateur non contrôlée — source classique de faille ("format string vulnerability"). |

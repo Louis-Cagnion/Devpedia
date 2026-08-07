@@ -4,7 +4,7 @@ order: 10
 
 # Les templates (programmation générique)
 
-Un **template** permet d'écrire une fonction ou une classe **une seule fois**, valable pour n'importe quel type, sans sacrifier la vérification de type à la compilation ni les performances (contrairement à des langages dynamiquement typés comme Python ou PHP, cf. chapitres dédiés).
+Un **template** permet d'écrire une fonction ou une classe **une seule fois**, valable pour n'importe quel type, sans sacrifier la vérification de type à la compilation ni les performances (contrairement à des langages dynamiquement typés comme [Python](/?c=langages-de-programmation&s=python&p=python) ou [PHP](/?c=langages-de-programmation&s=php&p=php)).
 
 ## Sans template : la duplication
 
@@ -14,7 +14,7 @@ double maximum(double a, double b) { return (a > b) ? a : b; }
 std::string maximum(std::string a, std::string b) { return (a > b) ? a : b; }
 ```
 
-Trois fonctions strictement identiques dans leur logique, dupliquées uniquement à cause du type — exactement le genre de répétition qu'un template élimine (cf. principe DRY, déjà évoqué pour d'autres langages).
+Trois fonctions strictement identiques dans leur logique, dupliquées uniquement à cause du type — exactement le genre de répétition qu'un template élimine (voir [Éviter la répétition par des structures indexées](/?c=qualite-et-architecture-du-code&p=eviter-la-repetition-structures-indexees), le principe DRY appliqué plus généralement).
 
 ## Template de fonction
 
@@ -40,7 +40,7 @@ public:
     void empiler(T valeur) { elements.push_back(valeur); }
     T depiler() {
         if (estVide()) {
-            throw std::out_of_range("Pile vide"); // cf. chapitre sur les exceptions : jamais dépiler à vide
+            throw std::out_of_range("Pile vide"); // voir Les exceptions : jamais dépiler à vide
         }
         T dernier = elements.back();
         elements.pop_back();
@@ -59,7 +59,7 @@ Pile<std::string> pileTextes;
 pileTextes.empiler("bonjour");
 ```
 
-Une seule définition de `Pile`, utilisable avec n'importe quel type — c'est exactement ainsi que sont construits les conteneurs de la STL (`std::vector<T>`, `std::map<K, V>`..., cf. chapitre dédié).
+Une seule définition de `Pile`, utilisable avec n'importe quel type — c'est exactement ainsi que sont construits [les conteneurs de la STL](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) (`std::vector<T>`, `std::map<K, V>`...).
 
 ## Contraintes sur le type (C++20 : `concepts`)
 
@@ -91,4 +91,15 @@ T addition(T a, T b) { return a + b; }
 | Coût à l'exécution | Nul (code généré spécifiquement pour chaque type) | Léger surcoût (vérifications de type en continu) |
 | Détection d'erreur de type | Avant même de lancer le programme | Seulement en exécutant le chemin de code concerné |
 
-Voir aussi le chapitre sur les conteneurs STL, qui repose entièrement sur ce mécanisme de templates.
+Voir aussi [La STL — les conteneurs](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs), qui repose entièrement sur ce mécanisme de templates.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un template écrit une fonction/classe une seule fois pour n'importe quel type, avec vérification à la compilation et sans coût à l'exécution (le compilateur génère une version par type utilisé). |
+| **Outils utilisables** | `template <typename T>`, `concepts` (C++20) pour contraindre les types acceptés. |
+| **Pièges à éviter** | Un template sans contrainte accepte n'importe quel type, y compris ceux pour lesquels l'opération n'a pas de sens — erreur de compilation parfois cryptique. |
+| **Bonnes pratiques** | Utiliser les `concepts` (C++20) pour exprimer explicitement les exigences sur un type template, plutôt que de laisser un message d'erreur générique le découvrir. |

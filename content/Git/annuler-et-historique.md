@@ -58,4 +58,15 @@ git branch recuperation e4f5g6h   # ou crée directement une branche à partir d
 
 > **Note :** `git reflog` est souvent la solution de secours après une manipulation Git qui a mal tourné — tant qu'un commit a existé localement à un moment donné, il reste généralement retrouvable pendant plusieurs semaines, même s'il n'est plus référencé par aucune branche.
 
-Voir aussi le chapitre sur les branches et celui sur le rebase, dont les manipulations sont les plus concernées par ce chapitre.
+Voir aussi [Les branches](/?c=git&p=branches) et [Le rebase](/?c=git&p=rebase), dont les manipulations sont les plus concernées par ce chapitre.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `restore`/`checkout --` annulent des modifications non commitées (irréversible) ; `reset` déplace la branche en arrière (`--soft`/`--mixed`/`--hard`) ; `revert` crée un commit inverse, sûr sur un historique déjà partagé ; `reflog` retrouve un commit "perdu". |
+| **Outils utilisables** | `git restore`, `git reset --soft/--mixed/--hard`, `git revert`, `git reflog`. |
+| **Pièges à éviter** | `git reset --hard` écrase silencieusement toute modification non commitée, sans récupération simple. |
+| **Bonnes pratiques** | Préférer `revert` à `reset` sur un historique déjà partagé ; vérifier `git reflog` avant de croire un commit définitivement perdu. |

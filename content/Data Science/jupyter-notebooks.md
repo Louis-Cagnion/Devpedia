@@ -62,4 +62,15 @@ Des commandes spéciales, propres à Jupyter, absentes du langage Python lui-mê
 - Explorer par petites étapes successives (charger les données, les nettoyer, les visualiser, entraîner un modèle) sans tout réexécuter à chaque essai.
 - Documenter la démarche et les résultats côte à côte (cellules Markdown + graphiques), utile pour partager une analyse avec d'autres.
 
-Voir aussi les chapitres sur pandas et Matplotlib, les deux bibliothèques les plus couramment utilisées à l'intérieur d'un notebook.
+Voir aussi les chapitres sur [pandas](/?c=data-science&p=pandas) et [Matplotlib](/?c=data-science&p=matplotlib), les deux bibliothèques les plus couramment utilisées à l'intérieur d'un notebook.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un notebook mêle cellules de code et cellules Markdown, exécutées dans un ordre potentiellement non linéaire — le kernel conserve l'état entre les exécutions, indépendamment de l'ordre visuel des cellules. |
+| **Outils utilisables** | Commandes magiques (`%matplotlib inline`, `%timeit`), *Restart Kernel and Run All* pour garantir un état cohérent. |
+| **Pièges à éviter** | Exécuter les cellules dans le désordre et croire que le résultat affiché reflète l'état réel du kernel. |
+| **Bonnes pratiques** | Relancer *Restart Kernel and Run All* en cas de doute sur la reproductibilité d'un résultat. |

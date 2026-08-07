@@ -87,6 +87,19 @@ Les prototypes sont des fonctions intégrées à l'objet string par défaut, per
     str.concat(' !'); // 'hello world !'
 ```
 
+> **Piège :** toutes ces méthodes renvoient une **nouvelle** string, sans jamais modifier l'originale — une string est immuable en JavaScript. `str.toUpperCase();` seule ne change rien à `str` ; il faut réassigner : `str = str.toUpperCase();`.
+
 ### Les regex
 
-On peut utiliser les regex pour rechercher ou collecter des informations dans des strings (cf regex).
+On peut utiliser [les regex](/?c=langages-de-programmation&s=javascript&p=regex) pour rechercher ou collecter des informations dans des strings.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une string se déclare avec des guillemets simples, doubles, ou des backticks (*template literals*, pour l'interpolation et le multi-ligne). Elle est immuable : chaque méthode renvoie une nouvelle string. |
+| **Outils utilisables** | `includes`, `slice`, `toUpperCase`/`toLowerCase`, `trim`, `replace`/`replaceAll`, `split`, `indexOf`, `startsWith`/`endsWith`. |
+| **Pièges à éviter** | Appeler une méthode de transformation (`toUpperCase`, `trim`...) sans réassigner le résultat, en pensant que la string d'origine a changé. |
+| **Bonnes pratiques** | Utiliser les backticks pour toute string qui interpole une variable ou s'étend sur plusieurs lignes, plutôt qu'une concaténation avec `+`. |

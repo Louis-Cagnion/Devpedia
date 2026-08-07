@@ -43,3 +43,14 @@ Python (cf. chapitre [Le typage avec annotations](/?c=langages-de-programmation&
 ## Un filet de sécurité, pas une contrainte de verbosité
 
 L'idée reçue sur les langages statiquement typés est qu'ils imposent d'écrire davantage — c'est vrai en C, où chaque variable porte son type. L'inférence dissocie les deux : la rigueur du typage statique (erreurs de type détectées avant l'exécution, y compris dans du code jamais exécuté lors des tests) sans le coût de frappe qui lui est habituellement associé.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | OCaml est statiquement typé mais déduit les types sans annotation (algorithme de Hindley-Milner) — la rigueur du typage statique sans le coût de frappe habituel. |
+| **Outils utilisables** | Le polymorphisme paramétrique (`'a`) pour une fonction valable sur n'importe quel type, résolu automatiquement. |
+| **Pièges à éviter** | Croire qu'un langage sans annotation de type est forcément dynamiquement typé — OCaml vérifie tout à la compilation, sans exception. |
+| **Bonnes pratiques** | Laisser le compilateur inférer les types plutôt que les annoter systématiquement — les annotations restent utiles ponctuellement pour documenter une signature complexe. |

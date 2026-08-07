@@ -4,14 +4,14 @@ order: 3
 
 # Les classes et objets
 
-Une **classe** C++ regroupe ce qu'un `struct` C (cf. chapitre dédié) sépare en deux : les données ET les fonctions qui les manipulent, au même endroit — avec en plus un contrôle explicite de ce qui est visible depuis l'extérieur.
+Une **classe** C++ regroupe ce qu'un [`struct` C](/?c=langages-de-programmation&s=c&p=variables) sépare en deux : les données ET les fonctions qui les manipulent, au même endroit — avec en plus un contrôle explicite de ce qui est visible depuis l'extérieur.
 
 ## Déclarer une classe
 
 ```cpp
 class Vehicule {
 public:
-    // const& : évite de copier les chaînes reçues (cf. chapitre sur les références)
+    // const& : évite de copier les chaînes reçues (voir Les références)
     Vehicule(const std::string &marque, const std::string &modele) : marque(marque), modele(modele) {}
 
     std::string description() const {
@@ -29,7 +29,7 @@ std::cout << v.description();   // "Peugeot 308"
 
 - `public` : accessible depuis l'extérieur de la classe.
 - `private` : accessible uniquement depuis l'intérieur de la classe (les méthodes de `Vehicule`).
-- `protected` : comme `private`, mais aussi accessible aux classes qui héritent de celle-ci (cf. chapitre sur l'héritage).
+- `protected` : comme `private`, mais aussi accessible aux classes qui héritent de celle-ci (voir [Héritage et polymorphisme](/?c=langages-de-programmation&s=cpp&p=heritage-et-polymorphisme)).
 
 > **Note :** contrairement à un `struct` C (où toutes les données sont libres d'accès), une classe C++ cache par défaut ses membres (`private` implicite) — c'est l'**encapsulation** : l'extérieur n'interagit qu'avec ce que la classe expose volontairement.
 
@@ -66,7 +66,7 @@ private:
 };
 ```
 
-Le destructeur (`~NomClasse()`) s'exécute automatiquement dès que l'objet est détruit (fin de portée pour un objet local, `delete` pour un objet alloué dynamiquement) — c'est la base du mécanisme RAII (cf. chapitre dédié), central en C++ pour ne jamais oublier de libérer une ressource.
+Le destructeur (`~NomClasse()`) s'exécute automatiquement dès que l'objet est détruit (fin de portée pour un objet local, `delete` pour un objet alloué dynamiquement) — c'est la base du mécanisme [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii), central en C++ pour ne jamais oublier de libérer une ressource.
 
 ## Méthodes `const`
 
@@ -90,4 +90,15 @@ public:
 int Compteur::totalCrees = 0;   // définition obligatoire en dehors de la classe
 ```
 
-Voir aussi le chapitre sur l'héritage et le polymorphisme, et sur la surcharge d'opérateurs, pour étendre le comportement d'une classe au-delà de simples méthodes nommées.
+Voir aussi [Héritage et polymorphisme](/?c=langages-de-programmation&s=cpp&p=heritage-et-polymorphisme) et [La surcharge d'opérateurs](/?c=langages-de-programmation&s=cpp&p=surcharge-d-operateurs), pour étendre le comportement d'une classe au-delà de simples méthodes nommées.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une classe regroupe données et méthodes, avec un contrôle d'accès (`public`/`private`/`protected`). Le constructeur initialise l'objet, le destructeur libère ses ressources automatiquement à la fin de sa portée. |
+| **Outils utilisables** | Liste d'initialisation (`: membre(valeur)`), méthodes `const`, membres/méthodes `static`. |
+| **Pièges à éviter** | Oublier qu'une classe cache ses membres par défaut (`private` implicite), contrairement à un `struct` C entièrement public. |
+| **Bonnes pratiques** | Préférer la liste d'initialisation à une affectation dans le corps du constructeur ; marquer `const` toute méthode qui ne modifie pas l'objet. |

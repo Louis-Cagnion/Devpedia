@@ -56,3 +56,14 @@ for (int i = 0; i < taille; i++) {
 La version `fold_left` ne mentionne jamais explicitement de compteur ni de variable intermédiaire : le "comment parcourir" est entièrement délégué à `List.fold_left`, et le code n'exprime plus que le "quoi faire à chaque élément" (`(+)`) et l'état de départ (`0`).
 
 > **Note :** `fold_left` accumule de gauche à droite (`(((0 + 1) + 2) + 3) + 4`) — pour une opération non associative ou sensible à l'ordre, `List.fold_right` accumule de droite à gauche, avec un signe d'appel légèrement différent (l'accumulateur est le dernier argument, pas le second).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | La récursion remplace la boucle à compteur mutable. Une récursion terminale (l'appel récursif est la dernière action) est optimisée par le compilateur en boucle, sans faire grandir la pile. `map`/`filter`/`fold` couvrent l'essentiel des boucles de transformation/filtrage/agrégation. |
+| **Outils utilisables** | `let rec`, un accumulateur pour rendre une récursion terminale, `List.map`/`List.filter`/`List.fold_left`. |
+| **Pièges à éviter** | Écrire une récursion non terminale sur une très grande liste — risque de dépassement de pile (*stack overflow*). |
+| **Bonnes pratiques** | Transformer une récursion en forme terminale (avec accumulateur) dès qu'elle doit traiter des collections potentiellement grandes. |

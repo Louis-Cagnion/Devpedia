@@ -18,7 +18,7 @@ git switch nouvelle-fonctionnalite      # équivalent moderne de "checkout" pour
 git switch -c nouvelle-fonctionnalite    # équivalent moderne de "checkout -b"
 ```
 
-> **Note :** `git switch` (plus récent) et `git checkout` (historique, plus polyvalent mais moins explicite) font ici la même chose — `checkout` sert aussi à d'autres usages (restaurer un fichier, cf. chapitre sur l'annulation), ce qui le rend plus ambigu à lire.
+> **Note :** `git switch` (plus récent) et `git checkout` (historique, plus polyvalent mais moins explicite) font ici la même chose — `checkout` sert aussi à d'autres usages (restaurer un fichier, voir [Annuler des changements et naviguer dans l'historique](/?c=git&p=annuler-et-historique)), ce qui le rend plus ambigu à lire.
 
 ## Ce qui se passe réellement en changeant de branche
 
@@ -61,6 +61,17 @@ git branch -d feature    # supprime, seulement si la branche a déjà été fusi
 git branch -D feature    # force la suppression, même si elle n'a jamais été fusionnée
 ```
 
-> **Note :** `git branch -D` sur une branche jamais fusionnée peut faire perdre l'accès à des commits qui n'existent plus nulle part ailleurs. Ils restent généralement retrouvables un moment via `git reflog` (cf. chapitre sur l'annulation et l'historique), mais mieux vaut vérifier avec `git log feature` (ou une fusion/`git branch -d`) avant de forcer la suppression.
+> **Note :** `git branch -D` sur une branche jamais fusionnée peut faire perdre l'accès à des commits qui n'existent plus nulle part ailleurs. Ils restent généralement retrouvables un moment via `git reflog` (voir [Annuler des changements et naviguer dans l'historique](/?c=git&p=annuler-et-historique)), mais mieux vaut vérifier avec `git log feature` (ou une fusion/`git branch -d`) avant de forcer la suppression.
 
-Voir aussi le chapitre sur le rebase, une alternative au merge pour intégrer des changements sans commit de fusion, et celui sur la résolution de conflits, pour le cas où les deux branches ont modifié les mêmes lignes.
+Voir aussi [Le rebase](/?c=git&p=rebase), une alternative au merge pour intégrer des changements sans commit de fusion, et [Résoudre un conflit de fusion](/?c=git&p=resoudre-conflits), pour le cas où les deux branches ont modifié les mêmes lignes.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une branche est un pointeur mobile vers un commit. `git merge` réunit deux branches : avance simple (*fast-forward*) si possible, sinon un commit de fusion à deux parents. |
+| **Outils utilisables** | `git branch`, `git switch`/`checkout`, `git merge`. |
+| **Pièges à éviter** | `git branch -D` sur une branche jamais fusionnée peut rendre ses commits difficiles à retrouver. |
+| **Bonnes pratiques** | Préférer `-d` (sécurisé, refuse si non fusionnée) à `-D` ; utiliser `switch` plutôt que `checkout` pour changer de branche, moins ambigu à lire. |

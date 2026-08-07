@@ -125,7 +125,7 @@ if (ptr != NULL) {
 }
 ```
 
-> **Note :** un pointeur qui pointait vers une zone mémoire libérée (`free()`, cf. chapitre sur la gestion de la mémoire) est appelé **dangling pointer**. Le déréférencer est un bug classique (*use-after-free*) : la mémoire peut sembler encore contenir la bonne valeur par coïncidence, jusqu'à ce qu'elle soit réutilisée ailleurs.
+> **Note :** un pointeur qui pointait vers une zone mémoire libérée (`free()`, voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) est appelé **dangling pointer**. Le déréférencer est un bug classique (*use-after-free*) : la mémoire peut sembler encore contenir la bonne valeur par coïncidence, jusqu'à ce qu'elle soit réutilisée ailleurs.
 
 ## Comparer des pointeurs : l'adresse ou la valeur ?
 
@@ -173,4 +173,15 @@ int *const p2 = &x; // p2 ne peut plus changer d'adresse, mais peut modifier la 
 | `ptr + 1` | Adresse suivante, décalée de `sizeof(type)` octets |
 | `NULL` | Pointeur qui ne pointe vers rien de valide |
 
-Voir aussi le chapitre sur la gestion de la mémoire (`malloc`/`free`), qui s'appuie directement sur ces notions.
+Voir aussi [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire) (`malloc`/`free`), qui s'appuie directement sur ces notions.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un pointeur stocke l'adresse mémoire d'une variable. `&` récupère une adresse, `*` déréférence (accède à la valeur pointée). Indexer un tableau (`tab[i]`) est strictement équivalent à `*(tab + i)`. |
+| **Outils utilisables** | Pointeurs de pointeur, pointeurs de fonction, `const` pour protéger la valeur pointée et/ou le pointeur lui-même. |
+| **Pièges à éviter** | Déréférencer un pointeur non initialisé ou `NULL` ; confondre comparaison d'adresses (`p1 == p2`) et de valeurs pointées (`*p1 == *p2`) ; utiliser un pointeur après son `free()` (dangling pointer). |
+| **Bonnes pratiques** | Initialiser tout pointeur inutilisé à `NULL` et le tester avant déréférencement ; passer l'adresse d'une variable à une fonction uniquement quand elle doit réellement la modifier. |

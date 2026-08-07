@@ -66,7 +66,7 @@ try {
 
 ## Erreurs et code asynchrone
 
-Un `try`/`catch` classique **n'intercepte pas** l'erreur d'une fonction asynchrone si elle n'est pas elle-même `await`ée (cf. chapitre sur l'asynchrone) :
+Un `try`/`catch` classique **n'intercepte pas** l'erreur d'une fonction asynchrone si elle n'est pas elle-même `await`ée (voir [La programmation asynchrone](/?c=langages-de-programmation&s=javascript&p=asynchrone)) :
 
 ```javascript
 async function chargerDonnees() {
@@ -91,3 +91,14 @@ fetch("/api/donnees")
 ```
 
 > **Note :** une erreur levée dans une fonction `async` ne devient pas une exception JavaScript classique immédiate — elle transforme la `Promise` renvoyée en promesse **rejetée**, récupérable uniquement via `await` dans un `try`/`catch`, ou via `.catch()`.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `try`/`catch`/`finally` intercepte une exception levée par `throw`. Une erreur dans du code asynchrone non `await`é ne remonte pas dans un `try`/`catch` classique — elle rejette la Promise. |
+| **Outils utilisables** | `Error` et ses sous-classes personnalisées (`extends Error`), `instanceof` pour distinguer les types d'erreur, `.catch()` sur une Promise. |
+| **Pièges à éviter** | Attendre qu'un `try`/`catch` intercepte l'erreur d'une Promise non `await`ée — elle ne le fera jamais. |
+| **Bonnes pratiques** | Toujours `await` une opération asynchrone dans un `try`/`catch`, ou chaîner `.catch()` sur la Promise correspondante ; laisser remonter une erreur inattendue plutôt que de la masquer silencieusement. |

@@ -8,7 +8,7 @@ Les conditions permettent d'exécuter un bloc de code selon qu'une expression es
 
 ## La condition `if`
 
-En C, toute valeur **non nulle** est considérée comme vraie ; seule la valeur `0` est fausse — il n'existe pas de type booléen natif avant C99 (`stdbool.h`, cf. chapitre sur les variables) :
+En C, toute valeur **non nulle** est considérée comme vraie ; seule la valeur `0` est fausse — il n'existe pas de type booléen natif avant C99 ([`stdbool.h`](/?c=langages-de-programmation&s=c&p=variables)) :
 
 ```
 int age = 18;
@@ -83,3 +83,14 @@ switch (jour) {
 ```
 
 > **Limite du `switch` en C :** contrairement à certains langages, un `switch` en C ne fonctionne que sur des types entiers (ou assimilés : `char`, `enum`) — impossible de faire un `switch` sur une chaîne de caractères directement.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `if`/`else`/`else if` exécutent un bloc selon une condition ; toute valeur non nulle est vraie en C. `switch` compare une même variable entière à plusieurs valeurs. |
+| **Outils utilisables** | L'opérateur ternaire `? :` pour une affectation conditionnelle courte. |
+| **Pièges à éviter** | Oublier `break;` dans un `case` — l'exécution continue dans le `case` suivant (*fall-through*), même sans correspondre à sa condition. |
+| **Bonnes pratiques** | Toujours accolader un bloc `if`, même à une seule instruction — évite un bug si une ligne est ajoutée par la suite sans les accolades. |

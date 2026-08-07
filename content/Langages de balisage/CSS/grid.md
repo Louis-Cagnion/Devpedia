@@ -4,7 +4,7 @@ order: 6
 
 # CSS Grid
 
-Contrairement à Flexbox (cf. chapitre dédié), pensé pour un seul axe à la fois, **CSS Grid** organise des éléments sur une véritable grille à **deux dimensions** — lignes et colonnes définies simultanément, avec un contrôle précis de la position de chaque élément.
+Contrairement à [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensé pour un seul axe à la fois, **CSS Grid** organise des éléments sur une véritable grille à **deux dimensions** — lignes et colonnes définies simultanément, avec un contrôle précis de la position de chaque élément.
 
 ## Activer une grille
 
@@ -54,7 +54,7 @@ Contrairement à Flexbox (cf. chapitre dédié), pensé pour un seul axe à la f
 }
 ```
 
-`auto-fit` calcule automatiquement combien de colonnes **d'au moins** `200px` tiennent dans l'espace disponible, et les étire (`1fr`) pour combler l'espace restant — le nombre de colonnes s'adapte donc à la largeur de l'écran, sans écrire une seule media query (cf. chapitre dédié).
+`auto-fit` calcule automatiquement combien de colonnes **d'au moins** `200px` tiennent dans l'espace disponible, et les étire (`1fr`) pour combler l'espace restant — le nombre de colonnes s'adapte donc à la largeur de l'écran, sans écrire une seule [media query](/?c=langages-de-balisage&s=css&p=responsive-et-media-queries).
 
 ## Placer un élément précisément
 
@@ -105,3 +105,14 @@ Chaque nom dans `grid-template-areas` dessine littéralement la disposition visu
 | Taille des éléments | Dépend souvent du contenu | Définie explicitement par la grille |
 
 En pratique, les deux se combinent très souvent dans un même projet : Grid pour la structure générale de la page, Flexbox pour aligner le contenu à l'intérieur de chaque zone.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | CSS Grid organise des éléments sur une grille à deux dimensions (lignes ET colonnes), contrairement à Flexbox (un seul axe). L'unité `fr` répartit l'espace restant ; `grid-template-areas` nomme visuellement chaque zone. |
+| **Outils utilisables** | `display: grid`, `grid-template-columns`/`rows`, `fr`, `repeat()`, `grid-template-areas`, `grid-column`/`grid-row`. |
+| **Pièges à éviter** | Utiliser Flexbox pour une mise en page qui a réellement besoin de deux dimensions — le résultat devient vite un empilement de contournements. |
+| **Bonnes pratiques** | `repeat(auto-fit, minmax(...))` pour une grille responsive sans écrire de media query ; `grid-template-areas` pour une structure de page lisible directement dans le CSS. |

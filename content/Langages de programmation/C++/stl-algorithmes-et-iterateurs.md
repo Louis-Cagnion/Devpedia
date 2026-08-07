@@ -4,7 +4,7 @@ order: 9
 
 # La STL — itérateurs, algorithmes et lambdas
 
-Un **itérateur** est une abstraction qui permet de parcourir n'importe quel conteneur STL (cf. chapitre dédié) de la même façon, qu'il s'agisse d'un `vector` (tableau contigu) ou d'une `list` (liste chaînée) — le code de parcours ne change pas, même si la structure sous-jacente est radicalement différente.
+Un **itérateur** est une abstraction qui permet de parcourir n'importe quel [conteneur STL](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) de la même façon, qu'il s'agisse d'un `vector` (tableau contigu) ou d'une `list` (liste chaînée) — le code de parcours ne change pas, même si la structure sous-jacente est radicalement différente.
 
 ## Le principe de l'itérateur
 
@@ -13,7 +13,7 @@ std::vector<int> nombres = {1, 2, 3};
 
 std::vector<int>::iterator it = nombres.begin();
 while (it != nombres.end()) {
-    std::cout << *it << " ";   // "*it" déréférence l'itérateur, comme un pointeur (cf. chapitre dédié, rubrique C)
+    std::cout << *it << " ";   // "*it" déréférence l'itérateur, comme un pointeur (voir Les pointeurs, rubrique C)
     ++it;
 }
 ```
@@ -55,7 +55,7 @@ std::for_each(nombres.begin(), nombres.end(), [](int n) {
 
 ## Les lambdas (C++11+)
 
-Une **lambda** est une fonction anonyme, écrite directement là où elle est utilisée — le même concept que les closures JavaScript ou les lambdas Python (cf. chapitres dédiés) :
+Une **lambda** est une fonction anonyme, écrite directement là où elle est utilisée — le même concept que [les closures JavaScript](/?c=langages-de-programmation&s=javascript&p=fonctions) ou [les lambdas Python](/?c=langages-de-programmation&s=python&p=fonctions) :
 
 ```cpp
 auto carre = [](int x) { return x * x; };
@@ -85,3 +85,14 @@ int compte = std::count_if(nombres.begin(), nombres.end(), estAuDessusDuSeuil);
 | `std::accumulate` | Réduit une plage à une seule valeur (équivalent de `reduce`) |
 
 > **Note :** utiliser ces algorithmes plutôt que des boucles manuelles rend l'intention explicite (`std::sort` dit "je trie", une boucle avec un algorithme de tri écrit à la main demande de le déduire) — un gain de lisibilité direct, en plus d'éviter de réimplémenter (et potentiellement de mal implémenter) une logique déjà standardisée et optimisée.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un itérateur parcourt n'importe quel conteneur STL de façon uniforme (`begin()`/`end()`, `*it`, `++it`). Les algorithmes standards (`sort`, `find`, `accumulate`...) opèrent sur des paires d'itérateurs, valables sur n'importe quel conteneur. |
+| **Outils utilisables** | `std::sort`, `std::find`, `std::count_if`, `std::transform`, `std::accumulate`, lambdas (`[](...){ ... }`). |
+| **Pièges à éviter** | Déréférencer `end()` — il ne pointe jamais sur un élément réel, seulement une position "juste après" le dernier. |
+| **Bonnes pratiques** | Préférer un algorithme standard nommé (`std::sort`) à une boucle manuelle équivalente — l'intention est explicite et la logique déjà optimisée. |

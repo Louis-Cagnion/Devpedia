@@ -13,7 +13,7 @@ autoload -Uz compinit
 compinit
 ```
 
-Ces deux lignes, placées dans `~/.zshrc` (cf. chapitre sur les fichiers de démarrage), chargent `compsys`. Sans elles, zsh se limite à une complétion basique proche de celle de Bash.
+Ces deux lignes, placées dans `~/.zshrc` (voir [Les fichiers de démarrage](/?c=shells&s=zsh&p=fichiers-de-demarrage)), chargent `compsys`. Sans elles, zsh se limite à une complétion basique proche de celle de Bash.
 
 > **Note :** `compinit` reconstruit un cache de définitions de complétion à chaque lancement, ce qui peut ralentir perceptiblement l'ouverture d'un nouveau terminal — d'où l'usage courant de `compinit -C` (sans revérification du cache) une fois la configuration stabilisée, ou d'un appel conditionné à la date du cache.
 
@@ -48,3 +48,14 @@ Permet de taper `desk<Tab>` et de compléter vers `Desktop` malgré la majuscule
 ## `zstyle` : le mécanisme de configuration derrière tout ça
 
 Les exemples ci-dessus utilisent `zstyle`, la commande générique de configuration de `compsys` — chaque règle associe un contexte (`':completion:*'` = partout) à un comportement. C'est un mécanisme propre à zsh, sans équivalent direct en Bash, dont la complétion n'expose pas ce niveau de personnalisation.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `compsys` est un moteur de complétion sensible au contexte — après `git checkout`, il propose des branches, pas des noms de fichiers. Il doit être activé explicitement (`compinit`). |
+| **Outils utilisables** | `autoload -Uz compinit`/`compinit`, `zstyle` pour personnaliser (menu navigable, insensibilité à la casse). |
+| **Pièges à éviter** | `compinit` reconstruit son cache à chaque lancement — peut ralentir perceptiblement l'ouverture d'un terminal. |
+| **Bonnes pratiques** | Utiliser `compinit -C` une fois la configuration stabilisée, pour éviter la revérification systématique du cache. |

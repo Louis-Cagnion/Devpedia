@@ -4,7 +4,7 @@ order: 13
 
 # Les tables de hachage (hash tables)
 
-Une **table de hachage** est une structure de données qui permet d'insérer, chercher et supprimer une valeur à partir d'une clé en temps quasi constant en moyenne (`O(1)`), là où une liste chaînée (cf. chapitre dédié) demanderait de parcourir tous les éléments un par un. Le principe : calculer une "adresse" numérique à partir de la clé, et stocker/retrouver la valeur directement à cet endroit dans un tableau.
+Une **table de hachage** est une structure de données qui permet d'insérer, chercher et supprimer une valeur à partir d'une clé en temps quasi constant en moyenne (`O(1)`), là où une [liste chaînée](/?c=langages-de-programmation&s=c&p=listes-chainees) demanderait de parcourir tous les éléments un par un. Le principe : calculer une "adresse" numérique à partir de la clé, et stocker/retrouver la valeur directement à cet endroit dans un tableau.
 
 ## Le principe général
 
@@ -45,7 +45,7 @@ unsigned long indice = hash_chaine(cle) % taille_tableau;
 
 Le nombre de clés possibles est infini (n'importe quelle chaîne), mais le tableau a une taille finie — deux clés différentes peuvent donc, tôt ou tard, produire le même indice. C'est une **collision**, gérée principalement de deux façons :
 
-- **Chaînage** (*separate chaining*) : chaque case du tableau contient une liste chaînée (cf. chapitre dédié) de toutes les entrées qui ont abouti à cet indice.
+- **Chaînage** (*separate chaining*) : chaque case du tableau contient une [liste chaînée](/?c=langages-de-programmation&s=c&p=listes-chainees) de toutes les entrées qui ont abouti à cet indice.
 - **Adressage ouvert** (*open addressing*) : en cas de collision, on cherche la prochaine case libre selon une règle fixe (ex. la case suivante), jusqu'à en trouver une.
 
 ## Implémentation par chaînage
@@ -74,7 +74,7 @@ void inserer(TableHachage *table, const char *cle, int valeur)
 
     Entree *nouvelle = malloc(sizeof(Entree));
     if (nouvelle == NULL) {
-        return; // échec d'allocation (cf. chapitre sur la gestion de la mémoire) : on renonce à l'insertion
+        return; // échec d'allocation (voir La gestion de la mémoire) : on renonce à l'insertion
     }
     nouvelle->cle = strdup(cle);
     nouvelle->valeur = valeur;
@@ -111,8 +111,19 @@ Le **facteur de charge** (nombre d'entrées ÷ taille du tableau) mesure à quel
 
 ## Où les tables de hachage se cachent déjà autour de vous
 
-- Les tableaux **associatifs** de PHP (cf. chapitre sur les variables en PHP) sont, en interne, implémentés avec une structure très proche d'une table de hachage.
-- Le modèle de stockage d'objets de Git (cf. chapitre sur l'architecture interne de Git) **est** directement une table de hachage : la clé de chaque objet est le hash SHA-1 de son contenu, et le sous-dossier `.git/objects/xx/` joue exactement le rôle d'une case (*bucket*).
+- Les tableaux **associatifs** de PHP (voir [Les variables](/?c=langages-de-programmation&s=php&p=variables)) sont, en interne, implémentés avec une structure très proche d'une table de hachage.
+- Le modèle de stockage d'objets de Git (voir [L'architecture interne de Git](/?c=git&p=architecture-interne)) **est** directement une table de hachage : la clé de chaque objet est le hash SHA-1 de son contenu, et le sous-dossier `.git/objects/xx/` joue exactement le rôle d'une case (*bucket*).
 - Les dictionnaires Python (`dict`) reposent sur le même principe.
 
 Comprendre les tables de hachage, c'est donc comprendre un mécanisme qui se répète silencieusement dans la quasi-totalité des langages et outils modernes.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une table de hachage calcule un indice à partir d'une clé (via une fonction de hachage) pour accéder directement à la valeur, en `O(1)` en moyenne. Une collision (deux clés, même indice) se gère par chaînage ou adressage ouvert. |
+| **Outils utilisables** | Une fonction de hachage déterministe et bien répartie ; le redimensionnement ("rehash") quand le facteur de charge dépasse un seuil (souvent 0.75). |
+| **Pièges à éviter** | Une fonction de hachage mal répartie qui concentre trop de clés sur peu d'indices — dégrade les performances vers `O(n)`. |
+| **Bonnes pratiques** | Redimensionner et réinsérer toutes les entrées dès que le facteur de charge devient trop élevé, plutôt que de laisser les listes de chaque case s'allonger indéfiniment. |

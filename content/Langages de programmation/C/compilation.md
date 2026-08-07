@@ -38,7 +38,7 @@ gcc -c main.s -o main.o
 
 ### 4. L'édition de liens (*linking*)
 
-Assemble un ou plusieurs fichiers `.o` entre eux, et résout les références vers des fonctions définies ailleurs (dans d'autres fichiers `.o`, ou dans des bibliothèques, cf. chapitre dédié) pour produire un exécutable final complet.
+Assemble un ou plusieurs fichiers `.o` entre eux, et résout les références vers des fonctions définies ailleurs (dans d'autres fichiers `.o`, ou dans des [bibliothèques](/?c=langages-de-programmation&s=c&p=bibliotheques)) pour produire un exécutable final complet.
 
 ```
 gcc main.o -o programme
@@ -46,7 +46,7 @@ gcc main.o -o programme
 
 ## Pourquoi séparer compilation et édition de liens
 
-Un projet à plusieurs fichiers source peut compiler chaque `.c` en `.o` indépendamment, puis ne relier (*link*) que les fichiers qui ont changé — plus rapide qu'une recompilation complète à chaque modification. C'est exactement ce qu'automatise un **Makefile** (cf. chapitre dédié) :
+Un projet à plusieurs fichiers source peut compiler chaque `.c` en `.o` indépendamment, puis ne relier (*link*) que les fichiers qui ont changé — plus rapide qu'une recompilation complète à chaque modification. C'est exactement ce qu'automatise un [**Makefile**](/?c=langages-de-programmation&s=c&p=makefiles) :
 
 ```
 gcc -c fichier1.c -o fichier1.o
@@ -61,5 +61,16 @@ Savoir à quelle étape une erreur survient aide à la diagnostiquer :
 | Message typique | Étape concernée | Cause fréquente |
 |---|---|---|
 | `error: expected ';' before...` | Compilation | Erreur de syntaxe dans le code source |
-| `fatal error: xxx.h: No such file or directory` | Préprocesseur | Fichier d'en-tête introuvable (cf. chapitre sur les headers) |
+| `fatal error: xxx.h: No such file or directory` | Préprocesseur | Fichier d'en-tête introuvable (voir [Les fichiers d'en-tête](/?c=langages-de-programmation&s=c&p=headers)) |
 | `undefined reference to 'ma_fonction'` | Édition de liens | Fonction déclarée mais jamais définie/liée (fichier `.o` ou bibliothèque manquante) |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un programme C passe par 4 étapes avant l'exécution : préprocesseur → compilation (assembleur) → assemblage (code machine, `.o`) → édition de liens (exécutable final). |
+| **Outils utilisables** | `gcc -E`/`-S`/`-c` pour observer chaque étape séparément. |
+| **Pièges à éviter** | Confondre une erreur de compilation (syntaxe) avec une erreur d'édition de liens (`undefined reference`, fonction jamais liée) — le message indique l'étape concernée. |
+| **Bonnes pratiques** | Compiler chaque fichier `.c` en `.o` séparément sur un projet à plusieurs fichiers, pour ne relier que ce qui a changé plutôt que tout recompiler. |

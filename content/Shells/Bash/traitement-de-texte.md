@@ -4,7 +4,7 @@ order: 10
 
 # Traitement de texte (grep, sed, awk...)
 
-Une grande partie de la puissance du terminal Unix vient d'une poignée d'outils spécialisés dans le traitement de texte, conçus pour être combinés entre eux via des pipes (cf. chapitre sur les redirections). Ce chapitre présente les plus utilisés au quotidien.
+Une grande partie de la puissance du terminal Unix vient d'une poignée d'outils spécialisés dans le traitement de texte, conçus pour être combinés entre eux via des [pipes](/?c=shells&s=bash&p=redirections-et-pipes). Ce chapitre présente les plus utilisés au quotidien.
 
 ## `grep` : rechercher du texte
 
@@ -45,7 +45,7 @@ Un `|` non échappé sans `-E` est cherché **littéralement** : `grep "a|b"` ch
 | `1` | aucune correspondance (ce n'est **pas** une erreur) |
 | `2` | une vraie erreur (fichier illisible, motif invalide) |
 
-C'est ce qui permet de l'enchaîner avec `&&` ou `||` (cf. chapitre sur les redirections et pipes) :
+C'est ce qui permet de l'enchaîner avec `&&` ou `||` (voir [Redirections et pipes](/?c=shells&s=bash&p=redirections-et-pipes)) :
 
 ```bash
 grep -rl "motif" *.md || echo "absent"   # message de repli si rien n'est trouve
@@ -56,7 +56,7 @@ Avec `-q`, `grep` s'arrête dès la première correspondance et n'affiche rien :
 
 > Ce code de retour `1` explique un comportement déroutant sous `set -e` : un `grep` qui ne trouve rien fait échouer un script entier. La parade habituelle est `grep motif fichier || true`.
 
-> **`grep` vs `pgrep`** : malgré le nom similaire, ce sont deux commandes indépendantes qui ne cherchent pas dans la même chose. `grep` cherche un motif dans du **texte** (fichier, sortie d'une commande...). `pgrep` (*process grep*, cf. chapitre sur la gestion des processus) cherche un motif dans la **liste des processus en cours** et renvoie des PID, pas des lignes de texte — `ps aux | grep motif` et `pgrep motif` répondent d'ailleurs à peu près à la même question, en passant par deux chemins différents.
+> **`grep` vs `pgrep`** : malgré le nom similaire, ce sont deux commandes indépendantes qui ne cherchent pas dans la même chose. `grep` cherche un motif dans du **texte** (fichier, sortie d'une commande...). `pgrep` (*process grep*, voir [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus)) cherche un motif dans la **liste des processus en cours** et renvoie des PID, pas des lignes de texte — `ps aux | grep motif` et `pgrep motif` répondent d'ailleurs à peu près à la même question, en passant par deux chemins différents.
 
 ## `sed` : rechercher et remplacer
 
@@ -70,7 +70,7 @@ sed '3s/ancien/nouveau/' fichier.txt        # adresse "3" -> seulement la ligne 
 sed '2,4s/ancien/nouveau/' fichier.txt       # adresse "2,4" -> uniquement les lignes 2 à 4
 ```
 
-La commande la plus utilisée est `s/motif/remplacement/` (le "s" pour *substitute*) : elle recherche `motif` (une regex, cf. chapitre dédié) et le remplace par `remplacement`. Par défaut, `sed` ne remplace que la **première** occurrence trouvée sur chaque ligne — d'où le drapeau `g` pour traiter aussi les suivantes :
+La commande la plus utilisée est `s/motif/remplacement/` (le "s" pour *substitute*) : elle recherche `motif` (une [regex](/?c=domain-specific-languages-dsl&p=regex)) et le remplace par `remplacement`. Par défaut, `sed` ne remplace que la **première** occurrence trouvée sur chaque ligne — d'où le drapeau `g` pour traiter aussi les suivantes :
 
 ```bash
 sed 's/ancien/nouveau/' fichier.txt        # remplace la 1ère occurrence par ligne, affiche le résultat
@@ -142,3 +142,14 @@ grep "404" access.log | awk '{ print $1 }' | sort | uniq -c | sort -rn
 # 4) compte les occurrences de chaque IP
 # 5) trie par nombre d'occurrences décroissant -> les IP les plus fréquentes en premier
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `grep` recherche, `sed` remplace, `awk` traite par colonnes — conçus pour se combiner via des pipes plutôt que d'être utilisés isolément. |
+| **Outils utilisables** | `grep -i`/`-v`/`-r`/`-E`, `sed 's/.../.../'`, `awk '{ print $1 }'`, `cut`, `sort`/`uniq`, `wc`. |
+| **Pièges à éviter** | Un `\|` non échappé sans `-E` dans `grep` est cherché littéralement, sans erreur ni avertissement ; `uniq` sans `sort` préalable ne détecte que les doublons adjacents. |
+| **Bonnes pratiques** | Combiner `sort` avant `uniq` pour dédupliquer correctement ; utiliser `grep -q` plutôt que `grep` simple quand seul le résultat du test (trouvé/pas trouvé) compte. |

@@ -4,7 +4,7 @@ order: 5
 
 # Les dictionnaires et les ensembles
 
-Le **dictionnaire** (`dict`) associe des clés à des valeurs, exactement comme un tableau associatif en PHP. L'**ensemble** (`set`) stocke des valeurs uniques, sans ordre ni doublons. Les deux structures s'appuient en interne sur une **table de hachage** (cf. chapitre dédié, rubrique C) — c'est ce qui permet à `dico["cle"]` ou `"valeur" in ensemble` d'être quasi instantané, même sur une très grande collection.
+Le **dictionnaire** (`dict`) associe des clés à des valeurs, exactement comme un tableau associatif en PHP. L'**ensemble** (`set`) stocke des valeurs uniques, sans ordre ni doublons. Les deux structures s'appuient en interne sur une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage) — c'est ce qui permet à `dico["cle"]` ou `"valeur" in ensemble` d'être quasi instantané, même sur une très grande collection.
 
 ## Les dictionnaires
 
@@ -77,4 +77,15 @@ carres_uniques = {x ** 2 for x in [-2, -1, 0, 1, 2]}
 # {0, 1, 4} -> (-2)**2 et 2**2 valent tous deux 4, donc dédupliqués automatiquement
 ```
 
-Voir aussi le chapitre sur les tables de hachage (rubrique C) pour ce qui se passe réellement en mémoire derrière `dict` et `set`.
+Voir aussi [Les tables de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage) pour ce qui se passe réellement en mémoire derrière `dict` et `set`.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un `dict` associe des clés à des valeurs, un `set` stocke des valeurs uniques sans ordre — les deux reposent sur une table de hachage, donc quasi instantanés en accès/test. |
+| **Outils utilisables** | `.get()` (sans erreur), compréhensions de dict/set, opérations d'ensembles (`|`, `&`, `-`, `^`). |
+| **Pièges à éviter** | Accéder à une clé absente par crochets (`dico["x"]`) plutôt que par `.get()` — lève une `KeyError`. |
+| **Bonnes pratiques** | Utiliser `.get()` dès que l'absence d'une clé est un cas normal, pas une erreur ; `list(set(ma_liste))` pour dédupliquer rapidement. |

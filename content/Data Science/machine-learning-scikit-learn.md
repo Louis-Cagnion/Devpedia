@@ -156,4 +156,15 @@ print(classification_report(y_test, predictions))   # précision, rappel et F1 �
 4. Évaluer sur l'ensemble de test (`predict` + une métrique adaptée au problème).
 5. Ajuster (autre algorithme, autres paramètres, plus de données...) et recommencer.
 
-Voir aussi le chapitre sur les réseaux de neurones : une famille particulière de modèles, plus complexe que ceux de scikit-learn, mais reposant sur exactement les mêmes principes de base (données d'entraînement/test, apprentissage, généralisation).
+Voir aussi le chapitre sur [les réseaux de neurones](/?c=ia&p=reseaux-de-neurones) : une famille particulière de modèles, plus complexe que ceux de scikit-learn, mais reposant sur exactement les mêmes principes de base (données d'entraînement/test, apprentissage, généralisation).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un modèle s'entraîne sur un jeu de données séparé du jeu de test, pour détecter s'il généralise ou "mémorise" (surapprentissage). L'API scikit-learn est uniforme : `fit()` puis `predict()`, quel que soit l'algorithme. |
+| **Outils utilisables** | `train_test_split`, `cross_val_score`, matrice de confusion, `precision_score`/`recall_score`/`f1_score`. |
+| **Pièges à éviter** | Évaluer et ajuster un modèle sur le même ensemble de test, à répétition — revient à tricher indirectement ; se fier à l'exactitude seule sur des classes déséquilibrées. |
+| **Bonnes pratiques** | Réserver un ensemble de validation pour ajuster les hyperparamètres, le test final ne servant qu'une seule fois ; utiliser le F1-score pour résumer le compromis précision/rappel. |

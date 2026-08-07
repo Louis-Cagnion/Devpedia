@@ -245,3 +245,14 @@ Si la partie `$encode` est modifiée par quelqu'un qui ne connaît pas `$secret`
 | Cas d'usage typique | Utilisateur déjà identifié, session en cours | Donnée à transmettre de façon vérifiable sans base à consulter (lien d'activation, invité sans compte...) |
 
 > **Note :** `hash_equals()` plutôt qu'un simple `===` pour comparer deux hashs : elle compare en temps constant, ce qui évite qu'un attaquant déduise progressivement la bonne valeur en mesurant le temps de réponse (attaque par timing).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un cookie est stocké côté navigateur (manipulable par l'utilisateur), une session côté serveur (identifiant opaque envoyé via cookie). Un jeton de connexion combine les deux pour une connexion longue durée. |
+| **Outils utilisables** | `setcookie()`, `$_SESSION`/`session_start()`, `hash_hmac()`/`hash_equals()` pour un jeton signé. |
+| **Pièges à éviter** | Stocker une donnée sensible dans un cookie ; comparer deux hash avec `==`/`===` plutôt que `hash_equals()`. |
+| **Bonnes pratiques** | `httponly`/`secure`/`samesite` sur tout cookie de session ; comparer le hash d'un jeton reçu, jamais le jeton en clair. |

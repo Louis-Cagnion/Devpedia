@@ -1,17 +1,17 @@
 # PHP
 
-PHP est considéré comme un langage de programmation de **haut niveau**, car il masque une grande partie des détails techniques liés à la machine et à la gestion de la mémoire. Contrairement aux langages de **bas niveau** comme le C, qui demandent au développeur de gérer manuellement la mémoire et les adresses, PHP automatise ces aspects grâce à un ramasse-miettes (*garbage collector*), permettant de se concentrer sur la logique applicative.
+Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) est un ensemble de règles qui permet d'écrire des instructions qu'un ordinateur peut exécuter. PHP en est un, conçu spécifiquement pour tourner sur un serveur web et générer des pages à la demande.
 
-Parmi les concepts essentiels manipulés en PHP, on retrouve notamment :
+```php
+<?php
+$nom = "Devpedia";   // une variable, voir le chapitre dédié
+echo "Bonjour, $nom"; // affiche : Bonjour, Devpedia
+```
 
-- Les variables et le typage dynamique
-- Les tableaux (indexés et associatifs)
-- La programmation orientée objet (classes, interfaces, héritage)
-- L'interaction avec les requêtes HTTP (GET, POST, sessions, cookies)
-- La connexion et la manipulation de bases de données (via PDO ou MySQLi)
+| Terme | Ce que ça veut dire |
+|---|---|
+| Haut niveau | Masque une grande partie des détails techniques liés à la machine, contrairement à un langage bas niveau comme le [C](/?c=langages-de-programmation&s=c&p=c) |
+| Ramasse-miettes (*garbage collector*) | Comme en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), la mémoire des valeurs devenues inutilisées est libérée automatiquement |
+| Requête HTTP | Le message qu'un navigateur envoie à un serveur pour demander une page — voir [Les échanges de données : API et HTTP](/?c=infrastructure&p=api-et-http). PHP s'exécute côté serveur, précisément pour répondre à ces requêtes |
 
-L'apprentissage de PHP permet de mieux comprendre comment un serveur web traite une requête, génère une réponse, et interagit avec un client (navigateur). Il aide à visualiser comment les données circulent entre le client, le serveur et la base de données, et comment le code est interprété à l'exécution.
-
-Grâce à sa simplicité et à son intégration native avec le web, PHP est largement utilisé pour le développement de sites web dynamiques, d'applications web, de systèmes de gestion de contenu (CMS) et d'API.
-
-Étudier PHP constitue également une excellente base pour comprendre le fonctionnement des applications web côté serveur, car de nombreux frameworks (Laravel, Symfony) et CMS (WordPress, Drupal) s'appuient sur ce langage.
+L'apprentissage de PHP permet de comprendre comment un serveur web traite une requête et interagit avec une base de données (voir [SQL](/?c=domain-specific-languages-dsl&p=sql)) pour générer une réponse. Il reste largement utilisé pour les sites dynamiques, les CMS (WordPress, Drupal) et les frameworks comme Laravel ou Symfony.

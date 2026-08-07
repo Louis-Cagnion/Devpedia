@@ -88,4 +88,15 @@ a.max()        # 3
 
 > **Note :** `*` entre deux tableaux NumPy multiplie élément par élément — pour un vrai produit matriciel (au sens de l'algèbre linéaire, utilisé massivement en deep learning, voir [Les réseaux de neurones](/?c=ia&p=reseaux-de-neurones)), l'opérateur est `@` (ou `np.matmul()`), jamais `*`.
 
-Voir aussi le chapitre sur pandas, qui construit ses `DataFrame` directement au-dessus des `ndarray` NumPy.
+Voir aussi le chapitre sur [pandas](/?c=data-science&p=pandas), qui construit ses `DataFrame` directement au-dessus des `ndarray` NumPy.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un `ndarray` NumPy stocke des valeurs brutes contiguës d'un seul type, contrairement à une liste Python (pointeurs vers des objets dispersés) — les opérations vectorisées sont exécutées par du code C compilé, bien plus rapide qu'une boucle Python. |
+| **Outils utilisables** | `np.array`/`zeros`/`ones`/`arange`/`linspace`, indexation/slicing multidimensionnel, broadcasting. |
+| **Pièges à éviter** | Utiliser `*` en pensant obtenir un produit matriciel — c'est une multiplication élément par élément ; le produit matriciel est `@`. |
+| **Bonnes pratiques** | Préférer une opération vectorisée à une boucle Python explicite sur un `ndarray`, pour profiter du gain de performance. |

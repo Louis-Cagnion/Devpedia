@@ -60,3 +60,14 @@ Get-Process -Name "*long_traitement*" | Stop-Process             # trouve ET ter
 ```
 
 > **`Get-Process` vs `Stop-Process`** : comme la paire `pgrep`/`pkill` en Bash, chercher un processus (lecture) et le terminer (action) restent deux cmdlets distinctes — combinées par un pipe plutôt que par un drapeau partagé. Le même risque existe qu'avec `pkill` : un filtre `-Name` trop large peut cibler plus de processus que prévu.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `Start-Job` lance une tâche d'arrière-plan dans un processus séparé. `Stop-Process` demande ou force l'arrêt d'un processus — Windows n'a pas de véritable équivalent des signaux Unix. |
+| **Outils utilisables** | `Get-Job`/`Receive-Job`/`Wait-Job`, `Get-Process`, `Stop-Process -Force`. |
+| **Pièges à éviter** | Cibler `Stop-Process` avec un filtre `-Name` trop large — risque d'arrêter plus de processus que prévu. |
+| **Bonnes pratiques** | Essayer `Stop-Process` sans `-Force` avant de forcer l'arrêt, quand l'application le permet. |

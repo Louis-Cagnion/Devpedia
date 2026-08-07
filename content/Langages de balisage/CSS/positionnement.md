@@ -4,7 +4,7 @@ order: 4
 
 # Le positionnement (position, z-index)
 
-La propriété `position` change fondamentalement la façon dont un élément est placé sur la page — au-delà du flux normal (chaque élément l'un après l'autre) que gèrent déjà Flexbox et Grid (cf. chapitres dédiés).
+La propriété `position` change fondamentalement la façon dont un élément est placé sur la page — au-delà du flux normal (chaque élément l'un après l'autre) que gèrent déjà [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox) et [Grid](/?c=langages-de-balisage&s=css&p=grid).
 
 ## `static` : le comportement par défaut
 
@@ -83,3 +83,14 @@ Se comporte comme `relative` tant que l'élément est visible dans son emplaceme
 ```
 
 > **Note :** `z-index` n'a d'effet que sur un élément **déjà positionné** (`relative`, `absolute`, `fixed` ou `sticky`) — sur un élément `static`, `z-index` est purement et simplement ignoré. Une valeur de `z-index` plus élevée s'affiche par-dessus une valeur plus faible, mais uniquement en comparaison d'éléments qui partagent le même "contexte d'empilement" (un groupe d'éléments comparés entre eux pour la superposition ; un élément positionné avec un `z-index`, une opacité inférieure à 1, ou une transformation crée un nouveau contexte pour ses propres enfants — leurs `z-index` s'y comparent entre eux, jamais directement à ceux de l'extérieur) — un détail qui explique certains cas où un `z-index` très élevé ne suffit pas à passer au-dessus d'un élément apparemment moins prioritaire.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `position` change comment un élément est placé : `static` (défaut, flux normal), `relative` (décalé, place réservée), `absolute` (retiré du flux, relatif à un ancêtre positionné), `fixed` (relatif à la fenêtre), `sticky` (hybride relative/fixed). `z-index` gère la superposition, mais seulement entre éléments positionnés. |
+| **Outils utilisables** | `position`, `top`/`right`/`bottom`/`left`, `z-index`. |
+| **Pièges à éviter** | Un `absolute` sans ancêtre `relative` se positionne par rapport à toute la page, pas au conteneur visuel attendu ; `z-index` est ignoré sur un élément `static`. |
+| **Bonnes pratiques** | Toujours poser `position: relative` sur le conteneur d'un enfant en `absolute`, même sans décalage propre à ce conteneur. |

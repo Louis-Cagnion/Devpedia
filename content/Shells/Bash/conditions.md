@@ -115,3 +115,14 @@ esac
 ```
 
 `|` sépare plusieurs motifs pour un même bloc, `*)` capture tout le reste (équivalent du `default` d'un `switch`), et `;;` marque la fin de chaque bloc.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Bash n'a pas d'opérateurs de comparaison intégrés au langage — `if` évalue le code de sortie d'une commande (`test`, `[`, `[[`). `[[ ]]` (Bash) est plus permissif que `[ ]` (POSIX). |
+| **Outils utilisables** | Opérateurs numériques (`-eq`, `-lt`...), opérateurs de chaînes (`==`, `-z`, `-n`), tests de fichiers (`-f`, `-d`, `-e`), `case`. |
+| **Pièges à éviter** | Utiliser `==` dans `[ ]` classique en pensant comparer des nombres — la comparaison se fait comme du texte, pas numériquement. |
+| **Bonnes pratiques** | Préférer `[[ ]]` à `[ ]` en Bash (gère mieux les variables non définies, `&&`/`\|\|` directs) sauf besoin de portabilité stricte vers `sh`. |

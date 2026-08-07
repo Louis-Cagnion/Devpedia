@@ -75,3 +75,14 @@ source ~/.bashrc
 # équivalent, plus court :
 . ~/.bashrc
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une variable d'environnement est transmise automatiquement aux processus enfants, contrairement à une variable Bash classique — `export` la fait passer de l'une à l'autre, dans un seul sens (parent vers enfant). |
+| **Outils utilisables** | `export`, `$PATH`, `~/.bashrc` (terminal interactif) vs `~/.bash_profile` (login), `alias`, `source`. |
+| **Pièges à éviter** | Modifier une variable exportée dans un sous-script en espérant que ça se répercute sur le script appelant — chaque processus a sa propre copie de l'environnement. |
+| **Bonnes pratiques** | Placer les `export`/`alias` destinés à chaque nouveau terminal dans `~/.bashrc` ; utiliser `source ~/.bashrc` pour appliquer un changement sans rouvrir de terminal. |

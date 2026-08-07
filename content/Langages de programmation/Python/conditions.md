@@ -98,3 +98,14 @@ match jour:
     case _:            # '_' : équivalent du "default" d'un switch
         print("Autre jour")
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `if`/`elif`/`else` structure le contrôle de flux, sans accolades — l'indentation délimite les blocs. Certaines valeurs (`0`, `""`, `[]`, `None`) sont "falsy" sans être `False`. |
+| **Outils utilisables** | Opérateur ternaire (`x if cond else y`), opérateur morse (`:=`), `match`/`case` (Python 3.10+). |
+| **Pièges à éviter** | Une indentation incohérente — provoque une `IndentationError`, pas un simple avertissement. |
+| **Bonnes pratiques** | Tester directement `if collection:` plutôt que `if len(collection) > 0:`, en s'appuyant sur le comportement truthy/falsy. |

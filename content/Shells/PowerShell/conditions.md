@@ -99,3 +99,14 @@ switch ($jour) {
 ```
 
 `$_` désigne la valeur testée (celle passée entre parenthèses à `switch`), `-in` teste son appartenance à une liste, et `default` capture tout le reste — équivalent du `*)` final d'un `case` Bash.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | PowerShell a de vrais opérateurs de comparaison intégrés au langage (`-eq`, `-lt`...), contrairement à Bash qui s'appuie sur des commandes de test. Un seul jeu d'opérateurs sert pour les nombres et les chaînes. |
+| **Outils utilisables** | `Test-Path` (remplace `-f`/`-d`/`-e` de Bash), `-and`/`-or`/`-not`, `-like`/`-match`. |
+| **Pièges à éviter** | Oublier que `-eq` sur des chaînes est insensible à la casse par défaut — `-ceq` force la sensibilité à la casse. |
+| **Bonnes pratiques** | Utiliser `Test-Path -PathType Leaf/Container` pour distinguer explicitement un fichier d'un dossier. |

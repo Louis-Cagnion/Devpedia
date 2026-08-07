@@ -90,3 +90,14 @@ else:
 ## Pas d'accès direct à l'index dans un `for`
 
 Contrairement à une boucle `for` en C (`for (int i = 0; i < taille; i++)`), la boucle Python ne manipule jamais explicitement un index — `enumerate()` est le moyen idiomatique d'en obtenir un quand c'est nécessaire, plutôt que d'itérer sur `range(len(liste))` puis d'indexer manuellement.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `for` parcourt directement les éléments d'un itérable (jamais un compteur manuel) ; `range()` génère une séquence de nombres si besoin. `enumerate()`/`zip()` couvrent les besoins d'index et de parcours parallèle. |
+| **Outils utilisables** | `enumerate()`, `zip()`, la clause `else` d'une boucle (exécutée si aucun `break`). |
+| **Pièges à éviter** | Itérer sur `range(len(liste))` puis indexer manuellement, plutôt que d'utiliser directement `for element in liste` ou `enumerate()`. |
+| **Bonnes pratiques** | Utiliser `enumerate()` dès qu'un index est nécessaire en plus de la valeur, plutôt que de le gérer manuellement. |

@@ -4,7 +4,7 @@ order: 1
 
 # Les fichiers de démarrage
 
-Bash charge selon le cas `~/.bashrc`, `~/.bash_profile` ou `~/.profile` (cf. chapitre Bash sur les variables d'environnement). Zsh découpe ce même besoin en **quatre fichiers distincts**, chacun avec un rôle précis — comprendre cette distinction évite les surprises classiques ("ma variable n'est pas visible dans mon script alors qu'elle marche dans mon terminal").
+Bash charge selon le cas `~/.bashrc`, `~/.bash_profile` ou `~/.profile` (voir [Variables d'environnement](/?c=shells&s=bash&p=variables-denvironnement) en Bash). Zsh découpe ce même besoin en **quatre fichiers distincts**, chacun avec un rôle précis — comprendre cette distinction évite les surprises classiques ("ma variable n'est pas visible dans mon script alors qu'elle marche dans mon terminal").
 
 ## Les quatre fichiers, et quand chacun se charge
 
@@ -12,7 +12,7 @@ Bash charge selon le cas `~/.bashrc`, `~/.bash_profile` ou `~/.profile` (cf. cha
 |---|---|
 | `~/.zshenv` | **Toute** invocation de zsh, y compris les scripts non interactifs et les [sous-shells](/?c=shells&s=bash&p=architecture-dun-shell) — même chose que le comportement de `~/.bashrc` serait si Bash le chargeait systématiquement, ce qu'il ne fait pas |
 | `~/.zprofile` | Uniquement un shell de connexion (*login shell*) — équivalent de `~/.bash_profile` |
-| `~/.zshrc` | Uniquement un shell interactif — équivalent de `~/.bashrc`, c'est le fichier le plus modifié en pratique (alias, `PROMPT`, plugins Oh My Zsh, cf. chapitre dédié) |
+| `~/.zshrc` | Uniquement un shell interactif — équivalent de `~/.bashrc`, c'est le fichier le plus modifié en pratique (alias, `PROMPT`, plugins [Oh My Zsh](/?c=shells&s=zsh&p=oh-my-zsh)) |
 | `~/.zlogin` | Uniquement un shell de connexion, **après** `~/.zshrc` — rarement utilisé, pour des commandes qui doivent s'exécuter après que l'environnement interactif soit prêt |
 
 > **Note :** contrairement à Bash, où l'ordre de chargement exact selon "login" ou "non-login" est une source récurrente de confusion, zsh charge toujours dans le même ordre fixe : `.zshenv` → `.zprofile` (si login) → `.zshrc` (si interactif) → `.zlogin` (si login). C'est prévisible, indépendamment du contexte d'invocation.
@@ -39,3 +39,14 @@ source ~/.zshrc
 # équivalent, plus court :
 . ~/.zshrc
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Zsh charge toujours dans le même ordre fixe : `.zshenv` → `.zprofile` (login) → `.zshrc` (interactif) → `.zlogin` (login) — plus prévisible que la logique Bash login/non-login. |
+| **Outils utilisables** | `~/.zshenv` (toute invocation), `~/.zshrc` (interactif, le plus modifié en pratique), `source`/`.`. |
+| **Pièges à éviter** | Mettre une commande lente ou qui affiche quelque chose dans `~/.zshenv` — il est chargé même par des outils qui invoquent zsh en coulisses. |
+| **Bonnes pratiques** | Réserver `~/.zshenv` aux variables d'environnement strictement nécessaires ; mettre alias, `PROMPT` et plugins dans `~/.zshrc`. |

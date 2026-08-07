@@ -64,3 +64,14 @@ Exemple de résolution, avec `$classe = 'App\Services\Facturation\Calculateur'` 
 Le `return;` après le `if` s'exécute, que le fichier existe ou non (il est placé après le `if (file_exists(...))`, pas dedans) : les préfixes de namespaces étant mutuellement exclusifs sur leur premier segment, une fois le bon préfixe trouvé, continuer à tester les autres serait toujours inutile.
 
 > **Convention indispensable pour que ça fonctionne :** le nom du namespace + le nom de la classe doivent encoder littéralement le chemin du fichier — un fichier par classe, arborescence de dossiers = arborescence de namespaces.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `spl_autoload_register()` enregistre une fonction appelée automatiquement dès qu'une classe non chargée est référencée — plus besoin de `require` manuel pour chaque classe. |
+| **Outils utilisables** | `spl_autoload_register()`, correspondance préfixe de namespace → dossier. |
+| **Pièges à éviter** | Ne pas faire correspondre exactement l'arborescence de dossiers à celle des namespaces — le résolveur ne retrouverait plus le fichier. |
+| **Bonnes pratiques** | Respecter la convention "un fichier par classe, arborescence de dossiers = arborescence de namespaces" pour que l'autoloading fonctionne de façon prévisible. |

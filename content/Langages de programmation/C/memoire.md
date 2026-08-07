@@ -86,7 +86,7 @@ p = NULL; // bonne pratique : empêche une utilisation accidentelle après libé
 | **Fuite mémoire** (*memory leak*) | Un bloc `malloc`é n'est jamais `free()` | La mémoire utilisée par le programme augmente sans jamais redescendre |
 | **Use-after-free** | Le programme déréférence un pointeur après son `free()` | Comportement indéfini : donnée corrompue, crash, ou pire, silencieusement "ça marche" |
 | **Double free** | `free()` appelé deux fois sur le même pointeur | Corruption du gestionnaire de mémoire, crash souvent différé et difficile à tracer |
-| **Débordement de tampon** (*buffer overflow*) | Écriture au-delà de la taille réellement allouée d'un buffer | Corruption de mémoire adjacente — et une porte ouverte à l'exécution de code arbitraire (cf. plus bas) |
+| **Débordement de tampon** (*buffer overflow*) | Écriture au-delà de la taille réellement allouée d'un buffer | Corruption de mémoire adjacente — et une porte ouverte à l'exécution de code arbitraire (voir plus bas) |
 
 ```
 int *p = malloc(sizeof(int));
@@ -107,7 +107,7 @@ strcpy(buffer, entree_utilisateur); // AUCUNE vérification de la taille de entr
 
 Si `entree_utilisateur` dépasse 16 octets, `strcpy()` continue d'écrire au-delà des limites de `buffer` — dans la mémoire qui suit immédiatement sur la pile, qui peut contenir d'autres variables locales, ou l'**adresse de retour** de la fonction courante (l'endroit où le programme doit reprendre son exécution après le `return`). Un attaquant qui maîtrise précisément le contenu écrit peut, dans le pire cas, remplacer cette adresse de retour par l'adresse de son choix — détournant le flux d'exécution du programme vers du code qu'il contrôle (*stack smashing*).
 
-> **Note :** c'est le même principe qu'une injection SQL (cf. chapitre PHP sur la sécurité) ou une injection de commande Bash (cf. chapitre Bash sur les variables) — une entrée non contrôlée qui modifie la **structure** de ce qui va s'exécuter, au lieu de rester une donnée passive.
+> **Note :** c'est le même principe qu'une [injection SQL](/?c=langages-de-programmation&s=php&p=securite) ou une [injection de commande Bash](/?c=shells&s=bash&p=variables) — une entrée non contrôlée qui modifie la **structure** de ce qui va s'exécuter, au lieu de rester une donnée passive.
 
 ### S'en protéger
 
@@ -138,4 +138,15 @@ sizeof(char);      // toujours 1, par définition du standard C
 sizeof(int) * 10;  // taille nécessaire pour 10 entiers -> à passer à malloc()
 ```
 
-Voir aussi le chapitre sur les pointeurs, dont la compréhension est un prérequis à celui-ci.
+Voir aussi [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs), dont la compréhension est un prérequis à celui-ci.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Le C laisse au développeur la responsabilité complète de la mémoire dynamique (heap) : `malloc`/`calloc`/`realloc` pour allouer, `free` pour libérer — la stack (variables locales) est gérée automatiquement. |
+| **Outils utilisables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind pour détecter fuites et accès invalides. |
+| **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon — ce dernier pouvant être exploité comme faille de sécurité. |
+| **Bonnes pratiques** | Toujours vérifier qu'un `malloc`/`realloc` n'a pas renvoyé `NULL` ; mettre un pointeur à `NULL` juste après son `free()` ; préférer `fgets`/`strncpy`/`snprintf` aux fonctions non bornées (`gets`/`strcpy`/`sprintf`). |

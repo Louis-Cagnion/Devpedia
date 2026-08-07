@@ -32,3 +32,14 @@ Le coût ne se limite pas au risque d'incohérence dans les données : le code q
 Le signal apparaît chaque fois que deux mécanismes indépendants peuvent, l'un comme l'autre, produire ou représenter la même information : un identifiant dérivé d'un nom de fichier ET stocké séparément en base ; une configuration lue depuis un fichier ET redéfinie par une variable d'environnement, sans qu'un seul des deux ne soit clairement prioritaire par construction ; un statut calculé à la volée ET mis en cache, sans invalidation garantie entre les deux.
 
 Dans chaque cas, la question à trancher est la même : **lequel des deux mécanismes est la source, et lequel peut être supprimé ou réduit à une simple dérivation du premier ?** Garder les deux "au cas où" n'élimine jamais le risque — il ne fait que le déplacer au moment, inévitable, où ils finiront par diverger.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Deux mécanismes capables de représenter la même information (frontmatter + heading, fichier + variable d'environnement...) obligent le code à choisir une règle de priorité — une source de bugs à elle seule, pas juste un style. |
+| **Outils utilisables** | Une seule règle simple sans exception (ex : le titre vient toujours du `# Heading`, jamais d'un champ `title` séparé). |
+| **Pièges à éviter** | Garder deux mécanismes "au cas où" en pensant éliminer le risque d'incohérence — cela ne fait que le déplacer au moment où ils divergeront. |
+| **Bonnes pratiques** | Identifier lequel des deux mécanismes est la vraie source, et réduire l'autre à une simple dérivation du premier, ou le supprimer. |

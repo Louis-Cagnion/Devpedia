@@ -83,3 +83,14 @@ Les deux styles coexistent dans OCaml — `ref`, `for` et `while` existent réel
 | Modèle mental | "Que faire, dans quel ordre" | "Quelle valeur, à partir de quelles autres valeurs" |
 
 Aucun style n'est strictement supérieur : le style impératif colle souvent plus naturellement à une ressource qui change réellement dans le temps (l'état d'une interface, une connexion réseau), tandis que le style fonctionnel excelle sur des transformations de données pures — la suite de ce sujet détaille les raisons concrètes de cet avantage plutôt que de le prendre pour acquis.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | En OCaml, `if` et tout bloc sont des expressions (produisent une valeur), `let` crée une liaison immuable (pas une variable réassignable), et la récursion remplace la boucle à compteur mutable. |
+| **Outils utilisables** | `let ... in`, `if ... then ... else` comme expression, `let rec` pour une fonction récursive. |
+| **Pièges à éviter** | Confondre une nouvelle liaison (`let x = x + 1`) avec une réassignation — l'ancien `x` n'est pas modifié, seulement masqué dans la portée qui suit. |
+| **Bonnes pratiques** | Choisir le style selon la nature du problème : impératif pour un état qui change réellement dans le temps, fonctionnel pour une transformation de données pure. |

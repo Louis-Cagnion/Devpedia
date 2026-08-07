@@ -123,6 +123,8 @@ Les prototypes sont des fonctions intégrées à l'objet array par défaut, perm
     arr.concat([6, 7]); // [1, 2, 3, 4, 5, 6, 7]
 ```
 
+> **Piège :** certaines méthodes modifient le tableau d'origine (`push`, `pop`, `splice`, `sort`, `reverse`), d'autres renvoient toujours une copie sans y toucher (`slice`, `map`, `filter`, `concat`). Confondre les deux catégories est une source fréquente de bugs — par exemple `arr.sort()` change silencieusement `arr` lui-même, alors qu'on s'attend parfois à obtenir une copie triée.
+
 ### Le destructuring et le spread
 
 Le **destructuring** permet d'extraire directement des valeurs d'un tableau dans des variables, dans l'ordre des éléments.
@@ -136,3 +138,14 @@ Le **spread** (`...`) permet de "déplier" un tableau, ce qui est utile pour le 
     const copie = [...arr]; // copie independante de arr
     const fusion = [...arr, 4, 5]; // [1, 2, 3, 4, 5]
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un tableau stocke une liste ordonnée de valeurs, indexée à partir de 0, pouvant mélanger n'importe quel type. Certaines méthodes le modifient directement, d'autres renvoient une copie transformée. |
+| **Outils utilisables** | `push`/`pop`/`shift`/`unshift`, `map`/`filter`/`reduce`, `find`/`findIndex`, `sort`, destructuring et spread (`...`). |
+| **Pièges à éviter** | Confondre une méthode qui mute le tableau d'origine (`sort`, `splice`, `reverse`) avec une méthode qui renvoie une copie (`slice`, `map`, `filter`). |
+| **Bonnes pratiques** | Utiliser `[...arr]` ou `slice()` avant une opération mutante si l'original doit rester intact ; fournir une fonction de comparaison à `sort()` pour trier des nombres correctement. |

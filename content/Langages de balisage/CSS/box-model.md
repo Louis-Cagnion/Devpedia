@@ -91,4 +91,15 @@ p { margin-bottom: 20px; }
 p + p { margin-top: 30px; }
 ```
 
-> **Note :** entre deux éléments **en flux normal** (pas en `flexbox`/`grid`, cf. chapitres dédiés), les marges verticales adjacentes ne s'additionnent **pas** — seule la plus grande des deux s'applique (ici, `30px`, pas `50px`). Ce comportement, souvent surprenant au premier abord, ne s'applique qu'aux marges verticales, jamais horizontales, et disparaît entièrement dans un conteneur Flexbox ou Grid.
+> **Note :** entre deux éléments **en flux normal** (pas en [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox)/[Grid](/?c=langages-de-balisage&s=css&p=grid)), les marges verticales adjacentes ne s'additionnent **pas** — seule la plus grande des deux s'applique (ici, `30px`, pas `50px`). Ce comportement, souvent surprenant au premier abord, ne s'applique qu'aux marges verticales, jamais horizontales, et disparaît entièrement dans un conteneur Flexbox ou Grid.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Chaque élément est une boîte à 4 couches concentriques : content, padding, border, margin. Par défaut, `width` ne définit que le contenu (`padding`/`border` s'ajoutent) ; `box-sizing: border-box` inclut tout dans la valeur déclarée. |
+| **Outils utilisables** | `box-sizing: border-box` (souvent appliqué globalement), les raccourcis `margin`/`padding` à 1, 2 ou 4 valeurs. |
+| **Pièges à éviter** | Oublier que `width` n'inclut pas `padding`/`border` par défaut — une boîte de "300px" peut en occuper 344 à l'écran. |
+| **Bonnes pratiques** | Appliquer `* { box-sizing: border-box; }` globalement en début de projet — comportement plus prévisible, devenu la convention de facto. |

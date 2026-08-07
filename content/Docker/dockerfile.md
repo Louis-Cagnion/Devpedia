@@ -97,4 +97,15 @@ node_modules/
 .env
 ```
 
-Exclure `node_modules/` accélère le build (moins de données à transmettre) ; exclure `.env` évite qu'un secret local ne se retrouve embarqué dans une image (cf. chapitre sur les bonnes pratiques et la sécurité).
+Exclure `node_modules/` accélère le build (moins de données à transmettre) ; exclure `.env` évite qu'un secret local ne se retrouve embarqué dans une image (voir [Bonnes pratiques et sécurité](/?c=docker&p=bonnes-pratiques-et-securite)).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un Dockerfile décrit la construction d'une image, instruction par instruction. Chaque instruction crée une couche mise en cache ; l'ordre compte pour maximiser la réutilisation du cache. Le conteneur vit exactement aussi longtemps que son processus PID 1. |
+| **Outils utilisables** | `FROM`/`WORKDIR`/`COPY`/`RUN`/`CMD`, builds multi-étapes, `.dockerignore`. |
+| **Pièges à éviter** | Copier tout le code avant d'installer les dépendances (invalide le cache à chaque commit) ; garder un conteneur "en vie" avec une commande qui ne fait rien (`sleep infinity`) plutôt que de lancer le vrai service au premier plan. |
+| **Bonnes pratiques** | Copier les fichiers de dépendances avant le reste du code source ; utiliser un build multi-étapes pour ne livrer que le binaire final, sans la chaîne de compilation. |

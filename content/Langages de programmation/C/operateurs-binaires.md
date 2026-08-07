@@ -123,3 +123,14 @@ Historiquement, `n & 1` était plus rapide que `n % 2`, et `n << 1` plus rapide 
 | Basculer un bit | `x ^= MASQUE` |
 | Tester un bit | `if (x & MASQUE)` |
 | Créer un masque pour le bit *n* | `1u << n` |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Les opérateurs binaires (`&`, `\|`, `^`, `~`, `<<`, `>>`) travaillent bit à bit — utilisés pour les drapeaux, permissions, et masques. Ne pas confondre avec `&&`/`\|\|` (logiques). |
+| **Outils utilisables** | Masques (`\|=` active, `&= ~` désactive, `^=` bascule, `&` teste un bit). |
+| **Pièges à éviter** | Décaler d'un nombre de bits ≥ la largeur du type (comportement indéfini) ; utiliser `>>` sur un signé négatif (dépend de l'implémentation). |
+| **Bonnes pratiques** | Réserver les opérations binaires aux types non signés ; écrire `n % 2`/`n * 2` plutôt que `n & 1`/`n << 1` pour la lisibilité — un compilateur moderne optimise déjà l'équivalence. |

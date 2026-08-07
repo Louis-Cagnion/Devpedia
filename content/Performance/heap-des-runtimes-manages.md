@@ -20,3 +20,14 @@ Deux effets concrets d'un heap surdimensionné par rapport au besoin réel :
 La plupart des runtimes managés exposent un réglage explicite pour la taille du heap (`-Xmx`/`-Xms` pour la JVM, par exemple) — plafonner cette taille à ce que l'usage réel demande, plutôt que de laisser l'heuristique par défaut réserver une fraction de toute la RAM disponible, évite les deux effets ci-dessus. C'est ce que fait un script comme `start-elasticsearch.ps1` en imposant 1 Go par défaut (`-HeapSize` pour ajuster) au lieu des 16 Go auto-détectés : largement suffisant pour un usage local, et un démarrage nettement plus rapide.
 
 > **Note :** contrairement au heap C, où une taille trop petite provoque un échec d'allocation immédiat et visible (`malloc` renvoie `NULL`), un heap managé trop petit se traduit plutôt par des cycles de ramasse-miettes plus fréquents, voire une erreur `OutOfMemoryError` si même la mémoire libérable ne suffit plus — une dégradation progressive plutôt qu'un échec net.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un runtime managé (JVM, CLR, V8) réserve un heap dimensionné automatiquement selon la RAM disponible, pas selon le besoin réel — souvent surdimensionné pour un usage local. |
+| **Outils utilisables** | Réglages explicites de taille de heap (`-Xmx`/`-Xms` pour la JVM). |
+| **Pièges à éviter** | Laisser l'heuristique par défaut réserver une grosse fraction de la RAM sur une machine de développement — moins de cache disque, ramasse-miettes plus lent à s'échauffer. |
+| **Bonnes pratiques** | Plafonner explicitement la taille du heap à ce que l'usage réel demande, plutôt que de garder la valeur auto-détectée. |

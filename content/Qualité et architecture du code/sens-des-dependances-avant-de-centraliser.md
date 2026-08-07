@@ -32,3 +32,14 @@ Un cycle : `browser.py` importerait un module qui, transitivement, l'importe dé
 ## Ce n'est pas une raison pour ne jamais centraliser
 
 Ce principe ne dit pas d'éviter la centralisation — la [source unique de vérité](/?c=qualite-et-architecture-du-code&p=source-unique-de-verite) reste souhaitable. Il dit de vérifier le graphe de dépendances **avant** de déplacer quoi que ce soit, et d'accepter qu'une information reste dans un module "moins logique" en apparence quand la seule alternative est un cycle — la clarté du rangement compte moins que l'absence de cycle.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Centraliser une information dans un module plus "haut" que certains de ses utilisateurs actuels crée un import circulaire, pas une simplification — le sens des dépendances existantes prime sur le rangement logique du domaine. |
+| **Outils utilisables** | Se demander "qui importe qui, aujourd'hui ?" avant tout déplacement de configuration partagée. |
+| **Pièges à éviter** | Déplacer une information vers un emplacement "logique" sans vérifier que ses utilisateurs actuels ne se trouvent pas plus bas dans le graphe de dépendances. |
+| **Bonnes pratiques** | Accepter qu'une information reste dans un module "moins logique" en apparence quand la seule alternative est un cycle, documenté en commentaire pour éviter une future "correction" malvenue. |

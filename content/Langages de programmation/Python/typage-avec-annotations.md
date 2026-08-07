@@ -4,7 +4,7 @@ order: 11
 
 # Le typage avec les annotations
 
-Python reste **dynamiquement typé** même avec des annotations de type : contrairement à PHP (cf. chapitre sur les fonctions typées en PHP), où un type déclaré est vérifié et appliqué **à l'exécution**, les annotations Python ne sont que des indications **facultatives**, jamais vérifiées par l'interpréteur lui-même.
+Python reste **dynamiquement typé** même avec des annotations de type : contrairement à PHP (voir [Les fonctions et méthodes les plus utiles](/?c=langages-de-programmation&s=php&p=methodes)), où un type déclaré est vérifié et appliqué **à l'exécution**, les annotations Python ne sont que des indications **facultatives**, jamais vérifiées par l'interpréteur lui-même.
 
 ## Annoter des variables et des fonctions
 
@@ -54,3 +54,14 @@ mypy mon_script.py
 - Documentation directement lisible dans le code, sans dépendre de commentaires à jour manuellement.
 - Meilleure autocomplétion et détection d'erreurs dans l'éditeur (VS Code, PyCharm...), avant même de lancer `mypy` ou le programme.
 - Base indispensable pour des projets Python de grande taille, où l'absence de vérification de type peut rendre les refactorisations risquées sans cette aide.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Les annotations de type Python (`x: int`, `-> str`) sont purement documentaires — jamais vérifiées par l'interpréteur, contrairement à un langage à typage statique ou même à PHP. |
+| **Outils utilisables** | Le module `typing` (`Optional`, `Union`, `List`...), `mypy` pour une vérification externe. |
+| **Pièges à éviter** | Croire qu'une annotation empêche réellement de passer une valeur du mauvais type — rien ne l'empêche à l'exécution. |
+| **Bonnes pratiques** | Annoter systématiquement un projet de taille significative, et faire tourner `mypy` en complément pour détecter les incohérences avant l'exécution. |

@@ -67,3 +67,14 @@ Le dictionnaire remplit exactement le même rôle que la chaîne de `if`/`elif`,
 ## Où s'arrêter
 
 Cette généralisation a un coût : une structure de données trop abstraite pour deux ou trois cas qui ne grandiront pas complique la lecture sans apporter de bénéfice réel (voir le principe KISS/YAGNI). Le seuil de bon sens : dès qu'on écrit la **troisième** répétition d'un même patron, c'est le bon moment pour la remplacer par une structure indexée — avant, ce n'est souvent pas encore rentable.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une même instruction répétée pour chaque élément d'un ensemble (options CLI, `if`/`elif` par cas) doit s'appuyer sur une structure indexée (liste, dictionnaire) parcourue par du code générique — ajouter un élément devient modifier une donnée, pas ajouter du code. |
+| **Outils utilisables** | Une liste de dictionnaires parcourue en boucle, un dictionnaire de dispatch à la place d'une chaîne `if`/`elif`. |
+| **Pièges à éviter** | Généraliser dès la première ou la deuxième occurrence — une structure trop abstraite pour un cas qui ne grandira pas complique la lecture sans bénéfice réel. |
+| **Bonnes pratiques** | Attendre la troisième répétition d'un même patron avant de le remplacer par une structure indexée. |

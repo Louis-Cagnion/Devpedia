@@ -86,7 +86,7 @@ liste_carres = [x ** 2 for x in range(10)]  # liste, tout est calculé immédiat
 sum(x ** 2 for x in range(1000000))    # calcule la somme SANS jamais stocker les 1M de valeurs
 ```
 
-Voir aussi le chapitre sur les fonctions (closures) et sur NumPy/pandas, où la distinction mémoire immédiate vs paresseuse redevient centrale à grande échelle.
+Voir aussi [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions) (closures) et [NumPy](/?c=data-science&p=numpy), où la distinction mémoire immédiate vs paresseuse redevient centrale à grande échelle.
 
 ## Générateur vs thread : un seul flux à la fois
 
@@ -109,3 +109,14 @@ print(next(t))     # "Reprise après A" s'affiche ICI, jamais entre-temps
 ```
 
 L'ordre d'affichage est **entièrement déterministe** et reproductible à chaque exécution — à l'inverse de deux threads indépendants, dont l'ordre d'exécution relatif n'est pas prévisible sans synchronisation explicite (mutex, `pthread_join`...). C'est pour ça qu'on parle de **coroutine** plutôt que de parallélisme pour décrire `yield` : la fonction "coopère" avec son appelant en lui rendant explicitement la main à chaque `yield`, au lieu d'être interrompue de force par un ordonnanceur comme le ferait un thread.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un objet itérable implémente `__iter__`, un itérateur `__next__`. Une fonction avec `yield` devient un générateur — paresseux, mémoire constante, mais parcourable une seule fois. |
+| **Outils utilisables** | `iter()`/`next()`, `yield`, expression génératrice (`(x for x in ...)`). |
+| **Pièges à éviter** | Réutiliser un générateur déjà épuisé, en s'attendant à ce qu'il reproduise ses valeurs. |
+| **Bonnes pratiques** | Préférer un générateur à une liste dès que la collection est grande et parcourue une seule fois séquentiellement. |

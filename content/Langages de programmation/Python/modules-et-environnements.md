@@ -78,7 +78,7 @@ pip install requests             # installe UNIQUEMENT dans cet environnement, p
 deactivate                        # quitte l'environnement virtuel
 ```
 
-> **Note :** une fois activé, `pip install` et `python` pointent vers les exécutables **de l'environnement virtuel**, pas ceux installés globalement sur le système — c'est ce qui garantit l'isolation. Le dossier `.venv/` ne doit jamais être versionné avec Git (cf. chapitre `.gitignore`) : il se régénère entièrement à partir de `requirements.txt`.
+> **Note :** une fois activé, `pip install` et `python` pointent vers les exécutables **de l'environnement virtuel**, pas ceux installés globalement sur le système — c'est ce qui garantit l'isolation. Le dossier `.venv/` ne doit jamais être versionné avec Git (voir [Le fichier .gitignore](/?c=git&p=gitignore)) : il se régénère entièrement à partir de `requirements.txt`.
 
 ## Organiser un projet en package
 
@@ -97,3 +97,14 @@ from mon_package.utils import une_fonction
 ```
 
 Un simple fichier `__init__.py` (même vide) suffit à faire d'un dossier un **package** importable, regroupant plusieurs modules sous un même espace de noms.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `import` charge un module ; `if __name__ == "__main__":` distingue exécution directe et import. `pip` installe des bibliothèques, un environnement virtuel isole les dépendances d'un projet. |
+| **Outils utilisables** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `__init__.py` pour un package. |
+| **Pièges à éviter** | Installer des bibliothèques globalement plutôt que dans un environnement virtuel — conflits de versions entre projets. |
+| **Bonnes pratiques** | Toujours travailler dans un environnement virtuel par projet ; versionner `requirements.txt`, jamais `.venv/`. |

@@ -53,7 +53,7 @@ fi
 
 ## "Renvoyer" une vraie donnée : `echo` + substitution de commande
 
-Pour récupérer une donnée calculée (pas juste un succès/échec), la convention est de l'afficher avec `echo`, et de capturer cette sortie depuis l'appelant via `$(...)` (cf. chapitre sur les variables) :
+Pour récupérer une donnée calculée (pas juste un succès/échec), la convention est de l'afficher avec `echo`, et de capturer cette sortie depuis l'appelant via [`$(...)`](/?c=shells&s=bash&p=variables) :
 
 ```bash
 addition() {
@@ -77,4 +77,15 @@ calculer() {
 }
 ```
 
-Voir aussi le chapitre sur les variables (variables spéciales `$1`, `$@`, `$#`, `$?`, déjà réutilisées ici dans le contexte des fonctions).
+Voir aussi [Les variables](/?c=shells&s=bash&p=variables) (variables spéciales `$1`, `$@`, `$#`, `$?`, déjà réutilisées ici dans le contexte des fonctions).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une fonction Bash reçoit ses arguments comme un script (`$1`, `$2`...), jamais via des paramètres nommés. `return` fixe uniquement un code de sortie (0-255) — pour une vraie donnée, on utilise `echo` capturé via `$(...)`. |
+| **Outils utilisables** | `$FUNCNAME`, `$@`/`$#`, `local` pour une variable propre à la fonction. |
+| **Pièges à éviter** | Confondre `return` (statut, pour `if`) et `echo`+`$(...)` (donnée, pour être stockée) ; oublier `local`, ce qui rend une variable visible globalement après le premier appel. |
+| **Bonnes pratiques** | Toujours déclarer `local` une variable qui n'a pas besoin d'exister en dehors de la fonction. |

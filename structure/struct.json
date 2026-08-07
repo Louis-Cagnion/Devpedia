@@ -501,7 +501,7 @@
               "label": "La gestion des erreurs"
             },
             {
-              "id": "HTMLElements",
+              "id": "html-elements",
               "label": "Les HTMLElements"
             },
             {
@@ -563,7 +563,7 @@
               "label": "Les boucles"
             },
             {
-              "id": "structuresDeLangagues",
+              "id": "structures-de-langage",
               "label": "Les structures de langage"
             },
             {

@@ -33,7 +33,7 @@ int main(void)
 }
 ```
 
-`main.c` n'a besoin que de connaître la **signature** de `addition()` (via le `#include "calculs.h"`) pour l'appeler — le corps réel est fourni au moment de l'édition de liens (cf. chapitre sur la compilation), à partir du fichier objet compilé depuis `calculs.c`.
+`main.c` n'a besoin que de connaître la **signature** de `addition()` (via le `#include "calculs.h"`) pour l'appeler — le corps réel est fourni au moment de [l'édition de liens](/?c=langages-de-programmation&s=c&p=compilation), à partir du fichier objet compilé depuis `calculs.c`.
 
 ## `#include <...>` vs `#include "..."`
 
@@ -67,3 +67,14 @@ int addition(int a, int b);
 ```
 
 > **Note :** un header ne doit contenir que des **déclarations** (prototypes de fonctions, `struct`, `typedef`, constantes), jamais le corps d'une fonction non-`static`/non-`inline` — sinon, chaque fichier `.c` qui l'inclut obtiendrait sa propre copie de la définition, provoquant une erreur "multiple definition" à l'édition de liens.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un header (`.h`) contient des déclarations, pas des définitions — il permet à plusieurs fichiers `.c` de partager les mêmes signatures sans les dupliquer. |
+| **Outils utilisables** | `#include <...>` (bibliothèque système) vs `#include "..."` (fichier du projet) ; include guards (`#ifndef`/`#define`/`#endif` ou `#pragma once`). |
+| **Pièges à éviter** | Mettre le corps d'une fonction dans un header — provoque une erreur "multiple definition" dès que plusieurs fichiers l'incluent. |
+| **Bonnes pratiques** | Toujours protéger un header par un include guard, pour supporter une inclusion indirecte multiple sans erreur. |

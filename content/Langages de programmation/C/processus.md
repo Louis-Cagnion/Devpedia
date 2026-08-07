@@ -95,4 +95,15 @@ int main(void)
 
 > **Note :** un processus enfant terminé mais jamais "récupéré" par un `wait()` du parent reste un **processus zombie** dans la table des processus du système, jusqu'à ce que son parent appelle `wait()` (ou se termine lui-même).
 
-Voir aussi le chapitre sur les threads, une alternative plus légère à `fork()` quand les tâches doivent partager la même mémoire.
+Voir aussi [Les threads](/?c=langages-de-programmation&s=c&p=threads), une alternative plus légère à `fork()` quand les tâches doivent partager la même mémoire.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `fork()` duplique le processus courant (deux processus continuent après l'appel) ; `exec*()` remplace le programme du processus courant ; `wait()`/`waitpid()` attendent qu'un enfant se termine. |
+| **Outils utilisables** | `fork()`, `execlp()`/`execve()`, `wait()`/`waitpid()`, `WIFEXITED`/`WEXITSTATUS`. |
+| **Pièges à éviter** | Ne jamais appeler `wait()` sur un enfant terminé — il reste "zombie" dans la table des processus jusqu'à ce que le parent le récupère ou se termine lui-même. |
+| **Bonnes pratiques** | Toujours vérifier la valeur de retour de `fork()` (`< 0` = échec) avant de brancher sur le cas parent/enfant. |

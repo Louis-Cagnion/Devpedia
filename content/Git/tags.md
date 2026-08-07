@@ -52,3 +52,14 @@ git checkout v1.0.0
 ```
 
 > **Note :** ceci place le dépôt en état de **"detached HEAD"** (`HEAD` pointe directement sur un commit, non plus sur une branche) — utile pour inspecter cette version précise, mais tout nouveau commit fait dans cet état n'appartiendrait à aucune branche et serait facilement perdu. Pour continuer à travailler à partir de là, créer d'abord une branche : `git checkout -b nouvelle-branche v1.0.0`.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un tag est un pointeur fixe vers un commit — contrairement à une branche, il ne bouge jamais. Sert typiquement à marquer une version publiée. |
+| **Outils utilisables** | `git tag`, `git tag -a`, `git push origin --tags`. |
+| **Pièges à éviter** | Les tags ne sont pas poussés automatiquement par un `git push` classique ; se déplacer sur un tag place en *detached HEAD*. |
+| **Bonnes pratiques** | Préférer un tag annoté (`-a`) pour une vraie version publiée ; créer une branche avant de continuer à travailler à partir d'un tag. |

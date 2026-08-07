@@ -39,7 +39,7 @@ Les liens (`<a>`) et les images (`<img>`) sont deux balises fondamentales du web
 ```
 
 - `src` : le chemin (relatif ou absolu, même logique que pour un lien) vers le fichier image.
-- `alt` : un texte alternatif, affiché si l'image ne charge pas, et lu par un lecteur d'écran — **jamais optionnel** d'un point de vue accessibilité (cf. chapitre dédié). Une image purement décorative (sans information propre) doit avoir `alt=""` (vide, mais présent), pour que le lecteur d'écran la saute silencieusement plutôt que d'annoncer un nom de fichier sans intérêt.
+- `alt` : un texte alternatif, affiché si l'image ne charge pas, et lu par un lecteur d'écran — **jamais optionnel** d'un point de vue accessibilité (voir [Attributs data-* et accessibilité](/?c=langages-de-balisage&s=html&p=attributs-data-et-accessibilite)). Une image purement décorative (sans information propre) doit avoir `alt=""` (vide, mais présent), pour que le lecteur d'écran la saute silencieusement plutôt que d'annoncer un nom de fichier sans intérêt.
 - `width`/`height` : dimensions déclarées à l'avance, qui permettent au navigateur de réserver l'espace nécessaire **avant** que l'image ne soit chargée — évite un décalage visuel du reste de la page pendant le chargement (*layout shift*).
 
 ## Images responsives (`srcset`)
@@ -64,3 +64,14 @@ Le navigateur choisit **lui-même** la version la plus adaptée à la taille ré
 ```
 
 Une image peut être placée à l'intérieur d'un `<a>`, la rendant elle-même cliquable — le `alt` reste alors indispensable, puisque c'est lui qui décrit la **destination** du lien pour un lecteur d'écran, pas seulement le contenu visuel de l'image.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `<a>` relie des documents (externe, relatif, ancre, mail, tel) ; `<img>` insère une image. `alt` décrit une image pour un lecteur d'écran ou en cas d'échec de chargement — jamais optionnel. |
+| **Outils utilisables** | `srcset`/`sizes` pour des images responsives ; `width`/`height` pour réserver l'espace avant chargement. |
+| **Pièges à éviter** | `target="_blank"` sans `rel="noopener"` (risque de sécurité, *tabnabbing*) ; une image sans `alt` (ni vide pour une image décorative, ni renseigné pour une image porteuse de sens). |
+| **Bonnes pratiques** | Toujours accompagner `target="_blank"` de `rel="noopener noreferrer"` ; déclarer `width`/`height` pour éviter un décalage visuel (*layout shift*) au chargement. |

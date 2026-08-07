@@ -4,7 +4,7 @@ order: 13
 
 # Comment fonctionne PowerShell (architecture interne)
 
-PowerShell repose sur la même mécanique de fond que Bash — une boucle qui lit, interprète et exécute — mais il ne tourne pas directement sur le système d'exploitation comme un simple exécutable natif : c'est un environnement construit sur le **.NET Runtime**, ce qui explique à la fois ses objets typés (cf. chapitres sur les variables et les redirections) et certaines de ses différences de performance avec Bash.
+PowerShell repose sur la même mécanique de fond que Bash — une boucle qui lit, interprète et exécute — mais il ne tourne pas directement sur le système d'exploitation comme un simple exécutable natif : c'est un environnement construit sur le **.NET Runtime**, ce qui explique à la fois ses objets typés (voir [Les variables](/?c=shells&s=powershell&p=variables) et [Redirections et pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) et certaines de ses différences de performance avec Bash.
 
 > **Prérequis :** ce chapitre suppose connu ce qu'est un processus (`fork`/`exec`) — voir le chapitre sur l'architecture d'un shell (rubrique Bash), qui détaille ce mécanisme côté Unix ; les concepts se retrouvent ici, mais implémentés différemment sous Windows.
 
@@ -32,7 +32,7 @@ Contrairement à Bash, qui distingue seulement *builtin* (exécuté par le shell
 
 ### Les fonctions
 
-Écrites directement en langage PowerShell (`function Saluer { ... }`, cf. chapitre dédié) — interprétées à l'exécution, comme une fonction Bash, mais bénéficiant du même typage et du même système de paramètres qu'une cmdlet.
+Écrites directement en langage PowerShell (`function Saluer { ... }`, voir [Les fonctions](/?c=shells&s=powershell&p=fonctions)) — interprétées à l'exécution, comme une fonction Bash, mais bénéficiant du même typage et du même système de paramètres qu'une cmdlet.
 
 ### Les commandes externes
 
@@ -46,7 +46,7 @@ CreateProcess("notepad.exe", arguments, ...)
 
 ## Le pipeline d'objets : ce que `|` fait réellement circuler
 
-C'est la différence la plus fondamentale avec Bash. Un pipe Bash (`cmd1 | cmd2`) connecte deux **descripteurs de fichiers** au niveau du système d'exploitation (cf. chapitre sur l'architecture d'un shell Bash, avec `pipe()`/`dup2()`) — le flux qui y circule est une suite d'octets, sans aucune structure.
+C'est la différence la plus fondamentale avec Bash. Un pipe Bash (`cmd1 | cmd2`) connecte deux **descripteurs de fichiers** au niveau du système d'exploitation (voir [Comment fonctionne un shell](/?c=shells&s=bash&p=architecture-dun-shell), avec `pipe()`/`dup2()`) — le flux qui y circule est une suite d'octets, sans aucune structure.
 
 Un pipeline PowerShell (`Cmd1 | Cmd2`), lui, transmet directement des **objets .NET en mémoire**, un par un, sans jamais les sérialiser en texte entre les deux commandes — c'est ce qui permet à `Get-ChildItem | Where-Object { $_.Length -gt 1000 }` de filtrer sur une vraie propriété numérique, plutôt que de chercher un motif dans du texte formaté comme le ferait un `ls -l | grep`.
 
@@ -68,4 +68,15 @@ C'est ce mécanisme (le *streaming* objet par objet) qui joue, à l'intérieur d
 
 ## Le contrôle de tâches : jobs plutôt que groupes de processus
 
-Contrairement à Bash, où `&`, `Ctrl+Z`, `fg`/`bg` manipulent des groupes de processus au niveau du système d'exploitation (cf. chapitre équivalent en Bash), PowerShell gère l'arrière-plan via des objets `Job` (cf. chapitre sur la gestion des processus) — une abstraction du runtime .NET, pas un mécanisme du noyau Windows partagé avec les autres programmes du système.
+Contrairement à Bash, où `&`, `Ctrl+Z`, `fg`/`bg` manipulent des groupes de processus au niveau du système d'exploitation (voir [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus) en Bash), PowerShell gère l'arrière-plan via des objets `Job` (voir [La gestion des processus](/?c=shells&s=powershell&p=gestion-des-processus)) — une abstraction du runtime .NET, pas un mécanisme du noyau Windows partagé avec les autres programmes du système.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | PowerShell repose sur .NET : cmdlets (classes compilées), fonctions (interprétées) et exécutables externes (nouveau processus via `CreateProcess`). Le pipeline transmet de vrais objets .NET, pas du texte. |
+| **Outils utilisables** | Résolution de commande (alias → fonction → cmdlet → exécutable), `BeginProcessing`/`ProcessRecord`/`EndProcessing` (streaming objet par objet). |
+| **Pièges à éviter** | Supposer qu'un pipeline PowerShell est aussi économe en mémoire qu'un pipe Bash — les objets restent en mémoire tant qu'ils ne sont pas consommés. |
+| **Bonnes pratiques** | Exploiter le typage des objets du pipeline (filtrer sur une propriété réelle) plutôt que de retomber sur un traitement texte comme en Bash. |

@@ -81,4 +81,15 @@ function Calculer {
 }
 ```
 
-Voir aussi le chapitre sur les variables (portée `$script:`, déjà réutilisée ici dans le contexte des fonctions).
+Voir aussi [Les variables](/?c=shells&s=powershell&p=variables) (portée `$script:`, déjà réutilisée ici dans le contexte des fonctions).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une fonction PowerShell déclare de vrais paramètres nommés et typés via `param()`. `return` (ou même la simple sortie non assignée) peut renvoyer une vraie valeur de n'importe quel type, contrairement au code de sortie limité de Bash. |
+| **Outils utilisables** | `param()`, `$args` pour les arguments non déclarés, portée `$script:`. |
+| **Pièges à éviter** | Un `Write-Output` de débogage oublié dans une fonction s'ajoute silencieusement à sa valeur de retour. |
+| **Bonnes pratiques** | Utiliser `[void]`/`Out-Null` pour supprimer explicitement une sortie qui ne doit pas faire partie de la valeur de retour. |

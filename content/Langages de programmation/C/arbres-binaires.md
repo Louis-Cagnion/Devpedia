@@ -39,7 +39,7 @@ Noeud *inserer(Noeud *racine, int valeur)
     if (racine == NULL) {
         Noeud *nouveau = malloc(sizeof(Noeud));
         if (nouveau == NULL) {
-            return NULL; // cf. chapitre sur la gestion de la mémoire : toujours vérifier malloc
+            return NULL; // voir La gestion de la mémoire : toujours vérifier malloc
         }
         nouveau->valeur = valeur;
         nouveau->gauche = NULL;
@@ -125,4 +125,15 @@ void libererArbre(Noeud *racine)
 }
 ```
 
-Voir aussi le chapitre sur les pointeurs (structures auto-référentielles) et sur la gestion de la mémoire (chaque `malloc` doit avoir son `free`).
+Voir aussi [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) (structures auto-référentielles) et [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire) (chaque `malloc` doit avoir son `free`).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un arbre binaire de recherche (ABR) impose sous-arbre gauche < nœud < sous-arbre droit, ce qui permet une recherche en éliminant la moitié des candidats à chaque étape. Trois parcours (infixe, préfixe, suffixe) visitent les nœuds dans des ordres différents. |
+| **Outils utilisables** | Insertion/recherche récursives ; parcours infixe pour obtenir les valeurs triées d'un ABR. |
+| **Pièges à éviter** | Oublier de vérifier chaque `malloc()` contre `NULL` lors de l'insertion. |
+| **Bonnes pratiques** | Libérer un arbre par parcours suffixe (enfants avant le nœud lui-même), pour ne jamais perdre l'accès à un sous-arbre encore à libérer. |

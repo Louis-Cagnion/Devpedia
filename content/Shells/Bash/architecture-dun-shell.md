@@ -46,7 +46,7 @@ Dans l'exemple de commande externe ci-dessous, l'enfant issu de `fork()` appelle
 - une substitution de commande : `resultat=$(commande)`
 - une commande en arrière-plan : `commande &`
 
-Un sous-shell hérite d'une **copie** des variables du shell parent au moment où il démarre — mais c'est une copie à sens unique, comme pour l'export d'une variable d'environnement (cf. chapitre dédié) : toute modification qu'il fait (`cd`, variable...) disparaît avec lui à sa terminaison, sans jamais atteindre le parent.
+Un sous-shell hérite d'une **copie** des variables du shell parent au moment où il démarre — mais c'est une copie à sens unique, comme pour l'export d'une [variable d'environnement](/?c=shells&s=bash&p=variables-denvironnement) : toute modification qu'il fait (`cd`, variable...) disparaît avec lui à sa terminaison, sans jamais atteindre le parent.
 
 ```bash
 cd /tmp
@@ -97,11 +97,11 @@ Le noyau lit les 2 premiers octets du fichier : "#!"
 Relance : execve("/bin/bash", ["/bin/bash", "./script.sh", ...], ...)
 ```
 
-C'est pourquoi un script sans droit d'exécution (`chmod +x`, cf. chapitre sur les permissions) ne peut pas être lancé directement (`./script.sh` échoue), mais reste exécutable en invoquant l'interpréteur explicitement (`bash script.sh`) : dans ce second cas, c'est `bash` lui-même (déjà exécutable) qui est lancé par `execve()` — c'est lui, et non le noyau, qui ouvre ensuite le script comme un simple fichier texte à lire ligne par ligne.
+C'est pourquoi un script sans droit d'exécution (`chmod +x`, voir [Permissions et manipulation de fichiers](/?c=shells&s=bash&p=permissions-et-fichiers)) ne peut pas être lancé directement (`./script.sh` échoue), mais reste exécutable en invoquant l'interpréteur explicitement (`bash script.sh`) : dans ce second cas, c'est `bash` lui-même (déjà exécutable) qui est lancé par `execve()` — c'est lui, et non le noyau, qui ouvre ensuite le script comme un simple fichier texte à lire ligne par ligne.
 
 ## Comment le shell trouve quel exécutable lancer
 
-Si la commande tapée contient un `/` (ex. `./script.sh`, `/bin/ls`), le shell l'utilise directement. Sinon, il parcourt chaque dossier listé dans `$PATH` (cf. chapitre sur les variables d'environnement), dans l'ordre, et s'arrête au **premier** fichier exécutable trouvé portant ce nom — c'est un simple test `access(chemin, X_OK)` répété sur chaque candidat.
+Si la commande tapée contient un `/` (ex. `./script.sh`, `/bin/ls`), le shell l'utilise directement. Sinon, il parcourt chaque dossier listé dans [`$PATH`](/?c=shells&s=bash&p=variables-denvironnement), dans l'ordre, et s'arrête au **premier** fichier exécutable trouvé portant ce nom — c'est un simple test `access(chemin, X_OK)` répété sur chaque candidat.
 
 ## Implémenter un pipe (`cmd1 | cmd2`)
 
@@ -146,11 +146,22 @@ close(fd);
 execve(...);
 ```
 
-`O_TRUNC` correspond à `>` (écrase le fichier), `O_APPEND` à `>>` (ajoute à la fin) — cf. chapitre sur les redirections pour le comportement observé côté utilisateur.
+`O_TRUNC` correspond à `>` (écrase le fichier), `O_APPEND` à `>>` (ajoute à la fin) — voir [Redirections et pipes](/?c=shells&s=bash&p=redirections-et-pipes) pour le comportement observé côté utilisateur.
 
 ## Le contrôle de tâches (jobs) : `&`, `Ctrl+Z`, `fg`/`bg`
 
-Chaque pipeline lancé forme un **groupe de processus** — un identifiant partagé (`setpgid()`) qui permet au shell et au terminal de traiter tous les processus d'un même pipeline comme une seule unité (ex. leur envoyer un signal à tous en même temps), plutôt que de devoir cibler chaque PID individuellement. Le terminal ne donne le contrôle clavier qu'à **un seul** groupe à la fois (`tcsetpgrp()`), celui au premier plan. `Ctrl+Z` envoie le signal `SIGTSTP` à ce groupe (le suspend sans le terminer), `fg`/`bg` (cf. chapitre sur la gestion des processus) redonnent respectivement le contrôle du terminal ou renvoient `SIGCONT` pour reprendre l'exécution en arrière-plan.
+Chaque pipeline lancé forme un **groupe de processus** — un identifiant partagé (`setpgid()`) qui permet au shell et au terminal de traiter tous les processus d'un même pipeline comme une seule unité (ex. leur envoyer un signal à tous en même temps), plutôt que de devoir cibler chaque PID individuellement. Le terminal ne donne le contrôle clavier qu'à **un seul** groupe à la fois (`tcsetpgrp()`), celui au premier plan. `Ctrl+Z` envoie le signal `SIGTSTP` à ce groupe (le suspend sans le terminer), `fg`/`bg` (voir [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus)) redonnent respectivement le contrôle du terminal ou renvoient `SIGCONT` pour reprendre l'exécution en arrière-plan.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un shell est une boucle REPL : lire une ligne, appliquer les expansions dans un ordre fixe, exécuter (builtin en interne, ou `fork`/`execve`/`wait` pour une commande externe). |
+| **Outils utilisables** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` pour les pipes et redirections, le shebang pour qu'un script soit reconnu comme exécutable. |
+| **Pièges à éviter** | Confondre l'ordre des expansions — c'est lui qui explique pourquoi `"$var"` protège du découpage en mots alors que `$var` seul y est exposé. |
+| **Bonnes pratiques** | Construire son propre mini-shell pour vérifier sa compréhension : boucle de lecture, analyseur, expansions, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. |
 
 ## Construire son propre mini-shell
 

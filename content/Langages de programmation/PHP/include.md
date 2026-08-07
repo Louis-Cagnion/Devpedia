@@ -27,7 +27,7 @@ Pour insérer des fonctions PHP dans du code HTML, on va pouvoir se servir de la
 </main>
 ```
 
-> **Note :** cf. structures de langages si vous ne savez pas ce que c'est.
+> **Note :** `include` est une [structure de langage](/?c=langages-de-programmation&s=php&p=structures-de-langage), pas une fonction classique.
 
 ## `require` et `require_once`
 
@@ -82,3 +82,14 @@ require __DIR__ . '/../config.php'; // toujours correct, quel que soit l'endroit
 ```
 
 > **Note :** construire les chemins avec `__DIR__ . '/chemin/relatif'` plutôt qu'un chemin fixe évite les erreurs selon le contexte d'exécution (serveur intégré, Apache, ligne de commande...), qui n'ont pas forcément le même "dossier courant".
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `include`/`require` insèrent le contenu d'un fichier PHP à l'endroit où l'instruction est écrite. `require` arrête le script si le fichier est introuvable, `include` se contente d'un warning. `require_once` ne charge le fichier qu'une seule fois. |
+| **Outils utilisables** | `require_once`, `__DIR__`, un fichier se terminant par `return [...]` comme mini-config. |
+| **Pièges à éviter** | Utiliser `include` pour un fichier indispensable au fonctionnement (une classe centrale) — un fichier manquant continue silencieusement avec seulement un warning. |
+| **Bonnes pratiques** | Utiliser `require_once` pour les fichiers de classes/fonctions, `__DIR__` pour construire des chemins indépendants du contexte d'exécution. |

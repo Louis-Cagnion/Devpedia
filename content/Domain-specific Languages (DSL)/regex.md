@@ -187,7 +187,22 @@ Récapitulatif des morceaux :
 
 Avec `"[mon lien](https://exemple.com)".match(regex)`, tu obtiens `match[1] = "mon lien"` et `match[2] = "https://exemple.com"`.
 
+> **Piège :** une regex trop permissive (par exemple oublier d'ancrer avec `^`/`$`) peut matcher bien plus que prévu — un motif de validation d'email sans ancrage accepterait "n'importe quoi contenant un @" au milieu d'un texte plus long, pas seulement une adresse email complète.
+>
+> **Bonne pratique :** tester une regex sur des cas limites volontairement pièges (chaîne vide, caractères spéciaux, texte plus long que prévu) avant de l'utiliser en production — un outil comme regex101.com permet de le faire interactivement.
+
 ## Pour aller plus loin
 
 - [MDN (*Mozilla Developer Network*, la documentation de référence du web) — Expressions régulières](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Regular_expressions)
 - [regex101.com](https://regex101.com) — testeur de regex interactif avec explications en direct
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une regex décrit un motif de caractères pour rechercher, valider ou extraire du texte — interprétée par un moteur regex intégré au langage hôte, pas un langage de programmation à part entière. |
+| **Outils utilisables** | Classes de caractères (`\d`, `\w`, `\s`), quantificateurs (`*`, `+`, `?`, `{n,m}`), groupes capturants, flags (`g`, `i`, `m`). |
+| **Pièges à éviter** | Oublier d'ancrer un motif (`^`/`$`) qui doit correspondre à la chaîne entière, pas seulement à une partie. |
+| **Bonnes pratiques** | Construire une regex complexe étape par étape, en testant chaque ajout ; vérifier son comportement sur des cas limites avant de l'utiliser en production. |

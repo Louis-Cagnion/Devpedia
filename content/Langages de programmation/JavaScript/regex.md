@@ -135,3 +135,16 @@ On peut aussi nommer les groupes pour les rendre plus lisibles, et y accéder pa
     const resultNamed = reNamed.exec(date);
     resultNamed.groups.annee; // '2024'
 ```
+
+> **Piège :** une regex littérale avec le flag `g`, réutilisée plusieurs fois avec `.test()` ou `.exec()`, conserve un état interne (`lastIndex`) entre les appels — un second `.test()` sur la même regex peut renvoyer `false` alors que le texte correspond, simplement parce que la recherche reprend après la position de la correspondance précédente. Créer une nouvelle regex (ou réinitialiser `lastIndex = 0`) évite ce piège.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une regex décrit un motif de recherche/validation/remplacement dans une string. `test()` renvoie un booléen, `exec()`/`match()`/`matchAll()` donnent accès aux détails de la correspondance (dont les groupes capturés). |
+| **Outils utilisables** | Flags `g`/`i`/`m`, groupes nommés (`(?<nom>...)`), `replace`/`replaceAll`/`split` sur une string avec une regex. |
+| **Pièges à éviter** | Réutiliser une regex `g` avec `.test()`/`.exec()` dans une boucle sans tenir compte de son état interne (`lastIndex`). |
+| **Bonnes pratiques** | Nommer les groupes de capture dès qu'une regex en a plusieurs, pour un accès plus lisible que par index numérique. |

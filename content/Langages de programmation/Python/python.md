@@ -1,17 +1,18 @@
 # Python
 
-Python est considéré comme un langage de programmation de **haut niveau**, dynamiquement typé et interprété : il masque presque entièrement la gestion de la mémoire et les détails machine, au profit de la lisibilité — la syntaxe s'appuie sur l'indentation elle-même pour délimiter les blocs de code, plutôt que sur des accolades.
+Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) est un ensemble de règles qui permet d'écrire des instructions qu'un ordinateur peut exécuter. Python en est un, réputé pour sa syntaxe volontairement proche du langage naturel.
 
-Parmi les concepts essentiels manipulés en Python, on retrouve notamment :
+```python
+nom = "Devpedia"          # une variable, voir le chapitre dédié
+print(f"Bonjour, {nom}")   # affiche : Bonjour, Devpedia
+```
 
-- Les variables et le typage dynamique
-- Les listes, tuples, dictionnaires et ensembles
-- La programmation orientée objet (classes, héritage, méthodes spéciales)
-- Les générateurs et la programmation fonctionnelle (fonctions de première classe, décorateurs)
-- Un vaste écosystème de bibliothèques externes (`pip`), notamment pour le calcul scientifique et l'intelligence artificielle
+| Terme | Ce que ça veut dire |
+|---|---|
+| Haut niveau | Masque presque entièrement la gestion de la mémoire et les détails du matériel, au profit de la lisibilité |
+| Dynamiquement typé | Une variable ne déclare pas de type à l'avance : elle prend le type de la valeur qu'on lui assigne, et peut en changer en cours de programme (voir [Les variables](/?c=langages-de-programmation&s=python&p=variables)) |
+| Interprété | Le code n'est pas traduit en instructions machine natives à l'avance : un **interpréteur** (un programme qui lit et exécute du code au fur et à mesure, plutôt qu'en une seule traduction préalable) le lit et l'exécute — un compromis de lisibilité contre la performance brute d'un langage compilé comme le [C](/?c=langages-de-programmation&s=c&p=c) |
 
-L'apprentissage de Python permet de progresser rapidement sur des problèmes concrets, grâce à une syntaxe volontairement proche du langage naturel et à une bibliothèque standard très riche ("*batteries included*"). Ce n'est en revanche **pas** un langage compilé vers du code machine natif : l'interpréteur de référence (CPython) compile le code source en *bytecode*, exécuté ensuite par une machine virtuelle — un compromis de lisibilité et de flexibilité contre la performance brute d'un langage comme le C.
+> L'interpréteur de référence pour Python s'appelle **CPython**. En interne, il traduit d'abord le code en *bytecode* — une forme intermédiaire, plus proche de la machine que le code source mais pas encore des instructions natives — avant de l'exécuter.
 
-Grâce à sa polyvalence, Python est aujourd'hui central dans plusieurs domaines très différents : le développement web (Django, Flask), l'automatisation et le scripting système, et surtout le **calcul scientifique et l'intelligence artificielle** (NumPy, pandas, PyTorch, scikit-learn...), qui en ont fait le langage de référence de la data science et du machine learning.
-
-Étudier Python constitue une excellente porte d'entrée vers des domaines de spécialisation comme le machine learning ou le deep learning, où l'essentiel de l'écosystème (bibliothèques, notebooks, communauté, documentation) est construit autour de ce langage.
+Grâce à sa syntaxe accessible et sa bibliothèque standard très riche, Python permet de progresser rapidement sur des problèmes concrets. Il est aujourd'hui central dans plusieurs domaines : le développement web (Django, Flask), l'automatisation, et surtout le calcul scientifique et l'intelligence artificielle (NumPy, pandas, PyTorch...) — voir les catégories [Data Science](/?c=data-science&p=jupyter-notebooks) et [IA](/?c=ia&p=reseaux-de-neurones), qui reposent presque entièrement sur ce langage.

@@ -70,3 +70,14 @@ Get-ChildItem | Tee-Object -FilePath resultats.txt   # affiche le résultat ET l
 | `2>` | Redirige la sortie d'erreur |
 | `*>` | Redirige tous les flux vers la même cible |
 | `\|` | Connecte la sortie (des objets) d'une commande à l'entrée de la suivante |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un pipe PowerShell transporte de vrais objets .NET (propriétés et méthodes intactes), pas du texte comme un pipe Bash — `Where-Object`/`Select-Object` filtrent sur de vraies propriétés. |
+| **Outils utilisables** | `>`/`>>`, `*>` (tous les flux), `$null` (équivalent de `/dev/null`), `Tee-Object`. |
+| **Pièges à éviter** | Chercher un opérateur `<` de redirection d'entrée — PowerShell n'en a pas, il faut passer par une cmdlet (`Get-Content`). |
+| **Bonnes pratiques** | Filtrer sur une propriété réelle (`Where-Object { $_.Extension -eq ".txt" }`) plutôt que de reproduire un filtrage texte à la Bash. |

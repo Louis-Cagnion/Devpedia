@@ -4,7 +4,7 @@ order: 17
 
 # Les threads (pthread)
 
-Un **thread** (fil d'exécution) est, comme un processus, une suite d'instructions exécutée de façon indépendante — mais contrairement à `fork()` (cf. chapitre sur les processus), plusieurs threads d'un même programme **partagent la même mémoire**. C'est plus léger à créer qu'un processus, mais ça introduit un risque nouveau : deux threads peuvent modifier la même donnée en même temps.
+Un **thread** (fil d'exécution) est, comme un processus, une suite d'instructions exécutée de façon indépendante — mais contrairement à [`fork()`](/?c=langages-de-programmation&s=c&p=processus), plusieurs threads d'un même programme **partagent la même mémoire**. C'est plus léger à créer qu'un processus, mais ça introduit un risque nouveau : deux threads peuvent modifier la même donnée en même temps.
 
 ## Créer et attendre un thread
 
@@ -87,3 +87,14 @@ void *incrementer(void *argument)
 | Coût de création | Plus élevé | Plus léger |
 | Communication entre unités | Nécessite un mécanisme explicite (pipe, mémoire partagée...) | Directe (variables globales), mais nécessite une protection (mutex) |
 | Un crash affecte les autres ? | Non — isolé | Oui — un thread qui plante peut corrompre tout le processus |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un thread partage la mémoire avec les autres threads du même programme (contrairement à un processus issu de `fork()`) — plus léger, mais expose à des *race conditions* sur les données partagées. |
+| **Outils utilisables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. |
+| **Pièges à éviter** | Modifier une variable partagée sans protection (*race condition*) ; oublier de déverrouiller un mutex (*deadlock* si un autre thread attend indéfiniment). |
+| **Bonnes pratiques** | Protéger toute donnée partagée entre threads par un mutex, y compris pour une opération qui paraît simple (`compteur++` n'est pas atomique). |

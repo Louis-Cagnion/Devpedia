@@ -114,3 +114,14 @@ console.log(v.__proto__ === Vehicule.prototype);  // true
 Chaque objet JavaScript porte une référence cachée (`__proto__`) vers un autre objet, son **prototype** — quand une propriété/méthode n'est pas trouvée directement sur l'objet, JavaScript la cherche automatiquement sur son prototype, puis le prototype de ce prototype, etc. (la "chaîne de prototypes"). `description()` n'est en réalité définie **qu'une seule fois**, sur `Vehicule.prototype`, et partagée par toutes les instances — pas dupliquée dans chaque objet créé par `new Vehicule(...)`.
 
 > **Note :** cette distinction explique pourquoi modifier `Vehicule.prototype.description` affecte **immédiatement** tous les objets déjà créés : ils ne possèdent pas leur propre copie de la méthode, ils la cherchent dynamiquement sur le prototype partagé à chaque appel.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `class` est du sucre syntaxique par-dessus les prototypes : une méthode est définie une seule fois sur `Class.prototype`, partagée par toutes les instances. `extends` gère l'héritage, `#` les champs privés. |
+| **Outils utilisables** | `static` (méthodes/propriétés de classe), `get`/`set` (accesseurs calculés), champs privés `#nom`. |
+| **Pièges à éviter** | Oublier `super.methode()` dans une classe fille qui veut étendre (plutôt que remplacer) le comportement du parent. |
+| **Bonnes pratiques** | Utiliser `#` pour toute donnée qui ne doit jamais être manipulée directement depuis l'extérieur de la classe. |

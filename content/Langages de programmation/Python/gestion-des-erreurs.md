@@ -85,4 +85,15 @@ with open("donnees.txt") as fichier:
 # fichier.close() est appelé automatiquement ici, que tout se soit bien passé ou non
 ```
 
-> **Note :** ceci repose sur les méthodes spéciales `__enter__`/`__exit__` (cf. chapitre sur la programmation orientée objet) — n'importe quelle classe personnalisée peut définir ces deux méthodes pour devenir utilisable avec `with` (ex. gérer l'ouverture/fermeture d'une connexion réseau ou base de données).
+> **Note :** ceci repose sur les méthodes spéciales `__enter__`/`__exit__` (voir [La programmation orientée objet](/?c=langages-de-programmation&s=python&p=poo)) — n'importe quelle classe personnalisée peut définir ces deux méthodes pour devenir utilisable avec `with` (ex. gérer l'ouverture/fermeture d'une connexion réseau ou base de données).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `try`/`except`/`else`/`finally` structure la gestion d'erreurs. `with` garantit qu'une ressource est libérée même en cas d'exception, via `__enter__`/`__exit__`. |
+| **Outils utilisables** | Exceptions personnalisées (héritent de `Exception`), `with`, `raise`. |
+| **Pièges à éviter** | Intercepter `Exception` (ou un `except:` nu) trop largement — masque des erreurs de programmation qui devraient plutôt faire planter le programme pour être corrigées. |
+| **Bonnes pratiques** | Intercepter le type d'exception le plus précis possible ; utiliser `with` pour toute ressource qui doit être fermée/libérée. |

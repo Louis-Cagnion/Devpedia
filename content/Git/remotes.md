@@ -25,7 +25,7 @@ git push                             # une fois le lien mémorisé
 
 ## Forcer un push après une réécriture d'historique
 
-Après un `rebase`, un `commit --amend`, ou une réécriture d'historique (cf. chapitre "Architecture interne"), les commits locaux n'ont plus les mêmes hash que ceux déjà poussés — un `push` normal est alors rejeté (*non fast-forward*), le remote ne retrouvant pas ses anciens commits comme ancêtres des nouveaux.
+Après un `rebase`, un `commit --amend`, ou une réécriture d'historique (voir [L'architecture interne de Git](/?c=git&p=architecture-interne)), les commits locaux n'ont plus les mêmes hash que ceux déjà poussés — un `push` normal est alors rejeté (*non fast-forward*), le remote ne retrouvant pas ses anciens commits comme ancêtres des nouveaux.
 
 ```bash
 git push --force origin main             # écrase l'historique distant sans condition — dangereux si quelqu'un d'autre a poussé entre-temps
@@ -78,4 +78,15 @@ git clone sauvegarde.bundle nouveau-dossier   # un bundle se clone comme un remo
 git remote remove origin
 ```
 
-Voir aussi le chapitre sur la résolution de conflits, fréquemment nécessaire après un `pull` quand plusieurs personnes ont modifié les mêmes lignes.
+Voir aussi [Résoudre un conflit de fusion](/?c=git&p=resoudre-conflits), fréquemment nécessaire après un `pull` quand plusieurs personnes ont modifié les mêmes lignes.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un remote référence une copie du dépôt hébergée ailleurs. `push`/`pull`/`fetch` synchronisent le travail entre le dépôt local et ce remote. |
+| **Outils utilisables** | `git remote`, `git push`/`pull`/`fetch`, `git bundle` (sauvegarde ou transfert sans serveur). |
+| **Pièges à éviter** | `git push --force` peut écraser le travail de quelqu'un d'autre sans prévenir. |
+| **Bonnes pratiques** | Préférer `--force-with-lease` à `--force` ; utiliser `fetch` pour inspecter les changements distants avant de décider comment les intégrer, plutôt qu'un `pull` direct en cas de doute. |

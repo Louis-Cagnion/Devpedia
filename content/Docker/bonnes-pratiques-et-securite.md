@@ -6,7 +6,7 @@ order: 6
 
 ## Une image minimale
 
-Chaque paquet installé dans une image est une **surface d'attaque** (un point d'entrée potentiel de plus qu'un attaquant pourrait exploiter — une vulnérabilité dans un paquet jamais utilisé reste une vulnérabilité) et un poids supplémentaire au téléchargement. Préférer une image de base minimale (`alpine`, ou une variante `-slim`) et un build multi-étapes (cf. chapitre sur le Dockerfile) pour ne livrer que le strict nécessaire à l'exécution, jamais les outils de compilation.
+Chaque paquet installé dans une image est une **surface d'attaque** (un point d'entrée potentiel de plus qu'un attaquant pourrait exploiter — une vulnérabilité dans un paquet jamais utilisé reste une vulnérabilité) et un poids supplémentaire au téléchargement. Préférer une image de base minimale (`alpine`, ou une variante `-slim`) et un [build multi-étapes](/?c=docker&p=dockerfile) pour ne livrer que le strict nécessaire à l'exécution, jamais les outils de compilation.
 
 ## Épingler les versions, ne jamais utiliser `latest` en production
 
@@ -58,8 +58,19 @@ L'application lit alors le mot de passe comme un fichier ordinaire (`cat /run/se
 
 ## `.dockerignore` systématique
 
-Sans `.dockerignore` (cf. chapitre sur le Dockerfile), un `COPY . .` embarque tout ce qui se trouve dans le dossier — y compris un `.env` local, un `.git/` complet, ou des identifiants de configuration oubliés. La liste minimale à exclure : `.git/`, `.env`, `node_modules/` (ou équivalent), tout fichier de log.
+Sans [`.dockerignore`](/?c=docker&p=dockerfile), un `COPY . .` embarque tout ce qui se trouve dans le dossier — y compris un `.env` local, un `.git/` complet, ou des identifiants de configuration oubliés. La liste minimale à exclure : `.git/`, `.env`, `node_modules/` (ou équivalent), tout fichier de log.
 
 ## L'isolation d'un conteneur n'est pas celle d'une machine virtuelle
 
-Un conteneur partage le noyau de la machine hôte (cf. chapitre sur les concepts de base) : une faille dans ce noyau, ou une mauvaise configuration (conteneur lancé en mode privilégié `--privileged`, socket Docker monté à l'intérieur d'un conteneur) peut permettre d'en sortir et d'atteindre l'hôte directement. Une VM oppose une frontière matérielle bien plus étanche. Pour un service exposé publiquement et particulièrement sensible, cette différence doit peser dans le choix entre conteneur et VM — Docker isole des processus, pas des noyaux.
+Un conteneur partage le noyau de la machine hôte (voir [Les concepts de base](/?c=docker&p=concepts-de-base)) : une faille dans ce noyau, ou une mauvaise configuration (conteneur lancé en mode privilégié `--privileged`, socket Docker monté à l'intérieur d'un conteneur) peut permettre d'en sortir et d'atteindre l'hôte directement. Une VM oppose une frontière matérielle bien plus étanche. Pour un service exposé publiquement et particulièrement sensible, cette différence doit peser dans le choix entre conteneur et VM — Docker isole des processus, pas des noyaux.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une image minimale réduit la surface d'attaque. Un conteneur ne devrait jamais tourner en `root`, ni embarquer de secret dans ses couches — les secrets s'injectent à l'exécution, jamais dans le Dockerfile. |
+| **Outils utilisables** | `USER` (utilisateur non-root), secrets Docker Compose (fichier monté), `.dockerignore`. |
+| **Pièges à éviter** | Utiliser `latest` en production (contenu imprévisible) ; passer un secret via `ARG`/`ENV` — reste lisible dans l'historique de l'image même après un build multi-étapes. |
+| **Bonnes pratiques** | Épingler une version précise de chaque image de base ; injecter les secrets à l'exécution (variable d'environnement au lancement, fichier monté, gestionnaire dédié) ; ne jamais faire tourner un conteneur en `root`. |

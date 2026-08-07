@@ -14,7 +14,7 @@ for fruit in pomme banane cerise; do
 done
 ```
 
-Parcourir les fichiers d'un dossier grâce au globbing (cf. chapitre sur l'expansion) :
+Parcourir les fichiers d'un dossier grâce au [globbing](/?c=shells&s=bash&p=expansion-et-jokers) :
 
 ```bash
 for fichier in *.txt; do
@@ -62,7 +62,7 @@ done < fichier.txt
 ```
 
 - `read -r` lit une ligne de l'entrée standard dans la variable `ligne` à chaque tour (`-r` empêche l'interprétation des `\` comme caractères d'échappement, presque toujours ce qu'on veut).
-- `< fichier.txt` redirige le contenu du fichier vers l'entrée standard de toute la boucle (cf. chapitre sur les redirections).
+- `< fichier.txt` redirige le contenu du fichier vers l'entrée standard de toute la boucle (voir [Redirections et pipes](/?c=shells&s=bash&p=redirections-et-pipes)).
 
 ## La boucle `until`
 
@@ -94,3 +94,14 @@ for i in {1..10}; do
     echo "$i"
 done
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `for` parcourt une liste, des fichiers (globbing) ou une plage de nombres ; `while`/`until` répètent tant qu'une condition reste vraie/fausse. `while read -r ligne` est le combo standard pour lire un fichier ligne par ligne. |
+| **Outils utilisables** | Expansion d'accolades (`{1..5}`), `for` de style C, `break`/`continue`. |
+| **Pièges à éviter** | Oublier `-r` avec `read` — sans lui, les `\` sont interprétés comme des caractères d'échappement. |
+| **Bonnes pratiques** | Utiliser `while read -r ligne; do ... done < fichier.txt` pour traiter un fichier texte ligne par ligne, plutôt qu'une autre approche moins idiomatique. |

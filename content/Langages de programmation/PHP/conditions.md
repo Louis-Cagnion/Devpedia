@@ -168,3 +168,14 @@ Le `switch` a également sa syntaxe alternative, qui utilise `:` à la place des
         break;
 endswitch; ?>
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `if`/`elseif`/`else` et `switch` structurent le contrôle de flux. `switch` compare avec `==` (lâche), contrairement à `match` (PHP 8+) qui utilise `===`. |
+| **Outils utilisables** | Opérateur ternaire `? :`, coalescence nulle `??`, syntaxe alternative (`:`/`end...`) pour les templates. |
+| **Pièges à éviter** | Utiliser `==` par habitude (type juggling) ; oublier `break;` dans un `case` (*fall-through*). |
+| **Bonnes pratiques** | Utiliser `===` par défaut ; préférer `match` à `switch` quand une comparaison stricte est nécessaire. |

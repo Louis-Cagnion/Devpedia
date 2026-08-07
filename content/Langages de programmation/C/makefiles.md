@@ -4,7 +4,7 @@ order: 8
 
 # Les Makefiles
 
-Un **Makefile** automatise la compilation d'un projet C à plusieurs fichiers : plutôt que de retaper manuellement chaque commande `gcc` (cf. chapitre sur la compilation), on décrit une fois les règles de construction, et l'outil `make` les exécute — en ne recompilant que ce qui a réellement changé depuis la dernière fois.
+Un **Makefile** automatise la compilation d'un projet C à plusieurs fichiers : plutôt que de retaper manuellement chaque commande `gcc` (voir [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation)), on décrit une fois les règles de construction, et l'outil `make` les exécute — en ne recompilant que ce qui a réellement changé depuis la dernière fois.
 
 ## Anatomie d'une règle
 
@@ -70,3 +70,14 @@ clean:
 `.PHONY` indique à `make` que `clean` n'est pas un nom de fichier : sans cette ligne, si un fichier nommé `clean` existait par coïncidence dans le dossier, `make clean` pourrait le considérer "à jour" et ne rien exécuter.
 
 > **Note :** appeler une cible en argument (`make clean`, `make programme`) construit **cette** cible précise plutôt que la première du fichier.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un Makefile décrit des règles (`cible: dépendances` + commande) que `make` exécute, en ne reconstruisant que ce qui a réellement changé. |
+| **Outils utilisables** | Variables (`CC`, `CFLAGS`), cibles factices (`.PHONY`). |
+| **Pièges à éviter** | Indenter une commande avec des espaces plutôt qu'une tabulation — erreur très fréquente qui casse la règle. |
+| **Bonnes pratiques** | Déclarer `.PHONY` pour toute cible qui ne produit pas un vrai fichier (`clean`, `test`...), pour éviter un conflit avec un fichier de même nom. |

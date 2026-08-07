@@ -79,4 +79,15 @@ pairs = [x for x in range(10) if x % 2 == 0]
 
 > **Note :** une compréhension reste lisible pour une transformation simple sur une seule ligne — au-delà (plusieurs conditions imbriquées, logique complexe), une boucle `for` classique reste plus claire à lire et à déboguer.
 
-Voir aussi le chapitre sur les dictionnaires et ensembles pour l'équivalent des compréhensions sur ces structures, et celui sur les itérateurs/générateurs pour l'expression génératrice (variante paresseuse d'une compréhension de liste).
+Voir aussi [Les dictionnaires et les ensembles](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) pour l'équivalent des compréhensions sur ces structures, et [Itérateurs et générateurs](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) pour l'expression génératrice (variante paresseuse d'une compréhension de liste).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une liste est mutable, un tuple est immuable — tous deux ordonnés et hétérogènes. Le slicing (`[debut:fin:pas]`) extrait une portion ; une compréhension construit une liste en une expression. |
+| **Outils utilisables** | `append`/`insert`/`remove`/`pop`, slicing, déballage (*unpacking*), compréhensions de liste. |
+| **Pièges à éviter** | Essayer de modifier un tuple après création (`TypeError`) — utiliser une liste si le contenu doit évoluer. |
+| **Bonnes pratiques** | Utiliser un tuple pour un enregistrement fixe, une liste pour une collection destinée à évoluer ; réserver la compréhension à une transformation simple, une boucle `for` au-delà. |

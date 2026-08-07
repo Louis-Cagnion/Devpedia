@@ -47,3 +47,14 @@ Un tableau NumPy (`ndarray`) est un unique bloc de mémoire **contigu**, contena
 Un tableau NumPy créé avec des types hétérogènes (ex. un mélange d'entiers et de chaînes) se rabat sur `dtype=object` : le tableau reste bien un bloc **contigu**... de pointeurs vers des objets Python potentiellement dispersés, de types différents. Chaque accès redevient un suivi de pointeur suivi d'une vérification de type par élément — le coût marginal explose et redevient comparable à celui d'une liste Python, malgré la contiguïté du tableau lui-même.
 
 La contiguïté de la mémoire est nécessaire pour profiter du cache et de SIMD, mais **pas suffisante** : il faut aussi que les éléments soient de taille et de type uniformes, pour que le processeur puisse les traiter en bloc sans revérifier chacun individuellement.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un accès RAM coûte ~50× plus qu'un accès cache L1. Des données contiguës et de type uniforme (tableau typé) profitent du cache et du SIMD ; des données dispersées (liste chaînée, objets épars) rechargent une ligne de cache à chaque accès. |
+| **Outils utilisables** | Un tableau typé contigu (NumPy `ndarray`) plutôt qu'une collection d'objets épars pour du calcul intensif. |
+| **Pièges à éviter** | Un tableau NumPy en `dtype=object` — reste contigu en apparence, mais perd tout le bénéfice du cache/SIMD (pointeurs vers des objets dispersés). |
+| **Bonnes pratiques** | Préférer un tableau typé et contigu dès que le volume de calcul justifie l'effort ; parcourir les données dans l'ordre de leur disposition mémoire. |

@@ -89,4 +89,15 @@ find . -type d -name "node_modules"   # tous les dossiers nommés "node_modules"
 find . -name "*.tmp" -delete          # trouve ET supprime en une seule commande
 ```
 
-Voir aussi le chapitre sur le traitement de texte (`grep`, `sed`, `awk`) pour aller plus loin dans l'exploitation du contenu de ces fichiers.
+Voir aussi [Traitement de texte](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`) pour aller plus loin dans l'exploitation du contenu de ces fichiers.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Chaque fichier a des permissions lecture/écriture/exécution pour propriétaire/groupe/autres. `chmod` les modifie (notation symbolique ou octale), `chown` change le propriétaire. |
+| **Outils utilisables** | `ls -l`, `chmod`/`chown`, `mkdir`/`cp`/`mv`/`rm`, `find`. |
+| **Pièges à éviter** | `rm -rf` sans vérifier la cible exacte — irréversible, sans confirmation. |
+| **Bonnes pratiques** | `chmod 644` pour un fichier normal, `755` pour un script/dossier exécutable ; toujours vérifier une commande `find ... -delete` en la testant d'abord sans `-delete`. |

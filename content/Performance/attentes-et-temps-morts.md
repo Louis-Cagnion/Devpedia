@@ -90,3 +90,14 @@ Attention à ne pas supprimer les pauses **utiles**. Face à un service distant,
 | Espacer volontairement des requêtes vers un même service | **Non**, c'est une protection |
 
 Une pause de politesse n'est pas une inefficacité : c'est une contrainte de conception. La supprimer ne rend pas le programme meilleur, elle déplace le problème vers un échec plus difficile à diagnostiquer.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un délai fixe ("`sleep(2)`") est toujours soit trop long (temps gaspillé), soit trop court (bug intermittent) — attendre une condition avec un plafond de sécurité résout les deux problèmes à la fois. |
+| **Outils utilisables** | Une fonction générique "attendre jusqu'à" (condition + timeout), la mémoïsation pour ne plus revérifier ce qui ne peut plus changer. |
+| **Pièges à éviter** | Guetter un évènement facultatif à chaque itération (une bannière de cookies) sans mémoriser qu'il ne réapparaîtra plus. |
+| **Bonnes pratiques** | Interroger une source autoritative (un cookie) plutôt que de sonder un affichage ; garder les pauses volontaires qui protègent contre une limitation de débit. |

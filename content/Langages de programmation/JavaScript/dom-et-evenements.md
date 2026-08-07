@@ -14,7 +14,7 @@ document.querySelector(".carte");            // le PREMIER élément corresponda
 document.querySelectorAll(".carte");          // TOUS les éléments correspondants (NodeList)
 ```
 
-> **Note :** `querySelector`/`querySelectorAll` acceptent n'importe quel sélecteur CSS (cf. chapitre dédié) — `.classe`, `#id`, `div > p`, `[data-role="bouton"]`... c'est la méthode la plus flexible.
+> **Note :** `querySelector`/`querySelectorAll` acceptent n'importe quel [sélecteur CSS](/?c=langages-de-balisage&s=css&p=selecteurs) — `.classe`, `#id`, `div > p`, `[data-role="bouton"]`... c'est la méthode la plus flexible.
 
 ## Modifier un élément
 
@@ -30,7 +30,7 @@ titre.classList.toggle("actif");              // ajoute si absente, retire si pr
 titre.setAttribute("data-id", "42");
 ```
 
-> **Note :** `innerHTML` avec une donnée provenant de l'utilisateur est une faille XSS classique (cf. chapitre sur la sécurité en PHP, même principe) — un attaquant pourrait y injecter du code exécutable. `textContent` reste sûr par défaut, car il traite toujours son contenu comme du texte brut.
+> **Note :** `innerHTML` avec une donnée provenant de l'utilisateur est une faille XSS classique (voir [La sécurité](/?c=langages-de-programmation&s=php&p=securite), même principe) — un attaquant pourrait y injecter du code exécutable. `textContent` reste sûr par défaut, car il traite toujours son contenu comme du texte brut.
 
 ## Créer et insérer un élément
 
@@ -83,4 +83,15 @@ document.querySelector("#liste").addEventListener("click", (evenement) => {
 // contrairement à un addEventListener posé individuellement sur chaque carte au chargement
 ```
 
-Cette technique, la **délégation d'événements**, évite d'avoir à réattacher un écouteur à chaque nouvel élément créé dynamiquement (cf. exemple de `createElement` plus haut) : un seul écouteur, posé une fois sur un ancêtre stable, suffit.
+Cette technique, la **délégation d'événements**, évite d'avoir à réattacher un écouteur à chaque nouvel élément créé dynamiquement (voir l'exemple de `createElement` plus haut) : un seul écouteur, posé une fois sur un ancêtre stable, suffit.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Le DOM représente une page HTML sous forme d'arbre manipulable. `querySelector`/`addEventListener` sélectionnent et réagissent aux interactions ; un événement se propage des enfants vers les parents (*bubbling*). |
+| **Outils utilisables** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`. |
+| **Pièges à éviter** | Assigner une donnée utilisateur à `innerHTML` (faille XSS) ; attacher un écouteur à chaque élément individuel plutôt que déléguer, ce qui casse pour les éléments ajoutés dynamiquement après coup. |
+| **Bonnes pratiques** | Utiliser la délégation d'événements (écouteur sur un ancêtre stable) plutôt qu'un écouteur par élément, surtout si des éléments sont ajoutés dynamiquement. |

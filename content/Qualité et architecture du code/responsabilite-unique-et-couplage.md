@@ -26,3 +26,14 @@ Un fichier de tests de plus de 1200 lignes, couvrant sept modules distincts d'un
 La responsabilité unique ne suffit pas si les morceaux, une fois séparés, dépendent lourdement des détails internes les uns des autres — un fichier "séparé" qui doit être relu en entier à chaque modification d'un autre n'est séparé qu'en apparence. Le couplage faible signifie qu'un module expose une interface claire (des fonctions, des types) et que ses appelants n'ont besoin de connaître que cette interface, jamais son implémentation interne.
 
 > **Signal d'alerte :** si modifier un détail d'implémentation dans un fichier oblige systématiquement à modifier un autre fichier qui ne fait que l'appeler, le couplage est trop fort — même si chaque fichier, pris isolément, semble avoir une responsabilité claire.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un fichier qui mélange plusieurs raisons de changer devient fragile — un changement pour un besoin en fait dérailler un autre. Le vrai test : "si je modifie ceci, est-ce pour la même raison que cela ?". |
+| **Outils utilisables** | Le signal de taille (~700-800 lignes) comme indice mécanique, complémentaire au test de la raison de changer. |
+| **Pièges à éviter** | Séparer des fichiers sans réduire le couplage entre eux — un fichier "séparé" qui doit être relu en entier à chaque modification d'un autre reste couplé, même s'il a l'air indépendant. |
+| **Bonnes pratiques** | Scinder un fichier dès que deux responsabilités distinctes s'y mélangent, avec une interface claire entre les morceaux issus du split. |

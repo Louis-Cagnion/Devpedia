@@ -40,7 +40,7 @@ docker compose down         # arrête et supprime les conteneurs (les volumes no
 
 ## Ce que Compose automatise
 
-- **Le réseau** : tous les services d'un même fichier sont placés sur un réseau commun automatiquement — `base` est déjà joignable par son nom depuis `api`, sans `docker network create` manuel (cf. chapitre sur les réseaux).
+- **Le réseau** : tous les services d'un même fichier sont placés sur un réseau commun automatiquement — `base` est déjà joignable par son nom depuis `api`, sans `docker network create` manuel (voir [Volumes et réseaux](/?c=docker&p=volumes-et-reseaux)).
 - **L'ordre de démarrage** : `depends_on` démarre `base` avant `api`. Cela garantit l'ordre de **démarrage** du conteneur, pas que le service interne (ici MySQL) soit déjà prêt à accepter des connexions — une application qui se connecte trop tôt doit encore prévoir une nouvelle tentative (cf. [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts), rubrique Performance) plutôt que de supposer que la base répond dès le premier instant.
 - **Les volumes déclarés une fois** : `donnees-mysql` défini en bas du fichier est créé automatiquement s'il n'existe pas encore.
 
@@ -86,3 +86,14 @@ services:
 networks:
   mon-reseau:
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Docker Compose décrit plusieurs services dans un fichier YAML unique et les démarre ensemble, avec un réseau commun automatique. `depends_on` ordonne le démarrage, sans garantir qu'un service interne soit déjà prêt. |
+| **Outils utilisables** | `docker compose up -d`/`logs -f`/`down`, `restart: unless-stopped`, secrets Compose (fichier monté, pas une variable d'environnement). |
+| **Pièges à éviter** | Une erreur d'indentation YAML, qui change silencieusement la structure sans erreur explicite ; supposer qu'un service dépendant est déjà prêt dès son démarrage. |
+| **Bonnes pratiques** | Prévoir une nouvelle tentative de connexion côté application plutôt que de supposer qu'un service dépendant répond dès le premier instant ; déclarer explicitement les réseaux dès qu'on veut les nommer ou en isoler certains. |

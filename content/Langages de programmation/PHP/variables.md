@@ -195,4 +195,15 @@ if (!empty($personne["age"])) {
 ?>
 ```
 
-> **Note :** `empty($x)` renvoie `true` si la variable/clé n'existe pas du tout, OU si elle contient une valeur "vide" (`''`, `0`, `null`, `false`, tableau vide...). C'est différent de `array_key_exists()` (cf. chapitre sur les fonctions), qui vérifie uniquement l'existence de la clé, même si sa valeur est `null`.
+> **Note :** `empty($x)` renvoie `true` si la variable/clé n'existe pas du tout, OU si elle contient une valeur "vide" (`''`, `0`, `null`, `false`, tableau vide...). C'est différent de `array_key_exists()` (voir [Les fonctions et méthodes les plus utiles](/?c=langages-de-programmation&s=php&p=methodes)), qui vérifie uniquement l'existence de la clé, même si sa valeur est `null`.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une variable PHP se déclare avec `$`, sans type explicite (faiblement typé). Les superglobales (`$_GET`, `$_POST`, `$_SERVER`...) sont visibles partout, pré-remplies par PHP. |
+| **Outils utilisables** | `var_dump`/`gettype` pour inspecter un type, `isset()`/`empty()` pour tester une clé sans warning, `define()` pour une constante globale. |
+| **Pièges à éviter** | Comparer avec `==` plutôt que `===` (conversions de type surprenantes) ; lire une clé de tableau absente sans `isset()`/`empty()` (déclenche un warning). |
+| **Bonnes pratiques** | Utiliser `===`/`!==` par défaut ; vérifier `isset()`/`empty()` avant de lire une clé qui pourrait ne pas exister. |

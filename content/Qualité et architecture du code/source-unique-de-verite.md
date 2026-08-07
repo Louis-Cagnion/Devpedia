@@ -57,3 +57,14 @@ Ce cas ne se corrige pas toujours par une fusion de structures comme l'exemple p
 ## Le principe général
 
 Avant de dupliquer une information (une constante, une liste d'identifiants, une configuration), la question à se poser : *si cette information change, combien d'endroits faut-il mettre à jour, et existe-t-il un mécanisme qui garantit qu'ils le seront tous ?* Si la réponse est "il faut s'en souvenir", la duplication est un risque, même si elle semble anodine au moment où elle est introduite.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une même famille d'informations dupliquée à deux endroits finit toujours par diverger — pas par manque de rigueur, mais dès qu'une mise à jour touche une copie sans que son auteur sache que l'autre existe. |
+| **Outils utilisables** | Consolider plusieurs structures parallèles (synchronisées par convention) en une seule structure imbriquée (synchronisée par construction). |
+| **Pièges à éviter** | Dupliquer une information entre plusieurs fichiers qui ne se référencent jamais entre eux — le lien n'est visible nulle part dans le code. |
+| **Bonnes pratiques** | Se demander, avant toute duplication, combien d'endroits il faudrait mettre à jour si l'information change, et si un mécanisme garantit qu'ils le seront tous. |

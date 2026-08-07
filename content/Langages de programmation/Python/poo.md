@@ -123,3 +123,14 @@ print(c.surface)   # 78.53975 -> accédé comme un attribut, PAS comme c.surface
 ```
 
 `@property` transforme une méthode en attribut en lecture, recalculé à chaque accès — utile pour exposer une valeur dérivée sans exiger que l'appelant sache que c'est en réalité un calcul.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | En Python, tout est objet. `self` est un paramètre explicite de chaque méthode. Les méthodes spéciales (`__init__`, `__str__`, `__eq__`...) définissent comment un objet réagit aux opérations natives (`+`, `==`, `print`...). |
+| **Outils utilisables** | `super()` pour appeler la méthode parente, `@property` pour un attribut calculé, attributs de classe vs d'instance. |
+| **Pièges à éviter** | Oublier `self` comme premier paramètre d'une méthode d'instance — provoque une erreur à l'appel. |
+| **Bonnes pratiques** | Définir `__repr__` sur toute classe destinée à être affichée en débogage, pour une représentation lisible plutôt que l'adresse mémoire par défaut. |

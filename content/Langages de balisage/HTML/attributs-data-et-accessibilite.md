@@ -23,7 +23,7 @@ carte.dataset.enStock;       // "true" -> "data-en-stock" devient "enStock" en c
 
 `data-*` permet d'attacher une donnée à un élément HTML, récupérable en JavaScript via `.dataset` — un moyen standard de faire circuler une information du HTML vers le JavaScript, sans avoir besoin de variables globales ou de requêtes supplémentaires.
 
-> **Note :** n'importe quel nom après `data-` est valide (`data-nimporte-quoi`) — la seule règle est la conversion automatique kebab-case (`data-en-stock`) vers camelCase (`enStock`) en JavaScript (cf. chapitre sur les variables, rubrique JavaScript, pour cette convention de nommage).
+> **Note :** n'importe quel nom après `data-` est valide (`data-nimporte-quoi`) — la seule règle est la conversion automatique **kebab-case** (mots séparés par des tirets, `data-en-stock`) vers **camelCase** (chaque mot suivant collé et capitalisé, `enStock`) en JavaScript — une simple convention de nommage, pas un mécanisme propre à `data-*`.
 
 ## L'accessibilité : pourquoi ça compte
 
@@ -83,3 +83,14 @@ bouton.addEventListener("keydown", (evenement) => {
 ```
 
 `tabindex="0"` rend l'élément focusable via Tab et `role="button"` annonce son rôle à un lecteur d'écran, mais **aucun des deux ne déclenche l'activation au clavier** (Entrée/Espace) — contrairement à un vrai `<button>`, qui le fait nativement. Sans ce gestionnaire `keydown` explicite, l'élément resterait focusable mais inutilisable au clavier : exactement le piège que la règle d'or ARIA cherche à éviter.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `data-*` attache une donnée personnalisée à un élément, récupérable en JavaScript via `.dataset`. `aria-*` complète l'accessibilité quand la sémantique HTML native ne suffit pas (composants personnalisés). |
+| **Outils utilisables** | `.dataset` en JavaScript ; `aria-label`, `role`, `aria-expanded`. |
+| **Pièges à éviter** | Recréer un `<div role="button">` sans gérer soi-même le focus clavier et l'activation (Entrée/Espace) — un vrai `<button>` fait tout cela nativement. |
+| **Bonnes pratiques** | "No ARIA is better than bad ARIA" — n'utiliser ARIA que pour combler un manque réel, jamais en remplacement d'une balise HTML native qui ferait déjà le travail. |

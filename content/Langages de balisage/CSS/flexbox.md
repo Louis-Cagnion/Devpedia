@@ -4,7 +4,7 @@ order: 5
 
 # Flexbox
 
-**Flexbox** (*Flexible Box Layout*) organise des éléments le long d'un **seul axe** (horizontal ou vertical), en distribuant l'espace disponible entre eux — la solution moderne pour aligner, centrer et répartir des éléments, remplaçant des techniques historiques bien plus fragiles (flottants, tableaux détournés de leur usage, cf. chapitre HTML sur les tableaux).
+**Flexbox** (*Flexible Box Layout*) organise des éléments le long d'un **seul axe** (horizontal ou vertical), en distribuant l'espace disponible entre eux — la solution moderne pour aligner, centrer et répartir des éléments, remplaçant des techniques historiques bien plus fragiles (flottants, [tableaux](/?c=langages-de-balisage&s=html&p=tableaux) détournés de leur usage d'origine).
 
 ## Activer Flexbox
 
@@ -104,4 +104,15 @@ align-items (axe secondaire, ici vertical) :
 [ ]                    [ ]                        [■]
 ```
 
-Voir aussi le chapitre sur CSS Grid, pour une mise en page à **deux** dimensions (lignes ET colonnes simultanément), là où Flexbox reste fondamentalement pensé pour un seul axe à la fois.
+Voir aussi [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), pour une mise en page à **deux** dimensions (lignes ET colonnes simultanément), là où Flexbox reste fondamentalement pensé pour un seul axe à la fois.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Flexbox aligne des éléments sur un seul axe (`flex-direction`). `justify-content` aligne sur l'axe principal, `align-items` sur l'axe secondaire. `flex-grow`/`flex-shrink`/`flex-basis` contrôlent la taille des enfants. |
+| **Outils utilisables** | `display: flex`, `justify-content`, `align-items`, `flex-wrap`, `flex-grow`/`shrink`/`basis`, `order`. |
+| **Pièges à éviter** | Utiliser `order` pour réordonner un contenu qui a un vrai sens de lecture — l'ordre visuel change, mais pas l'ordre de tabulation clavier ni celui lu par un lecteur d'écran. |
+| **Bonnes pratiques** | Réserver `order` aux réordonnancements purement décoratifs ; utiliser Grid plutôt que Flexbox dès que la mise en page a besoin de deux dimensions (lignes ET colonnes). |

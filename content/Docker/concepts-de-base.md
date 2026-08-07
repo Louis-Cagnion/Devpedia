@@ -48,6 +48,17 @@ Une même image peut donc démarrer plusieurs conteneurs indépendants, chacun a
 
 ## Les images sont construites en couches
 
-Une image est empilée en **couches** (*layers*), chacune correspondant à une instruction du Dockerfile (cf. chapitre dédié) : installer un paquet, copier du code, etc. Ces couches sont partagées et mises en cache entre images : si deux images partagent leurs premières couches (ex. la même image de base), Docker ne les stocke, ni ne les télécharge, qu'une seule fois.
+Une image est empilée en **couches** (*layers*), chacune correspondant à une instruction du [Dockerfile](/?c=docker&p=dockerfile) : installer un paquet, copier du code, etc. Ces couches sont partagées et mises en cache entre images : si deux images partagent leurs premières couches (ex. la même image de base), Docker ne les stocke, ni ne les télécharge, qu'une seule fois.
 
 > **Note :** c'est une déduplication automatique par contenu, sur le même principe que le [stockage d'objets de Git](/?c=git&p=architecture-interne) — deux couches identiques produisent le même identifiant et ne sont jamais dupliquées sur disque.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un conteneur est un processus isolé (namespaces + cgroups) qui partage le noyau de l'hôte — plus léger qu'une machine virtuelle, qui virtualise du matériel complet. Une image est un modèle immuable en couches ; un conteneur est une instance en cours d'exécution de cette image. |
+| **Outils utilisables** | Aucune commande spécifique ici — ce chapitre pose le vocabulaire (image, conteneur, namespace, cgroup) réutilisé dans tous les suivants. |
+| **Pièges à éviter** | Confondre image et conteneur — modifier un conteneur ne modifie jamais l'image dont il est issu. |
+| **Bonnes pratiques** | Comprendre que l'isolation d'un conteneur repose sur le noyau Linux (namespaces/cgroups), pas sur une technologie propre à Docker, pour mieux évaluer ses limites de sécurité. |

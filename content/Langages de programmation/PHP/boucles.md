@@ -111,3 +111,14 @@ Comme pour les conditions, les boucles peuvent s'écrire avec `:` et `end...` :
     <p><?= $fruit ?></p>
 <?php endforeach; ?>
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `while`/`do while`/`for` sont les boucles classiques ; `foreach` est spécifiquement conçue pour parcourir un tableau, avec ou sans sa clé. |
+| **Outils utilisables** | `break`/`continue`, la syntaxe alternative (`:`/`end...`) pour les templates. |
+| **Pièges à éviter** | Utiliser `for` avec un index manuel là où `foreach` évite tout risque d'erreur d'index. |
+| **Bonnes pratiques** | Préférer `foreach` dès qu'on parcourt un tableau, sans avoir besoin de gérer l'index soi-même. |

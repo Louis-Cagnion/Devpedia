@@ -58,7 +58,7 @@ p { color: red; }   /* ignoré : la règle du dessus a !important */
 
 > **Best practice :** éviter `!important` en usage courant — il rend le débogage difficile (impossible à surcharger simplement) et casse la logique naturelle de la cascade. À réserver à des cas très exceptionnels (souvent pour surcharger un style tiers qu'on ne contrôle pas).
 
-### 2. La spécificité (cf. chapitre sur les sélecteurs)
+### 2. La spécificité (voir [Les sélecteurs](/?c=langages-de-balisage&s=css&p=selecteurs))
 
 ```css
 #bouton-principal { color: blue; }   /* spécificité : id -> plus fort */
@@ -86,3 +86,14 @@ body {
 ```
 
 Les propriétés liées au **texte** (`color`, `font-family`, `font-size`, `line-height`...) sont généralement héritées par défaut ; les propriétés liées à la **boîte** (`border`, `margin`, `padding`, `background`...) ne le sont jamais — c'est un mécanisme distinct de la cascade, bien qu'il interagisse avec elle (une règle héritée a la spécificité la plus faible possible, facilement surchargée par n'importe quelle règle directement appliquée à l'élément).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Les variables CSS (`--nom`, lues via `var()`) évitent de répéter une valeur. Face à un conflit entre règles, la cascade tranche dans l'ordre : `!important` > spécificité > ordre d'écriture. L'héritage (texte oui, boîte non) est un mécanisme distinct qui interagit avec la cascade. |
+| **Outils utilisables** | `:root` pour des variables globales, `var(--nom, valeur-de-secours)`, `element.style.setProperty()` pour les modifier en JavaScript. |
+| **Pièges à éviter** | Abuser de `!important` — il court-circuite toute la cascade et rend le style difficile à surcharger ensuite. |
+| **Bonnes pratiques** | Réserver `!important` à des cas exceptionnels (surcharger un style tiers non contrôlé) ; définir les couleurs/espacements récurrents comme variables sur `:root` plutôt que de les répéter. |

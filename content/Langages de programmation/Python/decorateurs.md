@@ -4,7 +4,7 @@ order: 9
 
 # Les décorateurs
 
-Un **décorateur** enveloppe une fonction dans une autre, pour lui ajouter un comportement (chronométrage, journalisation, vérification de droits...) sans modifier son code — ce mécanisme s'appuie directement sur les fonctions de première classe et les closures (cf. chapitre sur les fonctions).
+Un **décorateur** enveloppe une fonction dans une autre, pour lui ajouter un comportement (chronométrage, journalisation, vérification de droits...) sans modifier son code — ce mécanisme s'appuie directement sur les fonctions de première classe et les closures (voir [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions)).
 
 ## Le principe, sans le sucre syntaxique
 
@@ -116,7 +116,18 @@ saluer()   # affiche "Bonjour !" trois fois
 
 | Décorateur | Rôle |
 |---|---|
-| `@property` | Transforme une méthode en attribut calculé (cf. chapitre sur la POO) |
+| `@property` | Transforme une méthode en attribut calculé (voir [La programmation orientée objet](/?c=langages-de-programmation&s=python&p=poo)) |
 | `@staticmethod` | Méthode qui n'a besoin ni de `self`, ni de la classe |
 | `@classmethod` | Méthode qui reçoit la classe elle-même (`cls`) plutôt qu'une instance |
 | `@functools.lru_cache` | Met en cache automatiquement le résultat d'une fonction pour des arguments déjà vus |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un décorateur (`@nom`) enveloppe une fonction pour lui ajouter un comportement sans modifier son code — `@decorateur def f()` équivaut à `f = decorateur(f)`. |
+| **Outils utilisables** | `functools.wraps` (préserve les métadonnées), `@property`/`@staticmethod`/`@classmethod`, `@functools.lru_cache`. |
+| **Pièges à éviter** | Oublier `@wraps` — la fonction décorée perd son `__name__`/`__doc__` d'origine, ce qui complique le débogage. |
+| **Bonnes pratiques** | Toujours utiliser `@wraps(fonction)` dans la fonction d'enveloppe d'un décorateur personnalisé. |

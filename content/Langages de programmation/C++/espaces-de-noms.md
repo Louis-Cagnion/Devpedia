@@ -4,7 +4,7 @@ order: 2
 
 # Les espaces de noms (namespaces)
 
-Un **espace de noms** (*namespace*) regroupe des identifiants (fonctions, classes, variables) sous un préfixe commun, pour éviter les collisions de noms entre différentes parties d'un projet ou différentes bibliothèques — le même besoin que les namespaces déjà vus en PHP (cf. chapitre dédié).
+Un **espace de noms** (*namespace*) regroupe des identifiants (fonctions, classes, variables) sous un préfixe commun, pour éviter les collisions de noms entre différentes parties d'un projet ou différentes bibliothèques — le même besoin que les namespaces PHP, dont [l'autoloading](/?c=langages-de-programmation&s=php&p=autoloading) montre un usage concret.
 
 ## Déclarer et utiliser un namespace
 
@@ -79,3 +79,14 @@ namespace Entreprise::Facturation {
 
 Entreprise::Facturation::Facture f;
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un namespace regroupe des identifiants sous un préfixe (`Namespace::identifiant`) pour éviter les collisions de noms. `using namespace` importe sans préfixe ; `using X::y` importe sélectivement. |
+| **Outils utilisables** | `namespace`, `using namespace`, import sélectif (`using std::cout`), namespaces imbriqués (`A::B`). |
+| **Pièges à éviter** | Écrire `using namespace X;` dans un header — impose cette importation à tout fichier qui l'inclut. |
+| **Bonnes pratiques** | Réserver `using namespace` à l'intérieur d'un fichier `.cpp`, jamais dans un header partagé. |

@@ -54,7 +54,7 @@ for (int i = 0; i < 5; i++) {
 }
 ```
 
-> **Note :** contrairement à PHP ou JavaScript, il n'existe **aucun moyen natif** de connaître la taille d'un tableau à partir du pointeur seul — `tableau[5]` "sait" combien il contient tant qu'il est manipulé comme tableau statique, mais cette information disparaît dès qu'il est passé à une fonction (il se comporte alors comme un simple pointeur, cf. chapitre sur les pointeurs). La taille doit alors être transmise séparément.
+> **Note :** contrairement à PHP ou JavaScript, il n'existe **aucun moyen natif** de connaître la taille d'un tableau à partir du pointeur seul — `tableau[5]` "sait" combien il contient tant qu'il est manipulé comme tableau statique, mais cette information disparaît dès qu'il est passé à une fonction (il se comporte alors comme un simple pointeur, voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs)). La taille doit alors être transmise séparément.
 
 ```
 void afficher(int *tableau, int taille) // la taille doit être passée explicitement
@@ -98,3 +98,14 @@ for (int i = 0; i < 10 && !trouve; i++) {
     }
 }
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `while` teste avant, `do while` teste après (au moins une exécution), `for` regroupe initialisation/condition/incrémentation. Pas de `foreach` natif : un tableau se parcourt par index. |
+| **Outils utilisables** | `break` (arrête la boucle), `continue` (passe au tour suivant). |
+| **Pièges à éviter** | `break` ne sort que de la boucle la plus proche — une variable de contrôle est nécessaire pour sortir de plusieurs boucles imbriquées. |
+| **Bonnes pratiques** | Toujours transmettre explicitement la taille d'un tableau à une fonction qui le parcourt, plutôt que de supposer qu'elle peut être déduite. |

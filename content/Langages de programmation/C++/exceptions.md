@@ -4,7 +4,7 @@ order: 6
 
 # Les exceptions
 
-C++ propose un mécanisme d'erreurs structuré (`try`/`catch`/`throw`), une alternative au style "à la C" (une fonction renvoie une valeur spéciale comme `-1` ou `NULL`, et positionne `errno`, cf. chapitre sur les appels système, rubrique C) — le même principe que les exceptions PHP, Python ou JavaScript déjà vues dans les rubriques correspondantes.
+C++ propose un mécanisme d'erreurs structuré (`try`/`catch`/`throw`), une alternative au style "à la C" (une fonction renvoie une valeur spéciale comme `-1` ou `NULL`, et positionne `errno`, voir [Les appels système](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs)) — le même principe que les exceptions PHP, Python ou JavaScript déjà vues dans les rubriques correspondantes.
 
 ## `try` / `catch` / `throw`
 
@@ -67,12 +67,23 @@ try {
 
 ```cpp
 void traiter() {
-    GestionnaireFichier gf("donnees.txt");   // cf. chapitre sur RAII
+    GestionnaireFichier gf("donnees.txt");   // voir RAII et les pointeurs intelligents
     throw std::runtime_error("Erreur pendant le traitement");
 }   // même ici, ~GestionnaireFichier() s'exécute AVANT que l'exception ne remonte plus haut
 ```
 
-Quand une exception est levée, C++ "déroule la pile" (*stack unwinding*) : chaque objet local encore en vie voit son destructeur appelé, dans l'ordre inverse de leur création, avant que l'exception ne continue de remonter — c'est ce qui garantit qu'une ressource gérée par RAII (cf. chapitre dédié) est toujours libérée proprement, même en cas d'erreur imprévue.
+Quand une exception est levée, C++ "déroule la pile" (*stack unwinding*) : chaque objet local encore en vie voit son destructeur appelé, dans l'ordre inverse de leur création, avant que l'exception ne continue de remonter — c'est ce qui garantit qu'une ressource gérée par [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii) est toujours libérée proprement, même en cas d'erreur imprévue.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `try`/`catch`/`throw` structure la gestion d'erreurs. La hiérarchie standard (`std::exception` et dérivés) permet d'intercepter par type précis. Le *stack unwinding* garantit qu'une ressource RAII est libérée même en cas d'exception. |
+| **Outils utilisables** | `std::runtime_error`, `std::logic_error`, exceptions personnalisées héritant de `std::exception`, `noexcept`. |
+| **Pièges à éviter** | Utiliser une exception pour un flux de contrôle normal — coût non négligeable comparé à un simple `if`. |
+| **Bonnes pratiques** | Intercepter le type le plus précis possible plutôt que `std::exception` systématiquement ; réserver les exceptions aux situations réellement exceptionnelles. |
 
 ## `noexcept` : garantir qu'une fonction ne lève jamais
 

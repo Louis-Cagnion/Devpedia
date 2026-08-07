@@ -51,6 +51,17 @@ setopt PROMPT_SUBST
 PROMPT='%n@%m %~ ${vcs_info_msg_0_} %# '
 ```
 
-`PROMPT_SUBST` (cf. chapitre sur les options du shell) autorise l'évaluation de variables et substitutions à l'intérieur de `PROMPT` — sans cette option, `${vcs_info_msg_0_}` s'afficherait littéralement plutôt que d'être remplacé par la branche courante.
+`PROMPT_SUBST` (voir [Le système d'options](/?c=shells&s=zsh&p=options-du-shell)) autorise l'évaluation de variables et substitutions à l'intérieur de `PROMPT` — sans cette option, `${vcs_info_msg_0_}` s'afficherait littéralement plutôt que d'être remplacé par la branche courante.
 
-> **Note :** c'est exactement ce mécanisme (`vcs_info` + un prompt personnalisé) que des thèmes populaires comme *robbyrussell* (le thème par défaut d'Oh My Zsh) ou *powerlevel10k* automatisent et enrichissent — cf. chapitre suivant.
+> **Note :** c'est exactement ce mécanisme (`vcs_info` + un prompt personnalisé) que des thèmes populaires comme *robbyrussell* (le thème par défaut d'[Oh My Zsh](/?c=shells&s=zsh&p=oh-my-zsh)) ou *powerlevel10k* automatisent et enrichissent.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Zsh construit son prompt via `PROMPT` (codes `%`), pas `PS1`/`\` comme Bash. `RPROMPT` affiche une invite secondaire à droite, sans équivalent Bash. |
+| **Outils utilisables** | `%n`/`%m`/`%~`/`%#`, `%F{couleur}`/`%f`, `vcs_info` pour la branche Git. |
+| **Pièges à éviter** | Oublier `setopt PROMPT_SUBST` — sans lui, une substitution comme `${vcs_info_msg_0_}` s'affiche littéralement au lieu d'être évaluée. |
+| **Bonnes pratiques** | Utiliser `vcs_info` pour intégrer nativement la branche Git courante, plutôt qu'un script externe. |

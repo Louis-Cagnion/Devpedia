@@ -42,3 +42,14 @@ Le signal d'alerte est un `if`/`elif`/`switch` dont chaque branche teste une val
 ## La limite : ne pas généraliser un cas qui restera unique
 
 Ce principe ne justifie pas de construire une structure générique pour un cas qui, par nature, ne connaîtra jamais qu'une seule valeur — un traitement réellement spécifique à un unique site n'a pas besoin d'un mécanisme de configuration généralisé, cela relèverait de la sur-ingénierie (YAGNI). La généricité se justifie quand le nombre de cas est amené à varier ; elle devient un coût inutile quand il ne varie structurellement pas.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un code qui teste des valeurs précises (`if site == "leboncoin"`) plutôt que de lire la structure des données déjà disponibles casse silencieusement dès que les données changent ou viennent d'ailleurs. |
+| **Outils utilisables** | Dériver un comportement depuis un registre déjà centralisé, plutôt que de dupliquer sa connaissance sous forme de branches conditionnelles. |
+| **Pièges à éviter** | Un `if`/`elif` dont chaque branche teste une valeur déjà présente dans une structure accessible ailleurs — signal qu'elle devrait être consultée directement. |
+| **Bonnes pratiques** | Faire dépendre le code de la forme des données plutôt que de valeurs particulières, dès que le nombre de cas est amené à varier. |

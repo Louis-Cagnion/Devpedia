@@ -85,3 +85,14 @@ Cette vérification attrape tous les cas, y compris ceux qu'on n'avait pas prév
 Les deux bugs les plus sérieux que j'ai rencontrés sur ce genre de programme sortaient tous les deux avec un **code de retour 0** : une extraction incomplète classée comme correcte, et un rapport final entièrement vide après fusion de résultats parallèles. Aucun test de "est-ce que ça plante ?" ne les aurait vus.
 
 La leçon est directe : pour un traitement long et non surveillé, testez le **contenu** de la sortie (le nombre d'éléments, la présence des sections attendues), pas seulement le fait que le programme se termine.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un traitement de plusieurs minutes doit pouvoir reprendre après une coupure (sauvegarde au fur et à mesure), afficher son avancement, et détecter un échec partiel plutôt que de le masquer silencieusement. |
+| **Outils utilisables** | Le format JSON Lines pour une sauvegarde incrémentale résiliente, `time.monotonic()` pour une estimation de durée fiable, une vérification d'invariant en fin de traitement. |
+| **Pièges à éviter** | Un `except`/`break` silencieux qui laisse un résultat partiel sans le signaler ; ne vérifier que le code de retour, pas le contenu réel produit. |
+| **Bonnes pratiques** | Comparer le nombre d'éléments obtenus au nombre attendu ; séparer le fichier d'état interne (`.partiel`) du livrable final. |

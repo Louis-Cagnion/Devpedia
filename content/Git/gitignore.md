@@ -44,3 +44,14 @@ git rm --cached fichier_deja_suivi.txt
 Un dépôt peut contenir plusieurs fichiers `.gitignore`, chacun s'appliquant au dossier où il se trouve et à ses sous-dossiers — utile pour des règles spécifiques à un sous-projet, en plus des règles globales à la racine.
 
 Un fichier `~/.gitignore_global` (configuré via `git config --global core.excludesfile ~/.gitignore_global`) permet aussi de définir des règles personnelles (ex. fichiers propres à son propre éditeur), sans les imposer aux autres contributeurs d'un projet partagé.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `.gitignore` exclut des fichiers du suivi Git — ils ne sont jamais proposés à l'ajout, même avec `git add .`. Les règles s'appliquent par dossier, avec `!motif` pour créer des exceptions. |
+| **Outils utilisables** | Motifs `*.ext`, `dossier/`, `/chemin`, `!motif` ; `git rm --cached` pour retirer un fichier déjà suivi du suivi. |
+| **Pièges à éviter** | Ajouter un fichier à `.gitignore` n'a **aucun effet** s'il est déjà suivi (déjà commité) — il faut d'abord `git rm --cached` avant que la règle ne prenne effet. |
+| **Bonnes pratiques** | Exclure dépendances, secrets et fichiers générés dès la création du dépôt, avant le tout premier commit. |

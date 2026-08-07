@@ -16,12 +16,12 @@ typedef struct Maillon
 } Maillon;
 ```
 
-Comme pour un arbre binaire (cf. chapitre dédié), `struct Maillon *suivant` doit référencer `struct Maillon` et non `Maillon` seul : au moment où cette ligne est lue, le `typedef` n'est pas encore complètement défini.
+Comme pour [un arbre binaire](/?c=langages-de-programmation&s=c&p=arbres-binaires), `struct Maillon *suivant` doit référencer `struct Maillon` et non `Maillon` seul : au moment où cette ligne est lue, le `typedef` n'est pas encore complètement défini.
 
 ## Créer et chaîner des maillons
 
 ```
-Maillon *premier = malloc(sizeof(Maillon));   // à vérifier contre NULL en pratique (cf. chapitre mémoire)
+Maillon *premier = malloc(sizeof(Maillon));   // à vérifier contre NULL en pratique (voir La gestion de la mémoire)
 premier->valeur = 10;
 
 Maillon *second = malloc(sizeof(Maillon));
@@ -74,7 +74,7 @@ Insérer en tête est une opération en temps constant (aucun autre maillon n'es
 
 ## Libérer la liste
 
-Chaque maillon alloué avec `malloc()` doit être libéré individuellement — libérer directement `tete` sans garder de référence au reste perdrait l'accès à tous les maillons suivants (fuite mémoire, cf. chapitre sur la gestion de la mémoire) :
+Chaque maillon alloué avec `malloc()` doit être libéré individuellement — libérer directement `tete` sans garder de référence au reste perdrait l'accès à tous les maillons suivants (fuite mémoire, voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) :
 
 ```
 void libererListe(Maillon *tete)
@@ -89,7 +89,7 @@ void libererListe(Maillon *tete)
 }
 ```
 
-> **Note :** l'ordre compte ici : appeler `free(courant)` puis lire `courant->suivant` serait un **use-after-free** (cf. chapitre sur la gestion de la mémoire) — la valeur du pointeur `suivant` doit être récupérée avant la libération du maillon qui la contient.
+> **Note :** l'ordre compte ici : appeler `free(courant)` puis lire `courant->suivant` serait un **use-after-free** (voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) — la valeur du pointeur `suivant` doit être récupérée avant la libération du maillon qui la contient.
 
 ## Liste chaînée vs tableau
 
@@ -99,3 +99,14 @@ void libererListe(Maillon *tete)
 | Insertion en tête/milieu | Décale tous les éléments suivants | Temps constant, aucun déplacement |
 | Mémoire | Contiguë | Éclatée, un `malloc` par maillon |
 | Taille | Fixe (tableau statique) ou à redimensionner (`realloc`) | Croît naturellement, un maillon à la fois |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une liste chaînée relie des maillons dispersés en mémoire via un pointeur "suivant" — contrairement à un tableau, insérer en tête est en temps constant, mais l'accès par index nécessite un parcours complet. |
+| **Outils utilisables** | Une `struct` auto-référentielle (`struct Maillon *suivant`), `malloc`/`free` par maillon. |
+| **Pièges à éviter** | Libérer un maillon avant de sauvegarder son pointeur `suivant` (use-after-free) ; oublier de libérer chaque maillon individuellement (fuite mémoire). |
+| **Bonnes pratiques** | Toujours sauvegarder `courant->suivant` avant de `free(courant)` ; vérifier chaque `malloc()` contre `NULL` avant de l'utiliser. |

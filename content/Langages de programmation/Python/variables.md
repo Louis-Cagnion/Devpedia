@@ -123,3 +123,14 @@ texte = texte.upper()  # il faut réassigner pour "garder" le changement
 | `None` | `None` | `null` |
 
 Voir aussi les chapitres sur les listes/tuples et les dictionnaires/ensembles pour les structures de données composites.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Python est dynamiquement typé : une variable prend le type de sa valeur, sans déclaration préalable, et peut en changer. `==` compare la valeur, `is` compare l'identité (le même objet en mémoire). |
+| **Outils utilisables** | `type()`/`isinstance()`, f-strings pour l'interpolation, `is None` pour tester une absence de valeur. |
+| **Pièges à éviter** | Confondre `==` et `is` — deux objets au contenu identique ne sont pas forcément le même objet en mémoire. |
+| **Bonnes pratiques** | Utiliser `is None` plutôt que `== None` ; préférer les f-strings à la concaténation pour insérer une variable dans du texte. |

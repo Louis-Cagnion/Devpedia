@@ -110,3 +110,14 @@ Le corollaire de cette représentation binaire est qu'on peut agir sur les bits 
 | Plage signée asymétrique | Le zéro est compté du côté positif |
 | Débordement | Les bits en trop sont perdus, la valeur boucle |
 | En C, signé qui déborde | Comportement **indéfini** : utiliser du non signé |
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un entier occupe un nombre fixe de bits, décidé à la déclaration : *n* bits donnent 2ⁿ valeurs possibles. Les négatifs s'encodent en complément à deux ; un débordement fait "boucler" la valeur (ou provoque un comportement indéfini en C pour un signé). |
+| **Outils utilisables** | Les types non signés pour compter/comparer/masquer des bits sans risque d'UB ; les types à taille fixe (`int32`, `int64`) des bibliothèques de calcul. |
+| **Pièges à éviter** | Compter sur le débordement d'un entier signé en C/C++ — comportement indéfini, pas un wraparound garanti. |
+| **Bonnes pratiques** | Préférer les types non signés pour toute manipulation de bits ; vérifier qu'un calcul de taille ne peut pas déborder avant une allocation mémoire. |

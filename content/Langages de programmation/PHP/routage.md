@@ -89,3 +89,14 @@ if (!$utilisateurConnecte) {
 }
 ?>
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Sans framework, un front controller unique reçoit toutes les requêtes et dispatch via une table "route → fichier". Par défaut, tout fichier physique sous la racine web est accessible — l'inverse d'un routeur JS où rien n'existe sans déclaration explicite. |
+| **Outils utilisables** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` pour un serveur de développement. |
+| **Pièges à éviter** | Tester l'existence d'un fichier avant de vérifier les dossiers bloqués (ordre inversé = protection contournée) ; rediriger sans `exit` juste après. |
+| **Bonnes pratiques** | Bloquer explicitement tout dossier sensible avant de servir un fichier physique ; toujours `exit` immédiatement après un `header('Location: ...')`. |

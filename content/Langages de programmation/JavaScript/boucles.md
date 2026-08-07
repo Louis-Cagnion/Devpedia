@@ -81,4 +81,15 @@ const somme = nombres.reduce((acc, n) => acc + n, 0); // 15 -> réduit tout le t
 
 > **Note :** `reduce()` est la plus polyvalente mais la moins immédiatement lisible : `acc` (l'accumulateur) part de la valeur initiale fournie en second argument (`0` ici), et se met à jour à chaque élément selon la fonction fournie.
 
-Voir aussi le chapitre sur les fonctions pour la syntaxe des fonctions fléchées (`=>`) utilisées ici.
+Voir aussi [Les fonctions](/?c=langages-de-programmation&s=javascript&p=fonctions) pour la syntaxe des fonctions fléchées (`=>`) utilisées ici.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `for`/`while`/`do...while` sont les boucles classiques ; `for...of` parcourt les valeurs d'un itérable, `for...in` les clés d'un objet. Les méthodes fonctionnelles (`map`/`filter`/`reduce`) remplacent souvent une boucle explicite. |
+| **Outils utilisables** | `break`/`continue`, `forEach`/`map`/`filter`/`reduce`. |
+| **Pièges à éviter** | Utiliser `for...in` sur un tableau — parcourt aussi des propriétés ajoutées manuellement, sans garantir l'ordre. |
+| **Bonnes pratiques** | `for...of` ou `.forEach()` pour un tableau ; les méthodes fonctionnelles pour transformer/filtrer plutôt qu'une boucle manuelle. |

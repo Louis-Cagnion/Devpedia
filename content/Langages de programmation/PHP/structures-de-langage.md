@@ -53,3 +53,14 @@ Les structures de langage sont traitées par PHP au moment de l'analyse du code 
 | `list()` | Assigne plusieurs variables en une fois depuis un tableau |
 
 > **Note :** vous avez déjà croisé la plupart de ces structures dans les chapitres précédents (conditions, boucles, variables...) sans que cette notion soit nommée explicitement.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Une structure de langage (`echo`, `include`, `if`, `return`...) fait partie de la syntaxe du langage lui-même, contrairement à une fonction — elle bénéficie de libertés d'écriture (parenthèses optionnelles, non stockable dans une variable). |
+| **Outils utilisables** | `echo`/`print`, `include`/`require`, `isset()`/`unset()`, `list()`. |
+| **Pièges à éviter** | Essayer de stocker une structure de langage dans une variable ou de la passer en argument, comme une fonction classique. |
+| **Bonnes pratiques** | Utiliser `include`/`require` plutôt qu'une fonction personnalisée pour charger un fichier — c'est le mécanisme natif prévu pour ça. |

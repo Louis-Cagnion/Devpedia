@@ -4,7 +4,7 @@ order: 10
 
 # Le rebase
 
-`git rebase` propose une alternative à `git merge` (cf. chapitre sur les branches) pour intégrer des changements entre deux branches : au lieu de créer un commit de fusion à deux parents, il **rejoue** les commits d'une branche par-dessus une autre, produisant un historique linéaire.
+`git rebase` propose une alternative à `git merge` (voir [Les branches](/?c=git&p=branches)) pour intégrer des changements entre deux branches : au lieu de créer un commit de fusion à deux parents, il **rejoue** les commits d'une branche par-dessus une autre, produisant un historique linéaire.
 
 ## Merge vs rebase, visuellement
 
@@ -29,7 +29,7 @@ git checkout feature
 git rebase main
 ```
 
-Git rejoue un par un chaque commit de `feature` (absent de `main`) par-dessus le dernier commit de `main`. En cas de conflit sur un commit précis (cf. chapitre sur la résolution de conflits), le rebase s'arrête pour le résoudre :
+Git rejoue un par un chaque commit de `feature` (absent de `main`) par-dessus le dernier commit de `main`. En cas de conflit sur un commit précis (voir [Résoudre un conflit de fusion](/?c=git&p=resoudre-conflits)), le rebase s'arrête pour le résoudre :
 
 ```bash
 # après avoir résolu les conflits dans les fichiers concernés :
@@ -76,4 +76,15 @@ git push --force
 
 Puisque le rebase crée de **nouveaux** commits avec des hash différents, le pousser en écrasant l'historique distant (`--force`) désynchronise brutalement quiconque avait déjà basé du travail sur les anciens commits — leurs branches locales référenceraient des commits qui n'existent plus côté serveur. Le rebase est sûr sur des commits **strictement locaux**, jamais encore partagés.
 
-Voir aussi le chapitre sur les branches (merge, l'alternative la plus sûre pour un historique déjà partagé) et celui sur la résolution de conflits.
+Voir aussi [Les branches](/?c=git&p=branches) (merge, l'alternative la plus sûre pour un historique déjà partagé) et [Résoudre un conflit de fusion](/?c=git&p=resoudre-conflits).
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `git rebase` rejoue les commits d'une branche par-dessus une autre, produisant un historique linéaire — au prix de nouveaux commits (hash différents) plutôt qu'un commit de fusion. |
+| **Outils utilisables** | `git rebase`, `git rebase -i` (réécriture interactive : pick/reword/squash/fixup/drop), `git rebase --continue`/`--abort`. |
+| **Pièges à éviter** | Rebaser un historique déjà partagé : les hash changent, ce qui désynchronise quiconque avait déjà basé du travail sur les anciens commits. |
+| **Bonnes pratiques** | Ne rebaser que des commits strictement locaux ; si un push forcé est réellement nécessaire, préférer `--force-with-lease` à `--force`. |

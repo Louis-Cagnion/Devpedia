@@ -4,6 +4,8 @@ order: 1
 
 # Les concepts de base de Git
 
+**Git** est un logiciel de *gestion de versions* : il garde en mémoire l'historique complet des modifications d'un projet, pour pouvoir revenir à un état antérieur, comprendre qui a changé quoi et pourquoi, ou faire travailler plusieurs personnes sur le même code sans écraser leur travail respectif. Les commandes qui suivent s'exécutent dans un [terminal](/?c=bases-de-l-informatique&p=le-terminal).
+
 Git suit l'évolution d'un projet en enregistrant, à chaque instant choisi, un **instantané** (snapshot) complet de l'état des fichiers — contrairement à l'idée reçue, ce n'est pas une simple liste de différences ligne par ligne, même si c'est souvent ainsi qu'on le visualise (`git diff`).
 
 ## Les trois zones de travail
@@ -41,7 +43,7 @@ Chaque commit pointe vers son parent, formant une chaîne : c'est cette chaîne 
 
 ## `HEAD` : où vous êtes actuellement
 
-`HEAD` est un pointeur qui désigne le commit sur lequel vous travaillez actuellement — la plupart du temps, il pointe vers le dernier commit de la branche courante (cf. chapitre sur les branches), et avance automatiquement à chaque nouveau commit.
+`HEAD` est un pointeur qui désigne le commit sur lequel vous travaillez actuellement — la plupart du temps, il pointe vers le dernier commit de la [branche](/?c=git&p=branches) courante, et avance automatiquement à chaque nouveau commit.
 
 ## Fichiers suivis, non suivis, modifiés
 
@@ -49,6 +51,17 @@ Chaque commit pointe vers son parent, formant une chaîne : c'est cette chaîne 
 git status
 ```
 
-`git status` classe les fichiers du dossier de travail en plusieurs catégories : suivis et inchangés (rien à signaler), suivis et modifiés (pas encore ajoutés au staging), en attente dans le staging (prêts pour le prochain commit), ou non suivis (jamais ajoutés à Git, cf. chapitre sur `.gitignore`).
+`git status` classe les fichiers du dossier de travail en plusieurs catégories : suivis et inchangés (rien à signaler), suivis et modifiés (pas encore ajoutés au staging), en attente dans le staging (prêts pour le prochain commit), ou non suivis — jamais ajoutés à Git, voir le chapitre [Le fichier .gitignore](/?c=git&p=gitignore) pour exclure volontairement certains fichiers de ce suivi.
 
-Voir aussi le chapitre sur les commandes essentielles pour la pratique concrète de ce cycle `add` → `commit`.
+Voir aussi [Les commandes essentielles](/?c=git&p=commandes-essentielles) pour la pratique concrète de ce cycle `add` → `commit`.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Git enregistre des instantanés complets (pas des différences) dans trois zones successives : dossier de travail → staging (`git add`) → dépôt (`git commit`). Chaque commit a un hash SHA-1 unique et pointe vers son commit parent, formant l'historique. `HEAD` désigne le commit actuellement actif. |
+| **Outils utilisables** | `git status` pour voir l'état des fichiers ; `git add`/`git commit` pour faire progresser un changement du dossier de travail vers le dépôt. |
+| **Pièges à éviter** | Confondre le staging avec un simple brouillon : tant qu'un fichier modifié n'est pas ajouté (`git add`), il ne fera pas partie du prochain commit, même si le commit est lancé juste après. |
+| **Bonnes pratiques** | Vérifier `git status` avant chaque commit pour ne jamais inclure un fichier par erreur (ou en oublier un). |

@@ -70,7 +70,7 @@ eval "cat $nom_fichier"    # DANGER : exécute réellement "cat rapport.txt" PUI
 
 `eval` réinterprète sa chaîne comme une nouvelle ligne de commande complète — c'est exactement ce mécanisme qui transforme un `;` contenu dans la donnée en un véritable **second ordre**, plutôt qu'un caractère inoffensif dans un nom de fichier. Même sans `eval`, la substitution de commande (`$(...)`, ci-dessus) ou une variable non protégée par des guillemets dans une commande qui accepte elle-même du code (ex. `ssh hote "$commande"`) créent le même risque.
 
-> **Piège :** faire confiance à une valeur externe (saisie utilisateur, argument de script, contenu d'un fichier téléchargé) pour construire une commande, notamment via `eval` ou une commande qui accepte elle-même du code (`ssh hote "$commande"`) — conceptuellement l'équivalent Bash d'une injection SQL (cf. chapitre PHP sur la sécurité) : une entrée non contrôlée qui modifie la structure de ce qui est exécuté, plutôt que de rester une simple donnée.
+> **Piège :** faire confiance à une valeur externe (saisie utilisateur, argument de script, contenu d'un fichier téléchargé) pour construire une commande, notamment via `eval` ou une commande qui accepte elle-même du code (`ssh hote "$commande"`) — conceptuellement l'équivalent Bash d'une [injection SQL](/?c=langages-de-programmation&s=php&p=securite) : une entrée non contrôlée qui modifie la structure de ce qui est exécuté, plutôt que de rester une simple donnée.
 >
 > **Bonne pratique :** ne jamais assembler textuellement une valeur externe dans une commande exécutée ensuite. Quand c'est inévitable, la traiter comme une donnée pure — jamais interpolée directement dans la commande, encore moins repassée à `eval`.
 
@@ -87,7 +87,7 @@ echo $((a * b))   # 15
 echo $((a / b))   # 1 -> division entière uniquement, Bash ne gère pas les décimaux
 ```
 
-> **Qu'est-ce qu'un "contexte arithmétique explicite" ?** C'est une syntaxe précise que Bash reconnaît et à l'intérieur de laquelle il interprète le contenu comme une expression numérique plutôt que comme du texte : `$((...))` (pour obtenir le résultat), `((...))` seul (pour un calcul ou un test, sans récupérer de valeur — utilisé par exemple dans `for ((i = 0; i < 5; i++))`, cf. chapitre sur les boucles), la commande `let` (`let "a = a + 1"`), ou encore les opérateurs numériques `-eq`, `-lt`, `-gt`... à l'intérieur de `[ ]`/`[[ ]]` (cf. chapitre sur les conditions). En dehors de ces syntaxes précises, `+`, `-`, `*` ne sont que des caractères ordinaires dans une chaîne.
+> **Qu'est-ce qu'un "contexte arithmétique explicite" ?** C'est une syntaxe précise que Bash reconnaît et à l'intérieur de laquelle il interprète le contenu comme une expression numérique plutôt que comme du texte : `$((...))` (pour obtenir le résultat), `((...))` seul (pour un calcul ou un test, sans récupérer de valeur — utilisé par exemple dans `for ((i = 0; i < 5; i++))`, voir [Les boucles](/?c=shells&s=bash&p=boucles)), la commande `let` (`let "a = a + 1"`), ou encore les opérateurs numériques `-eq`, `-lt`, `-gt`... à l'intérieur de `[ ]`/`[[ ]]` (voir [Les conditions](/?c=shells&s=bash&p=conditions)). En dehors de ces syntaxes précises, `+`, `-`, `*` ne sont que des caractères ordinaires dans une chaîne.
 
 > **Piège :** `$((a / b))` tronque silencieusement toute partie décimale, sans avertissement ni erreur — `echo $((5 / 2))` affiche `2`, pas `2.5`. Un calcul qui devrait produire un résultat décimal (moyenne, pourcentage...) donne ainsi un résultat faux sans qu'aucune erreur ne le signale.
 >

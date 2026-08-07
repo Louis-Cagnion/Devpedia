@@ -197,9 +197,9 @@ if (!hash_equals($_SESSION['csrf_token'] ?? '', $tokenRecu)) {
 ?>
 ```
 
-Un site tiers n'a aucun moyen de connaître ce jeton (il est stocké en session, jamais accessible depuis un autre domaine) — il ne peut donc pas le glisser dans sa requête piégée. `hash_equals()` plutôt qu'un `===` classique, pour la même raison qu'à la vérification d'un jeton signé (cf. chapitre sur les connexions) : une comparaison en temps constant, qui évite une attaque par timing.
+Un site tiers n'a aucun moyen de connaître ce jeton (il est stocké en session, jamais accessible depuis un autre domaine) — il ne peut donc pas le glisser dans sa requête piégée. `hash_equals()` plutôt qu'un `===` classique, pour la même raison qu'à la vérification d'un jeton signé (voir [Gérer les connexions](/?c=langages-de-programmation&s=php&p=connexions)) : une comparaison en temps constant, qui évite une attaque par timing.
 
-> **Note :** l'attribut de cookie `samesite` (cf. chapitre sur les connexions) apporte une protection complémentaire au niveau du navigateur lui-même, mais un jeton CSRF applicatif reste la protection de référence, indépendante du navigateur utilisé.
+> **Note :** l'attribut de cookie `samesite` (voir [Gérer les connexions](/?c=langages-de-programmation&s=php&p=connexions)) apporte une protection complémentaire au niveau du navigateur lui-même, mais un jeton CSRF applicatif reste la protection de référence, indépendante du navigateur utilisé.
 
 ## Panorama des autres familles d'attaques
 
@@ -213,13 +213,13 @@ Trois sigles reviennent dans tout ce qui suit :
 - **HTTPS** : simplement HTTP transporté dans une connexion chiffrée par TLS. Rien d'autre ne change côté protocole applicatif.
 - **DNS** (*Domain Name System*) : l'annuaire qui traduit un nom de domaine en adresse IP. C'est une étape indispensable avant toute connexion, et donc une cible.
 
-- **Man-in-the-middle (MITM)** : l'attaquant s'intercale entre le client et le serveur légitime, et relaie (ou altère) la conversation sans qu'aucune des deux parties ne s'en aperçoive. Le chiffrement seul (TLS) ne suffit pas à l'empêcher : un attaquant peut chiffrer *sa propre* conversation avec le client, pendant qu'il chiffre une autre conversation avec le vrai serveur. **Protection :** la vérification du certificat SSL/TLS présenté par le serveur (`verify_peer`/`verify_peer_name`, cf. chapitre sur les appels HTTP) — sans elle, un certificat forgé par l'attaquant serait accepté sans broncher.
+- **Man-in-the-middle (MITM)** : l'attaquant s'intercale entre le client et le serveur légitime, et relaie (ou altère) la conversation sans qu'aucune des deux parties ne s'en aperçoive. Le chiffrement seul (TLS) ne suffit pas à l'empêcher : un attaquant peut chiffrer *sa propre* conversation avec le client, pendant qu'il chiffre une autre conversation avec le vrai serveur. **Protection :** la vérification du certificat SSL/TLS présenté par le serveur (`verify_peer`/`verify_peer_name`, voir [Faire des appels HTTP en natif](/?c=langages-de-programmation&s=php&p=http)) — sans elle, un certificat forgé par l'attaquant serait accepté sans broncher.
 - **DNS spoofing / cache poisoning** : l'attaquant corrompt la résolution DNS pour qu'un nom de domaine légitime pointe vers son IP à lui. La vérification de certificat reste une protection même si le DNS est compromis, car elle ne dépend pas de la résolution DNS mais de l'identité cryptographique présentée par le serveur.
 - **Sniffing (écoute passive)** : simple lecture du trafic réseau non chiffré. Ne nécessite aucune interaction active avec le trafic — juste l'observer, par exemple sur un réseau Wi-Fi public non maîtrisé. **Protection :** HTTPS partout, sans exception pour une donnée jugée "pas si sensible".
 
 ### Session hijacking (vol de session)
 
-Voler l'identifiant de session d'un utilisateur (le cookie, cf. chapitre sur les connexions) pour usurper son identité sans connaître son mot de passe. Un attaquant qui obtiendrait cet identifiant — par XSS (lecture du cookie en JS, d'où l'intérêt de `httponly`), par sniffing sur une connexion non chiffrée, ou par vol physique de l'appareil — peut littéralement se faire passer pour la victime tant que la session reste valide.
+Voler l'identifiant de session d'un utilisateur (le cookie, voir [Gérer les connexions](/?c=langages-de-programmation&s=php&p=connexions)) pour usurper son identité sans connaître son mot de passe. Un attaquant qui obtiendrait cet identifiant — par XSS (lecture du cookie en JS, d'où l'intérêt de `httponly`), par sniffing sur une connexion non chiffrée, ou par vol physique de l'appareil — peut littéralement se faire passer pour la victime tant que la session reste valide.
 
 ### Brute force
 
@@ -244,7 +244,7 @@ $reponse = file_get_contents($_GET['url']);
 ?>
 ```
 
-Tout code qui construit une URL/hôte de destination à partir d'une entrée influencée, même indirectement, par l'utilisateur (cf. chapitre sur les appels HTTP) est un candidat à l'audit SSRF. **Protection :** valider l'hôte cible contre une liste blanche explicite plutôt que de faire confiance à une URL arbitraire fournie par le client.
+Tout code qui construit une URL/hôte de destination à partir d'une entrée influencée, même indirectement, par l'utilisateur (voir [Faire des appels HTTP en natif](/?c=langages-de-programmation&s=php&p=http)) est un candidat à l'audit SSRF. **Protection :** valider l'hôte cible contre une liste blanche explicite plutôt que de faire confiance à une URL arbitraire fournie par le client.
 
 ## Résumé
 
@@ -262,3 +262,14 @@ Tout code qui construit une URL/hôte de destination à partir d'une entrée inf
 | SSRF | Liste blanche des hôtes/URLs autorisés |
 
 > **Note :** aucune de ces protections ne remplace HTTPS, qui chiffre les données échangées entre le navigateur et le serveur.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Toute donnée utilisateur est non fiable par défaut. Les principales failles applicatives (XSS, injection SQL, CSRF) se neutralisent par des mécanismes dédiés (`htmlspecialchars`, requêtes préparées, jeton CSRF) — d'autres attaques visent le réseau ou l'infrastructure, hors du code applicatif seul. |
+| **Outils utilisables** | `filter_input()`, `htmlspecialchars()`, PDO (requêtes préparées), `password_hash`/`password_verify`, `hash_equals()`. |
+| **Pièges à éviter** | Comparer deux hash avec `==` (faille *magic hash*) ; concaténer une donnée utilisateur directement dans une requête SQL. |
+| **Bonnes pratiques** | Toujours valider/échapper une donnée utilisateur selon son usage (affichage, SQL, comparaison) ; HTTPS systématique, sans exception pour une donnée jugée "pas si sensible". |

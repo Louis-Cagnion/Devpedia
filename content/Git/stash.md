@@ -39,9 +39,9 @@ git stash clear             # supprime TOUS les stash de la pile
 
 ## Sous le capot : un stash est un commit un peu particulier
 
-Un stash n'est ni plus ni moins qu'un commit (cf. chapitre "Architecture interne" pour la structure objet sous-jacente), pointé par la ref `refs/stash`. Son premier parent est le commit courant au moment du stash, et un second parent capture l'état de l'index (un troisième si `-u` a été utilisé, pour les fichiers non suivis) — c'est cette structure à plusieurs parents que `git stash apply`/`pop` interprètent pour reconstruire séparément l'index et le dossier de travail.
+Un stash n'est ni plus ni moins qu'un commit (voir [L'architecture interne de Git](/?c=git&p=architecture-interne) pour la structure objet sous-jacente), pointé par la ref `refs/stash`. Son premier parent est le commit courant au moment du stash, et un second parent capture l'état de l'index (un troisième si `-u` a été utilisé, pour les fichiers non suivis) — c'est cette structure à plusieurs parents que `git stash apply`/`pop` interprètent pour reconstruire séparément l'index et le dossier de travail.
 
-> **Piège :** un outil qui réécrit l'historique sans connaître cette convention (`git filter-branch`, cf. "Architecture interne") peut aplatir ce commit à un seul parent — `apply`/`pop` deviennent alors inutilisables (`fatal: ... is not a stash-like commit`). Le contenu reste néanmoins récupérable directement, puisque le tree du commit reflète l'état complet du dossier de travail au moment du stash : `git checkout refs/stash -- fichier.txt`.
+> **Piège :** un outil qui réécrit l'historique sans connaître cette convention (`git filter-branch`, voir [L'architecture interne de Git](/?c=git&p=architecture-interne)) peut aplatir ce commit à un seul parent — `apply`/`pop` deviennent alors inutilisables (`fatal: ... is not a stash-like commit`). Le contenu reste néanmoins récupérable directement, puisque le tree du commit reflète l'état complet du dossier de travail au moment du stash : `git checkout refs/stash -- fichier.txt`.
 
 ## Cas d'usage typique
 
@@ -53,3 +53,14 @@ git checkout main
 git checkout feature
 git stash pop   # reprend exactement là où on s'était arrêté
 ```
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | `git stash` met de côté des modifications non commitées pour retrouver un dossier propre. C'est en réalité un commit spécial à plusieurs parents, pointé par `refs/stash`. |
+| **Outils utilisables** | `git stash push`/`list`/`apply`/`pop`/`drop`/`clear`. |
+| **Pièges à éviter** | Un outil qui réécrit l'historique sans connaître la structure d'un stash peut le casser (aplati à un seul parent, `apply`/`pop` deviennent inutilisables). |
+| **Bonnes pratiques** | Nommer ses stash avec `-m` pour s'y retrouver ; n'utiliser `pop` que si on est certain de ne plus en avoir besoin ailleurs, `apply` sinon. |

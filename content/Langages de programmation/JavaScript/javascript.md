@@ -1,18 +1,17 @@
 # JavaScript
 
-JavaScript est considéré comme un langage de programmation de **haut niveau**, car il masque une grande partie des détails techniques liés à la machine et à la gestion de la mémoire. Contrairement aux langages de **bas niveau** comme le C, qui demandent au développeur de gérer manuellement la mémoire et les adresses, JavaScript automatise ces aspects grâce à un ramasse-miettes (*garbage collector*), permettant de se concentrer sur la logique applicative.
+Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) est un ensemble de règles qui permet d'écrire des instructions qu'un ordinateur peut exécuter. JavaScript en est un, conçu à l'origine pour rendre les pages web interactives.
 
-Parmi les concepts essentiels manipulés en JavaScript, on retrouve notamment :
+```javascript
+let nom = "Devpedia";               // une variable, voir le chapitre dédié
+console.log(`Bonjour, ${nom}`);      // affiche : Bonjour, Devpedia
+```
 
-- Les variables et le typage dynamique
-- Les tableaux et les objets
-- La programmation orientée objet (classes, prototypes, héritage)
-- La manipulation du DOM (HTML, CSS) pour créer des interfaces interactives
-- La gestion des événements (clics, formulaires, clavier)
-- L'asynchrone (callbacks, promesses, async/await) et les requêtes réseau (fetch, AJAX)
+| Terme | Ce que ça veut dire |
+|---|---|
+| Haut niveau | Masque une grande partie des détails techniques liés à la machine, contrairement à un langage bas niveau comme le [C](/?c=langages-de-programmation&s=c&p=c) |
+| Ramasse-miettes (*garbage collector*) | Un mécanisme automatique qui libère la mémoire des valeurs devenues inutilisées, sans intervention du développeur |
+| DOM | La représentation en mémoire d'une page [HTML](/?c=langages-de-balisage&s=html&p=html) — voir [Le DOM et les événements](/?c=langages-de-programmation&s=javascript&p=dom-et-evenements) — que JavaScript peut lire et modifier pour rendre une page interactive |
+| Asynchrone | Une opération qui prend du temps (un appel réseau) sans bloquer le reste du programme en attendant sa fin — voir [L'asynchrone](/?c=langages-de-programmation&s=javascript&p=asynchrone) |
 
-L'apprentissage de JavaScript permet de mieux comprendre comment une page web devient interactive, comment le navigateur interprète et exécute le code, et comment les données circulent entre le client et le serveur lors d'échanges asynchrones.
-
-Grâce à sa polyvalence, JavaScript est utilisé aussi bien côté client (navigateur) que côté serveur (via Node.js), ce qui en fait un langage central du développement web moderne.
-
-Étudier JavaScript constitue également une excellente base pour comprendre le fonctionnement des applications web côté client, car de nombreux frameworks (React, Vue, Angular) et environnements (Node.js, Express) s'appuient sur ce langage.
+JavaScript s'exécute aussi bien côté client (dans le navigateur) que côté serveur (via Node.js), ce qui en fait un langage central du développement web moderne — de nombreux frameworks (React, Vue, Angular) s'appuient dessus.

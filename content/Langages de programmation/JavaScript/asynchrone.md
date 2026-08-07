@@ -4,7 +4,7 @@ order: 13
 
 # La programmation asynchrone (callbacks, Promises, async/await)
 
-JavaScript s'exécute sur un **seul thread** (contrairement aux threads du chapitre dédié en C) : il ne peut faire qu'une seule chose à la fois. Pourtant, une requête réseau ou un minuteur ne bloquent pas le programme entier en attendant — c'est le rôle du modèle asynchrone, construit autour de la **boucle d'événements** (*event loop*).
+JavaScript s'exécute sur un **seul thread** (contrairement aux [threads](/?c=langages-de-programmation&s=c&p=threads) en C) : il ne peut faire qu'une seule chose à la fois. Pourtant, une requête réseau ou un minuteur ne bloquent pas le programme entier en attendant — c'est le rôle du modèle asynchrone, construit autour de la **boucle d'événements** (*event loop*).
 
 ## Le principe : la boucle d'événements
 
@@ -96,4 +96,15 @@ async function chargerTout() {
 }
 ```
 
-Voir aussi le chapitre sur la gestion des erreurs pour `try`/`catch` autour d'un `await`, et sur les appels HTTP en PHP (`HttpClient`) pour un équivalent synchrone de `fetch()`.
+Voir aussi [La gestion des erreurs](/?c=langages-de-programmation&s=javascript&p=gestion-des-erreurs) pour `try`/`catch` autour d'un `await`, et [Les échanges HTTP en PHP](/?c=langages-de-programmation&s=php&p=http) (cURL) pour un équivalent synchrone de `fetch()`.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | JavaScript exécute tout le code synchrone avant de traiter la file d'événements asynchrones (minuteurs, réseau). Les Promises (`then`/`catch`) puis `async`/`await` structurent ce code sans callbacks imbriqués. |
+| **Outils utilisables** | `Promise`, `Promise.all`, `async`/`await`, `.then()`/`.catch()`. |
+| **Pièges à éviter** | Le "callback hell" (callbacks imbriqués illisibles) ; oublier qu'un `throw` dans une fonction `async` rejette la Promise plutôt que de lever une exception immédiate. |
+| **Bonnes pratiques** | Préférer `async`/`await` aux `.then()` enchaînés pour la lisibilité ; utiliser `Promise.all` pour lancer plusieurs opérations indépendantes en parallèle plutôt qu'en série. |

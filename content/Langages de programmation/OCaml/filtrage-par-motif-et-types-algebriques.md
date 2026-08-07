@@ -65,3 +65,14 @@ match trouver_utilisateur 42 with
 ```
 
 La différence avec `None` en Python (cf. chapitre [Les variables](/?c=langages-de-programmation&s=python&p=variables) pour `is None`) est que le compilateur **force** à traiter le cas `None` : le type d'une fonction qui peut ne rien trouver est explicitement `string option`, jamais simplement `string`. Il est donc impossible d'oublier de vérifier l'absence de valeur sans que le compilateur ne le signale — là où un `NullPointerException` ou un `TypeError: 'NoneType' object is not subscriptable` en Python n'apparaît qu'à l'exécution, sur le chemin de code précis qui l'a oublié.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un type variant énumère toutes les formes possibles d'une valeur ; `match` décompose et extrait ses données. Le compilateur vérifie l'exhaustivité d'un `match` — un cas oublié est détecté avant l'exécution, pas seulement le jour où il se présente en production. |
+| **Outils utilisables** | `type ... = | ...`, `match ... with`, le type `option` (`Some`/`None`) comme alternative structurelle à `null`. |
+| **Pièges à éviter** | Laisser un `match` non exhaustif en simple avertissement plutôt qu'en erreur bloquante. |
+| **Bonnes pratiques** | Activer l'option qui transforme un `match` non exhaustif en erreur de compilation ; utiliser `option` plutôt qu'une valeur qui pourrait être absente sans que le type le signale. |

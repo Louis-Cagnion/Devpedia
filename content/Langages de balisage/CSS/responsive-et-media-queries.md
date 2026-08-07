@@ -75,4 +75,15 @@ div {
 @media print { }                          /* styles appliqués uniquement à l'impression */
 ```
 
-Voir aussi le chapitre sur CSS Grid, dont `repeat(auto-fit, minmax(...))` permet d'obtenir un comportement responsive **sans écrire aucune media query**, une alternative complémentaire à connaître.
+Voir aussi [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), dont `repeat(auto-fit, minmax(...))` permet d'obtenir un comportement responsive **sans écrire aucune media query**, une alternative complémentaire à connaître.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Le responsive design adapte une page à toute taille d'écran, via des unités relatives (`%`, `rem`, `vw`/`vh`) et des media queries (`@media (min-width: ...)`) qui appliquent un style seulement à certaines largeurs. |
+| **Outils utilisables** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`. |
+| **Pièges à éviter** | Baser ses points de rupture sur des tailles d'appareils précises plutôt que sur le moment où la mise en page casse réellement visuellement. |
+| **Bonnes pratiques** | Adopter une approche *mobile first* (`min-width`, styliser d'abord le plus petit écran) ; préférer `rem` à `em` pour les tailles de police, plus prévisible en cas d'imbrication. |

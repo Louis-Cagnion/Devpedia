@@ -55,4 +55,15 @@ git rebase --abort    # annule un rebase en cours
 - Garder des branches de fonctionnalité courtes et ciblées.
 - Communiquer avec l'équipe quand plusieurs personnes travaillent sur les mêmes fichiers en parallèle.
 
-Voir aussi les chapitres sur les branches et le rebase, les deux opérations qui provoquent le plus souvent des conflits.
+Voir aussi [Les branches](/?c=git&p=branches) et [Le rebase](/?c=git&p=rebase), les deux opérations qui provoquent le plus souvent des conflits.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un conflit apparaît quand Git ne peut pas fusionner automatiquement deux versions des mêmes lignes. Les marqueurs `<<<<<<<`/`=======`/`>>>>>>>` doivent être retirés manuellement avant de continuer. |
+| **Outils utilisables** | `git status` (fichiers en conflit), `git add` + `git commit`/`git rebase --continue`, `git merge --abort`/`git rebase --abort`. |
+| **Pièges à éviter** | Oublier de supprimer un marqueur de conflit — le fichier reste invalide (ne compile/n'exécute plus) tant qu'il y est. |
+| **Bonnes pratiques** | Intégrer fréquemment les changements des autres pour limiter la divergence ; garder des branches de fonctionnalité courtes et ciblées. |

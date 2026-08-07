@@ -91,3 +91,14 @@ FormeGeometrique *impossible = new FormeGeometrique();   // ERREUR : classe abst
 ```
 
 Une classe contenant au moins une méthode purement virtuelle (`= 0`) devient **abstraite** : elle ne peut jamais être instanciée directement, seulement héritée — elle définit un contrat ("toute forme géométrique doit savoir calculer son aire") que chaque classe fille doit implémenter.
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | L'héritage réutilise le comportement d'une classe parente. `virtual` active la liaison dynamique (le type réel de l'objet décide de la méthode appelée), indispensable au polymorphisme. Une classe abstraite (méthode `= 0`) impose un contrat sans implémentation. |
+| **Outils utilisables** | `virtual`, `override`, destructeur `virtual`, classes abstraites. |
+| **Pièges à éviter** | Oublier `virtual` sur une méthode censée être polymorphique (liaison statique silencieuse) ; oublier `virtual` sur le destructeur d'une classe destinée à être manipulée par pointeur de base (fuite de ressources). |
+| **Bonnes pratiques** | Toujours déclarer `virtual` le destructeur d'une classe destinée à être héritée ; utiliser `override` systématiquement pour que le compilateur détecte une signature mal redéfinie. |
