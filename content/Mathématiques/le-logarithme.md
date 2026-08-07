@@ -10,7 +10,7 @@ Ce chapitre présente le logarithme, une notion reprise plus loin pour mesurer �
 
 Élever un nombre à une puissance (`b^y`) revient à multiplier `b` par lui-même `y` fois : `10^3 = 10 × 10 × 10 = 1000`. Le **logarithme** pose la question inverse : à quelle puissance faut-il élever une base donnée pour obtenir un nombre donné ?
 
-```
+```text
 10^2 = 100    ->  log10(100) = 2   ("il faut élever 10 à la puissance 2 pour obtenir 100")
 10^3 = 1000   ->  log10(1000) = 3
 10^0 = 1       ->  log10(1) = 0
@@ -32,26 +32,15 @@ Ce chapitre présente le logarithme, une notion reprise plus loin pour mesurer �
 
 ## La forme de sa courbe : très lente pour les grands x, très rapide près de 0
 
-Le graphique ci-dessous place chaque point `(x, log10(x))` à sa position réelle, sur un axe des `x` **linéaire** (chaque colonne représente le même écart de `x`, contrairement au tableau plus haut) :
+Le graphique ci-dessous place chaque point `(x, log10(x))` à sa position réelle, sur un axe des `x` **linéaire** (chaque écart horizontal représente le même écart de `x`, contrairement au tableau plus haut) :
 
-```
-log10(x)
- 1 |                                        *
-   |                         *
-   |                *
-   |          *
-   |      *
- 0 |————*————————————————————————————————————
-   |  *
-   | *
-   | *
-   |*
--1 |*
-   +-----------------------------------------
-    0,1 1       3                           10   -> x
+```plot-fonction
+fn: x => log(x)
+domaine: 0.05, 12
+label: log10(x)
 ```
 
-Entre `x = 0,1` et `x = 1` (à peine 4 colonnes sur ce graphique), la courbe monte déjà de -1 à 0 : une variation de 1 unité. Entre `x = 1` et `x = 10` (36 colonnes, neuf fois plus large), elle ne monte que de 0 à 1 : la **même** variation de 1 unité, mais étalée sur une distance bien plus grande. Le résultat visuel est cette forme dissymétrique : une montée raide sur la gauche (près de 0), puis un aplatissement progressif à mesure que `x` grandit.
+Entre `x = 0,1` et `x = 1` (une toute petite portion de cet axe linéaire), la courbe monte déjà de -1 à 0 : une variation de 1 unité. Entre `x = 1` et `x = 10` (neuf fois plus large), elle ne monte que de 0 à 1 : la **même** variation de 1 unité, mais étalée sur une distance bien plus grande. Le résultat visuel est cette forme dissymétrique : une montée raide sur la gauche (près de 0), puis un aplatissement progressif à mesure que `x` grandit.
 
 Cette compression près de 0 se prolonge sans limite : plus `x` se rapproche de 0, plus `log10(x)` plonge vers de grands nombres négatifs, sur un intervalle de `x` de plus en plus étroit (voir le tableau ci-dessous). Une formule qui applique `-log(x)` à un nombre proche de 0 hérite de cette même compression : le résultat explose sur un tout petit intervalle, une des façons de pénaliser fortement un résultat presque nul.
 
@@ -75,7 +64,7 @@ Cette compression près de 0 se prolonge sans limite : plus `x` se rapproche de 
 
 ## Propriété utile : transformer une multiplication en addition
 
-```
+```text
 log(a × b) = log(a) + log(b)
 ```
 
