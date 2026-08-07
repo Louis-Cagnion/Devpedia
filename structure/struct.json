@@ -989,6 +989,10 @@
         {
           "id": "design-systems",
           "label": "Design systems"
+        },
+        {
+          "id": "outils-du-metier",
+          "label": "Les outils du métier"
         }
       ]
     }
