@@ -12,7 +12,7 @@ Ce n'est **pas** un langage de programmation : pas de variables, pas de boucles,
 
 Un caractère normal dans une regex matche exactement lui-même :
 
-```regex
+```text
 chat
 ```
 
@@ -53,13 +53,13 @@ Cette regex matche la suite de caractères `chat`, n'importe où dans le texte.
 
 ### Les groupes
 
-```regex
+```text
 (abc)
 ```
 
 Un groupe capturant : il isole une portion du motif pour pouvoir **récupérer** ce qu'il a matché (`match[1]`, `match[2]`...), et permet d'appliquer un quantificateur à plusieurs caractères à la fois.
 
-```regex
+```text
 (?:abc)
 ```
 
@@ -98,11 +98,11 @@ Objectif : reconnaître une ligne qui contient **uniquement** un lien Markdown, 
 
 En regex, `[` et `]` sont des caractères **spéciaux** (ils servent à écrire une classe de caractères, comme `[abc]` vu plus haut). Pour matcher un crochet **littéral** (le vrai caractère `[` du texte), il faut l'échapper avec un backslash :
 
-```regex
+```text
 \[
 ```
 
-```regex
+```text
 \]
 ```
 
@@ -112,7 +112,7 @@ En regex, `[` et `]` sont des caractères **spéciaux** (ils servent à écrire 
 
 Entre les deux crochets, on veut accepter **n'importe quel caractère, sauf** un crochet fermant (sinon la regex risquerait de s'arrêter trop tôt ou de matcher plusieurs liens d'un coup). On utilise une classe de caractères **négative** :
 
-```regex
+```text
 [^\]]
 ```
 
@@ -120,19 +120,19 @@ Entre les deux crochets, on veut accepter **n'importe quel caractère, sauf** un
 - `^` en première position **à l'intérieur** d'une classe signifie "tout sauf" — donc `[^\]]` veut dire "n'importe quel caractère sauf `]`".
 - Ajoute `*` pour répéter ça "0 ou plusieurs fois" (un texte de n'importe quelle longueur, ou même vide) :
 
-```regex
+```text
 [^\]]*
 ```
 
 On veut aussi **récupérer** ce texte ensuite (pour savoir ce qu'il y a entre les crochets) → on l'entoure d'un groupe capturant avec `( )` :
 
-```regex
+```text
 ([^\]]*)
 ```
 
 ### Étape 3 — assembler les crochets et le groupe
 
-```regex
+```text
 \[([^\]]*)\]
 ```
 
@@ -145,7 +145,7 @@ Même principe, mais pour `(url)` :
 - `\(` et `\)` → parenthèses littérales échappées (elles aussi spéciales en regex, utilisées normalement pour les groupes).
 - À l'intérieur, on veut le contenu de l'URL : n'importe quel caractère sauf un espace (`\s`) et sauf une parenthèse fermante (`)`) — sinon la regex pourrait inclure du texte après le lien par erreur.
 
-```regex
+```text
 [^\s)]+
 ```
 
@@ -153,7 +153,7 @@ Ici on utilise `+` (1 fois minimum) plutôt que `*`, car une URL vide n'a pas de
 
 On capture aussi ce groupe :
 
-```regex
+```text
 \(([^\s)]+)\)
 ```
 
@@ -161,7 +161,7 @@ On capture aussi ce groupe :
 
 Pour l'instant, la regex pourrait matcher un lien **au milieu** d'une phrase plus longue. Si tu veux qu'elle ne matche que lorsque **toute la ligne** est exactement ce lien (rien avant, rien après), on ajoute les ancres vues plus haut :
 
-```regex
+```text
 ^\[([^\]]*)\]\(([^\s)]+)\)$
 ```
 
