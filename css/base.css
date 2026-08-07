@@ -476,6 +476,17 @@ pre {
     text-align: left;
 }
 
+/* `code` is inline by default: without this, a multi-line fenced block with no
+   language (no `.hljs` class, so no highlighting-driven layout) paints its
+   background one line-box at a time, each sized to that line's own text width,
+   instead of one contiguous block — the same box hljs's own `.hljs` class already
+   gives highlighted blocks (hljs-theme.css), applied here so unhighlighted ones match. */
+pre code {
+    display: block;
+    overflow-x: auto;
+    padding: 1em;
+}
+
 /* Charts (js/charts.js): declarative fenced blocks (```plot-fonction...) rendered as
    inline SVG instead of a code block — same outer framing as `pre` for visual consistency. */
 .chartWrapper {
