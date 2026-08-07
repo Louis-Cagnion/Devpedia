@@ -488,16 +488,28 @@ pre code {
 }
 
 /* Charts (js/charts.js): declarative fenced blocks (```plot-fonction...) rendered as
-   inline SVG instead of a code block — same outer framing as `pre` for visual consistency. */
+   inline SVG instead of a code block — same outer framing as `pre` for visual consistency.
+   Consecutive chart blocks (js/parser.js's lastChartRow) share one .chartRow instead of
+   each taking the full width on its own line: a lone chart still fills the row (flex-grow
+   with no siblings), several share it evenly and wrap to a new line if they'd get too
+   cramped, so the row as a whole always spans the chapter's width, with 1 card or many. */
+.chartRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0.5rem 0 1.5rem 0;
+}
+
 .chartWrapper {
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    margin: 0.5rem 0 1.5rem 0;
     padding: 1rem;
     background-color: var(--bg-elevated);
     display: flex;
     justify-content: center;
     overflow-x: auto;
+    flex: 1 1 200px;
+    min-width: 0;
 }
 
 .chartSvg {
@@ -506,10 +518,11 @@ pre code {
     height: auto;
 }
 
-/* The color wheel is a simple illustrative shape (no ticks/labels to read at
-   distance, unlike plot-fonction) -- much smaller than the default chart size
-   keeps it proportionate to the surrounding paragraph text. */
-.chartWrapper-roue-chromatique .chartSvg {
+/* The color wheel and the vector diagram are simple illustrative shapes (no ticks/labels
+   to read at distance, unlike plot-fonction) -- much smaller than the default chart size
+   keeps them proportionate to the surrounding paragraph text. */
+.chartWrapper-roue-chromatique .chartSvg,
+.chartWrapper-vecteurs .chartSvg {
     max-width: 15rem;
 }
 

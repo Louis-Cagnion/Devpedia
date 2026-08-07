@@ -271,6 +271,10 @@ export function parseAppendText(homeDiv, fileName, text) {
     let listDiv = null;
     let quoteDiv = null;
     let codeDiv = null;
+    // Consecutive chart blocks (no other content between them) share one full-width
+    // row instead of each taking the full width on its own line — reset to null by
+    // every other kind of block appended below, so unrelated charts don't get grouped.
+    let lastChartRow = null;
     const usedIds = new Set();
     const outline = [];
 
@@ -290,13 +294,22 @@ export function parseAppendText(homeDiv, fileName, text) {
                 inCodeBlock = false;
                 const chart = renderChartBlock(codeLanguage, codeDiv.textContent);
                 if (chart) {
-                    codeDiv.parentElement.replaceWith(chart);
-                } else if (codeDiv.className) {
+                    if (lastChartRow) {
+                        codeDiv.parentElement.remove();
+                    } else {
+                        lastChartRow = createTag("div", {class: "chartRow"});
+                        codeDiv.parentElement.replaceWith(lastChartRow);
+                    }
+                    lastChartRow.append(chart);
+                } else {
+                    lastChartRow = null;
                     // Only highlight when a language was explicitly given: without a
                     // `language-*` class, hljs falls back to auto-detection, which guesses
                     // a near-random language (and colors accordingly) on plain-text/ASCII
                     // diagram blocks.
-                    window.hljs.highlightElement(codeDiv);
+                    if (codeDiv.className) {
+                        window.hljs.highlightElement(codeDiv);
+                    }
                 }
                 codeDiv = null;
             }
@@ -311,6 +324,7 @@ export function parseAppendText(homeDiv, fileName, text) {
         if (line.includes("|") && i + 1 < lines.length && isTableSeparatorRow(lines[i + 1])) {
             openList = false;
             openQuote = false;
+            lastChartRow = null;
             const bodyLines = [];
             let j = i + 2;
             while (j < lines.length && lines[j].includes("|") && !isCodeFence(lines[j])) {
@@ -325,6 +339,7 @@ export function parseAppendText(homeDiv, fileName, text) {
         if (headingMatch) {
             openList = false;
             openQuote = false;
+            lastChartRow = null;
             const level = Math.min(headingMatch[1].length + 1, 6);
             const rawText = headingMatch[2];
             const headingText = mdToHtmlFormatting(rawText);
@@ -338,13 +353,16 @@ export function parseAppendText(homeDiv, fileName, text) {
             const formatted = mdToHtmlFormatting(line);
             if (quoteRegex.test(formatted)) {
                 openList = false;
+                lastChartRow = null;
                 quoteDiv = createQuoteFromText(formatted, homeDiv, fileName, quoteDiv);
             } else if (listRegex.test(formatted)) {
                 openQuote = false;
+                lastChartRow = null;
                 listDiv = createListFromText(formatted, homeDiv, fileName, listDiv, listRegex);
             } else {
                 openList = false;
                 openQuote = false;
+                lastChartRow = null;
                 homeDiv.append(createTag('p', {class: `${fileName}P`}, {innerHTML: formatted}));
             }
         }
