@@ -286,7 +286,12 @@ export function parseAppendText(homeDiv, fileName, text) {
                 homeDiv.append(pre);
             } else {
                 inCodeBlock = false;
-                window.hljs.highlightElement(codeDiv);
+                // Only highlight when a language was explicitly given: without a `language-*`
+                // class, hljs falls back to auto-detection, which guesses a near-random
+                // language (and colors accordingly) on plain-text/ASCII diagram blocks.
+                if (codeDiv.className) {
+                    window.hljs.highlightElement(codeDiv);
+                }
                 codeDiv = null;
             }
             i++;
