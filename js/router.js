@@ -182,6 +182,29 @@ function createChapterNavButton(className, label, arrow, arrowFirst) {
 }
 
 /**
+ * A chapter page's only permanent indication of where it sits (category, and subject if
+ * any) — the left sidebar shows the same tree, but is hidden on mobile behind the menu
+ * button, where this is otherwise the only such cue on screen.
+ *
+ * @param {Object} category
+ * @param {Object|null} subject
+ * @returns {HTMLElement}
+ */
+function createBreadcrumb(category, subject) {
+    const nav = createTag("nav", {class: "pageBreadcrumb"});
+    const categoryButton = createTag("button", {class: "breadcrumbCategory"}, {textContent: category.label});
+    categoryButton.addEventListener("click", () => loadCategory(category.id));
+    nav.append(categoryButton);
+    if (subject) {
+        nav.append(createTag("span", {class: "breadcrumbSeparator"}, {textContent: "›"}));
+        const subjectButton = createTag("button", {class: "breadcrumbSubject"}, {textContent: subject.label});
+        subjectButton.addEventListener("click", () => navigateToSubject(category.id, subject.id));
+        nav.append(subjectButton);
+    }
+    return nav;
+}
+
+/**
  * @param {HTMLElement} pageDiv where the nav row will be attached to
  * @param {string} pageId
  * @param {Boolean} withReturnButton
@@ -230,11 +253,14 @@ function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter,
  * @param {Boolean} withReturnButton
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [previousChapter]
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [nextChapter]
+ * @param {HTMLElement|null} [breadcrumb] see {@link createBreadcrumb} — chapter pages only
  * @returns {HTMLElement} page div
  */
-function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null) {
+function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null, breadcrumb = null) {
     const text = parseMdContent(textInfos);
     const pageDiv = createTag("div", {class: `page ${pageId}Div`});
+    if (breadcrumb)
+        pageDiv.append(breadcrumb);
     if (withReturnButton || previousChapter || nextChapter)
         createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter, nextChapter);
     const outline = parseAppendText(pageDiv, pageId, text);
@@ -291,13 +317,14 @@ async function renderChapter(categoryId, path, chapter, subjectId = null) {
     appState.curPageId = chapter.id;
     const chapterInfos = await fetchFileToTextOrJson(path, 'text');
     const category = findCategory({id: categoryId});
-    const chapters = (subjectId ? findSubject(category, subjectId).chapters : category.chapters) ?? [];
+    const subject = subjectId ? findSubject(category, subjectId) : null;
+    const chapters = (subject ? subject.chapters : category.chapters) ?? [];
     const curIndex = chapters.findIndex(c => c.id === chapter.id);
     const previousChapter = chapters[curIndex - 1];
     const nextChapter = chapters[curIndex + 1];
     currentPreviousChapter = previousChapter && {categoryId, subjectId, id: previousChapter.id, label: previousChapter.label};
     currentNextChapter = nextChapter && {categoryId, subjectId, id: nextChapter.id, label: nextChapter.label};
-    generatePageContent(chapterInfos, chapter.id, true, currentPreviousChapter, currentNextChapter);
+    generatePageContent(chapterInfos, chapter.id, true, currentPreviousChapter, currentNextChapter, createBreadcrumb(category, subject));
 }
 
 /**
