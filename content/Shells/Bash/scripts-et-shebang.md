@@ -156,12 +156,14 @@ set -euo pipefail
 # -o pipefail : un pipe échoue si N'IMPORTE LAQUELLE de ses commandes échoue (pas seulement la dernière)
 ```
 
-> **Piège :** `set -e` ne couvre pas tout ce qu'on pourrait attendre. Une commande qui échoue **n'arrête rien** si elle est testée par un `if`, combinée avec `&&`/`||`, ou si elle n'est pas la dernière d'un pipeline (sans `pipefail`) — dans ces trois cas, Bash considère l'échec "attendu et déjà géré", donc `set -e` ne se déclenche pas.
->
-> ```bash
-> set -e
-> commande_qui_echoue | grep "motif"   # échoue, mais set -e ne s'arrête PAS ici sans pipefail : seul grep compte
-> ```
+Un cas concret où `set -e` ne se déclenche pas, malgré un échec réel :
+
+```bash
+set -e
+commande_qui_echoue | grep "motif"   # échoue, mais set -e ne s'arrête PAS ici sans pipefail : seul grep compte
+```
+
+> **Piège :** `set -e` ne couvre pas tout ce qu'on pourrait attendre. Une commande qui échoue **n'arrête rien** si elle est testée par un `if`, combinée avec `&&`/`||`, ou si elle n'est pas la dernière d'un pipeline (sans `pipefail`, comme dans l'exemple ci-dessus) — dans ces trois cas, Bash considère l'échec "attendu et déjà géré", donc `set -e` ne se déclenche pas.
 >
 > **Bonne pratique :** ne jamais compter sur `set -e` seul pour une commande dans un pipeline, un `if`, ou avant `&&`/`||` — vérifier `$?` explicitement dans ces cas précis si l'échec doit réellement interrompre le script.
 
