@@ -940,6 +940,37 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ui-ux",
+      "label": "UI-UX",
+      "folder": "UI-UX",
+      "chapters": [
+        {
+          "id": "hierarchie-visuelle",
+          "label": "Hiérarchie visuelle"
+        },
+        {
+          "id": "couleur-et-contraste",
+          "label": "Couleur et contraste"
+        },
+        {
+          "id": "typographie",
+          "label": "Typographie"
+        },
+        {
+          "id": "espacement-et-grille",
+          "label": "Espacement et grille (layout)"
+        },
+        {
+          "id": "heuristiques-de-nielsen",
+          "label": "Heuristiques d'utilisabilité (Nielsen)"
+        },
+        {
+          "id": "accessibilite-ux",
+          "label": "Accessibilité de base (UX)"
+        }
+      ]
     }
   ]
 }
