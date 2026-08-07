@@ -61,6 +61,29 @@ Une question concrète, formulée en options identifiables (comme ci-dessus), s'
 >
 > **Bonne pratique :** réserver l'affinage aux cas où plusieurs interprétations restent également plausibles, ou où un choix (portée, format, contrainte) appartient clairement à la personne qui demande — et toujours proposer, en même temps que la question, une hypothèse par défaut raisonnable pour ne pas bloquer totalement l'avancement si elle ne répond pas.
 
+### Proposer plusieurs pistes plutôt qu'une seule question
+
+La question ci-dessus fonctionne bien quand l'information manquante est un paramètre factuel (une période, un destinataire) : la personne sait immédiatement quoi répondre. Ça marche moins bien quand l'incertitude porte sur une direction stylistique ou créative (un ton, une structure, un angle) — difficile à trancher dans l'abstrait, sans rien de concret sous les yeux. Dans ce cas, plutôt qu'une question ouverte, esquisser directement deux ou trois pistes courtes et nettement différentes laisse la personne réagir à quelque chose de tangible, plutôt que devoir se projeter sur une description verbale :
+
+```text
+Prompt reçu :  "Écris une accroche pour notre nouvelle app de fitness."
+
+Sans pistes  ->  une seule accroche, sur un ton choisi arbitrairement
+                 par le modèle
+
+Avec pistes  ->  "Trois directions possibles, dis-moi laquelle développer :
+                  1. Humoristique : 'Votre canapé va devoir se trouver
+                     un nouveau meilleur ami.'
+                  2. Factuel : 'Suivez vos progrès, jour après jour.'
+                  3. Premium : 'La performance, sans compromis.'"
+```
+
+Chaque piste doit rester courte (une ligne, pas un paragraphe) : l'objectif est de faire choisir une direction, pas de livrer un travail fini en plusieurs exemplaires — le développement complet vient après le choix, une fois la direction validée.
+
+> **Piège :** multiplier les pistes au-delà de 3-4, ou proposer des variantes qui ne se distinguent que par des détails de formulation plutôt que par un axe réellement différent (ton, structure, angle). Au-delà d'un certain nombre, ou sans différence nette entre elles, la personne perd plus de temps à comparer qu'elle n'en aurait mis à répondre à une question directe.
+>
+> **Bonne pratique :** limiter les pistes à 2-3 options réellement distinctes sur l'axe qui pose problème, chacune assez courte pour rester bon marché à produire — et réserver la technique aux cas où la différence se juge mieux sur un exemple concret que sur une description abstraite.
+
 ## Le few-shot prompting : montrer plutôt que décrire
 
 Plutôt que de décrire abstraitement le format ou le style attendu, donner directement un ou plusieurs exemples entrée → sortie dans le prompt (le *few-shot prompting*) exploite la capacité du modèle à repérer un motif et à le reproduire :
@@ -225,7 +248,7 @@ Aucune de ces techniques n'ajoute de connaissance ou de capacité que le modèle
 
 | | |
 |---|---|
-| **À retenir** | Le prompt engineering formule l'entrée d'un LLM méthodiquement : rôle et instructions explicites, repérage d'un prompt imprécis avant de s'engager, exemples (few-shot), raisonnement étape par étape (chain-of-thought), séparation instructions/contexte/données, décomposition d'une tâche complexe en étapes vérifiables. Il n'ajoute aucune capacité que le modèle n'a pas déjà. |
+| **À retenir** | Le prompt engineering formule l'entrée d'un LLM méthodiquement : rôle et instructions explicites, repérage d'un prompt imprécis avant de s'engager (par une question ciblée ou par plusieurs pistes concrètes), exemples (few-shot), raisonnement étape par étape (chain-of-thought), séparation instructions/contexte/données, décomposition d'une tâche complexe en étapes vérifiables. Il n'ajoute aucune capacité que le modèle n'a pas déjà. |
 | **Outils utilisables** | Un gabarit de prompt réutilisable (voir le template ci-dessus) ; un *golden set* de cas représentatifs pour évaluer un prompt avant de le considérer stable. |
-| **Pièges à éviter** | Ne pas préciser la conduite à tenir face à une information manquante. Systématiser une demande d'affinage même sur un prompt déjà précis. Des exemples few-shot non représentatifs ou biaisés. Prendre un raisonnement chain-of-thought pour une preuve d'exactitude. Valider un prompt sur un seul essai réussi. |
-| **Bonnes pratiques** | Toujours préciser la conduite attendue en cas d'ambiguïté. Réserver l'affinage aux cas d'ambiguïté réelle, avec une hypothèse par défaut en plus de la question. Choisir des exemples few-shot représentatifs de la diversité réelle des cas. Rejouer un prompt sur plusieurs cas avant de le considérer fiable. |
+| **Pièges à éviter** | Ne pas préciser la conduite à tenir face à une information manquante. Systématiser une demande d'affinage même sur un prompt déjà précis. Multiplier les pistes proposées ou les rendre trop proches les unes des autres. Des exemples few-shot non représentatifs ou biaisés. Prendre un raisonnement chain-of-thought pour une preuve d'exactitude. Valider un prompt sur un seul essai réussi. |
+| **Bonnes pratiques** | Toujours préciser la conduite attendue en cas d'ambiguïté. Réserver l'affinage aux cas d'ambiguïté réelle, avec une hypothèse par défaut en plus de la question. Face à une incertitude stylistique ou créative, proposer 2-3 pistes courtes et nettement distinctes plutôt qu'une question abstraite. Choisir des exemples few-shot représentatifs de la diversité réelle des cas. Rejouer un prompt sur plusieurs cas avant de le considérer fiable. |
