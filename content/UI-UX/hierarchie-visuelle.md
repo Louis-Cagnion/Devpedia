@@ -71,10 +71,10 @@ L'utilisateur lit en entier les premières lignes, puis se contente de scanner l
 ```
 [Logo]──────────────────────►[Menu / Connexion]
                                             ╱
-                                         ╱
-                                      ╱
-                                   ╱
-                                ╱
+                                 ╱
+                     ╱
+           ╱
+  ╱
 [Argument clé]──────────────►[Bouton d'action]
 ```
 
