@@ -8,11 +8,11 @@ A **hash table** is a data structure that allows you to insert, search for, and 
 
 ## The General Principle
 
-```
+```text
 clé -> fonction de hachage -> indice dans un tableau -> valeur stockée à cet indice
 ```
 
-```
+```text
 "nom" -> hash("nom") = 193847 -> 193847 % taille_tableau = 3 -> valeur stockée en case 3
 ```
 

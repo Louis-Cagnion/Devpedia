@@ -53,7 +53,7 @@ pip list                         # lists the installed libraries
 
 ## `requirements.txt` : Freeze a project's dependencies
 
-```
+```text
 requests==2.31.0
 numpy==1.26.0
 ```
@@ -82,7 +82,7 @@ deactivate                        # exit the virtual environment
 
 ## Organizing a Project into a Package
 
-```
+```text
 mon_projet/
 ├── mon_package/
 │   ├── __init__.py     # rend le dossier importable comme un package

@@ -117,7 +117,7 @@ A password should **never** be stored in plain text in a database. PHP provides 
 
 This salt is not lost: it is included directly in the generated hash, for example:
 
-```
+```text
 2y $10 N9qo8uLOickgx2ZMRZoMye IjZAgcfl7p92ldGxad68LJZdL17lhWy
 ```
 

@@ -74,7 +74,7 @@ char name[] = "Devpedia";
 
 In memory of:
 
-```
+```text
 D e v p e d i a \0
 ```
 

@@ -8,7 +8,7 @@ Each HTML element is represented by CSS as a rectangular box consisting of four 
 
 ## The Four Layers
 
-```
+```text
 ┌─────────────────────────────────┐
 │              margin               │  <- espace EXTÉRIEUR, en dehors de la boîte
 │   ┌───────────────────────────┐   │

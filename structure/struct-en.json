@@ -2,7 +2,7 @@
   "categories": [
     {
       "id": "acceuil",
-      "label": "Acceuil",
+      "label": "Home",
       "chapters": [
         {
           "id": "acceuil",
@@ -11,68 +11,102 @@
       ]
     },
     {
-      "id": "bash",
-      "label": "Bash",
-      "folder": "Bash",
+      "id": "bases-de-l-informatique",
+      "label": "Computer Basics",
+      "folder": "Bases de l'informatique",
       "chapters": [
         {
-          "id": "scripts-et-shebang",
-          "label": "Write and Run a Bash Script"
+          "id": "code-programmes-et-fichiers",
+          "label": "What does a computer execute?"
         },
         {
-          "id": "variables",
-          "label": "Variables"
+          "id": "le-terminal",
+          "label": "The Terminal: Entering Commands"
         },
         {
-          "id": "variables-denvironnement",
-          "label": "Environment Variables"
+          "id": "editeur-de-code-et-ide",
+          "label": "The code editor and the IDE"
         },
         {
-          "id": "conditions",
-          "label": "Conditions"
+          "id": "arborescence-et-chemins",
+          "label": "File structure and paths"
         },
         {
-          "id": "boucles",
-          "label": "Loops"
+          "id": "la-variable",
+          "label": "The variable"
         },
         {
-          "id": "fonctions",
-          "label": "Functions"
+          "id": "le-bug",
+          "label": "The bug"
+        }
+      ]
+    },
+    {
+      "id": "data-science",
+      "label": "Data Science",
+      "folder": "Data Science",
+      "chapters": [
+        {
+          "id": "jupyter-notebooks",
+          "label": "Jupyter notebooks"
         },
         {
-          "id": "expansion-et-jokers",
-          "label": "Expansion and wildcards (globbing)"
+          "id": "numpy",
+          "label": "NumPy — Numerical Computation"
         },
         {
-          "id": "redirections-et-pipes",
-          "label": "Redirects and Pipes"
+          "id": "pandas",
+          "label": "pandas — manipulating tabular data"
         },
         {
-          "id": "traitement-de-texte",
-          "label": "Text Processing (grep, sed, awk...)"
+          "id": "matplotlib",
+          "label": "Matplotlib — visualizing data"
         },
         {
-          "id": "permissions-et-fichiers",
-          "label": "File Permissions and File Handling"
+          "id": "machine-learning-scikit-learn",
+          "label": "Introduction to Machine Learning (scikit-learn)"
+        }
+      ]
+    },
+    {
+      "id": "docker",
+      "label": "Docker",
+      "folder": "Docker",
+      "chapters": [
+        {
+          "id": "concepts-de-base",
+          "label": "Basic Concepts"
         },
         {
-          "id": "gestion-des-processus",
-          "label": "Process Management"
+          "id": "dockerfile",
+          "label": "The Dockerfile"
         },
         {
-          "id": "architecture-dun-shell",
-          "label": "How a Shell Works (Internal Architecture)"
+          "id": "commandes-essentielles",
+          "label": "Essential Commands"
+        },
+        {
+          "id": "volumes-et-reseaux",
+          "label": "Volumes and Networks"
+        },
+        {
+          "id": "docker-compose",
+          "label": "Docker Compose"
+        },
+        {
+          "id": "bonnes-pratiques-et-securite",
+          "label": "Best Practices and Security"
         }
       ]
     },
     {
       "id": "domain-specific-languages-dsl",
-      "label": "Domain-Specific Languages (DSL)",
+      "label": "Domain-specific Languages (DSL)",
       "folder": "Domain-specific Languages (DSL)",
       "chapters": [
         {
           "id": "regex",
-          "label": "The regex"
+          "label": "Regular expressions"
         },
         {
           "id": "sql",
@@ -103,11 +137,11 @@
         },
         {
           "id": "annuler-et-historique",
-          "label": "Undo changes and browse the history"
+          "label": "Undo changes and navigate the history"
         },
         {
           "id": "stash",
-          "label": "The stash"
+          "label": "The Stash"
         },
         {
           "id": "tags",
@@ -132,8 +166,102 @@
       ]
     },
     {
+      "id": "ia",
+      "label": "AI",
+      "folder": "IA",
+      "chapters": [
+        {
+          "id": "reseaux-de-neurones",
+          "label": "Neural Networks — The Fundamentals"
+        },
+        {
+          "id": "entrainement-descente-de-gradient",
+          "label": "Model Training and Gradient Descent"
+        },
+        {
+          "id": "architectures-cnn-rnn-transformers",
+          "label": "Architectures — CNNs, RNNs, and Transformers"
+        },
+        {
+          "id": "deep-learning-pytorch",
+          "label": "Deep Learning with PyTorch"
+        },
+        {
+          "id": "nlp-et-llm",
+          "label": "Natural Language Processing (NLP) and Large Language Models (LLMs)"
+        },
+        {
+          "id": "prompt-engineering",
+          "label": "Prompt Engineering: Structuring a Request for Better Results"
+        },
+        {
+          "id": "llm-en-production",
+          "label": "LLMs in Production: Use Cases and Limits"
+        },
+        {
+          "id": "agents",
+          "label": "Agents: Tool/Reflection Loop and Orchestration"
+        },
+        {
+          "id": "rag",
+          "label": "RAG: Augmenting an LLM with External Data"
+        },
+        {
+          "id": "prompt-injection",
+          "label": "Prompt Injection: When Data Poses as an Instruction"
+        },
+        {
+          "id": "gestion-dun-llm",
+          "label": "LLM Monitoring and Operations"
+        },
+        {
+          "id": "gouvernance-des-donnees",
+          "label": "Data Governance for an AI System"
+        },
+        {
+          "id": "reglementation-europeenne-ia",
+          "label": "EU AI Regulation: the AI Act"
+        },
+        {
+          "id": "chatbot",
+          "label": "Building a Chatbot: Architecture, Configuration, and Scaling"
+        },
+        {
+          "id": "assistant-agentique-terminal",
+          "label": "The agent-based AI assistant in the terminal: beyond the simple prompt"
+        },
+        {
+          "id": "stack-ia",
+          "label": "The AI Stack: The Layers of a Production Application"
+        }
+      ]
+    },
+    {
+      "id": "infrastructure",
+      "label": "Infrastructure",
+      "folder": "Infrastructure",
+      "chapters": [
+        {
+          "id": "api-et-http",
+          "label": "Exchanging Data: API and HTTP"
+        },
+        {
+          "id": "json",
+          "label": "The JSON Format"
+        },
+        {
+          "id": "cpu-vs-gpu",
+          "label": "CPU vs. GPU: Parallel Computing"
+        },
+        {
+          "id": "le-cloud",
+          "label": "What Is the Cloud?"
+        }
+      ]
+    },
+    {
       "id": "langages-de-balisage",
-      "label": "Markup Languages",
+      "label": "Markup & Style Languages",
       "folder": "Langages de balisage",
       "subjects": [
         {
@@ -279,6 +407,10 @@
               "label": "System Calls and File Descriptors"
             },
             {
+              "id": "operateurs-binaires",
+              "label": "Bitwise Operators"
+            },
+            {
               "id": "threads",
               "label": "Threads (pthreads)"
             }
@@ -357,6 +489,10 @@
               "label": "Arrays"
             },
             {
+              "id": "nombres",
+              "label": "Numbers"
+            },
+            {
               "id": "objets",
               "label": "Objects"
             },
@@ -381,8 +517,39 @@
               "label": "The DOM and Event Handling"
             },
             {
+              "id": "html-elements",
+              "label": "HTMLElements"
+            },
+            {
               "id": "asynchrone",
               "label": "Asynchronous Programming (Callbacks, Promises, async/await)"
+            }
+          ]
+        },
+        {
+          "id": "ocaml",
+          "label": "OCaml",
+          "folder": "OCaml",
+          "chapters": [
+            {
+              "id": "programmation-fonctionnelle-vs-imperative",
+              "label": "Functional vs. Imperative Programming"
+            },
+            {
+              "id": "immuabilite-et-fonctions-pures",
+              "label": "Immutability and Pure Functions"
+            },
+            {
+              "id": "filtrage-par-motif-et-types-algebriques",
+              "label": "Pattern Matching and Algebraic Types"
+            },
+            {
+              "id": "recursion-et-fonctions-dordre-superieur",
+              "label": "Recursion and Higher-Order Functions"
+            },
+            {
+              "id": "inference-de-types",
+              "label": "Type Inference"
             }
           ]
         },
@@ -406,6 +573,10 @@
             {
               "id": "boucles",
               "label": "Loops"
+            },
+            {
+              "id": "structures-de-langage",
+              "label": "Language Constructs"
             },
             {
               "id": "structuresDeLangagues",
@@ -539,6 +710,337 @@
               "label": "Natural Language Processing (NLP) and Large Language Models (LLMs)"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "mathematiques",
+      "label": "Mathematics",
+      "folder": "Mathématiques",
+      "chapters": [
+        {
+          "id": "la-fonction-mathematique",
+          "label": "The Mathematical Function"
+        },
+        {
+          "id": "vecteurs-et-produit-scalaire",
+          "label": "Vectors and the Dot Product"
+        },
+        {
+          "id": "le-logarithme",
+          "label": "The Logarithm"
+        },
+        {
+          "id": "les-probabilites-de-base",
+          "label": "Basic Probability"
+        },
+        {
+          "id": "la-derivee-et-le-gradient",
+          "label": "The Derivative and the Gradient"
+        }
+      ]
+    },
+    {
+      "id": "performance",
+      "label": "Performance",
+      "folder": "Performance",
+      "chapters": [
+        {
+          "id": "mesurer-avant-d-optimiser",
+          "label": "Measure Before Optimizing"
+        },
+        {
+          "id": "attentes-et-temps-morts",
+          "label": "Waiting Without Wasting Time"
+        },
+        {
+          "id": "limiter-les-aller-retours",
+          "label": "Cutting Round Trips"
+        },
+        {
+          "id": "parallelisme",
+          "label": "Parallelism: Finding the Real Constraint"
+        },
+        {
+          "id": "traitements-longs",
+          "label": "Long-Running Processes"
+        },
+        {
+          "id": "cache-cpu-et-simd",
+          "label": "CPU Cache and Vectorization (SIMD)"
+        },
+        {
+          "id": "eviter-le-recalcul-redondant",
+          "label": "Avoiding Redundant Recomputation"
+        },
+        {
+          "id": "heap-des-runtimes-manages",
+          "label": "A Managed Runtime's Heap"
+        }
+      ]
+    },
+    {
+      "id": "qualite-et-architecture-du-code",
+      "label": "Code Quality & Architecture",
+      "folder": "Qualité et architecture du code",
+      "chapters": [
+        {
+          "id": "responsabilite-unique-et-couplage",
+          "label": "Single Responsibility and Low Coupling"
+        },
+        {
+          "id": "eviter-la-repetition-structures-indexees",
+          "label": "Avoiding Repetition: Indexed Structures Rather Than Duplicated Code"
+        },
+        {
+          "id": "source-unique-de-verite",
+          "label": "Single Source of Truth"
+        },
+        {
+          "id": "sens-des-dependances-avant-de-centraliser",
+          "label": "Checking Dependency Direction Before Centralizing"
+        },
+        {
+          "id": "genericite-dependre-de-la-structure",
+          "label": "Genericity: Depending on Structure Rather Than Fixed Values"
+        },
+        {
+          "id": "un-seul-mecanisme-par-information",
+          "label": "One Mechanism Per Piece of Information"
+        }
+      ]
+    },
+    {
+      "id": "representation-des-donnees",
+      "label": "Data Representation",
+      "folder": "Représentation des données",
+      "chapters": [
+        {
+          "id": "entiers-et-debordements",
+          "label": "Integers, Bits, and Overflow"
+        },
+        {
+          "id": "nombres-flottants",
+          "label": "Floating-Point Numbers (IEEE 754)"
+        },
+        {
+          "id": "encodage-des-textes",
+          "label": "Text Encoding (ASCII, Unicode, UTF-8)"
+        },
+        {
+          "id": "organisation-en-memoire",
+          "label": "How Data Is Laid Out in Memory"
+        },
+        {
+          "id": "aleatoire-et-generateurs",
+          "label": "Randomness and Generators"
+        }
+      ]
+    },
+    {
+      "id": "shells",
+      "label": "Shells",
+      "folder": "Shells",
+      "subjects": [
+        {
+          "id": "bash",
+          "label": "Bash",
+          "folder": "Bash",
+          "chapters": [
+            {
+              "id": "commandes-de-base",
+              "label": "Basic Commands"
+            },
+            {
+              "id": "scripts-et-shebang",
+              "label": "Writing and Running a Bash Script"
+            },
+            {
+              "id": "variables",
+              "label": "Variables"
+            },
+            {
+              "id": "variables-denvironnement",
+              "label": "Environment Variables"
+            },
+            {
+              "id": "conditions",
+              "label": "Conditions"
+            },
+            {
+              "id": "boucles",
+              "label": "Loops"
+            },
+            {
+              "id": "fonctions",
+              "label": "Functions"
+            },
+            {
+              "id": "expansion-et-jokers",
+              "label": "Expansion and Wildcards (Globbing)"
+            },
+            {
+              "id": "redirections-et-pipes",
+              "label": "Redirections and Pipes"
+            },
+            {
+              "id": "traitement-de-texte",
+              "label": "Text Processing (grep, sed, awk...)"
+            },
+            {
+              "id": "permissions-et-fichiers",
+              "label": "Permissions and File Manipulation"
+            },
+            {
+              "id": "gestion-des-processus",
+              "label": "Process Management"
+            },
+            {
+              "id": "architecture-dun-shell",
+              "label": "How a Shell Works (Internal Architecture)"
+            },
+            {
+              "id": "automatisation-cron",
+              "label": "Automating Tasks with cron"
+            }
+          ]
+        },
+        {
+          "id": "powershell",
+          "label": "PowerShell",
+          "folder": "PowerShell",
+          "chapters": [
+            {
+              "id": "commandes-de-base",
+              "label": "Basic Commands"
+            },
+            {
+              "id": "ecrire-et-executer-un-script",
+              "label": "Writing and Running a PowerShell Script"
+            },
+            {
+              "id": "variables",
+              "label": "Variables"
+            },
+            {
+              "id": "variables-denvironnement",
+              "label": "Environment Variables"
+            },
+            {
+              "id": "conditions",
+              "label": "Conditions"
+            },
+            {
+              "id": "boucles",
+              "label": "Loops"
+            },
+            {
+              "id": "fonctions",
+              "label": "Functions"
+            },
+            {
+              "id": "expansion-et-jokers",
+              "label": "Expansion and Wildcards"
+            },
+            {
+              "id": "redirections-et-pipes",
+              "label": "Redirections and Pipes"
+            },
+            {
+              "id": "traitement-de-texte",
+              "label": "Text and Object Processing"
+            },
+            {
+              "id": "permissions-et-fichiers",
+              "label": "Permissions and File Manipulation"
+            },
+            {
+              "id": "gestion-des-processus",
+              "label": "Process Management"
+            },
+            {
+              "id": "architecture-dun-shell",
+              "label": "How PowerShell Works (Internal Architecture)"
+            }
+          ]
+        },
+        {
+          "id": "zsh",
+          "label": "Zsh",
+          "folder": "Zsh",
+          "chapters": [
+            {
+              "id": "fichiers-de-demarrage",
+              "label": "Startup Files"
+            },
+            {
+              "id": "options-du-shell",
+              "label": "The Options System (`setopt`)"
+            },
+            {
+              "id": "expansion-et-jokers-avances",
+              "label": "Advanced Expansion and Wildcards"
+            },
+            {
+              "id": "completion-avancee",
+              "label": "Advanced Completion"
+            },
+            {
+              "id": "prompt-et-themes",
+              "label": "Customizing the Prompt"
+            },
+            {
+              "id": "oh-my-zsh",
+              "label": "Oh My Zsh"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ui-ux",
+      "label": "UI/UX",
+      "folder": "UI-UX",
+      "chapters": [
+        {
+          "id": "hierarchie-visuelle",
+          "label": "Visual Hierarchy"
+        },
+        {
+          "id": "couleur-et-contraste",
+          "label": "Color and Contrast"
+        },
+        {
+          "id": "typographie",
+          "label": "Typography"
+        },
+        {
+          "id": "espacement-et-grille",
+          "label": "Spacing and Grid (Layout)"
+        },
+        {
+          "id": "heuristiques-de-nielsen",
+          "label": "Usability Heuristics (Nielsen)"
+        },
+        {
+          "id": "accessibilite-ux",
+          "label": "Basic Accessibility (UX)"
+        },
+        {
+          "id": "recherche-utilisateur",
+          "label": "User Research"
+        },
+        {
+          "id": "wireframing-et-prototypage",
+          "label": "Wireframing and Prototyping"
+        },
+        {
+          "id": "design-systems",
+          "label": "Design Systems"
+        },
+        {
+          "id": "outils-du-metier",
+          "label": "Tools of the Trade"
         }
       ]
     }

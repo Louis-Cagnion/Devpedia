@@ -8,7 +8,7 @@ Unlike PHP or JavaScript, which are interpreted directly at runtime, a C program
 
 ## The Four Steps
 
-```
+```text
 main.c --[1. préprocesseur]--> main.i --[2. compilation]--> main.s --[3. assemblage]--> main.o --[4. édition de liens]--> programme
 ```
 

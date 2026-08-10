@@ -8,7 +8,7 @@ A program cannot read a file, create a process, or send data over the network by
 
 ## User Space vs. Kernel Space
 
-```
+```text
 Programme (espace utilisateur)
       |
       | appel système : open(), read(), write(), fork(), pipe()...

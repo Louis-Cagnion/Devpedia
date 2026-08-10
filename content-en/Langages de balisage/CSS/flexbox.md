@@ -93,7 +93,7 @@ Flexbox operates in terms of a** main** axis (`flex-direction`) and a** cross** 
 
 ## Visual Summary
 
-```
+```text
 justify-content (axe principal, ici horizontal) :
 [■]                    [■] [■] [■]              [■]       [■]       [■]
 flex-start             center                    space-between

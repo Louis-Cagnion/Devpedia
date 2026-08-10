@@ -31,7 +31,7 @@ premier->suivant = second; // chaîne le premier vers le second
 second->suivant = NULL;    // NULL marque la fin de la liste
 ```
 
-```
+```text
 premier -> second -> NULL
   10         20
 ```

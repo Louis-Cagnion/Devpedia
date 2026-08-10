@@ -65,7 +65,7 @@ Unlike Flexbox (see the dedicated chapter), which is designed for a single axis 
 }
 ```
 
-```
+```text
 Lignes de grille verticales :  1    2    3    4
                                 ┌────┬────┬────┐
                           1 ┤   │    │    │    │
