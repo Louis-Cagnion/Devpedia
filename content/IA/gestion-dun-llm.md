@@ -4,7 +4,7 @@ order: 11
 
 # Monitoring et gestion opérationnelle d'un LLM
 
-Surveiller un service classique revient à surveiller un [code de statut HTTP](/?c=infrastructure&p=api-et-http) : `200`, c'est bon, `500`, ça a planté. Un appel à un LLM répond presque toujours `200` — la question n'est jamais *"a-t-il répondu ?"* mais *"la réponse est-elle bonne, et a-t-elle coûté ce qu'elle devait coûter ?"*. C'est cette différence qui rend le monitoring d'un système à base de LLM structurellement différent d'un monitoring applicatif classique.
+Surveiller un service classique revient à surveiller un [code de statut HTTP](/?c=infrastructure&p=api-et-http) : `200`, c'est bon, `500`, ça a planté. Un appel à un LLM répond presque toujours `200` : la question n'est jamais *"a-t-il répondu ?"* mais *"la réponse est-elle bonne, et a-t-elle coûté ce qu'elle devait coûter ?"*. C'est cette différence qui rend le monitoring d'un système à base de LLM structurellement différent d'un monitoring applicatif classique.
 
 ## Ce qu'il faut journaliser
 
@@ -18,39 +18,39 @@ Un système en production doit conserver, pour chaque appel, de quoi reconstitue
 | Latence | Détecte une dégradation du service avant qu'un utilisateur ne s'en plaigne |
 | Identifiant et version du modèle | Voir plus bas : cette version change plus souvent qu'on ne le pense |
 
-> **Piège :** journaliser le prompt et la réponse sans précaution. Ils peuvent contenir des données personnelles ou sensibles selon ce que l'utilisateur a écrit — les conserver tel quel reproduit exactement le problème que la [gouvernance des données](/?c=ia&p=gouvernance-des-donnees) cherche à éviter.
+> **Piège :** journaliser le prompt et la réponse sans précaution. Ils peuvent contenir des données personnelles ou sensibles selon ce que l'utilisateur a écrit : les conserver tel quel reproduit exactement le problème que la [gouvernance des données](/?c=ia&p=gouvernance-des-donnees) cherche à éviter.
 >
-> **Bonne pratique :** chiffrer ces journaux au repos et leur appliquer une durée de rétention limitée, au minimum — voir la [politique de rétention](/?c=ia&p=gouvernance-des-donnees) détaillée par ailleurs.
+> **Bonne pratique :** chiffrer ces journaux au repos et leur appliquer une durée de rétention limitée, au minimum ; voir la [politique de rétention](/?c=ia&p=gouvernance-des-donnees) détaillée par ailleurs.
 
 ## La dérive silencieuse de version
 
-Un fournisseur de LLM fait évoluer son modèle régulièrement, parfois sous le même nom commercial (une mise à jour mineure, un ajustement de sécurité, un changement de comportement par défaut). Un système qui appelle "le modèle X" sans épingler une version précise peut donc voir son comportement changer du jour au lendemain, sans qu'aucune ligne de son propre code n'ait bougé — le bug le plus difficile à diagnostiquer est celui qui n'a pas de commit associé.
+Un fournisseur de LLM fait évoluer son modèle régulièrement, parfois sous le même nom commercial (une mise à jour mineure, un ajustement de sécurité, un changement de comportement par défaut). Un système qui appelle "le modèle X" sans épingler une version précise peut donc voir son comportement changer du jour au lendemain, sans qu'aucune ligne de son propre code n'ait bougé : le bug le plus difficile à diagnostiquer est celui qui n'a pas de commit associé.
 
 > **Piège :** appeler "le modèle X" sans épingler de version précise, en supposant que son comportement restera stable dans le temps.
 >
-> **Bonne pratique :** figer une version explicite plutôt que "la dernière disponible", et ne migrer vers une nouvelle version qu'après l'avoir testée sur un jeu de cas connus (voir plus bas) — la même parade que pour toute dépendance externe.
+> **Bonne pratique :** figer une version explicite plutôt que "la dernière disponible", et ne migrer vers une nouvelle version qu'après l'avoir testée sur un jeu de cas connus (voir plus bas), la même parade que pour toute dépendance externe.
 
 ## Évaluer une sortie qui n'est jamais identique deux fois
 
 Le non-déterminisme d'un LLM (voir [LLM en production](/?c=ia&p=llm-en-production)) rend inutilisable un test classique de type "la sortie doit être exactement cette chaîne". Deux approches se combinent en pratique :
 
-**Un jeu de cas de référence (*golden set*).** Une liste de prompts représentatifs dont on connaît la réponse attendue (ou les critères qu'une bonne réponse doit remplir), rejouée à chaque changement — de prompt, de modèle, de version. C'est l'équivalent d'une suite de tests de non-régression, adaptée à une sortie approximative plutôt qu'exacte.
+**Un jeu de cas de référence (*golden set*).** Une liste de prompts représentatifs dont on connaît la réponse attendue (ou les critères qu'une bonne réponse doit remplir), rejouée à chaque changement : de prompt, de modèle, de version. C'est l'équivalent d'une suite de tests de non-régression, adaptée à une sortie approximative plutôt qu'exacte.
 
 **Un second LLM comme évaluateur (*LLM-as-judge*).** Le juge reçoit la question, la réponse produite, et parfois une réponse de référence, puis note la réponse selon des critères explicites (exactitude, ton, longueur). Ça permet d'évaluer des milliers de cas sans relecture humaine systématique, en réservant l'œil humain aux cas que le juge signale comme douteux.
 
-> **Piège :** traiter le verdict d'un LLM-as-judge comme infaillible. Le juge hérite des mêmes limites qu'un LLM ordinaire (voir [LLM en production](/?c=ia&p=llm-en-production)) — y compris la possibilité de se tromper avec la même assurance qu'un jugement correct.
+> **Piège :** traiter le verdict d'un LLM-as-judge comme infaillible. Le juge hérite des mêmes limites qu'un LLM ordinaire (voir [LLM en production](/?c=ia&p=llm-en-production)), y compris la possibilité de se tromper avec la même assurance qu'un jugement correct.
 >
-> **Bonne pratique :** réserver l'évaluation humaine aux cas que le juge signale comme douteux, et vérifier périodiquement un échantillon de ses verdicts jugés "bons" — pas seulement ceux qu'il signale lui-même comme incertains.
+> **Bonne pratique :** réserver l'évaluation humaine aux cas que le juge signale comme douteux, et vérifier périodiquement un échantillon de ses verdicts jugés "bons", pas seulement ceux qu'il signale lui-même comme incertains.
 
 ## Les garde-fous opérationnels
 
 > **Piège :** un pic de trafic (légitime, ou une boucle d'agent mal bornée, voir le chapitre [Agents](/?c=ia&p=agents)) peut faire exploser une facture en quelques minutes sans qu'aucune alerte "erreur" ne se déclenche, puisque chaque appel individuel réussit.
 >
-> **Bonne pratique :** mettre en place un limiteur de débit et de coût, et un tableau de bord de coût par fonctionnalité, par client ou par utilisateur — pas un luxe, ce qui évite de découvrir la facture en fin de mois.
+> **Bonne pratique :** mettre en place un limiteur de débit et de coût, et un tableau de bord de coût par fonctionnalité, par client ou par utilisateur, pas un luxe, ce qui évite de découvrir la facture en fin de mois.
 
 > **Piège :** si le modèle principal devient indisponible ou trop lent, renvoyer directement une erreur à l'utilisateur plutôt que de dégrader le service.
 >
-> **Bonne pratique :** prévoir un repli (*fallback*) vers un modèle plus simple en cas d'indisponibilité ou de lenteur excessive — dégrader le service plutôt que l'interrompre.
+> **Bonne pratique :** prévoir un repli (*fallback*) vers un modèle plus simple en cas d'indisponibilité ou de lenteur excessive : dégrader le service plutôt que l'interrompre.
 
 Le filtrage des entrées et sorties (détecter une tentative d'instruction malveillante, voir la [prompt injection](/?c=ia&p=prompt-injection), et filtrer une sortie avant qu'elle n'atteigne l'utilisateur) complète ces garde-fous.
 

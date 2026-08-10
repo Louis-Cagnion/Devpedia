@@ -4,9 +4,9 @@ order: 16
 
 # Le stack IA : les couches d'une application en production
 
-Les chapitres précédents couvrent chacun un mécanisme : [entraîner un réseau de neurones](/?c=ia&p=entrainement-descente-de-gradient), [donner des outils à un modèle](/?c=ia&p=agents), [l'augmenter avec des données externes](/?c=ia&p=rag), [le surveiller en production](/?c=ia&p=gestion-dun-llm)... Ce chapitre n'en ajoute aucun : il montre comment ces pièces s'empilent réellement dans une application, et nomme les catégories d'outils concrètes qui existent à chaque étage — un vocabulaire qu'aucun autre chapitre ne couvre, parce qu'il ne concerne pas le fonctionnement d'un mécanisme mais le paysage des outils qui l'implémentent.
+Les chapitres précédents couvrent chacun un mécanisme : [entraîner un réseau de neurones](/?c=ia&p=entrainement-descente-de-gradient), [donner des outils à un modèle](/?c=ia&p=agents), [l'augmenter avec des données externes](/?c=ia&p=rag), [le surveiller en production](/?c=ia&p=gestion-dun-llm)... Ce chapitre n'en ajoute aucun : il montre comment ces pièces s'empilent réellement dans une application, et nomme les catégories d'outils concrètes qui existent à chaque étage, un vocabulaire qu'aucun autre chapitre ne couvre, parce qu'il ne concerne pas le fonctionnement d'un mécanisme mais le paysage des outils qui l'implémentent.
 
-**Stack IA** : l'ensemble des couches, chacune avec un rôle distinct, qui doivent s'assembler pour transformer un modèle de langage en application utilisable — du calcul brut jusqu'à ce que voit l'utilisateur final.
+**Stack IA** : l'ensemble des couches, chacune avec un rôle distinct, qui doivent s'assembler pour transformer un modèle de langage en application utilisable, du calcul brut jusqu'à ce que voit l'utilisateur final.
 
 ## Les couches, de bas en haut
 
@@ -51,9 +51,9 @@ Utiliser un LLM suppose de choisir entre deux façons radicalement différentes 
 | Maintenance | À la charge du fournisseur | À la charge de l'entreprise (mises à jour, mise à l'échelle, disponibilité) |
 | Qualité disponible | Accès aux modèles les plus performants du marché | Limitée à ce que le matériel disponible peut faire tourner |
 
-> **Piège :** choisir l'auto-hébergement uniquement pour économiser le coût par token, sans compter le coût fixe du matériel ni le temps d'ingénierie nécessaire pour égaler la fiabilité d'un service géré — l'équation ne devient favorable qu'à un volume d'usage suffisant.
+> **Piège :** choisir l'auto-hébergement uniquement pour économiser le coût par token, sans compter le coût fixe du matériel ni le temps d'ingénierie nécessaire pour égaler la fiabilité d'un service géré : l'équation ne devient favorable qu'à un volume d'usage suffisant.
 >
-> **Bonne pratique :** chiffrer les deux options sur le volume d'usage réel prévu (pas un usage hypothétique), et réévaluer ce choix si ce volume change significativement — la bascule n'est jamais définitive.
+> **Bonne pratique :** chiffrer les deux options sur le volume d'usage réel prévu (pas un usage hypothétique), et réévaluer ce choix si ce volume change significativement : la bascule n'est jamais définitive.
 
 ## La couche données : la base vectorielle
 
@@ -69,7 +69,7 @@ Le choix suit la même logique qu'ailleurs en architecture : une extension suffi
 
 ## La couche orchestration : écrire la boucle soi-même, ou s'appuyer sur un framework
 
-Le chapitre [Agents](/?c=ia&p=agents) décrit la boucle réflexion/action et les patrons de coordination multi-agents en général — sans dire comment ils sont concrètement implémentés. Deux approches :
+Le chapitre [Agents](/?c=ia&p=agents) décrit la boucle réflexion/action et les patrons de coordination multi-agents en général, sans dire comment ils sont concrètement implémentés. Deux approches :
 
 | | Écrire la boucle soi-même | Framework d'orchestration |
 |---|---|---|
@@ -77,17 +77,17 @@ Le chapitre [Agents](/?c=ia&p=agents) décrit la boucle réflexion/action et les
 | Avantage | Contrôle total, aucune dépendance externe, plus simple à déboguer ligne par ligne | Interface commune vers plusieurs fournisseurs de modèles, gestion de la mémoire de conversation et du chaînage déjà résolues |
 | Inconvénient | Chaque brique (retries, gestion de la mémoire, format des outils) est à réécrire | Une couche d'abstraction supplémentaire à comprendre, parfois plus lourde que le besoin réel |
 
-> **Piège :** adopter un framework d'orchestration complet pour un besoin qui se résume à un seul appel outil — la même erreur que sur-ingénierier n'importe quel autre système avant d'en avoir besoin.
+> **Piège :** adopter un framework d'orchestration complet pour un besoin qui se résume à un seul appel outil, la même erreur que sur-ingénierier n'importe quel autre système avant d'en avoir besoin.
 >
 > **Bonne pratique :** commencer par la boucle la plus simple qui répond au besoin réel, et n'introduire un framework que lorsque la coordination (plusieurs outils, plusieurs agents, gestion fine de la mémoire) dépasse ce qu'un code écrit à la main peut raisonnablement maintenir.
 
 ## Le piège transversal : un couplage caché entre les couches
 
-Chaque couche semble indépendante — jusqu'à ce qu'un changement dans l'une casse le fonctionnement d'une autre sans erreur visible. L'exemple déjà rencontré dans [RAG](/?c=ia&p=rag) : changer de modèle d'embedding (couche modèle) invalide silencieusement une base vectorielle existante (couche données), puisque les deux modèles ne partagent pas le même espace vectoriel.
+Chaque couche semble indépendante : jusqu'à ce qu'un changement dans l'une casse le fonctionnement d'une autre sans erreur visible. L'exemple déjà rencontré dans [RAG](/?c=ia&p=rag) : changer de modèle d'embedding (couche modèle) invalide silencieusement une base vectorielle existante (couche données), puisque les deux modèles ne partagent pas le même espace vectoriel.
 
 > **Piège :** modifier une couche isolément et ne tester que cette couche, en supposant que les autres n'ont aucune raison d'être affectées.
 >
-> **Bonne pratique :** après tout changement de composant à une couche (modèle, base vectorielle, framework d'orchestration), rejouer un test d'intégration bout en bout — pas seulement un test isolé de la couche modifiée.
+> **Bonne pratique :** après tout changement de composant à une couche (modèle, base vectorielle, framework d'orchestration), rejouer un test d'intégration bout en bout, pas seulement un test isolé de la couche modifiée.
 
 ## Ce qu'il faut retenir
 
