@@ -94,7 +94,7 @@ Les flags se placent après le dernier `/` de la regex en JavaScript :
 
 Objectif : reconnaître une ligne qui contient **uniquement** un lien Markdown, du type `[texte](url)`.
 
-### Étape 1 — les crochets littéraux
+### Étape 1 : les crochets littéraux
 
 En regex, `[` et `]` sont des caractères **spéciaux** (ils servent à écrire une classe de caractères, comme `[abc]` vu plus haut). Pour matcher un crochet **littéral** (le vrai caractère `[` du texte), il faut l'échapper avec un backslash :
 
@@ -106,9 +106,9 @@ En regex, `[` et `]` sont des caractères **spéciaux** (ils servent à écrire 
 \]
 ```
 
-`\[` matche le caractère `[`, et `\]` matche le caractère `]` — rien d'autre.
+`\[` matche le caractère `[`, et `\]` matche le caractère `]`, rien d'autre.
 
-### Étape 2 — le texte à l'intérieur des crochets
+### Étape 2 : le texte à l'intérieur des crochets
 
 Entre les deux crochets, on veut accepter **n'importe quel caractère, sauf** un crochet fermant (sinon la regex risquerait de s'arrêter trop tôt ou de matcher plusieurs liens d'un coup). On utilise une classe de caractères **négative** :
 
@@ -117,7 +117,7 @@ Entre les deux crochets, on veut accepter **n'importe quel caractère, sauf** un
 ```
 
 - Les `[ ]` ici sont la vraie syntaxe de classe de caractères (pas littérale, contrairement à l'étape 1).
-- `^` en première position **à l'intérieur** d'une classe signifie "tout sauf" — donc `[^\]]` veut dire "n'importe quel caractère sauf `]`".
+- `^` en première position **à l'intérieur** d'une classe signifie "tout sauf" : donc `[^\]]` veut dire "n'importe quel caractère sauf `]`".
 - Ajoute `*` pour répéter ça "0 ou plusieurs fois" (un texte de n'importe quelle longueur, ou même vide) :
 
 ```text
@@ -130,7 +130,7 @@ On veut aussi **récupérer** ce texte ensuite (pour savoir ce qu'il y a entre l
 ([^\]]*)
 ```
 
-### Étape 3 — assembler les crochets et le groupe
+### Étape 3 : assembler les crochets et le groupe
 
 ```text
 \[([^\]]*)\]
@@ -138,12 +138,12 @@ On veut aussi **récupérer** ce texte ensuite (pour savoir ce qu'il y a entre l
 
 Ça donne : un `[` littéral, puis le texte capturé, puis un `]` littéral. Ça matche par exemple `[texte]`, `[]` (texte vide), `[mon super lien]`...
 
-### Étape 4 — la même logique pour les parenthèses
+### Étape 4 : la même logique pour les parenthèses
 
 Même principe, mais pour `(url)` :
 
 - `\(` et `\)` → parenthèses littérales échappées (elles aussi spéciales en regex, utilisées normalement pour les groupes).
-- À l'intérieur, on veut le contenu de l'URL : n'importe quel caractère sauf un espace (`\s`) et sauf une parenthèse fermante (`)`) — sinon la regex pourrait inclure du texte après le lien par erreur.
+- À l'intérieur, on veut le contenu de l'URL : n'importe quel caractère sauf un espace (`\s`) et sauf une parenthèse fermante (`)`) : sinon la regex pourrait inclure du texte après le lien par erreur.
 
 ```text
 [^\s)]+
@@ -157,7 +157,7 @@ On capture aussi ce groupe :
 \(([^\s)]+)\)
 ```
 
-### Étape 5 — exiger que ce soit toute la ligne
+### Étape 5 : exiger que ce soit toute la ligne
 
 Pour l'instant, la regex pourrait matcher un lien **au milieu** d'une phrase plus longue. Si tu veux qu'elle ne matche que lorsque **toute la ligne** est exactement ce lien (rien avant, rien après), on ajoute les ancres vues plus haut :
 
@@ -187,14 +187,14 @@ Récapitulatif des morceaux :
 
 Avec `"[mon lien](https://exemple.com)".match(regex)`, tu obtiens `match[1] = "mon lien"` et `match[2] = "https://exemple.com"`.
 
-> **Piège :** une regex trop permissive (par exemple oublier d'ancrer avec `^`/`$`) peut matcher bien plus que prévu — un motif de validation d'email sans ancrage accepterait "n'importe quoi contenant un @" au milieu d'un texte plus long, pas seulement une adresse email complète.
+> **Piège :** une regex trop permissive (par exemple oublier d'ancrer avec `^`/`$`) peut matcher bien plus que prévu : un motif de validation d'email sans ancrage accepterait "n'importe quoi contenant un @" au milieu d'un texte plus long, pas seulement une adresse email complète.
 >
-> **Bonne pratique :** tester une regex sur des cas limites volontairement pièges (chaîne vide, caractères spéciaux, texte plus long que prévu) avant de l'utiliser en production — un outil comme regex101.com permet de le faire interactivement.
+> **Bonne pratique :** tester une regex sur des cas limites volontairement pièges (chaîne vide, caractères spéciaux, texte plus long que prévu) avant de l'utiliser en production : un outil comme regex101.com permet de le faire interactivement.
 
 ## Pour aller plus loin
 
-- [MDN (*Mozilla Developer Network*, la documentation de référence du web) — Expressions régulières](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Regular_expressions)
-- [regex101.com](https://regex101.com) — testeur de regex interactif avec explications en direct
+- [Expressions régulières (MDN, Mozilla Developer Network, la documentation de référence du web)](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Regular_expressions)
+- [regex101.com](https://regex101.com) : testeur de regex interactif avec explications en direct
 
 ---
 
@@ -202,7 +202,7 @@ Avec `"[mon lien](https://exemple.com)".match(regex)`, tu obtiens `match[1] = "m
 
 | | |
 |---|---|
-| **À retenir** | Une regex décrit un motif de caractères pour rechercher, valider ou extraire du texte — interprétée par un moteur regex intégré au langage hôte, pas un langage de programmation à part entière. |
+| **À retenir** | Une regex décrit un motif de caractères pour rechercher, valider ou extraire du texte, interprétée par un moteur regex intégré au langage hôte, pas un langage de programmation à part entière. |
 | **Outils utilisables** | Classes de caractères (`\d`, `\w`, `\s`), quantificateurs (`*`, `+`, `?`, `{n,m}`), groupes capturants, flags (`g`, `i`, `m`). |
 | **Pièges à éviter** | Oublier d'ancrer un motif (`^`/`$`) qui doit correspondre à la chaîne entière, pas seulement à une partie. |
 | **Bonnes pratiques** | Construire une regex complexe étape par étape, en testant chaque ajout ; vérifier son comportement sur des cas limites avant de l'utiliser en production. |
