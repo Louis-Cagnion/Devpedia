@@ -10,7 +10,7 @@ Le chapitre sur le [NLP et les LLM](/?c=ia&p=nlp-et-llm) distingue le *prompting
 
 Un modèle auquel on ne précise ni rôle ni contraintes doit deviner le registre attendu (ton, niveau de détail, format) à partir du seul contenu de la question. Le lever explicitement dans les instructions (souvent en tête de prompt, dans un rôle "système") réduit cette ambiguïté :
 
-```
+```text
 Mauvais prompt :  "Explique les index en base de données."
 
 Meilleur prompt :  "Tu es un formateur qui s'adresse à des développeurs juniors.
@@ -24,7 +24,7 @@ Voir la configuration d'un system prompt dans [Construire un chatbot](/?c=ia&p=c
 
 Face à une information manquante, un modèle ne s'arrête pas de lui-même pour la demander : il comble le vide par une hypothèse silencieuse, qui peut diverger de ce qui était réellement voulu sans que rien ne le signale. Préciser dans les instructions la conduite à tenir dans ce cas retire ce choix implicite au modèle :
 
-```
+```text
 Si une information nécessaire manque, indique-le explicitement au lieu
 de faire une hypothèse silencieuse — ou pose la question, si le contexte
 s'y prête.
@@ -88,7 +88,7 @@ Chaque piste doit rester courte (une ligne, pas un paragraphe) : l'objectif est 
 
 Plutôt que de décrire abstraitement le format ou le style attendu, donner directement un ou plusieurs exemples entrée → sortie dans le prompt (le *few-shot prompting*) exploite la capacité du modèle à repérer un motif et à le reproduire :
 
-```
+```text
 Classe le sentiment de chaque avis en positif/negatif/neutre.
 
 Avis : "Livraison rapide, produit conforme."       -> positif
@@ -108,7 +108,7 @@ Un prompt sans exemple (*zero-shot*) fonctionne pour des tâches simples ou déj
 
 Un LLM génère sa réponse token par token, chaque token s'appuyant sur tous ceux déjà produits (voir [LLM en production](/?c=ia&p=llm-en-production)) — y compris ceux de sa propre réponse en train de s'écrire. Demander explicitement au modèle de détailler son raisonnement avant de conclure ("réfléchis étape par étape avant de répondre") lui donne ainsi, concrètement, plus de tokens intermédiaires sur lesquels s'appuyer pour construire une conclusion — un gain surtout net sur les tâches à plusieurs étapes (calcul, logique, décomposition d'un problème) :
 
-```
+```text
 Sans chain-of-thought :  "Un train part à 14h12 à 80km/h, un autre à 14h27
                           à 100km/h sur la même voie. À quelle heure le second
                           rattrape-t-il le premier ?"
@@ -129,7 +129,7 @@ Demander en plus une étape de vérification avant de conclure ("relis ta répon
 
 Un prompt qui mélange instructions, contexte et données à traiter dans un seul bloc de texte laisse au modèle la charge de deviner où s'arrête l'un et où commence l'autre. Délimiter clairement chaque partie (balises, guillemets triples, titres) réduit cette ambiguïté — et rend aussi plus difficile qu'une donnée injectée dans le contexte soit interprétée comme une instruction (voir la [prompt injection](/?c=ia&p=prompt-injection)) :
 
-```
+```text
 ### Instructions
 Résume le texte ci-dessous en 2 phrases, en français.
 
@@ -141,11 +141,15 @@ Résume le texte ci-dessous en 2 phrases, en français.
 
 Préciser le format de sortie attendu (JSON avec des clés nommées, une liste à puces, un tableau) dans les instructions elles-mêmes évite de surcroît d'avoir à re-parser une réponse en langage libre.
 
+> **Piège :** mélanger dans un seul bloc de texte les instructions et une donnée externe (saisie utilisateur, contenu d'un fichier ou d'un site récupéré automatiquement...) sans aucune séparation visuelle — le modèle n'a alors aucun moyen fiable de distinguer une instruction légitime d'un texte qui, à l'intérieur même de la donnée, se ferait passer pour une instruction (voir la [prompt injection](/?c=ia&p=prompt-injection)).
+>
+> **Bonne pratique :** toujours délimiter explicitement chaque partie (balises, guillemets triples, titres) et préciser dans les instructions que le contenu ainsi délimité est une donnée à traiter, jamais une commande à exécuter.
+
 ## Template : un prompt unique pour une tâche simple
 
 Le squelette ci-dessous rassemble toutes les techniques précédentes dans un seul gabarit réutilisable, à adapter tâche par tâche — chaque section correspond à une technique vue plus haut (rôle, gestion de l'ambiguïté, few-shot, vérification, format) :
 
-```
+```text
 ## Rôle
 Tu es [rôle / expertise attendue].
 Ta mission : [objectif principal, en une phrase].
@@ -201,7 +205,7 @@ Sur un projet de taille significative, ce découpage se structure en étapes suc
 
 Chaque étape ci-dessous devient un prompt séparé, dont la sortie (validée avant de continuer) alimente le prompt suivant :
 
-```
+```text
 [1. Cadrage]
 Objectifs : [...]  —  Contraintes : [...]  —  Ressources disponibles : """[...]"""
 -> N'implémente rien : liste risques, informations manquantes, questions à trancher.
@@ -250,5 +254,5 @@ Aucune de ces techniques n'ajoute de connaissance ou de capacité que le modèle
 |---|---|
 | **À retenir** | Le prompt engineering formule l'entrée d'un LLM méthodiquement : rôle et instructions explicites, repérage d'un prompt imprécis avant de s'engager (par une question ciblée ou par plusieurs pistes concrètes), exemples (few-shot), raisonnement étape par étape (chain-of-thought), séparation instructions/contexte/données, décomposition d'une tâche complexe en étapes vérifiables. Il n'ajoute aucune capacité que le modèle n'a pas déjà. |
 | **Outils utilisables** | Un gabarit de prompt réutilisable (voir le template ci-dessus) ; un *golden set* de cas représentatifs pour évaluer un prompt avant de le considérer stable. |
-| **Pièges à éviter** | Ne pas préciser la conduite à tenir face à une information manquante. Systématiser une demande d'affinage même sur un prompt déjà précis. Multiplier les pistes proposées ou les rendre trop proches les unes des autres. Des exemples few-shot non représentatifs ou biaisés. Prendre un raisonnement chain-of-thought pour une preuve d'exactitude. Valider un prompt sur un seul essai réussi. |
-| **Bonnes pratiques** | Toujours préciser la conduite attendue en cas d'ambiguïté. Réserver l'affinage aux cas d'ambiguïté réelle, avec une hypothèse par défaut en plus de la question. Face à une incertitude stylistique ou créative, proposer 2-3 pistes courtes et nettement distinctes plutôt qu'une question abstraite. Choisir des exemples few-shot représentatifs de la diversité réelle des cas. Rejouer un prompt sur plusieurs cas avant de le considérer fiable. |
+| **Pièges à éviter** | Ne pas préciser la conduite à tenir face à une information manquante. Systématiser une demande d'affinage même sur un prompt déjà précis. Multiplier les pistes proposées ou les rendre trop proches les unes des autres. Des exemples few-shot non représentatifs ou biaisés. Mélanger instructions et données sans les délimiter. Prendre un raisonnement chain-of-thought pour une preuve d'exactitude. Se précipiter vers l'implémentation avant d'avoir validé cadrage et conception. Valider un prompt sur un seul essai réussi. |
+| **Bonnes pratiques** | Toujours préciser la conduite attendue en cas d'ambiguïté. Réserver l'affinage aux cas d'ambiguïté réelle, avec une hypothèse par défaut en plus de la question. Face à une incertitude stylistique ou créative, proposer 2-3 pistes courtes et nettement distinctes plutôt qu'une question abstraite. Choisir des exemples few-shot représentatifs de la diversité réelle des cas. Toujours délimiter explicitement instructions, contexte et données. Rejouer un prompt sur plusieurs cas avant de le considérer fiable. |
