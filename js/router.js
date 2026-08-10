@@ -253,7 +253,7 @@ function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter,
  * @param {Boolean} withReturnButton
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [previousChapter]
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [nextChapter]
- * @param {HTMLElement|null} [breadcrumb] see {@link createBreadcrumb} — chapter pages only
+ * @param {HTMLElement|null} [breadcrumb] see {@link createBreadcrumb} — chapter and subject pages
  * @returns {HTMLElement} page div
  */
 function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null, breadcrumb = null) {
@@ -341,7 +341,7 @@ async function renderSubject(category, subject) {
     appState.curPageId = subject.id;
     const path = `./${getContentDir()}/${category.folder}/${subject.folder}/${subject.id}.md`;
     const subjectInfos = await fetchFileToTextOrJson(path, 'text');
-    const pageDiv = generatePageContent(subjectInfos, subject.id, true);
+    const pageDiv = generatePageContent(subjectInfos, subject.id, true, null, null, createBreadcrumb(category, null));
     generateChildList(pageDiv, subject.chapters ?? [], subject.id, (chapter) => {
         appState.navigationStack.push({type: 'subject', categoryId: category.id, subjectId: subject.id});
         renderChapter(category.id, `./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subject.id);
