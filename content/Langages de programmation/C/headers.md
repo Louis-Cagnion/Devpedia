@@ -8,12 +8,12 @@ Un fichier d'en-tête (*header*, extension `.h`) contient des **déclarations** 
 
 ## Déclaration vs définition
 
-```
+```c
 // calculs.h — déclaration : "cette fonction existe, voici sa signature"
 int addition(int a, int b);
 ```
 
-```
+```c
 // calculs.c — définition : le vrai corps de la fonction
 #include "calculs.h"
 
@@ -23,7 +23,7 @@ int addition(int a, int b)
 }
 ```
 
-```
+```c
 // main.c — utilisation, via le header
 #include "calculs.h"
 
@@ -37,7 +37,7 @@ int main(void)
 
 ## `#include <...>` vs `#include "..."`
 
-```
+```c
 #include <stdio.h>   // chevrons : cherche dans les répertoires système (bibliothèque standard)
 #include "calculs.h" // guillemets : cherche d'abord dans le répertoire courant du projet
 ```
@@ -46,7 +46,7 @@ int main(void)
 
 Un même header peut être inclus indirectement plusieurs fois (ex. `a.h` inclut `commun.h`, et `b.h` aussi inclut `commun.h`, et `main.c` inclut `a.h` et `b.h`) — sans protection, ses déclarations seraient dupliquées et provoqueraient une erreur de compilation ("redefinition"). Un **include guard** empêche qu'un header soit traité plus d'une fois par le préprocesseur :
 
-```
+```c
 #ifndef CALCULS_H
 #define CALCULS_H
 
@@ -60,7 +60,7 @@ int addition(int a, int b);
 
 Une alternative plus courte, supportée par la quasi-totalité des compilateurs modernes bien que non garantie par le standard C :
 
-```
+```c
 #pragma once
 
 int addition(int a, int b);

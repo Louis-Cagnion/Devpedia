@@ -8,7 +8,7 @@ order: 1
 
 Une **machine virtuelle** (VM) virtualise du matériel : elle embarque son propre noyau (*kernel*) et démarre comme un ordinateur complet, ce qui la rend lourde (plusieurs Go, démarrage en dizaines de secondes) mais totalement isolée de l'hôte. Un **conteneur** est plus léger : c'est un processus classique du système hôte, qui **partage le noyau** de cet hôte mais s'exécute dans un environnement isolé du reste du système.
 
-```
+```text
 Machine virtuelle      Conteneur
 ┌─────────────────┐    ┌─────────────────┐
 │   Application   │    │   Application   │
@@ -40,7 +40,7 @@ Docker orchestre ces deux mécanismes, déjà présents dans le noyau, pour donn
 
 Une **image** est un modèle immuable, en lecture seule : un système de fichiers figé (une distribution minimale, les dépendances installées, le code de l'application) plus des métadonnées (commande à exécuter au démarrage, ports exposés...). Un **conteneur** est une instance en cours d'exécution de cette image, avec une fine couche inscriptible ajoutée par-dessus.
 
-```
+```text
 Image (lecture seule)  -->  docker run  -->  Conteneur (image + couche inscriptible + processus)
 ```
 

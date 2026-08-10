@@ -8,7 +8,7 @@ Un **arbre binaire** est une structure de données où chaque élément (appelé
 
 ## Déclarer un nœud
 
-```
+```c
 typedef struct Noeud
 {
     int valeur;
@@ -23,7 +23,7 @@ typedef struct Noeud
 
 Un **arbre binaire de recherche** (*Binary Search Tree*) impose une règle d'ordre à chaque nœud : tout ce qui est dans le sous-arbre gauche est **inférieur**, tout ce qui est dans le sous-arbre droit est **supérieur**. Cette règle permet de retrouver un élément en un minimum de comparaisons.
 
-```
+```text
         10
        /  \
       5    15
@@ -33,7 +33,7 @@ Un **arbre binaire de recherche** (*Binary Search Tree*) impose une règle d'ord
 
 ## Insertion récursive
 
-```
+```c
 Noeud *inserer(Noeud *racine, int valeur)
 {
     if (racine == NULL) {
@@ -63,7 +63,7 @@ Noeud *inserer(Noeud *racine, int valeur)
 
 ## Recherche
 
-```
+```c
 Noeud *rechercher(Noeud *racine, int valeur)
 {
     if (racine == NULL || racine->valeur == valeur) {
@@ -83,7 +83,7 @@ Noeud *rechercher(Noeud *racine, int valeur)
 
 Parcourir un arbre signifie visiter chacun de ses nœuds une fois. Trois ordres sont possibles selon le moment où l'on "traite" le nœud courant par rapport à ses enfants :
 
-```
+```c
 void parcoursInfixe(Noeud *racine)   // gauche, nœud, droit -> ordre croissant sur un ABR
 {
     if (racine == NULL) return;
@@ -115,7 +115,7 @@ Sur l'arbre exemple ci-dessus, `parcoursInfixe` affiche `2 5 7 10 15 20` — les
 
 Comme pour une liste chaînée, chaque nœud alloué avec `malloc()` doit être libéré individuellement — un parcours suffixe s'y prête naturellement, puisqu'il traite les enfants avant le nœud lui-même :
 
-```
+```c
 void libererArbre(Noeud *racine)
 {
     if (racine == NULL) return;

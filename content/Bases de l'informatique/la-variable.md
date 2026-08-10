@@ -8,7 +8,7 @@ Un [programme](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) exécu
 
 Une **variable** est une boîte étiquetée qui contient une valeur, consultable ou modifiable plus tard.
 
-```
+```text
 nom = "Jean"        → crée une boîte nommée "nom", y range la valeur "Jean"
 age = 25             → crée une boîte nommée "age", y range la valeur 25
 afficher nom          → va lire la boîte "nom", affiche "Jean"

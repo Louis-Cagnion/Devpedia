@@ -25,7 +25,7 @@ Un élément ressort par rapport aux autres via une combinaison de ces leviers :
 | Espacement | Plus d'espace vide autour d'un élément = il est isolé, donc remarqué | Un titre entouré de marge plutôt que collé au texte suivant |
 | Position | Un élément placé en haut ou à gauche (lecture occidentale) est vu en premier | Le logo et le menu principal en haut d'une page |
 
-```
+```text
 <h1>Titre principal</h1>       → gros, gras : lu en premier
 <p>Texte d'introduction.</p>   → taille normale : lu ensuite
 <small>Mentions légales</small> → petit, discret : lu en dernier, si besoin
@@ -53,7 +53,7 @@ Des études de suivi du regard (*eye-tracking*) montrent que l'œil suit des tra
 
 **F-pattern** — pour une page dense en texte (article, résultats de recherche, liste de produits) :
 
-```
+```text
 █████████████████████████    ← 1re ligne : balayée en entier
 ████████████
 █
@@ -68,7 +68,7 @@ L'utilisateur lit en entier les premières lignes, puis se contente de scanner l
 
 **Z-pattern** — pour une page simple et peu dense (page d'accueil, landing page) :
 
-```
+```text
 [Logo]──────────────────────►[Menu / Connexion]
                                             ╱
                                  ╱

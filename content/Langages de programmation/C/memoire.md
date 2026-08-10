@@ -17,7 +17,7 @@ Un programme C dispose de deux zones mémoire principales pour ses données :
 | Taille | Limitée, fixée au démarrage du programme | Limitée par la RAM/swap disponible |
 | Vitesse | Très rapide (simple déplacement d'un pointeur) | Plus lente (recherche d'un emplacement libre) |
 
-```
+```c
 void exemple(void)
 {
     int x = 5;            // sur la stack, libéré automatiquement à la fin de la fonction
@@ -31,7 +31,7 @@ void exemple(void)
 
 `malloc()` réserve un bloc de mémoire brut sur le heap, dont la taille est exprimée en octets :
 
-```
+```c
 int *tab = malloc(5 * sizeof(int)); // réserve la place pour 5 entiers
 
 if (tab == NULL) {
@@ -46,13 +46,13 @@ for (int i = 0; i < 5; i++) {
 
 > **Note :** `malloc()` ne **réinitialise pas** la mémoire allouée : elle peut contenir n'importe quelle valeur résiduelle ("garbage"). `calloc(nombre, taille)` fait la même chose que `malloc(nombre * taille)`, mais met en plus tous les octets à zéro.
 
-```
+```c
 int *tab = calloc(5, sizeof(int)); // 5 entiers, tous initialisés à 0
 ```
 
 ## Redimensionner un bloc : `realloc()`
 
-```
+```c
 int *tab = malloc(3 * sizeof(int));
 // ... on a besoin de plus de place ...
 int *nouveauTab = realloc(tab, 6 * sizeof(int));
@@ -71,7 +71,7 @@ tab = nouveauTab; // le bloc a pu être déplacé ailleurs en mémoire
 
 Chaque `malloc()`/`calloc()`/`realloc()` réussi doit correspondre à exactement un `free()`, quand le bloc n'est plus utile :
 
-```
+```c
 int *p = malloc(sizeof(int));
 *p = 42;
 free(p);
@@ -88,7 +88,7 @@ p = NULL; // bonne pratique : empêche une utilisation accidentelle après libé
 | **Double free** | `free()` appelé deux fois sur le même pointeur | Corruption du gestionnaire de mémoire, crash souvent différé et difficile à tracer |
 | **Débordement de tampon** (*buffer overflow*) | Écriture au-delà de la taille réellement allouée d'un buffer | Corruption de mémoire adjacente — et une porte ouverte à l'exécution de code arbitraire (voir plus bas) |
 
-```
+```c
 int *p = malloc(sizeof(int));
 free(p);
 free(p); // double free : comportement indéfini
@@ -132,7 +132,7 @@ fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, 
 
 `sizeof` n'est pas une fonction mais un opérateur évalué à la compilation : il renvoie la taille en octets d'un type ou d'une variable, indispensable pour calculer correctement la taille à allouer :
 
-```
+```c
 sizeof(int);      // généralement 4
 sizeof(char);      // toujours 1, par définition du standard C
 sizeof(int) * 10;  // taille nécessaire pour 10 entiers -> à passer à malloc()

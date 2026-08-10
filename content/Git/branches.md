@@ -24,7 +24,7 @@ git switch -c nouvelle-fonctionnalite    # équivalent moderne de "checkout -b"
 
 Chaque branche est un simple pointeur vers un commit précis. Changer de branche déplace `HEAD` vers ce pointeur, et Git met à jour le dossier de travail pour qu'il corresponde exactement à l'instantané de ce commit :
 
-```
+```text
 main:          A -- B -- C
                           \
 feature:                   D -- E   <-- HEAD (si on est sur "feature")
@@ -41,14 +41,14 @@ Deux cas possibles :
 
 **Fast-forward** : si `main` n'a reçu aucun commit depuis la création de `feature`, Git avance simplement le pointeur `main` jusqu'au dernier commit de `feature` — aucun nouveau commit de fusion n'est créé.
 
-```
+```text
 Avant :  main: A -- B          feature: A -- B -- C -- D
 Après :  main: A -- B -- C -- D
 ```
 
 **Merge commit** : si `main` a évolué en parallèle, Git crée un commit spécial à **deux parents**, qui réunit les deux historiques :
 
-```
+```text
 main:     A -- B ------- E (merge commit)
                 \        /
 feature:         C -- D

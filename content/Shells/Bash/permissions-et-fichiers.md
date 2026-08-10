@@ -15,7 +15,7 @@ ls -l fichier.txt
 
 Les 10 premiers caractères se décomposent ainsi :
 
-```
+```text
 -  rw-  r--  r--
 ^   ^    ^    ^
 |   |    |    +-- droits pour les autres utilisateurs

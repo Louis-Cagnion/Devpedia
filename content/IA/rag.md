@@ -21,7 +21,7 @@ Le RAG et le fine-tuning ne s'excluent pas : un modèle peut être affiné pour 
 
 ## Le pipeline en quatre étapes
 
-```
+```text
 1. Decoupage (chunking)   : chaque document source est decoupe en fragments
 2. Indexation             : chaque fragment est converti en embedding (voir
                             NLP et LLM) et stocke dans une base vectorielle

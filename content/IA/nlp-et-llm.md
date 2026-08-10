@@ -10,7 +10,7 @@ Un [réseau de neurones](/?c=ia&p=reseaux-de-neurones) manipule des nombres, jam
 
 Un modèle ne traite jamais une phrase entière d'un bloc — le texte est d'abord découpé en unités plus petites, les **tokens** :
 
-```
+```text
 "Les chats dorment" -> ["Les", "chats", "dorment"]          -> tokenisation par mot
 "Les chats dorment" -> ["Les", "chat", "s", "dor", "ment"]   -> tokenisation en sous-mots (plus courant)
 ```
@@ -42,7 +42,7 @@ embedding("voiture")  -> [-0.9, 0.6, -0.1, ...]  # loin de "chat" -> sens diffé
 
 Le mécanisme d'attention (voir [Architectures — CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers)) permet à chaque token de "regarder" les autres tokens de la séquence pour ajuster sa propre représentation selon le contexte :
 
-```
+```text
 "La banque au bord de la rivière"      vs      "La banque a augmenté ses taux"
         ^                                              ^
    "banque" influencée par "rivière"          "banque" influencée par "taux"
@@ -55,7 +55,7 @@ Le même mot ("banque") obtient une représentation numérique **différente** s
 
 Un **LLM** (*Large Language Model*) est, dans son principe le plus simple, un modèle [Transformer](/?c=ia&p=architectures-cnn-rnn-transformers) entraîné sur d'immenses quantités de texte, avec un objectif d'entraînement remarquablement simple : **prédire le mot (ou token) suivant**, étant donné tout ce qui précède.
 
-```
+```text
 "Le chat dort sur le" -> le modèle prédit une distribution de probabilité sur le token suivant
                           ("canapé" : 45%, "tapis" : 20%, "lit" : 15%, ...)
 ```

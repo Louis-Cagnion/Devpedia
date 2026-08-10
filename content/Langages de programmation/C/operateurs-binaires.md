@@ -17,7 +17,7 @@ Les opérateurs binaires (ou "bit à bit") travaillent directement sur la repré
 | `<<` | décalage à gauche | décale les bits vers la gauche |
 | `>>` | décalage à droite | décale les bits vers la droite |
 
-```
+```c
 unsigned char a = 12;   // 0000 1100
 unsigned char b = 10;   // 0000 1010
 
@@ -33,7 +33,7 @@ a ^ b    // 0000 0110 = 6   -> bits presents dans un seul des deux
 
 Décaler à gauche de `n` positions revient à **multiplier par 2ⁿ**, décaler à droite à **diviser par 2ⁿ** (division entière) :
 
-```
+```c
 unsigned char x = 5;    // 0000 0101
 
 x << 1   // 0000 1010 = 10   (5 * 2)
@@ -43,7 +43,7 @@ x >> 1   // 0000 0010 = 2    (5 / 2, arrondi vers le bas)
 
 Les bits qui sortent de la largeur du type sont **perdus** — ce n'est pas une erreur, il n'y a aucun avertissement :
 
-```
+```c
 unsigned char y = 200;  // 1100 1000
 y << 1                  // 1001 0000 = 144, et non 400 : un bit est tombe
 ```
@@ -57,7 +57,7 @@ y << 1                  // 1001 0000 = 144, et non 400 : un bit est tombe
 
 Un **masque** est une valeur dont on se sert pour cibler des bits précis. Les quatre opérations de base :
 
-```
+```c
 #define DRAPEAU_LECTURE   (1u << 0)   // 0000 0001
 #define DRAPEAU_ECRITURE  (1u << 1)   // 0000 0010
 #define DRAPEAU_AJOUT     (1u << 2)   // 0000 0100
@@ -81,7 +81,7 @@ Les permissions de fichiers Unix suivent la même logique en base 8 : `0644` cod
 
 ## Idiomes courants
 
-```
+```c
 // Parite : le bit de poids faible vaut 1 pour un nombre impair
 if (n & 1) { /* n est impair */ }
 

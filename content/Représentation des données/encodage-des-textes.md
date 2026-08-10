@@ -19,7 +19,7 @@ Un ordinateur ne stocke pas des lettres, seulement des nombres. Un **encodage** 
 
 Deux propriétés de cette table sont exploitées en permanence :
 
-```
+```c
 // Passer d'une minuscule a une majuscule : 32 d'ecart, soit un seul bit
 char majuscule = minuscule - 32;
 
@@ -59,7 +59,7 @@ UTF-8 encode un point de code sur **1 à 4 octets**, selon sa valeur :
 
 Sa qualité décisive est la **compatibilité ascendante avec ASCII** : un fichier ASCII est déjà un fichier UTF-8 valide, sans conversion. C'est ce qui a permis son adoption universelle — il représente aujourd'hui plus de 98 % du web.
 
-```
+```text
 "A"  -> 1 octet  : 41
 "é"  -> 2 octets : C3 A9
 "京" -> 3 octets : E4 BA AC
@@ -86,7 +86,7 @@ Pire, "un caractère" est lui-même ambigu : certains signes visibles sont compo
 
 Quand un texte encodé en UTF-8 est lu comme du Latin-1, chaque octet est interprété séparément :
 
-```
+```text
 "é" en UTF-8    = octets C3 A9
 lus en Latin-1  : C3 -> "Ã"   A9 -> "©"
 resultat        : "Ã©"

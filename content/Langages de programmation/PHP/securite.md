@@ -119,7 +119,7 @@ Un mot de passe ne doit **jamais** être stocké en clair dans une base de donn�
 
 Ce sel n'est pas perdu : il est inclus directement dans le hash généré, par exemple :
 
-```
+```text
 2y $10 N9qo8uLOickgx2ZMRZoMye IjZAgcfl7p92ldGxad68LJZdL17lhWy
 ```
 

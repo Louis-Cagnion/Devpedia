@@ -10,7 +10,7 @@ Avant de parler de terminal, d'éditeur de code ou d'un langage précis, une seu
 
 Un ordinateur ne "réfléchit" pas et ne devine jamais une intention. Il fait une seule chose, très vite et sans se poser de question : lire une liste d'instructions, dans l'ordre, et les exécuter une par une, exactement comme elles sont écrites.
 
-```
+```text
 Instruction 1  →  exécutée telle quelle
 Instruction 2  →  exécutée telle quelle
 Instruction 3  →  exécutée telle quelle
@@ -28,7 +28,7 @@ Instruction 3  →  exécutée telle quelle
 
 Le **code** (ou **code source**) est le texte qui contient ces instructions. Il est écrit par une personne, dans un **langage de programmation** — une des nombreuses "langues" qu'un ordinateur peut suivre, chacune avec sa propre grammaire (Python, JavaScript, C...).
 
-```
+```text
 afficher "Bonjour"      → écrit "Bonjour" à l'écran
 afficher "Au revoir"    → écrit "Au revoir" à l'écran juste après
 ```

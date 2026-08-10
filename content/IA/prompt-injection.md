@@ -6,7 +6,7 @@ order: 10
 
 Un programme classique sépare strictement le code (ce qu'il exécute) et la donnée (ce qu'il traite) — c'est justement l'absence de cette séparation qui rend l'[injection SQL](/?c=domain-specific-languages-dsl&p=sql) possible quand une valeur externe est concaténée dans une requête au lieu d'être passée à part. Un LLM pousse ce problème plus loin : il n'a **structurellement aucune séparation** entre instruction et donnée, même quand le développeur fait tout correctement. Tout ce qu'il reçoit — system prompt, question de l'utilisateur, document récupéré par un [RAG](/?c=ia&p=rag), résultat renvoyé par un outil d'[agent](/?c=ia&p=agents) — arrive comme un seul flux de texte, et c'est le modèle lui-même qui décide, à la lecture, ce qui ressemble à une instruction à suivre. La **prompt injection** consiste à glisser, dans une partie du prompt censée n'être que de la donnée, un texte rédigé pour être interprété comme une instruction.
 
-```
+```text
 Prompt assemblé par l'application :
 
   [SYSTEM]  Tu es un assistant de support client. Reponds uniquement
@@ -34,7 +34,7 @@ La forme la plus simple : l'instruction malveillante arrive directement dans le 
 
 Plus insidieuse : l'instruction malveillante n'est tapée par personne dans la conversation — elle est **déjà présente** dans un contenu externe que le système va chercher et coller dans le prompt de sa propre initiative : une page web récupérée par un agent, un document indexé par un RAG, le corps d'un email lu par un outil, le résultat d'une recherche.
 
-```
+```text
 1. L'utilisateur demande : "Resume la page X pour moi"
 2. Le systeme recupere le contenu de la page X, et l'injecte dans le prompt
 3. La page X contient, cachee dans le texte (police blanche sur fond

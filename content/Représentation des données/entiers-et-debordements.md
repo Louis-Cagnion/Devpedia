@@ -25,7 +25,7 @@ Le nombre de valeurs ne change pas selon qu'on soit signé ou non : c'est la **p
 
 Chaque bit contribue à la valeur totale selon sa position, une puissance de 2 croissante de droite à gauche — son **poids** :
 
-```
+```text
 bit :    1    0    1    1    0    0    1    0
 poids : 128   64   32   16   8    4    2    1
          ^                                  ^
@@ -40,7 +40,7 @@ Comment stocker un signe alors qu'on ne dispose que de 0 et de 1 ? L'idée naïv
 
 La solution universellement adoptée est le **complément à deux** : pour obtenir `−x`, on inverse tous les bits de `x` puis on ajoute 1.
 
-```
+```text
  5 (sur 8 bits)  = 0000 0101
  inversion       = 1111 1010
  + 1             = 1111 1011  =  -5
@@ -48,7 +48,7 @@ La solution universellement adoptée est le **complément à deux** : pour obten
 
 L'intérêt est décisif : **l'addition fonctionne sans cas particulier**. Le processeur additionne les bits sans savoir ni se soucier du signe.
 
-```
+```text
    5  = 0000 0101
 + -5  = 1111 1011
 -----------------
@@ -61,14 +61,14 @@ Le bit de poids fort agit alors comme un indicateur de signe : `0` pour positif,
 
 Que se passe-t-il quand un résultat ne tient plus dans le nombre de bits alloués ? Les bits en trop sont **perdus**, et la valeur "boucle".
 
-```
+```c
 unsigned char x = 255;   // 1111 1111, le maximum
 x = x + 1;               // 0000 0000 -> 0 !
 ```
 
 C'est le comportement dit *wraparound* : on repasse au début, comme un compteur kilométrique. Pour un entier **signé**, l'effet est plus surprenant :
 
-```
+```c
 signed char y = 127;     // 0111 1111, le maximum
 y = y + 1;               // 1000 0000 -> -128 !
 ```

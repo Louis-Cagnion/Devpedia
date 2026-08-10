@@ -8,7 +8,7 @@ Ce chapitre pose une notion reprise dans les statistiques, le machine learning e
 
 Une **fonction mathématique** est une règle qui associe, à chaque entrée, **toujours la même** sortie.
 
-```
+```text
 f(x) = x * 2
 
 f(3)  -> 6   (toujours 6, à chaque fois qu'on appelle f avec 3)
@@ -26,7 +26,7 @@ f(5)  -> 10
 
 Rien n'oblige une fonction à n'avoir qu'une seule entrée :
 
-```
+```text
 f(x, y) = x + y
 
 f(2, 3)   -> 5

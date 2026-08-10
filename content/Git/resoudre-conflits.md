@@ -8,7 +8,7 @@ Un **conflit** survient quand Git ne peut pas fusionner automatiquement deux ver
 
 ## Ce que Git écrit dans le fichier en conflit
 
-```
+```text
 <<<<<<< HEAD
 const TVA = 0.20;
 =======

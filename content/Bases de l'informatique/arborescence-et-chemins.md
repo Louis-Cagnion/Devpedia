@@ -10,7 +10,7 @@ Un [fichier](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) ne flott
 
 Un **dossier** (ou **répertoire**, *directory*) contient des fichiers — et peut aussi contenir d'autres dossiers. En répétant ça plusieurs niveaux de profondeur, on obtient une structure en arbre : l'**arborescence**.
 
-```
+```text
 Documents/
 ├── photos/
 │   ├── vacances.jpg
@@ -61,7 +61,7 @@ Quel que soit le shell, deux notations désignent toujours la même chose, de fa
 | `.` | Le dossier courant lui-même |
 | `..` | Le dossier parent, un niveau au-dessus |
 
-```
+```text
 Documents/photos/../travail/rapport.docx
                  └─┬─┘
                    └── remonte d'un niveau (sort de "photos"), puis redescend dans "travail"

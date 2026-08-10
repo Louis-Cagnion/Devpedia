@@ -10,14 +10,14 @@ Centraliser une configuration partagée dans un seul endroit est en général un
 
 Un projet de scraping organisé en couches : un module `browser.py` bas niveau (ouvrir une page, cliquer, attendre) sans connaissance des sites particuliers, et un dossier `sites/` plus haut niveau qui importe `browser.py` pour implémenter le scraping de chaque site :
 
-```
+```text
 sites/leboncoin.py  --importe-->  browser.py
 sites/lacentrale.py --importe-->  browser.py
 ```
 
 Certains réglages (des délais spécifiques à un site, des plages de variation aléatoire pour paraître moins robotique) semblaient, à première vue, appartenir logiquement à un registre centralisé des sites (`SITE_REGISTRY`, situé dans `sites/__init__.py`). Mais `browser.py` a lui-même besoin de lire ces réglages pour fonctionner — et `browser.py` est importé PAR `sites/`, pas l'inverse. Le déplacer créerait :
 
-```
+```text
 browser.py  --importerait-->  sites/__init__.py  --importe-->  browser.py
 ```
 

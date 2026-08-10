@@ -24,7 +24,7 @@ On note `P(événement) = valeur`. Pour un dé à 6 faces équilibré (chaque fa
 
 Quand un événement a plusieurs résultats possibles, chacun reçoit sa propre probabilité — l'ensemble de ces probabilités s'appelle une **distribution de probabilité** :
 
-```
+```text
 Dé à 6 faces équilibré :
 
 P(1) = 0,167
@@ -47,7 +47,7 @@ Peu importe comment les probabilités se répartissent entre les résultats poss
 
 Rien n'oblige chaque résultat à avoir la même probabilité que les autres — un dé à 6 faces équilibré est un cas particulier, pas la règle générale :
 
-```
+```text
 Une meteo qui privilegie fortement la pluie :
 
 P(pluie)  = 0,80

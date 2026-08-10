@@ -30,7 +30,7 @@ label: Le vecteur [3, 5]
 
 Rien ne limite un vecteur à deux composantes :
 
-```
+```text
 Un client :  [age, salaire, anciennete] = [34, 42000, 5]
 ```
 
@@ -57,7 +57,7 @@ On additionne les composantes une à une, à la même position.
 
 Le **produit scalaire** (*dot product*) de deux vecteurs de même dimension multiplie leurs composantes une à une, puis additionne tous ces produits :
 
-```
+```text
 [1, 2, 3] . [4, 5, 6] = (1×4) + (2×5) + (3×6) = 4 + 10 + 18 = 32
 ```
 
@@ -77,7 +77,7 @@ Ce nombre mesure à quel point deux vecteurs pointent dans la même direction :
 
 Un vecteur à 2 composantes comme `[3, 4]` peut se lire comme un point sur un plan (voir le tout premier exemple de ce chapitre), atteint en partant d'un point de départ commun à tous les vecteurs : l'**origine**, le point `[0, 0]`. La **norme** d'un vecteur est la distance entre l'origine et ce point — le chemin le plus direct, en ligne droite, pas la somme des deux distances parcourues en équerre (`3 + 4 = 7` serait faux) :
 
-```
+```text
         (3,4)
           /|
          / |
@@ -90,13 +90,13 @@ Un vecteur à 2 composantes comme `[3, 4]` peut se lire comme un point sur un pl
 
 Le trajet direct (la diagonale, longueur 5) est toujours plus court que le trajet en équerre (3 puis 4, soit 7) — c'est précisément ce que calcule la formule de la norme, qui vient du théorème de Pythagore : la racine carrée de la somme des carrés de chaque composante.
 
-```
+```text
 norme([3, 4]) = racine(3² + 4²) = racine(9 + 16) = racine(25) = 5
 ```
 
 Diviser chaque composante d'un vecteur par sa propre norme le **normalise** : sa direction reste la même, mais sa longueur devient exactement 1.
 
-```
+```text
 [3, 4] a pour norme 5 (calculé plus haut)
 
 Vecteur normalisé = [3/5, 4/5] = [0.6, 0.8]

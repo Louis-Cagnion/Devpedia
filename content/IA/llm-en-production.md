@@ -42,7 +42,7 @@ Ces limites ne sont pas des bugs qu'une meilleure version du modèle corrigera u
 
 La température ne change pas les probabilités calculées par le modèle pour le token suivant — elle change la façon dont ce tirage au sort les utilise ensuite, en resserrant ou en aplatissant l'écart entre le token le plus probable et les autres :
 
-```
+```text
 Distribution brute calculee par le modele pour "Le chat dort sur le ___" :
   "canape" : 45%   "tapis" : 20%   "lit" : 15%   "toit" : 5%   ...
 

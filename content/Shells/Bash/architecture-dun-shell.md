@@ -12,7 +12,7 @@ Tout ce que Bash fait en surface (variables, boucles, pipes, redirections) repos
 
 Un shell interactif est fondamentalement une boucle infinie :
 
-```
+```text
 tant que vrai :
     afficher le prompt
     lire une ligne de commande
@@ -66,7 +66,7 @@ Une fois la ligne découpée et expansée, le shell doit distinguer deux cas :
 
 Pour un programme comme `ls` ou `grep`, le shell reproduit exactement le mécanisme du chapitre sur la gestion des processus en C :
 
-```
+```c
 pid_t pid = fork();
 
 if (pid == 0) {
@@ -84,7 +84,7 @@ if (pid == 0) {
 
 Quand `execve()` reçoit le chemin d'un fichier, le noyau lit ses tout premiers octets pour savoir comment le lancer. S'ils valent `#!` (le [shebang](/?c=shells&s=bash&p=scripts-et-shebang)), le noyau ne tente pas d'exécuter le fichier comme du code machine : il relance lui-même `execve()`, cette fois sur l'interpréteur indiqué après `#!`, en lui passant le chemin du script d'origine comme premier argument.
 
-```
+```text
 ./script.sh
       │
       ▼
@@ -107,7 +107,7 @@ Si la commande tapée contient un `/` (ex. `./script.sh`, `/bin/ls`), le shell l
 
 Un pipe s'appuie sur l'appel système `pipe()`, qui crée deux descripteurs de fichier connectés (une extrémité en lecture, une en écriture), combiné à `fork()` et `dup2()` :
 
-```
+```c
 int fds[2];
 pipe(fds); // fds[0] = extrémité de lecture, fds[1] = extrémité d'écriture
 
@@ -139,7 +139,7 @@ waitpid(p2, NULL, 0);
 
 Même logique que pour un pipe, mais la "source" est un fichier ouvert avec `open()` plutôt qu'un pipe :
 
-```
+```c
 int fd = open("sortie.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 dup2(fd, STDOUT_FILENO); // tout ce qu'écrit le programme sur stdout part maintenant dans sortie.txt
 close(fd);

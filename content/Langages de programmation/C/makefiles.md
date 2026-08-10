@@ -8,12 +8,12 @@ Un **Makefile** automatise la compilation d'un projet C à plusieurs fichiers : 
 
 ## Anatomie d'une règle
 
-```
+```makefile
 cible: dependances
 	commande
 ```
 
-```
+```makefile
 programme: main.o calculs.o
 	gcc main.o calculs.o -o programme
 ```
@@ -22,7 +22,7 @@ programme: main.o calculs.o
 
 ## Enchaîner les règles
 
-```
+```makefile
 programme: main.o calculs.o
 	gcc main.o calculs.o -o programme
 
@@ -37,7 +37,7 @@ En tapant simplement `make`, l'outil construit la **première règle du fichier*
 
 ## Variables
 
-```
+```makefile
 CC = gcc
 CFLAGS = -Wall -Wextra -g
 
@@ -60,7 +60,7 @@ main.o: main.c calculs.h
 
 Une cible comme `clean` ne correspond à aucun vrai fichier à produire — elle sert juste à exécuter une commande utilitaire (ici, supprimer les fichiers compilés) :
 
-```
+```makefile
 .PHONY: clean
 
 clean:

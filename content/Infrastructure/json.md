@@ -71,7 +71,7 @@ Contrairement à beaucoup de formats de configuration, JSON est strict : pas de 
 
 Un texte JSON reste une simple chaîne de caractères tant qu'il n'a pas été **analysé** (*parsed*) — transformé en structure de données que le langage peut manipuler directement (accéder à une clé, parcourir une liste...). L'opération inverse (reconvertir une structure de données en texte JSON) s'appelle la **génération** ou la **sérialisation** :
 
-```
+```text
 texte_json = '{"ville": "Lyon", "temperature": 18}'
 
 donnee = analyser_json(texte_json)     // texte -> structure native du langage

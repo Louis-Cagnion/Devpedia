@@ -10,7 +10,7 @@ Un **thread** (fil d'exécution) est, comme un processus, une suite d'instructio
 
 La bibliothèque POSIX threads (`pthread`) fournit les fonctions de base ; la compilation nécessite l'option `-pthread` (`gcc -pthread main.c -o programme`). La norme **POSIX** est présentée dans le chapitre [Écrire un script](/?c=shells&s=bash&p=scripts-et-shebang) de Bash.
 
-```
+```c
 #include <pthread.h>
 #include <stdio.h>
 
@@ -40,7 +40,7 @@ int main(void)
 
 Contrairement à deux processus issus d'un `fork()` (mémoires séparées), deux threads du même programme voient et modifient les **mêmes variables globales** :
 
-```
+```c
 #include <pthread.h>
 
 int compteur = 0; // partagé par tous les threads
@@ -60,7 +60,7 @@ Si deux threads exécutent `incrementer()` en parallèle, le résultat final de 
 
 Un **mutex** (*mutual exclusion*) garantit qu'une seule section de code à la fois peut manipuler une donnée partagée : le premier thread à l'atteindre le **verrouille**, les autres attendent qu'il le **déverrouille** :
 
-```
+```c
 #include <pthread.h>
 
 int compteur = 0;

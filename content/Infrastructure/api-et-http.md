@@ -10,7 +10,7 @@ Deux programmes qui tournent sur des machines différentes (un téléphone et un
 
 ## Client et serveur : qui demande, qui répond
 
-```
+```text
 Client (navigateur, application, script...)          Serveur (machine distante)
 
         ------------- requete ------------->
@@ -53,7 +53,7 @@ Le serveur répond toujours avec un **code de statut** — un nombre qui indique
 
 Une **API** (*Application Programming Interface*) désigne, dans ce contexte, un serveur qui répond avec des données structurées destinées à être lues par un programme, plutôt qu'avec une page web destinée à être affichée dans un navigateur (voir le format le plus courant pour ces données, [JSON](/?c=infrastructure&p=json)) :
 
-```
+```text
 Requete :  GET https://api.exemple.com/meteo?ville=Lyon
 
 Reponse (statut 200) :

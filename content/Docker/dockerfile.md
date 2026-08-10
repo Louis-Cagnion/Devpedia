@@ -90,7 +90,7 @@ Seul le binaire `serveur` est copié de l'étape `builder` vers l'image finale �
 
 Fonctionne comme [`.gitignore`](/?c=git&p=gitignore) mais pour `docker build` : les fichiers listés ne sont jamais envoyés au moteur Docker pour la construction de l'image, qu'un `COPY . .` les aurait copiés ou non.
 
-```
+```text
 node_modules/
 .git/
 *.log

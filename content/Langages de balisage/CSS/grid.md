@@ -65,7 +65,7 @@ Contrairement à [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensé pou
 }
 ```
 
-```
+```text
 Lignes de grille verticales :  1    2    3    4
                                 ┌────┬────┬────┐
                           1 ┤   │    │    │    │

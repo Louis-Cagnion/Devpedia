@@ -8,7 +8,7 @@ Une **liste chaînée** est une structure de données où chaque élément (un *
 
 ## Déclarer un maillon
 
-```
+```c
 typedef struct Maillon
 {
     int valeur;
@@ -20,7 +20,7 @@ Comme pour [un arbre binaire](/?c=langages-de-programmation&s=c&p=arbres-binaire
 
 ## Créer et chaîner des maillons
 
-```
+```c
 Maillon *premier = malloc(sizeof(Maillon));   // à vérifier contre NULL en pratique (voir La gestion de la mémoire)
 premier->valeur = 10;
 
@@ -31,14 +31,14 @@ premier->suivant = second; // chaîne le premier vers le second
 second->suivant = NULL;    // NULL marque la fin de la liste
 ```
 
-```
+```text
 premier -> second -> NULL
   10         20
 ```
 
 ## Parcourir la liste
 
-```
+```c
 void afficher(Maillon *tete)
 {
     Maillon *courant = tete;
@@ -54,7 +54,7 @@ void afficher(Maillon *tete)
 
 ## Insérer en tête de liste
 
-```
+```c
 Maillon *insererEnTete(Maillon *tete, int valeur)
 {
     Maillon *nouveau = malloc(sizeof(Maillon));
@@ -76,7 +76,7 @@ Insérer en tête est une opération en temps constant (aucun autre maillon n'es
 
 Chaque maillon alloué avec `malloc()` doit être libéré individuellement — libérer directement `tete` sans garder de référence au reste perdrait l'accès à tous les maillons suivants (fuite mémoire, voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) :
 
-```
+```c
 void libererListe(Maillon *tete)
 {
     Maillon *courant = tete;

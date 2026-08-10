@@ -8,7 +8,7 @@ Contrairement à PHP ou JavaScript, interprétés directement à l'exécution, u
 
 ## Les quatre étapes
 
-```
+```text
 main.c --[1. préprocesseur]--> main.i --[2. compilation]--> main.s --[3. assemblage]--> main.o --[4. édition de liens]--> programme
 ```
 
@@ -16,7 +16,7 @@ main.c --[1. préprocesseur]--> main.i --[2. compilation]--> main.s --[3. assemb
 
 Traite tout ce qui commence par `#` **avant** que le compilateur ne voie le code : remplace les `#include` par le contenu réel du fichier inclus, remplace les macros `#define`, résout les `#ifdef`/`#ifndef`. Le résultat est un fichier source unique, "aplati", sans plus aucune directive `#`.
 
-```
+```bash
 gcc -E main.c -o main.i
 ```
 
@@ -24,7 +24,7 @@ gcc -E main.c -o main.i
 
 Traduit le code source (C) en **assembleur**, un langage encore lisible par un humain mais très proche des instructions du processeur.
 
-```
+```bash
 gcc -S main.i -o main.s
 ```
 
@@ -32,7 +32,7 @@ gcc -S main.i -o main.s
 
 Traduit l'assembleur en **code machine binaire**, regroupé dans un fichier objet (`.o`). Ce fichier contient déjà des instructions exécutables, mais n'est pas encore un programme complet : les appels à des fonctions externes (comme `printf`) ne sont pas encore résolus.
 
-```
+```bash
 gcc -c main.s -o main.o
 ```
 
@@ -40,7 +40,7 @@ gcc -c main.s -o main.o
 
 Assemble un ou plusieurs fichiers `.o` entre eux, et résout les références vers des fonctions définies ailleurs (dans d'autres fichiers `.o`, ou dans des [bibliothèques](/?c=langages-de-programmation&s=c&p=bibliotheques)) pour produire un exécutable final complet.
 
-```
+```bash
 gcc main.o -o programme
 ```
 
@@ -48,7 +48,7 @@ gcc main.o -o programme
 
 Un projet à plusieurs fichiers source peut compiler chaque `.c` en `.o` indépendamment, puis ne relier (*link*) que les fichiers qui ont changé — plus rapide qu'une recompilation complète à chaque modification. C'est exactement ce qu'automatise un [**Makefile**](/?c=langages-de-programmation&s=c&p=makefiles) :
 
-```
+```bash
 gcc -c fichier1.c -o fichier1.o
 gcc -c fichier2.c -o fichier2.o
 gcc fichier1.o fichier2.o -o programme

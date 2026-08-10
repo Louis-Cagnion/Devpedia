@@ -10,7 +10,7 @@ Le **machine learning** consiste à faire apprendre à un programme un comportem
 
 Un neurone reçoit plusieurs entrées, calcule une **somme pondérée** (voir le [produit scalaire](/?c=mathematiques&p=vecteurs-et-produit-scalaire) : c'est exactement ce calcul, entre le vecteur des entrées et le vecteur des poids), y ajoute un **biais**, puis applique une **fonction d'activation** :
 
-```
+```text
 sortie = activation(w1*x1 + w2*x2 + w3*x3 + ... + biais)
 ```
 
@@ -53,7 +53,7 @@ def relu(x):
 
 ## Les couches d'un réseau
 
-```
+```text
 Entrée -> [Couche cachée 1] -> [Couche cachée 2] -> ... -> Sortie
 ```
 

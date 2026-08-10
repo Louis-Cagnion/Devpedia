@@ -12,7 +12,7 @@ PowerShell repose sur la même mécanique de fond que Bash — une boucle qui li
 
 Comme pour Bash, une session interactive PowerShell est fondamentalement une boucle infinie :
 
-```
+```text
 tant que vrai :
     afficher le prompt
     lire une ligne de commande
@@ -38,7 +38,7 @@ Contrairement à Bash, qui distingue seulement *builtin* (exécuté par le shell
 
 Pour un exécutable comme `notepad.exe`, PowerShell délègue au système d'exploitation Windows la création d'un nouveau processus (rôle équivalent à `fork`/`execve` en C, mais via l'API Windows `CreateProcess`) :
 
-```
+```text
 CreateProcess("notepad.exe", arguments, ...)
 // le nouveau processus démarre en parallèle
 // PowerShell attend sa fin (ou continue, si lancé en arrière-plan) selon le contexte
@@ -60,7 +60,7 @@ Si la commande tapée contient un chemin explicite (`.\script.ps1`, `C:\outils\n
 
 Le moteur PowerShell (le *pipeline processor*) instancie chaque cmdlet du pipeline, puis appelle leurs méthodes `.NET` `BeginProcessing()`/`ProcessRecord()`/`EndProcessing()` en enchaînant la sortie de l'une comme entrée de la suivante — objet par objet, au fur et à mesure qu'ils sont produits, plutôt que d'attendre que la première cmdlet ait fini de tout produire :
 
-```
+```text
 Cmd1.ProcessRecord() -> produit un objet -> immédiatement transmis à Cmd2.ProcessRecord()
 ```
 

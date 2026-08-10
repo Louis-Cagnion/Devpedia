@@ -10,7 +10,7 @@ Un chatbot n'est pas qu'un appel à un LLM enveloppé dans une interface de chat
 
 Un chatbot fonctionnel a besoin, au strict minimum, de trois éléments qui s'ajoutent à l'appel LLM lui-même :
 
-```
+```text
 1. Instructions systeme (system prompt) : role, ton, limites du chatbot
 2. Historique de la conversation : les tours precedents, envoyes a chaque appel
 3. Le tour en cours : la question de l'utilisateur

@@ -18,7 +18,7 @@ crontab -r      # supprime tout le crontab de l'utilisateur courant
 
 Chaque ligne suit un format à 5 champs de temps, suivis de la commande à exécuter :
 
-```
+```text
 ┌───────────── minute (0-59)
 │ ┌─────────── heure (0-23)
 │ │ ┌───────── jour du mois (1-31)

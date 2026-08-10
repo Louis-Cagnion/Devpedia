@@ -10,7 +10,7 @@ Les conditions permettent d'exécuter un bloc de code selon qu'une expression es
 
 En C, toute valeur **non nulle** est considérée comme vraie ; seule la valeur `0` est fausse — il n'existe pas de type booléen natif avant C99 ([`stdbool.h`](/?c=langages-de-programmation&s=c&p=variables)) :
 
-```
+```c
 int age = 18;
 
 if (age >= 18) {
@@ -20,7 +20,7 @@ if (age >= 18) {
 
 ## `if` / `else` / `else if`
 
-```
+```c
 int note = 12;
 
 if (note >= 16) {
@@ -38,7 +38,7 @@ if (note >= 16) {
 
 ## L'opérateur ternaire
 
-```
+```c
 int age = 20;
 const char *statut = (age >= 18) ? "majeur" : "mineur";
 
@@ -49,7 +49,7 @@ printf("%s\n", statut);
 
 Utile pour comparer une même variable à plusieurs valeurs entières ou énumérées :
 
-```
+```c
 int jour = 3;
 
 switch (jour) {
@@ -70,7 +70,7 @@ switch (jour) {
 
 > **Note :** n'oubliez pas le `break;` à la fin de chaque `case` — sinon l'exécution continue dans le `case` suivant (*fall-through*), même si sa condition ne correspond pas. Ce comportement est parfois exploité volontairement pour regrouper plusieurs cas identiques :
 
-```
+```c
 switch (jour) {
     case 6:
     case 7:

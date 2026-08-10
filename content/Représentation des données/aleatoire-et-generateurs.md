@@ -25,7 +25,7 @@ print(random.randint(1, 100))   # 82 -> identique
 
 En C, `rand()` sans `srand()` utilise implicitement la graine `1` : un programme relancé produit **exactement la même suite**. D'où l'habitude de semer avec l'heure courante :
 
-```
+```c
 srand(time(NULL));   // graine differente a chaque seconde
 int tirage = rand() % 100;
 ```
@@ -79,7 +79,7 @@ C'est là qu'un CSPRNG puise sa graine — et c'est ce qui le rend imprévisible
 
 Une erreur discrète mais réelle : ramener un tirage dans un intervalle avec `%` **déséquilibre** les probabilités quand la plage du générateur n'est pas un multiple de l'intervalle.
 
-```
+```c
 // rand() renvoie 0..32767, soit 32768 valeurs
 int tirage = rand() % 3;   // 0..2
 ```

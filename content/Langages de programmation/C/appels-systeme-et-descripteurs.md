@@ -8,7 +8,7 @@ Un programme ne peut pas lire un fichier, créer un processus ou envoyer des don
 
 ## Espace utilisateur vs espace noyau
 
-```
+```text
 Programme (espace utilisateur)
       |
       | appel système : open(), read(), write(), fork(), pipe()...
@@ -38,7 +38,7 @@ Un appel de fonction C classique (`addition(2, 3)`) s'exécute entièrement dans
 
 La plupart des appels système signalent un échec en renvoyant `-1` (ou `NULL` pour ceux qui renvoient un pointeur), et en positionnant la variable globale `errno` avec un code décrivant la cause précise — le même principe que les fonctions C historiques évoquées au chapitre sur les fonctions (`@` en PHP fait face au même genre de convention d'erreur "à la C") :
 
-```
+```c
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -63,7 +63,7 @@ Chaque processus démarre avec trois descripteurs déjà ouverts :
 | `1` | `STDOUT_FILENO` | Sortie standard |
 | `2` | `STDERR_FILENO` | Sortie d'erreur |
 
-```
+```c
 int fd = open("fichier.txt", O_RDONLY); // renvoie par ex. 3 : le prochain emplacement libre de CE processus
 read(fd, tampon, taille);
 close(fd);
@@ -75,7 +75,7 @@ close(fd);
 
 `dup2(source, cible)` fait pointer le descripteur numéro `cible` vers la même ressource ouverte que `source`, en fermant au passage ce vers quoi `cible` pointait auparavant :
 
-```
+```c
 int fd = open("sortie.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 dup2(fd, STDOUT_FILENO); // désormais, écrire sur "stdout" (1) écrit en réalité dans "sortie.txt"
 close(fd); // l'original peut être fermé : la cible (1) reste valide, pointant vers la même ressource

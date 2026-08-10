@@ -6,7 +6,7 @@ order: 2
 
 C'est probablement le comportement le plus déroutant de la programmation, et celui qu'on attribue le plus souvent au mauvais responsable :
 
-```
+```text
 0.1 + 0.2   ==>  0.30000000000000004
 ```
 
@@ -33,7 +33,7 @@ Le même phénomène existe en base 2, mais **avec d'autres nombres**. Un nombre
 
 Un flottant est stocké en trois parties, comme une notation scientifique en binaire (± mantisse × 2^exposant) :
 
-```
+```text
 [ signe : 1 bit ][ exposant ][ mantisse ]
 ```
 
@@ -48,7 +48,7 @@ Un flottant est stocké en trois parties, comme une notation scientifique en bin
 
 Ce compromis est le cœur du sujet : un flottant sacrifie la précision pour couvrir une énorme plage de valeurs avec peu de bits. Le nombre de bits de mantisse étant fixe, la précision est **relative** : plus un nombre est grand, plus l'écart entre deux flottants consécutifs est grand.
 
-```
+```text
 1.0  et le flottant suivant  : ecart d'environ 2,2e-16
 1e9  et le flottant suivant  : ecart d'environ 1,2e-7
 1e16 et le flottant suivant  : ecart d'environ 2,0
@@ -60,13 +60,13 @@ Ce compromis est le cœur du sujet : un flottant sacrifie la précision pour cou
 
 Puisque deux calculs mathématiquement équivalents peuvent produire des flottants différents, `==` sur des flottants est presque toujours un bug latent. On compare l'**écart** à une marge d'erreur acceptable, appelée epsilon :
 
-```
+```text
 si valeur_absolue(a - b) < epsilon  ->  considerer a et b comme egaux
 ```
 
 En C :
 
-```
+```c
 #include <math.h>
 
 double epsilon = 0.0001;
@@ -92,7 +92,7 @@ Math.abs(a - b) < 0.0001;
 
 Pour des montants, la bonne réponse n'est pas d'ajuster l'epsilon mais de **changer de représentation** : compter en centimes, avec des entiers.
 
-```
+```text
 prix_en_centimes = 1999      // 19,99 EUR
 total = prix_en_centimes * 3 // 5997, exact
 ```

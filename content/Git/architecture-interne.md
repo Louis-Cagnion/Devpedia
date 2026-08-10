@@ -10,7 +10,7 @@ Les commandes vues dans les autres chapitres (`add`, `commit`, `branch`...) ne s
 
 Chaque donnée stockée par Git (le contenu d'un fichier, une structure de dossier, un commit...) est sauvegardée sous forme d'un **objet**, identifié uniquement par le hash SHA-1 de son propre contenu :
 
-```
+```text
 contenu -> SHA-1(contenu) -> clé de stockage
 ```
 
@@ -34,7 +34,7 @@ Concrètement, chaque objet est compressé (zlib, un algorithme de compression s
 | **commit** | Un hash de tree (l'instantané racine), un ou plusieurs hash de commit parent(s), auteur, date, message |
 | **tag** (annoté) | Un hash d'objet ciblé (généralement un commit), un message — utilisé par `git tag -a` |
 
-```
+```text
 commit ---> tree (racine du projet)
               |--> blob (main.c)
               |--> tree (src/)

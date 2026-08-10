@@ -59,7 +59,7 @@ Le **WCAG** (*Web Content Accessibility Guidelines*) est un ensemble de règles 
 
 ## Ne jamais coder une information uniquement par la couleur
 
-```
+```text
 ❌ Mauvais : dans un formulaire, un champ en erreur est bordé de rouge, un champ valide de vert —
    c'est la SEULE différence entre les deux.
 

@@ -10,7 +10,7 @@ Ce chapitre répond à une question posée par [la courbe d'une fonction](/?c=ma
 
 Pour une fonction simple comme `f(x) = 2x + 1`, la **pente** entre deux points mesure de combien `f` change, rapporté à un changement de `x` :
 
-```
+```text
 f(1) = 3
 f(3) = 7
 
@@ -23,7 +23,7 @@ Cette fonction est une droite : sa pente vaut 2 partout, quels que soient les de
 
 Pour une courbe (par exemple `f(x) = x²`), la pente n'est plus constante — elle dépend du point observé. Pour connaître la pente **exactement en un point**, on calcule la pente entre ce point et un autre de plus en plus proche :
 
-```
+```text
 f(x) = x²
 
 Autour de x = 2 :
@@ -43,7 +43,7 @@ Plus l'écart se réduit, plus la pente calculée se rapproche de **4** — c'es
 | Négatif | La fonction diminue |
 | Zéro | La fonction est momentanément plate (un sommet, un creux, ou un palier) |
 
-```
+```text
 f(x)
   |  \                                /
   |   \                              /
@@ -58,7 +58,7 @@ f(x)
 
 Si l'objectif est de trouver le point le plus bas d'une courbe (son minimum), et que seule la pente au point actuel est connue, avancer dans la direction **opposée** au signe de cette pente rapproche du minimum :
 
-```
+```text
 f(x) = x²   (minimum en x = 0)
 
 Point de depart : x = 3         f'(x) = 2x = 6
@@ -79,7 +79,7 @@ Le `0,1` contrôle la taille de chaque pas — un pas trop grand peut faire dép
 
 Pour une fonction à plusieurs entrées (voir [la fonction mathématique](/?c=mathematiques&p=la-fonction-mathematique)), le **gradient** généralise la dérivée : c'est un [vecteur](/?c=mathematiques&p=vecteurs-et-produit-scalaire) qui contient, pour chaque entrée, sa propre **dérivée partielle** — à quel point la fonction change si on bouge uniquement cette entrée-là, toutes les autres restant fixes.
 
-```
+```text
 f(x, y) = x² + y²
 
 derivee partielle par rapport a x (y traite comme une constante) : 2x
@@ -90,7 +90,7 @@ gradient de f au point (3, 4) = [2×3, 2×4] = [6, 8]
 
 Le gradient pointe dans la direction où la fonction **augmente** le plus vite. Avancer dans la direction opposée (soustraire le gradient, composante par composante — voir [l'addition de vecteurs](/?c=mathematiques&p=vecteurs-et-produit-scalaire)) fait donc diminuer la fonction le plus rapidement possible, exactement la même logique que pour une seule entrée, appliquée à chaque composante du vecteur :
 
-```
+```text
 nouveau_vecteur = ancien_vecteur - taux × gradient
 ```
 

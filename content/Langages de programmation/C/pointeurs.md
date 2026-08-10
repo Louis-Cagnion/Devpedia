@@ -8,7 +8,7 @@ Un pointeur est une variable qui ne stocke pas une valeur directement, mais l'**
 
 ## Déclaration, adresse et déréférencement
 
-```
+```c
 int age = 25;
 int *ptr = &age;
 
@@ -24,7 +24,7 @@ printf("%d\n", *ptr);  // 25          -> la valeur pointée par ptr
 
 Modifier `*ptr` modifie directement `age`, puisque les deux désignent le même emplacement mémoire :
 
-```
+```c
 *ptr = 30;
 printf("%d\n", age); // 30
 ```
@@ -33,7 +33,7 @@ printf("%d\n", age); // 30
 
 Additionner 1 à un pointeur ne l'avance pas d'un octet, mais de `sizeof(type)` octets :
 
-```
+```c
 int tab[3] = {10, 20, 30};
 int *p = tab;
 
@@ -48,13 +48,13 @@ printf("%d\n", *(p + 2)); // 30
 
 L'équivalence ci-dessus est plus profonde qu'une simple commodité d'écriture : l'opérateur `[]` n'a en C **aucune notion** de "tableau" ni d'"index". Le compilateur le traduit mécaniquement, toujours, par :
 
-```
+```text
 a[b]  ≡  *(a + b)
 ```
 
 Comme l'addition est commutative (`tab + 2` et `2 + tab` désignent la même adresse), on obtient une conséquence surprenante mais parfaitement légale :
 
-```
+```c
 int tab[5] = {1, 2, 3, 4, 5};
 
 printf("%d\n", tab[2]);   // 3
@@ -68,7 +68,7 @@ printf("%d\n", 2[tab]);   // 3 aussi !
 
 Un pointeur peut lui-même être pointé, ce qui est utile pour modifier un pointeur depuis une fonction (cf. passage par adresse ci-dessous) :
 
-```
+```c
 int age = 25;
 int *ptr = &age;
 int **ptrPtr = &ptr;
@@ -80,7 +80,7 @@ printf("%d\n", **ptrPtr); // 25 -> déréférence deux fois : ptrPtr -> ptr -> a
 
 En C, les arguments sont passés **par valeur** (une copie) par défaut — une fonction ne peut donc pas modifier la variable d'origine de l'appelant, sauf en lui passant directement l'adresse de cette variable :
 
-```
+```c
 void incrementer(int *nombre)
 {
     (*nombre)++; // modifie la valeur à l'adresse pointée, donc la variable d'origine
@@ -100,7 +100,7 @@ Sans le `*`, `incrementer(int nombre)` ne modifierait qu'une copie locale, sans 
 
 Une fonction a elle aussi une adresse en mémoire, qu'on peut stocker dans un pointeur — utile pour choisir dynamiquement quelle fonction appeler (callbacks, tables de dispatch) :
 
-```
+```c
 int addition(int a, int b) { return a + b; }
 int soustraction(int a, int b) { return a - b; }
 
@@ -115,7 +115,7 @@ printf("%d\n", operation(4, 2)); // 2
 
 Un pointeur non initialisé contient une adresse **aléatoire** ("wild pointer") — le déréférencer produit un comportement indéfini, souvent un crash (`segmentation fault`). Un pointeur qu'on n'utilise pas encore doit être explicitement mis à `NULL`, et testé avant déréférencement :
 
-```
+```c
 int *ptr = NULL;
 
 if (ptr != NULL) {
@@ -131,7 +131,7 @@ if (ptr != NULL) {
 
 Avec un pointeur, il y a deux choses distinctes à comparer, et confondre les deux est une source d'erreurs :
 
-```
+```c
 int a = 5;   // stockee a l'adresse 0x1000
 int b = 5;   // stockee a l'adresse 0x2000
 int *p1 = &a;
@@ -152,7 +152,7 @@ Deux pointeurs peuvent donc parfaitement contenir la même valeur sans être ég
 
 Deux usages de `const` bien distincts, souvent confondus :
 
-```
+```c
 const int *p1;  // p1 peut changer d'adresse, mais pas modifier la valeur pointée
 int *const p2 = &x; // p2 ne peut plus changer d'adresse, mais peut modifier la valeur pointée
 ```

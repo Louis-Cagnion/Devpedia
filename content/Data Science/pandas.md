@@ -18,7 +18,7 @@ donnees = pd.DataFrame({
 })
 ```
 
-```
+```text
     nom  age  ville
 0  Jean   25   Lyon
 1 Marie   30  Paris

@@ -10,7 +10,7 @@ Git suit l'évolution d'un projet en enregistrant, à chaque instant choisi, un 
 
 ## Les trois zones de travail
 
-```
+```text
 Dossier de travail  -->  Zone de staging  -->  Dépôt (historique)
 (working directory)      (index)               (commits)
 
@@ -35,7 +35,7 @@ Chaque commit référence :
 
 > **SHA-1** (*Secure Hash Algorithm 1*) est une fonction de hachage : elle transforme une donnée de taille quelconque en une empreinte de taille fixe (40 caractères hexadécimaux ici). Deux propriétés la rendent utile à Git : la même entrée donne toujours la même empreinte, et le moindre changement dans l'entrée produit une empreinte totalement différente. C'est ce qui permet d'identifier un contenu par son empreinte, et de détecter toute altération de l'historique.
 
-```
+```text
 commit A <-- commit B <-- commit C (HEAD)
 ```
 

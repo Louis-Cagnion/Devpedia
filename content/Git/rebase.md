@@ -8,7 +8,7 @@ order: 10
 
 ## Merge vs rebase, visuellement
 
-```
+```text
 Avant :
 main:     A -- B -- C
                 \
@@ -46,7 +46,7 @@ git rebase --abort
 git rebase -i HEAD~3   # ouvre un éditeur pour les 3 derniers commits
 ```
 
-```
+```text
 pick a1b2c3d Ajoute le formulaire de contact
 pick e4f5g6h Corrige une typo
 pick i7j8k9l Ajoute la validation email

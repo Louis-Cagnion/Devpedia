@@ -8,11 +8,11 @@ Une **table de hachage** est une structure de données qui permet d'insérer, ch
 
 ## Le principe général
 
-```
+```text
 clé -> fonction de hachage -> indice dans un tableau -> valeur stockée à cet indice
 ```
 
-```
+```text
 "nom" -> hash("nom") = 193847 -> 193847 % taille_tableau = 3 -> valeur stockée en case 3
 ```
 
@@ -22,7 +22,7 @@ Plutôt que de chercher séquentiellement "est-ce que la clé est ici ? et ici ?
 
 Une **fonction de hachage** transforme une entrée de taille quelconque (une chaîne, une structure...) en un nombre de taille fixe, de façon déterministe : la même entrée produit toujours le même nombre, et idéalement, des entrées différentes produisent des nombres bien répartis (pour éviter que trop de clés ne tombent au même endroit).
 
-```
+```c
 unsigned long hash_chaine(const char *chaine)
 {
     unsigned long hash = 5381;
@@ -37,7 +37,7 @@ unsigned long hash_chaine(const char *chaine)
 
 Le nombre obtenu est ensuite ramené à la taille réelle du tableau par un modulo :
 
-```
+```c
 unsigned long indice = hash_chaine(cle) % taille_tableau;
 ```
 
@@ -50,7 +50,7 @@ Le nombre de clés possibles est infini (n'importe quelle chaîne), mais le tabl
 
 ## Implémentation par chaînage
 
-```
+```c
 typedef struct Entree
 {
     char *cle;
@@ -67,7 +67,7 @@ typedef struct TableHachage
 
 ### Insertion
 
-```
+```c
 void inserer(TableHachage *table, const char *cle, int valeur)
 {
     unsigned long indice = hash_chaine(cle) % table->taille;
@@ -85,7 +85,7 @@ void inserer(TableHachage *table, const char *cle, int valeur)
 
 ### Recherche
 
-```
+```c
 int rechercher(TableHachage *table, const char *cle, int *trouve)
 {
     unsigned long indice = hash_chaine(cle) % table->taille;

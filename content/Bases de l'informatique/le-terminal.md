@@ -27,7 +27,7 @@ Deux mots reviennent tout le temps, et sont souvent confondus :
 - Le **terminal** est le programme qui affiche une fenêtre de texte : il reçoit ce que vous tapez, et affiche ce qu'on lui répond. Il ne comprend rien lui-même.
 - Le **shell** est le programme qui reçoit ce texte depuis le terminal, l'interprète, et l'exécute réellement.
 
-```
+```text
 Vous tapez : ls
       │
       ▼
@@ -66,7 +66,7 @@ Une fois ouvert, le terminal affiche une ligne qui se termine par un symbole (`>
 
 Une **commande** est le nom d'une instruction que le shell sait exécuter. Elle peut être suivie d'**arguments** (sur quoi agir) et d'**options** (qui changent son comportement, généralement précédées de `-` ou `--`) :
 
-```
+```text
 ls -l /home
 │  │  │
 │  │  └── argument : le dossier concerné

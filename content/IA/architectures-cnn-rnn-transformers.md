@@ -12,7 +12,7 @@ Un réseau entièrement connecté traitant une image de 1000x1000 pixels nécess
 
 Un **CNN** (*Convolutional Neural Network*) fait glisser un petit **filtre** (une grille de poids, ex. 3x3) sur toute l'image, en réutilisant **les mêmes poids** à chaque position :
 
-```
+```text
 Image (extrait)         Filtre (3x3)
 1  2  0  1               0  1  0
 0  1  1  0        *       1 -1  1     -> une seule valeur en sortie, par position du filtre
@@ -33,7 +33,7 @@ Empiler plusieurs couches convolutives permet aux premières de détecter des mo
 
 Une phrase, une série temporelle, un signal audio : ces données ont un ordre significatif, que ni un réseau entièrement connecté ni un CNN ne traite naturellement. Un **RNN** (*Recurrent Neural Network*) traite une séquence élément par élément, en conservant un **état caché** qui résume ce qui a été vu jusque-là :
 
-```
+```text
 mot1 -> [RNN] -> état1 --\
                            +-> mot2 -> [RNN] -> état2 --\
                                                            +-> mot3 -> [RNN] -> état3 -> sortie
@@ -53,7 +53,7 @@ Pour une séquence longue, la rétropropagation (voir [L'entraînement d'un mod�
 
 Un RNN traite une séquence **séquentiellement** (impossible de calculer l'étape 5 avant l'étape 4) — un frein majeur à la parallélisation sur des séquences longues et de gros volumes de données (voir le calcul parallèle sur [CPU vs GPU](/?c=infrastructure&p=cpu-vs-gpu)). Le **Transformer** (2017) remplace la récurrence par un mécanisme d'**attention** : chaque élément de la séquence "regarde" directement tous les autres (y compris lui-même), en pondérant leur importance relative, sans dépendre d'un état propagé pas à pas.
 
-```
+```text
 "Le chat qui dort sur le canapé est noir"
                                     ^
                      l'attention permet à "est noir" de se relier directement à "chat",

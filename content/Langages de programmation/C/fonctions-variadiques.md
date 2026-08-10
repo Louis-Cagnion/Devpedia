@@ -10,7 +10,7 @@ Une fonction **variadique** accepte un nombre variable d'arguments — `printf("
 
 Une fonction variadique a toujours au moins un paramètre fixe, suivi de `...` :
 
-```
+```c
 #include <stdarg.h>
 
 int somme(int nombre, ...)
@@ -45,7 +45,7 @@ somme(3, 10, 20, 30); // 60 -> nombre = 3, les 3 arguments suivants sont additio
 
 `printf` n'a **aucun moyen natif** de savoir combien d'arguments variables ont été fournis : c'est la chaîne de format elle-même qui sert de guide, en comptant le nombre de `%` qu'elle contient.
 
-```
+```c
 printf("%d %d %d\n", 1, 2, 3); // la chaîne annonce 3 valeurs -> printf lit 3 arguments variadiques
 ```
 

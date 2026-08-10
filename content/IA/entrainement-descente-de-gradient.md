@@ -67,7 +67,7 @@ Le **taux d'apprentissage** est le `taux` de la formule ci-dessus : il contrôle
 
 Un réseau à plusieurs couches est une **composition** de fonctions : la sortie de la couche 1 devient l'entrée de la couche 2, et ainsi de suite. Calculer l'effet d'un poids de la toute première couche sur la perte finale suppose donc de remonter toute cette chaîne. La **règle de dérivation en chaîne** (*chain rule*) permet de calculer ce gradient sans recalculer chaque effet depuis zéro : la dérivée d'une composition de fonctions est le produit des dérivées de chaque fonction qui la compose. La **rétropropagation** applique cette règle couche par couche, en partant de la sortie pour remonter vers l'entrée :
 
-```
+```text
 Sens du calcul normal (forward) :  Entrée -> Couche 1 -> Couche 2 -> Sortie -> Perte
 Sens de la rétropropagation :      Entrée <- Couche 1 <- Couche 2 <- Sortie <- Perte
 ```

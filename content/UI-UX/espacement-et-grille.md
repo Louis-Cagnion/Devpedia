@@ -26,7 +26,7 @@ Une **grille** structure une page en zones alignées entre elles, plutôt que de
 | Gouttière (*gutter*) | L'espace vide entre deux colonnes | Sépare visuellement le contenu de colonnes voisines |
 | Marge | L'espace vide entre le contenu et le bord de l'écran | Empêche le contenu de "coller" aux bords |
 
-```
+```text
 ┌──marge──┬────col A────┬gut┬────col B────┬gut┬────col C────┬──marge──┐
 │         │   Bloc 1     │   │   Bloc 2     │   │   Bloc 3     │         │
 └─────────┴──────────────┴───┴──────────────┴───┴──────────────┴─────────┘
@@ -58,7 +58,7 @@ Plutôt que d'inventer une valeur d'espacement au cas par cas (5px ici, 13px là
 
 Le **rythme vertical** est un espacement constant et prévisible entre les blocs de contenu empilés verticalement — titres, paragraphes, sections.
 
-```
+```text
 Titre
                     ← toujours le même espace après un titre (×3, 24px)
 Paragraphe de texte...

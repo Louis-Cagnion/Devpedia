@@ -22,7 +22,7 @@ Un GPU dispose au contraire de **milliers** de cœurs, chacun plus simple et moi
 
 Le [produit scalaire](/?c=mathematiques&p=vecteurs-et-produit-scalaire) entre deux vecteurs (et plus généralement, tout calcul matriciel) répète une même opération simple (multiplier deux nombres, additionner) des milliers ou des millions de fois, sur des données indépendantes les unes des autres :
 
-```
+```text
 Multiplier deux vecteurs de 1000 nombres, terme a terme :
 
 CPU (quelques coeurs)  : traite les 1000 multiplications en plusieurs vagues successives

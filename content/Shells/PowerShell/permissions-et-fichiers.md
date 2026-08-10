@@ -14,7 +14,7 @@ Get-Acl fichier.txt | Format-List
 
 Contrairement aux 10 caractères compacts de `ls -l` (`-rw-r--r--`), une ACL Windows liste explicitement chaque utilisateur ou groupe et les droits qui lui sont accordés :
 
-```
+```text
 Owner   : DESKTOP\utilisateur
 Access  : DESKTOP\utilisateur Allow  FullControl
           BUILTIN\Users        Allow  ReadAndExecute

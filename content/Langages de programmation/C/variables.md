@@ -16,7 +16,7 @@ Comprendre les différents types de données est essentiel pour écrire des prog
 
 Le type `int` permet de stocker des nombres entiers positifs ou négatifs.
 
-```
+```c
 int age = 25;
 int temperature = -5;
 ```
@@ -27,7 +27,7 @@ La taille d'un `int` dépend de l'architecture de la machine, mais elle est gén
 
 Le type `char` permet de stocker un caractère unique.
 
-```
+```c
 char letter = 'A';
 char digit = '5';
 ```
@@ -38,7 +38,7 @@ Un `char` occupe généralement 1 octet en mémoire et contient la valeur ASCII 
 
 Depuis la norme C99, le langage fournit le type `bool` via la bibliothèque `stdbool.h`.
 
-```
+```c
 #include <stdbool.h>
 
 bool isConnected = true;
@@ -56,7 +56,7 @@ Avant C99, il était courant d'utiliser des entiers (`0` pour faux, valeur non n
 
 Le C propose plusieurs types pour représenter des nombres décimaux :
 
-```
+```c
 float price = 9.99f;
 double pi = 3.1415926535;
 ```
@@ -72,13 +72,13 @@ De même, la plage de valeurs des entiers et leur comportement en cas de débord
 
 Le langage C ne possède pas de type "string" natif. Une chaîne de caractères est représentée par un tableau de caractères terminé par le caractère nul (`\0`).
 
-```
+```c
 char name[] = "Devpedia";
 ```
 
 En mémoire :
 
-```
+```text
 D e v p e d i a \0
 ```
 
@@ -90,7 +90,7 @@ Les pointeurs sont l'une des caractéristiques les plus importantes du langage C
 
 Ils permettent de stocker l'adresse mémoire d'une variable.
 
-```
+```c
 int age = 25;
 int *ptr = &age;
 ```
@@ -110,7 +110,7 @@ Les pointeurs sont utilisés pour :
 
 Les structures permettent de regrouper plusieurs données dans un même objet.
 
-```
+```c
 struct User
 {
     int id;

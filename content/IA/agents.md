@@ -48,7 +48,7 @@ Le paramètre `ville` de l'exemple précédent ne prend ses valeurs que dans un 
 
 La fonction qui exécute réellement cet outil (côté code, pas côté modèle) est aussi basique qu'elle en a l'air — le plus souvent un simple `subprocess.run(commande)` qui lance la chaîne reçue sans rien y comprendre. Elle ne change jamais entre deux appels. Ce qui varie, c'est le **contenu de `commande`**, composé à nouveau par le modèle à chaque appel en fonction de ce qu'il vient d'apprendre :
 
-```
+```text
 Tour 1 -> le modele genere : { "commande": "ls -la /var/log" }
        -> resultat : la liste des fichiers de log
 Tour 2 -> le modele genere : { "commande": "grep ERROR /var/log/app.log | tail -20" }
@@ -65,7 +65,7 @@ C'est exactement ce qui permet à un agent de produire des commandes bash diffé
 
 Avoir des outils disponibles (la section précédente) ne suffit pas, en soi, à faire un agent : un programme qui appelle une liste fixe de fonctions dans un ordre écrit à l'avance par un développeur reste un script classique, même s'il consulte un LLM à une étape. Ce qui fait qu'on parle d'un agent, c'est que **le modèle décide lui-même, à chaque étape, quoi faire ensuite** — quel outil appeler, avec quels arguments, ou s'il a fini — en fonction du résultat des étapes précédentes, sans qu'aucun humain n'ait écrit ce déroulé à l'avance. Un agent est donc cette séquence répétée jusqu'à ce que le modèle juge avoir assez d'éléments pour répondre, plutôt qu'un simple aller-retour question/réponse, ou qu'un script à séquence fixe :
 
-```
+```text
 1. Le modele recoit la question et l'historique
 2. Il decide : repondre directement, OU appeler un outil
 3. Si outil : le code l'execute, le resultat est ajoute a l'historique

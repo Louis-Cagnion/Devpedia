@@ -93,7 +93,7 @@ Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) 
 
 ## Résumé visuel
 
-```
+```text
 justify-content (axe principal, ici horizontal) :
 [■]                    [■] [■] [■]              [■]       [■]       [■]
 flex-start             center                    space-between

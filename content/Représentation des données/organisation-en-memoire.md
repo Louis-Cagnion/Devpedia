@@ -26,7 +26,7 @@ Sur certaines architectures, un accès non aligné est simplement **interdit** e
 
 C'est la conséquence la plus visible de l'alignement : une structure occupe souvent **plus** que la somme de ses champs.
 
-```
+```c
 struct Exemple {
     char  a;    // 1 octet
     int   b;    // 4 octets
@@ -38,7 +38,7 @@ sizeof(struct Exemple)   // 12, et non 6 !
 
 Ce que fait réellement le compilateur :
 
-```
+```text
 octet 0     : a
 octets 1-3  : REMPLISSAGE (pour aligner b sur un multiple de 4)
 octets 4-7  : b
@@ -50,7 +50,7 @@ Le remplissage final existe pour que, dans un **tableau** de structures, chaque 
 
 **Conséquence pratique : l'ordre de déclaration change la taille.** En regroupant les champs du plus grand au plus petit, on réduit le gaspillage :
 
-```
+```c
 struct Compacte {
     int   b;    // octets 0-3
     char  a;    // octet 4
@@ -83,7 +83,7 @@ C'est encore une raison de préférer un format sérialisé explicite (texte ou 
 
 Un pointeur contient l'adresse du **premier** octet d'une valeur. C'est son **type** qui indique combien d'octets lire à partir de là, et comment les interpréter.
 
-```
+```c
 int    x = 65;
 int   *pi = &x;
 char  *pc = (char *)&x;

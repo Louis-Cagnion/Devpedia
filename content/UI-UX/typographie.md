@@ -44,7 +44,7 @@ Trois réglages déterminent si un texte se lit confortablement ou fatigue l'œi
 | Interlignage (*line-height*) | 1.4 à 1.6 fois la taille du texte | Trop serré : les lignes se chevauchent visuellement. Trop espacé : le texte perd sa cohésion, semble décousu |
 | Espacement des lettres | Valeur par défaut de la police, sauf cas particulier | Un espacement resserré sur un titre en majuscules réduit la lisibilité — l'écarter légèrement aide au contraire |
 
-```
+```text
 ❌ Trop long (page pleine largeur, plus de 100 caractères par ligne) : l'œil doit
    parcourir une trop grande distance pour retrouver le début de la ligne suivante.
 

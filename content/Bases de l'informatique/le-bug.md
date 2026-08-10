@@ -10,7 +10,7 @@ Le [premier chapitre](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers)
 
 ## Un exemple concret
 
-```
+```text
 solde = 100
 retirer = 150
 solde = solde - retirer   → solde devient -50 : rien n'a vérifié qu'il y avait assez d'argent
@@ -39,7 +39,7 @@ L'erreur logique est la plus difficile des trois à repérer : rien n'avertit qu
 
 Face à un crash, la plupart des langages affichent un message qui indique où et pourquoi ça a échoué :
 
-```
+```text
 Erreur : division par zéro
   à la ligne 4, dans la fonction "calculer_moyenne"
 ```

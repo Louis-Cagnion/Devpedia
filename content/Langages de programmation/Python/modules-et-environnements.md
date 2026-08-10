@@ -53,7 +53,7 @@ pip list                         # liste les bibliothèques installées
 
 ## `requirements.txt` : figer les dépendances d'un projet
 
-```
+```text
 requests==2.31.0
 numpy==1.26.0
 ```
@@ -82,7 +82,7 @@ deactivate                        # quitte l'environnement virtuel
 
 ## Organiser un projet en package
 
-```
+```text
 mon_projet/
 ├── mon_package/
 │   ├── __init__.py     # rend le dossier importable comme un package

@@ -10,7 +10,7 @@ Une **bibliothèque** (*library*) regroupe des fonctions déjà compilées, réu
 
 Le code de la bibliothèque est **copié directement** dans l'exécutable final, au moment de [l'édition de liens](/?c=langages-de-programmation&s=c&p=compilation).
 
-```
+```text
 // 1. compiler chaque fichier source en .o
 gcc -c calculs.c -o calculs.o
 
@@ -34,7 +34,7 @@ gcc main.c -L. -lcalculs -o programme
 
 Le code de la bibliothèque reste dans un fichier **séparé**, chargé en mémoire au lancement du programme (ou même pendant son exécution). Plusieurs programmes peuvent alors partager une seule copie de la bibliothèque en mémoire.
 
-```
+```text
 gcc -shared -fPIC calculs.c -o libcalculs.so
 gcc main.c -L. -lcalculs -o programme
 

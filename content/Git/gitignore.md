@@ -8,7 +8,7 @@ order: 3
 
 ## Syntaxe de base
 
-```
+```text
 # Commentaire
 *.log              # ignore tous les fichiers se terminant par .log, où qu'ils soient
 node_modules/       # ignore ce dossier entier, à la racine ou ailleurs
