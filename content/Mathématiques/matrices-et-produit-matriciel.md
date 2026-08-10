@@ -20,6 +20,8 @@ Cette matrice a 2 lignes et 3 colonnes : on dit qu'elle est de dimension **2×3*
 
 > **Analogie :** une feuille de calcul (tableur) sans les formules : juste des cellules organisées en lignes et en colonnes, chacune contenant un nombre.
 
+> **Piège :** cette numérotation `(2, 3)` compte à partir de 1, comme en mathématiques. En NumPy (voir le chapitre [NumPy](/?c=data-science&p=numpy)) et dans la plupart des langages de programmation, l'indexation commence à 0 : ce même élément s'obtiendrait en code avec `matrice[1, 2]`, pas `matrice[2, 3]`.
+
 Un vecteur n'est donc rien d'autre qu'un cas particulier de matrice : une seule colonne (dimension *n*×1) ou une seule ligne (1×*n*). Tout ce qui a été vu sur les [vecteurs](/?c=mathematiques&p=vecteurs-et-produit-scalaire) (l'addition, le produit scalaire) se généralise directement aux matrices.
 
 ## Addition et multiplication par un nombre
