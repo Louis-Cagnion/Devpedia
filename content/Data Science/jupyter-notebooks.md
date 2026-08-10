@@ -4,7 +4,7 @@ order: 1
 
 # Les notebooks Jupyter
 
-Un **notebook Jupyter** est un document interactif mêlant code exécutable, résultats (y compris des graphiques affichés directement), et texte explicatif (Markdown) — le format de travail dominant en data science et en apprentissage automatique, pour l'exploration itérative de données.
+Un **notebook Jupyter** est un document interactif mêlant code exécutable, résultats (y compris des graphiques affichés directement), et texte explicatif (Markdown), le format de travail dominant en data science et en apprentissage automatique, pour l'exploration itérative de données.
 
 ## Cellules de code et cellules Markdown
 
@@ -26,9 +26,9 @@ donnees.describe()   # le résultat s'affiche directement sous la cellule
 
 ## Le kernel : le processus Python derrière le notebook
 
-Le **kernel** est le processus Python qui exécute réellement le code des cellules et conserve leur état en mémoire (variables, imports...) entre les exécutions — le notebook lui-même n'est qu'une interface qui envoie du code au kernel et affiche ses résultats.
+Le **kernel** est le processus Python qui exécute réellement le code des cellules et conserve leur état en mémoire (variables, imports...) entre les exécutions : le notebook lui-même n'est qu'une interface qui envoie du code au kernel et affiche ses résultats.
 
-> **Note :** redémarrer le kernel (*Restart Kernel*) efface **toutes** les variables en mémoire, comme si on relançait le programme depuis zéro — les cellules affichées restent visibles à l'écran, mais leur code n'a pas été réexécuté tant qu'on ne le redemande pas explicitement.
+> **Note :** redémarrer le kernel (*Restart Kernel*) efface **toutes** les variables en mémoire, comme si on relançait le programme depuis zéro : les cellules affichées restent visibles à l'écran, mais leur code n'a pas été réexécuté tant qu'on ne le redemande pas explicitement.
 
 ## Le piège de l'exécution non linéaire
 
@@ -44,7 +44,7 @@ x = 5
 x = x * 2
 ```
 
-Si on exécute la cellule 2 **plusieurs fois de suite** sans relancer la cellule 1, `x` double à chaque exécution (10, puis 20, puis 40...) — un piège classique où l'état "invisible" du kernel ne correspond plus à l'ordre visuel des cellules à l'écran. En cas de doute sur la reproductibilité d'un résultat, *Restart Kernel and Run All* réexécute tout dans l'ordre du haut vers le bas, garantissant un état cohérent.
+Si on exécute la cellule 2 **plusieurs fois de suite** sans relancer la cellule 1, `x` double à chaque exécution (10, puis 20, puis 40...) : un piège classique où l'état "invisible" du kernel ne correspond plus à l'ordre visuel des cellules à l'écran. En cas de doute sur la reproductibilité d'un résultat, *Restart Kernel and Run All* réexécute tout dans l'ordre du haut vers le bas, garantissant un état cohérent.
 
 ## Commandes magiques (`%`, `%%`)
 
@@ -70,7 +70,7 @@ Voir aussi les chapitres sur [pandas](/?c=data-science&p=pandas) et [Matplotlib]
 
 | | |
 |---|---|
-| **À retenir** | Un notebook mêle cellules de code et cellules Markdown, exécutées dans un ordre potentiellement non linéaire — le kernel conserve l'état entre les exécutions, indépendamment de l'ordre visuel des cellules. |
+| **À retenir** | Un notebook mêle cellules de code et cellules Markdown, exécutées dans un ordre potentiellement non linéaire : le kernel conserve l'état entre les exécutions, indépendamment de l'ordre visuel des cellules. |
 | **Outils utilisables** | Commandes magiques (`%matplotlib inline`, `%timeit`), *Restart Kernel and Run All* pour garantir un état cohérent. |
 | **Pièges à éviter** | Exécuter les cellules dans le désordre et croire que le résultat affiché reflète l'état réel du kernel. |
 | **Bonnes pratiques** | Relancer *Restart Kernel and Run All* en cas de doute sur la reproductibilité d'un résultat. |

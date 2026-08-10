@@ -25,7 +25,7 @@ X = [[25, 50000], [45, 80000], [30, 45000]]
 
 ## Le principe fondamental : séparer entraînement et test
 
-Un modèle qui "apprend par cœur" les données d'entraînement (au lieu d'apprendre le motif général sous-jacent) obtiendrait un score parfait sur ces données — mais échouerait sur des données nouvelles, jamais vues. Pour détecter ce problème, on **sépare toujours** les données disponibles en deux ensembles distincts :
+Un modèle qui "apprend par cœur" les données d'entraînement (au lieu d'apprendre le motif général sous-jacent) obtiendrait un score parfait sur ces données, mais échouerait sur des données nouvelles, jamais vues. Pour détecter ce problème, on **sépare toujours** les données disponibles en deux ensembles distincts :
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -56,11 +56,11 @@ X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, te
 
 | | Score sur l'entraînement | Score sur le test |
 |---|---|---|
-| **Sous-apprentissage** (*underfitting*) | Faible | Faible — le modèle est trop simple pour capturer le motif |
-| **Bon ajustement** | Élevé | Élevé — le modèle généralise bien |
-| **Surapprentissage** (*overfitting*) | Très élevé | Faible — le modèle a "mémorisé" les données d'entraînement au lieu d'apprendre un motif général |
+| **Sous-apprentissage** (*underfitting*) | Faible | Faible : le modèle est trop simple pour capturer le motif |
+| **Bon ajustement** | Élevé | Élevé : le modèle généralise bien |
+| **Surapprentissage** (*overfitting*) | Très élevé | Faible : le modèle a "mémorisé" les données d'entraînement au lieu d'apprendre un motif général |
 
-> **Note :** un grand écart entre le score d'entraînement (excellent) et le score de test (médiocre) est le signal classique d'un surapprentissage — le modèle a retenu les exemples précis plutôt que la règle générale qui les sous-tend, un peu comme un élève qui aurait mémorisé les réponses d'un exercice précis sans comprendre la méthode.
+> **Note :** un grand écart entre le score d'entraînement (excellent) et le score de test (médiocre) est le signal classique d'un surapprentissage : le modèle a retenu les exemples précis plutôt que la règle générale qui les sous-tend, un peu comme un élève qui aurait mémorisé les réponses d'un exercice précis sans comprendre la méthode.
 
 ## L'API uniforme de scikit-learn : `fit` / `predict`
 
@@ -79,13 +79,13 @@ modele.score(X_test, y_test)                    # évalue la qualité des prédi
 
 - `fit(X, y)` : ajuste les paramètres internes du modèle pour qu'il colle au mieux aux données fournies.
 - `predict(X)` : utilise ces paramètres appris pour produire une prédiction sur de nouvelles données.
-- Cette interface (`fit`/`predict`) reste identique en changeant simplement `LogisticRegression()` pour un autre algorithme (`RandomForestClassifier()`, `KMeans()`...) — ce qui rend très facile de tester rapidement plusieurs approches sur le même problème.
+- Cette interface (`fit`/`predict`) reste identique en changeant simplement `LogisticRegression()` pour un autre algorithme (`RandomForestClassifier()`, `KMeans()`...), ce qui rend très facile de tester rapidement plusieurs approches sur le même problème.
 
-> **Note :** le choix de l'algorithme dépend du type de `y`. Ici `y` est **catégoriel** (`"oui"`/`"non"`) : c'est un problème de classification, d'où `LogisticRegression` (malgré son nom, un algorithme de classification, pas de régression). `LinearRegression` s'utilise quand `y` est une valeur **numérique continue** à prédire (un prix, une température...) — l'utiliser sur des étiquettes textuelles comme ici provoquerait une erreur.
+> **Note :** le choix de l'algorithme dépend du type de `y`. Ici `y` est **catégoriel** (`"oui"`/`"non"`) : c'est un problème de classification, d'où `LogisticRegression` (malgré son nom, un algorithme de classification, pas de régression). `LinearRegression` s'utilise quand `y` est une valeur **numérique continue** à prédire (un prix, une température...) : l'utiliser sur des étiquettes textuelles comme ici provoquerait une erreur.
 
 ## La validation croisée (*cross-validation*)
 
-Avec peu de données, réserver 40% pour validation+test (cf. plus haut) devient coûteux — la validation croisée répond à ce problème sans sacrifier autant de données d'entraînement :
+Avec peu de données, réserver 40% pour validation+test (cf. plus haut) devient coûteux ; la validation croisée répond à ce problème sans sacrifier autant de données d'entraînement :
 
 ```python
 from sklearn.model_selection import cross_val_score
@@ -95,7 +95,7 @@ scores = cross_val_score(LogisticRegression(), X_entrainement, y_entrainement, c
 scores.mean()   # moyenne des 5 scores -> estimation plus fiable qu'un seul découpage train/validation
 ```
 
-Chaque exemple sert ainsi à la fois à l'entraînement (4 fois sur 5) et à la validation (1 fois sur 5), sans jamais toucher à `X_test` — la moyenne des 5 scores lisse l'effet d'un découpage particulièrement favorable ou défavorable qu'un split unique pourrait produire par hasard.
+Chaque exemple sert ainsi à la fois à l'entraînement (4 fois sur 5) et à la validation (1 fois sur 5), sans jamais toucher à `X_test` : la moyenne des 5 scores lisse l'effet d'un découpage particulièrement favorable ou défavorable qu'un split unique pourrait produire par hasard.
 
 ## Mesurer la qualité d'un modèle
 
@@ -107,7 +107,7 @@ from sklearn.metrics import mean_squared_error
 mean_squared_error(y_test, predictions)   # erreur quadratique moyenne
 ```
 
-Pour la classification, l'exactitude (`accuracy_score`, % de prédictions correctes) ne suffit pas dès que les classes sont déséquilibrées — les métriques ci-dessous en tiennent compte, à partir de la **matrice de confusion**.
+Pour la classification, l'exactitude (`accuracy_score`, % de prédictions correctes) ne suffit pas dès que les classes sont déséquilibrées : les métriques ci-dessous en tiennent compte, à partir de la **matrice de confusion**.
 
 ### La matrice de confusion
 
@@ -146,7 +146,7 @@ f1_score(y_test, predictions)
 print(classification_report(y_test, predictions))   # précision, rappel et F1 à la fois, par classe
 ```
 
-> **Note :** l'exactitude est trompeuse sur des classes déséquilibrées — un détecteur de fraude qui répond toujours "non" atteint 99% d'exactitude si 1% des transactions sont frauduleuses, tout en étant inutile (rappel de 0%). Précision et rappel s'évaluent presque toujours ensemble : augmenter l'un se fait généralement au détriment de l'autre (repousser le seuil de décision vers "positif" augmente le rappel mais fait baisser la précision, et inversement) — le F1-score résume ce compromis en un seul chiffre, pratique pour comparer des modèles sans arbitrer manuellement entre les deux à chaque fois. La spécificité complète le tableau côté négatifs : utile quand un faux positif coûte cher (ex : un examen médical inutile déclenché à tort), alors que le rappel se concentre sur le coût d'un faux négatif (ex : une maladie non détectée).
+> **Note :** l'exactitude est trompeuse sur des classes déséquilibrées : un détecteur de fraude qui répond toujours "non" atteint 99% d'exactitude si 1% des transactions sont frauduleuses, tout en étant inutile (rappel de 0%). Précision et rappel s'évaluent presque toujours ensemble : augmenter l'un se fait généralement au détriment de l'autre (repousser le seuil de décision vers "positif" augmente le rappel mais fait baisser la précision, et inversement), le F1-score résume ce compromis en un seul chiffre, pratique pour comparer des modèles sans arbitrer manuellement entre les deux à chaque fois. La spécificité complète le tableau côté négatifs : utile quand un faux positif coûte cher (ex : un examen médical inutile déclenché à tort), alors que le rappel se concentre sur le coût d'un faux négatif (ex : une maladie non détectée).
 
 ## Le déroulement type d'un projet de machine learning
 
@@ -166,5 +166,5 @@ Voir aussi le chapitre sur [les réseaux de neurones](/?c=ia&p=reseaux-de-neuron
 |---|---|
 | **À retenir** | Un modèle s'entraîne sur un jeu de données séparé du jeu de test, pour détecter s'il généralise ou "mémorise" (surapprentissage). L'API scikit-learn est uniforme : `fit()` puis `predict()`, quel que soit l'algorithme. |
 | **Outils utilisables** | `train_test_split`, `cross_val_score`, matrice de confusion, `precision_score`/`recall_score`/`f1_score`. |
-| **Pièges à éviter** | Évaluer et ajuster un modèle sur le même ensemble de test, à répétition — revient à tricher indirectement ; se fier à l'exactitude seule sur des classes déséquilibrées. |
+| **Pièges à éviter** | Évaluer et ajuster un modèle sur le même ensemble de test, à répétition : revient à tricher indirectement ; se fier à l'exactitude seule sur des classes déséquilibrées. |
 | **Bonnes pratiques** | Réserver un ensemble de validation pour ajuster les hyperparamètres, le test final ne servant qu'une seule fois ; utiliser le F1-score pour résumer le compromis précision/rappel. |
