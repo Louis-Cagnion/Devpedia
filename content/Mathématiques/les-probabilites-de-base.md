@@ -1,5 +1,5 @@
 ---
-order: 4
+order: 5
 ---
 
 # Les probabilités de base

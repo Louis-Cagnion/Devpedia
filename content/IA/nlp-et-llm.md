@@ -40,7 +40,7 @@ embedding("voiture")  -> [-0.9, 0.6, -0.1, ...]  # loin de "chat" -> sens diffé
 
 ## L'attention appliquée au texte
 
-Le mécanisme d'attention (voir [Architectures — CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers)) permet à chaque token de "regarder" les autres tokens de la séquence pour ajuster sa propre représentation selon le contexte :
+Le mécanisme d'attention (voir [Architectures : CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers)) permet à chaque token de "regarder" les autres tokens de la séquence pour ajuster sa propre représentation selon le contexte :
 
 ```text
 "La banque au bord de la rivière"      vs      "La banque a augmenté ses taux"
@@ -83,7 +83,7 @@ Le prompting exploite uniquement les capacités déjà acquises pendant l'entra�
 >
 > **Bonne pratique :** réserver le fine-tuning aux cas où le comportement recherché dépasse ce que le prompting peut exploiter (un style très spécifique, une compétence absente des données d'entraînement d'origine) — le prompting reste plus rapide et moins coûteux dès qu'il suffit.
 
-Voir aussi [Architectures — CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (le mécanisme d'attention sous-jacent), [Deep learning avec PyTorch](/?c=ia&p=deep-learning-pytorch) (comment un tel modèle est concrètement entraîné, à une échelle bien plus modeste dans les exemples de ce chapitre) et [Le prompt engineering](/?c=ia&p=prompt-engineering) (comment formuler concrètement un bon prompt).
+Voir aussi [Architectures : CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (le mécanisme d'attention sous-jacent), [Deep learning avec PyTorch](/?c=ia&p=deep-learning-pytorch) (comment un tel modèle est concrètement entraîné, à une échelle bien plus modeste dans les exemples de ce chapitre) et [Le prompt engineering](/?c=ia&p=prompt-engineering) (comment formuler concrètement un bon prompt).
 
 ## Ce qu'il faut retenir
 

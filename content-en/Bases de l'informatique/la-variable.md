@@ -9,10 +9,10 @@ A [program](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) executes 
 A **variable** is a labeled container that holds a value, which can be accessed or modified later.
 
 ```text
-nom = "Jean"        → crée une boîte nommée "name", y range la valeur "Jean"
-age = 25             → crée une boîte nommée "age", y range la valeur 25
-afficher nom          → va lire la boîte "name", affiche "Jean"
-age = 26              → remplace le contenu de la boîte "age" par 26 : la valeur change, la boîte reste la même
+name = "John"  → creates a box named "name", puts the value "John" in it
+age = 25       → creates a box named "age", puts the value 25 in it
+display name   → reads the "name" box, displays "John"
+age = 26       → replaces the content of the "age" box with 26: the value changes, the box stays the same
 ```
 
 > **Analogy:** a labeled locker in a locker room—you can change what’s inside without ever changing the label on it.

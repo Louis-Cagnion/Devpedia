@@ -2,7 +2,7 @@
 order: 8
 ---
 
-# La STL — les conteneurs
+# La STL : les conteneurs
 
 La **STL** (*Standard Template Library*) fournit des structures de données génériques (voir [Les templates](/?c=langages-de-programmation&s=cpp&p=templates)), prêtes à l'emploi — plutôt que de réimplémenter à la main une [liste chaînée](/?c=langages-de-programmation&s=c&p=listes-chainees) ou une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage), la quasi-totalité des projets C++ modernes s'appuient sur ces conteneurs standard.
 
@@ -79,7 +79,7 @@ valeurs.count(2);   // 1 si présent, 0 sinon (un set ne contient jamais de doub
 | Valeurs uniques, triées | `std::set` |
 | Valeurs uniques, ordre indifférent, vitesse prioritaire | `std::unordered_set` |
 
-Voir aussi [La STL — itérateurs, algorithmes et lambdas](/?c=langages-de-programmation&s=cpp&p=stl-algorithmes-et-iterateurs), qui permettent de manipuler n'importe lequel de ces conteneurs de façon uniforme.
+Voir aussi [La STL : itérateurs, algorithmes et lambdas](/?c=langages-de-programmation&s=cpp&p=stl-algorithmes-et-iterateurs), qui permettent de manipuler n'importe lequel de ces conteneurs de façon uniforme.
 
 ---
 

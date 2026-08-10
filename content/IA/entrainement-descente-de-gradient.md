@@ -72,7 +72,7 @@ Sens du calcul normal (forward) :  Entrée -> Couche 1 -> Couche 2 -> Sortie -> 
 Sens de la rétropropagation :      Entrée <- Couche 1 <- Couche 2 <- Sortie <- Perte
 ```
 
-> **Note :** ce n'est pas une opération à recalculer à la main pour utiliser un framework comme [PyTorch](/?c=ia&p=deep-learning-pytorch) — `autograd` (différenciation automatique) effectue ce calcul automatiquement. Comprendre le **principe** (propager le gradient en arrière, couche par couche, via la règle de dérivation en chaîne) suffit pour raisonner sur pourquoi certains problèmes d'entraînement surviennent (ex. le "vanishing gradient", voir [Architectures — CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers)).
+> **Note :** ce n'est pas une opération à recalculer à la main pour utiliser un framework comme [PyTorch](/?c=ia&p=deep-learning-pytorch) — `autograd` (différenciation automatique) effectue ce calcul automatiquement. Comprendre le **principe** (propager le gradient en arrière, couche par couche, via la règle de dérivation en chaîne) suffit pour raisonner sur pourquoi certains problèmes d'entraînement surviennent (ex. le "vanishing gradient", voir [Architectures : CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers)).
 
 ## Époques, batches, et descente de gradient stochastique
 

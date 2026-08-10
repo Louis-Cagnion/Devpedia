@@ -52,15 +52,15 @@
         },
         {
           "id": "numpy",
-          "label": "NumPy — le calcul numérique"
+          "label": "NumPy : le calcul numérique"
         },
         {
           "id": "pandas",
-          "label": "pandas — manipuler des données tabulaires"
+          "label": "pandas : manipuler des données tabulaires"
         },
         {
           "id": "matplotlib",
-          "label": "Matplotlib — visualiser des données"
+          "label": "Matplotlib : visualiser des données"
         },
         {
           "id": "machine-learning-scikit-learn",
@@ -172,7 +172,7 @@
       "chapters": [
         {
           "id": "reseaux-de-neurones",
-          "label": "Les réseaux de neurones — les fondamentaux"
+          "label": "Les réseaux de neurones : les fondamentaux"
         },
         {
           "id": "entrainement-descente-de-gradient",
@@ -180,7 +180,7 @@
         },
         {
           "id": "architectures-cnn-rnn-transformers",
-          "label": "Architectures — CNN, RNN et Transformers"
+          "label": "Architectures : CNN, RNN et Transformers"
         },
         {
           "id": "deep-learning-pytorch",
@@ -451,11 +451,11 @@
             },
             {
               "id": "stl-conteneurs",
-              "label": "La STL — les conteneurs"
+              "label": "La STL : les conteneurs"
             },
             {
               "id": "stl-algorithmes-et-iterateurs",
-              "label": "La STL — itérateurs, algorithmes et lambdas"
+              "label": "La STL : itérateurs, algorithmes et lambdas"
             },
             {
               "id": "templates",
@@ -677,6 +677,10 @@
         {
           "id": "vecteurs-et-produit-scalaire",
           "label": "Vecteurs et produit scalaire"
+        },
+        {
+          "id": "matrices-et-produit-matriciel",
+          "label": "Les matrices et le produit matriciel"
         },
         {
           "id": "le-logarithme",

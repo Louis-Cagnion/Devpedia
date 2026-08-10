@@ -9,10 +9,10 @@ Un [programme](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) exécu
 Une **variable** est une boîte étiquetée qui contient une valeur, consultable ou modifiable plus tard.
 
 ```text
-nom = "Jean"        → crée une boîte nommée "nom", y range la valeur "Jean"
-age = 25             → crée une boîte nommée "age", y range la valeur 25
-afficher nom          → va lire la boîte "nom", affiche "Jean"
-age = 26              → remplace le contenu de la boîte "age" par 26 : la valeur change, la boîte reste la même
+nom = "Jean"  → crée une boîte nommée "nom", y range la valeur "Jean"
+age = 25      → crée une boîte nommée "age", y range la valeur 25
+afficher nom  → va lire la boîte "nom", affiche "Jean"
+age = 26      → remplace le contenu de la boîte "age" par 26 : la valeur change, la boîte reste la même
 ```
 
 > **Analogie :** un casier étiqueté dans un vestiaire — on peut changer ce qu'il contient sans jamais changer l'étiquette collée dessus.

@@ -91,7 +91,7 @@ T addition(T a, T b) { return a + b; }
 | Coût à l'exécution | Nul (code généré spécifiquement pour chaque type) | Léger surcoût (vérifications de type en continu) |
 | Détection d'erreur de type | Avant même de lancer le programme | Seulement en exécutant le chemin de code concerné |
 
-Voir aussi [La STL — les conteneurs](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs), qui repose entièrement sur ce mécanisme de templates.
+Voir aussi [La STL : les conteneurs](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs), qui repose entièrement sur ce mécanisme de templates.
 
 ---
 

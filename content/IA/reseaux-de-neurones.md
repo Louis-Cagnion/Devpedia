@@ -2,7 +2,7 @@
 order: 1
 ---
 
-# Les réseaux de neurones — les fondamentaux
+# Les réseaux de neurones : les fondamentaux
 
 Le **machine learning** consiste à faire apprendre à un programme un comportement à partir de données, plutôt que de lui dicter chaque règle explicitement (voir [Introduction au machine learning](/?c=data-science&p=machine-learning-scikit-learn) pour aller plus loin). Un **réseau de neurones artificiels** est une famille de modèles de machine learning : une [fonction mathématique](/?c=mathematiques&p=la-fonction-mathematique), composée de nombreuses unités de calcul simples ("neurones") organisées en couches, dont les paramètres s'ajustent automatiquement à partir de données plutôt que d'être écrits à la main.
 
@@ -104,7 +104,7 @@ Vu sous cet angle, un réseau de neurones n'est rien d'autre qu'une [fonction ma
 >
 > **Bonne pratique :** vérifier que les données réellement soumises au modèle en usage restent représentatives des données d'entraînement, plutôt que de supposer que le modèle "généralise" indéfiniment au-delà.
 
-Voir aussi [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient) (comment ces poids sont concrètement ajustés) et [Architectures — CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (des façons spécifiques d'organiser ces couches selon le type de données traité).
+Voir aussi [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient) (comment ces poids sont concrètement ajustés) et [Architectures : CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (des façons spécifiques d'organiser ces couches selon le type de données traité).
 
 ## Ce qu'il faut retenir
 

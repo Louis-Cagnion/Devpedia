@@ -2,7 +2,7 @@
 order: 3
 ---
 
-# pandas — manipuler des données tabulaires
+# pandas : manipuler des données tabulaires
 
 **pandas** fournit deux structures pour manipuler des données tabulaires : la `Series` (une seule colonne, indexée) et le `DataFrame` (un tableau à deux dimensions avec des colonnes nommées) — l'équivalent Python d'une table [SQL](/?c=domain-specific-languages-dsl&p=sql) ou d'une feuille de tableur, mais manipulable par du code.
 

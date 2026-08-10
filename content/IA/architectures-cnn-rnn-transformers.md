@@ -2,7 +2,7 @@
 order: 3
 ---
 
-# Architectures — CNN, RNN et Transformers
+# Architectures : CNN, RNN et Transformers
 
 Le réseau "entièrement connecté" du [chapitre sur les fondamentaux](/?c=ia&p=reseaux-de-neurones) (chaque neurone relié à tous ceux de la couche suivante) n'est pas la seule façon d'organiser des couches. Selon le type de données traité (image, séquence, texte), certaines architectures sont bien plus efficaces. Ce chapitre présente les trois familles les plus influentes.
 

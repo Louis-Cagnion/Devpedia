@@ -2,7 +2,7 @@
 order: 9
 ---
 
-# La STL — itérateurs, algorithmes et lambdas
+# La STL : itérateurs, algorithmes et lambdas
 
 Un **itérateur** est une abstraction qui permet de parcourir n'importe quel [conteneur STL](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) de la même façon, qu'il s'agisse d'un `vector` (tableau contigu) ou d'une `list` (liste chaînée) — le code de parcours ne change pas, même si la structure sous-jacente est radicalement différente.
 
