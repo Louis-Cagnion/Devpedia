@@ -4,7 +4,7 @@ order: 1
 
 # Qu'est-ce qu'un ordinateur exécute ?
 
-Avant de parler de terminal, d'éditeur de code ou d'un langage précis, une seule question compte : que fait réellement un ordinateur quand on dit qu'il "exécute" quelque chose ? Ce chapitre pose ce socle — tout le reste du site s'appuiera sur lui.
+Avant de parler de terminal, d'éditeur de code ou d'un langage précis, une seule question compte : que fait réellement un ordinateur quand on dit qu'il "exécute" quelque chose ? Ce chapitre pose ce socle : tout le reste du site s'appuiera sur lui.
 
 ## Un ordinateur suit des instructions, sans les comprendre
 
@@ -16,34 +16,34 @@ Instruction 2  →  exécutée telle quelle
 Instruction 3  →  exécutée telle quelle
 ```
 
-> **Analogie :** c'est comme suivre une recette de cuisine à la lettre, sans jamais improviser. Si la recette dit "casser 2 œufs", on en casse 2 — ni plus, ni moins — et on ne se demande pas pourquoi.
+> **Analogie :** c'est comme suivre une recette de cuisine à la lettre, sans jamais improviser. Si la recette dit "casser 2 œufs", on en casse 2 (ni plus, ni moins) et on ne se demande pas pourquoi.
 
-**Pourquoi c'est important :** à peu près tout ce qui peut sembler "intelligent" chez un ordinateur (corriger une faute de frappe, deviner ce qu'on voulait faire) vient en réalité d'instructions écrites à l'avance par un humain pour ce cas précis — jamais d'une compréhension du problème par la machine elle-même.
+**Pourquoi c'est important :** à peu près tout ce qui peut sembler "intelligent" chez un ordinateur (corriger une faute de frappe, deviner ce qu'on voulait faire) vient en réalité d'instructions écrites à l'avance par un humain pour ce cas précis, jamais d'une compréhension du problème par la machine elle-même.
 
-> **Piège :** croire qu'une instruction imprécise sera "comprise raisonnablement". L'ordinateur choisit toujours une interprétation précise (souvent la plus littérale possible), pas forcément celle imaginée en l'écrivant — voir le chapitre sur [le bug](/?c=bases-de-l-informatique&p=le-bug) pour ce que ça produit concrètement.
+> **Piège :** croire qu'une instruction imprécise sera "comprise raisonnablement". L'ordinateur choisit toujours une interprétation précise (souvent la plus littérale possible), pas forcément celle imaginée en l'écrivant ; voir le chapitre sur [le bug](/?c=bases-de-l-informatique&p=le-bug) pour ce que ça produit concrètement.
 >
 > **Bonne pratique :** écrire des instructions aussi précises que possible, sans rien laisser à "deviner" par la machine.
 
 ## Le code : la liste d'instructions écrite par un humain
 
-Le **code** (ou **code source**) est le texte qui contient ces instructions. Il est écrit par une personne, dans un **langage de programmation** — une des nombreuses "langues" qu'un ordinateur peut suivre, chacune avec sa propre grammaire (Python, JavaScript, C...).
+Le **code** (ou **code source**) est le texte qui contient ces instructions. Il est écrit par une personne, dans un **langage de programmation**, une des nombreuses "langues" qu'un ordinateur peut suivre, chacune avec sa propre grammaire (Python, JavaScript, C...).
 
 ```text
 afficher "Bonjour"      → écrit "Bonjour" à l'écran
 afficher "Au revoir"    → écrit "Au revoir" à l'écran juste après
 ```
 
-> **Note :** le bloc ci-dessus n'est pas un vrai langage — c'est du **pseudocode**, une façon simplifiée d'écrire des instructions sans la syntaxe précise d'un langage réel. Il sert uniquement à illustrer l'idée d'une suite d'instructions, avant d'en choisir un pour de vrai.
+> **Note :** le bloc ci-dessus n'est pas un vrai langage : c'est du **pseudocode**, une façon simplifiée d'écrire des instructions sans la syntaxe précise d'un langage réel. Il sert uniquement à illustrer l'idée d'une suite d'instructions, avant d'en choisir un pour de vrai.
 
-Devpedia détaille plusieurs langages en profondeur, chacun dans son propre chapitre — par exemple [Python](/?c=langages-de-programmation&s=python&p=python) ou [le C](/?c=langages-de-programmation&s=c&p=c). Ce chapitre n'entre dans aucun d'eux : juste le principe commun à tous.
+Devpedia détaille plusieurs langages en profondeur, chacun dans son propre chapitre (par exemple [Python](/?c=langages-de-programmation&s=python&p=python) ou [le C](/?c=langages-de-programmation&s=c&p=c)). Ce chapitre n'entre dans aucun d'eux : juste le principe commun à tous.
 
-> **Piège :** essayer d'exécuter tel quel le pseudocode ci-dessus dans un vrai langage — ça ne fonctionnera pas, ce n'est qu'une illustration simplifiée, pas une syntaxe réelle.
+> **Piège :** essayer d'exécuter tel quel le pseudocode ci-dessus dans un vrai langage : ça ne fonctionnera pas, ce n'est qu'une illustration simplifiée, pas une syntaxe réelle.
 >
 > **Bonne pratique :** toujours vérifier la syntaxe exacte attendue par le langage choisi (chapitre dédié) avant d'écrire du code destiné à être réellement exécuté.
 
 ## Le fichier : où le code est rangé
 
-Un **fichier** est une unité de données stockée sur le disque de l'ordinateur, identifiée par un **nom** et une **extension** — la partie après le point, qui indique son type de contenu.
+Un **fichier** est une unité de données stockée sur le disque de l'ordinateur, identifiée par un **nom** et une **extension**, la partie après le point, qui indique son type de contenu.
 
 | Extension | Type de contenu | Exemple de nom |
 |---|---|---|
@@ -54,11 +54,11 @@ Un **fichier** est une unité de données stockée sur le disque de l'ordinateur
 
 > **Analogie :** un fichier, c'est comme une feuille de papier rangée dans un classeur (le **dossier**), avec un nom écrit sur l'onglet pour la retrouver.
 
-Le code source est presque toujours écrit dans un fichier texte — comprendre "fichier" est nécessaire avant de pouvoir naviguer dans une arborescence de dossiers ou ouvrir quoi que ce soit dans un éditeur, deux chapitres à venir.
+Le code source est presque toujours écrit dans un fichier texte ; comprendre "fichier" est nécessaire avant de pouvoir naviguer dans une arborescence de dossiers ou ouvrir quoi que ce soit dans un éditeur, deux chapitres à venir.
 
-> **Piège :** croire que renommer un fichier change ce qu'il contient — renommer `notes.txt` en `notes.py` ne transforme pas du texte quelconque en code Python valide. L'extension n'est qu'une **indication** pour les humains et les outils (quel éditeur ouvrir, quelle coloration appliquer) ; ce qui décide vraiment de la nature d'un fichier, c'est ce qui l'ouvre et l'interprète, jamais son nom.
+> **Piège :** croire que renommer un fichier change ce qu'il contient : renommer `notes.txt` en `notes.py` ne transforme pas du texte quelconque en code Python valide. L'extension n'est qu'une **indication** pour les humains et les outils (quel éditeur ouvrir, quelle coloration appliquer) ; ce qui décide vraiment de la nature d'un fichier, c'est ce qui l'ouvre et l'interprète, jamais son nom.
 >
-> **Bonne pratique :** choisir l'extension qui correspond au contenu réel du fichier — pas l'inverse.
+> **Bonne pratique :** choisir l'extension qui correspond au contenu réel du fichier, pas l'inverse.
 
 ## Programme : ce que l'ordinateur exécute pour de vrai
 
@@ -70,9 +70,9 @@ Le code écrit par un humain n'est pas toujours ce que le processeur exécute di
 | Quand l'exécution démarre | Immédiatement | Seulement une fois la transformation (la **compilation**) terminée |
 | Exemple de langage | Python, JavaScript | C, C++ |
 
-> **Approfondir :** ce chapitre s'arrête à cette distinction de principe — le détail de ce qui se passe pendant une compilation (étapes, erreurs possibles) est couvert dans [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation).
+> **Approfondir :** ce chapitre s'arrête à cette distinction de principe ; le détail de ce qui se passe pendant une compilation (étapes, erreurs possibles) est couvert dans [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation).
 
-> **Piège :** croire qu'un programme compilé fonctionne partout tel quel. Un exécutable compilé pour Windows ne s'exécute pas sur Linux ou macOS — la compilation produit du code spécifique au système visé, il faut recompiler pour chaque système cible.
+> **Piège :** croire qu'un programme compilé fonctionne partout tel quel. Un exécutable compilé pour Windows ne s'exécute pas sur Linux ou macOS : la compilation produit du code spécifique au système visé, il faut recompiler pour chaque système cible.
 >
 > **Bonne pratique :** pour un programme interprété, vérifier que l'interpréteur du bon langage est installé sur la machine cible ; pour un programme compilé, le recompiler pour chaque système visé plutôt que de supposer qu'un seul exécutable suffira partout.
 
@@ -83,6 +83,6 @@ Le code écrit par un humain n'est pas toujours ce que le processeur exécute di
 | | |
 |---|---|
 | **À retenir** | Un ordinateur exécute des instructions à la lettre, sans en comprendre le sens. Le **code** est cette liste d'instructions, écrite dans un **langage de programmation**, rangée dans un **fichier**. Un programme est **interprété** (exécuté directement) ou **compilé** (transformé avant d'être exécuté). |
-| **Outils utilisables** | Aucun pour l'instant — le terminal et l'éditeur de code, pour écrire et lancer du code soi-même, arrivent dans les deux prochains chapitres. |
+| **Outils utilisables** | Aucun pour l'instant : le terminal et l'éditeur de code, pour écrire et lancer du code soi-même, arrivent dans les deux prochains chapitres. |
 | **Pièges à éviter** | Croire que l'ordinateur "comprend" ce qu'on veut faire, ou qu'il peut deviner une intention non écrite explicitement dans le code. Confondre un fichier quelconque avec un programme : un fichier `.txt` n'est jamais exécuté, un fichier `.py` l'est seulement via un interpréteur Python. |
-| **Bonnes pratiques** | Toujours distinguer, face à un problème, "qu'est-ce que le code dit de faire" de "qu'est-ce que je voulais qu'il fasse" — la plupart des erreurs de débutant viennent d'une instruction exécutée à la lettre, mais mal formulée. |
+| **Bonnes pratiques** | Toujours distinguer, face à un problème, "qu'est-ce que le code dit de faire" de "qu'est-ce que je voulais qu'il fasse" : la plupart des erreurs de débutant viennent d'une instruction exécutée à la lettre, mais mal formulée. |

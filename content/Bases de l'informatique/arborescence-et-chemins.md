@@ -8,7 +8,7 @@ Un [fichier](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) ne flott
 
 ## Le dossier : ranger des fichiers, et d'autres dossiers
 
-Un **dossier** (ou **répertoire**, *directory*) contient des fichiers — et peut aussi contenir d'autres dossiers. En répétant ça plusieurs niveaux de profondeur, on obtient une structure en arbre : l'**arborescence**.
+Un **dossier** (ou **répertoire**, *directory*) contient des fichiers, et peut aussi contenir d'autres dossiers. En répétant ça plusieurs niveaux de profondeur, on obtient une structure en arbre : l'**arborescence**.
 
 ```text
 Documents/
@@ -19,9 +19,9 @@ Documents/
     └── rapport.docx
 ```
 
-> **Analogie :** comme des dossiers de classement rangés dans des tiroirs, eux-mêmes rangés dans une armoire — retrouver une feuille précise demande de connaître l'armoire, le tiroir, puis le dossier.
+> **Analogie :** comme des dossiers de classement rangés dans des tiroirs, eux-mêmes rangés dans une armoire : retrouver une feuille précise demande de connaître l'armoire, le tiroir, puis le dossier.
 
-> **Piège :** supprimer un dossier supprime **tout** son contenu avec lui, y compris les dossiers qu'il contient — souvent sans demander de confirmation par fichier individuellement.
+> **Piège :** supprimer un dossier supprime **tout** son contenu avec lui, y compris les dossiers qu'il contient, souvent sans demander de confirmation par fichier individuellement.
 >
 > **Bonne pratique :** avant de supprimer un dossier, vérifier son contenu (lister ce qu'il contient) plutôt que de supposer qu'il est vide ou sans importance.
 
@@ -34,7 +34,7 @@ Un **chemin** (*path*) décrit où trouver un fichier ou un dossier, en listant 
 | Linux / macOS | `/` | `Documents/photos/vacances.jpg` |
 | Windows | `\` | `Documents\photos\vacances.jpg` |
 
-> **Piège :** copier un chemin Windows (avec `\`) dans un terminal Linux/macOS. Sur ces systèmes, `\` n'est pas un séparateur : c'est un caractère d'échappement qui change le sens du caractère suivant — le chemin ne sera pas interprété comme prévu.
+> **Piège :** copier un chemin Windows (avec `\`) dans un terminal Linux/macOS. Sur ces systèmes, `\` n'est pas un séparateur : c'est un caractère d'échappement qui change le sens du caractère suivant : le chemin ne sera pas interprété comme prévu.
 >
 > **Bonne pratique :** toujours utiliser le séparateur du système sur lequel la commande s'exécute réellement, jamais celui de la machine où le chemin a été écrit à l'origine.
 
@@ -42,15 +42,15 @@ Un **chemin** (*path*) décrit où trouver un fichier ou un dossier, en listant 
 
 | | Chemin absolu | Chemin relatif |
 |---|---|---|
-| Point de départ | La **racine** — toujours le même, peu importe où on se trouve | Le **dossier courant** — là où le terminal "se trouve" actuellement |
+| Point de départ | La **racine** (toujours le même, peu importe où on se trouve) | Le **dossier courant** (là où le terminal "se trouve" actuellement) |
 | À quoi ça ressemble | `/home/jean/Documents/rapport.docx` (Linux) ou `C:\Users\jean\Documents\rapport.docx` (Windows) | `Documents/rapport.docx`, si on est déjà dans `/home/jean` |
 | Avantage | Fonctionne depuis n'importe où | Plus court à écrire, et reste valable si tout le projet est déplacé ensemble |
 
-La **racine** est le tout premier dossier de l'arborescence, celui dont tous les autres découlent : `/` sous Linux/macOS, une lettre de lecteur (`C:\`) sous Windows. Le **dossier courant** (*current working directory*) est l'endroit où vous êtes "positionné" dans cette arborescence à un instant donné — c'est justement ce que le [prompt du terminal](/?c=bases-de-l-informatique&p=le-terminal) affiche parfois, sans qu'on sache encore ce que ça signifiait.
+La **racine** est le tout premier dossier de l'arborescence, celui dont tous les autres découlent : `/` sous Linux/macOS, une lettre de lecteur (`C:\`) sous Windows. Le **dossier courant** (*current working directory*) est l'endroit où vous êtes "positionné" dans cette arborescence à un instant donné : c'est justement ce que le [prompt du terminal](/?c=bases-de-l-informatique&p=le-terminal) affiche parfois, sans qu'on sache encore ce que ça signifiait.
 
 > **Piège :** utiliser un chemin relatif en supposant être dans le bon dossier courant, sans l'avoir vérifié. La même commande, avec le même chemin relatif, peut agir sur un fichier totalement différent selon l'endroit d'où elle est lancée.
 >
-> **Bonne pratique :** en cas de doute, afficher le dossier courant avant une commande qui modifie ou supprime un fichier via un chemin relatif — un chemin absolu élimine complètement ce risque, au prix d'être plus long à écrire.
+> **Bonne pratique :** en cas de doute, afficher le dossier courant avant une commande qui modifie ou supprime un fichier via un chemin relatif ; un chemin absolu élimine complètement ce risque, au prix d'être plus long à écrire.
 
 ## Deux raccourcis universels : `.` et `..`
 
@@ -73,7 +73,7 @@ Documents/photos/../travail/rapport.docx
 
 ## Se déplacer et lister depuis le terminal
 
-Changer de dossier courant et lister le contenu d'un dossier sont deux actions de base — mais le nom exact des commandes dépend du shell utilisé, déjà vu au [chapitre sur le terminal](/?c=bases-de-l-informatique&p=le-terminal) :
+Changer de dossier courant et lister le contenu d'un dossier sont deux actions de base, mais le nom exact des commandes dépend du shell utilisé, déjà vu au [chapitre sur le terminal](/?c=bases-de-l-informatique&p=le-terminal) :
 
 - Sous Bash : voir [Permissions et manipulation de fichiers](/?c=shells&s=bash&p=permissions-et-fichiers).
 - Sous PowerShell : voir [Commandes de base](/?c=shells&s=powershell&p=commandes-de-base).
@@ -85,6 +85,6 @@ Changer de dossier courant et lister le contenu d'un dossier sont deux actions d
 | | |
 |---|---|
 | **À retenir** | Les fichiers sont rangés dans des dossiers, organisés en arborescence. Un **chemin** décrit leur emplacement : **absolu** depuis la racine (toujours valable), ou **relatif** depuis le **dossier courant** (plus court). `.` désigne le dossier courant, `..` son parent. |
-| **Outils utilisables** | Les commandes de navigation et de listing propres à votre shell — voir les chapitres Bash/PowerShell liés ci-dessus. |
-| **Pièges à éviter** | Utiliser un chemin relatif en supposant être dans le bon dossier courant, sans l'avoir vérifié — la même commande peut alors agir sur un fichier totalement différent selon d'où elle est lancée. |
+| **Outils utilisables** | Les commandes de navigation et de listing propres à votre shell (voir les chapitres Bash/PowerShell liés ci-dessus). |
+| **Pièges à éviter** | Utiliser un chemin relatif en supposant être dans le bon dossier courant, sans l'avoir vérifié : la même commande peut alors agir sur un fichier totalement différent selon d'où elle est lancée. |
 | **Bonnes pratiques** | En cas de doute sur l'endroit où l'on se trouve, vérifier le dossier courant avant de lancer une commande qui modifie ou supprime un fichier via un chemin relatif. |
