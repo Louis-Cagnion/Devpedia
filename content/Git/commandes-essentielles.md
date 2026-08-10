@@ -19,7 +19,7 @@ git clone https://exemple.com/projet.git   # récupère un dépôt existant, ave
 git status
 ```
 
-Affiche quels fichiers sont modifiés, lesquels sont dans la zone de staging, et lesquels ne sont pas suivis — voir [Les concepts de base de Git](/?c=git&p=concepts-de-base).
+Affiche quels fichiers sont modifiés, lesquels sont dans la zone de staging, et lesquels ne sont pas suivis (voir [Les concepts de base de Git](/?c=git&p=concepts-de-base)).
 
 ## Ajouter des modifications au staging
 
@@ -30,7 +30,7 @@ git add .                   # ajoute tout ce qui a changé dans le dossier coura
 git add -p                  # mode interactif : choisir précisément quels blocs de lignes ajouter
 ```
 
-> **Note :** `git add .` ajoute aussi les fichiers non suivis — s'assurer que [.gitignore](/?c=git&p=gitignore) est à jour avant, pour ne pas ajouter accidentellement des fichiers qui ne devraient jamais entrer dans l'historique (secrets, dépendances, fichiers générés...).
+> **Note :** `git add .` ajoute aussi les fichiers non suivis : s'assurer que [.gitignore](/?c=git&p=gitignore) est à jour avant, pour ne pas ajouter accidentellement des fichiers qui ne devraient jamais entrer dans l'historique (secrets, dépendances, fichiers générés...).
 
 ## Créer un commit
 
@@ -39,9 +39,9 @@ git commit -m "Corrige le calcul de la remise"
 git commit -am "Message"   # raccourci : ajoute automatiquement les fichiers déjà suivis ET modifiés, sans "git add" préalable
 ```
 
-> **Note :** `-a` (dans `-am`) n'ajoute **que** les fichiers déjà suivis par Git — un fichier tout nouveau, jamais ajouté auparavant, doit toujours passer par un `git add` explicite au moins une fois.
+> **Note :** `-a` (dans `-am`) n'ajoute **que** les fichiers déjà suivis par Git : un fichier tout nouveau, jamais ajouté auparavant, doit toujours passer par un `git add` explicite au moins une fois.
 
-Un bon message de commit décrit le **pourquoi** du changement, pas seulement le quoi (le diff montre déjà ce qui a changé) — utile pour comprendre l'historique bien après coup.
+Un bon message de commit décrit le **pourquoi** du changement, pas seulement le quoi (le diff montre déjà ce qui a changé), utile pour comprendre l'historique bien après coup.
 
 ## Consulter l'historique
 
@@ -74,5 +74,5 @@ git show a3f9c1d   # affiche le message, l'auteur, la date et le diff complet de
 |---|---|
 | **À retenir** | `git init`/`clone` créent ou récupèrent un dépôt ; `git add` place des modifications en staging ; `git commit` les enregistre ; `git log`/`diff`/`show` inspectent l'historique. |
 | **Outils utilisables** | `git status`, `git add`, `git commit`, `git log`, `git diff`, `git show`. |
-| **Pièges à éviter** | `git add .` ajoute aussi les fichiers non suivis — vérifier `.gitignore` avant ; `-am` n'ajoute pas les fichiers jamais suivis, un `git add` explicite reste nécessaire au moins une fois. |
+| **Pièges à éviter** | `git add .` ajoute aussi les fichiers non suivis : vérifier `.gitignore` avant ; `-am` n'ajoute pas les fichiers jamais suivis, un `git add` explicite reste nécessaire au moins une fois. |
 | **Bonnes pratiques** | Décrire le *pourquoi* du changement dans le message de commit, pas seulement le *quoi* ; vérifier `git status` avant chaque commit. |

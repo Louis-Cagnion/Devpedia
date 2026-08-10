@@ -4,7 +4,7 @@ order: 9
 
 # Résoudre un conflit de fusion
 
-Un **conflit** survient quand Git ne peut pas fusionner automatiquement deux versions d'un même fichier — typiquement, quand les **mêmes lignes** ont été modifiées différemment de part et d'autre (lors d'un `merge`, d'un `rebase`, ou d'un `pull`).
+Un **conflit** survient quand Git ne peut pas fusionner automatiquement deux versions d'un même fichier, typiquement quand les **mêmes lignes** ont été modifiées différemment de part et d'autre (lors d'un `merge`, d'un `rebase`, ou d'un `pull`).
 
 ## Ce que Git écrit dans le fichier en conflit
 
@@ -18,12 +18,12 @@ const TVA_TAUX = 0.20;
 
 - Tout ce qui est entre `<<<<<<< HEAD` et `=======` correspond à **votre** version (la branche sur laquelle vous êtes).
 - Tout ce qui est entre `=======` et `>>>>>>> feature` correspond à la version de l'**autre** branche (fusionnée).
-- Ces marqueurs (`<<<<<<<`, `=======`, `>>>>>>>`) sont insérés **directement dans le fichier** — le fichier ne compile/n'exécute plus tel quel tant qu'ils sont présents.
+- Ces marqueurs (`<<<<<<<`, `=======`, `>>>>>>>`) sont insérés **directement dans le fichier** : le fichier ne compile/n'exécute plus tel quel tant qu'ils sont présents.
 
 ## Résoudre le conflit
 
 1. Ouvrir le fichier, décider quelle version garder (ou combiner les deux manuellement).
-2. Supprimer entièrement les marqueurs `<<<<<<<`, `=======`, `>>>>>>>` — ils ne doivent **jamais** rester dans le fichier final.
+2. Supprimer entièrement les marqueurs `<<<<<<<`, `=======`, `>>>>>>>` : ils ne doivent **jamais** rester dans le fichier final.
 3. Marquer le fichier comme résolu, puis poursuivre l'opération en cours :
 
 ```bash
@@ -65,5 +65,5 @@ Voir aussi [Les branches](/?c=git&p=branches) et [Le rebase](/?c=git&p=rebase), 
 |---|---|
 | **À retenir** | Un conflit apparaît quand Git ne peut pas fusionner automatiquement deux versions des mêmes lignes. Les marqueurs `<<<<<<<`/`=======`/`>>>>>>>` doivent être retirés manuellement avant de continuer. |
 | **Outils utilisables** | `git status` (fichiers en conflit), `git add` + `git commit`/`git rebase --continue`, `git merge --abort`/`git rebase --abort`. |
-| **Pièges à éviter** | Oublier de supprimer un marqueur de conflit — le fichier reste invalide (ne compile/n'exécute plus) tant qu'il y est. |
+| **Pièges à éviter** | Oublier de supprimer un marqueur de conflit : le fichier reste invalide (ne compile/n'exécute plus) tant qu'il y est. |
 | **Bonnes pratiques** | Intégrer fréquemment les changements des autres pour limiter la divergence ; garder des branches de fonctionnalité courtes et ciblées. |

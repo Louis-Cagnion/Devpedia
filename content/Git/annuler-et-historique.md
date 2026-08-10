@@ -31,11 +31,11 @@ git reset --hard HEAD~1    # annule le dernier commit, le staging, ET les modifi
 | `--mixed` (défaut) | Oui | Réinitialisé | Conservé |
 | `--hard` | Oui | Réinitialisé | **Réinitialisé (perte de données)** |
 
-> **Note :** `git reset --hard` est l'une des commandes Git les plus destructrices — elle écrase silencieusement toute modification non commitée, sans possibilité de récupération simple. À utiliser uniquement en étant certain de ce qu'on abandonne.
+> **Note :** `git reset --hard` est l'une des commandes Git les plus destructrices : elle écrase silencieusement toute modification non commitée, sans possibilité de récupération simple. À utiliser uniquement en étant certain de ce qu'on abandonne.
 
 ## `git revert` : annuler un commit déjà partagé
 
-Contrairement à `reset` (qui réécrit l'historique en supprimant des commits), `revert` crée un **nouveau** commit qui applique l'inverse d'un commit précédent — l'historique original reste intact, ce qui le rend sûr même sur des commits déjà poussés et partagés :
+Contrairement à `reset` (qui réécrit l'historique en supprimant des commits), `revert` crée un **nouveau** commit qui applique l'inverse d'un commit précédent ; l'historique original reste intact, ce qui le rend sûr même sur des commits déjà poussés et partagés :
 
 ```bash
 git revert a3f9c1d
@@ -56,7 +56,7 @@ git checkout e4f5g6h        # récupère l'état d'un commit "perdu" retrouvé v
 git branch recuperation e4f5g6h   # ou crée directement une branche à partir de ce commit
 ```
 
-> **Note :** `git reflog` est souvent la solution de secours après une manipulation Git qui a mal tourné — tant qu'un commit a existé localement à un moment donné, il reste généralement retrouvable pendant plusieurs semaines, même s'il n'est plus référencé par aucune branche.
+> **Note :** `git reflog` est souvent la solution de secours après une manipulation Git qui a mal tourné : tant qu'un commit a existé localement à un moment donné, il reste généralement retrouvable pendant plusieurs semaines, même s'il n'est plus référencé par aucune branche.
 
 Voir aussi [Les branches](/?c=git&p=branches) et [Le rebase](/?c=git&p=rebase), dont les manipulations sont les plus concernées par ce chapitre.
 

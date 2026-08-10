@@ -4,7 +4,7 @@ order: 4
 
 # Les branches
 
-Une **branche** est simplement un pointeur mobile vers un commit — elle permet de faire évoluer une version du code (une nouvelle fonctionnalité, un correctif) sans toucher à la branche principale, puis de réunir les deux lignes de travail plus tard.
+Une **branche** est simplement un pointeur mobile vers un commit : elle permet de faire évoluer une version du code (une nouvelle fonctionnalité, un correctif) sans toucher à la branche principale, puis de réunir les deux lignes de travail plus tard.
 
 ## Créer et changer de branche
 
@@ -18,7 +18,7 @@ git switch nouvelle-fonctionnalite      # équivalent moderne de "checkout" pour
 git switch -c nouvelle-fonctionnalite    # équivalent moderne de "checkout -b"
 ```
 
-> **Note :** `git switch` (plus récent) et `git checkout` (historique, plus polyvalent mais moins explicite) font ici la même chose — `checkout` sert aussi à d'autres usages (restaurer un fichier, voir [Annuler des changements et naviguer dans l'historique](/?c=git&p=annuler-et-historique)), ce qui le rend plus ambigu à lire.
+> **Note :** `git switch` (plus récent) et `git checkout` (historique, plus polyvalent mais moins explicite) font ici la même chose : `checkout` sert aussi à d'autres usages (restaurer un fichier, voir [Annuler des changements et naviguer dans l'historique](/?c=git&p=annuler-et-historique)), ce qui le rend plus ambigu à lire.
 
 ## Ce qui se passe réellement en changeant de branche
 
@@ -39,7 +39,7 @@ git merge feature
 
 Deux cas possibles :
 
-**Fast-forward** : si `main` n'a reçu aucun commit depuis la création de `feature`, Git avance simplement le pointeur `main` jusqu'au dernier commit de `feature` — aucun nouveau commit de fusion n'est créé.
+**Fast-forward** : si `main` n'a reçu aucun commit depuis la création de `feature`, Git avance simplement le pointeur `main` jusqu'au dernier commit de `feature` : aucun nouveau commit de fusion n'est créé.
 
 ```text
 Avant :  main: A -- B          feature: A -- B -- C -- D

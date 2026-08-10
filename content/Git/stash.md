@@ -4,7 +4,7 @@ order: 6
 
 # Le stash
 
-`git stash` met de côté temporairement des modifications non commitées, pour retrouver un dossier de travail propre — utile quand il faut changer de branche en urgence (ex. corriger un bug critique) sans vouloir ni perdre son travail en cours, ni le commiter dans un état incomplet.
+`git stash` met de côté temporairement des modifications non commitées, pour retrouver un dossier de travail propre, utile quand il faut changer de branche en urgence (ex. corriger un bug critique) sans vouloir ni perdre son travail en cours, ni le commiter dans un état incomplet.
 
 ## Mettre de côté ses modifications
 
@@ -14,7 +14,7 @@ git stash push -m "en cours : formulaire de contact"  # avec un message, pour s'
 git stash -u                        # inclut aussi les fichiers non suivis (nouveaux, jamais ajoutés)
 ```
 
-Après un `git stash`, `git status` ne montre plus aucune modification — comme si on venait de commiter, sauf que rien n'apparaît dans l'historique (`git log`) : les modifications sont stockées à part, dans une pile.
+Après un `git stash`, `git status` ne montre plus aucune modification, comme si on venait de commiter, sauf que rien n'apparaît dans l'historique (`git log`) : les modifications sont stockées à part, dans une pile.
 
 ## Voir et récupérer ses stash
 
@@ -28,7 +28,7 @@ git stash apply stash@{1} # réapplique un stash précis
 git stash pop             # réapplique le stash le plus récent, ET le retire de la pile
 ```
 
-> **Note :** `apply` garde le stash dans la pile après l'avoir réappliqué (utile pour l'appliquer sur plusieurs branches successivement), tandis que `pop` le retire — le choix dépend du fait qu'on soit certain de ne plus en avoir besoin ailleurs.
+> **Note :** `apply` garde le stash dans la pile après l'avoir réappliqué (utile pour l'appliquer sur plusieurs branches successivement), tandis que `pop` le retire : le choix dépend du fait qu'on soit certain de ne plus en avoir besoin ailleurs.
 
 ## Supprimer un stash
 
@@ -39,9 +39,9 @@ git stash clear             # supprime TOUS les stash de la pile
 
 ## Sous le capot : un stash est un commit un peu particulier
 
-Un stash n'est ni plus ni moins qu'un commit (voir [L'architecture interne de Git](/?c=git&p=architecture-interne) pour la structure objet sous-jacente), pointé par la ref `refs/stash`. Son premier parent est le commit courant au moment du stash, et un second parent capture l'état de l'index (un troisième si `-u` a été utilisé, pour les fichiers non suivis) — c'est cette structure à plusieurs parents que `git stash apply`/`pop` interprètent pour reconstruire séparément l'index et le dossier de travail.
+Un stash n'est ni plus ni moins qu'un commit (voir [L'architecture interne de Git](/?c=git&p=architecture-interne) pour la structure objet sous-jacente), pointé par la ref `refs/stash`. Son premier parent est le commit courant au moment du stash, et un second parent capture l'état de l'index (un troisième si `-u` a été utilisé, pour les fichiers non suivis) : c'est cette structure à plusieurs parents que `git stash apply`/`pop` interprètent pour reconstruire séparément l'index et le dossier de travail.
 
-> **Piège :** un outil qui réécrit l'historique sans connaître cette convention (`git filter-branch`, voir [L'architecture interne de Git](/?c=git&p=architecture-interne)) peut aplatir ce commit à un seul parent — `apply`/`pop` deviennent alors inutilisables (`fatal: ... is not a stash-like commit`). Le contenu reste néanmoins récupérable directement, puisque le tree du commit reflète l'état complet du dossier de travail au moment du stash : `git checkout refs/stash -- fichier.txt`.
+> **Piège :** un outil qui réécrit l'historique sans connaître cette convention (`git filter-branch`, voir [L'architecture interne de Git](/?c=git&p=architecture-interne)) peut aplatir ce commit à un seul parent : `apply`/`pop` deviennent alors inutilisables (`fatal: ... is not a stash-like commit`). Le contenu reste néanmoins récupérable directement, puisque le tree du commit reflète l'état complet du dossier de travail au moment du stash : `git checkout refs/stash -- fichier.txt`.
 
 ## Cas d'usage typique
 

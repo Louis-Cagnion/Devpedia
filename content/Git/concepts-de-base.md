@@ -6,7 +6,7 @@ order: 1
 
 **Git** est un logiciel de *gestion de versions* : il garde en mémoire l'historique complet des modifications d'un projet, pour pouvoir revenir à un état antérieur, comprendre qui a changé quoi et pourquoi, ou faire travailler plusieurs personnes sur le même code sans écraser leur travail respectif. Les commandes qui suivent s'exécutent dans un [terminal](/?c=bases-de-l-informatique&p=le-terminal).
 
-Git suit l'évolution d'un projet en enregistrant, à chaque instant choisi, un **instantané** (snapshot) complet de l'état des fichiers — contrairement à l'idée reçue, ce n'est pas une simple liste de différences ligne par ligne, même si c'est souvent ainsi qu'on le visualise (`git diff`).
+Git suit l'évolution d'un projet en enregistrant, à chaque instant choisi, un **instantané** (snapshot) complet de l'état des fichiers : contrairement à l'idée reçue, ce n'est pas une simple liste de différences ligne par ligne, même si c'est souvent ainsi qu'on le visualise (`git diff`).
 
 ## Les trois zones de travail
 
@@ -31,7 +31,7 @@ Chaque commit référence :
 - Un instantané complet des fichiers suivis à cet instant.
 - Un ou plusieurs commits **parents** (le(s) commit(s) précédent(s)).
 - Un auteur, une date, et un message décrivant le changement.
-- Un identifiant unique : un **hash SHA-1** (ex. `a3f9c1d...`), calculé à partir du contenu — deux commits identiques auraient le même hash, et modifier un commit passé change son hash (et celui de tous ses descendants).
+- Un identifiant unique : un **hash SHA-1** (ex. `a3f9c1d...`), calculé à partir du contenu : deux commits identiques auraient le même hash, et modifier un commit passé change son hash (et celui de tous ses descendants).
 
 > **SHA-1** (*Secure Hash Algorithm 1*) est une fonction de hachage : elle transforme une donnée de taille quelconque en une empreinte de taille fixe (40 caractères hexadécimaux ici). Deux propriétés la rendent utile à Git : la même entrée donne toujours la même empreinte, et le moindre changement dans l'entrée produit une empreinte totalement différente. C'est ce qui permet d'identifier un contenu par son empreinte, et de détecter toute altération de l'historique.
 
@@ -43,7 +43,7 @@ Chaque commit pointe vers son parent, formant une chaîne : c'est cette chaîne 
 
 ## `HEAD` : où vous êtes actuellement
 
-`HEAD` est un pointeur qui désigne le commit sur lequel vous travaillez actuellement — la plupart du temps, il pointe vers le dernier commit de la [branche](/?c=git&p=branches) courante, et avance automatiquement à chaque nouveau commit.
+`HEAD` est un pointeur qui désigne le commit sur lequel vous travaillez actuellement ; la plupart du temps, il pointe vers le dernier commit de la [branche](/?c=git&p=branches) courante, et avance automatiquement à chaque nouveau commit.
 
 ## Fichiers suivis, non suivis, modifiés
 
@@ -51,7 +51,7 @@ Chaque commit pointe vers son parent, formant une chaîne : c'est cette chaîne 
 git status
 ```
 
-`git status` classe les fichiers du dossier de travail en plusieurs catégories : suivis et inchangés (rien à signaler), suivis et modifiés (pas encore ajoutés au staging), en attente dans le staging (prêts pour le prochain commit), ou non suivis — jamais ajoutés à Git, voir le chapitre [Le fichier .gitignore](/?c=git&p=gitignore) pour exclure volontairement certains fichiers de ce suivi.
+`git status` classe les fichiers du dossier de travail en plusieurs catégories : suivis et inchangés (rien à signaler), suivis et modifiés (pas encore ajoutés au staging), en attente dans le staging (prêts pour le prochain commit), ou non suivis, jamais ajoutés à Git (voir le chapitre [Le fichier .gitignore](/?c=git&p=gitignore)) pour exclure volontairement certains fichiers de ce suivi.
 
 Voir aussi [Les commandes essentielles](/?c=git&p=commandes-essentielles) pour la pratique concrète de ce cycle `add` → `commit`.
 
