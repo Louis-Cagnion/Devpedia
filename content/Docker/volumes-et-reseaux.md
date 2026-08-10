@@ -27,11 +27,11 @@ Ici, `mes-donnees` est un **volume nommé**, géré par Docker et stocké indép
 docker run -v $(pwd):/app mon-app:1.0
 ```
 
-> **Piège fréquent en développement** : un bind mount sur `/app` masque entièrement ce que l'image avait copié à cet endroit au moment du build — si l'image installe des dépendances dans `/app/node_modules` et que le bind mount écrase tout `/app` avec le dossier de l'hôte (où `node_modules` n'existe pas forcément), le conteneur démarre sans ses dépendances.
+> **Piège fréquent en développement** : un bind mount sur `/app` masque entièrement ce que l'image avait copié à cet endroit au moment du build : si l'image installe des dépendances dans `/app/node_modules` et que le bind mount écrase tout `/app` avec le dossier de l'hôte (où `node_modules` n'existe pas forcément), le conteneur démarre sans ses dépendances.
 
 ## Réseaux : les conteneurs se voient par leur nom
 
-Par défaut, Docker crée un réseau **bridge** : chaque conteneur y reçoit sa propre adresse IP interne, et deux conteneurs sur le même réseau peuvent se joindre directement **par leur nom**, sans configuration manuelle — Docker fait résoudre ce nom en interne, sur le même principe que le [DNS](/?c=langages-de-programmation&s=php&p=securite) qui traduit un nom de domaine en adresse IP sur Internet.
+Par défaut, Docker crée un réseau **bridge** : chaque conteneur y reçoit sa propre adresse IP interne, et deux conteneurs sur le même réseau peuvent se joindre directement **par leur nom**, sans configuration manuelle : Docker fait résoudre ce nom en interne, sur le même principe que le [DNS](/?c=langages-de-programmation&s=php&p=securite) qui traduit un nom de domaine en adresse IP sur Internet.
 
 ```bash
 docker network create mon-reseau
@@ -39,7 +39,7 @@ docker run --network mon-reseau --name base mysql:8
 docker run --network mon-reseau --name api mon-app:1.0
 ```
 
-Depuis le conteneur `api`, se connecter à la base de données se fait en visant l'hôte `base` (ex. `mysql://base:3306`), pas une adresse IP — cette adresse changerait à chaque redémarrage, le nom, lui, reste stable.
+Depuis le conteneur `api`, se connecter à la base de données se fait en visant l'hôte `base` (ex. `mysql://base:3306`), pas une adresse IP : cette adresse changerait à chaque redémarrage, le nom, lui, reste stable.
 
 ## Publier un port vers l'extérieur
 
@@ -60,7 +60,7 @@ docker run --network host mon-app:1.0
 
 Ce mode ne crée aucune interface réseau propre au conteneur : il réutilise directement celle de la machine hôte, sans passer par le [namespace réseau](/?c=docker&p=concepts-de-base) qui isole normalement chaque conteneur. Un port ouvert par l'application à l'intérieur est donc immédiatement un port ouvert sur l'hôte lui-même, sans mapping `-p` ni traduction d'adresse.
 
-> **Note :** ce gain de simplicité (et d'un peu de performance réseau) se paie par la perte d'une des deux barrières d'isolation vues dans [Les concepts de base](/?c=docker&p=concepts-de-base) — un conteneur compromis en mode `host` voit et peut potentiellement atteindre tout ce qui écoute sur le réseau de l'hôte, exactement comme un processus classique de ce même hôte. C'est pourquoi ce mode est généralement évité pour un service exposé publiquement, au profit du réseau bridge par défaut.
+> **Note :** ce gain de simplicité (et d'un peu de performance réseau) se paie par la perte d'une des deux barrières d'isolation vues dans [Les concepts de base](/?c=docker&p=concepts-de-base) : un conteneur compromis en mode `host` voit et peut potentiellement atteindre tout ce qui écoute sur le réseau de l'hôte, exactement comme un processus classique de ce même hôte. C'est pourquoi ce mode est généralement évité pour un service exposé publiquement, au profit du réseau bridge par défaut.
 
 ---
 
@@ -68,7 +68,7 @@ Ce mode ne crée aucune interface réseau propre au conteneur : il réutilise di
 
 | | |
 |---|---|
-| **À retenir** | Le système de fichiers d'un conteneur est éphémère — seul un volume (nommé ou bind mount) persiste après sa suppression. Les conteneurs d'un même réseau Docker se joignent directement par leur nom. |
+| **À retenir** | Le système de fichiers d'un conteneur est éphémère : seul un volume (nommé ou bind mount) persiste après sa suppression. Les conteneurs d'un même réseau Docker se joignent directement par leur nom. |
 | **Outils utilisables** | `-v` (volume/bind mount), `docker network create`, `-p` pour publier un port vers l'extérieur. |
 | **Pièges à éviter** | Un bind mount qui masque un dossier déjà peuplé par l'image (ex. `node_modules` installé au build, écrasé par le bind mount) ; le mode `--network host` qui supprime l'isolation réseau du conteneur. |
 | **Bonnes pratiques** | Utiliser un volume nommé pour des données persistantes (base de données), un bind mount pour le code source en développement ; éviter `--network host` pour un service exposé publiquement. |

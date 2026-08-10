@@ -23,9 +23,9 @@ Machine virtuelle      Conteneur
 └─────────────────┘
 ```
 
-L'**hyperviseur** est la couche logicielle qui crée et gère les machines virtuelles, en répartissant les ressources physiques (CPU, mémoire) entre elles — c'est cette couche supplémentaire, absente chez un conteneur, qui explique l'écart de poids entre les deux approches.
+L'**hyperviseur** est la couche logicielle qui crée et gère les machines virtuelles, en répartissant les ressources physiques (CPU, mémoire) entre elles : c'est cette couche supplémentaire, absente chez un conteneur, qui explique l'écart de poids entre les deux approches.
 
-> **Conséquence directe :** un conteneur Linux ne peut pas tourner nativement sous Windows ou macOS — Docker Desktop y démarre en réalité une petite VM Linux pour héberger les conteneurs. Sur un serveur Linux, en revanche, aucune couche de virtualisation n'est nécessaire.
+> **Conséquence directe :** un conteneur Linux ne peut pas tourner nativement sous Windows ou macOS : Docker Desktop y démarre en réalité une petite VM Linux pour héberger les conteneurs. Sur un serveur Linux, en revanche, aucune couche de virtualisation n'est nécessaire.
 
 ## Sous le capot : namespaces et cgroups
 
@@ -44,13 +44,13 @@ Une **image** est un modèle immuable, en lecture seule : un système de fichier
 Image (lecture seule)  -->  docker run  -->  Conteneur (image + couche inscriptible + processus)
 ```
 
-Une même image peut donc démarrer plusieurs conteneurs indépendants, chacun avec sa propre couche inscriptible — modifier un conteneur ne modifie jamais l'image dont il est issu.
+Une même image peut donc démarrer plusieurs conteneurs indépendants, chacun avec sa propre couche inscriptible : modifier un conteneur ne modifie jamais l'image dont il est issu.
 
 ## Les images sont construites en couches
 
 Une image est empilée en **couches** (*layers*), chacune correspondant à une instruction du [Dockerfile](/?c=docker&p=dockerfile) : installer un paquet, copier du code, etc. Ces couches sont partagées et mises en cache entre images : si deux images partagent leurs premières couches (ex. la même image de base), Docker ne les stocke, ni ne les télécharge, qu'une seule fois.
 
-> **Note :** c'est une déduplication automatique par contenu, sur le même principe que le [stockage d'objets de Git](/?c=git&p=architecture-interne) — deux couches identiques produisent le même identifiant et ne sont jamais dupliquées sur disque.
+> **Note :** c'est une déduplication automatique par contenu, sur le même principe que le [stockage d'objets de Git](/?c=git&p=architecture-interne) : deux couches identiques produisent le même identifiant et ne sont jamais dupliquées sur disque.
 
 ---
 
@@ -58,7 +58,7 @@ Une image est empilée en **couches** (*layers*), chacune correspondant à une i
 
 | | |
 |---|---|
-| **À retenir** | Un conteneur est un processus isolé (namespaces + cgroups) qui partage le noyau de l'hôte — plus léger qu'une machine virtuelle, qui virtualise du matériel complet. Une image est un modèle immuable en couches ; un conteneur est une instance en cours d'exécution de cette image. |
-| **Outils utilisables** | Aucune commande spécifique ici — ce chapitre pose le vocabulaire (image, conteneur, namespace, cgroup) réutilisé dans tous les suivants. |
-| **Pièges à éviter** | Confondre image et conteneur — modifier un conteneur ne modifie jamais l'image dont il est issu. |
+| **À retenir** | Un conteneur est un processus isolé (namespaces + cgroups) qui partage le noyau de l'hôte, plus léger qu'une machine virtuelle, qui virtualise du matériel complet. Une image est un modèle immuable en couches ; un conteneur est une instance en cours d'exécution de cette image. |
+| **Outils utilisables** | Aucune commande spécifique ici : ce chapitre pose le vocabulaire (image, conteneur, namespace, cgroup) réutilisé dans tous les suivants. |
+| **Pièges à éviter** | Confondre image et conteneur : modifier un conteneur ne modifie jamais l'image dont il est issu. |
 | **Bonnes pratiques** | Comprendre que l'isolation d'un conteneur repose sur le noyau Linux (namespaces/cgroups), pas sur une technologie propre à Docker, pour mieux évaluer ses limites de sécurité. |

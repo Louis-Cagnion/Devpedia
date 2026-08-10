@@ -19,11 +19,11 @@ docker run -d --name serveur -p 8080:80 mon-app:1.0
 
 | Option | Effet |
 |---|---|
-| `-d` | Détaché (*detached*) : le conteneur tourne en arrière-plan, le terminal reste disponible — même principe que `&` en Bash |
+| `-d` | Détaché (*detached*) : le conteneur tourne en arrière-plan, le terminal reste disponible, même principe que `&` en Bash |
 | `--name` | Donne un nom explicite au conteneur, plutôt qu'un identifiant généré aléatoirement |
 | `-p 8080:80` | Publie le port : le port `80` du conteneur devient accessible sur le port `8080` de l'hôte (voir [Volumes et réseaux](/?c=docker&p=volumes-et-reseaux)) |
 | `-it` | Interactif + pseudo-terminal (*tty*) : nécessaire pour un conteneur avec lequel on veut interagir directement (ex. un shell) |
-| `--rm` | Supprime automatiquement le conteneur dès qu'il s'arrête — pratique pour un usage ponctuel, sans laisser de conteneurs arrêtés s'accumuler |
+| `--rm` | Supprime automatiquement le conteneur dès qu'il s'arrête : pratique pour un usage ponctuel, sans laisser de conteneurs arrêtés s'accumuler |
 | `-e VAR=valeur` | Définit une variable d'environnement dans le conteneur |
 
 ## Observer ce qui tourne
@@ -54,7 +54,7 @@ docker rm serveur          # supprime un conteneur arrêté
 docker rmi mon-app:1.0     # supprime une image
 ```
 
-> **Note :** `docker stop` puis `docker kill` reproduisent exactement la même hiérarchie SIGTERM → SIGKILL vue au chapitre sur la gestion des processus — Docker ne réinvente pas un mécanisme d'arrêt, il pilote celui du système hôte.
+> **Note :** `docker stop` puis `docker kill` reproduisent exactement la même hiérarchie SIGTERM → SIGKILL vue au chapitre sur la gestion des processus : Docker ne réinvente pas un mécanisme d'arrêt, il pilote celui du système hôte.
 
 ```bash
 docker system prune        # supprime conteneurs arrêtés, images non utilisées, caches de build inutilisés

@@ -4,7 +4,7 @@ order: 5
 
 # Docker Compose
 
-Un projet réel implique rarement un seul conteneur : une API, sa base de données, un cache, un **reverse proxy** (un serveur qui reçoit toutes les requêtes entrantes et les redirige vers le bon service interne — Nginx ou Traefik, par exemple —, servant de point d'entrée unique)... Enchaîner les `docker run` à la main devient vite ingérable. **Docker Compose** décrit tous ces services dans un unique fichier déclaratif au format **YAML** (*YAML Ain't Markup Language* — un format texte structuré par indentation, largement utilisé pour la configuration), `docker-compose.yml`, et les démarre ensemble.
+Un projet réel implique rarement un seul conteneur : une API, sa base de données, un cache, un **reverse proxy** (un serveur qui reçoit toutes les requêtes entrantes et les redirige vers le bon service interne, Nginx ou Traefik par exemple, servant de point d'entrée unique)... Enchaîner les `docker run` à la main devient vite ingérable. **Docker Compose** décrit tous ces services dans un unique fichier déclaratif au format **YAML** (*YAML Ain't Markup Language* : un format texte structuré par indentation, largement utilisé pour la configuration), `docker-compose.yml`, et les démarre ensemble.
 
 ## Un exemple complet
 
@@ -36,12 +36,12 @@ docker compose logs -f api  # suit les logs d'un service précis
 docker compose down         # arrête et supprime les conteneurs (les volumes nommés survivent)
 ```
 
-> **YAML est sensible à l'indentation**, exactement comme [Python](/?c=langages-de-programmation&s=python&p=python) : deux lignes au même niveau doivent avoir la même indentation, et une tabulation y est généralement invalide (YAML n'accepte que des espaces). Une erreur d'indentation change silencieusement la structure du document plutôt que de provoquer une erreur explicite — à vérifier en premier en cas de comportement inattendu.
+> **YAML est sensible à l'indentation**, exactement comme [Python](/?c=langages-de-programmation&s=python&p=python) : deux lignes au même niveau doivent avoir la même indentation, et une tabulation y est généralement invalide (YAML n'accepte que des espaces). Une erreur d'indentation change silencieusement la structure du document plutôt que de provoquer une erreur explicite : à vérifier en premier en cas de comportement inattendu.
 
 ## Ce que Compose automatise
 
-- **Le réseau** : tous les services d'un même fichier sont placés sur un réseau commun automatiquement — `base` est déjà joignable par son nom depuis `api`, sans `docker network create` manuel (voir [Volumes et réseaux](/?c=docker&p=volumes-et-reseaux)).
-- **L'ordre de démarrage** : `depends_on` démarre `base` avant `api`. Cela garantit l'ordre de **démarrage** du conteneur, pas que le service interne (ici MySQL) soit déjà prêt à accepter des connexions — une application qui se connecte trop tôt doit encore prévoir une nouvelle tentative (cf. [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts), rubrique Performance) plutôt que de supposer que la base répond dès le premier instant.
+- **Le réseau** : tous les services d'un même fichier sont placés sur un réseau commun automatiquement : `base` est déjà joignable par son nom depuis `api`, sans `docker network create` manuel (voir [Volumes et réseaux](/?c=docker&p=volumes-et-reseaux)).
+- **L'ordre de démarrage** : `depends_on` démarre `base` avant `api`. Cela garantit l'ordre de **démarrage** du conteneur, pas que le service interne (ici MySQL) soit déjà prêt à accepter des connexions : une application qui se connecte trop tôt doit encore prévoir une nouvelle tentative (cf. [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts), rubrique Performance) plutôt que de supposer que la base répond dès le premier instant.
 - **Les volumes déclarés une fois** : `donnees-mysql` défini en bas du fichier est créé automatiquement s'il n'existe pas encore.
 
 ## Rebuild après un changement de Dockerfile
@@ -54,7 +54,7 @@ docker compose up -d --build   # force la reconstruction des images avant de dé
 
 ## Redémarrage automatique en cas de crash
 
-Par défaut, un conteneur qui plante reste arrêté — `restart` définit la conduite à tenir :
+Par défaut, un conteneur qui plante reste arrêté ; `restart` définit la conduite à tenir :
 
 | Valeur | Comportement |
 |---|---|
@@ -72,7 +72,7 @@ services:
 
 ## Déclarer explicitement son réseau
 
-Compose crée un réseau par défaut même sans rubrique `networks:` (cf. plus haut) — le déclarer explicitement reste préférable dès qu'on veut lui donner un nom clair ou plusieurs réseaux distincts (ex. isoler la base de données du reste) :
+Compose crée un réseau par défaut même sans rubrique `networks:` (cf. plus haut) ; le déclarer explicitement reste préférable dès qu'on veut lui donner un nom clair ou plusieurs réseaux distincts (ex. isoler la base de données du reste) :
 
 ```yaml
 services:

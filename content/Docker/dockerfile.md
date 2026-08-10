@@ -26,13 +26,13 @@ CMD ["node", "server.js"]    # commande exécutée quand le CONTENEUR démarre, 
 | Instruction | Rôle |
 |---|---|
 | `FROM` | Image de base sur laquelle construire (toujours la première instruction) |
-| `WORKDIR` | Change le dossier courant pour le reste du Dockerfile — évite les `cd` répétés |
+| `WORKDIR` | Change le dossier courant pour le reste du Dockerfile : évite les `cd` répétés |
 | `COPY` | Copie des fichiers de l'hôte vers l'image |
 | `RUN` | Exécute une commande au moment de la construction, son résultat est capturé dans une nouvelle couche |
 | `ENV` | Définit une variable d'environnement, persistante dans l'image et pour le conteneur |
 | `EXPOSE` | Documente le port sur lequel l'application écoute (informatif seulement) |
 | `CMD` | Commande par défaut au démarrage du conteneur, remplaçable en ligne de commande |
-| `ENTRYPOINT` | Comme `CMD`, mais non remplaçable — utile pour forcer un exécutable fixe et ne laisser que ses arguments varier |
+| `ENTRYPOINT` | Comme `CMD`, mais non remplaçable : utile pour forcer un exécutable fixe et ne laisser que ses arguments varier |
 
 > **`RUN` vs `CMD`** : `RUN` s'exécute une fois, **pendant** la construction de l'image (installer des paquets, compiler du code) et son résultat est figé dans une couche. `CMD` ne s'exécute jamais pendant le build : il ne fait qu'enregistrer la commande à lancer **à chaque démarrage** d'un conteneur à partir de cette image.
 
@@ -42,13 +42,13 @@ CMD ["node", "server.js"]    # commande exécutée quand le CONTENEUR démarre, 
 
 Le processus lancé par `CMD`/`ENTRYPOINT` reçoit le PID 1 à l'intérieur du conteneur (cf. les [namespaces](/?c=docker&p=concepts-de-base)) : dès qu'il se termine, le conteneur s'arrête, quel que soit le nombre d'autres processus encore actifs à l'intérieur.
 
-C'est pourquoi une commande qui ne se termine jamais mais ne fait par ailleurs **rien** (`tail -f /dev/null`, `sleep infinity`, `while true; do sleep 1; done`) est un mauvais réflexe pour "garder le conteneur en vie" : ça masque le vrai problème (le service qu'on veut réellement faire tourner s'est arrêté, ou n'a jamais été lancé) plutôt que de le résoudre. La bonne pratique est de lancer directement, en PID 1, le service voulu **au premier plan** (*foreground*) — la plupart des daemons ont une option dédiée pour ça, qui les empêche de se détacher en arrière-plan comme ils le feraient nativement (`nginx -g 'daemon off;'`, par exemple) :
+C'est pourquoi une commande qui ne se termine jamais mais ne fait par ailleurs **rien** (`tail -f /dev/null`, `sleep infinity`, `while true; do sleep 1; done`) est un mauvais réflexe pour "garder le conteneur en vie" : ça masque le vrai problème (le service qu'on veut réellement faire tourner s'est arrêté, ou n'a jamais été lancé) plutôt que de le résoudre. La bonne pratique est de lancer directement, en PID 1, le service voulu **au premier plan** (*foreground*) ; la plupart des daemons ont une option dédiée pour ça, qui les empêche de se détacher en arrière-plan comme ils le feraient nativement (`nginx -g 'daemon off;'`, par exemple) :
 
 ```dockerfile
 CMD ["nginx", "-g", "daemon off;"]   # nginx reste au premier plan : Docker a un processus à surveiller
 ```
 
-> **Note :** PID 1 a un rôle particulier sous Linux, indépendamment de Docker (cf. chapitre [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash) : le noyau ne lui applique pas l'action par défaut d'un signal comme `SIGTERM` s'il n'a pas explicitement installé son propre gestionnaire — `docker stop` peut donc sembler ne rien faire sur un processus qui ne gère pas ce signal lui-même. C'est aussi PID 1 qui doit récupérer (*reap*) les processus zombies qu'il lance ; un point à surveiller si l'image lance elle-même plusieurs sous-processus.
+> **Note :** PID 1 a un rôle particulier sous Linux, indépendamment de Docker (cf. chapitre [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash) : le noyau ne lui applique pas l'action par défaut d'un signal comme `SIGTERM` s'il n'a pas explicitement installé son propre gestionnaire : `docker stop` peut donc sembler ne rien faire sur un processus qui ne gère pas ce signal lui-même. C'est aussi PID 1 qui doit récupérer (*reap*) les processus zombies qu'il lance ; un point à surveiller si l'image lance elle-même plusieurs sous-processus.
 
 ## Chaque instruction crée une couche, et l'ordre compte
 
@@ -69,7 +69,7 @@ C'est pourquoi les fichiers qui changent le moins souvent (dépendances) sont co
 
 ## Les builds multi-étapes
 
-Un build multi-étapes sépare l'environnement de **compilation** (lourd : compilateur, outils de build) de l'environnement d'**exécution** (léger : seulement le binaire final) — le même principe que séparer compilation et édition de liens en C (cf. chapitre [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation)) : le résultat final n'a pas besoin de la chaîne d'outils qui l'a produit.
+Un build multi-étapes sépare l'environnement de **compilation** (lourd : compilateur, outils de build) de l'environnement d'**exécution** (léger : seulement le binaire final), le même principe que séparer compilation et édition de liens en C (cf. chapitre [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation)) : le résultat final n'a pas besoin de la chaîne d'outils qui l'a produit.
 
 ```dockerfile
 # Étape 1 : compilation, avec toute la toolchain Go
@@ -84,7 +84,7 @@ COPY --from=builder /app/serveur /usr/local/bin/serveur
 CMD ["serveur"]
 ```
 
-Seul le binaire `serveur` est copié de l'étape `builder` vers l'image finale — le compilateur Go (plusieurs centaines de Mo) ne fait jamais partie de l'image livrée.
+Seul le binaire `serveur` est copié de l'étape `builder` vers l'image finale : le compilateur Go (plusieurs centaines de Mo) ne fait jamais partie de l'image livrée.
 
 ## `.dockerignore`
 
