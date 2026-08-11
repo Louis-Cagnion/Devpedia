@@ -4,7 +4,7 @@ order: 7
 
 # Le responsive design et les media queries
 
-Le **responsive design** consiste à concevoir une page qui s'adapte à n'importe quelle taille d'écran (mobile, tablette, ordinateur) — une nécessité depuis que la majorité du trafic web se fait sur mobile, et la principale raison d'être des **media queries**.
+Le **responsive design** consiste à concevoir une page qui s'adapte à n'importe quelle taille d'écran (mobile, tablette, ordinateur) : une nécessité depuis que la majorité du trafic web se fait sur mobile, et la principale raison d'être des **media queries**.
 
 ## Les unités relatives, avant même les media queries
 
@@ -19,7 +19,7 @@ div {
 }
 ```
 
-> **Note :** `rem` est généralement préféré à `em` pour les tailles de police, car il reste prévisible même dans des composants imbriqués (un `em` sur un élément dont le parent a déjà un `em` modifié s'accumule de façon souvent non désirée) — `rem` se base toujours sur la même référence (`<html>`), quelle que soit la profondeur d'imbrication.
+> **Note :** `rem` est généralement préféré à `em` pour les tailles de police, car il reste prévisible même dans des composants imbriqués (un `em` sur un élément dont le parent a déjà un `em` modifié s'accumule de façon souvent non désirée) ; `rem` se base toujours sur la même référence (`<html>`), quelle que soit la profondeur d'imbrication.
 
 ## Les media queries
 
@@ -55,7 +55,7 @@ div {
 }
 ```
 
-> **Best practice :** l'approche "*mobile first*" (utiliser `min-width`, styliser d'abord pour le plus petit écran, puis ajouter de la complexité pour les écrans plus grands) est généralement préférée à l'inverse — elle force à réfléchir d'abord au contenu essentiel, et s'aligne avec le fait que la majorité du trafic web est mobile.
+> **Best practice :** l'approche "*mobile first*" (utiliser `min-width`, styliser d'abord pour le plus petit écran, puis ajouter de la complexité pour les écrans plus grands) est généralement préférée à l'inverse : elle force à réfléchir d'abord au contenu essentiel, et s'aligne avec le fait que la majorité du trafic web est mobile.
 
 ## Points de rupture (*breakpoints*) courants
 
@@ -65,7 +65,7 @@ div {
 | `768px – 1023px` | Tablette |
 | `≥ 1024px` | Ordinateur de bureau |
 
-> **Note :** ces valeurs ne sont **pas** une norme officielle — elles varient selon les projets et les frameworks CSS. Ce qui compte réellement, c'est de faire varier ses points de rupture en fonction du contenu lui-même (le moment où la mise en page commence à mal fonctionner visuellement), pas seulement de reproduire des tailles d'appareils physiques précises.
+> **Note :** ces valeurs ne sont **pas** une norme officielle : elles varient selon les projets et les frameworks CSS. Ce qui compte réellement, c'est de faire varier ses points de rupture en fonction du contenu lui-même (le moment où la mise en page commence à mal fonctionner visuellement), pas seulement de reproduire des tailles d'appareils physiques précises.
 
 ## Autres media features utiles
 

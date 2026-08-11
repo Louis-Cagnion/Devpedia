@@ -4,7 +4,7 @@ order: 5
 
 # Flexbox
 
-**Flexbox** (*Flexible Box Layout*) organise des éléments le long d'un **seul axe** (horizontal ou vertical), en distribuant l'espace disponible entre eux — la solution moderne pour aligner, centrer et répartir des éléments, remplaçant des techniques historiques bien plus fragiles (flottants, [tableaux](/?c=langages-de-balisage&s=html&p=tableaux) détournés de leur usage d'origine).
+**Flexbox** (*Flexible Box Layout*) organise des éléments le long d'un **seul axe** (horizontal ou vertical), en distribuant l'espace disponible entre eux, la solution moderne pour aligner, centrer et répartir des éléments, remplaçant des techniques historiques bien plus fragiles (flottants, [tableaux](/?c=langages-de-balisage&s=html&p=tableaux) détournés de leur usage d'origine).
 
 ## Activer Flexbox
 
@@ -27,7 +27,7 @@ Dès que `display: flex` est posé sur un élément, tous ses **enfants directs*
 }
 ```
 
-Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) et d'**axe secondaire** (perpendiculaire) — les propriétés d'alignement ci-dessous s'appliquent différemment selon cet axe.
+Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) et d'**axe secondaire** (perpendiculaire) : les propriétés d'alignement ci-dessous s'appliquent différemment selon cet axe.
 
 ## Aligner sur l'axe principal : `justify-content`
 
@@ -74,7 +74,7 @@ Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) 
 }
 ```
 
-> **Note (accessibilité) :** `order` ne change que l'ordre **visuel** — l'ordre de tabulation au clavier et celui lu par un lecteur d'écran restent ceux du HTML. Un décalage entre les deux peut désorienter un utilisateur au clavier ou avec un lecteur d'écran ; à réserver aux réordonnancements purement décoratifs, jamais pour réparer un ordre de contenu qui n'a pas de sens dans le HTML lui-même.
+> **Note (accessibilité) :** `order` ne change que l'ordre **visuel** : l'ordre de tabulation au clavier et celui lu par un lecteur d'écran restent ceux du HTML. Un décalage entre les deux peut désorienter un utilisateur au clavier ou avec un lecteur d'écran ; à réserver aux réordonnancements purement décoratifs, jamais pour réparer un ordre de contenu qui n'a pas de sens dans le HTML lui-même.
 
 ```css
 .colonne-principale { flex-grow: 2; }   /* occupe deux fois plus d'espace que .colonne-laterale */
@@ -114,5 +114,5 @@ Voir aussi [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), pour une mise en p
 |---|---|
 | **À retenir** | Flexbox aligne des éléments sur un seul axe (`flex-direction`). `justify-content` aligne sur l'axe principal, `align-items` sur l'axe secondaire. `flex-grow`/`flex-shrink`/`flex-basis` contrôlent la taille des enfants. |
 | **Outils utilisables** | `display: flex`, `justify-content`, `align-items`, `flex-wrap`, `flex-grow`/`shrink`/`basis`, `order`. |
-| **Pièges à éviter** | Utiliser `order` pour réordonner un contenu qui a un vrai sens de lecture — l'ordre visuel change, mais pas l'ordre de tabulation clavier ni celui lu par un lecteur d'écran. |
+| **Pièges à éviter** | Utiliser `order` pour réordonner un contenu qui a un vrai sens de lecture : l'ordre visuel change, mais pas l'ordre de tabulation clavier ni celui lu par un lecteur d'écran. |
 | **Bonnes pratiques** | Réserver `order` aux réordonnancements purement décoratifs ; utiliser Grid plutôt que Flexbox dès que la mise en page a besoin de deux dimensions (lignes ET colonnes). |

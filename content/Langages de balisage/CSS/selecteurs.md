@@ -4,7 +4,7 @@ order: 1
 
 # Les sélecteurs
 
-Un **sélecteur** détermine à quels éléments HTML une règle CSS s'applique — du plus simple (une balise) au plus précis (une combinaison d'attributs et de position dans l'arbre du document).
+Un **sélecteur** détermine à quels éléments HTML une règle CSS s'applique : du plus simple (une balise) au plus précis (une combinaison d'attributs et de position dans l'arbre du document).
 
 ## Sélecteurs de base
 
@@ -15,7 +15,7 @@ h1 { }             /* tous les éléments <h1> */
 * { }                   /* absolument tous les éléments */
 ```
 
-> **Note :** une `class` peut être réutilisée sur plusieurs éléments, un `id` doit rester **unique** dans toute la page — un sélecteur `#id` cible donc toujours un seul élément précis, contrairement à `.classe`.
+> **Note :** une `class` peut être réutilisée sur plusieurs éléments, un `id` doit rester **unique** dans toute la page : un sélecteur `#id` cible donc toujours un seul élément précis, contrairement à `.classe`.
 
 ## Combinateurs
 
@@ -56,7 +56,7 @@ p::before { content: "→ "; }  /* insère du contenu AVANT le texte réel du pa
 p::after { content: " ✓"; }    /* insère du contenu APRÈS */
 ```
 
-> **Note :** `::before`/`::after` nécessitent une propriété `content` pour être visibles (même vide, `content: "";`) — très utilisés pour ajouter un élément purement décoratif (icône, flèche...) sans alourdir le HTML d'une balise supplémentaire sans réelle signification sémantique (voir [Sémantique HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5)).
+> **Note :** `::before`/`::after` nécessitent une propriété `content` pour être visibles (même vide, `content: "";`), très utilisés pour ajouter un élément purement décoratif (icône, flèche...) sans alourdir le HTML d'une balise supplémentaire sans réelle signification sémantique (voir [Sémantique HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5)).
 
 ## La spécificité : que se passe-t-il en cas de conflit ?
 
@@ -70,7 +70,7 @@ p { color: blue; }
 <p id="paragraphe-unique" class="texte-important">Quelle couleur ?</p>
 ```
 
-Un `id` a une spécificité plus forte qu'une `class`, elle-même plus forte qu'un sélecteur de balise — le paragraphe s'affichera donc en **vert** (`#paragraphe-unique` gagne), quel que soit l'ordre d'écriture des règles dans le fichier.
+Un `id` a une spécificité plus forte qu'une `class`, elle-même plus forte qu'un sélecteur de balise : le paragraphe s'affichera donc en **vert** (`#paragraphe-unique` gagne), quel que soit l'ordre d'écriture des règles dans le fichier.
 
 | Type de sélecteur | Poids (du plus faible au plus fort) |
 |---|---|

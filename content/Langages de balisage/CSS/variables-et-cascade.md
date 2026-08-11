@@ -4,7 +4,7 @@ order: 2
 
 # Variables CSS et la cascade
 
-Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables personnalisées** (réutiliser une valeur à plusieurs endroits), et la **cascade** (comment CSS résout un conflit entre plusieurs règles qui ciblent le même élément) — le "C" de CSS (*Cascading*) fait directement référence à ce second mécanisme.
+Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables personnalisées** (réutiliser une valeur à plusieurs endroits), et la **cascade** (comment CSS résout un conflit entre plusieurs règles qui ciblent le même élément) : le "C" de CSS (*Cascading*) fait directement référence à ce second mécanisme.
 
 ## Les variables CSS (propriétés personnalisées)
 
@@ -20,7 +20,7 @@ Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables person
 }
 ```
 
-`:root` cible l'élément racine du document (`<html>`) — déclarer les variables là les rend accessibles **partout** dans la feuille de style. Changer une seule fois `--couleur-primaire` met à jour instantanément tous les endroits qui l'utilisent, sans "chercher-remplacer" dans tout le fichier.
+`:root` cible l'élément racine du document (`<html>`) : déclarer les variables là les rend accessibles **partout** dans la feuille de style. Changer une seule fois `--couleur-primaire` met à jour instantanément tous les endroits qui l'utilisent, sans "chercher-remplacer" dans tout le fichier.
 
 ```css
 .bouton {
@@ -41,7 +41,7 @@ Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables person
 }
 ```
 
-> **Note :** contrairement à une variable Sass/Less (résolues une fois pour toutes à la compilation), une variable CSS native est **vivante** dans le navigateur — modifiable même en JavaScript (`element.style.setProperty('--marge-interne', '30px')`), et réévaluée dynamiquement selon l'élément où elle est consultée.
+> **Note :** contrairement à une variable Sass/Less (résolues une fois pour toutes à la compilation), une variable CSS native est **vivante** dans le navigateur : modifiable même en JavaScript (`element.style.setProperty('--marge-interne', '30px')`), et réévaluée dynamiquement selon l'élément où elle est consultée.
 
 ## La cascade : trois critères, dans cet ordre
 
@@ -54,9 +54,9 @@ p { color: blue !important; }
 p { color: red; }   /* ignoré : la règle du dessus a !important */
 ```
 
-`!important` court-circuite tout le reste de la cascade — une règle avec `!important` gagne, quelle que soit sa spécificité ou son ordre d'écriture.
+`!important` court-circuite tout le reste de la cascade : une règle avec `!important` gagne, quelle que soit sa spécificité ou son ordre d'écriture.
 
-> **Best practice :** éviter `!important` en usage courant — il rend le débogage difficile (impossible à surcharger simplement) et casse la logique naturelle de la cascade. À réserver à des cas très exceptionnels (souvent pour surcharger un style tiers qu'on ne contrôle pas).
+> **Best practice :** éviter `!important` en usage courant : il rend le débogage difficile (impossible à surcharger simplement) et casse la logique naturelle de la cascade. À réserver à des cas très exceptionnels (souvent pour surcharger un style tiers qu'on ne contrôle pas).
 
 ### 2. La spécificité (voir [Les sélecteurs](/?c=langages-de-balisage&s=css&p=selecteurs))
 
@@ -85,7 +85,7 @@ body {
 }
 ```
 
-Les propriétés liées au **texte** (`color`, `font-family`, `font-size`, `line-height`...) sont généralement héritées par défaut ; les propriétés liées à la **boîte** (`border`, `margin`, `padding`, `background`...) ne le sont jamais — c'est un mécanisme distinct de la cascade, bien qu'il interagisse avec elle (une règle héritée a la spécificité la plus faible possible, facilement surchargée par n'importe quelle règle directement appliquée à l'élément).
+Les propriétés liées au **texte** (`color`, `font-family`, `font-size`, `line-height`...) sont généralement héritées par défaut ; les propriétés liées à la **boîte** (`border`, `margin`, `padding`, `background`...) ne le sont jamais : c'est un mécanisme distinct de la cascade, bien qu'il interagisse avec elle (une règle héritée a la spécificité la plus faible possible, facilement surchargée par n'importe quelle règle directement appliquée à l'élément).
 
 ---
 
@@ -95,5 +95,5 @@ Les propriétés liées au **texte** (`color`, `font-family`, `font-size`, `line
 |---|---|
 | **À retenir** | Les variables CSS (`--nom`, lues via `var()`) évitent de répéter une valeur. Face à un conflit entre règles, la cascade tranche dans l'ordre : `!important` > spécificité > ordre d'écriture. L'héritage (texte oui, boîte non) est un mécanisme distinct qui interagit avec la cascade. |
 | **Outils utilisables** | `:root` pour des variables globales, `var(--nom, valeur-de-secours)`, `element.style.setProperty()` pour les modifier en JavaScript. |
-| **Pièges à éviter** | Abuser de `!important` — il court-circuite toute la cascade et rend le style difficile à surcharger ensuite. |
+| **Pièges à éviter** | Abuser de `!important` : il court-circuite toute la cascade et rend le style difficile à surcharger ensuite. |
 | **Bonnes pratiques** | Réserver `!important` à des cas exceptionnels (surcharger un style tiers non contrôlé) ; définir les couleurs/espacements récurrents comme variables sur `:root` plutôt que de les répéter. |
