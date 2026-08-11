@@ -4,7 +4,7 @@ order: 8
 
 # Les classes et la programmation orientée objet
 
-Contrairement à PHP ou Python, l'objet en JavaScript ne repose pas fondamentalement sur des classes : il repose sur des **prototypes**. La syntaxe `class` (depuis ES6) n'est que du sucre syntaxique par-dessus ce mécanisme plus ancien — comprendre les deux aide à ne pas être surpris par certains comportements.
+Contrairement à PHP ou Python, l'objet en JavaScript ne repose pas fondamentalement sur des classes : il repose sur des **prototypes**. La syntaxe `class` (depuis ES6) n'est que du sucre syntaxique par-dessus ce mécanisme plus ancien ; comprendre les deux aide à ne pas être surpris par certains comportements.
 
 ## Déclarer une classe
 
@@ -111,7 +111,7 @@ console.log(typeof Vehicule);           // "function" -> une classe EST une fonc
 console.log(v.__proto__ === Vehicule.prototype);  // true
 ```
 
-Chaque objet JavaScript porte une référence cachée (`__proto__`) vers un autre objet, son **prototype** — quand une propriété/méthode n'est pas trouvée directement sur l'objet, JavaScript la cherche automatiquement sur son prototype, puis le prototype de ce prototype, etc. (la "chaîne de prototypes"). `description()` n'est en réalité définie **qu'une seule fois**, sur `Vehicule.prototype`, et partagée par toutes les instances — pas dupliquée dans chaque objet créé par `new Vehicule(...)`.
+Chaque objet JavaScript porte une référence cachée (`__proto__`) vers un autre objet, son **prototype** : quand une propriété/méthode n'est pas trouvée directement sur l'objet, JavaScript la cherche automatiquement sur son prototype, puis le prototype de ce prototype, etc. (la "chaîne de prototypes"). `description()` n'est en réalité définie **qu'une seule fois**, sur `Vehicule.prototype`, et partagée par toutes les instances, pas dupliquée dans chaque objet créé par `new Vehicule(...)`.
 
 > **Note :** cette distinction explique pourquoi modifier `Vehicule.prototype.description` affecte **immédiatement** tous les objets déjà créés : ils ne possèdent pas leur propre copie de la méthode, ils la cherchent dynamiquement sur le prototype partagé à chaque appel.
 

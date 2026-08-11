@@ -4,7 +4,7 @@ order: 13
 
 # La programmation asynchrone (callbacks, Promises, async/await)
 
-JavaScript s'exécute sur un **seul thread** (contrairement aux [threads](/?c=langages-de-programmation&s=c&p=threads) en C) : il ne peut faire qu'une seule chose à la fois. Pourtant, une requête réseau ou un minuteur ne bloquent pas le programme entier en attendant — c'est le rôle du modèle asynchrone, construit autour de la **boucle d'événements** (*event loop*).
+JavaScript s'exécute sur un **seul thread** (contrairement aux [threads](/?c=langages-de-programmation&s=c&p=threads) en C) : il ne peut faire qu'une seule chose à la fois. Pourtant, une requête réseau ou un minuteur ne bloquent pas le programme entier en attendant : c'est le rôle du modèle asynchrone, construit autour de la **boucle d'événements** (*event loop*).
 
 ## Le principe : la boucle d'événements
 
@@ -18,7 +18,7 @@ console.log("3");
 
 Le moteur JavaScript exécute tout le code **synchrone** en premier (la pile d'appels, *call stack*) ; les opérations asynchrones (minuteurs, requêtes réseau, événements) sont déléguées à l'environnement d'exécution (navigateur/Node.js), qui place leur callback dans une **file d'attente**, exécutée seulement une fois la pile d'appels vidée. C'est ce mécanisme qui permet à un seul thread de rester réactif sans jamais être bloqué par une opération lente.
 
-## Les callbacks — et le "callback hell"
+## Les callbacks et le "callback hell"
 
 ```javascript
 lireFichier("a.txt", (erreurA, contenuA) => {
@@ -30,11 +30,11 @@ lireFichier("a.txt", (erreurA, contenuA) => {
 });
 ```
 
-Enchaîner plusieurs opérations asynchrones par callbacks imbriqués devient vite illisible ("*callback hell*") — les Promises, puis `async`/`await`, ont été introduits précisément pour résoudre ce problème.
+Enchaîner plusieurs opérations asynchrones par callbacks imbriqués devient vite illisible ("*callback hell*") : les Promises, puis `async`/`await`, ont été introduits précisément pour résoudre ce problème.
 
 ## Les Promises
 
-Une **Promise** représente une valeur pas encore disponible, mais qui le sera (ou échouera) plus tard — trois états possibles : *pending* (en attente), *fulfilled* (résolue), *rejected* (rejetée).
+Une **Promise** représente une valeur pas encore disponible, mais qui le sera (ou échouera) plus tard ; trois états possibles : *pending* (en attente), *fulfilled* (résolue), *rejected* (rejetée).
 
 ```javascript
 function attendre(millisecondes) {
@@ -71,7 +71,7 @@ Promise.all([
 });
 ```
 
-> **Note :** `Promise.all` lance les deux requêtes **en même temps** (pas l'une après l'autre) et attend qu'elles aboutissent toutes — si l'une échoue, la Promise globale est immédiatement rejetée, même si l'autre a réussi.
+> **Note :** `Promise.all` lance les deux requêtes **en même temps** (pas l'une après l'autre) et attend qu'elles aboutissent toutes : si l'une échoue, la Promise globale est immédiatement rejetée, même si l'autre a réussi.
 
 ## `async`/`await` : du sucre syntaxique par-dessus les Promises
 
@@ -84,7 +84,7 @@ async function chargerUtilisateur(id) {
 ```
 
 - `async` devant une fonction fait qu'elle renvoie **toujours** une Promise, implicitement.
-- `await` ne peut être utilisé qu'à l'intérieur d'une fonction `async` — il "met en pause" cette fonction (sans bloquer le reste du programme) jusqu'à ce que la Promise soit résolue ou rejetée.
+- `await` ne peut être utilisé qu'à l'intérieur d'une fonction `async` : il "met en pause" cette fonction (sans bloquer le reste du programme) jusqu'à ce que la Promise soit résolue ou rejetée.
 
 ```javascript
 // Équivalent strictement identique, mais bien plus lisible qu'avec .then() imbriqués :

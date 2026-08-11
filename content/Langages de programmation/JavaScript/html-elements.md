@@ -40,7 +40,7 @@ element.insertAdjacentHTML('beforeend',   "<p>à la fin du contenu</p>");
 element.insertAdjacentHTML('afterend',    "<p>après l'élément</p>");
 ```
 
-> **Note (sécurité) :** comme `innerHTML` (voir plus bas), `insertAdjacentHTML` interprète son argument comme du HTML — ne jamais y insérer une donnée provenant de l'utilisateur sans l'avoir échappée, sous peine de faille XSS (voir [La sécurité](/?c=langages-de-programmation&s=php&p=securite), même principe).
+> **Note (sécurité) :** comme `innerHTML` (voir plus bas), `insertAdjacentHTML` interprète son argument comme du HTML : ne jamais y insérer une donnée provenant de l'utilisateur sans l'avoir échappée, sous peine de faille XSS (voir [La sécurité](/?c=langages-de-programmation&s=php&p=securite), même principe).
 
 **`remove`** supprime l'élément du DOM.
 ```javascript
@@ -76,7 +76,7 @@ document.getElementsByClassName('ma-classe'); // HTMLCollection (live)
 document.getElementsByTagName('p');           // HTMLCollection (live)
 ```
 
-> **Note :** une `HTMLCollection` (renvoyée par `getElementsByClassName`/`getElementsByTagName`) est **live** : elle se met à jour automatiquement si le DOM change, contrairement à la `NodeList` renvoyée par `querySelectorAll` (figée au moment de l'appel). Modifier le DOM (ajouter/retirer des éléments correspondants) **pendant** qu'on parcourt une collection live peut donc sauter ou repasser sur des éléments de façon inattendue — une bonne raison de préférer `querySelectorAll` dès qu'on prévoit de modifier la page pendant le parcours.
+> **Note :** une `HTMLCollection` (renvoyée par `getElementsByClassName`/`getElementsByTagName`) est **live** : elle se met à jour automatiquement si le DOM change, contrairement à la `NodeList` renvoyée par `querySelectorAll` (figée au moment de l'appel). Modifier le DOM (ajouter/retirer des éléments correspondants) **pendant** qu'on parcourt une collection live peut donc sauter ou repasser sur des éléments de façon inattendue : une bonne raison de préférer `querySelectorAll` dès qu'on prévoit de modifier la page pendant le parcours.
 
 ---
 
@@ -127,7 +127,7 @@ element.className = 'nouvelle';  // ⚠️ écrase tout
 
 ## Le contenu
 
-**`textContent`** accède au contenu textuel d'un élément (toutes les balises enfants ignorées). Assigner une valeur remplace le contenu entier par du texte brut — les balises HTML éventuellement présentes sont échappées et affichées telles quelles, jamais interprétées.
+**`textContent`** accède au contenu textuel d'un élément (toutes les balises enfants ignorées). Assigner une valeur remplace le contenu entier par du texte brut : les balises HTML éventuellement présentes sont échappées et affichées telles quelles, jamais interprétées.
 ```javascript
 element.textContent;              // 'Mon texte'
 element.textContent = 'Nouveau';  // remplace tout le contenu par du texte
@@ -139,7 +139,7 @@ element.innerHTML;                        // '<strong>Mon texte</strong>'
 element.innerHTML = '<em>Nouveau</em>';   // ⚠️ écrase tout, interprète le HTML
 ```
 
-> **Note (sécurité) :** assigner à `innerHTML` une donnée provenant de l'utilisateur (non fiable) est une faille XSS classique — le contenu est interprété comme du vrai HTML/JavaScript exécutable, pas comme du texte. `textContent` (ci-dessus) reste sûr par défaut, puisqu'il n'interprète jamais son contenu.
+> **Note (sécurité) :** assigner à `innerHTML` une donnée provenant de l'utilisateur (non fiable) est une faille XSS classique : le contenu est interprété comme du vrai HTML/JavaScript exécutable, pas comme du texte. `textContent` (ci-dessus) reste sûr par défaut, puisqu'il n'interprète jamais son contenu.
 
 ---
 
@@ -231,8 +231,8 @@ element.offsetHeight;
 
 ## Ressources
 
-- [MDN (*Mozilla Developer Network*, la documentation de référence du web) — HTMLElement](https://developer.mozilla.org/fr/docs/Web/API/HTMLElement)
-- [MDN — Document.querySelector](https://developer.mozilla.org/fr/docs/Web/API/Document/querySelector)
-- [MDN — Element.classList](https://developer.mozilla.org/fr/docs/Web/API/Element/classList)
-- [MDN — Element.setAttribute](https://developer.mozilla.org/fr/docs/Web/API/Element/setAttribute)
-- [MDN — insertAdjacentHTML](https://developer.mozilla.org/fr/docs/Web/API/Element/insertAdjacentHTML)
+- [MDN (*Mozilla Developer Network*, la documentation de référence du web) : HTMLElement](https://developer.mozilla.org/fr/docs/Web/API/HTMLElement)
+- [MDN : Document.querySelector](https://developer.mozilla.org/fr/docs/Web/API/Document/querySelector)
+- [MDN : Element.classList](https://developer.mozilla.org/fr/docs/Web/API/Element/classList)
+- [MDN : Element.setAttribute](https://developer.mozilla.org/fr/docs/Web/API/Element/setAttribute)
+- [MDN : insertAdjacentHTML](https://developer.mozilla.org/fr/docs/Web/API/Element/insertAdjacentHTML)

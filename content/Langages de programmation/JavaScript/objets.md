@@ -110,7 +110,7 @@ Le **spread** (`...`) permet de "déplier" un objet, ce qui est utile pour le co
     const fusion = { ...obj, ville: 'Paris' }; // { nom: 'Jean', age: 25, ville: 'Paris' }
 ```
 
-> **Piège :** `{ ...obj }` et `Object.assign({}, obj)` ne font qu'une copie **superficielle** (*shallow copy*) : si une propriété est elle-même un objet ou un tableau, la copie et l'original continuent de partager la **même** référence à cet objet imbriqué — le modifier depuis l'un le modifie aussi depuis l'autre.
+> **Piège :** `{ ...obj }` et `Object.assign({}, obj)` ne font qu'une copie **superficielle** (*shallow copy*) : si une propriété est elle-même un objet ou un tableau, la copie et l'original continuent de partager la **même** référence à cet objet imbriqué : le modifier depuis l'un le modifie aussi depuis l'autre.
 >
 > **Bonne pratique :** pour une copie vraiment indépendante d'un objet aux propriétés imbriquées, utiliser `structuredClone(obj)` (natif, moderne) ou reconstruire manuellement les niveaux imbriqués.
 
@@ -122,5 +122,5 @@ Le **spread** (`...`) permet de "déplier" un objet, ce qui est utile pour le co
 |---|---|
 | **À retenir** | Un objet stocke des paires clé/valeur, accessibles par notation pointée ou par crochets. `Object.keys`/`values`/`entries` exposent son contenu ; le spread et le destructuring copient ou extraient des propriétés. |
 | **Outils utilisables** | `Object.keys`/`values`/`entries`/`assign`/`freeze`/`fromEntries`, `hasOwnProperty`, l'opérateur `in`. |
-| **Pièges à éviter** | Croire qu'une copie par spread ou `Object.assign` est profonde — elle ne l'est pas pour les propriétés imbriquées. |
+| **Pièges à éviter** | Croire qu'une copie par spread ou `Object.assign` est profonde : elle ne l'est pas pour les propriétés imbriquées. |
 | **Bonnes pratiques** | Utiliser `structuredClone()` pour une copie réellement indépendante d'un objet imbriqué ; `Object.freeze()` pour empêcher toute modification accidentelle d'un objet censé rester constant. |

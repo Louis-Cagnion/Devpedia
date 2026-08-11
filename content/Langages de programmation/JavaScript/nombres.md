@@ -4,7 +4,7 @@ order: 6
 
 # Les nombres
 
-JavaScript se distingue par un choix radical : il n'a longtemps eu **qu'un seul type numérique**, `number`, qui est un flottant double précision (IEEE 754). Il ne distingue donc pas les entiers des décimaux — `1` et `1.0` sont la même valeur.
+JavaScript se distingue par un choix radical : il n'a longtemps eu **qu'un seul type numérique**, `number`, qui est un flottant double précision (IEEE 754). Il ne distingue donc pas les entiers des décimaux : `1` et `1.0` sont la même valeur.
 
 > Les comportements surprenants qui en découlent (`0.1 + 0.2 !== 0.3`, la limite des grands entiers, `NaN !== NaN`) ne sont **pas** propres à JavaScript : ils viennent de l'encodage des flottants, commun à tous les langages. Leur explication complète se trouve dans le chapitre [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants). Ce chapitre-ci se concentre sur ce que JavaScript en fait.
 
@@ -69,7 +69,7 @@ Deux contraintes à connaître :
 5n / 2n;       // 2n : division entiere, la partie decimale est tronquee
 ```
 
-`BigInt` sert aux grands identifiants et à la cryptographie, pas aux calculs décimaux — il ne gère que des entiers.
+`BigInt` sert aux grands identifiants et à la cryptographie, pas aux calculs décimaux : il ne gère que des entiers.
 
 ## `NaN` et les infinis
 
@@ -109,7 +109,7 @@ Number("");         // 0     -> piege classique : la chaine vide devient 0
 // "1 234 567,89 €"
 ```
 
-`toLocaleString` gère seul les séparateurs de milliers et la virgule décimale française — inutile de les reconstruire à la main.
+`toLocaleString` gère seul les séparateurs de milliers et la virgule décimale française : inutile de les reconstruire à la main.
 
 ## Résumé
 
@@ -128,7 +128,7 @@ Number("");         // 0     -> piege classique : la chaine vide devient 0
 
 | | |
 |---|---|
-| **À retenir** | JavaScript n'a qu'un seul type numérique (`number`, flottant IEEE 754) — pas de distinction entier/décimal native. `BigInt` lève la limite des grands entiers exacts (2⁵³ − 1). |
+| **À retenir** | JavaScript n'a qu'un seul type numérique (`number`, flottant IEEE 754) : pas de distinction entier/décimal native. `BigInt` lève la limite des grands entiers exacts (2⁵³ − 1). |
 | **Outils utilisables** | `Math.trunc`, `Number.isNaN`, `Number.isSafeInteger`, `toFixed`/`toLocaleString` pour l'affichage. |
 | **Pièges à éviter** | Comparer deux flottants avec `===` ; utiliser `isNaN()` global (convertit avant de tester) plutôt que `Number.isNaN()`. |
 | **Bonnes pratiques** | Travailler en centimes pour des montants ; transporter un grand identifiant en chaîne de caractères plutôt qu'en `number`. |

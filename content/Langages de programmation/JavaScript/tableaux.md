@@ -123,7 +123,7 @@ Les prototypes sont des fonctions intégrées à l'objet array par défaut, perm
     arr.concat([6, 7]); // [1, 2, 3, 4, 5, 6, 7]
 ```
 
-> **Piège :** certaines méthodes modifient le tableau d'origine (`push`, `pop`, `splice`, `sort`, `reverse`), d'autres renvoient toujours une copie sans y toucher (`slice`, `map`, `filter`, `concat`). Confondre les deux catégories est une source fréquente de bugs — par exemple `arr.sort()` change silencieusement `arr` lui-même, alors qu'on s'attend parfois à obtenir une copie triée.
+> **Piège :** certaines méthodes modifient le tableau d'origine (`push`, `pop`, `splice`, `sort`, `reverse`), d'autres renvoient toujours une copie sans y toucher (`slice`, `map`, `filter`, `concat`). Confondre les deux catégories est une source fréquente de bugs : par exemple `arr.sort()` change silencieusement `arr` lui-même, alors qu'on s'attend parfois à obtenir une copie triée.
 
 ### Le destructuring et le spread
 

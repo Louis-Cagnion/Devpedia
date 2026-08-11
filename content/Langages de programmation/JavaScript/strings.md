@@ -87,7 +87,7 @@ Les prototypes sont des fonctions intégrées à l'objet string par défaut, per
     str.concat(' !'); // 'hello world !'
 ```
 
-> **Piège :** toutes ces méthodes renvoient une **nouvelle** string, sans jamais modifier l'originale — une string est immuable en JavaScript. `str.toUpperCase();` seule ne change rien à `str` ; il faut réassigner : `str = str.toUpperCase();`.
+> **Piège :** toutes ces méthodes renvoient une **nouvelle** string, sans jamais modifier l'originale : une string est immuable en JavaScript. `str.toUpperCase();` seule ne change rien à `str` ; il faut réassigner : `str = str.toUpperCase();`.
 
 ### Les regex
 

@@ -4,7 +4,7 @@ order: 12
 
 # Le DOM et la gestion des événements
 
-Le **DOM** (*Document Object Model*) est la représentation en mémoire d'une page HTML, sous forme d'un arbre d'objets manipulables par JavaScript — chaque balise devient un nœud de cet arbre, avec ses propres propriétés et méthodes.
+Le **DOM** (*Document Object Model*) est la représentation en mémoire d'une page HTML, sous forme d'un arbre d'objets manipulables par JavaScript : chaque balise devient un nœud de cet arbre, avec ses propres propriétés et méthodes.
 
 ## Sélectionner des éléments
 
@@ -14,7 +14,7 @@ document.querySelector(".carte");            // le PREMIER élément corresponda
 document.querySelectorAll(".carte");          // TOUS les éléments correspondants (NodeList)
 ```
 
-> **Note :** `querySelector`/`querySelectorAll` acceptent n'importe quel [sélecteur CSS](/?c=langages-de-balisage&s=css&p=selecteurs) — `.classe`, `#id`, `div > p`, `[data-role="bouton"]`... c'est la méthode la plus flexible.
+> **Note :** `querySelector`/`querySelectorAll` acceptent n'importe quel [sélecteur CSS](/?c=langages-de-balisage&s=css&p=selecteurs) : `.classe`, `#id`, `div > p`, `[data-role="bouton"]`... c'est la méthode la plus flexible.
 
 ## Modifier un élément
 
@@ -30,7 +30,7 @@ titre.classList.toggle("actif");              // ajoute si absente, retire si pr
 titre.setAttribute("data-id", "42");
 ```
 
-> **Note :** `innerHTML` avec une donnée provenant de l'utilisateur est une faille XSS classique (voir [La sécurité](/?c=langages-de-programmation&s=php&p=securite), même principe) — un attaquant pourrait y injecter du code exécutable. `textContent` reste sûr par défaut, car il traite toujours son contenu comme du texte brut.
+> **Note :** `innerHTML` avec une donnée provenant de l'utilisateur est une faille XSS classique (voir [La sécurité](/?c=langages-de-programmation&s=php&p=securite), même principe) : un attaquant pourrait y injecter du code exécutable. `textContent` reste sûr par défaut, car il traite toujours son contenu comme du texte brut.
 
 ## Créer et insérer un élément
 
@@ -71,7 +71,7 @@ document.querySelector("form").addEventListener("submit", (evenement) => {
 
 ## Propagation des événements et délégation
 
-Un événement se propage de l'élément ciblé vers ses parents (*bubbling*) — ce qui permet d'écouter un événement sur un parent commun plutôt que sur chaque enfant individuellement :
+Un événement se propage de l'élément ciblé vers ses parents (*bubbling*), ce qui permet d'écouter un événement sur un parent commun plutôt que sur chaque enfant individuellement :
 
 ```javascript
 document.querySelector("#liste").addEventListener("click", (evenement) => {

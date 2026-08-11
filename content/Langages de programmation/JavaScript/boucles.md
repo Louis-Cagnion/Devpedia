@@ -4,7 +4,7 @@ order: 2
 
 # Les boucles
 
-JavaScript propose les boucles classiques (`for`, `while`, `do...while`), plus deux boucles dédiées au parcours de collections (`for...of`, `for...in`) — et, dans la pratique quotidienne, les méthodes fonctionnelles des tableaux (`map`, `filter`...) remplacent souvent une boucle explicite.
+JavaScript propose les boucles classiques (`for`, `while`, `do...while`), plus deux boucles dédiées au parcours de collections (`for...of`, `for...in`) ; et, dans la pratique quotidienne, les méthodes fonctionnelles des tableaux (`map`, `filter`...) remplacent souvent une boucle explicite.
 
 ## `for` classique
 
@@ -54,7 +54,7 @@ for (const cle in personne) {
 }
 ```
 
-> **Note :** `for...in` parcourt les **clés énumérables** d'un objet — ne jamais l'utiliser sur un tableau (`for...in` parcourrait les index, mais aussi n'importe quelle propriété ajoutée manuellement au tableau, et ne garantit pas l'ordre) : `for...of` ou `.forEach()` sont les bons outils pour un tableau.
+> **Note :** `for...in` parcourt les **clés énumérables** d'un objet : ne jamais l'utiliser sur un tableau (`for...in` parcourrait les index, mais aussi n'importe quelle propriété ajoutée manuellement au tableau, et ne garantit pas l'ordre) : `for...of` ou `.forEach()` sont les bons outils pour un tableau.
 
 ## `break` et `continue`
 
@@ -91,5 +91,5 @@ Voir aussi [Les fonctions](/?c=langages-de-programmation&s=javascript&p=fonction
 |---|---|
 | **À retenir** | `for`/`while`/`do...while` sont les boucles classiques ; `for...of` parcourt les valeurs d'un itérable, `for...in` les clés d'un objet. Les méthodes fonctionnelles (`map`/`filter`/`reduce`) remplacent souvent une boucle explicite. |
 | **Outils utilisables** | `break`/`continue`, `forEach`/`map`/`filter`/`reduce`. |
-| **Pièges à éviter** | Utiliser `for...in` sur un tableau — parcourt aussi des propriétés ajoutées manuellement, sans garantir l'ordre. |
+| **Pièges à éviter** | Utiliser `for...in` sur un tableau : parcourt aussi des propriétés ajoutées manuellement, sans garantir l'ordre. |
 | **Bonnes pratiques** | `for...of` ou `.forEach()` pour un tableau ; les méthodes fonctionnelles pour transformer/filtrer plutôt qu'une boucle manuelle. |

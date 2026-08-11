@@ -4,7 +4,7 @@ order: 3
 
 # Les fonctions
 
-JavaScript propose trois façons d'écrire une fonction — déclaration, expression, fonction fléchée — qui ne sont **pas** de simples variantes stylistiques : elles diffèrent par le *hoisting* et par la gestion de `this`.
+JavaScript propose trois façons d'écrire une fonction (déclaration, expression, fonction fléchée) qui ne sont **pas** de simples variantes stylistiques : elles diffèrent par le *hoisting* et par la gestion de `this`.
 
 ## Déclaration de fonction
 
@@ -31,7 +31,7 @@ const addition = function (a, b) {
 };
 ```
 
-Ici, `addition` est une variable comme une autre : elle n'existe qu'à partir de la ligne où elle est assignée (pas de hoisting de la fonction elle-même, seulement de la déclaration `const`/`let`, qui reste inutilisable avant assignation — la "zone morte temporelle").
+Ici, `addition` est une variable comme une autre : elle n'existe qu'à partir de la ligne où elle est assignée (pas de hoisting de la fonction elle-même, seulement de la déclaration `const`/`let`, qui reste inutilisable avant assignation (la "zone morte temporelle").
 
 ## Fonctions fléchées (*arrow functions*)
 
@@ -62,7 +62,7 @@ const objet = {
 };
 ```
 
-> **Note :** une fonction classique (`function`) reçoit son propre `this`, déterminé par **comment elle est appelée** (dynamique). Une fonction fléchée n'a **pas** son propre `this` : elle réutilise celui de la fonction englobante au moment où elle est écrite (lexical) — c'est la raison principale de préférer les fonctions fléchées pour des callbacks internes à une méthode.
+> **Note :** une fonction classique (`function`) reçoit son propre `this`, déterminé par **comment elle est appelée** (dynamique). Une fonction fléchée n'a **pas** son propre `this` : elle réutilise celui de la fonction englobante au moment où elle est écrite (lexical) : c'est la raison principale de préférer les fonctions fléchées pour des callbacks internes à une méthode.
 
 ## Paramètres par défaut, rest et spread
 
@@ -104,7 +104,7 @@ compter();   // 2 -> "total" a persisté entre les appels, propre à CETTE insta
 
 | | |
 |---|---|
-| **À retenir** | Une déclaration de fonction est *hoisted* (utilisable avant sa définition), une expression ne l'est pas. Une fonction fléchée n'a pas son propre `this` — elle réutilise celui de la fonction englobante. Une closure conserve l'accès aux variables de sa fonction englobante après l'exécution de celle-ci. |
+| **À retenir** | Une déclaration de fonction est *hoisted* (utilisable avant sa définition), une expression ne l'est pas. Une fonction fléchée n'a pas son propre `this` : elle réutilise celui de la fonction englobante. Une closure conserve l'accès aux variables de sa fonction englobante après l'exécution de celle-ci. |
 | **Outils utilisables** | Paramètres par défaut, `...` (rest/spread). |
-| **Pièges à éviter** | Utiliser une fonction classique (`function`) comme callback dans une méthode, en s'attendant à ce que `this` désigne l'objet englobant — une fonction fléchée est nécessaire pour ça. |
+| **Pièges à éviter** | Utiliser une fonction classique (`function`) comme callback dans une méthode, en s'attendant à ce que `this` désigne l'objet englobant : une fonction fléchée est nécessaire pour ça. |
 | **Bonnes pratiques** | Préférer les fonctions fléchées pour un callback interne à une méthode, afin de conserver le bon `this`. |

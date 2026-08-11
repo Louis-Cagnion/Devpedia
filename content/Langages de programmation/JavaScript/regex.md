@@ -136,7 +136,7 @@ On peut aussi nommer les groupes pour les rendre plus lisibles, et y accéder pa
     resultNamed.groups.annee; // '2024'
 ```
 
-> **Piège :** une regex littérale avec le flag `g`, réutilisée plusieurs fois avec `.test()` ou `.exec()`, conserve un état interne (`lastIndex`) entre les appels — un second `.test()` sur la même regex peut renvoyer `false` alors que le texte correspond, simplement parce que la recherche reprend après la position de la correspondance précédente. Créer une nouvelle regex (ou réinitialiser `lastIndex = 0`) évite ce piège.
+> **Piège :** une regex littérale avec le flag `g`, réutilisée plusieurs fois avec `.test()` ou `.exec()`, conserve un état interne (`lastIndex`) entre les appels : un second `.test()` sur la même regex peut renvoyer `false` alors que le texte correspond, simplement parce que la recherche reprend après la position de la correspondance précédente. Créer une nouvelle regex (ou réinitialiser `lastIndex = 0`) évite ce piège.
 
 ---
 
