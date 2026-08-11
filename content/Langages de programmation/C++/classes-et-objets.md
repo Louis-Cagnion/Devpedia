@@ -4,7 +4,7 @@ order: 3
 
 # Les classes et objets
 
-Une **classe** C++ regroupe ce qu'un [`struct` C](/?c=langages-de-programmation&s=c&p=variables) sépare en deux : les données ET les fonctions qui les manipulent, au même endroit — avec en plus un contrôle explicite de ce qui est visible depuis l'extérieur.
+Une **classe** C++ regroupe ce qu'un [`struct` C](/?c=langages-de-programmation&s=c&p=variables) sépare en deux : les données ET les fonctions qui les manipulent, au même endroit, avec en plus un contrôle explicite de ce qui est visible depuis l'extérieur.
 
 ## Déclarer une classe
 
@@ -31,7 +31,7 @@ std::cout << v.description();   // "Peugeot 308"
 - `private` : accessible uniquement depuis l'intérieur de la classe (les méthodes de `Vehicule`).
 - `protected` : comme `private`, mais aussi accessible aux classes qui héritent de celle-ci (voir [Héritage et polymorphisme](/?c=langages-de-programmation&s=cpp&p=heritage-et-polymorphisme)).
 
-> **Note :** contrairement à un `struct` C (où toutes les données sont libres d'accès), une classe C++ cache par défaut ses membres (`private` implicite) — c'est l'**encapsulation** : l'extérieur n'interagit qu'avec ce que la classe expose volontairement.
+> **Note :** contrairement à un `struct` C (où toutes les données sont libres d'accès), une classe C++ cache par défaut ses membres (`private` implicite) : c'est l'**encapsulation**, l'extérieur n'interagit qu'avec ce que la classe expose volontairement.
 
 ## Le constructeur, sous deux écritures
 
@@ -46,7 +46,7 @@ Vehicule(std::string marque, std::string modele) {
 }
 ```
 
-La liste d'initialisation (après le `:`) construit directement chaque membre avec la bonne valeur, plutôt que de le construire une première fois (valeur par défaut), puis de l'écraser dans le corps du constructeur — un détail de performance qui devient significatif pour des objets coûteux à construire.
+La liste d'initialisation (après le `:`) construit directement chaque membre avec la bonne valeur, plutôt que de le construire une première fois (valeur par défaut), puis de l'écraser dans le corps du constructeur : un détail de performance qui devient significatif pour des objets coûteux à construire.
 
 ## Le destructeur
 
@@ -66,7 +66,7 @@ private:
 };
 ```
 
-Le destructeur (`~NomClasse()`) s'exécute automatiquement dès que l'objet est détruit (fin de portée pour un objet local, `delete` pour un objet alloué dynamiquement) — c'est la base du mécanisme [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii), central en C++ pour ne jamais oublier de libérer une ressource.
+Le destructeur (`~NomClasse()`) s'exécute automatiquement dès que l'objet est détruit (fin de portée pour un objet local, `delete` pour un objet alloué dynamiquement) : c'est la base du mécanisme [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii), central en C++ pour ne jamais oublier de libérer une ressource.
 
 ## Méthodes `const`
 
@@ -76,7 +76,7 @@ std::string description() const {   // "const" ici : garantit que cette méthode
 }
 ```
 
-Marquer une méthode `const` documente et fait respecter par le compilateur qu'elle ne modifie aucun membre de l'objet — utile en particulier pour permettre l'appel de cette méthode sur un objet lui-même déclaré `const`.
+Marquer une méthode `const` documente et fait respecter par le compilateur qu'elle ne modifie aucun membre de l'objet : utile en particulier pour permettre l'appel de cette méthode sur un objet lui-même déclaré `const`.
 
 ## Membres et méthodes statiques
 

@@ -4,7 +4,7 @@ order: 9
 
 # La STL : itérateurs, algorithmes et lambdas
 
-Un **itérateur** est une abstraction qui permet de parcourir n'importe quel [conteneur STL](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) de la même façon, qu'il s'agisse d'un `vector` (tableau contigu) ou d'une `list` (liste chaînée) — le code de parcours ne change pas, même si la structure sous-jacente est radicalement différente.
+Un **itérateur** est une abstraction qui permet de parcourir n'importe quel [conteneur STL](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) de la même façon, qu'il s'agisse d'un `vector` (tableau contigu) ou d'une `list` (liste chaînée) : le code de parcours ne change pas, même si la structure sous-jacente est radicalement différente.
 
 ## Le principe de l'itérateur
 
@@ -20,7 +20,7 @@ while (it != nombres.end()) {
 
 - `begin()` renvoie un itérateur pointant sur le premier élément.
 - `end()` renvoie un itérateur "juste après" le dernier élément (jamais déréférencé directement, seulement comparé).
-- `*it` déréférence l'itérateur courant, `++it` avance au suivant — une syntaxe volontairement proche de celle d'un pointeur brut.
+- `*it` déréférence l'itérateur courant, `++it` avance au suivant : une syntaxe volontairement proche de celle d'un pointeur brut.
 
 ## Le for-each moderne (C++11+)
 
@@ -30,11 +30,11 @@ for (int n : nombres) {
 }
 ```
 
-Cette syntaxe s'appuie **exactement** sur le même mécanisme d'itérateurs en coulisses — c'est un raccourci syntaxique, valable pour n'importe quel type qui expose `begin()`/`end()`.
+Cette syntaxe s'appuie **exactement** sur le même mécanisme d'itérateurs en coulisses : c'est un raccourci syntaxique, valable pour n'importe quel type qui expose `begin()`/`end()`.
 
 ## Les algorithmes standards (`<algorithm>`)
 
-Plutôt que d'écrire manuellement une boucle pour chaque opération courante, la STL fournit des algorithmes génériques, fonctionnant sur des **paires d'itérateurs** (début, fin) — donc valables sur n'importe quel conteneur :
+Plutôt que d'écrire manuellement une boucle pour chaque opération courante, la STL fournit des algorithmes génériques, fonctionnant sur des **paires d'itérateurs** (début, fin), donc valables sur n'importe quel conteneur :
 
 ```cpp
 #include <algorithm>
@@ -55,7 +55,7 @@ std::for_each(nombres.begin(), nombres.end(), [](int n) {
 
 ## Les lambdas (C++11+)
 
-Une **lambda** est une fonction anonyme, écrite directement là où elle est utilisée — le même concept que [les closures JavaScript](/?c=langages-de-programmation&s=javascript&p=fonctions) ou [les lambdas Python](/?c=langages-de-programmation&s=python&p=fonctions) :
+Une **lambda** est une fonction anonyme, écrite directement là où elle est utilisée : le même concept que [les closures JavaScript](/?c=langages-de-programmation&s=javascript&p=fonctions) ou [les lambdas Python](/?c=langages-de-programmation&s=python&p=fonctions) :
 
 ```cpp
 auto carre = [](int x) { return x * x; };
@@ -69,7 +69,7 @@ auto estAuDessusDuSeuil = [seuil](int x) { return x > seuil; };   // capture "se
 int compte = std::count_if(nombres.begin(), nombres.end(), estAuDessusDuSeuil);
 ```
 
-- `[]` : liste de capture — quelles variables externes la lambda peut utiliser, et comment (`[seuil]` par valeur, `[&seuil]` par référence, `[&]` tout par référence, `[=]` tout par valeur).
+- `[]` : liste de capture, quelles variables externes la lambda peut utiliser, et comment (`[seuil]` par valeur, `[&seuil]` par référence, `[&]` tout par référence, `[=]` tout par valeur).
 - `()` : paramètres, comme une fonction classique.
 - `{}` : corps de la lambda.
 
@@ -84,7 +84,7 @@ int compte = std::count_if(nombres.begin(), nombres.end(), estAuDessusDuSeuil);
 | `std::transform` | Produit une nouvelle plage en appliquant une fonction à chaque élément (équivalent de `map` en Python/JS) |
 | `std::accumulate` | Réduit une plage à une seule valeur (équivalent de `reduce`) |
 
-> **Note :** utiliser ces algorithmes plutôt que des boucles manuelles rend l'intention explicite (`std::sort` dit "je trie", une boucle avec un algorithme de tri écrit à la main demande de le déduire) — un gain de lisibilité direct, en plus d'éviter de réimplémenter (et potentiellement de mal implémenter) une logique déjà standardisée et optimisée.
+> **Note :** utiliser ces algorithmes plutôt que des boucles manuelles rend l'intention explicite (`std::sort` dit "je trie", une boucle avec un algorithme de tri écrit à la main demande de le déduire) : un gain de lisibilité direct, en plus d'éviter de réimplémenter (et potentiellement de mal implémenter) une logique déjà standardisée et optimisée.
 
 ---
 
@@ -94,5 +94,5 @@ int compte = std::count_if(nombres.begin(), nombres.end(), estAuDessusDuSeuil);
 |---|---|
 | **À retenir** | Un itérateur parcourt n'importe quel conteneur STL de façon uniforme (`begin()`/`end()`, `*it`, `++it`). Les algorithmes standards (`sort`, `find`, `accumulate`...) opèrent sur des paires d'itérateurs, valables sur n'importe quel conteneur. |
 | **Outils utilisables** | `std::sort`, `std::find`, `std::count_if`, `std::transform`, `std::accumulate`, lambdas (`[](...){ ... }`). |
-| **Pièges à éviter** | Déréférencer `end()` — il ne pointe jamais sur un élément réel, seulement une position "juste après" le dernier. |
-| **Bonnes pratiques** | Préférer un algorithme standard nommé (`std::sort`) à une boucle manuelle équivalente — l'intention est explicite et la logique déjà optimisée. |
+| **Pièges à éviter** | Déréférencer `end()` : il ne pointe jamais sur un élément réel, seulement une position "juste après" le dernier. |
+| **Bonnes pratiques** | Préférer un algorithme standard nommé (`std::sort`) à une boucle manuelle équivalente : l'intention est explicite et la logique déjà optimisée. |

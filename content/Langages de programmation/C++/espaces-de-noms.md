@@ -4,7 +4,7 @@ order: 2
 
 # Les espaces de noms (namespaces)
 
-Un **espace de noms** (*namespace*) regroupe des identifiants (fonctions, classes, variables) sous un préfixe commun, pour éviter les collisions de noms entre différentes parties d'un projet ou différentes bibliothèques — le même besoin que les namespaces PHP, dont [l'autoloading](/?c=langages-de-programmation&s=php&p=autoloading) montre un usage concret.
+Un **espace de noms** (*namespace*) regroupe des identifiants (fonctions, classes, variables) sous un préfixe commun, pour éviter les collisions de noms entre différentes parties d'un projet ou différentes bibliothèques : le même besoin que les namespaces PHP, dont [l'autoloading](/?c=langages-de-programmation&s=php&p=autoloading) montre un usage concret.
 
 ## Déclarer et utiliser un namespace
 
@@ -33,7 +33,7 @@ Facture f;              // plus besoin du préfixe "Facturation::"
 double tva = calculerTVA(100);
 ```
 
-> **Note (best practice) :** `using namespace X;` en tête d'un fichier d'en-tête (`.h`) est généralement déconseillé — il impose cette importation à **tout** fichier qui inclut ce header, avec un risque de collision de noms qu'on ne maîtrise plus. Réserver `using namespace` à l'intérieur d'un fichier `.cpp` précis, jamais dans un header partagé.
+> **Note (best practice) :** `using namespace X;` en tête d'un fichier d'en-tête (`.h`) est généralement déconseillé : il impose cette importation à **tout** fichier qui inclut ce header, avec un risque de collision de noms qu'on ne maîtrise plus. Réserver `using namespace` à l'intérieur d'un fichier `.cpp` précis, jamais dans un header partagé.
 
 ## `std` : le namespace de la bibliothèque standard
 
@@ -50,7 +50,7 @@ vector<int> autresNombres;
 cout << "Bonjour";
 ```
 
-C'est exactement pour cette raison que tout le code des chapitres précédents (STL, exceptions...) utilise le préfixe `std::` — `vector`, `map`, `cout`, `runtime_error`... sont tous déclarés dans le namespace `std` de la bibliothèque standard.
+C'est exactement pour cette raison que tout le code des chapitres précédents (STL, exceptions...) utilise le préfixe `std::` : `vector`, `map`, `cout`, `runtime_error`... sont tous déclarés dans le namespace `std` de la bibliothèque standard.
 
 ## Import sélectif
 
@@ -61,7 +61,7 @@ cout << "Bonjour";      // fonctionne
 vector<int> v;             // ERREUR : "vector" nécessite toujours std:: (pas importé)
 ```
 
-Un compromis entre la lourdeur du préfixe systématique et le risque d'un `using namespace` complet — n'importer que ce qui est réellement utilisé, nommément.
+Un compromis entre la lourdeur du préfixe systématique et le risque d'un `using namespace` complet : n'importer que ce qui est réellement utilisé, nommément.
 
 ## Namespaces imbriqués
 
@@ -88,5 +88,5 @@ Entreprise::Facturation::Facture f;
 |---|---|
 | **À retenir** | Un namespace regroupe des identifiants sous un préfixe (`Namespace::identifiant`) pour éviter les collisions de noms. `using namespace` importe sans préfixe ; `using X::y` importe sélectivement. |
 | **Outils utilisables** | `namespace`, `using namespace`, import sélectif (`using std::cout`), namespaces imbriqués (`A::B`). |
-| **Pièges à éviter** | Écrire `using namespace X;` dans un header — impose cette importation à tout fichier qui l'inclut. |
+| **Pièges à éviter** | Écrire `using namespace X;` dans un header : impose cette importation à tout fichier qui l'inclut. |
 | **Bonnes pratiques** | Réserver `using namespace` à l'intérieur d'un fichier `.cpp`, jamais dans un header partagé. |
