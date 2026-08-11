@@ -4,7 +4,7 @@ order: 5
 
 # La surcharge d'opérateurs
 
-C++ permet de redéfinir le comportement des opérateurs standards (`+`, `==`, `<<`...) pour des types personnalisés — ce qui permet à un objet créé par l'utilisateur de se comporter, en apparence, comme un type natif du langage.
+C++ permet de redéfinir le comportement des opérateurs standards (`+`, `==`, `<<`...) pour des types personnalisés : ce qui permet à un objet créé par l'utilisateur de se comporter, en apparence, comme un type natif du langage.
 
 ## Surcharger `+`
 
@@ -25,7 +25,7 @@ Vecteur2D b(3, 4);
 Vecteur2D c = a + b;   // appelle en réalité a.operator+(b) -> Vecteur2D(4, 6)
 ```
 
-`a + b` est littéralement transformé par le compilateur en `a.operator+(b)` — l'opérateur n'est qu'une méthode avec un nom particulier et une syntaxe d'appel spéciale.
+`a + b` est littéralement transformé par le compilateur en `a.operator+(b)` : l'opérateur n'est qu'une méthode avec un nom particulier et une syntaxe d'appel spéciale.
 
 ## Surcharger `==`
 
@@ -46,7 +46,7 @@ Point p2(1, 2);
 std::cout << (p1 == p2);   // true -> sans surcharge, comparerait les ADRESSES, pas le contenu
 ```
 
-> **Note :** sans surcharge de `==`, comparer deux objets avec `==` compare par défaut leur **adresse mémoire** (comme comparer deux pointeurs), jamais leur contenu — une source d'erreur fréquente pour qui s'attend à une comparaison "par valeur" automatique.
+> **Note :** sans surcharge de `==`, comparer deux objets avec `==` compare par défaut leur **adresse mémoire** (comme comparer deux pointeurs), jamais leur contenu : une source d'erreur fréquente pour qui s'attend à une comparaison "par valeur" automatique.
 
 ## Surcharger `<<` pour l'affichage
 
@@ -66,7 +66,7 @@ Point p(3, 4);
 std::cout << p;   // (3, 4) -> sans cette surcharge : erreur de compilation, << ne connaît pas Point
 ```
 
-> **Note :** cette surcharge s'écrit en dehors de la classe (une fonction libre, pas une méthode), car l'objet de gauche de `<<` est le flux (`std::ostream`), pas le `Point` — `p << std::cout` n'aurait pas de sens, mais `std::cout << p` doit fonctionner.
+> **Note :** cette surcharge s'écrit en dehors de la classe (une fonction libre, pas une méthode), car l'objet de gauche de `<<` est le flux (`std::ostream`), pas le `Point` ; `p << std::cout` n'aurait pas de sens, mais `std::cout << p` doit fonctionner.
 
 ## Ce qu'il ne faut pas faire : surcharger sans respecter le sens attendu
 
@@ -95,7 +95,7 @@ Vecteur2D operator+(const Vecteur2D &autre) const {
 
 | | |
 |---|---|
-| **À retenir** | C++ permet de redéfinir un opérateur standard (`+`, `==`, `<<`...) pour un type personnalisé — `a + b` se traduit en `a.operator+(b)`. Sans surcharge, `==` compare par défaut les adresses, pas le contenu. |
+| **À retenir** | C++ permet de redéfinir un opérateur standard (`+`, `==`, `<<`...) pour un type personnalisé : `a + b` se traduit en `a.operator+(b)`. Sans surcharge, `==` compare par défaut les adresses, pas le contenu. |
 | **Outils utilisables** | `operator+`, `operator==`, `operator<<` (fonction libre, hors classe). |
 | **Pièges à éviter** | Surcharger un opérateur avec un comportement qui contredit son sens habituel (`+` qui multiplierait). |
-| **Bonnes pratiques** | Garder un opérateur surchargé prévisible et cohérent avec le symbole standard — jamais un comportement surprenant pour quiconque relit le code. |
+| **Bonnes pratiques** | Garder un opérateur surchargé prévisible et cohérent avec le symbole standard : jamais un comportement surprenant pour quiconque relit le code. |

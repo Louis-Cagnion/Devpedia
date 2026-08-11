@@ -14,7 +14,7 @@ double maximum(double a, double b) { return (a > b) ? a : b; }
 std::string maximum(std::string a, std::string b) { return (a > b) ? a : b; }
 ```
 
-Trois fonctions strictement identiques dans leur logique, dupliquées uniquement à cause du type — exactement le genre de répétition qu'un template élimine (voir [Éviter la répétition par des structures indexées](/?c=qualite-et-architecture-du-code&p=eviter-la-repetition-structures-indexees), le principe DRY appliqué plus généralement).
+Trois fonctions strictement identiques dans leur logique, dupliquées uniquement à cause du type : exactement le genre de répétition qu'un template élimine (voir [Éviter la répétition par des structures indexées](/?c=qualite-et-architecture-du-code&p=eviter-la-repetition-structures-indexees), le principe DRY appliqué plus généralement).
 
 ## Template de fonction
 
@@ -29,7 +29,7 @@ maximum(3.5, 2.1);          // T déduit comme double
 maximum<std::string>("a", "b");  // T précisé explicitement si nécessaire
 ```
 
-Le compilateur **génère** une version distincte de la fonction pour chaque type réellement utilisé (`maximum<int>`, `maximum<double>`...) — c'est ce qu'on appelle l'instanciation de template, effectuée entièrement à la compilation, sans aucun coût à l'exécution.
+Le compilateur **génère** une version distincte de la fonction pour chaque type réellement utilisé (`maximum<int>`, `maximum<double>`...) : c'est ce qu'on appelle l'instanciation de template, effectuée entièrement à la compilation, sans aucun coût à l'exécution.
 
 ## Template de classe
 
@@ -59,11 +59,11 @@ Pile<std::string> pileTextes;
 pileTextes.empiler("bonjour");
 ```
 
-Une seule définition de `Pile`, utilisable avec n'importe quel type — c'est exactement ainsi que sont construits [les conteneurs de la STL](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) (`std::vector<T>`, `std::map<K, V>`...).
+Une seule définition de `Pile`, utilisable avec n'importe quel type : c'est exactement ainsi que sont construits [les conteneurs de la STL](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) (`std::vector<T>`, `std::map<K, V>`...).
 
 ## Contraintes sur le type (C++20 : `concepts`)
 
-Sans contrainte, un template accepte n'importe quel type — y compris des types pour lesquels l'opération n'a pas de sens, produisant une erreur de compilation souvent longue et peu claire :
+Sans contrainte, un template accepte n'importe quel type, y compris des types pour lesquels l'opération n'a pas de sens, produisant une erreur de compilation souvent longue et peu claire :
 
 ```cpp
 template <typename T>
@@ -101,5 +101,5 @@ Voir aussi [La STL : les conteneurs](/?c=langages-de-programmation&s=cpp&p=stl-c
 |---|---|
 | **À retenir** | Un template écrit une fonction/classe une seule fois pour n'importe quel type, avec vérification à la compilation et sans coût à l'exécution (le compilateur génère une version par type utilisé). |
 | **Outils utilisables** | `template <typename T>`, `concepts` (C++20) pour contraindre les types acceptés. |
-| **Pièges à éviter** | Un template sans contrainte accepte n'importe quel type, y compris ceux pour lesquels l'opération n'a pas de sens — erreur de compilation parfois cryptique. |
+| **Pièges à éviter** | Un template sans contrainte accepte n'importe quel type, y compris ceux pour lesquels l'opération n'a pas de sens : erreur de compilation parfois cryptique. |
 | **Bonnes pratiques** | Utiliser les `concepts` (C++20) pour exprimer explicitement les exigences sur un type template, plutôt que de laisser un message d'erreur générique le découvrir. |
