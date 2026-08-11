@@ -23,7 +23,7 @@ if ($age -ge 18) {
 
 ## Les opérateurs de comparaison
 
-Contrairement à Bash, un seul jeu d'opérateurs sert aussi bien pour les nombres que pour les chaînes — pas de distinction `-eq`/`==` selon le type comparé :
+Contrairement à Bash, un seul jeu d'opérateurs sert aussi bien pour les nombres que pour les chaînes : pas de distinction `-eq`/`==` selon le type comparé :
 
 ```powershell
 if ($age -eq 18) { Write-Output "Exactement 18" }
@@ -38,7 +38,7 @@ if ($age -eq 18) { Write-Output "Exactement 18" }
 | `-gt` | Supérieur |
 | `-ge` | Supérieur ou égal |
 
-> **Note :** ces opérateurs restent des mots-clés PowerShell (`-eq`, pas `==`) même si la syntaxe rappelle les drapeaux Bash — `==` n'existe pas comme opérateur de comparaison en PowerShell.
+> **Note :** ces opérateurs restent des mots-clés PowerShell (`-eq`, pas `==`) même si la syntaxe rappelle les drapeaux Bash : `==` n'existe pas comme opérateur de comparaison en PowerShell.
 
 ## Comparer des chaînes
 
@@ -60,7 +60,7 @@ if ([string]::IsNullOrEmpty($nom)) {
 | `-like` | Correspondance avec un motif type joker (`*`, `?`) |
 | `-match` | Correspondance avec une expression régulière |
 
-> **Note :** `-eq` sur des chaînes est insensible à la casse par défaut (`"Jean" -eq "jean"` est vrai) — préfixer par `c` (`-ceq`, `-clike`, `-cmatch`) force une comparaison sensible à la casse, l'inverse de la plupart des langages où la casse compte par défaut.
+> **Note :** `-eq` sur des chaînes est insensible à la casse par défaut (`"Jean" -eq "jean"` est vrai) ; préfixer par `c` (`-ceq`, `-clike`, `-cmatch`) force une comparaison sensible à la casse, l'inverse de la plupart des langages où la casse compte par défaut.
 
 ## Tester des fichiers
 
@@ -74,7 +74,7 @@ if (Test-Path "C:\var\www" -PathType Container) {
 }
 ```
 
-`Test-Path` remplace à lui seul tous les tests de fichiers de Bash (`-f`, `-d`, `-e`) — `-PathType Leaf` pour un fichier, `-PathType Container` pour un dossier, aucun argument pour "existe, peu importe le type".
+`Test-Path` remplace à lui seul tous les tests de fichiers de Bash (`-f`, `-d`, `-e`) : `-PathType Leaf` pour un fichier, `-PathType Container` pour un dossier, aucun argument pour "existe, peu importe le type".
 
 ## Combiner des conditions
 
@@ -84,7 +84,7 @@ if ((Test-Path "config.txt") -and (Get-Item "config.txt").Length -gt 0) {
 }
 ```
 
-`-and`/`-or`/`-not` remplacent respectivement `&&`/`||`/`!` de Bash — les opérateurs symboliques n'existent pas pour la logique booléenne en PowerShell.
+`-and`/`-or`/`-not` remplacent respectivement `&&`/`||`/`!` de Bash : les opérateurs symboliques n'existent pas pour la logique booléenne en PowerShell.
 
 ## Le `switch` (équivalent du `case` de Bash)
 
@@ -98,7 +98,7 @@ switch ($jour) {
 }
 ```
 
-`$_` désigne la valeur testée (celle passée entre parenthèses à `switch`), `-in` teste son appartenance à une liste, et `default` capture tout le reste — équivalent du `*)` final d'un `case` Bash.
+`$_` désigne la valeur testée (celle passée entre parenthèses à `switch`), `-in` teste son appartenance à une liste, et `default` capture tout le reste : équivalent du `*)` final d'un `case` Bash.
 
 ---
 
@@ -108,5 +108,5 @@ switch ($jour) {
 |---|---|
 | **À retenir** | PowerShell a de vrais opérateurs de comparaison intégrés au langage (`-eq`, `-lt`...), contrairement à Bash qui s'appuie sur des commandes de test. Un seul jeu d'opérateurs sert pour les nombres et les chaînes. |
 | **Outils utilisables** | `Test-Path` (remplace `-f`/`-d`/`-e` de Bash), `-and`/`-or`/`-not`, `-like`/`-match`. |
-| **Pièges à éviter** | Oublier que `-eq` sur des chaînes est insensible à la casse par défaut — `-ceq` force la sensibilité à la casse. |
+| **Pièges à éviter** | Oublier que `-eq` sur des chaînes est insensible à la casse par défaut : `-ceq` force la sensibilité à la casse. |
 | **Bonnes pratiques** | Utiliser `Test-Path -PathType Leaf/Container` pour distinguer explicitement un fichier d'un dossier. |

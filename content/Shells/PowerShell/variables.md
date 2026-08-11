@@ -4,9 +4,9 @@ order: 3
 
 # Les variables
 
-Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable) — ce qui suit couvre uniquement ce qui est spécifique à PowerShell.
+Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable) : ce qui suit couvre uniquement ce qui est spécifique à PowerShell.
 
-Contrairement à Bash, où tout est manipulé comme du texte, une variable PowerShell conserve le **vrai type** de sa valeur — un nombre reste un nombre, une liste reste une liste d'objets, sans conversion implicite en chaîne. Toute variable commence par `$`, y compris à l'assignation (pas de règle "sans `$` pour écrire, avec `$` pour lire" comme en Bash).
+Contrairement à Bash, où tout est manipulé comme du texte, une variable PowerShell conserve le **vrai type** de sa valeur : un nombre reste un nombre, une liste reste une liste d'objets, sans conversion implicite en chaîne. Toute variable commence par `$`, y compris à l'assignation (pas de règle "sans `$` pour écrire, avec `$` pour lire" comme en Bash).
 
 ## Déclarer et lire une variable
 
@@ -16,7 +16,7 @@ Write-Output $nom       # Jean
 Write-Output "Bonjour $nom !"   # Bonjour Jean ! -> interpolation directe dans une chaîne double-guillemets
 ```
 
-> **Note :** `$nom` seul (sans `Write-Output`) affiche aussi sa valeur dans la console — PowerShell affiche automatiquement le résultat de toute expression qui n'est pas explicitement assignée ou supprimée, un comportement proche d'un REPL.
+> **Note :** `$nom` seul (sans `Write-Output`) affiche aussi sa valeur dans la console : PowerShell affiche automatiquement le résultat de toute expression qui n'est pas explicitement assignée ou supprimée, un comportement proche d'un REPL.
 
 ## Guillemets simples vs doubles
 
@@ -34,7 +34,7 @@ $utilisateur = Get-Process | Select-Object -First 1
 Write-Output "Premier processus : $($utilisateur.Name)"
 ```
 
-> **Note :** sans `$(...)`, `"$utilisateur.Name"` afficherait la représentation texte de l'objet suivie littéralement de `.Name` — PowerShell n'interprète l'accès à une propriété à l'intérieur d'une chaîne que si l'expression entière est explicitement délimitée.
+> **Note :** sans `$(...)`, `"$utilisateur.Name"` afficherait la représentation texte de l'objet suivie littéralement de `.Name` : PowerShell n'interprète l'accès à une propriété à l'intérieur d'une chaîne que si l'expression entière est explicitement délimitée.
 
 ## Typage
 
@@ -48,11 +48,11 @@ $score = 19.5   # type déduit : Double
 $age.GetType().Name   # Int32
 ```
 
-> **Note :** contrairement à Bash où `age="abc"` ne provoque aucune erreur immédiate (la valeur reste une chaîne, l'erreur n'apparaît qu'au moment d'un calcul), assigner `"abc"` à une variable typée `[int]$age` échoue immédiatement — PowerShell vérifie le type à l'assignation, pas seulement à l'usage.
+> **Note :** contrairement à Bash où `age="abc"` ne provoque aucune erreur immédiate (la valeur reste une chaîne, l'erreur n'apparaît qu'au moment d'un calcul), assigner `"abc"` à une variable typée `[int]$age` échoue immédiatement : PowerShell vérifie le type à l'assignation, pas seulement à l'usage.
 
 ## Arithmétique
 
-Aucun contexte arithmétique explicite n'est nécessaire — les opérateurs fonctionnent nativement sur les nombres, y compris décimaux :
+Aucun contexte arithmétique explicite n'est nécessaire : les opérateurs fonctionnent nativement sur les nombres, y compris décimaux :
 
 ```powershell
 $a = 5
@@ -65,11 +65,11 @@ Write-Output ($a / $b)   # 1.66666666666667 -> division réelle, pas entière co
 
 ## Variables automatiques
 
-PowerShell fournit des variables automatiques toujours disponibles, jouant un rôle proche des variables spéciales de Bash (`$0`, `$1`...) — voir le tableau et les exemples dans le chapitre sur l'écriture de scripts, juste après la section sur les arguments d'un script.
+PowerShell fournit des variables automatiques toujours disponibles, jouant un rôle proche des variables spéciales de Bash (`$0`, `$1`...) : voir le tableau et les exemples dans le chapitre sur l'écriture de scripts, juste après la section sur les arguments d'un script.
 
 ## Portée des variables
 
-Par défaut, une variable déclarée dans une fonction reste locale à cette fonction — l'inverse de Bash, où une variable de fonction est globale par défaut sauf `local` explicite :
+Par défaut, une variable déclarée dans une fonction reste locale à cette fonction : l'inverse de Bash, où une variable de fonction est globale par défaut sauf `local` explicite :
 
 ```powershell
 function Compter {
@@ -105,5 +105,5 @@ Voir aussi [Les fonctions](/?c=shells&s=powershell&p=fonctions), et [Variables d
 |---|---|
 | **À retenir** | Une variable PowerShell conserve le vrai type de sa valeur (pas de conversion implicite en texte comme en Bash). Une variable typée (`[int]$age`) échoue immédiatement si on lui assigne une valeur incompatible. |
 | **Outils utilisables** | Interpolation dans les guillemets doubles, `$(...)` pour une expression/propriété, portées (`$script:`). |
-| **Pièges à éviter** | Écrire `"$objet.Propriete"` en pensant accéder à la propriété — sans `$(...)`, `.Propriete` est traité comme du texte littéral. |
+| **Pièges à éviter** | Écrire `"$objet.Propriete"` en pensant accéder à la propriété : sans `$(...)`, `.Propriete` est traité comme du texte littéral. |
 | **Bonnes pratiques** | Utiliser `$(...)` dès qu'on interpole autre chose qu'une simple variable dans une chaîne. |

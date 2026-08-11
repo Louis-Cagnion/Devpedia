@@ -4,7 +4,7 @@ order: 1
 
 # Commandes de base
 
-Contrairement à Bash, où `cd`, `ls` ou `cp` sont des noms courts déjà familiers pour beaucoup, les cmdlets PowerShell suivent la convention `Verbe-Nom` (`Set-Location`, `Get-ChildItem`, `Copy-Item`) — plus longues, mais explicites et prévisibles une fois le verbe compris (voir le tableau des verbes standards dans le chapitre sur les fonctions). Ce chapitre couvre les commandes utilisées en premier dans un terminal, avant même d'écrire le moindre script : se déplacer, lister, lire un fichier, et trouver de l'aide sur une commande inconnue.
+Contrairement à Bash, où `cd`, `ls` ou `cp` sont des noms courts déjà familiers pour beaucoup, les cmdlets PowerShell suivent la convention `Verbe-Nom` (`Set-Location`, `Get-ChildItem`, `Copy-Item`), plus longues, mais explicites et prévisibles une fois le verbe compris (voir le tableau des verbes standards dans le chapitre sur les fonctions). Ce chapitre couvre les commandes utilisées en premier dans un terminal, avant même d'écrire le moindre script : se déplacer, lister, lire un fichier, et trouver de l'aide sur une commande inconnue.
 
 ## Se déplacer : `Set-Location` et `Get-Location`
 
@@ -23,7 +23,7 @@ Get-ChildItem -Force              # inclut les fichiers et dossiers cachés
 Get-ChildItem -Path C:\logs        # liste un dossier précis sans s'y déplacer
 ```
 
-> **Note :** `Get-ChildItem` fait aussi le travail de `find` dès qu'on ajoute `-Recurse` — voir le chapitre sur les permissions pour cet usage, ainsi que pour créer, copier, déplacer et supprimer des fichiers/dossiers.
+> **Note :** `Get-ChildItem` fait aussi le travail de `find` dès qu'on ajoute `-Recurse` : voir le chapitre sur les permissions pour cet usage, ainsi que pour créer, copier, déplacer et supprimer des fichiers/dossiers.
 
 ## Lire le contenu d'un fichier : `Get-Content`
 
@@ -50,11 +50,11 @@ PowerShell fournit par défaut des alias vers ces cmdlets, pour rester compatibl
 | `rm`, `del` | `Remove-Item` |
 | `cls`, `clear` | `Clear-Host` |
 
-> **Note :** un alias reste une commande PowerShell comme une autre — `cp` accepte les mêmes paramètres que `Copy-Item` (`-Recurse` par exemple), mais pas nécessairement ceux de la commande Unix ou cmd du même nom. Voir le chapitre sur les variables d'environnement pour créer ses propres alias avec `Set-Alias`.
+> **Note :** un alias reste une commande PowerShell comme une autre : `cp` accepte les mêmes paramètres que `Copy-Item` (`-Recurse` par exemple), mais pas nécessairement ceux de la commande Unix ou cmd du même nom. Voir le chapitre sur les variables d'environnement pour créer ses propres alias avec `Set-Alias`.
 
 ## Obtenir de l'aide : `Get-Help`
 
-Le nom d'une cmdlet ne suffit pas toujours à deviner ses paramètres — `Get-Help` évite d'avoir à chercher en ligne :
+Le nom d'une cmdlet ne suffit pas toujours à deviner ses paramètres : `Get-Help` évite d'avoir à chercher en ligne :
 
 ```powershell
 Get-Help Get-ChildItem             # syntaxe et description générale
@@ -62,7 +62,7 @@ Get-Help Get-ChildItem -Examples    # uniquement des exemples d'usage
 Get-Help Get-ChildItem -Full         # description complète, tous les paramètres
 ```
 
-> **Note :** au premier lancement, `Get-Help` peut demander d'exécuter `Update-Help` (télécharge la documentation à jour) — sans réseau disponible, une version minimale déjà installée reste utilisable.
+> **Note :** au premier lancement, `Get-Help` peut demander d'exécuter `Update-Help` (télécharge la documentation à jour) ; sans réseau disponible, une version minimale déjà installée reste utilisable.
 
 ---
 
@@ -70,7 +70,7 @@ Get-Help Get-ChildItem -Full         # description complète, tous les paramètr
 
 | | |
 |---|---|
-| **À retenir** | Les cmdlets PowerShell suivent la convention `Verbe-Nom` (`Get-ChildItem`, `Set-Location`) — plus longues que les commandes Bash, mais prévisibles une fois le verbe compris. Des alias familiers (`cd`, `ls`, `cat`) restent disponibles. |
+| **À retenir** | Les cmdlets PowerShell suivent la convention `Verbe-Nom` (`Get-ChildItem`, `Set-Location`), plus longues que les commandes Bash, mais prévisibles une fois le verbe compris. Des alias familiers (`cd`, `ls`, `cat`) restent disponibles. |
 | **Outils utilisables** | `Get-Location`/`Set-Location`, `Get-ChildItem`, `Get-Content`, `Get-Help`. |
-| **Pièges à éviter** | Supposer qu'un alias (`cp`) accepte exactement les mêmes paramètres que la commande Unix du même nom — il relaie en réalité `Copy-Item`. |
+| **Pièges à éviter** | Supposer qu'un alias (`cp`) accepte exactement les mêmes paramètres que la commande Unix du même nom : il relaie en réalité `Copy-Item`. |
 | **Bonnes pratiques** | Utiliser `Get-Help <cmdlet> -Examples` pour découvrir rapidement l'usage d'une commande inconnue. |
