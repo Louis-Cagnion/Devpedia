@@ -74,10 +74,10 @@ Un texte JSON reste une simple chaîne de caractères tant qu'il n'a pas été *
 ```text
 texte_json = '{"ville": "Lyon", "temperature": 18}'
 
-donnee = analyser_json(texte_json)     // texte -> structure native du langage
-donnee.temperature                       // 18, utilisable comme un nombre normal
+donnee = analyser_json(texte_json)    // texte -> structure native du langage
+donnee.temperature                    // 18, utilisable comme un nombre normal
 
-nouveau_texte = generer_json(donnee)   // structure -> texte JSON a nouveau
+nouveau_texte = generer_json(donnee)  // structure -> texte JSON a nouveau
 ```
 
 > **Piège :** essayer d'extraire une valeur directement dans le texte brut (recherche d'un motif, découpage de chaîne) plutôt que d'analyser le JSON correctement : une valeur qui contient par coïncidence la même suite de caractères que la clé recherchée ailleurs dans le texte peut fausser le résultat.
