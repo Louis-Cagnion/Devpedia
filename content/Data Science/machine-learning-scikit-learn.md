@@ -16,8 +16,8 @@ Le **machine learning** (apprentissage automatique) consiste à faire apprendre 
 
 ```python
 # Apprentissage supervisé : X (les données) ET y (les bonnes réponses connues)
-X = [[25, 50000], [45, 80000], [30, 45000]]   # ex : âge, salaire
-y = ["non", "oui", "non"]                        # ex : a souscrit un crédit ou non
+X = [[25, 50000], [45, 80000], [30, 45000]]  # ex : âge, salaire
+y = ["non", "oui", "non"]                    # ex : a souscrit un crédit ou non
 
 # Apprentissage non supervisé : uniquement X, pas de "bonne réponse" à apprendre
 X = [[25, 50000], [45, 80000], [30, 45000]]
@@ -70,11 +70,11 @@ Quel que soit l'algorithme choisi, scikit-learn expose systématiquement la mêm
 from sklearn.linear_model import LogisticRegression   # classification : y est catégoriel ("oui"/"non")
 
 modele = LogisticRegression()
-modele.fit(X_entrainement, y_entrainement)   # "apprend" à partir des données d'entraînement
+modele.fit(X_entrainement, y_entrainement)  # "apprend" à partir des données d'entraînement
 
-predictions = modele.predict(X_test)           # applique ce qui a été appris à de nouvelles données
+predictions = modele.predict(X_test)        # applique ce qui a été appris à de nouvelles données
 
-modele.score(X_test, y_test)                    # évalue la qualité des prédictions sur le test
+modele.score(X_test, y_test)                # évalue la qualité des prédictions sur le test
 ```
 
 - `fit(X, y)` : ajuste les paramètres internes du modèle pour qu'il colle au mieux aux données fournies.

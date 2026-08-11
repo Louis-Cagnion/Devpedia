@@ -37,11 +37,11 @@ fig, ax = plt.subplots()
 ## Types de graphiques courants
 
 ```python
-ax.plot(x, y)              # courbe (ligne continue)
-ax.scatter(x, y)            # nuage de points
+ax.plot(x, y)                # courbe (ligne continue)
+ax.scatter(x, y)             # nuage de points
 ax.bar(categories, valeurs)  # diagramme en barres
-ax.hist(donnees, bins=20)     # histogramme (distribution d'une variable)
-ax.boxplot(donnees)            # boîte à moustaches (médiane, quartiles, valeurs extrêmes)
+ax.hist(donnees, bins=20)    # histogramme (distribution d'une variable)
+ax.boxplot(donnees)          # boîte à moustaches (médiane, quartiles, valeurs extrêmes)
 ```
 
 ## Habiller un graphique
@@ -52,8 +52,8 @@ ax.plot(x, y, label="Ventes 2025", color="blue")
 ax.set_xlabel("Mois")
 ax.set_ylabel("Ventes (€)")
 ax.set_title("Évolution des ventes")
-ax.legend()             # affiche la légende (à partir des "label=" fournis)
-ax.grid(True)             # ajoute une grille, souvent utile pour lire des valeurs précises
+ax.legend()    # affiche la légende (à partir des "label=" fournis)
+ax.grid(True)  # ajoute une grille, souvent utile pour lire des valeurs précises
 ```
 
 ## Plusieurs graphiques dans une même figure

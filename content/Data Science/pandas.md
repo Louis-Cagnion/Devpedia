@@ -30,22 +30,22 @@ donnees = pd.DataFrame({
 ```python
 donnees = pd.read_csv("clients.csv")
 
-donnees.head()        # 5 premières lignes
-donnees.info()          # types de colonnes, valeurs manquantes, mémoire utilisée
-donnees.describe()       # statistiques (moyenne, écart-type, min/max) des colonnes numériques
-donnees.shape             # (nombre_de_lignes, nombre_de_colonnes)
-donnees.columns            # liste des noms de colonnes
+donnees.head()      # 5 premières lignes
+donnees.info()      # types de colonnes, valeurs manquantes, mémoire utilisée
+donnees.describe()  # statistiques (moyenne, écart-type, min/max) des colonnes numériques
+donnees.shape       # (nombre_de_lignes, nombre_de_colonnes)
+donnees.columns     # liste des noms de colonnes
 ```
 
 ## Sélectionner des colonnes et des lignes
 
 ```python
-donnees["age"]             # une seule colonne -> une Series
-donnees[["nom", "age"]]     # plusieurs colonnes -> un DataFrame
+donnees["age"]           # une seule colonne -> une Series
+donnees[["nom", "age"]]  # plusieurs colonnes -> un DataFrame
 
-donnees.loc[0]              # ligne d'INDEX 0 (l'index affiché à gauche du tableau)
-donnees.iloc[0]              # ligne de POSITION 0 (toujours la première, même si l'index a été modifié)
-donnees.loc[0, "nom"]         # valeur précise : ligne 0, colonne "nom"
+donnees.loc[0]          # ligne d'INDEX 0 (l'index affiché à gauche du tableau)
+donnees.iloc[0]         # ligne de POSITION 0 (toujours la première, même si l'index a été modifié)
+donnees.loc[0, "nom"]   # valeur précise : ligne 0, colonne "nom"
 ```
 
 > **Note :** `loc` sélectionne par **étiquette** (le label de l'index, qui peut être un nom, une date...), `iloc` par **position numérique**, les deux coïncident par défaut (index numérique de 0 à n), mais divergent dès que l'index a été personnalisé (ex. trié, filtré, ou basé sur des dates).
@@ -102,9 +102,9 @@ donnees["categorie"] = donnees["age"].apply(lambda age: "jeune" if age < 30 else
 ## Valeurs manquantes
 
 ```python
-donnees.isna()              # tableau de True/False, True là où la valeur est manquante (NaN)
-donnees.dropna()              # supprime les lignes contenant au moins une valeur manquante
-donnees.fillna(0)               # remplace les valeurs manquantes par une valeur par défaut
+donnees.isna()     # tableau de True/False, True là où la valeur est manquante (NaN)
+donnees.dropna()   # supprime les lignes contenant au moins une valeur manquante
+donnees.fillna(0)  # remplace les valeurs manquantes par une valeur par défaut
 ```
 
 Voir aussi le chapitre sur [NumPy](/?c=data-science&p=numpy) (les colonnes d'un DataFrame sont en réalité des `ndarray`) et sur [SQL](/?c=domain-specific-languages-dsl&p=sql), dont les concepts (`WHERE`, `GROUP BY`, `JOIN`) se retrouvent presque à l'identique ici.
