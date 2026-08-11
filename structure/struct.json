@@ -22,6 +22,10 @@
         {
           "id": "architecture-medaillon",
           "label": "L'architecture médaillon"
+        },
+        {
+          "id": "table-pont",
+          "label": "La table pont"
         }
       ]
     },
