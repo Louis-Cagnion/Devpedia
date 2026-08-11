@@ -15,7 +15,7 @@ unsetopt AUTO_CD         # la désactive
 setopt                   # liste toutes les options actuellement actives
 ```
 
-> **Note :** les noms d'options sont insensibles à la casse et aux underscores — `AUTO_CD`, `autocd` et `auto_cd` désignent la même option. La convention `MAJUSCULES_AVEC_UNDERSCORES` est la plus lisible et la plus répandue dans les `.zshrc` qu'on trouve en ligne.
+> **Note :** les noms d'options sont insensibles à la casse et aux underscores : `AUTO_CD`, `autocd` et `auto_cd` désignent la même option. La convention `MAJUSCULES_AVEC_UNDERSCORES` est la plus lisible et la plus répandue dans les `.zshrc` qu'on trouve en ligne.
 
 ## Quelques options utiles au quotidien
 
@@ -50,5 +50,5 @@ Contrairement à Bash, où les options sont dispersées entre `shopt` (options s
 |---|---|
 | **À retenir** | Zsh regroupe toutes ses options de comportement sous un seul mécanisme (`setopt`/`unsetopt`), là où Bash les disperse entre `shopt` et `set -o`. |
 | **Outils utilisables** | `setopt`/`unsetopt`, `AUTO_CD`, `EXTENDED_GLOB`, `SHARE_HISTORY`, `CORRECT`. |
-| **Pièges à éviter** | Chercher une option Bash équivalente une par une — zsh couvre souvent des aspects que Bash ne rend pas configurables du tout. |
+| **Pièges à éviter** | Chercher une option Bash équivalente une par une : zsh couvre souvent des aspects que Bash ne rend pas configurables du tout. |
 | **Bonnes pratiques** | Placer les `setopt` dans `~/.zshrc` pour qu'ils soient actifs dans chaque nouveau terminal. |

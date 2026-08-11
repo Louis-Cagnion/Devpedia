@@ -21,7 +21,7 @@ ls **/*.txt
 # tous les fichiers .txt, à n'importe quelle profondeur sous le dossier courant
 ```
 
-> **Note :** en Bash, ce comportement récursif nécessite `shopt -s globstar` (option équivalente, mais absente par défaut et propre à Bash 4+) — en zsh, `**` fonctionne dès que `EXTENDED_GLOB` (ou même sans, `**` seul est actif par défaut dans la plupart des configurations récentes) est actif, sans réglage supplémentaire.
+> **Note :** en Bash, ce comportement récursif nécessite `shopt -s globstar` (option équivalente, mais absente par défaut et propre à Bash 4+) ; en zsh, `**` fonctionne dès que `EXTENDED_GLOB` (ou même sans, `**` seul est actif par défaut dans la plupart des configurations récentes) est actif, sans réglage supplémentaire.
 
 ## Négation : exclure un motif
 
@@ -51,7 +51,7 @@ ls *.log(.Lm-7)     # fichiers .log de plus de 7 jours de modification
 | `Lm-N` / `Lm+N` | Modifié il y a moins de / plus de N jours |
 | `om[N]` | Trie par date de modification, garde le N-ième résultat |
 
-> **Note :** ces qualificatifs remplacent, pour beaucoup de cas simples, un `find . -type f` ou un `find . -mtime -7` (voir [Permissions et manipulation de fichiers](/?c=shells&s=bash&p=permissions-et-fichiers) en Bash) — directement dans le motif du glob, sans lancer de commande externe.
+> **Note :** ces qualificatifs remplacent, pour beaucoup de cas simples, un `find . -type f` ou un `find . -mtime -7` (voir [Permissions et manipulation de fichiers](/?c=shells&s=bash&p=permissions-et-fichiers) en Bash), directement dans le motif du glob, sans lancer de commande externe.
 
 ## Combiner globbing étendu et guillemets
 
@@ -70,5 +70,5 @@ echo "*(.)"     # affiche littéralement *(.)
 |---|---|
 | **À retenir** | Le globbing de base fonctionne comme en Bash ; `EXTENDED_GLOB` débloque des motifs propres à zsh (`**` récursif, négation `^`, qualificatifs entre parenthèses). |
 | **Outils utilisables** | `**/*.ext` (récursif), `*.^txt` (négation), qualificatifs de glob (`.`, `/`, `*`, `Lm-N`). |
-| **Pièges à éviter** | Utiliser ces motifs sans avoir activé `EXTENDED_GLOB` — ils sont alors traités comme du texte littéral. |
+| **Pièges à éviter** | Utiliser ces motifs sans avoir activé `EXTENDED_GLOB` : ils sont alors traités comme du texte littéral. |
 | **Bonnes pratiques** | Utiliser un qualificatif de glob (`*(.Lm-7)`) plutôt qu'un `find` externe pour un filtre simple. |

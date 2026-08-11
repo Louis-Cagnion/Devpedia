@@ -4,7 +4,7 @@ order: 5
 
 # Personnaliser le prompt
 
-Bash construit son invite via la variable `PS1`, avec des codes d'échappement commençant par `\` (`\u`, `\h`, `\w`...). Zsh utilise sa propre variable, `PROMPT` (alias historique : `PS1`, toujours accepté), avec des codes d'échappement commençant par `%` — une syntaxe entièrement différente, pas juste un renommage.
+Bash construit son invite via la variable `PS1`, avec des codes d'échappement commençant par `\` (`\u`, `\h`, `\w`...). Zsh utilise sa propre variable, `PROMPT` (alias historique : `PS1`, toujours accepté), avec des codes d'échappement commençant par `%` : une syntaxe entièrement différente, pas juste un renommage.
 
 ## La variable `PROMPT`
 
@@ -21,7 +21,7 @@ PROMPT='%n@%m %~ %# '
 | `%*` | Heure courante (HH:MM:SS) |
 | `%D` | Date courante |
 
-> **Note :** contrairement au `\w` de Bash qui abrège déjà automatiquement le chemin par `~`, zsh distingue explicitement `%~` (abrégé) de `%/` (chemin complet, jamais abrégé) — un choix explicite à faire selon le comportement voulu.
+> **Note :** contrairement au `\w` de Bash qui abrège déjà automatiquement le chemin par `~`, zsh distingue explicitement `%~` (abrégé) de `%/` (chemin complet, jamais abrégé), un choix explicite à faire selon le comportement voulu.
 
 ## Coloration du prompt
 
@@ -29,7 +29,7 @@ PROMPT='%n@%m %~ %# '
 PROMPT='%F{green}%n@%m%f %F{blue}%~%f %# '
 ```
 
-`%F{couleur}` démarre une couleur de texte, `%f` la referme — équivalent des séquences d'échappement ANSI (`\e[32m`, cf. notions de terminal) mais dans une syntaxe propre à zsh, sans avoir à connaître les codes ANSI bruts.
+`%F{couleur}` démarre une couleur de texte, `%f` la referme : équivalent des séquences d'échappement ANSI (`\e[32m`, cf. notions de terminal) mais dans une syntaxe propre à zsh, sans avoir à connaître les codes ANSI bruts.
 
 ## `RPROMPT` : une invite secondaire à droite de l'écran
 
@@ -51,7 +51,7 @@ setopt PROMPT_SUBST
 PROMPT='%n@%m %~ ${vcs_info_msg_0_} %# '
 ```
 
-`PROMPT_SUBST` (voir [Le système d'options](/?c=shells&s=zsh&p=options-du-shell)) autorise l'évaluation de variables et substitutions à l'intérieur de `PROMPT` — sans cette option, `${vcs_info_msg_0_}` s'afficherait littéralement plutôt que d'être remplacé par la branche courante.
+`PROMPT_SUBST` (voir [Le système d'options](/?c=shells&s=zsh&p=options-du-shell)) autorise l'évaluation de variables et substitutions à l'intérieur de `PROMPT` : sans cette option, `${vcs_info_msg_0_}` s'afficherait littéralement plutôt que d'être remplacé par la branche courante.
 
 > **Note :** c'est exactement ce mécanisme (`vcs_info` + un prompt personnalisé) que des thèmes populaires comme *robbyrussell* (le thème par défaut d'[Oh My Zsh](/?c=shells&s=zsh&p=oh-my-zsh)) ou *powerlevel10k* automatisent et enrichissent.
 
@@ -63,5 +63,5 @@ PROMPT='%n@%m %~ ${vcs_info_msg_0_} %# '
 |---|---|
 | **À retenir** | Zsh construit son prompt via `PROMPT` (codes `%`), pas `PS1`/`\` comme Bash. `RPROMPT` affiche une invite secondaire à droite, sans équivalent Bash. |
 | **Outils utilisables** | `%n`/`%m`/`%~`/`%#`, `%F{couleur}`/`%f`, `vcs_info` pour la branche Git. |
-| **Pièges à éviter** | Oublier `setopt PROMPT_SUBST` — sans lui, une substitution comme `${vcs_info_msg_0_}` s'affiche littéralement au lieu d'être évaluée. |
+| **Pièges à éviter** | Oublier `setopt PROMPT_SUBST` : sans lui, une substitution comme `${vcs_info_msg_0_}` s'affiche littéralement au lieu d'être évaluée. |
 | **Bonnes pratiques** | Utiliser `vcs_info` pour intégrer nativement la branche Git courante, plutôt qu'un script externe. |
