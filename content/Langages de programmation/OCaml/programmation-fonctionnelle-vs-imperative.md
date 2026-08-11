@@ -31,7 +31,7 @@ let resultat =
   a + b            (* résultat = 5 : c'est la valeur de tout le bloc *)
 ```
 
-Il n'existe donc pas, structurellement, de distinction entre "ce qui produit une valeur" et "ce qui exécute une action" — tout produit une valeur, y compris `()` (*unit*, l'équivalent de `void`) pour une expression exécutée uniquement pour son effet.
+Il n'existe donc pas, structurellement, de distinction entre "ce qui produit une valeur" et "ce qui exécute une action" : tout produit une valeur, y compris `()` (*unit*, l'équivalent de `void`) pour une expression exécutée uniquement pour son effet.
 
 ## Liaison contre mutation
 
@@ -50,7 +50,7 @@ x = x + 1
 print(x)   # 6
 ```
 
-Le résultat affiché est identique, mais le mécanisme diffère : en Python, une seule case mémoire a changé de contenu ; en OCaml, une nouvelle liaison a simplement pris le dessus sur l'ancienne dans la portée courante. OCaml propose une échappatoire explicite quand une case réellement mutable est nécessaire, la référence (`ref`) — approfondie au chapitre sur l'immuabilité et les fonctions pures.
+Le résultat affiché est identique, mais le mécanisme diffère : en Python, une seule case mémoire a changé de contenu ; en OCaml, une nouvelle liaison a simplement pris le dessus sur l'ancienne dans la portée courante. OCaml propose une échappatoire explicite quand une case réellement mutable est nécessaire, la référence (`ref`), approfondie au chapitre sur l'immuabilité et les fonctions pures.
 
 ## Boucles contre récursion
 
@@ -71,7 +71,7 @@ let rec somme_fonctionnelle = function
   | tete :: reste -> tete + somme_fonctionnelle reste
 ```
 
-Les deux styles coexistent dans OCaml — `ref`, `for` et `while` existent réellement dans le langage, ce n'est pas une simulation. Le chapitre sur la récursion et les fonctions d'ordre supérieur détaille pourquoi la version récursive reste praticable même sur de grandes listes.
+Les deux styles coexistent dans OCaml : `ref`, `for` et `while` existent réellement dans le langage, ce n'est pas une simulation. Le chapitre sur la récursion et les fonctions d'ordre supérieur détaille pourquoi la version récursive reste praticable même sur de grandes listes.
 
 ## Synthèse
 
@@ -82,7 +82,7 @@ Les deux styles coexistent dans OCaml — `ref`, `for` et `while` existent réel
 | Répétition | Boucles (`for`, `while`) avec compteur mutable | Récursion, fonctions d'ordre supérieur (`map`, `fold`) |
 | Modèle mental | "Que faire, dans quel ordre" | "Quelle valeur, à partir de quelles autres valeurs" |
 
-Aucun style n'est strictement supérieur : le style impératif colle souvent plus naturellement à une ressource qui change réellement dans le temps (l'état d'une interface, une connexion réseau), tandis que le style fonctionnel excelle sur des transformations de données pures — la suite de ce sujet détaille les raisons concrètes de cet avantage plutôt que de le prendre pour acquis.
+Aucun style n'est strictement supérieur : le style impératif colle souvent plus naturellement à une ressource qui change réellement dans le temps (l'état d'une interface, une connexion réseau), tandis que le style fonctionnel excelle sur des transformations de données pures. La suite de ce sujet détaille les raisons concrètes de cet avantage plutôt que de le prendre pour acquis.
 
 ---
 
@@ -92,5 +92,5 @@ Aucun style n'est strictement supérieur : le style impératif colle souvent plu
 |---|---|
 | **À retenir** | En OCaml, `if` et tout bloc sont des expressions (produisent une valeur), `let` crée une liaison immuable (pas une variable réassignable), et la récursion remplace la boucle à compteur mutable. |
 | **Outils utilisables** | `let ... in`, `if ... then ... else` comme expression, `let rec` pour une fonction récursive. |
-| **Pièges à éviter** | Confondre une nouvelle liaison (`let x = x + 1`) avec une réassignation — l'ancien `x` n'est pas modifié, seulement masqué dans la portée qui suit. |
+| **Pièges à éviter** | Confondre une nouvelle liaison (`let x = x + 1`) avec une réassignation : l'ancien `x` n'est pas modifié, seulement masqué dans la portée qui suit. |
 | **Bonnes pratiques** | Choisir le style selon la nature du problème : impératif pour un état qui change réellement dans le temps, fonctionnel pour une transformation de données pure. |
