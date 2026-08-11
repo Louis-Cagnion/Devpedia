@@ -17,11 +17,11 @@ Un **design token** est une valeur de design (une couleur, un espacement, un ray
 | Rayon de bordure | `rayon-standard` | 8px | Décision de style propre au produit |
 | Typographie | `texte-titre` | Famille, taille et graisse d'un titre | [Typographie](/?c=ui-ux&p=typographie) (échelle, pairing) |
 
-Un token ne remplace aucun des principes déjà vus (une échelle d'espacement cohérente, un contraste suffisant...) : il leur donne un nom réutilisable, une fois la valeur choisie. Techniquement, un token se traduit le plus souvent en [variable CSS](/?c=langages-de-balisage&s=css&p=variables-et-cascade) — ce chapitre reste au niveau de la décision de conception, pas de sa syntaxe d'implémentation.
+Un token ne remplace aucun des principes déjà vus (une échelle d'espacement cohérente, un contraste suffisant...) : il leur donne un nom réutilisable, une fois la valeur choisie. Techniquement, un token se traduit le plus souvent en [variable CSS](/?c=langages-de-balisage&s=css&p=variables-et-cascade) : ce chapitre reste au niveau de la décision de conception, pas de sa syntaxe d'implémentation.
 
-> **Piège :** faire cohabiter, pour une même valeur, un token ET des occurrences en dur ailleurs dans le produit (un bouton qui référence `couleur-accent`, un autre écrit directement le code couleur). Changer le token ne corrige alors qu'une partie des cas — exactement le problème qu'une [source unique de vérité](/?c=qualite-et-architecture-du-code&p=source-unique-de-verite) est censée éviter.
+> **Piège :** faire cohabiter, pour une même valeur, un token ET des occurrences en dur ailleurs dans le produit (un bouton qui référence `couleur-accent`, un autre écrit directement le code couleur). Changer le token ne corrige alors qu'une partie des cas : exactement le problème qu'une [source unique de vérité](/?c=qualite-et-architecture-du-code&p=source-unique-de-verite) est censée éviter.
 >
-> **Bonne pratique :** une fois un token créé, faire référencer sa valeur partout où elle apparaît, sans exception ponctuelle "pour cette fois" — une seule occurrence en dur suffit à briser la cohérence que le token est censé garantir.
+> **Bonne pratique :** une fois un token créé, faire référencer sa valeur partout où elle apparaît, sans exception ponctuelle "pour cette fois" : une seule occurrence en dur suffit à briser la cohérence que le token est censé garantir.
 
 ## La bibliothèque de composants : construire une fois, réutiliser partout
 
@@ -38,13 +38,13 @@ Ecran B : bouton "Valider"     Ecran B : <BoutonPrincipal>
 
 > **Piège :** dupliquer un composant existant pour l'adapter légèrement à un nouvel écran ("je repars du bouton existant mais je change juste ce détail"), plutôt que de faire évoluer le composant original. La copie diverge inévitablement de l'original au fil des retouches ultérieures, et le produit se retrouve avec plusieurs versions légèrement différentes du "même" composant.
 >
-> **Bonne pratique :** faire évoluer le composant partagé lui-même (avec un paramètre pour la variation nécessaire, si elle est légitime) plutôt que de le dupliquer — la même logique que [source unique de vérité](/?c=qualite-et-architecture-du-code&p=source-unique-de-verite) et [éviter la répétition](/?c=qualite-et-architecture-du-code&p=eviter-la-repetition-structures-indexees) déjà vues côté code s'applique tout autant aux éléments d'interface.
+> **Bonne pratique :** faire évoluer le composant partagé lui-même (avec un paramètre pour la variation nécessaire, si elle est légitime) plutôt que de le dupliquer : la même logique que [source unique de vérité](/?c=qualite-et-architecture-du-code&p=source-unique-de-verite) et [éviter la répétition](/?c=qualite-et-architecture-du-code&p=eviter-la-repetition-structures-indexees) déjà vues côté code s'applique tout autant aux éléments d'interface.
 
 ## Piège : construire un design system avant d'avoir des écrans réels
 
-Un design system se dégage de patterns qui se répètent réellement à travers plusieurs écrans déjà conçus — pas d'une anticipation de ce qui pourrait un jour se répéter.
+Un design system se dégage de patterns qui se répètent réellement à travers plusieurs écrans déjà conçus, pas d'une anticipation de ce qui pourrait un jour se répéter.
 
-> **Piège :** construire une bibliothèque de composants exhaustive avant même d'avoir conçu quelques écrans réels du produit. Sans cas d'usage réels pour les confronter, les composants anticipés ne correspondent souvent pas aux besoins qui émergent une fois le produit réellement conçu — un temps investi à généraliser un besoin encore hypothétique.
+> **Piège :** construire une bibliothèque de composants exhaustive avant même d'avoir conçu quelques écrans réels du produit. Sans cas d'usage réels pour les confronter, les composants anticipés ne correspondent souvent pas aux besoins qui émergent une fois le produit réellement conçu : un temps investi à généraliser un besoin encore hypothétique.
 >
 > **Bonne pratique :** laisser un design system émerger progressivement à partir d'écrans réels (extraire un composant une fois qu'un motif s'est répété 2 ou 3 fois), plutôt que de le concevoir intégralement à l'avance.
 

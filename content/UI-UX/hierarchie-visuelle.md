@@ -8,9 +8,9 @@ Face à un écran, personne ne lit dans l'ordre du code source : l'œil saute sp
 
 **Hiérarchie visuelle** : organiser les éléments d'un écran pour que l'œil aille vers ce qui compte le plus en premier, puis vers le reste dans un ordre voulu.
 
-> **Analogie :** la une d'un journal. Le titre principal est énorme, le sous-titre plus petit, le corps de texte plus petit encore. Personne n'a besoin qu'on lui dise quoi lire en premier — la taille seule l'indique.
+> **Analogie :** la une d'un journal. Le titre principal est énorme, le sous-titre plus petit, le corps de texte plus petit encore. Personne n'a besoin qu'on lui dise quoi lire en premier : la taille seule l'indique.
 
-**Pourquoi ça compte :** sans hiérarchie, tous les éléments ont le même poids visuel. L'utilisateur doit alors tout lire pour trouver l'information qu'il cherche — sur un site ou une appli, ce temps perdu se traduit directement par de l'abandon.
+**Pourquoi ça compte :** sans hiérarchie, tous les éléments ont le même poids visuel. L'utilisateur doit alors tout lire pour trouver l'information qu'il cherche : sur un site ou une appli, ce temps perdu se traduit directement par de l'abandon.
 
 ## Les leviers de la hiérarchie
 
@@ -43,7 +43,7 @@ Sur un écran donné, chaque élément se classe dans l'un de ces trois rôles :
 | Secondaire | Ce qui soutient ou explique le primaire | Le sous-titre qui décrit l'offre |
 | Tertiaire | Le détail consulté seulement si besoin | Les mentions légales, un lien "en savoir plus" |
 
-> **Piège :** vouloir tout mettre en avant en même temps — un titre énorme, plusieurs boutons colorés, du texte en gras partout. Résultat : plus rien ne ressort, l'écran devient une bouillie visuelle où l'œil ne sait plus où aller (la *surcharge visuelle*).
+> **Piège :** vouloir tout mettre en avant en même temps : un titre énorme, plusieurs boutons colorés, du texte en gras partout. Résultat : plus rien ne ressort, l'écran devient une bouillie visuelle où l'œil ne sait plus où aller (la *surcharge visuelle*).
 >
 > **Bonne pratique :** choisir un seul élément primaire par écran avant de designer quoi que ce soit d'autre. Tout le reste se hiérarchise ensuite en dessous de lui, jamais à son niveau.
 
@@ -51,7 +51,7 @@ Sur un écran donné, chaque élément se classe dans l'un de ces trois rôles :
 
 Des études de suivi du regard (*eye-tracking*) montrent que l'œil suit des trajectoires récurrentes selon le type de page.
 
-**F-pattern** — pour une page dense en texte (article, résultats de recherche, liste de produits) :
+**F-pattern** : pour une page dense en texte (article, résultats de recherche, liste de produits) :
 
 ```text
 █████████████████████████    ← 1re ligne : balayée en entier
@@ -66,7 +66,7 @@ Des études de suivi du regard (*eye-tracking*) montrent que l'œil suit des tra
 
 L'utilisateur lit en entier les premières lignes, puis se contente de scanner le début des lignes suivantes en descendant. Conséquence pratique : mettre l'information la plus importante dans les premiers mots de chaque titre ou paragraphe.
 
-**Z-pattern** — pour une page simple et peu dense (page d'accueil, landing page) :
+**Z-pattern** : pour une page simple et peu dense (page d'accueil, landing page) :
 
 ```text
 [Logo]──────────────────────►[Menu / Connexion]
@@ -78,11 +78,11 @@ L'utilisateur lit en entier les premières lignes, puis se contente de scanner l
 [Argument clé]──────────────►[Bouton d'action]
 ```
 
-L'œil part en haut à gauche, balaie vers la droite, redescend en diagonale, puis balaie une dernière fois vers la droite — où se place naturellement le bouton d'action principal (le point primaire défini plus haut).
+L'œil part en haut à gauche, balaie vers la droite, redescend en diagonale, puis balaie une dernière fois vers la droite : là se place naturellement le bouton d'action principal (le point primaire défini plus haut).
 
-> **Piège :** appliquer un Z-pattern à une page dense en texte (ou l'inverse). Le schéma de lecture dépend de la densité de contenu, pas d'une préférence esthétique — un mauvais choix pousse l'utilisateur à lire dans le désordre voulu par le designer, pas dans celui qui lui vient naturellement.
+> **Piège :** appliquer un Z-pattern à une page dense en texte (ou l'inverse). Le schéma de lecture dépend de la densité de contenu, pas d'une préférence esthétique : un mauvais choix pousse l'utilisateur à lire dans le désordre voulu par le designer, pas dans celui qui lui vient naturellement.
 
-> **Tendance actuelle (2026) :** après plusieurs années de mises en page très expérimentales, la tendance revient vers des hiérarchies lisibles et prévisibles, plus proches de ces schémas classiques que d'une composition surprenante — la nouveauté visuelle cède du terrain face à la rapidité de compréhension.
+> **Tendance actuelle (2026) :** après plusieurs années de mises en page très expérimentales, la tendance revient vers des hiérarchies lisibles et prévisibles, plus proches de ces schémas classiques que d'une composition surprenante : la nouveauté visuelle cède du terrain face à la rapidité de compréhension.
 
 ## Passer à l'implémentation
 
@@ -95,6 +95,6 @@ Ce chapitre reste volontairement indépendant d'un langage : les leviers ci-dess
 | | |
 |---|---|
 | **À retenir** | La hiérarchie visuelle organise un écran pour que l'œil aille vers ce qui compte en premier. Elle s'obtient via des leviers (taille, poids, couleur, contraste, espacement, position) et repose sur un seul élément primaire par écran. |
-| **Outils utilisables** | Aucun outil spécifique — la hiérarchie se décide au moment de la conception (croquis, maquette) puis se traduit en code (CSS, principalement). |
+| **Outils utilisables** | Aucun outil spécifique : la hiérarchie se décide au moment de la conception (croquis, maquette) puis se traduit en code (CSS, principalement). |
 | **Pièges à éviter** | Mettre plusieurs éléments en avant en même temps (surcharge visuelle, plus rien ne ressort) ; appliquer un schéma de lecture (F ou Z) qui ne correspond pas à la densité réelle du contenu. |
 | **Bonnes pratiques** | Choisir un seul élément primaire par écran avant de hiérarchiser le reste ; combiner plusieurs leviers (taille + espacement + position) plutôt qu'un seul pour renforcer un élément important. |
