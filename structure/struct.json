@@ -18,6 +18,10 @@
         {
           "id": "modeles-en-etoile",
           "label": "Le modèle en étoile"
+        },
+        {
+          "id": "architecture-medaillon",
+          "label": "L'architecture médaillon"
         }
       ]
     },
