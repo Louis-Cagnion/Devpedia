@@ -751,6 +751,29 @@
       ]
     },
     {
+      "id": "organisation-en-entreprise",
+      "label": "Organisation en entreprise",
+      "folder": "Organisation en entreprise",
+      "chapters": [
+        {
+          "id": "roles-equipe-developpement",
+          "label": "Les rôles dans une équipe de développement"
+        },
+        {
+          "id": "methodologies-agile-scrum-kanban",
+          "label": "Méthodologies : Agile, Scrum, Kanban"
+        },
+        {
+          "id": "cycle-de-vie-dun-projet",
+          "label": "Le cycle de vie d'un projet"
+        },
+        {
+          "id": "documentation-et-communication-equipe",
+          "label": "Documentation et communication en équipe"
+        }
+      ]
+    },
+    {
       "id": "performance",
       "label": "Performance",
       "folder": "Performance",
