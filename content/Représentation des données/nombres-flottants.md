@@ -14,7 +14,7 @@ Ce résultat est identique en JavaScript, en Python, en C, en PHP, en Java et en
 
 ## Pourquoi une approximation ?
 
-En base 10, certaines fractions n'ont pas d'écriture décimale finie : `1/3 = 0,333...` — on doit s'arrêter quelque part, donc écrire une approximation.
+En base 10, certaines fractions n'ont pas d'écriture décimale finie : `1/3 = 0,333...` : on doit s'arrêter quelque part, donc écrire une approximation.
 
 Le même phénomène existe en base 2, mais **avec d'autres nombres**. Un nombre n'a une écriture binaire finie que si son dénominateur est une puissance de 2 :
 
@@ -43,7 +43,7 @@ Un flottant est stocké en trois parties, comme une notation scientifique en bin
 | `double` (double précision) | 64 bits | 1 | 11 | 52 | ~15-16 |
 
 - le **signe** indique positif ou négatif ;
-- l'**exposant** donne l'ordre de grandeur — c'est lui qui permet de représenter aussi bien `10⁻³⁰⁰` que `10³⁰⁰` ;
+- l'**exposant** donne l'ordre de grandeur : c'est lui qui permet de représenter aussi bien `10⁻³⁰⁰` que `10³⁰⁰` ;
 - la **mantisse** porte les chiffres significatifs, et c'est elle qui **limite la précision**.
 
 Ce compromis est le cœur du sujet : un flottant sacrifie la précision pour couvrir une énorme plage de valeurs avec peu de bits. Le nombre de bits de mantisse étant fixe, la précision est **relative** : plus un nombre est grand, plus l'écart entre deux flottants consécutifs est grand.
@@ -106,7 +106,7 @@ La norme réserve certaines combinaisons de bits à des valeurs spéciales, pré
 - **infinis** : produits par un débordement ou une division par zéro (`1.0 / 0.0`) ;
 - **NaN** (*Not a Number*) : résultat d'une opération invalide (`0.0 / 0.0`, racine d'un nombre négatif).
 
-`NaN` a une propriété volontairement surprenante : **il n'est égal à rien, pas même à lui-même**. `NaN == NaN` est faux. C'est cohérent — deux résultats invalides n'ont aucune raison d'être "le même nombre" — mais cela impose d'utiliser une fonction dédiée pour le détecter (`isnan()` en C, `math.isnan()` en Python, `Number.isNaN()` en JavaScript).
+`NaN` a une propriété volontairement surprenante : **il n'est égal à rien, pas même à lui-même**. `NaN == NaN` est faux. C'est cohérent (deux résultats invalides n'ont aucune raison d'être "le même nombre"), mais cela impose d'utiliser une fonction dédiée pour le détecter (`isnan()` en C, `math.isnan()` en Python, `Number.isNaN()` en JavaScript).
 
 ## Ce que chaque langage y ajoute
 
@@ -115,7 +115,7 @@ Le socle est commun ; les langages diffèrent seulement sur l'emballage :
 | Langage | Spécificités |
 |---|---|
 | C | `float` / `double` / `long double` explicites, `fabs()`, `isnan()` |
-| JavaScript | un seul type `number` (toujours un double), `BigInt` pour les grands entiers — voir [Les nombres](/?c=langages-de-programmation&s=javascript&p=nombres) |
+| JavaScript | un seul type `number` (toujours un double), `BigInt` pour les grands entiers, voir [Les nombres](/?c=langages-de-programmation&s=javascript&p=nombres) |
 | Python | `float` = double, entiers de taille arbitraire nativement, `math.isclose()`, module `decimal` |
 | PHP | `float` = double, `PHP_FLOAT_EPSILON` |
 
@@ -138,7 +138,7 @@ Retenez surtout que ces différences ne changent rien au fond : c'est le matéri
 
 | | |
 |---|---|
-| **À retenir** | Un flottant (norme IEEE 754) stocke une approximation, pas une valeur exacte — `0.1 + 0.2 != 0.3` dans tous les langages, sans exception. La précision est relative : plus un nombre est grand, plus l'écart entre deux flottants consécutifs grandit. |
+| **À retenir** | Un flottant (norme IEEE 754) stocke une approximation, pas une valeur exacte : `0.1 + 0.2 != 0.3` dans tous les langages, sans exception. La précision est relative : plus un nombre est grand, plus l'écart entre deux flottants consécutifs grandit. |
 | **Outils utilisables** | Comparaison par epsilon (`math.isclose`, `fabs(a-b) < epsilon`), types `DECIMAL` pour des montants exacts. |
 | **Pièges à éviter** | Comparer deux flottants avec `==` ; stocker un montant monétaire en flottant plutôt qu'en entiers (centimes) ou `DECIMAL`. |
 | **Bonnes pratiques** | Choisir un epsilon adapté à l'ordre de grandeur manipulé, jamais l'epsilon machine par défaut pour de grandes valeurs. |

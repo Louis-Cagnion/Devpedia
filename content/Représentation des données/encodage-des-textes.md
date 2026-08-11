@@ -57,7 +57,7 @@ UTF-8 encode un point de code sur **1 à 4 octets**, selon sa valeur :
 | `U+0800` → `U+FFFF` | 3 | chinois, japonais, coréen |
 | `U+10000` → `U+10FFFF` | 4 | emojis, écritures rares |
 
-Sa qualité décisive est la **compatibilité ascendante avec ASCII** : un fichier ASCII est déjà un fichier UTF-8 valide, sans conversion. C'est ce qui a permis son adoption universelle — il représente aujourd'hui plus de 98 % du web.
+Sa qualité décisive est la **compatibilité ascendante avec ASCII** : un fichier ASCII est déjà un fichier UTF-8 valide, sans conversion. C'est ce qui a permis son adoption universelle : il représente aujourd'hui plus de 98 % du web.
 
 ```text
 "A"  -> 1 octet  : 41
@@ -100,7 +100,7 @@ Ce symptôme est très reconnaissable et permet de remonter à la cause :
 | `?` ou `�` | Caractère absent de l'encodage cible, remplacé |
 | Accents corrects sauf dans un tableur | Séparateur ou BOM manquant à l'ouverture |
 
-La correction n'est jamais de "remplacer les caractères" mais de **déclarer le bon encodage** au point de lecture. Chaque couche doit être cohérente : la balise HTML (`<meta charset="utf-8">`, voir le chapitre [Structure d'un document](/?c=langages-de-balisage&s=html&p=structure-dun-document)), l'en-tête HTTP, l'encodage des fichiers sources, et le jeu de caractères de la base de données (`utf8mb4` pour MySQL — `utf8` seul y est un faux ami limité à 3 octets, qui rejette les emojis).
+La correction n'est jamais de "remplacer les caractères" mais de **déclarer le bon encodage** au point de lecture. Chaque couche doit être cohérente : la balise HTML (`<meta charset="utf-8">`, voir le chapitre [Structure d'un document](/?c=langages-de-balisage&s=html&p=structure-dun-document)), l'en-tête HTTP, l'encodage des fichiers sources, et le jeu de caractères de la base de données (`utf8mb4` pour MySQL : `utf8` seul y est un faux ami limité à 3 octets, qui rejette les emojis).
 
 ## Le BOM
 
@@ -110,7 +110,7 @@ Il reste néanmoins courant sous Windows, où certains outils (dont Excel) s'en 
 
 ## UTF-16 et UTF-32
 
-- **UTF-16** : 2 ou 4 octets par caractère. Utilisé en interne par Java, C#, JavaScript et Windows. Les caractères hors du plan de base (les emojis) y occupent deux unités de 16 bits, appelées *surrogate pair* — d'où le fait qu'en JavaScript, `"😀".length` renvoie **2**.
+- **UTF-16** : 2 ou 4 octets par caractère. Utilisé en interne par Java, C#, JavaScript et Windows. Les caractères hors du plan de base (les emojis) y occupent deux unités de 16 bits, appelées *surrogate pair* : d'où le fait qu'en JavaScript, `"😀".length` renvoie **2**.
 - **UTF-32** : 4 octets par caractère, taille fixe. Simple à indexer, mais gaspille beaucoup d'espace ; rarement utilisé pour du stockage.
 
 ## Résumé
@@ -130,7 +130,7 @@ Il reste néanmoins courant sous Windows, où certains outils (dont Excel) s'en 
 
 | | |
 |---|---|
-| **À retenir** | Un encodage associe chaque caractère à un nombre (Unicode : le catalogue) puis à des octets (UTF-8 : le format). UTF-8 est compatible ASCII et code un caractère sur 1 à 4 octets — un caractère n'est donc pas forcément un octet. |
+| **À retenir** | Un encodage associe chaque caractère à un nombre (Unicode : le catalogue) puis à des octets (UTF-8 : le format). UTF-8 est compatible ASCII et code un caractère sur 1 à 4 octets : un caractère n'est donc pas forcément un octet. |
 | **Outils utilisables** | `<meta charset="utf-8">`, `utf8mb4` pour MySQL, une bibliothèque dédiée pour compter des graphèmes. |
 | **Pièges à éviter** | Lire un fichier UTF-8 avec le mauvais encodage déclaré (mojibake, `Ã©`) ; découper une chaîne à l'octet près sans tenir compte des caractères multi-octets. |
 | **Bonnes pratiques** | Déclarer le bon encodage à chaque couche (fichier, HTTP, base de données) plutôt que de "réparer" des caractères déjà corrompus. |

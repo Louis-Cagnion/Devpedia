@@ -4,7 +4,7 @@ order: 1
 
 # Les entiers, les bits et les débordements
 
-Un entier n'est pas stocké "tel quel" : il occupe un nombre **fixe** de bits, décidé à la déclaration. Toute la mécanique des entiers découle de cette contrainte — les valeurs maximales, les nombres négatifs, et les débordements.
+Un entier n'est pas stocké "tel quel" : il occupe un nombre **fixe** de bits, décidé à la déclaration. Toute la mécanique des entiers découle de cette contrainte : les valeurs maximales, les nombres négatifs, et les débordements.
 
 ## Combien de valeurs dans *n* bits ?
 
@@ -17,13 +17,13 @@ Avec *n* bits, on dispose de **2ⁿ** combinaisons distinctes, donc 2ⁿ valeurs
 | 32 | ~4,3 milliards | 0 → 4 294 967 295 | −2 147 483 648 → 2 147 483 647 |
 | 64 | ~1,8 × 10¹⁹ | 0 → ~1,8 × 10¹⁹ | ~−9,2 × 10¹⁸ → ~9,2 × 10¹⁸ |
 
-Le nombre de valeurs ne change pas selon qu'on soit signé ou non : c'est la **plage** qui se décale. Un `char` non signé va de 0 à 255, un signé de −128 à 127 — 256 valeurs dans les deux cas.
+Le nombre de valeurs ne change pas selon qu'on soit signé ou non : c'est la **plage** qui se décale. Un `char` non signé va de 0 à 255, un signé de −128 à 127 : 256 valeurs dans les deux cas.
 
 **Le calcul à retenir :** pour *n* bits, la valeur maximale non signée est `2ⁿ − 1` (le `− 1` parce que le zéro occupe une combinaison). En signé, la plage est `−2ⁿ⁻¹` à `2ⁿ⁻¹ − 1`.
 
 ## Le poids d'un bit
 
-Chaque bit contribue à la valeur totale selon sa position, une puissance de 2 croissante de droite à gauche — son **poids** :
+Chaque bit contribue à la valeur totale selon sa position, une puissance de 2 croissante de droite à gauche (son **poids**) :
 
 ```text
 bit :    1    0    1    1    0    0    1    0
@@ -75,14 +75,14 @@ y = y + 1;               // 1000 0000 -> -128 !
 
 Ajouter 1 au plus grand nombre positif donne le plus petit négatif.
 
-> **Piège majeur en C/C++ :** le débordement d'un entier **signé** est un **comportement indéfini** (*undefined behavior*), pas un wraparound garanti. Le compilateur a le droit de supposer qu'il n'arrive jamais et d'optimiser en conséquence — un test comme `if (x + 1 < x)` peut être purement supprimé. Le débordement **non signé**, lui, est défini par la norme et boucle bien. Pour compter, comparer ou masquer des bits, préférez donc les types non signés.
+> **Piège majeur en C/C++ :** le débordement d'un entier **signé** est un **comportement indéfini** (*undefined behavior*), pas un wraparound garanti. Le compilateur a le droit de supposer qu'il n'arrive jamais et d'optimiser en conséquence : un test comme `if (x + 1 < x)` peut être purement supprimé. Le débordement **non signé**, lui, est défini par la norme et boucle bien. Pour compter, comparer ou masquer des bits, préférez donc les types non signés.
 
 ## Pourquoi ça compte vraiment
 
 Les débordements d'entiers ne sont pas une curiosité académique :
 
 - Le **bug de l'an 2038** : les systèmes Unix comptent les secondes depuis 1970 dans un entier signé 32 bits. Il débordera le 19 janvier 2038, renvoyant une date en 1901.
-- De nombreuses **failles de sécurité** viennent d'un calcul de taille qui déborde : si `taille + 1` boucle à 0, une allocation de 0 octet est suivie d'une écriture de plusieurs milliers — c'est un débordement de tampon. Voir le chapitre [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire) de C.
+- De nombreuses **failles de sécurité** viennent d'un calcul de taille qui déborde : si `taille + 1` boucle à 0, une allocation de 0 octet est suivie d'une écriture de plusieurs milliers : c'est un débordement de tampon. Voir le chapitre [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire) de C.
 - La **première Ariane 5** a été détruite en 1996 à cause d'une conversion d'un flottant 64 bits vers un entier 16 bits qui a débordé.
 
 ## Selon les langages
@@ -95,7 +95,7 @@ Les débordements d'entiers ne sont pas une curiosité académique :
 | JavaScript | Pas de vrai type entier : tout est flottant, donc exact seulement jusqu'à 2⁵³ (voir [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` pour aller au-delà |
 | PHP | Entier natif ; en cas de débordement, conversion automatique en `float` (donc perte de précision) |
 
-Python illustre bien le compromis : ne jamais déborder est confortable, mais chaque entier est un objet plus lourd et plus lent qu'un entier machine. C'est l'une des raisons pour lesquelles les bibliothèques de calcul comme NumPy utilisent des types à taille fixe (`int32`, `int64`) — voir le chapitre [NumPy](/?c=data-science&p=numpy).
+Python illustre bien le compromis : ne jamais déborder est confortable, mais chaque entier est un objet plus lourd et plus lent qu'un entier machine. C'est l'une des raisons pour lesquelles les bibliothèques de calcul comme NumPy utilisent des types à taille fixe (`int32`, `int64`). Voir le chapitre [NumPy](/?c=data-science&p=numpy).
 
 ## Manipuler les bits directement
 
@@ -119,5 +119,5 @@ Le corollaire de cette représentation binaire est qu'on peut agir sur les bits 
 |---|---|
 | **À retenir** | Un entier occupe un nombre fixe de bits, décidé à la déclaration : *n* bits donnent 2ⁿ valeurs possibles. Les négatifs s'encodent en complément à deux ; un débordement fait "boucler" la valeur (ou provoque un comportement indéfini en C pour un signé). |
 | **Outils utilisables** | Les types non signés pour compter/comparer/masquer des bits sans risque d'UB ; les types à taille fixe (`int32`, `int64`) des bibliothèques de calcul. |
-| **Pièges à éviter** | Compter sur le débordement d'un entier signé en C/C++ — comportement indéfini, pas un wraparound garanti. |
+| **Pièges à éviter** | Compter sur le débordement d'un entier signé en C/C++ : comportement indéfini, pas un wraparound garanti. |
 | **Bonnes pratiques** | Préférer les types non signés pour toute manipulation de bits ; vérifier qu'un calcul de taille ne peut pas déborder avant une allocation mémoire. |

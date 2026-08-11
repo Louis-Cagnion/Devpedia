@@ -10,7 +10,7 @@ Cette distinction n'est pas un détail théorique : confondre les deux catégori
 
 ## Un PRNG est une suite déterministe
 
-Un PRNG part d'un état initial, la **graine** (*seed*), et applique une formule pour produire chaque valeur suivante. Même graine, même suite — toujours, sur toutes les machines.
+Un PRNG part d'un état initial, la **graine** (*seed*), et applique une formule pour produire chaque valeur suivante. Même graine, même suite, toujours, sur toutes les machines.
 
 ```python
 import random
@@ -73,7 +73,7 @@ Voir le chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p
 
 Le système d'exploitation collecte des évènements physiques difficilement prévisibles : intervalles précis entre les frappes clavier et les interruptions matérielles, bruit thermique, et sur les processeurs récents une instruction dédiée (`RDRAND`). Il en alimente un réservoir d'entropie, exposé sous Linux via `/dev/urandom`.
 
-C'est là qu'un CSPRNG puise sa graine — et c'est ce qui le rend imprévisible : la graine elle-même ne dépend d'aucune formule.
+C'est là qu'un CSPRNG puise sa graine, et c'est ce qui le rend imprévisible : la graine elle-même ne dépend d'aucune formule.
 
 ## Le biais du modulo
 
@@ -111,7 +111,7 @@ Le même raisonnement s'applique à `Math.random()` en JavaScript ou `mt_rand()`
 
 | | |
 |---|---|
-| **À retenir** | Un PRNG classique est une suite déterministe (même graine = même suite) — utile pour les tests et la reproductibilité, mais jamais pour une valeur qui doit rester secrète. Un CSPRNG puise sa graine dans l'entropie du système, ce qui le rend imprévisible. |
+| **À retenir** | Un PRNG classique est une suite déterministe (même graine = même suite) : utile pour les tests et la reproductibilité, mais jamais pour une valeur qui doit rester secrète. Un CSPRNG puise sa graine dans l'entropie du système, ce qui le rend imprévisible. |
 | **Outils utilisables** | `secrets`/`random_bytes()`/`crypto.getRandomValues()` (CSPRNG) vs `random`/`rand()`/`Math.random()` (PRNG classique). |
 | **Pièges à éviter** | Utiliser un PRNG classique (ou une graine prévisible comme l'horloge) pour un jeton de session, un sel, ou toute valeur devant rester secrète. |
 | **Bonnes pratiques** | CSPRNG systématique dès qu'une valeur doit être imprévisible ; utiliser une fonction dédiée (`randint`, `randbelow`) plutôt qu'un `%` improvisé pour ramener un tirage dans un intervalle. |

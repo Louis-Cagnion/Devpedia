@@ -59,7 +59,7 @@ struct Compacte {
 };              // sizeof = 8 au lieu de 12
 ```
 
-Sur une structure utilisée en millions d'exemplaires, ce détail change la consommation mémoire d'un tiers — et surtout l'efficacité du cache processeur, souvent plus déterminante que le calcul lui-même.
+Sur une structure utilisée en millions d'exemplaires, ce détail change la consommation mémoire d'un tiers, et surtout l'efficacité du cache processeur, souvent plus déterminante que le calcul lui-même.
 
 > Ne calculez donc **jamais** la taille d'une structure à la main : utilisez `sizeof`. Et n'écrivez pas une structure brute dans un fichier ou sur le réseau en supposant sa disposition : le remplissage varie selon le compilateur et l'architecture. C'est le rôle de la **sérialisation** (JSON, Protobuf...) de produire un format défini indépendamment de la machine.
 
@@ -72,7 +72,7 @@ Pour une valeur de plusieurs octets, dans quel ordre les ranger en mémoire ? De
 | **Little-endian** | `78 56 34 12` | x86, x86-64, ARM (par défaut) |
 | **Big-endian** | `12 34 56 78` | Réseau, certains processeurs (SPARC, PowerPC) |
 
-Le *little-endian* place l'octet de **poids faible** en premier. Ce n'est ni mieux ni pire, c'est un choix historique — mais il n'est pas universel, d'où deux implications :
+Le *little-endian* place l'octet de **poids faible** en premier. Ce n'est ni mieux ni pire, c'est un choix historique, mais il n'est pas universel, d'où deux implications :
 
 - Un fichier binaire écrit sur une machine little-endian et lu par une big-endian donnera des valeurs erronées, sans erreur signalée : la lecture réussit, les nombres sont juste faux.
 - Les protocoles réseau imposent le big-endian, appelé pour cette raison **ordre réseau**. Les fonctions `htons()`/`ntohl()` en C servent exactement à cette conversion.
@@ -99,7 +99,7 @@ C'est aussi pourquoi `pointeur + 1` avance de `sizeof(type)` octets et non de 1 
 Python, JavaScript ou PHP masquent tout cela : vous ne choisissez pas la disposition mémoire. Mais elle ne disparaît pas, et se manifeste autrement :
 
 - une liste Python de 1 000 entiers occupe beaucoup plus que 4 000 octets, car chaque entier est un **objet** avec son en-tête ;
-- c'est précisément pour cette raison que NumPy existe : un tableau NumPy stocke des valeurs brutes contiguës, alignées, sans en-tête par élément — d'où des gains de vitesse d'un ordre de grandeur sur du calcul numérique (voir [NumPy](/?c=data-science&p=numpy)).
+- c'est précisément pour cette raison que NumPy existe : un tableau NumPy stocke des valeurs brutes contiguës, alignées, sans en-tête par élément : d'où des gains de vitesse d'un ordre de grandeur sur du calcul numérique (voir [NumPy](/?c=data-science&p=numpy)).
 
 ## Résumé
 
@@ -118,7 +118,7 @@ Python, JavaScript ou PHP masquent tout cela : vous ne choisissez pas la disposi
 
 | | |
 |---|---|
-| **À retenir** | La mémoire s'adresse par octet, mais le processeur préfère lire des valeurs alignées sur des multiples de leur taille — d'où le *padding* qui agrandit une structure au-delà de la somme de ses champs. L'ordre des octets (*endianness*) varie selon l'architecture. |
+| **À retenir** | La mémoire s'adresse par octet, mais le processeur préfère lire des valeurs alignées sur des multiples de leur taille : d'où le *padding* qui agrandit une structure au-delà de la somme de ses champs. L'ordre des octets (*endianness*) varie selon l'architecture. |
 | **Outils utilisables** | `sizeof` pour mesurer une taille réelle, réordonner les champs d'une structure (plus grand au plus petit) pour réduire le padding. |
 | **Pièges à éviter** | Calculer la taille d'une structure à la main plutôt que d'utiliser `sizeof` ; écrire la mémoire brute d'une structure dans un fichier/réseau, sans tenir compte du padding ni de l'endianness. |
 | **Bonnes pratiques** | Sérialiser dans un format défini (JSON, Protobuf...) plutôt que copier la mémoire brute d'une structure entre machines. |
