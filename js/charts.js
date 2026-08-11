@@ -446,10 +446,96 @@ function renderVectorDiagram(spec) {
     return svg;
 }
 
+/**
+ * @param {string} barresSpec a comma-separated list of "étiquette=valeur" pairs,
+ *   e.g. "Pluie=0.8, Soleil=0.15, Neige=0.05"
+ * @returns {Array<{label: string, value: number}>}
+ */
+function parseBarList(barresSpec) {
+    const entries = barresSpec.split(",").map(part => part.trim()).filter(Boolean);
+    if (entries.length === 0) {
+        throw new Error(`liste de barres invalide : "${barresSpec}" (attendu "étiquette=valeur, ...")`);
+    }
+    return entries.map(entry => {
+        const eqIndex = entry.indexOf("=");
+        if (eqIndex === -1) throw new Error(`barre invalide : "${entry}" (attendu "étiquette=valeur")`);
+        const label = entry.slice(0, eqIndex).trim();
+        const value = parseFloat(entry.slice(eqIndex + 1).trim());
+        if (!label || !Number.isFinite(value) || value < 0) throw new Error(`barre invalide : "${entry}"`);
+        return {label, value};
+    });
+}
+
+const DISTRIBUTION_BAR_WIDTH_RATIO = 0.6;
+
+/**
+ * @param {{barres: string, label?: string}} spec
+ * @returns {SVGElement} a vertical bar chart, one bar per entry of `barres`, with the
+ *   y-axis scaled to the largest bar (plus headroom) rather than a fixed range, so a
+ *   distribution far from its theoretical ceiling still fills the chart readably
+ */
+function renderDistributionChart(spec) {
+    if (!spec.barres) throw new Error('le champ "barres" est requis (ex: "barres: Pluie=0.8, Soleil=0.15, Neige=0.05")');
+    const bars = parseBarList(spec.barres);
+
+    // `|| 1` guards the degenerate case where every bar is 0, avoiding a division by zero below.
+    const maxValue = Math.max(...bars.map(b => b.value)) * 1.1 || 1;
+    const plotWidth = PLOT_WIDTH - PLOT_MARGIN.left - PLOT_MARGIN.right;
+    const plotHeight = PLOT_HEIGHT - PLOT_MARGIN.top - PLOT_MARGIN.bottom;
+    const slotWidth = plotWidth / bars.length;
+    const barWidth = slotWidth * DISTRIBUTION_BAR_WIDTH_RATIO;
+    const barBottom = PLOT_MARGIN.top + plotHeight;
+    const toSvgY = value => PLOT_MARGIN.top + plotHeight - (value / maxValue) * plotHeight;
+
+    const svg = svgTag("svg", {
+        viewBox: `0 0 ${PLOT_WIDTH} ${PLOT_HEIGHT}`,
+        class: "chartSvg",
+        role: "img",
+        "aria-label": spec.label || `Distribution : ${bars.map(b => `${b.label} ${b.value}`).join(", ")}`,
+    });
+
+    svg.append(svgTag("line", {
+        x1: PLOT_MARGIN.left, x2: PLOT_MARGIN.left + plotWidth, y1: barBottom, y2: barBottom, class: "chartAxis",
+    }));
+
+    const yStep = niceStep(maxValue);
+    for (let tick = 0; tick <= maxValue + 1e-9; tick += yStep) {
+        const sy = toSvgY(tick);
+        svg.append(svgTag("line", {x1: PLOT_MARGIN.left - 4, x2: PLOT_MARGIN.left, y1: sy, y2: sy, class: "chartTick"}));
+        const tickLabel = svgTag("text", {x: PLOT_MARGIN.left - 8, y: sy + 3, class: "chartTickLabel", "text-anchor": "end"});
+        tickLabel.textContent = formatTick(tick);
+        svg.append(tickLabel);
+    }
+
+    bars.forEach((bar, i) => {
+        const slotCenter = PLOT_MARGIN.left + slotWidth * (i + 0.5);
+        const barTop = toSvgY(bar.value);
+        svg.append(svgTag("rect", {
+            x: (slotCenter - barWidth / 2).toFixed(2), y: barTop.toFixed(2),
+            width: barWidth.toFixed(2), height: (barBottom - barTop).toFixed(2), class: "chartBar",
+        }));
+        const valueLabel = svgTag("text", {x: slotCenter.toFixed(2), y: (barTop - 4).toFixed(2), class: "chartTickLabel", "text-anchor": "middle"});
+        valueLabel.textContent = formatTick(bar.value);
+        svg.append(valueLabel);
+        const xLabel = svgTag("text", {x: slotCenter.toFixed(2), y: (barBottom + 14).toFixed(2), class: "chartTickLabel", "text-anchor": "middle"});
+        xLabel.textContent = bar.label;
+        svg.append(xLabel);
+    });
+
+    if (spec.label) {
+        const caption = svgTag("text", {x: PLOT_WIDTH / 2, y: 14, class: "chartLabel", "text-anchor": "middle"});
+        caption.textContent = spec.label;
+        svg.append(caption);
+    }
+
+    return svg;
+}
+
 const CHART_RENDERERS = {
     "plot-fonction": renderFunctionPlot,
     "roue-chromatique": renderColorWheel,
     "vecteurs": renderVectorDiagram,
+    "distribution": renderDistributionChart,
 };
 
 /**

@@ -619,6 +619,10 @@ pre code {
     fill: var(--text);
 }
 
+.chartBar {
+    fill: var(--accent);
+}
+
 /* markdown tables */
 .tableWrapper {
     overflow-x: auto;

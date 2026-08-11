@@ -43,6 +43,12 @@ Plus l'écart se réduit, plus la pente calculée se rapproche de **4** : c'est 
 | Négatif | La fonction diminue |
 | Zéro | La fonction est momentanément plate (un sommet, un creux, ou un palier) |
 
+```plot-fonction
+fn: x => x^2
+domaine: -4, 4
+label: f(x) = x², le même creux qu'en schéma ci-dessous
+```
+
 ```text
 f(x)
   |  \                                /

@@ -37,6 +37,11 @@ P(6) = 0,167
 Somme = 1,000
 ```
 
+```distribution
+barres: 1=0.167, 2=0.167, 3=0.167, 4=0.167, 5=0.167, 6=0.167
+label: Distribution d'un dé à 6 faces équilibré
+```
+
 Peu importe comment les probabilités se répartissent entre les résultats possibles, leur somme vaut toujours exactement **1** : un des résultats listés se produit forcément, il n'y a rien en dehors de cette liste.
 
 > **Piège :** une distribution calculée par un programme qui ne somme pas exactement à 1 (arrondi imprécis, résultat possible oublié dans le calcul) n'est pas une distribution de probabilité valide.
@@ -55,6 +60,11 @@ P(soleil) = 0,15
 P(neige)  = 0,05
              -----
 Somme      = 1,00
+```
+
+```distribution
+barres: Pluie=0.80, Soleil=0.15, Neige=0.05
+label: Distribution météo déséquilibrée
 ```
 
 Le résultat le plus probable (ici, la pluie) n'est pas le seul possible : juste celui dont la probabilité est la plus élevée. Cette distinction sera reprise telle quelle plus loin : un modèle qui prédit "probablement X" laisse toujours ouverte la possibilité d'un résultat différent, avec une probabilité plus faible mais non nulle.
