@@ -82,22 +82,22 @@
 
 @media (min-width: 1100px) {
     body {
-        padding-inline: 240px;
+        padding-inline: 320px;
     }
     /* the navbar "breaks out" of body's padding so it still spans the full width,
        edge to edge, above both sidebars, with its own content free to use that
        full width (categories centered across the whole page, not just the middle column) */
     .navBar {
         box-sizing: border-box;
-        width: calc(100% + 480px);
-        margin-left: -240px;
+        width: calc(100% + 640px);
+        margin-left: -320px;
     }
     .leftSidebar, .rightSidebar {
         display: block;
         position: fixed;
         top: var(--navbar-height, 57px);
         bottom: 0;
-        width: 240px;
+        width: 320px;
         overflow-y: auto;
         padding: 1.25rem 1rem;
     }
@@ -108,5 +108,24 @@
     .rightSidebar {
         right: 0;
         border-left: 1px solid var(--border);
+    }
+    /* tighter category list on desktop only: the 0.85rem vertical padding on
+       .sidebarCategoryButton (base.css) is sized for the 44px mobile touch target
+       (accessibilite-ux.md): desktop is mouse-driven, so it can afford to sit
+       closer together instead of stretching the 13-category list unnecessarily tall. */
+    .leftSidebar .sidebarCategoryButton,
+    .leftSidebar .sidebarSubjectButton,
+    .leftSidebar .sidebarChapterButton {
+        padding-block: 0.4rem;
+    }
+    /* top-level categories specifically were flagged as too spaced out from one
+       another: base.css's margin: 0.1rem 0 is shared with subject/chapter
+       buttons, so override it here rather than tighten it globally. */
+    .leftSidebar .sidebarCategoryButton {
+        margin-block: 0.02rem;
+    }
+    .leftSidebar .sidebarChildList,
+    .leftSidebar .sidebarChapterList {
+        margin-block: 0.15rem 0.25rem;
     }
 }
