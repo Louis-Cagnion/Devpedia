@@ -20,9 +20,9 @@ Ces deux lignes, placées dans `~/.zshrc` (voir [Les fichiers de démarrage](/?c
 ## Ce que ça change concrètement
 
 ```bash
-git checkout <Tab>        # propose les branches locales, pas les fichiers du dossier
-kill -9 <Tab>              # propose les PID de processus en cours, avec leur nom
-ssh <Tab>                  # propose les hôtes connus (~/.ssh/config, ~/.ssh/known_hosts)
+git checkout <Tab>  # propose les branches locales, pas les fichiers du dossier
+kill -9 <Tab>       # propose les PID de processus en cours, avec leur nom
+ssh <Tab>           # propose les hôtes connus (~/.ssh/config, ~/.ssh/known_hosts)
 ```
 
 Sans `compsys`, chacune de ces commandes se contenterait de compléter des noms de fichiers du dossier courant, rarement ce qu'on veut dans ces cas précis.

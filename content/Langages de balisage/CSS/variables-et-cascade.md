@@ -61,8 +61,8 @@ p { color: red; }   /* ignoré : la règle du dessus a !important */
 ### 2. La spécificité (voir [Les sélecteurs](/?c=langages-de-balisage&s=css&p=selecteurs))
 
 ```css
-#bouton-principal { color: blue; }   /* spécificité : id -> plus fort */
-.bouton { color: red; }                /* spécificité : classe -> plus faible */
+#bouton-principal { color: blue; }  /* spécificité : id -> plus fort */
+.bouton { color: red; }             /* spécificité : classe -> plus faible */
 ```
 
 Le sélecteur le plus spécifique gagne, indépendamment de l'ordre d'écriture dans le fichier.
@@ -80,8 +80,8 @@ Le sélecteur le plus spécifique gagne, indépendamment de l'ordre d'écriture 
 
 ```css
 body {
-    color: #333;         /* HÉRITÉ : tous les descendants (p, span, li...) reprennent cette couleur de texte */
-    border: 1px solid;      /* PAS hérité : chaque élément a sa propre bordure, ou aucune */
+    color: #333;        /* HÉRITÉ : tous les descendants (p, span, li...) reprennent cette couleur de texte */
+    border: 1px solid;  /* PAS hérité : chaque élément a sa propre bordure, ou aucune */
 }
 ```
 

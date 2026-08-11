@@ -26,9 +26,9 @@ Un élément ressort par rapport aux autres via une combinaison de ces leviers :
 | Position | Un élément placé en haut ou à gauche (lecture occidentale) est vu en premier | Le logo et le menu principal en haut d'une page |
 
 ```text
-<h1>Titre principal</h1>       → gros, gras : lu en premier
-<p>Texte d'introduction.</p>   → taille normale : lu ensuite
-<small>Mentions légales</small> → petit, discret : lu en dernier, si besoin
+<h1>Titre principal</h1>         → gros, gras : lu en premier
+<p>Texte d'introduction.</p>     → taille normale : lu ensuite
+<small>Mentions légales</small>  → petit, discret : lu en dernier, si besoin
 ```
 
 Ces leviers se combinent : un titre gros ET gras ET isolé par de l'espace ressort bien plus qu'un titre qui n'a qu'un seul de ces trois atouts.

@@ -39,8 +39,8 @@ Il n'existe donc pas, structurellement, de distinction entre "ce qui produit une
 
 ```ocaml
 let x = 5 in
-let x = x + 1 in   (* nouvelle liaison, ne modifie PAS le x précédent *)
-print_int x         (* 6 *)
+let x = x + 1 in  (* nouvelle liaison, ne modifie PAS le x précédent *)
+print_int x       (* 6 *)
 ```
 
 ```python

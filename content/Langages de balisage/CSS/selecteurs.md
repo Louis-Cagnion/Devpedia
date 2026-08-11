@@ -9,10 +9,10 @@ Un **sélecteur** détermine à quels éléments HTML une règle CSS s'applique 
 ## Sélecteurs de base
 
 ```css
-h1 { }             /* tous les éléments <h1> */
-.carte { }          /* tous les éléments avec class="carte" */
-#en-tete { }          /* l'unique élément avec id="en-tete" */
-* { }                   /* absolument tous les éléments */
+h1 { }        /* tous les éléments <h1> */
+.carte { }    /* tous les éléments avec class="carte" */
+#en-tete { }  /* l'unique élément avec id="en-tete" */
+* { }         /* absolument tous les éléments */
 ```
 
 > **Note :** une `class` peut être réutilisée sur plusieurs éléments, un `id` doit rester **unique** dans toute la page : un sélecteur `#id` cible donc toujours un seul élément précis, contrairement à `.classe`.
@@ -20,40 +20,40 @@ h1 { }             /* tous les éléments <h1> */
 ## Combinateurs
 
 ```css
-article p { }        /* tout <p> descendant de <article>, à N'IMPORTE quelle profondeur */
-article > p { }        /* tout <p> ENFANT DIRECT de <article>, pas plus profond */
-h2 + p { }               /* le <p> immédiatement APRÈS un <h2>, au même niveau */
-h2 ~ p { }                /* TOUS les <p> qui suivent un <h2>, au même niveau */
+article p { }    /* tout <p> descendant de <article>, à N'IMPORTE quelle profondeur */
+article > p { }  /* tout <p> ENFANT DIRECT de <article>, pas plus profond */
+h2 + p { }       /* le <p> immédiatement APRÈS un <h2>, au même niveau */
+h2 ~ p { }       /* TOUS les <p> qui suivent un <h2>, au même niveau */
 ```
 
 ## Sélecteurs d'attributs
 
 ```css
-input[type="email"] { }         /* tout <input> avec cet attribut ET cette valeur exacte */
-a[href^="https"] { }              /* href qui COMMENCE par "https" */
-a[href$=".pdf"] { }                 /* href qui SE TERMINE par ".pdf" */
-a[href*="exemple"] { }                /* href qui CONTIENT "exemple" n'importe où */
+input[type="email"] { }  /* tout <input> avec cet attribut ET cette valeur exacte */
+a[href^="https"] { }     /* href qui COMMENCE par "https" */
+a[href$=".pdf"] { }      /* href qui SE TERMINE par ".pdf" */
+a[href*="exemple"] { }   /* href qui CONTIENT "exemple" n'importe où */
 ```
 
 ## Pseudo-classes : cibler un état
 
 ```css
-a:hover { }          /* quand la souris survole l'élément */
+a:hover { }            /* quand la souris survole l'élément */
 input:focus { }        /* quand le champ a le focus (clic ou tabulation) */
-li:first-child { }       /* le premier enfant de son parent */
-li:last-child { }          /* le dernier enfant de son parent */
-li:nth-child(2) { }          /* le 2e enfant précisément */
-li:nth-child(odd) { }          /* tous les enfants impairs (1er, 3e, 5e...) */
-input:disabled { }               /* un champ désactivé */
-input:required { }                 /* un champ marqué "required" en HTML (voir Les formulaires) */
+li:first-child { }     /* le premier enfant de son parent */
+li:last-child { }      /* le dernier enfant de son parent */
+li:nth-child(2) { }    /* le 2e enfant précisément */
+li:nth-child(odd) { }  /* tous les enfants impairs (1er, 3e, 5e...) */
+input:disabled { }     /* un champ désactivé */
+input:required { }     /* un champ marqué "required" en HTML (voir Les formulaires) */
 ```
 
 ## Pseudo-éléments : cibler une partie d'un élément
 
 ```css
-p::first-line { }     /* uniquement la première ligne affichée du paragraphe */
+p::first-line { }             /* uniquement la première ligne affichée du paragraphe */
 p::before { content: "→ "; }  /* insère du contenu AVANT le texte réel du paragraphe */
-p::after { content: " ✓"; }    /* insère du contenu APRÈS */
+p::after { content: " ✓"; }   /* insère du contenu APRÈS */
 ```
 
 > **Note :** `::before`/`::after` nécessitent une propriété `content` pour être visibles (même vide, `content: "";`), très utilisés pour ajouter un élément purement décoratif (icône, flèche...) sans alourdir le HTML d'une balise supplémentaire sans réelle signification sémantique (voir [Sémantique HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5)).

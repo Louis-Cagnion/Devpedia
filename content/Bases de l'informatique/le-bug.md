@@ -13,8 +13,8 @@ Le [premier chapitre](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers)
 ```text
 solde = 100
 retirer = 150
-solde = solde - retirer   → solde devient -50 : rien n'a vérifié qu'il y avait assez d'argent
-afficher solde              → affiche -50
+solde = solde - retirer  → solde devient -50 : rien n'a vérifié qu'il y avait assez d'argent
+afficher solde           → affiche -50
 ```
 
 Le code s'exécute sans planter, et fait exactement ce qui est écrit ; c'est justement le problème : personne n'a écrit l'instruction "refuser le retrait si le solde est insuffisant".

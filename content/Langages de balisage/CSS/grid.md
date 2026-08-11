@@ -11,9 +11,9 @@ Contrairement à [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensé pou
 ```css
 .conteneur {
     display: grid;
-    grid-template-columns: 200px 200px 200px;   /* 3 colonnes de 200px chacune */
-    grid-template-rows: 100px 100px;               /* 2 lignes de 100px chacune */
-    gap: 10px;                                        /* espace entre les cellules, lignes ET colonnes */
+    grid-template-columns: 200px 200px 200px;  /* 3 colonnes de 200px chacune */
+    grid-template-rows: 100px 100px;           /* 2 lignes de 100px chacune */
+    gap: 10px;                                 /* espace entre les cellules, lignes ET colonnes */
 }
 ```
 
@@ -60,8 +60,8 @@ Contrairement à [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensé pou
 
 ```css
 .element {
-    grid-column: 1 / 3;   /* s'étend de la ligne de grille 1 à la ligne 3 -> occupe 2 colonnes */
-    grid-row: 2 / 4;        /* s'étend sur 2 lignes verticalement */
+    grid-column: 1 / 3;  /* s'étend de la ligne de grille 1 à la ligne 3 -> occupe 2 colonnes */
+    grid-row: 2 / 4;     /* s'étend sur 2 lignes verticalement */
 }
 ```
 

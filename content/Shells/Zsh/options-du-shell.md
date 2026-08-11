@@ -9,10 +9,10 @@ Bash active des comportements optionnels au cas par cas (`shopt -s nom`, `set -o
 ## Activer et désactiver une option
 
 ```bash
-setopt AUTO_CD          # active une option
-unsetopt AUTO_CD         # la désactive
+setopt AUTO_CD    # active une option
+unsetopt AUTO_CD  # la désactive
 
-setopt                   # liste toutes les options actuellement actives
+setopt            # liste toutes les options actuellement actives
 ```
 
 > **Note :** les noms d'options sont insensibles à la casse et aux underscores : `AUTO_CD`, `autocd` et `auto_cd` désignent la même option. La convention `MAJUSCULES_AVEC_UNDERSCORES` est la plus lisible et la plus répandue dans les `.zshrc` qu'on trouve en ligne.
@@ -21,10 +21,10 @@ setopt                   # liste toutes les options actuellement actives
 
 ```bash
 setopt AUTO_CD           # taper un nom de dossier seul (sans "cd") y déplace directement
-setopt EXTENDED_GLOB      # active le globbing étendu (voir Expansion et jokers avancés)
-setopt SHARE_HISTORY       # partage l'historique de commandes en temps réel entre tous les terminaux ouverts
-setopt HIST_IGNORE_DUPS    # n'enregistre pas une commande identique à la précédente dans l'historique
-setopt CORRECT             # propose une correction si une commande tapée n'existe pas ("did you mean...")
+setopt EXTENDED_GLOB     # active le globbing étendu (voir Expansion et jokers avancés)
+setopt SHARE_HISTORY     # partage l'historique de commandes en temps réel entre tous les terminaux ouverts
+setopt HIST_IGNORE_DUPS  # n'enregistre pas une commande identique à la précédente dans l'historique
+setopt CORRECT           # propose une correction si une commande tapée n'existe pas ("did you mean...")
 ```
 
 | Option | Effet |

@@ -43,7 +43,7 @@ std::vector<int> nombres = {5, 3, 1, 4, 2};
 
 std::sort(nombres.begin(), nombres.end());               // trie en place -> {1, 2, 3, 4, 5}
 
-auto it = std::find(nombres.begin(), nombres.end(), 3);    // itérateur pointant vers la valeur 3
+auto it = std::find(nombres.begin(), nombres.end(), 3);  // itérateur pointant vers la valeur 3
 bool trouve = (it != nombres.end());
 
 int somme = std::accumulate(nombres.begin(), nombres.end(), 0);  // 15 -> nécessite <numeric>

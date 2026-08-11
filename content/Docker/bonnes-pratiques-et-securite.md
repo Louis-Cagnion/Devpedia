@@ -11,8 +11,8 @@ Chaque paquet installé dans une image est une **surface d'attaque** (un point d
 ## Épingler les versions, ne jamais utiliser `latest` en production
 
 ```dockerfile
-FROM node:latest    # à éviter : le contenu réel de "latest" change avec le temps, sans prévenir
-FROM node:20.11.1    # reproductible : le même Dockerfile construit toujours la même chose
+FROM node:latest   # à éviter : le contenu réel de "latest" change avec le temps, sans prévenir
+FROM node:20.11.1  # reproductible : le même Dockerfile construit toujours la même chose
 ```
 
 Une image `latest` qui change silencieusement sous les pieds d'un déploiement échoue de la pire façon possible : le build réussit, mais avec un contenu différent de la dernière fois : mieux vaudrait qu'une version absente fasse échouer le build explicitement plutôt que de construire quand même avec un contenu imprévisible.

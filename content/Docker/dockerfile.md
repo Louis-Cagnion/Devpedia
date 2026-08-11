@@ -10,17 +10,17 @@ Un **Dockerfile** est une recette texte : une suite d'instructions décrivant co
 
 ```dockerfile
 FROM node:20-alpine        # image de base : Node.js 20 sur une distribution Alpine (minimale)
-WORKDIR /app                # dossier de travail dans le conteneur pour toutes les instructions suivantes
+WORKDIR /app               # dossier de travail dans le conteneur pour toutes les instructions suivantes
 
-COPY package*.json ./       # copie ces fichiers depuis la machine hôte vers l'image
-RUN npm install              # exécute une commande PENDANT la construction de l'image
+COPY package*.json ./      # copie ces fichiers depuis la machine hôte vers l'image
+RUN npm install            # exécute une commande PENDANT la construction de l'image
 
-COPY . .                    # copie le reste du code source
+COPY . .                   # copie le reste du code source
 
-ENV NODE_ENV=production      # variable d'environnement, disponible au build et à l'exécution
-EXPOSE 3000                  # documente le port utilisé (n'ouvre rien lui-même, cf. chapitre réseaux)
+ENV NODE_ENV=production    # variable d'environnement, disponible au build et à l'exécution
+EXPOSE 3000                # documente le port utilisé (n'ouvre rien lui-même, cf. chapitre réseaux)
 
-CMD ["node", "server.js"]    # commande exécutée quand le CONTENEUR démarre, pas pendant le build
+CMD ["node", "server.js"]  # commande exécutée quand le CONTENEUR démarre, pas pendant le build
 ```
 
 | Instruction | Rôle |

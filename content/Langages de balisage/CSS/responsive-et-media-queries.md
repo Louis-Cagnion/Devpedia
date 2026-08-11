@@ -10,12 +10,12 @@ Le **responsive design** consiste à concevoir une page qui s'adapte à n'import
 
 ```css
 div {
-    width: 300px;     /* fixe, ne s'adapte à RIEN */
+    width: 300px;       /* fixe, ne s'adapte à RIEN */
     width: 50%;         /* relatif au parent */
-    font-size: 1.5rem;    /* relatif à la taille de police racine (<html>), indépendant du parent */
-    font-size: 1.5em;      /* relatif à la taille de police du PARENT direct (peut s'accumuler en cascade) */
-    width: 50vw;             /* relatif à la largeur de la fenêtre (viewport width) */
-    height: 100vh;             /* relatif à la hauteur de la fenêtre (viewport height) */
+    font-size: 1.5rem;  /* relatif à la taille de police racine (<html>), indépendant du parent */
+    font-size: 1.5em;   /* relatif à la taille de police du PARENT direct (peut s'accumuler en cascade) */
+    width: 50vw;        /* relatif à la largeur de la fenêtre (viewport width) */
+    height: 100vh;      /* relatif à la hauteur de la fenêtre (viewport height) */
 }
 ```
 
@@ -70,9 +70,9 @@ div {
 ## Autres media features utiles
 
 ```css
-@media (orientation: portrait) { }     /* écran plus haut que large */
+@media (orientation: portrait) { }       /* écran plus haut que large */
 @media (prefers-color-scheme: dark) { }  /* l'utilisateur a activé le mode sombre au niveau système */
-@media print { }                          /* styles appliqués uniquement à l'impression */
+@media print { }                         /* styles appliqués uniquement à l'impression */
 ```
 
 Voir aussi [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), dont `repeat(auto-fit, minmax(...))` permet d'obtenir un comportement responsive **sans écrire aucune media query**, une alternative complémentaire à connaître.

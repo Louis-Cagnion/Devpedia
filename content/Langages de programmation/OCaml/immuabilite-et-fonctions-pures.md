@@ -9,9 +9,9 @@ order: 2
 Une liaison OCaml (`let x = ...`) ne peut pas être réassignée : modifier une valeur suppose de créer une **nouvelle** valeur à partir de l'ancienne, jamais de modifier l'originale sur place. Quand une case réellement mutable est nécessaire, OCaml impose de le déclarer explicitement avec une **référence** :
 
 ```ocaml
-let compteur = ref 0        (* une référence : une case mutable, explicite *)
-compteur := !compteur + 1    (* := affecte une nouvelle valeur *)
-print_int !compteur           (* ! lit la valeur actuelle -> 1 *)
+let compteur = ref 0       (* une référence : une case mutable, explicite *)
+compteur := !compteur + 1  (* := affecte une nouvelle valeur *)
+print_int !compteur        (* ! lit la valeur actuelle -> 1 *)
 ```
 
 La syntaxe `ref`/`:=`/`!` rend toute mutation **visible dans le code** : impossible de muter une valeur par accident, contrairement à une variable Python ou JavaScript, mutable par défaut sans aucune marque distinctive à l'endroit où elle est modifiée.

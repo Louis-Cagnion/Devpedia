@@ -78,8 +78,8 @@ L'attribut `for` du `<label>` doit correspondre à l'`id` du champ : cliquer sur
 ## Soumission et méthode
 
 ```html
-<button type="submit">Envoyer</button>    <!-- soumet le formulaire -->
-<button type="reset">Réinitialiser</button> <!-- vide tous les champs -->
+<button type="submit">Envoyer</button>            <!-- soumet le formulaire -->
+<button type="reset">Réinitialiser</button>       <!-- vide tous les champs -->
 <button type="button">Ne fait rien seul</button>  <!-- utile pour un comportement géré en JavaScript -->
 ```
 

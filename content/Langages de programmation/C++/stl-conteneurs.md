@@ -13,12 +13,12 @@ La **STL** (*Standard Template Library*) fournit des structures de données gén
 
 std::vector<int> nombres = {1, 2, 3};
 
-nombres.push_back(4);        // ajoute à la fin
-nombres[0];                     // accès direct par index, comme un tableau C
-nombres.size();                  // nombre d'éléments
-nombres.pop_back();                // retire le dernier élément
+nombres.push_back(4);    // ajoute à la fin
+nombres[0];              // accès direct par index, comme un tableau C
+nombres.size();          // nombre d'éléments
+nombres.pop_back();      // retire le dernier élément
 
-for (int n : nombres) {              // parcours simple, comme un for-each
+for (int n : nombres) {  // parcours simple, comme un for-each
     std::cout << n << " ";
 }
 ```
@@ -45,10 +45,10 @@ std::map<std::string, int> ages;
 ages["Jean"] = 25;
 ages["Marie"] = 30;
 
-ages["Jean"];                       // 25
-ages.find("Ali") != ages.end();       // teste l'existence d'une clé (pas d'opérateur "in" direct en C++)
+ages["Jean"];                          // 25
+ages.find("Ali") != ages.end();        // teste l'existence d'une clé (pas d'opérateur "in" direct en C++)
 
-for (const auto &[nom, age] : ages) {   // parcours : les paires sont TOUJOURS triées par clé
+for (const auto &[nom, age] : ages) {  // parcours : les paires sont TOUJOURS triées par clé
     std::cout << nom << " : " << age << "\n";
 }
 ```

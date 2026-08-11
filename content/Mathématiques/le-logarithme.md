@@ -11,9 +11,9 @@ Ce chapitre présente le logarithme, une notion reprise plus loin pour mesurer �
 Élever un nombre à une puissance (`b^y`) revient à multiplier `b` par lui-même `y` fois : `10^3 = 10 × 10 × 10 = 1000`. Le **logarithme** pose la question inverse : à quelle puissance faut-il élever une base donnée pour obtenir un nombre donné ?
 
 ```text
-10^2 = 100    ->  log10(100) = 2   ("il faut élever 10 à la puissance 2 pour obtenir 100")
-10^3 = 1000   ->  log10(1000) = 3
-10^0 = 1       ->  log10(1) = 0
+10^2 = 100   ->  log10(100) = 2   ("il faut élever 10 à la puissance 2 pour obtenir 100")
+10^3 = 1000  ->  log10(1000) = 3
+10^0 = 1     ->  log10(1) = 0
 ```
 
 > **Analogie :** plier une feuille de papier en deux, répéter l'opération. Après 1 pliage, 2 épaisseurs ; après 2 pliages, 4 ; après 3, 8. `log2(8) = 3` répond exactement à la question "combien de fois faut-il plier la feuille pour obtenir 8 épaisseurs ?".

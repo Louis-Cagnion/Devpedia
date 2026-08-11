@@ -38,8 +38,8 @@ double tva = calculerTVA(100);
 ## `std` : le namespace de la bibliothèque standard
 
 ```cpp
-std::vector<int> nombres;   // "vector" vit dans le namespace "std", d'où le préfixe
-std::cout << "Bonjour";      // idem pour "cout"
+std::vector<int> nombres;  // "vector" vit dans le namespace "std", d'où le préfixe
+std::cout << "Bonjour";    // idem pour "cout"
 ```
 
 ```cpp
@@ -55,10 +55,10 @@ C'est exactement pour cette raison que tout le code des chapitres précédents (
 ## Import sélectif
 
 ```cpp
-using std::cout;   // importe UNIQUEMENT "cout", pas tout le namespace std
+using std::cout;    // importe UNIQUEMENT "cout", pas tout le namespace std
 
-cout << "Bonjour";      // fonctionne
-vector<int> v;             // ERREUR : "vector" nécessite toujours std:: (pas importé)
+cout << "Bonjour";  // fonctionne
+vector<int> v;      // ERREUR : "vector" nécessite toujours std:: (pas importé)
 ```
 
 Un compromis entre la lourdeur du préfixe systématique et le risque d'un `using namespace` complet : n'importer que ce qui est réellement utilisé, nommément.

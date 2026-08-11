@@ -6,7 +6,7 @@ C++ est né comme une extension du [C](/?c=langages-de-programmation&s=c&p=c) ("
 #include <iostream>
 
 int main() {
-    int age = 25;                  // une variable, exactement comme en C
+    int age = 25;                   // une variable, exactement comme en C
     std::cout << age << std::endl;  // affiche : 25
 }
 ```

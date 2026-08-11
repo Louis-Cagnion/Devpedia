@@ -7,8 +7,8 @@ order: 3
 ## Construire et lancer
 
 ```bash
-docker build -t mon-app:1.0 .     # construit une image nommée "mon-app", tag "1.0", depuis le Dockerfile du dossier courant (.)
-docker run mon-app:1.0             # lance un conteneur à partir de cette image
+docker build -t mon-app:1.0 .  # construit une image nommée "mon-app", tag "1.0", depuis le Dockerfile du dossier courant (.)
+docker run mon-app:1.0         # lance un conteneur à partir de cette image
 ```
 
 Options courantes de `docker run` :
@@ -30,9 +30,9 @@ docker run -d --name serveur -p 8080:80 mon-app:1.0
 
 ```bash
 docker ps               # conteneurs en cours d'exécution
-docker ps -a             # tous les conteneurs, y compris ceux arrêtés
-docker logs serveur       # sortie standard/erreur du conteneur "serveur"
-docker logs -f serveur     # suit les logs en direct (equivalent de `tail -f`)
+docker ps -a            # tous les conteneurs, y compris ceux arrêtés
+docker logs serveur     # sortie standard/erreur du conteneur "serveur"
+docker logs -f serveur  # suit les logs en direct (equivalent de `tail -f`)
 ```
 
 Un conteneur n'est, du point de vue du système hôte, qu'un processus parmi d'autres : `docker ps` est l'équivalent de `ps aux` filtré sur les processus lancés par Docker (cf. chapitre [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash).

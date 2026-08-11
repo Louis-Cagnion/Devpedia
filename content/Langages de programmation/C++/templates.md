@@ -24,8 +24,8 @@ T maximum(T a, T b) {
     return (a > b) ? a : b;
 }
 
-maximum(3, 7);            // T déduit automatiquement comme int
-maximum(3.5, 2.1);          // T déduit comme double
+maximum(3, 7);                   // T déduit automatiquement comme int
+maximum(3.5, 2.1);               // T déduit comme double
 maximum<std::string>("a", "b");  // T précisé explicitement si nécessaire
 ```
 
@@ -69,8 +69,8 @@ Sans contrainte, un template accepte n'importe quel type, y compris des types po
 template <typename T>
 T addition(T a, T b) { return a + b; }
 
-addition(2, 3);          // OK
-addition("a", "b");        // Erreur de compilation potentiellement cryptique selon le type
+addition(2, 3);      // OK
+addition("a", "b");  // Erreur de compilation potentiellement cryptique selon le type
 ```
 
 Depuis C++20, les **concepts** permettent d'exprimer explicitement les exigences sur `T`, pour un message d'erreur plus clair et une intention de code plus lisible :

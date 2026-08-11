@@ -21,8 +21,8 @@ Un élément `static` ignore totalement `top`/`left`/`right`/`bottom` : ces prop
 ```css
 div {
     position: relative;
-    top: 10px;     /* décalé de 10px vers le BAS par rapport à sa position normale */
-    left: 20px;      /* décalé de 20px vers la DROITE */
+    top: 10px;   /* décalé de 10px vers le BAS par rapport à sa position normale */
+    left: 20px;  /* décalé de 20px vers la DROITE */
 }
 ```
 

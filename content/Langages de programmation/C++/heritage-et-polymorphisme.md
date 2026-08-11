@@ -39,8 +39,8 @@ std::cout << a->parler();   // affiche "..." -> PAS "Rex aboie" !
 class Animal {
 public:
     Animal(std::string nom) : nom(nom) {}
-    virtual std::string parler() const { return "..."; }   // "virtual" active la LIAISON DYNAMIQUE
-    virtual ~Animal() {}   // destructeur virtuel : voir note ci-dessous
+    virtual std::string parler() const { return "..."; }  // "virtual" active la LIAISON DYNAMIQUE
+    virtual ~Animal() {}                                  // destructeur virtuel : voir note ci-dessous
 protected:
     std::string nom;
 };
@@ -86,8 +86,8 @@ private:
     double rayon;
 };
 
-FormeGeometrique *forme = new Cercle(5);   // OK
-FormeGeometrique *impossible = new FormeGeometrique();   // ERREUR : classe abstraite, non instanciable
+FormeGeometrique *forme = new Cercle(5);                // OK
+FormeGeometrique *impossible = new FormeGeometrique();  // ERREUR : classe abstraite, non instanciable
 ```
 
 Une classe contenant au moins une méthode purement virtuelle (`= 0`) devient **abstraite** : elle ne peut jamais être instanciée directement, seulement héritée : elle définit un contrat ("toute forme géométrique doit savoir calculer son aire") que chaque classe fille doit implémenter.

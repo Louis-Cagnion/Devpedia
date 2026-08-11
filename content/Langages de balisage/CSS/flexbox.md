@@ -58,8 +58,8 @@ Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) 
 ```css
 .conteneur {
     display: flex;
-    justify-content: center;   /* centre horizontalement */
-    align-items: center;        /* centre verticalement */
+    justify-content: center;  /* centre horizontalement */
+    align-items: center;      /* centre verticalement */
 }
 ```
 
@@ -67,10 +67,10 @@ Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) 
 
 ```css
 .element {
-    flex-grow: 1;      /* peut grandir pour occuper l'espace restant (1 = part égale entre éléments) */
-    flex-shrink: 1;      /* peut rétrécir si l'espace manque (par défaut) */
-    flex-basis: 200px;     /* taille de départ, avant application de grow/shrink */
-    order: 2;                /* change l'ordre d'affichage SANS toucher au HTML */
+    flex-grow: 1;       /* peut grandir pour occuper l'espace restant (1 = part égale entre éléments) */
+    flex-shrink: 1;     /* peut rétrécir si l'espace manque (par défaut) */
+    flex-basis: 200px;  /* taille de départ, avant application de grow/shrink */
+    order: 2;           /* change l'ordre d'affichage SANS toucher au HTML */
 }
 ```
 

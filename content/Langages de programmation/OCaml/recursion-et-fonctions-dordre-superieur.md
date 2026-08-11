@@ -38,9 +38,9 @@ Le compilateur OCaml reconnaît cette forme et l'optimise en une simple boucle a
 Une fonction d'ordre supérieur prend une fonction en argument, ou en renvoie une, le même principe qu'un décorateur Python (cf. chapitre [Les décorateurs](/?c=langages-de-programmation&s=python&p=decorateurs)), généralisé à toute la bibliothèque standard de listes plutôt que réservé à un cas d'usage précis.
 
 ```ocaml
-let carres = List.map (fun x -> x * x) [1; 2; 3; 4]           (* [1; 4; 9; 16] *)
-let pairs = List.filter (fun x -> x mod 2 = 0) [1; 2; 3; 4]     (* [2; 4] *)
-let somme = List.fold_left (+) 0 [1; 2; 3; 4]                  (* 10 *)
+let carres = List.map (fun x -> x * x) [1; 2; 3; 4]          (* [1; 4; 9; 16] *)
+let pairs = List.filter (fun x -> x mod 2 = 0) [1; 2; 3; 4]  (* [2; 4] *)
+let somme = List.fold_left (+) 0 [1; 2; 3; 4]                (* 10 *)
 ```
 
 Ces trois fonctions couvrent, à elles seules, la quasi-totalité des boucles `for` (cf. chapitre [Les boucles](/?c=langages-de-programmation&s=c&p=boucles), rubrique C) qu'on écrirait pour transformer une collection (`map`), en garder une partie (`filter`), ou l'agréger en une seule valeur (`fold`) :
