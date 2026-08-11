@@ -16,7 +16,7 @@ parser.add_argument("--output", default="rapports/rapport.txt")
 # ... une dizaine d'autres, chacune sur son propre appel
 ```
 
-Chaque ligne se ressemble, mais ajouter une option, en supprimer une, ou changer un comportement commun à toutes (par exemple, valider un type) oblige à répéter la même modification à chaque endroit — et il est facile d'en oublier une.
+Chaque ligne se ressemble, mais ajouter une option, en supprimer une, ou changer un comportement commun à toutes (par exemple, valider un type) oblige à répéter la même modification à chaque endroit, et il est facile d'en oublier une.
 
 ## La solution : une structure de données, parcourue par du code générique
 
@@ -35,7 +35,7 @@ for arg in CLI_ARGUMENTS:
     parser.add_argument(flag, **arg)
 ```
 
-Ajouter une option devient une entrée dans une liste, pas une nouvelle ligne de code à écrire selon le même patron que les précédentes. Un comportement commun (validation, valeur par défaut calculée, transformation) se change à un seul endroit — la boucle — au lieu d'être répété dans chaque appel.
+Ajouter une option devient une entrée dans une liste, pas une nouvelle ligne de code à écrire selon le même patron que les précédentes. Un comportement commun (validation, valeur par défaut calculée, transformation) se change à un seul endroit (la boucle) au lieu d'être répété dans chaque appel.
 
 ## Un cas plus subtil : le dispatch
 
@@ -66,7 +66,7 @@ Le dictionnaire remplit exactement le même rôle que la chaîne de `if`/`elif`,
 
 ## Où s'arrêter
 
-Cette généralisation a un coût : une structure de données trop abstraite pour deux ou trois cas qui ne grandiront pas complique la lecture sans apporter de bénéfice réel (voir le principe KISS/YAGNI). Le seuil de bon sens : dès qu'on écrit la **troisième** répétition d'un même patron, c'est le bon moment pour la remplacer par une structure indexée — avant, ce n'est souvent pas encore rentable.
+Cette généralisation a un coût : une structure de données trop abstraite pour deux ou trois cas qui ne grandiront pas complique la lecture sans apporter de bénéfice réel (voir le principe KISS/YAGNI). Le seuil de bon sens : dès qu'on écrit la **troisième** répétition d'un même patron, c'est le bon moment pour la remplacer par une structure indexée ; avant, ce n'est souvent pas encore rentable.
 
 ---
 
@@ -74,7 +74,7 @@ Cette généralisation a un coût : une structure de données trop abstraite pou
 
 | | |
 |---|---|
-| **À retenir** | Une même instruction répétée pour chaque élément d'un ensemble (options CLI, `if`/`elif` par cas) doit s'appuyer sur une structure indexée (liste, dictionnaire) parcourue par du code générique — ajouter un élément devient modifier une donnée, pas ajouter du code. |
+| **À retenir** | Une même instruction répétée pour chaque élément d'un ensemble (options CLI, `if`/`elif` par cas) doit s'appuyer sur une structure indexée (liste, dictionnaire) parcourue par du code générique : ajouter un élément devient modifier une donnée, pas ajouter du code. |
 | **Outils utilisables** | Une liste de dictionnaires parcourue en boucle, un dictionnaire de dispatch à la place d'une chaîne `if`/`elif`. |
-| **Pièges à éviter** | Généraliser dès la première ou la deuxième occurrence — une structure trop abstraite pour un cas qui ne grandira pas complique la lecture sans bénéfice réel. |
+| **Pièges à éviter** | Généraliser dès la première ou la deuxième occurrence : une structure trop abstraite pour un cas qui ne grandira pas complique la lecture sans bénéfice réel. |
 | **Bonnes pratiques** | Attendre la troisième répétition d'un même patron avant de le remplacer par une structure indexée. |
