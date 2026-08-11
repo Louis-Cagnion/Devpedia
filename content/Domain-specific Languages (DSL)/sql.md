@@ -89,7 +89,7 @@ Les espaces réservés nommés (`:ville`) empêchent ça structurellement : la v
 ```php
 <?php
 // Construire dynamiquement une clause WHERE reste sûr,
-// tant que seuls les NOMS de placeholders sont concaténés — jamais les valeurs elles-mêmes :
+// tant que seuls les NOMS de placeholders sont concaténés, jamais les valeurs elles-mêmes :
 function construireEt(array $criteres): array
 {
     $clauses = [];

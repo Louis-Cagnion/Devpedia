@@ -28,7 +28,7 @@ git push                             # une fois le lien mémorisé
 Après un `rebase`, un `commit --amend`, ou une réécriture d'historique (voir [L'architecture interne de Git](/?c=git&p=architecture-interne)), les commits locaux n'ont plus les mêmes hash que ceux déjà poussés : un `push` normal est alors rejeté (*non fast-forward*), le remote ne retrouvant pas ses anciens commits comme ancêtres des nouveaux.
 
 ```bash
-git push --force origin main             # écrase l'historique distant sans condition — dangereux si quelqu'un d'autre a poussé entre-temps
+git push --force origin main             # écrase l'historique distant sans condition, dangereux si quelqu'un d'autre a poussé entre-temps
 git push --force-with-lease origin main   # écrase seulement si le remote est encore dans l'état vu lors du dernier fetch
 ```
 
