@@ -6,7 +6,7 @@ order: 4
 
 Faire tourner un programme ou stocker une donnée nécessite une machine physique quelque part. Le **cloud** désigne l'utilisation de machines distantes, possédées et gérées par un fournisseur tiers (Amazon AWS, Google Cloud, Microsoft Azure...), plutôt que du matériel acheté et géré par l'entreprise elle-même.
 
-> **Analogie :** louer un appartement meublé plutôt que d'acheter et entretenir sa propre maison — on paie pour l'usage, sans posséder ni s'occuper de l'entretien de ce qu'il y a derrière.
+> **Analogie :** louer un appartement meublé plutôt que d'acheter et entretenir sa propre maison : on paie pour l'usage, sans posséder ni s'occuper de l'entretien de ce qu'il y a derrière.
 
 ## Pourquoi louer plutôt que posséder son propre serveur
 
@@ -29,7 +29,7 @@ Plus une catégorie est en haut de ce tableau, plus l'utilisateur garde de contr
 
 ## Le cloud et l'IA : louer de la puissance de calcul à la demande
 
-Entraîner un modèle de deep learning nécessite un ou plusieurs [GPU](/?c=infrastructure&p=cpu-vs-gpu) puissants — un matériel coûteux à l'achat, et rarement utilisé à pleine capacité en continu une fois l'entraînement terminé. Le cloud permet de louer cette puissance de calcul seulement pendant la durée réelle de l'entraînement, plutôt que d'investir dans du matériel dédié qui resterait ensuite largement inutilisé.
+Entraîner un modèle de deep learning nécessite un ou plusieurs [GPU](/?c=infrastructure&p=cpu-vs-gpu) puissants : un matériel coûteux à l'achat, et rarement utilisé à pleine capacité en continu une fois l'entraînement terminé. Le cloud permet de louer cette puissance de calcul seulement pendant la durée réelle de l'entraînement, plutôt que d'investir dans du matériel dédié qui resterait ensuite largement inutilisé.
 
 ## Piège : où sont réellement stockées mes données ?
 
@@ -39,7 +39,7 @@ Entraîner un modèle de deep learning nécessite un ou plusieurs [GPU](/?c=infr
 
 ## Piège : le coût peut échapper au contrôle habituel
 
-> **Piège :** oublier d'éteindre une ressource cloud louée après usage (une machine virtuelle, un GPU réservé). La facturation continue tant que la ressource tourne, même inutilisée — aucune alerte "erreur" ne se déclenche puisque techniquement, tout fonctionne comme prévu.
+> **Piège :** oublier d'éteindre une ressource cloud louée après usage (une machine virtuelle, un GPU réservé). La facturation continue tant que la ressource tourne, même inutilisée : aucune alerte "erreur" ne se déclenche puisque techniquement, tout fonctionne comme prévu.
 >
 > **Bonne pratique :** mettre en place des alertes de coût, voire une extinction automatique des ressources inutilisées, plutôt que de compter sur une vérification manuelle régulière.
 
