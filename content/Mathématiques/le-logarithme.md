@@ -24,11 +24,11 @@ Ce chapitre présente le logarithme, une notion reprise plus loin pour mesurer �
 |---|---|---|---|
 | 10 | `log10(x)` ou `log(x)` | Combien de fois multiplier par 10 ? | Ordres de grandeur, échelles (Richter, décibels) |
 | 2 | `log2(x)` | Combien de fois doubler ? | Informatique (recherche dans un arbre, complexité d'un algorithme) |
-| *e* (≈ 2,718) | `ln(x)` | Pas de question aussi intuitive que les deux précédentes — cette base est choisie parce qu'elle simplifie de nombreux calculs mathématiques | La plupart des formules utilisées en statistiques et en machine learning |
+| *e* (≈ 2,718) | `ln(x)` | Pas de question aussi intuitive que les deux précédentes : cette base est choisie parce qu'elle simplifie de nombreux calculs mathématiques | La plupart des formules utilisées en statistiques et en machine learning |
 
-> **Piège :** confondre les bases. `log2(8) = 3` mais `log10(8) ≈ 0,9` — le résultat dépend entièrement de la base choisie, deux logarithmes de bases différentes ne se comparent jamais directement sans conversion.
+> **Piège :** confondre les bases. `log2(8) = 3` mais `log10(8) ≈ 0,9` : le résultat dépend entièrement de la base choisie, deux logarithmes de bases différentes ne se comparent jamais directement sans conversion.
 >
-> **Bonne pratique :** toujours vérifier quelle base une fonction ou une formule utilise avant d'interpréter son résultat (`log` en Python, par exemple, désigne le logarithme **naturel** — base *e* — pas base 10, contrairement à ce que le nom pourrait laisser penser).
+> **Bonne pratique :** toujours vérifier quelle base une fonction ou une formule utilise avant d'interpréter son résultat (`log` en Python, par exemple, désigne le logarithme **naturel** (base *e*), pas base 10, contrairement à ce que le nom pourrait laisser penser).
 
 ## La forme de sa courbe : très lente pour les grands x, très rapide près de 0
 
@@ -56,7 +56,7 @@ Cette compression près de 0 se prolonge sans limite : plus `x` se rapproche de 
 
 ## Piège : le logarithme n'est pas défini partout
 
-`log(0)` n'est pas défini — la valeur diminue sans limite à mesure que `x` se rapproche de 0, sans jamais atteindre un résultat fini. Le logarithme d'un nombre négatif n'est pas défini non plus (dans les nombres réels).
+`log(0)` n'est pas défini : la valeur diminue sans limite à mesure que `x` se rapproche de 0, sans jamais atteindre un résultat fini. Le logarithme d'un nombre négatif n'est pas défini non plus (dans les nombres réels).
 
 > **Piège :** appliquer un logarithme à une valeur qui peut valoir exactement 0 (une probabilité, par exemple) provoque une erreur ou une valeur infinie dans un programme, pas un résultat inhabituel mais valide.
 >
@@ -68,13 +68,13 @@ Cette compression près de 0 se prolonge sans limite : plus `x` se rapproche de 
 log(a × b) = log(a) + log(b)
 ```
 
-Cette propriété permet de remplacer une multiplication par une addition, généralement plus simple à calculer et moins sujette à produire un nombre devenu trop petit ou trop grand pour être représenté correctement en mémoire (voir [les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants)) — utile en particulier quand de très nombreux petits nombres doivent être multipliés entre eux.
+Cette propriété permet de remplacer une multiplication par une addition, généralement plus simple à calculer et moins sujette à produire un nombre devenu trop petit ou trop grand pour être représenté correctement en mémoire (voir [les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants)), utile en particulier quand de très nombreux petits nombres doivent être multipliés entre eux.
 
 ## Ce qu'il faut retenir
 
 | | |
 |---|---|
-| **À retenir** | Le logarithme répond à "à quelle puissance élever cette base pour obtenir ce nombre ?" — l'inverse de la puissance. Il croît très lentement pour les grandes valeurs, et chute vers moins l'infini près de 0. |
-| **Outils utilisables** | `log10()`, `log2()`, `log()` (naturel, base *e*) dans la plupart des langages — vérifier systématiquement laquelle est utilisée. |
+| **À retenir** | Le logarithme répond à "à quelle puissance élever cette base pour obtenir ce nombre ?" (l'inverse de la puissance). Il croît très lentement pour les grandes valeurs, et chute vers moins l'infini près de 0. |
+| **Outils utilisables** | `log10()`, `log2()`, `log()` (naturel, base *e*) dans la plupart des langages : vérifier systématiquement laquelle est utilisée. |
 | **Pièges à éviter** | Confondre deux logarithmes de bases différentes. Appliquer un logarithme à une valeur qui peut être 0 ou négative. |
 | **Bonnes pratiques** | Vérifier la base utilisée par une fonction avant d'interpréter son résultat. Ajouter une petite valeur avant un `log()` appliqué à une probabilité, pour éviter `log(0)`. |
