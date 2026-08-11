@@ -42,7 +42,7 @@ printf("%d\n", *(p + 1)); // 20 -> avance de sizeof(int) octets, pas de 1 octet
 printf("%d\n", *(p + 2)); // 30
 ```
 
-> **Note :** un tableau `tab` se comporte comme un pointeur vers son premier élément. `tab[i]` et `*(tab + i)` sont deux écritures strictement équivalentes en C — c'est pour ça que l'indexation de tableau (`[]`) fonctionne aussi sur un pointeur brut.
+> **Note :** un tableau `tab` se comporte comme un pointeur vers son premier élément. `tab[i]` et `*(tab + i)` sont deux écritures strictement équivalentes en C : c'est pour ça que l'indexation de tableau (`[]`) fonctionne aussi sur un pointeur brut.
 
 ### `[]` n'est que du sucre syntaxique
 
@@ -78,7 +78,7 @@ printf("%d\n", **ptrPtr); // 25 -> déréférence deux fois : ptrPtr -> ptr -> a
 
 ## Passer un pointeur à une fonction (passage par adresse)
 
-En C, les arguments sont passés **par valeur** (une copie) par défaut — une fonction ne peut donc pas modifier la variable d'origine de l'appelant, sauf en lui passant directement l'adresse de cette variable :
+En C, les arguments sont passés **par valeur** (une copie) par défaut : une fonction ne peut donc pas modifier la variable d'origine de l'appelant, sauf en lui passant directement l'adresse de cette variable :
 
 ```c
 void incrementer(int *nombre)
@@ -98,7 +98,7 @@ Sans le `*`, `incrementer(int nombre)` ne modifierait qu'une copie locale, sans 
 
 ## Pointeurs de fonctions
 
-Une fonction a elle aussi une adresse en mémoire, qu'on peut stocker dans un pointeur — utile pour choisir dynamiquement quelle fonction appeler (callbacks, tables de dispatch) :
+Une fonction a elle aussi une adresse en mémoire, qu'on peut stocker dans un pointeur, utile pour choisir dynamiquement quelle fonction appeler (callbacks, tables de dispatch) :
 
 ```c
 int addition(int a, int b) { return a + b; }
@@ -113,7 +113,7 @@ printf("%d\n", operation(4, 2)); // 2
 
 ## `NULL` et pointeurs invalides
 
-Un pointeur non initialisé contient une adresse **aléatoire** ("wild pointer") — le déréférencer produit un comportement indéfini, souvent un crash (`segmentation fault`). Un pointeur qu'on n'utilise pas encore doit être explicitement mis à `NULL`, et testé avant déréférencement :
+Un pointeur non initialisé contient une adresse **aléatoire** ("wild pointer") : le déréférencer produit un comportement indéfini, souvent un crash (`segmentation fault`). Un pointeur qu'on n'utilise pas encore doit être explicitement mis à `NULL`, et testé avant déréférencement :
 
 ```c
 int *ptr = NULL;
@@ -146,7 +146,7 @@ p1 == p2     // faux : les adresses sont differentes
 
 Deux pointeurs peuvent donc parfaitement contenir la même valeur sans être égaux, et inversement.
 
-> Cette distinction — comparaison par **référence** ou par **valeur** — n'est pas propre au C, elle se retrouve dans la plupart des langages. En Python, `is` compare l'identité (l'équivalent de `p1 == p2`) et `==` compare la valeur (l'équivalent de `*p1 == *p2`) ; voir le chapitre [Variables](/?c=langages-de-programmation&s=python&p=variables) de Python. Comparer des chaînes en C illustre le même piège : `str1 == str2` compare deux adresses, pas deux textes — il faut `strcmp()`.
+> Cette distinction (comparaison par **référence** ou par **valeur**) n'est pas propre au C, elle se retrouve dans la plupart des langages. En Python, `is` compare l'identité (l'équivalent de `p1 == p2`) et `==` compare la valeur (l'équivalent de `*p1 == *p2`) ; voir le chapitre [Variables](/?c=langages-de-programmation&s=python&p=variables) de Python. Comparer des chaînes en C illustre le même piège : `str1 == str2` compare deux adresses, pas deux textes : il faut `strcmp()`.
 
 ## `const` avec les pointeurs
 

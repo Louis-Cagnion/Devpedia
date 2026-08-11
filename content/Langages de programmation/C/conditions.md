@@ -8,7 +8,7 @@ Les conditions permettent d'exécuter un bloc de code selon qu'une expression es
 
 ## La condition `if`
 
-En C, toute valeur **non nulle** est considérée comme vraie ; seule la valeur `0` est fausse — il n'existe pas de type booléen natif avant C99 ([`stdbool.h`](/?c=langages-de-programmation&s=c&p=variables)) :
+En C, toute valeur **non nulle** est considérée comme vraie ; seule la valeur `0` est fausse : il n'existe pas de type booléen natif avant C99 ([`stdbool.h`](/?c=langages-de-programmation&s=c&p=variables)) :
 
 ```c
 int age = 18;
@@ -34,7 +34,7 @@ if (note >= 16) {
 }
 ```
 
-> **Note :** contrairement à PHP, il n'existe pas de syntaxe alternative avec `:`/`endif` en C — les accolades `{ }` sont la seule écriture disponible (facultatives seulement si le bloc ne contient qu'une seule instruction, mais fortement déconseillé de les omettre : source classique de bugs si une ligne est ajoutée par erreur sans les accolades).
+> **Note :** contrairement à PHP, il n'existe pas de syntaxe alternative avec `:`/`endif` en C : les accolades `{ }` sont la seule écriture disponible (facultatives seulement si le bloc ne contient qu'une seule instruction, mais fortement déconseillé de les omettre : source classique de bugs si une ligne est ajoutée par erreur sans les accolades).
 
 ## L'opérateur ternaire
 
@@ -68,7 +68,7 @@ switch (jour) {
 }
 ```
 
-> **Note :** n'oubliez pas le `break;` à la fin de chaque `case` — sinon l'exécution continue dans le `case` suivant (*fall-through*), même si sa condition ne correspond pas. Ce comportement est parfois exploité volontairement pour regrouper plusieurs cas identiques :
+> **Note :** n'oubliez pas le `break;` à la fin de chaque `case` : sinon l'exécution continue dans le `case` suivant (*fall-through*), même si sa condition ne correspond pas. Ce comportement est parfois exploité volontairement pour regrouper plusieurs cas identiques :
 
 ```c
 switch (jour) {
@@ -82,7 +82,7 @@ switch (jour) {
 }
 ```
 
-> **Limite du `switch` en C :** contrairement à certains langages, un `switch` en C ne fonctionne que sur des types entiers (ou assimilés : `char`, `enum`) — impossible de faire un `switch` sur une chaîne de caractères directement.
+> **Limite du `switch` en C :** contrairement à certains langages, un `switch` en C ne fonctionne que sur des types entiers (ou assimilés : `char`, `enum`) : impossible de faire un `switch` sur une chaîne de caractères directement.
 
 ---
 
@@ -92,5 +92,5 @@ switch (jour) {
 |---|---|
 | **À retenir** | `if`/`else`/`else if` exécutent un bloc selon une condition ; toute valeur non nulle est vraie en C. `switch` compare une même variable entière à plusieurs valeurs. |
 | **Outils utilisables** | L'opérateur ternaire `? :` pour une affectation conditionnelle courte. |
-| **Pièges à éviter** | Oublier `break;` dans un `case` — l'exécution continue dans le `case` suivant (*fall-through*), même sans correspondre à sa condition. |
-| **Bonnes pratiques** | Toujours accolader un bloc `if`, même à une seule instruction — évite un bug si une ligne est ajoutée par la suite sans les accolades. |
+| **Pièges à éviter** | Oublier `break;` dans un `case` : l'exécution continue dans le `case` suivant (*fall-through*), même sans correspondre à sa condition. |
+| **Bonnes pratiques** | Toujours accolader un bloc `if`, même à une seule instruction : évite un bug si une ligne est ajoutée par la suite sans les accolades. |

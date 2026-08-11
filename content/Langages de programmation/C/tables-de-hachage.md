@@ -43,7 +43,7 @@ unsigned long indice = hash_chaine(cle) % taille_tableau;
 
 ## Les collisions
 
-Le nombre de clés possibles est infini (n'importe quelle chaîne), mais le tableau a une taille finie — deux clés différentes peuvent donc, tôt ou tard, produire le même indice. C'est une **collision**, gérée principalement de deux façons :
+Le nombre de clés possibles est infini (n'importe quelle chaîne), mais le tableau a une taille finie : deux clés différentes peuvent donc, tôt ou tard, produire le même indice. C'est une **collision**, gérée principalement de deux façons :
 
 - **Chaînage** (*separate chaining*) : chaque case du tableau contient une [liste chaînée](/?c=langages-de-programmation&s=c&p=listes-chainees) de toutes les entrées qui ont abouti à cet indice.
 - **Adressage ouvert** (*open addressing*) : en cas de collision, on cherche la prochaine case libre selon une règle fixe (ex. la case suivante), jusqu'à en trouver une.
@@ -103,11 +103,11 @@ int rechercher(TableHachage *table, const char *cle, int *trouve)
 }
 ```
 
-À indice égal, la recherche compare quand même la clé complète (`strcmp`) — l'indice ne fait que réduire la recherche à une petite liste (idéalement un seul élément), pas l'éliminer complètement.
+À indice égal, la recherche compare quand même la clé complète (`strcmp`) : l'indice ne fait que réduire la recherche à une petite liste (idéalement un seul élément), pas l'éliminer complètement.
 
 ## Facteur de charge et redimensionnement
 
-Le **facteur de charge** (nombre d'entrées ÷ taille du tableau) mesure à quel point la table est pleine. S'il devient trop élevé (au-delà d'un seuil courant comme `0.75`), les listes de chaque case s'allongent, et les performances se dégradent vers du `O(n)` — dans le pire des cas (toutes les clés dans la même case), la table de hachage se comporte exactement comme une simple liste chaînée. Une bonne implémentation **redimensionne** alors le tableau (généralement en doublant sa taille) et réinsère toutes les entrées existantes ("rehash"), pour retrouver un facteur de charge raisonnable.
+Le **facteur de charge** (nombre d'entrées ÷ taille du tableau) mesure à quel point la table est pleine. S'il devient trop élevé (au-delà d'un seuil courant comme `0.75`), les listes de chaque case s'allongent, et les performances se dégradent vers du `O(n)` : dans le pire des cas (toutes les clés dans la même case), la table de hachage se comporte exactement comme une simple liste chaînée. Une bonne implémentation **redimensionne** alors le tableau (généralement en doublant sa taille) et réinsère toutes les entrées existantes ("rehash"), pour retrouver un facteur de charge raisonnable.
 
 ## Où les tables de hachage se cachent déjà autour de vous
 
@@ -125,5 +125,5 @@ Comprendre les tables de hachage, c'est donc comprendre un mécanisme qui se ré
 |---|---|
 | **À retenir** | Une table de hachage calcule un indice à partir d'une clé (via une fonction de hachage) pour accéder directement à la valeur, en `O(1)` en moyenne. Une collision (deux clés, même indice) se gère par chaînage ou adressage ouvert. |
 | **Outils utilisables** | Une fonction de hachage déterministe et bien répartie ; le redimensionnement ("rehash") quand le facteur de charge dépasse un seuil (souvent 0.75). |
-| **Pièges à éviter** | Une fonction de hachage mal répartie qui concentre trop de clés sur peu d'indices — dégrade les performances vers `O(n)`. |
+| **Pièges à éviter** | Une fonction de hachage mal répartie qui concentre trop de clés sur peu d'indices : dégrade les performances vers `O(n)`. |
 | **Bonnes pratiques** | Redimensionner et réinsérer toutes les entrées dès que le facteur de charge devient trop élevé, plutôt que de laisser les listes de chaque case s'allonger indéfiniment. |

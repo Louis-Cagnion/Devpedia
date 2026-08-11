@@ -64,7 +64,7 @@ double pi = 3.1415926535;
 - `float` : précision simple (32 bits)
 - `double` : précision double (64 bits)
 
-Ces types stockent une **approximation** : `0.1 + 0.2` ne vaut pas exactement `0.3`, et deux flottants ne se comparent donc jamais avec `==`. Ce comportement n'est pas propre au C — il découle de la norme IEEE 754 imposée par le processeur, et se retrouve à l'identique en Python, JavaScript ou PHP. Voir le chapitre [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants) pour l'explication de l'encodage et la façon correcte de comparer.
+Ces types stockent une **approximation** : `0.1 + 0.2` ne vaut pas exactement `0.3`, et deux flottants ne se comparent donc jamais avec `==`. Ce comportement n'est pas propre au C : il découle de la norme IEEE 754 imposée par le processeur, et se retrouve à l'identique en Python, JavaScript ou PHP. Voir le chapitre [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants) pour l'explication de l'encodage et la façon correcte de comparer.
 
 De même, la plage de valeurs des entiers et leur comportement en cas de débordement découlent du nombre de bits alloués : voir [Les entiers, les bits et les débordements](/?c=representation-des-donnees&p=entiers-et-debordements).
 
@@ -135,7 +135,7 @@ Les principaux types de données en C sont :
 | `struct` | Ensemble de données personnalisées |
 | `pointer` | Adresse mémoire |
 
-La maîtrise de ces types est indispensable avant d'aborder des concepts plus avancés comme les listes chaînées, les arbres binaires, les threads ou la gestion des processus — voir les chapitres dédiés à chacun de ces sujets.
+La maîtrise de ces types est indispensable avant d'aborder des concepts plus avancés comme les listes chaînées, les arbres binaires, les threads ou la gestion des processus (voir les chapitres dédiés à chacun de ces sujets).
 
 ---
 
@@ -145,5 +145,5 @@ La maîtrise de ces types est indispensable avant d'aborder des concepts plus av
 |---|---|
 | **À retenir** | Chaque variable C a un type fixe qui détermine sa taille en mémoire, les valeurs possibles et les opérations autorisées : `int`, `char`, `bool` (C99), `float`/`double`, tableau de `char` (chaîne), `struct`, pointeur. |
 | **Outils utilisables** | `stdbool.h` pour un vrai type booléen ; `sizeof` pour connaître la taille réelle d'un type. |
-| **Pièges à éviter** | Comparer deux flottants avec `==` — ce sont des approximations, jamais des valeurs exactes. |
+| **Pièges à éviter** | Comparer deux flottants avec `==` : ce sont des approximations, jamais des valeurs exactes. |
 | **Bonnes pratiques** | Choisir le type le plus étroit qui couvre réellement les valeurs attendues, plutôt qu'un `int`/`double` par défaut systématique. |

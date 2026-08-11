@@ -4,7 +4,7 @@ order: 8
 
 # Les Makefiles
 
-Un **Makefile** automatise la compilation d'un projet C à plusieurs fichiers : plutôt que de retaper manuellement chaque commande `gcc` (voir [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation)), on décrit une fois les règles de construction, et l'outil `make` les exécute — en ne recompilant que ce qui a réellement changé depuis la dernière fois.
+Un **Makefile** automatise la compilation d'un projet C à plusieurs fichiers : plutôt que de retaper manuellement chaque commande `gcc` (voir [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation)), on décrit une fois les règles de construction, et l'outil `make` les exécute, en ne recompilant que ce qui a réellement changé depuis la dernière fois.
 
 ## Anatomie d'une règle
 
@@ -18,7 +18,7 @@ programme: main.o calculs.o
 	gcc main.o calculs.o -o programme
 ```
 
-"Pour construire `programme`, j'ai besoin de `main.o` et `calculs.o` ; si l'un des deux est plus récent que `programme` (ou si `programme` n'existe pas encore), exécute la commande." La ligne de commande **doit** être indentée avec une tabulation, jamais des espaces — une des erreurs les plus fréquentes avec les Makefiles.
+"Pour construire `programme`, j'ai besoin de `main.o` et `calculs.o` ; si l'un des deux est plus récent que `programme` (ou si `programme` n'existe pas encore), exécute la commande." La ligne de commande **doit** être indentée avec une tabulation, jamais des espaces : une des erreurs les plus fréquentes avec les Makefiles.
 
 ## Enchaîner les règles
 
@@ -33,7 +33,7 @@ calculs.o: calculs.c calculs.h
 	gcc -c calculs.c -o calculs.o
 ```
 
-En tapant simplement `make`, l'outil construit la **première règle du fichier** (`programme`), et remonte récursivement ses dépendances : pour obtenir `main.o`, il regarde la règle `main.o: ...`, etc. Si `calculs.c` n'a pas changé depuis la dernière compilation, `make` ne recompile pas `calculs.o` — seule la partie modifiée du projet est reconstruite.
+En tapant simplement `make`, l'outil construit la **première règle du fichier** (`programme`), et remonte récursivement ses dépendances : pour obtenir `main.o`, il regarde la règle `main.o: ...`, etc. Si `calculs.c` n'a pas changé depuis la dernière compilation, `make` ne recompile pas `calculs.o` : seule la partie modifiée du projet est reconstruite.
 
 ## Variables
 
@@ -58,7 +58,7 @@ main.o: main.c calculs.h
 
 ## Cibles factices (`.PHONY`)
 
-Une cible comme `clean` ne correspond à aucun vrai fichier à produire — elle sert juste à exécuter une commande utilitaire (ici, supprimer les fichiers compilés) :
+Une cible comme `clean` ne correspond à aucun vrai fichier à produire : elle sert juste à exécuter une commande utilitaire (ici, supprimer les fichiers compilés) :
 
 ```makefile
 .PHONY: clean
@@ -79,5 +79,5 @@ clean:
 |---|---|
 | **À retenir** | Un Makefile décrit des règles (`cible: dépendances` + commande) que `make` exécute, en ne reconstruisant que ce qui a réellement changé. |
 | **Outils utilisables** | Variables (`CC`, `CFLAGS`), cibles factices (`.PHONY`). |
-| **Pièges à éviter** | Indenter une commande avec des espaces plutôt qu'une tabulation — erreur très fréquente qui casse la règle. |
+| **Pièges à éviter** | Indenter une commande avec des espaces plutôt qu'une tabulation : erreur très fréquente qui casse la règle. |
 | **Bonnes pratiques** | Déclarer `.PHONY` pour toute cible qui ne produit pas un vrai fichier (`clean`, `test`...), pour éviter un conflit avec un fichier de même nom. |
