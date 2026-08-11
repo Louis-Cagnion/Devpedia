@@ -30,6 +30,10 @@
         {
           "id": "schemas-et-tables-techniques",
           "label": "Schémas et tables techniques"
+        },
+        {
+          "id": "entrepot-vs-data-lake",
+          "label": "Entrepôt de données contre data lake"
         }
       ]
     },
