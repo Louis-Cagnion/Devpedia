@@ -4,11 +4,11 @@ order: 8
 
 # Wireframing et prototypage
 
-La [recherche utilisateur](/?c=ui-ux&p=recherche-utilisateur) dit *qui* utilise le produit et *quel problème* résoudre. Avant de passer à un écran fini (couleurs, typographie, polish visuel), une étape intermédiaire vérifie que la **structure** de l'écran tient la route — le **wireframing** — puis que le **parcours** entre les écrans fonctionne — le **prototypage**.
+La [recherche utilisateur](/?c=ui-ux&p=recherche-utilisateur) dit *qui* utilise le produit et *quel problème* résoudre. Avant de passer à un écran fini (couleurs, typographie, polish visuel), une étape intermédiaire vérifie que la **structure** de l'écran tient la route (le **wireframing**), puis que le **parcours** entre les écrans fonctionne (le **prototypage**).
 
 ## Le wireframe : la structure, sans le visuel
 
-Un **wireframe** représente l'agencement des éléments d'un écran (où va le titre, où va le bouton principal, où va la liste de résultats) sans aucune décision de style — pas de couleur définitive, pas de police choisie, souvent juste des rectangles et du texte de remplissage :
+Un **wireframe** représente l'agencement des éléments d'un écran (où va le titre, où va le bouton principal, où va la liste de résultats) sans aucune décision de style : pas de couleur définitive, pas de police choisie, souvent juste des rectangles et du texte de remplissage :
 
 ```text
 +------------------------------------------+
@@ -27,7 +27,7 @@ Un **wireframe** représente l'agencement des éléments d'un écran (où va le 
 +------------------+------------------------+
 ```
 
-Ce schéma applique directement les leviers de la [hiérarchie visuelle](/?c=ui-ux&p=hierarchie-visuelle) (position, taille des blocs) sans encore toucher aux leviers purement visuels (couleur, typographie) — l'idée est de valider l'agencement avant d'investir du temps sur leur habillage final, qui devra être refait si la structure change.
+Ce schéma applique directement les leviers de la [hiérarchie visuelle](/?c=ui-ux&p=hierarchie-visuelle) (position, taille des blocs) sans encore toucher aux leviers purement visuels (couleur, typographie) : l'idée est de valider l'agencement avant d'investir du temps sur leur habillage final, qui devra être refait si la structure change.
 
 ## Les niveaux de fidélité
 
@@ -39,9 +39,9 @@ Un wireframe (ou un prototype) se décline à différents niveaux de détail, ch
 | Moyenne | Vraie hiérarchie, vrais libellés, pas encore de style visuel final | Faible à modérée | L'organisation détaillée du contenu, les cas limites (texte long, liste vide) |
 | Haute | Rendu quasi final (couleurs, typographie, composants réels) | Élevé (chaque changement retouche un visuel abouti) | Le détail des micro-interactions, la cohérence visuelle finale |
 
-> **Piège :** présenter un prototype haute fidélité à un stade où seule la structure doit encore être validée. Un rendu déjà poli détourne l'attention des testeurs vers l'esthétique ("j'aime bien ce bleu") plutôt que vers ce qui compte encore à ce stade (le parcours a-t-il un sens ? trouve-t-on l'information ?) — et chaque changement de structure coûte alors bien plus cher à répercuter.
+> **Piège :** présenter un prototype haute fidélité à un stade où seule la structure doit encore être validée. Un rendu déjà poli détourne l'attention des testeurs vers l'esthétique ("j'aime bien ce bleu") plutôt que vers ce qui compte encore à ce stade (le parcours a-t-il un sens ? trouve-t-on l'information ?) ; et chaque changement de structure coûte alors bien plus cher à répercuter.
 >
-> **Bonne pratique :** faire correspondre le niveau de fidélité à la question du moment — basse fidélité tant que la structure peut encore changer, haute fidélité seulement une fois qu'elle est stabilisée.
+> **Bonne pratique :** faire correspondre le niveau de fidélité à la question du moment : basse fidélité tant que la structure peut encore changer, haute fidélité seulement une fois qu'elle est stabilisée.
 
 ## Le prototype cliquable : simuler le parcours
 
@@ -54,9 +54,9 @@ Un **prototype cliquable** relie plusieurs wireframes ou écrans entre eux (un c
         +-------------------clic sur "Retour"---------+
 ```
 
-Ce parcours simulé permet de reprendre exactement la méthode du [test d'utilisabilité](/?c=ui-ux&p=recherche-utilisateur) — observer une personne essayer d'accomplir une tâche, sans l'aider — mais bien avant que le développement ne commence, quand corriger un problème de parcours ne coûte qu'un lien à redessiner plutôt qu'une fonctionnalité déjà codée à reprendre.
+Ce parcours simulé permet de reprendre exactement la méthode du [test d'utilisabilité](/?c=ui-ux&p=recherche-utilisateur) (observer une personne essayer d'accomplir une tâche, sans l'aider), mais bien avant que le développement ne commence, quand corriger un problème de parcours ne coûte qu'un lien à redessiner plutôt qu'une fonctionnalité déjà codée à reprendre.
 
-> **Piège :** ne prototyper que le chemin "idéal" (celui que l'équipe de conception a en tête) et laisser toute sortie de ce chemin mener à un écran non prévu, ou à rien du tout. Une personne qui teste le prototype dévie presque toujours du chemin prévu à un moment — c'est justement ce qu'un wireframe papier ou un prototype pauvrement relié ne révèle pas avant la mise en production.
+> **Piège :** ne prototyper que le chemin "idéal" (celui que l'équipe de conception a en tête) et laisser toute sortie de ce chemin mener à un écran non prévu, ou à rien du tout. Une personne qui teste le prototype dévie presque toujours du chemin prévu à un moment : c'est justement ce qu'un wireframe papier ou un prototype pauvrement relié ne révèle pas avant la mise en production.
 >
 > **Bonne pratique :** prototyper aussi les chemins secondaires plausibles (une recherche sans résultat, une erreur de saisie), pas seulement le scénario qui marche du premier coup.
 
@@ -68,7 +68,7 @@ Wireframing/prototypage et [recherche utilisateur](/?c=ui-ux&p=recherche-utilisa
 Wireframe/prototype -> Test d'utilisabilite -> Constats -> Wireframe revise -> ...
 ```
 
-Chaque tour de cette boucle coûte d'autant moins cher que la fidélité est restée basse — une raison supplémentaire de ne monter en fidélité qu'une fois la structure stabilisée par plusieurs tours de cette boucle.
+Chaque tour de cette boucle coûte d'autant moins cher que la fidélité est restée basse : une raison supplémentaire de ne monter en fidélité qu'une fois la structure stabilisée par plusieurs tours de cette boucle.
 
 ## Ce qu'il faut retenir
 
