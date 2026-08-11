@@ -27,6 +27,12 @@ Chapters live under `content/`, grouped by category and, when relevant, by subje
 
 These last six categories are deliberately cross-cutting: they explain once what would otherwise be repeated (and half-explained) in every language section. `0.1 + 0.2 != 0.3` is not a JavaScript quirk, so it is documented as an encoding property, and the language chapters link to it instead of re-deriving it.
 
+More recent additions, outside that cross-cutting set:
+
+- **Databases**: organizing data beyond the single-table view covered in SQL: the star schema (fact and dimension tables), the medallion architecture (bronze/silver/gold), bridge tables for many-to-many relationships, schemas and technical tables (staging, load tracking), data warehouses vs data lakes, and indexes
+- **CI/CD**: what a pipeline automates and why: the CI/CD concept itself, Azure DevOps as a platform (Boards, Repos, Pipelines, Artifacts), the YAML structure of an Azure pipeline, and a syntax comparison with GitHub Actions
+- **Business organization**: the human side of a software project: team roles (product owner, tech lead, QA, Scrum Master), Agile/Scrum/Kanban methodologies, a project's lifecycle from requirements to maintenance, and writing an actionable ticket or flagging a blocker
+
 Each chapter is a plain Markdown file, its title given by a regular `# Heading` at the top of the file (an optional `---`-fenced frontmatter block above it can carry build-time metadata, currently just `order`, used to sort chapters pedagogically). Markdown is rendered by a parser I wrote myself for this project (`js/parser.js`), rather than an existing library.
 
 Security isn't its own category — it's woven into whichever chapter it concretely applies to (PHP's `securite.md` for the web attack taxonomy — CSRF, XSS, SQL injection, MITM, session hijacking...; command injection in Bash; buffer overflows in C; least-privilege database accounts in SQL), each cross-referencing the others rather than repeating the same explanation.
@@ -55,7 +61,7 @@ then open `http://localhost:8000`. Node is only needed for that regeneration ste
 node scripts/generate-struct.js
 ```
 
-A subject's own description page is the `.md` file inside its folder whose title (its `# Heading`) matches the folder name (e.g. `cpp.md` titled "C++" inside `content/Langages de programmation/C++/`); every other `.md` file in that folder becomes one of its chapters. Categories without subject subfolders (Git, Performance, Data representation, the DSL category, Code quality & architecture, AI, Data Science, UI/UX) list their `.md` files as chapters directly, and take their intro text from `description.md`.
+A subject's own description page is the `.md` file inside its folder whose title (its `# Heading`) matches the folder name (e.g. `cpp.md` titled "C++" inside `content/Langages de programmation/C++/`); every other `.md` file in that folder becomes one of its chapters. Categories without subject subfolders (Git, Performance, Data representation, the DSL category, Code quality & architecture, AI, Data Science, UI/UX, Databases, CI/CD, Business organization) list their `.md` files as chapters directly, and take their intro text from `description.md`.
 
 Ids are slugified from folder and file names, with diacritics transliterated — an accented folder name like `Représentation des données` yields `representation-des-donnees`, so it can be linked to from other chapters. Cross-chapter links are plain query strings (`?c=<category>&s=<subject>&p=<chapter>`, the `&s=` part only for categories that have subjects). Running `node scripts/generate-struct.js` validates every such link found in `content/` against the freshly built structure and throws (listing each broken link) if a rename left any dangling — no silent breakage.
 
