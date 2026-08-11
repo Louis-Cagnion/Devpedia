@@ -4,7 +4,7 @@ order: 5
 
 # Les dictionnaires et les ensembles
 
-Le **dictionnaire** (`dict`) associe des clés à des valeurs, exactement comme un tableau associatif en PHP. L'**ensemble** (`set`) stocke des valeurs uniques, sans ordre ni doublons. Les deux structures s'appuient en interne sur une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage) — c'est ce qui permet à `dico["cle"]` ou `"valeur" in ensemble` d'être quasi instantané, même sur une très grande collection.
+Le **dictionnaire** (`dict`) associe des clés à des valeurs, exactement comme un tableau associatif en PHP. L'**ensemble** (`set`) stocke des valeurs uniques, sans ordre ni doublons. Les deux structures s'appuient en interne sur une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage) : c'est ce qui permet à `dico["cle"]` ou `"valeur" in ensemble` d'être quasi instantané, même sur une très grande collection.
 
 ## Les dictionnaires
 
@@ -22,7 +22,7 @@ personne.get("telephone", "inconnu") # "inconnu" -> valeur par défaut si absent
 "nom" in personne            # True -> teste la présence d'une CLÉ (pas d'une valeur)
 ```
 
-> **Note :** `personne["telephone"]` (accès direct par crochets) lève une `KeyError` si la clé n'existe pas — contrairement à `.get()`, qui renvoie `None` (ou une valeur par défaut fournie) sans jamais planter. Préférer `.get()` dès que l'absence de la clé est un cas normal, pas une erreur.
+> **Note :** `personne["telephone"]` (accès direct par crochets) lève une `KeyError` si la clé n'existe pas ; contrairement à `.get()`, qui renvoie `None` (ou une valeur par défaut fournie) sans jamais planter. Préférer `.get()` dès que l'absence de la clé est un cas normal, pas une erreur.
 
 ### Parcourir un dictionnaire
 
@@ -68,7 +68,7 @@ a - b   # {1}           -> différence (dans a, pas dans b)
 a ^ b   # {1, 4}        -> différence symétrique (dans l'un OU l'autre, pas les deux)
 ```
 
-> **Note :** un `set` élimine automatiquement les doublons — `set([1, 2, 2, 3, 3, 3])` donne `{1, 2, 3}`. C'est une façon très courante de dédupliquer rapidement une liste en Python : `list(set(ma_liste))`.
+> **Note :** un `set` élimine automatiquement les doublons : `set([1, 2, 2, 3, 3, 3])` donne `{1, 2, 3}`. C'est une façon très courante de dédupliquer rapidement une liste en Python : `list(set(ma_liste))`.
 
 ### Compréhension d'ensemble
 
@@ -85,7 +85,7 @@ Voir aussi [Les tables de hachage](/?c=langages-de-programmation&s=c&p=tables-de
 
 | | |
 |---|---|
-| **À retenir** | Un `dict` associe des clés à des valeurs, un `set` stocke des valeurs uniques sans ordre — les deux reposent sur une table de hachage, donc quasi instantanés en accès/test. |
+| **À retenir** | Un `dict` associe des clés à des valeurs, un `set` stocke des valeurs uniques sans ordre ; les deux reposent sur une table de hachage, donc quasi instantanés en accès/test. |
 | **Outils utilisables** | `.get()` (sans erreur), compréhensions de dict/set, opérations d'ensembles (`\|`, `&`, `-`, `^`). |
-| **Pièges à éviter** | Accéder à une clé absente par crochets (`dico["x"]`) plutôt que par `.get()` — lève une `KeyError`. |
+| **Pièges à éviter** | Accéder à une clé absente par crochets (`dico["x"]`) plutôt que par `.get()` : cela lève une `KeyError`. |
 | **Bonnes pratiques** | Utiliser `.get()` dès que l'absence d'une clé est un cas normal, pas une erreur ; `list(set(ma_liste))` pour dédupliquer rapidement. |

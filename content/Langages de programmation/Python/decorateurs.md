@@ -4,7 +4,7 @@ order: 9
 
 # Les décorateurs
 
-Un **décorateur** enveloppe une fonction dans une autre, pour lui ajouter un comportement (chronométrage, journalisation, vérification de droits...) sans modifier son code — ce mécanisme s'appuie directement sur les fonctions de première classe et les closures (voir [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions)).
+Un **décorateur** enveloppe une fonction dans une autre, pour lui ajouter un comportement (chronométrage, journalisation, vérification de droits...) sans modifier son code ; ce mécanisme s'appuie directement sur les fonctions de première classe et les closures (voir [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions)).
 
 ## Le principe, sans le sucre syntaxique
 
@@ -87,7 +87,7 @@ def calcul_long():
 print(calcul_long.__name__)   # "calcul_long" -> corrigé
 ```
 
-> **Note :** redéfinir `chronometrer` ne change rien rétroactivement à une fonction déjà décorée par son ancienne version — `calcul_long` doit être redécorée ici pour que `@wraps` s'applique réellement.
+> **Note :** redéfinir `chronometrer` ne change rien rétroactivement à une fonction déjà décorée par son ancienne version : `calcul_long` doit être redécorée ici pour que `@wraps` s'applique réellement.
 
 ## Un décorateur avec ses propres arguments
 
@@ -110,7 +110,7 @@ def saluer():
 saluer()   # affiche "Bonjour !" trois fois
 ```
 
-`repeter(3)` renvoie d'abord `decorateur` (une fonction qui prend une fonction), qui est ensuite appliqué à `saluer` — d'où les trois niveaux de fonctions imbriquées.
+`repeter(3)` renvoie d'abord `decorateur` (une fonction qui prend une fonction), qui est ensuite appliqué à `saluer`, d'où les trois niveaux de fonctions imbriquées.
 
 ## Décorateurs courants de la bibliothèque standard
 
@@ -127,7 +127,7 @@ saluer()   # affiche "Bonjour !" trois fois
 
 | | |
 |---|---|
-| **À retenir** | Un décorateur (`@nom`) enveloppe une fonction pour lui ajouter un comportement sans modifier son code — `@decorateur def f()` équivaut à `f = decorateur(f)`. |
+| **À retenir** | Un décorateur (`@nom`) enveloppe une fonction pour lui ajouter un comportement sans modifier son code : `@decorateur def f()` équivaut à `f = decorateur(f)`. |
 | **Outils utilisables** | `functools.wraps` (préserve les métadonnées), `@property`/`@staticmethod`/`@classmethod`, `@functools.lru_cache`. |
-| **Pièges à éviter** | Oublier `@wraps` — la fonction décorée perd son `__name__`/`__doc__` d'origine, ce qui complique le débogage. |
+| **Pièges à éviter** | Oublier `@wraps` : la fonction décorée perd son `__name__`/`__doc__` d'origine, ce qui complique le débogage. |
 | **Bonnes pratiques** | Toujours utiliser `@wraps(fonction)` dans la fonction d'enveloppe d'un décorateur personnalisé. |

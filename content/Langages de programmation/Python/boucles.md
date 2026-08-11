@@ -70,7 +70,7 @@ for i in range(10):
     print(i)
 ```
 
-## La clause `else` d'une boucle — une particularité Python
+## La clause `else` d'une boucle : une particularité Python
 
 Une boucle `for`/`while` peut avoir un bloc `else`, exécuté uniquement si la boucle s'est terminée **normalement**, sans `break` :
 
@@ -89,7 +89,7 @@ else:
 
 ## Pas d'accès direct à l'index dans un `for`
 
-Contrairement à une boucle `for` en C (`for (int i = 0; i < taille; i++)`), la boucle Python ne manipule jamais explicitement un index — `enumerate()` est le moyen idiomatique d'en obtenir un quand c'est nécessaire, plutôt que d'itérer sur `range(len(liste))` puis d'indexer manuellement.
+Contrairement à une boucle `for` en C (`for (int i = 0; i < taille; i++)`), la boucle Python ne manipule jamais explicitement un index ; `enumerate()` est le moyen idiomatique d'en obtenir un quand c'est nécessaire, plutôt que d'itérer sur `range(len(liste))` puis d'indexer manuellement.
 
 ---
 

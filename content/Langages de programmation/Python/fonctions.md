@@ -4,7 +4,7 @@ order: 6
 
 # Les fonctions
 
-Une fonction Python se déclare avec `def`. Les fonctions sont des **objets de première classe** : elles peuvent être stockées dans une variable, passées en argument à une autre fonction, ou renvoyées par une fonction — exactement comme n'importe quelle autre valeur.
+Une fonction Python se déclare avec `def`. Les fonctions sont des **objets de première classe** : elles peuvent être stockées dans une variable, passées en argument à une autre fonction, ou renvoyées par une fonction, exactement comme n'importe quelle autre valeur.
 
 ## Déclarer et appeler une fonction
 
@@ -25,7 +25,7 @@ saluer("Jean")               # "Bonjour Jean"
 saluer("Jean", "Salut")       # "Salut Jean"
 ```
 
-> **Piège classique : ne jamais utiliser un objet mutable (liste, dict) comme valeur par défaut.** La valeur par défaut n'est évaluée **qu'une seule fois**, à la définition de la fonction — pas à chaque appel :
+> **Piège classique : ne jamais utiliser un objet mutable (liste, dict) comme valeur par défaut.** La valeur par défaut n'est évaluée **qu'une seule fois**, à la définition de la fonction, pas à chaque appel :
 
 ```python
 def ajouter_a_liste(element, liste=[]):  # DANGER : cette liste est PARTAGÉE entre tous les appels
@@ -88,7 +88,7 @@ nombres_tries = sorted(nombres, key=lambda x: -x)  # tri décroissant
 
 ## Closures et `nonlocal`
 
-Une fonction imbriquée peut lire les variables de la fonction englobante — pour les **modifier**, `nonlocal` est nécessaire :
+Une fonction imbriquée peut lire les variables de la fonction englobante ; pour les **modifier**, `nonlocal` est nécessaire :
 
 ```python
 def compteur():
@@ -116,5 +116,5 @@ Voir aussi [Les décorateurs](/?c=langages-de-programmation&s=python&p=decorateu
 |---|---|
 | **À retenir** | Une fonction Python est un objet de première classe (stockable, passable en argument). `*args`/`**kwargs` gèrent un nombre variable d'arguments ; une closure conserve l'accès aux variables de sa fonction englobante. |
 | **Outils utilisables** | Paramètres par défaut, arguments uniquement par mot-clé (`*`), lambdas, `nonlocal`. |
-| **Pièges à éviter** | Utiliser un objet mutable (liste, dict) comme valeur par défaut — elle est partagée entre tous les appels, pas recréée à chaque fois. |
+| **Pièges à éviter** | Utiliser un objet mutable (liste, dict) comme valeur par défaut : elle est partagée entre tous les appels, pas recréée à chaque fois. |
 | **Bonnes pratiques** | Utiliser `None` comme valeur par défaut pour un paramètre mutable, puis créer l'objet réel à l'intérieur de la fonction. |

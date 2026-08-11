@@ -4,7 +4,7 @@ order: 2
 
 # Les conditions
 
-Python utilise `if`/`elif`/`else`, sans aucune accolade — c'est l'**indentation** elle-même qui délimite les blocs de code, contrairement à PHP, C ou JavaScript.
+Python utilise `if`/`elif`/`else`, sans aucune accolade : c'est l'**indentation** elle-même qui délimite les blocs de code, contrairement à PHP, C ou JavaScript.
 
 ## `if` / `elif` / `else`
 
@@ -19,7 +19,7 @@ else:
     print("Vous êtes enfant.")
 ```
 
-> **Note :** `elif` (contraction de "else if") est le seul mot-clé pour enchaîner des conditions — `else if` en deux mots n'existe pas en Python. L'indentation cohérente est **obligatoire** : un bloc mal indenté provoque une `IndentationError`, pas juste un avertissement.
+> **Note :** `elif` (contraction de "else if") est le seul mot-clé pour enchaîner des conditions ; `else if` en deux mots n'existe pas en Python. L'indentation cohérente est **obligatoire** : un bloc mal indenté provoque une `IndentationError`, pas juste un avertissement.
 
 ## Les valeurs "truthy" et "falsy"
 
@@ -59,7 +59,7 @@ statut = "majeur" if age >= 18 else "mineur"
 
 Contrairement à PHP/C/JS (`condition ? valeur_si_vrai : valeur_si_faux`), Python place la condition **au milieu** : `valeur_si_vrai if condition else valeur_si_faux`.
 
-## L'opérateur "morse" (`:=`) — depuis Python 3.8
+## L'opérateur "morse" (`:=`, depuis Python 3.8)
 
 Permet d'assigner une variable **et** de l'utiliser dans une même expression, notamment dans une condition :
 
@@ -75,7 +75,7 @@ if (resultat := calculer_resultat()) > 10:
 
 ## Pas de `switch` classique (avant Python 3.10)
 
-Python n'a longtemps proposé aucun équivalent direct de `switch` — une chaîne de `elif` ou un dictionnaire de correspondance faisait office d'alternative :
+Python n'a longtemps proposé aucun équivalent direct de `switch` ; une chaîne de `elif` ou un dictionnaire de correspondance faisait office d'alternative :
 
 ```python
 def jour_semaine(jour):
@@ -105,7 +105,7 @@ match jour:
 
 | | |
 |---|---|
-| **À retenir** | `if`/`elif`/`else` structure le contrôle de flux, sans accolades — l'indentation délimite les blocs. Certaines valeurs (`0`, `""`, `[]`, `None`) sont "falsy" sans être `False`. |
+| **À retenir** | `if`/`elif`/`else` structure le contrôle de flux, sans accolades : l'indentation délimite les blocs. Certaines valeurs (`0`, `""`, `[]`, `None`) sont "falsy" sans être `False`. |
 | **Outils utilisables** | Opérateur ternaire (`x if cond else y`), opérateur morse (`:=`), `match`/`case` (Python 3.10+). |
-| **Pièges à éviter** | Une indentation incohérente — provoque une `IndentationError`, pas un simple avertissement. |
+| **Pièges à éviter** | Une indentation incohérente : cela provoque une `IndentationError`, pas un simple avertissement. |
 | **Bonnes pratiques** | Tester directement `if collection:` plutôt que `if len(collection) > 0:`, en s'appuyant sur le comportement truthy/falsy. |
