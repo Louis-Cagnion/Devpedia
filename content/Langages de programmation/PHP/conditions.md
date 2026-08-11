@@ -46,7 +46,7 @@ Cette conversion automatique s'appelle le **type juggling**. Elle est commode qu
 
 > Attention, le `switch` de PHP compare avec `==` (comparaison lâche), pas avec `===`. Pour une comparaison stricte, préférez une chaîne de `if`/`elseif`, ou `match` (PHP 8+) qui utilise `===`.
 
-Le type juggling a aussi une conséquence directe en sécurité lors de la comparaison de chaînes de hachage — voir le chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite).
+Le type juggling a aussi une conséquence directe en sécurité lors de la comparaison de chaînes de hachage (voir le chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite)).
 
 ## `if` / `else`
 

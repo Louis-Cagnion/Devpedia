@@ -4,7 +4,7 @@ order: 5
 
 # Les structures de langage
 
-Une **structure de langage** (*language construct*) est une instruction intégrée directement au cœur du langage PHP. Contrairement à une fonction, elle n'est pas définie par du code, elle fait partie de la syntaxe même du langage — au même titre que `if`, `for`, ou `;`.
+Une **structure de langage** (*language construct*) est une instruction intégrée directement au cœur du langage PHP. Contrairement à une fonction, elle n'est pas définie par du code, elle fait partie de la syntaxe même du langage, au même titre que `if`, `for`, ou `;`.
 
 ## Différences avec une fonction
 
@@ -28,7 +28,7 @@ Cette nature particulière donne aux structures de langage certaines libertés d
 
 ## Pourquoi cette distinction existe-t-elle ?
 
-Les structures de langage sont traitées par PHP au moment de l'analyse du code (avant même son exécution), car elles influencent directement le déroulement du script — par exemple, `include` insère du code à un endroit précis, ou `return` interrompt l'exécution d'une fonction. C'est pour ça qu'elles ne peuvent pas être manipulées comme de simples fonctions : on ne peut pas les stocker dans une variable, ni les passer en argument d'une autre fonction.
+Les structures de langage sont traitées par PHP au moment de l'analyse du code (avant même son exécution), car elles influencent directement le déroulement du script : par exemple, `include` insère du code à un endroit précis, ou `return` interrompt l'exécution d'une fonction. C'est pour ça qu'elles ne peuvent pas être manipulées comme de simples fonctions : on ne peut pas les stocker dans une variable, ni les passer en argument d'une autre fonction.
 
 ```php
 <?php
@@ -60,7 +60,7 @@ Les structures de langage sont traitées par PHP au moment de l'analyse du code 
 
 | | |
 |---|---|
-| **À retenir** | Une structure de langage (`echo`, `include`, `if`, `return`...) fait partie de la syntaxe du langage lui-même, contrairement à une fonction — elle bénéficie de libertés d'écriture (parenthèses optionnelles, non stockable dans une variable). |
+| **À retenir** | Une structure de langage (`echo`, `include`, `if`, `return`...) fait partie de la syntaxe du langage lui-même, contrairement à une fonction : elle bénéficie de libertés d'écriture (parenthèses optionnelles, non stockable dans une variable). |
 | **Outils utilisables** | `echo`/`print`, `include`/`require`, `isset()`/`unset()`, `list()`. |
 | **Pièges à éviter** | Essayer de stocker une structure de langage dans une variable ou de la passer en argument, comme une fonction classique. |
-| **Bonnes pratiques** | Utiliser `include`/`require` plutôt qu'une fonction personnalisée pour charger un fichier — c'est le mécanisme natif prévu pour ça. |
+| **Bonnes pratiques** | Utiliser `include`/`require` plutôt qu'une fonction personnalisée pour charger un fichier : c'est le mécanisme natif prévu pour ça. |

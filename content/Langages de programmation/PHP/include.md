@@ -72,7 +72,7 @@ Ce pattern sert souvent de fichier de config/données simple, sans avoir besoin 
 
 ## `__DIR__`
 
-`__DIR__` est une constante représentant le répertoire **du fichier où elle apparaît** — pas un "répertoire du projet" global. Deux fichiers dans des dossiers différents n'ont donc pas le même `__DIR__` :
+`__DIR__` est une constante représentant le répertoire **du fichier où elle apparaît**, pas un "répertoire du projet" global. Deux fichiers dans des dossiers différents n'ont donc pas le même `__DIR__` :
 
 ```php
 <?php
@@ -91,5 +91,5 @@ require __DIR__ . '/../config.php'; // toujours correct, quel que soit l'endroit
 |---|---|
 | **À retenir** | `include`/`require` insèrent le contenu d'un fichier PHP à l'endroit où l'instruction est écrite. `require` arrête le script si le fichier est introuvable, `include` se contente d'un warning. `require_once` ne charge le fichier qu'une seule fois. |
 | **Outils utilisables** | `require_once`, `__DIR__`, un fichier se terminant par `return [...]` comme mini-config. |
-| **Pièges à éviter** | Utiliser `include` pour un fichier indispensable au fonctionnement (une classe centrale) — un fichier manquant continue silencieusement avec seulement un warning. |
+| **Pièges à éviter** | Utiliser `include` pour un fichier indispensable au fonctionnement (une classe centrale) : un fichier manquant continue silencieusement avec seulement un warning. |
 | **Bonnes pratiques** | Utiliser `require_once` pour les fichiers de classes/fonctions, `__DIR__` pour construire des chemins indépendants du contexte d'exécution. |

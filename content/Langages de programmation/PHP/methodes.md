@@ -60,7 +60,7 @@ calculerRemise("cent", 10);   // TypeError : "cent" n'est pas un float
 
 ## Types nullables (`?Type`)
 
-Une fonction déclarée `: array` (sans `?`) n'autorise **pas** `null` comme valeur de retour — le tenter provoque un `TypeError` à l'exécution. Pour autoriser explicitement `null` en plus du type déclaré, on préfixe le type d'un `?` :
+Une fonction déclarée `: array` (sans `?`) n'autorise **pas** `null` comme valeur de retour : le tenter provoque un `TypeError` à l'exécution. Pour autoriser explicitement `null` en plus du type déclaré, on préfixe le type d'un `?` :
 
 ```php
 <?php
@@ -74,7 +74,7 @@ function trouverUtilisateur(int $id): ?array
 ?>
 ```
 
-> **Note :** `?array` est une déclaration de contrat, pas une simple habitude d'écriture — c'est l'équivalent PHP de `std::optional<T>` en C++ moderne ou de `Optional[T]` en Python : la fonction peut renvoyer ce type précis, OU `null`, rien d'autre.
+> **Note :** `?array` est une déclaration de contrat, pas une simple habitude d'écriture : c'est l'équivalent PHP de `std::optional<T>` en C++ moderne ou de `Optional[T]` en Python : la fonction peut renvoyer ce type précis, OU `null`, rien d'autre.
 
 ## Supprimer un warning attendu avec `@`
 
@@ -87,7 +87,7 @@ $version = $mtime ? "v{$mtime}" : 'v-inconnue';
 ?>
 ```
 
-> **Note :** `@` masque le warning, il ne change rien au comportement de la fonction elle-même (`filemtime()` renvoie toujours `false` si le fichier n'existe pas). À réserver aux cas où l'échec est réellement anticipé et testé juste après — l'utiliser partout masquerait aussi de vraies erreurs.
+> **Note :** `@` masque le warning, il ne change rien au comportement de la fonction elle-même (`filemtime()` renvoie toujours `false` si le fichier n'existe pas). À réserver aux cas où l'échec est réellement anticipé et testé juste après : l'utiliser partout masquerait aussi de vraies erreurs.
 
 PHP fournit énormément de fonctions natives déjà prêtes à l'emploi, classées ci-dessous par catégorie.
 
@@ -175,7 +175,7 @@ ex :
 ?>
 ```
 
-> **Note :** vous trouverez la liste complète des fonctions natives de PHP dans la documentation officielle : [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). Pour ajouter un **seul** élément, `$tab[] = "valeur";` est aussi préféré à `array_push($tab, "valeur")` : même résultat, sans le coût d'un appel de fonction — `array_push()` ne devient réellement utile que pour ajouter plusieurs éléments en un seul appel (`array_push($tab, "a", "b", "c")`).
+> **Note :** vous trouverez la liste complète des fonctions natives de PHP dans la documentation officielle : [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). Pour ajouter un **seul** élément, `$tab[] = "valeur";` est aussi préféré à `array_push($tab, "valeur")` : même résultat, sans le coût d'un appel de fonction : `array_push()` ne devient réellement utile que pour ajouter plusieurs éléments en un seul appel (`array_push($tab, "a", "b", "c")`).
 
 ---
 
@@ -185,5 +185,5 @@ ex :
 |---|---|
 | **À retenir** | Une fonction est un bloc de code réutilisable ; une méthode est une fonction définie dans une classe, appelée via `->`/`::`. PHP vérifie les types annotés à l'exécution, pas à la compilation. |
 | **Outils utilisables** | Fonctions natives sur les chaînes, tableaux, tableaux associatifs, math, vérification de type ; `?Type` pour un type nullable. |
-| **Pièges à éviter** | Utiliser `@` pour masquer systématiquement les warnings — à réserver aux échecs réellement anticipés et testés juste après. |
+| **Pièges à éviter** | Utiliser `@` pour masquer systématiquement les warnings : à réserver aux échecs réellement anticipés et testés juste après. |
 | **Bonnes pratiques** | Typer les paramètres et le retour d'une fonction dès que possible ; utiliser `$tab[] = valeur` plutôt que `array_push()` pour un seul élément. |

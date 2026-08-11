@@ -35,10 +35,10 @@ echo $v->description(); // "Peugeot 308 (2022)"
 ```
 
 - `__construct` est le nom réservé de la méthode appelée automatiquement par `new`.
-- `$this` fait toujours référence à l'instance courante, et s'utilise **toujours** avec `->` — y compris pour lire une propriété (`$this->marque`) ou appeler une méthode (`$this->description()`). La seule différence visuelle entre les deux est la présence de `()`.
+- `$this` fait toujours référence à l'instance courante, et s'utilise **toujours** avec `->`, y compris pour lire une propriété (`$this->marque`) ou appeler une méthode (`$this->description()`). La seule différence visuelle entre les deux est la présence de `()`.
 - `private` = accessible uniquement depuis l'intérieur de la classe ; `public` = accessible aussi depuis l'extérieur.
 
-> **Note :** contrairement à un tableau, où l'on peut créer une nouvelle clé à la volée (`$arr['nouvelle_cle'] = 5;`, sans aucune déclaration), une propriété d'objet **typée** refuse une valeur du mauvais type — assigner un `int` à une propriété déclarée `string` déclenche un `TypeError`. Les propriétés typées définissent un vrai contrat : elles fixent quelles propriétés existent et quel type chacune doit toujours contenir.
+> **Note :** contrairement à un tableau, où l'on peut créer une nouvelle clé à la volée (`$arr['nouvelle_cle'] = 5;`, sans aucune déclaration), une propriété d'objet **typée** refuse une valeur du mauvais type : assigner un `int` à une propriété déclarée `string` déclenche un `TypeError`. Les propriétés typées définissent un vrai contrat : elles fixent quelles propriétés existent et quel type chacune doit toujours contenir.
 
 ## Méthodes statiques et classes utilitaires
 
@@ -92,13 +92,13 @@ Repository::trouver(1);
 ?>
 ```
 
-`use` ne charge pas le fichier lui-même — il indique seulement au moteur PHP à quel nom complet correspond le nom court utilisé plus bas. C'est un mécanisme d'[autoloading](/?c=langages-de-programmation&s=php&p=autoloading) qui se charge de retrouver et charger le fichier correspondant, au moment où la classe est réellement utilisée.
+`use` ne charge pas le fichier lui-même : il indique seulement au moteur PHP à quel nom complet correspond le nom court utilisé plus bas. C'est un mécanisme d'[autoloading](/?c=langages-de-programmation&s=php&p=autoloading) qui se charge de retrouver et charger le fichier correspondant, au moment où la classe est réellement utilisée.
 
-> **Note :** `Classe::methode()` (avec `::`) ressemble à `Classe->methode()` mais ne s'utilise jamais avec une instance — c'est l'équivalent quasi direct d'un namespace + méthode statique en C++.
+> **Note :** `Classe::methode()` (avec `::`) ressemble à `Classe->methode()` mais ne s'utilise jamais avec une instance : c'est l'équivalent quasi direct d'un namespace + méthode statique en C++.
 
 ## Injection de dépendances
 
-Plutôt que de créer elle-même les objets dont elle a besoin (`new`), une classe peut les recevoir "de l'extérieur", en paramètres de son constructeur — c'est l'**injection de dépendances**. La classe qui les reçoit n'a pas besoin de savoir comment ces objets sont construits, seulement quel contrat (quelles méthodes) ils respectent.
+Plutôt que de créer elle-même les objets dont elle a besoin (`new`), une classe peut les recevoir "de l'extérieur", en paramètres de son constructeur : c'est l'**injection de dépendances**. La classe qui les reçoit n'a pas besoin de savoir comment ces objets sont construits, seulement quel contrat (quelles méthodes) ils respectent.
 
 ```php
 <?php
@@ -121,7 +121,7 @@ $service = new ServiceNotification();
 $service = new ServiceNotification(new MailerDeTest(), new LoggerEnMemoire());
 ```
 
-Les paramètres nullables avec un repli `??` (voir [Les fonctions et méthodes les plus utiles](/?c=langages-de-programmation&s=php&p=methodes)) rendent chaque dépendance **optionnelle** : le code appelant peut soit laisser le comportement par défaut, soit fournir explicitement une implémentation différente — typiquement une version simulée (*mock*) dans un test automatisé, sans jamais toucher au code de `ServiceNotification` lui-même.
+Les paramètres nullables avec un repli `??` (voir [Les fonctions et méthodes les plus utiles](/?c=langages-de-programmation&s=php&p=methodes)) rendent chaque dépendance **optionnelle** : le code appelant peut soit laisser le comportement par défaut, soit fournir explicitement une implémentation différente, typiquement une version simulée (*mock*) dans un test automatisé, sans jamais toucher au code de `ServiceNotification` lui-même.
 
 > **Note :** cette technique est ce qui rend une classe *testable* sans dépendre d'un vrai service externe (envoi d'email réel, écriture de vrais fichiers de log) à chaque exécution des tests.
 
@@ -133,5 +133,5 @@ Les paramètres nullables avec un repli `??` (voir [Les fonctions et méthodes l
 |---|---|
 | **À retenir** | Une classe regroupe propriétés et méthodes ; `new` en crée une instance. Un namespace évite les collisions de noms entre modules. L'injection de dépendances reçoit les objets nécessaires en paramètre plutôt que de les créer soi-même. |
 | **Outils utilisables** | `__construct`, propriétés typées, méthodes `static`, `namespace`/`use`. |
-| **Pièges à éviter** | Créer directement (`new`) les dépendances d'une classe plutôt que de les recevoir en paramètre — rend la classe difficile à tester isolément. |
+| **Pièges à éviter** | Créer directement (`new`) les dépendances d'une classe plutôt que de les recevoir en paramètre : rend la classe difficile à tester isolément. |
 | **Bonnes pratiques** | Typer les propriétés pour qu'elles définissent un vrai contrat ; injecter les dépendances plutôt que de les instancier en dur, pour faciliter les tests. |

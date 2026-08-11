@@ -12,6 +12,6 @@ echo "Bonjour, $nom"; // affiche : Bonjour, Devpedia
 |---|---|
 | Haut niveau | Masque une grande partie des détails techniques liés à la machine, contrairement à un langage bas niveau comme le [C](/?c=langages-de-programmation&s=c&p=c) |
 | Ramasse-miettes (*garbage collector*) | Comme en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), la mémoire des valeurs devenues inutilisées est libérée automatiquement |
-| Requête HTTP | Le message qu'un navigateur envoie à un serveur pour demander une page — voir [Les échanges de données : API et HTTP](/?c=infrastructure&p=api-et-http). PHP s'exécute côté serveur, précisément pour répondre à ces requêtes |
+| Requête HTTP | Le message qu'un navigateur envoie à un serveur pour demander une page (voir [Les échanges de données : API et HTTP](/?c=infrastructure&p=api-et-http)). PHP s'exécute côté serveur, précisément pour répondre à ces requêtes |
 
 L'apprentissage de PHP permet de comprendre comment un serveur web traite une requête et interagit avec une base de données (voir [SQL](/?c=domain-specific-languages-dsl&p=sql)) pour générer une réponse. Il reste largement utilisé pour les sites dynamiques, les CMS (WordPress, Drupal) et les frameworks comme Laravel ou Symfony.

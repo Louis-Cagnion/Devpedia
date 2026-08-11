@@ -4,7 +4,7 @@ order: 9
 
 # L'autoloading des classes
 
-Sans autoloading, chaque fichier qui utilise une classe doit faire un `require` explicite du fichier qui la contient — lourd et fragile dès qu'un projet a beaucoup de classes. `spl_autoload_register()` permet de déléguer ce chargement au moteur PHP lui-même.
+Sans autoloading, chaque fichier qui utilise une classe doit faire un `require` explicite du fichier qui la contient : lourd et fragile dès qu'un projet a beaucoup de classes. `spl_autoload_register()` permet de déléguer ce chargement au moteur PHP lui-même.
 
 ## `spl_autoload_register()`
 
@@ -57,13 +57,13 @@ Exemple de résolution, avec `$classe = 'App\Services\Facturation\Calculateur'` 
 1. `str_starts_with($classe, 'App\\Services\\')` → `true`, ce préfixe correspond.
 2. `substr(...)` retire le préfixe matché → `'Facturation\Calculateur'`.
 3. `str_replace('\\', '/', ...)` transforme le séparateur de namespace en séparateur de dossier → `'Facturation/Calculateur'`.
-4. Chemin final : `.../Services/Facturation/Calculateur.php` — qui doit correspondre à l'emplacement réel du fichier.
+4. Chemin final : `.../Services/Facturation/Calculateur.php`, qui doit correspondre à l'emplacement réel du fichier.
 
-> **Note :** `'App\\Modeles\\'` dans une string à guillemets simples : `\\` représente **un seul** caractère `\` (il doit être doublé pour être écrit littéralement) — c'est la string `App\Modeles\`, le séparateur de namespace.
+> **Note :** `'App\\Modeles\\'` dans une string à guillemets simples : `\\` représente **un seul** caractère `\` (il doit être doublé pour être écrit littéralement) : c'est la string `App\Modeles\`, le séparateur de namespace.
 
 Le `return;` après le `if` s'exécute, que le fichier existe ou non (il est placé après le `if (file_exists(...))`, pas dedans) : les préfixes de namespaces étant mutuellement exclusifs sur leur premier segment, une fois le bon préfixe trouvé, continuer à tester les autres serait toujours inutile.
 
-> **Convention indispensable pour que ça fonctionne :** le nom du namespace + le nom de la classe doivent encoder littéralement le chemin du fichier — un fichier par classe, arborescence de dossiers = arborescence de namespaces.
+> **Convention indispensable pour que ça fonctionne :** le nom du namespace + le nom de la classe doivent encoder littéralement le chemin du fichier : un fichier par classe, arborescence de dossiers = arborescence de namespaces.
 
 ---
 
@@ -71,7 +71,7 @@ Le `return;` après le `if` s'exécute, que le fichier existe ou non (il est pla
 
 | | |
 |---|---|
-| **À retenir** | `spl_autoload_register()` enregistre une fonction appelée automatiquement dès qu'une classe non chargée est référencée — plus besoin de `require` manuel pour chaque classe. |
+| **À retenir** | `spl_autoload_register()` enregistre une fonction appelée automatiquement dès qu'une classe non chargée est référencée : plus besoin de `require` manuel pour chaque classe. |
 | **Outils utilisables** | `spl_autoload_register()`, correspondance préfixe de namespace → dossier. |
-| **Pièges à éviter** | Ne pas faire correspondre exactement l'arborescence de dossiers à celle des namespaces — le résolveur ne retrouverait plus le fichier. |
+| **Pièges à éviter** | Ne pas faire correspondre exactement l'arborescence de dossiers à celle des namespaces : le résolveur ne retrouverait plus le fichier. |
 | **Bonnes pratiques** | Respecter la convention "un fichier par classe, arborescence de dossiers = arborescence de namespaces" pour que l'autoloading fonctionne de façon prévisible. |

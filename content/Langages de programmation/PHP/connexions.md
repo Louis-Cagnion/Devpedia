@@ -24,7 +24,7 @@ Les cookies servent typiquement à :
 `setcookie()` prend principalement 3 paramètres :
 - Le nom du cookie
 - La valeur à stocker
-- La date d'expiration (en timestamp Unix — `time()` renvoie l'heure actuelle, donc `time() + 3600` veut dire "dans 1h")
+- La date d'expiration (en timestamp Unix, `time()` renvoie l'heure actuelle, donc `time() + 3600` veut dire "dans 1h")
 
 > **Note importante :** `setcookie()` doit être appelée **avant** tout affichage HTML (avant la moindre balise, espace ou retour à la ligne), car elle modifie les en-têtes (*headers*) HTTP de la réponse. C'est la même logique que pour la balise fermante `?>` évoquée plus haut.
 
@@ -82,7 +82,7 @@ Pour supprimer un cookie, on le recrée avec une date d'expiration **dans le pas
 
 ## Les sessions
 
-Une **session** permet de stocker des données **côté serveur**, tout en les associant à un visiteur précis. Contrairement à un cookie (stocké chez l'utilisateur et modifiable par lui), la donnée de session reste sur le serveur — l'utilisateur n'a donc aucun moyen de la lire ou de la modifier directement.
+Une **session** permet de stocker des données **côté serveur**, tout en les associant à un visiteur précis. Contrairement à un cookie (stocké chez l'utilisateur et modifiable par lui), la donnée de session reste sur le serveur : l'utilisateur n'a donc aucun moyen de la lire ou de la modifier directement.
 
 PHP fait le lien entre le visiteur et ses données grâce à un identifiant de session unique, envoyé automatiquement au navigateur sous forme de cookie (généralement nommé `PHPSESSID`). Ce cookie ne contient donc aucune donnée sensible : juste un identifiant, qui pointe vers les vraies données stockées sur le serveur.
 
@@ -130,14 +130,14 @@ PHP fait le lien entre le visiteur et ses données grâce à un identifiant de s
 ?>
 ```
 
-> **Note :** par défaut, le cookie `PHPSESSID` (et donc la session) disparaît à la fermeture du navigateur, ou après une période d'inactivité côté serveur. Pour faire durer une connexion plus longtemps (plusieurs jours/semaines), les sessions classiques ne suffisent pas — voir la partie sur les jetons de connexion ci-dessous.
+> **Note :** par défaut, le cookie `PHPSESSID` (et donc la session) disparaît à la fermeture du navigateur, ou après une période d'inactivité côté serveur. Pour faire durer une connexion plus longtemps (plusieurs jours/semaines), les sessions classiques ne suffisent pas : voir la partie sur les jetons de connexion ci-dessous.
 
 ## Les jetons de connexion ("se souvenir de moi")
 
 Pour garder un utilisateur connecté sur le long terme (plusieurs jours/semaines), même après fermeture du navigateur, ni le cookie classique (non sécurisé pour ça) ni la session (trop éphémère) ne suffisent. On utilise alors un **jeton de connexion** (*remember token*) : une preuve de connexion longue durée, stockée à la fois chez l'utilisateur et sur le serveur.
 
 Le principe :
-- On ne stocke **jamais** le mot de passe pour faire cela — uniquement un jeton aléatoire.
+- On ne stocke **jamais** le mot de passe pour faire cela : uniquement un jeton aléatoire.
 - Le jeton est envoyé en clair dans un cookie chez l'utilisateur.
 - Sa version **hachée** est stockée en base de données, associée à son compte (comme pour un mot de passe).
 
@@ -178,7 +178,7 @@ Le principe :
 ?>
 ```
 
-> **Note :** on compare toujours le **hash** du jeton reçu avec celui stocké en base, jamais le jeton en clair — exactement comme pour un mot de passe avec `password_hash()`/`password_verify()`. Si le cookie est volé, le voleur ne peut pas en déduire le hash stocké, mais surtout, on peut révoquer ce jeton à tout moment en le supprimant de la base (ex: en cas de changement de mot de passe ou de déconnexion explicite).
+> **Note :** on compare toujours le **hash** du jeton reçu avec celui stocké en base, jamais le jeton en clair : exactement comme pour un mot de passe avec `password_hash()`/`password_verify()`. Si le cookie est volé, le voleur ne peut pas en déduire le hash stocké, mais surtout, on peut révoquer ce jeton à tout moment en le supprimant de la base (ex: en cas de changement de mot de passe ou de déconnexion explicite).
 
 ### Cookie, session ou jeton de connexion, que choisir ?
 
@@ -198,15 +198,15 @@ Erreur fréquente : croire que `$_SESSION` est stocké dans le cookie du navigat
 - Les données (`$_SESSION['...'] = ...`) sont écrites **côté serveur** (fichier ou base), associées à cet identifiant.
 - À chaque requête suivante, le navigateur renvoie le cookie ; PHP relit l'identifiant, retrouve le stockage serveur correspondant, recharge `$_SESSION`.
 
-> **Analogie :** un ticket de vestiaire. Le numéro sur le ticket est tiré au hasard **au moment du dépôt du manteau** — il n'a aucun rapport avec le manteau lui-même. Le lien numéro ↔ manteau n'existe que dans le registre de l'employé (le stockage serveur), jamais dans le numéro.
+> **Analogie :** un ticket de vestiaire. Le numéro sur le ticket est tiré au hasard **au moment du dépôt du manteau** : il n'a aucun rapport avec le manteau lui-même. Le lien numéro ↔ manteau n'existe que dans le registre de l'employé (le stockage serveur), jamais dans le numéro.
 
 ### Le risque du vol de session
 
-Si un attaquant devinait ou volait l'identifiant d'une session déjà ouverte, il en hériterait le contenu — mais il ne peut pas *choisir* la cible : l'identifiant est généré par un CSPRNG (générateur aléatoire cryptographiquement sûr) avec une entropie énorme, comparable à un mot de passe de plusieurs centaines de bits. `session_set_cookie_params(['httponly' => true])` ajoute une protection complémentaire : elle empêche le JavaScript de la page de lire ce cookie, ce qui limite les dégâts en cas de faille XSS.
+Si un attaquant devinait ou volait l'identifiant d'une session déjà ouverte, il en hériterait le contenu, mais il ne peut pas *choisir* la cible : l'identifiant est généré par un CSPRNG (générateur aléatoire cryptographiquement sûr) avec une entropie énorme, comparable à un mot de passe de plusieurs centaines de bits. `session_set_cookie_params(['httponly' => true])` ajoute une protection complémentaire : elle empêche le JavaScript de la page de lire ce cookie, ce qui limite les dégâts en cas de faille XSS.
 
 ### Pourquoi ne pas simplement dériver l'identifiant par hash d'une donnée connue ?
 
-Un hash simple (`sha256($identifiant_connu)`) est **déterministe et sans secret** : n'importe qui peut le recalculer. S'il existe un nombre limité de valeurs possibles (ex. une trentaine de comptes), un attaquant n'a même pas besoin de bruteforcer un grand espace — il lui suffit de hasher chaque valeur possible pour obtenir tous les identifiants valides. Un hash seul n'ajoute **aucune entropie** au-delà de celle déjà présente dans l'entrée.
+Un hash simple (`sha256($identifiant_connu)`) est **déterministe et sans secret** : n'importe qui peut le recalculer. S'il existe un nombre limité de valeurs possibles (ex. une trentaine de comptes), un attaquant n'a même pas besoin de bruteforcer un grand espace : il lui suffit de hasher chaque valeur possible pour obtenir tous les identifiants valides. Un hash seul n'ajoute **aucune entropie** au-delà de celle déjà présente dans l'entrée.
 
 ## Jetons signés (HMAC) : porter une donnée en restant infalsifiable
 
@@ -240,8 +240,8 @@ Si la partie `$encode` est modifiée par quelqu'un qui ne connaît pas `$secret`
 
 | | Identifiant de session | Jeton signé (HMAC) |
 |---|---|---|
-| Contient l'information ? | Non — clé opaque, aucune donnée | Oui — la donnée est encodée dedans |
-| Nécessite un stockage serveur ? | Oui — la donnée vit dans un fichier/base associé à la clé | Non — auto-suffisant, vérifiable par recalcul de la signature à tout moment |
+| Contient l'information ? | Non : clé opaque, aucune donnée | Oui : la donnée est encodée dedans |
+| Nécessite un stockage serveur ? | Oui : la donnée vit dans un fichier/base associé à la clé | Non : auto-suffisant, vérifiable par recalcul de la signature à tout moment |
 | Cas d'usage typique | Utilisateur déjà identifié, session en cours | Donnée à transmettre de façon vérifiable sans base à consulter (lien d'activation, invité sans compte...) |
 
 > **Note :** `hash_equals()` plutôt qu'un simple `===` pour comparer deux hashs : elle compare en temps constant, ce qui évite qu'un attaquant déduise progressivement la bonne valeur en mesurant le temps de réponse (attaque par timing).
