@@ -4,7 +4,7 @@ order: 5
 
 # Les conditions
 
-Bash n'a pas d'opérateurs de comparaison intégrés au langage comme en PHP ou en C — les tests s'appuient sur des **commandes** (`test`, `[`, `[[`) dont le code de sortie (`$?`) détermine si la condition est vraie (`0`) ou fausse (non nul).
+Bash n'a pas d'opérateurs de comparaison intégrés au langage comme en PHP ou en C : les tests s'appuient sur des **commandes** (`test`, `[`, `[[`) dont le code de sortie (`$?`) détermine si la condition est vraie (`0`) ou fausse (non nul).
 
 ## `if` / `then` / `elif` / `else` / `fi`
 
@@ -18,7 +18,7 @@ else
 fi
 ```
 
-- `if` évalue en réalité le **code de sortie** de la commande qui suit (ici, `[ $age -ge 18 ]`) — `[` est une vraie commande (souvent un lien vers `/usr/bin/test`), pas un symbole du langage.
+- `if` évalue en réalité le **code de sortie** de la commande qui suit (ici, `[ $age -ge 18 ]`) : `[` est une vraie commande (souvent un lien vers `/usr/bin/test`), pas un symbole du langage.
 - `fi` (`if` à l'envers) ferme le bloc, comme `endif` le ferait dans d'autres langages.
 
 ## `[ ]` vs `[[ ]]`
@@ -122,7 +122,7 @@ esac
 
 | | |
 |---|---|
-| **À retenir** | Bash n'a pas d'opérateurs de comparaison intégrés au langage — `if` évalue le code de sortie d'une commande (`test`, `[`, `[[`). `[[ ]]` (Bash) est plus permissif que `[ ]` (POSIX). |
+| **À retenir** | Bash n'a pas d'opérateurs de comparaison intégrés au langage : `if` évalue le code de sortie d'une commande (`test`, `[`, `[[`). `[[ ]]` (Bash) est plus permissif que `[ ]` (POSIX). |
 | **Outils utilisables** | Opérateurs numériques (`-eq`, `-lt`...), opérateurs de chaînes (`==`, `-z`, `-n`), tests de fichiers (`-f`, `-d`, `-e`), `case`. |
-| **Pièges à éviter** | Utiliser `==` dans `[ ]` classique en pensant comparer des nombres — la comparaison se fait comme du texte, pas numériquement. |
+| **Pièges à éviter** | Utiliser `==` dans `[ ]` classique en pensant comparer des nombres : la comparaison se fait comme du texte, pas numériquement. |
 | **Bonnes pratiques** | Préférer `[[ ]]` à `[ ]` en Bash (gère mieux les variables non définies, `&&`/`\|\|` directs) sauf besoin de portabilité stricte vers `sh`. |

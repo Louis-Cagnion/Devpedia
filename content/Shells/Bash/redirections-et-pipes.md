@@ -6,7 +6,7 @@ order: 9
 
 Chaque commande Unix communique par défaut via trois flux : l'**entrée standard** (`stdin`, ce qu'elle lit), la **sortie standard** (`stdout`, ce qu'elle affiche normalement) et la **sortie d'erreur** (`stderr`, où vont les messages d'erreur). Les redirections et les pipes permettent de rediriger ces flux vers un fichier ou vers une autre commande, plutôt que vers le terminal.
 
-> **Note :** ces "flux" sont en réalité des **descripteurs de fichiers** numérotés (`0`, `1`, `2`) — voir le chapitre sur les appels système et les descripteurs de fichiers (rubrique C) pour ce qui se passe réellement au niveau du système d'exploitation quand on les redirige.
+> **Note :** ces "flux" sont en réalité des **descripteurs de fichiers** numérotés (`0`, `1`, `2`) : voir le chapitre sur les appels système et les descripteurs de fichiers (rubrique C) pour ce qui se passe réellement au niveau du système d'exploitation quand on les redirige.
 
 ## Rediriger la sortie vers un fichier
 
@@ -15,7 +15,7 @@ echo "Bonjour" > fichier.txt    # écrase fichier.txt (ou le crée) avec ce cont
 echo "Encore" >> fichier.txt    # ajoute à la fin de fichier.txt, sans écraser
 ```
 
-> **Note :** `>` écrase silencieusement le contenu existant du fichier cible — une erreur classique est d'utiliser `>` là où `>>` était voulu, perdant le contenu précédent sans avertissement.
+> **Note :** `>` écrase silencieusement le contenu existant du fichier cible : une erreur classique est d'utiliser `>` là où `>>` était voulu, perdant le contenu précédent sans avertissement.
 
 ## Rediriger l'entrée depuis un fichier
 
@@ -38,7 +38,7 @@ commande &> tout.log                    # raccourci Bash équivalent à "> tout.
 
 ## `/dev/null` : ignorer une sortie
 
-Un fichier spécial qui "avale" tout ce qu'on y écrit, sans jamais rien stocker — utile pour supprimer un flux dont on n'a pas besoin :
+Un fichier spécial qui "avale" tout ce qu'on y écrit, sans jamais rien stocker : utile pour supprimer un flux dont on n'a pas besoin :
 
 ```bash
 commande_bruyante > /dev/null 2>&1   # ignore toute sortie normale ET toute erreur
@@ -54,7 +54,7 @@ grep "404" access.log | wc -l   # compte les lignes contenant "404" dans le fich
 ps aux | sort -k 3 -nr | head -5      # les 5 processus qui consomment le plus de CPU
 ```
 
-Chaque commande d'un pipe s'exécute simultanément, la sortie de l'une alimentant l'entrée de la suivante au fur et à mesure — ce n'est pas une exécution séquentielle avec stockage intermédiaire.
+Chaque commande d'un pipe s'exécute simultanément, la sortie de l'une alimentant l'entrée de la suivante au fur et à mesure : ce n'est pas une exécution séquentielle avec stockage intermédiaire.
 
 ## Enchaîner des commandes selon leur résultat : `;`, `&&`, `||`
 
@@ -94,7 +94,7 @@ if commande; then echo "OK"; else echo "ECHEC"; fi
 
 ### Attention avec `set -e`
 
-Une commande placée à gauche d'un `&&` ou d'un `||` est considérée comme « testée » : son échec **n'interrompt pas** le script même sous `set -e`. C'est ce qui permet d'écrire `grep motif fichier || true` pour neutraliser volontairement un échec attendu — mais c'est aussi une source de surprise si on croyait que `set -e` protégeait toute la ligne.
+Une commande placée à gauche d'un `&&` ou d'un `||` est considérée comme « testée » : son échec **n'interrompt pas** le script même sous `set -e`. C'est ce qui permet d'écrire `grep motif fichier || true` pour neutraliser volontairement un échec attendu, mais c'est aussi une source de surprise si on croyait que `set -e` protégeait toute la ligne.
 
 ## `tee` : rediriger tout en gardant un affichage
 

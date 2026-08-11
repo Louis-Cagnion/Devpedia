@@ -4,7 +4,7 @@ order: 8
 
 # Expansion et jokers (globbing)
 
-Avant d'exécuter une commande, Bash remplace certains motifs qu'elle contient par leur valeur réelle — [variables](/?c=shells&s=bash&p=variables) (`$nom`), mais aussi motifs de fichiers (*globbing*) et expansions d'accolades. Comprendre cette étape (invisible mais systématique) explique pourquoi certaines commandes se comportent différemment selon les guillemets utilisés.
+Avant d'exécuter une commande, Bash remplace certains motifs qu'elle contient par leur valeur réelle : [variables](/?c=shells&s=bash&p=variables) (`$nom`), mais aussi motifs de fichiers (*globbing*) et expansions d'accolades. Comprendre cette étape (invisible mais systématique) explique pourquoi certaines commandes se comportent différemment selon les guillemets utilisés.
 
 ## Le globbing : `*`, `?`, `[]`
 
@@ -23,7 +23,7 @@ ls fichier[a-z].txt  # une seule lettre minuscule à cette position
 | `[a-z]` | Un seul caractère dans cette plage |
 | `[^abc]` | Un seul caractère qui n'est ni `a`, `b`, ni `c` |
 
-> **Note :** ce n'est **pas** une [regex](/?c=domain-specific-languages-dsl&p=regex) — le globbing est plus simple, propre à l'interprétation des noms de fichiers par le shell lui-même, avant même que la commande ne soit lancée.
+> **Note :** ce n'est **pas** une [regex](/?c=domain-specific-languages-dsl&p=regex) : le globbing est plus simple, propre à l'interprétation des noms de fichiers par le shell lui-même, avant même que la commande ne soit lancée.
 
 ## Attention : que se passe-t-il si aucun fichier ne correspond ?
 
@@ -52,7 +52,7 @@ echo {a..e}
 # a b c d e
 ```
 
-> **Note :** contrairement au globbing, l'expansion d'accolades ne dépend d'aucun fichier existant — `fichier{1,2,3}.txt` génère toujours ces trois chaînes, que les fichiers correspondants existent ou non.
+> **Note :** contrairement au globbing, l'expansion d'accolades ne dépend d'aucun fichier existant : `fichier{1,2,3}.txt` génère toujours ces trois chaînes, que les fichiers correspondants existent ou non.
 
 ## L'expansion du tilde (`~`)
 
@@ -77,7 +77,7 @@ Voir aussi [Les variables](/?c=shells&s=bash&p=variables) pour la distinction gu
 
 | | |
 |---|---|
-| **À retenir** | Avant d'exécuter une commande, Bash remplace variables, motifs de fichiers (globbing) et expansions d'accolades — une étape invisible mais systématique. Le globbing dépend des fichiers réellement présents ; l'expansion d'accolades n'en dépend jamais. |
+| **À retenir** | Avant d'exécuter une commande, Bash remplace variables, motifs de fichiers (globbing) et expansions d'accolades : une étape invisible mais systématique. Le globbing dépend des fichiers réellement présents ; l'expansion d'accolades n'en dépend jamais. |
 | **Outils utilisables** | `*`/`?`/`[abc]` (globbing), `{1,2,3}`/`{1..5}` (accolades), `~` (tilde). |
 | **Pièges à éviter** | Un motif de globbing qui ne correspond à aucun fichier est transmis littéralement à la commande, sans erreur ni avertissement. |
 | **Bonnes pratiques** | Entourer de guillemets doubles toute variable susceptible de contenir un espace ou un caractère spécial, pour désactiver le découpage en mots et le globbing non désirés. |

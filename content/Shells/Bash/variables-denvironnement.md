@@ -4,7 +4,7 @@ order: 4
 
 # Variables d'environnement
 
-Une variable d'environnement est une variable transmise automatiquement aux processus qu'un shell lance — contrairement à une variable Bash classique, qui reste locale au script qui la déclare, sauf si elle est explicitement **exportée**.
+Une variable d'environnement est une variable transmise automatiquement aux processus qu'un shell lance, contrairement à une variable Bash classique, qui reste locale au script qui la déclare, sauf si elle est explicitement **exportée**.
 
 ## Variable locale vs variable exportée
 
@@ -20,7 +20,7 @@ export EMAIL="jean@exemple.com"  # déclaration et export en une seule ligne
 echo "$NOM"    # affiche "Jean" si NOM a été exporté par le script appelant, vide sinon
 ```
 
-> **Note :** l'export ne fonctionne que dans un sens : du parent vers l'enfant. Un sous-script qui modifie une variable exportée ne peut pas répercuter ce changement vers le script qui l'a lancé — chaque processus a sa propre copie de l'environnement.
+> **Note :** l'export ne fonctionne que dans un sens : du parent vers l'enfant. Un sous-script qui modifie une variable exportée ne peut pas répercuter ce changement vers le script qui l'a lancé : chaque processus a sa propre copie de l'environnement.
 
 ## Variables d'environnement courantes
 
@@ -43,7 +43,7 @@ echo $PATH
 export PATH="$PATH:/mon/dossier/scripts"  # ajoute un dossier supplémentaire à la recherche
 ```
 
-> **Note :** l'ordre compte — le premier dossier du `$PATH` contenant un exécutable de ce nom est utilisé, ce qui permet par exemple de faire passer une version personnalisée d'une commande avant la version système.
+> **Note :** l'ordre compte : le premier dossier du `$PATH` contenant un exécutable de ce nom est utilisé, ce qui permet par exemple de faire passer une version personnalisée d'une commande avant la version système.
 
 ## Fichiers de configuration du shell
 
@@ -64,7 +64,7 @@ alias gs="git status"
 ll   # équivalent à taper "ls -la"
 ```
 
-Un `alias` défini directement dans le terminal ne survit pas à la fermeture de la session — pour qu'il soit disponible à chaque nouveau terminal, il doit être ajouté dans `~/.bashrc`.
+Un `alias` défini directement dans le terminal ne survit pas à la fermeture de la session : pour qu'il soit disponible à chaque nouveau terminal, il doit être ajouté dans `~/.bashrc`.
 
 ## `source` : recharger un fichier de configuration
 
@@ -82,7 +82,7 @@ source ~/.bashrc
 
 | | |
 |---|---|
-| **À retenir** | Une variable d'environnement est transmise automatiquement aux processus enfants, contrairement à une variable Bash classique — `export` la fait passer de l'une à l'autre, dans un seul sens (parent vers enfant). |
+| **À retenir** | Une variable d'environnement est transmise automatiquement aux processus enfants, contrairement à une variable Bash classique : `export` la fait passer de l'une à l'autre, dans un seul sens (parent vers enfant). |
 | **Outils utilisables** | `export`, `$PATH`, `~/.bashrc` (terminal interactif) vs `~/.bash_profile` (login), `alias`, `source`. |
-| **Pièges à éviter** | Modifier une variable exportée dans un sous-script en espérant que ça se répercute sur le script appelant — chaque processus a sa propre copie de l'environnement. |
+| **Pièges à éviter** | Modifier une variable exportée dans un sous-script en espérant que ça se répercute sur le script appelant : chaque processus a sa propre copie de l'environnement. |
 | **Bonnes pratiques** | Placer les `export`/`alias` destinés à chaque nouveau terminal dans `~/.bashrc` ; utiliser `source ~/.bashrc` pour appliquer un changement sans rouvrir de terminal. |

@@ -16,7 +16,7 @@ saluer() {
 saluer "Jean"   # Bonjour Jean !
 ```
 
-`function saluer { ... }` est une écriture alternative acceptée par Bash (mais non portable vers un `sh` strictement POSIX) — `saluer() { ... }` est la forme la plus universelle.
+`function saluer { ... }` est une écriture alternative acceptée par Bash (mais non portable vers un `sh` strictement POSIX) : `saluer() { ... }` est la forme la plus universelle.
 
 ## Les arguments d'une fonction
 
@@ -31,11 +31,11 @@ resumer() {
 resumer "Jean" "Dupont"
 ```
 
-> **Note :** `$1`, `$2`... à l'intérieur d'une fonction désignent les arguments **de la fonction**, jamais ceux du script englobant — ils sont automatiquement remplacés pendant l'appel, sans rien à configurer.
+> **Note :** `$1`, `$2`... à l'intérieur d'une fonction désignent les arguments **de la fonction**, jamais ceux du script englobant : ils sont automatiquement remplacés pendant l'appel, sans rien à configurer.
 
 ## Pas de vraie valeur de retour : uniquement un code de sortie
 
-`return` en Bash ne renvoie **pas** une valeur au sens de PHP/C — il fixe uniquement le **code de sortie** de la fonction (un entier de 0 à 255, récupérable via `$?`), exactement comme `exit` pour un script entier :
+`return` en Bash ne renvoie **pas** une valeur au sens de PHP/C : il fixe uniquement le **code de sortie** de la fonction (un entier de 0 à 255, récupérable via `$?`), exactement comme `exit` pour un script entier :
 
 ```bash
 est_pair() {
@@ -68,7 +68,7 @@ echo "Résultat : $resultat"  # Résultat : 10
 
 ## Variables locales
 
-Sans `local`, une variable assignée dans une fonction reste visible **globalement** après le premier appel — souvent un effet de bord non désiré :
+Sans `local`, une variable assignée dans une fonction reste visible **globalement** après le premier appel : souvent un effet de bord non désiré :
 
 ```bash
 calculer() {
@@ -85,7 +85,7 @@ Voir aussi [Les variables](/?c=shells&s=bash&p=variables) (variables spéciales 
 
 | | |
 |---|---|
-| **À retenir** | Une fonction Bash reçoit ses arguments comme un script (`$1`, `$2`...), jamais via des paramètres nommés. `return` fixe uniquement un code de sortie (0-255) — pour une vraie donnée, on utilise `echo` capturé via `$(...)`. |
+| **À retenir** | Une fonction Bash reçoit ses arguments comme un script (`$1`, `$2`...), jamais via des paramètres nommés. `return` fixe uniquement un code de sortie (0-255) : pour une vraie donnée, on utilise `echo` capturé via `$(...)`. |
 | **Outils utilisables** | `$FUNCNAME`, `$@`/`$#`, `local` pour une variable propre à la fonction. |
 | **Pièges à éviter** | Confondre `return` (statut, pour `if`) et `echo`+`$(...)` (donnée, pour être stockée) ; oublier `local`, ce qui rend une variable visible globalement après le premier appel. |
 | **Bonnes pratiques** | Toujours déclarer `local` une variable qui n'a pas besoin d'exister en dehors de la fonction. |

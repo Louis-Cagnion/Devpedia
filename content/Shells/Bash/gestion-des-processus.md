@@ -27,7 +27,7 @@ fg %1          # ramène la tâche numéro 1 au premier plan
 bg %1          # relance en arrière-plan une tâche suspendue par Ctrl+Z
 ```
 
-`fg` et `bg` sont des abréviations directes de leur sens anglais : `fg` = *foreground* (premier plan), `bg` = *background* (arrière-plan) — chacune ramène ou renvoie la tâche `%1` dans le plan correspondant. Beaucoup de commandes et de drapeaux Unix suivent ce même principe d'abréviation d'un mot anglais, ce qui aide à les retenir une fois qu'on connaît le mot d'origine : par exemple, dans ce chapitre, `-f` (*full*/*format*, pour `ps aux -f` ou le motif complet de `pgrep -f`) ou `-9` pour `SIGKILL`. Le tableau de signaux ci-dessous précise le sens de chacun.
+`fg` et `bg` sont des abréviations directes de leur sens anglais : `fg` = *foreground* (premier plan), `bg` = *background* (arrière-plan) : chacune ramène ou renvoie la tâche `%1` dans le plan correspondant. Beaucoup de commandes et de drapeaux Unix suivent ce même principe d'abréviation d'un mot anglais, ce qui aide à les retenir une fois qu'on connaît le mot d'origine : par exemple, dans ce chapitre, `-f` (*full*/*format*, pour `ps aux -f` ou le motif complet de `pgrep -f`) ou `-9` pour `SIGKILL`. Le tableau de signaux ci-dessous précise le sens de chacun.
 
 ## Voir les processus en cours (`ps`, `top`)
 
@@ -48,13 +48,13 @@ kill -9 1234      # envoie SIGKILL (9) : force l'arrêt immédiat, sans laisser 
 
 | Signal | Numéro | Effet |
 |---|---|---|
-| `SIGTERM` | 15 (défaut) | Demande d'arrêt propre — le processus peut intercepter ce signal pour se fermer proprement (fermer des fichiers, sauvegarder...) |
+| `SIGTERM` | 15 (défaut) | Demande d'arrêt propre : le processus peut intercepter ce signal pour se fermer proprement (fermer des fichiers, sauvegarder...) |
 | `SIGKILL` | 9 | Arrêt immédiat et inconditionnel, impossible à intercepter ou ignorer |
 | `SIGINT` | 2 | Signal envoyé par `Ctrl+C` depuis le terminal |
 | `SIGTSTP` | 20 | Signal envoyé par `Ctrl+Z` : suspend le processus (contrôlable, contrairement à `SIGKILL`) sans le terminer |
 | `SIGCONT` | 18 | Reprend l'exécution d'un processus suspendu par `SIGTSTP` (c'est ce qu'envoie `bg`/`fg`, voir [Comment fonctionne un shell](/?c=shells&s=bash&p=architecture-dun-shell)) |
 
-> **Note :** `kill -9` doit rester un dernier recours — un processus tué avec `SIGKILL` n'a aucune chance de nettoyer derrière lui (fichiers temporaires, connexions ouvertes, verrous...). Toujours essayer `kill` (SIGTERM) en premier.
+> **Note :** `kill -9` doit rester un dernier recours : un processus tué avec `SIGKILL` n'a aucune chance de nettoyer derrière lui (fichiers temporaires, connexions ouvertes, verrous...). Toujours essayer `kill` (SIGTERM) en premier.
 
 ## Intercepter un signal (`trap`)
 
@@ -64,7 +64,7 @@ kill -9 1234      # envoie SIGKILL (9) : force l'arrêt immédiat, sans laisser 
 trap 'echo "Arrêt propre"; rm -f fichier.tmp' SIGTERM
 ```
 
-Un signal non interceptable comme `SIGKILL` ignore totalement `trap` — c'est justement pour ça qu'il reste le dernier recours vu plus haut.
+Un signal non interceptable comme `SIGKILL` ignore totalement `trap` : c'est justement pour ça qu'il reste le dernier recours vu plus haut.
 
 ## Détacher un processus du terminal (`nohup`)
 
@@ -83,7 +83,7 @@ pgrep -f "long_traitement.sh"   # affiche le(s) PID correspondant au motif donn�
 pkill -f "long_traitement.sh"    # trouve ET termine en une seule commande (envoie SIGTERM par défaut)
 ```
 
-> **`kill` vs `pkill`** : `kill` a besoin d'un **PID** déjà connu (`kill 1234`) — c'est le seul moyen d'envoyer un signal à un processus précis sans se tromper de cible. `pkill` évite d'avoir à chercher ce PID à la main : il envoie le signal à tout processus dont le nom (ou la ligne de commande complète avec `-f`) correspond au motif donné, ce qui revient à enchaîner `pgrep` puis `kill` sur chaque PID trouvé. Le risque de `pkill` est donc de cibler plus de processus que prévu si le motif est trop large (ex. `pkill -f script.sh` sur une machine où plusieurs scripts contiennent "script.sh" dans leur nom).
+> **`kill` vs `pkill`** : `kill` a besoin d'un **PID** déjà connu (`kill 1234`) : c'est le seul moyen d'envoyer un signal à un processus précis sans se tromper de cible. `pkill` évite d'avoir à chercher ce PID à la main : il envoie le signal à tout processus dont le nom (ou la ligne de commande complète avec `-f`) correspond au motif donné, ce qui revient à enchaîner `pgrep` puis `kill` sur chaque PID trouvé. Le risque de `pkill` est donc de cibler plus de processus que prévu si le motif est trop large (ex. `pkill -f script.sh` sur une machine où plusieurs scripts contiennent "script.sh" dans leur nom).
 
 ---
 
@@ -93,5 +93,5 @@ pkill -f "long_traitement.sh"    # trouve ET termine en une seule commande (envo
 |---|---|
 | **À retenir** | Un `&` final lance une commande en arrière-plan. `kill` envoie un signal (SIGTERM par défaut, SIGKILL en dernier recours) ; `trap` permet d'intercepter un signal pour un nettoyage propre. |
 | **Outils utilisables** | `jobs`/`fg`/`bg`, `ps`/`top`, `pgrep`/`pkill`, `nohup`. |
-| **Pièges à éviter** | Utiliser `kill -9` (SIGKILL) par réflexe — le processus n'a alors aucune chance de nettoyer derrière lui. |
+| **Pièges à éviter** | Utiliser `kill -9` (SIGKILL) par réflexe : le processus n'a alors aucune chance de nettoyer derrière lui. |
 | **Bonnes pratiques** | Toujours essayer `kill` (SIGTERM) avant `kill -9` ; vérifier le motif de `pkill` avant de l'exécuter, pour ne pas cibler plus de processus que prévu. |

@@ -24,7 +24,7 @@ Les 10 premiers caractères se décomposent ainsi :
 +---------------- type (- = fichier, d = dossier, l = lien symbolique)
 ```
 
-Chaque groupe de trois caractères représente **lecture** (`r`), **écriture** (`w`) et **exécution** (`x`), dans cet ordre — un `-` signifie que le droit correspondant est absent.
+Chaque groupe de trois caractères représente **lecture** (`r`), **écriture** (`w`) et **exécution** (`x`), dans cet ordre : un `-` signifie que le droit correspondant est absent.
 
 ## `chmod` : modifier les permissions
 
@@ -39,7 +39,7 @@ chmod a+r fichier.txt   # ajoute la lecture pour tout le monde (all)
 
 ### Notation octale
 
-Chaque droit vaut une puissance de 2 : `r=4`, `w=2`, `x=1` — on additionne pour chaque catégorie (propriétaire, groupe, autres) :
+Chaque droit vaut une puissance de 2 : `r=4`, `w=2`, `x=1` ; on additionne pour chaque catégorie (propriétaire, groupe, autres) :
 
 ```bash
 chmod 755 script.sh
@@ -78,7 +78,7 @@ rm fichier.txt              # supprime un fichier (définitif, pas de corbeille)
 rm -r dossier               # supprime un dossier et tout son contenu
 ```
 
-> **Note :** `rm -rf` (récursif + `-f` pour ignorer les confirmations/erreurs) est irréversible et ne demande aucune confirmation — une cible mal ciblée (ex. un chemin avec un espace en trop, `rm -rf ~ /dossier` au lieu de `rm -rf ~/dossier`) peut supprimer bien plus que prévu.
+> **Note :** `rm -rf` (récursif + `-f` pour ignorer les confirmations/erreurs) est irréversible et ne demande aucune confirmation : une cible mal ciblée (ex. un chemin avec un espace en trop, `rm -rf ~ /dossier` au lieu de `rm -rf ~/dossier`) peut supprimer bien plus que prévu.
 
 ## `find` : rechercher des fichiers
 
@@ -99,5 +99,5 @@ Voir aussi [Traitement de texte](/?c=shells&s=bash&p=traitement-de-texte) (`grep
 |---|---|
 | **À retenir** | Chaque fichier a des permissions lecture/écriture/exécution pour propriétaire/groupe/autres. `chmod` les modifie (notation symbolique ou octale), `chown` change le propriétaire. |
 | **Outils utilisables** | `ls -l`, `chmod`/`chown`, `mkdir`/`cp`/`mv`/`rm`, `find`. |
-| **Pièges à éviter** | `rm -rf` sans vérifier la cible exacte — irréversible, sans confirmation. |
+| **Pièges à éviter** | `rm -rf` sans vérifier la cible exacte : irréversible, sans confirmation. |
 | **Bonnes pratiques** | `chmod 644` pour un fichier normal, `755` pour un script/dossier exécutable ; toujours vérifier une commande `find ... -delete` en la testant d'abord sans `-delete`. |
