@@ -34,6 +34,10 @@
         {
           "id": "entrepot-vs-data-lake",
           "label": "Entrepôt de données contre data lake"
+        },
+        {
+          "id": "les-index",
+          "label": "Les index"
         }
       ]
     },
