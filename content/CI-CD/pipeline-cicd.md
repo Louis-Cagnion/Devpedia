@@ -28,9 +28,9 @@ L'**intégration continue** (*Continuous Integration*, CI) reconstruit le projet
 push sur le dépôt -> déclenche automatiquement -> construction -> tests
                                                                      |
                                                     échec <----------+----------> succès
-                                              (le changement          (le changement
-                                            n'est pas intégré,      est intégré, prêt
-                                          l'auteur est prévenu)      pour la suite)
+                                              (le changement                 (le changement
+                                             n'est pas intégré,             est intégré, prêt
+                                           l'auteur est prévenu)              pour la suite)
 ```
 
 > **Piège :** ignorer un pipeline CI qui échoue en pensant "je corrigerai plus tard", et continuer à empiler des changements par-dessus. Chaque nouveau changement repose alors sur une base déjà cassée, rendant l'origine réelle du problème de plus en plus difficile à isoler.
