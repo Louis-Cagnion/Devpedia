@@ -4,7 +4,7 @@ order: 2
 
 # Le format JSON
 
-Une [API](/?c=infrastructure&p=api-et-http) répond avec des données — encore faut-il un format commun pour les écrire, que le programme qui les reçoit puisse comprendre sans ambiguïté. **JSON** (*JavaScript Object Notation*) est le format le plus utilisé pour ça : un texte structuré, lisible aussi bien par un humain que par un programme.
+Une [API](/?c=infrastructure&p=api-et-http) répond avec des données ; encore faut-il un format commun pour les écrire, que le programme qui les reçoit puisse comprendre sans ambiguïté. **JSON** (*JavaScript Object Notation*) est le format le plus utilisé pour ça : un texte structuré, lisible aussi bien par un humain que par un programme.
 
 ## Les types de valeurs en JSON
 
@@ -17,7 +17,7 @@ Une [API](/?c=infrastructure&p=api-et-http) répond avec des données — encore
 | Liste (*array*) | `[1, 2, 3]` | Une suite ordonnée de valeurs |
 | Objet | `{"cle": valeur}` | Un ensemble de paires clé/valeur |
 
-Texte, nombre et booléen sont les mêmes types de base déjà vus dans [la variable](/?c=bases-de-l-informatique&p=la-variable) — JSON ajoute la liste et l'objet, pour représenter des données composées de plusieurs valeurs.
+Texte, nombre et booléen sont les mêmes types de base déjà vus dans [la variable](/?c=bases-de-l-informatique&p=la-variable) ; JSON ajoute la liste et l'objet, pour représenter des données composées de plusieurs valeurs.
 
 ## Un exemple concret
 
@@ -31,11 +31,11 @@ Texte, nombre et booléen sont les mêmes types de base déjà vus dans [la vari
 }
 ```
 
-Un objet (délimité par `{ }`) associe chaque clé (`"ville"`, `"temperature"`...) à une valeur — ici un texte, un nombre, un booléen, une liste de nombres, et une valeur absente.
+Un objet (délimité par `{ }`) associe chaque clé (`"ville"`, `"temperature"`...) à une valeur : ici un texte, un nombre, un booléen, une liste de nombres, et une valeur absente.
 
 ## Objets et listes peuvent s'imbriquer
 
-Rien n'empêche une liste de contenir des objets, ou un objet de contenir une liste — c'est même la structure la plus courante pour des données réelles :
+Rien n'empêche une liste de contenir des objets, ou un objet de contenir une liste ; c'est même la structure la plus courante pour des données réelles :
 
 ```json
 {
@@ -69,7 +69,7 @@ Contrairement à beaucoup de formats de configuration, JSON est strict : pas de 
 
 ## Convertir entre JSON et un programme
 
-Un texte JSON reste une simple chaîne de caractères tant qu'il n'a pas été **analysé** (*parsed*) — transformé en structure de données que le langage peut manipuler directement (accéder à une clé, parcourir une liste...). L'opération inverse (reconvertir une structure de données en texte JSON) s'appelle la **génération** ou la **sérialisation** :
+Un texte JSON reste une simple chaîne de caractères tant qu'il n'a pas été **analysé** (*parsed*) : transformé en structure de données que le langage peut manipuler directement (accéder à une clé, parcourir une liste...). L'opération inverse (reconvertir une structure de données en texte JSON) s'appelle la **génération** ou la **sérialisation** :
 
 ```text
 texte_json = '{"ville": "Lyon", "temperature": 18}'
@@ -80,7 +80,7 @@ donnee.temperature                       // 18, utilisable comme un nombre norma
 nouveau_texte = generer_json(donnee)   // structure -> texte JSON a nouveau
 ```
 
-> **Piège :** essayer d'extraire une valeur directement dans le texte brut (recherche d'un motif, découpage de chaîne) plutôt que d'analyser le JSON correctement — une valeur qui contient par coïncidence la même suite de caractères que la clé recherchée ailleurs dans le texte peut fausser le résultat.
+> **Piège :** essayer d'extraire une valeur directement dans le texte brut (recherche d'un motif, découpage de chaîne) plutôt que d'analyser le JSON correctement : une valeur qui contient par coïncidence la même suite de caractères que la clé recherchée ailleurs dans le texte peut fausser le résultat.
 >
 > **Bonne pratique :** toujours passer par une fonction d'analyse JSON dédiée (présente nativement dans la quasi-totalité des langages) plutôt que de traiter le JSON comme du texte ordinaire.
 
