@@ -4,7 +4,7 @@ order: 10
 
 # La programmation orientée objet
 
-Python est un langage orienté objet de bout en bout — même un `int` ou une `str` est en réalité un objet, instance d'une classe. La syntaxe des classes personnalisées ressemble à celle de PHP, avec une différence immédiate : `self` (l'équivalent de `$this`) est un paramètre **explicite** de chaque méthode, jamais implicite.
+Python est un langage orienté objet de bout en bout : même un `int` ou une `str` est en réalité un objet, instance d'une classe. La syntaxe des classes personnalisées ressemble à celle de PHP, avec une différence immédiate : `self` (l'équivalent de `$this`) est un paramètre **explicite** de chaque méthode, jamais implicite.
 
 ## Déclarer une classe
 
@@ -21,7 +21,7 @@ v = Vehicule("Peugeot", "308")
 print(v.description())   # "Peugeot 308"
 ```
 
-> **Note :** `self` doit être écrit explicitement comme **premier paramètre** de chaque méthode d'instance — Python le remplit automatiquement avec l'instance courante à l'appel (`v.description()` équivaut à `Vehicule.description(v)`), mais l'omettre dans la signature provoque une erreur.
+> **Note :** `self` doit être écrit explicitement comme **premier paramètre** de chaque méthode d'instance : Python le remplit automatiquement avec l'instance courante à l'appel (`v.description()` équivaut à `Vehicule.description(v)`), mais l'omettre dans la signature provoque une erreur.
 
 ## Attributs de classe vs attributs d'instance
 
@@ -122,7 +122,7 @@ c = Cercle(5)
 print(c.surface)   # 78.53975 -> accédé comme un attribut, PAS comme c.surface()
 ```
 
-`@property` transforme une méthode en attribut en lecture, recalculé à chaque accès — utile pour exposer une valeur dérivée sans exiger que l'appelant sache que c'est en réalité un calcul.
+`@property` transforme une méthode en attribut en lecture, recalculé à chaque accès, utile pour exposer une valeur dérivée sans exiger que l'appelant sache que c'est en réalité un calcul.
 
 ---
 
@@ -132,5 +132,5 @@ print(c.surface)   # 78.53975 -> accédé comme un attribut, PAS comme c.surface
 |---|---|
 | **À retenir** | En Python, tout est objet. `self` est un paramètre explicite de chaque méthode. Les méthodes spéciales (`__init__`, `__str__`, `__eq__`...) définissent comment un objet réagit aux opérations natives (`+`, `==`, `print`...). |
 | **Outils utilisables** | `super()` pour appeler la méthode parente, `@property` pour un attribut calculé, attributs de classe vs d'instance. |
-| **Pièges à éviter** | Oublier `self` comme premier paramètre d'une méthode d'instance — provoque une erreur à l'appel. |
+| **Pièges à éviter** | Oublier `self` comme premier paramètre d'une méthode d'instance : provoque une erreur à l'appel. |
 | **Bonnes pratiques** | Définir `__repr__` sur toute classe destinée à être affichée en débogage, pour une représentation lisible plutôt que l'adresse mémoire par défaut. |

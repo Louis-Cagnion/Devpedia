@@ -4,7 +4,7 @@ order: 1
 
 # Les variables et types de base
 
-Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable). Python est **dynamiquement typé** : une variable n'a pas de type déclaré à l'avance, elle prend simplement le type de la valeur qui lui est assignée — et peut changer de type librement au cours du programme (contrairement à PHP ou C où le type d'une propriété/variable typée reste fixe une fois déclaré).
+Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable). Python est **dynamiquement typé** : une variable n'a pas de type déclaré à l'avance, elle prend simplement le type de la valeur qui lui est assignée, et peut changer de type librement au cours du programme (contrairement à PHP ou C où le type d'une propriété/variable typée reste fixe une fois déclaré).
 
 ## Déclarer une variable
 
@@ -18,7 +18,7 @@ rien = None           # équivalent de null/NULL
 age = "vingt-cinq"    # parfaitement valide : age devient un str, sans rien déclarer
 ```
 
-> **Note :** contrairement à PHP (`$variable`), Python n'utilise aucun symbole particulier pour désigner une variable — juste un nom, en minuscules avec des underscores par convention (`nom_utilisateur`, pas `nomUtilisateur`).
+> **Note :** contrairement à PHP (`$variable`), Python n'utilise aucun symbole particulier pour désigner une variable : juste un nom, en minuscules avec des underscores par convention (`nom_utilisateur`, pas `nomUtilisateur`).
 
 ## Vérifier le type d'une variable
 
@@ -84,7 +84,7 @@ Deux raisons :
 - `None` est un **singleton** : il n'en existe qu'une seule instance dans tout le programme. Tester l'identité est donc exact par construction, et légèrement plus rapide.
 - `==` peut être **redéfini** par une classe via `__eq__`. Un objet peut donc parfaitement répondre `True` à `== None` tout en n'étant pas `None`, ce qui rend le test peu fiable.
 
-C'est ce qui explique le motif de la sentinelle `None` utilisé pour les arguments par défaut mutables — voir le chapitre [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions).
+C'est ce qui explique le motif de la sentinelle `None` utilisé pour les arguments par défaut mutables (voir le chapitre [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions)).
 
 > Le même raisonnement s'applique à `True`/`False`, qui sont aussi des singletons. En pratique on écrit rarement `is True` : on teste directement `if condition:`.
 
@@ -132,5 +132,5 @@ Voir aussi les chapitres sur les listes/tuples et les dictionnaires/ensembles po
 |---|---|
 | **À retenir** | Python est dynamiquement typé : une variable prend le type de sa valeur, sans déclaration préalable, et peut en changer. `==` compare la valeur, `is` compare l'identité (le même objet en mémoire). |
 | **Outils utilisables** | `type()`/`isinstance()`, f-strings pour l'interpolation, `is None` pour tester une absence de valeur. |
-| **Pièges à éviter** | Confondre `==` et `is` — deux objets au contenu identique ne sont pas forcément le même objet en mémoire. |
+| **Pièges à éviter** | Confondre `==` et `is` : deux objets au contenu identique ne sont pas forcément le même objet en mémoire. |
 | **Bonnes pratiques** | Utiliser `is None` plutôt que `== None` ; préférer les f-strings à la concaténation pour insérer une variable dans du texte. |

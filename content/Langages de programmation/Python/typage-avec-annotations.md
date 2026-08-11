@@ -18,7 +18,7 @@ def addition(a: int, b: int) -> int:
 addition("deux", "trois")   # AUCUNE erreur au lancement : Python exécute quand même, sans vérifier les types
 ```
 
-> **Note :** contrairement à PHP où `function f(int $x): int` lève un `TypeError` si on passe autre chose qu'un entier, les annotations Python sont de la pure documentation pour un humain (ou un outil externe) — l'interpréteur ne les fait respecter à aucun moment.
+> **Note :** contrairement à PHP où `function f(int $x): int` lève un `TypeError` si on passe autre chose qu'un entier, les annotations Python sont de la pure documentation pour un humain (ou un outil externe) : l'interpréteur ne les fait respecter à aucun moment.
 
 ## Types composés avec le module `typing`
 
@@ -37,7 +37,7 @@ def config() -> Dict[str, Union[str, int]]:            # dict dont les valeurs s
     return {"nom": "app", "version": 2}
 ```
 
-> **Note :** depuis Python 3.9+, `list[int]`/`dict[str, int]` (les types natifs directement, en minuscules) remplacent `List[int]`/`Dict[str, int]` du module `typing` pour ces cas simples — `typing` reste nécessaire pour des constructions comme `Optional`/`Union`.
+> **Note :** depuis Python 3.9+, `list[int]`/`dict[str, int]` (les types natifs directement, en minuscules) remplacent `List[int]`/`Dict[str, int]` du module `typing` pour ces cas simples ; `typing` reste nécessaire pour des constructions comme `Optional`/`Union`.
 
 ## `mypy` : faire respecter les annotations malgré tout
 
@@ -61,7 +61,7 @@ mypy mon_script.py
 
 | | |
 |---|---|
-| **À retenir** | Les annotations de type Python (`x: int`, `-> str`) sont purement documentaires — jamais vérifiées par l'interpréteur, contrairement à un langage à typage statique ou même à PHP. |
+| **À retenir** | Les annotations de type Python (`x: int`, `-> str`) sont purement documentaires : jamais vérifiées par l'interpréteur, contrairement à un langage à typage statique ou même à PHP. |
 | **Outils utilisables** | Le module `typing` (`Optional`, `Union`, `List`...), `mypy` pour une vérification externe. |
-| **Pièges à éviter** | Croire qu'une annotation empêche réellement de passer une valeur du mauvais type — rien ne l'empêche à l'exécution. |
+| **Pièges à éviter** | Croire qu'une annotation empêche réellement de passer une valeur du mauvais type : rien ne l'empêche à l'exécution. |
 | **Bonnes pratiques** | Annoter systématiquement un projet de taille significative, et faire tourner `mypy` en complément pour détecter les incohérences avant l'exécution. |

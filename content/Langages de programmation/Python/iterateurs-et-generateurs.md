@@ -4,7 +4,7 @@ order: 8
 
 # Itérateurs et générateurs
 
-Une boucle `for` fonctionne sur les listes, les dictionnaires, les fichiers, et bien d'autres objets — parce qu'ils implémentent tous le même **protocole d'itération**. Comprendre ce protocole permet de créer ses propres objets "parcourables", et d'utiliser les générateurs pour traiter de grandes quantités de données sans tout charger en mémoire.
+Une boucle `for` fonctionne sur les listes, les dictionnaires, les fichiers, et bien d'autres objets, parce qu'ils implémentent tous le même **protocole d'itération**. Comprendre ce protocole permet de créer ses propres objets "parcourables", et d'utiliser les générateurs pour traiter de grandes quantités de données sans tout charger en mémoire.
 
 ## Le protocole d'itération
 
@@ -58,7 +58,7 @@ for nombre in compteur(5):
     print(nombre)   # 1 2 3 4 5
 ```
 
-`yield` "met en pause" la fonction et renvoie une valeur, **sans perdre son état** — au prochain appel de `next()`, l'exécution reprend juste après le `yield`, avec toutes les variables locales intactes.
+`yield` "met en pause" la fonction et renvoie une valeur, **sans perdre son état** : au prochain appel de `next()`, l'exécution reprend juste après le `yield`, avec toutes les variables locales intactes.
 
 ## Pourquoi utiliser un générateur plutôt qu'une liste
 
@@ -71,13 +71,13 @@ def carres_generateur(n):
         yield x ** 2                     # calcule UN SEUL élément à la fois, à la demande
 ```
 
-Pour `n = 10_000_000`, `carres_liste()` alloue une liste de 10 millions d'éléments en mémoire **avant** de commencer à les utiliser. `carres_generateur()` ne produit qu'un élément à la fois, consommé puis oublié — la mémoire utilisée reste constante, quelle que soit la taille de `n`.
+Pour `n = 10_000_000`, `carres_liste()` alloue une liste de 10 millions d'éléments en mémoire **avant** de commencer à les utiliser. `carres_generateur()` ne produit qu'un élément à la fois, consommé puis oublié : la mémoire utilisée reste constante, quelle que soit la taille de `n`.
 
 > **Note :** cette "évaluation paresseuse" (*lazy evaluation*) a un coût : un générateur ne peut être parcouru **qu'une seule fois** (une fois épuisé, une nouvelle boucle `for` dessus ne produit plus rien), contrairement à une liste qu'on peut reparcourir librement.
 
 ## Expression génératrice
 
-Équivalent d'une compréhension de liste, mais paresseuse — remplacer les crochets par des parenthèses :
+Équivalent d'une compréhension de liste, mais paresseuse : remplacer les crochets par des parenthèses :
 
 ```python
 carres = (x ** 2 for x in range(10))   # générateur, rien n'est encore calculé
@@ -92,7 +92,7 @@ Voir aussi [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions) (
 
 Un générateur donne parfois l'impression de "faire deux choses en même temps" (le code appelant, et le générateur qui progresse en arrière-plan). C'est trompeur : contrairement à un thread (voir [Les threads (pthread)](/?c=langages-de-programmation&s=c&p=threads)), où deux flux d'exécution peuvent réellement avancer en parallèle sans se coordonner explicitement, un générateur ne fait jamais rien "en arrière-plan".
 
-`next()` est un appel de fonction comme un autre : il **bloque** le code appelant jusqu'à ce que le générateur atteigne le `yield` suivant (ou se termine). Un seul des deux flux avance à un instant donné — jamais les deux en même temps :
+`next()` est un appel de fonction comme un autre : il **bloque** le code appelant jusqu'à ce que le générateur atteigne le `yield` suivant (ou se termine). Un seul des deux flux avance à un instant donné, jamais les deux en même temps :
 
 ```python
 def taches():
@@ -103,12 +103,12 @@ def taches():
 
 t = taches()
 print("Avant le premier next")
-print(next(t))     # "Démarrage" s'affiche ICI, au moment de l'appel — pas avant, pas en arrière-plan
+print(next(t))     # "Démarrage" s'affiche ICI, au moment de l'appel, pas avant, pas en arrière-plan
 print("Avant le deuxième next")
 print(next(t))     # "Reprise après A" s'affiche ICI, jamais entre-temps
 ```
 
-L'ordre d'affichage est **entièrement déterministe** et reproductible à chaque exécution — à l'inverse de deux threads indépendants, dont l'ordre d'exécution relatif n'est pas prévisible sans synchronisation explicite (mutex, `pthread_join`...). C'est pour ça qu'on parle de **coroutine** plutôt que de parallélisme pour décrire `yield` : la fonction "coopère" avec son appelant en lui rendant explicitement la main à chaque `yield`, au lieu d'être interrompue de force par un ordonnanceur comme le ferait un thread.
+L'ordre d'affichage est **entièrement déterministe** et reproductible à chaque exécution, à l'inverse de deux threads indépendants, dont l'ordre d'exécution relatif n'est pas prévisible sans synchronisation explicite (mutex, `pthread_join`...). C'est pour ça qu'on parle de **coroutine** plutôt que de parallélisme pour décrire `yield` : la fonction "coopère" avec son appelant en lui rendant explicitement la main à chaque `yield`, au lieu d'être interrompue de force par un ordonnanceur comme le ferait un thread.
 
 ---
 
@@ -116,7 +116,7 @@ L'ordre d'affichage est **entièrement déterministe** et reproductible à chaqu
 
 | | |
 |---|---|
-| **À retenir** | Un objet itérable implémente `__iter__`, un itérateur `__next__`. Une fonction avec `yield` devient un générateur — paresseux, mémoire constante, mais parcourable une seule fois. |
+| **À retenir** | Un objet itérable implémente `__iter__`, un itérateur `__next__`. Une fonction avec `yield` devient un générateur : paresseux, mémoire constante, mais parcourable une seule fois. |
 | **Outils utilisables** | `iter()`/`next()`, `yield`, expression génératrice (`(x for x in ...)`). |
 | **Pièges à éviter** | Réutiliser un générateur déjà épuisé, en s'attendant à ce qu'il reproduise ses valeurs. |
 | **Bonnes pratiques** | Préférer un générateur à une liste dès que la collection est grande et parcourue une seule fois séquentiellement. |

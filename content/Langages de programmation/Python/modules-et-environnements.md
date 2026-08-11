@@ -65,7 +65,7 @@ pip install -r requirements.txt   # réinstalle exactement les mêmes versions a
 
 ## Les environnements virtuels
 
-Sans isolation, `pip install` installe les bibliothèques **globalement** sur la machine — deux projets qui ont besoin de versions différentes d'une même bibliothèque entrent alors en conflit. Un **environnement virtuel** crée une installation Python isolée, propre à un projet :
+Sans isolation, `pip install` installe les bibliothèques **globalement** sur la machine : deux projets qui ont besoin de versions différentes d'une même bibliothèque entrent alors en conflit. Un **environnement virtuel** crée une installation Python isolée, propre à un projet :
 
 ```bash
 python -m venv .venv          # crée un environnement virtuel dans le dossier .venv
@@ -78,7 +78,7 @@ pip install requests             # installe UNIQUEMENT dans cet environnement, p
 deactivate                        # quitte l'environnement virtuel
 ```
 
-> **Note :** une fois activé, `pip install` et `python` pointent vers les exécutables **de l'environnement virtuel**, pas ceux installés globalement sur le système — c'est ce qui garantit l'isolation. Le dossier `.venv/` ne doit jamais être versionné avec Git (voir [Le fichier .gitignore](/?c=git&p=gitignore)) : il se régénère entièrement à partir de `requirements.txt`.
+> **Note :** une fois activé, `pip install` et `python` pointent vers les exécutables **de l'environnement virtuel**, pas ceux installés globalement sur le système : c'est ce qui garantit l'isolation. Le dossier `.venv/` ne doit jamais être versionné avec Git (voir [Le fichier .gitignore](/?c=git&p=gitignore)) : il se régénère entièrement à partir de `requirements.txt`.
 
 ## Organiser un projet en package
 
@@ -106,5 +106,5 @@ Un simple fichier `__init__.py` (même vide) suffit à faire d'un dossier un **p
 |---|---|
 | **À retenir** | `import` charge un module ; `if __name__ == "__main__":` distingue exécution directe et import. `pip` installe des bibliothèques, un environnement virtuel isole les dépendances d'un projet. |
 | **Outils utilisables** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `__init__.py` pour un package. |
-| **Pièges à éviter** | Installer des bibliothèques globalement plutôt que dans un environnement virtuel — conflits de versions entre projets. |
+| **Pièges à éviter** | Installer des bibliothèques globalement plutôt que dans un environnement virtuel : conflits de versions entre projets. |
 | **Bonnes pratiques** | Toujours travailler dans un environnement virtuel par projet ; versionner `requirements.txt`, jamais `.venv/`. |
