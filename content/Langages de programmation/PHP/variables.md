@@ -4,7 +4,7 @@ order: 2
 
 # Les variables
 
-Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable) — ce qui suit couvre uniquement ce qui est spécifique à PHP.
+Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable), ce qui suit couvre uniquement ce qui est spécifique à PHP.
 
 ## Les variables classiques
 Pour déclarer une variable en PHP, il faut mettre un `$` avant le nom de votre variable. PHP est faiblement typé : vous n'indiquez pas le type, il est déduit automatiquement selon la valeur assignée.
@@ -108,7 +108,7 @@ Ensuite pour comparer ou manipuler vos variables entre elles, il vous faudra uti
 ?>
 ```
 
-> **Note :** `==`/`!=` convertissent les types avant de comparer, ce qui peut donner des résultats surprenants selon les valeurs comparées (source de bugs historiques bien connus en PHP). `===`/`!==` exigent le même type ET la même valeur — à privilégier systématiquement, en particulier pour comparer des chaînes de caractères.
+> **Note :** `==`/`!=` convertissent les types avant de comparer, ce qui peut donner des résultats surprenants selon les valeurs comparées (source de bugs historiques bien connus en PHP). `===`/`!==` exigent le même type ET la même valeur : à privilégier systématiquement, en particulier pour comparer des chaînes de caractères.
 
 Si vous souhaitez concaténer des chaînes de caractères, vous avez 2 méthodes :
 
@@ -140,11 +140,11 @@ Quand la méthode `GET` est utilisée, les données du formulaire sont visibles 
 
 La méthode `POST` est plutôt utilisée pour envoyer des données sensibles (mots de passe, informations personnelles...), car elles ne sont pas affichées dans l'URL et ne sont pas limitées en taille comme peut l'être une URL.
 
-> **Note :** `GET` et `POST` ne servent pas à sécuriser des données — les données restent visibles via les outils de développement du navigateur ou par interception réseau si le site n'utilise pas HTTPS. Pour de vraies données sensibles (mots de passe...), il faut aussi penser au chiffrement et à HTTPS.
+> **Note :** `GET` et `POST` ne servent pas à sécuriser des données : les données restent visibles via les outils de développement du navigateur ou par interception réseau si le site n'utilise pas HTTPS. Pour de vraies données sensibles (mots de passe...), il faut aussi penser au chiffrement et à HTTPS.
 
 ## Les superglobales
 
-`$_GET` et `$_POST` font partie d'une famille plus large de tableaux associatifs, appelés **superglobales**, que PHP pré-remplit automatiquement dès le début de l'exécution — accessibles depuis n'importe quelle fonction ou méthode, sans rien à importer :
+`$_GET` et `$_POST` font partie d'une famille plus large de tableaux associatifs, appelés **superglobales**, que PHP pré-remplit automatiquement dès le début de l'exécution, accessibles depuis n'importe quelle fonction ou méthode, sans rien à importer :
 
 | Superglobale | Contenu |
 |---|---|
@@ -153,7 +153,7 @@ La méthode `POST` est plutôt utilisée pour envoyer des données sensibles (mo
 | `$_SESSION` | Données stockées côté serveur pour l'utilisateur courant (nécessite `session_start()`) |
 | `$_COOKIE` | Cookies envoyés par le navigateur |
 
-> **Note :** contrairement à une variable classique (portée locale, invisible dans une fonction sans la repasser en paramètre), les superglobales sont visibles **partout**, exactement comme une constante — mais elles contiennent des données qui changent à chaque requête, pas des réglages fixes.
+> **Note :** contrairement à une variable classique (portée locale, invisible dans une fonction sans la repasser en paramètre), les superglobales sont visibles **partout**, exactement comme une constante, mais elles contiennent des données qui changent à chaque requête, pas des réglages fixes.
 
 ## Constantes avec `define()`
 
@@ -170,11 +170,11 @@ function prixTTC(float $prixHT): float
 ?>
 ```
 
-> **Note :** une `$variable` classique, elle, reste locale même si le fichier qui la déclare a été chargé avec `require` — elle n'est pas automatiquement visible à l'intérieur d'une fonction ou d'une méthode définie dans un autre fichier. C'est pour ça que les fichiers de configuration utilisent souvent `define()` plutôt que de simples variables : ça garantit que le réglage reste lisible partout dans le projet.
+> **Note :** une `$variable` classique, elle, reste locale même si le fichier qui la déclare a été chargé avec `require` : elle n'est pas automatiquement visible à l'intérieur d'une fonction ou d'une méthode définie dans un autre fichier. C'est pour ça que les fichiers de configuration utilisent souvent `define()` plutôt que de simples variables : ça garantit que le réglage reste lisible partout dans le projet.
 
 ## Accéder à une clé de tableau qui n'existe pas
 
-Lire une clé de tableau totalement absente déclenche un **warning** ("Undefined array key") — pas un crash, mais un signal d'erreur à ne pas ignorer :
+Lire une clé de tableau totalement absente déclenche un **warning** ("Undefined array key"), pas un crash, mais un signal d'erreur à ne pas ignorer :
 
 ```php
 <?php
