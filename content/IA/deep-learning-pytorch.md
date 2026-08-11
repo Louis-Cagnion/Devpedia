@@ -4,7 +4,7 @@ order: 4
 
 # Deep learning avec PyTorch
 
-**PyTorch** est l'un des deux frameworks de deep learning les plus utilisés (avec TensorFlow). Il fournit le **tenseur** : une structure qui stocke un [vecteur ou une matrice de nombres](/?c=mathematiques&p=vecteurs-et-produit-scalaire) (proche du `ndarray` de la bibliothèque [NumPy](/?c=data-science&p=numpy) pour qui la connaît déjà), avec deux capacités supplémentaires : s'exécuter sur [GPU](/?c=infrastructure&p=cpu-vs-gpu), et calculer automatiquement son propre gradient. PyTorch automatise ainsi toute la mécanique du chapitre sur [l'entraînement et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient).
+**PyTorch** est l'un des deux frameworks de deep learning les plus utilisés (avec TensorFlow). Il fournit le **tenseur** : une structure qui stocke un [vecteur](/?c=mathematiques&p=vecteurs-et-produit-scalaire) ou une [matrice](/?c=mathematiques&p=matrices-et-produit-matriciel) de nombres (proche du `ndarray` de la bibliothèque [NumPy](/?c=data-science&p=numpy) pour qui la connaît déjà), avec deux capacités supplémentaires : s'exécuter sur [GPU](/?c=infrastructure&p=cpu-vs-gpu), et calculer automatiquement son propre gradient. PyTorch automatise ainsi toute la mécanique du chapitre sur [l'entraînement et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient).
 
 ## Le tenseur : des nombres qui peuvent calculer leur propre gradient
 
