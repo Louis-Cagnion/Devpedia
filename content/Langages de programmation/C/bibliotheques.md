@@ -4,7 +4,7 @@ order: 9
 
 # Les bibliothèques
 
-Une **bibliothèque** (*library*) regroupe des fonctions déjà compilées, réutilisables par n'importe quel programme sans en recompiler le code source — c'est ainsi que fonctionne par exemple la bibliothèque standard C (`printf`, `malloc`...). Il existe deux façons de lier une bibliothèque à un programme : statiquement, ou dynamiquement.
+Une **bibliothèque** (*library*) regroupe des fonctions déjà compilées, réutilisables par n'importe quel programme sans en recompiler le code source : c'est ainsi que fonctionne par exemple la bibliothèque standard C (`printf`, `malloc`...). Il existe deux façons de lier une bibliothèque à un programme : statiquement, ou dynamiquement.
 
 ## Bibliothèque statique (`.a`)
 
@@ -42,7 +42,7 @@ gcc main.c -L. -lcalculs -o programme
 LD_LIBRARY_PATH=. ./programme
 ```
 
-- `-fPIC` (*Position Independent Code*) génère du code capable de fonctionner quelle que soit l'adresse mémoire où il est chargé — nécessaire pour une bibliothèque partagée, chargée à un endroit différent selon le programme.
+- `-fPIC` (*Position Independent Code*) génère du code capable de fonctionner quelle que soit l'adresse mémoire où il est chargé : nécessaire pour une bibliothèque partagée, chargée à un endroit différent selon le programme.
 - Sans `LD_LIBRARY_PATH` (ou une installation dans un répertoire système standard comme `/usr/lib`), le système ne sait pas où chercher `libcalculs.so` au lancement, et le programme refuse de démarrer.
 
 | Avantage | Inconvénient |
@@ -54,7 +54,7 @@ LD_LIBRARY_PATH=. ./programme
 
 | | Statique (`.a`) | Dynamique (`.so`) |
 |---|---|---|
-| Copiée dans l'exécutable ? | Oui | Non — chargée séparément |
+| Copiée dans l'exécutable ? | Oui | Non (chargée séparément) |
 | Quand est-elle liée ? | À la compilation | Au lancement du programme (ou pendant son exécution) |
 | Mise à jour de la bibliothèque | Nécessite de recompiler le programme | Le programme profite de la mise à jour sans recompilation |
 

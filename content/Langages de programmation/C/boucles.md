@@ -4,7 +4,7 @@ order: 3
 
 # Les boucles
 
-Les boucles permettent de répéter un bloc de code plusieurs fois. En C, on dispose de trois structures : `while`, `do while` et `for` — il n'existe pas de `foreach` natif, un tableau se parcourt toujours via un index ou un pointeur.
+Les boucles permettent de répéter un bloc de code plusieurs fois. En C, on dispose de trois structures : `while`, `do while` et `for` : il n'existe pas de `foreach` natif, un tableau se parcourt toujours via un index ou un pointeur.
 
 ## La boucle `while`
 
@@ -34,7 +34,7 @@ do {
 
 ## La boucle `for`
 
-Regroupe en une seule ligne l'initialisation, la condition, et l'incrémentation — pratique dès que le nombre d'itérations est connu à l'avance :
+Regroupe en une seule ligne l'initialisation, la condition, et l'incrémentation, pratique dès que le nombre d'itérations est connu à l'avance :
 
 ```c
 for (int i = 0; i < 5; i++) {
@@ -54,7 +54,7 @@ for (int i = 0; i < 5; i++) {
 }
 ```
 
-> **Note :** contrairement à PHP ou JavaScript, il n'existe **aucun moyen natif** de connaître la taille d'un tableau à partir du pointeur seul — `tableau[5]` "sait" combien il contient tant qu'il est manipulé comme tableau statique, mais cette information disparaît dès qu'il est passé à une fonction (il se comporte alors comme un simple pointeur, voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs)). La taille doit alors être transmise séparément.
+> **Note :** contrairement à PHP ou JavaScript, il n'existe **aucun moyen natif** de connaître la taille d'un tableau à partir du pointeur seul : `tableau[5]` "sait" combien il contient tant qu'il est manipulé comme tableau statique, mais cette information disparaît dès qu'il est passé à une fonction (il se comporte alors comme un simple pointeur, voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs)). La taille doit alors être transmise séparément.
 
 ```c
 void afficher(int *tableau, int taille) // la taille doit être passée explicitement
@@ -84,7 +84,7 @@ for (int i = 0; i < 10; i++) {
 
 ## Boucles imbriquées et `break`
 
-`break` n'arrête que la boucle la **plus proche** qui l'englobe — pour sortir de plusieurs boucles imbriquées d'un coup, il faut une variable de contrôle ou un `goto` (rare mais parfois utilisé pour ce cas précis en C) :
+`break` n'arrête que la boucle la **plus proche** qui l'englobe : pour sortir de plusieurs boucles imbriquées d'un coup, il faut une variable de contrôle ou un `goto` (rare mais parfois utilisé pour ce cas précis en C) :
 
 ```c
 int trouve = 0;
@@ -107,5 +107,5 @@ for (int i = 0; i < 10 && !trouve; i++) {
 |---|---|
 | **À retenir** | `while` teste avant, `do while` teste après (au moins une exécution), `for` regroupe initialisation/condition/incrémentation. Pas de `foreach` natif : un tableau se parcourt par index. |
 | **Outils utilisables** | `break` (arrête la boucle), `continue` (passe au tour suivant). |
-| **Pièges à éviter** | `break` ne sort que de la boucle la plus proche — une variable de contrôle est nécessaire pour sortir de plusieurs boucles imbriquées. |
+| **Pièges à éviter** | `break` ne sort que de la boucle la plus proche : une variable de contrôle est nécessaire pour sortir de plusieurs boucles imbriquées. |
 | **Bonnes pratiques** | Toujours transmettre explicitement la taille d'un tableau à une fonction qui le parcourt, plutôt que de supposer qu'elle peut être déduite. |

@@ -4,17 +4,17 @@ order: 6
 
 # Les fichiers d'en-tête (.h)
 
-Un fichier d'en-tête (*header*, extension `.h`) contient des **déclarations** — il annonce "cette fonction/variable/structure existe et voici sa signature", sans fournir son implémentation. Il permet à plusieurs fichiers `.c` de partager les mêmes définitions sans les dupliquer, et sert de contrat entre un fichier qui fournit une fonctionnalité et les fichiers qui l'utilisent.
+Un fichier d'en-tête (*header*, extension `.h`) contient des **déclarations** : il annonce "cette fonction/variable/structure existe et voici sa signature", sans fournir son implémentation. Il permet à plusieurs fichiers `.c` de partager les mêmes définitions sans les dupliquer, et sert de contrat entre un fichier qui fournit une fonctionnalité et les fichiers qui l'utilisent.
 
 ## Déclaration vs définition
 
 ```c
-// calculs.h — déclaration : "cette fonction existe, voici sa signature"
+// calculs.h, déclaration : "cette fonction existe, voici sa signature"
 int addition(int a, int b);
 ```
 
 ```c
-// calculs.c — définition : le vrai corps de la fonction
+// calculs.c, définition : le vrai corps de la fonction
 #include "calculs.h"
 
 int addition(int a, int b)
@@ -24,7 +24,7 @@ int addition(int a, int b)
 ```
 
 ```c
-// main.c — utilisation, via le header
+// main.c, utilisation, via le header
 #include "calculs.h"
 
 int main(void)
@@ -33,7 +33,7 @@ int main(void)
 }
 ```
 
-`main.c` n'a besoin que de connaître la **signature** de `addition()` (via le `#include "calculs.h"`) pour l'appeler — le corps réel est fourni au moment de [l'édition de liens](/?c=langages-de-programmation&s=c&p=compilation), à partir du fichier objet compilé depuis `calculs.c`.
+`main.c` n'a besoin que de connaître la **signature** de `addition()` (via le `#include "calculs.h"`) pour l'appeler : le corps réel est fourni au moment de [l'édition de liens](/?c=langages-de-programmation&s=c&p=compilation), à partir du fichier objet compilé depuis `calculs.c`.
 
 ## `#include <...>` vs `#include "..."`
 
@@ -44,7 +44,7 @@ int main(void)
 
 ## Les include guards
 
-Un même header peut être inclus indirectement plusieurs fois (ex. `a.h` inclut `commun.h`, et `b.h` aussi inclut `commun.h`, et `main.c` inclut `a.h` et `b.h`) — sans protection, ses déclarations seraient dupliquées et provoqueraient une erreur de compilation ("redefinition"). Un **include guard** empêche qu'un header soit traité plus d'une fois par le préprocesseur :
+Un même header peut être inclus indirectement plusieurs fois (ex. `a.h` inclut `commun.h`, et `b.h` aussi inclut `commun.h`, et `main.c` inclut `a.h` et `b.h`) : sans protection, ses déclarations seraient dupliquées et provoqueraient une erreur de compilation ("redefinition"). Un **include guard** empêche qu'un header soit traité plus d'une fois par le préprocesseur :
 
 ```c
 #ifndef CALCULS_H
@@ -66,7 +66,7 @@ Une alternative plus courte, supportée par la quasi-totalité des compilateurs 
 int addition(int a, int b);
 ```
 
-> **Note :** un header ne doit contenir que des **déclarations** (prototypes de fonctions, `struct`, `typedef`, constantes), jamais le corps d'une fonction non-`static`/non-`inline` — sinon, chaque fichier `.c` qui l'inclut obtiendrait sa propre copie de la définition, provoquant une erreur "multiple definition" à l'édition de liens.
+> **Note :** un header ne doit contenir que des **déclarations** (prototypes de fonctions, `struct`, `typedef`, constantes), jamais le corps d'une fonction non-`static`/non-`inline` : sinon, chaque fichier `.c` qui l'inclut obtiendrait sa propre copie de la définition, provoquant une erreur "multiple definition" à l'édition de liens.
 
 ---
 
@@ -74,7 +74,7 @@ int addition(int a, int b);
 
 | | |
 |---|---|
-| **À retenir** | Un header (`.h`) contient des déclarations, pas des définitions — il permet à plusieurs fichiers `.c` de partager les mêmes signatures sans les dupliquer. |
+| **À retenir** | Un header (`.h`) contient des déclarations, pas des définitions : il permet à plusieurs fichiers `.c` de partager les mêmes signatures sans les dupliquer. |
 | **Outils utilisables** | `#include <...>` (bibliothèque système) vs `#include "..."` (fichier du projet) ; include guards (`#ifndef`/`#define`/`#endif` ou `#pragma once`). |
-| **Pièges à éviter** | Mettre le corps d'une fonction dans un header — provoque une erreur "multiple definition" dès que plusieurs fichiers l'incluent. |
+| **Pièges à éviter** | Mettre le corps d'une fonction dans un header : provoque une erreur "multiple definition" dès que plusieurs fichiers l'incluent. |
 | **Bonnes pratiques** | Toujours protéger un header par un include guard, pour supporter une inclusion indirecte multiple sans erreur. |

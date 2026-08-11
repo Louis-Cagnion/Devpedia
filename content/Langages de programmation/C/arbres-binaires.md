@@ -17,7 +17,7 @@ typedef struct Noeud
 } Noeud;
 ```
 
-> **Note :** `struct Noeud *gauche` doit référencer `struct Noeud` (avec le mot-clé `struct`), pas `Noeud` seul — au moment où le compilateur lit cette ligne, le `typedef Noeud` n'est pas encore complètement défini. C'est une exception nécessaire, propre aux structures auto-référentielles.
+> **Note :** `struct Noeud *gauche` doit référencer `struct Noeud` (avec le mot-clé `struct`), pas `Noeud` seul : au moment où le compilateur lit cette ligne, le `typedef Noeud` n'est pas encore complètement défini. C'est une exception nécessaire, propre aux structures auto-référentielles.
 
 ## L'arbre binaire de recherche (ABR)
 
@@ -59,7 +59,7 @@ Noeud *inserer(Noeud *racine, int valeur)
 ```
 
 - Le cas de base de la récursion est `racine == NULL` : on a trouvé l'emplacement vide où insérer.
-- Chaque appel récursif renvoie la racine du sous-arbre (modifié ou non), qui est réaffectée à `->gauche` ou `->droit` par l'appelant — c'est ce qui relie le nouveau nœud au reste de l'arbre.
+- Chaque appel récursif renvoie la racine du sous-arbre (modifié ou non), qui est réaffectée à `->gauche` ou `->droit` par l'appelant : c'est ce qui relie le nouveau nœud au reste de l'arbre.
 
 ## Recherche
 
@@ -77,7 +77,7 @@ Noeud *rechercher(Noeud *racine, int valeur)
 }
 ```
 
-À chaque étape, la comparaison élimine **tout un sous-arbre** de la recherche — c'est ce qui rend un ABR équilibré bien plus rapide qu'un parcours linéaire d'une liste chaînée.
+À chaque étape, la comparaison élimine **tout un sous-arbre** de la recherche : c'est ce qui rend un ABR équilibré bien plus rapide qu'un parcours linéaire d'une liste chaînée.
 
 ## Les trois parcours classiques
 
@@ -109,11 +109,11 @@ void parcoursSuffixe(Noeud *racine)  // gauche, droit, nœud
 }
 ```
 
-Sur l'arbre exemple ci-dessus, `parcoursInfixe` affiche `2 5 7 10 15 20` — les valeurs dans l'ordre croissant, une propriété propre à l'ABR.
+Sur l'arbre exemple ci-dessus, `parcoursInfixe` affiche `2 5 7 10 15 20`, les valeurs dans l'ordre croissant, une propriété propre à l'ABR.
 
 ## Libérer un arbre
 
-Comme pour une liste chaînée, chaque nœud alloué avec `malloc()` doit être libéré individuellement — un parcours suffixe s'y prête naturellement, puisqu'il traite les enfants avant le nœud lui-même :
+Comme pour une liste chaînée, chaque nœud alloué avec `malloc()` doit être libéré individuellement ; un parcours suffixe s'y prête naturellement, puisqu'il traite les enfants avant le nœud lui-même :
 
 ```c
 void libererArbre(Noeud *racine)

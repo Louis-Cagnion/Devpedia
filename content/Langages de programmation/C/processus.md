@@ -6,11 +6,11 @@ order: 14
 
 Un **processus** est une instance d'un programme en cours d'exécution, avec son propre espace mémoire, isolé de celui des autres processus. En C, la bibliothèque standard POSIX (`unistd.h`, `sys/wait.h`) permet de créer de nouveaux processus, de lancer d'autres programmes, et d'attendre leur fin. La norme **POSIX** est présentée dans le chapitre [Écrire un script](/?c=shells&s=bash&p=scripts-et-shebang) de Bash.
 
-> **Note :** `fork()`, `execve()` (utilisé par `execlp()` et les autres fonctions de la famille `exec`) et `wait()`/`waitpid()` sont des **appels système** — voir le chapitre dédié aux appels système et aux descripteurs de fichiers pour ce que ça implique concrètement (passage en espace noyau, gestion des erreurs via `errno`).
+> **Note :** `fork()`, `execve()` (utilisé par `execlp()` et les autres fonctions de la famille `exec`) et `wait()`/`waitpid()` sont des **appels système** : voir le chapitre dédié aux appels système et aux descripteurs de fichiers pour ce que ça implique concrètement (passage en espace noyau, gestion des erreurs via `errno`).
 
 ## `fork()` : dupliquer le processus courant
 
-`fork()` crée une copie quasi-identique du processus appelant. Après l'appel, **deux** processus existent et continuent tous les deux l'exécution juste après le `fork()` — la seule différence est la valeur renvoyée :
+`fork()` crée une copie quasi-identique du processus appelant. Après l'appel, **deux** processus existent et continuent tous les deux l'exécution juste après le `fork()` : la seule différence est la valeur renvoyée :
 
 ```c
 #include <unistd.h>
@@ -42,7 +42,7 @@ int main(void)
 
 ## Remplacer le programme en cours : la famille `exec`
 
-`fork()` duplique le processus courant, mais ne change pas le programme exécuté. Pour lancer un **autre** programme dans le processus enfant, on utilise une fonction de la famille `exec` (ex. `execve`, `execlp`) — elle remplace entièrement le code du processus courant par celui d'un nouveau programme :
+`fork()` duplique le processus courant, mais ne change pas le programme exécuté. Pour lancer un **autre** programme dans le processus enfant, on utilise une fonction de la famille `exec` (ex. `execve`, `execlp`) : elle remplace entièrement le code du processus courant par celui d'un nouveau programme :
 
 ```c
 #include <unistd.h>
@@ -60,7 +60,7 @@ int main(void)
 }
 ```
 
-> **Note :** si `execlp()` réussit, il ne "revient" jamais — le code du processus enfant est intégralement remplacé, la ligne suivante n'est donc atteinte qu'en cas d'échec de `execlp()` lui-même.
+> **Note :** si `execlp()` réussit, il ne "revient" jamais : le code du processus enfant est intégralement remplacé, la ligne suivante n'est donc atteinte qu'en cas d'échec de `execlp()` lui-même.
 
 ## Attendre la fin d'un enfant : `wait()` / `waitpid()`
 
@@ -105,5 +105,5 @@ Voir aussi [Les threads](/?c=langages-de-programmation&s=c&p=threads), une alter
 |---|---|
 | **À retenir** | `fork()` duplique le processus courant (deux processus continuent après l'appel) ; `exec*()` remplace le programme du processus courant ; `wait()`/`waitpid()` attendent qu'un enfant se termine. |
 | **Outils utilisables** | `fork()`, `execlp()`/`execve()`, `wait()`/`waitpid()`, `WIFEXITED`/`WEXITSTATUS`. |
-| **Pièges à éviter** | Ne jamais appeler `wait()` sur un enfant terminé — il reste "zombie" dans la table des processus jusqu'à ce que le parent le récupère ou se termine lui-même. |
+| **Pièges à éviter** | Ne jamais appeler `wait()` sur un enfant terminé : il reste "zombie" dans la table des processus jusqu'à ce que le parent le récupère ou se termine lui-même. |
 | **Bonnes pratiques** | Toujours vérifier la valeur de retour de `fork()` (`< 0` = échec) avant de brancher sur le cas parent/enfant. |

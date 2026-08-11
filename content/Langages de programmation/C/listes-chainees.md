@@ -4,7 +4,7 @@ order: 11
 
 # Les listes chaînées
 
-Une **liste chaînée** est une structure de données où chaque élément (un **maillon**, ou *nœud*) contient une valeur et un pointeur vers l'élément suivant. Contrairement à un tableau, ses éléments ne sont pas stockés de façon contiguë en mémoire — c'est ce qui permet d'ajouter ou de retirer un élément sans avoir à déplacer tous les autres.
+Une **liste chaînée** est une structure de données où chaque élément (un **maillon**, ou *nœud*) contient une valeur et un pointeur vers l'élément suivant. Contrairement à un tableau, ses éléments ne sont pas stockés de façon contiguë en mémoire : c'est ce qui permet d'ajouter ou de retirer un élément sans avoir à déplacer tous les autres.
 
 ## Déclarer un maillon
 
@@ -50,7 +50,7 @@ void afficher(Maillon *tete)
 }
 ```
 
-> **Note :** `courant` est une **copie** du pointeur `tete` — avancer `courant = courant->suivant` ne modifie pas `tete`, qui continue de désigner le premier maillon de la liste. C'est pour ça qu'on utilise toujours un pointeur "de travail" séparé pour parcourir une liste, jamais la tête elle-même.
+> **Note :** `courant` est une **copie** du pointeur `tete` : avancer `courant = courant->suivant` ne modifie pas `tete`, qui continue de désigner le premier maillon de la liste. C'est pour ça qu'on utilise toujours un pointeur "de travail" séparé pour parcourir une liste, jamais la tête elle-même.
 
 ## Insérer en tête de liste
 
@@ -70,11 +70,11 @@ Maillon *insererEnTete(Maillon *tete, int valeur)
 tete = insererEnTete(tete, 5);
 ```
 
-Insérer en tête est une opération en temps constant (aucun autre maillon n'est déplacé) — contrairement à un tableau, où insérer au début demande de décaler tous les éléments existants.
+Insérer en tête est une opération en temps constant (aucun autre maillon n'est déplacé) ; contrairement à un tableau, où insérer au début demande de décaler tous les éléments existants.
 
 ## Libérer la liste
 
-Chaque maillon alloué avec `malloc()` doit être libéré individuellement — libérer directement `tete` sans garder de référence au reste perdrait l'accès à tous les maillons suivants (fuite mémoire, voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) :
+Chaque maillon alloué avec `malloc()` doit être libéré individuellement : libérer directement `tete` sans garder de référence au reste perdrait l'accès à tous les maillons suivants (fuite mémoire, voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) :
 
 ```c
 void libererListe(Maillon *tete)
@@ -89,7 +89,7 @@ void libererListe(Maillon *tete)
 }
 ```
 
-> **Note :** l'ordre compte ici : appeler `free(courant)` puis lire `courant->suivant` serait un **use-after-free** (voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) — la valeur du pointeur `suivant` doit être récupérée avant la libération du maillon qui la contient.
+> **Note :** l'ordre compte ici : appeler `free(courant)` puis lire `courant->suivant` serait un **use-after-free** (voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) : la valeur du pointeur `suivant` doit être récupérée avant la libération du maillon qui la contient.
 
 ## Liste chaînée vs tableau
 
@@ -106,7 +106,7 @@ void libererListe(Maillon *tete)
 
 | | |
 |---|---|
-| **À retenir** | Une liste chaînée relie des maillons dispersés en mémoire via un pointeur "suivant" — contrairement à un tableau, insérer en tête est en temps constant, mais l'accès par index nécessite un parcours complet. |
+| **À retenir** | Une liste chaînée relie des maillons dispersés en mémoire via un pointeur "suivant" ; contrairement à un tableau, insérer en tête est en temps constant, mais l'accès par index nécessite un parcours complet. |
 | **Outils utilisables** | Une `struct` auto-référentielle (`struct Maillon *suivant`), `malloc`/`free` par maillon. |
 | **Pièges à éviter** | Libérer un maillon avant de sauvegarder son pointeur `suivant` (use-after-free) ; oublier de libérer chaque maillon individuellement (fuite mémoire). |
 | **Bonnes pratiques** | Toujours sauvegarder `courant->suivant` avant de `free(courant)` ; vérifier chaque `malloc()` contre `NULL` avant de l'utiliser. |
