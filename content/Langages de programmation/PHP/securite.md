@@ -56,34 +56,18 @@ Si vous affichez une donnée utilisateur sur la page (ex: un commentaire, un pse
 
 ## Se protéger des injections SQL
 
-Si vous insérez directement une donnée utilisateur dans une requête SQL, un visiteur peut manipuler la requête pour accéder à des données qu'il ne devrait pas voir, voire les supprimer. C'est une **injection SQL**.
+Si vous insérez directement une donnée utilisateur dans une requête SQL, un visiteur peut manipuler la requête pour accéder à des données qu'il ne devrait pas voir, voire les supprimer. C'est une **injection SQL**, déjà détaillée avec le mécanisme des requêtes préparées PDO dans le chapitre [SQL](/?c=domain-specific-languages-dsl&p=sql) : la protection en PHP reste exactement la même, jamais concaténer une donnée utilisateur dans le texte de la requête.
 
 ```php
 <?php
     // ❌ Dangereux : la donnée est insérée directement dans la requête
     $requete = "SELECT * FROM users WHERE email = '" . $_POST['email'] . "'";
-?>
-```
 
-La solution est d'utiliser des **requêtes préparées**, via PDO (*PHP Data Objects*, l'outil intégré à PHP pour communiquer avec une base de données), qui séparent la requête SQL des données :
-
-```php
-<?php
-    // Connexion à la base de données (type, adresse, nom de la base, identifiant, mot de passe)
-    $pdo = new PDO('mysql:host=localhost;dbname=mabase', 'utilisateur', 'motdepasse');
-
-    // Préparation de la requête : ":email" est un espace réservé, pas encore une vraie valeur
+    // ✅ Sûr : la donnée passe par un espace réservé, jamais interprétée comme du SQL
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
-
-    // Exécution de la requête avec la vraie valeur, envoyée par l'utilisateur
     $stmt->execute(['email' => $_POST['email']]);
-
-    // Récupération du résultat sous forme de tableau PHP
-    $user = $stmt->fetch();
 ?>
 ```
-
-Avec cette méthode, la donnée envoyée par l'utilisateur via `$_POST` n'est jamais interprétée comme du code SQL, quoi qu'elle contienne. Elle sera toujours considérée comme une valeur de la requête.
 
 ## `password_hash()` et `password_verify()` : stocker des mots de passe
 

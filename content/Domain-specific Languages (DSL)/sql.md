@@ -1,6 +1,6 @@
 # SQL
 
-SQL (*Structured Query Language*) est un langage à but unique : interroger et manipuler des données stockées sous forme de tables. Comme la regex, ce n'est pas un langage de programmation généraliste : il n'a ni boucles, ni fonctions définies par l'utilisateur, ni variables au sens classique. Il est interprété par un moteur de base de données (MySQL, PostgreSQL, SQL Server, SQLite...), généralement piloté depuis un langage hôte (PHP, Python, JS...) via un connecteur.
+SQL (*Structured Query Language*) est un langage à but unique : interroger et manipuler des données stockées sous forme de tables. Comme [la regex](/?c=domain-specific-languages-dsl&p=regex), ce n'est pas un langage de programmation généraliste : il n'a ni boucles, ni fonctions définies par l'utilisateur, ni variables au sens classique. Il est interprété par un moteur de base de données (MySQL, PostgreSQL, SQL Server, SQLite...), généralement piloté depuis un langage hôte (PHP, Python, JS...) via un connecteur.
 
 ## Une table, comme une feuille de tableur
 
@@ -82,7 +82,7 @@ $sql = "SELECT * FROM clients WHERE ville = '" . $_GET['ville'] . "'";
 ?>
 ```
 
-Si `$_GET['ville']` contenait `Lyon' OR '1'='1`, la requête deviendrait une condition toujours vraie, renvoyant toutes les lignes de la table. Équivalent conceptuel d'un dépassement de tampon en C : une entrée non contrôlée qui modifie la **structure** de la commande, au lieu de rester une simple donnée.
+Si `$_GET['ville']` contenait `Lyon' OR '1'='1`, la requête deviendrait une condition toujours vraie, renvoyant toutes les lignes de la table. Équivalent conceptuel d'un [dépassement de tampon](/?c=langages-de-programmation&s=c&p=memoire) en C : une entrée non contrôlée qui modifie la **structure** de la commande, au lieu de rester une simple donnée.
 
 Les espaces réservés nommés (`:ville`) empêchent ça structurellement : la valeur passée à `execute()` est **toujours** traitée comme une donnée pure par le driver, jamais réinterprétée comme du SQL, quoi qu'elle contienne.
 
