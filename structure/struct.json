@@ -26,6 +26,10 @@
         {
           "id": "table-pont",
           "label": "La table pont"
+        },
+        {
+          "id": "schemas-et-tables-techniques",
+          "label": "Schémas et tables techniques"
         }
       ]
     },
