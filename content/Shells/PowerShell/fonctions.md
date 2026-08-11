@@ -18,7 +18,7 @@ Saluer -Nom "Jean"   # Bonjour Jean !
 Saluer "Jean"         # fonctionne aussi : PowerShell accepte un argument positionnel si le nom est omis
 ```
 
-> **Convention de nommage :** les cmdlets et fonctions PowerShell suivent la casse `Verb-Nom` (`Get-ChildItem`, `Saluer` ici en simplifié) — un ensemble de verbes standard (`Get`, `Set`, `New`, `Remove`...) est même imposé par convention pour les cmdlets officielles, afin qu'un même verbe se comporte de façon prévisible d'une commande à l'autre.
+> **Convention de nommage :** les cmdlets et fonctions PowerShell suivent la casse `Verb-Nom` (`Get-ChildItem`, `Saluer` ici en simplifié) ; un ensemble de verbes standard (`Get`, `Set`, `New`, `Remove`...) est même imposé par convention pour les cmdlets officielles, afin qu'un même verbe se comporte de façon prévisible d'une commande à l'autre.
 
 ## Les paramètres d'une fonction
 
@@ -36,7 +36,7 @@ function Resumer {
 Resumer -Nom "Dupont" -Prenom "Jean"
 ```
 
-> **Note :** contrairement à Bash où `$1`, `$2` sont purement positionnels, l'appel `-Nom "Dupont" -Prenom "Jean"` reste correct même dans le désordre (`-Prenom "Jean" -Nom "Dupont"`) — les paramètres sont associés par leur nom, pas par leur position, ce qui explique pourquoi la casse `Verb-Nom` insiste autant sur des noms de paramètres clairs.
+> **Note :** contrairement à Bash où `$1`, `$2` sont purement positionnels, l'appel `-Nom "Dupont" -Prenom "Jean"` reste correct même dans le désordre (`-Prenom "Jean" -Nom "Dupont"`) : les paramètres sont associés par leur nom, pas par leur position, ce qui explique pourquoi la casse `Verb-Nom` insiste autant sur des noms de paramètres clairs.
 
 ## De vraies valeurs de retour
 
@@ -55,7 +55,7 @@ if (EstPair -Nombre 4) {
 
 ## "Renvoyer" une donnée : la sortie non capturée du pipeline
 
-En pratique, `return` est même optionnel : **toute sortie non assignée** dans le corps d'une fonction devient sa valeur de retour, exactement comme la dernière expression évaluée d'un bloc — une différence importante avec Bash, où `echo` sert uniquement à afficher, jamais à "retourner" au sens strict :
+En pratique, `return` est même optionnel : **toute sortie non assignée** dans le corps d'une fonction devient sa valeur de retour, exactement comme la dernière expression évaluée d'un bloc ; une différence importante avec Bash, où `echo` sert uniquement à afficher, jamais à "retourner" au sens strict :
 
 ```powershell
 function Addition {
@@ -67,7 +67,7 @@ $resultat = Addition -A 4 -B 6
 Write-Output "Résultat : $resultat"   # Résultat : 10
 ```
 
-> **Note :** contrairement à Bash où `echo` à l'intérieur d'une fonction sert *uniquement* à afficher (la capture via `$(...)` est une convention côté appelant, pas un vrai mécanisme de retour), toute ligne PowerShell dont le résultat n'est ni assigné ni supprimé (avec `[void]` ou `Out-Null`) s'ajoute à la valeur de retour de la fonction — un `Write-Output` de débogage oublié dans une fonction peut ainsi polluer silencieusement ce qu'elle renvoie.
+> **Note :** contrairement à Bash où `echo` à l'intérieur d'une fonction sert *uniquement* à afficher (la capture via `$(...)` est une convention côté appelant, pas un vrai mécanisme de retour), toute ligne PowerShell dont le résultat n'est ni assigné ni supprimé (avec `[void]` ou `Out-Null`) s'ajoute à la valeur de retour de la fonction : un `Write-Output` de débogage oublié dans une fonction peut ainsi polluer silencieusement ce qu'elle renvoie.
 
 ## Portée des variables
 

@@ -4,7 +4,7 @@ order: 8
 
 # Expansion et jokers (wildcards)
 
-PowerShell reprend l'idée du globbing Bash — remplacer un motif par la liste réelle de fichiers correspondants — mais sous un nom différent (*wildcards*) et avec des règles légèrement distinctes, en plus d'un opérateur de correspondance de motif réutilisable en dehors des noms de fichiers.
+PowerShell reprend l'idée du globbing Bash (remplacer un motif par la liste réelle de fichiers correspondants), mais sous un nom différent (*wildcards*) et avec des règles légèrement distinctes, en plus d'un opérateur de correspondance de motif réutilisable en dehors des noms de fichiers.
 
 ## Les wildcards : `*`, `?`, `[]`
 
@@ -22,7 +22,7 @@ Get-ChildItem fichier[a-z].txt          # une seule lettre minuscule à cette po
 | `[abc]` | Un seul caractère parmi `a`, `b` ou `c` |
 | `[a-z]` | Un seul caractère dans cette plage |
 
-> **Note :** comme le globbing Bash, ce n'est **pas** une [regex](/?c=domain-specific-languages-dsl&p=regex) — ces motifs ne sont interprétés de cette façon que par les cmdlets qui l'annoncent explicitement (`Get-ChildItem`, `-like`), pas par PowerShell lui-même à l'échelle de la ligne entière comme le fait Bash avant d'exécuter quoi que ce soit.
+> **Note :** comme le globbing Bash, ce n'est **pas** une [regex](/?c=domain-specific-languages-dsl&p=regex) : ces motifs ne sont interprétés de cette façon que par les cmdlets qui l'annoncent explicitement (`Get-ChildItem`, `-like`), pas par PowerShell lui-même à l'échelle de la ligne entière comme le fait Bash avant d'exécuter quoi que ce soit.
 
 ## `-like` : appliquer un wildcard à une chaîne quelconque
 
@@ -45,7 +45,7 @@ Get-ChildItem *.xyz
 # si aucun fichier .xyz n'existe, la commande ne renvoie rien -> pas d'erreur silencieuse comme en Bash
 ```
 
-> **Note :** c'est une différence importante avec Bash, où `echo *.xyz` affiche littéralement le texte `*.xyz` si rien ne correspond — PowerShell, lui, résout toujours le motif en une vraie liste (éventuellement vide), jamais en la chaîne brute du motif non résolu.
+> **Note :** c'est une différence importante avec Bash, où `echo *.xyz` affiche littéralement le texte `*.xyz` si rien ne correspond ; PowerShell, lui, résout toujours le motif en une vraie liste (éventuellement vide), jamais en la chaîne brute du motif non résolu.
 
 ## L'expansion de plage (`..`)
 
@@ -79,7 +79,7 @@ Write-Output *.txt      # PowerShell tente de résoudre le motif selon le contex
 Write-Output '*.txt'     # affiche littéralement *.txt -> les guillemets simples désactivent l'interprétation
 ```
 
-> **Note :** contrairement à Bash où `*` est développé par le shell lui-même avant même que la commande ne le reçoive, en PowerShell c'est chaque cmdlet qui décide d'interpréter ou non un wildcard reçu en argument — `Write-Output *.txt` n'affiche donc que le texte `*.txt`, alors que `Get-ChildItem *.txt` le résout bien en liste de fichiers.
+> **Note :** contrairement à Bash où `*` est développé par le shell lui-même avant même que la commande ne le reçoive, en PowerShell c'est chaque cmdlet qui décide d'interpréter ou non un wildcard reçu en argument : `Write-Output *.txt` n'affiche donc que le texte `*.txt`, alors que `Get-ChildItem *.txt` le résout bien en liste de fichiers.
 
 ---
 
@@ -87,7 +87,7 @@ Write-Output '*.txt'     # affiche littéralement *.txt -> les guillemets simple
 
 | | |
 |---|---|
-| **À retenir** | Les wildcards PowerShell (`*`, `?`, `[]`) ressemblent au globbing Bash, mais ne sont interprétés que par les cmdlets qui l'annoncent explicitement — PowerShell lui-même ne les développe jamais à l'échelle de toute la ligne comme le fait Bash. |
+| **À retenir** | Les wildcards PowerShell (`*`, `?`, `[]`) ressemblent au globbing Bash, mais ne sont interprétés que par les cmdlets qui l'annoncent explicitement : PowerShell lui-même ne les développe jamais à l'échelle de toute la ligne comme le fait Bash. |
 | **Outils utilisables** | `-like` (wildcard sur une chaîne quelconque), l'expansion de plage (`1..5`). |
-| **Pièges à éviter** | S'attendre à ce qu'un motif non résolu s'affiche littéralement comme en Bash — PowerShell résout toujours en une vraie liste, éventuellement vide. |
+| **Pièges à éviter** | S'attendre à ce qu'un motif non résolu s'affiche littéralement comme en Bash : PowerShell résout toujours en une vraie liste, éventuellement vide. |
 | **Bonnes pratiques** | Utiliser `-like`/`-match` pour appliquer un motif à une chaîne quelconque, pas seulement à des noms de fichiers. |

@@ -4,7 +4,7 @@ order: 11
 
 # Permissions et manipulation de fichiers
 
-Windows n'utilise pas le modèle de permissions Unix (propriétaire/groupe/autres, `rwx`) vu dans le chapitre équivalent de Bash — il repose sur des **listes de contrôle d'accès** (ACL, *Access Control List*), plus fines mais plus verbeuses. Ce chapitre couvre ce système ainsi que les commandes de base pour manipuler fichiers et dossiers.
+Windows n'utilise pas le modèle de permissions Unix (propriétaire/groupe/autres, `rwx`) vu dans le chapitre équivalent de Bash : il repose sur des **listes de contrôle d'accès** (ACL, *Access Control List*), plus fines mais plus verbeuses. Ce chapitre couvre ce système ainsi que les commandes de base pour manipuler fichiers et dossiers.
 
 ## Lire les permissions avec `Get-Acl`
 
@@ -20,7 +20,7 @@ Access  : DESKTOP\utilisateur Allow  FullControl
           BUILTIN\Users        Allow  ReadAndExecute
 ```
 
-Chaque ligne d'accès associe une **identité** (utilisateur ou groupe) à un **droit** (`FullControl`, `Modify`, `ReadAndExecute`...) — il peut y en avoir un nombre arbitraire, contrairement aux trois catégories fixes d'Unix (propriétaire/groupe/autres).
+Chaque ligne d'accès associe une **identité** (utilisateur ou groupe) à un **droit** (`FullControl`, `Modify`, `ReadAndExecute`...) ; il peut y en avoir un nombre arbitraire, contrairement aux trois catégories fixes d'Unix (propriétaire/groupe/autres).
 
 ## `Set-Acl` : modifier les permissions
 
@@ -31,7 +31,7 @@ $acl.SetAccessRule($regle)
 Set-Acl fichier.txt $acl
 ```
 
-> **Note :** contrairement à `chmod 755` (une seule commande, un seul chiffre), modifier une ACL Windows nécessite de récupérer l'ACL existante, construire une règle, puis la réappliquer — plus verbeux, mais permet d'accorder des droits différents à un nombre arbitraire d'utilisateurs sur un même fichier, ce que le modèle Unix ne permet pas nativement.
+> **Note :** contrairement à `chmod 755` (une seule commande, un seul chiffre), modifier une ACL Windows nécessite de récupérer l'ACL existante, construire une règle, puis la réappliquer, plus verbeux mais permettant d'accorder des droits différents à un nombre arbitraire d'utilisateurs sur un même fichier, ce que le modèle Unix ne permet pas nativement.
 
 ## `icacls` : l'équivalent en ligne de commande classique
 
@@ -55,7 +55,7 @@ Remove-Item fichier.txt                                   # supprime un fichier 
 Remove-Item -Recurse dossier                               # supprime un dossier et tout son contenu
 ```
 
-> **Note :** comme `rm -rf` en Bash, `Remove-Item -Recurse -Force` est irréversible en ligne de commande (contrairement à une suppression via l'explorateur Windows, qui passe par la corbeille) — une cible mal ciblée peut supprimer bien plus que prévu, sans confirmation ni recours.
+> **Note :** comme `rm -rf` en Bash, `Remove-Item -Recurse -Force` est irréversible en ligne de commande (contrairement à une suppression via l'explorateur Windows, qui passe par la corbeille) : une cible mal ciblée peut supprimer bien plus que prévu, sans confirmation ni recours.
 
 ## `Get-ChildItem -Recurse` : rechercher des fichiers (équivalent de `find`)
 
@@ -74,7 +74,7 @@ Voir aussi [Traitement de texte et d'objets](/?c=shells&s=powershell&p=traitemen
 
 | | |
 |---|---|
-| **À retenir** | Windows utilise des ACL (listes de contrôle d'accès) plutôt que le modèle propriétaire/groupe/autres d'Unix — plus verbeux, mais permet des droits différents pour un nombre arbitraire d'utilisateurs. |
+| **À retenir** | Windows utilise des ACL (listes de contrôle d'accès) plutôt que le modèle propriétaire/groupe/autres d'Unix, plus verbeux mais permettant des droits différents pour un nombre arbitraire d'utilisateurs. |
 | **Outils utilisables** | `Get-Acl`/`Set-Acl`, `icacls` (plus concis), `New-Item`/`Copy-Item`/`Move-Item`/`Remove-Item`. |
 | **Pièges à éviter** | `Remove-Item -Recurse -Force` est irréversible en ligne de commande, contrairement à une suppression via l'explorateur (corbeille). |
 | **Bonnes pratiques** | Utiliser `icacls` pour une modification rapide et lisible d'ACL, `Get-Acl`/`Set-Acl` quand un contrôle fin par script est nécessaire. |

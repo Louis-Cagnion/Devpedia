@@ -4,7 +4,7 @@ order: 6
 
 # Les boucles
 
-PowerShell propose les mêmes structures de base que Bash (`for`, `while`, jusqu'à une condition), plus une boucle `foreach` dédiée au parcours d'objets — la plus utilisée en pratique, puisque presque tout en PowerShell est une collection d'objets plutôt que du texte brut.
+PowerShell propose les mêmes structures de base que Bash (`for`, `while`, jusqu'à une condition), plus une boucle `foreach` dédiée au parcours d'objets, la plus utilisée en pratique, puisque presque tout en PowerShell est une collection d'objets plutôt que du texte brut.
 
 ## La boucle `foreach` (parcours de collection)
 
@@ -32,7 +32,7 @@ foreach ($i in 1..5) {
 
 ## `ForEach-Object` : la même idée, mais via le pipeline
 
-Contrairement à `foreach` (un mot-clé du langage), `ForEach-Object` est une cmdlet qui reçoit ses éléments **via le pipeline** (voir [Redirections et pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) — la forme la plus idiomatique en PowerShell pour enchaîner un traitement après une autre commande :
+Contrairement à `foreach` (un mot-clé du langage), `ForEach-Object` est une cmdlet qui reçoit ses éléments **via le pipeline** (voir [Redirections et pipes](/?c=shells&s=powershell&p=redirections-et-pipes)), la forme la plus idiomatique en PowerShell pour enchaîner un traitement après une autre commande :
 
 ```powershell
 Get-ChildItem -Filter "*.txt" | ForEach-Object {
@@ -40,7 +40,7 @@ Get-ChildItem -Filter "*.txt" | ForEach-Object {
 }
 ```
 
-`$_` désigne l'élément courant du pipeline à l'intérieur du bloc — un rôle proche de celui que joue implicitement la variable de boucle d'un `foreach` classique.
+`$_` désigne l'élément courant du pipeline à l'intérieur du bloc, un rôle proche de celui que joue implicitement la variable de boucle d'un `foreach` classique.
 
 ## La boucle `for` de style C
 
@@ -71,7 +71,7 @@ Get-Content "fichier.txt" | ForEach-Object {
 }
 ```
 
-Contrairement à Bash (`while read -r ligne`), lire un fichier ligne par ligne passe naturellement par le pipeline : `Get-Content` produit une collection de lignes, `ForEach-Object` (ou `foreach`) la parcourt — pas de redirection d'entrée standard nécessaire.
+Contrairement à Bash (`while read -r ligne`), lire un fichier ligne par ligne passe naturellement par le pipeline : `Get-Content` produit une collection de lignes, `ForEach-Object` (ou `foreach`) la parcourt : pas de redirection d'entrée standard nécessaire.
 
 ## La boucle `do`/`while` et `do`/`until`
 
@@ -95,7 +95,7 @@ do {
 } until ($i -ge 5)
 ```
 
-`do {...} until (...)` est l'équivalent PowerShell direct du `until` de Bash (bloc répété tant que la condition reste fausse) — la seule différence étant la garantie d'au moins un passage, absente du `while`/`until` de Bash.
+`do {...} until (...)` est l'équivalent PowerShell direct du `until` de Bash (bloc répété tant que la condition reste fausse), la seule différence étant la garantie d'au moins un passage, absente du `while`/`until` de Bash.
 
 ## `break` et `continue`
 
@@ -121,5 +121,5 @@ foreach ($i in 1..10) {
 |---|---|
 | **À retenir** | `foreach` parcourt une collection d'objets ; `ForEach-Object` fait la même chose via le pipeline. `do`/`while` et `do`/`until` garantissent au moins un passage, contrairement à `while`/`until` seuls. |
 | **Outils utilisables** | `1..5` (plage), `$_` (élément courant du pipeline), `break`/`continue`. |
-| **Pièges à éviter** | Confondre `foreach` (mot-clé) et `ForEach-Object` (cmdlet du pipeline) — syntaxe et contexte d'usage différents. |
+| **Pièges à éviter** | Confondre `foreach` (mot-clé) et `ForEach-Object` (cmdlet du pipeline) : syntaxe et contexte d'usage différents. |
 | **Bonnes pratiques** | Préférer `ForEach-Object` dans une chaîne de pipeline, `foreach` pour une boucle autonome sur une collection déjà en mémoire. |
