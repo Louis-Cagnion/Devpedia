@@ -143,17 +143,6 @@ element.innerHTML = '<em>Nouveau</em>';   // ⚠️ écrase tout, interprète le
 
 ---
 
-## 📋 Récapitulatif
-
-| | |
-|---|---|
-| **À retenir** | Un `HTMLElement` représente une balise HTML manipulable en JavaScript : le créer (`createElement`), le sélectionner (`querySelector`), modifier son contenu (`textContent`/`innerHTML`), ses attributs, ses classes ou son style. |
-| **Outils utilisables** | `querySelector`/`querySelectorAll`, `classList`, `setAttribute`/`getAttribute`, `getBoundingClientRect`. |
-| **Pièges à éviter** | Assigner une donnée utilisateur non échappée à `innerHTML`/`insertAdjacentHTML` (faille XSS) ; modifier une `HTMLCollection` live pendant qu'on la parcourt. |
-| **Bonnes pratiques** | Préférer `textContent` à `innerHTML` dès que le contenu est du texte brut ; préférer `querySelectorAll` (figé) à `getElementsByClassName`/`getElementsByTagName` (live) si le DOM est modifié pendant le parcours. |
-
----
-
 ## Le style
 
 **`style`** donne accès aux styles inline de l'élément. Les propriétés CSS s'écrivent en **camelCase** (pas de tiret).
@@ -236,3 +225,14 @@ element.offsetHeight;
 - [MDN : Element.classList](https://developer.mozilla.org/fr/docs/Web/API/Element/classList)
 - [MDN : Element.setAttribute](https://developer.mozilla.org/fr/docs/Web/API/Element/setAttribute)
 - [MDN : insertAdjacentHTML](https://developer.mozilla.org/fr/docs/Web/API/Element/insertAdjacentHTML)
+
+---
+
+## 📋 Récapitulatif
+
+| | |
+|---|---|
+| **À retenir** | Un `HTMLElement` représente une balise HTML manipulable en JavaScript : le créer (`createElement`), le sélectionner (`querySelector`), modifier son contenu (`textContent`/`innerHTML`), ses attributs, ses classes ou son style. |
+| **Outils utilisables** | `querySelector`/`querySelectorAll`, `classList`, `setAttribute`/`getAttribute`, `getBoundingClientRect`. |
+| **Pièges à éviter** | Assigner une donnée utilisateur non échappée à `innerHTML`/`insertAdjacentHTML` (faille XSS) ; modifier une `HTMLCollection` live pendant qu'on la parcourt. |
+| **Bonnes pratiques** | Préférer `textContent` à `innerHTML` dès que le contenu est du texte brut ; préférer `querySelectorAll` (figé) à `getElementsByClassName`/`getElementsByTagName` (live) si le DOM est modifié pendant le parcours. |
