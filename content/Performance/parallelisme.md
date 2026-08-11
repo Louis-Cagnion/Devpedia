@@ -27,7 +27,7 @@ Sur un programme qui interrogeait deux services distincts l'un après l'autre, c
 
 En revanche, lancer deux workers sur le **même** service double la cadence des requêtes qu'il reçoit. Le parallélisme ne contourne pas une limite de débit : il la **concentre**. Et si cette limite existe (quota, protection anti-abus), on ne gagne pas du temps, on achète un risque de blocage.
 
-Ce point est contre-intuitif : les workers partent bien du même endroit — même machine, souvent même adresse IP publique. Du point de vue du service distant, ce n'est pas "plusieurs clients", c'est **un client deux fois plus insistant**.
+Ce point est contre-intuitif : les workers partent bien du même endroit : même machine, souvent même adresse IP publique. Du point de vue du service distant, ce n'est pas "plusieurs clients", c'est **un client deux fois plus insistant**.
 
 ## Pourquoi ça devient contre-productif
 
@@ -35,7 +35,7 @@ Au-delà de la contrainte, chaque worker supplémentaire dégrade les autres :
 
 - **Mémoire et processeur** : plusieurs navigateurs ou interpréteurs se disputent la machine. Les pages se rendent plus lentement, donc chaque worker devient individuellement plus lent.
 - **Effet pervers avec les attentes adaptatives** : si les attentes sont calées sur le temps de réponse réel (voir [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts)), ralentir le rendu **allonge mécaniquement** chaque attente. Le gain par worker s'effondre pendant que la charge continue d'augmenter.
-- **Coût fixe de démarrage** : lancer un processus, un interpréteur, un navigateur coûte quelques secondes. Sur un petit volume de travail, ce coût annule le bénéfice — c'est exactement ce que j'ai observé : sur 4 unités de travail, la version parallèle était *plus lente* que la séquentielle ; le gain n'apparaissait qu'à partir de plusieurs dizaines.
+- **Coût fixe de démarrage** : lancer un processus, un interpréteur, un navigateur coûte quelques secondes. Sur un petit volume de travail, ce coût annule le bénéfice : c'est exactement ce que j'ai observé : sur 4 unités de travail, la version parallèle était *plus lente* que la séquentielle ; le gain n'apparaissait qu'à partir de plusieurs dizaines.
 
 D'où une progression typique :
 
@@ -46,7 +46,7 @@ D'où une progression typique :
 | 4 (2 par cible) | 8 min | **2×** | risque acheté |
 | 6 (3 par cible) | ~7 min | **3×** | contre-productif |
 
-Le passage de 4 à 6 illustre le point : le temps ne baisse presque plus mais la charge continue de croître linéairement — symptôme de **contention** (plusieurs workers qui se disputent une même ressource limitée, ici la machine elle-même : processeur, mémoire), qui annule le bénéfice attendu du parallélisme.
+Le passage de 4 à 6 illustre le point : le temps ne baisse presque plus mais la charge continue de croître linéairement : symptôme de **contention** (plusieurs workers qui se disputent une même ressource limitée, ici la machine elle-même : processeur, mémoire), qui annule le bénéfice attendu du parallélisme.
 
 ## Contraintes pratiques à anticiper
 
@@ -68,7 +68,7 @@ if len(resultats) < attendu:
 
 ## Une alternative souvent meilleure : étaler dans le temps
 
-Quand la contrainte est un quota, la solution n'est pas toujours d'aller plus vite. Découper le travail en lots répartis sur la journée expose beaucoup moins qu'un gros traitement d'un seul coup, pour un résultat identique — et ne demande aucune parallélisation. Si la latence n'a pas d'importance (un traitement nocturne, un rapport périodique), c'est le choix le plus sûr.
+Quand la contrainte est un quota, la solution n'est pas toujours d'aller plus vite. Découper le travail en lots répartis sur la journée expose beaucoup moins qu'un gros traitement d'un seul coup, pour un résultat identique, et ne demande aucune parallélisation. Si la latence n'a pas d'importance (un traitement nocturne, un rapport périodique), c'est le choix le plus sûr.
 
 ---
 

@@ -4,7 +4,7 @@ order: 7
 
 # Éviter le recalcul redondant
 
-Un principe plus général se cache derrière [l'attente d'une condition plutôt que d'une durée](/?c=performance&p=attentes-et-temps-morts) : **ne jamais recalculer un résultat que rien n'a pu changer depuis son dernier calcul**. Là où le chapitre précédent portait sur l'attente (du temps qui passe), celui-ci porte sur le calcul (du processeur et de la mémoire qui travaillent) — la même paresse disciplinée, appliquée à un autre type de coût.
+Un principe plus général se cache derrière [l'attente d'une condition plutôt que d'une durée](/?c=performance&p=attentes-et-temps-morts) : **ne jamais recalculer un résultat que rien n'a pu changer depuis son dernier calcul**. Là où le chapitre précédent portait sur l'attente (du temps qui passe), celui-ci porte sur le calcul (du processeur et de la mémoire qui travaillent) : la même paresse disciplinée, appliquée à un autre type de coût.
 
 ## Mémoïser le résultat d'une fonction
 
@@ -32,7 +32,7 @@ def note_de_credit(client_id):
     return _cache_notes[client_id]
 ```
 
-La **mémoïsation** garde en mémoire le résultat pour une entrée donnée et le réutilise tant que rien ne peut l'invalider. La condition qui fait sa correction n'est pas "c'est plus rapide", c'est "l'entrée n'a pas changé" — exactement le même invariant que celui de la bannière de cookies déjà traitée dans le chapitre précédent, appliqué ici à une valeur plutôt qu'à un état d'affichage.
+La **mémoïsation** garde en mémoire le résultat pour une entrée donnée et le réutilise tant que rien ne peut l'invalider. La condition qui fait sa correction n'est pas "c'est plus rapide", c'est "l'entrée n'a pas changé" : exactement le même invariant que celui de la bannière de cookies déjà traitée dans le chapitre précédent, appliqué ici à une valeur plutôt qu'à un état d'affichage.
 
 > Une mémoïsation sans invalidation est un bug en sursis : si `client_id` peut voir son historique modifié en cours de traitement (un paiement qui arrive entre deux commandes), le cache renvoie une réponse périmée. Mémoïser, c'est d'abord identifier ce qui rendrait le résultat obsolète, avant de décider de le garder.
 
@@ -57,7 +57,7 @@ for ligne in nouvelles_lignes:
 ecrire_marque_de_progression(nouvelles_lignes[-1].horodatage if nouvelles_lignes else dernier_horodatage)
 ```
 
-Le coût du traitement devient proportionnel à ce qui a **changé**, pas à la taille totale des données — un gain qui s'accentue à mesure que le volume déjà traité grandit par rapport au volume réellement nouveau.
+Le coût du traitement devient proportionnel à ce qui a **changé**, pas à la taille totale des données : un gain qui s'accentue à mesure que le volume déjà traité grandit par rapport au volume réellement nouveau.
 
 ## L'exemple du jeu vidéo 2D : ne redessiner que ce qui bouge
 
@@ -81,11 +81,11 @@ def dessiner_frame(ecran, scene, zones_modifiees):
             ecran.definir_pixel(x, y, scene.couleur_a(x, y))
 ```
 
-C'est la logique du **dirty rectangle** (rectangle sale) : la scène signale elle-même quelles zones ont changé depuis le dernier rendu, et seules celles-là sont redessinées. Sur un décor à 90% statique, ça ramène le coût de chaque frame à une fraction de celui d'un rendu complet — pour un résultat visuellement identique.
+C'est la logique du **dirty rectangle** (rectangle sale) : la scène signale elle-même quelles zones ont changé depuis le dernier rendu, et seules celles-là sont redessinées. Sur un décor à 90% statique, ça ramène le coût de chaque frame à une fraction de celui d'un rendu complet, pour un résultat visuellement identique.
 
 ## Un exemple tiré d'un scraper : ne pas confirmer ce qui est déjà prouvé
 
-Un scraper de petites annonces comparait deux annonces pour savoir si elles décrivaient le même véhicule (doublon) ou deux véhicules différents. La vérification complète ouvrait la page détaillée de chaque annonce pour comparer une dizaine de caractéristiques (kilométrage, options, historique d'entretien) — un appel réseau et un temps de rendu non négligeables.
+Un scraper de petites annonces comparait deux annonces pour savoir si elles décrivaient le même véhicule (doublon) ou deux véhicules différents. La vérification complète ouvrait la page détaillée de chaque annonce pour comparer une dizaine de caractéristiques (kilométrage, options, historique d'entretien) : un appel réseau et un temps de rendu non négligeables.
 
 ```python
 def sont_potentiellement_dupliquees(annonce_a, annonce_b):
@@ -106,7 +106,7 @@ def sont_dupliquees(annonce_a, annonce_b):
 
 Dès que la comparaison "légère" (les champs déjà présents sur la carte de résultats) établit que deux annonces sont différentes, la question est **déjà résolue** : ouvrir les deux pages détaillées pour le confirmer ne ferait que recalculer, au prix fort, un résultat que la donnée bon marché a déjà produit. La vérification coûteuse ne s'exécute que dans le cas ambigu, celui où la donnée légère ne suffit pas à trancher.
 
-> À ne pas confondre avec une optimisation de la **latence réseau**. Ici, ce qu'on évite est un travail redondant côté CPU/logique (recalculer une réponse déjà connue) — pas un délai d'E/S. Les pauses volontaires entre requêtes (limite de débit, politesse envers un serveur distant) ou l'attente d'une animation d'interface ne relèvent pas de ce principe : elles restent nécessaires même quand aucun recalcul n'est en jeu, et les supprimer expose à un blocage, pas à une simple lenteur. C'est exactement la distinction posée en fin de [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts) : un délai de protection n'est pas un gaspillage à éliminer.
+> À ne pas confondre avec une optimisation de la **latence réseau**. Ici, ce qu'on évite est un travail redondant côté CPU/logique (recalculer une réponse déjà connue), pas un délai d'E/S. Les pauses volontaires entre requêtes (limite de débit, politesse envers un serveur distant) ou l'attente d'une animation d'interface ne relèvent pas de ce principe : elles restent nécessaires même quand aucun recalcul n'est en jeu, et les supprimer expose à un blocage, pas à une simple lenteur. C'est exactement la distinction posée en fin de [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts) : un délai de protection n'est pas un gaspillage à éliminer.
 
 ## Récapitulatif
 
@@ -125,7 +125,7 @@ Dans les quatre cas, le gain ne vient pas d'un calcul rendu plus rapide, mais d'
 
 | | |
 |---|---|
-| **À retenir** | Ne jamais recalculer un résultat que rien n'a pu changer depuis son dernier calcul — mémoïsation, retraitement incrémental, ou dirty rectangle appliquent tous la même idée à des échelles différentes. |
+| **À retenir** | Ne jamais recalculer un résultat que rien n'a pu changer depuis son dernier calcul : mémoïsation, retraitement incrémental, ou dirty rectangle appliquent tous la même idée à des échelles différentes. |
 | **Outils utilisables** | Un cache en mémoire par entrée (mémoïsation), une marque de progression pour ne retraiter que le nouveau, une comparaison "légère" avant une vérification coûteuse. |
-| **Pièges à éviter** | Mémoïser sans identifier ce qui invaliderait le résultat — un cache jamais invalidé devient une source de données périmées. |
+| **Pièges à éviter** | Mémoïser sans identifier ce qui invaliderait le résultat : un cache jamais invalidé devient une source de données périmées. |
 | **Bonnes pratiques** | Toujours définir la condition d'invalidation avant de mémoïser ; distinguer un recalcul évitable (ce principe) d'une pause volontaire de protection (à conserver). |

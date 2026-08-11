@@ -4,13 +4,13 @@ order: 5
 
 # Les traitements longs
 
-Passé quelques minutes d'exécution, un programme change de nature. Ce n'est plus une commande qu'on lance et dont on voit le résultat : c'est un traitement qui peut être interrompu, qu'il faut pouvoir surveiller, et dont un échec coûte cher. À cette échelle, la robustesse devient une question de performance — reprendre un travail de 20 minutes est un gain bien plus grand que d'en gratter 10 %.
+Passé quelques minutes d'exécution, un programme change de nature. Ce n'est plus une commande qu'on lance et dont on voit le résultat : c'est un traitement qui peut être interrompu, qu'il faut pouvoir surveiller, et dont un échec coûte cher. À cette échelle, la robustesse devient une question de performance : reprendre un travail de 20 minutes est un gain bien plus grand que d'en gratter 10 %.
 
 ## Sauvegarder au fur et à mesure
 
 Un programme qui accumule ses résultats en mémoire et n'écrit qu'à la fin perd **tout** en cas de coupure : plantage, réseau, mise en veille de la machine. Écrire chaque résultat dès qu'il est obtenu change complètement le comportement en cas d'incident.
 
-Le format le plus simple pour cela est le **JSON Lines** : un objet JSON complet par ligne. Contrairement à un tableau JSON, il n'a pas besoin d'être refermé pour rester lisible — un fichier tronqué en plein milieu reste exploitable jusqu'à sa dernière ligne complète.
+Le format le plus simple pour cela est le **JSON Lines** : un objet JSON complet par ligne. Contrairement à un tableau JSON, il n'a pas besoin d'être refermé pour rester lisible : un fichier tronqué en plein milieu reste exploitable jusqu'à sa dernière ligne complète.
 
 ```python
 class EtatDAvancement:
@@ -69,7 +69,7 @@ except Timeout:
     break              # on sort avec des donnees partielles, sans rien signaler
 ```
 
-Le correctif n'est pas d'empêcher l'échec — c'est impossible — mais de garantir qu'il soit **visible**. La méthode la plus fiable est de vérifier un **invariant** à la fin — une propriété qui doit toujours être vraie à ce point du programme, quel que soit le chemin emprunté pour y arriver (ici : "le nombre d'éléments obtenus correspond au nombre annoncé") — indépendamment de la raison de l'échec :
+Le correctif n'est pas d'empêcher l'échec (c'est impossible) mais de garantir qu'il soit **visible**. La méthode la plus fiable est de vérifier un **invariant** à la fin : une propriété qui doit toujours être vraie à ce point du programme, quel que soit le chemin emprunté pour y arriver (ici : "le nombre d'éléments obtenus correspond au nombre annoncé"), indépendamment de la raison de l'échec :
 
 ```python
 if total_annonce is not None and len(charge) < total_annonce:

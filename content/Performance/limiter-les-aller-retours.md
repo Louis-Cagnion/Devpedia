@@ -4,7 +4,7 @@ order: 3
 
 # Limiter les allers-retours
 
-Quand deux composants communiquent (votre code et une base de données, votre code et un navigateur, un client et un serveur), chaque échange a un **coût fixe** indépendant de la quantité de données transportée : sérialisation, franchissement de processus, latence réseau. Ce coût est petit — quelques millisecondes — et c'est précisément ce qui le rend dangereux : il devient énorme par multiplication.
+Quand deux composants communiquent (votre code et une base de données, votre code et un navigateur, un client et un serveur), chaque échange a un **coût fixe** indépendant de la quantité de données transportée : sérialisation, franchissement de processus, latence réseau. Ce coût est petit (quelques millisecondes), et c'est précisément ce qui le rend dangereux : il devient énorme par multiplication.
 
 ## Le motif à reconnaître
 
@@ -18,7 +18,7 @@ for i in range(nombre_de_cartes):
     texte = carte.texte()                # 3
 ```
 
-Sur 100 éléments, cela fait 300 échanges. À 30 ms l'aller-retour, on atteint 9 secondes — pour un travail qui ne demande aucun calcul.
+Sur 100 éléments, cela fait 300 échanges. À 30 ms l'aller-retour, on atteint 9 secondes, pour un travail qui ne demande aucun calcul.
 
 ## Tout ramener en une fois
 
@@ -49,7 +49,7 @@ foreach ($clients as $client) {
 }
 ```
 
-La correction est structurellement identique — un seul échange qui ramène tout :
+La correction est structurellement identique : un seul échange qui ramène tout :
 
 ```sql
 SELECT c.id, c.nom, cm.*
@@ -67,7 +67,7 @@ Le motif se retrouve partout où il y a une frontière à franchir :
 
 - **API HTTP** : privilégier un point d'entrée qui accepte une liste d'identifiants plutôt que d'appeler *n* fois le point d'entrée unitaire ;
 - **Système de fichiers** : lire un fichier en une fois plutôt que caractère par caractère (c'est le rôle des tampons, voir [Appels système et descripteurs](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) en C) ;
-- **DOM** : accumuler les modifications puis les appliquer, plutôt que de modifier le document dans une boucle — chaque écriture peut déclencher un recalcul de mise en page.
+- **DOM** : accumuler les modifications puis les appliquer, plutôt que de modifier le document dans une boucle : chaque écriture peut déclencher un recalcul de mise en page.
 
 ## Savoir quand ne pas le faire
 
@@ -86,7 +86,7 @@ La bonne question n'est donc pas "un seul échange ou *n* ?" mais "quel est le p
 
 | | |
 |---|---|
-| **À retenir** | Chaque échange entre deux composants (réseau, base de données, DOM) a un coût fixe indépendant du volume — une boucle qui redemande quelque chose à chaque tour ("N+1") multiplie ce coût fixe par le nombre d'éléments. |
+| **À retenir** | Chaque échange entre deux composants (réseau, base de données, DOM) a un coût fixe indépendant du volume : une boucle qui redemande quelque chose à chaque tour ("N+1") multiplie ce coût fixe par le nombre d'éléments. |
 | **Outils utilisables** | Ramener toutes les données en un seul échange (jointure SQL, évaluation groupée côté page), traitement par lots pour les très gros volumes. |
 | **Pièges à éviter** | Une requête par élément dans une boucle (problème N+1) ; ramener un volume si grand qu'il sature la mémoire du processus. |
 | **Bonnes pratiques** | Déplacer la boucle du côté où sont les données plutôt que de faire des allers-retours répétés ; découper en lots de taille raisonnable entre "un seul échange" et "un par élément". |

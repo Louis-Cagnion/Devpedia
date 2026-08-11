@@ -53,10 +53,10 @@ En agrégeant ensuite par nom, on obtient le nombre d'appels **et** le temps cum
 
 Une optimisation non re-mesurée est une croyance. Deux vérifications valent d'être systématiques :
 
-- **le temps a bien baissé** — parfois un changement "évidemment plus rapide" ne change rien, parce qu'il n'était pas sur le **chemin critique** (la suite d'étapes dépendantes qui détermine à elle seule la durée totale ; accélérer une étape en dehors de cette suite ne raccourcit rien, puisque le programme attend de toute façon la fin des étapes qui, elles, en font partie) ;
-- **le résultat est identique** — c'est la vérification qu'on oublie, et c'est la plus importante. Une optimisation qui casse silencieusement la sortie est bien pire qu'un programme lent.
+- **le temps a bien baissé** : parfois un changement "évidemment plus rapide" ne change rien, parce qu'il n'était pas sur le **chemin critique** (la suite d'étapes dépendantes qui détermine à elle seule la durée totale ; accélérer une étape en dehors de cette suite ne raccourcit rien, puisque le programme attend de toute façon la fin des étapes qui, elles, en font partie) ;
+- **le résultat est identique** : c'est la vérification qu'on oublie, et c'est la plus importante. Une optimisation qui casse silencieusement la sortie est bien pire qu'un programme lent.
 
-Dans le cas ci-dessus, comparer la sortie octet par octet avant et après chaque étape a permis de détecter une extraction devenue incomplète — un bug qu'aucun chronomètre n'aurait révélé.
+Dans le cas ci-dessus, comparer la sortie octet par octet avant et après chaque étape a permis de détecter une extraction devenue incomplète : un bug qu'aucun chronomètre n'aurait révélé.
 
 ## Le piège de la mesure unique
 
@@ -68,7 +68,7 @@ Un seul relevé ne dit rien : le réseau, le cache et la charge de la machine fo
 
 | | |
 |---|---|
-| **À retenir** | Ne jamais optimiser sans avoir mesuré — l'intuition sur "ce qui est lent" cible en général le code qui semble compliqué, pas celui qui coûte réellement cher. |
+| **À retenir** | Ne jamais optimiser sans avoir mesuré : l'intuition sur "ce qui est lent" cible en général le code qui semble compliqué, pas celui qui coûte réellement cher. |
 | **Outils utilisables** | Un profileur classique (par fonction), une instrumentation manuelle par phase quand le programme passe son temps à attendre. |
-| **Pièges à éviter** | Se fier à une mesure unique — le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation. |
+| **Pièges à éviter** | Se fier à une mesure unique : le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation. |
 | **Bonnes pratiques** | Toujours re-mesurer après une optimisation (temps ET exactitude du résultat) ; prendre plusieurs mesures pour distinguer un vrai gain du bruit. |
