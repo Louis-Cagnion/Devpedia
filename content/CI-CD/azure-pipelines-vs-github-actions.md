@@ -4,7 +4,7 @@ order: 4
 
 # Azure Pipelines contre GitHub Actions
 
-**GitHub Actions** est l'équivalent GitHub d'[Azure Pipelines](/?c=ci-cd&p=azure-devops-plateforme) : un fichier YAML décrit des étapes automatiques, déclenchées par un événement du dépôt (un push, une pull request...), et exécutées sur une machine fournie par GitHub ou la vôtre.
+**GitHub Actions** est l'équivalent, sur [GitHub](/?c=git&p=github-et-plateformes), d'[Azure Pipelines](/?c=ci-cd&p=azure-devops-plateforme) : un fichier YAML décrit des étapes automatiques, déclenchées par un événement du dépôt (un push, une [pull request](/?c=git&p=pull-requests-github)...), et exécutées sur une machine fournie par GitHub ou la vôtre.
 
 ## Vocabulaire équivalent, structure différente
 

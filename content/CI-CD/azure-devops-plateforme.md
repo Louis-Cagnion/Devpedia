@@ -4,7 +4,7 @@ order: 2
 
 # Azure DevOps comme plateforme
 
-**Azure DevOps** est la plateforme de Microsoft qui regroupe, sous un même projet, la planification du travail, l'hébergement du code, l'automatisation CI/CD (voir [Qu'est-ce qu'un pipeline CI/CD ?](/?c=ci-cd&p=pipeline-cicd)) et le stockage de paquets. Elle rassemble en un seul endroit ce que GitHub, familier si vous en venez, répartit sur plusieurs services distincts.
+**Azure DevOps** est la plateforme de Microsoft qui regroupe, sous un même projet, la planification du travail, l'hébergement du code, l'automatisation CI/CD (voir [Qu'est-ce qu'un pipeline CI/CD ?](/?c=ci-cd&p=pipeline-cicd)) et le stockage de paquets. Elle rassemble en un seul endroit ce que [GitHub](/?c=git&p=github-et-plateformes) (la plateforme d'hébergement Git la plus répandue) répartit sur plusieurs services distincts.
 
 ## Les quatre services d'un projet Azure DevOps
 

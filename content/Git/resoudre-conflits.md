@@ -1,5 +1,5 @@
 ---
-order: 9
+order: 12
 ---
 
 # Résoudre un conflit de fusion
@@ -29,8 +29,8 @@ const TVA_TAUX = 0.20;
 ```bash
 git add fichier_en_conflit.js
 
-git commit                # si le conflit venait d'un "merge"
-git rebase --continue     # si le conflit venait d'un "rebase"
+git commit             # si le conflit venait d'un "merge"
+git rebase --continue  # si le conflit venait d'un "rebase"
 ```
 
 ## Voir quels fichiers sont en conflit
@@ -45,8 +45,8 @@ git status
 Si la résolution s'avère trop complexe ou qu'on préfère repartir de zéro :
 
 ```bash
-git merge --abort     # annule un merge en cours, restaure l'état d'avant la tentative
-git rebase --abort    # annule un rebase en cours
+git merge --abort   # annule un merge en cours, restaure l'état d'avant la tentative
+git rebase --abort  # annule un rebase en cours
 ```
 
 ## Réduire le risque de conflits

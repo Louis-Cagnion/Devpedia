@@ -1,5 +1,5 @@
 ---
-order: 11
+order: 14
 ---
 
 # L'architecture interne de Git
@@ -78,12 +78,12 @@ Chaque nouvel objet commence sa vie comme un fichier compressé indépendant ("*
 Les commandes du quotidien (`add`, `commit`, `merge`...) sont la **porcelaine** : une interface conviviale construite entièrement au-dessus de commandes plus bas niveau, la **plomberie**, qui manipulent directement les objets :
 
 ```bash
-echo "contenu" | git hash-object -w --stdin   # crée un blob, affiche son hash
-git cat-file -p a3f9c1d                        # affiche le contenu décompressé d'un objet
-git cat-file -t a3f9c1d                        # affiche son type (blob/tree/commit/tag)
-git write-tree                                  # construit un objet tree depuis l'index actuel
-git commit-tree a3f9c1d -m "message"             # crée manuellement un objet commit
-git update-ref refs/heads/main a3f9c1d           # déplace manuellement une branche vers un commit
+echo "contenu" | git hash-object -w --stdin  # crée un blob, affiche son hash
+git cat-file -p a3f9c1d                      # affiche le contenu décompressé d'un objet
+git cat-file -t a3f9c1d                      # affiche son type (blob/tree/commit/tag)
+git write-tree                               # construit un objet tree depuis l'index actuel
+git commit-tree a3f9c1d -m "message"         # crée manuellement un objet commit
+git update-ref refs/heads/main a3f9c1d       # déplace manuellement une branche vers un commit
 ```
 
 Un `git commit` "normal" n'est, sous le capot, rien de plus qu'un enchaînement de `write-tree`, `commit-tree` et `update-ref`.
@@ -114,9 +114,9 @@ Après une réécriture d'historique (ou un simple `reset --hard`), les anciens 
 Un objet n'est réellement supprimé du dépôt local que lorsque plus rien ne le retient :
 
 ```bash
-git reflog expire --expire=now --all   # vide immédiatement le reflog de toutes les refs (au lieu d'attendre l'expiration par défaut)
-git gc --prune=now                      # supprime tout objet devenu inaccessible ("unreachable")
-git fsck --unreachable                  # liste les objets encore présents mais non référencés par aucune branche/tag/reflog
+git reflog expire --expire=now --all  # vide immédiatement le reflog de toutes les refs (au lieu d'attendre l'expiration par défaut)
+git gc --prune=now                    # supprime tout objet devenu inaccessible ("unreachable")
+git fsck --unreachable                # liste les objets encore présents mais non référencés par aucune branche/tag/reflog
 ```
 
 > **Note :** ce nettoyage ne concerne que le dépôt **local**. Un dépôt distant (GitHub, GitLab...) applique son propre `gc` selon son propre calendrier : après un `push --force` qui retire un fichier sensible de l'historique, l'ancien commit peut rester accessible côté serveur via son hash exact (une requête ciblée, pas une navigation normale) jusqu'à ce que le serveur fasse son propre nettoyage. Pour une garantie de suppression immédiate côté serveur, seul le support de la plateforme peut agir.
