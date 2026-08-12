@@ -9,10 +9,10 @@ PowerShell reprend l'idée du globbing Bash (remplacer un motif par la liste ré
 ## Les wildcards : `*`, `?`, `[]`
 
 ```powershell
-Get-ChildItem *.txt                    # tous les fichiers se terminant par .txt
-Get-ChildItem fichier?.txt              # fichier1.txt, fichierA.txt... ('?' = exactement 1 caractère)
-Get-ChildItem fichier[123].txt          # fichier1.txt, fichier2.txt ou fichier3.txt uniquement
-Get-ChildItem fichier[a-z].txt          # une seule lettre minuscule à cette position
+Get-ChildItem *.txt             # tous les fichiers se terminant par .txt
+Get-ChildItem fichier?.txt      # fichier1.txt, fichierA.txt... ('?' = exactement 1 caractère)
+Get-ChildItem fichier[123].txt  # fichier1.txt, fichier2.txt ou fichier3.txt uniquement
+Get-ChildItem fichier[a-z].txt  # une seule lettre minuscule à cette position
 ```
 
 | Motif | Signifie |
@@ -68,15 +68,15 @@ Pour générer plusieurs chemins à la fois (équivalent de `fichier{1,2,3}.txt`
 ## L'expansion du tilde (`~`)
 
 ```powershell
-Set-Location ~              # équivalent à Set-Location $HOME
-Set-Location ~\projets        # équivalent à Set-Location $HOME\projets
+Set-Location ~          # équivalent à Set-Location $HOME
+Set-Location ~\projets  # équivalent à Set-Location $HOME\projets
 ```
 
 ## Empêcher l'expansion : les guillemets simples
 
 ```powershell
-Write-Output *.txt      # PowerShell tente de résoudre le motif selon le contexte de la commande
-Write-Output '*.txt'     # affiche littéralement *.txt -> les guillemets simples désactivent l'interprétation
+Write-Output *.txt    # PowerShell tente de résoudre le motif selon le contexte de la commande
+Write-Output '*.txt'  # affiche littéralement *.txt -> les guillemets simples désactivent l'interprétation
 ```
 
 > **Note :** contrairement à Bash où `*` est développé par le shell lui-même avant même que la commande ne le reçoive, en PowerShell c'est chaque cmdlet qui décide d'interpréter ou non un wildcard reçu en argument : `Write-Output *.txt` n'affiche donc que le texte `*.txt`, alors que `Get-ChildItem *.txt` le résout bien en liste de fichiers.

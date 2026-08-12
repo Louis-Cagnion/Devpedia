@@ -23,11 +23,11 @@ if (age >= 18) {
 ## `==` vs `===` : encore plus critique qu'en PHP
 
 ```javascript
-0 == "0"        // true  -> converti en nombre avant comparaison
-0 == ""          // true  -> "" convertie en 0
-null == undefined // true -> cas spécial
+0 == "0"           // true  -> converti en nombre avant comparaison
+0 == ""            // true  -> "" convertie en 0
+null == undefined  // true -> cas spécial
 "" == false        // true
-1 == "1"            // true
+1 == "1"           // true
 
 0 === "0"    // false -> types différents, aucune conversion
 ```
@@ -38,12 +38,12 @@ null == undefined // true -> cas spécial
 
 ```javascript
 if (0) {}          // falsy
-if ("") {}          // falsy
-if (null) {}         // falsy
-if (undefined) {}     // falsy
-if (NaN) {}            // falsy
-if ([]) {}               // TRUTHY ! (contrairement à PHP où un tableau vide est falsy)
-if ({}) {}                // TRUTHY !
+if ("") {}         // falsy
+if (null) {}       // falsy
+if (undefined) {}  // falsy
+if (NaN) {}        // falsy
+if ([]) {}         // TRUTHY ! (contrairement à PHP où un tableau vide est falsy)
+if ({}) {}         // TRUTHY !
 ```
 
 > **Note :** piège classique pour qui vient de PHP : un tableau ou objet **vide** est `truthy` en JavaScript, alors qu'il est `falsy` en PHP ; toujours tester `tableau.length === 0` explicitement plutôt que `if (!tableau)`.

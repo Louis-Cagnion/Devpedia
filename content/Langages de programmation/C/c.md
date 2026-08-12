@@ -7,7 +7,7 @@ Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-f
 
 int main(void) {
     int age = 25;         // une variable, voir le chapitre dédié
-    printf("%d\n", age);   // affiche : 25
+    printf("%d\n", age);  // affiche : 25
     return 0;
 }
 ```

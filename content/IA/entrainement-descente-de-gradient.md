@@ -16,8 +16,8 @@ def erreur_quadratique_moyenne(predictions, vraies_valeurs):
     erreurs = [(p - v) ** 2 for p, v in zip(predictions, vraies_valeurs)]
     return sum(erreurs) / len(erreurs)
 
-erreur_quadratique_moyenne([3.2, 5.1], [3.0, 5.0])   # petite perte -> prédictions proches
-erreur_quadratique_moyenne([1.0, 1.0], [3.0, 5.0])    # grande perte -> prédictions éloignées
+erreur_quadratique_moyenne([3.2, 5.1], [3.0, 5.0])  # petite perte -> prédictions proches
+erreur_quadratique_moyenne([1.0, 1.0], [3.0, 5.0])  # grande perte -> prédictions éloignées
 ```
 
 Pour une tâche de classification, on utilise plus couramment l'**entropie croisée** (*cross-entropy*) : elle compare deux [distributions de probabilité](/?c=mathematiques&p=les-probabilites-de-base) : celle prédite par le modèle et celle, connue, de la bonne réponse (100% sur la bonne classe, 0% sur les autres). Elle vaut `-log(probabilité attribuée à la bonne classe)` ; on retrouve directement la propriété du [logarithme](/?c=mathematiques&p=le-logarithme) vue plus tôt : plus cette probabilité se rapproche de 0, plus `-log(...)` explose, pénalisant fortement une prédiction confiante mais fausse :
@@ -28,9 +28,9 @@ import math
 def entropie_croisee(probabilite_bonne_classe):
     return -math.log(probabilite_bonne_classe)
 
-entropie_croisee(0.99)   # ~0.01 -> confiant ET juste : perte quasi nulle
-entropie_croisee(0.5)     # ~0.69 -> hésitant : perte modérée
-entropie_croisee(0.01)    # ~4.6  -> confiant MAIS faux : perte très élevée
+entropie_croisee(0.99)  # ~0.01 -> confiant ET juste : perte quasi nulle
+entropie_croisee(0.5)   # ~0.69 -> hésitant : perte modérée
+entropie_croisee(0.01)  # ~4.6  -> confiant MAIS faux : perte très élevée
 ```
 
 > **Piège :** utiliser l'erreur quadratique moyenne pour une classification (des catégories), ou l'entropie croisée pour une régression (un nombre continu) : chaque fonction de perte suppose un type de sortie précis, les mélanger produit un entraînement incohérent (voir la même distinction entre `LinearRegression` et `LogisticRegression` dans [Introduction au machine learning](/?c=data-science&p=machine-learning-scikit-learn)).
@@ -77,7 +77,7 @@ Sens de la rétropropagation :      Entrée <- Couche 1 <- Couche 2 <- Sortie <-
 ## Époques, batches, et descente de gradient stochastique
 
 ```python
-for epoque in range(nombre_epoques):        # une "époque" = un passage complet sur TOUTES les données
+for epoque in range(nombre_epoques):                      # une "époque" = un passage complet sur TOUTES les données
     for lot in donnees_par_lots(donnees, taille_lot=32):  # un "batch"/lot = un petit sous-ensemble
         predictions = modele.forward(lot)
         perte = calculer_perte(predictions, vraies_valeurs)

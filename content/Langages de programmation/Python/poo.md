@@ -35,8 +35,8 @@ class Compteur:
 
 c1 = Compteur()
 c2 = Compteur()
-print(Compteur.total_crees)   # 2 -> partagé
-print(c1.id, c2.id)             # 1 2 -> propre à chacun
+print(Compteur.total_crees)  # 2 -> partagé
+print(c1.id, c2.id)          # 1 2 -> propre à chacun
 ```
 
 ## L'héritage
@@ -94,7 +94,7 @@ class Point:
 
 p1 = Point(1, 2)
 p2 = Point(3, 4)
-print(p1 + p2)      # (4, 6) -> grâce à __add__
+print(p1 + p2)            # (4, 6) -> grâce à __add__
 print(p1 == Point(1, 2))  # True -> grâce à __eq__
 ```
 

@@ -14,8 +14,8 @@ import torch
 x = torch.tensor([1.0, 2.0, 3.0])
 y = torch.tensor([[1, 2], [3, 4]])
 
-x.shape       # torch.Size([3])
-x + 2          # opérations vectorisées, comme le produit scalaire vu précédemment
+x.shape  # torch.Size([3])
+x + 2    # opérations vectorisées, comme le produit scalaire vu précédemment
 ```
 
 Un tenseur PyTorch peut vivre sur le CPU ou sur un GPU (`x.to("cuda")`), qui exécute les mêmes opérations vectorisées massivement en parallèle (voir [CPU vs GPU](/?c=infrastructure&p=cpu-vs-gpu)) : c'est ce qui rend praticable l'entraînement de réseaux comportant des millions, voire des milliards de paramètres.
@@ -70,16 +70,16 @@ modele = ReseauSimple()
 ```python
 import torch.optim as optim
 
-fonction_perte = nn.MSELoss()                             # erreur quadratique moyenne
-optimiseur = optim.SGD(modele.parameters(), lr=0.01)        # descente de gradient stochastique
+fonction_perte = nn.MSELoss()                         # erreur quadratique moyenne
+optimiseur = optim.SGD(modele.parameters(), lr=0.01)  # descente de gradient stochastique
 
 for epoque in range(100):
     predictions = modele(X_entrainement)                    # équivaut à modele.forward(X_entrainement)
     perte = fonction_perte(predictions, y_entrainement)
 
-    optimiseur.zero_grad()   # réinitialise les gradients (sinon ils s'additionnent d'une itération à l'autre)
-    perte.backward()          # calcule les gradients (rétropropagation automatique)
-    optimiseur.step()          # ajuste les poids selon les gradients calculés
+    optimiseur.zero_grad()  # réinitialise les gradients (sinon ils s'additionnent d'une itération à l'autre)
+    perte.backward()        # calcule les gradients (rétropropagation automatique)
+    optimiseur.step()       # ajuste les poids selon les gradients calculés
 
     if epoque % 10 == 0:
         print(f"Époque {epoque} : perte = {perte.item():.4f}")
@@ -94,8 +94,8 @@ Cette boucle est la structure quasi universelle de tout entraînement PyTorch : 
 ## Mode évaluation vs entraînement
 
 ```python
-modele.eval()    # désactive des comportements spécifiques à l'entraînement (ex. dropout)
-with torch.no_grad():   # désactive le suivi des gradients : plus rapide, inutile hors entraînement
+modele.eval()          # désactive des comportements spécifiques à l'entraînement (ex. dropout)
+with torch.no_grad():  # désactive le suivi des gradients : plus rapide, inutile hors entraînement
     predictions = modele(X_test)
 
 modele.train()   # réactive le mode entraînement pour la suite

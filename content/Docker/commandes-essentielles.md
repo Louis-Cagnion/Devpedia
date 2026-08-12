@@ -48,10 +48,10 @@ Utile pour inspecter l'état d'un conteneur qui tourne déjà (fichiers, variabl
 ## Arrêter et nettoyer
 
 ```bash
-docker stop serveur       # envoie SIGTERM, laisse le conteneur s'arrêter proprement (cf. [tableau des signaux](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash)
-docker kill serveur        # envoie SIGKILL, arrêt immédiat et inconditionnel
-docker rm serveur          # supprime un conteneur arrêté
-docker rmi mon-app:1.0     # supprime une image
+docker stop serveur     # envoie SIGTERM, laisse le conteneur s'arrêter proprement (cf. [tableau des signaux](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash)
+docker kill serveur     # envoie SIGKILL, arrêt immédiat et inconditionnel
+docker rm serveur       # supprime un conteneur arrêté
+docker rmi mon-app:1.0  # supprime une image
 ```
 
 > **Note :** `docker stop` puis `docker kill` reproduisent exactement la même hiérarchie SIGTERM → SIGKILL vue au chapitre sur la gestion des processus : Docker ne réinvente pas un mécanisme d'arrêt, il pilote celui du système hôte.

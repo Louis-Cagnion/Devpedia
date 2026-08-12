@@ -29,11 +29,11 @@ Quelques filtres courants :
 
 ```php
 <?php
-    FILTER_VALIDATE_EMAIL;    // vérifie un format d'email
-    FILTER_VALIDATE_INT;      // vérifie un nombre entier
-    FILTER_VALIDATE_FLOAT;    // vérifie un nombre décimal
-    FILTER_VALIDATE_URL;      // vérifie une URL
-    FILTER_SANITIZE_STRING;   // nettoie une chaîne (déprécié depuis PHP 8.1)
+    FILTER_VALIDATE_EMAIL;   // vérifie un format d'email
+    FILTER_VALIDATE_INT;     // vérifie un nombre entier
+    FILTER_VALIDATE_FLOAT;   // vérifie un nombre décimal
+    FILTER_VALIDATE_URL;     // vérifie une URL
+    FILTER_SANITIZE_STRING;  // nettoie une chaîne (déprécié depuis PHP 8.1)
 ?>
 ```
 

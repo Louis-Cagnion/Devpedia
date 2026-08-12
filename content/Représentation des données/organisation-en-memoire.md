@@ -28,9 +28,9 @@ C'est la conséquence la plus visible de l'alignement : une structure occupe sou
 
 ```c
 struct Exemple {
-    char  a;    // 1 octet
-    int   b;    // 4 octets
-    char  c;    // 1 octet
+    char  a;  // 1 octet
+    int   b;  // 4 octets
+    char  c;  // 1 octet
 };
 
 sizeof(struct Exemple)   // 12, et non 6 !
@@ -52,9 +52,9 @@ Le remplissage final existe pour que, dans un **tableau** de structures, chaque 
 
 ```c
 struct Compacte {
-    int   b;    // octets 0-3
-    char  a;    // octet 4
-    char  c;    // octet 5
+    int   b;  // octets 0-3
+    char  a;  // octet 4
+    char  c;  // octet 5
                 // octets 6-7 : remplissage final
 };              // sizeof = 8 au lieu de 12
 ```
@@ -88,8 +88,8 @@ int    x = 65;
 int   *pi = &x;
 char  *pc = (char *)&x;
 
-*pi   // 65      -> lit 4 octets, les interprete comme un entier
-*pc   // 'A'     -> lit 1 octet a la MEME adresse, l'interprete comme un caractere
+*pi  // 65      -> lit 4 octets, les interprete comme un entier
+*pc  // 'A'     -> lit 1 octet a la MEME adresse, l'interprete comme un caractere
 ```
 
 C'est aussi pourquoi `pointeur + 1` avance de `sizeof(type)` octets et non de 1 : l'arithmétique de pointeurs compte en éléments, pas en octets. Voir le chapitre [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs).

@@ -11,17 +11,17 @@ Python distingue deux structures ordonnées de collections : la **liste**, mutab
 ```python
 fruits = ["pomme", "banane", "cerise"]
 
-fruits[0]           # "pomme"
-fruits[-1]           # "cerise" -> index négatif : compte depuis la fin
-fruits[0:2]          # ["pomme", "banane"] -> slicing : éléments de l'index 0 (inclus) à 2 (exclu)
-fruits[::-1]         # ["cerise", "banane", "pomme"] -> inverse la liste (pas à pas -1)
+fruits[0]     # "pomme"
+fruits[-1]    # "cerise" -> index négatif : compte depuis la fin
+fruits[0:2]   # ["pomme", "banane"] -> slicing : éléments de l'index 0 (inclus) à 2 (exclu)
+fruits[::-1]  # ["cerise", "banane", "pomme"] -> inverse la liste (pas à pas -1)
 
-fruits.append("kiwi")     # ajoute à la fin
-fruits.insert(0, "mangue") # insère à un index précis
-fruits.remove("banane")    # retire la première occurrence de cette valeur
+fruits.append("kiwi")       # ajoute à la fin
+fruits.insert(0, "mangue")  # insère à un index précis
+fruits.remove("banane")     # retire la première occurrence de cette valeur
 fruits.pop()                # retire ET renvoie le dernier élément
-len(fruits)                  # nombre d'éléments
-"pomme" in fruits             # True/False -> teste la présence d'une valeur
+len(fruits)                 # nombre d'éléments
+"pomme" in fruits           # True/False -> teste la présence d'une valeur
 ```
 
 > **Note :** contrairement à un tableau en C (taille fixe, un seul type), une liste Python est un tableau **dynamique** hétérogène : elle grandit automatiquement, et chaque élément peut être d'un type différent, au prix d'un surcoût mémoire par élément (chaque élément est en réalité une référence vers un objet Python, pas une valeur brute contiguë comme en C).
@@ -31,10 +31,10 @@ len(fruits)                  # nombre d'éléments
 ```python
 nombres = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-nombres[2:5]     # [2, 3, 4] -> de l'index 2 (inclus) à 5 (exclu)
-nombres[:3]       # [0, 1, 2] -> depuis le début
-nombres[7:]       # [7, 8, 9] -> jusqu'à la fin
-nombres[::2]       # [0, 2, 4, 6, 8] -> un élément sur deux
+nombres[2:5]  # [2, 3, 4] -> de l'index 2 (inclus) à 5 (exclu)
+nombres[:3]   # [0, 1, 2] -> depuis le début
+nombres[7:]   # [7, 8, 9] -> jusqu'à la fin
+nombres[::2]  # [0, 2, 4, 6, 8] -> un élément sur deux
 ```
 
 ## Les tuples : des listes immuables
@@ -42,8 +42,8 @@ nombres[::2]       # [0, 2, 4, 6, 8] -> un élément sur deux
 ```python
 coordonnees = (48.8566, 2.3522)
 
-coordonnees[0]        # 48.8566
-coordonnees[0] = 0     # TypeError : un tuple ne peut pas être modifié après création
+coordonnees[0]      # 48.8566
+coordonnees[0] = 0  # TypeError : un tuple ne peut pas être modifié après création
 ```
 
 Un tuple sert typiquement à représenter un enregistrement fixe (une paire de coordonnées, un point RGB...) plutôt qu'une collection destinée à évoluer.
@@ -54,8 +54,8 @@ Un tuple sert typiquement à représenter un enregistrement fixe (une paire de c
 latitude, longitude = coordonnees
 print(latitude)   # 48.8566
 
-a, b, c = 1, 2, 3   # fonctionne aussi sans parenthèses explicites : un tuple implicite
-a, b = b, a          # échange de valeurs, sans variable temporaire
+a, b, c = 1, 2, 3  # fonctionne aussi sans parenthèses explicites : un tuple implicite
+a, b = b, a        # échange de valeurs, sans variable temporaire
 ```
 
 ## Les compréhensions de liste

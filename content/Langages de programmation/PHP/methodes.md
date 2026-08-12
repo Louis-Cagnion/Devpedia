@@ -53,8 +53,8 @@ function calculerRemise(float $prix, int $pourcentage): float
     return $prix - ($prix * $pourcentage / 100);
 }
 
-calculerRemise(100, 10);      // OK -> 90.0
-calculerRemise("cent", 10);   // TypeError : "cent" n'est pas un float
+calculerRemise(100, 10);     // OK -> 90.0
+calculerRemise("cent", 10);  // TypeError : "cent" n'est pas un float
 ?>
 ```
 
@@ -95,15 +95,15 @@ PHP fournit énormément de fonctions natives déjà prêtes à l'emploi, class�
 
 ```php
 <?php
-    strlen("Hello");           // 5 -> longueur de la chaîne
-    strtoupper("Hello");       // "HELLO" -> met en majuscules
-    strtolower("Hello");       // "hello" -> met en minuscules
-    str_replace("a", "o", "Hello"); // "Hello" -> remplace une sous-chaîne
-    trim("  Hello  ");         // "Hello" -> retire les espaces au début/fin
-    substr("Hello", 1, 3);     // "ell" -> extrait une portion de chaîne
-    explode(",", "a,b,c");     // ["a", "b", "c"] -> découpe une chaîne en tableau
-    implode(",", ["a", "b"]);  // "a,b" -> assemble un tableau en chaîne
-    str_contains("Hello", "ell"); // true -> vérifie si une chaîne en contient une autre
+    strlen("Hello");                 // 5 -> longueur de la chaîne
+    strtoupper("Hello");             // "HELLO" -> met en majuscules
+    strtolower("Hello");             // "hello" -> met en minuscules
+    str_replace("a", "o", "Hello");  // "Hello" -> remplace une sous-chaîne
+    trim("  Hello  ");               // "Hello" -> retire les espaces au début/fin
+    substr("Hello", 1, 3);           // "ell" -> extrait une portion de chaîne
+    explode(",", "a,b,c");           // ["a", "b", "c"] -> découpe une chaîne en tableau
+    implode(",", ["a", "b"]);        // "a,b" -> assemble un tableau en chaîne
+    str_contains("Hello", "ell");    // true -> vérifie si une chaîne en contient une autre
 ?>
 ```
 
@@ -111,15 +111,15 @@ PHP fournit énormément de fonctions natives déjà prêtes à l'emploi, class�
 
 ```php
 <?php
-    count([1, 2, 3]);                  // 3 -> nombre d'éléments
-    $tab[] = "valeur";                  // ajoute un élément à la fin (préféré à array_push() pour un seul élément)
-    array_pop($tab);                   // retire et renvoie le dernier élément
-    array_merge($tab1, $tab2);         // fusionne deux tableaux
-    in_array("pomme", $fruits);        // true/false -> vérifie la présence d'une valeur
-    array_search("pomme", $fruits);    // renvoie la clé/l'index trouvé
-    sort($tab);                        // trie un tableau (valeurs)
-    array_map(fn($n) => $n * 2, $tab); // applique une fonction à chaque élément
-    array_filter($tab, fn($n) => $n > 0); // filtre les éléments selon une condition
+    count([1, 2, 3]);                      // 3 -> nombre d'éléments
+    $tab[] = "valeur";                     // ajoute un élément à la fin (préféré à array_push() pour un seul élément)
+    array_pop($tab);                       // retire et renvoie le dernier élément
+    array_merge($tab1, $tab2);             // fusionne deux tableaux
+    in_array("pomme", $fruits);            // true/false -> vérifie la présence d'une valeur
+    array_search("pomme", $fruits);        // renvoie la clé/l'index trouvé
+    sort($tab);                            // trie un tableau (valeurs)
+    array_map(fn($n) => $n * 2, $tab);     // applique une fonction à chaque élément
+    array_filter($tab, fn($n) => $n > 0);  // filtre les éléments selon une condition
 ?>
 ```
 ## Fonctions sur les tableaux associatifs
@@ -128,14 +128,14 @@ PHP fournit énormément de fonctions natives déjà prêtes à l'emploi, class�
 <?php
     $personne = ["nom" => "Dupont", "age" => 25];
 
-    array_keys($personne);             // ["nom", "age"] -> renvoie toutes les clés
-    array_values($personne);           // ["Dupont", 25] -> renvoie toutes les valeurs
-    array_key_exists("nom", $personne); // true/false -> vérifie qu'une clé existe
-    unset($personne["age"]);            // retire une clé (et sa valeur) du tableau
-    ksort($personne);                   // trie le tableau selon les clés
-    asort($personne);                   // trie le tableau selon les valeurs (en gardant les clés)
-    array_combine(["a", "b"], [1, 2]);  // ["a" => 1, "b" => 2] -> crée un tableau associatif à partir de 2 tableaux
-    array_flip($personne);              // inverse clés et valeurs
+    array_keys($personne);               // ["nom", "age"] -> renvoie toutes les clés
+    array_values($personne);             // ["Dupont", 25] -> renvoie toutes les valeurs
+    array_key_exists("nom", $personne);  // true/false -> vérifie qu'une clé existe
+    unset($personne["age"]);             // retire une clé (et sa valeur) du tableau
+    ksort($personne);                    // trie le tableau selon les clés
+    asort($personne);                    // trie le tableau selon les valeurs (en gardant les clés)
+    array_combine(["a", "b"], [1, 2]);   // ["a" => 1, "b" => 2] -> crée un tableau associatif à partir de 2 tableaux
+    array_flip($personne);               // inverse clés et valeurs
 ?>
 ```
 
@@ -145,7 +145,7 @@ ex :
 <?php
     $personne = ["nom" => "Dupont", "age" => null];
 
-    array_key_exists("age", $personne); // true
+    array_key_exists("age", $personne);  // true
     isset($personne["age"]);             // false
 ?>
 ```
@@ -154,11 +154,11 @@ ex :
 
 ```php
 <?php
-    abs(-5);        // 5 -> valeur absolue
-    round(3.456, 2); // 3.46 -> arrondit
-    rand(1, 10);     // génère un nombre aléatoire entre 1 et 10
-    max(1, 5, 3);    // 5 -> valeur maximale
-    min(1, 5, 3);    // 1 -> valeur minimale
+    abs(-5);          // 5 -> valeur absolue
+    round(3.456, 2);  // 3.46 -> arrondit
+    rand(1, 10);      // génère un nombre aléatoire entre 1 et 10
+    max(1, 5, 3);     // 5 -> valeur maximale
+    min(1, 5, 3);     // 1 -> valeur minimale
 ?>
 ```
 
@@ -167,11 +167,11 @@ ex :
 ```php
 <?php
     is_string($var);  // true/false
-    is_int($var);      // true/false
-    is_array($var);    // true/false
-    is_null($var);     // true/false
-    empty($var);       // true si vide, null, ou non défini
-    isset($var);        // true si la variable existe et n'est pas null
+    is_int($var);     // true/false
+    is_array($var);   // true/false
+    is_null($var);    // true/false
+    empty($var);      // true si vide, null, ou non défini
+    isset($var);      // true si la variable existe et n'est pas null
 ?>
 ```
 

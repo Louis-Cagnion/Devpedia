@@ -21,8 +21,8 @@ resultat = addition(2, 3)   # 5
 def saluer(nom, message="Bonjour"):
     return f"{message} {nom}"
 
-saluer("Jean")               # "Bonjour Jean"
-saluer("Jean", "Salut")       # "Salut Jean"
+saluer("Jean")           # "Bonjour Jean"
+saluer("Jean", "Salut")  # "Salut Jean"
 ```
 
 > **Piège classique : ne jamais utiliser un objet mutable (liste, dict) comme valeur par défaut.** La valeur par défaut n'est évaluée **qu'une seule fois**, à la définition de la fonction, pas à chaque appel :
@@ -32,8 +32,8 @@ def ajouter_a_liste(element, liste=[]):  # DANGER : cette liste est PARTAGÉE en
     liste.append(element)
     return liste
 
-ajouter_a_liste(1)   # [1]
-ajouter_a_liste(2)   # [1, 2] -> pas [2] ! la même liste par défaut a été réutilisée
+ajouter_a_liste(1)  # [1]
+ajouter_a_liste(2)  # [1, 2] -> pas [2] ! la même liste par défaut a été réutilisée
 ```
 
 La bonne pratique :
@@ -69,8 +69,8 @@ Un `*` seul dans la signature force tout ce qui suit à être passé par nom, ja
 def creer_utilisateur(nom, *, email, actif=True):
     return {"nom": nom, "email": email, "actif": actif}
 
-creer_utilisateur("Jean", email="jean@exemple.com")   # OK
-creer_utilisateur("Jean", "jean@exemple.com")           # TypeError : email doit être nommé
+creer_utilisateur("Jean", email="jean@exemple.com")  # OK
+creer_utilisateur("Jean", "jean@exemple.com")        # TypeError : email doit être nommé
 ```
 
 ## Les fonctions lambda
@@ -102,8 +102,8 @@ def compteur():
     return incrementer
 
 compter = compteur()
-compter()   # 1
-compter()   # 2 -> "total" a bien été conservé entre les appels
+compter()  # 1
+compter()  # 2 -> "total" a bien été conservé entre les appels
 ```
 
 Voir aussi [Les décorateurs](/?c=langages-de-programmation&s=python&p=decorateurs), qui s'appuie directement sur ce mécanisme de closure.

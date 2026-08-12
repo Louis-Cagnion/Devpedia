@@ -58,8 +58,8 @@ ls *.log(.Lm-7)  # fichiers .log de plus de 7 jours de modification
 Comme en Bash, entourer un motif de guillemets désactive son interprétation (voir [Les variables](/?c=shells&s=bash&p=variables) en Bash pour la logique guillemets simples/doubles) :
 
 ```bash
-echo *(.)      # liste réelle des fichiers réguliers
-echo "*(.)"     # affiche littéralement *(.)
+echo *(.)    # liste réelle des fichiers réguliers
+echo "*(.)"  # affiche littéralement *(.)
 ```
 
 ---

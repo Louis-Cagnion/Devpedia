@@ -38,21 +38,21 @@ Set-Acl fichier.txt $acl
 Plus proche dans l'esprit de `chmod`/`chown`, `icacls` reste très utilisé en pratique pour sa concision :
 
 ```powershell
-icacls fichier.txt /grant "jean:(R,W)"    # accorde lecture+écriture à l'utilisateur jean
-icacls fichier.txt /remove "jean"          # retire tous les droits explicites de jean
+icacls fichier.txt /grant "jean:(R,W)"  # accorde lecture+écriture à l'utilisateur jean
+icacls fichier.txt /remove "jean"       # retire tous les droits explicites de jean
 ```
 
 ## Commandes de base sur les fichiers
 
 ```powershell
-New-Item -ItemType Directory -Path dossier         # crée un dossier
-New-Item -ItemType Directory -Path a\b\c -Force     # crée toute l'arborescence en une fois
-New-Item -ItemType File -Path fichier.txt            # crée un fichier vide
-Copy-Item source.txt destination.txt                  # copie un fichier
-Copy-Item -Recurse dossier_source dossier_dest         # copie récursive, nécessaire pour un dossier
-Move-Item ancien.txt nouveau.txt                        # déplace OU renomme, comme mv en Bash
-Remove-Item fichier.txt                                   # supprime un fichier (va à la corbeille par défaut dans l'explorateur, mais pas ici)
-Remove-Item -Recurse dossier                               # supprime un dossier et tout son contenu
+New-Item -ItemType Directory -Path dossier       # crée un dossier
+New-Item -ItemType Directory -Path a\b\c -Force  # crée toute l'arborescence en une fois
+New-Item -ItemType File -Path fichier.txt        # crée un fichier vide
+Copy-Item source.txt destination.txt             # copie un fichier
+Copy-Item -Recurse dossier_source dossier_dest   # copie récursive, nécessaire pour un dossier
+Move-Item ancien.txt nouveau.txt                 # déplace OU renomme, comme mv en Bash
+Remove-Item fichier.txt                          # supprime un fichier (va à la corbeille par défaut dans l'explorateur, mais pas ici)
+Remove-Item -Recurse dossier                     # supprime un dossier et tout son contenu
 ```
 
 > **Note :** comme `rm -rf` en Bash, `Remove-Item -Recurse -Force` est irréversible en ligne de commande (contrairement à une suppression via l'explorateur Windows, qui passe par la corbeille) : une cible mal ciblée peut supprimer bien plus que prévu, sans confirmation ni recours.
@@ -60,10 +60,10 @@ Remove-Item -Recurse dossier                               # supprime un dossier
 ## `Get-ChildItem -Recurse` : rechercher des fichiers (équivalent de `find`)
 
 ```powershell
-Get-ChildItem -Path . -Filter "*.txt" -Recurse                          # tous les fichiers .txt, récursivement
+Get-ChildItem -Path . -Filter "*.txt" -Recurse                                                       # tous les fichiers .txt, récursivement
 Get-ChildItem -Path C:\logs -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }  # modifiés récemment
-Get-ChildItem -Recurse -Directory -Filter "node_modules"                  # tous les dossiers nommés "node_modules"
-Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item                       # trouve ET supprime en une seule chaîne
+Get-ChildItem -Recurse -Directory -Filter "node_modules"                                             # tous les dossiers nommés "node_modules"
+Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item                                                 # trouve ET supprime en une seule chaîne
 ```
 
 Voir aussi [Traitement de texte et d'objets](/?c=shells&s=powershell&p=traitement-de-texte) (`Select-String`, `-replace`, `ConvertFrom-Json`) pour aller plus loin dans l'exploitation du contenu de ces fichiers.

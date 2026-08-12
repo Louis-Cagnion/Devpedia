@@ -13,9 +13,9 @@ Le symptôme est toujours le même : une boucle qui, à chaque tour, redemande q
 ```python
 # 3 allers-retours par annonce
 for i in range(nombre_de_cartes):
-    carte = page.element(i)              # 1
-    lien = carte.attribut("href")        # 2
-    texte = carte.texte()                # 3
+    carte = page.element(i)        # 1
+    lien = carte.attribut("href")  # 2
+    texte = carte.texte()          # 3
 ```
 
 Sur 100 éléments, cela fait 300 échanges. À 30 ms l'aller-retour, on atteint 9 secondes, pour un travail qui ne demande aucun calcul.

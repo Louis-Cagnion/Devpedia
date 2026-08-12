@@ -9,8 +9,8 @@ PowerShell reprend les mêmes idées que Bash (rediriger un flux vers un fichier
 ## Rediriger la sortie vers un fichier
 
 ```powershell
-"Bonjour" > fichier.txt     # écrase fichier.txt (ou le crée) avec ce contenu
-"Encore" >> fichier.txt      # ajoute à la fin de fichier.txt, sans écraser
+"Bonjour" > fichier.txt  # écrase fichier.txt (ou le crée) avec ce contenu
+"Encore" >> fichier.txt  # ajoute à la fin de fichier.txt, sans écraser
 ```
 
 > **Note :** comme en Bash, `>` écrase silencieusement le contenu existant : utiliser `>>` quand l'ajout est réellement voulu.
@@ -28,9 +28,9 @@ Get-Content liste.txt | Sort-Object   # PowerShell n'a pas d'opérateur "<" dire
 Les flux sont numérotés différemment de Bash : `1` = sortie standard, `2` = erreur, mais aussi `3` (avertissement), `4` (verbeux), `5` (débogage), `6` (information) ; PowerShell distingue plus de flux que les trois d'Unix :
 
 ```powershell
-Commande-QuiEchoue 2> erreurs.log         # seule la sortie d'erreur va dans erreurs.log
-Commande 1> sortie.log 2> erreurs.log     # sépare sortie normale et erreurs dans deux fichiers
-Commande *> tout.log                       # raccourci PowerShell : redirige TOUS les flux vers tout.log
+Commande-QuiEchoue 2> erreurs.log      # seule la sortie d'erreur va dans erreurs.log
+Commande 1> sortie.log 2> erreurs.log  # sépare sortie normale et erreurs dans deux fichiers
+Commande *> tout.log                   # raccourci PowerShell : redirige TOUS les flux vers tout.log
 ```
 
 > **Note :** `*>` n'a pas d'équivalent direct en Bash (qui n'a que `&>` pour stdout+stderr) : PowerShell peut regrouper jusqu'à six flux distincts en une seule redirection.

@@ -9,10 +9,10 @@ Ce chapitre suppose déjà acquis ce qu'est un [terminal](/?c=bases-de-l-informa
 ## Se déplacer : `cd` et `pwd`
 
 ```bash
-pwd            # affiche le dossier courant (Print Working Directory)
-cd Documents    # se déplace dans le sous-dossier "Documents"
-cd ..            # remonte d'un niveau
-cd -              # retourne au dossier précédent
+pwd           # affiche le dossier courant (Print Working Directory)
+cd Documents  # se déplace dans le sous-dossier "Documents"
+cd ..         # remonte d'un niveau
+cd -          # retourne au dossier précédent
 ```
 
 > **Piège :** `cd` sans argument ne "ne fait rien" : il ramène directement au dossier personnel (`$HOME`), ce qui surprend qui s'attendait à rester sur place.
@@ -22,9 +22,9 @@ cd -              # retourne au dossier précédent
 ## Lister un dossier : `ls`
 
 ```bash
-ls              # liste le contenu du dossier courant
-ls -a            # inclut les fichiers cachés (dont le nom commence par un point)
-ls -l             # affiche les détails (permissions, taille, date) plutôt que juste les noms
+ls     # liste le contenu du dossier courant
+ls -a  # inclut les fichiers cachés (dont le nom commence par un point)
+ls -l  # affiche les détails (permissions, taille, date) plutôt que juste les noms
 ```
 
 | Option | Effet |
@@ -56,8 +56,8 @@ Ces commandes sont couvertes avec le système de permissions, dans le chapitre s
 ## Obtenir de l'aide : `man` et `--help`
 
 ```bash
-man ls           # ouvre le manuel complet de la commande ls (q pour quitter)
-ls --help         # résumé plus court, directement dans le terminal
+man ls     # ouvre le manuel complet de la commande ls (q pour quitter)
+ls --help  # résumé plus court, directement dans le terminal
 ```
 
 ### Le manuel est découpé en plusieurs sections
@@ -76,15 +76,15 @@ ls --help         # résumé plus court, directement dans le terminal
 Ça devient concret dès qu'un même nom existe dans **plusieurs** sections à la fois : `printf` est à la fois une commande de terminal (section 1) et une fonction du langage C (section 3, cf. [chapitre C dédié](/?c=langages-de-programmation&s=c&p=fonctions-variadiques)), et ce sont deux pages de manuel complètement différentes :
 
 ```bash
-man printf      # sans précision, ouvre la section la plus basse trouvée : ici, la 1 (commande)
-man 3 printf     # force l'ouverture de la section 3 : la fonction C, pas la commande
+man printf    # sans précision, ouvre la section la plus basse trouvée : ici, la 1 (commande)
+man 3 printf  # force l'ouverture de la section 3 : la fonction C, pas la commande
 ```
 
 Pour savoir dans quelles sections un nom existe avant de choisir :
 
 ```bash
-man -f printf    # liste toutes les sections où "printf" a une page de manuel
-whatis printf     # équivalent, avec une description d'une ligne pour chacune
+man -f printf  # liste toutes les sections où "printf" a une page de manuel
+whatis printf  # équivalent, avec une description d'une ligne pour chacune
 ```
 
 ### Piège : `man cd` ne fonctionne pas comme attendu
@@ -97,8 +97,8 @@ man cd
 `cd` n'est pas un programme séparé sur le disque : c'est une **commande interne** (*builtin*), exécutée directement par Bash lui-même plutôt que lancée comme un processus à part (voir [Exécuter une commande : builtin vs externe](/?c=shells&s=bash&p=architecture-dun-shell) pour pourquoi `cd` doit obligatoirement fonctionner ainsi). `man` cherche une page dédiée à un exécutable : il n'y en a pas pour un builtin. La bonne commande dans ce cas est `help` :
 
 ```bash
-help cd          # documentation du builtin cd, fournie par Bash lui-même
-man bash          # alternative : toutes les builtins y sont aussi documentées, dans la section "SHELL BUILTIN COMMANDS"
+help cd   # documentation du builtin cd, fournie par Bash lui-même
+man bash  # alternative : toutes les builtins y sont aussi documentées, dans la section "SHELL BUILTIN COMMANDS"
 ```
 
 ---

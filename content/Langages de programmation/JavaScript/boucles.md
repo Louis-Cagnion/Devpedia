@@ -73,10 +73,10 @@ En JavaScript moderne, transformer ou filtrer un tableau passe plus souvent par 
 ```javascript
 const nombres = [1, 2, 3, 4, 5];
 
-nombres.forEach(n => console.log(n));            // exécute une fonction pour chaque élément
-const doubles = nombres.map(n => n * 2);           // [2, 4, 6, 8, 10] -> transforme chaque élément
-const pairs = nombres.filter(n => n % 2 === 0);      // [2, 4] -> ne garde que ce qui correspond
-const somme = nombres.reduce((acc, n) => acc + n, 0); // 15 -> réduit tout le tableau à une seule valeur
+nombres.forEach(n => console.log(n));                  // exécute une fonction pour chaque élément
+const doubles = nombres.map(n => n * 2);               // [2, 4, 6, 8, 10] -> transforme chaque élément
+const pairs = nombres.filter(n => n % 2 === 0);        // [2, 4] -> ne garde que ce qui correspond
+const somme = nombres.reduce((acc, n) => acc + n, 0);  // 15 -> réduit tout le tableau à une seule valeur
 ```
 
 > **Note :** `reduce()` est la plus polyvalente mais la moins immédiatement lisible : `acc` (l'accumulateur) part de la valeur initiale fournie en second argument (`0` ici), et se met à jour à chaque élément selon la fonction fournie.

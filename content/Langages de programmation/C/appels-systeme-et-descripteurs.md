@@ -77,8 +77,8 @@ close(fd);
 
 ```c
 int fd = open("sortie.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-dup2(fd, STDOUT_FILENO); // désormais, écrire sur "stdout" (1) écrit en réalité dans "sortie.txt"
-close(fd); // l'original peut être fermé : la cible (1) reste valide, pointant vers la même ressource
+dup2(fd, STDOUT_FILENO);  // désormais, écrire sur "stdout" (1) écrit en réalité dans "sortie.txt"
+close(fd);                // l'original peut être fermé : la cible (1) reste valide, pointant vers la même ressource
 ```
 
 C'est exactement ce mécanisme que le chapitre sur l'architecture d'un shell utilise pour implémenter aussi bien les redirections (`>`, `<`) que les pipes (`|`) : dans les deux cas, on fait pointer un descripteur standard (`0`, `1`, `2`) vers une ressource différente juste avant d'exécuter le programme cible.

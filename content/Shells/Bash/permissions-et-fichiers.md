@@ -32,9 +32,9 @@ Chaque groupe de trois caractères représente **lecture** (`r`), **écriture** 
 
 ```bash
 chmod u+x script.sh    # ajoute le droit d'exécution pour le propriétaire (user)
-chmod g-w fichier.txt   # retire le droit d'écriture pour le groupe
-chmod o=r fichier.txt   # fixe les droits des autres à lecture seule, rien d'autre
-chmod a+r fichier.txt   # ajoute la lecture pour tout le monde (all)
+chmod g-w fichier.txt  # retire le droit d'écriture pour le groupe
+chmod o=r fichier.txt  # fixe les droits des autres à lecture seule, rien d'autre
+chmod a+r fichier.txt  # ajoute la lecture pour tout le monde (all)
 ```
 
 ### Notation octale
@@ -61,21 +61,21 @@ chmod 755 script.sh
 ## `chown` : changer le propriétaire
 
 ```bash
-chown utilisateur fichier.txt           # change le propriétaire
-chown utilisateur:groupe fichier.txt    # change propriétaire ET groupe en une fois
+chown utilisateur fichier.txt         # change le propriétaire
+chown utilisateur:groupe fichier.txt  # change propriétaire ET groupe en une fois
 ```
 
 ## Commandes de base sur les fichiers
 
 ```bash
-mkdir dossier              # crée un dossier
-mkdir -p a/b/c              # crée toute l'arborescence en une fois, sans erreur si elle existe déjà
-touch fichier.txt           # crée un fichier vide (ou met à jour sa date de modification s'il existe)
-cp source.txt destination.txt        # copie un fichier
-cp -r dossier_source dossier_dest    # copie récursive, nécessaire pour un dossier
-mv ancien.txt nouveau.txt   # déplace OU renomme (les deux sont la même opération pour mv)
-rm fichier.txt              # supprime un fichier (définitif, pas de corbeille)
-rm -r dossier               # supprime un dossier et tout son contenu
+mkdir dossier                      # crée un dossier
+mkdir -p a/b/c                     # crée toute l'arborescence en une fois, sans erreur si elle existe déjà
+touch fichier.txt                  # crée un fichier vide (ou met à jour sa date de modification s'il existe)
+cp source.txt destination.txt      # copie un fichier
+cp -r dossier_source dossier_dest  # copie récursive, nécessaire pour un dossier
+mv ancien.txt nouveau.txt          # déplace OU renomme (les deux sont la même opération pour mv)
+rm fichier.txt                     # supprime un fichier (définitif, pas de corbeille)
+rm -r dossier                      # supprime un dossier et tout son contenu
 ```
 
 > **Note :** `rm -rf` (récursif + `-f` pour ignorer les confirmations/erreurs) est irréversible et ne demande aucune confirmation : une cible mal ciblée (ex. un chemin avec un espace en trop, `rm -rf ~ /dossier` au lieu de `rm -rf ~/dossier`) peut supprimer bien plus que prévu.
@@ -84,9 +84,9 @@ rm -r dossier               # supprime un dossier et tout son contenu
 
 ```bash
 find . -name "*.txt"                 # tous les fichiers .txt, à partir du dossier courant
-find /var/log -mtime -7               # fichiers modifiés dans les 7 derniers jours
-find . -type d -name "node_modules"   # tous les dossiers nommés "node_modules"
-find . -name "*.tmp" -delete          # trouve ET supprime en une seule commande
+find /var/log -mtime -7              # fichiers modifiés dans les 7 derniers jours
+find . -type d -name "node_modules"  # tous les dossiers nommés "node_modules"
+find . -name "*.tmp" -delete         # trouve ET supprime en une seule commande
 ```
 
 Voir aussi [Traitement de texte](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`) pour aller plus loin dans l'exploitation du contenu de ces fichiers.

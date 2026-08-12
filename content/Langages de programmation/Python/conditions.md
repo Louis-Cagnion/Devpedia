@@ -26,11 +26,11 @@ else:
 En dehors de `True`/`False`, Python considère automatiquement certaines valeurs comme fausses dans un contexte booléen (`if`, `while`...) :
 
 ```python
-if []:        # False -> une liste vide est "falsy"
-if "":         # False -> une chaîne vide est "falsy"
-if 0:          # False -> zéro est "falsy"
-if None:       # False
-if [1, 2]:    # True -> une liste non vide est "truthy"
+if []:      # False -> une liste vide est "falsy"
+if "":      # False -> une chaîne vide est "falsy"
+if 0:       # False -> zéro est "falsy"
+if None:    # False
+if [1, 2]:  # True -> une liste non vide est "truthy"
 ```
 
 | Valeur | Truthy / Falsy |

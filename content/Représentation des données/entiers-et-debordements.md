@@ -62,15 +62,15 @@ Le bit de poids fort agit alors comme un indicateur de signe : `0` pour positif,
 Que se passe-t-il quand un résultat ne tient plus dans le nombre de bits alloués ? Les bits en trop sont **perdus**, et la valeur "boucle".
 
 ```c
-unsigned char x = 255;   // 1111 1111, le maximum
-x = x + 1;               // 0000 0000 -> 0 !
+unsigned char x = 255;  // 1111 1111, le maximum
+x = x + 1;              // 0000 0000 -> 0 !
 ```
 
 C'est le comportement dit *wraparound* : on repasse au début, comme un compteur kilométrique. Pour un entier **signé**, l'effet est plus surprenant :
 
 ```c
-signed char y = 127;     // 0111 1111, le maximum
-y = y + 1;               // 1000 0000 -> -128 !
+signed char y = 127;  // 0111 1111, le maximum
+y = y + 1;            // 1000 0000 -> -128 !
 ```
 
 Ajouter 1 au plus grand nombre positif donne le plus petit négatif.

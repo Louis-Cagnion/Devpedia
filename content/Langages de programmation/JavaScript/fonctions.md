@@ -36,8 +36,8 @@ Ici, `addition` est une variable comme une autre : elle n'existe qu'à partir de
 ## Fonctions fléchées (*arrow functions*)
 
 ```javascript
-const addition = (a, b) => a + b;              // une seule expression : retour implicite, pas de "return"
-const carre = x => x * x;                        // parenthèses optionnelles avec un seul paramètre
+const addition = (a, b) => a + b;                 // une seule expression : retour implicite, pas de "return"
+const carre = x => x * x;                         // parenthèses optionnelles avec un seul paramètre
 const saluer = () => { console.log("Bonjour"); }  // corps multi-lignes : accolades + "return" explicite requis
 ```
 
@@ -94,8 +94,8 @@ function compteur() {
 }
 
 const compter = compteur();
-compter();   // 1
-compter();   // 2 -> "total" a persisté entre les appels, propre à CETTE instance de compteur()
+compter();  // 1
+compter();  // 2 -> "total" a persisté entre les appels, propre à CETTE instance de compteur()
 ```
 
 ---

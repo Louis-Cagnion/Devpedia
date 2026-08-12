@@ -28,7 +28,7 @@ Chaque token est ensuite converti en un [vecteur](/?c=mathematiques&p=vecteurs-e
 ```python
 # Représentation purement illustrative
 embedding("chat")   -> [0.2, -0.5, 0.8, ...]
-embedding("chaton")  -> [0.3, -0.4, 0.7, ...]   # proche de "chat" -> sens similaire
+embedding("chaton")  -> [0.3, -0.4, 0.7, ...]    # proche de "chat" -> sens similaire
 embedding("voiture")  -> [-0.9, 0.6, -0.1, ...]  # loin de "chat" -> sens différent
 ```
 

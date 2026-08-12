@@ -29,8 +29,8 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ## Exécuter un script
 
 ```powershell
-.\script.ps1        # le ".\" est nécessaire même si le dossier courant contient le script
-powershell -File script.ps1   # alternative : lancer explicitement l'interpréteur sur le fichier
+.\script.ps1                 # le ".\" est nécessaire même si le dossier courant contient le script
+powershell -File script.ps1  # alternative : lancer explicitement l'interpréteur sur le fichier
 ```
 
 > **Note :** contrairement à Bash, taper simplement `script.ps1` sans préfixe de chemin ne fonctionne jamais, même si le script est exécutable : PowerShell ne cherche jamais dans le dossier courant par défaut, y compris s'il est présent dans `$env:PATH`, pour éviter qu'un fichier malveillant du dossier courant ne soit exécuté par erreur à la place d'une commande système du même nom.

@@ -50,8 +50,8 @@ Un sous-shell hérite d'une **copie** des variables du shell parent au moment o�
 
 ```bash
 cd /tmp
-(cd /var && pwd)   # affiche /var, dans le sous-shell
-pwd                # affiche toujours /tmp : le cd du sous-shell n'a pas survécu
+(cd /var && pwd)  # affiche /var, dans le sous-shell
+pwd               # affiche toujours /tmp : le cd du sous-shell n'a pas survécu
 ```
 
 ## Exécuter une commande : builtin vs externe

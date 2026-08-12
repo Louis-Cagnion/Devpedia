@@ -16,11 +16,11 @@ Un PRNG part d'un état initial, la **graine** (*seed*), et applique une formule
 import random
 
 random.seed(42)
-print(random.randint(1, 100))   # 82
-print(random.randint(1, 100))   # 15
+print(random.randint(1, 100))  # 82
+print(random.randint(1, 100))  # 15
 
-random.seed(42)                 # on repart de la meme graine
-print(random.randint(1, 100))   # 82 -> identique
+random.seed(42)                # on repart de la meme graine
+print(random.randint(1, 100))  # 82 -> identique
 ```
 
 En C, `rand()` sans `srand()` utilise implicitement la graine `1` : un programme relancé produit **exactement la même suite**. D'où l'habitude de semer avec l'heure courante :
@@ -89,8 +89,8 @@ int tirage = rand() % 3;   // 0..2
 La parade est de **rejeter** les tirages qui tombent dans la zone excédentaire, ou plus simplement d'utiliser une fonction qui le fait pour vous :
 
 ```python
-random.randint(0, 2)      # gere la repartition uniforme
-secrets.randbelow(3)      # idem, en version cryptographique
+random.randint(0, 2)  # gere la repartition uniforme
+secrets.randbelow(3)  # idem, en version cryptographique
 ```
 
 Le même raisonnement s'applique à `Math.random()` en JavaScript ou `mt_rand()` en PHP : préférez la fonction dédiée à un `%` improvisé.

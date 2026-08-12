@@ -18,13 +18,13 @@ Les opérateurs binaires (ou "bit à bit") travaillent directement sur la repré
 | `>>` | décalage à droite | décale les bits vers la droite |
 
 ```c
-unsigned char a = 12;   // 0000 1100
-unsigned char b = 10;   // 0000 1010
+unsigned char a = 12;  // 0000 1100
+unsigned char b = 10;  // 0000 1010
 
-a & b    // 0000 1000 = 8   -> bits presents dans les deux
-a | b    // 0000 1110 = 14  -> bits presents dans l'un ou l'autre
-a ^ b    // 0000 0110 = 6   -> bits presents dans un seul des deux
-~a       // 1111 0011 = 243 (sur unsigned char)
+a & b  // 0000 1000 = 8   -> bits presents dans les deux
+a | b  // 0000 1110 = 14  -> bits presents dans l'un ou l'autre
+a ^ b  // 0000 0110 = 6   -> bits presents dans un seul des deux
+~a     // 1111 0011 = 243 (sur unsigned char)
 ```
 
 > Ne pas confondre `&` avec `&&`, ni `|` avec `||`. Les versions doubles sont les opérateurs **logiques** : ils travaillent sur des valeurs vraies/fausses et renvoient 0 ou 1. `1 & 2` vaut `0` (aucun bit commun), alors que `1 && 2` vaut `1` (les deux valeurs sont vraies). Cette confusion est une source de bugs silencieux.
@@ -36,9 +36,9 @@ Décaler à gauche de `n` positions revient à **multiplier par 2ⁿ**, décaler
 ```c
 unsigned char x = 5;    // 0000 0101
 
-x << 1   // 0000 1010 = 10   (5 * 2)
-x << 3   // 0010 1000 = 40   (5 * 8)
-x >> 1   // 0000 0010 = 2    (5 / 2, arrondi vers le bas)
+x << 1  // 0000 1010 = 10   (5 * 2)
+x << 3  // 0010 1000 = 40   (5 * 8)
+x >> 1  // 0000 0010 = 2    (5 / 2, arrondi vers le bas)
 ```
 
 Les bits qui sortent de la largeur du type sont **perdus** ; ce n'est pas une erreur, il n'y a aucun avertissement :
@@ -58,9 +58,9 @@ y << 1                  // 1001 0000 = 144, et non 400 : un bit est tombe
 Un **masque** est une valeur dont on se sert pour cibler des bits précis. Les quatre opérations de base :
 
 ```c
-#define DRAPEAU_LECTURE   (1u << 0)   // 0000 0001
-#define DRAPEAU_ECRITURE  (1u << 1)   // 0000 0010
-#define DRAPEAU_AJOUT     (1u << 2)   // 0000 0100
+#define DRAPEAU_LECTURE   (1u << 0)  // 0000 0001
+#define DRAPEAU_ECRITURE  (1u << 1)  // 0000 0010
+#define DRAPEAU_AJOUT     (1u << 2)  // 0000 0100
 
 unsigned int options = 0;
 
@@ -69,8 +69,8 @@ options |= DRAPEAU_ECRITURE;
 
 if (options & DRAPEAU_ECRITURE) { ... }     // TESTER   un bit
 
-options &= ~DRAPEAU_ECRITURE;               // DESACTIVER un bit
-options ^= DRAPEAU_AJOUT;                   // BASCULER un bit
+options &= ~DRAPEAU_ECRITURE;  // DESACTIVER un bit
+options ^= DRAPEAU_AJOUT;      // BASCULER un bit
 ```
 
 C'est exactement le mécanisme des appels système : `open("f.txt", O_WRONLY | O_CREAT)` combine des drapeaux avec `|`, et la fonction les teste ensuite avec `&`. Voir le chapitre [Appels système et descripteurs](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs).

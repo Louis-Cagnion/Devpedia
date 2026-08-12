@@ -43,9 +43,9 @@ donnees.columns     # liste des noms de colonnes
 donnees["age"]           # une seule colonne -> une Series
 donnees[["nom", "age"]]  # plusieurs colonnes -> un DataFrame
 
-donnees.loc[0]          # ligne d'INDEX 0 (l'index affiché à gauche du tableau)
-donnees.iloc[0]         # ligne de POSITION 0 (toujours la première, même si l'index a été modifié)
-donnees.loc[0, "nom"]   # valeur précise : ligne 0, colonne "nom"
+donnees.loc[0]         # ligne d'INDEX 0 (l'index affiché à gauche du tableau)
+donnees.iloc[0]        # ligne de POSITION 0 (toujours la première, même si l'index a été modifié)
+donnees.loc[0, "nom"]  # valeur précise : ligne 0, colonne "nom"
 ```
 
 > **Note :** `loc` sélectionne par **étiquette** (le label de l'index, qui peut être un nom, une date...), `iloc` par **position numérique**, les deux coïncident par défaut (index numérique de 0 à n), mais divergent dès que l'index a été personnalisé (ex. trié, filtré, ou basé sur des dates).

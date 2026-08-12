@@ -16,9 +16,9 @@ Ce chapitre couvre deux familles d'attributs transversales, utilisables sur pres
 
 ```javascript
 const carte = document.querySelector("div");
-carte.dataset.id;         // "42"
-carte.dataset.role;         // "carte-produit"
-carte.dataset.enStock;       // "true" -> "data-en-stock" devient "enStock" en camelCase côté JS
+carte.dataset.id;       // "42"
+carte.dataset.role;     // "carte-produit"
+carte.dataset.enStock;  // "true" -> "data-en-stock" devient "enStock" en camelCase côté JS
 ```
 
 `data-*` permet d'attacher une donnée à un élément HTML, récupérable en JavaScript via `.dataset` : un moyen standard de faire circuler une information du HTML vers le JavaScript, sans avoir besoin de variables globales ou de requêtes supplémentaires.

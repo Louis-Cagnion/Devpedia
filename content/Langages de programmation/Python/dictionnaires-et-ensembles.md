@@ -11,13 +11,13 @@ Le **dictionnaire** (`dict`) associe des clés à des valeurs, exactement comme 
 ```python
 personne = {"nom": "Dupont", "age": 25}
 
-personne["nom"]          # "Dupont"
+personne["nom"]                         # "Dupont"
 personne["email"] = "jean@exemple.com"  # ajoute une nouvelle clé
-personne["age"] = 26      # modifie une clé existante
-del personne["age"]         # supprime une clé
+personne["age"] = 26                    # modifie une clé existante
+del personne["age"]                     # supprime une clé
 
-personne.get("telephone")           # None si la clé n'existe pas (pas d'erreur)
-personne.get("telephone", "inconnu") # "inconnu" -> valeur par défaut si absente
+personne.get("telephone")             # None si la clé n'existe pas (pas d'erreur)
+personne.get("telephone", "inconnu")  # "inconnu" -> valeur par défaut si absente
 
 "nom" in personne            # True -> teste la présence d'une CLÉ (pas d'une valeur)
 ```
@@ -50,8 +50,8 @@ carres = {x: x ** 2 for x in range(5)}
 fruits = {"pomme", "banane", "cerise"}
 
 fruits.add("kiwi")        # ajoute un élément
-fruits.remove("banane")    # retire un élément (erreur si absent)
-fruits.discard("mangue")    # retire un élément, SANS erreur si absent
+fruits.remove("banane")   # retire un élément (erreur si absent)
+fruits.discard("mangue")  # retire un élément, SANS erreur si absent
 
 "pomme" in fruits   # True -> test d'appartenance quasi instantané (table de hachage)
 ```
@@ -62,10 +62,10 @@ fruits.discard("mangue")    # retire un élément, SANS erreur si absent
 a = {1, 2, 3}
 b = {2, 3, 4}
 
-a | b   # {1, 2, 3, 4} -> union
-a & b   # {2, 3}       -> intersection
-a - b   # {1}           -> différence (dans a, pas dans b)
-a ^ b   # {1, 4}        -> différence symétrique (dans l'un OU l'autre, pas les deux)
+a | b  # {1, 2, 3, 4} -> union
+a & b  # {2, 3}       -> intersection
+a - b  # {1}           -> différence (dans a, pas dans b)
+a ^ b  # {1, 4}        -> différence symétrique (dans l'un OU l'autre, pas les deux)
 ```
 
 > **Note :** un `set` élimine automatiquement les doublons : `set([1, 2, 2, 3, 3, 3])` donne `{1, 2, 3}`. C'est une façon très courante de dédupliquer rapidement une liste en Python : `list(set(ma_liste))`.

@@ -37,9 +37,9 @@ Additionner 1 à un pointeur ne l'avance pas d'un octet, mais de `sizeof(type)` 
 int tab[3] = {10, 20, 30};
 int *p = tab;
 
-printf("%d\n", *p);       // 10
-printf("%d\n", *(p + 1)); // 20 -> avance de sizeof(int) octets, pas de 1 octet
-printf("%d\n", *(p + 2)); // 30
+printf("%d\n", *p);        // 10
+printf("%d\n", *(p + 1));  // 20 -> avance de sizeof(int) octets, pas de 1 octet
+printf("%d\n", *(p + 2));  // 30
 ```
 
 > **Note :** un tableau `tab` se comporte comme un pointeur vers son premier élément. `tab[i]` et `*(tab + i)` sont deux écritures strictement équivalentes en C : c'est pour ça que l'indexation de tableau (`[]`) fonctionne aussi sur un pointeur brut.
@@ -57,9 +57,9 @@ Comme l'addition est commutative (`tab + 2` et `2 + tab` désignent la même adr
 ```c
 int tab[5] = {1, 2, 3, 4, 5};
 
-printf("%d\n", tab[2]);   // 3
-printf("%d\n", *(tab + 2)); // 3
-printf("%d\n", 2[tab]);   // 3 aussi !
+printf("%d\n", tab[2]);      // 3
+printf("%d\n", *(tab + 2));  // 3
+printf("%d\n", 2[tab]);      // 3 aussi !
 ```
 
 > `2[tab]` ne sert à rien en pratique et n'a sa place que dans les questions pièges d'entretien. En revanche, comprendre *pourquoi* ça compile est utile : cela ancre le fait qu'en C, indexer un tableau **est** une arithmétique de pointeurs, et rien d'autre.
@@ -132,13 +132,13 @@ if (ptr != NULL) {
 Avec un pointeur, il y a deux choses distinctes à comparer, et confondre les deux est une source d'erreurs :
 
 ```c
-int a = 5;   // stockee a l'adresse 0x1000
-int b = 5;   // stockee a l'adresse 0x2000
+int a = 5;  // stockee a l'adresse 0x1000
+int b = 5;  // stockee a l'adresse 0x2000
 int *p1 = &a;
 int *p2 = &b;
 
-p1 == p2     // faux : les adresses sont differentes
-*p1 == *p2   // vrai : les valeurs pointees sont identiques
+p1 == p2    // faux : les adresses sont differentes
+*p1 == *p2  // vrai : les valeurs pointees sont identiques
 ```
 
 - `p1 == p2` compare les **adresses** : "ces deux pointeurs désignent-ils le même emplacement mémoire ?"
@@ -153,8 +153,8 @@ Deux pointeurs peuvent donc parfaitement contenir la même valeur sans être ég
 Deux usages de `const` bien distincts, souvent confondus :
 
 ```c
-const int *p1;  // p1 peut changer d'adresse, mais pas modifier la valeur pointée
-int *const p2 = &x; // p2 ne peut plus changer d'adresse, mais peut modifier la valeur pointée
+const int *p1;       // p1 peut changer d'adresse, mais pas modifier la valeur pointée
+int *const p2 = &x;  // p2 ne peut plus changer d'adresse, mais peut modifier la valeur pointée
 ```
 
 | Écriture | Ce qui est protégé |

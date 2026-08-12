@@ -32,8 +32,8 @@ Les structures de langage sont traitées par PHP au moment de l'analyse du code 
 
 ```php
 <?php
-    $f = strlen;     // ❌ ne fonctionne pas tel quel pour les fonctions, sauf via string/callable
-    $f = "echo";     // ❌ impossible d'appeler echo comme ça, ce n'est pas une fonction
+    $f = strlen;  // ❌ ne fonctionne pas tel quel pour les fonctions, sauf via string/callable
+    $f = "echo";  // ❌ impossible d'appeler echo comme ça, ce n'est pas une fonction
 ?>
 ```
 

@@ -9,8 +9,8 @@ Une variable d'environnement est une variable transmise automatiquement aux proc
 ## Variable locale vs variable exportée
 
 ```bash
-NOM="Jean"          # variable de shell classique : visible uniquement dans ce script/cette session
-export NOM          # à partir de maintenant, transmise aux processus enfants (autres scripts, commandes...)
+NOM="Jean"  # variable de shell classique : visible uniquement dans ce script/cette session
+export NOM  # à partir de maintenant, transmise aux processus enfants (autres scripts, commandes...)
 
 export EMAIL="jean@exemple.com"  # déclaration et export en une seule ligne
 ```
@@ -25,11 +25,11 @@ echo "$NOM"    # affiche "Jean" si NOM a été exporté par le script appelant, 
 ## Variables d'environnement courantes
 
 ```bash
-echo $PATH    # liste des dossiers où le shell cherche les commandes exécutables
-echo $HOME    # dossier personnel de l'utilisateur courant
-echo $USER    # nom de l'utilisateur courant
-echo $PWD     # dossier de travail courant
-echo $SHELL   # chemin du shell utilisé
+echo $PATH   # liste des dossiers où le shell cherche les commandes exécutables
+echo $HOME   # dossier personnel de l'utilisateur courant
+echo $USER   # nom de l'utilisateur courant
+echo $PWD    # dossier de travail courant
+echo $SHELL  # chemin du shell utilisé
 ```
 
 ## `$PATH` : comment le shell trouve une commande

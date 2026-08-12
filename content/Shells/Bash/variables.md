@@ -11,9 +11,9 @@ Bash n'a qu'un seul type de données réel : la **chaîne de caractères** ; mê
 ## Déclarer et lire une variable
 
 ```bash
-nom="Jean"        # aucun espace autour du '=' : "nom = Jean" est une erreur de syntaxe
-echo $nom          # Jean
-echo "${nom}"       # Jean -> les accolades délimitent explicitement le nom de variable
+nom="Jean"     # aucun espace autour du '=' : "nom = Jean" est une erreur de syntaxe
+echo $nom      # Jean
+echo "${nom}"  # Jean -> les accolades délimitent explicitement le nom de variable
 echo "Bonjour ${nom} !"
 ```
 
@@ -26,8 +26,8 @@ echo "Bonjour ${nom} !"
 ```bash
 nom="Jean"
 
-echo "Bonjour $nom"   # Bonjour Jean -> les guillemets doubles interprètent les variables
-echo 'Bonjour $nom'   # Bonjour $nom -> les guillemets simples désactivent toute interprétation
+echo "Bonjour $nom"  # Bonjour Jean -> les guillemets doubles interprètent les variables
+echo 'Bonjour $nom'  # Bonjour $nom -> les guillemets simples désactivent toute interprétation
 ```
 
 | Guillemets | Variables interprétées ? | Cas d'usage typique |
@@ -82,9 +82,9 @@ Bash ne calcule pas nativement sur des chaînes : un contexte arithmétique expl
 a=5
 b=3
 
-echo $((a + b))   # 8
-echo $((a * b))   # 15
-echo $((a / b))   # 1 -> division entière uniquement, Bash ne gère pas les décimaux
+echo $((a + b))  # 8
+echo $((a * b))  # 15
+echo $((a / b))  # 1 -> division entière uniquement, Bash ne gère pas les décimaux
 ```
 
 > **Qu'est-ce qu'un "contexte arithmétique explicite" ?** C'est une syntaxe précise que Bash reconnaît et à l'intérieur de laquelle il interprète le contenu comme une expression numérique plutôt que comme du texte : `$((...))` (pour obtenir le résultat), `((...))` seul (pour un calcul ou un test, sans récupérer de valeur, utilisé par exemple dans `for ((i = 0; i < 5; i++))`, voir [Les boucles](/?c=shells&s=bash&p=boucles)), la commande `let` (`let "a = a + 1"`), ou encore les opérateurs numériques `-eq`, `-lt`, `-gt`... à l'intérieur de `[ ]`/`[[ ]]` (voir [Les conditions](/?c=shells&s=bash&p=conditions)). En dehors de ces syntaxes précises, `+`, `-`, `*` ne sont que des caractères ordinaires dans une chaîne.

@@ -9,8 +9,8 @@ Comme en Bash, une variable d'environnement est transmise automatiquement aux pr
 ## Lire et modifier une variable d'environnement
 
 ```powershell
-$env:NOM = "Jean"          # crée ou modifie une variable d'environnement directement
-Write-Output $env:NOM       # Jean
+$env:NOM = "Jean"      # crée ou modifie une variable d'environnement directement
+Write-Output $env:NOM  # Jean
 ```
 
 ```powershell
@@ -23,9 +23,9 @@ Write-Output $env:NOM    # affiche "Jean" si NOM a été défini par le processu
 ## Variables d'environnement courantes
 
 ```powershell
-$env:PATH     # liste des dossiers où PowerShell cherche les exécutables (séparés par ";" sous Windows)
+$env:PATH          # liste des dossiers où PowerShell cherche les exécutables (séparés par ";" sous Windows)
 $env:USERPROFILE   # dossier personnel de l'utilisateur courant (équivalent de $HOME)
-$env:USERNAME  # nom de l'utilisateur courant
+$env:USERNAME      # nom de l'utilisateur courant
 $env:COMPUTERNAME  # nom de la machine
 ```
 

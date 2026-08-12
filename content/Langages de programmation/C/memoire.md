@@ -20,8 +20,8 @@ Un programme C dispose de deux zones mémoire principales pour ses données :
 ```c
 void exemple(void)
 {
-    int x = 5;            // sur la stack, libéré automatiquement à la fin de la fonction
-    int *p = malloc(sizeof(int)); // sur le heap, reste alloué jusqu'à free(p)
+    int x = 5;                     // sur la stack, libéré automatiquement à la fin de la fonction
+    int *p = malloc(sizeof(int));  // sur le heap, reste alloué jusqu'à free(p)
     *p = 5;
     free(p);
 }
@@ -112,9 +112,9 @@ Si `entree_utilisateur` dépasse 16 octets, `strcpy()` continue d'écrire au-del
 ### S'en protéger
 
 ```c
-strcpy(buffer, entree);                    // dangereux : aucune limite
-strncpy(buffer, entree, sizeof(buffer) - 1); // borné à la taille réelle du buffer
-buffer[sizeof(buffer) - 1] = '\0';           // strncpy ne garantit pas la terminaison si la source est trop longue
+strcpy(buffer, entree);                       // dangereux : aucune limite
+strncpy(buffer, entree, sizeof(buffer) - 1);  // borné à la taille réelle du buffer
+buffer[sizeof(buffer) - 1] = '\0';            // strncpy ne garantit pas la terminaison si la source est trop longue
 
 fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, plutôt que de corriger après coup
 ```
@@ -133,7 +133,7 @@ fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, 
 `sizeof` n'est pas une fonction mais un opérateur évalué à la compilation : il renvoie la taille en octets d'un type ou d'une variable, indispensable pour calculer correctement la taille à allouer :
 
 ```c
-sizeof(int);      // généralement 4
+sizeof(int);       // généralement 4
 sizeof(char);      // toujours 1, par définition du standard C
 sizeof(int) * 10;  // taille nécessaire pour 10 entiers -> à passer à malloc()
 ```

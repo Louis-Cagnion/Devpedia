@@ -20,8 +20,8 @@ $ch = curl_init($url);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $corpsJson,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'], // indispensable pour un corps JSON
-    CURLOPT_RETURNTRANSFER => true, // renvoyer la réponse en string, plutôt que l'afficher directement
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],  // indispensable pour un corps JSON
+    CURLOPT_RETURNTRANSFER => true,                                // renvoyer la réponse en string, plutôt que l'afficher directement
     CURLOPT_TIMEOUT        => 10,
 ]);
 
@@ -91,8 +91,8 @@ Le bloc `ssl` d'un contexte de flux (cf. exemple plus haut) contrôle deux véri
 <?php
 $options = [
     'ssl' => [
-        'verify_peer'      => false, // le certificat est-il signé par une autorité reconnue ?
-        'verify_peer_name' => false, // le nom du certificat correspond-il au domaine appelé ?
+        'verify_peer'      => false,  // le certificat est-il signé par une autorité reconnue ?
+        'verify_peer_name' => false,  // le nom du certificat correspond-il au domaine appelé ?
     ],
 ];
 ?>

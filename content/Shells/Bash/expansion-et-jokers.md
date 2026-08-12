@@ -9,8 +9,8 @@ Avant d'exécuter une commande, Bash remplace certains motifs qu'elle contient p
 ## Le globbing : `*`, `?`, `[]`
 
 ```bash
-ls *.txt        # tous les fichiers se terminant par .txt
-ls fichier?.txt  # fichier1.txt, fichierA.txt... ('?' = exactement 1 caractère, n'importe lequel)
+ls *.txt             # tous les fichiers se terminant par .txt
+ls fichier?.txt      # fichier1.txt, fichierA.txt... ('?' = exactement 1 caractère, n'importe lequel)
 ls fichier[123].txt  # fichier1.txt, fichier2.txt ou fichier3.txt uniquement
 ls fichier[a-z].txt  # une seule lettre minuscule à cette position
 ```
@@ -58,15 +58,15 @@ echo {a..e}
 
 ```bash
 cd ~          # équivalent à cd $HOME
-cd ~/projets   # équivalent à cd $HOME/projets
+cd ~/projets  # équivalent à cd $HOME/projets
 ```
 
 ## Empêcher l'expansion : les guillemets
 
 ```bash
-echo *.txt      # remplacé par la liste réelle des fichiers .txt
-echo "*.txt"     # affiche littéralement *.txt -> les guillemets doubles désactivent le globbing
-echo '*.txt'     # même résultat, guillemets simples encore plus stricts (désactivent aussi $variable)
+echo *.txt    # remplacé par la liste réelle des fichiers .txt
+echo "*.txt"  # affiche littéralement *.txt -> les guillemets doubles désactivent le globbing
+echo '*.txt'  # même résultat, guillemets simples encore plus stricts (désactivent aussi $variable)
 ```
 
 Voir aussi [Les variables](/?c=shells&s=bash&p=variables) pour la distinction guillemets simples/doubles vis-à-vis de l'interprétation de `$variable`.

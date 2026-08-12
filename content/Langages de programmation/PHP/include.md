@@ -42,8 +42,8 @@ Pour insérer des fonctions PHP dans du code HTML, on va pouvoir se servir de la
 
 ```php
 <?php
-require_once "config.php"; // chargé
-require_once "config.php"; // ignoré silencieusement, déjà chargé
+require_once "config.php";  // chargé
+require_once "config.php";  // ignoré silencieusement, déjà chargé
 ?>
 ```
 

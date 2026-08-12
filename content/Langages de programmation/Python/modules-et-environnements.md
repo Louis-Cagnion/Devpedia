@@ -1,5 +1,5 @@
 ---
-order: 12
+order: 13
 ---
 
 # Modules, pip et environnements virtuels
@@ -45,10 +45,10 @@ if __name__ == "__main__":
 ## `pip` : installer des bibliothèques externes
 
 ```bash
-pip install requests           # installe une bibliothèque
-pip install requests==2.31.0    # installe une version précise
-pip uninstall requests          # désinstalle
-pip list                         # liste les bibliothèques installées
+pip install requests          # installe une bibliothèque
+pip install requests==2.31.0  # installe une version précise
+pip uninstall requests        # désinstalle
+pip list                      # liste les bibliothèques installées
 ```
 
 ## `requirements.txt` : figer les dépendances d'un projet
@@ -60,7 +60,7 @@ numpy==1.26.0
 
 ```bash
 pip freeze > requirements.txt    # génère ce fichier depuis l'environnement actuel
-pip install -r requirements.txt   # réinstalle exactement les mêmes versions ailleurs
+pip install -r requirements.txt  # réinstalle exactement les mêmes versions ailleurs
 ```
 
 ## Les environnements virtuels
@@ -70,8 +70,8 @@ Sans isolation, `pip install` installe les bibliothèques **globalement** sur la
 ```bash
 python -m venv .venv          # crée un environnement virtuel dans le dossier .venv
 
-source .venv/bin/activate       # active l'environnement (Linux/macOS)
-.venv\Scripts\activate           # active l'environnement (Windows)
+source .venv/bin/activate  # active l'environnement (Linux/macOS)
+.venv\Scripts\activate     # active l'environnement (Windows)
 
 pip install requests             # installe UNIQUEMENT dans cet environnement, pas globalement
 

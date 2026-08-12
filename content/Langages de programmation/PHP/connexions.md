@@ -125,8 +125,8 @@ PHP fait le lien entre le visiteur et ses données grâce à un identifiant de s
 <?php
     session_start();
 
-    unset($_SESSION["user_id"]); // supprime uniquement cette donnée
-    session_destroy();           // détruit toute la session (ex: à la déconnexion)
+    unset($_SESSION["user_id"]);  // supprime uniquement cette donnée
+    session_destroy();            // détruit toute la session (ex: à la déconnexion)
 ?>
 ```
 

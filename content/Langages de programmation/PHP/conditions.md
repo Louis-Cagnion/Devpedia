@@ -33,10 +33,10 @@ PHP propose deux opérateurs d'égalité, et le choix entre les deux n'est pas c
     $b = "1e1";   // notation scientifique : vaut 10
     $c = 10;
 
-    var_dump($a == $b);    // true  -> les deux chaines sont numeriques : 10 == 10
-    var_dump($a === $b);   // false -> meme type (string) mais contenu litteral different
-    var_dump($a == $c);    // true  -> "10" convertie en entier
-    var_dump($a === $c);   // false -> string et int sont des types differents
+    var_dump($a == $b);   // true  -> les deux chaines sont numeriques : 10 == 10
+    var_dump($a === $b);  // false -> meme type (string) mais contenu litteral different
+    var_dump($a == $c);   // true  -> "10" convertie en entier
+    var_dump($a === $c);  // false -> string et int sont des types differents
 ?>
 ```
 

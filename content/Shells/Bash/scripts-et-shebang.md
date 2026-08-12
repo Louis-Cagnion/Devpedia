@@ -49,8 +49,8 @@ En pratique : utiliser `#!/bin/bash` (et l'exécuter avec `bash`) dès que le sc
 ## Rendre un script exécutable
 
 ```bash
-chmod +x script.sh   # ajoute le droit d'exécution (voir Permissions et manipulation de fichiers)
-./script.sh            # exécute le script (le "./" est nécessaire si le dossier courant n'est pas dans $PATH)
+chmod +x script.sh  # ajoute le droit d'exécution (voir Permissions et manipulation de fichiers)
+./script.sh         # exécute le script (le "./" est nécessaire si le dossier courant n'est pas dans $PATH)
 ```
 
 Alternative sans avoir besoin de `chmod +x` : lancer explicitement l'interpréteur sur le fichier :

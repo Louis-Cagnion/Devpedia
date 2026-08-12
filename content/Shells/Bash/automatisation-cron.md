@@ -11,9 +11,9 @@ order: 14
 Chaque utilisateur possède son propre **crontab**, une liste de tâches planifiées, éditée avec :
 
 ```bash
-crontab -e     # ouvre le crontab dans l'éditeur par défaut
-crontab -l      # affiche le crontab actuel sans l'ouvrir
-crontab -r      # supprime tout le crontab de l'utilisateur courant
+crontab -e  # ouvre le crontab dans l'éditeur par défaut
+crontab -l  # affiche le crontab actuel sans l'ouvrir
+crontab -r  # supprime tout le crontab de l'utilisateur courant
 ```
 
 Chaque ligne suit un format à 5 champs de temps, suivis de la commande à exécuter :
@@ -29,10 +29,10 @@ Chaque ligne suit un format à 5 champs de temps, suivis de la commande à exéc
 ```
 
 ```bash
-0 3 * * *        /home/user/scripts/sauvegarde.sh    # tous les jours à 3h00
-*/15 * * * *      /home/user/scripts/verifier-espace.sh # toutes les 15 minutes
-0 9 * * 1          /home/user/scripts/rapport-hebdo.sh  # tous les lundis à 9h00
-0 0 1 * *          /home/user/scripts/purge-logs.sh     # le 1er de chaque mois à minuit
+0 3 * * *        /home/user/scripts/sauvegarde.sh        # tous les jours à 3h00
+*/15 * * * *      /home/user/scripts/verifier-espace.sh  # toutes les 15 minutes
+0 9 * * 1          /home/user/scripts/rapport-hebdo.sh   # tous les lundis à 9h00
+0 0 1 * *          /home/user/scripts/purge-logs.sh      # le 1er de chaque mois à minuit
 ```
 
 Un `*` signifie "à chaque valeur possible de ce champ" ; `*/15` sur le champ des minutes signifie "toutes les 15 minutes" (0, 15, 30, 45).

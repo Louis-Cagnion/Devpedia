@@ -9,9 +9,9 @@ Le **DOM** (*Document Object Model*) est la représentation en mémoire d'une pa
 ## Sélectionner des éléments
 
 ```javascript
-document.getElementById("titre");           // un élément précis, par son id
-document.querySelector(".carte");            // le PREMIER élément correspondant à ce sélecteur CSS
-document.querySelectorAll(".carte");          // TOUS les éléments correspondants (NodeList)
+document.getElementById("titre");     // un élément précis, par son id
+document.querySelector(".carte");     // le PREMIER élément correspondant à ce sélecteur CSS
+document.querySelectorAll(".carte");  // TOUS les éléments correspondants (NodeList)
 ```
 
 > **Note :** `querySelector`/`querySelectorAll` acceptent n'importe quel [sélecteur CSS](/?c=langages-de-balisage&s=css&p=selecteurs) : `.classe`, `#id`, `div > p`, `[data-role="bouton"]`... c'est la méthode la plus flexible.
@@ -21,10 +21,10 @@ document.querySelectorAll(".carte");          // TOUS les éléments corresponda
 ```javascript
 const titre = document.querySelector("h1");
 
-titre.textContent = "Nouveau titre";     // remplace le texte (échappe automatiquement le HTML)
-titre.innerHTML = "<em>Titre</em>";       // insère du HTML brut -> DANGER si la source n'est pas fiable (XSS)
-titre.style.color = "red";                  // modifie un style CSS directement
-titre.classList.add("actif");                // ajoute une classe CSS
+titre.textContent = "Nouveau titre";  // remplace le texte (échappe automatiquement le HTML)
+titre.innerHTML = "<em>Titre</em>";   // insère du HTML brut -> DANGER si la source n'est pas fiable (XSS)
+titre.style.color = "red";            // modifie un style CSS directement
+titre.classList.add("actif");         // ajoute une classe CSS
 titre.classList.remove("actif");
 titre.classList.toggle("actif");              // ajoute si absente, retire si présente
 titre.setAttribute("data-id", "42");

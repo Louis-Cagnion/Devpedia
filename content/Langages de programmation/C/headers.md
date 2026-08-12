@@ -38,8 +38,8 @@ int main(void)
 ## `#include <...>` vs `#include "..."`
 
 ```c
-#include <stdio.h>   // chevrons : cherche dans les répertoires système (bibliothèque standard)
-#include "calculs.h" // guillemets : cherche d'abord dans le répertoire courant du projet
+#include <stdio.h>    // chevrons : cherche dans les répertoires système (bibliothèque standard)
+#include "calculs.h"  // guillemets : cherche d'abord dans le répertoire courant du projet
 ```
 
 ## Les include guards

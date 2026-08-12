@@ -74,8 +74,8 @@ C'est le piège pratique le plus courant. En UTF-8, la longueur en octets ne cor
 
 ```python
 texte = "café"
-len(texte)                    # 4 -> Python compte les caracteres
-len(texte.encode("utf-8"))    # 5 -> le "é" prend 2 octets
+len(texte)                  # 4 -> Python compte les caracteres
+len(texte.encode("utf-8"))  # 5 -> le "é" prend 2 octets
 ```
 
 En C, où une chaîne est un tableau d'octets, `strlen("café")` renvoie **5**. Découper une telle chaîne à l'octet près peut couper un caractère en deux et produire des données invalides.

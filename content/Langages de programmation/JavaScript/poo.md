@@ -79,8 +79,8 @@ class Cercle {
 }
 
 const c = new Cercle(5);
-console.log(c.surface);   // calculé à la volée, comme un attribut
-c.diametre = 10;            // équivaut à c.rayon = 5
+console.log(c.surface);  // calculé à la volée, comme un attribut
+c.diametre = 10;         // équivaut à c.rayon = 5
 ```
 
 ## Champs privés (`#`)
@@ -100,14 +100,14 @@ class CompteBancaire {
 
 const compte = new CompteBancaire();
 compte.deposer(100);
-console.log(compte.solde);    // 100
-console.log(compte.#solde);    // SyntaxError : #solde n'est pas accessible ici
+console.log(compte.solde);   // 100
+console.log(compte.#solde);  // SyntaxError : #solde n'est pas accessible ici
 ```
 
 ## Ce qui se cache derrière `class` : le prototype
 
 ```javascript
-console.log(typeof Vehicule);           // "function" -> une classe EST une fonction spéciale
+console.log(typeof Vehicule);                     // "function" -> une classe EST une fonction spéciale
 console.log(v.__proto__ === Vehicule.prototype);  // true
 ```
 

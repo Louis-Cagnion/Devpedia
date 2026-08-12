@@ -9,15 +9,15 @@ Une grande partie de la puissance du terminal Unix vient d'une poignée d'outils
 ## `grep` : rechercher du texte
 
 ```bash
-grep "erreur" fichier.log         # affiche les lignes contenant "erreur"
-grep -i "erreur" fichier.log      # insensible à la casse (-i)
-grep -v "erreur" fichier.log      # inverse : affiche les lignes qui NE contiennent PAS "erreur"
-grep -r "TODO" .                  # recherche récursive dans tous les fichiers d'un dossier
-grep -n "erreur" fichier.log      # affiche aussi le numéro de ligne
-grep -c "erreur" fichier.log      # compte le nombre de lignes correspondantes, sans les afficher
+grep "erreur" fichier.log             # affiche les lignes contenant "erreur"
+grep -i "erreur" fichier.log          # insensible à la casse (-i)
+grep -v "erreur" fichier.log          # inverse : affiche les lignes qui NE contiennent PAS "erreur"
+grep -r "TODO" .                      # recherche récursive dans tous les fichiers d'un dossier
+grep -n "erreur" fichier.log          # affiche aussi le numéro de ligne
+grep -c "erreur" fichier.log          # compte le nombre de lignes correspondantes, sans les afficher
 grep -E "erreur|warning" fichier.log  # -E active les regex étendues (cf. chapitre sur les regex)
-grep -l "TODO" *.md               # affiche seulement les NOMS des fichiers qui contiennent le motif
-grep -q "TODO" *.md               # n'affiche rien : sert uniquement à tester la présence (voir plus bas)
+grep -l "TODO" *.md                   # affiche seulement les NOMS des fichiers qui contiennent le motif
+grep -q "TODO" *.md                   # n'affiche rien : sert uniquement à tester la présence (voir plus bas)
 ```
 
 Comme beaucoup de commandes Unix, ces drapeaux sont des initiales de mots anglais plutôt que des lettres arbitraires : `-i` = *ignore case*, `-v` = *invert*, `-r` = *recursive*, `-n` = *line number*, `-c` = *count*, `-E` = *extended (regex)*, `-l` = *files with matches (list)*, `-q` = *quiet*. Une fois ces mots connus, retenir le drapeau devient naturel : ce principe revient dans la plupart des commandes de ce chapitre et du suivant.
@@ -48,8 +48,8 @@ Un `|` non échappé sans `-E` est cherché **littéralement** : `grep "a|b"` ch
 C'est ce qui permet de l'enchaîner avec `&&` ou `||` (voir [Redirections et pipes](/?c=shells&s=bash&p=redirections-et-pipes)) :
 
 ```bash
-grep -rl "motif" *.md || echo "absent"   # message de repli si rien n'est trouve
-grep -q "motif" f.txt && traiter f.txt   # ne traite le fichier que s'il contient le motif
+grep -rl "motif" *.md || echo "absent"  # message de repli si rien n'est trouve
+grep -q "motif" f.txt && traiter f.txt  # ne traite le fichier que s'il contient le motif
 ```
 
 Avec `-q`, `grep` s'arrête dès la première correspondance et n'affiche rien : c'est la forme à privilégier quand seul le résultat du test compte, notamment sur de gros fichiers.
@@ -65,17 +65,17 @@ Avec `-q`, `grep` s'arrête dès la première correspondance et n'affiche rien :
 Une commande `sed` se décompose en deux parties : une **adresse** optionnelle (quelles lignes concerner) et une **commande** à leur appliquer.
 
 ```bash
-sed 's/ancien/nouveau/' fichier.txt         # pas d'adresse -> la commande s'applique à TOUTES les lignes
-sed '3s/ancien/nouveau/' fichier.txt        # adresse "3" -> seulement la ligne 3
-sed '2,4s/ancien/nouveau/' fichier.txt       # adresse "2,4" -> uniquement les lignes 2 à 4
+sed 's/ancien/nouveau/' fichier.txt     # pas d'adresse -> la commande s'applique à TOUTES les lignes
+sed '3s/ancien/nouveau/' fichier.txt    # adresse "3" -> seulement la ligne 3
+sed '2,4s/ancien/nouveau/' fichier.txt  # adresse "2,4" -> uniquement les lignes 2 à 4
 ```
 
 La commande la plus utilisée est `s/motif/remplacement/` (le "s" pour *substitute*) : elle recherche `motif` (une [regex](/?c=domain-specific-languages-dsl&p=regex)) et le remplace par `remplacement`. Par défaut, `sed` ne remplace que la **première** occurrence trouvée sur chaque ligne, d'où le drapeau `g` pour traiter aussi les suivantes :
 
 ```bash
-sed 's/ancien/nouveau/' fichier.txt        # remplace la 1ère occurrence par ligne, affiche le résultat
-sed 's/ancien/nouveau/g' fichier.txt        # 'g' (global) : remplace TOUTES les occurrences de chaque ligne
-sed -i 's/ancien/nouveau/g' fichier.txt     # -i : modifie le fichier directement (in place), sans rien afficher
+sed 's/ancien/nouveau/' fichier.txt      # remplace la 1ère occurrence par ligne, affiche le résultat
+sed 's/ancien/nouveau/g' fichier.txt     # 'g' (global) : remplace TOUTES les occurrences de chaque ligne
+sed -i 's/ancien/nouveau/g' fichier.txt  # -i : modifie le fichier directement (in place), sans rien afficher
 ```
 
 L'autre commande courante est `p` (*print*), qui affiche explicitement une ligne ; combinée à `-n` (qui désactive l'affichage automatique de chaque ligne traitée), elle permet de n'afficher que certaines lignes plutôt que tout le fichier :
@@ -91,8 +91,8 @@ sed -n '2,4p' fichier.txt   # -n : n'affiche RIEN par défaut ; '2,4p' : affiche
 `awk` découpe automatiquement chaque ligne en champs (`$1`, `$2`...), séparés par défaut par des espaces/tabulations :
 
 ```bash
-echo "Jean Dupont 25" | awk '{ print $1 }'        # Jean -> premier champ
-echo "Jean Dupont 25" | awk '{ print $3, $1 }'    # 25 Jean
+echo "Jean Dupont 25" | awk '{ print $1 }'      # Jean -> premier champ
+echo "Jean Dupont 25" | awk '{ print $3, $1 }'  # 25 Jean
 
 awk -F ',' '{ print $2 }' donnees.csv    # -F ',' : change le séparateur de champ pour une virgule
 ```
@@ -108,18 +108,18 @@ awk '{ print $NF }' fichier.txt   # affiche le dernier mot de chaque ligne
 Plus limité qu'`awk`, mais suffisant pour des cas simples :
 
 ```bash
-cut -d ',' -f 2 donnees.csv       # -d : séparateur, -f : numéro du champ à extraire
-cut -c 1-5 fichier.txt            # extrait les caractères 1 à 5 de chaque ligne
+cut -d ',' -f 2 donnees.csv  # -d : séparateur, -f : numéro du champ à extraire
+cut -c 1-5 fichier.txt       # extrait les caractères 1 à 5 de chaque ligne
 ```
 
 ## `sort` et `uniq` : trier et dédupliquer
 
 ```bash
-sort fichier.txt                  # tri alphabétique
-sort -n nombres.txt                # tri numérique (indispensable pour des nombres, sinon tri par chaîne)
-sort -r fichier.txt                 # tri décroissant
-sort fichier.txt | uniq            # supprime les lignes en double CONSÉCUTIVES seulement
-sort fichier.txt | uniq -c          # compte les occurrences de chaque ligne
+sort fichier.txt            # tri alphabétique
+sort -n nombres.txt         # tri numérique (indispensable pour des nombres, sinon tri par chaîne)
+sort -r fichier.txt         # tri décroissant
+sort fichier.txt | uniq     # supprime les lignes en double CONSÉCUTIVES seulement
+sort fichier.txt | uniq -c  # compte les occurrences de chaque ligne
 ```
 
 > **Note :** `uniq` ne détecte que des doublons **adjacents** : c'est pour ça qu'on le combine presque toujours avec `sort` avant, qui regroupe les lignes identiques ensemble.
@@ -127,9 +127,9 @@ sort fichier.txt | uniq -c          # compte les occurrences de chaque ligne
 ## `wc` : compter
 
 ```bash
-wc -l fichier.txt   # nombre de lignes
-wc -w fichier.txt    # nombre de mots
-wc -c fichier.txt    # nombre d'octets
+wc -l fichier.txt  # nombre de lignes
+wc -w fichier.txt  # nombre de mots
+wc -c fichier.txt  # nombre d'octets
 ```
 
 ## Combiner ces outils

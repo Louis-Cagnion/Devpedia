@@ -4,7 +4,7 @@ Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-f
 
 ```python
 nom = "Devpedia"          # une variable, voir le chapitre dédié
-print(f"Bonjour, {nom}")   # affiche : Bonjour, Devpedia
+print(f"Bonjour, {nom}")  # affiche : Bonjour, Devpedia
 ```
 
 | Terme | Ce que ça veut dire |

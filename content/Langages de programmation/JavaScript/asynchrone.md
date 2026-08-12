@@ -44,8 +44,8 @@ function attendre(millisecondes) {
 }
 
 attendre(1000)
-    .then(resultat => console.log(resultat))   // exécuté si la promesse est résolue
-    .catch(erreur => console.log(erreur));      // exécuté si elle est rejetée
+    .then(resultat => console.log(resultat))  // exécuté si la promesse est résolue
+    .catch(erreur => console.log(erreur));    // exécuté si elle est rejetée
 ```
 
 ### Enchaîner des Promises

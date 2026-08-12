@@ -28,8 +28,8 @@ try {
 ```cpp
 #include <stdexcept>
 
-std::exception              // classe de base de toutes les exceptions standard
-  ├── std::logic_error        // erreur détectable avant l'exécution (ex: argument invalide)
+std::exception          // classe de base de toutes les exceptions standard
+  ├── std::logic_error  // erreur détectable avant l'exécution (ex: argument invalide)
   │     ├── std::invalid_argument
   │     └── std::out_of_range
   └── std::runtime_error       // erreur détectable seulement à l'exécution

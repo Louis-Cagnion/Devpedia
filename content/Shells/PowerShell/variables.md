@@ -11,9 +11,9 @@ Contrairement à Bash, où tout est manipulé comme du texte, une variable Power
 ## Déclarer et lire une variable
 
 ```powershell
-$nom = "Jean"          # pas de règle stricte sur les espaces autour du '=', contrairement à Bash
-Write-Output $nom       # Jean
-Write-Output "Bonjour $nom !"   # Bonjour Jean ! -> interpolation directe dans une chaîne double-guillemets
+$nom = "Jean"                  # pas de règle stricte sur les espaces autour du '=', contrairement à Bash
+Write-Output $nom              # Jean
+Write-Output "Bonjour $nom !"  # Bonjour Jean ! -> interpolation directe dans une chaîne double-guillemets
 ```
 
 > **Note :** `$nom` seul (sans `Write-Output`) affiche aussi sa valeur dans la console : PowerShell affiche automatiquement le résultat de toute expression qui n'est pas explicitement assignée ou supprimée, un comportement proche d'un REPL.
@@ -23,8 +23,8 @@ Write-Output "Bonjour $nom !"   # Bonjour Jean ! -> interpolation directe dans u
 ```powershell
 $nom = "Jean"
 
-Write-Output "Bonjour $nom"    # Bonjour Jean -> les guillemets doubles interprètent les variables
-Write-Output 'Bonjour $nom'    # Bonjour $nom -> les guillemets simples désactivent toute interprétation
+Write-Output "Bonjour $nom"  # Bonjour Jean -> les guillemets doubles interprètent les variables
+Write-Output 'Bonjour $nom'  # Bonjour $nom -> les guillemets simples désactivent toute interprétation
 ```
 
 Pour insérer une propriété ou le résultat d'une expression (pas seulement une variable simple), il faut l'entourer de `$(...)` à l'intérieur des guillemets doubles :
@@ -58,9 +58,9 @@ Aucun contexte arithmétique explicite n'est nécessaire : les opérateurs fonct
 $a = 5
 $b = 3
 
-Write-Output ($a + $b)   # 8
-Write-Output ($a * $b)   # 15
-Write-Output ($a / $b)   # 1.66666666666667 -> division réelle, pas entière comme en Bash
+Write-Output ($a + $b)  # 8
+Write-Output ($a * $b)  # 15
+Write-Output ($a / $b)  # 1.66666666666667 -> division réelle, pas entière comme en Bash
 ```
 
 ## Variables automatiques

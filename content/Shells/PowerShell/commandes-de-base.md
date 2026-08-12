@@ -9,18 +9,18 @@ Contrairement à Bash, où `cd`, `ls` ou `cp` sont des noms courts déjà famili
 ## Se déplacer : `Set-Location` et `Get-Location`
 
 ```powershell
-Get-Location                   # affiche le dossier courant, équivalent de "pwd"
-Set-Location C:\Users\Jean      # se déplace dans ce dossier, équivalent de "cd"
-Set-Location ..                  # remonte d'un niveau
-Set-Location -                   # retourne au dossier précédent
+Get-Location                # affiche le dossier courant, équivalent de "pwd"
+Set-Location C:\Users\Jean  # se déplace dans ce dossier, équivalent de "cd"
+Set-Location ..             # remonte d'un niveau
+Set-Location -              # retourne au dossier précédent
 ```
 
 ## Lister un dossier : `Get-ChildItem`
 
 ```powershell
-Get-ChildItem                    # liste le contenu du dossier courant
-Get-ChildItem -Force              # inclut les fichiers et dossiers cachés
-Get-ChildItem -Path C:\logs        # liste un dossier précis sans s'y déplacer
+Get-ChildItem                # liste le contenu du dossier courant
+Get-ChildItem -Force         # inclut les fichiers et dossiers cachés
+Get-ChildItem -Path C:\logs  # liste un dossier précis sans s'y déplacer
 ```
 
 > **Note :** `Get-ChildItem` fait aussi le travail de `find` dès qu'on ajoute `-Recurse` : voir le chapitre sur les permissions pour cet usage, ainsi que pour créer, copier, déplacer et supprimer des fichiers/dossiers.
@@ -28,9 +28,9 @@ Get-ChildItem -Path C:\logs        # liste un dossier précis sans s'y déplacer
 ## Lire le contenu d'un fichier : `Get-Content`
 
 ```powershell
-Get-Content fichier.txt           # affiche tout le fichier, équivalent de "cat"
-Get-Content fichier.txt -Tail 5    # les 5 dernières lignes, équivalent de "tail"
-Get-Content fichier.txt -Wait       # continue à afficher les lignes ajoutées au fichier, équivalent de "tail -f"
+Get-Content fichier.txt          # affiche tout le fichier, équivalent de "cat"
+Get-Content fichier.txt -Tail 5  # les 5 dernières lignes, équivalent de "tail"
+Get-Content fichier.txt -Wait    # continue à afficher les lignes ajoutées au fichier, équivalent de "tail -f"
 ```
 
 Voir le chapitre sur le traitement de texte pour aller plus loin (recherche, remplacement, tri sur le contenu lu par `Get-Content`).
@@ -57,9 +57,9 @@ PowerShell fournit par défaut des alias vers ces cmdlets, pour rester compatibl
 Le nom d'une cmdlet ne suffit pas toujours à deviner ses paramètres : `Get-Help` évite d'avoir à chercher en ligne :
 
 ```powershell
-Get-Help Get-ChildItem             # syntaxe et description générale
-Get-Help Get-ChildItem -Examples    # uniquement des exemples d'usage
-Get-Help Get-ChildItem -Full         # description complète, tous les paramètres
+Get-Help Get-ChildItem            # syntaxe et description générale
+Get-Help Get-ChildItem -Examples  # uniquement des exemples d'usage
+Get-Help Get-ChildItem -Full      # description complète, tous les paramètres
 ```
 
 > **Note :** au premier lancement, `Get-Help` peut demander d'exécuter `Update-Help` (télécharge la documentation à jour) ; sans réseau disponible, une version minimale déjà installée reste utilisable.

@@ -4,8 +4,8 @@ Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-f
 
 ```php
 <?php
-$nom = "Devpedia";   // une variable, voir le chapitre dédié
-echo "Bonjour, $nom"; // affiche : Bonjour, Devpedia
+$nom = "Devpedia";     // une variable, voir le chapitre dédié
+echo "Bonjour, $nom";  // affiche : Bonjour, Devpedia
 ```
 
 | Terme | Ce que ça veut dire |

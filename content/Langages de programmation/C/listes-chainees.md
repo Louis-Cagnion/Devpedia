@@ -27,8 +27,8 @@ premier->valeur = 10;
 Maillon *second = malloc(sizeof(Maillon));
 second->valeur = 20;
 
-premier->suivant = second; // chaîne le premier vers le second
-second->suivant = NULL;    // NULL marque la fin de la liste
+premier->suivant = second;  // chaîne le premier vers le second
+second->suivant = NULL;     // NULL marque la fin de la liste
 ```
 
 ```text
@@ -62,8 +62,8 @@ Maillon *insererEnTete(Maillon *tete, int valeur)
         return tete; // échec d'allocation : renvoyer la liste inchangée plutôt que planter
     }
     nouveau->valeur = valeur;
-    nouveau->suivant = tete; // le nouveau maillon pointe vers l'ancienne tête
-    return nouveau;          // devient la nouvelle tête
+    nouveau->suivant = tete;  // le nouveau maillon pointe vers l'ancienne tête
+    return nouveau;           // devient la nouvelle tête
 }
 
 // utilisation :

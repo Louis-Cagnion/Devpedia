@@ -11,8 +11,8 @@ Chaque commande Unix communique par défaut via trois flux : l'**entrée standar
 ## Rediriger la sortie vers un fichier
 
 ```bash
-echo "Bonjour" > fichier.txt    # écrase fichier.txt (ou le crée) avec ce contenu
-echo "Encore" >> fichier.txt    # ajoute à la fin de fichier.txt, sans écraser
+echo "Bonjour" > fichier.txt  # écrase fichier.txt (ou le crée) avec ce contenu
+echo "Encore" >> fichier.txt  # ajoute à la fin de fichier.txt, sans écraser
 ```
 
 > **Note :** `>` écrase silencieusement le contenu existant du fichier cible : une erreur classique est d'utiliser `>` là où `>>` était voulu, perdant le contenu précédent sans avertissement.
@@ -31,7 +31,7 @@ Les flux sont numérotés : `0` = entrée standard, `1` = sortie standard, `2` =
 commande_qui_echoue 2> erreurs.log     # seule la sortie d'erreur va dans erreurs.log
 commande 1> sortie.log 2> erreurs.log  # sépare sortie normale et erreurs dans deux fichiers
 commande > tout.log 2>&1               # redirige stdout dans tout.log, PUIS stderr vers là où va stdout
-commande &> tout.log                    # raccourci Bash équivalent à "> tout.log 2>&1"
+commande &> tout.log                   # raccourci Bash équivalent à "> tout.log 2>&1"
 ```
 
 > **Note :** l'ordre compte pour `2>&1`. `2>&1 > fichier` ne fonctionne **pas** comme attendu : à ce moment-là, `2` est encore redirigé vers le terminal (la sortie standard d'alors), et seul `1` part ensuite vers `fichier`. Il faut écrire `> fichier 2>&1` : d'abord rediriger `1` vers `fichier`, puis faire pointer `2` vers la même cible que `1` **à cet instant précis**.
@@ -49,9 +49,9 @@ commande_bruyante > /dev/null 2>&1   # ignore toute sortie normale ET toute erre
 Un pipe connecte la sortie standard d'une commande à l'entrée standard de la suivante :
 
 ```bash
-ls -l | grep ".txt"          # ne garde que les lignes contenant ".txt"
-grep "404" access.log | wc -l   # compte les lignes contenant "404" dans le fichier
-ps aux | sort -k 3 -nr | head -5      # les 5 processus qui consomment le plus de CPU
+ls -l | grep ".txt"               # ne garde que les lignes contenant ".txt"
+grep "404" access.log | wc -l     # compte les lignes contenant "404" dans le fichier
+ps aux | sort -k 3 -nr | head -5  # les 5 processus qui consomment le plus de CPU
 ```
 
 Chaque commande d'un pipe s'exécute simultanément, la sortie de l'une alimentant l'entrée de la suivante au fur et à mesure : ce n'est pas une exécution séquentielle avec stockage intermédiaire.
@@ -61,17 +61,17 @@ Chaque commande d'un pipe s'exécute simultanément, la sortie de l'une alimenta
 Un pipe fait circuler des **données**. Ces trois opérateurs, eux, contrôlent l'**exécution** : ils décident si la commande suivante est lancée, en fonction du code de sortie de la précédente (`0` = succès, voir [Écrire et exécuter un script Bash](/?c=shells&s=bash&p=scripts-et-shebang)).
 
 ```bash
-commande1 ; commande2      # lance commande2 dans tous les cas
-commande1 && commande2     # lance commande2 SEULEMENT si commande1 a reussi
-commande1 || commande2     # lance commande2 SEULEMENT si commande1 a echoue
+commande1 ; commande2   # lance commande2 dans tous les cas
+commande1 && commande2  # lance commande2 SEULEMENT si commande1 a reussi
+commande1 || commande2  # lance commande2 SEULEMENT si commande1 a echoue
 ```
 
 En pratique :
 
 ```bash
-mkdir -p build && cd build          # n'entre dans le dossier que s'il a bien ete cree
-./configure && make && make install # la chaine s'arrete des qu'une etape echoue
-grep -q "TODO" *.md || echo "aucun TODO"   # message de repli si grep ne trouve rien
+mkdir -p build && cd build                # n'entre dans le dossier que s'il a bien ete cree
+./configure && make && make install       # la chaine s'arrete des qu'une etape echoue
+grep -q "TODO" *.md || echo "aucun TODO"  # message de repli si grep ne trouve rien
 ```
 
 On parle d'évaluation **court-circuit** (*short-circuit*) : `&&` n'exécute la suite que si nécessaire, exactement comme les opérateurs logiques d'autres langages.

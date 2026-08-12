@@ -21,8 +21,8 @@ echo "Le terminal reste disponible immédiatement"
 
 ```bash
 long_traitement.sh &
-jobs           # liste les tâches en arrière-plan de la session courante
-fg %1          # ramène la tâche numéro 1 au premier plan
+jobs   # liste les tâches en arrière-plan de la session courante
+fg %1  # ramène la tâche numéro 1 au premier plan
 # Ctrl+Z suspend une tâche au premier plan (sans l'arrêter)
 bg %1          # relance en arrière-plan une tâche suspendue par Ctrl+Z
 ```
@@ -33,8 +33,8 @@ bg %1          # relance en arrière-plan une tâche suspendue par Ctrl+Z
 
 ```bash
 ps aux             # liste tous les processus du système, avec utilisateur, CPU, mémoire...
-ps aux | grep php   # filtre pour ne voir que les processus liés à "php"
-top                 # vue interactive, rafraîchie en direct, triée par consommation CPU par défaut
+ps aux | grep php  # filtre pour ne voir que les processus liés à "php"
+top                # vue interactive, rafraîchie en direct, triée par consommation CPU par défaut
 ```
 
 ## Terminer un processus (`kill`)
@@ -42,8 +42,8 @@ top                 # vue interactive, rafraîchie en direct, triée par consomm
 `kill` envoie un **signal** à un processus, identifié par son PID (*Process ID*) :
 
 ```bash
-kill 1234        # envoie SIGTERM (15) : demande poliment au processus de se terminer proprement
-kill -9 1234      # envoie SIGKILL (9) : force l'arrêt immédiat, sans laisser le processus réagir
+kill 1234     # envoie SIGTERM (15) : demande poliment au processus de se terminer proprement
+kill -9 1234  # envoie SIGKILL (9) : force l'arrêt immédiat, sans laisser le processus réagir
 ```
 
 | Signal | Numéro | Effet |
@@ -79,8 +79,8 @@ nohup long_traitement.sh &
 ## Trouver le PID d'un processus par son nom
 
 ```bash
-pgrep -f "long_traitement.sh"   # affiche le(s) PID correspondant au motif donné
-pkill -f "long_traitement.sh"    # trouve ET termine en une seule commande (envoie SIGTERM par défaut)
+pgrep -f "long_traitement.sh"  # affiche le(s) PID correspondant au motif donné
+pkill -f "long_traitement.sh"  # trouve ET termine en une seule commande (envoie SIGTERM par défaut)
 ```
 
 > **`kill` vs `pkill`** : `kill` a besoin d'un **PID** déjà connu (`kill 1234`) : c'est le seul moyen d'envoyer un signal à un processus précis sans se tromper de cible. `pkill` évite d'avoir à chercher ce PID à la main : il envoie le signal à tout processus dont le nom (ou la ligne de commande complète avec `-f`) correspond au motif donné, ce qui revient à enchaîner `pgrep` puis `kill` sur chaque PID trouvé. Le risque de `pkill` est donc de cibler plus de processus que prévu si le motif est trop large (ex. `pkill -f script.sh` sur une machine où plusieurs scripts contiennent "script.sh" dans leur nom).
