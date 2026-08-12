@@ -61,6 +61,18 @@ function withProtectedCodeSpans(line, transform, wrapCode) {
 }
 
 /**
+ * Escapes the characters that would otherwise be parsed as HTML markup when a string
+ * is inserted via `innerHTML` — needed for inline code spans, whose content (e.g. a
+ * literal `<table>` shown as an example) must render as visible text, not real markup.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function escapeHtml(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+/**
  * Renders `[label](url)` as a real `<a>`. An internal cross-chapter link (`/?c=...`, cf.
  * README) gets `class="contentLink"` so router.js can intercept its clicks and navigate through
  * the SPA instead of reloading the page; anything else is treated as an external link and opens
@@ -82,7 +94,7 @@ function mdToHtmlFormatting(line) {
         withProtectedCodeSpans(
             withoutEscapes,
             text => renderLinks(text).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>"),
-            code => `<code>${code}</code>`
+            code => `<code>${escapeHtml(code)}</code>`
         )
     );
 }
@@ -285,6 +297,13 @@ export function parseAppendText(homeDiv, fileName, text) {
         if (isCodeFence(line)) {
             if (!inCodeBlock) {
                 inCodeBlock = true;
+                // A fenced block ends whatever quote/list was open before it, exactly like a
+                // table or heading does below — otherwise a blockquote resuming after the fence
+                // (e.g. a "Piège" note, an example, then a "Bonne pratique" note) would append
+                // into the stale pre-fence quoteDiv, rendering out of order (above the fence).
+                openList = false;
+                openQuote = false;
+                lastChartRow = null;
                 codeLanguage = line.match(codeFenceRegex)[1];
                 const pre = createTag("pre", {class: `${fileName}Pre`});
                 codeDiv = createTag("code", codeLanguage ? {class: `language-${codeLanguage}`} : {});

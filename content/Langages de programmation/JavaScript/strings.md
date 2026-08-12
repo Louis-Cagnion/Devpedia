@@ -5,89 +5,57 @@ order: 4
 # Les strings
 
 Une string est une suite de caractères, utilisée pour représenter du texte. En JavaScript, elle peut être écrite de 3 manières différentes :
+
 ```javascript
-    //simple quotes
-    const st1 = 'Hello world';
+// guillemets simples
+const str1 = 'Hello world';
 
-    //double quotes
-    const str2 = "Hello world";
+// guillemets doubles : strictement équivalents aux guillemets simples
+const str2 = "Hello world";
 
-    //backticks, utiles pour ecrire sur plusieurs lignes ou inserer des variables (template literals)
-    const str3 = `
-    Ce format
-    permet d'écrire
-    une string sur
-    plusieurs lignes
-    `;
+// backticks (template literals) : seuls à permettre l'interpolation et le multi-ligne
+const nom = 'Jean';
+const str3 = `Bonjour ${nom} !`;   // 'Bonjour Jean !' -> ${...} insère directement une variable
+
+const str4 = `Ligne 1
+Ligne 2`;                          // les retours à la ligne du code source sont conservés tels quels
 ```
 
 ### Les prototypes de strings
 
-Les prototypes sont des fonctions intégrées à l'objet string par défaut, permettant d'effectuer certaines actions sur la string. Une string est immuable : ces fonctions ne la modifient jamais, elles renvoient toujours une nouvelle valeur.
+Les prototypes sont des fonctions intégrées à l'objet string par défaut, permettant d'effectuer certaines actions sur la string. Une string est **immuable** en JavaScript : aucune de ces méthodes ne la modifie, chacune renvoie toujours une nouvelle valeur.
+
+| Méthode | Effet |
+|---|---|
+| `includes(sous-chaîne)` | Teste la présence d'une sous-chaîne (`true`/`false`) |
+| `length` | Propriété (pas une méthode) : nombre de caractères |
+| `slice(debut, fin)` | Extrait une portion (`fin` exclu) |
+| `toUpperCase()` / `toLowerCase()` | Copie entièrement en majuscules / minuscules |
+| `trim()` | Copie sans les espaces inutiles au début et à la fin |
+| `replace(a, b)` / `replaceAll(a, b)` | Remplace la première occurrence / toutes les occurrences |
+| `split(separateur)` | Découpe en tableau de sous-chaînes |
+| `indexOf(sous-chaîne)` | Index de la première occurrence, `-1` si absente |
+| `startsWith(x)` / `endsWith(x)` | Teste si la chaîne commence / finit par `x` |
+| `repeat(n)` | Répète la chaîne `n` fois |
+| `concat(autre)` | Assemble plusieurs chaînes |
 
 ```javascript
-    const str = 'hello world';
+const str = 'hello world';
+
+str.includes('hello');       // true
+str.slice(0, 5);             // 'hello'
+str.toUpperCase();           // 'HELLO WORLD'
+str.trim();                  // copie sans espaces superflus
+str.replace('hello', 'hi');  // 'hi world', une seule occurrence
+str.replaceAll('o', '0');    // 'hell0 w0rld', toutes les occurrences
+str.split(' ');              // ['hello', 'world']
+str.startsWith('hello');     // true
+str.repeat(2);               // 'hello worldhello world'
 ```
 
-**`includes`** vérifie si la string contient une sous-chaîne donnée, et renvoie `true` ou `false`.
-```javascript
-    str.includes('hello'); // true
-```
-
-**`length`** n'est pas une fonction mais une propriété : elle renvoie le nombre de caractères de la string.
-```javascript
-    str.length; // 11
-```
-
-**`slice`** renvoie une portion de la string, entre un index de début (inclus) et un index de fin (exclu).
-```javascript
-    str.slice(0, 5); // 'hello'
-```
-
-**`toUpperCase`** et **`toLowerCase`** renvoient une copie de la string entièrement en majuscules ou en minuscules.
-```javascript
-    str.toUpperCase(); // 'HELLO WORLD'
-    str.toLowerCase(); // 'hello world'
-```
-
-**`trim`** renvoie une copie de la string sans les espaces inutiles au début et à la fin.
-```javascript
-    str.trim();
-```
-
-**`replace`** et **`replaceAll`** renvoient une copie de la string avec une partie remplacée par une autre : `replace` ne remplace que la première occurrence, `replaceAll` remplace toutes les occurrences.
-```javascript
-    str.replace('hello', 'hi'); // 'hi world'
-    str.replaceAll('o', '0'); // 'hell0 w0rld'
-```
-
-**`split`** découpe la string en un tableau de sous-chaînes, selon un séparateur donné en paramètre.
-```javascript
-    str.split(' '); // ['hello', 'world']
-```
-
-**`indexOf`** cherche une sous-chaîne dans la string et renvoie l'index de sa première occurrence. Si elle n'existe pas, elle renvoie `-1`.
-```javascript
-    str.indexOf('world'); // 6
-```
-
-**`startsWith`** et **`endsWith`** vérifient si la string commence ou finit par une valeur donnée, et renvoient `true` ou `false`.
-```javascript
-    str.startsWith('hello'); // true
-    str.endsWith('world'); // true
-```
-
-**`repeat`** renvoie une nouvelle string, en répétant la string d'origine un certain nombre de fois.
-```javascript
-    str.repeat(2); // 'hello worldhello world'
-```
-
-**`concat`** assemble plusieurs strings entre elles et renvoie le résultat, sans modifier les strings d'origine.
-```javascript
-    str.concat(' !'); // 'hello world !'
-```
-
-> **Piège :** toutes ces méthodes renvoient une **nouvelle** string, sans jamais modifier l'originale : une string est immuable en JavaScript. `str.toUpperCase();` seule ne change rien à `str` ; il faut réassigner : `str = str.toUpperCase();`.
+> **Piège :** toutes ces méthodes renvoient une **nouvelle** string, sans jamais modifier l'originale. `str.toUpperCase();` seule ne change rien à `str` ; il faut réassigner : `str = str.toUpperCase();`.
+>
+> **Bonne pratique :** toujours réassigner (ou utiliser directement) le résultat d'une méthode de string, jamais supposer qu'elle a modifié la variable d'origine.
 
 ### Les regex
 
