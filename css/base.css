@@ -814,3 +814,42 @@ blockquote p + p {
 .pageOutlineList .outline-h4 { margin-inline-start: 1rem; }
 .pageOutlineList .outline-h5 { margin-inline-start: 2rem; }
 .pageOutlineList .outline-h6 { margin-inline-start: 3rem; }
+
+/** ---- read-aloud control (js/reader.js) ---- **/
+
+.readerControl {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rightSidebar .readerControl {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.rightSidebar .readerToggleButton, .rightSidebar .readerContinueButton {
+    width: 100%;
+    justify-content: center;
+}
+
+.readerToggleButton:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* shown only once reading reaches a code block -- cf. .visible on .menuDiv/dropdowns */
+.readerContinueButton {
+    display: none;
+}
+
+.readerContinueButton.visible {
+    display: inline-flex;
+}
+
+/* shown only below the mobile breakpoint, cf. responsive.css -- .rightSidebar (which carries
+   the desktop instance) is hidden there, same as .leftSidebar */
+.readerFloatingBar {
+    display: none;
+}

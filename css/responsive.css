@@ -70,6 +70,27 @@
     .childList {
         grid-template-columns: 1fr;
     }
+    .readerFloatingBar {
+        display: flex;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 15;
+        padding: 0.6rem 1rem;
+        background-color: var(--bg-elevated);
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+    }
+    .readerFloatingBar .readerControl {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+    .readerFloatingBar .readerToggleButton, .readerFloatingBar .readerContinueButton {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
 }
 
 @media (max-width: 480px) {

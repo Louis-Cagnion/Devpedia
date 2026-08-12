@@ -1,6 +1,7 @@
 import { appState } from "./state.js";
 import { createTag } from "./tags.js";
 import { loadCategory, navigateToSubject, navigateToChapter } from "./router.js";
+import { createReaderControl } from "./reader.js";
 
 let categories = [];
 let currentOutline = [];
@@ -171,7 +172,9 @@ export function syncSidebars() {
  * navbar's burger button by the caller), and keep `categories` for later re-renders.
  *
  * @param {Object} initialCategories
- * @returns {HTMLElement} the mobile menu panel, not yet attached to the document
+ * @returns {{menuDiv: HTMLElement, floatingBar: HTMLElement|null}} the mobile menu panel and
+ *   the mobile read-aloud floating bar (null if the browser has no Web Speech API), neither
+ *   yet attached to the document
  */
 export function initSidebars(initialCategories) {
     categories = initialCategories;
@@ -183,6 +186,9 @@ export function initSidebars(initialCategories) {
 
     rightSidebarDiv = createTag("aside", { class: "rightSidebar" });
     rightSidebarDiv.append(createTag("div", { class: "sidebarOutlineContainer" }));
+    const desktopReaderControl = createReaderControl();
+    if (desktopReaderControl)
+        rightSidebarDiv.append(desktopReaderControl);
     document.body.append(rightSidebarDiv);
 
     mobileMenuDiv = createTag("div", { class: "menuDiv" });
@@ -190,5 +196,14 @@ export function initSidebars(initialCategories) {
     mobileMenuDiv.append(createTag("div", { class: "sidebarTreeContainer" }));
     mobileMenuDiv.append(createTag("div", { class: "sidebarOutlineContainer" }));
 
-    return mobileMenuDiv;
+    // Independent of .menuDiv (rather than living inside it): "Continuer après le bloc de
+    // code" must stay reachable without first reopening the hamburger menu.
+    let floatingBar = null;
+    const mobileReaderControl = createReaderControl();
+    if (mobileReaderControl) {
+        floatingBar = createTag("div", { class: "readerFloatingBar" });
+        floatingBar.append(mobileReaderControl);
+    }
+
+    return { menuDiv: mobileMenuDiv, floatingBar };
 }

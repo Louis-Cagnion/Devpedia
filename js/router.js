@@ -3,6 +3,7 @@ import { parseAppendText, parseMdContent } from "./parser.js";
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson, findCategory, getContentDir } from "./utils.js";
 import { setPageOutline, syncSidebars } from "./sidebar.js";
+import { buildReadingPlan, stopReading } from "./reader.js";
 
 /**
  * @param {Object} category
@@ -156,6 +157,7 @@ document.addEventListener("keydown", (e) => {
  * Remove the page currently displayed, if any
  */
 function clearCurrentPage() {
+    stopReading();
     const currentDiv = document.querySelector(`.${appState.curPageId}Div`);
     if (currentDiv)
         currentDiv.remove();
@@ -268,6 +270,7 @@ function generatePageContent(textInfos, pageId, withReturnButton, previousChapte
     document.body.append(pageDiv);
     setPageOutline(outline);
     syncSidebars();
+    buildReadingPlan(pageDiv);
     return pageDiv;
 }
 

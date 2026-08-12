@@ -173,7 +173,7 @@ function generateNavBar(categories = []) {
 
     ////search bar and menu button (phone format)
     const searchAndButtonDiv = createTag("div", {class: "searchAndButtonDiv"});
-    const menuDiv = initSidebars(categories);
+    const { menuDiv, floatingBar } = initSidebars(categories);
     createAppendSearchbarButton(searchAndButtonDiv, menuDiv, categories);
     navBar.append(searchAndButtonDiv);
 
@@ -182,6 +182,10 @@ function generateNavBar(categories = []) {
 
     //attach menu, will be displayed when menu button is pressed
     document.body.append(menuDiv);
+
+    //attach the mobile read-aloud floating bar, if the browser supports it
+    if (floatingBar)
+        document.body.append(floatingBar);
 
     //let the sidebars know how tall the navbar is, so they start right below it
     const setNavBarHeightVar = () => {
