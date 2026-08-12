@@ -1,11 +1,6 @@
 import { createTag } from "./tags.js";
 import { renderChartBlock } from "./charts.js";
 
-let openList = false
-let openQuote = false
-let inCodeBlock = false
-let codeLanguage = null
-
 /**
  * Strip a file's optional `---`-fenced frontmatter (used for build-time metadata
  * like `order`, irrelevant to rendering) and return its markdown body.
@@ -155,29 +150,7 @@ function uniqueHeadingId(text, usedIds) {
     return id;
 }
 
-function createListFromText(line, homeDiv, fileName, listDiv, listRegex) {
-    if (!openList) {
-        openList = true;
-        const type = /^\d+\) /.test(line) ? 'ol' : 'ul';
-        listDiv = createTag(type, {class: `content-list ${fileName}${type}`});
-        homeDiv.append(listDiv);
-    }
-    line = line.replace(listRegex, "")
-    listDiv.append(createTag("li", {}, {innerHTML: line}))
-    return listDiv;
-}
-
 const quoteRegex = /^>\s?(.*)/;
-
-function createQuoteFromText(line, homeDiv, fileName, quoteDiv) {
-    if (!openQuote) {
-        openQuote = true;
-        quoteDiv = createTag('blockquote', {class: `${fileName}Blockquote`});
-        homeDiv.append(quoteDiv);
-    }
-    quoteDiv.append(createTag('p', {}, {innerHTML: line.match(quoteRegex)[1]}));
-    return quoteDiv;
-}
 
 /**
  * @param {string} line a single markdown table row, e.g. `| a | b |`
@@ -289,6 +262,35 @@ export function parseAppendText(homeDiv, fileName, text) {
     let lastChartRow = null;
     const usedIds = new Set();
     const outline = [];
+    // Local to this call (not module-level): a previous parseAppendText call left open on a
+    // trailing quote/list would otherwise leak into the next page rendered, e.g. a null-deref
+    // if that next page's first line is itself a quote (openQuote already true, quoteDiv null).
+    let openList = false;
+    let openQuote = false;
+    let inCodeBlock = false;
+    let codeLanguage = null;
+
+    function createListFromText(line, listDiv) {
+        if (!openList) {
+            openList = true;
+            const type = /^\d+\) /.test(line) ? 'ol' : 'ul';
+            listDiv = createTag(type, {class: `content-list ${fileName}${type}`});
+            homeDiv.append(listDiv);
+        }
+        line = line.replace(listRegex, "")
+        listDiv.append(createTag("li", {}, {innerHTML: line}))
+        return listDiv;
+    }
+
+    function createQuoteFromText(line, quoteDiv) {
+        if (!openQuote) {
+            openQuote = true;
+            quoteDiv = createTag('blockquote', {class: `${fileName}Blockquote`});
+            homeDiv.append(quoteDiv);
+        }
+        quoteDiv.append(createTag('p', {}, {innerHTML: line.match(quoteRegex)[1]}));
+        return quoteDiv;
+    }
 
     let i = 0;
     while (i < lines.length) {
@@ -373,11 +375,11 @@ export function parseAppendText(homeDiv, fileName, text) {
             if (quoteRegex.test(formatted)) {
                 openList = false;
                 lastChartRow = null;
-                quoteDiv = createQuoteFromText(formatted, homeDiv, fileName, quoteDiv);
+                quoteDiv = createQuoteFromText(formatted, quoteDiv);
             } else if (listRegex.test(formatted)) {
                 openQuote = false;
                 lastChartRow = null;
-                listDiv = createListFromText(formatted, homeDiv, fileName, listDiv, listRegex);
+                listDiv = createListFromText(formatted, listDiv);
             } else {
                 openList = false;
                 openQuote = false;
