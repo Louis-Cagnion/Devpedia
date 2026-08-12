@@ -34,7 +34,10 @@ Sans fonction d'activation (ou avec une fonction linéaire), empiler plusieurs c
 | Fonction d'activation | Formule (simplifiée) | Usage typique |
 |---|---|---|
 | **Sigmoïde** | Écrase toute valeur entre 0 et 1 | Sortie d'une classification binaire (une [probabilité](/?c=mathematiques&p=les-probabilites-de-base)) |
+| **Tanh** | Écrase toute valeur entre -1 et 1, centrée sur 0 | Couches cachées de réseaux plus anciens (RNN notamment) ; converge souvent mieux que sigmoïde grâce à ce centrage |
 | **ReLU** (*Rectified Linear Unit*) | `max(0, x)` : laisse passer les valeurs positives, écrase les négatives à 0 | Couches cachées, très utilisée en pratique (simple et efficace à calculer) |
+| **Leaky ReLU** | `x` si positif, `0.01 * x` sinon (au lieu d'écraser à 0) | Couches cachées, comme ReLU, quand le "neurone mort" (voir plus bas) pose problème |
+| **GELU** | Variante lissée de ReLU, pondérée par la distribution normale | Couches cachées des [Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) modernes |
 | **Softmax** | Transforme un vecteur de scores en une [distribution de probabilité](/?c=mathematiques&p=les-probabilites-de-base) qui somme à 1 | Sortie d'une classification à plusieurs catégories |
 
 ```python
@@ -50,6 +53,10 @@ def relu(x):
 > **Piège :** utiliser sigmoïde en sortie d'une classification à **plusieurs** catégories (plus de deux). Sigmoïde produit une probabilité indépendante par catégorie, sans garantie que leur somme fasse 1 : softmax est construite précisément pour produire une distribution de probabilité valide sur plusieurs catégories à la fois (voir la [somme à 1 d'une distribution](/?c=mathematiques&p=les-probabilites-de-base)).
 >
 > **Bonne pratique :** choisir la fonction d'activation de sortie selon le nombre de catégories à distinguer : sigmoïde pour un choix binaire, softmax dès que plus de deux catégories s'excluent mutuellement.
+
+> **Piège : le "neurone mort" (*dying ReLU*).** Si l'entrée pondérée d'un neurone ReLU reste négative sur tous les exemples d'entraînement, sa sortie vaut toujours 0, et son gradient (voir [la dérivée et le gradient](/?c=mathematiques&p=la-derivee-et-le-gradient)) aussi : ce neurone cesse alors d'apprendre définitivement, sans qu'aucune erreur ne le signale.
+>
+> **Bonne pratique :** remplacer ReLU par Leaky ReLU (ou une variante proche) dans les couches où ce problème est observé : la petite pente conservée côté négatif laisse toujours passer un gradient non nul, qui permet au neurone de se rattraper.
 
 ## Les couches d'un réseau
 
@@ -113,6 +120,6 @@ Voir aussi [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=en
 | | |
 |---|---|
 | **À retenir** | Un neurone artificiel calcule une somme pondérée de ses entrées (un produit scalaire), ajoute un biais, puis applique une fonction d'activation non linéaire. Un réseau empile ces neurones en couches (entrée, cachées, sortie) ; ses poids et biais s'ajustent par l'entraînement. |
-| **Outils utilisables** | Les fonctions d'activation courantes (sigmoïde, ReLU, softmax) sont fournies directement par les bibliothèques de deep learning (voir [PyTorch](/?c=ia&p=deep-learning-pytorch)). |
-| **Pièges à éviter** | Omettre le biais. Utiliser sigmoïde pour une classification à plusieurs catégories. Empiler des couches sans données suffisantes. Initialiser tous les poids à la même valeur. Faire confiance au modèle en dehors du domaine couvert par ses données d'entraînement. |
-| **Bonnes pratiques** | Choisir l'activation de sortie selon le nombre de catégories (sigmoïde vs softmax). Ajuster la profondeur du réseau à la quantité de données disponible. Initialiser les poids avec de petites valeurs aléatoires distinctes. |
+| **Outils utilisables** | Les fonctions d'activation courantes (sigmoïde, tanh, ReLU, Leaky ReLU, GELU, softmax) sont fournies directement par les bibliothèques de deep learning (voir [PyTorch](/?c=ia&p=deep-learning-pytorch)). |
+| **Pièges à éviter** | Omettre le biais. Utiliser sigmoïde pour une classification à plusieurs catégories. Un neurone ReLU qui "meurt" (gradient nul en permanence). Empiler des couches sans données suffisantes. Initialiser tous les poids à la même valeur. Faire confiance au modèle en dehors du domaine couvert par ses données d'entraînement. |
+| **Bonnes pratiques** | Choisir l'activation de sortie selon le nombre de catégories (sigmoïde vs softmax). Passer à Leaky ReLU en cas de neurones morts. Ajuster la profondeur du réseau à la quantité de données disponible. Initialiser les poids avec de petites valeurs aléatoires distinctes. |

@@ -9,8 +9,8 @@ Git propose plusieurs commandes pour revenir en arrière, à des niveaux différ
 ## Annuler des modifications non commitées
 
 ```bash
-git checkout -- fichier.txt   # restaure un fichier à son dernier état commité, écrase les modifications locales
-git restore fichier.txt        # équivalent moderne de la commande ci-dessus
+git checkout -- fichier.txt  # restaure un fichier à son dernier état commité, écrase les modifications locales
+git restore fichier.txt      # équivalent moderne de la commande ci-dessus
 
 git restore --staged fichier.txt  # retire un fichier du staging, SANS toucher à ses modifications dans le dossier de travail
 ```
@@ -20,9 +20,9 @@ git restore --staged fichier.txt  # retire un fichier du staging, SANS toucher �
 ## `git reset` : déplacer la branche courante en arrière
 
 ```bash
-git reset --soft HEAD~1    # annule le dernier commit, mais garde tout en staging (prêt à recommiter)
-git reset --mixed HEAD~1   # annule le dernier commit ET le staging, garde les modifications dans le dossier de travail (par défaut)
-git reset --hard HEAD~1    # annule le dernier commit, le staging, ET les modifications elles-mêmes -> perte définitive
+git reset --soft HEAD~1   # annule le dernier commit, mais garde tout en staging (prêt à recommiter)
+git reset --mixed HEAD~1  # annule le dernier commit ET le staging, garde les modifications dans le dossier de travail (par défaut)
+git reset --hard HEAD~1   # annule le dernier commit, le staging, ET les modifications elles-mêmes -> perte définitive
 ```
 
 | Option | Commit annulé | Staging | Dossier de travail |
@@ -52,8 +52,8 @@ git reflog
 ```
 
 ```bash
-git checkout e4f5g6h        # récupère l'état d'un commit "perdu" retrouvé via reflog
-git branch recuperation e4f5g6h   # ou crée directement une branche à partir de ce commit
+git checkout e4f5g6h             # récupère l'état d'un commit "perdu" retrouvé via reflog
+git branch recuperation e4f5g6h  # ou crée directement une branche à partir de ce commit
 ```
 
 > **Note :** `git reflog` est souvent la solution de secours après une manipulation Git qui a mal tourné : tant qu'un commit a existé localement à un moment donné, il reste généralement retrouvable pendant plusieurs semaines, même s'il n'est plus référencé par aucune branche.

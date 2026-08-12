@@ -9,8 +9,8 @@ Un **tag** est un pointeur vers un commit précis, comme une branche, mais contr
 ## Créer un tag
 
 ```bash
-git tag v1.0.0                 # tag "léger" : simple pointeur, sans métadonnées
-git tag -a v1.0.0 -m "Première version stable"   # tag "annoté" : avec auteur, date et message
+git tag v1.0.0                                  # tag "léger" : simple pointeur, sans métadonnées
+git tag -a v1.0.0 -m "Première version stable"  # tag "annoté" : avec auteur, date et message
 ```
 
 > **Note :** un tag annoté (`-a`) est généralement préférable pour une vraie version publiée : il est enregistré comme un objet Git à part entière (avec son propre message et son auteur), contrairement au tag léger qui n'est qu'un simple alias vers un hash de commit.
@@ -18,9 +18,9 @@ git tag -a v1.0.0 -m "Première version stable"   # tag "annoté" : avec auteur,
 ## Lister et inspecter les tags
 
 ```bash
-git tag                     # liste tous les tags
-git tag -l "v1.*"            # filtre par motif
-git show v1.0.0               # affiche les détails du tag (et le commit associé)
+git tag            # liste tous les tags
+git tag -l "v1.*"  # filtre par motif
+git show v1.0.0    # affiche les détails du tag (et le commit associé)
 ```
 
 ## Tagger un commit passé
@@ -34,15 +34,15 @@ git tag -a v0.9.0 a3f9c1d -m "Version bêta"   # tag un commit précis, pas forc
 Les tags ne sont **pas** envoyés automatiquement par un `git push` classique :
 
 ```bash
-git push origin v1.0.0     # pousse un tag précis
-git push origin --tags      # pousse tous les tags locaux d'un coup
+git push origin v1.0.0  # pousse un tag précis
+git push origin --tags  # pousse tous les tags locaux d'un coup
 ```
 
 ## Supprimer un tag
 
 ```bash
-git tag -d v1.0.0                    # supprime localement
-git push origin --delete v1.0.0       # supprime aussi côté remote
+git tag -d v1.0.0                # supprime localement
+git push origin --delete v1.0.0  # supprime aussi côté remote
 ```
 
 ## Revenir à une version taguée
@@ -52,6 +52,14 @@ git checkout v1.0.0
 ```
 
 > **Note :** ceci place le dépôt en état de **"detached HEAD"** (`HEAD` pointe directement sur un commit, non plus sur une branche), utile pour inspecter cette version précise, mais tout nouveau commit fait dans cet état n'appartiendrait à aucune branche et serait facilement perdu. Pour continuer à travailler à partir de là, créer d'abord une branche : `git checkout -b nouvelle-branche v1.0.0`.
+
+**Revenir en arrière une fois l'inspection terminée.** Si aucun commit n'a été fait pendant le detached HEAD (le cas le plus courant après une simple inspection), il suffit de rebasculer sur la branche d'où l'on venait pour que `HEAD` s'y rattache à nouveau, exactement comme n'importe quel [changement de branche](/?c=git&p=branches) :
+
+```bash
+git checkout main   # ou : git switch main
+```
+
+Rien n'est perdu ni à annuler : le commit taggé n'a jamais été modifié, et `HEAD` reprend simplement sa place normale, pointant sur `main` plutôt que directement sur un commit.
 
 ---
 

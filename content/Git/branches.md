@@ -9,13 +9,13 @@ Une **branche** est simplement un pointeur mobile vers un commit : elle permet d
 ## Créer et changer de branche
 
 ```bash
-git branch                     # liste les branches existantes, celle courante est marquée d'un *
-git branch nouvelle-fonctionnalite   # crée une nouvelle branche, sans y basculer
-git checkout nouvelle-fonctionnalite  # bascule sur cette branche
+git branch                               # liste les branches existantes, celle courante est marquée d'un *
+git branch nouvelle-fonctionnalite       # crée une nouvelle branche, sans y basculer
+git checkout nouvelle-fonctionnalite     # bascule sur cette branche
 git checkout -b nouvelle-fonctionnalite  # raccourci : crée ET bascule en une seule commande
 
-git switch nouvelle-fonctionnalite      # équivalent moderne de "checkout" pour changer de branche
-git switch -c nouvelle-fonctionnalite    # équivalent moderne de "checkout -b"
+git switch nouvelle-fonctionnalite     # équivalent moderne de "checkout" pour changer de branche
+git switch -c nouvelle-fonctionnalite  # équivalent moderne de "checkout -b"
 ```
 
 > **Note :** `git switch` (plus récent) et `git checkout` (historique, plus polyvalent mais moins explicite) font ici la même chose : `checkout` sert aussi à d'autres usages (restaurer un fichier, voir [Annuler des changements et naviguer dans l'historique](/?c=git&p=annuler-et-historique)), ce qui le rend plus ambigu à lire.
@@ -37,28 +37,35 @@ git checkout main
 git merge feature
 ```
 
-Deux cas possibles :
+Ce que Git fait dépend d'une seule question : **`main` a-t-il reçu de nouveaux commits depuis la création de `feature` ?** La réponse détermine si une vraie fusion (avec un nouveau commit) est nécessaire, ou si Git peut se contenter de faire "rattraper" `main`.
 
-**Fast-forward** : si `main` n'a reçu aucun commit depuis la création de `feature`, Git avance simplement le pointeur `main` jusqu'au dernier commit de `feature` : aucun nouveau commit de fusion n'est créé.
+**Fast-forward : `main` n'a pas bougé, il n'y a rien à réunir.** Tous les commits de `feature` (`C`, `D`) descendent déjà directement du dernier commit de `main` (`B`) : l'historique de `feature` **contient** déjà tout l'historique de `main`, sans aucune divergence. Fusionner ne demande alors qu'une chose : faire avancer le pointeur `main` jusqu'à `D`, exactement comme on avancerait le signet d'un livre. Aucune combinaison de contenu n'a lieu, donc aucun commit de fusion n'est nécessaire :
 
 ```text
-Avant :  main: A -- B          feature: A -- B -- C -- D
-Après :  main: A -- B -- C -- D
+Avant :  main: A -- B                    feature: A -- B -- C -- D
+                    ^main                                        ^feature
+
+Après :  main: A -- B -- C -- D          (main est simplement realigne sur feature)
+                              ^main, feature
 ```
 
-**Merge commit** : si `main` a évolué en parallèle, Git crée un commit spécial à **deux parents**, qui réunit les deux historiques :
+**Merge commit : `main` a évolué de son côté, il faut vraiment réunir deux histoires.** Si `main` a reçu son propre commit (`E`) pendant que `feature` avançait avec `C`/`D`, les deux branches ont **divergé** : aucune des deux ne contient plus l'historique de l'autre, donc "avancer un pointeur" ne suffit plus. Git doit créer un nouveau commit qui a **deux parents** à la fois (le dernier commit de `main` et celui de `feature`), le seul moyen de représenter "voici un point de l'historique qui réunit ces deux lignes de travail" :
 
 ```text
-main:     A -- B ------- E (merge commit)
-                \        /
-feature:         C -- D
+Avant :  main:     A -- B -- E                    feature: A -- B -- C -- D
+                             ^main
+
+Après :  main:     A -- B -- E ------- F (merge commit, deux parents)
+                        \             /
+         feature:        C --------- D
+                                      ^feature
 ```
 
 ## Supprimer une branche
 
 ```bash
-git branch -d feature    # supprime, seulement si la branche a déjà été fusionnée (sécurité)
-git branch -D feature    # force la suppression, même si elle n'a jamais été fusionnée
+git branch -d feature  # supprime, seulement si la branche a déjà été fusionnée (sécurité)
+git branch -D feature  # force la suppression, même si elle n'a jamais été fusionnée
 ```
 
 > **Note :** `git branch -D` sur une branche jamais fusionnée peut faire perdre l'accès à des commits qui n'existent plus nulle part ailleurs. Ils restent généralement retrouvables un moment via `git reflog` (voir [Annuler des changements et naviguer dans l'historique](/?c=git&p=annuler-et-historique)), mais mieux vaut vérifier avec `git log feature` (ou une fusion/`git branch -d`) avant de forcer la suppression.

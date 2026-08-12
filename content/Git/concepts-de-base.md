@@ -23,7 +23,7 @@ git add                  git commit
 | **Zone de staging** (*index*) | Une zone intermédiaire : les modifications qu'on a explicitement choisi d'inclure dans le **prochain** commit |
 | **Dépôt** (*repository*) | L'historique complet, chaque commit étant un instantané permanent |
 
-> **Note :** cette étape intermédiaire de staging est une particularité de Git par rapport à d'autres systèmes plus anciens (comme SVN) : elle permet de choisir précisément **quelles** modifications entrent dans un commit, même si plusieurs fichiers ont été modifiés en même temps.
+> **Note :** cette étape intermédiaire de staging est une particularité de Git par rapport à d'autres systèmes plus anciens (comme [SVN](https://fr.wikipedia.org/wiki/Apache_Subversion), non traité sur ce site) : elle permet de choisir précisément **quelles** modifications entrent dans un commit, même si plusieurs fichiers ont été modifiés en même temps.
 
 ## Un commit : un instantané, pas une différence
 

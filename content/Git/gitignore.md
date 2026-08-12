@@ -43,7 +43,31 @@ git rm --cached fichier_deja_suivi.txt
 
 Un dépôt peut contenir plusieurs fichiers `.gitignore`, chacun s'appliquant au dossier où il se trouve et à ses sous-dossiers, utile pour des règles spécifiques à un sous-projet, en plus des règles globales à la racine.
 
-Un fichier `~/.gitignore_global` (configuré via `git config --global core.excludesfile ~/.gitignore_global`) permet aussi de définir des règles personnelles (ex. fichiers propres à son propre éditeur), sans les imposer aux autres contributeurs d'un projet partagé.
+## Des règles personnelles, hors du dépôt : `~/.gitignore_global`
+
+Un `.gitignore` classique (vu plus haut) est un fichier du projet comme un autre : il est lui-même suivi et commité, donc partagé avec tous les contributeurs. Ça pose un problème pour des fichiers qui ne dépendent que de **votre propre machine** (les fichiers temporaires d'un éditeur que vous seul utilisez, par exemple) : les ajouter au `.gitignore` du projet imposerait cette règle à des collègues qui n'utilisent peut-être pas le même éditeur.
+
+La solution est un second fichier, placé en dehors de tout dépôt, dans votre dossier personnel :
+
+```bash
+# 1. Créer le fichier, où vous voulez (ex. le dossier personnel)
+echo ".idea/" > ~/.gitignore_global
+echo "*.swp" >> ~/.gitignore_global
+
+# 2. Dire à Git, une fois pour toutes, où le trouver
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+`git config --global` (voir aussi le chapitre [Les remotes](/?c=git&p=remotes) pour d'autres réglages `--global`) écrit ce réglage dans `~/.gitconfig`, un fichier de configuration propre à votre compte utilisateur sur cette machine, en dehors de tout dépôt Git : `core.excludesfile` y indique à Git l'emplacement d'un `.gitignore` supplémentaire à appliquer à **tous vos dépôts locaux**, en plus du `.gitignore` propre à chacun.
+
+| | `.gitignore` (dans le dépôt) | `~/.gitignore_global` |
+|---|---|---|
+| Suivi par Git, commité | Oui | Non : il n'est jamais placé à l'intérieur d'un dépôt |
+| Visible par les autres contributeurs | Oui, dès qu'ils clonent le projet | Non : le réglage vit dans `~/.gitconfig`, propre à votre machine |
+| Portée | Un seul projet (et ses sous-dossiers) | Tous les dépôts Git de votre machine |
+| Contenu typique | Dépendances, secrets, fichiers de build du projet | Fichiers propres à votre éditeur/OS (`.idea/`, `.DS_Store`, `*.swp`) |
+
+C'est cette différence (fichier suivi et partagé vs réglage local à la machine) qui explique pourquoi une règle placée dans `~/.gitignore_global` n'apparaît jamais pour les autres contributeurs, même après un `git push` : elle n'a jamais été commitée, puisqu'elle ne vit pas dans le dépôt.
 
 ---
 
