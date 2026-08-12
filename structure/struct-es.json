@@ -67,7 +67,7 @@
     },
     {
       "id": "domain-specific-languages-dsl",
-      "label": "Lenguajes específicos de dominio (DSL)",
+      "label": "Domain-specific Languages (DSL)",
       "folder": "Domain-specific Languages (DSL)",
       "chapters": [
         {
@@ -133,7 +133,7 @@
     },
     {
       "id": "langages-de-balisage",
-      "label": "Lenguajes de marcado",
+      "label": "Langages de balisage",
       "folder": "Langages de balisage",
       "subjects": [
         {
@@ -210,7 +210,7 @@
     },
     {
       "id": "langages-de-programmation",
-      "label": "Lenguajes de programación",
+      "label": "Langages de programmation",
       "folder": "Langages de programmation",
       "subjects": [
         {
@@ -392,7 +392,7 @@
           "folder": "PHP",
           "chapters": [
             {
-              "id": "synthaxe",
+              "id": "syntaxe",
               "label": "La sintaxis de PHP"
             },
             {

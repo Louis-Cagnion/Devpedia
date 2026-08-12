@@ -165,6 +165,10 @@
         {
           "id": "sql",
           "label": "SQL"
+        },
+        {
+          "id": "parsing-incremental-machine-a-etats",
+          "label": "Parsing incrémental par machine à états"
         }
       ]
     },
@@ -204,6 +208,18 @@
         {
           "id": "remotes",
           "label": "Les dépôts distants (remotes)"
+        },
+        {
+          "id": "github-et-plateformes",
+          "label": "GitHub et les plateformes d'hébergement Git"
+        },
+        {
+          "id": "pull-requests-github",
+          "label": "Les pull requests sur GitHub"
+        },
+        {
+          "id": "issues-et-projets-github",
+          "label": "Issues et gestion de projet sur GitHub"
         },
         {
           "id": "resoudre-conflits",
@@ -609,7 +625,7 @@
           "folder": "PHP",
           "chapters": [
             {
-              "id": "synthaxe",
+              "id": "syntaxe",
               "label": "La syntaxe de PHP"
             },
             {
@@ -712,8 +728,16 @@
               "label": "Le typage avec les annotations"
             },
             {
+              "id": "dataclasses",
+              "label": "Les dataclasses"
+            },
+            {
               "id": "modules-et-environnements",
               "label": "Modules, pip et environnements virtuels"
+            },
+            {
+              "id": "cli-avec-argparse",
+              "label": "Construire une CLI avec `argparse`"
             }
           ]
         }
@@ -1027,6 +1051,25 @@
               "label": "Oh My Zsh"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "traitement-de-documents",
+      "label": "Traitement de documents",
+      "folder": "Traitement de documents",
+      "chapters": [
+        {
+          "id": "extraction-pdf",
+          "label": "Extraire le texte et les pages d'un PDF"
+        },
+        {
+          "id": "ocr-structure",
+          "label": "L'OCR structuré et l'analyse de mise en page"
+        },
+        {
+          "id": "arbitrage-local-cloud-vision",
+          "label": "Arbitrage local vs cloud pour un modèle de vision"
         }
       ]
     },

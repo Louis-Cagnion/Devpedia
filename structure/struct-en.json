@@ -2,7 +2,7 @@
   "categories": [
     {
       "id": "acceuil",
-      "label": "Home",
+      "label": "Acceuil",
       "chapters": [
         {
           "id": "acceuil",
@@ -12,7 +12,7 @@
     },
     {
       "id": "bases-de-l-informatique",
-      "label": "Computer Basics",
+      "label": "Bases de l'informatique",
       "folder": "Bases de l'informatique",
       "chapters": [
         {
@@ -167,7 +167,7 @@
     },
     {
       "id": "ia",
-      "label": "AI",
+      "label": "IA",
       "folder": "IA",
       "chapters": [
         {
@@ -261,7 +261,7 @@
     },
     {
       "id": "langages-de-balisage",
-      "label": "Markup & Style Languages",
+      "label": "Langages de balisage",
       "folder": "Langages de balisage",
       "subjects": [
         {
@@ -338,7 +338,7 @@
     },
     {
       "id": "langages-de-programmation",
-      "label": "Programming Languages",
+      "label": "Langages de programmation",
       "folder": "Langages de programmation",
       "subjects": [
         {
@@ -559,7 +559,7 @@
           "folder": "PHP",
           "chapters": [
             {
-              "id": "synthaxe",
+              "id": "syntaxe",
               "label": "PHP Syntax"
             },
             {
@@ -715,7 +715,7 @@
     },
     {
       "id": "mathematiques",
-      "label": "Mathematics",
+      "label": "Mathématiques",
       "folder": "Mathématiques",
       "chapters": [
         {
@@ -781,7 +781,7 @@
     },
     {
       "id": "qualite-et-architecture-du-code",
-      "label": "Code Quality & Architecture",
+      "label": "Qualité et architecture du code",
       "folder": "Qualité et architecture du code",
       "chapters": [
         {
@@ -812,7 +812,7 @@
     },
     {
       "id": "representation-des-donnees",
-      "label": "Data Representation",
+      "label": "Représentation des données",
       "folder": "Représentation des données",
       "chapters": [
         {
@@ -999,7 +999,7 @@
     },
     {
       "id": "ui-ux",
-      "label": "UI/UX",
+      "label": "UI-UX",
       "folder": "UI-UX",
       "chapters": [
         {
