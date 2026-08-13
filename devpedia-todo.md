@@ -3,7 +3,6 @@
 ## Reste à faire
 
 ### Traduction anglaise (EN)
-- 22 fichiers IA jamais traduits en EN : les 9 fichiers de `Vision et OCR` (8 chapitres + intro de subject), les 9 de `Voix IA` (idem), et 4 intros de subject restantes (`Applications LLM/applications-llm.md`, `Fondamentaux du deep learning/fondamentaux-du-deep-learning.md`, `NLP et LLM/nlp-llm.md`, `Production et gouvernance/production-et-gouvernance.md`).
 - `IA/description.md` (EN) à adapter le jour où `content-en/IA` sera restructuré en subjects (actuellement plat, décision explicite, pas un oubli).
 
 ### Tirets cadratins (`—`) jamais nettoyés hors FR

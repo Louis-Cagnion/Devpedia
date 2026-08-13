@@ -341,6 +341,42 @@
           "label": "Data governance for scanned documents"
         },
         {
+          "id": "voix-ia",
+          "label": "AI Voice"
+        },
+        {
+          "id": "synthese-classique-vs-deep-learning",
+          "label": "Speech synthesis: from classic concatenation to deep learning"
+        },
+        {
+          "id": "controler-la-prosodie",
+          "label": "Controlling prosody"
+        },
+        {
+          "id": "modeles-modernes-synthese",
+          "label": "Modern synthesis models: neural codecs"
+        },
+        {
+          "id": "cloner-une-voix",
+          "label": "Cloning a voice: technique and ethical/legal stakes"
+        },
+        {
+          "id": "fine-tuning-synthese-vocale",
+          "label": "Training and fine-tuning a speech synthesis model"
+        },
+        {
+          "id": "evaluer-synthese-vocale",
+          "label": "Evaluating speech synthesis: MOS, intelligibility, latency"
+        },
+        {
+          "id": "choisir-fournisseur-mise-en-production",
+          "label": "Choosing a provider and going to production"
+        },
+        {
+          "id": "gouvernance-voix-ia",
+          "label": "Governance of an AI voice pipeline"
+        },
+        {
           "id": "fondamentaux-du-deep-learning",
           "label": "Fundamentals of Deep Learning"
         },
