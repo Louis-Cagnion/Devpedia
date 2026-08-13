@@ -21,7 +21,7 @@ Unlike a text prompt, a voice directly identifies a person, the same way a finge
 
 ## Traceability: which sample produced which cloned voice
 
-A voice-cloning pipeline must be able to answer, after the fact, *"which reference sample was used to produce this audio, with whose consent?"* — the same traceability requirement as for an LLM (see [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm)), with an extra log specific to voice: proof of the consent obtained (see [Cloning a Voice](/?c=ia&p=cloner-une-voix)), kept separately from the generated audio itself.
+A voice-cloning pipeline must be able to answer, after the fact, *"which reference sample was used to produce this audio, with whose consent?"*, the same traceability requirement as for an LLM (see [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm)), with an extra log specific to voice: proof of the consent obtained (see [Cloning a Voice](/?c=ia&p=cloner-une-voix)), kept separately from the generated audio itself.
 
 > **Pitfall:** keeping the reference audio and the generated audio, but not the proof of consent obtained at the time of cloning. Without that proof, it becomes impossible to later demonstrate that this cloning was authorized, especially in case of a dispute.
 >
@@ -39,7 +39,7 @@ The principle already seen (data can be copied in several places, and a single `
 
 > **Pitfall:** responding to a deletion request by erasing only the reference audio file, leaving the already-extracted speaker embedding and any already-generated audio intact: the voice then remains clonable, or already present in existing content.
 >
-> **Best practice:** apply the deletion procedure to the source sample, the speaker embedding extracted from it, and the already-generated content that depends on it — the exact same reflex already flagged for a RAG vector embedding in the general chapter.
+> **Best practice:** apply the deletion procedure to the source sample, the speaker embedding extracted from it, and the already-generated content that depends on it, the exact same reflex already flagged for a RAG vector embedding in the general chapter.
 
 ## Key takeaways
 

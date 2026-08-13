@@ -20,7 +20,7 @@ Text to read + a few seconds of reference voice
       -> these audio tokens are then decoded into a sound signal
 ```
 
-These audio tokens come from a **neural codec**: a model trained separately to compress an audio signal into a short sequence of discrete numbers (the tokens), then to reconstruct it from those same tokens — a bit like a compressed audio file (MP3) represents a sound as a shorter sequence of numbers than the original wave, but learned rather than hand-designed.
+These audio tokens come from a **neural codec**: a model trained separately to compress an audio signal into a short sequence of discrete numbers (the tokens), then to reconstruct it from those same tokens, a bit like a compressed audio file (MP3) represents a sound as a shorter sequence of numbers than the original wave, but learned rather than hand-designed.
 
 > **Pitfall:** confusing this approach with Tacotron just because both "generate audio from text". Tacotron produces a continuous spectrogram (an image); in VALL-E's case, token by token, it's a discrete sequence of symbols, predicted exactly the way an LLM predicts text: the training objective and the nature of the intermediate output differ completely.
 >

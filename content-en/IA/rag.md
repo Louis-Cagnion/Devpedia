@@ -4,7 +4,7 @@ order: 9
 
 # RAG: Augmenting an LLM with External Data
 
-An LLM only knows what it saw during training, up to a cutoff date (see [LLM in Production](/?c=ia&p=llm-en-production)) — it has no knowledge of your internal documents, your knowledge base, or anything that happened after that date. **RAG** (*Retrieval-Augmented Generation*) addresses this problem by fetching, at the moment of the question, the relevant documents and injecting them into the prompt before asking for the answer.
+An LLM only knows what it saw during training, up to a cutoff date (see [LLM in Production](/?c=ia&p=llm-en-production)): it has no knowledge of your internal documents, your knowledge base, or anything that happened after that date. **RAG** (*Retrieval-Augmented Generation*) addresses this problem by fetching, at the moment of the question, the relevant documents and injecting them into the prompt before asking for the answer.
 
 ## Why not just retrain the model?
 
@@ -31,9 +31,9 @@ RAG and fine-tuning aren't mutually exclusive: a model can be fine-tuned to make
                    prompt, and the LLM answers based on them
 ```
 
-The comparison in step 3 is done with a similarity measure between vectors — most often, exactly the [dot product between normalized vectors](/?c=mathematiques&p=vecteurs-et-produit-scalaire) (the cosine of the angle between them): two fragments whose embeddings are close are, in principle, talking about similar topics — this is exactly the embedding property detailed in [NLP and LLM](/?c=ia&p=nlp-et-llm).
+The comparison in step 3 is done with a similarity measure between vectors, most often, exactly the [dot product between normalized vectors](/?c=mathematiques&p=vecteurs-et-produit-scalaire) (the cosine of the angle between them): two fragments whose embeddings are close are, in principle, talking about similar topics; this is exactly the embedding property detailed in [NLP and LLM](/?c=ia&p=nlp-et-llm).
 
-> **Pitfall:** switching embedding models without reindexing the entire existing document set. Embeddings produced by two different models don't share the same vector space (see comparing embeddings in [NLP and LLM](/?c=ia&p=nlp-et-llm)) — mixing old and new embeddings in the same search produces no valid comparison at all, even if the computation runs with no visible error.
+> **Pitfall:** switching embedding models without reindexing the entire existing document set. Embeddings produced by two different models don't share the same vector space (see comparing embeddings in [NLP and LLM](/?c=ia&p=nlp-et-llm)): mixing old and new embeddings in the same search produces no valid comparison at all, even if the computation runs with no visible error.
 >
 > **Best practice:** reindex the entire document base as soon as an embedding model changes, never a partial mix of two different models.
 
@@ -42,7 +42,7 @@ The comparison in step 3 is done with a similarity measure between vectors — m
 Fragment size is never neutral:
 
 - **Too small**, a fragment loses its surrounding context (a sentence isolated from its paragraph can become ambiguous or misleading once retrieved on its own).
-- **Too large**, a fragment dilutes its relevance: in a multi-page document, only a portion actually answers the question, but the whole fragment gets injected into the prompt — at a cost (see [LLM in Production](/?c=ia&p=llm-en-production)) and at the risk of drowning the useful information in irrelevant text.
+- **Too large**, a fragment dilutes its relevance: in a multi-page document, only a portion actually answers the question, but the whole fragment gets injected into the prompt, at a cost (see [LLM in Production](/?c=ia&p=llm-en-production)) and at the risk of drowning the useful information in irrelevant text.
 
 A common compromise keeps an overlap between consecutive fragments (the last words of one fragment repeated at the start of the next), so that information straddling two fragments is never entirely lost.
 
@@ -52,11 +52,11 @@ A common compromise keeps an overlap between consecutive fragments (the last wor
 
 ## The limit of RAG: bad retrieval doesn't show
 
-RAG doesn't make the LLM more honest, it surrounds it with better data — if the search step fails to find the right fragment (a poorly phrased question, an embedding that doesn't capture the right nuance, information missing from the base), the model still answers, with the same hallucination risks as without RAG (see [LLM in Production](/?c=ia&p=llm-en-production)), with no alert flagging that the context provided was insufficient or off-topic.
+RAG doesn't make the LLM more honest, it surrounds it with better data: if the search step fails to find the right fragment (a poorly phrased question, an embedding that doesn't capture the right nuance, information missing from the base), the model still answers, with the same hallucination risks as without RAG (see [LLM in Production](/?c=ia&p=llm-en-production)), with no alert flagging that the context provided was insufficient or off-topic.
 
-> **Pitfall:** assuming a RAG system's answer is reliable simply because it looks well-sourced. Bad retrieval (an irrelevant fragment) produces an answer just as confident as good retrieval — nothing on the surface distinguishes the two cases.
+> **Pitfall:** assuming a RAG system's answer is reliable simply because it looks well-sourced. Bad retrieval (an irrelevant fragment) produces an answer just as confident as good retrieval: nothing on the surface distinguishes the two cases.
 >
-> **Best practice:** monitor the quality of retrieval itself (were the fragments retrieved actually relevant?), not just the quality of the final answer — see [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm).
+> **Best practice:** monitor the quality of retrieval itself (were the fragments retrieved actually relevant?), not just the quality of the final answer; see [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm).
 
 ## Key takeaways
 

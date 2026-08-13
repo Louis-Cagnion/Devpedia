@@ -4,9 +4,9 @@ order: 16
 
 # The AI Stack: The Layers of a Production Application
 
-Each previous chapter covers one mechanism: [training a neural network](/?c=ia&p=entrainement-descente-de-gradient), [giving a model tools](/?c=ia&p=agents), [augmenting it with external data](/?c=ia&p=rag), [monitoring it in production](/?c=ia&p=gestion-dun-llm)... This chapter adds none of that: it shows how these pieces actually stack up in an application, and names the concrete tool categories that exist at each layer — vocabulary no other chapter covers, because it's not about how a mechanism works but about the landscape of tools that implement it.
+Each previous chapter covers one mechanism: [training a neural network](/?c=ia&p=entrainement-descente-de-gradient), [giving a model tools](/?c=ia&p=agents), [augmenting it with external data](/?c=ia&p=rag), [monitoring it in production](/?c=ia&p=gestion-dun-llm)... This chapter adds none of that: it shows how these pieces actually stack up in an application, and names the concrete tool categories that exist at each layer, vocabulary no other chapter covers, because it's not about how a mechanism works but about the landscape of tools that implement it.
 
-**AI stack**: the set of layers, each with a distinct role, that must come together to turn a language model into a usable application — from raw compute up to what the end user sees.
+**AI stack**: the set of layers, each with a distinct role, that must come together to turn a language model into a usable application, from raw compute up to what the end user sees.
 
 ## The layers, bottom to top
 
@@ -51,9 +51,9 @@ Using an LLM means choosing between two radically different ways of accessing on
 | Maintenance | The provider's responsibility | The company's responsibility (updates, scaling, availability) |
 | Available quality | Access to the highest-performing models on the market | Limited to what the available hardware can run |
 
-> **Pitfall:** choosing self-hosting purely to save on cost per token, without counting the fixed hardware cost or the engineering time needed to match the reliability of a managed service — the equation only becomes favorable at a sufficient volume of use.
+> **Pitfall:** choosing self-hosting purely to save on cost per token, without counting the fixed hardware cost or the engineering time needed to match the reliability of a managed service: the equation only becomes favorable at a sufficient volume of use.
 >
-> **Best practice:** cost out both options against the actual expected volume of use (not a hypothetical one), and reassess this choice if that volume changes significantly — the switch is never final.
+> **Best practice:** cost out both options against the actual expected volume of use (not a hypothetical one), and reassess this choice if that volume changes significantly: the switch is never final.
 
 ## The data layer: the vector database
 
@@ -69,7 +69,7 @@ The choice follows the same logic as elsewhere in architecture: an extension is 
 
 ## The orchestration layer: writing the loop yourself, or relying on a framework
 
-The [Agents](/?c=ia&p=agents) chapter describes the reasoning/action loop and multi-agent coordination patterns in general — without saying how they're concretely implemented. Two approaches:
+The [Agents](/?c=ia&p=agents) chapter describes the reasoning/action loop and multi-agent coordination patterns in general, without saying how they're concretely implemented. Two approaches:
 
 | | Writing the loop yourself | Orchestration framework |
 |---|---|---|
@@ -77,17 +77,17 @@ The [Agents](/?c=ia&p=agents) chapter describes the reasoning/action loop and mu
 | Advantage | Full control, no external dependency, simpler to debug line by line | Common interface to several model providers, conversation memory and chaining already solved |
 | Disadvantage | Every building block (retries, memory management, tool format) has to be rewritten | An extra abstraction layer to understand, sometimes heavier than the actual need |
 
-> **Pitfall:** adopting a full orchestration framework for a need that boils down to a single tool call — the same mistake as over-engineering any other system before actually needing to.
+> **Pitfall:** adopting a full orchestration framework for a need that boils down to a single tool call, the same mistake as over-engineering any other system before actually needing to.
 >
 > **Best practice:** start with the simplest loop that meets the actual need, and only introduce a framework once coordination (several tools, several agents, fine-grained memory management) exceeds what hand-written code can reasonably maintain.
 
 ## The cross-cutting pitfall: hidden coupling between layers
 
-Each layer looks independent — until a change in one breaks another's behavior with no visible error. The example already seen in [RAG](/?c=ia&p=rag): switching embedding models (model layer) silently invalidates an existing vector database (data layer), since the two models don't share the same vector space.
+Each layer looks independent: until a change in one breaks another's behavior with no visible error. The example already seen in [RAG](/?c=ia&p=rag): switching embedding models (model layer) silently invalidates an existing vector database (data layer), since the two models don't share the same vector space.
 
 > **Pitfall:** modifying one layer in isolation and only testing that layer, assuming the others have no reason to be affected.
 >
-> **Best practice:** after any component change at a layer (model, vector database, orchestration framework), rerun an end-to-end integration test — not just an isolated test of the modified layer.
+> **Best practice:** after any component change at a layer (model, vector database, orchestration framework), rerun an end-to-end integration test, not just an isolated test of the modified layer.
 
 ## Key takeaways
 

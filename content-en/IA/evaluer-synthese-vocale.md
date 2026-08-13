@@ -32,7 +32,7 @@ MOS = average of the ratings = (4+5+3+4+4) / 5 = 4.0
 
 ## Intelligibility: beyond perceived naturalness
 
-Audio can sound "natural" (high MOS) without every word being clearly understood, and conversely, a clearly synthetic voice can remain perfectly understood. **Intelligibility** is measured separately, often by having listeners transcribe the audio and comparing their transcription to the original text — exactly the same [WER](/?c=ia&p=evaluer-un-ocr) computation already seen for OCR, but applied to what a human understood by ear rather than what a model recognized on an image.
+Audio can sound "natural" (high MOS) without every word being clearly understood, and conversely, a clearly synthetic voice can remain perfectly understood. **Intelligibility** is measured separately, often by having listeners transcribe the audio and comparing their transcription to the original text, exactly the same [WER](/?c=ia&p=evaluer-un-ocr) computation already seen for OCR, but applied to what a human understood by ear rather than what a model recognized on an image.
 
 > **Pitfall:** relying only on MOS for a use case where exact understanding of the message matters more than perceived naturalness (a safety announcement, an alert). A high MOS doesn't guarantee a critical message stays 100% intelligible.
 >

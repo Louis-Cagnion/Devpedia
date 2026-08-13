@@ -242,7 +242,7 @@
       "chapters": [
         {
           "id": "reseaux-de-neurones",
-          "label": "Neural Networks — The Fundamentals"
+          "label": "Neural Networks: The Fundamentals"
         },
         {
           "id": "entrainement-descente-de-gradient",

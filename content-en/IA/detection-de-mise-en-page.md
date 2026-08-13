@@ -123,7 +123,7 @@ At each round, the remaining box with the best score is assumed to be the best e
 
 > **Best practice:** tune this threshold on documents representative of the actual use case (dense, closely packed tables need a higher threshold than an airy layout), rather than keeping a default value that's never been checked against your own documents.
 
-See also [Structured OCR and layout analysis](/?c=traitement-de-documents&p=ocr-structure) for the rest of the pipeline (rebuilding a table's grid once its region has been located and deduplicated), and [Neural Networks — The Fundamentals](/?c=ia&p=reseaux-de-neurones) for the confidence-score classification this chapter builds on.
+See also [Structured OCR and layout analysis](/?c=traitement-de-documents&p=ocr-structure) for the rest of the pipeline (rebuilding a table's grid once its region has been located and deduplicated), and [Neural Networks: The Fundamentals](/?c=ia&p=reseaux-de-neurones) for the confidence-score classification this chapter builds on.
 
 ## Key takeaways
 
