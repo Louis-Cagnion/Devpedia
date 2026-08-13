@@ -4,7 +4,7 @@ order: 13
 
 # EU AI Regulation: the AI Act
 
-The **EU Artificial Intelligence Act** (*AI Act*, Regulation (EU) 2024/1689) is the world's first horizontal legal framework devoted to AI: rather than regulating sector by sector, it imposes obligations based on an AI system's **risk level**, regardless of its field of application. Published in the Official Journal on July 12, 2024, it entered into force on August 1, 2024 — but its application is **phased in over several years**, not immediate.
+The **EU Artificial Intelligence Act** (*AI Act*, Regulation (EU) 2024/1689) is the world's first horizontal legal framework devoted to AI: rather than regulating sector by sector, it imposes obligations based on an AI system's **risk level**, regardless of its field of application. Published in the Official Journal on July 12, 2024, it entered into force on August 1, 2024, but its application is **phased in over several years**, not immediate.
 
 ## A risk-level classification
 
@@ -17,9 +17,9 @@ The **EU Artificial Intelligence Act** (*AI Act*, Regulation (EU) 2024/1689) is 
 
 A chatbot (see [Building a Chatbot](/?c=ia&p=chatbot)) typically falls into the "limited risk" category: its main obligation is to never let the user believe they're talking to a human without saying so.
 
-> **Pitfall:** underestimating your own system's risk level out of optimism or unfamiliarity with the rules — a chatbot that looks harmless can shift to "high risk" if, for example, it's involved in a recruitment or credit-scoring decision, two cases explicitly listed at that level.
+> **Pitfall:** underestimating your own system's risk level out of optimism or unfamiliarity with the rules: a chatbot that looks harmless can shift to "high risk" if, for example, it's involved in a recruitment or credit-scoring decision, two cases explicitly listed at that level.
 >
-> **Best practice:** assess risk level based on the system's actual use (the domain it operates in), not just its underlying technology — two technically identical chatbots can fall under two different risk levels depending on their use.
+> **Best practice:** assess risk level based on the system's actual use (the domain it operates in), not just its underlying technology: two technically identical chatbots can fall under two different risk levels depending on their use.
 
 ## The application timeline
 
@@ -33,7 +33,7 @@ Unlike a regulation that would apply all at once, the AI Act comes into force **
 | **August 2, 2026** | Application of most of the regulation: obligations for high-risk systems (Annex III), transparency obligations for limited risk (chatbots, deepfakes) |
 | **August 2, 2027** | Extra grace period for high-risk systems that are safety components of products already regulated (medical devices, machinery, toys...) |
 
-> **A concrete tension, still open at present:** obligations for high-risk systems have been legally enforceable since August 2026, but the **harmonized technical standards** meant to specify exactly how to comply with them (drafted by the CEN-CENELEC standardization bodies, JTC 21 working group) are still being finalized. A company can therefore find itself having to meet a legal obligation before the official technical instructions for doing so fully exist — a situation to watch, not a mere administrative detail.
+> **A concrete tension, still open at present:** obligations for high-risk systems have been legally enforceable since August 2026, but the **harmonized technical standards** meant to specify exactly how to comply with them (drafted by the CEN-CENELEC standardization bodies, JTC 21 working group) are still being finalized. A company can therefore find itself having to meet a legal obligation before the official technical instructions for doing so fully exist, a situation to watch, not a mere administrative detail.
 
 > **Pitfall:** assuming no obligation applies until the 2026 deadline is reached. The bans on unacceptable-risk practices and the obligations for GPAI models have, in fact, already been in force since 2025.
 >
@@ -41,7 +41,7 @@ Unlike a regulation that would apply all at once, the AI Act comes into force **
 
 ## General-purpose AI models (GPAI)
 
-A large language model (see [NLP and LLM](/?c=ia&p=nlp-et-llm)) isn't designed for a single use — it serves as the basis for a wide variety of uses. The AI Act creates specific obligations for this category ("*General-Purpose AI*", GPAI), applicable since August 2, 2025:
+A large language model (see [NLP and LLM](/?c=ia&p=nlp-et-llm)) isn't designed for a single use: it serves as the basis for a wide variety of uses. The AI Act creates specific obligations for this category ("*General-Purpose AI*", GPAI), applicable since August 2, 2025:
 
 - Technical documentation on the model's training and capabilities, kept available to authorities.
 - Compliance with copyright law on training data (a compliance policy must exist).
@@ -49,21 +49,21 @@ A large language model (see [NLP and LLM](/?c=ia&p=nlp-et-llm)) isn't designed f
 
 Models deemed to pose a **systemic risk** (beyond a training-compute power threshold) carry reinforced obligations: adversarial evaluation (*red teaming*), serious incident reporting, stronger cybersecurity. A voluntary **Code of Practice** for GPAI providers was published in 2025 to help anticipate these obligations before regulatory oversight ramps up.
 
-> **Pitfall:** confusing the obligations of a GPAI model's **provider** (technical documentation, copyright compliance...) with those of a company that merely **uses** that already-existing model (via an API, for instance) — GPAI obligations fall on whoever builds and distributes the model, not on whoever uses it to build a product on top of it.
+> **Pitfall:** confusing the obligations of a GPAI model's **provider** (technical documentation, copyright compliance...) with those of a company that merely **uses** that already-existing model (via an API, for instance): GPAI obligations fall on whoever builds and distributes the model, not on whoever uses it to build a product on top of it.
 >
 > **Best practice:** clearly identify your own role (model provider, or mere user of a third-party model) before determining which AI Act obligations actually apply to your case.
 
 ## Human oversight: an obligation, not an option
 
-For a high-risk system, the AI Act requires effective human oversight — directly echoing a principle already seen for [agents](/?c=ia&p=agents): an autonomous system should never be able to decide alone on an action with real consequences without a human able to intervene or stop it. What good engineering sense already recommended becomes, for high-risk cases, a documented legal obligation.
+For a high-risk system, the AI Act requires effective human oversight, directly echoing a principle already seen for [agents](/?c=ia&p=agents): an autonomous system should never be able to decide alone on an action with real consequences without a human able to intervene or stop it. What good engineering sense already recommended becomes, for high-risk cases, a documented legal obligation.
 
 ## What this changes relative to the GDPR
 
-The AI Act does **not** replace the GDPR — it adds to it. [Data governance](/?c=ia&p=gouvernance-des-donnees) (classification, traceability, access control) remains necessary independently of the AI Act: the GDPR governs the personal data itself, the AI Act governs the **AI system** that processes it — the two sets of obligations stack rather than substitute for one another.
+The AI Act does **not** replace the GDPR: it adds to it. [Data governance](/?c=ia&p=gouvernance-des-donnees) (classification, traceability, access control) remains necessary independently of the AI Act: the GDPR governs the personal data itself, the AI Act governs the **AI system** that processes it: the two sets of obligations stack rather than substitute for one another.
 
 ## Penalties
 
-Fines are tiered by the severity of the infringement, up to €35 million or 7% of annual global turnover for a banned practice (whichever is higher) — a level deliberately comparable to the GDPR's.
+Fines are tiered by the severity of the infringement, up to €35 million or 7% of annual global turnover for a banned practice (whichever is higher), a level deliberately comparable to the GDPR's.
 
 ## Key takeaways
 

@@ -4,7 +4,7 @@ order: 12
 
 # Data Governance for an AI System
 
-Sending data to an LLM isn't neutral: unlike an internal database, the data often passes through a third-party service hosted in the [cloud](/?c=infrastructure&p=le-cloud), can show up in logs no one planned to create (see [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm)), and can be retained by the provider under contractual terms that need to be known before sending anything at all. Data governance applied to an AI system reuses the classic principles (GDPR, access control, traceability), adapting them to this extra hop — obligations that stack on top of those specific to the AI system itself, from the [EU AI regulation](/?c=ia&p=reglementation-europeenne-ia).
+Sending data to an LLM isn't neutral: unlike an internal database, the data often passes through a third-party service hosted in the [cloud](/?c=infrastructure&p=le-cloud), can show up in logs no one planned to create (see [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm)), and can be retained by the provider under contractual terms that need to be known before sending anything at all. Data governance applied to an AI system reuses the classic principles (GDPR, access control, traceability), adapting them to this extra hop, obligations that stack on top of those specific to the AI system itself, from the [EU AI regulation](/?c=ia&p=reglementation-europeenne-ia).
 
 ## Classifying data before sending it to a model
 
@@ -17,27 +17,27 @@ Any data that enters a prompt (a user's question, a document injected by [RAG](/
 | Personal | A customer's name, email, phone number | Anonymize or pseudonymize before sending if the use case allows it, otherwise a compliant provider (hosting, contract) is required |
 | Secret | API key, password, trade secret | Never pass through a prompt, regardless of the provider |
 
-> **Pitfall:** only classifying what the initial prompt explicitly contains. An agent that calls tools (see [Agents](/?c=ia&p=agents)) can pull data into the prompt that no one explicitly decided to put there — the result of a SQL query returned to a model, for instance, carries every column from that query, not just the one useful for the answer.
+> **Pitfall:** only classifying what the initial prompt explicitly contains. An agent that calls tools (see [Agents](/?c=ia&p=agents)) can pull data into the prompt that no one explicitly decided to put there: the result of a SQL query returned to a model, for instance, carries every column from that query, not just the one useful for the answer.
 >
 > **Best practice:** base the classification on what *can* pass through a tool or a search, not just on what the initial prompt explicitly contains.
 
 ## Traceability: reconstructing who asked what
 
-An AI system in production must be able to answer, after the fact, *"who asked this question, with what data, and what answer was produced?"* — the same requirement as a classic audit system, but with two extra logs compared to ordinary CRUD: the prompt actually sent (not just the user's raw question, but everything assembled around it), and the exact version of the model that answered (see version drift in [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm)).
+An AI system in production must be able to answer, after the fact, *"who asked this question, with what data, and what answer was produced?"*, the same requirement as a classic audit system, but with two extra logs compared to ordinary CRUD: the prompt actually sent (not just the user's raw question, but everything assembled around it), and the exact version of the model that answered (see version drift in [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm)).
 
-> **Note:** CRUD (*Create, Read, Update, Delete*) refers to the four basic operations on stored data — creating it, reading it, modifying it, deleting it (the SQL commands `INSERT`/`SELECT`/`UPDATE`/`DELETE`, see [SQL](/?c=domain-specific-languages-dsl&p=sql), or the `POST`/`GET`/`PUT`/`DELETE` HTTP methods of a REST API). An "ordinary CRUD" audit therefore traces, for each of these four actions: who triggered it, on which row, at what time. An AI system adds two more (the assembled prompt, the model version) because an answer depends on much more than just the data modified — it also depends on the entire context provided to the model and on the model itself, two elements that don't exist in a classic CRUD.
+> **Note:** CRUD (*Create, Read, Update, Delete*) refers to the four basic operations on stored data: creating it, reading it, modifying it, deleting it (the SQL commands `INSERT`/`SELECT`/`UPDATE`/`DELETE`, see [SQL](/?c=domain-specific-languages-dsl&p=sql), or the `POST`/`GET`/`PUT`/`DELETE` HTTP methods of a REST API). An "ordinary CRUD" audit therefore traces, for each of these four actions: who triggered it, on which row, at what time. An AI system adds two more (the assembled prompt, the model version) because an answer depends on much more than just the data modified: it also depends on the entire context provided to the model and on the model itself, two elements that don't exist in a classic CRUD.
 
 ## Access control: RAG either inherits permissions, or bypasses them
 
 With a poorly designed [RAG](/?c=ia&p=rag), the vector database indexes documents at several confidentiality levels, but the search doesn't filter based on the rights of the person asking the question.
 
-> **Pitfall:** filtering by permission only **after** the search (reviewing the answer after the fact). A user who would never have had direct access to a document can then have its content quoted back to them, rephrased by the model, because the search judged it relevant without checking who is allowed to see it — once the information is in the answer, the damage is done.
+> **Pitfall:** filtering by permission only **after** the search (reviewing the answer after the fact). A user who would never have had direct access to a document can then have its content quoted back to them, rephrased by the model, because the search judged it relevant without checking who is allowed to see it: once the information is in the answer, the damage is done.
 >
 > **Best practice:** filter by permission **before** the search (only search documents the user is authorized to see), never only after the fact.
 
 ## Retention and the right to be forgotten
 
-The logs needed for traceability and evaluation (see [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm)) sit in direct tension with the right to be forgotten: a prompt containing personal data, kept indefinitely to analyze model quality, is personal data retention like any other. An explicit retention policy must cover these logs just as it would a business database — forgetting them because they're technical rather than functional is one of the most common ways to become non-compliant without realizing it.
+The logs needed for traceability and evaluation (see [LLM Monitoring and Operations](/?c=ia&p=gestion-dun-llm)) sit in direct tension with the right to be forgotten: a prompt containing personal data, kept indefinitely to analyze model quality, is personal data retention like any other. An explicit retention policy must cover these logs just as it would a business database: forgetting them because they're technical rather than functional is one of the most common ways to become non-compliant without realizing it.
 
 | Policy element | Question it answers | Concrete example |
 |---|---|---|
@@ -52,12 +52,12 @@ What complicates this compared to a classic business database: personal data sen
 |---|---|
 | Row in the application database | Yes |
 | Prompt log (see traceability above) | Only if the log is explicitly included in the deletion procedure |
-| A [RAG](/?c=ia&p=rag)'s vector index, if the document contained the data | No — the embedding generated from the document must be found and deleted separately |
+| A [RAG](/?c=ia&p=rag)'s vector index, if the document contained the data | No: the embedding generated from the document must be found and deleted separately |
 | Logs kept by the model provider (outside the company's infrastructure) | Depends entirely on the provider's contractual terms, not on what the company does internally |
 
-> **Pitfall:** treating the right to be forgotten as a simple `DELETE FROM users WHERE id = ...` and considering the matter closed. A document containing personal data, once indexed in a RAG, continues to exist as an embedding even after the source document is deleted — and a third-party model provider may retain the prompt under its own contractual terms, independently of what's deleted on the company's side.
+> **Pitfall:** treating the right to be forgotten as a simple `DELETE FROM users WHERE id = ...` and considering the matter closed. A document containing personal data, once indexed in a RAG, continues to exist as an embedding even after the source document is deleted, and a third-party model provider may retain the prompt under its own contractual terms, independently of what's deleted on the company's side.
 >
-> **Best practice:** make deletion a process that explicitly walks through every place the data may have been copied (database, logs, vector index), rather than a single query on the source table — and check, before choosing a provider, what its contract says about retention and deletion on request.
+> **Best practice:** make deletion a process that explicitly walks through every place the data may have been copied (database, logs, vector index), rather than a single query on the source table, and check, before choosing a provider, what its contract says about retention and deletion on request.
 
 ## Key takeaways
 
