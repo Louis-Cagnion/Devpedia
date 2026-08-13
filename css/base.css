@@ -829,7 +829,10 @@ blockquote p + p {
     border-top: 1px solid var(--border);
 }
 
-.rightSidebar .readerToggleButton, .rightSidebar .readerContinueButton {
+.rightSidebar .readerToggleButton,
+.rightSidebar .readerRestartButton,
+.rightSidebar .readerReplayButton,
+.rightSidebar .readerContinueButton {
     width: 100%;
     justify-content: center;
 }
@@ -839,12 +842,13 @@ blockquote p + p {
     cursor: default;
 }
 
-/* shown only once reading reaches a code block -- cf. .visible on .menuDiv/dropdowns */
-.readerContinueButton {
+/* shown only once reading has produced a paragraph to go back to (cf. applyStatus() in
+   reader.js), or once reading reaches a code block -- cf. .visible on .menuDiv/dropdowns */
+.readerRestartButton, .readerReplayButton, .readerContinueButton {
     display: none;
 }
 
-.readerContinueButton.visible {
+.readerRestartButton.visible, .readerReplayButton.visible, .readerContinueButton.visible {
     display: inline-flex;
 }
 
