@@ -1,4 +1,5 @@
 import { createTag } from "./tags.js";
+import { appState } from "./state.js";
 
 // Web Speech API only (no cloud TTS, no auto-hosted engine) -- the site is 100% static
 // (GitHub Pages), so this is the only option with zero cost and zero infrastructure.
@@ -56,8 +57,14 @@ const HAS_SPOKEN_CONTENT = /[\p{L}\p{N}]/u;
 // "!==" was heard dropping the "!", and "===" is easy to mishear as "==". Every occurrence is
 // replaced with an explicit English phrase instead, whether the whole inline code span is just
 // the operator (e.g. `===`) or it's embedded in a longer expression (e.g. `tableau.length === 0`).
-// Generic across every language chapter that uses these operators, not just JavaScript.
-const OPERATOR_SPEECH = {
+//
+// Only operators verified to mean the same thing in every language/tool taught on the site belong
+// here -- e.g. "==" is "equals" whether the page is about JavaScript, PHP, or Bash's `[[ ]]`. Many
+// common symbols are NOT safe to put here because the same glyph means something different
+// depending on context (`>` is "greater than" in most languages but "redirect, overwrite" in a
+// shell; `.`/`*`/`+` are ordinary punctuation/arithmetic almost everywhere but anchors/quantifiers
+// in a regex) -- those live in CONTEXT_OPERATOR_SPEECH below instead, keyed by where they're safe.
+const GLOBAL_OPERATOR_SPEECH = {
     "==": "equals",
     "===": "strictly equals",
     "!=": "not equal",
@@ -68,19 +75,148 @@ const OPERATOR_SPEECH = {
     "||": "or",
     "??": "nullish coalescing",
     "?.": "optional chaining",
+    // A bare "$" before a number (e.g. "$1") gets read by the TTS engine as a currency amount
+    // ("one dollar") -- nothing on this site is about money, it's always a variable sigil (Bash,
+    // Zsh, PHP...) or, in regex, an end-of-line anchor (overridden by that context's own "$" below).
+    "$": "variable",
 };
 
-// Longest keys first, so e.g. "!==" matches before "!=" can claim its first two characters.
-const OPERATOR_PATTERN = new RegExp(
-    Object.keys(OPERATOR_SPEECH)
-        .sort((a, b) => b.length - a.length)
-        .map(op => op.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-        .join("|"),
-    "g"
-);
+// Symbols whose meaning depends on the language/tool being taught, keyed by the page's context --
+// its subject id (e.g. "javascript", "bash"), or its category id when the category has no subjects
+// (e.g. "git"; cf. appState.curSubject/curCategory). A context's entries are layered on top of
+// GLOBAL_OPERATOR_SPEECH (overriding it on a shared key, though none currently collide) rather
+// than replacing it, so e.g. "==" still reads correctly on every page regardless of context.
+//
+// The whole "Domain-specific Languages (DSL)" category (regex.md, sql.md, ...) shares one context
+// since it has no subjects to split on -- safe today because only regex.md actually uses these
+// bare symbols (cf. the survey that produced this table), but a future DSL chapter reusing e.g.
+// "." for something else would need this category split into real subjects first.
+const CONTEXT_OPERATOR_SPEECH = {
+    c: {
+        "->": "arrow, member access through a pointer",
+        "&": "address of",
+        "<<": "left shift",
+        ">>": "right shift",
+        "~": "bitwise not",
+        "^": "bitwise xor",
+        "|": "bitwise or",
+    },
+    cpp: {
+        "->": "arrow, member access through a pointer",
+        "&": "address of",
+        "<<": "stream insertion",
+        ">>": "stream extraction",
+        "~": "bitwise not",
+        "^": "bitwise xor",
+        "::": "scope resolution",
+    },
+    php: {
+        "::": "double colon, static access",
+        "->": "arrow, property or method access",
+        "@": "at, suppress errors",
+        "?>": "closing tag",
+    },
+    python: {
+        ":=": "walrus operator",
+        "@": "at, decorator",
+    },
+    ocaml: {
+        "::": "cons",
+        ":=": "assign to reference",
+        "+.": "float plus",
+    },
+    bash: {
+        "|": "pipe",
+        ">": "redirect, overwrite",
+        ">>": "redirect, append",
+        "<": "redirect, input",
+        "~": "home directory",
+        "$?": "exit status",
+        "$@": "all arguments",
+        "$#": "argument count",
+        "$$": "process id",
+    },
+    powershell: {
+        "|": "pipe",
+        ">": "redirect, overwrite",
+        ">>": "redirect, append",
+    },
+    zsh: {
+        "|": "pipe",
+        ">": "redirect, overwrite",
+        ">>": "redirect, append",
+        "<": "redirect, input",
+        "~": "home directory",
+        "$?": "exit status",
+        "$@": "all arguments",
+        "$#": "argument count",
+        "**": "recursive glob",
+    },
+    "domain-specific-languages-dsl": {
+        "^": "start anchor",
+        "$": "end anchor",
+        ".": "any character",
+        "*": "zero or more",
+        "+": "one or more",
+        "?": "zero or one",
+    },
+    css: {
+        ">": "direct child combinator",
+        "+": "adjacent sibling combinator",
+        "~": "general sibling combinator",
+        "*": "universal selector",
+    },
+    "data-science": {
+        "@": "matrix multiplication",
+        "*": "element-wise multiplication",
+    },
+    mathematiques: {
+        "@": "matrix multiplication",
+        "*": "element-wise multiplication",
+        "·": "dot product",
+    },
+    git: {
+        "<<<<<<<": "conflict marker, start of your changes",
+        "=======": "conflict marker, separator",
+        ">>>>>>>": "conflict marker, end of incoming changes",
+    },
+};
 
-function speakableCode(text) {
-    return text.replace(OPERATOR_PATTERN, op => ` ${OPERATOR_SPEECH[op]} `).replace(/\s+/g, " ").trim();
+// One compiled { table, pattern } per context, built lazily and cached -- collectLeafSegments()
+// runs once per paragraph, so rebuilding a page's operator regex on every call would be wasteful.
+const operatorTableCache = new Map();
+
+function getOperatorTable(context) {
+    if (!operatorTableCache.has(context)) {
+        const table = { ...GLOBAL_OPERATOR_SPEECH, ...(CONTEXT_OPERATOR_SPEECH[context] ?? {}) };
+        // Longest keys first, so e.g. "!==" matches before "!=" can claim its first two characters.
+        const pattern = new RegExp(
+            Object.keys(table)
+                .sort((a, b) => b.length - a.length)
+                .map(op => op.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+                .join("|"),
+            "g"
+        );
+        operatorTableCache.set(context, { table, pattern });
+    }
+    return operatorTableCache.get(context);
+}
+
+// A CLI flag's leading dash(es) ("-e", "--verbose") get the same silent-or-mumbled treatment from
+// the TTS engine as the operators above. Unlike those, a flag prefix means the same thing (an
+// option, not a subtraction) in every language/tool that uses the convention -- Bash, Zsh,
+// PowerShell, git, Docker, Python's argparse... -- so this runs unconditionally, not per context.
+// Matched by structure (a dash run at a word boundary, right before a letter) rather than a fixed
+// list of known flags, so it covers any flag without needing to be kept in sync with content.
+const CLI_FLAG_PATTERN = /(^|\s)(--?)(?=[A-Za-z])/g;
+
+function speakableCode(text, context) {
+    const { table, pattern } = getOperatorTable(context);
+    return text
+        .replace(pattern, op => ` ${table[op]} `)
+        .replace(CLI_FLAG_PATTERN, (_, before, dashes) => `${before}${dashes === "--" ? "dash dash " : "dash "}`)
+        .replace(/\s+/g, " ")
+        .trim();
 }
 
 /**
@@ -91,9 +227,11 @@ function speakableCode(text) {
  *
  * @param {HTMLElement} leaf a single h2-h6/p/li/th/td element
  * @param {string} lang the page's language, e.g. "fr", "en"
+ * @param {string} context the page's subject or category id, used to pick the right operator
+ *   table for inline code (cf. CONTEXT_OPERATOR_SPEECH)
  * @param {Array} entries the plan being built, appended to in place
  */
-function collectLeafSegments(leaf, lang, entries) {
+function collectLeafSegments(leaf, lang, context, entries) {
     let buffer = "";
     const flushBuffer = () => {
         const text = buffer.trim();
@@ -104,7 +242,7 @@ function collectLeafSegments(leaf, lang, entries) {
         if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
             flushBuffer();
             const code = node.textContent.trim();
-            if (code) entries.push({ kind: "speak", text: speakableCode(code), lang: "en-US", group: leaf });
+            if (code) entries.push({ kind: "speak", text: speakableCode(code, context), lang: "en-US", group: leaf });
         } else {
             buffer += node.textContent;
         }
@@ -118,17 +256,18 @@ function collectLeafSegments(leaf, lang, entries) {
  *
  * @param {HTMLElement} root
  * @param {string} lang
+ * @param {string} context see {@link collectLeafSegments}
  * @param {Array} entries the plan being built, appended to in place
  */
-function collectSegments(root, lang, entries) {
+function collectSegments(root, lang, context, entries) {
     Array.from(root.children).forEach(element => {
         if (element.matches(IGNORED_SELECTOR)) return;
         if (element.tagName === "PRE") {
             entries.push({ kind: "pause", element });
         } else if (LEAF_TAGS.has(element.tagName)) {
-            collectLeafSegments(element, lang, entries);
+            collectLeafSegments(element, lang, context, entries);
         } else {
-            collectSegments(element, lang, entries);
+            collectSegments(element, lang, context, entries);
         }
     });
 }
@@ -149,6 +288,19 @@ function resetPlayback() {
 }
 
 /**
+ * Drops every "pause" entry that immediately follows another one -- several `pre` blocks in a
+ * row with no text between them (a common thing, e.g. a "before/after" pair) would otherwise
+ * need one "Continuer" click per block before reading picks the text back up. One pause for the
+ * whole run is enough; it lands on (and scrolls to) the first block, same as before.
+ *
+ * @param {Array} entries
+ * @returns {Array}
+ */
+function collapseConsecutivePauses(entries) {
+    return entries.filter((entry, i) => entry.kind !== "pause" || entries[i - 1]?.kind !== "pause");
+}
+
+/**
  * Rebuilds the reading plan from the page currently in `pageDiv`, and stops whatever was
  * being read before (its plan referenced elements about to leave the DOM). Call once per page
  * render, after its content has been generated.
@@ -158,8 +310,9 @@ function resetPlayback() {
 export function buildReadingPlan(pageDiv) {
     resetPlayback();
     const entries = [];
-    collectSegments(pageDiv, document.documentElement.lang || "fr", entries);
-    plan = entries;
+    const context = appState.curSubject ?? appState.curCategory;
+    collectSegments(pageDiv, document.documentElement.lang || "fr", context, entries);
+    plan = collapseConsecutivePauses(entries);
     notify();
 }
 
@@ -198,7 +351,12 @@ function speakNext() {
     utterance.onend = utterance.onerror = () => {
         if (generation !== myGeneration) return;
         planIndex++;
-        speakNext();
+        // Deferred rather than called directly: some engines fire onend/onerror synchronously
+        // for very short utterances (single-word entries, e.g. "variable 0"), and a page with
+        // many of those in a row -- speakNext() -> synth.speak() -> onend -> speakNext() -> ...
+        // -- can nest deep enough within one call stack to overflow it. setTimeout starts each
+        // call on a fresh stack instead.
+        setTimeout(speakNext, 0);
     };
     synth.speak(utterance);
 }
