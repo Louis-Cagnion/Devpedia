@@ -15,8 +15,26 @@ Traduit à cette occasion (n'existait pas du tout côté EN) : 3 chapitres Git G
 - **Recommandation pour une prochaine session** : lancer la même vérification par comparaison de longueur sur les 18 catégories restantes, puis retraduire chapitre par chapitre les fichiers signalés — un chantier à part, plus gros qu'une synchronisation de liens ponctuelle.
 
 **Reste à faire, sans rapport avec les liens du 2026-08-13 :**
-- **`Bases de données`, `CI-CD`, `Organisation en entreprise` : catégories entières absentes côté EN.**
-- **18 nouveaux chapitres IA (Vision et OCR ×8, Voix IA ×8, + `chatbot.md`/`assistant-agentique-terminal.md` dans Applications LLM) jamais traduits en EN**, plus `IA/description.md` dont le texte FR a été réécrit pour refléter la restructuration en subjects (le texte EN actuel, écrit pour une IA plate, devra être adapté en conséquence le jour où `content-en/IA` sera lui aussi restructuré).
+- **`Bases de données`, `CI-CD`, `Organisation en entreprise` : catégories entières absentes côté EN** (7 + 5 + 5 fichiers).
+- **22 fichiers IA jamais traduits en EN** : les 9 fichiers de `Vision et OCR` (8 chapitres + son intro de subject), les 9 de `Voix IA` (idem), et 4 intros de subject restantes (`Applications LLM/applications-llm.md`, `Fondamentaux du deep learning/fondamentaux-du-deep-learning.md`, `NLP et LLM/nlp-llm.md`, `Production et gouvernance/production-et-gouvernance.md`). `chatbot.md` et `assistant-agentique-terminal.md`, eux, étaient déjà traduits (voir bug ci-dessous, corrigé).
+- `IA/description.md` : texte FR réécrit pour refléter la restructuration en subjects ; le texte EN actuel (écrit pour une IA plate) devra être adapté le jour où `content-en/IA` sera lui aussi restructuré.
+- `Langages de programmation/PHP/php.md` : contenu EN structurellement différent du FR actuel (brouillon obsolète, à réécrire entièrement, pas juste combler des liens).
+- `Langages de programmation/C/variables.md` : paragraphe entier manquant (approximation IEEE 754 et piège `==` sur les flottants).
+- `Langages de programmation/C/pointeurs.md` et `Python/iterateurs-et-generateurs.md` : ratio de longueur FR/EN suspect (0.72 et 0.73), pas encore ouverts pour vérifier ce qui manque précisément.
+
+**Bug trouvé et corrigé le 2026-08-13 (commit `2646664`) : blocs de code ` ```text ` corrompus dans `IA/chatbot.md` et `IA/assistant-agentique-terminal.md`** — une phrase mélangeait français et anglais en plein milieu d'un mot (ex. `n'There is no memory between two calls`), et le reste du bloc autour n'avait jamais été traduit du tout. Les deux fichiers sont maintenant intégralement en anglais.
+
+**Découverte plus large suite à ce bug, non corrigée : au moins 19 autres fichiers EN ont des blocs ` ```text ` (diagrammes ASCII, exemples de terminal, pseudocode) restés entièrement en français**, jamais traduits par la passe de traduction manuelle antérieure — un problème distinct du "brouillon obsolète" documenté plus haut, propre aux blocs de code texte spécifiquement. Détecté par un script ad hoc (recherche de marqueurs français dans les blocs ` ```text `), pas encore vérifié à 100% fiable (faux positifs possibles sur des exemples délibérément en français, ex. un message de commit d'exemple). Fichiers identifiés, aucun encore corrigé :
+- `Git/gitignore.md`, `rebase.md` (×2), `branches.md` (×2), `architecture-interne.md` (×2), `concepts-de-base.md`
+- `Docker/concepts-de-base.md`
+- `IA/agents.md` (×2), `architectures-cnn-rnn-transformers.md` (×3)
+- `Bases de l'informatique/code-programmes-et-fichiers.md` (×2), `le-terminal.md` (×2), `le-bug.md`, `arborescence-et-chemins.md`
+- `Langages de balisage/CSS/box-model.md`, `grid.md`
+- `Langages de programmation/C/appels-systeme-et-descripteurs.md`, `compilation.md`, `tables-de-hachage.md` (×2)
+- `Langages de programmation/Python/modules-et-environnements.md`
+- `Représentation des données/encodage-des-textes.md` (×2)
+
+Décision de Louis le 2026-08-13 : les traiter directement (pas via agents), un par un, en comparant au texte FR source à chaque fois — risque d'erreur d'alignement ASCII trop élevé pour déléguer sans relecture. Pas encore commencé.
 
 ### Traductions ES/PT à rattraper (EN désormais complet, 2026-08-10)
 - Le quota DeepL (1M caractères, "abonnement à vie" — probablement non renouvelable, à vérifier sur le compte) est épuisé : la traduction EN a été terminée **manuellement** (sans l'API) pour les ~130 fichiers restants, catégorie par catégorie.
