@@ -9,7 +9,7 @@ Unlike PHP or JavaScript, which are interpreted directly at runtime, a C program
 ## The Four Steps
 
 ```text
-main.c --[1. préprocesseur]--> main.i --[2. compilation]--> main.s --[3. assemblage]--> main.o --[4. édition de liens]--> programme
+main.c --[1. preprocessor]--> main.i --[2. compilation]--> main.s --[3. assembly]--> main.o --[4. linking]--> program
 ```
 
 ### 1. The Preprocessor
@@ -38,7 +38,7 @@ gcc -c main.s -o main.o
 
 ### 4. *Linking*
 
-Compiles one or more `.o` files together and resolves references to functions defined elsewhere (in other `.o` files or in libraries; see the relevant chapter) to produce a complete final executable.
+Compiles one or more `.o` files together and resolves references to functions defined elsewhere (in other `.o` files, or in [libraries](/?c=langages-de-programmation&s=c&p=bibliotheques)) to produce a complete final executable.
 
 ```bash
 gcc main.o -o program
@@ -46,7 +46,7 @@ gcc main.o -o program
 
 ## Why Separate Compilation and Linking?
 
-A project with multiple source files can compile each `.c` into `.o` independently, and then link only the files that have changed—which is faster than a full recompilation every time a change is made. This is exactly what a **Makefile** automates (see the dedicated chapter):
+A project with multiple source files can compile each `.c` into `.o` independently, and then link only the files that have changed: faster than a full recompilation every time a change is made. This is exactly what a [**Makefile**](/?c=langages-de-programmation&s=c&p=makefiles) automates:
 
 ```bash
 gcc -c fichier1.c -o fichier1.o
@@ -61,5 +61,16 @@ Knowing at which stage an error occurs helps diagnose it:
 | Typical message | Affected step | Common cause |
 |---|---|---|
 | `error: expected ';' before...` | Compilation | Syntax error in the source code |
-| `fatal error: xxx.h: No such file or directory` | Preprocessor | Header file not found (see the chapter on headers) |
-| `undefined reference to 'ma_fonction'` | Edit links | Function declared but never defined/linked (`.o` file or missing library) |
+| `fatal error: xxx.h: No such file or directory` | Preprocessor | [Header file](/?c=langages-de-programmation&s=c&p=headers) not found |
+| `undefined reference to 'ma_fonction'` | Linking | Function declared but never defined/linked (`.o` file or missing library) |
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key Points** | A C program goes through 4 steps before execution: preprocessor → compilation (assembly) → assembly (machine code, `.o`) → linking (final executable). |
+| **Available Tools** | `gcc -E`/`-S`/`-c` to observe each step separately. |
+| **Pitfalls to Avoid** | Confusing a compilation error (syntax) with a linking error (`undefined reference`, function never linked): the message indicates the affected step. |
+| **Best Practices** | Compile each `.c` file into `.o` separately on a multi-file project, so only what changed needs relinking rather than recompiling everything. |
