@@ -11,6 +11,37 @@
       ]
     },
     {
+      "id": "bases-de-donnees",
+      "label": "Bases de données",
+      "folder": "Bases de données",
+      "chapters": [
+        {
+          "id": "modeles-en-etoile",
+          "label": "The Star Schema"
+        },
+        {
+          "id": "architecture-medaillon",
+          "label": "The Medallion Architecture"
+        },
+        {
+          "id": "table-pont",
+          "label": "The Bridge Table"
+        },
+        {
+          "id": "schemas-et-tables-techniques",
+          "label": "Schemas and Technical Tables"
+        },
+        {
+          "id": "entrepot-vs-data-lake",
+          "label": "Data Warehouse vs. Data Lake"
+        },
+        {
+          "id": "les-index",
+          "label": "Indexes"
+        }
+      ]
+    },
+    {
       "id": "bases-de-l-informatique",
       "label": "Bases de l'informatique",
       "folder": "Bases de l'informatique",
@@ -38,6 +69,29 @@
         {
           "id": "le-bug",
           "label": "The bug"
+        }
+      ]
+    },
+    {
+      "id": "ci-cd",
+      "label": "CI-CD",
+      "folder": "CI-CD",
+      "chapters": [
+        {
+          "id": "pipeline-cicd",
+          "label": "What Is a CI/CD Pipeline?"
+        },
+        {
+          "id": "azure-devops-plateforme",
+          "label": "Azure DevOps as a Platform"
+        },
+        {
+          "id": "yaml-pipelines-azure",
+          "label": "Azure Pipeline YAML Syntax"
+        },
+        {
+          "id": "azure-pipelines-vs-github-actions",
+          "label": "Azure Pipelines vs. GitHub Actions"
         }
       ]
     },
@@ -133,7 +187,7 @@
         },
         {
           "id": "branches",
-          "label": "The Branches"
+          "label": "Branches"
         },
         {
           "id": "annuler-et-historique",
@@ -192,7 +246,7 @@
         },
         {
           "id": "architectures-cnn-rnn-transformers",
-          "label": "Architectures — CNNs, RNNs, and Transformers"
+          "label": "Architectures: CNNs, RNNs, and Transformers"
         },
         {
           "id": "deep-learning-pytorch",
@@ -476,6 +530,69 @@
           ]
         },
         {
+          "id": "php",
+          "label": "PHP",
+          "folder": "PHP",
+          "chapters": [
+            {
+              "id": "syntaxe",
+              "label": "PHP Syntax"
+            },
+            {
+              "id": "variables",
+              "label": "Variables"
+            },
+            {
+              "id": "conditions",
+              "label": "Conditions"
+            },
+            {
+              "id": "boucles",
+              "label": "Loops"
+            },
+            {
+              "id": "structures-de-langage",
+              "label": "Language Constructs"
+            },
+            {
+              "id": "methodes",
+              "label": "The Most Useful Functions and Methods"
+            },
+            {
+              "id": "include",
+              "label": "Include functions"
+            },
+            {
+              "id": "poo",
+              "label": "Object-Oriented Programming (OOP)"
+            },
+            {
+              "id": "exceptions",
+              "label": "Exceptions"
+            },
+            {
+              "id": "autoloading",
+              "label": "Autoloading Classes"
+            },
+            {
+              "id": "connexions",
+              "label": "Manage Connections"
+            },
+            {
+              "id": "http",
+              "label": "Making HTTP Calls Natively"
+            },
+            {
+              "id": "routage",
+              "label": "Routing Without a Framework (Front Controller)"
+            },
+            {
+              "id": "securite",
+              "label": "Securing your data"
+            }
+          ]
+        },
+        {
           "id": "python",
           "label": "Python",
           "folder": "Python",
@@ -651,69 +768,6 @@
               "label": "Asynchronous Programming (Callbacks, Promises, async/await)"
             }
           ]
-        },
-        {
-          "id": "php",
-          "label": "PHP",
-          "folder": "PHP",
-          "chapters": [
-            {
-              "id": "syntaxe",
-              "label": "PHP Syntax"
-            },
-            {
-              "id": "variables",
-              "label": "Variables"
-            },
-            {
-              "id": "conditions",
-              "label": "Conditions"
-            },
-            {
-              "id": "boucles",
-              "label": "Loops"
-            },
-            {
-              "id": "structures-de-langage",
-              "label": "Language Constructs"
-            },
-            {
-              "id": "methodes",
-              "label": "The Most Useful Functions and Methods"
-            },
-            {
-              "id": "include",
-              "label": "Include functions"
-            },
-            {
-              "id": "poo",
-              "label": "Object-Oriented Programming (OOP)"
-            },
-            {
-              "id": "exceptions",
-              "label": "Exceptions"
-            },
-            {
-              "id": "autoloading",
-              "label": "Autoloading Classes"
-            },
-            {
-              "id": "connexions",
-              "label": "Manage Connections"
-            },
-            {
-              "id": "http",
-              "label": "Making HTTP Calls Natively"
-            },
-            {
-              "id": "routage",
-              "label": "Routing Without a Framework (Front Controller)"
-            },
-            {
-              "id": "securite",
-              "label": "Securing your data"
-            }
-          ]
         }
       ]
     },
@@ -741,6 +795,29 @@
         {
           "id": "la-derivee-et-le-gradient",
           "label": "The Derivative and the Gradient"
+        }
+      ]
+    },
+    {
+      "id": "organisation-en-entreprise",
+      "label": "Organisation en entreprise",
+      "folder": "Organisation en entreprise",
+      "chapters": [
+        {
+          "id": "roles-equipe-developpement",
+          "label": "Roles in a Development Team"
+        },
+        {
+          "id": "methodologies-agile-scrum-kanban",
+          "label": "Methodologies: Agile, Scrum, Kanban"
+        },
+        {
+          "id": "cycle-de-vie-dun-projet",
+          "label": "The Project Lifecycle"
+        },
+        {
+          "id": "documentation-et-communication-equipe",
+          "label": "Documentation and Team Communication"
         }
       ]
     },
