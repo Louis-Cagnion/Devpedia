@@ -4,7 +4,7 @@ order: 2
 
 # Color and Contrast
 
-Color is one of the levers of [visual hierarchy](/?c=ui-ux&p=hierarchie-visuelle): it draws the eye and distinguishes elements from one another. It deserves its own chapter because it follows its own rules — of harmony, readability, and accessibility.
+Color is one of the levers of [visual hierarchy](/?c=ui-ux&p=hierarchie-visuelle): it draws the eye and distinguishes elements from one another. It deserves its own chapter because it follows its own rules: of harmony, readability, and accessibility.
 
 ## The color wheel and harmonies
 
@@ -18,7 +18,7 @@ Their relative position on this circle determines combinations ("harmonies") tha
 
 | Harmony | How to spot it on the wheel | Example | Visual effect |
 |---|---|---|---|
-| Complementary | Two colors opposite each other | Red / Green | Strong, dynamic contrast — can tire the eye if overused |
+| Complementary | Two colors opposite each other | Red / Green | Strong, dynamic contrast; can tire the eye if overused |
 | Analogous | Several neighboring colors | Yellow / Green / Blue | Soft and cohesive, little contrast |
 | Triadic | Three evenly spaced colors | Red / Yellow / Blue | Vivid and balanced, harder to dose |
 
@@ -39,9 +39,9 @@ hues: 30, 150, 270
 label: Triadic (120 degrees apart)
 ```
 
-> **Pitfall:** choosing a harmony (triadic, for instance) then using its colors in equal parts. The result loses all [visual hierarchy](/?c=ui-ux&p=hierarchie-visuelle) and becomes garish — none of the three stands out as the most important.
+> **Pitfall:** choosing a harmony (triadic, for instance) then using its colors in equal parts. The result loses all [visual hierarchy](/?c=ui-ux&p=hierarchie-visuelle) and becomes garish: none of the three stands out as the most important.
 >
-> **Best practice:** distribute colors along a dominant/secondary/accent proportion — a common rule is **60-30-10**: 60% a neutral dominant color, 30% a secondary color, 10% an accent color reserved for elements that truly need to stand out (an action button, for instance).
+> **Best practice:** distribute colors along a dominant/secondary/accent proportion; a common rule is **60-30-10**: 60% a neutral dominant color, 30% a secondary color, 10% an accent color reserved for elements that truly need to stand out (an action button, for instance).
 
 ## Contrast: readability above all (WCAG)
 
@@ -49,22 +49,22 @@ label: Triadic (120 degrees apart)
 
 | Level | Minimum ratio | Applies to |
 |---|---|---|
-| AA | 4.5 : 1 | Normal text — the generally recommended minimum level |
+| AA | 4.5 : 1 | Normal text (the generally recommended minimum level) |
 | AA (large text) | 3 : 1 | Headings and large text (≥ 18 pt, or 14 pt bold) |
 | AAA | 7 : 1 | Enhanced level, recommended for a visually impaired audience |
 
-> **Pitfall:** light gray text on a white background, chosen "because it looks softer". Visually subtle, but often below the 4.5:1 ratio — unreadable for a portion of users (low vision, a screen in bright sunlight, a poorly calibrated screen...).
+> **Pitfall:** light gray text on a white background, chosen "because it looks softer". Visually subtle, but often below the 4.5:1 ratio: unreadable for a portion of users (low vision, a screen in bright sunlight, a poorly calibrated screen...).
 >
 > **Best practice:** check the actual ratio with a dedicated tool (the contrast checker built into browser dev tools, or an online checker) rather than by eye.
 
 ## Never encode information through color alone
 
 ```text
-❌ Bad: in a form, a field in error is bordered in red, a valid field in green —
+❌ Bad: in a form, a field in error is bordered in red, a valid field in green:
    that's the ONLY difference between the two.
 
 ✅ Good: the field in error is bordered in red, AND displays a ⚠ icon, AND a text message
-   ("Invalid email format") — three cues, two of which don't depend on color perception.
+   ("Invalid email format"): three cues, two of which don't depend on color perception.
 ```
 
 > **Pitfall:** distinguishing two states by color alone (red/green in particular). About 8% of men (a lower proportion among women) have some form of color blindness and don't perceive this difference.
@@ -73,7 +73,7 @@ label: Triadic (120 degrees apart)
 
 ## Cultural meaning of colors
 
-A color doesn't evoke the same thing everywhere — to be weighed against the actual target audience, especially for an international product:
+A color doesn't evoke the same thing everywhere, to be weighed against the actual target audience, especially for an international product:
 
 | Color | Common association (Western culture) | Different elsewhere |
 |---|---|---|
@@ -87,7 +87,7 @@ A color doesn't evoke the same thing everywhere — to be weighed against the ac
 
 ## Moving to implementation
 
-In CSS, a color palette is declared as a set of reusable values rather than repeated in every rule — see [CSS Variables and the Cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
+In CSS, a color palette is declared as a set of reusable values rather than repeated in every rule: see [CSS Variables and the Cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
 
 ---
 

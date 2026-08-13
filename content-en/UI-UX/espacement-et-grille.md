@@ -4,17 +4,17 @@ order: 4
 
 # Spacing and Grid (Layout)
 
-Spacing was already introduced as a [visual hierarchy](/?c=ui-ux&p=hierarchie-visuelle) lever: more space around an element isolates it and makes it noticed. This chapter treats spacing as a complete system — a coherent grid and scale — rather than a one-off setting.
+Spacing was already introduced as a [visual hierarchy](/?c=ui-ux&p=hierarchie-visuelle) lever: more space around an element isolates it and makes it noticed. This chapter treats spacing as a complete system (a coherent grid and scale) rather than a one-off setting.
 
 ## Negative space: an active tool, not a void to fill
 
-**Negative space** (*white space*) is the empty space around and between a screen's elements. It's not a shortfall to fix by filling every available pixel — it's a tool that lets content breathe and reduces reading effort.
+**Negative space** (*white space*) is the empty space around and between a screen's elements. It's not a shortfall to fix by filling every available pixel: it's a tool that lets content breathe and reduces reading effort.
 
-> **Analogy:** silence in music. The pauses between notes are as much a part of the piece as the notes themselves — without them, everything blends into continuous noise.
+> **Analogy:** silence in music. The pauses between notes are as much a part of the piece as the notes themselves; without them, everything blends into continuous noise.
 
-> **Pitfall:** "horror vacui" — filling every available space with content or decoration, on the assumption that empty space is wasted space. Result: visual overload (already seen in [chapter 1](/?c=ui-ux&p=hierarchie-visuelle)) and more tiring reading.
+> **Pitfall:** "horror vacui": filling every available space with content or decoration, on the assumption that empty space is wasted space. Result: visual overload (already seen in [chapter 1](/?c=ui-ux&p=hierarchie-visuelle)) and more tiring reading.
 >
-> **Best practice:** treat empty space as a design element in its own right, decided on the same footing as color or typography — not as leftover space to fill.
+> **Best practice:** treat empty space as a design element in its own right, decided on the same footing as color or typography, not as leftover space to fill.
 
 ## The grid system: columns, gutters, margins
 
@@ -52,11 +52,11 @@ Rather than inventing a spacing value case by case (5px here, 13px there, 22px e
 
 > **Pitfall:** choosing each spacing value case by case ("15px looks fine here"). Each value seems correct in isolation, but their accumulation across the whole project never forms a coherent whole.
 >
-> **Best practice:** define this scale once, at the start of the project, then draw from it exclusively — never a value invented on the spot.
+> **Best practice:** define this scale once, at the start of the project, then draw from it exclusively, never a value invented on the spot.
 
 ## Vertical rhythm
 
-**Vertical rhythm** is a constant, predictable spacing between content blocks stacked vertically — headings, paragraphs, sections.
+**Vertical rhythm** is a constant, predictable spacing between content blocks stacked vertically: headings, paragraphs, sections.
 
 ```text
 Title
@@ -70,7 +70,7 @@ Paragraph of text...
 >
 > **Best practice:** assign a fixed, reused spacing to each type of transition (heading → paragraph, paragraph → paragraph, section → section), drawn from the scale defined above.
 
-> **Current trend (2026):** a return to predictable, recognizable layouts, in the same vein as the return to clarity already observed for [visual hierarchy](/?c=ui-ux&p=hierarchie-visuelle) — rather than experimental grids.
+> **Current trend (2026):** a return to predictable, recognizable layouts, in the same vein as the return to clarity already observed for [visual hierarchy](/?c=ui-ux&p=hierarchie-visuelle), rather than experimental grids.
 
 ## Moving to implementation
 
@@ -83,6 +83,6 @@ A grid and a vertical rhythm are concretely built with [Flexbox](/?c=langages-de
 | | |
 |---|---|
 | **Key takeaways** | Negative space is an active tool, not a void to fill. A grid (columns, gutters, margins) aligns elements with one another, and a fixed spacing scale (multiples of 4 or 8px) guarantees a coherent vertical rhythm. |
-| **Tools you can use** | No specific tool — the grid and scale are defined at design time, then implemented in CSS (Flexbox, Grid). |
+| **Tools you can use** | No specific tool: the grid and scale are defined at design time, then implemented in CSS (Flexbox, Grid). |
 | **Pitfalls to avoid** | Filling every available space out of horror vacui; aligning elements by eye rather than on a grid; inventing a spacing value case by case. |
 | **Best practices** | Define the grid and spacing scale before placing a single element; always reuse the same spacing values for a given type of transition. |
