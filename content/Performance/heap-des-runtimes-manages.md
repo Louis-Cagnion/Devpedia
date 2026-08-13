@@ -4,7 +4,7 @@ order: 8
 
 # Le heap d'un runtime managé
 
-Le chapitre C sur [la gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire) distingue la stack (automatique) du heap (manuel, `malloc`/`free`). Un runtime managé (la JVM pour Java/Elasticsearch/Kafka..., le CLR .NET, le moteur V8 de Node.js) a lui aussi un heap, mais avec un sens différent : c'est **toute la zone mémoire réservée aux objets alloués dynamiquement**, gérée automatiquement par un ramasse-miettes (*garbage collector*) plutôt que par des appels explicites. Le développeur ne l'alloue ni ne le libère lui-même ; il en fixe seulement la taille.
+Le chapitre C sur [la gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire) distingue la stack (automatique) du heap (manuel, `malloc`/`free`). Un runtime managé (la [JVM](https://docs.oracle.com/en/java/) pour Java/[Elasticsearch](https://www.elastic.co/elasticsearch)/[Kafka](https://kafka.apache.org)..., le [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr) .NET, le moteur [V8](https://v8.dev) de Node.js) a lui aussi un heap, mais avec un sens différent : c'est **toute la zone mémoire réservée aux objets alloués dynamiquement**, gérée automatiquement par un ramasse-miettes (*garbage collector*) plutôt que par des appels explicites. Le développeur ne l'alloue ni ne le libère lui-même ; il en fixe seulement la taille.
 
 ## Une taille souvent auto-détectée, pas toujours adaptée
 
@@ -12,7 +12,7 @@ Faute d'indication explicite, la plupart des runtimes managés choisissent une t
 
 Deux effets concrets d'un heap surdimensionné par rapport au besoin réel :
 
-- **Moins de RAM pour le cache disque de l'OS.** Un moteur comme Elasticsearch (basé sur Lucene) s'appuie énormément sur le cache fichier du système pour ses performances de lecture : un heap qui monopolise la moitié de la RAM laisse d'autant moins de place à ce cache, et peut pousser le système vers le swap.
+- **Moins de RAM pour le cache disque de l'OS.** Un moteur comme Elasticsearch (basé sur [Lucene](https://lucene.apache.org)) s'appuie énormément sur le cache fichier du système pour ses performances de lecture : un heap qui monopolise la moitié de la RAM laisse d'autant moins de place à ce cache, et peut pousser le système vers le swap.
 - **Un ramasse-miettes plus lent à s'échauffer.** Plus le heap est grand, plus les premiers cycles de ramasse-miettes ont de travail à faire pour établir leurs statistiques internes : un effet qui se ressent surtout au démarrage, avant que le régime de croisière ne s'installe.
 
 ## Fixer la taille explicitement

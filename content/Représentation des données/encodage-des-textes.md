@@ -33,7 +33,7 @@ Les codes 0 à 31 ne sont pas des caractères imprimables mais des **caractères
 
 ## Le problème : 128 caractères ne suffisent pas
 
-Ni `é`, ni `ñ`, ni `京`, ni `😀` n'entrent dans ASCII. Chaque région a donc créé sa propre extension sur le 8ᵉ bit (codes 128–255) : `ISO-8859-1` (Latin-1) pour l'Europe de l'Ouest, `ISO-8859-5` pour le cyrillique, `Windows-1252`...
+Ni `é`, ni `ñ`, ni `京`, ni `😀` n'entrent dans ASCII. Chaque région a donc créé sa propre extension sur le 8ᵉ bit (codes 128–255) : [`ISO-8859-1`](https://en.wikipedia.org/wiki/ISO/IEC_8859-1) (Latin-1) pour l'Europe de l'Ouest, `ISO-8859-5` pour le cyrillique, [`Windows-1252`](https://en.wikipedia.org/wiki/Windows-1252)...
 
 D'où le problème structurel : **le même octet désignait des caractères différents selon la table utilisée**, et rien dans le fichier n'indiquait laquelle. Un texte français lu avec une table cyrillique donnait du charabia.
 
@@ -100,13 +100,13 @@ Ce symptôme est très reconnaissable et permet de remonter à la cause :
 | `?` ou `�` | Caractère absent de l'encodage cible, remplacé |
 | Accents corrects sauf dans un tableur | Séparateur ou BOM manquant à l'ouverture |
 
-La correction n'est jamais de "remplacer les caractères" mais de **déclarer le bon encodage** au point de lecture. Chaque couche doit être cohérente : la balise HTML (`<meta charset="utf-8">`, voir le chapitre [Structure d'un document](/?c=langages-de-balisage&s=html&p=structure-dun-document)), [l'en-tête HTTP](/?c=infrastructure&p=api-et-http), l'encodage des fichiers sources, et le jeu de caractères de la base de données (`utf8mb4` pour MySQL : `utf8` seul y est un faux ami limité à 3 octets, qui rejette les emojis).
+La correction n'est jamais de "remplacer les caractères" mais de **déclarer le bon encodage** au point de lecture. Chaque couche doit être cohérente : la balise HTML (`<meta charset="utf-8">`, voir le chapitre [Structure d'un document](/?c=langages-de-balisage&s=html&p=structure-dun-document)), [l'en-tête HTTP](/?c=infrastructure&p=api-et-http), l'encodage des fichiers sources, et le jeu de caractères de la base de données (`utf8mb4` pour [MySQL](https://dev.mysql.com/doc/) : `utf8` seul y est un faux ami limité à 3 octets, qui rejette les emojis).
 
 ## Le BOM
 
 Le **BOM** (*Byte Order Mark*, `U+FEFF`) est une marque optionnelle en début de fichier signalant l'encodage. Il est indispensable en UTF-16 pour indiquer l'ordre des octets, mais **inutile en UTF-8**, où l'ordre est fixe.
 
-Il reste néanmoins courant sous Windows, où certains outils (dont Excel) s'en servent pour reconnaître un fichier UTF-8. D'où un arbitrage classique : un CSV destiné à Excel a besoin du BOM pour afficher correctement les accents, alors qu'un fichier source PHP avec BOM provoque un envoi prématuré de contenu et casse les en-têtes HTTP.
+Il reste néanmoins courant sous Windows, où certains outils (dont [Excel](https://www.microsoft.com/microsoft-365/excel)) s'en servent pour reconnaître un fichier UTF-8. D'où un arbitrage classique : un CSV destiné à Excel a besoin du BOM pour afficher correctement les accents, alors qu'un fichier source PHP avec BOM provoque un envoi prématuré de contenu et casse les en-têtes HTTP.
 
 ## UTF-16 et UTF-32
 

@@ -107,7 +107,7 @@ Deux opérations distinctes portent des noms proches et se confondent facilement
 | Opération | Nom | Calcul | Dimensions |
 |---|---|---|---|
 | `A · B` | Produit matriciel | Produit scalaire ligne × colonne (voir ci-dessus) | (*m*×*n*) · (*n*×*p*) = (*m*×*p*) |
-| `A ⊙ B` | Produit terme à terme (*Hadamard*) | Chaque case de `A` multipliée par la case correspondante de `B` | `A` et `B` doivent avoir exactement les mêmes dimensions |
+| `A ⊙ B` | Produit terme à terme ([*Hadamard*](https://en.wikipedia.org/wiki/Hadamard_product_(matrices))) | Chaque case de `A` multipliée par la case correspondante de `B` | `A` et `B` doivent avoir exactement les mêmes dimensions |
 
 > **Piège :** en NumPy (voir le chapitre [NumPy](/?c=data-science&p=numpy)), `A * B` calcule le produit **terme à terme**, pas le produit matriciel : c'est `A @ B` (ou `np.dot(A, B)`) qu'il faut utiliser pour un vrai produit matriciel. Utiliser `*` par réflexe là où `@` était voulu ne provoque pas toujours une erreur (si les dimensions coïncident par coïncidence), ce qui rend ce piège particulièrement difficile à repérer.
 >

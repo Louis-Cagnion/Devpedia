@@ -34,7 +34,7 @@ Un modèle d'issue pré-remplit le formulaire de création avec les sections att
 
 ## GitHub Projects : une vue Kanban par-dessus les issues
 
-**GitHub Projects** est un tableau (souvent de style **Kanban** : des colonnes comme "À faire" / "En cours" / "Terminé", chaque carte déplacée d'une colonne à l'autre au fil de son avancement) qui regroupe des issues et des pull requests de un ou plusieurs dépôts, pour une vue d'ensemble de l'avancement d'un projet plutôt qu'une simple liste plate :
+**GitHub Projects** est un tableau (souvent de style [**Kanban**](https://en.wikipedia.org/wiki/Kanban_board) : des colonnes comme "À faire" / "En cours" / "Terminé", chaque carte déplacée d'une colonne à l'autre au fil de son avancement) qui regroupe des issues et des pull requests de un ou plusieurs dépôts, pour une vue d'ensemble de l'avancement d'un projet plutôt qu'une simple liste plate :
 
 ```text
 À faire              En cours              Terminé

@@ -11,7 +11,7 @@ order: 9
 | Nature | Un logiciel installé sur votre machine | Un service web, opéré par une entreprise (Microsoft) |
 | Rôle | Gère l'historique, les branches, les commits **localement** | Héberge une copie du dépôt en ligne, accessible à plusieurs personnes |
 | Fonctionne sans l'autre ? | Oui : Git fonctionne très bien sans jamais toucher à GitHub | Non : GitHub héberge des dépôts **Git**, il ne remplace pas l'outil |
-| Concurrents | (Git n'a pas de concurrent : c'est le standard) | GitLab, Bitbucket, Azure Repos (voir [Azure DevOps](/?c=ci-cd&p=azure-devops-plateforme)) : des plateformes différentes, toutes construites sur Git |
+| Concurrents | (Git n'a pas de concurrent : c'est le standard) | [GitLab](https://gitlab.com), [Bitbucket](https://bitbucket.org), Azure Repos (voir [Azure DevOps](/?c=ci-cd&p=azure-devops-plateforme)) : des plateformes différentes, toutes construites sur Git |
 
 > **Piège :** utiliser "Git" et "GitHub" comme des synonymes. Un dépôt Git purement local (jamais poussé nulle part) est un dépôt Git parfaitement valide, sans aucun lien avec GitHub. Inversement, un dépôt hébergé sur GitHub reste un dépôt Git ordinaire ; toutes les commandes du chapitre [Les dépôts distants](/?c=git&p=remotes) (`push`, `pull`, `fetch`, `clone`) s'appliquent à l'identique.
 

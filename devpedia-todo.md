@@ -12,43 +12,13 @@
 - Il faudra supprimer le pipeline Deepl, aujourd'hui devenu inutilisable.
 - **Restructuration IA (2026-08-13, FR seulement pour l'instant)** : la catégorie IA est passée d'une liste plate à 6 subjects (`Fondamentaux du deep learning`, `NLP et LLM`, `Applications LLM`, `Vision et OCR`, `Voix IA`, `Production et gouvernance`). `content-en/IA/` reste volontairement plat (décision explicite, pas un oubli) : un futur rattrapage EN devra reproduire la même répartition en subjects plutôt que de garder la structure plate. ES/PT n'ont pas encore de dossier IA du tout (comme les 6 autres langues manquantes) : quand cette catégorie sera traduite pour elles, l'écrire directement avec cette structure en subjects, pas à plat.
 
-### Règle 7bis (lien obligatoire pour tout outil/jargon/concept nommé) : audit du reste du site, en cours
+### Règle 7bis (lien obligatoire pour tout outil/jargon/concept nommé) — audit terminé le 2026-08-13
 
-Ajoutée le 2026-08-13 dans `prompt.md`, appliquée aux nouveaux chapitres OCR/Voix IA et rétroactivement à toute la catégorie IA (35 fichiers, terminé, corrigé). Stratégie actée avec Louis : corriger d'abord les liens **internes** (chapitre déjà existant sur le site, juste pas lié à cet endroit) directement, sans demander ; les liens **externes** et les cas qui demandent une vraie décision (créer un chapitre, choisir un lien externe pour un terme mineur) restent listés ci-dessous pour validation avant d'être appliqués.
+Ajoutée le 2026-08-13 dans `prompt.md`. Audit complet du site (20 catégories, ~300 fichiers) terminé et corrigé : tous les liens internes et externes identifiés ont été appliqués, style léger (pas de clause de définition systématique, voir les décisions ci-dessous), validés à chaque étape par `node scripts/generate-struct.js` (aucun lien mort).
 
-**Terminé et corrigé — Git, Shells (Bash/PowerShell/Zsh), Langages de programmation (C/C++/JavaScript/OCaml/PHP/Python)** : tous les liens internes identifiés lors de l'audit du 2026-08-13 ont été appliqués et validés (`node scripts/generate-struct.js`, aucun lien mort). Piège rencontré et corrigé au passage : un lien avait été inséré par erreur à l'intérieur d'un commentaire de bloc de code (```javascript) dans `JavaScript/conditions.md` — un bloc de code est rendu tel quel, aucun lien markdown n'y est interprété (il s'afficherait littéralement comme `[texte](url)`) ; déplacé dans la prose juste après. Vérifier ce même piège avant de poser un lien dans un futur bloc de code.
+Deux cas volontairement laissés sans lien, faute de destination stable identifiable avec confiance : **Adobe XD** (produit discontinué par Adobe, statut de sa doc officielle incertain) et **Framer Motion** (bibliothèque rebaptisée "Motion", URL actuelle incertaine) dans `UI-UX/outils-du-metier.md`.
 
-**Liens externes / décisions en attente de validation avant application :**
-- Git : zlib, algorithme de Myers (Git/architecture-interne.md), GitLab (remotes.md, github-et-plateformes.md), Bitbucket (github-et-plateformes.md), Kanban (issues-et-projets-github.md, mineur).
-- Bash : `bc` (variables.md). (Linux/Windows/macOS/Unix mentionnés comme contexte ambiant dans plusieurs fichiers, volontairement pas traités comme violations sauf quand un chapitre les explique déjà — voir ci-dessus.)
-- Zsh : powerlevel10k (prompt-et-themes.md).
-- Langages de balisage : SEO (HTML/semantique-html5.md, à développer un minimum avant de lier), Sass/Less (CSS/variables-et-cascade.md).
-- C : gcc (bibliotheques.md, compilation.md, makefiles.md, threads.md), Valgrind + norme C11 (memoire.md), algorithme de Kernighan (operateurs-binaires.md), norme C99 (conditions.md, variables.md).
-- C++ : arbre rouge-noir (stl-conteneurs.md).
-- JavaScript : React, Vue, Angular, Node.js (javascript.md).
-- OCaml : Jane Street, Coq, Haskell (ocaml.md), algorithme de Hindley-Milner (inference-de-types.md).
-- PHP : WordPress, Drupal, Laravel, Symfony (php.md, routage.md), Express, Node (routage.md), MD5, SHA-1, bcrypt (securite.md), `std::optional<T>` C++ (methodes.md, pas de chapitre C++ dédié aux templates génériques équivalent).
-- Python : Django, Flask, pandas (python.md — PyTorch et NumPy passent en lien interne, voir ci-dessus), Docker (cli-avec-argparse.md), VS Code, PyCharm (typage-avec-annotations.md).
-
-**15 catégories jamais auditées (Bases de l'informatique, Bases de données, Représentation des données, Data Science, Qualité et architecture du code, Mathématiques, Docker, Organisation en entreprise, Infrastructure, CI-CD, Traitement de documents, Domain-specific Languages (DSL), UI-UX, Performance, `acceuil.md`) : audit terminé le 2026-08-13 (4 agents, résultats fiables cette fois — contrairement au 3e agent de la session précédente, échoué). Tous les liens internes identifiés (vers un chapitre déjà existant sur le site) ont été appliqués directement et validés (`node scripts/generate-struct.js`, aucun lien mort) : NumPy (`cache-cpu-et-simd.md`, `vecteurs-et-produit-scalaire.md`, `matrices-et-produit-matriciel.md` ×2, `Bases de données/description.md`), pandas (`Bases de données/description.md`), PyTorch (`cpu-vs-gpu.md`, `matrices-et-produit-matriciel.md` ×2), Azure DevOps/GitHub Actions (`CI-CD/description.md`, `pipeline-cicd.md`), Azure Boards (`documentation-et-communication-equipe.md` ×2), HTML (`extraction-pdf.md`), HTTP (`encodage-des-textes.md`), JSON (`organisation-en-memoire.md`), JavaScript/Python/PHP/C/C++ (`code-programmes-et-fichiers.md`, `entiers-et-debordements.md`, `nombres-flottants.md`, `organisation-en-memoire.md`), LLM (`la-fonction-mathematique.md`), différenciation automatique → `entrainement-descente-de-gradient.md` (`la-derivee-et-le-gradient.md`).
-
-Liens externes / décisions en attente de validation avant application, issus de cet audit :
-- UI-UX : Apple HIG, Material Design (accessibilite-ux.md) ; Figma, Sketch, Adobe XD, Penpot, GSAP, Framer Motion (outils-du-metier.md, le chapitre lui-même dit explicitement que chaque outil "mérite une prise en main propre hors du périmètre de ce site" — confirme qu'un lien externe est attendu).
-- Performance : JVM, CLR .NET, V8/Node.js, Elasticsearch, Kafka, Lucene (heap-des-runtimes-manages.md — aucun chapitre Java/.NET sur le site) ; JSON Lines (traitements-longs.md) ; cProfile (mesurer-avant-d-optimiser.md).
-- Docker : Alpine, Docker Desktop, Nginx, Traefik, MySQL, YAML (concepts-de-base.md, docker-compose.md) ; Go (dockerfile.md — aucun chapitre Go sur le site).
-- Mathématiques : théorème de Pythagore (vecteurs-et-produit-scalaire.md), produit de Hadamard (matrices-et-produit-matriciel.md), Richter/décibels (le-logarithme.md, mineur).
-- Qualité et architecture du code : KISS/YAGNI (eviter-la-repetition-structures-indexees.md, genericite-dependre-de-la-structure.md), Markdown (un-seul-mecanisme-par-information.md, mineur).
-- Bases de l'informatique : Notepad/TextEdit, Word/WordPad, VS Code, PyCharm, Visual Studio (editeur-de-code-et-ide.md) ; cmd.exe (le-terminal.md, borderline, déjà expliqué en incise).
-- Bases de données : SQL Server (schemas-et-tables-techniques.md).
-- Représentation des données : ISO-8859-1/5, Windows-1252 (encodage-des-textes.md), MySQL (encodage-des-textes.md), Excel (encodage-des-textes.md), RDRAND, `/dev/urandom` (aleatoire-et-generateurs.md), Protobuf (organisation-en-memoire.md).
-- Data Science : LaTeX (jupyter-notebooks.md), seaborn (matplotlib.md).
-- CI-CD : npm, NuGet, Maven (azure-devops-plateforme.md).
-- Domain-specific Languages (DSL) : MySQL, PostgreSQL, SQL Server, SQLite (sql.md), XML (parsing-incremental-machine-a-etats.md, définition donnée en une seule ligne seulement).
-- Infrastructure : curl, Postman (api-et-http.md), TensorFlow (cpu-vs-gpu.md, PyTorch déjà lié en interne à côté), AWS, Google Cloud, Microsoft Azure (le-cloud.md — le chapitre traite le concept générique "cloud", pas ces produits spécifiques).
-- Organisation en entreprise : Jira, Confluence, Notion, Slack, Microsoft Teams (documentation-et-communication-equipe.md — Azure Boards déjà lié en interne à côté).
-- Traitement de documents : PyMuPDF, Word (extraction-pdf.md — HTML déjà lié en interne à côté).
-
-Cas limites signalés par les agents, non retenus comme violations mais notés pour info : noms de polices en exemples de tableau (typographie.md), énumération des langages/catégories dans `acceuil.md` (immédiatement précédée d'un renvoi vers la barre de navigation/recherche), eye-tracking et biais de désirabilité sociale (mentions isolées en incise, UI-UX).
+Piège rencontré et corrigé au passage : un lien avait été inséré par erreur à l'intérieur d'un commentaire de bloc de code (```javascript) dans `JavaScript/conditions.md` — un bloc de code est rendu tel quel, aucun lien markdown n'y est interprété (il s'afficherait littéralement comme `[texte](url)`) ; déplacé dans la prose juste après. Vérifier ce même piège avant de poser un lien dans un futur bloc de code — pas seulement au moment de l'écrire, mais aussi en le relisant, l'erreur peut passer inaperçue sur le moment.
 
 **Questions tranchées par Louis le 2026-08-13 :**
 - **Noms d'OS ambiants (Linux, Windows, macOS, Unix)** : confirmé, pas de lien pour une mention de contexte de fond. Écrit explicitement dans `prompt.md` (instruction 7bis) comme exception documentée, plutôt que laissé comme jugement au cas par cas.

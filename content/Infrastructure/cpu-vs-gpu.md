@@ -57,6 +57,6 @@ Le CPU et le GPU ont chacun leur propre mémoire : faire calculer une donnée pa
 | | |
 |---|---|
 | **À retenir** | Un CPU a peu de cœurs polyvalents et rapides, adaptés aux tâches séquentielles et aux embranchements. Un GPU a des milliers de cœurs simples, adaptés à répéter la même opération sur des données indépendantes : le cas du calcul vectoriel/matriciel derrière un réseau de neurones. |
-| **Outils utilisables** | Les bibliothèques de deep learning ([PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch), TensorFlow) gèrent le transfert des données vers le GPU et la parallélisation du calcul automatiquement. |
+| **Outils utilisables** | Les bibliothèques de deep learning ([PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch), [TensorFlow](https://www.tensorflow.org)) gèrent le transfert des données vers le GPU et la parallélisation du calcul automatiquement. |
 | **Pièges à éviter** | Transférer des données entre CPU et GPU trop souvent ou par trop petites quantités. Attendre une accélération d'un GPU sur un calcul intrinsèquement séquentiel. |
 | **Bonnes pratiques** | Regrouper les transferts CPU/GPU en un minimum d'opérations volumineuses. Réserver le GPU aux calculs réellement parallélisables. |

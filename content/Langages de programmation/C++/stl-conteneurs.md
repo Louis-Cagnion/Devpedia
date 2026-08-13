@@ -53,7 +53,7 @@ for (const auto &[nom, age] : ages) {  // parcours : les paires sont TOUJOURS tr
 }
 ```
 
-> **Note :** `std::map` est en interne un arbre équilibré (souvent un arbre rouge-noir, une variante de [l'arbre binaire de recherche](/?c=langages-de-programmation&s=c&p=arbres-binaires)) : les clés sont donc toujours parcourues **triées**, contrairement à un [tableau associatif PHP](/?c=langages-de-programmation&s=php&p=variables) ou un [`dict` Python](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) (ordre d'insertion). `std::unordered_map` propose l'équivalent basé sur une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage), plus rapide en moyenne mais sans ordre garanti.
+> **Note :** `std::map` est en interne un arbre équilibré (souvent un [arbre rouge-noir](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree), une variante de [l'arbre binaire de recherche](/?c=langages-de-programmation&s=c&p=arbres-binaires)) : les clés sont donc toujours parcourues **triées**, contrairement à un [tableau associatif PHP](/?c=langages-de-programmation&s=php&p=variables) ou un [`dict` Python](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) (ordre d'insertion). `std::unordered_map` propose l'équivalent basé sur une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage), plus rapide en moyenne mais sans ordre garanti.
 
 ## `std::set` : les valeurs uniques, ordonnées
 

@@ -22,7 +22,7 @@ gcc main.c -L. -lcalculs -o programme
 ```
 
 - `ar` (*archiver*) assemble un ou plusieurs fichiers `.o` en une seule archive `.a`.
-- `-L.` indique à `gcc` de chercher aussi les bibliothèques dans le répertoire courant.
+- `-L.` indique à [`gcc`](https://gcc.gnu.org) de chercher aussi les bibliothèques dans le répertoire courant.
 - `-lcalculs` demande de lier `libcalculs.a` (le préfixe `lib` et le suffixe `.a` sont sous-entendus).
 
 | Avantage | Inconvénient |

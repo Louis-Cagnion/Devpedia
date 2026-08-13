@@ -22,7 +22,7 @@ Ce chapitre présente le logarithme, une notion reprise plus loin pour mesurer �
 
 | Base | Notation | Répond à | Domaine d'usage typique |
 |---|---|---|---|
-| 10 | `log10(x)` ou `log(x)` | Combien de fois multiplier par 10 ? | Ordres de grandeur, échelles (Richter, décibels) |
+| 10 | `log10(x)` ou `log(x)` | Combien de fois multiplier par 10 ? | Ordres de grandeur, échelles ([Richter](https://en.wikipedia.org/wiki/Richter_magnitude_scale), [décibels](https://en.wikipedia.org/wiki/Decibel)) |
 | 2 | `log2(x)` | Combien de fois doubler ? | Informatique (recherche dans un arbre, complexité d'un algorithme) |
 | *e* (≈ 2,718) | `ln(x)` | Pas de question aussi intuitive que les deux précédentes : cette base est choisie parce qu'elle simplifie de nombreux calculs mathématiques | La plupart des formules utilisées en statistiques et en machine learning |
 

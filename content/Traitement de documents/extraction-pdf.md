@@ -4,7 +4,7 @@ order: 1
 
 # Extraire le texte et les pages d'un PDF
 
-Un **PDF** (*Portable Document Format*) est un format de fichier conçu pour qu'un document s'affiche à l'identique sur n'importe quel appareil, contrairement à un fichier éditable (Word, [HTML](/?c=langages-de-balisage&s=html&p=html)) dont la mise en page peut varier selon le logiciel qui l'ouvre. Cette portabilité a un coût pour qui veut en extraire l'information automatiquement : un PDF ne contient pas "du texte" de façon uniforme, il mélange deux natures de contenu très différentes sur une même page.
+Un **PDF** (*Portable Document Format*) est un format de fichier conçu pour qu'un document s'affiche à l'identique sur n'importe quel appareil, contrairement à un fichier éditable ([Word](https://www.microsoft.com/microsoft-365/word), [HTML](/?c=langages-de-balisage&s=html&p=html)) dont la mise en page peut varier selon le logiciel qui l'ouvre. Cette portabilité a un coût pour qui veut en extraire l'information automatiquement : un PDF ne contient pas "du texte" de façon uniforme, il mélange deux natures de contenu très différentes sur une même page.
 
 ## Deux natures de contenu, sur la même page
 
@@ -20,7 +20,7 @@ Un **PDF** (*Portable Document Format*) est un format de fichier conçu pour qu'
 
 ## Extraire le texte natif : blocs, positions, taille de police
 
-Une bibliothèque comme **PyMuPDF** (module Python `pymupdf`) ouvre un PDF et donne accès, page par page, à sa structure interne : le texte n'est jamais renvoyé comme une seule grande chaîne, mais découpé en **blocs** (un paragraphe, une cellule de tableau...), eux-mêmes découpés en lignes puis en **spans** (une portion de texte partageant la même police et la même taille) :
+Une bibliothèque comme [**PyMuPDF**](https://pymupdf.readthedocs.io) (module Python `pymupdf`) ouvre un PDF et donne accès, page par page, à sa structure interne : le texte n'est jamais renvoyé comme une seule grande chaîne, mais découpé en **blocs** (un paragraphe, une cellule de tableau...), eux-mêmes découpés en lignes puis en **spans** (une portion de texte partageant la même police et la même taille) :
 
 ```python
 import pymupdf

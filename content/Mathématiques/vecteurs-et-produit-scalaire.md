@@ -88,7 +88,7 @@ Un vecteur à 2 composantes comme `[3, 4]` peut se lire comme un point sur un pl
    origine
 ```
 
-Le trajet direct (la diagonale, longueur 5) est toujours plus court que le trajet en équerre (3 puis 4, soit 7) : c'est précisément ce que calcule la formule de la norme, qui vient du théorème de Pythagore : la racine carrée de la somme des carrés de chaque composante.
+Le trajet direct (la diagonale, longueur 5) est toujours plus court que le trajet en équerre (3 puis 4, soit 7) : c'est précisément ce que calcule la formule de la norme, qui vient du [théorème de Pythagore](https://en.wikipedia.org/wiki/Pythagorean_theorem) : la racine carrée de la somme des carrés de chaque composante.
 
 ```text
 norme([3, 4]) = racine(3² + 4²) = racine(9 + 16) = racine(25) = 5

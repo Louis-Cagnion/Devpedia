@@ -91,7 +91,7 @@ echo $((a / b))  # 1 -> division entière uniquement, Bash ne gère pas les déc
 
 > **Piège :** `$((a / b))` tronque silencieusement toute partie décimale, sans avertissement ni erreur : `echo $((5 / 2))` affiche `2`, pas `2.5`. Un calcul qui devrait produire un résultat décimal (moyenne, pourcentage...) donne ainsi un résultat faux sans qu'aucune erreur ne le signale.
 >
-> **Bonne pratique :** passer par un outil externe qui gère les décimaux (`bc`, `awk`) dès qu'un calcul peut produire un résultat non entier, plutôt que l'arithmétique native de Bash.
+> **Bonne pratique :** passer par un outil externe qui gère les décimaux ([`bc`](https://www.gnu.org/software/bc/), `awk`) dès qu'un calcul peut produire un résultat non entier, plutôt que l'arithmétique native de Bash.
 
 ## Variables spéciales
 

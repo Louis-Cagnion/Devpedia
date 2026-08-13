@@ -75,6 +75,6 @@ Un programme peut alors lire directement `temperature` ou `conditions`, sans avo
 | | |
 |---|---|
 | **À retenir** | HTTP est le protocole le plus courant pour échanger des données entre un client et un serveur. Une requête précise une méthode (`GET`/`POST`/`PUT`/`DELETE`) ; une réponse porte toujours un code de statut. Une API est un serveur pensé pour être utilisé par un programme plutôt qu'un humain. |
-| **Outils utilisables** | Un navigateur (pour un `GET` simple), ou un outil dédié (`curl`, Postman, une bibliothèque HTTP dans le langage de son choix) pour construire une requête complète. |
+| **Outils utilisables** | Un navigateur (pour un `GET` simple), ou un outil dédié ([`curl`](https://curl.se), [Postman](https://www.postman.com), une bibliothèque HTTP dans le langage de son choix) pour construire une requête complète. |
 | **Pièges à éviter** | Utiliser `GET` pour une action qui modifie une donnée. Ignorer le code de statut d'une réponse. Confondre une absence de réponse et une réponse d'erreur explicite. |
 | **Bonnes pratiques** | Réserver `GET` à la lecture seule. Vérifier systématiquement le code de statut avant d'utiliser le contenu d'une réponse. Traiter explicitement les cas d'erreur, pas seulement le cas de succès. |

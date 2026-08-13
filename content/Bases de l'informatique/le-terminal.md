@@ -58,7 +58,7 @@ Résultat affiché dans le terminal
 
 Une fois ouvert, le terminal affiche une ligne qui se termine par un symbole (`>`, `$`, `%`...) suivi d'un curseur clignotant : c'est le **prompt**. Il attend que vous tapiez quelque chose ; rien ne s'exécute avant d'appuyer sur `Entrée`.
 
-> **Piège :** sous Windows, confondre l'**Invite de commandes** (`cmd.exe`, l'ancien shell historique de Windows) avec **PowerShell** : les deux se ressemblent visuellement, mais leurs commandes et leur syntaxe diffèrent largement.
+> **Piège :** sous Windows, confondre l'**Invite de commandes** ([`cmd.exe`](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd), l'ancien shell historique de Windows) avec **PowerShell** : les deux se ressemblent visuellement, mais leurs commandes et leur syntaxe diffèrent largement.
 >
 > **Bonne pratique :** sur une machine récente, préférer PowerShell (plus complet, cf. [chapitre dédié](/?c=shells&s=powershell&p=powershell)) à l'Invite de commandes, sauf raison précise d'utiliser cette dernière.
 

@@ -4,7 +4,7 @@ order: 5
 
 # Docker Compose
 
-Un projet réel implique rarement un seul conteneur : une API, sa base de données, un cache, un **reverse proxy** (un serveur qui reçoit toutes les requêtes entrantes et les redirige vers le bon service interne, Nginx ou Traefik par exemple, servant de point d'entrée unique)... Enchaîner les `docker run` à la main devient vite ingérable. **Docker Compose** décrit tous ces services dans un unique fichier déclaratif au format **YAML** (*YAML Ain't Markup Language* : un format texte structuré par indentation, largement utilisé pour la configuration), `docker-compose.yml`, et les démarre ensemble.
+Un projet réel implique rarement un seul conteneur : une API, sa base de données, un cache, un **reverse proxy** (un serveur qui reçoit toutes les requêtes entrantes et les redirige vers le bon service interne, [Nginx](https://nginx.org) ou [Traefik](https://doc.traefik.io/traefik/) par exemple, servant de point d'entrée unique)... Enchaîner les `docker run` à la main devient vite ingérable. **Docker Compose** décrit tous ces services dans un unique fichier déclaratif au format [**YAML**](https://yaml.org/spec/1.2.2/) (*YAML Ain't Markup Language* : un format texte structuré par indentation, largement utilisé pour la configuration), `docker-compose.yml`, et les démarre ensemble.
 
 ## Un exemple complet
 
@@ -41,7 +41,7 @@ docker compose down         # arrête et supprime les conteneurs (les volumes no
 ## Ce que Compose automatise
 
 - **Le réseau** : tous les services d'un même fichier sont placés sur un réseau commun automatiquement : `base` est déjà joignable par son nom depuis `api`, sans `docker network create` manuel (voir [Volumes et réseaux](/?c=docker&p=volumes-et-reseaux)).
-- **L'ordre de démarrage** : `depends_on` démarre `base` avant `api`. Cela garantit l'ordre de **démarrage** du conteneur, pas que le service interne (ici MySQL) soit déjà prêt à accepter des connexions : une application qui se connecte trop tôt doit encore prévoir une nouvelle tentative (cf. [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts), rubrique Performance) plutôt que de supposer que la base répond dès le premier instant.
+- **L'ordre de démarrage** : `depends_on` démarre `base` avant `api`. Cela garantit l'ordre de **démarrage** du conteneur, pas que le service interne (ici [MySQL](https://dev.mysql.com/doc/)) soit déjà prêt à accepter des connexions : une application qui se connecte trop tôt doit encore prévoir une nouvelle tentative (cf. [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts), rubrique Performance) plutôt que de supposer que la base répond dès le premier instant.
 - **Les volumes déclarés une fois** : `donnees-mysql` défini en bas du fichier est créé automatiquement s'il n'existe pas encore.
 
 ## Rebuild après un changement de Dockerfile

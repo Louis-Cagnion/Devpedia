@@ -4,7 +4,7 @@ order: 8
 
 # Les dépôts distants (remotes)
 
-Un **remote** est une référence vers une copie du dépôt hébergée ailleurs ([GitHub](/?c=git&p=github-et-plateformes), GitLab, un serveur d'entreprise...), utilisée pour synchroniser du travail entre plusieurs personnes ou plusieurs machines.
+Un **remote** est une référence vers une copie du dépôt hébergée ailleurs ([GitHub](/?c=git&p=github-et-plateformes), [GitLab](https://gitlab.com), un serveur d'entreprise...), utilisée pour synchroniser du travail entre plusieurs personnes ou plusieurs machines.
 
 ## Voir et ajouter un remote
 

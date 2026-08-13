@@ -43,9 +43,9 @@ Critères d'acceptation :
 
 | Besoin | Outils typiques |
 |---|---|
-| Suivi des tickets et du travail | Jira, [Azure Boards](/?c=ci-cd&p=azure-devops-plateforme) |
-| Documentation partagée | Confluence, Notion |
-| Communication informelle, questions rapides | Slack, Microsoft Teams |
+| Suivi des tickets et du travail | [Jira](https://www.atlassian.com/software/jira), [Azure Boards](/?c=ci-cd&p=azure-devops-plateforme) |
+| Documentation partagée | [Confluence](https://www.atlassian.com/software/confluence), [Notion](https://www.notion.so) |
+| Communication informelle, questions rapides | [Slack](https://slack.com), [Microsoft Teams](https://www.microsoft.com/microsoft-teams) |
 
 > **Piège :** faire circuler une information importante uniquement dans un message de discussion instantanée (Slack, Teams), qui se noie vite dans le flux et devient introuvable quelques semaines plus tard.
 >

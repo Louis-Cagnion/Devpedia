@@ -24,8 +24,8 @@ Une **cible tactile** (*touch target*) est la zone qu'un doigt ou un curseur doi
 
 | Référence | Taille minimale recommandée |
 |---|---|
-| Apple (Human Interface Guidelines) | 44×44 px |
-| Google (Material Design) | 48×48 dp |
+| Apple ([Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)) | 44×44 px |
+| Google ([Material Design](https://m3.material.io)) | 48×48 dp |
 | WCAG (critère 2.5.5, niveau AAA) | 44×44 px |
 
 > **Piège :** des boutons ou liens trop petits ou trop rapprochés, en particulier sur mobile. L'utilisateur touche le mauvais élément : un risque accru pour une personne avec un tremblement ou une déficience motrice, mais qui gêne tout le monde (dans un bus, en marchant, avec de grands doigts).

@@ -4,7 +4,7 @@ order: 3
 
 # L'éditeur de code et l'IDE
 
-Un [fichier de code](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) est un fichier texte : techniquement, l'écrire avec Notepad ou TextEdit suffirait. En pratique, personne ne fait ça : un outil dédié rend l'écriture de code bien plus confortable.
+Un [fichier de code](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) est un fichier texte : techniquement, l'écrire avec [Notepad](https://learn.microsoft.com/en-us/windows/win32/menurc/notepad) ou [TextEdit](https://support.apple.com/guide/textedit/welcome/mac) suffirait. En pratique, personne ne fait ça : un outil dédié rend l'écriture de code bien plus confortable.
 
 ## Éditeur de texte simple vs éditeur de code
 
@@ -21,7 +21,7 @@ Un [fichier de code](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) 
 nom = "Jean"                    # "Jean" est une chaîne de texte -> une autre couleur
 ```
 
-> **Piège :** utiliser un traitement de texte (Word, WordPad) pour écrire du code. Au-delà de l'absence de coloration syntaxique, ces logiciels remplacent silencieusement certains caractères par leur équivalent "typographique" (guillemets courbes `“ ”` au lieu de `" "`, tirets longs...), invisibles à l'œil, mais qui rendent le code syntaxiquement invalide.
+> **Piège :** utiliser un traitement de texte ([Word](https://www.microsoft.com/microsoft-365/word), [WordPad](https://learn.microsoft.com/en-us/windows/win32/menurc/wordpad)) pour écrire du code. Au-delà de l'absence de coloration syntaxique, ces logiciels remplacent silencieusement certains caractères par leur équivalent "typographique" (guillemets courbes `“ ”` au lieu de `" "`, tirets longs...), invisibles à l'œil, mais qui rendent le code syntaxiquement invalide.
 >
 > **Bonne pratique :** toujours écrire du code dans un éditeur de **texte brut** (simple ou de code), jamais dans un traitement de texte, même "juste pour dépanner".
 
@@ -44,9 +44,9 @@ nom = "Jean"                    # "Jean" est une chaîne de texte -> une autre c
 
 | Outil | Catégorie | Langages ciblés |
 |---|---|---|
-| VS Code | Éditeur de code extensible | Généraliste : presque tous, via des extensions |
-| PyCharm | IDE complet | Python |
-| Visual Studio (à ne pas confondre avec VS Code) | IDE complet | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/), [.NET](https://learn.microsoft.com/en-us/dotnet/) |
+| [VS Code](https://code.visualstudio.com) | Éditeur de code extensible | Généraliste : presque tous, via des extensions |
+| [PyCharm](https://www.jetbrains.com/pycharm/) | IDE complet | Python |
+| [Visual Studio](https://visualstudio.microsoft.com) (à ne pas confondre avec VS Code) | IDE complet | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/), [.NET](https://learn.microsoft.com/en-us/dotnet/) |
 
 ## Par quoi commencer
 

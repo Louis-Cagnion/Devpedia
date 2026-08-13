@@ -4,7 +4,7 @@ order: 4
 
 # Qu'est-ce que le cloud ?
 
-Faire tourner un programme ou stocker une donnée nécessite une machine physique quelque part. Le **cloud** désigne l'utilisation de machines distantes, possédées et gérées par un fournisseur tiers (Amazon AWS, Google Cloud, Microsoft Azure...), plutôt que du matériel acheté et géré par l'entreprise elle-même.
+Faire tourner un programme ou stocker une donnée nécessite une machine physique quelque part. Le **cloud** désigne l'utilisation de machines distantes, possédées et gérées par un fournisseur tiers ([Amazon AWS](https://aws.amazon.com), [Google Cloud](https://cloud.google.com), [Microsoft Azure](https://azure.microsoft.com)...), plutôt que du matériel acheté et géré par l'entreprise elle-même.
 
 > **Analogie :** louer un appartement meublé plutôt que d'acheter et entretenir sa propre maison : on paie pour l'usage, sans posséder ni s'occuper de l'entretien de ce qu'il y a derrière.
 

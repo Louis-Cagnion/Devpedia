@@ -107,7 +107,7 @@ Ce sel n'est pas perdu : il est inclus directement dans le hash généré, par e
 2y $10 N9qo8uLOickgx2ZMRZoMye IjZAgcfl7p92ldGxad68LJZdL17lhWy
 ```
 
-- `$2y$` → l'algorithme utilisé (bcrypt)
+- `$2y$` → l'algorithme utilisé ([bcrypt](https://en.wikipedia.org/wiki/Bcrypt))
 - `$10$` → le coût (la difficulté du calcul)
 - Les 22 caractères suivants → le sel utilisé pour ce hash précis
 - Le reste → le résultat du hachage, calculé avec ce sel
@@ -127,7 +127,7 @@ Or PHP interprète une chaîne comme `"0e123456"` en notation scientifique : `0`
 ?>
 ```
 
-Ce n'est pas théorique : cette faille (*magic hash*) a permis de contourner de vraies authentifications, en fournissant un mot de passe dont le hash MD5 ou SHA-1 tombe sur cette forme. Il suffisait que le code compare avec `==`.
+Ce n'est pas théorique : cette faille (*magic hash*) a permis de contourner de vraies authentifications, en fournissant un mot de passe dont le hash [MD5](https://en.wikipedia.org/wiki/MD5) ou [SHA-1](https://en.wikipedia.org/wiki/SHA-1) tombe sur cette forme. Il suffisait que le code compare avec `==`.
 
 Trois protections, cumulables :
 

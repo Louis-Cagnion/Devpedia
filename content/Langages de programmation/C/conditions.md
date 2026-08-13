@@ -8,7 +8,7 @@ Les conditions permettent d'exécuter un bloc de code selon qu'une expression es
 
 ## La condition `if`
 
-En C, toute valeur **non nulle** est considérée comme vraie ; seule la valeur `0` est fausse : il n'existe pas de type booléen natif avant C99 ([`stdbool.h`](/?c=langages-de-programmation&s=c&p=variables)) :
+En C, toute valeur **non nulle** est considérée comme vraie ; seule la valeur `0` est fausse : il n'existe pas de type booléen natif avant [C99](https://en.wikipedia.org/wiki/C99) ([`stdbool.h`](/?c=langages-de-programmation&s=c&p=variables)) :
 
 ```c
 int age = 18;

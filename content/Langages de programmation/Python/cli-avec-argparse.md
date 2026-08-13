@@ -65,7 +65,7 @@ python convertisseur.py --help
 
 ## Les sous-commandes : plusieurs actions dans un seul programme
 
-Un outil qui propose plusieurs actions distinctes (`git commit`, `git push`, `docker run`...) les regroupe en **sous-commandes**, chacune avec ses propres arguments. `add_subparsers` construit ce découpage :
+Un outil qui propose plusieurs actions distinctes (`git commit`, `git push`, [`docker run`](/?c=docker&p=commandes-essentielles)...) les regroupe en **sous-commandes**, chacune avec ses propres arguments. `add_subparsers` construit ce découpage :
 
 ```python
 import argparse

@@ -41,7 +41,7 @@ Le signal d'alerte est un `if`/`elif`/`switch` dont chaque branche teste une val
 
 ## La limite : ne pas généraliser un cas qui restera unique
 
-Ce principe ne justifie pas de construire une structure générique pour un cas qui, par nature, ne connaîtra jamais qu'une seule valeur : un traitement réellement spécifique à un unique site n'a pas besoin d'un mécanisme de configuration généralisé, cela relèverait de la sur-ingénierie (YAGNI). La généricité se justifie quand le nombre de cas est amené à varier ; elle devient un coût inutile quand il ne varie structurellement pas.
+Ce principe ne justifie pas de construire une structure générique pour un cas qui, par nature, ne connaîtra jamais qu'une seule valeur : un traitement réellement spécifique à un unique site n'a pas besoin d'un mécanisme de configuration généralisé, cela relèverait de la sur-ingénierie ([YAGNI](https://martinfowler.com/bliki/Yagni.html)). La généricité se justifie quand le nombre de cas est amené à varier ; elle devient un coût inutile quand il ne varie structurellement pas.
 
 ---
 

@@ -8,7 +8,7 @@ Les chapitres précédents couvrent des concepts (hiérarchie, couleur, tokens, 
 
 ## Les outils de conception d'interface
 
-La plupart des outils de ce type (Figma, Sketch, Adobe XD, Penpot...) partagent les mêmes concepts de base, sous des noms parfois différents :
+La plupart des outils de ce type ([Figma](https://www.figma.com), [Sketch](https://www.sketch.com), Adobe XD, [Penpot](https://penpot.app)...) partagent les mêmes concepts de base, sous des noms parfois différents :
 
 | Concept | Rôle | Équivalent déjà vu |
 |---|---|---|
@@ -24,7 +24,7 @@ Travailler avec des composants et de l'auto-layout dans l'outil de conception, p
 
 ## Les outils d'animation pour les interactions avancées
 
-Une transition simple (un bouton qui change légèrement de couleur au survol) se couvre directement en CSS. Une interaction plus élaborée (plusieurs éléments animés dans un ordre précis, un mouvement qui réagit au geste de l'utilisateur, une physique de ressort plutôt qu'une simple accélération linéaire) dépasse ce que les transitions CSS de base couvrent confortablement, et s'appuie alors sur une bibliothèque JavaScript dédiée à l'animation (GSAP, Framer Motion, entre autres) :
+Une transition simple (un bouton qui change légèrement de couleur au survol) se couvre directement en CSS. Une interaction plus élaborée (plusieurs éléments animés dans un ordre précis, un mouvement qui réagit au geste de l'utilisateur, une physique de ressort plutôt qu'une simple accélération linéaire) dépasse ce que les transitions CSS de base couvrent confortablement, et s'appuie alors sur une bibliothèque JavaScript dédiée à l'animation ([GSAP](https://gsap.com), Framer Motion, entre autres) :
 
 | | Transition CSS | Bibliothèque d'animation JS |
 |---|---|---|

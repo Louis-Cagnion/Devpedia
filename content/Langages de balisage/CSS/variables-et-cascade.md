@@ -41,7 +41,7 @@ Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables person
 }
 ```
 
-> **Note :** contrairement à une variable Sass/Less (résolues une fois pour toutes à la compilation), une variable CSS native est **vivante** dans le navigateur : modifiable même en JavaScript (`element.style.setProperty('--marge-interne', '30px')`), et réévaluée dynamiquement selon l'élément où elle est consultée.
+> **Note :** contrairement à une variable [Sass](https://sass-lang.com)/[Less](https://lesscss.org) (résolues une fois pour toutes à la compilation), une variable CSS native est **vivante** dans le navigateur : modifiable même en JavaScript (`element.style.setProperty('--marge-interne', '30px')`), et réévaluée dynamiquement selon l'élément où elle est consultée.
 
 ## La cascade : trois critères, dans cet ordre
 

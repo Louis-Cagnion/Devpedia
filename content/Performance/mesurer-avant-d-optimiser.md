@@ -20,7 +20,7 @@ La moitié du temps partait à guetter une bannière **qui n'apparaissait jamais
 
 ## Profiler par phases, pas ligne par ligne
 
-Un profileur classique (`cProfile` en Python, l'onglet Performance d'un navigateur) donne le temps par fonction. C'est utile pour du calcul, beaucoup moins quand le programme passe son temps à **attendre** : tout apparaît sous une poignée de fonctions d'attente, sans dire *pourquoi* on attend.
+Un profileur classique ([`cProfile`](https://docs.python.org/3/library/profile.html) en Python, l'onglet Performance d'un navigateur) donne le temps par fonction. C'est utile pour du calcul, beaucoup moins quand le programme passe son temps à **attendre** : tout apparaît sous une poignée de fonctions d'attente, sans dire *pourquoi* on attend.
 
 Dans ce cas, instrumenter soi-même les phases logiques est plus parlant. Le principe : envelopper les fonctions clés pour cumuler leur temps, sans toucher au code mesuré.
 

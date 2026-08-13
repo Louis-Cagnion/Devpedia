@@ -25,7 +25,7 @@ Machine virtuelle      Conteneur
 
 L'**hyperviseur** est la couche logicielle qui crée et gère les machines virtuelles, en répartissant les ressources physiques (CPU, mémoire) entre elles : c'est cette couche supplémentaire, absente chez un conteneur, qui explique l'écart de poids entre les deux approches.
 
-> **Conséquence directe :** un conteneur Linux ne peut pas tourner nativement sous Windows ou macOS : Docker Desktop y démarre en réalité une petite VM Linux pour héberger les conteneurs. Sur un serveur Linux, en revanche, aucune couche de virtualisation n'est nécessaire.
+> **Conséquence directe :** un conteneur Linux ne peut pas tourner nativement sous Windows ou macOS : [Docker Desktop](https://docs.docker.com/desktop/) y démarre en réalité une petite VM Linux pour héberger les conteneurs. Sur un serveur Linux, en revanche, aucune couche de virtualisation n'est nécessaire.
 
 ## Sous le capot : namespaces et cgroups
 

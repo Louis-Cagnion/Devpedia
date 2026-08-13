@@ -53,7 +53,7 @@ PROMPT='%n@%m %~ ${vcs_info_msg_0_} %# '
 
 `PROMPT_SUBST` (voir [Le système d'options](/?c=shells&s=zsh&p=options-du-shell)) autorise l'évaluation de variables et substitutions à l'intérieur de `PROMPT` : sans cette option, `${vcs_info_msg_0_}` s'afficherait littéralement plutôt que d'être remplacé par la branche courante.
 
-> **Note :** c'est exactement ce mécanisme (`vcs_info` + un prompt personnalisé) que des thèmes populaires comme *robbyrussell* (le thème par défaut d'[Oh My Zsh](/?c=shells&s=zsh&p=oh-my-zsh)) ou *powerlevel10k* automatisent et enrichissent.
+> **Note :** c'est exactement ce mécanisme (`vcs_info` + un prompt personnalisé) que des thèmes populaires comme *robbyrussell* (le thème par défaut d'[Oh My Zsh](/?c=shells&s=zsh&p=oh-my-zsh)) ou [*powerlevel10k*](https://github.com/romkatv/powerlevel10k) automatisent et enrichissent.
 
 ---
 

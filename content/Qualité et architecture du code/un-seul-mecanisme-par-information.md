@@ -8,7 +8,7 @@ Quand une même information peut être représentée par deux mécanismes diffé
 
 ## Un exemple concret
 
-Un fichier Markdown pourrait, en théorie, déclarer son titre de deux façons à la fois :
+Un fichier [Markdown](https://commonmark.org) pourrait, en théorie, déclarer son titre de deux façons à la fois :
 
 ```markdown
 ---

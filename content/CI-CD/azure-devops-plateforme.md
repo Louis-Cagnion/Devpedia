@@ -13,7 +13,7 @@ order: 2
 | **Boards** | Planifier et suivre le travail (backlog, sprints, tableau Kanban) | Issues / Projects |
 | **Repos** | Héberger le code sur Git | GitHub lui-même |
 | **Pipelines** | Exécuter la construction, les tests et le déploiement | GitHub Actions |
-| **Artifacts** | Stocker des paquets (npm, NuGet, Maven...) | GitHub Packages |
+| **Artifacts** | Stocker des paquets ([npm](https://www.npmjs.com), [NuGet](https://www.nuget.org), [Maven](https://maven.apache.org)...) | GitHub Packages |
 
 > **Analogie :** un projet Azure DevOps est un immeuble avec quatre étages dédiés (planification, code, automatisation, paquets), alors que l'écosystème GitHub loge chaque fonction dans un bâtiment séparé, connecté aux autres par des intégrations.
 

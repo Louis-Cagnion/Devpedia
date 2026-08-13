@@ -52,7 +52,7 @@ mypy mon_script.py
 ## Pourquoi annoter malgré tout
 
 - Documentation directement lisible dans le code, sans dépendre de commentaires à jour manuellement.
-- Meilleure autocomplétion et détection d'erreurs dans l'éditeur (VS Code, PyCharm...), avant même de lancer `mypy` ou le programme.
+- Meilleure autocomplétion et détection d'erreurs dans l'éditeur ([VS Code](https://code.visualstudio.com), [PyCharm](https://www.jetbrains.com/pycharm/)...), avant même de lancer `mypy` ou le programme.
 - Base indispensable pour des projets Python de grande taille, où l'absence de vérification de type peut rendre les refactorisations risquées sans cette aide.
 
 ---

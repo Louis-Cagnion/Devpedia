@@ -27,7 +27,7 @@ CREATE TABLE fact.ventes (
 
 ## dbo : le schéma par défaut
 
-Sur SQL Server, **dbo** (*database owner*) est le schéma créé par défaut : toute table créée sans préciser de schéma y atterrit automatiquement. Une base qui n'a jamais créé d'autre schéma se retrouve donc avec toutes ses tables dans `dbo`, quel que soit leur rôle (fait, dimension, technique).
+Sur [SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/), **dbo** (*database owner*) est le schéma créé par défaut : toute table créée sans préciser de schéma y atterrit automatiquement. Une base qui n'a jamais créé d'autre schéma se retrouve donc avec toutes ses tables dans `dbo`, quel que soit leur rôle (fait, dimension, technique).
 
 > **Piège :** laisser toutes les tables dans `dbo` par défaut, sans jamais créer d'autres schémas. Dans une base de plusieurs centaines de tables, rien ne distingue alors une table de faits d'une table technique juste en lisant son nom complet ; il faut ouvrir chaque table pour comprendre son rôle.
 >

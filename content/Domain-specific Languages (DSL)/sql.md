@@ -4,7 +4,7 @@ order: 2
 
 # SQL
 
-SQL (*Structured Query Language*) est un langage à but unique : interroger et manipuler des données stockées sous forme de tables. Comme [la regex](/?c=domain-specific-languages-dsl&p=regex), ce n'est pas un langage de programmation généraliste : il n'a ni boucles, ni fonctions définies par l'utilisateur, ni variables au sens classique. Il est interprété par un moteur de base de données (MySQL, PostgreSQL, SQL Server, SQLite...), généralement piloté depuis un langage hôte (PHP, Python, JS...) via un connecteur.
+SQL (*Structured Query Language*) est un langage à but unique : interroger et manipuler des données stockées sous forme de tables. Comme [la regex](/?c=domain-specific-languages-dsl&p=regex), ce n'est pas un langage de programmation généraliste : il n'a ni boucles, ni fonctions définies par l'utilisateur, ni variables au sens classique. Il est interprété par un moteur de base de données ([MySQL](https://dev.mysql.com/doc/), [PostgreSQL](https://www.postgresql.org/docs/), [SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/), [SQLite](https://sqlite.org/docs.html)...), généralement piloté depuis un langage hôte ([PHP](/?c=langages-de-programmation&s=php&p=php), [Python](/?c=langages-de-programmation&s=python&p=python), [JS](/?c=langages-de-programmation&s=javascript&p=javascript)...) via un connecteur.
 
 ## Une table, comme une feuille de tableur
 

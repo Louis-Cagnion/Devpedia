@@ -4,7 +4,7 @@ order: 8
 
 # Les Makefiles
 
-Un **Makefile** automatise la compilation d'un projet C à plusieurs fichiers : plutôt que de retaper manuellement chaque commande `gcc` (voir [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation)), on décrit une fois les règles de construction, et l'outil `make` les exécute, en ne recompilant que ce qui a réellement changé depuis la dernière fois.
+Un **Makefile** automatise la compilation d'un projet C à plusieurs fichiers : plutôt que de retaper manuellement chaque commande [`gcc`](https://gcc.gnu.org) (voir [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation)), on décrit une fois les règles de construction, et l'outil `make` les exécute, en ne recompilant que ce qui a réellement changé depuis la dernière fois.
 
 ## Anatomie d'une règle
 

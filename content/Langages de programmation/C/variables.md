@@ -42,7 +42,7 @@ Un `char` occupe généralement 1 octet en mémoire et contient la valeur ASCII 
 
 ## Les booléens (`bool`)
 
-Depuis la norme C99, le langage fournit le type `bool` via la bibliothèque `stdbool.h`.
+Depuis la norme [C99](https://en.wikipedia.org/wiki/C99), le langage fournit le type `bool` via la bibliothèque `stdbool.h`.
 
 ```c
 #include <stdbool.h>

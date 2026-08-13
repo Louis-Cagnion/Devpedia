@@ -66,7 +66,7 @@ Le dictionnaire remplit exactement le même rôle que la chaîne de `if`/`elif`,
 
 ## Où s'arrêter
 
-Cette généralisation a un coût : une structure de données trop abstraite pour deux ou trois cas qui ne grandiront pas complique la lecture sans apporter de bénéfice réel (voir le principe KISS/YAGNI). Le seuil de bon sens : dès qu'on écrit la **troisième** répétition d'un même patron, c'est le bon moment pour la remplacer par une structure indexée ; avant, ce n'est souvent pas encore rentable.
+Cette généralisation a un coût : une structure de données trop abstraite pour deux ou trois cas qui ne grandiront pas complique la lecture sans apporter de bénéfice réel (voir le principe [KISS](https://en.wikipedia.org/wiki/KISS_principle)/[YAGNI](https://martinfowler.com/bliki/Yagni.html)). Le seuil de bon sens : dès qu'on écrit la **troisième** répétition d'un même patron, c'est le bon moment pour la remplacer par une structure indexée ; avant, ce n'est souvent pas encore rentable.
 
 ---
 

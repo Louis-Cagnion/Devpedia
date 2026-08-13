@@ -94,7 +94,7 @@ free(p);
 free(p); // double free : comportement indéfini
 ```
 
-> **Note :** ces bugs ne provoquent pas toujours un crash immédiat et visible : c'est ce qui les rend difficiles à détecter. Un outil comme **Valgrind** (`valgrind ./mon_programme`) exécute le programme et rapporte précisément les fuites mémoire et les accès invalides, avec la ligne de code responsable.
+> **Note :** ces bugs ne provoquent pas toujours un crash immédiat et visible : c'est ce qui les rend difficiles à détecter. Un outil comme [**Valgrind**](https://valgrind.org) (`valgrind ./mon_programme`) exécute le programme et rapporte précisément les fuites mémoire et les accès invalides, avec la ligne de code responsable.
 
 ## Le débordement de tampon (*buffer overflow*), un bug avec des conséquences de sécurité
 
@@ -124,7 +124,7 @@ fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, 
 | `strcpy()` | `strncpy()` (attention à la terminaison, cf. ci-dessus) |
 | `strcat()` | `strncat()` |
 | `sprintf()` | `snprintf()` (tronque plutôt que déborder) |
-| `gets()` | `fgets()` (`gets()` est d'ailleurs retiré du standard C depuis C11, précisément pour cette raison) |
+| `gets()` | `fgets()` (`gets()` est d'ailleurs retiré du standard C depuis [C11](https://en.wikipedia.org/wiki/C11_(C_standard_revision)), précisément pour cette raison) |
 
 > **Note :** borner la taille ne suffit qu'à moitié : il faut aussi vérifier que la donnée tronquée reste cohérente pour la suite du programme (un nom de fichier coupé à mi-chemin par `strncpy` reste un nom de fichier syntaxiquement valide, juste incorrect). Le bon réflexe reste de toujours connaître, à chaque écriture, la taille réelle du buffer de destination ; jamais de supposer qu'une entrée respectera une taille attendue sans le vérifier.
 

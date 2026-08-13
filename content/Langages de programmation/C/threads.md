@@ -8,7 +8,7 @@ Un **thread** (fil d'exécution) est, comme un processus, une suite d'instructio
 
 ## Créer et attendre un thread
 
-La bibliothèque POSIX threads (`pthread`) fournit les fonctions de base ; la compilation nécessite l'option `-pthread` (`gcc -pthread main.c -o programme`). La norme **POSIX** est présentée dans le chapitre [Écrire un script](/?c=shells&s=bash&p=scripts-et-shebang) de Bash.
+La bibliothèque POSIX threads (`pthread`) fournit les fonctions de base ; la compilation nécessite l'option `-pthread` ([`gcc`](https://gcc.gnu.org) `-pthread main.c -o programme`). La norme **POSIX** est présentée dans le chapitre [Écrire un script](/?c=shells&s=bash&p=scripts-et-shebang) de Bash.
 
 ```c
 #include <pthread.h>

@@ -71,7 +71,7 @@ Voir le chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p
 
 ## D'où vient la vraie entropie ?
 
-Le système d'exploitation collecte des évènements physiques difficilement prévisibles : intervalles précis entre les frappes clavier et les interruptions matérielles, bruit thermique, et sur les processeurs récents une instruction dédiée (`RDRAND`). Il en alimente un réservoir d'entropie, exposé sous Linux via `/dev/urandom`.
+Le système d'exploitation collecte des évènements physiques difficilement prévisibles : intervalles précis entre les frappes clavier et les interruptions matérielles, bruit thermique, et sur les processeurs récents une instruction dédiée ([`RDRAND`](https://en.wikipedia.org/wiki/RDRAND)). Il en alimente un réservoir d'entropie, exposé sous Linux via [`/dev/urandom`](https://man7.org/linux/man-pages/man4/urandom.4.html).
 
 C'est là qu'un CSPRNG puise sa graine, et c'est ce qui le rend imprévisible : la graine elle-même ne dépend d'aucune formule.
 

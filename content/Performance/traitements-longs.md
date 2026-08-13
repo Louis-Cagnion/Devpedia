@@ -10,7 +10,7 @@ Passé quelques minutes d'exécution, un programme change de nature. Ce n'est pl
 
 Un programme qui accumule ses résultats en mémoire et n'écrit qu'à la fin perd **tout** en cas de coupure : plantage, réseau, mise en veille de la machine. Écrire chaque résultat dès qu'il est obtenu change complètement le comportement en cas d'incident.
 
-Le format le plus simple pour cela est le **JSON Lines** : un objet JSON complet par ligne. Contrairement à un tableau JSON, il n'a pas besoin d'être refermé pour rester lisible : un fichier tronqué en plein milieu reste exploitable jusqu'à sa dernière ligne complète.
+Le format le plus simple pour cela est le [**JSON Lines**](https://jsonlines.org) : un objet JSON complet par ligne. Contrairement à un tableau JSON, il n'a pas besoin d'être refermé pour rester lisible : un fichier tronqué en plein milieu reste exploitable jusqu'à sa dernière ligne complète.
 
 ```python
 class EtatDAvancement:

@@ -21,7 +21,7 @@ echo "Bonjour" | git hash-object --stdin
 
 > **Note :** une **fonction de hachage** (ici SHA-1) transforme une entrée de taille quelconque en un nombre de taille fixe, de façon déterministe (même entrée → toujours le même résultat) et bien répartie (deux contenus, même très proches, produisent des résultats très différents : c'est ce qui rend une collision accidentelle extrêmement improbable). Voir [Les tables de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage) pour ce mécanisme appliqué à une structure de données concrète.
 
-Concrètement, chaque objet est compressé (zlib, un algorithme de compression sans perte) et stocké dans `.git/objects/`, sous un chemin dérivé de son hash : les 2 premiers caractères hexadécimaux forment un sous-dossier, les 38 restants le nom du fichier (`.git/objects/c6/b7f4a2...`). Ce n'est ni plus ni moins qu'une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage) stockée directement sur le système de fichiers : le sous-dossier joue le rôle d'une case (*bucket*).
+Concrètement, chaque objet est compressé ([zlib](https://zlib.net), un algorithme de compression sans perte) et stocké dans `.git/objects/`, sous un chemin dérivé de son hash : les 2 premiers caractères hexadécimaux forment un sous-dossier, les 38 restants le nom du fichier (`.git/objects/c6/b7f4a2...`). Ce n'est ni plus ni moins qu'une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage) stockée directement sur le système de fichiers : le sous-dossier joue le rôle d'une case (*bucket*).
 
 > **Conséquence directe :** deux fichiers avec un contenu strictement identique produisent le **même** hash, et donc le **même** objet stocké une seule fois, une déduplication automatique et gratuite, propriété inhérente au modèle, pas une optimisation ajoutée après coup.
 
@@ -129,7 +129,7 @@ Les briques nécessaires à un système minimal, dans cet ordre logique :
 2. **Une structure d'arbre** pour représenter un instantané complet d'une arborescence de dossiers à un instant donné (le `tree`).
 3. **Des objets commit chaînés** par un pointeur vers leur(s) parent(s) : c'est cette chaîne qui constitue l'historique.
 4. **Des pointeurs nommés et mutables** (les branches) pointant vers un commit, plus un pointeur spécial (`HEAD`) indiquant "où on en est" actuellement.
-5. **Un algorithme de diff** : nécessaire uniquement pour afficher des différences lisibles ou fusionner des branches, mais pas pour le modèle de stockage lui-même, qui n'en a structurellement pas besoin. L'algorithme de Myers, utilisé par Git, trouve la plus courte suite d'ajouts/suppressions de lignes transformant un texte en un autre : c'est ce qui fait qu'un `git diff` affiche un changement minimal et lisible plutôt que "tout supprimer puis tout réécrire".
+5. **Un algorithme de diff** : nécessaire uniquement pour afficher des différences lisibles ou fusionner des branches, mais pas pour le modèle de stockage lui-même, qui n'en a structurellement pas besoin. [L'algorithme de Myers](https://en.wikipedia.org/wiki/Diff#Algorithm), utilisé par Git, trouve la plus courte suite d'ajouts/suppressions de lignes transformant un texte en un autre : c'est ce qui fait qu'un `git diff` affiche un changement minimal et lisible plutôt que "tout supprimer puis tout réécrire".
 
 ---
 

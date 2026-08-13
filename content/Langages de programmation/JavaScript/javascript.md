@@ -18,4 +18,4 @@ console.log(`Bonjour, ${nom}`);  // affiche : Bonjour, Devpedia
 | DOM | La représentation en mémoire d'une page [HTML](/?c=langages-de-balisage&s=html&p=html) (voir [Le DOM et les événements](/?c=langages-de-programmation&s=javascript&p=dom-et-evenements)) que JavaScript peut lire et modifier pour rendre une page interactive |
 | Asynchrone | Une opération qui prend du temps (un appel réseau) sans bloquer le reste du programme en attendant sa fin (voir [L'asynchrone](/?c=langages-de-programmation&s=javascript&p=asynchrone)) |
 
-JavaScript s'exécute aussi bien côté client (dans le navigateur) que côté serveur (via Node.js), ce qui en fait un langage central du développement web moderne : de nombreux frameworks (React, Vue, Angular) s'appuient dessus.
+JavaScript s'exécute aussi bien côté client (dans le navigateur) que côté serveur (via [Node.js](https://nodejs.org)), ce qui en fait un langage central du développement web moderne : de nombreux frameworks ([React](https://react.dev), [Vue](https://vuejs.org), [Angular](https://angular.dev)) s'appuient dessus.

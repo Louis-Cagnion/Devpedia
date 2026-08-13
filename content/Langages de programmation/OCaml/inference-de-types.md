@@ -17,7 +17,7 @@ L'usage de `+` (réservé aux entiers en OCaml ; `+.` est l'addition flottante) 
 
 ## Comment l'inférence procède
 
-Le mécanisme (l'algorithme de Hindley-Milner) part de chaque expression et pose des contraintes sur les types de ses sous-expressions, puis résout l'ensemble du système de contraintes pour tout le programme :
+Le mécanisme (l'[algorithme de Hindley-Milner](https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system)) part de chaque expression et pose des contraintes sur les types de ses sous-expressions, puis résout l'ensemble du système de contraintes pour tout le programme :
 
 ```ocaml
 let double x = x + x

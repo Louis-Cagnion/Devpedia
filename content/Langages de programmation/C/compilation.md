@@ -4,7 +4,7 @@ order: 7
 
 # Le processus de compilation
 
-Contrairement à PHP ou JavaScript, interprétés directement à l'exécution, un programme C doit être **traduit en code machine** avant de pouvoir être lancé. Cette traduction se déroule en quatre étapes distinctes, généralement invisibles derrière une seule commande (`gcc main.c -o programme`), mais qu'il est utile de savoir séparer pour comprendre certaines erreurs.
+Contrairement à PHP ou JavaScript, interprétés directement à l'exécution, un programme C doit être **traduit en code machine** avant de pouvoir être lancé. Cette traduction se déroule en quatre étapes distinctes, généralement invisibles derrière une seule commande ([`gcc`](https://gcc.gnu.org) `main.c -o programme`), mais qu'il est utile de savoir séparer pour comprendre certaines erreurs.
 
 ## Les quatre étapes
 

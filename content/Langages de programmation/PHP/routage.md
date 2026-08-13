@@ -4,7 +4,7 @@ order: 13
 
 # Le routage sans framework (front controller)
 
-Sans framework (Laravel, Symfony...), PHP ne fournit aucun routeur intégré comparable à Express (`app.get('/chemin', callback)`). Un projet "PHP pur" doit organiser lui-même la correspondance entre une URL demandée et le code à exécuter.
+Sans framework ([Laravel](https://laravel.com), [Symfony](https://symfony.com)...), PHP ne fournit aucun routeur intégré comparable à [Express](https://expressjs.com) (`app.get('/chemin', callback)`). Un projet "PHP pur" doit organiser lui-même la correspondance entre une URL demandée et le code à exécuter.
 
 ## Le front controller et la table de dispatch
 
@@ -36,7 +36,7 @@ Différence clé avec un routeur JS (Express) : chaque route pointe vers un **ch
 
 ## Le modèle "filesystem = URLs"
 
-Sur un serveur PHP classique (sans configuration particulière), **tout fichier physiquement présent sous la racine web est accessible via son chemin en URL** : un `.php` y est exécuté, un fichier statique y est servi tel quel. C'est l'inverse d'Express/Node, où une route n'existe que si elle est explicitement déclarée : en PHP "à l'ancienne", **tout est accessible par défaut, sauf ce qu'on bloque explicitement**.
+Sur un serveur PHP classique (sans configuration particulière), **tout fichier physiquement présent sous la racine web est accessible via son chemin en URL** : un `.php` y est exécuté, un fichier statique y est servi tel quel. C'est l'inverse d'Express/[Node](https://nodejs.org), où une route n'existe que si elle est explicitement déclarée : en PHP "à l'ancienne", **tout est accessible par défaut, sauf ce qu'on bloque explicitement**.
 
 Conséquence concrète : un dossier contenant des classes ou des données sensibles (identifiants de connexion à une base, clés d'API...) doit être **bloqué explicitement**, même si aucune route ne le référence jamais dans le code applicatif : sinon rien n'empêche un visiteur de taper directement son chemin dans le navigateur.
 

@@ -84,7 +84,7 @@ COPY --from=builder /app/serveur /usr/local/bin/serveur
 CMD ["serveur"]
 ```
 
-Seul le binaire `serveur` est copié de l'étape `builder` vers l'image finale : le compilateur Go (plusieurs centaines de Mo) ne fait jamais partie de l'image livrée.
+Seul le binaire `serveur` est copié de l'étape `builder` vers l'image finale : le compilateur [Go](https://go.dev) (plusieurs centaines de Mo) ne fait jamais partie de l'image livrée.
 
 ## `.dockerignore`
 

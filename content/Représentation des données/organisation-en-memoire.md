@@ -61,7 +61,7 @@ struct Compacte {
 
 Sur une structure utilisée en millions d'exemplaires, ce détail change la consommation mémoire d'un tiers, et surtout l'efficacité du cache processeur, souvent plus déterminante que le calcul lui-même.
 
-> Ne calculez donc **jamais** la taille d'une structure à la main : utilisez `sizeof`. Et n'écrivez pas une structure brute dans un fichier ou sur le réseau en supposant sa disposition : le remplissage varie selon le compilateur et l'architecture. C'est le rôle de la **sérialisation** ([JSON](/?c=infrastructure&p=json), Protobuf...) de produire un format défini indépendamment de la machine.
+> Ne calculez donc **jamais** la taille d'une structure à la main : utilisez `sizeof`. Et n'écrivez pas une structure brute dans un fichier ou sur le réseau en supposant sa disposition : le remplissage varie selon le compilateur et l'architecture. C'est le rôle de la **sérialisation** ([JSON](/?c=infrastructure&p=json), [Protobuf](https://protobuf.dev)...) de produire un format défini indépendamment de la machine.
 
 ## L'ordre des octets (*endianness*)
 
