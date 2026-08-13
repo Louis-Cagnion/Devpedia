@@ -303,6 +303,58 @@
         {
           "id": "stack-ia",
           "label": "The AI Stack: The Layers of a Production Application"
+        },
+        {
+          "id": "vision-et-ocr",
+          "label": "Vision and OCR"
+        },
+        {
+          "id": "ocr-classique-vs-deep-learning",
+          "label": "OCR: from classic pattern recognition to deep learning"
+        },
+        {
+          "id": "detection-de-mise-en-page",
+          "label": "Layout detection: bounding boxes, confidence score, and duplicate removal"
+        },
+        {
+          "id": "modeles-document-ai",
+          "label": "\"Document AI\" models: understanding a document beyond plain text"
+        },
+        {
+          "id": "fine-tuning-modele-vision",
+          "label": "Training and fine-tuning a vision model for a business use case"
+        },
+        {
+          "id": "evaluer-un-ocr",
+          "label": "Evaluating an OCR: CER, WER, and per-field recognition rate"
+        },
+        {
+          "id": "post-traitement-correction",
+          "label": "OCR post-processing and correction"
+        },
+        {
+          "id": "ocr-en-production",
+          "label": "OCR pipeline deployment and monitoring"
+        },
+        {
+          "id": "gouvernance-documents-scannes",
+          "label": "Data governance for scanned documents"
+        },
+        {
+          "id": "fondamentaux-du-deep-learning",
+          "label": "Fundamentals of Deep Learning"
+        },
+        {
+          "id": "nlp-llm",
+          "label": "NLP and LLM"
+        },
+        {
+          "id": "applications-llm",
+          "label": "LLM Applications"
+        },
+        {
+          "id": "production-et-gouvernance",
+          "label": "Production and Governance"
         }
       ]
     },
