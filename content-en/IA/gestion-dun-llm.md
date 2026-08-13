@@ -4,7 +4,7 @@ order: 11
 
 # LLM Monitoring and Operations
 
-Monitoring a classic service comes down to watching an [HTTP status code](/?c=infrastructure&p=api-et-http): `200`, all good, `500`, it crashed. A call to an LLM almost always answers `200` — the question is never *"did it respond?"* but *"is the answer good, and did it cost what it should have?"*. This difference is what makes monitoring an LLM-based system structurally different from classic application monitoring.
+Monitoring a classic service comes down to watching an [HTTP status code](/?c=infrastructure&p=api-et-http): `200`, all good, `500`, it crashed. A call to an LLM almost always answers `200`: the question is never *"did it respond?"* but *"is the answer good, and did it cost what it should have?"*. This difference is what makes monitoring an LLM-based system structurally different from classic application monitoring.
 
 ## What needs to be logged
 
@@ -18,39 +18,39 @@ A production system must keep, for every call, enough to reconstruct and audit w
 | Latency | Catches a service degradation before a user complains about it |
 | Model identifier and version | See below: this version changes more often than you'd think |
 
-> **Pitfall:** logging the prompt and response with no precautions. They may contain personal or sensitive data depending on what the user wrote — keeping them as-is reproduces exactly the problem [data governance](/?c=ia&p=gouvernance-des-donnees) tries to avoid.
+> **Pitfall:** logging the prompt and response with no precautions. They may contain personal or sensitive data depending on what the user wrote: keeping them as-is reproduces exactly the problem [data governance](/?c=ia&p=gouvernance-des-donnees) tries to avoid.
 >
-> **Best practice:** encrypt these logs at rest and apply a limited retention period to them, at a minimum — see the [retention policy](/?c=ia&p=gouvernance-des-donnees) detailed elsewhere.
+> **Best practice:** encrypt these logs at rest and apply a limited retention period to them, at a minimum; see the [retention policy](/?c=ia&p=gouvernance-des-donnees) detailed elsewhere.
 
 ## Silent version drift
 
-An LLM provider regularly evolves its model, sometimes under the same commercial name (a minor update, a safety adjustment, a change in default behavior). A system that calls "model X" without pinning a specific version can therefore see its behavior change overnight, with not a single line of its own code having moved — the hardest bug to diagnose is the one with no associated commit.
+An LLM provider regularly evolves its model, sometimes under the same commercial name (a minor update, a safety adjustment, a change in default behavior). A system that calls "model X" without pinning a specific version can therefore see its behavior change overnight, with not a single line of its own code having moved: the hardest bug to diagnose is the one with no associated commit.
 
 > **Pitfall:** calling "model X" with no specific version pinned, assuming its behavior will stay stable over time.
 >
-> **Best practice:** pin an explicit version rather than "whatever is latest", and only migrate to a new version after testing it against a set of known cases (see below) — the same safeguard as for any external dependency.
+> **Best practice:** pin an explicit version rather than "whatever is latest", and only migrate to a new version after testing it against a set of known cases (see below), the same safeguard as for any external dependency.
 
 ## Evaluating an output that's never identical twice
 
 An LLM's non-determinism (see [LLMs in Production](/?c=ia&p=llm-en-production)) makes a classic "the output must be exactly this string" test useless. Two approaches combine in practice:
 
-**A reference case set (*golden set*).** A list of representative prompts whose expected answer (or the criteria a good answer must meet) is known, replayed on every change — to the prompt, the model, or the version. This is the equivalent of a regression test suite, adapted to an approximate rather than exact output.
+**A reference case set (*golden set*).** A list of representative prompts whose expected answer (or the criteria a good answer must meet) is known, replayed on every change: to the prompt, the model, or the version. This is the equivalent of a regression test suite, adapted to an approximate rather than exact output.
 
 **A second LLM as evaluator (*LLM-as-judge*).** The judge receives the question, the produced answer, and sometimes a reference answer, then scores the answer against explicit criteria (accuracy, tone, length). This makes it possible to evaluate thousands of cases without systematic human review, reserving the human eye for cases the judge flags as doubtful.
 
-> **Pitfall:** treating an LLM-as-judge's verdict as infallible. The judge inherits the same limits as an ordinary LLM (see [LLMs in Production](/?c=ia&p=llm-en-production)) — including the ability to be wrong with the same confidence as a correct judgment.
+> **Pitfall:** treating an LLM-as-judge's verdict as infallible. The judge inherits the same limits as an ordinary LLM (see [LLMs in Production](/?c=ia&p=llm-en-production)), including the ability to be wrong with the same confidence as a correct judgment.
 >
-> **Best practice:** reserve human evaluation for cases the judge flags as doubtful, and periodically check a sample of the verdicts it rated "good" — not just the ones it flags itself as uncertain.
+> **Best practice:** reserve human evaluation for cases the judge flags as doubtful, and periodically check a sample of the verdicts it rated "good", not just the ones it flags itself as uncertain.
 
 ## Operational safeguards
 
 > **Pitfall:** a traffic spike (legitimate, or a poorly bounded agent loop, see the [Agents](/?c=ia&p=agents) chapter) can blow up a bill within minutes with no "error" alert ever triggering, since every individual call succeeds.
 >
-> **Best practice:** set up a rate and cost limiter, and a cost dashboard by feature, customer, or user — not a luxury, this is what avoids discovering the bill at the end of the month.
+> **Best practice:** set up a rate and cost limiter, and a cost dashboard by feature, customer, or user, not a luxury, this is what avoids discovering the bill at the end of the month.
 
 > **Pitfall:** if the main model becomes unavailable or too slow, returning an error straight to the user instead of degrading the service.
 >
-> **Best practice:** plan a fallback to a simpler model in case of unavailability or excessive slowness — degrade the service rather than interrupt it.
+> **Best practice:** plan a fallback to a simpler model in case of unavailability or excessive slowness: degrade the service rather than interrupt it.
 
 Input and output filtering (detecting a malicious instruction attempt, see [prompt injection](/?c=ia&p=prompt-injection), and filtering an output before it reaches the user) rounds out these safeguards.
 
