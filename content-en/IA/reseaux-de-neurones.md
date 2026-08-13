@@ -2,7 +2,7 @@
 order: 1
 ---
 
-# Neural Networks — The Fundamentals
+# Neural Networks: The Fundamentals
 
 **Machine learning** consists of getting a program to learn a behavior from data, rather than dictating every rule to it explicitly (see [Introduction to Machine Learning](/?c=data-science&p=machine-learning-scikit-learn) to go further). An **artificial neural network** is a family of machine learning models: a [mathematical function](/?c=mathematiques&p=la-fonction-mathematique), made up of many simple computing units ("neurons") organized in layers, whose parameters adjust themselves automatically from data rather than being written by hand.
 
@@ -20,10 +20,10 @@ def neuron(inputs, weights, bias, activation):
     return activation(weighted_sum)
 ```
 
-- The **weights** (`w1`, `w2`...) determine how important each input is — these, along with the bias, are what training adjusts (see [Model Training and Gradient Descent](/?c=ia&p=entrainement-descente-de-gradient)).
+- The **weights** (`w1`, `w2`...) determine how important each input is: these, along with the bias, are what training adjusts (see [Model Training and Gradient Descent](/?c=ia&p=entrainement-descente-de-gradient)).
 - The **bias** lets the output be shifted even when all inputs are zero (like the y-intercept of a line).
 
-> **Pitfall:** omitting the bias. Without it, a neuron's output is always zero as soon as all inputs are zero, no matter the weights — the neuron can never shift its response independently of its inputs, which severely limits what it can learn to represent.
+> **Pitfall:** omitting the bias. Without it, a neuron's output is always zero as soon as all inputs are zero, no matter the weights: the neuron can never shift its response independently of its inputs, which severely limits what it can learn to represent.
 >
 > **Best practice:** always include a bias in a neuron, unless you have a specific reason to force a zero output for zero inputs.
 
@@ -34,7 +34,7 @@ Without an activation function (or with a linear one), stacking several layers o
 | Activation function | Formula (simplified) | Typical use |
 |---|---|---|
 | **Sigmoid** | Squashes any value between 0 and 1 | Output of a binary classification (a [probability](/?c=mathematiques&p=les-probabilites-de-base)) |
-| **ReLU** (*Rectified Linear Unit*) | `max(0, x)` — lets positive values through, squashes negatives to 0 | Hidden layers, very widely used in practice (simple and cheap to compute) |
+| **ReLU** (*Rectified Linear Unit*) | `max(0, x)`: lets positive values through, squashes negatives to 0 | Hidden layers, very widely used in practice (simple and cheap to compute) |
 | **Softmax** | Turns a vector of scores into a [probability distribution](/?c=mathematiques&p=les-probabilites-de-base) that sums to 1 | Output of a multi-category classification |
 
 ```python
@@ -47,9 +47,9 @@ def relu(x):
     return max(0, x)
 ```
 
-> **Pitfall:** using sigmoid on the output of a classification with **more than two** categories. Sigmoid produces an independent probability per category, with no guarantee that they sum to 1 — softmax is built precisely to produce a valid probability distribution across several categories at once (see a [distribution summing to 1](/?c=mathematiques&p=les-probabilites-de-base)).
+> **Pitfall:** using sigmoid on the output of a classification with **more than two** categories. Sigmoid produces an independent probability per category, with no guarantee that they sum to 1: softmax is built precisely to produce a valid probability distribution across several categories at once (see a [distribution summing to 1](/?c=mathematiques&p=les-probabilites-de-base)).
 >
-> **Best practice:** choose the output activation function based on the number of categories to distinguish — sigmoid for a binary choice, softmax as soon as more than two mutually exclusive categories are involved.
+> **Best practice:** choose the output activation function based on the number of categories to distinguish: sigmoid for a binary choice, softmax as soon as more than two mutually exclusive categories are involved.
 
 ## The layers of a network
 
@@ -58,7 +58,7 @@ Input -> [Hidden layer 1] -> [Hidden layer 2] -> ... -> Output
 ```
 
 - **Input layer**: receives the raw data (an image's pixels, a sentence's words encoded as numbers...).
-- **Hidden layers**: each transforms the representation received from the previous layer — the more layers there are ("*deep* learning"), the more abstract and complex the patterns the network can represent.
+- **Hidden layers**: each transforms the representation received from the previous layer: the more layers there are ("*deep* learning"), the more abstract and complex the patterns the network can represent.
 - **Output layer**: produces the final result (a probability, a category, a numeric value...).
 
 > **Pitfall:** adding layers without having enough data to train them properly. A network too deep for the amount of data available memorizes the training examples instead of learning a general pattern (see overfitting in [Introduction to Machine Learning](/?c=data-science&p=machine-learning-scikit-learn)).
@@ -88,23 +88,23 @@ output_bias = 0.05
 result = sigmoid(output_n1 * 0.6 + output_n2 * 0.9 + 0.05)  # sigmoid(0.95) ~= 0.72
 ```
 
-This computation — multiply, sum, apply an activation, layer after layer — is **all** a neural network does to produce a prediction. What makes the network "intelligent" is never this mechanism (fixed, purely arithmetic), but the **values of its weights and biases**, adjusted automatically by training (see [Model Training and Gradient Descent](/?c=ia&p=entrainement-descente-de-gradient)) from a large number of examples.
+This computation (multiply, sum, apply an activation, layer after layer) is **all** a neural network does to produce a prediction. What makes the network "intelligent" is never this mechanism (fixed, purely arithmetic), but the **values of its weights and biases**, adjusted automatically by training (see [Model Training and Gradient Descent](/?c=ia&p=entrainement-descente-de-gradient)) from a large number of examples.
 
-In this example, the weights are already fixed at specific values to illustrate the computation — at the very start of actual training, they instead start out as random values.
+In this example, the weights are already fixed at specific values to illustrate the computation, at the very start of actual training, they instead start out as random values.
 
-> **Pitfall:** initializing all of a layer's weights to the **same** value (often zero). All neurons in that layer would then compute exactly the same thing at every step, and would keep learning identically — the network loses the ability to have its neurons learn different roles.
+> **Pitfall:** initializing all of a layer's weights to the **same** value (often zero). All neurons in that layer would then compute exactly the same thing at every step, and would keep learning identically: the network loses the ability to have its neurons learn different roles.
 >
 > **Best practice:** initialize weights with small random values (see [randomness and generators](/?c=representation-des-donnees&p=aleatoire-et-generateurs)), different from one another, so each neuron starts from a distinct starting point.
 
 ## A network = an approximating function
 
-Seen from this angle, a neural network is nothing more than a [mathematical function](/?c=mathematiques&p=la-fonction-mathematique) parameterized (by its weights and biases), flexible enough to approximate a complex relationship between an input (an image, a text...) and an output (a category, a sequence of words...) — provided there is enough representative data to properly adjust these parameters.
+Seen from this angle, a neural network is nothing more than a [mathematical function](/?c=mathematiques&p=la-fonction-mathematique) parameterized (by its weights and biases), flexible enough to approximate a complex relationship between an input (an image, a text...) and an output (a category, a sequence of words...), provided there is enough representative data to properly adjust these parameters.
 
-> **Pitfall:** trusting a network on inputs very different from those seen during training. A function approximated from examples only stays reliable within the range covered by those examples — outside it, its output has no guarantee of remaining relevant.
+> **Pitfall:** trusting a network on inputs very different from those seen during training. A function approximated from examples only stays reliable within the range covered by those examples; outside it, its output has no guarantee of remaining relevant.
 >
 > **Best practice:** check that the data actually submitted to the model in use remains representative of the training data, rather than assuming the model "generalizes" indefinitely beyond it.
 
-See also [Model Training and Gradient Descent](/?c=ia&p=entrainement-descente-de-gradient) (how these weights are concretely adjusted) and [Architectures — CNN, RNN, and Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (specific ways of organizing these layers depending on the type of data processed).
+See also [Model Training and Gradient Descent](/?c=ia&p=entrainement-descente-de-gradient) (how these weights are concretely adjusted) and [Architectures: CNNs, RNNs, and Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (specific ways of organizing these layers depending on the type of data processed).
 
 ## Key takeaways
 
