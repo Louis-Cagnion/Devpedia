@@ -2,6 +2,7 @@ import { appState } from "./state.js";
 import { createTag } from "./tags.js";
 import { loadCategory, navigateToSubject, navigateToChapter } from "./router.js";
 import { createReaderControl } from "./reader.js";
+import { t } from "./i18n.js";
 
 let categories = [];
 let currentOutline = [];
@@ -35,7 +36,7 @@ function isSubject(entry) {
  */
 function createIntroItem(onClick, isCurrent) {
     const li = createTag("li");
-    const button = createTag("button", { class: `sidebarChapterButton sidebarIntroButton${isCurrent ? " current" : ""}` }, { textContent: "Introduction" });
+    const button = createTag("button", { class: `sidebarChapterButton sidebarIntroButton${isCurrent ? " current" : ""}` }, { textContent: t("introduction") });
     button.addEventListener("click", onClick);
     li.append(button);
     return li;
@@ -129,7 +130,7 @@ function renderOutline(container) {
     container.innerHTML = "";
     if (!currentOutline.length)
         return;
-    container.append(createTag("div", { class: "sidebarSectionTitle" }, { textContent: "Sur cette page" }));
+    container.append(createTag("div", { class: "sidebarSectionTitle" }, { textContent: t("onThisPage") }));
     const ul = createTag("ul", { class: "pageOutlineList" });
     currentOutline.forEach(({ level, id, text }) => {
         const li = createTag("li", { class: `outline-h${level}` });
@@ -180,7 +181,7 @@ export function initSidebars(initialCategories) {
     categories = initialCategories;
 
     leftSidebarDiv = createTag("nav", { class: "leftSidebar" });
-    leftSidebarDiv.append(createTag("div", { class: "sidebarSectionTitle" }, { textContent: "Catégories" }));
+    leftSidebarDiv.append(createTag("div", { class: "sidebarSectionTitle" }, { textContent: t("categories") }));
     leftSidebarDiv.append(createTag("div", { class: "sidebarTreeContainer" }));
     document.body.append(leftSidebarDiv);
 
@@ -192,7 +193,7 @@ export function initSidebars(initialCategories) {
     document.body.append(rightSidebarDiv);
 
     mobileMenuDiv = createTag("div", { class: "menuDiv" });
-    mobileMenuDiv.append(createTag("div", { class: "sidebarSectionTitle" }, { textContent: "Catégories" }));
+    mobileMenuDiv.append(createTag("div", { class: "sidebarSectionTitle" }, { textContent: t("categories") }));
     mobileMenuDiv.append(createTag("div", { class: "sidebarTreeContainer" }));
     mobileMenuDiv.append(createTag("div", { class: "sidebarOutlineContainer" }));
 

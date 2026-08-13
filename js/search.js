@@ -1,5 +1,6 @@
 import { loadCategory, navigateToSubject, navigateToChapter } from "./router.js";
 import { createTag } from "./tags.js";
+import { t } from "./i18n.js";
 
 /**
  * @param {string} text
@@ -66,7 +67,7 @@ export function initSearch(container, searchBar, categories) {
         const needle = normalize(trimmed);
         const matches = index.filter(entry => normalize(entry.label).includes(needle)).slice(0, 8);
         if (!matches.length) {
-            resultsList.append(createTag("li", { class: "searchResultEmpty" }, { textContent: "Aucun résultat" }));
+            resultsList.append(createTag("li", { class: "searchResultEmpty" }, { textContent: t("noResults") }));
         } else {
             matches.forEach(result => {
                 const li = createTag("li");

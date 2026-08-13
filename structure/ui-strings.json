@@ -1,0 +1,58 @@
+{
+  "fr": {
+    "categories": "Catégories",
+    "onThisPage": "Sur cette page",
+    "search": "Rechercher...",
+    "introduction": "Introduction",
+    "seeMore": "Voir plus ▾",
+    "return": "Retour",
+    "noResults": "Aucun résultat",
+    "readerRestart": "⏮ Lire depuis le début",
+    "readerReplay": "🔁 Relire le paragraphe",
+    "readerContinue": "▶ Continuer après le bloc de code",
+    "readerStop": "⏹ Arrêter la lecture",
+    "readerListen": "🔊 Écouter cette page"
+  },
+  "en": {
+    "categories": "Categories",
+    "onThisPage": "On this page",
+    "search": "Search...",
+    "introduction": "Introduction",
+    "seeMore": "See more ▾",
+    "return": "Back",
+    "noResults": "No results",
+    "readerRestart": "⏮ Read from the beginning",
+    "readerReplay": "🔁 Replay the paragraph",
+    "readerContinue": "▶ Continue after the code block",
+    "readerStop": "⏹ Stop reading",
+    "readerListen": "🔊 Listen to this page"
+  },
+  "es": {
+    "categories": "Categorías",
+    "onThisPage": "En esta página",
+    "search": "Buscar...",
+    "introduction": "Introducción",
+    "seeMore": "Ver más ▾",
+    "return": "Volver",
+    "noResults": "Sin resultados",
+    "readerRestart": "⏮ Leer desde el principio",
+    "readerReplay": "🔁 Repetir el párrafo",
+    "readerContinue": "▶ Continuar después del bloque de código",
+    "readerStop": "⏹ Detener la lectura",
+    "readerListen": "🔊 Escuchar esta página"
+  },
+  "pt": {
+    "categories": "Categorias",
+    "onThisPage": "Nesta página",
+    "search": "Pesquisar...",
+    "introduction": "Introdução",
+    "seeMore": "Ver mais ▾",
+    "return": "Voltar",
+    "noResults": "Nenhum resultado",
+    "readerRestart": "⏮ Ler desde o início",
+    "readerReplay": "🔁 Repetir o parágrafo",
+    "readerContinue": "▶ Continuar após o bloco de código",
+    "readerStop": "⏹ Parar a leitura",
+    "readerListen": "🔊 Ouvir esta página"
+  }
+}

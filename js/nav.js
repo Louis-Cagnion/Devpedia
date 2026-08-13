@@ -5,6 +5,7 @@ import { fetchFileToTextOrJson } from "./utils.js";
 import { initSidebars } from "./sidebar.js";
 import { initSearch } from "./search.js";
 import { initLanguageSwitcher, getStoredLanguage, applyDocumentLanguage } from "./lang.js";
+import { initI18n, t } from "./i18n.js";
 
 /**
  * @param {string} label
@@ -68,7 +69,7 @@ function watchCategoriesOverflow(categoriesDiv, categoryButtons, moreButton) {
  * @returns {HTMLElement} the "Voir plus" button, not yet attached to navBar
  */
 function createCategoriesOverflowMenu(categories) {
-    const moreButton = createTag("button", {class: "categoriesMoreButton"}, {textContent: "Voir plus ▾"});
+    const moreButton = createTag("button", {class: "categoriesMoreButton"}, {textContent: t("seeMore")});
     const dropdown = createTag("ul", {class: "categoriesDropdown"});
     [...categories]
         .sort((a, b) => a.label.localeCompare(b.label, "fr"))
@@ -140,7 +141,7 @@ function createAppendSearchbarButton(navBarRightSide, menuDiv, categories) {
             class: "navBarSearch",
             type:"search",
             name: "search",
-            placeholder: "Rechercher..."
+            placeholder: t("search")
         });
     navBarRightSide.append(searchBar);
     initSearch(navBarRightSide, searchBar, categories);
@@ -199,7 +200,7 @@ async function fetchStructJson() {
     appState.lang = getStoredLanguage();
     applyDocumentLanguage(appState.lang);
     const structPath = appState.lang ? `./structure/struct-${appState.lang}.json` : "./structure/struct.json";
-    const dataJson = await fetchFileToTextOrJson(structPath, 'json')
+    const [dataJson] = await Promise.all([fetchFileToTextOrJson(structPath, 'json'), initI18n()]);
     appState.categories = dataJson.categories;
     generateNavBar(appState.categories);
     resumePendingNavigation();

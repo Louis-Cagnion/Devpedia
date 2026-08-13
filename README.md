@@ -75,3 +75,4 @@ Besides Markdown rendering, the site includes a few hand-built pieces worth know
 - `js/search.js`: navbar search over every category/subject/chapter title, accent-insensitive
 - `js/lang.js`: language switcher, keeps you on the equivalent page after reloading in a new language
 - `js/router.js`: besides SPA routing, a chapter page gets a return button plus, when applicable, previous/next chapter buttons (stacked, arrow pinned to the outer edge, label wrapping instead of truncating); ArrowLeft/ArrowRight trigger the same previous/next navigation from the keyboard, mirroring the on-screen arrows (including in RTL)
+- `js/i18n.js`: fixed UI chrome (sidebar labels, search placeholder, return button, reader controls...) is looked up by key from `structure/ui-strings.json` (one table per language) via `t(key)`, instead of being hardcoded per language in each file — content translation (Markdown files) is unrelated and lives under `content-<lang>/`

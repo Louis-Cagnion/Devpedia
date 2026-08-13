@@ -4,6 +4,7 @@ import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson, findCategory, getContentDir } from "./utils.js";
 import { setPageOutline, syncSidebars } from "./sidebar.js";
 import { buildReadingPlan, stopReading } from "./reader.js";
+import { t } from "./i18n.js";
 
 /**
  * @param {Object} category
@@ -217,7 +218,7 @@ function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter,
     const nav = createTag("div", {class: "pageNav"});
     if (withReturnButton) {
         const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
-        const returnButton = createTag("button", {class: `returnButton ${pageId}ReturnButton`}, {textContent: `${arrow} Retour`});
+        const returnButton = createTag("button", {class: `returnButton ${pageId}ReturnButton`}, {textContent: `${arrow} ${t("return")}`});
         returnButton.addEventListener("click", (e) => {
             const previousEntry = appState.navigationStack.pop();
             renderEntry(previousEntry);
