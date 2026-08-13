@@ -1,5 +1,6 @@
 import { createTag } from "./tags.js";
 import { appState } from "./state.js";
+import { t } from "./i18n.js";
 
 // Web Speech API only (no cloud TTS, no auto-hosted engine) -- the site is 100% static
 // (GitHub Pages), so this is the only option with zero cost and zero infrastructure.
@@ -345,6 +346,10 @@ function speakNext() {
     isPausedAtCode = false;
     lastSpokenIndex = planIndex;
     notify();
+    // Only when its start isn't shown -- avoids yanking the view on every paragraph when several
+    // are already visible together (e.g. a tall screen, short paragraphs).
+    if (!isElementStartVisible(entry.group))
+        entry.group.scrollIntoView({ behavior: "smooth", block: "start" });
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
     const myGeneration = generation;
@@ -368,12 +373,31 @@ function startReading() {
 }
 
 /**
+ * @returns {number} the sticky navbar's height in pixels, so viewport-visibility checks can
+ *   exclude the area it covers at the top of the screen
+ */
+function getNavbarHeight() {
+    return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--navbar-height")) || 0;
+}
+
+/**
+ * @param {HTMLElement} element
+ * @returns {boolean} whether `element`'s own top edge (not just some part of it) is currently on
+ *   screen, below the sticky navbar -- unlike merely being partly on screen, e.g. only its last
+ *   line still poking above the navbar, which wouldn't show where it starts
+ */
+function isElementStartVisible(element) {
+    const top = element.getBoundingClientRect().top;
+    return top >= getNavbarHeight() && top < window.innerHeight;
+}
+
+/**
  * Index of the first "speak" entry whose paragraph hasn't fully scrolled past the top of the
  * viewport yet (below the sticky navbar) -- i.e. the topmost paragraph currently on screen.
  * Falls back to 0 (page top) if nothing qualifies, e.g. before any scrolling has happened.
  */
 function findVisibleEntryIndex() {
-    const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--navbar-height")) || 0;
+    const navbarHeight = getNavbarHeight();
     for (let i = 0; i < plan.length; i++) {
         const entry = plan[i];
         if (entry.kind === "speak" && entry.group.getBoundingClientRect().bottom > navbarHeight) return i;
@@ -423,12 +447,12 @@ function replayParagraph() {
 }
 
 /**
- * Builds one instance of the read-aloud control: a play/stop toggle, always shown, plus three
- * buttons hidden until they're relevant -- "restart from the beginning" and "replay this
- * paragraph" (once reading has produced something to go back to), and "continue after the code
- * block" (once reading is paused at one). Call once per place it needs to appear (the desktop
- * right sidebar, the mobile floating bar) -- every instance shares the same underlying playback
- * state and stays in sync with the others.
+ * Builds one instance of the read-aloud control: a play/stop toggle and a "restart from the
+ * beginning" button, both always shown, plus two buttons hidden until they're relevant --
+ * "replay this paragraph" (once reading has produced something to go back to) and "continue
+ * after the code block" (once reading is paused at one). Call once per place it needs to appear
+ * (the desktop right sidebar, the mobile floating bar) -- every instance shares the same
+ * underlying playback state and stays in sync with the others.
  *
  * @returns {HTMLElement|null} null if the browser has no Web Speech API, so callers show nothing
  *   rather than a control that can never work
@@ -440,18 +464,18 @@ export function createReaderControl() {
     const toggleButton = createTag("button", { class: "returnButton readerToggleButton" });
     const restartButton = createTag(
         "button",
-        { class: "returnButton readerRestartButton" },
-        { textContent: "⏮ Recommencer depuis le début" }
+        { class: "returnButton readerRestartButton visible" },
+        { textContent: t("readerRestart") }
     );
     const replayButton = createTag(
         "button",
         { class: "returnButton readerReplayButton" },
-        { textContent: "🔁 Relire le paragraphe" }
+        { textContent: t("readerReplay") }
     );
     const continueButton = createTag(
         "button",
         { class: "returnButton readerContinueButton" },
-        { textContent: "▶ Continuer après le bloc de code" }
+        { textContent: t("readerContinue") }
     );
     toggleButton.addEventListener("click", () => {
         if (isPlaying || isPausedAtCode) stopReading();
@@ -464,12 +488,14 @@ export function createReaderControl() {
 
     const applyStatus = status => {
         toggleButton.disabled = !status.hasPlan;
+        restartButton.disabled = !status.hasPlan;
         toggleButton.textContent = status.isPlaying || status.isPausedAtCode
-            ? "⏹ Arrêter la lecture"
-            : "🔊 Écouter cette page";
-        // Restarting/replaying only make sense once reading has produced something to go back to.
+            ? t("readerStop")
+            : t("readerListen");
+        // Replaying only makes sense once reading has produced something to go back to; restarting
+        // (readerRestartButton) is available from the start, same as the toggle button, since it
+        // doesn't depend on any prior progress.
         const hasProgress = status.isPlaying || status.isPausedAtCode || status.canReplay;
-        restartButton.classList.toggle("visible", hasProgress);
         replayButton.classList.toggle("visible", hasProgress);
         continueButton.classList.toggle("visible", status.isPausedAtCode);
     };
