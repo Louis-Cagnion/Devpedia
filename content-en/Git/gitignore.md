@@ -4,17 +4,17 @@ order: 3
 
 # The .gitignore file
 
-`.gitignore` Lists the files and folders that Git should **ignore**—never suggest for staging, never track, even with a `git add .`. Essential for keeping the history clean of generated files, dependencies, or secrets.
+`.gitignore` lists the files and folders that Git should **ignore**: never suggest for staging, never track, even with a `git add .`. Essential for keeping the history clean of generated files, dependencies, or secrets.
 
 ## Basic Syntax
 
 ```text
-# Commentaire
-*.log              # ignore tous les fichiers se terminant par .log, où qu'ils soient
-node_modules/       # ignore ce dossier entier, à la racine ou ailleurs
-/build              # le '/' en préfixe restreint à la racine du dépôt uniquement
-.env                # ignore ce fichier précis
-!important.log      # exception : NE PAS ignorer ce fichier précis, malgré la règle *.log au-dessus
+# Comment
+*.log              # ignores every file ending in .log, wherever it is
+node_modules/       # ignores this entire folder, at the root or anywhere else
+/build              # the leading '/' restricts this to the repository root only
+.env                # ignores this specific file
+!important.log      # exception: do NOT ignore this specific file, despite the *.log rule above
 ```
 
 | Reason | Meaning |
@@ -37,11 +37,11 @@ node_modules/       # ignore ce dossier entier, à la racine ou ailleurs
 git rm --cached fichier_deja_suivi.txt
 ```
 
-> **Note:** Adding a file to `.gitignore` has no** effect** if it is already tracked by Git (i.e., has been committed at least once)—Git continues to track changes to it as before. You must first explicitly remove it from tracking with `git rm --cached` (which leaves it intact on disk but stops tracking it) before the rule `.gitignore` takes effect.
+> **Note:** Adding a file to `.gitignore` has **no effect** if it is already tracked by Git (i.e., has been committed at least once): Git continues to track changes to it as before. You must first explicitly remove it from tracking with `git rm --cached` (which leaves it intact on disk but stops tracking it) before the rule `.gitignore` takes effect.
 
 ## `.gitignore` scope
 
-A repository can contain multiple `.gitignore` files, each of which applies to the folder in which it is located and its subfolders—useful for rules specific to a subproject, in addition to the global rules at the root.
+A repository can contain multiple `.gitignore` files, each of which applies to the folder in which it is located and its subfolders, useful for rules specific to a subproject, in addition to the global rules at the root.
 
 ## Personal rules, outside the repository: `~/.gitignore_global`
 
@@ -75,7 +75,7 @@ It's this difference (a tracked, shared file vs. a machine-local setting) that e
 
 | | |
 |---|---|
-| **Key Points** | `.gitignore` excludes files from Git tracking—they are never prompted for commit, even with `git add .`. The rules apply on a per-folder basis, with `!motif` to create exceptions. |
+| **Key Points** | `.gitignore` excludes files from Git tracking: they are never prompted for commit, even with `git add .`. The rules apply on a per-folder basis, with `!motif` to create exceptions. |
 | **Tools Available** | Patterns`*.ext`, `folder/`, `/path`, `!motif`; `git rm --cached` to remove a file that is already being tracked from the tracking system. |
-| **Pitfalls to Avoid** | Adding a file to `.gitignore` has no** effect** if it is already tracked (already committed)—you must first run `git rm --cached` before the rule takes effect. |
+| **Pitfalls to Avoid** | Adding a file to `.gitignore` has **no effect** if it is already tracked (already committed): you must first run `git rm --cached` before the rule takes effect. |
 | **Best Practices** | Exclude dependencies, secrets, and generated files when creating the repository, before the very first commit. |

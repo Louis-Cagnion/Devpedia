@@ -9,23 +9,23 @@ order: 1
 A **virtual machine** (VM) virtualizes hardware: it runs its own kernel and boots up like a full-fledged computer, which makes it resource-intensive (several GB, taking tens of seconds to boot) but completely isolated from the host. A **container** is lighter: it is a standard process on the host system that **shares the** host’s **kernel** but runs in an environment isolated from the rest of the system.
 
 ```text
-Machine virtuelle      Conteneur
+Virtual machine        Container
 ┌─────────────────┐    ┌─────────────────┐
 │   Application   │    │   Application   │
 ├─────────────────┤    ├─────────────────┤
-│  Bibliothèques  │    │  Bibliothèques  │
+│    Libraries    │    │    Libraries    │
 ├─────────────────┤    ├─────────────────┤
-│  Noyau invité   │    │  Moteur Docker  │
+│  Guest kernel   │    │  Docker engine  │
 ├─────────────────┤    ├─────────────────┤
-│   Hyperviseur   │    │ Noyau de l'hôte │
+│   Hypervisor    │    │   Host kernel   │
 ├─────────────────┤    └─────────────────┘
-│ Noyau de l'hôte │
+│   Host kernel   │
 └─────────────────┘
 ```
 
-**The hypervisor** is the software layer that creates and manages virtual machines by allocating physical resources (CPU, memory) among them—it is this additional layer, which is absent in a container, that explains the difference in size between the two approaches.
+**The hypervisor** is the software layer that creates and manages virtual machines by allocating physical resources (CPU, memory) among them: it is this additional layer, which is absent in a container, that explains the difference in size between the two approaches.
 
-> **Direct consequence:** a Linux container cannot run natively on Windows or macOS—[Docker Desktop](https://docs.docker.com/desktop/) actually launches a small Linux VM on those platforms to host the containers. On a Linux server, however, no virtualization layer is required.
+> **Direct consequence:** a Linux container cannot run natively on Windows or macOS: [Docker Desktop](https://docs.docker.com/desktop/) actually launches a small Linux VM on those platforms to host the containers. On a Linux server, however, no virtualization layer is required.
 
 ## Under the Hood: Namespaces and cgroups
 
@@ -41,16 +41,16 @@ Docker orchestrates these two mechanisms, which are already present in the kerne
 An **image** is an immutable, read-only template: a fixed filesystem (a minimal distribution, installed dependencies, and the application code) plus metadata (command to run at startup, exposed ports, etc.). A **container** is a running instance of this image, with a thin writable layer added on top.
 
 ```text
-Image (lecture seule)  -->  docker run  -->  Conteneur (image + couche inscriptible + processus)
+Image (read-only)  -->  docker run  -->  Container (image + writable layer + process)
 ```
 
-A single image can therefore launch multiple independent containers, each with its own writable layer—modifying a container never alters the image from which it was created.
+A single image can therefore launch multiple independent containers, each with its own writable layer: modifying a container never alters the image from which it was created.
 
 ## Images are built in layers
 
 An image is built up in **layers**, each corresponding to an instruction in the [Dockerfile](/?c=docker&p=dockerfile): install a package, copy code, etc. These layers are shared and cached across images: if two images share their first layers (e.g., the same base image), Docker stores and downloads them only once.
 
-> **Note:** This is automatic content-based deduplication, based on the same principle as [Git object storage](/?c=git&p=architecture-interne)—two identical layers produce the same identifier and are never duplicated on disk.
+> **Note:** This is automatic content-based deduplication, based on the same principle as [Git object storage](/?c=git&p=architecture-interne): two identical layers produce the same identifier and are never duplicated on disk.
 
 ---
 
@@ -58,7 +58,7 @@ An image is built up in **layers**, each corresponding to an instruction in the 
 
 | | |
 |---|---|
-| **Key Points** | A container is an isolated process (namespaces + cgroups) that shares the host’s kernel—lighter than a virtual machine, which virtualizes the entire hardware. An image is an immutable, layered template; a container is a running instance of that image. |
-| **Tools** | No specific commands here—this chapter introduces the terminology (image, container, namespace, cgroup) that is reused in all subsequent chapters. |
-| **Pitfalls to Avoid** | Confusing an image with a container — modifying a container never modifies the image from which it was created. |
+| **Key Points** | A container is an isolated process (namespaces + cgroups) that shares the host’s kernel, lighter than a virtual machine, which virtualizes the entire hardware. An image is an immutable, layered template; a container is a running instance of that image. |
+| **Tools** | No specific commands here: this chapter introduces the terminology (image, container, namespace, cgroup) that is reused in all subsequent chapters. |
+| **Pitfalls to Avoid** | Confusing an image with a container: modifying a container never modifies the image from which it was created. |
 | **Best Practices** | Understand that container isolation relies on the Linux kernel (namespaces/cgroups), not on a technology specific to Docker, to better assess its security limitations. |
