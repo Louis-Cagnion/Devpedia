@@ -4,7 +4,7 @@ order: 7
 
 # Functions
 
-Unlike Bash, where a function receives its arguments exactly like a script (`$1`, `$2`, with no name), a PowerShell function declares real **named, typed parameters** via `param()`, like PHP or C.
+Unlike Bash, where a function receives its arguments exactly like a script (`$1`, `$2`, with no name), a PowerShell function declares real **named, typed parameters** via `param()`, like [PHP](/?c=langages-de-programmation&s=php&p=conditions) or [C](/?c=langages-de-programmation&s=c&p=conditions).
 
 ## Declaring and calling a function
 

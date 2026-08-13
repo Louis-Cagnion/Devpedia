@@ -26,7 +26,7 @@ Instruction 3  →  exécutée telle quelle
 
 ## Code: a list of instructions written by a human
 
-**Code** (or **source code**) is the text that contains these instructions. It is written by a person in a **programming language**—one of the many “languages” that a computer can understand, each with its own grammar (Python, JavaScript, C...).
+**Code** (or **source code**) is the text that contains these instructions. It is written by a person in a **programming language**—one of the many “languages” that a computer can understand, each with its own grammar (Python, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), C...).
 
 ```text
 afficher "Hello"      → écrit "Hello" à l'écran

@@ -6,7 +6,7 @@ order: 2
 
 A PowerShell script is a text file with a `.ps1` extension, containing a sequence of commands (**cmdlets**) run in order, as if they'd been typed one by one in the console.
 
-> **Windows PowerShell vs. PowerShell (Core)**: *Windows PowerShell* (5.1) is the historical version, shipped with Windows, limited to that system. *PowerShell* (often called *PowerShell Core*, versions 7+) is the cross-platform rewrite on .NET, which also runs on Linux and macOS — it's the one invoked via `pwsh` rather than `powershell`. This site covers this second version, largely compatible with the first.
+> **Windows PowerShell vs. PowerShell (Core)**: *Windows PowerShell* (5.1) is the historical version, shipped with Windows, limited to that system. *PowerShell* (often called *PowerShell Core*, versions 7+) is the cross-platform rewrite on [.NET](https://learn.microsoft.com/en-us/dotnet/), which also runs on Linux and macOS — it's the one invoked via `pwsh` rather than `powershell`. This site covers this second version, largely compatible with the first.
 
 ## No shebang, but an execution policy
 
@@ -81,7 +81,7 @@ if ($LASTEXITCODE -eq 0) {
 }
 ```
 
-`$LASTEXITCODE` plays the role of Bash's `$?` for an external command or an explicit `exit`. But PowerShell also has a real exception mechanism on top: `Write-Error` alone doesn't stop execution (it continues with the next line), whereas `throw` raises an exception that stops the script — unless it's caught by a `try`/`catch` block, like the exceptions from PHP's dedicated chapter.
+`$LASTEXITCODE` plays the role of Bash's `$?` for an external command or an explicit `exit`. But PowerShell also has a real exception mechanism on top: `Write-Error` alone doesn't stop execution (it continues with the next line), whereas `throw` raises an exception that stops the script — unless it's caught by a `try`/`catch` block, like the [exceptions from PHP's dedicated chapter](/?c=langages-de-programmation&s=php&p=exceptions).
 
 ## Stopping a script on the first error: `$ErrorActionPreference`
 

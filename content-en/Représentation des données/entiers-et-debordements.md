@@ -89,11 +89,11 @@ Integer overflows aren't an academic curiosity:
 
 | Language | Behavior |
 |---|---|
-| C, C++ | Fixed size chosen explicitly. Signed overflow = undefined behavior |
-| Java, C# | Fixed size, defined wraparound for all integers |
-| **Python** | **Arbitrary-size** integers: they grow as long as memory allows, no overflow |
+| [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp) | Fixed size chosen explicitly. Signed overflow = undefined behavior |
+| [Java](https://docs.oracle.com/en/java/), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/) | Fixed size, defined wraparound for all integers |
+| **[Python](/?c=langages-de-programmation&s=python&p=python)** | **Arbitrary-size** integers: they grow as long as memory allows, no overflow |
 | JavaScript | No real integer type: everything is a float, so exact only up to 2⁵³ (see [Floating-Point Numbers](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` to go beyond |
-| PHP | Native integer; on overflow, automatic conversion to `float` (so precision is lost) |
+| [PHP](/?c=langages-de-programmation&s=php&p=php) | Native integer; on overflow, automatic conversion to `float` (so precision is lost) |
 
 Python illustrates the trade-off well: never overflowing is convenient, but every integer is a heavier, slower object than a machine integer. This is one of the reasons computing libraries like NumPy use fixed-size types (`int32`, `int64`) — see the [NumPy](/?c=data-science&p=numpy) chapter.
 

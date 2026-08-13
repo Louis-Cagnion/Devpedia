@@ -4,7 +4,7 @@ order: 7
 
 # Functions
 
-A Bash function groups a sequence of commands under a reusable name. Unlike PHP or C, a Bash function **never** declares a list of named parameters: it receives its arguments exactly the way a script receives its own, via `$1`, `$2`, etc.
+A Bash function groups a sequence of commands under a reusable name. Unlike [PHP](/?c=langages-de-programmation&s=php&p=conditions) or [C](/?c=langages-de-programmation&s=c&p=conditions), a Bash function **never** declares a list of named parameters: it receives its arguments exactly the way a script receives its own, via `$1`, `$2`, etc.
 
 ## Declaring and calling a function
 

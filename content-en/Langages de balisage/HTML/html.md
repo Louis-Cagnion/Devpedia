@@ -1,6 +1,10 @@
+---
+order: 1
+---
+
 # HTML
 
-HTML (*HyperText Markup Language*) is not a programming language: it is a **markup** language that describes the structure and meaning of content (a title, a paragraph, an image, a link, etc.), not instructions that are executed sequentially. A browser reads an HTML document and builds a representation of that structure in memory—the DOM (*Document Object Model*; see the dedicated chapter in JavaScript)—which it then displays on the screen.
+HTML (*HyperText Markup Language*) is not a programming language: it is a **markup** language that describes the structure and meaning of content (a title, a paragraph, an image, a link, etc.), not instructions that are executed sequentially. A browser reads an HTML document and builds a representation of that structure in memory—the DOM (*Document Object Model*; see [The DOM and Events](/?c=langages-de-programmation&s=javascript&p=dom-et-evenements))—which it then displays on the screen.
 
 Some of the key concepts in HTML include:
 

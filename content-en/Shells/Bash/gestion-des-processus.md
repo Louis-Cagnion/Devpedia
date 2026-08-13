@@ -27,7 +27,7 @@ fg %1          # brings job number 1 back to the foreground
 bg %1          # resumes a job suspended by Ctrl+Z, in the background
 ```
 
-`fg` and `bg` are direct abbreviations of their English meaning: `fg` = *foreground*, `bg` = *background* — each brings or sends job `%1` to the corresponding plane. Many Unix commands and flags follow this same abbreviation pattern, which helps remember them once you know the source word: for example, in this chapter, `-f` (*full*/*format*, for `ps aux -f` or `pgrep -f`'s full pattern) or `-9` for `SIGKILL`. The signal table below spells out the meaning of each.
+`fg` and `bg` are direct abbreviations of their English meaning: `fg` = *foreground*, `bg` = *background* — each brings or sends job `%1` to the corresponding plane. Many [Unix](/?c=shells&s=bash&p=scripts-et-shebang) commands and flags follow this same abbreviation pattern, which helps remember them once you know the source word: for example, in this chapter, `-f` (*full*/*format*, for `ps aux -f` or `pgrep -f`'s full pattern) or `-9` for `SIGKILL`. The signal table below spells out the meaning of each.
 
 ## Viewing running processes (`ps`, `top`)
 

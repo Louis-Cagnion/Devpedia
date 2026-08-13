@@ -4,7 +4,7 @@ order: 3
 
 # The code editor and the IDE
 
-A [code file](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) is a text file: technically, you could write it using Notepad or TextEdit. In practice, no one does that—a dedicated tool makes writing code much more convenient.
+A [code file](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) is a text file: technically, you could write it using [Notepad](https://learn.microsoft.com/en-us/windows/win32/menurc/notepad) or [TextEdit](https://support.apple.com/guide/textedit/welcome/mac). In practice, no one does that—a dedicated tool makes writing code much more convenient.
 
 ## Simple text editor vs. code editor
 

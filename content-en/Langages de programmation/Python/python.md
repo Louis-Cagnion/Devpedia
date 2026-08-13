@@ -1,3 +1,7 @@
+---
+order: 4
+---
+
 # Python
 
 Python is considered a **high-level**, dynamically typed, and interpreted programming language: it almost entirely hides memory management and machine-level details in favor of readability—the syntax relies on indentation itself to delimit code blocks, rather than curly braces.

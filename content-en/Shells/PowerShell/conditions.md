@@ -4,7 +4,7 @@ order: 5
 
 # Conditions
 
-Unlike Bash, where a condition goes through a test command's exit code (`[`, `[[`), PowerShell has real **comparison operators built into the language**, like PHP or C.
+Unlike Bash, where a condition goes through a test command's exit code (`[`, `[[`), PowerShell has real **comparison operators built into the language**, like [PHP](/?c=langages-de-programmation&s=php&p=conditions) or [C](/?c=langages-de-programmation&s=c&p=conditions).
 
 ## `if` / `elseif` / `else`
 

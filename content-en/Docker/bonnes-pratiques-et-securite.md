@@ -6,7 +6,7 @@ order: 6
 
 ## A minimal image
 
-Every package installed in an image is a **potential attack surface** (one more potential entry point that an attacker could exploit—a vulnerability in a package that is never used is still a vulnerability) and adds extra weight to the download. Opt for a minimal base image (`alpine`, or a variant `-slim`) and a [multi-stage build](/?c=docker&p=dockerfile) to deliver only what is strictly necessary for execution—never the compilation tools.
+Every package installed in an image is a **potential attack surface** (one more potential entry point that an attacker could exploit—a vulnerability in a package that is never used is still a vulnerability) and adds extra weight to the download. Opt for a minimal base image ([`alpine`](https://alpinelinux.org), or a variant `-slim`) and a [multi-stage build](/?c=docker&p=dockerfile) to deliver only what is strictly necessary for execution—never the compilation tools.
 
 ## Pin versions; never use `latest` in production
 

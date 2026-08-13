@@ -40,7 +40,7 @@ This second point is called **SIMD** (*Single Instruction, Multiple Data*): a pr
 
 A Python list is an array of **pointers** to objects, potentially scattered anywhere on the heap and of different sizes. A `for` loop over a Python list must, on every iteration: follow a pointer (a memory access potentially outside cache), check the type of the pointed-to object, then call the right routine — all driven by the interpreter, instruction by instruction.
 
-A NumPy array (`ndarray`) is a single **contiguous** block of memory, holding the values themselves (not pointers), all of the same type and size. A vectorized operation (`a + b`) delegates to a **compiled** loop that walks this block sequentially: cache lines are reused to the maximum, and the processor can use SIMD instructions on several elements at once. Same number of arithmetic operations, but a much lower marginal cost per element.
+A [NumPy array](/?c=data-science&p=numpy) (`ndarray`) is a single **contiguous** block of memory, holding the values themselves (not pointers), all of the same type and size. A vectorized operation (`a + b`) delegates to a **compiled** loop that walks this block sequentially: cache lines are reused to the maximum, and the processor can use SIMD instructions on several elements at once. Same number of arithmetic operations, but a much lower marginal cost per element.
 
 ## The `dtype=object` pitfall: contiguous doesn't mean uniform
 

@@ -4,7 +4,7 @@ order: 13
 
 # How PowerShell Works (Internal Architecture)
 
-PowerShell relies on the same underlying mechanism as Bash — a loop that reads, interprets, and executes — but it doesn't run directly on the operating system as a plain native executable: it's an environment built on the **.NET Runtime**, which explains both its typed objects (see [Variables](/?c=shells&s=powershell&p=variables) and [Redirections and Pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) and some of its performance differences from Bash.
+PowerShell relies on the same underlying mechanism as Bash — a loop that reads, interprets, and executes — but it doesn't run directly on the operating system as a plain native executable: it's an environment built on the [**.NET Runtime**](https://learn.microsoft.com/en-us/dotnet/), which explains both its typed objects (see [Variables](/?c=shells&s=powershell&p=variables) and [Redirections and Pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) and some of its performance differences from Bash.
 
 > **Prerequisite:** this chapter assumes you know what a process is (`fork`/`exec`) — see the chapter on a shell's architecture (Bash section), which details this mechanism on the Unix side; the concepts show up here too, just implemented differently on Windows.
 
@@ -28,7 +28,7 @@ Unlike Bash, which only distinguishes *builtin* (run by the shell itself) and *e
 
 ### Cmdlets
 
-`Get-ChildItem`, `Set-Location`, `Write-Output`... are compiled **.NET classes**, packaged in modules — run directly within the PowerShell process (like a Bash *builtin*), but implemented in C#, not interpreted line by line.
+`Get-ChildItem`, `Set-Location`, `Write-Output`... are compiled **.NET classes**, packaged in modules — run directly within the PowerShell process (like a Bash *builtin*), but implemented in [C#](https://learn.microsoft.com/en-us/dotnet/csharp/), not interpreted line by line.
 
 ### Functions
 

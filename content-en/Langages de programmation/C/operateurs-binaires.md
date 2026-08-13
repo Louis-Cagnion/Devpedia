@@ -104,7 +104,7 @@ int count_bits(unsigned int n) {
 a ^= b; b ^= a; a ^= b;
 ```
 
-The first two are genuinely useful in practice. The last one illustrates a property of XOR (`x ^ x == 0`, `x ^ 0 == x`) but should be avoided in real code: it's unreadable, slower than a temporary variable on a modern processor, and **wrong if both variables are the same one** (`a` and `a` would both end up 0).
+The first two are genuinely useful in practice (bit counting is [Kernighan's algorithm](https://en.wikipedia.org/wiki/Hamming_weight#Language_support)). The last one illustrates a property of XOR (`x ^ x == 0`, `x ^ 0 == x`) but should be avoided in real code: it's unreadable, slower than a temporary variable on a modern processor, and **wrong if both variables are the same one** (`a` and `a` would both end up 0).
 
 ## `n & 1` rather than `n % 2`?
 

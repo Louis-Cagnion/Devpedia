@@ -61,7 +61,7 @@ struct Compact {
 
 On a structure used in millions of instances, this detail changes memory usage by a third — and above all, processor cache efficiency, often more decisive than the computation itself.
 
-> So **never** compute a structure's size by hand: use `sizeof`. And don't write a raw structure to a file or over the network assuming its layout: padding varies by compiler and architecture. That's the role of **serialization** (JSON, Protobuf...) — producing a format defined independently of the machine.
+> So **never** compute a structure's size by hand: use `sizeof`. And don't write a raw structure to a file or over the network assuming its layout: padding varies by compiler and architecture. That's the role of **serialization** ([JSON](/?c=infrastructure&p=json), [Protobuf](https://protobuf.dev)...) — producing a format defined independently of the machine.
 
 ## Byte order (*endianness*)
 
@@ -96,7 +96,7 @@ This is also why `pointer + 1` advances by `sizeof(type)` bytes and not by 1: po
 
 ## What about higher-level languages?
 
-Python, JavaScript, or PHP hide all of this: you don't choose the memory layout. But it doesn't disappear, it just shows up differently:
+[Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), or [PHP](/?c=langages-de-programmation&s=php&p=php) hide all of this: you don't choose the memory layout. But it doesn't disappear, it just shows up differently:
 
 - a Python list of 1,000 integers takes up much more than 4,000 bytes, because each integer is an **object** with its own header;
 - this is precisely why NumPy exists: a NumPy array stores raw contiguous values, aligned, with no per-element header — hence order-of-magnitude speedups on numeric computation (see [NumPy](/?c=data-science&p=numpy)).

@@ -4,7 +4,7 @@ order: 8
 
 # A Managed Runtime's Heap
 
-The C chapter on [memory management](/?c=langages-de-programmation&s=c&p=memoire) distinguishes the stack (automatic) from the heap (manual, `malloc`/`free`). A managed runtime — the JVM (Java/Elasticsearch/Kafka...), the .NET CLR, Node.js's V8 engine — also has a heap, but with a different meaning: it's **the entire memory area reserved for dynamically allocated objects**, managed automatically by a garbage collector rather than through explicit calls. The developer neither allocates nor frees it themselves; they only set its size.
+The C chapter on [memory management](/?c=langages-de-programmation&s=c&p=memoire) distinguishes the stack (automatic) from the heap (manual, `malloc`/`free`). A managed runtime — the [JVM](https://docs.oracle.com/en/java/) (Java/[Elasticsearch](https://www.elastic.co/elasticsearch)/[Kafka](https://kafka.apache.org)...), the .NET [CLR](https://learn.microsoft.com/en-us/dotnet/standard/clr), Node.js's [V8](https://v8.dev) engine — also has a heap, but with a different meaning: it's **the entire memory area reserved for dynamically allocated objects**, managed automatically by a garbage collector rather than through explicit calls. The developer neither allocates nor frees it themselves; they only set its size.
 
 ## A size that's often auto-detected, not always well suited
 
@@ -12,7 +12,7 @@ Absent explicit guidance, most managed runtimes pick a default heap size based o
 
 Two concrete effects of a heap oversized relative to actual need:
 
-- **Less RAM for the OS's disk cache.** An engine like Elasticsearch (built on Lucene) relies heavily on the system's file cache for read performance — a heap that hogs half the RAM leaves that much less room for this cache, and can push the system toward swapping.
+- **Less RAM for the OS's disk cache.** An engine like Elasticsearch (built on [Lucene](https://lucene.apache.org)) relies heavily on the system's file cache for read performance — a heap that hogs half the RAM leaves that much less room for this cache, and can push the system toward swapping.
 - **A garbage collector slower to warm up.** The larger the heap, the more work the first garbage collection cycles have to do to establish their internal statistics — an effect felt mostly at startup, before cruising speed kicks in.
 
 ## Setting the size explicitly

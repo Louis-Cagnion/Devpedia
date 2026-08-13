@@ -33,7 +33,7 @@ Codes 0 to 31 aren't printable characters but **control characters**, a legacy o
 
 ## The problem: 128 characters aren't enough
 
-Neither `é`, `ñ`, `京`, nor `😀` fit into ASCII. Every region therefore created its own extension using the 8th bit (codes 128–255): `ISO-8859-1` (Latin-1) for Western Europe, `ISO-8859-5` for Cyrillic, `Windows-1252`...
+Neither `é`, `ñ`, `京`, nor `😀` fit into ASCII. Every region therefore created its own extension using the 8th bit (codes 128–255): [`ISO-8859-1`](https://en.wikipedia.org/wiki/ISO/IEC_8859-1) (Latin-1) for Western Europe, `ISO-8859-5` for Cyrillic, [`Windows-1252`](https://en.wikipedia.org/wiki/Windows-1252)...
 
 Hence the structural problem: **the same byte meant different characters depending on the table used**, and nothing in the file indicated which one. A French text read with a Cyrillic table came out as gibberish.
 
@@ -100,13 +100,13 @@ This symptom is very recognizable and helps trace back to the cause:
 | `?` or `�` | Character missing from the target encoding, replaced |
 | Correct accents except in a spreadsheet | Missing separator or BOM on open |
 
-The fix is never to "replace the characters" but to **declare the right encoding** at the point of reading. Every layer must be consistent: the HTML tag (`<meta charset="utf-8">`, see the [Document Structure](/?c=langages-de-balisage&s=html&p=structure-dun-document) chapter), the HTTP header, the source files' encoding, and the database's character set (`utf8mb4` for MySQL — plain `utf8` there is a false friend limited to 3 bytes, which rejects emoji).
+The fix is never to "replace the characters" but to **declare the right encoding** at the point of reading. Every layer must be consistent: the HTML tag (`<meta charset="utf-8">`, see the [Document Structure](/?c=langages-de-balisage&s=html&p=structure-dun-document) chapter), [the HTTP header](/?c=infrastructure&p=api-et-http), the source files' encoding, and the database's character set (`utf8mb4` for [MySQL](https://dev.mysql.com/doc/) — plain `utf8` there is a false friend limited to 3 bytes, which rejects emoji).
 
 ## The BOM
 
 The **BOM** (*Byte Order Mark*, `U+FEFF`) is an optional marker at the start of a file signaling its encoding. It's essential in UTF-16 to indicate byte order, but **useless in UTF-8**, where the order is fixed.
 
-It nonetheless remains common on Windows, where some tools (including Excel) use it to recognize a UTF-8 file. Hence a classic trade-off: a CSV meant for Excel needs the BOM to display accents correctly, whereas a PHP source file with a BOM causes content to be sent prematurely and breaks HTTP headers.
+It nonetheless remains common on Windows, where some tools (including [Excel](https://www.microsoft.com/microsoft-365/excel)) use it to recognize a UTF-8 file. Hence a classic trade-off: a CSV meant for Excel needs the BOM to display accents correctly, whereas a PHP source file with a BOM causes content to be sent prematurely and breaks HTTP headers.
 
 ## UTF-16 and UTF-32
 

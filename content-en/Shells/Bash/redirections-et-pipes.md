@@ -6,7 +6,7 @@ order: 9
 
 Every Unix command communicates by default through three streams: **standard input** (`stdin`, what it reads), **standard output** (`stdout`, what it normally displays), and **standard error** (`stderr`, where error messages go). Redirections and pipes make it possible to redirect these streams to a file or to another command, instead of to the terminal.
 
-> **Note:** these "streams" are actually numbered **file descriptors** (`0`, `1`, `2`) — see the chapter on system calls and file descriptors (C section) for what actually happens at the operating system level when you redirect them.
+> **Note:** these "streams" are actually numbered **file descriptors** (`0`, `1`, `2`) — see the [chapter on system calls and file descriptors](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) (C section) for what actually happens at the operating system level when you redirect them.
 
 ## Redirecting output to a file
 

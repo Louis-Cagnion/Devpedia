@@ -11,7 +11,7 @@ A **Jupyter notebook** is an interactive document that combines executable code,
 A notebook (`.ipynb` file) is a collection of **cells** of two types:
 
 - **Code snippet**: written in Python, executable on its own (use `Shift+Input` to run it).
-- **Markdown section**: formatted text (headings, lists, mathematical formulas using LaTeX) to document the process alongside the code.
+- **Markdown section**: formatted text (headings, lists, mathematical formulas using [LaTeX](https://www.latex-project.org)) to document the process alongside the code.
 
 ```python
 # Cell 1 (code)

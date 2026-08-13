@@ -8,7 +8,7 @@ When the same piece of information can be represented by two overlapping mechani
 
 ## A concrete example
 
-A Markdown file could, in theory, declare its title in two ways at once:
+A [Markdown](https://commonmark.org) file could, in theory, declare its title in two ways at once:
 
 ```markdown
 ---

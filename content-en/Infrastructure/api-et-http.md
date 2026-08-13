@@ -75,6 +75,6 @@ A program can then read `temperature` or `conditions` directly, without having t
 | | |
 |---|---|
 | **Key takeaways** | HTTP is the most common protocol for exchanging data between a client and a server. A request specifies a method (`GET`/`POST`/`PUT`/`DELETE`); a response always carries a status code. An API is a server designed to be used by a program rather than a human. |
-| **Tools you can use** | A browser (for a simple `GET`), or a dedicated tool (`curl`, Postman, an HTTP library in the language of your choice) to build a complete request. |
+| **Tools you can use** | A browser (for a simple `GET`), or a dedicated tool ([`curl`](https://curl.se), [Postman](https://www.postman.com), an HTTP library in the language of your choice) to build a complete request. |
 | **Pitfalls to avoid** | Using `GET` for an action that modifies data. Ignoring a response's status code. Confusing an absent response with an explicit error response. |
 | **Best practices** | Reserve `GET` for read-only use. Systematically check the status code before using a response's content. Explicitly handle error cases, not just the success case. |

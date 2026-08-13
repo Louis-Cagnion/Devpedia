@@ -4,7 +4,7 @@ order: 10
 
 # Text Processing (grep, sed, awk...)
 
-A large part of the Unix terminal's power comes from a handful of tools specialized in text processing, designed to be combined with each other via [pipes](/?c=shells&s=bash&p=redirections-et-pipes). This chapter presents the ones used most often day to day.
+A large part of the [Unix terminal](/?c=shells&s=bash&p=scripts-et-shebang)'s power comes from a handful of tools specialized in text processing, designed to be combined with each other via [pipes](/?c=shells&s=bash&p=redirections-et-pipes). This chapter presents the ones used most often day to day.
 
 ## `grep`: searching text
 

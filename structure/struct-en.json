@@ -277,41 +277,6 @@
       "folder": "Langages de balisage",
       "subjects": [
         {
-          "id": "css",
-          "label": "CSS",
-          "folder": "CSS",
-          "chapters": [
-            {
-              "id": "selecteurs",
-              "label": "Selectors"
-            },
-            {
-              "id": "variables-et-cascade",
-              "label": "CSS Variables and the Cascading Model"
-            },
-            {
-              "id": "box-model",
-              "label": "The Box Model"
-            },
-            {
-              "id": "positionnement",
-              "label": "Positioning (position, z-index)"
-            },
-            {
-              "id": "flexbox",
-              "label": "Flexbox"
-            },
-            {
-              "id": "grid",
-              "label": "CSS Grid"
-            },
-            {
-              "id": "responsive-et-media-queries",
-              "label": "Responsive Design and Media Queries"
-            }
-          ]
-        },
-        {
           "id": "html",
           "label": "HTML",
           "folder": "HTML",
@@ -343,6 +308,41 @@
             {
               "id": "attributs-data-et-accessibilite",
               "label": "data-* Attributes and Accessibility (ARIA)"
+            }
+          ]
+        },
+        {
+          "id": "css",
+          "label": "CSS",
+          "folder": "CSS",
+          "chapters": [
+            {
+              "id": "selecteurs",
+              "label": "Selectors"
+            },
+            {
+              "id": "variables-et-cascade",
+              "label": "CSS Variables and the Cascading Model"
+            },
+            {
+              "id": "box-model",
+              "label": "The Box Model"
+            },
+            {
+              "id": "positionnement",
+              "label": "Positioning (position, z-index)"
+            },
+            {
+              "id": "flexbox",
+              "label": "Flexbox"
+            },
+            {
+              "id": "grid",
+              "label": "CSS Grid"
+            },
+            {
+              "id": "responsive-et-media-queries",
+              "label": "Responsive Design and Media Queries"
             }
           ]
         }
@@ -476,159 +476,6 @@
           ]
         },
         {
-          "id": "javascript",
-          "label": "JavaScript",
-          "folder": "JavaScript",
-          "chapters": [
-            {
-              "id": "conditions",
-              "label": "Conditions"
-            },
-            {
-              "id": "boucles",
-              "label": "Loops"
-            },
-            {
-              "id": "fonctions",
-              "label": "Functions"
-            },
-            {
-              "id": "strings",
-              "label": "Strings"
-            },
-            {
-              "id": "tableaux",
-              "label": "Arrays"
-            },
-            {
-              "id": "nombres",
-              "label": "Numbers"
-            },
-            {
-              "id": "objets",
-              "label": "Objects"
-            },
-            {
-              "id": "poo",
-              "label": "Classes and Object-Oriented Programming"
-            },
-            {
-              "id": "regex",
-              "label": "Regular Expressions"
-            },
-            {
-              "id": "gestion-des-erreurs",
-              "label": "Error Handling"
-            },
-            {
-              "id": "HTMLElements",
-              "label": "HTML Elements"
-            },
-            {
-              "id": "dom-et-evenements",
-              "label": "The DOM and Event Handling"
-            },
-            {
-              "id": "html-elements",
-              "label": "HTMLElements"
-            },
-            {
-              "id": "asynchrone",
-              "label": "Asynchronous Programming (Callbacks, Promises, async/await)"
-            }
-          ]
-        },
-        {
-          "id": "ocaml",
-          "label": "OCaml",
-          "folder": "OCaml",
-          "chapters": [
-            {
-              "id": "programmation-fonctionnelle-vs-imperative",
-              "label": "Functional vs. Imperative Programming"
-            },
-            {
-              "id": "immuabilite-et-fonctions-pures",
-              "label": "Immutability and Pure Functions"
-            },
-            {
-              "id": "filtrage-par-motif-et-types-algebriques",
-              "label": "Pattern Matching and Algebraic Types"
-            },
-            {
-              "id": "recursion-et-fonctions-dordre-superieur",
-              "label": "Recursion and Higher-Order Functions"
-            },
-            {
-              "id": "inference-de-types",
-              "label": "Type Inference"
-            }
-          ]
-        },
-        {
-          "id": "php",
-          "label": "PHP",
-          "folder": "PHP",
-          "chapters": [
-            {
-              "id": "syntaxe",
-              "label": "PHP Syntax"
-            },
-            {
-              "id": "variables",
-              "label": "Variables"
-            },
-            {
-              "id": "conditions",
-              "label": "Conditions"
-            },
-            {
-              "id": "boucles",
-              "label": "Loops"
-            },
-            {
-              "id": "structures-de-langage",
-              "label": "Language Constructs"
-            },
-            {
-              "id": "methodes",
-              "label": "The Most Useful Functions and Methods"
-            },
-            {
-              "id": "include",
-              "label": "Include functions"
-            },
-            {
-              "id": "poo",
-              "label": "Object-Oriented Programming (OOP)"
-            },
-            {
-              "id": "exceptions",
-              "label": "Exceptions"
-            },
-            {
-              "id": "autoloading",
-              "label": "Autoloading Classes"
-            },
-            {
-              "id": "connexions",
-              "label": "Manage Connections"
-            },
-            {
-              "id": "http",
-              "label": "Making HTTP Calls Natively"
-            },
-            {
-              "id": "routage",
-              "label": "Routing Without a Framework (Front Controller)"
-            },
-            {
-              "id": "securite",
-              "label": "Securing your data"
-            }
-          ]
-        },
-        {
           "id": "python",
           "label": "Python",
           "folder": "Python",
@@ -728,6 +575,159 @@
             {
               "id": "nlp-et-llm",
               "label": "Natural Language Processing (NLP) and Large Language Models (LLMs)"
+            }
+          ]
+        },
+        {
+          "id": "ocaml",
+          "label": "OCaml",
+          "folder": "OCaml",
+          "chapters": [
+            {
+              "id": "programmation-fonctionnelle-vs-imperative",
+              "label": "Functional vs. Imperative Programming"
+            },
+            {
+              "id": "immuabilite-et-fonctions-pures",
+              "label": "Immutability and Pure Functions"
+            },
+            {
+              "id": "filtrage-par-motif-et-types-algebriques",
+              "label": "Pattern Matching and Algebraic Types"
+            },
+            {
+              "id": "recursion-et-fonctions-dordre-superieur",
+              "label": "Recursion and Higher-Order Functions"
+            },
+            {
+              "id": "inference-de-types",
+              "label": "Type Inference"
+            }
+          ]
+        },
+        {
+          "id": "javascript",
+          "label": "JavaScript",
+          "folder": "JavaScript",
+          "chapters": [
+            {
+              "id": "conditions",
+              "label": "Conditions"
+            },
+            {
+              "id": "boucles",
+              "label": "Loops"
+            },
+            {
+              "id": "fonctions",
+              "label": "Functions"
+            },
+            {
+              "id": "strings",
+              "label": "Strings"
+            },
+            {
+              "id": "tableaux",
+              "label": "Arrays"
+            },
+            {
+              "id": "nombres",
+              "label": "Numbers"
+            },
+            {
+              "id": "objets",
+              "label": "Objects"
+            },
+            {
+              "id": "poo",
+              "label": "Classes and Object-Oriented Programming"
+            },
+            {
+              "id": "regex",
+              "label": "Regular Expressions"
+            },
+            {
+              "id": "gestion-des-erreurs",
+              "label": "Error Handling"
+            },
+            {
+              "id": "HTMLElements",
+              "label": "HTML Elements"
+            },
+            {
+              "id": "dom-et-evenements",
+              "label": "The DOM and Event Handling"
+            },
+            {
+              "id": "html-elements",
+              "label": "HTMLElements"
+            },
+            {
+              "id": "asynchrone",
+              "label": "Asynchronous Programming (Callbacks, Promises, async/await)"
+            }
+          ]
+        },
+        {
+          "id": "php",
+          "label": "PHP",
+          "folder": "PHP",
+          "chapters": [
+            {
+              "id": "syntaxe",
+              "label": "PHP Syntax"
+            },
+            {
+              "id": "variables",
+              "label": "Variables"
+            },
+            {
+              "id": "conditions",
+              "label": "Conditions"
+            },
+            {
+              "id": "boucles",
+              "label": "Loops"
+            },
+            {
+              "id": "structures-de-langage",
+              "label": "Language Constructs"
+            },
+            {
+              "id": "methodes",
+              "label": "The Most Useful Functions and Methods"
+            },
+            {
+              "id": "include",
+              "label": "Include functions"
+            },
+            {
+              "id": "poo",
+              "label": "Object-Oriented Programming (OOP)"
+            },
+            {
+              "id": "exceptions",
+              "label": "Exceptions"
+            },
+            {
+              "id": "autoloading",
+              "label": "Autoloading Classes"
+            },
+            {
+              "id": "connexions",
+              "label": "Manage Connections"
+            },
+            {
+              "id": "http",
+              "label": "Making HTTP Calls Natively"
+            },
+            {
+              "id": "routage",
+              "label": "Routing Without a Framework (Front Controller)"
+            },
+            {
+              "id": "securite",
+              "label": "Securing your data"
             }
           ]
         }

@@ -31,7 +31,7 @@ Animal *a = new Chien("Rex");
 std::cout << a->parler();   // "..." poster -> NOT "Rex barks"!
 ```
 
-> **Common pitfall:** Without the `virtual` keyword, C++ chooses which version of `parler()` to call based on the **declared type** of the pointer (`Animal*`), not on the actual type of the object being pointed to (`Chien`)—a mechanism called *static binding*. The result seems to “ignore” inheritance, which is often surprising to those coming from languages like PHP, Python, or Java, where this behavior is automatic.
+> **Common pitfall:** Without the `virtual` keyword, C++ chooses which version of `parler()` to call based on the **declared type** of the pointer (`Animal*`), not on the actual type of the object being pointed to (`Chien`)—a mechanism called *static binding*. The result seems to “ignore” inheritance, which is often surprising to those coming from languages like [PHP](/?c=langages-de-programmation&s=php&p=poo), [Python](/?c=langages-de-programmation&s=python&p=poo), or [Java](https://docs.oracle.com/en/java/), where this behavior is automatic.
 
 ## Making a Method Polymorphic: `virtual`
 

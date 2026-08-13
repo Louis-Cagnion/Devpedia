@@ -66,7 +66,7 @@ The dictionary plays exactly the same role as the `if`/`elif` chain, but adding 
 
 ## Where to stop
 
-This generalization has a cost: a data structure too abstract for two or three cases that won't grow complicates reading with no real benefit (see the KISS/YAGNI principle). The rule of thumb: as soon as you write the **third** repetition of the same pattern, that's the right time to replace it with an indexed structure — before that, it's often not yet worth it.
+This generalization has a cost: a data structure too abstract for two or three cases that won't grow complicates reading with no real benefit (see the [KISS](https://en.wikipedia.org/wiki/KISS_principle)/[YAGNI](https://martinfowler.com/bliki/Yagni.html) principle). The rule of thumb: as soon as you write the **third** repetition of the same pattern, that's the right time to replace it with an indexed structure — before that, it's often not yet worth it.
 
 ---
 

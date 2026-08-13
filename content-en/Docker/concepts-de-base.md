@@ -25,7 +25,7 @@ Machine virtuelle      Conteneur
 
 **The hypervisor** is the software layer that creates and manages virtual machines by allocating physical resources (CPU, memory) among them—it is this additional layer, which is absent in a container, that explains the difference in size between the two approaches.
 
-> **Direct consequence:** a Linux container cannot run natively on Windows or macOS—Docker Desktop actually launches a small Linux VM on those platforms to host the containers. On a Linux server, however, no virtualization layer is required.
+> **Direct consequence:** a Linux container cannot run natively on Windows or macOS—[Docker Desktop](https://docs.docker.com/desktop/) actually launches a small Linux VM on those platforms to host the containers. On a Linux server, however, no virtualization layer is required.
 
 ## Under the Hood: Namespaces and cgroups
 

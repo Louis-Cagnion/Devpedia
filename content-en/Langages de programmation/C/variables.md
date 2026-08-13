@@ -36,7 +36,7 @@ A `char` typically occupies 1 byte of memory and contains the ASCII value of the
 
 ## 
 
-Since the C99 standard, the language has provided the `bool` type through the `stdbool.h` library.
+Since the [C99](https://en.wikipedia.org/wiki/C99) standard, the language has provided the `bool` type through the `stdbool.h` library.
 
 ```c
 #include <stdbool.h>

@@ -41,7 +41,7 @@ The warning sign is an `if`/`elif`/`switch` where each branch tests a specific v
 
 ## The limit: don't generalize a case that will stay unique
 
-This principle doesn't justify building a generic structure for a case that, by nature, will only ever have a single value — processing genuinely specific to one single site doesn't need a generalized configuration mechanism, that would be over-engineering (YAGNI). Genericity is justified when the number of cases is likely to vary; it becomes an unnecessary cost when it structurally never will.
+This principle doesn't justify building a generic structure for a case that, by nature, will only ever have a single value — processing genuinely specific to one single site doesn't need a generalized configuration mechanism, that would be over-engineering ([YAGNI](https://martinfowler.com/bliki/Yagni.html)). Genericity is justified when the number of cases is likely to vary; it becomes an unnecessary cost when it structurally never will.
 
 ---
 

@@ -13,6 +13,6 @@ Some of the key concepts used in JavaScript include:
 
 Learning JavaScript helps you better understand how a web page becomes interactive, how the browser interprets and executes code, and how data flows between the client and the server during asynchronous exchanges.
 
-Thanks to its versatility, JavaScript is used both on the client side (in the browser) and on the server side (via Node.js), making it a core language of modern web development.
+Thanks to its versatility, JavaScript is used both on the client side (in the browser) and on the server side (via [Node.js](https://nodejs.org)), making it a core language of modern web development.
 
-Learning JavaScript also provides an excellent foundation for understanding how client-side web applications work, since many frameworks (React, Vue, Angular) and environments (Node.js, Express) are based on this language.
+Learning JavaScript also provides an excellent foundation for understanding how client-side web applications work, since many frameworks ([React](https://react.dev), [Vue](https://vuejs.org), [Angular](https://angular.dev)) and environments (Node.js, Express) are based on this language.

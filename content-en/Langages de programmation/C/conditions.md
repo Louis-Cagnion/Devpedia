@@ -8,7 +8,7 @@ Conditional statements allow you to execute a block of code depending on whether
 
 ## `if`'s Condition
 
-In C, any **non-zero** value is considered true; only the value `0` is false—there was no native Boolean type prior to C99 (`stdbool.h`, see the chapter on variables):
+In C, any **non-zero** value is considered true; only the value `0` is false—there was no native Boolean type prior to [C99](https://en.wikipedia.org/wiki/C99) (`stdbool.h`, see the chapter on variables):
 
 ```c
 int age = 18;

@@ -24,8 +24,8 @@ A **touch target** is the area a finger or cursor must reach to activate an elem
 
 | Reference | Recommended minimum size |
 |---|---|
-| Apple (Human Interface Guidelines) | 44×44 px |
-| Google (Material Design) | 48×48 dp |
+| Apple ([Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)) | 44×44 px |
+| Google ([Material Design](https://m3.material.io)) | 48×48 dp |
 | WCAG (criterion 2.5.5, level AAA) | 44×44 px |
 
 > **Pitfall:** buttons or links that are too small or too close together, especially on mobile. The user taps the wrong element — a higher risk for someone with a tremor or motor impairment, but an annoyance for everyone (on a bus, while walking, with large fingers).

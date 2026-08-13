@@ -4,7 +4,7 @@ order: 5
 
 # Conditions
 
-Bash has no comparison operators built into the language like PHP or C do — tests rely on **commands** (`test`, `[`, `[[`) whose exit code (`$?`) determines whether the condition is true (`0`) or false (non-zero).
+Bash has no comparison operators built into the language like [PHP](/?c=langages-de-programmation&s=php&p=conditions) or [C](/?c=langages-de-programmation&s=c&p=conditions) do — tests rely on **commands** (`test`, `[`, `[[`) whose exit code (`$?`) determines whether the condition is true (`0`) or false (non-zero).
 
 ## `if` / `then` / `elif` / `else` / `fi`
 

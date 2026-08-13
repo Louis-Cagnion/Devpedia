@@ -1,6 +1,10 @@
+---
+order: 6
+---
+
 # OCaml
 
-Every language covered so far in this section — C, C++, PHP, Python, JavaScript — shares the same underlying style: **statements** executed in order, direct mutation of variables, loops to repeat a process. This is the **imperative** style, and it's so widespread it becomes invisible.
+Every language covered so far in this section — [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp), [PHP](/?c=langages-de-programmation&s=php&p=php), [Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) — shares the same underlying style: **statements** executed in order, direct mutation of variables, loops to repeat a process. This is the **imperative** style, and it's so widespread it becomes invisible.
 
 **OCaml** is a chance to see a different style, the **functional** style: programs are built by assembling functions and evaluating expressions, rather than chaining statements that modify a state. It's not some exotic lab language — OCaml compiles to native code as fast as C, and is used in production in fields that especially value reliability: finance ([Jane Street](https://www.janestreet.com) made it their main language), formal verification (the [Coq](https://coq.inria.fr) proof assistant is written in OCaml), and static code analysis.
 

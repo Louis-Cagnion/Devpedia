@@ -8,7 +8,7 @@ The previous chapters cover concepts (hierarchy, color, tokens, wireframes...) i
 
 ## Interface design tools
 
-Most tools of this kind (Figma, Sketch, Adobe XD, Penpot...) share the same basic concepts, sometimes under different names:
+Most tools of this kind ([Figma](https://www.figma.com), [Sketch](https://www.sketch.com), Adobe XD, [Penpot](https://penpot.app)...) share the same basic concepts, sometimes under different names:
 
 | Concept | Role | Equivalent already seen |
 |---|---|---|
@@ -24,7 +24,7 @@ Working with components and auto-layout in the design tool, rather than with fix
 
 ## Animation tools for advanced interactions
 
-A simple transition (a button that slightly changes color on hover) is covered directly in CSS. A more elaborate interaction — several elements animated in a precise order, a movement that reacts to the user's gesture, spring physics rather than plain linear easing — goes beyond what basic CSS transitions comfortably cover, and then relies on a JavaScript library dedicated to animation (GSAP, Framer Motion, among others):
+A simple transition (a button that slightly changes color on hover) is covered directly in CSS. A more elaborate interaction — several elements animated in a precise order, a movement that reacts to the user's gesture, spring physics rather than plain linear easing — goes beyond what basic CSS transitions comfortably cover, and then relies on a JavaScript library dedicated to animation ([GSAP](https://gsap.com), Framer Motion, among others):
 
 | | CSS transition | JS animation library |
 |---|---|---|

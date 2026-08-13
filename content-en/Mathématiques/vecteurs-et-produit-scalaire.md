@@ -49,7 +49,7 @@ label: [1, 2] + [3, 4] = [4, 6]
 
 Components are added one by one, at the same position.
 
-> **Pitfall:** adding two vectors of different sizes makes no sense (`[1, 2] + [1, 2, 3]` isn't defined — which component would go with which?). A program that attempts the operation generally raises an explicit error (e.g. *"shapes mismatch"* with NumPy) rather than guessing.
+> **Pitfall:** adding two vectors of different sizes makes no sense (`[1, 2] + [1, 2, 3]` isn't defined — which component would go with which?). A program that attempts the operation generally raises an explicit error (e.g. *"shapes mismatch"* with [NumPy](/?c=data-science&p=numpy)) rather than guessing.
 >
 > **Best practice:** check that two vectors have the same dimension before combining them, rather than discovering the mismatch at runtime.
 
@@ -116,6 +116,6 @@ This result isn't a coincidence specific to this example: dividing each componen
 | | |
 |---|---|
 | **Key takeaways** | A vector is an ordered list of numbers treated as a single entity. The dot product reduces two vectors of the same dimension to a single number, which measures how much they point in the same direction. The norm is a vector's length. |
-| **Tools you can use** | No specific tool for computing by hand; in practice, a library like NumPy performs these operations directly on whole vectors, with no explicit loop. |
+| **Tools you can use** | No specific tool for computing by hand; in practice, a library like [NumPy](/?c=data-science&p=numpy) performs these operations directly on whole vectors, with no explicit loop. |
 | **Pitfalls to avoid** | Adding or combining two vectors of different dimensions. Normalizing a zero vector (division by a norm of 0). |
 | **Best practices** | Check that two vectors have the same dimension before any operation between them. Document what each component of a vector represents as soon as it's created. |

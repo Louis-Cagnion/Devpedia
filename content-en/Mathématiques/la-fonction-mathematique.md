@@ -18,7 +18,7 @@ f(5)  -> 10
 
 > **Analogy:** a well-calibrated vending machine — pressing button "A1" always dispenses the same drink. If one day the same button sometimes gave a juice, sometimes a coffee, it would no longer be a function in the mathematical sense: the result would no longer depend only on the input.
 
-> **Pitfall:** a function in programming (see [Functions](/?c=shells&s=bash&p=fonctions) in Bash, or its equivalent in any other language) does **not** have this guarantee — a function that reads the current time, draws a [random](/?c=representation-des-donnees&p=aleatoire-et-generateurs) number, or reads a file can return a different result on every call, with the same input. This is called a **non-deterministic** function — a term that will come back up to explain why certain systems (including an LLM) never answer exactly the same thing twice.
+> **Pitfall:** a function in programming (see [Functions](/?c=shells&s=bash&p=fonctions) in Bash, or its equivalent in any other language) does **not** have this guarantee — a function that reads the current time, draws a [random](/?c=representation-des-donnees&p=aleatoire-et-generateurs) number, or reads a file can return a different result on every call, with the same input. This is called a **non-deterministic** function — a term that will come back up to explain why certain systems (including an [LLM](/?c=ia&p=nlp-et-llm)) never answer exactly the same thing twice.
 >
 > **Best practice:** in programming, prefer a deterministic function (same input → always the same output) whenever possible — the same call then gives a predictable result, making it simpler to test and debug.
 

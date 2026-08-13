@@ -91,7 +91,7 @@ echo $((a / b))   # 1 -> integer division only, Bash doesn't handle decimals
 
 > **Pitfall:** `$((a / b))` silently truncates any decimal part, with no warning or error — `echo $((5 / 2))` displays `2`, not `2.5`. A computation that should produce a decimal result (an average, a percentage...) thus gives a wrong result with nothing flagging it.
 >
-> **Best practice:** go through an external tool that handles decimals (`bc`, `awk`) as soon as a computation might produce a non-integer result, rather than Bash's native arithmetic.
+> **Best practice:** go through an external tool that handles decimals ([`bc`](https://www.gnu.org/software/bc/), `awk`) as soon as a computation might produce a non-integer result, rather than Bash's native arithmetic.
 
 ## Special variables
 

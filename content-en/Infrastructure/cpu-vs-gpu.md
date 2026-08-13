@@ -57,6 +57,6 @@ The CPU and GPU each have their own memory — having the GPU compute on a piece
 | | |
 |---|---|
 | **Key takeaways** | A CPU has few, fast, versatile cores, suited to sequential tasks and branching. A GPU has thousands of simple cores, suited to repeating the same operation on independent data — the case for the vector/matrix computation behind a neural network. |
-| **Tools you can use** | Deep learning libraries (PyTorch, TensorFlow) handle transferring data to the GPU and parallelizing computation automatically. |
+| **Tools you can use** | Deep learning libraries ([PyTorch](/?c=ia&p=deep-learning-pytorch), [TensorFlow](https://www.tensorflow.org)) handle transferring data to the GPU and parallelizing computation automatically. |
 | **Pitfalls to avoid** | Transferring data between CPU and GPU too often or in too small amounts. Expecting a speedup from a GPU on an inherently sequential computation. |
 | **Best practices** | Batch CPU/GPU transfers into as few large operations as possible. Reserve the GPU for computations that are genuinely parallelizable. |

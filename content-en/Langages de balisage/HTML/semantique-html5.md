@@ -77,7 +77,7 @@ Before HTML5, structuring a page relied almost entirely on generic `<div>`, dist
 ## Why Semantics Matters, Beyond Style
 
 - **Accessibility** (see the dedicated chapter): A screen reader can offer to jump directly to `<nav>` or `<main>`, something that no `<div class="nav">` can do as reliably.
-- **SEO**: Search engines better understand the structure and relative importance of content.
+- **[SEO](https://developer.mozilla.org/en-US/docs/Glossary/SEO)**: Search engines better understand the structure and relative importance of content.
 - **Code readability**: `<header>` / `<main>` / `<footer>` document the structure directly in the HTML, without having to read the CSS class names to figure out the role of each block.
 
 > **Best practice:** Use a semantic tag whenever it corresponds to the actual role of the content, and only fall back on `<div>` (which is purely generic and meaningless) for a simple technical container required for CSS styling, with no meaning of its own.

@@ -4,7 +4,7 @@ order: 4
 
 # What Is the Cloud?
 
-Running a program or storing data requires a physical machine somewhere. The **cloud** refers to using remote machines, owned and managed by a third-party provider (Amazon AWS, Google Cloud, Microsoft Azure...), rather than hardware bought and managed by the company itself.
+Running a program or storing data requires a physical machine somewhere. The **cloud** refers to using remote machines, owned and managed by a third-party provider ([Amazon AWS](https://aws.amazon.com), [Google Cloud](https://cloud.google.com), [Microsoft Azure](https://azure.microsoft.com)...), rather than hardware bought and managed by the company itself.
 
 > **Analogy:** renting a furnished apartment rather than buying and maintaining your own house — you pay for use, without owning or having to maintain what's behind it.
 

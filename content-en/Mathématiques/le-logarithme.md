@@ -28,7 +28,7 @@ Raising a number to a power (`b^y`) means multiplying `b` by itself `y` times: `
 
 > **Pitfall:** confusing bases. `log2(8) = 3` but `log10(8) ≈ 0.9` — the result depends entirely on the chosen base, two logarithms of different bases are never directly comparable without conversion.
 >
-> **Best practice:** always check which base a function or formula uses before interpreting its result (`log` in Python, for instance, refers to the **natural** logarithm — base *e* — not base 10, contrary to what the name might suggest).
+> **Best practice:** always check which base a function or formula uses before interpreting its result (`log` in [Python](/?c=langages-de-programmation&s=python&p=python), for instance, refers to the **natural** logarithm — base *e* — not base 10, contrary to what the name might suggest).
 
 ## The shape of its curve: very slow for large x, very fast near 0
 

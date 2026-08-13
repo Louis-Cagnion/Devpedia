@@ -71,7 +71,7 @@ See PHP's [Securing Your Data](/?c=langages-de-programmation&s=php&p=securite) c
 
 ## Where does real entropy come from?
 
-The operating system collects physical events that are hard to predict: precise intervals between keystrokes and hardware interrupts, thermal noise, and on recent processors a dedicated instruction (`RDRAND`). It feeds an entropy pool with this, exposed on Linux via `/dev/urandom`.
+The operating system collects physical events that are hard to predict: precise intervals between keystrokes and hardware interrupts, thermal noise, and on recent processors a dedicated instruction ([`RDRAND`](https://en.wikipedia.org/wiki/RDRAND)). It feeds an entropy pool with this, exposed on Linux via [`/dev/urandom`](https://man7.org/linux/man-pages/man4/urandom.4.html).
 
 This is where a CSPRNG draws its seed — and it's what makes it unpredictable: the seed itself follows no formula.
 

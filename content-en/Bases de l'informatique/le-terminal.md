@@ -58,7 +58,7 @@ Résultat affiché dans le terminal
 
 Once opened, the terminal displays a line ending with a symbol (`>`, `$`, `%`...) followed by a blinking cursor: this is the **prompt**. It waits for you to type something—nothing runs until you press `Input`.
 
-> **Pitfall:** On Windows, confusing **the Command Prompt** (`cmd.exe`, the original Windows shell) with **PowerShell**—the two look similar, but their commands and syntax differ significantly.
+> **Pitfall:** On Windows, confusing **the Command Prompt** ([`cmd.exe`](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd), the original Windows shell) with **PowerShell**—the two look similar, but their commands and syntax differ significantly.
 >
 > **Best practice:** On a recent computer, use PowerShell (more comprehensive; see [dedicated chapter](/?c=shells&s=powershell&p=powershell)) instead of Command Prompt, unless there is a specific reason to use the latter.
 

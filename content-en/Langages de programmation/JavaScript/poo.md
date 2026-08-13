@@ -4,7 +4,7 @@ order: 7
 
 # Classes and Object-Oriented Programming
 
-Unlike PHP or Python, objects in JavaScript are not fundamentally based on classes; they are based on **prototypes**. The syntax `class` (introduced in ES6) is merely syntactic sugar built on top of this older mechanism—understanding both helps prevent surprises regarding certain behaviors.
+Unlike [PHP](/?c=langages-de-programmation&s=php&p=poo) or [Python](/?c=langages-de-programmation&s=python&p=poo), objects in JavaScript are not fundamentally based on classes; they are based on **prototypes**. The syntax `class` (introduced in ES6) is merely syntactic sugar built on top of this older mechanism—understanding both helps prevent surprises regarding certain behaviors.
 
 ## Declare a Class
 

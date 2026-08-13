@@ -23,7 +23,7 @@ for (int n : numbers) {              // simple loop, like a for-each loop
 }
 ```
 
-> **Note:** `std::vector` is, internally, a contiguous array in memory (see the chapter on pointers and memory, section C) that automatically resizes (often by doubling its capacity) when it is full—the same principle as a Python list or a Java `ArrayList`, but without the indirection layer of a garbage-collected language.
+> **Note:** `std::vector` is, internally, a contiguous array in memory (see the chapter on pointers and memory, section C) that automatically resizes (often by doubling its capacity) when it is full—the same principle as a [Python list](/?c=langages-de-programmation&s=python&p=listes-et-tuples) or a Java [`ArrayList`](https://docs.oracle.com/en/java/), but without the indirection layer of a garbage-collected language.
 
 ## `std::list` : the doubly linked list
 
@@ -53,7 +53,7 @@ for (const auto &[name, age] : ages) {   // Process: Pairs are ALWAYS sorted by 
 }
 ```
 
-> **Note:** `std::map` is internally a balanced tree (often a red-black tree, a variant of the binary search tree discussed in the dedicated chapter, section C)—so the keys are always traversed **in sorted order**, unlike a PHP associative array or a Python `dict` (which are in insertion order). `std::unordered_map` offers the equivalent based on a hash table (see the dedicated chapter, section C), which is faster on average but does not guarantee any specific order.
+> **Note:** `std::map` is internally a balanced tree (often a [red-black tree](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree), a variant of the binary search tree discussed in the dedicated chapter, section C)—so the keys are always traversed **in sorted order**, unlike a [PHP associative array](/?c=langages-de-programmation&s=php&p=variables) or a [Python `dict`](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) (which are in insertion order). `std::unordered_map` offers the equivalent based on a hash table (see the dedicated chapter, section C), which is faster on average but does not guarantee any specific order.
 
 ## `std::set` : unique, ordered values
 

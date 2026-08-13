@@ -10,7 +10,7 @@ Past a few minutes of execution, a program changes nature. It's no longer a comm
 
 A program that accumulates its results in memory and only writes at the end loses **everything** if interrupted: a crash, the network, the machine going to sleep. Writing each result as soon as it's obtained completely changes behavior in the event of an incident.
 
-The simplest format for this is **JSON Lines**: one complete JSON object per line. Unlike a JSON array, it doesn't need to be closed to stay readable — a file truncated mid-way remains usable up to its last complete line.
+The simplest format for this is [**JSON Lines**](https://jsonlines.org): one complete JSON object per line. Unlike a JSON array, it doesn't need to be closed to stay readable — a file truncated mid-way remains usable up to its last complete line.
 
 ```python
 class ProgressState:
