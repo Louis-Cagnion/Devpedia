@@ -86,7 +86,7 @@ a.mean()  # 2.0
 a.max()   # 3
 ```
 
-> **Note :** `*` entre deux tableaux NumPy multiplie élément par élément : pour un vrai produit matriciel (au sens de l'algèbre linéaire, utilisé massivement en deep learning, voir [Les réseaux de neurones](/?c=ia&p=reseaux-de-neurones)), l'opérateur est `@` (ou `np.matmul()`), jamais `*`.
+> **Note :** `*` entre deux tableaux NumPy multiplie élément par élément : pour un vrai produit matriciel (au sens de l'algèbre linéaire, utilisé massivement en deep learning, voir [Les réseaux de neurones](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones)), l'opérateur est `@` (ou `np.matmul()`), jamais `*`.
 
 Voir aussi le chapitre sur [pandas](/?c=data-science&p=pandas), qui construit ses `DataFrame` directement au-dessus des `ndarray` NumPy.
 

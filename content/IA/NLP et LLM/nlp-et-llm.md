@@ -4,7 +4,7 @@ order: 5
 
 # Traitement du langage naturel (NLP) et grands modèles de langage (LLM)
 
-Un [réseau de neurones](/?c=ia&p=reseaux-de-neurones) manipule des nombres, jamais directement du texte. Le traitement du langage naturel (NLP, *Natural Language Processing*) regroupe les techniques qui convertissent du texte en représentations numériques exploitables, l'étape préalable indispensable à tout modèle de langage, jusqu'aux grands modèles de langage (LLM) modernes.
+Un [réseau de neurones](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones) manipule des nombres, jamais directement du texte. Le traitement du langage naturel (NLP, *Natural Language Processing*) regroupe les techniques qui convertissent du texte en représentations numériques exploitables, l'étape préalable indispensable à tout modèle de langage, jusqu'aux grands modèles de langage (LLM) modernes.
 
 ## La tokenisation : découper le texte
 
@@ -15,9 +15,9 @@ Un modèle ne traite jamais une phrase entière d'un bloc : le texte est d'abord
 "Les chats dorment" -> ["Les", "chat", "s", "dor", "ment"]   -> tokenisation en sous-mots (plus courant)
 ```
 
-La tokenisation par mot entier pose un problème de vocabulaire : chaque mot possible (y compris les variantes de conjugaison, les mots rares, les noms propres...) nécessiterait sa propre entrée, un vocabulaire potentiellement infini. La tokenisation en **sous-mots** (ex. l'algorithme *Byte-Pair Encoding*) découpe les mots rares en fragments plus courants, gardant un vocabulaire de taille fixe et gérable (typiquement quelques dizaines de milliers d'entrées) tout en pouvant représenter n'importe quel mot, même jamais vu tel quel à l'entraînement.
+La tokenisation par mot entier pose un problème de vocabulaire : chaque mot possible (y compris les variantes de conjugaison, les mots rares, les noms propres...) nécessiterait sa propre entrée, un vocabulaire potentiellement infini. La tokenisation en **sous-mots** (ex. l'algorithme [*Byte-Pair Encoding*](https://fr.wikipedia.org/wiki/Codage_par_paires_d%27octets)) découpe les mots rares en fragments plus courants, gardant un vocabulaire de taille fixe et gérable (typiquement quelques dizaines de milliers d'entrées) tout en pouvant représenter n'importe quel mot, même jamais vu tel quel à l'entraînement.
 
-> **Piège :** confondre nombre de tokens et nombre de mots. Avec la tokenisation en sous-mots, un seul mot peut être découpé en plusieurs tokens (voir l'exemple ci-dessus) : estimer une longueur de texte ou un coût (voir [LLM en production](/?c=ia&p=llm-en-production)) en comptant les mots plutôt que les tokens réels donne un résultat approximatif, parfois très éloigné.
+> **Piège :** confondre nombre de tokens et nombre de mots. Avec la tokenisation en sous-mots, un seul mot peut être découpé en plusieurs tokens (voir l'exemple ci-dessus) : estimer une longueur de texte ou un coût (voir [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production)) en comptant les mots plutôt que les tokens réels donne un résultat approximatif, parfois très éloigné.
 >
 > **Bonne pratique :** toujours mesurer une longueur de texte en tokens réels (via l'outil de tokenisation du modèle utilisé), jamais en comptant les mots à l'œil.
 
@@ -40,7 +40,7 @@ embedding("voiture")  -> [-0.9, 0.6, -0.1, ...]  # loin de "chat" -> sens diffé
 
 ## L'attention appliquée au texte
 
-Le mécanisme d'attention (voir [Architectures : CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers)) permet à chaque token de "regarder" les autres tokens de la séquence pour ajuster sa propre représentation selon le contexte :
+Le mécanisme d'attention (voir [Architectures : CNN, RNN et Transformers](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers)) permet à chaque token de "regarder" les autres tokens de la séquence pour ajuster sa propre représentation selon le contexte :
 
 ```text
 "La banque au bord de la rivière"      vs      "La banque a augmenté ses taux"
@@ -53,7 +53,7 @@ Le même mot ("banque") obtient une représentation numérique **différente** s
 
 ## Qu'est-ce qu'un grand modèle de langage (LLM) ?
 
-Un **LLM** (*Large Language Model*) est, dans son principe le plus simple, un modèle [Transformer](/?c=ia&p=architectures-cnn-rnn-transformers) entraîné sur d'immenses quantités de texte, avec un objectif d'entraînement remarquablement simple : **prédire le mot (ou token) suivant**, étant donné tout ce qui précède.
+Un **LLM** (*Large Language Model*) est, dans son principe le plus simple, un modèle [Transformer](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) entraîné sur d'immenses quantités de texte, avec un objectif d'entraînement remarquablement simple : **prédire le mot (ou token) suivant**, étant donné tout ce qui précède.
 
 ```text
 "Le chat dort sur le" -> le modèle prédit une distribution de probabilité sur le token suivant
@@ -62,9 +62,9 @@ Un **LLM** (*Large Language Model*) est, dans son principe le plus simple, un mo
 
 Cette sortie est exactement une [distribution de probabilité](/?c=mathematiques&p=les-probabilites-de-base) au sens vu précédemment : chaque token possible du vocabulaire reçoit une probabilité, et l'ensemble somme à 1.
 
-Ce qui rend un LLM impressionnant n'est pas la simplicité de cet objectif, mais l'**échelle** : des milliards de paramètres, entraînés sur une fraction significative du texte disponible publiquement, avec suffisamment de puissance de calcul (voir [Deep learning avec PyTorch](/?c=ia&p=deep-learning-pytorch)) pour que cette tâche de prédiction, poussée à cette échelle, fasse émerger des capacités qui n'ont pas été explicitement programmées (répondre à des questions, résumer, traduire, raisonner étape par étape...), un phénomène qualifié de **capacités émergentes**.
+Ce qui rend un LLM impressionnant n'est pas la simplicité de cet objectif, mais l'**échelle** : des milliards de paramètres, entraînés sur une fraction significative du texte disponible publiquement, avec suffisamment de puissance de calcul (voir [Deep learning avec PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch)) pour que cette tâche de prédiction, poussée à cette échelle, fasse émerger des capacités qui n'ont pas été explicitement programmées (répondre à des questions, résumer, traduire, raisonner étape par étape...), un phénomène qualifié de **capacités émergentes**.
 
-> **Piège :** en déduire que le modèle "comprend" ou "raisonne" au sens humain du terme. Le mécanisme reste, du début à la fin, une prédiction statistique du token suivant, un comportement qui *ressemble* à de la compréhension, sans qu'aucune garantie n'existe qu'il en partage les propriétés (voir les limites détaillées dans [LLM en production](/?c=ia&p=llm-en-production)).
+> **Piège :** en déduire que le modèle "comprend" ou "raisonne" au sens humain du terme. Le mécanisme reste, du début à la fin, une prédiction statistique du token suivant, un comportement qui *ressemble* à de la compréhension, sans qu'aucune garantie n'existe qu'il en partage les propriétés (voir les limites détaillées dans [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production)).
 >
 > **Bonne pratique :** évaluer un LLM sur ce qu'il produit réellement (des sorties vérifiées, testées) plutôt que sur une intuition de ce qu'il "doit" comprendre du fait de sa taille ou de la fluidité de ses réponses.
 
@@ -83,7 +83,7 @@ Le prompting exploite uniquement les capacités déjà acquises pendant l'entra�
 >
 > **Bonne pratique :** réserver le fine-tuning aux cas où le comportement recherché dépasse ce que le prompting peut exploiter (un style très spécifique, une compétence absente des données d'entraînement d'origine) : le prompting reste plus rapide et moins coûteux dès qu'il suffit.
 
-Voir aussi [Architectures : CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (le mécanisme d'attention sous-jacent), [Deep learning avec PyTorch](/?c=ia&p=deep-learning-pytorch) (comment un tel modèle est concrètement entraîné, à une échelle bien plus modeste dans les exemples de ce chapitre) et [Le prompt engineering](/?c=ia&p=prompt-engineering) (comment formuler concrètement un bon prompt).
+Voir aussi [Architectures : CNN, RNN et Transformers](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) (le mécanisme d'attention sous-jacent), [Deep learning avec PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch) (comment un tel modèle est concrètement entraîné, à une échelle bien plus modeste dans les exemples de ce chapitre) et [Le prompt engineering](/?c=ia&s=nlp-llm&p=prompt-engineering) (comment formuler concrètement un bon prompt).
 
 ## Ce qu'il faut retenir
 

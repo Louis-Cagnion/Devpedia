@@ -1,3 +1,7 @@
+---
+order: 6
+---
+
 # OCaml
 
 Tous les langages vus jusqu'ici dans cette rubrique (C, C++, PHP, Python, JavaScript) partagent un même style de fond : des **instructions** exécutées dans l'ordre, une mutation directe de variables, des boucles pour répéter un traitement. C'est le style **impératif**, et il est si répandu qu'il en devient invisible.

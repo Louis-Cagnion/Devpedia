@@ -4,7 +4,7 @@ order: 8
 
 # Agents : boucle outil/réflexion et orchestration
 
-Un LLM seul ne fait que produire du texte à partir de texte (voir [LLM en production](/?c=ia&p=llm-en-production)) : il ne peut ni consulter une base de données à jour, ni exécuter un calcul fiable, ni envoyer un email. Un **agent** est la façon de lever cette limite : on donne au modèle des **outils** qu'il peut décider d'appeler, et une boucle qui répète l'opération jusqu'à ce qu'il ait de quoi répondre.
+Un LLM seul ne fait que produire du texte à partir de texte (voir [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production)) : il ne peut ni consulter une base de données à jour, ni exécuter un calcul fiable, ni envoyer un email. Un **agent** est la façon de lever cette limite : on donne au modèle des **outils** qu'il peut décider d'appeler, et une boucle qui répète l'opération jusqu'à ce qu'il ait de quoi répondre.
 
 ## Donner un outil à un modèle : le function calling
 
@@ -57,7 +57,7 @@ Tour 2 -> le modele genere : { "commande": "grep ERROR /var/log/app.log | tail -
 
 C'est exactement ce qui permet à un agent de produire des commandes bash différentes à chaque fois pour un même outil : la fonction exécutée ne change pas (elle ne fait qu'obéir), mais le texte qu'elle reçoit est rédigé à la volée par le modèle, comme un humain qui taperait une commande différente selon ce qu'il vient de voir s'afficher dans son terminal.
 
-> **Piège :** un paramètre libre porte un risque bien plus élevé qu'un paramètre restreint : rien ne garantit que le texte généré par le modèle soit correct, ni même inoffensif. Une commande shell générée par le modèle peut contenir, par accident ou par manipulation (voir la [prompt injection](/?c=ia&p=prompt-injection)), les mêmes caractères spéciaux qui rendent une [injection de commande](/?c=shells&s=bash&p=variables) possible.
+> **Piège :** un paramètre libre porte un risque bien plus élevé qu'un paramètre restreint : rien ne garantit que le texte généré par le modèle soit correct, ni même inoffensif. Une commande shell générée par le modèle peut contenir, par accident ou par manipulation (voir la [prompt injection](/?c=ia&s=nlp-llm&p=prompt-injection)), les mêmes caractères spéciaux qui rendent une [injection de commande](/?c=shells&s=bash&p=variables) possible.
 >
 > **Bonne pratique :** traiter tout paramètre libre généré par un modèle avec la même méfiance qu'une entrée utilisateur non contrôlée : jamais l'interpoler aveuglément dans une commande ou une requête sans les mêmes précautions qu'ailleurs.
 
@@ -72,23 +72,23 @@ Avoir des outils disponibles (la section précédente) ne suffit pas, en soi, à
 4. Retour a l'etape 1, avec ce nouvel element de contexte
 ```
 
-Ce patron, souvent nommé *ReAct* (*Reasoning + Acting*), permet des enchaînements à plusieurs étapes : chercher une information, l'utiliser pour affiner une seconde recherche, calculer un résultat intermédiaire, avant de composer la réponse finale, chaque étape s'appuyant sur le résultat réel de la précédente plutôt que sur une supposition du modèle.
+Ce patron, souvent nommé [*ReAct*](https://arxiv.org/abs/2210.03629) (*Reasoning + Acting*), permet des enchaînements à plusieurs étapes : chercher une information, l'utiliser pour affiner une seconde recherche, calculer un résultat intermédiaire, avant de composer la réponse finale, chaque étape s'appuyant sur le résultat réel de la précédente plutôt que sur une supposition du modèle.
 
 ## Les risques propres à une boucle pilotée par un modèle non déterministe
 
-Une boucle classique s'arrête sur une condition connue à l'avance. Une boucle d'agent s'arrête quand le modèle **décide** de s'arrêter, une décision non garantie, prise par un système qui peut se tromper (voir les limites du chapitre [LLM en production](/?c=ia&p=llm-en-production)).
+Une boucle classique s'arrête sur une condition connue à l'avance. Une boucle d'agent s'arrête quand le modèle **décide** de s'arrêter, une décision non garantie, prise par un système qui peut se tromper (voir les limites du chapitre [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production)).
 
 > **Piège :** une boucle non bornée. Sans plafond explicite sur le nombre de tours, un modèle qui n'arrive pas à conclure peut répéter des appels indéfiniment.
 >
 > **Bonne pratique :** imposer un plafond dur (nombre de tours, budget de tokens), au même titre qu'un timeout sur n'importe quel appel réseau.
 
-> **Piège :** un coût qui s'accumule silencieusement. Chaque tour de la boucle est un appel LLM à part entière, facturé indépendamment (voir [le coût en production](/?c=ia&p=llm-en-production)) : répondre en un seul tour coûte le prix d'un appel, un agent qui a eu besoin de 20 tours pour arriver à sa réponse en a facturé 20, même si l'utilisateur n'a posé qu'une seule question. Le multiplicateur est en pratique pire qu'un simple x20 : à chaque tour, tout l'historique des tours précédents (question initiale, appels d'outils, résultats obtenus) est renvoyé en entrée du modèle pour qu'il garde le contexte : le prompt du tour 20 est donc bien plus gros que celui du tour 1, si bien que le coût total croît plus vite que le nombre de tours lui-même.
+> **Piège :** un coût qui s'accumule silencieusement. Chaque tour de la boucle est un appel LLM à part entière, facturé indépendamment (voir [le coût en production](/?c=ia&s=nlp-llm&p=llm-en-production)) : répondre en un seul tour coûte le prix d'un appel, un agent qui a eu besoin de 20 tours pour arriver à sa réponse en a facturé 20, même si l'utilisateur n'a posé qu'une seule question. Le multiplicateur est en pratique pire qu'un simple x20 : à chaque tour, tout l'historique des tours précédents (question initiale, appels d'outils, résultats obtenus) est renvoyé en entrée du modèle pour qu'il garde le contexte : le prompt du tour 20 est donc bien plus gros que celui du tour 1, si bien que le coût total croît plus vite que le nombre de tours lui-même.
 >
-> **Bonne pratique :** surveiller le coût cumulé d'une boucle d'agent en production (voir le [monitoring de coût](/?c=ia&p=gestion-dun-llm)), pas seulement le coût moyen par question : le gain d'un agent n'est pas toujours proportionnel à ce surcoût.
+> **Bonne pratique :** surveiller le coût cumulé d'une boucle d'agent en production (voir le [monitoring de coût](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm)), pas seulement le coût moyen par question : le gain d'un agent n'est pas toujours proportionnel à ce surcoût.
 
 > **Piège :** des actions irréversibles décidées par un système faillible. Un agent qui peut envoyer un email ou modifier une base de données peut aussi le faire à tort, sur la foi d'un raisonnement erroné.
 >
-> **Bonne pratique :** exiger une confirmation humaine avant toute action à conséquence réelle (financière, destructrice, visible publiquement) ; pour un système classé à risque élevé, c'est une obligation légale explicite de la [réglementation européenne de l'IA](/?c=ia&p=reglementation-europeenne-ia), pas seulement une bonne pratique.
+> **Bonne pratique :** exiger une confirmation humaine avant toute action à conséquence réelle (financière, destructrice, visible publiquement) ; pour un système classé à risque élevé, c'est une obligation légale explicite de la [réglementation européenne de l'IA](/?c=ia&s=production-et-gouvernance&p=reglementation-europeenne-ia), pas seulement une bonne pratique.
 
 ## Un agent, ou plusieurs qui se répartissent le travail ?
 
@@ -111,7 +111,7 @@ Le choix suit la même logique qu'ailleurs en architecture logicielle : un seul 
 | **Enchaînement séquentiel** (*pipeline*) | La sortie de l'agent A devient l'entrée de l'agent B, dans un ordre fixe (ex : un agent "recherche" puis un agent "rédaction") | Les étapes sont connues à l'avance et s'exécutent toujours dans le même ordre |
 | **Orchestrateur / travailleurs** | Un agent "orchestrateur" décompose la tâche, décide quel agent spécialisé appeler et dans quel ordre, puis assemble leurs résultats | L'ordre des étapes dépend de la tâche elle-même et ne peut pas être figé à l'avance |
 | **État partagé** (*blackboard*) | Les agents ne se parlent pas directement : ils lisent et écrivent dans un espace commun (une base, un document partagé), chacun réagissant à ce que les autres y ont déposé | Plusieurs agents doivent collaborer sans dépendance stricte d'ordre, chacun contribuant quand il a de quoi le faire |
-| **Évaluateur / optimiseur** | Un agent génère une première version, un second rôle (le même modèle ou un autre) la critique selon des critères explicites, puis une nouvelle version intègre cette critique, répété jusqu'à un critère d'arrêt (voir le détail dans [L'assistant IA agentique en terminal](/?c=ia&p=assistant-agentique-terminal)) | La qualité de sortie compte plus que la latence, et un critère de jugement explicite existe (checklist, tests, format attendu) |
+| **Évaluateur / optimiseur** | Un agent génère une première version, un second rôle (le même modèle ou un autre) la critique selon des critères explicites, puis une nouvelle version intègre cette critique, répété jusqu'à un critère d'arrêt (voir le détail dans [L'assistant IA agentique en terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal)) | La qualité de sortie compte plus que la latence, et un critère de jugement explicite existe (checklist, tests, format attendu) |
 
 > **Piège :** avec un état partagé notamment, rien n'empêche deux agents d'agir sur la base d'informations devenues incohérentes entre elles (l'un a lu l'état avant que l'autre ne le modifie), la même classe de problème qu'un accès concurrent à une ressource partagée en programmation classique.
 >

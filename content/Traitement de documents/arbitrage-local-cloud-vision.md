@@ -4,7 +4,7 @@ order: 3
 
 # Arbitrage local vs cloud pour un modèle de vision
 
-Le chapitre [Le stack IA](/?c=ia&p=stack-ia) détaille le choix entre API hébergée et modèle auto-hébergé pour un **LLM**. Un modèle de [vision par ordinateur](/?c=ia&p=architectures-cnn-rnn-transformers) (un OCR structuré, par exemple) pose la même question de fond, mais avec des réponses parfois inversées : ce chapitre reprend les mêmes critères (exposition des données, coût, latence) en les recalculant pour ce cas précis, sans répéter le principe déjà posé pour les LLM.
+Le chapitre [Le stack IA](/?c=ia&s=production-et-gouvernance&p=stack-ia) détaille le choix entre API hébergée et modèle auto-hébergé pour un **LLM**. Un modèle de [vision par ordinateur](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) (un OCR structuré, par exemple) pose la même question de fond, mais avec des réponses parfois inversées : ce chapitre reprend les mêmes critères (exposition des données, coût, latence) en les recalculant pour ce cas précis, sans répéter le principe déjà posé pour les LLM.
 
 ## Ce qui change par rapport à un LLM
 
@@ -21,7 +21,7 @@ Ces différences déplacent le point d'équilibre : la taille de modèle plus pe
 
 Envoyer un document à une API de vision hébergée signifie transmettre l'**image complète** de la page à un tiers, pas seulement l'information qu'on cherche à en extraire. Pour un document interne ou confidentiel (un contrat, une fiche technique propriétaire), cette exposition peut à elle seule disqualifier une API hébergée, indépendamment de son coût ou de sa qualité :
 
-> **Piège :** évaluer une API de vision hébergée uniquement sur son prix par page et sa qualité de reconnaissance, sans avoir vérifié au préalable si le type de document traité est autorisé à transiter par un tiers (voir les principes de [gouvernance des données](/?c=ia&p=gouvernance-des-donnees), applicables ici de la même façon que pour un LLM).
+> **Piège :** évaluer une API de vision hébergée uniquement sur son prix par page et sa qualité de reconnaissance, sans avoir vérifié au préalable si le type de document traité est autorisé à transiter par un tiers (voir les principes de [gouvernance des données](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees), applicables ici de la même façon que pour un LLM).
 >
 > **Bonne pratique :** trancher la question de l'exposition des données **avant** de comparer les coûts : si la nature des documents traités l'interdit, l'auto-hébergement devient la seule option valable, quel que soit le résultat d'un calcul de coût par ailleurs favorable au cloud.
 

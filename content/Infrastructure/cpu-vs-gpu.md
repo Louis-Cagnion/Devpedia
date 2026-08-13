@@ -29,7 +29,7 @@ CPU (quelques coeurs)  : traite les 1000 multiplications en plusieurs vagues suc
 GPU (milliers de coeurs) : peut traiter les 1000 multiplications presque toutes en une seule fois
 ```
 
-C'est exactement ce type de calcul (répétitif, identique, sur des données indépendantes) qui compose la quasi-totalité des opérations effectuées par un [réseau de neurones](/?c=ia&p=reseaux-de-neurones) : d'où l'usage systématique d'un GPU pour l'entraînement d'un modèle de deep learning.
+C'est exactement ce type de calcul (répétitif, identique, sur des données indépendantes) qui compose la quasi-totalité des opérations effectuées par un [réseau de neurones](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones) : d'où l'usage systématique d'un GPU pour l'entraînement d'un modèle de deep learning.
 
 | | CPU | GPU |
 |---|---|---|

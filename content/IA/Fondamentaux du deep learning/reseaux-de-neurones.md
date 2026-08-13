@@ -20,7 +20,7 @@ def neurone(entrees, poids, biais, activation):
     return activation(somme_ponderee)
 ```
 
-- Les **poids** (`w1`, `w2`...) déterminent l'importance de chaque entrée : ce sont eux, avec le biais, que l'entraînement va ajuster (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient)).
+- Les **poids** (`w1`, `w2`...) déterminent l'importance de chaque entrée : ce sont eux, avec le biais, que l'entraînement va ajuster (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)).
 - Le **biais** permet à la sortie d'être décalée même quand toutes les entrées valent zéro (comme l'ordonnée à l'origine d'une droite).
 
 > **Piège :** omettre le biais. Sans lui, la sortie d'un neurone vaut toujours zéro dès que toutes les entrées valent zéro, quels que soient les poids : le neurone ne peut jamais décaler sa réponse indépendamment de ses entrées, ce qui limite fortement ce qu'il peut apprendre à représenter.
@@ -37,7 +37,7 @@ Sans fonction d'activation (ou avec une fonction linéaire), empiler plusieurs c
 | **Tanh** | Écrase toute valeur entre -1 et 1, centrée sur 0 | Couches cachées de réseaux plus anciens (RNN notamment) ; converge souvent mieux que sigmoïde grâce à ce centrage |
 | **ReLU** (*Rectified Linear Unit*) | `max(0, x)` : laisse passer les valeurs positives, écrase les négatives à 0 | Couches cachées, très utilisée en pratique (simple et efficace à calculer) |
 | **Leaky ReLU** | `x` si positif, `0.01 * x` sinon (au lieu d'écraser à 0) | Couches cachées, comme ReLU, quand le "neurone mort" (voir plus bas) pose problème |
-| **GELU** | Variante lissée de ReLU, pondérée par la distribution normale | Couches cachées des [Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) modernes |
+| **GELU** | Variante lissée de ReLU, pondérée par la distribution normale | Couches cachées des [Transformers](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) modernes |
 | **Softmax** | Transforme un vecteur de scores en une [distribution de probabilité](/?c=mathematiques&p=les-probabilites-de-base) qui somme à 1 | Sortie d'une classification à plusieurs catégories |
 
 ```python
@@ -95,7 +95,7 @@ biais_sortie = 0.05
 resultat = sigmoide(sortie_n1 * 0.6 + sortie_n2 * 0.9 + 0.05)  # sigmoide(0.95) ≈ 0.72
 ```
 
-Ce calcul (multiplier, sommer, appliquer une activation, couche après couche) est **tout** ce qu'un réseau de neurones fait pour produire une prédiction. Ce qui rend le réseau "intelligent" n'est jamais ce mécanisme (fixe, purement arithmétique), mais les **valeurs des poids et des biais**, ajustées automatiquement par l'entraînement (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient)) à partir d'un grand nombre d'exemples.
+Ce calcul (multiplier, sommer, appliquer une activation, couche après couche) est **tout** ce qu'un réseau de neurones fait pour produire une prédiction. Ce qui rend le réseau "intelligent" n'est jamais ce mécanisme (fixe, purement arithmétique), mais les **valeurs des poids et des biais**, ajustées automatiquement par l'entraînement (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) à partir d'un grand nombre d'exemples.
 
 En pratique, un framework de deep learning ne calcule jamais neurone par neurone comme dans le code ci-dessus : les poids d'une couche entière sont rangés dans une [matrice](/?c=mathematiques&p=matrices-et-produit-matriciel), et un seul produit matriciel calcule la sortie de tous ses neurones à la fois, bien plus rapide qu'une boucle Python.
 
@@ -113,13 +113,13 @@ Vu sous cet angle, un réseau de neurones n'est rien d'autre qu'une [fonction ma
 >
 > **Bonne pratique :** vérifier que les données réellement soumises au modèle en usage restent représentatives des données d'entraînement, plutôt que de supposer que le modèle "généralise" indéfiniment au-delà.
 
-Voir aussi [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient) (comment ces poids sont concrètement ajustés) et [Architectures : CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) (des façons spécifiques d'organiser ces couches selon le type de données traité).
+Voir aussi [L'entraînement d'un modèle et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient) (comment ces poids sont concrètement ajustés) et [Architectures : CNN, RNN et Transformers](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) (des façons spécifiques d'organiser ces couches selon le type de données traité).
 
 ## Ce qu'il faut retenir
 
 | | |
 |---|---|
 | **À retenir** | Un neurone artificiel calcule une somme pondérée de ses entrées (un produit scalaire), ajoute un biais, puis applique une fonction d'activation non linéaire. Un réseau empile ces neurones en couches (entrée, cachées, sortie) ; ses poids et biais s'ajustent par l'entraînement. |
-| **Outils utilisables** | Les fonctions d'activation courantes (sigmoïde, tanh, ReLU, Leaky ReLU, GELU, softmax) sont fournies directement par les bibliothèques de deep learning (voir [PyTorch](/?c=ia&p=deep-learning-pytorch)). |
+| **Outils utilisables** | Les fonctions d'activation courantes (sigmoïde, tanh, ReLU, Leaky ReLU, GELU, softmax) sont fournies directement par les bibliothèques de deep learning (voir [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch)). |
 | **Pièges à éviter** | Omettre le biais. Utiliser sigmoïde pour une classification à plusieurs catégories. Un neurone ReLU qui "meurt" (gradient nul en permanence). Empiler des couches sans données suffisantes. Initialiser tous les poids à la même valeur. Faire confiance au modèle en dehors du domaine couvert par ses données d'entraînement. |
 | **Bonnes pratiques** | Choisir l'activation de sortie selon le nombre de catégories (sigmoïde vs softmax). Passer à Leaky ReLU en cas de neurones morts. Ajuster la profondeur du réseau à la quantité de données disponible. Initialiser les poids avec de petites valeurs aléatoires distinctes. |

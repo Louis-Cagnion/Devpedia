@@ -4,9 +4,9 @@ order: 13
 
 # Comment fonctionne un shell (architecture interne)
 
-Tout ce que Bash fait en surface (variables, boucles, pipes, redirections) repose sur une mécanique assez simple à décrire : une boucle qui lit une ligne, la découpe, l'interprète, puis lance des processus via les appels système standards du chapitre sur la gestion des processus en C (`fork`, `execve`, `wait`). Ce chapitre décrit cette mécanique, dans l'optique de comprendre (voire de reconstruire) un shell minimal.
+Tout ce que Bash fait en surface (variables, boucles, pipes, redirections) repose sur une mécanique assez simple à décrire : une boucle qui lit une ligne, la découpe, l'interprète, puis lance des processus via les appels système standards du [chapitre sur la gestion des processus en C](/?c=langages-de-programmation&s=c&p=processus) (`fork`, `execve`, `wait`). Ce chapitre décrit cette mécanique, dans l'optique de comprendre (voire de reconstruire) un shell minimal.
 
-> **Prérequis :** ce chapitre suppose connu ce qu'est un **appel système** et un **descripteur de fichier** (`STDIN_FILENO`, `dup2()`...). Voir le chapitre dédié dans la rubrique C si ces notions ne sont pas encore claires.
+> **Prérequis :** ce chapitre suppose connu ce qu'est un **appel système** et un **descripteur de fichier** (`STDIN_FILENO`, `dup2()`...). Voir [le chapitre dédié](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) dans la rubrique C si ces notions ne sont pas encore claires.
 
 ## La boucle principale (REPL)
 

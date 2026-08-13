@@ -4,7 +4,7 @@ order: 16
 
 # Le stack IA : les couches d'une application en production
 
-Les chapitres précédents couvrent chacun un mécanisme : [entraîner un réseau de neurones](/?c=ia&p=entrainement-descente-de-gradient), [donner des outils à un modèle](/?c=ia&p=agents), [l'augmenter avec des données externes](/?c=ia&p=rag), [le surveiller en production](/?c=ia&p=gestion-dun-llm)... Ce chapitre n'en ajoute aucun : il montre comment ces pièces s'empilent réellement dans une application, et nomme les catégories d'outils concrètes qui existent à chaque étage, un vocabulaire qu'aucun autre chapitre ne couvre, parce qu'il ne concerne pas le fonctionnement d'un mécanisme mais le paysage des outils qui l'implémentent.
+Les chapitres précédents couvrent chacun un mécanisme : [entraîner un réseau de neurones](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient), [donner des outils à un modèle](/?c=ia&s=nlp-llm&p=agents), [l'augmenter avec des données externes](/?c=ia&s=nlp-llm&p=rag), [le surveiller en production](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm)... Ce chapitre n'en ajoute aucun : il montre comment ces pièces s'empilent réellement dans une application, et nomme les catégories d'outils concrètes qui existent à chaque étage, un vocabulaire qu'aucun autre chapitre ne couvre, parce qu'il ne concerne pas le fonctionnement d'un mécanisme mais le paysage des outils qui l'implémentent.
 
 **Stack IA** : l'ensemble des couches, chacune avec un rôle distinct, qui doivent s'assembler pour transformer un modèle de langage en application utilisable, du calcul brut jusqu'à ce que voit l'utilisateur final.
 
@@ -31,11 +31,11 @@ Chaque couche s'appuie sur celle du dessous, et un problème dans une couche bas
 | Couche | Rôle | Déjà couvert ailleurs |
 |---|---|---|
 | Calcul / cloud | Fournir la puissance de calcul brute | [CPU vs GPU](/?c=infrastructure&p=cpu-vs-gpu), [Le cloud](/?c=infrastructure&p=le-cloud) |
-| Modèle | Produire une réponse à partir d'un prompt | [NLP et LLM](/?c=ia&p=nlp-et-llm), [LLM en production](/?c=ia&p=llm-en-production) |
-| Données | Fournir au modèle une information qu'il n'a pas en mémoire | [RAG](/?c=ia&p=rag) |
-| Orchestration | Décider quoi appeler, dans quel ordre | [Agents](/?c=ia&p=agents) |
-| Observabilité | Savoir ce qui s'est passé, combien ça a coûté | [Monitoring et gestion opérationnelle](/?c=ia&p=gestion-dun-llm) |
-| Application | Exposer tout ça à un utilisateur final | [Construire un chatbot](/?c=ia&p=chatbot), [L'assistant IA agentique en terminal](/?c=ia&p=assistant-agentique-terminal) |
+| Modèle | Produire une réponse à partir d'un prompt | [NLP et LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm), [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production) |
+| Données | Fournir au modèle une information qu'il n'a pas en mémoire | [RAG](/?c=ia&s=nlp-llm&p=rag) |
+| Orchestration | Décider quoi appeler, dans quel ordre | [Agents](/?c=ia&s=nlp-llm&p=agents) |
+| Observabilité | Savoir ce qui s'est passé, combien ça a coûté | [Monitoring et gestion opérationnelle](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm) |
+| Application | Exposer tout ça à un utilisateur final | [Construire un chatbot](/?c=ia&s=applications-llm&p=chatbot), [L'assistant IA agentique en terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal) |
 
 Les sections suivantes détaillent les trois couches dont seul le *mécanisme* (pas le *paysage d'outils*) a été vu ailleurs.
 
@@ -47,7 +47,7 @@ Utiliser un LLM suppose de choisir entre deux façons radicalement différentes 
 |---|---|---|
 | Principe | Un fournisseur héberge le modèle, on l'appelle par [API](/?c=infrastructure&p=api-et-http) | On fait tourner soi-même un modèle à poids ouverts sur son propre matériel (ou du [cloud](/?c=infrastructure&p=le-cloud) loué) |
 | Coût | Payé à l'usage (par token), aucun investissement matériel | Coût fixe (GPU possédés ou loués en continu), rentable seulement à fort volume |
-| Contrôle des données | La donnée transite chez un tiers (voir la [gouvernance des données](/?c=ia&p=gouvernance-des-donnees)) | La donnée ne quitte jamais l'infrastructure de l'entreprise |
+| Contrôle des données | La donnée transite chez un tiers (voir la [gouvernance des données](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees)) | La donnée ne quitte jamais l'infrastructure de l'entreprise |
 | Maintenance | À la charge du fournisseur | À la charge de l'entreprise (mises à jour, mise à l'échelle, disponibilité) |
 | Qualité disponible | Accès aux modèles les plus performants du marché | Limitée à ce que le matériel disponible peut faire tourner |
 
@@ -57,11 +57,11 @@ Utiliser un LLM suppose de choisir entre deux façons radicalement différentes 
 
 ## La couche données : la base vectorielle
 
-Le chapitre [RAG](/?c=ia&p=rag) explique le mécanisme (découpage, indexation, recherche par similarité) sans nommer d'outil précis. En pratique, l'étape d'indexation s'appuie sur l'une de ces deux familles :
+Le chapitre [RAG](/?c=ia&s=nlp-llm&p=rag) explique le mécanisme (découpage, indexation, recherche par similarité) sans nommer d'outil précis. En pratique, l'étape d'indexation s'appuie sur l'une de ces deux familles :
 
 | | Base vectorielle dédiée | Extension d'une base existante |
 |---|---|---|
-| Principe | Un système conçu uniquement pour stocker et rechercher des embeddings (Pinecone, Weaviate, Milvus...) | Une extension ajoutée à une base déjà en place (ex. `pgvector` pour PostgreSQL) |
+| Principe | Un système conçu uniquement pour stocker et rechercher des embeddings ([Pinecone](https://www.pinecone.io), [Weaviate](https://weaviate.io), [Milvus](https://milvus.io)...) | Une extension ajoutée à une base déjà en place (ex. [`pgvector`](https://github.com/pgvector/pgvector) pour PostgreSQL) |
 | Avantage | Optimisée pour la recherche par similarité à grande échelle | Pas de nouvelle infrastructure à opérer si la base existante suffit en volume |
 | Inconvénient | Un système supplémentaire à opérer et sécuriser | Moins performante qu'une base dédiée au-delà d'un certain volume |
 
@@ -69,11 +69,11 @@ Le choix suit la même logique qu'ailleurs en architecture : une extension suffi
 
 ## La couche orchestration : écrire la boucle soi-même, ou s'appuyer sur un framework
 
-Le chapitre [Agents](/?c=ia&p=agents) décrit la boucle réflexion/action et les patrons de coordination multi-agents en général, sans dire comment ils sont concrètement implémentés. Deux approches :
+Le chapitre [Agents](/?c=ia&s=nlp-llm&p=agents) décrit la boucle réflexion/action et les patrons de coordination multi-agents en général, sans dire comment ils sont concrètement implémentés. Deux approches :
 
 | | Écrire la boucle soi-même | Framework d'orchestration |
 |---|---|---|
-| Principe | Coder directement les appels au modèle, aux outils, et la boucle qui les enchaîne | S'appuyer sur une bibliothèque (LangChain, LlamaIndex...) qui fournit déjà ces briques |
+| Principe | Coder directement les appels au modèle, aux outils, et la boucle qui les enchaîne | S'appuyer sur une bibliothèque ([LangChain](https://www.langchain.com), [LlamaIndex](https://www.llamaindex.ai)...) qui fournit déjà ces briques |
 | Avantage | Contrôle total, aucune dépendance externe, plus simple à déboguer ligne par ligne | Interface commune vers plusieurs fournisseurs de modèles, gestion de la mémoire de conversation et du chaînage déjà résolues |
 | Inconvénient | Chaque brique (retries, gestion de la mémoire, format des outils) est à réécrire | Une couche d'abstraction supplémentaire à comprendre, parfois plus lourde que le besoin réel |
 
@@ -83,7 +83,7 @@ Le chapitre [Agents](/?c=ia&p=agents) décrit la boucle réflexion/action et les
 
 ## Le piège transversal : un couplage caché entre les couches
 
-Chaque couche semble indépendante : jusqu'à ce qu'un changement dans l'une casse le fonctionnement d'une autre sans erreur visible. L'exemple déjà rencontré dans [RAG](/?c=ia&p=rag) : changer de modèle d'embedding (couche modèle) invalide silencieusement une base vectorielle existante (couche données), puisque les deux modèles ne partagent pas le même espace vectoriel.
+Chaque couche semble indépendante : jusqu'à ce qu'un changement dans l'une casse le fonctionnement d'une autre sans erreur visible. L'exemple déjà rencontré dans [RAG](/?c=ia&s=nlp-llm&p=rag) : changer de modèle d'embedding (couche modèle) invalide silencieusement une base vectorielle existante (couche données), puisque les deux modèles ne partagent pas le même espace vectoriel.
 
 > **Piège :** modifier une couche isolément et ne tester que cette couche, en supposant que les autres n'ont aucune raison d'être affectées.
 >

@@ -45,7 +45,7 @@ Un bon message de commit décrit le **pourquoi** du changement, pas seulement le
 
 ## Un message de commit à deux niveaux : titre et description
 
-Un message de commit n'est, pour Git, qu'un seul bloc de texte : rien ne le force en "titre" ou "description" distincts. C'est une **convention**, pas une contrainte technique, mais elle est si largement adoptée (GitHub, `git log`, la plupart des outils qui affichent un historique) qu'elle vaut la peine d'être suivie systématiquement :
+Un message de commit n'est, pour Git, qu'un seul bloc de texte : rien ne le force en "titre" ou "description" distincts. C'est une **convention**, pas une contrainte technique, mais elle est si largement adoptée ([GitHub](/?c=git&p=github-et-plateformes), `git log`, la plupart des outils qui affichent un historique) qu'elle vaut la peine d'être suivie systématiquement :
 
 - La **première ligne** est le titre : un résumé court (traditionnellement sous 50-72 caractères), à l'impératif ("Corrige", "Ajoute", pas "Corrigé" ni "J'ai ajouté").
 - Une **ligne vide** sépare le titre du reste.
@@ -59,7 +59,7 @@ au lieu du total : un bug introduit lors du dernier refactor de
 `calculerRemise()`, jamais couvert par les tests existants.
 ```
 
-C'est cette ligne vide, et elle seule, qui indique à un outil comme GitHub où s'arrête le titre : sur la liste des commits d'un dépôt ou d'une pull request, seule la première ligne s'affiche par défaut (en gras) ; la description ne s'affiche qu'en dépliant le commit. `git log --oneline` fait la même chose : une ligne par commit, uniquement le titre.
+C'est cette ligne vide, et elle seule, qui indique à un outil comme [GitHub](/?c=git&p=github-et-plateformes) où s'arrête le titre : sur la liste des commits d'un dépôt ou d'une pull request, seule la première ligne s'affiche par défaut (en gras) ; la description ne s'affiche qu'en dépliant le commit. `git log --oneline` fait la même chose : une ligne par commit, uniquement le titre.
 
 ## Écrire un message multi-lignes en ligne de commande
 

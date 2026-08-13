@@ -98,7 +98,7 @@ git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" -
 
 `--index-filter` rejoue cette commande sur l'index de **chaque** commit de l'historique (sur toutes les refs, via `--all`), reconstruit un nouveau tree sans le fichier, puis un nouveau commit, ce qui, par la mécanique vue plus haut (le hash d'un commit dépend de celui de son parent), change le hash de **tous** les commits à partir du premier concerné.
 
-> **Note :** `git filter-branch` est officiellement déprécié au profit de [`git filter-repo`](https://github.com/newren/git-filter-repo) (plus rapide, moins de pièges), mais ce dernier n'est pas fourni avec Git : installation séparée (Python) nécessaire. `filter-branch` reste disponible partout où Git est installé, suffisant pour une opération ponctuelle.
+> **Note :** `git filter-branch` est officiellement déprécié au profit de [`git filter-repo`](https://github.com/newren/git-filter-repo) (plus rapide, moins de pièges), mais ce dernier n'est pas fourni avec Git : installation séparée ([Python](/?c=langages-de-programmation&s=python&p=python)) nécessaire. `filter-branch` reste disponible partout où Git est installé, suffisant pour une opération ponctuelle.
 
 Conséquences directes de ce changement de hash en cascade :
 - Tout clone ou fork existant du dépôt divergera irrémédiablement de la nouvelle version : un push normal sera rejeté, un `push --force`/`--force-with-lease` (voir [Les dépôts distants](/?c=git&p=remotes)) est nécessaire, et quiconque a déjà cloné le dépôt doit re-cloner ou réinitialiser durement sa copie.
@@ -119,7 +119,7 @@ git gc --prune=now                    # supprime tout objet devenu inaccessible 
 git fsck --unreachable                # liste les objets encore présents mais non référencés par aucune branche/tag/reflog
 ```
 
-> **Note :** ce nettoyage ne concerne que le dépôt **local**. Un dépôt distant (GitHub, GitLab...) applique son propre `gc` selon son propre calendrier : après un `push --force` qui retire un fichier sensible de l'historique, l'ancien commit peut rester accessible côté serveur via son hash exact (une requête ciblée, pas une navigation normale) jusqu'à ce que le serveur fasse son propre nettoyage. Pour une garantie de suppression immédiate côté serveur, seul le support de la plateforme peut agir.
+> **Note :** ce nettoyage ne concerne que le dépôt **local**. Un dépôt distant ([GitHub](/?c=git&p=github-et-plateformes), GitLab...) applique son propre `gc` selon son propre calendrier : après un `push --force` qui retire un fichier sensible de l'historique, l'ancien commit peut rester accessible côté serveur via son hash exact (une requête ciblée, pas une navigation normale) jusqu'à ce que le serveur fasse son propre nettoyage. Pour une garantie de suppression immédiate côté serveur, seul le support de la plateforme peut agir.
 
 ## Concevoir son propre système de versionnement
 

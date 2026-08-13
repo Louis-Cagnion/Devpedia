@@ -1,3 +1,7 @@
+---
+order: 1
+---
+
 # HTML
 
 HTML (*HyperText Markup Language*) n'est pas un langage de programmation : c'est un langage de **balisage**, qui décrit la structure et le sens d'un contenu (un titre, un paragraphe, une image, un lien...), pas des instructions exécutées séquentiellement. Un navigateur lit un document HTML et construit une représentation en mémoire de cette structure, le DOM (*Document Object Model*, voir [Le DOM et les événements](/?c=langages-de-programmation&s=javascript&p=dom-et-evenements)), qu'il affiche ensuite à l'écran.

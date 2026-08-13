@@ -1,3 +1,7 @@
+---
+order: 2
+---
+
 # CSS
 
 CSS (*Cascading Style Sheets*) est le langage qui décrit l'**apparence** d'un document [HTML](/?c=langages-de-balisage&s=html&p=html) (couleurs, tailles, positionnement, mise en page), en séparant volontairement cette présentation de la structure (HTML) et du comportement (JavaScript).

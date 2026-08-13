@@ -60,7 +60,7 @@ Un tableau détecté ne se limite pas à une grille rectangulaire uniforme : une
 | `colspan` (*column span*) | Une cellule occupe plusieurs colonnes sur la même ligne |
 | `rowspan` (*row span*) | Une cellule occupe plusieurs lignes sur la même colonne |
 
-Un modèle d'OCR structuré (comme PP-StructureV3, utilisé dans le projet source de ce chapitre) restitue typiquement cette grille au format **HTML** (`<table>`, `<tr>`, `<td colspan="...">`), le même format que celui d'une page web : reconstruire, à partir de ce HTML, la position exacte (ligne, colonne) de chaque cellule en tenant compte des fusions en cours, est un exercice de [parsing incrémental](/?c=domain-specific-languages-dsl&p=parsing-incremental-machine-a-etats) à part entière.
+Un modèle d'OCR structuré (comme [PP-StructureV3](/?c=ia&s=vision-et-ocr&p=modeles-document-ai), utilisé dans le projet source de ce chapitre) restitue typiquement cette grille au format **HTML** (`<table>`, `<tr>`, `<td colspan="...">`), le même format que celui d'une page web : reconstruire, à partir de ce HTML, la position exacte (ligne, colonne) de chaque cellule en tenant compte des fusions en cours, est un exercice de [parsing incrémental](/?c=domain-specific-languages-dsl&p=parsing-incremental-machine-a-etats) à part entière.
 
 > **Piège :** ignorer les fusions et supposer qu'un tableau reconstruit a toujours autant de cellules sur chaque ligne. Une ligne dont une colonne est "sautée" à cause d'un `rowspan` commencé plus haut aurait, sans en tenir compte, un décalage silencieux entre le contenu et la colonne à laquelle il est réellement associé.
 >
@@ -68,11 +68,7 @@ Un modèle d'OCR structuré (comme PP-StructureV3, utilisé dans le projet sourc
 
 ## Les résultats d'un modèle de détection ne sont jamais parfaits
 
-Un modèle qui localise des zones (ici, des tableaux) fournit un **score de confiance** par zone détectée, et peut aussi détecter deux fois la même zone physique sous deux boîtes légèrement différentes (une couvrant tout le tableau, une autre n'en couvrant qu'une partie) :
-
-> **Piège :** garder telles quelles toutes les zones renvoyées par le modèle, sans filtrage. Un score de confiance trop bas signale une détection peu fiable (un simple bloc de texte aligné confondu avec un tableau, par exemple) ; des zones qui se chevauchent presque entièrement décrivent souvent le même tableau physique détecté deux fois, pas deux tableaux distincts.
->
-> **Bonne pratique :** écarter les zones sous un seuil de confiance minimal, et ne garder que la zone de meilleur score parmi un groupe de zones qui se recouvrent fortement (mesuré par le ratio de leur intersection sur leur aire), plutôt que de traiter chaque détection brute comme définitive.
+Un modèle qui localise des zones (ici, des tableaux) fournit un **score de confiance** par zone détectée, et peut aussi détecter deux fois la même zone physique sous deux boîtes légèrement différentes (une couvrant tout le tableau, une autre n'en couvrant qu'une partie) : voir [Détection de mise en page : boîtes englobantes, score de confiance et suppression des doublons](/?c=ia&s=vision-et-ocr&p=detection-de-mise-en-page) pour le détail du filtrage par score de confiance et de la déduplication par IoU/NMS, directement applicable ici.
 
 Voir aussi [Extraire le texte et les pages d'un PDF](/?c=traitement-de-documents&p=extraction-pdf) pour l'étape qui précède (obtenir l'image de la page à analyser), et [Arbitrage local vs cloud pour un modèle de vision](/?c=traitement-de-documents&p=arbitrage-local-cloud-vision) pour la question de savoir où faire tourner ce type de modèle.
 

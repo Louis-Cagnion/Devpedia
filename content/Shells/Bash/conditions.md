@@ -4,7 +4,7 @@ order: 5
 
 # Les conditions
 
-Bash n'a pas d'opérateurs de comparaison intégrés au langage comme en PHP ou en C : les tests s'appuient sur des **commandes** (`test`, `[`, `[[`) dont le code de sortie (`$?`) détermine si la condition est vraie (`0`) ou fausse (non nul).
+Bash n'a pas d'opérateurs de comparaison intégrés au langage comme en [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou en [C](/?c=langages-de-programmation&s=c&p=conditions) : les tests s'appuient sur des **commandes** (`test`, `[`, `[[`) dont le code de sortie (`$?`) détermine si la condition est vraie (`0`) ou fausse (non nul).
 
 ## `if` / `then` / `elif` / `else` / `fi`
 

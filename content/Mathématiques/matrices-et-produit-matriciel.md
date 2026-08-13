@@ -42,7 +42,7 @@ Comme pour les vecteurs, ces deux opérations se font terme à terme, position p
 
 ## Le produit matrice-vecteur : plusieurs neurones, un seul calcul
 
-Voici l'opération qui compte vraiment. Rappel du chapitre sur [les réseaux de neurones](/?c=ia&p=reseaux-de-neurones) : un neurone calcule une somme pondérée de ses entrées, c'est-à-dire un [produit scalaire](/?c=mathematiques&p=vecteurs-et-produit-scalaire) entre le vecteur des entrées et son propre vecteur de poids. Une couche contient *plusieurs* neurones, chacun avec son propre vecteur de poids ; rangés en lignes, ces vecteurs de poids forment une matrice :
+Voici l'opération qui compte vraiment. Rappel du chapitre sur [les réseaux de neurones](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones) : un neurone calcule une somme pondérée de ses entrées, c'est-à-dire un [produit scalaire](/?c=mathematiques&p=vecteurs-et-produit-scalaire) entre le vecteur des entrées et son propre vecteur de poids. Une couche contient *plusieurs* neurones, chacun avec son propre vecteur de poids ; rangés en lignes, ces vecteurs de poids forment une matrice :
 
 ```text
 Poids de 2 neurones, pour 2 entrées chacun :
@@ -69,7 +69,7 @@ Comparez avec le calcul neurone par neurone du chapitre sur les réseaux de neur
 
 ## Le produit matrice-matrice : traiter plusieurs exemples à la fois (le *batch*)
 
-Une seule entrée à la fois reste inefficace à l'échelle de l'entraînement d'un modèle. En pratique, plusieurs exemples (un **batch**, voir [L'entraînement d'un modèle](/?c=ia&p=entrainement-descente-de-gradient)) sont empilés en lignes dans une matrice `X`, et un seul produit matriciel calcule la sortie de tous les exemples à la fois :
+Une seule entrée à la fois reste inefficace à l'échelle de l'entraînement d'un modèle. En pratique, plusieurs exemples (un **batch**, voir [L'entraînement d'un modèle](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) sont empilés en lignes dans une matrice `X`, et un seul produit matriciel calcule la sortie de tous les exemples à la fois :
 
 ```text
 X (2 exemples, 2 entrées chacun) :   [ 1.0  2.0 ]
@@ -150,10 +150,10 @@ Doubler la taille d'une matrice ne double pas le temps de calcul : il est multip
 
 | Élément | Ce qu'il représente | Chapitre lié |
 |---|---|---|
-| Poids d'une couche | Une matrice, une ligne par neurone | [Les réseaux de neurones](/?c=ia&p=reseaux-de-neurones) |
-| Un batch d'entrées | Une matrice, une ligne par exemple | [L'entraînement et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient) |
-| Une table d'embeddings | Une matrice, une ligne par mot du vocabulaire | [NLP et LLM](/?c=ia&p=nlp-et-llm) |
-| L'attention d'un Transformer | Des produits matriciels entre matrices de requêtes/clés/valeurs | [Architectures : CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) |
+| Poids d'une couche | Une matrice, une ligne par neurone | [Les réseaux de neurones](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones) |
+| Un batch d'entrées | Une matrice, une ligne par exemple | [L'entraînement et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient) |
+| Une table d'embeddings | Une matrice, une ligne par mot du vocabulaire | [NLP et LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) |
+| L'attention d'un Transformer | Des produits matriciels entre matrices de requêtes/clés/valeurs | [Architectures : CNN, RNN et Transformers](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) |
 
 Dans les quatre cas, le principe reste celui vu dans ce chapitre : remplacer une série de calculs répétés par un seul produit matriciel, pour que le matériel (GPU, SIMD) puisse les exécuter en parallèle plutôt qu'un par un.
 

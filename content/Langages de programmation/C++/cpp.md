@@ -1,3 +1,7 @@
+---
+order: 2
+---
+
 # C++
 
 C++ est né comme une extension du [C](/?c=langages-de-programmation&s=c&p=c) ("C with Classes"), et reste rétro-compatible avec la quasi-totalité de ce langage : presque tout ce qui s'y applique (pointeurs, mémoire, structs, compilation) fonctionne directement en C++.

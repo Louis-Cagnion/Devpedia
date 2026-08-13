@@ -4,7 +4,7 @@ order: 4
 
 # Deep learning avec PyTorch
 
-**PyTorch** est l'un des deux frameworks de deep learning les plus utilisés (avec TensorFlow). Il fournit le **tenseur** : une structure qui stocke un [vecteur](/?c=mathematiques&p=vecteurs-et-produit-scalaire) ou une [matrice](/?c=mathematiques&p=matrices-et-produit-matriciel) de nombres (proche du `ndarray` de la bibliothèque [NumPy](/?c=data-science&p=numpy) pour qui la connaît déjà), avec deux capacités supplémentaires : s'exécuter sur [GPU](/?c=infrastructure&p=cpu-vs-gpu), et calculer automatiquement son propre gradient. PyTorch automatise ainsi toute la mécanique du chapitre sur [l'entraînement et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient).
+**PyTorch** est l'un des deux frameworks de deep learning les plus utilisés (avec [TensorFlow](https://www.tensorflow.org)). Il fournit le **tenseur** : une structure qui stocke un [vecteur](/?c=mathematiques&p=vecteurs-et-produit-scalaire) ou une [matrice](/?c=mathematiques&p=matrices-et-produit-matriciel) de nombres (proche du `ndarray` de la bibliothèque [NumPy](/?c=data-science&p=numpy) pour qui la connaît déjà), avec deux capacités supplémentaires : s'exécuter sur [GPU](/?c=infrastructure&p=cpu-vs-gpu), et calculer automatiquement son propre gradient. PyTorch automatise ainsi toute la mécanique du chapitre sur [l'entraînement et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient).
 
 ## Le tenseur : des nombres qui peuvent calculer leur propre gradient
 
@@ -36,7 +36,7 @@ y.backward()    # calcule dy/dx automatiquement (rétropropagation)
 print(x.grad)   # 8.0 -> car dy/dx = 2x + 2, évalué en x=3 -> 2*3 + 2 = 8
 ```
 
-`requires_grad=True` indique à PyTorch de mémoriser chaque opération appliquée à ce tenseur ; `.backward()` remonte alors automatiquement cette chaîne d'opérations pour calculer le gradient (voir [la dérivée et le gradient](/?c=mathematiques&p=la-derivee-et-le-gradient)), exactement le mécanisme décrit conceptuellement dans [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient), mais entièrement automatisé.
+`requires_grad=True` indique à PyTorch de mémoriser chaque opération appliquée à ce tenseur ; `.backward()` remonte alors automatiquement cette chaîne d'opérations pour calculer le gradient (voir [la dérivée et le gradient](/?c=mathematiques&p=la-derivee-et-le-gradient)), exactement le mécanisme décrit conceptuellement dans [L'entraînement d'un modèle et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient), mais entièrement automatisé.
 
 ## Définir un réseau avec `nn.Module`
 
@@ -59,7 +59,7 @@ class ReseauSimple(nn.Module):
 modele = ReseauSimple()
 ```
 
-`nn.Linear(entrees, sorties)` crée automatiquement les poids et biais correspondants (voir [Les réseaux de neurones : les fondamentaux](/?c=ia&p=reseaux-de-neurones)) ; `forward()` décrit le trajet des données à travers les couches, exactement comme le "passage en avant" détaillé manuellement dans ce même chapitre.
+`nn.Linear(entrees, sorties)` crée automatiquement les poids et biais correspondants (voir [Les réseaux de neurones : les fondamentaux](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones)) ; `forward()` décrit le trajet des données à travers les couches, exactement comme le "passage en avant" détaillé manuellement dans ce même chapitre.
 
 > **Piège :** oublier `super().__init__()` au début de `__init__()`. Cette ligne initialise les mécanismes internes de `nn.Module` (dont le suivi des poids) : sans elle, le reste de la classe échoue ou se comporte de façon incohérente, souvent avec un message d'erreur peu explicite.
 >
@@ -85,7 +85,7 @@ for epoque in range(100):
         print(f"Époque {epoque} : perte = {perte.item():.4f}")
 ```
 
-Cette boucle est la structure quasi universelle de tout entraînement PyTorch : prédire, mesurer l'erreur, rétropropager, ajuster, répété autant d'époques que nécessaire pour que la perte diminue suffisamment (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&p=entrainement-descente-de-gradient) pour ce que chaque étape signifie réellement).
+Cette boucle est la structure quasi universelle de tout entraînement PyTorch : prédire, mesurer l'erreur, rétropropager, ajuster, répété autant d'époques que nécessaire pour que la perte diminue suffisamment (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient) pour ce que chaque étape signifie réellement).
 
 > **Piège :** oublier `optimiseur.zero_grad()`. PyTorch **accumule** les gradients par défaut à chaque `.backward()` plutôt que de les remplacer, une décision de conception utile pour certains cas avancés, mais qui fausse l'entraînement standard si les gradients ne sont jamais réinitialisés entre deux lots.
 >
@@ -107,7 +107,7 @@ Le **dropout** est une technique de régularisation qui désactive aléatoiremen
 >
 > **Bonne pratique :** basculer explicitement en `eval()` avant toute prédiction hors entraînement, et envelopper ce calcul dans `torch.no_grad()` pour éviter de suivre des gradients devenus inutiles, ce qui économise mémoire et temps de calcul.
 
-Voir aussi [Architectures : CNN, RNN et Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) : PyTorch fournit des couches prêtes à l'emploi pour chacune (`nn.Conv2d`, `nn.LSTM`, `nn.TransformerEncoder`...), au-dessus des mêmes briques de base vues ici.
+Voir aussi [Architectures : CNN, RNN et Transformers](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) : PyTorch fournit des couches prêtes à l'emploi pour chacune (`nn.Conv2d`, `nn.LSTM`, `nn.TransformerEncoder`...), au-dessus des mêmes briques de base vues ici.
 
 ## Ce qu'il faut retenir
 

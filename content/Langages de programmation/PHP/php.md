@@ -1,3 +1,7 @@
+---
+order: 3
+---
+
 # PHP
 
 Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) est un ensemble de règles qui permet d'écrire des instructions qu'un ordinateur peut exécuter. PHP en est un, conçu spécifiquement pour tourner sur un serveur web et générer des pages à la demande.

@@ -15,7 +15,7 @@ Le **règlement européen sur l'intelligence artificielle** (*AI Act*, règlemen
 | **Limité** | Chatbot, générateur de deepfake | Obligation de transparence (informer l'utilisateur qu'il interagit avec une IA, signaler un contenu généré) |
 | **Minimal** | Filtre anti-spam, IA d'un jeu vidéo | Aucune obligation spécifique |
 
-Un chatbot (voir [Construire un chatbot](/?c=ia&p=chatbot)) tombe typiquement dans la catégorie "risque limité" : son obligation principale est de ne jamais laisser l'utilisateur croire qu'il parle à un humain sans le préciser.
+Un chatbot (voir [Construire un chatbot](/?c=ia&s=applications-llm&p=chatbot)) tombe typiquement dans la catégorie "risque limité" : son obligation principale est de ne jamais laisser l'utilisateur croire qu'il parle à un humain sans le préciser.
 
 > **Piège :** sous-estimer le niveau de risque de son propre système par optimisme ou par méconnaissance : un chatbot qui semble anodin peut basculer en "risque élevé" s'il intervient par exemple dans une décision de recrutement ou de scoring de crédit, deux cas explicitement listés à ce niveau.
 >
@@ -33,7 +33,7 @@ Contrairement à un règlement qui s'appliquerait d'un bloc, l'AI Act entre en v
 | **2 août 2026** | Application de l'essentiel du règlement : obligations pour les systèmes à risque élevé (annexe III), obligations de transparence pour le risque limité (chatbots, deepfakes) |
 | **2 août 2027** | Délai supplémentaire pour les systèmes à risque élevé qui sont des composants de sécurité de produits déjà réglementés (dispositifs médicaux, machines, jouets...) |
 
-> **Une tension concrète, encore ouverte à l'heure actuelle :** les obligations pour les systèmes à risque élevé sont légalement exigibles depuis août 2026, mais les **normes techniques harmonisées** censées préciser comment s'y conformer concrètement (élaborées par les organismes de normalisation CEN-CENELEC, groupe JTC 21) sont encore en cours de finalisation. Une entreprise peut donc se retrouver à devoir respecter une obligation légale avant que le mode d'emploi technique officiel n'existe pleinement, une situation à surveiller plutôt qu'un simple détail administratif.
+> **Une tension concrète, encore ouverte à l'heure actuelle :** les obligations pour les systèmes à risque élevé sont légalement exigibles depuis août 2026, mais les **normes techniques harmonisées** censées préciser comment s'y conformer concrètement (élaborées par les organismes de normalisation [CEN-CENELEC](https://www.cencenelec.eu), groupe JTC 21) sont encore en cours de finalisation. Une entreprise peut donc se retrouver à devoir respecter une obligation légale avant que le mode d'emploi technique officiel n'existe pleinement, une situation à surveiller plutôt qu'un simple détail administratif.
 
 > **Piège :** supposer qu'aucune obligation ne s'applique tant que l'échéance de 2026 n'est pas atteinte. Les interdictions de pratiques à risque inacceptable et les obligations pour les modèles GPAI sont, elles, déjà en vigueur depuis 2025.
 >
@@ -41,7 +41,7 @@ Contrairement à un règlement qui s'appliquerait d'un bloc, l'AI Act entre en v
 
 ## Les modèles d'IA à usage général (GPAI)
 
-Un grand modèle de langage (voir [NLP et LLM](/?c=ia&p=nlp-et-llm)) n'est pas conçu pour un usage unique : il sert de base à des usages très variés. L'AI Act crée pour cette catégorie ("*General-Purpose AI*", GPAI) des obligations spécifiques, applicables depuis le 2 août 2025 :
+Un grand modèle de langage (voir [NLP et LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm)) n'est pas conçu pour un usage unique : il sert de base à des usages très variés. L'AI Act crée pour cette catégorie ("*General-Purpose AI*", GPAI) des obligations spécifiques, applicables depuis le 2 août 2025 :
 
 - Documentation technique sur l'entraînement et les capacités du modèle, tenue à disposition des autorités.
 - Respect du droit d'auteur sur les données d'entraînement (une politique de conformité doit exister).
@@ -55,11 +55,11 @@ Les modèles jugés à **risque systémique** (au-delà d'un seuil de puissance 
 
 ## Supervision humaine : une obligation, pas une option
 
-Pour un système à risque élevé, l'AI Act impose une supervision humaine effective, rejoignant directement un principe déjà vu pour les [agents](/?c=ia&p=agents) : un système autonome ne doit jamais pouvoir décider seul d'une action à conséquence réelle sans qu'un humain puisse intervenir ou l'arrêter. Ce que le bon sens technique recommandait déjà devient, pour les cas à risque élevé, une obligation légale documentée.
+Pour un système à risque élevé, l'AI Act impose une supervision humaine effective, rejoignant directement un principe déjà vu pour les [agents](/?c=ia&s=nlp-llm&p=agents) : un système autonome ne doit jamais pouvoir décider seul d'une action à conséquence réelle sans qu'un humain puisse intervenir ou l'arrêter. Ce que le bon sens technique recommandait déjà devient, pour les cas à risque élevé, une obligation légale documentée.
 
 ## Ce que ça change par rapport au RGPD
 
-L'AI Act ne remplace **pas** le RGPD : il s'y ajoute. La [gouvernance des données](/?c=ia&p=gouvernance-des-donnees) (classification, traçabilité, contrôle d'accès) reste nécessaire indépendamment de l'AI Act : le RGPD encadre la donnée personnelle elle-même, l'AI Act encadre le **système IA** qui la traite : ses deux ensembles d'obligations se cumulent plutôt que de se substituer l'un à l'autre.
+L'AI Act ne remplace **pas** le [RGPD](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees) : il s'y ajoute. La [gouvernance des données](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees) (classification, traçabilité, contrôle d'accès) reste nécessaire indépendamment de l'AI Act : le RGPD encadre la donnée personnelle elle-même, l'AI Act encadre le **système IA** qui la traite : ses deux ensembles d'obligations se cumulent plutôt que de se substituer l'un à l'autre.
 
 ## Sanctions
 

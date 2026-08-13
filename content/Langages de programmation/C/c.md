@@ -1,3 +1,7 @@
+---
+order: 1
+---
+
 # C
 
 Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) est un ensemble de règles qui permet d'écrire des instructions qu'un ordinateur peut exécuter. Le C en est un, réputé pour son accès direct aux mécanismes fondamentaux de la machine.

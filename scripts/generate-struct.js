@@ -18,7 +18,8 @@
  *   inside the "C++" folder. The rest of the .md files in that folder are its chapters.
  * - a file's title is its first line, a `# Title` markdown heading — not frontmatter.
  * - an optional `---`-fenced frontmatter block may precede that heading, holding build-time
- *   metadata only (currently just `order`, an integer used to sort chapters).
+ *   metadata only (currently just `order`, an integer used to sort chapters, and, on a
+ *   subject's own main file, to sort that subject among its siblings the same way).
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -95,10 +96,23 @@ function listSubdirectories(dir) {
 }
 
 /**
- * Chapters are ordered from most fundamental to most niche/advanced using each file's
- * `order` frontmatter field (a small integer, unique within its folder). Files without
- * an `order` field are pushed to the end, in their alphabetical (filename) order.
+ * Sorts items most fundamental first using their `order` field (a small integer, unique
+ * among siblings). Items without an `order` (`null`) are pushed to the end, in their
+ * existing (alphabetical) order. Shared by chapters and subjects — both are ordered the
+ * same way, from the same kind of frontmatter field.
  *
+ * @param {Array<{order: number|null}>} items mutated in place, like Array.prototype.sort
+ */
+function sortByOrder(items) {
+    items.sort((a, b) => {
+        if (a.order === null && b.order === null) return 0;
+        if (a.order === null) return 1;
+        if (b.order === null) return -1;
+        return a.order - b.order;
+    });
+}
+
+/**
  * @param {string} dir
  * @param {string[]} fileNames
  * @returns {Array<{id: string, label: string}>}
@@ -113,12 +127,7 @@ function buildChapterList(dir, fileNames) {
             order: order === undefined ? null : Number(order)
         };
     });
-    chapters.sort((a, b) => {
-        if (a.order === null && b.order === null) return 0;
-        if (a.order === null) return 1;
-        if (b.order === null) return -1;
-        return a.order - b.order;
-    });
+    sortByOrder(chapters);
     return chapters.map(({id, label}) => ({id, label}));
 }
 
@@ -136,10 +145,12 @@ function buildSubject(categoryDir, subjectFolder) {
         console.warn(`Aucun fichier principal trouvé pour le sujet "${subjectFolder}" (aucun titre ne correspond au nom du dossier) ; tous ses fichiers seront listés comme chapitres.`);
     }
     const chapterFiles = files.filter(fileName => fileName !== mainFile);
+    const order = mainFile ? readFrontmatter(path.join(subjectDir, mainFile)).order : undefined;
     return {
         id: mainFile ? mainFile.slice(0, -3) : slugify(subjectFolder),
         label: subjectFolder,
         folder: subjectFolder,
+        order: order === undefined ? null : Number(order),
         chapters: buildChapterList(subjectDir, chapterFiles)
     };
 }
@@ -157,7 +168,9 @@ function buildCategory(contentDir, categoryFolder) {
         folder: categoryFolder
     };
     if (subjectFolders.length > 0) {
-        category.subjects = subjectFolders.map(subjectFolder => buildSubject(categoryDir, subjectFolder));
+        const subjects = subjectFolders.map(subjectFolder => buildSubject(categoryDir, subjectFolder));
+        sortByOrder(subjects);
+        category.subjects = subjects.map(({id, label, folder, chapters}) => ({id, label, folder, chapters}));
     } else {
         const chapterFiles = listMarkdownFiles(categoryDir).filter(fileName => fileName !== "description.md");
         category.chapters = buildChapterList(categoryDir, chapterFiles);
@@ -165,9 +178,11 @@ function buildCategory(contentDir, categoryFolder) {
     return category;
 }
 
-/** Matches internal chapter links as written in .md files, e.g. "/?c=git&s=bash&p=stash" or,
- *  for categories without subjects, "/?c=git&p=stash". */
-const INTERNAL_LINK_PATTERN = /\/\?c=([a-z0-9-]+)(?:&s=([a-z0-9-]+))?&p=([a-z0-9-]+)/g;
+/** Matches internal links as written in .md files, at any of the 3 levels a link can target:
+ *  a chapter ("/?c=git&s=bash&p=stash", or "/?c=git&p=stash" for a category without subjects),
+ *  a subject's own intro page ("/?c=git&s=bash&p=bash" — `p` repeating `s`), or a category's own
+ *  intro page ("/?c=git&p=git" — `p` repeating `c` — or just "/?c=git" with `p` omitted entirely). */
+const INTERNAL_LINK_PATTERN = /\/\?c=([a-z0-9-]+)(?:&s=([a-z0-9-]+))?(?:&p=([a-z0-9-]+))?/g;
 
 /**
  * @param {{categories: Array}} struct
@@ -213,6 +228,9 @@ function validateInternalLinks(contentDir, struct) {
                 const category = index.get(categoryId);
                 if (!category) {
                     broken.push(`${entryPath} -> ${link} (catégorie "${categoryId}" introuvable)`);
+                } else if (chapterId === undefined || (!subjectId && chapterId === categoryId)) {
+                    // No `p` at all, or p=<categoryId> (same value as c=): both link to the
+                    // category's own intro page (its description.md), never a chapter to check.
                 } else if (subjectId) {
                     const subjectChapters = category.subjects.get(subjectId);
                     if (!subjectChapters) {

@@ -35,7 +35,7 @@ Entraîner un modèle de deep learning nécessite un ou plusieurs [GPU](/?c=infr
 
 > **Piège :** supposer qu'une donnée envoyée "dans le cloud" reste sous le même contrôle et les mêmes règles légales que si elle restait dans les locaux de l'entreprise. Elle est en réalité stockée sur du matériel appartenant à un tiers, parfois situé dans un pays différent, avec ses propres règles en matière de protection des données.
 >
-> **Bonne pratique :** vérifier les conditions contractuelles et la localisation géographique des données avant d'envoyer une donnée sensible à un service cloud (voir la [classification des données avant envoi](/?c=ia&p=gouvernance-des-donnees)), plutôt que de le supposer neutre par défaut.
+> **Bonne pratique :** vérifier les conditions contractuelles et la localisation géographique des données avant d'envoyer une donnée sensible à un service cloud (voir la [classification des données avant envoi](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees)), plutôt que de le supposer neutre par défaut.
 
 ## Piège : le coût peut échapper au contrôle habituel
 

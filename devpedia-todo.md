@@ -10,27 +10,52 @@
 - L'UI de la sidebar elle-même ("Catégories", "Sur cette page", "Rechercher...") reste en français quelle que soit la langue choisie — seul le contenu est traduit.
 - À vérifier au passage : comportement du sélecteur de langue sur une page qui n'existe pas encore dans la langue cible, la page non existente doit afficher par defaut le message "cette page n'existe pas" dans la langue choisie, et doit rediriger sur la page anglaise si elle existe, sinon la page de reference francaise, meme si elle ne sera pas comprehensible pour des etrangers qui ne parlent pas francais.
 - Il faudra supprimer le pipeline Deepl, aujourd'hui devenu inutilisable.
+- **Restructuration IA (2026-08-13, FR seulement pour l'instant)** : la catégorie IA est passée d'une liste plate à 6 subjects (`Fondamentaux du deep learning`, `NLP et LLM`, `Applications LLM`, `Vision et OCR`, `Voix IA`, `Production et gouvernance`). `content-en/IA/` reste volontairement plat (décision explicite, pas un oubli) : un futur rattrapage EN devra reproduire la même répartition en subjects plutôt que de garder la structure plate. ES/PT n'ont pas encore de dossier IA du tout (comme les 6 autres langues manquantes) : quand cette catégorie sera traduite pour elles, l'écrire directement avec cette structure en subjects, pas à plat.
 
-### Développer une vraie section OCR/vision dans IA (à l'image de la section LLM)
+### Règle 7bis (lien obligatoire pour tout outil/jargon/concept nommé) : audit du reste du site, en cours
 
-Décidé le 2026-08-12 : les 2 chapitres OCR de `Traitement de documents` (OCR structuré, arbitrage local/cloud) restent volontairement un survol ciblé sur le besoin du projet pdf parser, pas un curriculum complet. La section IA traite les LLM en profondeur (fondamentaux → couche applicative → production/gouvernance) ; l'OCR/vision mériterait un traitement symétrique, à cadrer en détail le moment venu. Piste de structure, par analogie avec l'existant en IA :
+Ajoutée le 2026-08-13 dans `prompt.md`, appliquée aux nouveaux chapitres OCR/Voix IA et rétroactivement à toute la catégorie IA (35 fichiers, terminé, corrigé). Le reste du site (~240 fichiers, 19 autres catégories) n'a jamais été audité contre cette règle. Stratégie actée avec Louis : corriger d'abord les liens **internes** (chapitre déjà existant sur le site, juste pas lié à cet endroit) directement, sans demander ; les liens **externes** et les cas qui demandent une vraie décision (créer un chapitre, choisir un lien externe pour un terme mineur) restent listés ci-dessous pour validation avant d'être appliqués. Session interrompue par Louis en plein audit ("arrête-toi là") : reprendre exactement où c'est noté ci-dessous, pas besoin de re-auditer ce qui est déjà listé.
 
-- **Fondamentaux** : OCR classique (reconnaissance de motifs, ex. Tesseract) vs OCR par deep learning (CRNN + CTC, puis modèles à base de Transformers) — symétrique de `reseaux-de-neurones.md`/`architectures-cnn-rnn-transformers.md`.
-- **Détection de mise en page en profondeur** : object detection (boîtes englobantes, score de confiance, NMS/suppression des doublons — déjà effleuré dans `ocr-structure.md`, à développer).
-- **Modèles "Document AI" modernes** (LayoutLM, Donut, PP-StructureV3...) — symétrique de `nlp-et-llm.md`.
-- **Entraîner/fine-tuner un modèle de vision pour un cas métier** — symétrique de `entrainement-descente-de-gradient.md`/`deep-learning-pytorch.md`.
-- **Évaluer un OCR** : métriques dédiées (CER/WER, taux de reconnaissance par champ) — symétrique du monitoring/golden set de `gestion-dun-llm.md`.
-- **Post-traitement et correction** (dictionnaires, correction contextuelle) — notion propre à l'OCR, sans équivalent direct côté LLM.
-- **Mise en production et monitoring d'un pipeline OCR** — symétrique de `llm-en-production.md`/`gestion-dun-llm.md`.
-- **Gouvernance des données pour des documents scannés** — symétrique de `gouvernance-des-donnees.md`, appliqué à des images de documents plutôt qu'à des prompts.
+**Déjà audité (2 agents fiables) + corrections déjà appliquées :**
+- `Git/architecture-interne.md` : lien Python et lien GitHub (interne) ajoutés.
+- `Git/commandes-essentielles.md` : 2 liens GitHub (interne) ajoutés.
+- `Shells/Bash/conditions.md`, `fonctions.md` : liens PHP/C (interne, vers leurs chapitres "conditions") ajoutés.
+- `Shells/Bash/architecture-dun-shell.md` : 2 liens vers les chapitres C (`processus`, `appels-systeme-et-descripteurs`) ajoutés.
 
-À traiter chapitre par chapitre avec validation, comme tout nouveau contenu, une fois ce chantier explicitement lancé.
+**Corrections internes identifiées, PAS ENCORE appliquées** (prêtes à corriger directement, pas de décision à prendre) :
+- `Shells/Bash/redirections-et-pipes.md` : lien manquant vers `/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs` (phrase "voir le chapitre sur les appels système et les descripteurs de fichiers (rubrique C)").
+- `Shells/Bash/traitement-de-texte.md`, `gestion-des-processus.md` : "Unix" mentionné sans lien vers `Shells/Bash/scripts-et-shebang.md` (qui l'explique déjà dans une note).
+- `Shells/PowerShell/conditions.md`, `fonctions.md` : même motif PHP/C que Bash, jamais corrigé.
+- `Shells/PowerShell/ecrire-et-executer-un-script.md` : référence à "un chapitre dédié en PHP" sur les exceptions — **PHP n'a pas de chapitre dédié aux exceptions** (à vérifier : couvert dans `poo.md` ou `structures-de-langage.md` ? sinon, décision à prendre : créer le chapitre, ou reformuler sans le lien).
+- `Shells/Zsh/zsh.md` : "POSIX" sans lien vers `Shells/Bash/scripts-et-shebang.md` (qui l'explique).
+- `Langages de programmation/C/variables.md` : "Python, JavaScript, PHP" mentionnés sans lien vers leurs chapitres respectifs (contrairement à `c.md` qui le fait systématiquement).
+- `Langages de programmation/C++/heritage-et-polymorphisme.md`, `poo.md` (JS), `exceptions.md`, `stl-conteneurs.md` : mentions PHP/Python sans lien (Java reste hors périmètre, voir liens externes ci-dessous ; PHP pour les exceptions a le même problème que PowerShell ci-dessus).
+- `Langages de programmation/JavaScript/conditions.md`, `poo.md` : PHP/Python sans lien.
+- `Langages de programmation/OCaml/ocaml.md` : la liste "C, C++, PHP, Python, JavaScript" en ouverture, sans lien vers chacun.
+- `Langages de programmation/OCaml/inference-de-types.md` : "mypy" → lien interne possible vers `Python/typage-avec-annotations.md` (qui couvre déjà mypy) plutôt qu'externe.
+- `Langages de programmation/PHP/methodes.md` : "`Optional[T]` en Python" → lien interne vers `Python/typage-avec-annotations.md`.
+- `Langages de programmation/Python/python.md` : "NumPy" → lien interne vers `/?c=data-science&p=numpy` ; "PyTorch" → lien interne vers `/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch` (déjà un chapitre dédié sur le site, actuellement non lié ici).
 
-### Étudier une section sur les voix générées par IA (synthèse vocale)
+**Liens externes / décisions en attente de validation avant application :**
+- Git : zlib, algorithme de Myers (Git/architecture-interne.md), GitLab (remotes.md, github-et-plateformes.md), Bitbucket (github-et-plateformes.md), Kanban (issues-et-projets-github.md, mineur).
+- Bash : `bc` (variables.md). (Linux/Windows/macOS/Unix mentionnés comme contexte ambiant dans plusieurs fichiers, volontairement pas traités comme violations sauf quand un chapitre les explique déjà — voir ci-dessus.)
+- PowerShell : .NET Runtime, C# (architecture-dun-shell.md, ecrire-et-executer-un-script.md, powershell.md — aucun chapitre C# sur le site).
+- Zsh : powerlevel10k (prompt-et-themes.md).
+- Langages de balisage : SEO (HTML/semantique-html5.md, à développer un minimum avant de lier), Sass/Less (CSS/variables-et-cascade.md).
+- C : gcc (bibliotheques.md, compilation.md, makefiles.md, threads.md), Valgrind + norme C11 (memoire.md), algorithme de Kernighan (operateurs-binaires.md), norme C99 (conditions.md, variables.md).
+- C++ : Java (heritage-et-polymorphisme.md, stl-conteneurs.md — pas de chapitre Java sur le site), arbre rouge-noir (stl-conteneurs.md).
+- JavaScript : React, Vue, Angular, Node.js (javascript.md).
+- OCaml : Jane Street, Coq, Haskell (ocaml.md), NullPointerException/Java (filtrage-par-motif-et-types-algebriques.md), algorithme de Hindley-Milner (inference-de-types.md).
+- PHP : WordPress, Drupal, Laravel, Symfony (php.md, routage.md), Express, Node (routage.md), MD5, SHA-1, bcrypt (securite.md), `std::optional<T>` C++ (methodes.md, pas de chapitre C++ dédié aux templates génériques équivalent).
+- Python : Django, Flask, pandas (python.md — PyTorch et NumPy passent en lien interne, voir ci-dessus), Docker (cli-avec-argparse.md), VS Code, PyCharm (typage-avec-annotations.md).
 
-Demandé le 2026-08-12, même traitement que la piste OCR ci-dessus : à cadrer le moment venu, pas à lancer maintenant. Périmètre encore flou, à clarifier avant d'écrire quoi que ce soit :
-- Risque de redite avec l'existant : la partie LLM (IA) couvre déjà l'entraînement de réseaux de neurones et les architectures Transformer en général, et une future section OCR/vision couvrira la reconnaissance à partir d'image — la synthèse vocale (texte → audio) est un troisième type de modèle génératif, à situer clairement par rapport aux deux autres avant d'écrire (probablement une nouvelle sous-catégorie dans IA, symétrique des deux autres, plutôt qu'un chapitre isolé).
-- Notions probables, à valider : synthèse vocale classique (concaténative) vs par deep learning (Tacotron/WaveNet et descendants), clonage de voix et ses enjeux éthiques/légaux (deepfake audio, consentement), choix d'un fournisseur (local vs API cloud, écho possible avec l'arbitrage local/cloud déjà traité pour la vision), qualité perçue (MOS, prosodie), latence pour un usage temps réel vs génération à l'avance.
+**Jamais audité du tout** (le 3e agent lancé pour ces 15 catégories a échoué, résultat inutilisable — à refaire directement, sans agent, conformément à `prompt.md`) : Bases de l'informatique, Bases de données, Représentation des données, Data Science, Qualité et architecture du code, Mathématiques, Docker, Organisation en entreprise, Infrastructure, CI-CD, Traitement de documents, Domain-specific Languages (DSL), UI-UX, Performance, `acceuil.md`.
+
+**Questions ouvertes pour la prochaine session** (décisions prises par défaut cette session, à confirmer avec Louis plutôt qu'à considérer comme tranchées) :
+- **Noms d'OS ambiants (Linux, Windows, macOS, Unix)** : décidé de ne PAS les traiter comme des violations de la règle 7bis quand ils apparaissent comme simple contexte de fond (« le shell le plus répandu sur Linux et macOS »), sauf quand un chapitre du site les explique déjà et n'est pas lié (ex. Unix dans `scripts-et-shebang.md`). À confirmer : est-ce le bon seuil, ou Louis veut-il un lien externe systématique même pour ces mentions ambiantes ?
+- **Java, absent du site** : cité en comparaison dans plusieurs chapitres C++/OCaml (`ArrayList`, `NullPointerException`...) sans aucune destination interne possible. Un lien externe (docs Oracle) suffit-il durablement, ou est-ce le signe qu'un chapitre Java devrait être envisagé un jour dans "Langages de programmation" (question de fond, pas juste un lien à poser) ?
+- **Profondeur des liens externes mineurs** (Kanban, SEO...) : un simple lien Wikipédia suffit-il, ou faut-il, comme le veut le principe zéro-connaissance déjà appliqué aux plateformes nommées (voir `prompt.md`, section Contexte), ajouter aussi une phrase de définition avant le lien plutôt que de ne poser que le lien ?
+- **PHP sans chapitre "exceptions" dédié** : à vérifier précisément si `poo.md` ou `structures-de-langage.md` couvre déjà try/catch en PHP avant de décider (lien vers l'un des deux si oui, nouveau chapitre à créer sinon).
 
 ### Lecture audio automatique du site (texte + blocs de code)
 

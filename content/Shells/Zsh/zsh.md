@@ -1,3 +1,7 @@
+---
+order: 2
+---
+
 # Zsh
 
 Zsh (*Z shell*) est, comme Bash, un shell compatible POSIX : la quasi-totalité de ce qui est vu dans la rubrique Bash (variables, conditions, boucles, fonctions, redirections et pipes, permissions et fichiers, gestion des processus, traitement de texte) fonctionne **à l'identique** en zsh, syntaxe comprise. C'est d'ailleurs le shell par défaut sur macOS depuis 2019, et un choix courant sur Linux pour son confort d'utilisation interactive.

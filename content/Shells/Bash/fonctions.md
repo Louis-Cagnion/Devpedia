@@ -4,7 +4,7 @@ order: 7
 
 # Les fonctions
 
-Une fonction Bash regroupe une suite de commandes sous un nom réutilisable. Contrairement à PHP ou C, une fonction Bash ne déclare **jamais** de liste de paramètres nommés : elle reçoit ses arguments exactement comme un script reçoit les siens, via `$1`, `$2`, etc.
+Une fonction Bash regroupe une suite de commandes sous un nom réutilisable. Contrairement à [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou [C](/?c=langages-de-programmation&s=c&p=conditions), une fonction Bash ne déclare **jamais** de liste de paramètres nommés : elle reçoit ses arguments exactement comme un script reçoit les siens, via `$1`, `$2`, etc.
 
 ## Déclarer et appeler une fonction
 

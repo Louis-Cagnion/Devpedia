@@ -1,3 +1,7 @@
+---
+order: 5
+---
+
 # JavaScript
 
 Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) est un ensemble de règles qui permet d'écrire des instructions qu'un ordinateur peut exécuter. JavaScript en est un, conçu à l'origine pour rendre les pages web interactives.

@@ -239,70 +239,176 @@
       "id": "ia",
       "label": "IA",
       "folder": "IA",
-      "chapters": [
+      "subjects": [
         {
-          "id": "reseaux-de-neurones",
-          "label": "Les réseaux de neurones : les fondamentaux"
+          "id": "fondamentaux-du-deep-learning",
+          "label": "Fondamentaux du deep learning",
+          "folder": "Fondamentaux du deep learning",
+          "chapters": [
+            {
+              "id": "reseaux-de-neurones",
+              "label": "Les réseaux de neurones : les fondamentaux"
+            },
+            {
+              "id": "entrainement-descente-de-gradient",
+              "label": "L'entraînement d'un modèle et la descente de gradient"
+            },
+            {
+              "id": "architectures-cnn-rnn-transformers",
+              "label": "Architectures : CNN, RNN et Transformers"
+            },
+            {
+              "id": "deep-learning-pytorch",
+              "label": "Deep learning avec PyTorch"
+            }
+          ]
         },
         {
-          "id": "entrainement-descente-de-gradient",
-          "label": "L'entraînement d'un modèle et la descente de gradient"
+          "id": "nlp-llm",
+          "label": "NLP et LLM",
+          "folder": "NLP et LLM",
+          "chapters": [
+            {
+              "id": "nlp-et-llm",
+              "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
+            },
+            {
+              "id": "prompt-engineering",
+              "label": "Le prompt engineering : structurer une requête pour de meilleurs résultats"
+            },
+            {
+              "id": "llm-en-production",
+              "label": "LLM en production : cas d'usage et limites"
+            },
+            {
+              "id": "agents",
+              "label": "Agents : boucle outil/réflexion et orchestration"
+            },
+            {
+              "id": "rag",
+              "label": "RAG : augmenter un LLM avec des données externes"
+            },
+            {
+              "id": "prompt-injection",
+              "label": "Prompt injection : quand une donnée se fait passer pour une instruction"
+            }
+          ]
         },
         {
-          "id": "architectures-cnn-rnn-transformers",
-          "label": "Architectures : CNN, RNN et Transformers"
+          "id": "applications-llm",
+          "label": "Applications LLM",
+          "folder": "Applications LLM",
+          "chapters": [
+            {
+              "id": "chatbot",
+              "label": "Construire un chatbot : architecture, configuration et mise à l'échelle"
+            },
+            {
+              "id": "assistant-agentique-terminal",
+              "label": "L'assistant IA agentique en terminal : au-delà du prompt simple"
+            }
+          ]
         },
         {
-          "id": "deep-learning-pytorch",
-          "label": "Deep learning avec PyTorch"
+          "id": "vision-et-ocr",
+          "label": "Vision et OCR",
+          "folder": "Vision et OCR",
+          "chapters": [
+            {
+              "id": "ocr-classique-vs-deep-learning",
+              "label": "OCR : de la reconnaissance de motifs classique au deep learning"
+            },
+            {
+              "id": "detection-de-mise-en-page",
+              "label": "Détection de mise en page : boîtes englobantes, score de confiance et suppression des doublons"
+            },
+            {
+              "id": "modeles-document-ai",
+              "label": "Modèles \"Document AI\" : comprendre un document au-delà du texte pur"
+            },
+            {
+              "id": "fine-tuning-modele-vision",
+              "label": "Entraîner et fine-tuner un modèle de vision pour un cas métier"
+            },
+            {
+              "id": "evaluer-un-ocr",
+              "label": "Évaluer un OCR : CER, WER et taux de reconnaissance par champ"
+            },
+            {
+              "id": "post-traitement-correction",
+              "label": "Post-traitement et correction d'un OCR"
+            },
+            {
+              "id": "ocr-en-production",
+              "label": "Mise en production et monitoring d'un pipeline OCR"
+            },
+            {
+              "id": "gouvernance-documents-scannes",
+              "label": "Gouvernance des données pour des documents scannés"
+            }
+          ]
         },
         {
-          "id": "nlp-et-llm",
-          "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
+          "id": "voix-ia",
+          "label": "Voix IA",
+          "folder": "Voix IA",
+          "chapters": [
+            {
+              "id": "synthese-classique-vs-deep-learning",
+              "label": "Synthèse vocale : de la concaténation classique au deep learning"
+            },
+            {
+              "id": "controler-la-prosodie",
+              "label": "Contrôler la prosodie"
+            },
+            {
+              "id": "modeles-modernes-synthese",
+              "label": "Modèles modernes de synthèse : les codecs neuronaux"
+            },
+            {
+              "id": "cloner-une-voix",
+              "label": "Cloner une voix : technique et enjeux éthiques/légaux"
+            },
+            {
+              "id": "fine-tuning-synthese-vocale",
+              "label": "Entraîner et fine-tuner un modèle de synthèse vocale"
+            },
+            {
+              "id": "evaluer-synthese-vocale",
+              "label": "Évaluer une synthèse vocale : MOS, intelligibilité, latence"
+            },
+            {
+              "id": "choisir-fournisseur-mise-en-production",
+              "label": "Choisir un fournisseur et mettre en production"
+            },
+            {
+              "id": "gouvernance-voix-ia",
+              "label": "Gouvernance d'un pipeline de voix IA"
+            }
+          ]
         },
         {
-          "id": "prompt-engineering",
-          "label": "Le prompt engineering : structurer une requête pour de meilleurs résultats"
-        },
-        {
-          "id": "llm-en-production",
-          "label": "LLM en production : cas d'usage et limites"
-        },
-        {
-          "id": "agents",
-          "label": "Agents : boucle outil/réflexion et orchestration"
-        },
-        {
-          "id": "rag",
-          "label": "RAG : augmenter un LLM avec des données externes"
-        },
-        {
-          "id": "prompt-injection",
-          "label": "Prompt injection : quand une donnée se fait passer pour une instruction"
-        },
-        {
-          "id": "gestion-dun-llm",
-          "label": "Monitoring et gestion opérationnelle d'un LLM"
-        },
-        {
-          "id": "gouvernance-des-donnees",
-          "label": "Gouvernance des données pour un système IA"
-        },
-        {
-          "id": "reglementation-europeenne-ia",
-          "label": "Réglementation européenne de l'IA : l'AI Act"
-        },
-        {
-          "id": "chatbot",
-          "label": "Construire un chatbot : architecture, configuration et mise à l'échelle"
-        },
-        {
-          "id": "assistant-agentique-terminal",
-          "label": "L'assistant IA agentique en terminal : au-delà du prompt simple"
-        },
-        {
-          "id": "stack-ia",
-          "label": "Le stack IA : les couches d'une application en production"
+          "id": "production-et-gouvernance",
+          "label": "Production et gouvernance",
+          "folder": "Production et gouvernance",
+          "chapters": [
+            {
+              "id": "gestion-dun-llm",
+              "label": "Monitoring et gestion opérationnelle d'un LLM"
+            },
+            {
+              "id": "gouvernance-des-donnees",
+              "label": "Gouvernance des données pour un système IA"
+            },
+            {
+              "id": "reglementation-europeenne-ia",
+              "label": "Réglementation européenne de l'IA : l'AI Act"
+            },
+            {
+              "id": "stack-ia",
+              "label": "Le stack IA : les couches d'une application en production"
+            }
+          ]
         }
       ]
     },
@@ -335,41 +441,6 @@
       "folder": "Langages de balisage",
       "subjects": [
         {
-          "id": "css",
-          "label": "CSS",
-          "folder": "CSS",
-          "chapters": [
-            {
-              "id": "selecteurs",
-              "label": "Les sélecteurs"
-            },
-            {
-              "id": "variables-et-cascade",
-              "label": "Variables CSS et la cascade"
-            },
-            {
-              "id": "box-model",
-              "label": "Le modèle de boîte (box model)"
-            },
-            {
-              "id": "positionnement",
-              "label": "Le positionnement (position, z-index)"
-            },
-            {
-              "id": "flexbox",
-              "label": "Flexbox"
-            },
-            {
-              "id": "grid",
-              "label": "CSS Grid"
-            },
-            {
-              "id": "responsive-et-media-queries",
-              "label": "Le responsive design et les media queries"
-            }
-          ]
-        },
-        {
           "id": "html",
           "label": "HTML",
           "folder": "HTML",
@@ -401,6 +472,41 @@
             {
               "id": "attributs-data-et-accessibilite",
               "label": "Attributs data-* et accessibilité (ARIA)"
+            }
+          ]
+        },
+        {
+          "id": "css",
+          "label": "CSS",
+          "folder": "CSS",
+          "chapters": [
+            {
+              "id": "selecteurs",
+              "label": "Les sélecteurs"
+            },
+            {
+              "id": "variables-et-cascade",
+              "label": "Variables CSS et la cascade"
+            },
+            {
+              "id": "box-model",
+              "label": "Le modèle de boîte (box model)"
+            },
+            {
+              "id": "positionnement",
+              "label": "Le positionnement (position, z-index)"
+            },
+            {
+              "id": "flexbox",
+              "label": "Flexbox"
+            },
+            {
+              "id": "grid",
+              "label": "CSS Grid"
+            },
+            {
+              "id": "responsive-et-media-queries",
+              "label": "Le responsive design et les media queries"
             }
           ]
         }
@@ -534,92 +640,6 @@
           ]
         },
         {
-          "id": "javascript",
-          "label": "JavaScript",
-          "folder": "JavaScript",
-          "chapters": [
-            {
-              "id": "conditions",
-              "label": "Les conditions"
-            },
-            {
-              "id": "boucles",
-              "label": "Les boucles"
-            },
-            {
-              "id": "fonctions",
-              "label": "Les fonctions"
-            },
-            {
-              "id": "strings",
-              "label": "Les strings"
-            },
-            {
-              "id": "tableaux",
-              "label": "Les tableaux"
-            },
-            {
-              "id": "nombres",
-              "label": "Les nombres"
-            },
-            {
-              "id": "objets",
-              "label": "Les objets"
-            },
-            {
-              "id": "poo",
-              "label": "Les classes et la programmation orientée objet"
-            },
-            {
-              "id": "regex",
-              "label": "Les regex"
-            },
-            {
-              "id": "gestion-des-erreurs",
-              "label": "La gestion des erreurs"
-            },
-            {
-              "id": "html-elements",
-              "label": "Les HTMLElements"
-            },
-            {
-              "id": "dom-et-evenements",
-              "label": "Le DOM et la gestion des événements"
-            },
-            {
-              "id": "asynchrone",
-              "label": "La programmation asynchrone (callbacks, Promises, async/await)"
-            }
-          ]
-        },
-        {
-          "id": "ocaml",
-          "label": "OCaml",
-          "folder": "OCaml",
-          "chapters": [
-            {
-              "id": "programmation-fonctionnelle-vs-imperative",
-              "label": "Programmation fonctionnelle vs impérative"
-            },
-            {
-              "id": "immuabilite-et-fonctions-pures",
-              "label": "Immuabilité et fonctions pures"
-            },
-            {
-              "id": "filtrage-par-motif-et-types-algebriques",
-              "label": "Filtrage par motif et types algébriques"
-            },
-            {
-              "id": "recursion-et-fonctions-dordre-superieur",
-              "label": "Récursion et fonctions d'ordre supérieur"
-            },
-            {
-              "id": "inference-de-types",
-              "label": "L'inférence de types"
-            }
-          ]
-        },
-        {
           "id": "php",
           "label": "PHP",
           "folder": "PHP",
@@ -738,6 +758,92 @@
             {
               "id": "cli-avec-argparse",
               "label": "Construire une CLI avec `argparse`"
+            }
+          ]
+        },
+        {
+          "id": "javascript",
+          "label": "JavaScript",
+          "folder": "JavaScript",
+          "chapters": [
+            {
+              "id": "conditions",
+              "label": "Les conditions"
+            },
+            {
+              "id": "boucles",
+              "label": "Les boucles"
+            },
+            {
+              "id": "fonctions",
+              "label": "Les fonctions"
+            },
+            {
+              "id": "strings",
+              "label": "Les strings"
+            },
+            {
+              "id": "tableaux",
+              "label": "Les tableaux"
+            },
+            {
+              "id": "nombres",
+              "label": "Les nombres"
+            },
+            {
+              "id": "objets",
+              "label": "Les objets"
+            },
+            {
+              "id": "poo",
+              "label": "Les classes et la programmation orientée objet"
+            },
+            {
+              "id": "regex",
+              "label": "Les regex"
+            },
+            {
+              "id": "gestion-des-erreurs",
+              "label": "La gestion des erreurs"
+            },
+            {
+              "id": "html-elements",
+              "label": "Les HTMLElements"
+            },
+            {
+              "id": "dom-et-evenements",
+              "label": "Le DOM et la gestion des événements"
+            },
+            {
+              "id": "asynchrone",
+              "label": "La programmation asynchrone (callbacks, Promises, async/await)"
+            }
+          ]
+        },
+        {
+          "id": "ocaml",
+          "label": "OCaml",
+          "folder": "OCaml",
+          "chapters": [
+            {
+              "id": "programmation-fonctionnelle-vs-imperative",
+              "label": "Programmation fonctionnelle vs impérative"
+            },
+            {
+              "id": "immuabilite-et-fonctions-pures",
+              "label": "Immuabilité et fonctions pures"
+            },
+            {
+              "id": "filtrage-par-motif-et-types-algebriques",
+              "label": "Filtrage par motif et types algébriques"
+            },
+            {
+              "id": "recursion-et-fonctions-dordre-superieur",
+              "label": "Récursion et fonctions d'ordre supérieur"
+            },
+            {
+              "id": "inference-de-types",
+              "label": "L'inférence de types"
             }
           ]
         }
@@ -963,6 +1069,37 @@
           ]
         },
         {
+          "id": "zsh",
+          "label": "Zsh",
+          "folder": "Zsh",
+          "chapters": [
+            {
+              "id": "fichiers-de-demarrage",
+              "label": "Les fichiers de démarrage"
+            },
+            {
+              "id": "options-du-shell",
+              "label": "Le système d'options (`setopt`)"
+            },
+            {
+              "id": "expansion-et-jokers-avances",
+              "label": "Expansion et jokers avancés"
+            },
+            {
+              "id": "completion-avancee",
+              "label": "La complétion avancée"
+            },
+            {
+              "id": "prompt-et-themes",
+              "label": "Personnaliser le prompt"
+            },
+            {
+              "id": "oh-my-zsh",
+              "label": "Oh My Zsh"
+            }
+          ]
+        },
+        {
           "id": "powershell",
           "label": "PowerShell",
           "folder": "PowerShell",
@@ -1018,37 +1155,6 @@
             {
               "id": "architecture-dun-shell",
               "label": "Comment fonctionne PowerShell (architecture interne)"
-            }
-          ]
-        },
-        {
-          "id": "zsh",
-          "label": "Zsh",
-          "folder": "Zsh",
-          "chapters": [
-            {
-              "id": "fichiers-de-demarrage",
-              "label": "Les fichiers de démarrage"
-            },
-            {
-              "id": "options-du-shell",
-              "label": "Le système d'options (`setopt`)"
-            },
-            {
-              "id": "expansion-et-jokers-avances",
-              "label": "Expansion et jokers avancés"
-            },
-            {
-              "id": "completion-avancee",
-              "label": "La complétion avancée"
-            },
-            {
-              "id": "prompt-et-themes",
-              "label": "Personnaliser le prompt"
-            },
-            {
-              "id": "oh-my-zsh",
-              "label": "Oh My Zsh"
             }
           ]
         }

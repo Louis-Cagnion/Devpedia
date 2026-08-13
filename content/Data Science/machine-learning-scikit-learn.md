@@ -156,7 +156,7 @@ print(classification_report(y_test, predictions))   # précision, rappel et F1 �
 4. Évaluer sur l'ensemble de test (`predict` + une métrique adaptée au problème).
 5. Ajuster (autre algorithme, autres paramètres, plus de données...) et recommencer.
 
-Voir aussi le chapitre sur [les réseaux de neurones](/?c=ia&p=reseaux-de-neurones) : une famille particulière de modèles, plus complexe que ceux de scikit-learn, mais reposant sur exactement les mêmes principes de base (données d'entraînement/test, apprentissage, généralisation).
+Voir aussi le chapitre sur [les réseaux de neurones](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones) : une famille particulière de modèles, plus complexe que ceux de scikit-learn, mais reposant sur exactement les mêmes principes de base (données d'entraînement/test, apprentissage, généralisation).
 
 ---
 

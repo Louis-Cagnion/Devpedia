@@ -4,7 +4,7 @@ order: 9
 
 # RAG : augmenter un LLM avec des données externes
 
-Un LLM ne connaît que ce qu'il a vu à l'entraînement, jusqu'à une date de coupure (voir [LLM en production](/?c=ia&p=llm-en-production)) : il ignore vos documents internes, votre base de connaissance, ou tout ce qui s'est produit après cette date. Le **RAG** (*Retrieval-Augmented Generation*, génération augmentée par recherche documentaire) répond à ce problème en allant chercher, au moment de la question, les documents pertinents et en les injectant dans le prompt avant de demander la réponse.
+Un LLM ne connaît que ce qu'il a vu à l'entraînement, jusqu'à une date de coupure (voir [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production)) : il ignore vos documents internes, votre base de connaissance, ou tout ce qui s'est produit après cette date. Le **RAG** (*Retrieval-Augmented Generation*, génération augmentée par recherche documentaire) répond à ce problème en allant chercher, au moment de la question, les documents pertinents et en les injectant dans le prompt avant de demander la réponse.
 
 ## Pourquoi pas simplement ré-entraîner le modèle ?
 
@@ -31,9 +31,9 @@ Le RAG et le fine-tuning ne s'excluent pas : un modèle peut être affiné pour 
                             le prompt, et le LLM repond en s'appuyant dessus
 ```
 
-La comparaison à l'étape 3 se fait par une mesure de similarité entre vecteurs, le plus souvent exactement le [produit scalaire entre vecteurs normalisés](/?c=mathematiques&p=vecteurs-et-produit-scalaire) (le cosinus de l'angle qui les sépare) : deux fragments dont les embeddings sont proches parlent, en principe, de sujets proches ; c'est exactement la propriété des embeddings détaillée dans [NLP et LLM](/?c=ia&p=nlp-et-llm).
+La comparaison à l'étape 3 se fait par une mesure de similarité entre vecteurs, le plus souvent exactement le [produit scalaire entre vecteurs normalisés](/?c=mathematiques&p=vecteurs-et-produit-scalaire) (le cosinus de l'angle qui les sépare) : deux fragments dont les embeddings sont proches parlent, en principe, de sujets proches ; c'est exactement la propriété des embeddings détaillée dans [NLP et LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm).
 
-> **Piège :** changer de modèle d'embedding sans réindexer l'intégralité des documents existants. Les embeddings produits par deux modèles différents ne partagent pas le même espace vectoriel (voir la comparaison d'embeddings dans [NLP et LLM](/?c=ia&p=nlp-et-llm)) : mélanger anciens et nouveaux embeddings dans une même recherche ne produit aucune comparaison valide, même si le calcul s'exécute sans erreur apparente.
+> **Piège :** changer de modèle d'embedding sans réindexer l'intégralité des documents existants. Les embeddings produits par deux modèles différents ne partagent pas le même espace vectoriel (voir la comparaison d'embeddings dans [NLP et LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm)) : mélanger anciens et nouveaux embeddings dans une même recherche ne produit aucune comparaison valide, même si le calcul s'exécute sans erreur apparente.
 >
 > **Bonne pratique :** réindexer l'intégralité de la base documentaire dès qu'un modèle d'embedding change, jamais un mélange partiel de deux modèles différents.
 
@@ -42,7 +42,7 @@ La comparaison à l'étape 3 se fait par une mesure de similarité entre vecteur
 La taille des fragments n'est jamais neutre :
 
 - **Trop petits**, un fragment perd le contexte qui l'entoure (une phrase isolée de son paragraphe peut devenir ambiguë ou trompeuse une fois recherchée seule).
-- **Trop grands**, un fragment dilue sa pertinence : sur un document de plusieurs pages, seule une portion répond vraiment à la question, mais tout le fragment est injecté dans le prompt, au prix (voir [LLM en production](/?c=ia&p=llm-en-production)) et au risque de noyer l'information utile dans du texte non pertinent.
+- **Trop grands**, un fragment dilue sa pertinence : sur un document de plusieurs pages, seule une portion répond vraiment à la question, mais tout le fragment est injecté dans le prompt, au prix (voir [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production)) et au risque de noyer l'information utile dans du texte non pertinent.
 
 Un compromis courant garde un chevauchement entre fragments consécutifs (les derniers mots d'un fragment répétés en tête du suivant), pour qu'une information à cheval sur deux fragments ne soit jamais totalement perdue.
 
@@ -52,11 +52,11 @@ Un compromis courant garde un chevauchement entre fragments consécutifs (les de
 
 ## La limite du RAG : un mauvais retrieval ne se voit pas
 
-Le RAG ne rend pas le LLM plus honnête, il l'entoure de meilleures données : si l'étape de recherche ne trouve pas le bon fragment (question mal formulée, embedding qui ne capture pas la bonne nuance, information absente de la base), le modèle répond quand même, avec les mêmes risques d'hallucination que sans RAG (voir [LLM en production](/?c=ia&p=llm-en-production)), sans qu'aucune alerte ne signale que le contexte fourni était insuffisant ou hors sujet.
+Le RAG ne rend pas le LLM plus honnête, il l'entoure de meilleures données : si l'étape de recherche ne trouve pas le bon fragment (question mal formulée, embedding qui ne capture pas la bonne nuance, information absente de la base), le modèle répond quand même, avec les mêmes risques d'hallucination que sans RAG (voir [LLM en production](/?c=ia&s=nlp-llm&p=llm-en-production)), sans qu'aucune alerte ne signale que le contexte fourni était insuffisant ou hors sujet.
 
 > **Piège :** supposer qu'une réponse d'un système RAG est fiable simplement parce qu'elle semble bien sourcée. Un mauvais retrieval (fragment non pertinent) produit une réponse tout aussi assurée qu'un bon retrieval : rien en surface ne distingue les deux cas.
 >
-> **Bonne pratique :** monitorer la qualité du retrieval lui-même (les fragments récupérés étaient-ils réellement pertinents ?), pas seulement la qualité de la réponse finale ; voir [Monitoring et gestion opérationnelle d'un LLM](/?c=ia&p=gestion-dun-llm).
+> **Bonne pratique :** monitorer la qualité du retrieval lui-même (les fragments récupérés étaient-ils réellement pertinents ?), pas seulement la qualité de la réponse finale ; voir [Monitoring et gestion opérationnelle d'un LLM](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm).
 
 ## Ce qu'il faut retenir
 
