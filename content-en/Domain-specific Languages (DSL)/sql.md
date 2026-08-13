@@ -1,6 +1,6 @@
 # SQL
 
-SQL (*Structured Query Language*) is a single-purpose language designed to query and manipulate data stored in tables. Like regex, it is not a general-purpose programming language—it has no loops, no user-defined functions, and no variables in the traditional sense. It is interpreted by a database engine (MySQL, PostgreSQL, SQL Server, SQLite, etc.), typically controlled from a host language (PHP, Python, JS, etc.) via a connector.
+SQL (*Structured Query Language*) is a single-purpose language designed to query and manipulate data stored in tables. Like regex, it is not a general-purpose programming language: it has no loops, no user-defined functions, and no variables in the traditional sense. It is interpreted by a database engine (MySQL, PostgreSQL, SQL Server, SQLite, etc.), typically controlled from a host language (PHP, Python, JS, etc.) via a connector.
 
 ## A table, like a spreadsheet sheet
 
@@ -47,11 +47,11 @@ LEFT JOIN ventes v ON v.client_id = c.id; -- Keeps ALL left-aligned lines; retur
 
 - `c` / `v` are table aliases, which are essential whenever two tables share a column name (e.g., `c.name` vs. `v.name`, to avoid ambiguity).
 - `JOIN` (or `INNER JOIN`): keeps only the lines that match on both sides.
-- `LEFT JOIN` : Keeps all rows from the left table; for the right-hand columns, sets them to `NULL` if no match is found—useful when you want to list *everyone*, regardless of whether a match was found (e.g., all customers, whether they have made a purchase or not).
+- `LEFT JOIN` : Keeps all rows from the left table; for the right-hand columns, sets them to `NULL` if no match is found: useful when you want to list *everyone*, regardless of whether a match was found (e.g., all customers, whether they have made a purchase or not).
 
-> **Pitfall:** Using `JOIN` (`INNER`) when you actually want *`EVERYONE*`—a customer with zero sales would be silently excluded from the results, whereas `LEFT JOIN` would have included them with columns set to `NULL`.
+> **Pitfall:** Using `JOIN` (`INNER`) when you actually want *`EVERYONE*`: a customer with zero sales would be silently excluded from the results, whereas `LEFT JOIN` would have included them with columns set to `NULL`.
 >
-> **Best practice:** Before writing the join, explicitly ask yourself whether rows without a match should be removed (`JOIN`) or remain visible (`LEFT JOIN`)—both produce a syntactically valid result, but with different semantic meanings.
+> **Best practice:** Before writing the join, explicitly ask yourself whether rows without a match should be removed (`JOIN`) or remain visible (`LEFT JOIN`), both produce a syntactically valid result, but with different semantic meanings.
 
 ## Controlling SQL from PHP with PDO
 
@@ -89,7 +89,7 @@ If `$_GET['city']` contained `Lyon' OR '1'='1`, the query would become a conditi
 ```php
 <?php
 // Dynamically constructing a WHERE clause remains safe,
-// as long as only the placeholder NAMES are concatenated—never the values themselves:
+// as long as only the placeholder NAMES are concatenated, never the values themselves:
 function construireEt(array $criteres): array
 {
     $clauses = [];
@@ -104,9 +104,9 @@ function construireEt(array $criteres): array
 ?>
 ```
 
-The generated SQL text never contains the actual value, only the literal name of the placeholder (`:city`)—the actual value is passed separately in `$params`, which is used by `execute($params)`.
+The generated SQL text never contains the actual value, only the literal name of the placeholder (`:city`): the actual value is passed separately in `$params`, which is used by `execute($params)`.
 
-> **Note (security):** This mechanism protects **values** (`$value`), but not **column names** (`$column`)—these are concatenated directly into the SQL without passing through a placeholder (this is technically not possible: PDO only allows values to be passed as parameters, never column or table names). If `$criteres` came directly from unfiltered user input (e.g., `construireEt($_GET)`), a fabricated column name could reintroduce an SQL injection. `$column` must therefore always come from a predefined whitelist of allowed columns, never directly from external input.
+> **Note (security):** This mechanism protects **values** (`$value`), but not **column names** (`$column`): these are concatenated directly into the SQL without passing through a placeholder (this is technically not possible: PDO only allows values to be passed as parameters, never column or table names). If `$criteres` came directly from unfiltered user input (e.g., `construireEt($_GET)`), a fabricated column name could reintroduce an SQL injection. `$column` must therefore always come from a predefined whitelist of allowed columns, never directly from external input.
 
 ## The principle of least privilege
 
@@ -118,11 +118,11 @@ GRANT SELECT, INSERT, UPDATE ON boutique.commandes TO 'app_boutique'@'%';
 -- No DROP, DELETE, or access to other tables or databases, unless the application ever needs them
 ```
 
-In practice, a compromised application account (due to a code vulnerability, a credential leak, etc.) can only cause damage commensurate with its own permissions—an account limited to `SELECT` / `INSERT` / `UPDATE` on a single table does not allow an attacker to delete an entire database, even if they manage to execute arbitrary queries. This is a **complementary** safeguard to prepared statements, not a substitute: it limits the damage *if* an injection does occur (undetected bug, poorly constructed dynamic query, etc.), rather than preventing the injection itself.
+In practice, a compromised application account (due to a code vulnerability, a credential leak, etc.) can only cause damage commensurate with its own permissions: an account limited to `SELECT` / `INSERT` / `UPDATE` on a single table does not allow an attacker to delete an entire database, even if they manage to execute arbitrary queries. This is a **complementary** safeguard to prepared statements, not a substitute: it limits the damage *if* an injection does occur (undetected bug, poorly constructed dynamic query, etc.), rather than preventing the injection itself.
 
 ## Learn More
 
-- [PDO Documentation — php.net](https://www.php.net/manual/fr/book.pdo.php)
+- [PDO Documentation (php.net)](https://www.php.net/manual/fr/book.pdo.php)
 - [W3Schools SQL (in English, a good syntax reference)](https://www.w3schools.com/sql/)
 
 ---
