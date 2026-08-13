@@ -8,7 +8,7 @@ A **thread** is, like a process, a sequence of instructions executed independent
 
 ## Create and wait for a thread
 
-The POSIX threads library (`pthread`) provides the basic functions; compilation requires the "`-pthread`" option (`gcc -pthread main.c -o program`).
+The POSIX threads library (`pthread`) provides the basic functions; compilation requires the "`-pthread`" option ([`gcc`](https://gcc.gnu.org) `-pthread main.c -o program`).
 
 ```c
 #include <pthread.h>

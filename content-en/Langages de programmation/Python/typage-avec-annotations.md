@@ -52,5 +52,5 @@ mypy mon_script.py
 ## Why Annotate Anyway?
 
 - Documentation that is directly readable within the code, without relying on comments that must be updated manually.
-- Improved autocompletion and error detection in the editor (VS Code, PyCharm...), even before launching `mypy` or the program.
+- Improved autocompletion and error detection in the editor ([VS Code](https://code.visualstudio.com), [PyCharm](https://www.jetbrains.com/pycharm/)...), even before launching `mypy` or the program.
 - An essential foundation for large-scale Python projects, where the lack of type checking can make refactoring risky without this support.

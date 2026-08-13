@@ -49,6 +49,45 @@ not a     # Logical "NOT" (not '!')
 
 > **Note:** Python uses the keywords `and` / `or` / `not` rather than the symbols `&&` / `||` / `!` found in PHP, JavaScript, or C.
 
+## `==` vs `is`: value or object?
+
+These two operators are often confused, even though they ask two different questions:
+
+| Operator | Compares | Question asked |
+|---|---|---|
+| `==` | the **value** | "is their content identical?" |
+| `is` | the **identity** | "is it the same object in memory?" |
+
+```python
+a = [1, 2, 3]
+b = [1, 2, 3]
+c = a
+
+a == b  # True  -> same content
+a is b  # False -> two distinct lists in memory
+a is c  # True  -> c and a refer to the same object
+```
+
+This is exactly the distinction between comparison by **value** and comparison by **reference** you find in C with pointers: `*p1 == *p2` (the pointed-to values) versus `p1 == p2` (the addresses). See the C [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs) chapter.
+
+### Why `is None` and not `== None`
+
+To test whether a variable is `None`, the Python convention is `is None`:
+
+```python
+if value is None:  # recommended
+if value == None:  # to avoid
+```
+
+Two reasons:
+
+- `None` is a **singleton**: only one instance of it exists in the whole program. Testing identity is therefore correct by construction, and slightly faster.
+- `==` can be **overridden** by a class via `__eq__`. An object can therefore perfectly well answer `True` to `== None` while not actually being `None`, which makes the test unreliable.
+
+This is what explains the `None` sentinel pattern used for mutable default arguments (see the [Functions](/?c=langages-de-programmation&s=python&p=fonctions) chapter).
+
+> The same reasoning applies to `True`/`False`, which are also singletons. In practice you rarely write `is True`: you test `if condition:` directly.
+
 ## F-strings: Inserting Variables into Text
 
 ```python
@@ -84,3 +123,14 @@ text = text.upper()  # You need to reassign it to "save" the change
 | `None` | `None` | `null` |
 
 See also the chapters on lists/tuples and dictionaries/sets for composite data structures.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | Python is dynamically typed: a variable takes on the type of its value, with no prior declaration, and can change type. `==` compares value, `is` compares identity (the same object in memory). |
+| **Tools you can use** | `type()`/`isinstance()`, f-strings for interpolation, `is None` to test for a missing value. |
+| **Pitfalls to avoid** | Confusing `==` and `is`: two objects with identical content aren't necessarily the same object in memory. |
+| **Best practices** | Use `is None` rather than `== None`; prefer f-strings over concatenation to insert a variable into text. |

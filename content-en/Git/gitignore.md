@@ -39,11 +39,35 @@ git rm --cached fichier_deja_suivi.txt
 
 > **Note:** Adding a file to `.gitignore` has no** effect** if it is already tracked by Git (i.e., has been committed at least once)—Git continues to track changes to it as before. You must first explicitly remove it from tracking with `git rm --cached` (which leaves it intact on disk but stops tracking it) before the rule `.gitignore` takes effect.
 
-## `.gitignore` Scope
+## `.gitignore` scope
 
 A repository can contain multiple `.gitignore` files, each of which applies to the folder in which it is located and its subfolders—useful for rules specific to a subproject, in addition to the global rules at the root.
 
-A `~/.gitignore_global` file (configured via `git config --global core.excludesfile ~/.gitignore_global`) also allows you to define custom rules (e.g., files specific to your own editor) without imposing them on other contributors to a shared project.
+## Personal rules, outside the repository: `~/.gitignore_global`
+
+A classic `.gitignore` (seen above) is a project file like any other: it's itself tracked and committed, and therefore shared with every contributor. This is a problem for files that only depend on **your own machine** (temporary files from an editor only you use, for example): adding them to the project's `.gitignore` would impose that rule on colleagues who may not use the same editor.
+
+The solution is a second file, placed outside any repository, in your home folder:
+
+```bash
+# 1. Create the file, wherever you want (e.g. your home folder)
+echo ".idea/" > ~/.gitignore_global
+echo "*.swp" >> ~/.gitignore_global
+
+# 2. Tell Git, once and for all, where to find it
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+`git config --global` (see also the [Remotes](/?c=git&p=remotes) chapter for other `--global` settings) writes this setting into `~/.gitconfig`, a configuration file specific to your user account on this machine, outside any Git repository: `core.excludesfile` tells Git where to find an additional `.gitignore` to apply to **all your local repositories**, on top of each one's own `.gitignore`.
+
+| | `.gitignore` (in the repository) | `~/.gitignore_global` |
+|---|---|---|
+| Tracked by Git, committed | Yes | No: it's never placed inside a repository |
+| Visible to other contributors | Yes, as soon as they clone the project | No: the setting lives in `~/.gitconfig`, specific to your machine |
+| Scope | A single project (and its subfolders) | Every Git repository on your machine |
+| Typical content | The project's dependencies, secrets, build files | Files specific to your editor/OS (`.idea/`, `.DS_Store`, `*.swp`) |
+
+It's this difference (a tracked, shared file vs. a machine-local setting) that explains why a rule placed in `~/.gitignore_global` never shows up for other contributors, even after a `git push`: it was never committed, since it doesn't live in the repository.
 
 ---
 

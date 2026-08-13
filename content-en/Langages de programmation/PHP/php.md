@@ -14,4 +14,4 @@ Learning PHP provides a better understanding of how a web server processes a req
 
 Thanks to its simplicity and native integration with the web, PHP is widely used for developing dynamic websites, web applications, content management systems (CMS), and APIs.
 
-Learning PHP also provides an excellent foundation for understanding how server-side web applications work, since many frameworks (Laravel, Symfony) and CMSs (WordPress, Drupal) are based on this language.
+Learning PHP also provides an excellent foundation for understanding how server-side web applications work, since many frameworks ([Laravel](https://laravel.com), [Symfony](https://symfony.com)) and CMSs ([WordPress](https://wordpress.org), [Drupal](https://www.drupal.org)) are based on this language.

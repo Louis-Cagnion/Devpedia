@@ -64,7 +64,7 @@ match find_user 42 with
 | None -> print_endline "User not found"
 ```
 
-The difference from `None` in Python (see the [Variables](/?c=langages-de-programmation&s=python&p=variables) chapter for `is None`) is that the compiler **forces** the `None` case to be handled: the type of a function that might find nothing is explicitly `string option`, never just `string`. It's therefore impossible to forget to check for a missing value without the compiler flagging it — where a `NullPointerException` or a `TypeError: 'NoneType' object is not subscriptable` in Python only shows up at runtime, on the exact code path that forgot it.
+The difference from `None` in Python (see the [Variables](/?c=langages-de-programmation&s=python&p=variables) chapter for `is None`) is that the compiler **forces** the `None` case to be handled: the type of a function that might find nothing is explicitly `string option`, never just `string`. It's therefore impossible to forget to check for a missing value without the compiler flagging it — where a [`NullPointerException`](https://docs.oracle.com/en/java/) or a `TypeError: 'NoneType' object is not subscriptable` in Python only shows up at runtime, on the exact code path that forgot it.
 
 ---
 

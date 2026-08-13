@@ -152,8 +152,16 @@
           "label": "Remote repositories"
         },
         {
+          "id": "github-et-plateformes",
+          "label": "GitHub and Git hosting platforms"
+        },
+        {
           "id": "resoudre-conflits",
           "label": "Resolving a merge conflict"
+        },
+        {
+          "id": "pull-requests-github",
+          "label": "Pull requests on GitHub"
         },
         {
           "id": "rebase",
@@ -162,6 +170,10 @@
         {
           "id": "architecture-interne",
           "label": "The Internal Architecture of Git"
+        },
+        {
+          "id": "issues-et-projets-github",
+          "label": "Issues and project management on GitHub"
         }
       ]
     },
@@ -579,10 +591,6 @@
               "label": "Language Constructs"
             },
             {
-              "id": "structuresDeLangagues",
-              "label": "Language Structures"
-            },
-            {
               "id": "methodes",
               "label": "The Most Useful Functions and Methods"
             },
@@ -593,6 +601,10 @@
             {
               "id": "poo",
               "label": "Object-Oriented Programming (OOP)"
+            },
+            {
+              "id": "exceptions",
+              "label": "Exceptions"
             },
             {
               "id": "autoloading",
@@ -612,7 +624,7 @@
             },
             {
               "id": "securite",
-              "label": "Secure Your Data"
+              "label": "Securing your data"
             }
           ]
         },
@@ -666,12 +678,20 @@
               "label": "Typing with Annotations"
             },
             {
+              "id": "dataclasses",
+              "label": "Dataclasses"
+            },
+            {
               "id": "modules-et-environnements",
               "label": "Modules, pip, and virtual environments"
             },
             {
               "id": "jupyter-notebooks",
               "label": "Jupyter Notebooks"
+            },
+            {
+              "id": "cli-avec-argparse",
+              "label": "Building a CLI with `argparse`"
             },
             {
               "id": "numpy",
@@ -994,6 +1014,25 @@
               "label": "Oh My Zsh"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "traitement-de-documents",
+      "label": "Traitement de documents",
+      "folder": "Traitement de documents",
+      "chapters": [
+        {
+          "id": "extraction-pdf",
+          "label": "Extracting text and pages from a PDF"
+        },
+        {
+          "id": "ocr-structure",
+          "label": "Structured OCR and layout analysis"
+        },
+        {
+          "id": "arbitrage-local-cloud-vision",
+          "label": "Local vs. cloud trade-off for a vision model"
         }
       ]
     },

@@ -95,3 +95,43 @@ Repository::trouver(1);
 `use` It does not load the file itself—it simply tells the PHP engine which full filename corresponds to the short name used below. This is an autoloading mechanism (see the dedicated chapter) that is responsible for locating and loading the corresponding file when the class is actually used.
 
 > **Note:** `Classe::methode()` (with `::`) looks like `Classe->methode()` but is never used with an instance—it is the near-exact equivalent of a namespace plus a static method in C++.
+
+## Dependency injection
+
+Rather than creating the objects it needs itself (`new`), a class can receive them "from the outside", as parameters of its constructor: this is **dependency injection**. The class that receives them doesn't need to know how these objects are built, only what contract (which methods) they honor.
+
+```php
+<?php
+class NotificationService
+{
+    private Mailer $mailer;
+    private Logger $logger;
+
+    public function __construct(?Mailer $mailer = null, ?Logger $logger = null)
+    {
+        $this->mailer = $mailer ?? new SmtpMailer();  // default value if nothing is provided
+        $this->logger = $logger ?? new FileLogger();
+    }
+}
+
+// normal usage: default dependencies
+$service = new NotificationService();
+
+// for tests, or a one-off need: dependencies explicitly replaced
+$service = new NotificationService(new TestMailer(), new InMemoryLogger());
+```
+
+Nullable parameters with a `??` fallback (see [The most useful functions and methods](/?c=langages-de-programmation&s=php&p=methodes)) make each dependency **optional**: the calling code can either leave the default behavior, or explicitly supply a different implementation, typically a mock in an automated test, without ever touching `NotificationService`'s own code.
+
+> **Note:** this technique is what makes a class *testable* without depending on a real external service (actually sending an email, actually writing log files) on every test run.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A class groups together properties and methods; `new` creates an instance of it. A namespace prevents name collisions between modules. Dependency injection receives the objects a class needs as parameters rather than creating them itself. |
+| **Tools you can use** | `__construct`, typed properties, `static` methods, `namespace`/`use`. |
+| **Pitfalls to avoid** | Creating a class's dependencies directly (`new`) rather than receiving them as parameters: makes the class hard to test in isolation. |
+| **Best practices** | Type properties so they define a true contract; inject dependencies rather than hard-coding their instantiation, to make testing easier. |

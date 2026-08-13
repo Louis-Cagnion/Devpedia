@@ -22,7 +22,7 @@ gcc main.c -L. -lcalculs -o program
 ```
 
 - `ar` (*archive*) combines one or more files `.o` into a single archive `.a`.
-- `-L.` Tells `gcc` to also search for libraries in the current directory.
+- `-L.` Tells [`gcc`](https://gcc.gnu.org) to also search for libraries in the current directory.
 - `-lcalculs` Request to link to `libcalculs.a` (the prefix `lib` and the suffix `.a` are implied).
 
 | Advantage | Disadvantage |

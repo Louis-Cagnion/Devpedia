@@ -1,16 +1,28 @@
+---
+order: 2
+---
+
 # C++
 
-C++ began as an extension of C ("C with Classes"), and remains backward-compatible with virtually all of C (see the C section)—almost everything we've already covered there (pointers, memory, structs, compilation) applies directly in C++. What C++ adds on top of that is essentially **object-oriented programming**, **automatic resource management** (RAII), and **generic programming** (templates).
+C++ began as an extension of [C](/?c=langages-de-programmation&s=c&p=c) ("C with Classes"), and remains backward-compatible with virtually all of that language: almost everything that applies there (pointers, memory, structs, compilation) works directly in C++.
 
-Among the key concepts added by C++ compared to C are the following:
+```cpp
+#include <iostream>
 
-- Classes and Objects (Encapsulation, Inheritance, Polymorphism)
-- References: A Safer Alternative to Pointers in Many Cases
-- RAII and smart pointers, which drastically reduce the memory leaks discussed in the chapter on C
-- Templates: Writing Generic Code Without Sacrificing Performance
-- The Standard Library (STL): Ready-to-Use Containers, Algorithms, and Iterators
-- Exceptions: A Structured Alternative to the "C-style" Error Handling Approach (Return Values + `errno`)
+int main() {
+    int age = 25;                   // a variable, exactly like in C
+    std::cout << age << std::endl;  // prints: 25
+}
+```
 
-Learning C++ allows you to retain the low-level control of C (memory, performance, no garbage collection) while providing higher-level tools for structuring large-scale projects—a balance that explains its enduring presence in game engines, demanding embedded systems, and software that requires both high performance and significant software complexity.
+What C++ adds on top of C:
 
-> **Note:** Unlike PHP, Python, or JavaScript, C++ is **compiled** into native machine code (see the chapter on compilation, section C)—there is no virtual machine or interpreter between the code and its execution.
+| Term | What it means |
+|---|---|
+| Object-oriented programming | Organizing code around objects that bundle data together with the functions that operate on it (see [Classes and objects](/?c=langages-de-programmation&s=cpp&p=classes-et-objets)) |
+| RAII | A resource (memory, a file...) is automatically released when the object that owns it is destroyed, see [Memory management and RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii), which drastically limits the memory leaks possible in C |
+| Templates | Writing a function or a class once, valid for several different types, without sacrificing performance, see [Templates](/?c=langages-de-programmation&s=cpp&p=templates) |
+
+C++ thus keeps C's low-level control (memory, performance, no garbage collector) while offering higher-level tools for structuring a large-scale project: a trade-off that explains its enduring presence in game engines and demanding embedded systems.
+
+> **Note:** unlike [Python](/?c=langages-de-programmation&s=python&p=python) or [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), C++ remains **compiled** to native machine code (see [Compilation](/?c=langages-de-programmation&s=c&p=compilation)): no virtual machine, no interpreter between the code and its execution.

@@ -1,10 +1,10 @@
 ---
-order: 12
+order: 13
 ---
 
 # Routing Without a Framework (Front Controller)
 
-Without a framework (Laravel, Symfony, etc.), PHP does not provide a built-in router comparable to Express (`app.get('/path', callback)`). A "pure PHP" project must handle the mapping between a requested URL and the code to be executed on its own.
+Without a framework ([Laravel](https://laravel.com), [Symfony](https://symfony.com), etc.), PHP does not provide a built-in router comparable to [Express](https://expressjs.com) (`app.get('/path', callback)`). A "pure PHP" project must handle the mapping between a requested URL and the code to be executed on its own.
 
 ## The front controller and the dispatch table
 
@@ -36,7 +36,7 @@ Key difference from a JS (Express) router: each route points to a **file path**,
 
 ## The "filesystem = URLs" model
 
-On a standard PHP server (without any special configuration), **any file physically located in the web root directory is accessible via its URL path**—a `.php` is executed there, and a static file is served as-is. This is the opposite of Express/Node, where a route exists only if it is explicitly declared: in “old-school” PHP, **everything is accessible by default, except for what is explicitly blocked**.
+On a standard PHP server (without any special configuration), **any file physically located in the web root directory is accessible via its URL path**—a `.php` is executed there, and a static file is served as-is. This is the opposite of Express/[Node](https://nodejs.org), where a route exists only if it is explicitly declared: in “old-school” PHP, **everything is accessible by default, except for what is explicitly blocked**.
 
 Practical implication: A directory containing classes or sensitive data (database login credentials, API keys, etc.) must be **explicitly blocked**, even if no route in the application code ever references it—otherwise, nothing prevents a visitor from typing the path directly into the browser.
 

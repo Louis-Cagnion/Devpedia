@@ -1,17 +1,25 @@
+---
+order: 1
+---
+
 # C
 
-The C language is considered a **low-level** programming language because it provides direct access to many of the machine's fundamental mechanisms. Unlike **higher-level** languages, which hide many of these details, C allows developers to precisely control a program's behavior and its use of system resources.
+A [programming language](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) is a set of rules that lets you write instructions a computer can execute. C is one, known for its direct access to the machine's fundamental mechanisms.
 
-Some of the key concepts used in C include:
+```c
+#include <stdio.h>
 
-- Memory Management
-- Data Types and Their Representation in Memory
-- Pointers and Memory Addresses
-- Dynamic Memory Allocation and Deallocation
-- Interactions with the Operating System and Hardware
+int main(void) {
+    int age = 25;         // a variable, see the dedicated chapter
+    printf("%d\n", age);  // prints: 25
+    return 0;
+}
+```
 
-Learning C provides a better understanding of what happens when a program is run by a computer. It helps you visualize how data is stored in memory, how variables are represented, and how the processor executes the instructions generated from the source code.
+| Term | What it means |
+|---|---|
+| Low-level | Gives direct access to memory and hardware: few hidden mechanisms between the code you write and what the processor actually does |
+| Compiled | The source code is translated once and for all into native machine instructions (see [Compilation](/?c=langages-de-programmation&s=c&p=compilation)) before execution, unlike an interpreted language such as [Python](/?c=langages-de-programmation&s=python&p=python) |
+| Manual memory management | The program must allocate and free the memory it needs itself (see [Memory management](/?c=langages-de-programmation&s=c&p=memoire)), with no automatic mechanism |
 
-Because of its close ties to hardware, the C programming language is widely used for developing operating systems, hardware drivers, embedded systems, and software that requires high performance.
-
-Studying C also provides an excellent foundation for understanding the inner workings of many other programming languages, since many of them rely on concepts inherited from C or interact with libraries written in that language.
+This closeness to hardware makes it easier to understand what actually happens when a program runs: how data is stored in memory, how the processor executes instructions. This is why C remains widely used for operating systems, hardware drivers, embedded systems, and serves as the foundation for many other languages: see for example [C++](/?c=langages-de-programmation&s=cpp&p=cpp), which builds directly on it.

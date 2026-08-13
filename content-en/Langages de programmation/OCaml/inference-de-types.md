@@ -17,7 +17,7 @@ Using `+` (reserved for integers in OCaml — `+.` is float addition) is enough 
 
 ## How inference proceeds
 
-The mechanism (the Hindley-Milner algorithm) starts from each expression and sets up constraints on the types of its sub-expressions, then solves the whole constraint system for the entire program:
+The mechanism (the [Hindley-Milner algorithm](https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system)) starts from each expression and sets up constraints on the types of its sub-expressions, then solves the whole constraint system for the entire program:
 
 ```ocaml
 let double x = x + x
@@ -35,7 +35,7 @@ The second example illustrates **parametric polymorphism**: `'a` means "some typ
 
 | | C | Python (annotations) | OCaml |
 |---|---|---|---|
-| Checking | At compile time | Optional: never, or via an external checker (`mypy`) | At compile time, systematically |
+| Checking | At compile time | Optional: never, or via an [external checker](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) (`mypy`) | At compile time, systematically |
 | Annotation required | Always (`int x`) | Optional | Never (inferred) |
 
 Python (see the [Typing with Annotations](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) chapter) lets you add type hints after the fact, checked by a separate tool that remains optional — the program runs even if these annotations are wrong or missing. In OCaml, there's no "unchecked" mode: a program whose types don't line up simply doesn't compile, and can therefore never reach execution with a type inconsistency.

@@ -4,7 +4,7 @@ order: 8
 
 # Remote repositories
 
-A **remote** is a reference to a copy of the repository hosted elsewhere (GitHub, GitLab, a corporate server, etc.), used to synchronize work among multiple people or machines.
+A **remote** is a reference to a copy of the repository hosted elsewhere ([GitHub](/?c=git&p=github-et-plateformes), [GitLab](https://gitlab.com), a corporate server, etc.), used to synchronize work among multiple people or machines.
 
 ## View and add a remote
 
@@ -78,7 +78,7 @@ git clone sauvegarde.bundle nouveau-folder   # A bundle is cloned just like a st
 git remote remove origin
 ```
 
-See also [Resolving a merge conflict](/?c=git&p=resoudre-conflits), which is often necessary after a `pull` when multiple people have modified the same lines.
+See also [GitHub and Git hosting platforms](/?c=git&p=github-et-plateformes) for what a platform like GitHub adds on top of a plain remote ([pull requests](/?c=git&p=pull-requests-github), [issues](/?c=git&p=issues-et-projets-github)), and [Resolving a merge conflict](/?c=git&p=resoudre-conflits), which is often necessary after a `pull` when multiple people have modified the same lines.
 
 ---
 

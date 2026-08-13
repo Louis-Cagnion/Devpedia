@@ -74,7 +74,7 @@ function trouverUtilisateur(int $id): ?array
 ?>
 ```
 
-> **Note:** `?array` is a contract declaration, not just a coding convention—it is the PHP equivalent of `std::optional<T>` in modern C++ or `Optional[T]` in Python: the function can return this specific type, OR `null`, but nothing else.
+> **Note:** `?array` is a contract declaration, not just a coding convention—it is the PHP equivalent of [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) in modern C++ or `Optional[T]` in Python: the function can return this specific type, OR `null`, but nothing else.
 
 ## Remove an expected warning using `@`
 

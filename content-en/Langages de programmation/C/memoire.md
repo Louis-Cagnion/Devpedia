@@ -93,16 +93,59 @@ free(p);
 free(p); // double free : comportement indéfini
 ```
 
-> **Note:** These bugs do not always cause an immediate, visible crash—which is what makes them difficult to detect. A tool like **Valgrind** (`valgrind ./mon_programme`) runs the program and reports memory leaks and invalid accesses in detail, along with the line of code responsible.
+> **Note:** These bugs do not always cause an immediate, visible crash—which is what makes them difficult to detect. A tool like [**Valgrind**](https://valgrind.org) (`valgrind ./my_program`) runs the program and reports memory leaks and invalid accesses in detail, along with the line of code responsible.
+
+## Buffer overflow: a bug with security consequences
+
+Unlike the three previous bugs (which corrupt the program's own memory, with no outside intent), a buffer overflow is often **the result of input controlled by an attacker**: which historically makes it one of the most exploited security flaws in C/C++.
+
+```c
+char buffer[16];
+strcpy(buffer, user_input); // NO check at all on the size of user_input
+```
+
+If `user_input` exceeds 16 bytes, `strcpy()` keeps writing past `buffer`'s bounds, into the memory that immediately follows on the stack, which may hold other local variables, or the current function's **return address** (the spot the program must resume at after the `return`). An attacker who precisely controls the written content can, in the worst case, overwrite this return address with one of their choosing, hijacking the program's execution flow toward code they control (*stack smashing*).
+
+> **Note:** this is the same principle as an [SQL injection](/?c=langages-de-programmation&s=php&p=securite) or a [Bash command injection](/?c=shells&s=bash&p=variables): uncontrolled input that alters the **structure** of what will run, instead of staying passive data.
+
+### Protecting against it
+
+```c
+strcpy(buffer, input);                       // dangerous: no limit at all
+strncpy(buffer, input, sizeof(buffer) - 1);  // bounded to the buffer's actual size
+buffer[sizeof(buffer) - 1] = '\0';           // strncpy doesn't guarantee termination if the source is too long
+
+fgets(buffer, sizeof(buffer), stdin);        // bounded reading right from input, rather than fixing it up afterward
+```
+
+| Risky function | Bounded alternative |
+|---|---|
+| `strcpy()` | `strncpy()` (watch out for termination, see above) |
+| `strcat()` | `strncat()` |
+| `sprintf()` | `snprintf()` (truncates rather than overflowing) |
+| `gets()` | `fgets()` (`gets()` was in fact removed from the C standard as of [C11](https://en.wikipedia.org/wiki/C11_(C_standard_revision)), precisely for this reason) |
+
+> **Note:** bounding the size only solves half the problem: you also need to check that the truncated data stays coherent for the rest of the program (a filename cut halfway by `strncpy` remains a syntactically valid filename, just an incorrect one). The right reflex is to always know, at every write, the destination buffer's actual size; never assume an input will respect an expected size without checking it.
 
 ## `sizeof`
 
 `sizeof` is not a function but an operator evaluated at compile time: it returns the size in bytes of a type or variable, which is essential for correctly calculating the amount of memory to allocate:
 
 ```c
-sizeof(int);      // généralement 4
-sizeof(char);      // toujours 1, par définition du standard C
-sizeof(int) * 10;  // taille nécessaire pour 10 entiers -> à passer à malloc()
+sizeof(int);       // generally 4
+sizeof(char);      // always 1, by definition of the C standard
+sizeof(int) * 10;  // size needed for 10 integers -> pass this to malloc()
 ```
 
 See also the chapter on pointers; understanding that chapter is a prerequisite for this one.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | C leaves the developer with full responsibility for dynamic memory (the heap): `malloc`/`calloc`/`realloc` to allocate, `free` to release; the stack (local variables) is managed automatically. |
+| **Tools you can use** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind to detect leaks and invalid accesses. |
+| **Pitfalls to avoid** | Memory leak (never calling `free`), use-after-free, double free, buffer overflow, the latter of which can be exploited as a security flaw. |
+| **Best practices** | Always check that a `malloc`/`realloc` didn't return `NULL`; set a pointer to `NULL` right after its `free()`; prefer `fgets`/`strncpy`/`snprintf` over unbounded functions (`gets`/`strcpy`/`sprintf`). |

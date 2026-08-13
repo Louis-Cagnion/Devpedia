@@ -21,7 +21,7 @@ echo "Hello" | git hash-object --stdin
 
 > **Note:** A **hash function** (in this case, SHA-1) transforms an input of any size into a fixed-size number in a deterministic manner (same input → always the same result) and well-distributed (two pieces of content, even if very similar, produce very different results—this is what makes an accidental collision extremely unlikely). See [Hash Tables](/?c=langages-de-programmation&s=c&p=tables-de-hachage) for an example of this mechanism applied to a specific data structure.
 
-Specifically, each object is compressed (using zlib, a lossless compression algorithm) and stored in `.git/objects/`, under a path derived from its hash: the first two hexadecimal characters form a subfolder, and the remaining 38 characters form the filename (`.git/objects/c6/b7f4a2...`). This is nothing more or less than a [hash table](/?c=langages-de-programmation&s=c&p=tables-de-hachage) stored directly on the file system—the subfolder acts as a (*bucket*).
+Specifically, each object is compressed (using [zlib](https://zlib.net), a lossless compression algorithm) and stored in `.git/objects/`, under a path derived from its hash: the first two hexadecimal characters form a subfolder, and the remaining 38 characters form the filename (`.git/objects/c6/b7f4a2...`). This is nothing more or less than a [hash table](/?c=langages-de-programmation&s=c&p=tables-de-hachage) stored directly on the file system—the subfolder acts as a (*bucket*).
 
 > **Direct consequence:** two files with exactly the same content produce the **same** hash, and therefore the **same** object stored only once—an automatic and cost-free form of deduplication that is inherent to the model, not an optimization added as an afterthought.
 
@@ -98,7 +98,7 @@ git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" -
 
 `--index-filter` Run this command on the index of **each** commit in the history (across all refs, via `--all`), rebuild a new tree without the file, and then create a new commit—which, due to the mechanism described above (a commit’s hash depends on its parent’s hash), changes the hash of **all** commits starting from the first one in question.
 
-> **Note:** `git filter-branch` is officially deprecated in favor of [`git filter-repo`](https://github.com/newren/git-filter-repo) (faster, fewer pitfalls), but the latter is not included with Git—separate installation (Python) required. `filter-branch` remains available wherever Git is installed, which is sufficient for a one-time operation.
+> **Note:** `git filter-branch` is officially deprecated in favor of [`git filter-repo`](https://github.com/newren/git-filter-repo) (faster, fewer pitfalls), but the latter is not included with Git—separate installation ([Python](/?c=langages-de-programmation&s=python&p=python)) required. `filter-branch` remains available wherever Git is installed, which is sufficient for a one-time operation.
 
 Direct consequences of this cascading hash change:
 - Any existing clone or fork of the repository will inevitably diverge from the new version—a normal push will be rejected, a `push --force` / `--force-with-lease` (see [Remote Repositories](/?c=git&p=remotes)) is required, and anyone who has already cloned the repository must re-clone it or hard reset their copy.
@@ -119,7 +119,7 @@ git gc --prune=now                      # Removes any object that has become ina
 git fsck --unreachable                  # Lists objects that are still present but are not referenced by any branch, tag, or reflog
 ```
 
-> **Note:** This cleanup applies only to the **local** repository. A remote repository (GitHub, GitLab, etc.) follows its own `gc` according to its own schedule—after a `push --force` that removes a sensitive file from the history, the old commit may remain accessible on the server via its exact hash (a targeted request, not normal browsing) until the server performs its own cleanup. To ensure immediate deletion on the server side, only the platform’s support team can take action.
+> **Note:** This cleanup applies only to the **local** repository. A remote repository ([GitHub](/?c=git&p=github-et-plateformes), GitLab, etc.) follows its own `gc` according to its own schedule—after a `push --force` that removes a sensitive file from the history, the old commit may remain accessible on the server via its exact hash (a targeted request, not normal browsing) until the server performs its own cleanup. To ensure immediate deletion on the server side, only the platform’s support team can take action.
 
 ## Designing Your Own Version Control System
 
@@ -129,7 +129,7 @@ The components required for a minimal system, in this logical order:
 2. **A tree structure** for representing a complete snapshot of a folder tree at a given point in time (`tree`).
 3. **Commit objects linked** by a pointer to their parent(s)—it is this chain that constitutes the history.
 4. **Named, mutable pointers** (branches) pointing to a commit, plus a special pointer (`HEAD`) indicating the current "state of affairs."
-5. **A diff algorithm**—necessary only for displaying readable differences or merging branches, but not for the storage model itself, which structurally does not require one. The Myers algorithm, used by Git, finds the shortest sequence of line additions and deletions that transforms one text into another—this is what allows a `git diff` to display a minimal, readable change rather than “delete everything and rewrite it all.”
+5. **A diff algorithm**—necessary only for displaying readable differences or merging branches, but not for the storage model itself, which structurally does not require one. [The Myers algorithm](https://en.wikipedia.org/wiki/Diff#Algorithm), used by Git, finds the shortest sequence of line additions and deletions that transforms one text into another—this is what allows a `git diff` to display a minimal, readable change rather than “delete everything and rewrite it all.”
 
 ---
 
