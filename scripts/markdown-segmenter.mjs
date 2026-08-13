@@ -1,55 +1,19 @@
-#!/usr/bin/env node
 /**
- * Translate every content/*.md file into a target language, via the DeepL API.
+ * Splits a content/*.md file's body into natural-language segments (to translate) and
+ * untouched segments (code, punctuation, markdown syntax), and renames recurring French
+ * example identifiers (`nom`, `valeur`, `fichier`...) to their target-language equivalent
+ * via scripts/variable-glossary.json.
  *
- * Run with: node scripts/translate-content.mjs <lang-code>
- * e.g.:     node scripts/translate-content.mjs en
- *
- * - Only natural-language text is sent to DeepL: headings, paragraphs, list items,
- *   blockquotes, and comments inside fenced code blocks. Code itself is never touched.
- * - Inline `code`, **bold** and *italic* spans are converted to <code>/<b>/<i> tags before
- *   translation (DeepL's `tag_handling: xml` + `ignore_tags: code` keeps `<code>` content
- *   byte-for-byte untouched, while still translating the surrounding sentence correctly).
- * - Output mirrors content/ under content-<lang>/, and structure/struct.json is rebuilt
- *   for that language as structure/struct-<lang>.json.
- * - A per-language manifest (content-<lang>/.translation-cache.json) maps each source file
- *   to a hash of its content; unchanged files are skipped on re-runs, to save API quota.
- *
- * - Recurring French variable names in code (`nom`, `valeur`, `fichier`...) are renamed to
- *   their target-language equivalent via scripts/variable-glossary.json, so a translated
- *   example doesn't leave French identifiers sitting in the middle of foreign-language prose.
- *
- * Requires a DEEPL_API_KEY in a local .env file (untracked — see .gitignore).
+ * Extracted from what used to be the DeepL translation pipeline (removed once the API
+ * subscription lapsed) — this part of it never called DeepL itself, it only prepared text
+ * for translation and reassembled it afterward. Still used by apply-variable-glossary.mjs
+ * to retrofit glossary renames onto already-translated content, with zero API calls.
  */
 import fs from "node:fs";
 import path from "node:path";
-import crypto from "node:crypto";
-import { fileURLToPath, pathToFileURL } from "node:url";
-import { buildStruct, writeStruct } from "./generate-struct.js";
+import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.join(__dirname, "..");
-// True only when this file is run directly (`node scripts/translate-content.mjs ...`), as
-// opposed to imported for its pure helpers — e.g. by apply-variable-glossary.mjs, which
-// reuses segmentBody() to rewrite already-translated files without calling the DeepL API.
-const isMainModule = !!process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url;
-// TRANSLATE_SOURCE_DIR lets a dry run point at a small throwaway folder instead of content/,
-// to sanity-check the script (and API quota usage) on a couple of files before a full run.
-const SOURCE_CONTENT_DIR = process.env.TRANSLATE_SOURCE_DIR
-    ? path.resolve(process.env.TRANSLATE_SOURCE_DIR)
-    : path.join(ROOT, "content");
-
-const lang = process.argv[2];
-const langLabel = process.argv[3] ?? lang?.toUpperCase();
-if (isMainModule && !lang) {
-    console.error("Usage: node scripts/translate-content.mjs <lang-code> [\"Display name\"]  (e.g. en \"English\")");
-    process.exit(1);
-}
-
-const TARGET_CONTENT_DIR = path.join(ROOT, `content-${lang}`);
-const CACHE_PATH = path.join(TARGET_CONTENT_DIR, ".translation-cache.json");
-const STRUCT_OUTPUT_PATH = path.join(ROOT, "structure", `struct-${lang}.json`);
-const LANGUAGES_MANIFEST_PATH = path.join(ROOT, "structure", "languages.json");
 
 /** Comment markers recognized per fenced-code-block language tag (a language may accept more than one — PHP allows both `//` and `#`). */
 const LINE_COMMENT_MARKERS = {
@@ -139,70 +103,6 @@ export function localizeIdentifiers(text, targetLang) {
  */
 function localizeCodePartsIdentifiers(parts, targetLang) {
     return parts.map(part => part.kind === "literal" ? { ...part, text: localizeIdentifiers(part.text, targetLang) } : part);
-}
-
-function readEnvFile() {
-    const envPath = path.join(ROOT, ".env");
-    if (!fs.existsSync(envPath))
-        return {};
-    const env = {};
-    fs.readFileSync(envPath, "utf-8").split("\n").forEach(line => {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith("#"))
-            return;
-        const sepIndex = trimmed.indexOf("=");
-        if (sepIndex === -1)
-            return;
-        env[trimmed.slice(0, sepIndex).trim()] = trimmed.slice(sepIndex + 1).trim();
-    });
-    return env;
-}
-
-const env = { ...readEnvFile(), ...process.env };
-const DEEPL_API_KEY = env.DEEPL_API_KEY;
-if (isMainModule && !DEEPL_API_KEY) {
-    console.error("Missing DEEPL_API_KEY. Create a .env file at the project root with:\nDEEPL_API_KEY=your_key_here");
-    process.exit(1);
-}
-// DeepL free-tier keys end in ":fx" and use a different host than paid keys.
-const DEEPL_URL = DEEPL_API_KEY.endsWith(":fx")
-    ? "https://api-free.deepl.com/v2/translate"
-    : "https://api.deepl.com/v2/translate";
-
-/**
- * Translate a batch of plain-text/XML strings in one API call.
- *
- * @param {string[]} texts
- * @returns {Promise<string[]>}
- */
-export async function translateBatch(texts, attempt = 1) {
-    if (!texts.length)
-        return [];
-    const body = new URLSearchParams();
-    body.append("target_lang", lang.toUpperCase());
-    body.append("source_lang", "FR");
-    body.append("tag_handling", "xml");
-    body.append("ignore_tags", "code");
-    // Disambiguates French technical homonyms (e.g. "tableaux" = arrays vs. paintings,
-    // "conditions" = conditionals vs. terms, "décorateurs" = decorators vs. interior designers)
-    body.append("context", "Documentation technique de programmation informatique, destinée à des développeurs.");
-    texts.forEach(text => body.append("text", text));
-
-    const response = await fetch(DEEPL_URL, {
-        method: "POST",
-        headers: { Authorization: `DeepL-Auth-Key ${DEEPL_API_KEY}` },
-        body
-    });
-    if (response.status === 429 && attempt <= 5) {
-        const delayMs = attempt * 3000;
-        console.log(`  … rate-limited, retrying in ${delayMs / 1000}s (attempt ${attempt}/5)`);
-        await new Promise(resolve => setTimeout(resolve, delayMs));
-        return translateBatch(texts, attempt + 1);
-    }
-    if (!response.ok)
-        throw new Error(`DeepL API error ${response.status}: ${await response.text()}`);
-    const data = await response.json();
-    return data.translations.map(t => t.text);
 }
 
 /** Escapes the 3 characters that would otherwise break DeepL's XML tag-handling parser. */
@@ -581,102 +481,4 @@ export function listMarkdownFilesRecursive(dir) {
             files.push(fullPath);
     }
     return files;
-}
-
-function hashContent(text) {
-    return crypto.createHash("sha256").update(text).digest("hex");
-}
-
-async function translateFile(filePath, cache) {
-    const relativePath = path.relative(SOURCE_CONTENT_DIR, filePath);
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const hash = hashContent(raw);
-    if (cache[relativePath] === hash) {
-        console.log(`  = ${relativePath} (unchanged, skipped)`);
-        return;
-    }
-
-    const { frontmatter, body } = readFrontmatterAndBody(filePath);
-    const segments = segmentBody(body, lang);
-
-    const toTranslate = [];
-    segments.forEach(seg => {
-        if (seg.type === "translate")
-            toTranslate.push(seg.xmlText);
-        else if (seg.type === "code-parts")
-            seg.parts.forEach(p => { if (p.kind === "translate") toTranslate.push(p.xmlText); });
-    });
-    const translated = await translateBatch(toTranslate);
-
-    let ti = 0;
-    const outputLines = segments.map(segment => {
-        if (segment.type === "raw")
-            return segment.line;
-        if (segment.type === "code-parts")
-            return segment.parts.map(p => p.kind === "literal" ? p.text : xmlToMdInline(translated[ti++])).join("");
-        return segment.prefix + xmlToMdInline(translated[ti++]);
-    });
-
-    const outputPath = path.join(TARGET_CONTENT_DIR, relativePath);
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-    fs.writeFileSync(outputPath, frontmatter + outputLines.join("\n") + "\n", "utf-8");
-    cache[relativePath] = hash;
-    console.log(`  ✓ ${relativePath}`);
-}
-
-/**
- * Collects every category/subject `label` in the struct tree (the `folder` field, used
- * for file paths, is left untouched), translates them all in one batch, and writes the
- * translations back in place.
- *
- * @param {{categories: Array}} struct
- */
-async function translateStructLabels(struct) {
-    const nodes = [];
-    struct.categories.forEach(category => {
-        if (category.id !== "acceuil")
-            nodes.push(category);
-        (category.subjects ?? []).forEach(subject => nodes.push(subject));
-    });
-    const translated = await translateBatch(nodes.map(node => node.label));
-    nodes.forEach((node, i) => { node.label = translated[i]; });
-}
-
-/**
- * Registers this language in structure/languages.json (read by the front-end's language
- * switcher), adding it if new or updating its display name if it already exists.
- */
-function updateLanguagesManifest() {
-    const languages = fs.existsSync(LANGUAGES_MANIFEST_PATH)
-        ? JSON.parse(fs.readFileSync(LANGUAGES_MANIFEST_PATH, "utf-8"))
-        : [];
-    const existing = languages.find(l => l.code === lang);
-    if (existing)
-        existing.label = langLabel;
-    else
-        languages.push({ code: lang, label: langLabel });
-    fs.writeFileSync(LANGUAGES_MANIFEST_PATH, JSON.stringify(languages, null, 2) + "\n", "utf-8");
-}
-
-async function main() {
-    const cache = fs.existsSync(CACHE_PATH) ? JSON.parse(fs.readFileSync(CACHE_PATH, "utf-8")) : {};
-    const files = listMarkdownFilesRecursive(SOURCE_CONTENT_DIR);
-    console.log(`Translating ${files.length} file(s) to "${lang}"...`);
-    for (const filePath of files) {
-        await translateFile(filePath, cache);
-        fs.writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2), "utf-8");
-        await new Promise(resolve => setTimeout(resolve, 500));
-    }
-    const struct = buildStruct(TARGET_CONTENT_DIR);
-    await translateStructLabels(struct);
-    writeStruct(struct, STRUCT_OUTPUT_PATH);
-    updateLanguagesManifest();
-    console.log(`Done. Translated content in content-${lang}/, structure in structure/struct-${lang}.json`);
-}
-
-if (isMainModule) {
-    main().catch(err => {
-        console.error(err);
-        process.exit(1);
-    });
 }

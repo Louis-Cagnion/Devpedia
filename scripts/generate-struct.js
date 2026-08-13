@@ -3,8 +3,9 @@
  * Scans a content directory and (re)generates its struct.json to match what's on disk.
  *
  * Run with: node scripts/generate-struct.js
- * (also importable — see buildStruct/writeStruct — used by translate-content.mjs to build
- * a struct.json for each translated content-<lang>/ directory)
+ * (also importable — see buildStruct/writeStruct — to build a struct-<lang>.json for a
+ * translated content-<lang>/ directory, the same way this file's own CLI usage builds
+ * structure/struct.json for content/)
  *
  * Conventions this relies on (matching how content/ is authored):
  * - <content>/acceuil.md is the home page, always mapped to the fixed "acceuil" category.

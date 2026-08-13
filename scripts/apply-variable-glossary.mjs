@@ -3,11 +3,11 @@
  * Retrofits scripts/variable-glossary.json identifier renaming onto ALREADY translated
  * content-<lang>/*.md files, in place — with zero DeepL API calls.
  *
- * Reuses segmentBody() from translate-content.mjs, which already renames glossary identifiers
+ * Reuses segmentBody() from markdown-segmenter.mjs, which already renames glossary identifiers
  * as it splits each line into "raw" (untouched) vs "translate" (natural-language) pieces. The
- * only difference from an actual translation run: instead of sending "translate" pieces to
- * DeepL, this script feeds them straight back through xmlToMdInline() unchanged — since the
- * file's own text is already correctly translated, there's nothing left to translate.
+ * only difference from an actual translation run: instead of sending "translate" pieces off for
+ * translation, this script feeds them straight back through xmlToMdInline() unchanged — since
+ * the file's own text is already correctly translated, there's nothing left to translate.
  *
  * Run with: node scripts/apply-variable-glossary.mjs <lang-code>
  * e.g.:     node scripts/apply-variable-glossary.mjs en
@@ -15,7 +15,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { segmentBody, xmlToMdInline, readFrontmatterAndBody, listMarkdownFilesRecursive } from "./translate-content.mjs";
+import { segmentBody, xmlToMdInline, readFrontmatterAndBody, listMarkdownFilesRecursive } from "./markdown-segmenter.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");

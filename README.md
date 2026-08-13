@@ -39,7 +39,7 @@ Security isn't its own category — it's woven into whichever chapter it concret
 
 ## Translations
 
-`content/` is the French source of truth. `scripts/translate-content.mjs` translates it into `content-<lang>/` via the DeepL API — natural language only, never code (comments are detected per language, code identifiers are matched against `scripts/variable-glossary.json` so they read naturally in each target language too). Currently translated: English, Spanish, Portuguese (Brazil) — see `structure/languages.json`. The language switcher lives in the navbar (`js/lang.js`).
+`content/` is the French source of truth, translated by hand into `content-<lang>/` (the automated DeepL pipeline this project used to have was retired once its API subscription lapsed). `scripts/apply-variable-glossary.mjs` still retrofits `scripts/variable-glossary.json`'s identifier renaming onto translated files with zero API calls, reusing the text-segmentation logic in `scripts/markdown-segmenter.mjs` (which splits a chapter into natural-language vs. code/markdown-syntax pieces so only the former ever gets rewritten). Currently translated: English, Spanish, Portuguese (Brazil) — see `structure/languages.json`. The language switcher lives in the navbar (`js/lang.js`).
 
 ## Running locally
 

@@ -18,8 +18,6 @@ Chantier du même ordre de grandeur que le sweep FR original ; les fichiers déj
 - 125 fichiers manquants **par langue** (ES et PT à l'identique), répartis sur 14 catégories entièrement absentes : Bases de l'informatique (7), Performance (9), Représentation des données (6), IA (39), Data Science (6), Qualité et architecture du code (7), Mathématiques (7), Infrastructure (5), UI-UX (11), Docker (7), Bases de données (7), CI-CD (5), Organisation en entreprise (5), Traitement de documents (4). Shells/Bash/PowerShell/Zsh également concernés (non quantifié précisément).
 - Liens internes ES/PT vérifiés 2026-08-13 : 0 lien cassé sur ce qui existe déjà (le sous-ensemble ancien reste cohérent en interne).
 - 6 langues manquantes en plus d'ES/PT : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
-- Bug dans `scripts/translate-content.mjs` : le pipeline DeepL traduit parfois par erreur des morceaux d'URL à l'intérieur d'un lien Markdown, cassant la navigation sans erreur visible — à corriger (protéger la portion `(...)` d'un lien comme les spans `` `code` `` le sont déjà) avant de refaire tourner l'API sur ES/PT.
-- Supprimer le pipeline DeepL, devenu inutilisable (quota épuisé, abonnement probablement non renouvelable).
 - Quand la catégorie IA sera traduite pour ES/PT, l'écrire directement en subjects (comme la structure FR actuelle), pas à plat.
 
 ### Lecture audio automatique du site

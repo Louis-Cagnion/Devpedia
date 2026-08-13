@@ -2,12 +2,12 @@
 /**
  * Builds scripts/variable-glossary.json: a French -> per-language mapping for the
  * recurring example variable/identifier names used across content/'s code blocks
- * (fichier, resultat, tableau, utilisateur...). translate-content.mjs uses this to
- * rename identifiers consistently instead of leaving them in French or letting DeepL
- * guess at a translation mid-sentence (which risks inconsistent or wrong renamings).
+ * (fichier, resultat, tableau, utilisateur...). scripts/markdown-segmenter.mjs's
+ * segmentBody() uses this to rename identifiers consistently in translated content,
+ * instead of leaving them in French or risking an inconsistent rename per file.
  *
  * Run with: node scripts/build-variable-glossary.mjs
- * Requires the same DEEPL_API_KEY .env as translate-content.mjs.
+ * Requires a DEEPL_API_KEY in a local .env file (untracked — see .gitignore).
  */
 import fs from "node:fs";
 import path from "node:path";

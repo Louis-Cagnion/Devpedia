@@ -29,8 +29,8 @@ export function getStoredLanguage() {
 }
 
 /**
- * @returns {Array<{code: string, label: string}>} French plus every language translate-content.mjs
- * has produced (read from structure/languages.json — absent until at least one translation exists)
+ * @returns {Array<{code: string, label: string}>} French plus every language with a translation
+ * (read from structure/languages.json — absent until at least one translation exists)
  */
 async function fetchAvailableLanguages() {
     try {
