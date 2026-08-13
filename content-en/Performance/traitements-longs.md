@@ -4,13 +4,13 @@ order: 5
 
 # Long-Running Processes
 
-Past a few minutes of execution, a program changes nature. It's no longer a command you launch and watch the result of: it's a process that can be interrupted, that needs to be monitorable, and whose failure is costly. At this scale, robustness becomes a matter of performance — resuming a 20-minute job is a far bigger win than shaving 10% off it.
+Past a few minutes of execution, a program changes nature. It's no longer a command you launch and watch the result of: it's a process that can be interrupted, that needs to be monitorable, and whose failure is costly. At this scale, robustness becomes a matter of performance: resuming a 20-minute job is a far bigger win than shaving 10% off it.
 
 ## Saving progress as you go
 
 A program that accumulates its results in memory and only writes at the end loses **everything** if interrupted: a crash, the network, the machine going to sleep. Writing each result as soon as it's obtained completely changes behavior in the event of an incident.
 
-The simplest format for this is [**JSON Lines**](https://jsonlines.org): one complete JSON object per line. Unlike a JSON array, it doesn't need to be closed to stay readable — a file truncated mid-way remains usable up to its last complete line.
+The simplest format for this is [**JSON Lines**](https://jsonlines.org): one complete JSON object per line. Unlike a JSON array, it doesn't need to be closed to stay readable: a file truncated mid-way remains usable up to its last complete line.
 
 ```python
 class ProgressState:
@@ -69,7 +69,7 @@ except Timeout:
     break              # exits with partial data, with nothing flagged
 ```
 
-The fix isn't to prevent the failure — that's impossible — but to guarantee it's **visible**. The most reliable method is checking an **invariant** at the end — a property that must always be true at that point in the program, whatever path was taken to get there (here: "the number of elements obtained matches the announced total") — regardless of the reason for the failure:
+The fix isn't to prevent the failure (that's impossible) but to guarantee it's **visible**. The most reliable method is checking an **invariant** at the end: a property that must always be true at that point in the program, whatever path was taken to get there (here: "the number of elements obtained matches the announced total"), regardless of the reason for the failure:
 
 ```python
 if announced_total is not None and len(fetched) < announced_total:

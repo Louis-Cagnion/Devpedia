@@ -27,7 +27,7 @@ On a program that queried two separate services one after the other, each with i
 
 By contrast, launching two workers against the **same** service doubles the rate of requests it receives. Parallelism doesn't work around a rate limit: it **concentrates** it. And if that limit exists (a quota, anti-abuse protection), you don't gain time, you buy a risk of being blocked.
 
-This point is counter-intuitive: the workers do start from the same place — the same machine, often the same public IP address. From the remote service's point of view, this isn't "several clients", it's **one client being twice as insistent**.
+This point is counter-intuitive: the workers do start from the same place: the same machine, often the same public IP address. From the remote service's point of view, this isn't "several clients", it's **one client being twice as insistent**.
 
 ## Why it becomes counter-productive
 
@@ -35,7 +35,7 @@ Beyond the constraint, each additional worker degrades the others:
 
 - **Memory and CPU**: several browsers or interpreters compete for the machine. Pages render more slowly, so each worker individually becomes slower.
 - **A perverse effect with adaptive waits**: if waits are calibrated to actual response time (see [Waiting Without Wasting Time](/?c=performance&p=attentes-et-temps-morts)), slower rendering **mechanically lengthens** every wait. The per-worker gain collapses while the load keeps increasing.
-- **Fixed startup cost**: launching a process, an interpreter, a browser costs a few seconds. On a small volume of work, this cost cancels out the benefit — this is exactly what I observed: on 4 units of work, the parallel version was *slower* than the sequential one; the gain only showed up past a few dozen.
+- **Fixed startup cost**: launching a process, an interpreter, a browser costs a few seconds. On a small volume of work, this cost cancels out the benefit; this is exactly what I observed: on 4 units of work, the parallel version was *slower* than the sequential one; the gain only showed up past a few dozen.
 
 Hence a typical progression:
 
@@ -46,7 +46,7 @@ Hence a typical progression:
 | 4 (2 per target) | 8 min | **2×** | risk bought |
 | 6 (3 per target) | ~7 min | **3×** | counter-productive |
 
-The move from 4 to 6 illustrates the point: the time barely drops anymore but the load keeps growing linearly — a symptom of **contention** (several workers competing for the same limited resource, here the machine itself: CPU, memory), which cancels out the expected benefit of parallelism.
+The move from 4 to 6 illustrates the point: the time barely drops anymore but the load keeps growing linearly: a symptom of **contention** (several workers competing for the same limited resource, here the machine itself: CPU, memory), which cancels out the expected benefit of parallelism.
 
 ## Practical constraints to anticipate
 
@@ -68,7 +68,7 @@ if len(results) < expected:
 
 ## An often better alternative: spreading work over time
 
-When the constraint is a quota, the solution isn't always to go faster. Splitting the work into batches spread across the day exposes far less than one big run all at once, for the same result — and requires no parallelization at all. If latency doesn't matter (an overnight job, a periodic report), it's the safest choice.
+When the constraint is a quota, the solution isn't always to go faster. Splitting the work into batches spread across the day exposes far less than one big run all at once, for the same result, and requires no parallelization at all. If latency doesn't matter (an overnight job, a periodic report), it's the safest choice.
 
 ---
 

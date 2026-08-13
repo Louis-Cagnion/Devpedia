@@ -53,10 +53,10 @@ Aggregating by name afterward gives both the number of calls **and** the cumulat
 
 An unremeasured optimization is just a belief. Two checks are worth making systematic:
 
-- **the time actually dropped** — sometimes an "obviously faster" change changes nothing, because it wasn't on the **critical path** (the sequence of dependent steps that alone determines total duration; speeding up a step outside that sequence shortens nothing, since the program waits for the steps that *are* part of it regardless);
-- **the result is identical** — the check that gets forgotten, and the most important one. An optimization that silently breaks the output is far worse than a slow program.
+- **the time actually dropped**: sometimes an "obviously faster" change changes nothing, because it wasn't on the **critical path** (the sequence of dependent steps that alone determines total duration; speeding up a step outside that sequence shortens nothing, since the program waits for the steps that *are* part of it regardless);
+- **the result is identical**: the check that gets forgotten, and the most important one. An optimization that silently breaks the output is far worse than a slow program.
 
-In the case above, comparing the output byte by byte before and after each step revealed an extraction that had become incomplete — a bug no stopwatch would have caught.
+In the case above, comparing the output byte by byte before and after each step revealed an extraction that had become incomplete: a bug no stopwatch would have caught.
 
 ## The single-measurement pitfall
 
@@ -68,7 +68,7 @@ A single reading tells you nothing: network, cache, and machine load make result
 
 | | |
 |---|---|
-| **Key takeaways** | Never optimize without measuring first — intuition about "what's slow" generally targets code that looks complicated, not code that actually costs the most. |
+| **Key takeaways** | Never optimize without measuring first: intuition about "what's slow" generally targets code that looks complicated, not code that actually costs the most. |
 | **Tools you can use** | A classic profiler (per function), manual per-phase instrumentation when the program spends its time waiting. |
-| **Pitfalls to avoid** | Trusting a single measurement — noise (network, cache, machine load) can exceed the actual effect of an optimization. |
+| **Pitfalls to avoid** | Trusting a single measurement: noise (network, cache, machine load) can exceed the actual effect of an optimization. |
 | **Best practices** | Always remeasure after an optimization (both time AND result accuracy); take several measurements to tell a real gain from noise. |

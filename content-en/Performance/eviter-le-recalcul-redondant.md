@@ -4,7 +4,7 @@ order: 7
 
 # Avoiding Redundant Recomputation
 
-A more general principle hides behind [waiting for a condition rather than a duration](/?c=performance&p=attentes-et-temps-morts): **never recompute a result that nothing could have changed since it was last computed**. Where the previous chapter was about waiting (time passing), this one is about computation (the CPU and memory doing work) — the same disciplined laziness, applied to a different kind of cost.
+A more general principle hides behind [waiting for a condition rather than a duration](/?c=performance&p=attentes-et-temps-morts): **never recompute a result that nothing could have changed since it was last computed**. Where the previous chapter was about waiting (time passing), this one is about computation (the CPU and memory doing work): the same disciplined laziness, applied to a different kind of cost.
 
 ## Memoizing a function's result
 
@@ -32,7 +32,7 @@ def credit_score(customer_id):
     return _score_cache[customer_id]
 ```
 
-**Memoization** keeps the result for a given input in memory and reuses it as long as nothing can invalidate it. The condition that makes it correct isn't "it's faster", it's "the input hasn't changed" — exactly the same invariant as the cookie banner already covered in the previous chapter, applied here to a value rather than a display state.
+**Memoization** keeps the result for a given input in memory and reuses it as long as nothing can invalidate it. The condition that makes it correct isn't "it's faster", it's "the input hasn't changed": exactly the same invariant as the cookie banner already covered in the previous chapter, applied here to a value rather than a display state.
 
 > Memoization with no invalidation is a bug waiting to happen: if `customer_id`'s history can be modified mid-process (a payment that arrives between two orders), the cache returns a stale answer. Memoizing means first identifying what would make the result obsolete, before deciding to keep it.
 
@@ -57,7 +57,7 @@ for line in new_lines:
 write_progress_marker(new_lines[-1].timestamp if new_lines else last_timestamp)
 ```
 
-The cost of processing becomes proportional to what **changed**, not to the total size of the data — a gain that grows as the volume already processed grows relative to the volume that's actually new.
+The cost of processing becomes proportional to what **changed**, not to the total size of the data: a gain that grows as the volume already processed grows relative to the volume that's actually new.
 
 ## The 2D game example: only redraw what moves
 
@@ -81,11 +81,11 @@ def draw_frame(screen, scene, changed_zones):
             screen.set_pixel(x, y, scene.color_at(x, y))
 ```
 
-This is the **dirty rectangle** logic: the scene itself flags which zones have changed since the last render, and only those are redrawn. On a scene that's 90% static, this cuts the cost of each frame down to a fraction of a full render — for a visually identical result.
+This is the **dirty rectangle** logic: the scene itself flags which zones have changed since the last render, and only those are redrawn. On a scene that's 90% static, this cuts the cost of each frame down to a fraction of a full render, for a visually identical result.
 
 ## An example from a scraper: don't reconfirm what's already proven
 
-A classifieds scraper compared two listings to tell whether they described the same vehicle (a duplicate) or two different vehicles. The full check opened each listing's detail page to compare a dozen characteristics (mileage, options, service history) — a non-trivial network call and render time.
+A classifieds scraper compared two listings to tell whether they described the same vehicle (a duplicate) or two different vehicles. The full check opened each listing's detail page to compare a dozen characteristics (mileage, options, service history): a non-trivial network call and render time.
 
 ```python
 def are_potentially_duplicates(listing_a, listing_b):
@@ -106,7 +106,7 @@ def are_duplicates(listing_a, listing_b):
 
 As soon as the "light" comparison (the fields already present on the results card) establishes that two listings are different, the question is **already resolved**: opening both detail pages to confirm it would only recompute, at a steep price, a result the cheap data already produced. The expensive check only runs in the ambiguous case, the one where the light data isn't enough to decide.
 
-> Not to be confused with a **network latency** optimization. What's being avoided here is redundant CPU/logic work (recomputing an already-known answer) — not an I/O delay. Deliberate pauses between requests (rate limiting, courtesy toward a remote server) or waiting for an interface animation don't fall under this principle: they remain necessary even when no recomputation is at stake, and removing them risks getting blocked, not just being slow. This is exactly the distinction drawn at the end of [Waiting Without Wasting Time](/?c=performance&p=attentes-et-temps-morts): a protective delay isn't waste to eliminate.
+> Not to be confused with a **network latency** optimization. What's being avoided here is redundant CPU/logic work (recomputing an already-known answer), not an I/O delay. Deliberate pauses between requests (rate limiting, courtesy toward a remote server) or waiting for an interface animation don't fall under this principle: they remain necessary even when no recomputation is at stake, and removing them risks getting blocked, not just being slow. This is exactly the distinction drawn at the end of [Waiting Without Wasting Time](/?c=performance&p=attentes-et-temps-morts): a protective delay isn't waste to eliminate.
 
 ## Summary
 
@@ -125,7 +125,7 @@ In all four cases, the gain doesn't come from a computation made faster, but fro
 
 | | |
 |---|---|
-| **Key takeaways** | Never recompute a result that nothing could have changed since it was last computed — memoization, incremental reprocessing, or dirty rectangles all apply the same idea at different scales. |
+| **Key takeaways** | Never recompute a result that nothing could have changed since it was last computed: memoization, incremental reprocessing, or dirty rectangles all apply the same idea at different scales. |
 | **Tools you can use** | An in-memory cache per input (memoization), a progress marker to only reprocess what's new, a "light" comparison before an expensive check. |
-| **Pitfalls to avoid** | Memoizing without identifying what would invalidate the result — a cache that's never invalidated becomes a source of stale data. |
+| **Pitfalls to avoid** | Memoizing without identifying what would invalidate the result: a cache that's never invalidated becomes a source of stale data. |
 | **Best practices** | Always define the invalidation condition before memoizing; distinguish avoidable recomputation (this principle) from a deliberate protective pause (to keep). |

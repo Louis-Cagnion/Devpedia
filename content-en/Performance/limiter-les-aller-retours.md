@@ -4,7 +4,7 @@ order: 3
 
 # Cutting Round Trips
 
-When two components communicate (your code and a database, your code and a browser, a client and a server), every exchange has a **fixed cost** independent of the amount of data carried: serialization, crossing a process boundary, network latency. This cost is small — a few milliseconds — and that's exactly what makes it dangerous: it becomes huge through multiplication.
+When two components communicate (your code and a database, your code and a browser, a client and a server), every exchange has a **fixed cost** independent of the amount of data carried: serialization, crossing a process boundary, network latency. This cost is small (a few milliseconds), and that's exactly what makes it dangerous: it becomes huge through multiplication.
 
 ## The pattern to recognize
 
@@ -18,7 +18,7 @@ for i in range(number_of_cards):
     text = card.text()                    # 3
 ```
 
-Over 100 elements, that's 300 exchanges. At 30 ms per round trip, that's 9 seconds — for work that requires no computation at all.
+Over 100 elements, that's 300 exchanges. At 30 ms per round trip, that's 9 seconds, for work that requires no computation at all.
 
 ## Bringing everything back at once
 
@@ -49,7 +49,7 @@ foreach ($customers as $customer) {
 }
 ```
 
-The fix is structurally identical — a single exchange that brings back everything:
+The fix is structurally identical: a single exchange that brings back everything:
 
 ```sql
 SELECT c.id, c.name, o.*
@@ -67,7 +67,7 @@ The pattern shows up anywhere there's a boundary to cross:
 
 - **HTTP API**: prefer an endpoint that accepts a list of IDs rather than calling the single-item endpoint *n* times;
 - **File system**: read a file all at once rather than character by character (that's the role of buffers, see [System Calls and File Descriptors](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) in C);
-- **DOM**: accumulate changes then apply them, rather than modifying the document inside a loop — every write can trigger a layout recalculation.
+- **DOM**: accumulate changes then apply them, rather than modifying the document inside a loop: every write can trigger a layout recalculation.
 
 ## Knowing when not to do it
 
@@ -86,7 +86,7 @@ The right question isn't therefore "a single exchange or *n*?" but "what's the l
 
 | | |
 |---|---|
-| **Key takeaways** | Every exchange between two components (network, database, DOM) has a fixed cost independent of volume — a loop that asks for something again on every iteration ("N+1") multiplies that fixed cost by the number of elements. |
+| **Key takeaways** | Every exchange between two components (network, database, DOM) has a fixed cost independent of volume: a loop that asks for something again on every iteration ("N+1") multiplies that fixed cost by the number of elements. |
 | **Tools you can use** | Bringing all the data back in a single exchange (SQL join, batched evaluation on the page side), batch processing for very large volumes. |
 | **Pitfalls to avoid** | One query per element inside a loop (N+1 problem); bringing back a volume so large it saturates the process's memory. |
 | **Best practices** | Move the loop to the side where the data lives rather than making repeated round trips; split into reasonably sized batches between "a single exchange" and "one per element". |

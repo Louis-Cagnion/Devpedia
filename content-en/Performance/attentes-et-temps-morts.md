@@ -19,7 +19,7 @@ read_results()
 This code has two opposite flaws, which is what makes it treacherous:
 
 - if the page responds in 300 ms, you **waste 1.7s** on every call;
-- if it takes 2.5s (busy network, heavy page), you read **too early** and the result is incomplete — an intermittent bug, very painful to diagnose.
+- if it takes 2.5s (busy network, heavy page), you read **too early** and the result is incomplete: an intermittent bug, very painful to diagnose.
 
 A fixed delay is a bet on a duration you don't control. It's either too long or too short, and usually both, depending on the day.
 
@@ -47,13 +47,13 @@ if not wait_until(lambda: count_results() > count_before):
     raise RuntimeError("The next page never loaded")
 ```
 
-You move on as soon as the content is ready — so in 300 ms when the page is fast — while staying correct when it's slow. The ceiling no longer serves as the wait time, it's a failure detector.
+You move on as soon as the content is ready (so in 300 ms when the page is fast) while staying correct when it's slow. The ceiling no longer serves as the wait time, it's a failure detector.
 
 > Notice that the condition is about a **change** (`> count_before`), not a presence. If you simply waited for "are there any results?", the condition would already be true from the previous page's results, and you'd read the old data thinking you were reading the new one.
 
 ## Don't watch for what won't come
 
-The most expensive case is waiting for an **optional** event. Checking for a cookie banner for 2 seconds costs a full 2 seconds every time there isn't one — which is almost always, once consent has been recorded.
+The most expensive case is waiting for an **optional** event. Checking for a cookie banner for 2 seconds costs a full 2 seconds every time there isn't one: which is almost always, once consent has been recorded.
 
 Two safeguards combine here:
 
@@ -68,7 +68,7 @@ def close_banner(page, sites_already_handled):
     ...
 ```
 
-**Query an authoritative source rather than poll for it.** Rather than watching for a banner to appear, you can directly ask whether consent already exists — here, the presence of a cookie:
+**Query an authoritative source rather than poll for it.** Rather than watching for a banner to appear, you can directly ask whether consent already exists: here, the presence of a cookie:
 
 ```python
 def consent_already_given(page):
@@ -97,7 +97,7 @@ A courtesy pause isn't an inefficiency: it's a design constraint. Removing it do
 
 | | |
 |---|---|
-| **Key takeaways** | A fixed delay (`sleep(2)`) is always either too long (wasted time) or too short (intermittent bug) — waiting for a condition with a safety ceiling solves both problems at once. |
+| **Key takeaways** | A fixed delay (`sleep(2)`) is always either too long (wasted time) or too short (intermittent bug): waiting for a condition with a safety ceiling solves both problems at once. |
 | **Tools you can use** | A generic "wait until" function (condition + timeout), memoization to stop rechecking what can no longer change. |
 | **Pitfalls to avoid** | Watching for an optional event on every iteration (a cookie banner) without remembering it won't reappear. |
 | **Best practices** | Query an authoritative source (a cookie) rather than poll a display; keep deliberate pauses that protect against rate limiting. |
