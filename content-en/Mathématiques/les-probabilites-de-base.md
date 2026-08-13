@@ -8,7 +8,7 @@ This chapter introduces probability, a concept used further on to describe what 
 
 ## What is a probability?
 
-A **probability** measures how likely an event is to happen — a number between 0 (impossible) and 1 (certain).
+A **probability** measures how likely an event is to happen: a number between 0 (impossible) and 1 (certain).
 
 | Value | Meaning | Example |
 |---|---|---|
@@ -22,7 +22,7 @@ This is written `P(event) = value`. For a fair 6-sided die (each face equally li
 
 ## A probability distribution: several outcomes, one total
 
-When an event has several possible outcomes, each gets its own probability — the set of these probabilities is called a **probability distribution**:
+When an event has several possible outcomes, each gets its own probability: the set of these probabilities is called a **probability distribution**:
 
 ```text
 Fair 6-sided die:
@@ -37,7 +37,12 @@ P(6) = 0.167
 Total = 1.000
 ```
 
-No matter how the probabilities are split across the possible outcomes, they always add up to exactly **1** — one of the listed outcomes is bound to happen, there's nothing outside this list.
+```distribution
+barres: 1=0.167, 2=0.167, 3=0.167, 4=0.167, 5=0.167, 6=0.167
+label: Distribution of a fair 6-sided die
+```
+
+No matter how the probabilities are split across the possible outcomes, they always add up to exactly **1**: one of the listed outcomes is bound to happen, there's nothing outside this list.
 
 > **Pitfall:** a distribution computed by a program that doesn't sum to exactly 1 (imprecise rounding, a possible outcome forgotten in the computation) isn't a valid probability distribution.
 >
@@ -45,7 +50,7 @@ No matter how the probabilities are split across the possible outcomes, they alw
 
 ## A distribution isn't necessarily balanced
 
-Nothing requires every outcome to have the same probability as the others — a fair 6-sided die is a special case, not the general rule:
+Nothing requires every outcome to have the same probability as the others: a fair 6-sided die is a special case, not the general rule:
 
 ```text
 Weather heavily favoring rain:
@@ -57,9 +62,14 @@ P(snow)  = 0.05
 Total      = 1.00
 ```
 
-The most likely outcome (rain, here) isn't the only possible one — just the one with the highest probability. This distinction will come back up unchanged later on: a model that predicts "probably X" always leaves open the possibility of a different outcome, with a lower but non-zero probability.
+```distribution
+barres: Rain=0.80, Sun=0.15, Snow=0.05
+label: Unbalanced weather distribution
+```
 
-> **Pitfall:** confusing "the most likely outcome" with "the only possible outcome" — a probability of 0.80 still means a 20% chance of something else, not a certainty.
+The most likely outcome (rain, here) isn't the only possible one: just the one with the highest probability. This distinction will come back up unchanged later on: a model that predicts "probably X" always leaves open the possibility of a different outcome, with a lower but non-zero probability.
+
+> **Pitfall:** confusing "the most likely outcome" with "the only possible outcome": a probability of 0.80 still means a 20% chance of something else, not a certainty.
 >
 > **Best practice:** reason about the whole distribution rather than just its most likely outcome, whenever less likely outcomes carry significant consequences if they happen anyway.
 
@@ -68,6 +78,6 @@ The most likely outcome (rain, here) isn't the only possible one — just the on
 | | |
 |---|---|
 | **Key takeaways** | A probability is a number between 0 (impossible) and 1 (certain). A probability distribution lists the probability of each possible outcome; these probabilities always sum to 1. The most likely outcome isn't the only possible one. |
-| **Tools you can use** | No specific tool — the notation `P(event) = value` is enough to reason on paper. |
+| **Tools you can use** | No specific tool: the notation `P(event) = value` is enough to reason on paper. |
 | **Pitfalls to avoid** | A distribution that doesn't sum to exactly 1 (computation error). Confusing "most likely" with "certain". |
 | **Best practices** | Check that a computed distribution does sum to 1 before using it. Reason about the whole distribution, not just its most likely outcome, when rare outcomes carry significant consequences. |
