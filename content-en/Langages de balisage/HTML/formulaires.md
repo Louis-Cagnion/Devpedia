@@ -4,56 +4,58 @@ order: 5
 
 # Forms
 
-An HTML form collects data entered by the user and sends it to a server (via `GET` or `POST`; see the chapter on global variables in PHP)—this is the main entry point for all user data in a web application.
+An HTML form collects data entered by the user, to send it to a server (via `GET` or `POST`, see [Data Exchange: API and HTTP](/?c=infrastructure&p=api-et-http)): it's the main entry point for all user data in a web application.
 
-## The Basic Structure
+## Basic structure
 
 ```html
-<form action="/inscription" method="POST">
-    <label for="email">Adresse email</label>
+<form action="/signup" method="POST">
+    <label for="email">Email address</label>
     <input type="email" id="email" name="email" required>
 
-    <button type="submit">S'inscrire</button>
+    <button type="submit">Sign up</button>
 </form>
 ```
 
-- `action` : The URL to which the data is sent upon submission.
-- `method` : `GET` (data visible in the URL, for a search, for example) or `POST` (data in the request body, for sensitive or large amounts of data—see the chapter on global variables in PHP for a full explanation of the difference).
-- `name` For each field: it is this value—**not** `id`—that identifies the field on the server side (e.g., `$_POST['email']` in PHP).
+- `action`: the URL the data is sent to on submission.
+- `method`: `GET` (data visible in the URL, for a search for example) or `POST` (data in the request body, for sensitive or large amounts of data; see [Data Exchange: API and HTTP](/?c=infrastructure&p=api-et-http) for the full difference).
+- `name` on each field: it's this value, **not** `id`, that identifies the field server-side (`$_POST['email']` in PHP, for example).
 
-## `<label>` : essential, not decorative
+## `<label>`: essential, not decorative
 
 ```html
-<label for="email">Adresse email</label>
+<label for="email">Email address</label>
 <input type="email" id="email" name="email">
 ```
 
-The "`for`" attribute of the `<label>` must match the field's `id`—clicking on the label automatically activates/focuses the associated field, and a screen reader announces this label when the user reaches the field. A field **without** an associated `<label>` is a major accessibility issue, even if it remains visually understandable to a sighted user.
+The `<label>`'s `for` attribute must match the field's `id`: clicking the label then automatically activates/focuses the associated field, and a screen reader announces this label when the user reaches the field. A field **without** an associated `<label>` is a major accessibility problem, even if it remains visually understandable to a sighted user.
 
-## 
+## Field types (`<input>`)
 
 ```html
-<input type="text" name="nom">
-<input type="email" name="email">          <!-- validation basique du format email par le navigateur -->
-<input type="password" name="motdepasse">  <!-- masque la saisie -->
+<input type="text" name="name">
+<input type="email" name="email">          <!-- basic email format validation by the browser -->
+<input type="password" name="password">   <!-- masks the input -->
 <input type="number" name="age" min="0" max="120">
-<input type="date" name="naissance">
-<input type="checkbox" name="accepte" value="oui">
-<input type="radio" name="genre" value="h"> <input type="radio" name="genre" value="f">
+<input type="date" name="birthdate">
+<input type="checkbox" name="accepts" value="yes">
+<input type="radio" name="gender" value="m"> <input type="radio" name="gender" value="f">
 <input type="file" name="document">
 <input type="hidden" name="token" value="abc123">
 ```
 
-> **Note:** Two radio buttons that share the same `name` form a **group**—only one of them can be selected at a time, unlike checkboxes (`checkbox`), which are independent of one another even when they have the same `name`.
+> **Note (security):** a hidden field carrying a token (like `token` above) is the usual mechanism for protecting against **CSRF** (*Cross-Site Request Forgery*); see [Security](/?c=langages-de-programmation&s=php&p=securite) for the details of this attack and its protection. The field is invisible to the user, but is indeed sent along with the rest of the form on submission.
+
+> **Note:** two radio buttons sharing the same `name` form a **group**: only one of them can be selected at a time, unlike checkboxes, which are independent of each other even with the same `name`.
 
 ## `<textarea>` and `<select>`
 
 ```html
 <textarea name="message" rows="5" cols="30"></textarea>
 
-<select name="pays">
+<select name="country">
     <option value="fr">France</option>
-    <option value="be" selected>Belgique</option>
+    <option value="be" selected>Belgium</option>
 </select>
 ```
 
@@ -61,22 +63,33 @@ The "`for`" attribute of the `<label>` must match the field's `id`—clicking on
 
 ```html
 <input type="email" name="email" required>
-<input type="text" name="pseudo" minlength="3" maxlength="20" pattern="[A-Za-z0-9]+">
+<input type="text" name="username" minlength="3" maxlength="20" pattern="[A-Za-z0-9]+">
 ```
 
 | Attribute | Role |
 |---|---|
-| `required` | This field cannot be left blank when submitting |
-| `minlength` / `maxlength` | Minimum/maximum input length |
+| `required` | The field cannot be empty on submission |
+| `minlength` / `maxlength` | Minimum/maximum length of the input |
 | `min` / `max` | Minimum/maximum value (for `number`, `date`...) |
-| `pattern` | A regular expression (see the relevant chapter) that the value must match |
+| `pattern` | A [regular expression](/?c=domain-specific-languages-dsl&p=regex) the value must match |
 
-> **Note (security):** This validation occurs **on the browser side**, even before the data is sent—it improves the user experience (immediate feedback), but should **never** replace server-side validation (see the chapter on PHP security). A malicious user can completely bypass the browser (direct HTTP request)—any data received on the server side must be revalidated, without exception.
+> **Note (security):** this validation happens **browser-side**, before the data is even sent; it improves the user experience (immediate feedback), but **never** replaces server-side validation (see [Security](/?c=langages-de-programmation&s=php&p=securite)). A malicious user can bypass the browser entirely (direct HTTP request): any data received server-side must be revalidated, without exception.
 
-## Submission and Method
+## Submission and method
 
 ```html
-<button type="submit">Envoyer</button>    <!-- soumet le formulaire -->
-<button type="reset">Réinitialiser</button> <!-- vide tous les champs -->
-<button type="button">Ne fait rien seul</button>  <!-- utile pour un comportement géré en JavaScript -->
+<button type="submit">Send</button>              <!-- submits the form -->
+<button type="reset">Reset</button>               <!-- clears all fields -->
+<button type="button">Does nothing on its own</button>  <!-- useful for behavior handled in JavaScript -->
 ```
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key Points** | A form collects user data and sends it via `GET` (URL) or `POST` (request body). `name` (not `id`) identifies each field server-side; `<label>` is essential for accessibility. |
+| **Available Tools** | Browser validation attributes (`required`, `minlength`/`maxlength`, `min`/`max`, `pattern`); field types (`email`, `password`, `number`, `date`...). |
+| **Pitfalls to Avoid** | Relying solely on browser-side validation: a malicious user can bypass it entirely; a field with no associated `<label>`. |
+| **Best Practices** | Always revalidate every piece of received data server-side, without exception; use a CSRF token on any form that modifies data. |

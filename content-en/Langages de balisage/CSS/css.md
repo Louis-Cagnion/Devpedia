@@ -4,7 +4,7 @@ order: 2
 
 # CSS
 
-CSS (*Cascading Style Sheets*) is the language that describes the **appearance** of an [HTML](/?c=langages-de-balisage&s=html&p=html) document—colors, sizes, positioning, layout—by deliberately separating this presentation from the structure (HTML) and behavior (JavaScript).
+CSS (*Cascading Style Sheets*) is the language that describes the **appearance** of an [HTML](/?c=langages-de-balisage&s=html&p=html) document (colors, sizes, positioning, layout), deliberately separating this presentation from the structure (HTML) and the behavior (JavaScript).
 
 Some of the key concepts in CSS include:
 
@@ -43,7 +43,7 @@ h1 {
 ```
 
 ```html
-<h1 style="color: blue;">Titre</h1>
+<h1 style="color: blue;">Heading</h1>
 ```
 
-> **Note (best practice):** An external `.css` file (`<link>`) is almost always preferable—it is cached by the browser, can be reused across multiple pages, and clearly separates structure from presentation. Inline styling (`style="..."` directly on a tag) has the highest specificity (see the chapter on the style sheet cascade), which makes it difficult to override later—it should be reserved for very specific cases, often generated dynamically via JavaScript.
+> **Note (best practice):** an external `.css` file (`<link>`) is almost always preferable: it's cached by the browser, reusable across several pages, and clearly separates structure from presentation. Inline styling (`style="..."` directly on a tag) has the highest specificity (see [CSS Variables and the Cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade)), which makes it hard to override afterward, to be reserved for very occasional cases, often generated dynamically in JavaScript.

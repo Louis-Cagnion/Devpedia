@@ -92,3 +92,14 @@ p + p { margin-top: 30px; }
 ```
 
 > **Note:** Between two elements **in normal flow** (not in [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox)/[Grid](/?c=langages-de-balisage&s=css&p=grid)), adjacent vertical margins do not add up: only the larger of the two applies (in this case, `30px`, not `50px`). This behavior, which is often surprising at first glance, applies only to vertical margins, never to horizontal ones, and disappears entirely within a Flexbox or Grid container.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key Points** | Every element is a box with 4 concentric layers: content, padding, border, margin. By default, `width` only defines the content (`padding`/`border` are added on top); `box-sizing: border-box` includes everything in the declared value. |
+| **Available Tools** | `box-sizing: border-box` (often applied globally), the `margin`/`padding` shorthands with 1, 2, or 4 values. |
+| **Pitfalls to Avoid** | Forgetting that `width` doesn't include `padding`/`border` by default: a "300px" box can occupy 344 on screen. |
+| **Best Practices** | Apply `* { box-sizing: border-box; }` globally at the start of a project: more predictable behavior, become the de facto convention. |

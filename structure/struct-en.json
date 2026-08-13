@@ -341,7 +341,7 @@
             },
             {
               "id": "balises-de-texte",
-              "label": "Text tags"
+              "label": "Text Tags"
             },
             {
               "id": "liens-et-images",
@@ -376,7 +376,7 @@
             },
             {
               "id": "variables-et-cascade",
-              "label": "CSS Variables and the Cascading Model"
+              "label": "CSS Variables and the Cascade"
             },
             {
               "id": "box-model",

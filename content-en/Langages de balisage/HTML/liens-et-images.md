@@ -4,63 +4,74 @@ order: 3
 
 # Links and Images
 
-Links (`<a>`) and images (`<img>`) are two fundamental elements of the web—one connects documents to one another (the very origin of the word "*hypertext*"), and the other embeds visual content.
+Links (`<a>`) and images (`<img>`) are two fundamental tags of the web: one connects documents to each other (the very origin of the word "*hypertext*"), the other embeds visual content.
 
 ## Links
 
 ```html
-<a href="https://exemple.com">Lien externe</a>
-<a href="/contact">Lien relatif, vers une autre page du même site</a>
-<a href="#section2">Lien vers une ancre, dans la même page</a>
-<a href="mailto:contact@exemple.com">Lien qui ouvre le client mail</a>
-<a href="tel:+33612345678">Lien qui propose d'appeler un numéro</a>
+<a href="https://example.com">External link</a>
+<a href="/contact">Relative link, to another page on the same site</a>
+<a href="#section2">Link to an anchor, on the same page</a>
+<a href="mailto:contact@example.com">Link that opens the mail client</a>
+<a href="tel:+12025550123">Link that offers to call a number</a>
 ```
 
 ### The `target` attribute
 
 ```html
-<a href="https://exemple.com" target="_blank" rel="noopener noreferrer">Ouvre dans un nouvel onglet</a>
+<a href="https://example.com" target="_blank" rel="noopener noreferrer">Opens in a new tab</a>
 ```
 
-> **Note:** `target="_blank"` without `rel="noopener"` allows the new page to access (via JavaScript) the `window` object from the original page—a minor but real security risk (*tabnabbing*). `noopener` (and `noreferrer`, which also prevents the original URL from being sent) must always be used with `target="_blank"`.
+> **Note:** `target="_blank"` without `rel="noopener"` lets the new page access (via JavaScript) the original page's `window` object: a minor but real security risk (*tabnabbing*). `noopener` (and `noreferrer`, which also prevents the original URL from being sent) should always accompany any `target="_blank"`.
 
-### Relative vs. Absolute Links
+### Relative vs. absolute links
 
 ```html
-<a href="https://exemple.com/page">Absolu : toujours la même destination, quel que soit le site</a>
-<a href="/page">Relatif à la racine : dépend du domaine actuel</a>
-<a href="page">Relatif au dossier courant : dépend de l'URL actuelle</a>
+<a href="https://example.com/page">Absolute: always the same destination, regardless of the site</a>
+<a href="/page">Root-relative: depends on the current domain</a>
+<a href="page">Relative to the current folder: depends on the current URL</a>
 ```
 
-## The images
+## Images
 
 ```html
-<img src="photo.jpg" alt="Un chat noir assis sur un canapé" width="600" height="400">
+<img src="photo.jpg" alt="A black cat sitting on a couch" width="600" height="400">
 ```
 
-- `src` : the path (relative or absolute; same logic as for a link) to the image file.
-- `alt` : alternative text, displayed if the image fails to load, and read by a screen reader—**never optional** from an accessibility standpoint (see the dedicated chapter). A purely decorative image (with no information of its own) must have `alt=""` (empty, but present), so that the screen reader silently skips it rather than announcing a meaningless filename.
-- `width` /`height`: dimensions specified in advance, which allow the browser to reserve the necessary space **before** the image is loaded—this prevents the rest of the page from shifting out of place while the image is loading (*layout shift*).
+- `src`: the path (relative or absolute, same logic as for a link) to the image file.
+- `alt`: alternative text, displayed if the image fails to load, and read by a screen reader: **never optional** from an accessibility standpoint (see [data-* Attributes and Accessibility](/?c=langages-de-balisage&s=html&p=attributs-data-et-accessibilite)). A purely decorative image (with no information of its own) should have `alt=""` (empty, but present), so the screen reader silently skips it rather than announcing a meaningless filename.
+- `width`/`height`: dimensions declared in advance, letting the browser reserve the necessary space **before** the image loads: avoids a visual shift of the rest of the page while it loads (*layout shift*).
 
-## 
+## Responsive images (`srcset`)
 
 ```html
 <img
     src="photo-800.jpg"
     srcset="photo-400.jpg 400w, photo-800.jpg 800w, photo-1200.jpg 1200w"
     sizes="(max-width: 600px) 400px, 800px"
-    alt="Un chat noir assis sur un canapé"
+    alt="A black cat sitting on a couch"
 >
 ```
 
-The browser **automatically** selects the version best suited to the actual display size and screen resolution from among those available—this prevents a mobile device from having to download an image designed for a large screen.
+The browser itself chooses the version best suited to the actual display size and screen resolution, among those offered: avoids forcing a mobile device to download an image meant for a large screen.
 
-## Images as Links
+## Images as links
 
 ```html
-<a href="/produit/42">
-    <img src="produit.jpg" alt="Chaise en bois, vue de face">
+<a href="/product/42">
+    <img src="product.jpg" alt="Wooden chair, front view">
 </a>
 ```
 
-An image can be placed inside a `<a>`, making the image itself clickable—the `alt` remains essential in this case, since it describes the link’s **destination** to a screen reader, not just the image’s visual content.
+An image can be placed inside an `<a>`, making it clickable itself: the `alt` remains essential in that case, since it's what describes the link's **destination** to a screen reader, not just the image's visual content.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key Points** | `<a>` connects documents (external, relative, anchor, mail, tel); `<img>` embeds an image. `alt` describes an image for a screen reader or if it fails to load: never optional. |
+| **Available Tools** | `srcset`/`sizes` for responsive images; `width`/`height` to reserve space before loading. |
+| **Pitfalls to Avoid** | `target="_blank"` without `rel="noopener"` (security risk, *tabnabbing*); an image with no `alt` (neither empty for a decorative image, nor filled in for a meaningful one). |
+| **Best Practices** | Always pair `target="_blank"` with `rel="noopener noreferrer"`; declare `width`/`height` to avoid a visual shift (*layout shift*) on load. |
