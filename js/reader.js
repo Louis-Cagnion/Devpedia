@@ -209,6 +209,39 @@ function startReading() {
     speakNext();
 }
 
+/**
+ * Index of the first "speak" entry whose paragraph hasn't fully scrolled past the top of the
+ * viewport yet (below the sticky navbar) -- i.e. the topmost paragraph currently on screen.
+ * Falls back to 0 (page top) if nothing qualifies, e.g. before any scrolling has happened.
+ */
+function findVisibleEntryIndex() {
+    const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--navbar-height")) || 0;
+    for (let i = 0; i < plan.length; i++) {
+        const entry = plan[i];
+        if (entry.kind === "speak" && entry.group.getBoundingClientRect().bottom > navbarHeight) return i;
+    }
+    return 0;
+}
+
+/**
+ * Starts reading from whichever paragraph is currently at the top of the screen rather than
+ * always from the top of the page -- resuming lower in a long chapter shouldn't require sitting
+ * through everything already read. What the main play/stop toggle calls to start.
+ *
+ * Scrolls that paragraph's start into view first, the same way the "pause at a code block" flow
+ * does (cf. speakNext()) but toward the top rather than centered -- if it was only partly
+ * visible (cut off above the navbar), reading should still begin at its very first word, so the
+ * view moves up to show that word rather than starting mid-scroll.
+ */
+function startFromVisible() {
+    if (!SPEECH_SUPPORTED || !plan.length) return;
+    resetPlayback();
+    const index = findVisibleEntryIndex();
+    plan[index]?.group?.scrollIntoView({ behavior: "smooth", block: "start" });
+    planIndex = index;
+    speakNext();
+}
+
 function continueAfterCode() {
     if (!isPausedAtCode) return;
     planIndex++;
@@ -264,7 +297,7 @@ export function createReaderControl() {
     );
     toggleButton.addEventListener("click", () => {
         if (isPlaying || isPausedAtCode) stopReading();
-        else startReading();
+        else startFromVisible();
     });
     restartButton.addEventListener("click", startReading);
     replayButton.addEventListener("click", replayParagraph);
