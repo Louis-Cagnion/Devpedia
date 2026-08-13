@@ -159,6 +159,10 @@
       "folder": "Domain-specific Languages (DSL)",
       "chapters": [
         {
+          "id": "parsing-incremental-machine-a-etats",
+          "label": "Incremental Parsing with a State Machine"
+        },
+        {
           "id": "regex",
           "label": "Regular expressions"
         },
@@ -787,6 +791,10 @@
         {
           "id": "le-logarithme",
           "label": "The Logarithm"
+        },
+        {
+          "id": "matrices-et-produit-matriciel",
+          "label": "Matrices and Matrix Multiplication"
         },
         {
           "id": "les-probabilites-de-base",

@@ -5,7 +5,6 @@
 ### Traduction anglaise (EN)
 - 22 fichiers IA jamais traduits en EN : les 9 fichiers de `Vision et OCR` (8 chapitres + intro de subject), les 9 de `Voix IA` (idem), et 4 intros de subject restantes (`Applications LLM/applications-llm.md`, `Fondamentaux du deep learning/fondamentaux-du-deep-learning.md`, `NLP et LLM/nlp-llm.md`, `Production et gouvernance/production-et-gouvernance.md`).
 - `IA/description.md` (EN) à adapter le jour où `content-en/IA` sera restructuré en subjects (actuellement plat, décision explicite, pas un oubli).
-- 2 fichiers jamais traduits en EN, repérés par l'heuristique de longueur : `Domain-specific Languages (DSL)/parsing-incremental-machine-a-etats.md`, `Mathématiques/matrices-et-produit-matriciel.md`.
 - 4 catégories vérifiées avec l'heuristique de comparaison de longueur FR/EN (`Langages de programmation`, `Git`, `Langages de balisage`) sur 20 ; les autres n'ont pas été passées au crible.
 - Ratio FR/EN limite (0.83-0.85), pas encore ouverts pour vérifier s'il s'agit d'un vrai écart ou d'une traduction juste plus compacte : `Mathématiques/les-probabilites-de-base.md`, `Shells/Bash/bash.md`, `UI-UX/description.md`, `Mathématiques/description.md`.
 
