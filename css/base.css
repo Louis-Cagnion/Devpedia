@@ -676,6 +676,20 @@ blockquote p + p {
     margin-top: 0.5rem;
 }
 
+/* shown when a page doesn't exist yet in the active language and got substituted from another
+   one (cf. router.js's resolveAcrossLanguages/fallbackNoticeFor) -- same shape as a blockquote
+   note, italicized to read as a system message rather than authored page content */
+.pageFallbackNotice {
+    margin: 0 0 1rem 0;
+    padding: 0.7rem 1rem;
+    border-inline-start: 3px solid var(--accent-strong);
+    background-color: var(--bg-elevated);
+    border-start-end-radius: var(--radius);
+    border-end-end-radius: var(--radius);
+    font-style: italic;
+    color: var(--text-muted);
+}
+
 /* navigation lists: subjects of a category, chapters of a subject/category */
 .childList {
     list-style: none;

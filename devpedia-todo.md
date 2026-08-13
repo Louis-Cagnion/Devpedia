@@ -19,7 +19,6 @@ Chantier du même ordre de grandeur que le sweep FR original ; les fichiers déj
 - Liens internes ES/PT vérifiés 2026-08-13 : 0 lien cassé sur ce qui existe déjà (le sous-ensemble ancien reste cohérent en interne).
 - 6 langues manquantes en plus d'ES/PT : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
 - Bug dans `scripts/translate-content.mjs` : le pipeline DeepL traduit parfois par erreur des morceaux d'URL à l'intérieur d'un lien Markdown, cassant la navigation sans erreur visible — à corriger (protéger la portion `(...)` d'un lien comme les spans `` `code` `` le sont déjà) avant de refaire tourner l'API sur ES/PT.
-- À vérifier : comportement du sélecteur de langue sur une page qui n'existe pas encore dans la langue cible — doit afficher "cette page n'existe pas" dans la langue choisie, rediriger vers l'anglais si disponible, sinon vers le français.
 - Supprimer le pipeline DeepL, devenu inutilisable (quota épuisé, abonnement probablement non renouvelable).
 - Quand la catégorie IA sera traduite pour ES/PT, l'écrire directement en subjects (comme la structure FR actuelle), pas à plat.
 

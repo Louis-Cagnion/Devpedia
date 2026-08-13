@@ -15,6 +15,109 @@ export function findSubject(category, subjectId) {
     return category.subjects?.find(subject => subject.id === subjectId);
 }
 
+/**
+ * @param {string} lang "" for French, or one of structure/languages.json's codes
+ * @returns {string} the content folder for that language
+ */
+function contentDirFor(lang) {
+    return lang ? `content-${lang}` : "content";
+}
+
+// ---- cross-language fallback for a page missing in the active language ----
+// Folder/file names (hence ids) are never translated -- only each file's own content is -- so
+// a categoryId/subjectId/pageId valid in one language's structure/struct-*.json is exactly the
+// same id to look up in another's. Content translation is always a subset of the French source
+// (content/), so French is the only fallback guaranteed to succeed if the id is valid at all.
+
+// Struct files already fetched during a fallback lookup this session, keyed by language code
+// ("" for French) -- avoids re-fetching the same struct on every subsequent missing page.
+const structCache = new Map();
+
+async function fetchStructCategories(lang) {
+    if (structCache.has(lang)) return structCache.get(lang);
+    const path = lang ? `./structure/struct-${lang}.json` : "./structure/struct.json";
+    const { categories } = await fetchFileToTextOrJson(path, 'json');
+    structCache.set(lang, categories);
+    return categories;
+}
+
+/**
+ * @param {Array} categories one language's category tree (structure/struct-*.json's `categories`)
+ * @returns {{category: Object, subject: Object|null, chapter: Object|null}|null} null if
+ *   categoryId doesn't exist in `categories`, or if subjectId/pageId don't resolve within it
+ */
+function resolveInCategories(categories, categoryId, subjectId, pageId) {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category) return null;
+    if (pageId === categoryId) return { category, subject: null, chapter: null };
+    if (subjectId) {
+        const subject = findSubject(category, subjectId);
+        if (!subject) return null;
+        if (pageId === subjectId) return { category, subject, chapter: null };
+        const chapter = subject.chapters?.find(c => c.id === pageId);
+        return chapter ? { category, subject, chapter } : null;
+    }
+    const chapter = category.chapters?.find(c => c.id === pageId);
+    return chapter ? { category, subject: null, chapter } : null;
+}
+
+/**
+ * Resolves categoryId/subjectId/pageId against the active language first, then English, then
+ * French (skipping whichever of those is already the active language).
+ *
+ * @returns {Promise<{lang: string, category: Object, subject: Object|null, chapter: Object|null}|null>}
+ *   null only if the id itself doesn't exist anywhere (a stale/broken link, not a missing
+ *   translation)
+ */
+async function resolveAcrossLanguages(categoryId, subjectId, pageId) {
+    const direct = resolveInCategories(appState.categories, categoryId, subjectId, pageId);
+    if (direct) return { lang: appState.lang, ...direct };
+
+    for (const lang of ["en", ""].filter(l => l !== appState.lang)) {
+        const categories = await fetchStructCategories(lang);
+        const found = resolveInCategories(categories, categoryId, subjectId, pageId);
+        if (found) return { lang, ...found };
+    }
+    return null;
+}
+
+/**
+ * Renders the result of {@link resolveAcrossLanguages} -- in the active language if that's
+ * where it was found, otherwise in whichever fallback language had it, with a translated
+ * notice (cf. renderCategory/renderSubject/renderChapter's own `lang` parameter).
+ *
+ * @param {{lang: string, category: Object, subject: Object|null, chapter: Object|null}} resolved
+ */
+function renderResolvedTarget({ lang, category, subject, chapter }) {
+    if (chapter) {
+        appState.navigationStack = subject
+            ? [{type: 'home'}, {type: 'category', categoryId: category.id}, {type: 'subject', categoryId: category.id, subjectId: subject.id}]
+            : [{type: 'home'}, {type: 'category', categoryId: category.id}];
+        const contentDir = contentDirFor(lang);
+        const path = subject
+            ? `./${contentDir}/${category.folder}/${subject.folder}/${chapter.id}.md`
+            : `./${contentDir}/${category.folder}/${chapter.id}.md`;
+        renderChapter(category.id, path, chapter, subject?.id ?? null, category, subject, lang);
+    } else if (subject) {
+        appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId: category.id}];
+        renderSubject(category, subject, lang);
+    } else {
+        appState.navigationStack = [{type: 'home'}];
+        renderCategory(category, lang);
+    }
+}
+
+/**
+ * Resolves categoryId/subjectId/pageId across languages and renders whatever's found, or falls
+ * back to the home page if the id doesn't exist anywhere (a stale/broken link).
+ */
+function renderAcrossLanguages(categoryId, subjectId, pageId) {
+    resolveAcrossLanguages(categoryId, subjectId, pageId).then(resolved => {
+        if (resolved) renderResolvedTarget(resolved);
+        else generateHomePage();
+    });
+}
+
 // Session-only: read once at startup by resumePendingNavigation(), then cleared — carries the
 // current page across a language switch's location.reload(), since ids (category/subject/chapter
 // folder names) are language-independent while only their displayed `label` gets translated.
@@ -56,11 +159,16 @@ function parseNavParams(url) {
  * restore, reused here for URL query params and in-content link clicks.
  *
  * @param {{categoryId: string, subjectId: string|null, pageId: string}} target
- * @returns {boolean} whether the category (and subject, if relevant) exist and navigation happened
+ * @returns {boolean} whether navigation happened -- directly, or (if `categoryId` doesn't
+ *   exist in the active language) asynchronously via {@link renderAcrossLanguages}, which
+ *   itself falls back to the home page if the id doesn't exist in any language
  */
 function navigateToTarget({ categoryId, subjectId, pageId }) {
     const category = findCategory({ id: categoryId });
-    if (!category) return false;
+    if (!category) {
+        renderAcrossLanguages(categoryId, subjectId, pageId);
+        return true;
+    }
     if (pageId === categoryId) {
         loadCategory(categoryId);
     } else if (subjectId && pageId === subjectId) {
@@ -77,8 +185,10 @@ export function resumePendingNavigation() {
     if (raw) {
         const { categoryId, subjectId, pageId } = JSON.parse(raw);
         const category = findCategory({ id: categoryId });
-        if (!category || categoryId === "acceuil") {
+        if (categoryId === "acceuil") {
             generateHomePage();
+        } else if (!category) {
+            renderAcrossLanguages(categoryId, subjectId, pageId);
         } else if (pageId === categoryId) {
             loadCategory(categoryId);
         } else if (pageId === subjectId) {
@@ -257,11 +367,15 @@ function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter,
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [previousChapter]
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [nextChapter]
  * @param {HTMLElement|null} [breadcrumb] see {@link createBreadcrumb} — chapter and subject pages
+ * @param {string|null} [notice] see {@link resolveAcrossLanguages} — shown when this page had to
+ *   be substituted from another language
  * @returns {HTMLElement} page div
  */
-function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null, breadcrumb = null) {
+function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null, breadcrumb = null, notice = null) {
     const text = parseMdContent(textInfos);
     const pageDiv = createTag("div", {class: `page ${pageId}Div`});
+    if (notice)
+        pageDiv.append(createTag("div", {class: "pageFallbackNotice"}, {textContent: notice}));
     if (breadcrumb)
         pageDiv.append(breadcrumb);
     if (withReturnButton || previousChapter || nextChapter)
@@ -307,28 +421,42 @@ export async function generateHomePage() {
 }
 
 /**
+ * @param {string} lang language a page is about to be rendered in
+ * @returns {string|null} the translated substitution notice if `lang` isn't the active
+ *   language (see {@link resolveAcrossLanguages}), null otherwise
+ */
+function fallbackNoticeFor(lang) {
+    return lang !== appState.lang ? t("pageFallbackNotice") : null;
+}
+
+/**
  * Render a chapter page (leaf content, belonging to a subject or a flat category)
  *
  * @param {string} categoryId
  * @param {string} path path to the chapter's markdown file
  * @param {Object} chapter
  * @param {string} [subjectId] the subject this chapter belongs to, if any
+ * @param {Object|null} [resolvedCategory] pre-resolved category, used instead of looking it up
+ *   in the active language's structure -- see {@link resolveAcrossLanguages}, whose result may
+ *   come from a different language's structure than the one currently loaded into appState
+ * @param {Object|null} [resolvedSubject] same as `resolvedCategory`, for the subject
+ * @param {string} [lang] the language `path` was built for -- see {@link fallbackNoticeFor}
  */
-async function renderChapter(categoryId, path, chapter, subjectId = null) {
+async function renderChapter(categoryId, path, chapter, subjectId = null, resolvedCategory = null, resolvedSubject = null, lang = appState.lang) {
     clearCurrentPage();
     appState.curCategory = categoryId;
     appState.curSubject = subjectId;
     appState.curPageId = chapter.id;
     const chapterInfos = await fetchFileToTextOrJson(path, 'text');
-    const category = findCategory({id: categoryId});
-    const subject = subjectId ? findSubject(category, subjectId) : null;
+    const category = resolvedCategory ?? findCategory({id: categoryId});
+    const subject = subjectId ? (resolvedSubject ?? findSubject(category, subjectId)) : null;
     const chapters = (subject ? subject.chapters : category.chapters) ?? [];
     const curIndex = chapters.findIndex(c => c.id === chapter.id);
     const previousChapter = chapters[curIndex - 1];
     const nextChapter = chapters[curIndex + 1];
     currentPreviousChapter = previousChapter && {categoryId, subjectId, id: previousChapter.id, label: previousChapter.label};
     currentNextChapter = nextChapter && {categoryId, subjectId, id: nextChapter.id, label: nextChapter.label};
-    generatePageContent(chapterInfos, chapter.id, true, currentPreviousChapter, currentNextChapter, createBreadcrumb(category, subject));
+    generatePageContent(chapterInfos, chapter.id, true, currentPreviousChapter, currentNextChapter, createBreadcrumb(category, subject), fallbackNoticeFor(lang));
 }
 
 /**
@@ -336,19 +464,23 @@ async function renderChapter(categoryId, path, chapter, subjectId = null) {
  *
  * @param {Object} category
  * @param {Object} subject
+ * @param {string} [lang] language to render in -- see {@link fallbackNoticeFor}, defaults to
+ *   the active one, propagated to every chapter reachable from this page so browsing onward
+ *   stays in the same (possibly substituted) language rather than reverting mid-chapter
  */
-async function renderSubject(category, subject) {
+async function renderSubject(category, subject, lang = appState.lang) {
     clearCurrentPage();
     clearChapterNeighbors();
     appState.curCategory = category.id;
     appState.curSubject = subject.id;
     appState.curPageId = subject.id;
-    const path = `./${getContentDir()}/${category.folder}/${subject.folder}/${subject.id}.md`;
+    const contentDir = contentDirFor(lang);
+    const path = `./${contentDir}/${category.folder}/${subject.folder}/${subject.id}.md`;
     const subjectInfos = await fetchFileToTextOrJson(path, 'text');
-    const pageDiv = generatePageContent(subjectInfos, subject.id, true, null, null, createBreadcrumb(category, null));
+    const pageDiv = generatePageContent(subjectInfos, subject.id, true, null, null, createBreadcrumb(category, null), fallbackNoticeFor(lang));
     generateChildList(pageDiv, subject.chapters ?? [], subject.id, (chapter) => {
         appState.navigationStack.push({type: 'subject', categoryId: category.id, subjectId: subject.id});
-        renderChapter(category.id, `./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subject.id);
+        renderChapter(category.id, `./${contentDir}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subject.id, category, subject, lang);
     });
 }
 
@@ -357,24 +489,27 @@ async function renderSubject(category, subject) {
  * when the category has no subjects (e.g. Bash, Git)
  *
  * @param {Object} category
+ * @param {string} [lang] language to render in -- see {@link fallbackNoticeFor}, defaults to
+ *   the active one, propagated onward the same way {@link renderSubject} does
  */
-async function renderCategory(category) {
+async function renderCategory(category, lang = appState.lang) {
     clearCurrentPage();
     clearChapterNeighbors();
     appState.curCategory = category.id;
     appState.curSubject = null;
     appState.curPageId = category.id;
-    const pageInfos = await fetchFileToTextOrJson(`./${getContentDir()}/${category.folder}/description.md`, 'text');
-    const pageDiv = generatePageContent(pageInfos, category.id, true);
+    const contentDir = contentDirFor(lang);
+    const pageInfos = await fetchFileToTextOrJson(`./${contentDir}/${category.folder}/description.md`, 'text');
+    const pageDiv = generatePageContent(pageInfos, category.id, true, null, null, null, fallbackNoticeFor(lang));
     if (category.subjects) {
         generateChildList(pageDiv, category.subjects, category.id, (subject) => {
             appState.navigationStack.push({type: 'category', categoryId: category.id});
-            renderSubject(category, subject);
+            renderSubject(category, subject, lang);
         });
     } else if (category.chapters) {
         generateChildList(pageDiv, category.chapters, category.id, (chapter) => {
             appState.navigationStack.push({type: 'category', categoryId: category.id});
-            renderChapter(category.id, `./${getContentDir()}/${category.folder}/${chapter.id}.md`, chapter);
+            renderChapter(category.id, `./${contentDir}/${category.folder}/${chapter.id}.md`, chapter, null, category, null, lang);
         });
     }
 }
@@ -390,8 +525,16 @@ function renderEntry(entry) {
         return;
     }
     const category = findCategory({id: entry.categoryId});
+    const subject = entry.type === 'subject' && category && findSubject(category, entry.subjectId);
+    if (!category || (entry.type === 'subject' && !subject)) {
+        // Reached by "Retour" from a page rendered as a cross-language fallback (cf.
+        // renderResolvedTarget) -- this category/subject doesn't exist in the active language
+        // either, same as the page we came from.
+        renderAcrossLanguages(entry.categoryId, entry.subjectId ?? null, entry.subjectId ?? entry.categoryId);
+        return;
+    }
     if (entry.type === 'subject') {
-        renderSubject(category, findSubject(category, entry.subjectId));
+        renderSubject(category, subject);
     } else {
         renderCategory(category);
     }
@@ -410,10 +553,17 @@ export function loadCategory(categoryId) {
     if (categoryId === 'acceuil') {
         appState.navigationStack = [];
         generateHomePage();
-    } else {
-        appState.navigationStack = [{type: 'home'}];
-        renderCategory(findCategory({id: categoryId}));
+        return;
     }
+    const category = findCategory({id: categoryId});
+    if (!category) {
+        // Reached from the breadcrumb of a page rendered as a cross-language fallback (cf.
+        // renderResolvedTarget) -- this category doesn't exist in the active language either.
+        renderAcrossLanguages(categoryId, null, categoryId);
+        return;
+    }
+    appState.navigationStack = [{type: 'home'}];
+    renderCategory(category);
 }
 
 /**
@@ -425,8 +575,13 @@ export function loadCategory(categoryId) {
 export function navigateToSubject(categoryId, subjectId) {
     closeMobileMenu();
     const category = findCategory({id: categoryId});
+    const subject = category && findSubject(category, subjectId);
+    if (!subject) {
+        renderAcrossLanguages(categoryId, subjectId, subjectId);
+        return;
+    }
     appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}];
-    renderSubject(category, findSubject(category, subjectId));
+    renderSubject(category, subject);
 }
 
 /**
@@ -439,13 +594,16 @@ export function navigateToSubject(categoryId, subjectId) {
 export function navigateToChapter(categoryId, subjectId, chapterId) {
     closeMobileMenu();
     const category = findCategory({id: categoryId});
+    const subject = subjectId ? category && findSubject(category, subjectId) : null;
+    const chapter = subjectId ? subject?.chapters.find(c => c.id === chapterId) : category?.chapters.find(c => c.id === chapterId);
+    if (!chapter) {
+        renderAcrossLanguages(categoryId, subjectId, chapterId);
+        return;
+    }
     if (subjectId) {
-        const subject = findSubject(category, subjectId);
-        const chapter = subject.chapters.find(c => c.id === chapterId);
         appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}, {type: 'subject', categoryId, subjectId}];
         renderChapter(categoryId, `./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subjectId);
     } else {
-        const chapter = category.chapters.find(c => c.id === chapterId);
         appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}];
         renderChapter(categoryId, `./${getContentDir()}/${category.folder}/${chapter.id}.md`, chapter);
     }
