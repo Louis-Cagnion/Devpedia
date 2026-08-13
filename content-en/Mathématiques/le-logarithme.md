@@ -24,11 +24,11 @@ Raising a number to a power (`b^y`) means multiplying `b` by itself `y` times: `
 |---|---|---|---|
 | 10 | `log10(x)` or `log(x)` | How many times to multiply by 10? | Orders of magnitude, scales (Richter, decibels) |
 | 2 | `log2(x)` | How many times to double? | Computer science (searching a tree, algorithm complexity) |
-| *e* (≈ 2.718) | `ln(x)` | No question as intuitive as the two above — this base is chosen because it simplifies many mathematical computations | Most formulas used in statistics and machine learning |
+| *e* (≈ 2.718) | `ln(x)` | No question as intuitive as the two above: this base is chosen because it simplifies many mathematical computations | Most formulas used in statistics and machine learning |
 
-> **Pitfall:** confusing bases. `log2(8) = 3` but `log10(8) ≈ 0.9` — the result depends entirely on the chosen base, two logarithms of different bases are never directly comparable without conversion.
+> **Pitfall:** confusing bases. `log2(8) = 3` but `log10(8) ≈ 0.9`: the result depends entirely on the chosen base, two logarithms of different bases are never directly comparable without conversion.
 >
-> **Best practice:** always check which base a function or formula uses before interpreting its result (`log` in [Python](/?c=langages-de-programmation&s=python&p=python), for instance, refers to the **natural** logarithm — base *e* — not base 10, contrary to what the name might suggest).
+> **Best practice:** always check which base a function or formula uses before interpreting its result (`log` in [Python](/?c=langages-de-programmation&s=python&p=python), for instance, refers to the **natural** logarithm (base *e*), not base 10, contrary to what the name might suggest).
 
 ## The shape of its curve: very slow for large x, very fast near 0
 
@@ -56,7 +56,7 @@ This compression near 0 continues without limit: the closer `x` gets to 0, the m
 
 ## Pitfall: the logarithm isn't defined everywhere
 
-`log(0)` isn't defined — the value decreases without limit as `x` gets closer to 0, never reaching a finite result. The logarithm of a negative number isn't defined either (within the real numbers).
+`log(0)` isn't defined: the value decreases without limit as `x` gets closer to 0, never reaching a finite result. The logarithm of a negative number isn't defined either (within the real numbers).
 
 > **Pitfall:** applying a logarithm to a value that can be exactly 0 (a probability, for instance) causes an error or an infinite value in a program, not an unusual but valid result.
 >
@@ -68,13 +68,13 @@ This compression near 0 continues without limit: the closer `x` gets to 0, the m
 log(a × b) = log(a) + log(b)
 ```
 
-This property makes it possible to replace a multiplication with an addition, generally simpler to compute and less prone to producing a number that becomes too small or too large to represent correctly in memory (see [floating-point numbers](/?c=representation-des-donnees&p=nombres-flottants)) — especially useful when a great many small numbers need to be multiplied together.
+This property makes it possible to replace a multiplication with an addition, generally simpler to compute and less prone to producing a number that becomes too small or too large to represent correctly in memory (see [floating-point numbers](/?c=representation-des-donnees&p=nombres-flottants)), especially useful when a great many small numbers need to be multiplied together.
 
 ## Key takeaways
 
 | | |
 |---|---|
-| **Key takeaways** | The logarithm answers "to what power must this base be raised to get this number?" — the inverse of a power. It grows very slowly for large values, and drops toward negative infinity near 0. |
-| **Tools you can use** | `log10()`, `log2()`, `log()` (natural, base *e*) in most languages — systematically check which one is being used. |
+| **Key takeaways** | The logarithm answers "to what power must this base be raised to get this number?" (the inverse of a power). It grows very slowly for large values, and drops toward negative infinity near 0. |
+| **Tools you can use** | `log10()`, `log2()`, `log()` (natural, base *e*) in most languages: systematically check which one is being used. |
 | **Pitfalls to avoid** | Confusing two logarithms of different bases. Applying a logarithm to a value that can be 0 or negative. |
 | **Best practices** | Check the base used by a function before interpreting its result. Add a small value before a `log()` applied to a probability, to avoid `log(0)`. |
