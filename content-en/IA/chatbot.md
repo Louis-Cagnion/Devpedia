@@ -11,13 +11,13 @@ A chatbot is not just a call to an LLM wrapped in a chat interface: it is a syst
 A functional chatbot requires, at a minimum, three elements in addition to the LLM call itself:
 
 ```text
-1. Instructions systeme (system prompt) : role, ton, limites du chatbot
-2. Historique de la conversation : les tours precedents, envoyes a chaque appel
-3. Le tour en cours : la question de l'utilisateur
+1. System instructions (system prompt): role, tone, chatbot's limits
+2. Conversation history: previous turns, sent with every call
+3. The current turn: the user's question
 
--> Ces trois elements composent le prompt envoye au modele a CHAQUE tour.
-   Un LLM n'There is no memory between two calls: c'est le systeme autour de
-   lui qui doit renvoyer tout l'historique a chaque fois.
+-> These three elements make up the prompt sent to the model on EVERY turn.
+   An LLM has no memory between calls: it's the system around it
+   that must resend the entire history every time.
 ```
 
 A more advanced chatbot adds a [RAG](/?c=ia&p=rag) call before the model call (to search for relevant context to inject) and/or tools in the sense of [agents](/?c=ia&p=agents) (check an order, a stock database, send an email)—but the three elements above remain the foundation, with or without these extensions.
