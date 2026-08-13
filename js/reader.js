@@ -41,6 +41,10 @@ function notify() {
     listeners.forEach(listener => listener(status));
 }
 
+// A separator like " / " left between two inline `code` spans (e.g. "if / else if") has no
+// word to pronounce -- skip flushing it rather than reading the bare punctuation aloud.
+const HAS_SPOKEN_CONTENT = /[\p{L}\p{N}]/u;
+
 /**
  * Flushes `buffer` (page-language text accumulated so far) as one plan entry, then appends
  * `leaf`'s inline `code` spans as their own separate en-US entries -- kept apart from the
@@ -55,7 +59,7 @@ function collectLeafSegments(leaf, lang, entries) {
     let buffer = "";
     const flushBuffer = () => {
         const text = buffer.trim();
-        if (text) entries.push({ kind: "speak", text, lang });
+        if (text && HAS_SPOKEN_CONTENT.test(text)) entries.push({ kind: "speak", text, lang });
         buffer = "";
     };
     leaf.childNodes.forEach(node => {
