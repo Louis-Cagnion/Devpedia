@@ -64,7 +64,7 @@ match trouver_utilisateur 42 with
 | None -> print_endline "Utilisateur introuvable"
 ```
 
-La différence avec `None` en Python (cf. chapitre [Les variables](/?c=langages-de-programmation&s=python&p=variables) pour `is None`) est que le compilateur **force** à traiter le cas `None` : le type d'une fonction qui peut ne rien trouver est explicitement `string option`, jamais simplement `string`. Il est donc impossible d'oublier de vérifier l'absence de valeur sans que le compilateur ne le signale, là où un `NullPointerException` ou un `TypeError: 'NoneType' object is not subscriptable` en Python n'apparaît qu'à l'exécution, sur le chemin de code précis qui l'a oublié.
+La différence avec `None` en Python (cf. chapitre [Les variables](/?c=langages-de-programmation&s=python&p=variables) pour `is None`) est que le compilateur **force** à traiter le cas `None` : le type d'une fonction qui peut ne rien trouver est explicitement `string option`, jamais simplement `string`. Il est donc impossible d'oublier de vérifier l'absence de valeur sans que le compilateur ne le signale, là où un [`NullPointerException`](https://docs.oracle.com/en/java/) ou un `TypeError: 'NoneType' object is not subscriptable` en Python n'apparaît qu'à l'exécution, sur le chemin de code précis qui l'a oublié.
 
 ---
 

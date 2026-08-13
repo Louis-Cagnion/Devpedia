@@ -23,7 +23,7 @@ for (int n : nombres) {  // parcours simple, comme un for-each
 }
 ```
 
-> **Note :** `std::vector` est, en interne, un tableau contigu en mémoire (voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) et [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) qui se redimensionne automatiquement (souvent en doublant sa capacité) quand il est plein : le même principe qu'une [liste Python](/?c=langages-de-programmation&s=python&p=listes-et-tuples) ou un `ArrayList` Java, mais sans la couche d'indirection d'un langage à ramasse-miettes.
+> **Note :** `std::vector` est, en interne, un tableau contigu en mémoire (voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) et [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) qui se redimensionne automatiquement (souvent en doublant sa capacité) quand il est plein : le même principe qu'une [liste Python](/?c=langages-de-programmation&s=python&p=listes-et-tuples) ou un [`ArrayList`](https://docs.oracle.com/en/java/) Java, mais sans la couche d'indirection d'un langage à ramasse-miettes.
 
 ## `std::list` : la liste doublement chaînée
 

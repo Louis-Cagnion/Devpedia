@@ -677,6 +677,10 @@
               "label": "La programmation orientée objet (POO)"
             },
             {
+              "id": "exceptions",
+              "label": "Les exceptions"
+            },
+            {
               "id": "autoloading",
               "label": "L'autoloading des classes"
             },

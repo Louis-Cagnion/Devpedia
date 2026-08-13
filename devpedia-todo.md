@@ -18,20 +18,15 @@ Ajoutée le 2026-08-13 dans `prompt.md`, appliquée aux nouveaux chapitres OCR/V
 
 **Terminé et corrigé — Git, Shells (Bash/PowerShell/Zsh), Langages de programmation (C/C++/JavaScript/OCaml/PHP/Python)** : tous les liens internes identifiés lors de l'audit du 2026-08-13 ont été appliqués et validés (`node scripts/generate-struct.js`, aucun lien mort). Piège rencontré et corrigé au passage : un lien avait été inséré par erreur à l'intérieur d'un commentaire de bloc de code (```javascript) dans `JavaScript/conditions.md` — un bloc de code est rendu tel quel, aucun lien markdown n'y est interprété (il s'afficherait littéralement comme `[texte](url)`) ; déplacé dans la prose juste après. Vérifier ce même piège avant de poser un lien dans un futur bloc de code.
 
-Restent en attente (non tranchés, non appliqués) :
-- `Shells/PowerShell/ecrire-et-executer-un-script.md` : référence à "un chapitre dédié en PHP" sur les exceptions — **PHP n'a pas de chapitre dédié aux exceptions** (vérifié : ni `poo.md` ni `structures-de-langage.md` ne couvrent try/catch). `Langages de programmation/C++/exceptions.md` a le même trou (PHP laissé sans lien, Python et JavaScript liés). Décision à prendre : créer un chapitre PHP dédié aux exceptions, ou reformuler les deux mentions sans le lien.
-- `Langages de programmation/C++/heritage-et-polymorphisme.md`, `stl-conteneurs.md` : "Java" mentionné en comparaison (polymorphisme, `ArrayList`) sans aucune destination, le site n'ayant aucun chapitre Java — laissé tel quel, voir la question ouverte sur Java plus bas.
-
 **Liens externes / décisions en attente de validation avant application :**
 - Git : zlib, algorithme de Myers (Git/architecture-interne.md), GitLab (remotes.md, github-et-plateformes.md), Bitbucket (github-et-plateformes.md), Kanban (issues-et-projets-github.md, mineur).
 - Bash : `bc` (variables.md). (Linux/Windows/macOS/Unix mentionnés comme contexte ambiant dans plusieurs fichiers, volontairement pas traités comme violations sauf quand un chapitre les explique déjà — voir ci-dessus.)
-- PowerShell : .NET Runtime, C# (architecture-dun-shell.md, ecrire-et-executer-un-script.md, powershell.md — aucun chapitre C# sur le site).
 - Zsh : powerlevel10k (prompt-et-themes.md).
 - Langages de balisage : SEO (HTML/semantique-html5.md, à développer un minimum avant de lier), Sass/Less (CSS/variables-et-cascade.md).
 - C : gcc (bibliotheques.md, compilation.md, makefiles.md, threads.md), Valgrind + norme C11 (memoire.md), algorithme de Kernighan (operateurs-binaires.md), norme C99 (conditions.md, variables.md).
-- C++ : Java (heritage-et-polymorphisme.md, stl-conteneurs.md — pas de chapitre Java sur le site), arbre rouge-noir (stl-conteneurs.md).
+- C++ : arbre rouge-noir (stl-conteneurs.md).
 - JavaScript : React, Vue, Angular, Node.js (javascript.md).
-- OCaml : Jane Street, Coq, Haskell (ocaml.md), NullPointerException/Java (filtrage-par-motif-et-types-algebriques.md), algorithme de Hindley-Milner (inference-de-types.md).
+- OCaml : Jane Street, Coq, Haskell (ocaml.md), algorithme de Hindley-Milner (inference-de-types.md).
 - PHP : WordPress, Drupal, Laravel, Symfony (php.md, routage.md), Express, Node (routage.md), MD5, SHA-1, bcrypt (securite.md), `std::optional<T>` C++ (methodes.md, pas de chapitre C++ dédié aux templates génériques équivalent).
 - Python : Django, Flask, pandas (python.md — PyTorch et NumPy passent en lien interne, voir ci-dessus), Docker (cli-avec-argparse.md), VS Code, PyCharm (typage-avec-annotations.md).
 
@@ -43,9 +38,9 @@ Liens externes / décisions en attente de validation avant application, issus de
 - Docker : Alpine, Docker Desktop, Nginx, Traefik, MySQL, YAML (concepts-de-base.md, docker-compose.md) ; Go (dockerfile.md — aucun chapitre Go sur le site).
 - Mathématiques : théorème de Pythagore (vecteurs-et-produit-scalaire.md), produit de Hadamard (matrices-et-produit-matriciel.md), Richter/décibels (le-logarithme.md, mineur).
 - Qualité et architecture du code : KISS/YAGNI (eviter-la-repetition-structures-indexees.md, genericite-dependre-de-la-structure.md), Markdown (un-seul-mecanisme-par-information.md, mineur).
-- Bases de l'informatique : Notepad/TextEdit, Word/WordPad, VS Code, PyCharm, Visual Studio, C#/.NET (editeur-de-code-et-ide.md — aucun chapitre C#/.NET) ; cmd.exe (le-terminal.md, borderline, déjà expliqué en incise).
+- Bases de l'informatique : Notepad/TextEdit, Word/WordPad, VS Code, PyCharm, Visual Studio (editeur-de-code-et-ide.md) ; cmd.exe (le-terminal.md, borderline, déjà expliqué en incise).
 - Bases de données : SQL Server (schemas-et-tables-techniques.md).
-- Représentation des données : ISO-8859-1/5, Windows-1252 (encodage-des-textes.md), MySQL (encodage-des-textes.md), Excel (encodage-des-textes.md), RDRAND, `/dev/urandom` (aleatoire-et-generateurs.md), Java/C# (entiers-et-debordements.md, nombres-flottants.md — même trou que pour C++, voir la question ouverte Java ci-dessous), Protobuf (organisation-en-memoire.md).
+- Représentation des données : ISO-8859-1/5, Windows-1252 (encodage-des-textes.md), MySQL (encodage-des-textes.md), Excel (encodage-des-textes.md), RDRAND, `/dev/urandom` (aleatoire-et-generateurs.md), Protobuf (organisation-en-memoire.md).
 - Data Science : LaTeX (jupyter-notebooks.md), seaborn (matplotlib.md).
 - CI-CD : npm, NuGet, Maven (azure-devops-plateforme.md).
 - Domain-specific Languages (DSL) : MySQL, PostgreSQL, SQL Server, SQLite (sql.md), XML (parsing-incremental-machine-a-etats.md, définition donnée en une seule ligne seulement).
@@ -55,11 +50,14 @@ Liens externes / décisions en attente de validation avant application, issus de
 
 Cas limites signalés par les agents, non retenus comme violations mais notés pour info : noms de polices en exemples de tableau (typographie.md), énumération des langages/catégories dans `acceuil.md` (immédiatement précédée d'un renvoi vers la barre de navigation/recherche), eye-tracking et biais de désirabilité sociale (mentions isolées en incise, UI-UX).
 
-**Questions ouvertes pour la prochaine session** (décisions prises par défaut cette session, à confirmer avec Louis plutôt qu'à considérer comme tranchées) :
-- **Noms d'OS ambiants (Linux, Windows, macOS, Unix)** : décidé de ne PAS les traiter comme des violations de la règle 7bis quand ils apparaissent comme simple contexte de fond (« le shell le plus répandu sur Linux et macOS »), sauf quand un chapitre du site les explique déjà et n'est pas lié (ex. Unix dans `scripts-et-shebang.md`). À confirmer : est-ce le bon seuil, ou Louis veut-il un lien externe systématique même pour ces mentions ambiantes ?
-- **Java (et C#), absents du site** : cités en comparaison dans de nombreux chapitres (C++ `ArrayList`/`NullPointerException`, OCaml, PowerShell, `entiers-et-debordements.md`, `nombres-flottants.md`, `editeur-de-code-et-ide.md`...) sans aucune destination interne possible — motif qui revient assez souvent pour ne plus être un cas isolé. Un lien externe (docs Oracle/Microsoft) suffit-il durablement, ou est-ce le signe qu'un chapitre Java et/ou C# devrait être envisagé un jour dans "Langages de programmation" (question de fond, pas juste un lien à poser) ?
-- **Profondeur des liens externes mineurs** (Kanban, SEO...) : un simple lien Wikipédia suffit-il, ou faut-il, comme le veut le principe zéro-connaissance déjà appliqué aux plateformes nommées (voir `prompt.md`, section Contexte), ajouter aussi une phrase de définition avant le lien plutôt que de ne poser que le lien ?
-- **PHP sans chapitre "exceptions" dédié** : à vérifier précisément si `poo.md` ou `structures-de-langage.md` couvre déjà try/catch en PHP avant de décider (lien vers l'un des deux si oui, nouveau chapitre à créer sinon).
+**Questions tranchées par Louis le 2026-08-13 :**
+- **Noms d'OS ambiants (Linux, Windows, macOS, Unix)** : confirmé, pas de lien pour une mention de contexte de fond. Écrit explicitement dans `prompt.md` (instruction 7bis) comme exception documentée, plutôt que laissé comme jugement au cas par cas.
+- **Java et C#, absents du site** : confirmé, pas de nouveau chapitre. Tous les liens externes en attente ont été appliqués (docs Oracle pour Java, Microsoft Learn pour C#/.NET) : `C++/heritage-et-polymorphisme.md`, `stl-conteneurs.md`, `OCaml/filtrage-par-motif-et-types-algebriques.md`, `Représentation des données/entiers-et-debordements.md`, `nombres-flottants.md`, `Bases de l'informatique/editeur-de-code-et-ide.md`, `Shells/PowerShell/architecture-dun-shell.md`, `ecrire-et-executer-un-script.md`, `powershell.md`.
+- **Profondeur des liens externes mineurs** : confirmé, mais avec une nuance importante que Louis a précisée : il ne veut **pas** que le texte des chapitres devienne lourd avec une clause de définition systématique avant chaque lien externe mineur — le texte doit rester fluide, un lien discret qui redirige vers la notion sans perturber le flux de lecture. Écrit dans `prompt.md` (instruction 7bis) : la phrase de définition obligatoire reste réservée aux plateformes/produits nommés comme prérequis explicite (section Contexte), pas à tout terme secondaire.
+- **Texte du lien = pas forcément le titre complet du chapitre** (précision ajoutée par Louis dans la foulée) : reprendre le titre officiel complet d'un chapitre comme texte de lien est lourd, surtout s'il est long — préférer une formulation courte et naturelle qui s'insère dans la phrase, sauf si le titre est déjà court ou qu'aucune formulation plus courte n'a de sens. Écrit dans `prompt.md` (instruction 7).
+- **PHP sans chapitre "exceptions" dédié** : confirmé par Louis, chapitre créé — `content/Langages de programmation/PHP/exceptions.md` (order 9, juste après `poo.md`, symétrique de la place d'`exceptions.md` dans la piste C++). Couvre `try`/`catch`/`finally`/`throw`, la distinction `Exception` vs `Error` sous `Throwable`, l'ordre des `catch` multiples, les exceptions personnalisées, et le chaînage via `previous`. Chapitres suivants (`autoloading` à `securite`) décalés de +1 en `order`. Les deux mentions qui l'attendaient (`C++/exceptions.md`, `PowerShell/ecrire-et-executer-un-script.md`) sont désormais liées.
+
+**Nouveau point d'attention pour l'écriture future de tout chapitre** (découle des clarifications ci-dessus, à garder en tête au même titre que le reste de `prompt.md`) : un lien (interne ou externe) doit toujours rester léger dans la phrase — jamais de clause de définition systématique ni de titre de chapitre recopié en entier, sauf réelle nécessité. Le texte doit se lire naturellement, le lien n'étant qu'une redirection discrète.
 
 ### Lecture audio automatique du site (texte + blocs de code)
 

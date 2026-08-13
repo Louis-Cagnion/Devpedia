@@ -4,7 +4,7 @@ order: 13
 
 # Comment fonctionne PowerShell (architecture interne)
 
-PowerShell repose sur la même mécanique de fond que Bash (une boucle qui lit, interprète et exécute), mais il ne tourne pas directement sur le système d'exploitation comme un simple exécutable natif : c'est un environnement construit sur le **.NET Runtime**, ce qui explique à la fois ses objets typés (voir [Les variables](/?c=shells&s=powershell&p=variables) et [Redirections et pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) et certaines de ses différences de performance avec Bash.
+PowerShell repose sur la même mécanique de fond que Bash (une boucle qui lit, interprète et exécute), mais il ne tourne pas directement sur le système d'exploitation comme un simple exécutable natif : c'est un environnement construit sur le [**.NET Runtime**](https://learn.microsoft.com/en-us/dotnet/), ce qui explique à la fois ses objets typés (voir [Les variables](/?c=shells&s=powershell&p=variables) et [Redirections et pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) et certaines de ses différences de performance avec Bash.
 
 > **Prérequis :** ce chapitre suppose connu ce qu'est un processus (`fork`/`exec`), voir le chapitre sur l'architecture d'un shell (rubrique Bash), qui détaille ce mécanisme côté Unix ; les concepts se retrouvent ici, mais implémentés différemment sous Windows.
 
@@ -28,7 +28,7 @@ Contrairement à Bash, qui distingue seulement *builtin* (exécuté par le shell
 
 ### Les cmdlets
 
-`Get-ChildItem`, `Set-Location`, `Write-Output`... sont des classes **.NET compilées**, packagées dans des modules, exécutées directement dans le processus PowerShell (comme un *builtin* Bash), mais implémentées en C#, pas interprétées ligne par ligne.
+`Get-ChildItem`, `Set-Location`, `Write-Output`... sont des classes **.NET compilées**, packagées dans des modules, exécutées directement dans le processus PowerShell (comme un *builtin* Bash), mais implémentées en [C#](https://learn.microsoft.com/en-us/dotnet/csharp/), pas interprétées ligne par ligne.
 
 ### Les fonctions
 

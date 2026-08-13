@@ -90,7 +90,7 @@ Les débordements d'entiers ne sont pas une curiosité académique :
 | Langage | Comportement |
 |---|---|
 | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp) | Taille fixe choisie explicitement. Débordement signé = comportement indéfini |
-| Java, C# | Taille fixe, wraparound défini pour tous les entiers |
+| [Java](https://docs.oracle.com/en/java/), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/) | Taille fixe, wraparound défini pour tous les entiers |
 | **[Python](/?c=langages-de-programmation&s=python&p=python)** | Entiers de **taille arbitraire** : ils grandissent tant que la mémoire suit, aucun débordement |
 | JavaScript | Pas de vrai type entier : tout est flottant, donc exact seulement jusqu'à 2⁵³ (voir [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` pour aller au-delà |
 | [PHP](/?c=langages-de-programmation&s=php&p=php) | Entier natif ; en cas de débordement, conversion automatique en `float` (donc perte de précision) |

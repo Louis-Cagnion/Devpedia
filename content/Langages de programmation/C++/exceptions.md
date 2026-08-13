@@ -4,7 +4,7 @@ order: 6
 
 # Les exceptions
 
-C++ propose un mécanisme d'erreurs structuré (`try`/`catch`/`throw`), une alternative au style "à la C" (une fonction renvoie une valeur spéciale comme `-1` ou `NULL`, et positionne `errno`, voir [Les appels système](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs)) : le même principe que les exceptions PHP, [Python](/?c=langages-de-programmation&s=python&p=gestion-des-erreurs) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=gestion-des-erreurs) déjà vues dans les rubriques correspondantes.
+C++ propose un mécanisme d'erreurs structuré (`try`/`catch`/`throw`), une alternative au style "à la C" (une fonction renvoie une valeur spéciale comme `-1` ou `NULL`, et positionne `errno`, voir [Les appels système](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs)) : le même principe que les exceptions [PHP](/?c=langages-de-programmation&s=php&p=exceptions), [Python](/?c=langages-de-programmation&s=python&p=gestion-des-erreurs) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=gestion-des-erreurs) déjà vues dans les rubriques correspondantes.
 
 ## `try` / `catch` / `throw`
 

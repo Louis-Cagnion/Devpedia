@@ -46,7 +46,7 @@ nom = "Jean"                    # "Jean" est une chaîne de texte -> une autre c
 |---|---|---|
 | VS Code | Éditeur de code extensible | Généraliste : presque tous, via des extensions |
 | PyCharm | IDE complet | Python |
-| Visual Studio (à ne pas confondre avec VS Code) | IDE complet | C, C++, C#, .NET |
+| Visual Studio (à ne pas confondre avec VS Code) | IDE complet | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/), [.NET](https://learn.microsoft.com/en-us/dotnet/) |
 
 ## Par quoi commencer
 

@@ -6,7 +6,7 @@ order: 2
 
 Un script PowerShell est un fichier texte portant l'extension `.ps1`, contenant une suite de commandes (des **cmdlets**) exécutées dans l'ordre, comme si elles avaient été tapées une à une dans la console.
 
-> **Windows PowerShell vs PowerShell (Core)** : *Windows PowerShell* (5.1) est la version historique, livrée avec Windows, limitée à ce système. *PowerShell* (souvent appelé *PowerShell Core*, versions 7+) est la réécriture multiplateforme sur .NET, qui tourne aussi sur Linux et macOS : c'est elle qu'on invoque via `pwsh` plutôt que `powershell`. Ce site couvre cette seconde version, largement compatible avec la première.
+> **Windows PowerShell vs PowerShell (Core)** : *Windows PowerShell* (5.1) est la version historique, livrée avec Windows, limitée à ce système. *PowerShell* (souvent appelé *PowerShell Core*, versions 7+) est la réécriture multiplateforme sur [.NET](https://learn.microsoft.com/en-us/dotnet/), qui tourne aussi sur Linux et macOS : c'est elle qu'on invoque via `pwsh` plutôt que `powershell`. Ce site couvre cette seconde version, largement compatible avec la première.
 
 ## Pas de shebang, mais une politique d'exécution
 
@@ -81,7 +81,7 @@ if ($LASTEXITCODE -eq 0) {
 }
 ```
 
-`$LASTEXITCODE` joue le rôle du `$?` de Bash pour une commande externe ou un `exit` explicite. Mais PowerShell a par-dessus un vrai mécanisme d'exceptions : `Write-Error` seul n'interrompt pas l'exécution (elle continue avec la ligne suivante), alors que `throw` lève une exception qui arrête le script, sauf si elle est interceptée par un bloc `try`/`catch`, comme les exceptions du chapitre dédié en PHP.
+`$LASTEXITCODE` joue le rôle du `$?` de Bash pour une commande externe ou un `exit` explicite. Mais PowerShell a par-dessus un vrai mécanisme d'exceptions : `Write-Error` seul n'interrompt pas l'exécution (elle continue avec la ligne suivante), alors que `throw` lève une exception qui arrête le script, sauf si elle est interceptée par un bloc `try`/`catch`, comme les [exceptions du chapitre dédié en PHP](/?c=langages-de-programmation&s=php&p=exceptions).
 
 ## Arrêter un script à la première erreur : `$ErrorActionPreference`
 
