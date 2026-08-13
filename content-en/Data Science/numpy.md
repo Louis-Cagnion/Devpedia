@@ -2,9 +2,9 @@
 order: 2
 ---
 
-# NumPy — Numerical Computation
+# NumPy: Numerical Computation
 
-**NumPy** (*Numerical Python*) provides the `ndarray` type: a multidimensional array of values **of a single type**, stored contiguously in memory—exactly like a C array (see [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs) and [Memory](/?c=langages-de-programmation&s=c&p=memoire) in C), rather than as a Python list (where each element is a separate reference to an object). This is the building block upon which pandas, scikit-learn, and virtually the entire Python data science ecosystem are built.
+**NumPy** (*Numerical Python*) provides the `ndarray` type: a multidimensional array of values **of a single type**, stored contiguously in memory, exactly like a C array (see [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs) and [Memory](/?c=langages-de-programmation&s=c&p=memoire) in C), rather than as a Python list (where each element is a separate reference to an object). This is the building block upon which pandas, scikit-learn, and virtually the entire Python data science ecosystem are built.
 
 ## Why not just Python lists?
 
@@ -19,7 +19,7 @@ array = np.array([1, 2, 3, 4, 5])
 array * 2                  # "* 2" applies directly to the ENTIRE array -> [2, 4, 6, 8, 10]
 ```
 
-> **Note:** A Python list stores **pointers** to objects `int` that may be scattered throughout memory (see [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs) in C); a `ndarray` stores **raw values** one after another, like a C array. NumPy operations are executed by internally compiled C code on this contiguous memory—often 10 to 100 times faster than an equivalent Python loop, while also using significantly less memory.
+> **Note:** A Python list stores **pointers** to objects `int` that may be scattered throughout memory (see [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs) in C); a `ndarray` stores **raw values** one after another, like a C array. NumPy operations are executed by internally compiled C code on this contiguous memory, often 10 to 100 times faster than an equivalent Python loop, while also using significantly less memory.
 
 ## Creating Arrays
 
@@ -42,7 +42,7 @@ array.dtype    # dtype('int64') -> ALL elements share this same type
 array.ndim      # 2 -> number of dimensions
 ```
 
-> **Note:** Unlike a Python list (which can contain mixed types), a `ndarray` requires all its elements to be of the **same type**—which is precisely what enables contiguous storage and the resulting performance optimizations.
+> **Note:** Unlike a Python list (which can contain mixed types), a `ndarray` requires all its elements to be of the **same type**, which is precisely what enables contiguous storage and the resulting performance optimizations.
 
 ## Indexing and Slicing
 
@@ -86,7 +86,7 @@ a.mean()      # 2.0
 a.max()        # 3
 ```
 
-> **Note:** `*` between two NumPy arrays multiplies them element-by-element—to obtain a true matrix product (in the sense of linear algebra, widely used in deep learning; see [Neural Networks](/?c=ia&p=reseaux-de-neurones)), the operator is `@` (or `np.matmul()`), never `*`.
+> **Note:** `*` between two NumPy arrays multiplies them element-by-element: to obtain a true matrix product (in the sense of linear algebra, widely used in deep learning; see [Neural Networks](/?c=ia&p=reseaux-de-neurones)), the operator is `@` (or `np.matmul()`), never `*`.
 
 See also the chapter on [pandas](/?c=data-science&p=pandas), which builds its `DataFrame` directly on top of NumPy `ndarray`.
 
@@ -96,7 +96,7 @@ See also the chapter on [pandas](/?c=data-science&p=pandas), which builds its `D
 
 | | |
 |---|---|
-| **Key Points** | A NumPy `ndarray` stores contiguous raw values of a single type, unlike a Python list (which consists of pointers to scattered objects)—vectorized operations are executed by compiled C code, which is much faster than a Python loop. |
+| **Key Points** | A NumPy `ndarray` stores contiguous raw values of a single type, unlike a Python list (which consists of pointers to scattered objects), vectorized operations are executed by compiled C code, which is much faster than a Python loop. |
 | **Tools available** | `np.array` / `zeros` / `ones` / `arange` / `linspace`, multidimensional indexing/slicing, broadcasting. |
-| **Pitfalls to Avoid** | Using `*` when you expect to get a matrix product—this performs element-by-element multiplication; the matrix product is `@`. |
+| **Pitfalls to Avoid** | Using `*` when you expect to get a matrix product: this performs element-by-element multiplication; the matrix product is `@`. |
 | **Best Practices** | Prefer a vectorized operation over an explicit Python loop on a `ndarray` to take advantage of the performance gain. |

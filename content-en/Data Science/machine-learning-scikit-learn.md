@@ -25,7 +25,7 @@ X = [[25, 50000], [45, 80000], [30, 45000]]
 
 ## The fundamental principle: separate training from testing
 
-A model that “memorizes” the training data (rather than learning the underlying general pattern) would achieve a perfect score on that data—but would fail on new, previously unseen data. To detect this problem, we **always split** the available data into two distinct sets:
+A model that “memorizes” the training data (rather than learning the underlying general pattern) would achieve a perfect score on that data, but would fail on new, previously unseen data. To detect this problem, we **always split** the available data into two distinct sets:
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -38,7 +38,7 @@ The model is then evaluated **only** on `X_test` / `y_test`, never on the data u
 
 ## A third category: validation
 
-Tuning a model (comparing multiple algorithms, choosing hyperparameters) based on the score obtained on `X_test` amounts to indirect cheating: the choices made earlier end up being influenced by this score, which then ceases to represent a truly unseen set. The correct approach involves introducing a third dataset—the **validation set**—which is used during development rather than at the end:
+Tuning a model (comparing multiple algorithms, choosing hyperparameters) based on the score obtained on `X_test` amounts to indirect cheating: the choices made earlier end up being influenced by this score, which then ceases to represent a truly unseen set. The correct approach involves introducing a third dataset, the **validation set**, which is used during development rather than at the end:
 
 | Set | Role |
 |---|---|
@@ -56,11 +56,11 @@ X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, te
 
 | | Practice Score | Test Score |
 |---|---|---|
-| **Underfitting** | Low | Low — the model is too simple to capture the pattern |
-| **Good fit** | High | High — the model generalizes well |
-| **Overfitting** | Very high | Low — the model has "memorized" the training data instead of learning a general pattern |
+| **Underfitting** | Low | Low: the model is too simple to capture the pattern |
+| **Good fit** | High | High: the model generalizes well |
+| **Overfitting** | Very high | Low: the model has "memorized" the training data instead of learning a general pattern |
 
-> **Note:** A large gap between the training score (excellent) and the test score (mediocre) is a classic sign of overfitting—the model has memorized specific examples rather than the general rule underlying them, much like a student who has memorized the answers to a specific exercise without understanding the method.
+> **Note:** A large gap between the training score (excellent) and the test score (mediocre) is a classic sign of overfitting: the model has memorized specific examples rather than the general rule underlying them, much like a student who has memorized the answers to a specific exercise without understanding the method.
 
 ## The unified scikit-learn API: `fit` / `predict`
 
@@ -79,13 +79,13 @@ model.score(X_test, y_test)                    # Evaluates the quality of predic
 
 - `fit(X, y)` : Adjusts the model's internal parameters so that it best fits the provided data.
 - `predict(X)` : uses these learned parameters to generate a prediction for new data.
-- This interface (`fit` / `predict`) remains the same when you simply replace `LogisticRegression()` with another algorithm (`RandomForestClassifier()`, `KMeans()`...)—which makes it very easy to quickly test several approaches to the same problem.
+- This interface (`fit` / `predict`) remains the same when you simply replace `LogisticRegression()` with another algorithm (`RandomForestClassifier()`, `KMeans()`...), which makes it very easy to quickly test several approaches to the same problem.
 
-> **Note:** The choice of algorithm depends on the type of `y`. Here, `y` is **categorical** (`"oui"` / `"non"`): it is a classification problem, hence `LogisticRegression` (despite its name, this is a classification algorithm, not a regression algorithm). `LinearRegression` is used when `y` is a **continuous numerical** value to be predicted (a price, a temperature, etc.)—using it on text labels, as in this case, would result in an error.
+> **Note:** The choice of algorithm depends on the type of `y`. Here, `y` is **categorical** (`"oui"` / `"non"`): it is a classification problem, hence `LogisticRegression` (despite its name, this is a classification algorithm, not a regression algorithm). `LinearRegression` is used when `y` is a **continuous numerical** value to be predicted (a price, a temperature, etc.): using it on text labels, as in this case, would result in an error.
 
 ## *Cross-validation*
 
-With limited data, setting aside 40% for validation and testing (see above) becomes costly—cross-validation solves this problem without sacrificing as much training data:
+With limited data, setting aside 40% for validation and testing (see above) becomes costly; cross-validation solves this problem without sacrificing as much training data:
 
 ```python
 from sklearn.model_selection import cross_val_score
@@ -95,7 +95,7 @@ scores = cross_val_score(LogisticRegression(), X_entrainement, y_entrainement, c
 scores.mean()   # Average of the 5 scores -> a more reliable estimate than a single train/validation split
 ```
 
-Each example thus serves both as a practice exercise (4 out of 5 times) and as a validation exercise (1 out of 5 times), without ever affecting `X_test`—the average of the 5 scores smooths out the effect of a particularly favorable or unfavorable split that a single split might produce by chance.
+Each example thus serves both as a practice exercise (4 out of 5 times) and as a validation exercise (1 out of 5 times), without ever affecting `X_test`: the average of the 5 scores smooths out the effect of a particularly favorable or unfavorable split that a single split might produce by chance.
 
 ## Measuring the quality of a model
 
@@ -107,7 +107,7 @@ from sklearn.metrics import mean_squared_error
 mean_squared_error(y_test, predictions)   # mean square error
 ```
 
-For classification, accuracy (`accuracy_score`, % of correct predictions) is not sufficient when classes are imbalanced—the metrics below take this into account, based on the **confusion matrix**.
+For classification, accuracy (`accuracy_score`, % of correct predictions) is not sufficient when classes are imbalanced: the metrics below take this into account, based on the **confusion matrix**.
 
 ### The confusion matrix
 
@@ -146,7 +146,7 @@ f1_score(y_test, predictions)
 print(classification_report(y_test, predictions))   # Detailed information, overview, and F1 help all in one place, organized by class
 ```
 
-> **Note:** Accuracy is misleading for imbalanced classes—a fraud detector that always responds “no” achieves 99% accuracy if 1% of transactions are fraudulent, yet is useless (0% recall). Precision and recall are almost always evaluated together: increasing one generally comes at the expense of the other (shifting the decision threshold toward “positive” increases recall but decreases precision, and vice versa) — The F1-score summarizes this trade-off in a single number, which is useful for comparing models without having to manually balance the two each time. Specificity completes the picture on the negative side: it’s useful when a false positive is costly (e.g., an unnecessary medical test triggered by mistake), whereas recall focuses on the cost of a false negative (e.g., an undetected disease).
+> **Note:** Accuracy is misleading for imbalanced classes: a fraud detector that always responds “no” achieves 99% accuracy if 1% of transactions are fraudulent, yet is useless (0% recall). Precision and recall are almost always evaluated together: increasing one generally comes at the expense of the other (shifting the decision threshold toward “positive” increases recall but decreases precision, and vice versa), the F1-score summarizes this trade-off in a single number, which is useful for comparing models without having to manually balance the two each time. Specificity completes the picture on the negative side: it’s useful when a false positive is costly (e.g., an unnecessary medical test triggered by mistake), whereas recall focuses on the cost of a false negative (e.g., an undetected disease).
 
 ## The typical workflow of a machine learning project
 
@@ -166,5 +166,5 @@ See also the chapter on [neural networks](/?c=ia&p=reseaux-de-neurones): a speci
 |---|---|
 | **Key Takeaway** | A model is trained on a dataset separate from the test set to determine whether it generalizes or “memorizes” (overfitting). The scikit-learn API is consistent: `fit()` followed by `predict()`, regardless of the algorithm. |
 | **Tools available** | `train_test_split`, `cross_val_score`, confusion matrix, `precision_score` / `recall_score` / `f1_score`. |
-| **Pitfalls to Avoid** | Repeatedly evaluating and tuning a model on the same test set—is tantamount to indirectly cheating; relying solely on accuracy for imbalanced classes. |
+| **Pitfalls to Avoid** | Repeatedly evaluating and tuning a model on the same test set: tantamount to indirectly cheating; relying solely on accuracy for imbalanced classes. |
 | **Best Practices** | Set aside a validation set to tune hyperparameters, since the final test is run only once; use the F1 score to summarize the trade-off between precision and recall. |

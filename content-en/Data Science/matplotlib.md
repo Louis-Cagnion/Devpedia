@@ -2,9 +2,9 @@
 order: 4
 ---
 
-# Matplotlib — visualizing data
+# Matplotlib: visualizing data
 
-**Matplotlib** is the most widely used visualization library in Python—most other graphics libraries ([seaborn](https://seaborn.pydata.org), pandas`.plot()`, etc.) are built on top of it or are directly inspired by it.
+**Matplotlib** is the most widely used visualization library in Python: most other graphics libraries ([seaborn](https://seaborn.pydata.org), pandas`.plot()`, etc.) are built on top of it or are directly inspired by it.
 
 ## The Two Ways to Use Matplotlib
 
@@ -23,7 +23,7 @@ ax.set_title("A simple graph")
 plt.show()
 ```
 
-> **Note:** The API `pyplot` maintains an implicit global state (the "current figure")—which is convenient for quickly creating a single-line graph, but can be confusing when working with multiple graphs at once. `fig, ax = plt.subplots()` explicitly specifies what each command acts upon (`ax`), which is preferable for any code intended to be reused.
+> **Note:** The API `pyplot` maintains an implicit global state (the "current figure"), which is convenient for quickly creating a single-line graph, but can be confusing when working with multiple graphs at once. `fig, ax = plt.subplots()` explicitly specifies what each command acts upon (`ax`), which is preferable for any code intended to be reused.
 
 ## `Figure` and `Axes`
 
@@ -82,7 +82,7 @@ fig.savefig("graphic.png", dpi=300)   # dpi: resolution of the exported image
 data["age"].plot(kind="hist")   # pandas delegates directly to Matplotlib internally
 ```
 
-The [pandas](/?c=data-science&p=pandas) "`.plot()`" is simply a convenient wrapper around Matplotlib—understanding Matplotlib allows you to customize any plot generated with it.
+The [pandas](/?c=data-science&p=pandas) "`.plot()`" is simply a convenient wrapper around Matplotlib: understanding Matplotlib allows you to customize any plot generated with it.
 
 ---
 
@@ -92,5 +92,5 @@ The [pandas](/?c=data-science&p=pandas) "`.plot()`" is simply a convenient wrapp
 |---|---|
 | **Key Points** | Matplotlib plots graphs using a `Figure` (the entire image) and one or more `Axes` (a plot area). The object-oriented API (`fig, ax = plt.subplots()`) is preferable as soon as the graph becomes more complex. |
 | **Tools available** | `plot` / `scatter` / `bar` / `hist` / `boxplot`, `savefig` for exporting. |
-| **Pitfalls to Avoid** | Using the implicit `pyplot` API with multiple simultaneous graphs—this can lead to confusion about which graph a command affects. |
+| **Pitfalls to Avoid** | Using the implicit `pyplot` API with multiple simultaneous graphs: this can lead to confusion about which graph a command affects. |
 | **Best Practices** | Use explicit`fig, ax = plt.subplots()`s for all code intended for reuse. |

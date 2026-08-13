@@ -106,15 +106,15 @@
         },
         {
           "id": "numpy",
-          "label": "NumPy — Numerical Computation"
+          "label": "NumPy: Numerical Computation"
         },
         {
           "id": "pandas",
-          "label": "pandas — manipulating tabular data"
+          "label": "pandas: manipulating tabular data"
         },
         {
           "id": "matplotlib",
-          "label": "Matplotlib — visualizing data"
+          "label": "Matplotlib: visualizing data"
         },
         {
           "id": "machine-learning-scikit-learn",

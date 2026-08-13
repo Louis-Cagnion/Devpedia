@@ -4,7 +4,7 @@ order: 1
 
 # Jupyter notebooks
 
-A **Jupyter notebook** is an interactive document that combines executable code, results (including graphics displayed directly), and explanatory text (Markdown)—the dominant working format in data science and machine learning for iterative data exploration.
+A **Jupyter notebook** is an interactive document that combines executable code, results (including graphics displayed directly), and explanatory text (Markdown), the dominant working format in data science and machine learning for iterative data exploration.
 
 ## Code blocks and Markdown blocks
 
@@ -26,9 +26,9 @@ data.describe()   # The result is displayed directly below the cell
 
 ## The kernel: the Python process behind the notebook
 
-The **kernel** is the Python process that actually executes the code in the cells and maintains their state in memory (variables, imports, etc.) between executions—the notebook itself is merely an interface that sends code to the kernel and displays its results.
+The **kernel** is the Python process that actually executes the code in the cells and maintains their state in memory (variables, imports, etc.) between executions: the notebook itself is merely an interface that sends code to the kernel and displays its results.
 
-> **Note:** Restarting the kernel clears **all** variables in memory, as if the program were being restarted from scratch—the displayed cells remain visible on the screen, but their code is not re-executed until explicitly requested.
+> **Note:** Restarting the kernel clears **all** variables in memory, as if the program were being restarted from scratch: the displayed cells remain visible on the screen, but their code is not re-executed until explicitly requested.
 
 ## The Pitfall of Nonlinear Execution
 
@@ -44,7 +44,7 @@ x = 5
 x = x * 2
 ```
 
-If cell 2 is executed **several times in a row** without restarting cell 1, `x` doubles with each execution (10, then 20, then 40...) — a common pitfall where the kernel’s “invisible” state no longer matches the visual order of the cells on the screen. If you have any doubts about the reproducibility of a result, *“Restart Kernel and Run All”* re-runs everything in order from top to bottom, ensuring a consistent state.
+If cell 2 is executed **several times in a row** without restarting cell 1, `x` doubles with each execution (10, then 20, then 40...): a common pitfall where the kernel’s “invisible” state no longer matches the visual order of the cells on the screen. If you have any doubts about the reproducibility of a result, *“Restart Kernel and Run All”* re-runs everything in order from top to bottom, ensuring a consistent state.
 
 ## Magic Commands (`%`, `%%`)
 
@@ -70,7 +70,7 @@ See also the chapters on [pandas](/?c=data-science&p=pandas) and [Matplotlib](/?
 
 | | |
 |---|---|
-| **Key Points** | A notebook combines code cells and Markdown cells, which are executed in a potentially non-linear order—the kernel preserves state between executions, regardless of the visual order of the cells. |
+| **Key Points** | A notebook combines code cells and Markdown cells, which are executed in a potentially non-linear order: the kernel preserves state between executions, regardless of the visual order of the cells. |
 | **Available tools** | `%matplotlib inline` (`%timeit`), *Restart Kernel*, *and Run All* to ensure a consistent state. |
 | **Pitfalls to Avoid** | Executing cells out of order and assuming that the displayed result reflects the kernel's actual state. |
 | **Best Practices** | If you are unsure whether a result is reproducible, *restart the kernel and run all processes* again. |

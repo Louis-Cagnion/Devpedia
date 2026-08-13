@@ -4,7 +4,7 @@ order: 9
 
 # Resolving a merge conflict
 
-A **conflict** occurs when Git cannot automatically merge two versions of the same file—typically, when the **same lines** have been modified differently in each version (during a `merge`, `rebase`, or `pull`).
+A **conflict** occurs when Git cannot automatically merge two versions of the same file, typically when the **same lines** have been modified differently in each version (during a `merge`, `rebase`, or `pull`).
 
 ## What Git writes to the file in conflict
 
@@ -18,12 +18,12 @@ const TVA_TAUX = 0.20;
 
 - Everything between `<<<<<<< HEAD` and `=======` corresponds to **your** version (the branch you're on).
 - Everything between `=======` and `>>>>>>> feature` corresponds to the version in the **other** (merged) branch.
-- These markers (`<<<<<<<`, `=======`, `>>>>>>>`) are inserted **directly into the file**—the file will no longer compile or run as-is as long as they are present.
+- These markers (`<<<<<<<`, `=======`, `>>>>>>>`) are inserted **directly into the file**: the file will no longer compile or run as-is as long as they are present.
 
 ## Resolving the conflict
 
 1. Open the file, decide which version to keep (or combine the two manually).
-2. Completely remove the markers `<<<<<<<`, `=======`, `>>>>>>>`—they must **never** remain in the final file.
+2. Completely remove the markers `<<<<<<<`, `=======`, `>>>>>>>`: they must **never** remain in the final file.
 3. Mark the file as resolved, then continue with the current task:
 
 ```bash
@@ -65,5 +65,5 @@ See also [Branches](/?c=git&p=branches) and [Rebase](/?c=git&p=rebase), the two 
 |---|---|
 | **Key Takeaway** | A conflict occurs when Git cannot automatically merge two versions of the same lines. The markers `<<<<<<<` / `=======` / `>>>>>>>` must be removed manually before continuing. |
 | **Tools available** | `git status` (conflicting files), `git add` + `git commit` / `git rebase --continue`, `git merge --abort` / `git rebase --abort`. |
-| **Pitfalls to Avoid** | Forgetting to remove a conflict marker—the file remains invalid (will no longer compile or run) as long as the marker is present. |
+| **Pitfalls to Avoid** | Forgetting to remove a conflict marker: the file remains invalid (will no longer compile or run) as long as the marker is present. |
 | **Best Practices** | Frequently merge changes made by others to minimize divergence; keep feature branches short and focused. |

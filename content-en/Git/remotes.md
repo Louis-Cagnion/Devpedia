@@ -25,14 +25,14 @@ git push                             # once the link has been saved
 
 ## Force a push after rewriting the history
 
-After a `rebase`, a `commit --amend`, or a history rewrite (see [Git's Internal Architecture](/?c=git&p=architecture-interne)), local commits no longer have the same hashes as those already pushed—a normal `push` is then rejected (*non-fast-forward*), since the remote cannot find its old commits as ancestors of the new ones.
+After a `rebase`, a `commit --amend`, or a history rewrite (see [Git's Internal Architecture](/?c=git&p=architecture-interne)), local commits no longer have the same hashes as those already pushed: a normal `push` is then rejected (*non-fast-forward*), since the remote cannot find its old commits as ancestors of the new ones.
 
 ```bash
-git push --force origin main             # Unconditionally overwrites the remote history—dangerous if someone else has pushed changes in the meantime
+git push --force origin main             # Unconditionally overwrites the remote history, dangerous if someone else has pushed changes in the meantime
 git push --force-with-lease origin main   # Overwrite only if the remote is still in the state observed during the last fetch
 ```
 
-> **Note:** `--force-with-lease` compares the actual state of the remote with what the local tracking branch (`origin/main`) knew at the time of the last `fetch`—if they differ (someone else has pushed in the meantime, or this tracking branch has itself been modified by a local operation), the push is rejected (`stale info`) rather than overwriting work you haven’t seen. Always prefer `--force-with-lease` to `--force`, unless you are absolutely certain you are the only one on the branch.
+> **Note:** `--force-with-lease` compares the actual state of the remote with what the local tracking branch (`origin/main`) knew at the time of the last `fetch`: if they differ (someone else has pushed in the meantime, or this tracking branch has itself been modified by a local operation), the push is rejected (`stale info`) rather than overwriting work you haven’t seen. Always prefer `--force-with-lease` to `--force`, unless you are absolutely certain you are the only one on the branch.
 
 ## `fetch` vs `pull`
 
@@ -41,7 +41,7 @@ git fetch origin    # Download the new commits from the remote repository WITHOU
 git pull origin main # Equivalent to: git fetch + git merge (merges immediately)
 ```
 
-> **Note:** `git fetch` is the "safest" way to check what has changed on the remote side (`git log origin/main`) before deciding how to integrate it—`git pull` performs this merge automatically, which can be surprising if conflicts arise unexpectedly.
+> **Note:** `git fetch` is the "safest" way to check what has changed on the remote side (`git log origin/main`) before deciding how to integrate it; `git pull` performs this merge automatically, which can be surprising if conflicts arise unexpectedly.
 
 ## Tracking branches
 
@@ -58,7 +58,7 @@ git push -u origin ma-branche       # Establishes this tracking link as soon as 
 git clone https://exemple.com/projet.git
 ```
 
-`git clone` It automatically configures `origin` to point to the cloned address—which is why a simple `git pull` / `git push` works immediately after a clone, without any manual configuration.
+`git clone` It automatically configures `origin` to point to the cloned address, which is why a simple `git pull` / `git push` works immediately after a clone, without any manual configuration.
 
 ## Back up or transfer a serverless repository: `git bundle`
 
@@ -70,7 +70,7 @@ git bundle verify sauvegarde.bundle          # Verifies that the bundle is compl
 git clone sauvegarde.bundle nouveau-folder   # A bundle is cloned just like a standard remote.
 ```
 
-> **Note:** A bundle is a static snapshot—it does not update automatically. It is the ideal tool for creating a one-time backup before a risky operation (such as rewriting the commit history), or for transferring a repository to a machine without network access (e.g., a USB drive).
+> **Note:** A bundle is a static snapshot: it does not update automatically. It is the ideal tool for creating a one-time backup before a risky operation (such as rewriting the commit history), or for transferring a repository to a machine without network access (e.g., a USB drive).
 
 ## Remove a remote
 

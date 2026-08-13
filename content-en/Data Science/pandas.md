@@ -2,9 +2,9 @@
 order: 3
 ---
 
-# pandas — manipulating tabular data
+# pandas: manipulating tabular data
 
-**pandas** provides two structures for manipulating tabular data: the `Series` (a single column, indexed) and the `DataFrame` (a two-dimensional array with named columns)—the Python equivalent of an [SQL](/?c=domain-specific-languages-dsl&p=sql) table or a spreadsheet, but manipulable via code.
+**pandas** provides two structures for manipulating tabular data: the `Series` (a single column, indexed) and the `DataFrame` (a two-dimensional array with named columns), the Python equivalent of an [SQL](/?c=domain-specific-languages-dsl&p=sql) table or a spreadsheet, but manipulable via code.
 
 ## Create a DataFrame
 
@@ -48,7 +48,7 @@ data.iloc[0]              # LINE 0 (always the first line, even if the index has
 data.loc[0, "name"]         # Exact value: row 0, column "name"
 ```
 
-> **Note:** `loc` sorts by **label** (the index label, which can be a name, a date, etc.), `iloc` by **numerical position**—the two coincide by default (numerical index from 0 to n), but differ once the index has been customized (e.g., sorted, filtered, or based on dates).
+> **Note:** `loc` sorts by **label** (the index label, which can be a name, a date, etc.), `iloc` by **numerical position**, the two coincide by default (numerical index from 0 to n), but differ once the index has been customized (e.g., sorted, filtered, or based on dates).
 
 ## Filtering with a Boolean mask
 
@@ -97,7 +97,7 @@ data["category"] = data["age"].apply(lambda age: "young" if age < 30 else "senio
 # apply(): Executes a function on each value in the column
 ```
 
-> **Note (performance):** `.apply()` executes the Python function line by line, without taking advantage of [NumPy](/?c=data-science&p=numpy) vectorization—for a simple condition like this one, `np.where(data["age"] < 30, "jeune", "senior")` does exactly the same thing, but much faster on a large dataset. `.apply()` remains useful for logic that is too complex to express using the vectorized functions of pandas/NumPy.
+> **Note (performance):** `.apply()` executes the Python function line by line, without taking advantage of [NumPy](/?c=data-science&p=numpy) vectorization: for a simple condition like this one, `np.where(data["age"] < 30, "jeune", "senior")` does exactly the same thing, but much faster on a large dataset. `.apply()` remains useful for logic that is too complex to express using the vectorized functions of pandas/NumPy.
 
 ## Missing values
 
@@ -117,5 +117,5 @@ See also the chapter on [NumPy](/?c=data-science&p=numpy) (the columns of a Data
 |---|---|
 | **Key Points** | pandas manipulates tabular data using `Series` (a column) and `DataFrame` (a table), with operations similar to SQL (`WHERE` → Boolean filter, `GROUP BY` → `groupby`, `JOIN` → `merge`). |
 | **Tools available** | `read_csv`, `loc` / `iloc`, `groupby`, `merge`, `isna` / `dropna` / `fillna`. |
-| **Pitfalls to Avoid** | Confusing `loc` (by tag) and `iloc` (by position)—they differ once the index has been customized. |
+| **Pitfalls to Avoid** | Confusing `loc` (by tag) and `iloc` (by position): they differ once the index has been customized. |
 | **Best Practices** | Use a `np.where` function instead of `.apply()` for a simple condition applied to a large dataset. |

@@ -4,7 +4,7 @@ order: 5
 
 # Docker Compose
 
-A real-world project rarely involves just a single container: an API, its database, a cache, a **reverse proxy** (a server that receives all incoming requests and redirects them to the correct internal service—[Nginx](https://nginx.org) or [Traefik](https://doc.traefik.io/traefik/), for example—acting as a single entry point)... Chaining `docker run` commands manually quickly becomes unmanageable. **Docker Compose** describes all these services in a single declarative file in [**YAML**](https://yaml.org/spec/1.2.2/) format (*YAML Ain’t Markup Language*—a text format structured by indentation, widely used for configuration), `docker-compose.yml`, and starts them all together.
+A real-world project rarely involves just a single container: an API, its database, a cache, a **reverse proxy** (a server that receives all incoming requests and redirects them to the correct internal service, [Nginx](https://nginx.org) or [Traefik](https://doc.traefik.io/traefik/) for example, acting as a single entry point)... Chaining `docker run` commands manually quickly becomes unmanageable. **Docker Compose** describes all these services in a single declarative file in [**YAML**](https://yaml.org/spec/1.2.2/) format (*YAML Ain’t Markup Language*: a text format structured by indentation, widely used for configuration), `docker-compose.yml`, and starts them all together.
 
 ## A complete example
 
@@ -36,13 +36,13 @@ docker compose logs -f api  # Monitors the logs of a specific service
 docker compose down         # Stops and deletes containers (named volumes remain intact)
 ```
 
-> **YAML is case-sensitive**, just like [Python](/?c=langages-de-programmation&s=python&p=python): two lines at the same level must have the same indentation, and tabs are generally invalid (YAML only accepts spaces). An indentation error silently alters the document’s structure rather than causing an explicit error—this should be checked first in the event of unexpected behavior.
+> **YAML is case-sensitive**, just like [Python](/?c=langages-de-programmation&s=python&p=python): two lines at the same level must have the same indentation, and tabs are generally invalid (YAML only accepts spaces). An indentation error silently alters the document’s structure rather than causing an explicit error: this should be checked first in the event of unexpected behavior.
 
 ## What Compose automates
 
-- **The network**: All services from the same file are automatically placed on a shared network—`base` is already accessible by name at `api`, without the need for a manual `docker network create` (see [Volumes and Networks](/?c=docker&p=volumes-et-reseaux)).
-- **The startup order**: `depends_on` starts `base` before `api`. This guarantees the container’s **startup** order, but does not ensure that the internal service (in this case, [MySQL](https://dev.mysql.com/doc/)) is already ready to accept connections—an application that connects too early must still provide for a retry (see [Waiting Without Wasting Time](/?c=performance&p=attentes-et-temps-morts), under the Performance section) rather than assuming that the database will respond immediately.
-- **Volumes declared once**—`data-mysql`—defined at the bottom of the file are created automatically if they do not yet exist.
+- **The network**: All services from the same file are automatically placed on a shared network: `base` is already accessible by name at `api`, without the need for a manual `docker network create` (see [Volumes and Networks](/?c=docker&p=volumes-et-reseaux)).
+- **The startup order**: `depends_on` starts `base` before `api`. This guarantees the container’s **startup** order, but does not ensure that the internal service (in this case, [MySQL](https://dev.mysql.com/doc/)) is already ready to accept connections: an application that connects too early must still provide for a retry (see [Waiting Without Wasting Time](/?c=performance&p=attentes-et-temps-morts), under the Performance section) rather than assuming that the database will respond immediately.
+- **Volumes declared once**: `data-mysql`, defined at the bottom of the file, is created automatically if it does not yet exist.
 
 ## Rebuild after a change to the Dockerfile
 
@@ -54,7 +54,7 @@ docker compose up -d --build   # Forces the images to be rebuilt before starting
 
 ## Automatic restart in the event of a crash
 
-By default, a container that crashes remains stopped—`restart` defines the appropriate course of action:
+By default, a container that crashes remains stopped; `restart` defines the appropriate course of action:
 
 | Value | Behavior |
 |---|---|
@@ -72,7 +72,7 @@ services:
 
 ## Explicitly declare your network
 
-Compose creates a default network even without a `networks:` section (see above)—it’s still preferable to declare it explicitly if you want to give it a clear name or set up multiple separate networks (e.g., to isolate the database from the rest):
+Compose creates a default network even without a `networks:` section (see above); it’s still preferable to declare it explicitly if you want to give it a clear name or set up multiple separate networks (e.g., to isolate the database from the rest):
 
 ```yaml
 services:

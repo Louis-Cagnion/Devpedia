@@ -19,11 +19,11 @@ docker run -d --name serveur -p 8080:80 mon-app:1.0
 
 | Option | Effect |
 |---|---|
-| `-d` | Detached: the container runs in the background, and the terminal remains available—same principle as `&` in Bash |
+| `-d` | Detached: the container runs in the background, and the terminal remains available, same principle as `&` in Bash |
 | `--name` | Give the container an explicit name, rather than a randomly generated identifier |
 | `-p 8080:80` | Publish the port: the container's port `80` becomes accessible on the host's port `8080` (see [Volumes and Networks](/?c=docker&p=volumes-et-reseaux)) |
 | `-it` | Interactive + pseudo-terminal (*tty*): required for a container with which you want to interact directly (e.g., a shell) |
-| `--rm` | Automatically deletes the container as soon as it stops—useful for one-time use, preventing stopped containers from piling up |
+| `--rm` | Automatically deletes the container as soon as it stops: useful for one-time use, preventing stopped containers from piling up |
 | `-e VAR=value` | Sets an environment variable in the container |
 
 ## Monitor what's running
@@ -54,7 +54,7 @@ docker rm serveur          # Removes a stopped container
 docker rmi mon-app:1.0     # removes an image
 ```
 
-> **Note:** `docker stop` and `docker kill` show exactly the same SIGTERM → SIGKILL hierarchy as described in the chapter on process management—Docker does not reinvent a shutdown mechanism; it controls the host system’s mechanism.
+> **Note:** `docker stop` and `docker kill` show exactly the same SIGTERM → SIGKILL hierarchy as described in the chapter on process management: Docker does not reinvent a shutdown mechanism; it controls the host system’s mechanism.
 
 ```bash
 docker system prune        # Removes stopped containers, unused images, and unused build caches

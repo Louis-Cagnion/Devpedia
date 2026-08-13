@@ -26,13 +26,13 @@ CMD ["node", "server.js"]    # Command executed when the CONTAINER starts, not d
 | Statement | Role |
 |---|---|
 | `FROM` | Base image to build upon (always the first instruction) |
-| `WORKDIR` | Changes the current directory for the rest of the Dockerfile — avoids repeated `cd` |
+| `WORKDIR` | Changes the current directory for the rest of the Dockerfile: avoids repeated `cd` |
 | `COPY` | Copying files from the host to the image |
 | `RUN` | Executes a command at build time; its result is captured in a new layer |
 | `ENV` | Defines an environment variable that persists across the image and the container |
 | `EXPOSE` | Documents the port on which the application listens (for informational purposes only) |
 | `CMD` | Default command when starting the container; can be overridden via the command line |
-| `ENTRYPOINT` | Same as `CMD`, but cannot be replaced—useful for forcing a specific executable and allowing only its arguments to vary |
+| `ENTRYPOINT` | Same as `CMD`, but cannot be replaced: useful for forcing a specific executable and allowing only its arguments to vary |
 
 > **`RUN` vs `CMD`**: `RUN` runs once, **during** the image build (installing packages, compiling code), and its result is frozen into a layer. `CMD` never runs during the build: it simply records the command to be executed **each time** a container **is started** from this image.
 
@@ -42,13 +42,13 @@ CMD ["node", "server.js"]    # Command executed when the CONTAINER starts, not d
 
 The process launched by `CMD` / `ENTRYPOINT` is assigned PID 1 inside the container (see [namespaces](/?c=docker&p=concepts-de-base)): as soon as it terminates, the container stops, regardless of how many other processes are still active inside it.
 
-That’s why a command that never terminates but otherwise does **nothing** (`tail -f /dev/null`, `sleep infinity`, `while true; do sleep 1; done`) is a bad habit for “keeping the container alive”: it masks the real problem (the service you actually want to run has stopped or was never started) rather than solving it. The best practice is to launch the desired service directly as PID 1 **in the ***foreground*—most daemons have a dedicated option for this, which prevents them from detaching to the background as they would by default (e.g., `nginx -g 'daemon off;'`):
+That’s why a command that never terminates but otherwise does **nothing** (`tail -f /dev/null`, `sleep infinity`, `while true; do sleep 1; done`) is a bad habit for “keeping the container alive”: it masks the real problem (the service you actually want to run has stopped or was never started) rather than solving it. The best practice is to launch the desired service directly as PID 1, in the **foreground**; most daemons have a dedicated option for this, which prevents them from detaching to the background as they would by default (e.g., `nginx -g 'daemon off;'`):
 
 ```dockerfile
 CMD ["nginx", "-g", "daemon off;"]   # nginx remains at the forefront: Docker has a process to monitor
 ```
 
-> **Note:** PID 1 has a special role in Linux, independent of Docker (see the chapter [Process Management](/?c=shells&s=bash&p=gestion-des-processus), under the Bash section): the kernel does not apply the default action for a signal such as `SIGTERM` to it if it has not explicitly set up its own handler—so `docker stop` may appear to do nothing on a process that does not handle this signal itself. It is also PID 1 that must reclaim (*reap*) the zombie processes it launches; this is something to watch out for if the image itself launches multiple subprocesses.
+> **Note:** PID 1 has a special role in Linux, independent of Docker (see the chapter [Process Management](/?c=shells&s=bash&p=gestion-des-processus), under the Bash section): the kernel does not apply the default action for a signal such as `SIGTERM` to it if it has not explicitly set up its own handler: so `docker stop` may appear to do nothing on a process that does not handle this signal itself. It is also PID 1 that must reclaim (*reap*) the zombie processes it launches; this is something to watch out for if the image itself launches multiple subprocesses.
 
 ## Each instruction creates a layer, and the order matters
 
@@ -69,7 +69,7 @@ That is why the files that change the least often (dependencies) are copied and 
 
 ## Multi-stage builds
 
-A multi-stage build separates the **compilation** environment (heavy: compiler, build tools) from the runtime environment (lightweight: only the final binary)—the same principle as separating compilation and linking in C (see the chapter [The Compilation Process](/?c=langages-de-programmation&s=c&p=compilation)): the final result does not require the toolchain that produced it.
+A multi-stage build separates the **compilation** environment (heavy: compiler, build tools) from the runtime environment (lightweight: only the final binary), the same principle as separating compilation and linking in C (see the chapter [The Compilation Process](/?c=langages-de-programmation&s=c&p=compilation)): the final result does not require the toolchain that produced it.
 
 ```dockerfile
 # Step 1: Compilation, using the entire Go toolchain
@@ -84,7 +84,7 @@ COPY --from=builder /app/serveur /usr/local/bin/serveur
 CMD ["server"]
 ```
 
-Only the binary `serveur` is copied from the `builder` step to the final image—the [Go](https://go.dev) compiler (several hundred MB) is never included in the delivered image.
+Only the binary `serveur` is copied from the `builder` step to the final image: the [Go](https://go.dev) compiler (several hundred MB) is never included in the delivered image.
 
 ## `.dockerignore`
 

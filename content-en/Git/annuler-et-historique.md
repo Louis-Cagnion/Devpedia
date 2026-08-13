@@ -31,11 +31,11 @@ git reset --hard HEAD~1    # Undoes the last commit, the staging, AND the change
 | `--mixed` (default) | Yes | Reset | Retained |
 | `--hard` | Yes | Reset | **Reset (data loss)** |
 
-> **Note:** `git reset --hard` is one of the most destructive Git commands—it silently overwrites any uncommitted changes, with no easy way to recover them. Use it only when you are certain of what you are discarding.
+> **Note:** `git reset --hard` is one of the most destructive Git commands: it silently overwrites any uncommitted changes, with no easy way to recover them. Use it only when you are certain of what you are discarding.
 
 ## `git revert` : Undo a commit that has already been shared
 
-Unlike `reset` (which rewrites the history by deleting commits), `revert` creates a **new** commit that applies the reverse of a previous commit—the original history remains intact, making it safe even on commits that have already been pushed and shared:
+Unlike `reset` (which rewrites the history by deleting commits), `revert` creates a **new** commit that applies the reverse of a previous commit; the original history remains intact, making it safe even on commits that have already been pushed and shared:
 
 ```bash
 git revert a3f9c1d
@@ -56,7 +56,7 @@ git checkout e4f5g6h        # Retrieves the status of a "lost" commit that was f
 git branch recuperation e4f5g6h   # or create a branch directly from this commit
 ```
 
-> **Note:** `git reflog` is often the fallback solution after a Git operation goes wrong—as long as a commit existed locally at some point, it can usually still be retrieved for several weeks, even if it is no longer referenced by any branch.
+> **Note:** `git reflog` is often the fallback solution after a Git operation goes wrong: as long as a commit existed locally at some point, it can usually still be retrieved for several weeks, even if it is no longer referenced by any branch.
 
 See also [Branches](/?c=git&p=branches) and [Rebase](/?c=git&p=rebase), as the operations described in this chapter primarily involve these concepts.
 

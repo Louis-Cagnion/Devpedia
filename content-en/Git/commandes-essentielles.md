@@ -19,7 +19,7 @@ git clone https://exemple.com/projet.git   # Retrieves an existing repository, a
 git status
 ```
 
-Shows which files have been modified, which are in the staging area, and which are not tracked—see [Git Basics](/?c=git&p=concepts-de-base).
+Shows which files have been modified, which are in the staging area, and which are not tracked (see [Git Basics](/?c=git&p=concepts-de-base)).
 
 ## Add changes to staging
 
@@ -30,7 +30,7 @@ git add .                   # Adds everything that has changed in the current fo
 git add -p                  # Interactive mode: Choose exactly which blocks of lines to add
 ```
 
-> **Note:** `git add .` also adds files that are not tracked—make sure that `[.gitignore](/?c=git&p=gitignore)` is up to date beforehand, so you don't accidentally add files that should never be included in the commit history (secrets, dependencies, generated files, etc.).
+> **Note:** `git add .` also adds files that are not tracked: make sure that `[.gitignore](/?c=git&p=gitignore)` is up to date beforehand, so you don't accidentally add files that should never be included in the commit history (secrets, dependencies, generated files, etc.).
 
 ## Create a commit
 
@@ -39,9 +39,9 @@ git commit -m "Corrects the discount calculation"
 git commit -am "Message"   # Shortcut: Automatically adds files that are already tracked AND have been modified, without needing to run "git add" first
 ```
 
-> **Note:** `-a` (in `-am`) only adds files already tracked by Git—a brand-new file that has never been added before must always be explicitly added with `git add` at least once.
+> **Note:** `-a` (in `-am`) only adds files already tracked by Git: a brand-new file that has never been added before must always be explicitly added with `git add` at least once.
 
-A good commit message explains the **reason** for the change, not just what was changed (the diff already shows what changed)—which is helpful for understanding the history long after the fact.
+A good commit message explains the **reason** for the change, not just what was changed (the diff already shows what changed), which is helpful for understanding the history long after the fact.
 
 ## A commit message has two levels: title and description
 
@@ -118,5 +118,5 @@ git show a3f9c1d   # Displays the message, author, date, and full diff for this 
 |---|---|
 | **Key Points** | `git init` / `clone` create or retrieve a repository; `git add` stage changes; `git commit` commit them; `git log` / `diff` / `show` view the history. A commit message has a title (first line) and an optional description, separated by a blank line: it's this blank line that GitHub and `git log` use to display only the title by default. |
 | **Tools available** | `git status`, `git add`, `git commit` (multiple `-m`, or without `-m` for the editor), `git log`, `git diff`, `git show`. |
-| **Pitfalls to Avoid** | `git add .` also adds untracked files—check `.gitignore` first; `-am` does not add files that have never been tracked, an explicit `git add` is still required at least once; an overly long commit title, or one that describes the *how* rather than the *why*. |
+| **Pitfalls to Avoid** | `git add .` also adds untracked files: check `.gitignore` first; `-am` does not add files that have never been tracked, an explicit `git add` is still required at least once; an overly long commit title, or one that describes the *how* rather than the *why*. |
 | **Best Practices** | Describe the *reason* for the change in the commit message, not just the *change itself*; check `git status` before each commit; keep the title short and actionable, put context in the description. |
