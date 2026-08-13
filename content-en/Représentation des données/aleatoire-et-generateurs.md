@@ -10,7 +10,7 @@ This distinction isn't a theoretical detail: confusing the two categories of gen
 
 ## A PRNG is a deterministic sequence
 
-A PRNG starts from an initial state, the **seed**, and applies a formula to produce each following value. Same seed, same sequence — always, on every machine.
+A PRNG starts from an initial state, the **seed**, and applies a formula to produce each following value. Same seed, same sequence, always, on every machine.
 
 ```python
 import random
@@ -73,7 +73,7 @@ See PHP's [Securing Your Data](/?c=langages-de-programmation&s=php&p=securite) c
 
 The operating system collects physical events that are hard to predict: precise intervals between keystrokes and hardware interrupts, thermal noise, and on recent processors a dedicated instruction ([`RDRAND`](https://en.wikipedia.org/wiki/RDRAND)). It feeds an entropy pool with this, exposed on Linux via [`/dev/urandom`](https://man7.org/linux/man-pages/man4/urandom.4.html).
 
-This is where a CSPRNG draws its seed — and it's what makes it unpredictable: the seed itself follows no formula.
+This is where a CSPRNG draws its seed, and it's what makes it unpredictable: the seed itself follows no formula.
 
 ## The modulo bias
 
@@ -111,7 +111,7 @@ The same reasoning applies to `Math.random()` in JavaScript or `mt_rand()` in PH
 
 | | |
 |---|---|
-| **Key takeaways** | A classic PRNG is a deterministic sequence (same seed = same sequence) — useful for tests and reproducibility, but never for a value that must stay secret. A CSPRNG draws its seed from system entropy, which makes it unpredictable. |
+| **Key takeaways** | A classic PRNG is a deterministic sequence (same seed = same sequence): useful for tests and reproducibility, but never for a value that must stay secret. A CSPRNG draws its seed from system entropy, which makes it unpredictable. |
 | **Tools you can use** | `secrets`/`random_bytes()`/`crypto.getRandomValues()` (CSPRNG) vs. `random`/`rand()`/`Math.random()` (classic PRNG). |
 | **Pitfalls to avoid** | Using a classic PRNG (or a predictable seed like the clock) for a session token, a salt, or any value that must stay secret. |
 | **Best practices** | Systematic CSPRNG as soon as a value must be unpredictable; use a dedicated function (`randint`, `randbelow`) rather than an improvised `%` to bring a draw into a range. |

@@ -14,7 +14,7 @@ This result is identical in JavaScript, [Python](/?c=langages-de-programmation&s
 
 ## Why an approximation?
 
-In base 10, some fractions have no finite decimal representation: `1/3 = 0.333...` — you have to stop somewhere, so you write an approximation.
+In base 10, some fractions have no finite decimal representation: `1/3 = 0.333...`; you have to stop somewhere, so you write an approximation.
 
 The same phenomenon exists in base 2, but **with different numbers**. A number has a finite binary representation only if its denominator is a power of 2:
 
@@ -43,7 +43,7 @@ A float is stored in three parts, like scientific notation in binary (± mantiss
 | `double` (double precision) | 64 bits | 1 | 11 | 52 | ~15-16 |
 
 - the **sign** indicates positive or negative;
-- the **exponent** gives the order of magnitude — it's what lets both `10⁻³⁰⁰` and `10³⁰⁰` be represented;
+- the **exponent** gives the order of magnitude: it's what lets both `10⁻³⁰⁰` and `10³⁰⁰` be represented;
 - the **mantissa** carries the significant digits, and it's what **limits precision**.
 
 This trade-off is the heart of the matter: a float sacrifices precision to cover a huge range of values with few bits. Since the number of mantissa bits is fixed, precision is **relative**: the larger a number is, the bigger the gap between two consecutive floats.
@@ -106,7 +106,7 @@ The standard reserves certain bit combinations for special values, present in ev
 - **infinities**: produced by an overflow or a division by zero (`1.0 / 0.0`);
 - **NaN** (*Not a Number*): the result of an invalid operation (`0.0 / 0.0`, the square root of a negative number).
 
-`NaN` has a deliberately surprising property: **it's equal to nothing, not even itself**. `NaN == NaN` is false. This is consistent — two invalid results have no reason to be "the same number" — but it means a dedicated function is required to detect it (`isnan()` in C, `math.isnan()` in Python, `Number.isNaN()` in JavaScript).
+`NaN` has a deliberately surprising property: **it's equal to nothing, not even itself**. `NaN == NaN` is false. This is consistent (two invalid results have no reason to be "the same number"), but it means a dedicated function is required to detect it (`isnan()` in C, `math.isnan()` in Python, `Number.isNaN()` in JavaScript).
 
 ## What each language adds on top
 
@@ -115,7 +115,7 @@ The foundation is common; languages only differ in the packaging:
 | Language | Specifics |
 |---|---|
 | [C](/?c=langages-de-programmation&s=c&p=c) | Explicit `float` / `double` / `long double`, `fabs()`, `isnan()` |
-| JavaScript | A single `number` type (always a double), `BigInt` for large integers — see [Numbers](/?c=langages-de-programmation&s=javascript&p=nombres) |
+| JavaScript | A single `number` type (always a double), `BigInt` for large integers, see [Numbers](/?c=langages-de-programmation&s=javascript&p=nombres) |
 | [Python](/?c=langages-de-programmation&s=python&p=python) | `float` = double, natively arbitrary-size integers, `math.isclose()`, the `decimal` module |
 | [PHP](/?c=langages-de-programmation&s=php&p=php) | `float` = double, `PHP_FLOAT_EPSILON` |
 
@@ -138,7 +138,7 @@ Above all, remember that these differences change nothing about the fundamentals
 
 | | |
 |---|---|
-| **Key takeaways** | A float (IEEE 754 standard) stores an approximation, not an exact value — `0.1 + 0.2 != 0.3` in every language, with no exception. Precision is relative: the larger a number is, the bigger the gap between two consecutive floats. |
+| **Key takeaways** | A float (IEEE 754 standard) stores an approximation, not an exact value: `0.1 + 0.2 != 0.3` in every language, with no exception. Precision is relative: the larger a number is, the bigger the gap between two consecutive floats. |
 | **Tools you can use** | Epsilon-based comparison (`math.isclose`, `fabs(a-b) < epsilon`), `DECIMAL` types for exact amounts. |
 | **Pitfalls to avoid** | Comparing two floats with `==`; storing a monetary amount as a float rather than as integers (cents) or `DECIMAL`. |
 | **Best practices** | Choose an epsilon suited to the order of magnitude being handled, never the default machine epsilon for large values. |

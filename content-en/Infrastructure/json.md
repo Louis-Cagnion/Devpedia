@@ -4,7 +4,7 @@ order: 2
 
 # The JSON Format
 
-An [API](/?c=infrastructure&p=api-et-http) responds with data — but you still need a common format to write it in, one the receiving program can understand unambiguously. **JSON** (*JavaScript Object Notation*) is the most widely used format for this: structured text, readable by both a human and a program.
+An [API](/?c=infrastructure&p=api-et-http) responds with data, but you still need a common format to write it in, one the receiving program can understand unambiguously. **JSON** (*JavaScript Object Notation*) is the most widely used format for this: structured text, readable by both a human and a program.
 
 ## Types of values in JSON
 
@@ -17,7 +17,7 @@ An [API](/?c=infrastructure&p=api-et-http) responds with data — but you still 
 | List (*array*) | `[1, 2, 3]` | An ordered sequence of values |
 | Object | `{"key": value}` | A set of key/value pairs |
 
-Text, number, and boolean are the same basic types already seen in [the variable](/?c=bases-de-l-informatique&p=la-variable) — JSON adds the list and the object, to represent data made up of several values.
+Text, number, and boolean are the same basic types already seen in [the variable](/?c=bases-de-l-informatique&p=la-variable); JSON adds the list and the object, to represent data made up of several values.
 
 ## A concrete example
 
@@ -31,11 +31,11 @@ Text, number, and boolean are the same basic types already seen in [the variable
 }
 ```
 
-An object (delimited by `{ }`) maps each key (`"city"`, `"temperature"`...) to a value — here a text, a number, a boolean, a list of numbers, and a missing value.
+An object (delimited by `{ }`) maps each key (`"city"`, `"temperature"`...) to a value: here a text, a number, a boolean, a list of numbers, and a missing value.
 
 ## Objects and lists can nest
 
-Nothing stops a list from containing objects, or an object from containing a list — this is actually the most common structure for real-world data:
+Nothing stops a list from containing objects, or an object from containing a list; this is actually the most common structure for real-world data:
 
 ```json
 {
@@ -63,13 +63,13 @@ Unlike many configuration formats, JSON is strict: no comments, no comma after t
 }
 ```
 
-> **Pitfall:** adding a comment (`// ...`) or a trailing comma out of habit from another language. JSON that's invalid for this reason fails explicitly to parse (the program trying to read it throws an error) — it's never interpreted "approximately".
+> **Pitfall:** adding a comment (`// ...`) or a trailing comma out of habit from another language. JSON that's invalid for this reason fails explicitly to parse (the program trying to read it throws an error), it's never interpreted "approximately".
 >
 > **Best practice:** validate hand-written JSON with a dedicated tool (linter, online validator, or simply the code editor) before using it, rather than discovering the syntax error once the program is running.
 
 ## Converting between JSON and a program
 
-A piece of JSON text remains a plain string until it's been **parsed** — turned into a data structure the language can directly manipulate (accessing a key, iterating over a list...). The reverse operation (converting a data structure back to JSON text) is called **generation** or **serialization**:
+A piece of JSON text remains a plain string until it's been **parsed**: turned into a data structure the language can directly manipulate (accessing a key, iterating over a list...). The reverse operation (converting a data structure back to JSON text) is called **generation** or **serialization**:
 
 ```text
 json_text = '{"city": "Lyon", "temperature": 18}'
@@ -80,7 +80,7 @@ data.temperature                   // 18, usable as a normal number
 new_text = generate_json(data)   // structure -> JSON text again
 ```
 
-> **Pitfall:** trying to extract a value directly from the raw text (pattern search, string splitting) instead of properly parsing the JSON — a value that happens to contain the same sequence of characters as the key you're looking for elsewhere in the text can throw off the result.
+> **Pitfall:** trying to extract a value directly from the raw text (pattern search, string splitting) instead of properly parsing the JSON: a value that happens to contain the same sequence of characters as the key you're looking for elsewhere in the text can throw off the result.
 >
 > **Best practice:** always go through a dedicated JSON parsing function (available natively in nearly every language) rather than treating JSON as ordinary text.
 

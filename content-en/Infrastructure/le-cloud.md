@@ -6,7 +6,7 @@ order: 4
 
 Running a program or storing data requires a physical machine somewhere. The **cloud** refers to using remote machines, owned and managed by a third-party provider ([Amazon AWS](https://aws.amazon.com), [Google Cloud](https://cloud.google.com), [Microsoft Azure](https://azure.microsoft.com)...), rather than hardware bought and managed by the company itself.
 
-> **Analogy:** renting a furnished apartment rather than buying and maintaining your own house — you pay for use, without owning or having to maintain what's behind it.
+> **Analogy:** renting a furnished apartment rather than buying and maintaining your own house: you pay for use, without owning or having to maintain what's behind it.
 
 ## Why rent rather than own your own server
 
@@ -29,7 +29,7 @@ The higher a category sits in this table, the more control (and responsibility) 
 
 ## The cloud and AI: renting compute power on demand
 
-Training a deep learning model requires one or more powerful [GPUs](/?c=infrastructure&p=cpu-vs-gpu) — hardware that's expensive to buy, and rarely used at full capacity continuously once training is done. The cloud makes it possible to rent this compute power only for the actual duration of training, rather than investing in dedicated hardware that would then sit largely unused.
+Training a deep learning model requires one or more powerful [GPUs](/?c=infrastructure&p=cpu-vs-gpu): hardware that's expensive to buy, and rarely used at full capacity continuously once training is done. The cloud makes it possible to rent this compute power only for the actual duration of training, rather than investing in dedicated hardware that would then sit largely unused.
 
 ## Pitfall: where is my data actually stored?
 
@@ -39,7 +39,7 @@ Training a deep learning model requires one or more powerful [GPUs](/?c=infrastr
 
 ## Pitfall: cost can slip past the usual controls
 
-> **Pitfall:** forgetting to turn off a rented cloud resource after use (a virtual machine, a reserved GPU). Billing continues as long as the resource runs, even unused — no "error" alert triggers since, technically, everything is working as expected.
+> **Pitfall:** forgetting to turn off a rented cloud resource after use (a virtual machine, a reserved GPU). Billing continues as long as the resource runs, even unused: no "error" alert triggers since, technically, everything is working as expected.
 >
 > **Best practice:** set up cost alerts, or even automatic shutdown of unused resources, rather than relying on regular manual checks.
 

@@ -4,7 +4,7 @@ order: 1
 
 # Integers, Bits, and Overflow
 
-An integer isn't stored "as is": it occupies a **fixed** number of bits, decided when it's declared. All the mechanics of integers follow from this constraint — maximum values, negative numbers, and overflow.
+An integer isn't stored "as is": it occupies a **fixed** number of bits, decided when it's declared. All the mechanics of integers follow from this constraint: maximum values, negative numbers, and overflow.
 
 ## How many values in *n* bits?
 
@@ -17,13 +17,13 @@ With *n* bits, you get **2ⁿ** distinct combinations, so 2ⁿ representable val
 | 32 | ~4.3 billion | 0 → 4,294,967,295 | −2,147,483,648 → 2,147,483,647 |
 | 64 | ~1.8 × 10¹⁹ | 0 → ~1.8 × 10¹⁹ | ~−9.2 × 10¹⁸ → ~9.2 × 10¹⁸ |
 
-The number of values doesn't change based on whether it's signed or not: it's the **range** that shifts. An unsigned `char` goes from 0 to 255, a signed one from −128 to 127 — 256 values either way.
+The number of values doesn't change based on whether it's signed or not: it's the **range** that shifts. An unsigned `char` goes from 0 to 255, a signed one from −128 to 127: 256 values either way.
 
 **The calculation to remember:** for *n* bits, the maximum unsigned value is `2ⁿ − 1` (the `− 1` because zero occupies one combination). Signed, the range is `−2ⁿ⁻¹` to `2ⁿ⁻¹ − 1`.
 
 ## The weight of a bit
 
-Each bit contributes to the total value based on its position, an increasing power of 2 from right to left — its **weight**:
+Each bit contributes to the total value based on its position, an increasing power of 2 from right to left (its **weight**):
 
 ```text
 bit :    1    0    1    1    0    0    1    0
@@ -75,14 +75,14 @@ y = y + 1;               // 1000 0000 -> -128!
 
 Adding 1 to the largest positive number gives the smallest negative one.
 
-> **Major C/C++ pitfall:** overflow of a **signed** integer is **undefined behavior**, not guaranteed wraparound. The compiler is allowed to assume it never happens and optimize accordingly — a check like `if (x + 1 < x)` can simply be removed. **Unsigned** overflow, by contrast, is defined by the standard and does wrap around. For counting, comparing, or masking bits, prefer unsigned types.
+> **Major C/C++ pitfall:** overflow of a **signed** integer is **undefined behavior**, not guaranteed wraparound. The compiler is allowed to assume it never happens and optimize accordingly: a check like `if (x + 1 < x)` can simply be removed. **Unsigned** overflow, by contrast, is defined by the standard and does wrap around. For counting, comparing, or masking bits, prefer unsigned types.
 
 ## Why this actually matters
 
 Integer overflows aren't an academic curiosity:
 
 - The **Year 2038 problem**: Unix systems count seconds since 1970 in a signed 32-bit integer. It will overflow on January 19, 2038, returning a date in 1901.
-- Many **security flaws** come from a size computation that overflows: if `size + 1` wraps to 0, a 0-byte allocation is followed by a write of several thousand bytes — that's a buffer overflow. See C's [Memory Management](/?c=langages-de-programmation&s=c&p=memoire) chapter.
+- Many **security flaws** come from a size computation that overflows: if `size + 1` wraps to 0, a 0-byte allocation is followed by a write of several thousand bytes: that's a buffer overflow. See C's [Memory Management](/?c=langages-de-programmation&s=c&p=memoire) chapter.
 - The **first Ariane 5** was destroyed in 1996 because of a conversion from a 64-bit float to a 16-bit integer that overflowed.
 
 ## By language
@@ -95,7 +95,7 @@ Integer overflows aren't an academic curiosity:
 | JavaScript | No real integer type: everything is a float, so exact only up to 2⁵³ (see [Floating-Point Numbers](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` to go beyond |
 | [PHP](/?c=langages-de-programmation&s=php&p=php) | Native integer; on overflow, automatic conversion to `float` (so precision is lost) |
 
-Python illustrates the trade-off well: never overflowing is convenient, but every integer is a heavier, slower object than a machine integer. This is one of the reasons computing libraries like NumPy use fixed-size types (`int32`, `int64`) — see the [NumPy](/?c=data-science&p=numpy) chapter.
+Python illustrates the trade-off well: never overflowing is convenient, but every integer is a heavier, slower object than a machine integer. This is one of the reasons computing libraries like NumPy use fixed-size types (`int32`, `int64`). See the [NumPy](/?c=data-science&p=numpy) chapter.
 
 ## Manipulating bits directly
 
@@ -119,5 +119,5 @@ The corollary of this binary representation is that you can act on the bits them
 |---|---|
 | **Key takeaways** | An integer occupies a fixed number of bits, decided at declaration: *n* bits give 2ⁿ possible values. Negatives are encoded in two's complement; overflow makes the value "wrap around" (or triggers undefined behavior in C for a signed one). |
 | **Tools you can use** | Unsigned types for counting/comparing/masking bits with no risk of UB; the fixed-size types (`int32`, `int64`) of computing libraries. |
-| **Pitfalls to avoid** | Relying on signed integer overflow in C/C++ — undefined behavior, not guaranteed wraparound. |
+| **Pitfalls to avoid** | Relying on signed integer overflow in C/C++: undefined behavior, not guaranteed wraparound. |
 | **Best practices** | Prefer unsigned types for any bit manipulation; check that a size computation can't overflow before a memory allocation. |

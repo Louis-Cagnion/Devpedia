@@ -4,7 +4,7 @@ order: 1
 
 # Exchanging Data: API and HTTP
 
-Two programs running on different machines (a phone and a remote server, for example) share neither memory nor files — to exchange information, they have to send messages over a network, following shared rules that both understand. **HTTP** (*HyperText Transfer Protocol*) is the most widely used set of rules for these exchanges.
+Two programs running on different machines (a phone and a remote server, for example) share neither memory nor files: to exchange information, they have to send messages over a network, following shared rules that both understand. **HTTP** (*HyperText Transfer Protocol*) is the most widely used set of rules for these exchanges.
 
 > **Analogy:** ordering at a restaurant. The customer (the dining room) sends a precise order to the kitchen; the kitchen responds with a dish, or with a message if the order can't be fulfilled ("out of stock"). Neither party needs to know how the other works internally, only how to phrase the order and read the response.
 
@@ -30,13 +30,13 @@ Every HTTP request specifies a **method** (what you want to do) and an address (
 | `PUT` | Replace existing data | Updating a profile's information |
 | `DELETE` | Delete data | Deleting a message |
 
-> **Pitfall:** using `GET` for an action that modifies data (for example, deleting an item via a simple clickable link). A `GET` is supposed to be repeatable with no consequence (reloading a page shouldn't change anything) — many tools (site crawlers, link previews) trigger `GET`s automatically, with no intent from the user.
+> **Pitfall:** using `GET` for an action that modifies data (for example, deleting an item via a simple clickable link). A `GET` is supposed to be repeatable with no consequence (reloading a page shouldn't change anything); many tools (site crawlers, link previews) trigger `GET`s automatically, with no intent from the user.
 >
 > **Best practice:** reserve `GET` for reading only, and use `POST`/`PUT`/`DELETE` for any action that actually modifies data.
 
 ## The response: a status code, sometimes data
 
-The server always responds with a **status code** — a number indicating whether the request succeeded, and if not, why:
+The server always responds with a **status code** (a number indicating whether the request succeeded, and if not, why):
 
 | Code | Category | Example |
 |---|---|---|
@@ -45,7 +45,7 @@ The server always responds with a **status code** — a number indicating whethe
 | `404` | Client-side error | The requested resource doesn't exist |
 | `500` | Server-side error | The server ran into an internal problem while processing the request |
 
-> **Pitfall:** ignoring the status code and assuming a request succeeded simply because a response arrived. A server in error (`500`) still returns a response — often with content that can look deceptively like a normal response if the code isn't checked.
+> **Pitfall:** ignoring the status code and assuming a request succeeded simply because a response arrived. A server in error (`500`) still returns a response, often with content that can look deceptively like a normal response if the code isn't checked.
 >
 > **Best practice:** always check a response's status code before using its content, and explicitly plan for error cases rather than only coding the success path.
 
@@ -66,9 +66,9 @@ Response (status 200):
 
 A program can then read `temperature` or `conditions` directly, without having to extract that information from a web page designed for display.
 
-> **Pitfall:** confusing "the server isn't responding" (timeout, network down) with "the server is responding with an error" (`4xx`/`5xx` code) — the two need different handling, but look like a similar failure from the caller's point of view if the two cases aren't distinguished explicitly in the code.
+> **Pitfall:** confusing "the server isn't responding" (timeout, network down) with "the server is responding with an error" (`4xx`/`5xx` code); the two need different handling, but look like a similar failure from the caller's point of view if the two cases aren't distinguished explicitly in the code.
 >
-> **Best practice:** explicitly distinguish, in the code that calls an API, the absence of a response (timeout) from an explicit refusal of the request (error code) — the two call for different reactions (retry, or fix the request).
+> **Best practice:** explicitly distinguish, in the code that calls an API, the absence of a response (timeout) from an explicit refusal of the request (error code); the two call for different reactions (retry, or fix the request).
 
 ## Key takeaways
 
