@@ -4,7 +4,7 @@ order: 1
 
 # Les conditions
 
-JavaScript utilise `if`/`else if`/`else` et `switch`, avec une particularité de taille par rapport à PHP ou Python : ses règles de comparaison "souples" (`==`) sont réputées pour leurs conversions de type surprenantes.
+JavaScript utilise `if`/`else if`/`else` et `switch`, avec une particularité de taille par rapport à [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou [Python](/?c=langages-de-programmation&s=python&p=conditions) : ses règles de comparaison "souples" (`==`) sont réputées pour leurs conversions de type surprenantes.
 
 ## `if` / `else if` / `else`
 
@@ -32,7 +32,7 @@ null == undefined  // true -> cas spécial
 0 === "0"    // false -> types différents, aucune conversion
 ```
 
-> **Note :** ces conversions implicites de `==` sont une source légendaire de bugs en JavaScript ; `===`/`!==` (égalité stricte, type ET valeur) doivent être le choix par défaut, exactement comme en PHP.
+> **Note :** ces conversions implicites de `==` sont une source légendaire de bugs en JavaScript ; `===`/`!==` (égalité stricte, type ET valeur) doivent être le choix par défaut, exactement comme en [PHP](/?c=langages-de-programmation&s=php&p=conditions).
 
 ## Valeurs "truthy" et "falsy"
 
@@ -46,7 +46,7 @@ if ([]) {}         // TRUTHY ! (contrairement à PHP où un tableau vide est fal
 if ({}) {}         // TRUTHY !
 ```
 
-> **Note :** piège classique pour qui vient de PHP : un tableau ou objet **vide** est `truthy` en JavaScript, alors qu'il est `falsy` en PHP ; toujours tester `tableau.length === 0` explicitement plutôt que `if (!tableau)`.
+> **Note :** piège classique pour qui vient de [PHP](/?c=langages-de-programmation&s=php&p=conditions) : un tableau ou objet **vide** est `truthy` en JavaScript, alors qu'il est `falsy` en PHP ; toujours tester `tableau.length === 0` explicitement plutôt que `if (!tableau)`.
 
 ## L'opérateur ternaire
 

@@ -100,7 +100,7 @@ Ce symptôme est très reconnaissable et permet de remonter à la cause :
 | `?` ou `�` | Caractère absent de l'encodage cible, remplacé |
 | Accents corrects sauf dans un tableur | Séparateur ou BOM manquant à l'ouverture |
 
-La correction n'est jamais de "remplacer les caractères" mais de **déclarer le bon encodage** au point de lecture. Chaque couche doit être cohérente : la balise HTML (`<meta charset="utf-8">`, voir le chapitre [Structure d'un document](/?c=langages-de-balisage&s=html&p=structure-dun-document)), l'en-tête HTTP, l'encodage des fichiers sources, et le jeu de caractères de la base de données (`utf8mb4` pour MySQL : `utf8` seul y est un faux ami limité à 3 octets, qui rejette les emojis).
+La correction n'est jamais de "remplacer les caractères" mais de **déclarer le bon encodage** au point de lecture. Chaque couche doit être cohérente : la balise HTML (`<meta charset="utf-8">`, voir le chapitre [Structure d'un document](/?c=langages-de-balisage&s=html&p=structure-dun-document)), [l'en-tête HTTP](/?c=infrastructure&p=api-et-http), l'encodage des fichiers sources, et le jeu de caractères de la base de données (`utf8mb4` pour MySQL : `utf8` seul y est un faux ami limité à 3 octets, qui rejette les emojis).
 
 ## Le BOM
 

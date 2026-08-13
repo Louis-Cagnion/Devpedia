@@ -4,7 +4,7 @@ order: 1
 
 # Extraire le texte et les pages d'un PDF
 
-Un **PDF** (*Portable Document Format*) est un format de fichier conçu pour qu'un document s'affiche à l'identique sur n'importe quel appareil, contrairement à un fichier éditable (Word, HTML) dont la mise en page peut varier selon le logiciel qui l'ouvre. Cette portabilité a un coût pour qui veut en extraire l'information automatiquement : un PDF ne contient pas "du texte" de façon uniforme, il mélange deux natures de contenu très différentes sur une même page.
+Un **PDF** (*Portable Document Format*) est un format de fichier conçu pour qu'un document s'affiche à l'identique sur n'importe quel appareil, contrairement à un fichier éditable (Word, [HTML](/?c=langages-de-balisage&s=html&p=html)) dont la mise en page peut varier selon le logiciel qui l'ouvre. Cette portabilité a un coût pour qui veut en extraire l'information automatiquement : un PDF ne contient pas "du texte" de façon uniforme, il mélange deux natures de contenu très différentes sur une même page.
 
 ## Deux natures de contenu, sur la même page
 

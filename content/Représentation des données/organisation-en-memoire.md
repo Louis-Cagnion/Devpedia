@@ -61,7 +61,7 @@ struct Compacte {
 
 Sur une structure utilisée en millions d'exemplaires, ce détail change la consommation mémoire d'un tiers, et surtout l'efficacité du cache processeur, souvent plus déterminante que le calcul lui-même.
 
-> Ne calculez donc **jamais** la taille d'une structure à la main : utilisez `sizeof`. Et n'écrivez pas une structure brute dans un fichier ou sur le réseau en supposant sa disposition : le remplissage varie selon le compilateur et l'architecture. C'est le rôle de la **sérialisation** (JSON, Protobuf...) de produire un format défini indépendamment de la machine.
+> Ne calculez donc **jamais** la taille d'une structure à la main : utilisez `sizeof`. Et n'écrivez pas une structure brute dans un fichier ou sur le réseau en supposant sa disposition : le remplissage varie selon le compilateur et l'architecture. C'est le rôle de la **sérialisation** ([JSON](/?c=infrastructure&p=json), Protobuf...) de produire un format défini indépendamment de la machine.
 
 ## L'ordre des octets (*endianness*)
 
@@ -96,7 +96,7 @@ C'est aussi pourquoi `pointeur + 1` avance de `sizeof(type)` octets et non de 1 
 
 ## Et dans les langages de plus haut niveau ?
 
-Python, JavaScript ou PHP masquent tout cela : vous ne choisissez pas la disposition mémoire. Mais elle ne disparaît pas, et se manifeste autrement :
+[Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ou [PHP](/?c=langages-de-programmation&s=php&p=php) masquent tout cela : vous ne choisissez pas la disposition mémoire. Mais elle ne disparaît pas, et se manifeste autrement :
 
 - une liste Python de 1 000 entiers occupe beaucoup plus que 4 000 octets, car chaque entier est un **objet** avec son en-tête ;
 - c'est précisément pour cette raison que NumPy existe : un tableau NumPy stocke des valeurs brutes contiguës, alignées, sans en-tête par élément : d'où des gains de vitesse d'un ordre de grandeur sur du calcul numérique (voir [NumPy](/?c=data-science&p=numpy)).

@@ -31,7 +31,7 @@ Animal *a = new Chien("Rex");
 std::cout << a->parler();   // affiche "..." -> PAS "Rex aboie" !
 ```
 
-> **Piège classique :** sans le mot-clé `virtual`, C++ choisit quelle version de `parler()` appeler en se basant sur le **type déclaré** du pointeur (`Animal*`), pas sur le type réel de l'objet pointé (`Chien`) : un mécanisme appelé *liaison statique*. Le résultat semble "ignorer" l'héritage, ce qui surprend souvent en venant d'un langage comme PHP, Python ou Java, où ce comportement est automatique.
+> **Piège classique :** sans le mot-clé `virtual`, C++ choisit quelle version de `parler()` appeler en se basant sur le **type déclaré** du pointeur (`Animal*`), pas sur le type réel de l'objet pointé (`Chien`) : un mécanisme appelé *liaison statique*. Le résultat semble "ignorer" l'héritage, ce qui surprend souvent en venant d'un langage comme [PHP](/?c=langages-de-programmation&s=php&p=poo), [Python](/?c=langages-de-programmation&s=python&p=poo) ou Java, où ce comportement est automatique.
 
 ## Rendre une méthode polymorphique : `virtual`
 

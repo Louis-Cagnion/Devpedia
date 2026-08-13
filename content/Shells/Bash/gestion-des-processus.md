@@ -27,7 +27,7 @@ fg %1  # ramène la tâche numéro 1 au premier plan
 bg %1          # relance en arrière-plan une tâche suspendue par Ctrl+Z
 ```
 
-`fg` et `bg` sont des abréviations directes de leur sens anglais : `fg` = *foreground* (premier plan), `bg` = *background* (arrière-plan) : chacune ramène ou renvoie la tâche `%1` dans le plan correspondant. Beaucoup de commandes et de drapeaux Unix suivent ce même principe d'abréviation d'un mot anglais, ce qui aide à les retenir une fois qu'on connaît le mot d'origine : par exemple, dans ce chapitre, `-f` (*full*/*format*, pour `ps aux -f` ou le motif complet de `pgrep -f`) ou `-9` pour `SIGKILL`. Le tableau de signaux ci-dessous précise le sens de chacun.
+`fg` et `bg` sont des abréviations directes de leur sens anglais : `fg` = *foreground* (premier plan), `bg` = *background* (arrière-plan) : chacune ramène ou renvoie la tâche `%1` dans le plan correspondant. Beaucoup de commandes et de drapeaux [Unix](/?c=shells&s=bash&p=scripts-et-shebang) suivent ce même principe d'abréviation d'un mot anglais, ce qui aide à les retenir une fois qu'on connaît le mot d'origine : par exemple, dans ce chapitre, `-f` (*full*/*format*, pour `ps aux -f` ou le motif complet de `pgrep -f`) ou `-9` pour `SIGKILL`. Le tableau de signaux ci-dessous précise le sens de chacun.
 
 ## Voir les processus en cours (`ps`, `top`)
 

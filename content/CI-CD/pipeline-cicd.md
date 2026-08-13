@@ -68,6 +68,6 @@ Chaque étape ne se lance que si la précédente a réussi : un échec arrête l
 | | |
 |---|---|
 | **À retenir** | Un pipeline CI/CD automatise la construction, les tests et le déploiement d'un projet à chaque changement. CI construit et teste ; CD (livraison continue ou déploiement continu, deux niveaux différents) prend le relais jusqu'à une version prête à déployer, voire déployée automatiquement. |
-| **Outils utilisables** | Azure Pipelines, GitHub Actions, et d'autres plateformes équivalentes, pour définir et exécuter ces étapes automatiquement. |
+| **Outils utilisables** | [Azure Pipelines](/?c=ci-cd&p=azure-devops-plateforme), [GitHub Actions](/?c=ci-cd&p=azure-pipelines-vs-github-actions), et d'autres plateformes équivalentes, pour définir et exécuter ces étapes automatiquement. |
 | **Pièges à éviter** | Sauter une étape "juste cette fois" sous pression de délai. Ignorer un pipeline CI en échec et empiler du nouveau code par-dessus. Confondre livraison continue et déploiement continu. |
 | **Bonnes pratiques** | Automatiser la suite d'étapes pour ne plus dépendre de la discipline humaine. Traiter un échec CI comme bloquant. Ordonner les étapes de la plus rapide à la plus lente. |

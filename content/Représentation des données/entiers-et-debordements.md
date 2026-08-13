@@ -89,11 +89,11 @@ Les débordements d'entiers ne sont pas une curiosité académique :
 
 | Langage | Comportement |
 |---|---|
-| C, C++ | Taille fixe choisie explicitement. Débordement signé = comportement indéfini |
+| [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp) | Taille fixe choisie explicitement. Débordement signé = comportement indéfini |
 | Java, C# | Taille fixe, wraparound défini pour tous les entiers |
-| **Python** | Entiers de **taille arbitraire** : ils grandissent tant que la mémoire suit, aucun débordement |
+| **[Python](/?c=langages-de-programmation&s=python&p=python)** | Entiers de **taille arbitraire** : ils grandissent tant que la mémoire suit, aucun débordement |
 | JavaScript | Pas de vrai type entier : tout est flottant, donc exact seulement jusqu'à 2⁵³ (voir [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` pour aller au-delà |
-| PHP | Entier natif ; en cas de débordement, conversion automatique en `float` (donc perte de précision) |
+| [PHP](/?c=langages-de-programmation&s=php&p=php) | Entier natif ; en cas de débordement, conversion automatique en `float` (donc perte de précision) |
 
 Python illustre bien le compromis : ne jamais déborder est confortable, mais chaque entier est un objet plus lourd et plus lent qu'un entier machine. C'est l'une des raisons pour lesquelles les bibliothèques de calcul comme NumPy utilisent des types à taille fixe (`int32`, `int64`). Voir le chapitre [NumPy](/?c=data-science&p=numpy).
 

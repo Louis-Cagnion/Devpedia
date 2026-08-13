@@ -4,7 +4,7 @@ order: 10
 
 # Traitement de texte (grep, sed, awk...)
 
-Une grande partie de la puissance du terminal Unix vient d'une poignée d'outils spécialisés dans le traitement de texte, conçus pour être combinés entre eux via des [pipes](/?c=shells&s=bash&p=redirections-et-pipes). Ce chapitre présente les plus utilisés au quotidien.
+Une grande partie de la puissance du [terminal Unix](/?c=shells&s=bash&p=scripts-et-shebang) vient d'une poignée d'outils spécialisés dans le traitement de texte, conçus pour être combinés entre eux via des [pipes](/?c=shells&s=bash&p=redirections-et-pipes). Ce chapitre présente les plus utilisés au quotidien.
 
 ## `grep` : rechercher du texte
 

@@ -26,7 +26,7 @@ Instruction 3  →  exécutée telle quelle
 
 ## Le code : la liste d'instructions écrite par un humain
 
-Le **code** (ou **code source**) est le texte qui contient ces instructions. Il est écrit par une personne, dans un **langage de programmation**, une des nombreuses "langues" qu'un ordinateur peut suivre, chacune avec sa propre grammaire (Python, JavaScript, C...).
+Le **code** (ou **code source**) est le texte qui contient ces instructions. Il est écrit par une personne, dans un **langage de programmation**, une des nombreuses "langues" qu'un ordinateur peut suivre, chacune avec sa propre grammaire (Python, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), C...).
 
 ```text
 afficher "Bonjour"      → écrit "Bonjour" à l'écran

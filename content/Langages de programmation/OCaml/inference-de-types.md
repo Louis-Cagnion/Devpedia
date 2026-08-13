@@ -35,7 +35,7 @@ Le second exemple illustre le **polymorphisme paramétrique** : `'a` signifie "u
 
 | | C | Python (annotations) | OCaml |
 |---|---|---|---|
-| Vérification | À la compilation | Au choix : jamais, ou via un vérificateur externe (`mypy`) | À la compilation, systématiquement |
+| Vérification | À la compilation | Au choix : jamais, ou via un [vérificateur externe](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) (`mypy`) | À la compilation, systématiquement |
 | Annotation requise | Toujours (`int x`) | Optionnelle | Jamais (déduite) |
 
 Python (cf. chapitre [Le typage avec annotations](/?c=langages-de-programmation&s=python&p=typage-avec-annotations)) permet d'ajouter des indications de type après coup, vérifiées par un outil séparé qui reste facultatif : le programme s'exécute même si ces annotations sont fausses ou absentes. En OCaml, il n'existe pas de mode "sans vérification" : un programme dont les types ne s'accordent pas ne compile tout simplement pas, et ne peut donc jamais atteindre l'exécution avec une incohérence de type.

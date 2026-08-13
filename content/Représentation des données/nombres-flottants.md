@@ -10,7 +10,7 @@ C'est probablement le comportement le plus déroutant de la programmation, et ce
 0.1 + 0.2   ==>  0.30000000000000004
 ```
 
-Ce résultat est identique en JavaScript, en Python, en C, en PHP, en Java et en C#. Ce n'est donc **pas** un défaut d'un langage : c'est une conséquence de la façon dont le processeur encode les nombres décimaux, décrite par la norme **IEEE 754**, que tous ces langages utilisent parce que c'est le matériel qui l'impose.
+Ce résultat est identique en JavaScript, en [Python](/?c=langages-de-programmation&s=python&p=python), en [C](/?c=langages-de-programmation&s=c&p=c), en [PHP](/?c=langages-de-programmation&s=php&p=php), en Java et en C#. Ce n'est donc **pas** un défaut d'un langage : c'est une conséquence de la façon dont le processeur encode les nombres décimaux, décrite par la norme **IEEE 754**, que tous ces langages utilisent parce que c'est le matériel qui l'impose.
 
 ## Pourquoi une approximation ?
 
@@ -114,10 +114,10 @@ Le socle est commun ; les langages diffèrent seulement sur l'emballage :
 
 | Langage | Spécificités |
 |---|---|
-| C | `float` / `double` / `long double` explicites, `fabs()`, `isnan()` |
+| [C](/?c=langages-de-programmation&s=c&p=c) | `float` / `double` / `long double` explicites, `fabs()`, `isnan()` |
 | JavaScript | un seul type `number` (toujours un double), `BigInt` pour les grands entiers, voir [Les nombres](/?c=langages-de-programmation&s=javascript&p=nombres) |
-| Python | `float` = double, entiers de taille arbitraire nativement, `math.isclose()`, module `decimal` |
-| PHP | `float` = double, `PHP_FLOAT_EPSILON` |
+| [Python](/?c=langages-de-programmation&s=python&p=python) | `float` = double, entiers de taille arbitraire nativement, `math.isclose()`, module `decimal` |
+| [PHP](/?c=langages-de-programmation&s=php&p=php) | `float` = double, `PHP_FLOAT_EPSILON` |
 
 Retenez surtout que ces différences ne changent rien au fond : c'est le matériel qui décide, et il décide pareil pour tout le monde.
 

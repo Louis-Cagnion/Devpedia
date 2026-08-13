@@ -4,7 +4,7 @@ order: 5
 
 # Les conditions
 
-Contrairement à Bash, où une condition passe par le code de sortie d'une commande de test (`[`, `[[`), PowerShell a de vrais **opérateurs de comparaison intégrés au langage**, comme en PHP ou en C.
+Contrairement à Bash, où une condition passe par le code de sortie d'une commande de test (`[`, `[[`), PowerShell a de vrais **opérateurs de comparaison intégrés au langage**, comme en [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou en [C](/?c=langages-de-programmation&s=c&p=conditions).
 
 ## `if` / `elseif` / `else`
 

@@ -40,7 +40,7 @@ C'est ce second point qu'on appelle **SIMD** (*Single Instruction, Multiple Data
 
 Une liste Python est un tableau de **pointeurs** vers des objets, potentiellement dispersés n'importe où sur le tas et de tailles différentes. Une boucle `for` sur une liste Python doit, à chaque itération : suivre un pointeur (accès mémoire potentiellement hors cache), vérifier le type de l'objet pointé, puis appeler la bonne routine : le tout piloté par l'interpréteur, instruction par instruction.
 
-Un tableau NumPy (`ndarray`) est un unique bloc de mémoire **contigu**, contenant les valeurs elles-mêmes (pas des pointeurs), toutes du même type et de la même taille. Une opération vectorisée (`a + b`) délègue à une boucle **compilée** qui parcourt ce bloc de façon séquentielle : les lignes de cache sont réutilisées au maximum, et le processeur peut employer des instructions SIMD sur plusieurs éléments à la fois. Même nombre d'opérations arithmétiques, mais un coût marginal par élément très inférieur.
+Un [tableau NumPy](/?c=data-science&p=numpy) (`ndarray`) est un unique bloc de mémoire **contigu**, contenant les valeurs elles-mêmes (pas des pointeurs), toutes du même type et de la même taille. Une opération vectorisée (`a + b`) délègue à une boucle **compilée** qui parcourt ce bloc de façon séquentielle : les lignes de cache sont réutilisées au maximum, et le processeur peut employer des instructions SIMD sur plusieurs éléments à la fois. Même nombre d'opérations arithmétiques, mais un coût marginal par élément très inférieur.
 
 ## Le piège de `dtype=object` : contigu ne veut pas dire uniforme
 

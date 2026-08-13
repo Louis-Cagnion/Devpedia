@@ -144,7 +144,7 @@ Doubler la taille d'une matrice ne double pas le temps de calcul : il est multip
 
 > **Piège :** écrire soi-même une boucle de produit matriciel (comme ci-dessus) dans du code réel. Une implémentation naïve ignore tout ce qui a été vu dans [Cache CPU et vectorisation](/?c=performance&p=cache-cpu-et-simd) (localité mémoire, SIMD) : une bibliothèque comme NumPy peut être des dizaines à des centaines de fois plus rapide sur le même calcul, à résultat strictement identique.
 >
-> **Bonne pratique :** toujours déléguer un produit matriciel à une bibliothèque optimisée (NumPy, PyTorch...) plutôt que d'écrire la boucle soi-même. Voir aussi le chapitre [NumPy](/?c=data-science&p=numpy).
+> **Bonne pratique :** toujours déléguer un produit matriciel à une bibliothèque optimisée (NumPy, [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch)...) plutôt que d'écrire la boucle soi-même. Voir aussi le chapitre [NumPy](/?c=data-science&p=numpy).
 
 ## Où les matrices apparaissent concrètement en IA
 
@@ -164,4 +164,4 @@ Dans les quatre cas, le principe reste celui vu dans ce chapitre : remplacer une
 | **À retenir** | Une matrice range des nombres en lignes et en colonnes ; un vecteur en est un cas particulier. Le produit matriciel calcule plusieurs produits scalaires en une seule opération (plusieurs neurones, ou plusieurs exemples d'un batch) : c'est cette opération, répétée à très grande échelle, qui fait tourner le deep learning. |
 | **Outils utilisables** | `@` ou `np.dot()` en NumPy pour un vrai produit matriciel (jamais `*`, qui multiplie terme à terme) ; la transposée pour réorienter une matrice avant un produit. |
 | **Pièges à éviter** | Multiplier deux matrices dont les dimensions internes ne correspondent pas. Confondre produit matriciel et produit terme à terme. Supposer que `A · B` et `B · A` donnent le même résultat. Écrire sa propre boucle de produit matriciel dans du code réel. |
-| **Bonnes pratiques** | Vérifier les dimensions avant tout produit matriciel. Toujours vérifier quel opérateur une bibliothèque utilise pour quel produit. Déléguer tout calcul matriciel à une bibliothèque optimisée (NumPy, PyTorch) plutôt que de le réimplémenter. |
+| **Bonnes pratiques** | Vérifier les dimensions avant tout produit matriciel. Toujours vérifier quel opérateur une bibliothèque utilise pour quel produit. Déléguer tout calcul matriciel à une bibliothèque optimisée (NumPy, [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch)) plutôt que de le réimplémenter. |

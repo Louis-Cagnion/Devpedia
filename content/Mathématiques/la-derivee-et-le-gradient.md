@@ -105,6 +105,6 @@ nouveau_vecteur = ancien_vecteur - taux × gradient
 | | |
 |---|---|
 | **À retenir** | La dérivée mesure la pente d'une fonction en un point précis (son signe indique si la fonction augmente, diminue, ou est momentanément plate). Le gradient généralise la dérivée à une fonction à plusieurs entrées : un vecteur de dérivées partielles, qui pointe vers la direction de plus forte augmentation. |
-| **Outils utilisables** | Aucun calcul à la main en pratique : les bibliothèques de deep learning calculent les dérivées et gradients automatiquement (différenciation automatique). |
+| **Outils utilisables** | Aucun calcul à la main en pratique : les bibliothèques de deep learning calculent les dérivées et gradients automatiquement (voir la [différenciation automatique](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)). |
 | **Pièges à éviter** | Confondre "un minimum trouvé" et "le minimum le plus bas possible" : une courbe à plusieurs creux ne garantit que le creux le plus proche du point de départ. |
 | **Bonnes pratiques** | Essayer plusieurs points de départ différents pour limiter le risque de rester bloqué sur un minimum local peu satisfaisant. |

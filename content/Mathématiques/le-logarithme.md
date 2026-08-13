@@ -28,7 +28,7 @@ Ce chapitre présente le logarithme, une notion reprise plus loin pour mesurer �
 
 > **Piège :** confondre les bases. `log2(8) = 3` mais `log10(8) ≈ 0,9` : le résultat dépend entièrement de la base choisie, deux logarithmes de bases différentes ne se comparent jamais directement sans conversion.
 >
-> **Bonne pratique :** toujours vérifier quelle base une fonction ou une formule utilise avant d'interpréter son résultat (`log` en Python, par exemple, désigne le logarithme **naturel** (base *e*), pas base 10, contrairement à ce que le nom pourrait laisser penser).
+> **Bonne pratique :** toujours vérifier quelle base une fonction ou une formule utilise avant d'interpréter son résultat (`log` en [Python](/?c=langages-de-programmation&s=python&p=python), par exemple, désigne le logarithme **naturel** (base *e*), pas base 10, contrairement à ce que le nom pourrait laisser penser).
 
 ## La forme de sa courbe : très lente pour les grands x, très rapide près de 0
 

@@ -49,7 +49,7 @@ label: [1, 2] + [3, 4] = [4, 6]
 
 On additionne les composantes une à une, à la même position.
 
-> **Piège :** additionner deux vecteurs de tailles différentes n'a pas de sens (`[1, 2] + [1, 2, 3]` n'est pas défini : quelle composante irait avec quoi ?). Un programme qui tente l'opération lève en général une erreur explicite (ex. *"shapes mismatch"* avec NumPy) plutôt que de deviner.
+> **Piège :** additionner deux vecteurs de tailles différentes n'a pas de sens (`[1, 2] + [1, 2, 3]` n'est pas défini : quelle composante irait avec quoi ?). Un programme qui tente l'opération lève en général une erreur explicite (ex. *"shapes mismatch"* avec [NumPy](/?c=data-science&p=numpy)) plutôt que de deviner.
 >
 > **Bonne pratique :** vérifier que deux vecteurs ont la même dimension avant de les combiner, plutôt que de découvrir l'incompatibilité au moment de l'exécution.
 
@@ -116,6 +116,6 @@ Ce résultat n'est pas une coïncidence propre à cet exemple : diviser chaque c
 | | |
 |---|---|
 | **À retenir** | Un vecteur est une liste ordonnée de nombres traitée comme une seule entité. Le produit scalaire réduit deux vecteurs de même dimension à un seul nombre, qui mesure à quel point ils pointent dans la même direction. La norme est la longueur d'un vecteur. |
-| **Outils utilisables** | Aucun outil spécifique pour le calcul à la main ; en pratique, une bibliothèque comme NumPy effectue ces opérations directement sur des vecteurs entiers, sans boucle explicite. |
+| **Outils utilisables** | Aucun outil spécifique pour le calcul à la main ; en pratique, une bibliothèque comme [NumPy](/?c=data-science&p=numpy) effectue ces opérations directement sur des vecteurs entiers, sans boucle explicite. |
 | **Pièges à éviter** | Additionner ou combiner deux vecteurs de dimensions différentes. Normaliser un vecteur nul (division par une norme de 0). |
 | **Bonnes pratiques** | Vérifier que deux vecteurs ont la même dimension avant toute opération entre eux. Documenter ce que représente chaque composante d'un vecteur dès sa création. |

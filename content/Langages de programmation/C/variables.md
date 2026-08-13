@@ -76,7 +76,7 @@ double pi = 3.1415926535;
 - `float` : précision simple (32 bits)
 - `double` : précision double (64 bits)
 
-Ces types stockent une **approximation**, pas une valeur exacte : `0.1 + 0.2` ne vaut pas exactement `0.3`. Ce comportement n'est pas propre au C : il découle de la norme IEEE 754 imposée par le processeur, et se retrouve à l'identique en Python, JavaScript ou PHP (voir le chapitre [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants) pour l'explication de l'encodage).
+Ces types stockent une **approximation**, pas une valeur exacte : `0.1 + 0.2` ne vaut pas exactement `0.3`. Ce comportement n'est pas propre au C : il découle de la norme IEEE 754 imposée par le processeur, et se retrouve à l'identique en [Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ou [PHP](/?c=langages-de-programmation&s=php&p=php) (voir le chapitre [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants) pour l'explication de l'encodage).
 
 > **Piège :** comparer deux flottants avec `==`, en s'attendant à ce que `0.1 + 0.2 == 0.3` soit vrai. À cause de l'approximation, ce test échoue silencieusement la plupart du temps : aucune erreur, juste un résultat inattendu.
 >

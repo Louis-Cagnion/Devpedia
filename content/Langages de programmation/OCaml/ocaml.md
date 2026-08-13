@@ -4,7 +4,7 @@ order: 6
 
 # OCaml
 
-Tous les langages vus jusqu'ici dans cette rubrique (C, C++, PHP, Python, JavaScript) partagent un même style de fond : des **instructions** exécutées dans l'ordre, une mutation directe de variables, des boucles pour répéter un traitement. C'est le style **impératif**, et il est si répandu qu'il en devient invisible.
+Tous les langages vus jusqu'ici dans cette rubrique ([C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp), [PHP](/?c=langages-de-programmation&s=php&p=php), [Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) partagent un même style de fond : des **instructions** exécutées dans l'ordre, une mutation directe de variables, des boucles pour répéter un traitement. C'est le style **impératif**, et il est si répandu qu'il en devient invisible.
 
 **OCaml** est l'occasion d'observer un style différent, le style **fonctionnel** : les programmes s'y construisent en assemblant des fonctions et en évaluant des expressions, plutôt qu'en enchaînant des instructions qui modifient un état. Ce n'est pas un langage exotique de laboratoire ; OCaml compile du code natif aussi rapide que du C, et est utilisé en production dans des domaines qui valorisent particulièrement la fiabilité : la finance (Jane Street en a fait son langage principal), la vérification formelle (l'assistant de preuve Coq est écrit en OCaml), et l'analyse statique de code.
 

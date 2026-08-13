@@ -23,7 +23,7 @@ for (int n : nombres) {  // parcours simple, comme un for-each
 }
 ```
 
-> **Note :** `std::vector` est, en interne, un tableau contigu en mémoire (voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) et [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) qui se redimensionne automatiquement (souvent en doublant sa capacité) quand il est plein : le même principe qu'une liste Python ou un `ArrayList` Java, mais sans la couche d'indirection d'un langage à ramasse-miettes.
+> **Note :** `std::vector` est, en interne, un tableau contigu en mémoire (voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) et [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) qui se redimensionne automatiquement (souvent en doublant sa capacité) quand il est plein : le même principe qu'une [liste Python](/?c=langages-de-programmation&s=python&p=listes-et-tuples) ou un `ArrayList` Java, mais sans la couche d'indirection d'un langage à ramasse-miettes.
 
 ## `std::list` : la liste doublement chaînée
 
@@ -53,7 +53,7 @@ for (const auto &[nom, age] : ages) {  // parcours : les paires sont TOUJOURS tr
 }
 ```
 
-> **Note :** `std::map` est en interne un arbre équilibré (souvent un arbre rouge-noir, une variante de [l'arbre binaire de recherche](/?c=langages-de-programmation&s=c&p=arbres-binaires)) : les clés sont donc toujours parcourues **triées**, contrairement à un tableau associatif PHP ou un `dict` Python (ordre d'insertion). `std::unordered_map` propose l'équivalent basé sur une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage), plus rapide en moyenne mais sans ordre garanti.
+> **Note :** `std::map` est en interne un arbre équilibré (souvent un arbre rouge-noir, une variante de [l'arbre binaire de recherche](/?c=langages-de-programmation&s=c&p=arbres-binaires)) : les clés sont donc toujours parcourues **triées**, contrairement à un [tableau associatif PHP](/?c=langages-de-programmation&s=php&p=variables) ou un [`dict` Python](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) (ordre d'insertion). `std::unordered_map` propose l'équivalent basé sur une [table de hachage](/?c=langages-de-programmation&s=c&p=tables-de-hachage), plus rapide en moyenne mais sans ordre garanti.
 
 ## `std::set` : les valeurs uniques, ordonnées
 

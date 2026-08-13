@@ -43,7 +43,7 @@ Critères d'acceptation :
 
 | Besoin | Outils typiques |
 |---|---|
-| Suivi des tickets et du travail | Jira, Azure Boards |
+| Suivi des tickets et du travail | Jira, [Azure Boards](/?c=ci-cd&p=azure-devops-plateforme) |
 | Documentation partagée | Confluence, Notion |
 | Communication informelle, questions rapides | Slack, Microsoft Teams |
 
@@ -58,6 +58,6 @@ Critères d'acceptation :
 | | |
 |---|---|
 | **À retenir** | Un ticket ou une user story exploitable précise le rôle, l'action, le bénéfice attendu et des critères d'acceptation vérifiables. Un blocage se signale avec ce qui est bloqué, depuis quand, et ce qui a déjà été essayé. |
-| **Outils utilisables** | Jira/Azure Boards pour les tickets, Confluence/Notion pour la documentation durable, Slack/Teams pour l'échange rapide. |
+| **Outils utilisables** | Jira/[Azure Boards](/?c=ci-cd&p=azure-devops-plateforme) pour les tickets, Confluence/Notion pour la documentation durable, Slack/Teams pour l'échange rapide. |
 | **Pièges à éviter** | Écrire un ticket vague sans critère de fin. Signaler un blocage sans détail exploitable. Faire vivre une information durable uniquement dans un message de discussion instantanée. |
 | **Bonnes pratiques** | Écrire un ticket qu'un tiers peut reprendre sans poser de question. Détailler un blocage pour permettre une aide directe. Consigner toute information durable dans la documentation partagée. |
