@@ -4,19 +4,19 @@ order: 13
 
 # Hash Tables
 
-A **hash table** is a data structure that allows you to insert, search for, and delete a value based on a key in `O(1)`, whereas a linked list (see the dedicated chapter) would require traversing all elements one by one. The principle: calculate a numerical “address” based on the key, and store or retrieve the value directly at that location in an array.
+A **hash table** is a data structure that allows you to insert, search for, and delete a value based on a key in `O(1)`, whereas a [linked list](/?c=langages-de-programmation&s=c&p=listes-chainees) would require traversing all elements one by one. The principle: calculate a numerical “address” based on the key, and store or retrieve the value directly at that location in an array.
 
 ## The General Principle
 
 ```text
-clé -> fonction de hachage -> indice dans un tableau -> valeur stockée à cet indice
+key -> hash function -> index in an array -> value stored at that index
 ```
 
 ```text
-"nom" -> hash("nom") = 193847 -> 193847 % taille_tableau = 3 -> valeur stockée en case 3
+"name" -> hash("name") = 193847 -> 193847 % taille_tableau = 3 -> value stored in slot 3
 ```
 
-Rather than checking sequentially—"Is the key here? And here? And there?"—the hash table calculates directly **where** to look.
+Rather than checking sequentially: "Is the key here? And here? And there?", the hash table calculates directly **where** to look.
 
 ## The Hash Function
 
@@ -43,10 +43,10 @@ unsigned long index = hash_chaine(key) % taille_tableau;
 
 ## Collisions
 
-The number of possible keys is infinite (any string), but the array has a finite size—so two different keys may, sooner or later, produce the same index. This is called a **collision**, which is handled primarily in two ways:
+The number of possible keys is infinite (any string), but the array has a finite size: so two different keys may, sooner or later, produce the same index. This is called a **collision**, which is handled primarily in two ways:
 
-- *Separate ***chaining**: Each array element contains a chained list (see the dedicated chapter) of all the entries that led to that index.
-- *Open ***addressing**: In the event of a collision, the next available slot is selected according to a fixed rule (e.g., the next slot) until one is found.
+- **Chaining** (*separate chaining*): each array slot contains a [linked list](/?c=langages-de-programmation&s=c&p=listes-chainees) of all the entries that led to that index.
+- **Open addressing**: in the event of a collision, the next available slot is selected according to a fixed rule (e.g., the next slot) until one is found.
 
 ## Implementation via chaining
 
@@ -55,12 +55,12 @@ typedef struct Entry
 {
     char *key;
     int value;
-    struct Entry *suivant; // plusieurs entrées peuvent partager le même indice
+    struct Entry *suivant; // several entries can share the same index
 } Entry;
 
 typedef struct TableHachage
 {
-    Entry **cases; // tableau de pointeurs vers des listes chaînées
+    Entry **cases; // array of pointers to linked lists
     int taille;
 } TableHachage;
 ```
@@ -74,11 +74,11 @@ void inserer(TableHachage *table, const char *key, int value)
 
     Entry *nouvelle = malloc(sizeof(Entry));
     if (nouvelle == NULL) {
-        return; // échec d'allocation (cf. chapitre sur la gestion de la mémoire) : on renonce à l'insertion
+        return; // allocation failed (see memory management): giving up on the insertion
     }
     nouvelle->key = strdup(key);
     nouvelle->value = value;
-    nouvelle->suivant = table->cases[index]; // insertion en tête de la liste de ce bucket
+    nouvelle->suivant = table->cases[index]; // inserted at the head of this bucket's list
     table->cases[index] = nouvelle;
 }
 ```
@@ -103,16 +103,27 @@ int rechercher(TableHachage *table, const char *key, int *trouve)
 }
 ```
 
-Even with an equal index, the search still compares the entire key (`strcmp`)—the index merely narrows the search down to a small list (ideally a single element), not eliminating it entirely.
+Even with an equal index, the search still compares the entire key (`strcmp`): the index merely narrows the search down to a small list (ideally a single element), not eliminating it entirely.
 
 ## Load factor and resizing
 
-The **load factor** (number of entries ÷ array size) measures how full the table is. If it becomes too high (beyond a common threshold such as `0.75`), the lists in each bucket grow longer, and performance degrades to O`O(n)`—in the worst case (all keys in the same bucket), the hash table behaves exactly like a simple linked list. A good implementation then **resizes** the array (usually by doubling its size) and re-inserts all existing entries (“rehash”) to restore a reasonable load factor.
+The **load factor** (number of entries ÷ array size) measures how full the table is. If it becomes too high (beyond a common threshold such as `0.75`), the lists in each bucket grow longer, and performance degrades to `O(n)`: in the worst case (all keys in the same bucket), the hash table behaves exactly like a simple linked list. A good implementation then **resizes** the array (usually by doubling its size) and re-inserts all existing entries (“rehash”) to restore a reasonable load factor.
 
 ## Where Hash Tables Are Already Hiding All Around You
 
-- PHP **associative** arrays (see the chapter on PHP variables) are internally implemented using a structure very similar to a hash table.
-- Git's object storage model (see the chapter on Git's internal architecture) **is** essentially a hash table: the key for each object is the SHA-1 hash of its content, and the subdirectory `.git/objects/xx/` acts exactly like a bucket.
+- PHP **associative** arrays (see [PHP variables](/?c=langages-de-programmation&s=php&p=variables)) are internally implemented using a structure very similar to a hash table.
+- Git's object storage model (see [Git's internal architecture](/?c=git&p=architecture-interne)) **is** essentially a hash table: the key for each object is the SHA-1 hash of its content, and the subdirectory `.git/objects/xx/` acts exactly like a bucket.
 - Python dictionaries (`dict`) are based on the same principle.
 
 Understanding hash tables, therefore, means understanding a mechanism that operates silently in virtually all modern languages and tools.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key Points** | A hash table computes an index from a key (via a hash function) to access the value directly, in `O(1)` on average. A collision (two keys, same index) is handled via chaining or open addressing. |
+| **Available Tools** | A deterministic, well-distributed hash function; resizing ("rehash") when the load factor exceeds a threshold (often 0.75). |
+| **Pitfalls to Avoid** | A poorly distributed hash function that concentrates too many keys on too few indices: degrades performance toward `O(n)`. |
+| **Best Practices** | Resize and re-insert all entries as soon as the load factor becomes too high, rather than letting each bucket's list grow indefinitely. |

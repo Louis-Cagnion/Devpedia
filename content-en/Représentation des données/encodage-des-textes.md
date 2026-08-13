@@ -57,7 +57,7 @@ UTF-8 encodes a code point using **1 to 4 bytes**, depending on its value:
 | `U+0800` → `U+FFFF` | 3 | Chinese, Japanese, Korean |
 | `U+10000` → `U+10FFFF` | 4 | emoji, rare scripts |
 
-Its decisive quality is **backward compatibility with ASCII**: an ASCII file is already a valid UTF-8 file, with no conversion needed. This is what allowed it to become universally adopted — it now accounts for over 98% of the web.
+Its decisive quality is **backward compatibility with ASCII**: an ASCII file is already a valid UTF-8 file, with no conversion needed. This is what allowed it to become universally adopted: it now accounts for over 98% of the web.
 
 ```text
 "A"  -> 1 byte  : 41
@@ -100,7 +100,7 @@ This symptom is very recognizable and helps trace back to the cause:
 | `?` or `�` | Character missing from the target encoding, replaced |
 | Correct accents except in a spreadsheet | Missing separator or BOM on open |
 
-The fix is never to "replace the characters" but to **declare the right encoding** at the point of reading. Every layer must be consistent: the HTML tag (`<meta charset="utf-8">`, see the [Document Structure](/?c=langages-de-balisage&s=html&p=structure-dun-document) chapter), [the HTTP header](/?c=infrastructure&p=api-et-http), the source files' encoding, and the database's character set (`utf8mb4` for [MySQL](https://dev.mysql.com/doc/) — plain `utf8` there is a false friend limited to 3 bytes, which rejects emoji).
+The fix is never to "replace the characters" but to **declare the right encoding** at the point of reading. Every layer must be consistent: the HTML tag (`<meta charset="utf-8">`, see the [Document Structure](/?c=langages-de-balisage&s=html&p=structure-dun-document) chapter), [the HTTP header](/?c=infrastructure&p=api-et-http), the source files' encoding, and the database's character set (`utf8mb4` for [MySQL](https://dev.mysql.com/doc/): plain `utf8` there is a false friend limited to 3 bytes, which rejects emoji).
 
 ## The BOM
 
@@ -110,7 +110,7 @@ It nonetheless remains common on Windows, where some tools (including [Excel](ht
 
 ## UTF-16 and UTF-32
 
-- **UTF-16**: 2 or 4 bytes per character. Used internally by Java, C#, JavaScript, and Windows. Characters outside the basic plane (emoji) occupy two 16-bit units there, called a *surrogate pair* — which is why, in JavaScript, `"😀".length` returns **2**.
+- **UTF-16**: 2 or 4 bytes per character. Used internally by Java, C#, JavaScript, and Windows. Characters outside the basic plane (emoji) occupy two 16-bit units there, called a *surrogate pair*, which is why, in JavaScript, `"😀".length` returns **2**.
 - **UTF-32**: 4 bytes per character, fixed size. Simple to index, but wastes a lot of space; rarely used for storage.
 
 ## Summary
@@ -130,7 +130,7 @@ It nonetheless remains common on Windows, where some tools (including [Excel](ht
 
 | | |
 |---|---|
-| **Key takeaways** | An encoding maps each character to a number (Unicode: the catalog) then to bytes (UTF-8: the format). UTF-8 is ASCII-compatible and encodes a character in 1 to 4 bytes — so a character isn't necessarily a byte. |
+| **Key takeaways** | An encoding maps each character to a number (Unicode: the catalog) then to bytes (UTF-8: the format). UTF-8 is ASCII-compatible and encodes a character in 1 to 4 bytes, so a character isn't necessarily a byte. |
 | **Tools you can use** | `<meta charset="utf-8">`, `utf8mb4` for MySQL, a dedicated library for counting graphemes. |
 | **Pitfalls to avoid** | Reading a UTF-8 file with the wrong encoding declared (mojibake, `Ã©`); splitting a string at an exact byte offset without accounting for multi-byte characters. |
 | **Best practices** | Declare the right encoding at every layer (file, HTTP, database) rather than "fixing" characters that are already corrupted. |

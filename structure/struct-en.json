@@ -557,22 +557,6 @@
               "label": "Introduction to Machine Learning (scikit-learn)"
             },
             {
-              "id": "reseaux-de-neurones",
-              "label": "Neural Networks — The Basics"
-            },
-            {
-              "id": "entrainement-descente-de-gradient",
-              "label": "Model Training and Gradient Descent"
-            },
-            {
-              "id": "deep-learning-pytorch",
-              "label": "Deep Learning with PyTorch"
-            },
-            {
-              "id": "architectures-cnn-rnn-transformers",
-              "label": "Architectures — CNNs, RNNs, and Transformers"
-            },
-            {
               "id": "nlp-et-llm",
               "label": "Natural Language Processing (NLP) and Large Language Models (LLMs)"
             }

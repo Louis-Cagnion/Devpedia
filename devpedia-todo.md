@@ -24,17 +24,16 @@ Traduit à cette occasion (n'existait pas du tout côté EN) : 3 chapitres Git G
 
 **Bug trouvé et corrigé le 2026-08-13 (commit `2646664`) : blocs de code ` ```text ` corrompus dans `IA/chatbot.md` et `IA/assistant-agentique-terminal.md`** — une phrase mélangeait français et anglais en plein milieu d'un mot (ex. `n'There is no memory between two calls`), et le reste du bloc autour n'avait jamais été traduit du tout. Les deux fichiers sont maintenant intégralement en anglais.
 
-**Découverte plus large suite à ce bug, non corrigée : au moins 19 autres fichiers EN ont des blocs ` ```text ` (diagrammes ASCII, exemples de terminal, pseudocode) restés entièrement en français**, jamais traduits par la passe de traduction manuelle antérieure — un problème distinct du "brouillon obsolète" documenté plus haut, propre aux blocs de code texte spécifiquement. Détecté par un script ad hoc (recherche de marqueurs français dans les blocs ` ```text `), pas encore vérifié à 100% fiable (faux positifs possibles sur des exemples délibérément en français, ex. un message de commit d'exemple). Fichiers identifiés, aucun encore corrigé :
-- `Git/gitignore.md`, `rebase.md` (×2), `branches.md` (×2), `architecture-interne.md` (×2), `concepts-de-base.md`
-- `Docker/concepts-de-base.md`
-- `IA/agents.md` (×2), `architectures-cnn-rnn-transformers.md` (×3)
-- `Bases de l'informatique/code-programmes-et-fichiers.md` (×2), `le-terminal.md` (×2), `le-bug.md`, `arborescence-et-chemins.md`
-- `Langages de balisage/CSS/box-model.md`, `grid.md`
-- `Langages de programmation/C/appels-systeme-et-descripteurs.md`, `compilation.md`, `tables-de-hachage.md` (×2)
-- `Langages de programmation/Python/modules-et-environnements.md`
-- `Représentation des données/encodage-des-textes.md` (×2)
+**Chantier des 19 fichiers EN à blocs ` ```text ` non traduits : terminé le 2026-08-13**, traité directement (pas via agents), un par un, en comparant au texte FR source à chaque fois, comme décidé par Louis. Les 18 fichiers listés ont été corrigés ; le 19e (`Représentation des données/encodage-des-textes.md`) s'est avéré déjà entièrement traduit à l'ouverture (faux positif du script de détection initial), seuls ses tirets cadratins restaient à nettoyer.
 
-Décision de Louis le 2026-08-13 : les traiter directement (pas via agents), un par un, en comparant au texte FR source à chaque fois — risque d'erreur d'alignement ASCII trop élevé pour déléguer sans relecture. Pas encore commencé.
+Découvertes faites en cours de route, corrigées au passage plutôt que reportées :
+- **2 sections "Récapitulatif" entièrement absentes côté EN** (`CSS/grid.md`, `Langages de programmation/C/compilation.md`) et une 3e quasi-absente (`C/appels-systeme-et-descripteurs.md`, `C/tables-de-hachage.md`) : rédigées en anglais à partir du contenu FR.
+- **`Git/branches.md` avait le même "brouillon obsolète"** que les fichiers déjà listés plus haut (titre de section vide, paragraphes d'explication fast-forward/merge commit tronqués) : comblé à cette occasion.
+- **Tirets cadratins** (`—`) présents dans les 19 fichiers (reliquats de l'ancienne traduction DeepL, jamais couverts par le sweep FR du 2026-08-10) : nettoyés dans chacun, sur décision explicite de Louis d'élargir le nettoyage à ces fichiers au passage.
+- **Liens manquants (règle 7bis)** retrouvés cassés/remplacés par des placeholders vagues ("see the dedicated chapter") dans plusieurs fichiers : restaurés en liens internes réels.
+- **Bugs de traduction ponctuels** : balises Markdown cassées (gras mal fermé), clés JSON traduites par erreur (`"Description"` au lieu de `"description"`), mistraduction récurrente de "modèle" en "template" au lieu de "model" (`IA/agents.md`), variable `errno`/comparaisons non traduites dans des commentaires de code C.
+- **4 fichiers EN orphelins supprimés** (`Langages de programmation/Python/{architectures-cnn-rnn-transformers,deep-learning-pytorch,entrainement-descente-de-gradient,reseaux-de-neurones}.md`) : reliquats d'avant la création de la catégorie IA, sans lien entrant ni entrée dans `structure/struct-en.json`, confirmé par une recherche exhaustive avant suppression.
+- **`structure/struct-en.json` corrigé après cette suppression** : contenait encore 4 entrées de chapitres fantômes dans le sujet Python (le script qui régénère ce fichier a besoin d'une clé API DeepL indisponible, correction manuelle donc). 0 lien cassé confirmé sur l'ensemble de `content-en/` en rejouant la logique de validation de `scripts/generate-struct.js`.
 
 ### Traductions ES/PT à rattraper (EN désormais complet, 2026-08-10)
 - Le quota DeepL (1M caractères, "abonnement à vie" — probablement non renouvelable, à vérifier sur le compte) est épuisé : la traduction EN a été terminée **manuellement** (sans l'API) pour les ~130 fichiers restants, catégorie par catégorie.
