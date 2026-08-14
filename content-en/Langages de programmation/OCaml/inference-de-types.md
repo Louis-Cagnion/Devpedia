@@ -6,14 +6,14 @@ order: 5
 
 ## Static, but with no annotations
 
-OCaml is **statically typed**: every expression has a type fixed once and for all, checked before execution even begins — as in C (see the [Variables and Data Types](/?c=langages-de-programmation&s=c&p=variables) chapter). Unlike C, this type almost never needs to be written explicitly:
+OCaml is **statically typed**: every expression has a type fixed once and for all, checked before execution even begins, as in C (see the [Variables and Data Types](/?c=langages-de-programmation&s=c&p=variables) chapter). Unlike C, this type almost never needs to be written explicitly:
 
 ```ocaml
 let add x y = x + y
 (* the compiler deduces on its own: add : int -> int -> int *)
 ```
 
-Using `+` (reserved for integers in OCaml — `+.` is float addition) is enough for the compiler to deduce that `x` and `y` are `int`s, and therefore that `add` also returns one. No annotation was written, and yet the typing is just as strict as in C: calling `add 1 "two"` is an error caught at compile time, never at runtime.
+Using `+` (reserved for integers in OCaml; `+.` is float addition) is enough for the compiler to deduce that `x` and `y` are `int`s, and therefore that `add` also returns one. No annotation was written, and yet the typing is just as strict as in C: calling `add 1 "two"` is an error caught at compile time, never at runtime.
 
 ## How inference proceeds
 
@@ -29,7 +29,7 @@ let apply_twice f x = f (f x)
 (* -> apply_twice : ('a -> 'a) -> 'a -> 'a *)
 ```
 
-The second example illustrates **parametric polymorphism**: `'a` means "some type, to be determined based on the call" — the same idea as a C++ template (see the [Templates](/?c=langages-de-programmation&s=cpp&p=templates) chapter), but resolved automatically by inference rather than declared explicitly at each use (`template<typename T>`).
+The second example illustrates **parametric polymorphism**: `'a` means "some type, to be determined based on the call", the same idea as a C++ template (see the [Templates](/?c=langages-de-programmation&s=cpp&p=templates) chapter), but resolved automatically by inference rather than declared explicitly at each use (`template<typename T>`).
 
 ## Compared to dynamic typing and gradual typing
 
@@ -38,11 +38,11 @@ The second example illustrates **parametric polymorphism**: `'a` means "some typ
 | Checking | At compile time | Optional: never, or via an [external checker](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) (`mypy`) | At compile time, systematically |
 | Annotation required | Always (`int x`) | Optional | Never (inferred) |
 
-Python (see the [Typing with Annotations](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) chapter) lets you add type hints after the fact, checked by a separate tool that remains optional — the program runs even if these annotations are wrong or missing. In OCaml, there's no "unchecked" mode: a program whose types don't line up simply doesn't compile, and can therefore never reach execution with a type inconsistency.
+Python (see the [Typing with Annotations](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) chapter) lets you add type hints after the fact, checked by a separate tool that remains optional: the program runs even if these annotations are wrong or missing. In OCaml, there's no "unchecked" mode: a program whose types don't line up simply doesn't compile, and can therefore never reach execution with a type inconsistency.
 
 ## A safety net, not a verbosity tax
 
-The common assumption about statically typed languages is that they require writing more — true in C, where every variable carries its type. Inference decouples the two: the rigor of static typing (type errors caught before execution, even in code never run during testing) without the typing overhead usually associated with it.
+The common assumption about statically typed languages is that they require writing more: true in C, where every variable carries its type. Inference decouples the two: the rigor of static typing (type errors caught before execution, even in code never run during testing) without the typing overhead usually associated with it.
 
 ---
 
@@ -50,7 +50,7 @@ The common assumption about statically typed languages is that they require writ
 
 | | |
 |---|---|
-| **Key takeaways** | OCaml is statically typed but deduces types with no annotation (Hindley-Milner algorithm) — the rigor of static typing without the usual typing overhead. |
+| **Key takeaways** | OCaml is statically typed but deduces types with no annotation (Hindley-Milner algorithm): the rigor of static typing without the usual typing overhead. |
 | **Tools you can use** | Parametric polymorphism (`'a`) for a function that works on any type, resolved automatically. |
-| **Pitfalls to avoid** | Believing that a language with no type annotation must be dynamically typed — OCaml checks everything at compile time, without exception. |
-| **Best practices** | Let the compiler infer types rather than annotating systematically — annotations remain useful occasionally to document a complex signature. |
+| **Pitfalls to avoid** | Believing that a language with no type annotation must be dynamically typed: OCaml checks everything at compile time, without exception. |
+| **Best practices** | Let the compiler infer types rather than annotating systematically; annotations remain useful occasionally to document a complex signature. |

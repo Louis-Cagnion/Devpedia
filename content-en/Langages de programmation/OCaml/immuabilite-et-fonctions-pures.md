@@ -6,7 +6,7 @@ order: 2
 
 ## Immutability by default, and its explicit escape hatch
 
-An OCaml binding (`let x = ...`) can't be reassigned — modifying a value requires creating a **new** value from the old one, never modifying the original in place. When a genuinely mutable slot is needed, OCaml requires it to be declared explicitly with a **reference**:
+An OCaml binding (`let x = ...`) can't be reassigned: modifying a value requires creating a **new** value from the old one, never modifying the original in place. When a genuinely mutable slot is needed, OCaml requires it to be declared explicitly with a **reference**:
 
 ```ocaml
 let counter = ref 0        (* a reference: an explicit mutable slot *)
@@ -14,7 +14,7 @@ counter := !counter + 1     (* := assigns a new value *)
 print_int !counter           (* ! reads the current value -> 1 *)
 ```
 
-The `ref`/`:=`/`!` syntax makes every mutation **visible in the code** — impossible to mutate a value by accident, unlike a Python or JavaScript variable, mutable by default with no distinctive mark at the spot where it's modified.
+The `ref`/`:=`/`!` syntax makes every mutation **visible in the code**: impossible to mutate a value by accident, unlike a Python or JavaScript variable, mutable by default with no distinctive mark at the spot where it's modified.
 
 ## Persistent data structures
 
@@ -47,15 +47,15 @@ let impure_square x =
   x * x
 ```
 
-`square` can be replaced by its return value anywhere in the program without changing its behavior — a property called **referential transparency**. `impure_square` cannot: calling it or not changes `counter`'s content, so the order and number of calls matter, not just the final result.
+`square` can be replaced by its return value anywhere in the program without changing its behavior, a property called **referential transparency**. `impure_square` cannot: calling it or not changes `counter`'s content, so the order and number of calls matter, not just the final result.
 
 ## Why this matters in practice
 
-- **Testing becomes trivial**: a pure function is tested with inputs and an expected output, with no prior state to set up and no side effect to check after the call — the exact opposite of a hidden dependency.
-- **No surprises between two calls**: since no shared state can be modified without the caller knowing, two identical calls always give the same result, even run in parallel on different cores — shared state mutated simultaneously by several threads is precisely one of the classic causes of a hard-to-reproduce bug.
+- **Testing becomes trivial**: a pure function is tested with inputs and an expected output, with no prior state to set up and no side effect to check after the call, the exact opposite of a hidden dependency.
+- **No surprises between two calls**: since no shared state can be modified without the caller knowing, two identical calls always give the same result, even run in parallel on different cores; shared state mutated simultaneously by several threads is precisely one of the classic causes of a hard-to-reproduce bug.
 - **A structurally impossible pitfall**: Python's mutable default argument (see the [Functions](/?c=langages-de-programmation&s=python&p=fonctions) chapter) only exists because a shared mutable object can be silently captured across several calls. With no implicit mutation, this specific pitfall simply has no way to occur.
 
-> **Nuance:** no real program is 100% made of pure functions — displaying a result, reading a file, responding to a network request are side effects by nature. The goal isn't to eliminate them, but to **isolate** them: keep the portion of code that depends on them to a minimum, to focus testing and review effort where bugs are most likely.
+> **Nuance:** no real program is 100% made of pure functions: displaying a result, reading a file, responding to a network request are side effects by nature. The goal isn't to eliminate them, but to **isolate** them: keep the portion of code that depends on them to a minimum, to focus testing and review effort where bugs are most likely.
 
 ---
 
@@ -63,7 +63,7 @@ let impure_square x =
 
 | | |
 |---|---|
-| **Key takeaways** | An OCaml binding is immutable by default; `ref`/`:=`/`!` make every mutation explicit and visible. A pure function depends only on its arguments and has no side effect — its output is therefore predictable and testable in isolation. |
+| **Key takeaways** | An OCaml binding is immutable by default; `ref`/`:=`/`!` make every mutation explicit and visible. A pure function depends only on its arguments and has no side effect: its output is therefore predictable and testable in isolation. |
 | **Tools you can use** | `ref`, `:=`, `!`, persistent data structures (immutable lists sharing their memory). |
 | **Pitfalls to avoid** | Expecting a function with a side effect (via `ref`) to give the same result on every call, regardless of execution order. |
-| **Best practices** | Isolate side effects in a small part of the code rather than eliminating them entirely — focus testing effort where they are. |
+| **Best practices** | Isolate side effects in a small part of the code rather than eliminating them entirely; focus testing effort where they are. |

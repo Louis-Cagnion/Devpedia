@@ -20,7 +20,7 @@ factorial 5   (* 120 *)
 
 `factorial` above is **not tail-recursive**: on every call, the multiplication `n * ...` waits for the recursive call's result before it can run. Every pending call therefore stays on the **call stack** (see the [Memory Layout](/?c=representation-des-donnees&p=organisation-en-memoire) chapter for the stack/heap distinction), until the base case is reached and then every multiplication unwinds in a cascade on the way back up.
 
-A **tail-recursive** version carries the intermediate result in an extra argument (an **accumulator**), so that the recursive call is the very last thing done in the function — nothing is left waiting after it:
+A **tail-recursive** version carries the intermediate result in an extra argument (an **accumulator**), so that the recursive call is the very last thing done in the function; nothing is left waiting after it:
 
 ```ocaml
 let tail_factorial n =
@@ -35,7 +35,7 @@ The OCaml compiler recognizes this shape and optimizes it into a plain loop in t
 
 ## Higher-order functions: `map`, `filter`, `fold`
 
-A higher-order function takes a function as an argument, or returns one — the same principle as a Python decorator (see the [Decorators](/?c=langages-de-programmation&s=python&p=decorateurs) chapter), generalized across the entire standard list library rather than reserved for one specific use case.
+A higher-order function takes a function as an argument, or returns one, the same principle as a Python decorator (see the [Decorators](/?c=langages-de-programmation&s=python&p=decorateurs) chapter), generalized across the entire standard list library rather than reserved for one specific use case.
 
 ```ocaml
 let squares = List.map (fun x -> x * x) [1; 2; 3; 4]           (* [1; 4; 9; 16] *)
@@ -55,7 +55,7 @@ for (int i = 0; i < size; i++) {
 
 The `fold_left` version never explicitly mentions a counter or an intermediate variable: the "how to iterate" is entirely delegated to `List.fold_left`, and the code only expresses the "what to do with each element" (`(+)`) and the starting state (`0`).
 
-> **Note:** `fold_left` accumulates from left to right (`(((0 + 1) + 2) + 3) + 4`) — for a non-associative or order-sensitive operation, `List.fold_right` accumulates from right to left, with a slightly different call signature (the accumulator is the last argument, not the second).
+> **Note:** `fold_left` accumulates from left to right (`(((0 + 1) + 2) + 3) + 4`); for a non-associative or order-sensitive operation, `List.fold_right` accumulates from right to left, with a slightly different call signature (the accumulator is the last argument, not the second).
 
 ---
 
@@ -65,5 +65,5 @@ The `fold_left` version never explicitly mentions a counter or an intermediate v
 |---|---|
 | **Key takeaways** | Recursion replaces the mutable-counter loop. Tail recursion (the recursive call is the last action) is optimized by the compiler into a loop, with no stack growth. `map`/`filter`/`fold` cover most transformation/filtering/aggregation loops. |
 | **Tools you can use** | `let rec`, an accumulator to make a recursion tail-recursive, `List.map`/`List.filter`/`List.fold_left`. |
-| **Pitfalls to avoid** | Writing non-tail recursion over a very large list — risk of stack overflow. |
+| **Pitfalls to avoid** | Writing non-tail recursion over a very large list: risk of stack overflow. |
 | **Best practices** | Turn a recursion into tail-recursive form (with an accumulator) as soon as it needs to handle potentially large collections. |

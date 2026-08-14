@@ -31,7 +31,7 @@ let result =
   a + b            (* result = 5: that's the value of the whole block *)
 ```
 
-There is therefore no structural distinction between "what produces a value" and "what performs an action" — everything produces a value, including `()` (*unit*, the equivalent of `void`) for an expression executed purely for its effect.
+There is therefore no structural distinction between "what produces a value" and "what performs an action": everything produces a value, including `()` (*unit*, the equivalent of `void`) for an expression executed purely for its effect.
 
 ## Binding vs. mutation
 
@@ -50,7 +50,7 @@ x = x + 1
 print(x)   # 6
 ```
 
-The displayed result is identical, but the mechanism differs: in Python, a single memory slot changed content; in OCaml, a new binding simply took over from the old one in the current scope. OCaml offers an explicit escape hatch for when a genuinely mutable slot is needed, the reference (`ref`) — covered in depth in the chapter on immutability and pure functions.
+The displayed result is identical, but the mechanism differs: in Python, a single memory slot changed content; in OCaml, a new binding simply took over from the old one in the current scope. OCaml offers an explicit escape hatch for when a genuinely mutable slot is needed, the reference (`ref`), covered in depth in the chapter on immutability and pure functions.
 
 ## Loops vs. recursion
 
@@ -71,7 +71,7 @@ let rec sum_functional = function
   | head :: rest -> head + sum_functional rest
 ```
 
-Both styles coexist in OCaml — `ref`, `for`, and `while` genuinely exist in the language, this isn't a simulation. The chapter on recursion and higher-order functions details why the recursive version stays practical even on large lists.
+Both styles coexist in OCaml: `ref`, `for`, and `while` genuinely exist in the language, this isn't a simulation. The chapter on recursion and higher-order functions details why the recursive version stays practical even on large lists.
 
 ## Summary
 
@@ -82,7 +82,7 @@ Both styles coexist in OCaml — `ref`, `for`, and `while` genuinely exist in th
 | Repetition | Loops (`for`, `while`) with a mutable counter | Recursion, higher-order functions (`map`, `fold`) |
 | Mental model | "What to do, in what order" | "What value, from which other values" |
 
-Neither style is strictly superior: imperative style often fits more naturally with a resource that genuinely changes over time (an interface's state, a network connection), while functional style excels at pure data transformations — the rest of this topic details the concrete reasons for that advantage rather than taking it for granted.
+Neither style is strictly superior: imperative style often fits more naturally with a resource that genuinely changes over time (an interface's state, a network connection), while functional style excels at pure data transformations; the rest of this topic details the concrete reasons for that advantage rather than taking it for granted.
 
 ---
 
@@ -92,5 +92,5 @@ Neither style is strictly superior: imperative style often fits more naturally w
 |---|---|
 | **Key takeaways** | In OCaml, `if` and every block are expressions (they produce a value), `let` creates an immutable binding (not a reassignable variable), and recursion replaces the mutable-counter loop. |
 | **Tools you can use** | `let ... in`, `if ... then ... else` as an expression, `let rec` for a recursive function. |
-| **Pitfalls to avoid** | Confusing a new binding (`let x = x + 1`) with a reassignment — the previous `x` isn't modified, only shadowed in the scope that follows. |
+| **Pitfalls to avoid** | Confusing a new binding (`let x = x + 1`) with a reassignment: the previous `x` isn't modified, only shadowed in the scope that follows. |
 | **Best practices** | Choose the style based on the nature of the problem: imperative for a state that genuinely changes over time, functional for a pure data transformation. |
