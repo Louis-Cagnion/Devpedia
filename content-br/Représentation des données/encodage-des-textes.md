@@ -126,7 +126,7 @@ Ele continua, no entanto, comum no Windows, onde algumas ferramentas (incluindo 
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

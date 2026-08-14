@@ -134,7 +134,7 @@ Lembre-se principalmente de que essas diferenças não mudam nada no fundo: é o
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

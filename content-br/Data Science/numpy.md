@@ -92,7 +92,7 @@ Veja também o capítulo sobre [pandas](/?c=data-science&p=pandas), que constró
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

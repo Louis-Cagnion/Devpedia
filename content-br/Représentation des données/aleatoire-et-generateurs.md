@@ -107,7 +107,7 @@ O mesmo raciocínio se aplica a `Math.random()` em JavaScript ou `mt_rand()` em 
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

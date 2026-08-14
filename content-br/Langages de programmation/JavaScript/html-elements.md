@@ -188,7 +188,7 @@ element.offsetWidth;
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

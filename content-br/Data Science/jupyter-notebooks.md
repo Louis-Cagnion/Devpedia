@@ -66,7 +66,7 @@ Veja também os capítulos sobre [pandas](/?c=data-science&p=pandas) e [Matplotl
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

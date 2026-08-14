@@ -160,7 +160,7 @@ Veja também o capítulo sobre [as redes neurais](/?c=ia&s=fondamentaux-du-deep-
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

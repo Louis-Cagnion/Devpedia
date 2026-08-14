@@ -86,7 +86,7 @@ O `.plot()` do [pandas](/?c=data-science&p=pandas) é apenas um atalho prático 
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

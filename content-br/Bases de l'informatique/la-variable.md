@@ -41,7 +41,7 @@ A sintaxe exata para criar uma variável muda de uma linguagem para outra (o sí
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

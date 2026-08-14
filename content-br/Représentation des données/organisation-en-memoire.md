@@ -114,7 +114,7 @@ char  *pc = (char *)&x;
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

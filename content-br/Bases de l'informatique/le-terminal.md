@@ -82,7 +82,7 @@ O nome exato dos comandos muda de um shell para outro (`ls` no Bash se torna `Ge
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

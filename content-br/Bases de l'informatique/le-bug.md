@@ -60,7 +60,7 @@ Uma [IDE](/?c=bases-de-l-informatique&p=editeur-de-code-et-ide) ajuda nas três 
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

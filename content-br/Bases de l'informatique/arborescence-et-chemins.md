@@ -80,7 +80,7 @@ Trocar a pasta atual e listar o conteúdo de uma pasta são duas ações básica
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

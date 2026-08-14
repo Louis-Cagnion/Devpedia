@@ -111,7 +111,7 @@ Veja também o capítulo sobre [NumPy](/?c=data-science&p=numpy) (as colunas de 
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

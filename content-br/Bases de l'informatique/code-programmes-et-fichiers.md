@@ -78,7 +78,7 @@ O código escrito por um humano nem sempre é o que o processador executa direta
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

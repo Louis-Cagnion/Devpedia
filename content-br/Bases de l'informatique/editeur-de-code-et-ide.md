@@ -58,7 +58,7 @@ Para começar, um editor generalista e gratuito como o **VS Code** (disponível 
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|

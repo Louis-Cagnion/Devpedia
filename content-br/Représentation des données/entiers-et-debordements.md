@@ -113,7 +113,7 @@ O corolário dessa representação binária é que se pode agir sobre os própri
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|
