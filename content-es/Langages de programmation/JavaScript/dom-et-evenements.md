@@ -1,86 +1,97 @@
 ---
-order: 11
+order: 12
 ---
 
 # El DOM y la gestión de eventos
 
-El **DOM** (*Document Object Model*) es la representación en memoria de una página HTML, en forma de árbol de objetos que pueden manipularse mediante JavaScript: cada etiqueta se convierte en un nodo de este árbol, con sus propias propiedades y métodos.
+El **DOM** (*Document Object Model*) es la representación en memoria de una página HTML, en forma de árbol de objetos manipulables por JavaScript: cada etiqueta se convierte en un nodo de ese árbol, con sus propias propiedades y métodos.
 
 ## Seleccionar elementos
 
 ```javascript
-document.getElementById("titre");           // un elemento concreto, mediante su ID
-document.querySelector(".carte");            // el PRIMER elemento que coincida con este selector CSS
-document.querySelectorAll(".carte");          // TODOS los elementos correspondientes (NodeList)
+document.getElementById("titulo");     // un elemento preciso, por su id
+document.querySelector(".tarjeta");    // el PRIMER elemento que coincide con este selector CSS
+document.querySelectorAll(".tarjeta"); // TODOS los elementos coincidentes (NodeList)
 ```
 
-> **Nota:** `querySelector` / `querySelectorAll` admiten cualquier selector CSS (véase el capítulo correspondiente): `.classe`, `#id`, `div > p`, `[data-role="bouton"]`... Es el método más flexible.
+> **Nota:** `querySelector`/`querySelectorAll` aceptan cualquier [selector CSS](/?c=langages-de-balisage&s=css&p=selecteurs): `.clase`, `#id`, `div > p`, `[data-role="boton"]`... es el método más flexible.
 
 ## Modificar un elemento
 
 ```javascript
-const título = document.querySelector("h1");
+const titulo = document.querySelector("h1");
 
-título.textContent = "Nouveau titre";     // sustituye el texto (escapa automáticamente el HTML)
-título.innerHTML = "<em>Titre</em>";       // Inserta código HTML sin formato -> PELIGRO si la fuente no es fiable (XSS)
-título.style.color = "red";                  // modifica un estilo CSS directamente
-título.classList.add("actif");                // Añade una clase CSS
-título.classList.remove("actif");
-título.classList.toggle("actif");              // Añádela si no está, elimínala si está.
-título.setAttribute("data-id", "42");
+titulo.textContent = "Nuevo título";  // sustituye el texto (escapa automáticamente el HTML)
+titulo.innerHTML = "<em>Título</em>"; // inserta HTML sin procesar -> PELIGRO si la fuente no es fiable (XSS)
+titulo.style.color = "red";           // modifica un estilo CSS directamente
+titulo.classList.add("activo");       // añade una clase CSS
+titulo.classList.remove("activo");
+titulo.classList.toggle("activo");            // añade si falta, quita si está presente
+titulo.setAttribute("data-id", "42");
 ```
 
-> **Nota:** «`innerHTML`» con datos proporcionados por el usuario constituye una vulnerabilidad XSS clásica (véase el capítulo sobre seguridad en PHP, el mismo principio): un atacante podría inyectar código ejecutable. «`textContent`» sigue siendo seguro por defecto, ya que siempre trata su contenido como texto sin formato.
+> **Nota:** `innerHTML` con un dato proveniente del usuario es una vulnerabilidad XSS clásica (véase [La seguridad](/?c=langages-de-programmation&s=php&p=securite), mismo principio): un atacante podría inyectar código ejecutable. `textContent` sigue siendo seguro por defecto, ya que siempre trata su contenido como texto sin formato.
 
 ## Crear e insertar un elemento
 
 ```javascript
-const nouvelleCarte = document.createElement("div");
-nouvelleCarte.textContent = "Nouvelle carte";
-nouvelleCarte.classList.add("carte");
+const nuevaTarjeta = document.createElement("div");
+nuevaTarjeta.textContent = "Nueva tarjeta";
+nuevaTarjeta.classList.add("tarjeta");
 
-document.querySelector("#liste").appendChild(nouvelleCarte);
+document.querySelector("#lista").appendChild(nuevaTarjeta);
 ```
 
 ## Escuchar eventos
 
 ```javascript
-const bouton = document.querySelector("#mon-bouton");
+const boton = document.querySelector("#mi-boton");
 
-bouton.addEventListener("click", (evenement) => {
-    console.log("Bouton cliqué !", evenement.target);
+boton.addEventListener("click", (evento) => {
+    console.log("¡Botón pulsado!", evento.target);
 });
 ```
 
-| Evento habitual | Se activa cuando |
+| Evento habitual | Se dispara cuando |
 |---|---|
 | `click` | Se hace clic en el elemento |
 | `submit` | Se envía un formulario |
 | `input` / `change` | El valor de un campo cambia |
-| `keydown` / `keyup` | Se pulsa o se suelta una tecla del teclado |
-| `DOMContentLoaded` | El HTML se ha cargado por completo (antes que las imágenes y los estilos) |
+| `keydown` / `keyup` | Se presiona/suelta una tecla del teclado |
+| `DOMContentLoaded` | El HTML está completamente cargado (antes de las imágenes/estilos) |
 
-## `preventDefault()` : anular el comportamiento por defecto
+## `preventDefault()`: anular el comportamiento por defecto
 
 ```javascript
-document.querySelector("form").addEventListener("submit", (evenement) => {
-    evenement.preventDefault();   // Impide que un formulario se recargue de forma predeterminada.
-    console.log("Formulaire intercepté par JavaScript");
+document.querySelector("form").addEventListener("submit", (evento) => {
+    evento.preventDefault();   // impide la recarga de página por defecto de un formulario
+    console.log("Formulario interceptado por JavaScript");
 });
 ```
 
 ## Propagación de eventos y delegación
 
-Un evento se propaga desde el elemento de destino hacia sus elementos padres (*bubbling*), lo que permite escuchar un evento en un elemento padre común en lugar de en cada elemento hijo individualmente:
+Un evento se propaga desde el elemento objetivo hacia sus padres (*bubbling*), lo cual permite escuchar un evento en un padre común en lugar de en cada hijo individualmente:
 
 ```javascript
-document.querySelector("#liste").addEventListener("click", (evenement) => {
-    if (evenement.target.classList.contains("carte")) {
-        console.log("Une carte a été cliquée :", evenement.target.textContent);
+document.querySelector("#lista").addEventListener("click", (evento) => {
+    if (evento.target.classList.contains("tarjeta")) {
+        console.log("Se hizo clic en una tarjeta:", evento.target.textContent);
     }
 });
-// Funciona incluso con tarjetas añadidas DINÁMICAMENTE después de este addEventListener,
-// a diferencia de un addEventListener aplicado individualmente a cada mapa al cargarse
+// funciona incluso para tarjetas añadidas DINÁMICAMENTE después de este addEventListener,
+// a diferencia de un addEventListener colocado individualmente en cada tarjeta al cargar la página
 ```
 
-Esta técnica, la **delegación de eventos**, evita tener que volver a asociar un oyente a cada nuevo elemento creado dinámicamente (véase el ejemplo de `createElement` más arriba): basta con un único oyente, asociado una sola vez a un antepasado estable.
+Esta técnica, la **delegación de eventos**, evita tener que volver a asociar un escuchador a cada nuevo elemento creado dinámicamente (véase el ejemplo de `createElement` más arriba): un único escuchador, colocado una vez en un ancestro estable, basta.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | El DOM representa una página HTML en forma de árbol manipulable. `querySelector`/`addEventListener` seleccionan y reaccionan a las interacciones; un evento se propaga de los hijos hacia los padres (*bubbling*). |
+| **Herramientas utilizables** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`. |
+| **Trampas a evitar** | Asignar un dato de usuario a `innerHTML` (vulnerabilidad XSS); asociar un escuchador a cada elemento individual en lugar de delegar, lo cual falla para los elementos añadidos dinámicamente después. |
+| **Buenas prácticas** | Usar la delegación de eventos (escuchador en un ancestro estable) en lugar de un escuchador por elemento, sobre todo si se añaden elementos dinámicamente. |

@@ -62,7 +62,7 @@
       "chapters": [
         {
           "id": "concepts-de-base",
-          "label": "Conceptos básicos de Git"
+          "label": "Los conceptos básicos de Git"
         },
         {
           "id": "commandes-essentielles",
@@ -86,11 +86,11 @@
         },
         {
           "id": "tags",
-          "label": "Las etiquetas"
+          "label": "Las tags"
         },
         {
           "id": "remotes",
-          "label": "Repositorios remotos"
+          "label": "Los repositorios remotos (remotes)"
         },
         {
           "id": "resoudre-conflits",
@@ -161,41 +161,6 @@
       "folder": "Langages de balisage",
       "subjects": [
         {
-          "id": "css",
-          "label": "CSS",
-          "folder": "CSS",
-          "chapters": [
-            {
-              "id": "selecteurs",
-              "label": "Los selectores"
-            },
-            {
-              "id": "variables-et-cascade",
-              "label": "Variables CSS y la cascada"
-            },
-            {
-              "id": "box-model",
-              "label": "El modelo de caja (box model)"
-            },
-            {
-              "id": "positionnement",
-              "label": "El posicionamiento (posición, z-index)"
-            },
-            {
-              "id": "flexbox",
-              "label": "Flexbox"
-            },
-            {
-              "id": "grid",
-              "label": "CSS Grid"
-            },
-            {
-              "id": "responsive-et-media-queries",
-              "label": "El diseño adaptativo y las consultas de medios"
-            }
-          ]
-        },
-        {
           "id": "html",
           "label": "HTML",
           "folder": "HTML",
@@ -226,7 +191,42 @@
             },
             {
               "id": "attributs-data-et-accessibilite",
-              "label": "Atributos «data-*» y accesibilidad (ARIA)"
+              "label": "Atributos data-* y accesibilidad (ARIA)"
+            }
+          ]
+        },
+        {
+          "id": "css",
+          "label": "CSS",
+          "folder": "CSS",
+          "chapters": [
+            {
+              "id": "selecteurs",
+              "label": "Los selectores"
+            },
+            {
+              "id": "variables-et-cascade",
+              "label": "Variables CSS y la cascada"
+            },
+            {
+              "id": "box-model",
+              "label": "El modelo de caja (box model)"
+            },
+            {
+              "id": "positionnement",
+              "label": "El posicionamiento (position, z-index)"
+            },
+            {
+              "id": "flexbox",
+              "label": "Flexbox"
+            },
+            {
+              "id": "grid",
+              "label": "CSS Grid"
+            },
+            {
+              "id": "responsive-et-media-queries",
+              "label": "El diseño adaptativo y las consultas de medios"
             }
           ]
         }
@@ -237,12 +237,6 @@
       "label": "Langages de programmation",
       "folder": "Langages de programmation",
       "subjects": [
-        {
-          "id": "ocaml",
-          "label": "OCaml",
-          "folder": "OCaml",
-          "chapters": []
-        },
         {
           "id": "c",
           "label": "C",
@@ -305,6 +299,10 @@
               "label": "La gestión de procesos"
             },
             {
+              "id": "operateurs-binaires",
+              "label": "Los operadores binarios"
+            },
+            {
               "id": "appels-systeme-et-descripteurs",
               "label": "Las llamadas al sistema y los descriptores de archivo"
             },
@@ -321,7 +319,7 @@
           "chapters": [
             {
               "id": "references",
-              "label": "Referencias"
+              "label": "Las referencias"
             },
             {
               "id": "espaces-de-noms",
@@ -329,7 +327,7 @@
             },
             {
               "id": "classes-et-objets",
-              "label": "Las clases y los objetos"
+              "label": "Las clases y objetos"
             },
             {
               "id": "heritage-et-polymorphisme",
@@ -353,7 +351,7 @@
             },
             {
               "id": "stl-algorithmes-et-iterateurs",
-              "label": "La STL: iteradores, algoritmos y lambda"
+              "label": "La STL: iteradores, algoritmos y lambdas"
             },
             {
               "id": "templates",
@@ -368,7 +366,7 @@
           "chapters": [
             {
               "id": "conditions",
-              "label": "Condiciones"
+              "label": "Las condiciones"
             },
             {
               "id": "boucles",
@@ -380,11 +378,15 @@
             },
             {
               "id": "strings",
-              "label": "Las cadenas de caracteres"
+              "label": "Las strings"
             },
             {
               "id": "tableaux",
-              "label": "Las tablas"
+              "label": "Los arrays"
+            },
+            {
+              "id": "nombres",
+              "label": "Los números"
             },
             {
               "id": "objets",
@@ -400,11 +402,11 @@
             },
             {
               "id": "gestion-des-erreurs",
-              "label": "Gestión de errores"
+              "label": "La gestión de errores"
             },
             {
-              "id": "HTMLElements",
-              "label": "Los elementos HTML"
+              "id": "html-elements",
+              "label": "Los HTMLElements"
             },
             {
               "id": "dom-et-evenements",
@@ -415,6 +417,12 @@
               "label": "La programación asíncrona (callbacks, Promises, async/await)"
             }
           ]
+        },
+        {
+          "id": "ocaml",
+          "label": "OCaml",
+          "folder": "OCaml",
+          "chapters": []
         },
         {
           "id": "php",

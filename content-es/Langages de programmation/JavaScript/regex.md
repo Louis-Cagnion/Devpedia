@@ -1,137 +1,117 @@
 ---
-order: 8
+order: 9
 ---
 
 # Las expresiones regulares
 
-Una expresión regular (regex) es un patrón que se utiliza para buscar, validar o sustituir fragmentos de texto en una cadena.
+Una regex (expresión regular) es un patrón que se utiliza para buscar, validar o sustituir fragmentos de texto en una string.
 
-Puede redactarse de dos formas diferentes:
+Se puede escribir de dos maneras distintas:
+
 ```javascript
-    // literal, el más habitual
-    const re1 = /hello/;
+// literal, la más habitual
+const re1 = /hello/;
 
-    // con el constructor RegExp, útil cuando el patrón es dinámico
-    const re2 = new RegExp('hello');
+// con el constructor RegExp, útil cuando el patrón es dinámico
+const re2 = new RegExp('hello');
 ```
 
-### Los indicadores
+### Los flags
 
-Los indicadores se colocan después de la última barra y modifican el comportamiento de la expresión regular.
+Los flags se colocan después de la última barra y modifican el comportamiento de la regex; se pueden combinar varios (`/hello/gi`):
 
-**`g`** (global) busca todas las apariciones en la cadena, y no solo la primera.
+| Flag | Nombre | Efecto |
+|---|---|---|
+| `g` | *global* | Busca **todas** las coincidencias en la string, no solo la primera |
+| `i` | *insensitive* | Ignora las mayúsculas y minúsculas: no distingue entre unas y otras |
+| `m` | *multiline* | `^`/`$` corresponden al inicio/final de **cada línea**, no solo de toda la string |
+
+### Los prototipos de regex
+
+Los prototipos son funciones integradas de forma predeterminada en el objeto RegExp, que permiten realizar ciertas acciones con la regex:
+
+| Método | Devuelve |
+|---|---|
+| `regex.test(str)` | `true`/`false` según si la string coincide con la regex |
+| `regex.exec(str)` | Detalles de la primera coincidencia (o `null`): índice 0 = coincidencia completa, índices siguientes = grupos capturados |
+
 ```javascript
-    const re1 = /hello/g;
+const re = /wor(l)d/;
+const str = 'hello world';
+
+re.test(str);  // true
+re.exec(str);  // ['world', 'l', index: 6, input: 'hello world', groups: undefined]
 ```
 
-**`i`** (insensible a mayúsculas y minúsculas) no distingue entre mayúsculas y minúsculas.
+### Los prototipos de strings que utilizan regex
+
+Algunos prototipos del objeto string aceptan una regex como parámetro para realizar búsquedas o sustituciones más avanzadas:
+
+| Método | Devuelve |
+|---|---|
+| `str.match(regex)` | Primera coincidencia (o `null`); con el flag `g`, todas las coincidencias pero sin detalle de los grupos |
+| `str.matchAll(regex)` | Iterador de todas las coincidencias, con sus grupos; flag `g` **obligatorio** |
+| `str.search(regex)` | Índice de la primera coincidencia, `-1` si no hay ninguna |
+| `str.replace(regex, x)` | Sustituye la primera ocurrencia (o todas, con el flag `g`) |
+| `str.replaceAll(regex, x)` | Sustituye todas las ocurrencias; flag `g` **obligatorio**, si no, error |
+| `str.split(regex)` | Divide en un array de subcadenas, usando la regex como separador |
+
 ```javascript
-    const re2 = /hello/i;
+const str = 'hello world';
+
+str.match(/o/g);         // ['o', 'o']
+str.search(/world/);     // 6
+str.replace(/o/g, '0');  // 'hell0 w0rld'
+str.split(/\s/);         // ['hello', 'world']
 ```
 
-**`m`** (multiline) activa el modo multilínea, lo que cambia el comportamiento de `^` y `$`: ahora corresponden al inicio y al final de cada línea, y ya no solo al de toda la cadena.
-```javascript
-    const re3 = /hello/m;
-```
-
-Se pueden combinar varias opciones entre sí.
-```javascript
-    const re4 = /hello/gi;
-```
-
-### Prototipos de expresiones regulares
-
-Los prototipos son funciones integradas de forma predeterminada en el objeto RegExp, que permiten realizar determinadas acciones con la expresión regular.
+`matchAll` da acceso al detalle de cada coincidencia (grupos incluidos), mientras que `match` con `g` solo devuelve las coincidencias en bruto:
 
 ```javascript
-    const re = /wor(l)d/;
-    const str = 'hello world';
-```
+const str2 = "Jean:25 Marie:30";
+const resultado = [...str2.matchAll(/(\w+):(\d+)/g)];
 
-**`test`** Comprueba si la cadena coincide con la expresión regular y devuelve simplemente «`true`» o «`false`».
-```javascript
-    re.test(str); // true
-```
-
-**`exec`** Devuelve un array con los detalles de la primera coincidencia encontrada, o «`null`» si no se encuentra ninguna coincidencia. En este array, el índice 0 contiene la coincidencia completa, y los índices siguientes contienen los grupos capturados (entre paréntesis en la expresión regular).
-```javascript
-    re.exec(str); // ['world', 'l', index: 6, input: 'hello world', groups: undefined]
-```
-
-### Prototipos de cadenas que utilizan expresiones regulares
-
-Algunos prototipos del objeto «string» admiten una expresión regular como parámetro para realizar búsquedas o sustituciones más avanzadas.
-
-```javascript
-    const str = 'hello world';
-```
-
-**`match`** Devuelve el primer resultado que coincida con la expresión regular (o «`null`» si no hay ninguno). Si la expresión regular utiliza el indicador «`g`», devuelve en su lugar una matriz que contiene todas las coincidencias, pero sin los detalles de los grupos capturados.
-```javascript
-    str.match(/o/g); // ['o', 'o']
-```
-
-**`matchAll`** Funciona igual que `match` con el indicador `g`, pero requiere obligatoriamente dicho indicador. Devuelve un iterador que da acceso a los detalles de cada coincidencia, incluidos los grupos capturados.
-```javascript
-    const str = "Jean:25 Marie:30";
-    const resultado = [...str.matchAll(/(\w+):(\d+)/g)];
-
-    console.log(resultado);
-    /*  
-    [
-        [
-            "Jean:25",           // correspondencia completa
-            "Jean",              // grupo 1
-            "25",                // grupo 2
-            índice: 0,
-            input: "Jean:25 Marie:30",
-            groups: undefined
-        ],
-        [
-            "Marie:30",
-            "Marie",
-            "30",
-            índice: 8,
-            input: "Jean:25 Marie:30",
-            groups: undefined
-        ]
-    ]
-    */
-```
-
-**`search`** Devuelve el índice de la primera coincidencia de la expresión regular en la cadena, o `-1` si no se encuentra ninguna coincidencia.
-```javascript
-    str.search(/world/); // 6
-```
-
-**`replace`** y **`replaceAll`** devuelven una copia de la cadena en la que una parte se ha sustituido por otra: `replace` solo sustituye la primera aparición que coincida con la expresión regular (a menos que se haya activado el indicador `g`), mientras que `replaceAll` requiere obligatoriamente este indicador para sustituir todas las apariciones.
-```javascript
-    str.replace(/o/g, '0'); // «hell0 w0rld»
-    str.replaceAll(/o/g, '0'); // Requiere el indicador «g»; de lo contrario, se producirá un error.
-```
-
-**`split`** Divide la cadena en una matriz de subcadenas, utilizando la expresión regular como separador.
-```javascript
-    str.split(/\s/); // ['hola', 'mundo']
+console.log(resultado);
+/*
+[
+    ["Jean:25", "Jean", "25", index: 0, input: "Jean:25 Marie:30", groups: undefined],
+    ["Marie:30", "Marie", "30", index: 8, input: "Jean:25 Marie:30", groups: undefined]
+]
+-> para cada coincidencia: la cadena completa, y luego cada grupo capturado (\w+ y \d+)
+*/
 ```
 
 ### Los grupos de captura
 
-Los paréntesis en una expresión regular permiten capturar una parte concreta de la coincidencia. Estas partes capturadas se pueden recuperar posteriormente mediante `exec` o `match`.
+Los paréntesis en una regex permiten capturar una parte concreta de la coincidencia. Estas partes capturadas se pueden recuperar después mediante `exec` o `match`:
 
 ```javascript
-    const re = /(\d{4})-(\d{2})-(\d{2})/;
-    const date = '2024-06-15';
+const re = /(\d{4})-(\d{2})-(\d{2})/;
+const date = '2024-06-15';
 
-    const result = date.match(re);
-    result[1]; // «2024» (año)
-    result[2]; // «06» (mes)
-    result[3]; // «15» (día)
+const result = date.match(re);
+result[1];  // '2024' (año)
+result[2];  // '06' (mes)
+result[3];  // '15' (día)
 ```
 
-También se pueden asignar nombres a los grupos para que resulten más legibles, y acceder a ellos por su nombre a través de la propiedad `groups`.
+También se pueden nombrar los grupos para que sean más legibles, y acceder a ellos por su nombre mediante la propiedad `groups`:
+
 ```javascript
-    const reNamed = /(?<annee>\d{4})-(?<mois>\d{2})-(?<jour>\d{2})/;
-    const resultNamed = reNamed.exec(date);
-    resultNamed.groups.annee; // «2024»
+const reNamed = /(?<annee>\d{4})-(?<mois>\d{2})-(?<jour>\d{2})/;
+const resultNamed = reNamed.exec(date);
+resultNamed.groups.annee; // '2024'
 ```
+
+> **Trampa:** una regex literal con el flag `g`, reutilizada varias veces con `.test()` o `.exec()`, conserva un estado interno (`lastIndex`) entre llamadas: un segundo `.test()` sobre la misma regex puede devolver `false` aunque el texto coincida, simplemente porque la búsqueda continúa después de la posición de la coincidencia anterior. Crear una nueva regex (o reiniciar `lastIndex = 0`) evita esta trampa.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Una regex describe un patrón de búsqueda/validación/sustitución en una string. `test()` devuelve un booleano, `exec()`/`match()`/`matchAll()` dan acceso a los detalles de la coincidencia (incluidos los grupos capturados). |
+| **Herramientas utilizables** | Flags `g`/`i`/`m`, grupos con nombre (`(?<nombre>...)`), `replace`/`replaceAll`/`split` sobre una string con una regex. |
+| **Trampas a evitar** | Reutilizar una regex `g` con `.test()`/`.exec()` en un bucle sin tener en cuenta su estado interno (`lastIndex`). |
+| **Buenas prácticas** | Nombrar los grupos de captura en cuanto una regex tenga varios, para un acceso más legible que por índice numérico. |
