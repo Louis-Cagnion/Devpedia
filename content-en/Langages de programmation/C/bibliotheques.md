@@ -6,7 +6,7 @@ order: 9
 
 A **library** is a collection of precompiled functions that can be reused by any program without recompiling the source code: this is how, for example, the C standard library works (`printf`, `malloc`...). There are two ways to link a library to a program: statically or dynamically.
 
-## 
+## Static Library (`.a`)
 
 The library code is **copied directly** into the final executable during the linking process (see the chapter on compilation).
 

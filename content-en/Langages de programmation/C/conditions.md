@@ -45,7 +45,7 @@ const char *statut = (age >= 18) ? "majeur" : "mineur";
 printf("%s\n", statut);
 ```
 
-## 
+## The `switch`
 
 Useful for comparing a single variable to multiple integer or enumerated values:
 

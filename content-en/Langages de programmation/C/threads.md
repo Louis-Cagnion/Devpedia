@@ -4,7 +4,7 @@ order: 16
 
 # Threads (pthreads)
 
-A **thread** is, like a process, a sequence of instructions executed independently, but unli`fork()`s (see the chapter on processes), multiple threads within the same program **share the same memory**. It is lighter to create than a process, but this introduces a new risk: two threads can modify the same data at the same time.
+A **thread** is, like a process, a sequence of instructions executed independently, but unlike `fork()`s (see the chapter on processes), multiple threads within the same program **share the same memory**. It is lighter to create than a process, but this introduces a new risk: two threads can modify the same data at the same time.
 
 ## Create and wait for a thread
 

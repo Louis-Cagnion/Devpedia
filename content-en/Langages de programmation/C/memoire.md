@@ -83,7 +83,7 @@ p = NULL; // bonne pratique : empêche une utilisation accidentelle après libé
 
 | Bug | Cause | Consequence |
 |---|---|---|
-| **Memory*** ***leak** | A block of *memory* `malloc` is never `free()` | The amount of memory used by the program increases but never decreases |
+| **Memory leak** | A block of *memory* `malloc` is never `free()` | The amount of memory used by the program increases but never decreases |
 | **Use-after-free** | The program dereferences a pointer after it has been "`free()`" | Undefined behavior: corrupted data, crash, or worse, it silently "works" |
 | **Double free** | `free()` called twice on the same pointer | Memory manager corruption, often resulting in a delayed crash that is difficult to trace |
 

@@ -6,7 +6,7 @@ order: 8
 
 A **Makefile** automates the compilation of a multi-file C project: rather than manually retyping each [`gcc`](https://gcc.gnu.org) command (see the chapter on compilation), you define the build rules once, and the tool `make` executes them, recompiling only what has actually changed since the last time.
 
-## Anatomy of a Ruler
+## Anatomy of a Rule
 
 ```makefile
 target: dependances
@@ -20,7 +20,7 @@ program: main.o calculs.o
 
 "To build `program`, I need `main.o` and `calculs.o`; if either of these is newer than `program` (or if `program` doesn't exist yet), run the command." The command line **must** be indented with a tab, never spaces, one of the most common mistakes with Makefiles.
 
-## Consecutive Periods
+## Chaining Rules
 
 ```makefile
 program: main.o calculs.o
@@ -56,7 +56,7 @@ main.o: main.c calculs.h
 | `-g` | Adds debugging information (required for `gdb` /Valgrind) |
 | `-o name` | Name the output file |
 
-## 
+## Phony Targets (`.PHONY`)
 
 A target like `clean` does not correspond to any actual file to be produced: it is simply used to execute a utility command (in this case, to delete the compiled files):
 

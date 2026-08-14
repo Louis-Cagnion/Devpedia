@@ -21,7 +21,7 @@ typedef struct Noeud
 
 ## The Binary Search Tree (BST)
 
-A** binary search*** ***tree** enforces an ordering rule for each node: everything in the left subtree is **less than**, and everything in the right subtree is **greater than**. This rule allows an element to be found with a minimum number of comparisons.
+A **binary search tree** enforces an ordering rule for each node: everything in the left subtree is **less than**, and everything in the right subtree is **greater than**. This rule allows an element to be found with a minimum number of comparisons.
 
 ```text
         10
