@@ -1,58 +1,69 @@
 ---
-order: 9
+order: 12
 ---
 
 # Resolver un conflicto de fusión
 
-Se produce un **conflicto** cuando Git no puede fusionar automáticamente dos versiones de un mismo archivo; normalmente, esto ocurre cuando las **mismas líneas** se han modificado de forma diferente en cada una de las versiones (durante un `merge`, un `rebase` o un `pull`).
+Un **conflicto** ocurre cuando Git no puede fusionar automáticamente dos versiones de un mismo archivo, típicamente cuando las **mismas líneas** se modificaron de forma diferente en cada lado (durante un `merge`, un `rebase`, o un `pull`).
 
 ## Lo que Git escribe en el archivo en conflicto
 
-```
+```text
 <<<<<<< HEAD
-const TVA = 0.20;
+const IVA = 0.20;
 =======
-const TVA_TAUX = 0.20;
+const TASA_IVA = 0.20;
 >>>>>>> feature
 ```
 
-- Todo lo que se encuentre entre `<<<<<<< HEAD` y `=======` corresponde a **tu** versión (la rama en la que te encuentras).
-- Todo lo que se encuentra entre `=======` y `>>>>>>> feature` corresponde a la versión de la otra rama (fusionada).
-- Estos marcadores (`<<<<<<<`, `=======`, `>>>>>>>`) se insertan **directamente en el archivo**; el archivo ya no se compila ni se ejecuta tal cual mientras estén presentes.
+- Todo lo que está entre `<<<<<<< HEAD` y `=======` corresponde a **tu** versión (la rama en la que estás).
+- Todo lo que está entre `=======` y `>>>>>>> feature` corresponde a la versión de la **otra** rama (fusionada).
+- Estos marcadores (`<<<<<<<`, `=======`, `>>>>>>>`) se insertan **directamente en el archivo**: el archivo ya no compila/ejecuta tal cual mientras estén presentes.
 
 ## Resolver el conflicto
 
-1. Abre el archivo y decide qué versión quieres conservar (o combina ambas manualmente).
-2. Elimina por completo los marcadores `<<<<<<<`, `=======`, `>>>>>>>`; **nunca** deben quedar en el archivo final.
-3. Marca el archivo como resuelto y, a continuación, continúa con la operación en curso:
+1. Abrir el archivo, decidir qué versión conservar (o combinar ambas manualmente).
+2. Eliminar por completo los marcadores `<<<<<<<`, `=======`, `>>>>>>>`: **nunca** deben quedar en el archivo final.
+3. Marcar el archivo como resuelto, luego continuar la operación en curso:
 
 ```bash
-git add fichier_en_conflit.js
+git add archivo_en_conflicto.js
 
-git commit                # si el conflicto se debiera a una «fusión»
-git rebase --continue     # si el conflicto se debiera a un «rebase»
+git commit             # si el conflicto venia de un "merge"
+git rebase --continue  # si el conflicto venia de un "rebase"
 ```
 
 ## Ver qué archivos están en conflicto
 
 ```bash
 git status
-# muestra explícitamente la lista de archivos «both modified» (modificados en ambos lados)
+# muestra explicitamente la lista de archivos "both modified" (modificados en ambos lados)
 ```
 
-## Cancelar la fusión o el rebase en curso
+## Abandonar la fusión/el rebase en curso
 
-Si la solución resulta demasiado compleja o si se prefiere empezar desde cero:
+Si la resolución resulta demasiado compleja o se prefiere empezar de cero:
 
 ```bash
-git merge --abort     # Anula una fusión en curso y restaura el estado anterior al intento.
-git rebase --abort    # Anula una rebase en curso
+git merge --abort   # anula un merge en curso, restaura el estado anterior al intento
+git rebase --abort  # anula un rebase en curso
 ```
 
 ## Reducir el riesgo de conflictos
 
-- Incorporar con frecuencia los cambios de los demás (`git pull` / `git fetch` regularmente) en lugar de dejar que una rama se desvíe durante mucho tiempo.
-- Mantén las ramas de funcionalidades breves y específicas.
-- Comunicarse con el equipo cuando varias personas trabajan en los mismos archivos al mismo tiempo.
+- Integrar con frecuencia los cambios de los demás (`git pull`/`git fetch` regular) en lugar de dejar que una rama diverja mucho tiempo.
+- Mantener ramas de funcionalidad cortas y específicas.
+- Comunicarse con el equipo cuando varias personas trabajan en los mismos archivos en paralelo.
 
-Consulta también los capítulos sobre las ramas y el rebase, las dos operaciones que suelen provocar más conflictos.
+Véase también [Las ramas](/?c=git&p=branches) y [El rebase](/?c=git&p=rebase), las dos operaciones que más a menudo provocan conflictos.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Un conflicto aparece cuando Git no puede fusionar automáticamente dos versiones de las mismas líneas. Los marcadores `<<<<<<<`/`=======`/`>>>>>>>` deben retirarse manualmente antes de continuar. |
+| **Herramientas utilizables** | `git status` (archivos en conflicto), `git add` + `git commit`/`git rebase --continue`, `git merge --abort`/`git rebase --abort`. |
+| **Trampas a evitar** | Olvidar eliminar un marcador de conflicto: el archivo sigue siendo inválido (no compila/ejecuta) mientras esté presente. |
+| **Buenas prácticas** | Integrar con frecuencia los cambios de los demás para limitar la divergencia; mantener ramas de funcionalidad cortas y específicas. |

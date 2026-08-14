@@ -1,26 +1,26 @@
 ---
-order: 10
+order: 13
 ---
 
 # El rebase
 
-`git rebase` Ofrece una alternativa a «`git merge`» (véase el capítulo sobre las ramas) para integrar cambios entre dos ramas: en lugar de crear una confirmación de fusión con dos padres, **vuelve** **a** **aplicar** las confirmaciones de una rama sobre otra, generando un historial lineal.
+`git rebase` ofrece una alternativa a `git merge` (véase [Las ramas](/?c=git&p=branches)) para integrar cambios entre dos ramas: en lugar de crear un commit de fusión con dos padres, **repite** los commits de una rama por encima de otra, generando un historial lineal.
 
-## Merge frente a rebase, de forma visual
+## Merge vs rebase, visualmente
 
-```
-Avant :
+```text
+Antes:
 main:     A -- B -- C
                 \
 feature:         D -- E
 
-Après un merge :                Après un rebase de feature sur main :
+Despues de un merge:            Despues de un rebase de feature sobre main:
 main:     A -- B -- C ----- F   main:     A -- B -- C
                \           /                          \
-feature:        D -- E ---'                            D' -- E'  <-- feature (rebasée)
+feature:        D -- E ---'                            D' -- E'  <-- feature (rebasada)
 ```
 
-El rebase no «mueve» literalmente los commits `D` y `E`: crea **nuevos** commits (`D'`, `E'`) con el mismo contenido pero con un padre diferente, de ahí que los hash sean distintos de los originales.
+El rebase no "mueve" literalmente los commits `D` y `E`: crea **nuevos** commits (`D'`, `E'`) con el mismo contenido pero un padre diferente, de ahí que sus hashes sean distintos de los originales.
 
 ## Realizar un rebase
 
@@ -29,27 +29,27 @@ git checkout feature
 git rebase main
 ```
 
-Git vuelve a aplicar, uno por uno, cada commit de `feature` (que no aparece en `main`) sobre el último commit de `main`. En caso de conflicto en un commit concreto (véase el capítulo sobre resolución de conflictos), el rebase se detiene para resolverlo:
+Git repite uno por uno cada commit de `feature` (ausente en `main`) por encima del último commit de `main`. En caso de conflicto en un commit concreto (véase [Resolver un conflicto de fusión](/?c=git&p=resoudre-conflits)), el rebase se detiene para resolverlo:
 
 ```bash
-# tras haber resuelto los conflictos en los archivos en cuestión:
-git add fichier_en_conflit.txt
+# tras resolver los conflictos en los archivos en cuestion:
+git add archivo_en_conflicto.txt
 git rebase --continue
 
-# O bien, para cancelar por completo el rebase en curso y volver al estado anterior:
+# o bien, para cancelar por completo el rebase en curso y volver al estado anterior:
 git rebase --abort
 ```
 
 ## El rebase interactivo: reescribir el historial local
 
 ```bash
-git rebase -i HEAD~3   # abre un editor con las tres últimas confirmaciones
+git rebase -i HEAD~3   # abre un editor para los ultimos 3 commits
 ```
 
-```
-pick a1b2c3d Ajoute le formulaire de contact
-pick e4f5g6h Corrige une typo
-pick i7j8k9l Ajoute la validation email
+```text
+pick a1b2c3d Añade el formulario de contacto
+pick e4f5g6h Corrige una errata
+pick i7j8k9l Añade la validación de email
 ```
 
 Cada línea se puede modificar antes de guardar:
@@ -57,23 +57,34 @@ Cada línea se puede modificar antes de guardar:
 | Acción | Efecto |
 |---|---|
 | `pick` | Mantener el commit tal cual |
-| `reword` | Conservar la confirmación, pero modificar su mensaje |
-| `squash` | Fusionar esta confirmación con la anterior (se conservan los dos mensajes, pendientes de fusionar) |
-| `fixup` | Igual que `squash`, pero muestra el mensaje de esta confirmación |
-| `drop` | Elimina por completo esta confirmación |
+| `reword` | Mantener el commit, pero modificar su mensaje |
+| `squash` | Fusionar este commit con el anterior (mantiene ambos mensajes, a fusionar) |
+| `fixup` | Como `squash`, pero descarta el mensaje de este commit |
+| `drop` | Elimina completamente este commit |
 
-Útil, por ejemplo, para limpiar un historial de trabajo («Corregir un error tipográfico», «Ups», «Esta vez sí que corrijo el error tipográfico») en una sola confirmación limpia antes de compartirlo.
+Útil, por ejemplo, para limpiar un historial de trabajo ("Corrige una errata", "Ups", "De verdad corrige la errata esta vez") en un único commit limpio antes de compartirlo.
 
-## La regla de oro: nunca volver a basar un historial que ya se haya compartido
+## La regla de oro: nunca rebasar un historial ya compartido
 
 ```bash
-# A EVITAR si otras personas ya han recuperado estas confirmaciones:
+# a EVITAR si otras personas ya han recuperado estos commits:
 git rebase main
 git push --force
 ```
 
-> **Nota:** cuando un «force-push» es realmente legítimo (rebasar y volver a enviar una rama que solo tú utilizas), `git push --force-with-lease` es más seguro que `--force`: primero comprueba que nadie más haya enviado un commit a esa rama desde el último `fetch`, y, en ese caso, rechaza la operación en lugar de sobrescribir a ciegas un trabajo que no se ha visto pasar.
+> **Nota:** cuando un force-push es realmente legítimo (rebasar y volver a enviar una rama que solo tú usas), `git push --force-with-lease` es más seguro que `--force`: primero verifica que nadie más haya enviado un commit a esa rama desde el último `fetch`, y rechaza la operación en ese caso en lugar de sobrescribir a ciegas un trabajo que no se vio pasar.
 
-Dado que el rebase crea **nuevas** confirmaciones con hash diferentes, subirlas sobrescribiendo el historial remoto (`--force`) desincroniza bruscamente a cualquiera que ya hubiera basado su trabajo en las confirmaciones anteriores, ya que sus ramas locales harían referencia a confirmaciones que ya no existen en el servidor. El rebase es seguro con commits **estrictamente locales**, que aún no se hayan compartido.
+Dado que el rebase crea **nuevos** commits con hashes diferentes, subirlos sobrescribiendo el historial remoto (`--force`) desincroniza bruscamente a cualquiera que ya hubiera basado trabajo en los commits anteriores: sus ramas locales referenciarían commits que ya no existen del lado del servidor. El rebase es seguro con commits **estrictamente locales**, nunca compartidos aún.
 
-Véase también el capítulo sobre las ramas (merge, la alternativa más segura para un historial ya compartido) y el dedicado a la resolución de conflictos.
+Véase también [Las ramas](/?c=git&p=branches) (merge, la alternativa más segura para un historial ya compartido) y [Resolver un conflicto de fusión](/?c=git&p=resoudre-conflits).
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | `git rebase` repite los commits de una rama por encima de otra, generando un historial lineal, a costa de nuevos commits (hashes diferentes) en lugar de un commit de fusión. |
+| **Herramientas utilizables** | `git rebase`, `git rebase -i` (reescritura interactiva: pick/reword/squash/fixup/drop), `git rebase --continue`/`--abort`. |
+| **Trampas a evitar** | Rebasar un historial ya compartido: los hashes cambian, lo que desincroniza a cualquiera que ya hubiera basado trabajo en los commits anteriores. |
+| **Buenas prácticas** | Rebasar solo commits estrictamente locales; si un push forzado es realmente necesario, preferir `--force-with-lease` a `--force`. |
