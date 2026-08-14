@@ -4,7 +4,7 @@ order: 6
 
 # Oh My Zsh
 
-Manually configuring [the prompt](/?c=shells&s=zsh&p=prompt-et-themes), [completion](/?c=shells&s=zsh&p=completion-avancee), and [dozens of options](/?c=shells&s=zsh&p=options-du-shell) takes time. **Oh My Zsh** is an open-source framework that provides all of this preconfigured, with hundreds of ready-to-use themes and plugins — the most common way to get a comfortable `~/.zshrc` without writing everything yourself.
+Manually configuring [the prompt](/?c=shells&s=zsh&p=prompt-et-themes), [completion](/?c=shells&s=zsh&p=completion-avancee), and [dozens of options](/?c=shells&s=zsh&p=options-du-shell) takes time. **Oh My Zsh** is an open-source framework that provides all of this preconfigured, with hundreds of ready-to-use themes and plugins, the most common way to get a comfortable `~/.zshrc` without writing everything yourself.
 
 ## Installation
 
@@ -26,7 +26,7 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 ```
 
-- `ZSH_THEME` selects a theme among those provided (in `~/.oh-my-zsh/themes/`) — it configures `PROMPT`/`RPROMPT` for you (see [Customizing the Prompt](/?c=shells&s=zsh&p=prompt-et-themes)), no need to redefine them yourself on top of it.
+- `ZSH_THEME` selects a theme among those provided (in `~/.oh-my-zsh/themes/`): it configures `PROMPT`/`RPROMPT` for you (see [Customizing the Prompt](/?c=shells&s=zsh&p=prompt-et-themes)), no need to redefine them yourself on top of it.
 - `plugins=(...)` enables a list of plugins, each adding specific aliases, functions, or completions.
 - `source $ZSH/oh-my-zsh.sh` must stay the **last** relevant line: it's this line that actually loads the theme and plugins declared above.
 
@@ -39,7 +39,7 @@ source $ZSH/oh-my-zsh.sh
 | `zsh-syntax-highlighting` | Colors the command line in real time (green = valid command, red = invalid) even before running it |
 | `docker`, `npm`, `python`... | Completion and aliases specific to the corresponding tool |
 
-> **Note:** `zsh-autosuggestions` and `zsh-syntax-highlighting` are **not** included by default with Oh My Zsh (unlike `git`) — they're installed separately into `~/.oh-my-zsh/custom/plugins/` before they can be added to the `plugins=(...)` list.
+> **Note:** `zsh-autosuggestions` and `zsh-syntax-highlighting` are **not** included by default with Oh My Zsh (unlike `git`): they're installed separately into `~/.oh-my-zsh/custom/plugins/` before they can be added to the `plugins=(...)` list.
 
 ## Aliases provided by the `git` plugin
 
@@ -51,7 +51,7 @@ gcmsg  # git commit -m
 gp     # git push
 ```
 
-These aliases (see [Environment Variables](/?c=shells&s=bash&p=variables-denvironnement) in Bash for the `alias` mechanism itself, identical in zsh) are defined by the plugin, not by zsh or Oh My Zsh themselves — their full list depends on the installed plugin version.
+These aliases (see [Environment Variables](/?c=shells&s=bash&p=variables-denvironnement) in Bash for the `alias` mechanism itself, identical in zsh) are defined by the plugin, not by zsh or Oh My Zsh themselves; their full list depends on the installed plugin version.
 
 ## Customizing without touching Oh My Zsh's core
 
@@ -60,7 +60,7 @@ These aliases (see [Environment Variables](/?c=shells&s=bash&p=variables-denviro
 alias myalias="my_command --with --options"
 ```
 
-Any `.zsh` file dropped into `~/.oh-my-zsh/custom/` is automatically loaded — which avoids modifying the framework's internal files (which would be overwritten on the next update) to add your own aliases or functions.
+Any `.zsh` file dropped into `~/.oh-my-zsh/custom/` is automatically loaded, which avoids modifying the framework's internal files (which would be overwritten on the next update) to add your own aliases or functions.
 
 ## Updating Oh My Zsh
 
@@ -78,5 +78,5 @@ Since Oh My Zsh updates itself via its own internal Git repository (`~/.oh-my-zs
 |---|---|
 | **Key takeaways** | Oh My Zsh preconfigures prompt, completion, and options via a framework of themes and plugins, rather than setting everything up manually. |
 | **Tools you can use** | `ZSH_THEME`, `plugins=(...)`, `~/.oh-my-zsh/custom/` to customize without touching the framework's core, `omz update`. |
-| **Pitfalls to avoid** | Directly modifying Oh My Zsh's internal files — overwritten on the next update. |
+| **Pitfalls to avoid** | Directly modifying Oh My Zsh's internal files, overwritten on the next update. |
 | **Best practices** | Drop your own aliases/functions into `~/.oh-my-zsh/custom/`; keep `source $ZSH/oh-my-zsh.sh` as the last relevant line of the `.zshrc`. |

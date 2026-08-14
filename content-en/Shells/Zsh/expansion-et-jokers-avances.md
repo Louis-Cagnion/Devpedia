@@ -21,7 +21,7 @@ ls **/*.txt
 # every .txt file, at any depth below the current folder
 ```
 
-> **Note:** in Bash, this recursive behavior requires `shopt -s globstar` (an equivalent option, but absent by default and specific to Bash 4+) — in zsh, `**` works as soon as `EXTENDED_GLOB` is active (or even without it, `**` alone is active by default in most recent configurations), with no extra setting.
+> **Note:** in Bash, this recursive behavior requires `shopt -s globstar` (an equivalent option, but absent by default and specific to Bash 4+); in zsh, `**` works as soon as `EXTENDED_GLOB` is active (or even without it, `**` alone is active by default in most recent configurations), with no extra setting.
 
 ## Negation: excluding a pattern
 
@@ -51,7 +51,7 @@ ls *.log(.Lm-7)     # .log files modified less than 7 days ago
 | `Lm-N` / `Lm+N` | Modified less than / more than N days ago |
 | `om[N]` | Sorts by modification date, keeps the Nth result |
 
-> **Note:** for many simple cases, these qualifiers replace a `find . -type f` or a `find . -mtime -7` (see [Permissions and File Manipulation](/?c=shells&s=bash&p=permissions-et-fichiers) in Bash) — directly in the glob pattern, with no external command launched.
+> **Note:** for many simple cases, these qualifiers replace a `find . -type f` or a `find . -mtime -7` (see [Permissions and File Manipulation](/?c=shells&s=bash&p=permissions-et-fichiers) in Bash), directly in the glob pattern, with no external command launched.
 
 ## Combining extended globbing and quotes
 
@@ -70,5 +70,5 @@ echo "*(.)"     # literally displays *(.)
 |---|---|
 | **Key takeaways** | Basic globbing works like in Bash; `EXTENDED_GLOB` unlocks zsh-specific patterns (recursive `**`, `^` negation, qualifiers in parentheses). |
 | **Tools you can use** | `**/*.ext` (recursive), `*.^txt` (negation), glob qualifiers (`.`, `/`, `*`, `Lm-N`). |
-| **Pitfalls to avoid** | Using these patterns without having enabled `EXTENDED_GLOB` — they're then treated as literal text. |
+| **Pitfalls to avoid** | Using these patterns without having enabled `EXTENDED_GLOB`: they're then treated as literal text. |
 | **Best practices** | Use a glob qualifier (`*(.Lm-7)`) rather than an external `find` for a simple filter. |
