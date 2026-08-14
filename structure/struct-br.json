@@ -225,6 +225,26 @@
             {
               "id": "nlp-et-llm",
               "label": "Processamento de linguagem natural (NLP) e grandes modelos de linguagem (LLM)"
+            },
+            {
+              "id": "prompt-engineering",
+              "label": "Prompt engineering: estruturar uma requisição para melhores resultados"
+            },
+            {
+              "id": "llm-en-production",
+              "label": "LLM em produção: casos de uso e limites"
+            },
+            {
+              "id": "agents",
+              "label": "Agentes: loop de reflexão/ação e orquestração"
+            },
+            {
+              "id": "rag",
+              "label": "RAG: aumentar um LLM com dados externos"
+            },
+            {
+              "id": "prompt-injection",
+              "label": "Prompt injection: quando um dado se faz passar por instrução"
             }
           ]
         }
