@@ -1,34 +1,23 @@
 # TODO — Devpedia
 
-## Reste à faire
+## Traduction anglaise (EN)
+- `IA/description.md` (EN) à adapter quand `content-en/IA` sera restructuré en subjects (actuellement plat, décision explicite).
 
-### Traduction anglaise (EN)
-- `IA/description.md` (EN) à adapter le jour où `content-en/IA` sera restructuré en subjects (actuellement plat, décision explicite, pas un oubli).
-
-### Tirets cadratins (`—`) jamais nettoyés hors FR
-Le sweep du 2026-08-10/11 ne portait que sur `content/` (FR) ; jamais sur les traductions. `content-en/` est intégralement nettoyé (2026-08-14, 178 fichiers). Reste (à faire une fois `content-br/` et `content-es/` à jour sur la structure, cf. section suivante, pour ne pas nettoyer des fichiers qui vont être déplacés/réécrits) :
+## Tirets cadratins (`—`) hors FR
 - `content-br/` : 472 occurrences dans 110 fichiers
 - `content-es/` : 123 occurrences dans 56 fichiers
+- À traiter une fois `content-br/`/`content-es/` à jour structurellement (voir ci-dessous), pour ne pas nettoyer des fichiers qui vont être réécrits.
 
-### Traductions ES/BR à rattraper
-- Code langue portugais renommé `pt` → `br` (2026-08-14) : `content-pt/` → `content-br/`, `structure/languages.json`, `structure/struct-pt.json` → `struct-br.json`, `structure/ui-strings.json`, `scripts/variable-glossary.json`, `scripts/build-variable-glossary.mjs`. Le routing du site est entièrement générique (piloté par `languages.json`), aucune autre référence en dur trouvée.
-- Vocabulaire `content-br/` corrigé vers du vrai portugais brésilien (2026-08-14) : le contenu existant utilisait du vocabulaire européen (`ficheiro`, `utilizador`, `ecrã`, `rato`, `predefinição`, `telemóvel`, `palavra-passe`, `morada`, `registo`, `contacto`, `aceder`, gérondif "estar a + infinitif") malgré le label "Português (Brasil)". Remplacé par `arquivo`, `usuário`, `tela`, `mouse`, `padrão`, `celular`, `senha`, `endereço`, `registro`, `contato`, `acessar`, gérondif `-ndo` — accords de genre et prépositions corrigés en même temps (`endereço`/`tela` sont respectivement masculin/féminin, contrairement à `morada`/`ecrã`). Script réutilisable : `scripts/fix-br-vocabulary.mjs`.
-- Audit structurel `content-br/` vs `content/` (FR, 2026-08-14) : 279 fichiers FR. **82 fichiers encore manquants**, répartis sur 7 catégories entièrement absentes (PowerShell 14, Langages de programmation — sous-dossiers manquants 11, UI-UX 11, Performance 9, Bases de données 7, Docker 7, Qualité et architecture du code 7, Zsh 7) + rattrapages dans des catégories partielles (Bash 3, Git 3, DSL 1, Shells 1). Ordre de traitement choisi par Louis : catégories manquantes par taille croissante. Catégories désormais **complètes** en BR : Infrastructure, Mathématiques, Représentation des données, Bases de l'informatique, Data Science, **IA (38/38 fichiers, les 6 subjects)**, **Traitement de documents (4/4 fichiers)**, **CI-CD (5/5 fichiers)**, **Organisation en entreprise (5/5 fichiers)**.
-- **Catégorie IA traduite intégralement (2026-08-14)**, en plus des 12 fichiers mal placés déjà corrigés : les subjects NLP et LLM (5 chapitres restants), Production et gouvernance (5), Applications LLM (3), Vision et OCR (9) et Voix IA (9) traduits en une session, plus `IA/description.md` (page d'intro de la catégorie elle-même, trouvée manquante en testant le fix des labels ci-dessous).
-- **Catégorie Traitement de documents traduite intégralement (2026-08-14)**, 4/4 fichiers (`description.md`, `extraction-pdf.md`, `ocr-structure.md`, `arbitrage-local-cloud-vision.md`), plus le label `traitement-de-documents` ajouté à `categoryLabels` dans `ui-strings.json`. `structure/struct-br.json` régénéré.
-- **Catégorie CI-CD traduite intégralement (2026-08-14)**, 5/5 fichiers (`description.md`, `pipeline-cicd.md`, `azure-devops-plateforme.md`, `yaml-pipelines-azure.md`, `azure-pipelines-vs-github-actions.md`), plus le label `ci-cd` ajouté à `categoryLabels`. `structure/struct-br.json` régénéré.
-- **Catégorie Organisation en entreprise traduite intégralement (2026-08-14)**, 5/5 fichiers (`description.md`, `roles-equipe-developpement.md`, `methodologies-agile-scrum-kanban.md`, `cycle-de-vie-dun-projet.md`, `documentation-et-communication-equipe.md`), plus le label `organisation-en-entreprise` ajouté à `categoryLabels`. `structure/struct-br.json` régénéré.
-- **Bug de labels non traduits corrigé (2026-08-14)**, signalé par Louis (menu hamburger) : `category.label`/`subject.label` viennent du nom de dossier brut (toujours en français, par construction — nécessaire au cross-language linking) et rien ne les traduisait à l'affichage, dans le menu hamburger, la barre desktop, la sidebar, le fil d'Ariane et la recherche. Ajout d'un lookup `categoryLabels`/`subjectLabels` dans `structure/ui-strings.json` + une fonction `tEntityLabel()` dans `js/i18n.js` (repli sur le nom de dossier si pas encore traduit, jamais d'exception) câblée dans `js/sidebar.js`, `js/nav.js`, `js/router.js` (y compris la page d'intro d'un subject, dont le `#` doit rester littéralement le nom de dossier français dans le fichier lui-même pour que `generate-struct.js` la reconnaisse — l'affichage est maintenant découplé de cette contrainte) et `js/search.js`. Testé en direct dans un navigateur (desktop + mobile). Labels BR renseignés pour les 12 catégories et 13 subjects actuellement traduits ; à compléter à chaque nouvelle catégorie/subject traduit.
-- `content-br/acceuil.md` réécrit (2026-08-14) : l'ancienne version était le texte pré-refonte ("mes notes personnelles"), remis au niveau du FR actuel.
-- `HTMLElements.md`/`structuresDeLangagues.md` renommés en kebab-case (`html-elements.md`/`structures-de-langage.md`) et remis au niveau du FR actuel (tableaux comparatifs, récap à 4 lignes ajouté, restes de français non traduit corrigés). `scripts/generate-struct.js` : `validateInternalLinks` exportée pour pouvoir vérifier les liens d'un `content-<lang>/` autre que FR.
-- `Bash` existe en catégorie plate en BR/ES au lieu d'un sous-dossier de `Shells` aligné avec PowerShell/Zsh (comme en FR) ; le Bash déjà traduit manque en plus `automatisation-cron.md` et `commandes-de-base.md`.
-- Liens internes ES/BR vérifiés 2026-08-13 : 0 lien cassé sur ce qui existe déjà (le sous-ensemble ancien reste cohérent en interne).
+## Traductions ES/BR à rattraper
+- **82 fichiers BR encore manquants**, répartis sur 7 catégories entièrement absentes (PowerShell 14, Langages de programmation — sous-dossiers manquants 11, UI-UX 11, Performance 9, Bases de données 7, Docker 7, Qualité et architecture du code 7, Zsh 7) + rattrapages dans des catégories partielles (Bash 3, Git 3, DSL 1, Shells 1). Ordre de traitement : catégories manquantes par taille croissante.
+- `Bash` existe en catégorie plate en BR/ES au lieu d'un sous-dossier de `Shells` (comme en FR) ; le Bash déjà traduit manque en plus `automatisation-cron.md` et `commandes-de-base.md`.
 - 6 langues manquantes en plus d'ES/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
 - Quand la catégorie IA sera traduite pour ES/BR, l'écrire directement en subjects (comme la structure FR actuelle), pas à plat.
+- ES : audit structurel complet (comme celui fait pour BR) encore à faire.
 
-### Lecture audio automatique du site
-- **Fonctionnalité demandée par Louis (2026-08-14)** : un CSS lié à la voix IA qui synchronise le mot lu avec le mot correspondant sur la page, mis en surbrillance (*highlight*) pendant la lecture. Pas encore cadré techniquement (nécessite de savoir, mot par mot, où en est la synthèse vocale — `SpeechSynthesisUtterance` expose un événement `boundary` pour ça, à vérifier sa fiabilité/support navigateur avant de s'appuyer dessus).
-- Bug signalé par Louis (test sur téléphone, 2026-08-14) : la voix FR se déclenchait sur le contenu BR. Cause : `document.documentElement.lang` (utilisé par `js/reader.js` pour choisir la voix) recevait littéralement le code interne `"br"`, qui n'est pas une balise BCP-47 valide (`"br"` désigne le breton en ISO 639-1) — le navigateur ne trouvait donc aucune voix correspondante. Corrigé dans `js/lang.js` (`applyDocumentLanguage`) : `"br"` est maintenant mappé vers `"pt-BR"` avant d'être posé sur `<html lang>`, sans changer le code interne du site. **À revérifier par Louis sur son téléphone** pour confirmer que la bonne voix se déclenche désormais.
-- Le mot français "déréférencement" (chapitre pointeurs en C) est mal prononcé par la voix : pas encore diagnostiqué (nécessite le retour de Louis en écoute directe pour identifier ce qui cloche).
-- Revue exhaustive demandée par Louis : identifier systématiquement tous les cas limites restants de la voix IA, pas seulement ceux trouvés au fil de l'eau.
-- Les phrases choisies pour les symboles de la table de prononciation (`js/reader.js`) n'ont pas été validées mot à mot par Louis, seulement l'architecture.
+## Lecture audio automatique du site
+- CSS de surbrillance mot par mot synchronisé avec la synthèse vocale (demandé par Louis) : pas encore cadré techniquement (vérifier fiabilité/support de l'événement `boundary` de `SpeechSynthesisUtterance` avant de s'appuyer dessus).
+- Correction de la voix BR (mapping `br` → `pt-BR`) à revérifier par Louis sur son téléphone.
+- Prononciation du mot "déréférencement" (chapitre pointeurs C) à diagnostiquer, avec le retour de Louis en écoute directe.
+- Revue exhaustive des cas limites restants de la voix IA, pas seulement ceux trouvés au fil de l'eau.
+- Phrases de la table de prononciation des symboles (`js/reader.js`) à valider mot à mot par Louis.
