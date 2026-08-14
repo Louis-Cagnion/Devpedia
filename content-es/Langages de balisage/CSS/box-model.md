@@ -4,19 +4,19 @@ order: 3
 
 # El modelo de caja (box model)
 
-Cada elemento HTML se representa mediante CSS como un cuadro rectangular, compuesto por cuatro capas concéntricas; comprender este modelo es imprescindible para controlar los tamaños, los espacios y las alineaciones.
+Cada elemento HTML se representa en CSS como una caja rectangular, compuesta por cuatro capas concéntricas: comprender este modelo es imprescindible para dominar los tamaños, los espacios y las alineaciones.
 
 ## Las cuatro capas
 
-```
+```text
 ┌─────────────────────────────────┐
-│              margin               │  <- espace EXTÉRIEUR, en dehors de la boîte
+│              margin               │  <- espacio EXTERIOR, fuera de la caja
 │   ┌───────────────────────────┐   │
-│   │           border            │   │  <- bordure visible
+│   │           border            │   │  <- borde visible
 │   │   ┌───────────────────┐   │   │
-│   │   │      padding        │   │   │  <- espace INTÉRIEUR, entre bordure et contenu
+│   │   │      padding        │   │   │  <- espacio INTERIOR, entre el borde y el contenido
 │   │   │   ┌───────────┐   │   │   │
-│   │   │   │  content    │   │   │   │  <- le texte/image/contenu réel
+│   │   │   │  content    │   │   │   │  <- el texto/imagen/contenido real
 │   │   │   └───────────┘   │   │   │
 │   │   └───────────────────┘   │   │
 │   └───────────────────────────┘   │
@@ -32,12 +32,12 @@ div {
 }
 ```
 
-- **contenido**: el contenido real (texto, imagen...).
-- **padding**: espacio entre el contenido y el borde; forma parte del propio elemento (mismo color de fondo que el contenido).
+- **content**: el contenido real (texto, imagen...).
+- **padding**: espacio entre el contenido y el borde, forma parte del propio elemento (mismo color de fondo que el contenido).
 - **border**: el borde visible.
-- **margin**: espacio fuera del borde que separa este elemento de los demás; nunca tiene color, siempre es transparente.
+- **margin**: espacio fuera del borde, que separa este elemento de los demás, nunca tiene color, siempre es transparente.
 
-## La trampa habitual: `width` no lo incluye todo, por defecto
+## La trampa clásica: `width` no lo incluye todo, por defecto
 
 ```css
 div {
@@ -45,12 +45,12 @@ div {
     padding: 20px;
     border: 2px solid black;
 }
-/* Largeur RÉELLEMENT occupée à l'écran : 300 + 20+20 (padding) + 2+2 (border) = 344px, PAS 300px ! */
+/* Ancho REALMENTE ocupado en pantalla: 300 + 20+20 (padding) + 2+2 (border) = 344px, ¡NO 300px! */
 ```
 
-> **Nota:** por defecto (`box-sizing: content-box`), `width` solo define el tamaño del **contenido**; `padding` y `border` se añaden por encima, lo que amplía el recuadro que se muestra realmente más allá del valor declarado. Esta es una causa muy frecuente de diseños que «se desbordan» de forma inesperada.
+> **Nota:** por defecto (`box-sizing: content-box`), `width` solo define el tamaño del **contenido**: `padding` y `border` se suman por encima, ampliando la caja que realmente se muestra más allá del valor declarado. Esta es una fuente muy frecuente de diseños que "se desbordan" de forma inesperada.
 
-## `box-sizing: border-box` : la solución casi universal
+## `box-sizing: border-box`: la solución casi universal
 
 ```css
 * {
@@ -62,24 +62,24 @@ div {
     padding: 20px;
     border: 2px solid black;
 }
-/* Largeur réelle : exactement 300px -> padding et border sont maintenant INCLUS dans cette valeur */
+/* Ancho real: exactamente 300px -> padding y border ahora estan INCLUIDOS en este valor */
 ```
 
-`border-box` Esto se debe a que `width` / `height` se refieren al tamaño **total** del recuadro (borde incluido), mientras que `padding` «restan» espacio del contenido en lugar de sumarse por encima —un comportamiento mucho más predecible, que se ha convertido en la convención de facto en la casi totalidad de los proyectos modernos (a menudo aplicado de forma global con `* { box-sizing: border-box; }`).
+`border-box` hace que `width`/`height` designen el tamaño **total** de la caja (borde incluido), y que el `padding` "recorte" el espacio del contenido en lugar de sumarse por encima: un comportamiento mucho más predecible, que se ha convertido en la convención de facto en la práctica totalidad de los proyectos modernos (a menudo aplicado globalmente con `* { box-sizing: border-box; }`).
 
-## Abreviaturas de escritura
+## Los atajos de escritura
 
 ```css
-/* Quatre valeurs : haut droite bas gauche (sens horaire) */
+/* Cuatro valores: arriba derecha abajo izquierda (sentido horario) */
 margin: 10px 20px 30px 40px;
 
-/* Deux valeurs : haut/bas puis gauche/droite */
+/* Dos valores: arriba/abajo y luego izquierda/derecha */
 margin: 10px 20px;
 
-/* Une valeur : les quatre côtés identiques */
+/* Un valor: los cuatro lados iguales */
 margin: 10px;
 
-/* Cibler un seul côté */
+/* Aplicar a un solo lado */
 margin-top: 10px;
 padding-left: 20px;
 ```
@@ -91,4 +91,15 @@ p { margin-bottom: 20px; }
 p + p { margin-top: 30px; }
 ```
 
-> **Nota:** entre dos elementos **en flujo normal** (no en «`flexbox`» ni en «`grid`», véanse los capítulos correspondientes), los márgenes verticales adyacentes no se suman; solo se aplica el mayor de los dos (en este caso, `30px`, no `50px`). Este comportamiento, que a menudo resulta sorprendente a primera vista, solo se aplica a los márgenes verticales, nunca a los horizontales, y desaparece por completo en un contenedor Flexbox o Grid.
+> **Nota:** entre dos elementos **en flujo normal** (no en [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox)/[Grid](/?c=langages-de-balisage&s=css&p=grid)), los márgenes verticales adyacentes no se suman: solo se aplica el mayor de los dos (en este caso, `30px`, no `50px`). Este comportamiento, a menudo sorprendente a primera vista, solo se aplica a los márgenes verticales, nunca a los horizontales, y desaparece por completo en un contenedor Flexbox o Grid.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Cada elemento es una caja de 4 capas concéntricas: content, padding, border, margin. Por defecto, `width` solo define el contenido (`padding`/`border` se suman aparte); `box-sizing: border-box` incluye todo en el valor declarado. |
+| **Herramientas utilizables** | `box-sizing: border-box` (a menudo aplicado globalmente), los atajos `margin`/`padding` de 1, 2 o 4 valores. |
+| **Trampas a evitar** | Olvidar que `width` no incluye `padding`/`border` por defecto: una caja de "300px" puede ocupar 344 en pantalla. |
+| **Buenas prácticas** | Aplicar `* { box-sizing: border-box; }` globalmente al inicio del proyecto: comportamiento más predecible, convertido en la convención de facto. |
