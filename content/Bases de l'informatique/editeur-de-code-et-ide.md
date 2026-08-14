@@ -14,7 +14,7 @@ Un [fichier de code](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) 
 | Coloration syntaxique | Non : tout le texte a la même couleur | Oui : mots-clés, chaînes de texte, commentaires... chacun sa couleur |
 | Aide à l'écriture | Aucune | Complétion automatique, détection d'erreur, navigation dans le code |
 
-**La coloration syntaxique** consiste à afficher chaque type d'élément du code dans une couleur différente, pour que sa structure se voie d'un coup d'œil, sans même lire chaque mot. Vous en voyez un exemple concret sur cette page même : chaque bloc de code de Devpedia est coloré ainsi.
+**La coloration syntaxique** consiste à afficher chaque type d'élément du code dans une couleur différente, pour que sa structure se voie d'un coup d'œil, sans même lire chaque mot. Vous en voyez un exemple concret sur cette page même : chaque bloc de code de Devpédia est coloré ainsi.
 
 ```python
 # Ceci est un commentaire       -> une couleur

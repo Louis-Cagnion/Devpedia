@@ -11,7 +11,7 @@ Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/
 ```python
 age = 25          # int
 prix = 9.99       # float
-nom = "Devpedia"  # str
+nom = "Devpédia"  # str
 actif = True      # bool
 rien = None       # équivalent de null/NULL
 

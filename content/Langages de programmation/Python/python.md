@@ -7,8 +7,8 @@ order: 4
 Un [langage de programmation](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) est un ensemble de règles qui permet d'écrire des instructions qu'un ordinateur peut exécuter. Python en est un, réputé pour sa syntaxe volontairement proche du langage naturel.
 
 ```python
-nom = "Devpedia"          # une variable, voir le chapitre dédié
-print(f"Bonjour, {nom}")  # affiche : Bonjour, Devpedia
+nom = "Devpédia"          # une variable, voir le chapitre dédié
+print(f"Bonjour, {nom}")  # affiche : Bonjour, Devpédia
 ```
 
 | Terme | Ce que ça veut dire |

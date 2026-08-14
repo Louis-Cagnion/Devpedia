@@ -35,7 +35,7 @@ afficher "Au revoir"    → écrit "Au revoir" à l'écran juste après
 
 > **Note :** le bloc ci-dessus n'est pas un vrai langage : c'est du **pseudocode**, une façon simplifiée d'écrire des instructions sans la syntaxe précise d'un langage réel. Il sert uniquement à illustrer l'idée d'une suite d'instructions, avant d'en choisir un pour de vrai.
 
-Devpedia détaille plusieurs langages en profondeur, chacun dans son propre chapitre (par exemple [Python](/?c=langages-de-programmation&s=python&p=python) ou [le C](/?c=langages-de-programmation&s=c&p=c)). Ce chapitre n'entre dans aucun d'eux : juste le principe commun à tous.
+Devpédia détaille plusieurs langages en profondeur, chacun dans son propre chapitre (par exemple [Python](/?c=langages-de-programmation&s=python&p=python) ou [le C](/?c=langages-de-programmation&s=c&p=c)). Ce chapitre n'entre dans aucun d'eux : juste le principe commun à tous.
 
 > **Piège :** essayer d'exécuter tel quel le pseudocode ci-dessus dans un vrai langage : ça ne fonctionnera pas, ce n'est qu'une illustration simplifiée, pas une syntaxe réelle.
 >

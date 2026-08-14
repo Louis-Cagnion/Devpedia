@@ -89,7 +89,7 @@ De même, la plage de valeurs des entiers et leur comportement en cas de débord
 Le langage C ne possède pas de type "string" natif. Une chaîne de caractères est représentée par un tableau de caractères terminé par le caractère nul (`\0`).
 
 ```c
-char name[] = "Devpedia";
+char name[] = "Devpédia";
 ```
 
 En mémoire :

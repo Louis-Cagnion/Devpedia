@@ -1,6 +1,6 @@
 # Accueil
 
-Bienvenue sur **Devpedia**, une base de connaissances qui explique le développement en partant de zéro : chaque notion part d'une définition simple, un exemple concret, puis le "pourquoi", sans jamais présupposer un terme non expliqué au préalable.
+Bienvenue sur **Devpédia**, une base de connaissances qui explique le développement en partant de zéro : chaque notion part d'une définition simple, un exemple concret, puis le "pourquoi", sans jamais présupposer un terme non expliqué au préalable.
 
 ## Par où commencer ?
 

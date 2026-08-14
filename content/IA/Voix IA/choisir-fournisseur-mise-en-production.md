@@ -15,9 +15,9 @@ L'arbitrage entre modèle auto-hébergé et API cloud (coût, exposition des don
 | Infrastructure requise | Aucune (le calcul a lieu dans le navigateur de l'utilisateur) | Un serveur (avec ou sans GPU selon le modèle) | Aucune côté développeur |
 | Fonctionne hors ligne | Oui, une fois les voix système installées | Oui | Non, nécessite une connexion réseau |
 
-## Un cas concret : le choix fait pour Devpedia lui-même
+## Un cas concret : le choix fait pour Devpédia lui-même
 
-La [lecture audio automatique de Devpedia](/?c=ia&s=voix-ia&p=synthese-classique-vs-deep-learning) illustre concrètement ce choix. Devpedia est un site **100% statique** (hébergé sur GitHub Pages, sans serveur ni étape de build) : héberger un modèle comme Piper aurait exigé un serveur d'inférence, incompatible avec cet hébergement ; une API cloud aurait introduit un coût par utilisation, pour un site consulté librement sans modèle économique. La **Web Speech API** a été retenue précisément parce qu'elle ne nécessite ni serveur ni coût d'usage : le calcul a lieu entièrement dans le navigateur de chaque visiteur.
+La [lecture audio automatique de Devpédia](/?c=ia&s=voix-ia&p=synthese-classique-vs-deep-learning) illustre concrètement ce choix. Devpédia est un site **100% statique** (hébergé sur GitHub Pages, sans serveur ni étape de build) : héberger un modèle comme Piper aurait exigé un serveur d'inférence, incompatible avec cet hébergement ; une API cloud aurait introduit un coût par utilisation, pour un site consulté librement sans modèle économique. La **Web Speech API** a été retenue précisément parce qu'elle ne nécessite ni serveur ni coût d'usage : le calcul a lieu entièrement dans le navigateur de chaque visiteur.
 
 > **Piège :** choisir un auto-hébergement ou une API cloud "par défaut", parce que la qualité de voix y est supérieure, sans vérifier au préalable si l'infrastructure du projet permet réellement d'héberger un serveur d'inférence, ou si le modèle économique du projet supporte un coût récurrent par utilisation.
 >
