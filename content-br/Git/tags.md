@@ -2,53 +2,72 @@
 order: 7
 ---
 
-# As etiquetas
+# As tags
 
-Uma **etiqueta** é um ponteiro para um commit específico, tal como um ramo, mas, ao contrário de um ramo, uma etiqueta **nunca** **se** **altera** depois de criada. É normalmente utilizada para identificar uma versão publicada de um projeto (`v1.0.0`, `v2.3.1`...).
+Uma **tag** é um ponteiro para um commit específico, como uma branch, mas ao contrário de uma branch, uma tag **nunca se move** depois de criada. Serve tipicamente para marcar uma versão publicada de um projeto (`v1.0.0`, `v2.3.1`...).
 
-## Criar uma etiqueta
-
-```bash
-git tag v1.0.0                 # etiqueta «leve»: simples indicador, sem metadados
-git tag -a v1.0.0 -m "Première version stable"   # etiqueta «anotada»: com autor, data e mensagem
-```
-
-> **Nota:** uma etiqueta anotada (`-a`) é geralmente preferível para uma versão efetivamente publicada: é registada como um objeto Git completo (com a sua própria mensagem e autor), ao contrário da etiqueta leve, que é apenas um simples alias para um hash de commit.
-
-## Listar e inspecionar as etiquetas
+## Criar uma tag
 
 ```bash
-git tag                     # lista todas as etiquetas
-git tag -l "v1.*"            # filtro por padrão
-git show v1.0.0               # mostra os detalhes da etiqueta (e o commit associado)
+git tag v1.0.0                                  # tag "leve": simples ponteiro, sem metadados
+git tag -a v1.0.0 -m "Primeira versao estavel"  # tag "anotada": com autor, data e mensagem
 ```
 
-## Marcar um commit anterior
+> **Nota:** uma tag anotada (`-a`) geralmente é preferível para uma versão realmente publicada: ela é registrada como um objeto Git completo (com sua própria mensagem e autor), ao contrário da tag leve, que é apenas um simples alias para um hash de commit.
+
+## Listar e inspecionar as tags
 
 ```bash
-git tag -a v0.9.0 a3f9c1d -m "Version bêta"   # marcar um commit específico, não necessariamente o mais recente
+git tag            # lista todas as tags
+git tag -l "v1.*"  # filtra por padrao
+git show v1.0.0    # exibe os detalhes da tag (e o commit associado)
 ```
 
-## Enviar tags para um servidor remoto
-
-As tags não são enviadas automaticamente por um `git push` clássico:
+## Marcar um commit passado
 
 ```bash
-git push origin v1.0.0     # insere uma tag específica
-git push origin --tags      # envia todas as etiquetas locais de uma só vez
+git tag -a v0.9.0 a3f9c1d -m "Versao beta"   # marca um commit especifico, nao necessariamente o mais recente
 ```
 
-## Eliminar uma etiqueta
+## Enviar tags para um remote
+
+As tags **não** são enviadas automaticamente por um `git push` comum:
 
 ```bash
-git tag -d v1.0.0                    # elimina localmente
-git push origin --delete v1.0.0       # elimina também do lado remoto
+git push origin v1.0.0  # envia uma tag especifica
+git push origin --tags  # envia todas as tags locais de uma vez
 ```
 
-## Voltar a uma versão marcada
+## Remover uma tag
+
+```bash
+git tag -d v1.0.0                # remove localmente
+git push origin --delete v1.0.0  # remove tambem do lado do remote
+```
+
+## Voltar a uma versão marcada por tag
 
 ```bash
 git checkout v1.0.0
 ```
 
-> **Nota:** isto coloca o repositório no estado **«detached HEAD»** (`HEAD` aponta diretamente para um commit, e não mais para um ramo), útil para inspecionar esta versão específica, mas qualquer novo commit feito neste estado não pertenceria a nenhum ramo e poderia ser facilmente perdido. Para continuar a trabalhar a partir daqui, crie primeiro um ramo: `git checkout -b nouvelle-branche v1.0.0`.
+> **Nota:** isso coloca o repositório em estado de **"detached HEAD"** (`HEAD` aponta diretamente para um commit, não mais para uma branch), útil para inspecionar essa versão específica, mas qualquer novo commit feito nesse estado não pertenceria a nenhuma branch e seria facilmente perdido. Para continuar trabalhando a partir dali, criar primeiro uma branch: `git checkout -b nova-branch v1.0.0`.
+
+**Voltar atrás uma vez terminada a inspeção.** Se nenhum commit foi feito durante o detached HEAD (o caso mais comum depois de uma simples inspeção), basta voltar para a branch de onde se veio para que `HEAD` volte a se ligar a ela, exatamente como qualquer [troca de branch](/?c=git&p=branches):
+
+```bash
+git checkout main   # ou: git switch main
+```
+
+Nada se perde nem precisa ser desfeito: o commit marcado nunca foi modificado, e `HEAD` simplesmente retoma seu lugar normal, apontando para `main` em vez de diretamente para um commit.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Uma tag é um ponteiro fixo para um commit; ao contrário de uma branch, ela nunca se move. Serve tipicamente para marcar uma versão publicada. |
+| **Ferramentas utilizáveis** | `git tag`, `git tag -a`, `git push origin --tags`. |
+| **Armadilhas a evitar** | As tags não são enviadas automaticamente por um `git push` comum; mover-se para uma tag coloca em *detached HEAD*. |
+| **Boas práticas** | Preferir uma tag anotada (`-a`) para uma versão realmente publicada; criar uma branch antes de continuar trabalhando a partir de uma tag. |

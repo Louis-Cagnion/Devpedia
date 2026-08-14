@@ -4,64 +4,119 @@ order: 2
 
 # Os comandos essenciais
 
-Este capítulo aborda o ciclo de trabalho mais comum do Git: inicializar um repositório (ou recuperar um já existente), acompanhar as alterações e registá-las sob a forma de commits.
+Este capítulo cobre o ciclo de trabalho do Git mais comum: iniciar um repositório (ou recuperar um existente), rastrear modificações, e registrá-las em forma de commits.
 
 ## Criar ou recuperar um repositório
 
 ```bash
-git init                              # transforma a pasta atual num repositório Git (vazio, sem histórico)
-git clone https://exemple.com/projet.git   # recupera um repositório existente, com todo o seu histórico
+git init                                  # transforma o diretorio atual em um repositorio Git (vazio, sem historico)
+git clone https://exemplo.com/projeto.git # recupera um repositorio existente, com todo seu historico
 ```
 
-## Ver o estado do dossier de trabalho
+## Ver o estado do diretório de trabalho
 
 ```bash
 git status
 ```
 
-Mostra quais os arquivos que foram alterados, quais se encontram na área de staging e quais não estão sendo acompanhados (ver capítulo sobre conceitos básicos).
+Exibe quais arquivos estão modificados, quais estão na área de staging, e quais não estão rastreados (veja [Os conceitos básicos do Git](/?c=git&p=concepts-de-base)).
 
-## Adicionar alterações ao ambiente de teste
+## Adicionar modificações ao staging
 
 ```bash
-git add arquivo.txt        # adiciona um arquivo específico
-git add pasta/            # adiciona uma pasta inteira
-git add .                   # adiciona tudo o que foi alterado na pasta atual e nas suas subpastas
-git add -p                  # modo interativo: escolher com precisão quais os blocos de linhas a adicionar
+git add arquivo.txt  # adiciona um arquivo especifico
+git add diretorio/   # adiciona um diretorio inteiro
+git add .            # adiciona tudo que mudou no diretorio atual e seus subdiretorios
+git add -p           # modo interativo: escolher precisamente quais blocos de linhas adicionar
 ```
 
-> **Nota:** O comando «`git add .`» também adiciona arquivos não controlados; certifique-se de que o arquivo «`.gitignore`» (ver capítulo dedicado) está atualizado antes de executar o comando, para não adicionar acidentalmente arquivos que nunca devem entrar no histórico (informações confidenciais, dependências, arquivos gerados...).
+> **Nota:** `git add .` também adiciona os arquivos não rastreados: garanta que o [.gitignore](/?c=git&p=gitignore) esteja atualizado antes, para não adicionar acidentalmente arquivos que nunca deveriam entrar no histórico (segredos, dependências, arquivos gerados...).
 
 ## Criar um commit
 
 ```bash
-git commit -m "Corrige le calcul de la remise"
-git commit -am "Message"   # atalho: adiciona automaticamente os arquivos já monitorizados E modificados, sem necessidade de um «git add» prévio
+git commit -m "Corrige o calculo do desconto"
+git commit -am "Mensagem"   # atalho: adiciona automaticamente os arquivos ja rastreados E modificados, sem "git add" previo
 ```
 
-> **Nota:** «`-a`» (em «`-am`») apenas adiciona os arquivos já controlados pelo Git; um arquivo totalmente novo, que nunca tenha sido adicionado anteriormente, deve sempre passar por um comando «`git add`» explícito, pelo menos uma vez.
+> **Nota:** `-a` (em `-am`) só adiciona os arquivos já rastreados pelo Git: um arquivo totalmente novo, nunca adicionado antes, sempre precisa passar por um `git add` explícito pelo menos uma vez.
 
-Uma boa mensagem de commit descreve o **motivo** da alteração, e não apenas o que foi alterado (o diff já mostra o que mudou), útil para compreender o histórico muito tempo depois.
+Uma boa mensagem de commit descreve o **porquê** da mudança, não apenas o quê (o diff já mostra o que mudou), útil para entender o histórico bem depois.
+
+## Uma mensagem de commit em dois níveis: título e descrição
+
+Uma mensagem de commit é, para o Git, apenas um único bloco de texto: nada a força a virar "título" ou "descrição" distintos. É uma **convenção**, não uma restrição técnica, mas ela é tão amplamente adotada ([GitHub](/?c=git&p=github-et-plateformes), `git log`, a maioria das ferramentas que exibem um histórico) que vale a pena segui-la sistematicamente:
+
+- A **primeira linha** é o título: um resumo curto (tradicionalmente abaixo de 50-72 caracteres), no imperativo ("Corrige", "Adiciona", não "Corrigido" nem "Eu adicionei").
+- Uma **linha vazia** separa o título do resto.
+- Tudo que segue é a **descrição**: o detalhe, o contexto, o "porquê" desenvolvido, em quantas linhas forem necessárias.
+
+```text
+Corrige o calculo do desconto para pedidos com varios itens
+
+O percentual so era aplicado ao primeiro item do pedido,
+em vez do total: um bug introduzido no ultimo refactor de
+`calcularDesconto()`, nunca coberto pelos testes existentes.
+```
+
+É essa linha vazia, e somente ela, que indica a uma ferramenta como o [GitHub](/?c=git&p=github-et-plateformes) onde o título termina: na lista de commits de um repositório ou de uma pull request, apenas a primeira linha é exibida por padrão (em negrito); a descrição só aparece ao expandir o commit. `git log --oneline` faz a mesma coisa: uma linha por commit, apenas o título.
+
+## Escrever uma mensagem multilinha na linha de comando
+
+`git commit -m "mensagem"` com um único `-m` só produz um título, sem descrição. Três formas de obter os dois:
+
+```bash
+# 1. Sem -m: abre o editor configurado (vim, nano...), onde se digita titulo, linha vazia, e depois descricao
+git commit
+
+# 2. Varios -m: cada um se torna um paragrafo separado por uma linha vazia, sem abrir editor
+git commit -m "Corrige o calculo do desconto" -m "O percentual so era aplicado ao primeiro item, nao ao total."
+
+# 3. Uma string multilinha passada a um unico -m (util para automatizar um commit, ou a partir de uma ferramenta que gera a mensagem)
+git commit -m "$(cat <<'EOF'
+Corrige o calculo do desconto
+
+O percentual so era aplicado ao primeiro item, nao ao total.
+EOF
+)"
+```
+
+> **Nota:** a opção 3 (`$(cat <<'EOF' ... EOF)`) não é uma funcionalidade do Git: é um **heredoc**, uma sintaxe do shell (veja [Escrever e executar um script Bash](/?c=shells&s=bash&p=scripts-et-shebang)) que constrói uma string multilinha, depois passada tal como está para `-m`. `$(...)` captura a saída do comando `cat` (aqui, tudo que está entre os dois `EOF`) para injetá-la como um único argumento.
+
+> **Armadilha:** escrever um título de commit longo demais, ou que descreve o *como* em vez do *porquê* ("Modifica linha 42 de carrinho.php"). Um título deve continuar compreensível sozinho, isolado em uma lista de dezenas de outros títulos, sem precisar abrir o commit para entender o que ele faz.
+>
+> **Boa prática:** reservar o título para um resumo breve e acionável, e detalhar todo contexto útil (por que essa mudança, qual bug, qual alternativa descartada) na descrição em vez de alongar o título indefinidamente.
 
 ## Consultar o histórico
 
 ```bash
-git log                     # histórico completo, do mais recente ao mais antigo
-git log --oneline            # uma linha por commit, mais legível para uma análise rápida
-git log --oneline --graph --all   # também visualiza as ramificações e os seus pontos de divergência/fusão
-git log -p arquivo.txt        # histórico detalhado (com diff) de um arquivo específico
+git log                          # historico completo, do mais recente ao mais antigo
+git log --oneline                # uma linha por commit, mais legivel para uma visao rapida
+git log --oneline --graph --all  # visualiza tambem as branches e seus pontos de divergencia/mesclagem
+git log -p arquivo.txt           # historico detalhado (com diff) de um arquivo especifico
 ```
 
 ## Ver as diferenças
 
 ```bash
-git diff                     # diferenças ainda não adicionadas ao ambiente de teste
-git diff --staged             # alterações já adicionadas ao ambiente de teste, mas ainda não submetidas
-git diff commit1 commit2      # diferenças entre dois commits específicos
+git diff                  # diferencas ainda nao adicionadas ao staging
+git diff --staged         # diferencas ja adicionadas ao staging, ainda nao commitadas
+git diff commit1 commit2  # diferencas entre dois commits especificos
 ```
 
-## Ver os detalhes de um commit
+## Ver o detalhe de um commit
 
 ```bash
-git show a3f9c1d   # apresenta a mensagem, o autor, a data e o diff completo deste commit específico
+git show a3f9c1d   # exibe a mensagem, o autor, a data e o diff completo desse commit especifico
 ```
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `git init`/`clone` criam ou recuperam um repositório; `git add` coloca modificações em staging; `git commit` as registra; `git log`/`diff`/`show` inspecionam o histórico. Uma mensagem de commit tem um título (primeira linha) e uma descrição opcional, separados por uma linha vazia: é essa linha vazia que o GitHub e o `git log` usam para exibir apenas o título por padrão. |
+| **Ferramentas utilizáveis** | `git status`, `git add`, `git commit` (vários `-m`, ou sem `-m` para o editor), `git log`, `git diff`, `git show`. |
+| **Armadilhas a evitar** | `git add .` também adiciona arquivos não rastreados: verificar o `.gitignore` antes; `-am` não adiciona arquivos nunca rastreados, um `git add` explícito continua necessário pelo menos uma vez; um título de commit longo demais ou que descreve o *como* em vez do *porquê*. |
+| **Boas práticas** | Descrever o *porquê* da mudança na mensagem de commit, não apenas o *quê*; verificar `git status` antes de cada commit; manter o título curto e acionável, detalhando o contexto na descrição. |

@@ -4,43 +4,78 @@ order: 3
 
 # O arquivo .gitignore
 
-`.gitignore` Enumera os arquivos e pastas que o Git deve **ignorar**: nunca propor para adição, nunca acompanhar, mesmo com um `git add .`. Indispensável para não poluir o histórico com arquivos gerados, dependências ou segredos.
+`.gitignore` lista os arquivos e diretórios que o Git deve **ignorar**: nunca sugerir para adicionar, nunca rastrear, mesmo com um `git add .`. Indispensável para não poluir o histórico com arquivos gerados, dependências, ou segredos.
 
 ## Sintaxe básica
 
-```
-# Commentaire
-*.log              # ignore tous les fichiers se terminant par .log, où qu'ils soient
-node_modules/       # ignore ce dossier entier, à la racine ou ailleurs
-/build              # le '/' en préfixe restreint à la racine du dépôt uniquement
-.env                # ignore ce fichier précis
-!important.log      # exception : NE PAS ignorer ce fichier précis, malgré la règle *.log au-dessus
+```text
+# Comentario
+*.log              # ignora todos os arquivos terminados em .log, onde estiverem
+node_modules/       # ignora esse diretorio inteiro, na raiz ou em qualquer lugar
+/build              # o '/' como prefixo restringe apenas a raiz do repositorio
+.env                # ignora esse arquivo especifico
+!important.log      # excecao: NAO ignorar esse arquivo especifico, apesar da regra *.log acima
 ```
 
-| Motivo | Significado |
+| Padrão | Significado |
 |---|---|
-| `*.ext` | Qualquer arquivo com esta extensão, a qualquer nível |
-| `pasta/` | Esta pasta e todo o seu conteúdo |
-| `/caminho` | Apenas na raiz do repositório (não numa subpasta com o mesmo nome) |
-| `!motif` | Exceção a uma regra anterior |
+| `*.ext` | Qualquer arquivo com essa extensão, em qualquer nível |
+| `diretorio/` | Esse diretório e todo seu conteúdo |
+| `/caminho` | Apenas na raiz do repositório (não em um subdiretório de mesmo nome) |
+| `!padrão` | Exceção a uma regra anterior |
 
-## O que normalmente deve ser ignorado
+## O que tipicamente se deve ignorar
 
-- As dependências instaladas (`node_modules/`, `vendor/`), que podem ser recompiladas a partir de um arquivo de dependências (`package.json`, `composer.json`...).
-- Os arquivos de configuração que contêm informações confidenciais (`.env`, chaves de API...).
+- As dependências instaladas (`node_modules/`, `vendor/`), reconstruíveis a partir de um arquivo de dependências (`package.json`, `composer.json`...).
+- Os arquivos de configuração contendo segredos (`.env`, chaves de API...).
 - Os arquivos gerados pela compilação ou pelo build (`*.o`, `dist/`, `build/`).
-- Arquivos específicos de um editor ou de um sistema operativo (`.DS_Store`, `.vscode/`, `*.swp`).
+- Os arquivos próprios de um editor ou sistema operacional (`.DS_Store`, `.vscode/`, `*.swp`).
 
-## `.gitignore` aplica-se apenas aos arquivos que **nunca foram acompanhados**
+## `.gitignore` só age sobre arquivos **nunca rastreados**
 
 ```bash
-git rm --cached fichier_deja_suivi.txt
+git rm --cached arquivo_ja_rastreado.txt
 ```
 
-> **Nota:** adicionar um arquivo a `.gitignore` não tem **qualquer efeito** se este já estiver a ser acompanhado pelo Git (já tiver sido submetido pelo menos uma vez): o Git continua a acompanhar as suas alterações como antes. É necessário, primeiro, removê-lo explicitamente do acompanhamento com o comando «`git rm --cached`» (que o deixa intacto no disco, mas deixa de o acompanhar), antes que a regra «`.gitignore`» entre em vigor.
+> **Nota:** adicionar um arquivo ao `.gitignore` **não tem nenhum efeito** se ele já estiver rastreado pelo Git (já commitado pelo menos uma vez): o Git continua rastreando suas modificações como antes. É preciso primeiro removê-lo explicitamente do rastreamento com `git rm --cached` (que o deixa intacto no disco, mas para de rastreá-lo), antes que a regra do `.gitignore` faça efeito.
 
-## Âmbito do `.gitignore`
+## Escopo do `.gitignore`
 
-Um repositório pode conter vários arquivos «`.gitignore`», cada um dos quais se aplica à pasta onde se encontra e às suas subpastas, útil para regras específicas de um subprojeto, para além das regras globais na raiz.
+Um repositório pode conter vários arquivos `.gitignore`, cada um se aplicando ao diretório onde se encontra e a seus subdiretórios, útil para regras específicas de um subprojeto, além das regras globais na raiz.
 
-Um arquivo «`~/.gitignore_global`» (configurado através de `git config --global core.excludesfile ~/.gitignore_global`) permite também definir regras pessoais (por exemplo, arquivos específicos do seu próprio editor), sem as impor aos outros colaboradores de um projeto partilhado.
+## Regras pessoais, fora do repositório: `~/.gitignore_global`
+
+Um `.gitignore` clássico (visto acima) é um arquivo do projeto como qualquer outro: ele próprio é rastreado e commitado, portanto compartilhado com todos os colaboradores. Isso é um problema para arquivos que dependem apenas da **sua própria máquina** (os arquivos temporários de um editor que só você usa, por exemplo): adicioná-los ao `.gitignore` do projeto imporia essa regra a colegas que talvez não usem o mesmo editor.
+
+A solução é um segundo arquivo, colocado fora de qualquer repositório, no seu diretório pessoal:
+
+```bash
+# 1. Criar o arquivo, onde voce quiser (ex. o diretorio pessoal)
+echo ".idea/" > ~/.gitignore_global
+echo "*.swp" >> ~/.gitignore_global
+
+# 2. Dizer ao Git, de uma vez por todas, onde encontra-lo
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+`git config --global` (veja também o capítulo [Os remotes](/?c=git&p=remotes) para outras configurações `--global`) grava essa configuração em `~/.gitconfig`, um arquivo de configuração próprio da sua conta de usuário nessa máquina, fora de qualquer repositório Git: `core.excludesfile` indica ali ao Git a localização de um `.gitignore` adicional a aplicar a **todos os seus repositórios locais**, além do `.gitignore` próprio de cada um.
+
+| | `.gitignore` (no repositório) | `~/.gitignore_global` |
+|---|---|---|
+| Rastreado pelo Git, commitado | Sim | Não: nunca é colocado dentro de um repositório |
+| Visível para os outros colaboradores | Sim, assim que clonam o projeto | Não: a configuração vive em `~/.gitconfig`, própria da sua máquina |
+| Escopo | Um único projeto (e seus subdiretórios) | Todos os repositórios Git da sua máquina |
+| Conteúdo típico | Dependências, segredos, arquivos de build do projeto | Arquivos próprios do seu editor/SO (`.idea/`, `.DS_Store`, `*.swp`) |
+
+É essa diferença (arquivo rastreado e compartilhado vs configuração local à máquina) que explica por que uma regra colocada em `~/.gitignore_global` nunca aparece para os outros colaboradores, mesmo depois de um `git push`: ela nunca foi commitada, já que não vive no repositório.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `.gitignore` exclui arquivos do rastreamento do Git: nunca são sugeridos para adição, mesmo com `git add .`. As regras se aplicam por diretório, com `!padrão` para criar exceções. |
+| **Ferramentas utilizáveis** | Padrões `*.ext`, `diretorio/`, `/caminho`, `!padrão`; `git rm --cached` para retirar do rastreamento um arquivo já rastreado. |
+| **Armadilhas a evitar** | Adicionar um arquivo ao `.gitignore` **não tem nenhum efeito** se ele já está rastreado (já commitado): é preciso primeiro `git rm --cached` antes que a regra faça efeito. |
+| **Boas práticas** | Excluir dependências, segredos e arquivos gerados já na criação do repositório, antes do primeiríssimo commit. |

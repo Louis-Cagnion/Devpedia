@@ -2,60 +2,71 @@
 order: 5
 ---
 
-# Anular alterações e navegar pelo histórico
+# Desfazer mudanças e navegar no histórico
 
-O Git disponibiliza vários comandos para voltar atrás, a diferentes níveis: anular uma alteração não submetida, um commit já efetuado ou até mesmo recuperar um commit que pareça ter desaparecido.
+O Git oferece vários comandos para voltar atrás, em níveis diferentes: desfazer uma modificação não commitada, um commit já feito, ou até recuperar um commit que parece ter desaparecido.
 
-## Anular alterações não submetidas
-
-```bash
-git checkout -- arquivo.txt   # restaura um arquivo para o seu último estado confirmado, substituindo as alterações locais
-git restore arquivo.txt        # equivalente moderno do comando acima
-
-git restore --staged arquivo.txt  # retira um arquivo da área de preparação, SEM alterar as suas modificações na pasta de trabalho
-```
-
-> **Nota:** «`git checkout -- arquivo.txt`» e «`git restore arquivo.txt`» são **irreversíveis**: as alterações não submetidas são perdidas definitivamente, ao contrário de um commit, que pode sempre ser recuperado (ver `git reflog` mais abaixo).
-
-## `git reset` : recuar o ramo atual
+## Desfazer modificações não commitadas
 
 ```bash
-git reset --soft HEAD~1    # Anula o último commit, mas mantém tudo na área de preparação (pronto para ser submetido novamente)
-git reset --mixed HEAD~1   # Anula o último commit E o staging, mantendo as alterações na pasta de trabalho (por padrão)
-git reset --hard HEAD~1    # anula o último commit, o staging e as próprias alterações -> perda definitiva
+git checkout -- arquivo.txt  # restaura um arquivo ao seu ultimo estado commitado, sobrescreve as modificacoes locais
+git restore arquivo.txt      # equivalente moderno do comando acima
+
+git restore --staged arquivo.txt  # retira um arquivo do staging, SEM tocar em suas modificacoes no diretorio de trabalho
 ```
 
-| Opção | Commit cancelado | Staging | Pasta de trabalho |
+> **Nota:** `git checkout -- arquivo.txt` e `git restore arquivo.txt` são **irreversíveis**: as modificações não commitadas são perdidas definitivamente, ao contrário de um commit que sempre se pode recuperar (cf. `git reflog` mais abaixo).
+
+## `git reset`: mover a branch atual para trás
+
+```bash
+git reset --soft HEAD~1   # desfaz o ultimo commit, mas mantem tudo em staging (pronto para recommitar)
+git reset --mixed HEAD~1  # desfaz o ultimo commit E o staging, mantem as modificacoes no diretorio de trabalho (padrao)
+git reset --hard HEAD~1   # desfaz o ultimo commit, o staging, E as proprias modificacoes -> perda definitiva
+```
+
+| Opção | Commit desfeito | Staging | Diretório de trabalho |
 |---|---|---|---|
-| `--soft` | Sim | Conservada | Conservada |
-| `--mixed` (padrão) | Sim | Reinicializado | Mantido |
-| `--hard` | Sim | Reinicializado | **Reinicializado (perda de dados)** |
+| `--soft` | Sim | Mantido | Mantido |
+| `--mixed` (padrão) | Sim | Reiniciado | Mantido |
+| `--hard` | Sim | Reiniciado | **Reiniciado (perda de dados)** |
 
-> **Nota:** «`git reset --hard`» é um dos comandos mais destrutivos do Git: substitui silenciosamente todas as alterações não submetidas, sem possibilidade de recuperação fácil. Deve ser utilizado apenas quando se tiver a certeza do que se está descartando.
+> **Nota:** `git reset --hard` é um dos comandos mais destrutivos do Git: ele sobrescreve silenciosamente qualquer modificação não commitada, sem possibilidade de recuperação simples. Usar apenas tendo certeza do que se está abandonando.
 
-## `git revert` : anular um commit já partilhado
+## `git revert`: desfazer um commit já compartilhado
 
-Ao contrário de `reset` (que reescreve o histórico ao eliminar commits), `revert` cria um **novo** commit que aplica o inverso de um commit anterior: o histórico original permanece intacto, o que torna esta operação segura mesmo em commits já enviados e partilhados:
+Ao contrário de `reset` (que reescreve o histórico removendo commits), `revert` cria um **novo** commit que aplica o inverso de um commit anterior; o histórico original permanece intacto, o que o torna seguro mesmo em commits já enviados e compartilhados:
 
 ```bash
 git revert a3f9c1d
 ```
 
-## `git reflog` : recuperar um commit «perdido»
+## `git reflog`: recuperar um commit "perdido"
 
-Mesmo após um «`reset --hard`» ou uma operação mal sucedida, o Git mantém, na realidade, um registro de todas as alterações de `HEAD` durante algum tempo:
+Mesmo depois de um `reset --hard` ou uma manipulação malsucedida, o Git na verdade mantém um registro de todos os deslocamentos de `HEAD` por um certo tempo:
 
 ```bash
 git reflog
-# a3f9c1d HEAD@{0}: reinicialização: a passar para HEAD~1
-# e4f5g6h HEAD@{1}: commit: Corrige o cálculo do desconto
+# a3f9c1d HEAD@{0}: reset: moving to HEAD~1
+# e4f5g6h HEAD@{1}: commit: Corrige o calculo de desconto
 ```
 
 ```bash
-git checkout e4f5g6h        # recupera o estado de um commit «perdido» recuperado através do reflog
-git branch recuperation e4f5g6h   # ou crie diretamente um ramo a partir deste commit
+git checkout e4f5g6h              # recupera o estado de um commit "perdido" encontrado via reflog
+git branch recuperacao e4f5g6h    # ou cria diretamente uma branch a partir desse commit
 ```
 
-> **Nota:** «`git reflog`» é frequentemente a solução de recurso após uma operação no Git que correu mal: desde que um commit tenha existido localmente em determinado momento, geralmente permanece localizável durante várias semanas, mesmo que já não seja referenciado por nenhum ramo.
+> **Nota:** `git reflog` costuma ser a solução de emergência depois de uma manipulação do Git que deu errado: enquanto um commit existiu localmente em algum momento, ele geralmente continua recuperável por várias semanas, mesmo que não seja mais referenciado por nenhuma branch.
 
-Ver também o capítulo sobre ramos e o capítulo sobre rebase, cujas operações são as mais relevantes para este capítulo.
+Veja também [As branches](/?c=git&p=branches) e [O rebase](/?c=git&p=rebase), cujas manipulações são as mais envolvidas neste capítulo.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `restore`/`checkout --` desfazem modificações não commitadas (irreversível); `reset` move a branch para trás (`--soft`/`--mixed`/`--hard`); `revert` cria um commit inverso, seguro em um histórico já compartilhado; `reflog` recupera um commit "perdido". |
+| **Ferramentas utilizáveis** | `git restore`, `git reset --soft/--mixed/--hard`, `git revert`, `git reflog`. |
+| **Armadilhas a evitar** | `git reset --hard` sobrescreve silenciosamente qualquer modificação não commitada, sem recuperação simples. |
+| **Boas práticas** | Preferir `revert` a `reset` em um histórico já compartilhado; verificar `git reflog` antes de achar um commit definitivamente perdido. |

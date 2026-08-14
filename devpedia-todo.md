@@ -1,5 +1,8 @@
 # TODO — Devpedia
 
+## Nouveau contenu à écrire (FR)
+- Une partie sur l'authentification, avec Okta comme exemple (demandé par Louis, catégorie/chapitre précis pas encore décidé).
+
 ## Traduction anglaise (EN)
 - `IA/description.md` (EN) à adapter quand `content-en/IA` sera restructuré en subjects (actuellement plat, décision explicite).
 
