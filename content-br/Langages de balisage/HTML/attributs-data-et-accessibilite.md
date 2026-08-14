@@ -4,82 +4,93 @@ order: 7
 
 # Atributos data-* e acessibilidade (ARIA)
 
-Este capítulo aborda duas famílias de atributos transversais, que podem ser utilizados em praticamente qualquer baliza: os atributos «`data-*`» (armazenar dados personalizados) e os atributos «`aria-*`» (melhorar a acessibilidade para além do que a semântica HTML5 por si só permite).
+Este capítulo cobre duas famílias de atributos transversais, utilizáveis em quase qualquer tag: os atributos `data-*` (armazenar um dado personalizado) e os atributos `aria-*` (melhorar a acessibilidade além do que a semântica HTML5 sozinha permite).
 
-## Os atributos`data-*`
+## Os atributos `data-*`
 
 ```html
-<div data-id="42" data-role="carte-produit" data-en-stock="true">
-    Chaise en bois
+<div data-id="42" data-role="cartao-produto" data-em-estoque="true">
+    Cadeira de madeira
 </div>
 ```
 
 ```javascript
-const carte = document.querySelector("div");
-carte.dataset.id;         // «42»
-carte.dataset.role;         // «ficha do produto»
-carte.dataset.enStock;       // «true» -> «data-en-stock» passa a ser «enStock» em camelCase no lado do JS
+const cartao = document.querySelector("div");
+cartao.dataset.id;        // "42"
+cartao.dataset.role;      // "cartao-produto"
+cartao.dataset.emEstoque; // "true" -> "data-em-estoque" vira "emEstoque" em camelCase do lado JS
 ```
 
-`data-*` permite associar um valor a um elemento HTML, que pode ser recuperado em JavaScript através de `.dataset`: uma forma padrão de transmitir informação do HTML para o JavaScript, sem necessidade de variáveis globais ou de chamadas adicionais.
+`data-*` permite anexar um dado a um elemento HTML, recuperável em JavaScript via `.dataset`: um jeito padrão de fazer uma informação circular do HTML para o JavaScript, sem precisar de variáveis globais ou requisições adicionais.
 
-> **Nota:** qualquer nome após `data-` é válido (`data-nimporte-quoi`): a única regra é a conversão automática de kebab-case (`data-en-stock`) para camelCase (`enStock`) em JavaScript (ver o capítulo sobre variáveis, secção JavaScript, para esta convenção de nomenclatura).
+> **Nota:** qualquer nome depois de `data-` é válido (`data-qualquer-coisa`): a única regra é a conversão automática de **kebab-case** (palavras separadas por hífens, `data-em-estoque`) para **camelCase** (cada palavra seguinte colada e capitalizada, `emEstoque`) em JavaScript, uma simples convenção de nomenclatura, não um mecanismo próprio de `data-*`.
 
-## Acessibilidade: por que é importante
+## A acessibilidade: por que isso importa
 
-A acessibilidade na Web garante que uma página continue a ser utilizável por pessoas com deficiência (deficiência visual com um leitor de tela, deficiência motora ao navegar apenas com o teclado...): não é uma opção secundária, mas sim uma exigência legal em muitos contextos (nomeadamente em sites públicos) e uma boa prática geral de qualidade do código.
+A acessibilidade web garante que uma página continue utilizável por pessoas com deficiência (deficiência visual usando um leitor de tela, motora navegando apenas pelo teclado...); não uma opção secundária, mas uma exigência legal em muitos contextos (sites públicos principalmente), e uma boa prática geral de qualidade de código.
 
-## `alt` e semântica: os conceitos básicos já abordados
+## `alt` e semântica: as bases já vistas
 
-Grande parte da acessibilidade decorre diretamente dos capítulos anteriores: `alt` sobre imagens, `<label>` sobre campos de formulário, hierarquia correta dos títulos, etiquetas semânticas HTML5 em vez de `<div>` genéricas.
+Boa parte da acessibilidade decorre diretamente dos capítulos anteriores: `alt` nas imagens, `<label>` nos campos de formulário, hierarquia correta dos títulos, tags semânticas do HTML5 em vez de `<div>` genéricas.
 
-## ARIA: a utilizar quando a semântica HTML, por si só, não for suficiente
+## ARIA: complementar quando a semântica HTML sozinha não basta
 
-**O ARIA** (*Accessible Rich Internet Applications*) adiciona informações de acessibilidade a componentes que o HTML nativo não descreve de forma nativa (um separador personalizado, uma janela modal, etc.):
+O **ARIA** (*Accessible Rich Internet Applications*) adiciona informações de acessibilidade para componentes que o HTML nativo não descreve nativamente (uma aba personalizada, uma janela modal...):
 
 ```html
-<button aria-label="Fermer la fenêtre">✕</button>
+<button aria-label="Fechar a janela">✕</button>
 ```
 
-`aria-label` Fornece um texto alternativo para um leitor de tela, quando o conteúdo visível por si só (neste caso, apenas um símbolo `✕`) não é suficiente para compreender a sua função.
+`aria-label` fornece um texto alternativo para um leitor de tela, quando o conteúdo visível sozinho (aqui, apenas um símbolo `✕`) não basta para entender seu papel.
 
 ```html
-<div role="alert">Votre session va expirer dans 2 minutes.</div>
+<div role="alert">Sua sessao vai expirar em 2 minutos.</div>
 ```
 
-`role="alert"` faz com que este conteúdo seja imediatamente anunciado por um leitor de tela assim que aparece, sem esperar que o usuário navegue até ele, útil para uma mensagem de erro ou uma notificação urgente que surja dinamicamente.
+`role="alert"` faz um leitor de tela anunciar imediatamente esse conteúdo assim que ele aparece, sem esperar que o usuário navegue até ele: útil para uma mensagem de erro ou uma notificação urgente que aparece dinamicamente.
 
 ```html
 <button aria-expanded="false" aria-controls="menu-mobile">Menu</button>
 <nav id="menu-mobile" hidden>...</nav>
 ```
 
-`aria-expanded` indica se um elemento controlado (frequentemente através de JavaScript) está atualmente aberto ou fechado: um leitor de tela anuncia este estado, que de outra forma seria invisível para alguém que não consiga perceber a alteração visual.
+`aria-expanded` indica se um elemento controlado (frequentemente via JavaScript) está atualmente aberto ou fechado; um leitor de tela anuncia esse estado, invisível de outra forma para quem não vê a mudança visual.
 
-> **Regra de ouro do ARIA:** *«Melhor nenhum ARIA do que um ARIA mal feito*»: utilize o ARIA apenas para colmatar uma lacuna real na semântica nativa do HTML, nunca em substituição de uma baliza HTML que já cumpra a sua função corretamente. Um «`<button>`» nativo já gere nativamente o foco do teclado e a indicação da sua função: recriar este comportamento manualmente com um «`<div role="button">`» é quase sempre um retrocesso, salvo em caso de necessidade absoluta.
+> **Regra de ouro do ARIA:** "*No ARIA is better than bad ARIA*": só usar ARIA para preencher uma lacuna real da semântica HTML nativa, nunca em substituição a uma tag HTML que já faria o trabalho corretamente. Um `<button>` nativo já gerencia nativamente o foco pelo teclado e o anúncio de seu papel; recriar esse comportamento na mão com um `<div role="button">` é quase sempre uma regressão, exceto necessidade absoluta.
 
-## Navegação com o teclado
+## Navegação pelo teclado
 
 ```html
-<button class="bouton-personnalise">Bouton personnalisé</button>
+<button class="botao-personalizado">Botao personalizado</button>
 ```
 
-Um «`<button>`» nativo já suporta a acessibilidade do teclado (foco através da tecla Tab, ativação através das teclas Enter/Espaço) e a leitura da sua função por um leitor de tela: é por isso que a «regra de ouro» acima recomenda partir de um verdadeiro «`<button>`», redesenhado em CSS, se necessário, em vez de recriar um botão a partir de um `<div>`.
+Um `<button>` nativo já gerencia a acessibilidade pelo teclado (foco via Tab, ativação via Enter/Espaço) e o anúncio de seu papel por um leitor de tela: é por isso que a "regra de ouro" acima recomenda partir de um `<button>` de verdade, reestilizado em CSS se necessário, em vez de recriar um botão a partir de uma `<div>`.
 
-Se um caso específico impedir efetivamente a utilização de um «`<button>`» nativo, recriar o seu comportamento requer mais do que apenas «`tabindex`» / «`role`»:
+Se um caso específico realmente impede usar um `<button>` nativo, recriar seu comportamento exige mais do que apenas `tabindex`/`role`:
 
 ```html
-<div tabindex="0" role="button" id="mon-bouton">Bouton personnalisé</div>
+<div tabindex="0" role="button" id="meu-botao">Botao personalizado</div>
 ```
 
 ```javascript
-const bouton = document.getElementById("mon-bouton");
-bouton.addEventListener("keydown", (evenement) => {
-    if (evenement.key === "Enter" || evenement.key === " ") {
-        evenement.preventDefault();
-        bouton.click();   // provoca o mesmo comportamento que um clique
+const botao = document.getElementById("meu-botao");
+botao.addEventListener("keydown", (evento) => {
+    if (evento.key === "Enter" || evento.key === " ") {
+        evento.preventDefault();
+        botao.click();   // dispara o mesmo comportamento de um clique
     }
 });
 ```
 
-`tabindex="0"` torna o elemento selecionável através das teclas Tab e `role="button"` indica a sua função a um leitor de tela, mas **nenhuma das duas opções aciona a ativação pelo teclado** (Enter/Barra de Espaço); ao contrário de um verdadeiro `<button>`, que o faz de forma nativa. Sem este gestor `keydown` explícito, o elemento continuaria a poder receber o foco, mas seria inutilizável através do teclado: exatamente a armadilha que a regra de ouro da ARIA procura evitar.
+`tabindex="0"` torna o elemento focável via Tab e `role="button"` anuncia seu papel para um leitor de tela, mas **nenhum dos dois dispara a ativação pelo teclado** (Enter/Espaço); ao contrário de um `<button>` de verdade, que faz isso nativamente. Sem esse manipulador `keydown` explícito, o elemento continuaria focável mas inutilizável pelo teclado: exatamente a armadilha que a regra de ouro do ARIA busca evitar.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `data-*` anexa um dado personalizado a um elemento, recuperável em JavaScript via `.dataset`. `aria-*` complementa a acessibilidade quando a semântica HTML nativa não basta (componentes personalizados). |
+| **Ferramentas utilizáveis** | `.dataset` em JavaScript; `aria-label`, `role`, `aria-expanded`. |
+| **Armadilhas a evitar** | Recriar um `<div role="button">` sem gerenciar você mesmo o foco pelo teclado e a ativação (Enter/Espaço); um `<button>` de verdade faz tudo isso nativamente. |
+| **Boas práticas** | "No ARIA is better than bad ARIA": só usar ARIA para preencher uma lacuna real, nunca em substituição a uma tag HTML nativa que já faria o trabalho. |

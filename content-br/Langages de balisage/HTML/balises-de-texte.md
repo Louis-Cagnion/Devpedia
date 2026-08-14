@@ -2,68 +2,79 @@
 order: 2
 ---
 
-# As etiquetas de texto
+# As tags de texto
 
-O conteúdo textual de uma página HTML organiza-se em torno de algumas etiquetas fundamentais (títulos, parágrafos, listas), cuja escolha deve refletir sempre o **significado** do conteúdo, e não apenas a aparência visual pretendida (a aparência é da competência do CSS, ver capítulo dedicado).
+O conteúdo textual de uma página HTML se organiza em torno de algumas tags fundamentais (títulos, parágrafos, listas) cuja escolha sempre deve refletir o **sentido** do conteúdo, não apenas a aparência visual desejada (a aparência é papel do [CSS](/?c=langages-de-balisage&s=css&p=css)).
 
 ## Os títulos
 
 ```html
-<h1>Titre principal</h1>
-<h2>Sous-titre</h2>
-<h3>Sous-sous-titre</h3>
+<h1>Titulo principal</h1>
+<h2>Subtitulo</h2>
+<h3>Subsubtitulo</h3>
 ```
 
-De `<h1>` (o mais importante) a `<h6>` (o menos importante). Uma página só deve conter um** único** `<h1>` (o título principal da página), e os níveis nunca devem ser «saltados» apenas por uma questão de efeito visual (`<h1>` seguido diretamente de `<h4>`): a hierarquia dos títulos é utilizada pelos leitores de tela para navegar na página (ver capítulo sobre acessibilidade), e não apenas para definir o tamanho do texto.
+De `<h1>` (o mais importante) a `<h6>` (o menos importante). Uma página deveria conter apenas **um único** `<h1>` (o título principal da página), e os níveis nunca deveriam ser "pulados" por um simples efeito visual (`<h1>` seguido diretamente de `<h4>`): a hierarquia de títulos é usada pelos leitores de tela para navegar na página (veja [Atributos data-* e acessibilidade](/?c=langages-de-balisage&s=html&p=attributs-data-et-accessibilite)), não apenas para o tamanho do texto.
 
 ## Os parágrafos
 
 ```html
-<p>Un paragraphe de texte.</p>
+<p>Um paragrafo de texto.</p>
 ```
 
 ## As listas
 
 ```html
 <ul>
-    <li>Pomme</li>
-    <li>Banane</li>
+    <li>Maca</li>
+    <li>Banana</li>
 </ul>
 
 <ol>
-    <li>Première étape</li>
-    <li>Deuxième étape</li>
+    <li>Primeira etapa</li>
+    <li>Segunda etapa</li>
 </ol>
 ```
 
-`<ul>` (*lista não ordenada*) para uma lista sem ordem significativa, `<ol>` (*lista ordenada*) quando a ordem é importante (um procedimento, uma classificação...), o navegador numera automaticamente as `<li>` de um `<ol>`.
+`<ul>` (*unordered list*) para uma lista sem ordem significativa, `<ol>` (*ordered list*) quando a ordem importa (um procedimento, uma classificação...): o navegador numera automaticamente os `<li>` de um `<ol>`.
 
-## Destaque do texto
-
-```html
-<strong>Texte important</strong>
-<em>Texte en emphase</em>
-```
-
-> **Nota:** `<strong>` / `<em>` expressam uma importância **semântica** (compreendida por um leitor de tela, que pode, por exemplo, realçar vocalmente este texto), ao contrário de `<b>` / `<i>` (negrito/itálico puramente visuais, sem significado). Dar preferência a `<strong>` / `<em>` por padrão e reservar `<b>` / `<i>` para os casos em que se procura apenas o aspeto visual, sem intenção de transmitir significado (por exemplo: um nome de espécie em latim, convencionalmente em itálico).
-
-## Saltos de linha e separadores
+## Ênfase no texto
 
 ```html
-<br>       <!-- saut de ligne, à l'intérieur d'un même bloc de texte -->
-<hr>       <!-- ligne horizontale, séparation thématique entre deux sections -->
+<strong>Texto importante</strong>
+<em>Texto em enfase</em>
 ```
 
-> **Nota:** `<br>` não deve ser utilizado para criar um espaçamento visual entre dois parágrafos: essa é a função do CSS (`margin`, ver capítulo dedicado). O uso repetido de `<br><br>` para «criar espaço» é um sinal de que se está utilizando HTML para fins de apresentação, quando essa não é a sua função.
+> **Nota:** `<strong>`/`<em>` expressam uma importância **semântica** (compreendida por um leitor de tela, que pode por exemplo acentuar vocalmente esse texto), ao contrário de `<b>`/`<i>` (negrito/itálico puramente visuais, sem significado). Priorizar `<strong>`/`<em>` por padrão, e reservar `<b>`/`<i>` para os casos em que apenas o aspecto visual é buscado, sem intenção de sentido (ex: um nome de espécie em latim, convencionalmente em itálico).
+
+## Quebras de linha e separadores
+
+```html
+<br>       <!-- quebra de linha, dentro de um mesmo bloco de texto -->
+<hr>       <!-- linha horizontal, separacao tematica entre duas secoes -->
+```
+
+> **Nota:** `<br>` não deve ser usado para criar espaçamento visual entre dois parágrafos: esse é o papel do CSS (`margin`, veja [O modelo de caixa](/?c=langages-de-balisage&s=css&p=box-model)). Um uso repetido de `<br><br>` para "fazer espaço" é um sinal de que se está usando HTML para apresentação, quando essa não é sua responsabilidade.
 
 ## Citações
 
 ```html
-<blockquote cite="https://source.com">
-    <p>Une citation longue, généralement mise en retrait visuellement.</p>
+<blockquote cite="https://fonte.com">
+    <p>Uma citacao longa, geralmente exibida em recuo visual.</p>
 </blockquote>
 
-<p>Comme le disait <q>une citation courte, intégrée dans une phrase</q>.</p>
+<p>Como dizia <q>uma citacao curta, integrada em uma frase</q>.</p>
 ```
 
-Consulte também o capítulo sobre a semântica do HTML5 para as etiquetas que estruturam secções inteiras de conteúdo, para além do próprio texto.
+Veja também [A semântica do HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5) para as tags que estruturam seções inteiras de conteúdo, além do texto em si.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | A escolha de uma tag de texto deve refletir o sentido do conteúdo (título, parágrafo, lista, ênfase), nunca apenas a aparência visual desejada: a aparência é papel do CSS. |
+| **Ferramentas utilizáveis** | `<h1>`-`<h6>`, `<p>`, `<ul>`/`<ol>`/`<li>`, `<strong>`/`<em>`, `<blockquote>`/`<q>`. |
+| **Armadilhas a evitar** | Pular níveis de título por um efeito visual (`<h1>` seguido de `<h4>`); usar `<b>`/`<i>` (puramente visuais) onde `<strong>`/`<em>` (sentido) seriam mais adequados; encadear `<br>` para criar espaçamento. |
+| **Boas práticas** | Uma única tag `<h1>` por página; priorizar `<strong>`/`<em>` por padrão, reservar `<b>`/`<i>` aos casos puramente visuais sem intenção de sentido. |

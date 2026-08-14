@@ -1,14 +1,18 @@
+---
+order: 1
+---
+
 # HTML
 
-O HTML (*HyperText Markup Language*) não é uma linguagem de programação: é uma linguagem de **marcação**, que descreve a estrutura e o significado de um conteúdo (um título, um parágrafo, uma imagem, um link...), e não instruções executadas sequencialmente. Um navegador lê um documento HTML e constrói uma representação dessa estrutura na memória, o DOM (*Document Object Model*, ver capítulo dedicado em JavaScript), que depois exibe na tela.
+O HTML (*HyperText Markup Language*) não é uma linguagem de programação: é uma linguagem de **marcação**, que descreve a estrutura e o sentido de um conteúdo (um título, um parágrafo, uma imagem, um link...), não instruções executadas sequencialmente. Um navegador lê um documento HTML e constrói uma representação em memória dessa estrutura, o DOM (*Document Object Model*, veja [O DOM e os eventos](/?c=langages-de-programmation&s=javascript&p=dom-et-evenements)), que depois exibe na tela.
 
-Entre os conceitos essenciais do HTML, destacam-se, nomeadamente:
+Entre os conceitos essenciais do HTML, destacam-se:
 
-- As etiquetas e os atributos, que estruturam e enriquecem o conteúdo
-- Os elementos semânticos (HTML5), que conferem um significado explícito a cada parte da página
-- Os formulários, para recolher dados junto do usuário
-- Acessibilidade, para que o conteúdo continue a ser utilizável por tecnologias de assistência (leitores de tela, etc.)
+- As tags e atributos, que estruturam e enriquecem o conteúdo
+- Os elementos semânticos (HTML5), que dão um sentido explícito a cada parte da página
+- Os formulários, para coletar dados do usuário
+- A acessibilidade, para que o conteúdo continue utilizável por tecnologias assistivas (leitores de tela...)
 
-O HTML não se ocupa **nem** da aparência visual (função do CSS, ver capítulo dedicado), **nem** do comportamento interativo (função do JavaScript): a sua única responsabilidade é descrever o que é cada parte do conteúdo. Esta separação de responsabilidades (estrutura / apresentação / comportamento) é um princípio central do desenvolvimento web moderno.
+O HTML não cuida **nem** da aparência visual (o papel do [CSS](/?c=langages-de-balisage&s=css&p=css)), **nem** do comportamento interativo (o papel do [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)): sua única responsabilidade é descrever o que **é** cada parte do conteúdo. Essa separação de responsabilidades (estrutura / apresentação / comportamento) é um princípio central do desenvolvimento web moderno.
 
-> **Nota:** ao contrário do que acontece com uma linguagem de programação, um erro de sintaxe HTML quase nunca provoca uma «falha»: os navegadores são deliberadamente tolerantes (etiqueta não fechada, atributo mal escrito...) e tentam corrigi-los silenciosamente, o que pode ocultar erros durante muito tempo se o HTML não for validado com uma ferramenta específica.
+> **Nota:** ao contrário de uma linguagem de programação, um erro de sintaxe HTML quase nunca provoca um "crash": os navegadores são deliberadamente tolerantes (tag não fechada, atributo mal escrito...) e tentam corrigir silenciosamente, o que pode mascarar erros por muito tempo se você não validar seu HTML com uma ferramenta dedicada.

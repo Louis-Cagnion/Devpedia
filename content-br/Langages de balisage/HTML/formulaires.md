@@ -4,79 +4,92 @@ order: 5
 
 # Os formulários
 
-Um formulário HTML recolhe os dados introduzidos pelo usuário, para os enviar para um servidor (através de `GET` ou `POST`, ver o capítulo sobre variáveis globais em PHP): este é o principal ponto de entrada de todos os dados do usuário numa aplicação web.
+Um formulário HTML coleta dados digitados pelo usuário, para enviá-los a um servidor (via `GET` ou `POST`, veja [As trocas de dados: API e HTTP](/?c=infrastructure&p=api-et-http)): é o principal ponto de entrada de qualquer dado do usuário em uma aplicação web.
 
 ## A estrutura básica
 
 ```html
-<form action="/inscription" method="POST">
-    <label for="email">Adresse email</label>
+<form action="/cadastro" method="POST">
+    <label for="email">Endereco de email</label>
     <input type="email" id="email" name="email" required>
 
-    <button type="submit">S'inscrire</button>
+    <button type="submit">Cadastrar</button>
 </form>
 ```
 
-- `action` : o URL para o qual os dados são enviados no momento do envio.
-- `method` : `GET` (dados visíveis no URL, por exemplo, para uma pesquisa) ou `POST` (dados no corpo da solicitação, para dados sensíveis ou de grande volume; ver o capítulo sobre variáveis globais em PHP para conhecer a diferença completa).
-- `name` em cada campo: é este valor, **e** n`id`**o**, que identifica o campo do lado do servidor (por exemplo, `$_POST['email']` em PHP).
+- `action`: a URL para onde os dados são enviados na submissão.
+- `method`: `GET` (dados visíveis na URL, para uma busca por exemplo) ou `POST` (dados no corpo da requisição, para dados sensíveis ou volumosos; veja [As trocas de dados: API e HTTP](/?c=infrastructure&p=api-et-http) para a diferença completa).
+- `name` em cada campo: é esse valor, **não** `id`, que identifica o campo do lado do servidor (`$_POST['email']` em PHP, por exemplo).
 
-## `<label>` : indispensável, não é meramente decorativa
+## `<label>`: indispensável, não decorativo
 
 ```html
-<label for="email">Adresse email</label>
+<label for="email">Endereco de email</label>
 <input type="email" id="email" name="email">
 ```
 
-O atributo «`for`» do «`<label>`» deve corresponder ao «`id`» do campo: clicar no rótulo ativa/focaliza automaticamente o campo associado, e um leitor de tela anuncia esse rótulo quando o usuário chega ao campo. Um campo **sem** um `<label>` associado constitui um problema grave de acessibilidade, mesmo que continue a ser visualmente compreensível para um usuário com visão.
+O atributo `for` do `<label>` precisa corresponder ao `id` do campo: clicar no label então ativa/foca automaticamente o campo associado, e um leitor de tela anuncia esse label quando o usuário chega ao campo. Um campo **sem** `<label>` associado é um problema de acessibilidade grave, mesmo que continue visualmente compreensível para um usuário que enxerga.
 
-## Tipos de campos (`<input>`)
+## Tipos de campo (`<input>`)
 
 ```html
-<input type="text" name="nom">
-<input type="email" name="email">          <!-- validation basique du format email par le navigateur -->
-<input type="password" name="motdepasse">  <!-- masque la saisie -->
-<input type="number" name="age" min="0" max="120">
-<input type="date" name="naissance">
-<input type="checkbox" name="accepte" value="oui">
-<input type="radio" name="genre" value="h"> <input type="radio" name="genre" value="f">
-<input type="file" name="document">
+<input type="text" name="nome">
+<input type="email" name="email">          <!-- validacao basica do formato de email pelo navegador -->
+<input type="password" name="senha">       <!-- mascara a digitacao -->
+<input type="number" name="idade" min="0" max="120">
+<input type="date" name="nascimento">
+<input type="checkbox" name="aceita" value="sim">
+<input type="radio" name="genero" value="m"> <input type="radio" name="genero" value="f">
+<input type="file" name="documento">
 <input type="hidden" name="token" value="abc123">
 ```
 
-> **Nota:** dois botões de opção que partilham o mesmo `name` formam um **grupo**: apenas um pode ser selecionado de cada vez entre eles, ao contrário das caixas de seleção (`checkbox`), que são independentes umas das outras, mesmo com o mesmo `name`.
+> **Nota (segurança):** um campo oculto carregando um token (como `token` acima) é o mecanismo comum de proteção contra **CSRF** (*Cross-Site Request Forgery*); veja [A segurança](/?c=langages-de-programmation&s=php&p=securite) para o detalhe desse ataque e de sua proteção. O campo é invisível para o usuário, mas é enviado normalmente com o resto do formulário na submissão.
+
+> **Nota:** dois botões de rádio compartilhando o mesmo `name` formam um **grupo**: apenas um pode ser selecionado por vez entre eles, ao contrário das caixas de seleção (`checkbox`), independentes umas das outras mesmo com o mesmo `name`.
 
 ## `<textarea>` e `<select>`
 
 ```html
-<textarea name="message" rows="5" cols="30"></textarea>
+<textarea name="mensagem" rows="5" cols="30"></textarea>
 
-<select name="pays">
-    <option value="fr">France</option>
-    <option value="be" selected>Belgique</option>
+<select name="pais">
+    <option value="br">Brasil</option>
+    <option value="pt" selected>Portugal</option>
 </select>
 ```
 
-## Validação no lado do navegador
+## Validação do lado do navegador
 
 ```html
 <input type="email" name="email" required>
-<input type="text" name="pseudo" minlength="3" maxlength="20" pattern="[A-Za-z0-9]+">
+<input type="text" name="usuario" minlength="3" maxlength="20" pattern="[A-Za-z0-9]+">
 ```
 
-| Atributo | Função |
+| Atributo | Papel |
 |---|---|
-| `required` | O campo não pode ficar em branco no momento do envio |
-| `minlength` / `maxlength` | Comprimento mínimo/máximo da entrada |
+| `required` | O campo não pode estar vazio na submissão |
+| `minlength` / `maxlength` | Comprimento mínimo/máximo da digitação |
 | `min` / `max` | Valor mínimo/máximo (para `number`, `date`...) |
-| `pattern` | Uma expressão regular (ver capítulo dedicado) que o valor deve respeitar |
+| `pattern` | Uma [expressão regular](/?c=domain-specific-languages-dsl&p=regex) que o valor precisa respeitar |
 
-> **Nota (segurança):** esta validação ocorre **no lado do navegador**, antes mesmo do envio: melhora a experiência do usuário (resposta imediata), mas **nunca** substitui uma validação do lado do servidor (ver capítulo sobre segurança em PHP). Um usuário mal-intencionado pode contornar completamente o navegador (pedido HTTP direto): todos os dados recebidos no lado do servidor devem ser revalidados, sem exceção.
+> **Nota (segurança):** essa validação acontece **do lado do navegador**, antes mesmo do envio; ela melhora a experiência do usuário (retorno imediato), mas **nunca** substitui uma validação do lado do servidor (veja [A segurança](/?c=langages-de-programmation&s=php&p=securite)). Um usuário mal-intencionado pode contornar inteiramente o navegador (requisição HTTP direta): todo dado recebido do lado do servidor precisa ser revalidado, sem exceção.
 
-## Apresentação e método
+## Submissão e método
 
 ```html
-<button type="submit">Envoyer</button>    <!-- soumet le formulaire -->
-<button type="reset">Réinitialiser</button> <!-- vide tous les champs -->
-<button type="button">Ne fait rien seul</button>  <!-- utile pour un comportement géré en JavaScript -->
+<button type="submit">Enviar</button>              <!-- submete o formulario -->
+<button type="reset">Limpar</button>                <!-- esvazia todos os campos -->
+<button type="button">Nao faz nada sozinho</button> <!-- util para um comportamento gerenciado em JavaScript -->
 ```
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Um formulário coleta dados do usuário e os envia via `GET` (URL) ou `POST` (corpo da requisição). `name` (não `id`) identifica cada campo do lado do servidor; `<label>` é indispensável para a acessibilidade. |
+| **Ferramentas utilizáveis** | Atributos de validação do navegador (`required`, `minlength`/`maxlength`, `min`/`max`, `pattern`); tipos de campo (`email`, `password`, `number`, `date`...). |
+| **Armadilhas a evitar** | Confiar apenas na validação do lado do navegador: um usuário mal-intencionado pode contorná-la inteiramente; um campo sem `<label>` associado. |
+| **Boas práticas** | Sempre revalidar do lado do servidor todo dado recebido, sem exceção; usar um token CSRF em todo formulário que modifica dados. |
