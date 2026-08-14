@@ -11,59 +11,34 @@
       ]
     },
     {
-      "id": "bash",
-      "label": "Bash",
-      "folder": "Bash",
-      "chapters": [
-        {
-          "id": "scripts-et-shebang",
-          "label": "Escribir y ejecutar un script de Bash"
-        },
-        {
-          "id": "variables",
-          "label": "Las variables"
-        },
-        {
-          "id": "variables-denvironnement",
-          "label": "Variables de entorno"
-        },
-        {
-          "id": "conditions",
-          "label": "Condiciones"
-        },
-        {
-          "id": "boucles",
-          "label": "Los bucles"
-        },
-        {
-          "id": "fonctions",
-          "label": "Las funciones"
-        },
-        {
-          "id": "expansion-et-jokers",
-          "label": "Expansión y comodines (globbing)"
-        },
-        {
-          "id": "redirections-et-pipes",
-          "label": "Redireccionamientos y pipes"
-        },
-        {
-          "id": "traitement-de-texte",
-          "label": "Procesamiento de texto (grep, sed, awk...)"
-        },
-        {
-          "id": "permissions-et-fichiers",
-          "label": "Permisos y gestión de archivos"
-        },
-        {
-          "id": "gestion-des-processus",
-          "label": "La gestión de procesos"
-        },
-        {
-          "id": "architecture-dun-shell",
-          "label": "Cómo funciona un shell (arquitectura interna)"
-        }
-      ]
+      "id": "bases-de-donnees",
+      "label": "Bases de données",
+      "folder": "Bases de données",
+      "chapters": []
+    },
+    {
+      "id": "bases-de-l-informatique",
+      "label": "Bases de l'informatique",
+      "folder": "Bases de l'informatique",
+      "chapters": []
+    },
+    {
+      "id": "ci-cd",
+      "label": "CI-CD",
+      "folder": "CI-CD",
+      "chapters": []
+    },
+    {
+      "id": "data-science",
+      "label": "Data Science",
+      "folder": "Data Science",
+      "chapters": []
+    },
+    {
+      "id": "docker",
+      "label": "Docker",
+      "folder": "Docker",
+      "chapters": []
     },
     {
       "id": "domain-specific-languages-dsl",
@@ -130,6 +105,55 @@
           "label": "La arquitectura interna de Git"
         }
       ]
+    },
+    {
+      "id": "ia",
+      "label": "IA",
+      "folder": "IA",
+      "subjects": [
+        {
+          "id": "fondamentaux-du-deep-learning",
+          "label": "Fondamentaux du deep learning",
+          "folder": "Fondamentaux du deep learning",
+          "chapters": []
+        },
+        {
+          "id": "nlp-llm",
+          "label": "NLP et LLM",
+          "folder": "NLP et LLM",
+          "chapters": []
+        },
+        {
+          "id": "applications-llm",
+          "label": "Applications LLM",
+          "folder": "Applications LLM",
+          "chapters": []
+        },
+        {
+          "id": "vision-et-ocr",
+          "label": "Vision et OCR",
+          "folder": "Vision et OCR",
+          "chapters": []
+        },
+        {
+          "id": "voix-ia",
+          "label": "Voix IA",
+          "folder": "Voix IA",
+          "chapters": []
+        },
+        {
+          "id": "production-et-gouvernance",
+          "label": "Production et gouvernance",
+          "folder": "Production et gouvernance",
+          "chapters": []
+        }
+      ]
+    },
+    {
+      "id": "infrastructure",
+      "label": "Infrastructure",
+      "folder": "Infrastructure",
+      "chapters": []
     },
     {
       "id": "langages-de-balisage",
@@ -213,6 +237,12 @@
       "label": "Langages de programmation",
       "folder": "Langages de programmation",
       "subjects": [
+        {
+          "id": "ocaml",
+          "label": "OCaml",
+          "folder": "OCaml",
+          "chapters": []
+        },
         {
           "id": "c",
           "label": "C",
@@ -541,6 +571,122 @@
           ]
         }
       ]
+    },
+    {
+      "id": "mathematiques",
+      "label": "Mathématiques",
+      "folder": "Mathématiques",
+      "chapters": []
+    },
+    {
+      "id": "organisation-en-entreprise",
+      "label": "Organisation en entreprise",
+      "folder": "Organisation en entreprise",
+      "chapters": []
+    },
+    {
+      "id": "performance",
+      "label": "Performance",
+      "folder": "Performance",
+      "chapters": []
+    },
+    {
+      "id": "qualite-et-architecture-du-code",
+      "label": "Qualité et architecture du code",
+      "folder": "Qualité et architecture du code",
+      "chapters": []
+    },
+    {
+      "id": "representation-des-donnees",
+      "label": "Représentation des données",
+      "folder": "Représentation des données",
+      "chapters": []
+    },
+    {
+      "id": "shells",
+      "label": "Shells",
+      "folder": "Shells",
+      "subjects": [
+        {
+          "id": "bash",
+          "label": "Bash",
+          "folder": "Bash",
+          "chapters": [
+            {
+              "id": "scripts-et-shebang",
+              "label": "Escribir y ejecutar un script de Bash"
+            },
+            {
+              "id": "variables",
+              "label": "Las variables"
+            },
+            {
+              "id": "variables-denvironnement",
+              "label": "Variables de entorno"
+            },
+            {
+              "id": "conditions",
+              "label": "Condiciones"
+            },
+            {
+              "id": "boucles",
+              "label": "Los bucles"
+            },
+            {
+              "id": "fonctions",
+              "label": "Las funciones"
+            },
+            {
+              "id": "expansion-et-jokers",
+              "label": "Expansión y comodines (globbing)"
+            },
+            {
+              "id": "redirections-et-pipes",
+              "label": "Redireccionamientos y pipes"
+            },
+            {
+              "id": "traitement-de-texte",
+              "label": "Procesamiento de texto (grep, sed, awk...)"
+            },
+            {
+              "id": "permissions-et-fichiers",
+              "label": "Permisos y gestión de archivos"
+            },
+            {
+              "id": "gestion-des-processus",
+              "label": "La gestión de procesos"
+            },
+            {
+              "id": "architecture-dun-shell",
+              "label": "Cómo funciona un shell (arquitectura interna)"
+            }
+          ]
+        },
+        {
+          "id": "zsh",
+          "label": "Zsh",
+          "folder": "Zsh",
+          "chapters": []
+        },
+        {
+          "id": "powershell",
+          "label": "PowerShell",
+          "folder": "PowerShell",
+          "chapters": []
+        }
+      ]
+    },
+    {
+      "id": "traitement-de-documents",
+      "label": "Traitement de documents",
+      "folder": "Traitement de documents",
+      "chapters": []
+    },
+    {
+      "id": "ui-ux",
+      "label": "UI-UX",
+      "folder": "UI-UX",
+      "chapters": []
     }
   ]
 }
