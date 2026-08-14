@@ -14,7 +14,7 @@ double maximum(double a, double b) { return (a > b) ? a : b; }
 std::string maximum(std::string a, std::string b) { return (a > b) ? a : b; }
 ```
 
-Three functions that are strictly identical in their logic, duplicated solely because of their type—exactly the kind of repetition that a template eliminates (see the DRY principle, already discussed in relation to other languages).
+Three functions that are strictly identical in their logic, duplicated solely because of their type, exactly the kind of repetition that a template eliminates (see the DRY principle, already discussed in relation to other languages).
 
 ## Function Template
 
@@ -29,7 +29,7 @@ maximum(3.5, 2.1);          // T is marked as a duplicate
 maximum<std::string>("a", "b");  // T explicitly specified if necessary
 ```
 
-The compiler **generates** a separate version of the function for each type that is actually used (`maximum<int>`, `maximum<double>`...)—this is known as template instantiation, which takes place entirely at compile time, with no overhead at runtime.
+The compiler **generates** a separate version of the function for each type that is actually used (`maximum<int>`, `maximum<double>`...): this is known as template instantiation, which takes place entirely at compile time, with no overhead at runtime.
 
 ## Class Template
 
@@ -59,11 +59,11 @@ Pile<std::string> pileTextes;
 pileTextes.empiler("bonjour");
 ```
 
-A single definition of `Pile` that can be used with any type—this is exactly how STL containers are built (`std::vector<T>`, `std::map<K, V>`..., see the dedicated chapter).
+A single definition of `Pile` that can be used with any type: this is exactly how STL containers are built (`std::vector<T>`, `std::map<K, V>`..., see the dedicated chapter).
 
 ## Type Constraints (C++20: `concepts`)
 
-Without constraints, a template accepts any type—including types for which the operation makes no sense, resulting in a compilation error that is often lengthy and unclear:
+Without constraints, a template accepts any type, including types for which the operation makes no sense, resulting in a compilation error that is often lengthy and unclear:
 
 ```cpp
 template <typename T>

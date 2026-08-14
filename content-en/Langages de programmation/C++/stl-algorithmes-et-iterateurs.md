@@ -2,9 +2,9 @@
 order: 9
 ---
 
-# STL — Iterators, Algorithms, and Lambdas
+# STL: Iterators, Algorithms, and Lambdas
 
-An **iterator** is an abstraction that allows you to iterate over any STL container (see the dedicated chapter) in the same way, whether it is a `vector` (contiguous array) or a `list` (linked list)—the iteration code remains the same, even if the underlying structure is radically different.
+An **iterator** is an abstraction that allows you to iterate over any STL container (see the dedicated chapter) in the same way, whether it is a `vector` (contiguous array) or a `list` (linked list): the iteration code remains the same, even if the underlying structure is radically different.
 
 ## The Principle of the Iterator
 
@@ -20,7 +20,7 @@ while (it != numbers.end()) {
 
 - `begin()` Returns an iterator pointing to the first element.
 - `end()` returns an iterator "just after" the last element (never directly dereferenced, only compared).
-- `*it` Dereference the current iterator; `++it` moves to the next one—a syntax intentionally similar to that of a raw pointer.
+- `*it` Dereference the current iterator; `++it` moves to the next one, a syntax intentionally similar to that of a raw pointer.
 
 ## The Modern for-each Loop (C++11+)
 
@@ -30,11 +30,11 @@ for (int n : numbers) {
 }
 ```
 
-This syntax relies on **exactly** the same iterator mechanism behind the scenes—it is a syntactic shortcut that works for any type that exposes `begin()` or `end()`.
+This syntax relies on **exactly** the same iterator mechanism behind the scenes; it is a syntactic shortcut that works for any type that exposes `begin()` or `end()`.
 
 ## Standard Algorithms (`<algorithm>`)
 
-Rather than manually writing a loop for each common operation, the STL provides generic algorithms that operate on **pairs of iterators** (start, end)—and are therefore applicable to any container:
+Rather than manually writing a loop for each common operation, the STL provides generic algorithms that operate on **pairs of iterators** (start, end), and are therefore applicable to any container:
 
 ```cpp
 #include <algorithm>
@@ -55,7 +55,7 @@ std::for_each(numbers.begin(), numbers.end(), [](int n) {
 
 ## Lambdas (C++11+)
 
-A **lambda** is an anonymous function written directly where it is used—the same concept as JavaScript closures or Python lambdas (see the relevant chapters):
+A **lambda** is an anonymous function written directly where it is used, the same concept as JavaScript closures or Python lambdas (see the relevant chapters):
 
 ```cpp
 auto carre = [](int x) { return x * x; };
@@ -69,7 +69,7 @@ auto estAuDessusDuSeuil = [seuil](int x) { return x > seuil; };   // "threshold"
 int compte = std::count_if(numbers.begin(), numbers.end(), estAuDessusDuSeuil);
 ```
 
-- `[]` : capture list — which external variables the lambda can use, and how (`[seuil]` by value, `[&seuil]` by reference, `[&]` all by reference, `[=]` all by value).
+- `[]` : capture list, which external variables the lambda can use, and how (`[seuil]` by value, `[&seuil]` by reference, `[&]` all by reference, `[=]` all by value).
 - `()` : parameters, just like a standard function.
 - `{}` : body of the lambda.
 
@@ -84,4 +84,4 @@ int compte = std::count_if(numbers.begin(), numbers.end(), estAuDessusDuSeuil);
 | `std::transform` | Generates a new array by applying a function to each element (equivalent to `map` in Python/JS) |
 | `std::accumulate` | Reduces a range to a single value (equivalent to `reduce`) |
 
-> **Note:** Using these algorithms instead of manual loops makes the intent explicit (a `std::sort` says “I’m sorting,” whereas a loop with a hand-written sorting algorithm requires the reader to infer it)—a direct gain in readability, in addition to avoiding the need to reimplement (and potentially misimplement) logic that is already standardized and optimized.
+> **Note:** Using these algorithms instead of manual loops makes the intent explicit (a `std::sort` says “I’m sorting,” whereas a loop with a hand-written sorting algorithm requires the reader to infer it), a direct gain in readability, in addition to avoiding the need to reimplement (and potentially misimplement) logic that is already standardized and optimized.

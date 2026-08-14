@@ -4,7 +4,7 @@ order: 6
 
 # Exceptions
 
-C++ provides a structured error-handling mechanism (`try` / `catch` / `throw`), an alternative to the "C-style" approach (where a function returns a special value such as `-1` or `NULL`, and sets `errno`; see [the chapter on system calls](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs), under the C section)—the same principle as [PHP](/?c=langages-de-programmation&s=php&p=exceptions), [Python](/?c=langages-de-programmation&s=python&p=gestion-des-erreurs), or [JavaScript](/?c=langages-de-programmation&s=javascript&p=gestion-des-erreurs) exceptions already covered in the corresponding sections.
+C++ provides a structured error-handling mechanism (`try` / `catch` / `throw`), an alternative to the "C-style" approach (where a function returns a special value such as `-1` or `NULL`, and sets `errno`; see [the chapter on system calls](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs), under the C section), the same principle as [PHP](/?c=langages-de-programmation&s=php&p=exceptions), [Python](/?c=langages-de-programmation&s=python&p=gestion-des-erreurs), or [JavaScript](/?c=langages-de-programmation&s=javascript&p=gestion-des-erreurs) exceptions already covered in the corresponding sections.
 
 ## `try` / `catch` / `throw`
 
@@ -37,7 +37,7 @@ std::exception              // base class for all standard exceptions
         └── std::underflow_error
 ```
 
-Intercepting `const std::exception &` catches any exception derived from this standard hierarchy—useful as a last resort, but intercepting the most **specific** type possible is still preferable so you can handle each actual problem differently.
+Intercepting `const std::exception &` catches any exception derived from this standard hierarchy, useful as a last resort, but intercepting the most **specific** type possible is still preferable so you can handle each actual problem differently.
 
 ## Create Your Own Exception
 
@@ -72,7 +72,7 @@ void traiter() {
 }   // Even here, ~FileManager() runs BEFORE the exception is propagated upward
 ```
 
-When an exception is thrown, C++ performs "stack* unwinding*": each local object that is still alive has its destructor called, in the reverse order of their creation, before the exception continues to propagate upward—this ensures that a resource managed by RAII (see the dedicated chapter) is always released properly, even in the event of an unexpected error.
+When an exception is thrown, C++ performs "stack* unwinding*": each local object that is still alive has its destructor called, in the reverse order of their creation, before the exception continues to propagate upward: this ensures that a resource managed by RAII (see the dedicated chapter) is always released properly, even in the event of an unexpected error.
 
 ## `noexcept` : ensure that a function never returns
 
@@ -83,4 +83,4 @@ void fonctionSure() noexcept {
 }
 ```
 
-> **Best practice:** Throw an exception only in truly **exceptional** situations (unforeseen error, violated invariant)—never for normal control flow (an exception incurs a significant runtime cost compared to a simple `if`, unlike a traditional error return).
+> **Best practice:** Throw an exception only in truly **exceptional** situations (unforeseen error, violated invariant), never for normal control flow (an exception incurs a significant runtime cost compared to a simple `if`, unlike a traditional error return).

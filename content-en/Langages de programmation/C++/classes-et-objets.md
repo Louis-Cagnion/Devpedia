@@ -4,7 +4,7 @@ order: 3
 
 # Classes and Objects
 
-A C++ **class** combines what a C-`struct`e (see the dedicated chapter) separates into two parts: data AND the functions that manipulate it, all in one place—with the added benefit of explicit control over what is visible from the outside.
+A C++ **class** combines what a C-`struct`e (see the dedicated chapter) separates into two parts: data AND the functions that manipulate it, all in one place, with the added benefit of explicit control over what is visible from the outside.
 
 ## Declare a Class
 
@@ -31,7 +31,7 @@ std::cout << v.description();   // "Peugeot 308"
 - `private` : accessible only from within the class (`Vehicule` methods).
 - `protected` : Like `private`, but also accessible to classes that inherit from it (see the chapter on inheritance).
 
-> **Note:** Unlike a C `struct` (where all data is freely accessible), a C++ class hides its members by default (implicit `private`)—this is **encapsulation**: the outside world interacts only with what the class intentionally exposes.
+> **Note:** Unlike a C `struct` (where all data is freely accessible), a C++ class hides its members by default (implicit `private`); this is **encapsulation**: the outside world interacts only with what the class intentionally exposes.
 
 ## The builder, in two different handwritings
 
@@ -46,7 +46,7 @@ Vehicule(std::string brand, std::string model) {
 }
 ```
 
-The initialization list (after the `:`) directly initializes each member with the correct value, rather than initializing it once (with the default value) and then overwriting it in the constructor's body—a performance detail that becomes significant for objects that are expensive to construct.
+The initialization list (after the `:`) directly initializes each member with the correct value, rather than initializing it once (with the default value) and then overwriting it in the constructor's body, a performance detail that becomes significant for objects that are expensive to construct.
 
 ## The Destroyer
 
@@ -66,7 +66,7 @@ private:
 };
 ```
 
-The `~NomClasse()` is automatically executed as soon as the object is destroyed (end of scope for a local object, `delete` for a dynamically allocated object)—this is the basis of the RAII mechanism (see the dedicated chapter), which is central to C++ to ensure that resources are never forgotten to be released.
+The `~NomClasse()` is automatically executed as soon as the object is destroyed (end of scope for a local object, `delete` for a dynamically allocated object): this is the basis of the RAII mechanism (see the dedicated chapter), which is central to C++ to ensure that resources are never forgotten to be released.
 
 ## Methods`const`
 
@@ -76,7 +76,7 @@ std::string description() const {   // "const" here: ensures that this method do
 }
 ```
 
-Marking a method as `const` documents and ensures that the compiler enforces the rule that it does not modify any members of the object—which is particularly useful for allowing this method to be called on an object that is itself declared as `const`.
+Marking a method as `const` documents and ensures that the compiler enforces the rule that it does not modify any members of the object, which is particularly useful for allowing this method to be called on an object that is itself declared as `const`.
 
 ## Static members and methods
 

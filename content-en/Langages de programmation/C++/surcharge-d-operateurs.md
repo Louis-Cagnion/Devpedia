@@ -4,7 +4,7 @@ order: 5
 
 # Operator Overload
 
-C++ allows you to redefine the behavior of standard operators (`+`, `==`, `<<`...) for custom types—which enables a user-defined object to behave, on the surface, like a native language type.
+C++ allows you to redefine the behavior of standard operators (`+`, `==`, `<<`...) for custom types, which enables a user-defined object to behave, on the surface, like a native language type.
 
 ## Overload`+`
 
@@ -25,7 +25,7 @@ Vecteur2D b(3, 4);
 Vecteur2D c = a + b;   // actually calls a.operator+(b) -> 2D Vector(4, 6)
 ```
 
-`a + b` is literally transformed by the compiler into `a.operator+(b)`—the operator is simply a method with a specific name and a special calling syntax.
+`a + b` is literally transformed by the compiler into `a.operator+(b)`: the operator is simply a method with a specific name and a special calling syntax.
 
 ## Overload`==`
 
@@ -46,7 +46,7 @@ Point p2(1, 2);
 std::cout << (p1 == p2);   // true -> without overloading, would compare the ADDRESSES, not the content
 ```
 
-> **Note:** Without the `==` overload, comparing two objects using `==` compares their **memory addresses** by default (as if comparing two pointers), never their contents—a common source of error for those who expect an automatic "by value" comparison.
+> **Note:** Without the `==` overload, comparing two objects using `==` compares their **memory addresses** by default (as if comparing two pointers), never their contents, a common source of error for those who expect an automatic "by value" comparison.
 
 ## Override `<<` for display
 
@@ -66,7 +66,7 @@ Point p(3, 4);
 std::cout << p;   // (3, 4) -> without this overloading: compilation error, << does not recognize Point
 ```
 
-> **Note:** This overloading is defined outside the class (as a free function, not a method), because the left-hand side of `<<` is the stream (`std::ostream`), not the `Point`—`p << std::cout` would not make sense, but `std::cout << p` should work.
+> **Note:** This overloading is defined outside the class (as a free function, not a method), because the left-hand side of `<<` is the stream (`std::ostream`), not the `Point`: `p << std::cout` would not make sense, but `std::cout << p` should work.
 
 ## What Not to Do: Overload without respecting the intended meaning
 
