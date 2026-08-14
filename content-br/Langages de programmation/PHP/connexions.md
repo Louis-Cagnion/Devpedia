@@ -1,61 +1,61 @@
 ---
-order: 10
+order: 11
 ---
 
-# Gerir as ligações
+# Gerenciar as conexões
 
-Quando um usuário navega num site, o servidor precisa frequentemente de se lembrar dele de uma página para outra, ou mesmo de uma visita para outra: manter a sessão ativa, recuperar as suas preferências, o seu carrinho de compras... Para tal, o PHP disponibiliza várias ferramentas, cada uma com as suas próprias finalidades: os **cookies** (armazenados no dispositivo do usuário), as **sessões** (armazenadas no servidor) e os **tokens de ligação** (para uma ligação de longa duração). Este capítulo apresenta estas três ferramentas e explica quando utilizar uma em vez de outra.
+Quando um usuário navega em um site, o servidor frequentemente precisa se lembrar dele de uma página para outra, ou até de uma visita para outra: permanecer conectado, recuperar suas preferências, seu carrinho... Para isso, PHP oferece várias ferramentas, cada uma com seus próprios usos: os **cookies** (armazenados no usuário), as **sessões** (armazenadas no servidor), e os **tokens de conexão** (para uma conexão de longa duração). Este capítulo apresenta essas três ferramentas e explica quando usar uma em vez da outra.
 
 ## Os cookies
-Um **cookie** é um pequeno arquivo de dados armazenado pelo navegador do usuário, enviado automaticamente para o servidor sempre que é feita uma solicitação ao mesmo site. Ao contrário das variáveis PHP clássicas (que desaparecem no final de cada script), um cookie persiste entre várias visitas, mesmo que o usuário feche o navegador.
+Um **cookie** é um pequeno dado armazenado pelo navegador do usuário, enviado automaticamente ao servidor a cada requisição para o mesmo site. Ao contrário das variáveis PHP clássicas (que desaparecem ao final de cada script), um cookie persiste entre várias visitas, mesmo que o usuário feche o navegador.
 
-Os cookies servem normalmente para:
-- Lembrar-se de um usuário (manter-se ligado, «lembrar-se de mim»)
-- Guardar preferências (idioma, tema claro/escuro...)
-- Acompanhar um cesto de compras antes da criação de uma conta
+Os cookies servem tipicamente para:
+- Lembrar de um usuário (permanecer conectado, "lembrar de mim")
+- Salvar preferências (idioma, tema claro/escuro...)
+- Rastrear um carrinho de compras antes da criação de uma conta
 
 ### Criar um cookie
 ```php
 <?php
-    setcookie("nom_cookie", "valeur", time() + 3600); // expira dentro de 1 hora
+    setcookie("nome_cookie", "valor", time() + 3600); // expira em 1h
 ?>
 ```
 
-`setcookie()` aceita principalmente 3 parâmetros:
+`setcookie()` recebe principalmente 3 parâmetros:
 - O nome do cookie
 - O valor a armazenar
-- A data de validade (em timestamp Unix: `time()` devolve a hora atual, pelo que `time() + 3600` significa «daqui a 1 hora»)
+- A data de expiração (em timestamp Unix, `time()` retorna a hora atual, então `time() + 3600` significa "em 1h")
 
-> **Nota importante:** a função `setcookie()` deve ser chamada **antes** **de** qualquer conteúdo HTML (antes de qualquer baliza, espaço ou retorno de linha), uma vez que altera os cabeçalhos (*headers*) HTTP da resposta. Trata-se da mesma lógica que se aplica à baliza de fecho `?>`, mencionada anteriormente.
+> **Nota importante:** `setcookie()` deve ser chamada **antes** de qualquer exibição HTML (antes de qualquer tag, espaço ou quebra de linha), pois ela modifica os cabeçalhos (*headers*) HTTP da resposta. É a mesma lógica da tag de fechamento `?>` mencionada mais acima.
 
 ### Ler um cookie
-Depois de criado, um cookie fica acessível através da variável global `$_COOKIE`:
+Uma vez criado, um cookie é acessível via a variável global `$_COOKIE`:
 
 ```php
 <?php
-    if (isset($_COOKIE["nom_cookie"])) {
-        echo $_COOKIE["nom_cookie"];
+    if (isset($_COOKIE["nome_cookie"])) {
+        echo $_COOKIE["nome_cookie"];
     }
 ?>
 ```
 
-> **Nota:** um cookie criado com `setcookie()` só fica disponível em `$_COOKIE` a partir da **próxima atualização** da página, e não imediatamente no mesmo script.
+> **Nota:** um cookie criado com `setcookie()` só fica disponível em `$_COOKIE` a partir do **próximo carregamento** da página, não imediatamente no mesmo script.
 
-### Alterar um cookie
-Não existe uma função «update»: para alterar um cookie, basta recriá-lo com o mesmo nome e um novo valor, o que substitui o anterior:
+### Modificar um cookie
+Não existe função "update": para modificar um cookie, basta recriá-lo com o mesmo nome e um novo valor, o que sobrescreve o antigo:
 
 ```php
 <?php
-    setcookie("nom_cookie", "nouvelle_valeur", time() + 3600);
+    setcookie("nome_cookie", "novo_valor", time() + 3600);
 ?>
 ```
 
-### Eliminar um cookie
-Para eliminar um cookie, basta recriá-lo com uma data de validade **no passado**:
+### Remover um cookie
+Para remover um cookie, recria-se ele com uma data de expiração **no passado**:
 
 ```php
 <?php
-    setcookie("nom_cookie", "", time() - 3600);
+    setcookie("nome_cookie", "", time() - 3600);
 ?>
 ```
 
@@ -64,7 +64,7 @@ Para eliminar um cookie, basta recriá-lo com uma data de validade **no passado*
 
 ```php
 <?php
-    setcookie("nom_cookie", "valeur", [
+    setcookie("nome_cookie", "valor", [
         "expires" => time() + 3600,
         "path" => "/",
         "secure" => true,
@@ -74,174 +74,185 @@ Para eliminar um cookie, basta recriá-lo com uma data de validade **no passado*
 ?>
 ```
 
-- `secure` : o cookie só é transmitido se a ligação for em HTTPS.
-- `httponly` : impede que o JavaScript (`document.cookie`) acesse o cookie, o que limita os danos em caso de falha XSS.
-- `samesite` : impede que o cookie seja enviado durante um pedido proveniente de outro site, o que protege contra ataques CSRF.
+- `secure`: o cookie só é transmitido se a conexão for HTTPS.
+- `httponly`: impede que JavaScript (`document.cookie`) acesse o cookie, o que limita os danos em caso de falha XSS.
+- `samesite`: impede que o cookie seja enviado em uma requisição vinda de outro site, o que protege contra ataques CSRF.
 
-> **Nota:** nunca armazene informações confidenciais (senhas, números de cartões de crédito, etc.) num cookie, mesmo que este seja seguro. Um cookie pode ser manipulado pelo próprio usuário. Para dados confidenciais do lado do servidor, opte por utilizar **sessões** (`$_SESSION`).
+> **Nota:** nunca armazene informações sensíveis (senha, número de cartão de crédito...) em um cookie, mesmo protegido. Um cookie continua manipulável pelo próprio usuário. Para dados sensíveis do lado do servidor, prefira as **sessões** (`$_SESSION`).
 
 ## As sessões
 
-Uma **sessão** permite armazenar dados **no servidor**, associando-os a um visitante específico. Ao contrário de um cookie (armazenado no computador do usuário e que este pode alterar), os dados da sessão permanecem no servidor, pelo que o usuário não tem qualquer forma de os ler ou alterar diretamente.
+Uma **sessão** permite armazenar dados **do lado do servidor**, associando-os a um visitante específico. Ao contrário de um cookie (armazenado no usuário e modificável por ele), o dado de sessão permanece no servidor: o usuário não tem, portanto, nenhum meio de lê-lo ou modificá-lo diretamente.
 
-O PHP estabelece a ligação entre o visitante e os seus dados através de um identificador de sessão único, enviado automaticamente para o navegador sob a forma de um cookie (geralmente denominado «`PHPSESSID`»). Este cookie não contém, portanto, quaisquer dados sensíveis: apenas um identificador, que remete para os dados reais armazenados no servidor.
+PHP faz a ligação entre o visitante e seus dados graças a um identificador de sessão único, enviado automaticamente ao navegador na forma de um cookie (geralmente chamado `PHPSESSID`). Esse cookie então não contém nenhum dado sensível: apenas um identificador, que aponta para os dados reais armazenados no servidor.
 
 ### Iniciar uma sessão
 
 ```php
 <?php
-    session_start(); // Deve ser chamada antes de qualquer exibição de HTML, tal como setcookie()
+    session_start(); // deve ser chamada antes de qualquer exibicao HTML, como setcookie()
 ?>
 ```
 
-### Armazenar dados na sessão
+### Armazenar um dado na sessão
 
 ```php
 <?php
     session_start();
 
     $_SESSION["user_id"] = 12;
-    $_SESSION["email"] = "jean@example.com";
+    $_SESSION["email"] = "joao@exemplo.com";
 ?>
 ```
 
-### Ler dados de uma sessão
+### Ler um dado da sessão
 
 ```php
 <?php
     session_start();
 
     if (isset($_SESSION["user_id"])) {
-        echo "Connecté en tant qu'utilisateur n°" . $_SESSION["user_id"];
+        echo "Conectado como usuario n." . $_SESSION["user_id"];
     }
 ?>
 ```
 
-> **Nota:** «`session_start()`» deve ser chamado no início de **cada** página em que pretenda acessar «`$_SESSION`», caso contrário, o PHP não saberá a que visitante associar os dados.
+> **Nota:** `session_start()` deve ser chamada no início de **cada** página onde você quer acessar `$_SESSION`, senão PHP não sabe a qual visitante associar os dados.
 
-### Eliminar dados ou encerrar a sessão
+### Remover um dado ou destruir a sessão
 
 ```php
 <?php
     session_start();
 
-    unset($_SESSION["user_id"]); // elimina apenas este dado
-    session_destroy();           // elimina toda a sessão (por exemplo: ao terminar a sessão)
+    unset($_SESSION["user_id"]);  // remove apenas esse dado
+    session_destroy();            // destroi toda a sessao (ex: ao desconectar)
 ?>
 ```
 
-> **Nota:** por padrão, o cookie `PHPSESSID` (e, consequentemente, a sessão) desaparece ao fechar o navegador ou após um período de inatividade do lado do servidor. Para prolongar a duração de uma ligação (vários dias/semanas), as sessões clássicas não são suficientes; consulte a secção sobre tokens de ligação abaixo.
+> **Nota:** por padrão, o cookie `PHPSESSID` (e portanto a sessão) desaparece ao fechar o navegador, ou após um período de inatividade do lado do servidor. Para manter uma conexão por mais tempo (vários dias/semanas), as sessões clássicas não bastam: veja a parte sobre tokens de conexão abaixo.
 
-## Os tokens de sessão («lembrar-me»)
+## Os tokens de conexão ("lembrar de mim")
 
-Para manter um usuário ligado a longo prazo (vários dias/semanas), mesmo após o encerramento do navegador, nem o cookie clássico (que não é seguro para esse fim) nem a sessão (demasiado efémera) são suficientes. Recorre-se, então, a um **token de ligação** (*remember token*): uma prova de ligação de longa duração, armazenada tanto no dispositivo do usuário como no servidor.
+Para manter um usuário conectado a longo prazo (vários dias/semanas), mesmo após fechar o navegador, nem o cookie clássico (inseguro para isso) nem a sessão (muito efêmera) bastam. Usa-se então um **token de conexão** (*remember token*): uma prova de conexão de longa duração, armazenada tanto no usuário quanto no servidor.
 
 O princípio:
-- **Nunca** se armazena a senha para o fazer, apenas um token aleatório.
-- O token é enviado em texto simples num cookie no dispositivo do usuário.
-- A sua versão **hash** é armazenada numa base de dados, associada à sua conta (tal como acontece com uma senha).
+- Nunca se armazena a senha para fazer isso: apenas um token aleatório.
+- O token é enviado em texto claro em um cookie no usuário.
+- Sua versão **hasheada** é armazenada no banco de dados, associada à sua conta (como para uma senha).
 
-### Criar o token aquando da ligação
+### Criar o token na conexão
 
 ```php
 <?php
-    $token = bin2hex(random_bytes(32)); // token aleatório (64 caracteres hexadecimais)
-    $tokenHache = hash('sha256', $token);
+    $token = bin2hex(random_bytes(32)); // token aleatorio (64 caracteres hexadecimais)
+    $tokenHash = hash('sha256', $token);
 
-    // O $tokenHache é armazenado na base de dados, associado ao usuário (por exemplo: coluna «remember_token»)
+    // armazena-se $tokenHash no banco, ligado ao usuario (ex: coluna "remember_token")
 
-    // Envia-se o $token (não hashado) num cookie seguro e de longa duração
+    // envia-se $token (nao hasheado) em um cookie seguro, de longa duracao
     setcookie("remember_token", $token, time() + 60 * 60 * 24 * 30, "/", "", true, true);
 ?>
 ```
 
 ### Reconectar automaticamente o usuário
 
-A cada visita, se a sessão estiver vazia mas o cookie `remember_token` existir, verifica-se se este corresponde aos dados da base de dados:
+A cada visita, se a sessão estiver vazia mas o cookie `remember_token` existir, verifica-se sua correspondência no banco:
 
 ```php
 <?php
     session_start();
 
     if (!isset($_SESSION["user_id"]) && isset($_COOKIE["remember_token"])) {
-        $tokenHache = hash('sha256', $_COOKIE["remember_token"]);
+        $tokenHash = hash('sha256', $_COOKIE["remember_token"]);
 
-        // procura-se na base de dados um usuário cujo «remember_token» corresponda
+        // busca-se no banco um usuario cujo remember_token corresponda
         $stmt = $pdo->prepare("SELECT * FROM users WHERE remember_token = :token");
-        $stmt->execute(['token' => $tokenHache]);
+        $stmt->execute(['token' => $tokenHash]);
         $user = $stmt->fetch();
 
         if ($user) {
-            $_SESSION["user_id"] = $user["id"]; // reautentica o usuário
+            $_SESSION["user_id"] = $user["id"]; // reconecta o usuario
         }
     }
 ?>
 ```
 
-> **Nota:** compara-se sempre o **hash** do token recebido com o que está armazenado na base de dados, nunca o token em texto simples, exatamente como acontece com uma senha em `password_hash()` / `password_verify()`. Se o cookie for roubado, o ladrão não consegue deduzir o hash armazenado, mas, acima de tudo, é possível revogar esse token a qualquer momento, eliminando-o da base de dados (por exemplo: em caso de alteração da senha ou de desligamento explícito).
+> **Nota:** sempre se compara o **hash** do token recebido com o armazenado no banco, nunca o token em texto claro: exatamente como para uma senha com `password_hash()`/`password_verify()`. Se o cookie for roubado, o ladrão não consegue deduzir o hash armazenado, mas sobretudo, é possível revogar esse token a qualquer momento removendo-o do banco (ex: em caso de troca de senha ou desconexão explícita).
 
-### Cookie, sessão ou token de ligação: qual escolher?
+### Cookie, sessão ou token de conexão, o que escolher?
 
-| | Cookie | Sessão | Token de sessão |
+| | Cookie | Sessão | Token de conexão |
 |---|---|---|---|
-| Armazenamento | Lado do navegador | Lado do servidor | Ambos (token no lado do usuário, hash na base de dados) |
-| Manipulável pelo usuário | Sim | Não | O token sim, mas inútil sem o hash correspondente na base |
-| Persistência | Pode durar dias/meses | Geralmente até ao encerramento do navegador | Pode durar dias/meses |
-| Revogável a qualquer momento | Não | Sim (`session_destroy()`) | Sim (eliminação do hash da base de dados) |
-| Utilização típica | Preferências, idioma, tema | Início de sessão do usuário (curta duração), cesto de compras, dados sensíveis | Início de sessão do usuário (longa duração), «lembrar-me» |
+| Armazenamento | Do lado do navegador | Do lado do servidor | Os dois (token no usuario, hash no banco) |
+| Manipulável pelo usuário | Sim | Não | O token sim, mas inutil sem o hash correspondente no banco |
+| Persistência | Pode durar dias/meses | Geralmente ate o fechamento do navegador | Pode durar dias/meses |
+| Revogável a qualquer momento | Não | Sim (`session_destroy()`) | Sim (remocao do hash no banco) |
+| Uso típico | Preferencias, idioma, tema | Conexao de usuario (curta duracao), carrinho, dados sensiveis | Conexao de usuario (longa duracao), "lembrar de mim" |
 
 ## O que o cookie de sessão realmente contém
 
-Erro frequente: acreditar que `$_SESSION` está armazenado no cookie do navegador. Na realidade:
+Erro frequente: acreditar que `$_SESSION` é armazenado no cookie do navegador. Na realidade:
 
-- `session_start()` Gera um **identificador aleatório opaco** (por exemplo, `a3f9c1...`), enviado ao cliente num cookie (por padrão, `PHPSESSID`). É tudo o que o cookie contém.
-- Os dados (`$_SESSION['...'] = ...`) são gravados **no lado do servidor** (arquivo ou base de dados), associados a este identificador.
-- A cada pedido subsequente, o navegador reenvia o cookie; o PHP lê novamente o identificador, localiza o armazenamento no servidor correspondente e recarrega `$_SESSION`.
+- `session_start()` gera um **identificador aleatório opaco** (ex. `a3f9c1...`), enviado ao cliente em um cookie (`PHPSESSID` por padrão). É tudo que o cookie contém.
+- Os dados (`$_SESSION['...'] = ...`) são escritos **do lado do servidor** (arquivo ou banco), associados a esse identificador.
+- A cada requisição seguinte, o navegador reenvia o cookie; PHP relê o identificador, encontra o armazenamento do servidor correspondente, recarrega `$_SESSION`.
 
-> **Analogia:** um bilhete de vestiário. O número no bilhete é sorteado aleatoriamente **no momento em que o casaco é entregue**: não tem qualquer relação com o próprio casaco. A ligação entre o número e o casaco existe apenas no registro do funcionário (o armazenamento no servidor), nunca no próprio número.
+> **Analogia:** um ticket de guarda-volumes. O número no ticket é sorteado **no momento em que se deixa o casaco**: ele não tem nenhuma relação com o casaco em si. A ligação número ↔ casaco só existe no registro do funcionário (o armazenamento do servidor), nunca no número.
 
-### O risco de roubo de sessão
+### O risco do roubo de sessão
 
-Se um atacante adivinhasse ou roubasse o identificador de uma sessão já aberta, herdaria o seu conteúdo, mas não pode *escolher* o alvo: o identificador é gerado por um CSPRNG (gerador aleatório criptograficamente seguro) com uma entropia enorme, comparável a uma senha de várias centenas de bits. `session_set_cookie_params(['httponly' => true])` acrescenta uma proteção adicional: impede que o JavaScript da página leia esse cookie, o que limita os danos em caso de uma falha XSS.
+Se um atacante adivinhasse ou roubasse o identificador de uma sessão já aberta, ele herdaria seu conteúdo, mas não pode *escolher* o alvo: o identificador é gerado por um CSPRNG (gerador aleatório criptograficamente seguro) com uma entropia enorme, comparável a uma senha de várias centenas de bits. `session_set_cookie_params(['httponly' => true])` adiciona uma proteção complementar: ela impede que o JavaScript da página leia esse cookie, o que limita os danos em caso de falha XSS.
 
-### Porque não derivar simplesmente o identificador a partir do hash de um dado conhecido?
+### Por que não simplesmente derivar o identificador por hash de um dado conhecido?
 
-Um hash simples (`sha256($identifiant_connu)`) é **determinístico e não contém segredos**: qualquer pessoa pode recalculá-lo. Se existir um número limitado de valores possíveis (por exemplo, cerca de trinta contas), um atacante nem sequer precisa de recorrer a um ataque de força bruta num espaço extenso: basta-lhe aplicar o hash a cada valor possível para obter todos os identificadores válidos. Um hash, por si só, não acrescenta **qualquer entropia** para além da que já está presente na entrada.
+Um hash simples (`sha256($identificador_conhecido)`) é **determinístico e sem segredo**: qualquer um pode recalculá-lo. Se existir um número limitado de valores possíveis (ex. umas trinta contas), um atacante nem precisa forçar um espaço grande: basta hashear cada valor possível para obter todos os identificadores válidos. Um hash sozinho não adiciona **nenhuma entropia** além daquela já presente na entrada.
 
-## Tokens assinados (HMAC): transmitir dados de forma a que não possam ser falsificados
+## Tokens assinados (HMAC): carregar um dado permanecendo infalsificável
 
-O token de ligação mencionado anteriormente é um segredo **opaco** (aleatório, sem significado), verificado por comparação com um hash armazenado na base de dados. Mas, por vezes, é necessário um token que **contenha ele próprio uma informação** (por exemplo, um identificador), mantendo-se, ao mesmo tempo, impossível de falsificar sem acesso ao servidor. Nesse caso, utiliza-se um`hash_hmac()`: um hash calculado com uma **chave secreta**, conhecida apenas pelo servidor.
+O token de conexão visto acima é um segredo **opaco** (aleatório, sem significado), verificado por correspondência com um hash armazenado no banco. Mas às vezes, precisa-se de um token que **carregue ele mesmo uma informação** (ex. um identificador), permanecendo impossível de falsificar sem acesso ao servidor. Usa-se então `hash_hmac()`: um hash calculado com uma **chave secreta**, conhecida apenas pelo servidor.
 
 ```php
 <?php
-function creerToken(string $donnee, string $secret): string
+function criarToken(string $dado, string $segredo): string
 {
-    $encode = base64_encode($donnee);                 // codificada, NÃO encriptada: legível se descodificada
-    $signature = hash_hmac('sha256', $encode, $secret);
-    return $encode . '.' . $signature;
+    $codificado = base64_encode($dado);                 // codificado, NAO cifrado: legivel se decodificado
+    $assinatura = hash_hmac('sha256', $codificado, $segredo);
+    return $codificado . '.' . $assinatura;
 }
 
-function verifierToken(string $token, string $secret): ?string
+function verificarToken(string $token, string $segredo): ?string
 {
-    [$encode, $signature] = explode('.', $token, 2);
-    $attendu = hash_hmac('sha256', $encode, $secret);
+    [$codificado, $assinatura] = explode('.', $token, 2);
+    $esperado = hash_hmac('sha256', $codificado, $segredo);
 
-    if (!hash_equals($attendu, $signature)) {
-        return null; // assinatura inválida -> dado rejeitado, mesmo que pareça correto
+    if (!hash_equals($esperado, $assinatura)) {
+        return null; // assinatura invalida -> dado rejeitado, mesmo que parecesse correto
     }
-    return base64_decode($encode);
+    return base64_decode($codificado);
 }
 ?>
 ```
 
-Se a parte `$encode` for alterada por alguém que não conheça `$secret`, a assinatura recalculada durante a verificação deixará de corresponder: a alteração não é impedida fisicamente, mas **é detetada**.
+Se a parte `$codificado` for modificada por alguém que não conhece `$segredo`, a assinatura recalculada na verificação nunca mais corresponderá: a modificação não é impedida fisicamente, mas **detectada**.
 
-### Identificador de sessão vs. token assinado: duas necessidades diferentes
+### Identificador de sessão vs token assinado: duas necessidades diferentes
 
 | | Identificador de sessão | Token assinado (HMAC) |
 |---|---|---|
-| Contém informação? | Não: chave opaca, sem dados | Sim: os dados estão codificados nela |
-| Requer armazenamento num servidor? | Sim: os dados estão num arquivo/base de dados associado à chave | Não: autossuficiente, verificável através do recálculo da assinatura a qualquer momento |
-| Caso de utilização típico | Usuário já identificado, sessão em curso | Dados a transmitir de forma verificável sem necessidade de consultar uma base de dados (ligação de ativação, convidado sem conta...) |
+| Contém a informação? | Não: chave opaca, nenhum dado | Sim: o dado esta codificado nele |
+| Exige armazenamento no servidor? | Sim: o dado vive em um arquivo/banco associado a chave | Não: autossuficiente, verificavel recalculando a assinatura a qualquer momento |
+| Caso de uso típico | Usuario ja identificado, sessao em andamento | Dado a transmitir de forma verificavel sem banco a consultar (link de ativacao, convidado sem conta...) |
 
-> **Nota:** Utilize `hash_equals()` em vez de simplesmente `===` para comparar dois hashes: esta função efetua a comparação em tempo constante, o que impede que um atacante deduza progressivamente o valor correto medindo o tempo de resposta (ataque por timing).
+> **Nota:** `hash_equals()` em vez de um simples `===` para comparar dois hashes: ela compara em tempo constante, o que evita que um atacante deduza progressivamente o valor correto medindo o tempo de resposta (ataque por timing).
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Um cookie é armazenado do lado do navegador (manipulável pelo usuário), uma sessão do lado do servidor (identificador opaco enviado via cookie). Um token de conexão combina os dois para uma conexão de longa duração. |
+| **Ferramentas utilizáveis** | `setcookie()`, `$_SESSION`/`session_start()`, `hash_hmac()`/`hash_equals()` para um token assinado. |
+| **Armadilhas a evitar** | Armazenar um dado sensível em um cookie; comparar dois hashes com `==`/`===` em vez de `hash_equals()`. |
+| **Boas práticas** | `httponly`/`secure`/`samesite` em todo cookie de sessão; comparar o hash de um token recebido, nunca o token em texto claro. |

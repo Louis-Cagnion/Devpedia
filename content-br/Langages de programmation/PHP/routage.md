@@ -1,91 +1,102 @@
 ---
-order: 12
+order: 13
 ---
 
-# Roteamento sem framework (front controller)
+# O roteamento sem framework (front controller)
 
-Sem um framework (Laravel, Symfony...), o PHP não fornece nenhum router integrado comparável ao Express (`app.get('/caminho', callback)`). Um projeto em «PHP puro» tem de organizar por si próprio a correspondência entre uma URL solicitada e o código a executar.
+Sem framework ([Laravel](https://laravel.com), [Symfony](https://symfony.com)...), PHP não fornece nenhum roteador integrado comparável ao [Express](https://expressjs.com) (`app.get('/caminho', callback)`). Um projeto "PHP puro" precisa organizar ele mesmo a correspondência entre uma URL solicitada e o código a executar.
 
-## O controlador frontal e a tabela de distribuição
+## O front controller e a tabela de dispatch
 
-Um padrão comum consiste em fazer com que **todas** as solicitações passem por um único ponto de entrada (muitas vezes `índice.php`), que consulta uma tabela associativa «rota → arquivo»:
+Um padrão comum consiste em fazer todas as requisições passarem por um único ponto de entrada (frequentemente `index.php`), que consulta um array associativo "rota → arquivo":
 
 ```php
 <?php
-$routes = [
-    'accueil' => '/pages/accueil.php',
-    'contact' => '/pages/contact.php',
+$rotas = [
+    'inicio'  => '/pages/inicio.php',
+    'contato' => '/pages/contato.php',
 ];
 
 $uri  = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-$file = $routes[$uri] ?? null;
+$arquivo = $rotas[$uri] ?? null;
 
-if ($file && file_exists(__DIR__ . $file)) {
-    require __DIR__ . $file; // O «handler» é um arquivo executável, não uma função chamada
+if ($arquivo && file_exists(__DIR__ . $arquivo)) {
+    require __DIR__ . $arquivo; // o "handler" e um arquivo executado, nao uma funcao chamada
 } else {
     http_response_code(404);
-    echo "Page introuvable";
+    echo "Pagina nao encontrada";
 }
 ?>
 ```
 
-Principal diferença em relação a um router JS (Express): cada rota aponta para um **caminho de arquivo**, e não para uma função. Não há qualquer callback a ser chamado: o próprio arquivo gera a resposta HTTP (`echo`, `header()`...) ao ler diretamente as superglobais.
+Diferença chave em relação a um roteador JS (Express): cada rota aponta para um **caminho de arquivo**, não uma função. Não há callback a chamar: o próprio arquivo produz a resposta HTTP (`echo`, `header()`...) lendo diretamente as superglobais.
 
-- `$_SERVER['REQUEST_URI']` contém o caminho **e** a string de consulta colados (`/contact?ref=pub`). `parse_url(..., PHP_URL_PATH)` extrai apenas o caminho, descartando a string de consulta.
-- `trim(..., '/')` remove os caracteres «`/`» do início e do fim, para que «`'contact'`» corresponda à chave da tabela «`$routes`» (sem a barra inicial).
+- `$_SERVER['REQUEST_URI']` contém o caminho **e** a query string colados (`/contato?ref=pub`). `parse_url(..., PHP_URL_PATH)` extrai apenas o caminho, descartando a query string.
+- `trim(..., '/')` remove as `/` do início/fim, para que `'contato'` corresponda à chave do array `$rotas` (sem barra inicial).
 
-## O modelo «sistema de arquivos = URLs»
+## O modelo "sistema de arquivos = URLs"
 
-Num servidor PHP clássico (sem configuração específica), **qualquer arquivo fisicamente presente na raiz do site é acessível através do seu caminho na URL**: um `.php` é aí executado, um arquivo estático é aí servido tal como está. É o oposto do Express/Node, onde uma rota só existe se for explicitamente declarada: no PHP «à moda antiga», **tudo é acessível por padrão, exceto o que for explicitamente bloqueado**.
+Em um servidor PHP clássico (sem configuração especial), **todo arquivo fisicamente presente sob a raiz web é acessível via seu caminho na URL**: um `.php` é executado, um arquivo estático é servido tal como está. É o inverso do Express/[Node](https://nodejs.org), onde uma rota só existe se for explicitamente declarada: em PHP "à moda antiga", **tudo é acessível por padrão, exceto o que é bloqueado explicitamente**.
 
-Consequência prática: um arquivo que contenha classes ou dados sensíveis (identificadores de ligação a uma base de dados, chaves de API...) deve ser **bloqueado explicitamente**, mesmo que nenhuma rota o referencie no código da aplicação; caso contrário, nada impede que um visitante digite diretamente o seu caminho no navegador.
+Consequência concreta: uma pasta contendo classes ou dados sensíveis (credenciais de conexão a um banco, chaves de API...) deve ser **bloqueada explicitamente**, mesmo que nenhuma rota jamais a referencie no código aplicativo: senão nada impede um visitante de digitar diretamente seu caminho no navegador.
 
-## A especificação do servidor de desenvolvimento integrado (`php -S`)
+## O contrato do servidor de desenvolvimento embutido (`php -S`)
 
-`php -S host:port routeur.php` não possui as capacidades de um verdadeiro servidor web (sem arquivo «`.htaccess`», sem configuração do Apache/nginx). O arquivo passado como argumento é executado em **cada** pedido e controla o comportamento através do seu valor de «`return`»:
+`php -S host:porta roteador.php` não tem as capacidades de um servidor web real (sem arquivo `.htaccess`, sem configuração Apache/nginx). O arquivo passado como argumento é executado em **cada** requisição, e controla o comportamento via seu valor de `return`:
 
-- `return false;` → «Não fiz nada, trate você mesmo desse pedido normalmente» (o servidor fornece então o arquivo físico solicitado, se este existir; caso contrário, retorna um erro 404).
-- `return true;` → «Já tratei eu próprio desta solicitação (resposta já fornecida), não faças mais nada».
+- `return false;` → "eu não fiz nada, sirva você mesmo essa requisição normalmente" (o servidor então serve o arquivo físico solicitado se existir, senão 404).
+- `return true;` → "eu já tratei essa requisição sozinho (resposta já produzida), não faça mais nada".
 
 ```php
 <?php
-// routeur.php
+// roteador.php
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// 1) bloqueios explícitos em primeiro lugar
-$dossiersBloques = ['/data/', '/src/'];
-foreach ($dossiersBloques as $pasta) {
+// 1) bloqueios explicitos primeiro
+$pastasBloqueadas = ['/data/', '/src/'];
+foreach ($pastasBloqueadas as $pasta) {
     if (str_starts_with($uri, $pasta)) {
         http_response_code(403);
-        echo 'Accès interdit.';
-        return true; // Já respondi, não é preciso fazer mais nada
+        echo 'Acesso negado.';
+        return true; // ja respondido, nao fazer mais nada
     }
 }
 
-// 2) arquivo estático existente -> deixar que o servidor o sirva por si próprio
+// 2) arquivo estatico existente -> deixar o servidor servi-lo sozinho
 if (is_file(__DIR__ . $uri)) {
     return false;
 }
 
-// 3) caso contrário, despacho da aplicação
+// 3) senao, dispatch aplicativo
 require __DIR__ . '/index.php';
 return true;
 ?>
 ```
 
-> **Nota:** a ordem dos blocos é importante. Se o teste `is_file()` fosse colocado **antes** dos bloqueios, uma solicitação relativa a um arquivo sensível, mas fisicamente presente (por exemplo, `/data/config.php`), passaria neste teste com `true` e devolveria `false`, permitindo que o servidor integrado **executasse** esse arquivo diretamente, sem passar pelas proteções.
+> **Nota:** a ordem dos blocos importa. Se o teste `is_file()` fosse colocado **antes** dos bloqueios, uma requisição a um arquivo sensível mas fisicamente presente (ex. `/data/config.php`) passaria nesse teste com `true` e retornaria `false`, deixando o servidor embutido **executar** esse arquivo diretamente, sem passar pelas proteções.
 
-> **Nota (segurança):** `$uri` provém diretamente da consulta (`$_SERVER['REQUEST_URI']`): sem normalização, um valor que contenha subdiretórios (`/../../etc/passwd`) poderia permitir que `is_file(__DIR__ . $uri)` escapasse para a raiz do servidor web. Na prática, é necessário resolver o caminho real (por exemplo, `realpath()`) e verificar se este se mantém efetivamente dentro de `__DIR__` antes de o servir, em vez de confiar em `$uri` tal como está.
+> **Nota (segurança):** `$uri` vem diretamente da requisição (`$_SERVER['REQUEST_URI']`): sem normalização, um valor contendo subidas de diretório (`/../../etc/passwd`) poderia fazer `is_file(__DIR__ . $uri)` escapar da raiz web. Na prática, é preciso resolver o caminho real (ex. `realpath()`) e verificar que ele permanece dentro de `__DIR__` antes de servi-lo, em vez de confiar em `$uri` tal como está.
 
-## Redirecionar e interromper a execução
+## Redirecionar e parar a execução
 
-`header('Location: ...')` apenas adiciona uma informação à resposta HTTP; não interrompe o script. Sem um `exit` imediatamente a seguir, o código seguinte continua a ser executado (e a produzir conteúdo) mesmo após um redirecionamento:
+`header('Location: ...')` apenas adiciona uma informação à resposta HTTP: ela **não** interrompe o script. Sem um `exit` logo depois, o código seguinte continua a executar (e a produzir conteúdo) mesmo após um redirecionamento:
 
 ```php
 <?php
-if (!$utilisateurConnecte) {
-    header('Location: /connexion');
-    exit; // indispensável: sem isto, o resto do script é executado na mesma
+if (!$usuarioConectado) {
+    header('Location: /login');
+    exit; // indispensavel: sem isso, o resto do script executa mesmo assim
 }
 ?>
 ```
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Sem framework, um front controller único recebe todas as requisições e faz o dispatch via uma tabela "rota → arquivo". Por padrão, todo arquivo físico sob a raiz web é acessível: o inverso de um roteador JS onde nada existe sem declaração explícita. |
+| **Ferramentas utilizáveis** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` para um servidor de desenvolvimento. |
+| **Armadilhas a evitar** | Testar a existência de um arquivo antes de verificar as pastas bloqueadas (ordem invertida = proteção contornada); redirecionar sem `exit` logo depois. |
+| **Boas práticas** | Bloquear explicitamente toda pasta sensível antes de servir um arquivo físico; sempre `exit` imediatamente após um `header('Location: ...')`. |

@@ -2,38 +2,38 @@
 order: 5
 ---
 
-# As estruturas da linguagem
+# As estruturas de linguagem
 
-Uma **construção de linguagem** (*language construct*) é uma instrução integrada diretamente no núcleo da linguagem PHP. Ao contrário de uma função, não é definida por código: faz parte da própria sintaxe da linguagem, tal como «`if`», «`for`» ou «`;`».
+Uma **estrutura de linguagem** (*language construct*) é uma instrução integrada diretamente ao núcleo da linguagem PHP. Ao contrário de uma função, ela não é definida por código, faz parte da própria sintaxe da linguagem, no mesmo nível que `if`, `for`, ou `;`.
 
-## Diferenças em relação a uma função
+## Diferenças com uma função
 
-Esta natureza específica confere às estruturas da linguagem certas liberdades de escrita que uma função clássica não possui:
+Essa natureza particular dá às estruturas de linguagem algumas liberdades de escrita que uma função clássica não tem:
 
 ```php
 <?php
-    // Os parênteses são opcionais
+    // Os parenteses sao opcionais
     include "boasvindas.php";
     include("boasvindas.php"); // equivalente
 
-    // O comando «echo» pode aceitar vários valores separados por vírgulas
-    echo "Olá ", $nome, " !";
+    // echo pode receber varios valores separados por virgulas
+    echo "Ola ", $nome, "!";
 
-    // A função print devolve sempre 1, pelo que pode ser utilizada numa expressão
-    $resultado = print "Oi"; // exibe «Oi» e, em seguida, $resultado = 1
+    // print sempre retorna 1, e portanto pode ser usado em uma expressao
+    $resultado = print "Hello"; // exibe "Hello", depois $resultado = 1
 ?>
 ```
 
-Por outro lado, uma função como `strlen()` deve ser sempre chamada com parênteses e não pode recorrer a essas flexibilidades.
+Ao contrário, uma função como `strlen()` sempre deve ser chamada com seus parênteses, e não pode usar essas liberdades.
 
-## Por que razão existe esta distinção?
+## Por que essa distinção existe?
 
-As estruturas da linguagem são processadas pelo PHP no momento da análise do código (antes mesmo da sua execução), uma vez que influenciam diretamente o desenrolar do script; por exemplo, `include` insere código num local específico, ou `return` interrompe a execução de uma função. É por isso que não podem ser manipuladas como simples funções: não é possível armazená-las numa variável, nem passá-las como argumento de outra função.
+As estruturas de linguagem são tratadas pelo PHP no momento da análise do código (antes mesmo de sua execução), pois elas influenciam diretamente o andamento do script: por exemplo, `include` insere código em um local preciso, ou `return` interrompe a execução de uma função. É por isso que elas não podem ser manipuladas como simples funções: não é possível armazená-las em uma variável, nem passá-las como argumento de outra função.
 
 ```php
 <?php
-    $f = strlen;     // ❌ Não funciona tal como está para as funções, exceto através de string/callable
-    $f = "echo";     // ❌ Não é possível chamar o «echo» desta forma, pois não é uma função
+    $f = strlen;  // ❌ nao funciona assim para funcoes, exceto via string/callable
+    $f = "echo";  // ❌ impossivel chamar echo assim, nao e uma funcao
 ?>
 ```
 
@@ -41,26 +41,26 @@ As estruturas da linguagem são processadas pelo PHP no momento da análise do c
 
 | Estrutura | Função |
 |---|---|
-| `echo` | Apresenta um ou mais valores |
-| `print` | Exibe um valor, devolve sempre `1` |
+| `echo` | Exibe um ou vários valores |
+| `print` | Exibe um valor, sempre retorna `1` |
 | `include` / `require` | Inclui o conteúdo de outro arquivo PHP |
-| `if` / `else` / `elseif` | Executa código em função de uma condição |
+| `if` / `else` / `elseif` | Executa código conforme uma condição |
 | `for` / `foreach` / `while` / `do-while` | Repete um bloco de código |
-| `switch` | Compara um valor com vários casos possíveis |
-| `return` | Devolve um valor e interrompe a execução de uma função |
-| `break` / `continue` | Interrompe ou avança para a próxima iteração de um ciclo |
-| `isset()` / `unset()` | Verifica a existência / elimina uma variável |
-| `list()` | Atribui vários valores a variáveis de uma só vez a partir de um array |
+| `switch` | Compara um valor a vários casos possíveis |
+| `return` | Retorna um valor e para a execução de uma função |
+| `break` / `continue` | Para ou passa para a próxima volta de um laço |
+| `isset()` / `unset()` | Verifica a existência / remove uma variável |
+| `list()` | Atribui várias variáveis de uma vez a partir de um array |
 
-> **Nota:** já se deparou com a maioria destas estruturas nos capítulos anteriores (condições, loops, variáveis...) sem que este conceito fosse explicitamente mencionado.
+> **Nota:** você já encontrou a maioria dessas estruturas nos capítulos anteriores (condições, laços, variáveis...) sem que esse conceito fosse nomeado explicitamente.
 
 ---
 
-## 📋 Recapitulação
+## 📋 Recapitulando
 
 | | |
 |---|---|
-| **O que reter** | Uma estrutura de linguagem (`echo`, `include`, `if`, `return`...) faz parte da sintaxe da própria linguagem, diferente de uma função: ela tem liberdades de escrita (parênteses opcionais, não pode ser armazenada em uma variável). |
-| **Ferramentas úteis** | `echo`/`print`, `include`/`require`, `isset()`/`unset()`, `list()`. |
-| **Armadilhas a evitar** | Tentar armazenar uma estrutura de linguagem em uma variável ou passá-la como argumento, como se fosse uma função clássica. |
+| **Para lembrar** | Uma estrutura de linguagem (`echo`, `include`, `if`, `return`...) faz parte da sintaxe da própria linguagem, ao contrário de uma função: ela se beneficia de liberdades de escrita (parênteses opcionais, não armazenável em variável). |
+| **Ferramentas utilizáveis** | `echo`/`print`, `include`/`require`, `isset()`/`unset()`, `list()`. |
+| **Armadilhas a evitar** | Tentar armazenar uma estrutura de linguagem em uma variável ou passá-la como argumento, como uma função clássica. |
 | **Boas práticas** | Usar `include`/`require` em vez de uma função personalizada para carregar um arquivo: é o mecanismo nativo previsto para isso. |

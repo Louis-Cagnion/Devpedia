@@ -2,13 +2,13 @@
 order: 4
 ---
 
-# Os loops
+# Os laços
 
-Os loops permitem repetir um bloco de código várias vezes, enquanto uma condição for verdadeira ou para cada elemento de uma coleção. Em PHP, utilizam-se principalmente `while`, `do while`, `for` e `foreach`.
+Os laços permitem repetir um bloco de código várias vezes, enquanto uma condição for verdadeira ou para cada elemento de uma coleção. Em PHP, usa-se principalmente `while`, `do while`, `for` e `foreach`.
 
-## O ciclo `while`
+## O laço `while`
 
-O código é executado em ciclo enquanto a condição se mantiver verdadeira. A condição é verificada **antes de** cada iteração do ciclo:
+O código executa em laço enquanto a condição permanece verdadeira. A condição é testada **antes** de cada volta:
 
 ```php
 <?php
@@ -21,9 +21,9 @@ O código é executado em ciclo enquanto a condição se mantiver verdadeira. A 
 ?>
 ```
 
-## O ciclo `do while`
+## O laço `do while`
 
-Variante do «`while`», mas a condição é verificada **após** cada iteração. Assim, o código é sempre executado pelo menos uma vez:
+Variante do `while`, mas a condição é testada **depois** de cada volta. O código então sempre executa pelo menos uma vez:
 
 ```php
 <?php
@@ -36,9 +36,9 @@ Variante do «`while`», mas a condição é verificada **após** cada iteraçã
 ?>
 ```
 
-## O ciclo `for`
+## O laço `for`
 
-Útil quando se sabe antecipadamente o número de iterações. Reúne numa única linha: a inicialização, a condição e o incremento:
+Útil quando você conhece antecipadamente o número de iterações. Ele agrupa em uma única linha: a inicialização, a condição, e o incremento:
 
 ```php
 <?php
@@ -48,45 +48,45 @@ Variante do «`while`», mas a condição é verificada **após** cada iteraçã
 ?>
 ```
 
-## O ciclo `foreach`
+## O laço `foreach`
 
-Concebida especificamente para percorrer os elementos de um array (`array`):
+Projetado especificamente para percorrer os elementos de um array (`array`):
 
 ```php
 <?php
-    $frutas = ["pomme", "banane", "cerise"];
+    $frutas = ["maca", "banana", "cereja"];
 
-    foreach ($frutas as $fruto) {
-        echo $fruto;
+    foreach ($frutas as $fruta) {
+        echo $fruta;
     }
 ?>
 ```
 
-Se precisar do índice (ou da chave) além do valor:
+Se você precisar do índice (ou da chave) além do valor:
 
 ```php
 <?php
-    $frutas = ["pomme", "banane", "cerise"];
+    $frutas = ["maca", "banana", "cereja"];
 
-    foreach ($frutas as $índice => $fruto) {
-        echo "{$índice} : {$fruto}";
+    foreach ($frutas as $indice => $fruta) {
+        echo "{$indice}: {$fruta}";
     }
 ?>
 ```
 
 ## `break` e `continue`
 
-- `break;` interrompe completamente o ciclo.
-- `continue;` passa diretamente para a próxima iteração, sem executar o resto do código da iteração atual.
+- `break;` para completamente o laço.
+- `continue;` passa diretamente para a próxima volta, sem executar o resto do código da iteração atual.
 
 ```php
 <?php
     for ($i = 0; $i < 10; $i++) {
         if ($i == 5) {
-            break; // interrompe o ciclo assim que $i for igual a 5
+            break; // para o laco assim que $i vale 5
         }
         if ($i % 2 == 0) {
-            continue; // ignora os números pares
+            continue; // ignora os numeros pares
         }
         echo $i;
     }
@@ -95,7 +95,7 @@ Se precisar do índice (ou da chave) além do valor:
 
 ## Sintaxe alternativa
 
-Tal como acontece com as condições, os laços podem ser escritos com «`:`» e «`end...`»:
+Como para as condições, os laços podem ser escritos com `:` e `end...`:
 
 | Clássica | Alternativa |
 |---|---|
@@ -103,11 +103,22 @@ Tal como acontece com as condições, os laços podem ser escritos com «`:`» e
 | `for (...) { }` | `for (...): ... endfor;` |
 | `foreach (...) { }` | `foreach (...): ... endforeach;` |
 
-> **Nota:** «`do while`» não tem sintaxe alternativa em PHP. Deve utilizar sempre as chaves `{ }` para este ciclo.
+> **Nota:** `do while` não possui sintaxe alternativa em PHP. Você deve sempre usar as chaves `{ }` para esse laço.
 
 
 ```php
-<?php foreach ($frutas as $fruto): ?>
-    <p><?= $fruto ?></p>
+<?php foreach ($frutas as $fruta): ?>
+    <p><?= $fruta ?></p>
 <?php endforeach; ?>
 ```
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `while`/`do while`/`for` são os laços clássicos; `foreach` é especificamente projetado para percorrer um array, com ou sem sua chave. |
+| **Ferramentas utilizáveis** | `break`/`continue`, a sintaxe alternativa (`:`/`end...`) para templates. |
+| **Armadilhas a evitar** | Usar `for` com um índice manual onde `foreach` evita todo risco de erro de índice. |
+| **Boas práticas** | Preferir `foreach` assim que se percorre um array, sem precisar gerenciar o índice manualmente. |
