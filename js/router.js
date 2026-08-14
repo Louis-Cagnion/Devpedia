@@ -4,7 +4,7 @@ import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson, findCategory, getContentDir } from "./utils.js";
 import { setPageOutline, syncSidebars } from "./sidebar.js";
 import { buildReadingPlan, stopReading } from "./reader.js";
-import { t } from "./i18n.js";
+import { t, tEntityLabel } from "./i18n.js";
 
 /**
  * @param {Object} category
@@ -305,12 +305,12 @@ function createChapterNavButton(className, label, arrow, arrowFirst) {
  */
 function createBreadcrumb(category, subject) {
     const nav = createTag("nav", {class: "pageBreadcrumb"});
-    const categoryButton = createTag("button", {class: "breadcrumbCategory"}, {textContent: category.label});
+    const categoryButton = createTag("button", {class: "breadcrumbCategory"}, {textContent: tEntityLabel("categoryLabels", category.id, category.label)});
     categoryButton.addEventListener("click", () => loadCategory(category.id));
     nav.append(categoryButton);
     if (subject) {
         nav.append(createTag("span", {class: "breadcrumbSeparator"}, {textContent: "›"}));
-        const subjectButton = createTag("button", {class: "breadcrumbSubject"}, {textContent: subject.label});
+        const subjectButton = createTag("button", {class: "breadcrumbSubject"}, {textContent: tEntityLabel("subjectLabels", subject.id, subject.label)});
         subjectButton.addEventListener("click", () => navigateToSubject(category.id, subject.id));
         nav.append(subjectButton);
     }
@@ -369,9 +369,14 @@ function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter,
  * @param {HTMLElement|null} [breadcrumb] see {@link createBreadcrumb} — chapter and subject pages
  * @param {string|null} [notice] see {@link resolveAcrossLanguages} — shown when this page had to
  *   be substituted from another language
+ * @param {string|null} [titleOverride] a category's or subject's own intro page always has its
+ *   `#` heading equal to its folder name (in French, even in a translated language — see
+ *   README's "Content structure" section, and js/i18n.js's tEntityLabel doc comment) so that
+ *   generate-struct.js can recognize it as that folder's main file; pass the translated label
+ *   here to display it instead. Applied before buildReadingPlan() so the TTS reads it too.
  * @returns {HTMLElement} page div
  */
-function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null, breadcrumb = null, notice = null) {
+function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null, breadcrumb = null, notice = null, titleOverride = null) {
     const text = parseMdContent(textInfos);
     const pageDiv = createTag("div", {class: `page ${pageId}Div`});
     if (notice)
@@ -381,6 +386,11 @@ function generatePageContent(textInfos, pageId, withReturnButton, previousChapte
     if (withReturnButton || previousChapter || nextChapter)
         createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter, nextChapter);
     const outline = parseAppendText(pageDiv, pageId, text);
+    if (titleOverride) {
+        const titleEl = pageDiv.querySelector(".pageTitle");
+        if (titleEl)
+            titleEl.textContent = titleOverride;
+    }
     attachContentLinkHandler(pageDiv);
     document.body.append(pageDiv);
     setPageOutline(outline);
@@ -398,7 +408,11 @@ function generatePageContent(textInfos, pageId, withReturnButton, previousChapte
 function generateChildList(pageDiv, items, listId, onSelect) {
     const ul = createTag("ul", {class: `childList ${listId}List`})
     items.forEach(item => {
-        const button = createTag("button", {class: `childButton ${item.id}button`}, {textContent: item.label})
+        // Subjects (identified by their own `chapters` array) need a translated label - see
+        // js/i18n.js's tEntityLabel doc comment; a chapter's label is already correctly
+        // translated, since it comes straight from that chapter's own file in this language.
+        const label = Array.isArray(item.chapters) ? tEntityLabel("subjectLabels", item.id, item.label) : item.label;
+        const button = createTag("button", {class: `childButton ${item.id}button`}, {textContent: label})
         button.addEventListener("click", (e) => onSelect(item));
         const li = createTag("li", {class: `${listId}List`});
         li.append(button);
@@ -477,7 +491,7 @@ async function renderSubject(category, subject, lang = appState.lang) {
     const contentDir = contentDirFor(lang);
     const path = `./${contentDir}/${category.folder}/${subject.folder}/${subject.id}.md`;
     const subjectInfos = await fetchFileToTextOrJson(path, 'text');
-    const pageDiv = generatePageContent(subjectInfos, subject.id, true, null, null, createBreadcrumb(category, null), fallbackNoticeFor(lang));
+    const pageDiv = generatePageContent(subjectInfos, subject.id, true, null, null, createBreadcrumb(category, null), fallbackNoticeFor(lang), tEntityLabel("subjectLabels", subject.id, subject.label));
     generateChildList(pageDiv, subject.chapters ?? [], subject.id, (chapter) => {
         appState.navigationStack.push({type: 'subject', categoryId: category.id, subjectId: subject.id});
         renderChapter(category.id, `./${contentDir}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subject.id, category, subject, lang);

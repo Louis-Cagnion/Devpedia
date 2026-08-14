@@ -57,6 +57,35 @@
     "readerContinue": "▶ Continuar após o bloco de código",
     "readerStop": "⏹ Parar a leitura",
     "readerListen": "🔊 Ouvir esta página",
-    "pageFallbackNotice": "Esta página ainda não foi traduzida: mostrando em outro idioma disponível."
+    "pageFallbackNotice": "Esta página ainda não foi traduzida: mostrando em outro idioma disponível.",
+    "categoryLabels": {
+      "acceuil": "Início",
+      "bases-de-l-informatique": "Fundamentos da computação",
+      "bash": "Bash",
+      "data-science": "Data Science",
+      "domain-specific-languages-dsl": "Linguagens de domínio específico (DSL)",
+      "git": "Git",
+      "ia": "IA",
+      "infrastructure": "Infraestrutura",
+      "langages-de-balisage": "Linguagens de marcação",
+      "langages-de-programmation": "Linguagens de programação",
+      "mathematiques": "Matemática",
+      "representation-des-donnees": "Representação de dados"
+    },
+    "subjectLabels": {
+      "fondamentaux-du-deep-learning": "Fundamentos do deep learning",
+      "nlp-llm": "NLP e LLM",
+      "applications-llm": "Aplicações LLM",
+      "vision-et-ocr": "Visão e OCR",
+      "voix-ia": "Voz IA",
+      "production-et-gouvernance": "Produção e governança",
+      "css": "CSS",
+      "html": "HTML",
+      "c": "C",
+      "cpp": "C++",
+      "javascript": "JavaScript",
+      "php": "PHP",
+      "python": "Python"
+    }
   }
 }

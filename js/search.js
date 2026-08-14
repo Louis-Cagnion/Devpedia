@@ -1,6 +1,6 @@
 import { loadCategory, navigateToSubject, navigateToChapter } from "./router.js";
 import { createTag } from "./tags.js";
-import { t } from "./i18n.js";
+import { t, tEntityLabel } from "./i18n.js";
 
 /**
  * @param {string} text
@@ -21,15 +21,17 @@ function buildIndex(categories) {
     categories.forEach(category => {
         if (category.id === "acceuil")
             return;
-        index.push({ type: "category", label: category.label, context: "", categoryId: category.id, subjectId: null, chapterId: null });
+        const categoryLabel = tEntityLabel("categoryLabels", category.id, category.label);
+        index.push({ type: "category", label: categoryLabel, context: "", categoryId: category.id, subjectId: null, chapterId: null });
         (category.subjects ?? category.chapters ?? []).forEach(entry => {
             if (Array.isArray(entry.chapters)) {
-                index.push({ type: "subject", label: entry.label, context: category.label, categoryId: category.id, subjectId: entry.id, chapterId: null });
+                const subjectLabel = tEntityLabel("subjectLabels", entry.id, entry.label);
+                index.push({ type: "subject", label: subjectLabel, context: categoryLabel, categoryId: category.id, subjectId: entry.id, chapterId: null });
                 entry.chapters.forEach(chapter => {
-                    index.push({ type: "chapter", label: chapter.label, context: `${category.label} / ${entry.label}`, categoryId: category.id, subjectId: entry.id, chapterId: chapter.id });
+                    index.push({ type: "chapter", label: chapter.label, context: `${categoryLabel} / ${subjectLabel}`, categoryId: category.id, subjectId: entry.id, chapterId: chapter.id });
                 });
             } else {
-                index.push({ type: "chapter", label: entry.label, context: category.label, categoryId: category.id, subjectId: null, chapterId: entry.id });
+                index.push({ type: "chapter", label: entry.label, context: categoryLabel, categoryId: category.id, subjectId: null, chapterId: entry.id });
             }
         });
     });

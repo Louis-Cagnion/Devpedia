@@ -2,7 +2,7 @@ import { appState } from "./state.js";
 import { createTag } from "./tags.js";
 import { loadCategory, navigateToSubject, navigateToChapter } from "./router.js";
 import { createReaderControl } from "./reader.js";
-import { t } from "./i18n.js";
+import { t, tEntityLabel } from "./i18n.js";
 
 let categories = [];
 let currentOutline = [];
@@ -58,7 +58,7 @@ function renderTree(container, openState) {
         const isOpen = openState.categoryId === category.id;
         const isCategoryCurrent = isOpen && appState.curPageId === category.id;
         const li = createTag("li", { class: "sidebarCategoryItem" });
-        const button = createTag("button", { class: `sidebarCategoryButton${isOpen ? " open" : ""}${isCategoryCurrent ? " current" : ""}` }, { textContent: category.label });
+        const button = createTag("button", { class: `sidebarCategoryButton${isOpen ? " open" : ""}${isCategoryCurrent ? " current" : ""}` }, { textContent: tEntityLabel("categoryLabels", category.id, category.label) });
         button.addEventListener("click", () => {
             if (isOpen) {
                 // already open: just collapse it, without navigating away from the current page
@@ -81,7 +81,7 @@ function renderTree(container, openState) {
                 if (isSubject(entry)) {
                     const subjectOpen = openState.subjectId === entry.id;
                     const subjectCurrent = subjectOpen && appState.curPageId === entry.id;
-                    const subjectButton = createTag("button", { class: `sidebarSubjectButton${subjectOpen ? " open" : ""}${subjectCurrent ? " current" : ""}` }, { textContent: entry.label });
+                    const subjectButton = createTag("button", { class: `sidebarSubjectButton${subjectOpen ? " open" : ""}${subjectCurrent ? " current" : ""}` }, { textContent: tEntityLabel("subjectLabels", entry.id, entry.label) });
                     subjectButton.addEventListener("click", () => {
                         if (subjectOpen) {
                             openState.subjectId = null;

@@ -5,7 +5,7 @@ import { fetchFileToTextOrJson } from "./utils.js";
 import { initSidebars } from "./sidebar.js";
 import { initSearch } from "./search.js";
 import { initLanguageSwitcher, getStoredLanguage, applyDocumentLanguage } from "./lang.js";
-import { initI18n, t } from "./i18n.js";
+import { initI18n, t, tEntityLabel } from "./i18n.js";
 
 /**
  * @param {string} label
@@ -72,10 +72,11 @@ function createCategoriesOverflowMenu(categories) {
     const moreButton = createTag("button", {class: "categoriesMoreButton"}, {textContent: t("seeMore")});
     const dropdown = createTag("ul", {class: "categoriesDropdown"});
     [...categories]
+        .map(category => ({ category, label: tEntityLabel("categoryLabels", category.id, category.label) }))
         .sort((a, b) => a.label.localeCompare(b.label, "fr"))
-        .forEach(category => {
+        .forEach(({ category, label }) => {
             const li = createTag("li");
-            const optionButton = createTag("button", {class: "categoriesDropdownOption"}, {textContent: category.label});
+            const optionButton = createTag("button", {class: "categoriesDropdownOption"}, {textContent: label});
             optionButton.addEventListener("click", () => {
                 dropdown.classList.remove("visible");
                 loadCategory(category.id);
@@ -102,9 +103,10 @@ function createCategoriesOverflowMenu(categories) {
 function createAppendCategories(navBar, categories = []) {
     const categoriesDiv = createTag("div", {class: "categories"});
     const categoryButtons = categories.map(category => {
-        const link = createTag("button", { class: `${category.id}-button`}, {textContent: category.label})
-        link.dataset.fullLabel = category.label;
-        link.dataset.shortLabel = getShortLabel(category.label);
+        const label = tEntityLabel("categoryLabels", category.id, category.label);
+        const link = createTag("button", { class: `${category.id}-button`}, {textContent: label})
+        link.dataset.fullLabel = label;
+        link.dataset.shortLabel = getShortLabel(label);
         link.addEventListener("click", () => loadCategory(category.id));
         categoriesDiv.appendChild(link);
         return link;
