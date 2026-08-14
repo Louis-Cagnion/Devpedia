@@ -178,6 +178,37 @@
       ]
     },
     {
+      "id": "docker",
+      "label": "Docker",
+      "folder": "Docker",
+      "chapters": [
+        {
+          "id": "concepts-de-base",
+          "label": "Os conceitos básicos"
+        },
+        {
+          "id": "dockerfile",
+          "label": "O Dockerfile"
+        },
+        {
+          "id": "commandes-essentielles",
+          "label": "Os comandos essenciais"
+        },
+        {
+          "id": "volumes-et-reseaux",
+          "label": "Volumes e redes"
+        },
+        {
+          "id": "docker-compose",
+          "label": "Docker Compose"
+        },
+        {
+          "id": "bonnes-pratiques-et-securite",
+          "label": "Boas práticas e segurança"
+        }
+      ]
+    },
+    {
       "id": "domain-specific-languages-dsl",
       "label": "Domain-specific Languages (DSL)",
       "folder": "Domain-specific Languages (DSL)",
