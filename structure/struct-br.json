@@ -97,6 +97,29 @@
       ]
     },
     {
+      "id": "ci-cd",
+      "label": "CI-CD",
+      "folder": "CI-CD",
+      "chapters": [
+        {
+          "id": "pipeline-cicd",
+          "label": "O que é um pipeline CI/CD?"
+        },
+        {
+          "id": "azure-devops-plateforme",
+          "label": "Azure DevOps como plataforma"
+        },
+        {
+          "id": "yaml-pipelines-azure",
+          "label": "A sintaxe YAML dos pipelines Azure"
+        },
+        {
+          "id": "azure-pipelines-vs-github-actions",
+          "label": "Azure Pipelines contra GitHub Actions"
+        }
+      ]
+    },
+    {
       "id": "data-science",
       "label": "Data Science",
       "folder": "Data Science",
