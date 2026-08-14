@@ -1,27 +1,27 @@
 ---
-order: 7
+order: 8
 ---
 
-# As classes e a programação orientada para objetos
+# As classes e a programação orientada a objetos
 
-Ao contrário do PHP ou do Python, o objeto em JavaScript não se baseia fundamentalmente em classes: baseia-se em **protótipos**. A sintaxe «`class`» (a partir do ES6) é apenas um sintaxe simplificada sobre este mecanismo mais antigo; compreender ambos ajuda a não ser surpreendido por certos comportamentos.
+Ao contrário de [PHP](/?c=langages-de-programmation&s=php&p=poo) ou [Python](/?c=langages-de-programmation&s=python&p=poo), o objeto em JavaScript não se baseia fundamentalmente em classes: ele se baseia em **protótipos**. A sintaxe `class` (desde o ES6) é apenas açúcar sintático por cima desse mecanismo mais antigo; entender os dois ajuda a não se surpreender com certos comportamentos.
 
 ## Declarar uma classe
 
 ```javascript
-class Vehicule {
+class Veiculo {
     constructor(marca, modelo) {
         this.marca = marca;
         this.modelo = modelo;
     }
 
-    description() {
+    descricao() {
         return `${this.marca} ${this.modelo}`;
     }
 }
 
-const v = new Vehicule("Peugeot", "308");
-console.log(v.description());   // «Peugeot 308»
+const v = new Veiculo("Peugeot", "308");
+console.log(v.descricao());   // "Peugeot 308"
 ```
 
 ## A herança
@@ -31,66 +31,66 @@ class Animal {
     constructor(nome) {
         this.nome = nome;
     }
-    parler() {
+    falar() {
         return "...";
     }
 }
 
-class Chien extends Animal {
-    parler() {
-        return `${this.nome} aboie`;
+class Cachorro extends Animal {
+    falar() {
+        return `${this.nome} late`;
     }
 }
 
-class ChienDeGarde extends Chien {
-    parler() {
-        return super.parler() + " bruyamment";   // chama o método da classe pai
+class CachorroDeGuarda extends Cachorro {
+    falar() {
+        return super.falar() + " ruidosamente";   // chama o metodo da classe pai
     }
 }
 ```
 
-## Métodos e propriedades estáticas
+## Métodos e propriedades estáticos
 
 ```javascript
-class Calculs {
-    static addition(a, b) {
+class Calculos {
+    static adicao(a, b) {
         return a + b;
     }
 }
 
-Calculs.addition(2, 3);   // não é necessário «new Calculs()»
+Calculos.adicao(2, 3);   // nao precisa de "new Calculos()"
 ```
 
 ## Getters e setters
 
 ```javascript
-class Cercle {
-    constructor(rayon) {
-        this.rayon = rayon;
+class Circulo {
+    constructor(raio) {
+        this.raio = raio;
     }
 
-    get surface() {              // acessado SEM parênteses: círculo.área
-        return Math.PI * this.rayon ** 2;
+    get area() {                 // acessado SEM parenteses: circulo.area
+        return Math.PI * this.raio ** 2;
     }
 
-    set diametre(valor) {        // "círculo.diâmetro = 10" chama este método
-        this.rayon = valor / 2;
+    set diametro(valor) {         // "circulo.diametro = 10" chama esse metodo
+        this.raio = valor / 2;
     }
 }
 
-const c = new Cercle(5);
-console.log(c.surface);   // calculado dinamicamente, como um atributo
-c.diametre = 10;            // equivale a c.raio = 5
+const c = new Circulo(5);
+console.log(c.area);   // calculado na hora, como um atributo
+c.diametro = 10;       // equivale a c.raio = 5
 ```
 
-## 
+## Campos privados (`#`)
 
 ```javascript
-class CompteBancaire {
-    #saldo = 0;   // O símbolo «#» torna esta propriedade inacessível a partir do exterior da classe
+class ContaBancaria {
+    #saldo = 0;   // o "#" torna essa propriedade inacessivel de fora da classe
 
-    deposer(montant) {
-        this.#saldo += montant;
+    depositar(valor) {
+        this.#saldo += valor;
     }
 
     get saldo() {
@@ -98,19 +98,30 @@ class CompteBancaire {
     }
 }
 
-const compte = new CompteBancaire();
-compte.deposer(100);
-console.log(compte.saldo);    // 100
-console.log(compte.#saldo);    // SyntaxError: #saldo não está acessível aqui
+const conta = new ContaBancaria();
+conta.depositar(100);
+console.log(conta.saldo);   // 100
+console.log(conta.#saldo);  // SyntaxError: #saldo nao e acessivel aqui
 ```
 
-## O que se esconde por trás de «`class`»: o protótipo
+## O que se esconde por trás de `class`: o protótipo
 
 ```javascript
-console.log(typeof Vehicule);           // «function» -> uma classe É uma função especial
-console.log(v.__proto__ === Vehicule.prototype);  // true
+console.log(typeof Veiculo);                     // "function" -> uma classe E uma funcao especial
+console.log(v.__proto__ === Veiculo.prototype);  // true
 ```
 
-Cada objeto JavaScript possui uma referência oculta (`__proto__`) a outro objeto, o seu **protótipo**: quando uma propriedade ou método não é encontrado diretamente no objeto, o JavaScript procura-o automaticamente no seu protótipo, depois no protótipo desse protótipo, e assim sucessivamente. (a «cadeia de protótipos»). `description()` é, na realidade, definida **apenas uma vez**, em `Vehicule.prototype`, e partilhada por todas as instâncias: não é duplicada em cada objeto criado por `new Vehicule(...)`.
+Cada objeto JavaScript carrega uma referência oculta (`__proto__`) para outro objeto, seu **protótipo**: quando uma propriedade/método não é encontrado diretamente no objeto, JavaScript o busca automaticamente em seu protótipo, depois no protótipo desse protótipo, etc. (a "cadeia de protótipos"). `descricao()` na verdade só é definida **uma única vez**, em `Veiculo.prototype`, e compartilhada por todas as instâncias, não duplicada em cada objeto criado por `new Veiculo(...)`.
 
-> **Nota:** esta distinção explica por que razão a alteração de `Vehicule.prototype.description` afeta **imediatamente** todos os objetos já criados: estes não possuem a sua própria cópia do método, procurando-a dinamicamente no protótipo partilhado a cada chamada.
+> **Nota:** essa distinção explica por que modificar `Veiculo.prototype.descricao` afeta **imediatamente** todos os objetos já criados: eles não possuem sua própria cópia do método, eles o buscam dinamicamente no protótipo compartilhado a cada chamada.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `class` é açúcar sintático por cima dos protótipos: um método é definido uma única vez em `Class.prototype`, compartilhado por todas as instâncias. `extends` gerencia a herança, `#` os campos privados. |
+| **Ferramentas utilizáveis** | `static` (métodos/propriedades de classe), `get`/`set` (acessores calculados), campos privados `#nome`. |
+| **Armadilhas a evitar** | Esquecer `super.metodo()` em uma classe filha que quer estender (em vez de substituir) o comportamento do pai. |
+| **Boas práticas** | Usar `#` para todo dado que nunca deve ser manipulado diretamente de fora da classe. |

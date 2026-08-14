@@ -2,91 +2,72 @@
 order: 4
 ---
 
-# As cadeias de caracteres
+# As strings
 
-Uma string é uma sequência de caracteres, utilizada para representar texto. Em JavaScript, pode ser escrita de três formas diferentes:
+Uma string é uma sequência de caracteres, usada para representar texto. Em JavaScript, ela pode ser escrita de 3 formas diferentes:
+
 ```javascript
-    // aspas simples
-    const st1 = 'Hello world';
+// aspas simples
+const str1 = 'Hello world';
 
-    // aspas duplas
-    const str2 = "Hello world";
+// aspas duplas: estritamente equivalentes as aspas simples
+const str2 = "Hello world";
 
-    // backticks, úteis para escrever em várias linhas ou inserir variáveis (literais de modelo)
-    const str3 = `
-    Ce format
-    permet d'écrire
-    une string sur
-    plusieurs lignes
-    `;
+// backticks (template literals): as unicas que permitem interpolacao e multi-linha
+const nome = 'Joao';
+const str3 = `Ola ${nome}!`;   // 'Ola Joao!' -> ${...} insere diretamente uma variavel
+
+const str4 = `Linha 1
+Linha 2`;                     // as quebras de linha do codigo fonte sao mantidas tal como estao
 ```
 
 ### Os protótipos de strings
 
-Os protótipos são funções integradas por padrão no objeto string, que permitem realizar determinadas ações sobre a string. Uma string é imutável: estas funções nunca a alteram, devolvendo sempre um novo valor.
+Os protótipos são funções integradas ao objeto string por padrão, permitindo realizar certas ações na string. Uma string é **imutável** em JavaScript: nenhum desses métodos a modifica, cada um sempre retorna um novo valor.
+
+| Método | Efeito |
+|---|---|
+| `includes(substring)` | Testa a presença de uma substring (`true`/`false`) |
+| `length` | Propriedade (não um método): número de caracteres |
+| `slice(inicio, fim)` | Extrai uma parte (`fim` excluído) |
+| `toUpperCase()` / `toLowerCase()` | Copia inteiramente em maiúsculas / minúsculas |
+| `trim()` | Copia sem os espaços desnecessários no início e no fim |
+| `replace(a, b)` / `replaceAll(a, b)` | Substitui a primeira ocorrência / todas as ocorrências |
+| `split(separador)` | Divide em array de substrings |
+| `indexOf(substring)` | Índice da primeira ocorrência, `-1` se ausente |
+| `startsWith(x)` / `endsWith(x)` | Testa se a string começa / termina com `x` |
+| `repeat(n)` | Repete a string `n` vezes |
+| `concat(outra)` | Junta várias strings |
 
 ```javascript
-    const str = 'hello world';
+const str = 'hello world';
+
+str.includes('hello');       // true
+str.slice(0, 5);             // 'hello'
+str.toUpperCase();           // 'HELLO WORLD'
+str.trim();                  // copia sem espacos superfluos
+str.replace('hello', 'hi');  // 'hi world', uma unica ocorrencia
+str.replaceAll('o', '0');    // 'hell0 w0rld', todas as ocorrencias
+str.split(' ');              // ['hello', 'world']
+str.startsWith('hello');     // true
+str.repeat(2);                // 'hello worldhello world'
 ```
 
-**`includes`** verifica se a cadeia de caracteres contém uma subcadeia específica e devolve «`true`» ou «`false`».
-```javascript
-    str.includes('hello'); // true
-```
+> **Armadilha:** todos esses métodos retornam uma **nova** string, sem nunca modificar a original. `str.toUpperCase();` sozinho não muda nada em `str`; é preciso reatribuir: `str = str.toUpperCase();`.
+>
+> **Boa prática:** sempre reatribuir (ou usar diretamente) o resultado de um método de string, nunca supor que ele modificou a variável original.
 
-**`length`** não é uma função, mas sim uma propriedade: devolve o número de caracteres da cadeia de caracteres.
-```javascript
-    str.length; // 11
-```
+### As regex
 
-**`slice`** retorna uma parte da cadeia de caracteres, entre um índice inicial (incluído) e um índice final (excluído).
-```javascript
-    str.slice(0, 5); // 'hello'
-```
+É possível usar [as regex](/?c=langages-de-programmation&s=javascript&p=regex) para buscar ou coletar informações em strings.
 
-**`toUpperCase`** e **`toLowerCase`** devolvem uma cópia da cadeia de caracteres totalmente em maiúsculas ou em minúsculas.
-```javascript
-    str.toUpperCase(); // «HELLO WORLD»
-    str.toLowerCase(); // «hello world»
-```
+---
 
-**`trim`** retorna uma cópia da cadeia de caracteres sem os espaços desnecessários no início e no fim.
-```javascript
-    str.trim();
-```
+## 📋 Recapitulando
 
-**`replace`** e **`replaceAll`** devolvem uma cópia da cadeia de caracteres com uma parte substituída por outra: `replace` substitui apenas a primeira ocorrência, `replaceAll` substitui todas as ocorrências.
-```javascript
-    str.replace('hello', 'hi'); // «hi world»
-    str.replaceAll('o', '0'); // 'hell0 w0rld'
-```
-
-**`split`** divide a cadeia de caracteres numa matriz de subcadeias, de acordo com um separador indicado como parâmetro.
-```javascript
-    str.split(' '); // ['hello', 'world']
-```
-
-**`indexOf`** Procura uma subcadeia na cadeia de caracteres e devolve o índice da sua primeira ocorrência. Se não existir, devolve «`-1`».
-```javascript
-    str.indexOf('world'); // 6
-```
-
-**`startsWith`** e **`endsWith`** verificam se a cadeia de caracteres começa ou termina com um determinado valor e devolvem `true` ou `false`.
-```javascript
-    str.startsWith('hello'); // true
-    str.endsWith('world'); // true
-```
-
-**`repeat`** retorna uma nova cadeia de caracteres, repetindo a cadeia original um determinado número de vezes.
-```javascript
-    str.repeat(2); // 'hello worldhello world'
-```
-
-**`concat`** junta várias cadeias de caracteres e devolve o resultado, sem alterar as cadeias de caracteres originais.
-```javascript
-    str.concat(' !'); // «hello world!»
-```
-
-### Expressões regulares
-
-É possível utilizar expressões regulares para pesquisar ou recolher informações em cadeias de caracteres (ver expressões regulares).
+| | |
+|---|---|
+| **Para lembrar** | Uma string se declara com aspas simples, duplas, ou backticks (*template literals*, para interpolação e multi-linha). Ela é imutável: cada método retorna uma nova string. |
+| **Ferramentas utilizáveis** | `includes`, `slice`, `toUpperCase`/`toLowerCase`, `trim`, `replace`/`replaceAll`, `split`, `indexOf`, `startsWith`/`endsWith`. |
+| **Armadilhas a evitar** | Chamar um método de transformação (`toUpperCase`, `trim`...) sem reatribuir o resultado, pensando que a string original mudou. |
+| **Boas práticas** | Usar backticks para toda string que interpola uma variável ou se estende por várias linhas, em vez de uma concatenação com `+`. |
