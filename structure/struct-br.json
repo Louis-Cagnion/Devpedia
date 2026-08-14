@@ -900,6 +900,37 @@
       ]
     },
     {
+      "id": "qualite-et-architecture-du-code",
+      "label": "Qualité et architecture du code",
+      "folder": "Qualité et architecture du code",
+      "chapters": [
+        {
+          "id": "responsabilite-unique-et-couplage",
+          "label": "Responsabilidade única e baixo acoplamento"
+        },
+        {
+          "id": "eviter-la-repetition-structures-indexees",
+          "label": "Evitar a repetição: estruturas indexadas em vez de código duplicado"
+        },
+        {
+          "id": "source-unique-de-verite",
+          "label": "Fonte única de verdade"
+        },
+        {
+          "id": "sens-des-dependances-avant-de-centraliser",
+          "label": "Verificar o sentido das dependências antes de centralizar"
+        },
+        {
+          "id": "genericite-dependre-de-la-structure",
+          "label": "Genericidade: depender da estrutura em vez de valores fixos"
+        },
+        {
+          "id": "un-seul-mecanisme-par-information",
+          "label": "Um único mecanismo por informação"
+        }
+      ]
+    },
+    {
       "id": "representation-des-donnees",
       "label": "Représentation des données",
       "folder": "Représentation des données",
