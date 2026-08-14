@@ -4,85 +4,96 @@ order: 2
 
 # Variáveis CSS e a cascata
 
-Este capítulo aborda dois mecanismos transversais do CSS: as **variáveis personalizadas** (reutilizar um valor em vários locais) e a **cascata** (como o CSS resolve um conflito entre várias regras que visam o mesmo elemento): o «C» de CSS (*Cascading*) refere-se diretamente a este segundo mecanismo.
+Este capítulo cobre dois mecanismos transversais do CSS: as **variáveis personalizadas** (reutilizar um valor em vários lugares), e a **cascata** (como o CSS resolve um conflito entre várias regras que miram no mesmo elemento): o "C" de CSS (*Cascading*) se refere diretamente a esse segundo mecanismo.
 
 ## As variáveis CSS (propriedades personalizadas)
 
 ```css
 :root {
-    --couleur-primaire: #3366cc;
-    --espacement-standard: 16px;
+    --cor-primaria: #3366cc;
+    --espacamento-padrao: 16px;
 }
 
-.bouton {
-    background-color: var(--couleur-primaire);
-    padding: var(--espacement-standard);
+.botao {
+    background-color: var(--cor-primaria);
+    padding: var(--espacamento-padrao);
 }
 ```
 
-`:root` Apointa para o elemento raiz do documento (`<html>`): declarar as variáveis neste local torna-as acessíveis em **toda** a folha de estilo. Alterar uma única vez `--couleur-primaire` atualiza instantaneamente todos os locais que a utilizam, sem necessidade de «procurar e substituir» em todo o arquivo.
+`:root` mira no elemento raiz do documento (`<html>`): declarar as variáveis ali as torna acessíveis **em qualquer lugar** da folha de estilo. Mudar uma única vez `--cor-primaria` atualiza instantaneamente todos os lugares que a usam, sem "buscar e substituir" no arquivo inteiro.
 
 ```css
-.bouton {
-    background-color: var(--couleur-primaire, blue);   /* "blue" : valeur de secours si la variable n'existe pas */
+.botao {
+    background-color: var(--cor-primaria, blue);   /* "blue": valor de reserva se a variavel nao existir */
 }
 ```
 
-## Variáveis locais de um componente
+## Variáveis locais a um componente
 
 ```css
-.carte {
-    --marge-interne: 20px;
-    padding: var(--marge-interne);
+.cartao {
+    --margem-interna: 20px;
+    padding: var(--margem-interna);
 }
 
-.carte.compacte {
-    --marge-interne: 8px;   /* redéfinit la variable UNIQUEMENT pour les éléments avec cette classe supplémentaire */
+.cartao.compacto {
+    --margem-interna: 8px;   /* redefine a variavel APENAS para os elementos com essa classe adicional */
 }
 ```
 
-> **Nota:** ao contrário de uma variável Sass/Less (resolvida de uma vez por todas na compilação), uma variável CSS nativa está **ativa** no navegador: pode ser alterada até mesmo em JavaScript (`elemento.style.setProperty('--marge-interne', '30px')`) e é reavaliada dinamicamente consoante o elemento em que é consultada.
+> **Nota:** ao contrário de uma variável [Sass](https://sass-lang.com)/[Less](https://lesscss.org) (resolvidas de uma vez por todas na compilação), uma variável CSS nativa é **viva** no navegador: modificável até em JavaScript (`elemento.style.setProperty('--margem-interna', '30px')`), e reavaliada dinamicamente conforme o elemento onde é consultada.
 
-## A cascata: três critérios, por esta ordem
+## A cascata: três critérios, nesta ordem
 
-Quando existem várias regras que visam o mesmo elemento e a mesma propriedade, o CSS distingue-as nesta ordem específica:
+Diante de várias regras mirando no mesmo elemento e na mesma propriedade, o CSS as desempata nesta ordem precisa:
 
 ### 1. A importância (`!important`)
 
 ```css
 p { color: blue !important; }
-p { color: red; }   /* ignoré : la règle du dessus a !important */
+p { color: red; }   /* ignorado: a regra acima tem !important */
 ```
 
-`!important` ignora todo o resto da cadeia: uma regra com «`!important`» prevalece, independentemente da sua especificidade ou da ordem em que foi escrita.
+`!important` ignora todo o resto da cascata: uma regra com `!important` vence, qualquer que seja sua especificidade ou sua ordem de escrita.
 
-> **Melhores práticas:** evite o uso corrente de `!important`: torna a depuração difícil (impossível de sobrecarregar de forma simples) e quebra a lógica natural da cadeia. Deve ser reservado para casos muito excecionais (muitas vezes para sobrecarregar um estilo de terceiros que não controlamos).
+> **Boa prática:** evitar `!important` no uso comum: ele torna a depuração difícil (impossível de sobrescrever de forma simples) e quebra a lógica natural da cascata. A reservar para casos bem excepcionais (frequentemente para sobrescrever um estilo de terceiros que não se controla).
 
-### 2. A especificidade (ver capítulo sobre os seletores)
+### 2. A especificidade (veja [Os seletores](/?c=langages-de-balisage&s=css&p=selecteurs))
 
 ```css
-#bouton-principal { color: blue; }   /* spécificité : id -> plus fort */
-.bouton { color: red; }                /* spécificité : classe -> plus faible */
+#botao-principal { color: blue; }  /* especificidade: id -> mais forte */
+.botao { color: red; }             /* especificidade: classe -> mais fraca */
 ```
 
-O seletor mais específico prevalece, independentemente da ordem em que está escrito no arquivo.
+O seletor mais específico vence, independentemente da ordem de escrita no arquivo.
 
-### 3. A ordem de aparecimento (em caso de igualidade de especificidade)
+### 3. A ordem de aparição (com especificidade igual)
 
 ```css
-.bouton { color: blue; }
-.bouton { color: red; }   /* GAGNE : même spécificité, mais écrite en dernier */
+.botao { color: blue; }
+.botao { color: red; }   /* VENCE: mesma especificidade, mas escrita por ultimo */
 ```
 
-Em caso de igualdade de especificações, prevalece a regra declarada **em último lugar** no arquivo (ou no último arquivo carregado).
+Com especificidade estritamente igual, a regra declarada **por último** no arquivo (ou no último arquivo carregado) prevalece.
 
-## A herança: algumas propriedades são transmitidas, outras não
+## A herança: algumas propriedades se transmitem, outras não
 
 ```css
 body {
-    color: #333;         /* HÉRITÉ : tous les descendants (p, span, li...) reprennent cette couleur de texte */
-    border: 1px solid;      /* PAS hérité : chaque élément a sa propre bordure, ou aucune */
+    color: #333;        /* HERDADO: todos os descendentes (p, span, li...) assumem essa cor de texto */
+    border: 1px solid;  /* NAO herdado: cada elemento tem sua propria borda, ou nenhuma */
 }
 ```
 
-As propriedades relacionadas com o **texto** (`color`, `font-family`, `font-size`, `line-height`...) são geralmente herdadas por padrão; as propriedades relacionadas com a **caixa** (`border`, `margin`, `padding`, `background`...) nunca o são: trata-se de um mecanismo distinto da cascata, embora interaja com ela (uma regra herdada tem a especificidade mais baixa possível, facilmente substituída por qualquer regra aplicada diretamente ao elemento).
+As propriedades ligadas ao **texto** (`color`, `font-family`, `font-size`, `line-height`...) geralmente são herdadas por padrão; as propriedades ligadas à **caixa** (`border`, `margin`, `padding`, `background`...) nunca são: é um mecanismo distinto da cascata, embora interaja com ela (uma regra herdada tem a especificidade mais baixa possível, facilmente sobrescrita por qualquer regra diretamente aplicada ao elemento).
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | As variáveis CSS (`--nome`, lidas via `var()`) evitam repetir um valor. Diante de um conflito entre regras, a cascata decide nesta ordem: `!important` > especificidade > ordem de escrita. A herança (texto sim, caixa não) é um mecanismo distinto que interage com a cascata. |
+| **Ferramentas utilizáveis** | `:root` para variáveis globais, `var(--nome, valor-de-reserva)`, `elemento.style.setProperty()` para modificá-las em JavaScript. |
+| **Armadilhas a evitar** | Abusar de `!important`: ele ignora toda a cascata e torna o estilo difícil de sobrescrever depois. |
+| **Boas práticas** | Reservar `!important` para casos excepcionais (sobrescrever um estilo de terceiros não controlado); definir cores/espaçamentos recorrentes como variáveis em `:root` em vez de repeti-los. |

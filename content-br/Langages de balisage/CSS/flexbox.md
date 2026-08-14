@@ -4,104 +4,115 @@ order: 5
 
 # Flexbox
 
-**O Flexbox** (*Flexible Box Layout*) organiza os elementos ao longo de um **único eixo** (horizontal ou vertical), distribuindo o espaço disponível entre eles: a solução moderna para alinhar, centrar e distribuir elementos, substituindo técnicas antigas muito mais frágeis (elementos flutuantes, tabelas utilizadas de forma inadequada, ver o capítulo sobre tabelas no HTML).
+O **Flexbox** (*Flexible Box Layout*) organiza elementos ao longo de um **único eixo** (horizontal ou vertical), distribuindo o espaço disponível entre eles, a solução moderna para alinhar, centralizar e distribuir elementos, substituindo técnicas históricas bem mais frágeis (floats, [tabelas](/?c=langages-de-balisage&s=html&p=tableaux) desviadas de seu uso original).
 
 ## Ativar o Flexbox
 
 ```css
-.conteneur {
+.container {
     display: flex;
 }
 ```
 
-Assim que a propriedade `display: flex` é aplicada a um elemento, todos os seus **filhos diretos** (e apenas esses) tornam-se «elementos flexíveis», alinhados automaticamente numa linha (por padrão).
+Assim que `display: flex` é colocado em um elemento, todos os seus **filhos diretos** (e apenas eles) se tornam "itens flexíveis", alinhados automaticamente em uma linha (por padrão).
 
-## O tema principal: `flex-direction`
+## O eixo principal: `flex-direction`
 
 ```css
-.conteneur {
+.container {
     display: flex;
-    flex-direction: row;      /* par défaut : gauche à droite */
-    /* flex-direction: column;   -> haut en bas */
+    flex-direction: row;      /* padrao: esquerda para direita */
+    /* flex-direction: column;   -> de cima para baixo */
     /* flex-direction: row-reverse; */
 }
 ```
 
-Todo o Flexbox funciona com base no eixo** principal** (o eixo d`flex-direction`o) e no eixo** secundário** (perpendicular): as propriedades de alinhamento abaixo aplicam-se de forma diferente consoante o eixo.
+Todo Flexbox raciocina em termos de **eixo principal** (o de `flex-direction`) e **eixo secundário** (perpendicular): as propriedades de alinhamento abaixo se aplicam de forma diferente conforme esse eixo.
 
-## Alinhar com o eixo principal: `justify-content`
+## Alinhar no eixo principal: `justify-content`
 
 ```css
-.conteneur {
+.container {
     display: flex;
-    justify-content: flex-start;     /* par défaut : regroupés au début */
-    /* justify-content: center;        -> centrés */
-    /* justify-content: space-between;  -> espace égal ENTRE les éléments, rien sur les bords */
-    /* justify-content: space-around;    -> espace égal AUTOUR de chaque élément */
+    justify-content: flex-start;     /* padrao: agrupados no inicio */
+    /* justify-content: center;        -> centralizados */
+    /* justify-content: space-between;  -> espaco igual ENTRE os elementos, nada nas bordas */
+    /* justify-content: space-around;    -> espaco igual AO REDOR de cada elemento */
 }
 ```
 
-## Alinhar com o eixo secundário: `align-items`
+## Alinhar no eixo secundário: `align-items`
 
 ```css
-.conteneur {
+.container {
     display: flex;
-    align-items: stretch;       /* par défaut : étire les éléments sur toute la hauteur disponible */
-    /* align-items: center;       -> centre verticalement (si flex-direction: row) */
-    /* align-items: flex-start;     -> aligne en haut */
-    /* align-items: flex-end;        -> aligne en bas */
+    align-items: stretch;       /* padrao: estica os elementos por toda a altura disponivel */
+    /* align-items: center;       -> centraliza verticalmente (se flex-direction: row) */
+    /* align-items: flex-start;     -> alinha no topo */
+    /* align-items: flex-end;        -> alinha embaixo */
 }
 ```
 
-> **O alinhamento central perfeito, um clássico resolvido em 3 linhas:**
+> **O centro perfeito, um clássico resolvido em 3 linhas:**
 
 ```css
-.conteneur {
+.container {
     display: flex;
-    justify-content: center;   /* centre horizontalement */
-    align-items: center;        /* centre verticalement */
+    justify-content: center;  /* centraliza horizontalmente */
+    align-items: center;      /* centraliza verticalmente */
 }
 ```
 
-## Propriedades dos elementos filhos
+## As propriedades nos filhos
 
 ```css
-.element {
-    flex-grow: 1;      /* peut grandir pour occuper l'espace restant (1 = part égale entre éléments) */
-    flex-shrink: 1;      /* peut rétrécir si l'espace manque (par défaut) */
-    flex-basis: 200px;     /* taille de départ, avant application de grow/shrink */
-    order: 2;                /* change l'ordre d'affichage SANS toucher au HTML */
+.elemento {
+    flex-grow: 1;       /* pode crescer para ocupar o espaco restante (1 = parte igual entre elementos) */
+    flex-shrink: 1;     /* pode encolher se faltar espaco (padrao) */
+    flex-basis: 200px;  /* tamanho inicial, antes de aplicar grow/shrink */
+    order: 2;           /* muda a ordem de exibicao SEM tocar no HTML */
 }
 ```
 
-> **Nota (acessibilidade):** `order` altera apenas a ordem **visual**: a ordem de tabulação no teclado e a lida por um leitor de tela mantêm-se as do HTML. Uma discrepância entre as duas ordens pode desorientar um usuário que utilize o teclado ou um leitor de tela; deve ser reservada apenas para reordenações puramente decorativas, nunca para corrigir uma ordem de conteúdo que não faça sentido no próprio HTML.
+> **Nota (acessibilidade):** `order` só muda a ordem **visual**: a ordem de tabulação pelo teclado e a lida por um leitor de tela continuam sendo as do HTML. Um descompasso entre as duas pode desorientar um usuário de teclado ou de leitor de tela; a reservar para reordenações puramente decorativas, nunca para consertar uma ordem de conteúdo que não faz sentido no próprio HTML.
 
 ```css
-.colonne-principale { flex-grow: 2; }   /* occupe deux fois plus d'espace que .colonne-laterale */
-.colonne-laterale { flex-grow: 1; }
+.coluna-principal { flex-grow: 2; }   /* ocupa duas vezes mais espaco que .coluna-lateral */
+.coluna-lateral { flex-grow: 1; }
 ```
 
-## Nova linha: `flex-wrap`
+## Quebra de linha: `flex-wrap`
 
 ```css
-.conteneur {
+.container {
     display: flex;
-    flex-wrap: nowrap;   /* par défaut : tout tient sur une seule ligne, rétrécit si besoin */
-    /* flex-wrap: wrap;     -> passe à la ligne suivante si manque de place */
+    flex-wrap: nowrap;   /* padrao: tudo cabe em uma unica linha, encolhe se necessario */
+    /* flex-wrap: wrap;     -> passa para a linha seguinte se faltar espaco */
 }
 ```
 
 ## Resumo visual
 
-```
-justify-content (axe principal, ici horizontal) :
+```text
+justify-content (eixo principal, aqui horizontal):
 [■]                    [■] [■] [■]              [■]       [■]       [■]
 flex-start             center                    space-between
 
-align-items (axe secondaire, ici vertical) :
+align-items (eixo secundario, aqui vertical):
 [■]                    [■]                        [■]
 [ ]  flex-start        [ ]  center                [ ]  flex-end
 [ ]                    [ ]                        [■]
 ```
 
-Consulte também o capítulo sobre CSS Grid, para um layout bidimensional (linhas E colunas simultaneamente), enquanto o Flexbox continua a ser concebido fundamentalmente para um único eixo de cada vez.
+Veja também [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), para um layout em **duas** dimensões (linhas E colunas simultaneamente), enquanto o Flexbox continua fundamentalmente pensado para um único eixo por vez.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | O Flexbox alinha elementos em um único eixo (`flex-direction`). `justify-content` alinha no eixo principal, `align-items` no eixo secundário. `flex-grow`/`flex-shrink`/`flex-basis` controlam o tamanho dos filhos. |
+| **Ferramentas utilizáveis** | `display: flex`, `justify-content`, `align-items`, `flex-wrap`, `flex-grow`/`shrink`/`basis`, `order`. |
+| **Armadilhas a evitar** | Usar `order` para reordenar um conteúdo que tem uma ordem de leitura real: a ordem visual muda, mas não a ordem de tabulação pelo teclado nem a lida por um leitor de tela. |
+| **Boas práticas** | Reservar `order` para reordenações puramente decorativas; usar Grid em vez de Flexbox assim que o layout precisar de duas dimensões (linhas E colunas). |

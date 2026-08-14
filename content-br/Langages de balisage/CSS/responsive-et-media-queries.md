@@ -2,77 +2,88 @@
 order: 7
 ---
 
-# O design responsivo e as media queries
+# O responsive design e as media queries
 
-O **design responsivo** consiste em conceber uma página que se adapte a qualquer tamanho de tela (celular, tablet, computador), uma necessidade desde que a maior parte do tráfego na Web passa a ocorrer em dispositivos móveis, e a principal razão de ser das **media queries**.
+O **responsive design** consiste em projetar uma página que se adapta a qualquer tamanho de tela (celular, tablet, computador): uma necessidade desde que a maioria do tráfego web acontece no celular, e a principal razão de existir das **media queries**.
 
 ## As unidades relativas, antes mesmo das media queries
 
 ```css
 div {
-    width: 300px;     /* fixe, ne s'adapte à RIEN */
-    width: 50%;         /* relatif au parent */
-    font-size: 1.5rem;    /* relatif à la taille de police racine (<html>), indépendant du parent */
-    font-size: 1.5em;      /* relatif à la taille de police du PARENT direct (peut s'accumuler en cascade) */
-    width: 50vw;             /* relatif à la largeur de la fenêtre (viewport width) */
-    height: 100vh;             /* relatif à la hauteur de la fenêtre (viewport height) */
+    width: 300px;       /* fixo, nao se adapta a NADA */
+    width: 50%;         /* relativo ao pai */
+    font-size: 1.5rem;  /* relativo ao tamanho de fonte raiz (<html>), independente do pai */
+    font-size: 1.5em;   /* relativo ao tamanho de fonte do PAI direto (pode se acumular em cascata) */
+    width: 50vw;        /* relativo a largura da janela (viewport width) */
+    height: 100vh;      /* relativo a altura da janela (viewport height) */
 }
 ```
 
-> **Nota:** «`rem`» é geralmente preferível a «`em`» para os tamanhos de tipo, uma vez que se mantém previsível mesmo em componentes aninhados (um «`em`» num elemento cujo pai já tenha um «`em`» alterado acumula-se frequentemente de forma indesejada); «`rem`» baseia-se sempre na mesma referência («`<html>`»), independentemente da profundidade do aninhamento.
+> **Nota:** `rem` geralmente é preferido a `em` para tamanhos de fonte, pois continua previsível mesmo em componentes aninhados (um `em` em um elemento cujo pai já tem um `em` modificado se acumula de forma frequentemente indesejada); `rem` sempre se baseia na mesma referência (`<html>`), qualquer que seja a profundidade de aninhamento.
 
 ## As media queries
 
 ```css
-/* Style par défaut, pensé "mobile first" */
-.conteneur {
+/* Estilo padrao, pensado "mobile first" */
+.container {
     flex-direction: column;
 }
 
-/* S'applique UNIQUEMENT si la largeur d'écran atteint au moins 768px */
+/* Se aplica APENAS se a largura da tela atingir pelo menos 768px */
 @media (min-width: 768px) {
-    .conteneur {
+    .container {
         flex-direction: row;
     }
 }
 
-/* S'applique UNIQUEMENT si la largeur d'écran est de 767px maximum */
+/* Se aplica APENAS se a largura da tela for de no maximo 767px */
 @media (max-width: 767px) {
     nav { display: none; }
 }
 ```
 
-## «Mobile first» vs «desktop first»
+## "Mobile first" vs "desktop first"
 
 ```css
-/* Approche mobile first : le style de base cible le mobile, on ÉLARGIT ensuite */
-.grille { grid-template-columns: 1fr; }
+/* Abordagem mobile first: o estilo base mira no celular, depois se AMPLIA */
+.grade { grid-template-columns: 1fr; }
 @media (min-width: 768px) {
-    .grille { grid-template-columns: 1fr 1fr; }
+    .grade { grid-template-columns: 1fr 1fr; }
 }
 @media (min-width: 1024px) {
-    .grille { grid-template-columns: 1fr 1fr 1fr; }
+    .grade { grid-template-columns: 1fr 1fr 1fr; }
 }
 ```
 
-> **Melhores práticas:** a abordagem «*mobile first*» (utilizar `min-width`, conceber primeiro para a tela mais pequena e, em seguida, adicionar complexidade para as telas maiores) é geralmente preferível ao inverso: obriga a pensar primeiro no conteúdo essencial e está em consonância com o facto de a maioria do tráfego na Web ser proveniente de dispositivos móveis.
+> **Boa prática:** a abordagem "*mobile first*" (usar `min-width`, estilizar primeiro para a tela menor, e depois adicionar complexidade para telas maiores) geralmente é preferida ao inverso: ela força a pensar primeiro no conteúdo essencial, e se alinha com o fato de que a maioria do tráfego web é mobile.
 
-## Pontos de interrupção (*breakpoints*) comuns
+## Pontos de corte (*breakpoints*) comuns
 
-| Largura | Público-alvo típico |
+| Largura | Alvo típico |
 |---|---|
 | `< 768px` | Celular |
 | `768px – 1023px` | Tablet |
-| `≥ 1024px` | Computador de secretária |
+| `≥ 1024px` | Computador de mesa |
 
-> **Nota:** estes valores não constituem uma norma oficial: variam consoante os projetos e os frameworks CSS. O que realmente importa é ajustar os pontos de quebra em função do próprio conteúdo (o momento em que o layout começa a apresentar problemas visuais), e não apenas reproduzir dimensões físicas precisas dos dispositivos.
+> **Nota:** esses valores **não** são uma norma oficial: variam conforme os projetos e os frameworks CSS. O que realmente importa é fazer variar seus pontos de corte em função do próprio conteúdo (o momento em que o layout começa a funcionar mal visualmente), não apenas reproduzir tamanhos de dispositivos físicos precisos.
 
-## Outros recursos multimédia úteis
+## Outras media features úteis
 
 ```css
-@media (orientation: portrait) { }     /* écran plus haut que large */
-@media (prefers-color-scheme: dark) { }  /* l'utilisateur a activé le mode sombre au niveau système */
-@media print { }                          /* styles appliqués uniquement à l'impression */
+@media (orientation: portrait) { }       /* tela mais alta que larga */
+@media (prefers-color-scheme: dark) { }  /* o usuario ativou o modo escuro no nivel do sistema */
+@media print { }                         /* estilos aplicados apenas na impressao */
 ```
 
-Consulte também o capítulo sobre CSS Grid, cujo «`repeat(auto-fit, minmax(...))`» permite obter um comportamento responsivo **sem escrever nenhuma media query**, uma alternativa complementar que vale a pena conhecer.
+Veja também [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), cujo `repeat(auto-fit, minmax(...))` permite obter um comportamento responsivo **sem escrever nenhuma media query**, uma alternativa complementar a conhecer.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | O responsive design adapta uma página a qualquer tamanho de tela, via unidades relativas (`%`, `rem`, `vw`/`vh`) e media queries (`@media (min-width: ...)`) que aplicam um estilo apenas para certas larguras. |
+| **Ferramentas utilizáveis** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`. |
+| **Armadilhas a evitar** | Basear seus pontos de corte em tamanhos de dispositivos precisos em vez do momento em que o layout realmente quebra visualmente. |
+| **Boas práticas** | Adotar uma abordagem *mobile first* (`min-width`, estilizar primeiro a tela menor); preferir `rem` a `em` para tamanhos de fonte, mais previsível em caso de aninhamento. |

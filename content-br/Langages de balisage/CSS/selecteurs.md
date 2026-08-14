@@ -4,81 +4,92 @@ order: 1
 
 # Os seletores
 
-Um **seletor** determina a que elementos HTML se aplica uma regra CSS: desde o mais simples (uma baliza) até ao mais preciso (uma combinação de atributos e posição na árvore do documento).
+Um **seletor** determina a quais elementos HTML uma regra CSS se aplica: do mais simples (uma tag) ao mais preciso (uma combinação de atributos e posição na árvore do documento).
 
 ## Seletores básicos
 
 ```css
-h1 { }             /* tous les éléments <h1> */
-.carte { }          /* tous les éléments avec class="carte" */
-#en-tete { }          /* l'unique élément avec id="en-tete" */
-* { }                   /* absolument tous les éléments */
+h1 { }        /* todos os elementos <h1> */
+.cartao { }   /* todos os elementos com class="cartao" */
+#cabecalho { }  /* o unico elemento com id="cabecalho" */
+* { }         /* absolutamente todos os elementos */
 ```
 
-> **Nota:** uma «`class`» pode ser reutilizada em vários elementos, um «`id`» deve permanecer **único** em toda a página: um seletor «`#id`» visa, portanto, sempre um único elemento específico, ao contrário de «`.classe`».
+> **Nota:** uma `class` pode ser reutilizada em vários elementos, um `id` precisa continuar **único** em toda a página: um seletor `#id` então sempre mira em um único elemento específico, ao contrário de `.classe`.
 
 ## Combinadores
 
 ```css
-article p { }        /* tout <p> descendant de <article>, à N'IMPORTE quelle profondeur */
-article > p { }        /* tout <p> ENFANT DIRECT de <article>, pas plus profond */
-h2 + p { }               /* le <p> immédiatement APRÈS un <h2>, au même niveau */
-h2 ~ p { }                /* TOUS les <p> qui suivent un <h2>, au même niveau */
+article p { }    /* todo <p> descendente de <article>, em QUALQUER profundidade */
+article > p { }  /* todo <p> FILHO DIRETO de <article>, nao mais fundo */
+h2 + p { }       /* o <p> imediatamente APOS um <h2>, no mesmo nivel */
+h2 ~ p { }       /* TODOS os <p> que seguem um <h2>, no mesmo nivel */
 ```
 
-## Seletores de atributos
+## Seletores de atributo
 
 ```css
-input[type="email"] { }         /* tout <input> avec cet attribut ET cette valeur exacte */
-a[href^="https"] { }              /* href qui COMMENCE par "https" */
-a[href$=".pdf"] { }                 /* href qui SE TERMINE par ".pdf" */
-a[href*="exemple"] { }                /* href qui CONTIENT "exemple" n'importe où */
+input[type="email"] { }  /* todo <input> com esse atributo E esse valor exato */
+a[href^="https"] { }     /* href que COMECA com "https" */
+a[href$=".pdf"] { }      /* href que TERMINA com ".pdf" */
+a[href*="exemplo"] { }   /* href que CONTEM "exemplo" em qualquer lugar */
 ```
 
-## Pseudoclasses: identificar um estado
+## Pseudo-classes: mirar em um estado
 
 ```css
-a:hover { }          /* quand la souris survole l'élément */
-input:focus { }        /* quand le champ a le focus (clic ou tabulation) */
-li:first-child { }       /* le premier enfant de son parent */
-li:last-child { }          /* le dernier enfant de son parent */
-li:nth-child(2) { }          /* le 2e enfant précisément */
-li:nth-child(odd) { }          /* tous les enfants impairs (1er, 3e, 5e...) */
-input:disabled { }               /* un champ désactivé */
-input:required { }                 /* un champ marqué "required" en HTML (cf. chapitre formulaires) */
+a:hover { }            /* quando o mouse passa sobre o elemento */
+input:focus { }        /* quando o campo tem foco (clique ou tab) */
+li:first-child { }     /* o primeiro filho de seu pai */
+li:last-child { }      /* o ultimo filho de seu pai */
+li:nth-child(2) { }    /* o 2o filho precisamente */
+li:nth-child(odd) { }  /* todos os filhos impares (1o, 3o, 5o...) */
+input:disabled { }     /* um campo desativado */
+input:required { }     /* um campo marcado "required" no HTML (veja Os formulários) */
 ```
 
-## Pseudo-elementos: selecionar uma parte de um elemento
+## Pseudo-elementos: mirar em uma parte de um elemento
 
 ```css
-p::first-line { }     /* uniquement la première ligne affichée du paragraphe */
-p::before { content: "→ "; }  /* insère du contenu AVANT le texte réel du paragraphe */
-p::after { content: " ✓"; }    /* insère du contenu APRÈS */
+p::first-line { }             /* apenas a primeira linha exibida do paragrafo */
+p::before { content: "→ "; }  /* insere conteudo ANTES do texto real do paragrafo */
+p::after { content: " ✓"; }   /* insere conteudo DEPOIS */
 ```
 
-> **Nota:** `::before` / `::after` requerem a propriedade `content` para serem visíveis (mesmo que esteja vazia, `content: "";`), muito utilizadas para adicionar um elemento puramente decorativo (ícone, seta...) sem sobrecarregar o HTML com uma baliza adicional sem significado semântico real (ver capítulo sobre a semântica HTML5).
+> **Nota:** `::before`/`::after` exigem uma propriedade `content` para serem visíveis (mesmo vazia, `content: "";`), muito usados para adicionar um elemento puramente decorativo (ícone, seta...) sem sobrecarregar o HTML com uma tag adicional sem significado semântico real (veja [Semântica HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5)).
 
-## A particularidade: o que acontece em caso de conflito?
+## A especificidade: o que acontece em caso de conflito?
 
 ```css
 p { color: blue; }
-.texte-important { color: red; }
-#paragraphe-unique { color: green; }
+.texto-importante { color: red; }
+#paragrafo-unico { color: green; }
 ```
 
 ```html
-<p id="paragraphe-unique" class="texte-important">Quelle couleur ?</p>
+<p id="paragrafo-unico" class="texto-importante">Qual cor?</p>
 ```
 
-Um «`id`» tem uma especificidade maior do que um «`class`», que por sua vez é mais específico do que um seletor de baliza: o parágrafo será, portanto, apresentado a **verde** (o «`#paragraphe-unique`» prevalece), independentemente da ordem em que as regras estiverem escritas no arquivo.
+Um `id` tem uma especificidade mais forte que uma `class`, que por sua vez é mais forte que um seletor de tag: o parágrafo então será exibido em **verde** (`#paragrafo-unico` vence), qualquer que seja a ordem de escrita das regras no arquivo.
 
 | Tipo de seletor | Peso (do mais fraco ao mais forte) |
 |---|---|
 | Seletor universal (`*`) | O mais fraco |
-| Etiqueta (`p`, `div`...) | Baixa |
-| Classe (`.carte`), atributo (`[type=...]`), pseudoclasse (`:hover`) | Médio |
-| `id` (`#en-tete`) | Fort |
+| Tag (`p`, `div`...) | Fraco |
+| Classe (`.cartao`), atributo (`[type=...]`), pseudo-classe (`:hover`) | Médio |
+| `id` (`#cabecalho`) | Forte |
 | Estilo em linha (`style="..."`) | Muito forte |
-| `!important` | Sobrescreve tudo o resto (a evitar, ver capítulo sobre a cascata) |
+| `!important` | Sobrepõe tudo o resto (evitar, veja [Variáveis CSS e a cascata](/?c=langages-de-balisage&s=css&p=variables-et-cascade)) |
 
-Ver também o capítulo sobre a cascata, que detalha com precisão a ordem de resolução entre especificidade, ordem de escrita e origem da regra.
+Veja também [Variáveis CSS e a cascata](/?c=langages-de-balisage&s=css&p=variables-et-cascade), que detalha precisamente a ordem de resolução entre especificidade, ordem de escrita e origem da regra.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Um seletor determina a quais elementos uma regra CSS se aplica, do mais simples (tag) ao mais preciso (atributos, posição, estado). Em caso de conflito, o seletor mais **específico** vence (id > classe > tag), senão a regra escrita por último. |
+| **Ferramentas utilizáveis** | Seletores básicos, combinadores (`>`, `+`, `~`), seletores de atributo, pseudo-classes (`:hover`, `:nth-child`...), pseudo-elementos (`::before`/`::after`). |
+| **Armadilhas a evitar** | Confundir especificidade com ordem de escrita: um seletor mais específico sempre vence, mesmo escrito antes de um seletor menos específico. |
+| **Boas práticas** | Preferir classes a ids para o estilo comum (mais fáceis de reutilizar e sobrescrever); reservar `id` a um uso realmente único na página. |

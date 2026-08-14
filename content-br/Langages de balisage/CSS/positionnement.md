@@ -2,53 +2,53 @@
 order: 4
 ---
 
-# O posicionamento (posição, z-index)
+# O posicionamento (position, z-index)
 
-A propriedade `position` altera fundamentalmente a forma como um elemento é posicionado na página, para além do fluxo normal (cada elemento a seguir ao outro) já gerido pelo Flexbox e pelo Grid (ver capítulos dedicados).
+A propriedade `position` muda fundamentalmente a forma como um elemento é colocado na página: além do fluxo normal (cada elemento um depois do outro) que [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox) e [Grid](/?c=langages-de-balisage&s=css&p=grid) já gerenciam.
 
-## `static` : o comportamento por padrão
+## `static`: o comportamento padrão
 
 ```css
 div {
-    position: static;   /* valeur par défaut : suit le flux normal du document */
+    position: static;   /* valor padrao: segue o fluxo normal do documento */
 }
 ```
 
-Um elemento `static` ignora completamente `top` / `left` / `right` / `bottom`: estas propriedades só têm efeito sobre os outros valores de `position`.
+Um elemento `static` ignora totalmente `top`/`left`/`right`/`bottom`: essas propriedades só têm efeito nos outros valores de `position`.
 
-## `relative` : deslocado em relação à sua posição original
+## `relative`: deslocado em relação à sua posição de origem
 
 ```css
 div {
     position: relative;
-    top: 10px;     /* décalé de 10px vers le BAS par rapport à sa position normale */
-    left: 20px;      /* décalé de 20px vers la DROITE */
+    top: 10px;   /* deslocado 10px para BAIXO em relacao a sua posicao normal */
+    left: 20px;  /* deslocado 20px para a DIREITA */
 }
 ```
 
-> **Nota:** o elemento mantém a sua posição original **reservada** no fluxo (os outros elementos não se deslocam para compensar): apenas a sua apresentação visual é deslocada. O comando «`position: relative`» também é frequentemente utilizado para um segundo objetivo: definir um ponto de referência para um elemento filho em «`position: absolute`» (ver mais abaixo).
+> **Nota:** o elemento mantém seu espaço de origem **reservado** no fluxo (os outros elementos não se movem para compensar); apenas sua exibição visual é deslocada. `position: relative` também serve muito frequentemente para uma segunda coisa: definir um ponto de referência para um filho em `position: absolute` (veja abaixo).
 
-## `absolute` : posicionado em relação a um antepassado posicionado
+## `absolute`: posicionado em relação a um ancestral posicionado
 
 ```css
-.conteneur {
-    position: relative;   /* devient le point de référence */
+.container {
+    position: relative;   /* torna-se o ponto de referencia */
 }
 .badge {
     position: absolute;
     top: 0;
-    right: 0;                /* positionné dans le coin supérieur droit DE .conteneur */
+    right: 0;                /* posicionado no canto superior direito DE .container */
 }
 ```
 
-Um elemento `absolute` é retirado do fluxo normal (os outros elementos comportam-se como se ele já não existisse) e posicionado em relação ao seu antepassado mais próximo (`relative`, `absolute`, `fixed` ou `sticky`); caso não exista nenhum, em relação à página inteira (`<html>`).
+Um elemento `absolute` é retirado do fluxo normal (os outros elementos se comportam como se ele não existisse mais), e posicionado em relação ao seu ancestral posicionado mais próximo (`relative`, `absolute`, `fixed` ou `sticky`); se não houver nenhum, em relação à página inteira (`<html>`).
 
-> **Nota (armadilha clássica):** um elemento `.badge { position: absolute; }` sem **nenhum** antepassado posicionado posiciona-se em relação a toda a página, e não apenas ao seu contentor visual visível: é por isso que `.conteneur { position: relative; }` acompanha quase sistematicamente um elemento filho com `absolute`, mesmo sem qualquer deslocamento (`top` / `left`) no próprio contentor.
+> **Nota (armadilha clássica):** um `.badge { position: absolute; }` sem **nenhum** ancestral posicionado se posiciona em relação à página inteira, não apenas ao seu contêiner visual aparente: é por isso que `.container { position: relative; }` quase sempre acompanha um filho em `absolute`, mesmo sem nenhum deslocamento (`top`/`left`) no próprio contêiner.
 
-## `fixed` : posicionado em relação à janela, fixo durante a deslocamento
+## `fixed`: posicionado em relação à janela, imóvel na rolagem
 
 ```css
-.bandeau-cookies {
+.banner-cookies {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -56,25 +56,25 @@ Um elemento `absolute` é retirado do fluxo normal (os outros elementos comporta
 }
 ```
 
-Permanece na mesma posição visual **mesmo ao percorrer a página**: utilizado para um menu sempre visível, uma barra de notificações, etc. Posicionado em relação à janela do navegador (*viewport*), e não em relação a um elemento pai.
+Permanece na mesma posição visual **mesmo rolando a página**, usado para um menu sempre visível, uma faixa de notificação, etc. Posicionado em relação à janela do navegador (*viewport*), não em relação a um ancestral.
 
-## `sticky` : um híbrido entre `relative` e `fixed`
+## `sticky`: um híbrido entre `relative` e `fixed`
 
 ```css
-.entete-tableau {
+.cabecalho-tabela {
     position: sticky;
     top: 0;
 }
 ```
 
-Comporta-se como «`relative`» enquanto o elemento estiver visível na sua posição normal e, em seguida, passa a ser «`fixed`» (fixado à margem especificada, neste caso «`top: 0`») assim que a rolagem o fizer sair dessa posição: utilizado normalmente para um cabeçalho de tabela que permanece visível durante a rolagem do conteúdo.
+Se comporta como `relative` enquanto o elemento está visível em seu lugar normal, e depois se torna `fixed` (grudado na borda especificada, aqui `top: 0`) assim que a rolagem o levaria para fora, usado tipicamente para um cabeçalho de tabela que permanece visível durante a rolagem do conteúdo.
 
-## `z-índice` : gerir a sobreposição
+## `z-index`: gerenciar a sobreposição
 
 ```css
-.modale {
+.modal {
     position: absolute;
-    z-index: 100;    /* affiché AU-DESSUS des éléments avec un z-index plus faible */
+    z-index: 100;    /* exibido POR CIMA dos elementos com um z-index menor */
 }
 .overlay {
     position: fixed;
@@ -82,4 +82,15 @@ Comporta-se como «`relative`» enquanto o elemento estiver visível na sua posi
 }
 ```
 
-> **Nota:** `z-índice` só tem efeito num elemento **já posicionado** (`relative`, `absolute`, `fixed` ou `sticky`): num elemento `static`, `z-índice` é simplesmente ignorado. Um valor mais elevado de «`z-índice`» é exibido por cima de um valor mais baixo, mas apenas em comparação com elementos que partilham o mesmo «contexto de pilha», um pormenor que explica certos casos em que um valor muito elevado de «`z-índice`» não é suficiente para se sobrepor a um elemento aparentemente com menor prioridade.
+> **Nota:** `z-index` só tem efeito em um elemento **já posicionado** (`relative`, `absolute`, `fixed` ou `sticky`): em um elemento `static`, `z-index` é simplesmente ignorado. Um valor de `z-index` mais alto é exibido por cima de um valor menor, mas apenas em comparação com elementos que compartilham o mesmo "contexto de empilhamento" (um grupo de elementos comparados entre si para a sobreposição; um elemento posicionado com um `z-index`, uma opacidade menor que 1, ou uma transformação cria um novo contexto para seus próprios filhos: seus `z-index` se comparam ali entre si, nunca diretamente com os de fora); um detalhe que explica alguns casos em que um `z-index` bem alto não basta para passar por cima de um elemento aparentemente menos prioritário.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `position` muda como um elemento é colocado: `static` (padrão, fluxo normal), `relative` (deslocado, lugar reservado), `absolute` (retirado do fluxo, relativo a um ancestral posicionado), `fixed` (relativo à janela), `sticky` (híbrido relative/fixed). `z-index` gerencia a sobreposição, mas apenas entre elementos posicionados. |
+| **Ferramentas utilizáveis** | `position`, `top`/`right`/`bottom`/`left`, `z-index`. |
+| **Armadilhas a evitar** | Um `absolute` sem ancestral `relative` se posiciona em relação à página inteira, não ao contêiner visual esperado; `z-index` é ignorado em um elemento `static`. |
+| **Boas práticas** | Sempre colocar `position: relative` no contêiner de um filho em `absolute`, mesmo sem deslocamento próprio nesse contêiner. |
