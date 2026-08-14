@@ -9,7 +9,7 @@
 - À traiter une fois `content-br/`/`content-es/` à jour structurellement (voir ci-dessous), pour ne pas nettoyer des fichiers qui vont être réécrits.
 
 ## Traductions ES/BR à rattraper
-- **54 fichiers BR encore manquants**, répartis sur 4 catégories entièrement absentes (PowerShell 14, Langages de programmation — sous-dossiers manquants 11, UI-UX 11, Performance 9) + rattrapages dans des catégories partielles (Bash 3, Git 3, DSL 1, Shells 1). Ordre de traitement : catégories manquantes par taille croissante.
+- **45 fichiers BR encore manquants**, répartis sur 3 catégories entièrement absentes (PowerShell 14, Langages de programmation — sous-dossiers manquants 11, UI-UX 11) + rattrapages dans des catégories partielles (Bash 3, Git 3, DSL 1, Shells 1). Ordre de traitement : catégories manquantes par taille croissante.
 - `Bash` existe en catégorie plate en BR/ES au lieu d'un sous-dossier de `Shells` (comme en FR) ; le Bash déjà traduit manque en plus `automatisation-cron.md` et `commandes-de-base.md`.
 - 6 langues manquantes en plus d'ES/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
 - Quand la catégorie IA sera traduite pour ES/BR, l'écrire directement en subjects (comme la structure FR actuelle), pas à plat.
