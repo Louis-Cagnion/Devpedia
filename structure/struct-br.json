@@ -623,6 +623,33 @@
           "label": "A derivada e o gradiente"
         }
       ]
+    },
+    {
+      "id": "representation-des-donnees",
+      "label": "Représentation des données",
+      "folder": "Représentation des données",
+      "chapters": [
+        {
+          "id": "entiers-et-debordements",
+          "label": "Os inteiros, os bits e os overflows"
+        },
+        {
+          "id": "nombres-flottants",
+          "label": "Os números de ponto flutuante (IEEE 754)"
+        },
+        {
+          "id": "encodage-des-textes",
+          "label": "A codificação de textos (ASCII, Unicode, UTF-8)"
+        },
+        {
+          "id": "organisation-en-memoire",
+          "label": "A organização dos dados em memória"
+        },
+        {
+          "id": "aleatoire-et-generateurs",
+          "label": "A aleatoriedade e os geradores"
+        }
+      ]
     }
   ]
 }
