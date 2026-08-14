@@ -53,7 +53,7 @@
         },
         {
           "id": "permissions-et-fichiers",
-          "label": "Permissões e manipulação de ficheiros"
+          "label": "Permissões e manipulação de arquivos"
         },
         {
           "id": "gestion-des-processus",
@@ -95,7 +95,7 @@
         },
         {
           "id": "gitignore",
-          "label": "O ficheiro .gitignore"
+          "label": "O arquivo .gitignore"
         },
         {
           "id": "branches",
@@ -240,7 +240,7 @@
             },
             {
               "id": "headers",
-              "label": "Os ficheiros de cabeçalho (.h)"
+              "label": "Os arquivos de cabeçalho (.h)"
             },
             {
               "id": "compilation",
@@ -276,7 +276,7 @@
             },
             {
               "id": "appels-systeme-et-descripteurs",
-              "label": "Chamadas de sistema e descritores de ficheiros"
+              "label": "Chamadas de sistema e descritores de arquivos"
             },
             {
               "id": "threads",

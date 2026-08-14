@@ -2,7 +2,7 @@
   "nom": {
     "en": "name",
     "es": "nombre",
-    "pt": "nome",
+    "br": "nome",
     "de": "name",
     "ru": "имя",
     "zh": "名称",
@@ -13,7 +13,7 @@
   "valeur": {
     "en": "value",
     "es": "valor",
-    "pt": "valor",
+    "br": "valor",
     "de": "wert",
     "ru": "значение",
     "zh": "值",
@@ -24,7 +24,7 @@
   "valeurs": {
     "en": "values",
     "es": "valores",
-    "pt": "valores",
+    "br": "valores",
     "de": "werte",
     "ru": "значения",
     "zh": "值",
@@ -35,7 +35,7 @@
   "fichier": {
     "en": "file",
     "es": "archivo",
-    "pt": "arquivo",
+    "br": "arquivo",
     "de": "datei",
     "ru": "файл",
     "zh": "文件",
@@ -46,7 +46,7 @@
   "erreur": {
     "en": "error",
     "es": "error",
-    "pt": "erro",
+    "br": "erro",
     "de": "fehler",
     "ru": "ошибка",
     "zh": "错误",
@@ -57,7 +57,7 @@
   "tableau": {
     "en": "array",
     "es": "matriz",
-    "pt": "matriz",
+    "br": "matriz",
     "de": "tabelle",
     "ru": "массив",
     "zh": "数组",
@@ -68,7 +68,7 @@
   "donnees": {
     "en": "data",
     "es": "datos",
-    "pt": "dados",
+    "br": "dados",
     "de": "daten",
     "ru": "данные",
     "zh": "数据",
@@ -79,7 +79,7 @@
   "nombre": {
     "en": "number",
     "es": "número",
-    "pt": "número",
+    "br": "número",
     "de": "zahl",
     "ru": "число",
     "zh": "数字",
@@ -90,7 +90,7 @@
   "nombres": {
     "en": "numbers",
     "es": "números",
-    "pt": "números",
+    "br": "números",
     "de": "zahlen",
     "ru": "числа",
     "zh": "数字",
@@ -101,7 +101,7 @@
   "liste": {
     "en": "list",
     "es": "lista",
-    "pt": "lista",
+    "br": "lista",
     "de": "liste",
     "ru": "список",
     "zh": "列表",
@@ -112,7 +112,7 @@
   "ligne": {
     "en": "line",
     "es": "línea",
-    "pt": "linha",
+    "br": "linha",
     "de": "zeile",
     "ru": "строка",
     "zh": "行",
@@ -123,7 +123,7 @@
   "modele": {
     "en": "model",
     "es": "modelo",
-    "pt": "modelo",
+    "br": "modelo",
     "de": "modell",
     "ru": "модель",
     "zh": "模型",
@@ -134,7 +134,7 @@
   "personne": {
     "en": "person",
     "es": "persona",
-    "pt": "pessoa",
+    "br": "pessoa",
     "de": "person",
     "ru": "человек",
     "zh": "人",
@@ -145,7 +145,7 @@
   "fruit": {
     "en": "fruit",
     "es": "fruta",
-    "pt": "fruto",
+    "br": "fruto",
     "de": "obst",
     "ru": "фрукт",
     "zh": "水果",
@@ -156,7 +156,7 @@
   "fruits": {
     "en": "fruits",
     "es": "frutas",
-    "pt": "frutas",
+    "br": "frutas",
     "de": "obst",
     "ru": "фрукты",
     "zh": "水果",
@@ -167,7 +167,7 @@
   "resultat": {
     "en": "result",
     "es": "resultado",
-    "pt": "resultado",
+    "br": "resultado",
     "de": "ergebnis",
     "ru": "результат",
     "zh": "结果",
@@ -178,7 +178,7 @@
   "compteur": {
     "en": "counter",
     "es": "contador",
-    "pt": "contador",
+    "br": "contador",
     "de": "zähler",
     "ru": "счётчик",
     "zh": "计数器",
@@ -189,7 +189,7 @@
   "dossier": {
     "en": "folder",
     "es": "carpeta",
-    "pt": "pasta",
+    "br": "pasta",
     "de": "ordner",
     "ru": "папка",
     "zh": "文件夹",
@@ -200,7 +200,7 @@
   "solde": {
     "en": "balance",
     "es": "saldo",
-    "pt": "saldo",
+    "br": "saldo",
     "de": "saldo",
     "ru": "баланс",
     "zh": "余额",
@@ -211,7 +211,7 @@
   "utilisateur": {
     "en": "user",
     "es": "usuario",
-    "pt": "usuário",
+    "br": "usuário",
     "de": "benutzer",
     "ru": "пользователь",
     "zh": "用户",
@@ -222,7 +222,7 @@
   "message": {
     "en": "message",
     "es": "mensaje",
-    "pt": "mensagem",
+    "br": "mensagem",
     "de": "nachricht",
     "ru": "сообщение",
     "zh": "消息",
@@ -233,7 +233,7 @@
   "texte": {
     "en": "text",
     "es": "texto",
-    "pt": "texto",
+    "br": "texto",
     "de": "text",
     "ru": "текст",
     "zh": "文本",
@@ -244,7 +244,7 @@
   "total": {
     "en": "total",
     "es": "total",
-    "pt": "total",
+    "br": "total",
     "de": "gesamt",
     "ru": "всего",
     "zh": "总计",
@@ -255,7 +255,7 @@
   "titre": {
     "en": "title",
     "es": "título",
-    "pt": "título",
+    "br": "título",
     "de": "titel",
     "ru": "заголовок",
     "zh": "标题",
@@ -266,7 +266,7 @@
   "animal": {
     "en": "animal",
     "es": "animal",
-    "pt": "animal",
+    "br": "animal",
     "de": "tier",
     "ru": "животное",
     "zh": "动物",
@@ -277,7 +277,7 @@
   "ville": {
     "en": "city",
     "es": "ciudad",
-    "pt": "cidade",
+    "br": "cidade",
     "de": "stadt",
     "ru": "город",
     "zh": "城市",
@@ -288,7 +288,7 @@
   "marque": {
     "en": "brand",
     "es": "marca",
-    "pt": "marca",
+    "br": "marca",
     "de": "marke",
     "ru": "марка",
     "zh": "品牌",
@@ -299,7 +299,7 @@
   "racine": {
     "en": "root",
     "es": "raíz",
-    "pt": "raiz",
+    "br": "raiz",
     "de": "wurzel",
     "ru": "корень",
     "zh": "根",
@@ -310,7 +310,7 @@
   "programme": {
     "en": "program",
     "es": "programa",
-    "pt": "programa",
+    "br": "programa",
     "de": "programm",
     "ru": "программа",
     "zh": "程序",
@@ -321,7 +321,7 @@
   "sortie": {
     "en": "output",
     "es": "salida",
-    "pt": "saída",
+    "br": "saída",
     "de": "ausgabe",
     "ru": "вывод",
     "zh": "输出",
@@ -332,7 +332,7 @@
   "contenu": {
     "en": "content",
     "es": "contenido",
-    "pt": "conteúdo",
+    "br": "conteúdo",
     "de": "inhalt",
     "ru": "содержание",
     "zh": "内容",
@@ -343,7 +343,7 @@
   "prix": {
     "en": "price",
     "es": "precio",
-    "pt": "preço",
+    "br": "preço",
     "de": "preis",
     "ru": "цена",
     "zh": "价格",
@@ -354,7 +354,7 @@
   "produit": {
     "en": "product",
     "es": "producto",
-    "pt": "produto",
+    "br": "produto",
     "de": "produkt",
     "ru": "произведение",
     "zh": "产品",
@@ -365,7 +365,7 @@
   "requete": {
     "en": "query",
     "es": "consulta",
-    "pt": "consulta",
+    "br": "consulta",
     "de": "abfrage",
     "ru": "запрос",
     "zh": "请求",
@@ -376,7 +376,7 @@
   "reponse": {
     "en": "response",
     "es": "respuesta",
-    "pt": "resposta",
+    "br": "resposta",
     "de": "antwort",
     "ru": "ответ",
     "zh": "回答",
@@ -387,7 +387,7 @@
   "chaine": {
     "en": "string",
     "es": "cadena",
-    "pt": "cadeia",
+    "br": "cadeia",
     "de": "zeichenkette",
     "ru": "строка",
     "zh": "字符串",
@@ -398,7 +398,7 @@
   "objet": {
     "en": "object",
     "es": "objeto",
-    "pt": "objeto",
+    "br": "objeto",
     "de": "objekt",
     "ru": "объект",
     "zh": "对象",
@@ -409,7 +409,7 @@
   "cible": {
     "en": "target",
     "es": "objetivo",
-    "pt": "alvo",
+    "br": "alvo",
     "de": "ziel",
     "ru": "целевое",
     "zh": "目标",
@@ -420,7 +420,7 @@
   "source": {
     "en": "source",
     "es": "fuente",
-    "pt": "fonte",
+    "br": "fonte",
     "de": "quelle",
     "ru": "источник",
     "zh": "源代码",
@@ -431,7 +431,7 @@
   "config": {
     "en": "config",
     "es": "config",
-    "pt": "config",
+    "br": "config",
     "de": "config",
     "ru": "config",
     "zh": "config",
@@ -442,7 +442,7 @@
   "groupe": {
     "en": "group",
     "es": "grupo",
-    "pt": "grupo",
+    "br": "grupo",
     "de": "gruppe",
     "ru": "группа",
     "zh": "组",
@@ -453,7 +453,7 @@
   "chemin": {
     "en": "path",
     "es": "ruta",
-    "pt": "caminho",
+    "br": "caminho",
     "de": "pfad",
     "ru": "путь",
     "zh": "路径",
@@ -464,7 +464,7 @@
   "champ": {
     "en": "field",
     "es": "campo",
-    "pt": "campo",
+    "br": "campo",
     "de": "feld",
     "ru": "поле",
     "zh": "字段",
@@ -475,7 +475,7 @@
   "cache": {
     "en": "cache",
     "es": "caché",
-    "pt": "cache",
+    "br": "cache",
     "de": "cache",
     "ru": "кеш",
     "zh": "缓存",
@@ -486,7 +486,7 @@
   "colonne": {
     "en": "column",
     "es": "columna",
-    "pt": "coluna",
+    "br": "coluna",
     "de": "spalte",
     "ru": "столбец",
     "zh": "列",
@@ -497,7 +497,7 @@
   "index": {
     "en": "index",
     "es": "índice",
-    "pt": "índice",
+    "br": "índice",
     "de": "index",
     "ru": "указатель",
     "zh": "索引",
@@ -508,7 +508,7 @@
   "indice": {
     "en": "index",
     "es": "índice",
-    "pt": "índice",
+    "br": "índice",
     "de": "index",
     "ru": "указатель",
     "zh": "索引",
@@ -519,7 +519,7 @@
   "âge": {
     "en": "age",
     "es": "edad",
-    "pt": "idade",
+    "br": "idade",
     "de": "alter",
     "ru": "возраст",
     "zh": "年龄",
@@ -530,7 +530,7 @@
   "élément": {
     "en": "element",
     "es": "elemento",
-    "pt": "elemento",
+    "br": "elemento",
     "de": "element",
     "ru": "элемент",
     "zh": "元素",
@@ -541,7 +541,7 @@
   "clé": {
     "en": "key",
     "es": "clave",
-    "pt": "chave",
+    "br": "chave",
     "de": "schlüssel",
     "ru": "ключ",
     "zh": "密钥",
@@ -552,7 +552,7 @@
   "entrée": {
     "en": "input",
     "es": "entrada",
-    "pt": "entrada",
+    "br": "entrada",
     "de": "eingang",
     "ru": "вход",
     "zh": "入口",
@@ -563,7 +563,7 @@
   "quantité": {
     "en": "quantity",
     "es": "cantidad",
-    "pt": "quantidade",
+    "br": "quantidade",
     "de": "menge",
     "ru": "количество",
     "zh": "数量",

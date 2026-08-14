@@ -33,7 +33,7 @@ const FRENCH_WORDS = [
 const LANGUAGES = [
     { code: "en", label: "English" },
     { code: "es", label: "Español" },
-    { code: "pt", label: "Português (Brasil)" },
+    { code: "br", label: "Português (Brasil)" },
     { code: "de", label: "Deutsch" },
     { code: "ru", label: "Русский" },
     { code: "zh", label: "中文（简体）" },
