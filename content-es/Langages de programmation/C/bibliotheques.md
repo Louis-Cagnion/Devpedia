@@ -4,56 +4,67 @@ order: 9
 
 # Las bibliotecas
 
-Una **biblioteca** (*library*) agrupa funciones ya compiladas, que pueden reutilizarse en cualquier programa sin necesidad de recompilar el código fuente; así es como funciona, por ejemplo, la biblioteca estándar de C (`printf`, `malloc`...). Hay dos formas de vincular una biblioteca a un programa: de forma estática o dinámica.
+Una **biblioteca** (*library*) agrupa funciones ya compiladas, reutilizables por cualquier programa sin necesidad de recompilar el código fuente: así es como funciona, por ejemplo, la biblioteca estándar de C (`printf`, `malloc`...). Existen dos formas de enlazar una biblioteca a un programa: de forma estática o dinámica.
 
 ## Biblioteca estática (`.a`)
 
-El código de la biblioteca se **copia directamente** en el ejecutable final durante la fase de enlace (véase el capítulo sobre la compilación).
+El código de la biblioteca se **copia directamente** en el ejecutable final, en el momento de [la edición de enlaces](/?c=langages-de-programmation&s=c&p=compilation).
 
-```bash
-// 1. compiler chaque fichier source en .o
-gcc -c calculs.c -o calculs.o
+```text
+// 1. compilar cada archivo fuente en .o
+gcc -c calculos.c -o calculos.o
 
-// 2. regrouper le(s) .o dans une archive statique
-ar rcs libcalculs.a calculs.o
+// 2. agrupar el/los .o en un archivo estático
+ar rcs libcalculos.a calculos.o
 
-// 3. lier le programme à cette bibliothèque
-gcc main.c -L. -lcalculs -o programa
+// 3. enlazar el programa con esta biblioteca
+gcc main.c -L. -lcalculos -o programa
 ```
 
-- `ar` (*archiver*) agrupa uno o varios archivos `.o` en un único archivo comprimido `.a`.
-- `-L.` Indica a `gcc` que busque también las bibliotecas en el directorio actual.
-- `-lcalculs` Solicitud de enlace a `libcalculs.a` (se sobreentienden el prefijo `lib` y el sufijo `.a`).
+- `ar` (*archiver*) reúne uno o varios archivos `.o` en un único archivo `.a`.
+- `-L.` indica a [`gcc`](https://gcc.gnu.org) que busque también las bibliotecas en el directorio actual.
+- `-lcalculos` solicita enlazar `libcalculos.a` (se sobreentienden el prefijo `lib` y el sufijo `.a`).
 
 | Ventaja | Inconveniente |
 |---|---|
-| Ejecutable independiente, sin necesidad de instalar dependencias externas | Mayor tamaño del ejecutable |
-| No hay riesgo de que una versión diferente de la biblioteca provoque un fallo en el programa más adelante | Una actualización de la biblioteca obliga a recompilar el programa |
+| Ejecutable autónomo, sin dependencia externa que instalar | Mayor tamaño del ejecutable |
+| Sin riesgo de que una versión diferente de la biblioteca rompa el programa más adelante | Una actualización de la biblioteca obliga a recompilar el programa |
 
 ## Biblioteca dinámica (`.so` en Linux, `.dll` en Windows)
 
-El código de la biblioteca se almacena en un archivo **independiente**, que se carga en memoria al iniciar el programa (o incluso durante su ejecución). De este modo, varios programas pueden compartir una única copia de la biblioteca en memoria.
+El código de la biblioteca permanece en un archivo **separado**, cargado en memoria al lanzar el programa (o incluso durante su ejecución). Varios programas pueden entonces compartir una sola copia de la biblioteca en memoria.
 
-```bash
-gcc -shared -fPIC calculs.c -o libcalculs.so
-gcc main.c -L. -lcalculs -o programa
+```text
+gcc -shared -fPIC calculos.c -o libcalculos.so
+gcc main.c -L. -lcalculos -o programa
 
-// au lancement, le système doit savoir où trouver libcalculs.so :
+// al lanzar el programa, el sistema debe saber dónde encontrar libcalculos.so:
 LD_LIBRARY_PATH=. ./programa
 ```
 
-- `-fPIC` (*Position Independent Code*) genera código capaz de funcionar independientemente de la dirección de memoria en la que se cargue, algo necesario para una biblioteca compartida, que se carga en una ubicación diferente según el programa.
-- Sin `LD_LIBRARY_PATH` (o una instalación en un directorio estándar del sistema como `/usr/lib`), el sistema no sabe dónde buscar `libcalculs.so` al iniciarse, y el programa no se inicia.
+- `-fPIC` (*Position Independent Code*) genera código capaz de funcionar sea cual sea la dirección de memoria en la que se cargue: necesario para una biblioteca compartida, cargada en un lugar diferente según el programa.
+- Sin `LD_LIBRARY_PATH` (o una instalación en un directorio del sistema estándar como `/usr/lib`), el sistema no sabe dónde buscar `libcalculos.so` al lanzarse, y el programa se niega a arrancar.
 
 | Ventaja | Inconveniente |
 |---|---|
-| Ejecutable más ligero | Dependencia externa: la biblioteca debe estar presente en el equipo que ejecuta el programa |
-| Una biblioteca compartida por varios programas ahorra memoria | Una actualización incompatible de la biblioteca puede hacer que un programa deje de funcionar sin necesidad de recompilarlo |
+| Ejecutable más ligero | Dependencia externa: la biblioteca debe estar presente en la máquina que ejecuta el programa |
+| Una biblioteca compartida por varios programas ahorra memoria | Una actualización incompatible de la biblioteca puede romper un programa sin recompilación |
 
 ## Resumen
 
 | | Estática (`.a`) | Dinámica (`.so`) |
 |---|---|---|
-| ¿Incluida en el ejecutable? | Sí | No — se carga por separado |
-| ¿Cuándo se vincula? | Durante la compilación | Al iniciar el programa (o durante su ejecución) |
-| Actualización de la biblioteca | Requiere recompilar el programa | El programa se beneficia de la actualización sin necesidad de recompilar |
+| ¿Copiada en el ejecutable? | Sí | No (se carga por separado) |
+| ¿Cuándo se enlaza? | En la compilación | Al lanzar el programa (o durante su ejecución) |
+| Actualización de la biblioteca | Requiere recompilar el programa | El programa se beneficia de la actualización sin recompilación |
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Una biblioteca estática (`.a`) se copia en el ejecutable en la compilación; una biblioteca dinámica (`.so`/`.dll`) permanece separada, se carga al lanzar el programa, y puede compartirse entre programas. |
+| **Herramientas utilizables** | `ar` (archivo estático), `gcc -shared -fPIC` (biblioteca dinámica), `-L`/`-l` para enlazar. |
+| **Trampas a evitar** | Olvidar `LD_LIBRARY_PATH` (o una instalación del sistema): el programa se niega a arrancar, al no encontrar la biblioteca dinámica. |
+| **Buenas prácticas** | Elegir estática para un ejecutable autónomo sin dependencia que gestionar, dinámica para ahorrar memoria/tamaño cuando varios programas comparten la misma biblioteca. |

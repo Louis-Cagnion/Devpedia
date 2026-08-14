@@ -4,13 +4,13 @@ order: 14
 
 # La gestión de procesos
 
-Un **proceso** es una instancia de un programa en ejecución, con su propio espacio de memoria, aislado del de los demás procesos. En C, la biblioteca estándar POSIX (`unistd.h`, `sys/wait.h`) permite crear nuevos procesos, ejecutar otros programas y esperar a que finalicen.
+Un **proceso** es una instancia de un programa en ejecución, con su propio espacio de memoria, aislado del de los demás procesos. En C, la biblioteca estándar POSIX (`unistd.h`, `sys/wait.h`) permite crear nuevos procesos, lanzar otros programas y esperar a que finalicen. La norma **POSIX** se presenta en el capítulo [Escribir un script](/?c=shells&s=bash&p=scripts-et-shebang) de Bash.
 
-> **Nota:** `fork()`, `execve()` (utilizado por `execlp()` y el resto de funciones de la familia `exec`) y `wait()` / `waitpid()` son **llamadas al sistema**; consulta el capítulo dedicado a las llamadas al sistema y a los descriptores de archivos para saber qué implica esto en la práctica (paso al espacio del núcleo, gestión de errores mediante `errno`).
+> **Nota:** `fork()`, `execve()` (utilizado por `execlp()` y el resto de funciones de la familia `exec`) y `wait()`/`waitpid()` son **llamadas al sistema**: consulta el capítulo dedicado a las llamadas al sistema y a los descriptores de archivos para saber qué implica esto en la práctica (paso al espacio del núcleo, gestión de errores mediante `errno`).
 
-## `fork()` : duplicar el proceso actual
+## `fork()`: duplicar el proceso actual
 
-`fork()` crea una copia prácticamente idéntica del proceso que realiza la llamada. Tras la llamada, existen **dos** procesos y ambos continúan la ejecución justo después de la función `fork()`; la única diferencia es el valor devuelto:
+`fork()` crea una copia prácticamente idéntica del proceso que hace la llamada. Después de la llamada, existen **dos** procesos y ambos continúan la ejecución justo después del `fork()`: la única diferencia es el valor devuelto:
 
 ```c
 #include <unistd.h>
@@ -21,11 +21,11 @@ int main(void)
     pid_t pid = fork();
 
     if (pid < 0) {
-        printf("Erreur : fork a échoué\n");
+        printf("Error: fork ha fallado\n");
     } else if (pid == 0) {
-        printf("Je suis l'enfant, mon PID est %d\n", getpid());
+        printf("Soy el hijo, mi PID es %d\n", getpid());
     } else {
-        printf("Je suis le parent, le PID de mon enfant est %d\n", pid);
+        printf("Soy el padre, el PID de mi hijo es %d\n", pid);
     }
 
     return 0;
@@ -34,15 +34,15 @@ int main(void)
 
 | Valor de retorno | ¿En qué proceso? | Significado |
 |---|---|---|
-| `< 0` | Solo el elemento principal | El «`fork()`» ha fallado, no se ha creado ningún elemento secundario |
-| `0` | El niño | Siempre recibe `0` |
-| `> 0` | El proceso padre | Recibe el PID (*identificador de proceso*) del proceso hijo recién creado |
+| `< 0` | Solo el padre | El `fork()` ha fallado, no se ha creado ningún hijo |
+| `0` | El hijo | Siempre recibe `0` |
+| `> 0` | El padre | Recibe el PID (*process ID*) del proceso hijo recién creado |
 
 > **Nota:** `pid_t` es el tipo dedicado a los identificadores de proceso. `getpid()` devuelve el PID del proceso actual, `getppid()` el de su proceso padre.
 
-## Sustituir el programa actual: la familia «`exec`»
+## Reemplazar el programa en ejecución: la familia `exec`
 
-`fork()` Duplica el proceso actual, pero no modifica el programa que se está ejecutando. Para iniciar **otro** programa en el proceso hijo, se utiliza una función de la familia «`exec`» (p. ej., `execve`, `execlp`), que sustituye por completo el código del proceso actual por el de un nuevo programa:
+`fork()` duplica el proceso actual, pero no cambia el programa que se ejecuta. Para lanzar **otro** programa en el proceso hijo, se utiliza una función de la familia `exec` (por ejemplo, `execve`, `execlp`): esta sustituye por completo el código del proceso actual por el de un nuevo programa:
 
 ```c
 #include <unistd.h>
@@ -52,19 +52,19 @@ int main(void)
     pid_t pid = fork();
 
     if (pid == 0) {
-        execlp("ls", "ls", "-l", NULL); // remplace le processus enfant par le programme "ls"
-        printf("Cette ligne ne s'exécute jamais si execlp réussit\n");
+        execlp("ls", "ls", "-l", NULL); // sustituye el proceso hijo por el programa "ls"
+        printf("Esta línea nunca se ejecuta si execlp tiene éxito\n");
     }
 
     return 0;
 }
 ```
 
-> **Nota:** si `execlp()` se ejecuta correctamente, nunca «vuelve»: el código del proceso hijo se sustituye por completo, por lo que solo se llega a la línea siguiente en caso de que `execlp()` falle.
+> **Nota:** si `execlp()` tiene éxito, nunca "vuelve": el código del proceso hijo se sustituye por completo, por lo que la línea siguiente solo se alcanza en caso de fallo del propio `execlp()`.
 
-## Esperar el nacimiento de un hijo: `wait()` / `waitpid()`
+## Esperar a que un hijo termine: `wait()` / `waitpid()`
 
-Sin sincronización, el proceso padre continúa su ejecución independientemente del proceso hijo. `wait()` bloquea el proceso padre hasta que uno de sus procesos hijos finalice:
+Sin sincronización, el proceso padre continúa su ejecución independientemente del hijo. `wait()` bloquea al padre hasta que **uno** de sus hijos termine:
 
 ```c
 #include <sys/wait.h>
@@ -74,25 +74,36 @@ int main(void)
     pid_t pid = fork();
 
     if (pid == 0) {
-        printf("Enfant : je travaille...\n");
-        return 42; // code de sortie de l'enfant
+        printf("Hijo: estoy trabajando...\n");
+        return 42; // código de salida del hijo
     } else {
-        int statut;
-        wait(&statut); // le parent attend ici que l'enfant se termine
+        int estado;
+        wait(&estado); // el padre espera aquí a que el hijo termine
 
-        if (WIFEXITED(statut)) {
-            printf("L'enfant s'est terminé avec le code %d\n", WEXITSTATUS(statut));
+        if (WIFEXITED(estado)) {
+            printf("El hijo terminó con el código %d\n", WEXITSTATUS(estado));
         }
     }
 }
 ```
 
-- `wait(&statut)` Rellena `statut` con información sobre cómo ha ido la jornada del niño.
-- `WIFEXITED(statut)` Comprueba que el proceso secundario haya finalizado correctamente (a través de `return` / `exit()`, no mediante una señal).
-- `WEXITSTATUS(statut)` Extrae el código de salida real del proceso hijo.
+- `wait(&estado)` rellena `estado` con información sobre cómo terminó el hijo.
+- `WIFEXITED(estado)` comprueba que el hijo terminó normalmente (mediante `return`/`exit()`, no por una señal).
+- `WEXITSTATUS(estado)` extrae el código de salida real del hijo.
 
-`waitpid(pid, &statut, 0)` Hace lo mismo que `wait()`, pero permite esperar a un hijo **concreto** (útil cuando un proceso tiene varios hijos).
+`waitpid(pid, &estado, 0)` hace lo mismo que `wait()`, pero permite esperar a un hijo **concreto** (útil cuando un proceso tiene varios hijos).
 
-> **Nota:** un proceso hijo que ha finalizado pero que nunca ha sido «recuperado» por un `wait()` del proceso padre permanece como **proceso zombi** en la tabla de procesos del sistema, hasta que su proceso padre llame a `wait()` (o finalice por sí mismo).
+> **Nota:** un proceso hijo terminado pero nunca "recuperado" por un `wait()` del padre permanece como **proceso zombi** en la tabla de procesos del sistema, hasta que su padre llame a `wait()` (o termine él mismo).
 
-Véase también el capítulo sobre los subprocesos, una alternativa más ligera al`fork()`o cuando las tareas deben compartir la misma memoria.
+Véase también [Los subprocesos](/?c=langages-de-programmation&s=c&p=threads), una alternativa más ligera a `fork()` cuando las tareas deben compartir la misma memoria.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | `fork()` duplica el proceso actual (dos procesos continúan tras la llamada); `exec*()` reemplaza el programa del proceso actual; `wait()`/`waitpid()` esperan a que un hijo termine. |
+| **Herramientas utilizables** | `fork()`, `execlp()`/`execve()`, `wait()`/`waitpid()`, `WIFEXITED`/`WEXITSTATUS`. |
+| **Trampas a evitar** | No llamar nunca a `wait()` sobre un hijo terminado: permanece "zombi" en la tabla de procesos hasta que el padre lo recupera o termina él mismo. |
+| **Buenas prácticas** | Comprobar siempre el valor de retorno de `fork()` (`< 0` = fallo) antes de bifurcar según el caso padre/hijo. |

@@ -4,98 +4,109 @@ order: 11
 
 # Las listas encadenadas
 
-Una **lista enlazada** es una estructura de datos en la que cada elemento (un **eslabón** o *nodo*) contiene un valor y un puntero al elemento siguiente. A diferencia de un array, sus elementos no se almacenan de forma contigua en la memoria; esto es lo que permite añadir o eliminar un elemento sin tener que desplazar todos los demás.
+Una **lista encadenada** es una estructura de datos en la que cada elemento (un **eslabón**, o *nodo*) contiene un valor y un puntero al elemento siguiente. A diferencia de un array, sus elementos no se almacenan de forma contigua en memoria: esto es lo que permite añadir o eliminar un elemento sin tener que desplazar todos los demás.
 
 ## Declarar un eslabón
 
 ```c
-typedef struct Maillon
+typedef struct Eslabon
 {
     int valor;
-    struct Maillon *suivant;
-} Maillon;
+    struct Eslabon *siguiente;
+} Eslabon;
 ```
 
-Al igual que en el caso de un árbol binario (véase el capítulo correspondiente), `struct Maillon *suivant` debe hacer referencia a `struct Maillon` y no solo a `Maillon`: en el momento de leer esta línea, `typedef` aún no está completamente definido.
+Como en el caso de [un árbol binario](/?c=langages-de-programmation&s=c&p=arbres-binaires), `struct Eslabon *siguiente` debe hacer referencia a `struct Eslabon` y no solo a `Eslabon`: en el momento en que se lee esta línea, el `typedef` todavía no está completamente definido.
 
 ## Crear y encadenar eslabones
 
 ```c
-Maillon *premier = malloc(sizeof(Maillon));   // à vérifier contre NULL en pratique (cf. chapitre mémoire)
-premier->valor = 10;
+Eslabon *primero = malloc(sizeof(Eslabon));   // a comprobar contra NULL en la práctica (véase La gestión de la memoria)
+primero->valor = 10;
 
-Maillon *second = malloc(sizeof(Maillon));
-second->valor = 20;
+Eslabon *segundo = malloc(sizeof(Eslabon));
+segundo->valor = 20;
 
-premier->suivant = second; // chaîne le premier vers le second
-second->suivant = NULL;    // NULL marque la fin de la liste
+primero->siguiente = segundo;  // encadena el primero con el segundo
+segundo->siguiente = NULL;     // NULL marca el final de la lista
 ```
 
-```
-premier -> second -> NULL
+```text
+primero -> segundo -> NULL
   10         20
 ```
 
-## Explorar la lista
+## Recorrer la lista
 
 ```c
-void afficher(Maillon *tete)
+void mostrar(Eslabon *cabeza)
 {
-    Maillon *courant = tete;
+    Eslabon *actual = cabeza;
 
-    while (courant != NULL) {
-        printf("%d\n", courant->valor);
-        courant = courant->suivant;
+    while (actual != NULL) {
+        printf("%d\n", actual->valor);
+        actual = actual->siguiente;
     }
 }
 ```
 
-> **Nota:** `courant` es una **copia** del puntero `tete` — avanzar `courant = courant->suivant` no modifica `tete`, que sigue apuntando al primer elemento de la lista. Por eso siempre se utiliza un puntero «de trabajo» independiente para recorrer una lista, nunca el propio puntero de cabeza.
+> **Nota:** `actual` es una **copia** del puntero `cabeza`: avanzar `actual = actual->siguiente` no modifica `cabeza`, que sigue designando el primer eslabón de la lista. Por eso siempre se utiliza un puntero "de trabajo" separado para recorrer una lista, nunca la propia cabeza.
 
-## Añadir al principio de la lista
-
-```c
-Maillon *insererEnTete(Maillon *tete, int valor)
-{
-    Maillon *nouveau = malloc(sizeof(Maillon));
-    if (nouveau == NULL) {
-        return tete; // échec d'allocation : renvoyer la liste inchangée plutôt que planter
-    }
-    nouveau->valor = valor;
-    nouveau->suivant = tete; // le nouveau maillon pointe vers l'ancienne tête
-    return nouveau;          // devient la nouvelle tête
-}
-
-// utilisation :
-tete = insererEnTete(tete, 5);
-```
-
-La inserción al principio es una operación de tiempo constante (no se desplaza ningún otro elemento), a diferencia de lo que ocurre con un array, en el que insertar al principio requiere desplazar todos los elementos existentes.
-
-## Ver la lista
-
-Cada eslabón asignado con `malloc()` debe liberarse individualmente; si se libera directamente `tete` sin conservar una referencia al resto, se perdería el acceso a todos los eslabones siguientes (fuga de memoria; véase el capítulo sobre la gestión de la memoria):
+## Insertar al principio de la lista
 
 ```c
-void libererListe(Maillon *tete)
+Eslabon *insertarAlPrincipio(Eslabon *cabeza, int valor)
 {
-    Maillon *courant = tete;
+    Eslabon *nuevo = malloc(sizeof(Eslabon));
+    if (nuevo == NULL) {
+        return cabeza; // fallo de asignación: devolver la lista sin cambios en lugar de fallar
+    }
+    nuevo->valor = valor;
+    nuevo->siguiente = cabeza;  // el nuevo eslabón apunta hacia la antigua cabeza
+    return nuevo;                // se convierte en la nueva cabeza
+}
 
-    while (courant != NULL) {
-        Maillon *suivant = courant->suivant; // sauvegarder le suivant AVANT de libérer courant
-        free(courant);
-        courant = suivant;
+// uso:
+cabeza = insertarAlPrincipio(cabeza, 5);
+```
+
+Insertar al principio es una operación en tiempo constante (ningún otro eslabón se desplaza); a diferencia de un array, donde insertar al principio exige desplazar todos los elementos existentes.
+
+## Liberar la lista
+
+Cada eslabón asignado con `malloc()` debe liberarse individualmente: liberar directamente `cabeza` sin conservar una referencia al resto haría perder el acceso a todos los eslabones siguientes (fuga de memoria, véase [La gestión de la memoria](/?c=langages-de-programmation&s=c&p=memoire)):
+
+```c
+void liberarLista(Eslabon *cabeza)
+{
+    Eslabon *actual = cabeza;
+
+    while (actual != NULL) {
+        Eslabon *siguiente = actual->siguiente; // guardar el siguiente ANTES de liberar actual
+        free(actual);
+        actual = siguiente;
     }
 }
 ```
 
-> **Nota:** aquí es importante el orden: llamar a `free(courant)` y luego leer `courant->suivant` constituiría un **«use-after-free»** (véase el capítulo sobre gestión de la memoria); el valor del puntero `suivant` debe recuperarse antes de liberar el nodo que lo contiene.
+> **Nota:** aquí el orden importa: llamar a `free(actual)` y luego leer `actual->siguiente` sería un **use-after-free** (véase [La gestión de la memoria](/?c=langages-de-programmation&s=c&p=memoire)): el valor del puntero `siguiente` debe recuperarse antes de liberar el eslabón que lo contiene.
 
-## Lista encadenada frente a matriz
+## Lista encadenada frente a array
 
-| | Tabla | Lista encadenada |
+| | Array | Lista encadenada |
 |---|---|---|
-| Acceso a un elemento por índice | Inmediato (`tab[i]`) | Hay que recorrer la lista desde el principio |
-| Inserción al principio o en medio | Desplaza todos los elementos siguientes | Tiempo constante, sin desplazamiento |
-| Memoria | Contigua | Fragmentada, un e`malloc`e por eslabón |
-| Tamaño | Fijo (tabla estática) o redimensionable (`realloc`) | Crece de forma natural, paso a paso |
+| Acceso a un elemento por índice | Inmediato (`tab[i]`) | Hay que recorrer desde el principio |
+| Inserción al principio/en medio | Desplaza todos los elementos siguientes | Tiempo constante, sin desplazamiento |
+| Memoria | Contigua | Fragmentada, un `malloc` por eslabón |
+| Tamaño | Fijo (array estático) o redimensionable (`realloc`) | Crece de forma natural, un eslabón a la vez |
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Una lista encadenada enlaza eslabones dispersos en memoria mediante un puntero "siguiente"; a diferencia de un array, insertar al principio es en tiempo constante, pero el acceso por índice requiere un recorrido completo. |
+| **Herramientas utilizables** | Una `struct` autorreferencial (`struct Eslabon *siguiente`), `malloc`/`free` por eslabón. |
+| **Trampas a evitar** | Liberar un eslabón antes de guardar su puntero `siguiente` (use-after-free); olvidar liberar cada eslabón individualmente (fuga de memoria). |
+| **Buenas prácticas** | Guardar siempre `actual->siguiente` antes de `free(actual)`; comprobar cada `malloc()` contra `NULL` antes de usarlo. |
