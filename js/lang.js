@@ -8,16 +8,25 @@ const FRENCH_OPTION = { code: "", label: "Français" };
 // Among the languages this site targets, only Arabic is written right-to-left.
 const RTL_LANGUAGE_CODES = new Set(["ar"]);
 
+// A site language `code` (structure/languages.json) is used directly as the BCP-47 `<html lang>`
+// value whenever it already is one (e.g. "en", "es"). "br" isn't: BCP-47/ISO 639-1 has no such
+// language tag ("br" is actually Breton), so browsers and screen readers - and the TTS voice
+// lookup in js/reader.js, which reads this same attribute - can't match a Brazilian Portuguese
+// voice against it and fall back unpredictably (observed as the French voice reading BR content).
+// Only codes that diverge from their BCP-47 tag need an entry here.
+const BCP47_OVERRIDES = { br: "pt-BR" };
+
 /**
  * Sets `<html lang>` and `<html dir>` to match the active language, so the browser and screen
  * readers apply the right script direction and per-language rendering rules — right-to-left
  * layout for Arabic, correct hyphenation/line-breaking hints for every other language (Latin
- * scripts as well as CJK, which browsers already break and wrap correctly by default).
+ * scripts as well as CJK, which browsers already break and wrap correctly by default) - and so
+ * that TTS (js/reader.js) picks a voice for the right language.
  *
  * @param {string} langCode "" for French, or one of structure/languages.json's codes
  */
 export function applyDocumentLanguage(langCode) {
-    document.documentElement.lang = langCode || "fr";
+    document.documentElement.lang = BCP47_OVERRIDES[langCode] ?? (langCode || "fr");
     document.documentElement.dir = RTL_LANGUAGE_CODES.has(langCode) ? "rtl" : "ltr";
 }
 
