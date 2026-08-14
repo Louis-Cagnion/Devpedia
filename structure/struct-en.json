@@ -844,10 +844,6 @@
               "label": "Error Handling"
             },
             {
-              "id": "HTMLElements",
-              "label": "HTML Elements"
-            },
-            {
               "id": "dom-et-evenements",
               "label": "The DOM and Event Handling"
             },
