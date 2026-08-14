@@ -2,60 +2,60 @@
 order: 8
 ---
 
-# A STL: os contentores
+# A STL: os contêineres
 
-A **STL** (*Standard Template Library*) fornece estruturas de dados genéricas (ver capítulo sobre os templates), prontas a utilizar; em vez de ter de reimplementar manualmente uma lista encadeada ou uma tabela de hash (ver capítulos dedicados, secção C), quase todos os projetos modernos em C++ baseiam-se nestes contentores padrão.
+A **STL** (*Standard Template Library*) fornece estruturas de dados genéricas (veja [Os templates](/?c=langages-de-programmation&s=cpp&p=templates)), prontas para uso; em vez de reimplementar à mão uma [lista encadeada](/?c=langages-de-programmation&s=c&p=listes-chainees) ou uma [tabela hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage), a quase totalidade dos projetos C++ modernos se apoia nesses contêineres padrão.
 
-## `std::vector` : a tabela dinâmica
+## `std::vector`: o array dinâmico
 
 ```cpp
 #include <vector>
 
-std::vector<int> números = {1, 2, 3};
+std::vector<int> numeros = {1, 2, 3};
 
-números.push_back(4);        // acrescentar no final
-números[0];                     // Acesso direto por índice, tal como um tabuláio em C
-números.size();                  // número de elementos
-números.pop_back();                // retira o último elemento
+numeros.push_back(4);  // adiciona ao final
+numeros[0];            // acesso direto por indice, como um array C
+numeros.size();        // numero de elementos
+numeros.pop_back();    // remove o ultimo elemento
 
-for (int n : números) {              // iteração simples, como um for-each
+for (int n : numeros) {  // percurso simples, como um for-each
     std::cout << n << " ";
 }
 ```
 
-> **Nota:** o «`std::vector`» é, internamente, uma matriz contígua na memória (ver capítulo sobre ponteiros e memória, secção C) que se redimensiona automaticamente (muitas vezes duplicando a sua capacidade) quando fica cheia, o mesmo princípio que uma lista em Python ou um «`ArrayList`» em Java, mas sem a camada de indireção de uma linguagem com recolha automática de lixo.
+> **Nota:** `std::vector` é, internamente, um array contíguo na memória (veja [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs) e [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire)) que se redimensiona automaticamente (frequentemente dobrando sua capacidade) quando fica cheio: o mesmo princípio de uma [lista Python](/?c=langages-de-programmation&s=python&p=listes-et-tuples) ou um [`ArrayList`](https://docs.oracle.com/en/java/) Java, mas sem a camada de indireção de uma linguagem com coletor de lixo.
 
-## `std::list` : a lista duplamente encadeada
+## `std::list`: a lista duplamente encadeada
 
 ```cpp
 #include <list>
 
 std::list<int> lista = {1, 2, 3};
-lista.push_front(0);   // Inserção no início em tempo constante -> o std::vector seria O(n) neste caso
+lista.push_front(0);   // insercao no inicio em tempo constante -> std::vector seria O(n) aqui
 ```
 
-Ao contrário de `std::vector`, inserir no meio ou no início de uma `std::list` não requer qualquer deslocamento dos outros elementos (ver capítulo sobre listas encadeadas, secção C), em troca de um acesso por índice impossível em tempo constante (não existe `lista[2]`, é necessário percorrer a lista).
+Ao contrário de `std::vector`, inserir no meio ou no início de uma `std::list` não exige nenhum deslocamento dos outros elementos (veja [As listas encadeadas](/?c=langages-de-programmation&s=c&p=listes-chainees)), ao custo de um acesso por índice impossível em tempo constante (`lista[2]` não existe, é preciso percorrer).
 
-## `std::map` : o dicionário ordenado
+## `std::map`: o dicionário ordenado
 
 ```cpp
 #include <map>
 
-std::map<std::string, int> ages;
-ages["Jean"] = 25;
-ages["Marie"] = 30;
+std::map<std::string, int> idades;
+idades["Joao"] = 25;
+idades["Maria"] = 30;
 
-ages["Jean"];                       // 25
-ages.find("Ali") != ages.end();       // verifica se existe uma chave (não existe o operador «in» direto em C++)
+idades["Joao"];                    // 25
+idades.find("Ali") != idades.end();  // testa a existencia de uma chave (nenhum operador "in" direto em C++)
 
-for (const auto &[nome, idade] : ages) {   // percorro: os pares estão SEMPRE ordenados por chave
+for (const auto &[nome, idade] : idades) {  // percurso: os pares SEMPRE ordenados por chave
     std::cout << nome << " : " << idade << "\n";
 }
 ```
 
-> **Nota:** `std::map` é, internamente, uma árvore equilibrada (frequentemente uma árvore vermelha-preta, uma variante da árvore binária de pesquisa abordada no capítulo dedicado, secção C): as chaves são, portanto, sempre percorridas **por ordem de classificação**, ao contrário de um array associativo em PHP ou de um `dict` em Python (ordem de inserção). `std::unordered_map` oferece o equivalente baseado numa tabela de hash (ver capítulo dedicado, secção C), mais rápido em média, mas sem ordem garantida.
+> **Nota:** `std::map` é internamente uma árvore balanceada (frequentemente uma [árvore rubro-negra](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree), uma variante da [árvore binária de busca](/?c=langages-de-programmation&s=c&p=arbres-binaires)): as chaves então são sempre percorridas **ordenadas**, ao contrário de um [array associativo PHP](/?c=langages-de-programmation&s=php&p=variables) ou um [`dict` Python](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) (ordem de inserção). `std::unordered_map` propõe o equivalente baseado em uma [tabela hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage), mais rápido em média mas sem ordem garantida.
 
-## `std::set` : os valores únicos, ordenados
+## `std::set`: os valores únicos, ordenados
 
 ```cpp
 #include <set>
@@ -63,20 +63,31 @@ for (const auto &[nome, idade] : ages) {   // percorro: os pares estão SEMPRE o
 std::set<int> valores = {3, 1, 2, 1};   // {1, 2, 3} -> ordenado E deduplicado automaticamente
 
 valores.insert(4);
-valores.count(2);   // 1 se existir, 0 caso contrário (um conjunto nunca contém elementos duplicados)
+valores.count(2);   // 1 se presente, 0 caso contrario (um set nunca contem duplicata)
 ```
 
-`std::unordered_set` é o equivalente baseado numa tabela hash, mais rápido, em média, sem ordem garantida.
+`std::unordered_set` é o equivalente baseado em uma tabela hash, mais rápido em média, sem ordem garantida.
 
-## Escolher o contentor certo
+## Escolher o contêiner certo
 
-| Necessidade | Contentor |
+| Necessidade | Contêiner |
 |---|---|
 | Acesso rápido por índice, adição ao final da coleção | `std::vector` |
-| Inserções/eliminações frequentes no meio/início da coleção | `std::list` |
-| Associação chave → valor, ordenação necessária | `std::map` |
+| Inserções/remoções frequentes no meio/início da coleção | `std::list` |
+| Associação chave → valor, ordem ordenada necessária | `std::map` |
 | Associação chave → valor, ordem indiferente, velocidade prioritária | `std::unordered_map` |
 | Valores únicos, ordenados | `std::set` |
 | Valores únicos, ordem indiferente, velocidade prioritária | `std::unordered_set` |
 
-Consulte também o capítulo sobre iteradores e algoritmos STL, que permitem manipular qualquer um destes contentores de forma uniforme.
+Veja também [A STL: iteradores, algoritmos e lambdas](/?c=langages-de-programmation&s=cpp&p=stl-algorithmes-et-iterateurs), que permitem manipular qualquer um desses contêineres de forma uniforme.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | A STL fornece contêineres genéricos prontos para uso: `vector` (array dinâmico), `list` (lista duplamente encadeada), `map`/`set` (ordenados), `unordered_map`/`unordered_set` (tabela hash, mais rápidos mas não ordenados). |
+| **Ferramentas utilizáveis** | `push_back`/`push_front`, `size`, `find`, percurso for-each. |
+| **Armadilhas a evitar** | Escolher `vector` para inserções frequentes no início (custo `O(n)`, `list` seria em tempo constante). |
+| **Boas práticas** | Escolher o contêiner conforme a operação dominante (acesso por índice, inserção frequente, associação ordenada...) em vez de por hábito. |

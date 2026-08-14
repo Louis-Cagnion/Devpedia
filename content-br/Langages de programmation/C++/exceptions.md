@@ -4,22 +4,22 @@ order: 6
 
 # As exceções
 
-O C++ oferece um mecanismo de erros estruturado (`try` / `catch` / `throw`), uma alternativa ao estilo «à la C» (uma função devolve um valor especial como `-1` ou `NULL` e define `errno`, ver capítulo sobre chamadas de sistema, secção C), o mesmo princípio que as exceções em PHP, Python ou JavaScript, já abordadas nas secções correspondentes.
+C++ propõe um mecanismo de erros estruturado (`try`/`catch`/`throw`), uma alternativa ao estilo "à moda C" (uma função retorna um valor especial como `-1` ou `NULL`, e define `errno`, veja [As chamadas de sistema](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs)): o mesmo princípio das exceções [PHP](/?c=langages-de-programmation&s=php&p=exceptions), [Python](/?c=langages-de-programmation&s=python&p=gestion-des-erreurs) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=gestion-des-erreurs) já vistas nos capítulos correspondentes.
 
 ## `try` / `catch` / `throw`
 
 ```cpp
-double diviser(double a, double b) {
+double dividir(double a, double b) {
     if (b == 0) {
-        throw std::runtime_error("Division par zéro");
+        throw std::runtime_error("Divisao por zero");
     }
     return a / b;
 }
 
 try {
-    double resultado = diviser(10, 0);
+    double resultado = dividir(10, 0);
 } catch (const std::runtime_error &erro) {
-    std::cout << "Erreur : " << erro.what() << "\n";
+    std::cout << "Erro: " << erro.what() << "\n";
 }
 ```
 
@@ -28,59 +28,70 @@ try {
 ```cpp
 #include <stdexcept>
 
-std::exception              // classe base de todas as exceções padrão
-  ├── std::logic_error        // erro detetável antes da execução (por exemplo: argumento inválido)
+std::exception          // classe base de todas as excecoes padrao
+  ├── std::logic_error  // erro detectavel antes da execucao (ex: argumento invalido)
   │     ├── std::invalid_argument
   │     └── std::out_of_range
-  └── std::runtime_error       // erro detetável apenas durante a execução
+  └── std::runtime_error       // erro detectavel apenas na execucao
         ├── std::overflow_error
         └── std::underflow_error
 ```
 
-Interceptar `const std::exception &` permite capturar qualquer exceção derivada desta hierarquia padrão, útil como último recurso, mas é preferível interceptar o tipo mais **específico** possível para reagir de forma diferente consoante o problema real.
+Capturar `const std::exception &` pega qualquer exceção derivada dessa hierarquia padrão: útil como último recurso, mas capturar o tipo mais **preciso** possível continua sendo preferível para reagir diferentemente conforme o problema real.
 
-## Criar a sua própria exceção
+## Criar sua própria exceção
 
 ```cpp
-class SoldeInsuffisantException : public std::runtime_error {
+class SaldoInsuficienteException : public std::runtime_error {
 public:
-    SoldeInsuffisantException(double saldo)
-        : std::runtime_error("Solde insuffisant : " + std::to_string(saldo)) {}
+    SaldoInsuficienteException(double saldo)
+        : std::runtime_error("Saldo insuficiente: " + std::to_string(saldo)) {}
 };
 
-void retirer(double saldo, double montant) {
-    if (montant > saldo) {
-        throw SoldeInsuffisantException(saldo);
+void sacar(double saldo, double valor) {
+    if (valor > saldo) {
+        throw SaldoInsuficienteException(saldo);
     }
 }
 
 try {
-    retirer(100, 150);
-} catch (const SoldeInsuffisantException &e) {
+    sacar(100, 150);
+} catch (const SaldoInsuficienteException &e) {
     std::cout << e.what() << "\n";
-} catch (const std::exception &e) {   // rede de segurança para qualquer outra exceção padrão
-    std::cout << "Erreur inattendue : " << e.what() << "\n";
+} catch (const std::exception &e) {   // rede de seguranca para qualquer outra excecao padrao
+    std::cout << "Erro inesperado: " << e.what() << "\n";
 }
 ```
 
-## Exceções e RAII: por que razão este mecanismo é seguro em C++
+## Exceções e RAII: por que esse mecanismo é seguro em C++
 
 ```cpp
-void traiter() {
-    GestionnaireFichier gf("donnees.txt");   // ver capítulo sobre RAII
-    throw std::runtime_error("Erreur pendant le traitement");
-}   // Mesmo aqui, ~GestionnaireFichier() é executada ANTES de a exceção ser propagada para um nível superior
+void processar() {
+    GerenciadorArquivo ga("dados.txt");   // veja RAII e os ponteiros inteligentes
+    throw std::runtime_error("Erro durante o processamento");
+}   // mesmo aqui, ~GerenciadorArquivo() executa ANTES que a excecao suba mais alto
 ```
 
-Quando é lançada uma exceção, o C++ «desenrola a pilha» (*stack unwinding*): cada objeto local ainda ativo vê o seu destrutor chamado, na ordem inversa à da sua criação, antes de a exceção continuar a subir: é isto que garante que um recurso gerido pelo RAII (ver capítulo dedicado) seja sempre libertado de forma adequada, mesmo em caso de erro imprevisto.
+Quando uma exceção é lançada, C++ "desenrola a pilha" (*stack unwinding*): cada objeto local ainda vivo tem seu destrutor chamado, na ordem inversa de sua criação, antes que a exceção continue subindo: é isso que garante que um recurso gerenciado por [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii) é sempre liberado corretamente, mesmo em caso de erro imprevisto.
 
-## `noexcept` : garantir que uma função nunca saia
+## `noexcept`: garantir que uma função nunca lança
 
 ```cpp
-void fonctionSure() noexcept {
-    // O compilador pode otimizar, sabendo que não será lançada nenhuma exceção a partir daqui
-    // Se, apesar de tudo, ocorrer uma exceção, o programa termina imediatamente (std::terminate)
+void funcaoSegura() noexcept {
+    // o compilador pode otimizar sabendo que nenhuma excecao sairia daqui
+    // se uma excecao escapar mesmo assim, o programa para imediatamente (std::terminate)
 }
 ```
 
-> **Melhores práticas:** só se deve lançar uma exceção numa situação verdadeiramente **excecional** (erro imprevisto, invariante violado), nunca num fluxo de controle normal (uma exceção tem um custo de execução não negligenciável em comparação com um simples «`if`», ao contrário de um retorno de erro clássico).
+> **Boa prática:** só lançar uma exceção para uma situação realmente **excepcional** (erro imprevisto, [invariante](/?c=performance&p=traitements-longs) violado), nunca para um fluxo de controle normal (uma exceção tem um custo não desprezível na execução comparado a um simples `if`, ao contrário de um retorno de erro clássico).
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `try`/`catch`/`throw` estrutura o tratamento de erros. A hierarquia padrão (`std::exception` e derivados) permite capturar por tipo preciso. O *stack unwinding* garante que um recurso RAII é liberado mesmo em caso de exceção. |
+| **Ferramentas utilizáveis** | `std::runtime_error`, `std::logic_error`, exceções personalizadas herdando de `std::exception`, `noexcept`. |
+| **Armadilhas a evitar** | Usar uma exceção para um fluxo de controle normal: custo não desprezível comparado a um simples `if`. |
+| **Boas práticas** | Capturar o tipo mais preciso possível em vez de `std::exception` sistematicamente; reservar as exceções às situações realmente excepcionais. |

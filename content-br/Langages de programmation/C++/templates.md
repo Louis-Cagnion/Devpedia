@@ -2,93 +2,104 @@
 order: 10
 ---
 
-# Os modelos (programação genérica)
+# Os templates (programação genérica)
 
-Um **modelo** permite escrever uma função ou uma classe **uma única vez**, válida para qualquer tipo, sem sacrificar a verificação de tipos na compilação nem o desempenho (ao contrário de linguagens de tipagem dinâmica como o Python ou o PHP, ver capítulos dedicados).
+Um **template** permite escrever uma função ou classe **uma única vez**, válida para qualquer tipo, sem sacrificar a verificação de tipo na compilação nem o desempenho (ao contrário de linguagens dinamicamente tipadas como [Python](/?c=langages-de-programmation&s=python&p=python) ou [PHP](/?c=langages-de-programmation&s=php&p=php)).
 
-## Sem modelo: a duplicação
+## Sem template: a duplicação
 
 ```cpp
-int maximum(int a, int b) { return (a > b) ? a : b; }
-double maximum(double a, double b) { return (a > b) ? a : b; }
-std::string maximum(std::string a, std::string b) { return (a > b) ? a : b; }
+int maximo(int a, int b) { return (a > b) ? a : b; }
+double maximo(double a, double b) { return (a > b) ? a : b; }
+std::string maximo(std::string a, std::string b) { return (a > b) ? a : b; }
 ```
 
-Três funções estritamente idênticas na sua lógica, duplicadas apenas devido ao tipo, exatamente o tipo de repetição que um modelo elimina (cf. princípio DRY, já mencionado para outras linguagens).
+Três funções estritamente idênticas em sua lógica, duplicadas apenas por causa do tipo: exatamente o tipo de repetição que um template elimina (veja [Evitar a repetição por estruturas indexadas](/?c=qualite-et-architecture-du-code&p=eviter-la-repetition-structures-indexees), o princípio DRY aplicado de forma mais geral).
 
-## Modelo de função
+## Template de função
 
 ```cpp
 template <typename T>
-T maximum(T a, T b) {
+T maximo(T a, T b) {
     return (a > b) ? a : b;
 }
 
-maximum(3, 7);            // T é automaticamente inferido como int
-maximum(3.5, 2.1);          // T é interpretado como «duplo»
-maximum<std::string>("a", "b");  // T especificado explicitamente, se necessário
+maximo(3, 7);                   // T deduzido automaticamente como int
+maximo(3.5, 2.1);               // T deduzido como double
+maximo<std::string>("a", "b");  // T especificado explicitamente se necessario
 ```
 
-O compilador **gera** uma versão distinta da função para cada tipo efetivamente utilizado (`maximum<int>`, `maximum<double>`...): é o que se denomina instanciação de modelo, realizada inteiramente na compilação, sem qualquer custo na execução.
+O compilador **gera** uma versão distinta da função para cada tipo realmente usado (`maximo<int>`, `maximo<double>`...): é isso que se chama instanciação de template, realizada inteiramente na compilação, sem nenhum custo na execução.
 
-## Modelo de classe
+## Template de classe
 
 ```cpp
 template <typename T>
-class Pile {
+class Pilha {
 public:
-    void empiler(T valor) { elements.push_back(valor); }
-    T depiler() {
-        if (estVide()) {
-            throw std::out_of_range("Pile vide"); // ver capítulo sobre exceções: nunca desempilhar em vazio
+    void empilhar(T valor) { elementos.push_back(valor); }
+    T desempilhar() {
+        if (estaVazia()) {
+            throw std::out_of_range("Pilha vazia"); // veja As excecoes: nunca desempilhar vazia
         }
-        T dernier = elements.back();
-        elements.pop_back();
-        return dernier;
+        T ultimo = elementos.back();
+        elementos.pop_back();
+        return ultimo;
     }
-    bool estVide() const { return elements.empty(); }
+    bool estaVazia() const { return elementos.empty(); }
 
 private:
-    std::vector<T> elements;
+    std::vector<T> elementos;
 };
 
-Pile<int> pileEntiers;
-pileEntiers.empiler(42);
+Pilha<int> pilhaInteiros;
+pilhaInteiros.empilhar(42);
 
-Pile<std::string> pileTextes;
-pileTextes.empiler("bonjour");
+Pilha<std::string> pilhaTextos;
+pilhaTextos.empilhar("ola");
 ```
 
-Uma única definição de `Pile`, utilizável com qualquer tipo: é exatamente assim que são construídos os contentores da STL (`std::vector<T>`, `std::map<K, V>`..., ver capítulo dedicado).
+Uma única definição de `Pilha`, utilizável com qualquer tipo: é exatamente assim que são construídos [os contêineres da STL](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) (`std::vector<T>`, `std::map<K, V>`...).
 
-## Restrições de tipo (C++20: `concepts`)
+## Restrições sobre o tipo (C++20: `concepts`)
 
-Sem restrições, um modelo aceita qualquer tipo, incluindo tipos para os quais a operação não faz sentido, o que gera um erro de compilação frequentemente extenso e pouco claro:
+Sem restrição, um template aceita qualquer tipo, incluindo tipos para os quais a operação não faz sentido, produzindo um erro de compilação frequentemente longo e pouco claro:
 
 ```cpp
 template <typename T>
-T addition(T a, T b) { return a + b; }
+T adicao(T a, T b) { return a + b; }
 
-addition(2, 3);          // OK
-addition("a", "b");        // Erro de compilação potencialmente enigmático, dependendo do tipo
+adicao(2, 3);      // OK
+adicao("a", "b");  // Erro de compilacao potencialmente criptico conforme o tipo
 ```
 
-Desde o C++20, os **conceitos** permitem expressar explicitamente os requisitos no `T`, para uma mensagem de erro mais clara e um código mais legível:
+Desde o C++20, os **concepts** permitem expressar explicitamente as exigências sobre `T`, para uma mensagem de erro mais clara e uma intenção de código mais legível:
 
 ```cpp
 template <typename T>
-concept Numerique = std::is_arithmetic_v<T>;
+concept Numerico = std::is_arithmetic_v<T>;
 
-template <Numerique T>
-T addition(T a, T b) { return a + b; }
+template <Numerico T>
+T adicao(T a, T b) { return a + b; }
 ```
 
-## Modelos vs. genericidade dinâmica (Python, PHP)
+## Templates vs generacidade dinâmica (Python, PHP)
 
-| | Modelos C++ | Tipagem dinâmica (Python/PHP) |
+| | Templates C++ | Tipagem dinâmica (Python/PHP) |
 |---|---|---|
-| Verificação de tipo | Na compilação | Na execução (ou nunca, dependendo da linguagem) |
-| Custo de execução | Nulo (código gerado especificamente para cada tipo) | Ligeiro sobrecosto (verificações de tipo contínuas) |
-| Detecção de erros de tipo | Antes mesmo de iniciar o programa | Apenas ao executar o trecho de código em questão |
+| Verificação de tipo | Na compilação | Na execução (ou nunca, conforme a linguagem) |
+| Custo na execução | Nulo (código gerado especificamente para cada tipo) | Leve sobrecusto (verificações de tipo contínuas) |
+| Detecção de erro de tipo | Antes mesmo de iniciar o programa | Somente ao executar o caminho de código em questão |
 
-Ver também o capítulo sobre os contentores STL, que se baseia inteiramente neste mecanismo de modelos.
+Veja também [A STL: os contêineres](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs), que se apoia inteiramente nesse mecanismo de templates.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Um template escreve uma função/classe uma única vez para qualquer tipo, com verificação na compilação e sem custo na execução (o compilador gera uma versão por tipo usado). |
+| **Ferramentas utilizáveis** | `template <typename T>`, `concepts` (C++20) para restringir os tipos aceitos. |
+| **Armadilhas a evitar** | Um template sem restrição aceita qualquer tipo, incluindo aqueles para os quais a operação não faz sentido: erro de compilação às vezes críptico. |
+| **Boas práticas** | Usar os `concepts` (C++20) para expressar explicitamente as exigências sobre um tipo template, em vez de deixar uma mensagem de erro genérica descobri-lo. |

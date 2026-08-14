@@ -4,7 +4,7 @@ order: 4
 
 # Herança e polimorfismo
 
-**A herança** permite que uma classe reutilize (e amplie ou modifique) o comportamento de outra. O **polimorfismo** permite tratar objetos de classes diferentes de forma uniforme, através de uma interface comum, o mecanismo mais poderoso, e muitas vezes mal compreendido, da POO em C++.
+A **herança** permite que uma classe reutilize (e estenda ou modifique) o comportamento de outra. O **polimorfismo** permite tratar objetos de classes diferentes de forma uniforme, através de uma interface comum: o mecanismo mais poderoso, e o mais frequentemente mal compreendido, da POO em C++.
 
 ## Herança simples
 
@@ -12,26 +12,26 @@ order: 4
 class Animal {
 public:
     Animal(std::string nome) : nome(nome) {}
-    std::string parler() const { return "..."; }
+    std::string falar() const { return "..."; }
 protected:
     std::string nome;
 };
 
-class Chien : public Animal {
+class Cachorro : public Animal {
 public:
-    Chien(std::string nome) : Animal(nome) {}   // chama explicitamente o construtor pai
-    std::string parler() const { return nome + " aboie"; }
+    Cachorro(std::string nome) : Animal(nome) {}   // chama explicitamente o construtor pai
+    std::string falar() const { return nome + " late"; }
 };
 ```
 
-## O problema sem o «`virtual`»
+## O problema sem `virtual`
 
 ```cpp
-Animal *a = new Chien("Rex");
-std::cout << a->parler();   // exibe «...» -> NÃO «O Rex ladra»!
+Animal *a = new Cachorro("Rex");
+std::cout << a->falar();   // exibe "..." -> NAO "Rex late"!
 ```
 
-> **Armadilha clássica:** sem a palavra-chave «`virtual`», o C++ escolhe qual a versão de «`parler()`» a chamar com base no **tipo declarado** do ponteiro (`Animal*`), e não no tipo real do objeto apontado (`Chien`), um mecanismo denominado *ligação estática*. O resultado parece «ignorar» a herança, o que muitas vezes surpreende quem vem de uma linguagem como PHP, Python ou Java, onde este comportamento é automático.
+> **Armadilha clássica:** sem a palavra-chave `virtual`, C++ escolhe qual versão de `falar()` chamar baseando-se no **tipo declarado** do ponteiro (`Animal*`), não no tipo real do objeto apontado (`Cachorro`): um mecanismo chamado *ligação estática*. O resultado parece "ignorar" a herança, o que costuma surpreender quem vem de uma linguagem como [PHP](/?c=langages-de-programmation&s=php&p=poo), [Python](/?c=langages-de-programmation&s=python&p=poo) ou [Java](https://docs.oracle.com/en/java/), onde esse comportamento é automático.
 
 ## Tornar um método polimórfico: `virtual`
 
@@ -39,55 +39,66 @@ std::cout << a->parler();   // exibe «...» -> NÃO «O Rex ladra»!
 class Animal {
 public:
     Animal(std::string nome) : nome(nome) {}
-    virtual std::string parler() const { return "..."; }   // «virtual» ativa a LIGAÇÃO DINÂMICA
-    virtual ~Animal() {}   // destruidor virtual: ver nota abaixo
+    virtual std::string falar() const { return "..."; }  // "virtual" ativa a LIGACAO DINAMICA
+    virtual ~Animal() {}                                 // destrutor virtual: veja nota abaixo
 protected:
     std::string nome;
 };
 
-class Chien : public Animal {
+class Cachorro : public Animal {
 public:
-    Chien(std::string nome) : Animal(nome) {}
-    std::string parler() const override { return nome + " aboie"; }   // «override»: verificado pelo compilador
+    Cachorro(std::string nome) : Animal(nome) {}
+    std::string falar() const override { return nome + " late"; }   // "override": verificado pelo compilador
 };
 
-Animal *a = new Chien("Rex");
-std::cout << a->parler();   // «Rex ladra» -> a versão CORRETA é chamada, graças a «virtual»
+Animal *a = new Cachorro("Rex");
+std::cout << a->falar();   // "Rex late" -> a versao CORRETA e chamada, gracas a "virtual"
 delete a;
 ```
 
-`virtual` permite escolher o método a ser chamado em função do **tipo real** do objeto, determinado em tempo de execução (*ligação dinâmica*) em vez de em tempo de compilação: é este mecanismo que permite o polimorfismo: uma mesma linha de código (`a->parler()`) comporta-se de forma diferente consoante o objeto efetivamente apontado.
+`virtual` faz com que o método a chamar seja escolhido conforme o **tipo real** do objeto, resolvido na execução (*ligação dinâmica*) em vez de na compilação; é esse mecanismo que permite o polimorfismo: uma mesma linha de código (`a->falar()`) se comporta diferentemente conforme o objeto realmente apontado.
 
-> **Nota:** `override` (opcional, mas fortemente recomendado) solicita ao compilador que verifique se este método redefine efetivamente um método `virtual` da classe pai: um erro de digitação na assinatura (número de parâmetros, `const` esquecido...) torna-se, assim, um erro de compilação, em vez de um bug silencioso em que o método pai continuaria a ser chamado sem que nos apercebêssemos.
+> **Nota:** `override` (facultativo mas fortemente recomendado) pede ao compilador para verificar que esse método realmente redefine um método `virtual` da classe pai: um erro de digitação na assinatura (número de parâmetros, `const` esquecido...) então se torna um erro de compilação, em vez de um bug silencioso em que o método pai continuaria sendo chamado sem que se percebesse.
 
-## Por que é que o destrutor também deve ser`virtual`
+## Por que o destrutor também deve ser `virtual`
 
 ```cpp
-Animal *a = new Chien("Rex");
-delete a;   // sem destruidor virtual: APENAS ~Animal() é chamado, nunca ~Cão()
+Animal *a = new Cachorro("Rex");
+delete a;   // sem destrutor virtual: SOMENTE ~Animal() e chamado, nunca ~Cachorro()
 ```
 
-Sem `virtual` no destrutor, a eliminação de um objeto `Chien` através de um ponteiro `Animal*` executa apenas o destrutor de `Animal`: quaisquer recursos próprios de `Chien` (memória alocada, arquivo aberto...) nunca seriam libertados. Qualquer classe destinada a ser herdada e manipulada através de um ponteiro à classe base deve, portanto, declarar sistematicamente o seu destruidor `virtual`.
+Sem `virtual` no destrutor, remover um objeto `Cachorro` via um ponteiro `Animal*` executa apenas o destrutor de `Animal`: qualquer recurso próprio de `Cachorro` (memória alocada, arquivo aberto...) nunca seria liberado. Toda classe destinada a ser herdada e manipulada por ponteiro de base deve, portanto, sistematicamente declarar seu destrutor `virtual`.
 
 ## Classes abstratas: impor um contrato sem implementação
 
 ```cpp
-class FormeGeometrique {
+class FormaGeometrica {
 public:
-    virtual double aire() const = 0;   // "= 0": função PURAMENTE virtual, sem implementação aqui
-    virtual ~FormeGeometrique() {}
+    virtual double area() const = 0;   // "= 0": funcao PURAMENTE virtual, nenhuma implementacao aqui
+    virtual ~FormaGeometrica() {}
 };
 
-class Cercle : public FormeGeometrique {
+class Circulo : public FormaGeometrica {
 public:
-    Cercle(double rayon) : rayon(rayon) {}
-    double aire() const override { return 3.14159 * rayon * rayon; }
+    Circulo(double raio) : raio(raio) {}
+    double area() const override { return 3.14159 * raio * raio; }
 private:
-    double rayon;
+    double raio;
 };
 
-FormeGeometrique *forme = new Cercle(5);   // OK
-FormeGeometrique *impossible = new FormeGeometrique();   // ERRO: classe abstrata, não instanciável
+FormaGeometrica *forma = new Circulo(5);                  // OK
+FormaGeometrica *impossivel = new FormaGeometrica();      // ERRO: classe abstrata, nao instanciavel
 ```
 
-Uma classe que contenha pelo menos um método puramente virtual (`= 0`) torna-se **abstrata**: nunca pode ser instanciada diretamente, apenas herdada, define um contrato («toda a forma geométrica deve saber calcular a sua área») que cada classe filha deve implementar.
+Uma classe contendo pelo menos um método puramente virtual (`= 0`) se torna **abstrata**: ela nunca pode ser instanciada diretamente, apenas herdada: ela define um contrato ("toda forma geométrica deve saber calcular sua área") que cada classe filha deve implementar.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | A herança reutiliza o comportamento de uma classe pai. `virtual` ativa a ligação dinâmica (o tipo real do objeto decide o método chamado), indispensável ao polimorfismo. Uma classe abstrata (método `= 0`) impõe um contrato sem implementação. |
+| **Ferramentas utilizáveis** | `virtual`, `override`, destrutor `virtual`, classes abstratas. |
+| **Armadilhas a evitar** | Esquecer `virtual` em um método destinado a ser polimórfico (ligação estática silenciosa); esquecer `virtual` no destrutor de uma classe destinada a ser manipulada por ponteiro de base (vazamento de recursos). |
+| **Boas práticas** | Sempre declarar `virtual` o destrutor de uma classe destinada a ser herdada; usar `override` sistematicamente para que o compilador detecte uma assinatura mal redefinida. |

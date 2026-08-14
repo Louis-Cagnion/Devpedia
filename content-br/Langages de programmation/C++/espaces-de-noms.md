@@ -4,78 +4,89 @@ order: 2
 
 # Os espaços de nomes (namespaces)
 
-Um **espaço de nomes** (*namespace*) agrupa identificadores (funções, classes, variáveis) sob um prefixo comum, para evitar colisões de nomes entre diferentes partes de um projeto ou diferentes bibliotecas, a mesma necessidade que os namespaces já abordados em PHP (ver capítulo dedicado).
+Um **espaço de nomes** (*namespace*) reúne identificadores (funções, classes, variáveis) sob um prefixo comum, para evitar colisões de nomes entre diferentes partes de um projeto ou diferentes bibliotecas: a mesma necessidade dos namespaces PHP, cujo [autoloading](/?c=langages-de-programmation&s=php&p=autoloading) mostra um uso concreto.
 
-## Declarar e utilizar um namespace
+## Declarar e usar um namespace
 
 ```cpp
-namespace Facturation {
-    class Facture {
+namespace Faturamento {
+    class Fatura {
     public:
-        double montant;
+        double valor;
     };
 
-    double calculerTVA(double montant) {
-        return montant * 0.20;
+    double calcularImposto(double valor) {
+        return valor * 0.20;
     }
 }
 
-Facturation::Facture f;                    // acesso completo, através de «::»
-double tva = Facturation::calculerTVA(100);
+Faturamento::Fatura f;                      // acesso completo, via "::"
+double imposto = Faturamento::calcularImposto(100);
 ```
 
-## `using namespace` : importar sem prefixo
+## `using namespace`: importar sem prefixo
 
 ```cpp
-using namespace Facturation;
+using namespace Faturamento;
 
-Facture f;              // já não é necessário o prefixo «Facturação::»
-double tva = calculerTVA(100);
+Fatura f;                  // nao precisa mais do prefixo "Faturamento::"
+double imposto = calcularImposto(100);
 ```
 
-> **Nota (melhores práticas):** A utilização de «`using namespace X;`» no início de um arquivo de cabeçalho (`.h`) é geralmente desaconselhada: impõe essa importação a **todos** os arquivos que incluam esse cabeçalho, com o risco de colisão de nomes que já não é possível controlar. Reserve «`using namespace`» para o interior de um arquivo `.cpp` específico, nunca num cabeçalho partilhado.
+> **Nota (boa prática):** `using namespace X;` no topo de um arquivo de cabeçalho (`.h`) geralmente é desaconselhado: ele impõe essa importação a **todo** arquivo que inclui esse header, com um risco de colisão de nomes que não se controla mais. Reservar `using namespace` para dentro de um arquivo `.cpp` específico, nunca em um header compartilhado.
 
-## `std` : o namespace da biblioteca padrão
+## `std`: o namespace da biblioteca padrão
 
 ```cpp
-std::vector<int> números;   // «vector» encontra-se no namespace «std», daí o prefixo
-std::cout << "Bonjour";      // O mesmo se aplica a «custo»
+std::vector<int> numeros;  // "vector" vive no namespace "std", daí o prefixo
+std::cout << "Ola";        // idem para "cout"
 ```
 
 ```cpp
-// Num OUTRO bloco/arquivo, após «using namespace std;»:
-using namespace std;          // permite utilizar «vector», «cout»... sem prefixo
+// Em OUTRO bloco/arquivo, apos "using namespace std;":
+using namespace std;          // torna "vector", "cout"... utilizaveis sem prefixo
 
-vector<int> autresNombres;
-cout << "Bonjour";
+vector<int> outrosNumeros;
+cout << "Ola";
 ```
 
-É exatamente por esta razão que todo o código dos capítulos anteriores (STL, exceções...) utiliza o prefixo `std::`: `vector`, `map`, `cout`, `runtime_error`... estão todos declarados no namespace `std` da biblioteca padrão.
+É exatamente por isso que todo o código dos capítulos anteriores (STL, exceções...) usa o prefixo `std::`: `vector`, `map`, `cout`, `runtime_error`... estão todos declarados no namespace `std` da biblioteca padrão.
 
 ## Importação seletiva
 
 ```cpp
-using std::cout;   // Importa APENAS «cout», e não todo o namespace std
+using std::cout;    // importa APENAS "cout", nao todo o namespace std
 
-cout << "Bonjour";      // funciona
-vector<int> v;             // ERRO: «vector» requer sempre std:: (não importado)
+cout << "Ola";      // funciona
+vector<int> v;      // ERRO: "vector" ainda precisa de std:: (nao importado)
 ```
 
-Um compromisso entre a complexidade do prefixo sistemático e o risco de um «`using namespace`» completo: importar apenas o que é realmente utilizado, de forma específica.
+Um meio-termo entre a pesadez do prefixo sistemático e o risco de um `using namespace` completo: importar apenas o que é realmente usado, nomeadamente.
 
-## Espaços de nomes aninhados
+## Namespaces aninhados
 
 ```cpp
-namespace Entreprise {
-    namespace Facturation {
-        class Facture { /* ... */ };
+namespace Empresa {
+    namespace Faturamento {
+        class Fatura { /* ... */ };
     }
 }
 
-// equivalente mais conciso a partir do C++17:
-namespace Entreprise::Facturation {
-    class Facture { /* ... */ };
+// equivalente mais conciso desde o C++17:
+namespace Empresa::Faturamento {
+    class Fatura { /* ... */ };
 }
 
-Entreprise::Facturation::Facture f;
+Empresa::Faturamento::Fatura f;
 ```
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Um namespace reúne identificadores sob um prefixo (`Namespace::identificador`) para evitar colisões de nomes. `using namespace` importa sem prefixo; `using X::y` importa seletivamente. |
+| **Ferramentas utilizáveis** | `namespace`, `using namespace`, importação seletiva (`using std::cout`), namespaces aninhados (`A::B`). |
+| **Armadilhas a evitar** | Escrever `using namespace X;` em um header: impõe essa importação a todo arquivo que o inclui. |
+| **Boas práticas** | Reservar `using namespace` para dentro de um arquivo `.cpp`, nunca em um header compartilhado. |

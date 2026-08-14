@@ -2,64 +2,75 @@
 order: 1
 ---
 
-# Referências
+# As referências
 
-Uma **referência** é um alias: outro nome para uma variável já existente, nunca uma variável independente. Resolve um problema muito concreto da linguagem C: passar uma variável a uma função para que esta a possa modificar obrigava, até então, a manipular explicitamente ponteiros (ver capítulo sobre ponteiros, secção C).
+Uma **referência** é um apelido: outro nome para uma variável já existente, nunca uma variável independente. Ela resolve um problema muito concreto do C: passar uma variável a uma função para que ela pudesse modificá-la até então obrigava a manipular explicitamente [ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs).
 
 ## Declarar uma referência
 
 ```cpp
 int idade = 25;
-int &refAge = idade;   // refAge é um OUTRO NOME para age, não uma cópia
+int &refIdade = idade;   // refIdade e OUTRO NOME para idade, nao uma copia
 
-refAge = 30;
-std::cout << idade;    // 30 -> alterar refAge altera diretamente age
+refIdade = 30;
+std::cout << idade;      // 30 -> modificar refIdade modifica diretamente idade
 ```
 
-> **Nota:** ao contrário de um ponteiro, uma referência **deve** ser inicializada logo na sua declaração e, posteriormente, **nunca** pode ser reatribuída para designar outra variável: uma vez associada a `idade`, `refAge` permanecerá um alias de `idade` durante todo o seu ciclo de vida.
+> **Nota:** ao contrário de um ponteiro, uma referência **deve** ser inicializada logo em sua declaração, e depois nunca pode ser reatribuída para designar outra variável; uma vez ligada a `idade`, `refIdade` permanecerá um apelido de `idade` por toda sua vida.
 
-## Chamar uma função por referência
+## Passar por referência a uma função
 
 ```cpp
-void incrementer(int &número) {
-    número++;   // não é necessário desreferenciar com *, ao contrário do que acontece com um ponteiro em C
+void incrementar(int &numero) {
+    numero++;   // nao precisa desreferenciar com *, ao contrario de um ponteiro em C
 }
 
 int x = 5;
-incrementer(x);
+incrementar(x);
 std::cout << x;   // 6
 ```
 
-Em comparação com o equivalente em C (ver capítulo sobre ponteiros):
+Comparado ao [equivalente em C](/?c=langages-de-programmation&s=c&p=pointeurs):
 
 ```c
-void incrementer(int *número) {
-    (*número)++;
+void incrementar(int *numero) {
+    (*numero)++;
 }
-incrementer(&x);
+incrementar(&x);
 ```
 
-A referência evita a sintaxe `*` / `&` na chamada e no interior da função, obtendo, no entanto, exatamente o mesmo comportamento (alterar a variável do chamador).
+A referência evita a sintaxe `*`/`&` na chamada e dentro da função, obtendo exatamente o mesmo comportamento (modificar a variável do chamador).
 
-## `const &` : evitar a cópia sem correr o risco de alterações
+## `const &`: evitar uma cópia sem arriscar uma modificação
 
-Passar um objeto de grande dimensão por valor (uma cópia completa) em cada chamada à função consome tempo e memória. Passar por referência evita a cópia, mas permite que a função altere o original; o «`const &`» combina as duas vantagens:
+Passar um objeto grande por valor (uma cópia completa) a cada chamada de função custa tempo e memória. Passar por referência evita a cópia, mas permite que a função modifique o original; `const &` combina as duas vantagens:
 
 ```cpp
-void afficher(const std::string &texto) {   // Não é permitida a cópia, E o texto não pode ser alterado aqui
+void exibir(const std::string &texto) {   // sem copia, E texto nao pode ser modificado aqui
     std::cout << texto;
 }
 ```
 
-> **Nota:** esta tornou-se a convenção padrão em C++ para passar um objeto de grande dimensão (cadeia, vetor, estrutura...) em modo de leitura única a uma função, mais rápido do que uma cópia, mais seguro do que um ponteiro bruto (sem risco de «`nullptr`», sem sintaxe de desreferenciamento para gerir).
+> **Nota:** essa se tornou a convenção padrão em C++ para passar um objeto volumoso (string, vetor, estrutura...) somente leitura a uma função: mais rápido que uma cópia, mais seguro que um ponteiro bruto (sem risco de `nullptr`, sem sintaxe de desreferenciamento a gerenciar).
 
-## Referência vs. ponteiro
+## Referência vs ponteiro
 
-| | Referência | Ponto de referência |
+| | Referência | Ponteiro |
 |---|---|---|
 | Pode ser `null` | Não, nunca | Sim (`nullptr`) |
 | Reatribuível após a inicialização | Não | Sim |
-| Sintaxe de acesso | Direta, tal como a própria variável | Requer «`*`» para desreferenciar |
+| Sintaxe de acesso | Direta, como a própria variável | Exige `*` para desreferenciar |
 | Deve ser inicializado na declaração | Sim, obrigatório | Não |
 
-Uma referência é, portanto, mais restrita do que um ponteiro: é precisamente isso que a torna mais segura nos casos em que essas restrições não precisam de ser contornadas (já se sabe que a variável existe e que não mudará de alvo).
+Uma referência é, portanto, mais restrita que um ponteiro: é precisamente isso que a torna mais segura nos casos em que essas restrições não precisam ser contornadas (já se sabe que a variável existe e não vai mudar de alvo).
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Uma referência é um apelido de uma variável existente: nunca `null`, nunca reatribuível após a inicialização, sem sintaxe `*`/`&` no uso. `const &` passa um objeto volumoso sem cópia nem risco de modificação. |
+| **Ferramentas utilizáveis** | `&` na declaração de tipo (referência), `const &` para um parâmetro somente leitura. |
+| **Armadilhas a evitar** | Acreditar que uma referência pode ser `null` ou reatribuída como um ponteiro: ambas são impossíveis. |
+| **Boas práticas** | Passar um objeto volumoso por `const &` por padrão, em vez de por valor (cópia custosa) ou por ponteiro bruto. |

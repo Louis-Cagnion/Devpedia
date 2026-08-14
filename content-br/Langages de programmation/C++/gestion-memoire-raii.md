@@ -4,87 +4,98 @@ order: 7
 
 # RAII e os ponteiros inteligentes
 
-Em C (ver capítulo sobre gestão de memória), cada `malloc()` deve ser seguido de um `free()` manual: se for esquecido uma única vez, resulta numa fuga de memória; se for chamado duas vezes, provoca uma falha do sistema. **RAII** (*Resource Acquisition Is Initialization*) é o princípio central do C++ para eliminar toda esta classe de erros, baseando-se num mecanismo já conhecido: o destruidor (ver capítulo sobre classes e objetos).
+Em C (veja [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire)), cada `malloc()` deve ser seguido de um `free()` manual: esquecido uma única vez, é um vazamento de memória; chamado duas vezes, um crash. **RAII** (*Resource Acquisition Is Initialization*) é o princípio central de C++ para eliminar essa classe inteira de bugs, apoiando-se em um mecanismo já visto: o destrutor (veja [As classes e objetos](/?c=langages-de-programmation&s=cpp&p=classes-et-objets)).
 
 ## O princípio RAII
 
-Um recurso (memória, arquivo, ligação de rede...) é alocado no **construtor** de um objeto e libertado automaticamente no seu **destrutor**: quando o objeto sai do âmbito, o recurso é inevitavelmente libertado, sem que seja possível esquecer essa limpeza:
+Um recurso (memória, arquivo, conexão de rede...) é adquirido no **construtor** de um objeto, e liberado automaticamente em seu **destrutor**; quando o objeto sai de escopo, o recurso é obrigatoriamente liberado, sem que seja possível esquecer essa limpeza:
 
 ```cpp
-class GestionnaireFichier {
+class GerenciadorArquivo {
 public:
-    GestionnaireFichier(const std::string &caminho) {
+    GerenciadorArquivo(const std::string &caminho) {
         arquivo.open(caminho);
         if (!arquivo.is_open()) {
-            throw std::runtime_error("Impossible d'ouvrir : " + caminho); // cf. chapitre sur les exceptions
+            throw std::runtime_error("Impossivel abrir: " + caminho); // veja As excecoes
         }
     }
-    ~GestionnaireFichier() { arquivo.close(); }   // chamada automaticamente, mesmo em caso de exceção!
+    ~GerenciadorArquivo() { arquivo.close(); }   // chamado automaticamente, mesmo em caso de excecao!
 private:
     std::ifstream arquivo;
 };
 
-void traiterFichier() {
-    GestionnaireFichier gf("donnees.txt");
-    // ... utilizar gf ...
-}   // <- aqui, a função ~GestionnaireFichier() é executada automaticamente: o arquivo é fechado, garantidamente
+void processarArquivo() {
+    GerenciadorArquivo ga("dados.txt");
+    // ... usar ga ...
+}   // <- aqui, ~GerenciadorArquivo() executa automaticamente: o arquivo e fechado, garantido
 ```
 
-> **Nota:** ao contrário de um simples `close()` chamado manualmente no final da função, o RAII garante a libertação mesmo que uma exceção interrompa a função a meio: o destrutor é executado durante o «desenrolamento da pilha» (*stack unwinding*) causado pela exceção, enquanto que uma chamada manual seria simplesmente ignorada.
+> **Nota:** ao contrário de um simples `close()` chamado manualmente ao fim da função, RAII garante a liberação mesmo se uma exceção interromper a função no meio: o destrutor executa durante o "desenrolar da pilha" (*stack unwinding*) causado pela exceção, onde uma chamada manual seria simplesmente pulada.
 
-## `new` / `delete`: a versão em C++ de `malloc` / `free`
+## `new`/`delete`: a versão C++ de `malloc`/`free`
 
 ```cpp
-int *p = new int(42);   // aloca E inicializa numa única operação
-delete p;                 // liberta
+int *p = new int(42);  // aloca E inicializa em uma unica operacao
+delete p;              // libera
 
-int *matriz = new int[10];   // aloca um tabuláro dinâmico
-delete[] matriz;               // «[]» é obrigatório para libertar um array; caso contrário, o comportamento é indefinido
+int *array = new int[10];  // aloca um array dinamico
+delete[] array;             // "[]" obrigatorio para liberar um array, senao comportamento indefinido
 ```
 
-`new` / `delete` substituem `malloc` / `free`, mas apresentam exatamente os mesmos riscos (esquecimento de `delete`, `delete` duplo, *use-after-free*; ver capítulo C sobre a memória): é por isso que, no C++ moderno, raramente são utilizados **diretamente**.
+`new`/`delete` substituem `malloc`/`free`, mas sofrem exatamente os mesmos riscos (esquecimento de `delete`, `delete` duplo, *use-after-free*, veja [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire) em C): é por isso que em C++ moderno, eles raramente são usados **diretamente**.
 
 ## Os ponteiros inteligentes (*smart pointers*)
 
-Um ponteiro inteligente aplica o RAII à própria gestão de memória: **trata-se** de um objeto cujo destrutor chama automaticamente o método `delete` sobre o recurso que possui.
+Um ponteiro inteligente aplica RAII à própria gestão de memória: ele **é** um objeto, cujo destrutor chama automaticamente `delete` no recurso que possui.
 
-### `unique_ptr` : propriedade exclusiva
+### `unique_ptr`: propriedade exclusiva
 
 ```cpp
 #include <memory>
 
 std::unique_ptr<int> p = std::make_unique<int>(42);
-std::cout << *p;   // 42 -> é desreferenciado como um ponteiro bruto
+std::cout << *p;   // 42 -> desreferencia como um ponteiro bruto
 
-// NÃO é necessário utilizar «delete»: quando «p» sai do âmbito, a memória é libertada automaticamente
+// NAO precisa de delete: quando p sai de escopo, a memoria e liberada automaticamente
 ```
 
-Um `unique_ptr` só pode ter um **único** proprietário: a sua cópia é proibida (erro de compilação), sendo apenas possível a sua transferência (`std::move`), que transfere a propriedade de um `unique_ptr` para outro:
+Um `unique_ptr` só pode ter um **único** proprietário; copiá-lo é proibido (erro de compilação), apenas o deslocamento (`std::move`) é possível, o que transfere a propriedade de um `unique_ptr` para outro:
 
 ```cpp
 std::unique_ptr<int> p1 = std::make_unique<int>(42);
-std::unique_ptr<int> p2 = std::move(p1);   // p2 torna-se proprietário, p1 torna-se nullptr
+std::unique_ptr<int> p2 = std::move(p1);   // p2 se torna proprietario, p1 se torna nullptr
 ```
 
-### `shared_ptr` : propriedade partilhada, com contagem de referências
+### `shared_ptr`: propriedade compartilhada, com contagem de referências
 
 ```cpp
 std::shared_ptr<int> p1 = std::make_shared<int>(42);
-std::shared_ptr<int> p2 = p1;   // OK, cópia autorizada: p1 E p2 partilham o mesmo recurso
+std::shared_ptr<int> p2 = p1;   // OK, copia permitida: p1 E p2 compartilham o mesmo recurso
 
-// a memória só é libertada quando o ÚLTIMO shared_ptr que a referencia é destruído
+// a memoria so e liberada quando o ULTIMO shared_ptr que a referencia e destruido
 ```
 
-Cada `shared_ptr` incrementa um contador de referências partilhado; o recurso só é libertado automaticamente quando esse contador chega a zero.
+Cada `shared_ptr` incrementa um contador de referências compartilhado; o recurso só é liberado automaticamente quando esse contador chega a zero.
 
-> **Nota:** `shared_ptr` tem um custo (o contador de referências, atualizado de forma thread-safe) superior ao de `unique_ptr`, a utilizar apenas nos casos em que um recurso tenha efetivamente vários proprietários legítimos, e não por padrão.
+> **Nota:** `shared_ptr` tem um custo (o contador de referências, atualizado de forma **thread-safe**: sem risco de [race condition](/?c=langages-de-programmation&s=c&p=threads) se várias threads o modificarem ao mesmo tempo) superior ao `unique_ptr`: reservado para os casos em que um recurso realmente tem vários proprietários legítimos, não por padrão.
 
 ## Resumo
 
-| | `new` / `delete` brut | `unique_ptr` | `shared_ptr` |
+| | `new`/`delete` bruto | `unique_ptr` | `shared_ptr` |
 |---|---|---|---|
-| Lançamento automático | Não | Sim | Sim |
-| Número de proprietários | N/A | Um único | Vários |
-| Custo | Mínimo | Quase nulo (sem sobrecusto na execução) | Contagem de referências (ligeiro sobrecusto) |
+| Liberação automática | Não | Sim | Sim |
+| Número de proprietários | N/A | Apenas um | Vários |
+| Custo | Mínimo | Quase nulo (sem sobrecusto na execução) | Contagem de referências (leve sobrecusto) |
 
-> **Boas práticas do C++ moderno:** nunca utilizar `new` / `delete` diretamente no código da aplicação, optar sistematicamente por `unique_ptr` (por padrão) ou `shared_ptr` (se a partilha for realmente necessária), para beneficiar do RAII sem ter de pensar nisso de cada vez.
+> **Boa prática de C++ moderno:** nunca usar `new`/`delete` diretamente em código aplicativo; preferir sistematicamente `unique_ptr` (por padrão) ou `shared_ptr` (se o compartilhamento for realmente necessário), para se beneficiar de RAII sem precisar pensar nisso a cada vez.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | RAII liga a aquisição de um recurso ao construtor e sua liberação ao destrutor: o recurso é obrigatoriamente liberado assim que o objeto sai de escopo, mesmo em caso de exceção. `unique_ptr`/`shared_ptr` aplicam esse princípio à memória. |
+| **Ferramentas utilizáveis** | `unique_ptr` (propriedade exclusiva), `shared_ptr` (propriedade compartilhada, contagem de referências), `std::move`. |
+| **Armadilhas a evitar** | Usar `new`/`delete` diretamente em código aplicativo moderno: mesmos riscos que `malloc`/`free` (vazamento, liberação dupla, use-after-free). |
+| **Boas práticas** | Preferir sistematicamente `unique_ptr` por padrão, `shared_ptr` apenas se um compartilhamento real for necessário. |
