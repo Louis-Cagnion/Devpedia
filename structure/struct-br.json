@@ -247,6 +247,29 @@
               "label": "Prompt injection: quando um dado se faz passar por instrução"
             }
           ]
+        },
+        {
+          "id": "production-et-gouvernance",
+          "label": "Production et gouvernance",
+          "folder": "Production et gouvernance",
+          "chapters": [
+            {
+              "id": "gestion-dun-llm",
+              "label": "Monitoramento e gestão operacional de um LLM"
+            },
+            {
+              "id": "gouvernance-des-donnees",
+              "label": "Governança de dados para um sistema de IA"
+            },
+            {
+              "id": "reglementation-europeenne-ia",
+              "label": "Regulamentação europeia de IA: o AI Act"
+            },
+            {
+              "id": "stack-ia",
+              "label": "A stack de IA: as camadas de uma aplicação em produção"
+            }
+          ]
         }
       ]
     },
