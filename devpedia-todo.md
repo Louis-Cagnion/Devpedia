@@ -2,6 +2,7 @@
 
 ## Nouveau contenu à écrire (FR)
 - Une partie sur l'authentification, avec Okta comme exemple (demandé par Louis, catégorie/chapitre précis pas encore décidé).
+- Discuter d'ajouter un contenu sur les techniques de réduction de la variance de l'exactitude des réponses des LLM (self-consistency, majority voting, ensembling...) : seul le réglage de la température est couvert actuellement (`content/IA/NLP et LLM/llm-en-production.md`), pas ces techniques dédiées à la fiabilité/reproductibilité des réponses.
 
 ## Traduction anglaise (EN)
 - `IA/description.md` (EN) à adapter quand `content-en/IA` sera restructuré en subjects (actuellement plat, décision explicite).
