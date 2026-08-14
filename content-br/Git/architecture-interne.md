@@ -4,7 +4,7 @@ order: 11
 
 # A arquitetura interna do Git
 
-Os comandos abordados nos outros capítulos (`add`, `commit`, `branch`...) são apenas a parte visível («porcelana») de um mecanismo de armazenamento surpreendentemente simples: uma base de dados chave-valor **endereçada por conteúdo**, em que a chave de cada dado é o hash do seu próprio conteúdo. Compreender este modelo permite «ver através» de qualquer comando Git e fornece os elementos necessários para conceber um sistema de controlo de versões semelhante.
+Os comandos abordados nos outros capítulos (`add`, `commit`, `branch`...) são apenas a parte visível («porcelana») de um mecanismo de armazenamento surpreendentemente simples: uma base de dados chave-valor **endereçada por conteúdo**, em que a chave de cada dado é o hash do seu próprio conteúdo. Compreender este modelo permite «ver através» de qualquer comando Git e fornece os elementos necessários para conceber um sistema de controle de versões semelhante.
 
 ## Uma base de dados indexada por conteúdo
 
@@ -88,7 +88,7 @@ git update-ref refs/heads/main a3f9c1d           # desloca manualmente um ramo p
 
 Um «`git commit`» «normal» não é, nos bastidores, mais do que uma sequência de `write-tree`, `commit-tree` e `update-ref`.
 
-## Criar o seu próprio sistema de controlo de versões
+## Criar o seu próprio sistema de controle de versões
 
 Os componentes necessários para um sistema mínimo, nesta ordem lógica:
 

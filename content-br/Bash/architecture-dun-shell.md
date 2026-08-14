@@ -112,9 +112,9 @@ execve(...);
 
 `O_TRUNC` corresponde a `>` (substitui o arquivo), `O_APPEND` a `>>` (acrescenta no final) — ver o capítulo sobre redirecionamentos para conhecer o comportamento observado do ponto de vista do usuário.
 
-## Controlo de tarefas (jobs): `&`, `Ctrl+Z`, `fg` / `bg`
+## Controle de tarefas (jobs): `&`, `Ctrl+Z`, `fg` / `bg`
 
-Cada pipeline iniciado forma um **grupo de processos** — um identificador partilhado (`setpgid()`) que permite ao shell e ao terminal tratar todos os processos de um mesmo pipeline como uma única unidade (por exemplo, enviar-lhes um sinal a todos ao mesmo tempo), em vez de ter de selecionar cada PID individualmente. O terminal concede o controlo do teclado apenas a **um único** grupo de cada vez (`tcsetpgrp()`), aquele que se encontra em primeiro plano. `Ctrl+Z` envia o sinal `SIGTSTP` a esse grupo (suspende-o sem o encerrar), `fg` / `bg` (ver capítulo sobre gestão de processos) devolvem, respetivamente, o controlo do terminal ou reenvi`SIGCONT` para retomar a execução em segundo plano.
+Cada pipeline iniciado forma um **grupo de processos** — um identificador partilhado (`setpgid()`) que permite ao shell e ao terminal tratar todos os processos de um mesmo pipeline como uma única unidade (por exemplo, enviar-lhes um sinal a todos ao mesmo tempo), em vez de ter de selecionar cada PID individualmente. O terminal concede o controle do teclado apenas a **um único** grupo de cada vez (`tcsetpgrp()`), aquele que se encontra em primeiro plano. `Ctrl+Z` envia o sinal `SIGTSTP` a esse grupo (suspende-o sem o encerrar), `fg` / `bg` (ver capítulo sobre gestão de processos) devolvem, respetivamente, o controle do terminal ou reenvi`SIGCONT` para retomar a execução em segundo plano.
 
 ## Criar o seu próprio mini-shell
 

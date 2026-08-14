@@ -19,7 +19,7 @@ Noyau du système d'exploitation (espace noyau)
 Matériel (disque, réseau, mémoire physique...)
 ```
 
-Uma chamada de função C clássica (`addition(2, 3)`) é executada inteiramente no espaço** do usuário**, sem nunca sair do programa. Uma chamada de sistema é diferente: solicita explicitamente ao **kernel** que aja em vez do programa, para uma operação que este não tem permissão para realizar por si próprio. Este pedido implica uma mudança controlada do modo de execução (*modo de usuário* → *modo do kernel*), verificada pelo processador — é este controlo que impede que um programa malicioso ou com erros acesse diretamente à memória ou ao disco de outro programa.
+Uma chamada de função C clássica (`addition(2, 3)`) é executada inteiramente no espaço** do usuário**, sem nunca sair do programa. Uma chamada de sistema é diferente: solicita explicitamente ao **kernel** que aja em vez do programa, para uma operação que este não tem permissão para realizar por si próprio. Este pedido implica uma mudança controlada do modo de execução (*modo de usuário* → *modo do kernel*), verificada pelo processador — é este controle que impede que um programa malicioso ou com erros acesse diretamente à memória ou ao disco de outro programa.
 
 > **Nota:** uma função como `printf()` não é, por si só, uma chamada ao sistema — trata-se de uma função de biblioteca que formata a cadeia de caracteres no espaço do usuário e, em seguida, chama internamente a verdadeira chamada ao sistema (`write()`) para a enviar efetivamente para a saída padrão.
 

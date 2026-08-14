@@ -83,4 +83,4 @@ void fonctionSure() noexcept {
 }
 ```
 
-> **Melhores práticas:** só se deve lançar uma exceção numa situação verdadeiramente **excecional** (erro imprevisto, invariante violado) — nunca num fluxo de controlo normal (uma exceção tem um custo de execução não negligenciável em comparação com um simples «`if`», ao contrário de um retorno de erro clássico).
+> **Melhores práticas:** só se deve lançar uma exceção numa situação verdadeiramente **excecional** (erro imprevisto, invariante violado) — nunca num fluxo de controle normal (uma exceção tem um custo de execução não negligenciável em comparação com um simples «`if`», ao contrário de um retorno de erro clássico).

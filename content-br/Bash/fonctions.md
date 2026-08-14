@@ -64,7 +64,7 @@ resultado=$(addition 4 6)
 echo "Résultat : $resultado"  # Resultado: 10
 ```
 
-> **Nota:** nunca se deve confundir os dois mecanismos. `return` comunica um estado (0-255, para controlo de fluxo com `if`), `echo` + `$(...)` comunica dados reais (para serem armazenados/reutilizados). A mistura dos dois na mesma função é uma fonte clássica de confusão.
+> **Nota:** nunca se deve confundir os dois mecanismos. `return` comunica um estado (0-255, para controle de fluxo com `if`), `echo` + `$(...)` comunica dados reais (para serem armazenados/reutilizados). A mistura dos dois na mesma função é uma fonte clássica de confusão.
 
 ## Variáveis locais
 

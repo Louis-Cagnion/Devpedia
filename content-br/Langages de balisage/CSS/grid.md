@@ -4,7 +4,7 @@ order: 6
 
 # CSS Grid
 
-Ao contrário do Flexbox (ver capítulo dedicado), concebido para um único eixo de cada vez, **o CSS Grid** organiza os elementos numa verdadeira grelha **bidimensional** — linhas e colunas definidas simultaneamente, com um controlo preciso da posição de cada elemento.
+Ao contrário do Flexbox (ver capítulo dedicado), concebido para um único eixo de cada vez, **o CSS Grid** organiza os elementos numa verdadeira grelha **bidimensional** — linhas e colunas definidas simultaneamente, com um controle preciso da posição de cada elemento.
 
 ## Ativar uma grelha
 

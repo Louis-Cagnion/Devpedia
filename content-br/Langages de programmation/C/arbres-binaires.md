@@ -77,7 +77,7 @@ Noeud *rechercher(Noeud *raiz, int valor)
 }
 ```
 
-A cada etapa, a comparação elimina **toda uma subárvore** da pesquisa — é isso que torna uma ABR equilibrada muito mais rápida do que uma percorrida linear de uma lista encadeada.
+A cada etapa, a comparação elimina **toda uma subárvore** da pesquisa — é isso que torna uma ABR equilibrada muito mais rápida do que um percurso linear de uma lista encadeada.
 
 ## Os três percursos clássicos
 
@@ -113,7 +113,7 @@ Na árvore de exemplo acima, `parcoursInfixe` apresenta `2 5 7 10 15 20` — os 
 
 ## Liberar uma árvore
 
-Tal como numa lista encadeada, cada nó alocado com`malloc()`deve ser libertado individualmente — uma percorreção por sufixo é naturalmente adequada para isso, uma vez que trata os filhos antes do próprio nó:
+Tal como numa lista encadeada, cada nó alocado com`malloc()`deve ser libertado individualmente — um percurso por sufixo é naturalmente adequado para isso, uma vez que trata os filhos antes do próprio nó:
 
 ```c
 void libererArbre(Noeud *raiz)

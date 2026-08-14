@@ -18,7 +18,7 @@ Fora destas balizas, o que escrever será considerado texto normal e não códig
 
 ## Sintaxe clássica e sintaxe alternativa
 
-O PHP oferece duas formas de escrever as estruturas de controlo (`if`, `foreach`, `while`, `for`...).
+O PHP oferece duas formas de escrever as estruturas de controle (`if`, `foreach`, `while`, `for`...).
 
 **Sintaxe clássica (com chaves)**:
 

@@ -41,7 +41,7 @@ git branch -vv                     # mostra qual o ramo remoto que cada ramo loc
 git push -u origin ma-branche       # estabelece esta ligação de acompanhamento logo a partir do primeiro envio
 ```
 
-## Clonar um controlo remoto já configurado
+## Clonar um controle remoto já configurado
 
 ```bash
 git clone https://exemple.com/projet.git

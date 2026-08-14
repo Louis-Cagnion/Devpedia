@@ -49,6 +49,7 @@ const TERMS = [
     ["registo", "registro"],
     ["contacto", "contato"],
     ["descarregar", "baixar"],
+    ["controlo", "controle"],
     // "aceder" (EU, -er verb) -> "acessar" (BR, -ar verb): conjugated forms differ,
     // so each form is mapped explicitly rather than swapped by a shared stem.
     ["aceder", "acessar"],

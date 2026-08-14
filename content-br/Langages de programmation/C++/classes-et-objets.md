@@ -4,7 +4,7 @@ order: 3
 
 # As classes e os objetos
 
-Uma **classe** C++ reúne num único local aquilo que um «`struct`» C (ver capítulo dedicado) separa em duas partes: os dados E as funções que os manipulam — além de proporcionar um controlo explícito do que é visível a partir do exterior.
+Uma **classe** C++ reúne num único local aquilo que um «`struct`» C (ver capítulo dedicado) separa em duas partes: os dados E as funções que os manipulam — além de proporcionar um controle explícito do que é visível a partir do exterior.
 
 ## Declarar uma classe
 

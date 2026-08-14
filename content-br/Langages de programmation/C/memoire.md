@@ -4,7 +4,7 @@ order: 5
 
 # Gestão da memória
 
-Ao contrário de linguagens como o PHP ou o JavaScript, que gerem automaticamente a memória através de um recolhedor de lixo (*garbage collector*), o C atribui ao programador a responsabilidade total pela alocação e libertação da memória de que o seu programa necessita. É isso que permite um elevado desempenho e um controlo preciso dos recursos, à custa de uma vigilância constante.
+Ao contrário de linguagens como o PHP ou o JavaScript, que gerem automaticamente a memória através de um recolhedor de lixo (*garbage collector*), o C atribui ao programador a responsabilidade total pela alocação e libertação da memória de que o seu programa necessita. É isso que permite um elevado desempenho e um controle preciso dos recursos, à custa de uma vigilância constante.
 
 ## Stack (pilha) e Heap (montão)
 

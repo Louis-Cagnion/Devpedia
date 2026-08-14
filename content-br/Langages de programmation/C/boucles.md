@@ -67,7 +67,7 @@ void afficher(int *matriz, int taille) // la taille doit être passée explicite
 
 ## `break` e `continue`
 
-- `break;` interrompe completamente o ciclo de controlo.
+- `break;` interrompe completamente o ciclo de controle.
 - `continue;` avança diretamente para a próxima iteração, sem executar o resto do corpo do ciclo atual.
 
 ```c
@@ -84,7 +84,7 @@ for (int i = 0; i < 10; i++) {
 
 ## Laços aninhados e `break`
 
-`break` só interrompe o ciclo **mais próximo** que o engloba — para sair de vários ciclos aninhados de uma só vez, é necessária uma variável de controlo ou um «`goto`» (raro, mas por vezes utilizado para este caso específico em C):
+`break` só interrompe o ciclo **mais próximo** que o engloba — para sair de vários ciclos aninhados de uma só vez, é necessária uma variável de controle ou um «`goto`» (raro, mas por vezes utilizado para este caso específico em C):
 
 ```c
 int trouve = 0;
