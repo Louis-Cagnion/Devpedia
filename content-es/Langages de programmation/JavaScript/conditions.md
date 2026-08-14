@@ -2,9 +2,9 @@
 order: 1
 ---
 
-# Condiciones
+# Las condiciones
 
-JavaScript utiliza `if` / `else if` / `else` y `switch`, con una particularidad importante respecto a PHP o Python: sus reglas de comparación «flexibles» (`==`) son conocidas por sus sorprendentes conversiones de tipo.
+JavaScript utiliza `if`/`else if`/`else` y `switch`, con una particularidad importante respecto a [PHP](/?c=langages-de-programmation&s=php&p=conditions) o [Python](/?c=langages-de-programmation&s=python&p=conditions): sus reglas de comparación "flexibles" (`==`) son conocidas por sus sorprendentes conversiones de tipo.
 
 ## `if` / `else if` / `else`
 
@@ -12,77 +12,88 @@ JavaScript utiliza `if` / `else if` / `else` y `switch`, con una particularidad 
 const edad = 20;
 
 if (edad >= 18) {
-    console.log("Vous êtes majeur.");
+    console.log("Eres mayor de edad.");
 } else if (edad >= 13) {
-    console.log("Vous êtes adolescent.");
+    console.log("Eres adolescente.");
 } else {
-    console.log("Vous êtes enfant.");
+    console.log("Eres un niño.");
 }
 ```
 
 ## `==` vs `===`: aún más crítico que en PHP
 
 ```javascript
-0 == "0"        // true  -> se convierte en un número antes de la comparación
-0 == ""          // true  -> "" se convierte en 0
-null == undefined // true -> caso especial
+0 == "0"           // true  -> se convierte a número antes de comparar
+0 == ""            // true  -> "" se convierte a 0
+null == undefined  // true  -> caso especial
 "" == false        // true
 1 == "1"            // true
 
 0 === "0"    // false -> tipos diferentes, sin conversión
 ```
 
-> **Nota:** estas conversiones implícitas de `==` son una fuente legendaria de errores en JavaScript — `===` / `!==` (igualdad estricta, tipo Y valor) deben ser la opción por defecto, exactamente igual que en PHP.
+> **Nota:** estas conversiones implícitas de `==` son una fuente legendaria de errores en JavaScript; `===`/`!==` (igualdad estricta, tipo Y valor) deben ser la opción por defecto, exactamente igual que en [PHP](/?c=langages-de-programmation&s=php&p=conditions).
 
-## Valores «truthy» y «falsy»
+## Valores "truthy" y "falsy"
 
 ```javascript
 if (0) {}          // falsy
-if ("") {}          // falsy
-if (null) {}         // falsy
-if (undefined) {}     // falsy
-if (NaN) {}            // falsy
-if ([]) {}               // ¡TRUTHY! (a diferencia de PHP, donde un array vacío es falsy)
-if ({}) {}                // ¡TRUTHY!
+if ("") {}         // falsy
+if (null) {}       // falsy
+if (undefined) {}  // falsy
+if (NaN) {}        // falsy
+if ([]) {}         // ¡TRUTHY! (a diferencia de PHP, donde un array vacío es falsy)
+if ({}) {}         // ¡TRUTHY!
 ```
 
-> **Nota:** trampa habitual para quienes vienen de PHP: un array u objeto **vacío** es «`truthy`» en JavaScript, mientras que en PHP es «`falsy`»; comprueba siempre explícitamente «`matriz.length === 0`» en lugar de «`if (!matriz)`».
+> **Nota:** trampa clásica para quien viene de [PHP](/?c=langages-de-programmation&s=php&p=conditions): un array u objeto **vacío** es `truthy` en JavaScript, mientras que es `falsy` en PHP; comprueba siempre explícitamente `array.length === 0` en lugar de `if (!array)`.
 
 ## El operador ternario
 
 ```javascript
-const statut = edad >= 18 ? "majeur" : "mineur";
+const estado = edad >= 18 ? "mayor" : "menor";
 ```
 
 ## Coalescencia nula (`??`) y encadenamiento opcional (`?.`)
 
 ```javascript
-const pseudo = usuario.pseudo ?? "Invité";
-// «??» solo recurre al valor por defecto SI el valor es null/undefined (no 0, «», false)
+const apodo = usuario.apodo ?? "Invitado";
+// "??" solo recurre al valor por defecto SI el valor es null/undefined (no 0, "", false)
 
-const ciudad = usuario?.adresse?.ciudad ?? "Inconnue";
-// «?.»: si «usuario» o «dirección» es nulo/indefinido, se detiene inmediatamente y devuelve «indefinido»
-// -> evita un TypeError «Cannot read properties of undefined» en cascada
+const ciudad = usuario?.direccion?.ciudad ?? "Desconocida";
+// "?." : si "usuario" o "direccion" es null/undefined, se detiene inmediatamente y devuelve undefined
+// -> evita un TypeError "Cannot read properties of undefined" en cascada
 ```
 
-> **Nota:** «`??`» es diferente de «`||`»: «`0 || "défaut"`» devuelve «`"défaut"`» (0 es «falsy» para «`||`»), mientras que «`0 ?? "défaut"`» devuelve «`0`» (0 no es ni «`null`» ni «`undefined`»).
+> **Nota:** `??` es diferente de `||`: `0 || "predeterminado"` devuelve `"predeterminado"` (0 es falsy para `||`), mientras que `0 ?? "predeterminado"` devuelve `0` (0 no es ni `null` ni `undefined`).
 
-## El e`switch`
+## El `switch`
 
 ```javascript
-const jour = 3;
+const dia = 3;
 
-switch (jour) {
+switch (dia) {
     case 1:
-        console.log("Lundi");
+        console.log("Lunes");
         break;
     case 2:
     case 3:
-        console.log("Début de semaine");  // No hay salto entre el 2 y el 3: caso compartido
+        console.log("Comienzo de semana");  // sin break entre 2 y 3: caso compartido
         break;
     default:
-        console.log("Autre jour");
+        console.log("Otro día");
 }
 ```
 
-`switch` Compara con la igualdad **estricta** (`===`): aquí no hay conversiones de tipo inesperadas, a diferencia de lo que ocurre con `if (x == y)`.
+`switch` compara con igualdad **estricta** (`===`): sin conversión de tipo sorpresa aquí, a diferencia de `if (x == y)`.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | `if`/`else if`/`else` y `switch` (comparación estricta `===`) estructuran el control de flujo. `??` y `?.` gestionan correctamente los valores `null`/`undefined`. |
+| **Herramientas utilizables** | Operador ternario `? :`, coalescencia nula `??`, encadenamiento opcional `?.`. |
+| **Trampas a evitar** | Usar `==` (conversiones de tipo sorprendentes); probar `if (array)` pensando que un array vacío es falsy: es truthy en JavaScript, a diferencia de PHP. |
+| **Buenas prácticas** | Preferir siempre `===`/`!==` a `==`/`!=`; usar `array.length === 0` para comprobar si un array está vacío. |
