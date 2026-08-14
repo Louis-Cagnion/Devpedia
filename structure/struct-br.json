@@ -200,6 +200,29 @@
       ]
     },
     {
+      "id": "infrastructure",
+      "label": "Infrastructure",
+      "folder": "Infrastructure",
+      "chapters": [
+        {
+          "id": "api-et-http",
+          "label": "As trocas de dados: API e HTTP"
+        },
+        {
+          "id": "json",
+          "label": "O formato JSON"
+        },
+        {
+          "id": "cpu-vs-gpu",
+          "label": "CPU vs GPU: o cálculo paralelo"
+        },
+        {
+          "id": "le-cloud",
+          "label": "O que é a nuvem (cloud)?"
+        }
+      ]
+    },
+    {
       "id": "langages-de-balisage",
       "label": "Langages de balisage",
       "folder": "Langages de balisage",
@@ -567,6 +590,37 @@
               "label": "Módulos, pip e ambientes virtuais"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "mathematiques",
+      "label": "Mathématiques",
+      "folder": "Mathématiques",
+      "chapters": [
+        {
+          "id": "la-fonction-mathematique",
+          "label": "A função matemática"
+        },
+        {
+          "id": "vecteurs-et-produit-scalaire",
+          "label": "Vetores e produto escalar"
+        },
+        {
+          "id": "matrices-et-produit-matriciel",
+          "label": "As matrizes e o produto matricial"
+        },
+        {
+          "id": "le-logarithme",
+          "label": "O logaritmo"
+        },
+        {
+          "id": "les-probabilites-de-base",
+          "label": "As probabilidades básicas"
+        },
+        {
+          "id": "la-derivee-et-le-gradient",
+          "label": "A derivada e o gradiente"
         }
       ]
     }
