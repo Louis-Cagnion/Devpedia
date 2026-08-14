@@ -11,9 +11,8 @@
 - `content-es/` : 123 occurrences dans 56 fichiers, à traiter une fois `content-es/` à jour structurellement.
 
 ## Traductions ES à rattraper
-- `Bash` existe en catégorie plate en ES au lieu d'un sous-dossier de `Shells` (BR déjà corrigé).
-- Audit structurel complet (comme celui fait pour BR) encore à faire pour ES.
-- Quand la catégorie IA sera traduite pour ES, l'écrire directement en subjects (comme la structure FR actuelle), pas à plat.
+- Structure des dossiers `content-es/` désormais alignée sur le FR (2026-08-14) : 14 catégories créées, IA + ses 6 subjects, Shells + Bash/PowerShell/Zsh, OCaml, chacun avec sa page d'intro traduite. Reste à traduire tous les chapitres à l'intérieur (volumineux, non commencé).
+- `ui-strings.json` n'a pas d'entrées `categoryLabels`/`subjectLabels` pour `es` (seul `br` les a) : tant que ce n'est pas ajouté, la sidebar/navbar/breadcrumb ES affichent les noms de dossiers bruts en français pour les catégories/subjects. À faire en même temps qu'un futur passage de traduction ES, sur le modèle de ce qui a été fait pour BR.
 - 6 langues manquantes en plus d'ES : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
 
 ## Lecture audio automatique du site
