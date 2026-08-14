@@ -11,6 +11,37 @@
       ]
     },
     {
+      "id": "bases-de-donnees",
+      "label": "Bases de données",
+      "folder": "Bases de données",
+      "chapters": [
+        {
+          "id": "modeles-en-etoile",
+          "label": "O modelo em estrela"
+        },
+        {
+          "id": "architecture-medaillon",
+          "label": "A arquitetura medalhão"
+        },
+        {
+          "id": "table-pont",
+          "label": "A tabela ponte"
+        },
+        {
+          "id": "schemas-et-tables-techniques",
+          "label": "Esquemas e tabelas técnicas"
+        },
+        {
+          "id": "entrepot-vs-data-lake",
+          "label": "Data warehouse contra data lake"
+        },
+        {
+          "id": "les-index",
+          "label": "Os índices"
+        }
+      ]
+    },
+    {
       "id": "bases-de-l-informatique",
       "label": "Bases de l'informatique",
       "folder": "Bases de l'informatique",

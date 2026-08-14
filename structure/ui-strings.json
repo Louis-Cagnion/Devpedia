@@ -60,6 +60,7 @@
     "pageFallbackNotice": "Esta página ainda não foi traduzida: mostrando em outro idioma disponível.",
     "categoryLabels": {
       "acceuil": "Início",
+      "bases-de-donnees": "Bancos de dados",
       "bases-de-l-informatique": "Fundamentos da computação",
       "bash": "Bash",
       "ci-cd": "CI/CD",
