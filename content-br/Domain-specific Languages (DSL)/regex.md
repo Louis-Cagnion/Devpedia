@@ -1,37 +1,41 @@
-# A expressão regular
+---
+order: 1
+---
 
-## O que é uma expressão regular?
+# A regex
 
-Uma **regex** (expressão regular, *regular expression*) é uma mini-linguagem que descreve um **padrão** (pattern) de caracteres. Este padrão serve para procurar, validar ou extrair partes de texto que correspondam a uma determinada estrutura.
+## O que é uma regex?
 
-Não se trata de uma linguagem de programação: não há variáveis, não há loops, não há funções. Uma expressão regular precisa de ser interpretada por um **motor de expressões regulares**, integrado na linguagem que estiveres a utilizar (JavaScript, Python, etc.), através de métodos como `.test()` ou `.match()`.
+Uma **regex** (expressão regular, *regular expression*) é uma mini-linguagem que descreve um **padrão** (pattern) de caracteres. Esse padrão serve para buscar, validar ou extrair partes de texto que correspondam a uma estrutura dada.
 
-## Noções básicas de sintaxe
+Isso **não é** uma linguagem de programação: sem variáveis, sem laços, sem funções. Uma regex precisa ser interpretada por um **motor de regex**, integrado à linguagem que você usa (JavaScript, Python, etc.), via métodos como `.test()` ou `.match()`.
+
+## As bases da sintaxe
 
 ### Caracteres literais
 
-Um carácter normal numa expressão regular corresponde exatamente a si próprio:
+Um caractere normal em uma regex corresponde exatamente a si mesmo:
 
-```regex
-chat
+```text
+gato
 ```
 
-Esta expressão regular corresponde à sequência de caracteres «`chat`», em qualquer parte do texto.
+Essa regex corresponde à sequência de caracteres `gato`, em qualquer lugar do texto.
 
 ### As classes de caracteres
 
 | Símbolo | Significado                          |
 |---------|-----------------------------------------|
-| `.`     | Qualquer carácter (exceto retorno de linha) |
-| `\d`    | Um algarismo (0-9)                        |
-| `\D`    | Tudo menos um número                    |
-| `\w`    | Uma letra, um algarismo ou `_`            |
-| `\W`    | Qualquer coisa, exceto uma letra/número/ `_`         |
-| `\s`    | Um espaço (espaço, tabulação, retorno de linha) |
-| `\S`    | Qualquer coisa menos um espaço                     |
+| `.`     | Qualquer caractere (exceto quebra de linha) |
+| `\d`    | Um dígito (0-9)                        |
+| `\D`    | Tudo exceto um dígito                    |
+| `\w`    | Uma letra, um dígito ou `_`            |
+| `\W`    | Tudo exceto uma letra/dígito/`_`         |
+| `\s`    | Um espaço (espaço, tabulação, quebra de linha) |
+| `\S`    | Tudo exceto um espaço                     |
 | `[abc]` | Um único caractere entre `a`, `b` ou `c`  |
-| `[^abc]`| Um único carácter que não é nem `a`, nem `b`, nem `c` |
-| `[a-z]` | Apenas um carácter entre `a` e `z`       |
+| `[^abc]`| Um único caractere que não seja `a`, `b`, nem `c` |
+| `[a-z]` | Um único caractere entre `a` e `z`       |
 
 ### Os quantificadores
 
@@ -41,127 +45,127 @@ Esta expressão regular corresponde à sequência de caracteres «`chat`», em q
 | `+`      | 1 ou mais vezes                    |
 | `?`      | 0 ou 1 vez (torna opcional)           |
 | `{n}`    | Exatamente n vezes                      |
-| `{n,}`   | n vezes, no mínimo, sem limite máximo           |
+| `{n,}`   | n vezes no mínimo, sem máximo           |
 | `{n,m}`  | Entre n e m vezes                      |
 
 ### As âncoras
 
 | Símbolo | Significado                  |
 |---------|----------------------------------|
-| `^`     | Início da linha/cadeia        |
-| `$`     | Fim da linha/cadeia          |
+| `^`     | Início da linha/string        |
+| `$`     | Fim da linha/string          |
 
 ### Os grupos
 
-```regex
+```text
 (abc)
 ```
 
-Um grupo de captura: isola uma parte do padrão para poder **recuperar** o que correspondeu (`match[1]`, `match[2]`...), e permite aplicar um quantificador a vários caracteres de uma só vez.
+Um grupo de captura: isola uma parte do padrão para poder **recuperar** o que ele capturou (`match[1]`, `match[2]`...), e permite aplicar um quantificador a vários caracteres de uma vez.
 
-```regex
+```text
 (?:abc)
 ```
 
-Um grupo sem captura: agrupa sem criar qualquer entrada recuperável no resultado do jogo.
+Um grupo não capturante: agrupa sem criar uma entrada recuperável no resultado do match.
 
-### As asserções (lookahead / lookbehind)
+### As assertivas (lookahead / lookbehind)
 
-Estas verificam o que existe à volta de uma posição, **sem consumir** esses caracteres na correspondência.
+Elas verificam o que existe ao redor de uma posição, **sem consumir** esses caracteres no match.
 
 | Símbolo    | Significado                              |
 |------------|----------------------------------------------|
 | `(?=abc)`  | Deve ser seguido de `abc`                    |
 | `(?!abc)`  | Não deve ser seguido de `abc`              |
-| `(?<=abc)` | Deve ser precedido por `abc`                  |
+| `(?<=abc)` | Deve ser precedido de `abc`                  |
 | `(?<!abc)` | Não deve ser precedido de `abc`            |
 
 ## Os flags (opções globais)
 
-Os sinalizadores devem ser colocados após o último «`/`» da expressão regular em JavaScript:
+Os flags são colocados depois da última `/` da regex em JavaScript:
 
 ```javascript
-/motif/flags
+/padrao/flags
 ```
 
-| Sinalizador | Efeito                                       |
+| Flag | Efeito                                       |
 |------|----------------------------------------------|
-| `g`  | Pesquisa **global** (todas as ocorrências, não apenas a primeira) |
-| `i`  | Não distingue maiúsculas de minúsculas |
-| `m`  | Modo multilinha (`^` e `$` aplicam-se a cada linha) |
+| `g`  | Busca **global** (todas as ocorrências, não apenas a primeira) |
+| `i`  | Ignora maiúsculas/minúsculas |
+| `m`  | Modo multilinha (`^` e `$` se aplicam a cada linha) |
 
 ## Exemplo completo, construído passo a passo
 
-Objetivo: identificar uma linha que contenha **apenas** um link Markdown, do tipo `[texto](url)`.
+Objetivo: reconhecer uma linha que contenha **apenas** um link Markdown, do tipo `[texto](url)`.
 
-### Passo 1: os colchetes literais
+### Etapa 1: os colchetes literais
 
-Em expressões regulares, `[` e `]` são caracteres **especiais** (servem para definir uma classe de caracteres, como `[abc]`, visto anteriormente). Para corresponder a um parêntese **literal** (o verdadeiro caractere `[` do texto), é necessário escapar o caractere com uma barra invertida:
+Em regex, `[` e `]` são caracteres **especiais** (servem para escrever uma classe de caracteres, como `[abc]` visto acima). Para corresponder a um colchete **literal** (o caractere `[` real do texto), é preciso escapá-lo com uma barra invertida:
 
-```regex
+```text
 \[
 ```
 
-```regex
+```text
 \]
 ```
 
 `\[` corresponde ao caractere `[`, e `\]` corresponde ao caractere `]`, nada mais.
 
-### Passo 2: o texto entre parênteses retos
+### Etapa 2: o texto dentro dos colchetes
 
-Entre os dois colchetes, pretende-se aceitar **qualquer carácter, exceto** um colchete de fecho (caso contrário, a expressão regular poderia terminar prematuramente ou corresponder a vários links de uma só vez). Utiliza-se uma classe de caracteres **negativa**:
+Entre os dois colchetes, queremos aceitar **qualquer caractere, exceto** um colchete de fechamento (senão a regex poderia parar cedo demais ou corresponder a vários links de uma vez). Usa-se uma classe de caracteres **negativa**:
 
-```regex
+```text
 [^\]]
 ```
 
-- As `[ ]` aqui representam a sintaxe real das classes de caracteres (não literal, ao contrário do passo 1).
-- `^` Na primeira posição **dentro** **de** uma classe, significa «qualquer, exceto»; portanto, «`[^\]]`» significa «qualquer carácter, exceto `]`».
-- Adicione `*` para repetir isto «0 ou mais vezes» (um texto de qualquer comprimento, ou mesmo vazio):
+- Os `[ ]` aqui são a sintaxe real de classe de caracteres (não literal, ao contrário da etapa 1).
+- `^` na primeira posição **dentro** de uma classe significa "tudo exceto": então `[^\]]` significa "qualquer caractere exceto `]`".
+- Adicione `*` para repetir isso "0 ou mais vezes" (um texto de qualquer comprimento, ou até vazio):
 
-```regex
+```text
 [^\]]*
 ```
 
-Também queremos **recuperar** este texto posteriormente (para saber o que está entre os colchetes) → colocamo-lo num grupo de captura com «`( )`»:
+Também queremos **recuperar** esse texto depois (para saber o que há entre os colchetes) → envolvemos com um grupo capturante com `( )`:
 
-```regex
+```text
 ([^\]]*)
 ```
 
-### Etapa 3: montar os ganchos e o conjunto
+### Etapa 3: montar os colchetes e o grupo
 
-```regex
+```text
 \[([^\]]*)\]
 ```
 
-O resultado é: um «`[`» literal, seguido do texto capturado e, por fim, um «`]`» literal. Corresponde, por exemplo, a `[texto]`, `[]` (texto vazio), `[mon super lien]`...
+Isso dá: um `[` literal, depois o texto capturado, depois um `]` literal. Corresponde por exemplo a `[texto]`, `[]` (texto vazio), `[meu super link]`...
 
-### Passo 4: a mesma lógica para os parênteses
+### Etapa 4: a mesma lógica para os parênteses
 
-O mesmo princípio, mas para o «`(url)`»:
+Mesmo princípio, mas para `(url)`:
 
-- `\(` e `\)` → parênteses literais com caracteres de escape (também especiais em expressões regulares, normalmente utilizados para grupos).
-- No interior, pretendemos o conteúdo do URL: qualquer carácter, exceto um espaço (`\s`) e exceto um parêntese de fecho (`)`): caso contrário, a expressão regular poderia incluir texto após o link por engano.
+- `\(` e `\)` → parênteses literais escapados (também especiais em regex, normalmente usados para grupos).
+- Dentro, queremos o conteúdo da URL: qualquer caractere exceto um espaço (`\s`) e exceto um parêntese de fechamento (`)`): senão a regex poderia incluir texto depois do link por engano.
 
-```regex
+```text
 [^\s)]+
 ```
 
-Aqui utiliza-se `+` (pelo menos uma vez) em vez de `*`, uma vez que uma URL vazia não faz sentido.
+Aqui usamos `+` (1 vez no mínimo) em vez de `*`, pois uma URL vazia não faz sentido.
 
-Este grupo também é abrangido:
+Também capturamos esse grupo:
 
-```regex
+```text
 \(([^\s)]+)\)
 ```
 
-### Passo 5: exigir que seja toda a linha
+### Etapa 5: exigir que seja toda a linha
 
-Por enquanto, a expressão regular poderia corresponder a um link **no meio** de uma frase mais longa. Se quiseres que ela só corresponda quando **toda a linha** for exatamente esse link (sem nada antes nem depois), adiciona as âncoras mencionadas acima:
+Por enquanto, a regex poderia corresponder a um link **no meio** de uma frase mais longa. Se você quiser que ela só corresponda quando **toda a linha** for exatamente esse link (nada antes, nada depois), adicione as âncoras vistas acima:
 
-```regex
+```text
 ^\[([^\]]*)\]\(([^\s)]+)\)$
 ```
 
@@ -174,20 +178,35 @@ Por enquanto, a expressão regular poderia corresponder a um link **no meio** de
 const regex = /^\[([^\]]*)\]\(([^\s)]+)\)$/;
 ```
 
-Resumo das faixas:
+Resumo das partes:
 
 - `^` → início de linha obrigatório
-- `\[` → um`[`o literal
+- `\[` → um `[` literal
 - `([^\]]*)` → grupo 1: o texto do link (tudo exceto `]`)
-- `\]` → um`]`o literal
-- `\(` → uma «`(`» literal
-- `([^\s)]+)` → grupo 2: o URL (tudo, exceto espaços e `)`)
-- `\)` → uma «`)`» literal
+- `\]` → um `]` literal
+- `\(` → um `(` literal
+- `([^\s)]+)` → grupo 2: a URL (tudo exceto espaço e `)`)
+- `\)` → um `)` literal
 - `$` → fim de linha obrigatório
 
-Com `"[mon lien](https://exemple.com)".match(regex)`, obtém `match[1] = "mon lien"` e `match[2] = "https://exemple.com"`.
+Com `"[meu link](https://exemplo.com)".match(regex)`, você obtém `match[1] = "meu link"` e `match[2] = "https://exemplo.com"`.
 
-## Para saber mais
+> **Armadilha:** uma regex permissiva demais (por exemplo, esquecer de ancorar com `^`/`$`) pode corresponder a muito mais do que o previsto: um padrão de validação de email sem ancoragem aceitaria "qualquer coisa contendo um @" no meio de um texto mais longo, não apenas um endereço de email completo.
+>
+> **Boa prática:** testar uma regex em casos-limite deliberadamente traiçoeiros (string vazia, caracteres especiais, texto mais longo que o previsto) antes de usá-la em produção: uma ferramenta como regex101.com permite fazer isso interativamente.
 
-- [MDN: Expressões regulares](https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Regular_expressions)
-- [regex101.com](https://regex101.com): testador interativo de expressões regulares com explicações em tempo real
+## Para ir mais longe
+
+- [Expressões regulares (MDN, Mozilla Developer Network, a documentação de referência da web)](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Regular_expressions)
+- [regex101.com](https://regex101.com): testador de regex interativo com explicações ao vivo
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Uma regex descreve um padrão de caracteres para buscar, validar ou extrair texto, interpretada por um motor de regex integrado à linguagem hospedeira, não uma linguagem de programação completa. |
+| **Ferramentas utilizáveis** | Classes de caracteres (`\d`, `\w`, `\s`), quantificadores (`*`, `+`, `?`, `{n,m}`), grupos capturantes, flags (`g`, `i`, `m`). |
+| **Armadilhas a evitar** | Esquecer de ancorar um padrão (`^`/`$`) que deve corresponder à string inteira, não apenas a uma parte. |
+| **Boas práticas** | Construir uma regex complexa passo a passo, testando cada adição; verificar seu comportamento em casos-limite antes de usá-la em produção. |

@@ -1,20 +1,24 @@
+---
+order: 2
+---
+
 # SQL
 
-O SQL (*Structured Query Language*) é uma linguagem com um único objetivo: consultar e manipular dados armazenados sob a forma de tabelas. Tal como a regex, não é uma linguagem de programação generalista: não possui loops, nem funções definidas pelo usuário, nem variáveis no sentido clássico. É interpretada por um motor de base de dados (MySQL, PostgreSQL, SQL Server, SQLite...), geralmente controlada a partir de uma linguagem anfitriã (PHP, Python, JS...) através de um conector.
+SQL (*Structured Query Language*) é uma linguagem com um único propósito: consultar e manipular dados armazenados na forma de tabelas. Como [a regex](/?c=domain-specific-languages-dsl&p=regex), não é uma linguagem de programação generalista: não tem laços, nem funções definidas pelo usuário, nem variáveis no sentido clássico. Ela é interpretada por um motor de banco de dados ([MySQL](https://dev.mysql.com/doc/), [PostgreSQL](https://www.postgresql.org/docs/), [SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/), [SQLite](https://sqlite.org/docs.html)...), geralmente controlada a partir de uma linguagem hospedeira ([PHP](/?c=langages-de-programmation&s=php&p=php), [Python](/?c=langages-de-programmation&s=python&p=python), [JS](/?c=langages-de-programmation&s=javascript&p=javascript)...) via um conector.
 
-## Uma tabela = um conjunto de estruturas / uma lista de dicionários
+## Uma tabela, como uma planilha
 
-Uma tabela relacional tem colunas fixas (como os campos de um `struct` em C ou as chaves de um `dict` em Python); cada linha é uma instância dessa estrutura.
+Uma tabela relacional se parece com uma planilha: colunas fixas, nomeadas antecipadamente (`id`, `nome`, `cidade`...), e cada linha representa um registro completo que preenche todas essas colunas.
 
 ```sql
-SELECT id, nome FROM clients WHERE cidade = 'Lyon';
+SELECT id, nome FROM clientes WHERE cidade = 'Lyon';
 ```
 
-«Colunas `id` / `nome`, da tabela `clients`, apenas as linhas em que `cidade = 'Lyon'`.» `SELECT *` seleciona todas as colunas.
+"Colunas `id`/`nome`, da tabela `clientes`, apenas as linhas onde `cidade = 'Lyon'`." `SELECT *` seleciona todas as colunas.
 
 ## As funções de agregação
 
-Estas resumem várias linhas num único valor:
+Elas resumem várias linhas em um único valor:
 
 | Função | Papel |
 |---|---|
@@ -24,87 +28,114 @@ Estas resumem várias linhas num único valor:
 | `MAX(coluna)` / `MIN(coluna)` | Valor máximo / mínimo |
 
 ```sql
-SELECT COUNT(*) AS nb_clients FROM clients WHERE cidade = 'Lyon';
+SELECT COUNT(*) AS nb_clientes FROM clientes WHERE cidade = 'Lyon';
 ```
 
-`AS nome` atribui um alias a uma coluna do resultado (neste caso, a coluna calculada passará a chamar-se «`nb_clients`»).
+`AS nome` dá um alias a uma coluna do resultado (aqui, a coluna calculada se chamará `nb_clientes`).
 
-## `JOIN` : combinar duas tabelas com base numa coluna comum
+## `JOIN`: combinar duas tabelas por uma coluna comum
 
-Equivalente declarativo para emparelhar duas coleções através de uma chave partilhada, em vez de escrever um ciclo com uma pesquisa manual:
+Equivalente declarativo de emparelhar duas coleções por uma chave compartilhada, em vez de escrever um laço com uma busca manual:
 
 ```sql
-SELECT c.nome, v.date_achat
-FROM clients c
-JOIN ventes v ON v.client_id = c.id; -- INNER JOIN : les lignes sans correspondance disparaissent
+SELECT c.nome, v.data_compra
+FROM clientes c
+JOIN vendas v ON v.cliente_id = c.id; -- INNER JOIN: as linhas sem correspondencia desaparecem
 ```
 
 ```sql
-SELECT c.nome, v.date_achat
-FROM clients c
-LEFT JOIN ventes v ON v.client_id = c.id; -- garde TOUTES les lignes de gauche, NULL si pas de correspondance
+SELECT c.nome, v.data_compra
+FROM clientes c
+LEFT JOIN vendas v ON v.cliente_id = c.id; -- mantem TODAS as linhas da esquerda, NULL se nao houver correspondencia
 ```
 
-- `c` / `v` são aliases de tabela, indispensáveis sempre que duas tabelas partilham o nome de uma coluna (por exemplo, `c.nome` versus uma eventual `v.nome`, sem ambiguidade).
-- `JOIN` (ou `INNER JOIN`): mantém apenas as linhas que correspondem em ambos os lados.
-- `LEFT JOIN` : mantém todas as linhas da tabela da esquerda; as colunas da direita são substituídas por «`NULL`» se não houver correspondência (útil quando se pretende listar *todos os elementos*, independentemente de ter sido encontrada ou não uma correspondência; por exemplo: todos os clientes, quer já tenham comprado ou não).
+- `c`/`v` são aliases de tabela, indispensáveis assim que duas tabelas compartilham um nome de coluna (`c.nome` vs uma eventual `v.nome`, sem ambiguidade).
+- `JOIN` (ou `INNER JOIN`): mantém apenas as linhas que correspondem dos dois lados.
+- `LEFT JOIN`: mantém todas as linhas da tabela da esquerda, colunas da direita com `NULL` se não houver correspondência: útil quando se quer listar *todo mundo*, correspondência encontrada ou não (ex: todos os clientes, tenham comprado ou não).
 
-## Utilizar o SQL a partir do PHP com o PDO
+> **Armadilha:** usar `JOIN` (INNER) quando na verdade se quer *todo mundo*: um cliente sem nenhuma venda desapareceria silenciosamente do resultado, enquanto um `LEFT JOIN` o teria mantido com colunas em `NULL`.
+>
+> **Boa prática:** perguntar-se explicitamente, antes de escrever a junção, se as linhas sem correspondência devem desaparecer (`JOIN`) ou permanecer visíveis (`LEFT JOIN`); ambas produzem um resultado sintaticamente válido, mas semanticamente diferente.
 
-O PDO (*PHP Data Objects*) é a interface nativa do PHP para interagir com uma base de dados, independentemente do seu motor.
+## Controlar o SQL a partir do PHP com PDO
+
+PDO (*PHP Data Objects*) é a interface nativa do PHP para dialogar com um banco de dados, seja qual for seu motor.
 
 ```php
 <?php
-$pdo = new PDO('mysql:host=localhost;dbname=boutique', 'utilisateur', 'motdepasse');
+$pdo = new PDO('mysql:host=localhost;dbname=loja', 'usuario', 'senha');
 
-$stmt = $pdo->prepare('SELECT * FROM clients WHERE ville = :ville');
-$stmt->execute([':ville' => 'Lyon']);
+$stmt = $pdo->prepare('SELECT * FROM clientes WHERE cidade = :cidade');
+$stmt->execute([':cidade' => 'Lyon']);
 
-$linha  = $stmt->fetch(\PDO::FETCH_ASSOC);    // uma única linha, tabela associativa
-$toutes = $stmt->fetchAll(\PDO::FETCH_ASSOC); // todas as linhas
+$linha  = $stmt->fetch(\PDO::FETCH_ASSOC);     // uma unica linha, array associativo
+$todas  = $stmt->fetchAll(\PDO::FETCH_ASSOC);  // todas as linhas
 ?>
 ```
 
-O ciclo é sempre o mesmo: `prepare()` (escrever a consulta, com espaços reservados como `:cidade`) → `execute()` (introduzir os valores reais) → `fetch()` / `fetchAll()` (obter o resultado).
+O ciclo é sempre o mesmo: `prepare()` (escrever a consulta, com espaços reservados como `:cidade`) → `execute()` (fornecer os valores reais) → `fetch()`/`fetchAll()` (recuperar o resultado).
 
-> **Nota:** `$pdo->query($sql)` é um atalho **sem** espaço reservado, utilizável apenas se `$sql` for uma cadeia de caracteres 100% fixa, sem qualquer variável externa concatenada. Assim que um único valor externo (usuário, URL, sessão...) for incluído na consulta, é necessário utilizar `prepare()` / `execute()`.
+> **Nota:** `$pdo->query($sql)` é um atalho **sem** espaço reservado, utilizável apenas se `$sql` for uma string 100% fixa, sem nenhuma variável externa concatenada nela. Assim que um único valor externo (usuário, URL, sessão...) entra na consulta, é preciso passar por `prepare()`/`execute()`.
 
-## Injeção SQL: por que nunca se deve concatenar um valor externo
+## Injeção SQL: por que nunca concatenar um valor externo
 
 ```php
 <?php
 // NUNCA:
-$sql = "SELECT * FROM clients WHERE ville = '" . $_GET['ville'] . "'";
+$sql = "SELECT * FROM clientes WHERE cidade = '" . $_GET['cidade'] . "'";
 ?>
 ```
 
-Se `$_GET['cidade']` contivesse `Lyon' OR '1'='1`, a consulta tornar-se-ia uma condição sempre verdadeira, devolvendo todas as linhas da tabela. Equivalente conceptual a um estouro de buffer em C: uma entrada não controlada que altera a **estrutura** do comando, em vez de se manter como um simples dado.
+Se `$_GET['cidade']` contivesse `Lyon' OR '1'='1`, a consulta se tornaria uma condição sempre verdadeira, retornando todas as linhas da tabela. Equivalente conceitual de um [estouro de buffer](/?c=langages-de-programmation&s=c&p=memoire) em C: uma entrada não controlada que modifica a **estrutura** do comando, em vez de permanecer um simples dado.
 
-Os espaços reservados denominados (`:cidade`) impedem isso estruturalmente: o valor passado para `execute()` é **sempre** tratado como dados puros pelo driver, nunca reinterpretado como SQL, independentemente do seu conteúdo.
+Os espaços reservados nomeados (`:cidade`) impedem isso estruturalmente: o valor passado a `execute()` é **sempre** tratado como dado puro pelo driver, nunca reinterpretado como SQL, seja qual for seu conteúdo.
 
 ```php
 <?php
-// A construção dinâmica de uma cláusula WHERE continua a ser segura,
-// desde que apenas os NOMES dos placeholders sejam concatenados — nunca os próprios valores:
-function construireEt(array $criteres): array
+// Construir dinamicamente uma clausula WHERE continua seguro,
+// desde que apenas os NOMES dos placeholders sejam concatenados, nunca os valores em si:
+function construirE(array $criterios): array
 {
-    $clauses = [];
-    $params  = [];
-    foreach ($criteres as $coluna => $valor) {
-        $clauses[] = "{$coluna} = :{$coluna}";
+    $clausulas = [];
+    $params    = [];
+    foreach ($criterios as $coluna => $valor) {
+        $clausulas[] = "{$coluna} = :{$coluna}";
         $params[":{$coluna}"] = $valor;
     }
-    return [implode(' AND ', $clauses), $params];
+    return [implode(' AND ', $clausulas), $params];
 }
-// construireEt(['cidade' => 'Lyon']) -> ["cidade = :cidade", [':cidade' => 'Lyon']]
+// construirE(['cidade' => 'Lyon']) -> ["cidade = :cidade", [':cidade' => 'Lyon']]
 ?>
 ```
 
-O texto SQL gerado nunca contém o valor real, apenas o nome literal do placeholder (`:cidade`); o valor real é enviado separadamente em `$params`, utilizado por `execute($params)`.
+O texto SQL gerado nunca contém o valor real, apenas o nome literal do placeholder (`:cidade`): o valor real vai separadamente em `$params`, usado por `execute($params)`.
 
-> **Nota (segurança):** este mecanismo protege os **valores** (`$valor`), mas não os **nomes das colunas** (`$coluna`): estes são concatenados diretamente no SQL, sem passar por um placeholder (isso não é tecnicamente possível: o PDO só permite passar valores como parâmetros, nunca nomes de colunas ou de tabelas). Se `$criteres` proviesse diretamente de uma entrada do usuário não filtrada (por exemplo, `construireEt($_GET)`), um nome de coluna falsificado poderia reintroduzir uma injeção SQL. `$coluna` deve, portanto, provir sempre de uma lista branca de colunas autorizadas previamente, nunca diretamente de uma entrada externa.
+> **Nota (segurança):** esse mecanismo protege os **valores** (`$valor`), mas não os **nomes de colunas** (`$coluna`): estes são concatenados diretamente no SQL, sem passar por um placeholder (isso não é tecnicamente possível: PDO só permite parametrizar valores, nunca nomes de colunas ou tabelas). Se `$criterios` viesse diretamente de uma entrada do usuário não filtrada (ex. `construirE($_GET)`), um nome de coluna forjado poderia reintroduzir uma injeção SQL. `$coluna` deve, portanto, sempre vir de uma lista branca de colunas autorizadas previamente, nunca diretamente de uma entrada externa.
 
-## Para saber mais
+## O princípio do menor privilégio
 
-- [Documentação PDO: php.net](https://www.php.net/manual/fr/book.pdo.php)
+Além da injeção SQL (que protege o *como* se consulta o banco), uma boa prática de segurança trata do *quem*: a conta usada por uma aplicação para se conectar ao banco nunca deveria ter mais direitos do que ela realmente precisa.
+
+```sql
+-- em vez de dar todos os direitos a uma unica conta aplicativa:
+GRANT SELECT, INSERT, UPDATE ON loja.pedidos TO 'app_loja'@'%';
+-- sem DROP, DELETE, nem acesso as outras tabelas/bancos, se a aplicacao nunca precisar deles
+```
+
+Concretamente, uma conta aplicativa comprometida (via uma falha no código, um vazamento de credenciais...) só pode causar danos na medida de seus próprios direitos: uma conta limitada a `SELECT`/`INSERT`/`UPDATE` em uma única tabela não permite a um atacante apagar um banco de dados inteiro, mesmo que consiga executar consultas arbitrárias. É uma proteção **complementar** às consultas preparadas, não um substituto: ela limita os danos *se* uma injeção acontecer mesmo assim (bug não detectado, consulta dinâmica mal construída...), em vez de impedir a própria injeção.
+
+## Para ir mais longe
+
+- [Documentação PDO (php.net)](https://www.php.net/manual/pt_BR/book.pdo.php)
 - [W3Schools SQL (em inglês, bom guia de referência de sintaxe)](https://www.w3schools.com/sql/)
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | SQL consulta e manipula tabelas (colunas fixas, linhas = registros). `JOIN` combina duas tabelas por uma coluna comum; `INNER JOIN` elimina as linhas sem correspondência, `LEFT JOIN` as mantém. |
+| **Ferramentas utilizáveis** | `SELECT`/`WHERE`, funções de agregação (`COUNT`/`SUM`/`AVG`), `JOIN`/`LEFT JOIN`, consultas preparadas via PDO. |
+| **Armadilhas a evitar** | Concatenar um valor externo diretamente em uma consulta SQL (injeção SQL); usar `INNER JOIN` quando se quer manter as linhas sem correspondência. |
+| **Boas práticas** | Sempre passar por uma consulta preparada (`prepare`/`execute`) para um valor externo; limitar os direitos da conta aplicativa ao estritamente necessário (princípio do menor privilégio). |
