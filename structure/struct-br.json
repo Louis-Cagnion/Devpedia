@@ -1052,6 +1052,53 @@
           "label": "Arbitragem local vs cloud para um modelo de visão"
         }
       ]
+    },
+    {
+      "id": "ui-ux",
+      "label": "UI-UX",
+      "folder": "UI-UX",
+      "chapters": [
+        {
+          "id": "hierarchie-visuelle",
+          "label": "Hierarquia visual"
+        },
+        {
+          "id": "couleur-et-contraste",
+          "label": "Cor e contraste"
+        },
+        {
+          "id": "typographie",
+          "label": "Tipografia"
+        },
+        {
+          "id": "espacement-et-grille",
+          "label": "Espaçamento e grade (layout)"
+        },
+        {
+          "id": "heuristiques-de-nielsen",
+          "label": "Heurísticas de usabilidade (Nielsen)"
+        },
+        {
+          "id": "accessibilite-ux",
+          "label": "Acessibilidade básica (UX)"
+        },
+        {
+          "id": "recherche-utilisateur",
+          "label": "A pesquisa com usuários"
+        },
+        {
+          "id": "wireframing-et-prototypage",
+          "label": "Wireframing e prototipagem"
+        },
+        {
+          "id": "design-systems",
+          "label": "Design systems"
+        },
+        {
+          "id": "outils-du-metier",
+          "label": "As ferramentas da profissão"
+        }
+      ]
     }
   ]
 }
