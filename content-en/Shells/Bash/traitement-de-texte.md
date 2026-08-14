@@ -20,7 +20,7 @@ grep -l "TODO" *.md           # displays only the NAMES of files containing the 
 grep -q "TODO" *.md           # displays nothing: only used to test for presence (see below)
 ```
 
-Like many Unix commands, these flags are initials of English words rather than arbitrary letters: `-i` = *ignore case*, `-v` = *invert*, `-r` = *recursive*, `-n` = *line number*, `-c` = *count*, `-E` = *extended (regex)*, `-l` = *files with matches (list)*, `-q` = *quiet*. Once you know these words, remembering the flag comes naturally — this pattern comes up in most of the commands in this chapter and the next.
+Like many Unix commands, these flags are initials of English words rather than arbitrary letters: `-i` = *ignore case*, `-v` = *invert*, `-r` = *recursive*, `-n` = *line number*, `-c` = *count*, `-E` = *extended (regex)*, `-l` = *files with matches (list)*, `-q` = *quiet*. Once you know these words, remembering the flag comes naturally; this pattern comes up in most of the commands in this chapter and the next.
 
 Flags combine, sometimes with interactions worth knowing: `grep -rln "pattern" *.md` stacks recursive + list of files + line number, but `-l` **overrides `-n`** (you can't display a line number when only file names are shown). The ignored flag triggers no warning.
 
@@ -33,7 +33,7 @@ grep "error\|warning" file.log    # BRE: alternation is written \|
 grep -E "error|warning" file.log  # ERE: more readable, preferred
 ```
 
-An unescaped `|` with no `-E` is searched for **literally**: `grep "a|b"` looks for the string `a|b`, and so finds nothing most of the time — with no error or warning. This is a classic pitfall. See the [Regex](/?c=domain-specific-languages-dsl&p=regex) chapter for the BRE/ERE difference.
+An unescaped `|` with no `-E` is searched for **literally**: `grep "a|b"` looks for the string `a|b`, and so finds nothing most of the time, with no error or warning. This is a classic pitfall. See the [Regex](/?c=domain-specific-languages-dsl&p=regex) chapter for the BRE/ERE difference.
 
 ### `grep`'s return code
 
@@ -56,7 +56,7 @@ With `-q`, `grep` stops at the first match and displays nothing: this is the for
 
 > This `1` return code explains a confusing behavior under `set -e`: a `grep` that finds nothing makes an entire script fail. The usual workaround is `grep pattern file || true`.
 
-> **`grep` vs. `pgrep`**: despite the similar name, these are two independent commands that don't search the same thing. `grep` searches for a pattern in **text** (a file, a command's output...). `pgrep` (*process grep*, see [Process Management](/?c=shells&s=bash&p=gestion-des-processus)) searches for a pattern in the **list of running processes** and returns PIDs, not lines of text — `ps aux | grep pattern` and `pgrep pattern` actually answer roughly the same question, via two different routes.
+> **`grep` vs. `pgrep`**: despite the similar name, these are two independent commands that don't search the same thing. `grep` searches for a pattern in **text** (a file, a command's output...). `pgrep` (*process grep*, see [Process Management](/?c=shells&s=bash&p=gestion-des-processus)) searches for a pattern in the **list of running processes** and returns PIDs, not lines of text; `ps aux | grep pattern` and `pgrep pattern` actually answer roughly the same question, via two different routes.
 
 ## `sed`: search and replace
 
@@ -70,7 +70,7 @@ sed '3s/old/new/' file.txt        # address "3" -> only line 3
 sed '2,4s/old/new/' file.txt       # address "2,4" -> only lines 2 through 4
 ```
 
-The most used command is `s/pattern/replacement/` (the "s" for *substitute*): it searches for `pattern` (a [regex](/?c=domain-specific-languages-dsl&p=regex)) and replaces it with `replacement`. By default, `sed` only replaces the **first** occurrence found on each line — hence the `g` flag to also handle the following ones:
+The most used command is `s/pattern/replacement/` (the "s" for *substitute*): it searches for `pattern` (a [regex](/?c=domain-specific-languages-dsl&p=regex)) and replaces it with `replacement`. By default, `sed` only replaces the **first** occurrence found on each line: hence the `g` flag to also handle the following ones:
 
 ```bash
 sed 's/old/new/' file.txt        # replaces the 1st occurrence per line, displays the result
@@ -78,13 +78,13 @@ sed 's/old/new/g' file.txt        # 'g' (global): replaces ALL occurrences on ea
 sed -i 's/old/new/g' file.txt     # -i: modifies the file directly (in place), displays nothing
 ```
 
-The other common command is `p` (*print*), which explicitly displays a line — combined with `-n` (which disables the automatic display of every processed line), it makes it possible to display only certain lines rather than the whole file:
+The other common command is `p` (*print*), which explicitly displays a line: combined with `-n` (which disables the automatic display of every processed line), it makes it possible to display only certain lines rather than the whole file:
 
 ```bash
 sed -n '2,4p' file.txt   # -n: displays NOTHING by default; '2,4p': explicitly displays lines 2 through 4
 ```
 
-> **Note:** without `-n`, `sed '2,4p'` would display every line of the file once (default behavior), and lines 2 through 4 a second time (because of the `p`) — `-n` and `p` almost always work as a pair.
+> **Note:** without `-n`, `sed '2,4p'` would display every line of the file once (default behavior), and lines 2 through 4 a second time (because of the `p`): `-n` and `p` almost always work as a pair.
 
 ## `awk`: processing text in columns
 
@@ -122,7 +122,7 @@ sort file.txt | uniq            # removes CONSECUTIVE duplicate lines only
 sort file.txt | uniq -c          # counts the occurrences of each line
 ```
 
-> **Note:** `uniq` only detects **adjacent** duplicates — that's why it's almost always combined with `sort` beforehand, which groups identical lines together.
+> **Note:** `uniq` only detects **adjacent** duplicates: that's why it's almost always combined with `sort` beforehand, which groups identical lines together.
 
 ## `wc`: counting
 
@@ -149,7 +149,7 @@ grep "404" access.log | awk '{ print $1 }' | sort | uniq -c | sort -rn
 
 | | |
 |---|---|
-| **Key takeaways** | `grep` searches, `sed` replaces, `awk` processes by columns — designed to be combined via pipes rather than used in isolation. |
+| **Key takeaways** | `grep` searches, `sed` replaces, `awk` processes by columns, designed to be combined via pipes rather than used in isolation. |
 | **Tools you can use** | `grep -i`/`-v`/`-r`/`-E`, `sed 's/.../.../'`, `awk '{ print $1 }'`, `cut`, `sort`/`uniq`, `wc`. |
 | **Pitfalls to avoid** | An unescaped `\|` with no `-E` in `grep` is searched for literally, with no error or warning; `uniq` with no prior `sort` only detects adjacent duplicates. |
 | **Best practices** | Combine `sort` before `uniq` to deduplicate correctly; use `grep -q` rather than plain `grep` when only the test result (found/not found) matters. |

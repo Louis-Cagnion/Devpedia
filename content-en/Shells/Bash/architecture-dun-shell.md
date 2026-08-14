@@ -4,9 +4,9 @@ order: 13
 
 # How a Shell Works (Internal Architecture)
 
-Everything Bash does on the surface (variables, loops, pipes, redirections) rests on a mechanism simple enough to describe: a loop that reads a line, splits it, interprets it, then launches processes via the standard system calls from [C's process management chapter](/?c=langages-de-programmation&s=c&p=processus) (`fork`, `execve`, `wait`). This chapter describes that mechanism, with the goal of understanding — or even rebuilding — a minimal shell.
+Everything Bash does on the surface (variables, loops, pipes, redirections) rests on a mechanism simple enough to describe: a loop that reads a line, splits it, interprets it, then launches processes via the standard system calls from [C's process management chapter](/?c=langages-de-programmation&s=c&p=processus) (`fork`, `execve`, `wait`). This chapter describes that mechanism, with the goal of understanding, or even rebuilding, a minimal shell.
 
-> **Prerequisite:** this chapter assumes you know what a **system call** and a **file descriptor** (`STDIN_FILENO`, `dup2()`...) are — see [the dedicated chapter](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) in the C section if these concepts aren't clear yet.
+> **Prerequisite:** this chapter assumes you know what a **system call** and a **file descriptor** (`STDIN_FILENO`, `dup2()`...) are; see [the dedicated chapter](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) in the C section if these concepts aren't clear yet.
 
 ## The main loop (REPL)
 
@@ -35,7 +35,7 @@ A typed line is **not** run as-is: Bash applies several expansion passes, in a f
 5. **Pathname expansion** (*globbing*: `*.txt` → the actual list of matching files)
 6. **Quote removal** (the quote characters themselves are never passed on to the final command)
 
-> **Note:** it's this precise order that explains why `"$var"` (with quotes) protects against word splitting (step 4) while `$var` alone is exposed to it — the quotes are only removed at the very last step, after splitting has already happened (or not) on the content they were protecting.
+> **Note:** it's this precise order that explains why `"$var"` (with quotes) protects against word splitting (step 4) while `$var` alone is exposed to it: the quotes are only removed at the very last step, after splitting has already happened (or not) on the content they were protecting.
 
 ## Subshells: fork() with no execve()
 
@@ -46,7 +46,7 @@ In the external-command example below, the child produced by `fork()` calls `exe
 - a command substitution: `result=$(command)`
 - a background command: `command &`
 
-A subshell inherits a **copy** of the parent shell's variables at the moment it starts — but it's a one-way copy, just like exporting an [environment variable](/?c=shells&s=bash&p=variables-denvironnement): any change it makes (`cd`, a variable...) disappears with it when it ends, never reaching the parent.
+A subshell inherits a **copy** of the parent shell's variables at the moment it starts, but it's a one-way copy, just like exporting an [environment variable](/?c=shells&s=bash&p=variables-denvironnement): any change it makes (`cd`, a variable...) disappears with it when it ends, never reaching the parent.
 
 ```bash
 cd /tmp
@@ -97,11 +97,11 @@ The kernel reads the file's first 2 bytes: "#!"
 Re-invokes: execve("/bin/bash", ["/bin/bash", "./script.sh", ...], ...)
 ```
 
-This is why a script with no execute permission (`chmod +x`, see [Permissions and File Manipulation](/?c=shells&s=bash&p=permissions-et-fichiers)) can't be launched directly (`./script.sh` fails), but stays runnable by invoking the interpreter explicitly (`bash script.sh`): in this second case, it's `bash` itself (already executable) that's launched by `execve()` — it's `bash`, not the kernel, that then opens the script as a plain text file to read line by line.
+This is why a script with no execute permission (`chmod +x`, see [Permissions and File Manipulation](/?c=shells&s=bash&p=permissions-et-fichiers)) can't be launched directly (`./script.sh` fails), but stays runnable by invoking the interpreter explicitly (`bash script.sh`): in this second case, it's `bash` itself (already executable) that's launched by `execve()`: it's `bash`, not the kernel, that then opens the script as a plain text file to read line by line.
 
 ## How the shell finds which executable to run
 
-If the typed command contains a `/` (e.g. `./script.sh`, `/bin/ls`), the shell uses it directly. Otherwise, it walks each folder listed in [`$PATH`](/?c=shells&s=bash&p=variables-denvironnement), in order, and stops at the **first** executable file found with that name — a simple `access(path, X_OK)` check repeated on each candidate.
+If the typed command contains a `/` (e.g. `./script.sh`, `/bin/ls`), the shell uses it directly. Otherwise, it walks each folder listed in [`$PATH`](/?c=shells&s=bash&p=variables-denvironnement), in order, and stops at the **first** executable file found with that name, a simple `access(path, X_OK)` check repeated on each candidate.
 
 ## Implementing a pipe (`cmd1 | cmd2`)
 
@@ -133,7 +133,7 @@ waitpid(p1, NULL, 0);
 waitpid(p2, NULL, 0);
 ```
 
-`dup2(source, target)` makes the `target` descriptor (e.g. `STDOUT_FILENO`, which equals `1`) point to the same resource as `source` — it's exactly this mechanism, applied to a pipe's descriptor rather than a file, that links one command's output to the next one's input.
+`dup2(source, target)` makes the `target` descriptor (e.g. `STDOUT_FILENO`, which equals `1`) point to the same resource as `source`: it's exactly this mechanism, applied to a pipe's descriptor rather than a file, that links one command's output to the next one's input.
 
 ## Implementing a redirection (`>`, `<`)
 
@@ -146,11 +146,11 @@ close(fd);
 execve(...);
 ```
 
-`O_TRUNC` corresponds to `>` (overwrites the file), `O_APPEND` to `>>` (appends to the end) — see [Redirections and Pipes](/?c=shells&s=bash&p=redirections-et-pipes) for the behavior observed on the user's side.
+`O_TRUNC` corresponds to `>` (overwrites the file), `O_APPEND` to `>>` (appends to the end); see [Redirections and Pipes](/?c=shells&s=bash&p=redirections-et-pipes) for the behavior observed on the user's side.
 
 ## Job control: `&`, `Ctrl+Z`, `fg`/`bg`
 
-Every pipeline launched forms a **process group** — a shared identifier (`setpgid()`) that lets the shell and the terminal treat every process in the same pipeline as a single unit (e.g. sending a signal to all of them at once), rather than having to target each PID individually. The terminal only gives keyboard control to **one** group at a time (`tcsetpgrp()`), the one in the foreground. `Ctrl+Z` sends the `SIGTSTP` signal to that group (suspends it without ending it), `fg`/`bg` (see [Process Management](/?c=shells&s=bash&p=gestion-des-processus)) respectively give back terminal control or send `SIGCONT` to resume execution in the background.
+Every pipeline launched forms a **process group**, a shared identifier (`setpgid()`) that lets the shell and the terminal treat every process in the same pipeline as a single unit (e.g. sending a signal to all of them at once), rather than having to target each PID individually. The terminal only gives keyboard control to **one** group at a time (`tcsetpgrp()`), the one in the foreground. `Ctrl+Z` sends the `SIGTSTP` signal to that group (suspends it without ending it), `fg`/`bg` (see [Process Management](/?c=shells&s=bash&p=gestion-des-processus)) respectively give back terminal control or send `SIGCONT` to resume execution in the background.
 
 ---
 
@@ -160,9 +160,9 @@ Every pipeline launched forms a **process group** — a shared identifier (`setp
 |---|---|
 | **Key takeaways** | A shell is a REPL loop: read a line, apply expansions in a fixed order, execute (internally for a builtin, or `fork`/`execve`/`wait` for an external command). |
 | **Tools you can use** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` for pipes and redirections, the shebang so a script is recognized as executable. |
-| **Pitfalls to avoid** | Mixing up the order of expansions — it's what explains why `"$var"` protects against word splitting while `$var` alone is exposed to it. |
+| **Pitfalls to avoid** | Mixing up the order of expansions: it's what explains why `"$var"` protects against word splitting while `$var` alone is exposed to it. |
 | **Best practices** | Build your own mini-shell to check your understanding: read loop, parser, expansions, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. |
 
 ## Building your own mini-shell
 
-In summary, a minimal shell in C needs: a read loop, a parser that respects quotes and operators (`|`, `>`, `<`, `&&`), the expansion logic in the right order, `fork`/`execve`/`waitpid` for external commands, directly-called C functions for builtins, and `pipe()`/`dup2()`/`open()` for pipes and redirections. That's literally the whole architecture — the rest (completion, history, coloring...) is just comfort added on top.
+In summary, a minimal shell in C needs: a read loop, a parser that respects quotes and operators (`|`, `>`, `<`, `&&`), the expansion logic in the right order, `fork`/`execve`/`waitpid` for external commands, directly-called C functions for builtins, and `pipe()`/`dup2()`/`open()` for pipes and redirections. That's literally the whole architecture: the rest (completion, history, coloring...) is just comfort added on top.

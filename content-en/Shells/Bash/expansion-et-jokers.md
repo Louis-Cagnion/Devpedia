@@ -4,7 +4,7 @@ order: 8
 
 # Expansion and Wildcards (Globbing)
 
-Before running a command, Bash replaces certain patterns it contains with their actual value — [variables](/?c=shells&s=bash&p=variables) (`$name`), but also file patterns (*globbing*) and brace expansions. Understanding this step (invisible but systematic) explains why some commands behave differently depending on the quotes used.
+Before running a command, Bash replaces certain patterns it contains with their actual value: [variables](/?c=shells&s=bash&p=variables) (`$name`), but also file patterns (*globbing*) and brace expansions. Understanding this step (invisible but systematic) explains why some commands behave differently depending on the quotes used.
 
 ## Globbing: `*`, `?`, `[]`
 
@@ -23,7 +23,7 @@ ls file[a-z].txt  # a single lowercase letter at this position
 | `[a-z]` | A single character within this range |
 | `[^abc]` | A single character that's neither `a`, `b`, nor `c` |
 
-> **Note:** this is **not** a [regex](/?c=domain-specific-languages-dsl&p=regex) — globbing is simpler, specific to how the shell itself interprets file names, even before the command is launched.
+> **Note:** this is **not** a [regex](/?c=domain-specific-languages-dsl&p=regex): globbing is simpler, specific to how the shell itself interprets file names, even before the command is launched.
 
 ## Watch out: what happens if no file matches?
 
@@ -52,7 +52,7 @@ echo {a..e}
 # a b c d e
 ```
 
-> **Note:** unlike globbing, brace expansion doesn't depend on any existing file — `file{1,2,3}.txt` always generates these three strings, whether the matching files exist or not.
+> **Note:** unlike globbing, brace expansion doesn't depend on any existing file: `file{1,2,3}.txt` always generates these three strings, whether the matching files exist or not.
 
 ## Tilde expansion (`~`)
 
@@ -77,7 +77,7 @@ See also [Variables](/?c=shells&s=bash&p=variables) for the single/double quote 
 
 | | |
 |---|---|
-| **Key takeaways** | Before running a command, Bash replaces variables, file patterns (globbing), and brace expansions — an invisible but systematic step. Globbing depends on the files actually present; brace expansion never does. |
+| **Key takeaways** | Before running a command, Bash replaces variables, file patterns (globbing), and brace expansions, an invisible but systematic step. Globbing depends on the files actually present; brace expansion never does. |
 | **Tools you can use** | `*`/`?`/`[abc]` (globbing), `{1,2,3}`/`{1..5}` (braces), `~` (tilde). |
 | **Pitfalls to avoid** | A globbing pattern that matches no file is passed to the command literally, with no error or warning. |
 | **Best practices** | Wrap in double quotes any variable that might contain a space or special character, to disable unwanted word splitting and globbing. |

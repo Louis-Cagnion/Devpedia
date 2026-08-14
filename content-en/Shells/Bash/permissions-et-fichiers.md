@@ -24,7 +24,7 @@ The first 10 characters break down like this:
 +---------------- type (- = file, d = folder, l = symbolic link)
 ```
 
-Each group of three characters represents **read** (`r`), **write** (`w`), and **execute** (`x`), in that order — a `-` means the corresponding right is absent.
+Each group of three characters represents **read** (`r`), **write** (`w`), and **execute** (`x`), in that order: a `-` means the corresponding right is absent.
 
 ## `chmod`: changing permissions
 
@@ -39,7 +39,7 @@ chmod a+r file.txt      # adds read for everyone (all)
 
 ### Octal notation
 
-Each right is worth a power of 2: `r=4`, `w=2`, `x=1` — you add them up for each category (owner, group, others):
+Each right is worth a power of 2: `r=4`, `w=2`, `x=1`: you add them up for each category (owner, group, others):
 
 ```bash
 chmod 755 script.sh
@@ -78,7 +78,7 @@ rm file.txt                  # deletes a file (permanent, no trash bin)
 rm -r folder                 # deletes a folder and all its content
 ```
 
-> **Note:** `rm -rf` (recursive + `-f` to skip confirmations/errors) is irreversible and asks for no confirmation — a mistargeted path (e.g. an extra space in the path, `rm -rf ~ /folder` instead of `rm -rf ~/folder`) can delete far more than intended.
+> **Note:** `rm -rf` (recursive + `-f` to skip confirmations/errors) is irreversible and asks for no confirmation: a mistargeted path (e.g. an extra space in the path, `rm -rf ~ /folder` instead of `rm -rf ~/folder`) can delete far more than intended.
 
 ## `find`: searching for files
 
@@ -99,5 +99,5 @@ See also [Text Processing](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `se
 |---|---|
 | **Key takeaways** | Every file has read/write/execute permissions for owner/group/others. `chmod` changes them (symbolic or octal notation), `chown` changes the owner. |
 | **Tools you can use** | `ls -l`, `chmod`/`chown`, `mkdir`/`cp`/`mv`/`rm`, `find`. |
-| **Pitfalls to avoid** | `rm -rf` without checking the exact target — irreversible, with no confirmation. |
+| **Pitfalls to avoid** | `rm -rf` without checking the exact target (irreversible, with no confirmation). |
 | **Best practices** | `chmod 644` for a normal file, `755` for an executable script/folder; always check a `find ... -delete` command by first testing it without `-delete`. |

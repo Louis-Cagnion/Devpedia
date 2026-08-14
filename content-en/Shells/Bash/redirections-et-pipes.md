@@ -6,7 +6,7 @@ order: 9
 
 Every Unix command communicates by default through three streams: **standard input** (`stdin`, what it reads), **standard output** (`stdout`, what it normally displays), and **standard error** (`stderr`, where error messages go). Redirections and pipes make it possible to redirect these streams to a file or to another command, instead of to the terminal.
 
-> **Note:** these "streams" are actually numbered **file descriptors** (`0`, `1`, `2`) — see the [chapter on system calls and file descriptors](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) (C section) for what actually happens at the operating system level when you redirect them.
+> **Note:** these "streams" are actually numbered **file descriptors** (`0`, `1`, `2`); see the [chapter on system calls and file descriptors](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) (C section) for what actually happens at the operating system level when you redirect them.
 
 ## Redirecting output to a file
 
@@ -15,7 +15,7 @@ echo "Hello" > file.txt    # overwrites file.txt (or creates it) with this conte
 echo "Again" >> file.txt   # appends to the end of file.txt, without overwriting
 ```
 
-> **Note:** `>` silently overwrites the target file's existing content — a classic mistake is using `>` where `>>` was intended, losing the previous content with no warning.
+> **Note:** `>` silently overwrites the target file's existing content: a classic mistake is using `>` where `>>` was intended, losing the previous content with no warning.
 
 ## Redirecting input from a file
 
@@ -38,7 +38,7 @@ command &> all.log                    # Bash shortcut equivalent to "> all.log 2
 
 ## `/dev/null`: discarding an output
 
-A special file that "swallows" everything written to it, never storing anything — useful for discarding a stream you don't need:
+A special file that "swallows" everything written to it, never storing anything, useful for discarding a stream you don't need:
 
 ```bash
 noisy_command > /dev/null 2>&1   # discards all normal output AND all errors
@@ -54,7 +54,7 @@ grep "404" access.log | wc -l   # counts lines containing "404" in the file
 ps aux | sort -k 3 -nr | head -5      # the 5 processes consuming the most CPU
 ```
 
-Every command in a pipe runs simultaneously, one's output feeding the next one's input as it goes — this isn't sequential execution with intermediate storage.
+Every command in a pipe runs simultaneously, one's output feeding the next one's input as it goes: this isn't sequential execution with intermediate storage.
 
 ## Chaining commands based on their result: `;`, `&&`, `||`
 
@@ -94,7 +94,7 @@ if command; then echo "OK"; else echo "FAILED"; fi
 
 ### Watch out with `set -e`
 
-A command placed to the left of an `&&` or an `||` is considered "tested": its failure **does not stop** the script even under `set -e`. This is what allows writing `grep pattern file || true` to deliberately neutralize an expected failure — but it's also a source of surprise if you thought `set -e` protected the whole line.
+A command placed to the left of an `&&` or an `||` is considered "tested": its failure **does not stop** the script even under `set -e`. This is what allows writing `grep pattern file || true` to deliberately neutralize an expected failure, but it's also a source of surprise if you thought `set -e` protected the whole line.
 
 ## `tee`: redirecting while still displaying
 

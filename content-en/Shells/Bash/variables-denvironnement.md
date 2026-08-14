@@ -4,7 +4,7 @@ order: 4
 
 # Environment Variables
 
-An environment variable is a variable automatically passed on to the processes a shell launches — unlike a regular Bash variable, which stays local to the script that declares it, unless explicitly **exported**.
+An environment variable is a variable automatically passed on to the processes a shell launches; unlike a regular Bash variable, which stays local to the script that declares it, unless explicitly **exported**.
 
 ## Local variable vs. exported variable
 
@@ -20,7 +20,7 @@ export EMAIL="john@example.com"  # declaration and export in a single line
 echo "$NAME"    # displays "John" if NAME was exported by the calling script, empty otherwise
 ```
 
-> **Note:** exporting only works one way: from parent to child. A subscript that modifies an exported variable can't propagate that change back to the script that launched it — each process has its own copy of the environment.
+> **Note:** exporting only works one way: from parent to child. A subscript that modifies an exported variable can't propagate that change back to the script that launched it: each process has its own copy of the environment.
 
 ## Common environment variables
 
@@ -43,7 +43,7 @@ echo $PATH
 export PATH="$PATH:/my/scripts/folder"  # adds an extra folder to the search
 ```
 
-> **Note:** order matters — the first folder in `$PATH` containing an executable with that name is the one used, which makes it possible, for instance, to have a custom version of a command take precedence over the system one.
+> **Note:** order matters: the first folder in `$PATH` containing an executable with that name is the one used, which makes it possible, for instance, to have a custom version of a command take precedence over the system one.
 
 ## Shell configuration files
 
@@ -64,7 +64,7 @@ alias gs="git status"
 ll   # equivalent to typing "ls -la"
 ```
 
-An `alias` defined directly in the terminal doesn't survive closing the session — to have it available in every new terminal, it needs to be added to `~/.bashrc`.
+An `alias` defined directly in the terminal doesn't survive closing the session: to have it available in every new terminal, it needs to be added to `~/.bashrc`.
 
 ## `source`: reloading a configuration file
 
@@ -82,7 +82,7 @@ source ~/.bashrc
 
 | | |
 |---|---|
-| **Key takeaways** | An environment variable is automatically passed to child processes, unlike a regular Bash variable — `export` moves it from one to the other, in only one direction (parent to child). |
+| **Key takeaways** | An environment variable is automatically passed to child processes, unlike a regular Bash variable; `export` moves it from one to the other, in only one direction (parent to child). |
 | **Tools you can use** | `export`, `$PATH`, `~/.bashrc` (interactive terminal) vs. `~/.bash_profile` (login), `alias`, `source`. |
-| **Pitfalls to avoid** | Modifying an exported variable in a subscript expecting it to propagate back to the calling script — each process has its own copy of the environment. |
+| **Pitfalls to avoid** | Modifying an exported variable in a subscript expecting it to propagate back to the calling script: each process has its own copy of the environment. |
 | **Best practices** | Put the `export`/`alias` lines meant for every new terminal in `~/.bashrc`; use `source ~/.bashrc` to apply a change without reopening a terminal. |

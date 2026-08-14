@@ -77,7 +77,7 @@ until [ $i -ge 5 ]; do
 done
 ```
 
-`until [ $i -ge 5 ]` is exactly equivalent to `while [ $i -lt 5 ]` — the choice between the two is a matter of readability, depending on which condition you want to express naturally.
+`until [ $i -ge 5 ]` is exactly equivalent to `while [ $i -lt 5 ]`: the choice between the two is a matter of readability, depending on which condition you want to express naturally.
 
 ## `break` and `continue`
 
@@ -103,5 +103,5 @@ done
 |---|---|
 | **Key takeaways** | `for` walks a list, files (globbing), or a range of numbers; `while`/`until` repeat as long as a condition stays true/false. `while read -r line` is the standard combo for reading a file line by line. |
 | **Tools you can use** | Brace expansion (`{1..5}`), C-style `for`, `break`/`continue`. |
-| **Pitfalls to avoid** | Forgetting `-r` with `read` — without it, `\` characters are interpreted as escapes. |
+| **Pitfalls to avoid** | Forgetting `-r` with `read`: without it, `\` characters are interpreted as escapes. |
 | **Best practices** | Use `while read -r line; do ... done < file.txt` to process a text file line by line, rather than a less idiomatic approach. |

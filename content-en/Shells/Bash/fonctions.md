@@ -16,7 +16,7 @@ greet() {
 greet "John"   # Hello John!
 ```
 
-`function greet { ... }` is an alternative form Bash accepts (but not portable to a strictly POSIX `sh`) — `greet() { ... }` is the most universal form.
+`function greet { ... }` is an alternative form Bash accepts (but not portable to a strictly POSIX `sh`); `greet() { ... }` is the most universal form.
 
 ## A function's arguments
 
@@ -31,11 +31,11 @@ summarize() {
 summarize "John" "Smith"
 ```
 
-> **Note:** `$1`, `$2`... inside a function refer to the arguments **of the function**, never those of the enclosing script — they're automatically swapped in during the call, with nothing to configure.
+> **Note:** `$1`, `$2`... inside a function refer to the arguments **of the function**, never those of the enclosing script: they're automatically swapped in during the call, with nothing to configure.
 
 ## No real return value: only an exit code
 
-`return` in Bash does **not** return a value in the PHP/C sense — it only sets the function's **exit code** (an integer from 0 to 255, retrievable via `$?`), exactly like `exit` for an entire script:
+`return` in Bash does **not** return a value in the PHP/C sense: it only sets the function's **exit code** (an integer from 0 to 255, retrievable via `$?`), exactly like `exit` for an entire script:
 
 ```bash
 is_even() {
@@ -68,7 +68,7 @@ echo "Result: $result"  # Result: 10
 
 ## Local variables
 
-Without `local`, a variable assigned inside a function stays visible **globally** after the first call — often an unwanted side effect:
+Without `local`, a variable assigned inside a function stays visible **globally** after the first call, often an unwanted side effect:
 
 ```bash
 compute() {
@@ -85,7 +85,7 @@ See also [Variables](/?c=shells&s=bash&p=variables) (the special variables `$1`,
 
 | | |
 |---|---|
-| **Key takeaways** | A Bash function receives its arguments like a script (`$1`, `$2`...), never via named parameters. `return` only sets an exit code (0-255) — for actual data, `echo` captured via `$(...)` is used. |
+| **Key takeaways** | A Bash function receives its arguments like a script (`$1`, `$2`...), never via named parameters. `return` only sets an exit code (0-255); for actual data, `echo` captured via `$(...)` is used. |
 | **Tools you can use** | `$FUNCNAME`, `$@`/`$#`, `local` for a variable scoped to the function. |
 | **Pitfalls to avoid** | Confusing `return` (status, for `if`) with `echo`+`$(...)` (data, to be stored); forgetting `local`, which makes a variable visible globally after the first call. |
 | **Best practices** | Always declare `local` for a variable that doesn't need to exist outside the function. |

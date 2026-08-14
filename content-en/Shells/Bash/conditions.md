@@ -4,7 +4,7 @@ order: 5
 
 # Conditions
 
-Bash has no comparison operators built into the language like [PHP](/?c=langages-de-programmation&s=php&p=conditions) or [C](/?c=langages-de-programmation&s=c&p=conditions) do — tests rely on **commands** (`test`, `[`, `[[`) whose exit code (`$?`) determines whether the condition is true (`0`) or false (non-zero).
+Bash has no comparison operators built into the language like [PHP](/?c=langages-de-programmation&s=php&p=conditions) or [C](/?c=langages-de-programmation&s=c&p=conditions) do: tests rely on **commands** (`test`, `[`, `[[`) whose exit code (`$?`) determines whether the condition is true (`0`) or false (non-zero).
 
 ## `if` / `then` / `elif` / `else` / `fi`
 
@@ -18,7 +18,7 @@ else
 fi
 ```
 
-- `if` actually evaluates the **exit code** of the command that follows it (here, `[ $age -ge 18 ]`) — `[` is a real command (often a link to `/usr/bin/test`), not a language symbol.
+- `if` actually evaluates the **exit code** of the command that follows it (here, `[ $age -ge 18 ]`): `[` is a real command (often a link to `/usr/bin/test`), not a language symbol.
 - `fi` (`if` backward) closes the block, the way `endif` would in other languages.
 
 ## `[ ]` vs. `[[ ]]`
@@ -122,7 +122,7 @@ esac
 
 | | |
 |---|---|
-| **Key takeaways** | Bash has no comparison operators built into the language — `if` evaluates a command's exit code (`test`, `[`, `[[`). `[[ ]]` (Bash) is more permissive than `[ ]` (POSIX). |
+| **Key takeaways** | Bash has no comparison operators built into the language: `if` evaluates a command's exit code (`test`, `[`, `[[`). `[[ ]]` (Bash) is more permissive than `[ ]` (POSIX). |
 | **Tools you can use** | Numeric operators (`-eq`, `-lt`...), string operators (`==`, `-z`, `-n`), file tests (`-f`, `-d`, `-e`), `case`. |
-| **Pitfalls to avoid** | Using `==` inside a classic `[ ]` thinking it compares numbers — the comparison is done as text, not numerically. |
+| **Pitfalls to avoid** | Using `==` inside a classic `[ ]` thinking it compares numbers: the comparison is done as text, not numerically. |
 | **Best practices** | Prefer `[[ ]]` over `[ ]` in Bash (handles undefined variables better, direct `&&`/`\|\|`) unless strict portability to `sh` is needed. |
