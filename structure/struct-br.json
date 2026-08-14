@@ -216,8 +216,16 @@
           "label": "Repositórios remotos (remotes)"
         },
         {
+          "id": "github-et-plateformes",
+          "label": "GitHub e as plataformas de hospedagem Git"
+        },
+        {
           "id": "resoudre-conflits",
           "label": "Resolver um conflito de fusão"
+        },
+        {
+          "id": "pull-requests-github",
+          "label": "As pull requests no GitHub"
         },
         {
           "id": "rebase",
@@ -226,6 +234,10 @@
         {
           "id": "architecture-interne",
           "label": "A arquitetura interna do Git"
+        },
+        {
+          "id": "issues-et-projets-github",
+          "label": "Issues e gestão de projeto no GitHub"
         }
       ]
     },

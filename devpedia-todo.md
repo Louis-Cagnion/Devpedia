@@ -9,7 +9,7 @@
 - À traiter une fois `content-br/`/`content-es/` à jour structurellement (voir ci-dessous), pour ne pas nettoyer des fichiers qui vont être réécrits.
 
 ## Traductions ES/BR à rattraper
-- **17 fichiers BR encore manquants**, répartis sur 1 catégorie entièrement absente (PowerShell 14) + rattrapage dans une catégorie partielle (Git 3). Ordre de traitement : catégories manquantes par taille croissante.
+- **14 fichiers BR encore manquants** : le sujet PowerShell (`Shells/PowerShell`), entièrement absent.
 - `Bash` existe toujours en catégorie plate en ES (pas encore restructuré en sous-dossier de `Shells`, contrairement à BR).
 - 6 langues manquantes en plus d'ES/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
 - Quand la catégorie IA sera traduite pour ES/BR, l'écrire directement en subjects (comme la structure FR actuelle), pas à plat.
