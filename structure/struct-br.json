@@ -557,6 +557,33 @@
       "folder": "Langages de programmation",
       "subjects": [
         {
+          "id": "ocaml",
+          "label": "OCaml",
+          "folder": "OCaml",
+          "chapters": [
+            {
+              "id": "programmation-fonctionnelle-vs-imperative",
+              "label": "Programação funcional vs imperativa"
+            },
+            {
+              "id": "immuabilite-et-fonctions-pures",
+              "label": "Imutabilidade e funções puras"
+            },
+            {
+              "id": "filtrage-par-motif-et-types-algebriques",
+              "label": "Filtro por padrão e tipos algébricos"
+            },
+            {
+              "id": "recursion-et-fonctions-dordre-superieur",
+              "label": "Recursão e funções de ordem superior"
+            },
+            {
+              "id": "inference-de-types",
+              "label": "A inferência de tipos"
+            }
+          ]
+        },
+        {
           "id": "c",
           "label": "C",
           "folder": "C",
@@ -620,6 +647,10 @@
             {
               "id": "appels-systeme-et-descripteurs",
               "label": "Chamadas de sistema e descritores de arquivos"
+            },
+            {
+              "id": "operateurs-binaires",
+              "label": "Os operadores binários"
             },
             {
               "id": "threads",
@@ -700,6 +731,10 @@
               "label": "As tabelas"
             },
             {
+              "id": "nombres",
+              "label": "Os números"
+            },
+            {
               "id": "objets",
               "label": "Os objetos"
             },
@@ -771,6 +806,10 @@
               "label": "Carregamento automático de classes"
             },
             {
+              "id": "exceptions",
+              "label": "As exceções"
+            },
+            {
               "id": "connexions",
               "label": "Gerir as ligações"
             },
@@ -838,8 +877,16 @@
               "label": "Tipagem com anotações"
             },
             {
+              "id": "dataclasses",
+              "label": "As dataclasses"
+            },
+            {
               "id": "modules-et-environnements",
               "label": "Módulos, pip e ambientes virtuais"
+            },
+            {
+              "id": "cli-avec-argparse",
+              "label": "Construir uma CLI com `argparse`"
             }
           ]
         }

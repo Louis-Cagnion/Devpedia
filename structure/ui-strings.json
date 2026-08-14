@@ -93,6 +93,7 @@
       "c": "C",
       "cpp": "C++",
       "javascript": "JavaScript",
+      "ocaml": "OCaml",
       "php": "PHP",
       "python": "Python",
       "zsh": "Zsh"
