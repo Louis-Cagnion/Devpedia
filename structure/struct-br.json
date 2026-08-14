@@ -11,6 +11,37 @@
       ]
     },
     {
+      "id": "bases-de-l-informatique",
+      "label": "Bases de l'informatique",
+      "folder": "Bases de l'informatique",
+      "chapters": [
+        {
+          "id": "code-programmes-et-fichiers",
+          "label": "O que um computador executa?"
+        },
+        {
+          "id": "le-terminal",
+          "label": "O terminal: dar instruções por escrito"
+        },
+        {
+          "id": "editeur-de-code-et-ide",
+          "label": "O editor de código e a IDE"
+        },
+        {
+          "id": "arborescence-et-chemins",
+          "label": "Árvore de diretórios e caminhos"
+        },
+        {
+          "id": "la-variable",
+          "label": "A variável"
+        },
+        {
+          "id": "le-bug",
+          "label": "O bug"
+        }
+      ]
+    },
+    {
       "id": "bash",
       "label": "Bash",
       "folder": "Bash",
