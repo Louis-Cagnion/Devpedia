@@ -1,17 +1,25 @@
+---
+order: 1
+---
+
 # C
 
-El lenguaje C se considera un lenguaje de programación de **bajo nivel**, ya que ofrece acceso directo a numerosos mecanismos fundamentales de la máquina. A diferencia de los lenguajes de más **alto nivel**, que ocultan gran parte de estos detalles, el C permite al desarrollador controlar con precisión el comportamiento del programa y su uso de los recursos del sistema.
+Un [lenguaje de programación](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) es un conjunto de reglas que permite escribir instrucciones que un ordenador puede ejecutar. El C es uno de ellos, conocido por su acceso directo a los mecanismos fundamentales de la máquina.
 
-Entre los conceptos esenciales que se manejan en C, destacan, entre otros:
+```c
+#include <stdio.h>
 
-- La gestión de la memoria
-- Los tipos de datos y su representación en memoria
-- Los punteros y las direcciones de memoria
-- La asignación y liberación de memoria dinámica
-- Interacciones con el sistema operativo y el hardware
+int main(void) {
+    int edad = 25;         // una variable, consulta el capítulo dedicado
+    printf("%d\n", edad);  // muestra: 25
+    return 0;
+}
+```
 
-Aprender C permite comprender mejor lo que ocurre cuando el ordenador ejecuta un programa. Ayuda a visualizar cómo se almacenan los datos en la memoria, cómo se representan las variables y cómo el procesador ejecuta las instrucciones generadas a partir del código fuente.
+| Término | Qué significa |
+|---|---|
+| Bajo nivel | Da acceso directo a la memoria y al hardware: pocos mecanismos ocultos entre el código escrito y lo que realmente hace el procesador |
+| Compilado | El código fuente se traduce de una vez por todas a instrucciones máquina nativas (véase [La compilación](/?c=langages-de-programmation&s=c&p=compilation)) antes de la ejecución, a diferencia de un lenguaje interpretado como [Python](/?c=langages-de-programmation&s=python&p=python) |
+| Gestión manual de la memoria | El programa debe reservar y liberar él mismo la memoria que necesita (véase [La gestión de la memoria](/?c=langages-de-programmation&s=c&p=memoire)), sin ningún mecanismo automático |
 
-Gracias a esta cercanía con el hardware, el lenguaje C se utiliza ampliamente para el desarrollo de sistemas operativos, controladores de hardware, sistemas embebidos y programas que requieren un alto rendimiento.
-
-El estudio del lenguaje C constituye, además, una base excelente para comprender el funcionamiento interno de muchos otros lenguajes de programación, ya que muchos de ellos se basan en conceptos heredados del C o interactúan con bibliotecas escritas en este lenguaje.
+Esta cercanía con el hardware permite comprender mejor lo que realmente ocurre durante la ejecución de un programa: cómo se almacenan los datos en memoria, cómo el procesador ejecuta las instrucciones. Por eso el C sigue siendo ampliamente utilizado para los sistemas operativos, los controladores de hardware, los sistemas embebidos, y sirve de base a numerosos otros lenguajes: véase por ejemplo [C++](/?c=langages-de-programmation&s=cpp&p=cpp), que se apoya directamente en él.
