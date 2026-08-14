@@ -4,63 +4,74 @@ order: 3
 
 # Enlaces e imágenes
 
-Los enlaces (`<a>`) y las imágenes (`<img>`) son dos elementos fundamentales de la web: uno conecta documentos entre sí (el origen mismo de la palabra «*hipertexto»*) y el otro inserta contenido visual.
+Los enlaces (`<a>`) y las imágenes (`<img>`) son dos etiquetas fundamentales de la web: una conecta documentos entre sí (el origen mismo de la palabra "hipertexto"), la otra inserta contenido visual.
 
-## Enlaces
-
-```html
-<a href="https://exemple.com">Lien externe</a>
-<a href="/contact">Lien relatif, vers une autre page du même site</a>
-<a href="#section2">Lien vers une ancre, dans la même page</a>
-<a href="mailto:contact@exemple.com">Lien qui ouvre le client mail</a>
-<a href="tel:+33612345678">Lien qui propose d'appeler un numéro</a>
-```
-
-### El atributo «`target`»
+## Los enlaces
 
 ```html
-<a href="https://exemple.com" target="_blank" rel="noopener noreferrer">Ouvre dans un nouvel onglet</a>
+<a href="https://ejemplo.com">Enlace externo</a>
+<a href="/contacto">Enlace relativo, hacia otra página del mismo sitio</a>
+<a href="#seccion2">Enlace hacia un ancla, en la misma página</a>
+<a href="mailto:contacto@ejemplo.com">Enlace que abre el cliente de correo</a>
+<a href="tel:+33612345678">Enlace que propone llamar a un número</a>
 ```
 
-> **Nota:** `target="_blank"` sin `rel="noopener"` permite que la nueva página abierta acceda (a través de JavaScript) al objeto `window` de la página original, lo que supone un riesgo de seguridad menor, pero real (*tabnabbing*). `noopener` (y `noreferrer`, que además impide el envío de la URL original) deben acompañar sistemáticamente a cualquier `target="_blank"`.
+### El atributo `target`
+
+```html
+<a href="https://ejemplo.com" target="_blank" rel="noopener noreferrer">Abre en una nueva pestaña</a>
+```
+
+> **Nota:** `target="_blank"` sin `rel="noopener"` permite que la nueva página abierta acceda (mediante JavaScript) al objeto `window` de la página de origen: un riesgo de seguridad menor, pero real (*tabnabbing*). `noopener` (y `noreferrer`, que además impide el envío de la URL de origen) deben acompañar sistemáticamente a cualquier `target="_blank"`.
 
 ### Enlaces relativos frente a absolutos
 
 ```html
-<a href="https://exemple.com/page">Absolu : toujours la même destination, quel que soit le site</a>
-<a href="/page">Relatif à la racine : dépend du domaine actuel</a>
-<a href="page">Relatif au dossier courant : dépend de l'URL actuelle</a>
+<a href="https://ejemplo.com/pagina">Absoluto: siempre el mismo destino, sea cual sea el sitio</a>
+<a href="/pagina">Relativo a la raíz: depende del dominio actual</a>
+<a href="pagina">Relativo a la carpeta actual: depende de la URL actual</a>
 ```
 
 ## Las imágenes
 
 ```html
-<img src="photo.jpg" alt="Un chat noir assis sur un canapé" width="600" height="400">
+<img src="foto.jpg" alt="Un gato negro sentado en un sofá" width="600" height="400">
 ```
 
-- `src` : la ruta (relativa o absoluta, igual que en el caso de un enlace) al archivo de imagen.
-- `alt` : un texto alternativo, que se muestra si la imagen no se carga y que lee un lector de pantalla; **nunca es opcional** desde el punto de vista de la accesibilidad (véase el capítulo dedicado a este tema). Una imagen puramente decorativa (sin información propia) debe tener un`alt=""`o (vacío, pero presente), para que el lector de pantalla la omita en silencio en lugar de anunciar un nombre de archivo sin interés.
-- `width` /`height`: dimensiones declaradas de antemano, que permiten al navegador reservar el espacio necesario **antes** de que se cargue la imagen, lo que evita un desplazamiento visual del resto de la página durante la carga (*layout shift*).
+- `src`: la ruta (relativa o absoluta, la misma lógica que para un enlace) hacia el archivo de imagen.
+- `alt`: un texto alternativo, que se muestra si la imagen no carga y que lee un lector de pantalla: **nunca es opcional** desde el punto de vista de la accesibilidad (véase [Atributos data-* y accesibilidad](/?c=langages-de-balisage&s=html&p=attributs-data-et-accessibilite)). Una imagen puramente decorativa (sin información propia) debe tener `alt=""` (vacío, pero presente), para que el lector de pantalla la omita en silencio en lugar de anunciar un nombre de archivo sin interés.
+- `width`/`height`: dimensiones declaradas de antemano, que permiten al navegador reservar el espacio necesario **antes** de que se cargue la imagen: evita un desplazamiento visual del resto de la página durante la carga (*layout shift*).
 
 ## Imágenes adaptativas (`srcset`)
 
 ```html
 <img
-    src="photo-800.jpg"
-    srcset="photo-400.jpg 400w, photo-800.jpg 800w, photo-1200.jpg 1200w"
+    src="foto-800.jpg"
+    srcset="foto-400.jpg 400w, foto-800.jpg 800w, foto-1200.jpg 1200w"
     sizes="(max-width: 600px) 400px, 800px"
-    alt="Un chat noir assis sur un canapé"
+    alt="Un gato negro sentado en un sofá"
 >
 ```
 
-El navegador elige **por sí mismo** la versión más adecuada al tamaño real de visualización y a la resolución de la pantalla, de entre las propuestas; así se evita que un móvil tenga que descargar una imagen diseñada para una pantalla grande.
+El navegador elige **por sí mismo** la versión más adecuada al tamaño real de visualización y a la resolución de la pantalla, entre las propuestas: evita obligar a un móvil a descargar una imagen pensada para una pantalla grande.
 
 ## Imágenes como enlaces
 
 ```html
-<a href="/produit/42">
-    <img src="produit.jpg" alt="Chaise en bois, vue de face">
+<a href="/producto/42">
+    <img src="producto.jpg" alt="Silla de madera, vista de frente">
 </a>
 ```
 
-Se puede insertar una imagen dentro de un `<a>`, lo que hace que la propia imagen sea clicable; en ese caso, el `alt` sigue siendo imprescindible, ya que es este el que describe el **destino** del enlace para un lector de pantalla, y no solo el contenido visual de la imagen.
+Una imagen puede colocarse dentro de un `<a>`, lo que la hace clicable por sí misma: el `alt` sigue siendo entonces indispensable, ya que es él quien describe el **destino** del enlace para un lector de pantalla, no solo el contenido visual de la imagen.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | `<a>` conecta documentos (externo, relativo, ancla, correo, teléfono); `<img>` inserta una imagen. `alt` describe una imagen para un lector de pantalla o en caso de fallo de carga: nunca es opcional. |
+| **Herramientas utilizables** | `srcset`/`sizes` para imágenes adaptativas; `width`/`height` para reservar el espacio antes de la carga. |
+| **Trampas a evitar** | `target="_blank"` sin `rel="noopener"` (riesgo de seguridad, *tabnabbing*); una imagen sin `alt` (ni vacío para una imagen decorativa, ni completado para una imagen con significado). |
+| **Buenas prácticas** | Acompañar siempre `target="_blank"` con `rel="noopener noreferrer"`; declarar `width`/`height` para evitar un desplazamiento visual (*layout shift*) durante la carga. |
