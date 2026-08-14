@@ -1,16 +1,28 @@
+---
+order: 2
+---
+
 # C++
 
-C++ surgió como una extensión de C («C with Classes») y, a día de hoy, sigue siendo retrocompatible con prácticamente todo el C (véase la sección sobre C): casi todo lo que ya se ha visto allí (punteros, memoria, estructuras, compilación) se aplica directamente en C++. Lo que C++ añade a todo ello es, esencialmente, la **programación orientada a objetos**, la **gestión automática de recursos** (RAII) y la **programación genérica** (plantillas).
+C++ nació como una extensión de [C](/?c=langages-de-programmation&s=c&p=c) ("C with Classes"), y sigue siendo retrocompatible con casi la totalidad de ese lenguaje: prácticamente todo lo que se aplica allí (punteros, memoria, structs, compilación) funciona directamente en C++.
 
-Entre los conceptos esenciales que C++ aporta con respecto a C, destacan, entre otros:
+```cpp
+#include <iostream>
 
-- Las clases y los objetos (encapsulación, herencia, polimorfismo)
-- Las referencias, una alternativa más segura a los punteros en muchos casos
-- RAII y los punteros inteligentes (*smart pointers*), que reducen drásticamente las fugas de memoria descritas en el capítulo dedicado al lenguaje C.
-- Las plantillas, para escribir código genérico sin sacrificar el rendimiento
-- La biblioteca estándar (STL): contenedores, algoritmos e iteradores listos para usar
-- Las excepciones, una alternativa estructurada al estilo de error «al estilo C» (valores de retorno + `errno`)
+int main() {
+    int edad = 25;                   // una variable, igual que en C
+    std::cout << edad << std::endl;  // imprime: 25
+}
+```
 
-El aprendizaje de C++ permite mantener el control de bajo nivel de C (memoria, rendimiento, ausencia de recolector de basura), al tiempo que se dispone de herramientas de mayor nivel para estructurar un proyecto de gran envergadura —un equilibrio que explica su presencia duradera en motores de videojuegos, sistemas embebidos exigentes y programas que requieren tanto rendimiento como una gran complejidad de código—.
+Lo que C++ añade por encima de C:
 
-> **Nota:** a diferencia de PHP, Python o JavaScript, C++ se **compila** en código máquina nativo (véase el capítulo sobre compilación, apartado C); no hay ninguna máquina virtual ni intérprete entre el código y su ejecución.
+| Término | Qué significa |
+|---|---|
+| Programación orientada a objetos | Organizar el código en torno a objetos que agrupan datos y las funciones que los manipulan (véase [Clases y objetos](/?c=langages-de-programmation&s=cpp&p=classes-et-objets)) |
+| RAII | Un recurso (memoria, archivo...) se libera automáticamente cuando el objeto que lo posee se destruye, véase [Gestión de memoria y RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii), lo que limita drásticamente las fugas de memoria posibles en C |
+| Plantillas | Escribir una función o una clase una sola vez, válida para varios tipos distintos, sin sacrificar el rendimiento, véase [Las plantillas](/?c=langages-de-programmation&s=cpp&p=templates) |
+
+C++ conserva así el control de bajo nivel de C (memoria, rendimiento, ausencia de recolector de basura) al tiempo que ofrece herramientas de más alto nivel para estructurar un proyecto de gran tamaño: un compromiso que explica su presencia duradera en los motores de videojuegos y los sistemas embebidos exigentes.
+
+> **Nota:** a diferencia de [Python](/?c=langages-de-programmation&s=python&p=python) o [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), C++ sigue siendo **compilado** a código máquina nativo (véase [La compilación](/?c=langages-de-programmation&s=c&p=compilation)): ninguna máquina virtual, ningún intérprete entre el código y su ejecución.

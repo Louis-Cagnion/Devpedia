@@ -2,56 +2,56 @@
 order: 1
 ---
 
-# Referencias
+# Las referencias
 
-Una **referencia** es un alias —otro nombre para una variable ya existente, nunca una variable independiente—. Resuelve un problema muy concreto del lenguaje C: hasta ahora, para pasar una variable a una función para que esta pudiera modificarla, era necesario manipular punteros de forma explícita (véase el capítulo sobre punteros, apartado C).
+Una **referencia** es un alias: otro nombre para una variable ya existente, nunca una variable independiente. Resuelve un problema muy concreto de C: pasar una variable a una función para que esta pudiera modificarla obligaba hasta ahora a manipular explícitamente [punteros](/?c=langages-de-programmation&s=c&p=pointeurs).
 
 ## Declarar una referencia
 
 ```cpp
 int edad = 25;
-int &refAge = edad;   // refAge es OTRO NOMBRE para age, no una copia
+int &refEdad = edad;   // refEdad es OTRO NOMBRE para edad, no una copia
 
-refAge = 30;
-std::cout << edad;    // 30 -> modificar refAge modifica directamente age
+refEdad = 30;
+std::cout << edad;    // 30 -> modificar refEdad modifica directamente edad
 ```
 
-> **Nota:** a diferencia de un puntero, una referencia **debe** inicializarse en el momento de su declaración y, a partir de entonces, **nunca** puede reasignarse para apuntar a otra variable; una vez vinculada a `edad`, `refAge` seguirá siendo un alias de `edad` durante toda su vida útil.
+> **Nota:** a diferencia de un puntero, una referencia **debe** inicializarse desde su declaración, y luego **nunca** puede reasignarse para designar otra variable; una vez vinculada a `edad`, `refEdad` seguirá siendo un alias de `edad` durante toda su vida.
 
-## Pasar un parámetro por referencia a una función
+## Pasar por referencia a una función
 
 ```cpp
-void incrementer(int &número) {
-    número++;   // No es necesario desreferenciar con *, a diferencia de lo que ocurre con un puntero en C.
+void incrementar(int &numero) {
+    numero++;   // no hace falta desreferenciar con *, a diferencia de un puntero en C
 }
 
 int x = 5;
-incrementer(x);
+incrementar(x);
 std::cout << x;   // 6
 ```
 
-En comparación con el equivalente en C (véase el capítulo sobre punteros):
+En comparación con [el equivalente en C](/?c=langages-de-programmation&s=c&p=pointeurs):
 
 ```c
-void incrementer(int *número) {
-    (*número)++;
+void incrementar(int *numero) {
+    (*numero)++;
 }
-incrementer(&x);
+incrementar(&x);
 ```
 
-La referencia evita la sintaxis `*` / `&` tanto en la llamada como dentro de la función, al tiempo que se obtiene exactamente el mismo comportamiento (modificar la variable del llamante).
+La referencia evita la sintaxis `*`/`&` tanto en la llamada como dentro de la función, obteniendo exactamente el mismo comportamiento (modificar la variable de quien llama).
 
-## `const &` : evitar la copia sin correr el riesgo de que se produzcan modificaciones
+## `const &`: evitar una copia sin arriesgar una modificación
 
-Pasar un objeto grande por valor (una copia completa) en cada llamada a la función consume tiempo y memoria. Pasarlo por referencia evita la copia, pero permite que la función modifique el original; «`const &`» combina ambas ventajas:
+Pasar un objeto grande por valor (una copia completa) en cada llamada a la función cuesta tiempo y memoria. Pasarlo por referencia evita la copia, pero permite que la función modifique el original; `const &` combina ambas ventajas:
 
 ```cpp
-void afficher(const std::string &texto) {   // No se permite copiar, Y el texto no se puede modificar aquí.
+void mostrar(const std::string &texto) {   // sin copia, Y texto no puede modificarse aquí
     std::cout << texto;
 }
 ```
 
-> **Nota:** se ha convertido en la convención por defecto en C++ para pasar un objeto de gran tamaño (cadena, vector, estructura...) en modo de solo lectura a una función: es más rápido que una copia y más seguro que un puntero sin tipo (no hay riesgo de «`nullptr`», ni hay que gestionar la sintaxis de desreferenciación).
+> **Nota:** se ha convertido en la convención por defecto en C++ para pasar un objeto voluminoso (cadena, vector, estructura...) en modo de solo lectura a una función: más rápido que una copia, más seguro que un puntero crudo (sin riesgo de `nullptr`, sin sintaxis de desreferenciación que gestionar).
 
 ## Referencia frente a puntero
 
@@ -59,7 +59,18 @@ void afficher(const std::string &texto) {   // No se permite copiar, Y el texto 
 |---|---|---|
 | Puede ser `null` | No, nunca | Sí (`nullptr`) |
 | Reasignable tras la inicialización | No | Sí |
-| Sintaxis de acceso | Directa, igual que la propia variable | Requiere «`*`» para desreferenciar |
-| Debe inicializarse en el momento de la declaración | Sí, obligatorio | No |
+| Sintaxis de acceso | Directa, como la propia variable | Requiere `*` para desreferenciar |
+| Debe inicializarse en la declaración | Sí, obligatorio | No |
 
-Por lo tanto, una referencia está más restringida que un puntero; eso es precisamente lo que la hace más segura en los casos en los que no es necesario eludir esas restricciones (ya se sabe que la variable existe y que no cambiará de destino).
+Una referencia es, por tanto, más restringida que un puntero: es precisamente eso lo que la hace más segura en los casos en los que no hace falta sortear esas restricciones (ya se sabe que la variable existe y que no cambiará de destino).
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Una referencia es un alias de una variable existente: nunca `null`, nunca reasignable tras la inicialización, sin sintaxis `*`/`&` en su uso. `const &` pasa un objeto voluminoso sin copia ni riesgo de modificación. |
+| **Herramientas utilizables** | `&` en la declaración de tipo (referencia), `const &` para un parámetro de solo lectura. |
+| **Trampas a evitar** | Creer que una referencia puede ser `null` o reasignarse como un puntero: ambas cosas son imposibles. |
+| **Buenas prácticas** | Pasar un objeto voluminoso por `const &` por defecto, en lugar de por valor (copia costosa) o por puntero crudo. |
