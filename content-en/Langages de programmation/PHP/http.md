@@ -35,7 +35,7 @@ curl_close($ch);
 
 ### Convert a "C-style" return to an exception
 
-`curl_exec()` returns `false` in the event of a network failure, rather than throwing an exception—an entry point can handle this detail and allow only exceptions to be propagated to the rest of the program:
+`curl_exec()` returns `false` in the event of a network failure, rather than throwing an exception: an entry point can handle this detail and allow only exceptions to be propagated to the rest of the program:
 
 ```php
 <?php
@@ -47,7 +47,7 @@ if ($response === false || $codeHttp !== 200) {
 
 Once this conversion is made in a single location, the rest of the project never needs to know that `curl_exec()` can redirect to `false`: it can simply use `try` / `catch`, just as with any other modern PHP error.
 
-## PHP Streams — Another API for the Same Purpose
+## PHP Streams: Another API for the Same Purpose
 
 PHP treats URLs as a type of "file" that `file_get_contents()` can read directly. `stream_context_create()` configures this behavior (HTTP method, headers, body, SSL, etc.):
 
@@ -65,7 +65,7 @@ $response  = file_get_contents($url, false, $contexte); // false if the operatio
 ?>
 ```
 
-> **Note:** In a literal associative array, a duplicate key will silently take on its **last** value—the first assignment is dead code and is never used. This is a good reason to have a linter check this type of array (HTTP options, configuration, etc.), or to review it yourself line by line, asking, “What is the last value assigned to this key?”
+> **Note:** In a literal associative array, a duplicate key will silently take on its **last** value: the first assignment is dead code and is never used. This is a good reason to have a linter check this type of array (HTTP options, configuration, etc.), or to review it yourself line by line, asking, “What is the last value assigned to this key?”
 
 ## `json_decode()` : an ambiguous return t`null`
 
@@ -79,7 +79,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 ?>
 ```
 
-`json_decode()` on an invalid string returns `null` — but a **valid** JSON string containing the literal `"null"` also decodes to `null`. A simple `if ($data === null)` would therefore not distinguish between "invalid JSON" and "JSON that actually was `null`". Hence `json_last_error()`: a separate function that returns whether the last conversion actually failed, regardless of the value obtained—the same logic as `isset()` / `empty()` when dealing with an array key (see the chapter on variables): never rely on an ambiguous value when a dedicated mechanism exists to resolve the ambiguity.
+`json_decode()` on an invalid string returns `null`, but a **valid** JSON string containing the literal `"null"` also decodes to `null`. A simple `if ($data === null)` would therefore not distinguish between "invalid JSON" and "JSON that actually was `null`". Hence `json_last_error()`: a separate function that returns whether the last conversion actually failed, regardless of the value obtained, the same logic as `isset()` / `empty()` when dealing with an array key (see the chapter on variables): never rely on an ambiguous value when a dedicated mechanism exists to resolve the ambiguity.
 
 `json_encode()` / `json_decode(..., true)` are the PHP equivalents of `JSON.stringify()` / `JSON.parse()` in JavaScript (`true` requires an associative array rather than a `stdClass` object).
 
@@ -119,7 +119,7 @@ $response = file_get_contents($url, false, $context);
 // without ignore_errors: $response is false for a 404/500, even though the server did respond
 ```
 
-A direct consequence for a "return value → exception" conversion like the one seen above (`if ($response === false) { throw ... }`): with `ignore_errors => true`, this check no longer triggers **at all** for an HTTP error (4xx/5xx): only for a more radical communication failure (server unreachable, DNS not resolving, network timeout—a case where PHP receives nothing at all, not even headers).
+A direct consequence for a "return value → exception" conversion like the one seen above (`if ($response === false) { throw ... }`): with `ignore_errors => true`, this check no longer triggers **at all** for an HTTP error (4xx/5xx): only for a more radical communication failure (server unreachable, DNS not resolving, network timeout, a case where PHP receives nothing at all, not even headers).
 
 > **Note:** the two mechanisms are complementary, not redundant. Once `ignore_errors` is enabled, every caller must re-check the actual HTTP code itself (`$http_response_header`, see the PHP documentation) to distinguish "communication succeeded but the response is an application-level error" from "everything went fine": something the initial `throw` (reserved for network failure) no longer covers.
 

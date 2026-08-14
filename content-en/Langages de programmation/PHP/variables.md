@@ -106,7 +106,7 @@ Next, to compare or manipulate your variables, you'll need to use several differ
 ?>
 ```
 
-> **Note:** `==` and `!=` convert types before performing the comparison, which can yield unexpected results depending on the values being compared (a well-known source of historical bugs in PHP). `===` and `!==` require both the same type AND the same value—these should always be used, especially when comparing strings.
+> **Note:** `==` and `!=` convert types before performing the comparison, which can yield unexpected results depending on the values being compared (a well-known source of historical bugs in PHP). `===` and `!==` require both the same type AND the same value: these should always be used, especially when comparing strings.
 
 If you want to concatenate strings, there are two ways to do it:
 
@@ -138,11 +138,11 @@ When the `GET` method is used, the form data is visible directly in the URL as a
 
 The `POST` method is typically used to send sensitive data (passwords, personal information, etc.), since this data is not displayed in the URL and is not subject to the same size limitations as a URL.
 
-> **Note:** `GET` and `POST` do not secure data—the data remains visible through the browser's developer tools or via network sniffing if the site does not use HTTPS. For truly sensitive data (such as passwords), you should also consider encryption and HTTPS.
+> **Note:** `GET` and `POST` do not secure data: the data remains visible through the browser's developer tools or via network sniffing if the site does not use HTTPS. For truly sensitive data (such as passwords), you should also consider encryption and HTTPS.
 
 ## Superglobals
 
-`$_GET` and `$_POST` are part of a larger family of associative arrays, called **superglobals**, which PHP automatically populates at the start of execution—accessible from any function or method, without needing to import anything:
+`$_GET` and `$_POST` are part of a larger family of associative arrays, called **superglobals**, which PHP automatically populates at the start of execution, accessible from any function or method, without needing to import anything:
 
 | Superglobal | Content |
 |---|---|
@@ -151,7 +151,7 @@ The `POST` method is typically used to send sensitive data (passwords, personal 
 | `$_SESSION` | Server-side data stored for the current user (requires `session_start()`) |
 | `$_COOKIE` | Cookies sent by the browser |
 
-> **Note:** Unlike a standard variable (which has local scope and is invisible outside a function unless passed as a parameter), superglobals are visible **everywhere**, just like a constant—but they contain data that changes with each request, not fixed settings.
+> **Note:** Unlike a standard variable (which has local scope and is invisible outside a function unless passed as a parameter), superglobals are visible **everywhere**, just like a constant, but they contain data that changes with each request, not fixed settings.
 
 ## Constants with `define()`
 
@@ -168,11 +168,11 @@ function prixTTC(float $prixHT): float
 ?>
 ```
 
-> **Note:** A standard `$variable`, on the other hand, remains local even if the file that declares it was loaded using `require`—it is not automatically visible within a function or method defined in another file. That’s why configuration files often use `define()` rather than simple variables: this ensures that the setting remains readable throughout the project.
+> **Note:** A standard `$variable`, on the other hand, remains local even if the file that declares it was loaded using `require`: it is not automatically visible within a function or method defined in another file. That’s why configuration files often use `define()` rather than simple variables: this ensures that the setting remains readable throughout the project.
 
 ## Accessing an array index that does not exist
 
-Reading an array key that doesn't exist triggers a **warning** ("Undefined array key")—not a crash, but an error message that should not be ignored:
+Reading an array key that doesn't exist triggers a **warning** ("Undefined array key"), not a crash, but an error message that should not be ignored:
 
 ```php
 <?php

@@ -4,7 +4,7 @@ order: 5
 
 # Language Constructs
 
-A **language construct** is a statement built directly into the core of the PHP language. Unlike a function, it isn't defined by code — it's part of the language's own syntax, just like `if`, `for`, or `;`.
+A **language construct** is a statement built directly into the core of the PHP language. Unlike a function, it isn't defined by code: it's part of the language's own syntax, just like `if`, `for`, or `;`.
 
 ## Differences from a function
 
@@ -28,7 +28,7 @@ By contrast, a function like `strlen()` must always be called with its parenthes
 
 ## Why does this distinction exist?
 
-Language constructs are handled by PHP while the code is being parsed (even before it runs), because they directly affect how the script proceeds — for example, `include` inserts code at a specific spot, or `return` stops a function's execution. That's why they can't be manipulated like plain functions: they can't be stored in a variable, nor passed as an argument to another function.
+Language constructs are handled by PHP while the code is being parsed (even before it runs), because they directly affect how the script proceeds: for example, `include` inserts code at a specific spot, or `return` stops a function's execution. That's why they can't be manipulated like plain functions: they can't be stored in a variable, nor passed as an argument to another function.
 
 ```php
 <?php
@@ -60,7 +60,7 @@ Language constructs are handled by PHP while the code is being parsed (even befo
 
 | | |
 |---|---|
-| **Key takeaways** | A language construct (`echo`, `include`, `if`, `return`...) is part of the language's own syntax, unlike a function — it benefits from writing freedoms (optional parentheses, can't be stored in a variable). |
+| **Key takeaways** | A language construct (`echo`, `include`, `if`, `return`...) is part of the language's own syntax, unlike a function: it benefits from writing freedoms (optional parentheses, can't be stored in a variable). |
 | **Tools you can use** | `echo`/`print`, `include`/`require`, `isset()`/`unset()`, `list()`. |
 | **Pitfalls to avoid** | Trying to store a language construct in a variable or pass it as an argument, like a regular function. |
-| **Best practices** | Use `include`/`require` rather than a custom function to load a file — it's the native mechanism designed for that. |
+| **Best practices** | Use `include`/`require` rather than a custom function to load a file: it's the native mechanism designed for that. |

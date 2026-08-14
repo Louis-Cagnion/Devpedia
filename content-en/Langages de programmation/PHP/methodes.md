@@ -60,7 +60,7 @@ calculerRemise("cent", 10);   // TypeError: "cent" is not a float
 
 ## 
 
-A function declared as `: array` (without `?`) does not allow `null` as a return value—attempting to do so results in a `TypeError` at runtime. To explicitly allow `null` in addition to the declared type, prefix the type with `?`:
+A function declared as `: array` (without `?`) does not allow `null` as a return value: attempting to do so results in a `TypeError` at runtime. To explicitly allow `null` in addition to the declared type, prefix the type with `?`:
 
 ```php
 <?php
@@ -74,7 +74,7 @@ function trouverUtilisateur(int $id): ?array
 ?>
 ```
 
-> **Note:** `?array` is a contract declaration, not just a coding convention—it is the PHP equivalent of [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) in modern C++ or [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) in Python: the function can return this specific type, OR `null`, but nothing else.
+> **Note:** `?array` is a contract declaration, not just a coding convention: it is the PHP equivalent of [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) in modern C++ or [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) in Python: the function can return this specific type, OR `null`, but nothing else.
 
 ## Remove an expected warning using `@`
 
@@ -87,7 +87,7 @@ $version = $mtime ? "v{$mtime}" : 'v-inconnue';
 ?>
 ```
 
-> **Note:** `@` suppresses the warning; it does not change the behavior of the function itself (`filemtime()` still returns `false` if the file does not exist). Use this only in cases where the failure is actually expected and tested immediately afterward—using it everywhere would also hide genuine errors.
+> **Note:** `@` suppresses the warning; it does not change the behavior of the function itself (`filemtime()` still returns `false` if the file does not exist). Use this only in cases where the failure is actually expected and tested immediately afterward; using it everywhere would also hide genuine errors.
 
 PHP provides a vast number of built-in functions that are ready to use, listed below by category.
 
@@ -175,4 +175,4 @@ e.g.,:
 ?>
 ```
 
-> **Note:** You can find the complete list of PHP's built-in functions in the official documentation: [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). To add a **single** element, `$tab[] = "value";` is also preferred over `array_push($tab, "value")`: same result, without the overhead of a function call—`array_push()` is only truly useful for adding multiple elements in a single call (`array_push($tab, "a", "b", "c")`).
+> **Note:** You can find the complete list of PHP's built-in functions in the official documentation: [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). To add a **single** element, `$tab[] = "value";` is also preferred over `array_push($tab, "value")`: same result, without the overhead of a function call; `array_push()` is only truly useful for adding multiple elements in a single call (`array_push($tab, "a", "b", "c")`).

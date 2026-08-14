@@ -4,7 +4,7 @@ order: 10
 
 # Autoloading Classes
 
-Without autoloading, every file that uses a class must explicitly use `require` on the file containing that class—which is cumbersome and prone to errors as soon as a project has many classes. `spl_autoload_register()` allows you to delegate this loading to the PHP engine itself.
+Without autoloading, every file that uses a class must explicitly use `require` on the file containing that class, which is cumbersome and prone to errors as soon as a project has many classes. `spl_autoload_register()` allows you to delegate this loading to the PHP engine itself.
 
 ## `spl_autoload_register()`
 
@@ -57,10 +57,10 @@ Example of a solution, using `$classe = 'App\Services\Facturation\Calculateur'`:
 1. `str_starts_with($classe, 'App\\Services\\')` → `true`; this prefix matches.
 2. `substr(...)` removes the matched prefix → `'Facturation\Calculateur'`.
 3. `str_replace('\\', '/', ...)` changes the namespace separator to a folder separator → `'Facturation/Calculateur'`.
-4. Final path: `.../Services/Facturation/Calculateur.php` — which must correspond to the actual location of the file.
+4. Final path: `.../Services/Facturation/Calculateur.php`, which must correspond to the actual location of the file.
 
-> **Note:** `'App\\Modeles\\'` in a string enclosed in single quotes: `\\` represents **a single** character `\` (it must be doubled to be treated as a literal) — this is the string `App\Modeles\`, the namespace separator.
+> **Note:** `'App\\Modeles\\'` in a string enclosed in single quotes: `\\` represents **a single** character `\` (it must be doubled to be treated as a literal): this is the string `App\Modeles\`, the namespace separator.
 
 The `return;` after `if` is executed regardless of whether the file exists (it is placed after `if (file_exists(...))`, not inside it): since namespace prefixes are mutually exclusive in their first segment, once the correct prefix is found, continuing to test the others would be pointless.
 
-> **A convention that is essential for this to work:** the namespace name and the class name must literally encode the file path—one file per class; the folder structure corresponds to the namespace structure.
+> **A convention that is essential for this to work:** the namespace name and the class name must literally encode the file path: one file per class; the folder structure corresponds to the namespace structure.

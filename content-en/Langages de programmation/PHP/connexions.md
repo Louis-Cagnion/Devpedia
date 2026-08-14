@@ -4,7 +4,7 @@ order: 11
 
 # Manage Connections
 
-When a user browses a website, the server often needs to remember the user from one page to the next, or even from one visit to the next—to keep the user logged in, retrieve their preferences, their shopping cart, and so on. To achieve this, PHP offers several tools, each with its own specific uses: **cookies** (stored on the user’s device), **sessions** (stored on the server), and **login tokens** (for long-term authentication). This chapter introduces these three tools and explains when to use one over the other.
+When a user browses a website, the server often needs to remember the user from one page to the next, or even from one visit to the next: to keep the user logged in, retrieve their preferences, their shopping cart, and so on. To achieve this, PHP offers several tools, each with its own specific uses: **cookies** (stored on the user’s device), **sessions** (stored on the server), and **login tokens** (for long-term authentication). This chapter introduces these three tools and explains when to use one over the other.
 
 ## Cookies
 A **cookie** is a small piece of data stored by the user's browser that is automatically sent to the server with every request to the same site. Unlike standard PHP variables (which are cleared at the end of each script), a cookie persists across multiple visits, even if the user closes their browser.
@@ -24,7 +24,7 @@ Cookies are typically used to:
 `setcookie()` It mainly takes 3 parameters:
 - The name of the cookie
 - The value to be stored
-- The expiration date (as a Unix timestamp—`time()` returns the current time, so `time() + 3600` means "in 1 hour")
+- The expiration date (as a Unix timestamp; `time()` returns the current time, so `time() + 3600` means "in 1 hour")
 
 > **Important note:** `setcookie()` must be called **before** any HTML is rendered (before any tags, spaces, or line breaks), because it modifies the HTTP headers of the response. This follows the same logic as the closing `?>` tag mentioned above.
 
@@ -82,7 +82,7 @@ To delete a cookie, you can recreate it with an expiration date **in the past**:
 
 ## The sessions
 
-A **session** allows data to be stored **on the server side** while associating it with a specific visitor. Unlike a cookie (which is stored on the user's device and can be modified by the user), session data remains on the server—so the user has no way to read or modify it directly.
+A **session** allows data to be stored **on the server side** while associating it with a specific visitor. Unlike a cookie (which is stored on the user's device and can be modified by the user), session data remains on the server, so the user has no way to read or modify it directly.
 
 PHP links the visitor to their data using a unique session ID, which is automatically sent to the browser as a cookie (usually named `PHPSESSID`). This cookie therefore contains no sensitive data: just an ID that points to the actual data stored on the server.
 
@@ -130,14 +130,14 @@ PHP links the visitor to their data using a unique session ID, which is automati
 ?>
 ```
 
-> **Note:** By default, the `PHPSESSID` cookie (and thus the session) expires when the browser is closed or after a period of inactivity on the server side. To keep a connection active for a longer period (several days or weeks), standard sessions are not sufficient—see the section on session tokens below.
+> **Note:** By default, the `PHPSESSID` cookie (and thus the session) expires when the browser is closed or after a period of inactivity on the server side. To keep a connection active for a longer period (several days or weeks), standard sessions are not sufficient: see the section on session tokens below.
 
 ## Session tokens ("remember me")
 
 To keep a user logged in for an extended period (several days or weeks), even after the browser is closed, neither a standard cookie (which isn't secure enough for this purpose) nor a session (which is too short-lived) is sufficient. Instead, a *remember ***token** is used: a long-term proof of authentication, stored both on the user’s device and on the server.
 
 The principle:
-- We **never** store the password to do this—only a random token.
+- We **never** store the password to do this: only a random token.
 - The token is sent in plain text in a cookie to the user.
 - Its **hashed** version is stored in the database, linked to the user's account (just like a password).
 
@@ -178,9 +178,9 @@ On each visit, if the session is empty but the "`remember_token`" cookie exists,
 ?>
 ```
 
-> **Note:** We always compare the **hash** of the received token with the one stored in the database, never the plaintext token—just like with a password using `password_hash()` / `password_verify()`. If the cookie is stolen, the thief cannot deduce the stored hash; more importantly, this token can be revoked at any time by deleting it from the database (e.g., when a password is changed or the user explicitly logs out).
+> **Note:** We always compare the **hash** of the received token with the one stored in the database, never the plaintext token, just like with a password using `password_hash()` / `password_verify()`. If the cookie is stolen, the thief cannot deduce the stored hash; more importantly, this token can be revoked at any time by deleting it from the database (e.g., when a password is changed or the user explicitly logs out).
 
-### Cookies, sessions, or login tokens—which one should you choose?
+### Cookies, sessions, or login tokens: which one should you choose?
 
 | | Cookie | Session | Login token |
 |---|---|---|---|
@@ -198,15 +198,15 @@ A common mistake: believing that `$_SESSION` is stored in the browser's cookie. 
 - The data (`$_SESSION['...'] = ...`) is written **on the server side** (to a file or database) and associated with this identifier.
 - With each subsequent request, the browser sends the cookie; PHP reads the identifier, retrieves the corresponding server storage, and reloads `$_SESSION`.
 
-> **Analogy:** a coat check ticket. The number on the ticket is chosen at random **when you check your coat**—it has nothing to do with the coat itself. The link between the number and the coat exists only in the employee’s records (the server storage), never in the number itself.
+> **Analogy:** a coat check ticket. The number on the ticket is chosen at random **when you check your coat**; it has nothing to do with the coat itself. The link between the number and the coat exists only in the employee’s records (the server storage), never in the number itself.
 
 ### The Risk of Session Hijacking
 
-If an attacker were to guess or steal the identifier of an already open session, they would inherit its contents—but they cannot *choose* the target: the identifier is generated by a CSPRNG (cryptographically secure pseudorandom number generator) with enormous entropy, comparable to a password several hundred bits long. `session_set_cookie_params(['httponly' => true])` adds an additional layer of protection: it prevents the page’s JavaScript from reading this cookie, which limits the damage in the event of an XSS vulnerability.
+If an attacker were to guess or steal the identifier of an already open session, they would inherit its contents, but they cannot *choose* the target: the identifier is generated by a CSPRNG (cryptographically secure pseudorandom number generator) with enormous entropy, comparable to a password several hundred bits long. `session_set_cookie_params(['httponly' => true])` adds an additional layer of protection: it prevents the page’s JavaScript from reading this cookie, which limits the damage in the event of an XSS vulnerability.
 
 ### Why not simply derive the identifier by hashing a known piece of data?
 
-A simple hash (`sha256($identifiant_connu)`) is **deterministic and contains no secrets**: anyone can recalculate it. If there is a limited number of possible values (e.g., about thirty accounts), an attacker doesn’t even need to brute-force a large space—they simply need to hash each possible value to obtain all valid identifiers. A hash alone adds no** entropy** beyond that already present in the input.
+A simple hash (`sha256($identifiant_connu)`) is **deterministic and contains no secrets**: anyone can recalculate it. If there is a limited number of possible values (e.g., about thirty accounts), an attacker doesn’t even need to brute-force a large space; they simply need to hash each possible value to obtain all valid identifiers. A hash alone adds no** entropy** beyond that already present in the input.
 
 ## Signed Tokens (HMAC): Transmitting Data While Ensuring It Cannot Be Tampered With
 
@@ -240,8 +240,8 @@ If the `$encode` section is modified by someone who is not a `$secret`, the sign
 
 | | Session ID | Signed token (HMAC) |
 |---|---|---|
-| Does it contain information? | No — opaque key, no data | Yes — the data is encoded within it |
-| Does it require server storage? | Yes — the data is stored in a file or database associated with the key | No — self-contained; verifiable by recalculating the signature at any time |
+| Does it contain information? | No: opaque key, no data | Yes: the data is encoded within it |
+| Does it require server storage? | Yes: the data is stored in a file or database associated with the key | No: self-contained; verifiable by recalculating the signature at any time |
 | Typical Use Case | User already logged in, session active | Data to be transmitted in a verifiable manner without consulting a database (activation link, guest without an account, etc.) |
 
 > **Note:** Use `hash_equals()` rather than just `===` to compare two hashes: it performs the comparison in constant time, which prevents an attacker from gradually deducing the correct value by measuring the response time (timing attack).

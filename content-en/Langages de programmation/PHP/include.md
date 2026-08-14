@@ -72,7 +72,7 @@ This pattern is often used as a simple configuration or data file, without the n
 
 ## `__DIR__`
 
-`__DIR__` is a constant representing the directory **of the file in which it appears**—not a global "project directory." Therefore, two files in different folders do not have the same `__DIR__`:
+`__DIR__` is a constant representing the directory **of the file in which it appears**, not a global "project directory." Therefore, two files in different folders do not have the same `__DIR__`:
 
 ```php
 <?php

@@ -37,7 +37,7 @@ if ($connecte) {
 <?php endif; ?>
 ```
 
-> **Note:** `<?= $user ?>` is a shorthand for `<?php echo $user; ?>`; this allows you to use PHP variables in HTML. Whenever the displayed variable could come from user input (a username, for example), you must enclose it in `htmlspecialchars()` as shown above—see the chapter on security for the XSS vulnerability this prevents.
+> **Note:** `<?= $user ?>` is a shorthand for `<?php echo $user; ?>`; this allows you to use PHP variables in HTML. Whenever the displayed variable could come from user input (a username, for example), you must enclose it in `htmlspecialchars()` as shown above: see the chapter on security for the XSS vulnerability this prevents.
 
 Both lines of code do exactly the same thing:
 - With the curly braces `{ }`, everything is written in PHP, and the HTML must be displayed via `echo`.

@@ -35,10 +35,10 @@ echo $v->description(); // "Peugeot 308 (2022)"
 ```
 
 - `__construct` is the reserved name of the method automatically called by `new`.
-- `$this` always refers to the current instance, and is **always** used with `->`—including when reading a property (`$this->brand`) or calling a method (`$this->description()`). The only visual difference between the two is the presence of `()`.
+- `$this` always refers to the current instance, and is **always** used with `->`, including when reading a property (`$this->brand`) or calling a method (`$this->description()`). The only visual difference between the two is the presence of `()`.
 - `private` = accessible only from inside the classroom; `public` = also accessible from outside.
 
-> **Note:** Unlike an array, where you can create a new key on the fly (`$arr['nouvelle_cle'] = 5;`, without any declaration), a **typed** object property will reject a value of the wrong type—assigning a `int` to a property declared as `string` triggers a `TypeError`. Typed properties define a true contract: they specify which properties exist and what type each must always contain.
+> **Note:** Unlike an array, where you can create a new key on the fly (`$arr['nouvelle_cle'] = 5;`, without any declaration), a **typed** object property will reject a value of the wrong type: assigning a `int` to a property declared as `string` triggers a `TypeError`. Typed properties define a true contract: they specify which properties exist and what type each must always contain.
 
 ## Static Methods and Utility Classes
 
@@ -92,9 +92,9 @@ Repository::trouver(1);
 ?>
 ```
 
-`use` It does not load the file itself—it simply tells the PHP engine which full filename corresponds to the short name used below. This is an autoloading mechanism (see the dedicated chapter) that is responsible for locating and loading the corresponding file when the class is actually used.
+`use` It does not load the file itself: it simply tells the PHP engine which full filename corresponds to the short name used below. This is an autoloading mechanism (see the dedicated chapter) that is responsible for locating and loading the corresponding file when the class is actually used.
 
-> **Note:** `Classe::methode()` (with `::`) looks like `Classe->methode()` but is never used with an instance—it is the near-exact equivalent of a namespace plus a static method in C++.
+> **Note:** `Classe::methode()` (with `::`) looks like `Classe->methode()` but is never used with an instance: it is the near-exact equivalent of a namespace plus a static method in C++.
 
 ## Dependency injection
 

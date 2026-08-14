@@ -29,16 +29,16 @@ if ($file && file_exists(__DIR__ . $file)) {
 ?>
 ```
 
-Key difference from a JS (Express) router: each route points to a **file path**, not a function. There is no callback to invoke—the file itself generates the HTTP response (`echo`, `header()`...) by directly reading the superglobals.
+Key difference from a JS (Express) router: each route points to a **file path**, not a function. There is no callback to invoke: the file itself generates the HTTP response (`echo`, `header()`...) by directly reading the superglobals.
 
 - `$_SERVER['REQUEST_URI']` contains the path **and** query string concatenated (`/contact?ref=pub`). `parse_url(..., PHP_URL_PATH)` extracts only the path, discarding the query string.
 - `trim(..., '/')` Removes the leading and trailing "`/`" so that `'contact'` matches the key in the `$routes` array (without the leading slash).
 
 ## The "filesystem = URLs" model
 
-On a standard PHP server (without any special configuration), **any file physically located in the web root directory is accessible via its URL path**—a `.php` is executed there, and a static file is served as-is. This is the opposite of Express/[Node](https://nodejs.org), where a route exists only if it is explicitly declared: in “old-school” PHP, **everything is accessible by default, except for what is explicitly blocked**.
+On a standard PHP server (without any special configuration), **any file physically located in the web root directory is accessible via its URL path**: a `.php` is executed there, and a static file is served as-is. This is the opposite of Express/[Node](https://nodejs.org), where a route exists only if it is explicitly declared: in “old-school” PHP, **everything is accessible by default, except for what is explicitly blocked**.
 
-Practical implication: A directory containing classes or sensitive data (database login credentials, API keys, etc.) must be **explicitly blocked**, even if no route in the application code ever references it—otherwise, nothing prevents a visitor from typing the path directly into the browser.
+Practical implication: A directory containing classes or sensitive data (database login credentials, API keys, etc.) must be **explicitly blocked**, even if no route in the application code ever references it; otherwise, nothing prevents a visitor from typing the path directly into the browser.
 
 ## The `php -S` (IDE) contract
 
@@ -58,7 +58,7 @@ foreach ($dossiersBloques as $folder) {
     if (str_starts_with($uri, $folder)) {
         http_response_code(403);
         echo 'Accès interdit.';
-        return true; // Already answered—no further action needed
+        return true; // Already answered: no further action needed
     }
 }
 
@@ -73,13 +73,13 @@ return true;
 ?>
 ```
 
-> **Note:** The order of the blocks matters. If the `is_file()` test were placed **before** the blocks, a request for a sensitive but physically present file (e.g., `/data/config.php`) would pass this test with `true` and return `false`—allowing the embedded server **to execute** that file directly, bypassing the protections.
+> **Note:** The order of the blocks matters. If the `is_file()` test were placed **before** the blocks, a request for a sensitive but physically present file (e.g., `/data/config.php`) would pass this test with `true` and return `false`, allowing the embedded server **to execute** that file directly, bypassing the protections.
 
-> **Note (security):** `$uri` comes directly from the request (`$_SERVER['REQUEST_URI']`) — without normalization, a value containing directory traversal (`/../../etc/passwd`) could cause `is_file(__DIR__ . $uri)` to escape to the web root. In practice, you should resolve the actual path (e.g., `realpath()`) and verify that it remains within `__DIR__` before serving it, rather than trusting `$uri` as-is.
+> **Note (security):** `$uri` comes directly from the request (`$_SERVER['REQUEST_URI']`); without normalization, a value containing directory traversal (`/../../etc/passwd`) could cause `is_file(__DIR__ . $uri)` to escape to the web root. In practice, you should resolve the actual path (e.g., `realpath()`) and verify that it remains within `__DIR__` before serving it, rather than trusting `$uri` as-is.
 
 ## Redirect and Stop Execution
 
-`header('Location: ...')` It simply adds information to the HTTP response—it does not interrupt the script. Without a `exit` immediately afterward, the following code continues to execute (and produce content) even after a redirect:
+`header('Location: ...')` It simply adds information to the HTTP response; it does not interrupt the script. Without a `exit` immediately afterward, the following code continues to execute (and produce content) even after a redirect:
 
 ```php
 <?php
