@@ -62,7 +62,6 @@
       "acceuil": "Início",
       "bases-de-donnees": "Bancos de dados",
       "bases-de-l-informatique": "Fundamentos da computação",
-      "bash": "Bash",
       "ci-cd": "CI/CD",
       "docker": "Docker",
       "data-science": "Data Science",
@@ -82,6 +81,7 @@
       "ui-ux": "UI-UX"
     },
     "subjectLabels": {
+      "bash": "Bash",
       "fondamentaux-du-deep-learning": "Fundamentos do deep learning",
       "nlp-llm": "NLP e LLM",
       "applications-llm": "Aplicações LLM",

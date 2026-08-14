@@ -76,56 +76,7 @@
       "id": "bash",
       "label": "Bash",
       "folder": "Bash",
-      "chapters": [
-        {
-          "id": "scripts-et-shebang",
-          "label": "Escrever e executar um script Bash"
-        },
-        {
-          "id": "variables",
-          "label": "As variáveis"
-        },
-        {
-          "id": "variables-denvironnement",
-          "label": "Variáveis de ambiente"
-        },
-        {
-          "id": "conditions",
-          "label": "As condições"
-        },
-        {
-          "id": "boucles",
-          "label": "Os loops"
-        },
-        {
-          "id": "fonctions",
-          "label": "As funções"
-        },
-        {
-          "id": "expansion-et-jokers",
-          "label": "Expansão e caracteres curinga (globbing)"
-        },
-        {
-          "id": "redirections-et-pipes",
-          "label": "Redirecionamentos e pipes"
-        },
-        {
-          "id": "traitement-de-texte",
-          "label": "Processamento de texto (grep, sed, awk...)"
-        },
-        {
-          "id": "permissions-et-fichiers",
-          "label": "Permissões e manipulação de arquivos"
-        },
-        {
-          "id": "gestion-des-processus",
-          "label": "Gestão de processos"
-        },
-        {
-          "id": "architecture-dun-shell",
-          "label": "Como funciona um shell (arquitetura interna)"
-        }
-      ]
+      "chapters": []
     },
     {
       "id": "ci-cd",
@@ -1048,6 +999,69 @@
       "label": "Shells",
       "folder": "Shells",
       "subjects": [
+        {
+          "id": "bash",
+          "label": "Bash",
+          "folder": "Bash",
+          "chapters": [
+            {
+              "id": "commandes-de-base",
+              "label": "Comandos básicos"
+            },
+            {
+              "id": "scripts-et-shebang",
+              "label": "Escrever e executar um script Bash"
+            },
+            {
+              "id": "variables",
+              "label": "As variáveis"
+            },
+            {
+              "id": "variables-denvironnement",
+              "label": "Variáveis de ambiente"
+            },
+            {
+              "id": "conditions",
+              "label": "As condições"
+            },
+            {
+              "id": "boucles",
+              "label": "Os laços"
+            },
+            {
+              "id": "fonctions",
+              "label": "As funções"
+            },
+            {
+              "id": "expansion-et-jokers",
+              "label": "Expansão e coringas (globbing)"
+            },
+            {
+              "id": "redirections-et-pipes",
+              "label": "Redirecionamentos e pipes"
+            },
+            {
+              "id": "traitement-de-texte",
+              "label": "Processamento de texto (grep, sed, awk...)"
+            },
+            {
+              "id": "permissions-et-fichiers",
+              "label": "Permissões e manipulação de arquivos"
+            },
+            {
+              "id": "gestion-des-processus",
+              "label": "O gerenciamento de processos"
+            },
+            {
+              "id": "architecture-dun-shell",
+              "label": "Como funciona um shell (arquitetura interna)"
+            },
+            {
+              "id": "automatisation-cron",
+              "label": "Automatizar tarefas com cron"
+            }
+          ]
+        },
         {
           "id": "zsh",
           "label": "Zsh",
