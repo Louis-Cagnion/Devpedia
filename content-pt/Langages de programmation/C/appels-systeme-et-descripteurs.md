@@ -2,11 +2,11 @@
 order: 15
 ---
 
-# Chamadas de sistema e descritores de ficheiros
+# Chamadas de sistema e descritores de arquivos
 
-Um programa não pode ler um ficheiro, criar um processo ou enviar dados pela rede manipulando diretamente o hardware — isso poderia ser catastrófico para a estabilidade e a segurança do sistema se qualquer programa tivesse acesso livre a ele. Em vez disso, deve passar por um canal restrito e controlado: a chamada** ao sistema** (*syscall*). Este capítulo explica este mecanismo e o **descritor de ficheiro**, a «identificação» que o núcleo devolve em troca, ambos utilizados constantemente sempre que se lida com ficheiros, processos ou pipes (ver capítulos sobre gestão de processos, threads e a arquitetura de um shell).
+Um programa não pode ler um arquivo, criar um processo ou enviar dados pela rede manipulando diretamente o hardware — isso poderia ser catastrófico para a estabilidade e a segurança do sistema se qualquer programa tivesse acesso livre a ele. Em vez disso, deve passar por um canal restrito e controlado: a chamada** ao sistema** (*syscall*). Este capítulo explica este mecanismo e o **descritor de arquivo**, a «identificação» que o núcleo devolve em troca, ambos utilizados constantemente sempre que se lida com arquivos, processos ou pipes (ver capítulos sobre gestão de processos, threads e a arquitetura de um shell).
 
-## Espaço do utilizador vs. espaço do kernel
+## Espaço do usuário vs. espaço do kernel
 
 ```
 Programme (espace utilisateur)
@@ -19,15 +19,15 @@ Noyau du système d'exploitation (espace noyau)
 Matériel (disque, réseau, mémoire physique...)
 ```
 
-Uma chamada de função C clássica (`addition(2, 3)`) é executada inteiramente no espaço** do utilizador**, sem nunca sair do programa. Uma chamada de sistema é diferente: solicita explicitamente ao **kernel** que aja em vez do programa, para uma operação que este não tem permissão para realizar por si próprio. Este pedido implica uma mudança controlada do modo de execução (*modo de utilizador* → *modo do kernel*), verificada pelo processador — é este controlo que impede que um programa malicioso ou com erros aceda diretamente à memória ou ao disco de outro programa.
+Uma chamada de função C clássica (`addition(2, 3)`) é executada inteiramente no espaço** do usuário**, sem nunca sair do programa. Uma chamada de sistema é diferente: solicita explicitamente ao **kernel** que aja em vez do programa, para uma operação que este não tem permissão para realizar por si próprio. Este pedido implica uma mudança controlada do modo de execução (*modo de usuário* → *modo do kernel*), verificada pelo processador — é este controlo que impede que um programa malicioso ou com erros acesse diretamente à memória ou ao disco de outro programa.
 
-> **Nota:** uma função como `printf()` não é, por si só, uma chamada ao sistema — trata-se de uma função de biblioteca que formata a cadeia de caracteres no espaço do utilizador e, em seguida, chama internamente a verdadeira chamada ao sistema (`write()`) para a enviar efetivamente para a saída padrão.
+> **Nota:** uma função como `printf()` não é, por si só, uma chamada ao sistema — trata-se de uma função de biblioteca que formata a cadeia de caracteres no espaço do usuário e, em seguida, chama internamente a verdadeira chamada ao sistema (`write()`) para a enviar efetivamente para a saída padrão.
 
 ## Algumas chamadas de sistema comuns
 
 | Chamada de sistema | Função |
 |---|---|
-| `open()` / `close()` | Abrir / fechar um ficheiro |
+| `open()` / `close()` | Abrir / fechar um arquivo |
 | `read()` / `write()` | Ler/escrever bytes num descritor |
 | `fork()` / `execve()` / `wait()` | Criar um processo / substituir o seu programa / aguardar a sua conclusão (ver capítulo sobre gestão de processos) |
 | `pipe()` | Criar um canal de comunicação entre dois processos (ver capítulo sobre a arquitetura de um shell) |
@@ -51,9 +51,9 @@ if (fd == -1) {
 }
 ```
 
-## O descritor de ficheiro: uma simples entrada numa tabela
+## O descritor de arquivo: uma simples entrada numa tabela
 
-Um **descritor de ficheiro** (*file descriptor*) não é nem um ponteiro nem um caminho: é um simples número inteiro, o índice de uma tabela mantida pelo núcleo **para cada processo**, que associa esse número inteiro a um recurso efetivamente aberto (ficheiro, pipe, ligação de rede, terminal...).
+Um **descritor de arquivo** (*file descriptor*) não é nem um ponteiro nem um caminho: é um simples número inteiro, o índice de uma tabela mantida pelo núcleo **para cada processo**, que associa esse número inteiro a um recurso efetivamente aberto (arquivo, pipe, ligação de rede, terminal...).
 
 Cada processo inicia com três descritores já abertos:
 

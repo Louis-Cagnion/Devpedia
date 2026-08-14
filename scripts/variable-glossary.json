@@ -35,7 +35,7 @@
   "fichier": {
     "en": "file",
     "es": "archivo",
-    "pt": "ficheiro",
+    "pt": "arquivo",
     "de": "datei",
     "ru": "файл",
     "zh": "文件",
@@ -211,7 +211,7 @@
   "utilisateur": {
     "en": "user",
     "es": "usuario",
-    "pt": "utilizador",
+    "pt": "usuário",
     "de": "benutzer",
     "ru": "пользователь",
     "zh": "用户",

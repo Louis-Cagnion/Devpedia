@@ -4,7 +4,7 @@ order: 5
 
 # Os loops
 
-O Bash disponibiliza três estruturas de loop (`for`, `while`, `until`), utilizadas tanto para repetir comandos como para percorrer listas de ficheiros, linhas ou resultados de comandos.
+O Bash disponibiliza três estruturas de loop (`for`, `while`, `until`), utilizadas tanto para repetir comandos como para percorrer listas de arquivos, linhas ou resultados de comandos.
 
 ## O ciclo «`for`» (iteração pela lista)
 
@@ -14,11 +14,11 @@ for fruto in pomme banane cerise; do
 done
 ```
 
-Percorrer os ficheiros de uma pasta utilizando o globbing (ver capítulo sobre expansão):
+Percorrer os arquivos de uma pasta utilizando o globbing (ver capítulo sobre expansão):
 
 ```bash
-for ficheiro in *.txt; do
-    echo "Traitement de $ficheiro"
+for arquivo in *.txt; do
+    echo "Traitement de $arquivo"
 done
 ```
 
@@ -51,18 +51,18 @@ while [ $i -lt 5 ]; do
 done
 ```
 
-### Ler um ficheiro linha a linha
+### Ler um arquivo linha a linha
 
-A combinação mais comum em scripts Bash para processar um ficheiro de texto:
+A combinação mais comum em scripts Bash para processar um arquivo de texto:
 
 ```bash
 while read -r linha; do
     echo "Ligne lue : $linha"
-done < ficheiro.txt
+done < arquivo.txt
 ```
 
 - `read -r` Lê uma linha da entrada padrão para a variável `linha` em cada iteração (o `-r` impede que os caracteres `\` sejam interpretados como caracteres de escape, o que é quase sempre o desejado).
-- `< ficheiro.txt` redireciona o conteúdo do ficheiro para a entrada padrão de todo o ciclo (ver capítulo sobre redirecionamentos).
+- `< arquivo.txt` redireciona o conteúdo do arquivo para a entrada padrão de todo o ciclo (ver capítulo sobre redirecionamentos).
 
 ## O ciclo `until`
 

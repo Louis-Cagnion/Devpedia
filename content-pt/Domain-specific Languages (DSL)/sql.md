@@ -1,6 +1,6 @@
 # SQL
 
-O SQL (*Structured Query Language*) é uma linguagem com um único objetivo: consultar e manipular dados armazenados sob a forma de tabelas. Tal como a regex, não é uma linguagem de programação generalista — não possui loops, nem funções definidas pelo utilizador, nem variáveis no sentido clássico. É interpretada por um motor de base de dados (MySQL, PostgreSQL, SQL Server, SQLite...), geralmente controlada a partir de uma linguagem anfitriã (PHP, Python, JS...) através de um conector.
+O SQL (*Structured Query Language*) é uma linguagem com um único objetivo: consultar e manipular dados armazenados sob a forma de tabelas. Tal como a regex, não é uma linguagem de programação generalista — não possui loops, nem funções definidas pelo usuário, nem variáveis no sentido clássico. É interpretada por um motor de base de dados (MySQL, PostgreSQL, SQL Server, SQLite...), geralmente controlada a partir de uma linguagem anfitriã (PHP, Python, JS...) através de um conector.
 
 ## Uma tabela = um conjunto de estruturas / uma lista de dicionários
 
@@ -67,7 +67,7 @@ $toutes = $stmt->fetchAll(\PDO::FETCH_ASSOC); // todas as linhas
 
 O ciclo é sempre o mesmo: `prepare()` (escrever a consulta, com espaços reservados como `:cidade`) → `execute()` (introduzir os valores reais) → `fetch()` / `fetchAll()` (obter o resultado).
 
-> **Nota:** `$pdo->query($sql)` é um atalho **sem** espaço reservado, utilizável apenas se `$sql` for uma cadeia de caracteres 100% fixa, sem qualquer variável externa concatenada. Assim que um único valor externo (utilizador, URL, sessão...) for incluído na consulta, é necessário utilizar `prepare()` / `execute()`.
+> **Nota:** `$pdo->query($sql)` é um atalho **sem** espaço reservado, utilizável apenas se `$sql` for uma cadeia de caracteres 100% fixa, sem qualquer variável externa concatenada. Assim que um único valor externo (usuário, URL, sessão...) for incluído na consulta, é necessário utilizar `prepare()` / `execute()`.
 
 ## Injeção SQL: por que nunca se deve concatenar um valor externo
 
@@ -102,7 +102,7 @@ function construireEt(array $criteres): array
 
 O texto SQL gerado nunca contém o valor real, apenas o nome literal do placeholder (`:cidade`) — o valor real é enviado separadamente em `$params`, utilizado por `execute($params)`.
 
-> **Nota (segurança):** este mecanismo protege os **valores** (`$valor`), mas não os **nomes das colunas** (`$coluna`) — estes são concatenados diretamente no SQL, sem passar por um placeholder (isso não é tecnicamente possível: o PDO só permite passar valores como parâmetros, nunca nomes de colunas ou de tabelas). Se `$criteres` proviesse diretamente de uma entrada do utilizador não filtrada (por exemplo, `construireEt($_GET)`), um nome de coluna falsificado poderia reintroduzir uma injeção SQL. `$coluna` deve, portanto, provir sempre de uma lista branca de colunas autorizadas previamente, nunca diretamente de uma entrada externa.
+> **Nota (segurança):** este mecanismo protege os **valores** (`$valor`), mas não os **nomes das colunas** (`$coluna`) — estes são concatenados diretamente no SQL, sem passar por um placeholder (isso não é tecnicamente possível: o PDO só permite passar valores como parâmetros, nunca nomes de colunas ou de tabelas). Se `$criteres` proviesse diretamente de uma entrada do usuário não filtrada (por exemplo, `construireEt($_GET)`), um nome de coluna falsificado poderia reintroduzir uma injeção SQL. `$coluna` deve, portanto, provir sempre de uma lista branca de colunas autorizadas previamente, nunca diretamente de uma entrada externa.
 
 ## Para saber mais
 

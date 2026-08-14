@@ -8,7 +8,7 @@ Para inserir funções PHP em código HTML, podemos utilizar a estrutura de ling
 
 ```php
 <?php
-    // inclui um ficheiro que contém as funções necessárias
+    // inclui um arquivo que contém as funções necessárias
     include("bienvenue.php");
     include("insectes.php");
     /*
@@ -31,14 +31,14 @@ Para inserir funções PHP em código HTML, podemos utilizar a estrutura de ling
 
 ## `require` e `require_once`
 
-`include` e `require` fazem o mesmo (inserir o conteúdo de um ficheiro PHP no local onde a instrução está escrita), mas reagem de forma diferente se o ficheiro não existir:
+`include` e `require` fazem o mesmo (inserir o conteúdo de um arquivo PHP no local onde a instrução está escrita), mas reagem de forma diferente se o arquivo não existir:
 
-| | Ficheiro não encontrado |
+| | Arquivo não encontrado |
 |---|---|
 | `include` | Atenção, o script continua |
 | `require` | Erro fatal, o script é interrompido |
 
-`require_once` Adiciona uma garantia adicional: o ficheiro só é carregado uma **vez**, mesmo que a função `require_once` seja chamada várias vezes sobre ele (útil para evitar redefinir duas vezes a mesma classe/função):
+`require_once` Adiciona uma garantia adicional: o arquivo só é carregado uma **vez**, mesmo que a função `require_once` seja chamada várias vezes sobre ele (útil para evitar redefinir duas vezes a mesma classe/função):
 
 ```php
 <?php
@@ -47,9 +47,9 @@ require_once "config.php"; // ignorado silenciosamente, já carregado
 ?>
 ```
 
-## Um ficheiro pode terminar com um simples «`return`»
+## Um arquivo pode terminar com um simples «`return`»
 
-Um ficheiro PHP não precisa de conter uma instrução «`class`» ou «`function`»: pode limitar-se a um «`return [...]`», e o valor é devolvido diretamente para o local onde o ficheiro é carregado:
+Um arquivo PHP não precisa de conter uma instrução «`class`» ou «`function`»: pode limitar-se a um «`return [...]`», e o valor é devolvido diretamente para o local onde o arquivo é carregado:
 
 ```php
 <?php
@@ -68,11 +68,11 @@ echo $parametres['nom_site']; // «A Minha Loja»
 ?>
 ```
 
-Este padrão é frequentemente utilizado como um ficheiro simples de configuração/dados, sem necessidade de uma base de dados.
+Este padrão é frequentemente utilizado como um arquivo simples de configuração/dados, sem necessidade de uma base de dados.
 
 ## `__DIR__`
 
-`__DIR__` é uma constante que representa o diretório **do ficheiro em que aparece** — não um «diretório do projeto» global. Por isso, dois ficheiros em pastas diferentes não têm o mesmo `__DIR__`:
+`__DIR__` é uma constante que representa o diretório **do arquivo em que aparece** — não um «diretório do projeto» global. Por isso, dois arquivos em pastas diferentes não têm o mesmo `__DIR__`:
 
 ```php
 <?php

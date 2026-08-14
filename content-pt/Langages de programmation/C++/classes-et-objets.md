@@ -31,7 +31,7 @@ std::cout << v.description();   // «Peugeot 308»
 - `private` : acessível apenas a partir do interior da classe (os métodos de «`Vehicule`»).
 - `protected` : tal como a `private`, mas também acessível às classes que herdam desta (ver capítulo sobre herança).
 
-> **Nota:** ao contrário de um `struct` em C (onde todos os dados são de acesso livre), uma classe em C++ oculta, por predefinição, os seus membros (`private` implícito) — isto é o que se designa por **encapsulamento**: o exterior interage apenas com o que a classe expõe voluntariamente.
+> **Nota:** ao contrário de um `struct` em C (onde todos os dados são de acesso livre), uma classe em C++ oculta, por padrão, os seus membros (`private` implícito) — isto é o que se designa por **encapsulamento**: o exterior interage apenas com o que a classe expõe voluntariamente.
 
 ## O construtor, em duas formas de escrita
 
@@ -46,7 +46,7 @@ Vehicule(std::string marca, std::string modelo) {
 }
 ```
 
-A lista de inicialização (após o `:`) constrói diretamente cada membro com o valor correto, em vez de o construir uma primeira vez (valor por predefinição) e, em seguida, sobrescrevê-lo no corpo do construtor — um pormenor de desempenho que se torna significativo para objetos cuja construção é dispendiosa.
+A lista de inicialização (após o `:`) constrói diretamente cada membro com o valor correto, em vez de o construir uma primeira vez (valor por padrão) e, em seguida, sobrescrevê-lo no corpo do construtor — um pormenor de desempenho que se torna significativo para objetos cuja construção é dispendiosa.
 
 ## O destrutor
 
@@ -54,15 +54,15 @@ A lista de inicialização (após o `:`) constrói diretamente cada membro com o
 class GestionnaireFichier {
 public:
     GestionnaireFichier(const std::string &caminho) {
-        ficheiro.open(caminho);
+        arquivo.open(caminho);
     }
 
     ~GestionnaireFichier() {   // chamada AUTOMATICAMENTE quando o objeto sai do âmbito
-        ficheiro.close();
+        arquivo.close();
     }
 
 private:
-    std::ifstream ficheiro;
+    std::ifstream arquivo;
 };
 ```
 

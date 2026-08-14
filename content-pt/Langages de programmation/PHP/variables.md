@@ -136,9 +136,9 @@ As variáveis abaixo permitem recuperar os elementos de um formulário consoante
 
 Quando se utiliza o método `GET`, os dados do formulário ficam visíveis diretamente no URL, sob a forma de *uma cadeia de consulta* (por exemplo: `?nome=Jean&idade=25`).
 
-O método `POST` é mais frequentemente utilizado para enviar dados sensíveis (palavras-passe, informações pessoais...), uma vez que estes não são exibidos na URL e não estão sujeitos a limitações de tamanho, ao contrário do que acontece com uma URL.
+O método `POST` é mais frequentemente utilizado para enviar dados sensíveis (senhas, informações pessoais...), uma vez que estes não são exibidos na URL e não estão sujeitos a limitações de tamanho, ao contrário do que acontece com uma URL.
 
-> **Nota:** `GET` e `POST` não servem para proteger dados — os dados continuam visíveis através das ferramentas de desenvolvimento do navegador ou por interceção de rede, caso o site não utilize HTTPS. Para dados verdadeiramente sensíveis (palavras-passe...), é necessário ter também em conta a encriptação e o HTTPS.
+> **Nota:** `GET` e `POST` não servem para proteger dados — os dados continuam visíveis através das ferramentas de desenvolvimento do navegador ou por interceção de rede, caso o site não utilize HTTPS. Para dados verdadeiramente sensíveis (senhas...), é necessário ter também em conta a encriptação e o HTTPS.
 
 ## As variáveis superglobais
 
@@ -148,14 +148,14 @@ O método `POST` é mais frequentemente utilizado para enviar dados sensíveis (
 |---|---|
 | `$_GET` / `$_POST` | Dados enviados por um formulário |
 | `$_SERVER` | Informações sobre o pedido e o servidor (URL solicitada, método HTTP...) |
-| `$_SESSION` | Dados armazenados no servidor para o utilizador atual (requer o `session_start()`) |
+| `$_SESSION` | Dados armazenados no servidor para o usuário atual (requer o `session_start()`) |
 | `$_COOKIE` | Cookies enviados pelo navegador |
 
 > **Nota:** ao contrário de uma variável clássica (de âmbito local, invisível numa função se não for passada como parâmetro), as superglobais são visíveis **em todo o lado**, tal como uma constante — mas contêm dados que mudam a cada pedido, e não configurações fixas.
 
 ## Constantes com o «`define()`»
 
-`define('NOME', valor)` Cria uma **constante global**, também acessível a partir de qualquer ficheiro, função ou método:
+`define('NOME', valor)` Cria uma **constante global**, também acessível a partir de qualquer arquivo, função ou método:
 
 ```php
 <?php
@@ -168,9 +168,9 @@ function prixTTC(float $prixHT): float
 ?>
 ```
 
-> **Nota:** uma «`$variable`» clássica, por sua vez, permanece local, mesmo que o ficheiro que a declara tenha sido carregado com «`require`» — não é automaticamente visível no interior de uma função ou de um método definido noutro ficheiro. É por isso que os ficheiros de configuração utilizam frequentemente `define()` em vez de simples variáveis: isso garante que a configuração permaneça legível em todo o projeto.
+> **Nota:** uma «`$variable`» clássica, por sua vez, permanece local, mesmo que o arquivo que a declara tenha sido carregado com «`require`» — não é automaticamente visível no interior de uma função ou de um método definido noutro arquivo. É por isso que os arquivos de configuração utilizam frequentemente `define()` em vez de simples variáveis: isso garante que a configuração permaneça legível em todo o projeto.
 
-## Aceder a uma chave de tabela que não existe
+## Acessar a uma chave de tabela que não existe
 
 A leitura de uma chave de matriz que não existe desencadeia um **aviso** («Undefined array key») — não é uma falha do sistema, mas sim um sinal de erro que não deve ser ignorado:
 

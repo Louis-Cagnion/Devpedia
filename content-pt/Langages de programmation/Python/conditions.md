@@ -44,7 +44,7 @@ if [1, 2]:    # True -> uma lista não vazia é «truthy»
 ```python
 utilisateurs = []
 
-if utilisateurs:                # preferível a «if len(utilizadores) > 0:»
+if utilisateurs:                # preferível a «if len(usuários) > 0:»
     print("Il y a des utilisateurs")
 else:
     print("Aucun utilisateur")

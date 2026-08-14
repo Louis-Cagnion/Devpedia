@@ -16,7 +16,7 @@ function addition(a, b) {
 addition(2, 3);   // 5
 ```
 
-Uma **declaração** de função é *«hoisted»* (elevada): pode ser utilizada mesmo **antes** da linha da sua definição no ficheiro, ao contrário de uma expressão de função.
+Uma **declaração** de função é *«hoisted»* (elevada): pode ser utilizada mesmo **antes** da linha da sua definição no arquivo, ao contrário de uma expressão de função.
 
 ```javascript
 console.log(addition(2, 3));  // Funciona, mesmo que tenha sido escrita antes da declaração que se segue
@@ -64,7 +64,7 @@ const objeto = {
 
 > **Nota:** uma função clássica (`function`) recebe o seu próprio `this`, determinado pela **forma como é chamada** (dinâmico). Uma função com setor não tem o seu próprio `this`: reutiliza o da função que a engloba no momento em que é escrita (lexical) — esta é a principal razão para se preferirem as funções com setor para callbacks internos a um método.
 
-## Parâmetros por predefinição, rest e spread
+## Parâmetros por padrão, rest e spread
 
 ```javascript
 function saluer(nome, mensagem = "Bonjour") {   // valor por defeito se o argumento for omitido/não definido

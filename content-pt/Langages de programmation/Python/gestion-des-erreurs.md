@@ -29,23 +29,23 @@ except Exception as erro:   # captura tudo o resto -> a colocar em ÚLTIMO
     print(f"Erreur inattendue : {erro}")
 ```
 
-> **Nota:** interceptar `Exception` de forma demasiado abrangente (ou, pior ainda, um `except:` sem tipo) oculta erros de programação que, em vez disso, deveriam fazer com que o programa falhasse para que fossem corrigidos — a reservar para casos em que a falha é realmente esperada e já está a ser tratada imediatamente a seguir.
+> **Nota:** interceptar `Exception` de forma demasiado abrangente (ou, pior ainda, um `except:` sem tipo) oculta erros de programação que, em vez disso, deveriam fazer com que o programa falhasse para que fossem corrigidos — a reservar para casos em que a falha é realmente esperada e já está sendo tratada imediatamente a seguir.
 
 ## `else` e `finally`
 
 ```python
 try:
-    ficheiro = open("donnees.txt")
+    arquivo = open("donnees.txt")
 except FileNotFoundError:
     print("Fichier introuvable")
 else:
     print("Fichier ouvert avec succès")   # executado APENAS se não tiver ocorrido nenhuma exceção
-    ficheiro.close()
+    arquivo.close()
 finally:
     print("Tentative terminée")            # executado EM TODOS OS CASOS, haja ou não uma exceção
 ```
 
-`finally` É normalmente utilizada para libertar um recurso (fechar um ficheiro, uma ligação...) independentemente de ter ocorrido ou não um erro.
+`finally` É normalmente utilizada para libertar um recurso (fechar um arquivo, uma ligação...) independentemente de ter ocorrido ou não um erro.
 
 ## Lançar as suas próprias exceções
 
@@ -77,11 +77,11 @@ Uma exceção personalizada herda d`Exception` (ou de uma subclasse mais especí
 
 ## O gestor de contexto `with`
 
-`with` garante que um recurso seja devidamente libertado, **mesmo em caso de exceção** — um ficheiro aberto com `with` fecha-se sempre automaticamente ao sair do bloco:
+`with` garante que um recurso seja devidamente libertado, **mesmo em caso de exceção** — um arquivo aberto com `with` fecha-se sempre automaticamente ao sair do bloco:
 
 ```python
-with open("donnees.txt") as ficheiro:
-    conteúdo = ficheiro.read()
+with open("donnees.txt") as arquivo:
+    conteúdo = arquivo.read()
 # O método `fichier.close()` é chamado automaticamente aqui, independentemente de tudo ter corrido bem ou não
 ```
 

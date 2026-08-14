@@ -44,7 +44,7 @@ Em resumo: **função** = autónoma, chamada diretamente pelo seu nome. **Métod
 
 ## Definir os tipos dos parâmetros e do valor de retorno de uma função
 
-O PHP é dinamicamente tipado por predefinição, mas aceita anotações de tipo nos parâmetros e no valor de retorno. Ao contrário de uma linguagem compilada, estes tipos não são verificados antes da execução: são verificados **durante a execução**, em cada chamada.
+O PHP é dinamicamente tipado por padrão, mas aceita anotações de tipo nos parâmetros e no valor de retorno. Ao contrário de uma linguagem compilada, estes tipos não são verificados antes da execução: são verificados **durante a execução**, em cada chamada.
 
 ```php
 <?php
@@ -87,7 +87,7 @@ $version = $mtime ? "v{$mtime}" : 'v-inconnue';
 ?>
 ```
 
-> **Nota:** `@` oculta o aviso, mas não altera o comportamento da própria função (o `filemtime()` continua a devolver `false` se o ficheiro não existir). Deve ser utilizado apenas nos casos em que a falha é realmente prevista e testada imediatamente a seguir — utilizá-lo em todas as situações também ocultaria erros reais.
+> **Nota:** `@` oculta o aviso, mas não altera o comportamento da própria função (o `filemtime()` continua a devolver `false` se o arquivo não existir). Deve ser utilizado apenas nos casos em que a falha é realmente prevista e testada imediatamente a seguir — utilizá-lo em todas as situações também ocultaria erros reais.
 
 O PHP disponibiliza uma grande variedade de funções nativas prontas a utilizar, classificadas abaixo por categoria.
 

@@ -26,7 +26,7 @@ echo "Bonjour $nome"   # Olá, Jean -> as aspas duplas interpretam as variáveis
 echo 'Bonjour $nom'   # Olá $nome -> as aspas simples desativam qualquer interpretação
 ```
 
-> **Nota:** coloque sempre uma variável entre aspas duplas quando a utilizar (`"$nome"`), salvo indicação específica em contrário — sem aspas, um valor que contenha espaços é dividido em várias palavras pelo Bash, o que provoca erros silenciosos em muitos scripts (`rm $ficheiro` com um nome de ficheiro que contenha um espaço pode eliminar algo diferente do previsto). A exceção mais comum: dentro de um contexto numérico explícito (`[ $i -lt 5 ]`, `$(( i + 1 ))`), o Bash não divide o valor em palavras — as aspas são, portanto, desnecessárias, o que explica por que razão os capítulos sobre condições e loops não as utilizam nestes casos específicos.
+> **Nota:** coloque sempre uma variável entre aspas duplas quando a utilizar (`"$nome"`), salvo indicação específica em contrário — sem aspas, um valor que contenha espaços é dividido em várias palavras pelo Bash, o que provoca erros silenciosos em muitos scripts (`rm $arquivo` com um nome de arquivo que contenha um espaço pode eliminar algo diferente do previsto). A exceção mais comum: dentro de um contexto numérico explícito (`[ $i -lt 5 ]`, `$(( i + 1 ))`), o Bash não divide o valor em palavras — as aspas são, portanto, desnecessárias, o que explica por que razão os capítulos sobre condições e loops não as utilizam nestes casos específicos.
 
 ## Substituição de comando
 
@@ -78,7 +78,7 @@ echo "Code de sortie : $?"  # diferente de zero, porque o comando anterior falho
 
 ## Variáveis locais numa função
 
-Por predefinição, uma variável declarada numa função permanece **global** (visível em todo o código após a sua primeira chamada) — «`local`» restringe o seu âmbito à função atual, o que evita efeitos colaterais inesperados:
+Por padrão, uma variável declarada numa função permanece **global** (visível em todo o código após a sua primeira chamada) — «`local`» restringe o seu âmbito à função atual, o que evita efeitos colaterais inesperados:
 
 ```bash
 compter() {

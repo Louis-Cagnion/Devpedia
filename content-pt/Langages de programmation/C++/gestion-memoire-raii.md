@@ -8,26 +8,26 @@ Em C (ver capítulo sobre gestão de memória), cada `malloc()` deve ser seguido
 
 ## O princípio RAII
 
-Um recurso (memória, ficheiro, ligação de rede...) é alocado no **construtor** de um objeto e libertado automaticamente no seu **destrutor** — quando o objeto sai do âmbito, o recurso é inevitavelmente libertado, sem que seja possível esquecer essa limpeza:
+Um recurso (memória, arquivo, ligação de rede...) é alocado no **construtor** de um objeto e libertado automaticamente no seu **destrutor** — quando o objeto sai do âmbito, o recurso é inevitavelmente libertado, sem que seja possível esquecer essa limpeza:
 
 ```cpp
 class GestionnaireFichier {
 public:
     GestionnaireFichier(const std::string &caminho) {
-        ficheiro.open(caminho);
-        if (!ficheiro.is_open()) {
+        arquivo.open(caminho);
+        if (!arquivo.is_open()) {
             throw std::runtime_error("Impossible d'ouvrir : " + caminho); // cf. chapitre sur les exceptions
         }
     }
-    ~GestionnaireFichier() { ficheiro.close(); }   // chamada automaticamente, mesmo em caso de exceção!
+    ~GestionnaireFichier() { arquivo.close(); }   // chamada automaticamente, mesmo em caso de exceção!
 private:
-    std::ifstream ficheiro;
+    std::ifstream arquivo;
 };
 
 void traiterFichier() {
     GestionnaireFichier gf("donnees.txt");
     // ... utilizar gf ...
-}   // <- aqui, a função ~GestionnaireFichier() é executada automaticamente: o ficheiro é fechado, garantidamente
+}   // <- aqui, a função ~GestionnaireFichier() é executada automaticamente: o arquivo é fechado, garantidamente
 ```
 
 > **Nota:** ao contrário de um simples `close()` chamado manualmente no final da função, o RAII garante a libertação mesmo que uma exceção interrompa a função a meio — o destrutor é executado durante o «desenrolamento da pilha» (*stack unwinding*) causado pela exceção, enquanto que uma chamada manual seria simplesmente ignorada.
@@ -77,7 +77,7 @@ std::shared_ptr<int> p2 = p1;   // OK, cópia autorizada: p1 E p2 partilham o me
 
 Cada `shared_ptr` incrementa um contador de referências partilhado; o recurso só é libertado automaticamente quando esse contador chega a zero.
 
-> **Nota:** `shared_ptr` tem um custo (o contador de referências, atualizado de forma thread-safe) superior ao de `unique_ptr` — a utilizar apenas nos casos em que um recurso tenha efetivamente vários proprietários legítimos, e não por predefinição.
+> **Nota:** `shared_ptr` tem um custo (o contador de referências, atualizado de forma thread-safe) superior ao de `unique_ptr` — a utilizar apenas nos casos em que um recurso tenha efetivamente vários proprietários legítimos, e não por padrão.
 
 ## Resumo
 
@@ -87,4 +87,4 @@ Cada `shared_ptr` incrementa um contador de referências partilhado; o recurso s
 | Número de proprietários | N/A | Um único | Vários |
 | Custo | Mínimo | Quase nulo (sem sobrecusto na execução) | Contagem de referências (ligeiro sobrecusto) |
 
-> **Boas práticas do C++ moderno:** nunca utilizar `new` / `delete` diretamente no código da aplicação — optar sistematicamente por `unique_ptr` (por predefinição) ou `shared_ptr` (se a partilha for realmente necessária), para beneficiar do RAII sem ter de pensar nisso de cada vez.
+> **Boas práticas do C++ moderno:** nunca utilizar `new` / `delete` diretamente no código da aplicação — optar sistematicamente por `unique_ptr` (por padrão) ou `shared_ptr` (se a partilha for realmente necessária), para beneficiar do RAII sem ter de pensar nisso de cada vez.

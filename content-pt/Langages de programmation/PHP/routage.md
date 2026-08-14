@@ -8,7 +8,7 @@ Sem um framework (Laravel, Symfony...), o PHP não fornece nenhum router integra
 
 ## O controlador frontal e a tabela de distribuição
 
-Um padrão comum consiste em fazer com que **todas** as solicitações passem por um único ponto de entrada (muitas vezes `índice.php`), que consulta uma tabela associativa «rota → ficheiro»:
+Um padrão comum consiste em fazer com que **todas** as solicitações passem por um único ponto de entrada (muitas vezes `índice.php`), que consulta uma tabela associativa «rota → arquivo»:
 
 ```php
 <?php
@@ -21,7 +21,7 @@ $uri  = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $file = $routes[$uri] ?? null;
 
 if ($file && file_exists(__DIR__ . $file)) {
-    require __DIR__ . $file; // O «handler» é um ficheiro executável, não uma função chamada
+    require __DIR__ . $file; // O «handler» é um arquivo executável, não uma função chamada
 } else {
     http_response_code(404);
     echo "Page introuvable";
@@ -29,22 +29,22 @@ if ($file && file_exists(__DIR__ . $file)) {
 ?>
 ```
 
-Principal diferença em relação a um router JS (Express): cada rota aponta para um **caminho de ficheiro**, e não para uma função. Não há qualquer callback a ser chamado — o próprio ficheiro gera a resposta HTTP (`echo`, `header()`...) ao ler diretamente as superglobais.
+Principal diferença em relação a um router JS (Express): cada rota aponta para um **caminho de arquivo**, e não para uma função. Não há qualquer callback a ser chamado — o próprio arquivo gera a resposta HTTP (`echo`, `header()`...) ao ler diretamente as superglobais.
 
 - `$_SERVER['REQUEST_URI']` contém o caminho **e** a string de consulta colados (`/contact?ref=pub`). `parse_url(..., PHP_URL_PATH)` extrai apenas o caminho, descartando a string de consulta.
 - `trim(..., '/')` remove os caracteres «`/`» do início e do fim, para que «`'contact'`» corresponda à chave da tabela «`$routes`» (sem a barra inicial).
 
-## O modelo «sistema de ficheiros = URLs»
+## O modelo «sistema de arquivos = URLs»
 
-Num servidor PHP clássico (sem configuração específica), **qualquer ficheiro fisicamente presente na raiz do site é acessível através do seu caminho na URL** — um `.php` é aí executado, um ficheiro estático é aí servido tal como está. É o oposto do Express/Node, onde uma rota só existe se for explicitamente declarada: no PHP «à moda antiga», **tudo é acessível por predefinição, exceto o que for explicitamente bloqueado**.
+Num servidor PHP clássico (sem configuração específica), **qualquer arquivo fisicamente presente na raiz do site é acessível através do seu caminho na URL** — um `.php` é aí executado, um arquivo estático é aí servido tal como está. É o oposto do Express/Node, onde uma rota só existe se for explicitamente declarada: no PHP «à moda antiga», **tudo é acessível por padrão, exceto o que for explicitamente bloqueado**.
 
-Consequência prática: um ficheiro que contenha classes ou dados sensíveis (identificadores de ligação a uma base de dados, chaves de API...) deve ser **bloqueado explicitamente**, mesmo que nenhuma rota o referencie no código da aplicação — caso contrário, nada impede que um visitante digite diretamente o seu caminho no navegador.
+Consequência prática: um arquivo que contenha classes ou dados sensíveis (identificadores de ligação a uma base de dados, chaves de API...) deve ser **bloqueado explicitamente**, mesmo que nenhuma rota o referencie no código da aplicação — caso contrário, nada impede que um visitante digite diretamente o seu caminho no navegador.
 
 ## A especificação do servidor de desenvolvimento integrado (`php -S`)
 
-`php -S host:port routeur.php` não possui as capacidades de um verdadeiro servidor web (sem ficheiro «`.htaccess`», sem configuração do Apache/nginx). O ficheiro passado como argumento é executado em **cada** pedido e controla o comportamento através do seu valor de «`return`»:
+`php -S host:port routeur.php` não possui as capacidades de um verdadeiro servidor web (sem arquivo «`.htaccess`», sem configuração do Apache/nginx). O arquivo passado como argumento é executado em **cada** pedido e controla o comportamento através do seu valor de «`return`»:
 
-- `return false;` → «Não fiz nada, trata tu mesmo deste pedido normalmente» (o servidor fornece então o ficheiro físico solicitado, se este existir; caso contrário, retorna um erro 404).
+- `return false;` → «Não fiz nada, trate você mesmo desse pedido normalmente» (o servidor fornece então o arquivo físico solicitado, se este existir; caso contrário, retorna um erro 404).
 - `return true;` → «Já tratei eu próprio desta solicitação (resposta já fornecida), não faças mais nada».
 
 ```php
@@ -62,7 +62,7 @@ foreach ($dossiersBloques as $pasta) {
     }
 }
 
-// 2) ficheiro estático existente -> deixar que o servidor o sirva por si próprio
+// 2) arquivo estático existente -> deixar que o servidor o sirva por si próprio
 if (is_file(__DIR__ . $uri)) {
     return false;
 }
@@ -73,7 +73,7 @@ return true;
 ?>
 ```
 
-> **Nota:** a ordem dos blocos é importante. Se o teste `is_file()` fosse colocado **antes** dos bloqueios, uma solicitação relativa a um ficheiro sensível, mas fisicamente presente (por exemplo, `/data/config.php`), passaria neste teste com `true` e devolveria `false` — permitindo que o servidor integrado **executasse** esse ficheiro diretamente, sem passar pelas proteções.
+> **Nota:** a ordem dos blocos é importante. Se o teste `is_file()` fosse colocado **antes** dos bloqueios, uma solicitação relativa a um arquivo sensível, mas fisicamente presente (por exemplo, `/data/config.php`), passaria neste teste com `true` e devolveria `false` — permitindo que o servidor integrado **executasse** esse arquivo diretamente, sem passar pelas proteções.
 
 > **Nota (segurança):** `$uri` provém diretamente da consulta (`$_SERVER['REQUEST_URI']`) — sem normalização, um valor que contenha subdiretórios (`/../../etc/passwd`) poderia permitir que `is_file(__DIR__ . $uri)` escapasse para a raiz do servidor web. Na prática, é necessário resolver o caminho real (por exemplo, `realpath()`) e verificar se este se mantém efetivamente dentro de `__DIR__` antes de o servir, em vez de confiar em `$uri` tal como está.
 

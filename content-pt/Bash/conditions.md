@@ -68,7 +68,7 @@ fi
 | `-z "$str"` | Verdadeiro se a cadeia estiver vazia |
 | `-n "$str"` | Verdadeiro se a cadeia não estiver vazia |
 
-## Testar ficheiros
+## Testar arquivos
 
 ```bash
 if [ -f "config.php" ]; then
@@ -82,11 +82,11 @@ fi
 
 | Operador | Verdadeiro se... |
 |---|---|
-| `-f caminho` | ...é um ficheiro existente |
+| `-f caminho` | ...é um arquivo existente |
 | `-d caminho` | ...é uma pasta já existente |
-| `-e caminho` | ...existe algo neste caminho (ficheiro ou pasta) |
-| `-x caminho` | ...o ficheiro é executável |
-| `-r` / `-w` | ...o ficheiro é legível / gravável |
+| `-e caminho` | ...existe algo neste caminho (arquivo ou pasta) |
+| `-x caminho` | ...o arquivo é executável |
+| `-r` / `-w` | ...o arquivo é legível / gravável |
 
 ## Combinar condições
 

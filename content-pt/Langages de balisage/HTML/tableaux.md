@@ -33,7 +33,7 @@ Uma tabela HTML serve para representar dados **tabulares** (linhas/colunas efeti
 - `<thead>` : o cabeçalho (geralmente uma única linha, com os títulos das colunas).
 - `<tbody>` : o corpo da tabela (os próprios dados).
 - `<tr>` (*linha da tabela*): uma linha.
-- `<th>` (*cabeçalho da tabela*): uma célula de cabeçalho (geralmente a negrito por predefinição e anunciada de forma diferente por um leitor de ecrã).
+- `<th>` (*cabeçalho da tabela*): uma célula de cabeçalho (geralmente a negrito por padrão e anunciada de forma diferente por um leitor de tela).
 - `<td>` (*dados da tabela*): uma célula de dados clássica.
 
 ## Unir células
@@ -85,7 +85,7 @@ Uma tabela HTML serve para representar dados **tabulares** (linhas/colunas efeti
 </table>
 ```
 
-- `<caption>` : um título associado à tabela, anunciado pelos leitores de ecrã antes do seu conteúdo.
-- `scope="col"` (ou `"row"`) num `<th>`: especifica explicitamente se este cabeçalho se aplica a toda uma coluna ou a toda uma linha — essencial para que um leitor de ecrã anuncie o cabeçalho correto ao percorrer cada célula de uma tabela complexa.
+- `<caption>` : um título associado à tabela, anunciado pelos leitores de tela antes do seu conteúdo.
+- `scope="col"` (ou `"row"`) num `<th>`: especifica explicitamente se este cabeçalho se aplica a toda uma coluna ou a toda uma linha — essencial para que um leitor de tela anuncie o cabeçalho correto ao percorrer cada célula de uma tabela complexa.
 
-> **Nota (melhor prática):** nunca utilizar `<table>` para organizar o layout geral de uma página (menu, colunas de conteúdo...) — esta prática, comum antes da chegada do CSS moderno, compromete a semântica do documento (um leitor de ecrã anunciaria dados tabulares onde não existem) e dificulta a adaptação da página a dispositivos móveis.
+> **Nota (melhor prática):** nunca utilizar `<table>` para organizar o layout geral de uma página (menu, colunas de conteúdo...) — esta prática, comum antes da chegada do CSS moderno, compromete a semântica do documento (um leitor de tela anunciaria dados tabulares onde não existem) e dificulta a adaptação da página a dispositivos móveis.

@@ -78,20 +78,20 @@ class Repository
 ?>
 ```
 
-A partir de outro ficheiro, existem duas formas de chamar esta classe:
+A partir de outro arquivo, existem duas formas de chamar esta classe:
 
 ```php
 <?php
 // 1) caminho completo, absoluto a partir da raiz (o \ inicial é opcional, mas explícito)
 \App\Facturation\Repository::trouver(1);
 
-// 2) import no início do ficheiro, seguido do nome abreviado
+// 2) import no início do arquivo, seguido do nome abreviado
 use App\Facturation\Repository;
 
 Repository::trouver(1);
 ?>
 ```
 
-`use` não carrega o ficheiro propriamente dito — limita-se a indicar ao motor PHP a que nome completo corresponde o nome abreviado utilizado mais abaixo. Trata-se de um mecanismo de autocarregamento (ver capítulo dedicado) que se encarrega de localizar e carregar o ficheiro correspondente, no momento em que a classe é efetivamente utilizada.
+`use` não carrega o arquivo propriamente dito — limita-se a indicar ao motor PHP a que nome completo corresponde o nome abreviado utilizado mais abaixo. Trata-se de um mecanismo de autocarregamento (ver capítulo dedicado) que se encarrega de localizar e carregar o arquivo correspondente, no momento em que a classe é efetivamente utilizada.
 
 > **Nota:** `Classe::methode()` (com `::`) assemelha-se a `Classe->methode()`, mas nunca é utilizado com uma instância — é o equivalente quase direto a um namespace + método estático em C++.

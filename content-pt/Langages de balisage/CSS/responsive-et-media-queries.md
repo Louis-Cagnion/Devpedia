@@ -4,7 +4,7 @@ order: 7
 
 # O design responsivo e as media queries
 
-O **design responsivo** consiste em conceber uma página que se adapte a qualquer tamanho de ecrã (telemóvel, tablet, computador) — uma necessidade desde que a maior parte do tráfego na Web passa a ocorrer em dispositivos móveis, e a principal razão de ser das **media queries**.
+O **design responsivo** consiste em conceber uma página que se adapte a qualquer tamanho de tela (celular, tablet, computador) — uma necessidade desde que a maior parte do tráfego na Web passa a ocorrer em dispositivos móveis, e a principal razão de ser das **media queries**.
 
 ## As unidades relativas, antes mesmo das media queries
 
@@ -55,13 +55,13 @@ div {
 }
 ```
 
-> **Melhores práticas:** a abordagem «*mobile first*» (utilizar `min-width`, conceber primeiro para o ecrã mais pequeno e, em seguida, adicionar complexidade para os ecrãs maiores) é geralmente preferível ao inverso — obriga a pensar primeiro no conteúdo essencial e está em consonância com o facto de a maioria do tráfego na Web ser proveniente de dispositivos móveis.
+> **Melhores práticas:** a abordagem «*mobile first*» (utilizar `min-width`, conceber primeiro para a tela mais pequena e, em seguida, adicionar complexidade para as telas maiores) é geralmente preferível ao inverso — obriga a pensar primeiro no conteúdo essencial e está em consonância com o facto de a maioria do tráfego na Web ser proveniente de dispositivos móveis.
 
 ## Pontos de interrupção (*breakpoints*) comuns
 
 | Largura | Público-alvo típico |
 |---|---|
-| `< 768px` | Telemóvel |
+| `< 768px` | Celular |
 | `768px – 1023px` | Tablet |
 | `≥ 1024px` | Computador de secretária |
 

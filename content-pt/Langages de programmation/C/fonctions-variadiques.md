@@ -49,7 +49,7 @@ somme(3, 10, 20, 30); // 60 -> número = 3, les 3 arguments suivants sont additi
 printf("%d %d %d\n", 1, 2, 3); // la chaîne annonce 3 valeurs -> printf lit 3 arguments variadiques
 ```
 
-> **Nota:** é por isso que um número incorreto de `%` em relação aos argumentos reais (ou o contrário) não provoca **qualquer erro de compilação** — apenas um comportamento indefinido na execução (leitura de dados que não são argumentos reais). Esta é uma fonte clássica de falhas de segurança («format string vulnerability») quando uma cadeia de formato provém diretamente de uma entrada do utilizador não controlada.
+> **Nota:** é por isso que um número incorreto de `%` em relação aos argumentos reais (ou o contrário) não provoca **qualquer erro de compilação** — apenas um comportamento indefinido na execução (leitura de dados que não são argumentos reais). Esta é uma fonte clássica de falhas de segurança («format string vulnerability») quando uma cadeia de formato provém diretamente de uma entrada do usuário não controlada.
 
 ## Uma restrição: o número de argumentos deve ser indicado de outra forma
 

@@ -4,7 +4,7 @@ order: 6
 
 # Os objetos
 
-Um objeto em JavaScript é uma estrutura que permite armazenar dados sob a forma de pares chave/valor. Ao contrário de um array, a ordem não é o elemento importante: acede-se a um valor através do seu nome (a chave), e não através de um índice numérico.
+Um objeto em JavaScript é uma estrutura que permite armazenar dados sob a forma de pares chave/valor. Ao contrário de um array, a ordem não é o elemento importante: acessa-se um valor através do seu nome (a chave), e não através de um índice numérico.
 
 Pode ser criada de duas formas diferentes:
 ```javascript
@@ -23,9 +23,9 @@ Pode ser criada de duas formas diferentes:
     };
 ```
 
-### Aceder e alterar as propriedades
+### Acessar e alterar as propriedades
 
-Existem duas formas de aceder a uma propriedade de um objeto: a notação com ponto e a notação com colchetes (útil quando o nome da chave é dinâmico ou contém caracteres especiais).
+Existem duas formas de acessar a uma propriedade de um objeto: a notação com ponto e a notação com colchetes (útil quando o nome da chave é dinâmico ou contém caracteres especiais).
 ```javascript
     const obj = { nome: 'Jean', idade: 25 };
 

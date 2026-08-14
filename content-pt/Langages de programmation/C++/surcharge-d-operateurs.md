@@ -4,7 +4,7 @@ order: 5
 
 # A sobrecarga de operadores
 
-O C++ permite redefinir o comportamento dos operadores padrão (`+`, `==`, `<<`...) para tipos personalizados — o que permite que um objeto criado pelo utilizador se comporte, aparentemente, como um tipo nativo da linguagem.
+O C++ permite redefinir o comportamento dos operadores padrão (`+`, `==`, `<<`...) para tipos personalizados — o que permite que um objeto criado pelo usuário se comporte, aparentemente, como um tipo nativo da linguagem.
 
 ## Sobrescrever `+`
 
@@ -46,7 +46,7 @@ Point p2(1, 2);
 std::cout << (p1 == p2);   // true -> sem sobrecarga, compararia os ENDEREÇOS, e não o conteúdo
 ```
 
-> **Nota:** sem sobrecarga de `==`, comparar dois objetos com `==` compara, por predefinição, os seus **endereços de memória** (tal como comparar dois ponteiros), nunca o seu conteúdo — uma fonte frequente de erros para quem espera uma comparação «por valor» automática.
+> **Nota:** sem sobrecarga de `==`, comparar dois objetos com `==` compara, por padrão, os seus **endereços de memória** (tal como comparar dois ponteiros), nunca o seu conteúdo — uma fonte frequente de erros para quem espera uma comparação «por valor» automática.
 
 ## Sobrepor `<<` para visualização
 

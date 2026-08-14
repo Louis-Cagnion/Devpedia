@@ -20,7 +20,7 @@ printf("%d\n", *ptr);  // 25          -> la valeur pointée par ptr
 
 - `&variable` : operador «endereço de», devolve o endereço de memória de uma variável.
 - `*ptr` (na declaração): indica que «`ptr`» é um ponteiro.
-- `*ptr` (fora de uma declaração): operador de **desreferência**, acede ao valor armazenado na morada contida n`ptr`o.
+- `*ptr` (fora de uma declaração): operador de **desreferência**, acessa o valor armazenado no endereço contido em `ptr`.
 
 Alterar `*ptr` altera diretamente `idade`, uma vez que ambos apontam para o mesmo local na memória:
 
@@ -58,7 +58,7 @@ printf("%d\n", **ptrPtr); // 25 -> déréférence deux fois : ptrPtr -> ptr -> a
 
 ## Passar um ponteiro a uma função (passagem por endereço)
 
-Em C, os argumentos são passados **por valor** (uma cópia) por predefinição — uma função não pode, portanto, alterar a variável original do chamador, a menos que lhe seja passada diretamente a morada dessa variável:
+Em C, os argumentos são passados **por valor** (uma cópia) por padrão — uma função não pode, portanto, alterar a variável original do chamador, a menos que lhe seja passado diretamente o endereço dessa variável:
 
 ```c
 void incrementer(int *número)
@@ -128,7 +128,7 @@ int *const p2 = &x; // p2 ne peut plus changer d'adresse, mais peut modifier la 
 |---|---|
 | `int *ptr` | Declara um ponteiro para um `int` |
 | `&variable` | Endereço de memória de `variable` |
-| `*ptr` | Valor na morada contida em `ptr` |
+| `*ptr` | Valor no endereço contido em `ptr` |
 | `ptr + 1` | Endereço seguinte, deslocado em `sizeof(type)` octetos |
 | `NULL` | Ponteiro que não aponta para nada válido |
 

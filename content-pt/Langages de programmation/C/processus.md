@@ -6,7 +6,7 @@ order: 14
 
 Um **processo** é uma instância de um programa em execução, com o seu próprio espaço de memória, isolado do dos outros processos. Em C, a biblioteca padrão POSIX (`unistd.h`, `sys/wait.h`) permite criar novos processos, iniciar outros programas e aguardar a sua conclusão.
 
-> **Nota:** `fork()`, `execve()` (utilizado por `execlp()` e pelas outras funções da família `exec`) e `wait()` / `waitpid()` são **chamadas de sistema** — consulte o capítulo dedicado às chamadas de sistema e aos descritores de ficheiros para saber o que isso implica na prática (passagem para o espaço do kernel, gestão de erros através de `errno`).
+> **Nota:** `fork()`, `execve()` (utilizado por `execlp()` e pelas outras funções da família `exec`) e `wait()` / `waitpid()` são **chamadas de sistema** — consulte o capítulo dedicado às chamadas de sistema e aos descritores de arquivos para saber o que isso implica na prática (passagem para o espaço do kernel, gestão de erros através de `errno`).
 
 ## `fork()` : duplicar o processo atual
 

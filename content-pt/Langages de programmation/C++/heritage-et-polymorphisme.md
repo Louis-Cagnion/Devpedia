@@ -67,7 +67,7 @@ Animal *a = new Chien("Rex");
 delete a;   // sem destruidor virtual: APENAS ~Animal() é chamado, nunca ~Cão()
 ```
 
-Sem `virtual` no destrutor, a eliminação de um objeto `Chien` através de um ponteiro `Animal*` executa apenas o destrutor de `Animal` — quaisquer recursos próprios de `Chien` (memória alocada, ficheiro aberto...) nunca seriam libertados. Qualquer classe destinada a ser herdada e manipulada através de um ponteiro à classe base deve, portanto, declarar sistematicamente o seu destruidor `virtual`.
+Sem `virtual` no destrutor, a eliminação de um objeto `Chien` através de um ponteiro `Animal*` executa apenas o destrutor de `Animal` — quaisquer recursos próprios de `Chien` (memória alocada, arquivo aberto...) nunca seriam libertados. Qualquer classe destinada a ser herdada e manipulada através de um ponteiro à classe base deve, portanto, declarar sistematicamente o seu destruidor `virtual`.
 
 ## Classes abstratas: impor um contrato sem implementação
 

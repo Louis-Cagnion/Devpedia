@@ -89,7 +89,7 @@ Para condições curtas que devolvem um valor, pode-se utilizar o operador tern�
 ?>
 ```
 
-Existe também uma versão abreviada, útil para definir um valor por predefinição:
+Existe também uma versão abreviada, útil para definir um valor por padrão:
 
 ```php
 <?php

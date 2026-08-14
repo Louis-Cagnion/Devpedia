@@ -27,7 +27,7 @@ curl_close($ch);
 ?>
 ```
 
-`CURLOPT_*` são constantes inteiras predefinidas pela extensão cURL (tal como os flags de `open()`m em C): cada uma configura um aspeto específico da solicitação.
+`CURLOPT_*` são constantes inteiras padrão pela extensão cURL (tal como os flags de `open()`m em C): cada uma configura um aspeto específico da solicitação.
 
 ### Converter um retorno «à la C» numa exceção
 
@@ -45,7 +45,7 @@ Depois de efetuada esta conversão num único local, o resto do projeto já não
 
 ## Os fluxos PHP (streams) — outra API para a mesma finalidade
 
-O PHP trata as URLs como uma variante de «ficheiro» que `file_get_contents()` consegue ler diretamente. `stream_context_create()` configura este comportamento (método HTTP, cabeçalhos, corpo, SSL...):
+O PHP trata as URLs como uma variante de «arquivo» que `file_get_contents()` consegue ler diretamente. `stream_context_create()` configura este comportamento (método HTTP, cabeçalhos, corpo, SSL...):
 
 ```php
 <?php

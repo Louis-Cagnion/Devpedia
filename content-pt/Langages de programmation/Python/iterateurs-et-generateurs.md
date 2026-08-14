@@ -4,7 +4,7 @@ order: 8
 
 # Iteradores e geradores
 
-Um ciclo «`for`» funciona com listas, dicionários, ficheiros e muitos outros objetos — porque todos eles implementam o mesmo **protocolo de iteração**. Compreender este protocolo permite criar os seus próprios objetos «iteráveis» e utilizar geradores para processar grandes quantidades de dados sem ter de carregar tudo na memória.
+Um ciclo «`for`» funciona com listas, dicionários, arquivos e muitos outros objetos — porque todos eles implementam o mesmo **protocolo de iteração**. Compreender este protocolo permite criar os seus próprios objetos «iteráveis» e utilizar geradores para processar grandes quantidades de dados sem ter de carregar tudo na memória.
 
 ## O protocolo de iteração
 

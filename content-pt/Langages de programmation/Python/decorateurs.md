@@ -4,7 +4,7 @@ order: 9
 
 # Os decoradores
 
-Um **decorador** envolve uma função noutra, para lhe adicionar um comportamento (cronometragem, registo em log, verificação de direitos...) sem alterar o seu código — este mecanismo baseia-se diretamente nas funções de primeira classe e nos closures (ver capítulo sobre funções).
+Um **decorador** envolve uma função noutra, para lhe adicionar um comportamento (cronometragem, registro em log, verificação de direitos...) sem alterar o seu código — este mecanismo baseia-se diretamente nas funções de primeira classe e nos closures (ver capítulo sobre funções).
 
 ## O princípio, sem os artifícios sintáticos
 

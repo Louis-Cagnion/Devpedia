@@ -14,7 +14,7 @@ main.c --[1. préprocesseur]--> main.i --[2. compilation]--> main.s --[3. assemb
 
 ### 1. O pré-processador
 
-Aborda tudo o que começa por `#` **antes** de o compilador ver o código: substitui os `#include` pelo conteúdo real do ficheiro incluído, substitui as macros `#define`, resolve os `#ifdef` / `#ifndef`. O resultado é um único ficheiro-fonte «simplificado», sem mais nenhuma diretiva `#`.
+Aborda tudo o que começa por `#` **antes** de o compilador ver o código: substitui os `#include` pelo conteúdo real do arquivo incluído, substitui as macros `#define`, resolve os `#ifdef` / `#ifndef`. O resultado é um único arquivo-fonte «simplificado», sem mais nenhuma diretiva `#`.
 
 ```bash
 gcc -E main.c -o main.i
@@ -30,15 +30,15 @@ gcc -S main.i -o main.s
 
 ### 3. A montagem
 
-Converte o código em assembler em **código de máquina binário**, agrupado num ficheiro objeto (`.o`). Este ficheiro já contém instruções executáveis, mas ainda não é um programa completo: as chamadas a funções externas (como `printf`) ainda não foram resolvidas.
+Converte o código em assembler em **código de máquina binário**, agrupado num arquivo objeto (`.o`). Este arquivo já contém instruções executáveis, mas ainda não é um programa completo: as chamadas a funções externas (como `printf`) ainda não foram resolvidas.
 
 ```bash
 gcc -c main.s -o main.o
 ```
 
-### 4. A ligação de ficheiros (*linking*)
+### 4. A ligação de arquivos (*linking*)
 
-Junta um ou mais ficheiros «`.o`» e resolve as referências a funções definidas noutros locais (noutros ficheiros «`.o`» ou em bibliotecas, ver capítulo dedicado) para produzir um executável final completo.
+Junta um ou mais arquivos «`.o`» e resolve as referências a funções definidas noutros locais (noutros arquivos «`.o`» ou em bibliotecas, ver capítulo dedicado) para produzir um executável final completo.
 
 ```bash
 gcc main.o -o programa
@@ -46,7 +46,7 @@ gcc main.o -o programa
 
 ## Por que separar a compilação da ligação?
 
-Um projeto com vários ficheiros-fonte pode compilar cada `.c` em `.o` de forma independente e, em seguida, ligar (*link*) apenas os ficheiros que foram alterados — o que é mais rápido do que uma recompilação completa a cada alteração. É exatamente isso que um **Makefile** automatiza (ver capítulo dedicado):
+Um projeto com vários arquivos-fonte pode compilar cada `.c` em `.o` de forma independente e, em seguida, ligar (*link*) apenas os arquivos que foram alterados — o que é mais rápido do que uma recompilação completa a cada alteração. É exatamente isso que um **Makefile** automatiza (ver capítulo dedicado):
 
 ```bash
 gcc -c fichier1.c -o fichier1.o
@@ -61,5 +61,5 @@ Saber em que etapa ocorre um erro ajuda a diagnosticá-lo:
 | Mensagem típica | Etapa em questão | Causa frequente |
 |---|---|---|
 | `error: expected ';' before...` | Compilação | Erro de sintaxe no código-fonte |
-| `fatal error: xxx.h: No such file or directory` | Pré-processador | Ficheiro de cabeçalho não encontrado (ver capítulo sobre cabeçalhos) |
-| `undefined reference to 'ma_fonction'` | Edição de ligações | Função declarada mas nunca definida/ligada (ficheiro `.o` ou biblioteca em falta) |
+| `fatal error: xxx.h: No such file or directory` | Pré-processador | Arquivo de cabeçalho não encontrado (ver capítulo sobre cabeçalhos) |
+| `undefined reference to 'ma_fonction'` | Edição de ligações | Função declarada mas nunca definida/ligada (arquivo `.o` ou biblioteca em falta) |

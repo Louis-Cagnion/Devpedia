@@ -26,8 +26,8 @@ echo "$NOME"    # exibe «Jean» se NOME tiver sido exportado pelo script chamad
 
 ```bash
 echo $PATH    # lista das pastas onde o shell procura os comandos executáveis
-echo $HOME    # pasta pessoal do utilizador atual
-echo $USER    # nome do utilizador atual
+echo $HOME    # pasta pessoal do usuário atual
+echo $USER    # nome do usuário atual
 echo $PWD     # pasta de trabalho atual
 echo $SHELL   # caminho do shell utilizado
 ```
@@ -45,15 +45,15 @@ export PATH="$PATH:/mon/dossier/scripts"  # adiciona uma pasta adicional à pesq
 
 > **Nota:** a ordem é importante — é utilizada a primeira pasta do `$PATH` que contenha um executável com esse nome, o que permite, por exemplo, dar prioridade a uma versão personalizada de um comando em detrimento da versão do sistema.
 
-## Ficheiros de configuração do shell
+## Arquivos de configuração do shell
 
-| Ficheiro | Carregado em |
+| Arquivo | Carregado em |
 |---|---|
 | `~/.bashrc` | A cada novo terminal interativo (sem início de sessão) |
 | `~/.bash_profile` (ou `~/.profile`) | Ao iniciar sessão (shell de início de sessão) |
-| `/etc/environment` | Ao nível do sistema, para todos os utilizadores |
+| `/etc/environment` | Ao nível do sistema, para todos os usuários |
 
-É no ficheiro «`~/.bashrc`» que são normalmente adicionados os «`export PATH=...`», os «`alias`» ou variáveis personalizadas destinadas a estarem disponíveis em cada novo terminal.
+É no arquivo «`~/.bashrc`» que são normalmente adicionados os «`export PATH=...`», os «`alias`» ou variáveis personalizadas destinadas a estarem disponíveis em cada novo terminal.
 
 ## `alias` : simplificar comandos frequentes
 
@@ -64,9 +64,9 @@ alias gs="git status"
 ll   # equivalente a digitar «ls -la»
 ```
 
-Um `alias` definido diretamente no terminal não é mantido após o encerramento da sessão — para que esteja disponível em cada novo terminal, deve ser adicionado ao ficheiro `~/.bashrc`.
+Um `alias` definido diretamente no terminal não é mantido após o encerramento da sessão — para que esteja disponível em cada novo terminal, deve ser adicionado ao arquivo `~/.bashrc`.
 
-## `fonte` : recarregar um ficheiro de configuração
+## `fonte` : recarregar um arquivo de configuração
 
 Após uma alteração em `~/.bashrc`, o comando `fonte` aplica as alterações na sessão atual, sem necessidade de abrir um novo terminal:
 

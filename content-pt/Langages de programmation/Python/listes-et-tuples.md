@@ -46,7 +46,7 @@ coordonnees[0]        # 48,8566
 coordonnees[0] = 0     # TypeError: uma tupla não pode ser alterada após a sua criação
 ```
 
-Uma tupla serve normalmente para representar um registo fixo (um par de coordenadas, um ponto RGB...) em vez de uma coleção destinada a evoluir.
+Uma tupla serve normalmente para representar um registro fixo (um par de coordenadas, um ponto RGB...) em vez de uma coleção destinada a evoluir.
 
 ### Descompactação (*unpacking*)
 

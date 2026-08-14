@@ -37,7 +37,7 @@ div {
 - **border**: a borda visível.
 - **margin**: espaço fora da borda, que separa este elemento dos outros — nunca colorido, sempre transparente.
 
-## A armadilha clássica: o comando «`width`» não inclui tudo, por predefinição
+## A armadilha clássica: o comando «`width`» não inclui tudo, por padrão
 
 ```css
 div {
@@ -48,7 +48,7 @@ div {
 /* Largeur RÉELLEMENT occupée à l'écran : 300 + 20+20 (padding) + 2+2 (border) = 344px, PAS 300px ! */
 ```
 
-> **Nota:** por predefinição (`box-sizing: content-box`), `width` define apenas o tamanho do **conteúdo** — `padding` e `border` são adicionados por cima, aumentando a área da caixa efetivamente exibida para além do valor declarado. Esta é uma causa muito frequente de layouts que «transbordam» de forma inesperada.
+> **Nota:** por padrão (`box-sizing: content-box`), `width` define apenas o tamanho do **conteúdo** — `padding` e `border` são adicionados por cima, aumentando a área da caixa efetivamente exibida para além do valor declarado. Esta é uma causa muito frequente de layouts que «transbordam» de forma inesperada.
 
 ## `box-sizing: border-box` : a solução quase universal
 

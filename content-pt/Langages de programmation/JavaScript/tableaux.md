@@ -20,7 +20,7 @@ Pode ser criada de duas formas diferentes:
 
 ### Os protótipos de tabelas
 
-Os protótipos são funções integradas por predefinição no objeto array, que permitem realizar determinadas ações na matriz (adicionar, remover, transformar, percorrer elementos...).
+Os protótipos são funções integradas por padrão no objeto array, que permitem realizar determinadas ações na matriz (adicionar, remover, transformar, percorrer elementos...).
 
 ```javascript
     const arr = [1, 2, 3, 4, 5];
@@ -113,7 +113,7 @@ Os protótipos são funções integradas por predefinição no objeto array, que
     arr.reverse(); // [5, 4, 3, 2, 1]
 ```
 
-**`sort`** ordena os elementos da matriz. Por predefinição, a ordenação é feita convertendo os elementos em cadeias de caracteres (o que causa problemas com os números); por isso, é necessário fornecer uma função de comparação para ordenar os números corretamente.
+**`sort`** ordena os elementos da matriz. Por padrão, a ordenação é feita convertendo os elementos em cadeias de caracteres (o que causa problemas com os números); por isso, é necessário fornecer uma função de comparação para ordenar os números corretamente.
 ```javascript
     arr.sort((a, b) => a - b);
 ```

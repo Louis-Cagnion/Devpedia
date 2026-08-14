@@ -32,7 +32,7 @@ null == undefined // true -> caso especial
 0 === "0"    // false -> tipos diferentes, sem conversão
 ```
 
-> **Nota:** estas conversões implícitas de `==` são uma fonte lendária de erros em JavaScript — `===` / `!==` (igualdade estrita, tipo E valor) devem ser a opção predefinida, tal como no PHP.
+> **Nota:** estas conversões implícitas de `==` são uma fonte lendária de erros em JavaScript — `===` / `!==` (igualdade estrita, tipo E valor) devem ser a opção padrão, tal como no PHP.
 
 ## Valores «truthy» e «falsy»
 
@@ -57,11 +57,11 @@ const statut = idade >= 18 ? "majeur" : "mineur";
 ## Coalescência nula (`??`) e encadeamento opcional (`?.`)
 
 ```javascript
-const pseudo = utilizador.pseudo ?? "Invité";
-// "??" só recorre ao valor por predefinição SE o valor for null/undefined (não 0, "", false)
+const pseudo = usuário.pseudo ?? "Invité";
+// "??" só recorre ao valor por padrão SE o valor for null/undefined (não 0, "", false)
 
-const cidade = utilizador?.adresse?.cidade ?? "Inconnue";
-// «?.»: se «utilizador» ou «endereço» for nulo/indefinido, interrompe-se imediatamente e devolve «indefinido»
+const cidade = usuário?.adresse?.cidade ?? "Inconnue";
+// «?.»: se «usuário» ou «endereço» for nulo/indefinido, interrompe-se imediatamente e devolve «indefinido»
 // -> evita um TypeError «Cannot read properties of undefined» em cascata
 ```
 

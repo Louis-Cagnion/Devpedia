@@ -30,7 +30,7 @@ título.classList.toggle("actif");              // adicionar se não existir, re
 título.setAttribute("data-id", "42");
 ```
 
-> **Nota:** `innerHTML` com dados fornecidos pelo utilizador constitui uma falha XSS clássica (ver capítulo sobre segurança em PHP, o mesmo princípio) — um atacante poderia injetar código executável. `textContent` permanece seguro por predefinição, uma vez que trata sempre o seu conteúdo como texto simples.
+> **Nota:** `innerHTML` com dados fornecidos pelo usuário constitui uma falha XSS clássica (ver capítulo sobre segurança em PHP, o mesmo princípio) — um atacante poderia injetar código executável. `textContent` permanece seguro por padrão, uma vez que trata sempre o seu conteúdo como texto simples.
 
 ## Criar e inserir um elemento
 
@@ -60,7 +60,7 @@ bouton.addEventListener("click", (evenement) => {
 | `keydown` / `keyup` | Uma tecla do teclado é pressionada/soltada |
 | `DOMContentLoaded` | O HTML está totalmente carregado (antes das imagens/estilos) |
 
-## `preventDefault()` : anular o comportamento predefinido
+## `preventDefault()` : anular o comportamento padrão
 
 ```javascript
 document.querySelector("form").addEventListener("submit", (evenement) => {

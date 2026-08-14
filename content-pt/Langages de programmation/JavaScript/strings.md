@@ -23,7 +23,7 @@ Uma string é uma sequência de caracteres, utilizada para representar texto. Em
 
 ### Os protótipos de strings
 
-Os protótipos são funções integradas por predefinição no objeto string, que permitem realizar determinadas ações sobre a string. Uma string é imutável: estas funções nunca a alteram, devolvendo sempre um novo valor.
+Os protótipos são funções integradas por padrão no objeto string, que permitem realizar determinadas ações sobre a string. Uma string é imutável: estas funções nunca a alteram, devolvendo sempre um novo valor.
 
 ```javascript
     const str = 'hello world';

@@ -6,7 +6,7 @@ order: 4
 
 A propriedade `position` altera fundamentalmente a forma como um elemento é posicionado na página — para além do fluxo normal (cada elemento a seguir ao outro) já gerido pelo Flexbox e pelo Grid (ver capítulos dedicados).
 
-## `static` : o comportamento por predefinição
+## `static` : o comportamento por padrão
 
 ```css
 div {

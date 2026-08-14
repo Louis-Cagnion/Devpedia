@@ -4,7 +4,7 @@ order: 1
 
 # Escrever e executar um script Bash
 
-Um script Bash é um simples ficheiro de texto que contém uma sequência de comandos, executados pela ordem, como se tivessem sido digitados um a um no terminal.
+Um script Bash é um simples arquivo de texto que contém uma sequência de comandos, executados pela ordem, como se tivessem sido digitados um a um no terminal.
 
 ## O shebang
 
@@ -16,7 +16,7 @@ A primeira linha de um script indica ao sistema qual o interpretador a utilizar 
 echo "Bonjour"
 ```
 
-`#!/bin/bash` (o «shebang») não é um comentário comum, apesar do `#`: o sistema operativo lê-o especificamente para saber que programa deve ser executado para interpretar o resto do ficheiro. `#!/bin/sh` executaria o script com um shell POSIX mais restrito (sem certas extensões específicas do Bash, como `[[ ]]` ou as tabelas).
+`#!/bin/bash` (o «shebang») não é um comentário comum, apesar do `#`: o sistema operativo lê-o especificamente para saber que programa deve ser executado para interpretar o resto do arquivo. `#!/bin/sh` executaria o script com um shell POSIX mais restrito (sem certas extensões específicas do Bash, como `[[ ]]` ou as tabelas).
 
 ## Tornar um script executável
 
@@ -25,7 +25,7 @@ chmod +x script.sh   # adiciona o direito de execução (ver capítulo sobre per
 ./script.sh            # executa o script (o «./» é necessário se a pasta atual não estiver no $PATH)
 ```
 
-Alternativa sem necessidade de utilizar o `chmod +x`: executar explicitamente o interpretador no ficheiro:
+Alternativa sem necessidade de utilizar o `chmod +x`: executar explicitamente o interpretador no arquivo:
 
 ```bash
 bash script.sh
@@ -82,7 +82,7 @@ fi
 
 ## Interromper um script ao primeiro erro: `set -e`
 
-Por predefinição, o Bash continua a executar as linhas seguintes mesmo que um comando falhe — o que muitas vezes não é desejável num script de automatização:
+Por padrão, o Bash continua a executar as linhas seguintes mesmo que um comando falhe — o que muitas vezes não é desejável num script de automatização:
 
 ```bash
 #!/bin/bash

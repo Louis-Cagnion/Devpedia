@@ -20,7 +20,7 @@ Este capítulo aborda dois mecanismos transversais do CSS: as **variáveis perso
 }
 ```
 
-`:root` Apointa para o elemento raiz do documento (`<html>`) — declarar as variáveis neste local torna-as acessíveis em **toda** a folha de estilo. Alterar uma única vez `--couleur-primaire` atualiza instantaneamente todos os locais que a utilizam, sem necessidade de «procurar e substituir» em todo o ficheiro.
+`:root` Apointa para o elemento raiz do documento (`<html>`) — declarar as variáveis neste local torna-as acessíveis em **toda** a folha de estilo. Alterar uma única vez `--couleur-primaire` atualiza instantaneamente todos os locais que a utilizam, sem necessidade de «procurar e substituir» em todo o arquivo.
 
 ```css
 .bouton {
@@ -65,7 +65,7 @@ p { color: red; }   /* ignoré : la règle du dessus a !important */
 .bouton { color: red; }                /* spécificité : classe -> plus faible */
 ```
 
-O seletor mais específico prevalece, independentemente da ordem em que está escrito no ficheiro.
+O seletor mais específico prevalece, independentemente da ordem em que está escrito no arquivo.
 
 ### 3. A ordem de aparecimento (em caso de igualidade de especificidade)
 
@@ -74,7 +74,7 @@ O seletor mais específico prevalece, independentemente da ordem em que está es
 .bouton { color: red; }   /* GAGNE : même spécificité, mais écrite en dernier */
 ```
 
-Em caso de igualdade de especificações, prevalece a regra declarada **em último lugar** no ficheiro (ou no último ficheiro carregado).
+Em caso de igualdade de especificações, prevalece a regra declarada **em último lugar** no arquivo (ou no último arquivo carregado).
 
 ## A herança: algumas propriedades são transmitidas, outras não
 
@@ -85,4 +85,4 @@ body {
 }
 ```
 
-As propriedades relacionadas com o **texto** (`color`, `font-family`, `font-size`, `line-height`...) são geralmente herdadas por predefinição; as propriedades relacionadas com a **caixa** (`border`, `margin`, `padding`, `background`...) nunca o são — trata-se de um mecanismo distinto da cascata, embora interaja com ela (uma regra herdada tem a especificidade mais baixa possível, facilmente substituída por qualquer regra aplicada diretamente ao elemento).
+As propriedades relacionadas com o **texto** (`color`, `font-family`, `font-size`, `line-height`...) são geralmente herdadas por padrão; as propriedades relacionadas com a **caixa** (`border`, `margin`, `padding`, `background`...) nunca o são — trata-se de um mecanismo distinto da cascata, embora interaja com ela (uma regra herdada tem a especificidade mais baixa possível, facilmente substituída por qualquer regra aplicada diretamente ao elemento).

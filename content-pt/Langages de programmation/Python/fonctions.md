@@ -15,7 +15,7 @@ def addition(a, b):
 resultado = addition(2, 3)   # 5
 ```
 
-## Parâmetros predefinidos
+## Parâmetros padrão
 
 ```python
 def saluer(nome, mensagem="Bonjour"):
@@ -25,7 +25,7 @@ saluer("Jean")               # «Olá, Jean»
 saluer("Jean", "Salut")       # «Olá, Jean»
 ```
 
-> **Armadilha clássica: nunca utilizar um objeto mutável (lista, dicionário) como valor por predefinição.** O valor por predefinição é avaliado **apenas uma vez**, na definição da função — e não em cada chamada:
+> **Armadilha clássica: nunca utilizar um objeto mutável (lista, dicionário) como valor por padrão.** O valor por padrão é avaliado **apenas uma vez**, na definição da função — e não em cada chamada:
 
 ```python
 def ajouter_a_liste(elemento, lista=[]):  # PERIGO: esta lista é PARTILHADA entre todas as chamadas
@@ -33,7 +33,7 @@ def ajouter_a_liste(elemento, lista=[]):  # PERIGO: esta lista é PARTILHADA ent
     return lista
 
 ajouter_a_liste(1)   # [1]
-ajouter_a_liste(2)   # [1, 2] -> não [2]! A mesma lista por predefinição foi reutilizada
+ajouter_a_liste(2)   # [1, 2] -> não [2]! A mesma lista por padrão foi reutilizada
 ```
 
 Boas práticas:

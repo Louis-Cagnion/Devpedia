@@ -107,7 +107,7 @@ print(p1 == Point(1, 2))  # True -> graças ao __eq__
 | `__len__` | `len(obj)` |
 | `__getitem__` | `obj[chave]` |
 
-## `@property` : um atributo calculado, acedido sem parênteses
+## `@property` : um atributo calculado, acessado sem parênteses
 
 ```python
 class Cercle:
@@ -119,7 +119,7 @@ class Cercle:
         return 3.14159 * self.rayon ** 2
 
 c = Cercle(5)
-print(c.surface)   # 78.53975 -> acedido como um atributo, NÃO como c.surface()
+print(c.surface)   # 78.53975 -> acessado como um atributo, NÃO como c.surface()
 ```
 
 `@property` transforma um método num atributo de leitura, recalculado a cada acesso — útil para expor um valor derivado sem exigir que quem o invoca saiba que se trata, na realidade, de um cálculo.

@@ -4,7 +4,7 @@ order: 6
 
 # A semântica do HTML5
 
-Antes do HTML5, a estruturação de uma página baseava-se quase exclusivamente em e`<div>`es genéricas, distinguidas apenas pelo seu `class` / `id` — O HTML5 introduziu etiquetas **semânticas**, que descrevem explicitamente a **função** de cada secção, compreensíveis tanto para um ser humano que leia o código como para um navegador, um motor de busca ou um leitor de ecrã.
+Antes do HTML5, a estruturação de uma página baseava-se quase exclusivamente em e`<div>`es genéricas, distinguidas apenas pelo seu `class` / `id` — O HTML5 introduziu etiquetas **semânticas**, que descrevem explicitamente a **função** de cada secção, compreensíveis tanto para um ser humano que leia o código como para um navegador, um motor de busca ou um leitor de tela.
 
 ## `<div>` genérico vs. balizas semânticas
 
@@ -76,7 +76,7 @@ Antes do HTML5, a estruturação de uma página baseava-se quase exclusivamente 
 
 ## Por que razão a semântica é importante, para além do estilo
 
-- **Acessibilidade** (ver capítulo dedicado): um leitor de ecrã pode sugerir saltar diretamente para `<nav>` ou `<main>`, algo que nenhuma `<div class="nav">` permite de forma tão fiável.
+- **Acessibilidade** (ver capítulo dedicado): um leitor de tela pode sugerir saltar diretamente para `<nav>` ou `<main>`, algo que nenhuma `<div class="nav">` permite de forma tão fiável.
 - **SEO**: os motores de busca compreendem melhor a estrutura e a importância relativa do conteúdo.
 - **Legibilidade do código**: `<header>` / `<main>` / `<footer>` documentam a estrutura diretamente no HTML, sem ser necessário ler os nomes das classes CSS para adivinhar a função de cada bloco.
 

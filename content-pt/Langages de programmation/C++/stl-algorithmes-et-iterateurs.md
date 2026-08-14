@@ -84,4 +84,4 @@ int compte = std::count_if(números.begin(), números.end(), estAuDessusDuSeuil)
 | `std::transform` | Gera um novo conjunto aplicando uma função a cada elemento (equivalente a `map` em Python/JS) |
 | `std::accumulate` | Reduz um intervalo a um único valor (equivalente a `reduce`) |
 
-> **Nota:** utilizar estes algoritmos em vez de loops manuais torna a intenção explícita (o `std::sort`, ou seja, «estou a ordenar», enquanto um ciclo com um algoritmo de ordenação escrito manualmente obriga a deduzir essa intenção) — um ganho direto em termos de legibilidade, além de evitar a reimplementação (e, potencialmente, a implementação incorreta) de uma lógica já padronizada e otimizada.
+> **Nota:** utilizar estes algoritmos em vez de loops manuais torna a intenção explícita (o `std::sort`, ou seja, «estou ordenando», enquanto um ciclo com um algoritmo de ordenação escrito manualmente obriga a deduzir essa intenção) — um ganho direto em termos de legibilidade, além de evitar a reimplementação (e, potencialmente, a implementação incorreta) de uma lógica já padronizada e otimizada.

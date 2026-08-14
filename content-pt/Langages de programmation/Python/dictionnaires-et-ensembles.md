@@ -17,7 +17,7 @@ pessoa["age"] = 26      # altera uma chave existente
 del pessoa["age"]         # elimina uma chave
 
 pessoa.get("telephone")           # Nenhuma, se a chave não existir (sem erro)
-pessoa.get("telephone", "inconnu") # «desconhecido» -> valor por predefinição, caso não exista
+pessoa.get("telephone", "inconnu") # «desconhecido» -> valor por padrão, caso não exista
 
 "nom" in pessoa            # True -> verifica a existência de uma CHAVE (não de um valor)
 ```

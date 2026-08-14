@@ -8,7 +8,7 @@ Entre os conceitos essenciais do CSS, destacam-se, nomeadamente:
 - O modelo de caixa (*box model*), que rege o tamanho e o espaçamento de cada elemento
 - Os sistemas modernos de disposição de páginas: Flexbox (alinhamento num eixo) e Grid (grelha bidimensional)
 - A hierarquia e a especificidade, que determinam qual a regra que se aplica quando várias se contradizem
-- O *design responsivo*, para que uma página se adapte a todos os tamanhos de ecrã
+- O *design responsivo*, para que uma página se adapte a todos os tamanhos de tela
 
 ## A sintaxe básica
 
@@ -42,4 +42,4 @@ h1 {
 <h1 style="color: blue;">Titre</h1>
 ```
 
-> **Nota (melhores práticas):** um ficheiro `.css` externo (`<link>`) é quase sempre preferível — é armazenado em cache pelo navegador, pode ser reutilizado em várias páginas e separa claramente a estrutura da apresentação. O estilo em linha (`style="..."` diretamente numa baliza) tem a mais alta especificidade (ver capítulo sobre a cascata), o que torna difícil sobrepor-lhe estilos posteriormente — deve ser reservado para casos muito pontuais, frequentemente gerados dinamicamente em JavaScript.
+> **Nota (melhores práticas):** um arquivo `.css` externo (`<link>`) é quase sempre preferível — é armazenado em cache pelo navegador, pode ser reutilizado em várias páginas e separa claramente a estrutura da apresentação. O estilo em linha (`style="..."` diretamente numa baliza) tem a mais alta especificidade (ver capítulo sobre a cascata), o que torna difícil sobrepor-lhe estilos posteriormente — deve ser reservado para casos muito pontuais, frequentemente gerados dinamicamente em JavaScript.

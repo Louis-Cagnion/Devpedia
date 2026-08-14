@@ -79,7 +79,7 @@ for epoque in range(100):
 
 Este ciclo é a estrutura praticamente universal de qualquer treino em PyTorch: prever, medir o erro, retropropagar, ajustar — repetido tantas épocas quantas forem necessárias para que a perda diminua suficientemente (ver o capítulo sobre o gradiente descendente para saber o que cada etapa significa realmente).
 
-> **Nota:** `optimiseur.zero_grad()` é um passo fácil de esquecer, mas essencial — por predefinição, o PyTorch **acumula** os gradientes a cada `.backward()` em vez de os substituir, uma decisão de conceção útil para alguns casos avançados, mas que distorceria o treino padrão se os gradientes nunca fossem reinicializados entre dois lotes.
+> **Nota:** `optimiseur.zero_grad()` é um passo fácil de esquecer, mas essencial — por padrão, o PyTorch **acumula** os gradientes a cada `.backward()` em vez de os substituir, uma decisão de conceção útil para alguns casos avançados, mas que distorceria o treino padrão se os gradientes nunca fossem reinicializados entre dois lotes.
 
 ## Modo de avaliação vs. modo de treino
 

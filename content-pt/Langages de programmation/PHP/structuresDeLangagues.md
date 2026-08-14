@@ -43,7 +43,7 @@ As estruturas da linguagem são processadas pelo PHP no momento da análise do c
 |---|---|
 | `echo` | Apresenta um ou mais valores |
 | `print` | Exibe um valor, devolve sempre `1` |
-| `include` / `require` | Inclui o conteúdo de outro ficheiro PHP |
+| `include` / `require` | Inclui o conteúdo de outro arquivo PHP |
 | `if` / `else` / `elseif` | Executa código em função de uma condição |
 | `for` / `foreach` / `while` / `do-while` | Repete um bloco de código |
 | `switch` | Compara um valor com vários casos possíveis |

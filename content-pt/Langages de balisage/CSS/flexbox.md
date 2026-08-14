@@ -14,7 +14,7 @@ order: 5
 }
 ```
 
-Assim que a propriedade `display: flex` é aplicada a um elemento, todos os seus **filhos diretos** (e apenas esses) tornam-se «elementos flexíveis», alinhados automaticamente numa linha (por predefinição).
+Assim que a propriedade `display: flex` é aplicada a um elemento, todos os seus **filhos diretos** (e apenas esses) tornam-se «elementos flexíveis», alinhados automaticamente numa linha (por padrão).
 
 ## O tema principal: `flex-direction`
 
@@ -74,7 +74,7 @@ Todo o Flexbox funciona com base no eixo** principal** (o eixo d`flex-direction`
 }
 ```
 
-> **Nota (acessibilidade):** `order` altera apenas a ordem **visual** — a ordem de tabulação no teclado e a lida por um leitor de ecrã mantêm-se as do HTML. Uma discrepância entre as duas ordens pode desorientar um utilizador que utilize o teclado ou um leitor de ecrã; deve ser reservada apenas para reordenações puramente decorativas, nunca para corrigir uma ordem de conteúdo que não faça sentido no próprio HTML.
+> **Nota (acessibilidade):** `order` altera apenas a ordem **visual** — a ordem de tabulação no teclado e a lida por um leitor de tela mantêm-se as do HTML. Uma discrepância entre as duas ordens pode desorientar um usuário que utilize o teclado ou um leitor de tela; deve ser reservada apenas para reordenações puramente decorativas, nunca para corrigir uma ordem de conteúdo que não faça sentido no próprio HTML.
 
 ```css
 .colonne-principale { flex-grow: 2; }   /* occupe deux fois plus d'espace que .colonne-laterale */

@@ -26,10 +26,10 @@ Qualquer documento HTML assenta numa estrutura mínima, praticamente idêntica d
 ## Linha a linha
 
 - `<!DOCTYPE html>` : indica ao navegador que deve interpretar a página de acordo com os padrões HTML5 modernos (modo «*padrões*»), em vez de um modo de compatibilidade histórico («*modo quirks*») herdado dos navegadores mais antigos.
-- `<html lang="fr">` : a raiz do documento; `lang` indica a língua principal do conteúdo — utilizada por leitores de ecrã (ver capítulo sobre acessibilidade) e motores de busca.
+- `<html lang="fr">` : a raiz do documento; `lang` indica a língua principal do conteúdo — utilizada por leitores de tela (ver capítulo sobre acessibilidade) e motores de busca.
 - `<head>` : os metadados da página, que nunca são apresentados diretamente no corpo visível.
   - `<meta charset="UTF-8">` : a codificação dos caracteres — sem esta linha (ou com uma codificação incorreta), os caracteres acentuados ou especiais podem ser apresentados de forma incorreta.
-  - `<meta name="viewport" ...>` : indispensável para uma visualização correta em dispositivos móveis — sem ela, um navegador móvel apresenta frequentemente a página como se tivesse sido concebida para um ecrã de computador e, em seguida, reduz-a (zoom ilegível).
+  - `<meta name="viewport" ...>` : indispensável para uma visualização correta em dispositivos móveis — sem ela, um navegador móvel apresenta frequentemente a página como se tivesse sido concebida para uma tela de computador e, em seguida, reduz-a (zoom ilegível).
   - `<title>` : o texto apresentado no separador do navegador e nos resultados da pesquisa.
 - `<body>` : todo o conteúdo efetivamente visível da página.
 

@@ -47,7 +47,7 @@ git push -u origin ma-branche       # estabelece esta ligação de acompanhament
 git clone https://exemple.com/projet.git
 ```
 
-`git clone` configura automaticamente o ficheiro «`origin`» para apontar para o endereço clonado — é por isso que um simples `git pull` / `git push` funciona imediatamente após uma clonagem, sem necessidade de configuração manual.
+`git clone` configura automaticamente o arquivo «`origin`» para apontar para o endereço clonado — é por isso que um simples `git pull` / `git push` funciona imediatamente após uma clonagem, sem necessidade de configuração manual.
 
 ## Remover um comando remoto
 

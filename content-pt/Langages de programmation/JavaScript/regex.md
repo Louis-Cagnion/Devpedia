@@ -41,7 +41,7 @@ Os sinalizadores colocam-se após a última barra e alteram o comportamento da e
 
 ### Os protótipos de expressões regulares
 
-Os protótipos são funções integradas por predefinição no objeto RegExp, que permitem realizar determinadas ações com a expressão regular.
+Os protótipos são funções integradas por padrão no objeto RegExp, que permitem realizar determinadas ações com a expressão regular.
 
 ```javascript
     const re = /wor(l)d/;
@@ -129,7 +129,7 @@ Os parênteses numa expressão regular permitem capturar uma parte específica d
     result[3]; // '15' (dia)
 ```
 
-Também é possível atribuir nomes aos grupos para torná-los mais legíveis e aceder aos mesmos através do seu nome, utilizando a propriedade «`groups`».
+Também é possível atribuir nomes aos grupos para torná-los mais legíveis e acessar os mesmos através do seu nome, utilizando a propriedade «`groups`».
 ```javascript
     const reNamed = /(?<annee>\d{4})-(?<mois>\d{2})-(?<jour>\d{2})/;
     const resultNamed = reNamed.exec(date);

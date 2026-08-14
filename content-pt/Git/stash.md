@@ -11,7 +11,7 @@ order: 6
 ```bash
 git stash                          # guarda todas as alterações acompanhadas e devolve a pasta «limpa»
 git stash push -m "en cours : formulaire de contact"  # com uma nota, para se orientar mais tarde
-git stash -u                        # inclui também os ficheiros não acompanhados (novos, nunca adicionados)
+git stash -u                        # inclui também os arquivos não acompanhados (novos, nunca adicionados)
 ```
 
 Após um «`git stash`», `git status` já não apresenta quaisquer alterações — como se tivéssemos acabado de efetuar um commit, só que nada aparece no histórico (`git log`): as alterações são armazenadas separadamente, numa pilha.
@@ -20,7 +20,7 @@ Após um «`git stash`», `git status` já não apresenta quaisquer alterações
 
 ```bash
 git stash list
-# stash@{0}: em curso: formulário de contacto
+# stash@{0}: em curso: formulário de contato
 # stash@{1}: WIP no ramo principal: a3f9c1d Corrige o cálculo do desconto
 
 git stash apply          # reaplica o stash mais recente, SEM o retirar da pilha
@@ -40,7 +40,7 @@ git stash clear             # elimina TODOS os stashes da pilha
 ## Caso de utilização típico
 
 ```bash
-# Enquanto se está a trabalhar num «feature», surge um bug urgente no «main»
+# Enquanto se está trabalhando num «feature», surge um bug urgente no «main»
 git stash push -m "travail en cours sur feature"
 git checkout main
 # ... corrigir o bug, fazer o commit, enviar...

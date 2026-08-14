@@ -32,7 +32,7 @@ git rebase main
 O Git repete, um a um, cada commit de `feature` (ausente em `main`) sobre o último commit de `main`. Em caso de conflito num commit específico (ver capítulo sobre resolução de conflitos), o rebase pára para o resolver:
 
 ```bash
-# Após resolver os conflitos nos ficheiros em questão:
+# Após resolver os conflitos nos arquivos em questão:
 git add fichier_en_conflit.txt
 git rebase --continue
 
@@ -72,7 +72,7 @@ git rebase main
 git push --force
 ```
 
-> **Nota:** quando um «force-push» é realmente legítimo (rebasar e, em seguida, voltar a enviar um ramo que só o utilizador está a utilizar), `git push --force-with-lease` é mais seguro do que `--force`: verifica primeiro se mais ninguém enviou um commit para esse ramo desde o último `fetch` e, nesse caso, recusa a operação, em vez de sobrescrever cegamente um trabalho que não se tenha visto a ser feito.
+> **Nota:** quando um «force-push» é realmente legítimo (rebasar e, em seguida, voltar a enviar um ramo que só o usuário está utilizando), `git push --force-with-lease` é mais seguro do que `--force`: verifica primeiro se mais ninguém enviou um commit para esse ramo desde o último `fetch` e, nesse caso, recusa a operação, em vez de sobrescrever cegamente um trabalho que não se tenha visto a ser feito.
 
 Uma vez que o rebase cria **novos** commits com hashes diferentes, enviá-lo sobrepondo o histórico remoto (`--force`) desincroniza abruptamente qualquer pessoa que já tivesse baseado o seu trabalho nos commits antigos — os seus ramos locais passariam a referenciar commits que já não existem no servidor. O rebase é seguro quando aplicado a commits **estritamente locais**, que ainda não tenham sido partilhados.
 

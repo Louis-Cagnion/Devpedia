@@ -33,7 +33,7 @@ Facture f;              // já não é necessário o prefixo «Facturação::»
 double tva = calculerTVA(100);
 ```
 
-> **Nota (melhores práticas):** A utilização de «`using namespace X;`» no início de um ficheiro de cabeçalho (`.h`) é geralmente desaconselhada — impõe essa importação a **todos** os ficheiros que incluam esse cabeçalho, com o risco de colisão de nomes que já não é possível controlar. Reserve «`using namespace`» para o interior de um ficheiro `.cpp` específico, nunca num cabeçalho partilhado.
+> **Nota (melhores práticas):** A utilização de «`using namespace X;`» no início de um arquivo de cabeçalho (`.h`) é geralmente desaconselhada — impõe essa importação a **todos** os arquivos que incluam esse cabeçalho, com o risco de colisão de nomes que já não é possível controlar. Reserve «`using namespace`» para o interior de um arquivo `.cpp` específico, nunca num cabeçalho partilhado.
 
 ## `std` : o namespace da biblioteca padrão
 
@@ -43,7 +43,7 @@ std::cout << "Bonjour";      // O mesmo se aplica a «custo»
 ```
 
 ```cpp
-// Num OUTRO bloco/ficheiro, após «using namespace std;»:
+// Num OUTRO bloco/arquivo, após «using namespace std;»:
 using namespace std;          // permite utilizar «vector», «cout»... sem prefixo
 
 vector<int> autresNombres;

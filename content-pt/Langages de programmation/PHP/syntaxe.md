@@ -14,7 +14,7 @@ Para escrever e manipular código em PHP, terá de abrir as seguintes tags:
 
 Fora destas balizas, o que escrever será considerado texto normal e não código PHP.
 
-> **Nota:** num ficheiro que contenha apenas código PHP, recomenda-se omitir a tag de fecho `?>` no final do ficheiro, para evitar problemas de espaços ou saltos de linha indesejados na saída.
+> **Nota:** num arquivo que contenha apenas código PHP, recomenda-se omitir a tag de fecho `?>` no final do arquivo, para evitar problemas de espaços ou saltos de linha indesejados na saída.
 
 ## Sintaxe clássica e sintaxe alternativa
 
@@ -37,7 +37,7 @@ if ($connecte) {
 <?php endif; ?>
 ```
 
-> **Nota:** «`<?= $user ?>`» é um atalho para «`<?php echo $user; ?>`», o que permite utilizar variáveis PHP no HTML. Sempre que a variável apresentada puder provir de uma entrada do utilizador (um nome de utilizador, por exemplo), é necessário colocá-la entre `htmlspecialchars()`, tal como acima — consulte o capítulo sobre segurança para saber mais sobre a vulnerabilidade XSS que isto evita.
+> **Nota:** «`<?= $user ?>`» é um atalho para «`<?php echo $user; ?>`», o que permite utilizar variáveis PHP no HTML. Sempre que a variável apresentada puder provir de uma entrada do usuário (um nome de usuário, por exemplo), é necessário colocá-la entre `htmlspecialchars()`, tal como acima — consulte o capítulo sobre segurança para saber mais sobre a vulnerabilidade XSS que isto evita.
 
 Ambas as sintaxes fazem exatamente a mesma coisa:
 - Com as chaves `{ }`, tudo está escrito em PHP, e o HTML deve ser apresentado através de `echo`.

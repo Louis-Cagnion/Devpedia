@@ -70,7 +70,7 @@ p { color: blue; }
 <p id="paragraphe-unique" class="texte-important">Quelle couleur ?</p>
 ```
 
-Um «`id`» tem uma especificidade maior do que um «`class`», que por sua vez é mais específico do que um seletor de baliza — o parágrafo será, portanto, apresentado a **verde** (o «`#paragraphe-unique`» prevalece), independentemente da ordem em que as regras estiverem escritas no ficheiro.
+Um «`id`» tem uma especificidade maior do que um «`class`», que por sua vez é mais específico do que um seletor de baliza — o parágrafo será, portanto, apresentado a **verde** (o «`#paragraphe-unique`» prevalece), independentemente da ordem em que as regras estiverem escritas no arquivo.
 
 | Tipo de seletor | Peso (do mais fraco ao mais forte) |
 |---|---|

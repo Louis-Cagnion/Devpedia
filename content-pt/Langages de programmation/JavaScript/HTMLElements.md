@@ -40,7 +40,7 @@ elemento.insertAdjacentHTML('beforeend',   "<p>à la fin du contenu</p>");
 elemento.insertAdjacentHTML('afterend',    "<p>après l'élément</p>");
 ```
 
-> **Nota (segurança):** tal como `innerHTML` (ver mais abaixo), `insertAdjacentHTML` interpreta o seu argumento como HTML — nunca insira dados provenientes do utilizador sem os ter submetido a um processo de escape, sob pena de uma falha XSS (ver capítulo sobre segurança em PHP, o mesmo princípio).
+> **Nota (segurança):** tal como `innerHTML` (ver mais abaixo), `insertAdjacentHTML` interpreta o seu argumento como HTML — nunca insira dados provenientes do usuário sem os ter submetido a um processo de escape, sob pena de uma falha XSS (ver capítulo sobre segurança em PHP, o mesmo princípio).
 
 **`remove`** elimina o elemento do DOM.
 ```javascript
@@ -54,7 +54,7 @@ p.replaceWith(autreElement);
 
 ---
 
-## Aceder aos elementos existentes
+## Acessar os elementos existentes
 
 **`querySelector`** retorna o primeiro elemento que corresponda ao seletor CSS indicado, ou `null` caso não exista.
 ```javascript
@@ -127,25 +127,25 @@ elemento.className = 'nouvelle';  // ⚠️ substitui tudo
 
 ## O conteúdo
 
-**`textContent`** acede ao conteúdo textual de um elemento (todas as etiquetas filhas são ignoradas). Atribuir um valor substitui todo o conteúdo por texto simples — as etiquetas HTML eventualmente presentes são escapadas e apresentadas tal como estão, nunca sendo interpretadas.
+**`textContent`** acessa o conteúdo textual de um elemento (todas as etiquetas filhas são ignoradas). Atribuir um valor substitui todo o conteúdo por texto simples — as etiquetas HTML eventualmente presentes são escapadas e apresentadas tal como estão, nunca sendo interpretadas.
 ```javascript
 elemento.textContent;              // «O meu texto»
 elemento.textContent = 'Nouveau';  // substitui todo o conteúdo por texto
 ```
 
-**`innerHTML`** acede ao conteúdo HTML interno do elemento sob a forma de cadeia de caracteres. Atribuir um valor **substitui** todo o conteúdo existente e interpreta as etiquetas HTML.
+**`innerHTML`** acessa o conteúdo HTML interno do elemento sob a forma de cadeia de caracteres. Atribuir um valor **substitui** todo o conteúdo existente e interpreta as etiquetas HTML.
 ```javascript
 elemento.innerHTML;                        // '<strong>O meu texto</strong>'
 elemento.innerHTML = '<em>Nouveau</em>';   // ⚠️ substitui tudo, interpreta o HTML
 ```
 
-> **Nota (segurança):** atribuir a `innerHTML` um dado proveniente do utilizador (não fiável) constitui uma falha clássica de XSS — o conteúdo é interpretado como HTML/JavaScript executável, e não como texto. `textContent` (acima) continua a ser seguro por predefinição, uma vez que nunca interpreta o seu conteúdo.
+> **Nota (segurança):** atribuir a `innerHTML` um dado proveniente do usuário (não fiável) constitui uma falha clássica de XSS — o conteúdo é interpretado como HTML/JavaScript executável, e não como texto. `textContent` (acima) continua a ser seguro por padrão, uma vez que nunca interpreta o seu conteúdo.
 
 ---
 
 ## O estilo
 
-**`style`** permite aceder aos estilos inline do elemento. As propriedades CSS são escritas em **camelCase** (sem hífen).
+**`style`** permite acessar os estilos inline do elemento. As propriedades CSS são escritas em **camelCase** (sem hífen).
 ```javascript
 elemento.style.color = 'red';
 elemento.style.backgroundColor = 'blue';  // background-color em CSS
@@ -157,7 +157,7 @@ elemento.style.borderLeft = '2px solid grey'; // border-left em CSS
 
 ## Navegar no DOM
 
-A partir de um elemento, é possível aceder aos seus vizinhos e à sua hierarquia.
+A partir de um elemento, é possível acessar seus vizinhos e sua hierarquia.
 
 **`parentElement`** retorna o elemento pai direto.
 ```javascript

@@ -48,7 +48,7 @@ dados.iloc[0]              # linha na POSIÇÃO 0 (sempre a primeira, mesmo que 
 dados.loc[0, "nom"]         # valor exato: linha 0, coluna «nome»
 ```
 
-> **Nota:** `loc` seleciona por **etiqueta** (o rótulo do índice, que pode ser um nome, uma data...), `iloc` por **posição numérica** — ambas coincidem por predefinição (índice numérico de 0 a n), mas divergem assim que o índice for personalizado (por exemplo, ordenado, filtrado ou baseado em datas).
+> **Nota:** `loc` seleciona por **etiqueta** (o rótulo do índice, que pode ser um nome, uma data...), `iloc` por **posição numérica** — ambas coincidem por padrão (índice numérico de 0 a n), mas divergem assim que o índice for personalizado (por exemplo, ordenado, filtrado ou baseado em datas).
 
 ## Filtrar com uma máscara booleana
 

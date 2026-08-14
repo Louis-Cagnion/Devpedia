@@ -4,25 +4,25 @@ order: 9
 
 # Carregamento automático de classes
 
-Sem o carregamento automático, cada ficheiro que utiliza uma classe tem de efetuar um «`require`» explícito do ficheiro que a contém — o que se torna pesado e frágil assim que um projeto tem muitas classes. O «`spl_autoload_register()`» permite delegar esse carregamento ao próprio motor PHP.
+Sem o carregamento automático, cada arquivo que utiliza uma classe tem de efetuar um «`require`» explícito do arquivo que a contém — o que se torna pesado e frágil assim que um projeto tem muitas classes. O «`spl_autoload_register()`» permite delegar esse carregamento ao próprio motor PHP.
 
 ## `spl_autoload_register()`
 
 ```php
 <?php
 spl_autoload_register(function (string $classe) {
-    $ficheiro = __DIR__ . '/' . $classe . '.php';
-    if (file_exists($ficheiro)) {
-        require $ficheiro;
+    $arquivo = __DIR__ . '/' . $classe . '.php';
+    if (file_exists($arquivo)) {
+        require $arquivo;
     }
 });
 
 $obj = new MaClasse(); // O PHP chama automaticamente o resolvedor com «MaClasse»
-// -> não é necessário incluir o ficheiro «require» em nenhuma outra parte do projeto
+// -> não é necessário incluir o arquivo «require» em nenhuma outra parte do projeto
 ?>
 ```
 
-`spl_autoload_register()` Regista **uma vez** uma função «resolver». Posteriormente, sempre que o motor PHP encontra um nome de classe ainda não carregado, chama automaticamente essa função, passando-lhe o nome da classe (na forma de string), e aguarda que esta carregue o ficheiro correto. Se nenhuma função registada conseguir carregar a classe, o PHP gera um erro fatal «Class not found».
+`spl_autoload_register()` Regista **uma vez** uma função «resolver». Posteriormente, sempre que o motor PHP encontra um nome de classe ainda não carregado, chama automaticamente essa função, passando-lhe o nome da classe (na forma de string), e aguarda que esta carregue o arquivo correto. Se nenhuma função registada conseguir carregar a classe, o PHP gera um erro fatal «Class not found».
 
 ## A função passada como argumento é um closure
 
@@ -30,7 +30,7 @@ O argumento de `spl_autoload_register()` não é nem um nome de função, nem um
 
 ## Associar um namespace a uma pasta
 
-Um resolvedor mais realista associa cada **prefixo de namespace** a uma pasta raiz e reconstrói o caminho do ficheiro a partir do nome completo da classe:
+Um resolvedor mais realista associa cada **prefixo de namespace** a uma pasta raiz e reconstrói o caminho do arquivo a partir do nome completo da classe:
 
 ```php
 <?php
@@ -57,10 +57,10 @@ Exemplo de resolução, com o «`$classe = 'App\Services\Facturation\Calculateur
 1. `str_starts_with($classe, 'App\\Services\\')` → `true`, este prefixo corresponde.
 2. `substr(...)` remove o prefixo correspondente → `'Facturation\Calculateur'`.
 3. `str_replace('\\', '/', ...)` transforma o separador de namespace num separador de pasta → `'Facturation/Calculateur'`.
-4. Caminho final: `.../Services/Facturation/Calculateur.php` — que deve corresponder à localização real do ficheiro.
+4. Caminho final: `.../Services/Facturation/Calculateur.php` — que deve corresponder à localização real do arquivo.
 
 > **Nota:** «`'App\\Modeles\\'`» numa cadeia de caracteres entre aspas simples: «`\\`» representa **um único** carácter «`\`» (deve ser duplicado para ser escrito literalmente) — trata-se da cadeia «`App\Modeles\`», o separador de namespace.
 
-O `return;`, após o `if`, é executado, quer o ficheiro exista ou não (é colocado após o `if (file_exists(...))`, e não dentro dele): uma vez que os prefixos dos namespaces são mutuamente exclusivos no seu primeiro segmento, assim que o prefixo correto for encontrado, continuar a testar os outros seria sempre inútil.
+O `return;`, após o `if`, é executado, quer o arquivo exista ou não (é colocado após o `if (file_exists(...))`, e não dentro dele): uma vez que os prefixos dos namespaces são mutuamente exclusivos no seu primeiro segmento, assim que o prefixo correto for encontrado, continuar a testar os outros seria sempre inútil.
 
-> **Convenção indispensável para que isto funcione:** o nome do namespace + o nome da classe devem codificar literalmente o caminho do ficheiro — um ficheiro por classe, estrutura de pastas = estrutura de namespaces.
+> **Convenção indispensável para que isto funcione:** o nome do namespace + o nome da classe devem codificar literalmente o caminho do arquivo — um arquivo por classe, estrutura de pastas = estrutura de namespaces.

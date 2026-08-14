@@ -21,7 +21,7 @@ ar rcs libcalculs.a calculs.o
 gcc main.c -L. -lcalculs -o programa
 ```
 
-- `ar` (*archiver*) agrupa um ou mais ficheiros `.o` num único arquivo `.a`.
+- `ar` (*archiver*) agrupa um ou mais arquivos `.o` num único arquivo `.a`.
 - `-L.` indica ao `gcc` que procure também as bibliotecas no diretório atual.
 - `-lcalculs` pedido para criar um link para `libcalculs.a` (o prefixo `lib` e o sufixo `.a` estão implícitos).
 
@@ -32,7 +32,7 @@ gcc main.c -L. -lcalculs -o programa
 
 ## Biblioteca dinâmica (`.so` no Linux, `.dll` no Windows)
 
-O código da biblioteca permanece num ficheiro **separado**, carregado na memória no arranque do programa (ou mesmo durante a sua execução). Assim, vários programas podem partilhar uma única cópia da biblioteca na memória.
+O código da biblioteca permanece num arquivo **separado**, carregado na memória no arranque do programa (ou mesmo durante a sua execução). Assim, vários programas podem partilhar uma única cópia da biblioteca na memória.
 
 ```bash
 gcc -shared -fPIC calculs.c -o libcalculs.so
@@ -43,7 +43,7 @@ LD_LIBRARY_PATH=. ./programa
 ```
 
 - `-fPIC` (*Position Independent Code*) gera código capaz de funcionar independentemente do endereço de memória em que é carregado — necessário para uma biblioteca partilhada, carregada num local diferente consoante o programa.
-- Sem o ficheiro «`LD_LIBRARY_PATH`» (ou uma instalação num diretório padrão do sistema, como «`/usr/lib`»), o sistema não sabe onde procurar «`libcalculs.so`» no momento do arranque, e o programa recusa-se a iniciar.
+- Sem o arquivo «`LD_LIBRARY_PATH`» (ou uma instalação num diretório padrão do sistema, como «`/usr/lib`»), o sistema não sabe onde procurar «`libcalculs.so`» no momento do arranque, e o programa recusa-se a iniciar.
 
 | Vantagem | Desvantagem |
 |---|---|

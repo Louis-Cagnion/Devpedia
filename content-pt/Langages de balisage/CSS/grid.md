@@ -54,7 +54,7 @@ Ao contrário do Flexbox (ver capítulo dedicado), concebido para um único eixo
 }
 ```
 
-`auto-fit` Calcula automaticamente quantas colunas **de, pelo menos**, `200px` cabem no espaço disponível e estica-as (`1fr`) para preencher o espaço restante — o número de colunas adapta-se, assim, à largura do ecrã, sem necessidade de escrever uma única media query (ver capítulo dedicado).
+`auto-fit` Calcula automaticamente quantas colunas **de, pelo menos**, `200px` cabem no espaço disponível e estica-as (`1fr`) para preencher o espaço restante — o número de colunas adapta-se, assim, à largura da tela, sem necessidade de escrever uma única media query (ver capítulo dedicado).
 
 ## Posicionar um elemento com precisão
 

@@ -33,12 +33,12 @@ int main(void)
 }
 ```
 
-- `pthread_create()` Aceita: um ponteiro para o identificador do thread a preencher, atributos (`NULL` = por predefinição), a função a executar e o argumento a passar-lhe (um único ponteiro `void *`, a ser convertido para o tipo real no interior da função).
+- `pthread_create()` Aceita: um ponteiro para o identificador do thread a preencher, atributos (`NULL` = por padrão), a função a executar e o argumento a passar-lhe (um único ponteiro `void *`, a ser convertido para o tipo real no interior da função).
 - `pthread_join()` bloqueia a execução até que o thread em questão termine — equivalente a «`wait()`» para um processo.
 
 ## Memória partilhada: uma vantagem e um risco
 
-Ao contrário de dois processos originários de um «`fork()`» (memórias separadas), dois threads do mesmo programa acedem e alteram as **mesmas variáveis globais**:
+Ao contrário de dois processos originários de um «`fork()`» (memórias separadas), dois threads do mesmo programa acessam e alteram as **mesmas variáveis globais**:
 
 ```c
 #include <pthread.h>
@@ -58,7 +58,7 @@ Se dois threads executarem `incrementer()` em paralelo, o resultado final de `co
 
 ## Proteger dados partilhados com um mutex
 
-Um **mutex** (*exclusão mútua*) garante que apenas uma secção de código de cada vez possa manipular um dado partilhado: o primeiro thread a aceder ao mesmo **bloqueia-o**, enquanto os outros aguardam que este o **desbloqueie**:
+Um **mutex** (*exclusão mútua*) garante que apenas uma secção de código de cada vez possa manipular um dado partilhado: o primeiro thread a acessar o mesmo **bloqueia-o**, enquanto os outros aguardam que este o **desbloqueie**:
 
 ```c
 #include <pthread.h>
