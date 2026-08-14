@@ -4,7 +4,7 @@ order: 9
 
 # Error Handling
 
-JavaScript signals an error by throwing an **exception** (`throw`), which can be intercepted using `try` / `catch` — a mechanism similar to that used in PHP or Python.
+JavaScript signals an error by throwing an **exception** (`throw`), which can be intercepted using `try` / `catch`, a mechanism similar to that used in PHP or Python.
 
 ## `try` / `catch` / `finally`
 
@@ -90,4 +90,4 @@ fetch("/api/donnees")
     .catch(error => console.log("Échec :", error.message));
 ```
 
-> **Note:** An error thrown within a `async` function does not immediately become a standard JavaScript exception—it transforms the returned `Promise` into a **rejected** promise, which can only be retrieved via `await` in a `try` or `catch`, or via `.catch()`.
+> **Note:** An error thrown within a `async` function does not immediately become a standard JavaScript exception: it transforms the returned `Promise` into a **rejected** promise, which can only be retrieved via `await` in a `try` or `catch`, or via `.catch()`.

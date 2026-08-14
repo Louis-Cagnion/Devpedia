@@ -4,7 +4,7 @@ order: 2
 
 # Loops
 
-JavaScript offers the standard loops (`for`, `while`, `do...while`), plus two loops specifically designed for iterating over collections (`for...of`, `for...in`)—and, in everyday practice, array methods (`map`, `filter`...) often replace an explicit loop.
+JavaScript offers the standard loops (`for`, `while`, `do...while`), plus two loops specifically designed for iterating over collections (`for...of`, `for...in`), and, in everyday practice, array methods (`map`, `filter`...) often replace an explicit loop.
 
 ## `for` classic
 
@@ -54,7 +54,7 @@ for (const key in person) {
 }
 ```
 
-> **Note:** `for...in` iterates over the **enumerable keys** of an object—never use it on an array (since `for...in` would iterate over the indices, as well as any properties manually added to the array, and does not guarantee the order): `for...of` or `.forEach()` are the correct methods to use for an array.
+> **Note:** `for...in` iterates over the **enumerable keys** of an object: never use it on an array (since `for...in` would iterate over the indices, as well as any properties manually added to the array, and does not guarantee the order): `for...of` or `.forEach()` are the correct methods to use for an array.
 
 ## `break` and `continue`
 

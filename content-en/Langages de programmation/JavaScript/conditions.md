@@ -32,7 +32,7 @@ null == undefined // true -> special case
 0 === "0"    // false -> different types, no conversion
 ```
 
-> **Note:** These implicit conversions from `==` are a notorious source of bugs in JavaScript — `===` / `!==` (strict equality, both type AND value) should be the default, just like in [PHP](/?c=langages-de-programmation&s=php&p=conditions).
+> **Note:** These implicit conversions from `==` are a notorious source of bugs in JavaScript: `===` / `!==` (strict equality, both type AND value) should be the default, just like in [PHP](/?c=langages-de-programmation&s=php&p=conditions).
 
 ## "Truthy" and "falsy" values
 
@@ -46,7 +46,7 @@ if ([]) {}               // TRUTHY! (unlike PHP, where an empty array is falsy)
 if ({}) {}                // TRUTHY!
 ```
 
-> **Note:** A common pitfall for those coming from [PHP](/?c=langages-de-programmation&s=php&p=conditions): an **empty** array or object is `truthy` in JavaScript, whereas it is `falsy` in PHP—always explicitly test `array.length === 0` rather than `if (!array)`.
+> **Note:** A common pitfall for those coming from [PHP](/?c=langages-de-programmation&s=php&p=conditions): an **empty** array or object is `truthy` in JavaScript, whereas it is `falsy` in PHP: always explicitly test `array.length === 0` rather than `if (!array)`.
 
 ## The ternary operator
 
@@ -85,4 +85,4 @@ switch (jour) {
 }
 ```
 
-`switch` Compare with **strict** equality (`===`) — no unexpected type conversions here, unlike `if (x == y)`.
+`switch` Compare with **strict** equality (`===`): no unexpected type conversions here, unlike `if (x == y)`.

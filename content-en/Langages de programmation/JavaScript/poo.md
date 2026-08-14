@@ -4,7 +4,7 @@ order: 7
 
 # Classes and Object-Oriented Programming
 
-Unlike [PHP](/?c=langages-de-programmation&s=php&p=poo) or [Python](/?c=langages-de-programmation&s=python&p=poo), objects in JavaScript are not fundamentally based on classes; they are based on **prototypes**. The syntax `class` (introduced in ES6) is merely syntactic sugar built on top of this older mechanism—understanding both helps prevent surprises regarding certain behaviors.
+Unlike [PHP](/?c=langages-de-programmation&s=php&p=poo) or [Python](/?c=langages-de-programmation&s=python&p=poo), objects in JavaScript are not fundamentally based on classes; they are based on **prototypes**. The syntax `class` (introduced in ES6) is merely syntactic sugar built on top of this older mechanism: understanding both helps prevent surprises regarding certain behaviors.
 
 ## Declare a Class
 
@@ -111,6 +111,6 @@ console.log(typeof Vehicule);           // "function" -> a class IS a special fu
 console.log(v.__proto__ === Vehicule.prototype);  // true
 ```
 
-Every JavaScript object carries a hidden reference (`__proto__`) to another object, its **prototype**—when a property or method is not found directly on the object, JavaScript automatically looks for it on its prototype, then on the prototype of that prototype, and so on. (the “prototype chain”). `description()` is actually defined **only once**, at `Vehicule.prototype`, and shared by all instances—it is not duplicated in every object created by `new Vehicule(...)`.
+Every JavaScript object carries a hidden reference (`__proto__`) to another object, its **prototype**: when a property or method is not found directly on the object, JavaScript automatically looks for it on its prototype, then on the prototype of that prototype, and so on. (the “prototype chain”). `description()` is actually defined **only once**, at `Vehicule.prototype`, and shared by all instances: it is not duplicated in every object created by `new Vehicule(...)`.
 
 > **Note:** This distinction explains why modifying `Vehicule.prototype.description` **immediately** affects all objects that have already been created: they do not have their own copy of the method; instead, they dynamically look for it in the shared prototype each time it is called.

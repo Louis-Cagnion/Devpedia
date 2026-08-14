@@ -4,7 +4,7 @@ order: 6
 
 # Numbers
 
-JavaScript stands out with a radical choice: for a long time it had **only one numeric type**, `number`, a double-precision float (IEEE 754). It therefore doesn't distinguish integers from decimals — `1` and `1.0` are the same value.
+JavaScript stands out with a radical choice: for a long time it had **only one numeric type**, `number`, a double-precision float (IEEE 754). It therefore doesn't distinguish integers from decimals: `1` and `1.0` are the same value.
 
 > The surprising behaviors that follow from this (`0.1 + 0.2 !== 0.3`, the large-integer limit, `NaN !== NaN`) are **not** specific to JavaScript: they come from float encoding, common to every language. The full explanation is in the [Floating-Point Numbers](/?c=representation-des-donnees&p=nombres-flottants) chapter. This chapter focuses on what JavaScript does with it.
 
@@ -69,7 +69,7 @@ Two constraints to know about:
 5n / 2n;       // 2n: integer division, the decimal part is truncated
 ```
 
-`BigInt` is meant for large identifiers and cryptography, not decimal computation — it only handles integers.
+`BigInt` is meant for large identifiers and cryptography, not decimal computation: it only handles integers.
 
 ## `NaN` and infinities
 
@@ -109,7 +109,7 @@ Number("");         // 0     -> classic pitfall: an empty string becomes 0
 // "$1,234,567.89"
 ```
 
-`toLocaleString` handles thousands separators and the decimal point on its own — no need to reconstruct them by hand.
+`toLocaleString` handles thousands separators and the decimal point on its own: no need to reconstruct them by hand.
 
 ## Summary
 
@@ -128,7 +128,7 @@ Number("");         // 0     -> classic pitfall: an empty string becomes 0
 
 | | |
 |---|---|
-| **Key takeaways** | JavaScript has only one numeric type (`number`, IEEE 754 float) — no native integer/decimal distinction. `BigInt` lifts the exact-large-integer limit (2⁵³ − 1). |
+| **Key takeaways** | JavaScript has only one numeric type (`number`, IEEE 754 float): no native integer/decimal distinction. `BigInt` lifts the exact-large-integer limit (2⁵³ − 1). |
 | **Tools you can use** | `Math.trunc`, `Number.isNaN`, `Number.isSafeInteger`, `toFixed`/`toLocaleString` for display. |
 | **Pitfalls to avoid** | Comparing two floats with `===`; using global `isNaN()` (converts before testing) rather than `Number.isNaN()`. |
 | **Best practices** | Work in cents for monetary amounts; carry a large identifier as a string rather than as a `number`. |

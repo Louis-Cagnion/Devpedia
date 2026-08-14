@@ -4,7 +4,7 @@ order: 3
 
 # Functions
 
-JavaScript offers three ways to write a function—declaration, expression, and arrow function—which are not merely stylistic variations: they differ in terms of *hoisting* and how they handle `this`.
+JavaScript offers three ways to write a function (declaration, expression, and arrow function), which are not merely stylistic variations: they differ in terms of *hoisting* and how they handle `this`.
 
 ## Function Declaration
 
@@ -31,7 +31,7 @@ const addition = function (a, b) {
 };
 ```
 
-Here, `addition` is a variable like any other: it only exists starting from the line where it is assigned (there is no hoisting of the function itself, only of the declaration `const` / `let`, which remains unusable before assignment—the "temporal dead zone").
+Here, `addition` is a variable like any other: it only exists starting from the line where it is assigned (there is no hoisting of the function itself, only of the declaration `const` / `let`, which remains unusable before assignment, the "temporal dead zone").
 
 ## Arrow functions
 
@@ -62,7 +62,7 @@ const object = {
 };
 ```
 
-> **Note:** A `function` receives its own `this`, which is determined by **how it is called** (dynamic). An arrow function does not have its own `this`: it reuses that of the enclosing function at the time it is written (lexical)—this is the main reason to prefer arrow functions for callbacks within a method.
+> **Note:** A `function` receives its own `this`, which is determined by **how it is called** (dynamic). An arrow function does not have its own `this`: it reuses that of the enclosing function at the time it is written (lexical): this is the main reason to prefer arrow functions for callbacks within a method.
 
 ## Default settings, rest, and spread
 

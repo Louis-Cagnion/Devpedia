@@ -4,7 +4,7 @@ order: 12
 
 # Asynchronous Programming (Callbacks, Promises, async/await)
 
-JavaScript runs on a **single thread** (unlike the threads discussed in the dedicated chapter on C): it can only do one thing at a time. However, a network request or a timer does not block the entire program while waiting—that is the role of the asynchronous model, built around the **event*** ***loop**.
+JavaScript runs on a **single thread** (unlike the threads discussed in the dedicated chapter on C): it can only do one thing at a time. However, a network request or a timer does not block the entire program while waiting: that is the role of the asynchronous model, built around the **event*** ***loop**.
 
 ## The Concept: The Event Loop
 
@@ -18,7 +18,7 @@ console.log("3");
 
 The JavaScript engine executes all **synchronous** code first (the call* stack*); asynchronous operations (timers, network requests, events) are delegated to the runtime environment (browser/Node.js), which places their callbacks in a **queue that** is executed only after the call stack has been cleared. It is this mechanism that allows a single thread to remain responsive without ever being blocked by a slow operation.
 
-## Callbacks — and "callback hell"
+## Callbacks and "callback hell"
 
 ```javascript
 lireFichier("a.txt", (erreurA, contenuA) => {
@@ -30,11 +30,11 @@ lireFichier("a.txt", (erreurA, contenuA) => {
 });
 ```
 
-Chaining multiple asynchronous operations using nested callbacks quickly becomes unreadable ("*callback hell*")—Promises, and later `async` / `await`, were introduced specifically to solve this problem.
+Chaining multiple asynchronous operations using nested callbacks quickly becomes unreadable ("*callback hell*"): Promises, and later `async` / `await`, were introduced specifically to solve this problem.
 
 ## The Promises
 
-A **Promise** represents a value that is not yet available but will be (or will fail to be) available later—there are three possible states: *pending*, *fulfilled*, and rejected.
+A **Promise** represents a value that is not yet available but will be (or will fail to be) available later; there are three possible states: *pending*, *fulfilled*, and rejected.
 
 ```javascript
 function attendre(millisecondes) {
@@ -71,7 +71,7 @@ Promise.all([
 });
 ```
 
-> **Note:** `Promise.all` runs both requests **at the same time** (not one after the other) and waits for both to complete—if one fails, the outer Promise is immediately rejected, even if the other succeeded.
+> **Note:** `Promise.all` runs both requests **at the same time** (not one after the other) and waits for both to complete: if one fails, the outer Promise is immediately rejected, even if the other succeeded.
 
 ## `async` /`await`: Syntax Sugar on Top of Promises
 
@@ -84,7 +84,7 @@ async function chargerUtilisateur(id) {
 ```
 
 - `async` Placing a `promise` keyword before a function causes it to **always** return a Promise, by default.
-- `await` can only be used within a `async` function—it "pauses" that function (without blocking the rest of the program) until the Promise is resolved or rejected.
+- `await` can only be used within a `async` function: it "pauses" that function (without blocking the rest of the program) until the Promise is resolved or rejected.
 
 ```javascript
 // An equivalent that is exactly the same, but much easier to read than using nested `.then()` calls:
