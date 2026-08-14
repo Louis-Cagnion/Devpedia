@@ -4,7 +4,7 @@ order: 10
 
 # Object-Oriented Programming
 
-Python is an end-to-end object-oriented language—even a `int` or `str` is actually an object, an instance of a class. The syntax for custom classes resembles that of PHP, with one immediate difference: `self` (the equivalent of `$this`) is an **explicit** parameter of every method; it is never implicit.
+Python is an end-to-end object-oriented language: even a `int` or `str` is actually an object, an instance of a class. The syntax for custom classes resembles that of PHP, with one immediate difference: `self` (the equivalent of `$this`) is an **explicit** parameter of every method; it is never implicit.
 
 ## Declare a Class
 
@@ -21,7 +21,7 @@ v = Vehicule("Peugeot", "308")
 print(v.description())   # "Peugeot 308"
 ```
 
-> **Note:** `self` must be explicitly specified as **the first parameter** of each instance method—Python automatically sets it to the current instance at the time of the call (e.g., `v.description()` is equivalent to `Vehicule.description(v)`), but omitting it from the signature results in an error.
+> **Note:** `self` must be explicitly specified as **the first parameter** of each instance method; Python automatically sets it to the current instance at the time of the call (e.g., `v.description()` is equivalent to `Vehicule.description(v)`), but omitting it from the signature results in an error.
 
 ## Class Attributes vs. Instance Attributes
 
@@ -122,4 +122,4 @@ c = Cercle(5)
 print(c.surface)   # 78.53975 -> accessed as an attribute, NOT as c.surface()
 ```
 
-`@property` Converts a method into a read-only attribute that is recalculated on each access—useful for exposing a derived value without requiring the caller to know that it is actually a calculation.
+`@property` Converts a method into a read-only attribute that is recalculated on each access, useful for exposing a derived value without requiring the caller to know that it is actually a calculation.

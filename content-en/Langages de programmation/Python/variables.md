@@ -4,7 +4,7 @@ order: 1
 
 # Basic Variables and Types
 
-Python is **dynamically typed**: a variable does not have a type declared in advance; it simply takes on the type of the value assigned to it—and can freely change types during the course of the program (unlike PHP or C, where the type of a typed property or variable remains fixed once declared).
+Python is **dynamically typed**: a variable does not have a type declared in advance; it simply takes on the type of the value assigned to it, and can freely change types during the course of the program (unlike PHP or C, where the type of a typed property or variable remains fixed once declared).
 
 ## Declare a variable
 
@@ -18,7 +18,7 @@ rien = None           # equivalent to null/NULL
 age = "vingt-cinq"    # Perfectly valid: `age` becomes a `str` without declaring anything
 ```
 
-> **Note:** Unlike PHP (`$variable`), Python does not use any special symbol to denote a variable—just a name, in lowercase with underscores by convention (`nom_utilisateur`, not `nomUtilisateur`).
+> **Note:** Unlike PHP (`$variable`), Python does not use any special symbol to denote a variable: just a name, in lowercase with underscores by convention (`nom_utilisateur`, not `nomUtilisateur`).
 
 ## Check the type of a variable
 

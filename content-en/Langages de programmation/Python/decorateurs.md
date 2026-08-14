@@ -4,7 +4,7 @@ order: 9
 
 # Decorators
 
-A **decorator** wraps one function inside another to add behavior (timing, logging, permission checks, etc.) without modifying its code—this mechanism relies directly on first-class functions and closures (see the chapter on functions).
+A **decorator** wraps one function inside another to add behavior (timing, logging, permission checks, etc.) without modifying its code: this mechanism relies directly on first-class functions and closures (see the chapter on functions).
 
 ## The principle, without the syntactic sugar
 
@@ -87,7 +87,7 @@ def calcul_long():
 print(calcul_long.__name__)   # "calcul_long" -> corrected
 ```
 
-> **Note:** Redefining `chronometrer` does not retroactively change a function that has already been decorated with its old version—`calcul_long` must be redecorated here for `@wraps` to actually take effect.
+> **Note:** Redefining `chronometrer` does not retroactively change a function that has already been decorated with its old version: `calcul_long` must be redecorated here for `@wraps` to actually take effect.
 
 ## An interior designer with his own ideas
 
@@ -110,7 +110,7 @@ def saluer():
 saluer()   # displays "Hello!" three times
 ```
 
-`repeter(3)` First returns `decorateur` (a function that takes a function), which is then applied to `saluer`—hence the three levels of nested functions.
+`repeter(3)` First returns `decorateur` (a function that takes a function), which is then applied to `saluer`, hence the three levels of nested functions.
 
 ## Common decorators in the standard library
 

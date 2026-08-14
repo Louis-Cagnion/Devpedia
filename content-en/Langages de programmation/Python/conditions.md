@@ -4,7 +4,7 @@ order: 2
 
 # Conditions
 
-Python uses `if` / `elif` / `else`, without any curly braces—it is the **indentation** itself that delimits code blocks, unlike PHP, C, or JavaScript.
+Python uses `if` / `elif` / `else`, without any curly braces: it is the **indentation** itself that delimits code blocks, unlike PHP, C, or JavaScript.
 
 ## `if` / `elif` / `else`
 
@@ -19,7 +19,7 @@ else:
     print("Vous êtes enfant.")
 ```
 
-> **Note:** `elif` (a contraction of "else if") is the only keyword used to chain conditions—`else if` (as two separate words) does not exist in Python. Consistent indentation is **required**: an incorrectly indented block causes a `IndentationError`, not just a warning.
+> **Note:** `elif` (a contraction of "else if") is the only keyword used to chain conditions; `else if` (as two separate words) does not exist in Python. Consistent indentation is **required**: an incorrectly indented block causes a `IndentationError`, not just a warning.
 
 ## "Truthy" and "falsy" values
 
@@ -59,7 +59,7 @@ statut = "majeur" if age >= 18 else "mineur"
 
 Unlike PHP/C/JS (`condition ? valeur_si_vrai : valeur_si_faux`), Python places the condition **in the middle**: `valeur_si_vrai if condition else valeur_si_faux`.
 
-## The "morse" operator (`:=`) — since Python 3.8
+## The "morse" operator (`:=`), since Python 3.8
 
 Allows you to assign a variable **and** use it in the same expression, particularly in a condition:
 
@@ -75,7 +75,7 @@ if (result := calculer_resultat()) > 10:
 
 ## No standard `switch` (prior to Python 3.10)
 
-For a long time, Python did not offer a direct equivalent to `switch`—a `elif` string or a mapping dictionary served as an alternative:
+For a long time, Python did not offer a direct equivalent to `switch`; a `elif` string or a mapping dictionary served as an alternative:
 
 ```python
 def jour_semaine(jour):

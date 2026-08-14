@@ -2,9 +2,9 @@
 order: 14
 ---
 
-# NumPy — Numerical Computation
+# NumPy: Numerical Computation
 
-**NumPy** (*Numerical Python*) provides the `ndarray` type: a multidimensional array of values **of a single type**, stored contiguously in memory—exactly like a C array (see the chapter on pointers and memory in C), rather than as a Python list (where each element is a separate reference to an object). It is the building block upon which pandas, scikit-learn, and virtually the entire Python data science ecosystem are built.
+**NumPy** (*Numerical Python*) provides the `ndarray` type: a multidimensional array of values **of a single type**, stored contiguously in memory, exactly like a C array (see the chapter on pointers and memory in C), rather than as a Python list (where each element is a separate reference to an object). It is the building block upon which pandas, scikit-learn, and virtually the entire Python data science ecosystem are built.
 
 ## Why not just use Python lists?
 
@@ -19,7 +19,7 @@ array = np.array([1, 2, 3, 4, 5])
 array * 2                  # "* 2" applies directly to the ENTIRE array -> [2, 4, 6, 8, 10]
 ```
 
-> **Note:** A Python list stores **pointers** to objects `int` that may be scattered throughout memory (see the chapter on pointers, C section); a `ndarray` stores **raw values** one after another, like a C array. NumPy operations are executed by internally compiled C code on this contiguous memory—often 10 to 100 times faster than an equivalent Python loop, while also using significantly less memory.
+> **Note:** A Python list stores **pointers** to objects `int` that may be scattered throughout memory (see the chapter on pointers, C section); a `ndarray` stores **raw values** one after another, like a C array. NumPy operations are executed by internally compiled C code on this contiguous memory: often 10 to 100 times faster than an equivalent Python loop, while also using significantly less memory.
 
 ## Create tables
 
@@ -42,7 +42,7 @@ array.dtype    # dtype('int64') -> ALL elements share this same type
 array.ndim      # 2 -> number of dimensions
 ```
 
-> **Note:** Unlike a Python list (which can contain mixed types), a `ndarray` requires all its elements to be of the **same type**—and that is precisely what enables contiguous storage and the resulting performance optimizations.
+> **Note:** Unlike a Python list (which can contain mixed types), a `ndarray` requires all its elements to be of the **same type**, and that is precisely what enables contiguous storage and the resulting performance optimizations.
 
 ## Indexing and Slicing
 
@@ -86,6 +86,6 @@ a.mean()      # 2.0
 a.max()        # 3
 ```
 
-> **Note:** `*` between two NumPy arrays performs an element-wise multiplication—for a true matrix product (as defined in linear algebra, which is widely used in deep learning; see the chapter on neural networks), the operator is `@` (or `np.matmul()`), never `*`.
+> **Note:** `*` between two NumPy arrays performs an element-wise multiplication; for a true matrix product (as defined in linear algebra, which is widely used in deep learning; see the chapter on neural networks), the operator is `@` (or `np.matmul()`), never `*`.
 
 See also the chapter on pandas, which builds its `DataFrame` directly on top of NumPy `ndarray`.

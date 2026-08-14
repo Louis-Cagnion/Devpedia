@@ -4,11 +4,11 @@ order: 22
 
 # Natural Language Processing (NLP) and Large Language Models (LLMs)
 
-A neural network (see the dedicated chapter) processes numbers, never text directly. Natural language processing (NLP) encompasses the techniques that convert text into usable numerical representations—the essential preliminary step for any language model, including modern large language models (LLMs).
+A neural network (see the dedicated chapter) processes numbers, never text directly. Natural language processing (NLP) encompasses the techniques that convert text into usable numerical representations: the essential preliminary step for any language model, including modern large language models (LLMs).
 
 ## Tokenization: Splitting Up the Text
 
-A model never processes an entire sentence all at once—the text is first broken down into smaller units called **tokens**:
+A model never processes an entire sentence all at once: the text is first broken down into smaller units called **tokens**:
 
 ```
 "Les chats dorment" -> ["Les", "chats", "dorment"]          -> tokenisation par mot
@@ -28,7 +28,7 @@ embedding("chaton")  -> [0.3, -0.4, 0.7, ...]   # similar to "chat" -> similar m
 embedding("voiture")  -> [-0.9, 0.6, -0.1, ...]  # far from "cat" -> different meaning
 ```
 
-This property allows us to use some now-classic operations to illustrate the concept: `embedding("roi") - embedding("homme") + embedding("femme")` produces a vector close to `embedding("reine")`—the direction is encoded, at least partially, as a geometric direction in this vector space.
+This property allows us to use some now-classic operations to illustrate the concept: `embedding("roi") - embedding("homme") + embedding("femme")` produces a vector close to `embedding("reine")`: the direction is encoded, at least partially, as a geometric direction in this vector space.
 
 ## Attention to the text
 
@@ -41,7 +41,7 @@ The attention mechanism (see the chapter on Transformer architectures) allows ea
    -> sens "berge"                            -> sens "établissement financier"
 ```
 
-The same word ("bank") is represented numerically **differently** depending on its context—it is this capability that distinguishes an attention-based model from a simple, fixed "word → vector" dictionary.
+The same word ("bank") is represented numerically **differently** depending on its context: it is this capability that distinguishes an attention-based model from a simple, fixed "word → vector" dictionary.
 
 ## What is a large language model (LLM)?
 
@@ -52,17 +52,17 @@ An **LLM** (*Large Language Model*) is, in its simplest form, a Transformer mode
                           ("canapé" : 45%, "tapis" : 20%, "lit" : 15%, ...)
 ```
 
-What makes an LLM impressive is not the simplicity of its goal, but its scale: billions of parameters, trained on a significant fraction of publicly available text, with enough computing power (see the chapter on PyTorch/GPU) so that this prediction task, pushed to this scale, gives rise to capabilities that were not explicitly programmed (answering questions, summarizing, translating, step-by-step reasoning...) — a phenomenon known as **emergent capabilities**.
+What makes an LLM impressive is not the simplicity of its goal, but its scale: billions of parameters, trained on a significant fraction of publicly available text, with enough computing power (see the chapter on PyTorch/GPU) so that this prediction task, pushed to this scale, gives rise to capabilities that were not explicitly programmed (answering questions, summarizing, translating, step-by-step reasoning...), a phenomenon known as **emergent capabilities**.
 
 ## From a Raw Model to a Usable Assistant: Fine-Tuning vs. Prompting
 
-An LLM that has just been trained to "predict the next word" does not naturally respond like a conversational assistant—two approaches (often combined) can help guide it:
+An LLM that has just been trained to "predict the next word" does not naturally respond like a conversational assistant: two approaches (often combined) can help guide it:
 
 | Approach | Principle |
 |---|---|
 | **Fine-tuning** | Continue training the model on specific data (exemplary conversations, instructions followed by correct responses, etc.), while readjusting its weights |
-| **Prompting** | Does not change **any** of the model's weights—we simply formulate the input (the *prompt*) in a way that guides the pre-trained model toward the desired behavior (providing examples in the prompt, phrasing the question in a certain way, etc.) |
+| **Prompting** | Does not change **any** of the model's weights: we simply formulate the input (the *prompt*) in a way that guides the pre-trained model toward the desired behavior (providing examples in the prompt, phrasing the question in a certain way, etc.) |
 
-> **Note:** Prompting relies solely on the capabilities already acquired during initial training—which is why well-formulated questions (“prompt engineering”) can significantly improve results without requiring any additional training data or gradient calculations.
+> **Note:** Prompting relies solely on the capabilities already acquired during initial training, which is why well-formulated questions (“prompt engineering”) can significantly improve results without requiring any additional training data or gradient calculations.
 
 See also the chapters on Transformer architectures (the underlying attention mechanism) and on PyTorch (how such a model is actually trained, on a much smaller scale in the examples in this chapter).

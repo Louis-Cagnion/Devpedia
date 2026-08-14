@@ -4,7 +4,7 @@ order: 7
 
 # Error Handling
 
-Python signals an error by raising an **exception**, which interrupts the program's normal execution unless it is caught by a block `try` / `except` — a mechanism similar to modern PHP exceptions (`throw` / `catch`).
+Python signals an error by raising an **exception**, which interrupts the program's normal execution unless it is caught by a block `try` / `except`, a mechanism similar to modern PHP exceptions (`throw` / `catch`).
 
 ## `try` / `except`
 
@@ -29,7 +29,7 @@ except Exception as error:   # "catch everything else" -> place this LAST
     print(f"Erreur inattendue : {error}")
 ```
 
-> **Note:** Intercepting `Exception` too broadly (or worse, a bare, untyped `except:`) hides programming errors that should instead cause the program to crash so they can be corrected—this should be reserved for cases where a failure is truly expected and is already handled immediately afterward.
+> **Note:** Intercepting `Exception` too broadly (or worse, a bare, untyped `except:`) hides programming errors that should instead cause the program to crash so they can be corrected: this should be reserved for cases where a failure is truly expected and is already handled immediately afterward.
 
 ## `else` and `finally`
 
@@ -77,7 +77,7 @@ A custom exception inherits from `Exception` (or a more specific subclass), whic
 
 ## `with` Context Manager
 
-`with` ensures that a resource is properly released, **even if an exception occurs**—a file opened with `with` always closes automatically when the block ends:
+`with` ensures that a resource is properly released, **even if an exception occurs**; a file opened with `with` always closes automatically when the block ends:
 
 ```python
 with open("donnees.txt") as file:
@@ -85,4 +85,4 @@ with open("donnees.txt") as file:
 # file.close() is called automatically here, regardless of whether everything went well or not
 ```
 
-> **Note:** This relies on the special methods `__enter__` and `__exit__` (see the chapter on object-oriented programming)—any custom class can define these two methods to be used with `with` (e.g., to manage opening and closing a network or database connection).
+> **Note:** This relies on the special methods `__enter__` and `__exit__` (see the chapter on object-oriented programming): any custom class can define these two methods to be used with `with` (e.g., to manage opening and closing a network or database connection).

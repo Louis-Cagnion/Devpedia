@@ -2,9 +2,9 @@
 order: 16
 ---
 
-# Matplotlib — Visualizing Data
+# Matplotlib: Visualizing Data
 
-**Matplotlib** is the most widely used visualization library in Python—most other graphics libraries (Seaborn, Pandas`.plot()`, etc.) are built on top of it or are directly inspired by it.
+**Matplotlib** is the most widely used visualization library in Python: most other graphics libraries (Seaborn, Pandas`.plot()`, etc.) are built on top of it or are directly inspired by it.
 
 ## The Two Ways to Use Matplotlib
 
@@ -23,7 +23,7 @@ ax.set_title("Un graphique simple")
 plt.show()
 ```
 
-> **Note:** The `pyplot` API maintains an implicit global state (the "current figure")—which is convenient for a quick single-line plot, but can be confusing when working with multiple plots at once. `fig, ax = plt.subplots()` makes it explicit what each command acts on (`ax`), which is preferable for any code intended to be reused.
+> **Note:** The `pyplot` API maintains an implicit global state (the "current figure"), which is convenient for a quick single-line plot, but can be confusing when working with multiple plots at once. `fig, ax = plt.subplots()` makes it explicit what each command acts on (`ax`), which is preferable for any code intended to be reused.
 
 ## `Figure` and `Axes`
 
@@ -82,4 +82,4 @@ fig.savefig("graphique.png", dpi=300)   # dpi: resolution of the exported image
 data["age"].plot(kind="hist")   # pandas delegates directly to Matplotlib internally
 ```
 
-The pandas "`.plot()`" (see the dedicated chapter) is simply a convenient wrapper around Matplotlib—understanding Matplotlib allows you to customize any plot generated in this way.
+The pandas "`.plot()`" (see the dedicated chapter) is simply a convenient wrapper around Matplotlib: understanding Matplotlib allows you to customize any plot generated in this way.

@@ -4,7 +4,7 @@ order: 13
 
 # Jupyter Notebooks
 
-A **Jupyter notebook** is an interactive document that combines executable code, results (including graphs displayed directly), and explanatory text (Markdown)—the dominant working format in data science and machine learning for iterative data exploration.
+A **Jupyter notebook** is an interactive document that combines executable code, results (including graphs displayed directly), and explanatory text (Markdown), the dominant working format in data science and machine learning for iterative data exploration.
 
 ## Code Cells and Markdown Cells
 
@@ -26,9 +26,9 @@ data.describe()   # The result appears directly below the cell
 
 ## The kernel: the Python process behind the notebook
 
-The **kernel** is the Python process that actually executes the code in the cells and maintains their state in memory (variables, imports, etc.) between executions—the notebook itself is merely an interface that sends code to the kernel and displays its results.
+The **kernel** is the Python process that actually executes the code in the cells and maintains their state in memory (variables, imports, etc.) between executions: the notebook itself is merely an interface that sends code to the kernel and displays its results.
 
-> **Note:** Restarting the kernel clears **all** variables in memory, as if the program were being restarted from scratch—the displayed cells remain visible on the screen, but their code is not re-executed until explicitly requested.
+> **Note:** Restarting the kernel clears **all** variables in memory, as if the program were being restarted from scratch; the displayed cells remain visible on the screen, but their code is not re-executed until explicitly requested.
 
 ## The Pitfall of Nonlinear Execution
 
@@ -44,7 +44,7 @@ x = 5
 x = x * 2
 ```
 
-If you run cell 2 **several times in a row** without restarting cell 1, `x` doubles with each execution (10, then 20, then 40...) — a common pitfall where the kernel’s “invisible” state no longer matches the visual order of the cells on the screen. If you’re unsure whether a result is reproducible, *“Restart Kernel and Run All”* reruns everything in order from top to bottom, ensuring a consistent state.
+If you run cell 2 **several times in a row** without restarting cell 1, `x` doubles with each execution (10, then 20, then 40...), a common pitfall where the kernel’s “invisible” state no longer matches the visual order of the cells on the screen. If you’re unsure whether a result is reproducible, *“Restart Kernel and Run All”* reruns everything in order from top to bottom, ensuring a consistent state.
 
 ## Magic Commands (`%`, `%%`)
 

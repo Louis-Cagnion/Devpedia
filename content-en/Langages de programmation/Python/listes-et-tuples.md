@@ -24,7 +24,7 @@ len(fruits)                  # number of items
 "pomme" in fruits             # True/False -> checks for the presence of a value
 ```
 
-> **Note:** Unlike a C array (fixed size, single type), a Python list is a heterogeneous **dynamic** array: it grows automatically, and each element can be of a different type—at the cost of additional memory per element (each element is actually a reference to a Python object, not a contiguous raw value as in C).
+> **Note:** Unlike a C array (fixed size, single type), a Python list is a heterogeneous **dynamic** array: it grows automatically, and each element can be of a different type, at the cost of additional memory per element (each element is actually a reference to a Python object, not a contiguous raw value as in C).
 
 ## Slicing in Detail
 
@@ -77,6 +77,6 @@ pairs = [x for x in range(10) if x % 2 == 0]
 # [0, 2, 4, 6, 8]
 ```
 
-> **Note:** This approach remains readable for a simple, single-line transformation—but beyond that (multiple nested conditions, complex logic), a standard `for` loop is still easier to read and debug.
+> **Note:** This approach remains readable for a simple, single-line transformation, but beyond that (multiple nested conditions, complex logic), a standard `for` loop is still easier to read and debug.
 
 See also the chapter on dictionaries and sets for the equivalent of comprehensions on these structures, and the chapter on iterators/generators for the generator expression (a lazy variant of a list comprehension).

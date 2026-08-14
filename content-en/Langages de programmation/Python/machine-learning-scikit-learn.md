@@ -25,7 +25,7 @@ X = [[25, 50000], [45, 80000], [30, 45000]]
 
 ## The fundamental principle: separating training and testing
 
-A model that “memorizes” the training data (rather than learning the underlying general pattern) would achieve a perfect score on that data—but would fail on new, never-before-seen data. To detect this problem, we **always split** the available data into two distinct sets:
+A model that “memorizes” the training data (rather than learning the underlying general pattern) would achieve a perfect score on that data, but would fail on new, never-before-seen data. To detect this problem, we **always split** the available data into two distinct sets:
 
 ```python
 from sklearn.model_selection import train_test_split
@@ -40,11 +40,11 @@ The model is then evaluated **only** on `X_test` / `y_test`, never on the data u
 
 | | Practice Score | Test Score |
 |---|---|---|
-| **Underfitting** | Low | Low — the model is too simple to capture the pattern |
-| **Good fit** | High | High — the model generalizes well |
-| **Overfitting** | Very high | Low — the model has "memorized" the training data instead of learning a general pattern |
+| **Underfitting** | Low | Low: the model is too simple to capture the pattern |
+| **Good fit** | High | High: the model generalizes well |
+| **Overfitting** | Very high | Low: the model has "memorized" the training data instead of learning a general pattern |
 
-> **Note:** A large gap between the training score (excellent) and the test score (poor) is a classic sign of overfitting—the model has memorized specific examples rather than the general rule underlying them, much like a student who has memorized the answers to a specific exercise without understanding the method.
+> **Note:** A large gap between the training score (excellent) and the test score (poor) is a classic sign of overfitting: the model has memorized specific examples rather than the general rule underlying them, much like a student who has memorized the answers to a specific exercise without understanding the method.
 
 ## The unified scikit-learn API: `fit` / `predict`
 
@@ -63,9 +63,9 @@ model.score(X_test, y_test)                    # evaluates the quality of the pr
 
 - `fit(X, y)` : adjusts the model's internal parameters so that it best fits the provided data.
 - `predict(X)` : uses these learned parameters to generate a prediction for new data.
-- This interface (`fit` / `predict`) remains the same when you simply replace `LogisticRegression()` with another algorithm (`RandomForestClassifier()`, `KMeans()`...)—which makes it very easy to quickly test several approaches to the same problem.
+- This interface (`fit` / `predict`) remains the same when you simply replace `LogisticRegression()` with another algorithm (`RandomForestClassifier()`, `KMeans()`...), which makes it very easy to quickly test several approaches to the same problem.
 
-> **Note:** The choice of algorithm depends on the type of `y`. Here, `y` is **categorical** (`"oui"` / `"non"`): it is a classification problem, hence `LogisticRegression` (despite its name, this is a classification algorithm, not a regression algorithm). `LinearRegression` is used when `y` is a **continuous numerical** value to be predicted (a price, a temperature, etc.)—using it on text labels as in this case would result in an error.
+> **Note:** The choice of algorithm depends on the type of `y`. Here, `y` is **categorical** (`"oui"` / `"non"`): it is a classification problem, hence `LogisticRegression` (despite its name, this is a classification algorithm, not a regression algorithm). `LinearRegression` is used when `y` is a **continuous numerical** value to be predicted (a price, a temperature, etc.); using it on text labels as in this case would result in an error.
 
 ## Measuring the Quality of a Model
 

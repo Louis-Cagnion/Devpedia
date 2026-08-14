@@ -4,7 +4,7 @@ order: 5
 
 # Dictionaries and Sets
 
-The **dictionary** (`dict`) associates keys with values, just like an associative array in PHP. The set (`set`) stores unique values, in no particular order and without duplicates. Both structures are internally based on a **hash table** (see the dedicated chapter, section C)—this is what allows `dico["key"]` or `"value" in ensemble` to be nearly instantaneous, even with a very large collection.
+The **dictionary** (`dict`) associates keys with values, just like an associative array in PHP. The set (`set`) stores unique values, in no particular order and without duplicates. Both structures are internally based on a **hash table** (see the dedicated chapter, section C): this is what allows `dico["key"]` or `"value" in ensemble` to be nearly instantaneous, even with a very large collection.
 
 ## Dictionaries
 
@@ -22,7 +22,7 @@ person.get("telephone", "inconnu") # "unknown" -> default value if missing
 "nom" in person            # True -> checks for the presence of a KEY (not a value)
 ```
 
-> **Note:** `person["telephone"]` (direct access using square brackets) raises an `KeyError` if the key does not exist—unlike `.get()`, which returns `None` (or a specified default value) without ever crashing. Use `.get()` whenever the absence of the key is expected behavior, not an error.
+> **Note:** `person["telephone"]` (direct access using square brackets) raises an `KeyError` if the key does not exist; unlike `.get()`, which returns `None` (or a specified default value) without ever crashing. Use `.get()` whenever the absence of the key is expected behavior, not an error.
 
 ### Browse a dictionary
 
@@ -68,7 +68,7 @@ a - b   # {1}           -> difference (in a, not in b)
 a ^ b   # {1, 4}        -> symmetric difference (in one OR the other, but not both)
 ```
 
-> **Note:** A `set` automatically removes duplicates—`set([1, 2, 2, 3, 3, 3])` returns `{1, 2, 3}`. This is a very common way to quickly deduplicate a list in Python: `list(set(ma_liste))`.
+> **Note:** A `set` automatically removes duplicates: `set([1, 2, 2, 3, 3, 3])` returns `{1, 2, 3}`. This is a very common way to quickly deduplicate a list in Python: `list(set(ma_liste))`.
 
 ### Overall Understanding
 

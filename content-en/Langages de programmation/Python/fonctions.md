@@ -4,7 +4,7 @@ order: 6
 
 # Functions
 
-A Python function is declared using `def`. Functions are **first-class objects**: they can be stored in a variable, passed as arguments to another function, or returned by a function—just like any other value.
+A Python function is declared using `def`. Functions are **first-class objects**: they can be stored in a variable, passed as arguments to another function, or returned by a function, just like any other value.
 
 ## Declaring and Calling a Function
 
@@ -25,7 +25,7 @@ saluer("Jean")               # "Hello, Jean"
 saluer("Jean", "Salut")       # "Hi, Jean"
 ```
 
-> **Common pitfall: Never use a mutable object (list, dict) as a default value.** The default value is evaluated **only once**, when the function is defined—not on every call:
+> **Common pitfall: Never use a mutable object (list, dict) as a default value.** The default value is evaluated **only once**, when the function is defined, not on every call:
 
 ```python
 def ajouter_a_liste(element, list=[]):  # WARNING: This list is SHARED across all calls
@@ -88,7 +88,7 @@ nombres_tries = sorted(numbers, key=lambda x: -x)  # descending order
 
 ## Closures and `nonlocal`
 
-A nested function can read the variables of the enclosing function—to **modify** them, `nonlocal` is required:
+A nested function can read the variables of the enclosing function; to **modify** them, `nonlocal` is required:
 
 ```python
 def counter():

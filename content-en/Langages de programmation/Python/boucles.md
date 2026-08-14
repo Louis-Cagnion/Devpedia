@@ -70,7 +70,7 @@ for i in range(10):
     print(i)
 ```
 
-## The "`else`" clause in a loop—a Python feature
+## The "`else`" clause in a loop (a Python feature)
 
 A loop such as ``for` / `while` can include a block `else`, which is executed only if the loop has completed **normally**, without `break``:
 
@@ -89,4 +89,4 @@ else:
 
 ## No direct access to the index in a `for`
 
-Unlike a C `for` loop (`for (int i = 0; i < taille; i++)`), the Python loop never explicitly manipulates an index—`enumerate()` is the idiomatic way to obtain one when necessary, rather than iterating over `range(len(list))` and then manually indexing.
+Unlike a C `for` loop (`for (int i = 0; i < taille; i++)`), the Python loop never explicitly manipulates an index; `enumerate()` is the idiomatic way to obtain one when necessary, rather than iterating over `range(len(list))` and then manually indexing.

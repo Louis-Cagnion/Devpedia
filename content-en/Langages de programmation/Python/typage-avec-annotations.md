@@ -18,7 +18,7 @@ def addition(a: int, b: int) -> int:
 addition("deux", "trois")   # NO errors on startup: Python runs anyway, without checking the types
 ```
 
-> **Note:** Unlike PHP, where `function f(int $x): int` raises a `TypeError` if anything other than an integer is passed, Python annotations are purely for human (or external tool) documentation—the interpreter never enforces them.
+> **Note:** Unlike PHP, where `function f(int $x): int` raises a `TypeError` if anything other than an integer is passed, Python annotations are purely for human (or external tool) documentation: the interpreter never enforces them.
 
 ## Types defined using the `typing` module
 
@@ -37,7 +37,7 @@ def config() -> Dict[str, Union[str, int]]:            # a `dict` whose values a
     return {"nom": "app", "version": 2}
 ```
 
-> **Note:** Starting with Python 3.9+, `list[int]` / `dict[str, int]` (native types directly, in lowercase) replace `List[int]` / `Dict[str, int]` from the `typing` module for these simple cases—`typing` is still required for constructs such as `Optional` / `Union`.
+> **Note:** Starting with Python 3.9+, `list[int]` / `dict[str, int]` (native types directly, in lowercase) replace `List[int]` / `Dict[str, int]` from the `typing` module for these simple cases; `typing` is still required for constructs such as `Optional` / `Union`.
 
 ## `mypy` : Ensure that annotations are followed regardless
 
