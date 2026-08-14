@@ -6,12 +6,9 @@
 - `IA/description.md` (EN) à adapter le jour où `content-en/IA` sera restructuré en subjects (actuellement plat, décision explicite, pas un oubli).
 
 ### Tirets cadratins (`—`) jamais nettoyés hors FR
-Le sweep du 2026-08-10/11 ne portait que sur `content/` (FR) ; jamais sur les traductions. Recensé le 2026-08-13 (rien corrigé, juste l'état des lieux) :
-- `content-en/` : 1172 occurrences dans 178 fichiers
+Le sweep du 2026-08-10/11 ne portait que sur `content/` (FR) ; jamais sur les traductions. `content-en/` est intégralement nettoyé (2026-08-14, 178 fichiers). Reste :
 - `content-pt/` : 472 occurrences dans 110 fichiers
 - `content-es/` : 123 occurrences dans 56 fichiers
-
-Chantier du même ordre de grandeur que le sweep FR original ; les fichiers déjà retouchés cette session (voir plus haut) sont déjà nettoyés, ce recensement porte sur le reste.
 
 ### Traductions ES/PT à rattraper
 - 125 fichiers manquants **par langue** (ES et PT à l'identique), répartis sur 14 catégories entièrement absentes : Bases de l'informatique (7), Performance (9), Représentation des données (6), IA (39), Data Science (6), Qualité et architecture du code (7), Mathématiques (7), Infrastructure (5), UI-UX (11), Docker (7), Bases de données (7), CI-CD (5), Organisation en entreprise (5), Traitement de documents (4). Shells/Bash/PowerShell/Zsh également concernés (non quantifié précisément).
