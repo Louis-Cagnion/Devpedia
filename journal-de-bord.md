@@ -1,43 +1,27 @@
 # Journal de bord — Devpedia
 
-Suivi de progression du projet (pas destiné au public) : ce qui a été fait, comment, pourquoi. Le todo (`devpedia-todo.md`) ne garde que les points restants ; ce fichier garde la trace de ce qui est terminé.
-Ce qui a ete traiter et commiter ne dois pas apparaitre dans ce document.
+Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
-## 2026-08-14 — Rattrapage `content-br/` (portugais brésilien)
+## Rattrapage `content-br/` (portugais brésilien)
 
-- **Code langue renommé `pt` → `br`** : `content-pt/` → `content-br/`, `structure/languages.json`, `structure/struct-pt.json` → `struct-br.json`, `structure/ui-strings.json`, `scripts/variable-glossary.json`, `scripts/build-variable-glossary.mjs`. Routing du site entièrement piloté par `languages.json`, aucune référence en dur restante.
-- **Vocabulaire des 125 fichiers existants corrigé** : remplacement du vocabulaire européen (`ficheiro`, `utilizador`, `ecrã`, `rato`, `predefinição`, `telemóvel`, `palavra-passe`, `morada`, `registo`, `contacto`, `aceder`, gérondif "estar a + infinitif") par du portugais brésilien réel (`arquivo`, `usuário`, `tela`, `mouse`, `padrão`, `celular`, `senha`, `endereço`, `registro`, `contato`, `acessar`, gérondif `-ndo`), accords de genre/prépositions corrigés à la main. Script réutilisable : `scripts/fix-br-vocabulary.mjs`.
-- **Audit structurel `content-br/` vs `content/` (FR)** : 279 fichiers FR, 167 manquants au départ + 12 fichiers BR mal placés (chapitres IA/Data Science encore sous `Langages de programmation/Python/`, 2 noms en camelCase). Les 12 fichiers mal placés corrigés (réécrits depuis le FR actuel, pas simplement déplacés).
-- **Catégories traduites intégralement cette session** : IA (38/38, 6 subjects), Traitement de documents (4/4), CI-CD (5/5), Organisation en entreprise (5/5), Bases de données (7/7), Docker (7/7), Qualité et architecture du code (7/7). Ordre de traitement choisi par Louis : catégories manquantes par taille croissante, commit + push à la fin de chaque catégorie.
-- **`content-br/acceuil.md` réécrit** : l'ancienne version était le texte pré-refonte, remis au niveau du FR actuel.
-- **`HTMLElements.md`/`structuresDeLangagues.md` renommés en kebab-case** et remis au niveau du FR actuel. `scripts/generate-struct.js` : `validateInternalLinks` exportée pour vérifier les liens d'un `content-<lang>/` autre que FR (avertissements attendus tant que la traduction est incomplète : `resolveAcrossLanguages` gère ça au runtime, ce n'est pas une vraie casse).
-- **Fichier orphelin repéré, pas supprimé** : `content-br/.translation-cache.json` (cache de l'ancien pipeline DeepL), lu par aucun script actuel. Décision laissée à Louis.
+- Le contenu existant utilisait du vocabulaire européen malgré le label "Português (Brasil)" (`ficheiro`, `utilizador`, `ecrã`... au lieu de `arquivo`, `usuário`, `tela`...), avec des accords de genre/préposition qui changent entre les deux variantes (`endereço`/`tela` masculin/féminin, contrairement à `morada`/`ecrã`). Script réutilisable : `scripts/fix-br-vocabulary.mjs`.
+- Ordre de traitement des catégories manquantes choisi par Louis : taille croissante (nombre de fichiers), commit + push à la fin de chaque catégorie plutôt qu'en fin de session.
+- `scripts/generate-struct.js` : `validateInternalLinks` exportée pour vérifier les liens d'un `content-<lang>/` autre que FR. Elle lève dès qu'un lien pointe vers une catégorie pas encore traduite dans cette langue : attendu tant que la traduction est incomplète (`resolveAcrossLanguages` gère ça au runtime), pas une vraie casse à corriger.
+- Fichier orphelin repéré (`content-br/.translation-cache.json`, cache de l'ancien pipeline DeepL) : signalé à Louis avant suppression plutôt que supprimé unilatéralement (pas une décision à trancher seul).
 
-## 2026-08-14 — Bug de labels non traduits
+## Bug de labels non traduits
 
-`category.label`/`subject.label` (nom de dossier brut, français par construction, nécessaire au cross-language linking) n'était affiché nulle part traduit (hamburger, barre desktop, sidebar, fil d'Ariane, recherche, `<h1>` d'une page d'intro de subject). Ajout de `categoryLabels`/`subjectLabels` dans `structure/ui-strings.json` + `tEntityLabel(kind, id, fallback)` dans `js/i18n.js` (repli sur le nom de dossier si non traduit, jamais d'exception), câblé dans `js/sidebar.js`, `js/nav.js`, `js/router.js` (nouveau paramètre `titleOverride` de `generatePageContent`) et `js/search.js`. Testé en direct au navigateur (desktop + mobile).
+`category.label`/`subject.label` viennent du nom de dossier brut (toujours en français par construction, nécessaire au cross-language linking) : rien ne les traduisait à l'affichage. Piège retenu : le `#` d'une page d'intro de subject doit rester littéralement le nom de dossier français dans le fichier pour que `generate-struct.js` la reconnaisse comme intro, indépendamment de ce que l'UI affiche désormais via `tEntityLabel()`.
 
-## 2026-08-14 — Bug TTS : mauvaise voix sur contenu BR
+## Bug TTS : mauvaise voix sur contenu BR
 
-`document.documentElement.lang` recevait le code interne brut `"br"`, pas une balise BCP-47 valide (`"br"` = breton en ISO 639-1) : `js/reader.js` ne trouvait donc aucune voix portugais-brésilien et retombait sur une voix arbitraire (signalé par Louis, voix FR jouée sur du contenu BR). Corrigé dans `js/lang.js` (`applyDocumentLanguage`) avec une table de correspondance code interne → BCP-47 (`br` → `pt-BR`).
+`document.documentElement.lang` recevait le code interne brut `"br"`, qui n'est pas une balise BCP-47 valide (`"br"` = breton en ISO 639-1) : le navigateur ne trouvait donc aucune voix portugais-brésilien. Corrigé par une table de correspondance code interne → BCP-47 (`br` → `pt-BR`) dans `js/lang.js`, sans changer le code interne du site.
 
-## 2026-08-13 — Chantier OCR/vision + restructuration IA
+## Chantier OCR/vision + restructuration IA (2026-08-13)
 
-- **8/8 chapitres OCR/vision écrits** (`ocr-classique-vs-deep-learning.md`, `detection-de-mise-en-page.md`, `modeles-document-ai.md`, `fine-tuning-modele-vision.md`, `evaluer-un-ocr.md`, `post-traitement-correction.md`, `ocr-en-production.md`, `gouvernance-documents-scannes.md`), sur demande explicite de Louis d'écrire tous les chapitres restants d'un coup (dérogation ponctuelle à la règle "un chapitre à la fois").
-- **Catégorie IA restructurée en subjects** (était plate, 17 chapitres) : Fondamentaux du deep learning, NLP et LLM, Production et gouvernance, Applications LLM, Vision et OCR. 165 liens internes réécrits en conséquence. `content-en/IA/` reste plat (décision explicite, à rattraper).
-- **Piège structurel documenté** (`scripts/generate-struct.js:151-166`) : une catégorie est soit 100% plate, soit 100% en subjects ; un fichier `.md` resté à plat une fois un sous-dossier créé est silencieusement ignoré.
-- **Bug du validateur de liens corrigé** : un lien "racine de catégorie" (`?c=data-science`, sans `&p=`) n'était jamais vérifié ; `&p=` rendu optionnel dans `INTERNAL_LINK_PATTERN`.
-- **Règle d'auteur ajoutée** (`prompt.md`, instruction 7bis) : tout outil/jargon/concept nommé doit avoir un lien, interne en priorité, externe stable à défaut.
-- **Tri par `order`** (frontmatter) ajouté pour les subjects, au lieu de l'alphabétique par défaut : IA + rétroactivement Langages de programmation, Shells, Langages de balisage.
+- Piège structurel retenu (`scripts/generate-struct.js:151-166`) : une catégorie est soit 100% plate, soit 100% en subjects ; un fichier `.md` resté à plat une fois un sous-dossier créé est silencieusement ignoré par le générateur, sans erreur.
+- Bug du validateur de liens : un lien "racine de catégorie" (`?c=data-science`, sans `&p=`) n'était jamais vérifié avant que `&p=` soit rendu optionnel dans `INTERNAL_LINK_PATTERN`.
 
-## 2026-08-12 — Réaudit zéro-connaissance + nouvelle catégorie Traitement de documents
+## Avant le 2026-08-13
 
-- Réaudit zéro-connaissance sur l'ensemble du site (23/23 groupes) terminé, détail dans `audit-zero-connaissance.md`.
-- Catégorie **Traitement de documents** créée (extraction PDF, OCR structuré, arbitrage local/cloud vision) + chapitres Python (dataclasses, argparse) + 1 chapitre DSL (parsing incrémental).
-- Faille zéro-connaissance corrigée : GitHub présupposé sans être enseigné → série de 3 chapitres Git ajoutée.
-- 2 bugs de rendu corrigés dans `js/parser.js` (spans `` `code` `` n'échappaient pas `<`/`>`/`&` ; état "blockquote ouvert" non réinitialisé à l'ouverture d'un bloc de code).
-- Lecture audio du site (TTS) cadrée mais pas encore implémentée à cette date (implémentée le 2026-08-14, voir plus haut).
-
-## Avant le 2026-08-12
-
-Voir `audit-zero-connaissance.md` pour l'historique du plan de réécriture zéro-connaissance initial (19 tâches, terminé) et le bug camelCase (fichiers renommés en kebab-case le 2026-08-07).
+Voir `audit-zero-connaissance.md` pour l'historique du plan de réécriture zéro-connaissance (terminé) et le bug camelCase (fichiers renommés en kebab-case le 2026-08-07).
