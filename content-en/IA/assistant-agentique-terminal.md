@@ -4,26 +4,26 @@ order: 15
 
 # The agent-based AI assistant in the terminal: beyond the simple prompt
 
-The previous chapters cover the building blocks of a modern LLM assistant separately: [tools and the agent loop](/?c=ia&p=agents), [RAG](/?c=ia&p=rag), [prompt engineering](/?c=ia&p=prompt-engineering), and [production limitations](/?c=ia&p=llm-en-production). This chapter does not repeat that information; instead, it brings together what is still missing to understand how an assistant that works in a terminal—capable of reading and modifying files, executing commands, and searching the web—actually functions from one turn to the next. Claude on the command line serves here as a concrete example, but nothing is specific to a particular provider: every mechanism described is publicly documented and can be found—sometimes under different names—in most current agent-based assistants.
+The previous chapters cover the building blocks of a modern LLM assistant separately: [tools and the agent loop](/?c=ia&p=agents), [RAG](/?c=ia&p=rag), [prompt engineering](/?c=ia&p=prompt-engineering), and [production limitations](/?c=ia&p=llm-en-production). This chapter does not repeat that information; instead, it brings together what is still missing to understand how an assistant that works in a terminal (capable of reading and modifying files, executing commands, and searching the web) actually functions from one turn to the next. Claude on the command line serves here as a concrete example, but nothing is specific to a particular provider: every mechanism described is publicly documented and can be found, sometimes under different names, in most current agent-based assistants.
 
 ## Pure generation vs. actual retrieved data
 
-Without a tool, an LLM simply **generates plausible text** based on what it has learned during training (see its definition in [NLP and LLM](/?c=ia&p=nlp-et-llm))—it has no way of consulting any external sources. Two prompts that, on the surface, produce the same kind of response are actually very different:
+Without a tool, an LLM simply **generates plausible text** based on what it has learned during training (see its definition in [NLP and LLM](/?c=ia&p=nlp-et-llm)): it has no way of consulting any external sources. Two prompts that, on the surface, produce the same kind of response are actually very different:
 
 | Request | What Happens | Reliability |
 |---|---|---|
-| "Give me an example of JSON representing a user" | The model **generates** plausible values (name, email, id)—that's exactly what we're asking it to do | Reliable for this use case: none of the values are supposed to be real |
-| "What is the current version number of library X?" | Without a tool to verify it, the model produces a response **that appears** just as plausible but may be false—a hallucination (see [LLM in Production](/?c=ia&p=llm-en-production)) | Unreliable without verification |
+| "Give me an example of JSON representing a user" | The model **generates** plausible values (name, email, id): that's exactly what we're asking it to do | Reliable for this use case: none of the values are supposed to be real |
+| "What is the current version number of library X?" | Without a tool to verify it, the model produces a response **that appears** just as plausible but may be false: a hallucination (see [LLM in Production](/?c=ia&p=llm-en-production)) | Unreliable without verification |
 
 The difference is never apparent in the form of the response: a made-up text and an accurate text are written with the same confidence. It depends solely on whether a tool was actually used to retrieve the data, or whether the model generated it from memory.
 
-> **Pitfall:** asking for verifiable factual information without providing the assistant with a tool capable of actually retrieving it—or verifying that it has been used—since nothing in the tone of the response distinguishes retrieved data from fabricated data.
+> **Pitfall:** asking for verifiable factual information without providing the assistant with a tool capable of actually retrieving it, or verifying that it has been used, since nothing in the tone of the response distinguishes retrieved data from fabricated data.
 >
-> **Best practice:** For any data that may change or must be accurate, ensure that a tool (web search, RAG, API call) has been used rather than relying on the model’s memory—see the tool categories below.
+> **Best practice:** For any data that may change or must be accurate, ensure that a tool (web search, RAG, API call) has been used rather than relying on the model's memory (see the tool categories below).
 
 ## Extended Internal Reasoning
 
-Some models generate, prior to the final response, an **extensive internal reasoning** phase: a sequence of tokens that explore the problem, try out different approaches, and correct themselves—without being part of the response intended for the user (it may be hidden, summarized, or displayed separately, depending on the interface).
+Some models generate, prior to the final response, an **extensive internal reasoning** phase: a sequence of tokens that explore the problem, try out different approaches, and correct themselves, without being part of the response intended for the user (it may be hidden, summarized, or displayed separately, depending on the interface).
 
 This mechanism should not be confused with the [*chain-of-thought* in prompt engineering](/?c=ia&p=prompt-engineering): in that context, detailed reasoning is a **prompt technique** explicitly requested by the user in their question. Extended internal reasoning, on the other hand, is a **distinct and native generation phase** that exists independently of any prompt instruction regarding it:
 
@@ -38,7 +38,7 @@ Part of the visible response     Can be hidden, summarized, or shown
                                   separately from the final response
 ```
 
-The same warning as for the prompted chain-of-thought applies, and even more so: a displayed or summarized line of reasoning does not guarantee that it accurately corresponds to the internal mechanism that actually produced the response—see [this pitfall detailed in prompt engineering](/?c=ia&p=prompt-engineering).
+The same warning as for the prompted chain-of-thought applies, and even more so: a displayed or summarized line of reasoning does not guarantee that it accurately corresponds to the internal mechanism that actually produced the response (see [this pitfall detailed in prompt engineering](/?c=ia&p=prompt-engineering)).
 
 ## Specific categories of tools
 
@@ -52,7 +52,7 @@ The [Agents](/?c=ia&p=agents) chapter presents the generic mechanism of function
 | Cost in tokens | Low, proportional to the amount of changes | High, proportional to the total file size |
 | Vulnerability | Fails if the expected context no longer exactly matches the actual file (modified since the last read) | Not affected by this issue: the entire file is replaced as provided |
 
-> **Pitfall:** Applying a calculated patch to a version of the file that no longer matches the actual version on disk—depending on the tool, this may fail explicitly, or worse, apply to the wrong lines without any visible error.
+> **Pitfall:** Applying a calculated patch to a version of the file that no longer matches the actual version on disk: depending on the tool, this may fail explicitly, or worse, apply to the wrong lines without any visible error.
 >
 > **Best practice:** Review a file immediately before generating a patch for it, rather than relying on a previous review.
 
@@ -67,7 +67,7 @@ The [RAG](/?c=ia&p=rag) queries a database **that is pre-indexed in advance** an
 | Reproducibility | Two identical searches return the same snippets | Two identical searches may return different results |
 | Source curation | Selected in advance (we decide what to index) | Depends on what the search engine returns |
 
-> **Pitfall:** treating a web search result with the same level of trust as a source that was specifically selected in advance for indexing—a page found directly online has not undergone any prior curation, unlike a deliberately constructed RAG database.
+> **Pitfall:** treating a web search result with the same level of trust as a source that was specifically selected in advance for indexing: a page found directly online has not undergone any prior curation, unlike a deliberately constructed RAG database.
 >
 > **Best practice:** Cite the source of any information found through a web search, so that a human can verify the source rather than relying solely on the assistant.
 
@@ -84,7 +84,7 @@ The table of [multi-agent coordination patterns](/?c=ia&p=agents) covers sequent
    sufficient, number of rounds reached)
 ```
 
-> **Pitfall:** A loop without an explicit termination condition carries the same risk of an unbounded loop as a classic agent loop (see [Agents](/?c=ia&p=agents))—except that here the loop runs for a single task of questionable quality, not due to a lack of information.
+> **Pitfall:** A loop without an explicit termination condition carries the same risk of an unbounded loop as a classic agent loop (see [Agents](/?c=ia&p=agents)), except that here the loop runs for a single task of questionable quality, not due to a lack of information.
 >
 > **Best practice:** Define a measurable termination criterion at the design stage (a minimum score, a maximum number of iterations) rather than letting the loop run until it is manually terminated.
 
@@ -94,17 +94,17 @@ Two complementary optimizations, distinct from the mechanisms already discussed.
 
 ### Reusing a Previously Calculated Prefix
 
-A call to an LLM typically recalculates the entire prompt at each turn, including tokens already sent in the previous turn (see tokenization in [NLP and LLM](/?c=ia&p=nlp-et-llm)). However, a large portion of an agentic prompt remains the same from one turn to the next within the same session: the system instructions, the list of available tools, and the beginning of the history. The prompt cache reuses the calculation already performed on this common prefix rather than starting from scratch every turn—a practical application of the principle of [never recalculating a result if nothing has changed since then](/?c=performance&p=eviter-le-recalcul-redondant).
+A call to an LLM typically recalculates the entire prompt at each turn, including tokens already sent in the previous turn (see tokenization in [NLP and LLM](/?c=ia&p=nlp-et-llm)). However, a large portion of an agentic prompt remains the same from one turn to the next within the same session: the system instructions, the list of available tools, and the beginning of the history. The prompt cache reuses the calculation already performed on this common prefix rather than starting from scratch every turn: a practical application of the principle of [never recalculating a result if nothing has changed since then](/?c=performance&p=eviter-le-recalcul-redondant).
 
-> **Pitfall:** Modifying the very beginning of the prompt (the system instructions, for example) for a single iteration—this invalidates the cache built on that prefix for all subsequent iterations of the session, negating the benefit of a change that affected only a single iteration.
+> **Pitfall:** Modifying the very beginning of the prompt (the system instructions, for example) for a single iteration: this invalidates the cache built on that prefix for all subsequent iterations of the session, negating the benefit of a change that affected only a single iteration.
 >
 > **Best practice:** Keep the part of the prompt intended for the cache (system instructions, tool descriptions) consistent, and vary only what actually changes from one iteration to the next.
 
 ### Condensing the context for a long session
 
-The [context window](/?c=ia&p=llm-en-production) remains fixed regardless of the model. During a long agentic session, the full history grows with each turn and eventually approaches this limit. Compaction summarizes older turns into a shorter summary before they are removed from the prompt, rather than silently truncating them—the pitfall already noted for the context window in [LLM in production](/?c=ia&p=llm-en-production).
+The [context window](/?c=ia&p=llm-en-production) remains fixed regardless of the model. During a long agentic session, the full history grows with each turn and eventually approaches this limit. Compaction summarizes older turns into a shorter summary before they are removed from the prompt, rather than silently truncating them: the pitfall already noted for the context window in [LLM in production](/?c=ia&p=llm-en-production).
 
-> **Pitfall:** compressing the code while losing information that is still needed later on (an identifier, a constraint specified at the very beginning of the session)—an automatic summary does not guarantee that everything that still matters will be preserved.
+> **Pitfall:** compressing the code while losing information that is still needed later on (an identifier, a constraint specified at the very beginning of the session): an automatic summary does not guarantee that everything that still matters will be preserved.
 >
 > **Best practice:** Keep critical elements (identifiers, explicit constraints) out of the compressible summary, rather than relying entirely on automatic compression.
 
@@ -131,7 +131,7 @@ The chapter [NLP and LLM](/?c=ia&p=nlp-et-llm) makes a general distinction betwe
                           explicitly labeled "harmful"
 ```
 
-> **Pitfall:** confusing these steps with the generic fine-tuning already discussed in [NLP and LLM](/?c=ia&p=nlp-et-llm) — SFT, RLHF, and Constitutional AI are each one of several possible fine-tuning methods, not synonyms for the generic term.
+> **Pitfall:** confusing these steps with the generic fine-tuning already discussed in [NLP and LLM](/?c=ia&p=nlp-et-llm): SFT, RLHF, and Constitutional AI are each one of several possible fine-tuning methods, not synonyms for the generic term.
 >
 > **Best practice:** When a new model is announced, identify the actual nature of its post-training process (supervised examples only? a learned reward model? a self-critique phase?) rather than assuming a single, undifferentiated form of “fine-tuning.”
 
