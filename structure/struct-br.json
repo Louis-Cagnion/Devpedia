@@ -165,6 +165,10 @@
       "folder": "Domain-specific Languages (DSL)",
       "chapters": [
         {
+          "id": "parsing-incremental-machine-a-etats",
+          "label": "Parsing incremental por máquina de estados"
+        },
+        {
           "id": "regex",
           "label": "A expressão regular"
         },
