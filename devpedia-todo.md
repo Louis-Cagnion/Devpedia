@@ -6,9 +6,6 @@
 ## Tirets cadratins (`—`) hors FR
 - `content-es/` : 123 occurrences dans 56 fichiers, à traiter une fois `content-es/` à jour structurellement.
 
-## Reste français non traduit repéré dans content-br/
-- `content-br/Langages de balisage/HTML/semantique-html5.md` : un bloc HTML d'exemple contient encore `<p>&copy; 2026 — Mentions légales</p>` en français au lieu du portugais.
-
 ## Traductions ES à rattraper
 - `Bash` existe en catégorie plate en ES au lieu d'un sous-dossier de `Shells` (BR déjà corrigé).
 - Audit structurel complet (comme celui fait pour BR) encore à faire pour ES.
