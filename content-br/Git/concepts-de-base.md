@@ -4,7 +4,7 @@ order: 1
 
 # Os conceitos básicos do Git
 
-O Git acompanha a evolução de um projeto, gravando, em cada momento escolhido, um **instantâneo** (snapshot) completo do estado dos arquivos — ao contrário do que se pensa, não se trata de uma simples lista de diferenças linha a linha, embora seja frequentemente assim que se visualiza (`git diff`).
+O Git acompanha a evolução de um projeto, gravando, em cada momento escolhido, um **instantâneo** (snapshot) completo do estado dos arquivos: ao contrário do que se pensa, não se trata de uma simples lista de diferenças linha a linha, embora seja frequentemente assim que se visualiza (`git diff`).
 
 ## As três áreas de trabalho
 
@@ -29,7 +29,7 @@ Cada commit faz referência a:
 - Um instantâneo completo dos arquivos monitorizados neste momento.
 - Um ou mais commits **pais** (o(s) commit(s) anterior(es)).
 - Um autor, uma data e uma mensagem a descrever a alteração.
-- Um identificador único: um **hash SHA-1** (por exemplo, `a3f9c1d...`), calculado a partir do conteúdo — dois commits idênticos teriam o mesmo hash, e a alteração de um commit anterior altera o seu hash (e o de todos os seus descendentes).
+- Um identificador único: um **hash SHA-1** (por exemplo, `a3f9c1d...`), calculado a partir do conteúdo: dois commits idênticos teriam o mesmo hash, e a alteração de um commit anterior altera o seu hash (e o de todos os seus descendentes).
 
 ```
 commit A <-- commit B <-- commit C (HEAD)
@@ -39,7 +39,7 @@ Cada commit aponta para o seu pai, formando uma cadeia: é essa cadeia que const
 
 ## `HEAD` : onde se encontra atualmente
 
-`HEAD` é um ponteiro que indica o commit em que está trabalhando atualmente — na maioria das vezes, aponta para o último commit do ramo atual (ver capítulo sobre ramos) e avança automaticamente a cada novo commit.
+`HEAD` é um ponteiro que indica o commit em que está trabalhando atualmente; na maioria das vezes, aponta para o último commit do ramo atual (ver capítulo sobre ramos) e avança automaticamente a cada novo commit.
 
 ## Arquivos controlados, não controlados, modificados
 

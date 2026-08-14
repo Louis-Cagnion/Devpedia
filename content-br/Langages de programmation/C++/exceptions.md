@@ -4,7 +4,7 @@ order: 6
 
 # As exceções
 
-O C++ oferece um mecanismo de erros estruturado (`try` / `catch` / `throw`), uma alternativa ao estilo «à la C» (uma função devolve um valor especial como `-1` ou `NULL` e define `errno`, ver capítulo sobre chamadas de sistema, secção C) — o mesmo princípio que as exceções em PHP, Python ou JavaScript, já abordadas nas secções correspondentes.
+O C++ oferece um mecanismo de erros estruturado (`try` / `catch` / `throw`), uma alternativa ao estilo «à la C» (uma função devolve um valor especial como `-1` ou `NULL` e define `errno`, ver capítulo sobre chamadas de sistema, secção C), o mesmo princípio que as exceções em PHP, Python ou JavaScript, já abordadas nas secções correspondentes.
 
 ## `try` / `catch` / `throw`
 
@@ -37,7 +37,7 @@ std::exception              // classe base de todas as exceções padrão
         └── std::underflow_error
 ```
 
-Interceptar `const std::exception &` permite capturar qualquer exceção derivada desta hierarquia padrão — útil como último recurso, mas é preferível interceptar o tipo mais **específico** possível para reagir de forma diferente consoante o problema real.
+Interceptar `const std::exception &` permite capturar qualquer exceção derivada desta hierarquia padrão, útil como último recurso, mas é preferível interceptar o tipo mais **específico** possível para reagir de forma diferente consoante o problema real.
 
 ## Criar a sua própria exceção
 
@@ -72,7 +72,7 @@ void traiter() {
 }   // Mesmo aqui, ~GestionnaireFichier() é executada ANTES de a exceção ser propagada para um nível superior
 ```
 
-Quando é lançada uma exceção, o C++ «desenrola a pilha» (*stack unwinding*): cada objeto local ainda ativo vê o seu destrutor chamado, na ordem inversa à da sua criação, antes de a exceção continuar a subir — é isto que garante que um recurso gerido pelo RAII (ver capítulo dedicado) seja sempre libertado de forma adequada, mesmo em caso de erro imprevisto.
+Quando é lançada uma exceção, o C++ «desenrola a pilha» (*stack unwinding*): cada objeto local ainda ativo vê o seu destrutor chamado, na ordem inversa à da sua criação, antes de a exceção continuar a subir: é isto que garante que um recurso gerido pelo RAII (ver capítulo dedicado) seja sempre libertado de forma adequada, mesmo em caso de erro imprevisto.
 
 ## `noexcept` : garantir que uma função nunca saia
 
@@ -83,4 +83,4 @@ void fonctionSure() noexcept {
 }
 ```
 
-> **Melhores práticas:** só se deve lançar uma exceção numa situação verdadeiramente **excecional** (erro imprevisto, invariante violado) — nunca num fluxo de controle normal (uma exceção tem um custo de execução não negligenciável em comparação com um simples «`if`», ao contrário de um retorno de erro clássico).
+> **Melhores práticas:** só se deve lançar uma exceção numa situação verdadeiramente **excecional** (erro imprevisto, invariante violado), nunca num fluxo de controle normal (uma exceção tem um custo de execução não negligenciável em comparação com um simples «`if`», ao contrário de um retorno de erro clássico).

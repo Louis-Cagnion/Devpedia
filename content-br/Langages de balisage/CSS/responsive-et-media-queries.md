@@ -4,7 +4,7 @@ order: 7
 
 # O design responsivo e as media queries
 
-O **design responsivo** consiste em conceber uma página que se adapte a qualquer tamanho de tela (celular, tablet, computador) — uma necessidade desde que a maior parte do tráfego na Web passa a ocorrer em dispositivos móveis, e a principal razão de ser das **media queries**.
+O **design responsivo** consiste em conceber uma página que se adapte a qualquer tamanho de tela (celular, tablet, computador), uma necessidade desde que a maior parte do tráfego na Web passa a ocorrer em dispositivos móveis, e a principal razão de ser das **media queries**.
 
 ## As unidades relativas, antes mesmo das media queries
 
@@ -19,7 +19,7 @@ div {
 }
 ```
 
-> **Nota:** «`rem`» é geralmente preferível a «`em`» para os tamanhos de tipo, uma vez que se mantém previsível mesmo em componentes aninhados (um «`em`» num elemento cujo pai já tenha um «`em`» alterado acumula-se frequentemente de forma indesejada) — «`rem`» baseia-se sempre na mesma referência («`<html>`»), independentemente da profundidade do aninhamento.
+> **Nota:** «`rem`» é geralmente preferível a «`em`» para os tamanhos de tipo, uma vez que se mantém previsível mesmo em componentes aninhados (um «`em`» num elemento cujo pai já tenha um «`em`» alterado acumula-se frequentemente de forma indesejada); «`rem`» baseia-se sempre na mesma referência («`<html>`»), independentemente da profundidade do aninhamento.
 
 ## As media queries
 
@@ -55,7 +55,7 @@ div {
 }
 ```
 
-> **Melhores práticas:** a abordagem «*mobile first*» (utilizar `min-width`, conceber primeiro para a tela mais pequena e, em seguida, adicionar complexidade para as telas maiores) é geralmente preferível ao inverso — obriga a pensar primeiro no conteúdo essencial e está em consonância com o facto de a maioria do tráfego na Web ser proveniente de dispositivos móveis.
+> **Melhores práticas:** a abordagem «*mobile first*» (utilizar `min-width`, conceber primeiro para a tela mais pequena e, em seguida, adicionar complexidade para as telas maiores) é geralmente preferível ao inverso: obriga a pensar primeiro no conteúdo essencial e está em consonância com o facto de a maioria do tráfego na Web ser proveniente de dispositivos móveis.
 
 ## Pontos de interrupção (*breakpoints*) comuns
 
@@ -65,7 +65,7 @@ div {
 | `768px – 1023px` | Tablet |
 | `≥ 1024px` | Computador de secretária |
 
-> **Nota:** estes valores não constituem uma norma oficial — variam consoante os projetos e os frameworks CSS. O que realmente importa é ajustar os pontos de quebra em função do próprio conteúdo (o momento em que o layout começa a apresentar problemas visuais), e não apenas reproduzir dimensões físicas precisas dos dispositivos.
+> **Nota:** estes valores não constituem uma norma oficial: variam consoante os projetos e os frameworks CSS. O que realmente importa é ajustar os pontos de quebra em função do próprio conteúdo (o momento em que o layout começa a apresentar problemas visuais), e não apenas reproduzir dimensões físicas precisas dos dispositivos.
 
 ## Outros recursos multimédia úteis
 

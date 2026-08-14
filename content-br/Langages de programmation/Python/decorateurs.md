@@ -4,7 +4,7 @@ order: 9
 
 # Os decoradores
 
-Um **decorador** envolve uma função noutra, para lhe adicionar um comportamento (cronometragem, registro em log, verificação de direitos...) sem alterar o seu código — este mecanismo baseia-se diretamente nas funções de primeira classe e nos closures (ver capítulo sobre funções).
+Um **decorador** envolve uma função noutra, para lhe adicionar um comportamento (cronometragem, registro em log, verificação de direitos...) sem alterar o seu código; este mecanismo baseia-se diretamente nas funções de primeira classe e nos closures (ver capítulo sobre funções).
 
 ## O princípio, sem os artifícios sintáticos
 
@@ -87,7 +87,7 @@ def calcul_long():
 print(calcul_long.__name__)   # «calcul_long» -> corrigido
 ```
 
-> **Nota:** redefinir `chronometrer` não altera retroativamente uma função já decorada pela sua versão anterior — `calcul_long` deve ser redecorada aqui para que `@wraps` se aplique efetivamente.
+> **Nota:** redefinir `chronometrer` não altera retroativamente uma função já decorada pela sua versão anterior: `calcul_long` deve ser redecorada aqui para que `@wraps` se aplique efetivamente.
 
 ## Um decorador com os seus próprios argumentos
 
@@ -110,7 +110,7 @@ def saluer():
 saluer()   # exibe «Olá!» três vezes
 ```
 
-`repeter(3)` retorna primeiro `decorateur` (uma função que recebe uma função), que é depois aplicada a `saluer` — daí os três níveis de funções aninhadas.
+`repeter(3)` retorna primeiro `decorateur` (uma função que recebe uma função), que é depois aplicada a `saluer`, daí os três níveis de funções aninhadas.
 
 ## Decoradores comuns da biblioteca padrão
 

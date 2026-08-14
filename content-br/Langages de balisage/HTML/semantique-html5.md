@@ -4,7 +4,7 @@ order: 6
 
 # A semântica do HTML5
 
-Antes do HTML5, a estruturação de uma página baseava-se quase exclusivamente em e`<div>`es genéricas, distinguidas apenas pelo seu `class` / `id` — O HTML5 introduziu etiquetas **semânticas**, que descrevem explicitamente a **função** de cada secção, compreensíveis tanto para um ser humano que leia o código como para um navegador, um motor de busca ou um leitor de tela.
+Antes do HTML5, a estruturação de uma página baseava-se quase exclusivamente em `<div>`s genéricas, distinguidas apenas pelo seu `class` / `id`. O HTML5 introduziu etiquetas **semânticas**, que descrevem explicitamente a **função** de cada secção, compreensíveis tanto para um ser humano que leia o código como para um navegador, um motor de busca ou um leitor de tela.
 
 ## `<div>` genérico vs. balizas semânticas
 
@@ -72,7 +72,7 @@ Antes do HTML5, a estruturação de uma página baseava-se quase exclusivamente 
 
 ## `<article>` vs`<section>`: a distinção mais confusa
 
-> **Nota:** `<article>` deve fazer sentido **isoladamente**, mesmo fora do seu contexto (um artigo de blogue continuaria a ser compreensível se fosse republicado noutro local) — `<section>` reúne conteúdos que só fazem sentido **no seu contexto** (uma secção «Características técnicas» de uma ficha de produto não faz sentido separada do produto). Uma página pode conter vários `<article>`, podendo cada um deles, por sua vez, conter vários `<section>`.
+> **Nota:** `<article>` deve fazer sentido **isoladamente**, mesmo fora do seu contexto (um artigo de blogue continuaria a ser compreensível se fosse republicado noutro local); `<section>` reúne conteúdos que só fazem sentido **no seu contexto** (uma secção «Características técnicas» de uma ficha de produto não faz sentido separada do produto). Uma página pode conter vários `<article>`, podendo cada um deles, por sua vez, conter vários `<section>`.
 
 ## Por que razão a semântica é importante, para além do estilo
 

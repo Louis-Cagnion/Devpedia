@@ -35,7 +35,7 @@ Alguns filtros comuns:
 ?>
 ```
 
-## `htmlspecialchars()` — proteger-se contra falhas XSS
+## `htmlspecialchars()`: proteger-se contra falhas XSS
 
 Se apresentar dados do usuário na página (por exemplo: um comentário, um nome de usuário), um visitante poderá injetar código HTML/JavaScript malicioso. Trata-se de uma falha denominada **XSS** (*Cross-Site Scripting*).
 
@@ -83,7 +83,7 @@ A solução consiste em utilizar **consultas preparadas**, através do PDO (*PHP
 
 Com este método, os dados enviados pelo usuário através de `$_POST` nunca são interpretados como código SQL, independentemente do seu conteúdo. Serão sempre considerados como um valor da consulta.
 
-## `password_hash()` e `password_verify()` — guardar senhas
+## `password_hash()` e `password_verify()`: guardar senhas
 
 Uma senha **nunca** deve ser armazenada em texto simples numa base de dados. O PHP disponibiliza funções nativas para a encriptar de forma segura:
 
@@ -126,7 +126,7 @@ Este sel não se perde: é incluído diretamente no hash gerado, por exemplo:
 - Os 22 caracteres seguintes → o sal utilizado para este hash específico
 - O resto → o resultado do hash, calculado com este salt
 
-É por isso que `password_verify($_POST['password'], $user['password'])` funciona na mesma: lê a chave já presente em `$user['password']`, faz o hash de `$_POST['password']` com **essa mesma chave** e, em seguida, compara o resultado obtido com o resto de `$user['password']`, utilizando o mesmo algoritmo e o mesmo custo. É por esta razão que se utiliza sempre `password_verify()` para comparar, e nunca um novo `password_hash()` comparado diretamente com o hash armazenado — este último daria sempre um resultado diferente, mesmo com a senha correta.
+É por isso que `password_verify($_POST['password'], $user['password'])` funciona na mesma: lê a chave já presente em `$user['password']`, faz o hash de `$_POST['password']` com **essa mesma chave** e, em seguida, compara o resultado obtido com o resto de `$user['password']`, utilizando o mesmo algoritmo e o mesmo custo. É por esta razão que se utiliza sempre `password_verify()` para comparar, e nunca um novo `password_hash()` comparado diretamente com o hash armazenado: este último daria sempre um resultado diferente, mesmo com a senha correta.
 
 ## Resumo
 

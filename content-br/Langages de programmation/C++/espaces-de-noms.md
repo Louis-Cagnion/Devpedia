@@ -4,7 +4,7 @@ order: 2
 
 # Os espaços de nomes (namespaces)
 
-Um **espaço de nomes** (*namespace*) agrupa identificadores (funções, classes, variáveis) sob um prefixo comum, para evitar colisões de nomes entre diferentes partes de um projeto ou diferentes bibliotecas — a mesma necessidade que os namespaces já abordados em PHP (ver capítulo dedicado).
+Um **espaço de nomes** (*namespace*) agrupa identificadores (funções, classes, variáveis) sob um prefixo comum, para evitar colisões de nomes entre diferentes partes de um projeto ou diferentes bibliotecas, a mesma necessidade que os namespaces já abordados em PHP (ver capítulo dedicado).
 
 ## Declarar e utilizar um namespace
 
@@ -33,7 +33,7 @@ Facture f;              // já não é necessário o prefixo «Facturação::»
 double tva = calculerTVA(100);
 ```
 
-> **Nota (melhores práticas):** A utilização de «`using namespace X;`» no início de um arquivo de cabeçalho (`.h`) é geralmente desaconselhada — impõe essa importação a **todos** os arquivos que incluam esse cabeçalho, com o risco de colisão de nomes que já não é possível controlar. Reserve «`using namespace`» para o interior de um arquivo `.cpp` específico, nunca num cabeçalho partilhado.
+> **Nota (melhores práticas):** A utilização de «`using namespace X;`» no início de um arquivo de cabeçalho (`.h`) é geralmente desaconselhada: impõe essa importação a **todos** os arquivos que incluam esse cabeçalho, com o risco de colisão de nomes que já não é possível controlar. Reserve «`using namespace`» para o interior de um arquivo `.cpp` específico, nunca num cabeçalho partilhado.
 
 ## `std` : o namespace da biblioteca padrão
 
@@ -50,7 +50,7 @@ vector<int> autresNombres;
 cout << "Bonjour";
 ```
 
-É exatamente por esta razão que todo o código dos capítulos anteriores (STL, exceções...) utiliza o prefixo `std::` — `vector`, `map`, `cout`, `runtime_error`... estão todos declarados no namespace `std` da biblioteca padrão.
+É exatamente por esta razão que todo o código dos capítulos anteriores (STL, exceções...) utiliza o prefixo `std::`: `vector`, `map`, `cout`, `runtime_error`... estão todos declarados no namespace `std` da biblioteca padrão.
 
 ## Importação seletiva
 
@@ -61,7 +61,7 @@ cout << "Bonjour";      // funciona
 vector<int> v;             // ERRO: «vector» requer sempre std:: (não importado)
 ```
 
-Um compromisso entre a complexidade do prefixo sistemático e o risco de um «`using namespace`» completo — importar apenas o que é realmente utilizado, de forma específica.
+Um compromisso entre a complexidade do prefixo sistemático e o risco de um «`using namespace`» completo: importar apenas o que é realmente utilizado, de forma específica.
 
 ## Espaços de nomes aninhados
 

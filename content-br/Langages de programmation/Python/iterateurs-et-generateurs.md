@@ -4,7 +4,7 @@ order: 8
 
 # Iteradores e geradores
 
-Um ciclo «`for`» funciona com listas, dicionários, arquivos e muitos outros objetos — porque todos eles implementam o mesmo **protocolo de iteração**. Compreender este protocolo permite criar os seus próprios objetos «iteráveis» e utilizar geradores para processar grandes quantidades de dados sem ter de carregar tudo na memória.
+Um ciclo «`for`» funciona com listas, dicionários, arquivos e muitos outros objetos, porque todos eles implementam o mesmo **protocolo de iteração**. Compreender este protocolo permite criar os seus próprios objetos «iteráveis» e utilizar geradores para processar grandes quantidades de dados sem ter de carregar tudo na memória.
 
 ## O protocolo de iteração
 
@@ -58,7 +58,7 @@ for número in contador(5):
     print(número)   # 1 2 3 4 5
 ```
 
-`yield` «suspende» a função e devolve um valor, **sem perder o seu estado** — na próxima chamada a `next()`, a execução retoma-se logo a seguir a `yield`, com todas as variáveis locais intactas.
+`yield` «suspende» a função e devolve um valor, **sem perder o seu estado**: na próxima chamada a `next()`, a execução retoma-se logo a seguir a `yield`, com todas as variáveis locais intactas.
 
 ## Por que utilizar um gerador em vez de uma lista
 
@@ -71,13 +71,13 @@ def carres_generateur(n):
         yield x ** 2                     # calcula APENAS UM elemento de cada vez, mediante solicitação
 ```
 
-Para `n = 10_000_000`, `carres_liste()` aloca uma lista de 10 milhões de elementos na memória **antes** de começar a utilizá-los. `carres_generateur()` produz apenas um elemento de cada vez, que é consumido e depois esquecido — a memória utilizada permanece constante, independentemente do tamanho de `n`.
+Para `n = 10_000_000`, `carres_liste()` aloca uma lista de 10 milhões de elementos na memória **antes** de começar a utilizá-los. `carres_generateur()` produz apenas um elemento de cada vez, que é consumido e depois esquecido: a memória utilizada permanece constante, independentemente do tamanho de `n`.
 
 > **Nota:** esta «avaliação preguiçosa» (*lazy evaluation*) tem um custo: um gerador **só** pode ser percorrido **uma única vez** (uma vez esgotado, um novo ciclo `for` sobre ele já não produz nada), ao contrário de uma lista, que pode ser percorrida livremente.
 
 ## Expressão geradora
 
-Equivalente a uma compreensão de lista, mas preguiçosa — substituir os colchetes por parênteses:
+Equivalente a uma compreensão de lista, mas preguiçosa, substituir os colchetes por parênteses:
 
 ```python
 carres = (x ** 2 for x in range(10))   # gerador, ainda não foi calculado nada

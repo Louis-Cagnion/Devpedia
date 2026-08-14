@@ -31,7 +31,7 @@ curl_close($ch);
 
 ### Converter um retorno «à la C» numa exceção
 
-`curl_exec()` retorna `false` em caso de falha de rede, em vez de lançar uma exceção — um ponto de entrada pode absorver esse detalhe e permitir que apenas as exceções sejam transmitidas para o resto do programa:
+`curl_exec()` retorna `false` em caso de falha de rede, em vez de lançar uma exceção: um ponto de entrada pode absorver esse detalhe e permitir que apenas as exceções sejam transmitidas para o resto do programa:
 
 ```php
 <?php
@@ -43,7 +43,7 @@ if ($resposta === false || $codeHttp !== 200) {
 
 Depois de efetuada esta conversão num único local, o resto do projeto já não precisa de saber que `curl_exec()` pode devolver `false`: pode simplesmente utilizar `try` / `catch`, tal como acontece com qualquer outro erro PHP moderno.
 
-## Os fluxos PHP (streams) — outra API para a mesma finalidade
+## Os fluxos PHP (streams): outra API para a mesma finalidade
 
 O PHP trata as URLs como uma variante de «arquivo» que `file_get_contents()` consegue ler diretamente. `stream_context_create()` configura este comportamento (método HTTP, cabeçalhos, corpo, SSL...):
 
@@ -61,7 +61,7 @@ $resposta  = file_get_contents($url, false, $contexte); // false em caso de falh
 ?>
 ```
 
-> **Nota:** numa tabela associativa literal, quando uma chave está duplicada, o **último** valor é automaticamente adotado — a primeira gravação é código morto, nunca utilizado. Uma boa razão para submeter este tipo de tabela (opções HTTP, configuração...) à análise de um linter, ou para a ler você mesmo, linha a linha, perguntando-se «qual é o último valor atribuído a esta chave?».
+> **Nota:** numa tabela associativa literal, quando uma chave está duplicada, o **último** valor é automaticamente adotado: a primeira gravação é código morto, nunca utilizado. Uma boa razão para submeter este tipo de tabela (opções HTTP, configuração...) à análise de um linter, ou para a ler você mesmo, linha a linha, perguntando-se «qual é o último valor atribuído a esta chave?».
 
 ## `json_decode()` : um retorno «`null`» ambíguo
 
@@ -75,7 +75,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 ?>
 ```
 
-`json_decode()` Uma string inválida devolve «`null`» — mas uma string JSON **válida** que contenha literalmente «`"null"`» também é descodificada como «`null`». Um simples «`if ($dados === null)`» não permitiria, portanto, distinguir «JSON inválido» de «JSON que era efetivamente `null`». Daí `json_last_error()`: uma função separada que indica se a última conversão falhou efetivamente, independentemente do valor obtido — a mesma lógica que `isset()` / `empty()` quando se trata de uma chave de matriz (ver capítulo sobre variáveis): nunca confiar num valor ambíguo quando existe um mecanismo específico para esclarecer a dúvida.
+`json_decode()` Uma string inválida devolve «`null`», mas uma string JSON **válida** que contenha literalmente «`"null"`» também é descodificada como «`null`». Um simples «`if ($dados === null)`» não permitiria, portanto, distinguir «JSON inválido» de «JSON que era efetivamente `null`». Daí `json_last_error()`: uma função separada que indica se a última conversão falhou efetivamente, independentemente do valor obtido, a mesma lógica que `isset()` / `empty()` quando se trata de uma chave de matriz (ver capítulo sobre variáveis): nunca confiar num valor ambíguo quando existe um mecanismo específico para esclarecer a dúvida.
 
 `json_encode()` / `json_decode(..., true)` são o equivalente em PHP de `JSON.stringify()` / `JSON.parse()` em JavaScript (o `true` requer um array associativo, em vez de um objeto `stdClass`).
 

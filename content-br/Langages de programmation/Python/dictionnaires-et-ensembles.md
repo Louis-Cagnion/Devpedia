@@ -4,7 +4,7 @@ order: 5
 
 # Dicionários e conjuntos
 
-O **dicionário** (`dict`) associa chaves a valores, exatamente como um tabuleiro associativo em PHP. O conjunto (`set`) armazena valores únicos, sem ordem nem duplicados. Ambas as estruturas baseiam-se internamente numa **tabela de hash** (ver capítulo dedicado, secção C) — é isso que permite que `dico["chave"]` ou `"valor" in ensemble` sejam praticamente instantâneos, mesmo numa coleção muito grande.
+O **dicionário** (`dict`) associa chaves a valores, exatamente como um tabuleiro associativo em PHP. O conjunto (`set`) armazena valores únicos, sem ordem nem duplicados. Ambas as estruturas baseiam-se internamente numa **tabela de hash** (ver capítulo dedicado, secção C): é isso que permite que `dico["chave"]` ou `"valor" in ensemble` sejam praticamente instantâneos, mesmo numa coleção muito grande.
 
 ## Os dicionários
 
@@ -22,7 +22,7 @@ pessoa.get("telephone", "inconnu") # «desconhecido» -> valor por padrão, caso
 "nom" in pessoa            # True -> verifica a existência de uma CHAVE (não de um valor)
 ```
 
-> **Nota:** `pessoa["telephone"]` (acesso direto através de colchetes) lança uma exceção «`KeyError`» se a chave não existir — ao contrário de `.get()`, que devolve «`None`» (ou um valor por defeito fornecido) sem nunca falhar. Deve-se dar preferência a `.get()` sempre que a ausência da chave for um caso normal, e não um erro.
+> **Nota:** `pessoa["telephone"]` (acesso direto através de colchetes) lança uma exceção «`KeyError`» se a chave não existir, ao contrário de `.get()`, que devolve «`None`» (ou um valor por defeito fornecido) sem nunca falhar. Deve-se dar preferência a `.get()` sempre que a ausência da chave for um caso normal, e não um erro.
 
 ### Navegar num dicionário
 
@@ -68,7 +68,7 @@ a - b   # {1}           -> diferença (em a, não em b)
 a ^ b   # {1, 4}        -> diferença simétrica (num OU noutro, mas não em ambos)
 ```
 
-> **Nota:** um `set` elimina automaticamente as entradas duplicadas — `set([1, 2, 2, 3, 3, 3])` resulta em `{1, 2, 3}`. Esta é uma forma muito comum de deduplicar rapidamente uma lista em Python: `list(set(ma_liste))`.
+> **Nota:** um `set` elimina automaticamente as entradas duplicadas: `set([1, 2, 2, 3, 3, 3])` resulta em `{1, 2, 3}`. Esta é uma forma muito comum de deduplicar rapidamente uma lista em Python: `list(set(ma_liste))`.
 
 ### Visão geral
 

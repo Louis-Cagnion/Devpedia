@@ -4,7 +4,7 @@ order: 10
 
 # A programação orientada para objetos
 
-O Python é uma linguagem orientada para objetos de ponta a ponta — até mesmo um `int` ou um `str` é, na realidade, um objeto, uma instância de uma classe. A sintaxe das classes personalizadas assemelha-se à do PHP, com uma diferença imediata: `self` (o equivalente a `$this`) é um parâmetro **explícito** de cada método, nunca implícito.
+O Python é uma linguagem orientada para objetos de ponta a ponta: até mesmo um `int` ou um `str` é, na realidade, um objeto, uma instância de uma classe. A sintaxe das classes personalizadas assemelha-se à do PHP, com uma diferença imediata: `self` (o equivalente a `$this`) é um parâmetro **explícito** de cada método, nunca implícito.
 
 ## Declarar uma classe
 
@@ -21,7 +21,7 @@ v = Vehicule("Peugeot", "308")
 print(v.description())   # «Peugeot 308»
 ```
 
-> **Nota:** «`self`» deve ser escrito explicitamente como **primeiro parâmetro** de cada método de instância — o Python preenche-o automaticamente com a instância atual no momento da chamada (`v.description()` equivale a `Vehicule.description(v)`), mas omitir este parâmetro na assinatura provoca um erro.
+> **Nota:** «`self`» deve ser escrito explicitamente como **primeiro parâmetro** de cada método de instância: o Python preenche-o automaticamente com a instância atual no momento da chamada (`v.description()` equivale a `Vehicule.description(v)`), mas omitir este parâmetro na assinatura provoca um erro.
 
 ## Atributos de classe vs. atributos de instância
 
@@ -122,4 +122,4 @@ c = Cercle(5)
 print(c.surface)   # 78.53975 -> acessado como um atributo, NÃO como c.surface()
 ```
 
-`@property` transforma um método num atributo de leitura, recalculado a cada acesso — útil para expor um valor derivado sem exigir que quem o invoca saiba que se trata, na realidade, de um cálculo.
+`@property` transforma um método num atributo de leitura, recalculado a cada acesso, útil para expor um valor derivado sem exigir que quem o invoca saiba que se trata, na realidade, de um cálculo.

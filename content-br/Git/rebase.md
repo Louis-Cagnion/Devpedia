@@ -20,7 +20,7 @@ main:     A -- B -- C ----- F   main:     A -- B -- C
 feature:        D -- E ---'                            D' -- E'  <-- feature (rebasée)
 ```
 
-O rebase não «desloca» literalmente os commits `D` e `E`: cria **novos** commits (`D'`, `E'`) com o mesmo conteúdo, mas com um pai diferente — daí os hashes diferentes dos originais.
+O rebase não «desloca» literalmente os commits `D` e `E`: cria **novos** commits (`D'`, `E'`) com o mesmo conteúdo, mas com um pai diferente: daí os hashes diferentes dos originais.
 
 ## Efetuar um rebase
 
@@ -74,6 +74,6 @@ git push --force
 
 > **Nota:** quando um «force-push» é realmente legítimo (rebasar e, em seguida, voltar a enviar um ramo que só o usuário está utilizando), `git push --force-with-lease` é mais seguro do que `--force`: verifica primeiro se mais ninguém enviou um commit para esse ramo desde o último `fetch` e, nesse caso, recusa a operação, em vez de sobrescrever cegamente um trabalho que não se tenha visto a ser feito.
 
-Uma vez que o rebase cria **novos** commits com hashes diferentes, enviá-lo sobrepondo o histórico remoto (`--force`) desincroniza abruptamente qualquer pessoa que já tivesse baseado o seu trabalho nos commits antigos — os seus ramos locais passariam a referenciar commits que já não existem no servidor. O rebase é seguro quando aplicado a commits **estritamente locais**, que ainda não tenham sido partilhados.
+Uma vez que o rebase cria **novos** commits com hashes diferentes, enviá-lo sobrepondo o histórico remoto (`--force`) desincroniza abruptamente qualquer pessoa que já tivesse baseado o seu trabalho nos commits antigos: os seus ramos locais passariam a referenciar commits que já não existem no servidor. O rebase é seguro quando aplicado a commits **estritamente locais**, que ainda não tenham sido partilhados.
 
 Ver também o capítulo sobre ramos (merge, a alternativa mais segura para um histórico já partilhado) e o capítulo sobre a resolução de conflitos.

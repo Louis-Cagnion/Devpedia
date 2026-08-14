@@ -17,7 +17,7 @@ typedef struct Noeud
 } Noeud;
 ```
 
-> **Nota:** `struct Noeud *gauche` deve referenciar `struct Noeud` (com a palavra-chave `struct`), e não apenas `Noeud` — no momento em que o compilador lê esta linha, o `typedef Noeud` ainda não está completamente definido. Trata-se de uma exceção necessária, própria das estruturas autorreferenciais.
+> **Nota:** `struct Noeud *gauche` deve referenciar `struct Noeud` (com a palavra-chave `struct`), e não apenas `Noeud`: no momento em que o compilador lê esta linha, o `typedef Noeud` ainda não está completamente definido. Trata-se de uma exceção necessária, própria das estruturas autorreferenciais.
 
 ## A árvore binária de pesquisa (ABR)
 
@@ -59,7 +59,7 @@ Noeud *inserer(Noeud *raiz, int valor)
 ```
 
 - O caso base da recursão é`raiz == NULL`: encontrou-se o local vazio onde inserir.
-- Cada chamada recursiva devolve a raiz da subárvore (modificada ou não), que é reatribuída a `->gauche` ou `->droit` pelo chamador — é isto que liga o novo nó ao resto da árvore.
+- Cada chamada recursiva devolve a raiz da subárvore (modificada ou não), que é reatribuída a `->gauche` ou `->droit` pelo chamador: é isto que liga o novo nó ao resto da árvore.
 
 ## Pesquisa
 
@@ -77,7 +77,7 @@ Noeud *rechercher(Noeud *raiz, int valor)
 }
 ```
 
-A cada etapa, a comparação elimina **toda uma subárvore** da pesquisa — é isso que torna uma ABR equilibrada muito mais rápida do que um percurso linear de uma lista encadeada.
+A cada etapa, a comparação elimina **toda uma subárvore** da pesquisa: é isso que torna uma ABR equilibrada muito mais rápida do que um percurso linear de uma lista encadeada.
 
 ## Os três percursos clássicos
 
@@ -109,11 +109,11 @@ void parcoursSuffixe(Noeud *raiz)  // gauche, droit, nœud
 }
 ```
 
-Na árvore de exemplo acima, `parcoursInfixe` apresenta `2 5 7 10 15 20` — os valores por ordem crescente, uma característica própria do ABR.
+Na árvore de exemplo acima, `parcoursInfixe` apresenta `2 5 7 10 15 20`, os valores por ordem crescente, uma característica própria do ABR.
 
 ## Liberar uma árvore
 
-Tal como numa lista encadeada, cada nó alocado com`malloc()`deve ser libertado individualmente — um percurso por sufixo é naturalmente adequado para isso, uma vez que trata os filhos antes do próprio nó:
+Tal como numa lista encadeada, cada nó alocado com`malloc()`deve ser libertado individualmente; um percurso por sufixo é naturalmente adequado para isso, uma vez que trata os filhos antes do próprio nó:
 
 ```c
 void libererArbre(Noeud *raiz)

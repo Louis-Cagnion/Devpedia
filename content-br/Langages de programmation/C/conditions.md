@@ -8,7 +8,7 @@ As condições permitem executar um bloco de código consoante uma expressão se
 
 ## A condição «`if`»
 
-Em C, qualquer valor **diferente de zero** é considerado verdadeiro; apenas o valor `0` é falso — não existe um tipo booleano nativo antes do C99 (`stdbool.h`, ver o capítulo sobre variáveis):
+Em C, qualquer valor **diferente de zero** é considerado verdadeiro; apenas o valor `0` é falso; não existe um tipo booleano nativo antes do C99 (`stdbool.h`, ver o capítulo sobre variáveis):
 
 ```c
 int idade = 18;
@@ -34,7 +34,7 @@ if (note >= 16) {
 }
 ```
 
-> **Nota:** ao contrário do PHP, não existe uma sintaxe alternativa com `:` / `endif` em C — as chaves `{ }` são a única notação disponível (opcionais apenas se o bloco contiver apenas uma instrução, mas é fortemente desaconselhado omitir as chaves: fonte clássica de erros se for adicionada uma linha por engano sem as chaves).
+> **Nota:** ao contrário do PHP, não existe uma sintaxe alternativa com `:` / `endif` em C: as chaves `{ }` são a única notação disponível (opcionais apenas se o bloco contiver apenas uma instrução, mas é fortemente desaconselhado omitir as chaves: fonte clássica de erros se for adicionada uma linha por engano sem as chaves).
 
 ## O operador ternário
 
@@ -68,7 +68,7 @@ switch (jour) {
 }
 ```
 
-> **Nota:** não se esqueça do «`break;`» no final de cada «`case`» — caso contrário, a execução continua no «`case`» seguinte (*fall-through*), mesmo que a sua condição não corresponda. Este comportamento é, por vezes, utilizado deliberadamente para agrupar vários casos idênticos:
+> **Nota:** não se esqueça do «`break;`» no final de cada «`case`»: caso contrário, a execução continua no «`case`» seguinte (*fall-through*), mesmo que a sua condição não corresponda. Este comportamento é, por vezes, utilizado deliberadamente para agrupar vários casos idênticos:
 
 ```c
 switch (jour) {
@@ -82,4 +82,4 @@ switch (jour) {
 }
 ```
 
-> **Limitação do «`switch`» em C:** ao contrário de algumas linguagens, um «`switch`» em C só funciona com tipos inteiros (ou equivalentes: `char`, `enum`) — não é possível realizar um «`switch`» diretamente numa cadeia de caracteres.
+> **Limitação do «`switch`» em C:** ao contrário de algumas linguagens, um «`switch`» em C só funciona com tipos inteiros (ou equivalentes: `char`, `enum`): não é possível realizar um «`switch`» diretamente numa cadeia de caracteres.

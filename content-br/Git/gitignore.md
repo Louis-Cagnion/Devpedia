@@ -4,7 +4,7 @@ order: 3
 
 # O arquivo .gitignore
 
-`.gitignore` Enumera os arquivos e pastas que o Git deve **ignorar** — nunca propor para adição, nunca acompanhar, mesmo com um `git add .`. Indispensável para não poluir o histórico com arquivos gerados, dependências ou segredos.
+`.gitignore` Enumera os arquivos e pastas que o Git deve **ignorar**: nunca propor para adição, nunca acompanhar, mesmo com um `git add .`. Indispensável para não poluir o histórico com arquivos gerados, dependências ou segredos.
 
 ## Sintaxe básica
 
@@ -37,10 +37,10 @@ node_modules/       # ignore ce dossier entier, à la racine ou ailleurs
 git rm --cached fichier_deja_suivi.txt
 ```
 
-> **Nota:** adicionar um arquivo a `.gitignore` não tem **qualquer efeito** se este já estiver a ser acompanhado pelo Git (já tiver sido submetido pelo menos uma vez) — o Git continua a acompanhar as suas alterações como antes. É necessário, primeiro, removê-lo explicitamente do acompanhamento com o comando «`git rm --cached`» (que o deixa intacto no disco, mas deixa de o acompanhar), antes que a regra «`.gitignore`» entre em vigor.
+> **Nota:** adicionar um arquivo a `.gitignore` não tem **qualquer efeito** se este já estiver a ser acompanhado pelo Git (já tiver sido submetido pelo menos uma vez): o Git continua a acompanhar as suas alterações como antes. É necessário, primeiro, removê-lo explicitamente do acompanhamento com o comando «`git rm --cached`» (que o deixa intacto no disco, mas deixa de o acompanhar), antes que a regra «`.gitignore`» entre em vigor.
 
 ## Âmbito do `.gitignore`
 
-Um repositório pode conter vários arquivos «`.gitignore`», cada um dos quais se aplica à pasta onde se encontra e às suas subpastas — útil para regras específicas de um subprojeto, para além das regras globais na raiz.
+Um repositório pode conter vários arquivos «`.gitignore`», cada um dos quais se aplica à pasta onde se encontra e às suas subpastas, útil para regras específicas de um subprojeto, para além das regras globais na raiz.
 
 Um arquivo «`~/.gitignore_global`» (configurado através de `git config --global core.excludesfile ~/.gitignore_global`) permite também definir regras pessoais (por exemplo, arquivos específicos do seu próprio editor), sem as impor aos outros colaboradores de um projeto partilhado.

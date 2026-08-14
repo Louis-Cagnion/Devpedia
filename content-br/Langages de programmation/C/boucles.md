@@ -4,7 +4,7 @@ order: 3
 
 # Os loops
 
-Os loops permitem repetir um bloco de código várias vezes. Em C, existem três estruturas: `while`, `do while` e `for` — não existe um `foreach` nativo; um array é sempre percorrido através de um índice ou de um ponteiro.
+Os loops permitem repetir um bloco de código várias vezes. Em C, existem três estruturas: `while`, `do while` e `for`; não existe um `foreach` nativo; um array é sempre percorrido através de um índice ou de um ponteiro.
 
 ## O ciclo `while`
 
@@ -34,7 +34,7 @@ do {
 
 ## O ciclo `for`
 
-Reúne numa única linha a inicialização, a condição e o incremento — o que é prático sempre que o número de iterações for conhecido antecipadamente:
+Reúne numa única linha a inicialização, a condição e o incremento, o que é prático sempre que o número de iterações for conhecido antecipadamente:
 
 ```c
 for (int i = 0; i < 5; i++) {
@@ -54,7 +54,7 @@ for (int i = 0; i < 5; i++) {
 }
 ```
 
-> **Nota:** ao contrário do PHP ou do JavaScript, não existe **qualquer forma nativa** de saber o tamanho de um array apenas a partir do ponteiro — o `matriz[5]` «sabe» quantos elementos contém enquanto for manipulado como um array estático, mas essa informação desaparece assim que for passado para uma função (nesse caso, comporta-se como um simples ponteiro; ver o capítulo sobre ponteiros). O tamanho deve, portanto, ser transmitido separadamente.
+> **Nota:** ao contrário do PHP ou do JavaScript, não existe **qualquer forma nativa** de saber o tamanho de um array apenas a partir do ponteiro: o `matriz[5]` «sabe» quantos elementos contém enquanto for manipulado como um array estático, mas essa informação desaparece assim que for passado para uma função (nesse caso, comporta-se como um simples ponteiro; ver o capítulo sobre ponteiros). O tamanho deve, portanto, ser transmitido separadamente.
 
 ```c
 void afficher(int *matriz, int taille) // la taille doit être passée explicitement
@@ -84,7 +84,7 @@ for (int i = 0; i < 10; i++) {
 
 ## Laços aninhados e `break`
 
-`break` só interrompe o ciclo **mais próximo** que o engloba — para sair de vários ciclos aninhados de uma só vez, é necessária uma variável de controle ou um «`goto`» (raro, mas por vezes utilizado para este caso específico em C):
+`break` só interrompe o ciclo **mais próximo** que o engloba: para sair de vários ciclos aninhados de uma só vez, é necessária uma variável de controle ou um «`goto`» (raro, mas por vezes utilizado para este caso específico em C):
 
 ```c
 int trouve = 0;

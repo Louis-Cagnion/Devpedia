@@ -30,7 +30,7 @@ git fetch origin    # descarrega os novos commits do remote, SEM alterar a pasta
 git pull origin main # equivalente a: git fetch + git merge (fusiona imediatamente)
 ```
 
-> **Nota:** «`git fetch`» é, por si só, a operação mais «segura» para verificar o que mudou no lado remoto (`git log origin/main`) antes de decidir como integrar essas alterações — «`git pull`» efetua essa fusão automaticamente, o que pode ser surpreendente se surgirem conflitos inesperados.
+> **Nota:** «`git fetch`» é, por si só, a operação mais «segura» para verificar o que mudou no lado remoto (`git log origin/main`) antes de decidir como integrar essas alterações; «`git pull`» efetua essa fusão automaticamente, o que pode ser surpreendente se surgirem conflitos inesperados.
 
 ## Ramos de acompanhamento (*tracking branches*)
 
@@ -47,7 +47,7 @@ git push -u origin ma-branche       # estabelece esta ligação de acompanhament
 git clone https://exemple.com/projet.git
 ```
 
-`git clone` configura automaticamente o arquivo «`origin`» para apontar para o endereço clonado — é por isso que um simples `git pull` / `git push` funciona imediatamente após uma clonagem, sem necessidade de configuração manual.
+`git clone` configura automaticamente o arquivo «`origin`» para apontar para o endereço clonado: é por isso que um simples `git pull` / `git push` funciona imediatamente após uma clonagem, sem necessidade de configuração manual.
 
 ## Remover um comando remoto
 

@@ -106,7 +106,7 @@ Em seguida, para comparar ou manipular as suas variáveis entre si, terá de uti
 ?>
 ```
 
-> **Nota:** `==` / `!=` convertem os tipos antes de comparar, o que pode dar origem a resultados surpreendentes, dependendo dos valores comparados (fonte de erros históricos bem conhecidos em PHP). `===` / `!==` exigem o mesmo tipo E o mesmo valor — a utilizar sistematicamente, em particular para comparar cadeias de caracteres.
+> **Nota:** `==` / `!=` convertem os tipos antes de comparar, o que pode dar origem a resultados surpreendentes, dependendo dos valores comparados (fonte de erros históricos bem conhecidos em PHP). `===` / `!==` exigem o mesmo tipo E o mesmo valor, a utilizar sistematicamente, em particular para comparar cadeias de caracteres.
 
 Se pretender concatenar cadeias de caracteres, tem à sua disposição dois métodos:
 
@@ -138,11 +138,11 @@ Quando se utiliza o método `GET`, os dados do formulário ficam visíveis diret
 
 O método `POST` é mais frequentemente utilizado para enviar dados sensíveis (senhas, informações pessoais...), uma vez que estes não são exibidos na URL e não estão sujeitos a limitações de tamanho, ao contrário do que acontece com uma URL.
 
-> **Nota:** `GET` e `POST` não servem para proteger dados — os dados continuam visíveis através das ferramentas de desenvolvimento do navegador ou por interceção de rede, caso o site não utilize HTTPS. Para dados verdadeiramente sensíveis (senhas...), é necessário ter também em conta a encriptação e o HTTPS.
+> **Nota:** `GET` e `POST` não servem para proteger dados: os dados continuam visíveis através das ferramentas de desenvolvimento do navegador ou por interceção de rede, caso o site não utilize HTTPS. Para dados verdadeiramente sensíveis (senhas...), é necessário ter também em conta a encriptação e o HTTPS.
 
 ## As variáveis superglobais
 
-`$_GET` e `$_POST` fazem parte de uma família mais ampla de tabelas associativas, denominadas **«superglobais»**, que o PHP preenche automaticamente logo no início da execução — acessíveis a partir de qualquer função ou método, sem necessidade de importar nada:
+`$_GET` e `$_POST` fazem parte de uma família mais ampla de tabelas associativas, denominadas **«superglobais»**, que o PHP preenche automaticamente logo no início da execução, acessíveis a partir de qualquer função ou método, sem necessidade de importar nada:
 
 | Superglobale | Conteúdo |
 |---|---|
@@ -151,7 +151,7 @@ O método `POST` é mais frequentemente utilizado para enviar dados sensíveis (
 | `$_SESSION` | Dados armazenados no servidor para o usuário atual (requer o `session_start()`) |
 | `$_COOKIE` | Cookies enviados pelo navegador |
 
-> **Nota:** ao contrário de uma variável clássica (de âmbito local, invisível numa função se não for passada como parâmetro), as superglobais são visíveis **em todo o lado**, tal como uma constante — mas contêm dados que mudam a cada pedido, e não configurações fixas.
+> **Nota:** ao contrário de uma variável clássica (de âmbito local, invisível numa função se não for passada como parâmetro), as superglobais são visíveis **em todo o lado**, tal como uma constante, mas contêm dados que mudam a cada pedido, e não configurações fixas.
 
 ## Constantes com o «`define()`»
 
@@ -168,11 +168,11 @@ function prixTTC(float $prixHT): float
 ?>
 ```
 
-> **Nota:** uma «`$variable`» clássica, por sua vez, permanece local, mesmo que o arquivo que a declara tenha sido carregado com «`require`» — não é automaticamente visível no interior de uma função ou de um método definido noutro arquivo. É por isso que os arquivos de configuração utilizam frequentemente `define()` em vez de simples variáveis: isso garante que a configuração permaneça legível em todo o projeto.
+> **Nota:** uma «`$variable`» clássica, por sua vez, permanece local, mesmo que o arquivo que a declara tenha sido carregado com «`require`»: não é automaticamente visível no interior de uma função ou de um método definido noutro arquivo. É por isso que os arquivos de configuração utilizam frequentemente `define()` em vez de simples variáveis: isso garante que a configuração permaneça legível em todo o projeto.
 
 ## Acessar a uma chave de tabela que não existe
 
-A leitura de uma chave de matriz que não existe desencadeia um **aviso** («Undefined array key») — não é uma falha do sistema, mas sim um sinal de erro que não deve ser ignorado:
+A leitura de uma chave de matriz que não existe desencadeia um **aviso** («Undefined array key»): não é uma falha do sistema, mas sim um sinal de erro que não deve ser ignorado:
 
 ```php
 <?php

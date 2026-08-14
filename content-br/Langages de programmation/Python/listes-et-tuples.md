@@ -24,7 +24,7 @@ len(frutas)                  # número de elementos
 "pomme" in frutas             # True/False -> verifica a existência de um valor
 ```
 
-> **Nota:** ao contrário de um array em C (tamanho fixo, um único tipo), uma lista em Python é um array **dinâmico** heterogéneo: cresce automaticamente e cada elemento pode ser de um tipo diferente — o que implica um custo adicional de memória por elemento (cada elemento é, na realidade, uma referência a um objeto Python, e não um valor bruto contíguo como em C).
+> **Nota:** ao contrário de um array em C (tamanho fixo, um único tipo), uma lista em Python é um array **dinâmico** heterogéneo: cresce automaticamente e cada elemento pode ser de um tipo diferente, o que implica um custo adicional de memória por elemento (cada elemento é, na realidade, uma referência a um objeto Python, e não um valor bruto contíguo como em C).
 
 ## O «slicing» em pormenor
 
@@ -77,6 +77,6 @@ pairs = [x for x in range(10) if x % 2 == 0]
 # [0, 2, 4, 6, 8]
 ```
 
-> **Nota:** o código continua a ser compreensível para uma transformação simples numa única linha — para além disso (várias condições aninhadas, lógica complexa), um ciclo clássico do tipo «`for`» continua a ser mais claro de ler e de depurar.
+> **Nota:** o código continua a ser compreensível para uma transformação simples numa única linha; para além disso (várias condições aninhadas, lógica complexa), um ciclo clássico do tipo «`for`» continua a ser mais claro de ler e de depurar.
 
 Consulte também o capítulo sobre dicionários e conjuntos para conhecer o equivalente às compreensões nestas estruturas, e o capítulo sobre iteradores/geradores para conhecer a expressão geradora (variante preguiçosa de uma compreensão de lista).

@@ -9,6 +9,6 @@ Entre os conceitos essenciais do HTML, destacam-se, nomeadamente:
 - Os formulários, para recolher dados junto do usuário
 - Acessibilidade, para que o conteúdo continue a ser utilizável por tecnologias de assistência (leitores de tela, etc.)
 
-O HTML não se ocupa **nem** da aparência visual (função do CSS, ver capítulo dedicado), **nem** do comportamento interativo (função do JavaScript) — a sua única responsabilidade é descrever o que é cada parte do conteúdo. Esta separação de responsabilidades (estrutura / apresentação / comportamento) é um princípio central do desenvolvimento web moderno.
+O HTML não se ocupa **nem** da aparência visual (função do CSS, ver capítulo dedicado), **nem** do comportamento interativo (função do JavaScript): a sua única responsabilidade é descrever o que é cada parte do conteúdo. Esta separação de responsabilidades (estrutura / apresentação / comportamento) é um princípio central do desenvolvimento web moderno.
 
-> **Nota:** ao contrário do que acontece com uma linguagem de programação, um erro de sintaxe HTML quase nunca provoca uma «falha» — os navegadores são deliberadamente tolerantes (etiqueta não fechada, atributo mal escrito...) e tentam corrigi-los silenciosamente, o que pode ocultar erros durante muito tempo se o HTML não for validado com uma ferramenta específica.
+> **Nota:** ao contrário do que acontece com uma linguagem de programação, um erro de sintaxe HTML quase nunca provoca uma «falha»: os navegadores são deliberadamente tolerantes (etiqueta não fechada, atributo mal escrito...) e tentam corrigi-los silenciosamente, o que pode ocultar erros durante muito tempo se o HTML não for validado com uma ferramenta específica.

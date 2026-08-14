@@ -4,7 +4,7 @@ order: 6
 
 # As funções
 
-Uma função em Python é declarada com «`def`». As funções são **objetos de primeira classe**: podem ser armazenadas numa variável, passadas como argumento a outra função ou devolvidas por uma função — exatamente como qualquer outro valor.
+Uma função em Python é declarada com «`def`». As funções são **objetos de primeira classe**: podem ser armazenadas numa variável, passadas como argumento a outra função ou devolvidas por uma função, exatamente como qualquer outro valor.
 
 ## Declarar e chamar uma função
 
@@ -25,7 +25,7 @@ saluer("Jean")               # «Olá, Jean»
 saluer("Jean", "Salut")       # «Olá, Jean»
 ```
 
-> **Armadilha clássica: nunca utilizar um objeto mutável (lista, dicionário) como valor por padrão.** O valor por padrão é avaliado **apenas uma vez**, na definição da função — e não em cada chamada:
+> **Armadilha clássica: nunca utilizar um objeto mutável (lista, dicionário) como valor por padrão.** O valor por padrão é avaliado **apenas uma vez**, na definição da função, e não em cada chamada:
 
 ```python
 def ajouter_a_liste(elemento, lista=[]):  # PERIGO: esta lista é PARTILHADA entre todas as chamadas
@@ -88,7 +88,7 @@ nombres_tries = sorted(números, key=lambda x: -x)  # ordenação decrescente
 
 ## Closures e `nonlocal`
 
-Uma função aninhada pode ler as variáveis da função que a engloba — para as **alterar**, é necessário utilizar `nonlocal`:
+Uma função aninhada pode ler as variáveis da função que a engloba; para as **alterar**, é necessário utilizar `nonlocal`:
 
 ```python
 def contador():

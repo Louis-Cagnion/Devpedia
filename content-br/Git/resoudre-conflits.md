@@ -4,7 +4,7 @@ order: 9
 
 # Resolver um conflito de fusão
 
-Ocorre um **conflito** quando o Git não consegue fundir automaticamente duas versões do mesmo arquivo — normalmente, quando as **mesmas linhas** foram alteradas de forma diferente em cada uma das versões (durante um «`merge`», um «`rebase`» ou um «`pull`»).
+Ocorre um **conflito** quando o Git não consegue fundir automaticamente duas versões do mesmo arquivo: normalmente, quando as **mesmas linhas** foram alteradas de forma diferente em cada uma das versões (durante um «`merge`», um «`rebase`» ou um «`pull`»).
 
 ## O que o Git escreve no arquivo em conflito
 
@@ -18,12 +18,12 @@ const TVA_TAUX = 0.20;
 
 - Tudo o que se encontra entre `<<<<<<< HEAD` e `=======` corresponde à **sua** versão (o ramo em que se encontra).
 - Tudo o que se encontra entre `=======` e `>>>>>>> feature` corresponde à versão do outro ramo (fusionado).
-- Estes marcadores (`<<<<<<<`, `=======`, `>>>>>>>`) são inseridos **diretamente no arquivo** — o arquivo deixa de compilar/executar tal como está enquanto estes marcadores estiverem presentes.
+- Estes marcadores (`<<<<<<<`, `=======`, `>>>>>>>`) são inseridos **diretamente no arquivo**: o arquivo deixa de compilar/executar tal como está enquanto estes marcadores estiverem presentes.
 
 ## Resolver o conflito
 
 1. Abrir o arquivo, decidir qual das versões manter (ou combinar as duas manualmente).
-2. Eliminar completamente os marcadores `<<<<<<<`, `=======`, `>>>>>>>` — estes **nunca** devem permanecer no arquivo final.
+2. Eliminar completamente os marcadores `<<<<<<<`, `=======`, `>>>>>>>`; estes **nunca** devem permanecer no arquivo final.
 3. Marcar o arquivo como resolvido e, em seguida, prosseguir com a operação em curso:
 
 ```bash

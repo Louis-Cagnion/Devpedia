@@ -4,7 +4,7 @@ order: 2
 
 # As condições
 
-O Python utiliza `if` / `elif` / `else`, sem quaisquer chaves — é a própria **indentação** que delimita os blocos de código, ao contrário do PHP, do C ou do JavaScript.
+O Python utiliza `if` / `elif` / `else`, sem quaisquer chaves: é a própria **indentação** que delimita os blocos de código, ao contrário do PHP, do C ou do JavaScript.
 
 ## `if` / `elif` / `else`
 
@@ -19,7 +19,7 @@ else:
     print("Vous êtes enfant.")
 ```
 
-> **Nota:** «`elif`» (contracção de «else if») é a única palavra-chave para encadear condições — «`else if`», em duas palavras, não existe em Python. É **obrigatório utilizar** uma indentação coerente: um bloco mal indentado provoca uma «`IndentationError`», não apenas um aviso.
+> **Nota:** «`elif`» (contracção de «else if») é a única palavra-chave para encadear condições: «`else if`», em duas palavras, não existe em Python. É **obrigatório utilizar** uma indentação coerente: um bloco mal indentado provoca uma «`IndentationError`», não apenas um aviso.
 
 ## Os valores «truthy» e «falsy»
 
@@ -59,7 +59,7 @@ statut = "majeur" if idade >= 18 else "mineur"
 
 Ao contrário do PHP/C/JS (`condition ? valeur_si_vrai : valeur_si_faux`), o Python coloca a condição **no meio**: `valeur_si_vrai if condition else valeur_si_faux`.
 
-## O operador «morse» (`:=`) — a partir do Python 3.8
+## O operador «morse» (`:=`): a partir do Python 3.8
 
 Permite atribuir um valor a uma variável **e** utilizá-la na mesma expressão, nomeadamente numa condição:
 
@@ -75,7 +75,7 @@ if (resultado := calculer_resultat()) > 10:
 
 ## Sem o comando clássico «`switch`» (antes do Python 3.10)
 
-Durante muito tempo, o Python não disponibilizou nenhum equivalente direto a um «`switch`» — uma cadeia de «`elif`» ou um dicionário de correspondência serviam de alternativa:
+Durante muito tempo, o Python não disponibilizou nenhum equivalente direto a um «`switch`»; uma cadeia de «`elif`» ou um dicionário de correspondência serviam de alternativa:
 
 ```python
 def jour_semaine(jour):

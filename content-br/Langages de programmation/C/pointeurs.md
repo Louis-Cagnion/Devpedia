@@ -42,7 +42,7 @@ printf("%d\n", *(p + 1)); // 20 -> avance de sizeof(int) octets, pas de 1 octet
 printf("%d\n", *(p + 2)); // 30
 ```
 
-> **Nota:** um tabu`tab`a comporta-se como um ponteiro para o seu primeiro elemento. `tab[i]` e `*(tab + i)` são duas formas de escrita estritamente equivalentes em C — é por isso que a indexação de tabua também funciona num ponteiro bruto.
+> **Nota:** um tabu`tab`a comporta-se como um ponteiro para o seu primeiro elemento. `tab[i]` e `*(tab + i)` são duas formas de escrita estritamente equivalentes em C: é por isso que a indexação de tabua também funciona num ponteiro bruto.
 
 ## Ponteiro para ponteiro
 
@@ -58,7 +58,7 @@ printf("%d\n", **ptrPtr); // 25 -> déréférence deux fois : ptrPtr -> ptr -> a
 
 ## Passar um ponteiro a uma função (passagem por endereço)
 
-Em C, os argumentos são passados **por valor** (uma cópia) por padrão — uma função não pode, portanto, alterar a variável original do chamador, a menos que lhe seja passado diretamente o endereço dessa variável:
+Em C, os argumentos são passados **por valor** (uma cópia) por padrão: uma função não pode, portanto, alterar a variável original do chamador, a menos que lhe seja passado diretamente o endereço dessa variável:
 
 ```c
 void incrementer(int *número)
@@ -78,7 +78,7 @@ Sem o `*`, `incrementer(int número)` apenas alteraria uma cópia local, sem qua
 
 ## Ponteiros de funções
 
-Uma função também tem um endereço na memória, que pode ser armazenado num ponteiro — útil para escolher dinamicamente qual a função a chamar (callbacks, tabelas de despacho):
+Uma função também tem um endereço na memória, que pode ser armazenado num ponteiro, útil para escolher dinamicamente qual a função a chamar (callbacks, tabelas de despacho):
 
 ```c
 int addition(int a, int b) { return a + b; }
@@ -93,7 +93,7 @@ printf("%d\n", operation(4, 2)); // 2
 
 ## `NULL` e ponteiros inválidos
 
-Um ponteiro não inicializado contém um endereço **aleatório** («wild pointer») — a sua desreferência produz um comportamento indefinido, muitas vezes uma falha do sistema (`segmentation fault`). Um ponteiro que ainda não seja utilizado deve ser explicitamente posto em «`NULL`» e testado antes da desreferência:
+Um ponteiro não inicializado contém um endereço **aleatório** («wild pointer»): a sua desreferência produz um comportamento indefinido, muitas vezes uma falha do sistema (`segmentation fault`). Um ponteiro que ainda não seja utilizado deve ser explicitamente posto em «`NULL`» e testado antes da desreferência:
 
 ```c
 int *ptr = NULL;

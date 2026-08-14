@@ -24,7 +24,7 @@ Os cookies servem normalmente para:
 `setcookie()` aceita principalmente 3 parâmetros:
 - O nome do cookie
 - O valor a armazenar
-- A data de validade (em timestamp Unix — `time()` devolve a hora atual, pelo que `time() + 3600` significa «daqui a 1 hora»)
+- A data de validade (em timestamp Unix: `time()` devolve a hora atual, pelo que `time() + 3600` significa «daqui a 1 hora»)
 
 > **Nota importante:** a função `setcookie()` deve ser chamada **antes** **de** qualquer conteúdo HTML (antes de qualquer baliza, espaço ou retorno de linha), uma vez que altera os cabeçalhos (*headers*) HTTP da resposta. Trata-se da mesma lógica que se aplica à baliza de fecho `?>`, mencionada anteriormente.
 
@@ -82,7 +82,7 @@ Para eliminar um cookie, basta recriá-lo com uma data de validade **no passado*
 
 ## As sessões
 
-Uma **sessão** permite armazenar dados **no servidor**, associando-os a um visitante específico. Ao contrário de um cookie (armazenado no computador do usuário e que este pode alterar), os dados da sessão permanecem no servidor — pelo que o usuário não tem qualquer forma de os ler ou alterar diretamente.
+Uma **sessão** permite armazenar dados **no servidor**, associando-os a um visitante específico. Ao contrário de um cookie (armazenado no computador do usuário e que este pode alterar), os dados da sessão permanecem no servidor, pelo que o usuário não tem qualquer forma de os ler ou alterar diretamente.
 
 O PHP estabelece a ligação entre o visitante e os seus dados através de um identificador de sessão único, enviado automaticamente para o navegador sob a forma de um cookie (geralmente denominado «`PHPSESSID`»). Este cookie não contém, portanto, quaisquer dados sensíveis: apenas um identificador, que remete para os dados reais armazenados no servidor.
 
@@ -130,14 +130,14 @@ O PHP estabelece a ligação entre o visitante e os seus dados através de um id
 ?>
 ```
 
-> **Nota:** por padrão, o cookie `PHPSESSID` (e, consequentemente, a sessão) desaparece ao fechar o navegador ou após um período de inatividade do lado do servidor. Para prolongar a duração de uma ligação (vários dias/semanas), as sessões clássicas não são suficientes — consulte a secção sobre tokens de ligação abaixo.
+> **Nota:** por padrão, o cookie `PHPSESSID` (e, consequentemente, a sessão) desaparece ao fechar o navegador ou após um período de inatividade do lado do servidor. Para prolongar a duração de uma ligação (vários dias/semanas), as sessões clássicas não são suficientes; consulte a secção sobre tokens de ligação abaixo.
 
 ## Os tokens de sessão («lembrar-me»)
 
 Para manter um usuário ligado a longo prazo (vários dias/semanas), mesmo após o encerramento do navegador, nem o cookie clássico (que não é seguro para esse fim) nem a sessão (demasiado efémera) são suficientes. Recorre-se, então, a um **token de ligação** (*remember token*): uma prova de ligação de longa duração, armazenada tanto no dispositivo do usuário como no servidor.
 
 O princípio:
-- **Nunca** se armazena a senha para o fazer — apenas um token aleatório.
+- **Nunca** se armazena a senha para o fazer, apenas um token aleatório.
 - O token é enviado em texto simples num cookie no dispositivo do usuário.
 - A sua versão **hash** é armazenada numa base de dados, associada à sua conta (tal como acontece com uma senha).
 
@@ -178,7 +178,7 @@ A cada visita, se a sessão estiver vazia mas o cookie `remember_token` existir,
 ?>
 ```
 
-> **Nota:** compara-se sempre o **hash** do token recebido com o que está armazenado na base de dados, nunca o token em texto simples — exatamente como acontece com uma senha em `password_hash()` / `password_verify()`. Se o cookie for roubado, o ladrão não consegue deduzir o hash armazenado, mas, acima de tudo, é possível revogar esse token a qualquer momento, eliminando-o da base de dados (por exemplo: em caso de alteração da senha ou de desligamento explícito).
+> **Nota:** compara-se sempre o **hash** do token recebido com o que está armazenado na base de dados, nunca o token em texto simples, exatamente como acontece com uma senha em `password_hash()` / `password_verify()`. Se o cookie for roubado, o ladrão não consegue deduzir o hash armazenado, mas, acima de tudo, é possível revogar esse token a qualquer momento, eliminando-o da base de dados (por exemplo: em caso de alteração da senha ou de desligamento explícito).
 
 ### Cookie, sessão ou token de ligação: qual escolher?
 
@@ -198,15 +198,15 @@ Erro frequente: acreditar que `$_SESSION` está armazenado no cookie do navegado
 - Os dados (`$_SESSION['...'] = ...`) são gravados **no lado do servidor** (arquivo ou base de dados), associados a este identificador.
 - A cada pedido subsequente, o navegador reenvia o cookie; o PHP lê novamente o identificador, localiza o armazenamento no servidor correspondente e recarrega `$_SESSION`.
 
-> **Analogia:** um bilhete de vestiário. O número no bilhete é sorteado aleatoriamente **no momento em que o casaco é entregue** — não tem qualquer relação com o próprio casaco. A ligação entre o número e o casaco existe apenas no registro do funcionário (o armazenamento no servidor), nunca no próprio número.
+> **Analogia:** um bilhete de vestiário. O número no bilhete é sorteado aleatoriamente **no momento em que o casaco é entregue**: não tem qualquer relação com o próprio casaco. A ligação entre o número e o casaco existe apenas no registro do funcionário (o armazenamento no servidor), nunca no próprio número.
 
 ### O risco de roubo de sessão
 
-Se um atacante adivinhasse ou roubasse o identificador de uma sessão já aberta, herdaria o seu conteúdo — mas não pode *escolher* o alvo: o identificador é gerado por um CSPRNG (gerador aleatório criptograficamente seguro) com uma entropia enorme, comparável a uma senha de várias centenas de bits. `session_set_cookie_params(['httponly' => true])` acrescenta uma proteção adicional: impede que o JavaScript da página leia esse cookie, o que limita os danos em caso de uma falha XSS.
+Se um atacante adivinhasse ou roubasse o identificador de uma sessão já aberta, herdaria o seu conteúdo, mas não pode *escolher* o alvo: o identificador é gerado por um CSPRNG (gerador aleatório criptograficamente seguro) com uma entropia enorme, comparável a uma senha de várias centenas de bits. `session_set_cookie_params(['httponly' => true])` acrescenta uma proteção adicional: impede que o JavaScript da página leia esse cookie, o que limita os danos em caso de uma falha XSS.
 
 ### Porque não derivar simplesmente o identificador a partir do hash de um dado conhecido?
 
-Um hash simples (`sha256($identifiant_connu)`) é **determinístico e não contém segredos**: qualquer pessoa pode recalculá-lo. Se existir um número limitado de valores possíveis (por exemplo, cerca de trinta contas), um atacante nem sequer precisa de recorrer a um ataque de força bruta num espaço extenso — basta-lhe aplicar o hash a cada valor possível para obter todos os identificadores válidos. Um hash, por si só, não acrescenta **qualquer entropia** para além da que já está presente na entrada.
+Um hash simples (`sha256($identifiant_connu)`) é **determinístico e não contém segredos**: qualquer pessoa pode recalculá-lo. Se existir um número limitado de valores possíveis (por exemplo, cerca de trinta contas), um atacante nem sequer precisa de recorrer a um ataque de força bruta num espaço extenso: basta-lhe aplicar o hash a cada valor possível para obter todos os identificadores válidos. Um hash, por si só, não acrescenta **qualquer entropia** para além da que já está presente na entrada.
 
 ## Tokens assinados (HMAC): transmitir dados de forma a que não possam ser falsificados
 
@@ -240,8 +240,8 @@ Se a parte `$encode` for alterada por alguém que não conheça `$secret`, a ass
 
 | | Identificador de sessão | Token assinado (HMAC) |
 |---|---|---|
-| Contém informação? | Não — chave opaca, sem dados | Sim — os dados estão codificados nela |
-| Requer armazenamento num servidor? | Sim — os dados estão num arquivo/base de dados associado à chave | Não — autossuficiente, verificável através do recálculo da assinatura a qualquer momento |
+| Contém informação? | Não: chave opaca, sem dados | Sim: os dados estão codificados nela |
+| Requer armazenamento num servidor? | Sim: os dados estão num arquivo/base de dados associado à chave | Não: autossuficiente, verificável através do recálculo da assinatura a qualquer momento |
 | Caso de utilização típico | Usuário já identificado, sessão em curso | Dados a transmitir de forma verificável sem necessidade de consultar uma base de dados (ligação de ativação, convidado sem conta...) |
 
 > **Nota:** Utilize `hash_equals()` em vez de simplesmente `===` para comparar dois hashes: esta função efetua a comparação em tempo constante, o que impede que um atacante deduza progressivamente o valor correto medindo o tempo de resposta (ataque por timing).

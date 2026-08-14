@@ -30,7 +30,7 @@ git add .                   # adiciona tudo o que foi alterado na pasta atual e 
 git add -p                  # modo interativo: escolher com precisão quais os blocos de linhas a adicionar
 ```
 
-> **Nota:** O comando «`git add .`» também adiciona arquivos não controlados — certifique-se de que o arquivo «`.gitignore`» (ver capítulo dedicado) está atualizado antes de executar o comando, para não adicionar acidentalmente arquivos que nunca devem entrar no histórico (informações confidenciais, dependências, arquivos gerados...).
+> **Nota:** O comando «`git add .`» também adiciona arquivos não controlados; certifique-se de que o arquivo «`.gitignore`» (ver capítulo dedicado) está atualizado antes de executar o comando, para não adicionar acidentalmente arquivos que nunca devem entrar no histórico (informações confidenciais, dependências, arquivos gerados...).
 
 ## Criar um commit
 
@@ -39,9 +39,9 @@ git commit -m "Corrige le calcul de la remise"
 git commit -am "Message"   # atalho: adiciona automaticamente os arquivos já monitorizados E modificados, sem necessidade de um «git add» prévio
 ```
 
-> **Nota:** «`-a`» (em «`-am`») apenas adiciona os arquivos já controlados pelo Git — um arquivo totalmente novo, que nunca tenha sido adicionado anteriormente, deve sempre passar por um comando «`git add`» explícito, pelo menos uma vez.
+> **Nota:** «`-a`» (em «`-am`») apenas adiciona os arquivos já controlados pelo Git; um arquivo totalmente novo, que nunca tenha sido adicionado anteriormente, deve sempre passar por um comando «`git add`» explícito, pelo menos uma vez.
 
-Uma boa mensagem de commit descreve o **motivo** da alteração, e não apenas o que foi alterado (o diff já mostra o que mudou) — útil para compreender o histórico muito tempo depois.
+Uma boa mensagem de commit descreve o **motivo** da alteração, e não apenas o que foi alterado (o diff já mostra o que mudou), útil para compreender o histórico muito tempo depois.
 
 ## Consultar o histórico
 

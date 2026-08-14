@@ -4,7 +4,7 @@ order: 11
 
 # Listas encadeadas
 
-Uma **lista encadeada** é uma estrutura de dados em que cada elemento (um **elo** ou *nó*) contém um valor e um ponteiro para o elemento seguinte. Ao contrário de um tabuuleiro, os seus elementos não são armazenados de forma contígua na memória — é isso que permite adicionar ou remover um elemento sem ter de deslocar todos os outros.
+Uma **lista encadeada** é uma estrutura de dados em que cada elemento (um **elo** ou *nó*) contém um valor e um ponteiro para o elemento seguinte. Ao contrário de um tabuuleiro, os seus elementos não são armazenados de forma contígua na memória: é isso que permite adicionar ou remover um elemento sem ter de deslocar todos os outros.
 
 ## Declarar um elo
 
@@ -50,7 +50,7 @@ void afficher(Maillon *tete)
 }
 ```
 
-> **Nota:** `courant` é uma **cópia** do ponteiro `tete` — avançar para `courant = courant->suivant` não altera `tete`, que continua a apontar para o primeiro elemento da lista. É por isso que se utiliza sempre um ponteiro «de trabalho» separado para percorrer uma lista, nunca o próprio ponteiro inicial.
+> **Nota:** `courant` é uma **cópia** do ponteiro `tete`: avançar para `courant = courant->suivant` não altera `tete`, que continua a apontar para o primeiro elemento da lista. É por isso que se utiliza sempre um ponteiro «de trabalho» separado para percorrer uma lista, nunca o próprio ponteiro inicial.
 
 ## Inserir no início da lista
 
@@ -70,11 +70,11 @@ Maillon *insererEnTete(Maillon *tete, int valor)
 tete = insererEnTete(tete, 5);
 ```
 
-A inserção no início é uma operação de tempo constante (nenhum outro elemento é deslocado) — ao contrário de um tabular, em que a inserção no início exige o deslocamento de todos os elementos existentes.
+A inserção no início é uma operação de tempo constante (nenhum outro elemento é deslocado); ao contrário de um tabular, em que a inserção no início exige o deslocamento de todos os elementos existentes.
 
 ## Liberar a lista
 
-Cada nó alocado com `malloc()` deve ser libertado individualmente — libertar diretamente `tete` sem manter uma referência ao resto faria com que se perdesse o acesso a todos os nós seguintes (fuga de memória, ver capítulo sobre gestão de memória):
+Cada nó alocado com `malloc()` deve ser libertado individualmente: libertar diretamente `tete` sem manter uma referência ao resto faria com que se perdesse o acesso a todos os nós seguintes (fuga de memória, ver capítulo sobre gestão de memória):
 
 ```c
 void libererListe(Maillon *tete)
@@ -89,7 +89,7 @@ void libererListe(Maillon *tete)
 }
 ```
 
-> **Nota:** a ordem é importante neste caso: chamar `free(courant)` e, em seguida, ler `courant->suivant` constituiria um **«use-after-free»** (ver capítulo sobre gestão de memória) — o valor do ponteiro `suivant` deve ser recuperado antes da libertação do bloco de memória que o contém.
+> **Nota:** a ordem é importante neste caso: chamar `free(courant)` e, em seguida, ler `courant->suivant` constituiria um **«use-after-free»** (ver capítulo sobre gestão de memória): o valor do ponteiro `suivant` deve ser recuperado antes da libertação do bloco de memória que o contém.
 
 ## Lista encadeada vs. tabela
 

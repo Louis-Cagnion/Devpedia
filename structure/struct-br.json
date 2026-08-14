@@ -660,11 +660,11 @@
             },
             {
               "id": "stl-conteneurs",
-              "label": "A STL — os contentores"
+              "label": "A STL: os contentores"
             },
             {
               "id": "stl-algorithmes-et-iterateurs",
-              "label": "A STL — iteradores, algoritmos e lambdas"
+              "label": "A STL: iteradores, algoritmos e lambdas"
             },
             {
               "id": "templates",

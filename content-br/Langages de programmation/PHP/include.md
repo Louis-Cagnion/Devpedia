@@ -72,7 +72,7 @@ Este padrão é frequentemente utilizado como um arquivo simples de configuraç�
 
 ## `__DIR__`
 
-`__DIR__` é uma constante que representa o diretório **do arquivo em que aparece** — não um «diretório do projeto» global. Por isso, dois arquivos em pastas diferentes não têm o mesmo `__DIR__`:
+`__DIR__` é uma constante que representa o diretório **do arquivo em que aparece**, não um «diretório do projeto» global. Por isso, dois arquivos em pastas diferentes não têm o mesmo `__DIR__`:
 
 ```php
 <?php

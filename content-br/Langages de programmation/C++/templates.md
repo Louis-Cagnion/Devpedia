@@ -14,7 +14,7 @@ double maximum(double a, double b) { return (a > b) ? a : b; }
 std::string maximum(std::string a, std::string b) { return (a > b) ? a : b; }
 ```
 
-Três funções estritamente idênticas na sua lógica, duplicadas apenas devido ao tipo — exatamente o tipo de repetição que um modelo elimina (cf. princípio DRY, já mencionado para outras linguagens).
+Três funções estritamente idênticas na sua lógica, duplicadas apenas devido ao tipo, exatamente o tipo de repetição que um modelo elimina (cf. princípio DRY, já mencionado para outras linguagens).
 
 ## Modelo de função
 
@@ -29,7 +29,7 @@ maximum(3.5, 2.1);          // T é interpretado como «duplo»
 maximum<std::string>("a", "b");  // T especificado explicitamente, se necessário
 ```
 
-O compilador **gera** uma versão distinta da função para cada tipo efetivamente utilizado (`maximum<int>`, `maximum<double>`...) — é o que se denomina instanciação de modelo, realizada inteiramente na compilação, sem qualquer custo na execução.
+O compilador **gera** uma versão distinta da função para cada tipo efetivamente utilizado (`maximum<int>`, `maximum<double>`...): é o que se denomina instanciação de modelo, realizada inteiramente na compilação, sem qualquer custo na execução.
 
 ## Modelo de classe
 
@@ -59,11 +59,11 @@ Pile<std::string> pileTextes;
 pileTextes.empiler("bonjour");
 ```
 
-Uma única definição de `Pile`, utilizável com qualquer tipo — é exatamente assim que são construídos os contentores da STL (`std::vector<T>`, `std::map<K, V>`..., ver capítulo dedicado).
+Uma única definição de `Pile`, utilizável com qualquer tipo: é exatamente assim que são construídos os contentores da STL (`std::vector<T>`, `std::map<K, V>`..., ver capítulo dedicado).
 
 ## Restrições de tipo (C++20: `concepts`)
 
-Sem restrições, um modelo aceita qualquer tipo — incluindo tipos para os quais a operação não faz sentido, o que gera um erro de compilação frequentemente extenso e pouco claro:
+Sem restrições, um modelo aceita qualquer tipo, incluindo tipos para os quais a operação não faz sentido, o que gera um erro de compilação frequentemente extenso e pouco claro:
 
 ```cpp
 template <typename T>

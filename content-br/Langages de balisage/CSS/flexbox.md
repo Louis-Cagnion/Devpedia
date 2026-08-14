@@ -4,7 +4,7 @@ order: 5
 
 # Flexbox
 
-**O Flexbox** (*Flexible Box Layout*) organiza os elementos ao longo de um **único eixo** (horizontal ou vertical), distribuindo o espaço disponível entre eles — a solução moderna para alinhar, centrar e distribuir elementos, substituindo técnicas antigas muito mais frágeis (elementos flutuantes, tabelas utilizadas de forma inadequada, ver o capítulo sobre tabelas no HTML).
+**O Flexbox** (*Flexible Box Layout*) organiza os elementos ao longo de um **único eixo** (horizontal ou vertical), distribuindo o espaço disponível entre eles: a solução moderna para alinhar, centrar e distribuir elementos, substituindo técnicas antigas muito mais frágeis (elementos flutuantes, tabelas utilizadas de forma inadequada, ver o capítulo sobre tabelas no HTML).
 
 ## Ativar o Flexbox
 
@@ -27,7 +27,7 @@ Assim que a propriedade `display: flex` é aplicada a um elemento, todos os seus
 }
 ```
 
-Todo o Flexbox funciona com base no eixo** principal** (o eixo d`flex-direction`o) e no eixo** secundário** (perpendicular) — as propriedades de alinhamento abaixo aplicam-se de forma diferente consoante o eixo.
+Todo o Flexbox funciona com base no eixo** principal** (o eixo d`flex-direction`o) e no eixo** secundário** (perpendicular): as propriedades de alinhamento abaixo aplicam-se de forma diferente consoante o eixo.
 
 ## Alinhar com o eixo principal: `justify-content`
 
@@ -74,7 +74,7 @@ Todo o Flexbox funciona com base no eixo** principal** (o eixo d`flex-direction`
 }
 ```
 
-> **Nota (acessibilidade):** `order` altera apenas a ordem **visual** — a ordem de tabulação no teclado e a lida por um leitor de tela mantêm-se as do HTML. Uma discrepância entre as duas ordens pode desorientar um usuário que utilize o teclado ou um leitor de tela; deve ser reservada apenas para reordenações puramente decorativas, nunca para corrigir uma ordem de conteúdo que não faça sentido no próprio HTML.
+> **Nota (acessibilidade):** `order` altera apenas a ordem **visual**: a ordem de tabulação no teclado e a lida por um leitor de tela mantêm-se as do HTML. Uma discrepância entre as duas ordens pode desorientar um usuário que utilize o teclado ou um leitor de tela; deve ser reservada apenas para reordenações puramente decorativas, nunca para corrigir uma ordem de conteúdo que não faça sentido no próprio HTML.
 
 ```css
 .colonne-principale { flex-grow: 2; }   /* occupe deux fois plus d'espace que .colonne-laterale */

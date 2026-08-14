@@ -4,7 +4,7 @@ order: 6
 
 # CSS Grid
 
-Ao contrário do Flexbox (ver capítulo dedicado), concebido para um único eixo de cada vez, **o CSS Grid** organiza os elementos numa verdadeira grelha **bidimensional** — linhas e colunas definidas simultaneamente, com um controle preciso da posição de cada elemento.
+Ao contrário do Flexbox (ver capítulo dedicado), concebido para um único eixo de cada vez, **o CSS Grid** organiza os elementos numa verdadeira grelha **bidimensional**: linhas e colunas definidas simultaneamente, com um controle preciso da posição de cada elemento.
 
 ## Ativar uma grelha
 
@@ -26,7 +26,7 @@ Ao contrário do Flexbox (ver capítulo dedicado), concebido para um único eixo
 }
 ```
 
-`fr` (*fração*) distribui o espaço **restante** após a subtração dos tamanhos fixos — muito mais flexível do que uma percentagem, especialmente quando combinada com tamanhos fixos:
+`fr` (*fração*) distribui o espaço **restante** após a subtração dos tamanhos fixos, muito mais flexível do que uma percentagem, especialmente quando combinada com tamanhos fixos:
 
 ```css
 .conteneur {
@@ -54,7 +54,7 @@ Ao contrário do Flexbox (ver capítulo dedicado), concebido para um único eixo
 }
 ```
 
-`auto-fit` Calcula automaticamente quantas colunas **de, pelo menos**, `200px` cabem no espaço disponível e estica-as (`1fr`) para preencher o espaço restante — o número de colunas adapta-se, assim, à largura da tela, sem necessidade de escrever uma única media query (ver capítulo dedicado).
+`auto-fit` Calcula automaticamente quantas colunas **de, pelo menos**, `200px` cabem no espaço disponível e estica-as (`1fr`) para preencher o espaço restante: o número de colunas adapta-se, assim, à largura da tela, sem necessidade de escrever uma única media query (ver capítulo dedicado).
 
 ## Posicionar um elemento com precisão
 
@@ -94,7 +94,7 @@ Lignes de grille verticales :  1    2    3    4
 .pied { grid-area: pied; }
 ```
 
-Cada nome em `grid-template-areas` define literalmente o layout visual da página diretamente no CSS — uma área repetida em várias linhas/colunas do esquema ocupa automaticamente esse espaço combinado (neste caso, `entete` e `pied` estendem-se por toda a largura).
+Cada nome em `grid-template-areas` define literalmente o layout visual da página diretamente no CSS: uma área repetida em várias linhas/colunas do esquema ocupa automaticamente esse espaço combinado (neste caso, `entete` e `pied` estendem-se por toda a largura).
 
 ## Flexbox ou Grid?
 

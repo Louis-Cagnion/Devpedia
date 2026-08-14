@@ -4,7 +4,7 @@ order: 9
 
 # Gestão de erros
 
-O JavaScript sinaliza um erro através do lançamento de uma **exceção** (`throw`), que pode ser interceptada com `try` / `catch` — um mecanismo semelhante ao do PHP ou do Python.
+O JavaScript sinaliza um erro através do lançamento de uma **exceção** (`throw`), que pode ser interceptada com `try` / `catch`, um mecanismo semelhante ao do PHP ou do Python.
 
 ## `try` / `catch` / `finally`
 
@@ -90,4 +90,4 @@ fetch("/api/donnees")
     .catch(erro => console.log("Échec :", erro.mensagem));
 ```
 
-> **Nota:** um erro gerado numa função `async` não se torna imediatamente uma exceção clássica do JavaScript — transforma a `Promise` devolvida numa promessa **rejeitada**, recuperável apenas através de `await` num `try` / `catch`, ou através de `.catch()`.
+> **Nota:** um erro gerado numa função `async` não se torna imediatamente uma exceção clássica do JavaScript: transforma a `Promise` devolvida numa promessa **rejeitada**, recuperável apenas através de `await` num `try` / `catch`, ou através de `.catch()`.

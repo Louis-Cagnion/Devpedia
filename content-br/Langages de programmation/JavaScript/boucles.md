@@ -4,7 +4,7 @@ order: 2
 
 # Os loops
 
-O JavaScript disponibiliza os ciclos clássicos (`for`, `while`, `do...while`), além de dois ciclos dedicados à iteração de coleções (`for...of`, `for...in`) — e, na prática quotidiana, os métodos funcionais dos tabuletos (`map`, `filter`...) substituem frequentemente um ciclo explícito.
+O JavaScript disponibiliza os ciclos clássicos (`for`, `while`, `do...while`), além de dois ciclos dedicados à iteração de coleções (`for...of`, `for...in`); e, na prática quotidiana, os métodos funcionais dos tabuletos (`map`, `filter`...) substituem frequentemente um ciclo explícito.
 
 ## `for` clássica
 
@@ -54,7 +54,7 @@ for (const chave in pessoa) {
 }
 ```
 
-> **Nota:** `for...in` percorre as **chaves enumeráveis** de um objeto — nunca a utilize num array (o `for...in` percorreria os índices, mas também qualquer propriedade adicionada manualmente ao array, e não garante a ordem): `for...of` ou `.forEach()` são as ferramentas adequadas para um array.
+> **Nota:** `for...in` percorre as **chaves enumeráveis** de um objeto: nunca a utilize num array (o `for...in` percorreria os índices, mas também qualquer propriedade adicionada manualmente ao array, e não garante a ordem): `for...of` ou `.forEach()` são as ferramentas adequadas para um array.
 
 ## `break` e `continue`
 

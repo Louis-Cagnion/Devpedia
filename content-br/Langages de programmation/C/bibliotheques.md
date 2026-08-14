@@ -4,7 +4,7 @@ order: 9
 
 # As bibliotecas
 
-Uma **biblioteca** (*library*) reúne funções já compiladas, reutilizáveis por qualquer programa sem necessidade de recompilar o código-fonte — é assim que funciona, por exemplo, a biblioteca padrão C (`printf`, `malloc`...). Existem duas formas de ligar uma biblioteca a um programa: estaticamente ou dinamicamente.
+Uma **biblioteca** (*library*) reúne funções já compiladas, reutilizáveis por qualquer programa sem necessidade de recompilar o código-fonte: é assim que funciona, por exemplo, a biblioteca padrão C (`printf`, `malloc`...). Existem duas formas de ligar uma biblioteca a um programa: estaticamente ou dinamicamente.
 
 ## 
 
@@ -42,7 +42,7 @@ gcc main.c -L. -lcalculs -o programa
 LD_LIBRARY_PATH=. ./programa
 ```
 
-- `-fPIC` (*Position Independent Code*) gera código capaz de funcionar independentemente do endereço de memória em que é carregado — necessário para uma biblioteca partilhada, carregada num local diferente consoante o programa.
+- `-fPIC` (*Position Independent Code*) gera código capaz de funcionar independentemente do endereço de memória em que é carregado, necessário para uma biblioteca partilhada, carregada num local diferente consoante o programa.
 - Sem o arquivo «`LD_LIBRARY_PATH`» (ou uma instalação num diretório padrão do sistema, como «`/usr/lib`»), o sistema não sabe onde procurar «`libcalculs.so`» no momento do arranque, e o programa recusa-se a iniciar.
 
 | Vantagem | Desvantagem |
@@ -54,6 +54,6 @@ LD_LIBRARY_PATH=. ./programa
 
 | | Estática (`.a`) | Dinâmica (`.so`) |
 |---|---|---|
-| Copiada para o executável? | Sim | Não — carregada separadamente |
+| Copiada para o executável? | Sim | Não: carregada separadamente |
 | Quando é ligada? | Na compilação | No arranque do programa (ou durante a sua execução) |
 | Atualização da biblioteca | Requer a recompilação do programa | O programa beneficia da atualização sem necessidade de recompilação |

@@ -4,7 +4,7 @@ order: 7
 
 # As etiquetas
 
-Uma **etiqueta** é um ponteiro para um commit específico, tal como um ramo — mas, ao contrário de um ramo, uma etiqueta **nunca** **se** **altera** depois de criada. É normalmente utilizada para identificar uma versão publicada de um projeto (`v1.0.0`, `v2.3.1`...).
+Uma **etiqueta** é um ponteiro para um commit específico, tal como um ramo, mas, ao contrário de um ramo, uma etiqueta **nunca** **se** **altera** depois de criada. É normalmente utilizada para identificar uma versão publicada de um projeto (`v1.0.0`, `v2.3.1`...).
 
 ## Criar uma etiqueta
 
@@ -13,7 +13,7 @@ git tag v1.0.0                 # etiqueta «leve»: simples indicador, sem metad
 git tag -a v1.0.0 -m "Première version stable"   # etiqueta «anotada»: com autor, data e mensagem
 ```
 
-> **Nota:** uma etiqueta anotada (`-a`) é geralmente preferível para uma versão efetivamente publicada — é registada como um objeto Git completo (com a sua própria mensagem e autor), ao contrário da etiqueta leve, que é apenas um simples alias para um hash de commit.
+> **Nota:** uma etiqueta anotada (`-a`) é geralmente preferível para uma versão efetivamente publicada: é registada como um objeto Git completo (com a sua própria mensagem e autor), ao contrário da etiqueta leve, que é apenas um simples alias para um hash de commit.
 
 ## Listar e inspecionar as etiquetas
 
@@ -51,4 +51,4 @@ git push origin --delete v1.0.0       # elimina também do lado remoto
 git checkout v1.0.0
 ```
 
-> **Nota:** isto coloca o repositório no estado **«detached HEAD»** (`HEAD` aponta diretamente para um commit, e não mais para um ramo) — útil para inspecionar esta versão específica, mas qualquer novo commit feito neste estado não pertenceria a nenhum ramo e poderia ser facilmente perdido. Para continuar a trabalhar a partir daqui, crie primeiro um ramo: `git checkout -b nouvelle-branche v1.0.0`.
+> **Nota:** isto coloca o repositório no estado **«detached HEAD»** (`HEAD` aponta diretamente para um commit, e não mais para um ramo), útil para inspecionar esta versão específica, mas qualquer novo commit feito neste estado não pertenceria a nenhum ramo e poderia ser facilmente perdido. Para continuar a trabalhar a partir daqui, crie primeiro um ramo: `git checkout -b nouvelle-branche v1.0.0`.

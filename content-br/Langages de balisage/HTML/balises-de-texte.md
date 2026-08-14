@@ -4,7 +4,7 @@ order: 2
 
 # As etiquetas de texto
 
-O conteúdo textual de uma página HTML organiza-se em torno de algumas etiquetas fundamentais — títulos, parágrafos, listas — cuja escolha deve refletir sempre o **significado** do conteúdo, e não apenas a aparência visual pretendida (a aparência é da competência do CSS, ver capítulo dedicado).
+O conteúdo textual de uma página HTML organiza-se em torno de algumas etiquetas fundamentais (títulos, parágrafos, listas), cuja escolha deve refletir sempre o **significado** do conteúdo, e não apenas a aparência visual pretendida (a aparência é da competência do CSS, ver capítulo dedicado).
 
 ## Os títulos
 
@@ -14,7 +14,7 @@ O conteúdo textual de uma página HTML organiza-se em torno de algumas etiqueta
 <h3>Sous-sous-titre</h3>
 ```
 
-De `<h1>` (o mais importante) a `<h6>` (o menos importante). Uma página só deve conter um** único** `<h1>` (o título principal da página), e os níveis nunca devem ser «saltados» apenas por uma questão de efeito visual (`<h1>` seguido diretamente de `<h4>`) — a hierarquia dos títulos é utilizada pelos leitores de tela para navegar na página (ver capítulo sobre acessibilidade), e não apenas para definir o tamanho do texto.
+De `<h1>` (o mais importante) a `<h6>` (o menos importante). Uma página só deve conter um** único** `<h1>` (o título principal da página), e os níveis nunca devem ser «saltados» apenas por uma questão de efeito visual (`<h1>` seguido diretamente de `<h4>`): a hierarquia dos títulos é utilizada pelos leitores de tela para navegar na página (ver capítulo sobre acessibilidade), e não apenas para definir o tamanho do texto.
 
 ## Os parágrafos
 
@@ -36,7 +36,7 @@ De `<h1>` (o mais importante) a `<h6>` (o menos importante). Uma página só dev
 </ol>
 ```
 
-`<ul>` (*lista não ordenada*) para uma lista sem ordem significativa, `<ol>` (*lista ordenada*) quando a ordem é importante (um procedimento, uma classificação...) — o navegador numera automaticamente as `<li>` de um `<ol>`.
+`<ul>` (*lista não ordenada*) para uma lista sem ordem significativa, `<ol>` (*lista ordenada*) quando a ordem é importante (um procedimento, uma classificação...), o navegador numera automaticamente as `<li>` de um `<ol>`.
 
 ## Destaque do texto
 
@@ -54,7 +54,7 @@ De `<h1>` (o mais importante) a `<h6>` (o menos importante). Uma página só dev
 <hr>       <!-- ligne horizontale, séparation thématique entre deux sections -->
 ```
 
-> **Nota:** `<br>` não deve ser utilizado para criar um espaçamento visual entre dois parágrafos — essa é a função do CSS (`margin`, ver capítulo dedicado). O uso repetido de `<br><br>` para «criar espaço» é um sinal de que se está utilizando HTML para fins de apresentação, quando essa não é a sua função.
+> **Nota:** `<br>` não deve ser utilizado para criar um espaçamento visual entre dois parágrafos: essa é a função do CSS (`margin`, ver capítulo dedicado). O uso repetido de `<br><br>` para «criar espaço» é um sinal de que se está utilizando HTML para fins de apresentação, quando essa não é a sua função.
 
 ## Citações
 

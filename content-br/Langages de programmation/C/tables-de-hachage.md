@@ -43,7 +43,7 @@ unsigned long índice = hash_chaine(chave) % taille_tableau;
 
 ## As colisões
 
-O número de chaves possíveis é infinito (qualquer cadeia de caracteres), mas a tabela tem um tamanho finito — pelo que duas chaves diferentes podem, mais cedo ou mais tarde, produzir o mesmo índice. Trata-se de uma **colisão**, gerida principalmente de duas formas:
+O número de chaves possíveis é infinito (qualquer cadeia de caracteres), mas a tabela tem um tamanho finito, pelo que duas chaves diferentes podem, mais cedo ou mais tarde, produzir o mesmo índice. Trata-se de uma **colisão**, gerida principalmente de duas formas:
 
 - **Encadeamento** (*separate chaining*): cada elemento da tabela contém uma lista encadeada (ver capítulo dedicado) de todas as entradas que conduziram a esse índice.
 - **Endereçamento aberto** (*open addressing*): em caso de colisão, procura-se a próxima casa livre de acordo com uma regra fixa (por exemplo, a casa seguinte), até se encontrar uma.
@@ -103,11 +103,11 @@ int rechercher(TableHachage *table, const char *chave, int *trouve)
 }
 ```
 
-Mesmo com o mesmo índice, a pesquisa compara, ainda assim, a chave completa (`strcmp`) — o índice apenas reduz a pesquisa a uma pequena lista (idealmente um único elemento), não a elimina completamente.
+Mesmo com o mesmo índice, a pesquisa compara, ainda assim, a chave completa (`strcmp`): o índice apenas reduz a pesquisa a uma pequena lista (idealmente um único elemento), não a elimina completamente.
 
 ## Fator de carga e redimensionamento
 
-O **fator de carga** (número de entradas ÷ tamanho da tabela) mede o grau de preenchimento da tabela. Se se tornar demasiado elevado (acima de um limiar comum, como `0.75`), as listas de cada compartimento alongam-se e o desempenho degrada-se para `O(n)` — no pior dos casos (todas as chaves no mesmo compartimento), a tabela de hash comporta-se exatamente como uma simples lista encadeada. Uma boa implementação **redimensiona** então a tabela (geralmente duplicando o seu tamanho) e reinsere todas as entradas existentes («rehash»), para recuperar um fator de carga razoável.
+O **fator de carga** (número de entradas ÷ tamanho da tabela) mede o grau de preenchimento da tabela. Se se tornar demasiado elevado (acima de um limiar comum, como `0.75`), as listas de cada compartimento alongam-se e o desempenho degrada-se para `O(n)`: no pior dos casos (todas as chaves no mesmo compartimento), a tabela de hash comporta-se exatamente como uma simples lista encadeada. Uma boa implementação **redimensiona** então a tabela (geralmente duplicando o seu tamanho) e reinsere todas as entradas existentes («rehash»), para recuperar um fator de carga razoável.
 
 ## Onde as tabelas hash já se encontram à sua volta
 

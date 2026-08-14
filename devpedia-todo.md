@@ -4,8 +4,10 @@
 - `IA/description.md` (EN) à adapter quand `content-en/IA` sera restructuré en subjects (actuellement plat, décision explicite).
 
 ## Tirets cadratins (`—`) hors FR
-- `content-br/` : à recompter (le sweep n'a jamais été relancé depuis que la structure BR est à jour — voir ci-dessous, `content-br/` est désormais complet).
 - `content-es/` : 123 occurrences dans 56 fichiers, à traiter une fois `content-es/` à jour structurellement.
+
+## Reste français non traduit repéré dans content-br/
+- `content-br/Langages de balisage/HTML/semantique-html5.md` : un bloc HTML d'exemple contient encore `<p>&copy; 2026 — Mentions légales</p>` en français au lieu du portugais.
 
 ## Traductions ES à rattraper
 - `Bash` existe en catégorie plate en ES au lieu d'un sous-dossier de `Shells` (BR déjà corrigé).

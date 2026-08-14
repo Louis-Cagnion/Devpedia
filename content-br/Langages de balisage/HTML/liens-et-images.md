@@ -4,7 +4,7 @@ order: 3
 
 # Os links e as imagens
 
-Os links (`<a>`) e as imagens (`<img>`) são dois elementos fundamentais da Web — um liga documentos entre si (a própria origem da palavra *«hipertexto»*), o outro insere conteúdo visual.
+Os links (`<a>`) e as imagens (`<img>`) são dois elementos fundamentais da Web: um liga documentos entre si (a própria origem da palavra *«hipertexto»*), o outro insere conteúdo visual.
 
 ## Os links
 
@@ -22,7 +22,7 @@ Os links (`<a>`) e as imagens (`<img>`) são dois elementos fundamentais da Web 
 <a href="https://exemple.com" target="_blank" rel="noopener noreferrer">Ouvre dans un nouvel onglet</a>
 ```
 
-> **Nota:** `target="_blank"` sem `rel="noopener"` permite que a nova página aberta acesse (através de JavaScript) ao objeto `window` da página original — um risco de segurança menor, mas real (*tabnabbing*). `noopener` (e `noreferrer`, que além disso impede o envio do URL original) devem acompanhar sistematicamente qualquer `target="_blank"`.
+> **Nota:** `target="_blank"` sem `rel="noopener"` permite que a nova página aberta acesse (através de JavaScript) ao objeto `window` da página original, um risco de segurança menor, mas real (*tabnabbing*). `noopener` (e `noreferrer`, que além disso impede o envio do URL original) devem acompanhar sistematicamente qualquer `target="_blank"`.
 
 ### Links relativos vs. absolutos
 
@@ -39,8 +39,8 @@ Os links (`<a>`) e as imagens (`<img>`) são dois elementos fundamentais da Web 
 ```
 
 - `src` : o caminho (relativo ou absoluto, da mesma forma que para um link) para o arquivo de imagem.
-- `alt` : um texto alternativo, exibido caso a imagem não carregue e lido por um leitor de tela — **nunca opcional** do ponto de vista da acessibilidade (ver capítulo dedicado). Uma imagem puramente decorativa (sem informação própria) deve ter `alt=""` (vazio, mas presente), para que o leitor de tela a ignore silenciosamente, em vez de anunciar um nome de arquivo sem interesse.
-- `width` /`height`: dimensões declaradas antecipadamente, que permitem ao navegador reservar o espaço necessário **antes** de a imagem ser carregada — evita um deslocamento visual do resto da página durante o carregamento (*layout shift*).
+- `alt` : um texto alternativo, exibido caso a imagem não carregue e lido por um leitor de tela: **nunca opcional** do ponto de vista da acessibilidade (ver capítulo dedicado). Uma imagem puramente decorativa (sem informação própria) deve ter `alt=""` (vazio, mas presente), para que o leitor de tela a ignore silenciosamente, em vez de anunciar um nome de arquivo sem interesse.
+- `width` /`height`: dimensões declaradas antecipadamente, que permitem ao navegador reservar o espaço necessário **antes** de a imagem ser carregada: evita um deslocamento visual do resto da página durante o carregamento (*layout shift*).
 
 ## Imagens responsivas (`srcset`)
 
@@ -53,7 +53,7 @@ Os links (`<a>`) e as imagens (`<img>`) são dois elementos fundamentais da Web 
 >
 ```
 
-O navegador escolhe **automaticamente** a versão mais adequada ao tamanho real de visualização e à resolução da tela, entre as disponíveis — evita obrigar um celular a baixar uma imagem concebida para uma tela grande.
+O navegador escolhe **automaticamente** a versão mais adequada ao tamanho real de visualização e à resolução da tela, entre as disponíveis: evita obrigar um celular a baixar uma imagem concebida para uma tela grande.
 
 ## Imagens como links
 
@@ -63,4 +63,4 @@ O navegador escolhe **automaticamente** a versão mais adequada ao tamanho real 
 </a>
 ```
 
-É possível inserir uma imagem dentro de um `<a>`, tornando-a clicável — o `alt` continua, portanto, a ser indispensável, uma vez que é ele que descreve o **destino** do link para um leitor de tela, e não apenas o conteúdo visual da imagem.
+É possível inserir uma imagem dentro de um `<a>`, tornando-a clicável: o `alt` continua, portanto, a ser indispensável, uma vez que é ele que descreve o **destino** do link para um leitor de tela, e não apenas o conteúdo visual da imagem.

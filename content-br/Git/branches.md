@@ -4,7 +4,7 @@ order: 4
 
 # As áreas
 
-Um **ramo** é simplesmente um ponteiro móvel para um commit — permite desenvolver uma versão do código (uma nova funcionalidade, uma correção) sem alterar o ramo principal e, posteriormente, reunir as duas linhas de trabalho.
+Um **ramo** é simplesmente um ponteiro móvel para um commit: permite desenvolver uma versão do código (uma nova funcionalidade, uma correção) sem alterar o ramo principal e, posteriormente, reunir as duas linhas de trabalho.
 
 ## Criar e mudar de ramo
 
@@ -18,7 +18,7 @@ git switch nouvelle-fonctionnalite      # equivalente moderno de «checkout» pa
 git switch -c nouvelle-fonctionnalite    # equivalente moderno de «checkout -b»
 ```
 
-> **Nota:** `git switch` (mais recente) e `git checkout` (histórico, mais versátil mas menos explícito) têm aqui a mesma função — `checkout` também serve para outros fins (restaurar um arquivo, ver o capítulo sobre a anulação), o que torna a sua leitura mais ambígua.
+> **Nota:** `git switch` (mais recente) e `git checkout` (histórico, mais versátil mas menos explícito) têm aqui a mesma função; `checkout` também serve para outros fins (restaurar um arquivo, ver o capítulo sobre a anulação), o que torna a sua leitura mais ambígua.
 
 ## O que acontece realmente quando se muda de ramificação
 
@@ -39,7 +39,7 @@ git merge feature
 
 Dois casos possíveis:
 
-**Avanço rápido**: se `main` não tiver recebido nenhum commit desde a criação de `feature`, o Git simplesmente avança o ponteiro `main` até ao último commit de `feature` — não é criado nenhum novo commit de fusão.
+**Avanço rápido**: se `main` não tiver recebido nenhum commit desde a criação de `feature`, o Git simplesmente avança o ponteiro `main` até ao último commit de `feature`: não é criado nenhum novo commit de fusão.
 
 ```
 Avant :  main: A -- B          feature: A -- B -- C -- D

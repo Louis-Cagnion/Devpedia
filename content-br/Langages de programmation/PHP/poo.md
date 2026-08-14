@@ -35,10 +35,10 @@ echo $v->description(); // «Peugeot 308 (2022)»
 ```
 
 - `__construct` é o nome reservado do método chamado automaticamente pel`new`o.
-- `$this` refere-se sempre à instância atual e é **sempre** utilizada com `->` — incluindo para ler uma propriedade (`$this->marca`) ou chamar um método (`$this->description()`). A única diferença visual entre as duas é a presença de `()`.
+- `$this` refere-se sempre à instância atual e é **sempre** utilizada com `->`, incluindo para ler uma propriedade (`$this->marca`) ou chamar um método (`$this->description()`). A única diferença visual entre as duas é a presença de `()`.
 - `private` = acessível apenas a partir do interior da classe; `public` = acessível também a partir do exterior.
 
-> **Nota:** ao contrário de um array, onde é possível criar uma nova chave dinamicamente (`$arr['nouvelle_cle'] = 5;`, sem qualquer declaração), uma propriedade de objeto **tipada** rejeita um valor do tipo incorreto — atribuir um `int` a uma propriedade declarada como `string` provoca um `TypeError`. As propriedades tipadas definem um verdadeiro contrato: determinam quais as propriedades que existem e que tipo cada uma deve conter sempre.
+> **Nota:** ao contrário de um array, onde é possível criar uma nova chave dinamicamente (`$arr['nouvelle_cle'] = 5;`, sem qualquer declaração), uma propriedade de objeto **tipada** rejeita um valor do tipo incorreto: atribuir um `int` a uma propriedade declarada como `string` provoca um `TypeError`. As propriedades tipadas definem um verdadeiro contrato: determinam quais as propriedades que existem e que tipo cada uma deve conter sempre.
 
 ## Métodos estáticos e classes utilitárias
 
@@ -92,6 +92,6 @@ Repository::trouver(1);
 ?>
 ```
 
-`use` não carrega o arquivo propriamente dito — limita-se a indicar ao motor PHP a que nome completo corresponde o nome abreviado utilizado mais abaixo. Trata-se de um mecanismo de autocarregamento (ver capítulo dedicado) que se encarrega de localizar e carregar o arquivo correspondente, no momento em que a classe é efetivamente utilizada.
+`use` não carrega o arquivo propriamente dito; limita-se a indicar ao motor PHP a que nome completo corresponde o nome abreviado utilizado mais abaixo. Trata-se de um mecanismo de autocarregamento (ver capítulo dedicado) que se encarrega de localizar e carregar o arquivo correspondente, no momento em que a classe é efetivamente utilizada.
 
-> **Nota:** `Classe::methode()` (com `::`) assemelha-se a `Classe->methode()`, mas nunca é utilizado com uma instância — é o equivalente quase direto a um namespace + método estático em C++.
+> **Nota:** `Classe::methode()` (com `::`) assemelha-se a `Classe->methode()`, mas nunca é utilizado com uma instância; é o equivalente quase direto a um namespace + método estático em C++.

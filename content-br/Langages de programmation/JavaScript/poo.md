@@ -4,7 +4,7 @@ order: 7
 
 # As classes e a programação orientada para objetos
 
-Ao contrário do PHP ou do Python, o objeto em JavaScript não se baseia fundamentalmente em classes: baseia-se em **protótipos**. A sintaxe «`class`» (a partir do ES6) é apenas um sintaxe simplificada sobre este mecanismo mais antigo — compreender ambos ajuda a não ser surpreendido por certos comportamentos.
+Ao contrário do PHP ou do Python, o objeto em JavaScript não se baseia fundamentalmente em classes: baseia-se em **protótipos**. A sintaxe «`class`» (a partir do ES6) é apenas um sintaxe simplificada sobre este mecanismo mais antigo; compreender ambos ajuda a não ser surpreendido por certos comportamentos.
 
 ## Declarar uma classe
 
@@ -111,6 +111,6 @@ console.log(typeof Vehicule);           // «function» -> uma classe É uma fun
 console.log(v.__proto__ === Vehicule.prototype);  // true
 ```
 
-Cada objeto JavaScript possui uma referência oculta (`__proto__`) a outro objeto, o seu **protótipo** — quando uma propriedade ou método não é encontrado diretamente no objeto, o JavaScript procura-o automaticamente no seu protótipo, depois no protótipo desse protótipo, e assim sucessivamente. (a «cadeia de protótipos»). `description()` é, na realidade, definida **apenas uma vez**, em `Vehicule.prototype`, e partilhada por todas as instâncias — não é duplicada em cada objeto criado por `new Vehicule(...)`.
+Cada objeto JavaScript possui uma referência oculta (`__proto__`) a outro objeto, o seu **protótipo**: quando uma propriedade ou método não é encontrado diretamente no objeto, o JavaScript procura-o automaticamente no seu protótipo, depois no protótipo desse protótipo, e assim sucessivamente. (a «cadeia de protótipos»). `description()` é, na realidade, definida **apenas uma vez**, em `Vehicule.prototype`, e partilhada por todas as instâncias: não é duplicada em cada objeto criado por `new Vehicule(...)`.
 
 > **Nota:** esta distinção explica por que razão a alteração de `Vehicule.prototype.description` afeta **imediatamente** todos os objetos já criados: estes não possuem a sua própria cópia do método, procurando-a dinamicamente no protótipo partilhado a cada chamada.

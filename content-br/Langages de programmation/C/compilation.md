@@ -46,7 +46,7 @@ gcc main.o -o programa
 
 ## Por que separar a compilação da ligação?
 
-Um projeto com vários arquivos-fonte pode compilar cada `.c` em `.o` de forma independente e, em seguida, ligar (*link*) apenas os arquivos que foram alterados — o que é mais rápido do que uma recompilação completa a cada alteração. É exatamente isso que um **Makefile** automatiza (ver capítulo dedicado):
+Um projeto com vários arquivos-fonte pode compilar cada `.c` em `.o` de forma independente e, em seguida, ligar (*link*) apenas os arquivos que foram alterados, o que é mais rápido do que uma recompilação completa a cada alteração. É exatamente isso que um **Makefile** automatiza (ver capítulo dedicado):
 
 ```bash
 gcc -c fichier1.c -o fichier1.o

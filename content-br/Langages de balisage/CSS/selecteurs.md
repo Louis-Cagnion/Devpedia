@@ -4,7 +4,7 @@ order: 1
 
 # Os seletores
 
-Um **seletor** determina a que elementos HTML se aplica uma regra CSS — desde o mais simples (uma baliza) até ao mais preciso (uma combinação de atributos e posição na árvore do documento).
+Um **seletor** determina a que elementos HTML se aplica uma regra CSS: desde o mais simples (uma baliza) até ao mais preciso (uma combinação de atributos e posição na árvore do documento).
 
 ## Seletores básicos
 
@@ -15,7 +15,7 @@ h1 { }             /* tous les éléments <h1> */
 * { }                   /* absolument tous les éléments */
 ```
 
-> **Nota:** uma «`class`» pode ser reutilizada em vários elementos, um «`id`» deve permanecer **único** em toda a página — um seletor «`#id`» visa, portanto, sempre um único elemento específico, ao contrário de «`.classe`».
+> **Nota:** uma «`class`» pode ser reutilizada em vários elementos, um «`id`» deve permanecer **único** em toda a página: um seletor «`#id`» visa, portanto, sempre um único elemento específico, ao contrário de «`.classe`».
 
 ## Combinadores
 
@@ -56,7 +56,7 @@ p::before { content: "→ "; }  /* insère du contenu AVANT le texte réel du pa
 p::after { content: " ✓"; }    /* insère du contenu APRÈS */
 ```
 
-> **Nota:** `::before` / `::after` requerem a propriedade `content` para serem visíveis (mesmo que esteja vazia, `content: "";`) — muito utilizadas para adicionar um elemento puramente decorativo (ícone, seta...) sem sobrecarregar o HTML com uma baliza adicional sem significado semântico real (ver capítulo sobre a semântica HTML5).
+> **Nota:** `::before` / `::after` requerem a propriedade `content` para serem visíveis (mesmo que esteja vazia, `content: "";`), muito utilizadas para adicionar um elemento puramente decorativo (ícone, seta...) sem sobrecarregar o HTML com uma baliza adicional sem significado semântico real (ver capítulo sobre a semântica HTML5).
 
 ## A particularidade: o que acontece em caso de conflito?
 
@@ -70,7 +70,7 @@ p { color: blue; }
 <p id="paragraphe-unique" class="texte-important">Quelle couleur ?</p>
 ```
 
-Um «`id`» tem uma especificidade maior do que um «`class`», que por sua vez é mais específico do que um seletor de baliza — o parágrafo será, portanto, apresentado a **verde** (o «`#paragraphe-unique`» prevalece), independentemente da ordem em que as regras estiverem escritas no arquivo.
+Um «`id`» tem uma especificidade maior do que um «`class`», que por sua vez é mais específico do que um seletor de baliza: o parágrafo será, portanto, apresentado a **verde** (o «`#paragraphe-unique`» prevalece), independentemente da ordem em que as regras estiverem escritas no arquivo.
 
 | Tipo de seletor | Peso (do mais fraco ao mais forte) |
 |---|---|

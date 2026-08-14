@@ -4,7 +4,7 @@ order: 6
 
 # Os arquivos de cabeçalho (.h)
 
-Um arquivo de cabeçalho (*header*, com a extensão `.h`) contém **declarações** — indica que «esta função/variável/estrutura existe e eis a sua assinatura», sem fornecer a sua implementação. Permite que vários arquivos `.c` partilhem as mesmas definições sem as duplicar e serve de contrato entre um arquivo que fornece uma funcionalidade e os arquivos que a utilizam.
+Um arquivo de cabeçalho (*header*, com a extensão `.h`) contém **declarações**: indica que «esta função/variável/estrutura existe e eis a sua assinatura», sem fornecer a sua implementação. Permite que vários arquivos `.c` partilhem as mesmas definições sem as duplicar e serve de contrato entre um arquivo que fornece uma funcionalidade e os arquivos que a utilizam.
 
 ## Declaração vs. definição
 
@@ -33,7 +33,7 @@ int main(void)
 }
 ```
 
-`main.c` basta conhecer a **assinatura** de `addition()` (através do `#include "calculs.h"`) para a chamar — o corpo real é fornecido no momento da ligação (ver capítulo sobre a compilação), a partir do arquivo objeto compilado a partir de `calculs.c`.
+`main.c` basta conhecer a **assinatura** de `addition()` (através do `#include "calculs.h"`) para a chamar; o corpo real é fornecido no momento da ligação (ver capítulo sobre a compilação), a partir do arquivo objeto compilado a partir de `calculs.c`.
 
 ## `#include <...>` vs `#include "..."`
 
@@ -44,7 +44,7 @@ int main(void)
 
 ## Os «include guards»
 
-Um mesmo arquivo de cabeçalho pode ser incluído indiretamente várias vezes (por exemplo, `a.h` inclui `commun.h`, e `b.h` também inclui `commun.h`, e `main.c` inclui `a.h` e `b.h`) — sem proteção, as suas declarações seriam duplicadas e provocariam um erro de compilação («redefinição»). Um **«include guard»** impede que um cabeçalho seja processado mais do que uma vez pelo pré-processador:
+Um mesmo arquivo de cabeçalho pode ser incluído indiretamente várias vezes (por exemplo, `a.h` inclui `commun.h`, e `b.h` também inclui `commun.h`, e `main.c` inclui `a.h` e `b.h`): sem proteção, as suas declarações seriam duplicadas e provocariam um erro de compilação («redefinição»). Um **«include guard»** impede que um cabeçalho seja processado mais do que uma vez pelo pré-processador:
 
 ```c
 #ifndef CALCULS_H
@@ -66,4 +66,4 @@ Uma alternativa mais concisa, suportada por praticamente todos os compiladores m
 int addition(int a, int b);
 ```
 
-> **Nota:** um arquivo de cabeçalho só deve conter **declarações** (protótipos de funções, `struct`, `typedef`, constantes), nunca o corpo de uma função não-`static` /não-`inline` — caso contrário, cada arquivo `.c` que o inclua obteria a sua própria cópia da definição, provocando um erro de «definição múltipla» durante a ligação de arquivos.
+> **Nota:** um arquivo de cabeçalho só deve conter **declarações** (protótipos de funções, `struct`, `typedef`, constantes), nunca o corpo de uma função não-`static` /não-`inline`; caso contrário, cada arquivo `.c` que o inclua obteria a sua própria cópia da definição, provocando um erro de «definição múltipla» durante a ligação de arquivos.

@@ -4,7 +4,7 @@ order: 5
 
 # A sobrecarga de operadores
 
-O C++ permite redefinir o comportamento dos operadores padrão (`+`, `==`, `<<`...) para tipos personalizados — o que permite que um objeto criado pelo usuário se comporte, aparentemente, como um tipo nativo da linguagem.
+O C++ permite redefinir o comportamento dos operadores padrão (`+`, `==`, `<<`...) para tipos personalizados, o que permite que um objeto criado pelo usuário se comporte, aparentemente, como um tipo nativo da linguagem.
 
 ## Sobrescrever `+`
 
@@ -25,7 +25,7 @@ Vecteur2D b(3, 4);
 Vecteur2D c = a + b;   // na realidade, chama a.operator+(b) -> Vector2D(4, 6)
 ```
 
-`a + b` é literalmente transformado pelo compilador num «`a.operator+(b)`» — o operador não passa de um método com um nome específico e uma sintaxe de chamada especial.
+`a + b` é literalmente transformado pelo compilador num «`a.operator+(b)`»: o operador não passa de um método com um nome específico e uma sintaxe de chamada especial.
 
 ## Sobrescrever `==`
 
@@ -46,7 +46,7 @@ Point p2(1, 2);
 std::cout << (p1 == p2);   // true -> sem sobrecarga, compararia os ENDEREÇOS, e não o conteúdo
 ```
 
-> **Nota:** sem sobrecarga de `==`, comparar dois objetos com `==` compara, por padrão, os seus **endereços de memória** (tal como comparar dois ponteiros), nunca o seu conteúdo — uma fonte frequente de erros para quem espera uma comparação «por valor» automática.
+> **Nota:** sem sobrecarga de `==`, comparar dois objetos com `==` compara, por padrão, os seus **endereços de memória** (tal como comparar dois ponteiros), nunca o seu conteúdo, uma fonte frequente de erros para quem espera uma comparação «por valor» automática.
 
 ## Sobrepor `<<` para visualização
 
@@ -66,7 +66,7 @@ Point p(3, 4);
 std::cout << p;   // (3, 4) -> sem esta sobrecarga: erro de compilação, << não reconhece Point
 ```
 
-> **Nota:** esta sobrecarga é definida fora da classe (uma função livre, não um método), uma vez que o objeto à esquerda de `<<` é o fluxo (`std::ostream`), e não o `Point` — `p << std::cout` não faria sentido, mas `std::cout << p` deve funcionar.
+> **Nota:** esta sobrecarga é definida fora da classe (uma função livre, não um método), uma vez que o objeto à esquerda de `<<` é o fluxo (`std::ostream`), e não o `Point`; `p << std::cout` não faria sentido, mas `std::cout << p` deve funcionar.
 
 ## O que não se deve fazer: sobrecarregar sem respeitar o sentido esperado
 

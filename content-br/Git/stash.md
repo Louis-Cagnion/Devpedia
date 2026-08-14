@@ -4,7 +4,7 @@ order: 6
 
 # O stash
 
-`git stash` Guarda temporariamente as alterações não submetidas, para recuperar uma pasta de trabalho limpa — útil quando é necessário mudar de ramo com urgência (por exemplo, para corrigir um bug crítico) sem querer perder o trabalho em curso nem submetê-lo num estado incompleto.
+`git stash` Guarda temporariamente as alterações não submetidas, para recuperar uma pasta de trabalho limpa, útil quando é necessário mudar de ramo com urgência (por exemplo, para corrigir um bug crítico) sem querer perder o trabalho em curso nem submetê-lo num estado incompleto.
 
 ## Guardar as alterações
 
@@ -14,7 +14,7 @@ git stash push -m "en cours : formulaire de contact"  # com uma nota, para se or
 git stash -u                        # inclui também os arquivos não acompanhados (novos, nunca adicionados)
 ```
 
-Após um «`git stash`», `git status` já não apresenta quaisquer alterações — como se tivéssemos acabado de efetuar um commit, só que nada aparece no histórico (`git log`): as alterações são armazenadas separadamente, numa pilha.
+Após um «`git stash`», `git status` já não apresenta quaisquer alterações: como se tivéssemos acabado de efetuar um commit, só que nada aparece no histórico (`git log`): as alterações são armazenadas separadamente, numa pilha.
 
 ## Ver e recuperar os seus stashes
 
@@ -28,7 +28,7 @@ git stash apply stash@{1} # reaplica um stash específico
 git stash pop             # reaplica o stash mais recente E retira-o da pilha
 ```
 
-> **Nota:** `apply` mantém o stash na pilha após o ter reaplicado (útil para o aplicar em vários ramos sucessivamente), enquanto que `pop` o retira — a escolha depende de se ter a certeza de que já não é necessário noutro local.
+> **Nota:** `apply` mantém o stash na pilha após o ter reaplicado (útil para o aplicar em vários ramos sucessivamente), enquanto que `pop` o retira; a escolha depende de se ter a certeza de que já não é necessário noutro local.
 
 ## Eliminar um stash
 

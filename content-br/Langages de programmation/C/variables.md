@@ -131,4 +131,4 @@ Os principais tipos de dados em C são:
 | `struct` | Conjunto de dados personalizados |
 | `pointer` | Endereço de memória |
 
-É essencial dominar estes tipos antes de abordar conceitos mais avançados, como listas encadeadas, árvores binárias, threads ou gestão de processos — consulte os capítulos dedicados a cada um destes temas.
+É essencial dominar estes tipos antes de abordar conceitos mais avançados, como listas encadeadas, árvores binárias, threads ou gestão de processos; consulte os capítulos dedicados a cada um destes temas.

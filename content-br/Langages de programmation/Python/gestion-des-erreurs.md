@@ -4,7 +4,7 @@ order: 7
 
 # Gestão de erros
 
-O Python sinaliza um erro ao lançar uma **exceção**, que interrompe a execução normal do programa, a menos que seja interceptada por um bloco `try` / `except` — um mecanismo semelhante às exceções PHP modernas (`throw` / `catch`).
+O Python sinaliza um erro ao lançar uma **exceção**, que interrompe a execução normal do programa, a menos que seja interceptada por um bloco `try` / `except`, um mecanismo semelhante às exceções PHP modernas (`throw` / `catch`).
 
 ## `try` / `except`
 
@@ -29,7 +29,7 @@ except Exception as erro:   # captura tudo o resto -> a colocar em ÚLTIMO
     print(f"Erreur inattendue : {erro}")
 ```
 
-> **Nota:** interceptar `Exception` de forma demasiado abrangente (ou, pior ainda, um `except:` sem tipo) oculta erros de programação que, em vez disso, deveriam fazer com que o programa falhasse para que fossem corrigidos — a reservar para casos em que a falha é realmente esperada e já está sendo tratada imediatamente a seguir.
+> **Nota:** interceptar `Exception` de forma demasiado abrangente (ou, pior ainda, um `except:` sem tipo) oculta erros de programação que, em vez disso, deveriam fazer com que o programa falhasse para que fossem corrigidos, a reservar para casos em que a falha é realmente esperada e já está sendo tratada imediatamente a seguir.
 
 ## `else` e `finally`
 
@@ -77,7 +77,7 @@ Uma exceção personalizada herda d`Exception` (ou de uma subclasse mais especí
 
 ## O gestor de contexto `with`
 
-`with` garante que um recurso seja devidamente libertado, **mesmo em caso de exceção** — um arquivo aberto com `with` fecha-se sempre automaticamente ao sair do bloco:
+`with` garante que um recurso seja devidamente libertado, **mesmo em caso de exceção**; um arquivo aberto com `with` fecha-se sempre automaticamente ao sair do bloco:
 
 ```python
 with open("donnees.txt") as arquivo:
@@ -85,4 +85,4 @@ with open("donnees.txt") as arquivo:
 # O método `fichier.close()` é chamado automaticamente aqui, independentemente de tudo ter corrido bem ou não
 ```
 
-> **Nota:** isto baseia-se nos métodos especiais `__enter__` / `__exit__` (ver capítulo sobre programação orientada para objetos) — qualquer classe personalizada pode definir estes dois métodos para se tornar utilizável com `with` (por exemplo, para gerir a abertura/fecho de uma ligação de rede ou de uma base de dados).
+> **Nota:** isto baseia-se nos métodos especiais `__enter__` / `__exit__` (ver capítulo sobre programação orientada para objetos); qualquer classe personalizada pode definir estes dois métodos para se tornar utilizável com `with` (por exemplo, para gerir a abertura/fecho de uma ligação de rede ou de uma base de dados).

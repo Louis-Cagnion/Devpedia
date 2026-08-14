@@ -65,7 +65,7 @@ pip install -r requirements.txt   # reinstala exatamente as mesmas versões nout
 
 ## Os ambientes virtuais
 
-Sem isolamento, o comando «`pip install`» instala as bibliotecas **globalmente** na máquina — dois projetos que necessitem de versões diferentes da mesma biblioteca entram, assim, em conflito. Um **ambiente virtual** cria uma instalação Python isolada, específica para um projeto:
+Sem isolamento, o comando «`pip install`» instala as bibliotecas **globalmente** na máquina: dois projetos que necessitem de versões diferentes da mesma biblioteca entram, assim, em conflito. Um **ambiente virtual** cria uma instalação Python isolada, específica para um projeto:
 
 ```bash
 python -m venv .venv          # cria um ambiente virtual na pasta .venv
@@ -78,7 +78,7 @@ pip install requests             # Instala-se APENAS neste ambiente, não global
 deactivate                        # sair do ambiente virtual
 ```
 
-> **Nota:** uma vez ativados, os arquivos `pip install` e `python` apontam para os executáveis **do ambiente virtual**, e não para os instalados globalmente no sistema — é isso que garante o isolamento. A pasta `.venv/` nunca deve ser controlada pelo Git (ver capítulo `.gitignore`): ela é totalmente regenerada a partir de `requirements.txt`.
+> **Nota:** uma vez ativados, os arquivos `pip install` e `python` apontam para os executáveis **do ambiente virtual**, e não para os instalados globalmente no sistema: é isso que garante o isolamento. A pasta `.venv/` nunca deve ser controlada pelo Git (ver capítulo `.gitignore`): ela é totalmente regenerada a partir de `requirements.txt`.
 
 ## Organizar um projeto em pacotes
 

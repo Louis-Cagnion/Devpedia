@@ -6,11 +6,11 @@ order: 14
 
 Um **processo** é uma instância de um programa em execução, com o seu próprio espaço de memória, isolado do dos outros processos. Em C, a biblioteca padrão POSIX (`unistd.h`, `sys/wait.h`) permite criar novos processos, iniciar outros programas e aguardar a sua conclusão.
 
-> **Nota:** `fork()`, `execve()` (utilizado por `execlp()` e pelas outras funções da família `exec`) e `wait()` / `waitpid()` são **chamadas de sistema** — consulte o capítulo dedicado às chamadas de sistema e aos descritores de arquivos para saber o que isso implica na prática (passagem para o espaço do kernel, gestão de erros através de `errno`).
+> **Nota:** `fork()`, `execve()` (utilizado por `execlp()` e pelas outras funções da família `exec`) e `wait()` / `waitpid()` são **chamadas de sistema**; consulte o capítulo dedicado às chamadas de sistema e aos descritores de arquivos para saber o que isso implica na prática (passagem para o espaço do kernel, gestão de erros através de `errno`).
 
 ## `fork()` : duplicar o processo atual
 
-`fork()` cria uma cópia praticamente idêntica do processo chamador. Após a chamada, existem **dois** processos e ambos continuam a execução imediatamente após o `fork()` — a única diferença é o valor devolvido:
+`fork()` cria uma cópia praticamente idêntica do processo chamador. Após a chamada, existem **dois** processos e ambos continuam a execução imediatamente após o `fork()`: a única diferença é o valor devolvido:
 
 ```c
 #include <unistd.h>
@@ -42,7 +42,7 @@ int main(void)
 
 ## Substituir o programa em execução: a família «`exec`»
 
-`fork()` duplica o processo atual, mas não altera o programa em execução. Para iniciar **outro** programa no processo filho, utiliza-se uma função da família «`exec`» (por exemplo, `execve`, `execlp`) — esta substitui na totalidade o código do processo atual pelo de um novo programa:
+`fork()` duplica o processo atual, mas não altera o programa em execução. Para iniciar **outro** programa no processo filho, utiliza-se uma função da família «`exec`» (por exemplo, `execve`, `execlp`): esta substitui na totalidade o código do processo atual pelo de um novo programa:
 
 ```c
 #include <unistd.h>
@@ -60,7 +60,7 @@ int main(void)
 }
 ```
 
-> **Nota:** se `execlp()` for bem-sucedido, nunca «regressa» — o código do processo filho é substituído na íntegra, pelo que a linha seguinte só é executada em caso de falha do próprio `execlp()`.
+> **Nota:** se `execlp()` for bem-sucedido, nunca «regressa»: o código do processo filho é substituído na íntegra, pelo que a linha seguinte só é executada em caso de falha do próprio `execlp()`.
 
 ## À espera do nascimento de um filho: `wait()` / `waitpid()`
 

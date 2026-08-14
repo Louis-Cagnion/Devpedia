@@ -60,7 +60,7 @@ calculerRemise("cent", 10);   // TypeError: «cent» não é um número real
 
 ## Tipos nulos (`?Type`)
 
-Uma função declarada como «`: array`» (sem «`?`») **não** permite «`null`» como valor de retorno — tentar fazê-lo provoca um «`TypeError`» durante a execução. Para permitir explicitamente «`null`» além do tipo declarado, deve-se prefixar o tipo com «`?`»:
+Uma função declarada como «`: array`» (sem «`?`») **não** permite «`null`» como valor de retorno: tentar fazê-lo provoca um «`TypeError`» durante a execução. Para permitir explicitamente «`null`» além do tipo declarado, deve-se prefixar o tipo com «`?`»:
 
 ```php
 <?php
@@ -74,7 +74,7 @@ function trouverUtilisateur(int $id): ?array
 ?>
 ```
 
-> **Nota:** «`?array`» é uma declaração de contrato, não uma mera convenção de escrita — é o equivalente em PHP a «`std::optional<T>`» no C++ moderno ou a «`Optional[T]`» em Python: a função pode devolver este tipo específico, OU «`null`», e nada mais.
+> **Nota:** «`?array`» é uma declaração de contrato, não uma mera convenção de escrita; é o equivalente em PHP a «`std::optional<T>`» no C++ moderno ou a «`Optional[T]`» em Python: a função pode devolver este tipo específico, OU «`null`», e nada mais.
 
 ## Eliminar um aviso esperado com «`@`»
 
@@ -87,7 +87,7 @@ $version = $mtime ? "v{$mtime}" : 'v-inconnue';
 ?>
 ```
 
-> **Nota:** `@` oculta o aviso, mas não altera o comportamento da própria função (o `filemtime()` continua a devolver `false` se o arquivo não existir). Deve ser utilizado apenas nos casos em que a falha é realmente prevista e testada imediatamente a seguir — utilizá-lo em todas as situações também ocultaria erros reais.
+> **Nota:** `@` oculta o aviso, mas não altera o comportamento da própria função (o `filemtime()` continua a devolver `false` se o arquivo não existir). Deve ser utilizado apenas nos casos em que a falha é realmente prevista e testada imediatamente a seguir; utilizá-lo em todas as situações também ocultaria erros reais.
 
 O PHP disponibiliza uma grande variedade de funções nativas prontas a utilizar, classificadas abaixo por categoria.
 
@@ -175,4 +175,4 @@ ex.:
 ?>
 ```
 
-> **Nota:** encontrará a lista completa das funções nativas do PHP na documentação oficial: [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). Para adicionar um **único** elemento, «`$tab[] = "valor";`» é também preferível a «`array_push($tab, "valor")`»: o resultado é o mesmo, sem o custo de uma chamada de função — «`array_push()`» só se torna realmente útil para adicionar vários elementos numa única chamada (`array_push($tab, "a", "b", "c")`).
+> **Nota:** encontrará a lista completa das funções nativas do PHP na documentação oficial: [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). Para adicionar um **único** elemento, «`$tab[] = "valor";`» é também preferível a «`array_push($tab, "valor")`»: o resultado é o mesmo, sem o custo de uma chamada de função; «`array_push()`» só se torna realmente útil para adicionar vários elementos numa única chamada (`array_push($tab, "a", "b", "c")`).

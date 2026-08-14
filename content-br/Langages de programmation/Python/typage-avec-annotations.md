@@ -18,7 +18,7 @@ def addition(a: int, b: int) -> int:
 addition("deux", "trois")   # NENHUM erro no arranque: o Python executa na mesma, sem verificar os tipos
 ```
 
-> **Nota:** ao contrário do PHP, onde `function f(int $x): int` gera uma exceção `TypeError` se for passado algo que não seja um inteiro, as anotações em Python são pura documentação para um ser humano (ou uma ferramenta externa) — o interpretador não as faz valer em momento algum.
+> **Nota:** ao contrário do PHP, onde `function f(int $x): int` gera uma exceção `TypeError` se for passado algo que não seja um inteiro, as anotações em Python são pura documentação para um ser humano (ou uma ferramenta externa); o interpretador não as faz valer em momento algum.
 
 ## Tipos compostos com o módulo «`typing`»
 
@@ -37,7 +37,7 @@ def config() -> Dict[str, Union[str, int]]:            # dict cujos valores são
     return {"nom": "app", "version": 2}
 ```
 
-> **Nota:** a partir do Python 3.9+, `list[int]` / `dict[str, int]` (os tipos nativos diretamente, em minúsculas) substituem `List[int]` / `Dict[str, int]` do módulo `typing` para estes casos simples — `typing` continua a ser necessário para construções como `Optional` / `Union`.
+> **Nota:** a partir do Python 3.9+, `list[int]` / `dict[str, int]` (os tipos nativos diretamente, em minúsculas) substituem `List[int]` / `Dict[str, int]` do módulo `typing` para estes casos simples; `typing` continua a ser necessário para construções como `Optional` / `Union`.
 
 ## `mypy` : garantir que as anotações sejam respeitadas em qualquer circunstância
 

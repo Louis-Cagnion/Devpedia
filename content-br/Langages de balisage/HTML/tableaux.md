@@ -4,7 +4,7 @@ order: 4
 
 # As tabelas HTML
 
-Uma tabela HTML serve para representar dados **tabulares** (linhas/colunas efetivamente interligadas, como uma exportação de uma base de dados, ver capítulo sobre SQL) — nunca para formatar visualmente uma página inteira, uma utilização histórica hoje substituída pelo CSS (`flexbox` / `grid`, ver capítulos dedicados).
+Uma tabela HTML serve para representar dados **tabulares** (linhas/colunas efetivamente interligadas, como uma exportação de uma base de dados, ver capítulo sobre SQL), nunca para formatar visualmente uma página inteira, uma utilização histórica hoje substituída pelo CSS (`flexbox` / `grid`, ver capítulos dedicados).
 
 ## Estrutura básica
 
@@ -86,6 +86,6 @@ Uma tabela HTML serve para representar dados **tabulares** (linhas/colunas efeti
 ```
 
 - `<caption>` : um título associado à tabela, anunciado pelos leitores de tela antes do seu conteúdo.
-- `scope="col"` (ou `"row"`) num `<th>`: especifica explicitamente se este cabeçalho se aplica a toda uma coluna ou a toda uma linha — essencial para que um leitor de tela anuncie o cabeçalho correto ao percorrer cada célula de uma tabela complexa.
+- `scope="col"` (ou `"row"`) num `<th>`: especifica explicitamente se este cabeçalho se aplica a toda uma coluna ou a toda uma linha, essencial para que um leitor de tela anuncie o cabeçalho correto ao percorrer cada célula de uma tabela complexa.
 
-> **Nota (melhor prática):** nunca utilizar `<table>` para organizar o layout geral de uma página (menu, colunas de conteúdo...) — esta prática, comum antes da chegada do CSS moderno, compromete a semântica do documento (um leitor de tela anunciaria dados tabulares onde não existem) e dificulta a adaptação da página a dispositivos móveis.
+> **Nota (melhor prática):** nunca utilizar `<table>` para organizar o layout geral de uma página (menu, colunas de conteúdo...): esta prática, comum antes da chegada do CSS moderno, compromete a semântica do documento (um leitor de tela anunciaria dados tabulares onde não existem) e dificulta a adaptação da página a dispositivos móveis.

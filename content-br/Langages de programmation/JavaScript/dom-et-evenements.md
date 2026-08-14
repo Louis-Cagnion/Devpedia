@@ -4,7 +4,7 @@ order: 11
 
 # O DOM e a gestão de eventos
 
-O **DOM** (*Document Object Model*) é a representação em memória de uma página HTML, sob a forma de uma árvore de objetos que podem ser manipulados pelo JavaScript — cada baliza torna-se um nó dessa árvore, com as suas próprias propriedades e métodos.
+O **DOM** (*Document Object Model*) é a representação em memória de uma página HTML, sob a forma de uma árvore de objetos que podem ser manipulados pelo JavaScript: cada baliza torna-se um nó dessa árvore, com as suas próprias propriedades e métodos.
 
 ## Selecionar elementos
 
@@ -14,7 +14,7 @@ document.querySelector(".carte");            // o PRIMEIRO elemento que correspo
 document.querySelectorAll(".carte");          // TODOS os elementos correspondentes (NodeList)
 ```
 
-> **Nota:** `querySelector` / `querySelectorAll` aceitam qualquer seletor CSS (ver capítulo dedicado) — `.classe`, `#id`, `div > p`, `[data-role="bouton"]`... este é o método mais flexível.
+> **Nota:** `querySelector` / `querySelectorAll` aceitam qualquer seletor CSS (ver capítulo dedicado): `.classe`, `#id`, `div > p`, `[data-role="bouton"]`... este é o método mais flexível.
 
 ## Alterar um elemento
 
@@ -30,7 +30,7 @@ título.classList.toggle("actif");              // adicionar se não existir, re
 título.setAttribute("data-id", "42");
 ```
 
-> **Nota:** `innerHTML` com dados fornecidos pelo usuário constitui uma falha XSS clássica (ver capítulo sobre segurança em PHP, o mesmo princípio) — um atacante poderia injetar código executável. `textContent` permanece seguro por padrão, uma vez que trata sempre o seu conteúdo como texto simples.
+> **Nota:** `innerHTML` com dados fornecidos pelo usuário constitui uma falha XSS clássica (ver capítulo sobre segurança em PHP, o mesmo princípio): um atacante poderia injetar código executável. `textContent` permanece seguro por padrão, uma vez que trata sempre o seu conteúdo como texto simples.
 
 ## Criar e inserir um elemento
 
@@ -71,7 +71,7 @@ document.querySelector("form").addEventListener("submit", (evenement) => {
 
 ## Propagação de eventos e delegação
 
-Um evento propaga-se do elemento alvo para os seus elementos pais (*bubbling*) — o que permite monitorizar um evento num elemento pai comum, em vez de o fazer em cada elemento filho individualmente:
+Um evento propaga-se do elemento alvo para os seus elementos pais (*bubbling*): o que permite monitorizar um evento num elemento pai comum, em vez de o fazer em cada elemento filho individualmente:
 
 ```javascript
 document.querySelector("#liste").addEventListener("click", (evenement) => {

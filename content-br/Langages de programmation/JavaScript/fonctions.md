@@ -4,7 +4,7 @@ order: 3
 
 # As funções
 
-O JavaScript oferece três formas de escrever uma função — declaração, expressão e função com seta — que não são meras variantes estilísticas: diferem no *hoisting* e na gestão d`this`o.
+O JavaScript oferece três formas de escrever uma função (declaração, expressão e função com seta) que não são meras variantes estilísticas: diferem no *hoisting* e na gestão d`this`o.
 
 ## Declaração de função
 
@@ -31,7 +31,7 @@ const addition = function (a, b) {
 };
 ```
 
-Aqui, `addition` é uma variável como qualquer outra: só existe a partir da linha em que é atribuída (não há hoisting da própria função, apenas da declaração `const` / `let`, que permanece inutilizável antes da atribuição — a «zona morta temporária»).
+Aqui, `addition` é uma variável como qualquer outra: só existe a partir da linha em que é atribuída (não há hoisting da própria função, apenas da declaração `const` / `let`, que permanece inutilizável antes da atribuição, a «zona morta temporária»).
 
 ## Funções-seta (*arrow functions*)
 
@@ -62,7 +62,7 @@ const objeto = {
 };
 ```
 
-> **Nota:** uma função clássica (`function`) recebe o seu próprio `this`, determinado pela **forma como é chamada** (dinâmico). Uma função com setor não tem o seu próprio `this`: reutiliza o da função que a engloba no momento em que é escrita (lexical) — esta é a principal razão para se preferirem as funções com setor para callbacks internos a um método.
+> **Nota:** uma função clássica (`function`) recebe o seu próprio `this`, determinado pela **forma como é chamada** (dinâmico). Uma função com setor não tem o seu próprio `this`: reutiliza o da função que a engloba no momento em que é escrita (lexical): esta é a principal razão para se preferirem as funções com setor para callbacks internos a um método.
 
 ## Parâmetros por padrão, rest e spread
 

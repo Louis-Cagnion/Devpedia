@@ -32,7 +32,7 @@ null == undefined // true -> caso especial
 0 === "0"    // false -> tipos diferentes, sem conversão
 ```
 
-> **Nota:** estas conversões implícitas de `==` são uma fonte lendária de erros em JavaScript — `===` / `!==` (igualdade estrita, tipo E valor) devem ser a opção padrão, tal como no PHP.
+> **Nota:** estas conversões implícitas de `==` são uma fonte lendária de erros em JavaScript: `===` / `!==` (igualdade estrita, tipo E valor) devem ser a opção padrão, tal como no PHP.
 
 ## Valores «truthy» e «falsy»
 
@@ -46,7 +46,7 @@ if ([]) {}               // TRUTHY! (ao contrário do PHP, onde um array vazio �
 if ({}) {}                // TRUTHY!
 ```
 
-> **Nota:** armadilha clássica para quem vem do PHP: um array ou objeto **vazio** é «`truthy`» em JavaScript, enquanto no PHP é «`falsy`» — teste sempre explicitamente «`matriz.length === 0`» em vez de «`if (!matriz)`».
+> **Nota:** armadilha clássica para quem vem do PHP: um array ou objeto **vazio** é «`truthy`» em JavaScript, enquanto no PHP é «`falsy`»: teste sempre explicitamente «`matriz.length === 0`» em vez de «`if (!matriz)`».
 
 ## O operador ternário
 
@@ -85,4 +85,4 @@ switch (jour) {
 }
 ```
 
-`switch` compara com a igualdade **estrita** (`===`) — aqui não há conversões de tipo inesperadas, ao contrário de `if (x == y)`.
+`switch` compara com a igualdade **estrita** (`===`): aqui não há conversões de tipo inesperadas, ao contrário de `if (x == y)`.

@@ -1,6 +1,6 @@
 # SQL
 
-O SQL (*Structured Query Language*) é uma linguagem com um único objetivo: consultar e manipular dados armazenados sob a forma de tabelas. Tal como a regex, não é uma linguagem de programação generalista — não possui loops, nem funções definidas pelo usuário, nem variáveis no sentido clássico. É interpretada por um motor de base de dados (MySQL, PostgreSQL, SQL Server, SQLite...), geralmente controlada a partir de uma linguagem anfitriã (PHP, Python, JS...) através de um conector.
+O SQL (*Structured Query Language*) é uma linguagem com um único objetivo: consultar e manipular dados armazenados sob a forma de tabelas. Tal como a regex, não é uma linguagem de programação generalista: não possui loops, nem funções definidas pelo usuário, nem variáveis no sentido clássico. É interpretada por um motor de base de dados (MySQL, PostgreSQL, SQL Server, SQLite...), geralmente controlada a partir de uma linguagem anfitriã (PHP, Python, JS...) através de um conector.
 
 ## Uma tabela = um conjunto de estruturas / uma lista de dicionários
 
@@ -47,7 +47,7 @@ LEFT JOIN ventes v ON v.client_id = c.id; -- garde TOUTES les lignes de gauche, 
 
 - `c` / `v` são aliases de tabela, indispensáveis sempre que duas tabelas partilham o nome de uma coluna (por exemplo, `c.nome` versus uma eventual `v.nome`, sem ambiguidade).
 - `JOIN` (ou `INNER JOIN`): mantém apenas as linhas que correspondem em ambos os lados.
-- `LEFT JOIN` : mantém todas as linhas da tabela da esquerda; as colunas da direita são substituídas por «`NULL`» se não houver correspondência — útil quando se pretende listar *todos os elementos*, independentemente de ter sido encontrada ou não uma correspondência (por exemplo: todos os clientes, quer já tenham comprado ou não).
+- `LEFT JOIN` : mantém todas as linhas da tabela da esquerda; as colunas da direita são substituídas por «`NULL`» se não houver correspondência (útil quando se pretende listar *todos os elementos*, independentemente de ter sido encontrada ou não uma correspondência; por exemplo: todos os clientes, quer já tenham comprado ou não).
 
 ## Utilizar o SQL a partir do PHP com o PDO
 
@@ -100,11 +100,11 @@ function construireEt(array $criteres): array
 ?>
 ```
 
-O texto SQL gerado nunca contém o valor real, apenas o nome literal do placeholder (`:cidade`) — o valor real é enviado separadamente em `$params`, utilizado por `execute($params)`.
+O texto SQL gerado nunca contém o valor real, apenas o nome literal do placeholder (`:cidade`); o valor real é enviado separadamente em `$params`, utilizado por `execute($params)`.
 
-> **Nota (segurança):** este mecanismo protege os **valores** (`$valor`), mas não os **nomes das colunas** (`$coluna`) — estes são concatenados diretamente no SQL, sem passar por um placeholder (isso não é tecnicamente possível: o PDO só permite passar valores como parâmetros, nunca nomes de colunas ou de tabelas). Se `$criteres` proviesse diretamente de uma entrada do usuário não filtrada (por exemplo, `construireEt($_GET)`), um nome de coluna falsificado poderia reintroduzir uma injeção SQL. `$coluna` deve, portanto, provir sempre de uma lista branca de colunas autorizadas previamente, nunca diretamente de uma entrada externa.
+> **Nota (segurança):** este mecanismo protege os **valores** (`$valor`), mas não os **nomes das colunas** (`$coluna`): estes são concatenados diretamente no SQL, sem passar por um placeholder (isso não é tecnicamente possível: o PDO só permite passar valores como parâmetros, nunca nomes de colunas ou de tabelas). Se `$criteres` proviesse diretamente de uma entrada do usuário não filtrada (por exemplo, `construireEt($_GET)`), um nome de coluna falsificado poderia reintroduzir uma injeção SQL. `$coluna` deve, portanto, provir sempre de uma lista branca de colunas autorizadas previamente, nunca diretamente de uma entrada externa.
 
 ## Para saber mais
 
-- [Documentação PDO — php.net](https://www.php.net/manual/fr/book.pdo.php)
+- [Documentação PDO: php.net](https://www.php.net/manual/fr/book.pdo.php)
 - [W3Schools SQL (em inglês, bom guia de referência de sintaxe)](https://www.w3schools.com/sql/)

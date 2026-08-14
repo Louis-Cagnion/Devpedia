@@ -4,7 +4,7 @@ order: 1
 
 # Variáveis e tipos básicos
 
-O Python é **uma linguagem de tipagem dinâmica**: uma variável não tem um tipo declarado antecipadamente, assumindo simplesmente o tipo do valor que lhe é atribuído — e pode mudar de tipo livremente ao longo do programa (ao contrário do PHP ou do C, onde o tipo de uma propriedade/variável tipada permanece fixo uma vez declarado).
+O Python é **uma linguagem de tipagem dinâmica**: uma variável não tem um tipo declarado antecipadamente, assumindo simplesmente o tipo do valor que lhe é atribuído, e pode mudar de tipo livremente ao longo do programa (ao contrário do PHP ou do C, onde o tipo de uma propriedade/variável tipada permanece fixo uma vez declarado).
 
 ## Declarar uma variável
 
@@ -18,7 +18,7 @@ rien = None           # equivalente a null/NULL
 idade = "vingt-cinq"    # perfeitamente válido: «age» torna-se um str, sem necessidade de qualquer declaração
 ```
 
-> **Nota:** ao contrário do PHP (`$variable`), o Python não utiliza nenhum símbolo específico para designar uma variável — apenas um nome, em minúsculas e com sublinhados, por convenção (`nom_utilisateur`, e não `nomUtilisateur`).
+> **Nota:** ao contrário do PHP (`$variable`), o Python não utiliza nenhum símbolo específico para designar uma variável: apenas um nome, em minúsculas e com sublinhados, por convenção (`nom_utilisateur`, e não `nomUtilisateur`).
 
 ## Verificar o tipo de uma variável
 

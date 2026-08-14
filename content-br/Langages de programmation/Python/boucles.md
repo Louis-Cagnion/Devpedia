@@ -70,7 +70,7 @@ for i in range(10):
     print(i)
 ```
 
-## A cláusula «`else`» de um ciclo — uma particularidade do Python
+## A cláusula «`else`» de um ciclo: uma particularidade do Python
 
 Um ciclo `for` / `while` pode conter um bloco `else`, executado apenas se o ciclo tiver terminado **normalmente**, sem `break`:
 
@@ -89,4 +89,4 @@ else:
 
 ## Não há acesso direto ao índice num `for`
 
-Ao contrário de um ciclo «`for`» em C (`for (int i = 0; i < taille; i++)`), o ciclo em Python nunca manipula explicitamente um índice — «`enumerate()`» é a forma idiomática de obter um índice quando necessário, em vez de iterar sobre «`range(len(lista))`» e depois indexar manualmente.
+Ao contrário de um ciclo «`for`» em C (`for (int i = 0; i < taille; i++)`), o ciclo em Python nunca manipula explicitamente um índice; «`enumerate()`» é a forma idiomática de obter um índice quando necessário, em vez de iterar sobre «`range(len(lista))`» e depois indexar manualmente.

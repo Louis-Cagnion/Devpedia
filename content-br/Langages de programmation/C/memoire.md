@@ -65,7 +65,7 @@ if (nouveauTab == NULL) {
 tab = nouveauTab; // le bloc a pu être déplacé ailleurs en mémoire
 ```
 
-`realloc()` mantém o conteúdo existente (truncado se o novo tamanho for menor), mas pode deslocar o bloco na memória, se necessário — é por isso que nunca se reatribui `tab` diretamente antes de verificar se `realloc()` não devolveu `NULL`.
+`realloc()` mantém o conteúdo existente (truncado se o novo tamanho for menor), mas pode deslocar o bloco na memória, se necessário: é por isso que nunca se reatribui `tab` diretamente antes de verificar se `realloc()` não devolveu `NULL`.
 
 ## Liberar memória: `free()`
 
@@ -93,7 +93,7 @@ free(p);
 free(p); // double free : comportement indéfini
 ```
 
-> **Nota:** estes erros nem sempre provocam uma falha imediata e visível — é isso que os torna difíceis de detetar. Uma ferramenta como **o Valgrind** (`valgrind ./mon_programme`) executa o programa e identifica com precisão as fugas de memória e os acessos inválidos, indicando a linha de código responsável.
+> **Nota:** estes erros nem sempre provocam uma falha imediata e visível: é isso que os torna difíceis de detetar. Uma ferramenta como **o Valgrind** (`valgrind ./mon_programme`) executa o programa e identifica com precisão as fugas de memória e os acessos inválidos, indicando a linha de código responsável.
 
 ## `sizeof`
 

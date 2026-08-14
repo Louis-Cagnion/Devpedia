@@ -4,7 +4,7 @@ order: 9
 
 # Carregamento automático de classes
 
-Sem o carregamento automático, cada arquivo que utiliza uma classe tem de efetuar um «`require`» explícito do arquivo que a contém — o que se torna pesado e frágil assim que um projeto tem muitas classes. O «`spl_autoload_register()`» permite delegar esse carregamento ao próprio motor PHP.
+Sem o carregamento automático, cada arquivo que utiliza uma classe tem de efetuar um «`require`» explícito do arquivo que a contém: o que se torna pesado e frágil assim que um projeto tem muitas classes. O «`spl_autoload_register()`» permite delegar esse carregamento ao próprio motor PHP.
 
 ## `spl_autoload_register()`
 
@@ -57,10 +57,10 @@ Exemplo de resolução, com o «`$classe = 'App\Services\Facturation\Calculateur
 1. `str_starts_with($classe, 'App\\Services\\')` → `true`, este prefixo corresponde.
 2. `substr(...)` remove o prefixo correspondente → `'Facturation\Calculateur'`.
 3. `str_replace('\\', '/', ...)` transforma o separador de namespace num separador de pasta → `'Facturation/Calculateur'`.
-4. Caminho final: `.../Services/Facturation/Calculateur.php` — que deve corresponder à localização real do arquivo.
+4. Caminho final: `.../Services/Facturation/Calculateur.php`, que deve corresponder à localização real do arquivo.
 
-> **Nota:** «`'App\\Modeles\\'`» numa cadeia de caracteres entre aspas simples: «`\\`» representa **um único** carácter «`\`» (deve ser duplicado para ser escrito literalmente) — trata-se da cadeia «`App\Modeles\`», o separador de namespace.
+> **Nota:** «`'App\\Modeles\\'`» numa cadeia de caracteres entre aspas simples: «`\\`» representa **um único** carácter «`\`» (deve ser duplicado para ser escrito literalmente): trata-se da cadeia «`App\Modeles\`», o separador de namespace.
 
 O `return;`, após o `if`, é executado, quer o arquivo exista ou não (é colocado após o `if (file_exists(...))`, e não dentro dele): uma vez que os prefixos dos namespaces são mutuamente exclusivos no seu primeiro segmento, assim que o prefixo correto for encontrado, continuar a testar os outros seria sempre inútil.
 
-> **Convenção indispensável para que isto funcione:** o nome do namespace + o nome da classe devem codificar literalmente o caminho do arquivo — um arquivo por classe, estrutura de pastas = estrutura de namespaces.
+> **Convenção indispensável para que isto funcione:** o nome do namespace + o nome da classe devem codificar literalmente o caminho do arquivo: um arquivo por classe, estrutura de pastas = estrutura de namespaces.
