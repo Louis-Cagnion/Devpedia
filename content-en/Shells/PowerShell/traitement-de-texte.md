@@ -4,7 +4,7 @@ order: 10
 
 # Text and Object Processing
 
-Where Bash relies on [specialized text tools](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`), PowerShell does the same job with generic cmdlets that filter, transform, and select **objects** — text is just a special case, the one where the object being handled is a string.
+Where Bash relies on [specialized text tools](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`), PowerShell does the same job with generic cmdlets that filter, transform, and select **objects**: text is just a special case, the one where the object being handled is a string.
 
 ## `Select-String`: searching text (the equivalent of `grep`)
 
@@ -17,7 +17,7 @@ Select-String "error" file.log | Measure-Object   # counts matching lines
 Select-String -Pattern "error|warning" file.log   # pattern = an actual .NET regex by default
 ```
 
-> **Note:** unlike `grep` where `-E` must be added to enable extended regex, `Select-String` interprets its pattern as a regex **by default** — use `-SimpleMatch` to fall back to a literal text search, the opposite of Bash's convention.
+> **Note:** unlike `grep` where `-E` must be added to enable extended regex, `Select-String` interprets its pattern as a regex **by default**: use `-SimpleMatch` to fall back to a literal text search, the opposite of Bash's convention.
 
 Each result is an object with directly usable properties, rather than a plain line of text to re-parse:
 
@@ -32,7 +32,7 @@ Select-String "error" file.log | Select-Object LineNumber, Line
 (Get-Content file.txt) -replace "old", "new" | Set-Content file.txt   # modifies the file
 ```
 
-> **Note:** `-replace` replaces **all** occurrences by default (the opposite of `sed 's///'` with no `g`, which only replaces the first) — there's no flag equivalent to `sed`'s `g` to add, this is the default behavior.
+> **Note:** `-replace` replaces **all** occurrences by default (the opposite of `sed 's///'` with no `g`, which only replaces the first): there's no flag equivalent to `sed`'s `g` to add, this is the default behavior.
 
 To only process certain lines (the equivalent of a `sed '2,4s///'` address), you filter explicitly by index:
 
@@ -65,7 +65,7 @@ Get-Content file.txt | Sort-Object -Unique               # sorts AND deduplicate
 Get-Content file.txt | Group-Object | Sort-Object Count -Descending   # counts occurrences
 ```
 
-> **Note:** unlike `uniq` in Bash (which only detects **adjacent** duplicates, hence the need to sort first), `Sort-Object -Unique` and `Group-Object` work on the whole collection, regardless of the initial order — no need to sort beforehand to deduplicate correctly.
+> **Note:** unlike `uniq` in Bash (which only detects **adjacent** duplicates, hence the need to sort first), `Sort-Object -Unique` and `Group-Object` work on the whole collection, regardless of the initial order: no need to sort beforehand to deduplicate correctly.
 
 ## `Measure-Object`: counting (the equivalent of `wc`)
 
@@ -97,4 +97,4 @@ Select-String "404" access.log |
 | **Key takeaways** | PowerShell treats text as a special case of object: `Select-String` (grep), `-replace` (sed), `ConvertFrom-Csv`/`Json` (awk on structured data) handle typed objects, not just lines. |
 | **Tools you can use** | `Select-String`, `-replace`, `-split`, `Sort-Object -Unique`, `Group-Object`, `Measure-Object`. |
 | **Pitfalls to avoid** | Forgetting that `Select-String` interprets its pattern as a regex by default (unlike `grep`, which requires `-E`). |
-| **Best practices** | Use `Sort-Object -Unique`/`Group-Object` rather than a manual sort followed by deduplication — they work on the whole collection, with no prior order required. |
+| **Best practices** | Use `Sort-Object -Unique`/`Group-Object` rather than a manual sort followed by deduplication: they work on the whole collection, with no prior order required. |

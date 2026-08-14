@@ -4,7 +4,7 @@ order: 11
 
 # Permissions and File Manipulation
 
-Windows doesn't use the Unix permission model (owner/group/others, `rwx`) seen in Bash's equivalent chapter — it relies on **Access Control Lists** (ACLs), finer-grained but more verbose. This chapter covers this system as well as the basic commands for manipulating files and folders.
+Windows doesn't use the Unix permission model (owner/group/others, `rwx`) seen in Bash's equivalent chapter: it relies on **Access Control Lists** (ACLs), finer-grained but more verbose. This chapter covers this system as well as the basic commands for manipulating files and folders.
 
 ## Reading permissions with `Get-Acl`
 
@@ -20,7 +20,7 @@ Access  : DESKTOP\user  Allow  FullControl
           BUILTIN\Users Allow  ReadAndExecute
 ```
 
-Each access line maps an **identity** (user or group) to a **right** (`FullControl`, `Modify`, `ReadAndExecute`...) — there can be an arbitrary number of them, unlike Unix's three fixed categories (owner/group/others).
+Each access line maps an **identity** (user or group) to a **right** (`FullControl`, `Modify`, `ReadAndExecute`...): there can be an arbitrary number of them, unlike Unix's three fixed categories (owner/group/others).
 
 ## `Set-Acl`: modifying permissions
 
@@ -31,7 +31,7 @@ $acl.SetAccessRule($rule)
 Set-Acl file.txt $acl
 ```
 
-> **Note:** unlike `chmod 755` (a single command, a single number), modifying a Windows ACL requires fetching the existing ACL, building a rule, then reapplying it — more verbose, but it allows granting different rights to an arbitrary number of users on the same file, which the Unix model doesn't natively support.
+> **Note:** unlike `chmod 755` (a single command, a single number), modifying a Windows ACL requires fetching the existing ACL, building a rule, then reapplying it: more verbose, but it allows granting different rights to an arbitrary number of users on the same file, which the Unix model doesn't natively support.
 
 ## `icacls`: the classic command-line equivalent
 
@@ -55,7 +55,7 @@ Remove-Item file.txt                                     # deletes a file (goes 
 Remove-Item -Recurse folder                               # deletes a folder and all its content
 ```
 
-> **Note:** like `rm -rf` in Bash, `Remove-Item -Recurse -Force` is irreversible from the command line (unlike a deletion via Windows Explorer, which goes through the recycle bin) — a mistargeted path can delete far more than intended, with no confirmation or recourse.
+> **Note:** like `rm -rf` in Bash, `Remove-Item -Recurse -Force` is irreversible from the command line (unlike a deletion via Windows Explorer, which goes through the recycle bin): a mistargeted path can delete far more than intended, with no confirmation or recourse.
 
 ## `Get-ChildItem -Recurse`: searching for files (the equivalent of `find`)
 
@@ -74,7 +74,7 @@ See also [Text and Object Processing](/?c=shells&s=powershell&p=traitement-de-te
 
 | | |
 |---|---|
-| **Key takeaways** | Windows uses ACLs (access control lists) rather than Unix's owner/group/others model — more verbose, but allows different rights for an arbitrary number of users. |
+| **Key takeaways** | Windows uses ACLs (access control lists) rather than Unix's owner/group/others model: more verbose, but allows different rights for an arbitrary number of users. |
 | **Tools you can use** | `Get-Acl`/`Set-Acl`, `icacls` (more concise), `New-Item`/`Copy-Item`/`Move-Item`/`Remove-Item`. |
 | **Pitfalls to avoid** | `Remove-Item -Recurse -Force` is irreversible from the command line, unlike a deletion via Explorer (recycle bin). |
 | **Best practices** | Use `icacls` for a quick, readable ACL change, `Get-Acl`/`Set-Acl` when fine-grained scripted control is needed. |

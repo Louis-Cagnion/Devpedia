@@ -23,7 +23,7 @@ if ($age -ge 18) {
 
 ## Comparison operators
 
-Unlike Bash, a single set of operators works for both numbers and strings — no `-eq`/`==` distinction based on the type compared:
+Unlike Bash, a single set of operators works for both numbers and strings: no `-eq`/`==` distinction based on the type compared:
 
 ```powershell
 if ($age -eq 18) { Write-Output "Exactly 18" }
@@ -38,7 +38,7 @@ if ($age -eq 18) { Write-Output "Exactly 18" }
 | `-gt` | Greater than |
 | `-ge` | Greater than or equal |
 
-> **Note:** these operators remain PowerShell keywords (`-eq`, not `==`) even though the syntax is reminiscent of Bash flags — `==` doesn't exist as a comparison operator in PowerShell.
+> **Note:** these operators remain PowerShell keywords (`-eq`, not `==`) even though the syntax is reminiscent of Bash flags: `==` doesn't exist as a comparison operator in PowerShell.
 
 ## Comparing strings
 
@@ -60,7 +60,7 @@ if ([string]::IsNullOrEmpty($name)) {
 | `-like` | Match against a wildcard-style pattern (`*`, `?`) |
 | `-match` | Match against a regular expression |
 
-> **Note:** `-eq` on strings is case-insensitive by default (`"John" -eq "john"` is true) — prefixing with `c` (`-ceq`, `-clike`, `-cmatch`) forces a case-sensitive comparison, the opposite of most languages where case matters by default.
+> **Note:** `-eq` on strings is case-insensitive by default (`"John" -eq "john"` is true): prefixing with `c` (`-ceq`, `-clike`, `-cmatch`) forces a case-sensitive comparison, the opposite of most languages where case matters by default.
 
 ## Testing files
 
@@ -74,7 +74,7 @@ if (Test-Path "C:\var\www" -PathType Container) {
 }
 ```
 
-`Test-Path` alone replaces all of Bash's file tests (`-f`, `-d`, `-e`) — `-PathType Leaf` for a file, `-PathType Container` for a folder, no argument for "exists, whatever the type".
+`Test-Path` alone replaces all of Bash's file tests (`-f`, `-d`, `-e`): `-PathType Leaf` for a file, `-PathType Container` for a folder, no argument for "exists, whatever the type".
 
 ## Combining conditions
 
@@ -84,7 +84,7 @@ if ((Test-Path "config.txt") -and (Get-Item "config.txt").Length -gt 0) {
 }
 ```
 
-`-and`/`-or`/`-not` respectively replace Bash's `&&`/`||`/`!` — symbolic operators don't exist for boolean logic in PowerShell.
+`-and`/`-or`/`-not` respectively replace Bash's `&&`/`||`/`!`: symbolic operators don't exist for boolean logic in PowerShell.
 
 ## `switch` (the equivalent of Bash's `case`)
 
@@ -98,7 +98,7 @@ switch ($day) {
 }
 ```
 
-`$_` refers to the tested value (the one passed in parentheses to `switch`), `-in` tests membership in a list, and `default` catches everything else — the equivalent of a Bash `case`'s final `*)`.
+`$_` refers to the tested value (the one passed in parentheses to `switch`), `-in` tests membership in a list, and `default` catches everything else, the equivalent of a Bash `case`'s final `*)`.
 
 ---
 
@@ -108,5 +108,5 @@ switch ($day) {
 |---|---|
 | **Key takeaways** | PowerShell has real comparison operators built into the language (`-eq`, `-lt`...), unlike Bash which relies on test commands. A single set of operators works for numbers and strings. |
 | **Tools you can use** | `Test-Path` (replaces Bash's `-f`/`-d`/`-e`), `-and`/`-or`/`-not`, `-like`/`-match`. |
-| **Pitfalls to avoid** | Forgetting that `-eq` on strings is case-insensitive by default — `-ceq` forces case sensitivity. |
+| **Pitfalls to avoid** | Forgetting that `-eq` on strings is case-insensitive by default: `-ceq` forces case sensitivity. |
 | **Best practices** | Use `Test-Path -PathType Leaf/Container` to explicitly distinguish a file from a folder. |

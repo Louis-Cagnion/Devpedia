@@ -4,7 +4,7 @@ order: 4
 
 # Environment Variables
 
-Like in Bash, an environment variable is automatically passed to child processes — but PowerShell accesses it through a dedicated namespace (`$env:`), distinct from its regular variables, rather than a simple convention (`export`) applied to a normal variable.
+Like in Bash, an environment variable is automatically passed to child processes, but PowerShell accesses it through a dedicated namespace (`$env:`), distinct from its regular variables, rather than a simple convention (`export`) applied to a normal variable.
 
 ## Reading and modifying an environment variable
 
@@ -18,7 +18,7 @@ Write-Output $env:NAME       # John
 Write-Output $env:NAME    # displays "John" if NAME was set by the calling process, empty otherwise
 ```
 
-> **Note:** as with `export` in Bash, propagation only works from parent to child — a subscript that modifies `$env:NAME` never propagates that change back to the script that launched it, each process having its own copy of the environment.
+> **Note:** as with `export` in Bash, propagation only works from parent to child: a subscript that modifies `$env:NAME` never propagates that change back to the script that launched it, each process having its own copy of the environment.
 
 ## Common environment variables
 
@@ -40,7 +40,7 @@ $env:PATH
 $env:PATH += ";C:\my\scripts\folder"   # adds an extra folder to the search
 ```
 
-> **Note:** on Windows, `$env:PATH`'s folders are separated by `;`, unlike `:` on Unix — a difference to keep in mind when porting a script from one system to the other.
+> **Note:** on Windows, `$env:PATH`'s folders are separated by `;`, unlike `:` on Unix, a difference to keep in mind when porting a script from one system to the other.
 
 ## Configuration files (profiles)
 
@@ -64,7 +64,7 @@ Set-Alias -Name gs -Value "git status"
 ll   # equivalent to typing "Get-ChildItem"
 ```
 
-An alias defined directly in the console doesn't survive closing it — to have it available in every new session, it needs to be added to `$PROFILE`.
+An alias defined directly in the console doesn't survive closing it: to have it available in every new session, it needs to be added to `$PROFILE`.
 
 ## `. $PROFILE`: reloading the profile
 
@@ -74,7 +74,7 @@ After modifying the profile, "dot sourcing" applies the changes in the current s
 . $PROFILE
 ```
 
-This leading `.` (identical to the one used for [`source` in Bash](/?c=shells&s=bash&p=variables-denvironnement)) runs the script in the current session's context rather than in an isolated subprocess — without it, the functions and variables defined in the file would disappear as soon as it finished running.
+This leading `.` (identical to the one used for [`source` in Bash](/?c=shells&s=bash&p=variables-denvironnement)) runs the script in the current session's context rather than in an isolated subprocess: without it, the functions and variables defined in the file would disappear as soon as it finished running.
 
 ---
 
@@ -82,7 +82,7 @@ This leading `.` (identical to the one used for [`source` in Bash](/?c=shells&s=
 
 | | |
 |---|---|
-| **Key takeaways** | A PowerShell environment variable lives in the `$env:` namespace, distinct from regular variables — propagation to child processes only works from parent to child, like `export` in Bash. |
+| **Key takeaways** | A PowerShell environment variable lives in the `$env:` namespace, distinct from regular variables; propagation to child processes only works from parent to child, like `export` in Bash. |
 | **Tools you can use** | `$env:PATH`, `$PROFILE`, `Set-Alias`, dot sourcing (`. $PROFILE`). |
 | **Pitfalls to avoid** | Forgetting that `;` separates `$env:PATH`'s folders on Windows, unlike `:` on Unix. |
 | **Best practices** | Put `$env:PATH` changes and aliases in `$PROFILE` so they're available in every new session. |

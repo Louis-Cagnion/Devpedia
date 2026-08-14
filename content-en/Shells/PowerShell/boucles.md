@@ -4,7 +4,7 @@ order: 6
 
 # Loops
 
-PowerShell offers the same basic structures as Bash (`for`, `while`, up to a condition), plus a `foreach` loop dedicated to walking through objects — the most used in practice, since almost everything in PowerShell is a collection of objects rather than plain text.
+PowerShell offers the same basic structures as Bash (`for`, `while`, up to a condition), plus a `foreach` loop dedicated to walking through objects, the most used in practice, since almost everything in PowerShell is a collection of objects rather than plain text.
 
 ## The `foreach` loop (walking a collection)
 
@@ -32,7 +32,7 @@ foreach ($i in 1..5) {
 
 ## `ForEach-Object`: the same idea, but via the pipeline
 
-Unlike `foreach` (a language keyword), `ForEach-Object` is a cmdlet that receives its elements **via the pipeline** (see [Redirections and Pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) — the most idiomatic PowerShell form for chaining processing after another command:
+Unlike `foreach` (a language keyword), `ForEach-Object` is a cmdlet that receives its elements **via the pipeline** (see [Redirections and Pipes](/?c=shells&s=powershell&p=redirections-et-pipes)), the most idiomatic PowerShell form for chaining processing after another command:
 
 ```powershell
 Get-ChildItem -Filter "*.txt" | ForEach-Object {
@@ -40,7 +40,7 @@ Get-ChildItem -Filter "*.txt" | ForEach-Object {
 }
 ```
 
-`$_` refers to the current pipeline element inside the block — a role close to what a classic `foreach`'s loop variable implicitly plays.
+`$_` refers to the current pipeline element inside the block, a role close to what a classic `foreach`'s loop variable implicitly plays.
 
 ## The C-style `for` loop
 
@@ -71,7 +71,7 @@ Get-Content "file.txt" | ForEach-Object {
 }
 ```
 
-Unlike Bash (`while read -r line`), reading a file line by line naturally goes through the pipeline: `Get-Content` produces a collection of lines, `ForEach-Object` (or `foreach`) walks through it — no standard input redirection needed.
+Unlike Bash (`while read -r line`), reading a file line by line naturally goes through the pipeline: `Get-Content` produces a collection of lines, `ForEach-Object` (or `foreach`) walks through it: no standard input redirection needed.
 
 ## The `do`/`while` and `do`/`until` loops
 
@@ -95,7 +95,7 @@ do {
 } until ($i -ge 5)
 ```
 
-`do {...} until (...)` is the direct PowerShell equivalent of Bash's `until` (block repeated as long as the condition stays false) — the only difference being the guarantee of at least one pass, absent from Bash's `while`/`until`.
+`do {...} until (...)` is the direct PowerShell equivalent of Bash's `until` (block repeated as long as the condition stays false), the only difference being the guarantee of at least one pass, absent from Bash's `while`/`until`.
 
 ## `break` and `continue`
 
@@ -121,5 +121,5 @@ foreach ($i in 1..10) {
 |---|---|
 | **Key takeaways** | `foreach` walks through a collection of objects; `ForEach-Object` does the same via the pipeline. `do`/`while` and `do`/`until` guarantee at least one pass, unlike `while`/`until` alone. |
 | **Tools you can use** | `1..5` (range), `$_` (current pipeline element), `break`/`continue`. |
-| **Pitfalls to avoid** | Confusing `foreach` (keyword) and `ForEach-Object` (pipeline cmdlet) — different syntax and context of use. |
+| **Pitfalls to avoid** | Confusing `foreach` (keyword) and `ForEach-Object` (pipeline cmdlet): different syntax and context of use. |
 | **Best practices** | Prefer `ForEach-Object` in a pipeline chain, `foreach` for a standalone loop over a collection already in memory. |

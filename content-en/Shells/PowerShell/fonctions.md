@@ -18,7 +18,7 @@ Greet -Name "John"   # Hello John!
 Greet "John"         # also works: PowerShell accepts a positional argument if the name is omitted
 ```
 
-> **Naming convention:** PowerShell cmdlets and functions follow `Verb-Noun` casing (`Get-ChildItem`, `Greet` here simplified) — a set of standard verbs (`Get`, `Set`, `New`, `Remove`...) is even mandated by convention for official cmdlets, so the same verb behaves predictably from one command to another.
+> **Naming convention:** PowerShell cmdlets and functions follow `Verb-Noun` casing (`Get-ChildItem`, `Greet` here simplified): a set of standard verbs (`Get`, `Set`, `New`, `Remove`...) is even mandated by convention for official cmdlets, so the same verb behaves predictably from one command to another.
 
 ## A function's parameters
 
@@ -36,7 +36,7 @@ function Summarize {
 Summarize -LastName "Smith" -FirstName "John"
 ```
 
-> **Note:** unlike Bash where `$1`, `$2` are purely positional, the call `-LastName "Smith" -FirstName "John"` stays correct even out of order (`-FirstName "John" -LastName "Smith"`) — parameters are matched by name, not position, which is why `Verb-Noun` casing places so much emphasis on clear parameter names.
+> **Note:** unlike Bash where `$1`, `$2` are purely positional, the call `-LastName "Smith" -FirstName "John"` stays correct even out of order (`-FirstName "John" -LastName "Smith"`): parameters are matched by name, not position, which is why `Verb-Noun` casing places so much emphasis on clear parameter names.
 
 ## Real return values
 
@@ -55,7 +55,7 @@ if (IsEven -Number 4) {
 
 ## "Returning" data: the pipeline's uncaptured output
 
-In practice, `return` is even optional: **any unassigned output** in a function's body becomes its return value, exactly like a block's last evaluated expression — an important difference from Bash, where `echo` is only for displaying, never for "returning" in the strict sense:
+In practice, `return` is even optional: **any unassigned output** in a function's body becomes its return value, exactly like a block's last evaluated expression, an important difference from Bash, where `echo` is only for displaying, never for "returning" in the strict sense:
 
 ```powershell
 function Add {
@@ -67,7 +67,7 @@ $result = Add -A 4 -B 6
 Write-Output "Result: $result"   # Result: 10
 ```
 
-> **Note:** unlike Bash where `echo` inside a function is *only* for displaying (capturing via `$(...)` is a caller-side convention, not an actual return mechanism), any PowerShell line whose result is neither assigned nor discarded (with `[void]` or `Out-Null`) gets added to the function's return value — a forgotten debug `Write-Output` inside a function can thus silently pollute what it returns.
+> **Note:** unlike Bash where `echo` inside a function is *only* for displaying (capturing via `$(...)` is a caller-side convention, not an actual return mechanism), any PowerShell line whose result is neither assigned nor discarded (with `[void]` or `Out-Null`) gets added to the function's return value: a forgotten debug `Write-Output` inside a function can thus silently pollute what it returns.
 
 ## Variable scope
 
