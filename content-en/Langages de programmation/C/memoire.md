@@ -65,7 +65,7 @@ if (nouveauTab == NULL) {
 tab = nouveauTab; // le bloc a pu être déplacé ailleurs en mémoire
 ```
 
-`realloc()` preserves the existing content (truncated if the new size is smaller), but may move the block in memory if necessary—that's why we never reassign `tab` directly before verifying that `realloc()` did not return `NULL`.
+`realloc()` preserves the existing content (truncated if the new size is smaller), but may move the block in memory if necessary: that's why we never reassign `tab` directly before verifying that `realloc()` did not return `NULL`.
 
 ## Free Up Memory: `free()`
 
@@ -93,7 +93,7 @@ free(p);
 free(p); // double free : comportement indéfini
 ```
 
-> **Note:** These bugs do not always cause an immediate, visible crash—which is what makes them difficult to detect. A tool like [**Valgrind**](https://valgrind.org) (`valgrind ./my_program`) runs the program and reports memory leaks and invalid accesses in detail, along with the line of code responsible.
+> **Note:** These bugs do not always cause an immediate, visible crash, which is what makes them difficult to detect. A tool like [**Valgrind**](https://valgrind.org) (`valgrind ./my_program`) runs the program and reports memory leaks and invalid accesses in detail, along with the line of code responsible.
 
 ## Buffer overflow: a bug with security consequences
 

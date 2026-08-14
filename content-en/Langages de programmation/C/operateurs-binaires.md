@@ -41,7 +41,7 @@ x << 3   // 0010 1000 = 40   (5 * 8)
 x >> 1   // 0000 0010 = 2    (5 / 2, rounded down)
 ```
 
-Bits that fall outside the type's width are **lost** — this isn't an error, there's no warning at all:
+Bits that fall outside the type's width are **lost**: this isn't an error, there's no warning at all:
 
 ```c
 unsigned char y = 200;  // 1100 1000
@@ -130,7 +130,7 @@ So write whatever expresses your intent: `n % 2 == 0` if you're talking about pa
 
 | | |
 |---|---|
-| **Key takeaways** | Bitwise operators (`&`, `\|`, `^`, `~`, `<<`, `>>`) work bit by bit — used for flags, permissions, and masks. Don't confuse them with `&&`/`\|\|` (logical). |
+| **Key takeaways** | Bitwise operators (`&`, `\|`, `^`, `~`, `<<`, `>>`) work bit by bit, used for flags, permissions, and masks. Don't confuse them with `&&`/`\|\|` (logical). |
 | **Tools you can use** | Masks (`\|=` sets, `&= ~` clears, `^=` toggles, `&` tests a bit). |
 | **Pitfalls to avoid** | Shifting by a number of bits ≥ the type's width (undefined behavior); using `>>` on a negative signed value (implementation-defined). |
-| **Best practices** | Reserve bitwise operations for unsigned types; write `n % 2`/`n * 2` rather than `n & 1`/`n << 1` for readability — a modern compiler already optimizes the equivalence. |
+| **Best practices** | Reserve bitwise operations for unsigned types; write `n % 2`/`n * 2` rather than `n & 1`/`n << 1` for readability; a modern compiler already optimizes the equivalence. |

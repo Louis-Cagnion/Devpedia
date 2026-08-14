@@ -4,7 +4,7 @@ order: 11
 
 # Linked Lists
 
-A **linked list** is a data structure in which each element (a **link**, or *node*) contains a value and a pointer to the next element. Unlike an array, its elements are not stored contiguously in memory—this is what makes it possible to add or remove an element without having to move all the others.
+A **linked list** is a data structure in which each element (a **link**, or *node*) contains a value and a pointer to the next element. Unlike an array, its elements are not stored contiguously in memory: this is what makes it possible to add or remove an element without having to move all the others.
 
 ## Report a link
 
@@ -50,7 +50,7 @@ void afficher(Maillon *tete)
 }
 ```
 
-> **Note:** `courant` is a **copy** of the pointer `tete` — moving `courant = courant->suivant` does not modify `tete`, which continues to point to the first element of the list. That is why we always use a separate "working" pointer to traverse a list, never the head itself.
+> **Note:** `courant` is a **copy** of the pointer `tete`: moving `courant = courant->suivant` does not modify `tete`, which continues to point to the first element of the list. That is why we always use a separate "working" pointer to traverse a list, never the head itself.
 
 ## Insert at the top of the list
 
@@ -70,11 +70,11 @@ Maillon *insererEnTete(Maillon *tete, int value)
 tete = insererEnTete(tete, 5);
 ```
 
-Inserting at the beginning is a constant-time operation (no other links are moved)—unlike an array, where inserting at the beginning requires shifting all existing elements.
+Inserting at the beginning is a constant-time operation (no other links are moved), unlike an array, where inserting at the beginning requires shifting all existing elements.
 
 ## Clear the list
 
-Each link allocated with `malloc()` must be freed individually—freeing `tete` directly without retaining a reference to the rest would result in the loss of access to all subsequent links (memory leak; see the chapter on memory management):
+Each link allocated with `malloc()` must be freed individually: freeing `tete` directly without retaining a reference to the rest would result in the loss of access to all subsequent links (memory leak; see the chapter on memory management):
 
 ```c
 void libererListe(Maillon *tete)
@@ -89,7 +89,7 @@ void libererListe(Maillon *tete)
 }
 ```
 
-> **Note:** The order matters here: calling `free(courant)` and then reading `courant->suivant` would result in a **use-after-free** (see the chapter on memory management)—the value of the pointer `suivant` must be retrieved before the link containing it is freed.
+> **Note:** The order matters here: calling `free(courant)` and then reading `courant->suivant` would result in a **use-after-free** (see the chapter on memory management): the value of the pointer `suivant` must be retrieved before the link containing it is freed.
 
 ## Linked List vs. Array
 

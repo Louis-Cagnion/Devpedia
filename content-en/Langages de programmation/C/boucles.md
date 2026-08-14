@@ -4,7 +4,7 @@ order: 3
 
 # Loops
 
-Loops allow you to repeat a block of code multiple times. In C, there are three structures: `while`, `do while`, and `for`—there is no native `foreach`; an array is always iterated through using an index or a pointer.
+Loops allow you to repeat a block of code multiple times. In C, there are three structures: `while`, `do while`, and `for`: there is no native `foreach`; an array is always iterated through using an index or a pointer.
 
 ## `while` Loop
 
@@ -34,7 +34,7 @@ do {
 
 ## `for` Loop
 
-Combines the initialization, the condition, and the increment into a single line—useful whenever the number of iterations is known in advance:
+Combines the initialization, the condition, and the increment into a single line, useful whenever the number of iterations is known in advance:
 
 ```c
 for (int i = 0; i < 5; i++) {
@@ -54,7 +54,7 @@ for (int i = 0; i < 5; i++) {
 }
 ```
 
-> **Note:** Unlike PHP or JavaScript, there is no **native way** to determine the size of an array based on the pointer alone—`array[5]` "knows" how many elements it contains as long as it is treated as a static array, but this information is lost as soon as it is passed to a function (at which point it behaves like a simple pointer; see the chapter on pointers). The size must therefore be passed separately.
+> **Note:** Unlike PHP or JavaScript, there is no **native way** to determine the size of an array based on the pointer alone: `array[5]` "knows" how many elements it contains as long as it is treated as a static array, but this information is lost as soon as it is passed to a function (at which point it behaves like a simple pointer; see the chapter on pointers). The size must therefore be passed separately.
 
 ```c
 void afficher(int *array, int taille) // la taille doit être passée explicitement
@@ -84,7 +84,7 @@ for (int i = 0; i < 10; i++) {
 
 ## Nested Loops and `break`
 
-`break` It only exits the **nearest** loop that encloses it—to exit multiple nested loops at once, you need a control variable or a "`goto`" (which is rare but sometimes used for this specific case in C):
+`break` It only exits the **nearest** loop that encloses it: to exit multiple nested loops at once, you need a control variable or a "`goto`" (which is rare but sometimes used for this specific case in C):
 
 ```c
 int trouve = 0;

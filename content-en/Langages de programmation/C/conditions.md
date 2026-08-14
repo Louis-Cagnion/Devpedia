@@ -8,7 +8,7 @@ Conditional statements allow you to execute a block of code depending on whether
 
 ## `if`'s Condition
 
-In C, any **non-zero** value is considered true; only the value `0` is false—there was no native Boolean type prior to [C99](https://en.wikipedia.org/wiki/C99) (`stdbool.h`, see the chapter on variables):
+In C, any **non-zero** value is considered true; only the value `0` is false: there was no native Boolean type prior to [C99](https://en.wikipedia.org/wiki/C99) (`stdbool.h`, see the chapter on variables):
 
 ```c
 int age = 18;
@@ -34,7 +34,7 @@ if (note >= 16) {
 }
 ```
 
-> **Note:** Unlike PHP, there is no alternative syntax using `:` or `endif` in C—curly braces `{ }` are the only available notation (optional only if the block contains a single statement, but omitting them is strongly discouraged: a common source of bugs if a line is accidentally added without the curly braces).
+> **Note:** Unlike PHP, there is no alternative syntax using `:` or `endif` in C: curly braces `{ }` are the only available notation (optional only if the block contains a single statement, but omitting them is strongly discouraged: a common source of bugs if a line is accidentally added without the curly braces).
 
 ## The ternary operator
 
@@ -68,7 +68,7 @@ switch (jour) {
 }
 ```
 
-> **Note:** Don't forget to include `break;` at the end of each `case`—otherwise, execution will continue into the next `case` (*fall-through*), even if its condition does not match. This behavior is sometimes intentionally used to group together several identical cases:
+> **Note:** Don't forget to include `break;` at the end of each `case`; otherwise, execution will continue into the next `case` (*fall-through*), even if its condition does not match. This behavior is sometimes intentionally used to group together several identical cases:
 
 ```c
 switch (jour) {
@@ -82,4 +82,4 @@ switch (jour) {
 }
 ```
 
-> **Limitations of the "`switch`" in C:** Unlike some languages, a "`switch`" in C only works on integer types (or equivalent types: `char`, `enum`)—it is not possible to perform a "`switch`" directly on a character string.
+> **Limitations of the "`switch`" in C:** Unlike some languages, a "`switch`" in C only works on integer types (or equivalent types: `char`, `enum`): it is not possible to perform a "`switch`" directly on a character string.

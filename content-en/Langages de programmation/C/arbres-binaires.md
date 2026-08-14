@@ -17,7 +17,7 @@ typedef struct Noeud
 } Noeud;
 ```
 
-> **Note:** `struct Noeud *gauche` must reference `struct Noeud` (with the keyword `struct`), not just `Noeud`—at the time the compiler reads this line, `typedef Noeud` is not yet fully defined. This is a necessary exception specific to self-referential structures.
+> **Note:** `struct Noeud *gauche` must reference `struct Noeud` (with the keyword `struct`), not just `Noeud`: at the time the compiler reads this line, `typedef Noeud` is not yet fully defined. This is a necessary exception specific to self-referential structures.
 
 ## The Binary Search Tree (BST)
 
@@ -59,7 +59,7 @@ Noeud *inserer(Noeud *root, int value)
 ```
 
 - The base case for recursion is`root == NULL`: we have found the empty slot where to insert.
-- Each recursive call returns the root of the subtree (whether modified or not), which is reassigned to `->gauche` or `->droit` by the caller—this is what connects the new node to the rest of the tree.
+- Each recursive call returns the root of the subtree (whether modified or not), which is reassigned to `->gauche` or `->droit` by the caller: this is what connects the new node to the rest of the tree.
 
 ## Search
 
@@ -77,7 +77,7 @@ Noeud *rechercher(Noeud *root, int value)
 }
 ```
 
-At each step, the comparison eliminates **an entire subtree** from the search—which is what makes a balanced B-tree much faster than a linear traversal of a linked list.
+At each step, the comparison eliminates **an entire subtree** from the search, which is what makes a balanced B-tree much faster than a linear traversal of a linked list.
 
 ## The Three Classic Routes
 
@@ -109,11 +109,11 @@ void parcoursSuffixe(Noeud *root)  // gauche, droit, nœud
 }
 ```
 
-In the example tree above, `parcoursInfixe` displays `2 5 7 10 15 20`—the values in ascending order, a feature unique to ABR.
+In the example tree above, `parcoursInfixe` displays `2 5 7 10 15 20`: the values in ascending order, a feature unique to ABR.
 
 ## Free a Tree
 
-As with a linked list, each node allocated with `malloc()` must be freed individually—a suffix traversal is naturally suited for this, since it processes the children before the node itself:
+As with a linked list, each node allocated with `malloc()` must be freed individually: a suffix traversal is naturally suited for this, since it processes the children before the node itself:
 
 ```c
 void libererArbre(Noeud *root)

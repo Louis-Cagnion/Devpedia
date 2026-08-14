@@ -4,7 +4,7 @@ order: 10
 
 # Variadic Functions (va_list)
 
-A **variadic** function accepts a variable number of arguments—`printf("%d %s\n", 42, "text")` is the best-known example: `printf` accepts 1, 2, or 10 arguments, depending on the format provided. In C, this mechanism is made possible by the macros in `<stdarg.h>`.
+A **variadic** function accepts a variable number of arguments; `printf("%d %s\n", 42, "text")` is the best-known example: `printf` accepts 1, 2, or 10 arguments, depending on the format provided. In C, this mechanism is made possible by the macros in `<stdarg.h>`.
 
 ## Declare a variadic function
 
@@ -39,7 +39,7 @@ somme(3, 10, 20, 30); // 60 -> number = 3, les 3 arguments suivants sont additio
 | `va_arg(list, type)` | Retrieves the following argument, assuming it is from the specified `type` |
 | `va_end(list)` | Cleanly terminates the use of the list |
 
-> **Note:** There is no way for the compiler to verify that the `type` passed to `va_arg()` actually matches the type of the argument provided by the caller—this is entirely the developer’s responsibility. Passing the wrong type (e.g., reading a `int` when a `double` was provided) results in undefined behavior that is not detected at compile time.
+> **Note:** There is no way for the compiler to verify that the `type` passed to `va_arg()` actually matches the type of the argument provided by the caller: this is entirely the developer’s responsibility. Passing the wrong type (e.g., reading a `int` when a `double` was provided) results in undefined behavior that is not detected at compile time.
 
 ## How does `printf` know the number of arguments?
 
@@ -49,8 +49,8 @@ somme(3, 10, 20, 30); // 60 -> number = 3, les 3 arguments suivants sont additio
 printf("%d %d %d\n", 1, 2, 3); // la chaîne annonce 3 valeurs -> printf lit 3 arguments variadiques
 ```
 
-> **Note:** This is why an incorrect number of `%` compared to the actual arguments (or vice versa) does not cause **a compilation error**—only undefined behavior at runtime (reading data that is not actual arguments). This is a classic source of security vulnerabilities (“format string vulnerabilities”) when a format string comes directly from unchecked user input.
+> **Note:** This is why an incorrect number of `%` compared to the actual arguments (or vice versa) does not cause **a compilation error**: only undefined behavior at runtime (reading data that is not actual arguments). This is a classic source of security vulnerabilities (“format string vulnerabilities”) when a format string comes directly from unchecked user input.
 
 ## One limitation: the number of arguments must be specified in another way
 
-Unlike `printf` (which is guided by the format string), the example `somme()` above must explicitly receive the number of arguments as its first parameter (`number`) — `va_list` alone does not allow you to know "how many arguments are left"; you always need an external means of communicating this (a counter, a sentinel value such as `NULL` as the last argument, or a format string).
+Unlike `printf` (which is guided by the format string), the example `somme()` above must explicitly receive the number of arguments as its first parameter (`number`): `va_list` alone does not allow you to know "how many arguments are left"; you always need an external means of communicating this (a counter, a sentinel value such as `NULL` as the last argument, or a format string).

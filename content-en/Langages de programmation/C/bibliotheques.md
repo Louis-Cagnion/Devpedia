@@ -4,7 +4,7 @@ order: 9
 
 # Libraries
 
-A **library** is a collection of precompiled functions that can be reused by any program without recompiling the source code—this is how, for example, the C standard library works (`printf`, `malloc`...). There are two ways to link a library to a program: statically or dynamically.
+A **library** is a collection of precompiled functions that can be reused by any program without recompiling the source code: this is how, for example, the C standard library works (`printf`, `malloc`...). There are two ways to link a library to a program: statically or dynamically.
 
 ## 
 
@@ -42,7 +42,7 @@ gcc main.c -L. -lcalculs -o program
 LD_LIBRARY_PATH=. ./program
 ```
 
-- `-fPIC` (*Position-Independent Code*) generates code that can run regardless of the memory address where it is loaded—a requirement for a shared library, which is loaded at a different location depending on the program.
+- `-fPIC` (*Position-Independent Code*) generates code that can run regardless of the memory address where it is loaded, a requirement for a shared library, which is loaded at a different location depending on the program.
 - Without `LD_LIBRARY_PATH` (or an installation in a standard system directory such as `/usr/lib`), the system does not know where to look for `libcalculs.so` at startup, and the program refuses to start.
 
 | Advantage | Disadvantage |
@@ -54,6 +54,6 @@ LD_LIBRARY_PATH=. ./program
 
 | | Static (`.a`) | Dynamic (`.so`) |
 |---|---|---|
-| Copied into the executable? | Yes | No — loaded separately |
+| Copied into the executable? | Yes | No (loaded separately) |
 | When is it linked? | At compile time | At program startup (or during program execution) |
 | Library update | Requires recompiling the program | The program benefits from the update without recompilation |
