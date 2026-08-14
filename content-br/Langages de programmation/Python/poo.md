@@ -2,41 +2,41 @@
 order: 10
 ---
 
-# A programação orientada para objetos
+# A programação orientada a objetos
 
-O Python é uma linguagem orientada para objetos de ponta a ponta: até mesmo um `int` ou um `str` é, na realidade, um objeto, uma instância de uma classe. A sintaxe das classes personalizadas assemelha-se à do PHP, com uma diferença imediata: `self` (o equivalente a `$this`) é um parâmetro **explícito** de cada método, nunca implícito.
+Python é uma linguagem orientada a objetos de ponta a ponta: até mesmo um `int` ou uma `str` é na verdade um objeto, instância de uma classe. A sintaxe das classes personalizadas se parece com a de PHP, com uma diferença imediata: `self` (o equivalente de `$this`) é um parâmetro **explícito** de cada método, nunca implícito.
 
 ## Declarar uma classe
 
 ```python
-class Vehicule:
+class Veiculo:
     def __init__(self, marca, modelo):
-        self.marca = marca   # self.xxx: equivalente a $this->xxx em PHP
+        self.marca = marca   # self.xxx: equivalente de $this->xxx em PHP
         self.modelo = modelo
 
-    def description(self):
+    def descricao(self):
         return f"{self.marca} {self.modelo}"
 
-v = Vehicule("Peugeot", "308")
-print(v.description())   # «Peugeot 308»
+v = Veiculo("Peugeot", "308")
+print(v.descricao())   # "Peugeot 308"
 ```
 
-> **Nota:** «`self`» deve ser escrito explicitamente como **primeiro parâmetro** de cada método de instância: o Python preenche-o automaticamente com a instância atual no momento da chamada (`v.description()` equivale a `Vehicule.description(v)`), mas omitir este parâmetro na assinatura provoca um erro.
+> **Nota:** `self` deve ser escrito explicitamente como **primeiro parâmetro** de cada método de instância: Python o preenche automaticamente com a instância atual na chamada (`v.descricao()` equivale a `Veiculo.descricao(v)`), mas omiti-lo na assinatura provoca um erro.
 
-## Atributos de classe vs. atributos de instância
+## Atributos de classe vs atributos de instância
 
 ```python
 class Contador:
-    total_crees = 0   # atributo de CLASSE: partilhado por todas as instâncias
+    total_criados = 0   # atributo de CLASSE: compartilhado por todas as instancias
 
     def __init__(self):
-        Contador.total_crees += 1
-        self.id = Contador.total_crees   # Atributo de instância: específico de cada objeto
+        Contador.total_criados += 1
+        self.id = Contador.total_criados   # atributo DE INSTANCIA: proprio de cada objeto
 
 c1 = Contador()
 c2 = Contador()
-print(Contador.total_crees)   # 2 -> partilhado
-print(c1.id, c2.id)             # 1 2 -> específico para cada um
+print(Contador.total_criados)  # 2 -> compartilhado
+print(c1.id, c2.id)            # 1 2 -> proprio de cada um
 ```
 
 ## A herança
@@ -46,80 +46,91 @@ class Animal:
     def __init__(self, nome):
         self.nome = nome
 
-    def parler(self):
+    def falar(self):
         return "..."
 
-class Chien(Animal):
-    def parler(self):
-        return f"{self.nome} aboie"
+class Cachorro(Animal):
+    def falar(self):
+        return f"{self.nome} late"
 
-class Chat(Animal):
-    def parler(self):
-        return f"{self.nome} miaule"
+class Gato(Animal):
+    def falar(self):
+        return f"{self.nome} mia"
 
-animaux = [Chien("Rex"), Chat("Félix")]
-for animal in animaux:
-    print(animal.parler())
+animais = [Cachorro("Rex"), Gato("Felix")]
+for animal in animais:
+    print(animal.falar())
 ```
 
-`super()` permite chamar explicitamente o método da classe pai, por exemplo, para o estender em vez de o substituir na totalidade:
+`super()` permite chamar explicitamente o método da classe pai, por exemplo para estendê-lo em vez de substituí-lo inteiramente:
 
 ```python
-class ChienDeGarde(Chien):
-    def parler(self):
-        return super().parler() + " bruyamment"
+class CachorroDeGuarda(Cachorro):
+    def falar(self):
+        return super().falar() + " ruidosamente"
 ```
 
 ## Os métodos especiais (*dunder methods*)
 
-Métodos cujos nomes são delimitados por dois sublinhados, chamados automaticamente pelo Python em determinados contextos:
+Métodos com o nome cercado por underscores duplos, chamados automaticamente pelo Python em certos contextos:
 
 ```python
-class Point:
+class Ponto:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-    def __repr__(self):           # chamada por repr(obj) e a exibição na consola/depurador
-        return f"Point({self.x}, {self.y})"
+    def __repr__(self):           # chamado por repr(obj) e a exibicao no console/debugador
+        return f"Ponto({self.x}, {self.y})"
 
-    def __str__(self):             # chamada por print(obj) e str(obj)
+    def __str__(self):             # chamado por print(obj) e str(obj)
         return f"({self.x}, {self.y})"
 
-    def __eq__(self, autre):       # chamada por «==»
-        return self.x == autre.x and self.y == autre.y
+    def __eq__(self, outro):       # chamado por "=="
+        return self.x == outro.x and self.y == outro.y
 
-    def __add__(self, autre):      # chamada por «+»
-        return Point(self.x + autre.x, self.y + autre.y)
+    def __add__(self, outro):      # chamado por "+"
+        return Ponto(self.x + outro.x, self.y + outro.y)
 
-p1 = Point(1, 2)
-p2 = Point(3, 4)
-print(p1 + p2)      # (4, 6) -> graças ao __add__
-print(p1 == Point(1, 2))  # True -> graças ao __eq__
+p1 = Ponto(1, 2)
+p2 = Ponto(3, 4)
+print(p1 + p2)            # (4, 6) -> gracas a __add__
+print(p1 == Ponto(1, 2))  # True -> gracas a __eq__
 ```
 
-| Método especial | Acionado por |
+| Método especial | Disparado por |
 |---|---|
-| `__init__` | `NomClasse(...)` (fabricante) |
+| `__init__` | `NomeClasse(...)` (construtor) |
 | `__str__` | `print(obj)`, `str(obj)` |
-| `__repr__` | Exibição na consola/depurador, `repr(obj)` |
+| `__repr__` | Exibição no console/debugador, `repr(obj)` |
 | `__eq__` | `obj1 == obj2` |
 | `__len__` | `len(obj)` |
 | `__getitem__` | `obj[chave]` |
 
-## `@property` : um atributo calculado, acessado sem parênteses
+## `@property`: um atributo calculado, acessado sem parênteses
 
 ```python
-class Cercle:
-    def __init__(self, rayon):
-        self.rayon = rayon
+class Circulo:
+    def __init__(self, raio):
+        self.raio = raio
 
     @property
-    def surface(self):
-        return 3.14159 * self.rayon ** 2
+    def area(self):
+        return 3.14159 * self.raio ** 2
 
-c = Cercle(5)
-print(c.surface)   # 78.53975 -> acessado como um atributo, NÃO como c.surface()
+c = Circulo(5)
+print(c.area)   # 78.53975 -> acessado como um atributo, NAO como c.area()
 ```
 
-`@property` transforma um método num atributo de leitura, recalculado a cada acesso, útil para expor um valor derivado sem exigir que quem o invoca saiba que se trata, na realidade, de um cálculo.
+`@property` transforma um método em atributo de leitura, recalculado a cada acesso, útil para expor um valor derivado sem exigir que o chamador saiba que é na verdade um cálculo.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Em Python, tudo é objeto. `self` é um parâmetro explícito de cada método. Os métodos especiais (`__init__`, `__str__`, `__eq__`...) definem como um objeto reage a operações nativas (`+`, `==`, `print`...). |
+| **Ferramentas utilizáveis** | `super()` para chamar o método pai, `@property` para um atributo calculado, atributos de classe vs de instância. |
+| **Armadilhas a evitar** | Esquecer `self` como primeiro parâmetro de um método de instância: provoca um erro na chamada. |
+| **Boas práticas** | Definir `__repr__` em toda classe destinada a ser exibida em depuração, para uma representação legível em vez do endereço de memória padrão. |

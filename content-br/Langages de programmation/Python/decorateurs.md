@@ -4,119 +4,130 @@ order: 9
 
 # Os decoradores
 
-Um **decorador** envolve uma função noutra, para lhe adicionar um comportamento (cronometragem, registro em log, verificação de direitos...) sem alterar o seu código; este mecanismo baseia-se diretamente nas funções de primeira classe e nos closures (ver capítulo sobre funções).
+Um **decorador** envolve uma função em outra, para adicionar a ela um comportamento (cronometragem, registro em log, verificação de permissões...) sem modificar seu código; esse mecanismo se apoia diretamente nas funções de primeira classe e nas closures (veja [As funções](/?c=langages-de-programmation&s=python&p=fonctions)).
 
-## O princípio, sem os artifícios sintáticos
+## O princípio, sem o açúcar sintático
 
 ```python
-def mon_decorateur(fonction):
-    def enveloppe(*args, **kwargs):
-        print("Avant l'appel")
-        resultado = fonction(*args, **kwargs)
-        print("Après l'appel")
+def meu_decorador(funcao):
+    def envelope(*args, **kwargs):
+        print("Antes da chamada")
+        resultado = funcao(*args, **kwargs)
+        print("Depois da chamada")
         return resultado
-    return enveloppe
+    return envelope
 
-def dire_bonjour(nome):
-    print(f"Bonjour {nome}")
+def dizer_ola(nome):
+    print(f"Ola {nome}")
 
-dire_bonjour = mon_decorateur(dire_bonjour)   # substitui a função pela sua versão encapsulada
-dire_bonjour("Jean")
+dizer_ola = meu_decorador(dizer_ola)   # substitui a funcao por sua versao envolvida
+dizer_ola("Joao")
 # Antes da chamada
-# Olá, Jean
-# Após a chamada
+# Ola Joao
+# Depois da chamada
 ```
 
-## A sintaxe`@`
+## A sintaxe `@`
 
-`@mon_decorateur` O código acima de uma função é um simples atalho para «`fonction = mon_decorateur(fonction)`»:
+`@meu_decorador` acima de uma função é um simples atalho para `funcao = meu_decorador(funcao)`:
 
 ```python
-@mon_decorateur
-def dire_bonjour(nome):
-    print(f"Bonjour {nome}")
+@meu_decorador
+def dizer_ola(nome):
+    print(f"Ola {nome}")
 
-dire_bonjour("Jean")   # exatamente o mesmo resultado que o exemplo anterior
+dizer_ola("Joao")   # exatamente o mesmo resultado do exemplo anterior
 ```
 
-## Exemplo prático: cronometrizar uma função
+## Exemplo prático: cronometrar uma função
 
 ```python
 import time
 
-def chronometrer(fonction):
-    def enveloppe(*args, **kwargs):
-        debut = time.time()
-        resultado = fonction(*args, **kwargs)
-        duree = time.time() - debut
-        print(f"{fonction.__name__} a pris {duree:.4f}s")
+def cronometrar(funcao):
+    def envelope(*args, **kwargs):
+        inicio = time.time()
+        resultado = funcao(*args, **kwargs)
+        duracao = time.time() - inicio
+        print(f"{funcao.__name__} levou {duracao:.4f}s")
         return resultado
-    return enveloppe
+    return envelope
 
-@chronometrer
-def calcul_long():
+@cronometrar
+def calculo_longo():
     total = sum(x ** 2 for x in range(1000000))
     return total
 
-calcul_long()   # A função `calcul_long` demorou 0,0834 s
+calculo_longo()   # calculo_longo levou 0.0834s
 ```
 
-## Preservar os metadados com o «`functools.wraps`»
+## Preservar os metadados com `functools.wraps`
 
-Sem as devidas precauções, a função decorada «perde» o seu nome e a sua documentação original, que são substituídos pelos da função de invólucro:
+Sem precaução, a função decorada "perde" seu nome e sua documentação de origem, substituídos pelos da função de envelope:
 
 ```python
-print(calcul_long.__name__)   # «envelope» -> não é muito útil para depurar
+print(calculo_longo.__name__)   # "envelope" -> nao muito util para depurar
 ```
 
 ```python
 from functools import wraps
 
-def chronometrer(fonction):
-    @wraps(fonction)   # preserva __name__, __doc__... da função original
-    def enveloppe(*args, **kwargs):
-        # ... a mesma lógica de antes ...
-        return fonction(*args, **kwargs)
-    return enveloppe
+def cronometrar(funcao):
+    @wraps(funcao)   # preserva __name__, __doc__... da funcao original
+    def envelope(*args, **kwargs):
+        # ... mesma logica que antes ...
+        return funcao(*args, **kwargs)
+    return envelope
 
-@chronometrer   # renovada com esta nova versão do Chronometrer
-def calcul_long():
+@cronometrar   # redecorado com essa nova versao de cronometrar
+def calculo_longo():
     total = sum(x ** 2 for x in range(1000000))
     return total
 
-print(calcul_long.__name__)   # «calcul_long» -> corrigido
+print(calculo_longo.__name__)   # "calculo_longo" -> corrigido
 ```
 
-> **Nota:** redefinir `chronometrer` não altera retroativamente uma função já decorada pela sua versão anterior: `calcul_long` deve ser redecorada aqui para que `@wraps` se aplique efetivamente.
+> **Nota:** redefinir `cronometrar` não muda nada retroativamente em uma função já decorada por sua versão antiga: `calculo_longo` precisa ser redecorada aqui para que `@wraps` se aplique realmente.
 
-## Um decorador com os seus próprios argumentos
+## Um decorador com seus próprios argumentos
 
-Para configurar um decorador (por exemplo, `@repeter(3)` em vez de `@repeter`), é necessário um nível adicional de aninhamento:
+Para parametrizar um decorador (ex. `@repetir(3)` em vez de `@repetir`), um nível de aninhamento adicional é necessário:
 
 ```python
-def repeter(nombre_de_fois):
-    def decorateur(fonction):
-        def enveloppe(*args, **kwargs):
-            for _ in range(nombre_de_fois):
-                resultado = fonction(*args, **kwargs)
+def repetir(numero_de_vezes):
+    def decorador(funcao):
+        def envelope(*args, **kwargs):
+            for _ in range(numero_de_vezes):
+                resultado = funcao(*args, **kwargs)
             return resultado
-        return enveloppe
-    return decorateur
+        return envelope
+    return decorador
 
-@repeter(3)
-def saluer():
-    print("Bonjour !")
+@repetir(3)
+def saudar():
+    print("Ola!")
 
-saluer()   # exibe «Olá!» três vezes
+saudar()   # exibe "Ola!" tres vezes
 ```
 
-`repeter(3)` retorna primeiro `decorateur` (uma função que recebe uma função), que é depois aplicada a `saluer`, daí os três níveis de funções aninhadas.
+`repetir(3)` primeiro retorna `decorador` (uma função que recebe uma função), que é então aplicado a `saudar`, daí os três níveis de funções aninhadas.
 
 ## Decoradores comuns da biblioteca padrão
 
 | Decorador | Função |
 |---|---|
-| `@property` | Transforma um método num atributo calculado (ver capítulo sobre POO) |
-| `@staticmethod` | Método que não necessita nem de `self`, nem da classe |
+| `@property` | Transforma um método em um atributo calculado (veja [A programação orientada a objetos](/?c=langages-de-programmation&s=python&p=poo)) |
+| `@staticmethod` | Método que não precisa nem de `self`, nem da classe |
 | `@classmethod` | Método que recebe a própria classe (`cls`) em vez de uma instância |
-| `@functools.lru_cache` | Armazena automaticamente em cache o resultado de uma função para argumentos já utilizados |
+| `@functools.lru_cache` | Armazena automaticamente em cache o resultado de uma função para argumentos já vistos |
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Um decorador (`@nome`) envolve uma função para adicionar a ela um comportamento sem modificar seu código: `@decorador def f()` equivale a `f = decorador(f)`. |
+| **Ferramentas utilizáveis** | `functools.wraps` (preserva os metadados), `@property`/`@staticmethod`/`@classmethod`, `@functools.lru_cache`. |
+| **Armadilhas a evitar** | Esquecer `@wraps`: a função decorada perde seu `__name__`/`__doc__` de origem, o que complica a depuração. |
+| **Boas práticas** | Sempre usar `@wraps(funcao)` na função de envelope de um decorador personalizado. |

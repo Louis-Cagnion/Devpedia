@@ -1,17 +1,22 @@
+---
+order: 4
+---
+
 # Python
 
-O Python é considerado uma linguagem de programação de **alto nível**, dinamicamente tipada e interpretada: oculta quase totalmente a gestão da memória e os detalhes do hardware, em benefício da legibilidade: a sintaxe baseia-se na própria indentação para delimitar os blocos de código, em vez de utilizar chaves.
+Uma [linguagem de programação](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) é um conjunto de regras que permite escrever instruções que um computador pode executar. Python é uma delas, conhecida por sua sintaxe deliberadamente próxima da linguagem natural.
 
-Entre os conceitos essenciais utilizados em Python, destacam-se, nomeadamente:
+```python
+nome = "Devpedia"          # uma variavel, veja o capitulo dedicado
+print(f"Ola, {nome}")      # exibe: Ola, Devpedia
+```
 
-- As variáveis e a tipagem dinâmica
-- Listas, tuplas, dicionários e conjuntos
-- Programação orientada a objetos (classes, herança, métodos especiais)
-- Geradores e programação funcional (funções de primeira classe, decoradores)
-- Um vasto ecossistema de bibliotecas externas (`pip`), nomeadamente para o cálculo científico e a inteligência artificial
+| Termo | O que significa |
+|---|---|
+| Alto nível | Esconde quase inteiramente o gerenciamento de memória e os detalhes do hardware, em favor da legibilidade |
+| Dinamicamente tipado | Uma variável não declara um tipo antecipadamente: ela assume o tipo do valor que lhe é atribuído, e pode mudar durante o programa (veja [As variáveis](/?c=langages-de-programmation&s=python&p=variables)) |
+| Interpretado | O código não é traduzido em instruções de máquina nativas antecipadamente: um **interpretador** (um programa que lê e executa código à medida que avança, em vez de uma única tradução prévia) o lê e executa: um compromisso de legibilidade contra a performance bruta de uma linguagem compilada como o [C](/?c=langages-de-programmation&s=c&p=c) |
 
-A aprendizagem do Python permite progredir rapidamente na resolução de problemas concretos, graças a uma sintaxe deliberadamente próxima da linguagem natural e a uma biblioteca padrão muito rica («*batteries *included»). No entanto, **não** se trata de uma linguagem compilada para código de máquina nativo: o interpretador de referência (CPython) compila o código-fonte em *bytecode*, que é posteriormente executado por uma máquina virtual, um compromisso entre legibilidade e flexibilidade, em detrimento do desempenho bruto de uma linguagem como o C.
+> O interpretador de referência para Python se chama **CPython**. Internamente, ele traduz primeiro o código em *bytecode* (uma forma intermediária, mais próxima da máquina que o código-fonte mas ainda não instruções nativas) antes de executá-lo.
 
-Graças à sua versatilidade, o Python é hoje fundamental em várias áreas muito diferentes: o desenvolvimento web (Django, Flask), a automatização e a criação de scripts de sistema e, sobretudo, o **cálculo científico e a inteligência artificial** (NumPy, pandas, PyTorch, scikit-learn...), o que o tornou a linguagem de referência na ciência de dados e na aprendizagem automática.
-
-A aprendizagem de Python constitui uma excelente porta de entrada para áreas de especialização como o machine learning ou o deep learning, onde a maior parte do ecossistema (bibliotecas, notebooks, comunidade, documentação) está construída em torno desta linguagem.
+Graças à sua sintaxe acessível e sua biblioteca padrão muito rica, Python permite progredir rapidamente em problemas concretos. Ele é hoje central em vários domínios: o desenvolvimento web ([Django](https://www.djangoproject.com), [Flask](https://flask.palletsprojects.com)), a automação, e principalmente a computação científica e a inteligência artificial ([NumPy](/?c=data-science&p=numpy), [pandas](/?c=data-science&p=pandas), [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch)...), veja as categorias [Data Science](/?c=data-science&p=jupyter-notebooks) e [IA](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones), que se apoiam quase inteiramente nessa linguagem.
