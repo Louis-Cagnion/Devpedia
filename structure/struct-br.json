@@ -66,6 +66,33 @@
       ]
     },
     {
+      "id": "data-science",
+      "label": "Data Science",
+      "folder": "Data Science",
+      "chapters": [
+        {
+          "id": "jupyter-notebooks",
+          "label": "Os notebooks Jupyter"
+        },
+        {
+          "id": "numpy",
+          "label": "NumPy: o cálculo numérico"
+        },
+        {
+          "id": "pandas",
+          "label": "pandas: manipular dados tabulares"
+        },
+        {
+          "id": "matplotlib",
+          "label": "Matplotlib: visualizar dados"
+        },
+        {
+          "id": "machine-learning-scikit-learn",
+          "label": "Introdução ao machine learning (scikit-learn)"
+        }
+      ]
+    },
+    {
       "id": "domain-specific-languages-dsl",
       "label": "Domain-specific Languages (DSL)",
       "folder": "Domain-specific Languages (DSL)",
@@ -128,6 +155,47 @@
         {
           "id": "architecture-interne",
           "label": "A arquitetura interna do Git"
+        }
+      ]
+    },
+    {
+      "id": "ia",
+      "label": "IA",
+      "folder": "IA",
+      "subjects": [
+        {
+          "id": "fondamentaux-du-deep-learning",
+          "label": "Fondamentaux du deep learning",
+          "folder": "Fondamentaux du deep learning",
+          "chapters": [
+            {
+              "id": "reseaux-de-neurones",
+              "label": "As redes neurais: os fundamentos"
+            },
+            {
+              "id": "entrainement-descente-de-gradient",
+              "label": "O treinamento de um modelo e a descida do gradiente"
+            },
+            {
+              "id": "architectures-cnn-rnn-transformers",
+              "label": "Arquiteturas: CNN, RNN e Transformers"
+            },
+            {
+              "id": "deep-learning-pytorch",
+              "label": "Deep learning com PyTorch"
+            }
+          ]
+        },
+        {
+          "id": "nlp-llm",
+          "label": "NLP et LLM",
+          "folder": "NLP et LLM",
+          "chapters": [
+            {
+              "id": "nlp-et-llm",
+              "label": "Processamento de linguagem natural (NLP) e grandes modelos de linguagem (LLM)"
+            }
+          ]
         }
       ]
     },
@@ -373,12 +441,12 @@
               "label": "Gestão de erros"
             },
             {
-              "id": "HTMLElements",
-              "label": "Os elementos HTML"
-            },
-            {
               "id": "dom-et-evenements",
               "label": "O DOM e a gestão de eventos"
+            },
+            {
+              "id": "html-elements",
+              "label": "Os HTMLElements"
             },
             {
               "id": "asynchrone",
@@ -408,7 +476,7 @@
               "label": "Os loops"
             },
             {
-              "id": "structuresDeLangagues",
+              "id": "structures-de-langage",
               "label": "As estruturas da linguagem"
             },
             {
@@ -497,46 +565,6 @@
             {
               "id": "modules-et-environnements",
               "label": "Módulos, pip e ambientes virtuais"
-            },
-            {
-              "id": "jupyter-notebooks",
-              "label": "Os notebooks Jupyter"
-            },
-            {
-              "id": "numpy",
-              "label": "NumPy — o cálculo numérico"
-            },
-            {
-              "id": "pandas",
-              "label": "pandas — manipulação de dados tabulares"
-            },
-            {
-              "id": "matplotlib",
-              "label": "Matplotlib — visualizar dados"
-            },
-            {
-              "id": "machine-learning-scikit-learn",
-              "label": "Introdução ao machine learning (scikit-learn)"
-            },
-            {
-              "id": "reseaux-de-neurones",
-              "label": "As redes neurais — os conceitos básicos"
-            },
-            {
-              "id": "entrainement-descente-de-gradient",
-              "label": "O treino de um modelo e o gradiente descendente"
-            },
-            {
-              "id": "deep-learning-pytorch",
-              "label": "Deep learning com PyTorch"
-            },
-            {
-              "id": "architectures-cnn-rnn-transformers",
-              "label": "Arquiteturas — CNN, RNN e Transformers"
-            },
-            {
-              "id": "nlp-et-llm",
-              "label": "Processamento de linguagem natural (NLP) e grandes modelos de linguagem (LLM)"
             }
           ]
         }

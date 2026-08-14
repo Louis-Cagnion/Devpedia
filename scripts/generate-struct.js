@@ -211,7 +211,7 @@ function indexStructForLinkLookup(struct) {
  * @param {{categories: Array}} struct
  * @throws {Error} listing every broken link found (file + link), if any
  */
-function validateInternalLinks(contentDir, struct) {
+export function validateInternalLinks(contentDir, struct) {
     const index = indexStructForLinkLookup(struct);
     const broken = [];
 
