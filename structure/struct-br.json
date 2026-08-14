@@ -817,6 +817,25 @@
           "label": "A aleatoriedade e os geradores"
         }
       ]
+    },
+    {
+      "id": "traitement-de-documents",
+      "label": "Traitement de documents",
+      "folder": "Traitement de documents",
+      "chapters": [
+        {
+          "id": "extraction-pdf",
+          "label": "Extrair o texto e as páginas de um PDF"
+        },
+        {
+          "id": "ocr-structure",
+          "label": "O OCR estruturado e a análise de layout"
+        },
+        {
+          "id": "arbitrage-local-cloud-vision",
+          "label": "Arbitragem local vs cloud para um modelo de visão"
+        }
+      ]
     }
   ]
 }
