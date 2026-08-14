@@ -14,7 +14,8 @@
 - Structure des dossiers `content-es/` alignée sur le FR (2026-08-14) : 14 catégories créées, IA + ses 6 subjects, Shells + Bash/PowerShell/Zsh, OCaml, chacun avec sa page d'intro traduite. Il reste à traduire tous les chapitres des catégories nouvellement créées (volumineux, pas commencé).
 - Réécriture des chapitres ES **déjà existants** mais legacy (décidé le 2026-08-14, comme pour BR, sans agents) : audit initial sur 118 fichiers a trouvé 89 sans résumé final, 29 tronqués (jusqu'à 54% du FR actuel), 48 avec tirets cadratins.
   - Git : 11/11 faits, catégorie terminée.
-  - Pas commencé : CSS (6 fichiers), HTML (7), Langages de programmation/C (17), C++ (11), JavaScript (11), PHP (13), Python (12), Shells/Bash (12), DSL (2).
+  - CSS : 8/8 faits, catégorie terminée.
+  - Pas commencé : HTML (7), Langages de programmation/C (17), C++ (11), JavaScript (11), PHP (13), Python (12), Shells/Bash (12), DSL (2).
   - Une fois la réécriture terminée : sweep dédié des tirets cadratins résiduels (comme pour BR), y compris sur des fichiers par ailleurs déjà corrects (ex: css.md, cpp.md, python.md).
 - 3 chapitres Git entièrement absents en ES (contenu neuf, pas une correction) : github-et-plateformes.md, issues-et-projets-github.md, pull-requests-github.md.
 - `ui-strings.json` n'a pas d'entrées `categoryLabels`/`subjectLabels` pour `es` (seul `br` les a) : tant que ce n'est pas ajouté, la sidebar/navbar/breadcrumb ES affichent les noms de dossiers bruts en français pour les catégories/subjects. À faire en même temps qu'un futur passage de traduction ES, sur le modèle de ce qui a été fait pour BR.
