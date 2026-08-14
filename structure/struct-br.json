@@ -249,6 +249,21 @@
           ]
         },
         {
+          "id": "applications-llm",
+          "label": "Applications LLM",
+          "folder": "Applications LLM",
+          "chapters": [
+            {
+              "id": "chatbot",
+              "label": "Construindo um chatbot: arquitetura, configuração e escalonamento"
+            },
+            {
+              "id": "assistant-agentique-terminal",
+              "label": "O assistente de IA agêntico no terminal: além do prompt simples"
+            }
+          ]
+        },
+        {
           "id": "production-et-gouvernance",
           "label": "Production et gouvernance",
           "folder": "Production et gouvernance",
