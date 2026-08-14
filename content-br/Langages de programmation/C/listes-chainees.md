@@ -2,100 +2,111 @@
 order: 11
 ---
 
-# Listas encadeadas
+# As listas encadeadas
 
-Uma **lista encadeada** é uma estrutura de dados em que cada elemento (um **elo** ou *nó*) contém um valor e um ponteiro para o elemento seguinte. Ao contrário de um tabuuleiro, os seus elementos não são armazenados de forma contígua na memória: é isso que permite adicionar ou remover um elemento sem ter de deslocar todos os outros.
+Uma **lista encadeada** é uma estrutura de dados em que cada elemento (um **nó**, ou *node*) contém um valor e um ponteiro para o elemento seguinte. Ao contrário de um array, seus elementos não são armazenados de forma contígua na memória: é isso que permite adicionar ou remover um elemento sem precisar deslocar todos os outros.
 
-## Declarar um elo
+## Declarar um nó
 
 ```c
-typedef struct Maillon
+typedef struct No
 {
     int valor;
-    struct Maillon *suivant;
-} Maillon;
+    struct No *seguinte;
+} No;
 ```
 
-Tal como acontece com uma árvore binária (ver capítulo dedicado), `struct Maillon *suivant` deve remeter para `struct Maillon` e não apenas para `Maillon`: no momento em que esta linha for lida, o `typedef` ainda não está completamente definido.
+Como para [uma árvore binária](/?c=langages-de-programmation&s=c&p=arbres-binaires), `struct No *seguinte` deve referenciar `struct No` e não apenas `No`: no momento em que essa linha é lida, o `typedef` ainda não está completamente definido.
 
-## Criar e encadear elos
+## Criar e encadear nós
 
 ```c
-Maillon *premier = malloc(sizeof(Maillon));   // à vérifier contre NULL en pratique (cf. chapitre mémoire)
-premier->valor = 10;
+No *primeiro = malloc(sizeof(No));   // a verificar contra NULL na pratica (veja O gerenciamento de memoria)
+primeiro->valor = 10;
 
-Maillon *second = malloc(sizeof(Maillon));
-second->valor = 20;
+No *segundo = malloc(sizeof(No));
+segundo->valor = 20;
 
-premier->suivant = second; // chaîne le premier vers le second
-second->suivant = NULL;    // NULL marque la fin de la liste
+primeiro->seguinte = segundo;  // encadeia o primeiro ao segundo
+segundo->seguinte = NULL;      // NULL marca o fim da lista
 ```
 
-```
-premier -> second -> NULL
-  10         20
+```text
+primeiro -> segundo -> NULL
+   10          20
 ```
 
-## Ver a lista
+## Percorrer a lista
 
 ```c
-void afficher(Maillon *tete)
+void exibir(No *cabeca)
 {
-    Maillon *courant = tete;
+    No *atual = cabeca;
 
-    while (courant != NULL) {
-        printf("%d\n", courant->valor);
-        courant = courant->suivant;
+    while (atual != NULL) {
+        printf("%d\n", atual->valor);
+        atual = atual->seguinte;
     }
 }
 ```
 
-> **Nota:** `courant` é uma **cópia** do ponteiro `tete`: avançar para `courant = courant->suivant` não altera `tete`, que continua a apontar para o primeiro elemento da lista. É por isso que se utiliza sempre um ponteiro «de trabalho» separado para percorrer uma lista, nunca o próprio ponteiro inicial.
+> **Nota:** `atual` é uma **cópia** do ponteiro `cabeca`: avançar `atual = atual->seguinte` não modifica `cabeca`, que continua designando o primeiro nó da lista. É por isso que sempre se usa um ponteiro "de trabalho" separado para percorrer uma lista, nunca a cabeça em si.
 
 ## Inserir no início da lista
 
 ```c
-Maillon *insererEnTete(Maillon *tete, int valor)
+No *inserirNoInicio(No *cabeca, int valor)
 {
-    Maillon *nouveau = malloc(sizeof(Maillon));
-    if (nouveau == NULL) {
-        return tete; // échec d'allocation : renvoyer la liste inchangée plutôt que planter
+    No *novo = malloc(sizeof(No));
+    if (novo == NULL) {
+        return cabeca; // falha de alocacao: devolver a lista inalterada em vez de travar
     }
-    nouveau->valor = valor;
-    nouveau->suivant = tete; // le nouveau maillon pointe vers l'ancienne tête
-    return nouveau;          // devient la nouvelle tête
+    novo->valor = valor;
+    novo->seguinte = cabeca;  // o novo no aponta para a antiga cabeca
+    return novo;              // torna-se a nova cabeca
 }
 
-// utilisation :
-tete = insererEnTete(tete, 5);
+// uso:
+cabeca = inserirNoInicio(cabeca, 5);
 ```
 
-A inserção no início é uma operação de tempo constante (nenhum outro elemento é deslocado); ao contrário de um tabular, em que a inserção no início exige o deslocamento de todos os elementos existentes.
+Inserir no início é uma operação em tempo constante (nenhum outro nó é deslocado); ao contrário de um array, em que inserir no início exige deslocar todos os elementos existentes.
 
 ## Liberar a lista
 
-Cada nó alocado com `malloc()` deve ser libertado individualmente: libertar diretamente `tete` sem manter uma referência ao resto faria com que se perdesse o acesso a todos os nós seguintes (fuga de memória, ver capítulo sobre gestão de memória):
+Cada nó alocado com `malloc()` deve ser liberado individualmente: liberar diretamente `cabeca` sem manter uma referência ao resto perderia o acesso a todos os nós seguintes (vazamento de memória, veja [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire)):
 
 ```c
-void libererListe(Maillon *tete)
+void liberarLista(No *cabeca)
 {
-    Maillon *courant = tete;
+    No *atual = cabeca;
 
-    while (courant != NULL) {
-        Maillon *suivant = courant->suivant; // sauvegarder le suivant AVANT de libérer courant
-        free(courant);
-        courant = suivant;
+    while (atual != NULL) {
+        No *seguinte = atual->seguinte; // salvar o seguinte ANTES de liberar atual
+        free(atual);
+        atual = seguinte;
     }
 }
 ```
 
-> **Nota:** a ordem é importante neste caso: chamar `free(courant)` e, em seguida, ler `courant->suivant` constituiria um **«use-after-free»** (ver capítulo sobre gestão de memória): o valor do ponteiro `suivant` deve ser recuperado antes da libertação do bloco de memória que o contém.
+> **Nota:** a ordem importa aqui: chamar `free(atual)` e depois ler `atual->seguinte` seria um **use-after-free** (veja [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire)): o valor do ponteiro `seguinte` deve ser recuperado antes da liberação do nó que o contém.
 
-## Lista encadeada vs. tabela
+## Lista encadeada vs array
 
-| | Tabela | Lista encadeada |
+| | Array | Lista encadeada |
 |---|---|---|
-| Acesso a um elemento por índice | Imediato (`tab[i]`) | É necessário percorrer a partir do início |
-| Inserção no início/no meio | Desloca todos os elementos seguintes | Tempo constante, sem deslocamento |
-| Memória | Contígua | Fragmentada, um «`malloc`» por nó |
-| Tamanho | Fixo (tabela estática) ou redimensionável (`realloc`) | Cresce naturalmente, um elo de cada vez |
+| Acesso a um elemento por índice | Imediato (`array[i]`) | É preciso percorrer desde o início |
+| Inserção no início/meio | Desloca todos os elementos seguintes | Tempo constante, nenhum deslocamento |
+| Memória | Contígua | Espalhada, um `malloc` por nó |
+| Tamanho | Fixo (array estático) ou a redimensionar (`realloc`) | Cresce naturalmente, um nó de cada vez |
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Uma lista encadeada liga nós espalhados na memória via um ponteiro "seguinte"; ao contrário de um array, inserir no início é em tempo constante, mas o acesso por índice exige um percurso completo. |
+| **Ferramentas utilizáveis** | Uma `struct` autorreferencial (`struct No *seguinte`), `malloc`/`free` por nó. |
+| **Armadilhas a evitar** | Liberar um nó antes de salvar seu ponteiro `seguinte` (use-after-free); esquecer de liberar cada nó individualmente (vazamento de memória). |
+| **Boas práticas** | Sempre salvar `atual->seguinte` antes de `free(atual)`; verificar cada `malloc()` contra `NULL` antes de usá-lo. |

@@ -2,51 +2,51 @@
 order: 13
 ---
 
-# As tabelas de hash (hash tables)
+# As tabelas hash (hash tables)
 
-Uma **tabela hash** é uma estrutura de dados que permite inserir, procurar e eliminar um valor a partir de uma chave num tempo médio quase constante (`O(1)`), enquanto que uma lista encadeada (ver capítulo dedicado) exigiria percorrer todos os elementos um a um. O princípio: calcular um «endereço» numérico a partir da chave e armazenar/recuperar o valor diretamente nesse local numa tabela.
+Uma **tabela hash** é uma estrutura de dados que permite inserir, buscar e remover um valor a partir de uma chave em tempo quase constante em média (`O(1)`), onde uma [lista encadeada](/?c=langages-de-programmation&s=c&p=listes-chainees) exigiria percorrer todos os elementos um a um. O princípio: calcular um "endereço" numérico a partir da chave, e armazenar/recuperar o valor diretamente nesse local em um array.
 
 ## O princípio geral
 
-```
-clé -> fonction de hachage -> indice dans un tableau -> valeur stockée à cet indice
-```
-
-```
-"nom" -> hash("nom") = 193847 -> 193847 % taille_tableau = 3 -> valeur stockée en case 3
+```text
+chave -> funcao hash -> indice em um array -> valor armazenado nesse indice
 ```
 
-Em vez de procurar sequencialmente «a chave está aqui? E aqui? E ali?», a tabela hash calcula diretamente **onde** procurar.
+```text
+"nome" -> hash("nome") = 193847 -> 193847 % tamanho_array = 3 -> valor armazenado na posicao 3
+```
 
-## A função de hash
+Em vez de buscar sequencialmente "a chave está aqui? e aqui? e ali?", a tabela hash calcula diretamente **onde** buscar.
 
-Uma **função hash** transforma uma entrada de qualquer tamanho (uma cadeia de caracteres, uma estrutura...) num número de tamanho fixo, de forma determinística: a mesma entrada produz sempre o mesmo número e, idealmente, entradas diferentes produzem números bem distribuídos (para evitar que demasiadas chaves caiam no mesmo local).
+## A função hash
+
+Uma **função hash** transforma uma entrada de tamanho qualquer (uma string, uma estrutura...) em um número de tamanho fixo, de forma determinística: a mesma entrada sempre produz o mesmo número, e idealmente, entradas diferentes produzem números bem distribuídos (para evitar que muitas chaves caiam no mesmo lugar).
 
 ```c
-unsigned long hash_chaine(const char *cadeia)
+unsigned long hash_string(const char *string)
 {
     unsigned long hash = 5381;
     int c;
 
-    while ((c = *cadeia++)) {
+    while ((c = *string++)) {
         hash = hash * 33 + c;
     }
     return hash;
 }
 ```
 
-O número obtido é, em seguida, reduzido ao tamanho real da matriz através de um módulo:
+O número obtido é então reduzido ao tamanho real do array por um módulo:
 
 ```c
-unsigned long índice = hash_chaine(chave) % taille_tableau;
+unsigned long indice = hash_string(chave) % tamanho_array;
 ```
 
 ## As colisões
 
-O número de chaves possíveis é infinito (qualquer cadeia de caracteres), mas a tabela tem um tamanho finito, pelo que duas chaves diferentes podem, mais cedo ou mais tarde, produzir o mesmo índice. Trata-se de uma **colisão**, gerida principalmente de duas formas:
+O número de chaves possíveis é infinito (qualquer string), mas o array tem um tamanho finito: duas chaves diferentes podem então, cedo ou tarde, produzir o mesmo índice. É uma **colisão**, tratada principalmente de duas formas:
 
-- **Encadeamento** (*separate chaining*): cada elemento da tabela contém uma lista encadeada (ver capítulo dedicado) de todas as entradas que conduziram a esse índice.
-- **Endereçamento aberto** (*open addressing*): em caso de colisão, procura-se a próxima casa livre de acordo com uma regra fixa (por exemplo, a casa seguinte), até se encontrar uma.
+- **Encadeamento** (*separate chaining*): cada posição do array contém uma [lista encadeada](/?c=langages-de-programmation&s=c&p=listes-chainees) de todas as entradas que resultaram nesse índice.
+- **Endereçamento aberto** (*open addressing*): em caso de colisão, busca-se a próxima posição livre segundo uma regra fixa (ex.: a posição seguinte), até encontrar uma.
 
 ## Implementação por encadeamento
 
@@ -55,64 +55,75 @@ typedef struct Entrada
 {
     char *chave;
     int valor;
-    struct Entrada *suivant; // plusieurs entrées peuvent partager le même indice
+    struct Entrada *seguinte; // varias entradas podem compartilhar o mesmo indice
 } Entrada;
 
-typedef struct TableHachage
+typedef struct TabelaHash
 {
-    Entrada **cases; // tableau de pointeurs vers des listes chaînées
-    int taille;
-} TableHachage;
+    Entrada **posicoes; // array de ponteiros para listas encadeadas
+    int tamanho;
+} TabelaHash;
 ```
 
 ### Inserção
 
 ```c
-void inserer(TableHachage *table, const char *chave, int valor)
+void inserir(TabelaHash *tabela, const char *chave, int valor)
 {
-    unsigned long índice = hash_chaine(chave) % table->taille;
+    unsigned long indice = hash_string(chave) % tabela->tamanho;
 
-    Entrada *nouvelle = malloc(sizeof(Entrada));
-    if (nouvelle == NULL) {
-        return; // échec d'allocation (cf. chapitre sur la gestion de la mémoire) : on renonce à l'insertion
+    Entrada *nova = malloc(sizeof(Entrada));
+    if (nova == NULL) {
+        return; // falha de alocacao (veja O gerenciamento de memoria): desiste-se da insercao
     }
-    nouvelle->chave = strdup(chave);
-    nouvelle->valor = valor;
-    nouvelle->suivant = table->cases[índice]; // insertion en tête de la liste de ce bucket
-    table->cases[índice] = nouvelle;
+    nova->chave = strdup(chave);
+    nova->valor = valor;
+    nova->seguinte = tabela->posicoes[indice]; // insercao no inicio da lista desse bucket
+    tabela->posicoes[indice] = nova;
 }
 ```
 
-### Pesquisa
+### Busca
 
 ```c
-int rechercher(TableHachage *table, const char *chave, int *trouve)
+int buscar(TabelaHash *tabela, const char *chave, int *encontrado)
 {
-    unsigned long índice = hash_chaine(chave) % table->taille;
-    Entrada *courant = table->cases[índice];
+    unsigned long indice = hash_string(chave) % tabela->tamanho;
+    Entrada *atual = tabela->posicoes[indice];
 
-    while (courant != NULL) {
-        if (strcmp(courant->chave, chave) == 0) {
-            *trouve = 1;
-            return courant->valor;
+    while (atual != NULL) {
+        if (strcmp(atual->chave, chave) == 0) {
+            *encontrado = 1;
+            return atual->valor;
         }
-        courant = courant->suivant;
+        atual = atual->seguinte;
     }
-    *trouve = 0;
+    *encontrado = 0;
     return 0;
 }
 ```
 
-Mesmo com o mesmo índice, a pesquisa compara, ainda assim, a chave completa (`strcmp`): o índice apenas reduz a pesquisa a uma pequena lista (idealmente um único elemento), não a elimina completamente.
+Mesmo com índices iguais, a busca ainda compara a chave completa (`strcmp`): o índice apenas reduz a busca a uma lista pequena (idealmente um único elemento), não a elimina completamente.
 
 ## Fator de carga e redimensionamento
 
-O **fator de carga** (número de entradas ÷ tamanho da tabela) mede o grau de preenchimento da tabela. Se se tornar demasiado elevado (acima de um limiar comum, como `0.75`), as listas de cada compartimento alongam-se e o desempenho degrada-se para `O(n)`: no pior dos casos (todas as chaves no mesmo compartimento), a tabela de hash comporta-se exatamente como uma simples lista encadeada. Uma boa implementação **redimensiona** então a tabela (geralmente duplicando o seu tamanho) e reinsere todas as entradas existentes («rehash»), para recuperar um fator de carga razoável.
+O **fator de carga** (número de entradas ÷ tamanho do array) mede o quão cheia está a tabela. Se ficar muito alto (acima de um limiar comum como `0.75`), as listas de cada posição se alongam, e o desempenho se degrada para `O(n)`: no pior caso (todas as chaves na mesma posição), a tabela hash se comporta exatamente como uma simples lista encadeada. Uma boa implementação então **redimensiona** o array (geralmente dobrando seu tamanho) e reinsere todas as entradas existentes ("rehash"), para retomar um fator de carga razoável.
 
-## Onde as tabelas hash já se encontram à sua volta
+## Onde as tabelas hash já se escondem ao seu redor
 
-- As tabelas **associativas** do PHP (ver capítulo sobre variáveis no PHP) são, internamente, implementadas com uma estrutura muito semelhante a uma tabela hash.
-- O modelo de armazenamento de objetos do Git (ver capítulo sobre a arquitetura interna do Git) **é**, na verdade, uma tabela de hash: a chave de cada objeto é o hash SHA-1 do seu conteúdo, e a subpasta `.git/objects/xx/` desempenha exatamente o papel de um compartimento (*bucket*).
-- Os dicionários Python (`dict`) baseiam-se no mesmo princípio.
+- Os arrays **associativos** de PHP (veja [As variáveis](/?c=langages-de-programmation&s=php&p=variables)) são, internamente, implementados com uma estrutura muito próxima de uma tabela hash.
+- O modelo de armazenamento de objetos do Git (veja [A arquitetura interna do Git](/?c=git&p=architecture-interne)) **é** diretamente uma tabela hash: a chave de cada objeto é o hash SHA-1 de seu conteúdo, e a subpasta `.git/objects/xx/` desempenha exatamente o papel de uma posição (*bucket*).
+- Os dicionários Python (`dict`) se baseiam no mesmo princípio.
 
-Compreender as tabelas hash significa, portanto, compreender um mecanismo que se repete discretamente em praticamente todas as linguagens e ferramentas modernas.
+Entender as tabelas hash é, portanto, entender um mecanismo que se repete silenciosamente na quase totalidade das linguagens e ferramentas modernas.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Uma tabela hash calcula um índice a partir de uma chave (via uma função hash) para acessar diretamente o valor, em `O(1)` em média. Uma colisão (duas chaves, mesmo índice) é tratada por encadeamento ou endereçamento aberto. |
+| **Ferramentas utilizáveis** | Uma função hash determinística e bem distribuída; o redimensionamento ("rehash") quando o fator de carga ultrapassa um limiar (frequentemente 0.75). |
+| **Armadilhas a evitar** | Uma função hash mal distribuída que concentra muitas chaves em poucos índices: degrada o desempenho para `O(n)`. |
+| **Boas práticas** | Redimensionar e reinserir todas as entradas assim que o fator de carga ficar muito alto, em vez de deixar as listas de cada posição se alongarem indefinidamente. |

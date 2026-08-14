@@ -2,13 +2,13 @@
 order: 3
 ---
 
-# Os loops
+# Os laços
 
-Os loops permitem repetir um bloco de código várias vezes. Em C, existem três estruturas: `while`, `do while` e `for`; não existe um `foreach` nativo; um array é sempre percorrido através de um índice ou de um ponteiro.
+Os laços permitem repetir um bloco de código várias vezes. Em C, dispõe-se de três estruturas: `while`, `do while` e `for`: não existe `foreach` nativo, um array sempre se percorre via um índice ou um ponteiro.
 
-## O ciclo `while`
+## O laço `while`
 
-A condição é testada **antes de** cada iteração:
+A condição é testada **antes** de cada volta:
 
 ```c
 int i = 0;
@@ -19,9 +19,9 @@ while (i < 5) {
 }
 ```
 
-## O ciclo `do while`
+## O laço `do while`
 
-Variante em que a condição é verificada **após** cada iteração: o bloco é, portanto, sempre executado pelo menos uma vez, mesmo que a condição seja falsa desde o início:
+Variante em que a condição é testada **depois** de cada volta: o bloco então sempre executa pelo menos uma vez, mesmo que a condição seja falsa desde o início:
 
 ```c
 int i = 0;
@@ -32,9 +32,9 @@ do {
 } while (i < 5);
 ```
 
-## O ciclo `for`
+## O laço `for`
 
-Reúne numa única linha a inicialização, a condição e o incremento, o que é prático sempre que o número de iterações for conhecido antecipadamente:
+Agrupa em uma única linha a inicialização, a condição, e o incremento, prático assim que o número de iterações é conhecido antecipadamente:
 
 ```c
 for (int i = 0; i < 5; i++) {
@@ -42,41 +42,41 @@ for (int i = 0; i < 5; i++) {
 }
 ```
 
-As três partes são independentes e opcionais (`for (;;)` é um ciclo infinito válido), mas a utilização clássica continua a ser `for (init; condition; incrément)`.
+As três partes são independentes e opcionais (`for (;;)` é um laço infinito válido), mas o uso clássico continua sendo `for (inicializacao; condicao; incremento)`.
 
-## Percorrer uma tabela (sem «`foreach`»)
+## Percorrer um array (sem `foreach`)
 
 ```c
-int matriz[5] = {10, 20, 30, 40, 50};
+int array[5] = {10, 20, 30, 40, 50};
 
 for (int i = 0; i < 5; i++) {
-    printf("%d\n", matriz[i]);
+    printf("%d\n", array[i]);
 }
 ```
 
-> **Nota:** ao contrário do PHP ou do JavaScript, não existe **qualquer forma nativa** de saber o tamanho de um array apenas a partir do ponteiro: o `matriz[5]` «sabe» quantos elementos contém enquanto for manipulado como um array estático, mas essa informação desaparece assim que for passado para uma função (nesse caso, comporta-se como um simples ponteiro; ver o capítulo sobre ponteiros). O tamanho deve, portanto, ser transmitido separadamente.
+> **Nota:** ao contrário de PHP ou JavaScript, não existe **nenhum jeito nativo** de saber o tamanho de um array apenas a partir do ponteiro: `array[5]` "sabe" quanto contém enquanto for manipulado como array estático, mas essa informação desaparece assim que é passado a uma função (ele então se comporta como um simples ponteiro, veja [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs)). O tamanho então precisa ser transmitido separadamente.
 
 ```c
-void afficher(int *matriz, int taille) // la taille doit être passée explicitement
+void exibir(int *array, int tamanho) // o tamanho precisa ser passado explicitamente
 {
-    for (int i = 0; i < taille; i++) {
-        printf("%d\n", matriz[i]);
+    for (int i = 0; i < tamanho; i++) {
+        printf("%d\n", array[i]);
     }
 }
 ```
 
 ## `break` e `continue`
 
-- `break;` interrompe completamente o ciclo de controle.
-- `continue;` avança diretamente para a próxima iteração, sem executar o resto do corpo do ciclo atual.
+- `break;` para completamente o laço que o envolve.
+- `continue;` passa diretamente para a próxima volta, sem executar o resto do corpo do laço atual.
 
 ```c
 for (int i = 0; i < 10; i++) {
     if (i == 5) {
-        break; // arrête la boucle dès que i vaut 5
+        break; // para o laco assim que i vale 5
     }
     if (i % 2 == 0) {
-        continue; // ignore les nombres pairs
+        continue; // ignora os numeros pares
     }
     printf("%d\n", i);
 }
@@ -84,17 +84,28 @@ for (int i = 0; i < 10; i++) {
 
 ## Laços aninhados e `break`
 
-`break` só interrompe o ciclo **mais próximo** que o engloba: para sair de vários ciclos aninhados de uma só vez, é necessária uma variável de controle ou um «`goto`» (raro, mas por vezes utilizado para este caso específico em C):
+`break` só para o laço **mais próximo** que o envolve: para sair de vários laços aninhados de uma vez, é preciso uma variável de controle ou um `goto` (raro mas às vezes usado para esse caso específico em C):
 
 ```c
-int trouve = 0;
+int encontrado = 0;
 
-for (int i = 0; i < 10 && !trouve; i++) {
+for (int i = 0; i < 10 && !encontrado; i++) {
     for (int j = 0; j < 10; j++) {
         if (i * j == 42) {
-            trouve = 1;
-            break; // ne sort que de la boucle interne
+            encontrado = 1;
+            break; // so sai do laco interno
         }
     }
 }
 ```
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `while` testa antes, `do while` testa depois (pelo menos uma execução), `for` agrupa inicialização/condição/incremento. Sem `foreach` nativo: um array se percorre por índice. |
+| **Ferramentas utilizáveis** | `break` (para o laço), `continue` (passa para a próxima volta). |
+| **Armadilhas a evitar** | `break` só sai do laço mais próximo: uma variável de controle é necessária para sair de vários laços aninhados. |
+| **Boas práticas** | Sempre transmitir explicitamente o tamanho de um array a uma função que o percorre, em vez de supor que pode ser deduzido. |

@@ -4,25 +4,25 @@ order: 4
 
 # Os ponteiros
 
-Um ponteiro é uma variável que não armazena um valor diretamente, mas sim o endereço** de memória** de outra variável. É o mecanismo central que permite, em C, manipular a memória diretamente, passar dados para as funções sem os copiar e construir estruturas de dados dinâmicas (listas encadeadas, árvores...).
+Um ponteiro é uma variável que não armazena um valor diretamente, mas o **endereço de memória** de outra variável. É o mecanismo central que permite em C manipular a memória diretamente, passar dados a funções sem copiá-los, e construir estruturas de dados dinâmicas (listas encadeadas, árvores...).
 
-## Declaração, endereço e remoção do índice
+## Declaração, endereço e desreferenciamento
 
 ```c
 int idade = 25;
 int *ptr = &idade;
 
-printf("%d\n", idade);   // 25          -> la valeur
-printf("%p\n", &idade);  // 0x7ffee...  -> l'adresse mémoire de age
-printf("%p\n", ptr);   // 0x7ffee...  -> la même adresse, stockée dans ptr
-printf("%d\n", *ptr);  // 25          -> la valeur pointée par ptr
+printf("%d\n", idade);  // 25          -> o valor
+printf("%p\n", &idade); // 0x7ffee...  -> o endereco de memoria de idade
+printf("%p\n", ptr);    // 0x7ffee...  -> o mesmo endereco, armazenado em ptr
+printf("%d\n", *ptr);   // 25          -> o valor apontado por ptr
 ```
 
-- `&variable` : operador «endereço de», devolve o endereço de memória de uma variável.
-- `*ptr` (na declaração): indica que «`ptr`» é um ponteiro.
-- `*ptr` (fora de uma declaração): operador de **desreferência**, acessa o valor armazenado no endereço contido em `ptr`.
+- `&variavel`: operador "endereço de", devolve o endereço de memória de uma variável.
+- `*ptr` (na declaração): indica que `ptr` é um ponteiro.
+- `*ptr` (fora de uma declaração): operador de **desreferenciamento**, acessa o valor armazenado no endereço contido em `ptr`.
 
-Alterar `*ptr` altera diretamente `idade`, uma vez que ambos apontam para o mesmo local na memória:
+Modificar `*ptr` modifica diretamente `idade`, já que os dois designam o mesmo local de memória:
 
 ```c
 *ptr = 30;
@@ -31,69 +31,89 @@ printf("%d\n", idade); // 30
 
 ## Aritmética de ponteiros
 
-Somar 1 a um ponteiro não o faz avançar um byte, mas sim`sizeof(type)`s bytes:
+Somar 1 a um ponteiro não o avança de um byte, mas de `sizeof(tipo)` bytes:
 
 ```c
-int tab[3] = {10, 20, 30};
-int *p = tab;
+int array[3] = {10, 20, 30};
+int *p = array;
 
-printf("%d\n", *p);       // 10
-printf("%d\n", *(p + 1)); // 20 -> avance de sizeof(int) octets, pas de 1 octet
-printf("%d\n", *(p + 2)); // 30
+printf("%d\n", *p);        // 10
+printf("%d\n", *(p + 1));  // 20 -> avanca de sizeof(int) bytes, nao de 1 byte
+printf("%d\n", *(p + 2));  // 30
 ```
 
-> **Nota:** um tabu`tab`a comporta-se como um ponteiro para o seu primeiro elemento. `tab[i]` e `*(tab + i)` são duas formas de escrita estritamente equivalentes em C: é por isso que a indexação de tabua também funciona num ponteiro bruto.
+> **Nota:** um array `array` se comporta como um ponteiro para seu primeiro elemento. `array[i]` e `*(array + i)` são duas escritas estritamente equivalentes em C: é por isso que a indexação de array (`[]`) também funciona em um ponteiro bruto.
+
+### `[]` é apenas açúcar sintático
+
+A equivalência acima é mais profunda que uma simples comodidade de escrita: o operador `[]` não tem em C **nenhuma noção** de "array" nem de "índice". O compilador o traduz mecanicamente, sempre, por:
+
+```text
+a[b]  ≡  *(a + b)
+```
+
+Como a adição é comutativa (`array + 2` e `2 + array` designam o mesmo endereço), obtém-se uma consequência surpreendente mas perfeitamente legal:
+
+```c
+int array[5] = {1, 2, 3, 4, 5};
+
+printf("%d\n", array[2]);      // 3
+printf("%d\n", *(array + 2));  // 3
+printf("%d\n", 2[array]);      // 3 tambem!
+```
+
+> `2[array]` não serve para nada na prática e só tem lugar em perguntas de pegadinha de entrevista. Por outro lado, entender *por que* isso compila é útil: ancora o fato de que em C, indexar um array **é** aritmética de ponteiros, e nada mais.
 
 ## Ponteiro para ponteiro
 
-Um ponteiro pode, por sua vez, ser apontado, o que é útil para alterar um ponteiro a partir de uma função (ver «passagem por endereço» abaixo):
+Um ponteiro pode ele mesmo ser apontado, o que é útil para modificar um ponteiro a partir de uma função (cf. passagem por endereço abaixo):
 
 ```c
 int idade = 25;
 int *ptr = &idade;
 int **ptrPtr = &ptr;
 
-printf("%d\n", **ptrPtr); // 25 -> déréférence deux fois : ptrPtr -> ptr -> age
+printf("%d\n", **ptrPtr); // 25 -> desreferencia duas vezes: ptrPtr -> ptr -> idade
 ```
 
 ## Passar um ponteiro a uma função (passagem por endereço)
 
-Em C, os argumentos são passados **por valor** (uma cópia) por padrão: uma função não pode, portanto, alterar a variável original do chamador, a menos que lhe seja passado diretamente o endereço dessa variável:
+Em C, os argumentos são passados **por valor** (uma cópia) por padrão: uma função então não pode modificar a variável original do chamador, exceto passando diretamente o endereço dessa variável:
 
 ```c
-void incrementer(int *número)
+void incrementar(int *numero)
 {
-    (*número)++; // modifie la valeur à l'adresse pointée, donc la variable d'origine
+    (*numero)++; // modifica o valor no endereco apontado, portanto a variavel original
 }
 
 int main(void)
 {
     int x = 5;
-    incrementer(&x);
+    incrementar(&x);
     printf("%d\n", x); // 6
 }
 ```
 
-Sem o `*`, `incrementer(int número)` apenas alteraria uma cópia local, sem qualquer efeito em `x`.
+Sem o `*`, `incrementar(int numero)` modificaria apenas uma cópia local, sem efeito sobre `x`.
 
 ## Ponteiros de funções
 
-Uma função também tem um endereço na memória, que pode ser armazenado num ponteiro, útil para escolher dinamicamente qual a função a chamar (callbacks, tabelas de despacho):
+Uma função também tem um endereço na memória, que se pode armazenar em um ponteiro, útil para escolher dinamicamente qual função chamar (callbacks, tabelas de dispatch):
 
 ```c
-int addition(int a, int b) { return a + b; }
-int soustraction(int a, int b) { return a - b; }
+int adicao(int a, int b) { return a + b; }
+int subtracao(int a, int b) { return a - b; }
 
-int (*operation)(int, int) = addition;
+int (*operacao)(int, int) = adicao;
 
-printf("%d\n", operation(4, 2)); // 6
-operation = soustraction;
-printf("%d\n", operation(4, 2)); // 2
+printf("%d\n", operacao(4, 2)); // 6
+operacao = subtracao;
+printf("%d\n", operacao(4, 2)); // 2
 ```
 
 ## `NULL` e ponteiros inválidos
 
-Um ponteiro não inicializado contém um endereço **aleatório** («wild pointer»): a sua desreferência produz um comportamento indefinido, muitas vezes uma falha do sistema (`segmentation fault`). Um ponteiro que ainda não seja utilizado deve ser explicitamente posto em «`NULL`» e testado antes da desreferência:
+Um ponteiro não inicializado contém um endereço **aleatório** ("wild pointer"): desreferenciá-lo produz um comportamento indefinido, frequentemente um crash (`segmentation fault`). Um ponteiro que ainda não se usa deve ser explicitamente colocado em `NULL`, e testado antes do desreferenciamento:
 
 ```c
 int *ptr = NULL;
@@ -101,35 +121,67 @@ int *ptr = NULL;
 if (ptr != NULL) {
     printf("%d\n", *ptr);
 } else {
-    printf("ptr ne pointe vers rien.\n");
+    printf("ptr nao aponta para nada.\n");
 }
 ```
 
-> **Nota:** um ponteiro que apontava para uma área de memória libertada (`free()`, ver capítulo sobre gestão de memória) é designado por **«dangling pointer**». Acessá-lo é um erro clássico (*use-after-free*): a memória pode, por coincidência, parecer ainda conter o valor correto, até ser reutilizada noutro local.
+> **Nota:** um ponteiro que apontava para uma zona de memória liberada (`free()`, veja [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire)) é chamado de **dangling pointer**. Desreferenciá-lo é um bug clássico (*use-after-free*): a memória pode parecer ainda conter o valor correto por coincidência, até ser reutilizada em outro lugar.
+
+## Comparar ponteiros: o endereço ou o valor?
+
+Com um ponteiro, há duas coisas distintas a comparar, e confundir as duas é uma fonte de erros:
+
+```c
+int a = 5;  // armazenada no endereco 0x1000
+int b = 5;  // armazenada no endereco 0x2000
+int *p1 = &a;
+int *p2 = &b;
+
+p1 == p2    // falso: os enderecos sao diferentes
+*p1 == *p2  // verdadeiro: os valores apontados sao identicos
+```
+
+- `p1 == p2` compara os **endereços**: "esses dois ponteiros designam o mesmo local de memória?"
+- `*p1 == *p2` compara os **valores apontados**: "o conteúdo é o mesmo?"
+
+Dois ponteiros podem então perfeitamente conter o mesmo valor sem serem iguais, e vice-versa.
+
+> Essa distinção (comparação por **referência** ou por **valor**) não é exclusiva do C, ela se encontra na maioria das linguagens. Em Python, `is` compara a identidade (o equivalente de `p1 == p2`) e `==` compara o valor (o equivalente de `*p1 == *p2`); veja o capítulo [Variáveis](/?c=langages-de-programmation&s=python&p=variables) de Python. Comparar strings em C ilustra a mesma armadilha: `str1 == str2` compara dois endereços, não dois textos: é preciso `strcmp()`.
 
 ## `const` com ponteiros
 
-Duas utilizações bem distintas d`const`, frequentemente confundidas:
+Dois usos de `const` bem distintos, frequentemente confundidos:
 
 ```c
-const int *p1;  // p1 peut changer d'adresse, mais pas modifier la valeur pointée
-int *const p2 = &x; // p2 ne peut plus changer d'adresse, mais peut modifier la valeur pointée
+const int *p1;       // p1 pode mudar de endereco, mas nao modificar o valor apontado
+int *const p2 = &x;  // p2 nao pode mais mudar de endereco, mas pode modificar o valor apontado
 ```
 
-| Escrita | O que está protegido |
+| Escrita | O que é protegido |
 |---|---|
-| `const int *p` | O **valor apontado** não pode ser alterado através de `p` |
-| `int *const p` | O **próprio ponteiro** já não pode ser reatribuído após a inicialização |
-| `const int *const p` | Nem uma coisa nem outra |
+| `const int *p` | O **valor apontado** não pode ser modificado via `p` |
+| `int *const p` | O **próprio ponteiro** não pode mais ser reatribuído após a inicialização |
+| `const int *const p` | Nem um, nem outro |
 
 ## Resumo
 
 | Notação | Significado |
 |---|---|
 | `int *ptr` | Declara um ponteiro para um `int` |
-| `&variable` | Endereço de memória de `variable` |
+| `&variavel` | Endereço de memória de `variavel` |
 | `*ptr` | Valor no endereço contido em `ptr` |
-| `ptr + 1` | Endereço seguinte, deslocado em `sizeof(type)` octetos |
+| `ptr + 1` | Endereço seguinte, deslocado de `sizeof(tipo)` bytes |
 | `NULL` | Ponteiro que não aponta para nada válido |
 
-Consulte também o capítulo sobre gestão de memória (`malloc` / `free`), que se baseia diretamente nestes conceitos.
+Veja também [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire) (`malloc`/`free`), que se apoia diretamente nessas noções.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Um ponteiro armazena o endereço de memória de uma variável. `&` obtém um endereço, `*` desreferencia (acessa o valor apontado). Indexar um array (`array[i]`) é estritamente equivalente a `*(array + i)`. |
+| **Ferramentas utilizáveis** | Ponteiros de ponteiro, ponteiros de função, `const` para proteger o valor apontado e/ou o próprio ponteiro. |
+| **Armadilhas a evitar** | Desreferenciar um ponteiro não inicializado ou `NULL`; confundir comparação de endereços (`p1 == p2`) e de valores apontados (`*p1 == *p2`); usar um ponteiro depois de seu `free()` (dangling pointer). |
+| **Boas práticas** | Inicializar todo ponteiro não usado com `NULL` e testá-lo antes de desreferenciar; passar o endereço de uma variável a uma função apenas quando ela realmente precisa modificá-la. |

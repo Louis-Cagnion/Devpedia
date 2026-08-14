@@ -2,89 +2,115 @@
 order: 1
 ---
 
-# Variáveis e tipos de dados
+# As variáveis e os tipos de dados
 
-As variáveis são utilizadas para armazenar dados na memória, para que um programa possa manipulá-los. Na linguagem C, cada variável possui um tipo que determina:
+Para lembrar, [uma variável é uma caixa etiquetada que contém um valor](/?c=bases-de-l-informatique&p=la-variable). Em linguagem C, cada variável também tem um tipo que determina:
 
-- A quantidade de memória atribuída.
-- Os valores que pode conter.
-- As operações que podem ser realizadas no mesmo.
+- A quantidade de memória alocada.
+- Os valores que ela pode conter.
+- As operações que podem ser feitas com ela.
 
-Compreender os diferentes tipos de dados é essencial para escrever programas eficazes e compreender melhor a gestão da memória.
+Entender os diferentes tipos de dados é essencial para escrever programas eficientes e compreender melhor o gerenciamento de memória.
 
-## Os números inteiros (`int`)
+## Os inteiros (`int`)
 
 O tipo `int` permite armazenar números inteiros positivos ou negativos.
 
 ```c
 int idade = 25;
-int temperature = -5;
+int temperatura = -5;
 ```
 
-O tamanho de um «`int`» depende da arquitetura do computador, mas é geralmente de 4 octetos (32 bits).
+O tamanho de um `int` depende da arquitetura da máquina, mas geralmente é de 4 bytes (32 bits).
 
 ## Os caracteres (`char`)
 
-O tipo «`char`» permite armazenar um único carácter.
+O tipo `char` permite armazenar um único caractere.
 
 ```c
-char letter = 'A';
-char digit = '5';
+char letra = 'A';
+char digito = '5';
 ```
 
-Um `char`o ocupa geralmente 1 byte na memória e contém o valor ASCII do carácter.
+Um `char` geralmente ocupa 1 byte em memória e contém o valor ASCII do caractere.
 
-## Os valores booleanos (`bool`)
+> **Armadilha:** confundir `'A'` (aspas simples) e `"A"` (aspas duplas). O primeiro é um único `char` (o valor ASCII 65); o segundo é uma **string** de dois bytes, `'A'` seguido do caractere nulo `'\0'` (veja a seção dedicada abaixo). Escrever `char letra = "A";` é um erro de tipo, não apenas uma diferença de estilo.
+>
+> **Boa prática:** reservar as aspas simples para um caractere isolado, as aspas duplas para uma string, mesmo de um único caractere.
+>
+> **Nota:** o padrão C não define se um `char` "puro" (sem `signed`/`unsigned` explícito) é assinado ou não: essa escolha depende do compilador e da arquitetura. Um código que armazena outra coisa além de texto em um `char` (um pequeno valor numérico, por exemplo) deveria especificar `signed char` ou `unsigned char` em vez de supor um dos dois comportamentos.
 
-Desde a norma C99, a linguagem disponibiliza o tipo «`bool`» através da biblioteca «`stdbool.h`».
+## Os booleanos (`bool`)
+
+Desde o padrão [C99](https://en.wikipedia.org/wiki/C99), a linguagem fornece o tipo `bool` via a biblioteca `stdbool.h`.
 
 ```c
 #include <stdbool.h>
 
-bool isConnected = true;
-bool isAdmin = false;
+bool estaConectado = true;
+bool ehAdmin = false;
 ```
 
-Um valor booleano representa um valor lógico:
+Um booleano representa um valor lógico:
 
 - `true`
 - `false`
 
-Antes da norma C99, era comum utilizar inteiros (`0` para falso, valor diferente de zero para verdadeiro).
+Antes do C99, era comum usar inteiros (`0` para falso, valor não nulo para verdadeiro).
 
-## Os números de vírgula flutuante
+> **Armadilha:** supor que um `bool` armazena fielmente qualquer inteiro atribuído. `bool b = 5;` não armazena `5`: qualquer valor não nulo é reduzido a `1` (`true`) na atribuição. Comparar depois `b == 5` então é falso, um resultado que surpreende quem esperava recuperar o valor original.
+>
+> **Boa prática:** nunca reutilizar um `bool` como se ele ainda pudesse conter o valor numérico original; ater-se a `true`/`false` uma vez a variável declarada `bool`.
 
-A linguagem C disponibiliza vários tipos para representar números decimais:
+> **Nota:** código C mais antigo (pré-C99, ou que não inclui `stdbool.h`) ainda usa um simples `int` para representar um booleano. Ler esse código exige manter em mente a mesma convenção: `0` é falso, qualquer outro valor é verdadeiro, incluindo valores negativos.
+
+## Os números de ponto flutuante
+
+O C oferece vários tipos para representar números decimais:
 
 ```c
-float price = 9.99f;
+float preco = 9.99f;
 double pi = 3.1415926535;
 ```
 
-- `float` : precisão simples
-- `double` : precisão dupla
+- `float`: precisão simples (32 bits)
+- `double`: precisão dupla (64 bits)
 
-## As cadeias de caracteres
+Esses tipos armazenam uma **aproximação**, não um valor exato: `0.1 + 0.2` não vale exatamente `0.3`. Esse comportamento não é específico do C: ele decorre do padrão IEEE 754 imposto pelo processador, e se repete identicamente em [Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ou [PHP](/?c=langages-de-programmation&s=php&p=php) (veja o capítulo [Os números de ponto flutuante](/?c=representation-des-donnees&p=nombres-flottants) para a explicação da codificação).
 
-A linguagem C não possui um tipo «string» nativo. Uma cadeia de caracteres é representada por um tabuleiro de caracteres terminado pelo caractere nulo (`\0`).
+> **Armadilha:** comparar dois floats com `==`, esperando que `0.1 + 0.2 == 0.3` seja verdadeiro. Por causa da aproximação, esse teste falha silenciosamente na maior parte das vezes: nenhum erro, apenas um resultado inesperado.
+>
+> **Boa prática:** comparar dois floats pela diferença entre eles (`fabs(a - b) < epsilon`, uma tolerância escolhida), nunca por igualdade estrita; veja a [forma correta de comparar](/?c=representation-des-donnees&p=nombres-flottants) para o detalhe.
+
+Da mesma forma, a faixa de valores dos inteiros e seu comportamento em caso de overflow decorrem do número de bits alocados: veja [Os inteiros, os bits e os overflows](/?c=representation-des-donnees&p=entiers-et-debordements).
+
+## As strings
+
+A linguagem C não tem um tipo "string" nativo. Uma string é representada por um array de caracteres terminado pelo caractere nulo (`\0`).
 
 ```c
-char name[] = "Devpedia";
+char nome[] = "Devpedia";
 ```
 
-Na memória:
+Em memória:
 
-```
+```text
 D e v p e d i a \0
 ```
 
-Uma cadeia de caracteres é, portanto, simplesmente uma sequência de caracteres armazenados de forma contígua.
+Uma string é então simplesmente uma sequência de caracteres armazenados de forma contígua.
+
+> **Armadilha:** confundir `sizeof(nome)` com o comprimento real do texto. Aqui, `sizeof(nome)` vale `9` (8 caracteres + o `\0`), calculado na **compilação** a partir do tamanho do array. Mas assim que esse mesmo array é passado a uma função, ele se comporta como um simples ponteiro (veja a [armadilha equivalente com arrays](/?c=langages-de-programmation&s=c&p=boucles)): `sizeof` então retorna o tamanho de um ponteiro (frequentemente `8`), não o da string.
+>
+> **Boa prática:** usar `sizeof` apenas em um array ainda declarado como tal no escopo atual; usar `strlen()` (que percorre a string até o `\0`) para obter seu comprimento real em qualquer outro contexto, principalmente dentro de uma função que a recebe como parâmetro.
+
+Veja também [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire) para as funções a priorizar (`strncpy`, `snprintf`...) para nunca escrever além do tamanho realmente alocado de uma string.
 
 ## Os ponteiros
 
 Os ponteiros são uma das características mais importantes da linguagem C.
 
-Permitem armazenar o endereço de memória de uma variável.
+Eles permitem armazenar o endereço de memória de uma variável.
 
 ```c
 int idade = 25;
@@ -96,25 +122,31 @@ Aqui:
 - `idade` contém um valor.
 - `ptr` contém o endereço de memória de `idade`.
 
-Os ponteiros são utilizados para:
+Os ponteiros são usados para:
 
 - Manipular diretamente a memória.
-- Passar dados para as funções.
+- Passar dados para funções.
 - Construir estruturas de dados complexas.
+
+Isso é apenas um panorama: veja o capítulo dedicado [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs) para a aritmética de ponteiros, a passagem por endereço, e as armadilhas associadas (ponteiro não inicializado, `NULL` não testado...).
 
 ## As estruturas (`struct`)
 
-As estruturas permitem agrupar vários dados num único objeto.
+As estruturas permitem agrupar vários dados em um mesmo objeto.
 
 ```c
-struct User
+struct Usuario
 {
     int id;
-    char name[50];
+    char nome[50];
 };
 ```
 
-São frequentemente utilizadas para representar entidades complexas.
+Elas são frequentemente usadas para representar entidades complexas.
+
+> **Armadilha:** comparar duas estruturas com `==`. O C não permite isso para uma `struct` (erro de compilação), e até uma comparação byte a byte (`memcmp`) pode errar: o compilador frequentemente insere bytes de preenchimento invisíveis entre os campos para respeitar o alinhamento de memória de cada tipo, e seu conteúdo não é garantido idêntico entre duas instâncias por outro lado iguais.
+>
+> **Boa prática:** comparar uma estrutura campo por campo explicitamente (`a.id == b.id && strcmp(a.nome, b.nome) == 0`), nunca por igualdade global nem por `memcmp` na estrutura inteira.
 
 ## Resumo
 
@@ -123,12 +155,23 @@ Os principais tipos de dados em C são:
 | Tipo | Descrição |
 |--------|-------------|
 | `bool` | Valor lógico |
-| `char` | Característica |
+| `char` | Caractere |
 | `int` | Inteiro |
 | `float` | Número decimal |
 | `double` | Número decimal de alta precisão |
-| `char[]` | Sequência de caracteres |
+| `char[]` | String |
 | `struct` | Conjunto de dados personalizados |
 | `pointer` | Endereço de memória |
 
-É essencial dominar estes tipos antes de abordar conceitos mais avançados, como listas encadeadas, árvores binárias, threads ou gestão de processos; consulte os capítulos dedicados a cada um destes temas.
+O domínio desses tipos é indispensável antes de abordar conceitos mais avançados como listas encadeadas, árvores binárias, threads ou gerenciamento de processos (veja os capítulos dedicados a cada um desses assuntos).
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Cada variável C tem um tipo fixo que determina seu tamanho em memória, os valores possíveis e as operações permitidas: `int`, `char`, `bool` (C99), `float`/`double`, array de `char` (string), `struct`, ponteiro. |
+| **Ferramentas utilizáveis** | `stdbool.h` para um verdadeiro tipo booleano; `sizeof` para o tamanho de um tipo na compilação; `strlen()` para o comprimento real de uma string na execução. |
+| **Armadilhas a evitar** | Confundir `'A'` e `"A"`. Atribuir a um `bool` um valor que ele não devolve tal como foi dado. Comparar dois floats com `==`. Confundir `sizeof` em um array e no ponteiro que o sucede uma vez passado a uma função. Comparar duas `struct` com `==` ou `memcmp` (bytes de preenchimento). |
+| **Boas práticas** | Escolher o tipo mais estreito que realmente cobre os valores esperados, em vez de um `int`/`double` padrão sistemático. Comparar os floats pela diferença, as strings com `strcmp`, as estruturas campo por campo. |

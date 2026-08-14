@@ -2,55 +2,66 @@
 order: 10
 ---
 
-# Funções variádicas (va_list)
+# As funções variádicas (va_list)
 
-Uma função **variádica** aceita um número variável de argumentos; `printf("%d %s\n", 42, "texto")` é o exemplo mais conhecido: `printf` aceita 1, 2 ou 10 argumentos, consoante o formato fornecido. Em C, este mecanismo é possibilitado pelas macros de `<stdarg.h>`.
+Uma função **variádica** aceita um número variável de argumentos: `printf("%d %s\n", 42, "texto")` é o exemplo mais conhecido: `printf` aceita 1, 2, ou 10 argumentos conforme o formato fornecido. Em C, esse mecanismo é possível graças às macros de `<stdarg.h>`.
 
 ## Declarar uma função variádica
 
-Uma função variádica tem sempre, pelo menos, um parâmetro fixo, seguido de um`...`:
+Uma função variádica sempre tem pelo menos um parâmetro fixo, seguido de `...`:
 
 ```c
 #include <stdarg.h>
 
-int somme(int número, ...)
+int soma(int numero, ...)
 {
-    va_list arguments;
-    va_start(arguments, número); // "número" est le dernier paramètre fixe, juste avant les "..."
+    va_list argumentos;
+    va_start(argumentos, numero); // "numero" e o ultimo parametro fixo, logo antes dos "..."
 
     int total = 0;
-    for (int i = 0; i < número; i++) {
-        total += va_arg(arguments, int); // récupère l'argument suivant, en le traitant comme un int
+    for (int i = 0; i < numero; i++) {
+        total += va_arg(argumentos, int); // recupera o proximo argumento, tratando-o como int
     }
 
-    va_end(arguments);
+    va_end(argumentos);
     return total;
 }
 
-somme(3, 10, 20, 30); // 60 -> número = 3, les 3 arguments suivants sont additionnés
+soma(3, 10, 20, 30); // 60 -> numero = 3, os 3 argumentos seguintes sao somados
 ```
 
-## As macros do «`<stdarg.h>`»
+## As macros de `<stdarg.h>`
 
 | Macro | Função |
 |---|---|
-| `va_list` | Tipo que representa a lista de argumentos variáveis |
-| `va_start(lista, dernierParamFixe)` | Inicializa a lista a partir do último parâmetro fixo conhecido |
-| `va_arg(lista, type)` | Recupera o argumento seguinte, partindo do princípio de que se trata do `type` indicado |
-| `va_end(lista)` | Encerra corretamente a utilização da lista |
+| `va_list` | Tipo que representa a lista dos argumentos variáveis |
+| `va_start(lista, ultimoParamFixo)` | Inicializa a lista, a partir do último parâmetro fixo conhecido |
+| `va_arg(lista, tipo)` | Recupera o próximo argumento, supondo que ele é do `tipo` indicado |
+| `va_end(lista)` | Encerra corretamente o uso da lista |
 
-> **Nota:** nada permite ao compilador verificar se o `type` passado para `va_arg()` corresponde efetivamente ao tipo do argumento fornecido pelo chamador: isso é da inteira responsabilidade do programador. Passar o tipo errado (por exemplo, ler um `int` quando foi fornecido um `double`) constitui um comportamento indefinido, não detetado na compilação.
+> **Nota:** nada permite ao compilador verificar que o `tipo` passado a `va_arg()` corresponde realmente ao tipo do argumento fornecido pelo chamador: isso é inteiramente responsabilidade do desenvolvedor. Passar o tipo errado (ex.: ler um `int` onde um `double` foi fornecido) é comportamento indefinido, não detectado na compilação.
 
-## Como é que a função `printf` sabe o número de argumentos?
+## Como o `printf` sabe o número de argumentos?
 
-`printf` não dispõe de **qualquer forma nativa** de saber quantos argumentos variáveis foram fornecidos: é a própria cadeia de formato que serve de orientação, contando o número de «`%`» que contém.
+`printf` não tem **nenhum meio nativo** de saber quantos argumentos variáveis foram fornecidos: é a própria string de formato que serve de guia, contando o número de `%` que ela contém.
 
 ```c
-printf("%d %d %d\n", 1, 2, 3); // la chaîne annonce 3 valeurs -> printf lit 3 arguments variadiques
+printf("%d %d %d\n", 1, 2, 3); // a string anuncia 3 valores -> printf le 3 argumentos variadicos
 ```
 
-> **Nota:** é por isso que um número incorreto de `%` em relação aos argumentos reais (ou o contrário) não provoca **qualquer erro de compilação**, apenas um comportamento indefinido na execução (leitura de dados que não são argumentos reais). Esta é uma fonte clássica de falhas de segurança («format string vulnerability») quando uma cadeia de formato provém diretamente de uma entrada do usuário não controlada.
+> **Nota:** é por isso que um número errado de `%` em relação aos argumentos reais (ou o inverso) não provoca **nenhum erro de compilação**: apenas um comportamento indefinido em tempo de execução (leitura de dados que não são argumentos reais). É uma fonte clássica de falhas de segurança ("format string vulnerability") quando uma string de formato vem diretamente de uma entrada de usuário não controlada.
 
-## Uma restrição: o número de argumentos deve ser indicado de outra forma
+## Um limite: o número de argumentos precisa ser comunicado de outra forma
 
-Ao contrário de `printf` (orientado pela cadeia de formato), o exemplo `somme()` acima deve receber explicitamente o número de argumentos como primeiro parâmetro (`número`): `va_list` não permite saber «quantos argumentos faltam» por si só, é sempre necessário um meio externo para comunicar essa informação (um contador, um valor sentinela como `NULL` no último argumento, ou uma cadeia de formato).
+Ao contrário de `printf` (guiado pela string de formato), o exemplo `soma()` acima precisa receber explicitamente o número de argumentos no primeiro parâmetro (`numero`): `va_list` não permite saber sozinho "quantos argumentos restam", é sempre necessário um meio externo de comunicá-lo (um contador, um valor sentinela como `NULL` no último argumento, ou uma string de formato).
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Uma função variádica (`...`) aceita um número variável de argumentos, lidos via as macros de `<stdarg.h>` (`va_list`, `va_start`, `va_arg`, `va_end`). O número de argumentos sempre precisa ser comunicado por um meio externo. |
+| **Ferramentas utilizáveis** | `va_list`, `va_start`, `va_arg`, `va_end`. |
+| **Armadilhas a evitar** | Passar a `va_arg()` um tipo diferente do realmente fornecido pelo chamador: comportamento indefinido, não detectado na compilação. |
+| **Boas práticas** | Nunca construir uma string de formato a partir de uma entrada de usuário não controlada: fonte clássica de falha ("format string vulnerability"). |

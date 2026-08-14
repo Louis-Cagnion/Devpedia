@@ -4,45 +4,45 @@ order: 2
 
 # As condições
 
-As condições permitem executar um bloco de código consoante uma expressão seja verdadeira ou falsa. Em C, utilizam-se «`if`» / «`else`» / «`else if`», o operador ternário e «`switch`».
+As condições permitem executar um bloco de código conforme uma expressão seja verdadeira ou falsa. Em C, usa-se `if`/`else`/`else if`, o operador ternário, e `switch`.
 
-## A condição «`if`»
+## A condição `if`
 
-Em C, qualquer valor **diferente de zero** é considerado verdadeiro; apenas o valor `0` é falso; não existe um tipo booleano nativo antes do C99 (`stdbool.h`, ver o capítulo sobre variáveis):
+Em C, todo valor **não nulo** é considerado verdadeiro; apenas o valor `0` é falso: não existe tipo booleano nativo antes do [C99](https://en.wikipedia.org/wiki/C99) ([`stdbool.h`](/?c=langages-de-programmation&s=c&p=variables)):
 
 ```c
 int idade = 18;
 
 if (idade >= 18) {
-    printf("Vous êtes majeur.\n");
+    printf("Voce e maior de idade.\n");
 }
 ```
 
 ## `if` / `else` / `else if`
 
 ```c
-int note = 12;
+int nota = 12;
 
-if (note >= 16) {
-    printf("Mention Très Bien\n");
-} else if (note >= 14) {
-    printf("Mention Bien\n");
-} else if (note >= 10) {
-    printf("Admis\n");
+if (nota >= 16) {
+    printf("Mencao Otimo\n");
+} else if (nota >= 14) {
+    printf("Mencao Bom\n");
+} else if (nota >= 10) {
+    printf("Aprovado\n");
 } else {
-    printf("Recalé\n");
+    printf("Reprovado\n");
 }
 ```
 
-> **Nota:** ao contrário do PHP, não existe uma sintaxe alternativa com `:` / `endif` em C: as chaves `{ }` são a única notação disponível (opcionais apenas se o bloco contiver apenas uma instrução, mas é fortemente desaconselhado omitir as chaves: fonte clássica de erros se for adicionada uma linha por engano sem as chaves).
+> **Nota:** ao contrário de PHP, não existe sintaxe alternativa com `:`/`endif` em C: as chaves `{ }` são a única forma disponível (opcionais apenas se o bloco contém uma única instrução, mas fortemente desaconselhado omiti-las: fonte clássica de bugs se uma linha for adicionada por engano sem as chaves).
 
 ## O operador ternário
 
 ```c
 int idade = 20;
-const char *statut = (idade >= 18) ? "majeur" : "mineur";
+const char *status = (idade >= 18) ? "maior de idade" : "menor de idade";
 
-printf("%s\n", statut);
+printf("%s\n", status);
 ```
 
 ## O `switch`
@@ -50,36 +50,47 @@ printf("%s\n", statut);
 Útil para comparar uma mesma variável com vários valores inteiros ou enumerados:
 
 ```c
-int jour = 3;
+int dia = 3;
 
-switch (jour) {
+switch (dia) {
     case 1:
-        printf("Lundi\n");
+        printf("Segunda\n");
         break;
     case 2:
-        printf("Mardi\n");
+        printf("Terca\n");
         break;
     case 3:
-        printf("Mercredi\n");
+        printf("Quarta\n");
         break;
     default:
-        printf("Autre jour\n");
+        printf("Outro dia\n");
         break;
 }
 ```
 
-> **Nota:** não se esqueça do «`break;`» no final de cada «`case`»: caso contrário, a execução continua no «`case`» seguinte (*fall-through*), mesmo que a sua condição não corresponda. Este comportamento é, por vezes, utilizado deliberadamente para agrupar vários casos idênticos:
+> **Nota:** não esqueça o `break;` no final de cada `case`: senão a execução continua no `case` seguinte (*fall-through*), mesmo que sua condição não corresponda. Esse comportamento às vezes é explorado deliberadamente para agrupar vários casos idênticos:
 
 ```c
-switch (jour) {
+switch (dia) {
     case 6:
     case 7:
-        printf("Week-end\n"); // pas de break entre 6 et 7 : les deux cas partagent ce code
+        printf("Fim de semana\n"); // sem break entre 6 e 7: os dois casos compartilham esse codigo
         break;
     default:
-        printf("Jour de semaine\n");
+        printf("Dia de semana\n");
         break;
 }
 ```
 
-> **Limitação do «`switch`» em C:** ao contrário de algumas linguagens, um «`switch`» em C só funciona com tipos inteiros (ou equivalentes: `char`, `enum`): não é possível realizar um «`switch`» diretamente numa cadeia de caracteres.
+> **Limite do `switch` em C:** ao contrário de algumas linguagens, um `switch` em C só funciona com tipos inteiros (ou assimilados: `char`, `enum`): impossível fazer um `switch` diretamente em uma string.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | `if`/`else`/`else if` executam um bloco conforme uma condição; qualquer valor não nulo é verdadeiro em C. `switch` compara uma mesma variável inteira com vários valores. |
+| **Ferramentas utilizáveis** | O operador ternário `? :` para uma atribuição condicional curta. |
+| **Armadilhas a evitar** | Esquecer `break;` em um `case`: a execução continua no `case` seguinte (*fall-through*), mesmo sem corresponder à sua condição. |
+| **Boas práticas** | Sempre usar chaves em um bloco `if`, mesmo com uma única instrução: evita um bug se uma linha for adicionada depois sem as chaves. |

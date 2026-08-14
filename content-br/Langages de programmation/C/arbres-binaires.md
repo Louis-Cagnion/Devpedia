@@ -2,28 +2,28 @@
 order: 12
 ---
 
-# Árvores binárias
+# As árvores binárias
 
-Uma **árvore binária** é uma estrutura de dados em que cada elemento (denominado **nó**) aponta para, no máximo, dois outros nós: um filho **esquerdo** e um filho **direito**. Trata-se de uma generalização de uma lista encadeada (um nó, um único «seguinte») com duas direções possíveis, o que permite organizar os dados de forma hierárquica e pesquisá-los de forma eficiente.
+Uma **árvore binária** é uma estrutura de dados em que cada elemento (chamado **nó**) aponta para no máximo outros dois nós: um filho **esquerdo** e um filho **direito**. É uma generalização de uma lista encadeada (um nó, um único "seguinte") para duas direções possíveis, o que permite organizar dados de forma hierárquica e buscá-los eficientemente.
 
 ## Declarar um nó
 
 ```c
-typedef struct Noeud
+typedef struct No
 {
     int valor;
-    struct Noeud *gauche;
-    struct Noeud *droit;
-} Noeud;
+    struct No *esquerda;
+    struct No *direita;
+} No;
 ```
 
-> **Nota:** `struct Noeud *gauche` deve referenciar `struct Noeud` (com a palavra-chave `struct`), e não apenas `Noeud`: no momento em que o compilador lê esta linha, o `typedef Noeud` ainda não está completamente definido. Trata-se de uma exceção necessária, própria das estruturas autorreferenciais.
+> **Nota:** `struct No *esquerda` deve referenciar `struct No` (com a palavra-chave `struct`), não apenas `No`: no momento em que o compilador lê essa linha, o `typedef No` ainda não está completamente definido. É uma exceção necessária, própria das estruturas autorreferenciais.
 
-## A árvore binária de pesquisa (ABR)
+## A árvore binária de busca (ABB)
 
-Uma **árvore binária de pesquisa** (*Binary Search Tree*) impõe uma regra de ordenação a cada nó: tudo o que se encontra na subárvore esquerda é **menor**, tudo o que se encontra na subárvore direita é **maior**. Esta regra permite localizar um elemento com o mínimo de comparações.
+Uma **árvore binária de busca** (*Binary Search Tree*) impõe uma regra de ordem a cada nó: tudo o que está na subárvore esquerda é **menor**, tudo o que está na subárvore direita é **maior**. Essa regra permite encontrar um elemento com um número mínimo de comparações.
 
-```
+```text
         10
        /  \
       5    15
@@ -34,95 +34,106 @@ Uma **árvore binária de pesquisa** (*Binary Search Tree*) impõe uma regra de 
 ## Inserção recursiva
 
 ```c
-Noeud *inserer(Noeud *raiz, int valor)
+No *inserir(No *raiz, int valor)
 {
     if (raiz == NULL) {
-        Noeud *nouveau = malloc(sizeof(Noeud));
-        if (nouveau == NULL) {
-            return NULL; // cf. chapitre sur la gestion de la mémoire : toujours vérifier malloc
+        No *novo = malloc(sizeof(No));
+        if (novo == NULL) {
+            return NULL; // veja O gerenciamento de memoria: sempre verificar malloc
         }
-        nouveau->valor = valor;
-        nouveau->gauche = NULL;
-        nouveau->droit  = NULL;
-        return nouveau;
+        novo->valor = valor;
+        novo->esquerda = NULL;
+        novo->direita  = NULL;
+        return novo;
     }
 
     if (valor < raiz->valor) {
-        raiz->gauche = inserer(raiz->gauche, valor);
+        raiz->esquerda = inserir(raiz->esquerda, valor);
     } else if (valor > raiz->valor) {
-        raiz->droit = inserer(raiz->droit, valor);
+        raiz->direita = inserir(raiz->direita, valor);
     }
-    // valeur == racine->valeur : déjà présente, on ne fait rien
+    // valor == raiz->valor: ja presente, nao faz nada
 
     return raiz;
 }
 ```
 
-- O caso base da recursão é`raiz == NULL`: encontrou-se o local vazio onde inserir.
-- Cada chamada recursiva devolve a raiz da subárvore (modificada ou não), que é reatribuída a `->gauche` ou `->droit` pelo chamador: é isto que liga o novo nó ao resto da árvore.
+- O caso base da recursão é `raiz == NULL`: encontrou-se o espaço vazio onde inserir.
+- Cada chamada recursiva devolve a raiz da subárvore (modificada ou não), que é reatribuída a `->esquerda` ou `->direita` pelo chamador: é isso que liga o novo nó ao resto da árvore.
 
-## Pesquisa
+## Busca
 
 ```c
-Noeud *rechercher(Noeud *raiz, int valor)
+No *buscar(No *raiz, int valor)
 {
     if (raiz == NULL || raiz->valor == valor) {
-        return raiz; // trouvé, ou NULL si l'arbre est vide/épuisé
+        return raiz; // encontrado, ou NULL se a arvore estiver vazia/esgotada
     }
 
     if (valor < raiz->valor) {
-        return rechercher(raiz->gauche, valor);
+        return buscar(raiz->esquerda, valor);
     }
-    return rechercher(raiz->droit, valor);
+    return buscar(raiz->direita, valor);
 }
 ```
 
-A cada etapa, a comparação elimina **toda uma subárvore** da pesquisa: é isso que torna uma ABR equilibrada muito mais rápida do que um percurso linear de uma lista encadeada.
+A cada etapa, a comparação elimina **toda uma subárvore** da busca: é isso que torna uma ABB equilibrada muito mais rápida que um percurso linear de uma lista encadeada.
 
 ## Os três percursos clássicos
 
-Percorrer uma árvore significa visitar cada um dos seus nós uma vez. São possíveis três ordens, dependendo do momento em que se «processa» o nó atual em relação aos seus filhos:
+Percorrer uma árvore significa visitar cada um de seus nós uma vez. Três ordens são possíveis conforme o momento em que se "processa" o nó atual em relação a seus filhos:
 
 ```c
-void parcoursInfixe(Noeud *raiz)   // gauche, nœud, droit -> ordre croissant sur un ABR
+void percursoEmOrdem(No *raiz)      // esquerda, no, direita -> ordem crescente em uma ABB
 {
     if (raiz == NULL) return;
-    parcoursInfixe(raiz->gauche);
+    percursoEmOrdem(raiz->esquerda);
     printf("%d ", raiz->valor);
-    parcoursInfixe(raiz->droit);
+    percursoEmOrdem(raiz->direita);
 }
 
-void parcoursPrefixe(Noeud *raiz)  // nœud, gauche, droit
+void percursoPreOrdem(No *raiz)     // no, esquerda, direita
 {
     if (raiz == NULL) return;
     printf("%d ", raiz->valor);
-    parcoursPrefixe(raiz->gauche);
-    parcoursPrefixe(raiz->droit);
+    percursoPreOrdem(raiz->esquerda);
+    percursoPreOrdem(raiz->direita);
 }
 
-void parcoursSuffixe(Noeud *raiz)  // gauche, droit, nœud
+void percursoPosOrdem(No *raiz)     // esquerda, direita, no
 {
     if (raiz == NULL) return;
-    parcoursSuffixe(raiz->gauche);
-    parcoursSuffixe(raiz->droit);
+    percursoPosOrdem(raiz->esquerda);
+    percursoPosOrdem(raiz->direita);
     printf("%d ", raiz->valor);
 }
 ```
 
-Na árvore de exemplo acima, `parcoursInfixe` apresenta `2 5 7 10 15 20`, os valores por ordem crescente, uma característica própria do ABR.
+Na árvore de exemplo acima, `percursoEmOrdem` exibe `2 5 7 10 15 20`, os valores em ordem crescente, uma propriedade própria da ABB.
 
 ## Liberar uma árvore
 
-Tal como numa lista encadeada, cada nó alocado com`malloc()`deve ser libertado individualmente; um percurso por sufixo é naturalmente adequado para isso, uma vez que trata os filhos antes do próprio nó:
+Como para uma lista encadeada, cada nó alocado com `malloc()` deve ser liberado individualmente; um percurso pós-ordem se presta naturalmente a isso, já que processa os filhos antes do próprio nó:
 
 ```c
-void libererArbre(Noeud *raiz)
+void liberarArvore(No *raiz)
 {
     if (raiz == NULL) return;
-    libererArbre(raiz->gauche);
-    libererArbre(raiz->droit);
+    liberarArvore(raiz->esquerda);
+    liberarArvore(raiz->direita);
     free(raiz);
 }
 ```
 
-Ver também o capítulo sobre ponteiros (estruturas autorreferenciais) e sobre a gestão da memória (cada `malloc` deve ter o seu `free`).
+Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs) (estruturas autorreferenciais) e [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire) (cada `malloc` deve ter seu `free`).
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | Uma árvore binária de busca (ABB) impõe subárvore esquerda < nó < subárvore direita, o que permite uma busca eliminando metade dos candidatos a cada etapa. Três percursos (em ordem, pré-ordem, pós-ordem) visitam os nós em ordens diferentes. |
+| **Ferramentas utilizáveis** | Inserção/busca recursivas; percurso em ordem para obter os valores ordenados de uma ABB. |
+| **Armadilhas a evitar** | Esquecer de verificar cada `malloc()` contra `NULL` durante a inserção. |
+| **Boas práticas** | Liberar uma árvore por percurso pós-ordem (filhos antes do próprio nó), para nunca perder o acesso a uma subárvore ainda a liberar. |

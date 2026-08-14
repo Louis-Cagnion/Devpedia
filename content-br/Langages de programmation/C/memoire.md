@@ -2,26 +2,26 @@
 order: 5
 ---
 
-# Gestão da memória
+# O gerenciamento de memória
 
-Ao contrário de linguagens como o PHP ou o JavaScript, que gerem automaticamente a memória através de um recolhedor de lixo (*garbage collector*), o C atribui ao programador a responsabilidade total pela alocação e libertação da memória de que o seu programa necessita. É isso que permite um elevado desempenho e um controle preciso dos recursos, à custa de uma vigilância constante.
+Ao contrário de linguagens como PHP ou JavaScript, que gerenciam automaticamente a memória via um coletor de lixo (*garbage collector*), o C deixa ao desenvolvedor a responsabilidade completa de alocar e liberar a memória de que seu programa precisa. É isso que permite performances elevadas e um controle fino dos recursos, ao preço de uma vigilância constante.
 
-## Stack (pilha) e Heap (montão)
+## Stack (pilha) e Heap (monte)
 
-Um programa em C dispõe de duas áreas principais de memória para os seus dados:
+Um programa C dispõe de duas zonas de memória principais para seus dados:
 
-| | Pilha | Heap |
+| | Stack | Heap |
 |---|---|---|
-| Gestão | Automática (variáveis locais) | Manual (`malloc` / `free`) |
-| Duração | O tempo do bloco/da função atual | Até ao «`free()`» explícito |
-| Tamanho | Limitado, definido no arranque do programa | Limitado pela RAM/espaço de swap disponível |
-| Velocidade | Muito rápida (simples deslocamento de um ponteiro) | Mais lenta (procura de um espaço livre) |
+| Gerenciamento | Automático (variáveis locais) | Manual (`malloc`/`free`) |
+| Tempo de vida | O tempo do bloco/da função atual | Até o `free()` explícito |
+| Tamanho | Limitado, fixado no início do programa | Limitado pela RAM/swap disponível |
+| Velocidade | Muito rápida (simples deslocamento de um ponteiro) | Mais lenta (busca por um espaço livre) |
 
 ```c
-void exemple(void)
+void exemplo(void)
 {
-    int x = 5;            // sur la stack, libéré automatiquement à la fin de la fonction
-    int *p = malloc(sizeof(int)); // sur le heap, reste alloué jusqu'à free(p)
+    int x = 5;                     // na stack, liberado automaticamente ao fim da funcao
+    int *p = malloc(sizeof(int));  // no heap, permanece alocado ate free(p)
     *p = 5;
     free(p);
 }
@@ -29,80 +29,124 @@ void exemple(void)
 
 ## Alocar memória dinamicamente
 
-`malloc()` reserva um bloco de memória bruta na pilha (heap), cujo tamanho é expresso em octetos:
+`malloc()` reserva um bloco de memória bruto no heap, cujo tamanho é expresso em bytes:
 
 ```c
-int *tab = malloc(5 * sizeof(int)); // réserve la place pour 5 entiers
+int *array = malloc(5 * sizeof(int)); // reserva o espaco para 5 inteiros
 
-if (tab == NULL) {
-    // malloc a échoué (mémoire insuffisante) -> tab vaut NULL, à toujours vérifier
+if (array == NULL) {
+    // malloc falhou (memoria insuficiente) -> array vale NULL, sempre verificar
     return;
 }
 
 for (int i = 0; i < 5; i++) {
-    tab[i] = i * 10;
+    array[i] = i * 10;
 }
 ```
 
-> **Nota:** `malloc()` não **reinicializa** a memória alocada: esta pode conter qualquer valor residual («garbage»). `calloc(número, taille)` faz o mesmo que `malloc(número * taille)`, mas, além disso, define todos os bytes a zero.
+> **Nota:** `malloc()` não **reinicializa** a memória alocada: ela pode conter qualquer valor residual ("garbage"). `calloc(numero, tamanho)` faz a mesma coisa que `malloc(numero * tamanho)`, mas além disso coloca todos os bytes em zero.
 
 ```c
-int *tab = calloc(5, sizeof(int)); // 5 entiers, tous initialisés à 0
+int *array = calloc(5, sizeof(int)); // 5 inteiros, todos inicializados em 0
 ```
 
 ## Redimensionar um bloco: `realloc()`
 
 ```c
-int *tab = malloc(3 * sizeof(int));
-// ... on a besoin de plus de place ...
-int *nouveauTab = realloc(tab, 6 * sizeof(int));
+int *array = malloc(3 * sizeof(int));
+// ... precisa-se de mais espaco ...
+int *novoArray = realloc(array, 6 * sizeof(int));
 
-if (nouveauTab == NULL) {
-    // realloc a échoué : l'ancien bloc "tab" est toujours valide, ne pas le perdre
-    free(tab);
+if (novoArray == NULL) {
+    // realloc falhou: o bloco antigo "array" ainda e valido, nao perde-lo
+    free(array);
     return;
 }
-tab = nouveauTab; // le bloc a pu être déplacé ailleurs en mémoire
+array = novoArray; // o bloco pode ter sido deslocado para outro lugar na memoria
 ```
 
-`realloc()` mantém o conteúdo existente (truncado se o novo tamanho for menor), mas pode deslocar o bloco na memória, se necessário: é por isso que nunca se reatribui `tab` diretamente antes de verificar se `realloc()` não devolveu `NULL`.
+`realloc()` preserva o conteúdo existente (truncado se o novo tamanho for menor), mas pode deslocar o bloco na memória se necessário: é por isso que nunca se reatribui `array` diretamente antes de verificar que `realloc()` não retornou `NULL`.
 
-## Liberar memória: `free()`
+## Liberar a memória: `free()`
 
-Cada `malloc()` / `calloc()` / `realloc()` bem-sucedido deve corresponder exatamente a um `free()`, quando o bloco já não for necessário:
+Cada `malloc()`/`calloc()`/`realloc()` bem-sucedido deve corresponder a exatamente um `free()`, quando o bloco não é mais útil:
 
 ```c
 int *p = malloc(sizeof(int));
 *p = 42;
 free(p);
-// p contient toujours l'ancienne adresse ("dangling pointer") : il ne faut plus l'utiliser
-p = NULL; // bonne pratique : empêche une utilisation accidentelle après libération
+// p ainda contem o endereco antigo ("dangling pointer"): nao deve mais ser usado
+p = NULL; // boa pratica: impede um uso acidental apos a liberacao
 ```
 
-## Os três erros de memória clássicos
+## Os quatro bugs de memória clássicos
 
-| Erro | Causa | Consequência |
+| Bug | Causa | Consequência |
 |---|---|---|
-| **Fuga de memória** (*memory leak*) | Um bloco `malloc` é nunca é `free()` | A memória utilizada pelo programa aumenta sem nunca diminuir |
-| **Use-after-free** | O programa desreferencia um ponteiro após a sua «`free()`» | Comportamento indefinido: dados corrompidos, falha do sistema ou, pior ainda, «funciona» silenciosamente |
-| **«Double free»** | «`free()`» chamado duas vezes no mesmo ponteiro | Corrupção do gestor de memória, falha frequentemente diferida e difícil de rastrear |
+| **Vazamento de memória** (*memory leak*) | Um bloco `malloc`ado nunca é `free()`ado | A memória usada pelo programa aumenta sem nunca diminuir |
+| **Use-after-free** | O programa desreferencia um ponteiro após seu `free()` | Comportamento indefinido: dado corrompido, crash, ou pior, silenciosamente "funciona" |
+| **Double free** | `free()` chamado duas vezes no mesmo ponteiro | Corrupção do gerenciador de memória, crash frequentemente adiado e difícil de rastrear |
+| **Estouro de buffer** (*buffer overflow*) | Escrita além do tamanho realmente alocado de um buffer | Corrupção de memória adjacente, e uma porta aberta para a execução de código arbitrário (veja abaixo) |
 
 ```c
 int *p = malloc(sizeof(int));
 free(p);
-free(p); // double free : comportement indéfini
+free(p); // double free: comportamento indefinido
 ```
 
-> **Nota:** estes erros nem sempre provocam uma falha imediata e visível: é isso que os torna difíceis de detetar. Uma ferramenta como **o Valgrind** (`valgrind ./mon_programme`) executa o programa e identifica com precisão as fugas de memória e os acessos inválidos, indicando a linha de código responsável.
+> **Nota:** esses bugs nem sempre provocam um crash imediato e visível: é isso que os torna difíceis de detectar. Uma ferramenta como o [**Valgrind**](https://valgrind.org) (`valgrind ./meu_programa`) executa o programa e relata precisamente os vazamentos de memória e os acessos inválidos, com a linha de código responsável.
+
+## O estouro de buffer (*buffer overflow*), um bug com consequências de segurança
+
+Ao contrário dos três bugs anteriores (que corrompem a memória do próprio programa, sem intenção externa), um estouro de buffer é frequentemente **o resultado de uma entrada controlada por um atacante**: o que faz dele historicamente uma das falhas de segurança mais exploradas em C/C++.
+
+```c
+char buffer[16];
+strcpy(buffer, entrada_usuario); // NENHUMA verificacao do tamanho de entrada_usuario
+```
+
+Se `entrada_usuario` ultrapassar 16 bytes, `strcpy()` continua escrevendo além dos limites de `buffer`, na memória que segue imediatamente na pilha, que pode conter outras variáveis locais, ou o **endereço de retorno** da função atual (o local onde o programa deve retomar sua execução após o `return`). Um atacante que controla precisamente o conteúdo escrito pode, no pior caso, substituir esse endereço de retorno pelo endereço de sua escolha, desviando o fluxo de execução do programa para um código sob seu controle (*stack smashing*).
+
+> **Nota:** é o mesmo princípio de uma [injeção SQL](/?c=langages-de-programmation&s=php&p=securite) ou de uma [injeção de comando Bash](/?c=shells&s=bash&p=variables): uma entrada não controlada que modifica a **estrutura** do que vai ser executado, em vez de permanecer um dado passivo.
+
+### Se proteger disso
+
+```c
+strcpy(buffer, entrada);                       // perigoso: nenhum limite
+strncpy(buffer, entrada, sizeof(buffer) - 1);  // limitado ao tamanho real do buffer
+buffer[sizeof(buffer) - 1] = '\0';             // strncpy nao garante a terminacao se a origem for muito longa
+
+fgets(buffer, sizeof(buffer), stdin);        // leitura limitada ja na captura, em vez de corrigir depois
+```
+
+| Função arriscada | Alternativa limitada |
+|---|---|
+| `strcpy()` | `strncpy()` (atenção à terminação, cf. acima) |
+| `strcat()` | `strncat()` |
+| `sprintf()` | `snprintf()` (trunca em vez de estourar) |
+| `gets()` | `fgets()` (`gets()` aliás foi removido do padrão C desde o [C11](https://en.wikipedia.org/wiki/C11_(C_standard_revision)), precisamente por esse motivo) |
+
+> **Nota:** limitar o tamanho só resolve metade do problema: também é preciso verificar que o dado truncado permanece coerente para o resto do programa (um nome de arquivo cortado no meio por `strncpy` continua sendo um nome de arquivo sintaticamente válido, apenas incorreto). O reflexo correto continua sendo sempre conhecer, a cada escrita, o tamanho real do buffer de destino; nunca supor que uma entrada respeitará um tamanho esperado sem verificá-lo.
 
 ## `sizeof`
 
-`sizeof` não é uma função, mas sim um operador avaliado na compilação: devolve o tamanho, em bytes, de um tipo ou de uma variável, essencial para calcular corretamente o tamanho a atribuir:
+`sizeof` não é uma função, mas um operador avaliado na compilação: ele retorna o tamanho em bytes de um tipo ou de uma variável, indispensável para calcular corretamente o tamanho a alocar:
 
 ```c
-sizeof(int);      // généralement 4
-sizeof(char);      // toujours 1, par définition du standard C
-sizeof(int) * 10;  // taille nécessaire pour 10 entiers -> à passer à malloc()
+sizeof(int);       // geralmente 4
+sizeof(char);      // sempre 1, por definicao do padrao C
+sizeof(int) * 10;  // tamanho necessario para 10 inteiros -> a passar para malloc()
 ```
 
-Consulte também o capítulo sobre ponteiros, cuja compreensão é um pré-requisito para este.
+Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs), cuja compreensão é um pré-requisito para este capítulo.
+
+---
+
+## 📋 Recapitulando
+
+| | |
+|---|---|
+| **Para lembrar** | O C deixa ao desenvolvedor a responsabilidade completa da memória dinâmica (heap): `malloc`/`calloc`/`realloc` para alocar, `free` para liberar; a stack (variáveis locais) é gerenciada automaticamente. |
+| **Ferramentas utilizáveis** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind para detectar vazamentos e acessos inválidos. |
+| **Armadilhas a evitar** | Vazamento de memória (nunca um `free`), use-after-free, double free, estouro de buffer, este último podendo ser explorado como falha de segurança. |
+| **Boas práticas** | Sempre verificar se um `malloc`/`realloc` não retornou `NULL`; colocar um ponteiro em `NULL` logo após seu `free()`; preferir `fgets`/`strncpy`/`snprintf` às funções sem limite (`gets`/`strcpy`/`sprintf`). |
