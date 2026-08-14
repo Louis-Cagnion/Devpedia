@@ -95,6 +95,7 @@
       "javascript": "JavaScript",
       "ocaml": "OCaml",
       "php": "PHP",
+      "powershell": "PowerShell",
       "python": "Python",
       "zsh": "Zsh"
     }

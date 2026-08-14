@@ -4,16 +4,14 @@
 - `IA/description.md` (EN) à adapter quand `content-en/IA` sera restructuré en subjects (actuellement plat, décision explicite).
 
 ## Tirets cadratins (`—`) hors FR
-- `content-br/` : 472 occurrences dans 110 fichiers
-- `content-es/` : 123 occurrences dans 56 fichiers
-- À traiter une fois `content-br/`/`content-es/` à jour structurellement (voir ci-dessous), pour ne pas nettoyer des fichiers qui vont être réécrits.
+- `content-br/` : à recompter (le sweep n'a jamais été relancé depuis que la structure BR est à jour — voir ci-dessous, `content-br/` est désormais complet).
+- `content-es/` : 123 occurrences dans 56 fichiers, à traiter une fois `content-es/` à jour structurellement.
 
-## Traductions ES/BR à rattraper
-- **14 fichiers BR encore manquants** : le sujet PowerShell (`Shells/PowerShell`), entièrement absent.
-- `Bash` existe toujours en catégorie plate en ES (pas encore restructuré en sous-dossier de `Shells`, contrairement à BR).
-- 6 langues manquantes en plus d'ES/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
-- Quand la catégorie IA sera traduite pour ES/BR, l'écrire directement en subjects (comme la structure FR actuelle), pas à plat.
-- ES : audit structurel complet (comme celui fait pour BR) encore à faire.
+## Traductions ES à rattraper
+- `Bash` existe en catégorie plate en ES au lieu d'un sous-dossier de `Shells` (BR déjà corrigé).
+- Audit structurel complet (comme celui fait pour BR) encore à faire pour ES.
+- Quand la catégorie IA sera traduite pour ES, l'écrire directement en subjects (comme la structure FR actuelle), pas à plat.
+- 6 langues manquantes en plus d'ES : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
 
 ## Lecture audio automatique du site
 - CSS de surbrillance mot par mot synchronisé avec la synthèse vocale (demandé par Louis) : pas encore cadré techniquement (vérifier fiabilité/support de l'événement `boundary` de `SpeechSynthesisUtterance` avant de s'appuyer dessus).
