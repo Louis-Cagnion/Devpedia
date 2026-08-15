@@ -684,7 +684,24 @@
       "id": "organisation-en-entreprise",
       "label": "Organisation en entreprise",
       "folder": "Organisation en entreprise",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "roles-equipe-developpement",
+          "label": "Los roles en un equipo de desarrollo"
+        },
+        {
+          "id": "methodologies-agile-scrum-kanban",
+          "label": "Metodologías: Agile, Scrum, Kanban"
+        },
+        {
+          "id": "cycle-de-vie-dun-projet",
+          "label": "El ciclo de vida de un proyecto"
+        },
+        {
+          "id": "documentation-et-communication-equipe",
+          "label": "Documentación y comunicación en equipo"
+        }
+      ]
     },
     {
       "id": "performance",
