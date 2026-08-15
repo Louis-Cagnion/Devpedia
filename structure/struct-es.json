@@ -258,7 +258,24 @@
       "id": "infrastructure",
       "label": "Infrastructure",
       "folder": "Infrastructure",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "api-et-http",
+          "label": "Los intercambios de datos: API y HTTP"
+        },
+        {
+          "id": "json",
+          "label": "El formato JSON"
+        },
+        {
+          "id": "cpu-vs-gpu",
+          "label": "CPU vs GPU: el cálculo paralelo"
+        },
+        {
+          "id": "le-cloud",
+          "label": "¿Qué es el cloud?"
+        }
+      ]
     },
     {
       "id": "langages-de-balisage",
