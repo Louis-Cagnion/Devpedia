@@ -11,6 +11,69 @@
       ]
     },
     {
+      "id": "authentification",
+      "label": "Authentification",
+      "folder": "Authentification",
+      "subjects": [
+        {
+          "id": "fondamentaux",
+          "label": "Fondamentaux",
+          "folder": "Fondamentaux",
+          "chapters": [
+            {
+              "id": "authentification-vs-autorisation",
+              "label": "Autenticação vs autorização"
+            },
+            {
+              "id": "mots-de-passe-et-hachage",
+              "label": "Senhas e hash seguro"
+            }
+          ]
+        },
+        {
+          "id": "sessions-et-tokens",
+          "label": "Sessions et tokens",
+          "folder": "Sessions et tokens",
+          "chapters": [
+            {
+              "id": "sessions-et-cookies",
+              "label": "Sessões e cookies"
+            },
+            {
+              "id": "jwt-et-tokens",
+              "label": "JWT e tokens"
+            }
+          ]
+        },
+        {
+          "id": "delegation-et-federation-didentite",
+          "label": "Délégation et fédération d'identité",
+          "folder": "Délégation et fédération d'identité",
+          "chapters": [
+            {
+              "id": "oauth2-et-openid-connect",
+              "label": "OAuth 2.0 e OpenID Connect"
+            },
+            {
+              "id": "sso-et-gestion-didentite-entreprise",
+              "label": "SSO e gestão de identidade corporativa"
+            }
+          ]
+        },
+        {
+          "id": "renforcer-lauthentification",
+          "label": "Renforcer l'authentification",
+          "folder": "Renforcer l'authentification",
+          "chapters": [
+            {
+              "id": "authentification-multifacteur",
+              "label": "Autenticação multifator"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "bases-de-donnees",
       "label": "Bases de données",
       "folder": "Bases de données",
@@ -279,6 +342,10 @@
             {
               "id": "llm-en-production",
               "label": "LLM em produção: casos de uso e limites"
+            },
+            {
+              "id": "reduire-la-variance-des-reponses",
+              "label": "Reduzir a variância das respostas: self-consistency, voto majoritário e ensembling"
             },
             {
               "id": "agents",

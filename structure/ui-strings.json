@@ -152,6 +152,7 @@
     "pageFallbackNotice": "Esta página ainda não foi traduzida: mostrando em outro idioma disponível.",
     "categoryLabels": {
       "acceuil": "Início",
+      "authentification": "Autenticação",
       "bases-de-donnees": "Bancos de dados",
       "bases-de-l-informatique": "Fundamentos da computação",
       "ci-cd": "CI/CD",
@@ -174,6 +175,10 @@
     },
     "subjectLabels": {
       "bash": "Bash",
+      "fondamentaux": "Fundamentos",
+      "sessions-et-tokens": "Sessões e tokens",
+      "delegation-et-federation-didentite": "Delegação e federação de identidade",
+      "renforcer-lauthentification": "Reforçar a autenticação",
       "fondamentaux-du-deep-learning": "Fundamentos do deep learning",
       "nlp-llm": "NLP e LLM",
       "applications-llm": "Aplicações LLM",
