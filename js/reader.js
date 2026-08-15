@@ -286,11 +286,15 @@ function speakableCode(text, context) {
 // either skips or reads unpredictably. Unlike CONTEXT_OPERATOR_SPEECH (always English, inline
 // code only), these run on the page's own prose text in whichever language it's currently shown
 // in -- keyed by that language, falling back to English for a language missing an entry.
+// "~" is used interchangeably with "≈" throughout the content as an informal "approximately"
+// prefix directly against a number ("~7 min", "~1,8 × 10¹⁹", "~−9,2 × 10¹⁸") -- same word as "≈"
+// in every language. Read aloud as the literal word "tilde" otherwise, even stuck to a negative
+// number's own "−" sign.
 const PROSE_SYMBOL_SPEECH = {
-    fr: { "≈": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés" },
-    en: { "≈": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees" },
-    es: { "≈": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados" },
-    br: { "≈": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus" },
+    fr: { "≈": "environ", "~": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés" },
+    en: { "≈": "approximately", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees" },
+    es: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados" },
+    br: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus" },
 };
 
 // "→" means different things depending on the chapter: a numeric/character range ("0 → 255",
