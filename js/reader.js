@@ -128,7 +128,10 @@ const CONTEXT_OPERATOR_SPEECH = {
         "<<": "left shift",
         ">>": "right shift",
         "~": "bitwise not",
-        "^": "bitwise xor",
+        // "xor" alone is a real word to a screen but not to most TTS voices, which try to sound
+        // it out as one syllable ("zor") rather than the two ("ex or") a human would say --
+        // spelled out as two words to force the natural pronunciation.
+        "^": "bitwise ex or",
         "|": "bitwise or",
     },
     cpp: {
@@ -141,7 +144,10 @@ const CONTEXT_OPERATOR_SPEECH = {
         "<<": "stream insertion",
         ">>": "stream extraction",
         "~": "bitwise not",
-        "^": "bitwise xor",
+        // "xor" alone is a real word to a screen but not to most TTS voices, which try to sound
+        // it out as one syllable ("zor") rather than the two ("ex or") a human would say --
+        // spelled out as two words to force the natural pronunciation.
+        "^": "bitwise ex or",
         "::": "scope resolution",
     },
     php: {
@@ -305,9 +311,17 @@ const ARROW_SPEECH = {
 // voices announce its name ("clipboard emoji") rather than skipping it silently.
 const DECORATIVE_EMOJI = "📋";
 
+// Kept as-is (untranslated) in every language's prose, always uppercase -- same mispronunciation
+// as CONTEXT_OPERATOR_SPEECH's "^" above, fixed the same way, for the two chapters that mention
+// it directly in prose rather than only inside inline code (cf. operateurs-binaires.md).
+const XOR_WORD_SPEECH = "ex or";
+
 function speakableText(text, lang, pageId) {
     const arrowWord = ARROW_SPEECH[ARROW_RANGE_PAGES.has(pageId) ? "range" : "other"][lang] ?? ARROW_SPEECH.other.en;
-    let result = text.replaceAll("→", ` ${arrowWord} `).replaceAll(DECORATIVE_EMOJI, "");
+    let result = text
+        .replaceAll("→", ` ${arrowWord} `)
+        .replaceAll(DECORATIVE_EMOJI, "")
+        .replaceAll("XOR", XOR_WORD_SPEECH);
     const symbols = PROSE_SYMBOL_SPEECH[lang] ?? PROSE_SYMBOL_SPEECH.en;
     for (const [symbol, phrase] of Object.entries(symbols)) {
         result = result.replaceAll(symbol, ` ${phrase} `);
