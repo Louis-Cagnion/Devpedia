@@ -291,10 +291,10 @@ function speakableCode(text, context) {
 // in every language. Read aloud as the literal word "tilde" otherwise, even stuck to a negative
 // number's own "−" sign.
 const PROSE_SYMBOL_SPEECH = {
-    fr: { "≈": "environ", "~": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés" },
-    en: { "≈": "approximately", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees" },
-    es: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados" },
-    br: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus" },
+    fr: { "≈": "environ", "~": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés", "×": "fois" },
+    en: { "≈": "approximately", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times" },
+    es: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por" },
+    br: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes" },
 };
 
 // "→" means different things depending on the chapter: a numeric/character range ("0 → 255",
