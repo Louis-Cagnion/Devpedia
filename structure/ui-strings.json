@@ -30,6 +30,7 @@
     "pageFallbackNotice": "This page isn't translated yet: showing it in another available language.",
     "categoryLabels": {
       "acceuil": "Home",
+      "authentification": "Authentication",
       "bases-de-donnees": "Databases",
       "bases-de-l-informatique": "Computer science fundamentals",
       "ci-cd": "CI/CD",
@@ -52,6 +53,10 @@
     },
     "subjectLabels": {
       "bash": "Bash",
+      "fondamentaux": "Fundamentals",
+      "sessions-et-tokens": "Sessions and Tokens",
+      "delegation-et-federation-didentite": "Delegation and Identity Federation",
+      "renforcer-lauthentification": "Strengthening Authentication",
       "fondamentaux-du-deep-learning": "Fundamentals of Deep Learning",
       "nlp-llm": "NLP and LLM",
       "applications-llm": "LLM Applications",

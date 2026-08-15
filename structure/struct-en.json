@@ -53,14 +53,23 @@
             {
               "id": "oauth2-et-openid-connect",
               "label": "OAuth 2.0 and OpenID Connect"
+            },
+            {
+              "id": "sso-et-gestion-didentite-entreprise",
+              "label": "SSO and Enterprise Identity Management"
             }
           ]
         },
         {
-          "id": "renforcer-l-authentification",
+          "id": "renforcer-lauthentification",
           "label": "Renforcer l'authentification",
           "folder": "Renforcer l'authentification",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "authentification-multifacteur",
+              "label": "Multi-Factor Authentication"
+            }
+          ]
         }
       ]
     },
