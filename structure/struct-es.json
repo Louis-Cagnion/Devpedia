@@ -114,6 +114,18 @@
           "label": "Los repositorios remotos (remotes)"
         },
         {
+          "id": "github-et-plateformes",
+          "label": "GitHub y las plataformas de alojamiento Git"
+        },
+        {
+          "id": "pull-requests-github",
+          "label": "Las pull requests en GitHub"
+        },
+        {
+          "id": "issues-et-projets-github",
+          "label": "Issues y gestión de proyecto en GitHub"
+        },
+        {
           "id": "resoudre-conflits",
           "label": "Resolver un conflicto de fusión"
         },
