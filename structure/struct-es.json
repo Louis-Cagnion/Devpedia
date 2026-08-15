@@ -45,7 +45,32 @@
       "id": "bases-de-l-informatique",
       "label": "Bases de l'informatique",
       "folder": "Bases de l'informatique",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "code-programmes-et-fichiers",
+          "label": "¿Qué ejecuta un ordenador?"
+        },
+        {
+          "id": "le-terminal",
+          "label": "La terminal: dar instrucciones por escrito"
+        },
+        {
+          "id": "editeur-de-code-et-ide",
+          "label": "El editor de código y el IDE"
+        },
+        {
+          "id": "arborescence-et-chemins",
+          "label": "Estructura de archivos y rutas"
+        },
+        {
+          "id": "la-variable",
+          "label": "La variable"
+        },
+        {
+          "id": "le-bug",
+          "label": "El bug"
+        }
+      ]
     },
     {
       "id": "ci-cd",
