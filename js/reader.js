@@ -310,6 +310,26 @@ const ARROW_SPEECH = {
     other: { fr: "puis", en: "then", es: "luego", br: "depois" },
 };
 
+// Unicode superscript characters (exponents, e.g. "2ⁿ⁻¹", "10¹⁹") are silently skipped by TTS
+// engines entirely -- "2ⁿ⁻¹ à 2ⁿ⁻¹ − 1" was heard as "2 à 2 − 1", losing the exponent that's the
+// whole point of the sentence. A run of consecutive superscript characters is decoded back to its
+// normal-size text (digits/n/i as themselves, "⁻"/"⁺" spelled out per language since a bare
+// "-"/"+" wouldn't reliably read as minus/plus either) and prefixed with a localized "to the
+// power of".
+const SUPERSCRIPT_DIGITS = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "ⁿ": "n", "ⁱ": "i" };
+const SUPERSCRIPT_RUN = /[⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱ⁻⁺]+/g;
+const POWER_OF_SPEECH = {
+    fr: { of: "puissance", "⁻": " moins ", "⁺": " plus " },
+    en: { of: "to the power of", "⁻": " minus ", "⁺": " plus " },
+    es: { of: "elevado a", "⁻": " menos ", "⁺": " más " },
+    br: { of: "elevado a", "⁻": " menos ", "⁺": " mais " },
+};
+
+function decodeSuperscript(run, lang) {
+    const signs = POWER_OF_SPEECH[lang] ?? POWER_OF_SPEECH.en;
+    return [...run].map(ch => SUPERSCRIPT_DIGITS[ch] ?? signs[ch] ?? ch).join("");
+}
+
 // Purely decorative in every "## 📋 Summary"-style heading (confirmed by survey: this is the
 // only emoji ever used in prose -- an emoji used as actual teaching content, like the one in the
 // text encoding chapter's own example, always sits inside an inline `code` span instead, so it
@@ -319,9 +339,11 @@ const DECORATIVE_EMOJI = "📋";
 
 function speakableText(text, lang, pageId) {
     const arrowWord = ARROW_SPEECH[ARROW_RANGE_PAGES.has(pageId) ? "range" : "other"][lang] ?? ARROW_SPEECH.other.en;
+    const powerOfWord = (POWER_OF_SPEECH[lang] ?? POWER_OF_SPEECH.en).of;
     let result = text
         .replaceAll("→", ` ${arrowWord} `)
-        .replaceAll(DECORATIVE_EMOJI, "");
+        .replaceAll(DECORATIVE_EMOJI, "")
+        .replace(SUPERSCRIPT_RUN, run => ` ${powerOfWord} ${decodeSuperscript(run, lang)} `);
     const symbols = PROSE_SYMBOL_SPEECH[lang] ?? PROSE_SYMBOL_SPEECH.en;
     for (const [symbol, phrase] of Object.entries(symbols)) {
         result = result.replaceAll(symbol, ` ${phrase} `);
