@@ -687,7 +687,28 @@
           "id": "ocaml",
           "label": "OCaml",
           "folder": "OCaml",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "programmation-fonctionnelle-vs-imperative",
+              "label": "Programación funcional vs imperativa"
+            },
+            {
+              "id": "immuabilite-et-fonctions-pures",
+              "label": "Inmutabilidad y funciones puras"
+            },
+            {
+              "id": "filtrage-par-motif-et-types-algebriques",
+              "label": "Filtrado por patrones y tipos algebraicos"
+            },
+            {
+              "id": "recursion-et-fonctions-dordre-superieur",
+              "label": "Recursión y funciones de orden superior"
+            },
+            {
+              "id": "inference-de-types",
+              "label": "La inferencia de tipos"
+            }
+          ]
         }
       ]
     },
