@@ -2,7 +2,6 @@
 
 ## Nouveau contenu à écrire (FR)
 - Une partie sur l'authentification, avec Okta comme exemple (demandé par Louis, catégorie/chapitre précis pas encore décidé).
-- Techniques de réduction de la variance des réponses LLM (self-consistency, majority voting, ensembling...) : `content/IA/NLP et LLM/llm-en-production.md` couvre déjà le réglage de la température, mais aucune de ces techniques dédiées n'est abordée (catégorie/chapitre précis pas encore décidé).
 
 ## Langues
 - 6 langues manquantes en plus d'ES/EN/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
