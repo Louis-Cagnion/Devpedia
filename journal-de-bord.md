@@ -27,6 +27,11 @@ Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièg
 - **Champs de blocs de code spéciaux non traduisibles** (`js/charts.js`) : les blocs ```` ```plot-fonction ````/```` ```vecteurs ````/```` ```distribution ```` utilisés dans Mathématiques ont des noms de champs (`fn`, `domaine`, `label`, `vecteurs`, `barres`) codés en dur dans le parseur JS, indépendamment de la langue du contenu : seule la valeur du champ `label` (et les identifiants mathématiques comme `f(x) = x²`) se traduit, jamais le nom du champ lui-même (`domaine` reste `domaine` en ES, pas `dominio`). Vérifié en lisant `js/charts.js` avant de traduire cette catégorie.
 - Chantier `content-es/` poursuivi et terminé pour 8 groupes supplémentaires le 2026-08-15 (Docker, Mathématiques, Qualité et architecture du code, Shells/Zsh, IA/Vision et OCR, IA/Voix IA), toujours à la main (sans agent), catégorie par catégorie avec commit/push à chaque fin de groupe. Restant après cette session : Performance (9), UI-UX (11), Shells/PowerShell (14).
 
+## Chantier Authentification/variance LLM (2026-08-15)
+
+- Convention BR : tout le contenu BR existant utilise exclusivement `## O que reter` comme en-tête de récapitulatif de fin de chapitre, jamais la variante emoji `## 📋 Resumo` utilisée (en minorité) en FR/ES/EN. À reproduire pareillement pour tout futur chapitre BR.
+- Méthode de vérification retenue avant de déclarer une langue ou un chantier de traduction "terminé" : comparer les comptes de fichiers `.md` par catégorie/sujet entre langues (`find`), pas seulement la qualité de ce qui existe déjà côté cible — un total global identique peut masquer une répartition différente par dossier.
+
 ## Bug de labels non traduits
 
 `category.label`/`subject.label` viennent du nom de dossier brut (toujours en français par construction, nécessaire au cross-language linking) : rien ne les traduisait à l'affichage. Piège retenu : le `#` d'une page d'intro de subject doit rester littéralement le nom de dossier français dans le fichier pour que `generate-struct.js` la reconnaisse comme intro, indépendamment de ce que l'UI affiche désormais via `tEntityLabel()`.
