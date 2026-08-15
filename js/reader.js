@@ -108,12 +108,23 @@ const CONTEXT_OPERATOR_SPEECH = {
         // site's own convention for infix operators). "& " (with the trailing space) is a longer,
         // higher-priority key that only matches the spaced/infix case, leaving bare "&" for the
         // unspaced/prefix case.
-        "& ": "bitwise and",
+        // Just "bitwise", not "bitwise and": unlike "|"/"^" below, dropping the operation name
+        // here doesn't lose real information, since AND is the default/most obvious of the three
+        // to a listener, and "bitwise and" reads as needlessly verbose next to "modulo"/"times".
+        "& ": "bitwise",
         "&": "address of",
         "|=": "bitwise or equals",
         "&=": "bitwise and equals",
         "^=": "bitwise xor equals",
         "++": "increment",
+        // Same spacing trick as "&": "%"/"*" are also ambiguous in C, unrelated to their bitwise
+        // usage above. "% " (modulo, infix, spaced -- "n % 2") vs bare "%" (a printf format
+        // specifier, prefix, unspaced -- "%d"). "* " (multiplication, infix, spaced -- "n * 2")
+        // vs bare "*" (pointer declaration/dereference, prefix, unspaced -- "*ptr", "int *p") --
+        // the bare "*" case is left unhandled for now (native TTS default), since it carries two
+        // distinct meanings of its own (declaration vs dereference) not resolvable by spacing.
+        "% ": "modulo",
+        "* ": "times",
         "<<": "left shift",
         ">>": "right shift",
         "~": "bitwise not",
@@ -287,9 +298,16 @@ const ARROW_SPEECH = {
     other: { fr: "puis", en: "then", es: "luego", br: "depois" },
 };
 
+// Purely decorative in every "## 📋 Summary"-style heading (confirmed by survey: this is the
+// only emoji ever used in prose -- an emoji used as actual teaching content, like the one in the
+// text encoding chapter's own example, always sits inside an inline `code` span instead, so it
+// goes through speakableCode(), never this function, and is left untouched). Read aloud, most TTS
+// voices announce its name ("clipboard emoji") rather than skipping it silently.
+const DECORATIVE_EMOJI = "📋";
+
 function speakableText(text, lang, pageId) {
     const arrowWord = ARROW_SPEECH[ARROW_RANGE_PAGES.has(pageId) ? "range" : "other"][lang] ?? ARROW_SPEECH.other.en;
-    let result = text.replaceAll("→", ` ${arrowWord} `);
+    let result = text.replaceAll("→", ` ${arrowWord} `).replaceAll(DECORATIVE_EMOJI, "");
     const symbols = PROSE_SYMBOL_SPEECH[lang] ?? PROSE_SYMBOL_SPEECH.en;
     for (const [symbol, phrase] of Object.entries(symbols)) {
         result = result.replaceAll(symbol, ` ${phrase} `);
