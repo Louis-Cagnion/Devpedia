@@ -1,9 +1,6 @@
 # TODO — Devpedia
 
-## Langues
-- 6 langues manquantes en plus d'ES/EN/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
-
-## Lecture audio automatique du site
+## Lecture audio automatique du site (priorité de la prochaine session)
 - CSS de surbrillance mot par mot synchronisé avec la synthèse vocale (demandé par Louis) : pas encore cadré techniquement (vérifier fiabilité/support de l'événement `boundary` de `SpeechSynthesisUtterance` avant de s'appuyer dessus).
 - Contrôles de lecture à étendre (demandé par Louis le 2026-08-15, à cadrer en même temps que la surbrillance ci-dessus puisque les deux dépendent du même événement `boundary` pour connaître la position mot par mot) :
   - Mémoriser le mot exact où la lecture s'est arrêtée (pas seulement le paragraphe, cf. `lastSpokenIndex`/`replayParagraph()` actuels dans `js/reader.js`), pour reprendre pile à cet endroit plutôt que de tout relire depuis le début du paragraphe.
@@ -15,3 +12,6 @@
 - Symboles typographiques rares en prose non traités (`↔`, `±`, `…`, `·` isolé) : laissés de côté le 2026-08-15 faute de volume suffisant pour justifier le travail (1-2 occurrences chacun), à reprendre si besoin.
 - `^` en prose comme notation d'exposant (caret normal, pas les caractères exposants Unicode déjà corrigés) lu "accent circonflexe" au lieu de "puissance" (repéré par Louis le 2026-08-16, exemple : `nombres-flottants.md`, "mantisse × 2^exposant") : à ajouter à `PROSE_SYMBOL_SPEECH` dans `js/reader.js`, même traitement que les exposants Unicode (mot "puissance"/"to the power of" localisé).
 - Phrases de la table de prononciation des symboles (`js/reader.js`) à valider mot à mot par Louis, chapitre par chapitre : reste la majorité de la table hors C/C++/SQL/Git/PHP déjà testés en écoute directe le 2026-08-15 (modulo/times/bitwise, XOR, emoji 📋, fluidité du code trivial, flèche →, ≈/≥/≠/°).
+
+## Langues
+- 6 langues manquantes en plus d'ES/EN/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
