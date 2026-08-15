@@ -1134,7 +1134,48 @@
       "id": "ui-ux",
       "label": "UI-UX",
       "folder": "UI-UX",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "hierarchie-visuelle",
+          "label": "Jerarquía visual"
+        },
+        {
+          "id": "couleur-et-contraste",
+          "label": "Color y contraste"
+        },
+        {
+          "id": "typographie",
+          "label": "Tipografía"
+        },
+        {
+          "id": "espacement-et-grille",
+          "label": "Espaciado y cuadrícula (layout)"
+        },
+        {
+          "id": "heuristiques-de-nielsen",
+          "label": "Heurísticas de usabilidad (Nielsen)"
+        },
+        {
+          "id": "accessibilite-ux",
+          "label": "Accesibilidad básica (UX)"
+        },
+        {
+          "id": "recherche-utilisateur",
+          "label": "La investigación de usuarios"
+        },
+        {
+          "id": "wireframing-et-prototypage",
+          "label": "Wireframing y prototipado"
+        },
+        {
+          "id": "design-systems",
+          "label": "Design systems"
+        },
+        {
+          "id": "outils-du-metier",
+          "label": "Las herramientas del oficio"
+        }
+      ]
     }
   ]
 }
