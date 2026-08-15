@@ -97,13 +97,23 @@ const COMPARISON_OPERATORS = new Set(["==", "===", "!=", "!==", "<=", ">="]);
 // than replacing it, so e.g. "==" still reads correctly on every page regardless of context.
 //
 // The whole "Domain-specific Languages (DSL)" category (regex.md, sql.md, ...) shares one context
-// since it has no subjects to split on -- safe today because only regex.md actually uses these
-// bare symbols (cf. the survey that produced this table), but a future DSL chapter reusing e.g.
-// "." for something else would need this category split into real subjects first.
+// since it has no subjects to split on -- but sql.md does reuse some of the same bare symbols
+// with a different meaning than regex.md (e.g. "*" is "all columns" in SQL, not "zero or more"):
+// PAGE_SPECIFIC_CONTEXT below routes it to its own "sql" entry instead of the shared one.
 const CONTEXT_OPERATOR_SPEECH = {
     c: {
         "->": "arrow, member access through a pointer",
+        // "&" is ambiguous in C: unary "address of" directly against an identifier ("&variable",
+        // no space) vs. binary bitwise AND between two operands ("x & MASQUE", spaced -- the
+        // site's own convention for infix operators). "& " (with the trailing space) is a longer,
+        // higher-priority key that only matches the spaced/infix case, leaving bare "&" for the
+        // unspaced/prefix case.
+        "& ": "bitwise and",
         "&": "address of",
+        "|=": "bitwise or equals",
+        "&=": "bitwise and equals",
+        "^=": "bitwise xor equals",
+        "++": "increment",
         "<<": "left shift",
         ">>": "right shift",
         "~": "bitwise not",
@@ -112,7 +122,11 @@ const CONTEXT_OPERATOR_SPEECH = {
     },
     cpp: {
         "->": "arrow, member access through a pointer",
-        "&": "address of",
+        // Unlike C, every inline "&" on this site's C++ content is a reference (declaration,
+        // lambda capture, or parameter), never a bare address-of or bitwise AND -- cf. the
+        // survey behind this table.
+        "&": "reference",
+        "++": "increment",
         "<<": "stream insertion",
         ">>": "stream extraction",
         "~": "bitwise not",
@@ -198,7 +212,19 @@ const CONTEXT_OPERATOR_SPEECH = {
         "EOF": "E O F",
         "$(": "command substitution",
     },
+    // "." kept as a literal period rather than removed: sql.md's own alias.column syntax
+    // (e.g. "c.nom") needs *something* between the two identifiers, just not "any character".
+    sql: {
+        "*": "all columns",
+        "$": "variable",
+        ".": ".",
+    },
 };
+
+// Pages whose own meaning for a shared subject/category context's symbols diverges from that
+// context's other pages (cf. the DSL comment above) get routed to a same-named entry in
+// CONTEXT_OPERATOR_SPEECH by page id instead, checked before curSubject/curCategory.
+const PAGE_SPECIFIC_CONTEXT = new Set(["sql"]);
 
 // One compiled { table, pattern } per context, built lazily and cached -- collectLeafSegments()
 // runs once per paragraph, so rebuilding a page's operator regex on every call would be wasteful.
@@ -328,7 +354,9 @@ function collapseConsecutivePauses(entries) {
 export function buildReadingPlan(pageDiv) {
     resetPlayback();
     const entries = [];
-    const context = appState.curSubject ?? appState.curCategory;
+    const context = PAGE_SPECIFIC_CONTEXT.has(appState.curPageId)
+        ? appState.curPageId
+        : (appState.curSubject ?? appState.curCategory);
     collectSegments(pageDiv, document.documentElement.lang || "fr", context, entries);
     plan = collapseConsecutivePauses(entries);
     notify();
