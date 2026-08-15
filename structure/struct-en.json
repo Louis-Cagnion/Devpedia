@@ -11,6 +11,60 @@
       ]
     },
     {
+      "id": "authentification",
+      "label": "Authentification",
+      "folder": "Authentification",
+      "subjects": [
+        {
+          "id": "fondamentaux",
+          "label": "Fondamentaux",
+          "folder": "Fondamentaux",
+          "chapters": [
+            {
+              "id": "authentification-vs-autorisation",
+              "label": "Authentication vs Authorization"
+            },
+            {
+              "id": "mots-de-passe-et-hachage",
+              "label": "Passwords and Secure Hashing"
+            }
+          ]
+        },
+        {
+          "id": "sessions-et-tokens",
+          "label": "Sessions et tokens",
+          "folder": "Sessions et tokens",
+          "chapters": [
+            {
+              "id": "sessions-et-cookies",
+              "label": "Sessions and Cookies"
+            },
+            {
+              "id": "jwt-et-tokens",
+              "label": "JWT and Tokens"
+            }
+          ]
+        },
+        {
+          "id": "delegation-et-federation-didentite",
+          "label": "Délégation et fédération d'identité",
+          "folder": "Délégation et fédération d'identité",
+          "chapters": [
+            {
+              "id": "oauth2-et-openid-connect",
+              "label": "OAuth 2.0 and OpenID Connect"
+            }
+          ]
+        },
+        {
+          "id": "renforcer-l-authentification",
+          "label": "Renforcer l'authentification",
+          "folder": "Renforcer l'authentification",
+          "chapters": []
+        }
+      ]
+    },
+    {
       "id": "bases-de-donnees",
       "label": "Bases de données",
       "folder": "Bases de données",
@@ -279,6 +333,10 @@
             {
               "id": "llm-en-production",
               "label": "LLMs in Production: Use Cases and Limits"
+            },
+            {
+              "id": "reduire-la-variance-des-reponses",
+              "label": "Reducing Response Variance: Self-Consistency, Majority Voting, and Ensembling"
             },
             {
               "id": "agents",
