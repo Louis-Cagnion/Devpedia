@@ -108,3 +108,14 @@ datos.fillna(0)               # sustituye los valores que faltan por un valor po
 ```
 
 Véase también el capítulo sobre NumPy (las columnas de un DataFrame son, en realidad, «`ndarray`») y sobre SQL, cuyos conceptos (`WHERE`, `GROUP BY`, `JOIN`) se recogen aquí de forma prácticamente idéntica.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | pandas manipula datos tabulares mediante `Series` (una columna) y `DataFrame` (una tabla), con operaciones cercanas a SQL (`WHERE` → máscara booleana, `GROUP BY` → `groupby`, `JOIN` → `merge`). |
+| **Herramientas utilizables** | `read_csv`, `loc`/`iloc`, `groupby`, `merge`, `isna`/`dropna`/`fillna`. |
+| **Trampas a evitar** | Confundir `loc` (por etiqueta) e `iloc` (por posición): divergen en cuanto el índice ha sido personalizado. |
+| **Buenas prácticas** | Preferir una función vectorizada (`np.where`) a `.apply()` para una condición simple sobre un conjunto de datos grande. |

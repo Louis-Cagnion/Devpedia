@@ -63,3 +63,14 @@ Comandos especiales, propios de Jupyter, que no están presentes en el propio le
 - Documentar el proceso y los resultados en paralelo (celdas Markdown + gráficos), lo cual resulta útil para compartir un análisis con otras personas.
 
 Consulta también los capítulos sobre pandas y Matplotlib, las dos bibliotecas más utilizadas en un cuaderno.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Un cuaderno mezcla celdas de código y celdas Markdown, ejecutadas en un orden potencialmente no lineal: el kernel conserva el estado entre ejecuciones, independientemente del orden visual de las celdas. |
+| **Herramientas utilizables** | Comandos mágicos (`%matplotlib inline`, `%timeit`), *Restart Kernel and Run All* para garantizar un estado coherente. |
+| **Trampas a evitar** | Ejecutar las celdas en desorden y creer que el resultado mostrado refleja el estado real del kernel. |
+| **Buenas prácticas** | Relanzar *Restart Kernel and Run All* en caso de duda sobre la reproducibilidad de un resultado. |

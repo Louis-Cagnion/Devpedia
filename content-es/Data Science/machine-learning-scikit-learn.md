@@ -85,3 +85,14 @@ mean_squared_error(y_test, predictions)    # error cuadrático medio -> para la 
 5. Ajustar (otro algoritmo, otros parámetros, más datos...) y volver a empezar.
 
 Véase también el capítulo sobre redes neuronales: una familia concreta de modelos, más compleja que la de scikit-learn, pero basada exactamente en los mismos principios básicos (datos de entrenamiento/prueba, aprendizaje, generalización).
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Un modelo se entrena sobre un conjunto de datos separado del conjunto de prueba, para detectar si generaliza o "memoriza" (sobreajuste). La API de scikit-learn es uniforme: `fit()` y luego `predict()`, sea cual sea el algoritmo. |
+| **Herramientas utilizables** | `train_test_split`, `cross_val_score`, matriz de confusión, `precision_score`/`recall_score`/`f1_score`. |
+| **Trampas a evitar** | Evaluar y ajustar un modelo sobre el mismo conjunto de prueba, repetidamente: equivale a hacer trampa indirectamente; fiarse solo de la exactitud en clases desequilibradas. |
+| **Buenas prácticas** | Reservar un conjunto de validación para ajustar los hiperparámetros, usando el conjunto de prueba final una sola vez; usar el F1-score para resumir el compromiso precisión/exhaustividad. |

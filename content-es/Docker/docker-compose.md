@@ -41,7 +41,7 @@ docker compose down         # detiene y elimina los contenedores (los volumenes 
 ## Lo que Compose automatiza
 
 - **La red**: todos los servicios de un mismo archivo se colocan automáticamente en una red común: `base` ya es accesible por su nombre desde `api`, sin `docker network create` manual (ver [Volúmenes y redes](/?c=docker&p=volumes-et-reseaux)).
-- **El orden de arranque**: `depends_on` arranca `base` antes que `api`. Esto garantiza el orden de **arranque** del contenedor, no que el servicio interno (aquí [MySQL](https://dev.mysql.com/doc/)) ya esté listo para aceptar conexiones: una aplicación que se conecta demasiado pronto debe prever aun así un reintento (cf. [Esperar sin perder tiempo](/?c=performance&p=attentes-et-temps-morts), sección Performance) en lugar de suponer que la base responde desde el primer instante.
+- **El orden de arranque**: `depends_on` arranca `base` antes que `api`. Esto garantiza el orden de **arranque** del contenedor, no que el servicio interno (aquí [MySQL](https://dev.mysql.com/doc/)) ya esté listo para aceptar conexiones: una aplicación que se conecta demasiado pronto debe prever aun así un reintento (cf. [Esperar sin perder tiempo](/?c=performance&p=attentes-et-temps-morts), sección Rendimiento) en lugar de suponer que la base responde desde el primer instante.
 - **Los volúmenes declarados una vez**: `datos-mysql` definido al final del archivo se crea automáticamente si aún no existe.
 
 ## Reconstruir tras un cambio en el Dockerfile

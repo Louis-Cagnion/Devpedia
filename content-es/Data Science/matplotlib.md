@@ -83,3 +83,14 @@ datos["age"].plot(kind="hist")   # pandas recurre directamente a Matplotlib de f
 ```
 
 El «`.plot()`» de pandas (véase el capítulo dedicado) no es más que un atajo práctico sobre Matplotlib; comprender este último permite personalizar cualquier gráfico generado con él.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Matplotlib traza gráficos mediante una `Figure` (la imagen completa) y uno o varios `Axes` (una zona de trazado). La API orientada a objetos (`fig, ax = plt.subplots()`) es preferible en cuanto el gráfico se complica. |
+| **Herramientas utilizables** | `plot`/`scatter`/`bar`/`hist`/`boxplot`, `savefig` para exportar. |
+| **Trampas a evitar** | Usar la API implícita `pyplot` con varios gráficos simultáneos: fuente de confusión sobre a qué gráfico afecta un comando. |
+| **Buenas prácticas** | Preferir `fig, ax = plt.subplots()` explícito para todo código destinado a ser reutilizado. |
