@@ -73,6 +73,10 @@
         {
           "id": "sql",
           "label": "SQL"
+        },
+        {
+          "id": "parsing-incremental-machine-a-etats",
+          "label": "Parsing incremental por máquina de estados"
         }
       ]
     },
@@ -175,6 +179,26 @@
             {
               "id": "nlp-et-llm",
               "label": "Procesamiento del lenguaje natural (NLP) y grandes modelos de lenguaje (LLM)"
+            },
+            {
+              "id": "prompt-engineering",
+              "label": "El prompt engineering: estructurar una petición para mejores resultados"
+            },
+            {
+              "id": "llm-en-production",
+              "label": "LLM en producción: casos de uso y límites"
+            },
+            {
+              "id": "agents",
+              "label": "Agentes: bucle herramienta/reflexión y orquestación"
+            },
+            {
+              "id": "rag",
+              "label": "RAG: aumentar un LLM con datos externos"
+            },
+            {
+              "id": "prompt-injection",
+              "label": "Prompt injection: cuando un dato se hace pasar por una instrucción"
             }
           ]
         },
@@ -182,7 +206,16 @@
           "id": "applications-llm",
           "label": "Applications LLM",
           "folder": "Applications LLM",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "chatbot",
+              "label": "Construir un chatbot: arquitectura, configuración y escalado"
+            },
+            {
+              "id": "assistant-agentique-terminal",
+              "label": "El asistente de IA agéntico en terminal: más allá del prompt simple"
+            }
+          ]
         },
         {
           "id": "vision-et-ocr",
