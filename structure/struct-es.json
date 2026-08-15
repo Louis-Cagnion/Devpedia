@@ -32,7 +32,28 @@
       "id": "data-science",
       "label": "Data Science",
       "folder": "Data Science",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "jupyter-notebooks",
+          "label": "Los cuadernos Jupyter"
+        },
+        {
+          "id": "numpy",
+          "label": "NumPy: cálculo numérico"
+        },
+        {
+          "id": "pandas",
+          "label": "pandas: manipulación de datos tabulares"
+        },
+        {
+          "id": "matplotlib",
+          "label": "Matplotlib: visualización de datos"
+        },
+        {
+          "id": "machine-learning-scikit-learn",
+          "label": "Introducción al aprendizaje automático (scikit-learn)"
+        }
+      ]
     },
     {
       "id": "docker",
@@ -115,13 +136,35 @@
           "id": "fondamentaux-du-deep-learning",
           "label": "Fondamentaux du deep learning",
           "folder": "Fondamentaux du deep learning",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "reseaux-de-neurones",
+              "label": "Las redes neuronales: conceptos básicos"
+            },
+            {
+              "id": "entrainement-descente-de-gradient",
+              "label": "El entrenamiento de un modelo y el descenso del gradiente"
+            },
+            {
+              "id": "architectures-cnn-rnn-transformers",
+              "label": "Arquitecturas: CNN, RNN y Transformers"
+            },
+            {
+              "id": "deep-learning-pytorch",
+              "label": "Aprendizaje profundo con PyTorch"
+            }
+          ]
         },
         {
           "id": "nlp-llm",
           "label": "NLP et LLM",
           "folder": "NLP et LLM",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "nlp-et-llm",
+              "label": "Procesamiento del lenguaje natural (NLP) y grandes modelos de lenguaje (LLM)"
+            }
+          ]
         },
         {
           "id": "applications-llm",
@@ -539,46 +582,6 @@
             {
               "id": "modules-et-environnements",
               "label": "Módulos, pip y entornos virtuales"
-            },
-            {
-              "id": "jupyter-notebooks",
-              "label": "Los cuadernos Jupyter"
-            },
-            {
-              "id": "numpy",
-              "label": "NumPy: cálculo numérico"
-            },
-            {
-              "id": "pandas",
-              "label": "pandas: manipulación de datos tabulares"
-            },
-            {
-              "id": "matplotlib",
-              "label": "Matplotlib: visualización de datos"
-            },
-            {
-              "id": "machine-learning-scikit-learn",
-              "label": "Introducción al aprendizaje automático (scikit-learn)"
-            },
-            {
-              "id": "reseaux-de-neurones",
-              "label": "Las redes neuronales: conceptos básicos"
-            },
-            {
-              "id": "entrainement-descente-de-gradient",
-              "label": "El entrenamiento de un modelo y el descenso del gradiente"
-            },
-            {
-              "id": "deep-learning-pytorch",
-              "label": "Aprendizaje profundo con PyTorch"
-            },
-            {
-              "id": "architectures-cnn-rnn-transformers",
-              "label": "Arquitecturas: CNN, RNN y Transformers"
-            },
-            {
-              "id": "nlp-et-llm",
-              "label": "Procesamiento del lenguaje natural (NLP) y grandes modelos de lenguaje (LLM)"
             }
           ]
         }

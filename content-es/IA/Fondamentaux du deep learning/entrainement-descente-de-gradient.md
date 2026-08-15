@@ -1,5 +1,5 @@
 ---
-order: 19
+order: 2
 ---
 
 # El entrenamiento de un modelo y el descenso del gradiente

@@ -1,5 +1,5 @@
 ---
-order: 14
+order: 2
 ---
 
 # NumPy: cálculo numérico
