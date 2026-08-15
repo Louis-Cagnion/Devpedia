@@ -791,7 +791,32 @@
       "id": "mathematiques",
       "label": "Mathématiques",
       "folder": "Mathématiques",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "la-fonction-mathematique",
+          "label": "La función matemática"
+        },
+        {
+          "id": "vecteurs-et-produit-scalaire",
+          "label": "Vectores y producto escalar"
+        },
+        {
+          "id": "matrices-et-produit-matriciel",
+          "label": "Las matrices y el producto matricial"
+        },
+        {
+          "id": "le-logarithme",
+          "label": "El logaritmo"
+        },
+        {
+          "id": "les-probabilites-de-base",
+          "label": "Las probabilidades básicas"
+        },
+        {
+          "id": "la-derivee-et-le-gradient",
+          "label": "La derivada y el gradiente"
+        }
+      ]
     },
     {
       "id": "organisation-en-entreprise",
