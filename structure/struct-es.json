@@ -352,7 +352,40 @@
           "id": "voix-ia",
           "label": "Voix IA",
           "folder": "Voix IA",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "synthese-classique-vs-deep-learning",
+              "label": "Síntesis de voz: de la concatenación clásica al deep learning"
+            },
+            {
+              "id": "controler-la-prosodie",
+              "label": "Controlar la prosodia"
+            },
+            {
+              "id": "modeles-modernes-synthese",
+              "label": "Modelos modernos de síntesis: los códecs neuronales"
+            },
+            {
+              "id": "cloner-une-voix",
+              "label": "Clonar una voz: técnica e implicaciones éticas/legales"
+            },
+            {
+              "id": "fine-tuning-synthese-vocale",
+              "label": "Entrenar y hacer fine-tuning de un modelo de síntesis de voz"
+            },
+            {
+              "id": "evaluer-synthese-vocale",
+              "label": "Evaluar una síntesis de voz: MOS, inteligibilidad, latencia"
+            },
+            {
+              "id": "choisir-fournisseur-mise-en-production",
+              "label": "Elegir un proveedor y poner en producción"
+            },
+            {
+              "id": "gouvernance-voix-ia",
+              "label": "Gobernanza de un pipeline de voz IA"
+            }
+          ]
         },
         {
           "id": "production-et-gouvernance",
