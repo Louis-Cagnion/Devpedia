@@ -263,6 +263,40 @@ function speakableCode(text, context) {
         .trim();
 }
 
+// Typographic symbols that appear directly in prose (outside inline code), which the TTS engine
+// either skips or reads unpredictably. Unlike CONTEXT_OPERATOR_SPEECH (always English, inline
+// code only), these run on the page's own prose text in whichever language it's currently shown
+// in -- keyed by that language, falling back to English for a language missing an entry.
+const PROSE_SYMBOL_SPEECH = {
+    fr: { "≈": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés" },
+    en: { "≈": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees" },
+    es: { "≈": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados" },
+    br: { "≈": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus" },
+};
+
+// "→" means different things depending on the chapter: a numeric/character range ("0 → 255",
+// "U+0000 → U+007F") in the two pages below, "leads to"/sequence/mapping everywhere else it's
+// used in prose (".zshenv → .zprofile", "str_starts_with(...) → true", "Stage → Job → Step").
+// Verified none of the pages using "→" mix both senses (cf. journal-de-bord.md) before choosing a
+// single word per page rather than trying to parse each occurrence's surrounding tokens. The
+// wording matches how each language's own prose already phrases a range elsewhere in these same
+// two chapters ("goes from 0 to 255" / "va de 0 à 255" / "va de 0 a 255").
+const ARROW_RANGE_PAGES = new Set(["entiers-et-debordements", "encodage-des-textes"]);
+const ARROW_SPEECH = {
+    range: { fr: "à", en: "to", es: "a", br: "a" },
+    other: { fr: "puis", en: "then", es: "luego", br: "depois" },
+};
+
+function speakableText(text, lang, pageId) {
+    const arrowWord = ARROW_SPEECH[ARROW_RANGE_PAGES.has(pageId) ? "range" : "other"][lang] ?? ARROW_SPEECH.other.en;
+    let result = text.replaceAll("→", ` ${arrowWord} `);
+    const symbols = PROSE_SYMBOL_SPEECH[lang] ?? PROSE_SYMBOL_SPEECH.en;
+    for (const [symbol, phrase] of Object.entries(symbols)) {
+        result = result.replaceAll(symbol, ` ${phrase} `);
+    }
+    return result.replace(/\s+/g, " ").trim();
+}
+
 /**
  * Flushes `buffer` (page-language text accumulated so far) as one plan entry, then appends
  * `leaf`'s inline `code` spans as their own separate en-US entries -- kept apart from the
@@ -273,13 +307,16 @@ function speakableCode(text, context) {
  * @param {string} lang the page's language, e.g. "fr", "en"
  * @param {string} context the page's subject or category id, used to pick the right operator
  *   table for inline code (cf. CONTEXT_OPERATOR_SPEECH)
+ * @param {string} pageId the page's own id, used to pick the right prose wording for a symbol
+ *   whose meaning varies page to page rather than context to context (cf. ARROW_RANGE_PAGES)
  * @param {Array} entries the plan being built, appended to in place
  */
-function collectLeafSegments(leaf, lang, context, entries) {
+function collectLeafSegments(leaf, lang, context, pageId, entries) {
     let buffer = "";
     const flushBuffer = () => {
         const text = buffer.trim();
-        if (text && HAS_SPOKEN_CONTENT.test(text)) entries.push({ kind: "speak", text, lang, group: leaf });
+        if (text && HAS_SPOKEN_CONTENT.test(text))
+            entries.push({ kind: "speak", text: speakableText(text, lang, pageId), lang, group: leaf });
         buffer = "";
     };
     leaf.childNodes.forEach(node => {
@@ -301,17 +338,18 @@ function collectLeafSegments(leaf, lang, context, entries) {
  * @param {HTMLElement} root
  * @param {string} lang
  * @param {string} context see {@link collectLeafSegments}
+ * @param {string} pageId see {@link collectLeafSegments}
  * @param {Array} entries the plan being built, appended to in place
  */
-function collectSegments(root, lang, context, entries) {
+function collectSegments(root, lang, context, pageId, entries) {
     Array.from(root.children).forEach(element => {
         if (element.matches(IGNORED_SELECTOR)) return;
         if (element.tagName === "PRE") {
             entries.push({ kind: "pause", element });
         } else if (LEAF_TAGS.has(element.tagName)) {
-            collectLeafSegments(element, lang, context, entries);
+            collectLeafSegments(element, lang, context, pageId, entries);
         } else {
-            collectSegments(element, lang, context, entries);
+            collectSegments(element, lang, context, pageId, entries);
         }
     });
 }
@@ -357,7 +395,7 @@ export function buildReadingPlan(pageDiv) {
     const context = PAGE_SPECIFIC_CONTEXT.has(appState.curPageId)
         ? appState.curPageId
         : (appState.curSubject ?? appState.curCategory);
-    collectSegments(pageDiv, document.documentElement.lang || "fr", context, entries);
+    collectSegments(pageDiv, document.documentElement.lang || "fr", context, appState.curPageId, entries);
     plan = collapseConsecutivePauses(entries);
     notify();
 }
