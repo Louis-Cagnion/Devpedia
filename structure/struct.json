@@ -11,6 +11,69 @@
       ]
     },
     {
+      "id": "authentification",
+      "label": "Authentification",
+      "folder": "Authentification",
+      "subjects": [
+        {
+          "id": "fondamentaux",
+          "label": "Fondamentaux",
+          "folder": "Fondamentaux",
+          "chapters": [
+            {
+              "id": "authentification-vs-autorisation",
+              "label": "Authentification vs autorisation"
+            },
+            {
+              "id": "mots-de-passe-et-hachage",
+              "label": "Mots de passe et hachage sécurisé"
+            }
+          ]
+        },
+        {
+          "id": "sessions-et-tokens",
+          "label": "Sessions et tokens",
+          "folder": "Sessions et tokens",
+          "chapters": [
+            {
+              "id": "sessions-et-cookies",
+              "label": "Sessions et cookies"
+            },
+            {
+              "id": "jwt-et-tokens",
+              "label": "JWT et tokens"
+            }
+          ]
+        },
+        {
+          "id": "delegation-et-federation-didentite",
+          "label": "Délégation et fédération d'identité",
+          "folder": "Délégation et fédération d'identité",
+          "chapters": [
+            {
+              "id": "oauth2-et-openid-connect",
+              "label": "OAuth 2.0 et OpenID Connect"
+            },
+            {
+              "id": "sso-et-gestion-didentite-entreprise",
+              "label": "SSO et gestion d'identité en entreprise"
+            }
+          ]
+        },
+        {
+          "id": "renforcer-lauthentification",
+          "label": "Renforcer l'authentification",
+          "folder": "Renforcer l'authentification",
+          "chapters": [
+            {
+              "id": "authentification-multifacteur",
+              "label": "Authentification multifacteur"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "bases-de-donnees",
       "label": "Bases de données",
       "folder": "Bases de données",
