@@ -250,7 +250,24 @@
           "id": "production-et-gouvernance",
           "label": "Production et gouvernance",
           "folder": "Production et gouvernance",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "gestion-dun-llm",
+              "label": "Monitorización y gestión operativa de un LLM"
+            },
+            {
+              "id": "gouvernance-des-donnees",
+              "label": "Gobernanza de datos para un sistema de IA"
+            },
+            {
+              "id": "reglementation-europeenne-ia",
+              "label": "Regulación europea de la IA: la AI Act"
+            },
+            {
+              "id": "stack-ia",
+              "label": "El stack de IA: las capas de una aplicación en producción"
+            }
+          ]
         }
       ]
     },
