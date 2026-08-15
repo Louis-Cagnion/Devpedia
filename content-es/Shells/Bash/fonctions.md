@@ -1,80 +1,91 @@
 ---
-order: 6
+order: 7
 ---
 
 # Las funciones
 
-Una función de Bash agrupa una secuencia de comandos bajo un nombre reutilizable. A diferencia de PHP o C, una función de Bash **nunca** declara una lista de parámetros con nombre: recibe sus argumentos exactamente igual que lo hace un script, a través de `$1`, `$2`, etc.
+Una función Bash agrupa una secuencia de comandos bajo un nombre reutilizable. A diferencia de [PHP](/?c=langages-de-programmation&s=php&p=conditions) o [C](/?c=langages-de-programmation&s=c&p=conditions), una función Bash **nunca** declara una lista de parámetros con nombre: recibe sus argumentos exactamente igual que un script recibe los suyos, vía `$1`, `$2`, etc.
 
 ## Declarar y llamar a una función
 
 ```bash
-saluer() {
-    echo "Bonjour $1 !"
+saludar() {
+    echo "¡Hola $1!"
 }
 
-saluer "Jean"   # ¡Hola, Jean!
+saludar "Juan"   # ¡Hola Juan!
 ```
 
-`function saluer { ... }` Es una sintaxis alternativa aceptada por Bash (pero no compatible con un e`sh`o estrictamente POSIX); `saluer() { ... }` es la forma más universal.
+`function saludar { ... }` es una escritura alternativa aceptada por Bash (pero no portable a un `sh` estrictamente POSIX): `saludar() { ... }` es la forma más universal.
 
 ## Los argumentos de una función
 
 ```bash
-resumer() {
-    echo "Nom de la fonction : $FUNCNAME"
-    echo "Premier argument : $1"
-    echo "Tous les arguments : $@"
-    echo "Nombre d'arguments : $#"
+resumir() {
+    echo "Nombre de la función: $FUNCNAME"
+    echo "Primer argumento: $1"
+    echo "Todos los argumentos: $@"
+    echo "Número de argumentos: $#"
 }
 
-resumer "Jean" "Dupont"
+resumir "Juan" "Perez"
 ```
 
-> **Nota:** «`$1`», «`$2`»... dentro de una función se refieren a los argumentos **de la función**, nunca a los del script que la engloba; se sustituyen automáticamente durante la llamada, sin necesidad de configurar nada.
+> **Nota:** `$1`, `$2`... dentro de una función designan los argumentos **de la función**, nunca los del script que la engloba: se sustituyen automáticamente durante la llamada, sin nada que configurar.
 
-## Sin valor de retorno real: solo un código de salida
+## Sin verdadero valor de retorno: solo un código de salida
 
-`return` En Bash no devuelve un valor en el sentido de PHP/C, sino que únicamente establece el **código de salida** de la función (un entero de 0 a 255, que se puede recuperar mediante `$?`), exactamente igual que `exit` para un script completo:
+`return` en Bash **no** devuelve un valor en el sentido de PHP/C: solo fija el **código de salida** de la función (un entero de 0 a 255, recuperable vía `$?`), exactamente como `exit` para un script completo:
 
 ```bash
-est_pair() {
+es_par() {
     if [ $(($1 % 2)) -eq 0 ]; then
-        return 0   # 0 = éxito/verdadero, convención de Unix
+        return 0   # 0 = éxito/verdadero, convención Unix
     else
-        return 1   # distinto de cero = error/falso
+        return 1   # distinto de cero = fallo/falso
     fi
 }
 
-if est_pair 4; then
-    echo "4 est pair"
+if es_par 4; then
+    echo "4 es par"
 fi
 ```
 
-## «Devolver» un dato real: `echo` + sustitución de comandos
+## "Devolver" un dato real: `echo` + sustitución de comandos
 
-Para recuperar un dato calculado (no solo un resultado de éxito o error), la convención consiste en mostrarlo mediante `echo` y capturar esta salida desde el llamante mediante `$(...)` (véase el capítulo sobre variables):
+Para recuperar un dato calculado (no solo un éxito/fallo), la convención es mostrarlo con `echo`, y capturar esa salida desde el llamador vía [`$(...)`](/?c=shells&s=bash&p=variables):
 
 ```bash
-addition() {
+suma() {
     echo $(($1 + $2))
 }
 
-resultado=$(addition 4 6)
-echo "Résultat : $resultado"  # Resultado: 10
+resultado=$(suma 4 6)
+echo "Resultado: $resultado"  # Resultado: 10
 ```
 
-> **Nota:** nunca hay que confundir ambos mecanismos. `return` comunica un estado (0-255, para el control de flujo con `if`), `echo` + `$(...)` comunica datos reales (para su almacenamiento o reutilización). Mezclar ambos en la misma función es una fuente habitual de confusión.
+> **Nota:** nunca confundir los dos mecanismos. `return` comunica un estado (0-255, para control de flujo con `if`), `echo` + `$(...)` comunica un dato real (para almacenarlo/reutilizarlo). Mezclar ambos en la misma función es una fuente clásica de confusión.
 
 ## Variables locales
 
-Sin «`local`», una variable asignada en una función sigue siendo visible **a nivel global** tras la primera llamada, lo que a menudo supone un efecto secundario no deseado:
+Sin `local`, una variable asignada en una función sigue siendo visible **globalmente** tras la primera llamada: a menudo un efecto secundario no deseado:
 
 ```bash
-calculer() {
-    local resultado=$(($1 * 2))  # local: solo existe dentro de calculer()
+calcular() {
+    local resultado=$(($1 * 2))  # local: solo existe dentro de calcular()
     echo $resultado
 }
 ```
 
-Véase también el capítulo sobre variables (variables especiales `$1`, `$@`, `$#`, `$?`, ya mencionadas aquí en el contexto de las funciones).
+Ver también [Las variables](/?c=shells&s=bash&p=variables) (variables especiales `$1`, `$@`, `$#`, `$?`, ya reutilizadas aquí en el contexto de las funciones).
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Una función Bash recibe sus argumentos como un script (`$1`, `$2`...), nunca vía parámetros con nombre. `return` solo fija un código de salida (0-255): para un dato real, se usa `echo` capturado vía `$(...)`. |
+| **Herramientas utilizables** | `$FUNCNAME`, `$@`/`$#`, `local` para una variable propia de la función. |
+| **Trampas a evitar** | Confundir `return` (estado, para `if`) y `echo`+`$(...)` (dato, para almacenarse); olvidar `local`, lo que deja una variable visible globalmente tras la primera llamada. |
+| **Buenas prácticas** | Declarar siempre `local` para una variable que no necesita existir fuera de la función. |

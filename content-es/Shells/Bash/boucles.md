@@ -1,24 +1,24 @@
 ---
-order: 5
+order: 6
 ---
 
 # Los bucles
 
-Bash ofrece tres estructuras de bucle (`for`, `while`, `until`), que se utilizan tanto para repetir comandos como para recorrer listas de archivos, líneas o resultados de comandos.
+Bash ofrece tres estructuras de bucle (`for`, `while`, `until`), usadas tanto para repetir comandos como para recorrer listas de archivos, líneas o resultados de comandos.
 
-## El bucle «`for`» (recorrido por una lista)
+## El bucle `for` (recorrido de lista)
 
 ```bash
-for fruta in pomme banane cerise; do
+for fruta in manzana platano cereza; do
     echo "$fruta"
 done
 ```
 
-Recorrer los archivos de una carpeta mediante el uso de comodines (véase el capítulo sobre la expansión):
+Recorrer los archivos de una carpeta gracias al [globbing](/?c=shells&s=bash&p=expansion-et-jokers):
 
 ```bash
 for archivo in *.txt; do
-    echo "Traitement de $archivo"
+    echo "Procesando $archivo"
 done
 ```
 
@@ -30,7 +30,7 @@ for i in {1..5}; do
 done
 ```
 
-## El bucle «`for`» al estilo C
+## El bucle `for` al estilo C
 
 ```bash
 for ((i = 0; i < 5; i++)); do
@@ -38,9 +38,9 @@ for ((i = 0; i < 5; i++)); do
 done
 ```
 
-## El bucle «`while`»
+## El bucle `while`
 
-El bloque se ejecuta mientras la condición siga siendo verdadera (se comprueba **antes de** cada iteración):
+El bloque se ejecuta mientras la condición siga siendo verdadera (probada **antes** de cada vuelta):
 
 ```bash
 i=0
@@ -53,20 +53,20 @@ done
 
 ### Leer un archivo línea por línea
 
-La combinación más habitual en scripts de Bash para procesar un archivo de texto:
+La combinación más frecuente en scripting Bash para procesar un archivo de texto:
 
 ```bash
-while read -r línea; do
-    echo "Ligne lue : $línea"
+while read -r linea; do
+    echo "Línea leída: $linea"
 done < archivo.txt
 ```
 
-- `read -r` Lee una línea de la entrada estándar en la variable `línea` en cada iteración (el `-r` impide que se interpreten los caracteres `\` como caracteres de escape, que es casi siempre lo que se desea).
-- `< archivo.txt` Redirige el contenido del archivo a la entrada estándar de todo el bucle (véase el capítulo sobre redirecciones).
+- `read -r` lee una línea de la entrada estándar en la variable `linea` en cada vuelta (`-r` impide la interpretación de los `\` como caracteres de escape, casi siempre lo que se quiere).
+- `< archivo.txt` redirige el contenido del archivo a la entrada estándar de todo el bucle (ver [Redirecciones y pipes](/?c=shells&s=bash&p=redirections-et-pipes)).
 
-## El bucle «`until`»
+## El bucle `until`
 
-Simétrico al de «`while`»: el bloque se ejecuta mientras la condición siga siendo **falsa**, hasta que pase a ser verdadera:
+Simétrico de `while`: el bloque se ejecuta mientras la condición siga siendo **falsa**, hasta que se vuelva verdadera:
 
 ```bash
 i=0
@@ -77,7 +77,7 @@ until [ $i -ge 5 ]; do
 done
 ```
 
-`until [ $i -ge 5 ]` equivale exactamente a «`while [ $i -lt 5 ]`»; la elección entre ambas opciones es una cuestión de legibilidad, dependiendo de la condición que se quiera expresar de forma natural.
+`until [ $i -ge 5 ]` equivale exactamente a `while [ $i -lt 5 ]`: la elección entre ambos es una cuestión de legibilidad según la condición que se quiera expresar de forma natural.
 
 ## `break` y `continue`
 
@@ -94,3 +94,14 @@ for i in {1..10}; do
     echo "$i"
 done
 ```
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | `for` recorre una lista, archivos (globbing) o un rango de números; `while`/`until` repiten mientras una condición siga siendo verdadera/falsa. `while read -r linea` es la combinación estándar para leer un archivo línea por línea. |
+| **Herramientas utilizables** | Expansión de llaves (`{1..5}`), `for` al estilo C, `break`/`continue`. |
+| **Trampas a evitar** | Olvidar `-r` con `read`: sin él, los `\` se interpretan como caracteres de escape. |
+| **Buenas prácticas** | Usar `while read -r linea; do ... done < archivo.txt` para procesar un archivo de texto línea por línea, en lugar de otro enfoque menos idiomático. |

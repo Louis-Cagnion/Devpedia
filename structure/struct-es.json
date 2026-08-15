@@ -625,8 +625,12 @@
           "folder": "Bash",
           "chapters": [
             {
+              "id": "commandes-de-base",
+              "label": "Comandos básicos"
+            },
+            {
               "id": "scripts-et-shebang",
-              "label": "Escribir y ejecutar un script de Bash"
+              "label": "Escribir y ejecutar un script Bash"
             },
             {
               "id": "variables",
@@ -638,7 +642,7 @@
             },
             {
               "id": "conditions",
-              "label": "Condiciones"
+              "label": "Las condiciones"
             },
             {
               "id": "boucles",
@@ -654,7 +658,7 @@
             },
             {
               "id": "redirections-et-pipes",
-              "label": "Redireccionamientos y pipes"
+              "label": "Redirecciones y pipes"
             },
             {
               "id": "traitement-de-texte",
@@ -662,7 +666,7 @@
             },
             {
               "id": "permissions-et-fichiers",
-              "label": "Permisos y gestión de archivos"
+              "label": "Permisos y manipulación de archivos"
             },
             {
               "id": "gestion-des-processus",
@@ -671,6 +675,10 @@
             {
               "id": "architecture-dun-shell",
               "label": "Cómo funciona un shell (arquitectura interna)"
+            },
+            {
+              "id": "automatisation-cron",
+              "label": "Automatizar tareas con cron"
             }
           ]
         },

@@ -1,49 +1,49 @@
 ---
-order: 7
+order: 8
 ---
 
 # Expansión y comodines (globbing)
 
-Antes de ejecutar un comando, Bash sustituye ciertos patrones que contiene por su valor real: variables (`$número`, véase el capítulo dedicado a ello), pero también patrones de archivos (*globbing*) y expansiones de llaves. Comprender este paso (invisible pero sistemático) explica por qué algunos comandos se comportan de forma diferente según las comillas que se utilicen.
+Antes de ejecutar un comando, Bash sustituye ciertos patrones que contiene por su valor real: [variables](/?c=shells&s=bash&p=variables) (`$nombre`), pero también patrones de archivos (*globbing*) y expansiones de llaves. Entender este paso (invisible pero sistemático) explica por qué algunos comandos se comportan de forma diferente según las comillas usadas.
 
-## El «globbing»: `*`, `?`, `[]`
+## El globbing: `*`, `?`, `[]`
 
 ```bash
-ls *.txt        # todos los archivos que terminen en .txt
-ls archivo?.txt  # archivo1.txt, archivoA.txt... («?» = exactamente 1 carácter, cualquiera)
+ls *.txt             # todos los archivos que terminan en .txt
+ls archivo?.txt      # archivo1.txt, archivoA.txt... ('?' = exactamente 1 carácter, cualquiera)
 ls archivo[123].txt  # solo archivo1.txt, archivo2.txt o archivo3.txt
 ls archivo[a-z].txt  # una sola letra minúscula en esa posición
 ```
 
-| Motivo | Significado |
+| Patrón | Significa |
 |---|---|
-| `*` | Cualquier secuencia de caracteres (incluida la cadena vacía) |
+| `*` | Cualquier secuencia de caracteres (incluida la vacía) |
 | `?` | Exactamente un carácter, cualquiera |
-| `[abc]` | Un solo carácter de entre `a`, `b` o `c` |
-| `[a-z]` | Un solo carácter en este rango |
-| `[^abc]` | Un único carácter que no es ni `a`, ni `b`, ni `c` |
+| `[abc]` | Un solo carácter entre `a`, `b` o `c` |
+| `[a-z]` | Un solo carácter en ese rango |
+| `[^abc]` | Un solo carácter que no sea ni `a`, `b`, ni `c` |
 
-> **Nota:** no se trata de una expresión regular (véase el capítulo dedicado a las expresiones regulares); el «globbing» es más sencillo y propio de la interpretación de los nombres de archivo por parte del propio shell, incluso antes de que se ejecute el comando.
+> **Nota:** esto **no** es una [regex](/?c=domain-specific-languages-dsl&p=regex): el globbing es más simple, propio de la interpretación de los nombres de archivo por el propio shell, incluso antes de que el comando se lance.
 
-## Atención: ¿qué ocurre si no hay ningún archivo que coincida?
+## Atención: ¿qué pasa si ningún archivo coincide?
 
 ```bash
 echo *.xyz
-# Si no existe ningún archivo .xyz, Bash muestra literalmente «*.xyz» (el patrón no se sustituye).
+# si no existe ningún archivo .xyz, Bash muestra literalmente "*.xyz" (el patrón no se sustituye)
 ```
 
-Es una fuente habitual de errores: un script que da por hecho que `*.xyz` siempre hace referencia a una lista de archivos reales puede recibir el texto sin formato `*.xyz` como único «nombre de archivo» si la carpeta no contiene nada de ese tipo.
+Es una fuente clásica de bugs: un script que supone que `*.xyz` siempre designa una lista de archivos reales puede recibir el texto plano `*.xyz` como único "nombre de archivo" si la carpeta no contiene nada de eso.
 
 ## La expansión de llaves (*brace expansion*)
 
-Genera varias cadenas a partir de un único patrón, **antes de realizar** cualquier búsqueda de archivos reales en el disco:
+Genera varias cadenas a partir de un único patrón, **antes** de cualquier búsqueda de archivos reales en el disco:
 
 ```bash
 echo archivo{1,2,3}.txt
 # archivo1.txt archivo2.txt archivo3.txt
 
-mkdir -p projet/{src,tests,docs}
-# Crea las tres carpetas con un solo comando
+mkdir -p proyecto/{src,tests,docs}
+# crea las tres carpetas en un solo comando
 
 echo {1..5}
 # 1 2 3 4 5
@@ -52,21 +52,32 @@ echo {a..e}
 # a b c d e
 ```
 
-> **Nota:** a diferencia del globbing, la expansión de las llaves no depende de ningún archivo existente — `archivo{1,2,3}.txt` siempre genera estas tres cadenas, independientemente de si los archivos correspondientes existen o no.
+> **Nota:** a diferencia del globbing, la expansión de llaves no depende de ningún archivo existente: `archivo{1,2,3}.txt` siempre genera estas tres cadenas, existan o no los archivos correspondientes.
 
 ## La expansión de la tilde (`~`)
 
 ```bash
-cd ~          # equivalente a cd $HOME
-cd ~/projets   # equivalente a cd $HOME/proyectos
+cd ~            # equivalente a cd $HOME
+cd ~/proyectos  # equivalente a cd $HOME/proyectos
 ```
 
-## Evitar la expansión: las comillas
+## Impedir la expansión: las comillas
 
 ```bash
-echo *.txt      # sustituida por la lista real de archivos .txt
-echo "*.txt"     # muestra literalmente *.txt -> las comillas dobles desactivan el globbing
-echo '*.txt'     # mismo resultado, las comillas simples son aún más estrictas (también desactivan $variable)
+echo *.txt    # sustituido por la lista real de archivos .txt
+echo "*.txt"  # muestra literalmente *.txt -> las comillas dobles desactivan el globbing
+echo '*.txt'  # mismo resultado, comillas simples aún más estrictas (también desactivan $variable)
 ```
 
-Véase también el capítulo sobre variables para conocer la diferencia entre comillas simples y dobles en relación con la interpretación de `$variable`.
+Ver también [Las variables](/?c=shells&s=bash&p=variables) para la distinción comillas simples/dobles respecto a la interpretación de `$variable`.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Antes de ejecutar un comando, Bash sustituye variables, patrones de archivos (globbing) y expansiones de llaves: un paso invisible pero sistemático. El globbing depende de los archivos realmente presentes; la expansión de llaves nunca depende de ellos. |
+| **Herramientas utilizables** | `*`/`?`/`[abc]` (globbing), `{1,2,3}`/`{1..5}` (llaves), `~` (tilde). |
+| **Trampas a evitar** | Un patrón de globbing que no coincide con ningún archivo se transmite literalmente al comando, sin error ni aviso. |
+| **Buenas prácticas** | Rodear de comillas dobles toda variable que pueda contener un espacio o un carácter especial, para desactivar la división en palabras y el globbing no deseados. |

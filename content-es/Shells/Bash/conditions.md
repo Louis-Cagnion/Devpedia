@@ -1,10 +1,10 @@
 ---
-order: 4
+order: 5
 ---
 
-# Condiciones
+# Las condiciones
 
-Bash no cuenta con operadores de comparación integrados en el lenguaje, como ocurre en PHP o en C; las comprobaciones se basan en **comandos** (`test`, `[`, `[[`) cuyo código de salida (`$?`) determina si la condición es verdadera (`0`) o falsa (distinta de cero).
+Bash no tiene operadores de comparación integrados en el lenguaje como en [PHP](/?c=langages-de-programmation&s=php&p=conditions) o en [C](/?c=langages-de-programmation&s=c&p=conditions): las pruebas se apoyan en **comandos** (`test`, `[`, `[[`) cuyo código de salida (`$?`) determina si la condición es verdadera (`0`) o falsa (distinto de cero).
 
 ## `if` / `then` / `elif` / `else` / `fi`
 
@@ -12,59 +12,59 @@ Bash no cuenta con operadores de comparación integrados en el lenguaje, como oc
 edad=18
 
 if [ $edad -ge 18 ]; then
-    echo "Vous êtes majeur."
+    echo "Eres mayor de edad."
 else
-    echo "Vous êtes mineur."
+    echo "Eres menor de edad."
 fi
 ```
 
-- `if` En realidad, evalúa el **código de salida** del comando que le sigue (en este caso, `[ $edad -ge 18 ]`); `[` es un comando real (a menudo un enlace a `/usr/bin/test`), no un símbolo del lenguaje.
-- `fi` («`if`» al revés) cierra el bloque, tal y como lo haría «`endif`» en otros lenguajes.
+- `if` evalúa en realidad el **código de salida** del comando que le sigue (aquí, `[ $edad -ge 18 ]`): `[` es un comando real (a menudo un enlace a `/usr/bin/test`), no un símbolo del lenguaje.
+- `fi` (`if` al revés) cierra el bloque, como lo haría `endif` en otros lenguajes.
 
 ## `[ ]` vs `[[ ]]`
 
 ```bash
-[[ $edad -ge 18 && $edad -lt 65 ]]  # [[ ]] : sintaxis extendida de Bash, && y || directamente utilizables
-[ $edad -ge 18 ] && [ $edad -lt 65 ]  # [ ]: POSIX, requiere combinar dos pruebas independientes
+[[ $edad -ge 18 && $edad -lt 65 ]]    # [[ ]]: sintaxis extendida de Bash, && y || directamente utilizables
+[ $edad -ge 18 ] && [ $edad -lt 65 ]  # [ ]: POSIX, necesita combinar dos pruebas separadas
 ```
 
-`[[ ]]` (específica para Bash, no compatible con un e`sh`o estrictamente POSIX) admite `&&` / `||` directamente en su interior, gestiona mejor las variables no definidas y permite el filtrado por patrón (`[[ $número == J* ]]`).
+`[[ ]]` (específico de Bash, no portable a un `sh` estrictamente POSIX) acepta `&&`/`||` directamente dentro, gestiona mejor las variables no definidas, y permite el filtrado por patrón (`[[ $nombre == J* ]]`).
 
 ## Comparar números
 
 ```bash
-if [ $edad -eq 18 ]; then echo "Exactement 18"; fi
+if [ $edad -eq 18 ]; then echo "Exactamente 18"; fi
 ```
 
 | Operador | Significado |
 |---|---|
 | `-eq` | Igual |
-| `-ne` | Varios |
+| `-ne` | Distinto |
 | `-lt` | Inferior |
-| `-le` | Menor o igual que |
+| `-le` | Inferior o igual |
 | `-gt` | Superior |
-| `-ge` | Igual o superior a |
+| `-ge` | Superior o igual |
 
-> **Nota:** `==` y `!=` también funcionan en `[[ ]]`, pero solo para comparar **cadenas**. Si utilizas `==` con números dentro de `[ ]` clásico, los valores se comparan como texto, no numéricamente (`"10" < "9"` textualmente, pero `10 -gt 9` numéricamente).
+> **Nota:** `==` y `!=` también funcionan en `[[ ]]`, pero únicamente para comparar **cadenas**. Usar `==` con números dentro de `[ ]` clásico compara los valores como texto, no numéricamente (`"10" < "9"` textualmente, pero `10 -gt 9` numéricamente).
 
 ## Comparar cadenas
 
 ```bash
-número="Jean"
+nombre="Juan"
 
-if [ "$número" == "Jean" ]; then
-    echo "Bonjour Jean"
+if [ "$nombre" == "Juan" ]; then
+    echo "Hola Juan"
 fi
 
-if [ -z "$número" ]; then
-    echo "nom est vide"
+if [ -z "$nombre" ]; then
+    echo "nombre está vacío"
 fi
 ```
 
 | Operador | Significado |
 |---|---|
-| `==` / `=` | Comparación de cadenas |
-| `!=` | Diferencia entre cadenas |
+| `==` / `=` | Igualdad de cadenas |
+| `!=` | Diferencia de cadenas |
 | `-z "$str"` | Verdadero si la cadena está vacía |
 | `-n "$str"` | Verdadero si la cadena no está vacía |
 
@@ -72,46 +72,57 @@ fi
 
 ```bash
 if [ -f "config.php" ]; then
-    echo "Le fichier existe"
+    echo "El archivo existe"
 fi
 
 if [ -d "/var/www" ]; then
-    echo "Le dossier existe"
+    echo "La carpeta existe"
 fi
 ```
 
 | Operador | Verdadero si... |
 |---|---|
-| `-f ruta` | ...es un archivo que ya existe |
-| `-d ruta` | ...es una carpeta ya existente |
+| `-f ruta` | ...es un archivo existente |
+| `-d ruta` | ...es una carpeta existente |
 | `-e ruta` | ...existe algo en esa ruta (archivo o carpeta) |
 | `-x ruta` | ...el archivo es ejecutable |
-| `-r` / `-w` | ...el archivo es de lectura y escritura |
+| `-r` / `-w` | ...el archivo es legible / se puede escribir en él |
 
 ## Combinar condiciones
 
 ```bash
 if [[ -f "config.php" && -r "config.php" ]]; then
-    echo "Le fichier existe et est lisible"
+    echo "El archivo existe y es legible"
 fi
 ```
 
 ## El `case` (equivalente a `switch`)
 
 ```bash
-jour="mer"
+dia="mie"
 
-case $jour in
-    lun|mar|mer|jeu|ven)
-        echo "Jour de semaine"
+case $dia in
+    lun|mar|mie|jue|vie)
+        echo "Día laborable"
         ;;
-    sam|dim)
-        echo "Week-end"
+    sab|dom)
+        echo "Fin de semana"
         ;;
     *)
-        echo "Jour inconnu"
+        echo "Día desconocido"
         ;;
 esac
 ```
 
-`|` separa varios motivos dentro de un mismo bloque, `*)` recoge todo lo demás (equivalente al «`default`» de un «`switch`»), y `;;` marca el final de cada bloque.
+`|` separa varios patrones para un mismo bloque, `*)` captura todo el resto (equivalente al `default` de un `switch`), y `;;` marca el final de cada bloque.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Bash no tiene operadores de comparación integrados en el lenguaje: `if` evalúa el código de salida de un comando (`test`, `[`, `[[`). `[[ ]]` (Bash) es más permisivo que `[ ]` (POSIX). |
+| **Herramientas utilizables** | Operadores numéricos (`-eq`, `-lt`...), operadores de cadenas (`==`, `-z`, `-n`), pruebas de archivos (`-f`, `-d`, `-e`), `case`. |
+| **Trampas a evitar** | Usar `==` en `[ ]` clásico pensando comparar números: la comparación se hace como texto, no numéricamente. |
+| **Buenas prácticas** | Preferir `[[ ]]` a `[ ]` en Bash (gestiona mejor las variables no definidas, `&&`/`\|\|` directos) salvo necesidad de portabilidad estricta hacia `sh`. |
