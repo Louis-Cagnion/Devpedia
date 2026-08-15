@@ -977,7 +977,32 @@
           "id": "zsh",
           "label": "Zsh",
           "folder": "Zsh",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "fichiers-de-demarrage",
+              "label": "Los archivos de inicio"
+            },
+            {
+              "id": "options-du-shell",
+              "label": "El sistema de opciones (`setopt`)"
+            },
+            {
+              "id": "expansion-et-jokers-avances",
+              "label": "Expansión y comodines avanzados"
+            },
+            {
+              "id": "completion-avancee",
+              "label": "La finalización avanzada"
+            },
+            {
+              "id": "prompt-et-themes",
+              "label": "Personalizar el prompt"
+            },
+            {
+              "id": "oh-my-zsh",
+              "label": "Oh My Zsh"
+            }
+          ]
         },
         {
           "id": "powershell",
