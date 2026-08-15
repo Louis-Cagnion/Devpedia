@@ -1,17 +1,22 @@
+---
+order: 4
+---
+
 # Python
 
-Python se considera un lenguaje de programación de **alto nivel**, de tipado dinámico e interpretado: oculta casi por completo la gestión de la memoria y los detalles del hardware, en beneficio de la legibilidad; la sintaxis se basa en la propia sangría para delimitar los bloques de código, en lugar de utilizar llaves.
+Un [lenguaje de programación](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) es un conjunto de reglas que permite escribir instrucciones que un ordenador puede ejecutar. Python es uno de ellos, conocido por su sintaxis voluntariamente cercana al lenguaje natural.
 
-Entre los conceptos fundamentales que se manejan en Python se encuentran, entre otros:
+```python
+nombre = "Devpedia"          # una variable, ver el capítulo dedicado
+print(f"Hola, {nombre}")     # muestra: Hola, Devpedia
+```
 
-- Las variables y el tipado dinámico
-- Listas, tuplas, diccionarios y conjuntos
-- La programación orientada a objetos (clases, herencia, métodos especiales)
-- Los generadores y la programación funcional (funciones de primera clase, decoradores)
-- Un amplio ecosistema de bibliotecas externas (`pip`), especialmente para el cálculo científico y la inteligencia artificial.
+| Término | Qué significa |
+|---|---|
+| Alto nivel | Oculta casi por completo la gestión de la memoria y los detalles del hardware, en favor de la legibilidad |
+| Tipado dinámico | Una variable no declara un tipo de antemano: adopta el tipo del valor que se le asigna, y puede cambiar en el transcurso del programa (ver [Las variables](/?c=langages-de-programmation&s=python&p=variables)) |
+| Interpretado | El código no se traduce a instrucciones máquina nativas de antemano: un **intérprete** (un programa que lee y ejecuta código sobre la marcha, en lugar de en una única traducción previa) lo lee y lo ejecuta: un compromiso de legibilidad frente al rendimiento bruto de un lenguaje compilado como el [C](/?c=langages-de-programmation&s=c&p=c) |
 
-El aprendizaje de Python permite avanzar rápidamente en la resolución de problemas concretos, gracias a una sintaxis que se acerca deliberadamente al lenguaje natural y a una biblioteca estándar muy completa («*batteries included*»). Sin embargo, **no** es un lenguaje compilado a código máquina nativo: el intérprete de referencia (CPython) compila el código fuente en *bytecode*, que luego ejecuta una máquina virtual —un equilibrio entre la legibilidad y la flexibilidad frente al rendimiento bruto de un lenguaje como el C—.
+> El intérprete de referencia de Python se llama **CPython**. Internamente, primero traduce el código a *bytecode* (una forma intermedia, más cercana a la máquina que el código fuente pero aún no instrucciones nativas) antes de ejecutarlo.
 
-Gracias a su versatilidad, Python ocupa hoy en día un lugar central en varios ámbitos muy diferentes: el desarrollo web (Django, Flask), la automatización y la creación de scripts de sistema y, sobre todo, el **cálculo científico y la inteligencia artificial** (NumPy, pandas, PyTorch, scikit-learn...), lo que lo ha convertido en el lenguaje de referencia para la ciencia de datos y el aprendizaje automático.
-
-Aprender Python es una excelente puerta de entrada a ámbitos de especialización como el aprendizaje automático o el aprendizaje profundo, donde la mayor parte del ecosistema (bibliotecas, cuadernos de trabajo, comunidad, documentación) gira en torno a este lenguaje.
+Gracias a su sintaxis accesible y su biblioteca estándar muy completa, Python permite avanzar rápido en problemas concretos. Hoy es central en varios ámbitos: el desarrollo web ([Django](https://www.djangoproject.com), [Flask](https://flask.palletsprojects.com)), la automatización, y sobre todo el cálculo científico y la inteligencia artificial ([NumPy](/?c=data-science&p=numpy), [pandas](/?c=data-science&p=pandas), [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch)...), ver las categorías [Data Science](/?c=data-science&p=jupyter-notebooks) e [IA](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones), que se apoyan casi por completo en este lenguaje.

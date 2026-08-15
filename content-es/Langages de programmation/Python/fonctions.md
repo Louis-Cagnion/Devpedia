@@ -4,106 +4,117 @@ order: 6
 
 # Las funciones
 
-Una función de Python se declara con «`def`». Las funciones son **objetos de primera clase**: pueden almacenarse en una variable, pasarse como argumento a otra función o devolverse desde una función, exactamente igual que cualquier otro valor.
+Una función Python se declara con `def`. Las funciones son **objetos de primera clase**: pueden almacenarse en una variable, pasarse como argumento a otra función, o ser devueltas por una función, exactamente igual que cualquier otro valor.
 
 ## Declarar y llamar a una función
 
 ```python
-def addition(a, b):
+def suma(a, b):
     return a + b
 
-resultado = addition(2, 3)   # 5
+resultado = suma(2, 3)   # 5
 ```
 
 ## Parámetros por defecto
 
 ```python
-def saluer(número, mensaje="Bonjour"):
-    return f"{mensaje} {número}"
+def saludar(nombre, mensaje="Hola"):
+    return f"{mensaje} {nombre}"
 
-saluer("Jean")               # «Hola, Jean»
-saluer("Jean", "Salut")       # «Hola, Jean»
+saludar("Juan")           # "Hola Juan"
+saludar("Juan", "Ey")     # "Ey Juan"
 ```
 
-> **Error clásico: nunca utilices un objeto mutable (lista, diccionario) como valor por defecto.** El valor por defecto **solo** se evalúa **una vez**, al definir la función, no en cada llamada:
+> **Trampa clásica: nunca usar un objeto mutable (lista, dict) como valor por defecto.** El valor por defecto se evalúa **una sola vez**, al definir la función, no en cada llamada:
 
 ```python
-def ajouter_a_liste(elemento, lista=[]):  # PELIGRO: esta lista se COMPARTE entre todas las llamadas
+def agregar_a_lista(elemento, lista=[]):  # PELIGRO: esta lista está COMPARTIDA entre todas las llamadas
     lista.append(elemento)
     return lista
 
-ajouter_a_liste(1)   # [1]
-ajouter_a_liste(2)   # [1, 2] -> ¡no [2]! Se ha reutilizado la misma lista por defecto
+agregar_a_lista(1)  # [1]
+agregar_a_lista(2)  # [1, 2] -> ¡no [2]! se reutilizó la misma lista por defecto
 ```
 
-Buenas prácticas:
+La buena práctica:
 
 ```python
-def ajouter_a_liste(elemento, lista=None):
+def agregar_a_lista(elemento, lista=None):
     if lista is None:
         lista = []   # una NUEVA lista, creada en cada llamada
     lista.append(elemento)
     return lista
 ```
 
-## `*args` y «`**kwargs`»: un número variable de argumentos
+## `*args` y `**kwargs`: un número variable de argumentos
 
 ```python
-def somme(*números):          # *args: agrupa los argumentos posicionales sobrantes en una tupla
-    return sum(números)
+def suma_variable(*numeros):     # *args: agrupa los argumentos posicionales en exceso en una tupla
+    return sum(numeros)
 
-somme(1, 2, 3, 4)   # 10
+suma_variable(1, 2, 3, 4)   # 10
 
-def afficher_infos(**options):  # **kwargs: agrupa los argumentos con nombre sobrantes en un diccionario**
-    for clave, valor in options.items():
-        print(f"{clave} : {valor}")
+def mostrar_info(**opciones):  # **kwargs: agrupa los argumentos con nombre en exceso en un dict
+    for clave, valor in opciones.items():
+        print(f"{clave}: {valor}")
 
-afficher_infos(número="Jean", edad=25)
+mostrar_info(nombre="Juan", edad=25)
 ```
 
-## Argumentos solo mediante palabras clave
+## Argumentos solo por palabra clave
 
-Un «`*`» solo en la firma obliga a que todo lo que le siga se pase por nombre, nunca por posición:
+Un `*` solo en la firma obliga a que todo lo que le sigue se pase por nombre, nunca por posición:
 
 ```python
-def creer_utilisateur(número, *, email, actif=True):
-    return {"nom": número, "email": email, "actif": actif}
+def crear_usuario(nombre, *, email, activo=True):
+    return {"nombre": nombre, "email": email, "activo": activo}
 
-creer_utilisateur("Jean", email="jean@exemple.com")   # De acuerdo
-creer_utilisateur("Jean", "jean@exemple.com")           # TypeError: el campo «email» debe tener un nombre
+crear_usuario("Juan", email="juan@ejemplo.com")  # OK
+crear_usuario("Juan", "juan@ejemplo.com")        # TypeError: email debe ser nombrado
 ```
 
 ## Las funciones lambda
 
-Una función anónima, limitada a una sola expresión (sin «`return`» explícito, sin bloque de varias líneas):
+Una función anónima, limitada a una sola expresión (sin `return` explícito, sin bloque multilínea):
 
 ```python
-double = lambda x: x * 2
-double(5)   # 10
+doble = lambda x: x * 2
+doble(5)   # 10
 
-# Uso habitual: como argumento de una función que espera una llamada de retorno.
-números = [5, 2, 8, 1]
-nombres_tries = sorted(números, key=lambda x: -x)  # orden descendente
+# uso típico: como argumento de una función que espera un callback
+numeros = [5, 2, 8, 1]
+numeros_ordenados = sorted(numeros, key=lambda x: -x)  # orden descendente
 ```
 
-## Cierres y «`nonlocal`»
+## Closures y `nonlocal`
 
-Una función anidada puede leer las variables de la función que la engloba; para **modificarlas**, es necesario utilizar «`nonlocal`»:
+Una función anidada puede leer las variables de la función que la engloba; para **modificarlas**, `nonlocal` es necesario:
 
 ```python
 def contador():
     total = 0
 
-    def incrementer():
-        nonlocal total   # Sin esto, «total += 1» crearía una nueva variable LOCAL que se incrementaría.
+    def incrementar():
+        nonlocal total   # sin esto, "total += 1" crearía una nueva variable LOCAL a incrementar()
         total += 1
         return total
 
-    return incrementer
+    return incrementar
 
-compter = contador()
-compter()   # 1
-compter()   # 2 -> «total» se ha conservado correctamente entre las llamadas
+contar = contador()
+contar()  # 1
+contar()  # 2 -> "total" sí se conservó entre las llamadas
 ```
 
-Véase también el capítulo sobre decoradores, que se basa directamente en este mecanismo de cierre.
+Ver también [Los decoradores](/?c=langages-de-programmation&s=python&p=decorateurs), que se apoya directamente en este mecanismo de closure.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Una función Python es un objeto de primera clase (almacenable, pasable como argumento). `*args`/`**kwargs` gestionan un número variable de argumentos; una closure conserva el acceso a las variables de su función englobante. |
+| **Herramientas utilizables** | Parámetros por defecto, argumentos solo por palabra clave (`*`), lambdas, `nonlocal`. |
+| **Trampas a evitar** | Usar un objeto mutable (lista, dict) como valor por defecto: se comparte entre todas las llamadas, no se recrea cada vez. |
+| **Buenas prácticas** | Usar `None` como valor por defecto para un parámetro mutable, luego crear el objeto real dentro de la función. |

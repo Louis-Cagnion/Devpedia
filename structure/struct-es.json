@@ -466,6 +466,69 @@
           ]
         },
         {
+          "id": "python",
+          "label": "Python",
+          "folder": "Python",
+          "chapters": [
+            {
+              "id": "variables",
+              "label": "Las variables y tipos básicos"
+            },
+            {
+              "id": "conditions",
+              "label": "Las condiciones"
+            },
+            {
+              "id": "boucles",
+              "label": "Los bucles"
+            },
+            {
+              "id": "listes-et-tuples",
+              "label": "Las listas y las tuplas"
+            },
+            {
+              "id": "dictionnaires-et-ensembles",
+              "label": "Los diccionarios y los conjuntos"
+            },
+            {
+              "id": "fonctions",
+              "label": "Las funciones"
+            },
+            {
+              "id": "gestion-des-erreurs",
+              "label": "La gestión de errores"
+            },
+            {
+              "id": "iterateurs-et-generateurs",
+              "label": "Iteradores y generadores"
+            },
+            {
+              "id": "decorateurs",
+              "label": "Los decoradores"
+            },
+            {
+              "id": "poo",
+              "label": "La programación orientada a objetos"
+            },
+            {
+              "id": "typage-avec-annotations",
+              "label": "El tipado con anotaciones"
+            },
+            {
+              "id": "dataclasses",
+              "label": "Las dataclasses"
+            },
+            {
+              "id": "modules-et-environnements",
+              "label": "Módulos, pip y entornos virtuales"
+            },
+            {
+              "id": "cli-avec-argparse",
+              "label": "Construir una CLI con `argparse`"
+            }
+          ]
+        },
+        {
           "id": "javascript",
           "label": "JavaScript",
           "folder": "JavaScript",
@@ -529,61 +592,6 @@
           "label": "OCaml",
           "folder": "OCaml",
           "chapters": []
-        },
-        {
-          "id": "python",
-          "label": "Python",
-          "folder": "Python",
-          "chapters": [
-            {
-              "id": "variables",
-              "label": "Variables y tipos básicos"
-            },
-            {
-              "id": "conditions",
-              "label": "Condiciones"
-            },
-            {
-              "id": "boucles",
-              "label": "Los bucles"
-            },
-            {
-              "id": "listes-et-tuples",
-              "label": "Las listas y las tuplas"
-            },
-            {
-              "id": "dictionnaires-et-ensembles",
-              "label": "Los diccionarios y los conjuntos"
-            },
-            {
-              "id": "fonctions",
-              "label": "Las funciones"
-            },
-            {
-              "id": "gestion-des-erreurs",
-              "label": "Gestión de errores"
-            },
-            {
-              "id": "iterateurs-et-generateurs",
-              "label": "Iteradores y generadores"
-            },
-            {
-              "id": "decorateurs",
-              "label": "Los decoradores"
-            },
-            {
-              "id": "poo",
-              "label": "La programación orientada a objetos"
-            },
-            {
-              "id": "typage-avec-annotations",
-              "label": "Tipado con anotaciones"
-            },
-            {
-              "id": "modules-et-environnements",
-              "label": "Módulos, pip y entornos virtuales"
-            }
-          ]
         }
       ]
     },

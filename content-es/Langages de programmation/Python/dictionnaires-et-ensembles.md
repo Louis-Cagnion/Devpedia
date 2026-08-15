@@ -4,77 +4,88 @@ order: 5
 
 # Los diccionarios y los conjuntos
 
-El **diccionario** (`dict`) asocia claves a valores, exactamente igual que un array asociativo en PHP. El conjunto (`set`) almacena valores únicos, sin orden ni duplicados. Ambas estructuras se basan internamente en una **tabla hash** (véase el capítulo dedicado a ello, apartado C); esto es lo que permite que `dico["clave"]` o `"valor" in ensemble` funcionen de forma casi instantánea, incluso con colecciones muy grandes.
+El **diccionario** (`dict`) asocia claves a valores, exactamente igual que un array asociativo en PHP. El **conjunto** (`set`) almacena valores únicos, sin orden ni duplicados. Ambas estructuras se apoyan internamente en una [tabla hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage): esto es lo que permite que `dico["clave"]` o `"valor" in conjunto` sean casi instantáneos, incluso sobre una colección muy grande.
 
 ## Los diccionarios
 
 ```python
-persona = {"nom": "Dupont", "age": 25}
+persona = {"nombre": "Dupont", "edad": 25}
 
-persona["nom"]          # «Dupont»
-persona["email"] = "jean@exemple.com"  # Añade una nueva clave
-persona["age"] = 26      # modifica una clave existente
-del persona["age"]         # elimina una clave
+persona["nombre"]                       # "Dupont"
+persona["email"] = "juan@ejemplo.com"   # añade una nueva clave
+persona["edad"] = 26                    # modifica una clave existente
+del persona["edad"]                     # elimina una clave
 
-persona.get("telephone")           # Ninguna si la clave no existe (sin error)
-persona.get("telephone", "inconnu") # «desconocido» -> valor por defecto si no se especifica
+persona.get("telefono")             # None si la clave no existe (sin error)
+persona.get("telefono", "desconocido")  # "desconocido" -> valor por defecto si está ausente
 
-"nom" in persona            # True -> comprueba si existe una CLAVE (no un valor)
+"nombre" in persona           # True -> prueba la presencia de una CLAVE (no de un valor)
 ```
 
-> **Nota:** `persona["telephone"]` (acceso directo mediante corchetes) genera un error «`KeyError`» si la clave no existe, a diferencia de `.get()`, que devuelve «`None`» (o un valor por defecto proporcionado) sin que se produzca ningún fallo. Es preferible utilizar `.get()` siempre que la ausencia de la clave sea un caso normal, no un error.
+> **Nota:** `persona["telefono"]` (acceso directo por corchetes) lanza un `KeyError` si la clave no existe; a diferencia de `.get()`, que devuelve `None` (o un valor por defecto proporcionado) sin fallar nunca. Preferir `.get()` en cuanto la ausencia de la clave sea un caso normal, no un error.
 
-### Explorar un diccionario
+### Recorrer un diccionario
 
 ```python
 for clave in persona:
-    print(clave)                      # solo recorre las claves
+    print(clave)                      # recorre únicamente las claves
 
 for clave, valor in persona.items():
-    print(f"{clave} : {valor}")       # recorre las claves y los valores de forma conjunta
+    print(f"{clave}: {valor}")        # recorre claves Y valores juntos
 
 for valor in persona.values():
-    print(valor)                    # solo recorre los valores
+    print(valor)                      # recorre únicamente los valores
 ```
 
-### Significado según el diccionario
+### Comprensión de diccionario
 
 ```python
-carres = {x: x ** 2 for x in range(5)}
+cuadrados = {x: x ** 2 for x in range(5)}
 # {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
 ```
 
 ## Los conjuntos (`set`)
 
 ```python
-frutas = {"pomme", "banane", "cerise"}
+frutas = {"manzana", "platano", "cereza"}
 
-frutas.add("kiwi")        # añade un elemento
-frutas.remove("banane")    # elimina un elemento (se produce un error si no existe)
-frutas.discard("mangue")    # elimina un elemento, SIN generar error si no existe
+frutas.add("kiwi")       # añade un elemento
+frutas.remove("platano")  # elimina un elemento (error si está ausente)
+frutas.discard("mango")   # elimina un elemento, SIN error si está ausente
 
-"pomme" in frutas   # True -> comprobación de pertenencia casi instantánea (tabla hash)
+"manzana" in frutas   # True -> prueba de pertenencia casi instantánea (tabla hash)
 ```
 
-### Operaciones con conjuntos
+### Operaciones de conjuntos
 
 ```python
 a = {1, 2, 3}
 b = {2, 3, 4}
 
-a | b   # {1, 2, 3, 4} -> unión
-a & b   # {2, 3}       -> intersección
-a - b   # {1}           -> diferencia (en a, no en b)
-a ^ b   # {1, 4}        -> diferencia simétrica (en uno O en el otro, pero no en ambos)
+a | b  # {1, 2, 3, 4} -> unión
+a & b  # {2, 3}       -> intersección
+a - b  # {1}           -> diferencia (en a, no en b)
+a ^ b  # {1, 4}        -> diferencia simétrica (en uno U otro, no en ambos)
 ```
 
-> **Nota:** un «`set`» elimina automáticamente los duplicados — «`set([1, 2, 2, 3, 3, 3])`» da como resultado «`{1, 2, 3}`». Es una forma muy habitual de deduplicar rápidamente una lista en Python: `list(set(ma_liste))`.
+> **Nota:** un `set` elimina automáticamente los duplicados: `set([1, 2, 2, 3, 3, 3])` da `{1, 2, 3}`. Es una forma muy habitual de deduplicar rápidamente una lista en Python: `list(set(mi_lista))`.
 
-### Visión general
+### Comprensión de conjunto
 
 ```python
-carres_uniques = {x ** 2 for x in [-2, -1, 0, 1, 2]}
-# {0, 1, 4} -> (-2)**2 y 2**2 dan ambos 4, por lo que se eliminan automáticamente los duplicados
+cuadrados_unicos = {x ** 2 for x in [-2, -1, 0, 1, 2]}
+# {0, 1, 4} -> (-2)**2 y 2**2 valen ambos 4, por tanto deduplicados automáticamente
 ```
 
-Consulta también el capítulo sobre tablas hash (apartado C) para saber qué ocurre realmente en la memoria detrás de `dict` y `set`.
+Ver también [Las tablas de hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage) para lo que ocurre realmente en memoria detrás de `dict` y `set`.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Un `dict` asocia claves a valores, un `set` almacena valores únicos sin orden; ambos se apoyan en una tabla hash, por tanto casi instantáneos en acceso/prueba. |
+| **Herramientas utilizables** | `.get()` (sin error), comprensiones de dict/set, operaciones de conjuntos (`\|`, `&`, `-`, `^`). |
+| **Trampas a evitar** | Acceder a una clave ausente por corchetes (`dico["x"]`) en lugar de por `.get()`: eso lanza un `KeyError`. |
+| **Buenas prácticas** | Usar `.get()` en cuanto la ausencia de una clave sea un caso normal, no un error; `list(set(mi_lista))` para deduplicar rápidamente. |

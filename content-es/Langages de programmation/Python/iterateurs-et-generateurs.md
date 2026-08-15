@@ -4,23 +4,23 @@ order: 8
 
 # Iteradores y generadores
 
-Un bucle «`for`» funciona con listas, diccionarios, archivos y muchos otros objetos, ya que todos ellos implementan el mismo **protocolo de iteración**. Comprender este protocolo permite crear tus propios objetos «iterables» y utilizar generadores para procesar grandes cantidades de datos sin tener que cargarlos todos en memoria.
+Un bucle `for` funciona con listas, diccionarios, archivos, y muchos otros objetos, porque todos implementan el mismo **protocolo de iteración**. Entender este protocolo permite crear tus propios objetos "recorribles", y usar generadores para procesar grandes cantidades de datos sin cargarlas todas en memoria.
 
 ## El protocolo de iteración
 
-`for elemento in objeto:` En realidad, así es como funciona entre bastidores:
+`for elemento in objeto:` funciona en realidad así, entre bastidores:
 
 ```python
-iterateur = iter(objeto)       # llama a objeto.__iter__()
+iterador = iter(objeto)       # llama a objeto.__iter__()
 while True:
     try:
-        elemento = next(iterateur)  # llama a iterador.__next__()
+        elemento = next(iterador)  # llama a iterador.__next__()
     except StopIteration:
         break
-    # ... cuerpo del bucle con «element» ...
+    # ... cuerpo del bucle con "elemento" ...
 ```
 
-Un objeto es **iterable** si implementa `__iter__()` (devuelve un iterador). Un **iterador** implementa `__next__()` (devuelve el siguiente elemento o lanza una excepció`StopIteration` cuando no quedan más).
+Un objeto es **iterable** si implementa `__iter__()` (devuelve un iterador). Un **iterador** implementa `__next__()` (devuelve el siguiente elemento, o lanza `StopIteration` cuando ya no hay más).
 
 ## Crear un iterador personalizado
 
@@ -28,62 +28,95 @@ Un objeto es **iterable** si implementa `__iter__()` (devuelve un iterador). Un 
 class Contador:
     def __init__(self, limite):
         self.limite = limite
-        self.actuel = 0
+        self.actual = 0
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.actuel >= self.limite:
+        if self.actual >= self.limite:
             raise StopIteration
-        self.actuel += 1
-        return self.actuel
+        self.actual += 1
+        return self.actual
 
-for número in Contador(5):
-    print(número)   # 1 2 3 4 5
+for numero in Contador(5):
+    print(numero)   # 1 2 3 4 5
 ```
 
-## Los generadores: una forma más sencilla de escribir un iterador
+## Los generadores: una forma más simple de escribir un iterador
 
-Una función que contenga `yield` se convierte automáticamente en un **generador**: Python implementa para ella todo el protocolo `__iter__` / `__next__` visto anteriormente, sin que sea necesario escribir una clase.
+Una función que contiene `yield` se convierte automáticamente en un **generador**: Python implementa por ella todo el protocolo `__iter__`/`__next__` visto arriba, sin necesidad de escribir una clase.
 
 ```python
 def contador(limite):
-    actuel = 0
-    while actuel < limite:
-        actuel += 1
-        yield actuel
+    actual = 0
+    while actual < limite:
+        actual += 1
+        yield actual
 
-for número in contador(5):
-    print(número)   # 1 2 3 4 5
+for numero in contador(5):
+    print(numero)   # 1 2 3 4 5
 ```
 
-`yield` «Pausa» la función y devuelve un valor, **sin perder su estado**: en la siguiente llamada a `next()`, la ejecución se reanuda justo después de `yield`, con todas las variables locales intactas.
+`yield` "pausa" la función y devuelve un valor, **sin perder su estado**: en la siguiente llamada a `next()`, la ejecución se reanuda justo después del `yield`, con todas las variables locales intactas.
 
-## ¿Por qué utilizar un generador en lugar de una lista?
+## Por qué usar un generador en lugar de una lista
 
 ```python
-def carres_liste(n):
-    return [x ** 2 for x in range(n)]   # calcula y almacena TODO en memoria, de una sola vez
+def cuadrados_lista(n):
+    return [x ** 2 for x in range(n)]   # calcula y almacena TODO en memoria, de golpe
 
-def carres_generateur(n):
+def cuadrados_generador(n):
     for x in range(n):
-        yield x ** 2                     # Calcula UN SOLO elemento cada vez, bajo demanda.
+        yield x ** 2                     # calcula UN SOLO elemento a la vez, bajo demanda
 ```
 
-En el caso de `n = 10_000_000`, `carres_liste()` asigna una lista de 10 millones de elementos en memoria **antes** de empezar a utilizarlos. `carres_generateur()` solo genera un elemento cada vez, que se consume y luego se olvida; la memoria utilizada permanece constante, independientemente del tamaño de `n`.
+Para `n = 10_000_000`, `cuadrados_lista()` asigna una lista de 10 millones de elementos en memoria **antes** de empezar a usarlos. `cuadrados_generador()` solo produce un elemento a la vez, consumido y luego olvidado: la memoria usada permanece constante, sea cual sea el tamaño de `n`.
 
-> **Nota:** esta «evaluación perezosa» (*lazy evaluation*) tiene un coste: un generador **solo** se puede recorrer **una vez** (una vez agotado, un nuevo bucle `for` sobre él ya no produce nada), a diferencia de una lista, que se puede volver a recorrer libremente.
+> **Nota:** esta "evaluación perezosa" (*lazy evaluation*) tiene un coste: un generador solo se puede recorrer **una única vez** (una vez agotado, un nuevo bucle `for` sobre él ya no produce nada), a diferencia de una lista que se puede volver a recorrer libremente.
 
 ## Expresión generadora
 
-Equivalente a una comprensión de lista, pero perezosa: sustituye los corchetes por paréntesis:
+Equivalente a una comprensión de lista, pero perezosa: reemplaza los corchetes por paréntesis:
 
 ```python
-carres = (x ** 2 for x in range(10))   # generador, aún no se ha calculado nada
-liste_carres = [x ** 2 for x in range(10)]  # lista, todo se calcula al instante
+cuadrados = (x ** 2 for x in range(10))         # generador, nada se ha calculado todavía
+lista_cuadrados = [x ** 2 for x in range(10)]   # lista, todo se calcula de inmediato
 
 sum(x ** 2 for x in range(1000000))    # calcula la suma SIN almacenar nunca el millón de valores
 ```
 
-Véase también el capítulo sobre las funciones (closures) y sobre NumPy/pandas, donde la distinción entre memoria inmediata y memoria diferida vuelve a ser fundamental a gran escala.
+Ver también [Las funciones](/?c=langages-de-programmation&s=python&p=fonctions) (closures) y [NumPy](/?c=data-science&p=numpy), donde la distinción memoria inmediata vs perezosa vuelve a ser central a gran escala.
+
+## Generador vs thread: un solo flujo a la vez
+
+Un generador a veces da la impresión de "hacer dos cosas a la vez" (el código llamador, y el generador que avanza en segundo plano). Es engañoso: a diferencia de un thread (ver [Los threads (pthread)](/?c=langages-de-programmation&s=c&p=threads)), donde dos flujos de ejecución pueden realmente avanzar en paralelo sin coordinarse explícitamente, un generador nunca hace nada "en segundo plano".
+
+`next()` es una llamada de función como cualquier otra: **bloquea** el código llamador hasta que el generador alcanza el siguiente `yield` (o termina). Solo uno de los dos flujos avanza en un instante dado, nunca los dos a la vez:
+
+```python
+def tareas():
+    print("Inicio")
+    yield "A"
+    print("Reanudación tras A")
+    yield "B"
+
+t = tareas()
+print("Antes del primer next")
+print(next(t))     # "Inicio" se muestra AQUÍ, en el momento de la llamada, no antes, no en segundo plano
+print("Antes del segundo next")
+print(next(t))     # "Reanudación tras A" se muestra AQUÍ, nunca mientras tanto
+```
+
+El orden de salida es **totalmente determinista** y reproducible en cada ejecución, al contrario que dos threads independientes, cuyo orden de ejecución relativo no es predecible sin sincronización explícita (mutex, `pthread_join`...). Por eso se habla de **corrutina** más que de paralelismo para describir `yield`: la función "coopera" con su llamador devolviéndole explícitamente el control en cada `yield`, en lugar de ser interrumpida por la fuerza por un planificador como haría un thread.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Un objeto iterable implementa `__iter__`, un iterador implementa `__next__`. Una función con `yield` se convierte en un generador: perezoso, memoria constante, pero recorrible una sola vez. |
+| **Herramientas utilizables** | `iter()`/`next()`, `yield`, expresión generadora (`(x for x in ...)`). |
+| **Trampas a evitar** | Reutilizar un generador ya agotado, esperando que reproduzca sus valores. |
+| **Buenas prácticas** | Preferir un generador a una lista en cuanto la colección es grande y se recorre una sola vez secuencialmente. |

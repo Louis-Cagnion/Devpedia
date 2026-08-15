@@ -4,79 +4,90 @@ order: 4
 
 # Las listas y las tuplas
 
-Python distingue entre dos estructuras ordenadas de colecciones: la **lista**, mutable, y la **tupla**, inmutable. Ambas pueden mezclar libremente elementos de diferentes tipos.
+Python distingue dos estructuras ordenadas de colecciones: la **lista**, mutable, y la **tupla**, inmutable. Ambas pueden mezclar libremente elementos de tipos diferentes.
 
 ## Las listas
 
 ```python
-frutas = ["pomme", "banane", "cerise"]
+frutas = ["manzana", "platano", "cereza"]
 
-frutas[0]           # «manzana»
-frutas[-1]           # «cerise» -> índice negativo: cuenta desde el final
-frutas[0:2]          # ["manzana", "plátano"] -> slicing: elementos del índice 0 (incluido) al 2 (excluido)
-frutas[::-1]         # ["cereza", "plátano", "manzana"] -> invierte la lista (paso a paso -1)
+frutas[0]     # "manzana"
+frutas[-1]    # "cereza" -> índice negativo: cuenta desde el final
+frutas[0:2]   # ["manzana", "platano"] -> slicing: elementos del índice 0 (incluido) al 2 (excluido)
+frutas[::-1]  # ["cereza", "platano", "manzana"] -> invierte la lista (paso -1)
 
-frutas.append("kiwi")     # añadir al final
-frutas.insert(0, "mangue") # Inserar en un índice concreto
-frutas.remove("banane")    # elimina la primera aparición de este valor
-frutas.pop()                # elimina Y devuelve el último elemento
+frutas.append("kiwi")       # añade al final
+frutas.insert(0, "mango")   # inserta en un índice preciso
+frutas.remove("platano")    # elimina la primera aparición de ese valor
+frutas.pop()                 # elimina Y devuelve el último elemento
 len(frutas)                  # número de elementos
-"pomme" in frutas             # True/False -> comprueba si existe un valor
+"manzana" in frutas           # True/False -> prueba la presencia de un valor
 ```
 
-> **Nota:** a diferencia de un array en C (tamaño fijo, un único tipo), una lista en Python es un array **dinámico** heterogéneo: crece automáticamente y cada elemento puede ser de un tipo diferente, lo que conlleva un sobrecoste de memoria por elemento (cada elemento es, en realidad, una referencia a un objeto de Python, no un valor bruto contiguo como en C).
+> **Nota:** a diferencia de un array en C (tamaño fijo, un solo tipo), una lista Python es un array **dinámico** heterogéneo: crece automáticamente, y cada elemento puede ser de un tipo diferente, al precio de un sobrecoste de memoria por elemento (cada elemento es en realidad una referencia a un objeto Python, no un valor bruto contiguo como en C).
 
-## El «slicing» en detalle
+## El slicing en detalle
 
 ```python
-números = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+numeros = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-números[2:5]     # [2, 3, 4] -> desde el índice 2 (incluido) hasta el 5 (excluido)
-números[:3]       # [0, 1, 2] -> desde el principio
-números[7:]       # [7, 8, 9] -> hasta el final
-números[::2]       # [0, 2, 4, 6, 8] -> uno de cada dos elementos
+numeros[2:5]  # [2, 3, 4] -> del índice 2 (incluido) al 5 (excluido)
+numeros[:3]   # [0, 1, 2] -> desde el principio
+numeros[7:]   # [7, 8, 9] -> hasta el final
+numeros[::2]  # [0, 2, 4, 6, 8] -> un elemento de cada dos
 ```
 
 ## Las tuplas: listas inmutables
 
 ```python
-coordonnees = (48.8566, 2.3522)
+coordenadas = (48.8566, 2.3522)
 
-coordonnees[0]        # 48,8566
-coordonnees[0] = 0     # TypeError: una tupla no se puede modificar una vez creada
+coordenadas[0]      # 48.8566
+coordenadas[0] = 0  # TypeError: una tupla no se puede modificar tras su creación
 ```
 
-Una tupla se utiliza normalmente para representar un registro fijo (un par de coordenadas, un punto RGB...) más que una colección destinada a evolucionar.
+Una tupla sirve típicamente para representar un registro fijo (un par de coordenadas, un punto RGB...) más que una colección destinada a evolucionar.
 
-### Descompresión (*unpacking*)
+### Desempaquetado (*unpacking*)
 
 ```python
-latitude, longitude = coordonnees
-print(latitude)   # 48,8566
+latitud, longitud = coordenadas
+print(latitud)   # 48.8566
 
-a, b, c = 1, 2, 3   # También funciona sin paréntesis explícitos: una tupla implícita
-a, b = b, a          # Intercambio de valores, sin variables temporales
+a, b, c = 1, 2, 3  # también funciona sin paréntesis explícitos: una tupla implícita
+a, b = b, a        # intercambio de valores, sin variable temporal
 ```
 
-## Conceptos básicos sobre listas
+## Las comprensiones de lista
 
-Una **comprensión de lista** crea una nueva lista en una sola expresión, más concisa y, a menudo, más rápida que un bucle clásico de «`for`» con «`.append()`»:
+Una **comprensión de lista** construye una nueva lista en una sola expresión, más concisa y a menudo más rápida que un bucle `for` clásico con `.append()`:
 
 ```python
-carres = [x ** 2 for x in range(5)]
+cuadrados = [x ** 2 for x in range(5)]
 # equivalente a:
-carres = []
+cuadrados = []
 for x in range(5):
-    carres.append(x ** 2)
+    cuadrados.append(x ** 2)
 ```
 
-Con un criterio de filtrado:
+Con una condición de filtrado:
 
 ```python
-pairs = [x for x in range(10) if x % 2 == 0]
+pares = [x for x in range(10) if x % 2 == 0]
 # [0, 2, 4, 6, 8]
 ```
 
-> **Nota:** el código sigue siendo legible para una transformación sencilla en una sola línea; más allá de eso (varias condiciones anidadas, lógica compleja), un bucle clásico de tipo «`for`» sigue siendo más claro de leer y depurar.
+> **Nota:** una comprensión sigue siendo legible para una transformación simple en una sola línea; más allá (varias condiciones anidadas, lógica compleja), un bucle `for` clásico sigue siendo más claro de leer y depurar.
 
-Véase también el capítulo sobre diccionarios y conjuntos para conocer el equivalente a las comprensiones en estas estructuras, y el capítulo sobre iteradores/generadores para conocer la expresión generadora (variante perezosa de una comprensión de lista).
+Ver también [Los diccionarios y los conjuntos](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) para el equivalente de las comprensiones sobre estas estructuras, y [Iteradores y generadores](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) para la expresión generadora (variante perezosa de una comprensión de lista).
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Una lista es mutable, una tupla es inmutable: ambas ordenadas y heterogéneas. El slicing (`[inicio:fin:paso]`) extrae una porción; una comprensión construye una lista en una expresión. |
+| **Herramientas utilizables** | `append`/`insert`/`remove`/`pop`, slicing, desempaquetado (*unpacking*), comprensiones de lista. |
+| **Trampas a evitar** | Intentar modificar una tupla tras su creación (`TypeError`): usar una lista si el contenido debe evolucionar. |
+| **Buenas prácticas** | Usar una tupla para un registro fijo, una lista para una colección destinada a evolucionar; reservar la comprensión a una transformación simple, un bucle `for` más allá. |

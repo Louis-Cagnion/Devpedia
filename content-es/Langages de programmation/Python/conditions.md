@@ -2,9 +2,9 @@
 order: 2
 ---
 
-# Condiciones
+# Las condiciones
 
-Python utiliza `if` / `elif` / `else`, sin llaves; es la propia **sangría** la que delimita los bloques de código, a diferencia de PHP, C o JavaScript.
+Python usa `if`/`elif`/`else`, sin ninguna llave: es la **indentación** misma la que delimita los bloques de código, a diferencia de PHP, C o JavaScript.
 
 ## `if` / `elif` / `else`
 
@@ -12,28 +12,28 @@ Python utiliza `if` / `elif` / `else`, sin llaves; es la propia **sangría** la 
 edad = 20
 
 if edad >= 18:
-    print("Vous êtes majeur.")
+    print("Eres mayor de edad.")
 elif edad >= 13:
-    print("Vous êtes adolescent.")
+    print("Eres adolescente.")
 else:
-    print("Vous êtes enfant.")
+    print("Eres un niño.")
 ```
 
-> **Nota:** «`elif`» (contracción de «else if») es la única palabra clave para encadenar condiciones; «`else if`» (en dos palabras) no existe en Python. Es **obligatorio** utilizar una sangría coherente: un bloque mal sangrado provoca un «`IndentationError`», no solo una advertencia.
+> **Nota:** `elif` (contracción de "else if") es la única palabra clave para encadenar condiciones; `else if` en dos palabras no existe en Python. La indentación coherente es **obligatoria**: un bloque mal indentado provoca un `IndentationError`, no solo un aviso.
 
-## Los valores «truthy» y «falsy»
+## Los valores "truthy" y "falsy"
 
-Aparte de `True` / `False`, Python considera automáticamente ciertos valores como falsos en un contexto booleano (`if`, `while`...):
+Además de `True`/`False`, Python considera automáticamente ciertos valores como falsos en un contexto booleano (`if`, `while`...):
 
 ```python
-if []:        # False -> una lista vacía es «falsy»
-if "":         # False -> una cadena vacía es «falsy»
-if 0:          # False -> cero es «falsy»
-if None:       # False
-if [1, 2]:    # True -> una lista no vacía es «truthy»
+if []:      # False -> una lista vacía es "falsy"
+if "":      # False -> una cadena vacía es "falsy"
+if 0:       # False -> cero es "falsy"
+if None:    # False
+if [1, 2]:  # True -> una lista no vacía es "truthy"
 ```
 
-| Valor | Verdadero / Falso |
+| Valor | Truthy / Falsy |
 |---|---|
 | `0`, `0.0` | Falsy |
 | `""` (cadena vacía) | Falsy |
@@ -42,59 +42,70 @@ if [1, 2]:    # True -> una lista no vacía es «truthy»
 | Todo lo demás | Truthy |
 
 ```python
-utilisateurs = []
+usuarios = []
 
-if utilisateurs:                # Se prefiere a «if len(usuarios) > 0:»
-    print("Il y a des utilisateurs")
+if usuarios:                     # preferido a "if len(usuarios) > 0:"
+    print("Hay usuarios")
 else:
-    print("Aucun utilisateur")
+    print("Ningún usuario")
 ```
 
 ## El operador ternario
 
 ```python
 edad = 20
-statut = "majeur" if edad >= 18 else "mineur"
+estado = "mayor de edad" if edad >= 18 else "menor de edad"
 ```
 
-A diferencia de PHP/C/JS (`condition ? valeur_si_vrai : valeur_si_faux`), Python coloca la condición **en medio**: `valeur_si_vrai if condition else valeur_si_faux`.
+A diferencia de PHP/C/JS (`condicion ? valor_si_verdadero : valor_si_falso`), Python coloca la condición **en medio**: `valor_si_verdadero if condicion else valor_si_falso`.
 
-## El operador «morse» (`:=`) — desde Python 3.8
+## El operador "morsa" (`:=`, desde Python 3.8)
 
-Permite asignar una variable **y** utilizarla en la misma expresión, especialmente en una condición:
+Permite asignar una variable **y** usarla en la misma expresión, especialmente en una condición:
 
 ```python
-# Sin el operador morse: la línea «resultado» se calcula dos veces.
-if calculer_resultat() > 10:
-    print(calculer_resultat())
+# sin el operador morsa: la línea "resultado" se calcula dos veces
+if calcular_resultado() > 10:
+    print(calcular_resultado())
 
-# con el operador Morse: se calcula una sola vez y, a continuación, se puede utilizar
-if (resultado := calculer_resultat()) > 10:
+# con el operador morsa: calculada una sola vez, Y utilizable después
+if (resultado := calcular_resultado()) > 10:
     print(resultado)
 ```
 
-## No hay un «`switch`» clásico (antes de Python 3.10)
+## Sin `switch` clásico (antes de Python 3.10)
 
-Durante mucho tiempo, Python no ofrecía ningún equivalente directo a «`switch`»; como alternativa se utilizaba una cadena de «`elif`» o un diccionario de correspondencias:
+Python no ofreció durante mucho tiempo ningún equivalente directo a `switch`; una cadena de `elif` o un diccionario de correspondencia hacía de alternativa:
 
 ```python
-def jour_semaine(jour):
-    correspondance = {
-        1: "Lundi",
-        2: "Mardi",
-        3: "Mercredi",
+def dia_semana(dia):
+    correspondencia = {
+        1: "Lunes",
+        2: "Martes",
+        3: "Miércoles",
     }
-    return correspondance.get(jour, "Jour inconnu")
+    return correspondencia.get(dia, "Día desconocido")
 ```
 
-Desde Python 3.10, `match` / `case` ofrece una sintaxis específica, más parecida a la de un lenguaje de programación de tipo «`switch`»:
+Desde Python 3.10, `match`/`case` ofrece una sintaxis dedicada, más cercana a un `switch`:
 
 ```python
-match jour:
+match dia:
     case 1:
-        print("Lundi")
+        print("Lunes")
     case 2:
-        print("Mardi")
-    case _:            # '_' : equivalente al «default» de un switch
-        print("Autre jour")
+        print("Martes")
+    case _:            # '_': equivalente al "default" de un switch
+        print("Otro día")
 ```
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | `if`/`elif`/`else` estructura el control de flujo, sin llaves: la indentación delimita los bloques. Ciertos valores (`0`, `""`, `[]`, `None`) son "falsy" sin ser `False`. |
+| **Herramientas utilizables** | Operador ternario (`x if cond else y`), operador morsa (`:=`), `match`/`case` (Python 3.10+). |
+| **Trampas a evitar** | Una indentación incoherente: provoca un `IndentationError`, no un simple aviso. |
+| **Buenas prácticas** | Probar directamente `if coleccion:` en lugar de `if len(coleccion) > 0:`, apoyándose en el comportamiento truthy/falsy. |

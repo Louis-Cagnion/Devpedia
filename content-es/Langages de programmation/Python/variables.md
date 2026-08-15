@@ -2,29 +2,29 @@
 order: 1
 ---
 
-# Variables y tipos básicos
+# Las variables y tipos básicos
 
-Python es **un lenguaje de tipado dinámico**: una variable no tiene un tipo declarado de antemano, sino que simplemente adopta el tipo del valor que se le asigna, y puede cambiar de tipo libremente a lo largo del programa (a diferencia de PHP o C, donde el tipo de una propiedad o variable tipada permanece fijo una vez declarado).
+Como recordatorio, [una variable es una caja etiquetada que contiene un valor](/?c=bases-de-l-informatique&p=la-variable). Python es de **tipado dinámico**: una variable no tiene un tipo declarado de antemano, simplemente adopta el tipo del valor que se le asigna, y puede cambiar de tipo libremente a lo largo del programa (a diferencia de PHP o C, donde el tipo de una propiedad/variable tipada permanece fijo una vez declarado).
 
 ## Declarar una variable
 
 ```python
-edad = 25            # int
-precio = 9.99          # float
-número = "Devpedia"      # str
-actif = True          # bool
-rien = None           # equivalente a null/NULL
+edad = 25             # int
+precio = 9.99         # float
+nombre = "Devpedia"   # str
+activo = True         # bool
+nada = None           # equivalente a null/NULL
 
-edad = "vingt-cinq"    # Totalmente válido: «age» se convierte en un tipo «str» sin necesidad de declarar nada.
+edad = "veinticinco"  # perfectamente válido: edad se convierte en un str, sin declarar nada
 ```
 
-> **Nota:** a diferencia de PHP (`$variable`), Python no utiliza ningún símbolo específico para designar una variable, sino solo un nombre, en minúsculas y con guiones bajos por convención (`nom_utilisateur`, no `nomUtilisateur`).
+> **Nota:** a diferencia de PHP (`$variable`), Python no usa ningún símbolo particular para designar una variable: solo un nombre, en minúsculas con guiones bajos por convención (`nombre_usuario`, no `nombreUsuario`).
 
 ## Comprobar el tipo de una variable
 
 ```python
 type(edad)             # <class 'int'>
-isinstance(edad, int)   # True -> preferible a type() == int para las comprobaciones condicionales
+isinstance(edad, int)  # True -> preferible a type() == int para las comprobaciones condicionales
 ```
 
 ## Los operadores
@@ -32,50 +32,89 @@ isinstance(edad, int)   # True -> preferible a type() == int para las comprobaci
 ```python
 a, b = 5, 3   # asignación múltiple en una sola línea
 
-a + b    # 8
-a - b    # 2
-a * b    # 15
-a / b     # 1,6666... -> división real, siempre un float
-a // b    # 1 -> división entera (división por el suelo)
-a % b     # 2 -> módulo
-a ** b    # 125 -> potencia
+a + b   # 8
+a - b   # 2
+a * b   # 15
+a / b   # 1.6666... -> división real, siempre un float
+a // b  # 1 -> división entera (floor division)
+a % b   # 2 -> módulo
+a ** b  # 125 -> potencia
 
-a == b    # False
-a != b    # Verdadero
-a and b   # Y lógico (no «&&»)
-a or b    # Operador lógico «O» (no «||»)
-not a     # NEGACIÓN lógica (no «!»)
+a == b   # False
+a != b   # True
+a and b  # Y lógico (no '&&')
+a or b   # O lógico (no '||')
+not a    # NO lógico (no '!')
 ```
 
-> **Nota:** Python utiliza las palabras clave `and` / `or` / `not` en lugar de los símbolos `&&` / `||` / `!` que se encuentran en PHP, JavaScript o C.
+> **Nota:** Python usa las palabras clave `and`/`or`/`not` en lugar de los símbolos `&&`/`||`/`!` que se encuentran en PHP, JavaScript o C.
 
-## Las f-strings: insertar variables en el texto
+## `==` e `is`: ¿el valor o el objeto?
+
+Estos dos operadores se confunden a menudo aunque plantean dos preguntas diferentes:
+
+| Operador | Compara | Pregunta planteada |
+|---|---|---|
+| `==` | el **valor** | "¿su contenido es idéntico?" |
+| `is` | la **identidad** | "¿es el mismo objeto en memoria?" |
 
 ```python
-número = "Jean"
-edad = 25
+a = [1, 2, 3]
+b = [1, 2, 3]
+c = a
 
-print(f"{número} a {edad} ans")           # Jean tiene 25 años.
-print(f"Dans 10 ans : {edad + 10} ans") # una expresión real, no solo una variable
+a == b  # True  -> mismo contenido
+a is b  # False -> dos listas distintas en memoria
+a is c  # True  -> c y a designan el mismo objeto
 ```
 
-Las f-strings (prefijo «`f`» antes de las comillas) son el método moderno recomendado, que sustituye a «`"{} a {} ans".format(número, edad)`» o a la concatenación con «`+`».
+Es exactamente la distinción entre comparación por **valor** y comparación por **referencia** que se encuentra en C con los punteros: `*p1 == *p2` (los valores apuntados) frente a `p1 == p2` (las direcciones). Ver el capítulo [Los punteros](/?c=langages-de-programmation&s=c&p=pointeurs) de C.
+
+### Por qué `is None` y no `== None`
+
+Para probar si una variable vale `None`, la convención Python es `is None`:
+
+```python
+if valor is None:  # recomendado
+if valor == None:  # a evitar
+```
+
+Dos razones:
+
+- `None` es un **singleton**: solo existe una única instancia en todo el programa. Probar la identidad es por tanto exacto por construcción, y ligeramente más rápido.
+- `==` puede ser **redefinido** por una clase vía `__eq__`. Un objeto puede por tanto perfectamente responder `True` a `== None` sin ser `None`, lo que hace la prueba poco fiable.
+
+Esto es lo que explica el patrón del centinela `None` usado para los argumentos por defecto mutables (ver el capítulo [Las funciones](/?c=langages-de-programmation&s=python&p=fonctions)).
+
+> El mismo razonamiento se aplica a `True`/`False`, que también son singletons. En la práctica rara vez se escribe `is True`: se prueba directamente `if condicion:`.
+
+## Las f-strings: insertar variables en texto
+
+```python
+nombre = "Juan"
+edad = 25
+
+print(f"{nombre} tiene {edad} años")    # Juan tiene 25 años
+print(f"Dentro de 10 años: {edad + 10} años")  # una expresión real, no solo una variable
+```
+
+Las f-strings (prefijo `f` antes de las comillas) son el método moderno recomendado, que sustituye a `"{} tiene {} años".format(nombre, edad)` o a la concatenación con `+`.
 
 ## Inmutabilidad de las cadenas de caracteres
 
-Al igual que en PHP, una cadena en Python es **inmutable**: cualquier «modificación» crea, en realidad, una nueva cadena, sin modificar nunca la original en memoria.
+Como en PHP, una cadena Python es **inmutable**: cualquier "modificación" crea en realidad una nueva cadena, nunca modifica la original en memoria.
 
 ```python
-texto = "bonjour"
-texto.upper()      # devuelve «BONJOUR», NO MODIFICA el texto
-print(texto)        # Siempre «hola»
+texto = "hola"
+texto.upper()  # devuelve "HOLA", NO MODIFICA texto
+print(texto)   # sigue siendo "hola"
 
-texto = texto.upper()  # Hay que reasignar para «conservar» el cambio.
+texto = texto.upper()  # hay que reasignar para "conservar" el cambio
 ```
 
 ## Resumen de los tipos básicos
 
-| Tipo | Ejemplo | Equivalente en PHP |
+| Tipo | Ejemplo | Equivalente PHP |
 |---|---|---|
 | `int` | `25` | `int` |
 | `float` | `9.99` | `float` |
@@ -83,4 +122,15 @@ texto = texto.upper()  # Hay que reasignar para «conservar» el cambio.
 | `bool` | `True` / `False` | `bool` |
 | `None` | `None` | `null` |
 
-Consulta también los capítulos sobre listas/tuplas y diccionarios/conjuntos para conocer las estructuras de datos compuestas.
+Ver también los capítulos sobre listas/tuplas y diccionarios/conjuntos para las estructuras de datos compuestas.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Python es de tipado dinámico: una variable adopta el tipo de su valor, sin declaración previa, y puede cambiar de tipo. `==` compara el valor, `is` compara la identidad (el mismo objeto en memoria). |
+| **Herramientas utilizables** | `type()`/`isinstance()`, f-strings para la interpolación, `is None` para probar una ausencia de valor. |
+| **Trampas a evitar** | Confundir `==` e `is`: dos objetos con contenido idéntico no son necesariamente el mismo objeto en memoria. |
+| **Buenas prácticas** | Usar `is None` en lugar de `== None`; preferir las f-strings a la concatenación para insertar una variable en texto. |

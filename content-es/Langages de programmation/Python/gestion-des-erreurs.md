@@ -2,9 +2,9 @@
 order: 7
 ---
 
-# Gestión de errores
+# La gestión de errores
 
-Python señala un error lanzando una **excepción**, que interrumpe la ejecución normal del programa a menos que sea interceptada por un bloque `try` / `except` — un mecanismo similar a las excepciones modernas de PHP (`throw` / `catch`).
+Python señala un error lanzando una **excepción**, que interrumpe la ejecución normal del programa salvo que sea interceptada por un bloque `try`/`except`, un mecanismo similar a las excepciones PHP modernas (`throw`/`catch`).
 
 ## `try` / `except`
 
@@ -12,77 +12,88 @@ Python señala un error lanzando una **excepción**, que interrumpe la ejecució
 try:
     resultado = 10 / 0
 except ZeroDivisionError:
-    print("Impossible de diviser par zéro")
+    print("Imposible dividir por cero")
 ```
 
 ## Interceptar varios tipos de excepciones
 
 ```python
 try:
-    número = int(input("Entrez un nombre : "))
-    resultado = 10 / número
+    numero = int(input("Introduce un número: "))
+    resultado = 10 / numero
 except ValueError:
-    print("Ce n'est pas un nombre valide")
+    print("Eso no es un número válido")
 except ZeroDivisionError:
-    print("Impossible de diviser par zéro")
-except Exception as error:   # «atrapa todo lo demás» -> colocarlo al FINAL
-    print(f"Erreur inattendue : {error}")
+    print("Imposible dividir por cero")
+except Exception as error:   # atrapa todo lo demás -> colocar al FINAL
+    print(f"Error inesperado: {error}")
 ```
 
-> **Nota:** interceptar `Exception` de forma demasiado amplia (o peor aún, un `except:` sin tipo) oculta errores de programación que, en realidad, deberían provocar un fallo del programa para que se corrigieran; debe reservarse para aquellos casos en los que el fallo sea realmente esperado y ya se haya gestionado inmediatamente después.
+> **Nota:** interceptar `Exception` de forma demasiado amplia (o peor, un `except:` desnudo, sin tipo) enmascara errores de programación que deberían más bien hacer fallar el programa para ser corregidos, hay que reservarlo para los casos donde el fallo está realmente esperado y ya gestionado justo después.
 
 ## `else` y `finally`
 
 ```python
 try:
-    archivo = open("donnees.txt")
+    archivo = open("datos.txt")
 except FileNotFoundError:
-    print("Fichier introuvable")
+    print("Archivo no encontrado")
 else:
-    print("Fichier ouvert avec succès")   # Se ejecuta SOLO si no se ha producido ninguna excepción
+    print("Archivo abierto con éxito")   # ejecutado SOLO si no ocurrió ninguna excepción
     archivo.close()
 finally:
-    print("Tentative terminée")            # Se ejecuta EN TODOS LOS CASOS, haya o no una excepción
+    print("Intento terminado")            # ejecutado EN TODOS LOS CASOS, excepción o no
 ```
 
-`finally` Se utiliza normalmente para liberar un recurso (cerrar un archivo, una conexión...) independientemente de si se ha producido un error o no.
+`finally` sirve típicamente para liberar un recurso (cerrar un archivo, una conexión...) haya habido error o no.
 
-## Lanzar excepciones propias
+## Lanzar tus propias excepciones
 
 ```python
-def calculer_age(annee_naissance):
-    if annee_naissance > 2026:
-        raise ValueError("L'année de naissance ne peut pas être dans le futur")
-    return 2026 - annee_naissance
+def calcular_edad(anio_nacimiento):
+    if anio_nacimiento > 2026:
+        raise ValueError("El año de nacimiento no puede estar en el futuro")
+    return 2026 - anio_nacimiento
 ```
 
 ## Crear una excepción personalizada
 
 ```python
-class SoldeInsuffisantError(Exception):
+class SaldoInsuficienteError(Exception):
     pass
 
-def retirer(saldo, montant):
-    if montant > saldo:
-        raise SoldeInsuffisantError(f"Solde de {saldo}€ insuffisant pour retirer {montant}€")
-    return saldo - montant
+def retirar(saldo, monto):
+    if monto > saldo:
+        raise SaldoInsuficienteError(f"Saldo de {saldo}€ insuficiente para retirar {monto}€")
+    return saldo - monto
 
 try:
-    retirer(100, 150)
-except SoldeInsuffisantError as error:
+    retirar(100, 150)
+except SaldoInsuficienteError as error:
     print(error)
 ```
 
-Una excepción personalizada hereda de `Exception` (o de una subclase más específica), lo que permite distinguirla de las demás en un `except` específico, en lugar de basarse en un mensaje de error genérico.
+Una excepción personalizada hereda de `Exception` (o de una subclase más precisa), lo que permite distinguirla de las demás en un `except` específico, en lugar de apoyarse en un mensaje de error genérico.
 
 ## El gestor de contexto `with`
 
-`with` Garantiza que un recurso se libere correctamente, **incluso en caso de excepción**: un archivo abierto con `with` siempre se cierra automáticamente al salir del bloque:
+`with` garantiza que un recurso se libere correctamente, **incluso en caso de excepción**: un archivo abierto con `with` siempre se cierra automáticamente al salir del bloque:
 
 ```python
-with open("donnees.txt") as archivo:
+with open("datos.txt") as archivo:
     contenido = archivo.read()
-# Aquí se llama automáticamente a `fichier.close()`, independientemente de si todo ha salido bien o no.
+# archivo.close() se llama automáticamente aquí, haya salido todo bien o no
 ```
 
-> **Nota:** esto se basa en los métodos especiales `__enter__` / `__exit__` (véase el capítulo sobre programación orientada a objetos); cualquier clase personalizada puede definir estos dos métodos para poder utilizarse con `with` (por ejemplo, para gestionar la apertura y el cierre de una conexión de red o a una base de datos).
+> **Nota:** esto se apoya en los métodos especiales `__enter__`/`__exit__` (ver [La programación orientada a objetos](/?c=langages-de-programmation&s=python&p=poo)); cualquier clase personalizada puede definir estos dos métodos para volverse utilizable con `with` (ej. gestionar la apertura/cierre de una conexión de red o de base de datos).
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | `try`/`except`/`else`/`finally` estructura la gestión de errores. `with` garantiza que un recurso se libere incluso en caso de excepción, vía `__enter__`/`__exit__`. |
+| **Herramientas utilizables** | Excepciones personalizadas (heredan de `Exception`), `with`, `raise`. |
+| **Trampas a evitar** | Interceptar `Exception` (o un `except:` desnudo) demasiado ampliamente: enmascara errores de programación que deberían más bien hacer fallar el programa para ser corregidos. |
+| **Buenas prácticas** | Interceptar el tipo de excepción más preciso posible; usar `with` para todo recurso que deba cerrarse/liberarse. |
