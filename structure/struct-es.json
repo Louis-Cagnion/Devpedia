@@ -313,7 +313,40 @@
           "id": "vision-et-ocr",
           "label": "Vision et OCR",
           "folder": "Vision et OCR",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "ocr-classique-vs-deep-learning",
+              "label": "OCR: del reconocimiento de patrones clásico al deep learning"
+            },
+            {
+              "id": "detection-de-mise-en-page",
+              "label": "Detección de maquetación: cajas delimitadoras, score de confianza y eliminación de duplicados"
+            },
+            {
+              "id": "modeles-document-ai",
+              "label": "Modelos \"Document AI\": comprender un documento más allá del texto puro"
+            },
+            {
+              "id": "fine-tuning-modele-vision",
+              "label": "Entrenar y hacer fine-tuning de un modelo de visión para un caso de negocio"
+            },
+            {
+              "id": "evaluer-un-ocr",
+              "label": "Evaluar un OCR: CER, WER y tasa de reconocimiento por campo"
+            },
+            {
+              "id": "post-traitement-correction",
+              "label": "Post-procesamiento y corrección de un OCR"
+            },
+            {
+              "id": "ocr-en-production",
+              "label": "Puesta en producción y monitoreo de un pipeline OCR"
+            },
+            {
+              "id": "gouvernance-documents-scannes",
+              "label": "Gobernanza de datos para documentos escaneados"
+            }
+          ]
         },
         {
           "id": "voix-ia",
