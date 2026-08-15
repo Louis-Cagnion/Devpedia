@@ -1,5 +1,5 @@
 ---
-order: 8
+order: 9
 ---
 
 # Agents : boucle outil/réflexion et orchestration

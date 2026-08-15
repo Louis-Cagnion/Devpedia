@@ -281,6 +281,10 @@
               "label": "LLM en production : cas d'usage et limites"
             },
             {
+              "id": "reduire-la-variance-des-reponses",
+              "label": "Réduire la variance des réponses : self-consistency, vote majoritaire et ensembling"
+            },
+            {
               "id": "agents",
               "label": "Agents : boucle outil/réflexion et orchestration"
             },
