@@ -1107,7 +1107,60 @@
           "id": "powershell",
           "label": "PowerShell",
           "folder": "PowerShell",
-          "chapters": []
+          "chapters": [
+            {
+              "id": "commandes-de-base",
+              "label": "Comandos básicos"
+            },
+            {
+              "id": "ecrire-et-executer-un-script",
+              "label": "Escribir y ejecutar un script PowerShell"
+            },
+            {
+              "id": "variables",
+              "label": "Las variables"
+            },
+            {
+              "id": "variables-denvironnement",
+              "label": "Variables de entorno"
+            },
+            {
+              "id": "conditions",
+              "label": "Las condiciones"
+            },
+            {
+              "id": "boucles",
+              "label": "Los bucles"
+            },
+            {
+              "id": "fonctions",
+              "label": "Las funciones"
+            },
+            {
+              "id": "expansion-et-jokers",
+              "label": "Expansión y comodines (wildcards)"
+            },
+            {
+              "id": "redirections-et-pipes",
+              "label": "Redirecciones y pipes"
+            },
+            {
+              "id": "traitement-de-texte",
+              "label": "Procesamiento de texto y objetos"
+            },
+            {
+              "id": "permissions-et-fichiers",
+              "label": "Permisos y manipulación de archivos"
+            },
+            {
+              "id": "gestion-des-processus",
+              "label": "La gestión de procesos"
+            },
+            {
+              "id": "architecture-dun-shell",
+              "label": "Cómo funciona PowerShell (arquitectura interna)"
+            }
+          ]
         }
       ]
     },
