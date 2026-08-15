@@ -128,10 +128,11 @@ const CONTEXT_OPERATOR_SPEECH = {
         "<<": "left shift",
         ">>": "right shift",
         "~": "bitwise not",
-        // "xor" alone is a real word to a screen but not to most TTS voices, which try to sound
-        // it out as one syllable ("zor") rather than the two ("ex or") a human would say --
-        // spelled out as two words to force the natural pronunciation.
-        "^": "bitwise ex or",
+        // Capitalized like the acronym it is: lowercase "xor" gets sounded out as one made-up
+        // syllable ("zor") by most TTS voices, the same way the literal word "XOR" already reads
+        // correctly in prose (untouched by speakableText) -- matching that capitalization here
+        // gets the same correct acronym pronunciation for the operator.
+        "^": "bitwise XOR",
         "|": "bitwise or",
     },
     cpp: {
@@ -144,10 +145,11 @@ const CONTEXT_OPERATOR_SPEECH = {
         "<<": "stream insertion",
         ">>": "stream extraction",
         "~": "bitwise not",
-        // "xor" alone is a real word to a screen but not to most TTS voices, which try to sound
-        // it out as one syllable ("zor") rather than the two ("ex or") a human would say --
-        // spelled out as two words to force the natural pronunciation.
-        "^": "bitwise ex or",
+        // Capitalized like the acronym it is: lowercase "xor" gets sounded out as one made-up
+        // syllable ("zor") by most TTS voices, the same way the literal word "XOR" already reads
+        // correctly in prose (untouched by speakableText) -- matching that capitalization here
+        // gets the same correct acronym pronunciation for the operator.
+        "^": "bitwise XOR",
         "::": "scope resolution",
     },
     php: {
