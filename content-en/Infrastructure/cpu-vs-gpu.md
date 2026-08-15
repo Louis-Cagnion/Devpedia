@@ -29,7 +29,7 @@ CPU (a few cores)    : processes the 1000 multiplications in several successive 
 GPU (thousands of cores) : can process almost all 1000 multiplications in a single pass
 ```
 
-This is exactly the type of computation (repetitive, identical, on independent data) that makes up nearly all the operations performed by a [neural network](/?c=ia&p=reseaux-de-neurones): hence the systematic use of a GPU for training a deep learning model.
+This is exactly the type of computation (repetitive, identical, on independent data) that makes up nearly all the operations performed by a [neural network](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones): hence the systematic use of a GPU for training a deep learning model.
 
 | | CPU | GPU |
 |---|---|---|
@@ -57,6 +57,6 @@ The CPU and GPU each have their own memory: having the GPU compute on a piece of
 | | |
 |---|---|
 | **Key takeaways** | A CPU has few, fast, versatile cores, suited to sequential tasks and branching. A GPU has thousands of simple cores, suited to repeating the same operation on independent data: the case for the vector/matrix computation behind a neural network. |
-| **Tools you can use** | Deep learning libraries ([PyTorch](/?c=ia&p=deep-learning-pytorch), [TensorFlow](https://www.tensorflow.org)) handle transferring data to the GPU and parallelizing computation automatically. |
+| **Tools you can use** | Deep learning libraries ([PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch), [TensorFlow](https://www.tensorflow.org)) handle transferring data to the GPU and parallelizing computation automatically. |
 | **Pitfalls to avoid** | Transferring data between CPU and GPU too often or in too small amounts. Expecting a speedup from a GPU on an inherently sequential computation. |
 | **Best practices** | Batch CPU/GPU transfers into as few large operations as possible. Reserve the GPU for computations that are genuinely parallelizable. |

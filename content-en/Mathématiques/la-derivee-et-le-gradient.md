@@ -99,6 +99,6 @@ new_vector = old_vector - rate × gradient
 | | |
 |---|---|
 | **Key takeaways** | The derivative measures a function's slope at one exact point (its sign shows whether the function is increasing, decreasing, or momentarily flat). The gradient generalizes the derivative to a function with several inputs: a vector of partial derivatives, pointing toward the direction of steepest increase. |
-| **Tools you can use** | No manual computation in practice: deep learning libraries compute derivatives and gradients automatically (see [automatic differentiation](/?c=ia&p=entrainement-descente-de-gradient)). |
+| **Tools you can use** | No manual computation in practice: deep learning libraries compute derivatives and gradients automatically (see [automatic differentiation](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)). |
 | **Pitfalls to avoid** | Confusing "a minimum found" with "the lowest possible minimum": a curve with several dips only guarantees the dip closest to the starting point. |
 | **Best practices** | Try several different starting points to limit the risk of getting stuck on an unsatisfying local minimum. |

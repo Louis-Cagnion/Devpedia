@@ -156,7 +156,7 @@ print(classification_report(y_test, predictions))   # Detailed information, over
 4. Evaluate using the test suite (`predict` + a metric appropriate for the problem).
 5. Adjust (different algorithm, different parameters, more data, etc.) and try again.
 
-See also the chapter on [neural networks](/?c=ia&p=reseaux-de-neurones): a specific family of models that are more complex than those in scikit-learn but are based on exactly the same fundamental principles (training/test data, learning, generalization).
+See also the chapter on [neural networks](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones): a specific family of models that are more complex than those in scikit-learn but are based on exactly the same fundamental principles (training/test data, learning, generalization).
 
 ---
 

@@ -32,7 +32,7 @@ int roll = rand() % 100;
 
 **This determinism is often a feature**, not a flaw:
 
-- **scientific reproducibility**: fixing the seed makes it possible to exactly replay a model's training run (see [Model Training and Gradient Descent](/?c=ia&p=entrainement-descente-de-gradient));
+- **scientific reproducibility**: fixing the seed makes it possible to exactly replay a model's training run (see [Model Training and Gradient Descent](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient));
 - **tests**: a test that uses randomness must be reproducible to be diagnosable;
 - **procedural generation**: an entire game world can be regenerated identically from a single seed.
 

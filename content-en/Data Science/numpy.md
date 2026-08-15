@@ -86,7 +86,7 @@ a.mean()      # 2.0
 a.max()        # 3
 ```
 
-> **Note:** `*` between two NumPy arrays multiplies them element-by-element: to obtain a true matrix product (in the sense of linear algebra, widely used in deep learning; see [Neural Networks](/?c=ia&p=reseaux-de-neurones)), the operator is `@` (or `np.matmul()`), never `*`.
+> **Note:** `*` between two NumPy arrays multiplies them element-by-element: to obtain a true matrix product (in the sense of linear algebra, widely used in deep learning; see [Neural Networks](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones)), the operator is `@` (or `np.matmul()`), never `*`.
 
 See also the chapter on [pandas](/?c=data-science&p=pandas), which builds its `DataFrame` directly on top of NumPy `ndarray`.
 

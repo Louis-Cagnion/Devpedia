@@ -35,7 +35,7 @@ Training a deep learning model requires one or more powerful [GPUs](/?c=infrastr
 
 > **Pitfall:** assuming that data sent "to the cloud" stays under the same control and the same legal rules as if it remained on the company's own premises. It's actually stored on hardware owned by a third party, sometimes located in a different country, with its own data protection rules.
 >
-> **Best practice:** check the contractual terms and the geographic location of the data before sending sensitive data to a cloud service (see [classifying data before sending it](/?c=ia&p=gouvernance-des-donnees)), rather than assuming it's neutral by default.
+> **Best practice:** check the contractual terms and the geographic location of the data before sending sensitive data to a cloud service (see [classifying data before sending it](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees)), rather than assuming it's neutral by default.
 
 ## Pitfall: cost can slip past the usual controls
 

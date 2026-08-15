@@ -239,158 +239,176 @@
       "id": "ia",
       "label": "IA",
       "folder": "IA",
-      "chapters": [
-        {
-          "id": "reseaux-de-neurones",
-          "label": "Neural Networks: The Fundamentals"
-        },
-        {
-          "id": "entrainement-descente-de-gradient",
-          "label": "Model Training and Gradient Descent"
-        },
-        {
-          "id": "architectures-cnn-rnn-transformers",
-          "label": "Architectures: CNNs, RNNs, and Transformers"
-        },
-        {
-          "id": "deep-learning-pytorch",
-          "label": "Deep Learning with PyTorch"
-        },
-        {
-          "id": "nlp-et-llm",
-          "label": "Natural Language Processing (NLP) and Large Language Models (LLMs)"
-        },
-        {
-          "id": "prompt-engineering",
-          "label": "Prompt Engineering: Structuring a Request for Better Results"
-        },
-        {
-          "id": "llm-en-production",
-          "label": "LLMs in Production: Use Cases and Limits"
-        },
-        {
-          "id": "agents",
-          "label": "Agents: Tool/Reflection Loop and Orchestration"
-        },
-        {
-          "id": "rag",
-          "label": "RAG: Augmenting an LLM with External Data"
-        },
-        {
-          "id": "prompt-injection",
-          "label": "Prompt Injection: When Data Poses as an Instruction"
-        },
-        {
-          "id": "gestion-dun-llm",
-          "label": "LLM Monitoring and Operations"
-        },
-        {
-          "id": "gouvernance-des-donnees",
-          "label": "Data Governance for an AI System"
-        },
-        {
-          "id": "reglementation-europeenne-ia",
-          "label": "EU AI Regulation: the AI Act"
-        },
-        {
-          "id": "chatbot",
-          "label": "Building a Chatbot: Architecture, Configuration, and Scaling"
-        },
-        {
-          "id": "assistant-agentique-terminal",
-          "label": "The agent-based AI assistant in the terminal: beyond the simple prompt"
-        },
-        {
-          "id": "stack-ia",
-          "label": "The AI Stack: The Layers of a Production Application"
-        },
-        {
-          "id": "vision-et-ocr",
-          "label": "Vision and OCR"
-        },
-        {
-          "id": "ocr-classique-vs-deep-learning",
-          "label": "OCR: from classic pattern recognition to deep learning"
-        },
-        {
-          "id": "detection-de-mise-en-page",
-          "label": "Layout detection: bounding boxes, confidence score, and duplicate removal"
-        },
-        {
-          "id": "modeles-document-ai",
-          "label": "\"Document AI\" models: understanding a document beyond plain text"
-        },
-        {
-          "id": "fine-tuning-modele-vision",
-          "label": "Training and fine-tuning a vision model for a business use case"
-        },
-        {
-          "id": "evaluer-un-ocr",
-          "label": "Evaluating an OCR: CER, WER, and per-field recognition rate"
-        },
-        {
-          "id": "post-traitement-correction",
-          "label": "OCR post-processing and correction"
-        },
-        {
-          "id": "ocr-en-production",
-          "label": "OCR pipeline deployment and monitoring"
-        },
-        {
-          "id": "gouvernance-documents-scannes",
-          "label": "Data governance for scanned documents"
-        },
-        {
-          "id": "voix-ia",
-          "label": "AI Voice"
-        },
-        {
-          "id": "synthese-classique-vs-deep-learning",
-          "label": "Speech synthesis: from classic concatenation to deep learning"
-        },
-        {
-          "id": "controler-la-prosodie",
-          "label": "Controlling prosody"
-        },
-        {
-          "id": "modeles-modernes-synthese",
-          "label": "Modern synthesis models: neural codecs"
-        },
-        {
-          "id": "cloner-une-voix",
-          "label": "Cloning a voice: technique and ethical/legal stakes"
-        },
-        {
-          "id": "fine-tuning-synthese-vocale",
-          "label": "Training and fine-tuning a speech synthesis model"
-        },
-        {
-          "id": "evaluer-synthese-vocale",
-          "label": "Evaluating speech synthesis: MOS, intelligibility, latency"
-        },
-        {
-          "id": "choisir-fournisseur-mise-en-production",
-          "label": "Choosing a provider and going to production"
-        },
-        {
-          "id": "gouvernance-voix-ia",
-          "label": "Governance of an AI voice pipeline"
-        },
+      "subjects": [
         {
           "id": "fondamentaux-du-deep-learning",
-          "label": "Fundamentals of Deep Learning"
+          "label": "Fondamentaux du deep learning",
+          "folder": "Fondamentaux du deep learning",
+          "chapters": [
+            {
+              "id": "reseaux-de-neurones",
+              "label": "Neural Networks: The Fundamentals"
+            },
+            {
+              "id": "entrainement-descente-de-gradient",
+              "label": "Model Training and Gradient Descent"
+            },
+            {
+              "id": "architectures-cnn-rnn-transformers",
+              "label": "Architectures: CNNs, RNNs, and Transformers"
+            },
+            {
+              "id": "deep-learning-pytorch",
+              "label": "Deep Learning with PyTorch"
+            }
+          ]
         },
         {
           "id": "nlp-llm",
-          "label": "NLP and LLM"
+          "label": "NLP et LLM",
+          "folder": "NLP et LLM",
+          "chapters": [
+            {
+              "id": "nlp-et-llm",
+              "label": "Natural Language Processing (NLP) and Large Language Models (LLMs)"
+            },
+            {
+              "id": "prompt-engineering",
+              "label": "Prompt Engineering: Structuring a Request for Better Results"
+            },
+            {
+              "id": "llm-en-production",
+              "label": "LLMs in Production: Use Cases and Limits"
+            },
+            {
+              "id": "agents",
+              "label": "Agents: Tool/Reflection Loop and Orchestration"
+            },
+            {
+              "id": "rag",
+              "label": "RAG: Augmenting an LLM with External Data"
+            },
+            {
+              "id": "prompt-injection",
+              "label": "Prompt Injection: When Data Poses as an Instruction"
+            }
+          ]
         },
         {
           "id": "applications-llm",
-          "label": "LLM Applications"
+          "label": "Applications LLM",
+          "folder": "Applications LLM",
+          "chapters": [
+            {
+              "id": "chatbot",
+              "label": "Building a Chatbot: Architecture, Configuration, and Scaling"
+            },
+            {
+              "id": "assistant-agentique-terminal",
+              "label": "The agent-based AI assistant in the terminal: beyond the simple prompt"
+            }
+          ]
+        },
+        {
+          "id": "vision-et-ocr",
+          "label": "Vision et OCR",
+          "folder": "Vision et OCR",
+          "chapters": [
+            {
+              "id": "ocr-classique-vs-deep-learning",
+              "label": "OCR: from classic pattern recognition to deep learning"
+            },
+            {
+              "id": "detection-de-mise-en-page",
+              "label": "Layout detection: bounding boxes, confidence score, and duplicate removal"
+            },
+            {
+              "id": "modeles-document-ai",
+              "label": "\"Document AI\" models: understanding a document beyond plain text"
+            },
+            {
+              "id": "fine-tuning-modele-vision",
+              "label": "Training and fine-tuning a vision model for a business use case"
+            },
+            {
+              "id": "evaluer-un-ocr",
+              "label": "Evaluating an OCR: CER, WER, and per-field recognition rate"
+            },
+            {
+              "id": "post-traitement-correction",
+              "label": "OCR post-processing and correction"
+            },
+            {
+              "id": "ocr-en-production",
+              "label": "OCR pipeline deployment and monitoring"
+            },
+            {
+              "id": "gouvernance-documents-scannes",
+              "label": "Data governance for scanned documents"
+            }
+          ]
+        },
+        {
+          "id": "voix-ia",
+          "label": "Voix IA",
+          "folder": "Voix IA",
+          "chapters": [
+            {
+              "id": "synthese-classique-vs-deep-learning",
+              "label": "Speech synthesis: from classic concatenation to deep learning"
+            },
+            {
+              "id": "controler-la-prosodie",
+              "label": "Controlling prosody"
+            },
+            {
+              "id": "modeles-modernes-synthese",
+              "label": "Modern synthesis models: neural codecs"
+            },
+            {
+              "id": "cloner-une-voix",
+              "label": "Cloning a voice: technique and ethical/legal stakes"
+            },
+            {
+              "id": "fine-tuning-synthese-vocale",
+              "label": "Training and fine-tuning a speech synthesis model"
+            },
+            {
+              "id": "evaluer-synthese-vocale",
+              "label": "Evaluating speech synthesis: MOS, intelligibility, latency"
+            },
+            {
+              "id": "choisir-fournisseur-mise-en-production",
+              "label": "Choosing a provider and going to production"
+            },
+            {
+              "id": "gouvernance-voix-ia",
+              "label": "Governance of an AI voice pipeline"
+            }
+          ]
         },
         {
           "id": "production-et-gouvernance",
-          "label": "Production and Governance"
+          "label": "Production et gouvernance",
+          "folder": "Production et gouvernance",
+          "chapters": [
+            {
+              "id": "gestion-dun-llm",
+              "label": "LLM Monitoring and Operations"
+            },
+            {
+              "id": "gouvernance-des-donnees",
+              "label": "Data Governance for an AI System"
+            },
+            {
+              "id": "reglementation-europeenne-ia",
+              "label": "EU AI Regulation: the AI Act"
+            },
+            {
+              "id": "stack-ia",
+              "label": "The AI Stack: The Layers of a Production Application"
+            }
+          ]
         }
       ]
     },
@@ -742,32 +760,8 @@
               "label": "Modules, pip, and virtual environments"
             },
             {
-              "id": "jupyter-notebooks",
-              "label": "Jupyter Notebooks"
-            },
-            {
               "id": "cli-avec-argparse",
               "label": "Building a CLI with `argparse`"
-            },
-            {
-              "id": "numpy",
-              "label": "NumPy: Numerical Computation"
-            },
-            {
-              "id": "pandas",
-              "label": "pandas: working with tabular data"
-            },
-            {
-              "id": "matplotlib",
-              "label": "Matplotlib: Visualizing Data"
-            },
-            {
-              "id": "machine-learning-scikit-learn",
-              "label": "Introduction to Machine Learning (scikit-learn)"
-            },
-            {
-              "id": "nlp-et-llm",
-              "label": "Natural Language Processing (NLP) and Large Language Models (LLMs)"
             }
           ]
         },

@@ -42,7 +42,7 @@ As with vectors, these two operations happen term by term, position by position:
 
 ## The matrix-vector product: several neurons, a single computation
 
-Here's the operation that really matters. Recall from the chapter on [neural networks](/?c=ia&p=reseaux-de-neurones): a neuron computes a weighted sum of its inputs, in other words a [dot product](/?c=mathematiques&p=vecteurs-et-produit-scalaire) between the input vector and its own weight vector. A layer contains *several* neurons, each with its own weight vector; arranged as rows, these weight vectors form a matrix:
+Here's the operation that really matters. Recall from the chapter on [neural networks](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones): a neuron computes a weighted sum of its inputs, in other words a [dot product](/?c=mathematiques&p=vecteurs-et-produit-scalaire) between the input vector and its own weight vector. A layer contains *several* neurons, each with its own weight vector; arranged as rows, these weight vectors form a matrix:
 
 ```text
 Weights of 2 neurons, for 2 inputs each:
@@ -69,7 +69,7 @@ Compare with the neuron-by-neuron computation from the chapter on neural network
 
 ## The matrix-matrix product: handling several examples at once (the *batch*)
 
-A single input at a time remains inefficient at the scale of training a model. In practice, several examples (a **batch**, see [Model Training](/?c=ia&p=entrainement-descente-de-gradient)) are stacked as rows in a matrix `X`, and a single matrix product computes the output of all the examples at once:
+A single input at a time remains inefficient at the scale of training a model. In practice, several examples (a **batch**, see [Model Training](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) are stacked as rows in a matrix `X`, and a single matrix product computes the output of all the examples at once:
 
 ```text
 X (2 examples, 2 inputs each):   [ 1.0  2.0 ]
@@ -144,16 +144,16 @@ Doubling a matrix's size doesn't double the computation time: it's multiplied by
 
 > **Pitfall:** writing your own matrix product loop (like above) in real code. A naive implementation ignores everything covered in [CPU Cache and Vectorization](/?c=performance&p=cache-cpu-et-simd) (memory locality, SIMD): a library like NumPy can be tens to hundreds of times faster on the same computation, for a strictly identical result.
 >
-> **Best practice:** always delegate a matrix product to an optimized library (NumPy, [PyTorch](/?c=ia&p=deep-learning-pytorch)...) rather than writing the loop yourself. See also the [NumPy](/?c=data-science&p=numpy) chapter.
+> **Best practice:** always delegate a matrix product to an optimized library (NumPy, [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch)...) rather than writing the loop yourself. See also the [NumPy](/?c=data-science&p=numpy) chapter.
 
 ## Where matrices concretely show up in AI
 
 | Element | What it represents | Related chapter |
 |---|---|---|
-| A layer's weights | A matrix, one row per neuron | [Neural Networks](/?c=ia&p=reseaux-de-neurones) |
-| A batch of inputs | A matrix, one row per example | [Training and Gradient Descent](/?c=ia&p=entrainement-descente-de-gradient) |
-| An embedding table | A matrix, one row per word in the vocabulary | [NLP and LLM](/?c=ia&p=nlp-et-llm) |
-| A Transformer's attention | Matrix products between query/key/value matrices | [Architectures: CNNs, RNNs, and Transformers](/?c=ia&p=architectures-cnn-rnn-transformers) |
+| A layer's weights | A matrix, one row per neuron | [Neural Networks](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones) |
+| A batch of inputs | A matrix, one row per example | [Training and Gradient Descent](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient) |
+| An embedding table | A matrix, one row per word in the vocabulary | [NLP and LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) |
+| A Transformer's attention | Matrix products between query/key/value matrices | [Architectures: CNNs, RNNs, and Transformers](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) |
 
 In all four cases, the underlying principle stays the one seen in this chapter: replacing a series of repeated computations with a single matrix product, so the hardware (GPU, SIMD) can run them in parallel rather than one at a time.
 
@@ -166,4 +166,4 @@ In all four cases, the underlying principle stays the one seen in this chapter: 
 | **Key Points** | A matrix arranges numbers into rows and columns; a vector is a special case of it. The matrix product computes several dot products in a single operation (several neurons, or several examples in a batch): it's this operation, repeated at very large scale, that runs deep learning. |
 | **Available Tools** | `@` or `np.dot()` in NumPy for a true matrix product (never `*`, which multiplies term by term); the transpose to reorient a matrix before a product. |
 | **Pitfalls to Avoid** | Multiplying two matrices whose inner dimensions don't match. Confusing the matrix product with the term-by-term product. Assuming `A · B` and `B · A` give the same result. Writing your own matrix product loop in real code. |
-| **Best Practices** | Check dimensions before any matrix product. Always check which operator a library uses for which product. Delegate all matrix computation to an optimized library (NumPy, [PyTorch](/?c=ia&p=deep-learning-pytorch)) rather than reimplementing it. |
+| **Best Practices** | Check dimensions before any matrix product. Always check which operator a library uses for which product. Delegate all matrix computation to an optimized library (NumPy, [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch)) rather than reimplementing it. |

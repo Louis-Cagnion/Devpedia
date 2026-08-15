@@ -4,7 +4,7 @@ order: 3
 
 # Local vs. cloud trade-off for a vision model
 
-The [The AI stack](/?c=ia&p=stack-ia) chapter details the choice between a hosted API and a self-hosted model for an **LLM**. A [computer vision](/?c=ia&p=architectures-cnn-rnn-transformers) model (a structured OCR, for example) raises the same underlying question, but sometimes with reversed answers: this chapter reuses the same criteria (data exposure, cost, latency), recalculating them for this specific case, without repeating the principle already laid out for LLMs.
+The [The AI stack](/?c=ia&s=production-et-gouvernance&p=stack-ia) chapter details the choice between a hosted API and a self-hosted model for an **LLM**. A [computer vision](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) model (a structured OCR, for example) raises the same underlying question, but sometimes with reversed answers: this chapter reuses the same criteria (data exposure, cost, latency), recalculating them for this specific case, without repeating the principle already laid out for LLMs.
 
 ## What changes compared to an LLM
 
@@ -21,7 +21,7 @@ These differences shift the balance: the smaller model size makes self-hosting a
 
 Sending a document to a hosted vision API means transmitting the page's **complete image** to a third party, not just the information you're trying to extract from it. For an internal or confidential document (a contract, a proprietary spec sheet), this exposure alone can disqualify a hosted API, regardless of its cost or quality:
 
-> **Pitfall:** evaluating a hosted vision API solely on its price per page and recognition quality, without first checking whether the type of document being processed is allowed to pass through a third party (see the [data governance](/?c=ia&p=gouvernance-des-donnees) principles, applicable here in the same way as for an LLM).
+> **Pitfall:** evaluating a hosted vision API solely on its price per page and recognition quality, without first checking whether the type of document being processed is allowed to pass through a third party (see the [data governance](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees) principles, applicable here in the same way as for an LLM).
 >
 > **Best practice:** settle the data exposure question **before** comparing costs: if the nature of the documents being processed forbids it, self-hosting becomes the only valid option, regardless of an otherwise cloud-favorable cost calculation.
 
