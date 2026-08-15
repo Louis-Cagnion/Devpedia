@@ -126,7 +126,32 @@
       "id": "docker",
       "label": "Docker",
       "folder": "Docker",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "concepts-de-base",
+          "label": "Los conceptos básicos"
+        },
+        {
+          "id": "dockerfile",
+          "label": "El Dockerfile"
+        },
+        {
+          "id": "commandes-essentielles",
+          "label": "Los comandos esenciales"
+        },
+        {
+          "id": "volumes-et-reseaux",
+          "label": "Volúmenes y redes"
+        },
+        {
+          "id": "docker-compose",
+          "label": "Docker Compose"
+        },
+        {
+          "id": "bonnes-pratiques-et-securite",
+          "label": "Buenas prácticas y seguridad"
+        }
+      ]
     },
     {
       "id": "domain-specific-languages-dsl",
