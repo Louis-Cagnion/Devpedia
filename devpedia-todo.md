@@ -2,7 +2,6 @@
 
 ## Langues
 - 6 langues manquantes en plus d'ES/EN/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
-- Convention BR : tout le contenu BR existant utilise exclusivement `## O que reter` comme en-tête de récapitulatif de fin de chapitre, jamais la variante emoji `## 📋 Resumo` utilisée (en minorité) en FR/ES/EN — à respecter pour tout futur chapitre BR.
 - Avant de déclarer une nouvelle langue ou un nouveau chantier de traduction "terminé", toujours comparer les comptes de fichiers `.md` par catégorie/sujet entre langues (`find`), pas seulement la qualité de ce qui existe déjà côté cible.
 
 ## Lecture audio automatique du site
