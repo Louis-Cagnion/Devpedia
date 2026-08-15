@@ -68,8 +68,8 @@ const HAS_SPOKEN_CONTENT = /[\p{L}\p{N}]/u;
 const GLOBAL_OPERATOR_SPEECH = {
     "==": "equals",
     "===": "strictly equals",
-    "!=": "not equal",
-    "!==": "strictly not equal",
+    "!=": "not equals",
+    "!==": "strictly not equals",
     "<=": "less than or equal",
     ">=": "greater than or equal",
     "&&": "and",
@@ -81,6 +81,11 @@ const GLOBAL_OPERATOR_SPEECH = {
     // Zsh, PHP...) or, in regex, an end-of-line anchor (overridden by that context's own "$" below).
     "$": "variable",
 };
+
+// These six always compare two operands: appending "to" after the spoken phrase folds the
+// right-hand side into the same clause (e.g. "3 !== 4" -> "3 strictly not equals to 4") instead
+// of leaving it trailing on its own right after the phrase.
+const COMPARISON_OPERATORS = new Set(["==", "===", "!=", "!==", "<=", ">="]);
 
 // Symbols whose meaning depends on the language/tool being taught, keyed by the page's context --
 // its subject id (e.g. "javascript", "bash"), or its category id when the category has no subjects
@@ -115,6 +120,7 @@ const CONTEXT_OPERATOR_SPEECH = {
         "::": "double colon, static access",
         "->": "arrow, property or method access",
         "@": "at, suppress errors",
+        "<?php": "opening tag",
         "?>": "closing tag",
     },
     python: {
@@ -180,6 +186,8 @@ const CONTEXT_OPERATOR_SPEECH = {
         "<<<<<<<": "conflict marker, start of your changes",
         "=======": "conflict marker, separator",
         ">>>>>>>": "conflict marker, end of incoming changes",
+        "<<": "heredoc redirect",
+        "EOF": "E O F",
     },
 };
 
@@ -214,7 +222,7 @@ const CLI_FLAG_PATTERN = /(^|\s)(--?)(?=[A-Za-z])/g;
 function speakableCode(text, context) {
     const { table, pattern } = getOperatorTable(context);
     return text
-        .replace(pattern, op => ` ${table[op]} `)
+        .replace(pattern, op => COMPARISON_OPERATORS.has(op) ? ` ${table[op]} to ` : ` ${table[op]} `)
         .replace(CLI_FLAG_PATTERN, (_, before, dashes) => `${before}${dashes === "--" ? "dash dash " : "dash "}`)
         .replace(/\s+/g, " ")
         .trim();
