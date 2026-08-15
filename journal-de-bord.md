@@ -38,7 +38,7 @@ Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièg
 
 ## Revue de la table de prononciation TTS (2026-08-15)
 
-Écart repéré en revoyant `CONTEXT_OPERATOR_SPEECH`/`GLOBAL_OPERATOR_SPEECH` (`js/reader.js`), pas encore corrigé : l'entrée globale `"$": "variable"` (pensée pour éviter qu'un `$1` isolé soit lu comme un montant en dollars) matche aussi le `$` de `$(...)` en contexte Git/Bash (substitution de commande), ce qui donne "variable (cat..." au lieu d'une lecture cohérente. Repéré en testant l'exemple heredoc de `commandes-essentielles.md`, hors périmètre de la correction faite ce jour-là (Louis n'avait signalé que l'opening tag PHP, le heredoc `<<`/`EOF`, et l'ajout de "to" sur les comparaisons) : à corriger dans une prochaine passe sur la table de prononciation.
+Écart repéré en revoyant `CONTEXT_OPERATOR_SPEECH`/`GLOBAL_OPERATOR_SPEECH` (`js/reader.js`), puis corrigé le même jour : l'entrée globale `"$": "variable"` (pensée pour éviter qu'un `$1` isolé soit lu comme un montant en dollars) matchait aussi le `$` de `$(...)`/`$((...))` en Bash/Zsh/PowerShell/Git (substitution de commande, arithmétique), donnant "variable (cat..." au lieu d'une lecture cohérente. Repéré en testant l'exemple heredoc de `commandes-essentielles.md`. En creusant l'usage réel (`variables.md`/`fonctions.md` Bash et PowerShell), le problème dépassait largement Git : ajout de `"$(("`/`"$("` par contexte (bash/zsh : "arithmetic expansion"/"command substitution" ; powershell : "subexpression", terme propre à l'écosystème ; git : "command substitution"), ces clés plus longues étant prioritaires sur le `"$"` générique grâce au tri par longueur déjà en place.
 
 ## Bug TTS : mauvaise voix sur contenu BR
 
