@@ -40,9 +40,9 @@ A continuación, el modelo **solo** se evalúa con `X_test` / `y_test`, nunca co
 
 | | Puntuación en el entrenamiento | Puntuación en la prueba |
 |---|---|---|
-| **Subajuste** (*underfitting*) | Bajo | Bajo — el modelo es demasiado simple para captar el patrón |
-| **Buen ajuste** | Alto | Alto — el modelo generaliza bien |
-| **Sobreajuste** (*overfitting*) | Muy alto | Bajo — el modelo ha «memorizado» los datos de entrenamiento en lugar de aprender un patrón general |
+| **Subajuste** (*underfitting*) | Bajo | Bajo: el modelo es demasiado simple para captar el patrón |
+| **Buen ajuste** | Alto | Alto: el modelo generaliza bien |
+| **Sobreajuste** (*overfitting*) | Muy alto | Bajo: el modelo ha «memorizado» los datos de entrenamiento en lugar de aprender un patrón general |
 
 > **Nota:** una gran diferencia entre la puntuación del entrenamiento (excelente) y la puntuación de la prueba (mediocre) es el indicio clásico de sobreaprendizaje: el modelo ha memorizado los ejemplos concretos en lugar de la regla general que los sustenta, algo así como un alumno que se hubiera aprendido de memoria las respuestas de un ejercicio concreto sin comprender el método.
 
@@ -65,7 +65,7 @@ modelo.score(X_test, y_test)                    # evalúa la calidad de las pred
 - `predict(X)` : utiliza estos parámetros aprendidos para generar una predicción sobre nuevos datos.
 - Esta interfaz (`fit` / `predict`) permanece idéntica al sustituir simplemente `LogisticRegression()` por otro algoritmo (`RandomForestClassifier()`, `KMeans()`...), lo que facilita mucho probar rápidamente varios enfoques para resolver el mismo problema.
 
-> **Nota:** la elección del algoritmo depende del tipo de `y`. En este caso, `y` es **categórico** (`"oui"` / `"non"`): se trata de un problema de clasificación, de ahí que se utilice `LogisticRegression` (a pesar de su nombre, es un algoritmo de clasificación, no de regresión). `LinearRegression` se utiliza cuando `y` es un valor **numérico continuo** que se va a predecir (un precio, una temperatura...) — utilizarlo con etiquetas de texto, como en este caso, provocaría un error.
+> **Nota:** la elección del algoritmo depende del tipo de `y`. En este caso, `y` es **categórico** (`"oui"` / `"non"`): se trata de un problema de clasificación, de ahí que se utilice `LogisticRegression` (a pesar de su nombre, es un algoritmo de clasificación, no de regresión). `LinearRegression` se utiliza cuando `y` es un valor **numérico continuo** que se va a predecir (un precio, una temperatura...); utilizarlo con etiquetas de texto, como en este caso, provocaría un error.
 
 ## Medir la calidad de un modelo
 

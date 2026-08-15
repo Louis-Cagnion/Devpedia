@@ -57,7 +57,7 @@ datos[datos["age"] > 25]
 # solo conserva las líneas en las que la condición es verdadera -> equivalente a un «WHERE» en SQL
 
 datos[(datos["age"] > 20) & (datos["ville"] == "Lyon")]
-# Combinar varias condiciones: & (y), | (o) — NO «and»/«or», reservados para los booleanos simples
+# Combinar varias condiciones: & (y), | (o). NO «and»/«or», reservados para los booleanos simples
 ```
 
 ## `groupby` : agrupar por categoría

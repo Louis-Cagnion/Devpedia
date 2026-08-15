@@ -32,7 +32,7 @@ y.backward()    # Calcula dy/dx automáticamente (retropropagación; véase el c
 print(x.grad)   # 8,0 -> ya que dy/dx = 2x + 2, evaluado para x = 3 -> 2 × 3 + 2 = 8
 ```
 
-`requires_grad=True` Indica a PyTorch que memorice cada operación aplicada a este tensor; a continuación, `.backward()` recorre automáticamente esta cadena de operaciones para calcular el gradiente —exactamente el mecanismo descrito conceptualmente en el capítulo sobre el descenso del gradiente, pero totalmente automatizado—.
+`requires_grad=True` Indica a PyTorch que memorice cada operación aplicada a este tensor; a continuación, `.backward()` recorre automáticamente esta cadena de operaciones para calcular el gradiente (exactamente el mecanismo descrito conceptualmente en el capítulo sobre el descenso del gradiente, pero totalmente automatizado).
 
 ## Configurar una red con`nn.Module`
 
@@ -77,7 +77,7 @@ for epoque in range(100):
         print(f"Époque {epoque} : perte = {perte.item():.4f}")
 ```
 
-Este bucle es la estructura prácticamente universal de cualquier entrenamiento con PyTorch: predecir, medir el error, realizar la retropropagación, ajustar — y repetir este proceso tantas épocas como sea necesario para que la pérdida disminuya lo suficiente (véase el capítulo sobre el descenso del gradiente para saber qué significa realmente cada paso).
+Este bucle es la estructura prácticamente universal de cualquier entrenamiento con PyTorch: predecir, medir el error, realizar la retropropagación, ajustar, y repetir este proceso tantas épocas como sea necesario para que la pérdida disminuya lo suficiente (véase el capítulo sobre el descenso del gradiente para saber qué significa realmente cada paso).
 
 > **Nota:** «`optimiseur.zero_grad()`» es un paso fácil de pasar por alto, pero esencial: PyTorch **acumula** los gradientes por defecto en cada `.backward()` en lugar de sustituirlos, una decisión de diseño útil para ciertos casos avanzados, pero que distorsionaría el entrenamiento estándar si los gradientes nunca se reiniciaran entre dos lotes.
 

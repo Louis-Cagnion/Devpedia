@@ -28,7 +28,7 @@ embedding("chaton")  -> [0.3, -0.4, 0.7, ...]   # similar a «chat» -> signific
 embedding("voiture")  -> [-0.9, 0.6, -0.1, ...]  # no tiene nada que ver con «chat» -> significado diferente
 ```
 
-Esta propiedad permite realizar operaciones que se han convertido en clásicas para ilustrar el concepto: `embedding("roi") - embedding("homme") + embedding("femme")` produce un vector cercano a `embedding("reine")` — el sentido queda codificado, al menos parcialmente, como una dirección geométrica en este espacio vectorial.
+Esta propiedad permite realizar operaciones que se han convertido en clásicas para ilustrar el concepto: `embedding("roi") - embedding("homme") + embedding("femme")` produce un vector cercano a `embedding("reine")`: el sentido queda codificado, al menos parcialmente, como una dirección geométrica en este espacio vectorial.
 
 ## La atención prestada al texto
 
@@ -52,7 +52,7 @@ Un **LLM** (*Large Language Model*) es, en su forma más sencilla, un modelo Tra
                           ("canapé" : 45%, "tapis" : 20%, "lit" : 15%, ...)
 ```
 
-Lo que hace que un LLM sea impresionante no es la simplicidad de este objetivo, sino su escala: miles de millones de parámetros, entrenados con una parte significativa del texto disponible públicamente, con suficiente potencia de cálculo (véase el capítulo sobre PyTorch/GPU) para que esta tarea de predicción, llevada a tal escala, dé lugar a capacidades que no se han programado explícitamente (responder a preguntas, resumir, traducir, razonar paso a paso...) — un fenómeno denominado **«capacidades emergentes**».
+Lo que hace que un LLM sea impresionante no es la simplicidad de este objetivo, sino su escala: miles de millones de parámetros, entrenados con una parte significativa del texto disponible públicamente, con suficiente potencia de cálculo (véase el capítulo sobre PyTorch/GPU) para que esta tarea de predicción, llevada a tal escala, dé lugar a capacidades que no se han programado explícitamente (responder a preguntas, resumir, traducir, razonar paso a paso...): un fenómeno denominado **«capacidades emergentes»**.
 
 ## Del modelo en bruto a un asistente utilizable: ajuste fino frente a prompting
 

@@ -30,7 +30,7 @@ Sin una función de activación (o con una función lineal), apilar varias capas
 | Función de activación | Fórmula (simplificada) | Uso típico |
 |---|---|---|
 | **Sigmoide** | Aplana cualquier valor entre 0 y 1 | Salida de una clasificación binaria (probabilidad) |
-| **ReLU** (*Rectified Linear Unit*) | `max(0, x)` — deja pasar los valores positivos y pone a 0 los negativos | Capas ocultas, muy utilizadas en la práctica (sencillas y eficaces de calcular) |
+| **ReLU** (*Rectified Linear Unit*) | `max(0, x)`: deja pasar los valores positivos y pone a 0 los negativos | Capas ocultas, muy utilizadas en la práctica (sencillas y eficaces de calcular) |
 | **Softmax** | Transforma un vector de puntuaciones en probabilidades cuya suma es 1 | Salida de una clasificación en varias categorías |
 
 ```python
@@ -76,10 +76,10 @@ biais_sortie = 0.05
 resultado = sigmoide(sortie_n1 * 0.6 + sortie_n2 * 0.9 + 0.05)  # sigmoide(0,95) ≈ 0,72
 ```
 
-Este cálculo —multiplicar, sumar, aplicar una activación, capa tras capa— es **todo** lo que hace una red neuronal para generar una predicción. Lo que hace que la red sea «inteligente» nunca es este mecanismo (fijo y puramente aritmético), sino los **valores de los pesos y los sesgos**, ajustados automáticamente mediante el entrenamiento (véase el capítulo sobre el descenso del gradiente) a partir de un gran número de ejemplos.
+Este cálculo (multiplicar, sumar, aplicar una activación, capa tras capa) es **todo** lo que hace una red neuronal para generar una predicción. Lo que hace que la red sea «inteligente» nunca es este mecanismo (fijo y puramente aritmético), sino los **valores de los pesos y los sesgos**, ajustados automáticamente mediante el entrenamiento (véase el capítulo sobre el descenso del gradiente) a partir de un gran número de ejemplos.
 
 ## Una red = una función de aproximación
 
-Desde este punto de vista, una red neuronal no es más que una función matemática parametrizada (por sus pesos y sesgos), lo suficientemente flexible como para aproximar una relación compleja entre una entrada (una imagen, un texto...) y una salida (una categoría, una secuencia de palabras...) — siempre que se disponga de suficientes datos representativos para ajustar correctamente dichos parámetros.
+Desde este punto de vista, una red neuronal no es más que una función matemática parametrizada (por sus pesos y sesgos), lo suficientemente flexible como para aproximar una relación compleja entre una entrada (una imagen, un texto...) y una salida (una categoría, una secuencia de palabras...), siempre que se disponga de suficientes datos representativos para ajustar correctamente dichos parámetros.
 
 Véanse también los capítulos sobre el descenso de gradiente (cómo se ajustan concretamente estos pesos) y sobre las arquitecturas CNN/RNN/Transformer (formas específicas de organizar estas capas según el tipo de datos que se procesen).

@@ -4,7 +4,7 @@ order: 2
 
 # NumPy: cálculo numérico
 
-**NumPy** (*Numerical Python*) proporciona el tipo «`ndarray`»: una matriz multidimensional de valores **de un único tipo**, almacenados de forma contigua en memoria —exactamente igual que una matriz en C (véase el capítulo sobre punteros y memoria en C)—, en lugar de como una lista en Python (en la que cada elemento es una referencia independiente a un objeto). Es el pilar fundamental sobre el que se asientan pandas, scikit-learn y la práctica totalidad del ecosistema de ciencia de datos de Python.
+**NumPy** (*Numerical Python*) proporciona el tipo «`ndarray`»: una matriz multidimensional de valores **de un único tipo**, almacenados de forma contigua en memoria (exactamente igual que una matriz en C, véase el capítulo sobre punteros y memoria en C), en lugar de como una lista en Python (en la que cada elemento es una referencia independiente a un objeto). Es el pilar fundamental sobre el que se asientan pandas, scikit-learn y la práctica totalidad del ecosistema de ciencia de datos de Python.
 
 ## ¿Por qué no simplemente listas de Python?
 

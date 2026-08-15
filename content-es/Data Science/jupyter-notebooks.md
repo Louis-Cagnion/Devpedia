@@ -44,7 +44,7 @@ x = 5
 x = x * 2
 ```
 
-Si se ejecuta la celda 2 **varias veces seguidas** sin volver a ejecutar la celda 1, `x` se duplica en cada ejecución (10, luego 20, luego 40...) — una trampa clásica en la que el estado «invisible» del kernel ya no se corresponde con el orden visual de las celdas en pantalla. En caso de duda sobre la reproducibilidad de un resultado, la opción *«Restart Kernel and Run All»* vuelve a ejecutar todo en orden de arriba abajo, lo que garantiza un estado coherente.
+Si se ejecuta la celda 2 **varias veces seguidas** sin volver a ejecutar la celda 1, `x` se duplica en cada ejecución (10, luego 20, luego 40...): una trampa clásica en la que el estado «invisible» del kernel ya no se corresponde con el orden visual de las celdas en pantalla. En caso de duda sobre la reproducibilidad de un resultado, la opción *«Restart Kernel and Run All»* vuelve a ejecutar todo en orden de arriba abajo, lo que garantiza un estado coherente.
 
 ## Comandos mágicos (`%`, `%%`)
 
