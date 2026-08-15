@@ -609,11 +609,11 @@
             },
             {
               "id": "stl-conteneurs",
-              "label": "STL — Containers"
+              "label": "STL: Containers"
             },
             {
               "id": "stl-algorithmes-et-iterateurs",
-              "label": "STL — Iterators, Algorithms, and Lambdas"
+              "label": "STL: Iterators, Algorithms, and Lambdas"
             },
             {
               "id": "templates",
@@ -751,15 +751,15 @@
             },
             {
               "id": "numpy",
-              "label": "NumPy — Numerical Computation"
+              "label": "NumPy: Numerical Computation"
             },
             {
               "id": "pandas",
-              "label": "pandas — working with tabular data"
+              "label": "pandas: working with tabular data"
             },
             {
               "id": "matplotlib",
-              "label": "Matplotlib — Visualizing Data"
+              "label": "Matplotlib: Visualizing Data"
             },
             {
               "id": "machine-learning-scikit-learn",

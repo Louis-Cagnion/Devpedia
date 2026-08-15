@@ -73,12 +73,6 @@
       ]
     },
     {
-      "id": "bash",
-      "label": "Bash",
-      "folder": "Bash",
-      "chapters": []
-    },
-    {
       "id": "ci-cd",
       "label": "CI-CD",
       "folder": "CI-CD",
