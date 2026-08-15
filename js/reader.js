@@ -311,17 +311,11 @@ const ARROW_SPEECH = {
 // voices announce its name ("clipboard emoji") rather than skipping it silently.
 const DECORATIVE_EMOJI = "📋";
 
-// Kept as-is (untranslated) in every language's prose, always uppercase -- same mispronunciation
-// as CONTEXT_OPERATOR_SPEECH's "^" above, fixed the same way, for the two chapters that mention
-// it directly in prose rather than only inside inline code (cf. operateurs-binaires.md).
-const XOR_WORD_SPEECH = "ex or";
-
 function speakableText(text, lang, pageId) {
     const arrowWord = ARROW_SPEECH[ARROW_RANGE_PAGES.has(pageId) ? "range" : "other"][lang] ?? ARROW_SPEECH.other.en;
     let result = text
         .replaceAll("→", ` ${arrowWord} `)
-        .replaceAll(DECORATIVE_EMOJI, "")
-        .replaceAll("XOR", XOR_WORD_SPEECH);
+        .replaceAll(DECORATIVE_EMOJI, "");
     const symbols = PROSE_SYMBOL_SPEECH[lang] ?? PROSE_SYMBOL_SPEECH.en;
     for (const [symbol, phrase] of Object.entries(symbols)) {
         result = result.replaceAll(symbol, ` ${phrase} `);
@@ -333,7 +327,11 @@ function speakableText(text, lang, pageId) {
  * Flushes `buffer` (page-language text accumulated so far) as one plan entry, then appends
  * `leaf`'s inline `code` spans as their own separate en-US entries -- kept apart from the
  * surrounding text rather than concatenated with it, so each is spoken with correct
- * pronunciation without breaking the flow of the sentence around it.
+ * pronunciation without breaking the flow of the sentence around it. Exception: a code span
+ * `speakableCode()` leaves completely untouched (a bare variable name, no operator or CLI flag to
+ * rewrite -- e.g. "`a` et `a` deviendraient 0") has nothing that actually needs the English voice,
+ * so it's folded into the surrounding sentence instead of forcing a voice switch and a pause for
+ * something this trivial.
  *
  * @param {HTMLElement} leaf a single h2-h6/p/li/th/td element
  * @param {string} lang the page's language, e.g. "fr", "en"
@@ -353,9 +351,15 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
     };
     leaf.childNodes.forEach(node => {
         if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
-            flushBuffer();
             const code = node.textContent.trim();
-            if (code) entries.push({ kind: "speak", text: speakableCode(code, context), lang: "en-US", group: leaf });
+            if (!code) return;
+            const spoken = speakableCode(code, context);
+            if (spoken === code) {
+                buffer += ` ${code} `;
+            } else {
+                flushBuffer();
+                entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf });
+            }
         } else {
             buffer += node.textContent;
         }
