@@ -911,7 +911,40 @@
       "id": "performance",
       "label": "Performance",
       "folder": "Performance",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "mesurer-avant-d-optimiser",
+          "label": "Medir antes de optimizar"
+        },
+        {
+          "id": "attentes-et-temps-morts",
+          "label": "Esperar sin perder tiempo"
+        },
+        {
+          "id": "limiter-les-aller-retours",
+          "label": "Limitar las idas y vueltas"
+        },
+        {
+          "id": "parallelisme",
+          "label": "Paralelismo: encontrar la restricción real"
+        },
+        {
+          "id": "traitements-longs",
+          "label": "Los procesamientos largos"
+        },
+        {
+          "id": "cache-cpu-et-simd",
+          "label": "Caché de CPU y vectorización (SIMD)"
+        },
+        {
+          "id": "eviter-le-recalcul-redondant",
+          "label": "Evitar el recálculo redundante"
+        },
+        {
+          "id": "heap-des-runtimes-manages",
+          "label": "El heap de un runtime gestionado"
+        }
+      ]
     },
     {
       "id": "qualite-et-architecture-du-code",
