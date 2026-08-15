@@ -77,8 +77,11 @@ const GLOBAL_OPERATOR_SPEECH = {
     "??": "nullish coalescing",
     "?.": "optional chaining",
     // A bare "$" before a number (e.g. "$1") gets read by the TTS engine as a currency amount
-    // ("one dollar") -- nothing on this site is about money, it's always a variable sigil (Bash,
-    // Zsh, PHP...) or, in regex, an end-of-line anchor (overridden by that context's own "$" below).
+    // ("one dollar") -- nothing on this site is about money, it's a variable sigil (Bash, Zsh,
+    // PHP...) or, in regex, an end-of-line anchor (both overridden by that context's own "$"
+    // below). "$(" (command substitution/subexpression) and "$((" (arithmetic expansion) are
+    // longer keys matched first in shell contexts, so this fallback only ever fires on an actual
+    // variable/anchor "$", never on one that opens a parenthesized construct.
     "$": "variable",
 };
 
@@ -142,11 +145,14 @@ const CONTEXT_OPERATOR_SPEECH = {
         "$@": "all arguments",
         "$#": "argument count",
         "$$": "process id",
+        "$((": "arithmetic expansion",
+        "$(": "command substitution",
     },
     powershell: {
         "|": "pipe",
         ">": "redirect, overwrite",
         ">>": "redirect, append",
+        "$(": "subexpression",
     },
     zsh: {
         "|": "pipe",
@@ -158,6 +164,8 @@ const CONTEXT_OPERATOR_SPEECH = {
         "$@": "all arguments",
         "$#": "argument count",
         "**": "recursive glob",
+        "$((": "arithmetic expansion",
+        "$(": "command substitution",
     },
     "domain-specific-languages-dsl": {
         "^": "start anchor",
@@ -188,6 +196,7 @@ const CONTEXT_OPERATOR_SPEECH = {
         ">>>>>>>": "conflict marker, end of incoming changes",
         "<<": "heredoc redirect",
         "EOF": "E O F",
+        "$(": "command substitution",
     },
 };
 
