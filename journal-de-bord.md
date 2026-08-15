@@ -36,6 +36,10 @@ Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièg
 
 `category.label`/`subject.label` viennent du nom de dossier brut (toujours en français par construction, nécessaire au cross-language linking) : rien ne les traduisait à l'affichage. Piège retenu : le `#` d'une page d'intro de subject doit rester littéralement le nom de dossier français dans le fichier pour que `generate-struct.js` la reconnaisse comme intro, indépendamment de ce que l'UI affiche désormais via `tEntityLabel()`.
 
+## Revue de la table de prononciation TTS (2026-08-15)
+
+Écart repéré en revoyant `CONTEXT_OPERATOR_SPEECH`/`GLOBAL_OPERATOR_SPEECH` (`js/reader.js`), pas encore corrigé : l'entrée globale `"$": "variable"` (pensée pour éviter qu'un `$1` isolé soit lu comme un montant en dollars) matche aussi le `$` de `$(...)` en contexte Git/Bash (substitution de commande), ce qui donne "variable (cat..." au lieu d'une lecture cohérente. Repéré en testant l'exemple heredoc de `commandes-essentielles.md`, hors périmètre de la correction faite ce jour-là (Louis n'avait signalé que l'opening tag PHP, le heredoc `<<`/`EOF`, et l'ajout de "to" sur les comparaisons) : à corriger dans une prochaine passe sur la table de prononciation.
+
 ## Bug TTS : mauvaise voix sur contenu BR
 
 `document.documentElement.lang` recevait le code interne brut `"br"`, qui n'est pas une balise BCP-47 valide (`"br"` = breton en ISO 639-1) : le navigateur ne trouvait donc aucune voix portugais-brésilien. Corrigé par une table de correspondance code interne → BCP-47 (`br` → `pt-BR`) dans `js/lang.js`, sans changer le code interne du site.
