@@ -756,7 +756,20 @@
       "id": "traitement-de-documents",
       "label": "Traitement de documents",
       "folder": "Traitement de documents",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "extraction-pdf",
+          "label": "Extraer el texto y las páginas de un PDF"
+        },
+        {
+          "id": "ocr-structure",
+          "label": "El OCR estructurado y el análisis de maquetación"
+        },
+        {
+          "id": "arbitrage-local-cloud-vision",
+          "label": "Arbitraje local vs cloud para un modelo de visión"
+        }
+      ]
     },
     {
       "id": "ui-ux",
