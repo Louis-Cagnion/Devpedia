@@ -736,7 +736,28 @@
       "id": "representation-des-donnees",
       "label": "Représentation des données",
       "folder": "Représentation des données",
-      "chapters": []
+      "chapters": [
+        {
+          "id": "entiers-et-debordements",
+          "label": "Los enteros, los bits y los desbordamientos"
+        },
+        {
+          "id": "nombres-flottants",
+          "label": "Los números de coma flotante (IEEE 754)"
+        },
+        {
+          "id": "encodage-des-textes",
+          "label": "La codificación de textos (ASCII, Unicode, UTF-8)"
+        },
+        {
+          "id": "organisation-en-memoire",
+          "label": "La organización de los datos en memoria"
+        },
+        {
+          "id": "aleatoire-et-generateurs",
+          "label": "El azar y los generadores"
+        }
+      ]
     },
     {
       "id": "shells",
