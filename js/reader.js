@@ -290,11 +290,15 @@ function speakableCode(text, context) {
 // prefix directly against a number ("~7 min", "~1,8 × 10¹⁹", "~−9,2 × 10¹⁸") -- same word as "≈"
 // in every language. Read aloud as the literal word "tilde" otherwise, even stuck to a negative
 // number's own "−" sign.
+// "C#" is the language name, never translated, always pronounced "C sharp" -- read as "C
+// croisillons" (the French name of "#") otherwise, since it's outside any inline code span in
+// every mention on the site (only ever cited in passing, never taught as its own chapter).
+const CSHARP_SPEECH = "C sharp";
 const PROSE_SYMBOL_SPEECH = {
-    fr: { "≈": "environ", "~": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés", "×": "fois" },
-    en: { "≈": "approximately", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times" },
-    es: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por" },
-    br: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes" },
+    fr: { "≈": "environ", "~": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés", "×": "fois", "C#": CSHARP_SPEECH },
+    en: { "≈": "approximately", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "C#": CSHARP_SPEECH },
+    es: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "C#": CSHARP_SPEECH },
+    br: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "C#": CSHARP_SPEECH },
 };
 
 // "→" means different things depending on the chapter: a numeric/character range ("0 → 255",
