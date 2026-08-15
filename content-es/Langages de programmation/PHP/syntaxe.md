@@ -24,24 +24,24 @@ PHP ofrece dos formas de escribir las estructuras de control (`if`, `foreach`, `
 
 ```php
 <?php
-if ($connecte) {
-    echo "<p>Bienvenue !</p>";
+if ($conectado) {
+    echo "<p>¡Bienvenido!</p>";
 }
 ```
 
-**Sintaxis alternativa (con `:` y `end...`)**, diseñada para combinar PHP y HTML de forma más limpia:
+**Sintaxis alternativa (con `:` y `end...`)**, pensada para combinar PHP y HTML de forma más limpia:
 
 ```php
-<?php if ($connecte): ?>
-    <p>Bienvenue <?= htmlspecialchars($user) ?>!</p>
+<?php if ($conectado): ?>
+    <p>¡Bienvenido, <?= htmlspecialchars($usuario) ?>!</p>
 <?php endif; ?>
 ```
 
-> **Nota:** «`<?= $user ?>`» es un atajo para «`<?php echo $user; ?>`», de esta forma puedes utilizar las variables de PHP en el HTML. Siempre que la variable que se muestra pueda proceder de una entrada del usuario (un nombre de usuario, por ejemplo), hay que rodearla de `htmlspecialchars()` como se ha indicado anteriormente; véase el capítulo sobre seguridad para conocer la vulnerabilidad XSS que esto evita.
+> **Nota:** `<?= $usuario ?>` es un atajo para `<?php echo $usuario; ?>`, de esta forma puedes usar las variables de PHP dentro del HTML. En cuanto la variable mostrada pueda proceder de una entrada del usuario (un nombre de usuario, por ejemplo), hay que rodearla con `htmlspecialchars()` como arriba (véase [Protege tus datos](/?c=langages-de-programmation&s=php&p=securite) para la vulnerabilidad XSS que esto evita).
 
-Ambas sintaxis hacen exactamente lo mismo:
-- Con las llaves `{ }`, todo está escrito en PHP, y el HTML debe visualizarse a través de `echo`.
-- Con `:` y `end...`, se puede salir de PHP (`?>`), escribir HTML normal y, a continuación, volver a PHP (`<?php`) para cerrar la estructura.
+Ambas formas de escritura hacen exactamente lo mismo:
+- Con las llaves `{ }`, todo se escribe en PHP, y el HTML debe mostrarse mediante `echo`.
+- Con `:` y `end...`, se puede salir de PHP (`?>`), escribir HTML normal, y luego volver a PHP (`<?php`) para cerrar la estructura.
 
 | Clásica | Alternativa |
 |---|---|
@@ -50,26 +50,37 @@ Ambas sintaxis hacen exactamente lo mismo:
 | `while (...) { }` | `while (...): ... endwhile;` |
 | `for (...) { }` | `for (...): ... endfor;` |
 
-La sintaxis clásica es la más utilizada en el código PHP «puro». La sintaxis alternativa se utiliza sobre todo en las plantillas que muestran código HTML.
+La sintaxis clásica es la más utilizada en el código PHP "puro". La sintaxis alternativa se usa sobre todo en las plantillas que muestran HTML.
 
-En PHP, también debes terminar cada instrucción con un «`;`», tanto si utilizas la sintaxis clásica como la alternativa.
+En PHP, también debes terminar cada instrucción con un `;`, tanto en sintaxis clásica como en sintaxis alternativa.
 
 ## Los comentarios
 
-Para escribir comentarios en PHP, tienes dos opciones:
+Para escribir comentarios en PHP, tienes 2 opciones:
 
 ```php
 <?php
-    // Comentario de una sola línea
-    # Alternative pour une seule ligne
+    // Comentario en una sola línea
+    # Alternativa para una sola línea
 
     /*
-        Commentaire
-        sur
-        plusieurs
-        lignes.
+        Comentario
+        en
+        varias
+        líneas.
     */
 ?>
 ```
 
-> **Nota:** «`//`» es la convención más extendida para escribir un comentario en una sola línea.
+> **Nota:** `//` es la convención más extendida para escribir un comentario en una sola línea.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | El código PHP se escribe entre `<?php ?>`; la sintaxis alternativa (`:`/`end...`) facilita la combinación con HTML. Cada instrucción termina con `;`. |
+| **Herramientas utilizables** | `<?= $var ?>` (atajo de visualización), comentarios `//`, `#`, `/* */`. |
+| **Trampas a evitar** | Mostrar un dato del usuario sin `htmlspecialchars()`: riesgo de vulnerabilidad XSS. |
+| **Buenas prácticas** | Omitir la etiqueta de cierre `?>` al final de un archivo 100% PHP; usar la sintaxis alternativa en las plantillas que combinan PHP y HTML. |

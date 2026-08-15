@@ -1,48 +1,48 @@
 ---
-order: 9
+order: 10
 ---
 
 # La carga automática de clases
 
-Sin la carga automática, cada archivo que utiliza una clase debe realizar una llamada explícita a `require` para cargar el archivo que la contiene, lo cual resulta engorroso y propenso a errores cuando un proyecto tiene muchas clases. `spl_autoload_register()` permite delegar esta tarea al propio motor de PHP.
+Sin autoloading, cada archivo que usa una clase debe hacer un `require` explícito del archivo que la contiene: pesado y frágil en cuanto un proyecto tiene muchas clases. `spl_autoload_register()` permite delegar esta carga al propio motor PHP.
 
 ## `spl_autoload_register()`
 
 ```php
 <?php
-spl_autoload_register(function (string $classe) {
-    $archivo = __DIR__ . '/' . $classe . '.php';
+spl_autoload_register(function (string $clase) {
+    $archivo = __DIR__ . '/' . $clase . '.php';
     if (file_exists($archivo)) {
         require $archivo;
     }
 });
 
-$obj = new MaClasse(); // PHP llama automáticamente al resolutor con «MaClasse».
-// -> No es necesario incluir ninguna referencia al manual en ninguna otra parte del proyecto.
+$obj = new MiClase(); // PHP llama automáticamente al resolutor con "MiClase"
+// -> ningún require manual necesario en el resto del proyecto
 ?>
 ```
 
-`spl_autoload_register()` Registra **una vez** una función «resolver». A continuación, cada vez que el motor PHP encuentra un nombre de clase que aún no se ha cargado, llama automáticamente a esta función pasándole el nombre de la clase (en forma de cadena) y espera a que cargue el archivo correcto. Si ninguna de las funciones registradas consigue cargar la clase, PHP genera un error fatal «Class not found».
+`spl_autoload_register()` registra **una vez** una función "resolutor". Después, cada vez que el motor PHP encuentra un nombre de clase aún no cargado, llama automáticamente a esta función pasándole el nombre de la clase (como string), y espera a que cargue el archivo correcto. Si ninguna función registrada consigue cargar la clase, PHP lanza un error fatal "Class not found".
 
-## La función pasada como argumento es un cierre.
+## La función pasada como argumento es una closure
 
-El argumento de `spl_autoload_register()` no es ni un nombre de función ni una variable: es una **función anónima (closure)**, definida directamente en el lugar donde se utiliza. Equivalente en PHP a una callback de JS (`matriz.map(function(x) { ... })` o `x => ...`) o a una lambda de C++11. No se ejecuta en la línea en la que está escrita: se almacena y **se invoca más tarde**, cada vez que se hace referencia a una clase desconocida.
+El argumento de `spl_autoload_register()` no es ni un nombre de función ni una variable: es una **función anónima (closure)**, definida directamente en el lugar donde se usa. Equivalente en PHP de un callback de JS (`array.map(function(x) { ... })` o `x => ...`) o de una lambda de C++11. No se ejecuta en la línea donde está escrita: se almacena, y **se invoca más tarde**, cada vez que se referencia una clase desconocida.
 
-## Asignar un espacio de nombres a una carpeta
+## Hacer corresponder un namespace con una carpeta
 
-Un resolutor más realista asocia cada **prefijo de espacio de nombres** a una carpeta raíz y reconstruye la ruta del archivo a partir del nombre completo de la clase:
+Un resolutor más realista asocia cada **prefijo de namespace** a una carpeta base, y reconstruye la ruta del archivo a partir del nombre completo de la clase:
 
 ```php
 <?php
-spl_autoload_register(function (string $classe): void {
+spl_autoload_register(function (string $clase): void {
     $namespaces = [
-        'App\\Modeles\\'  => __DIR__ . '/Modeles/',
+        'App\\Modelos\\'  => __DIR__ . '/Modelos/',
         'App\\Services\\' => __DIR__ . '/Services/',
     ];
 
-    foreach ($namespaces as $prefixe => $dossierBase) {
-        if (str_starts_with($classe, $prefixe)) {
-            $ruta = $dossierBase . str_replace('\\', '/', substr($classe, strlen($prefixe))) . '.php';
+    foreach ($namespaces as $prefijo => $carpetaBase) {
+        if (str_starts_with($clase, $prefijo)) {
+            $ruta = $carpetaBase . str_replace('\\', '/', substr($clase, strlen($prefijo))) . '.php';
             if (file_exists($ruta)) {
                 require $ruta;
             }
@@ -53,14 +53,25 @@ spl_autoload_register(function (string $classe): void {
 ?>
 ```
 
-Ejemplo de resolución, con `$classe = 'App\Services\Facturation\Calculateur'`:
-1. `str_starts_with($classe, 'App\\Services\\')` → `true`; este prefijo es el correcto.
-2. `substr(...)` elimina el prefijo coincidente → `'Facturation\Calculateur'`.
-3. `str_replace('\\', '/', ...)` transforma el separador de espacio de nombres en separador de carpeta → `'Facturation/Calculateur'`.
-4. Ruta final: `.../Services/Facturation/Calculateur.php` — que debe corresponder a la ubicación real del archivo.
+Ejemplo de resolución, con `$clase = 'App\Services\Facturacion\Calculador'`:
+1. `str_starts_with($clase, 'App\\Services\\')` → `true`, este prefijo coincide.
+2. `substr(...)` retira el prefijo encontrado → `'Facturacion\Calculador'`.
+3. `str_replace('\\', '/', ...)` transforma el separador de namespace en separador de carpeta → `'Facturacion/Calculador'`.
+4. Ruta final: `.../Services/Facturacion/Calculador.php`, que debe corresponder a la ubicación real del archivo.
 
-> **Nota:** «`'App\\Modeles\\'`» en una cadena entre comillas simples: «`\\`» representa **un único** carácter «`\`» (debe duplicarse para escribirse literalmente); es la cadena «`App\Modeles\`», el separador de espacio de nombres.
+> **Nota:** `'App\\Modelos\\'` en una string entre comillas simples: `\\` representa **un solo** carácter `\` (debe duplicarse para escribirse literalmente): es la string `App\Modelos\`, el separador de namespace.
 
-El `return;`, situado después del `if`, se ejecuta independientemente de si el archivo existe o no (se encuentra después del `if (file_exists(...))`, no dentro de él): dado que los prefijos de los espacios de nombres son mutuamente excluyentes en su primer segmento, una vez encontrado el prefijo correcto, seguir comprobando los demás sería siempre inútil.
+El `return;` después del `if` se ejecuta, exista o no el archivo (está colocado después del `if (file_exists(...))`, no dentro): como los prefijos de namespace son mutuamente excluyentes en su primer segmento, una vez encontrado el prefijo correcto, seguir probando los demás sería siempre inútil.
 
-> **Convención imprescindible para que funcione:** el nombre del espacio de nombres + el nombre de la clase deben codificar literalmente la ruta del archivo —un archivo por clase, estructura de carpetas = estructura de espacios de nombres.
+> **Convención imprescindible para que funcione:** el nombre del namespace + el nombre de la clase deben codificar literalmente la ruta del archivo: un archivo por clase, estructura de carpetas = estructura de namespaces.
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | `spl_autoload_register()` registra una función llamada automáticamente en cuanto se referencia una clase no cargada: ya no hace falta `require` manual para cada clase. |
+| **Herramientas utilizables** | `spl_autoload_register()`, correspondencia prefijo de namespace → carpeta. |
+| **Trampas a evitar** | No hacer corresponder exactamente la estructura de carpetas con la de los namespaces: el resolutor ya no encontraría el archivo. |
+| **Buenas prácticas** | Respetar la convención "un archivo por clase, estructura de carpetas = estructura de namespaces" para que el autoloading funcione de forma predecible. |

@@ -4,149 +4,149 @@ order: 6
 
 # Las funciones y métodos más útiles
 
-## ¿Qué es una función o un método?
+## ¿Qué es una función / método?
 
-Una **función** es un bloque de código reutilizable, que tiene un nombre y que puede recibir información (*parámetros*) para realizar una acción o devolver un resultado (un *valor de retorno*).
+Una **función** es un bloque de código reutilizable, que tiene un nombre y que puede recibir información (unos *parámetros*) para realizar una acción o devolver un resultado (un *valor de retorno*).
 
 ```php
 <?php
     // función clásica
-    function addition($a, $b) {
+    function suma($a, $b) {
         return $a + $b;
     }
 
-    echo addition(2, 3); // página 5
+    echo suma(2, 3); // muestra 5
 
-    // función flechada
-    $double = fn($n) => $n * 2;
+    // función flecha
+    $doble = fn($n) => $n * 2;
 
-    echo $double(5); // página 10
+    echo $doble(5); // muestra 10
 ?>
 ```
-> **Nota:** a diferencia de JavaScript, donde una función con flecha se puede escribir con llaves y un «`return`» (`(n) => { return n * 2; }`), PHP solo permite la forma corta con una única expresión, sin llaves ni «`return`» (`fn($n) => $n * 2;`).
+> **Nota:** a diferencia de JavaScript, donde una función flecha puede escribirse con llaves y un `return` (`(n) => { return n * 2; }`), PHP solo permite la forma corta con una única expresión, sin llaves ni `return` (`fn($n) => $n * 2;`).
 
-Un **método** es exactamente lo mismo que una función, con una sola diferencia: se define **dentro de una clase** y se utiliza sobre un objeto (véanse los capítulos sobre clases y programación orientada a objetos).
+Un **método** es exactamente lo mismo que una función, con una sola diferencia: se define **dentro de una clase**, y se usa sobre un objeto (ver [La programación orientada a objetos](/?c=langages-de-programmation&s=php&p=poo)).
 
 ```php
 <?php
-    class Calculatrice {
-        public function addition($a, $b) {
+    class Calculadora {
+        public function suma($a, $b) {
             return $a + $b;
         }
     }
 
-    $calc = new Calculatrice();
-    echo $calc->addition(2, 3); // página 5
+    $calc = new Calculadora();
+    echo $calc->suma(2, 3); // muestra 5
 ?>
 ```
 
-En resumen: **función** = autónoma, se invoca directamente por su nombre. **Método** = pertenece a un objeto, se invoca mediante `->` (o `::` en el caso de un método estático).
+En resumen: **función** = autónoma, se invoca directamente por su nombre. **Método** = pertenece a un objeto, se invoca vía `->` (o `::` para un método estático).
 
-## Especificar los tipos de los parámetros y el valor devuelto de una función
+## Tipar los parámetros y el retorno de una función
 
-PHP es un lenguaje de tipado dinámico por defecto, pero admite anotaciones de tipo en los parámetros y en el valor de retorno. A diferencia de un lenguaje compilado, estos tipos no se comprueban antes de la ejecución, sino que se comprueban **en el momento de la ejecución**, en cada llamada.
+PHP tiene tipado dinámico por defecto, pero acepta anotaciones de tipo en los parámetros y en el valor de retorno. A diferencia de un lenguaje compilado, estos tipos no se comprueban antes de la ejecución: se comprueban **en tiempo de ejecución**, en cada llamada.
 
 ```php
 <?php
-function calculerRemise(float $precio, int $pourcentage): float
+function calcularDescuento(float $precio, int $porcentaje): float
 {
-    return $precio - ($precio * $pourcentage / 100);
+    return $precio - ($precio * $porcentaje / 100);
 }
 
-calculerRemise(100, 10);      // OK -> 90,0
-calculerRemise("cent", 10);   // TypeError: «cent» no es un número flotante
+calcularDescuento(100, 10);    // OK -> 90.0
+calcularDescuento("cien", 10); // TypeError: "cien" no es un float
 ?>
 ```
 
-## Tipos nulos (`?Type`)
+## Tipos anulables (`?Tipo`)
 
-Una función declarada como «`: array`» (sin «`?`») **no** permite «`null`» como valor de retorno; intentarlo provoca un «`TypeError`» durante la ejecución. Para permitir explícitamente «`null`» además del tipo declarado, se antepone el tipo de un «`?`»:
+Una función declarada `: array` (sin `?`) **no** permite `null` como valor de retorno: intentarlo provoca un `TypeError` en tiempo de ejecución. Para permitir explícitamente `null` además del tipo declarado, se antepone un `?` al tipo:
 
 ```php
 <?php
-function trouverUtilisateur(int $id): ?array
+function encontrarUsuario(int $id): ?array
 {
     if ($id <= 0) {
-        return null; // OK: ?array permite explícitamente el valor null
+        return null; // OK: ?array permite explícitamente null
     }
-    return ['id' => $id, 'nom' => 'Dupont'];
+    return ['id' => $id, 'nombre' => 'Dupont'];
 }
 ?>
 ```
 
-> **Nota:** «`?array`» es una declaración de contrato, no una simple convención de escritura; es el equivalente en PHP a «`std::optional<T>`» en C++ moderno o a «`Optional[T]`» en Python: la función puede devolver este tipo concreto, O «`null`», y nada más.
+> **Nota:** `?array` es una declaración de contrato, no una simple costumbre de escritura: es el equivalente en PHP de [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) en C++ moderno o de [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) en Python: la función puede devolver ese tipo concreto, O `null`, nada más.
 
-## Eliminar una advertencia esperada con «`@`»
+## Suprimir un warning esperado con `@`
 
-Muchas funciones nativas de PHP devuelven «`false`» en caso de fallo, en lugar de lanzar una excepción (un estilo similar al de C, donde «`fopen()`» devuelve un puntero nulo y establece «`errno`»). Cuando este error ya está previsto y se gestiona más adelante en el código, el operador «`@`» situado delante de la llamada suprime la advertencia que PHP emitiría de otro modo:
+Muchas funciones nativas de PHP devuelven `false` en caso de fallo en lugar de lanzar una excepción (un estilo cercano al de C, donde `fopen()` devuelve un puntero nulo y establece `errno`). Cuando ese fallo ya está previsto y gestionado por el resto del código, el operador `@` colocado delante de la llamada suprime el warning que PHP emitiría en otro caso:
 
 ```php
 <?php
-$mtime = @filemtime('fichier_qui_peut_ne_pas_exister.txt');
-$version = $mtime ? "v{$mtime}" : 'v-inconnue';
+$mtime = @filemtime('archivo_que_puede_no_existir.txt');
+$version = $mtime ? "v{$mtime}" : 'v-desconocida';
 ?>
 ```
 
-> **Nota:** «`@`» oculta el aviso, pero no modifica el comportamiento de la propia función (`filemtime()` sigue devolviendo «`false`» si el archivo no existe). Debe utilizarse únicamente en los casos en los que el error se prevea realmente y se compruebe inmediatamente después; utilizarlo en todas partes también ocultaría errores reales.
+> **Nota:** `@` oculta el warning, no cambia en nada el comportamiento de la función en sí (`filemtime()` sigue devolviendo `false` si el archivo no existe). Hay que reservarlo para los casos en que el fallo está realmente previsto y comprobado justo después: usarlo en todas partes ocultaría también errores reales.
 
-PHP ofrece una gran cantidad de funciones nativas listas para usar, clasificadas a continuación por categorías.
+PHP ofrece una enorme cantidad de funciones nativas ya listas para usar, clasificadas a continuación por categoría.
 
 ## Funciones sobre cadenas de caracteres
 
 ```php
 <?php
-    strlen("Hello");           // 5 -> longitud de la cadena
-    strtoupper("Hello");       // «HELLO» -> lo pone en mayúsculas
-    strtolower("Hello");       // «hello» -> lo convierte a minúsculas
-    str_replace("a", "o", "Hello"); // «Hello» -> sustituye una subcadena
-    trim("  Hello  ");         // «Hello» -> elimina los espacios al principio y al final
-    substr("Hello", 1, 3);     // «ell» -> extrae una parte de una cadena
-    explode(",", "a,b,c");     // ["a", "b", "c"] -> divide una cadena en una matriz
-    implode(",", ["a", "b"]);  // «a,b» -> ensambla una matriz en cadena
-    str_contains("Hello", "ell"); // true -> comprueba si una cadena contiene otra
+    strlen("Hello");                 // 5 -> longitud de la cadena
+    strtoupper("Hello");             // "HELLO" -> pone en mayúsculas
+    strtolower("Hello");             // "hello" -> pone en minúsculas
+    str_replace("a", "o", "Hello");  // "Hello" -> reemplaza una subcadena
+    trim("  Hello  ");               // "Hello" -> quita los espacios al inicio/final
+    substr("Hello", 1, 3);           // "ell" -> extrae una parte de la cadena
+    explode(",", "a,b,c");           // ["a", "b", "c"] -> divide una cadena en array
+    implode(",", ["a", "b"]);        // "a,b" -> une un array en una cadena
+    str_contains("Hello", "ell");    // true -> comprueba si una cadena contiene otra
 ?>
 ```
 
-## Funciones sobre matrices (`array`)
+## Funciones sobre arrays (`array`)
 
 ```php
 <?php
-    count([1, 2, 3]);                  // 3 -> número de elementos
-    $tab[] = "valeur";                  // Añade un elemento al final (preferible a `array_push()` para un solo elemento).
-    array_pop($tab);                   // extrae y devuelve el último elemento
-    array_merge($tab1, $tab2);         // combina dos tablas
-    in_array("pomme", $frutas);        // true/false -> comprueba si hay un valor
-    array_search("pomme", $frutas);    // devuelve la clave o el índice encontrado
-    sort($tab);                        // ordena un array (valores)
-    array_map(fn($n) => $n * 2, $tab); // Aplica una función a cada elemento
-    array_filter($tab, fn($n) => $n > 0); // filtra los elementos según una condición
+    count([1, 2, 3]);                      // 3 -> número de elementos
+    $tab[] = "valor";                      // añade un elemento al final (preferido a array_push() para un solo elemento)
+    array_pop($tab);                       // retira y devuelve el último elemento
+    array_merge($tab1, $tab2);             // fusiona dos arrays
+    in_array("manzana", $frutas);          // true/false -> comprueba la presencia de un valor
+    array_search("manzana", $frutas);      // devuelve la clave/el índice encontrado
+    sort($tab);                            // ordena un array (valores)
+    array_map(fn($n) => $n * 2, $tab);     // aplica una función a cada elemento
+    array_filter($tab, fn($n) => $n > 0);  // filtra los elementos según una condición
 ?>
 ```
-## Funciones sobre matrices asociativas
+## Funciones sobre arrays asociativos
 
 ```php
 <?php
-    $persona = ["nom" => "Dupont", "age" => 25];
+    $persona = ["nombre" => "Dupont", "edad" => 25];
 
-    array_keys($persona);             // ["nombre", "edad"] -> devuelve todas las claves
-    array_values($persona);           // ["Dupont", 25] -> devuelve todos los valores
-    array_key_exists("nom", $persona); // true/false -> comprueba si existe una clave
-    unset($persona["age"]);            // elimina una clave (y su valor) de la matriz
-    ksort($persona);                   // ordena el array según las claves
-    asort($persona);                   // ordena el array según los valores (conservando las claves)
-    array_combine(["a", "b"], [1, 2]);  // ["a" => 1, "b" => 2] -> crea un array asociativo a partir de dos arrays
-    array_flip($persona);              // inversión de claves y valores
+    array_keys($persona);                    // ["nombre", "edad"] -> devuelve todas las claves
+    array_values($persona);                  // ["Dupont", 25] -> devuelve todos los valores
+    array_key_exists("nombre", $persona);    // true/false -> comprueba que una clave existe
+    unset($persona["edad"]);                 // retira una clave (y su valor) del array
+    ksort($persona);                         // ordena el array según las claves
+    asort($persona);                         // ordena el array según los valores (conservando las claves)
+    array_combine(["a", "b"], [1, 2]);       // ["a" => 1, "b" => 2] -> crea un array asociativo a partir de 2 arrays
+    array_flip($persona);                    // invierte claves y valores
 ?>
 ```
 
-> **Nota:** `array_key_exists()` comprueba si existe una clave, incluso si su valor es `null`. `isset($persona["número"])` devuelve `false` en este caso, ya que comprueba además que el valor no sea `null`.
+> **Nota:** `array_key_exists()` comprueba que una clave existe, incluso si su valor es `null`. `isset($persona["nombre"])` devuelve `false` en ese caso, porque además comprueba que el valor no sea `null`.
 Ej.:
 ```php
 <?php
-    $persona = ["nom" => "Dupont", "age" => null];
+    $persona = ["nombre" => "Dupont", "edad" => null];
 
-    array_key_exists("age", $persona); // true
-    isset($persona["age"]);             // false
+    array_key_exists("edad", $persona);  // true
+    isset($persona["edad"]);             // false
 ?>
 ```
 
@@ -154,25 +154,36 @@ Ej.:
 
 ```php
 <?php
-    abs(-5);        // 5 -> valor absoluto
-    round(3.456, 2); // 3,46 -> redondea
-    rand(1, 10);     // Genera un número aleatorio entre 1 y 10
-    max(1, 5, 3);    // 5 -> valor máximo
-    min(1, 5, 3);    // 1 -> valor mínimo
+    abs(-5);          // 5 -> valor absoluto
+    round(3.456, 2);  // 3.46 -> redondea
+    rand(1, 10);      // genera un número aleatorio entre 1 y 10
+    max(1, 5, 3);     // 5 -> valor máximo
+    min(1, 5, 3);     // 1 -> valor mínimo
 ?>
 ```
 
-## Funciones de verificación de tipos
+## Funciones de comprobación de tipo
 
 ```php
 <?php
-    is_string($var);  // verdadero/falso
-    is_int($var);      // verdadero/falso
-    is_array($var);    // verdadero/falso
-    is_null($var);     // verdadero/falso
-    empty($var);       // true si está vacío, es nulo o no está definido
-    isset($var);        // true si la variable existe y no es nula
+    is_string($var);  // true/false
+    is_int($var);     // true/false
+    is_array($var);   // true/false
+    is_null($var);    // true/false
+    empty($var);      // true si está vacío, null, o no definido
+    isset($var);      // true si la variable existe y no es null
 ?>
 ```
 
-> **Nota:** encontrarás la lista completa de funciones nativas de PHP en la documentación oficial: [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). Para añadir un **solo** elemento, también es preferible utilizar «`$tab[] = "valor";`» en lugar de «`array_push($tab, "valor")`»: el resultado es el mismo, pero sin el coste de una llamada a una función; «`array_push()`» solo resulta realmente útil para añadir varios elementos en una sola llamada (`array_push($tab, "a", "b", "c")`).
+> **Nota:** encontrarás la lista completa de las funciones nativas de PHP en la documentación oficial: [php.net/manual/es/funcref.php](https://www.php.net/manual/es/funcref.php). Para añadir un **solo** elemento, `$tab[] = "valor";` también es preferido a `array_push($tab, "valor")`: mismo resultado, sin el coste de una llamada a función: `array_push()` solo resulta realmente útil para añadir varios elementos en una sola llamada (`array_push($tab, "a", "b", "c")`).
+
+---
+
+## 📋 Resumen
+
+| | |
+|---|---|
+| **Para recordar** | Una función es un bloque de código reutilizable; un método es una función definida dentro de una clase, invocada vía `->`/`::`. PHP comprueba los tipos anotados en tiempo de ejecución, no en compilación. |
+| **Herramientas utilizables** | Funciones nativas sobre cadenas, arrays, arrays asociativos, matemáticas, comprobación de tipo; `?Tipo` para un tipo anulable. |
+| **Trampas a evitar** | Usar `@` para ocultar sistemáticamente los warnings: hay que reservarlo para fallos realmente previstos y comprobados justo después. |
+| **Buenas prácticas** | Tipar los parámetros y el retorno de una función en cuanto sea posible; usar `$tab[] = valor` en lugar de `array_push()` para un solo elemento. |

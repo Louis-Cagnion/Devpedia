@@ -47,7 +47,7 @@
       "chapters": [
         {
           "id": "regex",
-          "label": "La expresión regular"
+          "label": "La regex"
         },
         {
           "id": "sql",
@@ -360,6 +360,69 @@
           ]
         },
         {
+          "id": "php",
+          "label": "PHP",
+          "folder": "PHP",
+          "chapters": [
+            {
+              "id": "syntaxe",
+              "label": "La sintaxis de PHP"
+            },
+            {
+              "id": "variables",
+              "label": "Las variables"
+            },
+            {
+              "id": "conditions",
+              "label": "Condiciones"
+            },
+            {
+              "id": "boucles",
+              "label": "Los bucles"
+            },
+            {
+              "id": "structures-de-langage",
+              "label": "Las estructuras del lenguaje"
+            },
+            {
+              "id": "methodes",
+              "label": "Las funciones y métodos más útiles"
+            },
+            {
+              "id": "include",
+              "label": "Incluir funciones"
+            },
+            {
+              "id": "poo",
+              "label": "La programación orientada a objetos (POO)"
+            },
+            {
+              "id": "exceptions",
+              "label": "Las excepciones"
+            },
+            {
+              "id": "autoloading",
+              "label": "La carga automática de clases"
+            },
+            {
+              "id": "connexions",
+              "label": "Gestión de conexiones"
+            },
+            {
+              "id": "http",
+              "label": "Realizar llamadas HTTP de forma nativa"
+            },
+            {
+              "id": "routage",
+              "label": "Enrutamiento sin framework (front controller)"
+            },
+            {
+              "id": "securite",
+              "label": "Protege tus datos"
+            }
+          ]
+        },
+        {
           "id": "javascript",
           "label": "JavaScript",
           "folder": "JavaScript",
@@ -423,65 +486,6 @@
           "label": "OCaml",
           "folder": "OCaml",
           "chapters": []
-        },
-        {
-          "id": "php",
-          "label": "PHP",
-          "folder": "PHP",
-          "chapters": [
-            {
-              "id": "syntaxe",
-              "label": "La sintaxis de PHP"
-            },
-            {
-              "id": "variables",
-              "label": "Las variables"
-            },
-            {
-              "id": "conditions",
-              "label": "Condiciones"
-            },
-            {
-              "id": "boucles",
-              "label": "Los bucles"
-            },
-            {
-              "id": "structuresDeLangagues",
-              "label": "Las estructuras del lenguaje"
-            },
-            {
-              "id": "methodes",
-              "label": "Las funciones y métodos más útiles"
-            },
-            {
-              "id": "include",
-              "label": "Incluir funciones"
-            },
-            {
-              "id": "poo",
-              "label": "La programación orientada a objetos (POO)"
-            },
-            {
-              "id": "autoloading",
-              "label": "La carga automática de clases"
-            },
-            {
-              "id": "connexions",
-              "label": "Gestión de conexiones"
-            },
-            {
-              "id": "http",
-              "label": "Realizar llamadas HTTP de forma nativa"
-            },
-            {
-              "id": "routage",
-              "label": "Enrutamiento sin framework (front controller)"
-            },
-            {
-              "id": "securite",
-              "label": "Protege tus datos"
-            }
-          ]
         },
         {
           "id": "python",
