@@ -1,6 +1,16 @@
-import { createTag } from "./tags.js";
 import { appState } from "./state.js";
 import { speakableCode, speakableText, PAGE_SPECIFIC_CONTEXT, HAS_SPOKEN_CONTENT } from "./reader-pronunciation.js";
+import { CLAUSE_END_PATTERN } from "./reader-clauses.js";
+import { collectTableSegments } from "./reader-table.js";
+import {
+    setHighlightedEntry,
+    clearHighlight,
+    setActiveWord,
+    wordIndexAtChar,
+    wrapSegmentWords,
+    calibrateRate,
+    scheduleEstimatedWords,
+} from "./reader-highlight.js";
 
 // Web Speech API only (no cloud TTS, no auto-hosted engine) -- the site is 100% static
 // (GitHub Pages), so this is the only option with zero cost and zero infrastructure.
@@ -80,242 +90,6 @@ let isPaused = false;
 // by resetPlayback() since a rebuilt/torn-down plan invalidates it.
 let lastSpokenIndex = null;
 
-// Two mutually exclusive highlight tiers for the "speak" entry currently playing --
-// READER_HIGHLIGHT_CLASS marks the whole entry (an inline wrapper for buffered text, cf.
-// wrapSegmentWords() -- or the `code` element itself for an inline-code entry). READER_ACTIVE_WORD_CLASS
-// instead marks the one word currently being spoken, replacing the whole-entry highlight rather
-// than layering on top of it. Which word that is comes from the real `boundary` event where it
-// fires, corrected on top of a timer-based estimate that runs regardless (cf. scheduleEstimatedWords()
-// and setActiveWord()) -- so an entry with nothing to highlight word by word (no `words`, e.g. an
-// inline-code entry) is the only case that keeps the whole-entry highlight for its full duration.
-const READER_HIGHLIGHT_CLASS = "readerActiveParagraph";
-const READER_ACTIVE_WORD_CLASS = "readerActiveWord";
-let highlightedTarget = null;
-let highlightedWords = [];
-let activeWordIndex = -1;
-
-/**
- * Switches the base highlight to `entry`, replacing whatever was highlighted before, and drops
- * any active word highlight from the previous entry -- a new entry starting to play means
- * `boundary` (if it fires at all for it) hasn't reported a word yet.
- *
- * @param {{highlightTarget: HTMLElement, words: HTMLElement[]}} entry
- */
-function setHighlightedEntry(entry) {
-    if (entry.highlightTarget === highlightedTarget) return;
-    highlightedTarget?.classList.remove(READER_HIGHLIGHT_CLASS);
-    entry.highlightTarget.classList.add(READER_HIGHLIGHT_CLASS);
-    highlightedTarget = entry.highlightTarget;
-    setActiveWord(-1);
-    highlightedWords = entry.words;
-}
-
-/** Removes both highlight tiers -- nothing is being spoken once this runs. */
-function clearHighlight() {
-    highlightedTarget?.classList.remove(READER_HIGHLIGHT_CLASS);
-    highlightedTarget = null;
-    setActiveWord(-1);
-    highlightedWords = [];
-}
-
-/**
- * Moves READER_ACTIVE_WORD_CLASS to `highlightedWords[index]`, if that word exists -- `index`
- * comes from an approximate mapping (cf. wordIndexAtChar()) between `boundary`'s charIndex into
- * the spoken (post-speakableText) text and the original DOM words wrapped by
- * wrapSegmentWords(), so it's clamped implicitly by the array lookup rather than asserted exact.
- *
- * The two highlight tiers are exclusive, not stacked: as soon as a word actually gets
- * highlighted, READER_HIGHLIGHT_CLASS drops off `highlightedTarget` so only the word shows --
- * layering "this whole paragraph" under "this exact word" read as redundant. It comes back the
- * moment there's no active word again (index -1: a new entry starting, cf. setHighlightedEntry,
- * or playback stopping, cf. clearHighlight), which is also the permanent state for an entry with
- * no `words` to highlight at all (cf. collectLeafSegments).
- *
- * @param {number} index -1 to clear without setting a new word
- */
-function setActiveWord(index) {
-    if (index === activeWordIndex) return;
-    highlightedWords[activeWordIndex]?.classList.remove(READER_ACTIVE_WORD_CLASS);
-    activeWordIndex = index;
-    const word = highlightedWords[activeWordIndex];
-    word?.classList.add(READER_ACTIVE_WORD_CLASS);
-    highlightedTarget?.classList.toggle(READER_HIGHLIGHT_CLASS, !word);
-}
-
-// A "word" for highlighting purposes: any maximal run of non-space characters, trailing
-// punctuation included -- matches how wrapSegmentWords() below splits the original DOM text, so
-// a word index counted in one lines up with the same index counted in the other.
-const WORD_PATTERN = /\S+/g;
-
-/**
- * @param {string} text the utterance's own (post-speakableText) text
- * @param {number} charIndex a `boundary` event's charIndex into that text, expected to land on
- *   the first character of the word it's announcing
- * @returns {number} the 0-based index of that word among WORD_PATTERN's matches in `text`
- */
-function wordIndexAtChar(text, charIndex) {
-    return [...text.slice(0, charIndex).matchAll(WORD_PATTERN)].length;
-}
-
-/**
- * Replaces each word of text-node content under `root` with its own `<span class="readerWord">`
- * (whitespace/punctuation between words left as-is), so setActiveWord() has an element to target
- * per word. Recurses into every element under `root`, formatting elements (`strong`, `em`, a
- * link...) and `code` alike -- a `code` element only ever reaches this function already folded
- * into the surrounding sentence as one of its ordinary words (cf. collectLeafSegments: a `code`
- * span with actual pronunciation to rewrite becomes its own separate entry instead, bypassing
- * wrapSegmentWords()/this function entirely). Skipping `code` here used to leave a folded one with
- * no word span of its own even though entry.text's own word count (cf. scheduleEstimatedWords())
- * still included it -- invisible to the word highlight, and silently shifting every word index
- * after it out of alignment with the real word spans (reported by Louis on 2026-08-16, "le
- * highlight skip les codes inline").
- *
- * @param {HTMLElement} root
- * @param {HTMLElement[]} out appended to in document order
- */
-function wrapWordsInPlace(root, out) {
-    Array.from(root.childNodes).forEach(node => {
-        if (node.nodeType === Node.TEXT_NODE) {
-            const text = node.textContent;
-            const matches = [...text.matchAll(WORD_PATTERN)];
-            if (!matches.length) return;
-            const frag = document.createDocumentFragment();
-            let lastIndex = 0;
-            matches.forEach(match => {
-                const [word] = match;
-                if (match.index > lastIndex) frag.append(text.slice(lastIndex, match.index));
-                const span = createTag("span", { class: "readerWord" }, { textContent: word });
-                frag.append(span);
-                out.push(span);
-                lastIndex = match.index + word.length;
-            });
-            if (lastIndex < text.length) frag.append(text.slice(lastIndex));
-            node.replaceWith(frag);
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-            wrapWordsInPlace(node, out);
-        }
-    });
-}
-
-/**
- * Moves `nodes` (a run of a leaf's own children collected by collectLeafSegments between two
- * inline `code` spans, or up to the leaf's boundary) into one new `<span class="readerSegment">`
- * in their place, then word-wraps its content in place.
- *
- * Why a wrapper: `nodes`' original parent is the leaf itself, a block element whose own
- * background would span its full width regardless of where the text actually ends on each line
- * (a short last line would still highlight edge-to-edge). `readerSegment` is inline instead, so
- * its background paints one line-box at a time, sized to that line's own text -- same mechanism
- * `pre code`'s own comment above documents, used here for the opposite effect.
- *
- * @param {ChildNode[]} nodes non-empty, all siblings, still attached to their original parent
- * @returns {{wrapper: HTMLElement, words: HTMLElement[]}} the new wrapper, and the words wrapped
- *   inside it in document order (empty if `nodes` turned out to hold no actual word, e.g. a lone
- *   folded-in code span -- cf. collectLeafSegments)
- */
-function wrapSegmentWords(nodes) {
-    const wrapper = createTag("span", { class: "readerSegment" });
-    nodes[0].parentNode.insertBefore(wrapper, nodes[0]);
-    nodes.forEach(node => wrapper.append(node));
-    const words = [];
-    wrapWordsInPlace(wrapper, words);
-    return { wrapper, words };
-}
-
-// Estimated speaking rate driving the word-by-word highlight's timing (cf. scheduleEstimatedWords()
-// below) when the `boundary` event doesn't fire at all -- which turned out to be every browser
-// tested while building this feature (cf. devpedia-todo.md), not just the "no boundary" edge case
-// (Chrome on Android) it was originally written for. Recalibrated after every utterance from how
-// long it actually took to speak (cf. speakNext()'s utterance.onend, CALIBRATION_WEIGHT below), so
-// it converges on this session's actual voice/rate within the first couple of entries rather than
-// staying a guess. Starts at a plausible default for a "rate: 1" utterance so the very first entry
-// (still running on this default, with no calibrated measurement yet to correct it) isn't wildly
-// off -- tuned up from an initial 17 by Louis listening on 2026-08-16.
-//
-// No separate pause modeling needed on top of this (an earlier version had one, per-punctuation --
-// removed 2026-08-16): each entry is now one clause at most (cf. collectLeafSegments' own
-// CLAUSE_END_PATTERN), split at every comma/semicolon/colon/sentence end rather than reading a
-// whole paragraph as a single utterance, so there's no punctuation pause left *inside* an entry to
-// account for -- the gap between separate utterances covers it instead. That split also happens to
-// be why word-by-word can rely on a single flat rate at all: fitting one constant to a short,
-// single-clause entry is far more tractable than to a long paragraph mixing short and long
-// sentences with a different number of pauses each (tuning that by ear on 2026-08-16 kept reading
-// right on one paragraph and wrong on the next, no matter which constant got picked).
-let charsPerSecond = 38;
-
-// How strongly one utterance's measured rate moves charsPerSecond (0 = ignore it, 1 = replace it
-// outright). High on purpose: a voice's rate is constant for the whole session once picked, so
-// there's little value in a slow crawl toward it the way a genuinely noisy signal would need --
-// converging within the first entry or two matters more here than smoothing out noise. Raised
-// alongside the default above on 2026-08-16: still general, uniform lag reported after 17 -> 20 ->
-// 22 (each confirmed "still slow" by Louis), so convergence needed to be faster too, not just the
-// starting point higher -- a few seconds of a wrong guess shouldn't take several paragraphs to
-// wash out.
-const CALIBRATION_WEIGHT = 0.75;
-
-// How much scheduleEstimatedWords() below speeds up toward the end of a long entry, per word it
-// has -- 0.05 means a 3-word entry tops out around 15% faster by its last word (negligible, cf.
-// "sans modifier le pace des lignes courtes" below), a 20-word one around 100% faster (twice
-// charsPerSecond). Capped so an unusually long entry doesn't run away into an absurd speed.
-// Requested by Louis on 2026-08-16 as a general safety margin against charsPerSecond being a bit
-// off for the entry currently playing: since there's no way to know *this* entry's real duration
-// until it's over (cf. charsPerSecond's own comment on why calibration only ever corrects the
-// *next* entry), a long entry that's running behind gets a chance to visibly close some of that
-// gap by its own end rather than just handing the whole shortfall to whatever plays after it --
-// scaled by length so a short entry, which was never at much risk of drifting far in the first
-// place, keeps its pace essentially untouched.
-const MAX_ACCELERATION_PER_WORD = 0.05;
-const MAX_ACCELERATION_CAP = 1.5;
-
-/**
- * Schedules setActiveWord() calls timed to land roughly when each word of `entry.text` should
- * start being spoken, estimated from `charsPerSecond` -- the only way to get a word-by-word
- * highlight on a browser that never fires `boundary` (cf. charsPerSecond's own comment). Kept
- * running alongside `boundary` rather than instead of it: a real event is always more accurate
- * than this estimate, so utterance.onboundary in speakNext() still calls setActiveWord() directly
- * on top of whatever this schedule produces, correcting it wherever the browser actually reports.
- *
- * The pace itself isn't flat: it ramps up word over word (cf. MAX_ACCELERATION_PER_WORD) rather
- * than staying at a constant charsPerSecond the whole way through.
- *
- * A short entry (a heading, a table cell) can finish being spoken -- and hand the highlight to the
- * entry after it -- before every one of its own words' timers has fired. Without the
- * `highlightedTarget` check below, such a late timer would call setActiveWord() using an index
- * that means nothing for whatever entry is *now* playing, flipping the highlight between the
- * paragraph and word tiers seemingly at random on short entries (reported by Louis on 2026-08-16,
- * "notamment sur les titres et les tableaux"). The `generation` check alone doesn't catch this --
- * that one only guards a stop/restart, not ordinary entry-to-entry progress within the same
- * playback run.
- *
- * @param {{text: string, words: HTMLElement[], highlightTarget: HTMLElement}} entry
- * @param {number} myGeneration this call's generation, so a stop/restart/skip (which bumps the
- *   module's `generation`) silently drops every timer still pending instead of moving the
- *   highlight on a since-abandoned entry
- */
-function scheduleEstimatedWords(entry, myGeneration) {
-    if (!entry.words.length) return; // nothing to highlight word by word (cf. collectLeafSegments)
-    const totalWords = entry.words.length;
-    const maxAcceleration = Math.min(MAX_ACCELERATION_CAP, totalWords * MAX_ACCELERATION_PER_WORD);
-    let wordIndex = 0;
-    let cumulativeMs = 0;
-    let lastCharIndex = 0;
-    for (const match of entry.text.matchAll(WORD_PATTERN)) {
-        // Rate grows from charsPerSecond at the entry's first word toward charsPerSecond *
-        // (1 + maxAcceleration) at its last -- applied to the gap since the previous word rather
-        // than to match.index directly, so it's a smooth ramp rather than a jump recomputed from
-        // scratch every time.
-        const progress = wordIndex / totalWords;
-        const effectiveRate = charsPerSecond * (1 + maxAcceleration * progress);
-        cumulativeMs += ((match.index - lastCharIndex) / effectiveRate) * 1000;
-        lastCharIndex = match.index;
-        const index = wordIndex++;
-        const delayMs = cumulativeMs;
-        setTimeout(() => {
-            if (generation === myGeneration && highlightedTarget === entry.highlightTarget) setActiveWord(index);
-        }, delayMs);
-    }
-}
-
 // Bumped by resetPlayback(). synth.cancel() fires an async "error" event on the utterance it
 // just interrupted (same onend/onerror handler below), so without this guard that stale callback
 // would advance planIndex and call speakNext() again right after a stop, or after plan has
@@ -352,21 +126,9 @@ export function onStatusChange(listener) {
     listener(getReaderStatus());
 }
 
-// A clause boundary: one or more sentence-ending marks (with an optional closing quote/parenthesis
-// right after), or a single comma/semicolon/colon -- as long as that comma/semicolon/colon isn't
-// sitting between two digits, where it's a decimal separator or a ratio/time-like notation ("1,8",
-// "12:30") rather than a pause, and splitting it would read the number back in two disconnected
-// pieces. collectLeafSegments() below splits on every match, so a paragraph becomes several
-// single-clause entries instead of one long one.
-//
-// Why split this granularly rather than just per sentence: Chrome's speechSynthesis can silently
-// cut a long utterance short partway through and skip straight to the next plan entry without ever
-// finishing it -- confirmed on 2026-08-16 from a recording Louis made, a ~240-character/40-word
-// paragraph (nowhere near the length TTS bug reports usually blame) stopped dead after its first
-// sentence and jumped to the next heading. Splitting this small removes the need for a separate
-// pause model on top of charsPerSecond too (cf. its own comment) -- the gap between two separate
-// utterances stands in for the pause a comma or colon would otherwise need modeled inside one.
-const CLAUSE_END_PATTERN = /[.!?…]+[)»"'’”]*|[,;:](?!\d)/g;
+// CLAUSE_END_PATTERN itself (used directly in the while loop below) lives in reader-clauses.js
+// instead, shared with reader-table.js's own clause splitting -- a paragraph becomes several
+// single-clause entries instead of one long one, same reasoning as that file's own comment on it.
 
 /**
  * Flushes `buffer` (page-language text accumulated so far) as one plan entry, then appends
@@ -462,116 +224,9 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
 }
 
 /**
- * @param {HTMLElement} cell a `td`/`th`
- * @param {string} context see {@link collectLeafSegments}
- * @returns {string} `cell`'s own text, with any inline `code` span pronounced through
- *   speakableCode() first (cf. collectLeafSegments, which does the same for prose) -- without
- *   this, a cell like `` `!==` `` would read as "not equals" everywhere else on the site but as
- *   the bare characters here, since a plain `.textContent` doesn't know the difference
- */
-function cellSpokenText(cell, context) {
-    let text = "";
-    cell.childNodes.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
-            const code = node.textContent.trim();
-            if (code) text += ` ${speakableCode(code, context)} `;
-        } else {
-            text += node.textContent;
-        }
-    });
-    return text.replace(/\s+/g, " ").trim();
-}
-
-/**
- * Splits plain text (not a live DOM node, unlike collectLeafSegments' own clause splitting) at
- * every CLAUSE_END_PATTERN match. Used for a table row's own synthesized sentence (cf.
- * collectTableSegments) rather than Text.splitText(), since there's no original DOM text run to
- * keep matched up with a `words` list here -- a table row's highlight never goes word by word
- * (cf. collectTableSegments' own comment on why), so nothing needs that alignment.
- *
- * @param {string} text
- * @returns {string[]} non-empty, spoken-content-bearing chunks, in order
- */
-function splitIntoClauses(text) {
-    const chunks = [];
-    let lastIndex = 0;
-    CLAUSE_END_PATTERN.lastIndex = 0;
-    let match;
-    while ((match = CLAUSE_END_PATTERN.exec(text))) {
-        chunks.push(text.slice(lastIndex, match.index + match[0].length));
-        lastIndex = match.index + match[0].length;
-    }
-    if (lastIndex < text.length) chunks.push(text.slice(lastIndex));
-    return chunks.map(chunk => chunk.trim()).filter(chunk => HAS_SPOKEN_CONTENT.test(chunk));
-}
-
-/**
- * Reads a `table`'s data rows with row/column context instead of each `th`/`td` in isolation --
- * the original complaint behind the whole table audit in devpedia-todo.md. The header row is
- * never read on its own (its wording is folded into each data row's own sentence instead), and
- * which of three shapes to fold it in as is detected from the header alone, audited on 2026-08-16
- * to actually cover the content site-wide rather than just the one example table a first version
- * of this was designed around:
- *
- * - Every header cell blank: a "recap card" -- a bold label in the first cell, a full sentence in
- *   the rest, no real columns at all (`| **À retenir** | Zsh regroupe... |`). Read as
- *   "label : the rest, joined".
- * - Only the first header cell blank: a comparison matrix -- the first cell of each row is an
- *   unlabeled criterion, the rest are values for the labeled columns being compared (headers like
- *   `["", "CPU", "GPU"]`). Read as "criterion : value1 pour title1, value2 pour title2...".
- * - Every header cell filled in: an ordinary data table. Read as "title1 : value1, title2 :
- *   value2...", title always before value regardless of how long a cell's own text is -- tried
- *   suffixing the title for short cells only, decided against it (2026-08-16) since it needed two
- *   rules instead of one for a difference listeners never really noticed either way.
- *
- * No word-level highlight for any of these -- unlike prose, a row's sentence here is synthesized
- * (titles and connector words like "pour" folded in) rather than a straight read of some
- * contiguous run of DOM text, so there's no single original text run left to wrap into `words`
- * the way wrapSegmentWords() does for a paragraph. The whole `tr` gets the whole-entry highlight
- * instead, the same as an inline-code entry with nothing to highlight word by word (cf.
- * collectLeafSegments).
- *
- * @param {HTMLElement} table
- * @param {string} lang
- * @param {string} context see {@link collectLeafSegments}
- * @param {string} pageId see {@link collectLeafSegments}
- * @param {Array} entries the plan being built, appended to in place
- */
-function collectTableSegments(table, lang, context, pageId, entries) {
-    const headerTexts = [...table.querySelectorAll("thead th")].map(th => th.textContent.trim());
-    const isRecapCard = headerTexts.every(text => !text);
-    const isComparison = !isRecapCard && !headerTexts[0];
-
-    table.querySelectorAll("tbody tr").forEach(tr => {
-        const cells = [...tr.children].map(cell => cellSpokenText(cell, context));
-        let sentence;
-        if (isRecapCard) {
-            const [label, ...rest] = cells;
-            sentence = `${label} : ${rest.join(", ")}`;
-        } else if (isComparison) {
-            const [criterion, ...rest] = cells;
-            const parts = rest.map((value, i) => `${value} pour ${headerTexts[i + 1]}`);
-            sentence = `${criterion} : ${parts.join(", ")}`;
-        } else {
-            sentence = cells.map((value, i) => `${headerTexts[i] ?? ""} : ${value}`).join(", ");
-        }
-        splitIntoClauses(sentence).forEach(chunk => {
-            entries.push({
-                kind: "speak",
-                text: speakableText(chunk, lang, pageId),
-                lang,
-                group: tr,
-                highlightTarget: tr,
-                words: [],
-            });
-        });
-    });
-}
-
-/**
  * Recursively walks `root`, appending a "speak" entry per leaf (h2-h6/p/li, split around any
- * inline code), a set of entries per `table` (cf. collectTableSegments), and a "pause" entry per
- * `pre` block, in document order.
+ * inline code), a set of entries per `table` (cf. reader-table.js's collectTableSegments), and a
+ * "pause" entry per `pre` block, in document order.
  *
  * @param {HTMLElement} root
  * @param {string} lang
@@ -722,9 +377,9 @@ function speakNext() {
     // onstart (speech actually beginning) rather than on when speak() was called -- the two can be
     // a couple hundred ms apart (engine queueing/startup), which would otherwise get counted as
     // part of the text's own speaking time and inflate short entries the most, since a fixed
-    // startup delay is a bigger fraction of a short entry's total duration (with CALIBRATION_WEIGHT
-    // trusting each measurement this much, one skewed entry was enough to drag the whole estimate
-    // down, reported by Louis on 2026-08-16). The word-by-word schedule itself, though, is
+    // startup delay is a bigger fraction of a short entry's total duration (with calibrateRate()'s
+    // own weighting trusting each measurement this much, one skewed entry was enough to drag the
+    // whole estimate down, reported by Louis on 2026-08-16). The word-by-word schedule itself, though, is
     // deliberately anchored on the call to speak() below instead, straight away rather than waiting
     // for onstart -- its first word already lands at 0ms (cf. scheduleEstimatedWords()), so waiting
     // for onstart would only have delayed it by that same queueing gap, showing the whole-entry
@@ -736,21 +391,18 @@ function speakNext() {
         if (generation !== myGeneration) return;
         startedAt = Date.now();
     };
-    scheduleEstimatedWords(entry, myGeneration);
+    scheduleEstimatedWords(entry, () => generation === myGeneration);
     utterance.onend = utterance.onerror = () => {
         if (generation !== myGeneration) return;
-        // Recalibrates charsPerSecond from how long this utterance actually took, so the estimate
-        // converges on this session's real voice/rate. Skipped if onstart never fired at all (no
-        // reliable elapsed time to measure) or below some floor: a browser that can't actually
-        // produce speech (e.g. Brave on Linux with zero system TTS voices, cf. devpedia-todo.md)
-        // fires onerror within a millisecond or two of being asked to speak, and averaging that in
-        // as "this entry's text took ~0ms to say" would drag the estimate toward an absurdly high
-        // rate for every entry after it.
+        // Recalibrates the word-timing estimate from how long this utterance actually took (cf.
+        // reader-highlight.js's calibrateRate()), so it converges on this session's real
+        // voice/rate. Skipped if onstart never fired at all (no reliable elapsed time to measure)
+        // or below some floor: a browser that can't actually produce speech (e.g. Brave on Linux
+        // with zero system TTS voices, cf. devpedia-todo.md) fires onerror within a millisecond or
+        // two of being asked to speak, and averaging that in as "this entry's text took ~0ms to
+        // say" would drag the estimate toward an absurdly high rate for every entry after it.
         const elapsedSeconds = startedAt === null ? 0 : (Date.now() - startedAt) / 1000;
-        if (entry.words.length && elapsedSeconds > 0.1) {
-            const measuredRate = entry.text.length / elapsedSeconds;
-            charsPerSecond = charsPerSecond * (1 - CALIBRATION_WEIGHT) + measuredRate * CALIBRATION_WEIGHT;
-        }
+        if (entry.words.length && elapsedSeconds > 0.1) calibrateRate(entry.text.length / elapsedSeconds);
         planIndex++;
         // Deferred rather than called directly: some engines fire onend/onerror synchronously
         // for very short utterances (single-word entries, e.g. "variable 0"), and a page with
