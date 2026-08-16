@@ -197,8 +197,8 @@ export function initSidebars(initialCategories) {
     mobileMenuDiv.append(createTag("div", { class: "sidebarTreeContainer" }));
     mobileMenuDiv.append(createTag("div", { class: "sidebarOutlineContainer" }));
 
-    // Independent of .menuDiv (rather than living inside it): "Continuer après le bloc de
-    // code" must stay reachable without first reopening the hamburger menu.
+    /* Independent of .menuDiv (rather than living inside it): "Continuer après le bloc de
+       code" must stay reachable without first reopening the hamburger menu. */
     let floatingBar = null;
     const mobileReaderControl = createReaderControl();
     if (mobileReaderControl) {

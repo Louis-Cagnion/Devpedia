@@ -111,8 +111,8 @@ function createAppendCategories(navBar, categories = []) {
         categoriesDiv.appendChild(link);
         return link;
     });
-    // moreButton lives inside categoriesDiv (not a navBar-level sibling) so it shares
-    // the categories' own gap/centering — see watchCategoriesOverflow.
+    /* moreButton lives inside categoriesDiv (not a navBar-level sibling) so it shares
+       the categories' own gap/centering — see watchCategoriesOverflow. */
     const moreButton = createCategoriesOverflowMenu(categories);
     categoriesDiv.append(moreButton);
     navBar.append(categoriesDiv);

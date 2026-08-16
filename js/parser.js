@@ -158,8 +158,8 @@ const quoteRegex = /^>\s?(.*)/;
  */
 function splitTableRow(line) {
     const trimmed = line.trim().replace(/^\|/, "").replace(/\|$/, "");
-    // A `\|` (e.g. inside a code span like `` `\|` `` to render a literal pipe character)
-    // is an escaped separator, not a column boundary — mdToHtmlFormatting unescapes it later.
+    /* A `\|` (e.g. inside a code span like `` `\|` `` to render a literal pipe character)
+       is an escaped separator, not a column boundary — mdToHtmlFormatting unescapes it later. */
     const cells = [];
     let cell = "";
     for (let i = 0; i < trimmed.length; i++) {
@@ -241,8 +241,8 @@ function createTableFromLines(headerLine, separatorLine, bodyLines, homeDiv, fil
  * @returns {Array<{level: number, id: string, text: string}>} the page's `h3`-`h6` headings, in order
  */
 export function parseAppendText(homeDiv, fileName, text) {
-    // Blank lines are noise between blocks, but significant inside a fenced code block
-    // (they're part of the code) — so fence state must gate the filter, not run after it.
+    /* Blank lines are noise between blocks, but significant inside a fenced code block
+       (they're part of the code) — so fence state must gate the filter, not run after it. */
     let inFence = false;
     const lines = text.split("\n").filter(line => {
         if (isCodeFence(line)) {
@@ -256,15 +256,13 @@ export function parseAppendText(homeDiv, fileName, text) {
     let listDiv = null;
     let quoteDiv = null;
     let codeDiv = null;
-    // Consecutive chart blocks (no other content between them) share one full-width
-    // row instead of each taking the full width on its own line — reset to null by
-    // every other kind of block appended below, so unrelated charts don't get grouped.
+    /* Consecutive chart blocks share one full-width row instead of each taking the full width on
+       its own line — reset to null by every other block kind below, so unrelated charts don't group. */
     let lastChartRow = null;
     const usedIds = new Set();
     const outline = [];
-    // Local to this call (not module-level): a previous parseAppendText call left open on a
-    // trailing quote/list would otherwise leak into the next page rendered, e.g. a null-deref
-    // if that next page's first line is itself a quote (openQuote already true, quoteDiv null).
+    /* Local to this call, not module-level: a previous call's leftover open quote/list would
+       otherwise leak into the next page rendered (e.g. a null-deref if its own first line is a quote). */
     let openList = false;
     let openQuote = false;
     let inCodeBlock = false;
@@ -299,10 +297,8 @@ export function parseAppendText(homeDiv, fileName, text) {
         if (isCodeFence(line)) {
             if (!inCodeBlock) {
                 inCodeBlock = true;
-                // A fenced block ends whatever quote/list was open before it, exactly like a
-                // table or heading does below — otherwise a blockquote resuming after the fence
-                // (e.g. a "Piège" note, an example, then a "Bonne pratique" note) would append
-                // into the stale pre-fence quoteDiv, rendering out of order (above the fence).
+                /* Ends whatever quote/list was open before the fence, like a table/heading does
+                   below — otherwise a quote resuming after it would append into the stale one. */
                 openList = false;
                 openQuote = false;
                 lastChartRow = null;
@@ -324,10 +320,8 @@ export function parseAppendText(homeDiv, fileName, text) {
                     lastChartRow.append(chart);
                 } else {
                     lastChartRow = null;
-                    // Only highlight when a language was explicitly given: without a
-                    // `language-*` class, hljs falls back to auto-detection, which guesses
-                    // a near-random language (and colors accordingly) on plain-text/ASCII
-                    // diagram blocks.
+                    /* Only highlight when a language was given: without a `language-*` class,
+                       hljs auto-detects, guessing a near-random language on ASCII diagram blocks. */
                     if (codeDiv.className) {
                         window.hljs.highlightElement(codeDiv);
                     }

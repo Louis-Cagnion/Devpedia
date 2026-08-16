@@ -35,10 +35,10 @@ function parseDomain(domainSpec, fieldName = "domaine") {
     return parts;
 }
 
-// --- Minimal math expression evaluator ---
-// A hand-rolled tokenizer/parser rather than eval()/new Function(): chart specs are
-// authored content here, not user input, but this module is a template for future
-// chart kinds and should never normalize executing free-form text as code.
+/* --- Minimal math expression evaluator ---
+   A hand-rolled tokenizer/parser rather than eval()/new Function(): chart specs are
+   authored content here, not user input, but this module is a template for future
+   chart kinds and should never normalize executing free-form text as code. */
 
 const MATH_FUNCTIONS = {
     sqrt: Math.sqrt, log: Math.log10, ln: Math.log,
@@ -169,8 +169,8 @@ function evaluateAst(ast, x) {
     }
 }
 
-// `fn: x => x*x` accepts the arrow-function look content authors already know from
-// JS/Python lambdas; only the body after `=>` is actually parsed as an expression.
+/* `fn: x => x*x` accepts the arrow-function look content authors already know from
+   JS/Python lambdas; only the body after `=>` is actually parsed as an expression. */
 function stripArrowPrefix(fnSpec) {
     return fnSpec.match(/^\s*x\s*=>\s*(.+)$/)?.[1] ?? fnSpec;
 }
@@ -262,8 +262,8 @@ function renderFunctionPlot(spec) {
         svg.append(label);
     }
 
-    // Split into separate path segments across gaps (non-finite y, e.g. log(x) at x <= 0)
-    // so the curve never draws a straight line jumping across an undefined region.
+    /* Split into separate path segments across gaps (non-finite y, e.g. log(x) at x <= 0)
+       so the curve never draws a straight line jumping across an undefined region. */
     const segments = [];
     let currentSegment = [];
     for (const point of points) {
@@ -295,8 +295,8 @@ const WHEEL_CENTER_X = WHEEL_SIZE / 2;
 const WHEEL_CENTER_Y = WHEEL_SIZE / 2 + 15; // leaves room for the top caption
 const WHEEL_SLICE_COUNT = 60;
 
-// Angle convention: 0deg (hue 0, red) at 12 o'clock, increasing clockwise --
-// the usual layout for a "color wheel" in design tools.
+/* Angle convention: 0deg (hue 0, red) at 12 o'clock, increasing clockwise --
+   the usual layout for a "color wheel" in design tools. */
 function hueToPoint(hueDegrees, radius) {
     const angleRad = (hueDegrees * Math.PI) / 180;
     return {
