@@ -279,11 +279,15 @@ const FILENAME_DOT_PATTERN = /\.(?!\s)/g;
 const FILENAME_DOT_SPEECH = { fr: "point", en: "dot", es: "punto", br: "ponto" };
 
 /**
- * @param {string} text
- * @param {string} context see {@link englishRewrite}
- * @param {string} lang the page's own language, used only to pick the right word for a filename's
- *   "." (cf. FILENAME_DOT_SPEECH above) -- unrelated to whether the result ends up spoken in that
- *   language or in English, which needsEnglishVoice() below decides independently
+ * @brief Rewrites inline-code text into a form a TTS engine pronounces correctly: operators,
+ * CLI flags, rc-files, keywords, file extensions, filename dots, and identifier underscores.
+ *
+ * @param {string} text raw inline-code text
+ * @param {string} context the page's subject id, or its category id when there's no subject
+ *   (e.g. "c", "bash")
+ * @param {string} lang the page's own language code (e.g. "fr", "en")
+ *
+ * @returns {string} the text as it should actually be spoken
  */
 export function speakableCode(text, context, lang) {
     return englishRewrite(text, context)
@@ -316,14 +320,17 @@ const KEYWORD_SPEECH = new Set([
 ]);
 
 /**
+ * @brief Determines whether inline-code text needs to be spoken in the English voice.
+ *
+ * @example
+ * needsEnglishVoice("===", "javascript") -> true (an operator rewrite changes the text)
+ * needsEnglishVoice("shopt", "zsh") -> true (a known bare keyword, even unchanged)
+ * needsEnglishVoice("nom_dossier", "c") -> false (no rewrite, not a known keyword)
+ *
  * @param {string} code raw inline-code text, not yet run through speakableCode()
- * @param {string} context see {@link speakableCode}
- * @returns {boolean} whether `code` needs the English voice -- either because an operator, CLI
- *   flag or rc-file rewrite actually changes it (cf. englishRewrite() above), or because it's a
- *   known bare keyword (cf. KEYWORD_SPEECH above) with nothing to mechanically rewrite but that's
- *   still a real English name rather than a teaching-example identifier. Deliberately not swayed
- *   by speakableCode()'s own underscore cleanup alone (cf. englishRewrite()'s own comment) -- that
- *   step changes the text too, but doesn't by itself mean the result belongs in English.
+ * @param {string} context the page's subject id, or its category id when there's no subject
+ *
+ * @returns {boolean} true if `code` needs the English voice
  */
 export function needsEnglishVoice(code, context) {
     if (englishRewrite(code, context) !== code) return true;
@@ -421,6 +428,16 @@ function decodeSuperscript(run, lang) {
    Exported so reader.js's collectLeafSegments can recognize this heading structurally too. */
 export const DECORATIVE_EMOJI = "📋";
 
+/**
+ * @brief Rewrites page-language prose text into a form a TTS engine pronounces correctly:
+ * arrows, the recap emoji, superscripts, "prompt"/"déréférencement" (fr), and prose symbols.
+ *
+ * @param {string} text raw prose text
+ * @param {string} lang the page's own language code (e.g. "fr", "en")
+ * @param {string} pageId the page's own id
+ *
+ * @returns {string} the text as it should actually be spoken
+ */
 export function speakableText(text, lang, pageId) {
     const arrowWord = ARROW_SPEECH[ARROW_RANGE_PAGES.has(pageId) ? "range" : "other"][lang] ?? ARROW_SPEECH.other.en;
     const powerOfWord = (POWER_OF_SPEECH[lang] ?? POWER_OF_SPEECH.en).of;

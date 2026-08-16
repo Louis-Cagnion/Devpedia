@@ -28,20 +28,10 @@ export const SPEECH_SUPPORTED = "speechSynthesis" in window;
 const synth = SPEECH_SUPPORTED ? window.speechSynthesis : null;
 
 /**
- * Resolves once it's known whether the browser can actually produce speech, not just whether the
- * Web Speech API object exists (cf. SPEECH_SUPPORTED). A browser can have the API but zero usable
- * voices -- confirmed on 2026-08-16 for Brave on Linux, whose anti-fingerprinting protection
- * deliberately empties the list `getVoices()` returns (cf. devpedia-todo.md) -- in which case
- * every speak() call fails silently and the reader control would otherwise sit there looking
- * broken rather than explaining why. Not Brave-specific by design: this reacts to the voice list
- * actually being empty, whatever the reason, so it degrades the same way for any other browser or
- * privacy setting that ends up in the same state, known today or not.
- *
- * getVoices() can genuinely return empty for a brief moment even on a browser that does have
- * voices -- they load asynchronously on some engines -- so a single synchronous call can't tell
- * "temporarily not loaded yet" apart from "genuinely none". Waits for the voiceschanged event
- * (fired once the real list is ready), or a short timeout in case that event never comes, before
- * concluding either way.
+ * @brief Resolves once it's known whether the browser can actually produce speech, not just
+ * whether the Web Speech API object exists (a browser can have the API but zero usable voices,
+ * e.g. Brave on Linux). Waits for the voiceschanged event, or a short timeout, since getVoices()
+ * can genuinely return empty for a brief moment even where voices do exist.
  *
  * @returns {Promise<boolean>}
  */
@@ -95,9 +85,10 @@ let generation = 0;
 const listeners = new Set();
 
 /**
+ * @brief Returns a snapshot of the current playback state.
+ *
  * @returns {{hasPlan: boolean, isPlaying: boolean, isPaused: boolean, isPausedAtCode: boolean,
- *   canReplay: boolean}} a snapshot of the playback state, for reader-control.js's
- *   createReaderControl() to pick which buttons to show (cf. onStatusChange() below)
+ *   canReplay: boolean}}
  */
 export function getReaderStatus() {
     return { hasPlan: plan.length > 0, isPlaying, isPaused, isPausedAtCode, canReplay: lastSpokenIndex !== null };
@@ -109,10 +100,8 @@ function notify() {
 }
 
 /**
- * Subscribes `listener` to every future playback state change, called once immediately with the
- * current state too so a freshly built control doesn't have to wait for the next change to know
- * what to show. Every createReaderControl() instance (desktop sidebar + mobile floating bar)
- * subscribes here, so both stay in sync with the single shared playback state.
+ * @brief Subscribes `listener` to every future playback state change, calling it once
+ * immediately with the current state too.
  *
  * @param {(status: ReturnType<typeof getReaderStatus>) => void} listener
  */
@@ -126,53 +115,20 @@ export function onStatusChange(listener) {
    single-clause entries instead of one long one, same reasoning as that file's own comment on it. */
 
 /**
- * Flushes `buffer` (page-language text accumulated so far) as one plan entry, then appends
- * `leaf`'s inline `code` spans as their own separate en-US entries -- kept apart from the
- * surrounding text rather than concatenated with it, so each is spoken with correct
- * pronunciation without breaking the flow of the sentence around it. Exception: a code span
- * needsEnglishVoice() says doesn't need the English voice at all (a bare variable name, no
- * operator/flag/keyword to justify it -- e.g. "`a` et `a` deviendraient 0") is folded into the
- * surrounding sentence instead, rather than forcing a voice switch and a pause for something this
- * trivial. Also splits the page-language text at every CLAUSE_END_PATTERN match, so one leaf can
- * produce several "speak" entries even with no inline code in sight (cf. CLAUSE_END_PATTERN's own
- * comment for why).
- *
- * Also wraps whatever ends up in each entry's own highlight target -- an inline `readerSegment`
- * around the buffered text's original nodes, or the `code` element itself -- so speakNext() has
- * something to switch READER_HIGHLIGHT_CLASS onto, and (for buffered text) a `words` list so it
- * can move READER_ACTIVE_WORD_CLASS as `boundary` reports each one (cf. wrapSegmentWords()).
- * Exception: the "📋 Récapitulatif" heading every chapter ends on always highlights as one whole
- * block, never word by word -- requested by Louis on 2026-08-16 as the one deliberate exception to
- * word-by-word highlighting, so its `words` list is discarded even though wrapSegmentWords() still
- * builds one. Detected by DECORATIVE_EMOJI rather than the heading's own translated text ("Summary"
- * in English, etc.), since the emoji itself is the one part of it that never gets translated.
- *
- * A folded code span (nothing to rewrite, cf. needsEnglishVoice()) is buffered as its raw `code`
- * text, not its cleaned-up `spoken` form, even though the two can differ (e.g. an underscore
- * removed) -- `node` is about to be word-wrapped in place by wrapSegmentWords() below, splitting
- * its own unchanged DOM text on the same WORD_PATTERN used to count entry.text's words (cf.
- * reader-highlight.js); using the cleaned-up text here instead could desync that word count (an
- * underscore isn't whitespace, so it doesn't split a DOM word the way a space in `spoken` would)
- * and misalign the word highlight, the exact bug already fixed once for inline code (cf.
- * wrapWordsInPlace's own comment). Table cells don't share this constraint (cf. reader-table.js's
- * own cellSpokenParts), so they do use the cleaned-up text.
- *
- * A text node is split at every CLAUSE_END_PATTERN match it contains, but a boundary landing
- * inside a formatting element (`strong`, `em`, a link) doesn't split that element -- the two
- * clauses stay merged into one entry instead, same as if no splitting happened at all. Rare in
- * practice (a sentence essentially never ends mid-bold), and not a regression either way.
+ * @brief Flushes `buffer` as one or more "speak" plan entries (split at clause boundaries), then
+ * appends `leaf`'s own inline `code` spans as separate en-US entries -- unless a span needs no
+ * English voice at all, in which case it's folded into the surrounding sentence instead. Also
+ * wraps each entry's own highlight target and `words` list for word-level highlighting.
  *
  * @param {HTMLElement} leaf a single h2-h6/p/li element
  * @param {string} lang the page's language, e.g. "fr", "en"
- * @param {string} context the page's subject or category id, used to pick the right operator
- *   table for inline code (cf. CONTEXT_OPERATOR_SPEECH)
- * @param {string} pageId the page's own id, used to pick the right prose wording for a symbol
- *   whose meaning varies page to page rather than context to context (cf. ARROW_RANGE_PAGES)
+ * @param {string} context the page's subject or category id
+ * @param {string} pageId the page's own id
  * @param {Array} entries the plan being built, appended to in place
  */
 function collectLeafSegments(leaf, lang, context, pageId, entries) {
     /* Not restricted to a heading level: markdown rendering shifts "##" to H2 or H3 depending on
-       outline depth (cf. parser.js), so the recap heading isn't reliably one tag across chapters. */
+       outline depth, so the recap heading isn't reliably one tag across chapters. */
     const isRecapHeading = leaf.textContent.trimStart().startsWith(DECORATIVE_EMOJI);
     let buffer = "";
     let segmentNodes = [];
@@ -186,6 +142,7 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
                 lang,
                 group: leaf,
                 highlightTarget: wrapper,
+                // The recap heading always highlights as one block, never word by word.
                 words: isRecapHeading ? [] : words,
             });
         }
@@ -200,19 +157,14 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
             if (!code) return;
             const spoken = speakableCode(code, context, lang);
             if (!needsEnglishVoice(code, context)) {
-                /* Buffers raw `code`, not `spoken` -- see this function's own docstring for why
-                   (word-highlight alignment with the DOM's own unwrapped text). */
+                // Raw `code`, not `spoken`: keeps this node's own word count aligned for wrapSegmentWords().
                 buffer += ` ${code} `;
                 segmentNodes.push(node);
             } else {
                 flushBuffer();
-                /* No word-level highlight for inline code -- spoken as a short phrase (cf.
-                   speakableCode()); the whole `code` element gets READER_HIGHLIGHT_CLASS instead. */
                 entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf, highlightTarget: node, words: [] });
             }
         } else if (node.nodeType === Node.TEXT_NODE) {
-            /* Splits at each clause boundary; see this function's own docstring for the
-               formatting-element edge case. */
             let current = node;
             CLAUSE_END_PATTERN.lastIndex = 0;
             let match;
@@ -237,14 +189,13 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
 }
 
 /**
- * Recursively walks `root`, appending a "speak" entry per leaf (h2-h6/p/li, split around any
- * inline code), a set of entries per `table` (cf. reader-table.js's collectTableSegments), and a
- * "pause" entry per `pre` block, in document order.
+ * @brief Recursively walks `root`, appending a "speak" entry per leaf, a set of entries per
+ * `table`, and a "pause" entry per `pre` block, in document order.
  *
  * @param {HTMLElement} root
- * @param {string} lang
- * @param {string} context see {@link collectLeafSegments}
- * @param {string} pageId see {@link collectLeafSegments}
+ * @param {string} lang the page's language code
+ * @param {string} context the page's subject or category id
+ * @param {string} pageId the page's own id
  * @param {Array} entries the plan being built, appended to in place
  */
 function collectSegments(root, lang, context, pageId, entries) {
@@ -280,12 +231,11 @@ function resetPlayback() {
 }
 
 /**
- * Drops every "pause" entry that immediately follows another one -- several `pre` blocks in a
- * row with no text between them (a common thing, e.g. a "before/after" pair) would otherwise
- * need one "Continuer" click per block before reading picks the text back up. One pause for the
- * whole run is enough; it lands on (and scrolls to) the first block, same as before.
+ * @brief Drops every "pause" entry that immediately follows another one -- several `pre` blocks
+ * in a row would otherwise need one "Continuer" click each before reading resumes.
  *
  * @param {Array} entries
+ *
  * @returns {Array}
  */
 function collapseConsecutivePauses(entries) {
@@ -293,9 +243,8 @@ function collapseConsecutivePauses(entries) {
 }
 
 /**
- * Rebuilds the reading plan from the page currently in `pageDiv`, and stops whatever was
- * being read before (its plan referenced elements about to leave the DOM). Call once per page
- * render, after its content has been generated.
+ * @brief Rebuilds the reading plan from the page currently in `pageDiv`, stopping whatever was
+ * being read before. Call once per page render, after its content has been generated.
  *
  * @param {HTMLElement} pageDiv
  */
@@ -310,22 +259,13 @@ export function buildReadingPlan(pageDiv) {
     notify();
 }
 
-/**
- * Stops any reading in progress and rewinds to the start of the current plan, without
- * discarding it -- the reader control can start over on the same page. Also the right thing to
- * call right before a page is torn down (its plan's `pre` elements are about to be removed).
- */
+/** @brief Stops any reading in progress and rewinds to the start of the current plan, without discarding it. */
 export function stopReading() {
     resetPlayback();
     notify();
 }
 
-/**
- * Pauses reading in place: cancels whatever's being spoken right now but leaves `planIndex` (and
- * the highlight already showing) untouched, so resumeReading() picks the same clause back up from
- * its own start rather than the whole paragraph or the whole page. What the reader control's
- * "Pause" button calls while playing.
- */
+/** @brief Pauses reading in place: cancels the current utterance but leaves `planIndex` untouched, so resumeReading() re-speaks the same clause. */
 export function pauseReading() {
     cancelCurrentUtterance();
     isPlaying = false;
@@ -333,10 +273,7 @@ export function pauseReading() {
     notify();
 }
 
-/**
- * Resumes reading after pauseReading() -- re-speaks the clause `planIndex` still points at, from
- * its own start. What the reader control's "Reprendre" button calls.
- */
+/** @brief Resumes reading after pauseReading(), re-speaking the clause `planIndex` still points at. */
 export function resumeReading() {
     if (!SPEECH_SUPPORTED || !plan.length) return;
     isPaused = false;
@@ -344,45 +281,8 @@ export function resumeReading() {
 }
 
 /**
- * Speaks plan[planIndex] and advances -- the core playback loop, called any time playback resumes
- * after a stop, pause, code block, or the previous utterance finishing. A "pause" entry (a `pre`
- * block) stops playback and waits for continueAfterCode() instead of speaking.
- *
- * Scroll/highlight visibility is checked (and scrolled) against the entry's own highlightTarget --
- * the one clause/segment actually being read right now -- rather than entry.group, the whole
- * containing leaf. A long paragraph reads as several clause entries sharing one group (cf.
- * collectLeafSegments' CLAUSE_END_PATTERN split), so checking only the leaf's own start left every
- * clause after the first one free to scroll off the bottom of the screen without ever
- * re-triggering a scroll, as long as the paragraph itself had been visible when it started
- * (reported by Louis on 2026-08-16). Only scrolled when not already fully visible, to avoid
- * yanking the view on every clause when several are already visible together.
- *
- * Word-by-word highlight: `boundary` is the accurate source when it fires, so it always wins over
- * the timer-based estimate (cf. scheduleEstimatedWords()) -- but every browser tested while
- * building this feature failed to fire it at all (cf. devpedia-todo.md), so the estimate is what
- * actually runs in practice, not just a fallback for an edge case.
- *
- * Two different timing anchors, on purpose. Calibration (cf. calibrateRate(), in onend below) is
- * anchored on onstart (speech actually beginning) rather than on when speak() was called -- the
- * two can be a couple hundred ms apart (engine queueing/startup), which would otherwise get
- * counted as part of the text's own speaking time and inflate short entries the most, since a
- * fixed startup delay is a bigger fraction of a short entry's total duration (reported by Louis on
- * 2026-08-16). The word-by-word schedule itself, though, is deliberately anchored on the call to
- * speak() instead, straight away rather than waiting for onstart -- its first word already lands
- * at 0ms (cf. scheduleEstimatedWords()), so waiting for onstart would only have delayed it by that
- * same queueing gap, showing the whole-entry highlight alone for longer than necessary before the
- * word-level one takes over (reported by Louis on 2026-08-16).
- *
- * Calibration is skipped if onstart never fired at all (no reliable elapsed time to measure), or
- * below some floor: a browser that can't actually produce speech (e.g. Brave on Linux with zero
- * system TTS voices, cf. devpedia-todo.md) fires onerror within a millisecond or two of being
- * asked to speak, and averaging that in as "this entry's text took ~0ms to say" would drag the
- * estimate toward an absurdly high rate for every entry after it.
- *
- * planIndex++/speakNext() at the end are deferred via setTimeout rather than called directly:
- * some engines fire onend/onerror synchronously for very short utterances (single-word entries),
- * and a page with many of those in a row could nest deep enough within one call stack to overflow
- * it. setTimeout starts each call on a fresh stack instead.
+ * @brief Speaks plan[planIndex] and advances -- the core playback loop, called whenever playback
+ * resumes after a stop, pause, code block, or the previous utterance finishing.
  */
 function speakNext() {
     if (planIndex >= plan.length) {
@@ -405,6 +305,8 @@ function speakNext() {
     lastSpokenIndex = planIndex;
     setHighlightedEntry(entry);
     notify();
+    /* Checked against the entry's own highlightTarget, not the whole leaf: a long paragraph's
+       later clauses need their own scroll trigger too. */
     if (!isElementFullyVisible(entry.highlightTarget))
         entry.highlightTarget.scrollIntoView({ behavior: "smooth", block: "start" });
     const utterance = new SpeechSynthesisUtterance(entry.text);
@@ -415,6 +317,7 @@ function speakNext() {
         setActiveWord(wordIndexAtChar(entry.text, event.charIndex));
     };
     let startedAt = null;
+    // Anchored on onstart, not on speak(): the queueing gap would otherwise inflate short entries.
     utterance.onstart = () => {
         if (generation !== myGeneration) return;
         startedAt = Date.now();
@@ -425,32 +328,24 @@ function speakNext() {
         const elapsedSeconds = startedAt === null ? 0 : (Date.now() - startedAt) / 1000;
         if (entry.words.length && elapsedSeconds > 0.1) calibrateRate(entry.text.length / elapsedSeconds);
         planIndex++;
-        setTimeout(speakNext, 0);
+        setTimeout(speakNext, 0); // deferred: some engines fire onend synchronously
     };
     synth.speak(utterance);
 }
 
-/** What the reader control's "Lire depuis le début" button calls. */
+/** @brief Restarts reading from the beginning of the plan. Called by the "Lire depuis le début" button. */
 export function startReading() {
     if (!SPEECH_SUPPORTED || !plan.length) return;
     resetPlayback();
     speakNext();
 }
 
-/**
- * @returns {number} the sticky navbar's height in pixels, so viewport-visibility checks can
- *   exclude the area it covers at the top of the screen
- */
+/** @brief Returns the sticky navbar's own height in pixels. */
 function getNavbarHeight() {
     return parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--navbar-height")) || 0;
 }
 
-/**
- * @returns {number} the read-aloud floating bar's own height in pixels if it's currently a fixed
- *   overlay pinned to the bottom of the screen (narrow/mobile layout, cf. .readerFloatingBar in
- *   responsive.css) -- 0 on a wide layout, where the reader control sits in the right sidebar
- *   instead and never covers any of the readable content.
- */
+/** @brief Returns the mobile floating reader bar's height in pixels, 0 if not currently a fixed overlay. */
 function getFloatingBarHeight() {
     const bar = document.querySelector(".readerFloatingBar");
     if (!bar || getComputedStyle(bar).position !== "fixed") return 0;
@@ -458,14 +353,12 @@ function getFloatingBarHeight() {
 }
 
 /**
+ * @brief Reports whether `element` is entirely on screen: both its top and bottom edge, below
+ * the sticky navbar and above the floating reader bar.
+ *
  * @param {HTMLElement} element
- * @returns {boolean} whether `element` is entirely on screen -- both its top AND bottom edge,
- *   below the sticky navbar and above the bottom floating reader bar on narrow layouts. Checking
- *   only the top edge (as an earlier version of this did) missed a multi-line entry whose top was
- *   visible but whose last line or two were still cut off under the floating bar -- a short entry
- *   rarely reaches that height, but a clause that wraps to two or three lines on a narrow screen
- *   can (reported by Louis on 2026-08-16: the read line's last lines weren't brought fully into
- *   view when cut off by the floating bar).
+ *
+ * @returns {boolean}
  */
 function isElementFullyVisible(element) {
     const { top, bottom } = element.getBoundingClientRect();
@@ -473,9 +366,8 @@ function isElementFullyVisible(element) {
 }
 
 /**
- * Index of the first "speak" entry whose paragraph hasn't fully scrolled past the top of the
- * viewport yet (below the sticky navbar) -- i.e. the topmost paragraph currently on screen.
- * Falls back to 0 (page top) if nothing qualifies, e.g. before any scrolling has happened.
+ * @brief Returns the index of the first "speak" entry whose paragraph hasn't fully scrolled past
+ * the top of the viewport yet, or 0 if nothing qualifies.
  */
 function findVisibleEntryIndex() {
     const navbarHeight = getNavbarHeight();
@@ -486,16 +378,7 @@ function findVisibleEntryIndex() {
     return 0;
 }
 
-/**
- * Starts reading from whichever paragraph is currently at the top of the screen rather than
- * always from the top of the page -- resuming lower in a long chapter shouldn't require sitting
- * through everything already read. What the main play/stop toggle calls to start.
- *
- * Scrolls that paragraph's start into view first, the same way the "pause at a code block" flow
- * does (cf. speakNext()) but toward the top rather than centered -- if it was only partly
- * visible (cut off above the navbar), reading should still begin at its very first word, so the
- * view moves up to show that word rather than starting mid-scroll.
- */
+/** @brief Starts reading from whichever paragraph is currently at the top of the screen. */
 export function startFromVisible() {
     if (!SPEECH_SUPPORTED || !plan.length) return;
     resetPlayback();
@@ -505,20 +388,14 @@ export function startFromVisible() {
     speakNext();
 }
 
-/** What the reader control's "Continuer" button calls (cf. triggerPrimaryAction() below). */
+/** @brief Resumes reading past a paused code block. Called by the "Continuer" button. */
 export function continueAfterCode() {
     if (!isPausedAtCode) return;
     planIndex++;
     speakNext();
 }
 
-/**
- * Re-speaks the paragraph `lastSpokenIndex` belongs to, from its first segment -- lets the
- * listener catch a sentence they missed without rewinding the whole page or waiting for it to
- * come back around. Works while playing (interrupts the current utterance), paused at a code
- * block (replays the paragraph just before it), or stopped (replays the last one heard). What the
- * reader control's "Relire le paragraphe" button calls.
- */
+/** @brief Re-speaks the paragraph `lastSpokenIndex` belongs to, from its first segment. Called by the "Relire le paragraphe" button. */
 export function replayParagraph() {
     if (lastSpokenIndex === null) return;
     const group = plan[lastSpokenIndex].group;
@@ -530,10 +407,12 @@ export function replayParagraph() {
 }
 
 /**
+ * @brief Returns the plan index of the adjacent paragraph's first "speak" entry.
+ *
  * @param {number} fromIndex a plan index to search from, typically `planIndex`
- * @param {1|-1} direction 1 to look for the next paragraph, -1 for the previous one
- * @returns {number|null} the plan index of the adjacent paragraph's first "speak" entry, or null
- *   if there isn't one in that direction (already at the first/last paragraph)
+ * @param {1|-1} direction 1 for the next paragraph, -1 for the previous one
+ *
+ * @returns {number|null} null if there isn't one in that direction
  */
 function adjacentParagraphIndex(fromIndex, direction) {
     const currentEntry = plan[fromIndex];
@@ -555,8 +434,7 @@ function adjacentParagraphIndex(fromIndex, direction) {
 }
 
 /**
- * Cancels whatever's playing and jumps straight to `index`, speaking from there -- shared by
- * nextParagraph()/previousParagraph().
+ * @brief Cancels whatever's playing and jumps straight to `index`, speaking from there.
  *
  * @param {number} index
  */
@@ -567,24 +445,19 @@ function jumpToParagraph(index) {
     speakNext();
 }
 
-/** What the reader control's "paragraphe suivant" button calls. */
+/** @brief Jumps to the next paragraph. Called by the "paragraphe suivant" button. */
 export function nextParagraph() {
     const target = adjacentParagraphIndex(planIndex, 1);
     if (target !== null) jumpToParagraph(target);
 }
 
-/** What the reader control's "paragraphe précédent" button calls. */
+/** @brief Jumps to the previous paragraph. Called by the "paragraphe précédent" button. */
 export function previousParagraph() {
     const target = adjacentParagraphIndex(planIndex, -1);
     if (target !== null) jumpToParagraph(target);
 }
 
-/**
- * What the reader control's single dynamic primary button calls, regardless of which of the
- * three in-progress states (cf. isPausedAtCode/isPlaying/isPaused) it's currently showing a label
- * for -- keeps that branching here rather than in reader-control.js, which only needs to know
- * which label to show (cf. its own applyStatus()), not reader.js's internal state names.
- */
+/** @brief Dispatches the reader control's single dynamic primary button to whichever action matches the current playback state. */
 export function triggerPrimaryAction() {
     if (isPausedAtCode) continueAfterCode();
     else if (isPlaying) pauseReading();

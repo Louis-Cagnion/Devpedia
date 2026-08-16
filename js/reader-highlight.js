@@ -10,17 +10,12 @@ let highlightedWords = [];
 let activeWordIndex = -1;
 
 /**
- * Switches the base highlight to `entry`, replacing whatever was highlighted before, and drops
- * any active word highlight from the previous entry -- a new entry starting to play means
- * `boundary` (if it fires at all for it) hasn't reported a word yet.
+ * @brief Switches the base highlight to `entry`, replacing whatever was highlighted before, and
+ * clears any active word highlight from the previous entry.
  *
- * `highlightedWords` is refreshed on every call, even when `highlightTarget` is the very same
- * element as before (only the CSS class churn is skipped then, to avoid a pointless remove+add) --
- * a table row's own entries all share one `tr` as their highlightTarget (cf. reader-table.js's
- * collectTableSegments), so skipping the refresh there too would leave `highlightedWords` stuck on
- * whichever cell's entry happened to play first in that row, silently pinning the word highlight to
- * that cell's own words for the rest of the row regardless of which cell is actually being spoken
- * (reported by Louis on 2026-08-16: highlight stuck on the first cell of a table's first row).
+ * @example
+ * A table row's entries all share one `tr` as their highlightTarget: `highlightedWords` must
+ * still refresh every call, or it stays pinned to whichever cell played first in that row.
  *
  * @param {{highlightTarget: HTMLElement, words: HTMLElement[]}} entry
  */
@@ -43,17 +38,8 @@ export function clearHighlight() {
 }
 
 /**
- * Moves READER_ACTIVE_WORD_CLASS to `highlightedWords[index]`, if that word exists -- `index`
- * comes from an approximate mapping (cf. wordIndexAtChar()) between `boundary`'s charIndex into
- * the spoken (post-speakableText) text and the original DOM words wrapped by
- * wrapSegmentWords(), so it's clamped implicitly by the array lookup rather than asserted exact.
- *
- * The two highlight tiers are exclusive, not stacked: as soon as a word actually gets
- * highlighted, READER_HIGHLIGHT_CLASS drops off `highlightedTarget` so only the word shows --
- * layering "this whole paragraph" under "this exact word" read as redundant. It comes back the
- * moment there's no active word again (index -1: a new entry starting, cf. setHighlightedEntry,
- * or playback stopping, cf. clearHighlight), which is also the permanent state for an entry with
- * no `words` to highlight at all (cf. reader.js's collectLeafSegments).
+ * @brief Moves READER_ACTIVE_WORD_CLASS to `highlightedWords[index]`, if that word exists,
+ * exclusively replacing the whole-entry highlight while a word is active.
  *
  * @param {number} index -1 to clear without setting a new word
  */
@@ -63,6 +49,8 @@ export function setActiveWord(index) {
     activeWordIndex = index;
     const word = highlightedWords[activeWordIndex];
     word?.classList.add(READER_ACTIVE_WORD_CLASS);
+    /* Comes back the moment there's no active word (index -1), the permanent state for a
+       words-less entry too (cf. wrapSegmentWords()'s own empty-array case). */
     highlightedTarget?.classList.toggle(READER_HIGHLIGHT_CLASS, !word);
 }
 
@@ -71,9 +59,13 @@ export function setActiveWord(index) {
 export const WORD_PATTERN = /\S+/g;
 
 /**
+ * @brief Maps a `boundary` event's charIndex to a 0-based word index among WORD_PATTERN's own
+ * matches in `text`.
+ *
  * @param {string} text the utterance's own (post-speakableText) text
  * @param {number} charIndex a `boundary` event's charIndex into that text, expected to land on
  *   the first character of the word it's announcing
+ *
  * @returns {number} the 0-based index of that word among WORD_PATTERN's matches in `text`
  */
 export function wordIndexAtChar(text, charIndex) {
@@ -81,17 +73,8 @@ export function wordIndexAtChar(text, charIndex) {
 }
 
 /**
- * Replaces each word of text-node content under `root` with its own `<span class="readerWord">`
- * (whitespace/punctuation between words left as-is), so setActiveWord() has an element to target
- * per word. Recurses into every element under `root`, formatting elements (`strong`, `em`, a
- * link...) and `code` alike -- a `code` element only ever reaches this function already folded
- * into the surrounding sentence as one of its ordinary words (cf. reader.js's collectLeafSegments:
- * a `code` span with actual pronunciation to rewrite becomes its own separate entry instead,
- * bypassing wrapSegmentWords()/this function entirely). Skipping `code` here used to leave a
- * folded one with no word span of its own even though entry.text's own word count (cf.
- * scheduleEstimatedWords()) still included it -- invisible to the word highlight, and silently
- * shifting every word index after it out of alignment with the real word spans (reported by Louis
- * on 2026-08-16, "le highlight skip les codes inline").
+ * @brief Replaces each word of text-node content under `root` with its own
+ * `<span class="readerWord">`, recursing into every descendant element.
  *
  * @param {HTMLElement} root
  * @param {HTMLElement[]} out appended to in document order
@@ -115,29 +98,25 @@ function wrapWordsInPlace(root, out) {
             if (lastIndex < text.length) frag.append(text.slice(lastIndex));
             node.replaceWith(frag);
         } else if (node.nodeType === Node.ELEMENT_NODE) {
+            /* Recurses into `code` too: a folded code span left unwrapped here used to desync
+               every later word index from its real span (Louis, 2026-08-16). */
             wrapWordsInPlace(node, out);
         }
     });
 }
 
 /**
- * Moves `nodes` (a run of a leaf's own children collected by reader.js's collectLeafSegments
- * between two inline `code` spans, or up to the leaf's boundary) into one new
- * `<span class="readerSegment">` in their place, then word-wraps its content in place.
- *
- * Why a wrapper: `nodes`' original parent is the leaf itself, a block element whose own
- * background would span its full width regardless of where the text actually ends on each line
- * (a short last line would still highlight edge-to-edge). `readerSegment` is inline instead, so
- * its background paints one line-box at a time, sized to that line's own text -- same mechanism
- * `pre code`'s own comment in base.css documents, used here for the opposite effect.
+ * @brief Moves `nodes` into one new `<span class="readerSegment">` in their place, then
+ * word-wraps its content in place.
  *
  * @param {ChildNode[]} nodes non-empty, all siblings, still attached to their original parent
- * 
+ *
  * @returns {{wrapper: HTMLElement, words: HTMLElement[]}} the new wrapper, and the words wrapped
- *   inside it in document order (empty if `nodes` turned out to hold no actual word, e.g. a lone
- *   folded-in code span -- cf. reader.js's collectLeafSegments)
+ *   inside it in document order (empty if `nodes` held no actual word)
  */
 export function wrapSegmentWords(nodes) {
+    /* Inline, not the block-level leaf itself: paints one line-box at a time instead of a
+       background spanning the leaf's full width regardless of where the text ends. */
     const wrapper = createTag("span", { class: "readerSegment" });
     nodes[0].parentNode.insertBefore(wrapper, nodes[0]);
     nodes.forEach(node => wrapper.append(node));
@@ -163,11 +142,8 @@ const MAX_ACCELERATION_PER_WORD = 0.05;
 const MAX_ACCELERATION_CAP = 1.5;
 
 /**
- * Recalibrates charsPerSecond from how long an utterance actually took to speak (cf. reader.js's
- * speakNext(), utterance.onend), so the word-timing estimate converges on this session's real
- * voice/rate rather than staying a guess. Kept private to this module (unlike a plain exported
- * `charsPerSecond` binding) so scheduleEstimatedWords() below is the only thing that ever reads
- * the raw value, and every write goes through the same weighted-average rule.
+ * @brief Recalibrates charsPerSecond from how long an utterance actually took to speak, so the
+ * word-timing estimate converges on this session's real voice/rate.
  *
  * @param {number} measuredRate characters per second this utterance actually spoke at
  */
@@ -176,34 +152,16 @@ export function calibrateRate(measuredRate) {
 }
 
 /**
- * Schedules setActiveWord() calls timed to land roughly when each word of `entry.text` should
- * start being spoken, estimated from `charsPerSecond` -- the only way to get a word-by-word
- * highlight on a browser that never fires `boundary` (cf. charsPerSecond's own comment). Kept
- * running alongside `boundary` rather than instead of it: a real event is always more accurate
- * than this estimate, so reader.js's utterance.onboundary still calls setActiveWord() directly
- * on top of whatever this schedule produces, correcting it wherever the browser actually reports.
- *
- * The pace itself isn't flat: it ramps up word over word (cf. MAX_ACCELERATION_PER_WORD) rather
- * than staying at a constant charsPerSecond the whole way through.
- *
- * A short entry (a heading, a table cell) can finish being spoken -- and hand the highlight to the
- * entry after it -- before every one of its own words' timers has fired. Without the
- * `highlightedTarget` check below, such a late timer would call setActiveWord() using an index
- * that means nothing for whatever entry is *now* playing, flipping the highlight between the
- * paragraph and word tiers seemingly at random on short entries (reported by Louis on 2026-08-16,
- * "notamment sur les titres et les tableaux"). `isStillCurrent` alone doesn't catch this -- that
- * one only guards a stop/restart, not ordinary entry-to-entry progress within the same playback
- * run.
+ * @brief Schedules setActiveWord() calls timed to land roughly when each word of `entry.text`
+ * should start being spoken, estimated from `charsPerSecond`. Runs alongside the real `boundary`
+ * event rather than instead of it, which always wins when it fires.
  *
  * @param {{text: string, words: HTMLElement[], highlightTarget: HTMLElement}} entry
  * @param {() => boolean} isStillCurrent reports whether this call's playback generation is still
- *   the active one (cf. reader.js's own `generation` counter), so a stop/restart/skip silently
- *   drops every timer still pending instead of moving the highlight on a since-abandoned entry --
- *   a plain generation number isn't passed directly since it would already be stale by the time a
- *   timer fires; this closure reads reader.js's live counter instead
+ *   the active one
  */
 export function scheduleEstimatedWords(entry, isStillCurrent) {
-    if (!entry.words.length) return; // nothing to highlight word by word (cf. reader.js's collectLeafSegments)
+    if (!entry.words.length) return; // nothing to highlight word by word
     const totalWords = entry.words.length;
     const maxAcceleration = Math.min(MAX_ACCELERATION_CAP, totalWords * MAX_ACCELERATION_PER_WORD);
     let wordIndex = 0;
@@ -219,6 +177,8 @@ export function scheduleEstimatedWords(entry, isStillCurrent) {
         const index = wordIndex++;
         const delayMs = cumulativeMs;
         setTimeout(() => {
+            /* A short entry can hand the highlight to the next one before all its own timers
+               fire -- without this check, a late timer would move the highlight on the wrong entry. */
             if (isStillCurrent() && highlightedTarget === entry.highlightTarget) setActiveWord(index);
         }, delayMs);
     }
