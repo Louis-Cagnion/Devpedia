@@ -227,13 +227,109 @@ function getOperatorTable(context) {
 // list of known flags, so it covers any flag without needing to be kept in sync with content.
 const CLI_FLAG_PATTERN = /(^|\s)(--?)(?=[A-Za-z])/g;
 
-export function speakableCode(text, context) {
+// snake_case/CONSTANT_CASE identifiers (variable, option and constant names across virtually every
+// language taught on the site) read their underscore as a word on most TTS engines, e.g. "AUTO_CD"
+// heard as "auto souligné C D" -- pure noise for a listener, the underscore itself carries no
+// meaning to say out loud. A space in its place lets each part of the identifier be pronounced as
+// its own word instead, same as reading the name out loud naturally (reported by Louis on
+// 2026-08-16 while listening live to a table of Zsh option names).
+const IDENTIFIER_UNDERSCORE_PATTERN = /_/g;
+
+// Unix "rc" (run commands) dotfiles -- ".bashrc", ".zshrc" -- read as one mangled word by the TTS
+// engine otherwise ("bashrc" isn't an English word it knows). A small table rather than a generic
+// "any word ending in rc" regex: a structural suffix rule would also catch unrelated code that
+// happens to end the same way (e.g. "src", which should stay "S R C" as a whole, not "s R C").
+// Applied unconditionally like CLI_FLAG_PATTERN above -- one shell's rc file is routinely
+// referenced from another shell's own chapter (e.g. Zsh's own page mentioning `~/.bashrc` for
+// comparison), so this can't be scoped to a single context the way CONTEXT_OPERATOR_SPEECH is.
+// Extend this table as more rc-files show up in content (`.vimrc`, `.npmrc`...), same as
+// GLOBAL_OPERATOR_SPEECH above. The leading "." these files are always written with (cf. the
+// dotfile convention itself) is captured and read out as "dot" rather than left for the TTS
+// engine to silently drop -- reported by Louis on 2026-08-16 while listening live to `~/.bashrc`.
+const RC_FILE_SPEECH = { bashrc: "bash R C", zshrc: "zsh R C" };
+const RC_FILE_PATTERN = new RegExp(`(\\.)?\\b(${Object.keys(RC_FILE_SPEECH).join("|")})\\b`, "g");
+
+// A handful of the bare keywords below (cf. KEYWORD_SPEECH) are spelled in a way an English voice
+// mis-reads as a single unfamiliar blob rather than the way a person actually says it out loud --
+// "shopt" heard as one mumbled word instead of its two initial letters spelled out ("S H") plus
+// "opt" (a lowercase "sh" alone was tried first and heard as the "hush" gesture sound instead of
+// the letters, reported by Louis on 2026-08-16 while listening live). A respelling table, same
+// mechanism as RC_FILE_SPEECH above, rather than baking the fix into KEYWORD_SPEECH's own
+// membership check: most keywords there need no respelling at all (their own spelling already
+// reads correctly), so keeping the two separate avoids adding a no-op respelling entry for every
+// one of them.
+const KEYWORD_RESPELLING = { shopt: "S H opt" };
+const KEYWORD_RESPELLING_PATTERN = new RegExp(`\\b(${Object.keys(KEYWORD_RESPELLING).join("|")})\\b`, "g");
+
+// The operator/flag/rc-file rewrites above all produce an inherently English replacement (a
+// spelled-out word like "equals" or "dash", or a name like "bash R C") -- so whenever one of them
+// actually changes the text, that's a reliable signal the result needs the English voice (cf.
+// needsEnglishVoice() below). Kept as its own step, separate from speakableCode()'s final
+// underscore cleanup below, specifically so that cleanup step doesn't count as this signal too --
+// unlike the rewrites above, replacing "_" with a space doesn't imply anything about which
+// language the result belongs in, since it applies just as much to a French teaching-example
+// identifier (`nom_dossier`) as to a real English one (`AUTO_CD`).
+function englishRewrite(text, context) {
     const { table, pattern } = getOperatorTable(context);
     return text
         .replace(pattern, op => COMPARISON_OPERATORS.has(op) ? ` ${table[op]} to ` : ` ${table[op]} `)
         .replace(CLI_FLAG_PATTERN, (_, before, dashes) => `${before}${dashes === "--" ? "dash dash " : "dash "}`)
+        .replace(RC_FILE_PATTERN, (_, dot, name) => `${dot ? "dot " : ""}${RC_FILE_SPEECH[name]}`)
+        .replace(KEYWORD_RESPELLING_PATTERN, name => KEYWORD_RESPELLING[name]);
+}
+
+export function speakableCode(text, context) {
+    return englishRewrite(text, context)
+        .replace(IDENTIFIER_UNDERSCORE_PATTERN, " ")
         .replace(/\s+/g, " ")
         .trim();
+}
+
+// Bare command/builtin names that are always English regardless of the page's own language, even
+// though nothing about their spelling needs rewriting (cf. needsEnglishVoice() below) -- unlike a
+// teaching-example identifier the content author chose to fit the page's own language (e.g.
+// `nom_dossier`, or an all-caps one like `MAJUSCULES_AVEC_UNDERSCORES`, a real word in French
+// content despite the shouty case), these are the actual name of a language/tool feature, exactly
+// like an operator symbol above, just spelled the same whichever voice reads it. A curated set
+// rather than a shape-based rule (e.g. "any ALL_CAPS identifier") on purpose: content on this
+// French-first site sometimes writes a genuinely French placeholder in all caps too (cf.
+// `MAJUSCULES_AVEC_UNDERSCORES` itself, or `ECHEC`/`INCOMPLET` elsewhere), so case alone can't
+// reliably tell a real keyword apart from one.
+//
+// Applied unconditionally like RC_FILE_SPEECH above, not scoped per context the way
+// CONTEXT_OPERATOR_SPEECH is: one shell's own builtins get mentioned from another shell's own
+// chapter just as routinely as its rc file does (e.g. this exact table, read on the Zsh page,
+// mentions Bash's own `shopt`) -- scoping "shopt" to a `bash` context here left it unrecognized
+// and read in French on any page whose own context isn't literally "bash" (reported by Louis on
+// 2026-08-16 while listening live to this Zsh chapter's own recap table).
+//
+// Extend this set as more bare keywords are found while validating the pronunciation table
+// chapter by chapter (cf. devpedia-todo.md).
+const KEYWORD_SPEECH = new Set([
+    "setopt",
+    "unsetopt",
+    "shopt",
+    "AUTO_CD",
+    "CORRECT",
+    "EXTENDED_GLOB",
+    "HIST_IGNORE_DUPS",
+    "NO_CASE_GLOB",
+    "SHARE_HISTORY",
+]);
+
+/**
+ * @param {string} code raw inline-code text, not yet run through speakableCode()
+ * @param {string} context see {@link speakableCode}
+ * @returns {boolean} whether `code` needs the English voice -- either because an operator, CLI
+ *   flag or rc-file rewrite actually changes it (cf. englishRewrite() above), or because it's a
+ *   known bare keyword (cf. KEYWORD_SPEECH above) with nothing to mechanically rewrite but that's
+ *   still a real English name rather than a teaching-example identifier. Deliberately not swayed
+ *   by speakableCode()'s own underscore cleanup alone (cf. englishRewrite()'s own comment) -- that
+ *   step changes the text too, but doesn't by itself mean the result belongs in English.
+ */
+export function needsEnglishVoice(code, context) {
+    if (englishRewrite(code, context) !== code) return true;
+    return KEYWORD_SPEECH.has(code);
 }
 
 // Typographic symbols that appear directly in prose (outside inline code), which the TTS engine

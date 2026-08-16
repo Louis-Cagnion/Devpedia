@@ -1,5 +1,11 @@
 import { appState } from "./state.js";
-import { speakableCode, speakableText, PAGE_SPECIFIC_CONTEXT, HAS_SPOKEN_CONTENT } from "./reader-pronunciation.js";
+import {
+    speakableCode,
+    speakableText,
+    needsEnglishVoice,
+    PAGE_SPECIFIC_CONTEXT,
+    HAS_SPOKEN_CONTENT,
+} from "./reader-pronunciation.js";
 import { CLAUSE_END_PATTERN } from "./reader-clauses.js";
 import { collectTableSegments } from "./reader-table.js";
 import {
@@ -135,12 +141,12 @@ export function onStatusChange(listener) {
  * `leaf`'s inline `code` spans as their own separate en-US entries -- kept apart from the
  * surrounding text rather than concatenated with it, so each is spoken with correct
  * pronunciation without breaking the flow of the sentence around it. Exception: a code span
- * `speakableCode()` leaves completely untouched (a bare variable name, no operator or CLI flag to
- * rewrite -- e.g. "`a` et `a` deviendraient 0") has nothing that actually needs the English voice,
- * so it's folded into the surrounding sentence instead of forcing a voice switch and a pause for
- * something this trivial. Also splits the page-language text at every CLAUSE_END_PATTERN match, so
- * one leaf can produce several "speak" entries even with no inline code in sight (cf.
- * CLAUSE_END_PATTERN's own comment for why).
+ * needsEnglishVoice() says doesn't need the English voice at all (a bare variable name, no
+ * operator/flag/keyword to justify it -- e.g. "`a` et `a` deviendraient 0") is folded into the
+ * surrounding sentence instead, rather than forcing a voice switch and a pause for something this
+ * trivial. Also splits the page-language text at every CLAUSE_END_PATTERN match, so one leaf can
+ * produce several "speak" entries even with no inline code in sight (cf. CLAUSE_END_PATTERN's own
+ * comment for why).
  *
  * Also wraps whatever ends up in each entry's own highlight target -- an inline `readerSegment`
  * around the buffered text's original nodes, or the `code` element itself -- so speakNext() has
@@ -182,7 +188,17 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
             const code = node.textContent.trim();
             if (!code) return;
             const spoken = speakableCode(code, context);
-            if (spoken === code) {
+            if (!needsEnglishVoice(code, context)) {
+                // Buffers the raw `code`, not `spoken`, even though the two can differ (e.g.
+                // speakableCode()'s own underscore cleanup) -- `node` is about to be word-wrapped
+                // in place by wrapSegmentWords() below, splitting its own unchanged DOM text on the
+                // same WORD_PATTERN used to count entry.text's words (cf. reader-highlight.js); if
+                // this buffer used the cleaned-up text instead, the two word counts could disagree
+                // (an underscore isn't whitespace, so it doesn't split a DOM word the way a space
+                // in `spoken` would) and desync the word highlight, the exact bug already fixed
+                // once for inline code (cf. wrapWordsInPlace's own comment). Table cells don't have
+                // this constraint (cf. reader-table.js's own cellSpokenParts), so they do use the
+                // cleaned-up text here.
                 buffer += ` ${code} `;
                 segmentNodes.push(node);
             } else {
