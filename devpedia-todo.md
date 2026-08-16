@@ -1,7 +1,7 @@
 # TODO — Devpedia
 
 ## Lecture audio automatique du site (priorité de la prochaine session)
-- Brave sur Linux ne renvoie aucune voix (`speechSynthesis.getVoices()` vide, protection anti-fingerprinting) : lecture inutilisable, limitation de Brave. Piste non implémentée : détecter `getVoices().length === 0` pour masquer/adapter le bouton plutôt que le laisser sembler buggé.
+- Détection "aucune voix disponible" (`hasUsableVoice()` dans `js/reader.js`, implémentée le 2026-08-16) : remplace les boutons du lecteur par un message explicatif plutôt que les laisser sembler buggés, sur n'importe quel navigateur sans voix utilisable (Brave sur Linux confirmé concerné, mais la détection réagit à l'état réel plutôt qu'à Brave spécifiquement). Testé en simulant `getVoices()` vide ; **à confirmer par Louis sur son vrai Brave**.
 - Lecture des tableaux à revoir (demandé par Louis le 2026-08-15) : chaque cellule `th`/`td` est lue seule, sans lien avec sa colonne. Voulu : sauter la ligne d'en-tête, et pour chaque ligne de données dire "valeur, titre de colonne" (ex. tableau Bits/Combinaisons/Entiers, ligne `8 | 256 | 0 → 255` → "8 Bits, 256 Combinaisons, 0 à 255 Entiers non signé"). Touche `collectLeafSegments` dans `js/reader.js` (`TH`/`TD` sont des `LEAF_TAGS` lus indépendamment).
 - Voix BR (mapping `br` → `pt-BR`) à revérifier par Louis sur son téléphone.
 - Prononciation de "déréférencement" (chapitre pointeurs C) à diagnostiquer en écoute directe avec Louis.

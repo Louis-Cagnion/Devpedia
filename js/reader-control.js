@@ -2,6 +2,7 @@ import { createTag } from "./tags.js";
 import { t } from "./i18n.js";
 import {
     SPEECH_SUPPORTED,
+    hasUsableVoice,
     startReading,
     startFromVisible,
     replayParagraph,
@@ -23,13 +24,26 @@ import {
  * the same underlying playback state (reader.js's own module state) and stays in sync with the
  * others via onStatusChange().
  *
- * @returns {HTMLElement|null} null if the browser has no Web Speech API, so callers show nothing
- *   rather than a control that can never work
+ * A browser can have the Web Speech API present (cf. SPEECH_SUPPORTED) but no voice actually
+ * able to speak with it -- confirmed for Brave on Linux (cf. hasUsableVoice()'s own comment in
+ * reader.js). Once that's confirmed (asynchronously: unlike SPEECH_SUPPORTED, it can't be known
+ * synchronously at build time), every button here is replaced with a short explanation instead of
+ * sitting there looking broken -- requested by Louis on 2026-08-16.
+ *
+ * @returns {HTMLElement|null} null if the browser has no Web Speech API at all, so callers show
+ *   nothing rather than a control that can never work
  */
 export function createReaderControl() {
     if (!SPEECH_SUPPORTED) return null;
 
     const wrapper = createTag("div", { class: "readerControl" });
+    hasUsableVoice().then(usable => {
+        if (!usable) {
+            wrapper.replaceChildren(
+                createTag("p", { class: "readerUnavailableNotice" }, { textContent: t("readerUnavailable") })
+            );
+        }
+    });
     const listenButton = createTag(
         "button",
         { class: "returnButton readerListenButton" },

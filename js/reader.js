@@ -10,6 +10,38 @@ import { speakableCode, speakableText, PAGE_SPECIFIC_CONTEXT, HAS_SPOKEN_CONTENT
 export const SPEECH_SUPPORTED = "speechSynthesis" in window;
 const synth = SPEECH_SUPPORTED ? window.speechSynthesis : null;
 
+/**
+ * Resolves once it's known whether the browser can actually produce speech, not just whether the
+ * Web Speech API object exists (cf. SPEECH_SUPPORTED). A browser can have the API but zero usable
+ * voices -- confirmed on 2026-08-16 for Brave on Linux, whose anti-fingerprinting protection
+ * deliberately empties the list `getVoices()` returns (cf. devpedia-todo.md) -- in which case
+ * every speak() call fails silently and the reader control would otherwise sit there looking
+ * broken rather than explaining why. Not Brave-specific by design: this reacts to the voice list
+ * actually being empty, whatever the reason, so it degrades the same way for any other browser or
+ * privacy setting that ends up in the same state, known today or not.
+ *
+ * getVoices() can genuinely return empty for a brief moment even on a browser that does have
+ * voices -- they load asynchronously on some engines -- so a single synchronous call can't tell
+ * "temporarily not loaded yet" apart from "genuinely none". Waits for the voiceschanged event
+ * (fired once the real list is ready), or a short timeout in case that event never comes, before
+ * concluding either way.
+ *
+ * @returns {Promise<boolean>}
+ */
+export function hasUsableVoice() {
+    if (!SPEECH_SUPPORTED) return Promise.resolve(false);
+    if (synth.getVoices().length > 0) return Promise.resolve(true);
+    return new Promise(resolve => {
+        const timeoutId = setTimeout(finish, 1000);
+        function finish() {
+            clearTimeout(timeoutId);
+            synth.removeEventListener("voiceschanged", finish);
+            resolve(synth.getVoices().length > 0);
+        }
+        synth.addEventListener("voiceschanged", finish);
+    });
+}
+
 // Elements read as one spoken unit; everything else (blockquote, ul/ol, table/thead/tbody/tr,
 // div.tableWrapper, chart containers...) is a structural container, walked but never itself
 // read as a block.
