@@ -5,6 +5,7 @@ import {
     needsEnglishVoice,
     PAGE_SPECIFIC_CONTEXT,
     HAS_SPOKEN_CONTENT,
+    DECORATIVE_EMOJI,
 } from "./reader-pronunciation.js";
 import { CLAUSE_END_PATTERN } from "./reader-clauses.js";
 import { collectTableSegments } from "./reader-table.js";
@@ -152,6 +153,11 @@ export function onStatusChange(listener) {
  * around the buffered text's original nodes, or the `code` element itself -- so speakNext() has
  * something to switch READER_HIGHLIGHT_CLASS onto, and (for buffered text) a `words` list so it
  * can move READER_ACTIVE_WORD_CLASS as `boundary` reports each one (cf. wrapSegmentWords()).
+ * Exception: the "📋 Récapitulatif" heading every chapter ends on always highlights as one whole
+ * block, never word by word -- requested by Louis on 2026-08-16 as the one deliberate exception to
+ * word-by-word highlighting, so its `words` list is discarded even though wrapSegmentWords() still
+ * builds one. Detected by DECORATIVE_EMOJI rather than the heading's own translated text ("Summary"
+ * in English, etc.), since the emoji itself is the one part of it that never gets translated.
  *
  * @param {HTMLElement} leaf a single h2-h6/p/li element
  * @param {string} lang the page's language, e.g. "fr", "en"
@@ -162,6 +168,10 @@ export function onStatusChange(listener) {
  * @param {Array} entries the plan being built, appended to in place
  */
 function collectLeafSegments(leaf, lang, context, pageId, entries) {
+    // Not restricted to a specific heading level: markdown-to-HTML rendering shifts "##" to H2 or
+    // H3 depending on how deep it sits in a given page's own outline (cf. parser.js), so the
+    // recap heading isn't reliably one specific tag across every chapter.
+    const isRecapHeading = leaf.textContent.trimStart().startsWith(DECORATIVE_EMOJI);
     let buffer = "";
     let segmentNodes = [];
     const flushBuffer = () => {
@@ -174,7 +184,7 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
                 lang,
                 group: leaf,
                 highlightTarget: wrapper,
-                words,
+                words: isRecapHeading ? [] : words,
             });
         }
         buffer = "";

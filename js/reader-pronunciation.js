@@ -497,8 +497,11 @@ function decodeSuperscript(run, lang) {
 // only emoji ever used in prose -- an emoji used as actual teaching content, like the one in the
 // text encoding chapter's own example, always sits inside an inline `code` span instead, so it
 // goes through speakableCode(), never this function, and is left untouched). Read aloud, most TTS
-// voices announce its name ("clipboard emoji") rather than skipping it silently.
-const DECORATIVE_EMOJI = "📋";
+// voices announce its name ("clipboard emoji") rather than skipping it silently. Exported so
+// reader.js's collectLeafSegments can also use it to recognize this same heading structurally
+// (language-independent, unlike the translated "Récapitulatif"/"Summary" text itself) and skip
+// its word-by-word highlight (cf. that file's own comment on why).
+export const DECORATIVE_EMOJI = "📋";
 
 export function speakableText(text, lang, pageId) {
     const arrowWord = ARROW_SPEECH[ARROW_RANGE_PAGES.has(pageId) ? "range" : "other"][lang] ?? ARROW_SPEECH.other.en;
