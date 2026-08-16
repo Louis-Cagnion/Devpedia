@@ -19,11 +19,9 @@ import {
     scheduleEstimatedWords,
 } from "./reader-highlight.js";
 
-/* Web Speech API only (no cloud TTS, no auto-hosted engine) -- the site is 100% static
+/* Web Speech API only (no cloud TTS, no auto-hosted engine): the site is 100% static
    (GitHub Pages), so this is the only option with zero cost and zero infrastructure.
-   See devpedia-todo.md for the decisions this module implements. Pronunciation rules (how a
-   page's own text gets rewritten into what's actually spoken) live in reader-pronunciation.js
-   instead -- a separate reason to change from the reading engine/highlighting/UI below. */
+   Pronunciation rewriting lives in reader-pronunciation.js instead, a separate reason to change. */
 export const SPEECH_SUPPORTED = "speechSynthesis" in window;
 const synth = SPEECH_SUPPORTED ? window.speechSynthesis : null;
 
@@ -213,8 +211,11 @@ function collectSegments(root, lang, context, pageId, entries) {
     });
 }
 
-/* Bumps `generation` and cancels whatever utterance is in flight, without touching `planIndex` --
-   shared by resetPlayback() (which does rewind) and replayParagraph() (which seeks elsewhere). */
+/**
+ * @brief Bumps `generation` and cancels whatever utterance is in flight, without touching
+ * `planIndex`. Shared by resetPlayback() (which does rewind) and replayParagraph() (which seeks
+ * elsewhere).
+ */
 function cancelCurrentUtterance() {
     generation++;
     if (SPEECH_SUPPORTED) synth.cancel();

@@ -10,7 +10,7 @@ import { t, tEntityLabel } from "./i18n.js";
  * @returns {string}
  */
 function normalize(text) {
-    return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    return text.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
 }
 
 /**

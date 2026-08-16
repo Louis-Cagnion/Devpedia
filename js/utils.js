@@ -20,10 +20,13 @@ export function findCategory(toFind = {}) {
  * @brief Returns the content folder to fetch pages from: the translated `content-<lang>`
  * folder if a language other than French is selected, `content` otherwise.
  *
+ * @param {string} [lang] "" for French, or one of structure/languages.json's codes; defaults
+ *   to the currently selected language (appState.lang)
+ *
  * @returns {string}
  */
-export function getContentDir() {
-    return appState.lang ? `content-${appState.lang}` : "content";
+export function getContentDir(lang = appState.lang) {
+    return lang ? `content-${lang}` : "content";
 }
 
 /**

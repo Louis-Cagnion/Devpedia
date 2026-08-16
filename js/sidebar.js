@@ -58,6 +58,22 @@ function createIntroItem(onClick, isCurrent) {
  * @param {HTMLElement} container
  * @param {{categoryId: string|null, subjectId: string|null}} openState
  */
+/**
+ * @brief Builds a chapter's sidebar button, current chapter or under a subject alike.
+ *
+ * @param {string} categoryId
+ * @param {string|null} subjectId
+ * @param {{id: string, label: string}} chapter
+ *
+ * @returns {HTMLElement}
+ */
+function createChapterButton(categoryId, subjectId, chapter) {
+    const isCurrent = appState.curPageId === chapter.id;
+    const button = createTag("button", { class: `sidebarChapterButton${isCurrent ? " current" : ""}` }, { textContent: chapter.label });
+    button.addEventListener("click", () => navigateToChapter(categoryId, subjectId, chapter.id));
+    return button;
+}
+
 function renderTree(container, openState) {
     container.innerHTML = "";
     const ul = createTag("ul", { class: "sidebarTree" });
@@ -107,19 +123,13 @@ function renderTree(container, openState) {
                         chapterUl.append(createIntroItem(() => navigateToSubject(category.id, entry.id), subjectCurrent));
                         entry.chapters.forEach(chapter => {
                             const chapterLi = createTag("li");
-                            const isCurrent = appState.curPageId === chapter.id;
-                            const chapterButton = createTag("button", { class: `sidebarChapterButton${isCurrent ? " current" : ""}` }, { textContent: chapter.label });
-                            chapterButton.addEventListener("click", () => navigateToChapter(category.id, entry.id, chapter.id));
-                            chapterLi.append(chapterButton);
+                            chapterLi.append(createChapterButton(category.id, entry.id, chapter));
                             chapterUl.append(chapterLi);
                         });
                         childLi.append(chapterUl);
                     }
                 } else {
-                    const isCurrent = appState.curPageId === entry.id;
-                    const chapterButton = createTag("button", { class: `sidebarChapterButton${isCurrent ? " current" : ""}` }, { textContent: entry.label });
-                    chapterButton.addEventListener("click", () => navigateToChapter(category.id, null, entry.id));
-                    childLi.append(chapterButton);
+                    childLi.append(createChapterButton(category.id, null, entry));
                 }
                 childUl.append(childLi);
             });

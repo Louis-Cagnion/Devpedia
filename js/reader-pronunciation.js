@@ -1,8 +1,6 @@
 /* Pure text-transformation logic for js/reader.js: given a page's own text (inline code or
    prose), returns the text to actually feed SpeechSynthesisUtterance so it's pronounced
-   correctly -- no DOM access, no playback state, so this module can be reasoned about (and
-   tested) independently of the reading engine that calls into it. See devpedia-todo.md for the
-   decisions this module implements. */
+   correctly. No DOM access, no playback state, so this module is reasoned about independently. */
 
 /* A separator like " / " left between two inline `code` spans (e.g. "if / else if") has no
    word to pronounce -- skip flushing it rather than reading the bare punctuation aloud. */
@@ -247,14 +245,20 @@ const RC_FILE_PATTERN = new RegExp(`(\\.)?\\b(${Object.keys(RC_FILE_SPEECH).join
 const KEYWORD_RESPELLING = { shopt: "S H opt" };
 const KEYWORD_RESPELLING_PATTERN = new RegExp(`\\b(${Object.keys(KEYWORD_RESPELLING).join("|")})\\b`, "g");
 
-/* The operator/flag/rc-file rewrites above all produce an inherently English replacement (a
-   spelled-out word like "equals" or "dash", or a name like "bash R C") -- so whenever one of them
-   actually changes the text, that's a reliable signal the result needs the English voice (cf.
-   needsEnglishVoice() below). Kept as its own step, separate from speakableCode()'s final
-   underscore cleanup below, specifically so that cleanup step doesn't count as this signal too --
-   unlike the rewrites above, replacing "_" with a space doesn't imply anything about which
-   language the result belongs in, since it applies just as much to a French teaching-example
-   identifier (`nom_dossier`) as to a real English one (`AUTO_CD`). */
+/**
+ * @brief Applies the operator/flag/rc-file rewrites, which all produce an inherently English
+ * replacement (a spelled-out word like "equals" or "dash", or a name like "bash R C"). Whenever
+ * one of them actually changes the text, that's a reliable signal the result needs the English
+ * voice (cf. needsEnglishVoice() below). Kept as its own step, separate from speakableCode()'s
+ * final underscore cleanup, since that cleanup applies just as much to a French teaching-example
+ * identifier (`nom_dossier`) as to a real English one (`AUTO_CD`) and so implies nothing about
+ * which language the result belongs in.
+ *
+ * @param {string} text
+ * @param {string} context
+ *
+ * @returns {string}
+ */
 function englishRewrite(text, context) {
     if (BARE_DASH_PATTERN.test(text)) return BARE_DASH_SPEECH[text];
     const { table, pattern } = getOperatorTable(context);

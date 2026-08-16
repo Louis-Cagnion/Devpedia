@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 /**
- * Scans a content directory and (re)generates its struct.json to match what's on disk.
- *
- * Run with: node scripts/generate-struct.js
- * (also importable — see buildStruct/writeStruct — to build a struct-<lang>.json for a
- * translated content-<lang>/ directory, the same way this file's own CLI usage builds
- * structure/struct.json for content/)
+ * @brief Scans a content directory and (re)generates its struct.json to match what's on disk.
+ * Run with: node scripts/generate-struct.js (also importable, see buildStruct/writeStruct, to
+ * build a struct-<lang>.json for a translated content-<lang>/ directory the same way this file's
+ * own CLI usage builds structure/struct.json for content/).
  *
  * Conventions this relies on (matching how content/ is authored):
  * - <content>/acceuil.md is the home page, always mapped to the fixed "acceuil" category.
@@ -15,9 +13,9 @@
  * - if a category folder has no subfolders, its .md files (except description.md) are its
  *   chapters directly (e.g. Bash, Git).
  * - a subject's own description page is the .md file inside it whose first line (a `# Title`
- *   heading) matches the subject folder name (case-insensitive) — e.g. cpp.md titled "C++"
+ *   heading) matches the subject folder name (case-insensitive): e.g. cpp.md titled "C++"
  *   inside the "C++" folder. The rest of the .md files in that folder are its chapters.
- * - a file's title is its first line, a `# Title` markdown heading — not frontmatter.
+ * - a file's title is its first line, a `# Title` markdown heading, not frontmatter.
  * - an optional `---`-fenced frontmatter block may precede that heading, holding build-time
  *   metadata only (currently just `order`, an integer used to sort chapters, and, on a
  *   subject's own main file, to sort that subject among its siblings the same way).
@@ -31,8 +29,11 @@ const DEFAULT_CONTENT_DIR = path.join(__dirname, "..", "content");
 const DEFAULT_STRUCT_PATH = path.join(__dirname, "..", "structure", "struct.json");
 
 /**
+ * @brief Strips a file's optional frontmatter and returns its markdown body.
+ *
  * @param {string} filePath
- * @returns {string} the markdown body (frontmatter, if any, stripped off)
+ *
+ * @returns {string}
  */
 function readBody(filePath) {
     const raw = fs.readFileSync(filePath, "utf-8");
@@ -40,8 +41,11 @@ function readBody(filePath) {
 }
 
 /**
+ * @brief Reads a file's optional frontmatter's `key: value` pairs.
+ *
  * @param {string} filePath
- * @returns {Object<string, string>} the optional frontmatter's `key: value` pairs
+ *
+ * @returns {Object<string, string>}
  */
 function readFrontmatter(filePath) {
     const raw = fs.readFileSync(filePath, "utf-8");
@@ -57,8 +61,11 @@ function readFrontmatter(filePath) {
 }
 
 /**
+ * @brief Reads a file's title: its first line, a `# Title` heading.
+ *
  * @param {string} filePath
- * @returns {string} the file's title — its first line, a `# Title` heading
+ *
+ * @returns {string}
  */
 function readTitle(filePath) {
     const firstLine = readBody(filePath).split("\n")[0];
@@ -67,14 +74,16 @@ function readTitle(filePath) {
 }
 
 /**
+ * @brief Builds a kebab-case id from `name`.
+ *
  * @param {string} name
- * @returns {string} a kebab-case id
+ *
+ * @returns {string}
  */
 function slugify(name) {
     return name
-        // Décompose chaque lettre accentuée en "lettre + accent", puis retire les
-        // accents : sans cette étape, "Représentation" donnerait "repr-sentation",
-        // les accents n'étant pas dans [a-z0-9].
+        /* Décompose chaque lettre accentuée en "lettre + accent", puis retire les accents :
+           sans cette étape, "Représentation" donnerait "repr-sentation". */
         .normalize("NFD")
         .replace(/\p{Diacritic}/gu, "")
         .toLowerCase()
@@ -97,10 +106,10 @@ function listSubdirectories(dir) {
 }
 
 /**
- * Sorts items most fundamental first using their `order` field (a small integer, unique
- * among siblings). Items without an `order` (`null`) are pushed to the end, in their
- * existing (alphabetical) order. Shared by chapters and subjects — both are ordered the
- * same way, from the same kind of frontmatter field.
+ * @brief Sorts items most fundamental first using their `order` field (a small integer, unique
+ * among siblings). Items without an `order` (`null`) are pushed to the end, in their existing
+ * (alphabetical) order. Shared by chapters and subjects: both are ordered the same way, from
+ * the same kind of frontmatter field.
  *
  * @param {Array<{order: number|null}>} items mutated in place, like Array.prototype.sort
  */
@@ -114,8 +123,11 @@ function sortByOrder(items) {
 }
 
 /**
+ * @brief Builds the ordered chapter list for a set of markdown files.
+ *
  * @param {string} dir
  * @param {string[]} fileNames
+ *
  * @returns {Array<{id: string, label: string}>}
  */
 function buildChapterList(dir, fileNames) {
@@ -133,8 +145,12 @@ function buildChapterList(dir, fileNames) {
 }
 
 /**
+ * @brief Builds one subject's entry (its own main file plus its chapters).
+ *
  * @param {string} categoryDir
  * @param {string} subjectFolder
+ *
+ * @returns {{id: string, label: string, folder: string, order: number|null, chapters: Array}}
  */
 function buildSubject(categoryDir, subjectFolder) {
     const subjectDir = path.join(categoryDir, subjectFolder);
@@ -157,8 +173,13 @@ function buildSubject(categoryDir, subjectFolder) {
 }
 
 /**
+ * @brief Builds one category's entry, with either `subjects` or `chapters` depending on
+ * whether its folder has subfolders.
+ *
  * @param {string} contentDir
  * @param {string} categoryFolder
+ *
+ * @returns {{id: string, label: string, folder: string, subjects?: Array, chapters?: Array}}
  */
 function buildCategory(contentDir, categoryFolder) {
     const categoryDir = path.join(contentDir, categoryFolder);
@@ -179,16 +200,18 @@ function buildCategory(contentDir, categoryFolder) {
     return category;
 }
 
-/** Matches internal links as written in .md files, at any of the 3 levels a link can target:
- *  a chapter ("/?c=git&s=bash&p=stash", or "/?c=git&p=stash" for a category without subjects),
- *  a subject's own intro page ("/?c=git&s=bash&p=bash" — `p` repeating `s`), or a category's own
- *  intro page ("/?c=git&p=git" — `p` repeating `c` — or just "/?c=git" with `p` omitted entirely). */
+/* Matches internal links as written in .md files, at any of the 3 levels a link can target: a
+   chapter, a subject's own intro page (`p` repeating `s`), or a category's own intro page (`p`
+   repeating `c`, or `p` omitted entirely). See validateInternalLinks() below for each case. */
 const INTERNAL_LINK_PATTERN = /\/\?c=([a-z0-9-]+)(?:&s=([a-z0-9-]+))?(?:&p=([a-z0-9-]+))?/g;
 
 /**
+ * @brief Indexes a struct's valid chapter/subject ids per category id, to validate internal
+ * links against.
+ *
  * @param {{categories: Array}} struct
+ *
  * @returns {Map<string, {chapters: Set<string>, subjects: Map<string, Set<string>>}>}
- *   valid chapter/subject ids per category id, for validating internal links against
  */
 function indexStructForLinkLookup(struct) {
     const index = new Map();
@@ -203,12 +226,14 @@ function indexStructForLinkLookup(struct) {
 }
 
 /**
- * Walks every .md file under contentDir and validates each internal "?c=...&s=...&p=..." link
- * against the freshly built struct. Without this, renaming a category/subject folder (which
- * changes its slugified id) silently breaks every link pointing to it — no error anywhere on
- * the site, the broken chapter just never opens.
+ * @brief Walks every .md file under contentDir and validates each internal "?c=...&s=...&p=..."
+ * link against the freshly built struct. Without this, renaming a category/subject folder
+ * (which changes its slugified id) silently breaks every link pointing to it: no error anywhere
+ * on the site, the broken chapter just never opens.
+ *
  * @param {string} contentDir
  * @param {{categories: Array}} struct
+ *
  * @throws {Error} listing every broken link found (file + link), if any
  */
 export function validateInternalLinks(contentDir, struct) {
@@ -230,15 +255,15 @@ export function validateInternalLinks(contentDir, struct) {
                 if (!category) {
                     broken.push(`${entryPath} -> ${link} (catégorie "${categoryId}" introuvable)`);
                 } else if (chapterId === undefined || (!subjectId && chapterId === categoryId)) {
-                    // No `p` at all, or p=<categoryId> (same value as c=): both link to the
-                    // category's own intro page (its description.md), never a chapter to check.
+                    /* No `p` at all, or p=<categoryId> (same value as c=): both link to the
+                       category's own intro page (its description.md), never a chapter to check. */
                 } else if (subjectId) {
                     const subjectChapters = category.subjects.get(subjectId);
                     if (!subjectChapters) {
                         broken.push(`${entryPath} -> ${link} (sujet "${subjectId}" introuvable dans "${categoryId}")`);
                     } else if (chapterId !== subjectId && !subjectChapters.has(chapterId)) {
-                        // p=<subjectId> (same value as s=) links to the subject's own intro page
-                        // (its "main file", excluded from `chapters` — see buildSubject), not a chapter.
+                        /* p=<subjectId> (same value as s=) links to the subject's own intro page
+                           (its "main file", excluded from `chapters`, see buildSubject), not a chapter. */
                         broken.push(`${entryPath} -> ${link} (chapitre "${chapterId}" introuvable dans le sujet "${subjectId}")`);
                     }
                 } else if (!category.chapters.has(chapterId)) {
@@ -255,7 +280,10 @@ export function validateInternalLinks(contentDir, struct) {
 }
 
 /**
+ * @brief Builds the full struct (every category) for a content directory.
+ *
  * @param {string} [contentDir] defaults to the project's content/ directory
+ *
  * @returns {{categories: Array}}
  */
 export function buildStruct(contentDir = DEFAULT_CONTENT_DIR) {
@@ -270,6 +298,8 @@ export function buildStruct(contentDir = DEFAULT_CONTENT_DIR) {
 }
 
 /**
+ * @brief Writes a struct to disk as JSON.
+ *
  * @param {{categories: Array}} struct
  * @param {string} [outputPath] defaults to the project's structure/struct.json
  */

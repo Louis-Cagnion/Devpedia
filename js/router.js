@@ -18,17 +18,6 @@ export function findSubject(category, subjectId) {
     return category.subjects?.find(subject => subject.id === subjectId);
 }
 
-/**
- * @brief Returns the content folder for a language code.
- *
- * @param {string} lang "" for French, or one of structure/languages.json's codes
- *
- * @returns {string}
- */
-function contentDirFor(lang) {
-    return lang ? `content-${lang}` : "content";
-}
-
 /* ---- cross-language fallback for a page missing in the active language ----
    Folder/file names (ids) are never translated, so an id valid in one language's struct-*.json
    is the same id in another's. French is guaranteed to succeed if the id is valid at all. */
@@ -98,7 +87,7 @@ function renderResolvedTarget({ lang, category, subject, chapter }) {
         appState.navigationStack = subject
             ? [{type: 'home'}, {type: 'category', categoryId: category.id}, {type: 'subject', categoryId: category.id, subjectId: subject.id}]
             : [{type: 'home'}, {type: 'category', categoryId: category.id}];
-        const contentDir = contentDirFor(lang);
+        const contentDir = getContentDir(lang);
         const path = subject
             ? `./${contentDir}/${category.folder}/${subject.folder}/${chapter.id}.md`
             : `./${contentDir}/${category.folder}/${chapter.id}.md`;
@@ -425,25 +414,10 @@ function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter,
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} nextChapter
  */
 function appendBottomChapterNav(pageDiv, pageId, previousChapter, nextChapter) {
-    if (!previousChapter && !nextChapter) return;
-    const nav = createTag("div", {class: "pageNavBottom"});
-    if (previousChapter) {
-        const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
-        const prevButton = createChapterNavButton(`prevButton ${pageId}PrevButton`, previousChapter.label, arrow, true);
-        prevButton.addEventListener("click", (e) => {
-            navigateToChapter(previousChapter.categoryId, previousChapter.subjectId, previousChapter.id);
-        })
-        nav.append(prevButton);
-    }
-    if (nextChapter) {
-        const arrow = document.documentElement.dir === "rtl" ? "←" : "→";
-        const nextButton = createChapterNavButton(`nextButton ${pageId}NextButton`, nextChapter.label, arrow, false);
-        nextButton.addEventListener("click", (e) => {
-            navigateToChapter(nextChapter.categoryId, nextChapter.subjectId, nextChapter.id);
-        })
-        nav.append(nextButton);
-    }
-    pageDiv.append(nav);
+    const chapterNav = createChapterNav(pageId, previousChapter, nextChapter);
+    if (!chapterNav) return;
+    chapterNav.className = "pageNavBottom";
+    pageDiv.append(chapterNav);
 }
 
 /**
@@ -571,7 +545,7 @@ async function renderSubject(category, subject, lang = appState.lang) {
     appState.curCategory = category.id;
     appState.curSubject = subject.id;
     appState.curPageId = subject.id;
-    const contentDir = contentDirFor(lang);
+    const contentDir = getContentDir(lang);
     const path = `./${contentDir}/${category.folder}/${subject.folder}/${subject.id}.md`;
     const subjectInfos = await fetchFileToTextOrJson(path, 'text');
     const pageDiv = generatePageContent(subjectInfos, subject.id, true, null, null, createBreadcrumb(category, null), fallbackNoticeFor(lang), tEntityLabel("subjectLabels", subject.id, subject.label));
@@ -595,7 +569,7 @@ async function renderCategory(category, lang = appState.lang) {
     appState.curCategory = category.id;
     appState.curSubject = null;
     appState.curPageId = category.id;
-    const contentDir = contentDirFor(lang);
+    const contentDir = getContentDir(lang);
     const pageInfos = await fetchFileToTextOrJson(`./${contentDir}/${category.folder}/description.md`, 'text');
     const pageDiv = generatePageContent(pageInfos, category.id, true, null, null, null, fallbackNoticeFor(lang));
     if (category.subjects) {

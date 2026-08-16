@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
  * Retrofits scripts/variable-glossary.json identifier renaming onto ALREADY translated
- * content-<lang>/*.md files, in place — with zero DeepL API calls.
+ * content-<lang>/*.md files, in place, with zero DeepL API calls.
  *
  * Reuses segmentBody() from markdown-segmenter.mjs, which already renames glossary identifiers
  * as it splits each line into "raw" (untouched) vs "translate" (natural-language) pieces. The
  * only difference from an actual translation run: instead of sending "translate" pieces off for
- * translation, this script feeds them straight back through xmlToMdInline() unchanged — since
+ * translation, this script feeds them straight back through xmlToMdInline() unchanged, since
  * the file's own text is already correctly translated, there's nothing left to translate.
  *
  * Run with: node scripts/apply-variable-glossary.mjs <lang-code>

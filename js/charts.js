@@ -175,8 +175,14 @@ function evaluateAst(ast, x) {
     }
 }
 
-/* `fn: x => x*x` accepts the arrow-function look content authors already know from
-   JS/Python lambdas; only the body after `=>` is actually parsed as an expression. */
+/**
+ * @brief Strips the `x => ` prefix some `fn` specs use for the arrow-function look content
+ * authors already know from JS/Python lambdas; only the body after `=>` is actually parsed.
+ *
+ * @param {string} fnSpec
+ *
+ * @returns {string}
+ */
 function stripArrowPrefix(fnSpec) {
     return fnSpec.match(/^\s*x\s*=>\s*(.+)$/)?.[1] ?? fnSpec;
 }
@@ -198,6 +204,40 @@ function niceStep(range) {
 const PLOT_WIDTH = 400;
 const PLOT_HEIGHT = 260;
 const PLOT_MARGIN = {top: 20, right: 20, bottom: 30, left: 40};
+
+/**
+ * @brief Appends one tick (line + label) per step from `startTick` to `endTick` along the
+ * left-hand Y axis, shared by every plot kind that has one.
+ *
+ * @param {SVGElement} svg
+ * @param {number} startTick
+ * @param {number} endTick
+ * @param {number} step
+ * @param {(value: number) => number} toSvgY
+ */
+function appendYAxisTicks(svg, startTick, endTick, step, toSvgY) {
+    for (let tick = startTick; tick <= endTick + 1e-9; tick += step) {
+        const sy = toSvgY(tick);
+        svg.append(svgTag("line", {x1: PLOT_MARGIN.left - 4, x2: PLOT_MARGIN.left, y1: sy, y2: sy, class: "chartTick"}));
+        const label = svgTag("text", {x: PLOT_MARGIN.left - 8, y: sy + 3, class: "chartTickLabel", "text-anchor": "end"});
+        label.textContent = formatTick(tick);
+        svg.append(label);
+    }
+}
+
+/**
+ * @brief Appends the optional top caption shared by every chart kind, if `label` is set.
+ *
+ * @param {SVGElement} svg
+ * @param {number} width
+ * @param {string} [label]
+ */
+function appendCaption(svg, width, label) {
+    if (!label) return;
+    const caption = svgTag("text", {x: width / 2, y: 14, class: "chartLabel", "text-anchor": "middle"});
+    caption.textContent = label;
+    svg.append(caption);
+}
 
 /**
  * @brief Builds an inline SVG plotting `fn` (a function of `x`) over `domaine`.
@@ -263,13 +303,7 @@ function renderFunctionPlot(spec) {
         svg.append(label);
     }
     const yStep = niceStep(yMax - yMin);
-    for (let tick = Math.ceil(yMin / yStep) * yStep; tick <= yMax + 1e-9; tick += yStep) {
-        const sy = toSvgY(tick);
-        svg.append(svgTag("line", {x1: PLOT_MARGIN.left - 4, x2: PLOT_MARGIN.left, y1: sy, y2: sy, class: "chartTick"}));
-        const label = svgTag("text", {x: PLOT_MARGIN.left - 8, y: sy + 3, class: "chartTickLabel", "text-anchor": "end"});
-        label.textContent = formatTick(tick);
-        svg.append(label);
-    }
+    appendYAxisTicks(svg, Math.ceil(yMin / yStep) * yStep, yMax, yStep, toSvgY);
 
     /* Split into separate path segments across gaps (non-finite y, e.g. log(x) at x <= 0)
        so the curve never draws a straight line jumping across an undefined region. */
@@ -289,11 +323,7 @@ function renderFunctionPlot(spec) {
         svg.append(svgTag("path", {d, class: "chartCurve"}));
     }
 
-    if (spec.label) {
-        const caption = svgTag("text", {x: PLOT_WIDTH / 2, y: 14, class: "chartLabel", "text-anchor": "middle"});
-        caption.textContent = spec.label;
-        svg.append(caption);
-    }
+    appendCaption(svg, PLOT_WIDTH, spec.label);
 
     return svg;
 }
@@ -304,8 +334,15 @@ const WHEEL_CENTER_X = WHEEL_SIZE / 2;
 const WHEEL_CENTER_Y = WHEEL_SIZE / 2 + 15; // leaves room for the top caption
 const WHEEL_SLICE_COUNT = 60;
 
-/* Angle convention: 0deg (hue 0, red) at 12 o'clock, increasing clockwise --
-   the usual layout for a "color wheel" in design tools. */
+/**
+ * @brief Converts a hue angle to a point on the wheel. Angle convention: 0deg (hue 0, red) at
+ * 12 o'clock, increasing clockwise, the usual layout for a "color wheel" in design tools.
+ *
+ * @param {number} hueDegrees
+ * @param {number} radius
+ *
+ * @returns {{x: number, y: number}}
+ */
 function hueToPoint(hueDegrees, radius) {
     const angleRad = (hueDegrees * Math.PI) / 180;
     return {
@@ -364,11 +401,7 @@ function renderColorWheel(spec) {
         }));
     }
 
-    if (spec.label) {
-        const caption = svgTag("text", {x: WHEEL_SIZE / 2, y: 14, class: "chartLabel", "text-anchor": "middle"});
-        caption.textContent = spec.label;
-        svg.append(caption);
-    }
+    appendCaption(svg, WHEEL_SIZE, spec.label);
 
     return svg;
 }
@@ -455,11 +488,7 @@ function renderVectorDiagram(spec) {
         svg.append(label);
     });
 
-    if (spec.label) {
-        const caption = svgTag("text", {x: VECTOR_WIDTH / 2, y: 14, class: "chartLabel", "text-anchor": "middle"});
-        caption.textContent = spec.label;
-        svg.append(caption);
-    }
+    appendCaption(svg, VECTOR_WIDTH, spec.label);
 
     return svg;
 }
@@ -523,13 +552,7 @@ function renderDistributionChart(spec) {
     }));
 
     const yStep = niceStep(maxValue);
-    for (let tick = 0; tick <= maxValue + 1e-9; tick += yStep) {
-        const sy = toSvgY(tick);
-        svg.append(svgTag("line", {x1: PLOT_MARGIN.left - 4, x2: PLOT_MARGIN.left, y1: sy, y2: sy, class: "chartTick"}));
-        const tickLabel = svgTag("text", {x: PLOT_MARGIN.left - 8, y: sy + 3, class: "chartTickLabel", "text-anchor": "end"});
-        tickLabel.textContent = formatTick(tick);
-        svg.append(tickLabel);
-    }
+    appendYAxisTicks(svg, 0, maxValue, yStep, toSvgY);
 
     bars.forEach((bar, i) => {
         const slotCenter = PLOT_MARGIN.left + slotWidth * (i + 0.5);
@@ -546,11 +569,7 @@ function renderDistributionChart(spec) {
         svg.append(xLabel);
     });
 
-    if (spec.label) {
-        const caption = svgTag("text", {x: PLOT_WIDTH / 2, y: 14, class: "chartLabel", "text-anchor": "middle"});
-        caption.textContent = spec.label;
-        svg.append(caption);
-    }
+    appendCaption(svg, PLOT_WIDTH, spec.label);
 
     return svg;
 }

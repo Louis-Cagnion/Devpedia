@@ -24,8 +24,8 @@ const TARGET_CONTENT_DIR = path.join(ROOT, "content-br");
 
 const PT_LETTER = "A-Za-zÀ-ÖØ-öø-ÿ";
 
-// [European form, Brazilian replacement] — replacement's first letter is
-// re-capitalized to match the matched form, so only lowercase forms are listed.
+/* [European form, Brazilian replacement]: replacement's first letter is
+   re-capitalized to match the matched form, so only lowercase forms are listed. */
 const TERMS = [
     ["ficheiros", "arquivos"],
     ["ficheiro", "arquivo"],

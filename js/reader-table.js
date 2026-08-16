@@ -155,6 +155,10 @@ function mergeAdjacentRuns(parts) {
  * @param {string} pageId the page's own id
  * @param {Array} entries the plan being built, appended to in place
  */
+/* Connector word for a comparison table's "value for header" phrasing -- was hardcoded to
+   French, so an English/Spanish/Portuguese page read it as a stray French word mid-sentence. */
+const FOR_HEADER_SPEECH = { fr: "pour", en: "for", es: "para", br: "para" };
+
 export function collectTableSegments(table, lang, context, pageId, entries) {
     const headerTexts = [...table.querySelectorAll("thead th")].map(th => th.textContent.trim());
     const isRecapCard = headerTexts.every(text => !text);
@@ -168,7 +172,8 @@ export function collectTableSegments(table, lang, context, pageId, entries) {
             sentenceParts = [...label, ambientPart(" : "), ...joinPartsGroups(rest, ", ")];
         } else if (isComparison) {
             const [criterion, ...rest] = cellParts;
-            const valuePhrases = rest.map((valueParts, i) => [...valueParts, ambientPart(` pour ${headerTexts[i + 1]}`)]);
+            const forWord = FOR_HEADER_SPEECH[lang] ?? FOR_HEADER_SPEECH.fr;
+            const valuePhrases = rest.map((valueParts, i) => [...valueParts, ambientPart(` ${forWord} ${headerTexts[i + 1]}`)]);
             sentenceParts = [...criterion, ambientPart(" : "), ...joinPartsGroups(valuePhrases, ", ")];
         } else {
             /* Title always before value regardless of cell length -- suffixing short cells instead

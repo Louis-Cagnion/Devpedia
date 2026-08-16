@@ -1,13 +1,9 @@
 /**
- * Splits a content/*.md file's body into natural-language segments (to translate) and
+ * @brief Splits a content/*.md file's body into natural-language segments (to translate) and
  * untouched segments (code, punctuation, markdown syntax), and renames recurring French
- * example identifiers (`nom`, `valeur`, `fichier`...) to their target-language equivalent
- * via scripts/variable-glossary.json.
- *
- * Extracted from what used to be the DeepL translation pipeline (removed once the API
- * subscription lapsed) — this part of it never called DeepL itself, it only prepared text
- * for translation and reassembled it afterward. Still used by apply-variable-glossary.mjs
- * to retrofit glossary renames onto already-translated content, with zero API calls.
+ * example identifiers (`nom`, `valeur`, `fichier`...) to their target-language equivalent via
+ * scripts/variable-glossary.json. Extracted from the former DeepL translation pipeline (this
+ * part never called DeepL itself); still used by apply-variable-glossary.mjs, with zero API calls.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -15,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-/** Comment markers recognized per fenced-code-block language tag (a language may accept more than one — PHP allows both `//` and `#`). */
+/** Comment markers recognized per fenced-code-block language tag (a language may accept more than one: PHP allows both `//` and `#`). */
 const LINE_COMMENT_MARKERS = {
     bash: ["#"], sh: ["#"], shell: ["#"], python: ["#"], py: ["#"], makefile: ["#"], yaml: ["#"], yml: ["#"],
     javascript: ["//"], js: ["//"], php: ["//", "#"], c: ["//"], cpp: ["//"], "c++": ["//"], java: ["//"], dockerfile: ["#"],
@@ -23,7 +19,7 @@ const LINE_COMMENT_MARKERS = {
 };
 
 /**
- * Block-style comment delimiters recognized per fenced-code-block language tag — as opposed to
+ * Block-style comment delimiters recognized per fenced-code-block language tag, as opposed to
  * {@link LINE_COMMENT_MARKERS}' line-prefix style. Only OCaml today: it has no line-comment
  * syntax at all, comments are always `(* ... *)`, possibly spanning several lines.
  */
@@ -32,37 +28,44 @@ const BLOCK_COMMENT_MARKERS = {
 };
 
 /**
+ * @brief Lowercases `text` with diacritics removed (e.g. "Âge" -> "age").
+ *
  * @param {string} text
- * @returns {string} `text` lowercased with diacritics removed (e.g. "Âge" -> "age")
+ *
+ * @returns {string}
  */
 function stripAccents(text) {
-    return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    return text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
 }
 
-// Keyed by the accent-stripped form of each French entry, since real identifiers in code
-// (`age`, `element`, `cle`...) never carry the accents their dictionary spelling would have
-// (`âge`, `élément`, `clé`) — most languages don't allow accented characters in identifiers.
+/* Keyed by the accent-stripped form of each French entry, since real identifiers in code
+   (`age`, `element`, `cle`...) never carry the accents their dictionary spelling would have
+   (`âge`, `élément`, `clé`): most languages don't allow accented characters in identifiers. */
 const VARIABLE_GLOSSARY = Object.fromEntries(
     Object.entries(JSON.parse(fs.readFileSync(path.join(__dirname, "variable-glossary.json"), "utf-8")))
         .map(([word, translations]) => [stripAccents(word), translations])
 );
 
 /**
+ * @brief Looks up a bare identifier token's `targetLang` equivalent per the glossary.
+ *
  * @param {string} word a bare identifier token
  * @param {string} targetLang
- * @returns {string|null} its `targetLang` equivalent per the glossary, or null if not listed
+ *
+ * @returns {string|null} null if not listed
  */
 function glossaryTranslation(word, targetLang) {
     return VARIABLE_GLOSSARY[stripAccents(word)]?.[targetLang] ?? null;
 }
 
 /**
- * Reapplies `original`'s case convention to `translated` — ALL CAPS stays ALL CAPS (e.g. the
- * PHP constant-naming convention `NOM` -> `NAME`), Capitalized stays Capitalized, otherwise
+ * @brief Reapplies `original`'s case convention to `translated`: ALL CAPS stays ALL CAPS (e.g.
+ * the PHP constant-naming convention `NOM` -> `NAME`), Capitalized stays Capitalized, otherwise
  * `translated` is returned as-is (glossary entries are already lowercase snake_case).
  *
  * @param {string} original
  * @param {string} translated
+ *
  * @returns {string}
  */
 function matchCase(original, translated) {
@@ -74,13 +77,14 @@ function matchCase(original, translated) {
 }
 
 /**
- * Renames every bare identifier token found in `text` that matches a French variable name in
- * the glossary to its `targetLang` equivalent (e.g. `nom` -> `name`). Used on inline code spans
- * in prose, where any embedded quotes are already never sent to DeepL (ignore_tags on `<code>`),
- * so there's no separate natural-language content to protect from this substitution.
+ * @brief Renames every bare identifier token found in `text` that matches a French variable
+ * name in the glossary to its `targetLang` equivalent (e.g. `nom` -> `name`). Used on inline
+ * code spans in prose, where any embedded quotes are already never sent to DeepL (ignore_tags
+ * on `<code>`), so there's no separate natural-language content to protect from this substitution.
  *
  * @param {string} text
  * @param {string} targetLang
+ *
  * @returns {string}
  */
 export function localizeIdentifiers(text, targetLang) {
@@ -91,35 +95,42 @@ export function localizeIdentifiers(text, targetLang) {
 }
 
 /**
- * Applies {@link localizeIdentifiers} to the `literal`-kind parts of a fenced-code-block line
- * already split by {@link extractCodeLineParts} — `translate`-kind parts (natural-language
+ * @brief Applies {@link localizeIdentifiers} to the `literal`-kind parts of a fenced-code-block
+ * line already split by {@link extractCodeLineParts}. `translate`-kind parts (natural-language
  * string content headed to DeepL) are left untouched, and interpolated variable references
  * inside a string (e.g. `$nom` in `"Bonjour $nom"`) are `literal`-kind already, so renaming
  * them here keeps them in sync with a same-line identifier declared outside any string.
  *
  * @param {Array<{kind: string, text?: string, xmlText?: string}>} parts
  * @param {string} targetLang
+ *
  * @returns {Array<{kind: string, text?: string, xmlText?: string}>}
  */
 function localizeCodePartsIdentifiers(parts, targetLang) {
     return parts.map(part => part.kind === "literal" ? { ...part, text: localizeIdentifiers(part.text, targetLang) } : part);
 }
 
-/** Escapes the 3 characters that would otherwise break DeepL's XML tag-handling parser. */
+/** @brief Escapes the 3 characters that would otherwise break DeepL's XML tag-handling parser. */
 function escapeXml(text) {
     return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+/** @brief Reverses {@link escapeXml}. */
 function unescapeXml(text) {
     return text.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 }
 
 /**
- * Converts `code`, **bold**, *italic* markdown spans to <code>/<b>/<i> tags for the API call,
- * escaping any bare `<`/`>`/`&` (e.g. a redirection example like `` `< fichier.txt` ``) so the
- * result is well-formed XML. Code spans are pulled out before the bold/italic passes run (via
- * a null-char placeholder, which can't collide with real text) so a literal `*` inside one,
+ * @brief Converts `code`, **bold**, *italic* markdown spans to <code>/<b>/<i> tags for the API
+ * call, escaping any bare `<`/`>`/`&` (e.g. a redirection example like `` `< fichier.txt` ``) so
+ * the result is well-formed XML. Code spans are pulled out before the bold/italic passes run
+ * (via a null-char placeholder, which can't collide with real text) so a literal `*` inside one,
  * e.g. `` `*` ``, can never be mistaken for an emphasis marker.
+ *
+ * @param {string} text
+ * @param {string} targetLang
+ *
+ * @returns {string}
  */
 function mdInlineToXml(text, targetLang) {
     const codeSpans = [];
@@ -134,10 +145,14 @@ function mdInlineToXml(text, targetLang) {
 }
 
 /**
- * Converts <code>/<b>/<i> tags back to `code`, **bold**, *italic*, and un-escapes entities.
- * DeepL occasionally echoes an ignored <code> tag's content back wrapped in its own extra
- * pair of backticks — the trailing replace collapses any resulting double-backtick span
+ * @brief Converts <code>/<b>/<i> tags back to `code`, **bold**, *italic*, and un-escapes
+ * entities. DeepL occasionally echoes an ignored <code> tag's content back wrapped in its own
+ * extra pair of backticks; the trailing replace collapses any resulting double-backtick span
  * (`` ``for`` ``) down to a single one.
+ *
+ * @param {string} text
+ *
+ * @returns {string}
  */
 export function xmlToMdInline(text) {
     const md = text
@@ -149,19 +164,20 @@ export function xmlToMdInline(text) {
 }
 
 /**
- * Applies identifier localization to `parts`' literal pieces, then decides how the segment
- * should be emitted: as `code-parts` (reconstructed from `parts`) if anything needs DeepL
- * translation or the identifier renaming actually changed something, otherwise as `raw` — the
- * original `line` verbatim, byte-for-byte, for every line that needs no rewriting at all.
+ * @brief Applies identifier localization to `parts`' literal pieces, then decides how the
+ * segment should be emitted: as `code-parts` (reconstructed from `parts`) if anything needs
+ * DeepL translation or the identifier renaming actually changed something, otherwise as `raw`,
+ * the original `line` verbatim, byte-for-byte, for every line that needs no rewriting at all.
  *
  * @param {Array<{kind: string, text?: string, xmlText?: string}>} parts
  * @param {string} line the original, unmodified source line `parts` was derived from
  * @param {string} targetLang
- * @param {boolean} applyGlossary whether identifier renaming is safe here — false for a fenced
+ * @param {boolean} applyGlossary whether identifier renaming is safe here: false for a fenced
  *   block whose language has no registered comment marker (untagged, or e.g. html/css/sql/json),
  *   since without a reliable way to split code from a trailing comment, a glossary word could
  *   land inside natural-language comment prose instead of an actual identifier and corrupt it
  *   (e.g. renaming "chaîne" to "string" inside the French comment "chaîne le premier au second")
+ *
  * @returns {{type: string, line?: string, parts?: Array}}
  */
 function finalizeCodeParts(parts, line, targetLang, applyGlossary) {
@@ -181,11 +197,12 @@ const quoteRegex = /^(>\s?)(.*)/;
 const codeFenceRegex = /^```(\w*)/;
 
 /**
- * Split a file's body into a list of segments: `{type: "raw", line}` for anything left
+ * @brief Splits a file's body into a list of segments: `{type: "raw", line}` for anything left
  * untouched, or `{type: "translate", prefix, xmlText}` for a piece of text to send to DeepL.
  *
  * @param {string} body
  * @param {string} targetLang
+ *
  * @returns {Array<{type: string, line?: string, prefix?: string, xmlText?: string}>}
  */
 export function segmentBody(body, targetLang) {
@@ -193,12 +210,12 @@ export function segmentBody(body, targetLang) {
     let inCodeBlock = false;
     let commentMarkers = null;
     let blockMarkers = null;
-    // Tracks a block comment (e.g. OCaml's `(* ... *)`) opened on an earlier line and not yet
-    // closed — the block-comment equivalent of `inTemplateLiteral` below.
+    /* Tracks a block comment (e.g. OCaml's `(* ... *)`) opened on an earlier line and not yet
+       closed: the block-comment equivalent of `inTemplateLiteral` below. */
     let inBlockComment = false;
     let codeLang = null;
-    // Tracks a JS template literal (`...`) opened on an earlier line and not yet closed —
-    // e.g. `` const s = ` `` followed by prose lines and a closing `` ` `` on its own line.
+    /* Tracks a JS template literal (`...`) opened on an earlier line and not yet closed, e.g.
+       `` const s = ` `` followed by prose lines and a closing `` ` `` on its own line. */
     let inTemplateLiteral = false;
 
     body.split("\n").forEach(line => {
@@ -223,7 +240,7 @@ export function segmentBody(body, targetLang) {
             if (inTemplateLiteral) {
                 const closeIndex = line.indexOf("`");
                 if (closeIndex === -1) {
-                    // still inside the template literal: the whole line is its content
+                    /* still inside the template literal: the whole line is its content */
                     segments.push(/[a-zA-ZÀ-ÿ]/.test(line)
                         ? { type: "code-parts", parts: [{ kind: "translate", xmlText: escapeXml(line) }] }
                         : { type: "raw", line });
@@ -264,8 +281,8 @@ export function segmentBody(body, targetLang) {
             const isJs = ["js", "javascript", "ts", "typescript"].includes((codeLang ?? "").toLowerCase());
             const backtickCount = (codePart.match(/`/g) ?? []).length;
             if (isJs && backtickCount % 2 === 1) {
-                // an odd number of backticks means the last one opens a template literal
-                // that isn't closed on this same line — it continues on the next line(s).
+                /* An odd number of backticks means the last one opens a template literal
+                   that isn't closed on this same line: it continues on the next line(s). */
                 const openIndex = codePart.lastIndexOf("`");
                 parts = extractCodeLineParts(codePart.slice(0, openIndex), codeLang);
                 parts.push({ kind: "literal", text: "`" });
@@ -303,9 +320,9 @@ export function segmentBody(body, targetLang) {
 }
 
 /**
- * Splits a code-block line for a block-comment language (only OCaml today, see
+ * @brief Splits a code-block line for a block-comment language (only OCaml today, see
  * {@link BLOCK_COMMENT_MARKERS}) into alternating code/comment parts, tracking whether a
- * comment opened on this line (or an earlier one) is still open at its end — a block comment
+ * comment opened on this line (or an earlier one) is still open at its end: a block comment
  * can span multiple lines, mirroring how `inTemplateLiteral` tracks a multi-line JS template
  * literal above. Comments are not nested here, unlike OCaml itself (the first `close` marker
  * always ends the comment): none of this project's own OCaml snippets nest a comment inside
@@ -315,6 +332,7 @@ export function segmentBody(body, targetLang) {
  * @param {{open: string, close: string}} markers
  * @param {boolean} startInComment whether a comment opened on an earlier line is still open
  * @param {string} codeLang
+ *
  * @returns {{parts: Array<{kind: string, text?: string, xmlText?: string}>, stillInComment: boolean}}
  */
 function splitByBlockComment(line, markers, startInComment, codeLang) {
@@ -351,11 +369,12 @@ function splitByBlockComment(line, markers, startInComment, codeLang) {
 }
 
 /**
- * Finds where a line comment starts, ignoring markers that appear inside a quoted string
+ * @brief Finds where a line comment starts, ignoring markers that appear inside a quoted string
  * (approximated by requiring an even number of quote characters before the marker).
  *
  * @param {string} line
  * @param {string} marker
+ *
  * @returns {number} index of the marker, or -1 if none found outside a string
  */
 function findCommentMarker(line, marker) {
@@ -371,15 +390,21 @@ function findCommentMarker(line, marker) {
     return -1;
 }
 
-// Group 1: optional 0-2 letter prefix (f/F for Python f-strings, r/b/rb combos).
-// Group 2: quote character (', ", or ` for JS template literals).
-// Group 3: string content.
+/* Group 1: optional 0-2 letter prefix (f/F for Python f-strings, r/b/rb combos).
+   Group 2: quote character (', ", or ` for JS template literals).
+   Group 3: string content. */
 const stringLiteralRegex = /([a-zA-Z]{0,2})(["'`])((?:\\.|(?!\2).)*)\2/g;
 
 /**
- * Returns the regex matching interpolation expressions for a given fenced-code-block
- * language and quote style, or null if that combination doesn't support interpolation
- * (e.g. PHP single-quoted strings, JS strings using ' or ", Python strings with no f-prefix).
+ * @brief Returns the regex matching interpolation expressions for a given fenced-code-block
+ * language and quote style, or null if that combination doesn't support interpolation (e.g.
+ * PHP single-quoted strings, JS strings using ' or ", Python strings with no f-prefix).
+ *
+ * @param {string} codeLang
+ * @param {string} quoteChar
+ * @param {string} prefix
+ *
+ * @returns {RegExp|null}
  */
 function getInterpolationRegex(codeLang, quoteChar, prefix) {
     const lang = (codeLang ?? "").toLowerCase();
@@ -389,16 +414,21 @@ function getInterpolationRegex(codeLang, quoteChar, prefix) {
         return /\{\$[^}]*\}|\$\{[^}]*\}|\$[A-Za-z_][A-Za-z0-9_]*(?:\[[^\]]*\]|->[A-Za-z_][A-Za-z0-9_]*)*/g;
     if (["python", "py"].includes(lang) && /f/i.test(prefix ?? ""))
         return /\{[^{}]*\}/g;
-    // Bash/shell double-quoted strings interpolate $var, ${var} and $(command) — single-quoted
-    // strings don't interpolate at all, so they're excluded (quoteChar === '"' only).
+    /* Bash/shell double-quoted strings interpolate $var, ${var} and $(command); single-quoted
+       strings don't interpolate at all, so they're excluded (quoteChar === '"' only). */
     if (["bash", "sh", "shell"].includes(lang) && quoteChar === '"')
         return /\$\{[^}]*\}|\$\([^)]*\)|\$[A-Za-z_][A-Za-z0-9_]*/g;
     return null;
 }
 
 /**
- * Splits string content into literal runs (interpolation expressions, kept as-is) and
+ * @brief Splits string content into literal runs (interpolation expressions, kept as-is) and
  * text runs (surrounding natural language, to be translated).
+ *
+ * @param {string} content
+ * @param {RegExp|null} interpRegex
+ *
+ * @returns {Array<{kind: string, text: string}>}
  */
 function splitInterpolatedContent(content, interpRegex) {
     if (!interpRegex)
@@ -419,11 +449,16 @@ function splitInterpolatedContent(content, interpRegex) {
 }
 
 /**
- * Splits a line of code into literal pieces (kept as-is) and translatable pieces (the
+ * @brief Splits a line of code into literal pieces (kept as-is) and translatable pieces (the
  * natural-language runs inside quoted strings). Strings with no letters (IDs, format
  * specifiers, codes) are left untouched. Interpolation expressions inside JS template
  * literals (`${x}`), PHP double-quoted strings ($x, {$x}), and Python f-strings ({x})
  * are detected via getInterpolationRegex and excluded from translation.
+ *
+ * @param {string} line
+ * @param {string} codeLang
+ *
+ * @returns {Array<{kind: string, text?: string, xmlText?: string}>}
  */
 function extractCodeLineParts(line, codeLang) {
     const parts = [];
@@ -460,7 +495,10 @@ function extractCodeLineParts(line, codeLang) {
 }
 
 /**
+ * @brief Splits a file into its frontmatter (kept fenced, empty string if there is none) and body.
+ *
  * @param {string} filePath
+ *
  * @returns {{frontmatter: string, body: string}}
  */
 export function readFrontmatterAndBody(filePath) {
@@ -471,6 +509,13 @@ export function readFrontmatterAndBody(filePath) {
     return { frontmatter: `---${parts[1]}---\n\n`, body: parts.slice(2).join("---").trim() };
 }
 
+/**
+ * @brief Recursively lists every `.md` file under `dir`.
+ *
+ * @param {string} dir
+ *
+ * @returns {string[]}
+ */
 export function listMarkdownFilesRecursive(dir) {
     let files = [];
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {

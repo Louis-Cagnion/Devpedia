@@ -136,7 +136,7 @@ function slugifyHeading(text) {
     return text
         .toLowerCase()
         .replace(/<[^>]+>/g, "")
-        .normalize("NFD").replace(/[̀-ͯ]/g, "")
+        .normalize("NFD").replace(/\p{Diacritic}/gu, "")
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
 }
@@ -266,7 +266,7 @@ function createTableFromLines(headerLine, separatorLine, bodyLines, homeDiv, fil
  */
 export function parseAppendText(homeDiv, fileName, text) {
     /* Blank lines are noise between blocks, but significant inside a fenced code block
-       (they're part of the code) — so fence state must gate the filter, not run after it. */
+       (they're part of the code): so fence state must gate the filter, not run after it. */
     let inFence = false;
     const lines = text.split("\n").filter(line => {
         if (isCodeFence(line)) {
@@ -299,8 +299,8 @@ export function parseAppendText(homeDiv, fileName, text) {
             listDiv = createTag(type, {class: `content-list ${fileName}${type}`});
             homeDiv.append(listDiv);
         }
-        line = line.replace(listRegex, "")
-        listDiv.append(createTag("li", {}, {innerHTML: line}))
+        line = line.replace(listRegex, "");
+        listDiv.append(createTag("li", {}, {innerHTML: line}));
         return listDiv;
     }
 
