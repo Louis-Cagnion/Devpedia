@@ -441,16 +441,35 @@ function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter,
  * the chapter buttons: the request was specifically about reaching the next/previous chapter
  * without scrolling, not about going back up a level (which the return button does).
  *
+ * Laid out as its own full-width row (previous at the start, next at the end) rather than reusing
+ * createChapterNav()'s stacked, right-aligned pair -- that layout exists specifically to leave
+ * room for the return button sharing the row at the top of the page; with no return button down
+ * here, the full page width is free to use instead (requested by Louis on 2026-08-16).
+ *
  * @param {HTMLElement} pageDiv where the nav row will be attached to
  * @param {string} pageId
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} previousChapter
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} nextChapter
  */
 function appendBottomChapterNav(pageDiv, pageId, previousChapter, nextChapter) {
-    const chapterNav = createChapterNav(pageId, previousChapter, nextChapter);
-    if (!chapterNav) return;
+    if (!previousChapter && !nextChapter) return;
     const nav = createTag("div", {class: "pageNavBottom"});
-    nav.append(chapterNav);
+    if (previousChapter) {
+        const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
+        const prevButton = createChapterNavButton(`prevButton ${pageId}PrevButton`, previousChapter.label, arrow, true);
+        prevButton.addEventListener("click", (e) => {
+            navigateToChapter(previousChapter.categoryId, previousChapter.subjectId, previousChapter.id);
+        })
+        nav.append(prevButton);
+    }
+    if (nextChapter) {
+        const arrow = document.documentElement.dir === "rtl" ? "←" : "→";
+        const nextButton = createChapterNavButton(`nextButton ${pageId}NextButton`, nextChapter.label, arrow, false);
+        nextButton.addEventListener("click", (e) => {
+            navigateToChapter(nextChapter.categoryId, nextChapter.subjectId, nextChapter.id);
+        })
+        nav.append(nextButton);
+    }
     pageDiv.append(nav);
 }
 

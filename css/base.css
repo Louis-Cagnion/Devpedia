@@ -423,13 +423,19 @@ em {
 }
 
 /* Second previous/next chapter nav at the bottom of a chapter's own content (cf.
-   appendBottomChapterNav() in router.js) -- no return button here, so `justify-content:
-   space-between` (which relies on that other, absent button to push .chapterNav to this same
-   right-aligned spot) isn't reused; flex-end does the same job with only one child. */
+   appendBottomChapterNav() in router.js) -- previous pinned to the start, next to the end, using
+   the chapter's full width now that there's no return button to share the row with (requested by
+   Louis on 2026-08-16). `.nextButton`'s own margin-inline-start: auto below does the pinning
+   (rather than `justify-content: space-between` here), so it still lands at the end even when
+   it's the only button present (the first chapter of a subject/category has no previous one). */
 .pageNavBottom {
     display: flex;
-    justify-content: flex-end;
+    gap: 0.75rem;
     margin-top: 1.5rem;
+}
+
+.pageNavBottom .nextButton {
+    margin-inline-start: auto;
 }
 
 /* previous chapter above next chapter, both right-aligned — a single row would make two
