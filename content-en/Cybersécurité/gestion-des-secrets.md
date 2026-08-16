@@ -41,7 +41,7 @@ api_key = readEnvironmentVariable("API_KEY")
 
 ## Secrets vaults
 
-Beyond a simple `.env` file, a secrets vault is a dedicated service (for example [HashiCorp Vault](https://www.vaultproject.io) or a cloud provider's built-in secrets manager, like AWS Secrets Manager) that offers what a `.env` file can't:
+Beyond a simple `.env` file, a secrets vault is a dedicated service (for example [HashiCorp Vault](https://www.vaultproject.io) or a cloud provider's built-in secrets manager, like [AWS Secrets Manager](https://aws.amazon.com/secrets-manager)) that offers what a `.env` file can't:
 
 | Need | `.env` file | Secrets vault |
 |---|---|---|

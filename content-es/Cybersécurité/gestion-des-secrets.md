@@ -41,7 +41,7 @@ clave_api = leerVariableDeEntorno("API_KEY")
 
 ## Las bóvedas de secretos (*vaults*)
 
-Más allá de un simple archivo `.env`, una bóveda de secretos es un servicio dedicado (por ejemplo, [HashiCorp Vault](https://www.vaultproject.io) o un gestor de secretos integrado en un proveedor cloud como AWS Secrets Manager) que ofrece lo que un archivo `.env` no puede:
+Más allá de un simple archivo `.env`, una bóveda de secretos es un servicio dedicado (por ejemplo, [HashiCorp Vault](https://www.vaultproject.io) o un gestor de secretos integrado en un proveedor cloud como [AWS Secrets Manager](https://aws.amazon.com/secrets-manager)) que ofrece lo que un archivo `.env` no puede:
 
 | Necesidad | Archivo `.env` | Bóveda de secretos |
 |---|---|---|

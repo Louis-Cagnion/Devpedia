@@ -41,7 +41,7 @@ chave_api = lerVariavelDeAmbiente("API_KEY")
 
 ## Os cofres de segredos (*vaults*)
 
-Além de um simples arquivo `.env`, um cofre de segredos é um serviço dedicado (por exemplo, [HashiCorp Vault](https://www.vaultproject.io) ou um gerenciador de segredos integrado a um provedor de nuvem como o AWS Secrets Manager) que oferece o que um arquivo `.env` não consegue:
+Além de um simples arquivo `.env`, um cofre de segredos é um serviço dedicado (por exemplo, [HashiCorp Vault](https://www.vaultproject.io) ou um gerenciador de segredos integrado a um provedor de nuvem como o [AWS Secrets Manager](https://aws.amazon.com/secrets-manager)) que oferece o que um arquivo `.env` não consegue:
 
 | Necessidade | Arquivo `.env` | Cofre de segredos |
 |---|---|---|

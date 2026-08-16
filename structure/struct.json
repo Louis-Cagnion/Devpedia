@@ -159,6 +159,49 @@
       ]
     },
     {
+      "id": "cybersecurite",
+      "label": "Cybersécurité",
+      "folder": "Cybersécurité",
+      "chapters": [
+        {
+          "id": "types-de-failles",
+          "label": "Les grandes familles de failles"
+        },
+        {
+          "id": "ingenierie-sociale-et-phishing",
+          "label": "Ingénierie sociale et phishing"
+        },
+        {
+          "id": "principes-de-developpement-securise",
+          "label": "Principes de développement sécurisé"
+        },
+        {
+          "id": "gestion-des-secrets",
+          "label": "Gestion des secrets"
+        },
+        {
+          "id": "cryptographie-appliquee",
+          "label": "Cryptographie appliquée pour développeurs"
+        },
+        {
+          "id": "securite-des-dependances",
+          "label": "Sécurité des dépendances et de la chaîne d'approvisionnement"
+        },
+        {
+          "id": "securite-api-web",
+          "label": "Sécurité des API web"
+        },
+        {
+          "id": "tests-et-audit-de-securite",
+          "label": "Tests et audit de sécurité"
+        },
+        {
+          "id": "owasp-top-10",
+          "label": "L'OWASP Top 10 : le référentiel standard de l'industrie"
+        }
+      ]
+    },
+    {
       "id": "data-science",
       "label": "Data Science",
       "folder": "Data Science",

@@ -18,7 +18,7 @@ cle_api = "sk_live_51H8xJ2eZvKYlo2C..."
 //   (voir Annuler des changements et naviguer dans l'historique)
 ```
 
-Une fois un secret commité, le simple retirer du fichier ne suffit pas : il reste consultable dans l'historique Git tant qu'il n'a pas été réécrit (opération lourde et risquée sur un dépôt partagé, voir [Annuler des changements et naviguer dans l'historique](/?c=git&p=annuler-et-historique)) — et même après une réécriture, un clone déjà existant ailleurs peut avoir conservé la version compromise. La seule protection fiable une fois un secret exposé est de le **révoquer et le remplacer immédiatement**, jamais de compter sur sa suppression du dépôt.
+Une fois un secret commité, le simple retirer du fichier ne suffit pas : il reste consultable dans l'historique Git tant qu'il n'a pas été réécrit (opération lourde et risquée sur un dépôt partagé, voir [Annuler des changements et naviguer dans l'historique](/?c=git&p=annuler-et-historique)) ; et même après une réécriture, un clone déjà existant ailleurs peut avoir conservé la version compromise. La seule protection fiable une fois un secret exposé est de le **révoquer et le remplacer immédiatement**, jamais de compter sur sa suppression du dépôt.
 
 ## Où stocker un secret : trois approches, du plus simple au plus robuste
 
@@ -41,7 +41,7 @@ cle_api = lire_variable_environnement("API_KEY")
 
 ## Les coffres-forts de secrets (*vaults*)
 
-Au-delà d'un simple fichier `.env`, un coffre-fort de secrets est un service dédié (par exemple [HashiCorp Vault](https://www.vaultproject.io) ou un gestionnaire de secrets intégré à un fournisseur cloud comme AWS Secrets Manager) qui apporte ce qu'un fichier `.env` ne peut pas offrir :
+Au-delà d'un simple fichier `.env`, un coffre-fort de secrets est un service dédié (par exemple [HashiCorp Vault](https://www.vaultproject.io) ou un gestionnaire de secrets intégré à un fournisseur cloud comme [AWS Secrets Manager](https://aws.amazon.com/secrets-manager)) qui apporte ce qu'un fichier `.env` ne peut pas offrir :
 
 | Besoin | Fichier `.env` | Coffre-fort de secrets |
 |---|---|---|
