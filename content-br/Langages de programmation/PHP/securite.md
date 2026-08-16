@@ -39,7 +39,7 @@ Alguns filtros comuns:
 
 ## `htmlspecialchars()`: proteger-se de falhas XSS
 
-Se você exibir um dado do usuário na página (ex: um comentário, um apelido), um visitante poderia injetar código HTML/JavaScript malicioso. É uma falha chamada **XSS** (*Cross-Site Scripting*).
+Se você exibir um dado do usuário na página (ex: um comentário, um apelido), um visitante poderia injetar código HTML/JavaScript malicioso. É uma falha chamada **XSS** (*Cross-Site Scripting*), uma forma de [injeção](/?c=cybersecurite&p=types-de-failles): um dado não confiável interpretado como código em vez de texto puro.
 
 ```php
 <?php
@@ -141,7 +141,7 @@ if (hash_equals($token_esperado, $token_recebido)) { /* ... */ }
 
 ## CSRF: Cross-Site Request Forgery
 
-Um site malicioso faz executar, sem o conhecimento do usuário, uma ação em outro site onde este já está autenticado, apoiando-se no fato de que o navegador reenvia automaticamente os cookies de sessão para esse site, seja qual for a página de origem da requisição.
+Um exemplo concreto de [controle de acesso falho](/?c=cybersecurite&p=types-de-failles): uma ação sensível disparada sem reconferir se a requisição reflete uma intenção real do usuário, e não apenas um cookie de sessão válido. Um site malicioso faz executar, sem o conhecimento do usuário, uma ação em outro site onde este já está autenticado, apoiando-se no fato de que o navegador reenvia automaticamente os cookies de sessão para esse site, seja qual for a página de origem da requisição.
 
 ```html
 <!-- em um site terceiro, armadilha -->
@@ -197,7 +197,7 @@ Três siglas retornam em tudo o que segue:
 - **HTTPS**: simplesmente HTTP transportado em uma conexão criptografada por TLS. Nada mais muda do lado do protocolo aplicativo.
 - **DNS** (*Domain Name System*): o catálogo que traduz um nome de domínio em endereço IP. É uma etapa indispensável antes de qualquer conexão, e portanto um alvo.
 
-- **Man-in-the-middle (MITM)**: o atacante se intercala entre o cliente e o servidor legítimo, e retransmite (ou altera) a conversa sem que nenhuma das duas partes perceba. A criptografia sozinha (TLS) não basta para impedi-lo: um atacante pode criptografar *sua própria* conversa com o cliente, enquanto criptografa outra conversa com o servidor real. **Proteção:** a verificação do certificado SSL/TLS apresentado pelo servidor (`verify_peer`/`verify_peer_name`, veja [Fazer chamadas HTTP nativamente](/?c=langages-de-programmation&s=php&p=http)): sem ela, um certificado forjado pelo atacante seria aceito sem problema.
+- **Man-in-the-middle (MITM)**: o atacante se intercala entre o cliente e o servidor legítimo, e retransmite (ou altera) a conversa sem que nenhuma das duas partes perceba. A criptografia sozinha (TLS) não basta para impedi-lo: um atacante pode criptografar *sua própria* conversa com o cliente, enquanto criptografa outra conversa com o servidor real. **Proteção:** a verificação do certificado SSL/TLS apresentado pelo servidor (`verify_peer`/`verify_peer_name`, veja [Fazer chamadas HTTP nativamente](/?c=langages-de-programmation&s=php&p=http)): sem ela, um certificado forjado pelo atacante seria aceito sem problema. A criptografia assimétrica por trás dessa verificação de certificado é detalhada em [Criptografia aplicada](/?c=cybersecurite&p=cryptographie-appliquee).
 - **DNS spoofing / cache poisoning**: o atacante corrompe a resolução DNS para que um nome de domínio legítimo aponte para o IP dele. A verificação de certificado continua sendo uma proteção mesmo que o DNS esteja comprometido, pois não depende da resolução DNS mas da identidade criptográfica apresentada pelo servidor.
 - **Sniffing (escuta passiva)**: simples leitura do tráfego de rede não criptografado. Não exige nenhuma interação ativa com o tráfego: apenas observá-lo, por exemplo em uma rede Wi-Fi pública não controlada. **Proteção:** HTTPS em tudo, sem exceção para um dado considerado "não tão sensível".
 
@@ -215,11 +215,11 @@ Sobrecarregar um servidor (ou um recurso de rede) com requisições, vindas de n
 
 ### Phishing
 
-Fazer a vítima acreditar que está interagindo com um site/serviço legítimo para extrair informações dela (credenciais, dados bancários), tipicamente via um nome de domínio visualmente próximo do real (*typosquatting*) e um certificado SSL válido, mas emitido para esse falso domínio. Um certificado válido prova a identidade **do domínio chamado**, não que esse domínio seja confiável: uma nuance que explica por que o cadeado do navegador sozinho nunca garante que um site é legítimo.
+O lado humano mais do que técnico, detalhado em [Engenharia social e phishing](/?c=cybersecurite&p=ingenierie-sociale-et-phishing). Fazer a vítima acreditar que está interagindo com um site/serviço legítimo para extrair informações dela (credenciais, dados bancários), tipicamente via um nome de domínio visualmente próximo do real (*typosquatting*) e um certificado SSL válido, mas emitido para esse falso domínio. Um certificado válido prova a identidade **do domínio chamado**, não que esse domínio seja confiável: uma nuance que explica por que o cadeado do navegador sozinho nunca garante que um site é legítimo.
 
 ### SSRF: Server-Side Request Forgery
 
-Forçar um servidor a realizar, em nome de um atacante, uma requisição HTTP para um destino que ele normalmente não deveria alcançar, tipicamente um recurso interno da rede (painel de administração, metadados de nuvem, serviço interno não exposto publicamente).
+Classificada A10 no [OWASP Top 10](/?c=cybersecurite&p=owasp-top-10). Forçar um servidor a realizar, em nome de um atacante, uma requisição HTTP para um destino que ele normalmente não deveria alcançar, tipicamente um recurso interno da rede (painel de administração, metadados de nuvem, serviço interno não exposto publicamente).
 
 ```php
 <?php

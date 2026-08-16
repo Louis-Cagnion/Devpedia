@@ -3,7 +3,6 @@
 ## Lecture audio automatique du site (priorité de la prochaine session)
 - Prononciation de "déréférencement" (chapitre pointeurs C) à diagnostiquer en écoute directe avec Louis.
 - Symboles rares en prose non traités (`↔`, `±`, `…`, `·` isolé) : laissés de côté faute de volume (1-2 occurrences chacun).
-- `^` en prose comme exposant lu "accent circonflexe" au lieu de "puissance" (ex. `nombres-flottants.md`, "mantisse × 2^exposant") : à ajouter à `PROSE_SYMBOL_SPEECH` dans `js/reader-pronunciation.js`, même traitement que les exposants Unicode.
 - Table de prononciation des symboles (`js/reader-pronunciation.js`) à valider mot à mot par Louis, chapitre par chapitre : reste tout hors C/C++/SQL/Git/PHP, déjà testés en écoute directe le 2026-08-15 (modulo/times/bitwise, XOR, emoji 📋, flèche →, ≈/≥/≠/°).
 
 ## Langues

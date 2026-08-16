@@ -39,7 +39,7 @@ Quelques filtres courants :
 
 ## `htmlspecialchars()` : se protéger des failles XSS
 
-Si vous affichez une donnée utilisateur sur la page (ex: un commentaire, un pseudo), un visiteur pourrait injecter du code [HTML](/?c=langages-de-balisage&s=html&p=html)/[JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) malveillant. C'est une faille appelée **XSS** (*Cross-Site Scripting*).
+Si vous affichez une donnée utilisateur sur la page (ex: un commentaire, un pseudo), un visiteur pourrait injecter du code [HTML](/?c=langages-de-balisage&s=html&p=html)/[JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) malveillant. C'est une faille appelée **XSS** (*Cross-Site Scripting*), une forme d'[injection](/?c=cybersecurite&p=types-de-failles) : une donnée non fiable interprétée comme du code plutôt que comme du simple texte.
 
 ```php
 <?php
@@ -141,7 +141,7 @@ if (hash_equals($jeton_attendu, $jeton_recu)) { /* ... */ }
 
 ## CSRF : Cross-Site Request Forgery
 
-Un site malveillant fait exécuter, à l'insu de l'utilisateur, une action sur un autre site où celui-ci est déjà authentifié, en s'appuyant sur le fait que le navigateur renvoie automatiquement les cookies de session à ce site, quelle que soit la page d'origine de la requête.
+Un exemple concret de [contrôle d'accès défaillant](/?c=cybersecurite&p=types-de-failles) : une action sensible déclenchée sans revérifier que la requête vient bien d'une intention de l'utilisateur, pas seulement d'un cookie de session valide. Un site malveillant fait exécuter, à l'insu de l'utilisateur, une action sur un autre site où celui-ci est déjà authentifié, en s'appuyant sur le fait que le navigateur renvoie automatiquement les cookies de session à ce site, quelle que soit la page d'origine de la requête.
 
 ```html
 <!-- sur un site tiers, piégé -->
@@ -197,7 +197,7 @@ Trois sigles reviennent dans tout ce qui suit :
 - **HTTPS** : simplement HTTP transporté dans une connexion chiffrée par TLS. Rien d'autre ne change côté protocole applicatif.
 - **DNS** (*Domain Name System*) : l'annuaire qui traduit un nom de domaine en adresse IP. C'est une étape indispensable avant toute connexion, et donc une cible.
 
-- **Man-in-the-middle (MITM)** : l'attaquant s'intercale entre le client et le serveur légitime, et relaie (ou altère) la conversation sans qu'aucune des deux parties ne s'en aperçoive. Le chiffrement seul (TLS) ne suffit pas à l'empêcher : un attaquant peut chiffrer *sa propre* conversation avec le client, pendant qu'il chiffre une autre conversation avec le vrai serveur. **Protection :** la vérification du certificat SSL/TLS présenté par le serveur (`verify_peer`/`verify_peer_name`, voir [Faire des appels HTTP en natif](/?c=langages-de-programmation&s=php&p=http)) : sans elle, un certificat forgé par l'attaquant serait accepté sans broncher.
+- **Man-in-the-middle (MITM)** : l'attaquant s'intercale entre le client et le serveur légitime, et relaie (ou altère) la conversation sans qu'aucune des deux parties ne s'en aperçoive. Le chiffrement seul (TLS) ne suffit pas à l'empêcher : un attaquant peut chiffrer *sa propre* conversation avec le client, pendant qu'il chiffre une autre conversation avec le vrai serveur. **Protection :** la vérification du certificat SSL/TLS présenté par le serveur (`verify_peer`/`verify_peer_name`, voir [Faire des appels HTTP en natif](/?c=langages-de-programmation&s=php&p=http)) : sans elle, un certificat forgé par l'attaquant serait accepté sans broncher. Le fonctionnement du chiffrement asymétrique derrière cette vérification de certificat est détaillé dans [Cryptographie appliquée](/?c=cybersecurite&p=cryptographie-appliquee).
 - **DNS spoofing / cache poisoning** : l'attaquant corrompt la résolution DNS pour qu'un nom de domaine légitime pointe vers son IP à lui. La vérification de certificat reste une protection même si le DNS est compromis, car elle ne dépend pas de la résolution DNS mais de l'identité cryptographique présentée par le serveur.
 - **Sniffing (écoute passive)** : simple lecture du trafic réseau non chiffré. Ne nécessite aucune interaction active avec le trafic : juste l'observer, par exemple sur un réseau Wi-Fi public non maîtrisé. **Protection :** HTTPS partout, sans exception pour une donnée jugée "pas si sensible".
 
@@ -215,11 +215,11 @@ Submerger un serveur (ou une ressource réseau) de requêtes, depuis de nombreus
 
 ### Phishing
 
-Faire croire à la victime qu'elle interagit avec un site/service légitime pour lui soutirer des informations (identifiants, coordonnées bancaires), typiquement via un nom de domaine visuellement proche du vrai (*typosquatting*) et un certificat SSL valide, mais délivré pour ce faux domaine. Un certificat valide prouve l'identité **du domaine appelé**, pas que ce domaine soit digne de confiance : une nuance qui explique pourquoi le cadenas du navigateur seul ne garantit jamais qu'un site est légitime.
+Volet humain plutôt que technique, détaillé dans [Ingénierie sociale et phishing](/?c=cybersecurite&p=ingenierie-sociale-et-phishing). Faire croire à la victime qu'elle interagit avec un site/service légitime pour lui soutirer des informations (identifiants, coordonnées bancaires), typiquement via un nom de domaine visuellement proche du vrai (*typosquatting*) et un certificat SSL valide, mais délivré pour ce faux domaine. Un certificat valide prouve l'identité **du domaine appelé**, pas que ce domaine soit digne de confiance : une nuance qui explique pourquoi le cadenas du navigateur seul ne garantit jamais qu'un site est légitime.
 
 ### SSRF : Server-Side Request Forgery
 
-Forcer un serveur à effectuer, pour le compte d'un attaquant, une requête HTTP vers une destination qu'il ne devrait normalement pas atteindre, typiquement une ressource interne au réseau (base d'administration, métadonnées cloud, service interne non exposé publiquement).
+Classée A10 dans l'[OWASP Top 10](/?c=cybersecurite&p=owasp-top-10). Forcer un serveur à effectuer, pour le compte d'un attaquant, une requête HTTP vers une destination qu'il ne devrait normalement pas atteindre, typiquement une ressource interne au réseau (base d'administration, métadonnées cloud, service interne non exposé publiquement).
 
 ```php
 <?php
