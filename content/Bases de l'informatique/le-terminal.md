@@ -40,7 +40,7 @@ Shell (l'interpréteur)  →  comprend "ls", demande au système la liste des fi
 Résultat affiché dans le terminal
 ```
 
-> **Analogie :** le terminal est le combiné téléphonique, le shell est la personne à qui vous parlez. Le combiné ne comprend pas votre demande : il ne fait que transmettre votre voix et vous renvoyer la réponse.
+> **Analogie :** le terminal est le téléphone, le shell est la personne à qui vous parlez. Le téléphone ne comprend pas votre demande : il ne fait que transmettre votre voix et vous renvoyer la réponse.
 
 > **Approfondir :** ce site détaille en profondeur deux shells très utilisés, [Bash](/?c=shells&s=bash&p=bash) (Linux/macOS) et [PowerShell](/?c=shells&s=powershell&p=powershell) (Windows), chacun avec son propre vocabulaire de commandes.
 

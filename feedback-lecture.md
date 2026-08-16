@@ -5,4 +5,9 @@
 - tu as le droit de poser des questions a l'utilisateur si une demande te semble flou
 
 ## general
-- Défilement des dernières lignes coupées par la barre du bas (`isElementFullyVisible` dans `js/reader.js`, corrigé le 2026-08-16) : logique corrigée mais jamais reproduite visuellement dans le cas exact (une clause qui retombe sur plusieurs lignes en écran étroit) faute d'un tel cas sous la main pour le déclencher. À valider visuellement.
+- highlight ne marche toujours pas dans les tableaux, mot a mot non plus
+- Graphical User Interface et Command-Line Interface devraient etre prononcer en anglais, tu peux les mettre en code inline pour que ca trigger le mode anglais si besoin
+- pour '📋 Récapitulatif', il faut selectionner toute la ligne, c'est la seule exception du mot a mot
+
+## qu'est ce qu'un ordinateur execute ?
+- Exemple de langage	Python, JavaScript	C, C++ : pas de liens pour les langages evoquees, je t'invite a faire une recherche sur tous les noms de langages aborder dans ce projet et verifier que chaque evocation renvoie vers la section du programme correspondant

@@ -194,12 +194,22 @@ const CONTEXT_OPERATOR_SPEECH = {
         "*": "all columns",
         "$": "variable",
     },
+    // le-terminal.md cites `>`/`$`/`%` as plain characters a prompt can end with, not as any
+    // shell's own redirect/variable/modulo operators (this chapter comes before any shell is
+    // introduced) -- read by their everyday French names instead, specific to this one chapter
+    // (reported by Louis on 2026-08-16). GLOBAL_OPERATOR_SPEECH's own "$": "variable" would
+    // otherwise apply here too, hence overriding it rather than leaving it unset.
+    "le-terminal": {
+        ">": "flèche",
+        "$": "dollar",
+        "%": "pourcent",
+    },
 };
 
 // Pages whose own meaning for a shared subject/category context's symbols diverges from that
 // context's other pages (cf. the DSL comment above) get routed to a same-named entry in
 // CONTEXT_OPERATOR_SPEECH by page id instead, checked before curSubject/curCategory.
-export const PAGE_SPECIFIC_CONTEXT = new Set(["sql"]);
+export const PAGE_SPECIFIC_CONTEXT = new Set(["sql", "le-terminal"]);
 
 // One compiled { table, pattern } per context, built lazily and cached -- collectLeafSegments()
 // runs once per paragraph, so rebuilding a page's operator regex on every call would be wasteful.
@@ -228,6 +238,14 @@ function getOperatorTable(context) {
 // Matched by structure (a dash run at a word boundary, right before a letter) rather than a fixed
 // list of known flags, so it covers any flag without needing to be kept in sync with content.
 const CLI_FLAG_PATTERN = /(^|\s)(--?)(?=[A-Za-z])/g;
+
+// A code span that's nothing but "-" or "--" on its own (cited as the prefix itself, e.g.
+// "précédées de `-` ou `--`", rather than attached to an actual flag letter) falls outside
+// CLI_FLAG_PATTERN above -- its lookahead requires a following letter, which a bare citation like
+// this doesn't have, so it went completely unread otherwise (reported by Louis on 2026-08-16).
+// Same words as CLI_FLAG_PATTERN's own for consistency, just reached by a different route.
+const BARE_DASH_PATTERN = /^--?$/;
+const BARE_DASH_SPEECH = { "-": "dash", "--": "dash dash" };
 
 // snake_case/CONSTANT_CASE identifiers (variable, option and constant names across virtually every
 // language taught on the site) read their underscore as a word on most TTS engines, e.g. "AUTO_CD"
@@ -272,6 +290,7 @@ const KEYWORD_RESPELLING_PATTERN = new RegExp(`\\b(${Object.keys(KEYWORD_RESPELL
 // language the result belongs in, since it applies just as much to a French teaching-example
 // identifier (`nom_dossier`) as to a real English one (`AUTO_CD`).
 function englishRewrite(text, context) {
+    if (BARE_DASH_PATTERN.test(text)) return BARE_DASH_SPEECH[text];
     const { table, pattern } = getOperatorTable(context);
     return text
         .replace(pattern, op => COMPARISON_OPERATORS.has(op) ? ` ${table[op]} to ` : ` ${table[op]} `)
@@ -394,6 +413,30 @@ const OCAML_SPEECH = "O Caml";
 // language's content writes the name "Devpedia" without an accent in the first place (not
 // reported as mispronounced by its own voice, so left as-is rather than guessed at).
 const DEVPEDIA_SPEECH_FR = "Dévpédia";
+// Acronyms read as a single mumbled word instead of their own letters, spelled out the same way
+// as "EOF" already is above -- reported by Louis on 2026-08-16 for "GUI"/"CLI" (le-terminal.md,
+// outside any inline code span, so this lives in prose respelling rather than speakableCode()).
+const GUI_SPEECH = "G U I";
+const CLI_SPEECH = "C L I";
+// "cf." read as the French word "confère" instead of the two letters an abbreviation like this is
+// actually said as; "Ctrl" read as the raw letters instead of the French word it stands for
+// ("contrôle"); "shells" read with an English plural "z" sound even though it's used here as the
+// (loan-word, invariable) name of a whole category, not literally plural. All reported by Louis
+// on 2026-08-16. ("prompt" -- reported at the same time, losing its final "t" sound -- is handled
+// separately below, by PROMPT_WORD_PATTERN, rather than through this table: unlike these three, it
+// collides with real French/English words that contain it as a substring, "prompts"/"prompting"/
+// "prompter" among them, all used on their own elsewhere in AI content -- this table's own
+// replaceAll() has no word-boundary check, so it would have mangled every one of those too.)
+const CF_SPEECH_FR = "C F";
+const CTRL_SPEECH_FR = "contrôle";
+const SHELL_SPEECH_FR = "shell";
+// "prompt" loses its final "t" sound, swallowed the same way the existing French word "prompt"
+// (meaning "quick") is pronounced -- respelled with a silent trailing "e" to force it through, the
+// same trick a French speaker uses for this word. Matched by whole word (case-insensitive, so a
+// capitalized "Prompt" at the start of a sentence still gets it too) rather than through
+// PROSE_SYMBOL_SPEECH's plain substring replace -- see CF_SPEECH_FR's own comment above for why.
+const PROMPT_WORD_PATTERN = /\bprompt\b/gi;
+const PROMPT_SPEECH_FR = "prompte";
 const PROSE_SYMBOL_SPEECH = {
     fr: {
         "≈": "environ égal à",
@@ -405,6 +448,12 @@ const PROSE_SYMBOL_SPEECH = {
         "C#": CSHARP_SPEECH,
         "OCaml": OCAML_SPEECH,
         "Devpédia": DEVPEDIA_SPEECH_FR,
+        "GUI": GUI_SPEECH,
+        "CLI": CLI_SPEECH,
+        "cf.": CF_SPEECH_FR,
+        "Ctrl": CTRL_SPEECH_FR,
+        "Shells": SHELL_SPEECH_FR,
+        "shells": SHELL_SPEECH_FR,
     },
     en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
     es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
@@ -458,6 +507,7 @@ export function speakableText(text, lang, pageId) {
         .replaceAll("→", ` ${arrowWord} `)
         .replaceAll(DECORATIVE_EMOJI, "")
         .replace(SUPERSCRIPT_RUN, run => ` ${powerOfWord} ${decodeSuperscript(run, lang)} `);
+    if (lang === "fr") result = result.replace(PROMPT_WORD_PATTERN, ` ${PROMPT_SPEECH_FR} `);
     const symbols = PROSE_SYMBOL_SPEECH[lang] ?? PROSE_SYMBOL_SPEECH.en;
     for (const [symbol, phrase] of Object.entries(symbols)) {
         result = result.replaceAll(symbol, ` ${phrase} `);
