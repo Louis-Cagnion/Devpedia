@@ -6,6 +6,3 @@
 
 ## general
 - Défilement des dernières lignes coupées par la barre du bas (`isElementFullyVisible` dans `js/reader.js`, corrigé le 2026-08-16) : logique corrigée mais jamais reproduite visuellement dans le cas exact (une clause qui retombe sur plusieurs lignes en écran étroit) faute d'un tel cas sous la main pour le déclencher. À valider visuellement.
-
-## acceuil
-- Prononciation de "Devpédia" respellée "Dévpédia" le 2026-08-16 (`js/reader-pronunciation.js`) : suit exactement ta consigne, mais reste un contournement d'orthographe pour la synthèse vocale (comme "shopt"/"S H opt" plus tôt), jamais fiable à 100% sans l'entendre. À valider à l'oreille.
