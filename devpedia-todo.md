@@ -1,7 +1,7 @@
 # TODO — Devpedia
 
 ## Lecture audio automatique du site (priorité de la prochaine session)
-- Lecture des tableaux à revoir (demandé par Louis le 2026-08-15) : chaque cellule `th`/`td` est lue seule, sans lien avec sa colonne. Voulu : sauter la ligne d'en-tête, et pour chaque ligne de données dire "valeur, titre de colonne" (ex. tableau Bits/Combinaisons/Entiers, ligne `8 | 256 | 0 → 255` → "8 Bits, 256 Combinaisons, 0 à 255 Entiers non signé"). Touche `collectLeafSegments` dans `js/reader.js` (`TH`/`TD` sont des `LEAF_TAGS` lus indépendamment).
+- Lecture des tableaux reconstruite le 2026-08-16 (`collectTableSegments` dans `js/reader.js`, testée en direct sur les 3 formes) : à confirmer par Louis à l'oreille sur un vrai site.
 - Voix BR (mapping `br` → `pt-BR`) à revérifier par Louis sur son téléphone.
 - Prononciation de "déréférencement" (chapitre pointeurs C) à diagnostiquer en écoute directe avec Louis.
 - Symboles rares en prose non traités (`↔`, `±`, `…`, `·` isolé) : laissés de côté faute de volume (1-2 occurrences chacun).
