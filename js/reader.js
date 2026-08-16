@@ -17,10 +17,12 @@ const LEAF_TAGS = new Set(["H2", "H3", "H4", "H5", "H6", "P", "LI", "TH", "TD"])
 // and generateChildList.
 const IGNORED_SELECTOR = ".pageNav, .pageBreadcrumb, .childList";
 
-// The reading plan: an ordered list of {kind: "speak", text, lang, group} and
-// {kind: "pause", element} entries, rebuilt by buildReadingPlan() on every page render. `group`
-// is the leaf element a "speak" entry was split from (cf. collectLeafSegments) -- entries sharing
-// the same `group` are one paragraph for replayParagraph()'s purposes.
+// The reading plan: an ordered list of {kind: "speak", text, lang, group, highlightTarget, words}
+// and {kind: "pause", element} entries, rebuilt by buildReadingPlan() on every page render.
+// `group` is the leaf element a "speak" entry was split from (cf. collectLeafSegments) -- entries
+// sharing the same `group` are one paragraph for replayParagraph()'s purposes. `highlightTarget`
+// and `words` are also set by collectLeafSegments (cf. wrapSegmentWords()), used by
+// setHighlightedEntry()/setActiveWord() to drive the read-aloud highlight.
 let plan = [];
 let planIndex = 0;
 let isPlaying = false;
@@ -31,31 +33,129 @@ let isPausedAtCode = false;
 // by resetPlayback() since a rebuilt/torn-down plan invalidates it.
 let lastSpokenIndex = null;
 
-// The element (a "speak" entry's `group`) currently carrying READER_HIGHLIGHT_CLASS, so
-// setHighlightedGroup() can remove it before moving the highlight elsewhere. Word-by-word
-// highlighting isn't implemented yet everywhere `boundary` would allow it (cf. devpedia-todo.md) --
-// this paragraph-level highlight is the base every platform gets, mobile included.
+// Two-tier highlight for the "speak" entry currently playing: READER_HIGHLIGHT_CLASS marks the
+// whole entry (an inline wrapper for buffered text, cf. wrapSegmentWords() -- or the `code`
+// element itself for an inline-code entry), the base every platform gets since it doesn't depend
+// on `boundary` at all. READER_ACTIVE_WORD_CLASS additionally marks the one word `boundary` last
+// reported, layered on top where that event fires with word-level granularity (cf. setActiveWord()
+// and its call from speakNext()'s utterance.onboundary).
 const READER_HIGHLIGHT_CLASS = "readerActiveParagraph";
-let highlightedGroup = null;
+const READER_ACTIVE_WORD_CLASS = "readerActiveWord";
+let highlightedTarget = null;
+let highlightedWords = [];
+let activeWordIndex = -1;
 
 /**
- * Moves READER_HIGHLIGHT_CLASS onto `group` (a "speak" entry's leaf element), removing it from
- * wherever it was before. No-op if `group` already carries it, since consecutive "speak" entries
- * commonly share the same group (cf. collectLeafSegments splitting a leaf around inline code).
+ * Switches the base highlight to `entry`, replacing whatever was highlighted before, and drops
+ * any active word highlight from the previous entry -- a new entry starting to play means
+ * `boundary` (if it fires at all for it) hasn't reported a word yet.
  *
- * @param {HTMLElement} group
+ * @param {{highlightTarget: HTMLElement, words: HTMLElement[]}} entry
  */
-function setHighlightedGroup(group) {
-    if (group === highlightedGroup) return;
-    highlightedGroup?.classList.remove(READER_HIGHLIGHT_CLASS);
-    group.classList.add(READER_HIGHLIGHT_CLASS);
-    highlightedGroup = group;
+function setHighlightedEntry(entry) {
+    if (entry.highlightTarget === highlightedTarget) return;
+    highlightedTarget?.classList.remove(READER_HIGHLIGHT_CLASS);
+    entry.highlightTarget.classList.add(READER_HIGHLIGHT_CLASS);
+    highlightedTarget = entry.highlightTarget;
+    setActiveWord(-1);
+    highlightedWords = entry.words;
 }
 
-/** Removes READER_HIGHLIGHT_CLASS, if any -- nothing is being spoken once this runs. */
+/** Removes both highlight tiers -- nothing is being spoken once this runs. */
 function clearHighlight() {
-    highlightedGroup?.classList.remove(READER_HIGHLIGHT_CLASS);
-    highlightedGroup = null;
+    highlightedTarget?.classList.remove(READER_HIGHLIGHT_CLASS);
+    highlightedTarget = null;
+    setActiveWord(-1);
+    highlightedWords = [];
+}
+
+/**
+ * Moves READER_ACTIVE_WORD_CLASS to `highlightedWords[index]`, if that word exists -- `index`
+ * comes from an approximate mapping (cf. wordIndexAtChar()) between `boundary`'s charIndex into
+ * the spoken (post-speakableText) text and the original DOM words wrapped by
+ * wrapSegmentWords(), so it's clamped implicitly by the array lookup rather than asserted exact.
+ *
+ * @param {number} index -1 to clear without setting a new word
+ */
+function setActiveWord(index) {
+    if (index === activeWordIndex) return;
+    highlightedWords[activeWordIndex]?.classList.remove(READER_ACTIVE_WORD_CLASS);
+    activeWordIndex = index;
+    highlightedWords[activeWordIndex]?.classList.add(READER_ACTIVE_WORD_CLASS);
+}
+
+// A "word" for highlighting purposes: any maximal run of non-space characters, trailing
+// punctuation included -- matches how wrapSegmentWords() below splits the original DOM text, so
+// a word index counted in one lines up with the same index counted in the other.
+const WORD_PATTERN = /\S+/g;
+
+/**
+ * @param {string} text the utterance's own (post-speakableText) text
+ * @param {number} charIndex a `boundary` event's charIndex into that text, expected to land on
+ *   the first character of the word it's announcing
+ * @returns {number} the 0-based index of that word among WORD_PATTERN's matches in `text`
+ */
+function wordIndexAtChar(text, charIndex) {
+    return [...text.slice(0, charIndex).matchAll(WORD_PATTERN)].length;
+}
+
+/**
+ * Replaces each word of text-node content under `root` with its own `<span class="readerWord">`
+ * (whitespace/punctuation between words left as-is), so setActiveWord() has an element to target
+ * per word. Recurses into formatting elements (`strong`, `em`, a link...) to keep their styling
+ * and behavior intact, but never descends into `code` -- inline code is highlighted as a whole via
+ * its own entry (cf. collectLeafSegments), not word by word.
+ *
+ * @param {HTMLElement} root
+ * @param {HTMLElement[]} out appended to in document order
+ */
+function wrapWordsInPlace(root, out) {
+    Array.from(root.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent;
+            const matches = [...text.matchAll(WORD_PATTERN)];
+            if (!matches.length) return;
+            const frag = document.createDocumentFragment();
+            let lastIndex = 0;
+            matches.forEach(match => {
+                const [word] = match;
+                if (match.index > lastIndex) frag.append(text.slice(lastIndex, match.index));
+                const span = createTag("span", { class: "readerWord" }, { textContent: word });
+                frag.append(span);
+                out.push(span);
+                lastIndex = match.index + word.length;
+            });
+            if (lastIndex < text.length) frag.append(text.slice(lastIndex));
+            node.replaceWith(frag);
+        } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== "CODE") {
+            wrapWordsInPlace(node, out);
+        }
+    });
+}
+
+/**
+ * Moves `nodes` (a run of a leaf's own children collected by collectLeafSegments between two
+ * inline `code` spans, or up to the leaf's boundary) into one new `<span class="readerSegment">`
+ * in their place, then word-wraps its content in place.
+ *
+ * Why a wrapper: `nodes`' original parent is the leaf itself, a block element whose own
+ * background would span its full width regardless of where the text actually ends on each line
+ * (a short last line would still highlight edge-to-edge). `readerSegment` is inline instead, so
+ * its background paints one line-box at a time, sized to that line's own text -- same mechanism
+ * `pre code`'s own comment above documents, used here for the opposite effect.
+ *
+ * @param {ChildNode[]} nodes non-empty, all siblings, still attached to their original parent
+ * @returns {{wrapper: HTMLElement, words: HTMLElement[]}} the new wrapper, and the words wrapped
+ *   inside it in document order (empty if `nodes` turned out to hold no actual word, e.g. a lone
+ *   folded-in code span -- cf. collectLeafSegments)
+ */
+function wrapSegmentWords(nodes) {
+    const wrapper = createTag("span", { class: "readerSegment" });
+    nodes[0].parentNode.insertBefore(wrapper, nodes[0]);
+    nodes.forEach(node => wrapper.append(node));
+    const words = [];
+    wrapWordsInPlace(wrapper, words);
+    return { wrapper, words };
 }
 
 // Bumped by resetPlayback(). synth.cancel() fires an async "error" event on the utterance it
@@ -392,6 +492,11 @@ function speakableText(text, lang, pageId) {
  * so it's folded into the surrounding sentence instead of forcing a voice switch and a pause for
  * something this trivial.
  *
+ * Also wraps whatever ends up in each entry's own highlight target -- an inline `readerSegment`
+ * around the buffered text's original nodes, or the `code` element itself -- so speakNext() has
+ * something to switch READER_HIGHLIGHT_CLASS onto, and (for buffered text) a `words` list so it
+ * can move READER_ACTIVE_WORD_CLASS as `boundary` reports each one (cf. wrapSegmentWords()).
+ *
  * @param {HTMLElement} leaf a single h2-h6/p/li/th/td element
  * @param {string} lang the page's language, e.g. "fr", "en"
  * @param {string} context the page's subject or category id, used to pick the right operator
@@ -402,25 +507,43 @@ function speakableText(text, lang, pageId) {
  */
 function collectLeafSegments(leaf, lang, context, pageId, entries) {
     let buffer = "";
+    let segmentNodes = [];
     const flushBuffer = () => {
         const text = buffer.trim();
-        if (text && HAS_SPOKEN_CONTENT.test(text))
-            entries.push({ kind: "speak", text: speakableText(text, lang, pageId), lang, group: leaf });
+        if (text && HAS_SPOKEN_CONTENT.test(text)) {
+            const { wrapper, words } = wrapSegmentWords(segmentNodes);
+            entries.push({
+                kind: "speak",
+                text: speakableText(text, lang, pageId),
+                lang,
+                group: leaf,
+                highlightTarget: wrapper,
+                words,
+            });
+        }
         buffer = "";
+        segmentNodes = [];
     };
-    leaf.childNodes.forEach(node => {
+    // A static snapshot: wrapSegmentWords() below mutates leaf's children as buffered runs are
+    // flushed, which would desync a live NodeList mid-iteration and skip nodes.
+    Array.from(leaf.childNodes).forEach(node => {
         if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
             const code = node.textContent.trim();
             if (!code) return;
             const spoken = speakableCode(code, context);
             if (spoken === code) {
                 buffer += ` ${code} `;
+                segmentNodes.push(node);
             } else {
                 flushBuffer();
-                entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf });
+                // No word-level highlight for inline code -- it's spoken as a short, separately
+                // pronounced phrase (cf. speakableCode()), not worth the DOM churn of wrapping it
+                // too; the whole `code` element gets READER_HIGHLIGHT_CLASS instead.
+                entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf, highlightTarget: node, words: [] });
             }
         } else {
             buffer += node.textContent;
+            segmentNodes.push(node);
         }
     });
     flushBuffer();
@@ -525,7 +648,7 @@ function speakNext() {
     isPlaying = true;
     isPausedAtCode = false;
     lastSpokenIndex = planIndex;
-    setHighlightedGroup(entry.group);
+    setHighlightedEntry(entry);
     notify();
     // Only when its start isn't shown -- avoids yanking the view on every paragraph when several
     // are already visible together (e.g. a tall screen, short paragraphs).
@@ -534,6 +657,16 @@ function speakNext() {
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
     const myGeneration = generation;
+    // Not every engine fires this at all (e.g. Chrome on Android never does), and among those
+    // that do, granularity varies (Chrome desktop word by word, Safari once per sentence) -- cf.
+    // devpedia-todo.md. No feature detection needed: wordIndexAtChar() naturally degrades with
+    // whatever charIndex the engine actually reports, landing on word 0 and staying there for a
+    // sentence-granular engine, never moving at all for one that doesn't fire this at all --
+    // either way on top of the READER_HIGHLIGHT_CLASS highlight set above, never replacing it.
+    utterance.onboundary = event => {
+        if (generation !== myGeneration) return;
+        setActiveWord(wordIndexAtChar(entry.text, event.charIndex));
+    };
     utterance.onend = utterance.onerror = () => {
         if (generation !== myGeneration) return;
         planIndex++;

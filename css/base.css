@@ -880,12 +880,35 @@ blockquote p + p {
     display: none;
 }
 
-/* Paragraph currently being read aloud (cf. setHighlightedGroup() in reader.js). Base highlight
-   every platform gets, including mobile where the `boundary` event never fires (Android Chrome)
-   or only fires per sentence (Safari) -- see devpedia-todo.md for the word-level refinement
-   planned on top of this where `boundary` allows it. */
-.readerActiveParagraph {
+/* Base highlight for the segment currently being read aloud (cf. setHighlightedEntry() in
+   reader.js) -- every platform gets this, including mobile where the `boundary` event never
+   fires (Android Chrome) or only fires per sentence (Safari), cf. devpedia-todo.md.
+   .readerSegment (wrapSegmentWords() in reader.js) is an inline wrapper around the entry's own
+   text rather than the block-level leaf itself, so this background paints one line-box at a
+   time, sized to that line's own text -- ends where the text actually ends even on a short last
+   line, instead of a block background spanning the full paragraph width regardless. Same
+   mechanism `pre code`'s own comment above documents, used here for the opposite effect.
+   `code.readerActiveParagraph` covers the other kind of entry (inline code, cf.
+   collectLeafSegments) -- `code` is inline by default already, no wrapper needed. Padding is on
+   .readerSegment only, not shared with `code`: `code` already has its own (cf. the base `code`
+   rule above) and changing it just while active would shift the chip's size on every play/stop. */
+.readerSegment.readerActiveParagraph, code.readerActiveParagraph {
     background-color: color-mix(in srgb, var(--accent) 15%, transparent);
     border-radius: 0.25rem;
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 15%, transparent);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.readerSegment.readerActiveParagraph {
+    padding: 4px;
+}
+
+/* The one word `boundary` last reported (cf. setActiveWord() in reader.js), layered on top of
+   readerActiveParagraph's softer highlight above -- stronger tint so it reads as "this exact
+   word" rather than "this whole segment". Only ever set where `boundary` actually fires with
+   word-level granularity (Chrome desktop); left unstyled otherwise, so the segment highlight
+   above is all that shows. */
+.readerWord.readerActiveWord {
+    background-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: 0.2rem;
 }
