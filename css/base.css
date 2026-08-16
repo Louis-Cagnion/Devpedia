@@ -879,3 +879,13 @@ blockquote p + p {
 .readerFloatingBar {
     display: none;
 }
+
+/* Paragraph currently being read aloud (cf. setHighlightedGroup() in reader.js). Base highlight
+   every platform gets, including mobile where the `boundary` event never fires (Android Chrome)
+   or only fires per sentence (Safari) -- see devpedia-todo.md for the word-level refinement
+   planned on top of this where `boundary` allows it. */
+.readerActiveParagraph {
+    background-color: color-mix(in srgb, var(--accent) 15%, transparent);
+    border-radius: 0.25rem;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 15%, transparent);
+}

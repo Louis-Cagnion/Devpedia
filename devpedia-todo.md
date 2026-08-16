@@ -1,7 +1,7 @@
 # TODO — Devpedia
 
 ## Lecture audio automatique du site (priorité de la prochaine session)
-- CSS de surbrillance mot par mot synchronisé avec la synthèse vocale (demandé par Louis) : pas encore cadré techniquement (vérifier fiabilité/support de l'événement `boundary` de `SpeechSynthesisUtterance` avant de s'appuyer dessus).
+- Surbrillance mot par mot synchronisée avec la synthèse vocale, en complément de la surbrillance par paragraphe déjà en place (implémentée et testée en navigateur le 2026-08-16 : `setHighlightedGroup()`/`.readerActiveParagraph` dans `js/reader.js`/`css/base.css`, base qui fonctionne sur toute plateforme y compris mobile). Reste à faire, là où le support de l'événement `boundary` de `SpeechSynthesisUtterance` le permet de façon fiable (mot par mot sur Chrome desktop, jamais sur Chrome Android, seulement par phrase sur Safari, Firefox intermédiaire à vérifier en pratique) : affiner au mot précis plutôt qu'au paragraphe entier, avec un test de capacité au runtime plutôt qu'une liste de navigateurs en dur.
 - Contrôles de lecture à étendre (demandé par Louis le 2026-08-15, à cadrer en même temps que la surbrillance ci-dessus puisque les deux dépendent du même événement `boundary` pour connaître la position mot par mot) :
   - Mémoriser le mot exact où la lecture s'est arrêtée (pas seulement le paragraphe, cf. `lastSpokenIndex`/`replayParagraph()` actuels dans `js/reader.js`), pour reprendre pile à cet endroit plutôt que de tout relire depuis le début du paragraphe.
   - Ajouter un bouton paragraphe suivant/précédent.
@@ -12,6 +12,18 @@
 - Symboles typographiques rares en prose non traités (`↔`, `±`, `…`, `·` isolé) : laissés de côté le 2026-08-15 faute de volume suffisant pour justifier le travail (1-2 occurrences chacun), à reprendre si besoin.
 - `^` en prose comme notation d'exposant (caret normal, pas les caractères exposants Unicode déjà corrigés) lu "accent circonflexe" au lieu de "puissance" (repéré par Louis le 2026-08-16, exemple : `nombres-flottants.md`, "mantisse × 2^exposant") : à ajouter à `PROSE_SYMBOL_SPEECH` dans `js/reader.js`, même traitement que les exposants Unicode (mot "puissance"/"to the power of" localisé).
 - Phrases de la table de prononciation des symboles (`js/reader.js`) à valider mot à mot par Louis, chapitre par chapitre : reste la majorité de la table hors C/C++/SQL/Git/PHP déjà testés en écoute directe le 2026-08-15 (modulo/times/bitwise, XOR, emoji 📋, fluidité du code trivial, flèche →, ≈/≥/≠/°).
+
+## Nouveau contenu
+- Nouvelle catégorie "Cybersécurité" à la racine de `content/` (demandé par Louis le 2026-08-16 ; à créer au moment d'écrire ces chapitres, pas avant — aucune catégorie de ce nom n'existe actuellement, seulement du contenu sécurité localisé par techno comme `Langages de programmation/PHP/securite.md` ou `Docker/bonnes-pratiques-et-securite.md`, à ne pas dupliquer). Liste de chapitres validée par Louis le 2026-08-16 :
+  - Types de failles : zero day, injection, etc., ce qu'elles recouvrent en général, et comment éviter d'en laisser dans le code qu'on écrit.
+  - Principes de développement sécurisé (secure by design, validation des entrées, moindre privilège, defense in depth).
+  - Cryptographie appliquée pour développeurs (hachage vs chiffrement, erreurs courantes).
+  - Gestion des secrets (clés API, coffres-forts/vaults, variables d'environnement).
+  - Sécurité des dépendances/supply chain (audit de paquets, lockfiles, typosquatting).
+  - Sécurité des API web (CORS, CSRF, rate limiting, tokens).
+  - Tests et audit de sécurité (pentest, fuzzing, SAST/DAST).
+  - Ingénierie sociale et phishing (volet humain, hors code).
+  - OWASP Top 10 comme référentiel transversal.
 
 ## Langues
 - 6 langues manquantes en plus d'ES/EN/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.

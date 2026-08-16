@@ -31,6 +31,33 @@ let isPausedAtCode = false;
 // by resetPlayback() since a rebuilt/torn-down plan invalidates it.
 let lastSpokenIndex = null;
 
+// The element (a "speak" entry's `group`) currently carrying READER_HIGHLIGHT_CLASS, so
+// setHighlightedGroup() can remove it before moving the highlight elsewhere. Word-by-word
+// highlighting isn't implemented yet everywhere `boundary` would allow it (cf. devpedia-todo.md) --
+// this paragraph-level highlight is the base every platform gets, mobile included.
+const READER_HIGHLIGHT_CLASS = "readerActiveParagraph";
+let highlightedGroup = null;
+
+/**
+ * Moves READER_HIGHLIGHT_CLASS onto `group` (a "speak" entry's leaf element), removing it from
+ * wherever it was before. No-op if `group` already carries it, since consecutive "speak" entries
+ * commonly share the same group (cf. collectLeafSegments splitting a leaf around inline code).
+ *
+ * @param {HTMLElement} group
+ */
+function setHighlightedGroup(group) {
+    if (group === highlightedGroup) return;
+    highlightedGroup?.classList.remove(READER_HIGHLIGHT_CLASS);
+    group.classList.add(READER_HIGHLIGHT_CLASS);
+    highlightedGroup = group;
+}
+
+/** Removes READER_HIGHLIGHT_CLASS, if any -- nothing is being spoken once this runs. */
+function clearHighlight() {
+    highlightedGroup?.classList.remove(READER_HIGHLIGHT_CLASS);
+    highlightedGroup = null;
+}
+
 // Bumped by resetPlayback(). synth.cancel() fires an async "error" event on the utterance it
 // just interrupted (same onend/onerror handler below), so without this guard that stale callback
 // would advance planIndex and call speakNext() again right after a stop, or after plan has
@@ -435,6 +462,7 @@ function resetPlayback() {
     isPlaying = false;
     isPausedAtCode = false;
     lastSpokenIndex = null;
+    clearHighlight();
 }
 
 /**
@@ -489,6 +517,7 @@ function speakNext() {
     if (entry.kind === "pause") {
         isPlaying = false;
         isPausedAtCode = true;
+        clearHighlight();
         entry.element.scrollIntoView({ behavior: "smooth", block: "center" });
         notify();
         return;
@@ -496,6 +525,7 @@ function speakNext() {
     isPlaying = true;
     isPausedAtCode = false;
     lastSpokenIndex = planIndex;
+    setHighlightedGroup(entry.group);
     notify();
     // Only when its start isn't shown -- avoids yanking the view on every paragraph when several
     // are already visible together (e.g. a tall screen, short paragraphs).
