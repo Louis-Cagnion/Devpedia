@@ -7,8 +7,8 @@ order: 5
 Un [lenguaje de programación](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) es un conjunto de reglas que permite escribir instrucciones que un ordenador puede ejecutar. JavaScript es uno de ellos, concebido originalmente para hacer interactivas las páginas web.
 
 ```javascript
-let nombre = "Devpédia";        // una variable, véase el capítulo dedicado
-console.log(`Hola, ${nombre}`); // muestra: Hola, Devpédia
+let nombre = "Devpedia";        // una variable, véase el capítulo dedicado
+console.log(`Hola, ${nombre}`); // muestra: Hola, Devpedia
 ```
 
 | Término | Qué significa |
