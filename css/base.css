@@ -345,14 +345,15 @@ h3, h4, h5, h6 {
 
 /* Every element scrollIntoView({block: "start"}) can target during read-aloud playback (cf.
    speakNext/startFromVisible in reader.js), so its start lands below the sticky navbar instead of
-   hidden behind it -- h2-h6/p/li/th/td match reader.js's LEAF_TAGS (used to scroll to a whole
-   paragraph before entries were split into individual clauses), .readerSegment and code are the
-   finer-grained target speakNext() actually scrolls to now (a single clause, or an inline code
-   entry). Missing this on the finer-grained targets specifically used to leave the currently-read
-   line scrolled to right under the navbar rather than below it -- scroll-margin-top isn't
-   inherited from an ancestor, an inline .readerSegment scrolled to on its own ignored the block
-   element around it having the correct value (reported by Louis on 2026-08-16). */
-h2, h3, h4, h5, h6, p, li, th, td, .readerSegment, code {
+   hidden behind it -- h2-h6/p/li match reader.js's LEAF_TAGS (used to scroll to a whole paragraph
+   before entries were split into individual clauses), .readerSegment/code/tr are the
+   finer-grained targets speakNext() actually scrolls to now (a single clause, an inline code
+   entry, or a table row -- cf. collectTableSegments). Missing this on the finer-grained targets
+   specifically used to leave the currently-read line scrolled to right under the navbar rather
+   than below it -- scroll-margin-top isn't inherited from an ancestor, an inline .readerSegment
+   scrolled to on its own ignored the block element around it having the correct value (reported
+   by Louis on 2026-08-16). */
+h2, h3, h4, h5, h6, p, li, .readerSegment, code, tr {
     scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem);
 }
 
@@ -910,11 +911,16 @@ blockquote p + p {
    time, sized to that line's own text -- ends where the text actually ends even on a short last
    line, instead of a block background spanning the full paragraph width regardless. Same
    mechanism `pre code`'s own comment above documents, used here for the opposite effect.
-   `code.readerActiveParagraph` covers the other kind of entry (inline code, cf.
-   collectLeafSegments) -- `code` is inline by default already, no wrapper needed. Padding is on
-   .readerSegment only, not shared with `code`: `code` already has its own (cf. the base `code`
-   rule above) and changing it just while active would shift the chip's size on every play/stop. */
-.readerSegment.readerActiveParagraph, code.readerActiveParagraph {
+   `code.readerActiveParagraph` covers another kind of entry (inline code, cf.
+   collectLeafSegments) -- `code` is inline by default already, no wrapper needed.
+   `tr.readerActiveParagraph` covers a table row (cf. collectTableSegments): a whole-row
+   highlight, since a row's own spoken sentence is synthesized (titles/connector words folded in)
+   rather than a straight read of some contiguous DOM text, so there's nothing to wrap into a
+   .readerSegment or highlight word by word the way a paragraph's own words can be. Padding is on
+   .readerSegment only, not shared with `code`/`tr`: they already have their own sizing (`code`'s
+   own padding above, `tr`'s cells' own) and changing it just while active would shift things on
+   every play/stop. */
+.readerSegment.readerActiveParagraph, code.readerActiveParagraph, tr.readerActiveParagraph {
     background-color: color-mix(in srgb, var(--accent) 15%, transparent);
     border-radius: 0.25rem;
     box-decoration-break: clone;

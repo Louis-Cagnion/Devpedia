@@ -42,10 +42,13 @@ export function hasUsableVoice() {
     });
 }
 
-// Elements read as one spoken unit; everything else (blockquote, ul/ol, table/thead/tbody/tr,
-// div.tableWrapper, chart containers...) is a structural container, walked but never itself
-// read as a block.
-const LEAF_TAGS = new Set(["H2", "H3", "H4", "H5", "H6", "P", "LI", "TH", "TD"]);
+// Elements read as one spoken unit; everything else (blockquote, ul/ol, div.tableWrapper, chart
+// containers...) is a structural container, walked but never itself read as a block. `table`
+// itself is handled separately by collectSegments (cf. collectTableSegments) rather than being
+// walked generically down to its `th`/`td` -- reading each cell in isolation, with no idea which
+// row or column it belonged to, was the exact complaint that started the table audit in
+// devpedia-todo.md.
+const LEAF_TAGS = new Set(["H2", "H3", "H4", "H5", "H6", "P", "LI"]);
 
 // Router-generated UI, not page content -- cf. router.js's createAppendPageNav/createBreadcrumb
 // and generateChildList.
@@ -382,7 +385,7 @@ const CLAUSE_END_PATTERN = /[.!?…]+[)»"'’”]*|[,;:](?!\d)/g;
  * something to switch READER_HIGHLIGHT_CLASS onto, and (for buffered text) a `words` list so it
  * can move READER_ACTIVE_WORD_CLASS as `boundary` reports each one (cf. wrapSegmentWords()).
  *
- * @param {HTMLElement} leaf a single h2-h6/p/li/th/td element
+ * @param {HTMLElement} leaf a single h2-h6/p/li element
  * @param {string} lang the page's language, e.g. "fr", "en"
  * @param {string} context the page's subject or category id, used to pick the right operator
  *   table for inline code (cf. CONTEXT_OPERATOR_SPEECH)
@@ -459,8 +462,116 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
 }
 
 /**
- * Recursively walks `root`, appending a "speak" entry per leaf (h2-h6/p/li/th/td, split around
- * any inline code) and a "pause" entry per `pre` block, in document order.
+ * @param {HTMLElement} cell a `td`/`th`
+ * @param {string} context see {@link collectLeafSegments}
+ * @returns {string} `cell`'s own text, with any inline `code` span pronounced through
+ *   speakableCode() first (cf. collectLeafSegments, which does the same for prose) -- without
+ *   this, a cell like `` `!==` `` would read as "not equals" everywhere else on the site but as
+ *   the bare characters here, since a plain `.textContent` doesn't know the difference
+ */
+function cellSpokenText(cell, context) {
+    let text = "";
+    cell.childNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
+            const code = node.textContent.trim();
+            if (code) text += ` ${speakableCode(code, context)} `;
+        } else {
+            text += node.textContent;
+        }
+    });
+    return text.replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Splits plain text (not a live DOM node, unlike collectLeafSegments' own clause splitting) at
+ * every CLAUSE_END_PATTERN match. Used for a table row's own synthesized sentence (cf.
+ * collectTableSegments) rather than Text.splitText(), since there's no original DOM text run to
+ * keep matched up with a `words` list here -- a table row's highlight never goes word by word
+ * (cf. collectTableSegments' own comment on why), so nothing needs that alignment.
+ *
+ * @param {string} text
+ * @returns {string[]} non-empty, spoken-content-bearing chunks, in order
+ */
+function splitIntoClauses(text) {
+    const chunks = [];
+    let lastIndex = 0;
+    CLAUSE_END_PATTERN.lastIndex = 0;
+    let match;
+    while ((match = CLAUSE_END_PATTERN.exec(text))) {
+        chunks.push(text.slice(lastIndex, match.index + match[0].length));
+        lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) chunks.push(text.slice(lastIndex));
+    return chunks.map(chunk => chunk.trim()).filter(chunk => HAS_SPOKEN_CONTENT.test(chunk));
+}
+
+/**
+ * Reads a `table`'s data rows with row/column context instead of each `th`/`td` in isolation --
+ * the original complaint behind the whole table audit in devpedia-todo.md. The header row is
+ * never read on its own (its wording is folded into each data row's own sentence instead), and
+ * which of three shapes to fold it in as is detected from the header alone, audited on 2026-08-16
+ * to actually cover the content site-wide rather than just the one example table a first version
+ * of this was designed around:
+ *
+ * - Every header cell blank: a "recap card" -- a bold label in the first cell, a full sentence in
+ *   the rest, no real columns at all (`| **À retenir** | Zsh regroupe... |`). Read as
+ *   "label : the rest, joined".
+ * - Only the first header cell blank: a comparison matrix -- the first cell of each row is an
+ *   unlabeled criterion, the rest are values for the labeled columns being compared (headers like
+ *   `["", "CPU", "GPU"]`). Read as "criterion : value1 pour title1, value2 pour title2...".
+ * - Every header cell filled in: an ordinary data table. Read as "title1 : value1, title2 :
+ *   value2...", title always before value regardless of how long a cell's own text is -- tried
+ *   suffixing the title for short cells only, decided against it (2026-08-16) since it needed two
+ *   rules instead of one for a difference listeners never really noticed either way.
+ *
+ * No word-level highlight for any of these -- unlike prose, a row's sentence here is synthesized
+ * (titles and connector words like "pour" folded in) rather than a straight read of some
+ * contiguous run of DOM text, so there's no single original text run left to wrap into `words`
+ * the way wrapSegmentWords() does for a paragraph. The whole `tr` gets the whole-entry highlight
+ * instead, the same as an inline-code entry with nothing to highlight word by word (cf.
+ * collectLeafSegments).
+ *
+ * @param {HTMLElement} table
+ * @param {string} lang
+ * @param {string} context see {@link collectLeafSegments}
+ * @param {string} pageId see {@link collectLeafSegments}
+ * @param {Array} entries the plan being built, appended to in place
+ */
+function collectTableSegments(table, lang, context, pageId, entries) {
+    const headerTexts = [...table.querySelectorAll("thead th")].map(th => th.textContent.trim());
+    const isRecapCard = headerTexts.every(text => !text);
+    const isComparison = !isRecapCard && !headerTexts[0];
+
+    table.querySelectorAll("tbody tr").forEach(tr => {
+        const cells = [...tr.children].map(cell => cellSpokenText(cell, context));
+        let sentence;
+        if (isRecapCard) {
+            const [label, ...rest] = cells;
+            sentence = `${label} : ${rest.join(", ")}`;
+        } else if (isComparison) {
+            const [criterion, ...rest] = cells;
+            const parts = rest.map((value, i) => `${value} pour ${headerTexts[i + 1]}`);
+            sentence = `${criterion} : ${parts.join(", ")}`;
+        } else {
+            sentence = cells.map((value, i) => `${headerTexts[i] ?? ""} : ${value}`).join(", ");
+        }
+        splitIntoClauses(sentence).forEach(chunk => {
+            entries.push({
+                kind: "speak",
+                text: speakableText(chunk, lang, pageId),
+                lang,
+                group: tr,
+                highlightTarget: tr,
+                words: [],
+            });
+        });
+    });
+}
+
+/**
+ * Recursively walks `root`, appending a "speak" entry per leaf (h2-h6/p/li, split around any
+ * inline code), a set of entries per `table` (cf. collectTableSegments), and a "pause" entry per
+ * `pre` block, in document order.
  *
  * @param {HTMLElement} root
  * @param {string} lang
@@ -473,6 +584,8 @@ function collectSegments(root, lang, context, pageId, entries) {
         if (element.matches(IGNORED_SELECTOR)) return;
         if (element.tagName === "PRE") {
             entries.push({ kind: "pause", element });
+        } else if (element.tagName === "TABLE") {
+            collectTableSegments(element, lang, context, pageId, entries);
         } else if (LEAF_TAGS.has(element.tagName)) {
             collectLeafSegments(element, lang, context, pageId, entries);
         } else {
