@@ -1,7 +1,7 @@
 import { appState } from "./state.js";
 import { createTag } from "./tags.js";
 import { loadCategory, navigateToSubject, navigateToChapter } from "./router.js";
-import { createReaderControl } from "./reader.js";
+import { createReaderControl } from "./reader-control.js";
 import { t, tEntityLabel } from "./i18n.js";
 
 let categories = [];

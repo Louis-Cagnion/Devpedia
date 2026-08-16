@@ -1,6 +1,5 @@
 import { createTag } from "./tags.js";
 import { appState } from "./state.js";
-import { t } from "./i18n.js";
 import { speakableCode, speakableText, PAGE_SPECIFIC_CONTEXT, HAS_SPOKEN_CONTENT } from "./reader-pronunciation.js";
 
 // Web Speech API only (no cloud TTS, no auto-hosted engine) -- the site is 100% static
@@ -8,7 +7,7 @@ import { speakableCode, speakableText, PAGE_SPECIFIC_CONTEXT, HAS_SPOKEN_CONTENT
 // See devpedia-todo.md for the decisions this module implements. Pronunciation rules (how a
 // page's own text gets rewritten into what's actually spoken) live in reader-pronunciation.js
 // instead -- a separate reason to change from the reading engine/highlighting/UI below.
-const SPEECH_SUPPORTED = "speechSynthesis" in window;
+export const SPEECH_SUPPORTED = "speechSynthesis" in window;
 const synth = SPEECH_SUPPORTED ? window.speechSynthesis : null;
 
 // Elements read as one spoken unit; everything else (blockquote, ul/ol, table/thead/tbody/tr,
@@ -288,17 +287,34 @@ function scheduleEstimatedWords(entry, myGeneration) {
 // already been reassigned to the next page -- resuming playback instead of stopping.
 let generation = 0;
 
-// Every createReaderControl() instance (desktop sidebar + mobile floating bar) subscribes here,
-// so both stay in sync with the single shared playback state.
+// Subscribers registered through onStatusChange() below.
 const listeners = new Set();
 
-function getStatus() {
+/**
+ * @returns {{hasPlan: boolean, isPlaying: boolean, isPaused: boolean, isPausedAtCode: boolean,
+ *   canReplay: boolean}} a snapshot of the playback state, for reader-control.js's
+ *   createReaderControl() to pick which buttons to show (cf. onStatusChange() below)
+ */
+export function getReaderStatus() {
     return { hasPlan: plan.length > 0, isPlaying, isPaused, isPausedAtCode, canReplay: lastSpokenIndex !== null };
 }
 
 function notify() {
-    const status = getStatus();
+    const status = getReaderStatus();
     listeners.forEach(listener => listener(status));
+}
+
+/**
+ * Subscribes `listener` to every future playback state change, called once immediately with the
+ * current state too so a freshly built control doesn't have to wait for the next change to know
+ * what to show. Every createReaderControl() instance (desktop sidebar + mobile floating bar)
+ * subscribes here, so both stay in sync with the single shared playback state.
+ *
+ * @param {(status: ReturnType<typeof getReaderStatus>) => void} listener
+ */
+export function onStatusChange(listener) {
+    listeners.add(listener);
+    listener(getReaderStatus());
 }
 
 // A clause boundary: one or more sentence-ending marks (with an optional closing quote/parenthesis
@@ -601,7 +617,8 @@ function speakNext() {
     synth.speak(utterance);
 }
 
-function startReading() {
+/** What the reader control's "Lire depuis le début" button calls. */
+export function startReading() {
     if (!SPEECH_SUPPORTED || !plan.length) return;
     resetPlayback();
     speakNext();
@@ -666,7 +683,7 @@ function findVisibleEntryIndex() {
  * visible (cut off above the navbar), reading should still begin at its very first word, so the
  * view moves up to show that word rather than starting mid-scroll.
  */
-function startFromVisible() {
+export function startFromVisible() {
     if (!SPEECH_SUPPORTED || !plan.length) return;
     resetPlayback();
     const index = findVisibleEntryIndex();
@@ -675,7 +692,8 @@ function startFromVisible() {
     speakNext();
 }
 
-function continueAfterCode() {
+/** What the reader control's "Continuer" button calls (cf. triggerPrimaryAction() below). */
+export function continueAfterCode() {
     if (!isPausedAtCode) return;
     planIndex++;
     speakNext();
@@ -685,9 +703,10 @@ function continueAfterCode() {
  * Re-speaks the paragraph `lastSpokenIndex` belongs to, from its first segment -- lets the
  * listener catch a sentence they missed without rewinding the whole page or waiting for it to
  * come back around. Works while playing (interrupts the current utterance), paused at a code
- * block (replays the paragraph just before it), or stopped (replays the last one heard).
+ * block (replays the paragraph just before it), or stopped (replays the last one heard). What the
+ * reader control's "Relire le paragraphe" button calls.
  */
-function replayParagraph() {
+export function replayParagraph() {
     if (lastSpokenIndex === null) return;
     const group = plan[lastSpokenIndex].group;
     let start = lastSpokenIndex;
@@ -737,89 +756,28 @@ function jumpToParagraph(index) {
 }
 
 /** What the reader control's "paragraphe suivant" button calls. */
-function nextParagraph() {
+export function nextParagraph() {
     const target = adjacentParagraphIndex(planIndex, 1);
     if (target !== null) jumpToParagraph(target);
 }
 
 /** What the reader control's "paragraphe précédent" button calls. */
-function previousParagraph() {
+export function previousParagraph() {
     const target = adjacentParagraphIndex(planIndex, -1);
     if (target !== null) jumpToParagraph(target);
 }
 
 /**
- * Builds one instance of the read-aloud control. Exactly one of two button pairs shows at a time
- * (cf. applyStatus() below), rather than stacking every action whether or not it currently means
- * anything (requested by Louis on 2026-08-16, "pour éviter la surcharge de boutons") --
- * readerListenButton + readerRestartButton while nothing is playing, or readerPrimaryButton
- * (its own label switching between "Pause"/"Reprendre"/"Continuer" depending on exactly which of
- * isPlaying/isPaused/isPausedAtCode is set) + readerReplayButton + readerPreviousButton +
- * readerNextButton once reading is in progress in any of those three ways. Call once per place it
- * needs to appear (the desktop right sidebar, the mobile floating bar) -- every instance shares
- * the same underlying playback state and stays in sync with the others.
- *
- * @returns {HTMLElement|null} null if the browser has no Web Speech API, so callers show nothing
- *   rather than a control that can never work
+ * What the reader control's single dynamic primary button calls, regardless of which of the
+ * three in-progress states (cf. isPausedAtCode/isPlaying/isPaused) it's currently showing a label
+ * for -- keeps that branching here rather than in reader-control.js, which only needs to know
+ * which label to show (cf. its own applyStatus()), not reader.js's internal state names.
  */
-export function createReaderControl() {
-    if (!SPEECH_SUPPORTED) return null;
-
-    const wrapper = createTag("div", { class: "readerControl" });
-    const listenButton = createTag(
-        "button",
-        { class: "returnButton readerListenButton" },
-        { textContent: t("readerListen") }
-    );
-    const restartButton = createTag(
-        "button",
-        { class: "returnButton readerRestartButton" },
-        { textContent: t("readerRestart") }
-    );
-    const primaryButton = createTag("button", { class: "returnButton readerPrimaryButton" });
-    const replayButton = createTag(
-        "button",
-        { class: "returnButton readerReplayButton" },
-        { textContent: t("readerReplay") }
-    );
-    const previousButton = createTag(
-        "button",
-        { class: "returnButton readerPreviousButton" },
-        { textContent: t("readerPreviousParagraph") }
-    );
-    const nextButton = createTag(
-        "button",
-        { class: "returnButton readerNextButton" },
-        { textContent: t("readerNextParagraph") }
-    );
-    listenButton.addEventListener("click", startFromVisible);
-    restartButton.addEventListener("click", startReading);
-    primaryButton.addEventListener("click", () => {
-        if (isPausedAtCode) continueAfterCode();
-        else if (isPlaying) pauseReading();
-        else if (isPaused) resumeReading();
-    });
-    replayButton.addEventListener("click", replayParagraph);
-    previousButton.addEventListener("click", previousParagraph);
-    nextButton.addEventListener("click", nextParagraph);
-    // In-progress order requested by Louis on 2026-08-16: previous, pause/resume, next, replay.
-    wrapper.append(listenButton, restartButton, previousButton, primaryButton, nextButton, replayButton);
-
-    const applyStatus = status => {
-        const inProgress = status.isPlaying || status.isPaused || status.isPausedAtCode;
-        listenButton.classList.toggle("visible", !inProgress);
-        restartButton.classList.toggle("visible", !inProgress);
-        listenButton.disabled = restartButton.disabled = !status.hasPlan;
-        primaryButton.classList.toggle("visible", inProgress);
-        primaryButton.textContent = status.isPausedAtCode ? t("readerContinue")
-            : status.isPlaying ? t("readerPause")
-            : t("readerResume");
-        replayButton.classList.toggle("visible", inProgress);
-        previousButton.classList.toggle("visible", inProgress);
-        nextButton.classList.toggle("visible", inProgress);
-    };
-    listeners.add(applyStatus);
-    applyStatus(getStatus());
-
-    return wrapper;
+export function triggerPrimaryAction() {
+    if (isPausedAtCode) continueAfterCode();
+    else if (isPlaying) pauseReading();
+    else if (isPaused) resumeReading();
 }
+
+// createReaderControl() -- the reader control's own UI/button wiring -- lives in
+// reader-control.js instead, a separate reason to change from the playback engine above.
