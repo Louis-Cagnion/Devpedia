@@ -523,19 +523,25 @@ function speakNext() {
         if (generation !== myGeneration) return;
         setActiveWord(wordIndexAtChar(entry.text, event.charIndex));
     };
-    // Anchored on onstart (speech actually beginning), not on when speak() was called -- the two
-    // can be a couple hundred ms apart (engine queueing/startup), which the schedule below would
-    // otherwise treat as part of the text's own speaking time. That inflated short entries (a
-    // heading, a one-line paragraph) the most, since a fixed startup delay is a bigger fraction of
-    // a short entry's total duration -- and with CALIBRATION_WEIGHT trusting each measurement this
-    // much, one skewed entry was enough to drag the whole estimate down and make every entry after
-    // it feel slower (reported by Louis on 2026-08-16, right after CALIBRATION_WEIGHT went up).
+    // Two different anchors on purpose. Calibration (cf. utterance.onend below) is anchored on
+    // onstart (speech actually beginning) rather than on when speak() was called -- the two can be
+    // a couple hundred ms apart (engine queueing/startup), which would otherwise get counted as
+    // part of the text's own speaking time and inflate short entries the most, since a fixed
+    // startup delay is a bigger fraction of a short entry's total duration (with CALIBRATION_WEIGHT
+    // trusting each measurement this much, one skewed entry was enough to drag the whole estimate
+    // down, reported by Louis on 2026-08-16). The word-by-word schedule itself, though, is
+    // deliberately anchored on the call to speak() below instead, straight away rather than waiting
+    // for onstart -- its first word already lands at 0ms (cf. scheduleEstimatedWords()), so waiting
+    // for onstart would only have delayed it by that same queueing gap, showing the whole-entry
+    // highlight alone for longer than necessary before the word-level one takes over (reported by
+    // Louis on 2026-08-16, "le highlight de la section complète avant que ça switch sur du mot à
+    // mot").
     let startedAt = null;
     utterance.onstart = () => {
         if (generation !== myGeneration) return;
         startedAt = Date.now();
-        scheduleEstimatedWords(entry, myGeneration);
     };
+    scheduleEstimatedWords(entry, myGeneration);
     utterance.onend = utterance.onerror = () => {
         if (generation !== myGeneration) return;
         // Recalibrates charsPerSecond from how long this utterance actually took, so the estimate
@@ -576,14 +582,30 @@ function getNavbarHeight() {
 }
 
 /**
+ * @returns {number} the read-aloud floating bar's own height in pixels if it's currently a fixed
+ *   overlay pinned to the bottom of the screen (narrow/mobile layout, cf. .readerFloatingBar in
+ *   responsive.css) -- 0 on a wide layout, where the reader control sits in the right sidebar
+ *   instead and never covers any of the readable content.
+ */
+function getFloatingBarHeight() {
+    const bar = document.querySelector(".readerFloatingBar");
+    if (!bar || getComputedStyle(bar).position !== "fixed") return 0;
+    return bar.getBoundingClientRect().height;
+}
+
+/**
  * @param {HTMLElement} element
  * @returns {boolean} whether `element`'s own top edge (not just some part of it) is currently on
- *   screen, below the sticky navbar -- unlike merely being partly on screen, e.g. only its last
- *   line still poking above the navbar, which wouldn't show where it starts
+ *   screen, below the sticky navbar and above the bottom floating reader bar on narrow layouts --
+ *   unlike merely being partly on screen, e.g. only its last line still poking above the navbar
+ *   (or its first line already hidden under the floating bar), which wouldn't show where it
+ *   starts. Missing the floating bar here used to read a line sitting right above it as "visible"
+ *   even though it's actually covered, so the page never auto-scrolled to bring it back into view
+ *   (reported by Louis on 2026-08-16).
  */
 function isElementStartVisible(element) {
     const top = element.getBoundingClientRect().top;
-    return top >= getNavbarHeight() && top < window.innerHeight;
+    return top >= getNavbarHeight() && top < window.innerHeight - getFloatingBarHeight();
 }
 
 /**
