@@ -1,8 +1,10 @@
 /**
- * Create any HTML tag
- * @param {string} tagName 
- * @param {object<key, values>} attributes 
- * @param {object<key, values>} DOMProperties 
+ * @brief Creates any HTML tag.
+ *
+ * @param {string} tagName
+ * @param {Object<string, string>} attributes
+ * @param {Object<string, *>} DOMProperties
+ *
  * @returns {HTMLElement}
  */
 export function createTag(tagName= "", attributes = {}, DOMProperties = {}) {

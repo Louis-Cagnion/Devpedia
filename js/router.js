@@ -123,7 +123,7 @@ function renderAcrossLanguages(categoryId, subjectId, pageId) {
     });
 }
 
-/* Session-only: read once at startup by resumePendingNavigation(), then cleared — carries the
+/* Session-only: read once at startup by resumePendingNavigation(), then cleared; carries the
    current page across a language switch's location.reload(), since ids are language-independent. */
 export const PENDING_NAV_KEY = "devpedia-pending-nav";
 

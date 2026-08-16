@@ -11,9 +11,13 @@ function svgTag(name, attributes = {}) {
 }
 
 /**
- * Parses a chart block's raw body into a flat { key: value } spec.
- * Lines follow `key: value`, split on the first colon only (a value like
- * `x => x*x` has none, but nothing rules out a colon appearing later).
+ * @brief Parses a chart block's raw body into a flat { key: value } spec. Lines follow
+ * `key: value`, split on the first colon only (a value like `x => x*x` has none, but
+ * nothing rules out a colon appearing later).
+ *
+ * @param {string} rawText
+ *
+ * @returns {Object<string, string>}
  */
 function parseSpec(rawText) {
     const spec = {};
@@ -76,9 +80,12 @@ function tokenize(expr) {
 }
 
 /**
+ * @brief Parses a math expression into an AST evaluable by evaluateAst.
+ *
  * @param {string} exprString a math expression using `x`, `+ - * / ^`, parentheses,
  *   and calls from MATH_FUNCTIONS (e.g. "x^2 + sqrt(x)")
- * @returns {object} an AST evaluable by evaluateAst
+ *
+ * @returns {object}
  */
 function parseExpression(exprString) {
     const tokens = tokenize(exprString);
@@ -193,8 +200,11 @@ const PLOT_HEIGHT = 260;
 const PLOT_MARGIN = {top: 20, right: 20, bottom: 30, left: 40};
 
 /**
+ * @brief Builds an inline SVG plotting `fn` (a function of `x`) over `domaine`.
+ *
  * @param {{fn: string, domaine: string, label?: string}} spec
- * @returns {SVGElement} an inline SVG plotting `fn` (a function of `x`) over `domaine`
+ *
+ * @returns {SVGElement}
  */
 function renderFunctionPlot(spec) {
     if (!spec.fn) throw new Error('le champ "fn" est requis (ex: "fn: x => x*x")');
@@ -313,10 +323,13 @@ function parseHueList(huesSpec) {
 }
 
 /**
+ * @brief Builds a full hue wheel, with any given hues marked and connected.
+ *
  * @param {{hues?: string, label?: string}} spec `hues`: an optional comma-separated
  *   list of hue angles (0-360°) to mark and connect on the wheel -- 2 for a
  *   complementary harmony, 3 for a triadic one, etc. Omit it for a bare wheel.
- * @returns {SVGElement} a full hue wheel, with any given hues marked and connected
+ *
+ * @returns {SVGElement}
  */
 function renderColorWheel(spec) {
     const hues = spec.hues ? parseHueList(spec.hues) : [];
@@ -366,7 +379,10 @@ const VECTOR_MARGIN = 30;
 const VECTOR_COLOR_CLASSES = ["chartVector0", "chartVector1", "chartVector2"];
 
 /**
- * @param {string} vectorsSpec a list of 2D vectors, e.g. "(3, 2), (1, 4)"
+ * @brief Parses a list of 2D vectors, e.g. "(3, 2), (1, 4)".
+ *
+ * @param {string} vectorsSpec
+ *
  * @returns {Array<{x: number, y: number}>}
  */
 function parseVectorList(vectorsSpec) {
@@ -384,8 +400,11 @@ function parseVectorList(vectorsSpec) {
 }
 
 /**
+ * @brief Draws 2D vectors as arrows from the origin, same scale on both axes.
+ *
  * @param {{vecteurs: string, label?: string}} spec
- * @returns {SVGElement} 2D vectors drawn as arrows from the origin, same scale on both axes
+ *
+ * @returns {SVGElement}
  */
 function renderVectorDiagram(spec) {
     if (!spec.vecteurs) throw new Error('le champ "vecteurs" est requis (ex: "vecteurs: (3, 2), (1, 4)")');
@@ -446,8 +465,11 @@ function renderVectorDiagram(spec) {
 }
 
 /**
- * @param {string} barresSpec a comma-separated list of "étiquette=valeur" pairs,
- *   e.g. "Pluie=0.8, Soleil=0.15, Neige=0.05"
+ * @brief Parses a comma-separated list of "étiquette=valeur" pairs,
+ * e.g. "Pluie=0.8, Soleil=0.15, Neige=0.05".
+ *
+ * @param {string} barresSpec
+ *
  * @returns {Array<{label: string, value: number}>}
  */
 function parseBarList(barresSpec) {
@@ -468,10 +490,13 @@ function parseBarList(barresSpec) {
 const DISTRIBUTION_BAR_WIDTH_RATIO = 0.6;
 
 /**
+ * @brief Builds a vertical bar chart, one bar per entry of `barres`, with the y-axis
+ * scaled to the largest bar (plus headroom) rather than a fixed range, so a distribution
+ * far from its theoretical ceiling still fills the chart readably.
+ *
  * @param {{barres: string, label?: string}} spec
- * @returns {SVGElement} a vertical bar chart, one bar per entry of `barres`, with the
- *   y-axis scaled to the largest bar (plus headroom) rather than a fixed range, so a
- *   distribution far from its theoretical ceiling still fills the chart readably
+ *
+ * @returns {SVGElement}
  */
 function renderDistributionChart(spec) {
     if (!spec.barres) throw new Error('le champ "barres" est requis (ex: "barres: Pluie=0.8, Soleil=0.15, Neige=0.05")');
@@ -538,11 +563,13 @@ const CHART_RENDERERS = {
 };
 
 /**
+ * @brief Builds a wrapper element to render in place of the fence, or null if `language`
+ * isn't a registered chart kind (caller falls back to a regular code block).
+ *
  * @param {string} language the fence's language tag
  * @param {string} rawText the fence's raw body (unparsed `key: value` spec lines)
- * @returns {HTMLElement|null} a wrapper element to render in place of the fence,
- *   or null if `language` isn't a registered chart kind (caller falls back to a
- *   regular code block)
+ *
+ * @returns {HTMLElement|null}
  */
 export function renderChartBlock(language, rawText) {
     const renderer = CHART_RENDERERS[language];

@@ -29,7 +29,7 @@ export function setHighlightedEntry(entry) {
     highlightedWords = entry.words;
 }
 
-/** Removes both highlight tiers -- nothing is being spoken once this runs. */
+/** @brief Removes both highlight tiers -- nothing is being spoken once this runs. */
 export function clearHighlight() {
     highlightedTarget?.classList.remove(READER_HIGHLIGHT_CLASS);
     highlightedTarget = null;

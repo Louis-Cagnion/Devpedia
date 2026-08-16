@@ -2,10 +2,10 @@ import { createTag } from "./tags.js";
 import { renderChartBlock } from "./charts.js";
 
 /**
- * Strip a file's optional `---`-fenced frontmatter (used for build-time metadata
- * like `order`, irrelevant to rendering) and return its markdown body.
+ * @brief Strips a file's optional `---`-fenced frontmatter and returns its markdown body.
  *
  * @param {string} rawContent
+ *
  * @returns {string}
  */
 export function parseMdContent(rawContent) {
@@ -14,13 +14,12 @@ export function parseMdContent(rawContent) {
 }
 
 /**
- * Pulls a backslash-escaped punctuation character (e.g. `` \` ``, `\*`) out of `line` before
- * `transform` runs, so it can never be mistaken for a markdown delimiter, then puts back the
- * bare literal character (the backslash is consumed, per commonmark escaping) at its original
- * position. Uses \x01-delimited placeholders so they can never collide with real text.
+ * @brief Pulls a backslash-escaped punctuation character out of `line` before `transform` runs,
+ * so it can never be mistaken for a markdown delimiter, then puts back the bare literal character.
  *
  * @param {string} line
  * @param {(withoutEscapes: string) => string} transform
+ *
  * @returns {string}
  */
 function withProtectedEscapes(line, transform) {
@@ -33,17 +32,15 @@ function withProtectedEscapes(line, transform) {
 }
 
 /**
- * Pulls `code` spans out of `line` before `transform` runs on the rest (so a literal `*`
- * or `**` inside a code span, e.g. `` `*` ``, can never be mistaken for emphasis markers),
- * then reinserts each span — wrapped by `wrapCode` — at its original position. Uses a null
- * character as the placeholder delimiter so it can never collide with real text.
- *
- * Delimiters can be one or two backticks (`` `code` `` or ``` ``code`` ```) — the longer form
- * lets a code span contain a literal backtick, e.g. `` ```date` `` `` renders as `` `date` ``.
+ * @brief Pulls `code` spans out of `line` before `transform` runs on the rest, so a literal `*`
+ * inside a code span can never be mistaken for an emphasis marker, then reinserts each span
+ * (wrapped by `wrapCode`) at its original position. Delimiters can be one or two backticks,
+ * the longer form letting a code span contain a literal backtick.
  *
  * @param {string} line
  * @param {(withoutCode: string) => string} transform
  * @param {(code: string) => string} wrapCode
+ *
  * @returns {string}
  */
 function withProtectedCodeSpans(line, transform, wrapCode) {
@@ -56,11 +53,12 @@ function withProtectedCodeSpans(line, transform, wrapCode) {
 }
 
 /**
- * Escapes the characters that would otherwise be parsed as HTML markup when a string
- * is inserted via `innerHTML` — needed for inline code spans, whose content (e.g. a
- * literal `<table>` shown as an example) must render as visible text, not real markup.
+ * @brief Escapes the characters that would otherwise be parsed as HTML markup when a string
+ * is inserted via `innerHTML`: needed for inline code spans, whose content (e.g. a literal
+ * `<table>` shown as an example) must render as visible text, not real markup.
  *
  * @param {string} text
+ *
  * @returns {string}
  */
 function escapeHtml(text) {
@@ -68,12 +66,13 @@ function escapeHtml(text) {
 }
 
 /**
- * Renders `[label](url)` as a real `<a>`. An internal cross-chapter link (`/?c=...`, cf.
+ * @brief Renders `[label](url)` as a real `<a>`. An internal cross-chapter link (`/?c=...`, cf.
  * README) gets `class="contentLink"` so router.js can intercept its clicks and navigate through
  * the SPA instead of reloading the page; anything else is treated as an external link and opens
  * in a new tab, `rel="noopener noreferrer"` guarding against tabnabbing (cf. HTML liens-et-images.md).
  *
  * @param {string} text
+ *
  * @returns {string}
  */
 function renderLinks(text) {
@@ -95,8 +94,11 @@ function mdToHtmlFormatting(line) {
 }
 
 /**
+ * @brief Strips markdown emphasis/code markers from `line`, returned as plain text.
+ *
  * @param {string} line
- * @returns {string} the line with markdown emphasis/code markers removed, as plain text
+ *
+ * @returns {string}
  */
 function stripMdFormatting(line) {
     return withProtectedEscapes(line, withoutEscapes =>
@@ -111,8 +113,11 @@ function stripMdFormatting(line) {
 const codeFenceRegex = /^```([\w-]*)/;
 
 /**
+ * @brief Checks whether `line` is a ``` code fence marker.
+ *
  * @param {string} line
- * @returns {boolean} whether this line is a ``` code fence marker
+ *
+ * @returns {boolean}
  */
 function isCodeFence(line) {
     return codeFenceRegex.test(line);
@@ -121,8 +126,11 @@ function isCodeFence(line) {
 const headingRegex = /^(#{1,5})\s+(.*)/;
 
 /**
+ * @brief Builds a kebab-case anchor id from `text`.
+ *
  * @param {string} text
- * @returns {string} a kebab-case anchor id
+ *
+ * @returns {string}
  */
 function slugifyHeading(text) {
     return text
@@ -134,9 +142,12 @@ function slugifyHeading(text) {
 }
 
 /**
+ * @brief Builds a slug for `text` unique among `usedIds` (adds it to the set).
+ *
  * @param {string} text
  * @param {Set<string>} usedIds
- * @returns {string} a slug unique among `usedIds` (adds it to the set)
+ *
+ * @returns {string}
  */
 function uniqueHeadingId(text, usedIds) {
     const base = slugifyHeading(text) || "section";
@@ -153,13 +164,17 @@ function uniqueHeadingId(text, usedIds) {
 const quoteRegex = /^>\s?(.*)/;
 
 /**
- * @param {string} line a single markdown table row, e.g. `| a | b |`
- * @returns {Array<string>} the row's cells, trimmed, without the leading/trailing pipe
+ * @brief Splits a single markdown table row (e.g. `| a | b |`) into its cells, trimmed,
+ * without the leading/trailing pipe.
+ *
+ * @param {string} line
+ *
+ * @returns {Array<string>}
  */
 function splitTableRow(line) {
     const trimmed = line.trim().replace(/^\|/, "").replace(/\|$/, "");
     /* A `\|` (e.g. inside a code span like `` `\|` `` to render a literal pipe character)
-       is an escaped separator, not a column boundary — mdToHtmlFormatting unescapes it later. */
+       is an escaped separator, not a column boundary: mdToHtmlFormatting unescapes it later. */
     const cells = [];
     let cell = "";
     for (let i = 0; i < trimmed.length; i++) {
@@ -178,8 +193,12 @@ function splitTableRow(line) {
 }
 
 /**
- * @param {string} line the line right after a table header row
- * @returns {boolean} whether it's a valid markdown table separator (e.g. `|---|:--:|`)
+ * @brief Checks whether `line` (the line right after a table header row) is a valid
+ * markdown table separator (e.g. `|---|:--:|`).
+ *
+ * @param {string} line
+ *
+ * @returns {boolean}
  */
 function isTableSeparatorRow(line) {
     if (!line.includes("|") && !line.includes("-"))
@@ -189,8 +208,12 @@ function isTableSeparatorRow(line) {
 }
 
 /**
- * @param {string} cell a separator cell, e.g. `:--:`
- * @returns {string|null} the CSS text-align implied by the cell's colons, or null for the default
+ * @brief Derives the CSS text-align implied by a separator cell's colons (e.g. `:--:`),
+ * or null for the default.
+ *
+ * @param {string} cell
+ *
+ * @returns {string|null}
  */
 function tableColumnAlign(cell) {
     const left = cell.startsWith(":");
@@ -231,13 +254,14 @@ function createTableFromLines(headerLine, separatorLine, bodyLines, homeDiv, fil
 }
 
 /**
- * Render a markdown body into `homeDiv`. Its first line must be a `# ` heading,
+ * @brief Renders a markdown body into `homeDiv`. Its first line must be a `# ` heading,
  * used as the page's title (`h2`); further `##`-`######` headings render as `h3`-`h6`,
  * each given an anchor id.
  *
  * @param {HTMLElement} homeDiv
  * @param {string} fileName
  * @param {string} text
+ *
  * @returns {Array<{level: number, id: string, text: string}>} the page's `h3`-`h6` headings, in order
  */
 export function parseAppendText(homeDiv, fileName, text) {
@@ -257,7 +281,7 @@ export function parseAppendText(homeDiv, fileName, text) {
     let quoteDiv = null;
     let codeDiv = null;
     /* Consecutive chart blocks share one full-width row instead of each taking the full width on
-       its own line — reset to null by every other block kind below, so unrelated charts don't group. */
+       its own line; reset to null by every other block kind below, so unrelated charts don't group. */
     let lastChartRow = null;
     const usedIds = new Set();
     const outline = [];
@@ -298,7 +322,7 @@ export function parseAppendText(homeDiv, fileName, text) {
             if (!inCodeBlock) {
                 inCodeBlock = true;
                 /* Ends whatever quote/list was open before the fence, like a table/heading does
-                   below — otherwise a quote resuming after it would append into the stale one. */
+                   below; otherwise a quote resuming after it would append into the stale one. */
                 openList = false;
                 openQuote = false;
                 lastChartRow = null;

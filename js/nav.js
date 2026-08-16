@@ -110,7 +110,7 @@ function createAppendCategories(navBar, categories = []) {
         return link;
     });
     /* moreButton lives inside categoriesDiv (not a navBar-level sibling) so it shares
-       the categories' own gap/centering — see watchCategoriesOverflow. */
+       the categories' own gap/centering (see watchCategoriesOverflow). */
     const moreButton = createCategoriesOverflowMenu(categories);
     categoriesDiv.append(moreButton);
     navBar.append(categoriesDiv);

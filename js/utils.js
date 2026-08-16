@@ -1,10 +1,11 @@
 import { appState } from "./state.js";
 
 /**
- * Find and return the category
- * 
- * @param {string} toFind 
- * @returns The category
+ * @brief Finds a category by id or label.
+ *
+ * @param {{id?: string, label?: string}} toFind
+ *
+ * @returns {object|undefined}
  */
 export function findCategory(toFind = {}) {
     return appState.categories.find(category => {
@@ -16,17 +17,22 @@ export function findCategory(toFind = {}) {
 }
 
 /**
- * @returns {string} the content folder to fetch pages from — the translated
- * `content-<lang>` folder if a language other than French is selected, `content` otherwise
+ * @brief Returns the content folder to fetch pages from: the translated `content-<lang>`
+ * folder if a language other than French is selected, `content` otherwise.
+ *
+ * @returns {string}
  */
 export function getContentDir() {
     return appState.lang ? `content-${appState.lang}` : "content";
 }
 
 /**
+ * @brief Fetches `path` and parses its response as JSON or plain text.
+ *
  * @param {string} path
- * @param {string} type
- * @returns json or text content of file
+ * @param {"text"|"json"} type
+ *
+ * @returns {Promise<string|object>}
  */
 export async function fetchFileToTextOrJson(path, type) {
     const file = await fetch(path, {

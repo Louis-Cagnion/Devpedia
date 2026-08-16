@@ -3,17 +3,21 @@ import { createTag } from "./tags.js";
 import { t, tEntityLabel } from "./i18n.js";
 
 /**
+ * @brief Lowercases and strips accents from `text`, for accent-insensitive matching.
+ *
  * @param {string} text
- * @returns {string} lowercased, accent-stripped text, for accent-insensitive matching
+ *
+ * @returns {string}
  */
 function normalize(text) {
     return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 }
 
 /**
- * Flattens the category tree into a searchable list of categories, subjects and chapters.
+ * @brief Flattens the category tree into a searchable list of categories, subjects and chapters.
  *
  * @param {Object} categories
+ *
  * @returns {Array<{type: string, label: string, context: string, categoryId: string, subjectId: (string|null), chapterId: (string|null)}>}
  */
 function buildIndex(categories) {
@@ -48,7 +52,7 @@ function navigateToResult(result) {
 }
 
 /**
- * Wire the navbar search input to a live dropdown of matching categories/subjects/chapters.
+ * @brief Wires the navbar search input to a live dropdown of matching categories/subjects/chapters.
  *
  * @param {HTMLElement} container positioned-relative element the dropdown attaches to
  * @param {HTMLInputElement} searchBar

@@ -4,7 +4,7 @@ import { fetchFileToTextOrJson } from "./utils.js";
 let uiStrings = null;
 
 /**
- * Fetches structure/ui-strings.json once at startup. Must be awaited before any UI that
+ * @brief Fetches structure/ui-strings.json once at startup. Must be awaited before any UI that
  * calls t() is built (t() reads the cached result synchronously).
  */
 export async function initI18n() {
@@ -12,9 +12,12 @@ export async function initI18n() {
 }
 
 /**
+ * @brief Looks up the label for `key` in the active language (appState.lang), falling back
+ * to French for a language that doesn't have this key translated yet.
+ *
  * @param {string} key a key present in structure/ui-strings.json's "fr" table
- * @returns {string} the label for the active language (appState.lang), falling back to
- *   French for a language that doesn't have this key translated yet
+ *
+ * @returns {string}
  */
 export function t(key) {
     const label = uiStrings[appState.lang]?.[key] ?? uiStrings.fr[key];
@@ -24,7 +27,7 @@ export function t(key) {
 }
 
 /**
- * Category and subject labels come from struct-*.json as the raw (French) folder name -
+ * @brief Category and subject labels come from struct-*.json as the raw (French) folder name -
  * see js/sidebar.js and js/nav.js - because a folder name must stay identical across
  * languages for cross-language linking to work (see README's "Content structure" section).
  * This looks up a translated display label for one, added to ui-strings.json's
@@ -35,6 +38,7 @@ export function t(key) {
  * @param {"categoryLabels"|"subjectLabels"} kind
  * @param {string} id the category's or subject's id
  * @param {string} fallback the raw folder-derived label to use if no translation exists yet
+ *
  * @returns {string}
  */
 export function tEntityLabel(kind, id, fallback) {
