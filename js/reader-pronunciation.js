@@ -176,6 +176,12 @@ const CONTEXT_OPERATOR_SPEECH = {
         "@": "matrix multiplication",
         "*": "element-wise multiplication",
         "·": "dot product",
+        /* "b^y" was read letter-by-letter as "b accent circonflexe y" -- the caret's own French
+           name -- since nothing here rewrote it (reported by Louis on 2026-08-16). English like
+           every other operator phrase in this table (code always gets the English voice, cf.
+           needsEnglishVoice()), not "puissance" -- that word belongs to the separate prose case
+           for the same symbol (cf. PROSE_SYMBOL_SPEECH's own "^" entry below). */
+        "^": "to the power of",
     },
     git: {
         "<<<<<<<": "conflict marker, start of your changes",
@@ -439,6 +445,40 @@ const SHELL_SPEECH_FR = "shell";
    PROSE_SYMBOL_SPEECH's plain substring replace -- see CF_SPEECH_FR's own comment above for why. */
 const PROMPT_WORD_PATTERN = /\bprompt\b/gi;
 const PROMPT_SPEECH_FR = "prompte";
+/* "déréférencement" (and déréférence/déréférencé/déréférencer, the C/C++ pointer chapters' own
+   vocabulary) comes out of the French voice as "dé" then the second "é" spelled out letter by
+   letter ("e accent aigu") instead of spoken -- confirmed live on 2026-08-16 that the text handed
+   to SpeechSynthesisUtterance is already the correct, properly-accented word, so this is the voice
+   engine itself choking on the "éré" cluster, not something upstream mangling the text. A hyphen
+   after the "dé" prefix (silent for meaning, "dé-référencement" reads identically to
+   "déréférencement") gives the engine an explicit word break between the two accented syllables it
+   otherwise runs together. Matched by word-boundary prefix rather than PROSE_SYMBOL_SPEECH's plain
+   substring replace, same reasoning as PROMPT_WORD_PATTERN above -- and case-insensitively, since
+   only the spoken string (never the page's own displayed text) is affected either way. */
+const DEREFERENCE_PATTERN = /\bdéréférenc/gi;
+const DEREFERENCE_SPEECH_FR = "dé-référenc";
+
+/* Unicode superscript characters (exponents, e.g. "2ⁿ⁻¹", "10¹⁹") are silently skipped by TTS
+   engines entirely -- "2ⁿ⁻¹ à 2ⁿ⁻¹ − 1" was heard as "2 à 2 − 1", losing the exponent that's the
+   whole point of the sentence. A run of consecutive superscript characters is decoded back to its
+   normal-size text (digits/n/i as themselves, "⁻"/"⁺" spelled out per language since a bare
+   "-"/"+" wouldn't reliably read as minus/plus either) and prefixed with a localized "to the
+   power of". Declared before PROSE_SYMBOL_SPEECH so its own "^" entry below can reuse this same
+   `of` wording, rather than a second hand-written copy of the same four translations. */
+const SUPERSCRIPT_DIGITS = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "ⁿ": "n", "ⁱ": "i" };
+const SUPERSCRIPT_RUN = /[⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱ⁻⁺]+/g;
+const POWER_OF_SPEECH = {
+    fr: { of: "puissance", "⁻": " moins ", "⁺": " plus " },
+    en: { of: "to the power of", "⁻": " minus ", "⁺": " plus " },
+    es: { of: "elevado a", "⁻": " menos ", "⁺": " más " },
+    br: { of: "elevado a", "⁻": " menos ", "⁺": " mais " },
+};
+
+/* "^" in prose (not inside a code span, cf. CONTEXT_OPERATOR_SPEECH.mathematiques for that case)
+   was read as the caret's own name ("accent circonflexe" in French) instead of as an exponent --
+   e.g. "mantisse × 2^exposant" in nombres-flottants.md (reported by Louis on 2026-08-16). Same
+   wording as a real Unicode superscript's own "to the power of" prefix above, since it's the same
+   concept written in plain ASCII for lack of an actual superscript character to type. */
 const PROSE_SYMBOL_SPEECH = {
     fr: {
         "≈": "environ égal à",
@@ -447,6 +487,7 @@ const PROSE_SYMBOL_SPEECH = {
         "≠": "différent de",
         "°": "degrés",
         "×": "fois",
+        "^": POWER_OF_SPEECH.fr.of,
         "C#": CSHARP_SPEECH,
         "OCaml": OCAML_SPEECH,
         "Devpédia": DEVPEDIA_SPEECH_FR,
@@ -457,9 +498,9 @@ const PROSE_SYMBOL_SPEECH = {
         "Shells": SHELL_SPEECH_FR,
         "shells": SHELL_SPEECH_FR,
     },
-    en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
-    es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
-    br: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "^": POWER_OF_SPEECH.en.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "^": POWER_OF_SPEECH.es.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    br: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "^": POWER_OF_SPEECH.br.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
 };
 
 /* "→" means different things depending on the chapter: a numeric/character range ("0 → 255",
@@ -473,21 +514,6 @@ const ARROW_RANGE_PAGES = new Set(["entiers-et-debordements", "encodage-des-text
 const ARROW_SPEECH = {
     range: { fr: "à", en: "to", es: "a", br: "a" },
     other: { fr: "puis", en: "then", es: "luego", br: "depois" },
-};
-
-/* Unicode superscript characters (exponents, e.g. "2ⁿ⁻¹", "10¹⁹") are silently skipped by TTS
-   engines entirely -- "2ⁿ⁻¹ à 2ⁿ⁻¹ − 1" was heard as "2 à 2 − 1", losing the exponent that's the
-   whole point of the sentence. A run of consecutive superscript characters is decoded back to its
-   normal-size text (digits/n/i as themselves, "⁻"/"⁺" spelled out per language since a bare
-   "-"/"+" wouldn't reliably read as minus/plus either) and prefixed with a localized "to the
-   power of". */
-const SUPERSCRIPT_DIGITS = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "ⁿ": "n", "ⁱ": "i" };
-const SUPERSCRIPT_RUN = /[⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱ⁻⁺]+/g;
-const POWER_OF_SPEECH = {
-    fr: { of: "puissance", "⁻": " moins ", "⁺": " plus " },
-    en: { of: "to the power of", "⁻": " minus ", "⁺": " plus " },
-    es: { of: "elevado a", "⁻": " menos ", "⁺": " más " },
-    br: { of: "elevado a", "⁻": " menos ", "⁺": " mais " },
 };
 
 function decodeSuperscript(run, lang) {
@@ -512,7 +538,10 @@ export function speakableText(text, lang, pageId) {
         .replaceAll("→", ` ${arrowWord} `)
         .replaceAll(DECORATIVE_EMOJI, "")
         .replace(SUPERSCRIPT_RUN, run => ` ${powerOfWord} ${decodeSuperscript(run, lang)} `);
-    if (lang === "fr") result = result.replace(PROMPT_WORD_PATTERN, ` ${PROMPT_SPEECH_FR} `);
+    if (lang === "fr") {
+        result = result.replace(PROMPT_WORD_PATTERN, ` ${PROMPT_SPEECH_FR} `);
+        result = result.replace(DEREFERENCE_PATTERN, DEREFERENCE_SPEECH_FR);
+    }
     const symbols = PROSE_SYMBOL_SPEECH[lang] ?? PROSE_SYMBOL_SPEECH.en;
     for (const [symbol, phrase] of Object.entries(symbols)) {
         result = result.replaceAll(symbol, ` ${phrase} `);
