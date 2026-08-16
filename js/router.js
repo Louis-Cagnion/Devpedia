@@ -318,6 +318,36 @@ function createBreadcrumb(category, subject) {
 }
 
 /**
+ * @param {string} pageId
+ * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} previousChapter
+ * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} nextChapter
+ * @returns {HTMLElement|null} the previous/next chapter buttons, stacked and right-aligned rather
+ *   than side by side (two chapter titles on one row can get uncomfortably long), or null if
+ *   there's neither a previous nor a next chapter to link to
+ */
+function createChapterNav(pageId, previousChapter, nextChapter) {
+    if (!previousChapter && !nextChapter) return null;
+    const chapterNav = createTag("div", {class: "chapterNav"});
+    if (previousChapter) {
+        const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
+        const prevButton = createChapterNavButton(`prevButton ${pageId}PrevButton`, previousChapter.label, arrow, true);
+        prevButton.addEventListener("click", (e) => {
+            navigateToChapter(previousChapter.categoryId, previousChapter.subjectId, previousChapter.id);
+        })
+        chapterNav.append(prevButton);
+    }
+    if (nextChapter) {
+        const arrow = document.documentElement.dir === "rtl" ? "←" : "→";
+        const nextButton = createChapterNavButton(`nextButton ${pageId}NextButton`, nextChapter.label, arrow, false);
+        nextButton.addEventListener("click", (e) => {
+            navigateToChapter(nextChapter.categoryId, nextChapter.subjectId, nextChapter.id);
+        })
+        chapterNav.append(nextButton);
+    }
+    return chapterNav;
+}
+
+/**
  * @param {HTMLElement} pageDiv where the nav row will be attached to
  * @param {string} pageId
  * @param {Boolean} withReturnButton
@@ -335,28 +365,28 @@ function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter,
         })
         nav.append(returnButton);
     }
-    if (previousChapter || nextChapter) {
-        // previous chapter stacked above next chapter, both right-aligned, rather than
-        // side by side — two chapter titles on one row can get uncomfortably long
-        const chapterNav = createTag("div", {class: "chapterNav"});
-        if (previousChapter) {
-            const arrow = document.documentElement.dir === "rtl" ? "→" : "←";
-            const prevButton = createChapterNavButton(`prevButton ${pageId}PrevButton`, previousChapter.label, arrow, true);
-            prevButton.addEventListener("click", (e) => {
-                navigateToChapter(previousChapter.categoryId, previousChapter.subjectId, previousChapter.id);
-            })
-            chapterNav.append(prevButton);
-        }
-        if (nextChapter) {
-            const arrow = document.documentElement.dir === "rtl" ? "←" : "→";
-            const nextButton = createChapterNavButton(`nextButton ${pageId}NextButton`, nextChapter.label, arrow, false);
-            nextButton.addEventListener("click", (e) => {
-                navigateToChapter(nextChapter.categoryId, nextChapter.subjectId, nextChapter.id);
-            })
-            chapterNav.append(nextButton);
-        }
-        nav.append(chapterNav);
-    }
+    const chapterNav = createChapterNav(pageId, previousChapter, nextChapter);
+    if (chapterNav) nav.append(chapterNav);
+    pageDiv.append(nav);
+}
+
+/**
+ * Appends a second previous/next chapter nav at the very end of the page content, past the
+ * bottom of a chapter's own text -- so moving to the next chapter doesn't require scrolling back
+ * up to the one at the top first (requested by Louis on 2026-08-16). No return button here, only
+ * the chapter buttons: the request was specifically about reaching the next/previous chapter
+ * without scrolling, not about going back up a level (which the return button does).
+ *
+ * @param {HTMLElement} pageDiv where the nav row will be attached to
+ * @param {string} pageId
+ * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} previousChapter
+ * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} nextChapter
+ */
+function appendBottomChapterNav(pageDiv, pageId, previousChapter, nextChapter) {
+    const chapterNav = createChapterNav(pageId, previousChapter, nextChapter);
+    if (!chapterNav) return;
+    const nav = createTag("div", {class: "pageNavBottom"});
+    nav.append(chapterNav);
     pageDiv.append(nav);
 }
 
@@ -391,6 +421,7 @@ function generatePageContent(textInfos, pageId, withReturnButton, previousChapte
         if (titleEl)
             titleEl.textContent = titleOverride;
     }
+    appendBottomChapterNav(pageDiv, pageId, previousChapter, nextChapter);
     attachContentLinkHandler(pageDiv);
     document.body.append(pageDiv);
     setPageOutline(outline);

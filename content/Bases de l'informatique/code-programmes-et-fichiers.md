@@ -26,7 +26,7 @@ Instruction 3  →  exécutée telle quelle
 
 ## Le code : la liste d'instructions écrite par un humain
 
-Le **code** (ou **code source**) est le texte qui contient ces instructions. Il est écrit par une personne, dans un **langage de programmation**, une des nombreuses "langues" qu'un ordinateur peut suivre, chacune avec sa propre grammaire (Python, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), C...).
+Le **code** (ou **code source**) est le texte qui contient ces instructions. Il est écrit par une personne, dans un **langage de programmation**, une des nombreuses "langues" qu'un ordinateur peut suivre, chacune avec sa propre grammaire ([Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), [le C](/?c=langages-de-programmation&s=c&p=c)...).
 
 ```text
 afficher "Bonjour"      → écrit "Bonjour" à l'écran
@@ -48,8 +48,8 @@ Un **fichier** est une unité de données stockée sur le disque de l'ordinateur
 | Extension | Type de contenu | Exemple de nom |
 |---|---|---|
 | `.txt` | Texte brut, sans mise en forme | `notes.txt` |
-| `.py` | Code source en langage Python | `programme.py` |
-| `.js` | Code source en langage JavaScript | `script.js` |
+| `.py` | Code source en langage [Python](/?c=langages-de-programmation&s=python&p=python) | `programme.py` |
+| `.js` | Code source en langage [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) | `script.js` |
 | `.md` | Texte au format Markdown (celui de cette page) | `README.md` |
 
 > **Analogie :** un fichier, c'est comme une feuille de papier rangée dans un classeur (le **dossier**), avec un nom écrit sur l'onglet pour la retrouver.
@@ -83,6 +83,6 @@ Le code écrit par un humain n'est pas toujours ce que le processeur exécute di
 | | |
 |---|---|
 | **À retenir** | Un ordinateur exécute des instructions à la lettre, sans en comprendre le sens. Le **code** est cette liste d'instructions, écrite dans un **langage de programmation**, rangée dans un **fichier**. Un programme est **interprété** (exécuté directement) ou **compilé** (transformé avant d'être exécuté). |
-| **Outils utilisables** | Aucun pour l'instant : le terminal et l'éditeur de code, pour écrire et lancer du code soi-même, arrivent dans les deux prochains chapitres. |
+| **Outils utilisables** | [Le terminal](/?c=bases-de-l-informatique&p=le-terminal) et [l'éditeur de code](/?c=bases-de-l-informatique&p=editeur-de-code-et-ide), pour écrire et lancer du code soi-même. |
 | **Pièges à éviter** | Croire que l'ordinateur "comprend" ce qu'on veut faire, ou qu'il peut deviner une intention non écrite explicitement dans le code. Confondre un fichier quelconque avec un programme : un fichier `.txt` n'est jamais exécuté, un fichier `.py` l'est seulement via un interpréteur Python. |
 | **Bonnes pratiques** | Toujours distinguer, face à un problème, "qu'est-ce que le code dit de faire" de "qu'est-ce que je voulais qu'il fasse" : la plupart des erreurs de débutant viennent d'une instruction exécutée à la lettre, mais mal formulée. |

@@ -20,12 +20,14 @@ function ambientPart(text) {
  * in French despite containing real English keywords (`setopt`, `AUTO_CD`...).
  *
  * @param {HTMLElement} cell a `td`/`th`
+ * @param {string} lang the page's own language, threaded through to speakableCode() only to pick
+ *   the right word for a filename's "." (cf. FILENAME_DOT_SPEECH in reader-pronunciation.js)
  * @param {string} context see {@link needsEnglishVoice}
  * @returns {{text: string, lang: (string|null)}[]} runs in document order; `lang` is "en-US" for a
  *   code span needsEnglishVoice() flags, null for ordinary page-language text (including a folded
  *   code span with nothing to justify switching voice)
  */
-function cellSpokenParts(cell, context) {
+function cellSpokenParts(cell, lang, context) {
     const parts = [];
     let buffer = "";
     const flushBuffer = () => {
@@ -39,14 +41,14 @@ function cellSpokenParts(cell, context) {
             if (!code) return;
             if (needsEnglishVoice(code, context)) {
                 flushBuffer();
-                parts.push({ text: speakableCode(code, context), lang: "en-US" });
+                parts.push({ text: speakableCode(code, context, lang), lang: "en-US" });
             } else {
                 // Still run through speakableCode() even though nothing here needs the English
                 // voice -- unlike reader.js's own collectLeafSegments, a table row has no
                 // word-by-word DOM highlight to keep aligned with this text (cf. collectTableSegments'
                 // own comment: `words` is always empty here), so there's no risk in also applying
                 // its underscore cleanup to a folded, page-language identifier like `nom_dossier`.
-                buffer += ` ${speakableCode(code, context)} `;
+                buffer += ` ${speakableCode(code, context, lang)} `;
             }
         } else {
             buffer += node.textContent;
@@ -138,7 +140,7 @@ export function collectTableSegments(table, lang, context, pageId, entries) {
     const isComparison = !isRecapCard && !headerTexts[0];
 
     table.querySelectorAll("tbody tr").forEach(tr => {
-        const cellParts = [...tr.children].map(cell => cellSpokenParts(cell, context));
+        const cellParts = [...tr.children].map(cell => cellSpokenParts(cell, lang, context));
         let sentenceParts;
         if (isRecapCard) {
             const [label, ...rest] = cellParts;

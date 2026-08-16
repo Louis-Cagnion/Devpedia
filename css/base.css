@@ -422,6 +422,16 @@ em {
     margin-bottom: 1.2rem;
 }
 
+/* Second previous/next chapter nav at the bottom of a chapter's own content (cf.
+   appendBottomChapterNav() in router.js) -- no return button here, so `justify-content:
+   space-between` (which relies on that other, absent button to push .chapterNav to this same
+   right-aligned spot) isn't reused; flex-end does the same job with only one child. */
+.pageNavBottom {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
 /* previous chapter above next chapter, both right-aligned — a single row would make two
    chapter titles side by side uncomfortably long */
 .chapterNav {
@@ -920,7 +930,7 @@ blockquote p + p {
    .readerSegment only, not shared with `code`/`tr`: they already have their own sizing (`code`'s
    own padding above, `tr`'s cells' own) and changing it just while active would shift things on
    every play/stop. */
-.readerSegment.readerActiveParagraph, code.readerActiveParagraph, tr.readerActiveParagraph {
+.readerSegment.readerActiveParagraph, code.readerActiveParagraph {
     background-color: color-mix(in srgb, var(--accent) 15%, transparent);
     border-radius: 0.25rem;
     box-decoration-break: clone;
@@ -929,6 +939,20 @@ blockquote p + p {
 
 .readerSegment.readerActiveParagraph {
     padding: 4px;
+}
+
+/* `tr.readerActiveParagraph` alone would be invisible: per CSS table background layering, a
+   cell's own background-color always paints over its row's, so `td`/`th`'s opaque backgrounds
+   below (--bg-elevated-2/--bg-elevated) would fully hide any tint set on `tr` itself. Tinting each
+   cell directly instead, mixed into that same opaque base rather than a transparent overlay (there
+   is nothing beneath the cell left to blend a transparent color with) -- reported by Louis on
+   2026-08-16, the highlight silently stopped showing once table rows became the highlight target. */
+tr.readerActiveParagraph > td {
+    background-color: color-mix(in srgb, var(--accent) 15%, var(--bg-elevated-2));
+}
+
+tr.readerActiveParagraph > th {
+    background-color: color-mix(in srgb, var(--accent) 15%, var(--bg-elevated));
 }
 
 /* The one word `boundary` last reported (cf. setActiveWord() in reader.js), layered on top of

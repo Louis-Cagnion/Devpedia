@@ -185,12 +185,14 @@ const CONTEXT_OPERATOR_SPEECH = {
         "EOF": "E O F",
         "$(": "command substitution",
     },
-    // "." kept as a literal period rather than removed: sql.md's own alias.column syntax
-    // (e.g. "c.nom") needs *something* between the two identifiers, just not "any character".
+    // No "." entry here (unlike the DSL context above, where it means "any character" in a
+    // regex): sql.md's own alias.column syntax (e.g. "c.nom") needs its "." read as an ordinary
+    // filename-style dot, exactly what FILENAME_DOT_PATTERN in speakableCode() already does for
+    // any dot with no space after it -- an explicit identity entry here used to pre-empt that by
+    // padding it with spaces first, which left it unread instead of read as "point"/"dot".
     sql: {
         "*": "all columns",
         "$": "variable",
-        ".": ".",
     },
 };
 
@@ -278,8 +280,39 @@ function englishRewrite(text, context) {
         .replace(KEYWORD_RESPELLING_PATTERN, name => KEYWORD_RESPELLING[name]);
 }
 
-export function speakableCode(text, context) {
+// A few file extensions are conventionally said as a whole word rather than spelled out letter by
+// letter -- ".py" is said "dot pie" by English and French speakers alike, not "dot P Y". Matched
+// only right after a literal "." (cf. FILENAME_DOT_PATTERN below), which still runs afterward to
+// read that same dot out loud -- this table only respells the letters, not the dot itself.
+const FILE_EXTENSION_RESPELLING = { py: "pi" };
+const FILE_EXTENSION_RESPELLING_PATTERN = new RegExp(`(?<=\\.)(${Object.keys(FILE_EXTENSION_RESPELLING).join("|")})\\b`, "g");
+
+// A "." with no space right after it -- a file extension or path segment (`texte.txt`,
+// `~/.bashrc`, `c.nom`) -- gets silently dropped or mumbled by the TTS engine otherwise, unlike a
+// real sentence-ending period, which always has a space after it in ordinary prose (a code span
+// almost never ends its own text on a bare trailing "." the way a sentence does, so matching one
+// at the very end of the string too, with nothing after it, is still the right call here). Reading
+// it out whenever a space doesn't follow, regardless of context, catches every such case
+// structurally rather than needing a per-file entry the way RC_FILE_SPEECH does (reported by Louis
+// on 2026-08-16 while listening live to `texte.txt`). Kept as its own step, not part of
+// englishRewrite() above, for the same reason as the underscore cleanup: which word this reads as
+// depends only on the page's own language, not on whether the surrounding code needs the English
+// voice -- `nom_dossier.txt` should still say "point" in French, not switch language just because
+// of its extension.
+const FILENAME_DOT_PATTERN = /\.(?!\s)/g;
+const FILENAME_DOT_SPEECH = { fr: "point", en: "dot", es: "punto", br: "ponto" };
+
+/**
+ * @param {string} text
+ * @param {string} context see {@link englishRewrite}
+ * @param {string} lang the page's own language, used only to pick the right word for a filename's
+ *   "." (cf. FILENAME_DOT_SPEECH above) -- unrelated to whether the result ends up spoken in that
+ *   language or in English, which needsEnglishVoice() below decides independently
+ */
+export function speakableCode(text, context, lang) {
     return englishRewrite(text, context)
+        .replace(FILE_EXTENSION_RESPELLING_PATTERN, ext => FILE_EXTENSION_RESPELLING[ext])
+        .replace(FILENAME_DOT_PATTERN, ` ${FILENAME_DOT_SPEECH[lang] ?? FILENAME_DOT_SPEECH.fr} `)
         .replace(IDENTIFIER_UNDERSCORE_PATTERN, " ")
         .replace(/\s+/g, " ")
         .trim();
@@ -336,10 +369,14 @@ export function needsEnglishVoice(code, context) {
 // either skips or reads unpredictably. Unlike CONTEXT_OPERATOR_SPEECH (always English, inline
 // code only), these run on the page's own prose text in whichever language it's currently shown
 // in -- keyed by that language, falling back to English for a language missing an entry.
-// "~" is used interchangeably with "≈" throughout the content as an informal "approximately"
-// prefix directly against a number ("~7 min", "~1,8 × 10¹⁹", "~−9,2 × 10¹⁸") -- same word as "≈"
-// in every language. Read aloud as the literal word "tilde" otherwise, even stuck to a negative
-// number's own "−" sign.
+// "~" is used throughout the content as an informal "approximately" prefix directly against a
+// single number ("~7 min", "~1,8 × 10¹⁹", "~−9,2 × 10¹⁸") -- read aloud as the literal word
+// "tilde" otherwise, even stuck to a negative number's own "−" sign. "≈" instead always sits
+// between two expressed values ("π ≈ 3,14159", "log10(8) ≈ 0,9"), an approximate equality rather
+// than a rough quantity -- "environ" alone dropped that "equal to" half of the meaning (reported
+// by Louis on 2026-08-16), so the two symbols no longer share one word the way they used to:
+// "~7 min" still reads as "environ 7 min", but "π ≈ 3,14159" now reads as "π environ égal à
+// 3,14159" instead of the ambiguous "π environ 3,14159".
 // "C#" is the language name, never translated, always pronounced "C sharp" -- read as "C
 // croisillons" (the French name of "#") otherwise, since it's outside any inline code span in
 // every mention on the site (only ever cited in passing, never taught as its own chapter).
@@ -350,11 +387,28 @@ const CSHARP_SPEECH = "C sharp";
 // syllables apart, the same fix as C# above, but this one matters a lot more: OCaml has its own
 // whole subject on the site, so its name shows up in prose constantly, not just in passing.
 const OCAML_SPEECH = "O Caml";
+// The site's own name, written "Devpédia" in French content, is read "Deuvpédia" by the French
+// voice -- the plain "e" in "Dev" comes out as a schwa instead of the crisp vowel an accented "é"
+// would force (reported by Louis on 2026-08-16). Respelled with that accent purely for speech,
+// leaving the page's own displayed text untouched -- only the fr entry, since every other
+// language's content writes the name "Devpedia" without an accent in the first place (not
+// reported as mispronounced by its own voice, so left as-is rather than guessed at).
+const DEVPEDIA_SPEECH_FR = "Dévpédia";
 const PROSE_SYMBOL_SPEECH = {
-    fr: { "≈": "environ", "~": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés", "×": "fois", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
-    en: { "≈": "approximately", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
-    es: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
-    br: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    fr: {
+        "≈": "environ égal à",
+        "~": "environ",
+        "≥": "supérieur ou égal à",
+        "≠": "différent de",
+        "°": "degrés",
+        "×": "fois",
+        "C#": CSHARP_SPEECH,
+        "OCaml": OCAML_SPEECH,
+        "Devpédia": DEVPEDIA_SPEECH_FR,
+    },
+    en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    br: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
 };
 
 // "→" means different things depending on the chapter: a numeric/character range ("0 → 255",

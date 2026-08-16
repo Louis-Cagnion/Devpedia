@@ -1,6 +1,8 @@
 # Accueil
 
-Bienvenue sur **Devpédia**, une base de connaissances qui explique le développement en partant de zéro : chaque notion part d'une définition simple, un exemple concret, puis le "pourquoi", sans jamais présupposer un terme non expliqué au préalable.
+Bienvenue sur **Devpédia**, une base de connaissances qui explique la programmation en partant de zéro : chaque notion part d'une définition simple, un exemple concret, puis le "pourquoi", sans jamais présupposer qu'un terme technique est connu au préalable.
+
+Quand un chapitre a besoin d'une notion déjà expliquée ailleurs sur le site, il y renvoie par un lien plutôt que de la répéter ; suivez ces liens dès qu'un mot ne vous est pas familier.
 
 ## Par où commencer ?
 
@@ -17,5 +19,3 @@ Bienvenue sur **Devpédia**, une base de connaissances qui explique le développ
 - Infrastructure, bases de données (SQL), Docker
 - Data Science et Intelligence Artificielle
 - Mathématiques, représentation des données, performance, qualité et architecture du code
-
-Quand un chapitre a besoin d'une notion déjà expliquée ailleurs sur le site, il y renvoie par un lien plutôt que de la répéter ; suivez ces liens dès qu'un mot ne vous est pas familier.

@@ -68,7 +68,7 @@ const LEAF_TAGS = new Set(["H2", "H3", "H4", "H5", "H6", "P", "LI"]);
 
 // Router-generated UI, not page content -- cf. router.js's createAppendPageNav/createBreadcrumb
 // and generateChildList.
-const IGNORED_SELECTOR = ".pageNav, .pageBreadcrumb, .childList";
+const IGNORED_SELECTOR = ".pageNav, .pageNavBottom, .pageBreadcrumb, .childList";
 
 // The reading plan: an ordered list of {kind: "speak", text, lang, group, highlightTarget, words}
 // and {kind: "pause", element} entries, rebuilt by buildReadingPlan() on every page render.
@@ -187,7 +187,7 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
         if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
             const code = node.textContent.trim();
             if (!code) return;
-            const spoken = speakableCode(code, context);
+            const spoken = speakableCode(code, context, lang);
             if (!needsEnglishVoice(code, context)) {
                 // Buffers the raw `code`, not `spoken`, even though the two can differ (e.g.
                 // speakableCode()'s own underscore cleanup) -- `node` is about to be word-wrapped
@@ -376,7 +376,7 @@ function speakNext() {
     // 2026-08-16: reading kept going past the visible bottom of the page with nothing on screen to
     // follow along with). Only when it isn't shown at all -- avoids yanking the view on every
     // clause when several are already visible together (e.g. a tall screen, short paragraphs).
-    if (!isElementStartVisible(entry.highlightTarget))
+    if (!isElementFullyVisible(entry.highlightTarget))
         entry.highlightTarget.scrollIntoView({ behavior: "smooth", block: "start" });
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
@@ -459,17 +459,17 @@ function getFloatingBarHeight() {
 
 /**
  * @param {HTMLElement} element
- * @returns {boolean} whether `element`'s own top edge (not just some part of it) is currently on
- *   screen, below the sticky navbar and above the bottom floating reader bar on narrow layouts --
- *   unlike merely being partly on screen, e.g. only its last line still poking above the navbar
- *   (or its first line already hidden under the floating bar), which wouldn't show where it
- *   starts. Missing the floating bar here used to read a line sitting right above it as "visible"
- *   even though it's actually covered, so the page never auto-scrolled to bring it back into view
- *   (reported by Louis on 2026-08-16).
+ * @returns {boolean} whether `element` is entirely on screen -- both its top AND bottom edge,
+ *   below the sticky navbar and above the bottom floating reader bar on narrow layouts. Checking
+ *   only the top edge (as an earlier version of this did) missed a multi-line entry whose top was
+ *   visible but whose last line or two were still cut off under the floating bar -- a short entry
+ *   rarely reaches that height, but a clause that wraps to two or three lines on a narrow screen
+ *   can (reported by Louis on 2026-08-16: the read line's last lines weren't brought fully into
+ *   view when cut off by the floating bar).
  */
-function isElementStartVisible(element) {
-    const top = element.getBoundingClientRect().top;
-    return top >= getNavbarHeight() && top < window.innerHeight - getFloatingBarHeight();
+function isElementFullyVisible(element) {
+    const { top, bottom } = element.getBoundingClientRect();
+    return top >= getNavbarHeight() && bottom <= window.innerHeight - getFloatingBarHeight();
 }
 
 /**
