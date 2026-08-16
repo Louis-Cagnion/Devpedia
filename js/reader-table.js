@@ -25,7 +25,11 @@ function ambientPart(text) {
  * @param {string} context see {@link needsEnglishVoice}
  * @returns {{text: string, lang: (string|null)}[]} runs in document order; `lang` is "en-US" for a
  *   code span needsEnglishVoice() flags, null for ordinary page-language text (including a folded
- *   code span with nothing to justify switching voice)
+ *   code span with nothing to justify switching voice) -- always run through speakableCode() even
+ *   when folded, since unlike reader.js's own collectLeafSegments, a table row has no word-by-word
+ *   DOM highlight to keep aligned with this text (`words` is always empty for a table entry, cf.
+ *   collectTableSegments() below), so applying its underscore cleanup to a folded, page-language
+ *   identifier like `nom_dossier` carries no alignment risk
  */
 function cellSpokenParts(cell, lang, context) {
     const parts = [];
@@ -43,11 +47,6 @@ function cellSpokenParts(cell, lang, context) {
                 flushBuffer();
                 parts.push({ text: speakableCode(code, context, lang), lang: "en-US" });
             } else {
-                // Still run through speakableCode() even though nothing here needs the English
-                // voice -- unlike reader.js's own collectLeafSegments, a table row has no
-                // word-by-word DOM highlight to keep aligned with this text (cf. collectTableSegments'
-                // own comment: `words` is always empty here), so there's no risk in also applying
-                // its underscore cleanup to a folded, page-language identifier like `nom_dossier`.
                 buffer += ` ${speakableCode(code, context, lang)} `;
             }
         } else {
@@ -154,9 +153,8 @@ export function collectTableSegments(table, lang, context, pageId, entries) {
             sentenceParts = joinPartsGroups(cellPhrases, ", ");
         }
 
-        // Each merged run becomes one or more plan entries: an ambient run still splits into
-        // several short clause entries (same as prose, cf. splitIntoClauses()), while an English
-        // run is spoken whole, unsplit -- see mergeAdjacentRuns()'s own comment for why.
+        /* An ambient run still splits into clause entries (cf. splitIntoClauses()); an English
+           run is spoken whole, unsplit (cf. mergeAdjacentRuns()'s own comment). */
         mergeAdjacentRuns(sentenceParts).forEach(run => {
             const chunks = run.lang === null ? splitIntoClauses(run.text) : [run.text];
             chunks.forEach(chunk => {

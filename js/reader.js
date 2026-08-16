@@ -19,11 +19,11 @@ import {
     scheduleEstimatedWords,
 } from "./reader-highlight.js";
 
-// Web Speech API only (no cloud TTS, no auto-hosted engine) -- the site is 100% static
-// (GitHub Pages), so this is the only option with zero cost and zero infrastructure.
-// See devpedia-todo.md for the decisions this module implements. Pronunciation rules (how a
-// page's own text gets rewritten into what's actually spoken) live in reader-pronunciation.js
-// instead -- a separate reason to change from the reading engine/highlighting/UI below.
+/* Web Speech API only (no cloud TTS, no auto-hosted engine) -- the site is 100% static
+   (GitHub Pages), so this is the only option with zero cost and zero infrastructure.
+   See devpedia-todo.md for the decisions this module implements. Pronunciation rules (how a
+   page's own text gets rewritten into what's actually spoken) live in reader-pronunciation.js
+   instead -- a separate reason to change from the reading engine/highlighting/UI below. */
 export const SPEECH_SUPPORTED = "speechSynthesis" in window;
 const synth = SPEECH_SUPPORTED ? window.speechSynthesis : null;
 
@@ -59,48 +59,48 @@ export function hasUsableVoice() {
     });
 }
 
-// Elements read as one spoken unit; everything else (blockquote, ul/ol, div.tableWrapper, chart
-// containers...) is a structural container, walked but never itself read as a block. `table`
-// itself is handled separately by collectSegments (cf. collectTableSegments) rather than being
-// walked generically down to its `th`/`td` -- reading each cell in isolation, with no idea which
-// row or column it belonged to, was the exact complaint that started the table audit in
-// devpedia-todo.md.
+/* Elements read as one spoken unit; everything else (blockquote, ul/ol, div.tableWrapper, chart
+   containers...) is a structural container, walked but never itself read as a block. `table`
+   itself is handled separately by collectSegments (cf. collectTableSegments) rather than being
+   walked generically down to its `th`/`td` -- reading each cell in isolation, with no idea which
+   row or column it belonged to, was the exact complaint that started the table audit in
+   devpedia-todo.md. */
 const LEAF_TAGS = new Set(["H2", "H3", "H4", "H5", "H6", "P", "LI"]);
 
-// Router-generated UI, not page content -- cf. router.js's createAppendPageNav/createBreadcrumb
-// and generateChildList.
+/* Router-generated UI, not page content -- cf. router.js's createAppendPageNav/createBreadcrumb
+   and generateChildList. */
 const IGNORED_SELECTOR = ".pageNav, .pageNavBottom, .pageBreadcrumb, .childList";
 
-// The reading plan: an ordered list of {kind: "speak", text, lang, group, highlightTarget, words}
-// and {kind: "pause", element} entries, rebuilt by buildReadingPlan() on every page render.
-// `group` is the leaf element a "speak" entry was split from (cf. collectLeafSegments) -- entries
-// sharing the same `group` are one paragraph for replayParagraph()'s purposes. `highlightTarget`
-// and `words` are also set by collectLeafSegments (cf. wrapSegmentWords()), used by
-// setHighlightedEntry()/setActiveWord() to drive the read-aloud highlight.
+/* The reading plan: an ordered list of {kind: "speak", text, lang, group, highlightTarget, words}
+   and {kind: "pause", element} entries, rebuilt by buildReadingPlan() on every page render.
+   `group` is the leaf element a "speak" entry was split from (cf. collectLeafSegments) -- entries
+   sharing the same `group` are one paragraph for replayParagraph()'s purposes. `highlightTarget`
+   and `words` are also set by collectLeafSegments (cf. wrapSegmentWords()), used by
+   setHighlightedEntry()/setActiveWord() to drive the read-aloud highlight. */
 let plan = [];
 let planIndex = 0;
 let isPlaying = false;
 let isPausedAtCode = false;
 
-// True after pauseReading() (the reader control's own "Pause" button), distinct from
-// isPausedAtCode (paused automatically at a `pre` block, waiting for "Continuer") and from the
-// fully-stopped state (neither flag set, planIndex reset to 0 by resetPlayback()). `planIndex`
-// itself is left untouched while paused, so resumeReading() re-speaks the same clause from its
-// own start rather than the whole paragraph -- close enough to "resume exactly where it stopped"
-// now that clauses are short (cf. collectLeafSegments' CLAUSE_END_PATTERN), and far simpler than
-// tracking a mid-utterance offset through synth.pause()/resume() for what would be a barely
-// noticeable difference. Requested by Louis on 2026-08-16.
+/* True after pauseReading() (the reader control's own "Pause" button), distinct from
+   isPausedAtCode (paused automatically at a `pre` block, waiting for "Continuer") and from the
+   fully-stopped state (neither flag set, planIndex reset to 0 by resetPlayback()). `planIndex`
+   itself is left untouched while paused, so resumeReading() re-speaks the same clause from its
+   own start rather than the whole paragraph -- close enough to "resume exactly where it stopped"
+   now that clauses are short (cf. collectLeafSegments' CLAUSE_END_PATTERN), and far simpler than
+   tracking a mid-utterance offset through synth.pause()/resume() for what would be a barely
+   noticeable difference. Requested by Louis on 2026-08-16. */
 let isPaused = false;
 
-// Index in `plan` of the last (or currently playing) "speak" entry, so replayParagraph() knows
-// which paragraph to restart even after playback has stopped or paused at a code block. Cleared
-// by resetPlayback() since a rebuilt/torn-down plan invalidates it.
+/* Index in `plan` of the last (or currently playing) "speak" entry, so replayParagraph() knows
+   which paragraph to restart even after playback has stopped or paused at a code block. Cleared
+   by resetPlayback() since a rebuilt/torn-down plan invalidates it. */
 let lastSpokenIndex = null;
 
-// Bumped by resetPlayback(). synth.cancel() fires an async "error" event on the utterance it
-// just interrupted (same onend/onerror handler below), so without this guard that stale callback
-// would advance planIndex and call speakNext() again right after a stop, or after plan has
-// already been reassigned to the next page -- resuming playback instead of stopping.
+/* Bumped by resetPlayback(). synth.cancel() fires an async "error" event on the utterance it
+   just interrupted (same onend/onerror handler below), so without this guard that stale callback
+   would advance planIndex and call speakNext() again right after a stop, or after plan has
+   already been reassigned to the next page -- resuming playback instead of stopping. */
 let generation = 0;
 
 // Subscribers registered through onStatusChange() below.
@@ -133,9 +133,9 @@ export function onStatusChange(listener) {
     listener(getReaderStatus());
 }
 
-// CLAUSE_END_PATTERN itself (used directly in the while loop below) lives in reader-clauses.js
-// instead, shared with reader-table.js's own clause splitting -- a paragraph becomes several
-// single-clause entries instead of one long one, same reasoning as that file's own comment on it.
+/* CLAUSE_END_PATTERN itself (used directly in the while loop below) lives in reader-clauses.js
+   instead, shared with reader-table.js's own clause splitting -- a paragraph becomes several
+   single-clause entries instead of one long one, same reasoning as that file's own comment on it. */
 
 /**
  * Flushes `buffer` (page-language text accumulated so far) as one plan entry, then appends
@@ -159,6 +159,21 @@ export function onStatusChange(listener) {
  * builds one. Detected by DECORATIVE_EMOJI rather than the heading's own translated text ("Summary"
  * in English, etc.), since the emoji itself is the one part of it that never gets translated.
  *
+ * A folded code span (nothing to rewrite, cf. needsEnglishVoice()) is buffered as its raw `code`
+ * text, not its cleaned-up `spoken` form, even though the two can differ (e.g. an underscore
+ * removed) -- `node` is about to be word-wrapped in place by wrapSegmentWords() below, splitting
+ * its own unchanged DOM text on the same WORD_PATTERN used to count entry.text's words (cf.
+ * reader-highlight.js); using the cleaned-up text here instead could desync that word count (an
+ * underscore isn't whitespace, so it doesn't split a DOM word the way a space in `spoken` would)
+ * and misalign the word highlight, the exact bug already fixed once for inline code (cf.
+ * wrapWordsInPlace's own comment). Table cells don't share this constraint (cf. reader-table.js's
+ * own cellSpokenParts), so they do use the cleaned-up text.
+ *
+ * A text node is split at every CLAUSE_END_PATTERN match it contains, but a boundary landing
+ * inside a formatting element (`strong`, `em`, a link) doesn't split that element -- the two
+ * clauses stay merged into one entry instead, same as if no splitting happened at all. Rare in
+ * practice (a sentence essentially never ends mid-bold), and not a regression either way.
+ *
  * @param {HTMLElement} leaf a single h2-h6/p/li element
  * @param {string} lang the page's language, e.g. "fr", "en"
  * @param {string} context the page's subject or category id, used to pick the right operator
@@ -168,9 +183,8 @@ export function onStatusChange(listener) {
  * @param {Array} entries the plan being built, appended to in place
  */
 function collectLeafSegments(leaf, lang, context, pageId, entries) {
-    // Not restricted to a specific heading level: markdown-to-HTML rendering shifts "##" to H2 or
-    // H3 depending on how deep it sits in a given page's own outline (cf. parser.js), so the
-    // recap heading isn't reliably one specific tag across every chapter.
+    /* Not restricted to a heading level: markdown rendering shifts "##" to H2 or H3 depending on
+       outline depth (cf. parser.js), so the recap heading isn't reliably one tag across chapters. */
     const isRecapHeading = leaf.textContent.trimStart().startsWith(DECORATIVE_EMOJI);
     let buffer = "";
     let segmentNodes = [];
@@ -190,42 +204,27 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
         buffer = "";
         segmentNodes = [];
     };
-    // A static snapshot: wrapSegmentWords() below (and this loop's own Text.splitText(), for a
-    // text node split at a clause boundary) mutate leaf's children as buffered runs are flushed,
-    // which would desync a live NodeList mid-iteration and skip nodes.
+    /* A static snapshot: wrapSegmentWords()/this loop's own Text.splitText() mutate leaf's
+       children as buffered runs flush, desyncing a live NodeList mid-iteration otherwise. */
     Array.from(leaf.childNodes).forEach(node => {
         if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
             const code = node.textContent.trim();
             if (!code) return;
             const spoken = speakableCode(code, context, lang);
             if (!needsEnglishVoice(code, context)) {
-                // Buffers the raw `code`, not `spoken`, even though the two can differ (e.g.
-                // speakableCode()'s own underscore cleanup) -- `node` is about to be word-wrapped
-                // in place by wrapSegmentWords() below, splitting its own unchanged DOM text on the
-                // same WORD_PATTERN used to count entry.text's words (cf. reader-highlight.js); if
-                // this buffer used the cleaned-up text instead, the two word counts could disagree
-                // (an underscore isn't whitespace, so it doesn't split a DOM word the way a space
-                // in `spoken` would) and desync the word highlight, the exact bug already fixed
-                // once for inline code (cf. wrapWordsInPlace's own comment). Table cells don't have
-                // this constraint (cf. reader-table.js's own cellSpokenParts), so they do use the
-                // cleaned-up text here.
+                /* Buffers raw `code`, not `spoken` -- see this function's own docstring for why
+                   (word-highlight alignment with the DOM's own unwrapped text). */
                 buffer += ` ${code} `;
                 segmentNodes.push(node);
             } else {
                 flushBuffer();
-                // No word-level highlight for inline code -- it's spoken as a short, separately
-                // pronounced phrase (cf. speakableCode()), not worth the DOM churn of wrapping it
-                // too; the whole `code` element gets READER_HIGHLIGHT_CLASS instead.
+                /* No word-level highlight for inline code -- spoken as a short phrase (cf.
+                   speakableCode()); the whole `code` element gets READER_HIGHLIGHT_CLASS instead. */
                 entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf, highlightTarget: node, words: [] });
             }
         } else if (node.nodeType === Node.TEXT_NODE) {
-            // Split at each clause boundary found, flushing the text/nodes accumulated so far
-            // (including the part of `current` up to and including the boundary) as its own entry
-            // before moving on to whatever's left. Only text nodes are split this way -- a
-            // boundary landing inside a formatting element (`strong`, `em`, a link) doesn't split
-            // that element; the two clauses stay merged into one entry, same as if this function
-            // didn't split at all. Rare in practice (a sentence essentially never ends mid-bold),
-            // and not a regression either way -- merged is exactly today's behavior everywhere else.
+            /* Splits at each clause boundary; see this function's own docstring for the
+               formatting-element edge case. */
             let current = node;
             CLAUSE_END_PATTERN.lastIndex = 0;
             let match;
@@ -275,8 +274,8 @@ function collectSegments(root, lang, context, pageId, entries) {
     });
 }
 
-// Bumps `generation` and cancels whatever utterance is in flight, without touching `planIndex` --
-// shared by resetPlayback() (which does rewind) and replayParagraph() (which seeks elsewhere).
+/* Bumps `generation` and cancels whatever utterance is in flight, without touching `planIndex` --
+   shared by resetPlayback() (which does rewind) and replayParagraph() (which seeks elsewhere). */
 function cancelCurrentUtterance() {
     generation++;
     if (SPEECH_SUPPORTED) synth.cancel();
@@ -356,6 +355,47 @@ export function resumeReading() {
     speakNext();
 }
 
+/**
+ * Speaks plan[planIndex] and advances -- the core playback loop, called any time playback resumes
+ * after a stop, pause, code block, or the previous utterance finishing. A "pause" entry (a `pre`
+ * block) stops playback and waits for continueAfterCode() instead of speaking.
+ *
+ * Scroll/highlight visibility is checked (and scrolled) against the entry's own highlightTarget --
+ * the one clause/segment actually being read right now -- rather than entry.group, the whole
+ * containing leaf. A long paragraph reads as several clause entries sharing one group (cf.
+ * collectLeafSegments' CLAUSE_END_PATTERN split), so checking only the leaf's own start left every
+ * clause after the first one free to scroll off the bottom of the screen without ever
+ * re-triggering a scroll, as long as the paragraph itself had been visible when it started
+ * (reported by Louis on 2026-08-16). Only scrolled when not already fully visible, to avoid
+ * yanking the view on every clause when several are already visible together.
+ *
+ * Word-by-word highlight: `boundary` is the accurate source when it fires, so it always wins over
+ * the timer-based estimate (cf. scheduleEstimatedWords()) -- but every browser tested while
+ * building this feature failed to fire it at all (cf. devpedia-todo.md), so the estimate is what
+ * actually runs in practice, not just a fallback for an edge case.
+ *
+ * Two different timing anchors, on purpose. Calibration (cf. calibrateRate(), in onend below) is
+ * anchored on onstart (speech actually beginning) rather than on when speak() was called -- the
+ * two can be a couple hundred ms apart (engine queueing/startup), which would otherwise get
+ * counted as part of the text's own speaking time and inflate short entries the most, since a
+ * fixed startup delay is a bigger fraction of a short entry's total duration (reported by Louis on
+ * 2026-08-16). The word-by-word schedule itself, though, is deliberately anchored on the call to
+ * speak() instead, straight away rather than waiting for onstart -- its first word already lands
+ * at 0ms (cf. scheduleEstimatedWords()), so waiting for onstart would only have delayed it by that
+ * same queueing gap, showing the whole-entry highlight alone for longer than necessary before the
+ * word-level one takes over (reported by Louis on 2026-08-16).
+ *
+ * Calibration is skipped if onstart never fired at all (no reliable elapsed time to measure), or
+ * below some floor: a browser that can't actually produce speech (e.g. Brave on Linux with zero
+ * system TTS voices, cf. devpedia-todo.md) fires onerror within a millisecond or two of being
+ * asked to speak, and averaging that in as "this entry's text took ~0ms to say" would drag the
+ * estimate toward an absurdly high rate for every entry after it.
+ *
+ * planIndex++/speakNext() at the end are deferred via setTimeout rather than called directly:
+ * some engines fire onend/onerror synchronously for very short utterances (single-word entries),
+ * and a page with many of those in a row could nest deep enough within one call stack to overflow
+ * it. setTimeout starts each call on a fresh stack instead.
+ */
 function speakNext() {
     if (planIndex >= plan.length) {
         isPlaying = false;
@@ -377,41 +417,15 @@ function speakNext() {
     lastSpokenIndex = planIndex;
     setHighlightedEntry(entry);
     notify();
-    // Checked (and scrolled) against the entry's own highlightTarget -- the one clause/segment
-    // actually being read right now -- rather than entry.group, the whole containing leaf. A long
-    // paragraph reads as several clause entries sharing one group (cf. collectLeafSegments'
-    // CLAUSE_END_PATTERN split), so checking only the leaf's own start left every clause after the
-    // first one free to scroll off the bottom of the screen without ever re-triggering a scroll,
-    // as long as the paragraph itself had been visible when it started (reported by Louis on
-    // 2026-08-16: reading kept going past the visible bottom of the page with nothing on screen to
-    // follow along with). Only when it isn't shown at all -- avoids yanking the view on every
-    // clause when several are already visible together (e.g. a tall screen, short paragraphs).
     if (!isElementFullyVisible(entry.highlightTarget))
         entry.highlightTarget.scrollIntoView({ behavior: "smooth", block: "start" });
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
     const myGeneration = generation;
-    // `boundary` is the accurate source when it fires, so it always wins over the timer-based
-    // estimate below -- but every browser tested while building this feature failed to fire it at
-    // all (cf. devpedia-todo.md), so the estimate is the schedule that actually runs in practice,
-    // not just a fallback for an edge case.
     utterance.onboundary = event => {
         if (generation !== myGeneration) return;
         setActiveWord(wordIndexAtChar(entry.text, event.charIndex));
     };
-    // Two different anchors on purpose. Calibration (cf. utterance.onend below) is anchored on
-    // onstart (speech actually beginning) rather than on when speak() was called -- the two can be
-    // a couple hundred ms apart (engine queueing/startup), which would otherwise get counted as
-    // part of the text's own speaking time and inflate short entries the most, since a fixed
-    // startup delay is a bigger fraction of a short entry's total duration (with calibrateRate()'s
-    // own weighting trusting each measurement this much, one skewed entry was enough to drag the
-    // whole estimate down, reported by Louis on 2026-08-16). The word-by-word schedule itself, though, is
-    // deliberately anchored on the call to speak() below instead, straight away rather than waiting
-    // for onstart -- its first word already lands at 0ms (cf. scheduleEstimatedWords()), so waiting
-    // for onstart would only have delayed it by that same queueing gap, showing the whole-entry
-    // highlight alone for longer than necessary before the word-level one takes over (reported by
-    // Louis on 2026-08-16, "le highlight de la section complète avant que ça switch sur du mot à
-    // mot").
     let startedAt = null;
     utterance.onstart = () => {
         if (generation !== myGeneration) return;
@@ -420,21 +434,9 @@ function speakNext() {
     scheduleEstimatedWords(entry, () => generation === myGeneration);
     utterance.onend = utterance.onerror = () => {
         if (generation !== myGeneration) return;
-        // Recalibrates the word-timing estimate from how long this utterance actually took (cf.
-        // reader-highlight.js's calibrateRate()), so it converges on this session's real
-        // voice/rate. Skipped if onstart never fired at all (no reliable elapsed time to measure)
-        // or below some floor: a browser that can't actually produce speech (e.g. Brave on Linux
-        // with zero system TTS voices, cf. devpedia-todo.md) fires onerror within a millisecond or
-        // two of being asked to speak, and averaging that in as "this entry's text took ~0ms to
-        // say" would drag the estimate toward an absurdly high rate for every entry after it.
         const elapsedSeconds = startedAt === null ? 0 : (Date.now() - startedAt) / 1000;
         if (entry.words.length && elapsedSeconds > 0.1) calibrateRate(entry.text.length / elapsedSeconds);
         planIndex++;
-        // Deferred rather than called directly: some engines fire onend/onerror synchronously
-        // for very short utterances (single-word entries, e.g. "variable 0"), and a page with
-        // many of those in a row -- speakNext() -> synth.speak() -> onend -> speakNext() -> ...
-        // -- can nest deep enough within one call stack to overflow it. setTimeout starts each
-        // call on a fresh stack instead.
         setTimeout(speakNext, 0);
     };
     synth.speak(utterance);
@@ -550,16 +552,15 @@ function adjacentParagraphIndex(fromIndex, direction) {
     if (!currentEntry) return null;
     const currentGroup = currentEntry.kind === "speak" ? currentEntry.group : currentEntry.element;
     let i = fromIndex;
-    // Step past whatever's left of the current paragraph -- or, if paused at a code block right
-    // now, past that block itself.
+    /* Steps past whatever's left of the current paragraph, or (if paused at a code block) that
+       block itself. */
     while (plan[i] && (plan[i].kind === "speak" ? plan[i].group : plan[i].element) === currentGroup) i += direction;
-    // A "pause" entry (a code block) in between isn't a paragraph to land on for this purpose --
-    // skip over it too, in either direction.
+    // A "pause" entry (a code block) in between isn't a paragraph to land on -- skip it too.
     while (plan[i] && plan[i].kind !== "speak") i += direction;
     if (!plan[i]) return null;
     if (direction > 0) return i;
-    // Walking backward, `i` is the *last* entry of the previous paragraph rather than its first --
-    // keep going back to find where that paragraph actually starts.
+    /* Walking backward, `i` is the *last* entry of the previous paragraph -- keep going back to
+       find where that paragraph actually starts. */
     const targetGroup = plan[i].group;
     while (plan[i - 1] && plan[i - 1].kind === "speak" && plan[i - 1].group === targetGroup) i--;
     return i;
@@ -602,5 +603,5 @@ export function triggerPrimaryAction() {
     else if (isPaused) resumeReading();
 }
 
-// createReaderControl() -- the reader control's own UI/button wiring -- lives in
-// reader-control.js instead, a separate reason to change from the playback engine above.
+/* createReaderControl() -- the reader control's own UI/button wiring -- lives in
+   reader-control.js instead, a separate reason to change from the playback engine above. */

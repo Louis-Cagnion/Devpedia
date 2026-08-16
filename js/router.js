@@ -23,14 +23,14 @@ function contentDirFor(lang) {
     return lang ? `content-${lang}` : "content";
 }
 
-// ---- cross-language fallback for a page missing in the active language ----
-// Folder/file names (hence ids) are never translated -- only each file's own content is -- so
-// a categoryId/subjectId/pageId valid in one language's structure/struct-*.json is exactly the
-// same id to look up in another's. Content translation is always a subset of the French source
-// (content/), so French is the only fallback guaranteed to succeed if the id is valid at all.
+/* ---- cross-language fallback for a page missing in the active language ----
+   Folder/file names (hence ids) are never translated -- only each file's own content is -- so
+   a categoryId/subjectId/pageId valid in one language's structure/struct-*.json is exactly the
+   same id to look up in another's. Content translation is always a subset of the French source
+   (content/), so French is the only fallback guaranteed to succeed if the id is valid at all. */
 
-// Struct files already fetched during a fallback lookup this session, keyed by language code
-// ("" for French) -- avoids re-fetching the same struct on every subsequent missing page.
+/* Struct files already fetched during a fallback lookup this session, keyed by language code
+   ("" for French) -- avoids re-fetching the same struct on every subsequent missing page. */
 const structCache = new Map();
 
 async function fetchStructCategories(lang) {
@@ -121,9 +121,9 @@ function renderAcrossLanguages(categoryId, subjectId, pageId) {
     });
 }
 
-// Session-only: read once at startup by resumePendingNavigation(), then cleared — carries the
-// current page across a language switch's location.reload(), since ids (category/subject/chapter
-// folder names) are language-independent while only their displayed `label` gets translated.
+/* Session-only: read once at startup by resumePendingNavigation(), then cleared — carries the
+   current page across a language switch's location.reload(), since ids (category/subject/chapter
+   folder names) are language-independent while only their displayed `label` gets translated. */
 export const PENDING_NAV_KEY = "devpedia-pending-nav";
 
 /**
@@ -156,13 +156,13 @@ function parseNavParams(url) {
     return { categoryId, subjectId: params.get("s"), pageId: params.get("p") ?? categoryId };
 }
 
-// ---- browser history (back/forward + reload keep the current page) ----
-// Requested by Louis on 2026-08-16: a full reload (e.g. from a live-reload dev server watching
-// content files) always landed back on the home page, and the browser's own back/forward buttons
-// did nothing, because nothing here ever touched `window.location` or `history` after the very
-// first load -- every click just mutated appState/the DOM directly. `p`/`s`/`c` are exactly the
-// same query params parseNavParams() above already reads at startup, so the fix is to also *write*
-// them on every navigation instead of only reading them once.
+/* ---- browser history (back/forward + reload keep the current page) ----
+   Requested by Louis on 2026-08-16: a full reload (e.g. from a live-reload dev server watching
+   content files) always landed back on the home page, and the browser's own back/forward buttons
+   did nothing, because nothing here ever touched `window.location` or `history` after the very
+   first load -- every click just mutated appState/the DOM directly. `p`/`s`/`c` are exactly the
+   same query params parseNavParams() above already reads at startup, so the fix is to also *write*
+   them on every navigation instead of only reading them once. */
 
 /**
  * @param {string} categoryId
@@ -179,14 +179,14 @@ function buildNavUrl(categoryId, subjectId, pageId) {
     return `?${params.toString()}`;
 }
 
-// True while a render is replaying whatever the current URL already says (the initial page load,
-// or a browser back/forward navigation) rather than responding to a fresh click -- pushNavUrl()
-// below is a no-op while this is set, so replaying the current URL never pushes it again as if it
-// were a brand new destination. Every render dispatch function (loadCategory, navigateToSubject,
-// navigateToChapter, generateHomePage, renderResolvedTarget, renderEntry) calls pushNavUrl() on its
-// own, unconditionally, rather than threading a "should I push?" parameter through every one of
-// them and every function that calls them -- simpler to reason about, at the cost of this one
-// shared flag standing in for that parameter instead.
+/* True while a render is replaying whatever the current URL already says (the initial page load,
+   or a browser back/forward navigation) rather than responding to a fresh click -- pushNavUrl()
+   below is a no-op while this is set, so replaying the current URL never pushes it again as if it
+   were a brand new destination. Every render dispatch function (loadCategory, navigateToSubject,
+   navigateToChapter, generateHomePage, renderResolvedTarget, renderEntry) calls pushNavUrl() on its
+   own, unconditionally, rather than threading a "should I push?" parameter through every one of
+   them and every function that calls them -- simpler to reason about, at the cost of this one
+   shared flag standing in for that parameter instead. */
 let isReplayingUrl = false;
 
 /**
@@ -293,8 +293,8 @@ function closeMobileMenu() {
     document.querySelector(".menuDiv").classList.remove("visible");
 }
 
-// Current chapter's neighbors, kept in sync by renderChapter/clearChapterNeighbors so the
-// ArrowLeft/ArrowRight handler below can navigate without re-deriving them from the DOM.
+/* Current chapter's neighbors, kept in sync by renderChapter/clearChapterNeighbors so the
+   ArrowLeft/ArrowRight handler below can navigate without re-deriving them from the DOM. */
 let currentPreviousChapter = null;
 let currentNextChapter = null;
 
@@ -522,9 +522,8 @@ function generatePageContent(textInfos, pageId, withReturnButton, previousChapte
 function generateChildList(pageDiv, items, listId, onSelect) {
     const ul = createTag("ul", {class: `childList ${listId}List`})
     items.forEach(item => {
-        // Subjects (identified by their own `chapters` array) need a translated label - see
-        // js/i18n.js's tEntityLabel doc comment; a chapter's label is already correctly
-        // translated, since it comes straight from that chapter's own file in this language.
+        /* Subjects (their own `chapters` array) need a translated label (cf. i18n.js's
+           tEntityLabel); a chapter's label is already correctly translated at the source. */
         const label = Array.isArray(item.chapters) ? tEntityLabel("subjectLabels", item.id, item.label) : item.label;
         const button = createTag("button", {class: `childButton ${item.id}button`}, {textContent: label})
         button.addEventListener("click", (e) => onSelect(item));
@@ -536,7 +535,13 @@ function generateChildList(pageDiv, items, listId, onSelect) {
 }
 
 /**
- * Render the home page
+ * Render the home page.
+ *
+ * Pushes a bare URL with no query params, rather than buildNavUrl()'s usual "?c=..." -- "acceuil"
+ * isn't a real entry in structure/struct.json (cf. resumePendingNavigation()'s own special-case
+ * check for it), so a bare URL is what parseNavParams() already treats as "go home" today; pushing
+ * "?c=acceuil" instead would send a future reload down its slower not-found-in-any-language
+ * fallback path (cf. navigateToTarget()) to reach the exact same page.
  */
 export async function generateHomePage() {
     clearCurrentPage();
@@ -544,11 +549,6 @@ export async function generateHomePage() {
     appState.curCategory = 'acceuil';
     appState.curSubject = null;
     appState.curPageId = 'acceuil';
-    // No query params at all, rather than buildNavUrl()'s usual "?c=..." -- "acceuil" isn't a
-    // real entry in structure/struct.json (cf. resumePendingNavigation()'s own special-case check
-    // for it above), so a bare URL is what parseNavParams() already treats as "go home" today;
-    // pushing "?c=acceuil" instead would send a future reload down its slower not-found-in-any-
-    // language fallback path (cf. navigateToTarget()) to reach the exact same page.
     pushNavUrl(window.location.pathname);
     const homeInfos = await fetchFileToTextOrJson(`./${getContentDir()}/acceuil.md`, 'text');
     generatePageContent(homeInfos, 'acceuil', false);
@@ -661,9 +661,8 @@ function renderEntry(entry) {
     const category = findCategory({id: entry.categoryId});
     const subject = entry.type === 'subject' && category && findSubject(category, entry.subjectId);
     if (!category || (entry.type === 'subject' && !subject)) {
-        // Reached by "Retour" from a page rendered as a cross-language fallback (cf.
-        // renderResolvedTarget) -- this category/subject doesn't exist in the active language
-        // either, same as the page we came from.
+        /* Reached by "Retour" from a cross-language fallback page (cf. renderResolvedTarget) --
+           this category/subject doesn't exist in the active language either. */
         renderAcrossLanguages(entry.categoryId, entry.subjectId ?? null, entry.subjectId ?? entry.categoryId);
         return;
     }
@@ -693,8 +692,8 @@ export function loadCategory(categoryId) {
     }
     const category = findCategory({id: categoryId});
     if (!category) {
-        // Reached from the breadcrumb of a page rendered as a cross-language fallback (cf.
-        // renderResolvedTarget) -- this category doesn't exist in the active language either.
+        /* Reached from the breadcrumb of a cross-language fallback page (cf. renderResolvedTarget)
+           -- this category doesn't exist in the active language either. */
         renderAcrossLanguages(categoryId, null, categoryId);
         return;
     }

@@ -1,13 +1,13 @@
 import { createTag } from "./tags.js";
 
-// Two mutually exclusive highlight tiers for the "speak" entry currently playing --
-// READER_HIGHLIGHT_CLASS marks the whole entry (an inline wrapper for buffered text, cf.
-// wrapSegmentWords() -- or the `code` element itself for an inline-code entry). READER_ACTIVE_WORD_CLASS
-// instead marks the one word currently being spoken, replacing the whole-entry highlight rather
-// than layering on top of it. Which word that is comes from the real `boundary` event where it
-// fires, corrected on top of a timer-based estimate that runs regardless (cf. scheduleEstimatedWords()
-// and setActiveWord()) -- so an entry with nothing to highlight word by word (no `words`, e.g. an
-// inline-code entry) is the only case that keeps the whole-entry highlight for its full duration.
+/* Two mutually exclusive highlight tiers for the "speak" entry currently playing --
+   READER_HIGHLIGHT_CLASS marks the whole entry (an inline wrapper for buffered text, cf.
+   wrapSegmentWords() -- or the `code` element itself for an inline-code entry). READER_ACTIVE_WORD_CLASS
+   instead marks the one word currently being spoken, replacing the whole-entry highlight rather
+   than layering on top of it. Which word that is comes from the real `boundary` event where it
+   fires, corrected on top of a timer-based estimate that runs regardless (cf. scheduleEstimatedWords()
+   and setActiveWord()) -- so an entry with nothing to highlight word by word (no `words`, e.g. an
+   inline-code entry) is the only case that keeps the whole-entry highlight for its full duration. */
 const READER_HIGHLIGHT_CLASS = "readerActiveParagraph";
 const READER_ACTIVE_WORD_CLASS = "readerActiveWord";
 let highlightedTarget = null;
@@ -62,9 +62,9 @@ export function setActiveWord(index) {
     highlightedTarget?.classList.toggle(READER_HIGHLIGHT_CLASS, !word);
 }
 
-// A "word" for highlighting purposes: any maximal run of non-space characters, trailing
-// punctuation included -- matches how wrapSegmentWords() below splits the original DOM text, so
-// a word index counted in one lines up with the same index counted in the other.
+/* A "word" for highlighting purposes: any maximal run of non-space characters, trailing
+   punctuation included -- matches how wrapSegmentWords() below splits the original DOM text, so
+   a word index counted in one lines up with the same index counted in the other. */
 const WORD_PATTERN = /\S+/g;
 
 /**
@@ -142,48 +142,48 @@ export function wrapSegmentWords(nodes) {
     return { wrapper, words };
 }
 
-// Estimated speaking rate driving the word-by-word highlight's timing (cf. scheduleEstimatedWords()
-// below) when the `boundary` event doesn't fire at all -- which turned out to be every browser
-// tested while building this feature (cf. devpedia-todo.md), not just the "no boundary" edge case
-// (Chrome on Android) it was originally written for. Recalibrated after every utterance from how
-// long it actually took to speak (cf. reader.js's speakNext()/calibrateRate() below), so it
-// converges on this session's actual voice/rate within the first couple of entries rather than
-// staying a guess. Starts at a plausible default for a "rate: 1" utterance so the very first entry
-// (still running on this default, with no calibrated measurement yet to correct it) isn't wildly
-// off -- tuned up from an initial 17 by Louis listening on 2026-08-16.
-//
-// No separate pause modeling needed on top of this (an earlier version had one, per-punctuation --
-// removed 2026-08-16): each entry is now one clause at most (cf. reader-clauses.js's
-// CLAUSE_END_PATTERN), split at every comma/semicolon/colon/sentence end rather than reading a
-// whole paragraph as a single utterance, so there's no punctuation pause left *inside* an entry to
-// account for -- the gap between separate utterances covers it instead. That split also happens to
-// be why word-by-word can rely on a single flat rate at all: fitting one constant to a short,
-// single-clause entry is far more tractable than to a long paragraph mixing short and long
-// sentences with a different number of pauses each (tuning that by ear on 2026-08-16 kept reading
-// right on one paragraph and wrong on the next, no matter which constant got picked).
+/* Estimated speaking rate driving the word-by-word highlight's timing (cf. scheduleEstimatedWords()
+   below) when the `boundary` event doesn't fire at all -- which turned out to be every browser
+   tested while building this feature (cf. devpedia-todo.md), not just the "no boundary" edge case
+   (Chrome on Android) it was originally written for. Recalibrated after every utterance from how
+   long it actually took to speak (cf. reader.js's speakNext()/calibrateRate() below), so it
+   converges on this session's actual voice/rate within the first couple of entries rather than
+   staying a guess. Starts at a plausible default for a "rate: 1" utterance so the very first entry
+   (still running on this default, with no calibrated measurement yet to correct it) isn't wildly
+   off -- tuned up from an initial 17 by Louis listening on 2026-08-16.
+
+   No separate pause modeling needed on top of this (an earlier version had one, per-punctuation --
+   removed 2026-08-16): each entry is now one clause at most (cf. reader-clauses.js's
+   CLAUSE_END_PATTERN), split at every comma/semicolon/colon/sentence end rather than reading a
+   whole paragraph as a single utterance, so there's no punctuation pause left *inside* an entry to
+   account for -- the gap between separate utterances covers it instead. That split also happens to
+   be why word-by-word can rely on a single flat rate at all: fitting one constant to a short,
+   single-clause entry is far more tractable than to a long paragraph mixing short and long
+   sentences with a different number of pauses each (tuning that by ear on 2026-08-16 kept reading
+   right on one paragraph and wrong on the next, no matter which constant got picked). */
 let charsPerSecond = 38;
 
-// How strongly one utterance's measured rate moves charsPerSecond (0 = ignore it, 1 = replace it
-// outright). High on purpose: a voice's rate is constant for the whole session once picked, so
-// there's little value in a slow crawl toward it the way a genuinely noisy signal would need --
-// converging within the first entry or two matters more here than smoothing out noise. Raised
-// alongside the default above on 2026-08-16: still general, uniform lag reported after 17 -> 20 ->
-// 22 (each confirmed "still slow" by Louis), so convergence needed to be faster too, not just the
-// starting point higher -- a few seconds of a wrong guess shouldn't take several paragraphs to
-// wash out.
+/* How strongly one utterance's measured rate moves charsPerSecond (0 = ignore it, 1 = replace it
+   outright). High on purpose: a voice's rate is constant for the whole session once picked, so
+   there's little value in a slow crawl toward it the way a genuinely noisy signal would need --
+   converging within the first entry or two matters more here than smoothing out noise. Raised
+   alongside the default above on 2026-08-16: still general, uniform lag reported after 17 -> 20 ->
+   22 (each confirmed "still slow" by Louis), so convergence needed to be faster too, not just the
+   starting point higher -- a few seconds of a wrong guess shouldn't take several paragraphs to
+   wash out. */
 const CALIBRATION_WEIGHT = 0.75;
 
-// How much scheduleEstimatedWords() below speeds up toward the end of a long entry, per word it
-// has -- 0.05 means a 3-word entry tops out around 15% faster by its last word (negligible, cf.
-// "sans modifier le pace des lignes courtes" below), a 20-word one around 100% faster (twice
-// charsPerSecond). Capped so an unusually long entry doesn't run away into an absurd speed.
-// Requested by Louis on 2026-08-16 as a general safety margin against charsPerSecond being a bit
-// off for the entry currently playing: since there's no way to know *this* entry's real duration
-// until it's over (cf. charsPerSecond's own comment on why calibration only ever corrects the
-// *next* entry), a long entry that's running behind gets a chance to visibly close some of that
-// gap by its own end rather than just handing the whole shortfall to whatever plays after it --
-// scaled by length so a short entry, which was never at much risk of drifting far in the first
-// place, keeps its pace essentially untouched.
+/* How much scheduleEstimatedWords() below speeds up toward the end of a long entry, per word it
+   has -- 0.05 means a 3-word entry tops out around 15% faster by its last word (negligible, cf.
+   "sans modifier le pace des lignes courtes" below), a 20-word one around 100% faster (twice
+   charsPerSecond). Capped so an unusually long entry doesn't run away into an absurd speed.
+   Requested by Louis on 2026-08-16 as a general safety margin against charsPerSecond being a bit
+   off for the entry currently playing: since there's no way to know *this* entry's real duration
+   until it's over (cf. charsPerSecond's own comment on why calibration only ever corrects the
+   *next* entry), a long entry that's running behind gets a chance to visibly close some of that
+   gap by its own end rather than just handing the whole shortfall to whatever plays after it --
+   scaled by length so a short entry, which was never at much risk of drifting far in the first
+   place, keeps its pace essentially untouched. */
 const MAX_ACCELERATION_PER_WORD = 0.05;
 const MAX_ACCELERATION_CAP = 1.5;
 
@@ -235,10 +235,8 @@ export function scheduleEstimatedWords(entry, isStillCurrent) {
     let cumulativeMs = 0;
     let lastCharIndex = 0;
     for (const match of entry.text.matchAll(WORD_PATTERN)) {
-        // Rate grows from charsPerSecond at the entry's first word toward charsPerSecond *
-        // (1 + maxAcceleration) at its last -- applied to the gap since the previous word rather
-        // than to match.index directly, so it's a smooth ramp rather than a jump recomputed from
-        // scratch every time.
+        /* Rate ramps applied per-gap since the previous word, not from match.index directly, for
+           a smooth curve rather than a jump recomputed from scratch each time. */
         const progress = wordIndex / totalWords;
         const effectiveRate = charsPerSecond * (1 + maxAcceleration * progress);
         cumulativeMs += ((match.index - lastCharIndex) / effectiveRate) * 1000;
