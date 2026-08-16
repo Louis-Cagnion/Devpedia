@@ -929,13 +929,14 @@ blockquote p + p {
    mechanism `pre code`'s own comment above documents, used here for the opposite effect.
    `code.readerActiveParagraph` covers another kind of entry (inline code, cf.
    collectLeafSegments) -- `code` is inline by default already, no wrapper needed.
-   `tr.readerActiveParagraph` covers a table row (cf. collectTableSegments): a whole-row
-   highlight, since a row's own spoken sentence is synthesized (titles/connector words folded in)
-   rather than a straight read of some contiguous DOM text, so there's nothing to wrap into a
-   .readerSegment or highlight word by word the way a paragraph's own words can be. Padding is on
-   .readerSegment only, not shared with `code`/`tr`: they already have their own sizing (`code`'s
-   own padding above, `tr`'s cells' own) and changing it just while active would shift things on
-   every play/stop. */
+   `tr.readerActiveParagraph` covers a table row (cf. collectTableSegments): a whole-row highlight
+   that stays the entry's own highlightTarget throughout, even though individual cell words can
+   still get the .readerWord.readerActiveWord treatment below on top of it (cf.
+   cellSpokenParts()) -- only the connector words the row's sentence synthesizes around them
+   ("Titre :", " pour Titre2"...) have no DOM word of their own to highlight, so they fall back to
+   this whole-row tint instead. Padding is on .readerSegment only, not shared with `code`/`tr`:
+   they already have their own sizing (`code`'s own padding above, `tr`'s cells' own) and changing
+   it just while active would shift things on every play/stop. */
 .readerSegment.readerActiveParagraph, code.readerActiveParagraph {
     background-color: color-mix(in srgb, var(--accent) 15%, transparent);
     border-radius: 0.25rem;

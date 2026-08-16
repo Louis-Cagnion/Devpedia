@@ -64,8 +64,10 @@ export function setActiveWord(index) {
 
 /* A "word" for highlighting purposes: any maximal run of non-space characters, trailing
    punctuation included -- matches how wrapSegmentWords() below splits the original DOM text, so
-   a word index counted in one lines up with the same index counted in the other. */
-const WORD_PATTERN = /\S+/g;
+   a word index counted in one lines up with the same index counted in the other. Exported so
+   reader-clauses.js/reader-table.js can count words the same way when slicing a table row's own
+   `words` array alongside its synthesized sentence (cf. reader-table.js's collectTableSegments). */
+export const WORD_PATTERN = /\S+/g;
 
 /**
  * @param {string} text the utterance's own (post-speakableText) text
