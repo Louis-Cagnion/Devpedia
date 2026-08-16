@@ -36,12 +36,14 @@ let isPausedAtCode = false;
 // by resetPlayback() since a rebuilt/torn-down plan invalidates it.
 let lastSpokenIndex = null;
 
-// Two-tier highlight for the "speak" entry currently playing: READER_HIGHLIGHT_CLASS marks the
-// whole entry (an inline wrapper for buffered text, cf. wrapSegmentWords() -- or the `code`
-// element itself for an inline-code entry), the base every platform gets since it doesn't depend
-// on `boundary` at all. READER_ACTIVE_WORD_CLASS additionally marks the one word `boundary` last
-// reported, layered on top where that event fires with word-level granularity (cf. setActiveWord()
-// and its call from speakNext()'s utterance.onboundary).
+// Two mutually exclusive highlight tiers for the "speak" entry currently playing --
+// READER_HIGHLIGHT_CLASS marks the whole entry (an inline wrapper for buffered text, cf.
+// wrapSegmentWords() -- or the `code` element itself for an inline-code entry). READER_ACTIVE_WORD_CLASS
+// instead marks the one word currently being spoken, replacing the whole-entry highlight rather
+// than layering on top of it. Which word that is comes from the real `boundary` event where it
+// fires, corrected on top of a timer-based estimate that runs regardless (cf. scheduleEstimatedWords()
+// and setActiveWord()) -- so an entry with nothing to highlight word by word (no `words`, e.g. an
+// inline-code entry) is the only case that keeps the whole-entry highlight for its full duration.
 const READER_HIGHLIGHT_CLASS = "readerActiveParagraph";
 const READER_ACTIVE_WORD_CLASS = "readerActiveWord";
 let highlightedTarget = null;
@@ -78,13 +80,22 @@ function clearHighlight() {
  * the spoken (post-speakableText) text and the original DOM words wrapped by
  * wrapSegmentWords(), so it's clamped implicitly by the array lookup rather than asserted exact.
  *
+ * The two highlight tiers are exclusive, not stacked: as soon as a word actually gets
+ * highlighted, READER_HIGHLIGHT_CLASS drops off `highlightedTarget` so only the word shows --
+ * layering "this whole paragraph" under "this exact word" read as redundant. It comes back the
+ * moment there's no active word again (index -1: a new entry starting, cf. setHighlightedEntry,
+ * or playback stopping, cf. clearHighlight), which is also the permanent state for an entry with
+ * no `words` to highlight at all (cf. collectLeafSegments).
+ *
  * @param {number} index -1 to clear without setting a new word
  */
 function setActiveWord(index) {
     if (index === activeWordIndex) return;
     highlightedWords[activeWordIndex]?.classList.remove(READER_ACTIVE_WORD_CLASS);
     activeWordIndex = index;
-    highlightedWords[activeWordIndex]?.classList.add(READER_ACTIVE_WORD_CLASS);
+    const word = highlightedWords[activeWordIndex];
+    word?.classList.add(READER_ACTIVE_WORD_CLASS);
+    highlightedTarget?.classList.toggle(READER_HIGHLIGHT_CLASS, !word);
 }
 
 // A "word" for highlighting purposes: any maximal run of non-space characters, trailing
@@ -159,6 +170,57 @@ function wrapSegmentWords(nodes) {
     const words = [];
     wrapWordsInPlace(wrapper, words);
     return { wrapper, words };
+}
+
+// Estimated speaking rate driving the word-by-word highlight's timing (cf. scheduleEstimatedWords()
+// below) when the `boundary` event doesn't fire at all -- which turned out to be every browser
+// tested while building this feature (cf. devpedia-todo.md), not just the "no boundary" edge case
+// (Chrome on Android) it was originally written for. Recalibrated after every utterance from how
+// long it actually took to speak (cf. speakNext()'s utterance.onend, CALIBRATION_WEIGHT below), so
+// it converges on this session's actual voice/rate within the first couple of paragraphs rather
+// than staying a guess. Starts at a plausible default for a "rate: 1" utterance (~170 words/minute,
+// ~6 characters including the trailing space per word in French/English) so the very first entry
+// isn't wildly off.
+let charsPerSecond = 17;
+
+// A calibration measurement folds in real pauses (commas, periods) that scheduleEstimatedWords()
+// itself doesn't model -- it schedules every word at a constant pace, punctuation or not. Dividing
+// an utterance's full length by its full (pause-inclusive) duration therefore always reads as
+// slower than the voice's actual word-to-word pace, which otherwise made the highlight drift
+// further behind the voice as a long paragraph went on (observed by Louis on 2026-08-16) instead
+// of catching up. This factor nudges each calibration up to compensate, closer to "how fast the
+// words themselves go" than "how fast the whole sentence, pauses included, goes".
+const PAUSE_COMPENSATION = 1.15;
+
+// How strongly one utterance's measured rate moves charsPerSecond (0 = ignore it, 1 = replace it
+// outright). High on purpose: a voice's rate is constant for the whole session once picked, so
+// there's little value in a slow crawl toward it the way a genuinely noisy signal would need --
+// converging within the first entry or two matters more here than smoothing out noise.
+const CALIBRATION_WEIGHT = 0.6;
+
+/**
+ * Schedules setActiveWord() calls timed to land roughly when each word of `entry.text` should
+ * start being spoken, estimated from `charsPerSecond` -- the only way to get a word-by-word
+ * highlight on a browser that never fires `boundary` (cf. charsPerSecond's own comment). Kept
+ * running alongside `boundary` rather than instead of it: a real event is always more accurate
+ * than this estimate, so utterance.onboundary in speakNext() still calls setActiveWord() directly
+ * on top of whatever this schedule produces, correcting it wherever the browser actually reports.
+ *
+ * @param {{text: string, words: HTMLElement[]}} entry
+ * @param {number} myGeneration this call's generation, so a stop/restart/skip (which bumps the
+ *   module's `generation`) silently drops every timer still pending instead of moving the
+ *   highlight on a since-abandoned entry
+ */
+function scheduleEstimatedWords(entry, myGeneration) {
+    if (!entry.words.length) return; // nothing to highlight word by word (cf. collectLeafSegments)
+    let wordIndex = 0;
+    for (const match of entry.text.matchAll(WORD_PATTERN)) {
+        const delayMs = (match.index / charsPerSecond) * 1000;
+        const index = wordIndex++;
+        setTimeout(() => {
+            if (generation === myGeneration) setActiveWord(index);
+        }, delayMs);
+    }
 }
 
 // Bumped by resetPlayback(). synth.cancel() fires an async "error" event on the utterance it
@@ -355,18 +417,29 @@ function speakNext() {
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
     const myGeneration = generation;
-    // Not every engine fires this at all (e.g. Chrome on Android never does), and among those
-    // that do, granularity varies (Chrome desktop word by word, Safari once per sentence) -- cf.
-    // devpedia-todo.md. No feature detection needed: wordIndexAtChar() naturally degrades with
-    // whatever charIndex the engine actually reports, landing on word 0 and staying there for a
-    // sentence-granular engine, never moving at all for one that doesn't fire this at all --
-    // either way on top of the READER_HIGHLIGHT_CLASS highlight set above, never replacing it.
+    // `boundary` is the accurate source when it fires, so it always wins over the timer-based
+    // estimate below -- but every browser tested while building this feature failed to fire it at
+    // all (cf. devpedia-todo.md), so the estimate is the schedule that actually runs in practice,
+    // not just a fallback for an edge case.
     utterance.onboundary = event => {
         if (generation !== myGeneration) return;
         setActiveWord(wordIndexAtChar(entry.text, event.charIndex));
     };
+    const calledAt = Date.now();
+    scheduleEstimatedWords(entry, myGeneration);
     utterance.onend = utterance.onerror = () => {
         if (generation !== myGeneration) return;
+        // Recalibrates charsPerSecond from how long this utterance actually took, so the estimate
+        // converges on this session's real voice/rate. Skipped below some floor: a browser that
+        // can't actually produce speech (e.g. Brave on Linux with zero system TTS voices, cf.
+        // devpedia-todo.md) fires onerror within a millisecond or two of being asked to speak, and
+        // averaging that in as "this entry's text took ~0ms to say" would drag the estimate toward
+        // an absurdly high rate for every entry after it.
+        const elapsedSeconds = (Date.now() - calledAt) / 1000;
+        if (entry.words.length && elapsedSeconds > 0.1) {
+            const measuredRate = (entry.text.length / elapsedSeconds) * PAUSE_COMPENSATION;
+            charsPerSecond = charsPerSecond * (1 - CALIBRATION_WEIGHT) + measuredRate * CALIBRATION_WEIGHT;
+        }
         planIndex++;
         // Deferred rather than called directly: some engines fire onend/onerror synchronously
         // for very short utterances (single-word entries, e.g. "variable 0"), and a page with
