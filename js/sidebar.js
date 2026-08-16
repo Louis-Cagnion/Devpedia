@@ -14,15 +14,21 @@ const desktopOpenState = { categoryId: null, subjectId: null };
 const mobileOpenState = { categoryId: null, subjectId: null };
 
 /**
+ * @brief Returns a category's subjects, or its own chapters if it has none.
+ *
  * @param {Object} category
- * @returns {Array} the category's subjects (with their own chapters) or its own chapters
+ *
+ * @returns {Array}
  */
 function childrenOf(category) {
     return category.subjects ?? category.chapters ?? [];
 }
 
 /**
+ * @brief Reports whether `entry` is a subject rather than a chapter.
+ *
  * @param {Object} entry a subject or a chapter
+ *
  * @returns {boolean}
  */
 function isSubject(entry) {
@@ -30,9 +36,12 @@ function isSubject(entry) {
 }
 
 /**
+ * @brief Builds an "Introduction" entry, linking to a category's or subject's own page.
+ *
  * @param {Function} onClick
  * @param {boolean} isCurrent
- * @returns {HTMLElement} an "Introduction" entry, linking to a category's or subject's own page
+ *
+ * @returns {HTMLElement}
  */
 function createIntroItem(onClick, isCurrent) {
     const li = createTag("li");
@@ -43,7 +52,7 @@ function createIntroItem(onClick, isCurrent) {
 }
 
 /**
- * Build one collapsible category/subject/chapter tree into `container`, reading and
+ * @brief Builds one collapsible category/subject/chapter tree into `container`, reading and
  * mutating `openState` on click (one category open at a time, one subject open at a time).
  *
  * @param {HTMLElement} container
@@ -122,7 +131,8 @@ function renderTree(container, openState) {
 }
 
 /**
- * Build the "on this page" outline (the current chapter's `##`-`######` headings) into `container`.
+ * @brief Builds the "on this page" outline (the current chapter's `##`-`######` headings) into
+ * `container`.
  *
  * @param {HTMLElement} container
  */
@@ -148,7 +158,7 @@ function renderAll() {
 }
 
 /**
- * Called after every page render with that page's heading outline.
+ * @brief Called after every page render with that page's heading outline.
  *
  * @param {Array<{level: number, id: string, text: string}>} outline
  */
@@ -157,8 +167,8 @@ export function setPageOutline(outline) {
 }
 
 /**
- * Re-sync both sidebars (and the mobile menu) with the current page: only the current
- * page's branch starts expanded, everything else collapsed, and the outline is refreshed.
+ * @brief Re-syncs both sidebars (and the mobile menu) with the current page: only its own branch
+ * starts expanded, everything else collapsed, and the outline is refreshed.
  */
 export function syncSidebars() {
     desktopOpenState.categoryId = appState.curCategory;
@@ -169,13 +179,13 @@ export function syncSidebars() {
 }
 
 /**
- * Build the desktop left/right sidebars and the mobile menu panel (attached to the
- * navbar's burger button by the caller), and keep `categories` for later re-renders.
+ * @brief Builds the desktop left/right sidebars and the mobile menu panel, and keeps
+ * `categories` for later re-renders.
  *
  * @param {Object} initialCategories
- * @returns {{menuDiv: HTMLElement, floatingBar: HTMLElement|null}} the mobile menu panel and
- *   the mobile read-aloud floating bar (null if the browser has no Web Speech API), neither
- *   yet attached to the document
+ *
+ * @returns {{menuDiv: HTMLElement, floatingBar: HTMLElement|null}} the mobile menu panel and the
+ *   mobile read-aloud floating bar (null with no Web Speech API), neither yet attached to the document
  */
 export function initSidebars(initialCategories) {
     categories = initialCategories;
