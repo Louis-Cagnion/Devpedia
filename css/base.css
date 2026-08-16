@@ -343,10 +343,16 @@ h3, h4, h5, h6 {
     margin: 1.5rem 0 0.5rem 0;
 }
 
-/* matches reader.js's LEAF_TAGS -- every element scrollIntoView({block: "start"}) can target
-   (cf. speakNext/startFromVisible), so its start lands below the sticky navbar instead of
-   hidden behind it */
-h2, h3, h4, h5, h6, p, li, th, td {
+/* Every element scrollIntoView({block: "start"}) can target during read-aloud playback (cf.
+   speakNext/startFromVisible in reader.js), so its start lands below the sticky navbar instead of
+   hidden behind it -- h2-h6/p/li/th/td match reader.js's LEAF_TAGS (used to scroll to a whole
+   paragraph before entries were split into individual clauses), .readerSegment and code are the
+   finer-grained target speakNext() actually scrolls to now (a single clause, or an inline code
+   entry). Missing this on the finer-grained targets specifically used to leave the currently-read
+   line scrolled to right under the navbar rather than below it -- scroll-margin-top isn't
+   inherited from an ancestor, an inline .readerSegment scrolled to on its own ignored the block
+   element around it having the correct value (reported by Louis on 2026-08-16). */
+h2, h3, h4, h5, h6, p, li, th, td, .readerSegment, code {
     scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem);
 }
 
