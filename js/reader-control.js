@@ -13,25 +13,11 @@ import {
 } from "./reader.js";
 
 /**
- * Builds one instance of the read-aloud control. Exactly one of two button pairs shows at a time
- * (cf. applyStatus() below), rather than stacking every action whether or not it currently means
- * anything (requested by Louis on 2026-08-16, "pour éviter la surcharge de boutons") --
- * readerListenButton + readerRestartButton while nothing is playing, or readerPrimaryButton
- * (its own label switching between "Pause"/"Reprendre"/"Continuer" depending on exactly which of
- * reader.js's isPlaying/isPaused/isPausedAtCode is set) + readerReplayButton + readerPreviousButton +
- * readerNextButton once reading is in progress in any of those three ways. Call once per place it
- * needs to appear (the desktop right sidebar, the mobile floating bar) -- every instance shares
- * the same underlying playback state (reader.js's own module state) and stays in sync with the
- * others via onStatusChange().
+ * @brief Builds one instance of the read-aloud control. Exactly one of two button pairs shows at
+ * a time: listen/restart while idle, or pause/replay/previous/next while playing. Call once per
+ * place it needs to appear; every instance shares reader.js's playback state via onStatusChange().
  *
- * A browser can have the Web Speech API present (cf. SPEECH_SUPPORTED) but no voice actually
- * able to speak with it -- confirmed for Brave on Linux (cf. hasUsableVoice()'s own comment in
- * reader.js). Once that's confirmed (asynchronously: unlike SPEECH_SUPPORTED, it can't be known
- * synchronously at build time), every button here is replaced with a short explanation instead of
- * sitting there looking broken -- requested by Louis on 2026-08-16.
- *
- * @returns {HTMLElement|null} null if the browser has no Web Speech API at all, so callers show
- *   nothing rather than a control that can never work
+ * @returns {HTMLElement|null} null if the browser has no Web Speech API at all
  */
 export function createReaderControl() {
     if (!SPEECH_SUPPORTED) return null;
