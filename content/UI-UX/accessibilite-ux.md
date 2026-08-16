@@ -36,7 +36,7 @@ Une **cible tactile** (*touch target*) est la zone qu'un doigt ou un curseur doi
 
 La **navigation clavier** permet d'utiliser toute une interface sans souris : `Tab` pour passer d'un élément interactif au suivant, `Entrée`/`Espace` pour l'activer, `Échap` pour fermer une fenêtre. Elle est indispensable pour les utilisateurs qui ne peuvent pas utiliser une souris, et accélère aussi l'usage pour n'importe qui.
 
-> **Piège :** ne penser la navigation clavier qu'au moment de coder, une fois la maquette figée. L'ordre visuel des éléments, choisi librement sur la maquette, ne correspond alors pas forcément à un ordre de tabulation logique : un rattrapage en code (réordonner manuellement, restructurer le HTML) devient nécessaire après coup.
+> **Piège :** ne penser la navigation clavier qu'au moment de coder, une fois la maquette figée. L'ordre visuel des éléments, choisi librement sur la maquette, ne correspond alors pas forcément à un ordre de tabulation logique : un rattrapage en code (réordonner manuellement, restructurer le [HTML](/?c=langages-de-balisage&s=html&p=html)) devient nécessaire après coup.
 >
 > **Bonne pratique :** définir dès la maquette l'ordre logique de navigation (quel élément reçoit le focus en premier, puis dans quel ordre). Un ordre qui suit le sens de lecture naturel (haut vers bas, gauche vers droite) évite ce problème dans la grande majorité des cas.
 

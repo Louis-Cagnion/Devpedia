@@ -4,7 +4,7 @@ order: 11
 
 # Le typage avec les annotations
 
-Python reste **dynamiquement typé** même avec des annotations de type : contrairement à PHP (voir [Les fonctions et méthodes les plus utiles](/?c=langages-de-programmation&s=php&p=methodes)), où un type déclaré est vérifié et appliqué **à l'exécution**, les annotations Python ne sont que des indications **facultatives**, jamais vérifiées par l'interpréteur lui-même.
+Python reste **dynamiquement typé** même avec des annotations de type : contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php) (voir [Les fonctions et méthodes les plus utiles](/?c=langages-de-programmation&s=php&p=methodes)), où un type déclaré est vérifié et appliqué **à l'exécution**, les annotations Python ne sont que des indications **facultatives**, jamais vérifiées par l'interpréteur lui-même.
 
 ## Annoter des variables et des fonctions
 
@@ -18,7 +18,7 @@ def addition(a: int, b: int) -> int:
 addition("deux", "trois")   # AUCUNE erreur au lancement : Python exécute quand même, sans vérifier les types
 ```
 
-> **Note :** contrairement à PHP où `function f(int $x): int` lève un `TypeError` si on passe autre chose qu'un entier, les annotations Python sont de la pure documentation pour un humain (ou un outil externe) : l'interpréteur ne les fait respecter à aucun moment.
+> **Note :** contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php) où `function f(int $x): int` lève un `TypeError` si on passe autre chose qu'un entier, les annotations Python sont de la pure documentation pour un humain (ou un outil externe) : l'interpréteur ne les fait respecter à aucun moment.
 
 ## Types composés avec le module `typing`
 
@@ -61,7 +61,7 @@ mypy mon_script.py
 
 | | |
 |---|---|
-| **À retenir** | Les annotations de type Python (`x: int`, `-> str`) sont purement documentaires : jamais vérifiées par l'interpréteur, contrairement à un langage à typage statique ou même à PHP. |
+| **À retenir** | Les annotations de type Python (`x: int`, `-> str`) sont purement documentaires : jamais vérifiées par l'interpréteur, contrairement à un langage à typage statique ou même à [PHP](/?c=langages-de-programmation&s=php&p=php). |
 | **Outils utilisables** | Le module `typing` (`Optional`, `Union`, `List`...), `mypy` pour une vérification externe. |
 | **Pièges à éviter** | Croire qu'une annotation empêche réellement de passer une valeur du mauvais type : rien ne l'empêche à l'exécution. |
 | **Bonnes pratiques** | Annoter systématiquement un projet de taille significative, et faire tourner `mypy` en complément pour détecter les incohérences avant l'exécution. |

@@ -4,7 +4,7 @@ order: 1
 
 # Les références
 
-Une **référence** est un alias : un autre nom pour une variable déjà existante, jamais une variable indépendante. Elle résout un problème très concret du C : passer une variable à une fonction pour qu'elle puisse la modifier obligeait jusque-là à manipuler explicitement des [pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs).
+Une **référence** est un alias : un autre nom pour une variable déjà existante, jamais une variable indépendante. Elle résout un problème très concret du [C](/?c=langages-de-programmation&s=c&p=c) : passer une variable à une fonction pour qu'elle puisse la modifier obligeait jusque-là à manipuler explicitement des [pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs).
 
 ## Déclarer une référence
 

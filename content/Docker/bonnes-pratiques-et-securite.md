@@ -26,7 +26,7 @@ RUN adduser -D monapp
 USER monapp
 ```
 
-Cette précaution rejoint le [principe du moindre privilège](/?c=domain-specific-languages-dsl&p=sql) déjà vu pour un compte de connexion à une base de données, rubrique SQL : un processus ne devrait jamais disposer de plus de droits que ce dont il a réellement besoin.
+Cette précaution rejoint le [principe du moindre privilège](/?c=domain-specific-languages-dsl&p=sql) déjà vu pour un compte de connexion à une base de données, rubrique [SQL](/?c=domain-specific-languages-dsl&p=sql) : un processus ne devrait jamais disposer de plus de droits que ce dont il a réellement besoin.
 
 ## Ne jamais embarquer de secret dans une image
 
@@ -37,7 +37,7 @@ Une valeur passée par `ENV` ou `ARG` reste lisible dans les métadonnées de l'
 ARG DB_PASSWORD=motdepasse123
 ```
 
-Les secrets doivent être injectés **à l'exécution** (variables d'environnement passées à `docker run -e`, fichiers montés via un volume, ou un gestionnaire de secrets dédié), jamais gravés dans une couche de l'image, le même principe que ne jamais committer une clé d'API dans le code source (cf. chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite), rubrique PHP).
+Les secrets doivent être injectés **à l'exécution** (variables d'environnement passées à `docker run -e`, fichiers montés via un volume, ou un gestionnaire de secrets dédié), jamais gravés dans une couche de l'image, le même principe que ne jamais committer une clé d'API dans le code source (cf. chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite), rubrique [PHP](/?c=langages-de-programmation&s=php&p=php)).
 
 ### Secrets Docker Compose vs simples variables d'environnement
 

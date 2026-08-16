@@ -46,7 +46,7 @@ if ([]) {}         // TRUTHY ! (contrairement à PHP où un tableau vide est fal
 if ({}) {}         // TRUTHY !
 ```
 
-> **Note :** piège classique pour qui vient de [PHP](/?c=langages-de-programmation&s=php&p=conditions) : un tableau ou objet **vide** est `truthy` en JavaScript, alors qu'il est `falsy` en PHP ; toujours tester `tableau.length === 0` explicitement plutôt que `if (!tableau)`.
+> **Note :** piège classique pour qui vient de [PHP](/?c=langages-de-programmation&s=php&p=conditions) : un tableau ou objet **vide** est `truthy` en JavaScript, alors qu'il est `falsy` en [PHP](/?c=langages-de-programmation&s=php&p=php) ; toujours tester `tableau.length === 0` explicitement plutôt que `if (!tableau)`.
 
 ## L'opérateur ternaire
 
@@ -95,5 +95,5 @@ switch (jour) {
 |---|---|
 | **À retenir** | `if`/`else if`/`else` et `switch` (comparaison stricte `===`) structurent le contrôle de flux. `??` et `?.` gèrent proprement les valeurs `null`/`undefined`. |
 | **Outils utilisables** | Opérateur ternaire `? :`, coalescence nulle `??`, chaînage optionnel `?.`. |
-| **Pièges à éviter** | Utiliser `==` (conversions de type surprenantes) ; tester `if (tableau)` en pensant qu'un tableau vide est falsy : il est truthy en JavaScript, contrairement à PHP. |
+| **Pièges à éviter** | Utiliser `==` (conversions de type surprenantes) ; tester `if (tableau)` en pensant qu'un tableau vide est falsy : il est truthy en JavaScript, contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php). |
 | **Bonnes pratiques** | Toujours préférer `===`/`!==` à `==`/`!=` ; utiliser `tableau.length === 0` pour tester un tableau vide. |

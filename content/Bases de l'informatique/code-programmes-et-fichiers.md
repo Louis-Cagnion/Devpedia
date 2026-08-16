@@ -56,7 +56,7 @@ Un **fichier** est une unité de données stockée sur le disque de l'ordinateur
 
 Le code source est presque toujours écrit dans un fichier texte ; comprendre "fichier" est nécessaire avant de pouvoir naviguer dans une arborescence de dossiers ou ouvrir quoi que ce soit dans un éditeur, deux chapitres à venir.
 
-> **Piège :** croire que renommer un fichier change ce qu'il contient : renommer `notes.txt` en `notes.py` ne transforme pas du texte quelconque en code Python valide. L'extension n'est qu'une **indication** pour les humains et les outils (quel éditeur ouvrir, quelle coloration appliquer) ; ce qui décide vraiment de la nature d'un fichier, c'est ce qui l'ouvre et l'interprète, jamais son nom.
+> **Piège :** croire que renommer un fichier change ce qu'il contient : renommer `notes.txt` en `notes.py` ne transforme pas du texte quelconque en code [Python](/?c=langages-de-programmation&s=python&p=python) valide. L'extension n'est qu'une **indication** pour les humains et les outils (quel éditeur ouvrir, quelle coloration appliquer) ; ce qui décide vraiment de la nature d'un fichier, c'est ce qui l'ouvre et l'interprète, jamais son nom.
 >
 > **Bonne pratique :** choisir l'extension qui correspond au contenu réel du fichier, pas l'inverse.
 
@@ -68,7 +68,7 @@ Le code écrit par un humain n'est pas toujours ce que le processeur exécute di
 |---|---|---|
 | Ce qui se passe | Un autre programme, l'**interpréteur**, lit le code et l'exécute directement, ligne par ligne | Un programme, le **compilateur**, transforme d'abord tout le code en une forme que le processeur comprend nativement |
 | Quand l'exécution démarre | Immédiatement | Seulement une fois la transformation (la **compilation**) terminée |
-| Exemple de langage | Python, JavaScript | C, C++ |
+| Exemple de langage | [Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp) |
 
 > **Approfondir :** ce chapitre s'arrête à cette distinction de principe ; le détail de ce qui se passe pendant une compilation (étapes, erreurs possibles) est couvert dans [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation).
 
@@ -84,5 +84,5 @@ Le code écrit par un humain n'est pas toujours ce que le processeur exécute di
 |---|---|
 | **À retenir** | Un ordinateur exécute des instructions à la lettre, sans en comprendre le sens. Le **code** est cette liste d'instructions, écrite dans un **langage de programmation**, rangée dans un **fichier**. Un programme est **interprété** (exécuté directement) ou **compilé** (transformé avant d'être exécuté). |
 | **Outils utilisables** | [Le terminal](/?c=bases-de-l-informatique&p=le-terminal) et [l'éditeur de code](/?c=bases-de-l-informatique&p=editeur-de-code-et-ide), pour écrire et lancer du code soi-même. |
-| **Pièges à éviter** | Croire que l'ordinateur "comprend" ce qu'on veut faire, ou qu'il peut deviner une intention non écrite explicitement dans le code. Confondre un fichier quelconque avec un programme : un fichier `.txt` n'est jamais exécuté, un fichier `.py` l'est seulement via un interpréteur Python. |
+| **Pièges à éviter** | Croire que l'ordinateur "comprend" ce qu'on veut faire, ou qu'il peut deviner une intention non écrite explicitement dans le code. Confondre un fichier quelconque avec un programme : un fichier `.txt` n'est jamais exécuté, un fichier `.py` l'est seulement via un interpréteur [Python](/?c=langages-de-programmation&s=python&p=python). |
 | **Bonnes pratiques** | Toujours distinguer, face à un problème, "qu'est-ce que le code dit de faire" de "qu'est-ce que je voulais qu'il fasse" : la plupart des erreurs de débutant viennent d'une instruction exécutée à la lettre, mais mal formulée. |

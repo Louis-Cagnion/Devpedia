@@ -4,7 +4,7 @@ order: 3
 
 # pandas : manipuler des données tabulaires
 
-**pandas** fournit deux structures pour manipuler des données tabulaires : la `Series` (une seule colonne, indexée) et le `DataFrame` (un tableau à deux dimensions avec des colonnes nommées), l'équivalent Python d'une table [SQL](/?c=domain-specific-languages-dsl&p=sql) ou d'une feuille de tableur, mais manipulable par du code.
+**pandas** fournit deux structures pour manipuler des données tabulaires : la `Series` (une seule colonne, indexée) et le `DataFrame` (un tableau à deux dimensions avec des colonnes nommées), l'équivalent [Python](/?c=langages-de-programmation&s=python&p=python) d'une table [SQL](/?c=domain-specific-languages-dsl&p=sql) ou d'une feuille de tableur, mais manipulable par du code.
 
 ## Créer un DataFrame
 
@@ -97,7 +97,7 @@ donnees["categorie"] = donnees["age"].apply(lambda age: "jeune" if age < 30 else
 # apply() : exécute une fonction sur chaque valeur de la colonne
 ```
 
-> **Note (performance) :** `.apply()` exécute la fonction Python ligne par ligne, sans profiter de la vectorisation [NumPy](/?c=data-science&p=numpy) : pour une condition simple comme celle-ci, `np.where(donnees["age"] < 30, "jeune", "senior")` fait exactement la même chose, en bien plus rapide sur un grand jeu de données. `.apply()` reste utile pour une logique trop complexe à exprimer avec les fonctions vectorisées de pandas/NumPy.
+> **Note (performance) :** `.apply()` exécute la fonction [Python](/?c=langages-de-programmation&s=python&p=python) ligne par ligne, sans profiter de la vectorisation [NumPy](/?c=data-science&p=numpy) : pour une condition simple comme celle-ci, `np.where(donnees["age"] < 30, "jeune", "senior")` fait exactement la même chose, en bien plus rapide sur un grand jeu de données. `.apply()` reste utile pour une logique trop complexe à exprimer avec les fonctions vectorisées de pandas/NumPy.
 
 ## Valeurs manquantes
 
@@ -115,7 +115,7 @@ Voir aussi le chapitre sur [NumPy](/?c=data-science&p=numpy) (les colonnes d'un 
 
 | | |
 |---|---|
-| **À retenir** | pandas manipule des données tabulaires via `Series` (une colonne) et `DataFrame` (un tableau), avec des opérations proches de SQL (`WHERE` → masque booléen, `GROUP BY` → `groupby`, `JOIN` → `merge`). |
+| **À retenir** | pandas manipule des données tabulaires via `Series` (une colonne) et `DataFrame` (un tableau), avec des opérations proches de [SQL](/?c=domain-specific-languages-dsl&p=sql) (`WHERE` → masque booléen, `GROUP BY` → `groupby`, `JOIN` → `merge`). |
 | **Outils utilisables** | `read_csv`, `loc`/`iloc`, `groupby`, `merge`, `isna`/`dropna`/`fillna`. |
 | **Pièges à éviter** | Confondre `loc` (par étiquette) et `iloc` (par position) : ils divergent dès que l'index a été personnalisé. |
 | **Bonnes pratiques** | Préférer une fonction vectorisée (`np.where`) à `.apply()` pour une condition simple sur un grand jeu de données. |

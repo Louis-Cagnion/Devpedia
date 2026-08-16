@@ -83,6 +83,6 @@ Une grille et un rythme vertical se construisent concrètement avec [Flexbox](/?
 | | |
 |---|---|
 | **À retenir** | L'espace négatif est un outil actif, pas un vide à combler. Une grille (colonnes, gouttières, marges) aligne les éléments entre eux, et une échelle d'espacement fixe (multiples de 4 ou 8px) garantit un rythme vertical cohérent. |
-| **Outils utilisables** | Aucun outil spécifique : la grille et l'échelle se définissent à la conception, puis s'implémentent en CSS (Flexbox, Grid). |
+| **Outils utilisables** | Aucun outil spécifique : la grille et l'échelle se définissent à la conception, puis s'implémentent en [CSS](/?c=langages-de-balisage&s=css&p=css) (Flexbox, Grid). |
 | **Pièges à éviter** | Remplir chaque espace disponible par peur du vide ; aligner des éléments à l'œil plutôt que sur une grille ; inventer une valeur d'espacement au cas par cas. |
 | **Bonnes pratiques** | Définir grille et échelle d'espacement avant de placer le moindre élément ; réutiliser toujours les mêmes valeurs d'espacement pour un même type de transition. |

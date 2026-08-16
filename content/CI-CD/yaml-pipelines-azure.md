@@ -68,7 +68,7 @@ steps:
   - script: deploy.sh --password monMotDePasse123
 ```
 
-> **Piège :** écrire un mot de passe, une clé d'API ou un jeton d'accès directement dans `azure-pipelines.yml`. Ce fichier est versionné dans le dépôt Git : le secret reste visible dans l'historique même après l'avoir retiré d'une version ultérieure.
+> **Piège :** écrire un mot de passe, une clé d'API ou un jeton d'accès directement dans `azure-pipelines.yml`. Ce fichier est versionné dans le dépôt [Git](/?c=git&p=git) : le secret reste visible dans l'historique même après l'avoir retiré d'une version ultérieure.
 >
 > **Bonne pratique :** stocker les secrets dans un **groupe de variables** (*variable group*) ou une bibliothèque Azure DevOps dédiée, puis les référencer dans le YAML par leur nom (`$(motDePasse)`) : le fichier versionné ne contient alors jamais la valeur elle-même.
 

@@ -8,7 +8,7 @@ Les chapitres précédents ([modèle en étoile](/?c=bases-de-donnees&p=modeles-
 
 ## Le schéma : un espace de noms pour les tables
 
-Un **schéma** SQL est un espace de noms à l'intérieur d'une base de données : chaque table lui appartient, et son nom complet s'écrit `schema.table` (par exemple `dim.produit` plutôt que juste `produit`). Deux tables de même nom peuvent coexister sans conflit si elles sont dans des schémas différents, et un schéma sert surtout à indiquer d'un coup d'œil le rôle d'une table dans une base qui en contient des centaines.
+Un **schéma** [SQL](/?c=domain-specific-languages-dsl&p=sql) est un espace de noms à l'intérieur d'une base de données : chaque table lui appartient, et son nom complet s'écrit `schema.table` (par exemple `dim.produit` plutôt que juste `produit`). Deux tables de même nom peuvent coexister sans conflit si elles sont dans des schémas différents, et un schéma sert surtout à indiquer d'un coup d'œil le rôle d'une table dans une base qui en contient des centaines.
 
 ```sql
 CREATE SCHEMA dim;
@@ -78,7 +78,7 @@ Comme pour la bronze et l'argent de l'[architecture médaillon](/?c=bases-de-don
 | `fact` | Faits | `fact.ventes` | Tableaux de bord, analystes |
 | `stg` | Données en transit (staging) | Copie brute avant nettoyage | Le pipeline lui-même |
 | `admin` | Fonctionnement du pipeline | Suivi de chargement, journal d'erreurs | Les personnes qui maintiennent le pipeline |
-| `dbo` | Par défaut (SQL Server), ou usage général non catégorisé | Selon la base | Variable |
+| `dbo` | Par défaut ([SQL](/?c=domain-specific-languages-dsl&p=sql) Server), ou usage général non catégorisé | Selon la base | Variable |
 
 ---
 
@@ -86,7 +86,7 @@ Comme pour la bronze et l'argent de l'[architecture médaillon](/?c=bases-de-don
 
 | | |
 |---|---|
-| **À retenir** | Un schéma SQL est un espace de noms qui range les tables par rôle (`dim`, `fact`, `stg`, `admin`) ; `dbo` est le schéma par défaut de SQL Server, à ne pas laisser recevoir toutes les tables sans distinction. Les tables techniques (suivi de chargement, journal d'erreurs) font fonctionner le pipeline mais ne servent pas à l'analyse. |
+| **À retenir** | Un schéma [SQL](/?c=domain-specific-languages-dsl&p=sql) est un espace de noms qui range les tables par rôle (`dim`, `fact`, `stg`, `admin`) ; `dbo` est le schéma par défaut de [SQL](/?c=domain-specific-languages-dsl&p=sql) Server, à ne pas laisser recevoir toutes les tables sans distinction. Les tables techniques (suivi de chargement, journal d'erreurs) font fonctionner le pipeline mais ne servent pas à l'analyse. |
 | **Outils utilisables** | `CREATE SCHEMA` pour organiser les tables par rôle ; une table de suivi de chargement (`admin.suivi_chargements`) pour ne retraiter que les nouvelles données à chaque exécution. |
 | **Pièges à éviter** | Tout laisser dans `dbo` sans distinction de rôle ; relire l'intégralité d'une source à chaque exécution du pipeline ; brancher un tableau de bord directement sur une table technique. |
 | **Bonnes pratiques** | Créer des schémas nommés par rôle dès qu'une base grandit ; mettre à jour le suivi de chargement uniquement après un chargement réussi ; réserver les tables techniques à un schéma dédié, séparé de l'analyse. |

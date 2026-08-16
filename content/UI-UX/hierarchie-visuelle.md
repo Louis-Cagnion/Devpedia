@@ -86,7 +86,7 @@ L'œil part en haut à gauche, balaie vers la droite, redescend en diagonale, pu
 
 ## Passer à l'implémentation
 
-Ce chapitre reste volontairement indépendant d'un langage : les leviers ci-dessus (taille, espacement, position...) se traduisent concrètement en CSS via [Le modèle de boîte](/?c=langages-de-balisage&s=css&p=box-model) (espacement, dimensions) et [Le positionnement](/?c=langages-de-balisage&s=css&p=positionnement) (placement des éléments à l'écran).
+Ce chapitre reste volontairement indépendant d'un langage : les leviers ci-dessus (taille, espacement, position...) se traduisent concrètement en [CSS](/?c=langages-de-balisage&s=css&p=css) via [Le modèle de boîte](/?c=langages-de-balisage&s=css&p=box-model) (espacement, dimensions) et [Le positionnement](/?c=langages-de-balisage&s=css&p=positionnement) (placement des éléments à l'écran).
 
 ---
 
@@ -95,6 +95,6 @@ Ce chapitre reste volontairement indépendant d'un langage : les leviers ci-dess
 | | |
 |---|---|
 | **À retenir** | La hiérarchie visuelle organise un écran pour que l'œil aille vers ce qui compte en premier. Elle s'obtient via des leviers (taille, poids, couleur, contraste, espacement, position) et repose sur un seul élément primaire par écran. |
-| **Outils utilisables** | Aucun outil spécifique : la hiérarchie se décide au moment de la conception (croquis, maquette) puis se traduit en code (CSS, principalement). |
+| **Outils utilisables** | Aucun outil spécifique : la hiérarchie se décide au moment de la conception (croquis, maquette) puis se traduit en code ([CSS](/?c=langages-de-balisage&s=css&p=css), principalement). |
 | **Pièges à éviter** | Mettre plusieurs éléments en avant en même temps (surcharge visuelle, plus rien ne ressort) ; appliquer un schéma de lecture (F ou Z) qui ne correspond pas à la densité réelle du contenu. |
 | **Bonnes pratiques** | Choisir un seul élément primaire par écran avant de hiérarchiser le reste ; combiner plusieurs leviers (taille + espacement + position) plutôt qu'un seul pour renforcer un élément important. |

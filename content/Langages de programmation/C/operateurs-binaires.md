@@ -75,7 +75,7 @@ options ^= DRAPEAU_AJOUT;      // BASCULER un bit
 
 C'est exactement le mécanisme des appels système : `open("f.txt", O_WRONLY | O_CREAT)` combine des drapeaux avec `|`, et la fonction les teste ensuite avec `&`. Voir le chapitre [Appels système et descripteurs](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs).
 
-Les permissions de fichiers Unix suivent la même logique en base 8 : `0644` code trois groupes de trois bits (lecture/écriture/exécution pour le propriétaire, le groupe, les autres). Voir aussi le chapitre [Permissions et fichiers](/?c=shells&s=bash&p=permissions-et-fichiers) de Bash.
+Les permissions de fichiers Unix suivent la même logique en base 8 : `0644` code trois groupes de trois bits (lecture/écriture/exécution pour le propriétaire, le groupe, les autres). Voir aussi le chapitre [Permissions et fichiers](/?c=shells&s=bash&p=permissions-et-fichiers) de [Bash](/?c=shells&s=bash&p=bash).
 
 **Pourquoi des drapeaux plutôt que des booléens séparés ?** Un seul `unsigned int` stocke 32 options indépendantes, se passe en un seul argument, et se teste en une instruction processeur.
 

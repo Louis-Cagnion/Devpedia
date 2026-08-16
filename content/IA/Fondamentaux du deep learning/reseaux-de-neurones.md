@@ -97,7 +97,7 @@ resultat = sigmoide(sortie_n1 * 0.6 + sortie_n2 * 0.9 + 0.05)  # sigmoide(0.95) 
 
 Ce calcul (multiplier, sommer, appliquer une activation, couche après couche) est **tout** ce qu'un réseau de neurones fait pour produire une prédiction. Ce qui rend le réseau "intelligent" n'est jamais ce mécanisme (fixe, purement arithmétique), mais les **valeurs des poids et des biais**, ajustées automatiquement par l'entraînement (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) à partir d'un grand nombre d'exemples.
 
-En pratique, un framework de deep learning ne calcule jamais neurone par neurone comme dans le code ci-dessus : les poids d'une couche entière sont rangés dans une [matrice](/?c=mathematiques&p=matrices-et-produit-matriciel), et un seul produit matriciel calcule la sortie de tous ses neurones à la fois, bien plus rapide qu'une boucle Python.
+En pratique, un framework de deep learning ne calcule jamais neurone par neurone comme dans le code ci-dessus : les poids d'une couche entière sont rangés dans une [matrice](/?c=mathematiques&p=matrices-et-produit-matriciel), et un seul produit matriciel calcule la sortie de tous ses neurones à la fois, bien plus rapide qu'une boucle [Python](/?c=langages-de-programmation&s=python&p=python).
 
 Dans cet exemple, les poids sont déjà fixés à des valeurs précises pour illustrer le calcul, au tout début d'un entraînement réel, ils partent au contraire de valeurs aléatoires.
 

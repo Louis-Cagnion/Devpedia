@@ -367,6 +367,8 @@ const KEYWORD_SPEECH = new Set([
     "HIST_IGNORE_DUPS",
     "NO_CASE_GLOB",
     "SHARE_HISTORY",
+    "Graphical User Interface",
+    "Command-Line Interface",
 ]);
 
 /**

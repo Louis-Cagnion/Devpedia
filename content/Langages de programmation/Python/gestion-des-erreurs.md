@@ -4,7 +4,7 @@ order: 7
 
 # La gestion des erreurs
 
-Python signale une erreur en levant une **exception**, qui interrompt l'exécution normale du programme sauf si elle est interceptée par un bloc `try`/`except`, un mécanisme similaire aux exceptions PHP modernes (`throw`/`catch`).
+Python signale une erreur en levant une **exception**, qui interrompt l'exécution normale du programme sauf si elle est interceptée par un bloc `try`/`except`, un mécanisme similaire aux exceptions [PHP](/?c=langages-de-programmation&s=php&p=php) modernes (`throw`/`catch`).
 
 ## `try` / `except`
 

@@ -33,7 +33,7 @@ Cookie: session_id=a8f3d9...         ->   retrouve la session a8f3d9...,
 
 Un **cookie** est une petite donnée que le serveur demande au navigateur de conserver, et que celui-ci renvoie automatiquement à chaque requête vers le même site : c'est le véhicule le plus courant pour transporter l'identifiant de session d'une requête à l'autre, sans que le développeur ait à s'en occuper manuellement à chaque appel.
 
-Ce chapitre reste volontairement indépendant du langage utilisé : voir [Gérer les connexions](/?c=langages-de-programmation&s=php&p=connexions) pour l'implémentation concrète en PHP (`setcookie()`, `$_SESSION`, l'identifiant `PHPSESSID` généré automatiquement).
+Ce chapitre reste volontairement indépendant du langage utilisé : voir [Gérer les connexions](/?c=langages-de-programmation&s=php&p=connexions) pour l'implémentation concrète en [PHP](/?c=langages-de-programmation&s=php&p=php) (`setcookie()`, `$_SESSION`, l'identifiant `PHPSESSID` généré automatiquement).
 
 ## Pourquoi l'identifiant de session doit être imprévisible
 
@@ -50,7 +50,7 @@ Même avec un identifiant parfaitement imprévisible, un attaquant qui parvient 
 
 > **Piège :** supposer qu'un identifiant de session imprévisible suffit à sécuriser une session. Un identifiant imprévisible empêche de le *deviner*, mais ne protège pas contre le fait de le *voler* une fois qu'il existe.
 >
-> **Bonne pratique :** transmettre le cookie de session uniquement en HTTPS, en interdire l'accès à JavaScript, et en limiter l'envoi aux requêtes provenant réellement du site (voir les options `secure`/`httponly`/`samesite` détaillées dans [Gérer les connexions](/?c=langages-de-programmation&s=php&p=connexions)).
+> **Bonne pratique :** transmettre le cookie de session uniquement en HTTPS, en interdire l'accès à [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), et en limiter l'envoi aux requêtes provenant réellement du site (voir les options `secure`/`httponly`/`samesite` détaillées dans [Gérer les connexions](/?c=langages-de-programmation&s=php&p=connexions)).
 
 ---
 
@@ -61,4 +61,4 @@ Même avec un identifiant parfaitement imprévisible, un attaquant qui parvient 
 | **À retenir** | HTTP est sans état : sans mécanisme supplémentaire, le serveur ne se souvient de rien entre deux requêtes. Une session (côté serveur) associée à un identifiant transmis via un cookie résout ce problème : le client renvoie l'identifiant à chaque requête, le serveur retrouve la session correspondante. |
 | **Outils utilisables** | Un générateur aléatoire cryptographique pour l'identifiant de session ; les options `secure`/`httponly`/`samesite` d'un cookie pour limiter le risque de vol. |
 | **Pièges à éviter** | Un identifiant de session prévisible (compteur, valeur devinable). Croire qu'un identifiant imprévisible suffit, sans se protéger contre le vol du cookie lui-même. |
-| **Bonnes pratiques** | Générer l'identifiant de session avec un CSPRNG. Sécuriser le cookie de session (HTTPS uniquement, inaccessible à JavaScript, limité aux requêtes du site). |
+| **Bonnes pratiques** | Générer l'identifiant de session avec un CSPRNG. Sécuriser le cookie de session (HTTPS uniquement, inaccessible à [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), limité aux requêtes du site). |

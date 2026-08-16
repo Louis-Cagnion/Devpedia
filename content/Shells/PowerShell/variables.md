@@ -6,7 +6,7 @@ order: 3
 
 Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable) : ce qui suit couvre uniquement ce qui est spécifique à PowerShell.
 
-Contrairement à Bash, où tout est manipulé comme du texte, une variable PowerShell conserve le **vrai type** de sa valeur : un nombre reste un nombre, une liste reste une liste d'objets, sans conversion implicite en chaîne. Toute variable commence par `$`, y compris à l'assignation (pas de règle "sans `$` pour écrire, avec `$` pour lire" comme en Bash).
+Contrairement à [Bash](/?c=shells&s=bash&p=bash), où tout est manipulé comme du texte, une variable PowerShell conserve le **vrai type** de sa valeur : un nombre reste un nombre, une liste reste une liste d'objets, sans conversion implicite en chaîne. Toute variable commence par `$`, y compris à l'assignation (pas de règle "sans `$` pour écrire, avec `$` pour lire" comme en [Bash](/?c=shells&s=bash&p=bash)).
 
 ## Déclarer et lire une variable
 
@@ -48,7 +48,7 @@ $score = 19.5   # type déduit : Double
 $age.GetType().Name   # Int32
 ```
 
-> **Note :** contrairement à Bash où `age="abc"` ne provoque aucune erreur immédiate (la valeur reste une chaîne, l'erreur n'apparaît qu'au moment d'un calcul), assigner `"abc"` à une variable typée `[int]$age` échoue immédiatement : PowerShell vérifie le type à l'assignation, pas seulement à l'usage.
+> **Note :** contrairement à [Bash](/?c=shells&s=bash&p=bash) où `age="abc"` ne provoque aucune erreur immédiate (la valeur reste une chaîne, l'erreur n'apparaît qu'au moment d'un calcul), assigner `"abc"` à une variable typée `[int]$age` échoue immédiatement : PowerShell vérifie le type à l'assignation, pas seulement à l'usage.
 
 ## Arithmétique
 
@@ -65,11 +65,11 @@ Write-Output ($a / $b)  # 1.66666666666667 -> division réelle, pas entière com
 
 ## Variables automatiques
 
-PowerShell fournit des variables automatiques toujours disponibles, jouant un rôle proche des variables spéciales de Bash (`$0`, `$1`...) : voir le tableau et les exemples dans le chapitre sur l'écriture de scripts, juste après la section sur les arguments d'un script.
+PowerShell fournit des variables automatiques toujours disponibles, jouant un rôle proche des variables spéciales de [Bash](/?c=shells&s=bash&p=bash) (`$0`, `$1`...) : voir le tableau et les exemples dans le chapitre sur l'écriture de scripts, juste après la section sur les arguments d'un script.
 
 ## Portée des variables
 
-Par défaut, une variable déclarée dans une fonction reste locale à cette fonction : l'inverse de Bash, où une variable de fonction est globale par défaut sauf `local` explicite :
+Par défaut, une variable déclarée dans une fonction reste locale à cette fonction : l'inverse de [Bash](/?c=shells&s=bash&p=bash), où une variable de fonction est globale par défaut sauf `local` explicite :
 
 ```powershell
 function Compter {
@@ -82,7 +82,7 @@ Compter
 Write-Output $total   # vide : $total n'existe pas en dehors de la fonction
 ```
 
-Pour modifier explicitement une variable d'un contexte englobant (l'équivalent inverse d'un `local` Bash), on préfixe son nom par une portée :
+Pour modifier explicitement une variable d'un contexte englobant (l'équivalent inverse d'un `local` [Bash](/?c=shells&s=bash&p=bash)), on préfixe son nom par une portée :
 
 ```powershell
 $total = 0
@@ -103,7 +103,7 @@ Voir aussi [Les fonctions](/?c=shells&s=powershell&p=fonctions), et [Variables d
 
 | | |
 |---|---|
-| **À retenir** | Une variable PowerShell conserve le vrai type de sa valeur (pas de conversion implicite en texte comme en Bash). Une variable typée (`[int]$age`) échoue immédiatement si on lui assigne une valeur incompatible. |
+| **À retenir** | Une variable PowerShell conserve le vrai type de sa valeur (pas de conversion implicite en texte comme en [Bash](/?c=shells&s=bash&p=bash)). Une variable typée (`[int]$age`) échoue immédiatement si on lui assigne une valeur incompatible. |
 | **Outils utilisables** | Interpolation dans les guillemets doubles, `$(...)` pour une expression/propriété, portées (`$script:`). |
 | **Pièges à éviter** | Écrire `"$objet.Propriete"` en pensant accéder à la propriété : sans `$(...)`, `.Propriete` est traité comme du texte littéral. |
 | **Bonnes pratiques** | Utiliser `$(...)` dès qu'on interpole autre chose qu'une simple variable dans une chaîne. |

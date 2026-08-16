@@ -146,7 +146,7 @@ p1 == p2    // faux : les adresses sont differentes
 
 Deux pointeurs peuvent donc parfaitement contenir la même valeur sans être égaux, et inversement.
 
-> Cette distinction (comparaison par **référence** ou par **valeur**) n'est pas propre au C, elle se retrouve dans la plupart des langages. En Python, `is` compare l'identité (l'équivalent de `p1 == p2`) et `==` compare la valeur (l'équivalent de `*p1 == *p2`) ; voir le chapitre [Variables](/?c=langages-de-programmation&s=python&p=variables) de Python. Comparer des chaînes en C illustre le même piège : `str1 == str2` compare deux adresses, pas deux textes : il faut `strcmp()`.
+> Cette distinction (comparaison par **référence** ou par **valeur**) n'est pas propre au C, elle se retrouve dans la plupart des langages. En [Python](/?c=langages-de-programmation&s=python&p=python), `is` compare l'identité (l'équivalent de `p1 == p2`) et `==` compare la valeur (l'équivalent de `*p1 == *p2`) ; voir le chapitre [Variables](/?c=langages-de-programmation&s=python&p=variables) de [Python](/?c=langages-de-programmation&s=python&p=python). Comparer des chaînes en C illustre le même piège : `str1 == str2` compare deux adresses, pas deux textes : il faut `strcmp()`.
 
 ## `const` avec les pointeurs
 

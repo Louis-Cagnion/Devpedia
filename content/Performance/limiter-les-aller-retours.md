@@ -57,16 +57,16 @@ FROM clients c
 LEFT JOIN commandes cm ON cm.client_id = c.id;
 ```
 
-Voir la section [SQL](/?c=domain-specific-languages-dsl&p=sql) pour les jointures, et le chapitre [Connexions](/?c=langages-de-programmation&s=php&p=connexions) de PHP pour `PDO`.
+Voir la section [SQL](/?c=domain-specific-languages-dsl&p=sql) pour les jointures, et le chapitre [Connexions](/?c=langages-de-programmation&s=php&p=connexions) de [PHP](/?c=langages-de-programmation&s=php&p=php) pour `PDO`.
 
-> Au passage, écrire une requête par élément en concaténant une variable dans la chaîne SQL cumule deux problèmes : la lenteur **et** l'injection SQL. Les requêtes préparées règlent le second, la jointure le premier.
+> Au passage, écrire une requête par élément en concaténant une variable dans la chaîne [SQL](/?c=domain-specific-languages-dsl&p=sql) cumule deux problèmes : la lenteur **et** l'injection [SQL](/?c=domain-specific-languages-dsl&p=sql). Les requêtes préparées règlent le second, la jointure le premier.
 
 ## Le même raisonnement ailleurs
 
 Le motif se retrouve partout où il y a une frontière à franchir :
 
 - **API HTTP** : privilégier un point d'entrée qui accepte une liste d'identifiants plutôt que d'appeler *n* fois le point d'entrée unitaire ;
-- **Système de fichiers** : lire un fichier en une fois plutôt que caractère par caractère (c'est le rôle des tampons, voir [Appels système et descripteurs](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) en C) ;
+- **Système de fichiers** : lire un fichier en une fois plutôt que caractère par caractère (c'est le rôle des tampons, voir [Appels système et descripteurs](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) en [C](/?c=langages-de-programmation&s=c&p=c)) ;
 - **DOM** : accumuler les modifications puis les appliquer, plutôt que de modifier le document dans une boucle : chaque écriture peut déclencher un recalcul de mise en page.
 
 ## Savoir quand ne pas le faire
@@ -87,6 +87,6 @@ La bonne question n'est donc pas "un seul échange ou *n* ?" mais "quel est le p
 | | |
 |---|---|
 | **À retenir** | Chaque échange entre deux composants (réseau, base de données, DOM) a un coût fixe indépendant du volume : une boucle qui redemande quelque chose à chaque tour ("N+1") multiplie ce coût fixe par le nombre d'éléments. |
-| **Outils utilisables** | Ramener toutes les données en un seul échange (jointure SQL, évaluation groupée côté page), traitement par lots pour les très gros volumes. |
+| **Outils utilisables** | Ramener toutes les données en un seul échange (jointure [SQL](/?c=domain-specific-languages-dsl&p=sql), évaluation groupée côté page), traitement par lots pour les très gros volumes. |
 | **Pièges à éviter** | Une requête par élément dans une boucle (problème N+1) ; ramener un volume si grand qu'il sature la mémoire du processus. |
 | **Bonnes pratiques** | Déplacer la boucle du côté où sont les données plutôt que de faire des allers-retours répétés ; découper en lots de taille raisonnable entre "un seul échange" et "un par élément". |

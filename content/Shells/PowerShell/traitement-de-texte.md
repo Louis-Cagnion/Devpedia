@@ -4,7 +4,7 @@ order: 10
 
 # Traitement de texte et d'objets
 
-Là où Bash s'appuie sur des [outils texte spécialisés](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`), PowerShell fait le même travail avec des cmdlets génériques qui filtrent, transforment et sélectionnent des **objets** : le texte n'est qu'un cas particulier, celui où l'objet manipulé est une chaîne.
+Là où [Bash](/?c=shells&s=bash&p=bash) s'appuie sur des [outils texte spécialisés](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`), PowerShell fait le même travail avec des cmdlets génériques qui filtrent, transforment et sélectionnent des **objets** : le texte n'est qu'un cas particulier, celui où l'objet manipulé est une chaîne.
 
 ## `Select-String` : rechercher du texte (équivalent de `grep`)
 
@@ -17,7 +17,7 @@ Select-String "erreur" fichier.log | Measure-Object  # compte les lignes corresp
 Select-String -Pattern "erreur|warning" fichier.log  # motif = une vraie regex .NET par défaut
 ```
 
-> **Note :** contrairement à `grep` où `-E` doit être ajouté pour activer les regex étendues, `Select-String` interprète son motif comme une regex **par défaut** : utiliser `-SimpleMatch` pour revenir à une recherche de texte littéral, l'inverse de la convention Bash.
+> **Note :** contrairement à `grep` où `-E` doit être ajouté pour activer les regex étendues, `Select-String` interprète son motif comme une regex **par défaut** : utiliser `-SimpleMatch` pour revenir à une recherche de texte littéral, l'inverse de la convention [Bash](/?c=shells&s=bash&p=bash).
 
 Chaque résultat est un objet avec des propriétés exploitables directement, plutôt qu'une simple ligne de texte à reparser :
 
@@ -65,7 +65,7 @@ Get-Content fichier.txt | Sort-Object -Unique                           # trie E
 Get-Content fichier.txt | Group-Object | Sort-Object Count -Descending  # compte les occurrences
 ```
 
-> **Note :** contrairement à `uniq` en Bash (qui ne détecte que des doublons **adjacents**, d'où l'obligation de trier avant), `Sort-Object -Unique` et `Group-Object` fonctionnent sur l'ensemble de la collection, peu importe l'ordre initial : pas besoin de trier au préalable pour dédupliquer correctement.
+> **Note :** contrairement à `uniq` en [Bash](/?c=shells&s=bash&p=bash) (qui ne détecte que des doublons **adjacents**, d'où l'obligation de trier avant), `Sort-Object -Unique` et `Group-Object` fonctionnent sur l'ensemble de la collection, peu importe l'ordre initial : pas besoin de trier au préalable pour dédupliquer correctement.
 
 ## `Measure-Object` : compter (équivalent de `wc`)
 

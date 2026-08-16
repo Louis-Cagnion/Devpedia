@@ -24,7 +24,7 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 | `RemoteSigned` | Les scripts locaux s'exécutent librement ; ceux téléchargés doivent être signés |
 | `Unrestricted` | Tous les scripts s'exécutent, avec un simple avertissement pour ceux téléchargés |
 
-> **Note :** cette politique est propre à Windows (`RemoteSigned` est un choix courant en développement) : sur Linux/macOS avec `pwsh`, elle n'a aucun effet, la sécurité reposant alors sur les permissions du fichier comme pour un script Bash (voir [Permissions et manipulation de fichiers](/?c=shells&s=powershell&p=permissions-et-fichiers)).
+> **Note :** cette politique est propre à Windows (`RemoteSigned` est un choix courant en développement) : sur Linux/macOS avec `pwsh`, elle n'a aucun effet, la sécurité reposant alors sur les permissions du fichier comme pour un script [Bash](/?c=shells&s=bash&p=bash) (voir [Permissions et manipulation de fichiers](/?c=shells&s=powershell&p=permissions-et-fichiers)).
 
 ## Exécuter un script
 
@@ -33,7 +33,7 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 powershell -File script.ps1  # alternative : lancer explicitement l'interpréteur sur le fichier
 ```
 
-> **Note :** contrairement à Bash, taper simplement `script.ps1` sans préfixe de chemin ne fonctionne jamais, même si le script est exécutable : PowerShell ne cherche jamais dans le dossier courant par défaut, y compris s'il est présent dans `$env:PATH`, pour éviter qu'un fichier malveillant du dossier courant ne soit exécuté par erreur à la place d'une commande système du même nom.
+> **Note :** contrairement à [Bash](/?c=shells&s=bash&p=bash), taper simplement `script.ps1` sans préfixe de chemin ne fonctionne jamais, même si le script est exécutable : PowerShell ne cherche jamais dans le dossier courant par défaut, y compris s'il est présent dans `$env:PATH`, pour éviter qu'un fichier malveillant du dossier courant ne soit exécuté par erreur à la place d'une commande système du même nom.
 
 ## Les arguments d'un script
 
@@ -52,7 +52,7 @@ Write-Output "Bonjour $Nom, tu as $Age ans"
 # Bonjour Jean, tu as 25 ans
 ```
 
-Contrairement à Bash (`$1`, `$2`, positionnels et sans nom), un script PowerShell déclare ses paramètres avec `param()`, chacun typé et nommé : l'ordre d'appel importe alors beaucoup moins, et `-Nom "Jean"` reste lisible même avec de nombreux arguments.
+Contrairement à [Bash](/?c=shells&s=bash&p=bash) (`$1`, `$2`, positionnels et sans nom), un script PowerShell déclare ses paramètres avec `param()`, chacun typé et nommé : l'ordre d'appel importe alors beaucoup moins, et `-Nom "Jean"` reste lisible même avec de nombreux arguments.
 
 Les arguments non déclarés dans `param()` restent malgré tout accessibles via la variable automatique `$args`, comme un équivalent de `$@` :
 
@@ -81,11 +81,11 @@ if ($LASTEXITCODE -eq 0) {
 }
 ```
 
-`$LASTEXITCODE` joue le rôle du `$?` de Bash pour une commande externe ou un `exit` explicite. Mais PowerShell a par-dessus un vrai mécanisme d'exceptions : `Write-Error` seul n'interrompt pas l'exécution (elle continue avec la ligne suivante), alors que `throw` lève une exception qui arrête le script, sauf si elle est interceptée par un bloc `try`/`catch`, comme les [exceptions du chapitre dédié en PHP](/?c=langages-de-programmation&s=php&p=exceptions).
+`$LASTEXITCODE` joue le rôle du `$?` de [Bash](/?c=shells&s=bash&p=bash) pour une commande externe ou un `exit` explicite. Mais PowerShell a par-dessus un vrai mécanisme d'exceptions : `Write-Error` seul n'interrompt pas l'exécution (elle continue avec la ligne suivante), alors que `throw` lève une exception qui arrête le script, sauf si elle est interceptée par un bloc `try`/`catch`, comme les [exceptions du chapitre dédié en PHP](/?c=langages-de-programmation&s=php&p=exceptions).
 
 ## Arrêter un script à la première erreur : `$ErrorActionPreference`
 
-Par défaut, une erreur non-fatale (celle de la plupart des cmdlets) n'interrompt pas le script : équivalent du comportement par défaut de Bash sans `set -e` :
+Par défaut, une erreur non-fatale (celle de la plupart des cmdlets) n'interrompt pas le script : équivalent du comportement par défaut de [Bash](/?c=shells&s=bash&p=bash) sans `set -e` :
 
 ```powershell
 $ErrorActionPreference = "Stop"   # équivalent de "set -e" : toute erreur devient bloquante
@@ -102,7 +102,7 @@ Voir aussi [La gestion des processus](/?c=shells&s=powershell&p=gestion-des-proc
 
 | | |
 |---|---|
-| **À retenir** | Un script `.ps1` s'exécute sous une politique d'exécution (`Get-ExecutionPolicy`), pas via un shebang. Les paramètres se déclarent avec `param()`, nommés et typés, contrairement aux `$1`/`$2` positionnels de Bash. |
+| **À retenir** | Un script `.ps1` s'exécute sous une politique d'exécution (`Get-ExecutionPolicy`), pas via un shebang. Les paramètres se déclarent avec `param()`, nommés et typés, contrairement aux `$1`/`$2` positionnels de [Bash](/?c=shells&s=bash&p=bash). |
 | **Outils utilisables** | `param()`, `$args`, `$LASTEXITCODE`, `try`/`catch`/`throw`, `$ErrorActionPreference = "Stop"`. |
 | **Pièges à éviter** | Confondre `Write-Error` (n'interrompt pas le script) et `throw` (lève une exception qui l'arrête). |
 | **Bonnes pratiques** | Utiliser `param()` pour des arguments nommés et typés plutôt que de se reposer sur `$args` positionnel ; définir `$ErrorActionPreference = "Stop"` pour un comportement proche de `set -e`. |

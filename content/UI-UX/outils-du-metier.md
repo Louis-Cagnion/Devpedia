@@ -12,9 +12,9 @@ La plupart des outils de ce type ([Figma](https://www.figma.com), [Sketch](https
 
 | Concept | Rôle | Équivalent déjà vu |
 |---|---|---|
-| Calque (*layer*) | Chaque élément (texte, forme, image) existe indépendamment, empilé sur les autres | Similaire à l'empilement des éléments HTML dans un document |
+| Calque (*layer*) | Chaque élément (texte, forme, image) existe indépendamment, empilé sur les autres | Similaire à l'empilement des éléments [HTML](/?c=langages-de-balisage&s=html&p=html) dans un document |
 | Composant | Un élément réutilisable (bouton, carte...), défini une fois et instancié partout | La [bibliothèque de composants](/?c=ui-ux&p=design-systems) d'un design system |
-| Auto-layout | Un conteneur qui repositionne et redimensionne son contenu automatiquement selon des règles (espacement, alignement), plutôt que des positions fixées à la main | [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox) en CSS : le même principe, dans l'outil de conception plutôt que dans le code |
+| Auto-layout | Un conteneur qui repositionne et redimensionne son contenu automatiquement selon des règles (espacement, alignement), plutôt que des positions fixées à la main | [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox) en [CSS](/?c=langages-de-balisage&s=css&p=css) : le même principe, dans l'outil de conception plutôt que dans le code |
 
 Travailler avec des composants et de l'auto-layout dans l'outil de conception, plutôt qu'avec des positions figées, produit des maquettes qui se comportent déjà comme l'interface codée le fera (un bouton qui s'adapte à la longueur de son texte, par exemple) ; l'écart entre la maquette et le résultat codé s'en trouve réduit.
 
@@ -24,17 +24,17 @@ Travailler avec des composants et de l'auto-layout dans l'outil de conception, p
 
 ## Les outils d'animation pour les interactions avancées
 
-Une transition simple (un bouton qui change légèrement de couleur au survol) se couvre directement en CSS. Une interaction plus élaborée (plusieurs éléments animés dans un ordre précis, un mouvement qui réagit au geste de l'utilisateur, une physique de ressort plutôt qu'une simple accélération linéaire) dépasse ce que les transitions CSS de base couvrent confortablement, et s'appuie alors sur une bibliothèque JavaScript dédiée à l'animation ([GSAP](https://gsap.com), Framer Motion, entre autres) :
+Une transition simple (un bouton qui change légèrement de couleur au survol) se couvre directement en [CSS](/?c=langages-de-balisage&s=css&p=css). Une interaction plus élaborée (plusieurs éléments animés dans un ordre précis, un mouvement qui réagit au geste de l'utilisateur, une physique de ressort plutôt qu'une simple accélération linéaire) dépasse ce que les transitions [CSS](/?c=langages-de-balisage&s=css&p=css) de base couvrent confortablement, et s'appuie alors sur une bibliothèque [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) dédiée à l'animation ([GSAP](https://gsap.com), Framer Motion, entre autres) :
 
-| | Transition CSS | Bibliothèque d'animation JS |
+| | Transition [CSS](/?c=langages-de-balisage&s=css&p=css) | Bibliothèque d'animation JS |
 |---|---|---|
 | Adapté à | Un changement d'état simple (survol, apparition) | Des séquences de plusieurs animations coordonnées, des gestes, une physique de mouvement |
-| Contrôle depuis le code | Limité (déclenché par un changement d'état CSS) | Fin (démarrer, mettre en pause, enchaîner des étapes précisément) |
+| Contrôle depuis le code | Limité (déclenché par un changement d'état [CSS](/?c=langages-de-balisage&s=css&p=css)) | Fin (démarrer, mettre en pause, enchaîner des étapes précisément) |
 | Coût | Aucune dépendance supplémentaire | Une bibliothèque externe à charger et maintenir |
 
-> **Piège :** utiliser une bibliothèque d'animation JavaScript pour une simple transition d'état (un survol, une apparition) qu'une transition CSS suffirait à couvrir. Le coût (poids de la bibliothèque, complexité de code supplémentaire) dépasse largement le gain sur un cas aussi simple.
+> **Piège :** utiliser une bibliothèque d'animation [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) pour une simple transition d'état (un survol, une apparition) qu'une transition [CSS](/?c=langages-de-balisage&s=css&p=css) suffirait à couvrir. Le coût (poids de la bibliothèque, complexité de code supplémentaire) dépasse largement le gain sur un cas aussi simple.
 >
-> **Bonne pratique :** réserver une bibliothèque d'animation JS aux interactions qui dépassent réellement ce que les transitions CSS couvrent (séquences coordonnées, gestes, physique de mouvement), pas comme réflexe par défaut sur toute animation.
+> **Bonne pratique :** réserver une bibliothèque d'animation JS aux interactions qui dépassent réellement ce que les transitions [CSS](/?c=langages-de-balisage&s=css&p=css) couvrent (séquences coordonnées, gestes, physique de mouvement), pas comme réflexe par défaut sur toute animation.
 
 ## Choisir un outil : la stabilité plutôt que la nouveauté
 
@@ -46,7 +46,7 @@ Une transition simple (un bouton qui change légèrement de couleur au survol) s
 
 | | |
 |---|---|
-| **À retenir** | Les outils de conception d'interface (Figma et ses alternatives) partagent les mêmes concepts de base (calques, composants, auto-layout) qui préfigurent directement la structure du code final. Une bibliothèque d'animation JS (GSAP, Framer Motion) prend le relais des transitions CSS pour des interactions plus élaborées (séquences, gestes, physique de mouvement). |
-| **Outils utilisables** | Un outil de conception avec composants et auto-layout (Figma ou équivalent) ; une bibliothèque d'animation JS pour les interactions qui dépassent une simple transition CSS. |
-| **Pièges à éviter** | Construire une maquette en positions fixes sans composants ni auto-layout. Utiliser une bibliothèque d'animation JS pour une simple transition qu'une règle CSS suffirait à couvrir. Changer d'outil par mode plutôt que par besoin concret. |
+| **À retenir** | Les outils de conception d'interface (Figma et ses alternatives) partagent les mêmes concepts de base (calques, composants, auto-layout) qui préfigurent directement la structure du code final. Une bibliothèque d'animation JS (GSAP, Framer Motion) prend le relais des transitions [CSS](/?c=langages-de-balisage&s=css&p=css) pour des interactions plus élaborées (séquences, gestes, physique de mouvement). |
+| **Outils utilisables** | Un outil de conception avec composants et auto-layout (Figma ou équivalent) ; une bibliothèque d'animation JS pour les interactions qui dépassent une simple transition [CSS](/?c=langages-de-balisage&s=css&p=css). |
+| **Pièges à éviter** | Construire une maquette en positions fixes sans composants ni auto-layout. Utiliser une bibliothèque d'animation JS pour une simple transition qu'une règle [CSS](/?c=langages-de-balisage&s=css&p=css) suffirait à couvrir. Changer d'outil par mode plutôt que par besoin concret. |
 | **Bonnes pratiques** | Créer un composant dès qu'un élément se répète, utiliser l'auto-layout par défaut. Réserver une bibliothèque d'animation JS aux interactions réellement complexes. Choisir un outil pour son adéquation à l'équipe existante, pas pour sa nouveauté. |

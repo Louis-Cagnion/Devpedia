@@ -27,9 +27,9 @@ char majuscule = minuscule - 32;
 int valeur = caractere - '0';    // '7' - '0' = 55 - 48 = 7
 ```
 
-C'est pour cette raison qu'en C un `char` **est** un entier : `'A'` et `65` sont la même valeur. Voir le chapitre [Les variables et types de données](/?c=langages-de-programmation&s=c&p=variables).
+C'est pour cette raison qu'en [C](/?c=langages-de-programmation&s=c&p=c) un `char` **est** un entier : `'A'` et `65` sont la même valeur. Voir le chapitre [Les variables et types de données](/?c=langages-de-programmation&s=c&p=variables).
 
-Les codes 0 à 31 ne sont pas des caractères imprimables mais des **caractères de contrôle**, héritage des téléscripteurs : `\n` (10, saut de ligne), `\t` (9, tabulation), `\0` (0, marqueur de fin de chaîne en C).
+Les codes 0 à 31 ne sont pas des caractères imprimables mais des **caractères de contrôle**, héritage des téléscripteurs : `\n` (10, saut de ligne), `\t` (9, tabulation), `\0` (0, marqueur de fin de chaîne en [C](/?c=langages-de-programmation&s=c&p=c)).
 
 ## Le problème : 128 caractères ne suffisent pas
 
@@ -100,17 +100,17 @@ Ce symptôme est très reconnaissable et permet de remonter à la cause :
 | `?` ou `�` | Caractère absent de l'encodage cible, remplacé |
 | Accents corrects sauf dans un tableur | Séparateur ou BOM manquant à l'ouverture |
 
-La correction n'est jamais de "remplacer les caractères" mais de **déclarer le bon encodage** au point de lecture. Chaque couche doit être cohérente : la balise HTML (`<meta charset="utf-8">`, voir le chapitre [Structure d'un document](/?c=langages-de-balisage&s=html&p=structure-dun-document)), [l'en-tête HTTP](/?c=infrastructure&p=api-et-http), l'encodage des fichiers sources, et le jeu de caractères de la base de données (`utf8mb4` pour [MySQL](https://dev.mysql.com/doc/) : `utf8` seul y est un faux ami limité à 3 octets, qui rejette les emojis).
+La correction n'est jamais de "remplacer les caractères" mais de **déclarer le bon encodage** au point de lecture. Chaque couche doit être cohérente : la balise [HTML](/?c=langages-de-balisage&s=html&p=html) (`<meta charset="utf-8">`, voir le chapitre [Structure d'un document](/?c=langages-de-balisage&s=html&p=structure-dun-document)), [l'en-tête HTTP](/?c=infrastructure&p=api-et-http), l'encodage des fichiers sources, et le jeu de caractères de la base de données (`utf8mb4` pour [MySQL](https://dev.mysql.com/doc/) : `utf8` seul y est un faux ami limité à 3 octets, qui rejette les emojis).
 
 ## Le BOM
 
 Le **BOM** (*Byte Order Mark*, `U+FEFF`) est une marque optionnelle en début de fichier signalant l'encodage. Il est indispensable en UTF-16 pour indiquer l'ordre des octets, mais **inutile en UTF-8**, où l'ordre est fixe.
 
-Il reste néanmoins courant sous Windows, où certains outils (dont [Excel](https://www.microsoft.com/microsoft-365/excel)) s'en servent pour reconnaître un fichier UTF-8. D'où un arbitrage classique : un CSV destiné à Excel a besoin du BOM pour afficher correctement les accents, alors qu'un fichier source PHP avec BOM provoque un envoi prématuré de contenu et casse les en-têtes HTTP.
+Il reste néanmoins courant sous Windows, où certains outils (dont [Excel](https://www.microsoft.com/microsoft-365/excel)) s'en servent pour reconnaître un fichier UTF-8. D'où un arbitrage classique : un CSV destiné à Excel a besoin du BOM pour afficher correctement les accents, alors qu'un fichier source [PHP](/?c=langages-de-programmation&s=php&p=php) avec BOM provoque un envoi prématuré de contenu et casse les en-têtes HTTP.
 
 ## UTF-16 et UTF-32
 
-- **UTF-16** : 2 ou 4 octets par caractère. Utilisé en interne par Java, C#, JavaScript et Windows. Les caractères hors du plan de base (les emojis) y occupent deux unités de 16 bits, appelées *surrogate pair* : d'où le fait qu'en JavaScript, `"😀".length` renvoie **2**.
+- **UTF-16** : 2 ou 4 octets par caractère. Utilisé en interne par Java, C#, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) et Windows. Les caractères hors du plan de base (les emojis) y occupent deux unités de 16 bits, appelées *surrogate pair* : d'où le fait qu'en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), `"😀".length` renvoie **2**.
 - **UTF-32** : 4 octets par caractère, taille fixe. Simple à indexer, mais gaspille beaucoup d'espace ; rarement utilisé pour du stockage.
 
 ## Résumé
@@ -120,9 +120,9 @@ Il reste néanmoins courant sous Windows, où certains outils (dont [Excel](http
 | ASCII | 128 caractères, 7 bits, base de tout le reste |
 | Unicode | Un catalogue de points de code, **pas** un encodage |
 | UTF-8 | 1 à 4 octets, compatible ASCII, standard de fait du web |
-| Caractère ≠ octet | `strlen` en C compte des octets, pas des lettres |
+| Caractère ≠ octet | `strlen` en [C](/?c=langages-de-programmation&s=c&p=c) compte des octets, pas des lettres |
 | Mojibake `Ã©` | UTF-8 lu comme du Latin-1 : corriger la déclaration, pas le texte |
-| BOM | Inutile en UTF-8, mais attendu par Excel, néfaste en tête d'un source PHP |
+| BOM | Inutile en UTF-8, mais attendu par Excel, néfaste en tête d'un source [PHP](/?c=langages-de-programmation&s=php&p=php) |
 
 ---
 

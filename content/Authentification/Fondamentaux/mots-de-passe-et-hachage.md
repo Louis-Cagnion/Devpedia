@@ -52,7 +52,7 @@ Deux utilisateurs avec le même mot de passe obtiennent ainsi des hash différen
 
 ## Passer à l'implémentation
 
-En pratique, choisir l'algorithme, générer le sel et gérer son intégration au hash final est pris en charge par une fonction dédiée du langage utilisé, jamais à réimplémenter soi-même : voir [`password_hash()` et `password_verify()`](/?c=langages-de-programmation&s=php&p=securite) pour l'implémentation concrète en PHP, qui utilise bcrypt par défaut et détaille comment le sel est intégré au hash stocké.
+En pratique, choisir l'algorithme, générer le sel et gérer son intégration au hash final est pris en charge par une fonction dédiée du langage utilisé, jamais à réimplémenter soi-même : voir [`password_hash()` et `password_verify()`](/?c=langages-de-programmation&s=php&p=securite) pour l'implémentation concrète en [PHP](/?c=langages-de-programmation&s=php&p=php), qui utilise bcrypt par défaut et détaille comment le sel est intégré au hash stocké.
 
 ---
 

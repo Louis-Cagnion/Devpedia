@@ -45,7 +45,7 @@ nom = "Jean"                    # "Jean" est une chaîne de texte -> une autre c
 | Outil | Catégorie | Langages ciblés |
 |---|---|---|
 | [VS Code](https://code.visualstudio.com) | Éditeur de code extensible | Généraliste : presque tous, via des extensions |
-| [PyCharm](https://www.jetbrains.com/pycharm/) | IDE complet | Python |
+| [PyCharm](https://www.jetbrains.com/pycharm/) | IDE complet | [Python](/?c=langages-de-programmation&s=python&p=python) |
 | [Visual Studio](https://visualstudio.microsoft.com) (à ne pas confondre avec VS Code) | IDE complet | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/), [.NET](https://learn.microsoft.com/en-us/dotnet/) |
 
 ## Par quoi commencer

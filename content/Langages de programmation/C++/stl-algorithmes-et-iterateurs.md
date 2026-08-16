@@ -81,7 +81,7 @@ int compte = std::count_if(nombres.begin(), nombres.end(), estAuDessusDuSeuil);
 | `std::find` | Cherche la première occurrence d'une valeur |
 | `std::count` / `std::count_if` | Compte les occurrences (avec ou sans condition) |
 | `std::for_each` | Applique une fonction à chaque élément |
-| `std::transform` | Produit une nouvelle plage en appliquant une fonction à chaque élément (équivalent de `map` en Python/JS) |
+| `std::transform` | Produit une nouvelle plage en appliquant une fonction à chaque élément (équivalent de `map` en [Python](/?c=langages-de-programmation&s=python&p=python)/JS) |
 | `std::accumulate` | Réduit une plage à une seule valeur (équivalent de `reduce`) |
 
 > **Note :** utiliser ces algorithmes plutôt que des boucles manuelles rend l'intention explicite (`std::sort` dit "je trie", une boucle avec un algorithme de tri écrit à la main demande de le déduire) : un gain de lisibilité direct, en plus d'éviter de réimplémenter (et potentiellement de mal implémenter) une logique déjà standardisée et optimisée.

@@ -4,7 +4,7 @@ order: 12
 
 # Le DOM et la gestion des événements
 
-Le **DOM** (*Document Object Model*) est la représentation en mémoire d'une page HTML, sous forme d'un arbre d'objets manipulables par JavaScript : chaque balise devient un nœud de cet arbre, avec ses propres propriétés et méthodes.
+Le **DOM** (*Document Object Model*) est la représentation en mémoire d'une page [HTML](/?c=langages-de-balisage&s=html&p=html), sous forme d'un arbre d'objets manipulables par JavaScript : chaque balise devient un nœud de cet arbre, avec ses propres propriétés et méthodes.
 
 ## Sélectionner des éléments
 
@@ -58,7 +58,7 @@ bouton.addEventListener("click", (evenement) => {
 | `submit` | Un formulaire est soumis |
 | `input` / `change` | La valeur d'un champ change |
 | `keydown` / `keyup` | Une touche du clavier est pressée/relâchée |
-| `DOMContentLoaded` | Le HTML est entièrement chargé (avant les images/styles) |
+| `DOMContentLoaded` | Le [HTML](/?c=langages-de-balisage&s=html&p=html) est entièrement chargé (avant les images/styles) |
 
 ## `preventDefault()` : annuler le comportement par défaut
 
@@ -91,7 +91,7 @@ Cette technique, la **délégation d'événements**, évite d'avoir à réattach
 
 | | |
 |---|---|
-| **À retenir** | Le DOM représente une page HTML sous forme d'arbre manipulable. `querySelector`/`addEventListener` sélectionnent et réagissent aux interactions ; un événement se propage des enfants vers les parents (*bubbling*). |
+| **À retenir** | Le DOM représente une page [HTML](/?c=langages-de-balisage&s=html&p=html) sous forme d'arbre manipulable. `querySelector`/`addEventListener` sélectionnent et réagissent aux interactions ; un événement se propage des enfants vers les parents (*bubbling*). |
 | **Outils utilisables** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`. |
 | **Pièges à éviter** | Assigner une donnée utilisateur à `innerHTML` (faille XSS) ; attacher un écouteur à chaque élément individuel plutôt que déléguer, ce qui casse pour les éléments ajoutés dynamiquement après coup. |
 | **Bonnes pratiques** | Utiliser la délégation d'événements (écouteur sur un ancêtre stable) plutôt qu'un écouteur par élément, surtout si des éléments sont ajoutés dynamiquement. |

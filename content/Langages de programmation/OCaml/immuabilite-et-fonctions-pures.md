@@ -14,7 +14,7 @@ compteur := !compteur + 1  (* := affecte une nouvelle valeur *)
 print_int !compteur        (* ! lit la valeur actuelle -> 1 *)
 ```
 
-La syntaxe `ref`/`:=`/`!` rend toute mutation **visible dans le code** : impossible de muter une valeur par accident, contrairement à une variable Python ou JavaScript, mutable par défaut sans aucune marque distinctive à l'endroit où elle est modifiée.
+La syntaxe `ref`/`:=`/`!` rend toute mutation **visible dans le code** : impossible de muter une valeur par accident, contrairement à une variable [Python](/?c=langages-de-programmation&s=python&p=python) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), mutable par défaut sans aucune marque distinctive à l'endroit où elle est modifiée.
 
 ## Structures de données persistantes
 
@@ -53,7 +53,7 @@ let carre_impur x =
 
 - **Tester devient trivial** : une fonction pure se teste avec des entrées et une sortie attendue, sans avoir à construire un état préalable ni à vérifier un effet de bord après l'appel, l'exact opposé d'une dépendance cachée.
 - **Aucune surprise entre deux appels** : puisqu'aucun état partagé ne peut être modifié à l'insu de l'appelant, deux appels identiques donnent toujours le même résultat, y compris exécutés en parallèle sur des cœurs différents : un état partagé muté simultanément par plusieurs threads est justement l'une des causes classiques de bug difficile à reproduire.
-- **Un piège structurellement impossible** : l'argument par défaut mutable en Python (cf. chapitre [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions)) n'existe que parce qu'un objet mutable partagé peut être capturé silencieusement entre plusieurs appels. Sans mutation implicite, ce piège précis n'a simplement aucune prise.
+- **Un piège structurellement impossible** : l'argument par défaut mutable en [Python](/?c=langages-de-programmation&s=python&p=python) (cf. chapitre [Les fonctions](/?c=langages-de-programmation&s=python&p=fonctions)) n'existe que parce qu'un objet mutable partagé peut être capturé silencieusement entre plusieurs appels. Sans mutation implicite, ce piège précis n'a simplement aucune prise.
 
 > **Nuance :** aucun programme réel n'est composé à 100 % de fonctions pures : afficher un résultat, lire un fichier, répondre à une requête réseau sont des effets de bord par nature. L'objectif n'est pas de les éliminer, mais de les **isoler** : réduire au minimum la part de code qui en dépend, pour concentrer l'effort de test et de relecture là où les bugs sont les plus probables.
 

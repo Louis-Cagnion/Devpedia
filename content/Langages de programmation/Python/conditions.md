@@ -4,7 +4,7 @@ order: 2
 
 # Les conditions
 
-Python utilise `if`/`elif`/`else`, sans aucune accolade : c'est l'**indentation** elle-même qui délimite les blocs de code, contrairement à PHP, C ou JavaScript.
+Python utilise `if`/`elif`/`else`, sans aucune accolade : c'est l'**indentation** elle-même qui délimite les blocs de code, contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php), C ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript).
 
 ## `if` / `elif` / `else`
 
@@ -57,7 +57,7 @@ age = 20
 statut = "majeur" if age >= 18 else "mineur"
 ```
 
-Contrairement à PHP/C/JS (`condition ? valeur_si_vrai : valeur_si_faux`), Python place la condition **au milieu** : `valeur_si_vrai if condition else valeur_si_faux`.
+Contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php)/C/JS (`condition ? valeur_si_vrai : valeur_si_faux`), Python place la condition **au milieu** : `valeur_si_vrai if condition else valeur_si_faux`.
 
 ## L'opérateur "morse" (`:=`, depuis Python 3.8)
 

@@ -74,7 +74,7 @@ Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) 
 }
 ```
 
-> **Note (accessibilité) :** `order` ne change que l'ordre **visuel** : l'ordre de tabulation au clavier et celui lu par un lecteur d'écran restent ceux du HTML. Un décalage entre les deux peut désorienter un utilisateur au clavier ou avec un lecteur d'écran ; à réserver aux réordonnancements purement décoratifs, jamais pour réparer un ordre de contenu qui n'a pas de sens dans le HTML lui-même.
+> **Note (accessibilité) :** `order` ne change que l'ordre **visuel** : l'ordre de tabulation au clavier et celui lu par un lecteur d'écran restent ceux du [HTML](/?c=langages-de-balisage&s=html&p=html). Un décalage entre les deux peut désorienter un utilisateur au clavier ou avec un lecteur d'écran ; à réserver aux réordonnancements purement décoratifs, jamais pour réparer un ordre de contenu qui n'a pas de sens dans le [HTML](/?c=langages-de-balisage&s=html&p=html) lui-même.
 
 ```css
 .colonne-principale { flex-grow: 2; }   /* occupe deux fois plus d'espace que .colonne-laterale */

@@ -24,7 +24,7 @@ len(fruits)                 # nombre d'éléments
 "pomme" in fruits           # True/False -> teste la présence d'une valeur
 ```
 
-> **Note :** contrairement à un tableau en C (taille fixe, un seul type), une liste Python est un tableau **dynamique** hétérogène : elle grandit automatiquement, et chaque élément peut être d'un type différent, au prix d'un surcoût mémoire par élément (chaque élément est en réalité une référence vers un objet Python, pas une valeur brute contiguë comme en C).
+> **Note :** contrairement à un tableau en [C](/?c=langages-de-programmation&s=c&p=c) (taille fixe, un seul type), une liste Python est un tableau **dynamique** hétérogène : elle grandit automatiquement, et chaque élément peut être d'un type différent, au prix d'un surcoût mémoire par élément (chaque élément est en réalité une référence vers un objet Python, pas une valeur brute contiguë comme en [C](/?c=langages-de-programmation&s=c&p=c)).
 
 ## Le slicing en détail
 

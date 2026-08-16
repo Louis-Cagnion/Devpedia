@@ -14,7 +14,7 @@ Le chapitre précédent explique que [le code est une liste d'instructions](/?c=
 | Exemple concret | Faire glisser un fichier vers la corbeille | Taper une instruction qui supprime ce fichier |
 | Avantage principal | Immédiatement visuel, rien à mémoriser | Précis, répétable, automatisable (rejouer 100 fois la même instruction en une fois) |
 
-**GUI** (*Graphical User Interface*) et **CLI** (*Command-Line Interface*) sont les deux abréviations que vous croiserez partout pour désigner ces deux mondes. Ce site s'intéresse surtout au second.
+**GUI** (`Graphical User Interface`) et **CLI** (`Command-Line Interface`) sont les deux abréviations que vous croiserez partout pour désigner ces deux mondes. Ce site s'intéresse surtout au second.
 
 > **Piège :** supposer qu'une suppression en CLI passe par une corbeille, comme en GUI. La plupart des commandes de suppression sont **définitives** et immédiates, sans étape de récupération possible.
 >
@@ -52,15 +52,15 @@ Résultat affiché dans le terminal
 
 | Système | Comment l'ouvrir |
 |---|---|
-| Windows | Menu Démarrer → taper "Terminal" ou "PowerShell" → Entrée |
+| Windows | Menu Démarrer → taper "Terminal" ou "[PowerShell](/?c=shells&s=powershell&p=powershell)" → Entrée |
 | macOS | Spotlight (`Cmd + Espace`) → taper "Terminal" → Entrée |
 | Linux | Selon l'environnement de bureau : souvent `Ctrl + Alt + T`, ou dans le menu des applications |
 
 Une fois ouvert, le terminal affiche une ligne qui se termine par un symbole (`>`, `$`, `%`...) suivi d'un curseur clignotant : c'est le **prompt**. Il attend que vous tapiez quelque chose ; rien ne s'exécute avant d'appuyer sur `Entrée`.
 
-> **Piège :** sous Windows, confondre l'**Invite de commandes** ([`cmd.exe`](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd), l'ancien shell historique de Windows) avec **PowerShell** : les deux se ressemblent visuellement, mais leurs commandes et leur syntaxe diffèrent largement.
+> **Piège :** sous Windows, confondre l'**Invite de commandes** ([`cmd.exe`](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/cmd), l'ancien shell historique de Windows) avec **[PowerShell](/?c=shells&s=powershell&p=powershell)** : les deux se ressemblent visuellement, mais leurs commandes et leur syntaxe diffèrent largement.
 >
-> **Bonne pratique :** sur une machine récente, préférer PowerShell (plus complet, cf. [chapitre dédié](/?c=shells&s=powershell&p=powershell)) à l'Invite de commandes, sauf raison précise d'utiliser cette dernière.
+> **Bonne pratique :** sur une machine récente, préférer [PowerShell](/?c=shells&s=powershell&p=powershell) (plus complet, cf. [chapitre dédié](/?c=shells&s=powershell&p=powershell)) à l'Invite de commandes, sauf raison précise d'utiliser cette dernière.
 
 ## Anatomie d'une commande
 
@@ -74,7 +74,7 @@ ls -l /home
 └──────── commande : lister le contenu d'un dossier
 ```
 
-Le nom exact des commandes change d'un shell à l'autre (`ls` sous Bash devient `Get-ChildItem` sous PowerShell) ; c'est le sujet des chapitres [Bash](/?c=shells&s=bash&p=bash) et [PowerShell](/?c=shells&s=powershell&p=powershell), pas de celui-ci : ici, seule la structure générale (commande, options, arguments) compte.
+Le nom exact des commandes change d'un shell à l'autre (`ls` sous [Bash](/?c=shells&s=bash&p=bash) devient `Get-ChildItem` sous [PowerShell](/?c=shells&s=powershell&p=powershell)) ; c'est le sujet des chapitres [Bash](/?c=shells&s=bash&p=bash) et [PowerShell](/?c=shells&s=powershell&p=powershell), pas de celui-ci : ici, seule la structure générale (commande, options, arguments) compte.
 
 > **Piège :** une option qui semble anodine peut désactiver une protection : une option comme "forcer" ou "sans confirmation" (souvent `-f`/`--force`) supprime justement la question "vous êtes sûr ?" qu'une commande poserait sinon.
 >

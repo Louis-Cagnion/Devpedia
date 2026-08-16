@@ -4,7 +4,7 @@ order: 14
 
 # La gestion des processus
 
-Un **processus** est une instance d'un programme en cours d'exécution, avec son propre espace mémoire, isolé de celui des autres processus. En C, la bibliothèque standard POSIX (`unistd.h`, `sys/wait.h`) permet de créer de nouveaux processus, de lancer d'autres programmes, et d'attendre leur fin. La norme **POSIX** est présentée dans le chapitre [Écrire un script](/?c=shells&s=bash&p=scripts-et-shebang) de Bash.
+Un **processus** est une instance d'un programme en cours d'exécution, avec son propre espace mémoire, isolé de celui des autres processus. En C, la bibliothèque standard POSIX (`unistd.h`, `sys/wait.h`) permet de créer de nouveaux processus, de lancer d'autres programmes, et d'attendre leur fin. La norme **POSIX** est présentée dans le chapitre [Écrire un script](/?c=shells&s=bash&p=scripts-et-shebang) de [Bash](/?c=shells&s=bash&p=bash).
 
 > **Note :** `fork()`, `execve()` (utilisé par `execlp()` et les autres fonctions de la famille `exec`) et `wait()`/`waitpid()` sont des **appels système** : voir le chapitre dédié aux appels système et aux descripteurs de fichiers pour ce que ça implique concrètement (passage en espace noyau, gestion des erreurs via `errno`).
 

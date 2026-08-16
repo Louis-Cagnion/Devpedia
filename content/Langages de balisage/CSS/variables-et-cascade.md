@@ -41,7 +41,7 @@ Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables person
 }
 ```
 
-> **Note :** contrairement à une variable [Sass](https://sass-lang.com)/[Less](https://lesscss.org) (résolues une fois pour toutes à la compilation), une variable CSS native est **vivante** dans le navigateur : modifiable même en JavaScript (`element.style.setProperty('--marge-interne', '30px')`), et réévaluée dynamiquement selon l'élément où elle est consultée.
+> **Note :** contrairement à une variable [Sass](https://sass-lang.com)/[Less](https://lesscss.org) (résolues une fois pour toutes à la compilation), une variable CSS native est **vivante** dans le navigateur : modifiable même en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`element.style.setProperty('--marge-interne', '30px')`), et réévaluée dynamiquement selon l'élément où elle est consultée.
 
 ## La cascade : trois critères, dans cet ordre
 
@@ -94,6 +94,6 @@ Les propriétés liées au **texte** (`color`, `font-family`, `font-size`, `line
 | | |
 |---|---|
 | **À retenir** | Les variables CSS (`--nom`, lues via `var()`) évitent de répéter une valeur. Face à un conflit entre règles, la cascade tranche dans l'ordre : `!important` > spécificité > ordre d'écriture. L'héritage (texte oui, boîte non) est un mécanisme distinct qui interagit avec la cascade. |
-| **Outils utilisables** | `:root` pour des variables globales, `var(--nom, valeur-de-secours)`, `element.style.setProperty()` pour les modifier en JavaScript. |
+| **Outils utilisables** | `:root` pour des variables globales, `var(--nom, valeur-de-secours)`, `element.style.setProperty()` pour les modifier en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript). |
 | **Pièges à éviter** | Abuser de `!important` : il court-circuite toute la cascade et rend le style difficile à surcharger ensuite. |
 | **Bonnes pratiques** | Réserver `!important` à des cas exceptionnels (surcharger un style tiers non contrôlé) ; définir les couleurs/espacements récurrents comme variables sur `:root` plutôt que de les répéter. |

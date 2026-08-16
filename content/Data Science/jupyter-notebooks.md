@@ -10,7 +10,7 @@ Un **notebook Jupyter** est un document interactif mêlant code exécutable, ré
 
 Un notebook (fichier `.ipynb`) est une suite de **cellules**, de deux types :
 
-- **Cellule de code** : du Python, exécutable indépendamment (`Shift+Entrée` pour l'exécuter).
+- **Cellule de code** : du [Python](/?c=langages-de-programmation&s=python&p=python), exécutable indépendamment (`Shift+Entrée` pour l'exécuter).
 - **Cellule Markdown** : du texte formaté (titres, listes, formules mathématiques via [LaTeX](https://www.latex-project.org)), pour documenter la démarche à côté du code.
 
 ```python
@@ -26,7 +26,7 @@ donnees.describe()   # le résultat s'affiche directement sous la cellule
 
 ## Le kernel : le processus Python derrière le notebook
 
-Le **kernel** est le processus Python qui exécute réellement le code des cellules et conserve leur état en mémoire (variables, imports...) entre les exécutions : le notebook lui-même n'est qu'une interface qui envoie du code au kernel et affiche ses résultats.
+Le **kernel** est le processus [Python](/?c=langages-de-programmation&s=python&p=python) qui exécute réellement le code des cellules et conserve leur état en mémoire (variables, imports...) entre les exécutions : le notebook lui-même n'est qu'une interface qui envoie du code au kernel et affiche ses résultats.
 
 > **Note :** redémarrer le kernel (*Restart Kernel*) efface **toutes** les variables en mémoire, comme si on relançait le programme depuis zéro : les cellules affichées restent visibles à l'écran, mais leur code n'a pas été réexécuté tant qu'on ne le redemande pas explicitement.
 
@@ -48,7 +48,7 @@ Si on exécute la cellule 2 **plusieurs fois de suite** sans relancer la cellule
 
 ## Commandes magiques (`%`, `%%`)
 
-Des commandes spéciales, propres à Jupyter, absentes du langage Python lui-même :
+Des commandes spéciales, propres à Jupyter, absentes du langage [Python](/?c=langages-de-programmation&s=python&p=python) lui-même :
 
 ```python
 %matplotlib inline     # affiche les graphiques Matplotlib directement sous la cellule, sans fenêtre séparée

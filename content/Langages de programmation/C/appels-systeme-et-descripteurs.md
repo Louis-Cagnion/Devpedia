@@ -36,7 +36,7 @@ Un appel de fonction C classique (`addition(2, 3)`) s'exécute entièrement dans
 
 ## Signaler une erreur : `errno`
 
-La plupart des appels système signalent un échec en renvoyant `-1` (ou `NULL` pour ceux qui renvoient un pointeur), et en positionnant la variable globale `errno` avec un code décrivant la cause précise : le même principe que les fonctions C historiques évoquées au chapitre sur les fonctions (`@` en PHP fait face au même genre de convention d'erreur "à la C") :
+La plupart des appels système signalent un échec en renvoyant `-1` (ou `NULL` pour ceux qui renvoient un pointeur), et en positionnant la variable globale `errno` avec un code décrivant la cause précise : le même principe que les fonctions C historiques évoquées au chapitre sur les fonctions (`@` en [PHP](/?c=langages-de-programmation&s=php&p=php) fait face au même genre de convention d'erreur "à la C") :
 
 ```c
 #include <errno.h>
@@ -69,7 +69,7 @@ read(fd, tampon, taille);
 close(fd);
 ```
 
-> **Note :** ces trois numéros (`0`/`1`/`2`) sont exactement les "flux" (*stdin*/*stdout*/*stderr*) évoqués au chapitre sur les redirections Bash : une redirection comme `2>` ne fait rien d'autre, sous le capot, que manipuler ce descripteur numéro `2` du processus concerné.
+> **Note :** ces trois numéros (`0`/`1`/`2`) sont exactement les "flux" (*stdin*/*stdout*/*stderr*) évoqués au chapitre sur les redirections [Bash](/?c=shells&s=bash&p=bash) : une redirection comme `2>` ne fait rien d'autre, sous le capot, que manipuler ce descripteur numéro `2` du processus concerné.
 
 ## `dup2()` : faire pointer un descripteur vers une autre ressource
 

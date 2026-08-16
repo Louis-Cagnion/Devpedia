@@ -88,7 +88,7 @@ Pour tester plusieurs conditions à la suite, on utilise `elseif` :
 
 ## Syntaxe alternative
 
-Comme pour les autres structures de contrôle, les conditions peuvent s'écrire avec `:` et `end...`, pratique pour mélanger avec du HTML :
+Comme pour les autres structures de contrôle, les conditions peuvent s'écrire avec `:` et `end...`, pratique pour mélanger avec du [HTML](/?c=langages-de-balisage&s=html&p=html) :
 
 ```php
 <?php if ($age >= 18): ?>

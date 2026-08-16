@@ -69,7 +69,7 @@ Le **pairing** consiste à choisir une police pour les titres et une autre pour 
 
 ## Passer à l'implémentation
 
-Comme pour une palette de couleurs, une échelle de tailles et une liste de polices se déclarent en CSS comme des valeurs réutilisables : voir [Variables CSS et la cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
+Comme pour une palette de couleurs, une échelle de tailles et une liste de polices se déclarent en [CSS](/?c=langages-de-balisage&s=css&p=css) comme des valeurs réutilisables : voir [Variables CSS et la cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
 
 ---
 
@@ -78,6 +78,6 @@ Comme pour une palette de couleurs, une échelle de tailles et une liste de poli
 | | |
 |---|---|
 | **À retenir** | Chaque police appartient à une famille (serif, sans-serif, monospace) porteuse d'une connotation. Une échelle de tailles/graisses cohérente et une lisibilité soignée (longueur de ligne, interlignage) priment sur le choix esthétique des polices elles-mêmes. |
-| **Outils utilisables** | Aucun outil spécifique : le choix et l'échelle des polices se décident à la conception, puis se déclarent en CSS. |
+| **Outils utilisables** | Aucun outil spécifique : le choix et l'échelle des polices se décident à la conception, puis se déclarent en [CSS](/?c=langages-de-balisage&s=css&p=css). |
 | **Pièges à éviter** | Utiliser plus de 2-3 polices sur un même projet ; associer deux polices trop proches visuellement sans que ce soit un choix assumé. |
 | **Bonnes pratiques** | Limiter le projet à 2-3 polices maximum ; viser un contraste net entre police de titre et police de corps de texte (ou rester dans la même famille en jouant sur la graisse). |

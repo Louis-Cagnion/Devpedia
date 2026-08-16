@@ -4,7 +4,7 @@ order: 1
 
 # Les sélecteurs
 
-Un **sélecteur** détermine à quels éléments HTML une règle CSS s'applique : du plus simple (une balise) au plus précis (une combinaison d'attributs et de position dans l'arbre du document).
+Un **sélecteur** détermine à quels éléments [HTML](/?c=langages-de-balisage&s=html&p=html) une règle CSS s'applique : du plus simple (une balise) au plus précis (une combinaison d'attributs et de position dans l'arbre du document).
 
 ## Sélecteurs de base
 
@@ -56,7 +56,7 @@ p::before { content: "→ "; }  /* insère du contenu AVANT le texte réel du pa
 p::after { content: " ✓"; }   /* insère du contenu APRÈS */
 ```
 
-> **Note :** `::before`/`::after` nécessitent une propriété `content` pour être visibles (même vide, `content: "";`), très utilisés pour ajouter un élément purement décoratif (icône, flèche...) sans alourdir le HTML d'une balise supplémentaire sans réelle signification sémantique (voir [Sémantique HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5)).
+> **Note :** `::before`/`::after` nécessitent une propriété `content` pour être visibles (même vide, `content: "";`), très utilisés pour ajouter un élément purement décoratif (icône, flèche...) sans alourdir le [HTML](/?c=langages-de-balisage&s=html&p=html) d'une balise supplémentaire sans réelle signification sémantique (voir [Sémantique HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5)).
 
 ## La spécificité : que se passe-t-il en cas de conflit ?
 

@@ -87,7 +87,7 @@ Une couleur n'évoque pas la même chose partout, à nuancer selon le public ré
 
 ## Passer à l'implémentation
 
-En CSS, une palette de couleurs se déclare comme un ensemble de valeurs réutilisables plutôt que répétées à chaque règle : voir [Variables CSS et la cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
+En [CSS](/?c=langages-de-balisage&s=css&p=css), une palette de couleurs se déclare comme un ensemble de valeurs réutilisables plutôt que répétées à chaque règle : voir [Variables CSS et la cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
 
 ---
 

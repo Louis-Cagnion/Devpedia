@@ -10,7 +10,7 @@ C'est probablement le comportement le plus déroutant de la programmation, et ce
 0.1 + 0.2   ==>  0.30000000000000004
 ```
 
-Ce résultat est identique en JavaScript, en [Python](/?c=langages-de-programmation&s=python&p=python), en [C](/?c=langages-de-programmation&s=c&p=c), en [PHP](/?c=langages-de-programmation&s=php&p=php), en [Java](https://docs.oracle.com/en/java/) et en [C#](https://learn.microsoft.com/en-us/dotnet/csharp/). Ce n'est donc **pas** un défaut d'un langage : c'est une conséquence de la façon dont le processeur encode les nombres décimaux, décrite par la norme **IEEE 754**, que tous ces langages utilisent parce que c'est le matériel qui l'impose.
+Ce résultat est identique en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), en [Python](/?c=langages-de-programmation&s=python&p=python), en [C](/?c=langages-de-programmation&s=c&p=c), en [PHP](/?c=langages-de-programmation&s=php&p=php), en [Java](https://docs.oracle.com/en/java/) et en [C#](https://learn.microsoft.com/en-us/dotnet/csharp/). Ce n'est donc **pas** un défaut d'un langage : c'est une conséquence de la façon dont le processeur encode les nombres décimaux, décrite par la norme **IEEE 754**, que tous ces langages utilisent parce que c'est le matériel qui l'impose.
 
 ## Pourquoi une approximation ?
 
@@ -73,14 +73,14 @@ double epsilon = 0.0001;
 if (fabs(a - b) < epsilon) { /* consideres comme egaux */ }
 ```
 
-En Python :
+En [Python](/?c=langages-de-programmation&s=python&p=python) :
 
 ```python
 import math
 math.isclose(0.1 + 0.2, 0.3)     # True -> gere la tolerance pour vous
 ```
 
-En JavaScript :
+En [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) :
 
 ```js
 Math.abs(a - b) < 0.0001;
@@ -106,7 +106,7 @@ La norme réserve certaines combinaisons de bits à des valeurs spéciales, pré
 - **infinis** : produits par un débordement ou une division par zéro (`1.0 / 0.0`) ;
 - **NaN** (*Not a Number*) : résultat d'une opération invalide (`0.0 / 0.0`, racine d'un nombre négatif).
 
-`NaN` a une propriété volontairement surprenante : **il n'est égal à rien, pas même à lui-même**. `NaN == NaN` est faux. C'est cohérent (deux résultats invalides n'ont aucune raison d'être "le même nombre"), mais cela impose d'utiliser une fonction dédiée pour le détecter (`isnan()` en C, `math.isnan()` en Python, `Number.isNaN()` en JavaScript).
+`NaN` a une propriété volontairement surprenante : **il n'est égal à rien, pas même à lui-même**. `NaN == NaN` est faux. C'est cohérent (deux résultats invalides n'ont aucune raison d'être "le même nombre"), mais cela impose d'utiliser une fonction dédiée pour le détecter (`isnan()` en [C](/?c=langages-de-programmation&s=c&p=c), `math.isnan()` en [Python](/?c=langages-de-programmation&s=python&p=python), `Number.isNaN()` en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)).
 
 ## Ce que chaque langage y ajoute
 
@@ -115,7 +115,7 @@ Le socle est commun ; les langages diffèrent seulement sur l'emballage :
 | Langage | Spécificités |
 |---|---|
 | [C](/?c=langages-de-programmation&s=c&p=c) | `float` / `double` / `long double` explicites, `fabs()`, `isnan()` |
-| JavaScript | un seul type `number` (toujours un double), `BigInt` pour les grands entiers, voir [Les nombres](/?c=langages-de-programmation&s=javascript&p=nombres) |
+| [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) | un seul type `number` (toujours un double), `BigInt` pour les grands entiers, voir [Les nombres](/?c=langages-de-programmation&s=javascript&p=nombres) |
 | [Python](/?c=langages-de-programmation&s=python&p=python) | `float` = double, entiers de taille arbitraire nativement, `math.isclose()`, module `decimal` |
 | [PHP](/?c=langages-de-programmation&s=php&p=php) | `float` = double, `PHP_FLOAT_EPSILON` |
 

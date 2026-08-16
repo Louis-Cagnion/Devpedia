@@ -20,7 +20,7 @@ Un **PDF** (*Portable Document Format*) est un format de fichier conçu pour qu'
 
 ## Extraire le texte natif : blocs, positions, taille de police
 
-Une bibliothèque comme [**PyMuPDF**](https://pymupdf.readthedocs.io) (module Python `pymupdf`) ouvre un PDF et donne accès, page par page, à sa structure interne : le texte n'est jamais renvoyé comme une seule grande chaîne, mais découpé en **blocs** (un paragraphe, une cellule de tableau...), eux-mêmes découpés en lignes puis en **spans** (une portion de texte partageant la même police et la même taille) :
+Une bibliothèque comme [**PyMuPDF**](https://pymupdf.readthedocs.io) (module [Python](/?c=langages-de-programmation&s=python&p=python) `pymupdf`) ouvre un PDF et donne accès, page par page, à sa structure interne : le texte n'est jamais renvoyé comme une seule grande chaîne, mais découpé en **blocs** (un paragraphe, une cellule de tableau...), eux-mêmes découpés en lignes puis en **spans** (une portion de texte partageant la même police et la même taille) :
 
 ```python
 import pymupdf
@@ -37,7 +37,7 @@ with pymupdf.open("document.pdf") as document:
             print(numero_page, bloc["bbox"], texte)
 ```
 
-- `page.get_text("dict")` renvoie une structure imbriquée (dictionnaire Python) plutôt qu'une simple chaîne : c'est ce qui donne accès à la **position** de chaque bloc sur la page (`bbox`, la boîte englobante en coordonnées `x0, y0, x1, y1`) et à sa mise en forme, pas seulement à son contenu textuel.
+- `page.get_text("dict")` renvoie une structure imbriquée (dictionnaire [Python](/?c=langages-de-programmation&s=python&p=python)) plutôt qu'une simple chaîne : c'est ce qui donne accès à la **position** de chaque bloc sur la page (`bbox`, la boîte englobante en coordonnées `x0, y0, x1, y1`) et à sa mise en forme, pas seulement à son contenu textuel.
 - `bloc["type"]` distingue un bloc de texte (`0`) d'un bloc image (`1`, couvert dans la section suivante) : un PDF peut mélanger les deux sur une même page, ce filtre ne garde que le texte.
 - La **taille de police** d'un span (`span["size"]`) sert, dans un usage réel, à repérer un titre (police plus grande que le corps du texte) sans avoir à deviner la mise en page autrement qu'en la mesurant.
 

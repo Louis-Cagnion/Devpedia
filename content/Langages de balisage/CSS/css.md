@@ -4,11 +4,11 @@ order: 2
 
 # CSS
 
-CSS (*Cascading Style Sheets*) est le langage qui décrit l'**apparence** d'un document [HTML](/?c=langages-de-balisage&s=html&p=html) (couleurs, tailles, positionnement, mise en page), en séparant volontairement cette présentation de la structure (HTML) et du comportement (JavaScript).
+CSS (*Cascading Style Sheets*) est le langage qui décrit l'**apparence** d'un document [HTML](/?c=langages-de-balisage&s=html&p=html) (couleurs, tailles, positionnement, mise en page), en séparant volontairement cette présentation de la structure ([HTML](/?c=langages-de-balisage&s=html&p=html)) et du comportement ([JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)).
 
 Parmi les concepts essentiels de CSS, on retrouve notamment :
 
-- Les sélecteurs, qui ciblent les éléments HTML à styliser
+- Les sélecteurs, qui ciblent les éléments [HTML](/?c=langages-de-balisage&s=html&p=html) à styliser
 - Le modèle de boîte (*box model*), qui régit la taille et l'espacement de chaque élément
 - Les systèmes de mise en page modernes : Flexbox (alignement sur un axe) et Grid (grille à deux dimensions)
 - La cascade et la spécificité, qui déterminent quelle règle s'applique quand plusieurs se contredisent
@@ -46,4 +46,4 @@ h1 {
 <h1 style="color: blue;">Titre</h1>
 ```
 
-> **Note (best practice) :** un fichier `.css` externe (`<link>`) est presque toujours préférable : il est mis en cache par le navigateur, réutilisable sur plusieurs pages, et sépare clairement structure et présentation. Le style en ligne (`style="..."` directement sur une balise) a la spécificité la plus élevée (voir [Variables CSS et la cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade)), ce qui le rend difficile à surcharger ensuite, à réserver à des cas très ponctuels, souvent générés dynamiquement en JavaScript.
+> **Note (best practice) :** un fichier `.css` externe (`<link>`) est presque toujours préférable : il est mis en cache par le navigateur, réutilisable sur plusieurs pages, et sépare clairement structure et présentation. Le style en ligne (`style="..."` directement sur une balise) a la spécificité la plus élevée (voir [Variables CSS et la cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade)), ce qui le rend difficile à surcharger ensuite, à réserver à des cas très ponctuels, souvent générés dynamiquement en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript).

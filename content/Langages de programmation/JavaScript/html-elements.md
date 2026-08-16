@@ -4,7 +4,7 @@ order: 11
 
 # Les HTMLElements
 
-Un `HTMLElement` est la représentation JavaScript d'une balise HTML dans le DOM. Chaque balise (`<div>`, `<p>`, `<a>`...) devient un objet `HTMLElement` accessible et manipulable en JavaScript.
+Un `HTMLElement` est la représentation JavaScript d'une balise [HTML](/?c=langages-de-balisage&s=html&p=html) dans le DOM. Chaque balise (`<div>`, `<p>`, `<a>`...) devient un objet `HTMLElement` accessible et manipulable en JavaScript.
 
 ```javascript
 const div = document.querySelector('div');
@@ -18,7 +18,7 @@ const div = document.querySelector('div');
 | `document.createElement(tag)` | Crée un nouvel élément, sans l'insérer dans la page |
 | `parent.append(...)` | Insère un ou plusieurs éléments (ou textes) à la **fin** du contenu du parent |
 | `parent.prepend(...)` | Insère un ou plusieurs éléments (ou textes) au **début** du contenu du parent |
-| `element.insertAdjacentHTML(position, html)` | Insère du HTML brut à une position précise, sans écraser le contenu existant |
+| `element.insertAdjacentHTML(position, html)` | Insère du [HTML](/?c=langages-de-balisage&s=html&p=html) brut à une position précise, sans écraser le contenu existant |
 | `element.remove()` | Supprime l'élément du DOM |
 | `element.replaceWith(...)` | Remplace l'élément par un ou plusieurs autres |
 
@@ -38,7 +38,7 @@ p.remove();
 p.replaceWith(autreElement);
 ```
 
-> **Piège (sécurité) :** comme `innerHTML` (voir plus bas), `insertAdjacentHTML` interprète son argument comme du HTML : y insérer une donnée provenant de l'utilisateur sans l'avoir échappée ouvre une faille XSS (voir [La sécurité](/?c=langages-de-programmation&s=php&p=securite), même principe).
+> **Piège (sécurité) :** comme `innerHTML` (voir plus bas), `insertAdjacentHTML` interprète son argument comme du [HTML](/?c=langages-de-balisage&s=html&p=html) : y insérer une donnée provenant de l'utilisateur sans l'avoir échappée ouvre une faille XSS (voir [La sécurité](/?c=langages-de-programmation&s=php&p=securite), même principe).
 >
 > **Bonne pratique :** ne jamais passer une donnée utilisateur non échappée à `insertAdjacentHTML`/`innerHTML` ; utiliser `createElement` + `textContent` quand le contenu vient de l'utilisateur.
 
@@ -46,7 +46,7 @@ p.replaceWith(autreElement);
 
 | Méthode | Renvoie |
 |---|---|
-| `document.querySelector(sélecteur)` | Le premier élément correspondant au sélecteur CSS, ou `null` |
+| `document.querySelector(sélecteur)` | Le premier élément correspondant au sélecteur [CSS](/?c=langages-de-balisage&s=css&p=css), ou `null` |
 | `document.querySelectorAll(sélecteur)` | Tous les éléments correspondants, sous forme de `NodeList` (figée) |
 | `document.getElementById(id)` | L'élément avec cet id (alternative plus ancienne, moins flexible) |
 | `document.getElementsByClassName(classe)` | Les éléments avec cette classe, sous forme de `HTMLCollection` (**live**) |
@@ -85,7 +85,7 @@ element.removeAttribute('class');
 
 ## Les classes CSS
 
-**`classList`** est un objet dédié à la gestion des classes CSS d'un élément, plus fiable que `className` pour manipuler les classes individuellement.
+**`classList`** est un objet dédié à la gestion des classes [CSS](/?c=langages-de-balisage&s=css&p=css) d'un élément, plus fiable que `className` pour manipuler les classes individuellement.
 
 ```javascript
 element.classList.add('nouvelle-classe');       // ajoute
@@ -105,8 +105,8 @@ element.className = 'nouvelle';  // ⚠️ écrase tout
 
 | Propriété | Contenu | Assignation |
 |---|---|---|
-| `textContent` | Le texte de l'élément, balises enfants ignorées | Remplace tout par du texte brut ; toute balise HTML fournie est échappée, jamais interprétée |
-| `innerHTML` | Le HTML interne de l'élément, sous forme de chaîne | Remplace tout **et interprète** les balises HTML fournies |
+| `textContent` | Le texte de l'élément, balises enfants ignorées | Remplace tout par du texte brut ; toute balise [HTML](/?c=langages-de-balisage&s=html&p=html) fournie est échappée, jamais interprétée |
+| `innerHTML` | Le [HTML](/?c=langages-de-balisage&s=html&p=html) interne de l'élément, sous forme de chaîne | Remplace tout **et interprète** les balises [HTML](/?c=langages-de-balisage&s=html&p=html) fournies |
 
 ```javascript
 element.textContent;               // 'Mon texte'
@@ -116,13 +116,13 @@ element.innerHTML;                          // '<strong>Mon texte</strong>'
 element.innerHTML = '<em>Nouveau</em>';      // écrase tout, interprète le HTML
 ```
 
-> **Piège (sécurité) :** assigner à `innerHTML` une donnée provenant de l'utilisateur (non fiable) est une faille XSS classique : le contenu est interprété comme du vrai HTML/JavaScript exécutable, pas comme du texte.
+> **Piège (sécurité) :** assigner à `innerHTML` une donnée provenant de l'utilisateur (non fiable) est une faille XSS classique : le contenu est interprété comme du vrai [HTML](/?c=langages-de-balisage&s=html&p=html)/JavaScript exécutable, pas comme du texte.
 >
 > **Bonne pratique :** préférer `textContent` à `innerHTML` dès que le contenu attendu est du texte brut ; il reste sûr par défaut, puisqu'il n'interprète jamais son contenu.
 
 ## Le style
 
-`style` donne accès aux styles inline de l'élément. Les propriétés CSS s'écrivent en **camelCase** (pas de tiret) :
+`style` donne accès aux styles inline de l'élément. Les propriétés [CSS](/?c=langages-de-balisage&s=css&p=css) s'écrivent en **camelCase** (pas de tiret) :
 
 ```javascript
 element.style.color = 'red';
@@ -192,7 +192,7 @@ element.offsetWidth;
 
 | | |
 |---|---|
-| **À retenir** | Un `HTMLElement` représente une balise HTML manipulable en JavaScript : le créer (`createElement`), le sélectionner (`querySelector`), modifier son contenu (`textContent`/`innerHTML`), ses attributs, ses classes ou son style. |
+| **À retenir** | Un `HTMLElement` représente une balise [HTML](/?c=langages-de-balisage&s=html&p=html) manipulable en JavaScript : le créer (`createElement`), le sélectionner (`querySelector`), modifier son contenu (`textContent`/`innerHTML`), ses attributs, ses classes ou son style. |
 | **Outils utilisables** | `querySelector`/`querySelectorAll`, `classList`, `setAttribute`/`getAttribute`, `getBoundingClientRect`. |
 | **Pièges à éviter** | Assigner une donnée utilisateur non échappée à `innerHTML`/`insertAdjacentHTML` (faille XSS) ; modifier une `HTMLCollection` live pendant qu'on la parcourt. |
 | **Bonnes pratiques** | Préférer `textContent` à `innerHTML` dès que le contenu est du texte brut ; préférer `querySelectorAll` (figé) à `getElementsByClassName`/`getElementsByTagName` (live) si le DOM est modifié pendant le parcours. |

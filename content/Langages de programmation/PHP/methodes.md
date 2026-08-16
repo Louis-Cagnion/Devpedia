@@ -23,7 +23,7 @@ Une **fonction** est un bloc de code réutilisable, qui porte un nom, et qui peu
     echo $double(5); // affiche 10
 ?>
 ```
-> **Note :** contrairement à JavaScript, où une fonction fléchée peut s'écrire avec des accolades et un `return` (`(n) => { return n * 2; }`), PHP n'autorise que la forme courte avec une seule expression, sans accolades ni `return` (`fn($n) => $n * 2;`).
+> **Note :** contrairement à [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), où une fonction fléchée peut s'écrire avec des accolades et un `return` (`(n) => { return n * 2; }`), PHP n'autorise que la forme courte avec une seule expression, sans accolades ni `return` (`fn($n) => $n * 2;`).
 
 Une **méthode**, c'est exactement la même chose qu'une fonction, à une différence près : elle est définie **à l'intérieur d'une classe**, et elle s'utilise sur un objet (voir [La programmation orientée objet](/?c=langages-de-programmation&s=php&p=poo)).
 
@@ -74,11 +74,11 @@ function trouverUtilisateur(int $id): ?array
 ?>
 ```
 
-> **Note :** `?array` est une déclaration de contrat, pas une simple habitude d'écriture : c'est l'équivalent PHP de [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) en C++ moderne ou de [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) en Python : la fonction peut renvoyer ce type précis, OU `null`, rien d'autre.
+> **Note :** `?array` est une déclaration de contrat, pas une simple habitude d'écriture : c'est l'équivalent PHP de [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) en [C++](/?c=langages-de-programmation&s=cpp&p=cpp) moderne ou de [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) en [Python](/?c=langages-de-programmation&s=python&p=python) : la fonction peut renvoyer ce type précis, OU `null`, rien d'autre.
 
 ## Supprimer un warning attendu avec `@`
 
-Beaucoup de fonctions natives de PHP renvoient `false` en cas d'échec plutôt que de lever une exception (un style proche du C, où `fopen()` renvoie un pointeur nul et positionne `errno`). Quand cet échec est déjà prévu et géré par la suite du code, l'opérateur `@` placé devant l'appel supprime le warning que PHP émettrait sinon :
+Beaucoup de fonctions natives de PHP renvoient `false` en cas d'échec plutôt que de lever une exception (un style proche du [C](/?c=langages-de-programmation&s=c&p=c), où `fopen()` renvoie un pointeur nul et positionne `errno`). Quand cet échec est déjà prévu et géré par la suite du code, l'opérateur `@` placé devant l'appel supprime le warning que PHP émettrait sinon :
 
 ```php
 <?php

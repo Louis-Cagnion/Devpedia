@@ -8,7 +8,7 @@ order: 1
 
 Une **regex** (expression régulière, *regular expression*) est un mini-langage qui décrit un **motif** (pattern) de caractères. Ce motif sert à rechercher, valider ou extraire des portions de texte qui correspondent à une structure donnée.
 
-Ce n'est **pas** un langage de programmation : pas de variables, pas de boucles, pas de fonctions. Une regex a besoin d'être interprétée par un **moteur regex**, intégré au langage que tu utilises (JavaScript, Python, etc.), via des méthodes comme `.test()` ou `.match()`.
+Ce n'est **pas** un langage de programmation : pas de variables, pas de boucles, pas de fonctions. Une regex a besoin d'être interprétée par un **moteur regex**, intégré au langage que tu utilises ([JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), [Python](/?c=langages-de-programmation&s=python&p=python), etc.), via des méthodes comme `.test()` ou `.match()`.
 
 ## Les bases de la syntaxe
 
@@ -82,7 +82,7 @@ Elles vérifient ce qu'il y a autour d'une position, **sans consommer** ces cara
 
 ## Les flags (options globales)
 
-Les flags se placent après le dernier `/` de la regex en JavaScript :
+Les flags se placent après le dernier `/` de la regex en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) :
 
 ```javascript
 /motif/flags

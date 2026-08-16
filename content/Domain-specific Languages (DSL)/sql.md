@@ -59,7 +59,7 @@ LEFT JOIN ventes v ON v.client_id = c.id; -- garde TOUTES les lignes de gauche, 
 
 ## Piloter SQL depuis PHP avec PDO
 
-PDO (*PHP Data Objects*) est l'interface native de PHP pour dialoguer avec une base de données, quel que soit son moteur.
+PDO (*[PHP](/?c=langages-de-programmation&s=php&p=php) Data Objects*) est l'interface native de [PHP](/?c=langages-de-programmation&s=php&p=php) pour dialoguer avec une base de données, quel que soit son moteur.
 
 ```php
 <?php
@@ -86,7 +86,7 @@ $sql = "SELECT * FROM clients WHERE ville = '" . $_GET['ville'] . "'";
 ?>
 ```
 
-Si `$_GET['ville']` contenait `Lyon' OR '1'='1`, la requête deviendrait une condition toujours vraie, renvoyant toutes les lignes de la table. Équivalent conceptuel d'un [dépassement de tampon](/?c=langages-de-programmation&s=c&p=memoire) en C : une entrée non contrôlée qui modifie la **structure** de la commande, au lieu de rester une simple donnée.
+Si `$_GET['ville']` contenait `Lyon' OR '1'='1`, la requête deviendrait une condition toujours vraie, renvoyant toutes les lignes de la table. Équivalent conceptuel d'un [dépassement de tampon](/?c=langages-de-programmation&s=c&p=memoire) en [C](/?c=langages-de-programmation&s=c&p=c) : une entrée non contrôlée qui modifie la **structure** de la commande, au lieu de rester une simple donnée.
 
 Les espaces réservés nommés (`:ville`) empêchent ça structurellement : la valeur passée à `execute()` est **toujours** traitée comme une donnée pure par le driver, jamais réinterprétée comme du SQL, quoi qu'elle contienne.
 

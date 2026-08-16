@@ -4,7 +4,7 @@ order: 5
 
 # Les conditions
 
-Contrairement à Bash, où une condition passe par le code de sortie d'une commande de test (`[`, `[[`), PowerShell a de vrais **opérateurs de comparaison intégrés au langage**, comme en [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou en [C](/?c=langages-de-programmation&s=c&p=conditions).
+Contrairement à [Bash](/?c=shells&s=bash&p=bash), où une condition passe par le code de sortie d'une commande de test (`[`, `[[`), PowerShell a de vrais **opérateurs de comparaison intégrés au langage**, comme en [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou en [C](/?c=langages-de-programmation&s=c&p=conditions).
 
 ## `if` / `elseif` / `else`
 
@@ -18,12 +18,12 @@ if ($age -ge 18) {
 }
 ```
 
-- Les blocs sont délimités par des accolades `{ }`, comme en C/PHP/JavaScript, pas par des mots-clés de fermeture (`fi`).
-- La condition entre parenthèses est une véritable expression booléenne, pas l'appel d'une commande externe comme le `[` de Bash.
+- Les blocs sont délimités par des accolades `{ }`, comme en [C](/?c=langages-de-programmation&s=c&p=c)/[PHP](/?c=langages-de-programmation&s=php&p=php)/[JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), pas par des mots-clés de fermeture (`fi`).
+- La condition entre parenthèses est une véritable expression booléenne, pas l'appel d'une commande externe comme le `[` de [Bash](/?c=shells&s=bash&p=bash).
 
 ## Les opérateurs de comparaison
 
-Contrairement à Bash, un seul jeu d'opérateurs sert aussi bien pour les nombres que pour les chaînes : pas de distinction `-eq`/`==` selon le type comparé :
+Contrairement à [Bash](/?c=shells&s=bash&p=bash), un seul jeu d'opérateurs sert aussi bien pour les nombres que pour les chaînes : pas de distinction `-eq`/`==` selon le type comparé :
 
 ```powershell
 if ($age -eq 18) { Write-Output "Exactement 18" }
@@ -38,7 +38,7 @@ if ($age -eq 18) { Write-Output "Exactement 18" }
 | `-gt` | Supérieur |
 | `-ge` | Supérieur ou égal |
 
-> **Note :** ces opérateurs restent des mots-clés PowerShell (`-eq`, pas `==`) même si la syntaxe rappelle les drapeaux Bash : `==` n'existe pas comme opérateur de comparaison en PowerShell.
+> **Note :** ces opérateurs restent des mots-clés PowerShell (`-eq`, pas `==`) même si la syntaxe rappelle les drapeaux [Bash](/?c=shells&s=bash&p=bash) : `==` n'existe pas comme opérateur de comparaison en PowerShell.
 
 ## Comparer des chaînes
 
@@ -74,7 +74,7 @@ if (Test-Path "C:\var\www" -PathType Container) {
 }
 ```
 
-`Test-Path` remplace à lui seul tous les tests de fichiers de Bash (`-f`, `-d`, `-e`) : `-PathType Leaf` pour un fichier, `-PathType Container` pour un dossier, aucun argument pour "existe, peu importe le type".
+`Test-Path` remplace à lui seul tous les tests de fichiers de [Bash](/?c=shells&s=bash&p=bash) (`-f`, `-d`, `-e`) : `-PathType Leaf` pour un fichier, `-PathType Container` pour un dossier, aucun argument pour "existe, peu importe le type".
 
 ## Combiner des conditions
 
@@ -84,7 +84,7 @@ if ((Test-Path "config.txt") -and (Get-Item "config.txt").Length -gt 0) {
 }
 ```
 
-`-and`/`-or`/`-not` remplacent respectivement `&&`/`||`/`!` de Bash : les opérateurs symboliques n'existent pas pour la logique booléenne en PowerShell.
+`-and`/`-or`/`-not` remplacent respectivement `&&`/`||`/`!` de [Bash](/?c=shells&s=bash&p=bash) : les opérateurs symboliques n'existent pas pour la logique booléenne en PowerShell.
 
 ## Le `switch` (équivalent du `case` de Bash)
 
@@ -98,7 +98,7 @@ switch ($jour) {
 }
 ```
 
-`$_` désigne la valeur testée (celle passée entre parenthèses à `switch`), `-in` teste son appartenance à une liste, et `default` capture tout le reste : équivalent du `*)` final d'un `case` Bash.
+`$_` désigne la valeur testée (celle passée entre parenthèses à `switch`), `-in` teste son appartenance à une liste, et `default` capture tout le reste : équivalent du `*)` final d'un `case` [Bash](/?c=shells&s=bash&p=bash).
 
 ---
 
@@ -106,7 +106,7 @@ switch ($jour) {
 
 | | |
 |---|---|
-| **À retenir** | PowerShell a de vrais opérateurs de comparaison intégrés au langage (`-eq`, `-lt`...), contrairement à Bash qui s'appuie sur des commandes de test. Un seul jeu d'opérateurs sert pour les nombres et les chaînes. |
-| **Outils utilisables** | `Test-Path` (remplace `-f`/`-d`/`-e` de Bash), `-and`/`-or`/`-not`, `-like`/`-match`. |
+| **À retenir** | PowerShell a de vrais opérateurs de comparaison intégrés au langage (`-eq`, `-lt`...), contrairement à [Bash](/?c=shells&s=bash&p=bash) qui s'appuie sur des commandes de test. Un seul jeu d'opérateurs sert pour les nombres et les chaînes. |
+| **Outils utilisables** | `Test-Path` (remplace `-f`/`-d`/`-e` de [Bash](/?c=shells&s=bash&p=bash)), `-and`/`-or`/`-not`, `-like`/`-match`. |
 | **Pièges à éviter** | Oublier que `-eq` sur des chaînes est insensible à la casse par défaut : `-ceq` force la sensibilité à la casse. |
 | **Bonnes pratiques** | Utiliser `Test-Path -PathType Leaf/Container` pour distinguer explicitement un fichier d'un dossier. |

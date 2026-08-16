@@ -26,7 +26,7 @@ Le modèle ne peut pas exécuter cette fonction lui-même ; il ne fait que **dé
 { "appel": "obtenir_meteo", "arguments": { "ville": "Montpellier" } }
 ```
 
-C'est le code qui entoure le modèle qui reçoit cette décision, exécute réellement la fonction (Python, l'appel [HTTP](/?c=infrastructure&p=api-et-http), la requête SQL...) correspondante, et renvoie son résultat au modèle pour qu'il poursuive.
+C'est le code qui entoure le modèle qui reçoit cette décision, exécute réellement la fonction ([Python](/?c=langages-de-programmation&s=python&p=python), l'appel [HTTP](/?c=infrastructure&p=api-et-http), la requête [SQL](/?c=domain-specific-languages-dsl&p=sql)...) correspondante, et renvoie son résultat au modèle pour qu'il poursuive.
 
 > **Piège :** faire confiance aveuglément aux arguments produits par le modèle avant de les transmettre à la fonction réelle : le modèle ne "sait" jamais vraiment ce qu'une fonction fait au-delà de sa description texte, une description imprécise ou ambiguë produit des appels avec les mauvais arguments aussi sûrement qu'une fonction mal documentée trompe un développeur humain qui ne lirait que sa signature.
 >
@@ -34,7 +34,7 @@ C'est le code qui entoure le modèle qui reçoit cette décision, exécute réel
 
 ## Un paramètre libre plutôt qu'une valeur fixe : d'où vient la variation
 
-Le paramètre `ville` de l'exemple précédent ne prend ses valeurs que dans un ensemble limité et prévisible (des noms de villes). Rien n'oblige un paramètre à être aussi contraint : il peut tout aussi bien être un **texte libre que le modèle rédige lui-même**, comme une commande shell, une requête SQL ou un extrait de code :
+Le paramètre `ville` de l'exemple précédent ne prend ses valeurs que dans un ensemble limité et prévisible (des noms de villes). Rien n'oblige un paramètre à être aussi contraint : il peut tout aussi bien être un **texte libre que le modèle rédige lui-même**, comme une commande shell, une requête [SQL](/?c=domain-specific-languages-dsl&p=sql) ou un extrait de code :
 
 ```json
 {

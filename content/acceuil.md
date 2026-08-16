@@ -13,9 +13,9 @@ Quand un chapitre a besoin d'une notion déjà expliquée ailleurs sur le site, 
 
 ## Ce que couvre le site
 
-- Langages de programmation : C, C++, PHP, Python, JavaScript, OCaml
-- Langages de balisage et interface : HTML, CSS, UI/UX
-- Ligne de commande et versioning : Bash, PowerShell, Zsh, Git
-- Infrastructure, bases de données (SQL), Docker
+- Langages de programmation : C, [C++](/?c=langages-de-programmation&s=cpp&p=cpp), [PHP](/?c=langages-de-programmation&s=php&p=php), [Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), [OCaml](/?c=langages-de-programmation&s=ocaml&p=ocaml)
+- Langages de balisage et interface : [HTML](/?c=langages-de-balisage&s=html&p=html), [CSS](/?c=langages-de-balisage&s=css&p=css), UI/UX
+- Ligne de commande et versioning : [Bash](/?c=shells&s=bash&p=bash), [PowerShell](/?c=shells&s=powershell&p=powershell), [Zsh](/?c=shells&s=zsh&p=zsh), [Git](/?c=git&p=git)
+- Infrastructure, bases de données ([SQL](/?c=domain-specific-languages-dsl&p=sql)), Docker
 - Data Science et Intelligence Artificielle
 - Mathématiques, représentation des données, performance, qualité et architecture du code

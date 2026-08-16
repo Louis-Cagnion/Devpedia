@@ -34,7 +34,7 @@ if (note >= 16) {
 }
 ```
 
-> **Note :** contrairement à PHP, il n'existe pas de syntaxe alternative avec `:`/`endif` en C : les accolades `{ }` sont la seule écriture disponible (facultatives seulement si le bloc ne contient qu'une seule instruction, mais fortement déconseillé de les omettre : source classique de bugs si une ligne est ajoutée par erreur sans les accolades).
+> **Note :** contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php), il n'existe pas de syntaxe alternative avec `:`/`endif` en C : les accolades `{ }` sont la seule écriture disponible (facultatives seulement si le bloc ne contient qu'une seule instruction, mais fortement déconseillé de les omettre : source classique de bugs si une ligne est ajoutée par erreur sans les accolades).
 
 ## L'opérateur ternaire
 

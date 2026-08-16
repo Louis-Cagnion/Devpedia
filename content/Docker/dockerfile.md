@@ -48,7 +48,7 @@ C'est pourquoi une commande qui ne se termine jamais mais ne fait par ailleurs *
 CMD ["nginx", "-g", "daemon off;"]   # nginx reste au premier plan : Docker a un processus à surveiller
 ```
 
-> **Note :** PID 1 a un rôle particulier sous Linux, indépendamment de Docker (cf. chapitre [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash) : le noyau ne lui applique pas l'action par défaut d'un signal comme `SIGTERM` s'il n'a pas explicitement installé son propre gestionnaire : `docker stop` peut donc sembler ne rien faire sur un processus qui ne gère pas ce signal lui-même. C'est aussi PID 1 qui doit récupérer (*reap*) les processus zombies qu'il lance ; un point à surveiller si l'image lance elle-même plusieurs sous-processus.
+> **Note :** PID 1 a un rôle particulier sous Linux, indépendamment de Docker (cf. chapitre [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus), rubrique [Bash](/?c=shells&s=bash&p=bash)) : le noyau ne lui applique pas l'action par défaut d'un signal comme `SIGTERM` s'il n'a pas explicitement installé son propre gestionnaire : `docker stop` peut donc sembler ne rien faire sur un processus qui ne gère pas ce signal lui-même. C'est aussi PID 1 qui doit récupérer (*reap*) les processus zombies qu'il lance ; un point à surveiller si l'image lance elle-même plusieurs sous-processus.
 
 ## Chaque instruction crée une couche, et l'ordre compte
 
@@ -69,7 +69,7 @@ C'est pourquoi les fichiers qui changent le moins souvent (dépendances) sont co
 
 ## Les builds multi-étapes
 
-Un build multi-étapes sépare l'environnement de **compilation** (lourd : compilateur, outils de build) de l'environnement d'**exécution** (léger : seulement le binaire final), le même principe que séparer compilation et édition de liens en C (cf. chapitre [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation)) : le résultat final n'a pas besoin de la chaîne d'outils qui l'a produit.
+Un build multi-étapes sépare l'environnement de **compilation** (lourd : compilateur, outils de build) de l'environnement d'**exécution** (léger : seulement le binaire final), le même principe que séparer compilation et édition de liens en [C](/?c=langages-de-programmation&s=c&p=c) (cf. chapitre [Le processus de compilation](/?c=langages-de-programmation&s=c&p=compilation)) : le résultat final n'a pas besoin de la chaîne d'outils qui l'a produit.
 
 ```dockerfile
 # Étape 1 : compilation, avec toute la toolchain Go

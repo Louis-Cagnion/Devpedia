@@ -38,13 +38,13 @@ C'est ce second point qu'on appelle **SIMD** (*Single Instruction, Multiple Data
 
 ## Pourquoi un tableau NumPy est rapide et une liste Python ne l'est pas
 
-Une liste Python est un tableau de **pointeurs** vers des objets, potentiellement dispersés n'importe où sur le tas et de tailles différentes. Une boucle `for` sur une liste Python doit, à chaque itération : suivre un pointeur (accès mémoire potentiellement hors cache), vérifier le type de l'objet pointé, puis appeler la bonne routine : le tout piloté par l'interpréteur, instruction par instruction.
+Une liste [Python](/?c=langages-de-programmation&s=python&p=python) est un tableau de **pointeurs** vers des objets, potentiellement dispersés n'importe où sur le tas et de tailles différentes. Une boucle `for` sur une liste [Python](/?c=langages-de-programmation&s=python&p=python) doit, à chaque itération : suivre un pointeur (accès mémoire potentiellement hors cache), vérifier le type de l'objet pointé, puis appeler la bonne routine : le tout piloté par l'interpréteur, instruction par instruction.
 
 Un [tableau NumPy](/?c=data-science&p=numpy) (`ndarray`) est un unique bloc de mémoire **contigu**, contenant les valeurs elles-mêmes (pas des pointeurs), toutes du même type et de la même taille. Une opération vectorisée (`a + b`) délègue à une boucle **compilée** qui parcourt ce bloc de façon séquentielle : les lignes de cache sont réutilisées au maximum, et le processeur peut employer des instructions SIMD sur plusieurs éléments à la fois. Même nombre d'opérations arithmétiques, mais un coût marginal par élément très inférieur.
 
 ## Le piège de `dtype=object` : contigu ne veut pas dire uniforme
 
-Un tableau NumPy créé avec des types hétérogènes (ex. un mélange d'entiers et de chaînes) se rabat sur `dtype=object` : le tableau reste bien un bloc **contigu**... de pointeurs vers des objets Python potentiellement dispersés, de types différents. Chaque accès redevient un suivi de pointeur suivi d'une vérification de type par élément : le coût marginal explose et redevient comparable à celui d'une liste Python, malgré la contiguïté du tableau lui-même.
+Un tableau NumPy créé avec des types hétérogènes (ex. un mélange d'entiers et de chaînes) se rabat sur `dtype=object` : le tableau reste bien un bloc **contigu**... de pointeurs vers des objets [Python](/?c=langages-de-programmation&s=python&p=python) potentiellement dispersés, de types différents. Chaque accès redevient un suivi de pointeur suivi d'une vérification de type par élément : le coût marginal explose et redevient comparable à celui d'une liste [Python](/?c=langages-de-programmation&s=python&p=python), malgré la contiguïté du tableau lui-même.
 
 La contiguïté de la mémoire est nécessaire pour profiter du cache et de SIMD, mais **pas suffisante** : il faut aussi que les éléments soient de taille et de type uniformes, pour que le processeur puisse les traiter en bloc sans revérifier chacun individuellement.
 

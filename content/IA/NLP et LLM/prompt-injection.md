@@ -80,7 +80,7 @@ Aucune parade connue n'élimine le risque à 100 % : un modèle qui doit rester 
 
 > **Piège :** croire qu'une seule de ces défenses ("on a mis un filtre de mots-clés") règle le problème. Une injection qui reformule, traduit dans une autre langue, ou encode son instruction (base64, texte inversé) passe souvent au travers d'un filtre construit sur des motifs littéraux.
 >
-> **Bonne pratique :** empiler plusieurs défenses indépendantes (délimitation + filtrage + privilège minimal + confirmation humaine) plutôt que de miser sur une seule, exactement la même logique de défense en profondeur qu'ailleurs en sécurité informatique (voir le principe du moindre privilège en SQL, qui protège même quand une injection SQL a quand même lieu).
+> **Bonne pratique :** empiler plusieurs défenses indépendantes (délimitation + filtrage + privilège minimal + confirmation humaine) plutôt que de miser sur une seule, exactement la même logique de défense en profondeur qu'ailleurs en sécurité informatique (voir le principe du moindre privilège en [SQL](/?c=domain-specific-languages-dsl&p=sql), qui protège même quand une injection [SQL](/?c=domain-specific-languages-dsl&p=sql) a quand même lieu).
 
 ## Ce qu'il faut retenir
 

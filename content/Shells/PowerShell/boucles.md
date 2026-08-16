@@ -4,7 +4,7 @@ order: 6
 
 # Les boucles
 
-PowerShell propose les mêmes structures de base que Bash (`for`, `while`, jusqu'à une condition), plus une boucle `foreach` dédiée au parcours d'objets, la plus utilisée en pratique, puisque presque tout en PowerShell est une collection d'objets plutôt que du texte brut.
+PowerShell propose les mêmes structures de base que [Bash](/?c=shells&s=bash&p=bash) (`for`, `while`, jusqu'à une condition), plus une boucle `foreach` dédiée au parcours d'objets, la plus utilisée en pratique, puisque presque tout en PowerShell est une collection d'objets plutôt que du texte brut.
 
 ## La boucle `foreach` (parcours de collection)
 
@@ -71,7 +71,7 @@ Get-Content "fichier.txt" | ForEach-Object {
 }
 ```
 
-Contrairement à Bash (`while read -r ligne`), lire un fichier ligne par ligne passe naturellement par le pipeline : `Get-Content` produit une collection de lignes, `ForEach-Object` (ou `foreach`) la parcourt : pas de redirection d'entrée standard nécessaire.
+Contrairement à [Bash](/?c=shells&s=bash&p=bash) (`while read -r ligne`), lire un fichier ligne par ligne passe naturellement par le pipeline : `Get-Content` produit une collection de lignes, `ForEach-Object` (ou `foreach`) la parcourt : pas de redirection d'entrée standard nécessaire.
 
 ## La boucle `do`/`while` et `do`/`until`
 
@@ -95,7 +95,7 @@ do {
 } until ($i -ge 5)
 ```
 
-`do {...} until (...)` est l'équivalent PowerShell direct du `until` de Bash (bloc répété tant que la condition reste fausse), la seule différence étant la garantie d'au moins un passage, absente du `while`/`until` de Bash.
+`do {...} until (...)` est l'équivalent PowerShell direct du `until` de [Bash](/?c=shells&s=bash&p=bash) (bloc répété tant que la condition reste fausse), la seule différence étant la garantie d'au moins un passage, absente du `while`/`until` de [Bash](/?c=shells&s=bash&p=bash).
 
 ## `break` et `continue`
 

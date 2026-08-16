@@ -26,7 +26,7 @@ Les cookies servent typiquement à :
 - La valeur à stocker
 - La date d'expiration (en timestamp Unix, `time()` renvoie l'heure actuelle, donc `time() + 3600` veut dire "dans 1h")
 
-> **Note importante :** `setcookie()` doit être appelée **avant** tout affichage HTML (avant la moindre balise, espace ou retour à la ligne), car elle modifie les en-têtes (*headers*) HTTP de la réponse. C'est la même logique que pour la balise fermante `?>` évoquée plus haut.
+> **Note importante :** `setcookie()` doit être appelée **avant** tout affichage [HTML](/?c=langages-de-balisage&s=html&p=html) (avant la moindre balise, espace ou retour à la ligne), car elle modifie les en-têtes (*headers*) HTTP de la réponse. C'est la même logique que pour la balise fermante `?>` évoquée plus haut.
 
 ### Lire un cookie
 Une fois créé, un cookie est accessible via la variable globale `$_COOKIE` :
@@ -75,7 +75,7 @@ Pour supprimer un cookie, on le recrée avec une date d'expiration **dans le pas
 ```
 
 - `secure` : le cookie n'est transmis que si la connexion est en HTTPS.
-- `httponly` : empêche JavaScript (`document.cookie`) d'accéder au cookie, ce qui limite les dégâts en cas de faille XSS.
+- `httponly` : empêche [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`document.cookie`) d'accéder au cookie, ce qui limite les dégâts en cas de faille XSS.
 - `samesite` : empêche le cookie d'être envoyé lors d'une requête provenant d'un autre site, ce qui protège contre les attaques CSRF.
 
 > **Note :** ne stockez jamais d'informations sensibles (mot de passe, numéro de carte bancaire...) dans un cookie, même sécurisé. Un cookie reste manipulable par l'utilisateur lui-même. Pour des données sensibles côté serveur, préférez les **sessions** (`$_SESSION`).
@@ -202,7 +202,7 @@ Erreur fréquente : croire que `$_SESSION` est stocké dans le cookie du navigat
 
 ### Le risque du vol de session
 
-Si un attaquant devinait ou volait l'identifiant d'une session déjà ouverte, il en hériterait le contenu, mais il ne peut pas *choisir* la cible : l'identifiant est généré par un CSPRNG (générateur aléatoire cryptographiquement sûr) avec une entropie énorme, comparable à un mot de passe de plusieurs centaines de bits. `session_set_cookie_params(['httponly' => true])` ajoute une protection complémentaire : elle empêche le JavaScript de la page de lire ce cookie, ce qui limite les dégâts en cas de faille XSS.
+Si un attaquant devinait ou volait l'identifiant d'une session déjà ouverte, il en hériterait le contenu, mais il ne peut pas *choisir* la cible : l'identifiant est généré par un CSPRNG (générateur aléatoire cryptographiquement sûr) avec une entropie énorme, comparable à un mot de passe de plusieurs centaines de bits. `session_set_cookie_params(['httponly' => true])` ajoute une protection complémentaire : elle empêche le [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) de la page de lire ce cookie, ce qui limite les dégâts en cas de faille XSS.
 
 ### Pourquoi ne pas simplement dériver l'identifiant par hash d'une donnée connue ?
 

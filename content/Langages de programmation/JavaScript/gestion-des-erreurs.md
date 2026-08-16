@@ -4,7 +4,7 @@ order: 10
 
 # La gestion des erreurs
 
-JavaScript signale une erreur en levant une **exception** (`throw`), interceptable avec `try`/`catch`, un mécanisme proche de celui de PHP ou Python.
+JavaScript signale une erreur en levant une **exception** (`throw`), interceptable avec `try`/`catch`, un mécanisme proche de celui de [PHP](/?c=langages-de-programmation&s=php&p=php) ou [Python](/?c=langages-de-programmation&s=python&p=python).
 
 ## `try` / `catch` / `finally`
 

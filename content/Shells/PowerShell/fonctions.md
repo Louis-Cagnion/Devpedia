@@ -4,7 +4,7 @@ order: 7
 
 # Les fonctions
 
-Contrairement à Bash, où une fonction reçoit ses arguments exactement comme un script (`$1`, `$2`, sans nom), une fonction PowerShell déclare de vrais **paramètres nommés et typés** via `param()`, comme en [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou en [C](/?c=langages-de-programmation&s=c&p=conditions).
+Contrairement à [Bash](/?c=shells&s=bash&p=bash), où une fonction reçoit ses arguments exactement comme un script (`$1`, `$2`, sans nom), une fonction PowerShell déclare de vrais **paramètres nommés et typés** via `param()`, comme en [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou en [C](/?c=langages-de-programmation&s=c&p=conditions).
 
 ## Déclarer et appeler une fonction
 
@@ -36,11 +36,11 @@ function Resumer {
 Resumer -Nom "Dupont" -Prenom "Jean"
 ```
 
-> **Note :** contrairement à Bash où `$1`, `$2` sont purement positionnels, l'appel `-Nom "Dupont" -Prenom "Jean"` reste correct même dans le désordre (`-Prenom "Jean" -Nom "Dupont"`) : les paramètres sont associés par leur nom, pas par leur position, ce qui explique pourquoi la casse `Verb-Nom` insiste autant sur des noms de paramètres clairs.
+> **Note :** contrairement à [Bash](/?c=shells&s=bash&p=bash) où `$1`, `$2` sont purement positionnels, l'appel `-Nom "Dupont" -Prenom "Jean"` reste correct même dans le désordre (`-Prenom "Jean" -Nom "Dupont"`) : les paramètres sont associés par leur nom, pas par leur position, ce qui explique pourquoi la casse `Verb-Nom` insiste autant sur des noms de paramètres clairs.
 
 ## De vraies valeurs de retour
 
-Contrairement à Bash, où `return` ne fixe qu'un code de sortie (0-255), `return` en PowerShell peut renvoyer une **vraie valeur** de n'importe quel type :
+Contrairement à [Bash](/?c=shells&s=bash&p=bash), où `return` ne fixe qu'un code de sortie (0-255), `return` en PowerShell peut renvoyer une **vraie valeur** de n'importe quel type :
 
 ```powershell
 function EstPair {
@@ -55,7 +55,7 @@ if (EstPair -Nombre 4) {
 
 ## "Renvoyer" une donnée : la sortie non capturée du pipeline
 
-En pratique, `return` est même optionnel : **toute sortie non assignée** dans le corps d'une fonction devient sa valeur de retour, exactement comme la dernière expression évaluée d'un bloc ; une différence importante avec Bash, où `echo` sert uniquement à afficher, jamais à "retourner" au sens strict :
+En pratique, `return` est même optionnel : **toute sortie non assignée** dans le corps d'une fonction devient sa valeur de retour, exactement comme la dernière expression évaluée d'un bloc ; une différence importante avec [Bash](/?c=shells&s=bash&p=bash), où `echo` sert uniquement à afficher, jamais à "retourner" au sens strict :
 
 ```powershell
 function Addition {
@@ -67,11 +67,11 @@ $resultat = Addition -A 4 -B 6
 Write-Output "Résultat : $resultat"   # Résultat : 10
 ```
 
-> **Note :** contrairement à Bash où `echo` à l'intérieur d'une fonction sert *uniquement* à afficher (la capture via `$(...)` est une convention côté appelant, pas un vrai mécanisme de retour), toute ligne PowerShell dont le résultat n'est ni assigné ni supprimé (avec `[void]` ou `Out-Null`) s'ajoute à la valeur de retour de la fonction : un `Write-Output` de débogage oublié dans une fonction peut ainsi polluer silencieusement ce qu'elle renvoie.
+> **Note :** contrairement à [Bash](/?c=shells&s=bash&p=bash) où `echo` à l'intérieur d'une fonction sert *uniquement* à afficher (la capture via `$(...)` est une convention côté appelant, pas un vrai mécanisme de retour), toute ligne PowerShell dont le résultat n'est ni assigné ni supprimé (avec `[void]` ou `Out-Null`) s'ajoute à la valeur de retour de la fonction : un `Write-Output` de débogage oublié dans une fonction peut ainsi polluer silencieusement ce qu'elle renvoie.
 
 ## Portée des variables
 
-Contrairement à Bash (variable globale par défaut sauf `local`), une variable assignée dans une fonction PowerShell reste locale à cette fonction par défaut :
+Contrairement à [Bash](/?c=shells&s=bash&p=bash) (variable globale par défaut sauf `local`), une variable assignée dans une fonction PowerShell reste locale à cette fonction par défaut :
 
 ```powershell
 function Calculer {
@@ -89,7 +89,7 @@ Voir aussi [Les variables](/?c=shells&s=powershell&p=variables) (portée `$scrip
 
 | | |
 |---|---|
-| **À retenir** | Une fonction PowerShell déclare de vrais paramètres nommés et typés via `param()`. `return` (ou même la simple sortie non assignée) peut renvoyer une vraie valeur de n'importe quel type, contrairement au code de sortie limité de Bash. |
+| **À retenir** | Une fonction PowerShell déclare de vrais paramètres nommés et typés via `param()`. `return` (ou même la simple sortie non assignée) peut renvoyer une vraie valeur de n'importe quel type, contrairement au code de sortie limité de [Bash](/?c=shells&s=bash&p=bash). |
 | **Outils utilisables** | `param()`, `$args` pour les arguments non déclarés, portée `$script:`. |
 | **Pièges à éviter** | Un `Write-Output` de débogage oublié dans une fonction s'ajoute silencieusement à sa valeur de retour. |
 | **Bonnes pratiques** | Utiliser `[void]`/`Out-Null` pour supprimer explicitement une sortie qui ne doit pas faire partie de la valeur de retour. |

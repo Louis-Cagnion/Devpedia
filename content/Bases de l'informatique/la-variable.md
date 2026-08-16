@@ -37,7 +37,7 @@ Toute valeur a un **type**, qui détermine ce qu'on peut en faire (additionner d
 >
 > **Bonne pratique :** convertir explicitement une valeur vers le type voulu avant une opération qui mélange les types, plutôt que de compter sur une conversion automatique dont le comportement exact n'est pas garanti d'un langage à l'autre.
 
-La syntaxe exacte pour créer une variable change d'un langage à l'autre (le symbole `=` n'est pas toujours suffisant, certains langages exigent de préciser le type à l'avance) ; chaque chapitre de langage sur ce site (Python, C, PHP...) couvre sa propre syntaxe en détail.
+La syntaxe exacte pour créer une variable change d'un langage à l'autre (le symbole `=` n'est pas toujours suffisant, certains langages exigent de préciser le type à l'avance) ; chaque chapitre de langage sur ce site ([Python](/?c=langages-de-programmation&s=python&p=python), C, [PHP](/?c=langages-de-programmation&s=php&p=php)...) couvre sa propre syntaxe en détail.
 
 ---
 

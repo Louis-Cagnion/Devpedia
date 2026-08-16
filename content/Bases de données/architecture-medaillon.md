@@ -103,6 +103,6 @@ Rien n'empêche techniquement un outil de reporting de se connecter directement 
 | | |
 |---|---|
 | **À retenir** | L'architecture médaillon découpe un pipeline de données en trois copies successives : bronze (brute, intacte), argent (nettoyée, schéma stable), or (agrégée pour un besoin métier précis, souvent modélisée en [étoile](/?c=bases-de-donnees&p=modeles-en-etoile)). |
-| **Outils utilisables** | Requêtes SQL de transformation (`INSERT ... SELECT`, dédoublonnage par `ROW_NUMBER()`, agrégation par `GROUP BY`) pour faire passer une table d'une couche à la suivante. |
+| **Outils utilisables** | Requêtes [SQL](/?c=domain-specific-languages-dsl&p=sql) de transformation (`INSERT ... SELECT`, dédoublonnage par `ROW_NUMBER()`, agrégation par `GROUP BY`) pour faire passer une table d'une couche à la suivante. |
 | **Pièges à éviter** | Corriger ou filtrer dès la bronze ; appliquer une règle de nettoyage non documentée ; créer une table or par tableau de bord ; brancher un outil de reporting directement sur la bronze ou l'argent. |
 | **Bonnes pratiques** | Bronze en ajout seul ; règles de nettoyage traçables ; tables or pensées par besoin métier réutilisable ; l'or comme unique point d'entrée pour les consommateurs externes au pipeline. |

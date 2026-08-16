@@ -19,7 +19,7 @@ docker run -d --name serveur -p 8080:80 mon-app:1.0
 
 | Option | Effet |
 |---|---|
-| `-d` | Détaché (*detached*) : le conteneur tourne en arrière-plan, le terminal reste disponible, même principe que `&` en Bash |
+| `-d` | Détaché (*detached*) : le conteneur tourne en arrière-plan, le terminal reste disponible, même principe que `&` en [Bash](/?c=shells&s=bash&p=bash) |
 | `--name` | Donne un nom explicite au conteneur, plutôt qu'un identifiant généré aléatoirement |
 | `-p 8080:80` | Publie le port : le port `80` du conteneur devient accessible sur le port `8080` de l'hôte (voir [Volumes et réseaux](/?c=docker&p=volumes-et-reseaux)) |
 | `-it` | Interactif + pseudo-terminal (*tty*) : nécessaire pour un conteneur avec lequel on veut interagir directement (ex. un shell) |
@@ -35,7 +35,7 @@ docker logs serveur     # sortie standard/erreur du conteneur "serveur"
 docker logs -f serveur  # suit les logs en direct (equivalent de `tail -f`)
 ```
 
-Un conteneur n'est, du point de vue du système hôte, qu'un processus parmi d'autres : `docker ps` est l'équivalent de `ps aux` filtré sur les processus lancés par Docker (cf. chapitre [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash).
+Un conteneur n'est, du point de vue du système hôte, qu'un processus parmi d'autres : `docker ps` est l'équivalent de `ps aux` filtré sur les processus lancés par Docker (cf. chapitre [La gestion des processus](/?c=shells&s=bash&p=gestion-des-processus), rubrique [Bash](/?c=shells&s=bash&p=bash)).
 
 ## Entrer dans un conteneur en cours d'exécution
 

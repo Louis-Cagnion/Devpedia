@@ -4,7 +4,7 @@ order: 3
 
 # Les boucles
 
-Python propose `for` et `while`, mais la boucle `for` fonctionne différemment de PHP/C/JS : elle parcourt toujours directement les éléments d'un itérable, jamais un compteur numérique manipulé manuellement.
+Python propose `for` et `while`, mais la boucle `for` fonctionne différemment de [PHP](/?c=langages-de-programmation&s=php&p=php)/C/JS : elle parcourt toujours directement les éléments d'un itérable, jamais un compteur numérique manipulé manuellement.
 
 ## La boucle `for`
 
@@ -89,7 +89,7 @@ else:
 
 ## Pas d'accès direct à l'index dans un `for`
 
-Contrairement à une boucle `for` en C (`for (int i = 0; i < taille; i++)`), la boucle Python ne manipule jamais explicitement un index ; `enumerate()` est le moyen idiomatique d'en obtenir un quand c'est nécessaire, plutôt que d'itérer sur `range(len(liste))` puis d'indexer manuellement.
+Contrairement à une boucle `for` en [C](/?c=langages-de-programmation&s=c&p=c) (`for (int i = 0; i < taille; i++)`), la boucle Python ne manipule jamais explicitement un index ; `enumerate()` est le moyen idiomatique d'en obtenir un quand c'est nécessaire, plutôt que d'itérer sur `range(len(liste))` puis d'indexer manuellement.
 
 ---
 

@@ -4,7 +4,7 @@ order: 4
 
 # La complétion avancée
 
-Bash complète les noms de fichiers et, pour certaines commandes, propose une liste à plat via la touche Tab. Le système de complétion de zsh (`compsys`) est un moteur à part entière, sensible au **contexte** : il sait qu'après `git checkout`, il doit proposer des noms de branches, et qu'après `kill`, des PID de processus en cours, pas seulement des noms de fichiers.
+[Bash](/?c=shells&s=bash&p=bash) complète les noms de fichiers et, pour certaines commandes, propose une liste à plat via la touche Tab. Le système de complétion de zsh (`compsys`) est un moteur à part entière, sensible au **contexte** : il sait qu'après `git checkout`, il doit proposer des noms de branches, et qu'après `kill`, des PID de processus en cours, pas seulement des noms de fichiers.
 
 ## Activer le système de complétion
 
@@ -13,7 +13,7 @@ autoload -Uz compinit
 compinit
 ```
 
-Ces deux lignes, placées dans `~/.zshrc` (voir [Les fichiers de démarrage](/?c=shells&s=zsh&p=fichiers-de-demarrage)), chargent `compsys`. Sans elles, zsh se limite à une complétion basique proche de celle de Bash.
+Ces deux lignes, placées dans `~/.zshrc` (voir [Les fichiers de démarrage](/?c=shells&s=zsh&p=fichiers-de-demarrage)), chargent `compsys`. Sans elles, zsh se limite à une complétion basique proche de celle de [Bash](/?c=shells&s=bash&p=bash).
 
 > **Note :** `compinit` reconstruit un cache de définitions de complétion à chaque lancement, ce qui peut ralentir perceptiblement l'ouverture d'un nouveau terminal ; d'où l'usage courant de `compinit -C` (sans revérification du cache) une fois la configuration stabilisée, ou d'un appel conditionné à la date du cache.
 
@@ -43,11 +43,11 @@ Une fois cette ligne ajoutée à `~/.zshrc`, appuyer sur Tab avec plusieurs rés
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 ```
 
-Permet de taper `desk<Tab>` et de compléter vers `Desktop` malgré la majuscule, utile notamment sous macOS/Windows où la casse des noms de fichiers est moins strictement respectée qu'en Bash sous Linux.
+Permet de taper `desk<Tab>` et de compléter vers `Desktop` malgré la majuscule, utile notamment sous macOS/Windows où la casse des noms de fichiers est moins strictement respectée qu'en [Bash](/?c=shells&s=bash&p=bash) sous Linux.
 
 ## `zstyle` : le mécanisme de configuration derrière tout ça
 
-Les exemples ci-dessus utilisent `zstyle`, la commande générique de configuration de `compsys` : chaque règle associe un contexte (`':completion:*'` = partout) à un comportement. C'est un mécanisme propre à zsh, sans équivalent direct en Bash, dont la complétion n'expose pas ce niveau de personnalisation.
+Les exemples ci-dessus utilisent `zstyle`, la commande générique de configuration de `compsys` : chaque règle associe un contexte (`':completion:*'` = partout) à un comportement. C'est un mécanisme propre à zsh, sans équivalent direct en [Bash](/?c=shells&s=bash&p=bash), dont la complétion n'expose pas ce niveau de personnalisation.
 
 ---
 

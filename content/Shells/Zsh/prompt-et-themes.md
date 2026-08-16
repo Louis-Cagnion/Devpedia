@@ -4,7 +4,7 @@ order: 5
 
 # Personnaliser le prompt
 
-Bash construit son invite via la variable `PS1`, avec des codes d'échappement commençant par `\` (`\u`, `\h`, `\w`...). Zsh utilise sa propre variable, `PROMPT` (alias historique : `PS1`, toujours accepté), avec des codes d'échappement commençant par `%` : une syntaxe entièrement différente, pas juste un renommage.
+[Bash](/?c=shells&s=bash&p=bash) construit son invite via la variable `PS1`, avec des codes d'échappement commençant par `\` (`\u`, `\h`, `\w`...). Zsh utilise sa propre variable, `PROMPT` (alias historique : `PS1`, toujours accepté), avec des codes d'échappement commençant par `%` : une syntaxe entièrement différente, pas juste un renommage.
 
 ## La variable `PROMPT`
 
@@ -16,12 +16,12 @@ PROMPT='%n@%m %~ %# '
 |---|---|
 | `%n` | Nom de l'utilisateur courant |
 | `%m` | Nom de la machine (court) |
-| `%~` | Dossier courant, avec `~` si sous le dossier personnel (équivalent de `\w` en Bash) |
-| `%#` | `#` si root, `%` sinon (équivalent de `\$` en Bash) |
+| `%~` | Dossier courant, avec `~` si sous le dossier personnel (équivalent de `\w` en [Bash](/?c=shells&s=bash&p=bash)) |
+| `%#` | `#` si root, `%` sinon (équivalent de `\$` en [Bash](/?c=shells&s=bash&p=bash)) |
 | `%*` | Heure courante (HH:MM:SS) |
 | `%D` | Date courante |
 
-> **Note :** contrairement au `\w` de Bash qui abrège déjà automatiquement le chemin par `~`, zsh distingue explicitement `%~` (abrégé) de `%/` (chemin complet, jamais abrégé), un choix explicite à faire selon le comportement voulu.
+> **Note :** contrairement au `\w` de [Bash](/?c=shells&s=bash&p=bash) qui abrège déjà automatiquement le chemin par `~`, zsh distingue explicitement `%~` (abrégé) de `%/` (chemin complet, jamais abrégé), un choix explicite à faire selon le comportement voulu.
 
 ## Coloration du prompt
 
@@ -33,7 +33,7 @@ PROMPT='%F{green}%n@%m%f %F{blue}%~%f %# '
 
 ## `RPROMPT` : une invite secondaire à droite de l'écran
 
-Sans équivalent en Bash : zsh peut afficher une seconde invite, alignée sur le bord droit du terminal, qui disparaît automatiquement dès qu'on commence à taper :
+Sans équivalent en [Bash](/?c=shells&s=bash&p=bash) : zsh peut afficher une seconde invite, alignée sur le bord droit du terminal, qui disparaît automatiquement dès qu'on commence à taper :
 
 ```bash
 RPROMPT='%D{%H:%M:%S}'
@@ -42,7 +42,7 @@ RPROMPT='%D{%H:%M:%S}'
 
 ## `vcs_info` : informations Git intégrées au prompt
 
-Zsh fournit nativement une fonction capable d'afficher la branche Git courante dans le prompt, sans dépendance externe :
+Zsh fournit nativement une fonction capable d'afficher la branche [Git](/?c=git&p=git) courante dans le prompt, sans dépendance externe :
 
 ```bash
 autoload -Uz vcs_info
@@ -61,7 +61,7 @@ PROMPT='%n@%m %~ ${vcs_info_msg_0_} %# '
 
 | | |
 |---|---|
-| **À retenir** | Zsh construit son prompt via `PROMPT` (codes `%`), pas `PS1`/`\` comme Bash. `RPROMPT` affiche une invite secondaire à droite, sans équivalent Bash. |
-| **Outils utilisables** | `%n`/`%m`/`%~`/`%#`, `%F{couleur}`/`%f`, `vcs_info` pour la branche Git. |
+| **À retenir** | Zsh construit son prompt via `PROMPT` (codes `%`), pas `PS1`/`\` comme [Bash](/?c=shells&s=bash&p=bash). `RPROMPT` affiche une invite secondaire à droite, sans équivalent [Bash](/?c=shells&s=bash&p=bash). |
+| **Outils utilisables** | `%n`/`%m`/`%~`/`%#`, `%F{couleur}`/`%f`, `vcs_info` pour la branche [Git](/?c=git&p=git). |
 | **Pièges à éviter** | Oublier `setopt PROMPT_SUBST` : sans lui, une substitution comme `${vcs_info_msg_0_}` s'affiche littéralement au lieu d'être évaluée. |
-| **Bonnes pratiques** | Utiliser `vcs_info` pour intégrer nativement la branche Git courante, plutôt qu'un script externe. |
+| **Bonnes pratiques** | Utiliser `vcs_info` pour intégrer nativement la branche [Git](/?c=git&p=git) courante, plutôt qu'un script externe. |

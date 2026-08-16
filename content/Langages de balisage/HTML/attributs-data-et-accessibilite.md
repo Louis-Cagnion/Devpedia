@@ -21,9 +21,9 @@ carte.dataset.role;     // "carte-produit"
 carte.dataset.enStock;  // "true" -> "data-en-stock" devient "enStock" en camelCase côté JS
 ```
 
-`data-*` permet d'attacher une donnée à un élément HTML, récupérable en JavaScript via `.dataset` : un moyen standard de faire circuler une information du HTML vers le JavaScript, sans avoir besoin de variables globales ou de requêtes supplémentaires.
+`data-*` permet d'attacher une donnée à un élément HTML, récupérable en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) via `.dataset` : un moyen standard de faire circuler une information du HTML vers le [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), sans avoir besoin de variables globales ou de requêtes supplémentaires.
 
-> **Note :** n'importe quel nom après `data-` est valide (`data-nimporte-quoi`) : la seule règle est la conversion automatique **kebab-case** (mots séparés par des tirets, `data-en-stock`) vers **camelCase** (chaque mot suivant collé et capitalisé, `enStock`) en JavaScript, une simple convention de nommage, pas un mécanisme propre à `data-*`.
+> **Note :** n'importe quel nom après `data-` est valide (`data-nimporte-quoi`) : la seule règle est la conversion automatique **kebab-case** (mots séparés par des tirets, `data-en-stock`) vers **camelCase** (chaque mot suivant collé et capitalisé, `enStock`) en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), une simple convention de nommage, pas un mécanisme propre à `data-*`.
 
 ## L'accessibilité : pourquoi ça compte
 
@@ -54,7 +54,7 @@ Une bonne partie de l'accessibilité découle directement des chapitres précéd
 <nav id="menu-mobile" hidden>...</nav>
 ```
 
-`aria-expanded` indique si un élément contrôlé (souvent via JavaScript) est actuellement ouvert ou fermé ; un lecteur d'écran annonce cet état, invisible autrement pour quelqu'un qui ne voit pas le changement visuel.
+`aria-expanded` indique si un élément contrôlé (souvent via [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) est actuellement ouvert ou fermé ; un lecteur d'écran annonce cet état, invisible autrement pour quelqu'un qui ne voit pas le changement visuel.
 
 > **Règle d'or ARIA :** "*No ARIA is better than bad ARIA*" : n'utiliser ARIA que pour combler un manque réel de la sémantique HTML native, jamais en remplacement d'une balise HTML qui ferait déjà le travail correctement. Un `<button>` natif gère déjà nativement le focus clavier et l'annonce de son rôle ; recréer ce comportement à la main avec un `<div role="button">` est presque toujours une régression, sauf nécessité absolue.
 
@@ -64,7 +64,7 @@ Une bonne partie de l'accessibilité découle directement des chapitres précéd
 <button class="bouton-personnalise">Bouton personnalisé</button>
 ```
 
-Un `<button>` natif gère déjà l'accessibilité clavier (focus via Tab, activation via Entrée/Espace) et l'annonce de son rôle par un lecteur d'écran : c'est pour ça que la « règle d'or » ci-dessus recommande de partir d'un vrai `<button>`, restylé en CSS si besoin, plutôt que de recréer un bouton à partir d'un `<div>`.
+Un `<button>` natif gère déjà l'accessibilité clavier (focus via Tab, activation via Entrée/Espace) et l'annonce de son rôle par un lecteur d'écran : c'est pour ça que la « règle d'or » ci-dessus recommande de partir d'un vrai `<button>`, restylé en [CSS](/?c=langages-de-balisage&s=css&p=css) si besoin, plutôt que de recréer un bouton à partir d'un `<div>`.
 
 Si un cas précis empêche vraiment d'utiliser un `<button>` natif, recréer son comportement demande plus que `tabindex`/`role` seuls :
 
@@ -90,7 +90,7 @@ bouton.addEventListener("keydown", (evenement) => {
 
 | | |
 |---|---|
-| **À retenir** | `data-*` attache une donnée personnalisée à un élément, récupérable en JavaScript via `.dataset`. `aria-*` complète l'accessibilité quand la sémantique HTML native ne suffit pas (composants personnalisés). |
-| **Outils utilisables** | `.dataset` en JavaScript ; `aria-label`, `role`, `aria-expanded`. |
+| **À retenir** | `data-*` attache une donnée personnalisée à un élément, récupérable en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) via `.dataset`. `aria-*` complète l'accessibilité quand la sémantique HTML native ne suffit pas (composants personnalisés). |
+| **Outils utilisables** | `.dataset` en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ; `aria-label`, `role`, `aria-expanded`. |
 | **Pièges à éviter** | Recréer un `<div role="button">` sans gérer soi-même le focus clavier et l'activation (Entrée/Espace) ; un vrai `<button>` fait tout cela nativement. |
 | **Bonnes pratiques** | "No ARIA is better than bad ARIA" : n'utiliser ARIA que pour combler un manque réel, jamais en remplacement d'une balise HTML native qui ferait déjà le travail. |

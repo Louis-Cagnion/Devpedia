@@ -4,7 +4,7 @@ order: 11
 
 # Permissions et manipulation de fichiers
 
-Windows n'utilise pas le modèle de permissions Unix (propriétaire/groupe/autres, `rwx`) vu dans le chapitre équivalent de Bash : il repose sur des **listes de contrôle d'accès** (ACL, *Access Control List*), plus fines mais plus verbeuses. Ce chapitre couvre ce système ainsi que les commandes de base pour manipuler fichiers et dossiers.
+Windows n'utilise pas le modèle de permissions Unix (propriétaire/groupe/autres, `rwx`) vu dans le chapitre équivalent de [Bash](/?c=shells&s=bash&p=bash) : il repose sur des **listes de contrôle d'accès** (ACL, *Access Control List*), plus fines mais plus verbeuses. Ce chapitre couvre ce système ainsi que les commandes de base pour manipuler fichiers et dossiers.
 
 ## Lire les permissions avec `Get-Acl`
 
@@ -55,7 +55,7 @@ Remove-Item fichier.txt                          # supprime un fichier (va à la
 Remove-Item -Recurse dossier                     # supprime un dossier et tout son contenu
 ```
 
-> **Note :** comme `rm -rf` en Bash, `Remove-Item -Recurse -Force` est irréversible en ligne de commande (contrairement à une suppression via l'explorateur Windows, qui passe par la corbeille) : une cible mal ciblée peut supprimer bien plus que prévu, sans confirmation ni recours.
+> **Note :** comme `rm -rf` en [Bash](/?c=shells&s=bash&p=bash), `Remove-Item -Recurse -Force` est irréversible en ligne de commande (contrairement à une suppression via l'explorateur Windows, qui passe par la corbeille) : une cible mal ciblée peut supprimer bien plus que prévu, sans confirmation ni recours.
 
 ## `Get-ChildItem -Recurse` : rechercher des fichiers (équivalent de `find`)
 

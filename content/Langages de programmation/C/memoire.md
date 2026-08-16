@@ -4,7 +4,7 @@ order: 5
 
 # La gestion de la mémoire
 
-Contrairement à des langages comme PHP ou JavaScript, qui gèrent automatiquement la mémoire via un ramasse-miettes (*garbage collector*), le C laisse au développeur la responsabilité complète d'allouer et de libérer la mémoire dont son programme a besoin. C'est ce qui permet des performances élevées et un contrôle fin des ressources, au prix d'une vigilance de tous les instants.
+Contrairement à des langages comme [PHP](/?c=langages-de-programmation&s=php&p=php) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), qui gèrent automatiquement la mémoire via un ramasse-miettes (*garbage collector*), le C laisse au développeur la responsabilité complète d'allouer et de libérer la mémoire dont son programme a besoin. C'est ce qui permet des performances élevées et un contrôle fin des ressources, au prix d'une vigilance de tous les instants.
 
 ## Stack (pile) et Heap (tas)
 
@@ -98,7 +98,7 @@ free(p); // double free : comportement indéfini
 
 ## Le débordement de tampon (*buffer overflow*), un bug avec des conséquences de sécurité
 
-Contrairement aux trois bugs précédents (qui corrompent la mémoire du programme lui-même, sans intention extérieure), un débordement de tampon est souvent **le résultat d'une entrée contrôlée par un attaquant** : ce qui en fait historiquement l'une des failles de sécurité les plus exploitées en C/C++.
+Contrairement aux trois bugs précédents (qui corrompent la mémoire du programme lui-même, sans intention extérieure), un débordement de tampon est souvent **le résultat d'une entrée contrôlée par un attaquant** : ce qui en fait historiquement l'une des failles de sécurité les plus exploitées en C/[C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
 ```c
 char buffer[16];

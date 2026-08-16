@@ -78,7 +78,7 @@ pip install requests             # installe UNIQUEMENT dans cet environnement, p
 deactivate                        # quitte l'environnement virtuel
 ```
 
-> **Note :** une fois activé, `pip install` et `python` pointent vers les exécutables **de l'environnement virtuel**, pas ceux installés globalement sur le système : c'est ce qui garantit l'isolation. Le dossier `.venv/` ne doit jamais être versionné avec Git (voir [Le fichier .gitignore](/?c=git&p=gitignore)) : il se régénère entièrement à partir de `requirements.txt`.
+> **Note :** une fois activé, `pip install` et `python` pointent vers les exécutables **de l'environnement virtuel**, pas ceux installés globalement sur le système : c'est ce qui garantit l'isolation. Le dossier `.venv/` ne doit jamais être versionné avec [Git](/?c=git&p=git) (voir [Le fichier .gitignore](/?c=git&p=gitignore)) : il se régénère entièrement à partir de `requirements.txt`.
 
 ## Organiser un projet en package
 

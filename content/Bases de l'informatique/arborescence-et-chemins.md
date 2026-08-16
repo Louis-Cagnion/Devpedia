@@ -75,8 +75,8 @@ Documents/photos/../travail/rapport.docx
 
 Changer de dossier courant et lister le contenu d'un dossier sont deux actions de base, mais le nom exact des commandes dépend du shell utilisé, déjà vu au [chapitre sur le terminal](/?c=bases-de-l-informatique&p=le-terminal) :
 
-- Sous Bash : voir [Permissions et manipulation de fichiers](/?c=shells&s=bash&p=permissions-et-fichiers).
-- Sous PowerShell : voir [Commandes de base](/?c=shells&s=powershell&p=commandes-de-base).
+- Sous [Bash](/?c=shells&s=bash&p=bash) : voir [Permissions et manipulation de fichiers](/?c=shells&s=bash&p=permissions-et-fichiers).
+- Sous [PowerShell](/?c=shells&s=powershell&p=powershell) : voir [Commandes de base](/?c=shells&s=powershell&p=commandes-de-base).
 
 ---
 
@@ -85,6 +85,6 @@ Changer de dossier courant et lister le contenu d'un dossier sont deux actions d
 | | |
 |---|---|
 | **À retenir** | Les fichiers sont rangés dans des dossiers, organisés en arborescence. Un **chemin** décrit leur emplacement : **absolu** depuis la racine (toujours valable), ou **relatif** depuis le **dossier courant** (plus court). `.` désigne le dossier courant, `..` son parent. |
-| **Outils utilisables** | Les commandes de navigation et de listing propres à votre shell (voir les chapitres Bash/PowerShell liés ci-dessus). |
+| **Outils utilisables** | Les commandes de navigation et de listing propres à votre shell (voir les chapitres [Bash](/?c=shells&s=bash&p=bash)/[PowerShell](/?c=shells&s=powershell&p=powershell) liés ci-dessus). |
 | **Pièges à éviter** | Utiliser un chemin relatif en supposant être dans le bon dossier courant, sans l'avoir vérifié : la même commande peut alors agir sur un fichier totalement différent selon d'où elle est lancée. |
 | **Bonnes pratiques** | En cas de doute sur l'endroit où l'on se trouve, vérifier le dossier courant avant de lancer une commande qui modifie ou supprime un fichier via un chemin relatif. |

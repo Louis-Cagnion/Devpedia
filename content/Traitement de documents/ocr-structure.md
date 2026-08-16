@@ -41,7 +41,7 @@ Modele de detection de mise en page (rapide, ~40x plus rapide que le pipeline co
 
 ## Reconstruire la grille : lignes, colonnes, cellules fusionnées
 
-Un tableau détecté ne se limite pas à une grille rectangulaire uniforme : une cellule d'en-tête peut s'étendre sur plusieurs colonnes, ou une cellule de la première colonne peut couvrir plusieurs lignes. Deux notions décrivent ces fusions, héritées directement du vocabulaire HTML des tableaux :
+Un tableau détecté ne se limite pas à une grille rectangulaire uniforme : une cellule d'en-tête peut s'étendre sur plusieurs colonnes, ou une cellule de la première colonne peut couvrir plusieurs lignes. Deux notions décrivent ces fusions, héritées directement du vocabulaire [HTML](/?c=langages-de-balisage&s=html&p=html) des tableaux :
 
 ```text
 +----------+----------------------+
@@ -60,7 +60,7 @@ Un tableau détecté ne se limite pas à une grille rectangulaire uniforme : une
 | `colspan` (*column span*) | Une cellule occupe plusieurs colonnes sur la même ligne |
 | `rowspan` (*row span*) | Une cellule occupe plusieurs lignes sur la même colonne |
 
-Un modèle d'OCR structuré (comme [PP-StructureV3](/?c=ia&s=vision-et-ocr&p=modeles-document-ai), utilisé dans le projet source de ce chapitre) restitue typiquement cette grille au format **HTML** (`<table>`, `<tr>`, `<td colspan="...">`), le même format que celui d'une page web : reconstruire, à partir de ce HTML, la position exacte (ligne, colonne) de chaque cellule en tenant compte des fusions en cours, est un exercice de [parsing incrémental](/?c=domain-specific-languages-dsl&p=parsing-incremental-machine-a-etats) à part entière.
+Un modèle d'OCR structuré (comme [PP-StructureV3](/?c=ia&s=vision-et-ocr&p=modeles-document-ai), utilisé dans le projet source de ce chapitre) restitue typiquement cette grille au format **[HTML](/?c=langages-de-balisage&s=html&p=html)** (`<table>`, `<tr>`, `<td colspan="...">`), le même format que celui d'une page web : reconstruire, à partir de ce [HTML](/?c=langages-de-balisage&s=html&p=html), la position exacte (ligne, colonne) de chaque cellule en tenant compte des fusions en cours, est un exercice de [parsing incrémental](/?c=domain-specific-languages-dsl&p=parsing-incremental-machine-a-etats) à part entière.
 
 > **Piège :** ignorer les fusions et supposer qu'un tableau reconstruit a toujours autant de cellules sur chaque ligne. Une ligne dont une colonne est "sautée" à cause d'un `rowspan` commencé plus haut aurait, sans en tenir compte, un décalage silencieux entre le contenu et la colonne à laquelle il est réellement associé.
 >

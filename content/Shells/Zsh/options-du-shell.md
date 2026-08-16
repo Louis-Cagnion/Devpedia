@@ -4,7 +4,7 @@ order: 2
 
 # Le système d'options (`setopt`)
 
-Bash active des comportements optionnels au cas par cas (`shopt -s nom`, `set -o nom`, chacun avec sa propre commande). Zsh centralise ça dans un seul mécanisme cohérent : `setopt`/`unsetopt`, avec des dizaines d'options nommées qui changent le comportement du shell.
+[Bash](/?c=shells&s=bash&p=bash) active des comportements optionnels au cas par cas (`shopt -s nom`, `set -o nom`, chacun avec sa propre commande). Zsh centralise ça dans un seul mécanisme cohérent : `setopt`/`unsetopt`, avec des dizaines d'options nommées qui changent le comportement du shell.
 
 ## Activer et désactiver une option
 
@@ -38,7 +38,7 @@ setopt CORRECT           # propose une correction si une commande tapée n'exist
 
 ## `setopt` vs `shopt`/`set -o` : pas juste un nom différent
 
-Contrairement à Bash, où les options sont dispersées entre `shopt` (options spécifiques à Bash) et `set -o` (options POSIX partagées), zsh regroupe tout sous `setopt`/`unsetopt`, avec une liste de plusieurs centaines d'options couvrant des aspects que Bash ne rend pas configurables du tout (comportement du globbing, de l'historique, de la complétion...).
+Contrairement à [Bash](/?c=shells&s=bash&p=bash), où les options sont dispersées entre `shopt` (options spécifiques à [Bash](/?c=shells&s=bash&p=bash)) et `set -o` (options POSIX partagées), zsh regroupe tout sous `setopt`/`unsetopt`, avec une liste de plusieurs centaines d'options couvrant des aspects que [Bash](/?c=shells&s=bash&p=bash) ne rend pas configurables du tout (comportement du globbing, de l'historique, de la complétion...).
 
 > **Note :** ces options sont typiquement placées dans `~/.zshrc` (voir [Les fichiers de démarrage](/?c=shells&s=zsh&p=fichiers-de-demarrage)) pour être actives dans chaque nouveau terminal, exactement comme un `shopt -s` serait placé dans `~/.bashrc`.
 
@@ -48,7 +48,7 @@ Contrairement à Bash, où les options sont dispersées entre `shopt` (options s
 
 | | |
 |---|---|
-| **À retenir** | Zsh regroupe toutes ses options de comportement sous un seul mécanisme (`setopt`/`unsetopt`), là où Bash les disperse entre `shopt` et `set -o`. |
+| **À retenir** | Zsh regroupe toutes ses options de comportement sous un seul mécanisme (`setopt`/`unsetopt`), là où [Bash](/?c=shells&s=bash&p=bash) les disperse entre `shopt` et `set -o`. |
 | **Outils utilisables** | `setopt`/`unsetopt`, `AUTO_CD`, `EXTENDED_GLOB`, `SHARE_HISTORY`, `CORRECT`. |
-| **Pièges à éviter** | Chercher une option Bash équivalente une par une : zsh couvre souvent des aspects que Bash ne rend pas configurables du tout. |
+| **Pièges à éviter** | Chercher une option [Bash](/?c=shells&s=bash&p=bash) équivalente une par une : zsh couvre souvent des aspects que [Bash](/?c=shells&s=bash&p=bash) ne rend pas configurables du tout. |
 | **Bonnes pratiques** | Placer les `setopt` dans `~/.zshrc` pour qu'ils soient actifs dans chaque nouveau terminal. |

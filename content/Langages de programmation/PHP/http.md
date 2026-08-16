@@ -8,7 +8,7 @@ PHP propose au moins deux façons natives de faire des requêtes HTTP sortantes 
 
 > Une **API** (*Application Programming Interface*, interface de programmation) est le contrat par lequel un logiciel expose ses fonctionnalités à un autre : quelles requêtes envoyer, sous quel format, et quelles réponses attendre. Le terme désigne aussi bien un service web interrogeable par HTTP (le cas ici) que l'ensemble des fonctions publiques d'une bibliothèque.
 >
-> Les réponses d'une API web sont le plus souvent au format **JSON** (*JavaScript Object Notation*) : un format texte de représentation de données structurées, lisible par un humain, né dans JavaScript mais aujourd'hui indépendant de tout langage. PHP le convertit avec `json_encode()` / `json_decode()`.
+> Les réponses d'une API web sont le plus souvent au format **JSON** (*[JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) Object Notation*) : un format texte de représentation de données structurées, lisible par un humain, né dans [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) mais aujourd'hui indépendant de tout langage. PHP le convertit avec `json_encode()` / `json_decode()`.
 
 ## cURL
 
@@ -31,7 +31,7 @@ curl_close($ch);
 ?>
 ```
 
-`CURLOPT_*` sont des constantes entières prédéfinies par l'extension cURL (comme des flags d'`open()` en C) : chacune configure un aspect précis de la requête.
+`CURLOPT_*` sont des constantes entières prédéfinies par l'extension cURL (comme des flags d'`open()` en [C](/?c=langages-de-programmation&s=c&p=c)) : chacune configure un aspect précis de la requête.
 
 ### Convertir un retour "à la C" en exception
 
@@ -81,7 +81,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
 `json_decode()` sur une string invalide renvoie `null`, mais une string JSON **valide** contenant littéralement `"null"` se décode elle aussi en `null`. Un simple `if ($donnees === null)` ne permettrait donc pas de distinguer "JSON invalide" de "JSON valait effectivement `null`". D'où `json_last_error()` : une fonction séparée qui rapporte si la dernière conversion a réellement échoué, indépendamment de la valeur obtenue, même logique que `isset()`/`empty()` face à une clé de tableau (voir [Les variables](/?c=langages-de-programmation&s=php&p=variables)) : ne jamais se fier à une valeur ambiguë quand un mécanisme dédié existe pour lever le doute.
 
-`json_encode()` / `json_decode(..., true)` sont l'équivalent PHP de `JSON.stringify()` / `JSON.parse()` en JavaScript (le `true` demande un tableau associatif, plutôt qu'un objet `stdClass`).
+`json_encode()` / `json_decode(..., true)` sont l'équivalent PHP de `JSON.stringify()` / `JSON.parse()` en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (le `true` demande un tableau associatif, plutôt qu'un objet `stdClass`).
 
 ## `verify_peer` / `verify_peer_name` : vérifier le certificat du serveur distant
 

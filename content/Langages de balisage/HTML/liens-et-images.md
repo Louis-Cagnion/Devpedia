@@ -22,7 +22,7 @@ Les liens (`<a>`) et les images (`<img>`) sont deux balises fondamentales du web
 <a href="https://exemple.com" target="_blank" rel="noopener noreferrer">Ouvre dans un nouvel onglet</a>
 ```
 
-> **Note :** `target="_blank"` sans `rel="noopener"` laisse la nouvelle page ouverte accéder (via JavaScript) à l'objet `window` de la page d'origine : un risque de sécurité mineur mais réel (*tabnabbing*). `noopener` (et `noreferrer`, qui empêche en plus l'envoi de l'URL d'origine) doivent accompagner systématiquement tout `target="_blank"`.
+> **Note :** `target="_blank"` sans `rel="noopener"` laisse la nouvelle page ouverte accéder (via [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) à l'objet `window` de la page d'origine : un risque de sécurité mineur mais réel (*tabnabbing*). `noopener` (et `noreferrer`, qui empêche en plus l'envoi de l'URL d'origine) doivent accompagner systématiquement tout `target="_blank"`.
 
 ### Liens relatifs vs absolus
 

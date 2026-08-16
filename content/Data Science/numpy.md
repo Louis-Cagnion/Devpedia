@@ -4,7 +4,7 @@ order: 2
 
 # NumPy : le calcul numérique
 
-**NumPy** (*Numerical Python*) fournit le type `ndarray` : un tableau multidimensionnel de valeurs **d'un seul type**, stockées de façon contiguë en mémoire, exactement comme un tableau C (voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) et [La mémoire](/?c=langages-de-programmation&s=c&p=memoire) en C), plutôt que comme une liste Python (où chaque élément est une référence séparée vers un objet). C'est la brique de base sur laquelle reposent pandas, scikit-learn et la quasi-totalité de l'écosystème data science Python.
+**NumPy** (*Numerical [Python](/?c=langages-de-programmation&s=python&p=python)*) fournit le type `ndarray` : un tableau multidimensionnel de valeurs **d'un seul type**, stockées de façon contiguë en mémoire, exactement comme un tableau C (voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) et [La mémoire](/?c=langages-de-programmation&s=c&p=memoire) en [C](/?c=langages-de-programmation&s=c&p=c)), plutôt que comme une liste [Python](/?c=langages-de-programmation&s=python&p=python) (où chaque élément est une référence séparée vers un objet). C'est la brique de base sur laquelle reposent pandas, scikit-learn et la quasi-totalité de l'écosystème data science [Python](/?c=langages-de-programmation&s=python&p=python).
 
 ## Pourquoi pas simplement des listes Python ?
 
@@ -19,7 +19,7 @@ tableau = np.array([1, 2, 3, 4, 5])
 tableau * 2             # "* 2" s'applique directement à TOUT le tableau -> [2, 4, 6, 8, 10]
 ```
 
-> **Note :** une liste Python stocke des **pointeurs** vers des objets `int` potentiellement dispersés en mémoire (voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) en C) ; un `ndarray` stocke les **valeurs brutes** les unes à la suite des autres, comme un tableau C. Les opérations NumPy sont exécutées par du code C compilé en interne, sur cette mémoire contiguë, souvent 10 à 100 fois plus rapide qu'une boucle Python équivalente, en plus d'utiliser bien moins de mémoire.
+> **Note :** une liste [Python](/?c=langages-de-programmation&s=python&p=python) stocke des **pointeurs** vers des objets `int` potentiellement dispersés en mémoire (voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) en [C](/?c=langages-de-programmation&s=c&p=c)) ; un `ndarray` stocke les **valeurs brutes** les unes à la suite des autres, comme un tableau C. Les opérations NumPy sont exécutées par du code C compilé en interne, sur cette mémoire contiguë, souvent 10 à 100 fois plus rapide qu'une boucle [Python](/?c=langages-de-programmation&s=python&p=python) équivalente, en plus d'utiliser bien moins de mémoire.
 
 ## Créer des tableaux
 
@@ -42,7 +42,7 @@ tableau.dtype  # dtype('int64') -> TOUS les éléments partagent ce même type
 tableau.ndim   # 2 -> nombre de dimensions
 ```
 
-> **Note :** contrairement à une liste Python (types mixtes possibles), un `ndarray` impose un **seul type** pour tous ses éléments : c'est justement ce qui permet le stockage contigu et les optimisations de performance qui en découlent.
+> **Note :** contrairement à une liste [Python](/?c=langages-de-programmation&s=python&p=python) (types mixtes possibles), un `ndarray` impose un **seul type** pour tous ses éléments : c'est justement ce qui permet le stockage contigu et les optimisations de performance qui en découlent.
 
 ## Indexation et slicing
 
@@ -96,7 +96,7 @@ Voir aussi le chapitre sur [pandas](/?c=data-science&p=pandas), qui construit se
 
 | | |
 |---|---|
-| **À retenir** | Un `ndarray` NumPy stocke des valeurs brutes contiguës d'un seul type, contrairement à une liste Python (pointeurs vers des objets dispersés), les opérations vectorisées sont exécutées par du code C compilé, bien plus rapide qu'une boucle Python. |
+| **À retenir** | Un `ndarray` NumPy stocke des valeurs brutes contiguës d'un seul type, contrairement à une liste [Python](/?c=langages-de-programmation&s=python&p=python) (pointeurs vers des objets dispersés), les opérations vectorisées sont exécutées par du code C compilé, bien plus rapide qu'une boucle [Python](/?c=langages-de-programmation&s=python&p=python). |
 | **Outils utilisables** | `np.array`/`zeros`/`ones`/`arange`/`linspace`, indexation/slicing multidimensionnel, broadcasting. |
 | **Pièges à éviter** | Utiliser `*` en pensant obtenir un produit matriciel : c'est une multiplication élément par élément ; le produit matriciel est `@`. |
-| **Bonnes pratiques** | Préférer une opération vectorisée à une boucle Python explicite sur un `ndarray`, pour profiter du gain de performance. |
+| **Bonnes pratiques** | Préférer une opération vectorisée à une boucle [Python](/?c=langages-de-programmation&s=python&p=python) explicite sur un `ndarray`, pour profiter du gain de performance. |

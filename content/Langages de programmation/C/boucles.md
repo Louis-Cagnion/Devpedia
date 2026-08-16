@@ -54,7 +54,7 @@ for (int i = 0; i < 5; i++) {
 }
 ```
 
-> **Note :** contrairement à PHP ou JavaScript, il n'existe **aucun moyen natif** de connaître la taille d'un tableau à partir du pointeur seul : `tableau[5]` "sait" combien il contient tant qu'il est manipulé comme tableau statique, mais cette information disparaît dès qu'il est passé à une fonction (il se comporte alors comme un simple pointeur, voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs)). La taille doit alors être transmise séparément.
+> **Note :** contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), il n'existe **aucun moyen natif** de connaître la taille d'un tableau à partir du pointeur seul : `tableau[5]` "sait" combien il contient tant qu'il est manipulé comme tableau statique, mais cette information disparaît dès qu'il est passé à une fonction (il se comporte alors comme un simple pointeur, voir [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs)). La taille doit alors être transmise séparément.
 
 ```c
 void afficher(int *tableau, int taille) // la taille doit être passée explicitement

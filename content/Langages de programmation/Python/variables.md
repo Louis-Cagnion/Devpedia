@@ -4,7 +4,7 @@ order: 1
 
 # Les variables et types de base
 
-Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable). Python est **dynamiquement typé** : une variable n'a pas de type déclaré à l'avance, elle prend simplement le type de la valeur qui lui est assignée, et peut changer de type librement au cours du programme (contrairement à PHP ou C où le type d'une propriété/variable typée reste fixe une fois déclaré).
+Pour rappel, [une variable est une boîte étiquetée qui contient une valeur](/?c=bases-de-l-informatique&p=la-variable). Python est **dynamiquement typé** : une variable n'a pas de type déclaré à l'avance, elle prend simplement le type de la valeur qui lui est assignée, et peut changer de type librement au cours du programme (contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php) ou C où le type d'une propriété/variable typée reste fixe une fois déclaré).
 
 ## Déclarer une variable
 
@@ -18,7 +18,7 @@ rien = None       # équivalent de null/NULL
 age = "vingt-cinq"    # parfaitement valide : age devient un str, sans rien déclarer
 ```
 
-> **Note :** contrairement à PHP (`$variable`), Python n'utilise aucun symbole particulier pour désigner une variable : juste un nom, en minuscules avec des underscores par convention (`nom_utilisateur`, pas `nomUtilisateur`).
+> **Note :** contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php) (`$variable`), Python n'utilise aucun symbole particulier pour désigner une variable : juste un nom, en minuscules avec des underscores par convention (`nom_utilisateur`, pas `nomUtilisateur`).
 
 ## Vérifier le type d'une variable
 
@@ -47,7 +47,7 @@ a or b   # OU logique (pas '||')
 not a    # NON logique (pas '!')
 ```
 
-> **Note :** Python utilise les mots-clés `and`/`or`/`not` plutôt que les symboles `&&`/`||`/`!` retrouvés en PHP, JavaScript ou C.
+> **Note :** Python utilise les mots-clés `and`/`or`/`not` plutôt que les symboles `&&`/`||`/`!` retrouvés en [PHP](/?c=langages-de-programmation&s=php&p=php), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ou C.
 
 ## `==` et `is` : la valeur ou l'objet ?
 
@@ -68,7 +68,7 @@ a is b  # False -> deux listes distinctes en memoire
 a is c  # True  -> c et a designent le meme objet
 ```
 
-C'est exactement la distinction entre comparaison par **valeur** et comparaison par **référence** que l'on retrouve en C avec les pointeurs : `*p1 == *p2` (les valeurs pointées) contre `p1 == p2` (les adresses). Voir le chapitre [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) de C.
+C'est exactement la distinction entre comparaison par **valeur** et comparaison par **référence** que l'on retrouve en [C](/?c=langages-de-programmation&s=c&p=c) avec les pointeurs : `*p1 == *p2` (les valeurs pointées) contre `p1 == p2` (les adresses). Voir le chapitre [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs) de C.
 
 ### Pourquoi `is None` et pas `== None`
 
@@ -102,7 +102,7 @@ Les f-strings (préfixe `f` avant les guillemets) sont la méthode moderne recom
 
 ## Immutabilité des chaînes de caractères
 
-Comme en PHP, une chaîne Python est **immuable** : toute "modification" crée en réalité une nouvelle chaîne, elle ne modifie jamais l'originale en mémoire.
+Comme en [PHP](/?c=langages-de-programmation&s=php&p=php), une chaîne Python est **immuable** : toute "modification" crée en réalité une nouvelle chaîne, elle ne modifie jamais l'originale en mémoire.
 
 ```python
 texte = "bonjour"
@@ -114,7 +114,7 @@ texte = texte.upper()  # il faut réassigner pour "garder" le changement
 
 ## Résumé des types de base
 
-| Type | Exemple | Équivalent PHP |
+| Type | Exemple | Équivalent [PHP](/?c=langages-de-programmation&s=php&p=php) |
 |---|---|---|
 | `int` | `25` | `int` |
 | `float` | `9.99` | `float` |

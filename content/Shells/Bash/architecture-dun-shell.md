@@ -64,7 +64,7 @@ Une fois la ligne découpée et expansée, le shell doit distinguer deux cas :
 
 ### Les commandes externes
 
-Pour un programme comme `ls` ou `grep`, le shell reproduit exactement le mécanisme du chapitre sur la gestion des processus en C :
+Pour un programme comme `ls` ou `grep`, le shell reproduit exactement le mécanisme du chapitre sur la gestion des processus en [C](/?c=langages-de-programmation&s=c&p=c) :
 
 ```c
 pid_t pid = fork();
@@ -165,4 +165,4 @@ Chaque pipeline lancé forme un **groupe de processus** : un identifiant partag�
 
 ## Construire son propre mini-shell
 
-En résumé, un shell minimal en C a besoin de : une boucle de lecture, un analyseur qui respecte les guillemets et les opérateurs (`|`, `>`, `<`, `&&`), la logique d'expansion dans le bon ordre, `fork`/`execve`/`waitpid` pour les commandes externes, des fonctions C directement appelées pour les builtins, et `pipe()`/`dup2()`/`open()` pour les pipes et redirections. C'est littéralement l'architecture complète ; le reste (complétion, historique, coloration...) n'est que du confort ajouté par-dessus.
+En résumé, un shell minimal en [C](/?c=langages-de-programmation&s=c&p=c) a besoin de : une boucle de lecture, un analyseur qui respecte les guillemets et les opérateurs (`|`, `>`, `<`, `&&`), la logique d'expansion dans le bon ordre, `fork`/`execve`/`waitpid` pour les commandes externes, des fonctions C directement appelées pour les builtins, et `pipe()`/`dup2()`/`open()` pour les pipes et redirections. C'est littéralement l'architecture complète ; le reste (complétion, historique, coloration...) n'est que du confort ajouté par-dessus.

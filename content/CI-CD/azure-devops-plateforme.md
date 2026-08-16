@@ -4,14 +4,14 @@ order: 2
 
 # Azure DevOps comme plateforme
 
-**Azure DevOps** est la plateforme de Microsoft qui regroupe, sous un même projet, la planification du travail, l'hébergement du code, l'automatisation CI/CD (voir [Qu'est-ce qu'un pipeline CI/CD ?](/?c=ci-cd&p=pipeline-cicd)) et le stockage de paquets. Elle rassemble en un seul endroit ce que [GitHub](/?c=git&p=github-et-plateformes) (la plateforme d'hébergement Git la plus répandue) répartit sur plusieurs services distincts.
+**Azure DevOps** est la plateforme de Microsoft qui regroupe, sous un même projet, la planification du travail, l'hébergement du code, l'automatisation CI/CD (voir [Qu'est-ce qu'un pipeline CI/CD ?](/?c=ci-cd&p=pipeline-cicd)) et le stockage de paquets. Elle rassemble en un seul endroit ce que [GitHub](/?c=git&p=github-et-plateformes) (la plateforme d'hébergement [Git](/?c=git&p=git) la plus répandue) répartit sur plusieurs services distincts.
 
 ## Les quatre services d'un projet Azure DevOps
 
 | Service | Rôle | Équivalent GitHub |
 |---|---|---|
 | **Boards** | Planifier et suivre le travail (backlog, sprints, tableau Kanban) | Issues / Projects |
-| **Repos** | Héberger le code sur Git | GitHub lui-même |
+| **Repos** | Héberger le code sur [Git](/?c=git&p=git) | GitHub lui-même |
 | **Pipelines** | Exécuter la construction, les tests et le déploiement | GitHub Actions |
 | **Artifacts** | Stocker des paquets ([npm](https://www.npmjs.com), [NuGet](https://www.nuget.org), [Maven](https://maven.apache.org)...) | GitHub Packages |
 
@@ -31,7 +31,7 @@ Rien n'oblige à utiliser les quatre ensemble : une équipe peut héberger son c
 
 | | |
 |---|---|
-| **À retenir** | Azure DevOps regroupe Boards (planification), Repos (hébergement Git), Pipelines (CI/CD) et Artifacts (paquets) dans un même projet, là où GitHub répartit ces rôles entre plusieurs services distincts. |
+| **À retenir** | Azure DevOps regroupe Boards (planification), Repos (hébergement [Git](/?c=git&p=git)), Pipelines (CI/CD) et Artifacts (paquets) dans un même projet, là où GitHub répartit ces rôles entre plusieurs services distincts. |
 | **Outils utilisables** | Boards pour le suivi du travail, Repos pour le code, Pipelines pour l'automatisation, Artifacts pour les paquets. |
 | **Pièges à éviter** | Supposer que les quatre services doivent obligatoirement venir du même fournisseur. |
 | **Bonnes pratiques** | Choisir chaque service indépendamment selon le besoin réel (par exemple, GitHub pour le code et Azure Pipelines pour l'automatisation). |

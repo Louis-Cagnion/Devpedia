@@ -85,7 +85,7 @@ T addition(T a, T b) { return a + b; }
 
 ## Templates vs généricité dynamique (Python, PHP)
 
-| | Templates C++ | Typage dynamique (Python/PHP) |
+| | Templates C++ | Typage dynamique ([Python](/?c=langages-de-programmation&s=python&p=python)/[PHP](/?c=langages-de-programmation&s=php&p=php)) |
 |---|---|---|
 | Vérification de type | À la compilation | À l'exécution (ou jamais, selon le langage) |
 | Coût à l'exécution | Nul (code généré spécifiquement pour chaque type) | Léger surcoût (vérifications de type en continu) |

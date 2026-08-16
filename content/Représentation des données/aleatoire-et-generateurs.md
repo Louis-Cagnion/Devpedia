@@ -49,10 +49,10 @@ Plus grave : un PRNG classique est conçu pour être **rapide et bien réparti**
 | Objectif | Vitesse, bonne répartition | Imprévisibilité |
 | Prévisible ? | Oui, à partir de l'état | Non, même en connaissant les sorties |
 | Source de graine | Souvent l'horloge | Entropie du système |
-| C | `rand()` | `getrandom()`, `/dev/urandom` |
-| Python | `random` | `secrets` |
-| PHP | `rand()`, `mt_rand()` | `random_bytes()`, `random_int()` |
-| JavaScript | `Math.random()` | `crypto.getRandomValues()` |
+| [C](/?c=langages-de-programmation&s=c&p=c) | `rand()` | `getrandom()`, `/dev/urandom` |
+| [Python](/?c=langages-de-programmation&s=python&p=python) | `random` | `secrets` |
+| [PHP](/?c=langages-de-programmation&s=php&p=php) | `rand()`, `mt_rand()` | `random_bytes()`, `random_int()` |
+| [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) | `Math.random()` | `crypto.getRandomValues()` |
 
 **La règle est simple et sans exception : dès que la valeur doit être imprévisible, utilisez un CSPRNG.** Cela concerne les jetons de session, les jetons CSRF, les codes de réinitialisation de mot de passe, les sels, les identifiants secrets, les clés.
 
@@ -65,7 +65,7 @@ jeton = secrets.token_hex(32)     # imprevisible
 $jeton = bin2hex(random_bytes(32));   // et non uniqid() ou mt_rand()
 ```
 
-Voir le chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite) de PHP, où les jetons CSRF reposent précisément sur `random_bytes()`.
+Voir le chapitre [Sécuriser vos données](/?c=langages-de-programmation&s=php&p=securite) de [PHP](/?c=langages-de-programmation&s=php&p=php), où les jetons CSRF reposent précisément sur `random_bytes()`.
 
 > À l'inverse, n'utilisez pas un CSPRNG pour mélanger une liste d'affichage ou simuler un dé : c'est plus lent et consomme de l'entropie sans bénéfice.
 
@@ -93,7 +93,7 @@ random.randint(0, 2)  # gere la repartition uniforme
 secrets.randbelow(3)  # idem, en version cryptographique
 ```
 
-Le même raisonnement s'applique à `Math.random()` en JavaScript ou `mt_rand()` en PHP : préférez la fonction dédiée à un `%` improvisé.
+Le même raisonnement s'applique à `Math.random()` en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ou `mt_rand()` en [PHP](/?c=langages-de-programmation&s=php&p=php) : préférez la fonction dédiée à un `%` improvisé.
 
 ## Résumé
 

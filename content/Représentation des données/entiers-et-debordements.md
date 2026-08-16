@@ -75,7 +75,7 @@ y = y + 1;            // 1000 0000 -> -128 !
 
 Ajouter 1 au plus grand nombre positif donne le plus petit négatif.
 
-> **Piège majeur en C/C++ :** le débordement d'un entier **signé** est un **comportement indéfini** (*undefined behavior*), pas un wraparound garanti. Le compilateur a le droit de supposer qu'il n'arrive jamais et d'optimiser en conséquence : un test comme `if (x + 1 < x)` peut être purement supprimé. Le débordement **non signé**, lui, est défini par la norme et boucle bien. Pour compter, comparer ou masquer des bits, préférez donc les types non signés.
+> **Piège majeur en [C](/?c=langages-de-programmation&s=c&p=c)/[C++](/?c=langages-de-programmation&s=cpp&p=cpp) :** le débordement d'un entier **signé** est un **comportement indéfini** (*undefined behavior*), pas un wraparound garanti. Le compilateur a le droit de supposer qu'il n'arrive jamais et d'optimiser en conséquence : un test comme `if (x + 1 < x)` peut être purement supprimé. Le débordement **non signé**, lui, est défini par la norme et boucle bien. Pour compter, comparer ou masquer des bits, préférez donc les types non signés.
 
 ## Pourquoi ça compte vraiment
 
@@ -92,14 +92,14 @@ Les débordements d'entiers ne sont pas une curiosité académique :
 | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp) | Taille fixe choisie explicitement. Débordement signé = comportement indéfini |
 | [Java](https://docs.oracle.com/en/java/), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/) | Taille fixe, wraparound défini pour tous les entiers |
 | **[Python](/?c=langages-de-programmation&s=python&p=python)** | Entiers de **taille arbitraire** : ils grandissent tant que la mémoire suit, aucun débordement |
-| JavaScript | Pas de vrai type entier : tout est flottant, donc exact seulement jusqu'à 2⁵³ (voir [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` pour aller au-delà |
+| [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) | Pas de vrai type entier : tout est flottant, donc exact seulement jusqu'à 2⁵³ (voir [Les nombres à virgule flottante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` pour aller au-delà |
 | [PHP](/?c=langages-de-programmation&s=php&p=php) | Entier natif ; en cas de débordement, conversion automatique en `float` (donc perte de précision) |
 
-Python illustre bien le compromis : ne jamais déborder est confortable, mais chaque entier est un objet plus lourd et plus lent qu'un entier machine. C'est l'une des raisons pour lesquelles les bibliothèques de calcul comme NumPy utilisent des types à taille fixe (`int32`, `int64`). Voir le chapitre [NumPy](/?c=data-science&p=numpy).
+[Python](/?c=langages-de-programmation&s=python&p=python) illustre bien le compromis : ne jamais déborder est confortable, mais chaque entier est un objet plus lourd et plus lent qu'un entier machine. C'est l'une des raisons pour lesquelles les bibliothèques de calcul comme NumPy utilisent des types à taille fixe (`int32`, `int64`). Voir le chapitre [NumPy](/?c=data-science&p=numpy).
 
 ## Manipuler les bits directement
 
-Le corollaire de cette représentation binaire est qu'on peut agir sur les bits eux-mêmes : masques, décalages, drapeaux. C'est l'objet du chapitre [Les opérateurs binaires](/?c=langages-de-programmation&s=c&p=operateurs-binaires) en C.
+Le corollaire de cette représentation binaire est qu'on peut agir sur les bits eux-mêmes : masques, décalages, drapeaux. C'est l'objet du chapitre [Les opérateurs binaires](/?c=langages-de-programmation&s=c&p=operateurs-binaires) en [C](/?c=langages-de-programmation&s=c&p=c).
 
 ## Résumé
 
@@ -117,7 +117,7 @@ Le corollaire de cette représentation binaire est qu'on peut agir sur les bits 
 
 | | |
 |---|---|
-| **À retenir** | Un entier occupe un nombre fixe de bits, décidé à la déclaration : *n* bits donnent 2ⁿ valeurs possibles. Les négatifs s'encodent en complément à deux ; un débordement fait "boucler" la valeur (ou provoque un comportement indéfini en C pour un signé). |
+| **À retenir** | Un entier occupe un nombre fixe de bits, décidé à la déclaration : *n* bits donnent 2ⁿ valeurs possibles. Les négatifs s'encodent en complément à deux ; un débordement fait "boucler" la valeur (ou provoque un comportement indéfini en [C](/?c=langages-de-programmation&s=c&p=c) pour un signé). |
 | **Outils utilisables** | Les types non signés pour compter/comparer/masquer des bits sans risque d'UB ; les types à taille fixe (`int32`, `int64`) des bibliothèques de calcul. |
-| **Pièges à éviter** | Compter sur le débordement d'un entier signé en C/C++ : comportement indéfini, pas un wraparound garanti. |
+| **Pièges à éviter** | Compter sur le débordement d'un entier signé en [C](/?c=langages-de-programmation&s=c&p=c)/[C++](/?c=langages-de-programmation&s=cpp&p=cpp) : comportement indéfini, pas un wraparound garanti. |
 | **Bonnes pratiques** | Préférer les types non signés pour toute manipulation de bits ; vérifier qu'un calcul de taille ne peut pas déborder avant une allocation mémoire. |

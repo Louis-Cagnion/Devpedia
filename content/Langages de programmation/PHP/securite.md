@@ -4,9 +4,9 @@ order: 14
 
 # Sécuriser vos données
 
-Lorsque vous récupérez des données venant de l'utilisateur (formulaires, URL, cookies...), il faut toujours les considérer comme **non fiables**, même si elles semblent correctes. Un visiteur malveillant peut envoyer n'importe quoi : du code HTML, du JavaScript, ou des requêtes SQL malformées. PHP fournit plusieurs fonctions pour filtrer, valider et échapper ces données.
+Lorsque vous récupérez des données venant de l'utilisateur (formulaires, URL, cookies...), il faut toujours les considérer comme **non fiables**, même si elles semblent correctes. Un visiteur malveillant peut envoyer n'importe quoi : du code [HTML](/?c=langages-de-balisage&s=html&p=html), du [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), ou des requêtes [SQL](/?c=domain-specific-languages-dsl&p=sql) malformées. PHP fournit plusieurs fonctions pour filtrer, valider et échapper ces données.
 
-Ce chapitre couvre d'abord les protections directement actionnables en PHP (validation, XSS, injection SQL, mots de passe), puis situe ces protections dans un panorama plus large des familles d'attaques qu'une application web peut subir : certaines se défendent au niveau du code applicatif, d'autres au niveau du réseau ou de l'infrastructure.
+Ce chapitre couvre d'abord les protections directement actionnables en PHP (validation, XSS, injection [SQL](/?c=domain-specific-languages-dsl&p=sql), mots de passe), puis situe ces protections dans un panorama plus large des familles d'attaques qu'une application web peut subir : certaines se défendent au niveau du code applicatif, d'autres au niveau du réseau ou de l'infrastructure.
 
 ## `filter_input()`
 
@@ -39,7 +39,7 @@ Quelques filtres courants :
 
 ## `htmlspecialchars()` : se protéger des failles XSS
 
-Si vous affichez une donnée utilisateur sur la page (ex: un commentaire, un pseudo), un visiteur pourrait injecter du code HTML/JavaScript malveillant. C'est une faille appelée **XSS** (*Cross-Site Scripting*).
+Si vous affichez une donnée utilisateur sur la page (ex: un commentaire, un pseudo), un visiteur pourrait injecter du code [HTML](/?c=langages-de-balisage&s=html&p=html)/[JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) malveillant. C'est une faille appelée **XSS** (*Cross-Site Scripting*).
 
 ```php
 <?php
@@ -50,13 +50,13 @@ Si vous affichez une donnée utilisateur sur la page (ex: un commentaire, un pse
 ?>
 ```
 
-`htmlspecialchars()` convertit les caractères spéciaux (`<`, `>`, `"`, `'`) en entités HTML, ce qui empêche le navigateur d'interpréter le contenu comme du code.
+`htmlspecialchars()` convertit les caractères spéciaux (`<`, `>`, `"`, `'`) en entités [HTML](/?c=langages-de-balisage&s=html&p=html), ce qui empêche le navigateur d'interpréter le contenu comme du code.
 
 > **Note :** affichez toujours les données utilisateur avec `htmlspecialchars()`, sauf si vous avez une raison précise de ne pas le faire.
 
 ## Se protéger des injections SQL
 
-Si vous insérez directement une donnée utilisateur dans une requête SQL, un visiteur peut manipuler la requête pour accéder à des données qu'il ne devrait pas voir, voire les supprimer. C'est une **injection SQL**, déjà détaillée avec le mécanisme des requêtes préparées PDO dans le chapitre [SQL](/?c=domain-specific-languages-dsl&p=sql) : la protection en PHP reste exactement la même, jamais concaténer une donnée utilisateur dans le texte de la requête.
+Si vous insérez directement une donnée utilisateur dans une requête [SQL](/?c=domain-specific-languages-dsl&p=sql), un visiteur peut manipuler la requête pour accéder à des données qu'il ne devrait pas voir, voire les supprimer. C'est une **injection [SQL](/?c=domain-specific-languages-dsl&p=sql)**, déjà détaillée avec le mécanisme des requêtes préparées PDO dans le chapitre [SQL](/?c=domain-specific-languages-dsl&p=sql) : la protection en PHP reste exactement la même, jamais concaténer une donnée utilisateur dans le texte de la requête.
 
 ```php
 <?php
@@ -235,8 +235,8 @@ Tout code qui construit une URL/hôte de destination à partir d'une entrée inf
 | Risque | Défense principale |
 |---|---|
 | Donnée mal formée (email, nombre...) | `filter_input()` |
-| Injection de HTML/JS (XSS) | `htmlspecialchars()` |
-| Injection SQL | Requêtes préparées (PDO) |
+| Injection de [HTML](/?c=langages-de-balisage&s=html&p=html)/JS (XSS) | `htmlspecialchars()` |
+| Injection [SQL](/?c=domain-specific-languages-dsl&p=sql) | Requêtes préparées (PDO) |
 | Mot de passe en clair | `password_hash()` / `password_verify()` |
 | CSRF | Jeton CSRF en session, vérifié via `hash_equals()` |
 | MITM / DNS spoofing | Vérification de certificat SSL (`verify_peer`/`verify_peer_name`) |
@@ -253,7 +253,7 @@ Tout code qui construit une URL/hôte de destination à partir d'une entrée inf
 
 | | |
 |---|---|
-| **À retenir** | Toute donnée utilisateur est non fiable par défaut. Les principales failles applicatives (XSS, injection SQL, CSRF) se neutralisent par des mécanismes dédiés (`htmlspecialchars`, requêtes préparées, jeton CSRF) : d'autres attaques visent le réseau ou l'infrastructure, hors du code applicatif seul. |
+| **À retenir** | Toute donnée utilisateur est non fiable par défaut. Les principales failles applicatives (XSS, injection [SQL](/?c=domain-specific-languages-dsl&p=sql), CSRF) se neutralisent par des mécanismes dédiés (`htmlspecialchars`, requêtes préparées, jeton CSRF) : d'autres attaques visent le réseau ou l'infrastructure, hors du code applicatif seul. |
 | **Outils utilisables** | `filter_input()`, `htmlspecialchars()`, PDO (requêtes préparées), `password_hash`/`password_verify`, `hash_equals()`. |
-| **Pièges à éviter** | Comparer deux hash avec `==` (faille *magic hash*) ; concaténer une donnée utilisateur directement dans une requête SQL. |
-| **Bonnes pratiques** | Toujours valider/échapper une donnée utilisateur selon son usage (affichage, SQL, comparaison) ; HTTPS systématique, sans exception pour une donnée jugée "pas si sensible". |
+| **Pièges à éviter** | Comparer deux hash avec `==` (faille *magic hash*) ; concaténer une donnée utilisateur directement dans une requête [SQL](/?c=domain-specific-languages-dsl&p=sql). |
+| **Bonnes pratiques** | Toujours valider/échapper une donnée utilisateur selon son usage (affichage, [SQL](/?c=domain-specific-languages-dsl&p=sql), comparaison) ; HTTPS systématique, sans exception pour une donnée jugée "pas si sensible". |

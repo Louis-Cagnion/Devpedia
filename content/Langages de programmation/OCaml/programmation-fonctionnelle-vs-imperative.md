@@ -6,7 +6,7 @@ order: 1
 
 ## Instructions contre expressions
 
-En C, Python ou JavaScript, un `if` est une **instruction** : il ne produit aucune valeur, il déclenche seulement l'exécution d'un bloc ou d'un autre.
+En C, [Python](/?c=langages-de-programmation&s=python&p=python) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), un `if` est une **instruction** : il ne produit aucune valeur, il déclenche seulement l'exécution d'un bloc ou d'un autre.
 
 ```python
 # Python : if est une instruction, chaque branche doit assigner explicitement
@@ -50,7 +50,7 @@ x = x + 1
 print(x)   # 6
 ```
 
-Le résultat affiché est identique, mais le mécanisme diffère : en Python, une seule case mémoire a changé de contenu ; en OCaml, une nouvelle liaison a simplement pris le dessus sur l'ancienne dans la portée courante. OCaml propose une échappatoire explicite quand une case réellement mutable est nécessaire, la référence (`ref`), approfondie au chapitre sur l'immuabilité et les fonctions pures.
+Le résultat affiché est identique, mais le mécanisme diffère : en [Python](/?c=langages-de-programmation&s=python&p=python), une seule case mémoire a changé de contenu ; en OCaml, une nouvelle liaison a simplement pris le dessus sur l'ancienne dans la portée courante. OCaml propose une échappatoire explicite quand une case réellement mutable est nécessaire, la référence (`ref`), approfondie au chapitre sur l'immuabilité et les fonctions pures.
 
 ## Boucles contre récursion
 
@@ -75,7 +75,7 @@ Les deux styles coexistent dans OCaml : `ref`, `for` et `while` existent réelle
 
 ## Synthèse
 
-| | Impératif (C, Python, JS...) | Fonctionnel (OCaml) |
+| | Impératif (C, [Python](/?c=langages-de-programmation&s=python&p=python), JS...) | Fonctionnel (OCaml) |
 |---|---|---|
 | Unité de base | Instruction (aucune valeur) | Expression (produit toujours une valeur) |
 | Variables | Réassignables par défaut | Liaisons immuables par défaut, mutation explicite via `ref` |

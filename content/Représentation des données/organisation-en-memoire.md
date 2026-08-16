@@ -75,7 +75,7 @@ Pour une valeur de plusieurs octets, dans quel ordre les ranger en mémoire ? De
 Le *little-endian* place l'octet de **poids faible** en premier. Ce n'est ni mieux ni pire, c'est un choix historique, mais il n'est pas universel, d'où deux implications :
 
 - Un fichier binaire écrit sur une machine little-endian et lu par une big-endian donnera des valeurs erronées, sans erreur signalée : la lecture réussit, les nombres sont juste faux.
-- Les protocoles réseau imposent le big-endian, appelé pour cette raison **ordre réseau**. Les fonctions `htons()`/`ntohl()` en C servent exactement à cette conversion.
+- Les protocoles réseau imposent le big-endian, appelé pour cette raison **ordre réseau**. Les fonctions `htons()`/`ntohl()` en [C](/?c=langages-de-programmation&s=c&p=c) servent exactement à cette conversion.
 
 C'est encore une raison de préférer un format sérialisé explicite (texte ou binaire spécifié) à une copie brute de la mémoire.
 
@@ -98,7 +98,7 @@ C'est aussi pourquoi `pointeur + 1` avance de `sizeof(type)` octets et non de 1 
 
 [Python](/?c=langages-de-programmation&s=python&p=python), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ou [PHP](/?c=langages-de-programmation&s=php&p=php) masquent tout cela : vous ne choisissez pas la disposition mémoire. Mais elle ne disparaît pas, et se manifeste autrement :
 
-- une liste Python de 1 000 entiers occupe beaucoup plus que 4 000 octets, car chaque entier est un **objet** avec son en-tête ;
+- une liste [Python](/?c=langages-de-programmation&s=python&p=python) de 1 000 entiers occupe beaucoup plus que 4 000 octets, car chaque entier est un **objet** avec son en-tête ;
 - c'est précisément pour cette raison que NumPy existe : un tableau NumPy stocke des valeurs brutes contiguës, alignées, sans en-tête par élément : d'où des gains de vitesse d'un ordre de grandeur sur du calcul numérique (voir [NumPy](/?c=data-science&p=numpy)).
 
 ## Résumé

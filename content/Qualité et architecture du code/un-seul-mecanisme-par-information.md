@@ -19,7 +19,7 @@ order: 5
 # Les pointeurs en C
 ```
 
-Le frontmatter dit "Les pointeurs", le corps du fichier dit "Les pointeurs en C". Lequel est le vrai titre ? Le générateur de site doit choisir une règle de priorité (le frontmatter gagne ? le heading gagne ? le dernier écrit ?), et cette règle devient elle-même une source de bugs : quelqu'un modifie le heading en pensant changer le titre affiché, sans savoir que le frontmatter (invisible à la lecture rapide du fichier) prend le dessus.
+Le frontmatter dit "Les pointeurs", le corps du fichier dit "Les pointeurs en [C](/?c=langages-de-programmation&s=c&p=c)". Lequel est le vrai titre ? Le générateur de site doit choisir une règle de priorité (le frontmatter gagne ? le heading gagne ? le dernier écrit ?), et cette règle devient elle-même une source de bugs : quelqu'un modifie le heading en pensant changer le titre affiché, sans savoir que le frontmatter (invisible à la lecture rapide du fichier) prend le dessus.
 
 Ce site évite délibérément le problème : le frontmatter d'un chapitre ne porte **jamais** de champ `title`, seulement des métadonnées de construction (`order`, pour le tri pédagogique). Le titre affiché vient uniquement du premier `# Heading` du corps : une seule source, un seul endroit à modifier, aucune règle de priorité à documenter ni à retenir.
 

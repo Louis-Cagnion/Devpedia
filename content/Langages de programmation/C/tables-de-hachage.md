@@ -111,9 +111,9 @@ Le **facteur de charge** (nombre d'entrées ÷ taille du tableau) mesure à quel
 
 ## Où les tables de hachage se cachent déjà autour de vous
 
-- Les tableaux **associatifs** de PHP (voir [Les variables](/?c=langages-de-programmation&s=php&p=variables)) sont, en interne, implémentés avec une structure très proche d'une table de hachage.
-- Le modèle de stockage d'objets de Git (voir [L'architecture interne de Git](/?c=git&p=architecture-interne)) **est** directement une table de hachage : la clé de chaque objet est le hash SHA-1 de son contenu, et le sous-dossier `.git/objects/xx/` joue exactement le rôle d'une case (*bucket*).
-- Les dictionnaires Python (`dict`) reposent sur le même principe.
+- Les tableaux **associatifs** de [PHP](/?c=langages-de-programmation&s=php&p=php) (voir [Les variables](/?c=langages-de-programmation&s=php&p=variables)) sont, en interne, implémentés avec une structure très proche d'une table de hachage.
+- Le modèle de stockage d'objets de [Git](/?c=git&p=git) (voir [L'architecture interne de Git](/?c=git&p=architecture-interne)) **est** directement une table de hachage : la clé de chaque objet est le hash SHA-1 de son contenu, et le sous-dossier `.git/objects/xx/` joue exactement le rôle d'une case (*bucket*).
+- Les dictionnaires [Python](/?c=langages-de-programmation&s=python&p=python) (`dict`) reposent sur le même principe.
 
 Comprendre les tables de hachage, c'est donc comprendre un mécanisme qui se répète silencieusement dans la quasi-totalité des langages et outils modernes.
 

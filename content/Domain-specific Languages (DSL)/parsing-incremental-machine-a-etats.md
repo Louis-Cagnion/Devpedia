@@ -54,7 +54,7 @@ Fermeture : </p>
 
 ## Reconstruire une structure : maintenir l'état soi-même
 
-`HTMLParser` transmet des événements, mais ne restitue jamais "la ligne d'un tableau" ou "la cellule courante" : ces notions n'existent qu'en construisant des variables d'instance mises à jour à chaque événement, exactement comme le fait un projet réel qui reconstruit un tableau HTML (`<table>`/`<tr>`/`<td>`) en une grille de cellules :
+`HTMLParser` transmet des événements, mais ne restitue jamais "la ligne d'un tableau" ou "la cellule courante" : ces notions n'existent qu'en construisant des variables d'instance mises à jour à chaque événement, exactement comme le fait un projet réel qui reconstruit un tableau [HTML](/?c=langages-de-balisage&s=html&p=html) (`<table>`/`<tr>`/`<td>`) en une grille de cellules :
 
 ```python
 class ParseurTableau(HTMLParser):
@@ -85,7 +85,7 @@ class ParseurTableau(HTMLParser):
 ```
 
 - `self._ligne_courante` et `self._cellule_courante` sont l'**état** de cette machine à états : leur valeur (`None` ou une liste en cours de remplissage) détermine comment interpréter le prochain événement reçu.
-- `handle_data` peut être appelé **plusieurs fois** pour un même texte (le module HTML sous-jacent découpe parfois le texte en plusieurs fragments, par exemple autour d'une entité comme `&amp;`) : c'est pour ça que `_cellule_courante` accumule dans une **liste** (`.append`), plutôt que d'écraser une simple variable à chaque appel.
+- `handle_data` peut être appelé **plusieurs fois** pour un même texte (le module [HTML](/?c=langages-de-balisage&s=html&p=html) sous-jacent découpe parfois le texte en plusieurs fragments, par exemple autour d'une entité comme `&amp;`) : c'est pour ça que `_cellule_courante` accumule dans une **liste** (`.append`), plutôt que d'écraser une simple variable à chaque appel.
 
 > **Piège :** écraser l'état accumulé plutôt que l'étendre (`self._cellule_courante = data` au lieu de `self._cellule_courante.append(data)`). Si le texte d'une cellule arrive en plusieurs fragments, seul le dernier fragment survivrait, sans erreur visible : juste une cellule tronquée dans le résultat final.
 >

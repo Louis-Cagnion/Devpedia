@@ -106,6 +106,6 @@ Le **modèle en flocon** (*snowflake schema*) pousse la normalisation un cran pl
 | | |
 |---|---|
 | **À retenir** | Le modèle en étoile organise un entrepôt de données autour d'une table de faits (les mesures) reliée à des tables de dimension (les axes d'analyse), à l'opposé d'une base OLTP normalisée. |
-| **Outils utilisables** | `JOIN` et `GROUP BY` en SQL pour interroger une table de faits selon une ou plusieurs dimensions. |
+| **Outils utilisables** | `JOIN` et `GROUP BY` en [SQL](/?c=domain-specific-languages-dsl&p=sql) pour interroger une table de faits selon une ou plusieurs dimensions. |
 | **Pièges à éviter** | Juger une dimension dénormalisée avec des réflexes de base OLTP ; utiliser une clé naturelle (susceptible de changer) comme clé de dimension. |
 | **Bonnes pratiques** | Générer une clé de substitution propre à l'entrepôt pour chaque dimension ; garder le modèle en étoile par défaut, ne passer en flocon que si un besoin concret le justifie. |
