@@ -12,6 +12,10 @@
     "readerContinue": "▶ Continuer après le bloc de code",
     "readerStop": "⏹ Arrêter la lecture",
     "readerListen": "🔊 Écouter cette page",
+    "readerPause": "⏸ Pause",
+    "readerResume": "▶ Reprendre",
+    "readerNextParagraph": "⏩ Paragraphe suivant",
+    "readerPreviousParagraph": "⏪ Paragraphe précédent",
     "pageFallbackNotice": "Cette page n'est pas encore traduite : la voici dans une autre langue disponible."
   },
   "en": {
@@ -27,6 +31,10 @@
     "readerContinue": "▶ Continue after the code block",
     "readerStop": "⏹ Stop reading",
     "readerListen": "🔊 Listen to this page",
+    "readerPause": "⏸ Pause",
+    "readerResume": "▶ Resume",
+    "readerNextParagraph": "⏩ Next paragraph",
+    "readerPreviousParagraph": "⏪ Previous paragraph",
     "pageFallbackNotice": "This page isn't translated yet: showing it in another available language.",
     "categoryLabels": {
       "acceuil": "Home",
@@ -88,6 +96,10 @@
     "readerContinue": "▶ Continuar después del bloque de código",
     "readerStop": "⏹ Detener la lectura",
     "readerListen": "🔊 Escuchar esta página",
+    "readerPause": "⏸ Pausa",
+    "readerResume": "▶ Reanudar",
+    "readerNextParagraph": "⏩ Párrafo siguiente",
+    "readerPreviousParagraph": "⏪ Párrafo anterior",
     "pageFallbackNotice": "Esta página aún no está traducida: mostrándola en otro idioma disponible.",
     "categoryLabels": {
       "acceuil": "Inicio",
@@ -149,6 +161,10 @@
     "readerContinue": "▶ Continuar após o bloco de código",
     "readerStop": "⏹ Parar a leitura",
     "readerListen": "🔊 Ouvir esta página",
+    "readerPause": "⏸ Pausar",
+    "readerResume": "▶ Retomar",
+    "readerNextParagraph": "⏩ Próximo parágrafo",
+    "readerPreviousParagraph": "⏪ Parágrafo anterior",
     "pageFallbackNotice": "Esta página ainda não foi traduzida: mostrando em outro idioma disponível.",
     "categoryLabels": {
       "acceuil": "Início",

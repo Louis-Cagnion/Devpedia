@@ -855,28 +855,35 @@ blockquote p + p {
     border-top: 1px solid var(--border);
 }
 
-.rightSidebar .readerToggleButton,
+.rightSidebar .readerListenButton,
 .rightSidebar .readerRestartButton,
+.rightSidebar .readerPrimaryButton,
 .rightSidebar .readerReplayButton,
-.rightSidebar .readerContinueButton {
+.rightSidebar .readerPreviousButton,
+.rightSidebar .readerNextButton {
     width: 100%;
     justify-content: center;
 }
 
-.readerToggleButton:disabled, .readerRestartButton:disabled {
+.readerListenButton:disabled, .readerRestartButton:disabled {
     opacity: 0.5;
     cursor: default;
 }
 
-/* readerRestartButton carries "visible" from the start (cf. createReaderControl) -- available
-   right away, same as readerToggleButton. readerReplayButton/readerContinueButton only get it
-   once reading has produced a paragraph to go back to (cf. applyStatus() in reader.js), or once
-   reading reaches a code block -- cf. .visible on .menuDiv/dropdowns */
-.readerRestartButton, .readerReplayButton, .readerContinueButton {
+/* Exactly one pair shows at a time (cf. applyStatus() in reader.js): readerListenButton +
+   readerRestartButton while nothing is playing, or readerPrimaryButton (its own label switching
+   between "Pause"/"Reprendre"/"Continuer" depending on state) + readerReplayButton +
+   readerPreviousButton + readerNextButton once reading is in progress -- deliberately never both
+   pairs together, to keep the control down to 2 buttons at rest instead of stacking every action
+   whether or not it currently means anything (requested by Louis on 2026-08-16). Same on/off
+   mechanism as .visible on .menuDiv/dropdowns elsewhere. */
+.readerListenButton, .readerRestartButton, .readerPrimaryButton, .readerReplayButton,
+.readerPreviousButton, .readerNextButton {
     display: none;
 }
 
-.readerRestartButton.visible, .readerReplayButton.visible, .readerContinueButton.visible {
+.readerListenButton.visible, .readerRestartButton.visible, .readerPrimaryButton.visible,
+.readerReplayButton.visible, .readerPreviousButton.visible, .readerNextButton.visible {
     display: inline-flex;
 }
 

@@ -31,6 +31,16 @@ let planIndex = 0;
 let isPlaying = false;
 let isPausedAtCode = false;
 
+// True after pauseReading() (the reader control's own "Pause" button), distinct from
+// isPausedAtCode (paused automatically at a `pre` block, waiting for "Continuer") and from the
+// fully-stopped state (neither flag set, planIndex reset to 0 by resetPlayback()). `planIndex`
+// itself is left untouched while paused, so resumeReading() re-speaks the same clause from its
+// own start rather than the whole paragraph -- close enough to "resume exactly where it stopped"
+// now that clauses are short (cf. collectLeafSegments' CLAUSE_END_PATTERN), and far simpler than
+// tracking a mid-utterance offset through synth.pause()/resume() for what would be a barely
+// noticeable difference. Requested by Louis on 2026-08-16.
+let isPaused = false;
+
 // Index in `plan` of the last (or currently playing) "speak" entry, so replayParagraph() knows
 // which paragraph to restart even after playback has stopped or paused at a code block. Cleared
 // by resetPlayback() since a rebuilt/torn-down plan invalidates it.
@@ -283,7 +293,7 @@ let generation = 0;
 const listeners = new Set();
 
 function getStatus() {
-    return { hasPlan: plan.length > 0, isPlaying, isPausedAtCode, canReplay: lastSpokenIndex !== null };
+    return { hasPlan: plan.length > 0, isPlaying, isPaused, isPausedAtCode, canReplay: lastSpokenIndex !== null };
 }
 
 function notify() {
@@ -434,6 +444,7 @@ function resetPlayback() {
     cancelCurrentUtterance();
     planIndex = 0;
     isPlaying = false;
+    isPaused = false;
     isPausedAtCode = false;
     lastSpokenIndex = null;
     clearHighlight();
@@ -478,6 +489,29 @@ export function buildReadingPlan(pageDiv) {
 export function stopReading() {
     resetPlayback();
     notify();
+}
+
+/**
+ * Pauses reading in place: cancels whatever's being spoken right now but leaves `planIndex` (and
+ * the highlight already showing) untouched, so resumeReading() picks the same clause back up from
+ * its own start rather than the whole paragraph or the whole page. What the reader control's
+ * "Pause" button calls while playing.
+ */
+export function pauseReading() {
+    cancelCurrentUtterance();
+    isPlaying = false;
+    isPaused = true;
+    notify();
+}
+
+/**
+ * Resumes reading after pauseReading() -- re-speaks the clause `planIndex` still points at, from
+ * its own start. What the reader control's "Reprendre" button calls.
+ */
+export function resumeReading() {
+    if (!SPEECH_SUPPORTED || !plan.length) return;
+    isPaused = false;
+    speakNext();
 }
 
 function speakNext() {
@@ -664,12 +698,66 @@ function replayParagraph() {
 }
 
 /**
- * Builds one instance of the read-aloud control: a play/stop toggle and a "restart from the
- * beginning" button, both always shown, plus two buttons hidden until they're relevant --
- * "replay this paragraph" (once reading has produced something to go back to) and "continue
- * after the code block" (once reading is paused at one). Call once per place it needs to appear
- * (the desktop right sidebar, the mobile floating bar) -- every instance shares the same
- * underlying playback state and stays in sync with the others.
+ * @param {number} fromIndex a plan index to search from, typically `planIndex`
+ * @param {1|-1} direction 1 to look for the next paragraph, -1 for the previous one
+ * @returns {number|null} the plan index of the adjacent paragraph's first "speak" entry, or null
+ *   if there isn't one in that direction (already at the first/last paragraph)
+ */
+function adjacentParagraphIndex(fromIndex, direction) {
+    const currentEntry = plan[fromIndex];
+    if (!currentEntry) return null;
+    const currentGroup = currentEntry.kind === "speak" ? currentEntry.group : currentEntry.element;
+    let i = fromIndex;
+    // Step past whatever's left of the current paragraph -- or, if paused at a code block right
+    // now, past that block itself.
+    while (plan[i] && (plan[i].kind === "speak" ? plan[i].group : plan[i].element) === currentGroup) i += direction;
+    // A "pause" entry (a code block) in between isn't a paragraph to land on for this purpose --
+    // skip over it too, in either direction.
+    while (plan[i] && plan[i].kind !== "speak") i += direction;
+    if (!plan[i]) return null;
+    if (direction > 0) return i;
+    // Walking backward, `i` is the *last* entry of the previous paragraph rather than its first --
+    // keep going back to find where that paragraph actually starts.
+    const targetGroup = plan[i].group;
+    while (plan[i - 1] && plan[i - 1].kind === "speak" && plan[i - 1].group === targetGroup) i--;
+    return i;
+}
+
+/**
+ * Cancels whatever's playing and jumps straight to `index`, speaking from there -- shared by
+ * nextParagraph()/previousParagraph().
+ *
+ * @param {number} index
+ */
+function jumpToParagraph(index) {
+    cancelCurrentUtterance();
+    planIndex = index;
+    isPaused = false;
+    speakNext();
+}
+
+/** What the reader control's "paragraphe suivant" button calls. */
+function nextParagraph() {
+    const target = adjacentParagraphIndex(planIndex, 1);
+    if (target !== null) jumpToParagraph(target);
+}
+
+/** What the reader control's "paragraphe précédent" button calls. */
+function previousParagraph() {
+    const target = adjacentParagraphIndex(planIndex, -1);
+    if (target !== null) jumpToParagraph(target);
+}
+
+/**
+ * Builds one instance of the read-aloud control. Exactly one of two button pairs shows at a time
+ * (cf. applyStatus() below), rather than stacking every action whether or not it currently means
+ * anything (requested by Louis on 2026-08-16, "pour éviter la surcharge de boutons") --
+ * readerListenButton + readerRestartButton while nothing is playing, or readerPrimaryButton
+ * (its own label switching between "Pause"/"Reprendre"/"Continuer" depending on exactly which of
+ * isPlaying/isPaused/isPausedAtCode is set) + readerReplayButton + readerPreviousButton +
+ * readerNextButton once reading is in progress in any of those three ways. Call once per place it
+ * needs to appear (the desktop right sidebar, the mobile floating bar) -- every instance shares
+ * the same underlying playback state and stays in sync with the others.
  *
  * @returns {HTMLElement|null} null if the browser has no Web Speech API, so callers show nothing
  *   rather than a control that can never work
@@ -678,43 +766,57 @@ export function createReaderControl() {
     if (!SPEECH_SUPPORTED) return null;
 
     const wrapper = createTag("div", { class: "readerControl" });
-    const toggleButton = createTag("button", { class: "returnButton readerToggleButton" });
+    const listenButton = createTag(
+        "button",
+        { class: "returnButton readerListenButton" },
+        { textContent: t("readerListen") }
+    );
     const restartButton = createTag(
         "button",
-        { class: "returnButton readerRestartButton visible" },
+        { class: "returnButton readerRestartButton" },
         { textContent: t("readerRestart") }
     );
+    const primaryButton = createTag("button", { class: "returnButton readerPrimaryButton" });
     const replayButton = createTag(
         "button",
         { class: "returnButton readerReplayButton" },
         { textContent: t("readerReplay") }
     );
-    const continueButton = createTag(
+    const previousButton = createTag(
         "button",
-        { class: "returnButton readerContinueButton" },
-        { textContent: t("readerContinue") }
+        { class: "returnButton readerPreviousButton" },
+        { textContent: t("readerPreviousParagraph") }
     );
-    toggleButton.addEventListener("click", () => {
-        if (isPlaying || isPausedAtCode) stopReading();
-        else startFromVisible();
-    });
+    const nextButton = createTag(
+        "button",
+        { class: "returnButton readerNextButton" },
+        { textContent: t("readerNextParagraph") }
+    );
+    listenButton.addEventListener("click", startFromVisible);
     restartButton.addEventListener("click", startReading);
+    primaryButton.addEventListener("click", () => {
+        if (isPausedAtCode) continueAfterCode();
+        else if (isPlaying) pauseReading();
+        else if (isPaused) resumeReading();
+    });
     replayButton.addEventListener("click", replayParagraph);
-    continueButton.addEventListener("click", continueAfterCode);
-    wrapper.append(toggleButton, restartButton, replayButton, continueButton);
+    previousButton.addEventListener("click", previousParagraph);
+    nextButton.addEventListener("click", nextParagraph);
+    // In-progress order requested by Louis on 2026-08-16: previous, pause/resume, next, replay.
+    wrapper.append(listenButton, restartButton, previousButton, primaryButton, nextButton, replayButton);
 
     const applyStatus = status => {
-        toggleButton.disabled = !status.hasPlan;
-        restartButton.disabled = !status.hasPlan;
-        toggleButton.textContent = status.isPlaying || status.isPausedAtCode
-            ? t("readerStop")
-            : t("readerListen");
-        // Replaying only makes sense once reading has produced something to go back to; restarting
-        // (readerRestartButton) is available from the start, same as the toggle button, since it
-        // doesn't depend on any prior progress.
-        const hasProgress = status.isPlaying || status.isPausedAtCode || status.canReplay;
-        replayButton.classList.toggle("visible", hasProgress);
-        continueButton.classList.toggle("visible", status.isPausedAtCode);
+        const inProgress = status.isPlaying || status.isPaused || status.isPausedAtCode;
+        listenButton.classList.toggle("visible", !inProgress);
+        restartButton.classList.toggle("visible", !inProgress);
+        listenButton.disabled = restartButton.disabled = !status.hasPlan;
+        primaryButton.classList.toggle("visible", inProgress);
+        primaryButton.textContent = status.isPausedAtCode ? t("readerContinue")
+            : status.isPlaying ? t("readerPause")
+            : t("readerResume");
+        replayButton.classList.toggle("visible", inProgress);
+        previousButton.classList.toggle("visible", inProgress);
+        nextButton.classList.toggle("visible", inProgress);
     };
     listeners.add(applyStatus);
     applyStatus(getStatus());

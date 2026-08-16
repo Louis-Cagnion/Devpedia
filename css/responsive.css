@@ -87,10 +87,12 @@
         flex-wrap: wrap;
         width: 100%;
     }
-    .readerFloatingBar .readerToggleButton,
+    .readerFloatingBar .readerListenButton,
     .readerFloatingBar .readerRestartButton,
+    .readerFloatingBar .readerPrimaryButton,
     .readerFloatingBar .readerReplayButton,
-    .readerFloatingBar .readerContinueButton {
+    .readerFloatingBar .readerPreviousButton,
+    .readerFloatingBar .readerNextButton {
         flex: 1 1 auto;
         justify-content: center;
     }
