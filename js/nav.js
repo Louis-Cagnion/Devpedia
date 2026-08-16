@@ -8,8 +8,11 @@ import { initLanguageSwitcher, getStoredLanguage, applyDocumentLanguage } from "
 import { initI18n, t, tEntityLabel } from "./i18n.js";
 
 /**
+ * @brief Returns the trailing "(ABBR)" part of a label, or the label itself if it has none.
+ *
  * @param {string} label
- * @returns {string} the trailing "(ABBR)" part of a label, or the label itself if it has none
+ *
+ * @returns {string}
  */
 function getShortLabel(label) {
     const match = label.match(/\(([^)]+)\)\s*$/);
@@ -17,16 +20,10 @@ function getShortLabel(label) {
 }
 
 /**
- * Show the short form of any category button whose full label no longer fits,
- * and the full form otherwise. If even the short labels don't all fit on one line,
- * hide trailing buttons one by one (rather than letting the row overflow and clip
- * them mid-way) until the rest fit cleanly, and reveal the "Voir plus" button.
- * `moreButton` lives inside `categoriesDiv` (not as a separate sibling), so it shares
- * the exact same gap/centering as the category buttons — the spacing before it is
- * identical to the spacing between any two category buttons. It's made visible
- * *before* the hiding loop runs, so its own width is accounted for while deciding
- * how many category buttons still fit.
+ * @brief Shows the short form of any category button whose full label no longer fits, hiding
+ * trailing buttons one by one (revealing "Voir plus") if even the short labels don't all fit.
  * Re-evaluated whenever the categories bar is resized.
+ *
  * @param {HTMLElement} categoriesDiv
  * @param {HTMLElement[]} categoryButtons
  * @param {HTMLElement} moreButton
@@ -61,12 +58,12 @@ function watchCategoriesOverflow(categoriesDiv, categoryButtons, moreButton) {
 }
 
 /**
- * Build the (initially hidden) "Voir plus" button and its dropdown listing every category
- * alphabetically. The dropdown is attached to <body> and fixed below the navbar, independently
- * of where the button ends up in the navbar's flex layout, so it always spans the full width.
+ * @brief Builds the (initially hidden) "Voir plus" button and its dropdown listing every
+ * category alphabetically.
  *
  * @param {Object} categories
- * @returns {HTMLElement} the "Voir plus" button, not yet attached to navBar
+ *
+ * @returns {HTMLElement} the button, not yet attached to navBar
  */
 function createCategoriesOverflowMenu(categories) {
     const moreButton = createTag("button", {class: "categoriesMoreButton"}, {textContent: t("seeMore")});
@@ -96,7 +93,8 @@ function createCategoriesOverflowMenu(categories) {
 }
 
 /**
- * Create and attach the (desktop) categories row to navBar
+ * @brief Creates and attaches the (desktop) categories row to navBar.
+ *
  * @param {HTMLElement} navBar
  * @param {Object} categories
  */
@@ -120,8 +118,9 @@ function createAppendCategories(navBar, categories = []) {
 }
 
 /**
- * 
- * @param {HTMLElement} navBar 
+ * @brief Creates and attaches the navbar logo, which navigates home when clicked.
+ *
+ * @param {HTMLElement} navBar
  */
 function createAppendLogo(navBar) {
     const logo = createTag("button", {class: "logo"}, {textContent: "Devpedia"});
@@ -133,6 +132,7 @@ function createAppendLogo(navBar) {
 }
 
 /**
+ * @brief Creates and attaches the search bar, language switcher, and mobile menu button.
  *
  * @param {HTMLElement} navBarRightSide
  * @param {HTMLElement} menuDiv
@@ -157,40 +157,27 @@ function createAppendSearchbarButton(navBarRightSide, menuDiv, categories) {
 }
 
 /**
- * Generate the navigation bar and append it to the body
+ * @brief Generates the navigation bar, the desktop sidebars, and the mobile menu, and appends
+ * them to the body.
  *
- * Also builds the desktop sidebars and the mobile menu (shown when the menu
- * button on the right is pressed), both driven by sidebar.js
- *
- * @param {Object} categories The category list of what will be in the website
+ * @param {Object} categories the category list of what will be in the website
  */
 function generateNavBar(categories = []) {
-    //navbar
     const navBar = createTag("div", {class: "navBar"});
-
-    ////logo
     createAppendLogo(navBar);
-
-    ////categories (pc format)
     createAppendCategories(navBar, categories);
 
-    ////search bar and menu button (phone format)
     const searchAndButtonDiv = createTag("div", {class: "searchAndButtonDiv"});
     const { menuDiv, floatingBar } = initSidebars(categories);
     createAppendSearchbarButton(searchAndButtonDiv, menuDiv, categories);
     navBar.append(searchAndButtonDiv);
 
-    //attach navbar to body
     document.body.append(navBar);
-
-    //attach menu, will be displayed when menu button is pressed
     document.body.append(menuDiv);
-
-    //attach the mobile read-aloud floating bar, if the browser supports it
     if (floatingBar)
         document.body.append(floatingBar);
 
-    //let the sidebars know how tall the navbar is, so they start right below it
+    // Lets the sidebars know how tall the navbar is, so they start right below it.
     const setNavBarHeightVar = () => {
         document.documentElement.style.setProperty("--navbar-height", `${navBar.getBoundingClientRect().height}px`);
     };
