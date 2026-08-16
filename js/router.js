@@ -97,12 +97,15 @@ function renderResolvedTarget({ lang, category, subject, chapter }) {
         const path = subject
             ? `./${contentDir}/${category.folder}/${subject.folder}/${chapter.id}.md`
             : `./${contentDir}/${category.folder}/${chapter.id}.md`;
+        pushNavUrl(buildNavUrl(category.id, subject?.id ?? null, chapter.id));
         renderChapter(category.id, path, chapter, subject?.id ?? null, category, subject, lang);
     } else if (subject) {
         appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId: category.id}];
+        pushNavUrl(buildNavUrl(category.id, subject.id, subject.id));
         renderSubject(category, subject, lang);
     } else {
         appState.navigationStack = [{type: 'home'}];
+        pushNavUrl(buildNavUrl(category.id, null, category.id));
         renderCategory(category, lang);
     }
 }
@@ -153,6 +156,46 @@ function parseNavParams(url) {
     return { categoryId, subjectId: params.get("s"), pageId: params.get("p") ?? categoryId };
 }
 
+// ---- browser history (back/forward + reload keep the current page) ----
+// Requested by Louis on 2026-08-16: a full reload (e.g. from a live-reload dev server watching
+// content files) always landed back on the home page, and the browser's own back/forward buttons
+// did nothing, because nothing here ever touched `window.location` or `history` after the very
+// first load -- every click just mutated appState/the DOM directly. `p`/`s`/`c` are exactly the
+// same query params parseNavParams() above already reads at startup, so the fix is to also *write*
+// them on every navigation instead of only reading them once.
+
+/**
+ * @param {string} categoryId
+ * @param {string|null} subjectId
+ * @param {string} pageId
+ * @returns {string} the URL parseNavParams() above would resolve back to this same target --
+ *   `p` omitted when it's redundant with `c` (a category's or the home page's own intro page),
+ *   the same default parseNavParams() already falls back to
+ */
+function buildNavUrl(categoryId, subjectId, pageId) {
+    const params = new URLSearchParams({ c: categoryId });
+    if (subjectId) params.set("s", subjectId);
+    if (pageId !== categoryId) params.set("p", pageId);
+    return `?${params.toString()}`;
+}
+
+// True while a render is replaying whatever the current URL already says (the initial page load,
+// or a browser back/forward navigation) rather than responding to a fresh click -- pushNavUrl()
+// below is a no-op while this is set, so replaying the current URL never pushes it again as if it
+// were a brand new destination. Every render dispatch function (loadCategory, navigateToSubject,
+// navigateToChapter, generateHomePage, renderResolvedTarget, renderEntry) calls pushNavUrl() on its
+// own, unconditionally, rather than threading a "should I push?" parameter through every one of
+// them and every function that calls them -- simpler to reason about, at the cost of this one
+// shared flag standing in for that parameter instead.
+let isReplayingUrl = false;
+
+/**
+ * @param {string} url see {@link buildNavUrl}
+ */
+function pushNavUrl(url) {
+    if (!isReplayingUrl) history.pushState(null, "", url);
+}
+
 /**
  * Navigate to whatever `target` describes — a category's own page, a subject's own page, or a
  * chapter — the same dispatch {@link resumePendingNavigation} already did for a language-switch
@@ -180,38 +223,59 @@ function navigateToTarget({ categoryId, subjectId, pageId }) {
 }
 
 export function resumePendingNavigation() {
-    const raw = sessionStorage.getItem(PENDING_NAV_KEY);
-    sessionStorage.removeItem(PENDING_NAV_KEY);
-    if (raw) {
-        const { categoryId, subjectId, pageId } = JSON.parse(raw);
-        const category = findCategory({ id: categoryId });
-        if (categoryId === "acceuil") {
-            generateHomePage();
-        } else if (!category) {
-            renderAcrossLanguages(categoryId, subjectId, pageId);
-        } else if (pageId === categoryId) {
-            loadCategory(categoryId);
-        } else if (pageId === subjectId) {
-            navigateToSubject(categoryId, subjectId);
-        } else {
-            navigateToChapter(categoryId, subjectId, pageId);
+    isReplayingUrl = true;
+    try {
+        const raw = sessionStorage.getItem(PENDING_NAV_KEY);
+        sessionStorage.removeItem(PENDING_NAV_KEY);
+        if (raw) {
+            const { categoryId, subjectId, pageId } = JSON.parse(raw);
+            const category = findCategory({ id: categoryId });
+            if (categoryId === "acceuil") {
+                generateHomePage();
+            } else if (!category) {
+                renderAcrossLanguages(categoryId, subjectId, pageId);
+            } else if (pageId === categoryId) {
+                loadCategory(categoryId);
+            } else if (pageId === subjectId) {
+                navigateToSubject(categoryId, subjectId);
+            } else {
+                navigateToChapter(categoryId, subjectId, pageId);
+            }
+            return;
         }
-        return;
+        const target = parseNavParams(window.location.href);
+        if (!target || !navigateToTarget(target))
+            generateHomePage();
+    } finally {
+        isReplayingUrl = false;
     }
-    const target = parseNavParams(window.location.href);
-    if (!target || !navigateToTarget(target))
-        generateHomePage();
 }
+
+/**
+ * The browser's own back/forward buttons -- re-renders whatever the URL now says (the same
+ * parseNavParams()/navigateToTarget() dispatch resumePendingNavigation() uses at startup) without
+ * pushing a new entry for it, since the browser already moved the history position on its own.
+ */
+window.addEventListener("popstate", () => {
+    isReplayingUrl = true;
+    try {
+        const target = parseNavParams(window.location.href);
+        if (!target || !navigateToTarget(target)) generateHomePage();
+    } finally {
+        isReplayingUrl = false;
+    }
+});
 
 /**
  * Intercepts a plain click on an in-content cross-chapter link (`<a class="contentLink">`,
  * cf. parser.js) so it navigates through the SPA router instead of triggering a full page
- * reload — which would land back on the home page for any URL the user didn't just arrive
- * on, since {@link resumePendingNavigation} only runs once, at startup. A click carrying a
- * modifier key (Ctrl/Cmd/Shift, or a non-primary button) is left alone so "open in a new
- * tab" still works — the reload it causes there now resolves correctly too, via the same
- * URL-param handling in {@link resumePendingNavigation}. Sidebar navigation doesn't push
- * history entries either, so this doesn't call `history.pushState`, for consistency.
+ * reload — smoother (no white flash, current scroll/reader state discarded for nothing), even
+ * though a reload now resolves to the same page too (cf. resumePendingNavigation()/pushNavUrl()).
+ * A click carrying a modifier key (Ctrl/Cmd/Shift, or a non-primary button) is left alone so
+ * "open in a new tab" still works. No `history.pushState` call needed directly here: it
+ * delegates to navigateToTarget(), which reaches loadCategory()/navigateToSubject()/
+ * navigateToChapter() the same way a sidebar click does, and each of those already pushes its own
+ * URL.
  *
  * @param {HTMLElement} pageDiv
  */
@@ -461,6 +525,12 @@ export async function generateHomePage() {
     appState.curCategory = 'acceuil';
     appState.curSubject = null;
     appState.curPageId = 'acceuil';
+    // No query params at all, rather than buildNavUrl()'s usual "?c=..." -- "acceuil" isn't a
+    // real entry in structure/struct.json (cf. resumePendingNavigation()'s own special-case check
+    // for it above), so a bare URL is what parseNavParams() already treats as "go home" today;
+    // pushing "?c=acceuil" instead would send a future reload down its slower not-found-in-any-
+    // language fallback path (cf. navigateToTarget()) to reach the exact same page.
+    pushNavUrl(window.location.pathname);
     const homeInfos = await fetchFileToTextOrJson(`./${getContentDir()}/acceuil.md`, 'text');
     generatePageContent(homeInfos, 'acceuil', false);
 }
@@ -579,8 +649,10 @@ function renderEntry(entry) {
         return;
     }
     if (entry.type === 'subject') {
+        pushNavUrl(buildNavUrl(category.id, subject.id, subject.id));
         renderSubject(category, subject);
     } else {
+        pushNavUrl(buildNavUrl(category.id, null, category.id));
         renderCategory(category);
     }
 }
@@ -608,6 +680,7 @@ export function loadCategory(categoryId) {
         return;
     }
     appState.navigationStack = [{type: 'home'}];
+    pushNavUrl(buildNavUrl(categoryId, null, categoryId));
     renderCategory(category);
 }
 
@@ -626,6 +699,7 @@ export function navigateToSubject(categoryId, subjectId) {
         return;
     }
     appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}];
+    pushNavUrl(buildNavUrl(categoryId, subjectId, subjectId));
     renderSubject(category, subject);
 }
 
@@ -645,6 +719,7 @@ export function navigateToChapter(categoryId, subjectId, chapterId) {
         renderAcrossLanguages(categoryId, subjectId, chapterId);
         return;
     }
+    pushNavUrl(buildNavUrl(categoryId, subjectId, chapterId));
     if (subjectId) {
         appState.navigationStack = [{type: 'home'}, {type: 'category', categoryId}, {type: 'subject', categoryId, subjectId}];
         renderChapter(categoryId, `./${getContentDir()}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subjectId);

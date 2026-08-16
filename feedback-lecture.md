@@ -5,8 +5,8 @@
 - tu as le droit de poser des questions a l'utilisateur si une demande te semble flou
 
 ## nouvelles modifications
-- Bouton bas de page fait le 2026-08-16 : "Paragraphe précédent/suivant" du bas de page dupliqué à la fin du contenu de chaque chapitre (`appendBottomChapterNav` dans `js/router.js`), testé en cliquant dessus. À confirmer visuellement.
-- Live-server qui revient à l'accueil et navigation sans retour arrière possible : même cause racine (la navigation en JS ne met jamais à jour l'URL du navigateur, `history.pushState` n'est jamais appelé) — nécessite un plan détaillé avant de commencer, cf. discussion à suivre.
+- Boutons chapitre précédent/suivant dupliqués en bas de page faits le 2026-08-16 (`appendBottomChapterNav` dans `js/router.js`), testés en cliquant dessus. À confirmer visuellement.
+- Navigation par URL faite le 2026-08-16 : `history.pushState`/`popstate` ajoutés dans `js/router.js` (`pushNavUrl`/`buildNavUrl`, écouteur `popstate`) pour que l'URL reflète toujours la page affichée. Corrige à la fois le retour arrière du navigateur et le live-server qui remettait à l'accueil (même cause racine). Testé : navigation directe, retour/avance navigateur, rechargement complet, clic sur un lien interne. À confirmer en conditions réelles avec ton live-server.
 
 ## general
 - Prononciation des points de fichier corrigée le 2026-08-16 (`texte.txt`, `.py` → "pi") dans `js/reader-pronunciation.js`. À valider à l'oreille.
