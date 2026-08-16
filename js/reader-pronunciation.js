@@ -248,11 +248,17 @@ export function speakableCode(text, context) {
 // croisillons" (the French name of "#") otherwise, since it's outside any inline code span in
 // every mention on the site (only ever cited in passing, never taught as its own chapter).
 const CSHARP_SPEECH = "C sharp";
+// "OCaml" is likewise never translated, but read as one run-together word by a French voice --
+// which happens to land on "au calme" ("at ease"), since "O" and "Caml" both sound like real
+// French words back to back (reported by Louis on 2026-08-16). The inserted space forces the two
+// syllables apart, the same fix as C# above, but this one matters a lot more: OCaml has its own
+// whole subject on the site, so its name shows up in prose constantly, not just in passing.
+const OCAML_SPEECH = "O Caml";
 const PROSE_SYMBOL_SPEECH = {
-    fr: { "≈": "environ", "~": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés", "×": "fois", "C#": CSHARP_SPEECH },
-    en: { "≈": "approximately", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "C#": CSHARP_SPEECH },
-    es: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "C#": CSHARP_SPEECH },
-    br: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "C#": CSHARP_SPEECH },
+    fr: { "≈": "environ", "~": "environ", "≥": "supérieur ou égal à", "≠": "différent de", "°": "degrés", "×": "fois", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    en: { "≈": "approximately", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    es: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    br: { "≈": "aproximadamente", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
 };
 
 // "→" means different things depending on the chapter: a numeric/character range ("0 → 255",

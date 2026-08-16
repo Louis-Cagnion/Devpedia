@@ -116,9 +116,15 @@ function wordIndexAtChar(text, charIndex) {
 /**
  * Replaces each word of text-node content under `root` with its own `<span class="readerWord">`
  * (whitespace/punctuation between words left as-is), so setActiveWord() has an element to target
- * per word. Recurses into formatting elements (`strong`, `em`, a link...) to keep their styling
- * and behavior intact, but never descends into `code` -- inline code is highlighted as a whole via
- * its own entry (cf. collectLeafSegments), not word by word.
+ * per word. Recurses into every element under `root`, formatting elements (`strong`, `em`, a
+ * link...) and `code` alike -- a `code` element only ever reaches this function already folded
+ * into the surrounding sentence as one of its ordinary words (cf. collectLeafSegments: a `code`
+ * span with actual pronunciation to rewrite becomes its own separate entry instead, bypassing
+ * wrapSegmentWords()/this function entirely). Skipping `code` here used to leave a folded one with
+ * no word span of its own even though entry.text's own word count (cf. scheduleEstimatedWords())
+ * still included it -- invisible to the word highlight, and silently shifting every word index
+ * after it out of alignment with the real word spans (reported by Louis on 2026-08-16, "le
+ * highlight skip les codes inline").
  *
  * @param {HTMLElement} root
  * @param {HTMLElement[]} out appended to in document order
@@ -141,7 +147,7 @@ function wrapWordsInPlace(root, out) {
             });
             if (lastIndex < text.length) frag.append(text.slice(lastIndex));
             node.replaceWith(frag);
-        } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName !== "CODE") {
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
             wrapWordsInPlace(node, out);
         }
     });
@@ -177,26 +183,45 @@ function wrapSegmentWords(nodes) {
 // tested while building this feature (cf. devpedia-todo.md), not just the "no boundary" edge case
 // (Chrome on Android) it was originally written for. Recalibrated after every utterance from how
 // long it actually took to speak (cf. speakNext()'s utterance.onend, CALIBRATION_WEIGHT below), so
-// it converges on this session's actual voice/rate within the first couple of paragraphs rather
-// than staying a guess. Starts at a plausible default for a "rate: 1" utterance (~170 words/minute,
-// ~6 characters including the trailing space per word in French/English) so the very first entry
-// isn't wildly off.
-let charsPerSecond = 17;
-
-// A calibration measurement folds in real pauses (commas, periods) that scheduleEstimatedWords()
-// itself doesn't model -- it schedules every word at a constant pace, punctuation or not. Dividing
-// an utterance's full length by its full (pause-inclusive) duration therefore always reads as
-// slower than the voice's actual word-to-word pace, which otherwise made the highlight drift
-// further behind the voice as a long paragraph went on (observed by Louis on 2026-08-16) instead
-// of catching up. This factor nudges each calibration up to compensate, closer to "how fast the
-// words themselves go" than "how fast the whole sentence, pauses included, goes".
-const PAUSE_COMPENSATION = 1.15;
+// it converges on this session's actual voice/rate within the first couple of entries rather than
+// staying a guess. Starts at a plausible default for a "rate: 1" utterance so the very first entry
+// (still running on this default, with no calibrated measurement yet to correct it) isn't wildly
+// off -- tuned up from an initial 17 by Louis listening on 2026-08-16.
+//
+// No separate pause modeling needed on top of this (an earlier version had one, per-punctuation --
+// removed 2026-08-16): each entry is now one clause at most (cf. collectLeafSegments' own
+// CLAUSE_END_PATTERN), split at every comma/semicolon/colon/sentence end rather than reading a
+// whole paragraph as a single utterance, so there's no punctuation pause left *inside* an entry to
+// account for -- the gap between separate utterances covers it instead. That split also happens to
+// be why word-by-word can rely on a single flat rate at all: fitting one constant to a short,
+// single-clause entry is far more tractable than to a long paragraph mixing short and long
+// sentences with a different number of pauses each (tuning that by ear on 2026-08-16 kept reading
+// right on one paragraph and wrong on the next, no matter which constant got picked).
+let charsPerSecond = 38;
 
 // How strongly one utterance's measured rate moves charsPerSecond (0 = ignore it, 1 = replace it
 // outright). High on purpose: a voice's rate is constant for the whole session once picked, so
 // there's little value in a slow crawl toward it the way a genuinely noisy signal would need --
-// converging within the first entry or two matters more here than smoothing out noise.
-const CALIBRATION_WEIGHT = 0.6;
+// converging within the first entry or two matters more here than smoothing out noise. Raised
+// alongside the default above on 2026-08-16: still general, uniform lag reported after 17 -> 20 ->
+// 22 (each confirmed "still slow" by Louis), so convergence needed to be faster too, not just the
+// starting point higher -- a few seconds of a wrong guess shouldn't take several paragraphs to
+// wash out.
+const CALIBRATION_WEIGHT = 0.75;
+
+// How much scheduleEstimatedWords() below speeds up toward the end of a long entry, per word it
+// has -- 0.05 means a 3-word entry tops out around 15% faster by its last word (negligible, cf.
+// "sans modifier le pace des lignes courtes" below), a 20-word one around 100% faster (twice
+// charsPerSecond). Capped so an unusually long entry doesn't run away into an absurd speed.
+// Requested by Louis on 2026-08-16 as a general safety margin against charsPerSecond being a bit
+// off for the entry currently playing: since there's no way to know *this* entry's real duration
+// until it's over (cf. charsPerSecond's own comment on why calibration only ever corrects the
+// *next* entry), a long entry that's running behind gets a chance to visibly close some of that
+// gap by its own end rather than just handing the whole shortfall to whatever plays after it --
+// scaled by length so a short entry, which was never at much risk of drifting far in the first
+// place, keeps its pace essentially untouched.
+const MAX_ACCELERATION_PER_WORD = 0.05;
+const MAX_ACCELERATION_CAP = 1.5;
 
 /**
  * Schedules setActiveWord() calls timed to land roughly when each word of `entry.text` should
@@ -206,19 +231,43 @@ const CALIBRATION_WEIGHT = 0.6;
  * than this estimate, so utterance.onboundary in speakNext() still calls setActiveWord() directly
  * on top of whatever this schedule produces, correcting it wherever the browser actually reports.
  *
- * @param {{text: string, words: HTMLElement[]}} entry
+ * The pace itself isn't flat: it ramps up word over word (cf. MAX_ACCELERATION_PER_WORD) rather
+ * than staying at a constant charsPerSecond the whole way through.
+ *
+ * A short entry (a heading, a table cell) can finish being spoken -- and hand the highlight to the
+ * entry after it -- before every one of its own words' timers has fired. Without the
+ * `highlightedTarget` check below, such a late timer would call setActiveWord() using an index
+ * that means nothing for whatever entry is *now* playing, flipping the highlight between the
+ * paragraph and word tiers seemingly at random on short entries (reported by Louis on 2026-08-16,
+ * "notamment sur les titres et les tableaux"). The `generation` check alone doesn't catch this --
+ * that one only guards a stop/restart, not ordinary entry-to-entry progress within the same
+ * playback run.
+ *
+ * @param {{text: string, words: HTMLElement[], highlightTarget: HTMLElement}} entry
  * @param {number} myGeneration this call's generation, so a stop/restart/skip (which bumps the
  *   module's `generation`) silently drops every timer still pending instead of moving the
  *   highlight on a since-abandoned entry
  */
 function scheduleEstimatedWords(entry, myGeneration) {
     if (!entry.words.length) return; // nothing to highlight word by word (cf. collectLeafSegments)
+    const totalWords = entry.words.length;
+    const maxAcceleration = Math.min(MAX_ACCELERATION_CAP, totalWords * MAX_ACCELERATION_PER_WORD);
     let wordIndex = 0;
+    let cumulativeMs = 0;
+    let lastCharIndex = 0;
     for (const match of entry.text.matchAll(WORD_PATTERN)) {
-        const delayMs = (match.index / charsPerSecond) * 1000;
+        // Rate grows from charsPerSecond at the entry's first word toward charsPerSecond *
+        // (1 + maxAcceleration) at its last -- applied to the gap since the previous word rather
+        // than to match.index directly, so it's a smooth ramp rather than a jump recomputed from
+        // scratch every time.
+        const progress = wordIndex / totalWords;
+        const effectiveRate = charsPerSecond * (1 + maxAcceleration * progress);
+        cumulativeMs += ((match.index - lastCharIndex) / effectiveRate) * 1000;
+        lastCharIndex = match.index;
         const index = wordIndex++;
+        const delayMs = cumulativeMs;
         setTimeout(() => {
-            if (generation === myGeneration) setActiveWord(index);
+            if (generation === myGeneration && highlightedTarget === entry.highlightTarget) setActiveWord(index);
         }, delayMs);
     }
 }
@@ -242,6 +291,22 @@ function notify() {
     listeners.forEach(listener => listener(status));
 }
 
+// A clause boundary: one or more sentence-ending marks (with an optional closing quote/parenthesis
+// right after), or a single comma/semicolon/colon -- as long as that comma/semicolon/colon isn't
+// sitting between two digits, where it's a decimal separator or a ratio/time-like notation ("1,8",
+// "12:30") rather than a pause, and splitting it would read the number back in two disconnected
+// pieces. collectLeafSegments() below splits on every match, so a paragraph becomes several
+// single-clause entries instead of one long one.
+//
+// Why split this granularly rather than just per sentence: Chrome's speechSynthesis can silently
+// cut a long utterance short partway through and skip straight to the next plan entry without ever
+// finishing it -- confirmed on 2026-08-16 from a recording Louis made, a ~240-character/40-word
+// paragraph (nowhere near the length TTS bug reports usually blame) stopped dead after its first
+// sentence and jumped to the next heading. Splitting this small removes the need for a separate
+// pause model on top of charsPerSecond too (cf. its own comment) -- the gap between two separate
+// utterances stands in for the pause a comma or colon would otherwise need modeled inside one.
+const CLAUSE_END_PATTERN = /[.!?…]+[)»"'’”]*|[,;:](?!\d)/g;
+
 /**
  * Flushes `buffer` (page-language text accumulated so far) as one plan entry, then appends
  * `leaf`'s inline `code` spans as their own separate en-US entries -- kept apart from the
@@ -250,7 +315,9 @@ function notify() {
  * `speakableCode()` leaves completely untouched (a bare variable name, no operator or CLI flag to
  * rewrite -- e.g. "`a` et `a` deviendraient 0") has nothing that actually needs the English voice,
  * so it's folded into the surrounding sentence instead of forcing a voice switch and a pause for
- * something this trivial.
+ * something this trivial. Also splits the page-language text at every CLAUSE_END_PATTERN match, so
+ * one leaf can produce several "speak" entries even with no inline code in sight (cf.
+ * CLAUSE_END_PATTERN's own comment for why).
  *
  * Also wraps whatever ends up in each entry's own highlight target -- an inline `readerSegment`
  * around the buffered text's original nodes, or the `code` element itself -- so speakNext() has
@@ -284,8 +351,9 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
         buffer = "";
         segmentNodes = [];
     };
-    // A static snapshot: wrapSegmentWords() below mutates leaf's children as buffered runs are
-    // flushed, which would desync a live NodeList mid-iteration and skip nodes.
+    // A static snapshot: wrapSegmentWords() below (and this loop's own Text.splitText(), for a
+    // text node split at a clause boundary) mutate leaf's children as buffered runs are flushed,
+    // which would desync a live NodeList mid-iteration and skip nodes.
     Array.from(leaf.childNodes).forEach(node => {
         if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
             const code = node.textContent.trim();
@@ -301,6 +369,29 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
                 // too; the whole `code` element gets READER_HIGHLIGHT_CLASS instead.
                 entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf, highlightTarget: node, words: [] });
             }
+        } else if (node.nodeType === Node.TEXT_NODE) {
+            // Split at each clause boundary found, flushing the text/nodes accumulated so far
+            // (including the part of `current` up to and including the boundary) as its own entry
+            // before moving on to whatever's left. Only text nodes are split this way -- a
+            // boundary landing inside a formatting element (`strong`, `em`, a link) doesn't split
+            // that element; the two clauses stay merged into one entry, same as if this function
+            // didn't split at all. Rare in practice (a sentence essentially never ends mid-bold),
+            // and not a regression either way -- merged is exactly today's behavior everywhere else.
+            let current = node;
+            CLAUSE_END_PATTERN.lastIndex = 0;
+            let match;
+            while ((match = CLAUSE_END_PATTERN.exec(current.textContent))) {
+                const cutAt = match.index + match[0].length;
+                if (cutAt >= current.textContent.length) break;
+                const rest = current.splitText(cutAt);
+                buffer += current.textContent;
+                segmentNodes.push(current);
+                flushBuffer();
+                current = rest;
+                CLAUSE_END_PATTERN.lastIndex = 0;
+            }
+            buffer += current.textContent;
+            segmentNodes.push(current);
         } else {
             buffer += node.textContent;
             segmentNodes.push(node);
@@ -410,10 +501,17 @@ function speakNext() {
     lastSpokenIndex = planIndex;
     setHighlightedEntry(entry);
     notify();
-    // Only when its start isn't shown -- avoids yanking the view on every paragraph when several
-    // are already visible together (e.g. a tall screen, short paragraphs).
-    if (!isElementStartVisible(entry.group))
-        entry.group.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Checked (and scrolled) against the entry's own highlightTarget -- the one clause/segment
+    // actually being read right now -- rather than entry.group, the whole containing leaf. A long
+    // paragraph reads as several clause entries sharing one group (cf. collectLeafSegments'
+    // CLAUSE_END_PATTERN split), so checking only the leaf's own start left every clause after the
+    // first one free to scroll off the bottom of the screen without ever re-triggering a scroll,
+    // as long as the paragraph itself had been visible when it started (reported by Louis on
+    // 2026-08-16: reading kept going past the visible bottom of the page with nothing on screen to
+    // follow along with). Only when it isn't shown at all -- avoids yanking the view on every
+    // clause when several are already visible together (e.g. a tall screen, short paragraphs).
+    if (!isElementStartVisible(entry.highlightTarget))
+        entry.highlightTarget.scrollIntoView({ behavior: "smooth", block: "start" });
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
     const myGeneration = generation;
@@ -425,19 +523,31 @@ function speakNext() {
         if (generation !== myGeneration) return;
         setActiveWord(wordIndexAtChar(entry.text, event.charIndex));
     };
-    const calledAt = Date.now();
-    scheduleEstimatedWords(entry, myGeneration);
+    // Anchored on onstart (speech actually beginning), not on when speak() was called -- the two
+    // can be a couple hundred ms apart (engine queueing/startup), which the schedule below would
+    // otherwise treat as part of the text's own speaking time. That inflated short entries (a
+    // heading, a one-line paragraph) the most, since a fixed startup delay is a bigger fraction of
+    // a short entry's total duration -- and with CALIBRATION_WEIGHT trusting each measurement this
+    // much, one skewed entry was enough to drag the whole estimate down and make every entry after
+    // it feel slower (reported by Louis on 2026-08-16, right after CALIBRATION_WEIGHT went up).
+    let startedAt = null;
+    utterance.onstart = () => {
+        if (generation !== myGeneration) return;
+        startedAt = Date.now();
+        scheduleEstimatedWords(entry, myGeneration);
+    };
     utterance.onend = utterance.onerror = () => {
         if (generation !== myGeneration) return;
         // Recalibrates charsPerSecond from how long this utterance actually took, so the estimate
-        // converges on this session's real voice/rate. Skipped below some floor: a browser that
-        // can't actually produce speech (e.g. Brave on Linux with zero system TTS voices, cf.
-        // devpedia-todo.md) fires onerror within a millisecond or two of being asked to speak, and
-        // averaging that in as "this entry's text took ~0ms to say" would drag the estimate toward
-        // an absurdly high rate for every entry after it.
-        const elapsedSeconds = (Date.now() - calledAt) / 1000;
+        // converges on this session's real voice/rate. Skipped if onstart never fired at all (no
+        // reliable elapsed time to measure) or below some floor: a browser that can't actually
+        // produce speech (e.g. Brave on Linux with zero system TTS voices, cf. devpedia-todo.md)
+        // fires onerror within a millisecond or two of being asked to speak, and averaging that in
+        // as "this entry's text took ~0ms to say" would drag the estimate toward an absurdly high
+        // rate for every entry after it.
+        const elapsedSeconds = startedAt === null ? 0 : (Date.now() - startedAt) / 1000;
         if (entry.words.length && elapsedSeconds > 0.1) {
-            const measuredRate = (entry.text.length / elapsedSeconds) * PAUSE_COMPENSATION;
+            const measuredRate = entry.text.length / elapsedSeconds;
             charsPerSecond = charsPerSecond * (1 - CALIBRATION_WEIGHT) + measuredRate * CALIBRATION_WEIGHT;
         }
         planIndex++;
