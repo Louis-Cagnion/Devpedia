@@ -19,13 +19,22 @@ let activeWordIndex = -1;
  * any active word highlight from the previous entry -- a new entry starting to play means
  * `boundary` (if it fires at all for it) hasn't reported a word yet.
  *
+ * `highlightedWords` is refreshed on every call, even when `highlightTarget` is the very same
+ * element as before (only the CSS class churn is skipped then, to avoid a pointless remove+add) --
+ * a table row's own entries all share one `tr` as their highlightTarget (cf. reader-table.js's
+ * collectTableSegments), so skipping the refresh there too would leave `highlightedWords` stuck on
+ * whichever cell's entry happened to play first in that row, silently pinning the word highlight to
+ * that cell's own words for the rest of the row regardless of which cell is actually being spoken
+ * (reported by Louis on 2026-08-16: highlight stuck on the first cell of a table's first row).
+ *
  * @param {{highlightTarget: HTMLElement, words: HTMLElement[]}} entry
  */
 export function setHighlightedEntry(entry) {
-    if (entry.highlightTarget === highlightedTarget) return;
-    highlightedTarget?.classList.remove(READER_HIGHLIGHT_CLASS);
-    entry.highlightTarget.classList.add(READER_HIGHLIGHT_CLASS);
-    highlightedTarget = entry.highlightTarget;
+    if (entry.highlightTarget !== highlightedTarget) {
+        highlightedTarget?.classList.remove(READER_HIGHLIGHT_CLASS);
+        entry.highlightTarget.classList.add(READER_HIGHLIGHT_CLASS);
+        highlightedTarget = entry.highlightTarget;
+    }
     setActiveWord(-1);
     highlightedWords = entry.words;
 }
