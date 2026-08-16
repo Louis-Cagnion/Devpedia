@@ -14,11 +14,8 @@ const RTL_LANGUAGE_CODES = new Set(["ar"]);
 const BCP47_OVERRIDES = { br: "pt-BR" };
 
 /**
- * Sets `<html lang>` and `<html dir>` to match the active language, so the browser and screen
- * readers apply the right script direction and per-language rendering rules — right-to-left
- * layout for Arabic, correct hyphenation/line-breaking hints for every other language (Latin
- * scripts as well as CJK, which browsers already break and wrap correctly by default) - and so
- * that TTS (js/reader.js) picks a voice for the right language.
+ * @brief Sets `<html lang>` and `<html dir>` to match the active language, so the browser,
+ * screen readers, and TTS apply the right script direction and voice.
  *
  * @param {string} langCode "" for French, or one of structure/languages.json's codes
  */
@@ -27,16 +24,15 @@ export function applyDocumentLanguage(langCode) {
     document.documentElement.dir = RTL_LANGUAGE_CODES.has(langCode) ? "rtl" : "ltr";
 }
 
-/**
- * @returns {string} the language code stored from a previous visit, or "" (French)
- */
+/** @brief Returns the language code stored from a previous visit, or "" (French). */
 export function getStoredLanguage() {
     return localStorage.getItem(STORAGE_KEY) ?? "";
 }
 
 /**
- * @returns {Array<{code: string, label: string}>} French plus every language with a translation
- * (read from structure/languages.json — absent until at least one translation exists)
+ * @brief Returns French plus every language with a translation.
+ *
+ * @returns {Array<{code: string, label: string}>}
  */
 async function fetchAvailableLanguages() {
     try {
@@ -48,8 +44,8 @@ async function fetchAvailableLanguages() {
 }
 
 /**
- * Build the "Langue" button + dropdown in the navbar. Hidden entirely if no translation
- * exists yet. Selecting a language stores it and reloads the page to restart cleanly in it.
+ * @brief Builds the "Langue" button + dropdown in the navbar, hidden if no translation exists
+ * yet. Selecting a language stores it and reloads the page to restart cleanly in it.
  *
  * @param {HTMLElement} container positioned-relative element the dropdown attaches to
  */
