@@ -8,17 +8,9 @@
    word to pronounce -- skip flushing it rather than reading the bare punctuation aloud. */
 export const HAS_SPOKEN_CONTENT = /[\p{L}\p{N}]/u;
 
-/* Operators spoken character-by-character by the browser's TTS engine are unreliable -- e.g.
-   "!==" was heard dropping the "!", and "===" is easy to mishear as "==". Every occurrence is
-   replaced with an explicit English phrase instead, whether the whole inline code span is just
-   the operator (e.g. `===`) or it's embedded in a longer expression (e.g. `tableau.length === 0`).
-
-   Only operators verified to mean the same thing in every language/tool taught on the site belong
-   here -- e.g. "==" is "equals" whether the page is about JavaScript, PHP, or Bash's `[[ ]]`. Many
-   common symbols are NOT safe to put here because the same glyph means something different
-   depending on context (`>` is "greater than" in most languages but "redirect, overwrite" in a
-   shell; `.`/`*`/`+` are ordinary punctuation/arithmetic almost everywhere but anchors/quantifiers
-   in a regex) -- those live in CONTEXT_OPERATOR_SPEECH below instead, keyed by where they're safe. */
+/* Operators spoken character-by-character are unreliable ("!==" dropped the "!"): replaced with
+   an explicit English phrase. Only operators meaning the same thing everywhere belong here -- a
+   context-dependent glyph (`>`, `.`, `*`...) lives in CONTEXT_OPERATOR_SPEECH below instead. */
 const GLOBAL_OPERATOR_SPEECH = {
     "==": "equals",
     "===": "strictly equals",
@@ -30,12 +22,9 @@ const GLOBAL_OPERATOR_SPEECH = {
     "||": "or",
     "??": "nullish coalescing",
     "?.": "optional chaining",
-    /* A bare "$" before a number (e.g. "$1") gets read by the TTS engine as a currency amount
-       ("one dollar") -- nothing on this site is about money, it's a variable sigil (Bash, Zsh,
-       PHP...) or, in regex, an end-of-line anchor (both overridden by that context's own "$"
-       below). "$(" (command substitution/subexpression) and "$((" (arithmetic expansion) are
-       longer keys matched first in shell contexts, so this fallback only ever fires on an actual
-       variable/anchor "$", never on one that opens a parenthesized construct. */
+    /* A bare "$" before a number reads as a currency amount otherwise -- it's a variable sigil
+       (Bash, Zsh, PHP) or regex anchor here, both overridden by that context's own "$" below.
+       Longer shell keys ("$(", "$((") match first, so this only fires on an actual variable. */
     "$": "variable",
 };
 
@@ -44,48 +33,37 @@ const GLOBAL_OPERATOR_SPEECH = {
    of leaving it trailing on its own right after the phrase. */
 const COMPARISON_OPERATORS = new Set(["==", "===", "!=", "!==", "<=", ">="]);
 
-/* Symbols whose meaning depends on the language/tool being taught, keyed by the page's context --
-   its subject id (e.g. "javascript", "bash"), or its category id when the category has no subjects
-   (e.g. "git"; cf. appState.curSubject/curCategory). A context's entries are layered on top of
-   GLOBAL_OPERATOR_SPEECH (overriding it on a shared key, though none currently collide) rather
-   than replacing it, so e.g. "==" still reads correctly on every page regardless of context.
-
-   The whole "Domain-specific Languages (DSL)" category (regex.md, sql.md, ...) shares one context
-   since it has no subjects to split on -- but sql.md does reuse some of the same bare symbols
-   with a different meaning than regex.md (e.g. "*" is "all columns" in SQL, not "zero or more"):
-   PAGE_SPECIFIC_CONTEXT below routes it to its own "sql" entry instead of the shared one. */
+/* Symbols whose meaning depends on the language/tool being taught, keyed by the page's context
+   (its subject id, or category id when there's no subject). Layered on top of
+   GLOBAL_OPERATOR_SPEECH rather than replacing it, so "==" still reads right everywhere. */
 const CONTEXT_OPERATOR_SPEECH = {
     c: {
         "->": "arrow, member access through a pointer",
-        /* "&" is ambiguous in C: unary "address of" directly against an identifier ("&variable",
-           no space) vs. binary bitwise AND between two operands ("x & MASQUE", spaced -- the
-           site's own convention for infix operators). "& " (with the trailing space) is a longer,
-           higher-priority key that only matches the spaced/infix case, leaving bare "&" for the
-           unspaced/prefix case.
-           Just "bitwise", not "bitwise and": unlike "|"/"^" below, dropping the operation name
-           here doesn't lose real information, since AND is the default/most obvious of the three
-           to a listener, and "bitwise and" reads as needlessly verbose next to "modulo"/"times". */
+        /* "&" is ambiguous in C: unary "address of" unspaced vs. binary bitwise AND spaced ("x &
+           MASQUE"). "& " (longer, higher-priority) matches only the spaced case. Just "bitwise":
+           AND is the default of the three, "bitwise and" reads as needlessly verbose here. */
         "& ": "bitwise",
         "&": "address of",
         "|=": "bitwise or equals",
         "&=": "bitwise and equals",
         "^=": "bitwise xor equals",
         "++": "increment",
-        /* Same spacing trick as "&": "%"/"*" are also ambiguous in C, unrelated to their bitwise
-           usage above. "% " (modulo, infix, spaced -- "n % 2") vs bare "%" (a printf format
-           specifier, prefix, unspaced -- "%d"). "* " (multiplication, infix, spaced -- "n * 2")
-           vs bare "*" (pointer declaration/dereference, prefix, unspaced -- "*ptr", "int *p") --
-           the bare "*" case is left unhandled for now (native TTS default), since it carries two
-           distinct meanings of its own (declaration vs dereference) not resolvable by spacing. */
+        /* Same spacing trick as "&": "% " is modulo (infix, "n % 2"), bare "%" a printf specifier
+           ("%d"). "* " is multiplication ("n * 2"); bare "*" (declaration vs. dereference) is left
+           unhandled, its two meanings aren't resolvable by spacing alone. */
         "% ": "modulo",
         "* ": "times",
         "<<": "left shift",
         ">>": "right shift",
         "~": "bitwise not",
+        /* Spaced like "& "/"* " above: unspaced "-" is a CLI flag (`-o`, `-lm`), not subtraction. */
+        "- ": "minus",
+        /* Spaced too: bare "<"/">" open a bracket in real C content here (`<stdarg.h>`), always
+           unspaced -- `fabs(a-b) < epsilon` read "<" in French otherwise (Louis, 2026-08-16). */
+        " < ": "strictly inferior to",
+        " > ": "strictly superior to",
         /* Capitalized like the acronym it is: lowercase "xor" gets sounded out as one made-up
-           syllable ("zor") by most TTS voices, the same way the literal word "XOR" already reads
-           correctly in prose (untouched by speakableText) -- matching that capitalization here
-           gets the same correct acronym pronunciation for the operator. */
+           syllable ("zor") by most TTS voices, same as why "XOR" is capitalized in prose too. */
         "^": "bitwise XOR",
         "|": "bitwise or",
     },
@@ -100,9 +78,7 @@ const CONTEXT_OPERATOR_SPEECH = {
         ">>": "stream extraction",
         "~": "bitwise not",
         /* Capitalized like the acronym it is: lowercase "xor" gets sounded out as one made-up
-           syllable ("zor") by most TTS voices, the same way the literal word "XOR" already reads
-           correctly in prose (untouched by speakableText) -- matching that capitalization here
-           gets the same correct acronym pronunciation for the operator. */
+           syllable ("zor") by most TTS voices, same as why "XOR" is capitalized in prose too. */
         "^": "bitwise XOR",
         "::": "scope resolution",
     },
@@ -176,12 +152,18 @@ const CONTEXT_OPERATOR_SPEECH = {
         "@": "matrix multiplication",
         "*": "element-wise multiplication",
         "·": "dot product",
-        /* "b^y" was read letter-by-letter as "b accent circonflexe y" -- the caret's own French
-           name -- since nothing here rewrote it (reported by Louis on 2026-08-16). English like
-           every other operator phrase in this table (code always gets the English voice, cf.
-           needsEnglishVoice()), not "puissance" -- that word belongs to the separate prose case
-           for the same symbol (cf. PROSE_SYMBOL_SPEECH's own "^" entry below). */
+        /* "b^y" was read "b accent circonflexe y" -- the caret's French name (Louis, 2026-08-16).
+           English like the rest of this table, not "puissance" -- that's the separate prose case
+           (cf. PROSE_SYMBOL_SPEECH's own "^" entry below). */
         "^": "to the power of",
+    },
+    /* Same fabs(a-b) < epsilon idiom as "c" above (nombres-flottants.md). "-" is bare (no CLI
+       flag here to protect against); " < "/" > " stay spaced -- encodage-des-textes.md cites raw
+       HTML (`<meta charset="utf-8">`) unspaced, same as C's own `<stdarg.h>`. */
+    "representation-des-donnees": {
+        "-": "minus",
+        " < ": "strictly inferior to",
+        " > ": "strictly superior to",
     },
     git: {
         "<<<<<<<": "conflict marker, start of your changes",
@@ -191,20 +173,16 @@ const CONTEXT_OPERATOR_SPEECH = {
         "EOF": "E O F",
         "$(": "command substitution",
     },
-    /* No "." entry here (unlike the DSL context above, where it means "any character" in a
-       regex): sql.md's own alias.column syntax (e.g. "c.nom") needs its "." read as an ordinary
-       filename-style dot, exactly what FILENAME_DOT_PATTERN in speakableCode() already does for
-       any dot with no space after it -- an explicit identity entry here used to pre-empt that by
-       padding it with spaces first, which left it unread instead of read as "point"/"dot". */
+    /* No "." entry here (unlike the DSL context, "any character" in regex): sql.md's own
+       "c.nom" syntax needs its "." read as an ordinary filename dot (FILENAME_DOT_PATTERN),
+       which an identity entry here used to pre-empt by padding it with spaces first. */
     sql: {
         "*": "all columns",
         "$": "variable",
     },
-    /* le-terminal.md cites `>`/`$`/`%` as plain characters a prompt can end with, not as any
-       shell's own redirect/variable/modulo operators (this chapter comes before any shell is
-       introduced) -- read by their everyday French names instead, specific to this one chapter
-       (reported by Louis on 2026-08-16). GLOBAL_OPERATOR_SPEECH's own "$": "variable" would
-       otherwise apply here too, hence overriding it rather than leaving it unset. */
+    /* le-terminal.md cites `>`/`$`/`%` as plain prompt-ending characters, not shell operators
+       (before any shell is introduced) -- read by their everyday French names instead, overriding
+       GLOBAL_OPERATOR_SPEECH's own "$": "variable" which would otherwise apply here too. */
     "le-terminal": {
         ">": "flèche",
         "$": "dollar",
@@ -237,53 +215,35 @@ function getOperatorTable(context) {
     return operatorTableCache.get(context);
 }
 
-/* A CLI flag's leading dash(es) ("-e", "--verbose") get the same silent-or-mumbled treatment from
-   the TTS engine as the operators above. Unlike those, a flag prefix means the same thing (an
-   option, not a subtraction) in every language/tool that uses the convention -- Bash, Zsh,
-   PowerShell, git, Docker, Python's argparse... -- so this runs unconditionally, not per context.
-   Matched by structure (a dash run at a word boundary, right before a letter) rather than a fixed
-   list of known flags, so it covers any flag without needing to be kept in sync with content. */
+/* A CLI flag's leading dash(es) get the silent-or-mumbled TTS treatment: means the same thing (an
+   option) in every tool that uses the convention, so this runs unconditionally, not per context.
+   Matched by structure (a dash run before a letter), not a fixed list, so it covers any flag. */
 const CLI_FLAG_PATTERN = /(^|\s)(--?)(?=[A-Za-z])/g;
 
-/* A code span that's nothing but "-" or "--" on its own (cited as the prefix itself, e.g.
-   "précédées de `-` ou `--`", rather than attached to an actual flag letter) falls outside
-   CLI_FLAG_PATTERN above -- its lookahead requires a following letter, which a bare citation like
-   this doesn't have, so it went completely unread otherwise (reported by Louis on 2026-08-16).
-   Same words as CLI_FLAG_PATTERN's own for consistency, just reached by a different route. */
+/* `fabs(a-b) < epsilon` was read "fat a b plus petit que epsilon" -- mumbled name, dropped
+   parens/minus, French "<" (Louis, 2026-08-16). "FABS" capitalized like GUI/CLI/EOF; the closing
+   ")" is dropped entirely rather than left for the engine to skip on its own. */
+const FABS_CALL_PATTERN = /fabs\(([^)]*)\)/g;
+
+/* "-"/"--" cited bare (not attached to a flag letter) falls outside CLI_FLAG_PATTERN's own
+   lookahead, so it went unread (Louis, 2026-08-16). Same words, reached by a different route. */
 const BARE_DASH_PATTERN = /^--?$/;
 const BARE_DASH_SPEECH = { "-": "dash", "--": "dash dash" };
 
-/* snake_case/CONSTANT_CASE identifiers (variable, option and constant names across virtually every
-   language taught on the site) read their underscore as a word on most TTS engines, e.g. "AUTO_CD"
-   heard as "auto souligné C D" -- pure noise for a listener, the underscore itself carries no
-   meaning to say out loud. A space in its place lets each part of the identifier be pronounced as
-   its own word instead, same as reading the name out loud naturally (reported by Louis on
-   2026-08-16 while listening live to a table of Zsh option names). */
+/* snake_case/CONSTANT_CASE identifiers read their underscore as a word ("AUTO_CD" -> "auto
+   souligné C D") -- pure noise, replaced with a space so each part reads as its own word
+   (Louis, 2026-08-16, listening to a table of Zsh option names). */
 const IDENTIFIER_UNDERSCORE_PATTERN = /_/g;
 
-/* Unix "rc" (run commands) dotfiles -- ".bashrc", ".zshrc" -- read as one mangled word by the TTS
-   engine otherwise ("bashrc" isn't an English word it knows). A small table rather than a generic
-   "any word ending in rc" regex: a structural suffix rule would also catch unrelated code that
-   happens to end the same way (e.g. "src", which should stay "S R C" as a whole, not "s R C").
-   Applied unconditionally like CLI_FLAG_PATTERN above -- one shell's rc file is routinely
-   referenced from another shell's own chapter (e.g. Zsh's own page mentioning `~/.bashrc` for
-   comparison), so this can't be scoped to a single context the way CONTEXT_OPERATOR_SPEECH is.
-   Extend this table as more rc-files show up in content (`.vimrc`, `.npmrc`...), same as
-   GLOBAL_OPERATOR_SPEECH above. The leading "." these files are always written with (cf. the
-   dotfile convention itself) is captured and read out as "dot" rather than left for the TTS
-   engine to silently drop -- reported by Louis on 2026-08-16 while listening live to `~/.bashrc`. */
+/* Unix "rc" dotfiles (".bashrc") read as one mangled word otherwise -- a small table rather than
+   a generic "ends in rc" regex (would also catch "src"). Unconditional like CLI_FLAG_PATTERN: one
+   shell's rc file gets cited from another's chapter. Captures the leading "." as "dot" too. */
 const RC_FILE_SPEECH = { bashrc: "bash R C", zshrc: "zsh R C" };
 const RC_FILE_PATTERN = new RegExp(`(\\.)?\\b(${Object.keys(RC_FILE_SPEECH).join("|")})\\b`, "g");
 
-/* A handful of the bare keywords below (cf. KEYWORD_SPEECH) are spelled in a way an English voice
-   mis-reads as a single unfamiliar blob rather than the way a person actually says it out loud --
-   "shopt" heard as one mumbled word instead of its two initial letters spelled out ("S H") plus
-   "opt" (a lowercase "sh" alone was tried first and heard as the "hush" gesture sound instead of
-   the letters, reported by Louis on 2026-08-16 while listening live). A respelling table, same
-   mechanism as RC_FILE_SPEECH above, rather than baking the fix into KEYWORD_SPEECH's own
-   membership check: most keywords there need no respelling at all (their own spelling already
-   reads correctly), so keeping the two separate avoids adding a no-op respelling entry for every
-   one of them. */
+/* Some bare KEYWORD_SPEECH keywords are mis-read as a mumbled blob otherwise -- "shopt" heard as
+   one word instead of "S H opt" ("sh" alone read as the "hush" sound, Louis, 2026-08-16). Kept
+   separate from KEYWORD_SPEECH since most keywords there need no respelling at all. */
 const KEYWORD_RESPELLING = { shopt: "S H opt" };
 const KEYWORD_RESPELLING_PATTERN = new RegExp(`\\b(${Object.keys(KEYWORD_RESPELLING).join("|")})\\b`, "g");
 
@@ -299,31 +259,22 @@ function englishRewrite(text, context) {
     if (BARE_DASH_PATTERN.test(text)) return BARE_DASH_SPEECH[text];
     const { table, pattern } = getOperatorTable(context);
     return text
+        .replace(FABS_CALL_PATTERN, (_, args) => `FABS of ${args}`)
         .replace(pattern, op => COMPARISON_OPERATORS.has(op) ? ` ${table[op]} to ` : ` ${table[op]} `)
         .replace(CLI_FLAG_PATTERN, (_, before, dashes) => `${before}${dashes === "--" ? "dash dash " : "dash "}`)
         .replace(RC_FILE_PATTERN, (_, dot, name) => `${dot ? "dot " : ""}${RC_FILE_SPEECH[name]}`)
         .replace(KEYWORD_RESPELLING_PATTERN, name => KEYWORD_RESPELLING[name]);
 }
 
-/* A few file extensions are conventionally said as a whole word rather than spelled out letter by
-   letter -- ".py" is said "dot pie" by English and French speakers alike, not "dot P Y". Matched
-   only right after a literal "." (cf. FILENAME_DOT_PATTERN below), which still runs afterward to
-   read that same dot out loud -- this table only respells the letters, not the dot itself. */
+/* Some extensions are said as a whole word, not spelled out -- ".py" is "dot pie", not "dot P Y".
+   Matched only right after a literal "." (cf. FILENAME_DOT_PATTERN below); this table only
+   respells the letters, the dot itself is still read separately. */
 const FILE_EXTENSION_RESPELLING = { py: "pi" };
 const FILE_EXTENSION_RESPELLING_PATTERN = new RegExp(`(?<=\\.)(${Object.keys(FILE_EXTENSION_RESPELLING).join("|")})\\b`, "g");
 
-/* A "." with no space right after it -- a file extension or path segment (`texte.txt`,
-   `~/.bashrc`, `c.nom`) -- gets silently dropped or mumbled by the TTS engine otherwise, unlike a
-   real sentence-ending period, which always has a space after it in ordinary prose (a code span
-   almost never ends its own text on a bare trailing "." the way a sentence does, so matching one
-   at the very end of the string too, with nothing after it, is still the right call here). Reading
-   it out whenever a space doesn't follow, regardless of context, catches every such case
-   structurally rather than needing a per-file entry the way RC_FILE_SPEECH does (reported by Louis
-   on 2026-08-16 while listening live to `texte.txt`). Kept as its own step, not part of
-   englishRewrite() above, for the same reason as the underscore cleanup: which word this reads as
-   depends only on the page's own language, not on whether the surrounding code needs the English
-   voice -- `nom_dossier.txt` should still say "point" in French, not switch language just because
-   of its extension. */
+/* A "." with no space right after it (`texte.txt`, `~/.bashrc`) gets dropped/mumbled otherwise
+   (Louis, 2026-08-16). Kept out of englishRewrite(): which word this reads as depends only on the
+   page's own language, not on whether the surrounding code needs the English voice. */
 const FILENAME_DOT_PATTERN = /\.(?!\s)/g;
 const FILENAME_DOT_SPEECH = { fr: "point", en: "dot", es: "punto", br: "ponto" };
 
@@ -343,26 +294,9 @@ export function speakableCode(text, context, lang) {
         .trim();
 }
 
-/* Bare command/builtin names that are always English regardless of the page's own language, even
-   though nothing about their spelling needs rewriting (cf. needsEnglishVoice() below) -- unlike a
-   teaching-example identifier the content author chose to fit the page's own language (e.g.
-   `nom_dossier`, or an all-caps one like `MAJUSCULES_AVEC_UNDERSCORES`, a real word in French
-   content despite the shouty case), these are the actual name of a language/tool feature, exactly
-   like an operator symbol above, just spelled the same whichever voice reads it. A curated set
-   rather than a shape-based rule (e.g. "any ALL_CAPS identifier") on purpose: content on this
-   French-first site sometimes writes a genuinely French placeholder in all caps too (cf.
-   `MAJUSCULES_AVEC_UNDERSCORES` itself, or `ECHEC`/`INCOMPLET` elsewhere), so case alone can't
-   reliably tell a real keyword apart from one.
-
-   Applied unconditionally like RC_FILE_SPEECH above, not scoped per context the way
-   CONTEXT_OPERATOR_SPEECH is: one shell's own builtins get mentioned from another shell's own
-   chapter just as routinely as its rc file does (e.g. this exact table, read on the Zsh page,
-   mentions Bash's own `shopt`) -- scoping "shopt" to a `bash` context here left it unrecognized
-   and read in French on any page whose own context isn't literally "bash" (reported by Louis on
-   2026-08-16 while listening live to this Zsh chapter's own recap table).
-
-   Extend this set as more bare keywords are found while validating the pronunciation table
-   chapter by chapter (cf. devpedia-todo.md). */
+/* Bare command/builtin names always English regardless of page language -- a curated set, not a
+   shape rule (`MAJUSCULES_AVEC_UNDERSCORES` is a real French placeholder elsewhere). Unconditional:
+   Bash's own `shopt` gets cited from Zsh's own chapter too (Louis, 2026-08-16). */
 const KEYWORD_SPEECH = new Set([
     "setopt",
     "unsetopt",
@@ -375,6 +309,10 @@ const KEYWORD_SPEECH = new Set([
     "SHARE_HISTORY",
     "Graphical User Interface",
     "Command-Line Interface",
+    /* The SQL column type, read as a French word ("décimal") instead of the English one by a
+       French voice otherwise (nombres-flottants.md's own recap row, reported by Louis on
+       2026-08-16 alongside the fabs() fix above). */
+    "DECIMAL",
 ]);
 
 /**
@@ -392,79 +330,42 @@ export function needsEnglishVoice(code, context) {
     return KEYWORD_SPEECH.has(code);
 }
 
-/* Typographic symbols that appear directly in prose (outside inline code), which the TTS engine
-   either skips or reads unpredictably. Unlike CONTEXT_OPERATOR_SPEECH (always English, inline
-   code only), these run on the page's own prose text in whichever language it's currently shown
-   in -- keyed by that language, falling back to English for a language missing an entry.
-   "~" is used throughout the content as an informal "approximately" prefix directly against a
-   single number ("~7 min", "~1,8 × 10¹⁹", "~−9,2 × 10¹⁸") -- read aloud as the literal word
-   "tilde" otherwise, even stuck to a negative number's own "−" sign. "≈" instead always sits
-   between two expressed values ("π ≈ 3,14159", "log10(8) ≈ 0,9"), an approximate equality rather
-   than a rough quantity -- "environ" alone dropped that "equal to" half of the meaning (reported
-   by Louis on 2026-08-16), so the two symbols no longer share one word the way they used to:
-   "~7 min" still reads as "environ 7 min", but "π ≈ 3,14159" now reads as "π environ égal à
-   3,14159" instead of the ambiguous "π environ 3,14159". */
-/* "C#" is the language name, never translated, always pronounced "C sharp" -- read as "C
-   croisillons" (the French name of "#") otherwise, since it's outside any inline code span in
-   every mention on the site (only ever cited in passing, never taught as its own chapter). */
+/* Typographic symbols in prose, which TTS skips or reads unpredictably. Keyed by language. "~"
+   prefixes a number and reads "tilde"; "≈" sits between two values and needs "environ égal à",
+   not just "environ" (dropped the "equal to" half, so the two no longer share one word). */
+/* "C#" always reads "C sharp", never the French name of "#" -- outside any code span in every
+   mention on the site (cited in passing, never its own chapter). */
 const CSHARP_SPEECH = "C sharp";
-/* "OCaml" is likewise never translated, but read as one run-together word by a French voice --
-   which happens to land on "au calme" ("at ease"), since "O" and "Caml" both sound like real
-   French words back to back (reported by Louis on 2026-08-16). The inserted space forces the two
-   syllables apart, the same fix as C# above, but this one matters a lot more: OCaml has its own
-   whole subject on the site, so its name shows up in prose constantly, not just in passing. */
+/* "OCaml" read as one word by a French voice lands on "au calme" ("at ease") -- the inserted
+   space forces the syllables apart (Louis, 2026-08-16). Matters more than C#: its own subject. */
 const OCAML_SPEECH = "O Caml";
-/* The site's own name, written "Devpédia" in French content, is read "Deuvpédia" by the French
-   voice -- the plain "e" in "Dev" comes out as a schwa instead of the crisp vowel an accented "é"
-   would force (reported by Louis on 2026-08-16). Respelled with that accent purely for speech,
-   leaving the page's own displayed text untouched -- only the fr entry, since every other
-   language's content writes the name "Devpedia" without an accent in the first place (not
-   reported as mispronounced by its own voice, so left as-is rather than guessed at). */
+/* "Devpédia" is read "Deuvpédia" -- the plain "e" in "Dev" comes out as a schwa (Louis,
+   2026-08-16). Respelled for speech only; fr content only, other languages write it unaccented. */
 const DEVPEDIA_SPEECH_FR = "Dévpédia";
-/* Acronyms read as a single mumbled word instead of their own letters, spelled out the same way
-   as "EOF" already is above -- reported by Louis on 2026-08-16 for "GUI"/"CLI" (le-terminal.md,
-   outside any inline code span, so this lives in prose respelling rather than speakableCode()). */
+/* Acronyms read as a mumbled word instead of their own letters, spelled out like "EOF" above --
+   "GUI"/"CLI" in prose (le-terminal.md, outside any code span), Louis, 2026-08-16. */
 const GUI_SPEECH = "G U I";
 const CLI_SPEECH = "C L I";
-/* "cf." read as the French word "confère" instead of the two letters an abbreviation like this is
-   actually said as; "Ctrl" read as the raw letters instead of the French word it stands for
-   ("contrôle"); "shells" read with an English plural "z" sound even though it's used here as the
-   (loan-word, invariable) name of a whole category, not literally plural. All reported by Louis
-   on 2026-08-16. ("prompt" -- reported at the same time, losing its final "t" sound -- is handled
-   separately below, by PROMPT_WORD_PATTERN, rather than through this table: unlike these three, it
-   collides with real French/English words that contain it as a substring, "prompts"/"prompting"/
-   "prompter" among them, all used on their own elsewhere in AI content -- this table's own
-   replaceAll() has no word-boundary check, so it would have mangled every one of those too.) */
+/* "cf." read as "confère" instead of two letters; "Ctrl" read as raw letters instead of
+   "contrôle"; "shells" given an English plural "z" sound despite being an invariable loan-word
+   here. All Louis, 2026-08-16 ("prompt" -- same report -- is handled separately below). */
 const CF_SPEECH_FR = "C F";
 const CTRL_SPEECH_FR = "contrôle";
 const SHELL_SPEECH_FR = "shell";
-/* "prompt" loses its final "t" sound, swallowed the same way the existing French word "prompt"
-   (meaning "quick") is pronounced -- respelled with a silent trailing "e" to force it through, the
-   same trick a French speaker uses for this word. Matched by whole word (case-insensitive, so a
-   capitalized "Prompt" at the start of a sentence still gets it too) rather than through
-   PROSE_SYMBOL_SPEECH's plain substring replace -- see CF_SPEECH_FR's own comment above for why. */
+/* "prompt" loses its final "t" sound like the French word "prompt" (quick) does -- a silent
+   trailing "e" forces it through. Matched by whole word rather than through PROSE_SYMBOL_SPEECH's
+   plain substring replace: it collides with "prompts"/"prompting" used elsewhere in AI content. */
 const PROMPT_WORD_PATTERN = /\bprompt\b/gi;
 const PROMPT_SPEECH_FR = "prompte";
-/* "déréférencement" (and déréférence/déréférencé/déréférencer, the C/C++ pointer chapters' own
-   vocabulary) comes out of the French voice as "dé" then the second "é" spelled out letter by
-   letter ("e accent aigu") instead of spoken -- confirmed live on 2026-08-16 that the text handed
-   to SpeechSynthesisUtterance is already the correct, properly-accented word, so this is the voice
-   engine itself choking on the "éré" cluster, not something upstream mangling the text. A hyphen
-   after the "dé" prefix (silent for meaning, "dé-référencement" reads identically to
-   "déréférencement") gives the engine an explicit word break between the two accented syllables it
-   otherwise runs together. Matched by word-boundary prefix rather than PROSE_SYMBOL_SPEECH's plain
-   substring replace, same reasoning as PROMPT_WORD_PATTERN above -- and case-insensitively, since
-   only the spoken string (never the page's own displayed text) is affected either way. */
+/* "déréférencement" is read "dé" then the second "é" spelled out letter by letter -- confirmed
+   live (2026-08-16) the text handed to the engine is already correct, so this is the voice itself
+   choking on the "éré" cluster. A silent hyphen after "dé" breaks the two syllables apart. */
 const DEREFERENCE_PATTERN = /\bdéréférenc/gi;
 const DEREFERENCE_SPEECH_FR = "dé-référenc";
 
-/* Unicode superscript characters (exponents, e.g. "2ⁿ⁻¹", "10¹⁹") are silently skipped by TTS
-   engines entirely -- "2ⁿ⁻¹ à 2ⁿ⁻¹ − 1" was heard as "2 à 2 − 1", losing the exponent that's the
-   whole point of the sentence. A run of consecutive superscript characters is decoded back to its
-   normal-size text (digits/n/i as themselves, "⁻"/"⁺" spelled out per language since a bare
-   "-"/"+" wouldn't reliably read as minus/plus either) and prefixed with a localized "to the
-   power of". Declared before PROSE_SYMBOL_SPEECH so its own "^" entry below can reuse this same
-   `of` wording, rather than a second hand-written copy of the same four translations. */
+/* Unicode superscripts ("2ⁿ⁻¹") are silently skipped by TTS engines -- decoded back to normal-size
+   text and prefixed with a localized "to the power of". Declared before PROSE_SYMBOL_SPEECH so its
+   own "^" entry below can reuse this same `of` wording instead of a second hand-written copy. */
 const SUPERSCRIPT_DIGITS = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "ⁿ": "n", "ⁱ": "i" };
 const SUPERSCRIPT_RUN = /[⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱ⁻⁺]+/g;
 const POWER_OF_SPEECH = {
@@ -474,11 +375,9 @@ const POWER_OF_SPEECH = {
     br: { of: "elevado a", "⁻": " menos ", "⁺": " mais " },
 };
 
-/* "^" in prose (not inside a code span, cf. CONTEXT_OPERATOR_SPEECH.mathematiques for that case)
-   was read as the caret's own name ("accent circonflexe" in French) instead of as an exponent --
-   e.g. "mantisse × 2^exposant" in nombres-flottants.md (reported by Louis on 2026-08-16). Same
-   wording as a real Unicode superscript's own "to the power of" prefix above, since it's the same
-   concept written in plain ASCII for lack of an actual superscript character to type. */
+/* "^" in prose (cf. CONTEXT_OPERATOR_SPEECH.mathematiques for the code-span case) was read as
+   the caret's own French name instead of an exponent, e.g. "mantisse × 2^exposant" (Louis,
+   2026-08-16). Reuses the superscript's own "to the power of" wording -- same concept, ASCII. */
 const PROSE_SYMBOL_SPEECH = {
     fr: {
         "≈": "environ égal à",
@@ -503,13 +402,9 @@ const PROSE_SYMBOL_SPEECH = {
     br: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "^": POWER_OF_SPEECH.br.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
 };
 
-/* "→" means different things depending on the chapter: a numeric/character range ("0 → 255",
-   "U+0000 → U+007F") in the two pages below, "leads to"/sequence/mapping everywhere else it's
-   used in prose (".zshenv → .zprofile", "str_starts_with(...) → true", "Stage → Job → Step").
-   Verified none of the pages using "→" mix both senses (cf. journal-de-bord.md) before choosing a
-   single word per page rather than trying to parse each occurrence's surrounding tokens. The
-   wording matches how each language's own prose already phrases a range elsewhere in these same
-   two chapters ("goes from 0 to 255" / "va de 0 à 255" / "va de 0 a 255"). */
+/* "→" means a numeric/character range ("0 → 255") on the two pages below, "leads to"/sequence
+   everywhere else ("str_starts_with(...) → true"). Verified none of these pages mix both senses,
+   so one word per page rather than parsing each occurrence's own surrounding tokens. */
 const ARROW_RANGE_PAGES = new Set(["entiers-et-debordements", "encodage-des-textes"]);
 const ARROW_SPEECH = {
     range: { fr: "à", en: "to", es: "a", br: "a" },
@@ -521,14 +416,9 @@ function decodeSuperscript(run, lang) {
     return [...run].map(ch => SUPERSCRIPT_DIGITS[ch] ?? signs[ch] ?? ch).join("");
 }
 
-/* Purely decorative in every "## 📋 Summary"-style heading (confirmed by survey: this is the
-   only emoji ever used in prose -- an emoji used as actual teaching content, like the one in the
-   text encoding chapter's own example, always sits inside an inline `code` span instead, so it
-   goes through speakableCode(), never this function, and is left untouched). Read aloud, most TTS
-   voices announce its name ("clipboard emoji") rather than skipping it silently. Exported so
-   reader.js's collectLeafSegments can also use it to recognize this same heading structurally
-   (language-independent, unlike the translated "Récapitulatif"/"Summary" text itself) and skip
-   its word-by-word highlight (cf. that file's own comment on why). */
+/* Purely decorative in every "## 📋 Summary" heading (the only prose emoji -- one used as real
+   content always sits inside a `code` span instead). Most TTS voices announce its name otherwise.
+   Exported so reader.js's collectLeafSegments can recognize this heading structurally too. */
 export const DECORATIVE_EMOJI = "📋";
 
 export function speakableText(text, lang, pageId) {

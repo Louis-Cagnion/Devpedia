@@ -192,7 +192,6 @@ function mergeAdjacentRuns(parts) {
  * (`tr` stays this function's `highlightTarget` throughout, never a per-word wrapper), the same
  * fallback an inline-code entry already gets in prose (cf. reader.js's collectLeafSegments).
  *
-
  * @param {HTMLElement} table
  * @param {string} lang
  * @param {string} context see {@link cellSpokenParts}

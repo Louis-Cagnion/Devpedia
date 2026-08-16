@@ -343,16 +343,9 @@ h3, h4, h5, h6 {
     margin: 1.5rem 0 0.5rem 0;
 }
 
-/* Every element scrollIntoView({block: "start"}) can target during read-aloud playback (cf.
-   speakNext/startFromVisible in reader.js), so its start lands below the sticky navbar instead of
-   hidden behind it -- h2-h6/p/li match reader.js's LEAF_TAGS (used to scroll to a whole paragraph
-   before entries were split into individual clauses), .readerSegment/code/tr are the
-   finer-grained targets speakNext() actually scrolls to now (a single clause, an inline code
-   entry, or a table row -- cf. collectTableSegments). Missing this on the finer-grained targets
-   specifically used to leave the currently-read line scrolled to right under the navbar rather
-   than below it -- scroll-margin-top isn't inherited from an ancestor, an inline .readerSegment
-   scrolled to on its own ignored the block element around it having the correct value (reported
-   by Louis on 2026-08-16). */
+/* Every element scrollIntoView() can target during read-aloud playback, so its start lands below
+   the sticky navbar instead of hidden behind it -- scroll-margin-top isn't inherited, so each
+   finer-grained target (.readerSegment/code/tr, not just the whole h2-h6/p/li) needs its own. */
 h2, h3, h4, h5, h6, p, li, .readerSegment, code, tr {
     scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem);
 }
@@ -422,12 +415,9 @@ em {
     margin-bottom: 1.2rem;
 }
 
-/* Second previous/next chapter nav at the bottom of a chapter's own content (cf.
-   appendBottomChapterNav() in router.js) -- previous pinned to the start, next to the end, using
-   the chapter's full width now that there's no return button to share the row with (requested by
-   Louis on 2026-08-16). `.nextButton`'s own margin-inline-start: auto below does the pinning
-   (rather than `justify-content: space-between` here), so it still lands at the end even when
-   it's the only button present (the first chapter of a subject/category has no previous one). */
+/* Second previous/next chapter nav at the bottom of a chapter (cf. appendBottomChapterNav() in
+   router.js) -- `.nextButton`'s own margin-inline-start: auto below pins it to the end even when
+   it's the only button present, rather than `justify-content: space-between` here. */
 .pageNavBottom {
     display: flex;
     gap: 0.75rem;
@@ -466,12 +456,9 @@ em {
     border-color: var(--accent);
 }
 
-/* the arrow stays pinned to the button's outer edge (start for previous, end for next) while
-   the label can wrap onto a second line on its own, rather than growing the row/column past
-   the page — align-items: center (inherited from the shared rule above) keeps the arrow
-   centered against the label's full height even when it wraps to two lines. min-width: 0
-   overrides a flex item's default min-width: auto, which otherwise keeps this button at its
-   label's full one-line width regardless of max-width below */
+/* The arrow stays pinned to the button's outer edge while the label wraps onto a second line on
+   its own. min-width: 0 overrides a flex item's default min-width: auto, which otherwise keeps
+   this button at its label's full one-line width regardless of max-width below. */
 .nextButton, .prevButton {
     min-width: 0;
     max-width: 22rem;
@@ -536,23 +523,18 @@ pre {
     text-align: left;
 }
 
-/* `code` is inline by default: without this, a multi-line fenced block with no
-   language (no `.hljs` class, so no highlighting-driven layout) paints its
-   background one line-box at a time, each sized to that line's own text width,
-   instead of one contiguous block — the same box hljs's own `.hljs` class already
-   gives highlighted blocks (hljs-theme.css), applied here so unhighlighted ones match. */
+/* `code` is inline by default: without this, an unhighlighted fenced block (no `.hljs` class)
+   paints its background one line-box at a time instead of one contiguous block, unlike a
+   highlighted one (hljs-theme.css's own `.hljs` class already gives it this box). */
 pre code {
     display: block;
     overflow-x: auto;
     padding: 1em;
 }
 
-/* Charts (js/charts.js): declarative fenced blocks (```plot-fonction...) rendered as
-   inline SVG instead of a code block — same outer framing as `pre` for visual consistency.
-   Consecutive chart blocks (js/parser.js's lastChartRow) share one .chartRow instead of
-   each taking the full width on its own line: a lone chart still fills the row (flex-grow
-   with no siblings), several share it evenly and wrap to a new line if they'd get too
-   cramped, so the row as a whole always spans the chapter's width, with 1 card or many. */
+/* Charts (js/charts.js) rendered as inline SVG. Consecutive chart blocks share one .chartRow
+   instead of each taking the full row: a lone chart still fills it, several share it evenly and
+   wrap to a new line if cramped, so the row always spans the chapter's width either way. */
 .chartRow {
     display: flex;
     flex-wrap: wrap;
@@ -806,10 +788,8 @@ blockquote p + p {
     font-weight: 600;
 }
 
-/* --bg-hover and the accent-tinted color-mix() below both landed under the WCAG AA
-   text contrast threshold (4.5:1) against var(--accent) text -- measured 3.69:1 and
-   4.35:1. --bg-elevated reads as a highlight against the sidebar's plain background
-   just the same, at 5.03:1. */
+/* --bg-hover and the accent-tinted color-mix() both landed under WCAG AA contrast (4.5:1)
+   against var(--accent) text -- --bg-elevated reads as a highlight just the same, at 5.03:1. */
 .sidebarCategoryButton.open, .sidebarSubjectButton.open {
     background-color: var(--bg-elevated);
     color: var(--accent);
@@ -887,13 +867,9 @@ blockquote p + p {
     cursor: default;
 }
 
-/* Exactly one pair shows at a time (cf. applyStatus() in reader.js): readerListenButton +
-   readerRestartButton while nothing is playing, or readerPrimaryButton (its own label switching
-   between "Pause"/"Reprendre"/"Continuer" depending on state) + readerReplayButton +
-   readerPreviousButton + readerNextButton once reading is in progress -- deliberately never both
-   pairs together, to keep the control down to 2 buttons at rest instead of stacking every action
-   whether or not it currently means anything (requested by Louis on 2026-08-16). Same on/off
-   mechanism as .visible on .menuDiv/dropdowns elsewhere. */
+/* Exactly one pair shows at a time (cf. applyStatus() in reader.js), never both together, to keep
+   the control down to 2 buttons at rest instead of stacking every action. Same on/off mechanism
+   as .visible on .menuDiv/dropdowns elsewhere. */
 .readerListenButton, .readerRestartButton, .readerPrimaryButton, .readerReplayButton,
 .readerPreviousButton, .readerNextButton {
     display: none;
@@ -919,24 +895,9 @@ blockquote p + p {
     display: none;
 }
 
-/* Base highlight for the segment currently being read aloud (cf. setHighlightedEntry() in
-   reader.js) -- every platform gets this, including mobile where the `boundary` event never
-   fires (Android Chrome) or only fires per sentence (Safari), cf. devpedia-todo.md.
-   .readerSegment (wrapSegmentWords() in reader.js) is an inline wrapper around the entry's own
-   text rather than the block-level leaf itself, so this background paints one line-box at a
-   time, sized to that line's own text -- ends where the text actually ends even on a short last
-   line, instead of a block background spanning the full paragraph width regardless. Same
-   mechanism `pre code`'s own comment above documents, used here for the opposite effect.
-   `code.readerActiveParagraph` covers another kind of entry (inline code, cf.
-   collectLeafSegments) -- `code` is inline by default already, no wrapper needed.
-   `tr.readerActiveParagraph` covers a table row (cf. collectTableSegments): a whole-row highlight
-   that stays the entry's own highlightTarget throughout, even though individual cell words can
-   still get the .readerWord.readerActiveWord treatment below on top of it (cf.
-   cellSpokenParts()) -- only the connector words the row's sentence synthesizes around them
-   ("Titre :", " pour Titre2"...) have no DOM word of their own to highlight, so they fall back to
-   this whole-row tint instead. Padding is on .readerSegment only, not shared with `code`/`tr`:
-   they already have their own sizing (`code`'s own padding above, `tr`'s cells' own) and changing
-   it just while active would shift things on every play/stop. */
+/* Base highlight for the segment read aloud (cf. setHighlightedEntry() in reader.js).
+   .readerSegment is an inline wrapper, painting one line-box at a time. `tr.readerActiveParagraph`
+   covers a table row: connector words with no DOM word of their own fall back to this tint. */
 .readerSegment.readerActiveParagraph, code.readerActiveParagraph {
     background-color: color-mix(in srgb, var(--accent) 15%, transparent);
     border-radius: 0.25rem;
@@ -948,12 +909,9 @@ blockquote p + p {
     padding: 4px;
 }
 
-/* `tr.readerActiveParagraph` alone would be invisible: per CSS table background layering, a
-   cell's own background-color always paints over its row's, so `td`/`th`'s opaque backgrounds
-   below (--bg-elevated-2/--bg-elevated) would fully hide any tint set on `tr` itself. Tinting each
-   cell directly instead, mixed into that same opaque base rather than a transparent overlay (there
-   is nothing beneath the cell left to blend a transparent color with) -- reported by Louis on
-   2026-08-16, the highlight silently stopped showing once table rows became the highlight target. */
+/* `tr.readerActiveParagraph` alone would be invisible: a cell's own background-color always
+   paints over its row's. Tinting each cell directly instead, mixed into its opaque base
+   (Louis, 2026-08-16: the highlight silently stopped showing once rows became the target). */
 tr.readerActiveParagraph > td {
     background-color: color-mix(in srgb, var(--accent) 15%, var(--bg-elevated-2));
 }
@@ -962,11 +920,8 @@ tr.readerActiveParagraph > th {
     background-color: color-mix(in srgb, var(--accent) 15%, var(--bg-elevated));
 }
 
-/* The one word `boundary` last reported (cf. setActiveWord() in reader.js), layered on top of
-   readerActiveParagraph's softer highlight above -- stronger tint so it reads as "this exact
-   word" rather than "this whole segment". Only ever set where `boundary` actually fires with
-   word-level granularity (Chrome desktop); left unstyled otherwise, so the segment highlight
-   above is all that shows. */
+/* The one active word (cf. setActiveWord() in reader.js), replacing readerActiveParagraph's
+   softer highlight with a stronger tint so it reads as "this exact word". */
 .readerWord.readerActiveWord {
     background-color: color-mix(in srgb, var(--accent) 45%, transparent);
     border-radius: 0.2rem;

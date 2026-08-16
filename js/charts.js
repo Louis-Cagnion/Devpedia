@@ -36,9 +36,8 @@ function parseDomain(domainSpec, fieldName = "domaine") {
 }
 
 /* --- Minimal math expression evaluator ---
-   A hand-rolled tokenizer/parser rather than eval()/new Function(): chart specs are
-   authored content here, not user input, but this module is a template for future
-   chart kinds and should never normalize executing free-form text as code. */
+   Hand-rolled rather than eval()/new Function(): chart specs are authored content here, not user
+   input, but this module is a template for future kinds and shouldn't normalize executing text as code. */
 
 const MATH_FUNCTIONS = {
     sqrt: Math.sqrt, log: Math.log10, ln: Math.log,

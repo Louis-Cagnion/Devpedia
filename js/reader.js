@@ -59,12 +59,9 @@ export function hasUsableVoice() {
     });
 }
 
-/* Elements read as one spoken unit; everything else (blockquote, ul/ol, div.tableWrapper, chart
-   containers...) is a structural container, walked but never itself read as a block. `table`
-   itself is handled separately by collectSegments (cf. collectTableSegments) rather than being
-   walked generically down to its `th`/`td` -- reading each cell in isolation, with no idea which
-   row or column it belonged to, was the exact complaint that started the table audit in
-   devpedia-todo.md. */
+/* Elements read as one spoken unit; other elements are structural containers, walked but never
+   read as a block. `table` is handled separately (cf. collectTableSegments), not walked down to
+   its `th`/`td` -- reading each cell in isolation was the exact complaint behind the table audit. */
 const LEAF_TAGS = new Set(["H2", "H3", "H4", "H5", "H6", "P", "LI"]);
 
 /* Router-generated UI, not page content -- cf. router.js's createAppendPageNav/createBreadcrumb
@@ -73,23 +70,15 @@ const IGNORED_SELECTOR = ".pageNav, .pageNavBottom, .pageBreadcrumb, .childList"
 
 /* The reading plan: an ordered list of {kind: "speak", text, lang, group, highlightTarget, words}
    and {kind: "pause", element} entries, rebuilt by buildReadingPlan() on every page render.
-   `group` is the leaf element a "speak" entry was split from (cf. collectLeafSegments) -- entries
-   sharing the same `group` are one paragraph for replayParagraph()'s purposes. `highlightTarget`
-   and `words` are also set by collectLeafSegments (cf. wrapSegmentWords()), used by
-   setHighlightedEntry()/setActiveWord() to drive the read-aloud highlight. */
+   `group` ties entries sharing one paragraph together for replayParagraph()'s purposes. */
 let plan = [];
 let planIndex = 0;
 let isPlaying = false;
 let isPausedAtCode = false;
 
-/* True after pauseReading() (the reader control's own "Pause" button), distinct from
-   isPausedAtCode (paused automatically at a `pre` block, waiting for "Continuer") and from the
-   fully-stopped state (neither flag set, planIndex reset to 0 by resetPlayback()). `planIndex`
-   itself is left untouched while paused, so resumeReading() re-speaks the same clause from its
-   own start rather than the whole paragraph -- close enough to "resume exactly where it stopped"
-   now that clauses are short (cf. collectLeafSegments' CLAUSE_END_PATTERN), and far simpler than
-   tracking a mid-utterance offset through synth.pause()/resume() for what would be a barely
-   noticeable difference. Requested by Louis on 2026-08-16. */
+/* True after pauseReading(), distinct from isPausedAtCode (paused at a `pre` block) and the
+   fully-stopped state. `planIndex` stays untouched while paused, so resumeReading() re-speaks the
+   same (short) clause from its own start rather than tracking a mid-utterance offset. */
 let isPaused = false;
 
 /* Index in `plan` of the last (or currently playing) "speak" entry, so replayParagraph() knows
@@ -97,10 +86,9 @@ let isPaused = false;
    by resetPlayback() since a rebuilt/torn-down plan invalidates it. */
 let lastSpokenIndex = null;
 
-/* Bumped by resetPlayback(). synth.cancel() fires an async "error" event on the utterance it
-   just interrupted (same onend/onerror handler below), so without this guard that stale callback
-   would advance planIndex and call speakNext() again right after a stop, or after plan has
-   already been reassigned to the next page -- resuming playback instead of stopping. */
+/* Bumped by resetPlayback(). synth.cancel() fires an async "error" event on the interrupted
+   utterance, so without this guard that stale callback would advance planIndex and resume
+   playback right after a stop, instead of the callback recognizing it's stale and doing nothing. */
 let generation = 0;
 
 // Subscribers registered through onStatusChange() below.

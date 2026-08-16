@@ -24,10 +24,9 @@ function contentDirFor(lang) {
 }
 
 /* ---- cross-language fallback for a page missing in the active language ----
-   Folder/file names (hence ids) are never translated -- only each file's own content is -- so
-   a categoryId/subjectId/pageId valid in one language's structure/struct-*.json is exactly the
-   same id to look up in another's. Content translation is always a subset of the French source
-   (content/), so French is the only fallback guaranteed to succeed if the id is valid at all. */
+   Folder/file names (ids) are never translated, only content is -- so an id valid in one
+   language's struct-*.json is the same id in another's. French is the only fallback guaranteed
+   to succeed, since content translation is always a subset of the French source. */
 
 /* Struct files already fetched during a fallback lookup this session, keyed by language code
    ("" for French) -- avoids re-fetching the same struct on every subsequent missing page. */
@@ -140,11 +139,6 @@ export function rememberCurrentPageForLanguageSwitch() {
 }
 
 /**
- * Restores the page saved by {@link rememberCurrentPageForLanguageSwitch}, if any (consuming
- * it — it's a one-shot flag for the reload that follows a language switch), otherwise renders
- * the home page. Safe to call on every startup.
- */
-/**
  * @param {string} url an absolute or root-relative URL, e.g. "/?c=shells&s=bash&p=variables"
  * @returns {{categoryId: string, subjectId: string|null, pageId: string}|null} the target
  *   described by its `c`/`s`/`p` query params, or null if it has no `c` param to navigate to
@@ -157,12 +151,9 @@ function parseNavParams(url) {
 }
 
 /* ---- browser history (back/forward + reload keep the current page) ----
-   Requested by Louis on 2026-08-16: a full reload (e.g. from a live-reload dev server watching
-   content files) always landed back on the home page, and the browser's own back/forward buttons
-   did nothing, because nothing here ever touched `window.location` or `history` after the very
-   first load -- every click just mutated appState/the DOM directly. `p`/`s`/`c` are exactly the
-   same query params parseNavParams() above already reads at startup, so the fix is to also *write*
-   them on every navigation instead of only reading them once. */
+   A full reload used to always land on the home page, and back/forward did nothing, since nothing
+   here touched `window.location`/`history`. `p`/`s`/`c` (Louis, 2026-08-16) are now also *written*
+   on every navigation, not just read once at startup by parseNavParams() above. */
 
 /**
  * @param {string} categoryId
@@ -179,14 +170,9 @@ function buildNavUrl(categoryId, subjectId, pageId) {
     return `?${params.toString()}`;
 }
 
-/* True while a render is replaying whatever the current URL already says (the initial page load,
-   or a browser back/forward navigation) rather than responding to a fresh click -- pushNavUrl()
-   below is a no-op while this is set, so replaying the current URL never pushes it again as if it
-   were a brand new destination. Every render dispatch function (loadCategory, navigateToSubject,
-   navigateToChapter, generateHomePage, renderResolvedTarget, renderEntry) calls pushNavUrl() on its
-   own, unconditionally, rather than threading a "should I push?" parameter through every one of
-   them and every function that calls them -- simpler to reason about, at the cost of this one
-   shared flag standing in for that parameter instead. */
+/* True while a render is replaying the current URL (initial load, back/forward), making
+   pushNavUrl() below a no-op. Every click to a new page must call pushNavUrl() itself, including
+   generateChildList() callbacks -- skipping it stuck the URL on the previous page (Louis, 2026-08-16). */
 let isReplayingUrl = false;
 
 /**
@@ -222,6 +208,11 @@ function navigateToTarget({ categoryId, subjectId, pageId }) {
     return true;
 }
 
+/**
+ * Restores the page saved by {@link rememberCurrentPageForLanguageSwitch}, if any (consuming
+ * it — it's a one-shot flag for the reload that follows a language switch), otherwise renders
+ * the home page. Safe to call on every startup.
+ */
 export function resumePendingNavigation() {
     isReplayingUrl = true;
     try {
@@ -614,6 +605,7 @@ async function renderSubject(category, subject, lang = appState.lang) {
     const pageDiv = generatePageContent(subjectInfos, subject.id, true, null, null, createBreadcrumb(category, null), fallbackNoticeFor(lang), tEntityLabel("subjectLabels", subject.id, subject.label));
     generateChildList(pageDiv, subject.chapters ?? [], subject.id, (chapter) => {
         appState.navigationStack.push({type: 'subject', categoryId: category.id, subjectId: subject.id});
+        pushNavUrl(buildNavUrl(category.id, subject.id, chapter.id));
         renderChapter(category.id, `./${contentDir}/${category.folder}/${subject.folder}/${chapter.id}.md`, chapter, subject.id, category, subject, lang);
     });
 }
@@ -638,11 +630,13 @@ async function renderCategory(category, lang = appState.lang) {
     if (category.subjects) {
         generateChildList(pageDiv, category.subjects, category.id, (subject) => {
             appState.navigationStack.push({type: 'category', categoryId: category.id});
+            pushNavUrl(buildNavUrl(category.id, subject.id, subject.id));
             renderSubject(category, subject, lang);
         });
     } else if (category.chapters) {
         generateChildList(pageDiv, category.chapters, category.id, (chapter) => {
             appState.navigationStack.push({type: 'category', categoryId: category.id});
+            pushNavUrl(buildNavUrl(category.id, null, chapter.id));
             renderChapter(category.id, `./${contentDir}/${category.folder}/${chapter.id}.md`, chapter, null, category, null, lang);
         });
     }

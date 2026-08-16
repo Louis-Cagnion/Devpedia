@@ -8,12 +8,9 @@ const FRENCH_OPTION = { code: "", label: "Français" };
 // Among the languages this site targets, only Arabic is written right-to-left.
 const RTL_LANGUAGE_CODES = new Set(["ar"]);
 
-/* A site language `code` (structure/languages.json) is used directly as the BCP-47 `<html lang>`
-   value whenever it already is one (e.g. "en", "es"). "br" isn't: BCP-47/ISO 639-1 has no such
-   language tag ("br" is actually Breton), so browsers and screen readers - and the TTS voice
-   lookup in js/reader.js, which reads this same attribute - can't match a Brazilian Portuguese
-   voice against it and fall back unpredictably (observed as the French voice reading BR content).
-   Only codes that diverge from their BCP-47 tag need an entry here. */
+/* A site language `code` is used directly as the BCP-47 `<html lang>` value when it already is
+   one. "br" isn't (BCP-47 has no such tag, "br" is Breton) -- without this, the TTS voice lookup
+   in js/reader.js can't match a Brazilian Portuguese voice against it. */
 const BCP47_OVERRIDES = { br: "pt-BR" };
 
 /**

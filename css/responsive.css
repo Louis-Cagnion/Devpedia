@@ -135,10 +135,8 @@
         right: 0;
         border-left: 1px solid var(--border);
     }
-    /* tighter category list on desktop only: the 0.85rem vertical padding on
-       .sidebarCategoryButton (base.css) is sized for the 44px mobile touch target
-       (accessibilite-ux.md): desktop is mouse-driven, so it can afford to sit
-       closer together instead of stretching the 13-category list unnecessarily tall. */
+    /* Tighter category list on desktop only: base.css's padding is sized for the mobile
+       touch target; desktop is mouse-driven, so it can sit closer together. */
     .leftSidebar .sidebarCategoryButton,
     .leftSidebar .sidebarSubjectButton,
     .leftSidebar .sidebarChapterButton {
