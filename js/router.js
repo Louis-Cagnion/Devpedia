@@ -7,26 +7,31 @@ import { buildReadingPlan, stopReading } from "./reader.js";
 import { t, tEntityLabel } from "./i18n.js";
 
 /**
+ * @brief Returns a category's subject matching `subjectId`.
+ *
  * @param {Object} category
  * @param {string} subjectId
- * @returns {Object} the subject
+ *
+ * @returns {Object}
  */
 export function findSubject(category, subjectId) {
     return category.subjects?.find(subject => subject.id === subjectId);
 }
 
 /**
+ * @brief Returns the content folder for a language code.
+ *
  * @param {string} lang "" for French, or one of structure/languages.json's codes
- * @returns {string} the content folder for that language
+ *
+ * @returns {string}
  */
 function contentDirFor(lang) {
     return lang ? `content-${lang}` : "content";
 }
 
 /* ---- cross-language fallback for a page missing in the active language ----
-   Folder/file names (ids) are never translated, only content is -- so an id valid in one
-   language's struct-*.json is the same id in another's. French is the only fallback guaranteed
-   to succeed, since content translation is always a subset of the French source. */
+   Folder/file names (ids) are never translated, so an id valid in one language's struct-*.json
+   is the same id in another's. French is guaranteed to succeed if the id is valid at all. */
 
 /* Struct files already fetched during a fallback lookup this session, keyed by language code
    ("" for French) -- avoids re-fetching the same struct on every subsequent missing page. */
@@ -41,9 +46,12 @@ async function fetchStructCategories(lang) {
 }
 
 /**
+ * @brief Resolves categoryId/subjectId/pageId within one language's own category tree.
+ *
  * @param {Array} categories one language's category tree (structure/struct-*.json's `categories`)
- * @returns {{category: Object, subject: Object|null, chapter: Object|null}|null} null if
- *   categoryId doesn't exist in `categories`, or if subjectId/pageId don't resolve within it
+ *
+ * @returns {{category: Object, subject: Object|null, chapter: Object|null}|null} null if it
+ *   doesn't resolve within `categories`
  */
 function resolveInCategories(categories, categoryId, subjectId, pageId) {
     const category = categories.find(c => c.id === categoryId);
@@ -61,12 +69,11 @@ function resolveInCategories(categories, categoryId, subjectId, pageId) {
 }
 
 /**
- * Resolves categoryId/subjectId/pageId against the active language first, then English, then
- * French (skipping whichever of those is already the active language).
+ * @brief Resolves categoryId/subjectId/pageId against the active language first, then English,
+ * then French.
  *
  * @returns {Promise<{lang: string, category: Object, subject: Object|null, chapter: Object|null}|null>}
- *   null only if the id itself doesn't exist anywhere (a stale/broken link, not a missing
- *   translation)
+ *   null only if the id doesn't exist in any language (a stale/broken link)
  */
 async function resolveAcrossLanguages(categoryId, subjectId, pageId) {
     const direct = resolveInCategories(appState.categories, categoryId, subjectId, pageId);
@@ -81,9 +88,8 @@ async function resolveAcrossLanguages(categoryId, subjectId, pageId) {
 }
 
 /**
- * Renders the result of {@link resolveAcrossLanguages} -- in the active language if that's
- * where it was found, otherwise in whichever fallback language had it, with a translated
- * notice (cf. renderCategory/renderSubject/renderChapter's own `lang` parameter).
+ * @brief Renders the result of {@link resolveAcrossLanguages}, in the active language if found
+ * there, otherwise in the fallback language with a translated notice.
  *
  * @param {{lang: string, category: Object, subject: Object|null, chapter: Object|null}} resolved
  */
@@ -109,10 +115,7 @@ function renderResolvedTarget({ lang, category, subject, chapter }) {
     }
 }
 
-/**
- * Resolves categoryId/subjectId/pageId across languages and renders whatever's found, or falls
- * back to the home page if the id doesn't exist anywhere (a stale/broken link).
- */
+/** @brief Resolves categoryId/subjectId/pageId across languages and renders it, or falls back to the home page. */
 function renderAcrossLanguages(categoryId, subjectId, pageId) {
     resolveAcrossLanguages(categoryId, subjectId, pageId).then(resolved => {
         if (resolved) renderResolvedTarget(resolved);
@@ -121,15 +124,10 @@ function renderAcrossLanguages(categoryId, subjectId, pageId) {
 }
 
 /* Session-only: read once at startup by resumePendingNavigation(), then cleared — carries the
-   current page across a language switch's location.reload(), since ids (category/subject/chapter
-   folder names) are language-independent while only their displayed `label` gets translated. */
+   current page across a language switch's location.reload(), since ids are language-independent. */
 export const PENDING_NAV_KEY = "devpedia-pending-nav";
 
-/**
- * Call right before switching language (and reloading) to remember the page the user is
- * currently on, so {@link resumePendingNavigation} can restore it after the reload completes
- * in the new language, instead of dropping the user back on the home page.
- */
+/** @brief Remembers the current page before a language switch, so {@link resumePendingNavigation} can restore it after the reload. */
 export function rememberCurrentPageForLanguageSwitch() {
     sessionStorage.setItem(PENDING_NAV_KEY, JSON.stringify({
         categoryId: appState.curCategory,
@@ -139,9 +137,12 @@ export function rememberCurrentPageForLanguageSwitch() {
 }
 
 /**
+ * @brief Parses a nav URL's `c`/`s`/`p` query params into a navigation target.
+ *
  * @param {string} url an absolute or root-relative URL, e.g. "/?c=shells&s=bash&p=variables"
- * @returns {{categoryId: string, subjectId: string|null, pageId: string}|null} the target
- *   described by its `c`/`s`/`p` query params, or null if it has no `c` param to navigate to
+ *
+ * @returns {{categoryId: string, subjectId: string|null, pageId: string}|null} null if there's
+ *   no `c` param to navigate to
  */
 function parseNavParams(url) {
     const params = new URLSearchParams(new URL(url, window.location.origin).search);
@@ -152,16 +153,16 @@ function parseNavParams(url) {
 
 /* ---- browser history (back/forward + reload keep the current page) ----
    A full reload used to always land on the home page, and back/forward did nothing, since nothing
-   here touched `window.location`/`history`. `p`/`s`/`c` (Louis, 2026-08-16) are now also *written*
-   on every navigation, not just read once at startup by parseNavParams() above. */
+   here touched `window.location`/`history`. `p`/`s`/`c` are now also *written* on every navigation. */
 
 /**
+ * @brief Builds the URL parseNavParams() would resolve back to this same target.
+ *
  * @param {string} categoryId
  * @param {string|null} subjectId
  * @param {string} pageId
- * @returns {string} the URL parseNavParams() above would resolve back to this same target --
- *   `p` omitted when it's redundant with `c` (a category's or the home page's own intro page),
- *   the same default parseNavParams() already falls back to
+ *
+ * @returns {string} `p` omitted when it's redundant with `c`
  */
 function buildNavUrl(categoryId, subjectId, pageId) {
     const params = new URLSearchParams({ c: categoryId });
@@ -176,6 +177,8 @@ function buildNavUrl(categoryId, subjectId, pageId) {
 let isReplayingUrl = false;
 
 /**
+ * @brief Pushes `url` to browser history, unless a render is currently replaying the current URL.
+ *
  * @param {string} url see {@link buildNavUrl}
  */
 function pushNavUrl(url) {
@@ -183,14 +186,12 @@ function pushNavUrl(url) {
 }
 
 /**
- * Navigate to whatever `target` describes — a category's own page, a subject's own page, or a
- * chapter — the same dispatch {@link resumePendingNavigation} already did for a language-switch
- * restore, reused here for URL query params and in-content link clicks.
+ * @brief Navigates to whatever `target` describes: a category's, subject's, or chapter's page.
  *
  * @param {{categoryId: string, subjectId: string|null, pageId: string}} target
- * @returns {boolean} whether navigation happened -- directly, or (if `categoryId` doesn't
- *   exist in the active language) asynchronously via {@link renderAcrossLanguages}, which
- *   itself falls back to the home page if the id doesn't exist in any language
+ *
+ * @returns {boolean} whether navigation happened, directly or (if `categoryId` doesn't exist in
+ *   the active language) asynchronously via {@link renderAcrossLanguages}
  */
 function navigateToTarget({ categoryId, subjectId, pageId }) {
     const category = findCategory({ id: categoryId });
@@ -209,9 +210,8 @@ function navigateToTarget({ categoryId, subjectId, pageId }) {
 }
 
 /**
- * Restores the page saved by {@link rememberCurrentPageForLanguageSwitch}, if any (consuming
- * it — it's a one-shot flag for the reload that follows a language switch), otherwise renders
- * the home page. Safe to call on every startup.
+ * @brief Restores the page saved by {@link rememberCurrentPageForLanguageSwitch}, if any,
+ * otherwise renders whatever the current URL says, or the home page. Safe to call on every startup.
  */
 export function resumePendingNavigation() {
     isReplayingUrl = true;
@@ -242,11 +242,8 @@ export function resumePendingNavigation() {
     }
 }
 
-/**
- * The browser's own back/forward buttons -- re-renders whatever the URL now says (the same
- * parseNavParams()/navigateToTarget() dispatch resumePendingNavigation() uses at startup) without
- * pushing a new entry for it, since the browser already moved the history position on its own.
- */
+/* The browser's own back/forward buttons -- re-renders whatever the URL now says, without
+   pushing a new entry for it since the browser already moved the history position on its own. */
 window.addEventListener("popstate", () => {
     isReplayingUrl = true;
     try {
@@ -258,15 +255,9 @@ window.addEventListener("popstate", () => {
 });
 
 /**
- * Intercepts a plain click on an in-content cross-chapter link (`<a class="contentLink">`,
- * cf. parser.js) so it navigates through the SPA router instead of triggering a full page
- * reload — smoother (no white flash, current scroll/reader state discarded for nothing), even
- * though a reload now resolves to the same page too (cf. resumePendingNavigation()/pushNavUrl()).
- * A click carrying a modifier key (Ctrl/Cmd/Shift, or a non-primary button) is left alone so
- * "open in a new tab" still works. No `history.pushState` call needed directly here: it
- * delegates to navigateToTarget(), which reaches loadCategory()/navigateToSubject()/
- * navigateToChapter() the same way a sidebar click does, and each of those already pushes its own
- * URL.
+ * @brief Intercepts a plain click on an in-content cross-chapter link so it navigates through
+ * the SPA router instead of triggering a full page reload. A click carrying a modifier key or a
+ * non-primary button is left alone so "open in a new tab" still works.
  *
  * @param {HTMLElement} pageDiv
  */
@@ -295,19 +286,18 @@ function clearChapterNeighbors() {
 }
 
 /**
+ * @brief Reports whether arrow keys should type a character at `target` rather than navigate.
+ *
  * @param {HTMLElement} target the keydown event's target
- * @returns {boolean} whether `target` is where arrow keys should type a character
- *   (a text field) rather than navigate between chapters
+ *
+ * @returns {boolean}
  */
 function isTextInput(target) {
     return target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
 }
 
-/**
- * ArrowLeft/ArrowRight moves to the previous/next chapter, mirroring the arrow glyphs used by
- * the on-screen prevButton/nextButton (which already flip in RTL, cf. createAppendPageNav) —
- * same left/right meaning, just from the keyboard instead of a click.
- */
+/* ArrowLeft/ArrowRight moves to the previous/next chapter, mirroring the on-screen
+   prevButton/nextButton arrows (which already flip in RTL). */
 document.addEventListener("keydown", (e) => {
     if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
     if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
@@ -319,9 +309,7 @@ document.addEventListener("keydown", (e) => {
     navigateToChapter(chapter.categoryId, chapter.subjectId, chapter.id);
 });
 
-/**
- * Remove the page currently displayed, if any
- */
+/** @brief Removes the page currently displayed, if any. */
 function clearCurrentPage() {
     stopReading();
     const currentDiv = document.querySelector(`.${appState.curPageId}Div`);
@@ -330,16 +318,15 @@ function clearCurrentPage() {
 }
 
 /**
- * Builds a prev/next chapter button as two separate elements — an arrow pinned to the
- * button's outer edge, and a label that can wrap onto several lines on its own without
- * dragging the arrow along with it.
+ * @brief Builds a prev/next chapter button as an arrow pinned to its outer edge plus a label
+ * that can wrap onto several lines without dragging the arrow along.
  *
  * @param {string} className
  * @param {string} label
  * @param {string} arrow
- * @param {Boolean} arrowFirst true for the previous-chapter button (arrow, then label),
- *   false for the next-chapter button (label, then arrow)
- * @returns {HTMLElement} button
+ * @param {Boolean} arrowFirst true for the previous-chapter button, false for the next-chapter one
+ *
+ * @returns {HTMLElement}
  */
 function createChapterNavButton(className, label, arrow, arrowFirst) {
     const button = createTag("button", {class: className});
@@ -350,12 +337,11 @@ function createChapterNavButton(className, label, arrow, arrowFirst) {
 }
 
 /**
- * A chapter page's only permanent indication of where it sits (category, and subject if
- * any) — the left sidebar shows the same tree, but is hidden on mobile behind the menu
- * button, where this is otherwise the only such cue on screen.
+ * @brief Builds a chapter page's breadcrumb (category, and subject if any).
  *
  * @param {Object} category
  * @param {Object|null} subject
+ *
  * @returns {HTMLElement}
  */
 function createBreadcrumb(category, subject) {
@@ -373,12 +359,13 @@ function createBreadcrumb(category, subject) {
 }
 
 /**
+ * @brief Builds the previous/next chapter buttons, stacked and right-aligned.
+ *
  * @param {string} pageId
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} previousChapter
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} nextChapter
- * @returns {HTMLElement|null} the previous/next chapter buttons, stacked and right-aligned rather
- *   than side by side (two chapter titles on one row can get uncomfortably long), or null if
- *   there's neither a previous nor a next chapter to link to
+ *
+ * @returns {HTMLElement|null} null if there's neither a previous nor a next chapter
  */
 function createChapterNav(pageId, previousChapter, nextChapter) {
     if (!previousChapter && !nextChapter) return null;
@@ -403,6 +390,8 @@ function createChapterNav(pageId, previousChapter, nextChapter) {
 }
 
 /**
+ * @brief Builds and appends the top-of-page nav row (return button, previous/next chapter).
+ *
  * @param {HTMLElement} pageDiv where the nav row will be attached to
  * @param {string} pageId
  * @param {Boolean} withReturnButton
@@ -426,16 +415,9 @@ function createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter,
 }
 
 /**
- * Appends a second previous/next chapter nav at the very end of the page content, past the
- * bottom of a chapter's own text -- so moving to the next chapter doesn't require scrolling back
- * up to the one at the top first (requested by Louis on 2026-08-16). No return button here, only
- * the chapter buttons: the request was specifically about reaching the next/previous chapter
- * without scrolling, not about going back up a level (which the return button does).
- *
- * Laid out as its own full-width row (previous at the start, next at the end) rather than reusing
- * createChapterNav()'s stacked, right-aligned pair -- that layout exists specifically to leave
- * room for the return button sharing the row at the top of the page; with no return button down
- * here, the full page width is free to use instead (requested by Louis on 2026-08-16).
+ * @brief Appends a second previous/next chapter nav at the very end of the page content, full
+ * width (no return button down here), so reaching the next chapter doesn't require scrolling
+ * back up to the one at the top.
  *
  * @param {HTMLElement} pageDiv where the nav row will be attached to
  * @param {string} pageId
@@ -465,20 +447,19 @@ function appendBottomChapterNav(pageDiv, pageId, previousChapter, nextChapter) {
 }
 
 /**
+ * @brief Renders a markdown page's full content (notice, breadcrumb, nav, body, chapter nav)
+ * into a new page div and builds its reading plan.
+ *
  * @param {string} textInfos
  * @param {string} pageId
  * @param {Boolean} withReturnButton
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [previousChapter]
  * @param {{categoryId: string, subjectId: string|null, id: string, label: string}|null} [nextChapter]
- * @param {HTMLElement|null} [breadcrumb] see {@link createBreadcrumb} — chapter and subject pages
- * @param {string|null} [notice] see {@link resolveAcrossLanguages} — shown when this page had to
- *   be substituted from another language
- * @param {string|null} [titleOverride] a category's or subject's own intro page always has its
- *   `#` heading equal to its folder name (in French, even in a translated language — see
- *   README's "Content structure" section, and js/i18n.js's tEntityLabel doc comment) so that
- *   generate-struct.js can recognize it as that folder's main file; pass the translated label
- *   here to display it instead. Applied before buildReadingPlan() so the TTS reads it too.
- * @returns {HTMLElement} page div
+ * @param {HTMLElement|null} [breadcrumb]
+ * @param {string|null} [notice] shown when this page had to be substituted from another language
+ * @param {string|null} [titleOverride] translated title to use instead of the page's own `#` heading
+ *
+ * @returns {HTMLElement} the page div
  */
 function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null, breadcrumb = null, notice = null, titleOverride = null) {
     const text = parseMdContent(textInfos);
@@ -505,6 +486,8 @@ function generatePageContent(textInfos, pageId, withReturnButton, previousChapte
 }
 
 /**
+ * @brief Builds and appends a clickable list of subjects or chapters.
+ *
  * @param {HTMLElement} pageDiv where the list will be attached to
  * @param {Array} items subjects or chapters to list
  * @param {string} listId
@@ -513,8 +496,7 @@ function generatePageContent(textInfos, pageId, withReturnButton, previousChapte
 function generateChildList(pageDiv, items, listId, onSelect) {
     const ul = createTag("ul", {class: `childList ${listId}List`})
     items.forEach(item => {
-        /* Subjects (their own `chapters` array) need a translated label (cf. i18n.js's
-           tEntityLabel); a chapter's label is already correctly translated at the source. */
+        // A subject needs a translated label; a chapter's label is already translated at the source.
         const label = Array.isArray(item.chapters) ? tEntityLabel("subjectLabels", item.id, item.label) : item.label;
         const button = createTag("button", {class: `childButton ${item.id}button`}, {textContent: label})
         button.addEventListener("click", (e) => onSelect(item));
@@ -525,15 +507,7 @@ function generateChildList(pageDiv, items, listId, onSelect) {
     pageDiv.append(ul);
 }
 
-/**
- * Render the home page.
- *
- * Pushes a bare URL with no query params, rather than buildNavUrl()'s usual "?c=..." -- "acceuil"
- * isn't a real entry in structure/struct.json (cf. resumePendingNavigation()'s own special-case
- * check for it), so a bare URL is what parseNavParams() already treats as "go home" today; pushing
- * "?c=acceuil" instead would send a future reload down its slower not-found-in-any-language
- * fallback path (cf. navigateToTarget()) to reach the exact same page.
- */
+/** @brief Renders the home page. Pushes a bare URL (no query params) rather than buildNavUrl()'s usual "?c=...", since "acceuil" isn't a real struct.json entry. */
 export async function generateHomePage() {
     clearCurrentPage();
     clearChapterNeighbors();
@@ -546,26 +520,26 @@ export async function generateHomePage() {
 }
 
 /**
+ * @brief Returns the translated substitution notice for a page rendered in a fallback language.
+ *
  * @param {string} lang language a page is about to be rendered in
- * @returns {string|null} the translated substitution notice if `lang` isn't the active
- *   language (see {@link resolveAcrossLanguages}), null otherwise
+ *
+ * @returns {string|null} null if `lang` is the active language
  */
 function fallbackNoticeFor(lang) {
     return lang !== appState.lang ? t("pageFallbackNotice") : null;
 }
 
 /**
- * Render a chapter page (leaf content, belonging to a subject or a flat category)
+ * @brief Renders a chapter page (leaf content, belonging to a subject or a flat category).
  *
  * @param {string} categoryId
  * @param {string} path path to the chapter's markdown file
  * @param {Object} chapter
  * @param {string} [subjectId] the subject this chapter belongs to, if any
- * @param {Object|null} [resolvedCategory] pre-resolved category, used instead of looking it up
- *   in the active language's structure -- see {@link resolveAcrossLanguages}, whose result may
- *   come from a different language's structure than the one currently loaded into appState
- * @param {Object|null} [resolvedSubject] same as `resolvedCategory`, for the subject
- * @param {string} [lang] the language `path` was built for -- see {@link fallbackNoticeFor}
+ * @param {Object|null} [resolvedCategory] pre-resolved category (cf. {@link resolveAcrossLanguages})
+ * @param {Object|null} [resolvedSubject] pre-resolved subject, same as `resolvedCategory`
+ * @param {string} [lang] the language `path` was built for
  */
 async function renderChapter(categoryId, path, chapter, subjectId = null, resolvedCategory = null, resolvedSubject = null, lang = appState.lang) {
     clearCurrentPage();
@@ -585,13 +559,11 @@ async function renderChapter(categoryId, path, chapter, subjectId = null, resolv
 }
 
 /**
- * Render a subject page: its own description plus the list of its chapters
+ * @brief Renders a subject page: its own description plus the list of its chapters.
  *
  * @param {Object} category
  * @param {Object} subject
- * @param {string} [lang] language to render in -- see {@link fallbackNoticeFor}, defaults to
- *   the active one, propagated to every chapter reachable from this page so browsing onward
- *   stays in the same (possibly substituted) language rather than reverting mid-chapter
+ * @param {string} [lang] language to render in, propagated to every chapter reachable from this page
  */
 async function renderSubject(category, subject, lang = appState.lang) {
     clearCurrentPage();
@@ -611,12 +583,11 @@ async function renderSubject(category, subject, lang = appState.lang) {
 }
 
 /**
- * Render a category page: its description plus its subjects, or its chapters
- * when the category has no subjects (e.g. Bash, Git)
+ * @brief Renders a category page: its description plus its subjects, or its chapters when the
+ * category has no subjects.
  *
  * @param {Object} category
- * @param {string} [lang] language to render in -- see {@link fallbackNoticeFor}, defaults to
- *   the active one, propagated onward the same way {@link renderSubject} does
+ * @param {string} [lang] language to render in, propagated the same way {@link renderSubject} does
  */
 async function renderCategory(category, lang = appState.lang) {
     clearCurrentPage();
@@ -643,7 +614,7 @@ async function renderCategory(category, lang = appState.lang) {
 }
 
 /**
- * Render whatever page a navigation stack entry points to
+ * @brief Renders whatever page a navigation stack entry points to.
  *
  * @param {Object} entry
  */
@@ -655,8 +626,7 @@ function renderEntry(entry) {
     const category = findCategory({id: entry.categoryId});
     const subject = entry.type === 'subject' && category && findSubject(category, entry.subjectId);
     if (!category || (entry.type === 'subject' && !subject)) {
-        /* Reached by "Retour" from a cross-language fallback page (cf. renderResolvedTarget) --
-           this category/subject doesn't exist in the active language either. */
+        // Reached by "Retour" from a cross-language fallback page that doesn't exist here either.
         renderAcrossLanguages(entry.categoryId, entry.subjectId ?? null, entry.subjectId ?? entry.categoryId);
         return;
     }
@@ -670,8 +640,7 @@ function renderEntry(entry) {
 }
 
 /**
- * Load the category corresponding to the button name, if the current category displayed is
- * the one of the button, nothing happens
+ * @brief Loads the category matching `categoryId`. No-op if it's already the one displayed.
  *
  * @param {string} categoryId
  */
@@ -686,8 +655,7 @@ export function loadCategory(categoryId) {
     }
     const category = findCategory({id: categoryId});
     if (!category) {
-        /* Reached from the breadcrumb of a cross-language fallback page (cf. renderResolvedTarget)
-           -- this category doesn't exist in the active language either. */
+        // Reached from the breadcrumb of a cross-language fallback page that doesn't exist here either.
         renderAcrossLanguages(categoryId, null, categoryId);
         return;
     }
@@ -697,7 +665,7 @@ export function loadCategory(categoryId) {
 }
 
 /**
- * Navigate directly to a subject's page (used by the sidebar tree)
+ * @brief Navigates directly to a subject's page. Used by the sidebar tree.
  *
  * @param {string} categoryId
  * @param {string} subjectId
@@ -716,7 +684,7 @@ export function navigateToSubject(categoryId, subjectId) {
 }
 
 /**
- * Navigate directly to a chapter's page (used by the sidebar tree)
+ * @brief Navigates directly to a chapter's page. Used by the sidebar tree.
  *
  * @param {string} categoryId
  * @param {string} [subjectId] the subject this chapter belongs to, if any
