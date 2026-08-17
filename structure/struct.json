@@ -715,6 +715,10 @@
             {
               "id": "threads",
               "label": "Les threads (pthread)"
+            },
+            {
+              "id": "signaux-unix",
+              "label": "Les signaux UNIX"
             }
           ]
         },
