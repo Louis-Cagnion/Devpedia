@@ -98,13 +98,37 @@ from meu_pacote.utils import uma_funcao
 
 Um simples arquivo `__init__.py` (mesmo vazio) basta para tornar uma pasta um **pacote** importável, reunindo vários módulos sob um mesmo namespace.
 
+> **Nota:** desde o Python 3.3, `__init__.py` não é mais obrigatório para que uma pasta seja importável: sem ele, o Python a trata como um **namespace package** ([PEP 420](https://peps.python.org/pep-0420/)). A diferença é visível na prática: em um pacote clássico (com `__init__.py`), `meu_pacote.__file__` aponta para esse arquivo; em um namespace package, `__file__` vale `None` e `__path__` se torna um objeto especial em vez de uma simples lista. Uma pasta sem `__init__.py` continua, portanto, importável, mas não se comporta exatamente como um pacote clássico para todo o código que inspeciona esses atributos.
+
+## `pyproject.toml`: o packaging moderno
+
+`requirements.txt` fixa versões, mas não descreve o projeto em si (seu nome, como instalá-lo, seus metadados): `pyproject.toml` centraliza essa descrição em um formato padrão, reconhecido pelas ferramentas de packaging modernas (`setuptools`, `poetry`...):
+
+```toml
+[project]
+name = "meu-projeto"
+version = "0.1.0"
+dependencies = ["requests==2.31.0"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+```
+
+`[tool.setuptools.packages.find]` detecta automaticamente os pacotes clássicos (com `__init__.py`); um projeto que se apoia em namespace packages deve usar `find_namespace_packages` no lugar, caso contrário as pastas sem `__init__.py` são silenciosamente ignoradas na instalação.
+
+```bash
+pip install -e .   # instalacao "editable"
+```
+
+A instalação **editável** (`pip install -e .`) instala o projeto sem copiar seus arquivos para o ambiente virtual: em vez disso, ela cria um arquivo `.pth` que aponta para a pasta de origem. Modificar o código-fonte tem efeito imediato, sem reinstalação, o que torna esse comando indispensável no desenvolvimento ativo de uma biblioteca.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | `import` carrega um módulo; `if __name__ == "__main__":` distingue execução direta e importação. `pip` instala bibliotecas, um ambiente virtual isola as dependências de um projeto. |
-| **Ferramentas utilizáveis** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `__init__.py` para um pacote. |
-| **Armadilhas a evitar** | Instalar bibliotecas globalmente em vez de em um ambiente virtual: conflitos de versão entre projetos. |
-| **Boas práticas** | Sempre trabalhar em um ambiente virtual por projeto; versionar `requirements.txt`, nunca `.venv/`. |
+| **Para lembrar** | `import` carrega um módulo; `if __name__ == "__main__":` distingue execução direta e importação. `pip` instala bibliotecas, um ambiente virtual isola as dependências de um projeto. `pyproject.toml` descreve o projeto em si, além das versões fixadas apenas por `requirements.txt`. |
+| **Ferramentas utilizáveis** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `__init__.py` para um pacote clássico, `pyproject.toml` e `pip install -e .` para o packaging moderno. |
+| **Armadilhas a evitar** | Instalar bibliotecas globalmente em vez de em um ambiente virtual: conflitos de versão entre projetos. Esquecer `find_namespace_packages` para um projeto sem `__init__.py`, o que faz as pastas serem ignoradas silenciosamente na instalação. |
+| **Boas práticas** | Sempre trabalhar em um ambiente virtual por projeto; versionar `requirements.txt`, nunca `.venv/`. Usar `pip install -e .` no desenvolvimento ativo de uma biblioteca. |

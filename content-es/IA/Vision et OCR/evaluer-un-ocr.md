@@ -6,6 +6,8 @@ order: 21
 
 El principio general de evaluación (separar un conjunto de test, comparar una predicción con la respuesta verdadera) ya se plantea en [Introducción al machine learning](/?c=data-science&p=machine-learning-scikit-learn). Un OCR sin embargo tiene una ventaja que un LLM no tiene: su salida se compara directamente con una **respuesta verdadera conocida** (el texto real de la imagen), sin el no-determinismo que obliga a métodos como el golden set o el LLM-as-judge (ver [Monitoreo y gestión operativa de un LLM](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm)). Este capítulo cubre las métricas específicas de esta comparación directa.
 
+> **Nota:** este determinismo sigue siendo teórico hasta el último bit. En un cálculo multi-hilo (las bibliotecas de inferencia como MKL-DNN/oneDNN paralelizan las operaciones internas), la suma en coma flotante no es asociativa: sumar los mismos números en un orden distinto de una ejecución a otra puede producir un resultado ligeramente diferente. Dos ejecuciones del mismo modelo, en el mismo CPU, pueden por tanto en teoría divergir en un épsilon numérico, un fenómeno sin relación con el no-determinismo por muestreo de un LLM (ver más arriba) y en la práctica casi siempre demasiado ínfimo para cambiar el texto reconocido.
+
 ## Medir la diferencia entre dos textos: la distancia de edición
 
 Comparar dos textos carácter por carácter en una posición fija fallaría desde el primer carácter faltante o añadido: todo lo demás se desplazaría, un desacuerdo artificial en cada posición siguiente. La [**distancia de Levenshtein**](https://es.wikipedia.org/wiki/Distancia_de_Levenshtein) resuelve este problema: el número mínimo de operaciones (sustituir, insertar, eliminar un carácter) para transformar un texto en otro.

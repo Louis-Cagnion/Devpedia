@@ -27,6 +27,14 @@ La responsabilité unique ne suffit pas si les morceaux, une fois séparés, dé
 
 > **Signal d'alerte :** si modifier un détail d'implémentation dans un fichier oblige systématiquement à modifier un autre fichier qui ne fait que l'appeler, le couplage est trop fort, même si chaque fichier, pris isolément, semble avoir une responsabilité claire.
 
+## Le couplage caché par une donnée partagée
+
+Le couplage ne passe pas toujours par un appel de fonction : deux mécanismes qui n'ont, en apparence, rien à voir l'un avec l'autre peuvent être couplés en silence parce qu'ils réutilisent, par commodité, la **même constante**. Cas réel : deux détections indépendantes (l'une repérant des lettres isolées légitimes dans un texte, l'autre un tout autre type d'anomalie) partageaient une même liste `LETTRES_ISOLEES_LEGITIMES`, sans lien réel entre leurs deux intentions, seulement parce que la seconde avait été écrite en réutilisant une constante qui traînait déjà dans le fichier.
+
+Le vrai test (la raison de changer, vu plus haut) s'applique ici tout autant : ajuster cette liste pour affiner la première détection modifiait silencieusement le comportement de la seconde, sans qu'aucun appel de fonction ne le laisse deviner à la lecture. Corrigé en séparant les deux constantes, chacune propre à sa détection, même si leur contenu initial était identique.
+
+> **Signal d'alerte :** deux parties du code qui changent chacune pour leur propre raison, mais qui pointent vers la **même constante** (une liste, un seuil, un dictionnaire) sans qu'aucune des deux n'ait de raison réelle de dépendre du contenu exact de l'autre. Modifier cette constante pour l'un des deux usages modifie l'autre par effet de bord, sans qu'aucun import ni appel ne le rende visible à la lecture.
+
 ---
 
 ## 📋 Récapitulatif
@@ -35,5 +43,5 @@ La responsabilité unique ne suffit pas si les morceaux, une fois séparés, dé
 |---|---|
 | **À retenir** | Un fichier qui mélange plusieurs raisons de changer devient fragile : un changement pour un besoin en fait dérailler un autre. Le vrai test : "si je modifie ceci, est-ce pour la même raison que cela ?". |
 | **Outils utilisables** | Le signal de taille (~700-800 lignes) comme indice mécanique, complémentaire au test de la raison de changer. |
-| **Pièges à éviter** | Séparer des fichiers sans réduire le couplage entre eux : un fichier "séparé" qui doit être relu en entier à chaque modification d'un autre reste couplé, même s'il a l'air indépendant. |
-| **Bonnes pratiques** | Scinder un fichier dès que deux responsabilités distinctes s'y mélangent, avec une interface claire entre les morceaux issus du split. |
+| **Pièges à éviter** | Séparer des fichiers sans réduire le couplage entre eux : un fichier "séparé" qui doit être relu en entier à chaque modification d'un autre reste couplé, même s'il a l'air indépendant. Deux mécanismes indépendants qui partagent la même constante sans raison réelle de dépendre l'un de l'autre. |
+| **Bonnes pratiques** | Scinder un fichier dès que deux responsabilités distinctes s'y mélangent, avec une interface claire entre les morceaux issus du split. Donner sa propre constante à chaque mécanisme, même si leur contenu initial est identique, dès qu'ils n'ont pas de raison réelle de rester liés. |

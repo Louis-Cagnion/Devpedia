@@ -66,6 +66,20 @@ if len(results) < expected:
     warn(f"{len(results)} results out of {expected} expected")
 ```
 
+## `spawn` vs `fork`: two ways to start a Python worker
+
+In Python, `multiprocessing.Pool` can start each worker in two different ways, with real practical consequences:
+
+| | `fork` | `spawn` |
+|---|---|---|
+| Principle | The worker copies the parent's memory as it already is (*copy-on-write*) | The worker restarts a fresh interpreter, which re-imports the code and inherits the parent's environment **at the moment the pool is created** |
+| Platforms | Linux (historical default behavior) | Windows, macOS (since Python 3.8), and increasingly the default on Linux too |
+| An object already loaded in the parent (a model, for instance) | Immediately available in the child, with no reloading | Must be reloaded in each worker, a real startup cost |
+
+> **Pitfall:** under `fork`, an inconsistent parent state (a lock held, a buffer half-written at the moment of the fork) ends up frozen as-is in the child, a source of hard-to-diagnose hangs since nothing signals the inconsistency at the moment of the fork itself. This is why Python is progressively shifting toward `spawn` as the default, even on Linux, in certain contexts.
+>
+> **Best practice:** under `spawn`, an environment variable set just before the pool is created is correctly inherited by each worker (the parent's environment is captured at that exact moment); under `fork`, take advantage of the fact that an object already loaded in the parent (an AI model, for instance) is immediately available in the child rather than needlessly reloading it in each worker.
+
 ## An often better alternative: spreading work over time
 
 When the constraint is a quota, the solution isn't always to go faster. Splitting the work into batches spread across the day exposes far less than one big run all at once, for the same result, and requires no parallelization at all. If latency doesn't matter (an overnight job, a periodic report), it's the safest choice.
@@ -76,7 +90,7 @@ When the constraint is a quota, the solution isn't always to go faster. Splittin
 
 | | |
 |---|---|
-| **Key takeaways** | A program never goes faster than its most constrained resource. Parallelizing across independent targets is a free gain; parallelizing on the same target concentrates the load rather than spreading it out. |
-| **Tools you can use** | One worker per independent target, explicit checking of return codes and the volume of results obtained. |
-| **Pitfalls to avoid** | Adding workers beyond the real constraint (degrades performance); assuming a silently failing worker will make the main program fail. |
-| **Best practices** | Identify the limiting resource before parallelizing; spread work over time rather than parallelizing when the constraint is a quota and latency doesn't matter much. |
+| **Key takeaways** | A program never goes faster than its most constrained resource. Parallelizing across independent targets is a free gain; parallelizing on the same target concentrates the load rather than spreading it out. In Python, `fork` copies the parent's memory as-is, `spawn` restarts a fresh interpreter. |
+| **Tools you can use** | One worker per independent target, explicit checking of return codes and the volume of results obtained. The `fork`/`spawn` choice of `multiprocessing.Pool` depending on the need to share an already-loaded state. |
+| **Pitfalls to avoid** | Adding workers beyond the real constraint (degrades performance); assuming a silently failing worker will make the main program fail; under `fork`, an inconsistent parent state at the moment of the fork gets frozen as-is in the child. |
+| **Best practices** | Identify the limiting resource before parallelizing; spread work over time rather than parallelizing when the constraint is a quota and latency doesn't matter much; under `fork`, take advantage of an object already loaded in the parent rather than reloading it in each worker. |

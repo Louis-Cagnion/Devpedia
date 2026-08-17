@@ -61,6 +61,19 @@ is_valid_tax_id("123456789")   # True
 
 A field that fails this check is flagged as suspect, even without knowing precisely *what* correction to apply: information that's already useful on its own for prioritizing human review.
 
+## Statistical shape detection: flag without correcting
+
+The three previous approaches all share one point in common: they know, or try to guess, **which** value would be correct. A free-text field, with no business lexicon or known format, doesn't lend itself to any of the three: what's left is the possibility of noticing that **a value has a statistically suspicious shape**, without claiming to know how to correct it.
+
+Two signals common in practice:
+
+- **An abnormally high ratio of isolated letters**: a single letter surrounded by digits (`"12A34"`) is rare in a well-recognized real text; a high rate of this pattern in a document often betrays a systematic digit/letter confusion by the OCR model on that specific document.
+- **A substitution pattern restricted to a confusable subset**: `0`/`O`, `1`/`l`/`I`, `5`/`S`, `8`/`B` look visually similar and are often confused with each other; a substitution outside this subset (a `7` read as `K`, for instance) is statistically much rarer and deserves different scrutiny.
+
+> **Pitfall:** confusing this approach with contextual correction (seen above): statistical detection proposes **no** replacement value, it only flags a field as suspect. Treating it as a correction (automatically replacing the value) amounts to guessing a value with no real basis at all, worse than a poorly calibrated contextual correction.
+>
+> **Best practice:** reserve this detection for fields that escape the three previous approaches (no business lexicon, no known format, insufficient context for a language model), and always have it lead to human review, never an automatic replacement.
+
 ## Never lose track of the raw text
 
 Whatever correction method is applied, the text recognized **before** correction remains valuable information: without it, it becomes impossible to know afterward whether a value comes from the OCR model or an automatic correction, or to measure that correction's actual effect on overall quality (see [CER/WER](/?c=ia&s=vision-et-ocr&p=evaluer-un-ocr)).
@@ -73,7 +86,7 @@ Whatever correction method is applied, the text recognized **before** correction
 
 | | |
 |---|---|
-| **Key takeaways** | Dictionary-based correction replaces a word absent from a lexicon with its closest entry (Levenshtein distance). Contextual correction judges the plausibility of a whole sequence via a language model, useful against confusions an isolated word doesn't reveal. Format validation (regex) detects an anomaly on a field with a known structure, with no dictionary or model needed. |
-| **Tools you can use** | A business lexicon built from vocabulary actually encountered. A language model for contextual correction. Regular expressions to validate a field with a known format. |
-| **Pitfalls to avoid** | Using a generic language dictionary on business vocabulary. Applying automatic contextual correction on fields with a strict format constraint. Overwriting the raw text with its corrected version. |
-| **Best practices** | Build the lexicon from actual business vocabulary. Reserve contextual correction for free text, validate known-format fields with regex. Always keep the raw text alongside the corrected text. |
+| **Key takeaways** | Dictionary-based correction replaces a word absent from a lexicon with its closest entry (Levenshtein distance). Contextual correction judges the plausibility of a whole sequence via a language model, useful against confusions an isolated word doesn't reveal. Format validation (regex) detects an anomaly on a field with a known structure, with no dictionary or model needed. Statistical shape detection flags a suspect field without proposing a correction, for cases the three previous approaches don't cover. |
+| **Tools you can use** | A business lexicon built from vocabulary actually encountered. A language model for contextual correction. Regular expressions to validate a field with a known format. An isolated-letter ratio or a restricted substitution pattern for statistical detection. |
+| **Pitfalls to avoid** | Using a generic language dictionary on business vocabulary. Applying automatic contextual correction on fields with a strict format constraint. Overwriting the raw text with its corrected version. Treating statistical detection as a correction, by automatically replacing the flagged value. |
+| **Best practices** | Build the lexicon from actual business vocabulary. Reserve contextual correction for free text, validate known-format fields with regex. Always keep the raw text alongside the corrected text. Always have any statistical detection lead to human review, never an automatic replacement. |

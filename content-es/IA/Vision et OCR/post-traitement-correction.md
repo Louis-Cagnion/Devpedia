@@ -61,6 +61,19 @@ formato_codigo_postal_valido("28018")   # True
 
 Un campo que falla esta verificación se marca como sospechoso, incluso sin saber precisamente *qué* corrección aplicar: una información ya útil en sí misma para priorizar una relectura humana.
 
+## Detección por forma estadística: señalar sin corregir
+
+Los tres enfoques anteriores tienen todos un punto en común: saben, o intentan adivinar, **qué** valor sería el correcto. Un campo de texto libre, sin léxico de negocio ni formato conocido, no se presta a ninguno de los tres: queda la posibilidad de detectar que **un valor tiene una forma estadísticamente sospechosa**, sin pretender saber corregirlo.
+
+Dos señales frecuentes en la práctica:
+
+- **Un ratio de letras aisladas anormalmente elevado**: una letra única rodeada de dígitos (`"12A34"`) es rara en un texto real bien reconocido; una tasa elevada de este patrón en un documento a menudo delata una confusión dígito/letra sistemática del modelo de OCR en ese documento concreto.
+- **Un patrón de sustitución restringido a un subconjunto confundible**: `0`/`O`, `1`/`l`/`I`, `5`/`S`, `8`/`B` se parecen visualmente y a menudo se confunden entre sí; una sustitución fuera de este subconjunto (un `7` leído como `K`, por ejemplo) es estadísticamente mucho más rara y merece una vigilancia distinta.
+
+> **Trampa:** confundir este enfoque con la corrección contextual (vista más arriba): la detección estadística no propone **ningún** valor de reemplazo, se limita a señalar un campo como sospechoso. Tratarla como una corrección (reemplazar automáticamente) equivale a adivinar un valor sin ninguna base real, peor que una corrección contextual mal calibrada.
+>
+> **Buena práctica:** reservar esta detección a los campos que escapan a los tres enfoques anteriores (sin léxico de negocio, sin formato conocido, contexto insuficiente para un modelo de lenguaje), y hacer que siempre desemboque en una relectura humana, nunca en un reemplazo automático.
+
 ## Nunca perder el rastro del texto bruto
 
 Sea cual sea el método de corrección aplicado, el texto reconocido **antes** de la corrección sigue siendo una información valiosa: sin él, se vuelve imposible saber a posteriori si un valor proviene del modelo de OCR o de una corrección automática, ni medir el efecto real de esa corrección sobre la calidad global (ver el [CER/WER](/?c=ia&s=vision-et-ocr&p=evaluer-un-ocr)).
@@ -73,7 +86,7 @@ Sea cual sea el método de corrección aplicado, el texto reconocido **antes** d
 
 | | |
 |---|---|
-| **Para recordar** | La corrección por diccionario reemplaza una palabra ausente de un léxico por su entrada más cercana (distancia de Levenshtein). La corrección contextual juzga la plausibilidad de una secuencia completa vía un modelo de lenguaje, útil frente a confusiones que la palabra aislada no revela. La validación por formato (regex) detecta una anomalía en un campo de estructura conocida, sin diccionario ni modelo. |
-| **Herramientas utilizables** | Un léxico de negocio construido sobre el vocabulario realmente encontrado. Un modelo de lenguaje para la corrección contextual. Expresiones regulares para validar un campo de formato conocido. |
-| **Trampas a evitar** | Usar un diccionario de idioma genérico sobre vocabulario de negocio. Aplicar una corrección contextual automática en campos de alta restricción de formato. Sobrescribir el texto bruto con su versión corregida. |
-| **Buenas prácticas** | Construir el léxico a partir del vocabulario de negocio real. Reservar la corrección contextual al texto libre, validar los campos de formato conocido por regex. Conservar siempre el texto bruto junto al texto corregido. |
+| **Para recordar** | La corrección por diccionario reemplaza una palabra ausente de un léxico por su entrada más cercana (distancia de Levenshtein). La corrección contextual juzga la plausibilidad de una secuencia completa vía un modelo de lenguaje, útil frente a confusiones que la palabra aislada no revela. La validación por formato (regex) detecta una anomalía en un campo de estructura conocida, sin diccionario ni modelo. La detección por forma estadística señala un campo sospechoso sin proponer corrección, para los casos que los tres anteriores no cubren. |
+| **Herramientas utilizables** | Un léxico de negocio construido sobre el vocabulario realmente encontrado. Un modelo de lenguaje para la corrección contextual. Expresiones regulares para validar un campo de formato conocido. Un ratio de letras aisladas o un patrón de sustitución restringido para la detección estadística. |
+| **Trampas a evitar** | Usar un diccionario de idioma genérico sobre vocabulario de negocio. Aplicar una corrección contextual automática en campos de alta restricción de formato. Sobrescribir el texto bruto con su versión corregida. Tratar una detección estadística como una corrección, reemplazando automáticamente el valor señalado. |
+| **Buenas prácticas** | Construir el léxico a partir del vocabulario de negocio real. Reservar la corrección contextual al texto libre, validar los campos de formato conocido por regex. Conservar siempre el texto bruto junto al texto corregido. Hacer que toda detección estadística desemboque en una relectura humana, nunca un reemplazo automático. |

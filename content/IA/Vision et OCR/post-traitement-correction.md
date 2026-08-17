@@ -61,6 +61,19 @@ format_siret_valide("12345678901234")   # True
 
 Un champ qui échoue cette vérification est signalé comme suspect, même sans savoir précisément *quelle* correction appliquer : une information déjà utile en elle-même pour prioriser une relecture humaine.
 
+## Détection par forme statistique : signaler sans corriger
+
+Les trois approches précédentes ont toutes un point commun : elles savent, ou tentent de deviner, **quelle** valeur serait correcte. Un champ en texte libre, sans lexique métier ni format connu, ne se prête à aucune des trois : reste la possibilité de repérer qu'**une valeur a une forme statistiquement suspecte**, sans prétendre savoir la corriger.
+
+Deux signaux fréquents en pratique :
+
+- **Un ratio de lettres isolées anormalement élevé** : une lettre unique entourée de chiffres (`"12A34"`) est rare dans un texte réel bien reconnu ; un taux élevé de ce motif sur un document trahit souvent une confusion chiffre/lettre systématique du modèle d'OCR sur ce document précis.
+- **Un motif de substitution restreint à un sous-ensemble confondable** : `0`/`O`, `1`/`l`/`I`, `5`/`S`, `8`/`B` se ressemblent visuellement et se confondent souvent ensemble ; une substitution en dehors de ce sous-ensemble (un `7` lu `K`, par exemple) est statistiquement bien plus rare et mérite une vigilance différente.
+
+> **Piège :** confondre cette approche avec la correction contextuelle (vue plus haut) : la détection statistique ne propose **aucune** valeur de remplacement, elle se contente de signaler un champ comme suspect. La traiter comme une correction (remplacer automatiquement) revient à deviner une valeur sans aucune base réelle, pire qu'une correction contextuelle mal calibrée.
+>
+> **Bonne pratique :** réserver cette détection aux champs qui échappent aux trois approches précédentes (pas de lexique métier, pas de format connu, contexte insuffisant pour un modèle de langage), et toujours la faire déboucher sur une relecture humaine, jamais sur un remplacement automatique.
+
 ## Ne jamais perdre la trace du texte brut
 
 Quelle que soit la méthode de correction appliquée, le texte reconnu **avant** correction reste une information précieuse : sans lui, il devient impossible de savoir après coup si une valeur vient du modèle d'OCR ou d'une correction automatique, ni de mesurer l'effet réel de cette correction sur la qualité globale (voir le [CER/WER](/?c=ia&s=vision-et-ocr&p=evaluer-un-ocr)).
@@ -73,7 +86,7 @@ Quelle que soit la méthode de correction appliquée, le texte reconnu **avant**
 
 | | |
 |---|---|
-| **À retenir** | La correction par dictionnaire remplace un mot absent d'un lexique par son entrée la plus proche (distance de Levenshtein). La correction contextuelle juge la plausibilité d'une séquence entière via un modèle de langage, utile face à des confusions que le mot isolé ne révèle pas. La validation par format (regex) détecte une anomalie sur un champ à structure connue, sans dictionnaire ni modèle. |
-| **Outils utilisables** | Un lexique métier construit sur le vocabulaire réellement rencontré. Un modèle de langage pour la correction contextuelle. Des expressions régulières pour valider un champ à format connu. |
-| **Pièges à éviter** | Utiliser un dictionnaire de langue générique sur du vocabulaire métier. Appliquer une correction contextuelle automatique sur des champs à haute contrainte de format. Écraser le texte brut par sa version corrigée. |
-| **Bonnes pratiques** | Construire le lexique à partir du vocabulaire métier réel. Réserver la correction contextuelle au texte libre, valider les champs à format connu par regex. Toujours conserver le texte brut à côté du texte corrigé. |
+| **À retenir** | La correction par dictionnaire remplace un mot absent d'un lexique par son entrée la plus proche (distance de Levenshtein). La correction contextuelle juge la plausibilité d'une séquence entière via un modèle de langage, utile face à des confusions que le mot isolé ne révèle pas. La validation par format (regex) détecte une anomalie sur un champ à structure connue, sans dictionnaire ni modèle. La détection par forme statistique signale un champ suspect sans proposer de correction, pour les cas que les trois précédentes ne couvrent pas. |
+| **Outils utilisables** | Un lexique métier construit sur le vocabulaire réellement rencontré. Un modèle de langage pour la correction contextuelle. Des expressions régulières pour valider un champ à format connu. Un ratio de lettres isolées ou un motif de substitution restreint pour la détection statistique. |
+| **Pièges à éviter** | Utiliser un dictionnaire de langue générique sur du vocabulaire métier. Appliquer une correction contextuelle automatique sur des champs à haute contrainte de format. Écraser le texte brut par sa version corrigée. Traiter une détection statistique comme une correction, en remplaçant automatiquement la valeur signalée. |
+| **Bonnes pratiques** | Construire le lexique à partir du vocabulaire métier réel. Réserver la correction contextuelle au texte libre, valider les champs à format connu par regex. Toujours conserver le texte brut à côté du texte corrigé. Faire déboucher toute détection statistique sur une relecture humaine, jamais un remplacement automatique. |

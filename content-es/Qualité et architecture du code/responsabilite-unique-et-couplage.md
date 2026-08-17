@@ -27,6 +27,14 @@ La responsabilidad única no basta si las partes, una vez separadas, dependen fu
 
 > **Señal de alerta:** si modificar un detalle de implementación en un archivo obliga sistemáticamente a modificar otro archivo que solo lo llama, el acoplamiento es demasiado fuerte, incluso si cada archivo, tomado por separado, parece tener una responsabilidad clara.
 
+## El acoplamiento oculto por un dato compartido
+
+El acoplamiento no siempre pasa por una llamada a función: dos mecanismos que, en apariencia, no tienen nada que ver el uno con el otro pueden estar acoplados en silencio porque reutilizan, por comodidad, la **misma constante**. Caso real: dos detecciones independientes (una que localizaba letras aisladas legítimas en un texto, la otra un tipo de anomalía completamente distinto) compartían una misma lista `LETRAS_AISLADAS_LEGITIMAS`, sin ningún vínculo real entre sus dos intenciones, solo porque la segunda se había escrito reutilizando una constante que ya andaba dando vueltas en el archivo.
+
+La verdadera prueba (el motivo del cambio, visto más arriba) se aplica aquí igualmente: ajustar esta lista para afinar la primera detección modificaba silenciosamente el comportamiento de la segunda, sin que ninguna llamada a función lo dejara adivinar en la lectura. Se corrigió separando las dos constantes, cada una propia de su detección, aunque su contenido inicial fuera idéntico.
+
+> **Señal de alerta:** dos partes del código que cambian cada una por su propio motivo, pero que apuntan a la **misma constante** (una lista, un umbral, un diccionario) sin que ninguna de las dos tenga un motivo real para depender del contenido exacto de la otra. Modificar esta constante para uno de los dos usos modifica el otro por efecto secundario, sin que ningún import ni llamada lo haga visible en la lectura.
+
 ---
 
 ## 📋 Resumen
@@ -35,5 +43,5 @@ La responsabilidad única no basta si las partes, una vez separadas, dependen fu
 |---|---|
 | **Para recordar** | Un archivo que mezcla varios motivos de cambio se vuelve frágil: un cambio para una necesidad hace descarrilar otra. La verdadera prueba: "si modifico esto, ¿es por el mismo motivo que aquello?". |
 | **Herramientas utilizables** | La señal de tamaño (~700-800 líneas) como indicio mecánico, complementario a la prueba del motivo de cambio. |
-| **Trampas a evitar** | Separar archivos sin reducir el acoplamiento entre ellos: un archivo "separado" que debe releerse por completo en cada modificación de otro sigue acoplado, aunque parezca independiente. |
-| **Buenas prácticas** | Dividir un archivo en cuanto dos responsabilidades distintas se mezclan en él, con una interfaz clara entre las partes surgidas de la división. |
+| **Trampas a evitar** | Separar archivos sin reducir el acoplamiento entre ellos: un archivo "separado" que debe releerse por completo en cada modificación de otro sigue acoplado, aunque parezca independiente. Dos mecanismos independientes que comparten la misma constante sin motivo real para depender el uno del otro. |
+| **Buenas prácticas** | Dividir un archivo en cuanto dos responsabilidades distintas se mezclan en él, con una interfaz clara entre las partes surgidas de la división. Dar su propia constante a cada mecanismo, aunque su contenido inicial sea idéntico, en cuanto no tengan un motivo real para permanecer vinculados. |

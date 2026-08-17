@@ -6,6 +6,8 @@ order: 22
 
 The general evaluation principle (splitting off a test set, comparing a prediction to the true answer) is already laid out in [Introduction to Machine Learning](/?c=data-science&p=machine-learning-scikit-learn). An OCR, however, has an advantage an LLM doesn't: its output compares directly to a **known true answer** (the image's actual text), without the non-determinism that forces methods like the golden set or LLM-as-judge (see [LLM Monitoring and Operations](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm)). This chapter covers the metrics specific to this direct comparison.
 
+> **Note:** This determinism remains theoretical down to the bit. Under multi-threaded computation (inference libraries like MKL-DNN/oneDNN parallelize internal operations), floating-point addition isn't associative: adding the same numbers in a different order from one run to the next can produce a slightly different result. Two runs of the same model, on the same CPU, can therefore in theory diverge by a numerical epsilon, a phenomenon unrelated to an LLM's sampling-based non-determinism (see above) and in practice almost always too tiny to change the recognized text.
+
 ## Measuring the gap between two texts: edit distance
 
 Comparing two texts character by character at a fixed position would fail at the very first missing or added character: everything else would shift, creating an artificial mismatch at every following position. **[Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)** solves this problem: the minimum number of operations (substitute, insert, delete a character) needed to turn one text into another.

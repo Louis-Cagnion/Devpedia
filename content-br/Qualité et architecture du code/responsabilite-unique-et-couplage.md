@@ -27,6 +27,14 @@ A responsabilidade única não basta se as partes, uma vez separadas, dependem f
 
 > **Sinal de alerta:** se modificar um detalhe de implementação em um arquivo obriga sistematicamente a modificar outro arquivo que apenas o chama, o acoplamento está forte demais, mesmo que cada arquivo, isoladamente, pareça ter uma responsabilidade clara.
 
+## O acoplamento oculto por um dado compartilhado
+
+O acoplamento nem sempre passa por uma chamada de função: dois mecanismos que, aparentemente, não têm nada a ver um com o outro podem estar acoplados silenciosamente porque reutilizam, por conveniência, a **mesma constante**. Caso real: duas detecções independentes (uma identificando letras isoladas legítimas em um texto, a outra um tipo de anomalia totalmente diferente) compartilhavam uma mesma lista `LETRAS_ISOLADAS_LEGITIMAS`, sem nenhuma relação real entre suas duas intenções, apenas porque a segunda tinha sido escrita reutilizando uma constante que já estava no arquivo.
+
+O teste de verdade (o motivo de mudar, visto acima) se aplica aqui igualmente: ajustar essa lista para refinar a primeira detecção modificava silenciosamente o comportamento da segunda, sem que nenhuma chamada de função deixasse isso perceptível na leitura. Corrigido separando as duas constantes, cada uma própria de sua detecção, mesmo que seu conteúdo inicial fosse idêntico.
+
+> **Sinal de alerta:** duas partes do código que mudam cada uma por seu próprio motivo, mas que apontam para a **mesma constante** (uma lista, um limite, um dicionário) sem que nenhuma das duas tenha um motivo real para depender do conteúdo exato da outra. Modificar essa constante para um dos dois usos modifica o outro por efeito colateral, sem que nenhum import ou chamada torne isso visível na leitura.
+
 ---
 
 ## 📋 Recapitulando
@@ -35,5 +43,5 @@ A responsabilidade única não basta se as partes, uma vez separadas, dependem f
 |---|---|
 | **Para lembrar** | Um arquivo que mistura vários motivos de mudar se torna frágil: uma mudança para uma necessidade descarrila outra. O teste de verdade: "se eu modifico isto, é pelo mesmo motivo que aquilo?". |
 | **Ferramentas utilizáveis** | O sinal de tamanho (~700-800 linhas) como indício mecânico, complementar ao teste do motivo de mudar. |
-| **Armadilhas a evitar** | Separar arquivos sem reduzir o acoplamento entre eles: um arquivo "separado" que precisa ser relido inteiro a cada modificação de outro continua acoplado, mesmo que pareça independente. |
-| **Boas práticas** | Dividir um arquivo assim que duas responsabilidades distintas se misturam nele, com uma interface clara entre as partes resultantes da divisão. |
+| **Armadilhas a evitar** | Separar arquivos sem reduzir o acoplamento entre eles: um arquivo "separado" que precisa ser relido inteiro a cada modificação de outro continua acoplado, mesmo que pareça independente. Dois mecanismos independentes que compartilham a mesma constante sem motivo real de depender um do outro. |
+| **Boas práticas** | Dividir um arquivo assim que duas responsabilidades distintas se misturam nele, com uma interface clara entre as partes resultantes da divisão. Dar sua própria constante a cada mecanismo, mesmo que seu conteúdo inicial seja idêntico, assim que não tiverem motivo real de permanecer ligados. |

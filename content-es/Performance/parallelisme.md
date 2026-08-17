@@ -66,6 +66,20 @@ if len(resultados) < esperado:
     advertir(f"{len(resultados)} resultados de {esperado} esperados")
 ```
 
+## `spawn` vs `fork`: dos formas de iniciar un worker Python
+
+En Python, `multiprocessing.Pool` puede iniciar cada worker de dos formas diferentes, con consecuencias prácticas reales:
+
+| | `fork` | `spawn` |
+|---|---|---|
+| Principio | El worker copia la memoria del padre tal como está ya (*copy-on-write*) | El worker reinicia un intérprete nuevo, que reimporta el código y hereda el entorno del padre **en el momento de la creación del pool** |
+| Plataformas | Linux (comportamiento histórico por defecto) | Windows, macOS (desde Python 3.8), y cada vez más el valor por defecto también en Linux |
+| Un objeto ya cargado en el padre (un modelo, por ejemplo) | Inmediatamente disponible en el hijo, sin recarga | Debe recargarse en cada worker, un coste de arranque real |
+
+> **Trampa:** bajo `fork`, un estado del padre incoherente (un lock retenido, un buffer a medio escribir en el momento del fork) se queda congelado tal cual en el hijo, una fuente de bloqueos difíciles de diagnosticar puesto que nada señala la incoherencia en el momento del propio fork. Esta es la razón por la que Python se pasa progresivamente a `spawn` por defecto, incluso en Linux, en ciertos contextos.
+>
+> **Buena práctica:** bajo `spawn`, una variable de entorno establecida justo antes de la creación del pool sí es heredada por cada worker (el entorno del padre se captura en ese instante preciso); bajo `fork`, aprovechar que un objeto ya cargado en el padre (un modelo de IA, por ejemplo) está inmediatamente disponible en el hijo en lugar de recargarlo innecesariamente en cada worker.
+
 ## Una alternativa a menudo mejor: distribuir en el tiempo
 
 Cuando la restricción es una cuota, la solución no siempre es ir más rápido. Dividir el trabajo en lotes repartidos a lo largo del día expone mucho menos que un gran procesamiento de una sola vez, para un resultado idéntico, y no requiere ninguna paralelización. Si la latencia no importa (un procesamiento nocturno, un informe periódico), es la opción más segura.
@@ -76,7 +90,7 @@ Cuando la restricción es una cuota, la solución no siempre es ir más rápido.
 
 | | |
 |---|---|
-| **Para recordar** | Un programa nunca va más rápido que su recurso más restringido. Paralelizar sobre destinos independientes es una ganancia gratuita; paralelizar sobre un mismo destino concentra la carga en lugar de repartirla. |
-| **Herramientas utilizables** | Un worker por destino independiente, verificación explícita de los códigos de retorno y del volumen de resultados obtenido. |
-| **Trampas a evitar** | Añadir workers más allá de la restricción real (degrada el rendimiento); suponer que un worker que falla silenciosamente hará fallar al programa principal. |
-| **Buenas prácticas** | Identificar el recurso limitante antes de paralelizar; distribuir el trabajo en el tiempo en lugar de paralelizar cuando la restricción es una cuota y la latencia importa poco. |
+| **Para recordar** | Un programa nunca va más rápido que su recurso más restringido. Paralelizar sobre destinos independientes es una ganancia gratuita; paralelizar sobre un mismo destino concentra la carga en lugar de repartirla. En Python, `fork` copia la memoria del padre tal cual, `spawn` reinicia un intérprete nuevo. |
+| **Herramientas utilizables** | Un worker por destino independiente, verificación explícita de los códigos de retorno y del volumen de resultados obtenido. La elección `fork`/`spawn` de `multiprocessing.Pool` según la necesidad de compartir un estado ya cargado. |
+| **Trampas a evitar** | Añadir workers más allá de la restricción real (degrada el rendimiento); suponer que un worker que falla silenciosamente hará fallar al programa principal; bajo `fork`, un estado del padre incoherente en el momento del fork se congela tal cual en el hijo. |
+| **Buenas prácticas** | Identificar el recurso limitante antes de paralelizar; distribuir el trabajo en el tiempo en lugar de paralelizar cuando la restricción es una cuota y la latencia importa poco; bajo `fork`, aprovechar un objeto ya cargado en el padre en lugar de recargarlo en cada worker. |

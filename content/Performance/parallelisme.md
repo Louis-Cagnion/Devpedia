@@ -66,6 +66,20 @@ if len(resultats) < attendu:
     avertir(f"{len(resultats)} resultats sur {attendu} attendus")
 ```
 
+## `spawn` vs `fork` : deux façons de démarrer un worker Python
+
+En Python, `multiprocessing.Pool` peut démarrer chaque worker de deux façons différentes, avec des conséquences pratiques réelles :
+
+| | `fork` | `spawn` |
+|---|---|---|
+| Principe | Le worker copie la mémoire du parent telle qu'elle est déjà (*copy-on-write*) | Le worker redémarre un interpréteur neuf, qui réimporte le code et hérite de l'environnement du parent **au moment de la création du pool** |
+| Plateformes | Linux (comportement historique par défaut) | Windows, macOS (depuis Python 3.8), et de plus en plus le défaut sur Linux aussi |
+| Un objet déjà chargé dans le parent (un modèle, par exemple) | Immédiatement disponible dans l'enfant, sans rechargement | Doit être rechargé dans chaque worker, un coût de démarrage réel |
+
+> **Piège :** sous `fork`, un état parent incohérent (un verrou tenu, un buffer à moitié écrit au moment du fork) se retrouve figé tel quel dans l'enfant, une source de blocages difficiles à diagnostiquer puisque rien ne signale l'incohérence au moment du fork lui-même. C'est la raison pour laquelle Python bascule progressivement vers `spawn` par défaut, même sur Linux, dans certains contextes.
+>
+> **Bonne pratique :** sous `spawn`, une variable d'environnement positionnée juste avant la création du pool est bien héritée par chaque worker (l'environnement du parent est capturé à cet instant précis) ; sous `fork`, profiter du fait qu'un objet déjà chargé dans le parent (un modèle IA, par exemple) est immédiatement disponible dans l'enfant plutôt que de le recharger inutilement dans chaque worker.
+
 ## Une alternative souvent meilleure : étaler dans le temps
 
 Quand la contrainte est un quota, la solution n'est pas toujours d'aller plus vite. Découper le travail en lots répartis sur la journée expose beaucoup moins qu'un gros traitement d'un seul coup, pour un résultat identique, et ne demande aucune parallélisation. Si la latence n'a pas d'importance (un traitement nocturne, un rapport périodique), c'est le choix le plus sûr.
@@ -76,7 +90,7 @@ Quand la contrainte est un quota, la solution n'est pas toujours d'aller plus vi
 
 | | |
 |---|---|
-| **À retenir** | Un programme ne va jamais plus vite que sa ressource la plus contrainte. Paralléliser sur des cibles indépendantes est un gain gratuit ; paralléliser sur une même cible concentre la charge plutôt que de la répartir. |
-| **Outils utilisables** | Un worker par cible indépendante, vérification explicite des codes de retour et du volume de résultats obtenu. |
-| **Pièges à éviter** | Ajouter des workers au-delà de la contrainte réelle (dégrade les performances) ; supposer qu'un worker qui échoue silencieusement fera échouer le programme principal. |
-| **Bonnes pratiques** | Identifier la ressource limitante avant de paralléliser ; étaler le travail dans le temps plutôt que de paralléliser quand la contrainte est un quota et que la latence importe peu. |
+| **À retenir** | Un programme ne va jamais plus vite que sa ressource la plus contrainte. Paralléliser sur des cibles indépendantes est un gain gratuit ; paralléliser sur une même cible concentre la charge plutôt que de la répartir. En Python, `fork` copie la mémoire du parent telle quelle, `spawn` redémarre un interpréteur neuf. |
+| **Outils utilisables** | Un worker par cible indépendante, vérification explicite des codes de retour et du volume de résultats obtenu. Le choix `fork`/`spawn` de `multiprocessing.Pool` selon le besoin de partager un état déjà chargé. |
+| **Pièges à éviter** | Ajouter des workers au-delà de la contrainte réelle (dégrade les performances) ; supposer qu'un worker qui échoue silencieusement fera échouer le programme principal ; sous `fork`, un état parent incohérent au moment du fork se fige tel quel dans l'enfant. |
+| **Bonnes pratiques** | Identifier la ressource limitante avant de paralléliser ; étaler le travail dans le temps plutôt que de paralléliser quand la contrainte est un quota et que la latence importe peu ; sous `fork`, profiter d'un objet déjà chargé dans le parent plutôt que de le recharger dans chaque worker. |

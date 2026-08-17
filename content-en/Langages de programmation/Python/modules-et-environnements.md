@@ -97,3 +97,38 @@ from mon_package.utils import une_fonction
 ```
 
 A simple `__init__.py` file (even an empty one) is all it takes to turn a folder into an importable **package**, grouping multiple modules under a single namespace.
+
+> **Note:** Since Python 3.3, `__init__.py` is no longer required for a folder to be importable: without it, Python treats it as a **namespace package** ([PEP 420](https://peps.python.org/pep-0420/)). The difference is visible in practice: on a classic package (with `__init__.py`), `mon_package.__file__` points to that file; on a namespace package, `__file__` is `None` and `__path__` becomes a special object rather than a plain list. A folder without `__init__.py` therefore remains importable, but doesn't behave exactly like a classic package for any code that inspects these attributes.
+
+## `pyproject.toml`: Modern packaging
+
+`requirements.txt` freezes versions, but doesn't describe the project itself (its name, how to install it, its metadata): `pyproject.toml` centralizes this description in a standard format, recognized by modern packaging tools (`setuptools`, `poetry`...):
+
+```toml
+[project]
+name = "mon-projet"
+version = "0.1.0"
+dependencies = ["requests==2.31.0"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+```
+
+`[tool.setuptools.packages.find]` automatically detects classic packages (with `__init__.py`); a project relying on namespace packages must use `find_namespace_packages` instead, otherwise folders without `__init__.py` are silently ignored during installation.
+
+```bash
+pip install -e .   # "editable" install
+```
+
+An **editable** install (`pip install -e .`) installs the project without copying its files into the virtual environment: it instead creates a `.pth` file that points to the source folder. Modifying the source code takes effect immediately, with no reinstallation needed, which makes this command essential during active development of a library.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `import` loads a module; `if __name__ == "__main__":` distinguishes direct execution from import. `pip` installs libraries, a virtual environment isolates a project's dependencies. `pyproject.toml` describes the project itself, beyond just the versions frozen by `requirements.txt`. |
+| **Tools you can use** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `__init__.py` for a classic package, `pyproject.toml` and `pip install -e .` for modern packaging. |
+| **Pitfalls to avoid** | Installing libraries globally rather than in a virtual environment: version conflicts between projects. Forgetting `find_namespace_packages` for a project without `__init__.py`, which causes those folders to be silently ignored during installation. |
+| **Best practices** | Always work in a virtual environment per project; version `requirements.txt`, never `.venv/`. Use `pip install -e .` during active development of a library. |
