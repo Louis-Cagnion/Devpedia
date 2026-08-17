@@ -29,7 +29,7 @@ Un système IA en production doit pouvoir répondre après coup à *"qui a posé
 
 ## Contrôle d'accès : le RAG hérite des permissions, ou il les contourne
 
-Avec un [RAG](/?c=ia&s=nlp-llm&p=rag) mal conçu, la base vectorielle indexe des documents de plusieurs niveaux de confidentialité, mais la recherche ne filtre pas selon les droits de la personne qui pose la question.
+Avec un [RAG](/?c=ia&s=nlp-llm&p=rag) mal conçu, la base vectorielle indexe des documents de plusieurs niveaux de confidentialité, mais la recherche ne filtre pas selon les droits de la personne qui pose la question. Ce "qui a le droit de voir quoi" s'appuie sur les mêmes modèles génériques que n'importe quel autre système, pas spécifiques à l'IA : voir [RBAC et ABAC](/?c=authentification&s=fondamentaux&p=rbac-et-abac).
 
 > **Piège :** filtrer par permission seulement **après** la recherche (relire la réponse a posteriori). Un utilisateur qui n'aurait jamais eu accès à un document directement peut alors s'en voir citer le contenu, reformulé par le modèle, parce que la recherche l'a jugé pertinent sans vérifier qui a le droit de le voir : une fois l'information dans la réponse, le mal est fait.
 >

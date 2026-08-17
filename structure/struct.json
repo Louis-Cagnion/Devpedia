@@ -27,6 +27,10 @@
             {
               "id": "mots-de-passe-et-hachage",
               "label": "Mots de passe et hachage sécurisé"
+            },
+            {
+              "id": "rbac-et-abac",
+              "label": "RBAC et ABAC : deux façons de modéliser l'autorisation"
             }
           ]
         },

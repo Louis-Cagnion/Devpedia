@@ -29,7 +29,7 @@ An AI system in production must be able to answer, after the fact, *"who asked t
 
 ## Access control: RAG either inherits permissions, or bypasses them
 
-With a poorly designed [RAG](/?c=ia&s=nlp-llm&p=rag), the vector database indexes documents at several confidentiality levels, but the search doesn't filter based on the rights of the person asking the question.
+With a poorly designed [RAG](/?c=ia&s=nlp-llm&p=rag), the vector database indexes documents at several confidentiality levels, but the search doesn't filter based on the rights of the person asking the question. This "who is allowed to see what" relies on the same generic models as any other system, not specific to AI: see [RBAC and ABAC](/?c=authentification&s=fondamentaux&p=rbac-et-abac).
 
 > **Pitfall:** filtering by permission only **after** the search (reviewing the answer after the fact). A user who would never have had direct access to a document can then have its content quoted back to them, rephrased by the model, because the search judged it relevant without checking who is allowed to see it: once the information is in the answer, the damage is done.
 >

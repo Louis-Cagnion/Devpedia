@@ -29,7 +29,7 @@ Un sistema de IA en producción debe poder responder después a *"¿quién hizo 
 
 ## Control de acceso: el RAG hereda los permisos, o los elude
 
-Con un [RAG](/?c=ia&s=nlp-llm&p=rag) mal diseñado, la base vectorial indexa documentos de varios niveles de confidencialidad, pero la búsqueda no filtra según los permisos de la persona que hace la pregunta.
+Con un [RAG](/?c=ia&s=nlp-llm&p=rag) mal diseñado, la base vectorial indexa documentos de varios niveles de confidencialidad, pero la búsqueda no filtra según los permisos de la persona que hace la pregunta. Este "quién tiene derecho a ver qué" se apoya en los mismos modelos genéricos que cualquier otro sistema, no específicos de la IA: ver [RBAC y ABAC](/?c=authentification&s=fondamentaux&p=rbac-et-abac).
 
 > **Trampa:** filtrar por permiso solo **después** de la búsqueda (releer la respuesta a posteriori). Un usuario que nunca habría tenido acceso a un documento directamente puede entonces verse citado su contenido, reformulado por el modelo, porque la búsqueda lo juzgó relevante sin verificar quién tiene derecho a verlo: una vez la información en la respuesta, el daño está hecho.
 >
