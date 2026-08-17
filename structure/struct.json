@@ -723,6 +723,10 @@
             {
               "id": "readline-et-termios",
               "label": "`readline` et `termios` : contrôler la ligne de commande"
+            },
+            {
+              "id": "lecture-formatee-scanf",
+              "label": "La lecture formatée : `scanf` et `sscanf`"
             }
           ]
         },
