@@ -42,6 +42,31 @@ O não determinismo de um LLM (veja [LLM em produção](/?c=ia&s=nlp-llm&p=llm-e
 >
 > **Boa prática:** reservar a avaliação humana para os casos que o juiz sinaliza como dúbios, e verificar periodicamente uma amostra de seus veredictos considerados "bons", não apenas os que ele mesmo sinaliza como incertos.
 
+## O cache semântico: evitar recalcular uma resposta já conhecida
+
+Um cache clássico associa uma resposta a uma **chave exata**: a mesma chave devolve a mesma resposta, uma chave ligeiramente diferente (uma reformulação) erra o cache e dispara uma nova chamada, mesmo que a pergunta feita fosse na verdade a mesma. Um **cache semântico** resolve esse problema comparando as perguntas por **similaridade de significado** em vez de igualdade de texto, com a mesma técnica de busca por embedding do [RAG](/?c=ia&s=nlp-llm&p=rag):
+
+```text
+Pergunta 1: "Qual e o preco da assinatura Pro?"
+             -> chamada LLM, resposta armazenada em cache com seu embedding
+
+Pergunta 2: "Quanto custa o plano Pro?"
+             -> embedding proximo da pergunta 1 (similaridade > limiar)
+             -> resposta em cache devolvida, NENHUMA chamada LLM
+```
+
+| | Cache clássico | Cache semântico |
+|---|---|---|
+| Correspondência | Chave exata (string idêntica) | Similaridade de embedding acima de um limiar |
+| Erra uma reformulação? | Sim, sistematicamente | Não, enquanto o significado permanecer próximo |
+| Custo evitado | Apenas a pergunta exata já feita | Qualquer pergunta semanticamente próxima de uma já feita |
+
+> **Cuidado:** um limiar de similaridade permissivo demais faz corresponder duas perguntas de significado realmente diferente ("cancelar meu pedido" e "cancelar minha assinatura" podem estar próximas no espaço de embeddings), devolvendo então uma resposta em cache que não responde à pergunta real, com a mesma confiança de uma resposta correta.
+>
+> **Boa prática:** ajustar o limiar de similaridade de forma conservadora (mesmo que isso signifique perder algumas reformulações válidas), e invalidar as entradas do cache quando a informação subjacente mudar, o mesmo problema de desatualização de qualquer cache clássico.
+
+Uma [passarela LLM](/?c=ia&s=production-et-gouvernance&p=stack-ia) geralmente centraliza esse cache em escala para todos os aplicativos que a utilizam, em vez de cada um reimplementar o seu.
+
 ## As proteções operacionais
 
 > **Cuidado:** um pico de tráfego (legítimo, ou um loop de agente mal limitado, veja o capítulo [Agentes](/?c=ia&s=nlp-llm&p=agents)) pode fazer explodir uma fatura em poucos minutos sem que nenhum alerta de "erro" seja disparado, já que cada chamada individual é bem-sucedida.
@@ -58,7 +83,7 @@ A filtragem de entradas e saídas (detectar uma tentativa de instrução malicio
 
 | | |
 |---|---|
-| **O que reter** | O monitoramento de um LLM foca na qualidade e no custo da resposta, não em um simples código de status. Registrar prompt, resposta, tokens, latência e versão do modelo permite reconstituir um incidente. Um golden set e um LLM-as-judge substituem um teste clássico diante do não determinismo. |
-| **Ferramentas úteis** | Um painel de custo por funcionalidade/cliente. Um golden set executado novamente a cada mudança. Um limitador de taxa e de custo, um plano de contingência para um modelo mais simples. |
-| **Armadilhas a evitar** | Registrar prompt/resposta sem criptografia nem retenção limitada. Chamar um modelo sem versão fixada. Tratar um LLM-as-judge como infalível. Deixar um pico de tráfego ou uma falha degradar a fatura ou o serviço sem proteção. |
-| **Boas práticas** | Criptografar os registros e limitar sua retenção. Fixar uma versão explícita do modelo. Verificar periodicamente uma amostra dos veredictos de um LLM-as-judge. Implementar limitador de custo e plano de contingência automático. |
+| **O que reter** | O monitoramento de um LLM foca na qualidade e no custo da resposta, não em um simples código de status. Registrar prompt, resposta, tokens, latência e versão do modelo permite reconstituir um incidente. Um golden set e um LLM-as-judge substituem um teste clássico diante do não determinismo. Um cache semântico evita recalcular uma resposta para uma pergunta reformulada mas equivalente. |
+| **Ferramentas úteis** | Um painel de custo por funcionalidade/cliente. Um golden set executado novamente a cada mudança. Um limitador de taxa e de custo, um plano de contingência para um modelo mais simples. Um cache semântico, geralmente centralizado em uma passarela LLM. |
+| **Armadilhas a evitar** | Registrar prompt/resposta sem criptografia nem retenção limitada. Chamar um modelo sem versão fixada. Tratar um LLM-as-judge como infalível. Deixar um pico de tráfego ou uma falha degradar a fatura ou o serviço sem proteção. Um limiar de similaridade de cache semântico permissivo demais. |
+| **Boas práticas** | Criptografar os registros e limitar sua retenção. Fixar uma versão explícita do modelo. Verificar periodicamente uma amostra dos veredictos de um LLM-as-judge. Implementar limitador de custo e plano de contingência automático. Ajustar o limiar de similaridade do cache semântico de forma conservadora. |

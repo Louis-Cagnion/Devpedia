@@ -42,6 +42,31 @@ Le non-déterminisme d'un LLM (voir [LLM en production](/?c=ia&s=nlp-llm&p=llm-e
 >
 > **Bonne pratique :** réserver l'évaluation humaine aux cas que le juge signale comme douteux, et vérifier périodiquement un échantillon de ses verdicts jugés "bons", pas seulement ceux qu'il signale lui-même comme incertains.
 
+## Le cache sémantique : éviter de recalculer une réponse déjà connue
+
+Un cache classique associe une réponse à une **clé exacte** : la même clé redonne la même réponse, une clé légèrement différente (une reformulation) manque le cache et déclenche un nouvel appel, même si la question posée était en réalité la même. Un **cache sémantique** répond à ce problème en comparant les questions par **similarité de sens** plutôt que par égalité de texte, avec la même technique de recherche par embedding que celle du [RAG](/?c=ia&s=nlp-llm&p=rag) :
+
+```text
+Question 1 : "Quel est le prix de l'abonnement Pro ?"
+             -> appel LLM, reponse mise en cache avec son embedding
+
+Question 2 : "Combien coute la formule Pro ?"
+             -> embedding proche de la question 1 (similarite > seuil)
+             -> reponse en cache renvoyee, AUCUN appel LLM
+```
+
+| | Cache classique | Cache sémantique |
+|---|---|---|
+| Correspondance | Clé exacte (chaîne identique) | Similarité d'embedding au-dessus d'un seuil |
+| Rate une reformulation ? | Oui, systématiquement | Non, tant que le sens reste proche |
+| Coût évité | Uniquement la question exacte déjà posée | Toute question sémantiquement proche d'une déjà posée |
+
+> **Piège :** un seuil de similarité trop permissif fait correspondre deux questions au sens réellement différent ("annuler ma commande" et "annuler mon abonnement" peuvent être proches en embedding), renvoyant alors une réponse en cache qui ne répond pas à la vraie question, avec la même assurance qu'une réponse correcte.
+>
+> **Bonne pratique :** régler le seuil de similarité de façon conservatrice (quitte à manquer quelques reformulations valables), et invalider les entrées du cache quand l'information sous-jacente change, le même problème de péremption qu'un cache classique.
+
+Une [passerelle LLM](/?c=ia&s=production-et-gouvernance&p=stack-ia) centralise généralement ce cache à l'échelle de toutes les applications qui l'utilisent, plutôt que chacune réimplémentant le sien.
+
 ## Les garde-fous opérationnels
 
 > **Piège :** un pic de trafic (légitime, ou une boucle d'agent mal bornée, voir le chapitre [Agents](/?c=ia&s=nlp-llm&p=agents)) peut faire exploser une facture en quelques minutes sans qu'aucune alerte "erreur" ne se déclenche, puisque chaque appel individuel réussit.
@@ -58,7 +83,7 @@ Le filtrage des entrées et sorties (détecter une tentative d'instruction malve
 
 | | |
 |---|---|
-| **À retenir** | Le monitoring d'un LLM porte sur la qualité et le coût de la réponse, pas sur un simple code de statut. Journaliser prompt, réponse, tokens, latence et version du modèle permet de reconstituer un incident. Un golden set et un LLM-as-judge remplacent un test classique face au non-déterminisme. |
-| **Outils utilisables** | Un tableau de bord de coût par fonctionnalité/client. Un golden set rejoué à chaque changement. Un limiteur de débit et de coût, un repli vers un modèle plus simple. |
-| **Pièges à éviter** | Journaliser prompt/réponse sans chiffrement ni rétention limitée. Appeler un modèle sans version épinglée. Traiter un LLM-as-judge comme infaillible. Laisser un pic de trafic ou une panne dégrader la facture ou le service sans garde-fou. |
-| **Bonnes pratiques** | Chiffrer les journaux et limiter leur rétention. Figer une version de modèle explicite. Vérifier périodiquement un échantillon des verdicts d'un LLM-as-judge. Mettre en place limiteur de coût et repli automatique. |
+| **À retenir** | Le monitoring d'un LLM porte sur la qualité et le coût de la réponse, pas sur un simple code de statut. Journaliser prompt, réponse, tokens, latence et version du modèle permet de reconstituer un incident. Un golden set et un LLM-as-judge remplacent un test classique face au non-déterminisme. Un cache sémantique évite de recalculer une réponse pour une question reformulée mais équivalente. |
+| **Outils utilisables** | Un tableau de bord de coût par fonctionnalité/client. Un golden set rejoué à chaque changement. Un limiteur de débit et de coût, un repli vers un modèle plus simple. Un cache sémantique, souvent centralisé au niveau d'une passerelle LLM. |
+| **Pièges à éviter** | Journaliser prompt/réponse sans chiffrement ni rétention limitée. Appeler un modèle sans version épinglée. Traiter un LLM-as-judge comme infaillible. Laisser un pic de trafic ou une panne dégrader la facture ou le service sans garde-fou. Un seuil de similarité de cache sémantique trop permissif. |
+| **Bonnes pratiques** | Chiffrer les journaux et limiter leur rétention. Figer une version de modèle explicite. Vérifier périodiquement un échantillon des verdicts d'un LLM-as-judge. Mettre en place limiteur de coût et repli automatique. Régler le seuil de similarité du cache sémantique de façon conservatrice. |

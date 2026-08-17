@@ -35,7 +35,7 @@ Cada capa se apoya en la de abajo, y un problema en una capa baja (una GPU insuf
 | Datos | Proporcionar al modelo una información que no tiene en memoria | [RAG](/?c=ia&s=nlp-llm&p=rag) |
 | Orquestación | Decidir qué llamar, en qué orden | [Agentes](/?c=ia&s=nlp-llm&p=agents) |
 | Observabilidad | Saber qué pasó, cuánto costó | [Monitorización y gestión operativa](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm) |
-| Aplicación | Exponer todo esto a un usuario final | [Construir un chatbot](/?c=ia&s=applications-llm&p=chatbot), [El asistente de IA agéntico en terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal) |
+| Aplicación | Exponer todo esto a un usuario final | [Construir un chatbot](/?c=ia&s=applications-llm&p=chatbot), [El asistente de IA agéntico en terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal), o una interfaz lista para usar ([Open WebUI](https://openwebui.com), [LibreChat](https://www.librechat.ai)) sin necesidad de desarrollo |
 
 Las secciones siguientes detallan las tres capas cuyo solo *mecanismo* (no el *panorama de herramientas*) se ha visto en otro sitio.
 
@@ -55,6 +55,17 @@ Usar un LLM supone elegir entre dos formas radicalmente diferentes de acceder a 
 >
 > **Buena práctica:** calcular ambas opciones sobre el volumen de uso real previsto (no un uso hipotético), y reevaluar esta elección si ese volumen cambia significativamente: el cambio nunca es definitivo.
 
+### La pasarela LLM: un único punto de entrada hacia varios proveedores
+
+Una aplicación que llama directamente a la API de un proveedor de modelos acopla todo su código a ese proveedor específico: cambiar de modelo, repartir un presupuesto entre equipos, u ocultar las claves API a cada aplicación que las necesita se convierte en un problema que cada aplicación resuelve por separado. Una **pasarela LLM** (*LLM gateway*, por ejemplo [LiteLLM](https://www.litellm.ai)) se sitúa entre las aplicaciones y los proveedores para centralizar estas necesidades transversales:
+
+| Necesidad | Qué aporta la pasarela |
+|---|---|
+| Cambiar de proveedor | Una interfaz común, sin reescribir el código de llamada para cada proveedor |
+| Presupuesto por equipo | Un límite de gasto configurado una sola vez, en la pasarela, en lugar de en cada aplicación |
+| Claves API | Las aplicaciones llaman a la pasarela, nunca directamente al proveedor: las claves API reales permanecen ocultas, conocidas solo por la pasarela |
+| Caché de respuestas | Una caché centralizada (ver la [caché semántica](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm)) beneficia a todas las aplicaciones que pasan por la pasarela, en lugar de que cada una reimplemente la suya |
+
 ## La capa datos: la base vectorial
 
 El capítulo [RAG](/?c=ia&s=nlp-llm&p=rag) explica el mecanismo (división, indexación, búsqueda por similitud) sin nombrar una herramienta precisa. En la práctica, la etapa de indexación se apoya en una de estas dos familias:
@@ -71,15 +82,17 @@ La elección sigue la misma lógica que en cualquier otro sitio en arquitectura:
 
 El capítulo [Agentes](/?c=ia&s=nlp-llm&p=agents) describe el bucle reflexión/acción y los patrones de coordinación multi-agente en general, sin decir cómo se implementan concretamente. Dos enfoques:
 
-| | Escribir el bucle uno mismo | Framework de orquestación |
-|---|---|---|
-| Principio | Codificar directamente las llamadas al modelo, a las herramientas, y el bucle que las encadena | Apoyarse en una biblioteca ([LangChain](https://www.langchain.com), [LlamaIndex](https://www.llamaindex.ai)...) que ya proporciona estos bloques |
-| Ventaja | Control total, ninguna dependencia externa, más simple de depurar línea por línea | Interfaz común hacia varios proveedores de modelos, gestión de la memoria de conversación y del encadenamiento ya resueltas |
-| Inconveniente | Cada bloque (reintentos, gestión de la memoria, formato de las herramientas) hay que reescribirlo | Una capa de abstracción adicional que entender, a veces más pesada que la necesidad real |
+| | Escribir el bucle uno mismo | Framework de orquestación | Estudio agéntico visual |
+|---|---|---|---|
+| Principio | Codificar directamente las llamadas al modelo, a las herramientas, y el bucle que las encadena | Apoyarse en una biblioteca ([LangChain](https://www.langchain.com), [LlamaIndex](https://www.llamaindex.ai)...) que ya proporciona estos bloques | Ensamblar el bucle y las herramientas en una interfaz gráfica low-code ([Dify](https://dify.ai)), sin escribir código de orquestación |
+| Ventaja | Control total, ninguna dependencia externa, más simple de depurar línea por línea | Interfaz común hacia varios proveedores de modelos, gestión de la memoria de conversación y del encadenamiento ya resueltas | La puesta en marcha más rápida de las tres, accesible sin conocimientos de desarrollo |
+| Inconveniente | Cada bloque (reintentos, gestión de la memoria, formato de las herramientas) hay que reescribirlo | Una capa de abstracción adicional que entender, a veces más pesada que la necesidad real | Menos control fino sobre el comportamiento exacto del bucle que con código o un framework |
 
 > **Trampa:** adoptar un framework de orquestación completo para una necesidad que se resume en una sola llamada a herramienta, el mismo error que sobreingenierizar cualquier otro sistema antes de necesitarlo.
 >
 > **Buena práctica:** empezar por el bucle más simple que responda a la necesidad real, e introducir un framework solo cuando la coordinación (varias herramientas, varios agentes, gestión fina de la memoria) supere lo que un código escrito a mano puede mantener razonablemente.
+
+Sea cual sea el enfoque elegido, las herramientas que el bucle llama (function calling o no) se benefician de ser expuestas de forma estandarizada en lugar de reintegradas a mano en cada proyecto: ver [MCP](/?c=ia&s=nlp-llm&p=mcp).
 
 ## La trampa transversal: un acoplamiento oculto entre capas
 
@@ -94,6 +107,6 @@ Cada capa parece independiente: hasta que un cambio en una rompe el funcionamien
 | | |
 |---|---|
 | **Para recordar** | Una aplicación de IA se ensambla en capas distintas (cálculo, modelo, datos, orquestación, observabilidad, aplicación), cada una cubierta mecánicamente en otro sitio del sitio. La elección API alojada vs autoalojado, base vectorial dedicada vs extensión, y bucle codificado a mano vs framework de orquestación son decisiones de arquitectura propias de cada capa. |
-| **Herramientas utilizables** | Una API de modelo alojada para empezar sin infraestructura. Una extensión como `pgvector` para un volumen de documentos modesto, una base vectorial dedicada más allá. Un framework de orquestación una vez que la coordinación sea demasiado compleja para código escrito a mano. |
+| **Herramientas utilizables** | Una API de modelo alojada para empezar sin infraestructura, una pasarela LLM (LiteLLM) en cuanto varias aplicaciones o equipos comparten el acceso a los modelos. Una extensión como `pgvector` para un volumen de documentos modesto, una base vectorial dedicada más allá. Un framework de orquestación una vez que la coordinación se vuelve demasiado compleja para código escrito a mano, o un estudio agéntico visual (Dify) para una necesidad sin desarrollo. |
 | **Trampas a evitar** | Elegir el autoalojamiento solo por el coste por token sin contar el coste fijo. Adoptar un framework completo para una necesidad trivial. Modificar una capa sin volver a probar la integración de extremo a extremo. |
 | **Buenas prácticas** | Calcular ambas opciones de alojamiento sobre el volumen real previsto. Empezar por el bucle más simple antes de introducir un framework. Volver a ejecutar un test de integración de extremo a extremo tras todo cambio de componente. |

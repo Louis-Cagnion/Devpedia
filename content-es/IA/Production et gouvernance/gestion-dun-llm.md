@@ -42,6 +42,31 @@ El no determinismo de un LLM (ver [LLM en producción](/?c=ia&s=nlp-llm&p=llm-en
 >
 > **Buena práctica:** reservar la evaluación humana a los casos que el juez señala como dudosos, y verificar periódicamente una muestra de sus veredictos juzgados "buenos", no solo los que él mismo señala como inciertos.
 
+## La caché semántica: evitar recalcular una respuesta ya conocida
+
+Una caché clásica asocia una respuesta a una **clave exacta**: la misma clave devuelve la misma respuesta, una clave ligeramente distinta (una reformulación) falla la caché y desencadena una nueva llamada, aunque la pregunta planteada fuera en realidad la misma. Una **caché semántica** resuelve este problema comparando las preguntas por **similitud de significado** en lugar de por igualdad de texto, con la misma técnica de búsqueda por embedding que la del [RAG](/?c=ia&s=nlp-llm&p=rag):
+
+```text
+Pregunta 1: "¿Cuál es el precio de la suscripcion Pro?"
+             -> llamada LLM, respuesta guardada en cache junto con su embedding
+
+Pregunta 2: "¿Cuanto cuesta el plan Pro?"
+             -> embedding cercano a la pregunta 1 (similitud > umbral)
+             -> respuesta en cache devuelta, NINGUNA llamada LLM
+```
+
+| | Caché clásica | Caché semántica |
+|---|---|---|
+| Correspondencia | Clave exacta (cadena idéntica) | Similitud de embedding por encima de un umbral |
+| ¿Falla ante una reformulación? | Sí, sistemáticamente | No, mientras el significado se mantenga cercano |
+| Coste evitado | Solo la pregunta exacta ya planteada | Cualquier pregunta semánticamente cercana a una ya planteada |
+
+> **Trampa:** un umbral de similitud demasiado permisivo hace corresponder dos preguntas de significado realmente distinto ("cancelar mi pedido" y "cancelar mi suscripción" pueden estar cerca en el espacio de embeddings), devolviendo entonces una respuesta en caché que no responde a la pregunta real, con la misma seguridad que una respuesta correcta.
+>
+> **Buena práctica:** ajustar el umbral de similitud de forma conservadora (aunque suponga perder algunas reformulaciones válidas), e invalidar las entradas de la caché cuando la información subyacente cambie, el mismo problema de caducidad que cualquier caché clásica.
+
+Una [pasarela LLM](/?c=ia&s=production-et-gouvernance&p=stack-ia) suele centralizar esta caché a escala de todas las aplicaciones que la usan, en lugar de que cada una reimplemente la suya.
+
 ## Las salvaguardas operativas
 
 > **Trampa:** un pico de tráfico (legítimo, o un bucle de agente mal acotado, ver el capítulo [Agentes](/?c=ia&s=nlp-llm&p=agents)) puede disparar una factura en unos minutos sin que se dispare ninguna alerta de "error", ya que cada llamada individual tiene éxito.
@@ -58,7 +83,7 @@ El filtrado de entradas y salidas (detectar un intento de instrucción maliciosa
 
 | | |
 |---|---|
-| **Para recordar** | La monitorización de un LLM se centra en la calidad y el coste de la respuesta, no en un simple código de estado. Registrar prompt, respuesta, tokens, latencia y versión del modelo permite reconstruir un incidente. Un golden set y un LLM-as-judge reemplazan a un test clásico frente al no determinismo. |
-| **Herramientas utilizables** | Un panel de coste por funcionalidad/cliente. Un golden set vuelto a ejecutar en cada cambio. Un limitador de tasa y de coste, un repliegue hacia un modelo más simple. |
-| **Trampas a evitar** | Registrar prompt/respuesta sin cifrado ni retención limitada. Llamar a un modelo sin versión fijada. Tratar un LLM-as-judge como infalible. Dejar que un pico de tráfico o una avería degrade la factura o el servicio sin salvaguarda. |
-| **Buenas prácticas** | Cifrar los registros y limitar su retención. Fijar una versión de modelo explícita. Verificar periódicamente una muestra de los veredictos de un LLM-as-judge. Implementar limitador de coste y repliegue automático. |
+| **Para recordar** | La monitorización de un LLM se centra en la calidad y el coste de la respuesta, no en un simple código de estado. Registrar prompt, respuesta, tokens, latencia y versión del modelo permite reconstruir un incidente. Un golden set y un LLM-as-judge reemplazan a un test clásico frente al no determinismo. Una caché semántica evita recalcular una respuesta para una pregunta reformulada pero equivalente. |
+| **Herramientas utilizables** | Un panel de coste por funcionalidad/cliente. Un golden set vuelto a ejecutar en cada cambio. Un limitador de tasa y de coste, un repliegue hacia un modelo más simple. Una caché semántica, a menudo centralizada en una pasarela LLM. |
+| **Trampas a evitar** | Registrar prompt/respuesta sin cifrado ni retención limitada. Llamar a un modelo sin versión fijada. Tratar un LLM-as-judge como infalible. Dejar que un pico de tráfico o una avería degrade la factura o el servicio sin salvaguarda. Un umbral de similitud de caché semántica demasiado permisivo. |
+| **Buenas prácticas** | Cifrar los registros y limitar su retención. Fijar una versión de modelo explícita. Verificar periódicamente una muestra de los veredictos de un LLM-as-judge. Implementar limitador de coste y repliegue automático. Ajustar el umbral de similitud de la caché semántica de forma conservadora. |

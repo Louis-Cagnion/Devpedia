@@ -35,7 +35,7 @@ Each layer relies on the one below it, and a problem in a lower layer (insuffici
 | Data | Give the model information it doesn't have in memory | [RAG](/?c=ia&s=nlp-llm&p=rag) |
 | Orchestration | Decide what to call, in what order | [Agents](/?c=ia&s=nlp-llm&p=agents) |
 | Observability | Know what happened, how much it cost | [LLM Monitoring and Operations](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm) |
-| Application | Expose all of this to an end user | [Building a Chatbot](/?c=ia&s=applications-llm&p=chatbot), [The Agent-Based AI Assistant in the Terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal) |
+| Application | Expose all of this to an end user | [Building a Chatbot](/?c=ia&s=applications-llm&p=chatbot), [The Agent-Based AI Assistant in the Terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal), or a ready-made interface ([Open WebUI](https://openwebui.com), [LibreChat](https://www.librechat.ai)) with no development needed |
 
 The following sections detail the three layers for which only the *mechanism* (not the *tool landscape*) has been covered elsewhere.
 
@@ -55,6 +55,17 @@ Using an LLM means choosing between two radically different ways of accessing on
 >
 > **Best practice:** cost out both options against the actual expected volume of use (not a hypothetical one), and reassess this choice if that volume changes significantly: the switch is never final.
 
+### The LLM gateway: a single entry point to multiple providers
+
+An application that calls a model provider's API directly couples all its code to that specific provider: switching models, splitting a budget across teams, or hiding API keys from every application that needs one becomes a problem each application has to solve separately. An **LLM gateway** (for example [LiteLLM](https://www.litellm.ai)) sits between applications and providers to centralize these cross-cutting needs:
+
+| Need | What the gateway provides |
+|---|---|
+| Switching providers | A common interface, without rewriting the calling code for each provider |
+| Per-team budget | A spending cap configured once, at the gateway, rather than in every application |
+| API keys | Applications call the gateway, never the provider directly: the real API keys stay hidden, known only to the gateway |
+| Response caching | A centralized cache (see the [semantic cache](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm)) benefits every application going through the gateway, rather than each one reimplementing its own |
+
 ## The data layer: the vector database
 
 The [RAG](/?c=ia&s=nlp-llm&p=rag) chapter explains the mechanism (chunking, indexing, similarity search) without naming a specific tool. In practice, the indexing step relies on one of these two families:
@@ -71,15 +82,17 @@ The choice follows the same logic as elsewhere in architecture: an extension is 
 
 The [Agents](/?c=ia&s=nlp-llm&p=agents) chapter describes the reasoning/action loop and multi-agent coordination patterns in general, without saying how they're concretely implemented. Two approaches:
 
-| | Writing the loop yourself | Orchestration framework |
-|---|---|---|
-| Principle | Directly code the calls to the model, to tools, and the loop that chains them | Rely on a library (LangChain, LlamaIndex...) that already provides these building blocks |
-| Advantage | Full control, no external dependency, simpler to debug line by line | Common interface to several model providers, conversation memory and chaining already solved |
-| Disadvantage | Every building block (retries, memory management, tool format) has to be rewritten | An extra abstraction layer to understand, sometimes heavier than the actual need |
+| | Writing the loop yourself | Orchestration framework | Visual agentic studio |
+|---|---|---|---|
+| Principle | Directly code the calls to the model, to tools, and the loop that chains them | Rely on a library (LangChain, LlamaIndex...) that already provides these building blocks | Assembling the loop and tools in a low-code graphical interface ([Dify](https://dify.ai)), without writing orchestration code |
+| Advantage | Full control, no external dependency, simpler to debug line by line | Common interface to several model providers, conversation memory and chaining already solved | The fastest of the three to get started with, accessible without development skills |
+| Disadvantage | Every building block (retries, memory management, tool format) has to be rewritten | An extra abstraction layer to understand, sometimes heavier than the actual need | Less fine-grained control over the loop's exact behavior than code or a framework |
 
 > **Pitfall:** adopting a full orchestration framework for a need that boils down to a single tool call, the same mistake as over-engineering any other system before actually needing to.
 >
 > **Best practice:** start with the simplest loop that meets the actual need, and only introduce a framework once coordination (several tools, several agents, fine-grained memory management) exceeds what hand-written code can reasonably maintain.
+
+Whichever approach is chosen, the tools the loop calls (function calling or not) benefit from being exposed in a standardized way rather than reintegrated by hand for every project: see [MCP](/?c=ia&s=nlp-llm&p=mcp).
 
 ## The cross-cutting pitfall: hidden coupling between layers
 
@@ -94,6 +107,6 @@ Each layer looks independent: until a change in one breaks another's behavior wi
 | | |
 |---|---|
 | **Key takeaways** | An AI application is assembled from distinct layers (compute, model, data, orchestration, observability, application), each covered mechanically elsewhere on this site. Hosted API vs. self-hosted, dedicated vector database vs. extension, and a hand-coded loop vs. an orchestration framework are architecture decisions specific to each layer. |
-| **Tools you can use** | A hosted model API to get started with no infrastructure. An extension like `pgvector` for a modest document volume, a dedicated vector database beyond that. An orchestration framework once coordination gets too complex for hand-written code. |
+| **Tools you can use** | A hosted model API to get started with no infrastructure, an LLM gateway (LiteLLM) as soon as several applications or teams share access to models. An extension like `pgvector` for a modest document volume, a dedicated vector database beyond that. An orchestration framework once coordination gets too complex for hand-written code, or a visual agentic studio (Dify) for a no-development need. |
 | **Pitfalls to avoid** | Choosing self-hosting on cost per token alone without counting the fixed cost. Adopting a full framework for a trivial need. Modifying a layer without retesting end-to-end integration. |
 | **Best practices** | Cost out both hosting options against the actual expected volume. Start with the simplest loop before introducing a framework. Rerun an end-to-end integration test after any component change. |

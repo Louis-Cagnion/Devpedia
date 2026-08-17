@@ -35,7 +35,7 @@ Cada camada se apoia na de baixo, e um problema em uma camada inferior (uma GPU 
 | Dados | Fornecer ao modelo uma informação que ele não tem em memória | [RAG](/?c=ia&s=nlp-llm&p=rag) |
 | Orquestração | Decidir o que chamar, em que ordem | [Agentes](/?c=ia&s=nlp-llm&p=agents) |
 | Observabilidade | Saber o que aconteceu, quanto custou | [Monitoramento e gestão operacional](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm) |
-| Aplicação | Expor tudo isso a um usuário final | [Construindo um chatbot](/?c=ia&s=applications-llm&p=chatbot), [O assistente de IA agêntico no terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal) |
+| Aplicação | Expor tudo isso a um usuário final | [Construindo um chatbot](/?c=ia&s=applications-llm&p=chatbot), [O assistente de IA agêntico no terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal), ou uma interface pronta para uso ([Open WebUI](https://openwebui.com), [LibreChat](https://www.librechat.ai)) sem necessidade de desenvolvimento |
 
 As seções seguintes detalham as três camadas cujo apenas *mecanismo* (não o *panorama de ferramentas*) já foi visto em outro lugar.
 
@@ -55,6 +55,17 @@ Usar um LLM exige escolher entre duas formas radicalmente diferentes de acessá-
 >
 > **Boa prática:** calcular as duas opções com base no volume de uso real previsto (não um uso hipotético), e reavaliar essa escolha se esse volume mudar significativamente: a troca nunca é definitiva.
 
+### A passarela LLM: um ponto de entrada único para vários fornecedores
+
+Um aplicativo que chama diretamente a API de um fornecedor de modelo acopla todo seu código a esse fornecedor específico: trocar de modelo, dividir um orçamento entre equipes, ou esconder as chaves de API de cada aplicativo que precisa delas se torna um problema resolvido separadamente por cada aplicativo. Uma **passarela LLM** (*LLM gateway*, por exemplo [LiteLLM](https://www.litellm.ai)) se posiciona entre os aplicativos e os fornecedores para centralizar essas necessidades transversais:
+
+| Necessidade | O que a passarela oferece |
+|---|---|
+| Trocar de fornecedor | Uma interface comum, sem reescrever o código de chamada para cada fornecedor |
+| Orçamento por equipe | Um teto de gasto configurado uma única vez, na passarela, em vez de em cada aplicativo |
+| Chaves de API | Os aplicativos chamam a passarela, nunca diretamente o fornecedor: as chaves de API reais permanecem ocultas, conhecidas apenas pela passarela |
+| Cache de respostas | Um cache centralizado (veja o [cache semântico](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm)) beneficia todos os aplicativos que passam pela passarela, em vez de cada um reimplementar o seu |
+
 ## A camada dados: o banco vetorial
 
 O capítulo [RAG](/?c=ia&s=nlp-llm&p=rag) explica o mecanismo (divisão, indexação, busca por similaridade) sem citar uma ferramenta específica. Na prática, a etapa de indexação se apoia em uma dessas duas famílias:
@@ -71,15 +82,17 @@ A escolha segue a mesma lógica de outros lugares em arquitetura: uma extensão 
 
 O capítulo [Agentes](/?c=ia&s=nlp-llm&p=agents) descreve o loop reflexão/ação e os padrões de coordenação multiagente em geral, sem dizer como são concretamente implementados. Duas abordagens:
 
-| | Escrever o loop você mesmo | Framework de orquestração |
-|---|---|---|
-| Princípio | Codificar diretamente as chamadas ao modelo, às ferramentas, e o loop que as encadeia | Apoiar-se em uma biblioteca ([LangChain](https://www.langchain.com), [LlamaIndex](https://www.llamaindex.ai)...) que já fornece esses blocos |
-| Vantagem | Controle total, nenhuma dependência externa, mais simples de depurar linha por linha | Interface comum para vários fornecedores de modelos, gestão da memória de conversa e do encadeamento já resolvidas |
-| Desvantagem | Cada bloco (retries, gestão de memória, formato das ferramentas) precisa ser reescrito | Uma camada de abstração adicional a entender, às vezes mais pesada que a necessidade real |
+| | Escrever o loop você mesmo | Framework de orquestração | Estúdio agêntico visual |
+|---|---|---|---|
+| Princípio | Codificar diretamente as chamadas ao modelo, às ferramentas, e o loop que as encadeia | Apoiar-se em uma biblioteca ([LangChain](https://www.langchain.com), [LlamaIndex](https://www.llamaindex.ai)...) que já fornece esses blocos | Montar o loop e as ferramentas em uma interface gráfica low-code ([Dify](https://dify.ai)), sem escrever código de orquestração |
+| Vantagem | Controle total, nenhuma dependência externa, mais simples de depurar linha por linha | Interface comum para vários fornecedores de modelos, gestão da memória de conversa e do encadeamento já resolvidas | O início mais rápido dos três, acessível sem habilidades de desenvolvimento |
+| Desvantagem | Cada bloco (retries, gestão de memória, formato das ferramentas) precisa ser reescrito | Uma camada de abstração adicional a entender, às vezes mais pesada que a necessidade real | Menos controle fino sobre o comportamento exato do loop do que código ou um framework |
 
 > **Cuidado:** adotar um framework de orquestração completo para uma necessidade que se resume a uma única chamada de ferramenta, o mesmo erro de superengenharia de qualquer outro sistema antes de precisar dele.
 >
 > **Boa prática:** começar pelo loop mais simples que atenda à necessidade real, e só introduzir um framework quando a coordenação (várias ferramentas, vários agentes, gestão fina da memória) superar o que um código escrito manualmente pode razoavelmente manter.
+
+Qualquer que seja a abordagem escolhida, as ferramentas que o loop chama (function calling ou não) se beneficiam de ser expostas de forma padronizada em vez de reintegradas manualmente em cada projeto: veja [MCP](/?c=ia&s=nlp-llm&p=mcp).
 
 ## A armadilha transversal: um acoplamento oculto entre as camadas
 
@@ -94,6 +107,6 @@ Cada camada parece independente: até que uma mudança em uma quebre o funcionam
 | | |
 |---|---|
 | **O que reter** | Uma aplicação de IA se monta em camadas distintas (cálculo, modelo, dados, orquestração, observabilidade, aplicação), cada uma coberta mecanicamente em outro lugar do site. A escolha API hospedada vs auto-hospedado, banco vetorial dedicado vs extensão, e loop codificado manualmente vs framework de orquestração são decisões de arquitetura específicas de cada camada. |
-| **Ferramentas úteis** | Uma API de modelo hospedada para começar sem infraestrutura. Uma extensão como `pgvector` para um volume modesto de documentos, um banco vetorial dedicado além disso. Um framework de orquestração quando a coordenação se tornar muito complexa para código escrito manualmente. |
+| **Ferramentas úteis** | Uma API de modelo hospedada para começar sem infraestrutura, uma passarela LLM (LiteLLM) assim que vários aplicativos ou equipes compartilham o acesso aos modelos. Uma extensão como `pgvector` para um volume modesto de documentos, um banco vetorial dedicado além disso. Um framework de orquestração quando a coordenação fica complexa demais para código escrito à mão, ou um estúdio agêntico visual (Dify) para uma necessidade sem desenvolvimento. |
 | **Armadilhas a evitar** | Escolher a auto-hospedagem só pelo custo por token sem contar o custo fixo. Adotar um framework completo para uma necessidade trivial. Modificar uma camada sem testar novamente a integração de ponta a ponta. |
 | **Boas práticas** | Calcular as duas opções de hospedagem com base no volume real previsto. Começar pelo loop mais simples antes de introduzir um framework. Executar novamente um teste de integração de ponta a ponta após qualquer mudança de componente. |

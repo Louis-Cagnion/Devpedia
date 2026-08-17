@@ -42,6 +42,31 @@ An LLM's non-determinism (see [LLMs in Production](/?c=ia&s=nlp-llm&p=llm-en-pro
 >
 > **Best practice:** reserve human evaluation for cases the judge flags as doubtful, and periodically check a sample of the verdicts it rated "good", not just the ones it flags itself as uncertain.
 
+## The semantic cache: avoiding recomputing an already-known answer
+
+A classic cache maps a response to an **exact key**: the same key returns the same response, a slightly different key (a rephrasing) misses the cache and triggers a new call, even if the question asked was effectively the same. A **semantic cache** solves this by comparing questions by **meaning similarity** rather than text equality, using the same embedding-based search technique as [RAG](/?c=ia&s=nlp-llm&p=rag):
+
+```text
+Question 1: "What's the price of the Pro subscription?"
+             -> LLM call, response cached along with its embedding
+
+Question 2: "How much does the Pro plan cost?"
+             -> embedding close to question 1 (similarity > threshold)
+             -> cached response returned, NO LLM call
+```
+
+| | Classic cache | Semantic cache |
+|---|---|---|
+| Matching | Exact key (identical string) | Embedding similarity above a threshold |
+| Misses a rephrasing? | Yes, systematically | No, as long as the meaning stays close |
+| Cost avoided | Only the exact question already asked | Any question semantically close to one already asked |
+
+> **Pitfall:** an overly permissive similarity threshold matches two questions with genuinely different meanings ("cancel my order" and "cancel my subscription" can be close in embedding space), returning a cached response that doesn't answer the actual question, with the same confidence as a correct answer.
+>
+> **Best practice:** set the similarity threshold conservatively (even if it means missing a few valid rephrasings), and invalidate cache entries when the underlying information changes, the same staleness problem as any classic cache.
+
+An [LLM gateway](/?c=ia&s=production-et-gouvernance&p=stack-ia) typically centralizes this cache across every application that uses it, rather than each one reimplementing its own.
+
 ## Operational safeguards
 
 > **Pitfall:** a traffic spike (legitimate, or a poorly bounded agent loop, see the [Agents](/?c=ia&s=nlp-llm&p=agents) chapter) can blow up a bill within minutes with no "error" alert ever triggering, since every individual call succeeds.
@@ -58,7 +83,7 @@ Input and output filtering (detecting a malicious instruction attempt, see [prom
 
 | | |
 |---|---|
-| **Key takeaways** | Monitoring an LLM is about the quality and cost of the answer, not a simple status code. Logging prompt, response, tokens, latency, and model version makes it possible to reconstruct an incident. A golden set and an LLM-as-judge replace a classic test in the face of non-determinism. |
-| **Tools you can use** | A cost dashboard by feature/customer. A golden set replayed on every change. A rate and cost limiter, a fallback to a simpler model. |
-| **Pitfalls to avoid** | Logging prompt/response with no encryption or limited retention. Calling a model with no version pinned. Treating an LLM-as-judge as infallible. Letting a traffic spike or outage degrade the bill or service with no safeguard. |
-| **Best practices** | Encrypt logs and limit their retention. Pin an explicit model version. Periodically check a sample of an LLM-as-judge's verdicts. Set up a cost limiter and automatic fallback. |
+| **Key takeaways** | Monitoring an LLM is about the quality and cost of the answer, not a simple status code. Logging prompt, response, tokens, latency, and model version makes it possible to reconstruct an incident. A golden set and an LLM-as-judge replace a classic test in the face of non-determinism. A semantic cache avoids recomputing a response for a rephrased but equivalent question. |
+| **Tools you can use** | A cost dashboard by feature/customer. A golden set replayed on every change. A rate and cost limiter, a fallback to a simpler model. A semantic cache, often centralized at an LLM gateway. |
+| **Pitfalls to avoid** | Logging prompt/response with no encryption or limited retention. Calling a model with no version pinned. Treating an LLM-as-judge as infallible. Letting a traffic spike or outage degrade the bill or service with no safeguard. An overly permissive semantic cache similarity threshold. |
+| **Best practices** | Encrypt logs and limit their retention. Pin an explicit model version. Periodically check a sample of an LLM-as-judge's verdicts. Set up a cost limiter and automatic fallback. Set the semantic cache similarity threshold conservatively. |

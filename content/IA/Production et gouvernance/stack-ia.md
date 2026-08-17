@@ -35,7 +35,7 @@ Chaque couche s'appuie sur celle du dessous, et un problème dans une couche bas
 | Données | Fournir au modèle une information qu'il n'a pas en mémoire | [RAG](/?c=ia&s=nlp-llm&p=rag) |
 | Orchestration | Décider quoi appeler, dans quel ordre | [Agents](/?c=ia&s=nlp-llm&p=agents) |
 | Observabilité | Savoir ce qui s'est passé, combien ça a coûté | [Monitoring et gestion opérationnelle](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm) |
-| Application | Exposer tout ça à un utilisateur final | [Construire un chatbot](/?c=ia&s=applications-llm&p=chatbot), [L'assistant IA agentique en terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal) |
+| Application | Exposer tout ça à un utilisateur final | [Construire un chatbot](/?c=ia&s=applications-llm&p=chatbot), [L'assistant IA agentique en terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal), ou une interface prête à l'emploi ([Open WebUI](https://openwebui.com), [LibreChat](https://www.librechat.ai)) sans développement |
 
 Les sections suivantes détaillent les trois couches dont seul le *mécanisme* (pas le *paysage d'outils*) a été vu ailleurs.
 
@@ -55,6 +55,17 @@ Utiliser un LLM suppose de choisir entre deux façons radicalement différentes 
 >
 > **Bonne pratique :** chiffrer les deux options sur le volume d'usage réel prévu (pas un usage hypothétique), et réévaluer ce choix si ce volume change significativement : la bascule n'est jamais définitive.
 
+### La passerelle LLM : un point d'entrée unique vers plusieurs fournisseurs
+
+Une application qui appelle directement l'API d'un fournisseur de modèle couple tout son code à ce fournisseur précis : changer de modèle, répartir un budget entre équipes, ou masquer les clés API à chaque application qui en a besoin devient un problème résolu séparément par chaque application. Une **passerelle LLM** (*LLM gateway*, par exemple [LiteLLM](https://www.litellm.ai)) s'intercale entre les applications et les fournisseurs pour centraliser ces besoins transverses :
+
+| Besoin | Ce que la passerelle apporte |
+|---|---|
+| Changer de fournisseur | Une interface commune, sans réécrire le code appelant pour chaque fournisseur |
+| Budget par équipe | Un plafond de dépense configuré une seule fois, à la passerelle, plutôt que dans chaque application |
+| Clés API | Les applications appellent la passerelle, jamais directement le fournisseur : les clés API réelles restent masquées, connues de la seule passerelle |
+| Cache de réponses | Un cache centralisé (voir le [cache sémantique](/?c=ia&s=production-et-gouvernance&p=gestion-dun-llm)) profite à toutes les applications qui passent par la passerelle, plutôt qu'un cache réimplémenté par chacune |
+
 ## La couche données : la base vectorielle
 
 Le chapitre [RAG](/?c=ia&s=nlp-llm&p=rag) explique le mécanisme (découpage, indexation, recherche par similarité) sans nommer d'outil précis. En pratique, l'étape d'indexation s'appuie sur l'une de ces deux familles :
@@ -71,15 +82,17 @@ Le choix suit la même logique qu'ailleurs en architecture : une extension suffi
 
 Le chapitre [Agents](/?c=ia&s=nlp-llm&p=agents) décrit la boucle réflexion/action et les patrons de coordination multi-agents en général, sans dire comment ils sont concrètement implémentés. Deux approches :
 
-| | Écrire la boucle soi-même | Framework d'orchestration |
-|---|---|---|
-| Principe | Coder directement les appels au modèle, aux outils, et la boucle qui les enchaîne | S'appuyer sur une bibliothèque ([LangChain](https://www.langchain.com), [LlamaIndex](https://www.llamaindex.ai)...) qui fournit déjà ces briques |
-| Avantage | Contrôle total, aucune dépendance externe, plus simple à déboguer ligne par ligne | Interface commune vers plusieurs fournisseurs de modèles, gestion de la mémoire de conversation et du chaînage déjà résolues |
-| Inconvénient | Chaque brique (retries, gestion de la mémoire, format des outils) est à réécrire | Une couche d'abstraction supplémentaire à comprendre, parfois plus lourde que le besoin réel |
+| | Écrire la boucle soi-même | Framework d'orchestration | Studio agentique visuel |
+|---|---|---|---|
+| Principe | Coder directement les appels au modèle, aux outils, et la boucle qui les enchaîne | S'appuyer sur une bibliothèque ([LangChain](https://www.langchain.com), [LlamaIndex](https://www.llamaindex.ai)...) qui fournit déjà ces briques | Assembler la boucle et les outils dans une interface graphique low-code ([Dify](https://dify.ai)), sans écrire le code d'orchestration |
+| Avantage | Contrôle total, aucune dépendance externe, plus simple à déboguer ligne par ligne | Interface commune vers plusieurs fournisseurs de modèles, gestion de la mémoire de conversation et du chaînage déjà résolues | Mise en route la plus rapide des trois, accessible sans compétence de développement |
+| Inconvénient | Chaque brique (retries, gestion de la mémoire, format des outils) est à réécrire | Une couche d'abstraction supplémentaire à comprendre, parfois plus lourde que le besoin réel | Moins de contrôle fin sur le comportement exact de la boucle qu'un code ou qu'un framework |
 
 > **Piège :** adopter un framework d'orchestration complet pour un besoin qui se résume à un seul appel outil, la même erreur que sur-ingénierier n'importe quel autre système avant d'en avoir besoin.
 >
 > **Bonne pratique :** commencer par la boucle la plus simple qui répond au besoin réel, et n'introduire un framework que lorsque la coordination (plusieurs outils, plusieurs agents, gestion fine de la mémoire) dépasse ce qu'un code écrit à la main peut raisonnablement maintenir.
+
+Quelle que soit l'approche choisie, les outils que la boucle appelle (function calling ou non) gagnent à être exposés de façon standardisée plutôt que réintégrés à la main pour chaque projet : voir [MCP](/?c=ia&s=nlp-llm&p=mcp).
 
 ## Le piège transversal : un couplage caché entre les couches
 
@@ -94,6 +107,6 @@ Chaque couche semble indépendante : jusqu'à ce qu'un changement dans l'une cas
 | | |
 |---|---|
 | **À retenir** | Une application IA s'assemble en couches distinctes (calcul, modèle, données, orchestration, observabilité, application), chacune couverte mécaniquement ailleurs sur le site. Le choix API hébergée vs auto-hébergé, base vectorielle dédiée vs extension, et boucle codée à la main vs framework d'orchestration sont des décisions d'architecture propres à chaque couche. |
-| **Outils utilisables** | Une API de modèle hébergée pour démarrer sans infrastructure. Une extension comme `pgvector` pour un volume de documents modeste, une base vectorielle dédiée au-delà. Un framework d'orchestration une fois la coordination trop complexe pour du code écrit à la main. |
+| **Outils utilisables** | Une API de modèle hébergée pour démarrer sans infrastructure, une passerelle LLM (LiteLLM) dès que plusieurs applications ou équipes partagent l'accès aux modèles. Une extension comme `pgvector` pour un volume de documents modeste, une base vectorielle dédiée au-delà. Un framework d'orchestration une fois la coordination trop complexe pour du code écrit à la main, ou un studio agentique visuel (Dify) pour un besoin sans développement. |
 | **Pièges à éviter** | Choisir l'auto-hébergement sur le seul coût par token sans compter le coût fixe. Adopter un framework complet pour un besoin trivial. Modifier une couche sans retester l'intégration bout en bout. |
 | **Bonnes pratiques** | Chiffrer les deux options d'hébergement sur le volume réel prévu. Commencer par la boucle la plus simple avant d'introduire un framework. Rejouer un test d'intégration bout en bout après tout changement de composant. |
