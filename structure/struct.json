@@ -401,6 +401,10 @@
             {
               "id": "prompt-injection",
               "label": "Prompt injection : quand une donnée se fait passer pour une instruction"
+            },
+            {
+              "id": "mcp",
+              "label": "MCP (Model Context Protocol) : standardiser les outils d'un agent"
             }
           ]
         },
