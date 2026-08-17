@@ -719,6 +719,10 @@
             {
               "id": "signaux-unix",
               "label": "Les signaux UNIX"
+            },
+            {
+              "id": "readline-et-termios",
+              "label": "`readline` et `termios` : contrôler la ligne de commande"
             }
           ]
         },
