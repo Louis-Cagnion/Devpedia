@@ -61,6 +61,10 @@
             {
               "id": "sso-et-gestion-didentite-entreprise",
               "label": "SSO et gestion d'identité en entreprise"
+            },
+            {
+              "id": "on-behalf-of",
+              "label": "Propagation d'identité entre services (On-Behalf-Of)"
             }
           ]
         },
