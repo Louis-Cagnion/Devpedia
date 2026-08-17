@@ -542,6 +542,10 @@
         {
           "id": "le-cloud",
           "label": "Qu'est-ce que le cloud ?"
+        },
+        {
+          "id": "automatisation-workflow",
+          "label": "L'automatisation par workflow visuel"
         }
       ]
     },

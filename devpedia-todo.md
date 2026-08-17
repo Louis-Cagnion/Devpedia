@@ -4,10 +4,6 @@
 - Symboles rares en prose non traités (`↔`, `±`, `…`, `·` isolé) : laissés de côté faute de volume (1-2 occurrences chacun).
 - Table de prononciation des symboles (`js/reader-pronunciation.js`) à valider mot à mot par Louis, chapitre par chapitre : reste tout hors C/C++/SQL/Git/PHP, déjà testés en écoute directe le 2026-08-15 (modulo/times/bitwise, XOR, emoji 📋, flèche →, ≈/≥/≠/°).
 
-## Outils d'automatisation (n8n et équivalents)
-Demandé par Louis le 17/08/2026, pas issu d'un audit de projet. 0 occurrence de `n8n`/`Zapier`/`Make.com`/automatisation par workflow no-code dans tout `content/` (vérifié par recherche).
-- **Plateformes d'automatisation par workflow visuel** (n8n, Zapier, Make/Integromat - déclencheurs/actions, connecteurs vers des API tierces, self-hosted vs SaaS) : à couvrir en tant que catégorie d'outil à part entière, distincte de l'API/HTTP bas niveau déjà traité. Recommandation : chapitre dans `Infrastructure`, à côté de `api-et-http.md` (même niveau : consommer/orchestrer des API, mais par composition visuelle plutôt que par code).
-
 ## Dossier "Architecture & Stack Technique — Service IA d'Entreprise" (PDF fourni le 17/08/2026, supprimé après lecture)
 Comparé au contenu existant (`content/`) - notions du document absentes, à confirmer en écrivant le chapitre.
 - **MCP (Model Context Protocol)** : protocole standardisé exposant des outils/ressources à un LLM de façon interopérable entre applications - 0 occurrence. Distinct du *function calling* générique déjà couvert (`IA/NLP et LLM/agents.md`), qui décrit le mécanisme sans le protocole d'interopérabilité. Recommandation : chapitre dans `IA/NLP et LLM`, à côté de `agents.md`, avec un renvoi depuis `stack-ia.md` (couche orchestration).
