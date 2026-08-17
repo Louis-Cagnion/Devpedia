@@ -1,0 +1,255 @@
+.navBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    background-color: var(--bg-elevated);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    margin: 0;
+    position: sticky;
+    top: 0;
+    z-index: 25;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: transparent;
+    border: none;
+    padding: 0.5rem 0.9rem;
+    margin: 0;
+    cursor: pointer;
+}
+
+.categories {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    background: transparent;
+}
+
+.searchAndButtonDiv {
+    position: relative;
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+    background: transparent;
+}
+
+/* search bar */
+.navBarSearch {
+    max-width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+    background-color: var(--bg-elevated-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.45rem 0.7rem;
+    color: var(--text);
+}
+
+.navBarSearch::placeholder {
+    color: var(--text-muted);
+}
+
+.navBarSearch:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* search results dropdown */
+.searchResults {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    inset-inline-end: 0;
+    width: min(320px, 90vw);
+    max-height: 60vh;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    z-index: 30;
+}
+
+.searchResults.visible {
+    display: block;
+}
+
+.searchResultButton,
+.langOption {
+    display: block;
+    width: 100%;
+    text-align: start;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    padding: 0.5rem 0.6rem;
+    margin: 0.1rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.searchResultButton:hover {
+    background-color: var(--bg-hover);
+}
+
+.searchResultLabel {
+    display: block;
+    color: var(--text);
+}
+
+.searchResultContext {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.1rem;
+}
+
+.searchResultEmpty {
+    padding: 0.5rem 0.6rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* language switcher */
+.langButton {
+    background-color: var(--bg-elevated-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 0.45rem 0.7rem;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.langButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+.langDropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    inset-inline-end: 0;
+    min-width: 140px;
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    z-index: 30;
+}
+
+.langDropdown.visible {
+    display: block;
+}
+
+.langOption:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+.langOption.current {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* menu button */
+.NavBarButton {
+    display: none;
+    font-size: 1rem;
+    line-height: 1.2;
+    box-sizing: border-box;
+    background-color: var(--bg-elevated-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.45rem 0.7rem;
+    color: var(--text);
+    cursor: pointer;
+}
+
+.NavBarButton:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+/* navBar categories */
+.categories > button,
+.categoriesMoreButton,
+.categoriesDropdownOption {
+    padding: 0.5rem 0.9rem;
+    background-color: var(--bg-elevated-2);
+    color: var(--text);
+    border: none;
+    border-radius: var(--radius);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.categories > button:hover,
+.categoriesMoreButton:hover,
+.categoriesDropdownOption:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+/* "Voir plus" button: hidden until the categories row overflows even in compact form */
+.categoriesMoreButton {
+    display: none;
+    flex-shrink: 0;
+}
+
+.categoriesMoreButton.overflowing {
+    display: inline-flex;
+}
+
+/* full category list, alphabetical, opened by .categoriesMoreButton */
+.categoriesDropdown {
+    display: none;
+    position: fixed;
+    top: var(--navbar-height, 57px);
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - var(--navbar-height, 57px));
+    overflow-y: auto;
+    margin: 0;
+    padding: 1rem;
+    list-style: none;
+    background-color: var(--bg-elevated);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    z-index: 20;
+}
+
+.categoriesDropdown.visible {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.menuDiv {
+    display: none;
+}

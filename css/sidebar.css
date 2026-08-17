@@ -1,0 +1,100 @@
+.leftSidebar, .rightSidebar {
+    display: none;
+}
+
+.sidebarSectionTitle {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    margin: 0 0 0.6rem 0;
+}
+
+.sidebarOutlineContainer .sidebarSectionTitle {
+    padding-inline-start: 0.5rem;
+}
+
+.sidebarTree, .sidebarChildList, .sidebarChapterList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebarChildList, .sidebarChapterList {
+    margin-block: 0.3rem 0.5rem;
+    margin-inline-start: 0.5rem;
+    padding-inline-start: 0.6rem;
+    border-inline-start: 2px solid var(--border);
+}
+
+.sidebarCategoryButton, .sidebarSubjectButton, .sidebarChapterButton {
+    display: block;
+    width: 100%;
+    text-align: start;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    /* padding sized so the button's real height reaches the 44px touch-target
+       recommendation (accessibilite-ux.md) -- measured, not guessed. */
+    padding: 0.85rem 0.5rem;
+    margin: 0.1rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebarCategoryButton {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* --bg-hover and the accent-tinted color-mix() both landed under WCAG AA contrast (4.5:1)
+   against var(--accent) text -- --bg-elevated reads as a highlight just the same, at 5.03:1. */
+.sidebarCategoryButton.open, .sidebarSubjectButton.open {
+    background-color: var(--bg-elevated);
+    color: var(--accent);
+}
+
+.sidebarCategoryButton.current, .sidebarSubjectButton.current, .sidebarChapterButton.current {
+    background-color: var(--bg-elevated);
+    color: var(--accent);
+    border-inline-start: 3px solid var(--accent);
+    padding-inline-start: calc(0.5rem - 3px);
+}
+
+.sidebarCategoryButton:hover, .sidebarSubjectButton:hover, .sidebarChapterButton:hover {
+    background-color: var(--bg-elevated);
+    color: var(--accent);
+}
+
+.pageOutlineList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pageOutlineList a {
+    display: block;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+.pageOutlineList a::before {
+    content: "•";
+    color: var(--accent);
+    margin-inline-end: 0.5em;
+}
+
+.pageOutlineList a:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.pageOutlineList .outline-h4 { margin-inline-start: 1rem; }
+.pageOutlineList .outline-h5 { margin-inline-start: 2rem; }
+.pageOutlineList .outline-h6 { margin-inline-start: 3rem; }

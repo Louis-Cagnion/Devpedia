@@ -1,0 +1,317 @@
+/* page layout, common to home / category / subject / chapter pages */
+.page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 4rem;
+}
+
+/* underlined even at rest (unlike the global `a`) — a link whose label is itself an inline
+   code span has no color of its own to read as a link by (`code` sets its own text color,
+   overriding the inherited one), so the underline is what actually marks it as clickable */
+.page a {
+    text-decoration: underline;
+}
+
+.pageTitle {
+    color: var(--accent);
+    font-size: 1.6rem;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+}
+
+h3, h4, h5, h6 {
+    color: var(--text);
+    margin: 1.5rem 0 0.5rem 0;
+}
+
+/* Every element scrollIntoView() can target during read-aloud playback, so its start lands below
+   the sticky navbar instead of hidden behind it -- scroll-margin-top isn't inherited, so each
+   finer-grained target (.readerSegment/code/tr, not just the whole h2-h6/p/li) needs its own. */
+h2, h3, h4, h5, h6, p, li, .readerSegment, code, tr {
+    scroll-margin-top: calc(var(--navbar-height, 57px) + 1rem);
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+h4, h5, h6 {
+    font-size: 1.1rem;
+    color: var(--accent-strong);
+}
+
+p {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+strong {
+    color: var(--text);
+}
+
+em {
+    color: var(--accent-strong);
+    font-style: italic;
+}
+
+/* top-of-page nav row: return button on one side, previous/next chapter buttons on the
+   other. align-items: flex-start (not center) because that other side is a two-row stack
+   (previous chapter above next chapter) taller than the return button alone */
+/* Chapter-page-only context cue (js/router.js's createBreadcrumb) -- the left sidebar
+   shows the same category/subject tree, but is hidden behind the mobile menu button,
+   where this is otherwise the only on-screen reminder of where the current chapter sits. */
+.pageBreadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.breadcrumbCategory, .breadcrumbSubject {
+    background: transparent;
+    border: none;
+    color: var(--accent-strong);
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.breadcrumbCategory:hover, .breadcrumbSubject:hover {
+    color: var(--accent);
+}
+
+.breadcrumbSeparator {
+    color: var(--text-muted);
+}
+
+.pageNav {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.2rem;
+}
+
+/* Second previous/next chapter nav at the bottom of a chapter (cf. appendBottomChapterNav() in
+   router.js) -- `.nextButton`'s own margin-inline-start: auto below pins it to the end even when
+   it's the only button present, rather than `justify-content: space-between` here. */
+.pageNavBottom {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.pageNavBottom .nextButton {
+    margin-inline-start: auto;
+}
+
+/* previous chapter above next chapter, both right-aligned — a single row would make two
+   chapter titles side by side uncomfortably long */
+.chapterNav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.returnButton, .nextButton, .prevButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.returnButton:hover, .nextButton:hover, .prevButton:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* The arrow stays pinned to the button's outer edge while the label wraps onto a second line on
+   its own. min-width: 0 overrides a flex item's default min-width: auto, which otherwise keeps
+   this button at its label's full one-line width regardless of max-width below. */
+.nextButton, .prevButton {
+    min-width: 0;
+    max-width: 22rem;
+}
+
+.chapterNavArrow {
+    flex-shrink: 0;
+}
+
+.chapterNavLabel {
+    min-width: 0;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.35;
+}
+
+/* markdown content lists (bullet/numbered lists inside a page's text) */
+.content-list {
+    margin: 0.5rem 0 1.5rem 0;
+    padding-inline-start: 1.4rem;
+}
+
+.content-list li {
+    margin: 0.4rem 0;
+    padding-inline-end: 1.2rem;
+    color: var(--text-muted);
+}
+
+.content-list li:first-child {
+    margin-top: -0.2rem;
+}
+
+.content-list li::marker {
+    color: var(--accent);
+}
+
+/* inline code and fenced code blocks — always LTR: code syntax reads left-to-right
+   regardless of the page's language, exactly like on GitHub or MDN's Arabic docs */
+code {
+    font-family: monospace;
+    background-color: var(--bg-elevated-2);
+    color: var(--accent-strong);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    direction: ltr;
+    unicode-bidi: embed;
+    vertical-align: middle;
+}
+
+/* td already uses --bg-elevated-2 (cf. below) — a plain `code` span there would be
+   invisible against its own background, so it needs a lighter shade to stand out */
+td code {
+    background-color: var(--bg-hover);
+}
+
+pre {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 0.5rem 0 1.5rem 0;
+    overflow: hidden;
+    direction: ltr;
+    text-align: left;
+}
+
+/* `code` is inline by default: without this, an unhighlighted fenced block (no `.hljs` class)
+   paints its background one line-box at a time instead of one contiguous block, unlike a
+   highlighted one (hljs-theme.css's own `.hljs` class already gives it this box). */
+pre code {
+    display: block;
+    overflow-x: auto;
+    padding: 1em;
+}
+
+/* markdown tables */
+.tableWrapper {
+    overflow-x: auto;
+    margin: 0.5rem 0 1.5rem 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--border);
+    text-align: start;
+}
+
+th {
+    background-color: var(--bg-elevated);
+    color: var(--text);
+}
+
+td {
+    color: var(--text-muted);
+    background-color: var(--bg-elevated-2);
+}
+
+/* notes / callouts (markdown blockquotes) */
+blockquote {
+    margin: 0.5rem 0 1.5rem 0;
+    padding: 0.7rem 1rem;
+    border-inline-start: 3px solid var(--accent);
+    background-color: var(--bg-elevated);
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: var(--radius);
+    border-end-end-radius: var(--radius);
+}
+
+blockquote p {
+    margin: 0;
+}
+
+blockquote p + p {
+    margin-top: 0.5rem;
+}
+
+/* shown when a page doesn't exist yet in the active language and got substituted from another
+   one (cf. router-language-fallback.js's resolveAcrossLanguages / router.js's fallbackNoticeFor)
+   -- same shape as a blockquote note, italicized to read as a system message rather than
+   authored page content */
+.pageFallbackNotice {
+    margin: 0 0 1rem 0;
+    padding: 0.7rem 1rem;
+    border-inline-start: 3px solid var(--accent-strong);
+    background-color: var(--bg-elevated);
+    border-start-end-radius: var(--radius);
+    border-end-end-radius: var(--radius);
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+/* navigation lists: subjects of a category, chapters of a subject/category */
+.childList {
+    list-style: none;
+    margin: 1.5rem 0 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+
+.childList > li {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.childButton {
+    width: 100%;
+    height: 100%;
+    display: block;
+    text-align: start;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.childButton:hover {
+    background-color: var(--bg-hover);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.childButton:active {
+    transform: translateY(0);
+}

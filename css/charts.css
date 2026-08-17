@@ -1,0 +1,101 @@
+/* Charts (js/charts.js) rendered as inline SVG. Consecutive chart blocks share one .chartRow
+   instead of each taking the full row: a lone chart still fills it, several share it evenly and
+   wrap to a new line if cramped, so the row always spans the chapter's width either way. */
+.chartRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0.5rem 0 1.5rem 0;
+}
+
+.chartWrapper {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background-color: var(--bg-elevated);
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    flex: 1 1 200px;
+    min-width: 0;
+}
+
+.chartSvg {
+    width: 100%;
+    max-width: 30rem;
+    height: auto;
+}
+
+/* The color wheel and the vector diagram are simple illustrative shapes (no ticks/labels
+   to read at distance, unlike plot-fonction) -- much smaller than the default chart size
+   keeps them proportionate to the surrounding paragraph text. */
+.chartWrapper-roue-chromatique .chartSvg,
+.chartWrapper-vecteurs .chartSvg {
+    max-width: 15rem;
+}
+
+.chartAxis {
+    stroke: var(--text-muted);
+    stroke-width: 1;
+}
+
+.chartTick {
+    stroke: var(--text-muted);
+    stroke-width: 1;
+}
+
+.chartTickLabel {
+    fill: var(--text-muted);
+    font-size: 9px;
+}
+
+.chartCurve {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+}
+
+.chartLabel {
+    fill: var(--text);
+    font-size: 11px;
+}
+
+.chartError {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.chartHarmonyLine {
+    fill: none;
+    stroke: var(--text);
+    stroke-width: 2;
+    stroke-dasharray: 4 3;
+}
+
+.chartHueMarker {
+    stroke: var(--text);
+    stroke-width: 2;
+}
+
+.chartVectorArrow {
+    stroke-width: 2;
+}
+
+.chartVector0 {
+    stroke: var(--accent);
+    fill: var(--accent);
+}
+
+.chartVector1 {
+    stroke: var(--accent-strong);
+    fill: var(--accent-strong);
+}
+
+.chartVector2 {
+    stroke: var(--text);
+    fill: var(--text);
+}
+
+.chartBar {
+    fill: var(--accent);
+}

@@ -7,7 +7,11 @@
  * instead of leaving them in French or risking an inconsistent rename per file.
  *
  * Run with: node scripts/build-variable-glossary.mjs
- * Requires a DEEPL_API_KEY in a local .env file (untracked — see .gitignore).
+ * Requires a DEEPL_API_KEY in a local .env file (untracked, see .gitignore).
+ *
+ * Kept as a safety net: unrunnable since the DeepL subscription lapsed, but this is what
+ * produced variable-glossary.json (already covering de/ru/zh/ar/ja/id). Delete once the
+ * remaining languages are translated and no more glossary regeneration is expected.
  */
 import fs from "node:fs";
 import path from "node:path";

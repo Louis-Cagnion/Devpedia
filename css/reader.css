@@ -1,0 +1,86 @@
+.readerControl {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rightSidebar .readerControl {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.rightSidebar .readerListenButton,
+.rightSidebar .readerRestartButton,
+.rightSidebar .readerPrimaryButton,
+.rightSidebar .readerReplayButton,
+.rightSidebar .readerPreviousButton,
+.rightSidebar .readerNextButton {
+    width: 100%;
+    justify-content: center;
+}
+
+.readerListenButton:disabled, .readerRestartButton:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* Exactly one pair shows at a time (cf. applyStatus() in reader.js), never both together, to keep
+   the control down to 2 buttons at rest instead of stacking every action. Same on/off mechanism
+   as .visible on .menuDiv/dropdowns elsewhere. */
+.readerListenButton, .readerRestartButton, .readerPrimaryButton, .readerReplayButton,
+.readerPreviousButton, .readerNextButton {
+    display: none;
+}
+
+.readerListenButton.visible, .readerRestartButton.visible, .readerPrimaryButton.visible,
+.readerReplayButton.visible, .readerPreviousButton.visible, .readerNextButton.visible {
+    display: inline-flex;
+}
+
+/* Replaces every button above (cf. createReaderControl() in reader-control.js) once
+   hasUsableVoice() confirms the browser has the Web Speech API but no voice to actually use it
+   with -- e.g. Brave on Linux, cf. devpedia-todo.md. */
+.readerUnavailableNotice {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* shown only below the mobile breakpoint, cf. responsive.css -- .rightSidebar (which carries
+   the desktop instance) is hidden there, same as .leftSidebar */
+.readerFloatingBar {
+    display: none;
+}
+
+/* Base highlight for the segment read aloud (cf. setHighlightedEntry() in reader.js).
+   .readerSegment is an inline wrapper, painting one line-box at a time. `tr.readerActiveParagraph`
+   covers a table row: connector words with no DOM word of their own fall back to this tint. */
+.readerSegment.readerActiveParagraph, code.readerActiveParagraph {
+    background-color: color-mix(in srgb, var(--accent) 15%, transparent);
+    border-radius: 0.25rem;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.readerSegment.readerActiveParagraph {
+    padding: 4px;
+}
+
+/* `tr.readerActiveParagraph` alone would be invisible: a cell's own background-color always
+   paints over its row's. Tinting each cell directly instead, mixed into its opaque base
+   (Louis, 2026-08-16: the highlight silently stopped showing once rows became the target). */
+tr.readerActiveParagraph > td {
+    background-color: color-mix(in srgb, var(--accent) 15%, var(--bg-elevated-2));
+}
+
+tr.readerActiveParagraph > th {
+    background-color: color-mix(in srgb, var(--accent) 15%, var(--bg-elevated));
+}
+
+/* The one active word (cf. setActiveWord() in reader.js), replacing readerActiveParagraph's
+   softer highlight with a stronger tint so it reads as "this exact word". */
+.readerWord.readerActiveWord {
+    background-color: color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: 0.2rem;
+}

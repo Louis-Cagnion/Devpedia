@@ -1,80 +1,12 @@
 import { appState } from "./state.js";
 import { parseAppendText, parseMdContent } from "./parser.js";
 import { createTag } from "./tags.js";
-import { fetchFileToTextOrJson, findCategory, getContentDir } from "./utils.js";
+import { fetchFileToTextOrJson, findCategory, findSubject, getContentDir } from "./utils.js";
 import { setPageOutline, syncSidebars } from "./sidebar.js";
 import { buildReadingPlan, stopReading } from "./reader.js";
 import { t, tEntityLabel } from "./i18n.js";
-
-/**
- * @brief Returns a category's subject matching `subjectId`.
- *
- * @param {Object} category
- * @param {string} subjectId
- *
- * @returns {Object}
- */
-export function findSubject(category, subjectId) {
-    return category.subjects?.find(subject => subject.id === subjectId);
-}
-
-/* ---- cross-language fallback for a page missing in the active language ----
-   Folder/file names (ids) are never translated, so an id valid in one language's struct-*.json
-   is the same id in another's. French is guaranteed to succeed if the id is valid at all. */
-
-/* Struct files already fetched during a fallback lookup this session, keyed by language code
-   ("" for French) -- avoids re-fetching the same struct on every subsequent missing page. */
-const structCache = new Map();
-
-async function fetchStructCategories(lang) {
-    if (structCache.has(lang)) return structCache.get(lang);
-    const path = lang ? `./structure/struct-${lang}.json` : "./structure/struct.json";
-    const { categories } = await fetchFileToTextOrJson(path, 'json');
-    structCache.set(lang, categories);
-    return categories;
-}
-
-/**
- * @brief Resolves categoryId/subjectId/pageId within one language's own category tree.
- *
- * @param {Array} categories one language's category tree (structure/struct-*.json's `categories`)
- *
- * @returns {{category: Object, subject: Object|null, chapter: Object|null}|null} null if it
- *   doesn't resolve within `categories`
- */
-function resolveInCategories(categories, categoryId, subjectId, pageId) {
-    const category = categories.find(c => c.id === categoryId);
-    if (!category) return null;
-    if (pageId === categoryId) return { category, subject: null, chapter: null };
-    if (subjectId) {
-        const subject = findSubject(category, subjectId);
-        if (!subject) return null;
-        if (pageId === subjectId) return { category, subject, chapter: null };
-        const chapter = subject.chapters?.find(c => c.id === pageId);
-        return chapter ? { category, subject, chapter } : null;
-    }
-    const chapter = category.chapters?.find(c => c.id === pageId);
-    return chapter ? { category, subject: null, chapter } : null;
-}
-
-/**
- * @brief Resolves categoryId/subjectId/pageId against the active language first, then English,
- * then French.
- *
- * @returns {Promise<{lang: string, category: Object, subject: Object|null, chapter: Object|null}|null>}
- *   null only if the id doesn't exist in any language (a stale/broken link)
- */
-async function resolveAcrossLanguages(categoryId, subjectId, pageId) {
-    const direct = resolveInCategories(appState.categories, categoryId, subjectId, pageId);
-    if (direct) return { lang: appState.lang, ...direct };
-
-    for (const lang of ["en", ""].filter(l => l !== appState.lang)) {
-        const categories = await fetchStructCategories(lang);
-        const found = resolveInCategories(categories, categoryId, subjectId, pageId);
-        if (found) return { lang, ...found };
-    }
-    return null;
-}
+import { resolveAcrossLanguages } from "./router-language-fallback.js";
+import { PENDING_NAV_KEY, buildNavUrl, parseNavParams, pushNavUrl, replayingUrl } from "./nav-url.js";
 
 /**
  * @brief Renders the result of {@link resolveAcrossLanguages}, in the active language if found
@@ -112,68 +44,6 @@ function renderAcrossLanguages(categoryId, subjectId, pageId) {
     });
 }
 
-/* Session-only: read once at startup by resumePendingNavigation(), then cleared; carries the
-   current page across a language switch's location.reload(), since ids are language-independent. */
-export const PENDING_NAV_KEY = "devpedia-pending-nav";
-
-/** @brief Remembers the current page before a language switch, so {@link resumePendingNavigation} can restore it after the reload. */
-export function rememberCurrentPageForLanguageSwitch() {
-    sessionStorage.setItem(PENDING_NAV_KEY, JSON.stringify({
-        categoryId: appState.curCategory,
-        subjectId: appState.curSubject,
-        pageId: appState.curPageId
-    }));
-}
-
-/**
- * @brief Parses a nav URL's `c`/`s`/`p` query params into a navigation target.
- *
- * @param {string} url an absolute or root-relative URL, e.g. "/?c=shells&s=bash&p=variables"
- *
- * @returns {{categoryId: string, subjectId: string|null, pageId: string}|null} null if there's
- *   no `c` param to navigate to
- */
-function parseNavParams(url) {
-    const params = new URLSearchParams(new URL(url, window.location.origin).search);
-    const categoryId = params.get("c");
-    if (!categoryId) return null;
-    return { categoryId, subjectId: params.get("s"), pageId: params.get("p") ?? categoryId };
-}
-
-/* ---- browser history (back/forward + reload keep the current page) ----
-   A full reload used to always land on the home page, and back/forward did nothing, since nothing
-   here touched `window.location`/`history`. `p`/`s`/`c` are now also *written* on every navigation. */
-
-/**
- * @brief Builds the URL parseNavParams() would resolve back to this same target.
- *
- * @param {string} categoryId
- * @param {string|null} subjectId
- * @param {string} pageId
- *
- * @returns {string} `p` omitted when it's redundant with `c`
- */
-function buildNavUrl(categoryId, subjectId, pageId) {
-    const params = new URLSearchParams({ c: categoryId });
-    if (subjectId) params.set("s", subjectId);
-    if (pageId !== categoryId) params.set("p", pageId);
-    return `?${params.toString()}`;
-}
-
-/* True while a render is replaying the current URL (initial load, back/forward), making
-   pushNavUrl() below a no-op. Every click to a new page must call pushNavUrl() itself, including
-   generateChildList() callbacks -- skipping it stuck the URL on the previous page (Louis, 2026-08-16). */
-let isReplayingUrl = false;
-
-/**
- * @brief Pushes `url` to browser history, unless a render is currently replaying the current URL.
- *
- * @param {string} url see {@link buildNavUrl}
- */
-function pushNavUrl(url) {
-    if (!isReplayingUrl) history.pushState(null, "", url);
-}
-
 /**
  * @brief Navigates to whatever `target` describes: a category's, subject's, or chapter's page.
  *
@@ -199,12 +69,11 @@ function navigateToTarget({ categoryId, subjectId, pageId }) {
 }
 
 /**
- * @brief Restores the page saved by {@link rememberCurrentPageForLanguageSwitch}, if any,
+ * @brief Restores the page saved by lang.js's rememberCurrentPageForLanguageSwitch(), if any,
  * otherwise renders whatever the current URL says, or the home page. Safe to call on every startup.
  */
 export function resumePendingNavigation() {
-    isReplayingUrl = true;
-    try {
+    replayingUrl(() => {
         const raw = sessionStorage.getItem(PENDING_NAV_KEY);
         sessionStorage.removeItem(PENDING_NAV_KEY);
         if (raw) {
@@ -226,21 +95,16 @@ export function resumePendingNavigation() {
         const target = parseNavParams(window.location.href);
         if (!target || !navigateToTarget(target))
             generateHomePage();
-    } finally {
-        isReplayingUrl = false;
-    }
+    });
 }
 
 /* The browser's own back/forward buttons -- re-renders whatever the URL now says, without
    pushing a new entry for it since the browser already moved the history position on its own. */
 window.addEventListener("popstate", () => {
-    isReplayingUrl = true;
-    try {
+    replayingUrl(() => {
         const target = parseNavParams(window.location.href);
         if (!target || !navigateToTarget(target)) generateHomePage();
-    } finally {
-        isReplayingUrl = false;
-    }
+    });
 });
 
 /**

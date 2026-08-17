@@ -6,6 +6,9 @@
  * per API call (no wrapper sentence) so the response IS the translation, nothing to parse.
  *
  * Run with: node scripts/fix-variable-glossary.mjs
+ *
+ * Kept as a safety net alongside build-variable-glossary.mjs: unrunnable since the DeepL
+ * subscription lapsed. Delete once no more glossary regeneration is expected.
  */
 import fs from "node:fs";
 import path from "node:path";

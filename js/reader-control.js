@@ -62,7 +62,7 @@ export function createReaderControl() {
     replayButton.addEventListener("click", replayParagraph);
     previousButton.addEventListener("click", previousParagraph);
     nextButton.addEventListener("click", nextParagraph);
-    // In-progress order requested by Louis on 2026-08-16: previous, pause/resume, next, replay.
+    // Deliberate order (Louis, 2026-08-16): previous, pause/resume, next, replay.
     wrapper.append(listenButton, restartButton, previousButton, primaryButton, nextButton, replayButton);
 
     const applyStatus = status => {

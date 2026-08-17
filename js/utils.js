@@ -17,6 +17,18 @@ export function findCategory(toFind = {}) {
 }
 
 /**
+ * @brief Returns a category's subject matching `subjectId`.
+ *
+ * @param {Object} category
+ * @param {string} subjectId
+ *
+ * @returns {Object}
+ */
+export function findSubject(category, subjectId) {
+    return category.subjects?.find(subject => subject.id === subjectId);
+}
+
+/**
  * @brief Returns the content folder to fetch pages from: the translated `content-<lang>`
  * folder if a language other than French is selected, `content` otherwise.
  *

@@ -1,6 +1,6 @@
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson } from "./utils.js";
-import { rememberCurrentPageForLanguageSwitch } from "./router.js";
+import { rememberCurrentPageForLanguageSwitch } from "./nav-url.js";
 
 const STORAGE_KEY = "devpedia-lang";
 const FRENCH_OPTION = { code: "", label: "Français" };
