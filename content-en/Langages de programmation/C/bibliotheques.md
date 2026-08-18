@@ -8,37 +8,37 @@ A **library** is a collection of precompiled functions that can be reused by any
 
 ## Static Library (`.a`)
 
-The library code is **copied directly** into the final executable during the linking process (see the chapter on compilation).
+The library code is **copied directly** into the final executable during the [linking process](/?c=langages-de-programmation&s=c&p=compilation).
 
-```bash
-// 1. compiler chaque fichier source en .o
+```text
+// 1. compile each source file into .o
 gcc -c calculs.c -o calculs.o
 
-// 2. regrouper le(s) .o dans une archive statique
+// 2. combine the .o file(s) into a static archive
 ar rcs libcalculs.a calculs.o
 
-// 3. lier le programme à cette bibliothèque
+// 3. link the program to this library
 gcc main.c -L. -lcalculs -o program
 ```
 
 - `ar` (*archive*) combines one or more files `.o` into a single archive `.a`.
-- `-L.` Tells [`gcc`](https://gcc.gnu.org) to also search for libraries in the current directory.
-- `-lcalculs` Request to link to `libcalculs.a` (the prefix `lib` and the suffix `.a` are implied).
+- `-L.` tells [`gcc`](https://gcc.gnu.org) to also search for libraries in the current directory.
+- `-lcalculs` asks to link `libcalculs.a` (the prefix `lib` and the suffix `.a` are implied).
 
 | Advantage | Disadvantage |
 |---|---|
 | Standalone executable; no external dependencies to install | Larger executable size |
 | There's no risk that a different version of the library will break the program later | Updating the library requires recompiling the program |
 
-## Dynamic library (`.so` on Linux, `.dll` on Windows)
+## Dynamic Library (`.so` on Linux, `.dll` on Windows)
 
 The library code remains in a **separate** file, which is loaded into memory when the program starts (or even while it is running). Multiple programs can then share a single copy of the library in memory.
 
-```bash
+```text
 gcc -shared -fPIC calculs.c -o libcalculs.so
 gcc main.c -L. -lcalculs -o program
 
-// au lancement, le système doit savoir où trouver libcalculs.so :
+// at startup, the system must know where to find libcalculs.so:
 LD_LIBRARY_PATH=. ./program
 ```
 
@@ -50,10 +50,21 @@ LD_LIBRARY_PATH=. ./program
 | Smaller executable | External dependency: the library must be present on the machine running the program |
 | A library shared by multiple programs saves memory | An incompatible update to the library can break a program without recompilation |
 
-## Abstract
+## Static vs. Dynamic
 
 | | Static (`.a`) | Dynamic (`.so`) |
 |---|---|---|
 | Copied into the executable? | Yes | No (loaded separately) |
 | When is it linked? | At compile time | At program startup (or during program execution) |
 | Library update | Requires recompiling the program | The program benefits from the update without recompilation |
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A static library (`.a`) is copied into the executable at compile time; a dynamic library (`.so`/`.dll`) stays separate, is loaded at startup, and can be shared between programs. |
+| **Tools you can use** | `ar` (static archive), `gcc -shared -fPIC` (dynamic library), `-L`/`-l` to link. |
+| **Pitfalls to avoid** | Forgetting `LD_LIBRARY_PATH` (or a system-wide install): the program refuses to start, unable to find the dynamic library. |
+| **Best practices** | Choose static for a standalone executable with no dependency to manage, dynamic to save memory/size when several programs share the same library. |
