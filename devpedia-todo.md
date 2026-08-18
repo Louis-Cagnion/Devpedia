@@ -7,11 +7,6 @@
 ## Langues
 - 6 langues manquantes en plus d'ES/EN/BR : allemand, russe, chinois simplifié, arabe, indonésien, japonais.
 
-## Rattrapage `content-en/Langages de programmation/C/` (trouvé le 17/08/2026 en travaillant sur le chantier cursus 42)
-Vérifié : écart spécifique à l'EN, absent en ES/BR (seul `c.md`, l'intro de subject, n'a normalement pas de récap).
-- 8 chapitres sans tableau récapitulatif final (`## 📋 Summary`) : `boucles.md`, `conditions.md`, `fonctions-variadiques.md`, `headers.md`, `listes-chainees.md`, `makefiles.md`, `processus.md`, `threads.md`.
-- `processus.md` en plus : restes de français non traduits dans des commentaires de code/texte (`"L'enfant s'est terminé avec le code..."`, `"Fill out..."` mal formé), et une mention "the chapter on threads" en texte brut au lieu d'un lien Markdown vers `threads.md`.
-
 ## Cursus 42 (notions abordées, absentes de Devpedia)
 Audit complet du repo `../42Cursus` le 17/08/2026 (les 7 cercles, code réel lu projet par projet - pas une déduction depuis les noms de dossiers). Deux limites assumées : les sujets PDF originaux ne sont pas commités dans un repo 42 (règle de redistribution), donc les notions viennent du CODE produit, pas de l'énoncé complet ; et les modules C++ 05-09 (Cercle 6) étaient des submodules vides (dossiers ajoutés sans avoir retiré leur `.git` interne, jamais `.gitmodules` créé) - contenu récupéré depuis l'historique git du dépôt (un commit antérieur au remplacement par le lien vide contenait encore les vrais fichiers), donc vérifié malgré tout. Les parties bonus ont été faites sur tous les projets sauf `inception` (confirmé par Louis) : à considérer comme couvertes même sans fichier `_bonus` visible partout.
 
