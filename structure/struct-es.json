@@ -11,6 +11,48 @@
       ]
     },
     {
+      "id": "administration-systeme",
+      "label": "Administration système",
+      "folder": "Administration système",
+      "chapters": [
+        {
+          "id": "virtualisation-et-choix-dos",
+          "label": "Virtualización y elección de SO"
+        },
+        {
+          "id": "partitionnement-et-lvm",
+          "label": "Particionamiento y LVM"
+        },
+        {
+          "id": "selinux-vs-apparmor",
+          "label": "SELinux vs AppArmor"
+        },
+        {
+          "id": "durcissement-ssh-sudo-mots-de-passe",
+          "label": "Endurecimiento de SSH, sudo y contraseñas"
+        },
+        {
+          "id": "pare-feu-ufw-firewalld",
+          "label": "Cortafuegos: UFW y firewalld"
+        }
+      ]
+    },
+    {
+      "id": "algorithmes",
+      "label": "Algorithmes",
+      "folder": "Algorithmes",
+      "chapters": [
+        {
+          "id": "complexite-et-notation-big-o",
+          "label": "La complejidad y la notación Big-O"
+        },
+        {
+          "id": "tri-par-comparaison",
+          "label": "La ordenación por comparación"
+        }
+      ]
+    },
+    {
       "id": "authentification",
       "label": "Authentification",
       "folder": "Authentification",
@@ -746,6 +788,10 @@
             {
               "id": "templates",
               "label": "Las plantillas (programación genérica)"
+            },
+            {
+              "id": "cast-cpp",
+              "label": "Los cast en C++"
             }
           ]
         },
@@ -1111,6 +1157,21 @@
         {
           "id": "aleatoire-et-generateurs",
           "label": "El azar y los generadores"
+        }
+      ]
+    },
+    {
+      "id": "reseaux",
+      "label": "Réseaux",
+      "folder": "Réseaux",
+      "chapters": [
+        {
+          "id": "fondamentaux-reseau",
+          "label": "Fundamentos de redes"
+        },
+        {
+          "id": "sockets-et-io-non-bloquante",
+          "label": "Sockets y E/S no bloqueante"
         }
       ]
     },
