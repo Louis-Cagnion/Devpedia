@@ -34,6 +34,10 @@
         {
           "id": "pare-feu-ufw-firewalld",
           "label": "Pare-feu : UFW et firewalld"
+        },
+        {
+          "id": "supervision-systeme",
+          "label": "Lire l'état du système"
         }
       ]
     },
