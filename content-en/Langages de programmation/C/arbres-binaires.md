@@ -39,7 +39,7 @@ Noeud *inserer(Noeud *root, int value)
     if (root == NULL) {
         Noeud *nouveau = malloc(sizeof(Noeud));
         if (nouveau == NULL) {
-            return NULL; // cf. chapitre sur la gestion de la mémoire : toujours vérifier malloc
+            return NULL; // see the chapter on memory management: always check malloc
         }
         nouveau->value = value;
         nouveau->gauche = NULL;
@@ -52,13 +52,13 @@ Noeud *inserer(Noeud *root, int value)
     } else if (value > root->value) {
         root->droit = inserer(root->droit, value);
     }
-    // valeur == racine->valeur : déjà présente, on ne fait rien
+    // value == root->value: already present, do nothing
 
     return root;
 }
 ```
 
-- The base case for recursion is`root == NULL`: we have found the empty slot where to insert.
+- The base case for recursion is `root == NULL`: we have found the empty slot where to insert.
 - Each recursive call returns the root of the subtree (whether modified or not), which is reassigned to `->gauche` or `->droit` by the caller: this is what connects the new node to the rest of the tree.
 
 ## Search
@@ -67,7 +67,7 @@ Noeud *inserer(Noeud *root, int value)
 Noeud *rechercher(Noeud *root, int value)
 {
     if (root == NULL || root->value == value) {
-        return root; // trouvé, ou NULL si l'arbre est vide/épuisé
+        return root; // found, or NULL if the tree is empty/exhausted
     }
 
     if (value < root->value) {
@@ -77,14 +77,14 @@ Noeud *rechercher(Noeud *root, int value)
 }
 ```
 
-At each step, the comparison eliminates **an entire subtree** from the search, which is what makes a balanced B-tree much faster than a linear traversal of a linked list.
+At each step, the comparison eliminates **an entire subtree** from the search, which is what makes a balanced BST much faster than a linear traversal of a linked list.
 
-## The Three Classic Routes
+## The Three Classic Traversals
 
 Traversing a tree means visiting each of its nodes once. There are three possible orders, depending on when the current node is "processed" relative to its children:
 
 ```c
-void parcoursInfixe(Noeud *root)   // gauche, nœud, droit -> ordre croissant sur un ABR
+void parcoursInfixe(Noeud *root)   // left, node, right -> ascending order on a BST
 {
     if (root == NULL) return;
     parcoursInfixe(root->gauche);
@@ -92,7 +92,7 @@ void parcoursInfixe(Noeud *root)   // gauche, nœud, droit -> ordre croissant su
     parcoursInfixe(root->droit);
 }
 
-void parcoursPrefixe(Noeud *root)  // nœud, gauche, droit
+void parcoursPrefixe(Noeud *root)  // node, left, right
 {
     if (root == NULL) return;
     printf("%d ", root->value);
@@ -100,7 +100,7 @@ void parcoursPrefixe(Noeud *root)  // nœud, gauche, droit
     parcoursPrefixe(root->droit);
 }
 
-void parcoursSuffixe(Noeud *root)  // gauche, droit, nœud
+void parcoursSuffixe(Noeud *root)  // left, right, node
 {
     if (root == NULL) return;
     parcoursSuffixe(root->gauche);
@@ -109,7 +109,7 @@ void parcoursSuffixe(Noeud *root)  // gauche, droit, nœud
 }
 ```
 
-In the example tree above, `parcoursInfixe` displays `2 5 7 10 15 20`: the values in ascending order, a feature unique to ABR.
+In the example tree above, `parcoursInfixe` displays `2 5 7 10 15 20`: the values in ascending order, a feature unique to a BST.
 
 ## Free a Tree
 
@@ -125,4 +125,15 @@ void libererArbre(Noeud *root)
 }
 ```
 
-See also the chapter on pointers (self-referencing structures) and on memory management (each `malloc` must have its own `free`).
+See also [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs) (self-referencing structures) and [Memory management](/?c=langages-de-programmation&s=c&p=memoire) (each `malloc` must have its own `free`).
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A binary search tree (BST) enforces left subtree < node < right subtree, which allows a search to eliminate half of the candidates at each step. Three traversals (in-order, pre-order, post-order) visit nodes in different orders. |
+| **Tools you can use** | Recursive insertion/search; in-order traversal to get a BST's values sorted. |
+| **Pitfalls to avoid** | Forgetting to check each `malloc()` against `NULL` during insertion. |
+| **Best practices** | Free a tree with a post-order traversal (children before the node itself), to never lose access to a subtree still to be freed. |

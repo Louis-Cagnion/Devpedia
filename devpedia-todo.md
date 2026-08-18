@@ -9,7 +9,7 @@
 
 ## Rattrapage `content-en/Langages de programmation/C/` (trouvé le 17/08/2026 en travaillant sur le chantier cursus 42)
 Vérifié : écart spécifique à l'EN, absent en ES/BR (seul `c.md`, l'intro de subject, n'a normalement pas de récap).
-- 10 chapitres sans tableau récapitulatif final (`## 📋 Summary`) : `arbres-binaires.md`, `bibliotheques.md`, `boucles.md`, `conditions.md`, `fonctions-variadiques.md`, `headers.md`, `listes-chainees.md`, `makefiles.md`, `processus.md`, `threads.md`.
+- 9 chapitres sans tableau récapitulatif final (`## 📋 Summary`) : `bibliotheques.md`, `boucles.md`, `conditions.md`, `fonctions-variadiques.md`, `headers.md`, `listes-chainees.md`, `makefiles.md`, `processus.md`, `threads.md`.
 - `processus.md` en plus : restes de français non traduits dans des commentaires de code/texte (`"L'enfant s'est terminé avec le code..."`, `"Fill out..."` mal formé), et une mention "the chapter on threads" en texte brut au lieu d'un lien Markdown vers `threads.md`.
 
 ## Cursus 42 (notions abordées, absentes de Devpedia)
