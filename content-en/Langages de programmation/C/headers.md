@@ -9,12 +9,12 @@ A header file (`.h`) contains **declarations**: it states, “This function/vari
 ## Statement vs. Definition
 
 ```c
-// calculs.h, déclaration : "cette fonction existe, voici sa signature"
+// calculs.h, declaration: "this function exists, here is its signature"
 int addition(int a, int b);
 ```
 
 ```c
-// calculs.c, définition : le vrai corps de la fonction
+// calculs.c, definition: the actual body of the function
 #include "calculs.h"
 
 int addition(int a, int b)
@@ -24,7 +24,7 @@ int addition(int a, int b)
 ```
 
 ```c
-// main.c, utilisation, via le header
+// main.c, usage, via the header
 #include "calculs.h"
 
 int main(void)
@@ -33,13 +33,13 @@ int main(void)
 }
 ```
 
-`main.c` You only need to know the **signature** of `addition()` (via `#include "calculs.h"`) to call it: the actual body is provided at link time (see the chapter on compilation), from the object file compiled from `calculs.c`.
+`main.c` only needs to know the **signature** of `addition()` (via `#include "calculs.h"`) to call it: the actual body is provided at [link time](/?c=langages-de-programmation&s=c&p=compilation), from the object file compiled from `calculs.c`.
 
-## `#include <...>` vs`#include "..."`
+## `#include <...>` vs `#include "..."`
 
 ```c
-#include <stdio.h>   // chevrons : cherche dans les répertoires système (bibliothèque standard)
-#include "calculs.h" // guillemets : cherche d'abord dans le répertoire courant du projet
+#include <stdio.h>   // angle brackets: searches the system directories (standard library)
+#include "calculs.h" // quotes: searches the project's current directory first
 ```
 
 ## Include guards
@@ -67,3 +67,14 @@ int addition(int a, int b);
 ```
 
 > **Note:** A header file must contain only **declarations** (function prototypes, `struct`, `typedef`, constants), never the body of a non-`static` or non-`inline` function; otherwise, every `.c` file that includes it would get its own copy of the definition, causing a "multiple definition" error during linking.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A header (`.h`) contains declarations, not definitions: it lets several `.c` files share the same signatures without duplicating them. |
+| **Tools you can use** | `#include <...>` (system library) vs `#include "..."` (project file); include guards (`#ifndef`/`#define`/`#endif` or `#pragma once`). |
+| **Pitfalls to avoid** | Putting a function's body in a header: causes a "multiple definition" error as soon as several files include it. |
+| **Best practices** | Always protect a header with an include guard, to support multiple indirect inclusions without error. |
