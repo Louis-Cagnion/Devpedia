@@ -4,13 +4,13 @@ order: 8
 
 # Makefiles
 
-A **Makefile** automates the compilation of a multi-file C project: rather than manually retyping each [`gcc`](https://gcc.gnu.org) command (see the chapter on compilation), you define the build rules once, and the tool `make` executes them, recompiling only what has actually changed since the last time.
+A **Makefile** automates the compilation of a multi-file C project: rather than manually retyping each [`gcc`](https://gcc.gnu.org) command (see [The Compilation Process](/?c=langages-de-programmation&s=c&p=compilation)), you define the build rules once, and the tool `make` executes them, recompiling only what has actually changed since the last time.
 
 ## Anatomy of a Rule
 
 ```makefile
-target: dependances
-	commande
+target: dependencies
+	command
 ```
 
 ```makefile
@@ -70,3 +70,14 @@ clean:
 `.PHONY` tells `make` that `clean` is not a filename: without this line, if a file named `clean` happened to exist in the folder, `make clean` might consider it "up to date" and not run anything.
 
 > **Note:** Passing a target as an argument (`make clean`, `make program`) creates **that** specific target rather than the first one in the file.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A Makefile describes rules (`target: dependencies` + command) that `make` executes, rebuilding only what has actually changed. |
+| **Tools you can use** | Variables (`CC`, `CFLAGS`), phony targets (`.PHONY`). |
+| **Pitfalls to avoid** | Indenting a command with spaces instead of a tab: a very common mistake that breaks the rule. |
+| **Best practices** | Declare `.PHONY` for any target that doesn't produce an actual file (`clean`, `test`...), to avoid a conflict with a file of the same name. |
