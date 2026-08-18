@@ -11,6 +11,48 @@
       ]
     },
     {
+      "id": "administration-systeme",
+      "label": "Administration système",
+      "folder": "Administration système",
+      "chapters": [
+        {
+          "id": "virtualisation-et-choix-dos",
+          "label": "Virtualization and Choosing an OS"
+        },
+        {
+          "id": "partitionnement-et-lvm",
+          "label": "Partitioning and LVM"
+        },
+        {
+          "id": "selinux-vs-apparmor",
+          "label": "SELinux vs AppArmor"
+        },
+        {
+          "id": "durcissement-ssh-sudo-mots-de-passe",
+          "label": "Hardening SSH, sudo, and Passwords"
+        },
+        {
+          "id": "pare-feu-ufw-firewalld",
+          "label": "Firewalls: UFW and firewalld"
+        }
+      ]
+    },
+    {
+      "id": "algorithmes",
+      "label": "Algorithmes",
+      "folder": "Algorithmes",
+      "chapters": [
+        {
+          "id": "complexite-et-notation-big-o",
+          "label": "Big-O Notation and Complexity"
+        },
+        {
+          "id": "tri-par-comparaison",
+          "label": "Comparison Sorting"
+        }
+      ]
+    },
+    {
       "id": "authentification",
       "label": "Authentification",
       "folder": "Authentification",
@@ -746,6 +788,10 @@
             {
               "id": "templates",
               "label": "Templates (Generic Programming)"
+            },
+            {
+              "id": "cast-cpp",
+              "label": "Casts in C++"
             }
           ]
         },
@@ -1111,6 +1157,21 @@
         {
           "id": "aleatoire-et-generateurs",
           "label": "Randomness and Generators"
+        }
+      ]
+    },
+    {
+      "id": "reseaux",
+      "label": "Réseaux",
+      "folder": "Réseaux",
+      "chapters": [
+        {
+          "id": "fondamentaux-reseau",
+          "label": "Network Fundamentals"
+        },
+        {
+          "id": "sockets-et-io-non-bloquante",
+          "label": "Sockets and Non-Blocking I/O"
         }
       ]
     },
