@@ -54,10 +54,10 @@ for (int i = 0; i < 5; i++) {
 }
 ```
 
-> **Note:** Unlike PHP or JavaScript, there is no **native way** to determine the size of an array based on the pointer alone: `array[5]` "knows" how many elements it contains as long as it is treated as a static array, but this information is lost as soon as it is passed to a function (at which point it behaves like a simple pointer; see the chapter on pointers). The size must therefore be passed separately.
+> **Note:** Unlike [PHP](/?c=langages-de-programmation&s=php&p=php) or [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), there is no **native way** to determine the size of an array based on the pointer alone: `array[5]` "knows" how many elements it contains as long as it is treated as a static array, but this information is lost as soon as it is passed to a function (at which point it behaves like a simple pointer; see [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs)). The size must therefore be passed separately.
 
 ```c
-void afficher(int *array, int taille) // la taille doit être passée explicitement
+void afficher(int *array, int taille) // the size must be passed explicitly
 {
     for (int i = 0; i < taille; i++) {
         printf("%d\n", array[i]);
@@ -73,10 +73,10 @@ void afficher(int *array, int taille) // la taille doit être passée explicitem
 ```c
 for (int i = 0; i < 10; i++) {
     if (i == 5) {
-        break; // arrête la boucle dès que i vaut 5
+        break; // stops the loop as soon as i equals 5
     }
     if (i % 2 == 0) {
-        continue; // ignore les nombres pairs
+        continue; // skips even numbers
     }
     printf("%d\n", i);
 }
@@ -84,7 +84,7 @@ for (int i = 0; i < 10; i++) {
 
 ## Nested Loops and `break`
 
-`break` It only exits the **nearest** loop that encloses it: to exit multiple nested loops at once, you need a control variable or a "`goto`" (which is rare but sometimes used for this specific case in C):
+`break` only exits the **nearest** loop that encloses it: to exit multiple nested loops at once, you need a control variable or a `goto` (which is rare but sometimes used for this specific case in C):
 
 ```c
 int trouve = 0;
@@ -93,8 +93,19 @@ for (int i = 0; i < 10 && !trouve; i++) {
     for (int j = 0; j < 10; j++) {
         if (i * j == 42) {
             trouve = 1;
-            break; // ne sort que de la boucle interne
+            break; // only exits the inner loop
         }
     }
 }
 ```
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `while` checks before, `do while` checks after (at least one execution), `for` combines initialization/condition/increment. No native `foreach`: an array is iterated through by index. |
+| **Tools you can use** | `break` (stops the loop), `continue` (skips to the next iteration). |
+| **Pitfalls to avoid** | `break` only exits the nearest loop: a control variable is needed to exit multiple nested loops. |
+| **Best practices** | Always pass an array's size explicitly to a function that iterates through it, rather than assuming it can be deduced. |
