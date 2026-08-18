@@ -34,6 +34,10 @@
         {
           "id": "pare-feu-ufw-firewalld",
           "label": "Firewalls: UFW and firewalld"
+        },
+        {
+          "id": "supervision-systeme",
+          "label": "Reading System State"
         }
       ]
     },
