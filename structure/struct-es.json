@@ -34,6 +34,10 @@
         {
           "id": "pare-feu-ufw-firewalld",
           "label": "Cortafuegos: UFW y firewalld"
+        },
+        {
+          "id": "supervision-systeme",
+          "label": "Leer el estado del sistema"
         }
       ]
     },
