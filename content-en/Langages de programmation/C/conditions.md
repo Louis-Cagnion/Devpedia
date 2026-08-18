@@ -8,7 +8,7 @@ Conditional statements allow you to execute a block of code depending on whether
 
 ## `if`'s Condition
 
-In C, any **non-zero** value is considered true; only the value `0` is false: there was no native Boolean type prior to [C99](https://en.wikipedia.org/wiki/C99) (`stdbool.h`, see the chapter on variables):
+In C, any **non-zero** value is considered true; only the value `0` is false: there was no native Boolean type prior to [C99](https://en.wikipedia.org/wiki/C99) ([`stdbool.h`](/?c=langages-de-programmation&s=c&p=variables)):
 
 ```c
 int age = 18;
@@ -74,7 +74,7 @@ switch (jour) {
 switch (jour) {
     case 6:
     case 7:
-        printf("Week-end\n"); // pas de break entre 6 et 7 : les deux cas partagent ce code
+        printf("Week-end\n"); // no break between 6 and 7: both cases share this code
         break;
     default:
         printf("Jour de semaine\n");
@@ -83,3 +83,14 @@ switch (jour) {
 ```
 
 > **Limitations of the "`switch`" in C:** Unlike some languages, a "`switch`" in C only works on integer types (or equivalent types: `char`, `enum`): it is not possible to perform a "`switch`" directly on a character string.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `if`/`else`/`else if` execute a block based on a condition; any non-zero value is true in C. `switch` compares a single integer variable to multiple values. |
+| **Tools you can use** | The ternary operator `? :` for a short conditional assignment. |
+| **Pitfalls to avoid** | Forgetting `break;` in a `case`: execution continues into the next `case` (*fall-through*), even without matching its condition. |
+| **Best practices** | Always use curly braces around an `if` block, even for a single statement: this avoids a bug if a line is later added without the braces. |
