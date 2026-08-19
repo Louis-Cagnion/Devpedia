@@ -9,6 +9,7 @@ import {
     previousParagraph,
     nextParagraph,
     triggerPrimaryAction,
+    cycleReaderRate,
     onStatusChange,
 } from "./reader.js";
 
@@ -56,14 +57,19 @@ export function createReaderControl() {
         { class: "returnButton readerNextButton" },
         { textContent: t("readerNextParagraph") }
     );
+    const rateButton = createTag(
+        "button",
+        { class: "returnButton readerRateButton", title: t("readerSpeed") }
+    );
     listenButton.addEventListener("click", startFromVisible);
     restartButton.addEventListener("click", startReading);
     primaryButton.addEventListener("click", triggerPrimaryAction);
     replayButton.addEventListener("click", replayParagraph);
     previousButton.addEventListener("click", previousParagraph);
     nextButton.addEventListener("click", nextParagraph);
+    rateButton.addEventListener("click", cycleReaderRate);
     // Deliberate order (Louis, 2026-08-16): previous, pause/resume, next, replay.
-    wrapper.append(listenButton, restartButton, previousButton, primaryButton, nextButton, replayButton);
+    wrapper.append(listenButton, restartButton, previousButton, primaryButton, nextButton, replayButton, rateButton);
 
     const applyStatus = status => {
         const inProgress = status.isPlaying || status.isPaused || status.isPausedAtCode;
@@ -77,6 +83,8 @@ export function createReaderControl() {
         replayButton.classList.toggle("visible", inProgress);
         previousButton.classList.toggle("visible", inProgress);
         nextButton.classList.toggle("visible", inProgress);
+        // Always visible (idle and playing alike), unlike the pairs above: a speed choice applies to whichever comes next.
+        rateButton.textContent = `⏱ ×${status.rate}`;
     };
     onStatusChange(applyStatus);
 

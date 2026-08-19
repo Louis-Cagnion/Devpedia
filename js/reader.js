@@ -64,6 +64,15 @@ let planIndex = 0;
 let isPlaying = false;
 let isPausedAtCode = false;
 
+/* Playback speed, applied to each utterance in speakNext() and persisted across visits like
+   js/lang.js's own language choice. Falls back to 1 for a stored value outside READER_RATES
+   (corrupted storage, or a removed step from an earlier version). */
+const READER_RATE_STORAGE_KEY = "devpedia-reader-rate";
+export const READER_RATES = [1, 1.25, 1.5, 2];
+let readerRate = READER_RATES.includes(Number(localStorage.getItem(READER_RATE_STORAGE_KEY)))
+    ? Number(localStorage.getItem(READER_RATE_STORAGE_KEY))
+    : READER_RATES[0];
+
 /* True after pauseReading(), distinct from isPausedAtCode (paused at a `pre` block) and the
    fully-stopped state. `planIndex` stays untouched while paused, so resumeReading() re-speaks the
    same (short) clause from its own start rather than tracking a mid-utterance offset. */
@@ -86,10 +95,28 @@ const listeners = new Set();
  * @brief Returns a snapshot of the current playback state.
  *
  * @returns {{hasPlan: boolean, isPlaying: boolean, isPaused: boolean, isPausedAtCode: boolean,
- *   canReplay: boolean}}
+ *   canReplay: boolean, rate: number}}
  */
 export function getReaderStatus() {
-    return { hasPlan: plan.length > 0, isPlaying, isPaused, isPausedAtCode, canReplay: lastSpokenIndex !== null };
+    return {
+        hasPlan: plan.length > 0,
+        isPlaying,
+        isPaused,
+        isPausedAtCode,
+        canReplay: lastSpokenIndex !== null,
+        rate: readerRate,
+    };
+}
+
+/**
+ * @brief Advances the playback speed to the next value in READER_RATES, wrapping back to the
+ * first after the last, and persists the choice for future visits.
+ */
+export function cycleReaderRate() {
+    const nextIndex = (READER_RATES.indexOf(readerRate) + 1) % READER_RATES.length;
+    readerRate = READER_RATES[nextIndex];
+    localStorage.setItem(READER_RATE_STORAGE_KEY, readerRate);
+    notify();
 }
 
 function notify() {
@@ -312,6 +339,7 @@ function speakNext() {
         entry.highlightTarget.scrollIntoView({ behavior: "smooth", block: "start" });
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
+    utterance.rate = readerRate;
     const myGeneration = generation;
     utterance.onboundary = event => {
         if (generation !== myGeneration) return;

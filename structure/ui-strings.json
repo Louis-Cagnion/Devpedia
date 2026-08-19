@@ -16,6 +16,7 @@
     "readerResume": "▶ Reprendre",
     "readerNextParagraph": "⏩ Paragraphe suivant",
     "readerPreviousParagraph": "⏪ Paragraphe précédent",
+    "readerSpeed": "Vitesse de lecture",
     "readerUnavailable": "🔇 Lecture audio indisponible : aucune voix détectée dans ce navigateur. Essayez un autre navigateur (Chrome, Firefox, Safari...).",
     "pageFallbackNotice": "Cette page n'est pas encore traduite : la voici dans une autre langue disponible."
   },
@@ -36,6 +37,7 @@
     "readerResume": "▶ Resume",
     "readerNextParagraph": "⏩ Next paragraph",
     "readerPreviousParagraph": "⏪ Previous paragraph",
+    "readerSpeed": "Reading speed",
     "readerUnavailable": "🔇 Read-aloud unavailable: no voice detected in this browser. Try another browser (Chrome, Firefox, Safari...).",
     "pageFallbackNotice": "This page isn't translated yet: showing it in another available language.",
     "categoryLabels": {
@@ -102,6 +104,7 @@
     "readerResume": "▶ Reanudar",
     "readerNextParagraph": "⏩ Párrafo siguiente",
     "readerPreviousParagraph": "⏪ Párrafo anterior",
+    "readerSpeed": "Velocidad de lectura",
     "readerUnavailable": "🔇 Lectura en voz alta no disponible: no se detectó ninguna voz en este navegador. Prueba otro navegador (Chrome, Firefox, Safari...).",
     "pageFallbackNotice": "Esta página aún no está traducida: mostrándola en otro idioma disponible.",
     "categoryLabels": {
@@ -168,6 +171,7 @@
     "readerResume": "▶ Retomar",
     "readerNextParagraph": "⏩ Próximo parágrafo",
     "readerPreviousParagraph": "⏪ Parágrafo anterior",
+    "readerSpeed": "Velocidade de leitura",
     "readerUnavailable": "🔇 Leitura em voz alta indisponível: nenhuma voz detectada neste navegador. Tente outro navegador (Chrome, Firefox, Safari...).",
     "pageFallbackNotice": "Esta página ainda não foi traduzida: mostrando em outro idioma disponível.",
     "categoryLabels": {

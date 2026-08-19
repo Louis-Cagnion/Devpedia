@@ -92,7 +92,8 @@
     .readerFloatingBar .readerPrimaryButton,
     .readerFloatingBar .readerReplayButton,
     .readerFloatingBar .readerPreviousButton,
-    .readerFloatingBar .readerNextButton {
+    .readerFloatingBar .readerNextButton,
+    .readerFloatingBar .readerRateButton {
         flex: 1 1 auto;
         justify-content: center;
     }

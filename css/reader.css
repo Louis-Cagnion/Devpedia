@@ -15,7 +15,8 @@
 .rightSidebar .readerPrimaryButton,
 .rightSidebar .readerReplayButton,
 .rightSidebar .readerPreviousButton,
-.rightSidebar .readerNextButton {
+.rightSidebar .readerNextButton,
+.rightSidebar .readerRateButton {
     width: 100%;
     justify-content: center;
 }

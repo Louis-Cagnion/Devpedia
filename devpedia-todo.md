@@ -2,15 +2,12 @@
 
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
-## 1. Vitesse de lecture du lecteur audio (x1 / x1.25 / x1.5 / x2)
-Sélecteur de vitesse à ajouter aux contrôles du lecteur (`js/reader-control.js`), propagé à la synthèse vocale (`js/reader.js`).
-
-## 2. Chapitre — watermarking du contenu généré par IA
+## 1. Chapitre — watermarking du contenu généré par IA
 - Emplacement : `IA/Production et gouvernance`, à côté de `reglementation-europeenne-ia.md` (lien avec l'obligation de marquage de l'AI Act) et de `gouvernance-des-donnees.md`.
 - À couvrir (pas figé, à trancher en écrivant) : pourquoi marquer (traçabilité, AI Act, désinformation) ; watermarking de texte (biais statistique sur les tokens, type SynthID) et ses limites physiques propres (texte trop court, réécriture, résumé, traduction effacent le signal) ; watermarking image/audio (C2PA/Content Credentials, watermark perceptible/imperceptible, à mettre en regard de la mention déjà présente dans `cloner-une-voix.md`) ; limite générale (détection a posteriori, pas de prévention).
 - Avant de rédiger : lire la source complémentaire donnée par Louis (reel Instagram : https://www.instagram.com/reel/DcHmNPfMysl/?igsh=MTVycnRmdW1uOXltbA==&igsi=MTVycnRmdW1uOXltbA==, y compris la description du post).
 
-## 3. Chapitres isolés issus de l'audit cursus 42 (`../42Cursus`)
+## 2. Chapitres isolés issus de l'audit cursus 42 (`../42Cursus`)
 Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire FR/EN/ES/BR comme le reste du site.
 
 - **Arithmétique en précision arbitraire sur chaînes** (`ft_multiply` : multiplier chiffre par chiffre comme à la main) : extension de `Représentation des données/entiers-et-debordements.md`, pas un nouveau chapitre.
@@ -28,7 +25,7 @@ Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire 
 - **IA de jeu par imitation** (comportement d'un adversaire appris depuis des enregistrements de parties humaines + dégradation volontaire de précision pour simuler la fatigue) : dans `IA`, sous-catégorie à trancher en écrivant (potentiellement nouvelle « IA/Jeux et agents » si d'autres notions du même genre s'accumulent).
 - **Blockchain et smart contracts** (Solidity, réseaux type Avalanche, backends sur ICP) : décision à prendre — nouvelle catégorie top-level « Blockchain » si traité en profondeur, sinon chapitre isolé pour une introduction générale.
 
-## 4. Section Automatisation (n8n)
+## 3. Section Automatisation (n8n)
 Ordre déjà validé par Louis (19/08/2026), du plus rapide au plus lent :
 
 1. **Décision structurelle** (bloquant pour la suite) : nouvelle catégorie top-level « Automatisation » sortie d'`Infrastructure` (implique de mettre à jour `structure/struct.json` + les 3 variantes langue, et de déplacer le contenu dans `content/` + les 3 dossiers `content-<lang>/`) vs. garder dans `Infrastructure` en convertissant sa liste plate de chapitres en `subjects` (touche aussi les chapitres non liés à l'automatisation : `api-et-http`, `json`, `cpu-vs-gpu`, `le-cloud`).
@@ -41,19 +38,19 @@ Ordre déjà validé par Louis (19/08/2026), du plus rapide au plus lent :
 
 Décision restante à trancher avant d'écrire les chapitres n8n : contenu générique (l'outil vu de l'extérieur) ou documentant aussi l'usage concret de ce dépôt (le workflow d'orchestration nocturne de `git-scrapping`, cf. section « Automatic orchestration (n8n) » du README) — risque de mélanger doc générale et doc spécifique à un projet.
 
-## 5. Lecteur audio — enchaînement automatique au chapitre suivant
+## 4. Lecteur audio — enchaînement automatique au chapitre suivant
 Aujourd'hui `reader-control.js` ne connaît que la navigation par paragraphe (`previousParagraph`/`nextParagraph`) au sein d'un même chapitre ; pas de notion de « chapitre suivant/précédent » au sens navigation entre pages (`?c=...&p=...`). À construire :
 - Détection de fin de lecture du chapitre.
 - Timer de 5s annulable par un clic sur n'importe quel contrôle du lecteur.
 - Résolution du chapitre suivant dans `structure/struct.json` (respecter l'ordre des `chapters`/`subjects`, y compris le passage d'une catégorie à la suivante en fin de catégorie).
 
-## 6. Lecteur audio — synchronisation boutons médias Bluetooth
+## 5. Lecteur audio — synchronisation boutons médias Bluetooth
 Permettre suivant/précédent/lecture-pause depuis un casque Bluetooth, comme pour de la musique.
 - Mécanisme : [MediaSession API](https://developer.mozilla.org/fr/docs/Web/API/MediaSession) (`navigator.mediaSession.setActionHandler('nexttrack'/'previoustrack'/'play'/'pause', ...)`) — aucune intégration actuelle (`mediaSession` absent de `js/`).
-- Se brancher sur la même notion de « chapitre suivant/précédent » que la tâche 5, plutôt que dupliquer la logique.
+- Se brancher sur la même notion de « chapitre suivant/précédent » que la tâche 4, plutôt que dupliquer la logique.
 - `pause`/`play` synchronisé dans les deux sens avec le bouton déjà présent (`primaryButton` dans `reader-control.js`) : un appui Bluetooth met à jour l'état visuel du bouton, et inversement un clic met à jour `navigator.mediaSession.playbackState`.
 
-## 7. Nouvelle catégorie : Tests
+## 6. Nouvelle catégorie : Tests
 Aucune catégorie dédiée à la méthodologie de test logiciel aujourd'hui (`tests-et-audit-de-securite.md` dans `Cybersécurité` couvre l'audit sécu, pas ça). Section complète demandée, pas des chapitres isolés.
 
 Chapitres demandés explicitement :
@@ -63,7 +60,7 @@ Chapitres demandés explicitement :
 
 À compléter en écrivant (pas figé) pour une section réellement complète : tests unitaires, tests d'intégration, tests end-to-end, TDD, mocks/stubs/fakes en détail, couverture de code (et ses pièges : 100% de couverture ≠ absence de bugs), et si le niveau « bonnes pratiques avancées » est visé — property-based testing, tests de mutation.
 
-## 8. Section prompt engineering (developpement approfondi)
+## 7. Section prompt engineering (developpement approfondi)
 Objectif de Louis : aller beaucoup plus loin que l'existant, jusqu'à pouvoir lancer un seul prompt et laisser l'IA mener un projet de A à Z sans s'arrêter, en choisissant elle-même les meilleures options (dépendances, librairies, fonctions, outils, variables, techniques, bonnes pratiques) selon le but recherché, from scratch ou non. Il faut notamment identifier à l'avance quelles informations l'IA a besoin pour y arriver.
 
 Point explicite de Louis, à respecter avant de rédiger quoi que ce soit : sa vision n'est pas à prendre pour acquise. Il veut un vrai débat sur le fonctionnement réel du prompt engineering, pas une section qui va dans son sens pour lui faire plaisir — contester son point de vue et proposer d'autres approches si elles sont plus justes.
