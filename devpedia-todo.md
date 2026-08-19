@@ -83,3 +83,6 @@ Recommandation : chapitre dans `IA/Production et gouvernance`, à côté de `reg
 - Watermarking d'image et d'audio (métadonnées de provenance type C2PA/Content Credentials, watermark perceptible ou imperceptible dans le signal) - à mettre en regard de la mention déjà existante dans `cloner-une-voix.md`.
 - Limites : un watermark n'empêche pas la génération de contenu trompeur, seulement sa détection a posteriori ; robustesse face aux transformations (compression, recadrage, reformulation) très variable selon la technique.
 - Limites physiques propres au watermarking de texte (le signal statistique disparaît vite) : contenu trop court (peu de tokens générés = peu de biais statistique accumulé, détection peu fiable sur une phrase ou deux) ; réécriture du contenu (reformuler avec un autre modèle ou à la main efface la distribution de tokens d'origine) ; résumé du contenu (un résumé ne reprend pas les tokens exacts du texte source, donc pas le watermark) ; traduction (même effet que la réécriture, changement de vocabulaire complet).
+
+source complementaire watermarking : https://www.instagram.com/reel/DcHmNPfMysl/?igsh=MTVycnRmdW1uOXltbA==&igsi=MTVycnRmdW1uOXltbA==
+lire la description du poste instagram
