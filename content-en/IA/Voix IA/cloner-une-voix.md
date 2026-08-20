@@ -52,6 +52,8 @@ A dedicated detector can recover this mark and confirm: "this audio is AI-genera
 >
 > **Best practice:** treat watermarking as an additional layer of traceability, not an infallible guarantee, to combine with documented consent and clear usage policies on the provider's side.
 
+This audio watermarking is a special case of a broader issue, common to text and images: see [Watermarking AI-Generated Content](/?c=ia&s=production-et-gouvernance&p=watermarking-ia).
+
 ## Key takeaways
 
 | | |

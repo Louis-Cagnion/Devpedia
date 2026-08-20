@@ -52,6 +52,8 @@ Un detecteur dedie peut retrouver cette marque et confirmer : "cet audio est gen
 >
 > **Bonne pratique :** traiter le marquage comme une couche de traçabilité supplémentaire, pas comme une garantie infaillible, à combiner avec le consentement documenté et des politiques d'utilisation claires côté fournisseur.
 
+Ce marquage audio est un cas particulier d'un enjeu plus large, commun au texte et à l'image : voir [Watermarking du contenu généré par IA](/?c=ia&s=production-et-gouvernance&p=watermarking-ia).
+
 ## Ce qu'il faut retenir
 
 | | |

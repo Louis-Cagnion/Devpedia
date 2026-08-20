@@ -73,6 +73,10 @@
             {
               "id": "mots-de-passe-et-hachage",
               "label": "Passwords and Secure Hashing"
+            },
+            {
+              "id": "rbac-et-abac",
+              "label": "RBAC and ABAC: Two Ways to Model Authorization"
             }
           ]
         },
@@ -103,6 +107,10 @@
             {
               "id": "sso-et-gestion-didentite-entreprise",
               "label": "SSO and Enterprise Identity Management"
+            },
+            {
+              "id": "on-behalf-of",
+              "label": "Propagating Identity Between Services (On-Behalf-Of)"
             }
           ]
         },
@@ -447,6 +455,10 @@
             {
               "id": "prompt-injection",
               "label": "Prompt Injection: When Data Poses as an Instruction"
+            },
+            {
+              "id": "mcp",
+              "label": "MCP (Model Context Protocol): standardizing an agent's tools"
             }
           ]
         },
@@ -561,6 +573,10 @@
               "label": "EU AI Regulation: the AI Act"
             },
             {
+              "id": "watermarking-ia",
+              "label": "Watermarking AI-Generated Content"
+            },
+            {
               "id": "stack-ia",
               "label": "The AI Stack: The Layers of a Production Application"
             }
@@ -588,6 +604,10 @@
         {
           "id": "le-cloud",
           "label": "What Is the Cloud?"
+        },
+        {
+          "id": "automatisation-workflow",
+          "label": "Automation with Visual Workflows"
         }
       ]
     },
@@ -735,16 +755,28 @@
               "label": "Process Management"
             },
             {
-              "id": "appels-systeme-et-descripteurs",
-              "label": "System Calls and File Descriptors"
-            },
-            {
               "id": "operateurs-binaires",
               "label": "Bitwise Operators"
             },
             {
+              "id": "appels-systeme-et-descripteurs",
+              "label": "System Calls and File Descriptors"
+            },
+            {
               "id": "threads",
               "label": "Threads (pthreads)"
+            },
+            {
+              "id": "signaux-unix",
+              "label": "UNIX Signals"
+            },
+            {
+              "id": "readline-et-termios",
+              "label": "`readline` and `termios`: Controlling the Command Line"
+            },
+            {
+              "id": "lecture-formatee-scanf",
+              "label": "Formatted Reading: `scanf` and `sscanf`"
             }
           ]
         },
@@ -1134,6 +1166,10 @@
         {
           "id": "un-seul-mecanisme-par-information",
           "label": "One Mechanism Per Piece of Information"
+        },
+        {
+          "id": "conventions-de-documentation",
+          "label": "Code Documentation Conventions by Language"
         }
       ]
     },

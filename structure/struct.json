@@ -573,6 +573,10 @@
               "label": "Réglementation européenne de l'IA : l'AI Act"
             },
             {
+              "id": "watermarking-ia",
+              "label": "Watermarking du contenu généré par IA"
+            },
+            {
               "id": "stack-ia",
               "label": "Le stack IA : les couches d'une application en production"
             }

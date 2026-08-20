@@ -73,6 +73,10 @@
             {
               "id": "mots-de-passe-et-hachage",
               "label": "Contraseñas y hash seguro"
+            },
+            {
+              "id": "rbac-et-abac",
+              "label": "RBAC y ABAC: dos formas de modelar la autorización"
             }
           ]
         },
@@ -103,6 +107,10 @@
             {
               "id": "sso-et-gestion-didentite-entreprise",
               "label": "SSO y gestión de identidad en la empresa"
+            },
+            {
+              "id": "on-behalf-of",
+              "label": "Propagación de identidad entre servicios (On-Behalf-Of)"
             }
           ]
         },
@@ -447,6 +455,10 @@
             {
               "id": "prompt-injection",
               "label": "Prompt injection: cuando un dato se hace pasar por una instrucción"
+            },
+            {
+              "id": "mcp",
+              "label": "MCP (Model Context Protocol): estandarizar las herramientas de un agente"
             }
           ]
         },
@@ -561,6 +573,10 @@
               "label": "Regulación europea de la IA: la AI Act"
             },
             {
+              "id": "watermarking-ia",
+              "label": "Marcado del contenido generado por IA"
+            },
+            {
               "id": "stack-ia",
               "label": "El stack de IA: las capas de una aplicación en producción"
             }
@@ -588,6 +604,10 @@
         {
           "id": "le-cloud",
           "label": "¿Qué es el cloud?"
+        },
+        {
+          "id": "automatisation-workflow",
+          "label": "La automatización mediante workflow visual"
         }
       ]
     },
@@ -745,6 +765,18 @@
             {
               "id": "threads",
               "label": "Los subprocesos (pthread)"
+            },
+            {
+              "id": "signaux-unix",
+              "label": "Las señales UNIX"
+            },
+            {
+              "id": "readline-et-termios",
+              "label": "`readline` y `termios`: controlar la línea de comandos"
+            },
+            {
+              "id": "lecture-formatee-scanf",
+              "label": "La lectura formateada: `scanf` y `sscanf`"
             }
           ]
         },
@@ -1134,6 +1166,10 @@
         {
           "id": "un-seul-mecanisme-par-information",
           "label": "Un solo mecanismo por información"
+        },
+        {
+          "id": "conventions-de-documentation",
+          "label": "Convenciones de documentación del código por lenguaje"
         }
       ]
     },

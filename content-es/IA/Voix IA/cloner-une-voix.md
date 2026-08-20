@@ -52,6 +52,8 @@ Un detector dedicado puede recuperar esta marca y confirmar: "este audio es gene
 >
 > **Buena práctica:** tratar el marcado como una capa de trazabilidad adicional, no como una garantía infalible, a combinar con el consentimiento documentado y políticas de uso claras del lado del proveedor.
 
+Este marcado de audio es un caso particular de un problema más amplio, común al texto y a la imagen: ver [Marcado del contenido generado por IA](/?c=ia&s=production-et-gouvernance&p=watermarking-ia).
+
 ## Lo que hay que recordar
 
 | | |

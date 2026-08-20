@@ -52,6 +52,8 @@ Um detector dedicado pode encontrar essa marca e confirmar: "este audio e gerado
 >
 > **Boa prática:** tratar a marcação como uma camada adicional de rastreabilidade, não como uma garantia infalível, a combinar com o consentimento documentado e políticas de uso claras do lado do fornecedor.
 
+Essa marcação de áudio é um caso particular de uma questão mais ampla, comum ao texto e à imagem: veja [Watermarking do conteúdo gerado por IA](/?c=ia&s=production-et-gouvernance&p=watermarking-ia).
+
 ## O que reter
 
 | | |
