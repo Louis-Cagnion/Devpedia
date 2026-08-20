@@ -14,6 +14,7 @@ Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire 
 - **i18n et RTL** : `UI-UX`, à côté de `accessibilite-ux.md`.
 - **IA de jeu par imitation** (comportement d'un adversaire appris depuis des enregistrements de parties humaines + dégradation volontaire de précision pour simuler la fatigue) : dans `IA`, sous-catégorie à trancher en écrivant (potentiellement nouvelle « IA/Jeux et agents » si d'autres notions du même genre s'accumulent).
 - **Blockchain et smart contracts** (Solidity, réseaux type Avalanche, backends sur ICP) : décision à prendre — nouvelle catégorie top-level « Blockchain » si traité en profondeur, sinon chapitre isolé pour une introduction générale.
+- **Bases de données à fort trafic sans bloquer l'UX** (demande du 20/08/2026) : nouveau chapitre dans `Bases de données` — méthodes pour absorber un trafic important et des données volumineuses en temps réel sans bloquer l'expérience utilisateur : cache et stale-while-revalidate (servir une valeur périmée immédiatement, rafraîchir en tâche de fond), réplicas de lecture, files d'attente/traitement asynchrone pour les écritures ou recalculs lourds, pagination/streaming plutôt que charger un résultat complet d'un coup, connection pooling, sharding/partitionnement. Cas concret déclencheur : cache des options de filtre VN d'Atlas (`poc-borne-git`, `Atlas\VN\VentesRepository::getFilterOptions()`) — requête de 393s sans filtre de date, TTL 6h, à ne jamais recalculer en direct dans une requête utilisateur.
 
 ## 2. Section Automatisation (n8n)
 Ordre déjà validé par Louis (19/08/2026), du plus rapide au plus lent :
@@ -56,6 +57,13 @@ Objectif de Louis : aller beaucoup plus loin que l'existant, jusqu'à pouvoir la
 Point explicite de Louis, à respecter avant de rédiger quoi que ce soit : sa vision n'est pas à prendre pour acquise. Il veut un vrai débat sur le fonctionnement réel du prompt engineering, pas une section qui va dans son sens pour lui faire plaisir — contester son point de vue et proposer d'autres approches si elles sont plus justes.
 
 Étape 1 (avant toute rédaction) : discussion avec Louis pour caler l'angle de la section, en s'appuyant sur le fonctionnement réel de l'IA plutôt que sur l'intuition de Louis seule.
+
+## 9. Nouvelle catégorie : Gestion de projet
+Sortir le sujet d'`Organisation en entreprise` vers une catégorie top-level dédiée « Gestion de projet ».
+
+- **Déplacement** : `methodologies-agile-scrum-kanban.md` (déjà écrit et traduit EN/ES/BR, compare cascade/Scrum/Kanban en détail) quitte `Organisation en entreprise` pour devenir le premier chapitre de cette nouvelle catégorie — déplacement de fichier (+ les 3 dossiers `content-<lang>/`) + mise à jour de `structure/struct.json` (+ 3 variantes langue), sans réécrire le contenu.
+- Vérifier après coup que le lien interne `/?c=organisation-en-entreprise&p=roles-equipe-developpement` référencé en tête du chapitre déplacé reste correct, et mettre à jour les liens qui pointaient vers l'ancien emplacement `organisation-en-entreprise&p=methodologies-agile-scrum-kanban` s'il y en a ailleurs sur le site.
+- **Chapitres à ajouter** (pas figé, à trancher en écrivant, « et plus si affinité ») : backlog et user stories (rédaction, critères d'acceptation, INVEST) ; estimation (points de complexité vs estimation en temps, planning poker) ; outils de suivi (board physique/Jira/Trello/Linear, ticket, epic) ; éventuellement SAFe/Scrumban pour les cas hybrides, OKR pour le lien objectifs ↔ exécution.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
