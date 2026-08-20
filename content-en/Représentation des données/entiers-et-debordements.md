@@ -97,6 +97,32 @@ Integer overflows aren't an academic curiosity:
 
 Python illustrates the trade-off well: never overflowing is convenient, but every integer is a heavier, slower object than a machine integer. This is one of the reasons computing libraries like NumPy use fixed-size types (`int32`, `int64`). See the [NumPy](/?c=data-science&p=numpy) chapter.
 
+## When a fixed size isn't enough: arbitrary-precision arithmetic on strings
+
+No native integer, however wide (64 bits, or even wider), is enough for some computations: cryptography on large prime numbers, computing thousands of digits of π, the factorial of a large number... A common technique for going past this limit, regardless of the language and its native integer type, is to represent the number not as a fixed-size binary value anymore, but as a **string of characters** (or an array), one element per digit:
+
+```text
+"123" -> ['1', '2', '3']   (each digit stays a character, not a binary value)
+```
+
+Multiplication then reproduces, digit by digit, the method learned by hand at school (long multiplication):
+
+```text
+    1 2 3
+  x   4 5
+  -------
+    6 1 5    (123 x 5)
++ 4 9 2 .    (123 x 4, shifted one place)
+  -------
+  5 5 3 5
+```
+
+Each digit of the second number multiplies every digit of the first, with a **carry** propagated as in a long addition, the result of each line shifted one place (a power of 10) before being summed with the previous lines.
+
+> **Pitfall:** propagating each carry immediately into the next digit, the way you would by hand on a single line. A robust implementation instead stores each digit-by-digit product in a large enough intermediate array (`size1 + size2` digits), then propagates the carries in a single final pass over that array: simpler to get right than an on-the-fly propagation, where a digit already written might need to be changed several times in a row.
+
+The cost is clear compared to a native multiplication: multiplying *n* by *m* digits takes on the order of *n* × *m* digit-by-digit multiplications (versus a single machine instruction for a native integer), to be reserved for cases where the number's size genuinely exceeds what a native type can hold. This is exactly the mechanism behind Python's arbitrary-precision integers seen above, using a base far larger than 10 internally to limit the number of operations.
+
 ## Manipulating bits directly
 
 The corollary of this binary representation is that you can act on the bits themselves: masks, shifts, flags. That's the subject of C's [Bitwise Operators](/?c=langages-de-programmation&s=c&p=operateurs-binaires) chapter.
@@ -110,6 +136,7 @@ The corollary of this binary representation is that you can act on the bits them
 | Asymmetric signed range | Zero is counted on the positive side |
 | Overflow | The extra bits are lost, the value wraps around |
 | In C, signed overflow | **Undefined** behavior: use unsigned |
+| Arbitrary precision | Represent the number as a string of digits and multiply by hand, to go past any native size |
 
 ---
 
@@ -117,7 +144,7 @@ The corollary of this binary representation is that you can act on the bits them
 
 | | |
 |---|---|
-| **Key takeaways** | An integer occupies a fixed number of bits, decided at declaration: *n* bits give 2ⁿ possible values. Negatives are encoded in two's complement; overflow makes the value "wrap around" (or triggers undefined behavior in C for a signed one). |
-| **Tools you can use** | Unsigned types for counting/comparing/masking bits with no risk of UB; the fixed-size types (`int32`, `int64`) of computing libraries. |
-| **Pitfalls to avoid** | Relying on signed integer overflow in C/C++: undefined behavior, not guaranteed wraparound. |
+| **Key takeaways** | An integer occupies a fixed number of bits, decided at declaration: *n* bits give 2ⁿ possible values. Negatives are encoded in two's complement; overflow makes the value "wrap around" (or triggers undefined behavior in C for a signed one). When no native size is enough, a string of digits multiplied by hand goes around the limit. |
+| **Tools you can use** | Unsigned types for counting/comparing/masking bits with no risk of UB; the fixed-size types (`int32`, `int64`) of computing libraries; arbitrary-precision arithmetic on a string to go past any native size. |
+| **Pitfalls to avoid** | Relying on signed integer overflow in C/C++: undefined behavior, not guaranteed wraparound. Propagating the carries of a long multiplication on the fly instead of through an intermediate array. |
 | **Best practices** | Prefer unsigned types for any bit manipulation; check that a size computation can't overflow before a memory allocation. |

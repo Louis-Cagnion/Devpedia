@@ -97,6 +97,32 @@ Los desbordamientos de enteros no son una curiosidad académica:
 
 Python ilustra bien el compromiso: no desbordar nunca es cómodo, pero cada entero es un objeto más pesado y más lento que un entero máquina. Es una de las razones por las que las bibliotecas de cálculo como NumPy usan tipos de tamaño fijo (`int32`, `int64`). Ver el capítulo [NumPy](/?c=data-science&p=numpy).
 
+## Cuando un tamaño fijo ya no basta: aritmética de precisión arbitraria sobre cadenas
+
+Ningún entero nativo, por amplio que sea (64 bits, o incluso más), basta para ciertos cálculos: criptografía sobre grandes números primos, cálculo de miles de decimales de π, factorial de un número grande... Una técnica habitual para superar este límite, con independencia del lenguaje y de su tipo entero nativo, consiste en representar el número ya no como un valor binario de tamaño fijo, sino como una **cadena de caracteres** (o un array), un elemento por cifra:
+
+```text
+"123" -> ['1', '2', '3']   (cada cifra sigue siendo un caracter, no un valor binario)
+```
+
+La multiplicación reproduce entonces, cifra a cifra, el método aprendido a mano en la escuela (multiplicación en columna):
+
+```text
+    1 2 3
+  x   4 5
+  -------
+    6 1 5    (123 x 5)
++ 4 9 2 .    (123 x 4, desplazado una posicion)
+  -------
+  5 5 3 5
+```
+
+Cada cifra del segundo número multiplica todas las cifras del primero, con un **acarreo** propagado como en una suma en columna, el resultado de cada línea desplazado una posición (una potencia de 10) antes de sumarse a las líneas anteriores.
+
+> **Trampa:** propagar cada acarreo inmediatamente en la cifra siguiente, como se haría a mano en una sola línea. Una implementación robusta almacena en cambio cada producto cifra por cifra en un array intermedio suficientemente grande (`tamaño1 + tamaño2` cifras), y propaga los acarreos en una sola pasada final sobre ese array: más fácil de implementar correctamente que una propagación sobre la marcha, donde una cifra ya escrita podría necesitar modificarse varias veces seguidas.
+
+El coste es claro frente a una multiplicación nativa: multiplicar *n* por *m* cifras requiere del orden de *n* × *m* multiplicaciones cifra a cifra (frente a una sola instrucción máquina para un entero nativo), a reservar para los casos en que el tamaño del número supera realmente lo que un tipo nativo puede representar. Es exactamente el mecanismo que se esconde detrás de los enteros de precisión arbitraria de Python vistos más arriba, con una base mucho mayor que 10 internamente para limitar el número de operaciones.
+
 ## Manipular los bits directamente
 
 El corolario de esta representación binaria es que se puede actuar sobre los bits mismos: máscaras, desplazamientos, banderas. Es el objeto del capítulo [Los operadores binarios](/?c=langages-de-programmation&s=c&p=operateurs-binaires) en C.
@@ -110,6 +136,7 @@ El corolario de esta representación binaria es que se puede actuar sobre los bi
 | Rango con signo asimétrico | El cero se cuenta del lado positivo |
 | Desbordamiento | Los bits sobrantes se pierden, el valor da la vuelta |
 | En C, con signo que desborda | Comportamiento **indefinido**: usar sin signo |
+| Precisión arbitraria | Representar el número como cadena de cifras y multiplicar como a mano, para superar cualquier tamaño nativo |
 
 ---
 
@@ -117,7 +144,7 @@ El corolario de esta representación binaria es que se puede actuar sobre los bi
 
 | | |
 |---|---|
-| **Para recordar** | Un entero ocupa un número fijo de bits, decidido en la declaración: *n* bits dan 2ⁿ valores posibles. Los negativos se codifican en complemento a dos; un desbordamiento hace "dar la vuelta" al valor (o provoca un comportamiento indefinido en C para uno con signo). |
-| **Herramientas utilizables** | Los tipos sin signo para contar/comparar/enmascarar bits sin riesgo de UB; los tipos de tamaño fijo (`int32`, `int64`) de las bibliotecas de cálculo. |
-| **Trampas a evitar** | Contar con el desbordamiento de un entero con signo en C/C++: comportamiento indefinido, no un wraparound garantizado. |
+| **Para recordar** | Un entero ocupa un número fijo de bits, decidido en la declaración: *n* bits dan 2ⁿ valores posibles. Los negativos se codifican en complemento a dos; un desbordamiento hace "dar la vuelta" al valor (o provoca un comportamiento indefinido en C para uno con signo). Cuando ningún tamaño nativo basta, una cadena de cifras multiplicada a mano rodea el límite. |
+| **Herramientas utilizables** | Los tipos sin signo para contar/comparar/enmascarar bits sin riesgo de UB; los tipos de tamaño fijo (`int32`, `int64`) de las bibliotecas de cálculo; la aritmética de precisión arbitraria sobre cadena para superar cualquier tamaño nativo. |
+| **Trampas a evitar** | Contar con el desbordamiento de un entero con signo en C/C++: comportamiento indefinido, no un wraparound garantizado. Propagar los acarreos de una multiplicación en columna sobre la marcha en lugar de mediante un array intermedio. |
 | **Buenas prácticas** | Preferir los tipos sin signo para toda manipulación de bits; verificar que un cálculo de tamaño no pueda desbordar antes de una asignación de memoria. |

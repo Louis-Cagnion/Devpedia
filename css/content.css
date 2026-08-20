@@ -261,6 +261,13 @@ blockquote p + p {
     margin-top: 0.5rem;
 }
 
+/* markdown horizontal rules */
+hr {
+    margin: 1.5rem 0;
+    border: none;
+    border-top: 1px solid var(--border);
+}
+
 /* shown when a page doesn't exist yet in the active language and got substituted from another
    one (cf. router-language-fallback.js's resolveAcrossLanguages / router.js's fallbackNoticeFor)
    -- same shape as a blockquote note, italicized to read as a system message rather than

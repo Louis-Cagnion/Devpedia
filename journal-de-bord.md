@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Bug de rendu : séparateur `---` affiché en texte littéral (2026-08-20)
+
+Repéré en relisant le rendu de `entiers-et-debordements.md` après l'ajout de la section arithmétique en précision arbitraire : le `---` qui sépare le `## Résumé` intermédiaire du `## 📋 Récapitulatif` final (convention déjà utilisée par 226 fichiers en FR, autant sinon plus par langue traduite) s'affichait comme le texte littéral "---" plutôt qu'une ligne horizontale. `parseAppendText` (`js/parser.js`) ne traitait aucun cas "ligne réduite à `---`" : elle tombait dans la branche générique `<p>`. Corrigé en ajoutant un cas dédié avant la détection de tableau (une ligne `---` seule n'a jamais de `|`, aucun risque de collision) qui génère un `<hr>`, plus une règle CSS minimale (`border-top`, pas de style avant). Vérifié par grep sur les 4 langues : chaque occurrence d'une ligne `---` isolée dans tout `content(-<lang>)/` est bien suivie d'un titre `##`, aucun usage décoratif détourné qui aurait pu être cassé par ce changement.
+
 ## Chapitre watermarking IA (2026-08-20)
 
 - Source complémentaire donnée par Louis (reel Instagram) : `WebFetch` renvoie une page vide sur Instagram (contenu rendu en JS, réservé aux comptes connectés) ; contournement via l'extension Chrome (`navigate` + `get_page_text`), qui affiche le texte complet du post (légende + commentaires) sans connexion. À réutiliser pour toute future source Instagram/réseau social donnée en référence.

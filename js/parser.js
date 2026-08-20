@@ -360,6 +360,14 @@ export function parseAppendText(homeDiv, fileName, text) {
             i++;
             continue;
         }
+        if (line.trim() === "---") {
+            openList = false;
+            openQuote = false;
+            lastChartRow = null;
+            homeDiv.append(createTag("hr", {class: `${fileName}Hr`}));
+            i++;
+            continue;
+        }
         if (line.includes("|") && i + 1 < lines.length && isTableSeparatorRow(lines[i + 1])) {
             openList = false;
             openQuote = false;

@@ -5,7 +5,6 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 ## 1. Chapitres isolés issus de l'audit cursus 42 (`../42Cursus`)
 Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire FR/EN/ES/BR comme le reste du site.
 
-- **Arithmétique en précision arbitraire sur chaînes** (`ft_multiply` : multiplier chiffre par chiffre comme à la main) : extension de `Représentation des données/entiers-et-debordements.md`, pas un nouveau chapitre.
 - **Rendu 3D bas niveau et fenêtrage** (raycasting façon Wolfenstein, MinilibX/X11 — vu dans `Cub3D`/`fract-ol`) : nouvelle petite catégorie « Graphisme », ou sous-catégorie de `Bases de l'informatique`.
 - **Génériques en C par dispatch sur étiquette de type** (`one_for_all`/`all_for_one`, `void*` + chaîne de type) : `Langages de programmation/C`, à côté de `pointeurs.md` ; mettre en regard de `templates.md` (C++) pour montrer la même intention résolue différemment selon le langage.
 - **Évaluateur d'expressions arithmétiques** (`calculate`, précédence d'opérateurs depuis une chaîne) : `Domain-specific Languages (DSL)`, à côté de `parsing-incremental-machine-a-etats.md`.

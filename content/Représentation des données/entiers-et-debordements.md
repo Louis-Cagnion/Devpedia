@@ -97,6 +97,32 @@ Les débordements d'entiers ne sont pas une curiosité académique :
 
 [Python](/?c=langages-de-programmation&s=python&p=python) illustre bien le compromis : ne jamais déborder est confortable, mais chaque entier est un objet plus lourd et plus lent qu'un entier machine. C'est l'une des raisons pour lesquelles les bibliothèques de calcul comme NumPy utilisent des types à taille fixe (`int32`, `int64`). Voir le chapitre [NumPy](/?c=data-science&p=numpy).
 
+## Quand une taille fixe ne suffit plus : l'arithmétique en précision arbitraire sur chaînes
+
+Aucun entier natif, aussi large soit-il (64 bits, voire au-delà), ne suffit pour certains calculs : cryptographie sur de grands nombres premiers, calcul de milliers de décimales de π, factorielle d'un grand nombre... Une technique courante pour dépasser cette limite, indépendamment du langage et de son type entier natif, consiste à représenter le nombre non plus comme une valeur binaire de taille fixe, mais comme une **chaîne de caractères** (ou un tableau), un élément par chiffre :
+
+```text
+"123" -> ['1', '2', '3']   (chaque chiffre reste un caractère, pas une valeur binaire)
+```
+
+La multiplication reproduit alors, chiffre par chiffre, la méthode apprise à la main à l'école (multiplication posée) :
+
+```text
+    1 2 3
+  x   4 5
+  -------
+    6 1 5    (123 x 5)
++ 4 9 2 .    (123 x 4, decale d'un rang)
+  -------
+  5 5 3 5
+```
+
+Chaque chiffre du second nombre multiplie tous les chiffres du premier, avec une **retenue** propagée comme pour une addition posée, le résultat de chaque ligne étant décalé d'un rang (une puissance de 10) avant d'être sommé aux lignes précédentes.
+
+> **Piège :** propager chaque retenue immédiatement dans le chiffre suivant, comme on le ferait à la main sur une seule ligne. Une implémentation robuste stocke plutôt chaque produit chiffre × chiffre dans un tableau intermédiaire assez large (`taille1 + taille2` chiffres), puis propage les retenues en une seule passe finale sur ce tableau : plus simple à écrire correctement qu'une propagation au fil de l'eau, où un chiffre déjà écrit devrait être modifié plusieurs fois de suite.
+
+Le coût est net par rapport à une multiplication native : une multiplication à *n* et *m* chiffres demande de l'ordre de *n* × *m* multiplications chiffre par chiffre (contre une seule instruction machine pour un entier natif), à réserver aux cas où la taille du nombre dépasse réellement ce qu'un type natif peut représenter. C'est exactement le mécanisme qui se cache derrière les entiers de taille arbitraire de [Python](/?c=langages-de-programmation&s=python&p=python) vus plus haut, avec une base bien plus grande que 10 en interne pour limiter le nombre d'opérations.
+
 ## Manipuler les bits directement
 
 Le corollaire de cette représentation binaire est qu'on peut agir sur les bits eux-mêmes : masques, décalages, drapeaux. C'est l'objet du chapitre [Les opérateurs binaires](/?c=langages-de-programmation&s=c&p=operateurs-binaires) en [C](/?c=langages-de-programmation&s=c&p=c).
@@ -110,6 +136,7 @@ Le corollaire de cette représentation binaire est qu'on peut agir sur les bits 
 | Plage signée asymétrique | Le zéro est compté du côté positif |
 | Débordement | Les bits en trop sont perdus, la valeur boucle |
 | En C, signé qui déborde | Comportement **indéfini** : utiliser du non signé |
+| Précision arbitraire | Représenter le nombre en chaîne de chiffres et multiplier comme à la main, pour dépasser toute taille native |
 
 ---
 
@@ -117,7 +144,7 @@ Le corollaire de cette représentation binaire est qu'on peut agir sur les bits 
 
 | | |
 |---|---|
-| **À retenir** | Un entier occupe un nombre fixe de bits, décidé à la déclaration : *n* bits donnent 2ⁿ valeurs possibles. Les négatifs s'encodent en complément à deux ; un débordement fait "boucler" la valeur (ou provoque un comportement indéfini en [C](/?c=langages-de-programmation&s=c&p=c) pour un signé). |
-| **Outils utilisables** | Les types non signés pour compter/comparer/masquer des bits sans risque d'UB ; les types à taille fixe (`int32`, `int64`) des bibliothèques de calcul. |
-| **Pièges à éviter** | Compter sur le débordement d'un entier signé en [C](/?c=langages-de-programmation&s=c&p=c)/[C++](/?c=langages-de-programmation&s=cpp&p=cpp) : comportement indéfini, pas un wraparound garanti. |
+| **À retenir** | Un entier occupe un nombre fixe de bits, décidé à la déclaration : *n* bits donnent 2ⁿ valeurs possibles. Les négatifs s'encodent en complément à deux ; un débordement fait "boucler" la valeur (ou provoque un comportement indéfini en [C](/?c=langages-de-programmation&s=c&p=c) pour un signé). Quand aucune taille native ne suffit, une chaîne de chiffres multipliée comme à la main contourne la limite. |
+| **Outils utilisables** | Les types non signés pour compter/comparer/masquer des bits sans risque d'UB ; les types à taille fixe (`int32`, `int64`) des bibliothèques de calcul ; l'arithmétique en précision arbitraire sur chaîne pour dépasser toute taille native. |
+| **Pièges à éviter** | Compter sur le débordement d'un entier signé en [C](/?c=langages-de-programmation&s=c&p=c)/[C++](/?c=langages-de-programmation&s=cpp&p=cpp) : comportement indéfini, pas un wraparound garanti. Propager les retenues d'une multiplication posée au fil de l'eau plutôt que via un tableau intermédiaire. |
 | **Bonnes pratiques** | Préférer les types non signés pour toute manipulation de bits ; vérifier qu'un calcul de taille ne peut pas déborder avant une allocation mémoire. |

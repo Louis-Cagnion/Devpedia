@@ -97,6 +97,32 @@ Os overflows de inteiros não são uma curiosidade acadêmica:
 
 Python ilustra bem o compromisso: nunca dar overflow é confortável, mas cada inteiro é um objeto mais pesado e mais lento que um inteiro de máquina. É uma das razões pelas quais bibliotecas de cálculo como o NumPy usam tipos de tamanho fixo (`int32`, `int64`). Veja o capítulo [NumPy](/?c=data-science&p=numpy).
 
+## Quando um tamanho fixo não basta mais: aritmética de precisão arbitrária sobre strings
+
+Nenhum inteiro nativo, por maior que seja (64 bits, ou até mais), basta para certos cálculos: criptografia sobre grandes números primos, cálculo de milhares de casas decimais de π, fatorial de um número grande... Uma técnica comum para superar esse limite, independentemente da linguagem e de seu tipo inteiro nativo, consiste em representar o número não mais como um valor binário de tamanho fixo, mas como uma **string de caracteres** (ou um array), um elemento por dígito:
+
+```text
+"123" -> ['1', '2', '3']   (cada digito continua sendo um caractere, nao um valor binario)
+```
+
+A multiplicação reproduz então, dígito a dígito, o método aprendido à mão na escola (multiplicação por extenso):
+
+```text
+    1 2 3
+  x   4 5
+  -------
+    6 1 5    (123 x 5)
++ 4 9 2 .    (123 x 4, deslocado uma posicao)
+  -------
+  5 5 3 5
+```
+
+Cada dígito do segundo número multiplica todos os dígitos do primeiro, com um **vai-um** (*carry*) propagado como em uma soma por extenso, o resultado de cada linha deslocado uma posição (uma potência de 10) antes de ser somado às linhas anteriores.
+
+> **Cuidado:** propagar cada vai-um imediatamente para o dígito seguinte, como se faria à mão em uma única linha. Uma implementação robusta armazena, em vez disso, cada produto dígito a dígito em um array intermediário suficientemente grande (`tamanho1 + tamanho2` dígitos), depois propaga os vai-uns em uma única passagem final sobre esse array: mais simples de implementar corretamente do que uma propagação em tempo real, onde um dígito já escrito poderia precisar ser modificado várias vezes seguidas.
+
+O custo é nítido em comparação a uma multiplicação nativa: multiplicar *n* por *m* dígitos exige da ordem de *n* × *m* multiplicações dígito a dígito (contra uma única instrução de máquina para um inteiro nativo), a ser reservada para os casos em que o tamanho do número realmente ultrapassa o que um tipo nativo consegue representar. É exatamente o mecanismo por trás dos inteiros de precisão arbitrária do Python vistos acima, com uma base bem maior que 10 internamente para limitar o número de operações.
+
 ## Manipular os bits diretamente
 
 O corolário dessa representação binária é que se pode agir sobre os próprios bits: máscaras, deslocamentos, flags. É o assunto do capítulo [Os operadores binários](/?c=langages-de-programmation&s=c&p=operateurs-binaires) em C.
@@ -110,6 +136,7 @@ O corolário dessa representação binária é que se pode agir sobre os própri
 | Faixa com sinal assimétrica | O zero é contado do lado positivo |
 | Overflow | Os bits excedentes são perdidos, o valor dá a volta |
 | Em C, com sinal que dá overflow | Comportamento **indefinido**: usar sem sinal |
+| Precisão arbitrária | Representar o número como string de dígitos e multiplicar como à mão, para superar qualquer tamanho nativo |
 
 ---
 
@@ -117,7 +144,7 @@ O corolário dessa representação binária é que se pode agir sobre os própri
 
 | | |
 |---|---|
-| **O que reter** | Um inteiro ocupa um número fixo de bits, decidido na declaração: *n* bits dão 2ⁿ valores possíveis. Os negativos se codificam em complemento de dois; um overflow faz o valor "dar a volta" (ou provoca um comportamento indefinido em C para um com sinal). |
-| **Ferramentas úteis** | Os tipos sem sinal para contar/comparar/mascarar bits sem risco de UB; os tipos de tamanho fixo (`int32`, `int64`) das bibliotecas de cálculo. |
-| **Armadilhas a evitar** | Contar com o overflow de um inteiro com sinal em C/C++: comportamento indefinido, não um wraparound garantido. |
+| **O que reter** | Um inteiro ocupa um número fixo de bits, decidido na declaração: *n* bits dão 2ⁿ valores possíveis. Os negativos se codificam em complemento de dois; um overflow faz o valor "dar a volta" (ou provoca um comportamento indefinido em C para um com sinal). Quando nenhum tamanho nativo basta, uma string de dígitos multiplicada à mão contorna o limite. |
+| **Ferramentas úteis** | Os tipos sem sinal para contar/comparar/mascarar bits sem risco de UB; os tipos de tamanho fixo (`int32`, `int64`) das bibliotecas de cálculo; a aritmética de precisão arbitrária sobre string para superar qualquer tamanho nativo. |
+| **Armadilhas a evitar** | Contar com o overflow de um inteiro com sinal em C/C++: comportamento indefinido, não um wraparound garantido. Propagar os vai-uns de uma multiplicação por extenso em tempo real em vez de usar um array intermediário. |
 | **Boas práticas** | Preferir tipos sem sinal para qualquer manipulação de bits; verificar que um cálculo de tamanho não pode dar overflow antes de uma alocação de memória. |
