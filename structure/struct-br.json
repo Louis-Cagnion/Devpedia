@@ -384,6 +384,10 @@
         {
           "id": "parsing-incremental-machine-a-etats",
           "label": "Parsing incremental por máquina de estados"
+        },
+        {
+          "id": "evaluateur-expressions-arithmetiques",
+          "label": "Avaliador de expressões aritméticas: gerenciar a precedência dos operadores"
         }
       ]
     },
@@ -649,6 +653,10 @@
           "label": "As trocas de dados: API e HTTP"
         },
         {
+          "id": "websocket-et-temps-reel",
+          "label": "WebSocket: a comunicação em tempo real"
+        },
+        {
           "id": "json",
           "label": "O formato JSON"
         },
@@ -748,6 +756,97 @@
       "label": "Langages de programmation",
       "folder": "Langages de programmation",
       "subjects": [
+        {
+          "id": "c",
+          "label": "C",
+          "folder": "C",
+          "chapters": [
+            {
+              "id": "variables",
+              "label": "As variáveis e os tipos de dados"
+            },
+            {
+              "id": "conditions",
+              "label": "As condições"
+            },
+            {
+              "id": "boucles",
+              "label": "Os laços"
+            },
+            {
+              "id": "pointeurs",
+              "label": "Os ponteiros"
+            },
+            {
+              "id": "generiques-par-etiquette-de-type",
+              "label": "Os genéricos em C: dispatch por etiqueta de tipo"
+            },
+            {
+              "id": "memoire",
+              "label": "O gerenciamento de memória"
+            },
+            {
+              "id": "headers",
+              "label": "Os arquivos de cabeçalho (.h)"
+            },
+            {
+              "id": "compilation",
+              "label": "O processo de compilação"
+            },
+            {
+              "id": "makefiles",
+              "label": "Os Makefiles"
+            },
+            {
+              "id": "bibliotheques",
+              "label": "As bibliotecas"
+            },
+            {
+              "id": "fonctions-variadiques",
+              "label": "As funções variádicas (va_list)"
+            },
+            {
+              "id": "listes-chainees",
+              "label": "As listas encadeadas"
+            },
+            {
+              "id": "arbres-binaires",
+              "label": "As árvores binárias"
+            },
+            {
+              "id": "tables-de-hachage",
+              "label": "As tabelas hash (hash tables)"
+            },
+            {
+              "id": "processus",
+              "label": "O gerenciamento de processos"
+            },
+            {
+              "id": "operateurs-binaires",
+              "label": "Os operadores binários"
+            },
+            {
+              "id": "appels-systeme-et-descripteurs",
+              "label": "As chamadas de sistema e os descritores de arquivo"
+            },
+            {
+              "id": "signaux-unix",
+              "label": "Os sinais UNIX"
+            },
+            {
+              "id": "threads",
+              "label": "As threads (pthread)"
+            },
+            {
+              "id": "readline-et-termios",
+              "label": "`readline` e `termios`: controlar a linha de comando"
+            },
+            {
+              "id": "lecture-formatee-scanf",
+              "label": "A leitura formatada: `scanf` e `sscanf`"
+            }
+          ]
+        },
         {
           "id": "php",
           "label": "PHP",
@@ -914,93 +1013,6 @@
             {
               "id": "inference-de-types",
               "label": "A inferência de tipos"
-            }
-          ]
-        },
-        {
-          "id": "c",
-          "label": "C",
-          "folder": "C",
-          "chapters": [
-            {
-              "id": "variables",
-              "label": "As variáveis e os tipos de dados"
-            },
-            {
-              "id": "conditions",
-              "label": "As condições"
-            },
-            {
-              "id": "boucles",
-              "label": "Os laços"
-            },
-            {
-              "id": "pointeurs",
-              "label": "Os ponteiros"
-            },
-            {
-              "id": "memoire",
-              "label": "O gerenciamento de memória"
-            },
-            {
-              "id": "headers",
-              "label": "Os arquivos de cabeçalho (.h)"
-            },
-            {
-              "id": "compilation",
-              "label": "O processo de compilação"
-            },
-            {
-              "id": "makefiles",
-              "label": "Os Makefiles"
-            },
-            {
-              "id": "bibliotheques",
-              "label": "As bibliotecas"
-            },
-            {
-              "id": "fonctions-variadiques",
-              "label": "As funções variádicas (va_list)"
-            },
-            {
-              "id": "listes-chainees",
-              "label": "As listas encadeadas"
-            },
-            {
-              "id": "arbres-binaires",
-              "label": "As árvores binárias"
-            },
-            {
-              "id": "tables-de-hachage",
-              "label": "As tabelas hash (hash tables)"
-            },
-            {
-              "id": "processus",
-              "label": "O gerenciamento de processos"
-            },
-            {
-              "id": "operateurs-binaires",
-              "label": "Os operadores binários"
-            },
-            {
-              "id": "appels-systeme-et-descripteurs",
-              "label": "As chamadas de sistema e os descritores de arquivo"
-            },
-            {
-              "id": "threads",
-              "label": "As threads (pthread)"
-            },
-            {
-              "id": "signaux-unix",
-              "label": "Os sinais UNIX"
-            },
-            {
-              "id": "readline-et-termios",
-              "label": "`readline` e `termios`: controlar a linha de comando"
-            },
-            {
-              "id": "lecture-formatee-scanf",
-              "label": "A leitura formatada: `scanf` e `sscanf`"
             }
           ]
         },
@@ -1221,6 +1233,10 @@
         {
           "id": "responsabilite-unique-et-couplage",
           "label": "Responsabilidade única e baixo acoplamento"
+        },
+        {
+          "id": "microservices",
+          "label": "Microsserviços: dividir uma aplicação em serviços independentes"
         },
         {
           "id": "eviter-la-repetition-structures-indexees",

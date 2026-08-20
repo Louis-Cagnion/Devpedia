@@ -329,6 +329,10 @@
         {
           "id": "parsing-incremental-machine-a-etats",
           "label": "Parsing incrémental par machine à états"
+        },
+        {
+          "id": "evaluateur-expressions-arithmetiques",
+          "label": "Évaluateur d'expressions arithmétiques : gérer la précédence des opérateurs"
         }
       ]
     },
@@ -594,6 +598,10 @@
           "label": "Les échanges de données : API et HTTP"
         },
         {
+          "id": "websocket-et-temps-reel",
+          "label": "WebSocket : la communication temps réel"
+        },
+        {
           "id": "json",
           "label": "Le format JSON"
         },
@@ -713,6 +721,10 @@
             {
               "id": "pointeurs",
               "label": "Les pointeurs"
+            },
+            {
+              "id": "generiques-par-etiquette-de-type",
+              "label": "Les génériques en C : dispatch par étiquette de type"
             },
             {
               "id": "memoire",
@@ -1146,6 +1158,10 @@
         {
           "id": "responsabilite-unique-et-couplage",
           "label": "Responsabilité unique et faible couplage"
+        },
+        {
+          "id": "microservices",
+          "label": "Microservices : découper une application en services indépendants"
         },
         {
           "id": "eviter-la-repetition-structures-indexees",

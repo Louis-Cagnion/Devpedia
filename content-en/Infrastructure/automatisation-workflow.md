@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Automation with Visual Workflows

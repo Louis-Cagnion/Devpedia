@@ -1,5 +1,5 @@
 ---
-order: 3
+order: 4
 ---
 
 # CPU vs GPU: o cálculo paralelo

@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Genericidad: depender de la estructura en lugar de valores fijos

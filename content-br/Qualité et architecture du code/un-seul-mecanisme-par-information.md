@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 7
 ---
 
 # Um único mecanismo por informação

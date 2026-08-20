@@ -1,5 +1,5 @@
 ---
-order: 19
+order: 20
 ---
 
 # `readline` et `termios` : contrôler la ligne de commande

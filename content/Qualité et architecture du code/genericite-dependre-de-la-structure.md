@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Généricité : dépendre de la structure plutôt que de valeurs figées

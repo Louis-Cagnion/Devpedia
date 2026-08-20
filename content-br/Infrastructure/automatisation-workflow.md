@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # A automação por workflow visual

@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Genericity: Depending on Structure Rather Than Fixed Values

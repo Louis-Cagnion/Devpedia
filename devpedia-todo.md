@@ -5,12 +5,8 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 ## 1. Chapitres isolés issus de l'audit cursus 42 (`../42Cursus`)
 Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire FR/EN/ES/BR comme le reste du site.
 
-- **Rendu 3D bas niveau et fenêtrage** (raycasting façon Wolfenstein, MinilibX/X11 — vu dans `Cub3D`/`fract-ol`) : nouvelle petite catégorie « Graphisme », ou sous-catégorie de `Bases de l'informatique`.
-- **Génériques en C par dispatch sur étiquette de type** (`one_for_all`/`all_for_one`, `void*` + chaîne de type) : `Langages de programmation/C`, à côté de `pointeurs.md` ; mettre en regard de `templates.md` (C++) pour montrer la même intention résolue différemment selon le langage.
-- **Évaluateur d'expressions arithmétiques** (`calculate`, précédence d'opérateurs depuis une chaîne) : `Domain-specific Languages (DSL)`, à côté de `parsing-incremental-machine-a-etats.md`.
-- **WebSocket / Socket.IO** (protocole temps réel bidirectionnel au-dessus de TCP, confirmé sur `transcendence`) : `Infrastructure`, à côté de `api-et-http.md`.
+- **Rendu 3D bas niveau et fenêtrage** (raycasting façon Wolfenstein, MinilibX/X11 — vu dans `Cub3D`/`fract-ol`) : nouvelle petite catégorie « Graphisme », ou sous-catégorie de `Bases de l'informatique` — décision structurelle à trancher avec Louis avant d'écrire (impact site-wide comme pour la catégorie Automatisation).
 - **ORM** (mapping objet-relationnel, migrations, type-safety, ex. Prisma) : nouveau chapitre dans `Bases de données` (nouvelle sous-catégorie si le sujet prend de l'ampleur : migrations, requêtes type-safe, N+1).
-- **Microservices comme patron d'architecture** (découpage en services à responsabilité unique, communication inter-service, scaling indépendant) : `Qualité et architecture du code`, à côté de `responsabilite-unique-et-couplage.md`.
 - **WAF (ModSecurity) + gestion de secrets dédiée (HashiCorp Vault)** : `Cybersécurité`, à côté de `securite-api-web.md`.
 - **ELK (Elasticsearch/Logstash/Kibana)** pour l'agrégation de logs, à distinguer du monitoring par métriques (déjà couvert ailleurs) : `Docker` ou `Infrastructure`.
 - **PWA** (offline, installabilité, service workers) : `Infrastructure`, ou nouvelle sous-catégorie web dédiée.

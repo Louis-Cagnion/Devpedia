@@ -1,3 +1,7 @@
+---
+order: 1
+---
+
 # C
 
 A linguagem C é considerada uma linguagem de programação de **baixo nível**, uma vez que oferece acesso direto a muitos mecanismos fundamentais da máquina. Ao contrário das linguagens de **nível superior**, que ocultam grande parte desses detalhes, a linguagem C permite ao programador controlar com precisão o comportamento do programa e a sua utilização dos recursos do sistema.

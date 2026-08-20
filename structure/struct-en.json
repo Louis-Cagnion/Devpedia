@@ -323,6 +323,10 @@
           "label": "Incremental Parsing with a State Machine"
         },
         {
+          "id": "evaluateur-expressions-arithmetiques",
+          "label": "Arithmetic Expression Evaluator: Handling Operator Precedence"
+        },
+        {
           "id": "regex",
           "label": "Regular expressions"
         },
@@ -594,6 +598,10 @@
           "label": "Exchanging Data: API and HTTP"
         },
         {
+          "id": "websocket-et-temps-reel",
+          "label": "WebSocket: real-time communication"
+        },
+        {
           "id": "json",
           "label": "The JSON Format"
         },
@@ -713,6 +721,10 @@
             {
               "id": "pointeurs",
               "label": "Pointers"
+            },
+            {
+              "id": "generiques-par-etiquette-de-type",
+              "label": "Generics in C: dispatch by type tag"
             },
             {
               "id": "memoire",
@@ -1146,6 +1158,10 @@
         {
           "id": "responsabilite-unique-et-couplage",
           "label": "Single Responsibility and Low Coupling"
+        },
+        {
+          "id": "microservices",
+          "label": "Microservices: Splitting an Application into Independent Services"
         },
         {
           "id": "eviter-la-repetition-structures-indexees",

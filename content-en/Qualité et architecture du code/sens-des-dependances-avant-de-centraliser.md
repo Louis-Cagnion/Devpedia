@@ -1,5 +1,5 @@
 ---
-order: 4
+order: 5
 ---
 
 # Checking Dependency Direction Before Centralizing

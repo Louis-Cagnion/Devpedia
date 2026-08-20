@@ -1,5 +1,5 @@
 ---
-order: 2
+order: 3
 ---
 
 # Evitar a repetição: estruturas indexadas em vez de código duplicado

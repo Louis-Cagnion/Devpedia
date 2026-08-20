@@ -1,5 +1,5 @@
 ---
-order: 4
+order: 5
 ---
 
 # Verificar el sentido de las dependencias antes de centralizar
