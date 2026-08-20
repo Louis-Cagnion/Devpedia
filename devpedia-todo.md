@@ -58,6 +58,9 @@ Point explicite de Louis, à respecter avant de rédiger quoi que ce soit : sa v
 
 Étape 1 (avant toute rédaction) : discussion avec Louis pour caler l'angle de la section, en s'appuyant sur le fonctionnement réel de l'IA plutôt que sur l'intuition de Louis seule.
 
+## 7. Chapitre isolé : raccourcis clavier VS Code
+**Être efficace sur le code grâce aux raccourcis clavier** : `bases-de-l-informatique`, à côté de `editeur-de-code-et-ide.md`. À couvrir : se déplacer dans l'arbre du projet (explorateur de fichiers), se déplacer rapidement dans un fichier (recherche de symbole, aller à une ligne, navigation par mots/blocs), sélection multiple (une ou plusieurs sections, multi-curseur), fermer/gérer les onglets de fichiers ouverts, ouvrir une preview Markdown, la palette de commandes (Ctrl+Maj+P) et son usage général au-delà des raccourcis fixes.
+
 ## 9. Nouvelle catégorie : Gestion de projet
 Sortir le sujet d'`Organisation en entreprise` vers une catégorie top-level dédiée « Gestion de projet ».
 
