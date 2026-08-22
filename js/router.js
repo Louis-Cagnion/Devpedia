@@ -3,7 +3,16 @@ import { parseAppendText, parseMdContent } from "./parser.js";
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson, findCategory, findSubject, getContentDir } from "./utils.js";
 import { setPageOutline, syncSidebars } from "./sidebar.js";
-import { buildReadingPlan, stopReading, onPlaybackComplete } from "./reader.js";
+import {
+    buildReadingPlan,
+    stopReading,
+    onPlaybackComplete,
+    onStatusChange,
+    getReaderStatus,
+    resumeReading,
+    pauseReading,
+    continueAfterCode,
+} from "./reader.js";
 import { t, tEntityLabel } from "./i18n.js";
 import { resolveAcrossLanguages } from "./router-language-fallback.js";
 import { PENDING_NAV_KEY, buildNavUrl, parseNavParams, pushNavUrl, replayingUrl } from "./nav-url.js";
@@ -164,7 +173,9 @@ function cancelAutoAdvance() {
  */
 function flattenChapters() {
     const entries = [];
-    appState.categories.forEach(category => {
+    // Excludes "acceuil": a synthetic entry generate-struct.js adds only so internal home links
+    // validate, with no `folder` -- navigateToChapter() can't render it (cf. generateHomePage()).
+    appState.categories.filter(category => category.id !== "acceuil").forEach(category => {
         (category.subjects ?? [{ id: null, chapters: category.chapters ?? [] }]).forEach(subject => {
             (subject.chapters ?? []).forEach(chapter => {
                 entries.push({ categoryId: category.id, subjectId: subject.id, id: chapter.id });
@@ -175,18 +186,43 @@ function flattenChapters() {
 }
 
 /**
+ * @brief Returns the index, within the site-wide flattened chapter list, of the chapter currently
+ * displayed.
+ *
+ * @param {Array<{categoryId: string, subjectId: string|null, id: string}>} entries
+ *
+ * @returns {number} -1 if the current page isn't a chapter (home, a category, a subject)
+ */
+function curChapterIndex(entries) {
+    return entries.findIndex(entry =>
+        entry.categoryId === appState.curCategory && entry.subjectId === appState.curSubject && entry.id === appState.curPageId
+    );
+}
+
+/**
  * @brief Returns the chapter right after the one currently displayed, crossing subject and
  * category boundaries -- unlike currentNextChapter above, which stops at the end of the current
- * subject/category.
+ * subject/category. Used both for read-aloud auto-advance and for MediaSession's "next track".
  *
  * @returns {{categoryId: string, subjectId: string|null, id: string}|null} null past the site's last chapter
  */
-function resolveNextChapterAcrossSite() {
+export function resolveNextChapterAcrossSite() {
     const entries = flattenChapters();
-    const curIndex = entries.findIndex(entry =>
-        entry.categoryId === appState.curCategory && entry.subjectId === appState.curSubject && entry.id === appState.curPageId
-    );
+    const curIndex = curChapterIndex(entries);
     return curIndex === -1 ? null : (entries[curIndex + 1] ?? null);
+}
+
+/**
+ * @brief Returns the chapter right before the one currently displayed, crossing subject and
+ * category boundaries the same way resolveNextChapterAcrossSite() does. Used by MediaSession's
+ * "previous track".
+ *
+ * @returns {{categoryId: string, subjectId: string|null, id: string}|null} null before the site's first chapter
+ */
+export function resolvePreviousChapterAcrossSite() {
+    const entries = flattenChapters();
+    const curIndex = curChapterIndex(entries);
+    return curIndex <= 0 ? null : entries[curIndex - 1];
 }
 
 // Read-aloud reaching the end of a chapter on its own offers to move on to the next one.
@@ -206,6 +242,33 @@ onPlaybackComplete(() => {
 document.addEventListener("click", e => {
     if (e.target.closest(".readerControl")) cancelAutoAdvance();
 });
+
+/* Bluetooth headset media buttons (play/pause/next/previous), synced both ways with the reader
+   control: a Bluetooth press drives the same actions as the on-screen buttons, and any on-screen
+   change (including a manual chapter change) updates what the OS shows as the playback state. */
+if ("mediaSession" in navigator) {
+    navigator.mediaSession.setActionHandler("play", () => {
+        const status = getReaderStatus();
+        if (status.isPausedAtCode) continueAfterCode();
+        else if (status.isPaused) resumeReading();
+    });
+    navigator.mediaSession.setActionHandler("pause", () => {
+        if (getReaderStatus().isPlaying) pauseReading();
+    });
+    navigator.mediaSession.setActionHandler("nexttrack", () => {
+        const next = resolveNextChapterAcrossSite();
+        if (next) navigateToChapter(next.categoryId, next.subjectId, next.id);
+    });
+    navigator.mediaSession.setActionHandler("previoustrack", () => {
+        const previous = resolvePreviousChapterAcrossSite();
+        if (previous) navigateToChapter(previous.categoryId, previous.subjectId, previous.id);
+    });
+    onStatusChange(status => {
+        navigator.mediaSession.playbackState = status.isPlaying ? "playing"
+            : (status.isPaused || status.isPausedAtCode) ? "paused"
+            : "none";
+    });
+}
 
 /**
  * @brief Reports whether arrow keys should type a character at `target` rather than navigate.
