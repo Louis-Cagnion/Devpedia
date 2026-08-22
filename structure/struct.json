@@ -482,457 +482,9 @@
       ]
     },
     {
-      "id": "domain-specific-languages-dsl",
-      "label": "Domain-specific Languages (DSL)",
-      "folder": "Domain-specific Languages (DSL)",
-      "chapters": [
-        {
-          "id": "regex",
-          "label": "La regex"
-        },
-        {
-          "id": "sql",
-          "label": "SQL"
-        },
-        {
-          "id": "parsing-incremental-machine-a-etats",
-          "label": "Parsing incrémental par machine à états"
-        },
-        {
-          "id": "evaluateur-expressions-arithmetiques",
-          "label": "Évaluateur d'expressions arithmétiques : gérer la précédence des opérateurs"
-        }
-      ]
-    },
-    {
-      "id": "qualite-performance-outils",
-      "label": "Qualité, performance et outils",
-      "folder": "Qualité, performance et outils",
-      "subjects": [
-        {
-          "id": "qualite-et-architecture-du-code",
-          "label": "Qualité et architecture du code",
-          "folder": "Qualité et architecture du code",
-          "chapters": [
-            {
-              "id": "responsabilite-unique-et-couplage",
-              "label": "Responsabilité unique et faible couplage"
-            },
-            {
-              "id": "microservices",
-              "label": "Microservices : découper une application en services indépendants"
-            },
-            {
-              "id": "eviter-la-repetition-structures-indexees",
-              "label": "Éviter la répétition : structures indexées plutôt que du code dupliqué"
-            },
-            {
-              "id": "source-unique-de-verite",
-              "label": "Source unique de vérité"
-            },
-            {
-              "id": "sens-des-dependances-avant-de-centraliser",
-              "label": "Vérifier le sens des dépendances avant de centraliser"
-            },
-            {
-              "id": "genericite-dependre-de-la-structure",
-              "label": "Généricité : dépendre de la structure plutôt que de valeurs figées"
-            },
-            {
-              "id": "un-seul-mecanisme-par-information",
-              "label": "Un seul mécanisme par information"
-            },
-            {
-              "id": "conventions-de-documentation",
-              "label": "Conventions de documentation du code par langage"
-            }
-          ]
-        },
-        {
-          "id": "performance",
-          "label": "Performance",
-          "folder": "Performance",
-          "chapters": [
-            {
-              "id": "mesurer-avant-d-optimiser",
-              "label": "Mesurer avant d'optimiser"
-            },
-            {
-              "id": "attentes-et-temps-morts",
-              "label": "Attendre sans perdre de temps"
-            },
-            {
-              "id": "limiter-les-aller-retours",
-              "label": "Limiter les allers-retours"
-            },
-            {
-              "id": "parallelisme",
-              "label": "Parallélisme : trouver la contrainte réelle"
-            },
-            {
-              "id": "traitements-longs",
-              "label": "Les traitements longs"
-            },
-            {
-              "id": "cache-cpu-et-simd",
-              "label": "Cache CPU et vectorisation (SIMD)"
-            },
-            {
-              "id": "eviter-le-recalcul-redondant",
-              "label": "Éviter le recalcul redondant"
-            },
-            {
-              "id": "heap-des-runtimes-manages",
-              "label": "Le heap d'un runtime managé"
-            }
-          ]
-        },
-        {
-          "id": "git",
-          "label": "Git",
-          "folder": "Git",
-          "chapters": [
-            {
-              "id": "concepts-de-base",
-              "label": "Les concepts de base de Git"
-            },
-            {
-              "id": "commandes-essentielles",
-              "label": "Les commandes essentielles"
-            },
-            {
-              "id": "gitignore",
-              "label": "Le fichier .gitignore"
-            },
-            {
-              "id": "branches",
-              "label": "Les branches"
-            },
-            {
-              "id": "annuler-et-historique",
-              "label": "Annuler des changements et naviguer dans l'historique"
-            },
-            {
-              "id": "stash",
-              "label": "Le stash"
-            },
-            {
-              "id": "tags",
-              "label": "Les tags"
-            },
-            {
-              "id": "remotes",
-              "label": "Les dépôts distants (remotes)"
-            },
-            {
-              "id": "github-et-plateformes",
-              "label": "GitHub et les plateformes d'hébergement Git"
-            },
-            {
-              "id": "pull-requests-github",
-              "label": "Les pull requests sur GitHub"
-            },
-            {
-              "id": "issues-et-projets-github",
-              "label": "Issues et gestion de projet sur GitHub"
-            },
-            {
-              "id": "resoudre-conflits",
-              "label": "Résoudre un conflit de fusion"
-            },
-            {
-              "id": "rebase",
-              "label": "Le rebase"
-            },
-            {
-              "id": "architecture-interne",
-              "label": "L'architecture interne de Git"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ia",
-      "label": "IA",
-      "folder": "IA",
-      "subjects": [
-        {
-          "id": "fondamentaux-du-deep-learning",
-          "label": "Fondamentaux du deep learning",
-          "folder": "Fondamentaux du deep learning",
-          "chapters": [
-            {
-              "id": "reseaux-de-neurones",
-              "label": "Les réseaux de neurones : les fondamentaux"
-            },
-            {
-              "id": "entrainement-descente-de-gradient",
-              "label": "L'entraînement d'un modèle et la descente de gradient"
-            },
-            {
-              "id": "architectures-cnn-rnn-transformers",
-              "label": "Architectures : CNN, RNN et Transformers"
-            },
-            {
-              "id": "deep-learning-pytorch",
-              "label": "Deep learning avec PyTorch"
-            }
-          ]
-        },
-        {
-          "id": "nlp-llm",
-          "label": "NLP et LLM",
-          "folder": "NLP et LLM",
-          "chapters": [
-            {
-              "id": "nlp-et-llm",
-              "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
-            },
-            {
-              "id": "prompt-engineering",
-              "label": "Le prompt engineering : structurer une requête pour de meilleurs résultats"
-            },
-            {
-              "id": "llm-en-production",
-              "label": "LLM en production : cas d'usage et limites"
-            },
-            {
-              "id": "reduire-la-variance-des-reponses",
-              "label": "Réduire la variance des réponses : self-consistency, vote majoritaire et ensembling"
-            },
-            {
-              "id": "agents",
-              "label": "Agents : boucle outil/réflexion et orchestration"
-            },
-            {
-              "id": "rag",
-              "label": "RAG : augmenter un LLM avec des données externes"
-            },
-            {
-              "id": "prompt-injection",
-              "label": "Prompt injection : quand une donnée se fait passer pour une instruction"
-            },
-            {
-              "id": "mcp",
-              "label": "MCP (Model Context Protocol) : standardiser les outils d'un agent"
-            }
-          ]
-        },
-        {
-          "id": "applications-llm",
-          "label": "Applications LLM",
-          "folder": "Applications LLM",
-          "chapters": [
-            {
-              "id": "chatbot",
-              "label": "Construire un chatbot : architecture, configuration et mise à l'échelle"
-            },
-            {
-              "id": "assistant-agentique-terminal",
-              "label": "L'assistant IA agentique en terminal : au-delà du prompt simple"
-            }
-          ]
-        },
-        {
-          "id": "vision-et-ocr",
-          "label": "Vision et OCR",
-          "folder": "Vision et OCR",
-          "chapters": [
-            {
-              "id": "ocr-classique-vs-deep-learning",
-              "label": "OCR : de la reconnaissance de motifs classique au deep learning"
-            },
-            {
-              "id": "detection-de-mise-en-page",
-              "label": "Détection de mise en page : boîtes englobantes, score de confiance et suppression des doublons"
-            },
-            {
-              "id": "modeles-document-ai",
-              "label": "Modèles \"Document AI\" : comprendre un document au-delà du texte pur"
-            },
-            {
-              "id": "fine-tuning-modele-vision",
-              "label": "Entraîner et fine-tuner un modèle de vision pour un cas métier"
-            },
-            {
-              "id": "evaluer-un-ocr",
-              "label": "Évaluer un OCR : CER, WER et taux de reconnaissance par champ"
-            },
-            {
-              "id": "post-traitement-correction",
-              "label": "Post-traitement et correction d'un OCR"
-            },
-            {
-              "id": "ocr-en-production",
-              "label": "Mise en production et monitoring d'un pipeline OCR"
-            },
-            {
-              "id": "gouvernance-documents-scannes",
-              "label": "Gouvernance des données pour des documents scannés"
-            }
-          ]
-        },
-        {
-          "id": "voix-ia",
-          "label": "Voix IA",
-          "folder": "Voix IA",
-          "chapters": [
-            {
-              "id": "synthese-classique-vs-deep-learning",
-              "label": "Synthèse vocale : de la concaténation classique au deep learning"
-            },
-            {
-              "id": "controler-la-prosodie",
-              "label": "Contrôler la prosodie"
-            },
-            {
-              "id": "modeles-modernes-synthese",
-              "label": "Modèles modernes de synthèse : les codecs neuronaux"
-            },
-            {
-              "id": "cloner-une-voix",
-              "label": "Cloner une voix : technique et enjeux éthiques/légaux"
-            },
-            {
-              "id": "fine-tuning-synthese-vocale",
-              "label": "Entraîner et fine-tuner un modèle de synthèse vocale"
-            },
-            {
-              "id": "evaluer-synthese-vocale",
-              "label": "Évaluer une synthèse vocale : MOS, intelligibilité, latence"
-            },
-            {
-              "id": "choisir-fournisseur-mise-en-production",
-              "label": "Choisir un fournisseur et mettre en production"
-            },
-            {
-              "id": "gouvernance-voix-ia",
-              "label": "Gouvernance d'un pipeline de voix IA"
-            }
-          ]
-        },
-        {
-          "id": "production-et-gouvernance",
-          "label": "Production et gouvernance",
-          "folder": "Production et gouvernance",
-          "chapters": [
-            {
-              "id": "gestion-dun-llm",
-              "label": "Monitoring et gestion opérationnelle d'un LLM"
-            },
-            {
-              "id": "gouvernance-des-donnees",
-              "label": "Gouvernance des données pour un système IA"
-            },
-            {
-              "id": "reglementation-europeenne-ia",
-              "label": "Réglementation européenne de l'IA : l'AI Act"
-            },
-            {
-              "id": "watermarking-ia",
-              "label": "Watermarking du contenu généré par IA"
-            },
-            {
-              "id": "stack-ia",
-              "label": "Le stack IA : les couches d'une application en production"
-            }
-          ]
-        },
-        {
-          "id": "jeux-et-agents",
-          "label": "Jeux et agents",
-          "folder": "Jeux et agents",
-          "chapters": [
-            {
-              "id": "ia-de-jeu-par-imitation",
-              "label": "L'IA de jeu par imitation : apprendre d'un joueur humain"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "langages-de-balisage",
-      "label": "Langages de balisage",
-      "folder": "Langages de balisage",
-      "subjects": [
-        {
-          "id": "html",
-          "label": "HTML",
-          "folder": "HTML",
-          "chapters": [
-            {
-              "id": "structure-dun-document",
-              "label": "La structure d'un document HTML"
-            },
-            {
-              "id": "balises-de-texte",
-              "label": "Les balises de texte"
-            },
-            {
-              "id": "liens-et-images",
-              "label": "Les liens et les images"
-            },
-            {
-              "id": "tableaux",
-              "label": "Les tableaux HTML"
-            },
-            {
-              "id": "formulaires",
-              "label": "Les formulaires"
-            },
-            {
-              "id": "semantique-html5",
-              "label": "La sémantique HTML5"
-            },
-            {
-              "id": "attributs-data-et-accessibilite",
-              "label": "Attributs data-* et accessibilité (ARIA)"
-            }
-          ]
-        },
-        {
-          "id": "css",
-          "label": "CSS",
-          "folder": "CSS",
-          "chapters": [
-            {
-              "id": "selecteurs",
-              "label": "Les sélecteurs"
-            },
-            {
-              "id": "variables-et-cascade",
-              "label": "Variables CSS et la cascade"
-            },
-            {
-              "id": "box-model",
-              "label": "Le modèle de boîte (box model)"
-            },
-            {
-              "id": "positionnement",
-              "label": "Le positionnement (position, z-index)"
-            },
-            {
-              "id": "flexbox",
-              "label": "Flexbox"
-            },
-            {
-              "id": "grid",
-              "label": "CSS Grid"
-            },
-            {
-              "id": "responsive-et-media-queries",
-              "label": "Le responsive design et les media queries"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "langages-de-programmation",
-      "label": "Langages de programmation",
-      "folder": "Langages de programmation",
+      "id": "langages",
+      "label": "Langages",
+      "folder": "Langages",
       "subjects": [
         {
           "id": "c",
@@ -1291,51 +843,77 @@
               "label": "L'inférence de types"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "gestion-de-projet-organisation",
-      "label": "Gestion de projet et organisation",
-      "folder": "Gestion de projet et organisation",
-      "subjects": [
+        },
         {
-          "id": "organisation-en-entreprise",
-          "label": "Organisation en entreprise",
-          "folder": "Organisation en entreprise",
+          "id": "html",
+          "label": "HTML",
+          "folder": "HTML",
           "chapters": [
             {
-              "id": "roles-equipe-developpement",
-              "label": "Les rôles dans une équipe de développement"
+              "id": "structure-dun-document",
+              "label": "La structure d'un document HTML"
             },
             {
-              "id": "cycle-de-vie-dun-projet",
-              "label": "Le cycle de vie d'un projet"
+              "id": "balises-de-texte",
+              "label": "Les balises de texte"
             },
             {
-              "id": "documentation-et-communication-equipe",
-              "label": "Documentation et communication en équipe"
+              "id": "liens-et-images",
+              "label": "Les liens et les images"
+            },
+            {
+              "id": "tableaux",
+              "label": "Les tableaux HTML"
+            },
+            {
+              "id": "formulaires",
+              "label": "Les formulaires"
+            },
+            {
+              "id": "semantique-html5",
+              "label": "La sémantique HTML5"
+            },
+            {
+              "id": "attributs-data-et-accessibilite",
+              "label": "Attributs data-* et accessibilité (ARIA)"
             }
           ]
         },
         {
-          "id": "gestion-de-projet",
-          "label": "Gestion de projet",
-          "folder": "Gestion de projet",
+          "id": "css",
+          "label": "CSS",
+          "folder": "CSS",
           "chapters": [
             {
-              "id": "methodologies-agile-scrum-kanban",
-              "label": "Méthodologies : Agile, Scrum, Kanban"
+              "id": "selecteurs",
+              "label": "Les sélecteurs"
+            },
+            {
+              "id": "variables-et-cascade",
+              "label": "Variables CSS et la cascade"
+            },
+            {
+              "id": "box-model",
+              "label": "Le modèle de boîte (box model)"
+            },
+            {
+              "id": "positionnement",
+              "label": "Le positionnement (position, z-index)"
+            },
+            {
+              "id": "flexbox",
+              "label": "Flexbox"
+            },
+            {
+              "id": "grid",
+              "label": "CSS Grid"
+            },
+            {
+              "id": "responsive-et-media-queries",
+              "label": "Le responsive design et les media queries"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "shells",
-      "label": "Shells",
-      "folder": "Shells",
-      "subjects": [
+        },
         {
           "id": "bash",
           "label": "Bash",
@@ -1486,6 +1064,414 @@
             {
               "id": "architecture-dun-shell",
               "label": "Comment fonctionne PowerShell (architecture interne)"
+            }
+          ]
+        },
+        {
+          "id": "domain-specific-languages-dsl",
+          "label": "Domain-specific Languages (DSL)",
+          "folder": "Domain-specific Languages (DSL)",
+          "chapters": [
+            {
+              "id": "regex",
+              "label": "La regex"
+            },
+            {
+              "id": "sql",
+              "label": "SQL"
+            },
+            {
+              "id": "parsing-incremental-machine-a-etats",
+              "label": "Parsing incrémental par machine à états"
+            },
+            {
+              "id": "evaluateur-expressions-arithmetiques",
+              "label": "Évaluateur d'expressions arithmétiques : gérer la précédence des opérateurs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qualite-performance-outils",
+      "label": "Qualité, performance et outils",
+      "folder": "Qualité, performance et outils",
+      "subjects": [
+        {
+          "id": "qualite-et-architecture-du-code",
+          "label": "Qualité et architecture du code",
+          "folder": "Qualité et architecture du code",
+          "chapters": [
+            {
+              "id": "responsabilite-unique-et-couplage",
+              "label": "Responsabilité unique et faible couplage"
+            },
+            {
+              "id": "microservices",
+              "label": "Microservices : découper une application en services indépendants"
+            },
+            {
+              "id": "eviter-la-repetition-structures-indexees",
+              "label": "Éviter la répétition : structures indexées plutôt que du code dupliqué"
+            },
+            {
+              "id": "source-unique-de-verite",
+              "label": "Source unique de vérité"
+            },
+            {
+              "id": "sens-des-dependances-avant-de-centraliser",
+              "label": "Vérifier le sens des dépendances avant de centraliser"
+            },
+            {
+              "id": "genericite-dependre-de-la-structure",
+              "label": "Généricité : dépendre de la structure plutôt que de valeurs figées"
+            },
+            {
+              "id": "un-seul-mecanisme-par-information",
+              "label": "Un seul mécanisme par information"
+            },
+            {
+              "id": "conventions-de-documentation",
+              "label": "Conventions de documentation du code par langage"
+            }
+          ]
+        },
+        {
+          "id": "performance",
+          "label": "Performance",
+          "folder": "Performance",
+          "chapters": [
+            {
+              "id": "mesurer-avant-d-optimiser",
+              "label": "Mesurer avant d'optimiser"
+            },
+            {
+              "id": "attentes-et-temps-morts",
+              "label": "Attendre sans perdre de temps"
+            },
+            {
+              "id": "limiter-les-aller-retours",
+              "label": "Limiter les allers-retours"
+            },
+            {
+              "id": "parallelisme",
+              "label": "Parallélisme : trouver la contrainte réelle"
+            },
+            {
+              "id": "traitements-longs",
+              "label": "Les traitements longs"
+            },
+            {
+              "id": "cache-cpu-et-simd",
+              "label": "Cache CPU et vectorisation (SIMD)"
+            },
+            {
+              "id": "eviter-le-recalcul-redondant",
+              "label": "Éviter le recalcul redondant"
+            },
+            {
+              "id": "heap-des-runtimes-manages",
+              "label": "Le heap d'un runtime managé"
+            }
+          ]
+        },
+        {
+          "id": "git",
+          "label": "Git",
+          "folder": "Git",
+          "chapters": [
+            {
+              "id": "concepts-de-base",
+              "label": "Les concepts de base de Git"
+            },
+            {
+              "id": "commandes-essentielles",
+              "label": "Les commandes essentielles"
+            },
+            {
+              "id": "gitignore",
+              "label": "Le fichier .gitignore"
+            },
+            {
+              "id": "branches",
+              "label": "Les branches"
+            },
+            {
+              "id": "annuler-et-historique",
+              "label": "Annuler des changements et naviguer dans l'historique"
+            },
+            {
+              "id": "stash",
+              "label": "Le stash"
+            },
+            {
+              "id": "tags",
+              "label": "Les tags"
+            },
+            {
+              "id": "remotes",
+              "label": "Les dépôts distants (remotes)"
+            },
+            {
+              "id": "github-et-plateformes",
+              "label": "GitHub et les plateformes d'hébergement Git"
+            },
+            {
+              "id": "pull-requests-github",
+              "label": "Les pull requests sur GitHub"
+            },
+            {
+              "id": "issues-et-projets-github",
+              "label": "Issues et gestion de projet sur GitHub"
+            },
+            {
+              "id": "resoudre-conflits",
+              "label": "Résoudre un conflit de fusion"
+            },
+            {
+              "id": "rebase",
+              "label": "Le rebase"
+            },
+            {
+              "id": "architecture-interne",
+              "label": "L'architecture interne de Git"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ia",
+      "label": "IA",
+      "folder": "IA",
+      "subjects": [
+        {
+          "id": "fondamentaux-du-deep-learning",
+          "label": "Fondamentaux du deep learning",
+          "folder": "Fondamentaux du deep learning",
+          "chapters": [
+            {
+              "id": "reseaux-de-neurones",
+              "label": "Les réseaux de neurones : les fondamentaux"
+            },
+            {
+              "id": "entrainement-descente-de-gradient",
+              "label": "L'entraînement d'un modèle et la descente de gradient"
+            },
+            {
+              "id": "architectures-cnn-rnn-transformers",
+              "label": "Architectures : CNN, RNN et Transformers"
+            },
+            {
+              "id": "deep-learning-pytorch",
+              "label": "Deep learning avec PyTorch"
+            }
+          ]
+        },
+        {
+          "id": "nlp-llm",
+          "label": "NLP et LLM",
+          "folder": "NLP et LLM",
+          "chapters": [
+            {
+              "id": "nlp-et-llm",
+              "label": "Traitement du langage naturel (NLP) et grands modèles de langage (LLM)"
+            },
+            {
+              "id": "prompt-engineering",
+              "label": "Le prompt engineering : structurer une requête pour de meilleurs résultats"
+            },
+            {
+              "id": "llm-en-production",
+              "label": "LLM en production : cas d'usage et limites"
+            },
+            {
+              "id": "reduire-la-variance-des-reponses",
+              "label": "Réduire la variance des réponses : self-consistency, vote majoritaire et ensembling"
+            },
+            {
+              "id": "agents",
+              "label": "Agents : boucle outil/réflexion et orchestration"
+            },
+            {
+              "id": "rag",
+              "label": "RAG : augmenter un LLM avec des données externes"
+            },
+            {
+              "id": "prompt-injection",
+              "label": "Prompt injection : quand une donnée se fait passer pour une instruction"
+            },
+            {
+              "id": "mcp",
+              "label": "MCP (Model Context Protocol) : standardiser les outils d'un agent"
+            }
+          ]
+        },
+        {
+          "id": "applications-llm",
+          "label": "Applications LLM",
+          "folder": "Applications LLM",
+          "chapters": [
+            {
+              "id": "chatbot",
+              "label": "Construire un chatbot : architecture, configuration et mise à l'échelle"
+            },
+            {
+              "id": "assistant-agentique-terminal",
+              "label": "L'assistant IA agentique en terminal : au-delà du prompt simple"
+            }
+          ]
+        },
+        {
+          "id": "vision-et-ocr",
+          "label": "Vision et OCR",
+          "folder": "Vision et OCR",
+          "chapters": [
+            {
+              "id": "ocr-classique-vs-deep-learning",
+              "label": "OCR : de la reconnaissance de motifs classique au deep learning"
+            },
+            {
+              "id": "detection-de-mise-en-page",
+              "label": "Détection de mise en page : boîtes englobantes, score de confiance et suppression des doublons"
+            },
+            {
+              "id": "modeles-document-ai",
+              "label": "Modèles \"Document AI\" : comprendre un document au-delà du texte pur"
+            },
+            {
+              "id": "fine-tuning-modele-vision",
+              "label": "Entraîner et fine-tuner un modèle de vision pour un cas métier"
+            },
+            {
+              "id": "evaluer-un-ocr",
+              "label": "Évaluer un OCR : CER, WER et taux de reconnaissance par champ"
+            },
+            {
+              "id": "post-traitement-correction",
+              "label": "Post-traitement et correction d'un OCR"
+            },
+            {
+              "id": "ocr-en-production",
+              "label": "Mise en production et monitoring d'un pipeline OCR"
+            },
+            {
+              "id": "gouvernance-documents-scannes",
+              "label": "Gouvernance des données pour des documents scannés"
+            }
+          ]
+        },
+        {
+          "id": "voix-ia",
+          "label": "Voix IA",
+          "folder": "Voix IA",
+          "chapters": [
+            {
+              "id": "synthese-classique-vs-deep-learning",
+              "label": "Synthèse vocale : de la concaténation classique au deep learning"
+            },
+            {
+              "id": "controler-la-prosodie",
+              "label": "Contrôler la prosodie"
+            },
+            {
+              "id": "modeles-modernes-synthese",
+              "label": "Modèles modernes de synthèse : les codecs neuronaux"
+            },
+            {
+              "id": "cloner-une-voix",
+              "label": "Cloner une voix : technique et enjeux éthiques/légaux"
+            },
+            {
+              "id": "fine-tuning-synthese-vocale",
+              "label": "Entraîner et fine-tuner un modèle de synthèse vocale"
+            },
+            {
+              "id": "evaluer-synthese-vocale",
+              "label": "Évaluer une synthèse vocale : MOS, intelligibilité, latence"
+            },
+            {
+              "id": "choisir-fournisseur-mise-en-production",
+              "label": "Choisir un fournisseur et mettre en production"
+            },
+            {
+              "id": "gouvernance-voix-ia",
+              "label": "Gouvernance d'un pipeline de voix IA"
+            }
+          ]
+        },
+        {
+          "id": "production-et-gouvernance",
+          "label": "Production et gouvernance",
+          "folder": "Production et gouvernance",
+          "chapters": [
+            {
+              "id": "gestion-dun-llm",
+              "label": "Monitoring et gestion opérationnelle d'un LLM"
+            },
+            {
+              "id": "gouvernance-des-donnees",
+              "label": "Gouvernance des données pour un système IA"
+            },
+            {
+              "id": "reglementation-europeenne-ia",
+              "label": "Réglementation européenne de l'IA : l'AI Act"
+            },
+            {
+              "id": "watermarking-ia",
+              "label": "Watermarking du contenu généré par IA"
+            },
+            {
+              "id": "stack-ia",
+              "label": "Le stack IA : les couches d'une application en production"
+            }
+          ]
+        },
+        {
+          "id": "jeux-et-agents",
+          "label": "Jeux et agents",
+          "folder": "Jeux et agents",
+          "chapters": [
+            {
+              "id": "ia-de-jeu-par-imitation",
+              "label": "L'IA de jeu par imitation : apprendre d'un joueur humain"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gestion-de-projet-organisation",
+      "label": "Gestion de projet et organisation",
+      "folder": "Gestion de projet et organisation",
+      "subjects": [
+        {
+          "id": "organisation-en-entreprise",
+          "label": "Organisation en entreprise",
+          "folder": "Organisation en entreprise",
+          "chapters": [
+            {
+              "id": "roles-equipe-developpement",
+              "label": "Les rôles dans une équipe de développement"
+            },
+            {
+              "id": "cycle-de-vie-dun-projet",
+              "label": "Le cycle de vie d'un projet"
+            },
+            {
+              "id": "documentation-et-communication-equipe",
+              "label": "Documentation et communication en équipe"
+            }
+          ]
+        },
+        {
+          "id": "gestion-de-projet",
+          "label": "Gestion de projet",
+          "folder": "Gestion de projet",
+          "chapters": [
+            {
+              "id": "methodologies-agile-scrum-kanban",
+              "label": "Méthodologies : Agile, Scrum, Kanban"
             }
           ]
         }

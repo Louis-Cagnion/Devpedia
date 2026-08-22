@@ -537,457 +537,9 @@
       ]
     },
     {
-      "id": "domain-specific-languages-dsl",
-      "label": "Domain-specific Languages (DSL)",
-      "folder": "Domain-specific Languages (DSL)",
-      "chapters": [
-        {
-          "id": "regex",
-          "label": "A regex"
-        },
-        {
-          "id": "sql",
-          "label": "SQL"
-        },
-        {
-          "id": "parsing-incremental-machine-a-etats",
-          "label": "Parsing incremental por máquina de estados"
-        },
-        {
-          "id": "evaluateur-expressions-arithmetiques",
-          "label": "Avaliador de expressões aritméticas: gerenciar a precedência dos operadores"
-        }
-      ]
-    },
-    {
-      "id": "qualite-performance-outils",
-      "label": "Qualité, performance et outils",
-      "folder": "Qualité, performance et outils",
-      "subjects": [
-        {
-          "id": "qualite-et-architecture-du-code",
-          "label": "Qualité et architecture du code",
-          "folder": "Qualité et architecture du code",
-          "chapters": [
-            {
-              "id": "responsabilite-unique-et-couplage",
-              "label": "Responsabilidade única e baixo acoplamento"
-            },
-            {
-              "id": "microservices",
-              "label": "Microsserviços: dividir uma aplicação em serviços independentes"
-            },
-            {
-              "id": "eviter-la-repetition-structures-indexees",
-              "label": "Evitar a repetição: estruturas indexadas em vez de código duplicado"
-            },
-            {
-              "id": "source-unique-de-verite",
-              "label": "Fonte única de verdade"
-            },
-            {
-              "id": "sens-des-dependances-avant-de-centraliser",
-              "label": "Verificar o sentido das dependências antes de centralizar"
-            },
-            {
-              "id": "genericite-dependre-de-la-structure",
-              "label": "Genericidade: depender da estrutura em vez de valores fixos"
-            },
-            {
-              "id": "un-seul-mecanisme-par-information",
-              "label": "Um único mecanismo por informação"
-            },
-            {
-              "id": "conventions-de-documentation",
-              "label": "Convenções de documentação do código por linguagem"
-            }
-          ]
-        },
-        {
-          "id": "performance",
-          "label": "Performance",
-          "folder": "Performance",
-          "chapters": [
-            {
-              "id": "mesurer-avant-d-optimiser",
-              "label": "Medir antes de otimizar"
-            },
-            {
-              "id": "attentes-et-temps-morts",
-              "label": "Esperar sem perder tempo"
-            },
-            {
-              "id": "limiter-les-aller-retours",
-              "label": "Limitar as idas e vindas"
-            },
-            {
-              "id": "parallelisme",
-              "label": "Paralelismo: encontrar a restrição real"
-            },
-            {
-              "id": "traitements-longs",
-              "label": "Os processamentos longos"
-            },
-            {
-              "id": "cache-cpu-et-simd",
-              "label": "Cache da CPU e vetorização (SIMD)"
-            },
-            {
-              "id": "eviter-le-recalcul-redondant",
-              "label": "Evitar o recálculo redundante"
-            },
-            {
-              "id": "heap-des-runtimes-manages",
-              "label": "O heap de um runtime gerenciado"
-            }
-          ]
-        },
-        {
-          "id": "git",
-          "label": "Git",
-          "folder": "Git",
-          "chapters": [
-            {
-              "id": "concepts-de-base",
-              "label": "Os conceitos básicos do Git"
-            },
-            {
-              "id": "commandes-essentielles",
-              "label": "Os comandos essenciais"
-            },
-            {
-              "id": "gitignore",
-              "label": "O arquivo .gitignore"
-            },
-            {
-              "id": "branches",
-              "label": "As branches"
-            },
-            {
-              "id": "annuler-et-historique",
-              "label": "Desfazer mudanças e navegar no histórico"
-            },
-            {
-              "id": "stash",
-              "label": "O stash"
-            },
-            {
-              "id": "tags",
-              "label": "As tags"
-            },
-            {
-              "id": "remotes",
-              "label": "Os repositórios remotos (remotes)"
-            },
-            {
-              "id": "github-et-plateformes",
-              "label": "GitHub e as plataformas de hospedagem Git"
-            },
-            {
-              "id": "pull-requests-github",
-              "label": "As pull requests no GitHub"
-            },
-            {
-              "id": "issues-et-projets-github",
-              "label": "Issues e gestão de projeto no GitHub"
-            },
-            {
-              "id": "resoudre-conflits",
-              "label": "Resolver um conflito de mesclagem"
-            },
-            {
-              "id": "rebase",
-              "label": "O rebase"
-            },
-            {
-              "id": "architecture-interne",
-              "label": "A arquitetura interna do Git"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ia",
-      "label": "IA",
-      "folder": "IA",
-      "subjects": [
-        {
-          "id": "fondamentaux-du-deep-learning",
-          "label": "Fondamentaux du deep learning",
-          "folder": "Fondamentaux du deep learning",
-          "chapters": [
-            {
-              "id": "reseaux-de-neurones",
-              "label": "As redes neurais: os fundamentos"
-            },
-            {
-              "id": "entrainement-descente-de-gradient",
-              "label": "O treinamento de um modelo e a descida do gradiente"
-            },
-            {
-              "id": "architectures-cnn-rnn-transformers",
-              "label": "Arquiteturas: CNN, RNN e Transformers"
-            },
-            {
-              "id": "deep-learning-pytorch",
-              "label": "Deep learning com PyTorch"
-            }
-          ]
-        },
-        {
-          "id": "nlp-llm",
-          "label": "NLP et LLM",
-          "folder": "NLP et LLM",
-          "chapters": [
-            {
-              "id": "nlp-et-llm",
-              "label": "Processamento de linguagem natural (NLP) e grandes modelos de linguagem (LLM)"
-            },
-            {
-              "id": "prompt-engineering",
-              "label": "Prompt engineering: estruturar uma requisição para melhores resultados"
-            },
-            {
-              "id": "llm-en-production",
-              "label": "LLM em produção: casos de uso e limites"
-            },
-            {
-              "id": "reduire-la-variance-des-reponses",
-              "label": "Reduzir a variância das respostas: self-consistency, voto majoritário e ensembling"
-            },
-            {
-              "id": "agents",
-              "label": "Agentes: loop de reflexão/ação e orquestração"
-            },
-            {
-              "id": "rag",
-              "label": "RAG: aumentar um LLM com dados externos"
-            },
-            {
-              "id": "prompt-injection",
-              "label": "Prompt injection: quando um dado se faz passar por instrução"
-            },
-            {
-              "id": "mcp",
-              "label": "MCP (Model Context Protocol): padronizar as ferramentas de um agente"
-            }
-          ]
-        },
-        {
-          "id": "applications-llm",
-          "label": "Applications LLM",
-          "folder": "Applications LLM",
-          "chapters": [
-            {
-              "id": "chatbot",
-              "label": "Construindo um chatbot: arquitetura, configuração e escalonamento"
-            },
-            {
-              "id": "assistant-agentique-terminal",
-              "label": "O assistente de IA agêntico no terminal: além do prompt simples"
-            }
-          ]
-        },
-        {
-          "id": "vision-et-ocr",
-          "label": "Vision et OCR",
-          "folder": "Vision et OCR",
-          "chapters": [
-            {
-              "id": "ocr-classique-vs-deep-learning",
-              "label": "OCR: do reconhecimento de padrões clássico ao deep learning"
-            },
-            {
-              "id": "detection-de-mise-en-page",
-              "label": "Detecção de layout: caixas delimitadoras, score de confiança e remoção de duplicatas"
-            },
-            {
-              "id": "modeles-document-ai",
-              "label": "Modelos \"Document AI\": entender um documento além do texto puro"
-            },
-            {
-              "id": "fine-tuning-modele-vision",
-              "label": "Treinar e fazer fine-tuning de um modelo de visão para um caso de negócio"
-            },
-            {
-              "id": "evaluer-un-ocr",
-              "label": "Avaliar um OCR: CER, WER e taxa de reconhecimento por campo"
-            },
-            {
-              "id": "post-traitement-correction",
-              "label": "Pós-processamento e correção de um OCR"
-            },
-            {
-              "id": "ocr-en-production",
-              "label": "Colocação em produção e monitoramento de um pipeline OCR"
-            },
-            {
-              "id": "gouvernance-documents-scannes",
-              "label": "Governança de dados para documentos escaneados"
-            }
-          ]
-        },
-        {
-          "id": "voix-ia",
-          "label": "Voix IA",
-          "folder": "Voix IA",
-          "chapters": [
-            {
-              "id": "synthese-classique-vs-deep-learning",
-              "label": "Síntese de voz: da concatenação clássica ao deep learning"
-            },
-            {
-              "id": "controler-la-prosodie",
-              "label": "Controlar a prosódia"
-            },
-            {
-              "id": "modeles-modernes-synthese",
-              "label": "Modelos modernos de síntese: os codecs neurais"
-            },
-            {
-              "id": "cloner-une-voix",
-              "label": "Clonar uma voz: técnica e questões éticas/legais"
-            },
-            {
-              "id": "fine-tuning-synthese-vocale",
-              "label": "Treinar e fazer fine-tuning de um modelo de síntese de voz"
-            },
-            {
-              "id": "evaluer-synthese-vocale",
-              "label": "Avaliar uma síntese de voz: MOS, inteligibilidade, latência"
-            },
-            {
-              "id": "choisir-fournisseur-mise-en-production",
-              "label": "Escolher um fornecedor e colocar em produção"
-            },
-            {
-              "id": "gouvernance-voix-ia",
-              "label": "Governança de um pipeline de voz IA"
-            }
-          ]
-        },
-        {
-          "id": "production-et-gouvernance",
-          "label": "Production et gouvernance",
-          "folder": "Production et gouvernance",
-          "chapters": [
-            {
-              "id": "gestion-dun-llm",
-              "label": "Monitoramento e gestão operacional de um LLM"
-            },
-            {
-              "id": "gouvernance-des-donnees",
-              "label": "Governança de dados para um sistema de IA"
-            },
-            {
-              "id": "reglementation-europeenne-ia",
-              "label": "Regulamentação europeia de IA: o AI Act"
-            },
-            {
-              "id": "watermarking-ia",
-              "label": "Watermarking do conteúdo gerado por IA"
-            },
-            {
-              "id": "stack-ia",
-              "label": "A stack de IA: as camadas de uma aplicação em produção"
-            }
-          ]
-        },
-        {
-          "id": "jeux-et-agents",
-          "label": "Jeux et agents",
-          "folder": "Jeux et agents",
-          "chapters": [
-            {
-              "id": "ia-de-jeu-par-imitation",
-              "label": "IA de jogo por imitação: aprender com um jogador humano"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "langages-de-balisage",
-      "label": "Langages de balisage",
-      "folder": "Langages de balisage",
-      "subjects": [
-        {
-          "id": "html",
-          "label": "HTML",
-          "folder": "HTML",
-          "chapters": [
-            {
-              "id": "structure-dun-document",
-              "label": "A estrutura de um documento HTML"
-            },
-            {
-              "id": "balises-de-texte",
-              "label": "As tags de texto"
-            },
-            {
-              "id": "liens-et-images",
-              "label": "Os links e as imagens"
-            },
-            {
-              "id": "tableaux",
-              "label": "As tabelas HTML"
-            },
-            {
-              "id": "formulaires",
-              "label": "Os formulários"
-            },
-            {
-              "id": "semantique-html5",
-              "label": "A semântica do HTML5"
-            },
-            {
-              "id": "attributs-data-et-accessibilite",
-              "label": "Atributos data-* e acessibilidade (ARIA)"
-            }
-          ]
-        },
-        {
-          "id": "css",
-          "label": "CSS",
-          "folder": "CSS",
-          "chapters": [
-            {
-              "id": "selecteurs",
-              "label": "Os seletores"
-            },
-            {
-              "id": "variables-et-cascade",
-              "label": "Variáveis CSS e a cascata"
-            },
-            {
-              "id": "box-model",
-              "label": "O modelo de caixa (box model)"
-            },
-            {
-              "id": "positionnement",
-              "label": "O posicionamento (position, z-index)"
-            },
-            {
-              "id": "flexbox",
-              "label": "Flexbox"
-            },
-            {
-              "id": "grid",
-              "label": "CSS Grid"
-            },
-            {
-              "id": "responsive-et-media-queries",
-              "label": "O responsive design e as media queries"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "langages-de-programmation",
-      "label": "Langages de programmation",
-      "folder": "Langages de programmation",
+      "id": "langages",
+      "label": "Langages",
+      "folder": "Langages",
       "subjects": [
         {
           "id": "c",
@@ -1366,51 +918,77 @@
               "label": "SSR vs CSR: onde o HTML é construído?"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "gestion-de-projet-organisation",
-      "label": "Gestion de projet et organisation",
-      "folder": "Gestion de projet et organisation",
-      "subjects": [
+        },
         {
-          "id": "organisation-en-entreprise",
-          "label": "Organisation en entreprise",
-          "folder": "Organisation en entreprise",
+          "id": "html",
+          "label": "HTML",
+          "folder": "HTML",
           "chapters": [
             {
-              "id": "roles-equipe-developpement",
-              "label": "Os papéis em uma equipe de desenvolvimento"
+              "id": "structure-dun-document",
+              "label": "A estrutura de um documento HTML"
             },
             {
-              "id": "cycle-de-vie-dun-projet",
-              "label": "O ciclo de vida de um projeto"
+              "id": "balises-de-texte",
+              "label": "As tags de texto"
             },
             {
-              "id": "documentation-et-communication-equipe",
-              "label": "Documentação e comunicação em equipe"
+              "id": "liens-et-images",
+              "label": "Os links e as imagens"
+            },
+            {
+              "id": "tableaux",
+              "label": "As tabelas HTML"
+            },
+            {
+              "id": "formulaires",
+              "label": "Os formulários"
+            },
+            {
+              "id": "semantique-html5",
+              "label": "A semântica do HTML5"
+            },
+            {
+              "id": "attributs-data-et-accessibilite",
+              "label": "Atributos data-* e acessibilidade (ARIA)"
             }
           ]
         },
         {
-          "id": "gestion-de-projet",
-          "label": "Gestion de projet",
-          "folder": "Gestion de projet",
+          "id": "css",
+          "label": "CSS",
+          "folder": "CSS",
           "chapters": [
             {
-              "id": "methodologies-agile-scrum-kanban",
-              "label": "Metodologias: Agile, Scrum, Kanban"
+              "id": "selecteurs",
+              "label": "Os seletores"
+            },
+            {
+              "id": "variables-et-cascade",
+              "label": "Variáveis CSS e a cascata"
+            },
+            {
+              "id": "box-model",
+              "label": "O modelo de caixa (box model)"
+            },
+            {
+              "id": "positionnement",
+              "label": "O posicionamento (position, z-index)"
+            },
+            {
+              "id": "flexbox",
+              "label": "Flexbox"
+            },
+            {
+              "id": "grid",
+              "label": "CSS Grid"
+            },
+            {
+              "id": "responsive-et-media-queries",
+              "label": "O responsive design e as media queries"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "shells",
-      "label": "Shells",
-      "folder": "Shells",
-      "subjects": [
+        },
         {
           "id": "bash",
           "label": "Bash",
@@ -1561,6 +1139,414 @@
             {
               "id": "architecture-dun-shell",
               "label": "Como funciona o PowerShell (arquitetura interna)"
+            }
+          ]
+        },
+        {
+          "id": "domain-specific-languages-dsl",
+          "label": "Domain-specific Languages (DSL)",
+          "folder": "Domain-specific Languages (DSL)",
+          "chapters": [
+            {
+              "id": "regex",
+              "label": "A regex"
+            },
+            {
+              "id": "sql",
+              "label": "SQL"
+            },
+            {
+              "id": "parsing-incremental-machine-a-etats",
+              "label": "Parsing incremental por máquina de estados"
+            },
+            {
+              "id": "evaluateur-expressions-arithmetiques",
+              "label": "Avaliador de expressões aritméticas: gerenciar a precedência dos operadores"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qualite-performance-outils",
+      "label": "Qualité, performance et outils",
+      "folder": "Qualité, performance et outils",
+      "subjects": [
+        {
+          "id": "qualite-et-architecture-du-code",
+          "label": "Qualité et architecture du code",
+          "folder": "Qualité et architecture du code",
+          "chapters": [
+            {
+              "id": "responsabilite-unique-et-couplage",
+              "label": "Responsabilidade única e baixo acoplamento"
+            },
+            {
+              "id": "microservices",
+              "label": "Microsserviços: dividir uma aplicação em serviços independentes"
+            },
+            {
+              "id": "eviter-la-repetition-structures-indexees",
+              "label": "Evitar a repetição: estruturas indexadas em vez de código duplicado"
+            },
+            {
+              "id": "source-unique-de-verite",
+              "label": "Fonte única de verdade"
+            },
+            {
+              "id": "sens-des-dependances-avant-de-centraliser",
+              "label": "Verificar o sentido das dependências antes de centralizar"
+            },
+            {
+              "id": "genericite-dependre-de-la-structure",
+              "label": "Genericidade: depender da estrutura em vez de valores fixos"
+            },
+            {
+              "id": "un-seul-mecanisme-par-information",
+              "label": "Um único mecanismo por informação"
+            },
+            {
+              "id": "conventions-de-documentation",
+              "label": "Convenções de documentação do código por linguagem"
+            }
+          ]
+        },
+        {
+          "id": "performance",
+          "label": "Performance",
+          "folder": "Performance",
+          "chapters": [
+            {
+              "id": "mesurer-avant-d-optimiser",
+              "label": "Medir antes de otimizar"
+            },
+            {
+              "id": "attentes-et-temps-morts",
+              "label": "Esperar sem perder tempo"
+            },
+            {
+              "id": "limiter-les-aller-retours",
+              "label": "Limitar as idas e vindas"
+            },
+            {
+              "id": "parallelisme",
+              "label": "Paralelismo: encontrar a restrição real"
+            },
+            {
+              "id": "traitements-longs",
+              "label": "Os processamentos longos"
+            },
+            {
+              "id": "cache-cpu-et-simd",
+              "label": "Cache da CPU e vetorização (SIMD)"
+            },
+            {
+              "id": "eviter-le-recalcul-redondant",
+              "label": "Evitar o recálculo redundante"
+            },
+            {
+              "id": "heap-des-runtimes-manages",
+              "label": "O heap de um runtime gerenciado"
+            }
+          ]
+        },
+        {
+          "id": "git",
+          "label": "Git",
+          "folder": "Git",
+          "chapters": [
+            {
+              "id": "concepts-de-base",
+              "label": "Os conceitos básicos do Git"
+            },
+            {
+              "id": "commandes-essentielles",
+              "label": "Os comandos essenciais"
+            },
+            {
+              "id": "gitignore",
+              "label": "O arquivo .gitignore"
+            },
+            {
+              "id": "branches",
+              "label": "As branches"
+            },
+            {
+              "id": "annuler-et-historique",
+              "label": "Desfazer mudanças e navegar no histórico"
+            },
+            {
+              "id": "stash",
+              "label": "O stash"
+            },
+            {
+              "id": "tags",
+              "label": "As tags"
+            },
+            {
+              "id": "remotes",
+              "label": "Os repositórios remotos (remotes)"
+            },
+            {
+              "id": "github-et-plateformes",
+              "label": "GitHub e as plataformas de hospedagem Git"
+            },
+            {
+              "id": "pull-requests-github",
+              "label": "As pull requests no GitHub"
+            },
+            {
+              "id": "issues-et-projets-github",
+              "label": "Issues e gestão de projeto no GitHub"
+            },
+            {
+              "id": "resoudre-conflits",
+              "label": "Resolver um conflito de mesclagem"
+            },
+            {
+              "id": "rebase",
+              "label": "O rebase"
+            },
+            {
+              "id": "architecture-interne",
+              "label": "A arquitetura interna do Git"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ia",
+      "label": "IA",
+      "folder": "IA",
+      "subjects": [
+        {
+          "id": "fondamentaux-du-deep-learning",
+          "label": "Fondamentaux du deep learning",
+          "folder": "Fondamentaux du deep learning",
+          "chapters": [
+            {
+              "id": "reseaux-de-neurones",
+              "label": "As redes neurais: os fundamentos"
+            },
+            {
+              "id": "entrainement-descente-de-gradient",
+              "label": "O treinamento de um modelo e a descida do gradiente"
+            },
+            {
+              "id": "architectures-cnn-rnn-transformers",
+              "label": "Arquiteturas: CNN, RNN e Transformers"
+            },
+            {
+              "id": "deep-learning-pytorch",
+              "label": "Deep learning com PyTorch"
+            }
+          ]
+        },
+        {
+          "id": "nlp-llm",
+          "label": "NLP et LLM",
+          "folder": "NLP et LLM",
+          "chapters": [
+            {
+              "id": "nlp-et-llm",
+              "label": "Processamento de linguagem natural (NLP) e grandes modelos de linguagem (LLM)"
+            },
+            {
+              "id": "prompt-engineering",
+              "label": "Prompt engineering: estruturar uma requisição para melhores resultados"
+            },
+            {
+              "id": "llm-en-production",
+              "label": "LLM em produção: casos de uso e limites"
+            },
+            {
+              "id": "reduire-la-variance-des-reponses",
+              "label": "Reduzir a variância das respostas: self-consistency, voto majoritário e ensembling"
+            },
+            {
+              "id": "agents",
+              "label": "Agentes: loop de reflexão/ação e orquestração"
+            },
+            {
+              "id": "rag",
+              "label": "RAG: aumentar um LLM com dados externos"
+            },
+            {
+              "id": "prompt-injection",
+              "label": "Prompt injection: quando um dado se faz passar por instrução"
+            },
+            {
+              "id": "mcp",
+              "label": "MCP (Model Context Protocol): padronizar as ferramentas de um agente"
+            }
+          ]
+        },
+        {
+          "id": "applications-llm",
+          "label": "Applications LLM",
+          "folder": "Applications LLM",
+          "chapters": [
+            {
+              "id": "chatbot",
+              "label": "Construindo um chatbot: arquitetura, configuração e escalonamento"
+            },
+            {
+              "id": "assistant-agentique-terminal",
+              "label": "O assistente de IA agêntico no terminal: além do prompt simples"
+            }
+          ]
+        },
+        {
+          "id": "vision-et-ocr",
+          "label": "Vision et OCR",
+          "folder": "Vision et OCR",
+          "chapters": [
+            {
+              "id": "ocr-classique-vs-deep-learning",
+              "label": "OCR: do reconhecimento de padrões clássico ao deep learning"
+            },
+            {
+              "id": "detection-de-mise-en-page",
+              "label": "Detecção de layout: caixas delimitadoras, score de confiança e remoção de duplicatas"
+            },
+            {
+              "id": "modeles-document-ai",
+              "label": "Modelos \"Document AI\": entender um documento além do texto puro"
+            },
+            {
+              "id": "fine-tuning-modele-vision",
+              "label": "Treinar e fazer fine-tuning de um modelo de visão para um caso de negócio"
+            },
+            {
+              "id": "evaluer-un-ocr",
+              "label": "Avaliar um OCR: CER, WER e taxa de reconhecimento por campo"
+            },
+            {
+              "id": "post-traitement-correction",
+              "label": "Pós-processamento e correção de um OCR"
+            },
+            {
+              "id": "ocr-en-production",
+              "label": "Colocação em produção e monitoramento de um pipeline OCR"
+            },
+            {
+              "id": "gouvernance-documents-scannes",
+              "label": "Governança de dados para documentos escaneados"
+            }
+          ]
+        },
+        {
+          "id": "voix-ia",
+          "label": "Voix IA",
+          "folder": "Voix IA",
+          "chapters": [
+            {
+              "id": "synthese-classique-vs-deep-learning",
+              "label": "Síntese de voz: da concatenação clássica ao deep learning"
+            },
+            {
+              "id": "controler-la-prosodie",
+              "label": "Controlar a prosódia"
+            },
+            {
+              "id": "modeles-modernes-synthese",
+              "label": "Modelos modernos de síntese: os codecs neurais"
+            },
+            {
+              "id": "cloner-une-voix",
+              "label": "Clonar uma voz: técnica e questões éticas/legais"
+            },
+            {
+              "id": "fine-tuning-synthese-vocale",
+              "label": "Treinar e fazer fine-tuning de um modelo de síntese de voz"
+            },
+            {
+              "id": "evaluer-synthese-vocale",
+              "label": "Avaliar uma síntese de voz: MOS, inteligibilidade, latência"
+            },
+            {
+              "id": "choisir-fournisseur-mise-en-production",
+              "label": "Escolher um fornecedor e colocar em produção"
+            },
+            {
+              "id": "gouvernance-voix-ia",
+              "label": "Governança de um pipeline de voz IA"
+            }
+          ]
+        },
+        {
+          "id": "production-et-gouvernance",
+          "label": "Production et gouvernance",
+          "folder": "Production et gouvernance",
+          "chapters": [
+            {
+              "id": "gestion-dun-llm",
+              "label": "Monitoramento e gestão operacional de um LLM"
+            },
+            {
+              "id": "gouvernance-des-donnees",
+              "label": "Governança de dados para um sistema de IA"
+            },
+            {
+              "id": "reglementation-europeenne-ia",
+              "label": "Regulamentação europeia de IA: o AI Act"
+            },
+            {
+              "id": "watermarking-ia",
+              "label": "Watermarking do conteúdo gerado por IA"
+            },
+            {
+              "id": "stack-ia",
+              "label": "A stack de IA: as camadas de uma aplicação em produção"
+            }
+          ]
+        },
+        {
+          "id": "jeux-et-agents",
+          "label": "Jeux et agents",
+          "folder": "Jeux et agents",
+          "chapters": [
+            {
+              "id": "ia-de-jeu-par-imitation",
+              "label": "IA de jogo por imitação: aprender com um jogador humano"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gestion-de-projet-organisation",
+      "label": "Gestion de projet et organisation",
+      "folder": "Gestion de projet et organisation",
+      "subjects": [
+        {
+          "id": "organisation-en-entreprise",
+          "label": "Organisation en entreprise",
+          "folder": "Organisation en entreprise",
+          "chapters": [
+            {
+              "id": "roles-equipe-developpement",
+              "label": "Os papéis em uma equipe de desenvolvimento"
+            },
+            {
+              "id": "cycle-de-vie-dun-projet",
+              "label": "O ciclo de vida de um projeto"
+            },
+            {
+              "id": "documentation-et-communication-equipe",
+              "label": "Documentação e comunicação em equipe"
+            }
+          ]
+        },
+        {
+          "id": "gestion-de-projet",
+          "label": "Gestion de projet",
+          "folder": "Gestion de projet",
+          "chapters": [
+            {
+              "id": "methodologies-agile-scrum-kanban",
+              "label": "Metodologias: Agile, Scrum, Kanban"
             }
           ]
         }
