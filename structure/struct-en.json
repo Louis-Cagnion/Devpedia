@@ -1522,6 +1522,10 @@
         {
           "id": "pyramide-de-test",
           "label": "The test pyramid"
+        },
+        {
+          "id": "architecture-de-test",
+          "label": "Test suite architecture"
         }
       ]
     },

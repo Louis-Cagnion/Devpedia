@@ -1522,6 +1522,10 @@
         {
           "id": "pyramide-de-test",
           "label": "La pirámide de pruebas"
+        },
+        {
+          "id": "architecture-de-test",
+          "label": "Arquitectura de una suite de pruebas"
         }
       ]
     },

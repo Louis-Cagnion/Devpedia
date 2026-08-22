@@ -1542,6 +1542,10 @@
         {
           "id": "pyramide-de-test",
           "label": "A pirâmide de testes"
+        },
+        {
+          "id": "architecture-de-test",
+          "label": "Arquitetura de uma suíte de testes"
         }
       ]
     },
