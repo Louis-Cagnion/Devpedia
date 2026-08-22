@@ -1586,6 +1586,10 @@
         {
           "id": "couverture-de-code",
           "label": "La cobertura de código"
+        },
+        {
+          "id": "mocks-stubs-et-fakes-en-detail",
+          "label": "Mocks, stubs y fakes en detalle"
         }
       ]
     },
