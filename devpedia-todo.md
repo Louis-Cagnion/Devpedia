@@ -8,13 +8,9 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 Catégorie créée, premier chapitre en place (concepts fondamentaux : bloc, hash, consensus, smart contract — fait le 22/08/2026). Traitée en profondeur (plusieurs chapitres à terme, Solidity/smart contracts/réseaux type Avalanche/backends sur ICP), à trancher en écrivant comme la section Tests.
 
 ## 2. Section Automatisation (n8n)
-Ordre déjà validé par Louis (19/08/2026), du plus rapide au plus lent :
+Les 4 chapitres prévus sont faits (22/08/2026) : « Prise en main de l'interface », « Catalogue des fonctionnalités / types de nœuds », « Le format JSON d'un workflow » (vérifié auprès de la doc officielle n8n avant rédaction), « L'industrialisation » (self-hosted vs cloud, variables d'environnement vs `$vars`, credentials, environnements dev/prod, supervision des exécutions, sécurité/NODES_EXCLUDE — vérifié auprès de la doc officielle n8n).
 
-Chapitres faits le 22/08/2026 : « Prise en main de l'interface » (canvas, nœuds, connexions, panneau d'exécution, test manuel), « Catalogue des fonctionnalités / types de nœuds » (trigger, action, code node JS/Python, nœuds conditionnels/branchement, error workflow), « Le format JSON d'un workflow » (structure nodes/connections, credentials en référence, format des données, versionner comme du code — vérifié auprès de la doc officielle n8n avant rédaction, pas de théorie non vérifiée).
-
-Restants :
-1. **Chapitre n8n « L'industrialisation »** (self-hosted vs n8n cloud, variables d'environnement, credentials, environnements dev/prod, supervision des exécutions, sécurité de l'éditeur/restriction des nœuds sensibles comme Execute Command) : le plus transversal, donc le plus long à structurer.
-2. Potentiellement d'autres chapitres n8n, à compléter en écrivant (même logique que la section Tests ci-dessous).
+Potentiellement d'autres chapitres n8n, à compléter en écrivant (même logique que la section Tests ci-dessous).
 
 **Décidé (22/08/2026)** : contenu générique uniquement (l'outil vu de l'extérieur), sans documenter l'usage concret de ce dépôt par `git-scrapping` — évite de mélanger doc générale et doc spécifique à un projet. Le cas `git-scrapping` peut être mentionné en exemple ponctuel sans devenir le fil conducteur. Plus rien ne bloque l'écriture.
 
