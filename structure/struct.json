@@ -132,6 +132,18 @@
             {
               "id": "aleatoire-et-generateurs",
               "label": "L'aléatoire et les générateurs"
+            },
+            {
+              "id": "metadonnees-exif-et-format-raw",
+              "label": "Métadonnées EXIF et format RAW : ce qu'une photo contient au-delà de l'image"
+            },
+            {
+              "id": "hachage-perceptuel-similarite-dimages",
+              "label": "Le hachage perceptuel : reconnaître des images similaires, pas identiques"
+            },
+            {
+              "id": "empreinte-audio-reconnaissance-musicale",
+              "label": "L'empreinte audio : reconnaître une chanson en quelques secondes"
             }
           ]
         },
@@ -547,6 +559,10 @@
               "label": "Qu'est-ce que le cloud ?"
             },
             {
+              "id": "tpu-npu-lpu-vpu",
+              "label": "Au-delà du GPU : TPU, NPU, LPU et VPU"
+            },
+            {
               "id": "elk-agregation-de-logs",
               "label": "ELK : centraliser et interroger les logs d'une infrastructure"
             },
@@ -584,6 +600,10 @@
             {
               "id": "bonnes-pratiques-et-securite",
               "label": "Bonnes pratiques et sécurité"
+            },
+            {
+              "id": "conteneurs-manages-ecs-et-fargate",
+              "label": "Conteneurs managés dans le cloud : ECS et Fargate"
             }
           ]
         },
@@ -680,6 +700,33 @@
             {
               "id": "n8n-lindustrialisation",
               "label": "n8n : l'industrialisation"
+            }
+          ]
+        },
+        {
+          "id": "conception-a-grande-echelle",
+          "label": "Conception à grande échelle",
+          "folder": "Conception à grande échelle",
+          "chapters": [
+            {
+              "id": "system-design-lexercice",
+              "label": "Le \"system design\" comme genre d'exercice"
+            },
+            {
+              "id": "autoscaling-et-repartition-de-charge",
+              "label": "Autoscaling et répartition de charge"
+            },
+            {
+              "id": "cdn-et-diffusion-adaptative",
+              "label": "CDN et diffusion adaptative : le cas Netflix"
+            },
+            {
+              "id": "fil-dactualite-fan-out",
+              "label": "Le fil d'actualité : construire le flux de chacun (fan-out)"
+            },
+            {
+              "id": "direct-et-chat-a-grande-echelle",
+              "label": "Diffusion en direct et chat à grande échelle"
             }
           ]
         }
@@ -1497,6 +1544,10 @@
             {
               "id": "owasp-top-10",
               "label": "L'OWASP Top 10 : le référentiel standard de l'industrie"
+            },
+            {
+              "id": "fingerprinting-navigateur-et-appareil",
+              "label": "Le fingerprinting : reconnaître un appareil sans rien y stocker"
             }
           ]
         },

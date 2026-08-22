@@ -2,6 +2,37 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## 6 nouveaux chapitres issus d'une capture Instagram, dont une nouvelle sous-section "Conception à grande échelle" (2026-08-22)
+
+Point de départ : une capture d'écran (`IMG_9833.png`, carrousel Instagram du compte `rick.theengineer`) comparant CPU/GPU/TPU/NPU/LPU/VPU, puis un tour des vignettes de reels du même compte pour repérer d'autres sujets absents du site. Image supprimée du dépôt une fois son contenu exploité (elle n'était pas trackée par git).
+
+**Règle du nombre de catégories top-level** : Louis a d'abord énoncé "10 maximum" puis corrigé lui-même en "11 maximum" dans la foulée — le projet en compte déjà exactement 11 (hors accueil), donc à la limite mais pas au-dessus. Conséquence pour tout ajout : passer par une sous-section (subject) ou un chapitre dans une catégorie existante, jamais une 12ᵉ catégorie, sauf accord explicite de Louis pour fusionner deux catégories existantes au préalable.
+
+**Chapitres ajoutés, tous vérifiés/régénérés via `node scripts/generate-struct.js` (liens internes validés à chaque fois)** :
+- `Infrastructure & DevOps/Infrastructure/tpu-npu-lpu-vpu.md` — TPU/NPU/LPU/VPU, en complément de `cpu-vs-gpu.md` déjà existant (CPU/GPU non retraités). LPU (Groq) et VPU (Intel Movidius) vérifiés par recherche web avant rédaction, pas connus avec certitude a priori.
+- `Données/Représentation des données/metadonnees-exif-et-format-raw.md` — JPEG vs RAW, bloc EXIF, piège vie privée (GPS embarqué).
+- `Sécurité/Cybersécurité/fingerprinting-navigateur-et-appareil.md` — canvas fingerprinting, distinction avec le suivi par cookie.
+- `Infrastructure & DevOps/Docker/conteneurs-manages-ecs-et-fargate.md` — ECS/Fargate, réutilise la grille IaaS/PaaS déjà posée par `le-cloud.md`.
+- `Données/Représentation des données/hachage-perceptuel-similarite-dimages.md` — pHash/aHash, distance de Hamming, distingué du hachage cryptographique déjà couvert par `mots-de-passe-et-hachage.md`.
+- `Données/Représentation des données/empreinte-audio-reconnaissance-musicale.md` — principe Shazam (spectrogramme, pics, hachage de paires), présenté comme l'équivalent audio du hachage perceptuel plutôt que de réexpliquer le hachage depuis zéro.
+
+**Nouvelle sous-section créée : "Conception à grande échelle"** (dossier `content/Infrastructure & DevOps/Conception à grande échelle/`, order 7 dans la catégorie), à la demande explicite de Louis qui a marqué cet axe prioritaire (comprendre comment les grosses applications gèrent le trafic à haut niveau — il a cité Uber, LeetCode, Netflix). Rien de comparable n'existait (les chapitres d'architecture existants comme `microservices.md` restent au niveau du code, pas du dimensionnement). Trois chapitres, dans un ordre du plus fondamental au plus composite :
+1. `system-design-lexercice.md` — le "system design" comme genre d'exercice (méthode en 4 étapes, exemples Uber/LeetCode), distingué de `qualite-et-architecture-du-code.md` (choix pris avant le code, pas qualité du code).
+2. `autoscaling-et-repartition-de-charge.md` — couche calcul (load balancer, health checks, horizontal vs vertical, autoscaling), présenté comme le pendant de `bases-de-donnees-a-fort-trafic.md` qui couvre déjà la couche base de données.
+3. `cdn-et-diffusion-adaptative.md` — CDN (Netflix Open Connect) et streaming adaptatif (HLS/DASH), en s'appuyant sur le chapitre précédent pour la distinction contenu partagé/personnalisé.
+
+Cf. mémoire long-terme `devpedia-content-priority-system-design.md` (Louis a explicitement demandé que ce type de sujet soit priorisé à l'avenir) et `devpedia-max-top-level-sections.md` (la règle des 11 catégories max).
+
+Louis a validé chapitre par chapitre au fil de la rédaction, puis a explicitement demandé (à partir du 4ᵉ chapitre de ce lot) d'enchaîner sans redemander confirmation à chaque fois, le temps qu'il puisse relire/écouter plus tard (une autre session travaillant en parallèle sur la lecture audio écran verrouillé, cf. section todo dédiée).
+
+## 2 chapitres de plus dans "Conception à grande échelle" : Instagram et Twitch, pas les 5 demandés (2026-08-22)
+
+Louis a demandé des chapitres sur les conceptions à grande échelle d'Instagram, TikTok, YouTube, Twitch et Spotify, en flaggant lui-même le risque de répétitif. Évaluation avant rédaction : TikTok, YouTube et Spotify reposent tous sur le même CDN + streaming adaptatif déjà couvert par `cdn-et-diffusion-adaptative.md` (Netflix), sans concept d'infra réellement nouveau par-dessus — leur partie vraiment distinctive (algorithme de recommandation) relève du machine learning, pas du dimensionnement d'infra, donc hors périmètre de cette sous-section. Seuls deux sujets apportaient un concept nouveau : Instagram (comment construire le fil de chacun) et Twitch (direct + chat, différent d'un streaming à la demande). Proposé à Louis via question à choix, qui a choisi de s'en tenir à ces deux-là plutôt que d'écrire les 5.
+
+Ajoutés (validés, `generate-struct.js` propre) :
+- `fil-dactualite-fan-out.md` (order 4) — fan-out sur écriture vs sur lecture, "problème de la célébrité", modèle hybride.
+- `direct-et-chat-a-grande-echelle.md` (order 5) — ingestion + transcodage en direct, délai de diffusion incompressible, chat en pub/sub explicitement mis en miroir avec le fan-out du fil d'actualité (même contenu pour tous vs contenu personnalisé par abonnement).
+
 ## Test réel iPhone : la piste MediaSession seule ne suffit pas (2026-08-22)
 
 Louis a testé en conditions réelles sur iPhone/iOS ce que le todo laissait ouvert : est-ce que la synchronisation Bluetooth (MediaSession API, livrée le même jour) suffit à faire reconnaître le lecteur du site comme une vraie session média par l'OS, sans passer par un pipeline de pré-génération audio. Résultat négatif et net : appuyer sur play sur le casque Bluetooth lance l'app iTunes/Apple Music à la place du site, y compris quand une lecture était déjà en pause sur le site (`navigator.mediaSession.playbackState` correctement à `"paused"` avant l'appui).
