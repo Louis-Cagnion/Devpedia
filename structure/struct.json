@@ -1128,32 +1128,39 @@
       ]
     },
     {
-      "id": "organisation-en-entreprise",
-      "label": "Organisation en entreprise",
-      "folder": "Organisation en entreprise",
-      "chapters": [
+      "id": "gestion-de-projet-organisation",
+      "label": "Gestion de projet et organisation",
+      "folder": "Gestion de projet et organisation",
+      "subjects": [
         {
-          "id": "roles-equipe-developpement",
-          "label": "Les rôles dans une équipe de développement"
+          "id": "organisation-en-entreprise",
+          "label": "Organisation en entreprise",
+          "folder": "Organisation en entreprise",
+          "chapters": [
+            {
+              "id": "roles-equipe-developpement",
+              "label": "Les rôles dans une équipe de développement"
+            },
+            {
+              "id": "cycle-de-vie-dun-projet",
+              "label": "Le cycle de vie d'un projet"
+            },
+            {
+              "id": "documentation-et-communication-equipe",
+              "label": "Documentation et communication en équipe"
+            }
+          ]
         },
         {
-          "id": "cycle-de-vie-dun-projet",
-          "label": "Le cycle de vie d'un projet"
-        },
-        {
-          "id": "documentation-et-communication-equipe",
-          "label": "Documentation et communication en équipe"
-        }
-      ]
-    },
-    {
-      "id": "gestion-de-projet",
-      "label": "Gestion de projet",
-      "folder": "Gestion de projet",
-      "chapters": [
-        {
-          "id": "methodologies-agile-scrum-kanban",
-          "label": "Méthodologies : Agile, Scrum, Kanban"
+          "id": "gestion-de-projet",
+          "label": "Gestion de projet",
+          "folder": "Gestion de projet",
+          "chapters": [
+            {
+              "id": "methodologies-agile-scrum-kanban",
+              "label": "Méthodologies : Agile, Scrum, Kanban"
+            }
+          ]
         }
       ]
     },
