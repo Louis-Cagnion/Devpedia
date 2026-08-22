@@ -106,7 +106,7 @@ audioEl.addEventListener("pause", () => {
 });
 
 // Purely diagnostic (cf. js/reader-debug.js): no state changes, just a timeline of what audioEl did.
-["play", "playing", "stalled", "suspend", "waiting", "ended"].forEach(type =>
+["play", "playing", "stalled", "suspend", "waiting", "ended", "seeking", "seeked"].forEach(type =>
     audioEl.addEventListener(type, () => logEvent(`audioEl:${type}`)));
 audioEl.addEventListener("error", () => logEvent("audioEl:error", `code=${audioEl.error?.code}`));
 
@@ -478,9 +478,27 @@ function speakNextViaAudio(entry) {
     const myGeneration = generation;
     scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs);
     currentEntryEndSeconds = (entry.startMs + entry.durationMs) / 1000;
-    audioEl.currentTime = entry.startMs / 1000;
     audioEl.playbackRate = readerRate;
-    audioEl.play();
+
+    /* Calling play() right after setting currentTime, without waiting for the seek it triggers to
+       actually land, played an instant of stale audio from wherever the clip previously was before
+       snapping to entry's real start -- audible as each segment's first word getting cut and
+       restarting (reported by Louis, 22/08/2026). Skipped when already close enough (the common
+       case: consecutive entries are concatenated back-to-back in the same clip, cf.
+       scripts/generate-audio.mjs, so there's often no real seek to wait for -- and a currentTime
+       write that lands on the same value the element already reports can fail to ever fire "seeked",
+       which would otherwise leave playback hanging silently instead of just starting immediately). */
+    const targetSeconds = entry.startMs / 1000;
+    const play = () => {
+        if (generation !== myGeneration) return;
+        audioEl.play().catch(err => logEvent("audioEl:play-rejected", err.message));
+    };
+    if (Math.abs(audioEl.currentTime - targetSeconds) < 0.05) {
+        play();
+    } else {
+        audioEl.addEventListener("seeked", play, { once: true });
+        audioEl.currentTime = targetSeconds;
+    }
 }
 
 /**
