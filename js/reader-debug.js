@@ -2,10 +2,13 @@
  * @brief On-page diagnostic log for the iOS lock-screen audio bug, for when no Mac is available
  * for Safari's remote Web Inspector. Persisted to localStorage (survives iOS silently killing and
  * reloading the page while backgrounded, unlike an in-memory log) and shown as an on-screen overlay
- * so it can be read directly on the phone. Opt-in via `?debug=1`/`?debug=0` in the URL, which flips
- * a localStorage flag rather than being read fresh on every load: manifest.json's start_url ignores
- * whatever query string was on the tab when "Add to Home Screen" ran, so the home-screen icon always
- * launches at the plain root -- the flag is what makes debug mode survive that.
+ * so it can be read directly on the phone.
+ *
+ * A home-screen "standalone" app on iOS keeps its own separate storage, not shared with a regular
+ * Safari tab on the same page (confirmed on a real iPhone, 22/08/2026: a ?debug=1 flag set from a
+ * Safari tab never reached the installed icon) -- so the flag has to be toggled from inside whichever
+ * context needs it, without relying on a URL (the standalone app has no address bar). 5 taps on the
+ * navbar logo within 2.5s flips it and reloads, working the same in a Safari tab or the installed app.
  *
  * Each session logs its own random boot id first: two different ids in the log with no "pagehide"
  * between them means iOS killed the page process outright rather than merely suspending it.
@@ -13,11 +16,30 @@
 const DEBUG_STORAGE_KEY = "devpedia-reader-debug-log";
 const DEBUG_FLAG_KEY = "devpedia-reader-debug-enabled";
 const MAX_LOG_ENTRIES = 300;
+const TOGGLE_TAP_COUNT = 5;
+const TOGGLE_TAP_WINDOW_MS = 2500;
 
-const debugParam = new URLSearchParams(location.search).get("debug");
-if (debugParam === "1") localStorage.setItem(DEBUG_FLAG_KEY, "1");
-else if (debugParam === "0") localStorage.removeItem(DEBUG_FLAG_KEY);
 export const DEBUG_ENABLED = localStorage.getItem(DEBUG_FLAG_KEY) === "1";
+
+/**
+ * @brief Wires the 5-taps-on-the-logo gesture that flips DEBUG_ENABLED and reloads. Delegated on
+ * `document` (rather than queried once) since the navbar is rendered asynchronously by js/nav.js,
+ * possibly after this runs. Call once at startup, regardless of whether debug mode is currently on.
+ */
+export function initReaderDebugToggle() {
+    let tapCount = 0;
+    let resetTimeoutId = null;
+    document.addEventListener("click", e => {
+        if (!e.target.closest(".logo")) return;
+        tapCount++;
+        clearTimeout(resetTimeoutId);
+        resetTimeoutId = setTimeout(() => { tapCount = 0; }, TOGGLE_TAP_WINDOW_MS);
+        if (tapCount < TOGGLE_TAP_COUNT) return;
+        if (DEBUG_ENABLED) localStorage.removeItem(DEBUG_FLAG_KEY);
+        else localStorage.setItem(DEBUG_FLAG_KEY, "1");
+        location.reload();
+    });
+}
 
 function readLog() {
     try {
@@ -29,7 +51,7 @@ function readLog() {
 
 let overlayEl = null;
 
-/** @brief Appends one timestamped line to the persisted log and refreshes the overlay. No-op unless `?debug=1`. */
+/** @brief Appends one timestamped line to the persisted log and refreshes the overlay. No-op unless DEBUG_ENABLED. */
 export function logEvent(label, detail = "") {
     if (!DEBUG_ENABLED) return;
     const log = readLog();
@@ -44,7 +66,7 @@ export function logEvent(label, detail = "") {
 
 /**
  * @brief Mounts the log overlay and starts tracking page lifecycle events (visibility, bfcache
- * restore/eviction). No-op unless `?debug=1`. Call once at startup.
+ * restore/eviction). No-op unless DEBUG_ENABLED. Call once at startup.
  */
 export function initReaderDebugOverlay() {
     if (!DEBUG_ENABLED) return;

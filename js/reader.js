@@ -19,7 +19,7 @@ import {
     calibrateRate,
     scheduleEstimatedWords,
 } from "./reader-highlight.js";
-import { logEvent, initReaderDebugOverlay } from "./reader-debug.js";
+import { logEvent, initReaderDebugOverlay, initReaderDebugToggle } from "./reader-debug.js";
 
 /* Web Speech API only (no cloud TTS, no auto-hosted engine): the site is 100% static
    (GitHub Pages), so this is the only option with zero cost and zero infrastructure.
@@ -110,6 +110,7 @@ audioEl.addEventListener("pause", () => {
     audioEl.addEventListener(type, () => logEvent(`audioEl:${type}`)));
 audioEl.addEventListener("error", () => logEvent("audioEl:error", `code=${audioEl.error?.code}`));
 
+initReaderDebugToggle();
 initReaderDebugOverlay();
 
 /* Playback speed, applied to each utterance in speakNext() and persisted across visits like
