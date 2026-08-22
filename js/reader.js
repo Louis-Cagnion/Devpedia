@@ -486,8 +486,13 @@ function speakNextViaAudio(entry) {
        restarting (reported by Louis, 22/08/2026). Skipped when already close enough (the common
        case: consecutive entries are concatenated back-to-back in the same clip, cf.
        scripts/generate-audio.mjs, so there's often no real seek to wait for -- and a currentTime
-       write that lands on the same value the element already reports can fail to ever fire "seeked",
-       which would otherwise leave playback hanging silently instead of just starting immediately). */
+       write that lands on the same value the element already reports can fail to ever fire "seeked").
+       The "seeked" listener alone still isn't enough: on a real iPhone, a "seeking"/"seeked" pair was
+       observed with no "play" ever following it, playback silently stuck until the next entry's own
+       transition happened to recover it several seconds later (confirmed via js/reader-debug.js,
+       23/08/2026) -- a raced listener attached just after an already in-flight seek started, most
+       likely. playOnce() plus the fallback timer below guarantees play() always fires eventually,
+       "seeked" or not. */
     const targetSeconds = entry.startMs / 1000;
     const play = () => {
         if (generation !== myGeneration) return;
@@ -496,7 +501,14 @@ function speakNextViaAudio(entry) {
     if (Math.abs(audioEl.currentTime - targetSeconds) < 0.05) {
         play();
     } else {
-        audioEl.addEventListener("seeked", play, { once: true });
+        let played = false;
+        const playOnce = () => {
+            if (played) return;
+            played = true;
+            play();
+        };
+        audioEl.addEventListener("seeked", playOnce, { once: true });
+        setTimeout(playOnce, 300);
         audioEl.currentTime = targetSeconds;
     }
 }
