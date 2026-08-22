@@ -30,6 +30,10 @@
         {
           "id": "reseaux-blockchain",
           "label": "Las redes blockchain"
+        },
+        {
+          "id": "backends-sur-icp",
+          "label": "Los backends en ICP"
         }
       ]
     },
