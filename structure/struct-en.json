@@ -1114,16 +1114,23 @@
           "label": "Roles in a Development Team"
         },
         {
-          "id": "methodologies-agile-scrum-kanban",
-          "label": "Methodologies: Agile, Scrum, Kanban"
-        },
-        {
           "id": "cycle-de-vie-dun-projet",
           "label": "The Project Lifecycle"
         },
         {
           "id": "documentation-et-communication-equipe",
           "label": "Documentation and Team Communication"
+        }
+      ]
+    },
+    {
+      "id": "gestion-de-projet",
+      "label": "Gestion de projet",
+      "folder": "Gestion de projet",
+      "chapters": [
+        {
+          "id": "methodologies-agile-scrum-kanban",
+          "label": "Methodologies: Agile, Scrum, Kanban"
         }
       ]
     },

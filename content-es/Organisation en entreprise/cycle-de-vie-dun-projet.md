@@ -1,10 +1,10 @@
 ---
-order: 3
+order: 2
 ---
 
 # El ciclo de vida de un proyecto
 
-Un proyecto siempre atraviesa las mismas grandes etapas, desde la idea inicial hasta su uso real, ya sea que el equipo trabaje en [cascada o en ágil](/?c=organisation-en-entreprise&p=methodologies-agile-scrum-kanban).
+Un proyecto siempre atraviesa las mismas grandes etapas, desde la idea inicial hasta su uso real, ya sea que el equipo trabaje en [cascada o en ágil](/?c=gestion-de-projet&p=methodologies-agile-scrum-kanban).
 
 ## Las etapas
 

@@ -1189,16 +1189,23 @@
           "label": "Os papéis em uma equipe de desenvolvimento"
         },
         {
-          "id": "methodologies-agile-scrum-kanban",
-          "label": "Metodologias: Agile, Scrum, Kanban"
-        },
-        {
           "id": "cycle-de-vie-dun-projet",
           "label": "O ciclo de vida de um projeto"
         },
         {
           "id": "documentation-et-communication-equipe",
           "label": "Documentação e comunicação em equipe"
+        }
+      ]
+    },
+    {
+      "id": "gestion-de-projet",
+      "label": "Gestion de projet",
+      "folder": "Gestion de projet",
+      "chapters": [
+        {
+          "id": "methodologies-agile-scrum-kanban",
+          "label": "Metodologias: Agile, Scrum, Kanban"
         }
       ]
     },

@@ -1,10 +1,10 @@
 ---
-order: 3
+order: 2
 ---
 
 # The Project Lifecycle
 
-A project always goes through the same broad stages, from the initial idea to real-world use, whether the team works in [waterfall or Agile](/?c=organisation-en-entreprise&p=methodologies-agile-scrum-kanban).
+A project always goes through the same broad stages, from the initial idea to real-world use, whether the team works in [waterfall or Agile](/?c=gestion-de-projet&p=methodologies-agile-scrum-kanban).
 
 ## The stages
 

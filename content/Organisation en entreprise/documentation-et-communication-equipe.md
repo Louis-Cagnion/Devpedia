@@ -1,5 +1,5 @@
 ---
-order: 4
+order: 3
 ---
 
 # Documentation et communication en équipe
