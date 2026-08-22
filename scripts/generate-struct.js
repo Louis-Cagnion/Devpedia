@@ -23,6 +23,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { resolveLegacyCategory } from "../js/legacy-category-redirects.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_CONTENT_DIR = path.join(__dirname, "..", "content");
@@ -250,11 +251,19 @@ export function validateInternalLinks(contentDir, struct) {
             if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
 
             const text = fs.readFileSync(entryPath, "utf-8");
-            for (const [link, categoryId, subjectId, chapterId] of text.matchAll(INTERNAL_LINK_PATTERN)) {
+            for (const [link, rawCategoryId, rawSubjectId, rawChapterId] of text.matchAll(INTERNAL_LINK_PATTERN)) {
+                /* A rawCategoryId folded away by a past site reorganization (see
+                   legacy-category-redirects.js) resolves to its new location first, so an old
+                   unrewritten link validates against where its target actually lives now. */
+                const { categoryId, subjectId, pageId: chapterId } = resolveLegacyCategory({
+                    categoryId: rawCategoryId,
+                    subjectId: rawSubjectId ?? null,
+                    pageId: rawChapterId ?? rawCategoryId
+                });
                 const category = index.get(categoryId);
                 if (!category) {
                     broken.push(`${entryPath} -> ${link} (catégorie "${categoryId}" introuvable)`);
-                } else if (chapterId === undefined || (!subjectId && chapterId === categoryId)) {
+                } else if (rawChapterId === undefined || (!subjectId && chapterId === categoryId)) {
                     /* No `p` at all, or p=<categoryId> (same value as c=): both link to the
                        category's own intro page (its description.md), never a chapter to check. */
                 } else if (subjectId) {

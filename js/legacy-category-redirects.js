@@ -31,12 +31,12 @@ export const LEGACY_CATEGORY_REDIRECTS = {
     "cybersecurite": { newCategory: "securite", asSubject: true },
     "authentification": { newCategory: "securite", asSubject: false },
 
-    "qualite-et-architecture-du-code": { newCategory: "qualite-performance-outils", asSubject: true },
-    "performance": { newCategory: "qualite-performance-outils", asSubject: true },
-    "git": { newCategory: "qualite-performance-outils", asSubject: true },
+    "qualite-et-architecture-du-code": { newCategory: "qualite-performance-et-outils", asSubject: true },
+    "performance": { newCategory: "qualite-performance-et-outils", asSubject: true },
+    "git": { newCategory: "qualite-performance-et-outils", asSubject: true },
 
-    "organisation-en-entreprise": { newCategory: "gestion-de-projet-organisation", asSubject: true },
-    "gestion-de-projet": { newCategory: "gestion-de-projet-organisation", asSubject: true },
+    "organisation-en-entreprise": { newCategory: "gestion-de-projet-et-organisation", asSubject: true },
+    "gestion-de-projet": { newCategory: "gestion-de-projet-et-organisation", asSubject: true },
 
     "langages-de-programmation": { newCategory: "langages", asSubject: false },
     "langages-de-balisage": { newCategory: "langages", asSubject: false },
