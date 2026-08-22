@@ -71,20 +71,11 @@ Point explicite de Louis, à respecter avant de rédiger quoi que ce soit : sa v
 
 Étape 1 (avant toute rédaction) : discussion avec Louis pour caler l'angle de la section, en s'appuyant sur le fonctionnement réel de l'IA plutôt que sur l'intuition de Louis seule.
 
-## 7. Chapitre isolé : raccourcis clavier VS Code
-**Être efficace sur le code grâce aux raccourcis clavier** : `bases-de-l-informatique`, à côté de `editeur-de-code-et-ide.md`. À couvrir : se déplacer dans l'arbre du projet (explorateur de fichiers), se déplacer rapidement dans un fichier (recherche de symbole, aller à une ligne, navigation par mots/blocs), sélection multiple (une ou plusieurs sections, multi-curseur), fermer/gérer les onglets de fichiers ouverts, ouvrir une preview Markdown, la palette de commandes (Ctrl+Maj+P) et son usage général au-delà des raccourcis fixes.
-
 ## 9. Nouvelle catégorie : Gestion de projet
 Catégorie créée, `methodologies-agile-scrum-kanban.md` déplacé et premier chapitre en place (fait le 22/08/2026). Reste à ajouter des chapitres.
 
 - **Chapitres à ajouter** (pas figé, à trancher en écrivant, « et plus si affinité ») : backlog et user stories (rédaction, critères d'acceptation, INVEST) ; estimation (points de complexité vs estimation en temps, planning poker) ; outils de suivi (board physique/Jira/Trello/Linear, ticket, epic) ; éventuellement SAFe/Scrumban pour les cas hybrides, OKR pour le lien objectifs ↔ exécution.
 - **Vérifié le 21/08/2026** : la notion de backlog n'est nulle part expliquée en profondeur dans le site aujourd'hui, seulement nommée sans lien dans `CI-CD/azure-devops-plateforme.md` (tableau des services Boards) et dans `Organisation en entreprise/roles-equipe-developpement.md` (rôle du Product Owner). Une fois le chapitre « backlog et user stories » ci-dessus écrit, mettre à jour ces deux chapitres pour y ajouter un lien vers lui (règle 7bis de `prompt.md` : jargon nommé doit être défini ou lié).
-
-## 10. Nettoyer le frontmatter `order` des chapitres dans `IA` (cosmétique, pas urgent)
-Trouvé le 21/08/2026 en auditant toute la catégorie `IA` à la demande de Louis. Le champ `order` n'est lu par **aucun script du site** (`grep` sur `js/` : seul `parser.js` référence `order`, uniquement dans un commentaire) — la navigation réelle suit uniquement l'ordre des tableaux `chapters` dans `structure/struct.json`. `order` est donc purement documentaire aujourd'hui, mais incohérent :
-- Au niveau des **sujets** (fichier principal de chaque sous-catégorie, ex. `voix-ia.md`), c'est propre : 1 à 6, dans l'ordre exact des sujets de `structure/struct.json` (`fondamentaux-du-deep-learning`=1 … `production-et-gouvernance`=6).
-- Au niveau des **chapitres**, c'est incohérent : `Fondamentaux du deep learning` et `Voix IA` repartent de 1 pour chaque sujet (1-4 et 1-8), mais `NLP et LLM` (5-12), `Applications LLM` (14-15), `Vision et OCR` (17-24) et `Production et gouvernance` (11-16, avec un trou à 15) continuent une numérotation globale qui se chevauche entre sujets — `NLP et LLM/prompt-injection` (order=11) et `mcp` (order=12) portent exactement les mêmes valeurs que `Production et gouvernance/gestion-dun-llm` (order=11) et `gouvernance-des-donnees` (order=12).
-- Sans impact fonctionnel tant que rien ne lit ce champ, mais à corriger si quelqu'un l'implémente un jour en supposant (à raison, vu la règle 11 de `prompt.md` et le pattern déjà correct sur `Fondamentaux`/`Voix IA`) qu'il redémarre à 1 par sujet. Correction mécanique : renuméroter 1..N dans chaque sujet concerné (`NLP et LLM`, `Applications LLM`, `Vision et OCR`, `Production et gouvernance`), sans toucher aux valeurs déjà correctes.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
