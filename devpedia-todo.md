@@ -33,10 +33,7 @@ Une fois cette décision tranchée en faveur du pré-rendu : mettre à jour `con
 - Piste intermédiaire à vérifier expérimentalement avant de trancher : tester en conditions réelles (écran verrouillé, Android puis iOS) si un `MediaSession.playbackState = "playing"` actif suffit à prolonger `speechSynthesis` au-delà de quelques secondes — les sources consultées le 21/08/2026 ne confirment ce comportement sur aucune plateforme.
 
 ## 4. Catégorie Tests
-Catégorie créée, 2 premiers chapitres en place (vocabulaire QA/ISTQB, pyramide de test — faits le 22/08/2026). Section complète demandée, pas des chapitres isolés.
-
-Chapitre demandé explicitement, restant :
-- **Architecture de test** : organisation d'une suite de tests (arborescence, fixtures, environnements, test doubles/mocks/stubs), comment rester maintenable.
+Catégorie créée, les 3 chapitres explicitement demandés en place (vocabulaire QA/ISTQB, pyramide de test, architecture de test — faits le 22/08/2026). Section complète demandée, pas des chapitres isolés.
 
 À compléter en écrivant (pas figé) pour une section réellement complète : tests unitaires, tests d'intégration, tests end-to-end, TDD, mocks/stubs/fakes en détail, couverture de code (et ses pièges : 100% de couverture ≠ absence de bugs), et si le niveau « bonnes pratiques avancées » est visé — property-based testing, tests de mutation.
 
