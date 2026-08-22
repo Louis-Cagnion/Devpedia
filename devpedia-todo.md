@@ -25,8 +25,5 @@ Ce qui fonctionne de façon fiable dans ce cas (mécanisme utilisé par tout lec
 
 Une fois une architecture pré-rendue effectivement implémentée (si retenue) : mettre à jour `content/IA/Voix IA/choisir-fournisseur-mise-en-production.md`, qui justifie aujourd'hui le choix de la Web Speech API par le fait que Devpédia est « 100% statique... sans serveur ni étape de build » (confirmé au passage : `.github/workflows/pages.yml` ne fait que checkout + upload, aucun build actuellement). Un pré-rendu audio (ex. Piper exécuté à la publication) introduirait une **étape de build** sans nécessiter de **serveur d'inférence live** — nuance absente du chapitre, qui traite aujourd'hui les deux comme un seul bloc. À corriger dans ce chapitre seulement une fois ce point effectivement implémenté, pas avant (éviter de documenter une architecture qui n'existe pas encore).
 
-## 4. Chapitre sur les skills des LLM
-Demandé par Louis (22/08/2026), en s'appuyant notamment sur skills.sh et le compte GitHub de Matt Pocock. Nécessite une recherche dédiée avant rédaction (concept, convention de fichier, différence avec un prompt/agent classique). Reste à choisir l'emplacement dans la structure (probablement IA > NLP et LLM, aux côtés de prompt-engineering.md, ou IA > Applications LLM selon ce que la recherche révèle).
-
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
