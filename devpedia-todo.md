@@ -4,10 +4,8 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `prompt.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
-## 1. Chapitres isolés issus de l'audit cursus 42 (`../42Cursus`)
-Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire FR/EN/ES/BR comme le reste du site.
-
-- **Blockchain et smart contracts** (Solidity, réseaux type Avalanche, backends sur ICP) : catégorie top-level « Blockchain » dès le premier chapitre, traitée en profondeur (plusieurs chapitres à terme : concepts, Solidity, smart contracts, réseaux). Premier chapitre à écrire : une introduction générale aux concepts (blockchain, bloc, hash, consensus, smart contract), les suivants à trancher en écrivant.
+## 1. Catégorie Blockchain
+Catégorie créée, premier chapitre en place (concepts fondamentaux : bloc, hash, consensus, smart contract — fait le 22/08/2026). Traitée en profondeur (plusieurs chapitres à terme, Solidity/smart contracts/réseaux type Avalanche/backends sur ICP), à trancher en écrivant comme la section Tests.
 
 ## 2. Section Automatisation (n8n)
 Ordre déjà validé par Louis (19/08/2026), du plus rapide au plus lent :
