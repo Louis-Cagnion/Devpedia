@@ -1558,6 +1558,10 @@
         {
           "id": "tests-end-to-end",
           "label": "End-to-end tests"
+        },
+        {
+          "id": "tdd",
+          "label": "TDD (Test-Driven Development)"
         }
       ]
     },

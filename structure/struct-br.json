@@ -1578,6 +1578,10 @@
         {
           "id": "tests-end-to-end",
           "label": "Os testes end-to-end"
+        },
+        {
+          "id": "tdd",
+          "label": "O TDD (Test-Driven Development)"
         }
       ]
     },
