@@ -1594,6 +1594,10 @@
         {
           "id": "property-based-testing",
           "label": "El property-based testing"
+        },
+        {
+          "id": "tests-de-mutation",
+          "label": "Las pruebas de mutación"
         }
       ]
     },
