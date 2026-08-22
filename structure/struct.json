@@ -155,6 +155,10 @@
         {
           "id": "les-index",
           "label": "Les index"
+        },
+        {
+          "id": "orm",
+          "label": "L'ORM : mapper des objets sur des tables relationnelles"
         }
       ]
     },
@@ -244,6 +248,10 @@
         {
           "id": "securite-api-web",
           "label": "Sécurité des API web"
+        },
+        {
+          "id": "waf-pare-feu-applicatif",
+          "label": "Le WAF : filtrer le trafic avant qu'il n'atteigne l'application"
         },
         {
           "id": "tests-et-audit-de-securite",
@@ -616,6 +624,10 @@
         {
           "id": "automatisation-workflow",
           "label": "L'automatisation par workflow visuel"
+        },
+        {
+          "id": "elk-agregation-de-logs",
+          "label": "ELK : centraliser et interroger les logs d'une infrastructure"
         }
       ]
     },
@@ -1025,6 +1037,10 @@
             {
               "id": "asynchrone",
               "label": "La programmation asynchrone (callbacks, Promises, async/await)"
+            },
+            {
+              "id": "ssr-vs-csr",
+              "label": "SSR vs CSR : où le HTML est-il construit ?"
             }
           ]
         },
@@ -1438,6 +1454,10 @@
         {
           "id": "accessibilite-ux",
           "label": "Accessibilité de base (UX)"
+        },
+        {
+          "id": "internationalisation-i18n-et-rtl",
+          "label": "Internationalisation (i18n) et RTL : concevoir au-delà d'une seule langue"
         },
         {
           "id": "recherche-utilisateur",
