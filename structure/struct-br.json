@@ -159,6 +159,10 @@
         {
           "id": "orm",
           "label": "O ORM: mapear objetos em tabelas relacionais"
+        },
+        {
+          "id": "bases-de-donnees-a-fort-trafic",
+          "label": "Bancos de dados de alto tráfego: nunca bloquear o usuário em um recálculo custoso"
         }
       ]
     },

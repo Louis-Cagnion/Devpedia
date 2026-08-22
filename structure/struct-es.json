@@ -159,6 +159,10 @@
         {
           "id": "orm",
           "label": "El ORM: mapear objetos sobre tablas relacionales"
+        },
+        {
+          "id": "bases-de-donnees-a-fort-trafic",
+          "label": "Bases de datos de alto tráfico: nunca bloquear al usuario con un recálculo costoso"
         }
       ]
     },

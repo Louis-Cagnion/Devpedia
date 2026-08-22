@@ -159,6 +159,10 @@
         {
           "id": "orm",
           "label": "L'ORM : mapper des objets sur des tables relationnelles"
+        },
+        {
+          "id": "bases-de-donnees-a-fort-trafic",
+          "label": "Bases de données à fort trafic : ne jamais bloquer l'utilisateur sur un recalcul coûteux"
         }
       ]
     },

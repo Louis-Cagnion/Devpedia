@@ -159,6 +159,10 @@
         {
           "id": "orm",
           "label": "The ORM: Mapping Objects onto Relational Tables"
+        },
+        {
+          "id": "bases-de-donnees-a-fort-trafic",
+          "label": "High-Traffic Databases: Never Block the User on a Costly Recalculation"
         }
       ]
     },
