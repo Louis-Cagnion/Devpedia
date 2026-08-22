@@ -487,6 +487,10 @@
             {
               "id": "elk-agregation-de-logs",
               "label": "ELK : centraliser et interroger les logs d'une infrastructure"
+            },
+            {
+              "id": "pwa-progressive-web-app",
+              "label": "La PWA : un site web qui se comporte comme une application"
             }
           ]
         },
