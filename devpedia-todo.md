@@ -7,7 +7,6 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 ## 1. Chapitres isolés issus de l'audit cursus 42 (`../42Cursus`)
 Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire FR/EN/ES/BR comme le reste du site.
 
-- **Rendu 3D bas niveau et fenêtrage** (raycasting façon Wolfenstein, MinilibX/X11 — vu dans `Cub3D`/`fract-ol`) : sous-catégorie « Graphisme » de `Fondamentaux`, avec ce chapitre comme premier contenu (nouveau dossier `content*/Fondamentaux/Graphisme/`, à ajouter dans `structure/struct*.json` ou régénérer via `node scripts/generate-struct.js` pour le FR).
 - **Blockchain et smart contracts** (Solidity, réseaux type Avalanche, backends sur ICP) : catégorie top-level « Blockchain » dès le premier chapitre, traitée en profondeur (plusieurs chapitres à terme : concepts, Solidity, smart contracts, réseaux). Premier chapitre à écrire : une introduction générale aux concepts (blockchain, bloc, hash, consensus, smart contract), les suivants à trancher en écrivant.
 
 ## 2. Section Automatisation (n8n)
