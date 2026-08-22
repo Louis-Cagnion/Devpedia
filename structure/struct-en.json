@@ -632,6 +632,10 @@
             {
               "id": "n8n-prise-en-main-de-linterface",
               "label": "n8n: getting started with the interface"
+            },
+            {
+              "id": "n8n-catalogue-des-fonctionnalites",
+              "label": "n8n: feature catalog and node types"
             }
           ]
         }
