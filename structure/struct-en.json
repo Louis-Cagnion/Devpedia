@@ -1562,6 +1562,10 @@
         {
           "id": "tdd",
           "label": "TDD (Test-Driven Development)"
+        },
+        {
+          "id": "couverture-de-code",
+          "label": "Code coverage"
         }
       ]
     },

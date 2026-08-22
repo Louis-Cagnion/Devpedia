@@ -1562,6 +1562,10 @@
         {
           "id": "tdd",
           "label": "Le TDD (Test-Driven Development)"
+        },
+        {
+          "id": "couverture-de-code",
+          "label": "La couverture de code"
         }
       ]
     },
