@@ -4,30 +4,17 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `prompt.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
-## 0. Regroupement des catégories top-level (26+ → 10)
-Décidé le 22/08/2026 : les liens internes existants (jusqu'à 441 fichiers pour une seule catégorie) restent fonctionnels grâce à une table de redirection dans `js/legacy-category-redirects.js` (`LEGACY_CATEGORY_REDIRECTS`), câblée dans `js/router.js` — aucun contenu à réécrire pour ça. Une fusion à la fois, commit+push après chacune.
-
-- [x] **Gestion de projet et organisation** (Organisation en entreprise, Gestion de projet) — fait le 22/08/2026.
-- [x] **Fondamentaux** (Bases de l'informatique, Algorithmes, Mathématiques) — fait le 22/08/2026. Graphisme à ajouter comme 4e sous-catégorie une fois ce chapitre écrit.
-- [ ] **Langages** (Langages de programmation, Langages de balisage, DSL, Shells) — Langages de programmation/balisage/Shells ont déjà leurs propres `subjects` : à aplatir en sous-catégories directes de `Langages` plutôt que d'imbriquer un niveau de plus (redirect déjà prévu avec `asSubject: false`).
-- [x] **Données** (Bases de données, Data Science, Représentation des données, Traitement de documents) — fait le 22/08/2026.
-- [x] **Infrastructure & DevOps** (Infrastructure, Docker, CI-CD, Administration système, Réseaux) — fait le 22/08/2026. Automatisation à ajouter comme 6e sous-catégorie une fois créée.
-- [x] **Sécurité** (Cybersécurité, Authentification) — fait le 22/08/2026, sous-catégories d'Authentification aplaties directement sous Sécurité.
-- [x] **Qualité, performance et outils** (Qualité et architecture du code, Performance, Git) — fait le 22/08/2026.
-
-Catégories qui restent top-level telles quelles : IA, UI-UX, Blockchain (décidé le 22/08/2026).
-
 ## 1. Chapitres isolés issus de l'audit cursus 42 (`../42Cursus`)
 Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire FR/EN/ES/BR comme le reste du site.
 
-- **Rendu 3D bas niveau et fenêtrage** (raycasting façon Wolfenstein, MinilibX/X11 — vu dans `Cub3D`/`fract-ol`) : **décidé le 22/08/2026** — sous-catégorie « Graphisme » de la future catégorie top-level `Fondamentaux` (cf. section « Regroupement des catégories » ci-dessous), avec ce chapitre comme premier contenu.
-- **PWA** (offline, installabilité, service workers) : **décidé le 22/08/2026** — chapitre dans la sous-catégorie `Infrastructure` de la future catégorie top-level `Infrastructure & DevOps`.
-- **Blockchain et smart contracts** (Solidity, réseaux type Avalanche, backends sur ICP) : **décidé le 22/08/2026** — catégorie top-level « Blockchain » dès le premier chapitre (reste top-level même après le regroupement à 10 catégories, cf. ci-dessous), traitée en profondeur (plusieurs chapitres à terme : concepts, Solidity, smart contracts, réseaux). Premier chapitre à écrire : une introduction générale aux concepts (blockchain, bloc, hash, consensus, smart contract), les suivants à trancher en écrivant.
+- **Rendu 3D bas niveau et fenêtrage** (raycasting façon Wolfenstein, MinilibX/X11 — vu dans `Cub3D`/`fract-ol`) : sous-catégorie « Graphisme » de `Fondamentaux`, avec ce chapitre comme premier contenu (nouveau dossier `content*/Fondamentaux/Graphisme/`, à ajouter dans `structure/struct*.json` ou régénérer via `node scripts/generate-struct.js` pour le FR).
+- **PWA** (offline, installabilité, service workers) : chapitre dans la sous-catégorie `Infrastructure` de `Infrastructure & DevOps`.
+- **Blockchain et smart contracts** (Solidity, réseaux type Avalanche, backends sur ICP) : catégorie top-level « Blockchain » dès le premier chapitre, traitée en profondeur (plusieurs chapitres à terme : concepts, Solidity, smart contracts, réseaux). Premier chapitre à écrire : une introduction générale aux concepts (blockchain, bloc, hash, consensus, smart contract), les suivants à trancher en écrivant.
 
 ## 2. Section Automatisation (n8n)
 Ordre déjà validé par Louis (19/08/2026), du plus rapide au plus lent :
 
-1. **Décidé le 22/08/2026, révisé le 22/08/2026** : plutôt qu'une catégorie top-level séparée, « Automatisation » devient une sous-catégorie de la future catégorie top-level `Infrastructure & DevOps` (cf. « Regroupement des catégories » ci-dessous) — implique de mettre à jour `structure/struct.json` + les 3 variantes langue, et de déplacer le contenu dans `content/` + les 3 dossiers `content-<lang>/`.
+1. « Automatisation » devient une sous-catégorie de `Infrastructure & DevOps` (id `infrastructure-devops`) — nouveau dossier `content*/Infrastructure & DevOps/Automatisation/`, entrée à ajouter dans `LEGACY_CATEGORY_REDIRECTS` (`js/legacy-category-redirects.js`) si d'anciens liens externes vers une éventuelle ancienne catégorie `automatisation` existent déjà quelque part, sinon pas nécessaire pour du contenu tout neuf.
 2. **Déplacer `automatisation-workflow.md`** (déjà écrit et traduit EN/ES/BR) vers la sous-catégorie « Fonctionnement général » : déplacement de fichier + mise à jour de `struct.json` (+ 3 variantes langue), sans réécrire le contenu.
 3. **Chapitre n8n « Prise en main de l'interface »** (canvas, nœuds, connexions, panneau d'exécution, test manuel avant activation).
 4. **Chapitre n8n « Catalogue des fonctionnalités / types de nœuds »** (trigger, action, code node JS/Python, nœuds conditionnels/branchement, error workflow).
