@@ -32,11 +32,10 @@ Décision à trancher avec Louis avant d'aller plus loin sur ce point (impact ar
 Une fois cette décision tranchée en faveur du pré-rendu : mettre à jour `content/IA/Voix IA/choisir-fournisseur-mise-en-production.md`, qui justifie aujourd'hui le choix de la Web Speech API par le fait que Devpédia est « 100% statique... sans serveur ni étape de build » (confirmé au passage : `.github/workflows/pages.yml` ne fait que checkout + upload, aucun build actuellement). Un pré-rendu audio (ex. Piper exécuté à la publication) introduirait une **étape de build** sans nécessiter de **serveur d'inférence live** — nuance absente du chapitre, qui traite aujourd'hui les deux comme un seul bloc. À corriger dans ce chapitre seulement une fois ce point effectivement implémenté, pas avant (éviter de documenter une architecture qui n'existe pas encore).
 - Piste intermédiaire à vérifier expérimentalement avant de trancher : tester en conditions réelles (écran verrouillé, Android puis iOS) si un `MediaSession.playbackState = "playing"` actif suffit à prolonger `speechSynthesis` au-delà de quelques secondes — les sources consultées le 21/08/2026 ne confirment ce comportement sur aucune plateforme.
 
-## 4. Nouvelle catégorie : Tests
-Aucune catégorie dédiée à la méthodologie de test logiciel aujourd'hui (`tests-et-audit-de-securite.md` dans `Cybersécurité` couvre l'audit sécu, pas ça). Section complète demandée, pas des chapitres isolés.
+## 4. Catégorie Tests
+Catégorie créée, premier chapitre en place (vocabulaire QA/ISTQB — fait le 22/08/2026). Section complète demandée, pas des chapitres isolés.
 
-Chapitres demandés explicitement :
-- **Vocabulaire QA (ISTQB)** : terminologie normalisée (cas de test, plan de test, non-régression, critère de sortie...) — fondation pour le reste de la section.
+Chapitres demandés explicitement, restants :
 - **Pyramide de test** : répartition unitaire/intégration/end-to-end, pourquoi peu de tests lents et beaucoup de tests rapides, anti-pattern du « cône de glace » inversé.
 - **Architecture de test** : organisation d'une suite de tests (arborescence, fixtures, environnements, test doubles/mocks/stubs), comment rester maintenable.
 
