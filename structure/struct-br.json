@@ -1538,6 +1538,10 @@
         {
           "id": "vocabulaire-qa-istqb",
           "label": "Vocabulário de testes de software (QA, ISTQB)"
+        },
+        {
+          "id": "pyramide-de-test",
+          "label": "A pirâmide de testes"
         }
       ]
     },

@@ -1518,6 +1518,10 @@
         {
           "id": "vocabulaire-qa-istqb",
           "label": "Vocabulaire des tests logiciels (QA, ISTQB)"
+        },
+        {
+          "id": "pyramide-de-test",
+          "label": "La pyramide de test"
         }
       ]
     },
