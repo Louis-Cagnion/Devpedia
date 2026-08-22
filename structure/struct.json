@@ -1550,6 +1550,10 @@
         {
           "id": "tests-unitaires",
           "label": "Les tests unitaires"
+        },
+        {
+          "id": "tests-dintegration",
+          "label": "Les tests d'intégration"
         }
       ]
     },
