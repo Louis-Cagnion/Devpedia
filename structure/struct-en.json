@@ -241,10 +241,61 @@
       ]
     },
     {
-      "id": "authentification",
-      "label": "Authentification",
-      "folder": "Authentification",
+      "id": "securite",
+      "label": "Sécurité",
+      "folder": "Sécurité",
       "subjects": [
+        {
+          "id": "cybersecurite",
+          "label": "Cybersécurité",
+          "folder": "Cybersécurité",
+          "chapters": [
+            {
+              "id": "types-de-failles",
+              "label": "The Main Families of Vulnerabilities"
+            },
+            {
+              "id": "ingenierie-sociale-et-phishing",
+              "label": "Social Engineering and Phishing"
+            },
+            {
+              "id": "principes-de-developpement-securise",
+              "label": "Secure Development Principles"
+            },
+            {
+              "id": "gestion-des-secrets",
+              "label": "Secrets Management"
+            },
+            {
+              "id": "cryptographie-appliquee",
+              "label": "Applied Cryptography for Developers"
+            },
+            {
+              "id": "securite-des-dependances",
+              "label": "Dependency and Supply Chain Security"
+            },
+            {
+              "id": "securite-api-web",
+              "label": "Web API Security"
+            },
+            {
+              "id": "waf-pare-feu-applicatif",
+              "label": "The WAF: Filtering Traffic Before It Reaches the Application"
+            },
+            {
+              "id": "hashicorp-vault",
+              "label": "HashiCorp Vault: Beyond the .env File"
+            },
+            {
+              "id": "tests-et-audit-de-securite",
+              "label": "Security Testing and Auditing"
+            },
+            {
+              "id": "owasp-top-10",
+              "label": "The OWASP Top 10: the industry-standard reference"
+            }
+          ]
+        },
         {
           "id": "fondamentaux",
           "label": "Fondamentaux",
@@ -427,57 +478,6 @@
               "label": "Local vs. cloud trade-off for a vision model"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "cybersecurite",
-      "label": "Cybersécurité",
-      "folder": "Cybersécurité",
-      "chapters": [
-        {
-          "id": "types-de-failles",
-          "label": "The Main Families of Vulnerabilities"
-        },
-        {
-          "id": "ingenierie-sociale-et-phishing",
-          "label": "Social Engineering and Phishing"
-        },
-        {
-          "id": "principes-de-developpement-securise",
-          "label": "Secure Development Principles"
-        },
-        {
-          "id": "gestion-des-secrets",
-          "label": "Secrets Management"
-        },
-        {
-          "id": "cryptographie-appliquee",
-          "label": "Applied Cryptography for Developers"
-        },
-        {
-          "id": "securite-des-dependances",
-          "label": "Dependency and Supply Chain Security"
-        },
-        {
-          "id": "securite-api-web",
-          "label": "Web API Security"
-        },
-        {
-          "id": "waf-pare-feu-applicatif",
-          "label": "The WAF: Filtering Traffic Before It Reaches the Application"
-        },
-        {
-          "id": "hashicorp-vault",
-          "label": "HashiCorp Vault: Beyond the .env File"
-        },
-        {
-          "id": "tests-et-audit-de-securite",
-          "label": "Security Testing and Auditing"
-        },
-        {
-          "id": "owasp-top-10",
-          "label": "The OWASP Top 10: the industry-standard reference"
         }
       ]
     },

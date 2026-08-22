@@ -241,10 +241,61 @@
       ]
     },
     {
-      "id": "authentification",
-      "label": "Authentification",
-      "folder": "Authentification",
+      "id": "securite",
+      "label": "Sécurité",
+      "folder": "Sécurité",
       "subjects": [
+        {
+          "id": "cybersecurite",
+          "label": "Cybersécurité",
+          "folder": "Cybersécurité",
+          "chapters": [
+            {
+              "id": "types-de-failles",
+              "label": "As grandes famílias de falhas de segurança"
+            },
+            {
+              "id": "ingenierie-sociale-et-phishing",
+              "label": "Engenharia social e phishing"
+            },
+            {
+              "id": "principes-de-developpement-securise",
+              "label": "Princípios de desenvolvimento seguro"
+            },
+            {
+              "id": "gestion-des-secrets",
+              "label": "Gestão de segredos"
+            },
+            {
+              "id": "cryptographie-appliquee",
+              "label": "Criptografia aplicada para desenvolvedores"
+            },
+            {
+              "id": "securite-des-dependances",
+              "label": "Segurança das dependências e da cadeia de suprimentos"
+            },
+            {
+              "id": "securite-api-web",
+              "label": "Segurança de APIs web"
+            },
+            {
+              "id": "waf-pare-feu-applicatif",
+              "label": "O WAF: filtrar o tráfego antes que ele alcance a aplicação"
+            },
+            {
+              "id": "hashicorp-vault",
+              "label": "HashiCorp Vault: além do arquivo .env"
+            },
+            {
+              "id": "tests-et-audit-de-securite",
+              "label": "Testes e auditoria de segurança"
+            },
+            {
+              "id": "owasp-top-10",
+              "label": "O OWASP Top 10: a referência padrão da indústria"
+            }
+          ]
+        },
         {
           "id": "fondamentaux",
           "label": "Fondamentaux",
@@ -482,57 +533,6 @@
         {
           "id": "architecture-dun-shell",
           "label": "Como funciona um shell (arquitetura interna)"
-        }
-      ]
-    },
-    {
-      "id": "cybersecurite",
-      "label": "Cybersécurité",
-      "folder": "Cybersécurité",
-      "chapters": [
-        {
-          "id": "types-de-failles",
-          "label": "As grandes famílias de falhas de segurança"
-        },
-        {
-          "id": "ingenierie-sociale-et-phishing",
-          "label": "Engenharia social e phishing"
-        },
-        {
-          "id": "principes-de-developpement-securise",
-          "label": "Princípios de desenvolvimento seguro"
-        },
-        {
-          "id": "gestion-des-secrets",
-          "label": "Gestão de segredos"
-        },
-        {
-          "id": "cryptographie-appliquee",
-          "label": "Criptografia aplicada para desenvolvedores"
-        },
-        {
-          "id": "securite-des-dependances",
-          "label": "Segurança das dependências e da cadeia de suprimentos"
-        },
-        {
-          "id": "securite-api-web",
-          "label": "Segurança de APIs web"
-        },
-        {
-          "id": "waf-pare-feu-applicatif",
-          "label": "O WAF: filtrar o tráfego antes que ele alcance a aplicação"
-        },
-        {
-          "id": "hashicorp-vault",
-          "label": "HashiCorp Vault: além do arquivo .env"
-        },
-        {
-          "id": "tests-et-audit-de-securite",
-          "label": "Testes e auditoria de segurança"
-        },
-        {
-          "id": "owasp-top-10",
-          "label": "O OWASP Top 10: a referência padrão da indústria"
         }
       ]
     },
