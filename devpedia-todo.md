@@ -38,14 +38,7 @@ Catégorie créée, les 3 chapitres explicitement demandés en place (vocabulair
 
 À compléter en écrivant (pas figé) pour une section réellement complète : tests unitaires, tests d'intégration, tests end-to-end, TDD, mocks/stubs/fakes en détail, couverture de code (et ses pièges : 100% de couverture ≠ absence de bugs), et si le niveau « bonnes pratiques avancées » est visé — property-based testing, tests de mutation.
 
-## 5. Section prompt engineering (developpement approfondi)
-Objectif de Louis : aller beaucoup plus loin que l'existant, jusqu'à pouvoir lancer un seul prompt et laisser l'IA mener un projet de A à Z sans s'arrêter, en choisissant elle-même les meilleures options (dépendances, librairies, fonctions, outils, variables, techniques, bonnes pratiques) selon le but recherché, from scratch ou non. Il faut notamment identifier à l'avance quelles informations l'IA a besoin pour y arriver.
-
-Point explicite de Louis, à respecter avant de rédiger quoi que ce soit : sa vision n'est pas à prendre pour acquise. Il veut un vrai débat sur le fonctionnement réel du prompt engineering, pas une section qui va dans son sens pour lui faire plaisir — contester son point de vue et proposer d'autres approches si elles sont plus justes.
-
-Étape 1 (avant toute rédaction) : discussion avec Louis pour caler l'angle de la section, en s'appuyant sur le fonctionnement réel de l'IA plutôt que sur l'intuition de Louis seule.
-
-## 9. Nouvelle catégorie : Gestion de projet
+## 5. Nouvelle catégorie : Gestion de projet
 Catégorie créée, 2 chapitres en place (méthodologies Agile/Scrum/Kanban, backlog et user stories — faits le 22/08/2026, avec lien ajouté depuis `azure-devops-plateforme.md` et `roles-equipe-developpement.md`). Reste à ajouter des chapitres.
 
 - **Chapitres à ajouter** (pas figé, à trancher en écrivant, « et plus si affinité ») : estimation (points de complexité vs estimation en temps, planning poker) ; outils de suivi (board physique/Jira/Trello/Linear, ticket, epic) ; éventuellement SAFe/Scrumban pour les cas hybrides, OKR pour le lien objectifs ↔ exécution.
