@@ -1511,6 +1511,17 @@
       ]
     },
     {
+      "id": "tests",
+      "label": "Tests",
+      "folder": "Tests",
+      "chapters": [
+        {
+          "id": "vocabulaire-qa-istqb",
+          "label": "Vocabulaire des tests logiciels (QA, ISTQB)"
+        }
+      ]
+    },
+    {
       "id": "ui-ux",
       "label": "UI-UX",
       "folder": "UI-UX",
