@@ -12,7 +12,7 @@ Décidé le 22/08/2026 : les liens internes existants (jusqu'à 441 fichiers pou
 - [ ] **Langages** (Langages de programmation, Langages de balisage, DSL, Shells) — Langages de programmation/balisage/Shells ont déjà leurs propres `subjects` : à aplatir en sous-catégories directes de `Langages` plutôt que d'imbriquer un niveau de plus (redirect déjà prévu avec `asSubject: false`).
 - [x] **Données** (Bases de données, Data Science, Représentation des données, Traitement de documents) — fait le 22/08/2026.
 - [x] **Infrastructure & DevOps** (Infrastructure, Docker, CI-CD, Administration système, Réseaux) — fait le 22/08/2026. Automatisation à ajouter comme 6e sous-catégorie une fois créée.
-- [ ] **Sécurité** (Cybersécurité, Authentification) — Authentification a déjà ses propres `subjects` : même aplatissement que pour Langages (redirect déjà prévu avec `asSubject: false`).
+- [x] **Sécurité** (Cybersécurité, Authentification) — fait le 22/08/2026, sous-catégories d'Authentification aplaties directement sous Sécurité.
 - [ ] **Qualité, performance et outils** (Qualité et architecture du code, Performance, Git).
 
 Catégories qui restent top-level telles quelles : IA, UI-UX, Blockchain (décidé le 22/08/2026).
