@@ -11,11 +11,11 @@ Objectif de Louis (21/08/2026) : pouvoir lire en marchant, casque Bluetooth, té
 
 Ce qui fonctionne de façon fiable dans ce cas (mécanisme utilisé par tout lecteur audio/podcast web) : un élément `<audio>` qui joue un **fichier audio pré-généré** (pas de synthèse vocale en direct dans le navigateur), couplé à MediaSession — c'est ce que l'OS reconnaît comme une session de lecture média légitime à maintenir en arrière-plan.
 
-**Décidé (22/08/2026)** : tester d'abord la piste intermédiaire avant de choisir entre pré-générer l'audio ou garder `speechSynthesis` en direct — inutile d'investir dans un pipeline de pré-génération si l'intermédiaire suffit.
+**Testé le 22/08/2026 sur iPhone/iOS par Louis : la piste intermédiaire ne marche pas.** Appuyer sur play depuis le casque Bluetooth lance l'app iTunes/Apple Music à la place du site, y compris quand une lecture était déjà en pause sur le site (`mediaSession.playbackState` correctement à `"paused"` avant l'appui). Confirme la limite déjà documentée : `speechSynthesis` n'est jamais reconnu par iOS comme une vraie session média, même avec les hooks MediaSession correctement branchés. Non testé sur Android.
 
-**Bloqué sur un test que seul Louis peut faire** (nécessite un vrai téléphone, écran verrouillé — hors de portée d'un navigateur desktop automatisé) : avec la synchronisation Bluetooth déjà en place (`js/router.js`, `navigator.mediaSession.playbackState` mis à jour automatiquement), vérifier en conditions réelles (Android puis iOS, écran verrouillé, casque Bluetooth connecté) si `MediaSession.playbackState = "playing"` actif suffit à prolonger `speechSynthesis` au-delà de quelques secondes. Les sources consultées le 21/08/2026 ne confirment ce comportement sur aucune plateforme.
-- **Si ça marche** : rien à construire, l'architecture actuelle suffit déjà.
-- **Si ça ne marche pas** : retrancher alors entre pré-générer l'audio (impact architecture, cf. options détaillées dans `journal-de-bord.md`) et abandonner cet objectif de confort.
+**Décision restante à trancher avec Louis** (cf. les deux options détaillées ci-dessus et dans `journal-de-bord.md`) :
+- **Pré-générer l'audio** (impact architecture réel).
+- **Abandonner cet objectif de confort**, garder `speechSynthesis` en direct tel quel.
 
 Une fois une architecture pré-rendue effectivement implémentée (si retenue) : mettre à jour `content/IA/Voix IA/choisir-fournisseur-mise-en-production.md`, qui justifie aujourd'hui le choix de la Web Speech API par le fait que Devpédia est « 100% statique... sans serveur ni étape de build » (confirmé au passage : `.github/workflows/pages.yml` ne fait que checkout + upload, aucun build actuellement). Un pré-rendu audio (ex. Piper exécuté à la publication) introduirait une **étape de build** sans nécessiter de **serveur d'inférence live** — nuance absente du chapitre, qui traite aujourd'hui les deux comme un seul bloc. À corriger dans ce chapitre seulement une fois ce point effectivement implémenté, pas avant (éviter de documenter une architecture qui n'existe pas encore).
 

@@ -2,6 +2,12 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Test réel iPhone : la piste MediaSession seule ne suffit pas (2026-08-22)
+
+Louis a testé en conditions réelles sur iPhone/iOS ce que le todo laissait ouvert : est-ce que la synchronisation Bluetooth (MediaSession API, livrée le même jour) suffit à faire reconnaître le lecteur du site comme une vraie session média par l'OS, sans passer par un pipeline de pré-génération audio. Résultat négatif et net : appuyer sur play sur le casque Bluetooth lance l'app iTunes/Apple Music à la place du site, y compris quand une lecture était déjà en pause sur le site (`navigator.mediaSession.playbackState` correctement à `"paused"` avant l'appui).
+
+Ce résultat confirme la limite déjà documentée et pressentie avant ce test : `speechSynthesis` (Web Speech API) n'est jamais reconnu par iOS comme une vraie session de lecture média, même avec les hooks `MediaSession` correctement branchés (`js/router.js`) ; iOS retombe sur la dernière application ayant tenu une session média légitime (généralement le dernier lecteur audio natif utilisé) au lieu du site. La piste intermédiaire envisagée dans le todo est donc invalidée sur iOS : reste à trancher entre pré-générer l'audio (impact architecture, cf. options détaillées ci-dessous dans la section todo correspondante avant sa clôture) et abandonner l'objectif de confort (poche, écran verrouillé). Non testé sur Android à ce stade.
+
 ## Débat prompt engineering : critères hiérarchisés plutôt que « sans s'arrêter » (2026-08-22)
 
 Louis voulait initialement qu'une section approfondie décrive comment lancer un seul prompt et laisser l'IA mener un projet de A à Z sans aucun arrêt, en choisissant elle-même les meilleures options. Débat mené avant rédaction (demandé explicitement par Louis, pas une simple validation) :
