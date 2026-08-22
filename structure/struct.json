@@ -636,6 +636,10 @@
             {
               "id": "n8n-catalogue-des-fonctionnalites",
               "label": "n8n : catalogue des fonctionnalités et types de nœuds"
+            },
+            {
+              "id": "n8n-le-format-json-dun-workflow",
+              "label": "n8n : le format JSON d'un workflow"
             }
           ]
         }

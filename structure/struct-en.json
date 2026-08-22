@@ -636,6 +636,10 @@
             {
               "id": "n8n-catalogue-des-fonctionnalites",
               "label": "n8n: feature catalog and node types"
+            },
+            {
+              "id": "n8n-le-format-json-dun-workflow",
+              "label": "n8n: a workflow's JSON format"
             }
           ]
         }
