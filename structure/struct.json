@@ -279,6 +279,10 @@
             {
               "id": "estimation",
               "label": "L'estimation"
+            },
+            {
+              "id": "outils-de-suivi",
+              "label": "Les outils de suivi"
             }
           ]
         }

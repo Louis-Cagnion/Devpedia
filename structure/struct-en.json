@@ -279,6 +279,10 @@
             {
               "id": "estimation",
               "label": "Estimation"
+            },
+            {
+              "id": "outils-de-suivi",
+              "label": "Tracking tools"
             }
           ]
         }
