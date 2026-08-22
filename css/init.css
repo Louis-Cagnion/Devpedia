@@ -14,6 +14,11 @@ button, input, textarea, select {
     color: inherit;
 }
 
+/* Prevents a fast tap-tap on a button from being read as a double-tap-to-zoom gesture on mobile. */
+button {
+    touch-action: manipulation;
+}
+
 button:focus-visible, input:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
