@@ -295,6 +295,10 @@
             {
               "id": "outils-de-suivi",
               "label": "Tracking tools"
+            },
+            {
+              "id": "safe-et-scrumban",
+              "label": "SAFe and Scrumban: the hybrid cases"
             }
           ]
         }
