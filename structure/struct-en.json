@@ -601,6 +601,17 @@
               "label": "The AI Stack: The Layers of a Production Application"
             }
           ]
+        },
+        {
+          "id": "jeux-et-agents",
+          "label": "Jeux et agents",
+          "folder": "Jeux et agents",
+          "chapters": [
+            {
+              "id": "ia-de-jeu-par-imitation",
+              "label": "Game AI by Imitation: Learning from a Human Player"
+            }
+          ]
         }
       ]
     },

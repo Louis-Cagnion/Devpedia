@@ -656,6 +656,17 @@
               "label": "A stack de IA: as camadas de uma aplicação em produção"
             }
           ]
+        },
+        {
+          "id": "jeux-et-agents",
+          "label": "Jeux et agents",
+          "folder": "Jeux et agents",
+          "chapters": [
+            {
+              "id": "ia-de-jeu-par-imitation",
+              "label": "IA de jogo por imitação: aprender com um jogador humano"
+            }
+          ]
         }
       ]
     },

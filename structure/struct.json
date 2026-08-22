@@ -601,6 +601,17 @@
               "label": "Le stack IA : les couches d'une application en production"
             }
           ]
+        },
+        {
+          "id": "jeux-et-agents",
+          "label": "Jeux et agents",
+          "folder": "Jeux et agents",
+          "chapters": [
+            {
+              "id": "ia-de-jeu-par-imitation",
+              "label": "L'IA de jeu par imitation : apprendre d'un joueur humain"
+            }
+          ]
         }
       ]
     },
