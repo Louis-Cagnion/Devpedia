@@ -42,17 +42,90 @@
       ]
     },
     {
-      "id": "algorithmes",
-      "label": "Algorithmes",
-      "folder": "Algorithmes",
-      "chapters": [
+      "id": "fondamentaux",
+      "label": "Fondamentaux",
+      "folder": "Fondamentaux",
+      "subjects": [
         {
-          "id": "complexite-et-notation-big-o",
-          "label": "Big-O Notation and Complexity"
+          "id": "bases-de-l-informatique",
+          "label": "Bases de l'informatique",
+          "folder": "Bases de l'informatique",
+          "chapters": [
+            {
+              "id": "code-programmes-et-fichiers",
+              "label": "What does a computer execute?"
+            },
+            {
+              "id": "le-terminal",
+              "label": "The Terminal: Entering Commands"
+            },
+            {
+              "id": "editeur-de-code-et-ide",
+              "label": "The code editor and the IDE"
+            },
+            {
+              "id": "raccourcis-clavier-vs-code",
+              "label": "Being Efficient with Code Through Keyboard Shortcuts"
+            },
+            {
+              "id": "arborescence-et-chemins",
+              "label": "File structure and paths"
+            },
+            {
+              "id": "la-variable",
+              "label": "The variable"
+            },
+            {
+              "id": "le-bug",
+              "label": "The bug"
+            }
+          ]
         },
         {
-          "id": "tri-par-comparaison",
-          "label": "Comparison Sorting"
+          "id": "algorithmes",
+          "label": "Algorithmes",
+          "folder": "Algorithmes",
+          "chapters": [
+            {
+              "id": "complexite-et-notation-big-o",
+              "label": "Big-O Notation and Complexity"
+            },
+            {
+              "id": "tri-par-comparaison",
+              "label": "Comparison Sorting"
+            }
+          ]
+        },
+        {
+          "id": "mathematiques",
+          "label": "Mathématiques",
+          "folder": "Mathématiques",
+          "chapters": [
+            {
+              "id": "la-fonction-mathematique",
+              "label": "The Mathematical Function"
+            },
+            {
+              "id": "vecteurs-et-produit-scalaire",
+              "label": "Vectors and the Dot Product"
+            },
+            {
+              "id": "le-logarithme",
+              "label": "The Logarithm"
+            },
+            {
+              "id": "matrices-et-produit-matriciel",
+              "label": "Matrices and Matrix Multiplication"
+            },
+            {
+              "id": "les-probabilites-de-base",
+              "label": "Basic Probability"
+            },
+            {
+              "id": "la-derivee-et-le-gradient",
+              "label": "The Derivative and the Gradient"
+            }
+          ]
         }
       ]
     },
@@ -163,41 +236,6 @@
         {
           "id": "bases-de-donnees-a-fort-trafic",
           "label": "High-Traffic Databases: Never Block the User on a Costly Recalculation"
-        }
-      ]
-    },
-    {
-      "id": "bases-de-l-informatique",
-      "label": "Bases de l'informatique",
-      "folder": "Bases de l'informatique",
-      "chapters": [
-        {
-          "id": "code-programmes-et-fichiers",
-          "label": "What does a computer execute?"
-        },
-        {
-          "id": "le-terminal",
-          "label": "The Terminal: Entering Commands"
-        },
-        {
-          "id": "editeur-de-code-et-ide",
-          "label": "The code editor and the IDE"
-        },
-        {
-          "id": "raccourcis-clavier-vs-code",
-          "label": "Being Efficient with Code Through Keyboard Shortcuts"
-        },
-        {
-          "id": "arborescence-et-chemins",
-          "label": "File structure and paths"
-        },
-        {
-          "id": "la-variable",
-          "label": "The variable"
-        },
-        {
-          "id": "le-bug",
-          "label": "The bug"
         }
       ]
     },
@@ -1093,37 +1131,6 @@
               "label": "SSR vs CSR: Where Is the HTML Built?"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "mathematiques",
-      "label": "Mathématiques",
-      "folder": "Mathématiques",
-      "chapters": [
-        {
-          "id": "la-fonction-mathematique",
-          "label": "The Mathematical Function"
-        },
-        {
-          "id": "vecteurs-et-produit-scalaire",
-          "label": "Vectors and the Dot Product"
-        },
-        {
-          "id": "le-logarithme",
-          "label": "The Logarithm"
-        },
-        {
-          "id": "matrices-et-produit-matriciel",
-          "label": "Matrices and Matrix Multiplication"
-        },
-        {
-          "id": "les-probabilites-de-base",
-          "label": "Basic Probability"
-        },
-        {
-          "id": "la-derivee-et-le-gradient",
-          "label": "The Derivative and the Gradient"
         }
       ]
     },

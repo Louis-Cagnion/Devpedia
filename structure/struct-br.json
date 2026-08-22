@@ -42,17 +42,90 @@
       ]
     },
     {
-      "id": "algorithmes",
-      "label": "Algorithmes",
-      "folder": "Algorithmes",
-      "chapters": [
+      "id": "fondamentaux",
+      "label": "Fondamentaux",
+      "folder": "Fondamentaux",
+      "subjects": [
         {
-          "id": "complexite-et-notation-big-o",
-          "label": "A complexidade e a notação Big-O"
+          "id": "bases-de-l-informatique",
+          "label": "Bases de l'informatique",
+          "folder": "Bases de l'informatique",
+          "chapters": [
+            {
+              "id": "code-programmes-et-fichiers",
+              "label": "O que um computador executa?"
+            },
+            {
+              "id": "le-terminal",
+              "label": "O terminal: dar instruções por escrito"
+            },
+            {
+              "id": "editeur-de-code-et-ide",
+              "label": "O editor de código e a IDE"
+            },
+            {
+              "id": "raccourcis-clavier-vs-code",
+              "label": "Ser eficiente no código graças aos atalhos de teclado"
+            },
+            {
+              "id": "arborescence-et-chemins",
+              "label": "Árvore de diretórios e caminhos"
+            },
+            {
+              "id": "la-variable",
+              "label": "A variável"
+            },
+            {
+              "id": "le-bug",
+              "label": "O bug"
+            }
+          ]
         },
         {
-          "id": "tri-par-comparaison",
-          "label": "A ordenação por comparação"
+          "id": "algorithmes",
+          "label": "Algorithmes",
+          "folder": "Algorithmes",
+          "chapters": [
+            {
+              "id": "complexite-et-notation-big-o",
+              "label": "A complexidade e a notação Big-O"
+            },
+            {
+              "id": "tri-par-comparaison",
+              "label": "A ordenação por comparação"
+            }
+          ]
+        },
+        {
+          "id": "mathematiques",
+          "label": "Mathématiques",
+          "folder": "Mathématiques",
+          "chapters": [
+            {
+              "id": "la-fonction-mathematique",
+              "label": "A função matemática"
+            },
+            {
+              "id": "vecteurs-et-produit-scalaire",
+              "label": "Vetores e produto escalar"
+            },
+            {
+              "id": "matrices-et-produit-matriciel",
+              "label": "As matrizes e o produto matricial"
+            },
+            {
+              "id": "le-logarithme",
+              "label": "O logaritmo"
+            },
+            {
+              "id": "les-probabilites-de-base",
+              "label": "As probabilidades básicas"
+            },
+            {
+              "id": "la-derivee-et-le-gradient",
+              "label": "A derivada e o gradiente"
+            }
+          ]
         }
       ]
     },
@@ -163,41 +236,6 @@
         {
           "id": "bases-de-donnees-a-fort-trafic",
           "label": "Bancos de dados de alto tráfego: nunca bloquear o usuário em um recálculo custoso"
-        }
-      ]
-    },
-    {
-      "id": "bases-de-l-informatique",
-      "label": "Bases de l'informatique",
-      "folder": "Bases de l'informatique",
-      "chapters": [
-        {
-          "id": "code-programmes-et-fichiers",
-          "label": "O que um computador executa?"
-        },
-        {
-          "id": "le-terminal",
-          "label": "O terminal: dar instruções por escrito"
-        },
-        {
-          "id": "editeur-de-code-et-ide",
-          "label": "O editor de código e a IDE"
-        },
-        {
-          "id": "raccourcis-clavier-vs-code",
-          "label": "Ser eficiente no código graças aos atalhos de teclado"
-        },
-        {
-          "id": "arborescence-et-chemins",
-          "label": "Árvore de diretórios e caminhos"
-        },
-        {
-          "id": "la-variable",
-          "label": "A variável"
-        },
-        {
-          "id": "le-bug",
-          "label": "O bug"
         }
       ]
     },
@@ -1168,37 +1206,6 @@
               "label": "SSR vs CSR: onde o HTML é construído?"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "mathematiques",
-      "label": "Mathématiques",
-      "folder": "Mathématiques",
-      "chapters": [
-        {
-          "id": "la-fonction-mathematique",
-          "label": "A função matemática"
-        },
-        {
-          "id": "vecteurs-et-produit-scalaire",
-          "label": "Vetores e produto escalar"
-        },
-        {
-          "id": "matrices-et-produit-matriciel",
-          "label": "As matrizes e o produto matricial"
-        },
-        {
-          "id": "le-logarithme",
-          "label": "O logaritmo"
-        },
-        {
-          "id": "les-probabilites-de-base",
-          "label": "As probabilidades básicas"
-        },
-        {
-          "id": "la-derivee-et-le-gradient",
-          "label": "A derivada e o gradiente"
         }
       ]
     },

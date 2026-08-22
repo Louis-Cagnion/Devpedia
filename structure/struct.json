@@ -42,17 +42,90 @@
       ]
     },
     {
-      "id": "algorithmes",
-      "label": "Algorithmes",
-      "folder": "Algorithmes",
-      "chapters": [
+      "id": "fondamentaux",
+      "label": "Fondamentaux",
+      "folder": "Fondamentaux",
+      "subjects": [
         {
-          "id": "complexite-et-notation-big-o",
-          "label": "La complexité et la notation Big-O"
+          "id": "bases-de-l-informatique",
+          "label": "Bases de l'informatique",
+          "folder": "Bases de l'informatique",
+          "chapters": [
+            {
+              "id": "code-programmes-et-fichiers",
+              "label": "Qu'est-ce qu'un ordinateur exécute ?"
+            },
+            {
+              "id": "le-terminal",
+              "label": "Le terminal : donner des instructions par écrit"
+            },
+            {
+              "id": "editeur-de-code-et-ide",
+              "label": "L'éditeur de code et l'IDE"
+            },
+            {
+              "id": "raccourcis-clavier-vs-code",
+              "label": "Être efficace sur le code grâce aux raccourcis clavier"
+            },
+            {
+              "id": "arborescence-et-chemins",
+              "label": "Arborescence de fichiers et chemins"
+            },
+            {
+              "id": "la-variable",
+              "label": "La variable"
+            },
+            {
+              "id": "le-bug",
+              "label": "Le bug"
+            }
+          ]
         },
         {
-          "id": "tri-par-comparaison",
-          "label": "Le tri par comparaison"
+          "id": "algorithmes",
+          "label": "Algorithmes",
+          "folder": "Algorithmes",
+          "chapters": [
+            {
+              "id": "complexite-et-notation-big-o",
+              "label": "La complexité et la notation Big-O"
+            },
+            {
+              "id": "tri-par-comparaison",
+              "label": "Le tri par comparaison"
+            }
+          ]
+        },
+        {
+          "id": "mathematiques",
+          "label": "Mathématiques",
+          "folder": "Mathématiques",
+          "chapters": [
+            {
+              "id": "la-fonction-mathematique",
+              "label": "La fonction mathématique"
+            },
+            {
+              "id": "vecteurs-et-produit-scalaire",
+              "label": "Vecteurs et produit scalaire"
+            },
+            {
+              "id": "matrices-et-produit-matriciel",
+              "label": "Les matrices et le produit matriciel"
+            },
+            {
+              "id": "le-logarithme",
+              "label": "Le logarithme"
+            },
+            {
+              "id": "les-probabilites-de-base",
+              "label": "Les probabilités de base"
+            },
+            {
+              "id": "la-derivee-et-le-gradient",
+              "label": "La dérivée et le gradient"
+            }
+          ]
         }
       ]
     },
@@ -163,41 +236,6 @@
         {
           "id": "bases-de-donnees-a-fort-trafic",
           "label": "Bases de données à fort trafic : ne jamais bloquer l'utilisateur sur un recalcul coûteux"
-        }
-      ]
-    },
-    {
-      "id": "bases-de-l-informatique",
-      "label": "Bases de l'informatique",
-      "folder": "Bases de l'informatique",
-      "chapters": [
-        {
-          "id": "code-programmes-et-fichiers",
-          "label": "Qu'est-ce qu'un ordinateur exécute ?"
-        },
-        {
-          "id": "le-terminal",
-          "label": "Le terminal : donner des instructions par écrit"
-        },
-        {
-          "id": "editeur-de-code-et-ide",
-          "label": "L'éditeur de code et l'IDE"
-        },
-        {
-          "id": "raccourcis-clavier-vs-code",
-          "label": "Être efficace sur le code grâce aux raccourcis clavier"
-        },
-        {
-          "id": "arborescence-et-chemins",
-          "label": "Arborescence de fichiers et chemins"
-        },
-        {
-          "id": "la-variable",
-          "label": "La variable"
-        },
-        {
-          "id": "le-bug",
-          "label": "Le bug"
         }
       ]
     },
@@ -1093,37 +1131,6 @@
               "label": "L'inférence de types"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "mathematiques",
-      "label": "Mathématiques",
-      "folder": "Mathématiques",
-      "chapters": [
-        {
-          "id": "la-fonction-mathematique",
-          "label": "La fonction mathématique"
-        },
-        {
-          "id": "vecteurs-et-produit-scalaire",
-          "label": "Vecteurs et produit scalaire"
-        },
-        {
-          "id": "matrices-et-produit-matriciel",
-          "label": "Les matrices et le produit matriciel"
-        },
-        {
-          "id": "le-logarithme",
-          "label": "Le logarithme"
-        },
-        {
-          "id": "les-probabilites-de-base",
-          "label": "Les probabilités de base"
-        },
-        {
-          "id": "la-derivee-et-le-gradient",
-          "label": "La dérivée et le gradient"
         }
       ]
     },
