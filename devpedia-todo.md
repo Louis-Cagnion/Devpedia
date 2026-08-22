@@ -8,7 +8,6 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire FR/EN/ES/BR comme le reste du site.
 
 - **Rendu 3D bas niveau et fenêtrage** (raycasting façon Wolfenstein, MinilibX/X11 — vu dans `Cub3D`/`fract-ol`) : nouvelle petite catégorie « Graphisme », ou sous-catégorie de `Bases de l'informatique` — décision structurelle à trancher avec Louis avant d'écrire (impact site-wide comme pour la catégorie Automatisation).
-- **Gestion de secrets dédiée (HashiCorp Vault)** : `Cybersécurité`, à côté de `waf-pare-feu-applicatif.md` (le WAF lui-même est écrit, traduit FR/EN/ES/BR et enregistré dans la navigation).
 - **PWA** (offline, installabilité, service workers) : `Infrastructure`, ou nouvelle sous-catégorie web dédiée.
 - **IA de jeu par imitation** (comportement d'un adversaire appris depuis des enregistrements de parties humaines + dégradation volontaire de précision pour simuler la fatigue) : dans `IA`, sous-catégorie à trancher en écrivant (potentiellement nouvelle « IA/Jeux et agents » si d'autres notions du même genre s'accumulent).
 - **Blockchain et smart contracts** (Solidity, réseaux type Avalanche, backends sur ICP) : décision à prendre — nouvelle catégorie top-level « Blockchain » si traité en profondeur, sinon chapitre isolé pour une introduction générale.
