@@ -5,7 +5,7 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `prompt.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
 ## 1. Catégorie Blockchain
-Catégorie créée, premier chapitre en place (concepts fondamentaux : bloc, hash, consensus, smart contract — fait le 22/08/2026). Traitée en profondeur (plusieurs chapitres à terme, Solidity/smart contracts/réseaux type Avalanche/backends sur ICP), à trancher en écrivant comme la section Tests.
+Catégorie créée, 2 chapitres en place (concepts fondamentaux, Solidity bases du langage — faits le 22/08/2026). Traitée en profondeur (plusieurs chapitres à terme, smart contracts en pratique/réseaux type Avalanche/backends sur ICP), à trancher en écrivant comme la section Tests.
 
 ## 2. Section Automatisation (n8n)
 Les 4 chapitres prévus sont faits (22/08/2026) : « Prise en main de l'interface », « Catalogue des fonctionnalités / types de nœuds », « Le format JSON d'un workflow » (vérifié auprès de la doc officielle n8n avant rédaction), « L'industrialisation » (self-hosted vs cloud, variables d'environnement vs `$vars`, credentials, environnements dev/prod, supervision des exécutions, sécurité/NODES_EXCLUDE — vérifié auprès de la doc officielle n8n).
