@@ -14,13 +14,11 @@ Un chapitre chacun, contenu bien cadré, aucune dépendance entre eux. Traduire 
 ## 2. Section Automatisation (n8n)
 Ordre déjà validé par Louis (19/08/2026), du plus rapide au plus lent :
 
-1. « Automatisation » devient une sous-catégorie de `Infrastructure & DevOps` (id `infrastructure-devops`) — nouveau dossier `content*/Infrastructure & DevOps/Automatisation/`, entrée à ajouter dans `LEGACY_CATEGORY_REDIRECTS` (`js/legacy-category-redirects.js`) si d'anciens liens externes vers une éventuelle ancienne catégorie `automatisation` existent déjà quelque part, sinon pas nécessaire pour du contenu tout neuf.
-2. **Déplacer `automatisation-workflow.md`** (déjà écrit et traduit EN/ES/BR) vers la sous-catégorie « Fonctionnement général » : déplacement de fichier + mise à jour de `struct.json` (+ 3 variantes langue), sans réécrire le contenu.
-3. **Chapitre n8n « Prise en main de l'interface »** (canvas, nœuds, connexions, panneau d'exécution, test manuel avant activation).
-4. **Chapitre n8n « Catalogue des fonctionnalités / types de nœuds »** (trigger, action, code node JS/Python, nœuds conditionnels/branchement, error workflow).
-5. **Chapitre n8n « Le format JSON d'un workflow »** (structure de l'export, portabilité entre instances, import/export, versionner comme du code) : nécessite d'exporter et d'inspecter un vrai workflow avant de rédiger, pas juste de la description théorique.
-6. **Chapitre n8n « L'industrialisation »** (self-hosted vs n8n cloud, variables d'environnement, credentials, environnements dev/prod, supervision des exécutions, sécurité de l'éditeur/restriction des nœuds sensibles comme Execute Command) : le plus transversal, donc le plus long à structurer.
-7. Potentiellement d'autres chapitres n8n, à compléter en écrivant (même logique que la section Tests ci-dessous).
+1. **Chapitre n8n « Prise en main de l'interface »** (canvas, nœuds, connexions, panneau d'exécution, test manuel avant activation).
+2. **Chapitre n8n « Catalogue des fonctionnalités / types de nœuds »** (trigger, action, code node JS/Python, nœuds conditionnels/branchement, error workflow).
+3. **Chapitre n8n « Le format JSON d'un workflow »** (structure de l'export, portabilité entre instances, import/export, versionner comme du code) : nécessite d'exporter et d'inspecter un vrai workflow avant de rédiger, pas juste de la description théorique.
+4. **Chapitre n8n « L'industrialisation »** (self-hosted vs n8n cloud, variables d'environnement, credentials, environnements dev/prod, supervision des exécutions, sécurité de l'éditeur/restriction des nœuds sensibles comme Execute Command) : le plus transversal, donc le plus long à structurer.
+5. Potentiellement d'autres chapitres n8n, à compléter en écrivant (même logique que la section Tests ci-dessous).
 
 Décision restante à trancher avant d'écrire les chapitres n8n : contenu générique (l'outil vu de l'extérieur) ou documentant aussi l'usage concret de ce dépôt (le workflow d'orchestration nocturne de `git-scrapping`, cf. section « Automatic orchestration (n8n) » du README) — risque de mélanger doc générale et doc spécifique à un projet.
 
