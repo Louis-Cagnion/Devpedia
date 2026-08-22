@@ -10,7 +10,7 @@ O **Azure DevOps** é a plataforma da Microsoft que reúne, sob um mesmo projeto
 
 | Serviço | Papel | Equivalente no GitHub |
 |---|---|---|
-| **Boards** | Planejar e acompanhar o trabalho (backlog, sprints, quadro Kanban) | Issues / Projects |
+| **Boards** | Planejar e acompanhar o trabalho ([backlog](/?c=gestion-de-projet-et-organisation&s=gestion-de-projet&p=backlog-et-user-stories), sprints, quadro Kanban) | Issues / Projects |
 | **Repos** | Hospedar o código no Git | O próprio GitHub |
 | **Pipelines** | Executar a construção, os testes e a implantação | GitHub Actions |
 | **Artifacts** | Armazenar pacotes ([npm](https://www.npmjs.com), [NuGet](https://www.nuget.org), [Maven](https://maven.apache.org)...) | GitHub Packages |

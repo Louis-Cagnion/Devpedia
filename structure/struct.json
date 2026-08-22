@@ -271,6 +271,10 @@
             {
               "id": "methodologies-agile-scrum-kanban",
               "label": "Méthodologies : Agile, Scrum, Kanban"
+            },
+            {
+              "id": "backlog-et-user-stories",
+              "label": "Le backlog et les user stories"
             }
           ]
         }

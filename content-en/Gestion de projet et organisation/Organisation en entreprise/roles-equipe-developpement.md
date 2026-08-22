@@ -10,7 +10,7 @@ A company project rarely involves only one type of person: each of the questions
 
 | Role | Answers the question | Responsibility |
 |---|---|---|
-| **Product Owner (PO)** | What to build? | Prioritizes the backlog (the list of needs to address), represents the business or customer need |
+| **Product Owner (PO)** | What to build? | Prioritizes the [backlog](/?c=gestion-de-projet-et-organisation&s=gestion-de-projet&p=backlog-et-user-stories) (the list of needs to address), represents the business or customer need |
 | **Project Manager** | When to deliver it? | Schedule, budget, deadlines, coordination between teams |
 | **Tech Lead** | How to build it? | Technical reference, arbitrates architecture choices |
 | **Developer** | - | Designs and writes the code |

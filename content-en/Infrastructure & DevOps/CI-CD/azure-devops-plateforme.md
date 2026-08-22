@@ -10,7 +10,7 @@ order: 2
 
 | Service | Role | GitHub Equivalent |
 |---|---|---|
-| **Boards** | Plan and track work (backlog, sprints, Kanban board) | Issues / Projects |
+| **Boards** | Plan and track work ([backlog](/?c=gestion-de-projet-et-organisation&s=gestion-de-projet&p=backlog-et-user-stories), sprints, Kanban board) | Issues / Projects |
 | **Repos** | Host code on Git | GitHub itself |
 | **Pipelines** | Run the build, tests, and deployment | GitHub Actions |
 | **Artifacts** | Store packages ([npm](https://www.npmjs.com), [NuGet](https://www.nuget.org), [Maven](https://maven.apache.org)...) | GitHub Packages |

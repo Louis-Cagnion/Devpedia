@@ -10,7 +10,7 @@ Um projeto na empresa raramente envolve um único tipo de pessoa: cada uma das p
 
 | Papel | Responde à pergunta | Responsabilidade |
 |---|---|---|
-| **Product Owner (PO)** | O que construir? | Prioriza o backlog (a lista de necessidades a tratar), representa a necessidade de negócio ou do cliente |
+| **Product Owner (PO)** | O que construir? | Prioriza o [backlog](/?c=gestion-de-projet-et-organisation&s=gestion-de-projet&p=backlog-et-user-stories) (a lista de necessidades a tratar), representa a necessidade de negócio ou do cliente |
 | **Gerente de projeto / Project Manager** | Quando entregar? | Cronograma, orçamento, prazos, coordenação entre equipes |
 | **Tech Lead** | Como construir? | Referência técnica, decide as escolhas de arquitetura |
 | **Desenvolvedor** | - | Projeta e escreve o código |

@@ -10,7 +10,7 @@ order: 2
 
 | Servicio | Papel | Equivalente en GitHub |
 |---|---|---|
-| **Boards** | Planificar y seguir el trabajo (backlog, sprints, tablero Kanban) | Issues / Projects |
+| **Boards** | Planificar y seguir el trabajo ([backlog](/?c=gestion-de-projet-et-organisation&s=gestion-de-projet&p=backlog-et-user-stories), sprints, tablero Kanban) | Issues / Projects |
 | **Repos** | Alojar el código en Git | GitHub mismo |
 | **Pipelines** | Ejecutar la construcción, los tests y el despliegue | GitHub Actions |
 | **Artifacts** | Almacenar paquetes ([npm](https://www.npmjs.com), [NuGet](https://www.nuget.org), [Maven](https://maven.apache.org)...) | GitHub Packages |
