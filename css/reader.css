@@ -55,6 +55,53 @@
     font-style: italic;
 }
 
+.readerRateWrapper {
+    position: relative;
+}
+
+.readerRateMenu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    inset-inline-start: 0;
+    min-width: 100px;
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    z-index: 30;
+}
+
+.readerRateMenu.visible {
+    display: block;
+}
+
+.readerRateOption {
+    display: block;
+    width: 100%;
+    text-align: start;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    padding: 0.5rem 0.6rem;
+    margin: 0.1rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.readerRateOption:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent);
+}
+
+.readerRateOption.current {
+    color: var(--accent);
+    font-weight: 600;
+}
+
 /* shown only below the mobile breakpoint, cf. responsive.css -- .rightSidebar (which carries
    the desktop instance) is hidden there, same as .leftSidebar */
 .readerFloatingBar {

@@ -123,12 +123,14 @@ export function getReaderStatus() {
 }
 
 /**
- * @brief Advances the playback speed to the next value in READER_RATES, wrapping back to the
- * first after the last, and persists the choice for future visits.
+ * @brief Sets the playback speed directly and persists the choice for future visits. No-op for a
+ * value outside READER_RATES.
+ *
+ * @param {number} rate one of READER_RATES
  */
-export function cycleReaderRate() {
-    const nextIndex = (READER_RATES.indexOf(readerRate) + 1) % READER_RATES.length;
-    readerRate = READER_RATES[nextIndex];
+export function setReaderRate(rate) {
+    if (!READER_RATES.includes(rate)) return;
+    readerRate = rate;
     localStorage.setItem(READER_RATE_STORAGE_KEY, readerRate);
     notify();
 }

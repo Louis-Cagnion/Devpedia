@@ -9,7 +9,8 @@ import {
     previousParagraph,
     nextParagraph,
     triggerPrimaryAction,
-    cycleReaderRate,
+    setReaderRate,
+    READER_RATES,
     onStatusChange,
 } from "./reader.js";
 
@@ -57,19 +58,39 @@ export function createReaderControl() {
         { class: "returnButton readerNextButton" },
         { textContent: t("readerNextParagraph") }
     );
+    const rateWrapper = createTag("div", { class: "readerRateWrapper" });
     const rateButton = createTag(
         "button",
         { class: "returnButton readerRateButton", title: t("readerSpeed") }
     );
+    const rateMenu = createTag("ul", { class: "readerRateMenu" });
+    const rateOptionButtons = READER_RATES.map(rate => {
+        const optionButton = createTag("button", { class: "readerRateOption" }, { textContent: `×${rate}` });
+        optionButton.addEventListener("click", () => {
+            setReaderRate(rate);
+            rateMenu.classList.remove("visible");
+        });
+        const li = createTag("li");
+        li.append(optionButton);
+        rateMenu.append(li);
+        return optionButton;
+    });
+    rateButton.addEventListener("click", e => {
+        e.stopPropagation();
+        rateMenu.classList.toggle("visible");
+    });
+    document.addEventListener("click", e => {
+        if (!rateWrapper.contains(e.target)) rateMenu.classList.remove("visible");
+    });
+    rateWrapper.append(rateButton, rateMenu);
     listenButton.addEventListener("click", startFromVisible);
     restartButton.addEventListener("click", startReading);
     primaryButton.addEventListener("click", triggerPrimaryAction);
     replayButton.addEventListener("click", replayParagraph);
     previousButton.addEventListener("click", previousParagraph);
     nextButton.addEventListener("click", nextParagraph);
-    rateButton.addEventListener("click", cycleReaderRate);
     // Deliberate order (Louis, 2026-08-16): previous, pause/resume, next, replay.
-    wrapper.append(listenButton, restartButton, previousButton, primaryButton, nextButton, replayButton, rateButton);
+    wrapper.append(listenButton, restartButton, previousButton, primaryButton, nextButton, replayButton, rateWrapper);
 
     const applyStatus = status => {
         const inProgress = status.isPlaying || status.isPaused || status.isPausedAtCode;
@@ -85,6 +106,9 @@ export function createReaderControl() {
         nextButton.classList.toggle("visible", inProgress);
         // Always visible (idle and playing alike), unlike the pairs above: a speed choice applies to whichever comes next.
         rateButton.textContent = `⏱ ×${status.rate}`;
+        rateOptionButtons.forEach((optionButton, i) => {
+            optionButton.classList.toggle("current", READER_RATES[i] === status.rate);
+        });
     };
     onStatusChange(applyStatus);
 
