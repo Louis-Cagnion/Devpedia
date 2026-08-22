@@ -275,6 +275,10 @@
             {
               "id": "backlog-et-user-stories",
               "label": "Le backlog et les user stories"
+            },
+            {
+              "id": "estimation",
+              "label": "L'estimation"
             }
           ]
         }
