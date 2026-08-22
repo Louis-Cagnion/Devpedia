@@ -92,6 +92,17 @@ audioEl.addEventListener("timeupdate", () => {
     speakNext();
 });
 
+/* iOS can silently stop audioEl on its own (screen lock, backgrounding, a call coming in...)
+   without ever going through pauseReading()/cancelCurrentUtterance() -- every self-initiated pause
+   sets isPlaying false before calling audioEl.pause(), so isPlaying still being true here is exactly
+   what marks this one as external, and the cue to resync state once the page wakes back up. */
+audioEl.addEventListener("pause", () => {
+    if (!isPlaying) return;
+    isPlaying = false;
+    isPaused = true;
+    notify();
+});
+
 /* Playback speed, applied to each utterance in speakNext() and persisted across visits like
    js/lang.js's own language choice. Falls back to 1 for a stored value outside READER_RATES
    (corrupted storage, or a removed step from an earlier version). */
