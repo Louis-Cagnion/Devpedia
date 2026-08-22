@@ -108,6 +108,24 @@
     display: none;
 }
 
+/* cf. js/reader-debug.js -- only mounted at all behind ?debug=1, so no need to hide it by default */
+#readerDebugOverlay {
+    position: fixed;
+    inset-block-end: 0;
+    inset-inline: 0;
+    max-height: 40vh;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0.5rem;
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #0f0;
+    font-size: 0.7rem;
+    line-height: 1.3;
+    white-space: pre-wrap;
+    z-index: 9999;
+}
+
 /* Base highlight for the segment read aloud (cf. setHighlightedEntry() in reader.js).
    .readerSegment is an inline wrapper, painting one line-box at a time. `tr.readerActiveParagraph`
    covers a table row: connector words with no DOM word of their own fall back to this tint. */

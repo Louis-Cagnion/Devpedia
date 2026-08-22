@@ -13,6 +13,7 @@ import {
     pauseReading,
     continueAfterCode,
 } from "./reader.js";
+import { logEvent } from "./reader-debug.js";
 import { t, tEntityLabel } from "./i18n.js";
 import { resolveAcrossLanguages } from "./router-language-fallback.js";
 import { PENDING_NAV_KEY, buildNavUrl, parseNavParams, pushNavUrl, replayingUrl } from "./nav-url.js";
@@ -248,18 +249,22 @@ document.addEventListener("click", e => {
    change (including a manual chapter change) updates what the OS shows as the playback state. */
 if ("mediaSession" in navigator) {
     navigator.mediaSession.setActionHandler("play", () => {
+        logEvent("mediaSession:play");
         const status = getReaderStatus();
         if (status.isPausedAtCode) continueAfterCode();
         else if (status.isPaused) resumeReading();
     });
     navigator.mediaSession.setActionHandler("pause", () => {
+        logEvent("mediaSession:pause");
         if (getReaderStatus().isPlaying) pauseReading();
     });
     navigator.mediaSession.setActionHandler("nexttrack", () => {
+        logEvent("mediaSession:nexttrack");
         const next = resolveNextChapterAcrossSite();
         if (next) navigateToChapter(next.categoryId, next.subjectId, next.id);
     });
     navigator.mediaSession.setActionHandler("previoustrack", () => {
+        logEvent("mediaSession:previoustrack");
         const previous = resolvePreviousChapterAcrossSite();
         if (previous) navigateToChapter(previous.categoryId, previous.subjectId, previous.id);
     });

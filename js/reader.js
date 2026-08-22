@@ -19,6 +19,7 @@ import {
     calibrateRate,
     scheduleEstimatedWords,
 } from "./reader-highlight.js";
+import { logEvent, initReaderDebugOverlay } from "./reader-debug.js";
 
 /* Web Speech API only (no cloud TTS, no auto-hosted engine): the site is 100% static
    (GitHub Pages), so this is the only option with zero cost and zero infrastructure.
@@ -97,11 +98,19 @@ audioEl.addEventListener("timeupdate", () => {
    sets isPlaying false before calling audioEl.pause(), so isPlaying still being true here is exactly
    what marks this one as external, and the cue to resync state once the page wakes back up. */
 audioEl.addEventListener("pause", () => {
+    logEvent("audioEl:pause", isPlaying ? "(external)" : "(self)");
     if (!isPlaying) return;
     isPlaying = false;
     isPaused = true;
     notify();
 });
+
+// Purely diagnostic (cf. js/reader-debug.js): no state changes, just a timeline of what audioEl did.
+["play", "playing", "stalled", "suspend", "waiting", "ended"].forEach(type =>
+    audioEl.addEventListener(type, () => logEvent(`audioEl:${type}`)));
+audioEl.addEventListener("error", () => logEvent("audioEl:error", `code=${audioEl.error?.code}`));
+
+initReaderDebugOverlay();
 
 /* Playback speed, applied to each utterance in speakNext() and persisted across visits like
    js/lang.js's own language choice. Falls back to 1 for a stored value outside READER_RATES

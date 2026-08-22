@@ -13,8 +13,8 @@ Mode "ajout à l'écran d'accueil" implémenté (`manifest.json`, icônes `icons
 
 Hypothèse à vérifier : un site ajouté à l'écran d'accueil (mode standalone, sans passer par l'App Store) n'a pas forcément l'autorisation d'exécution en arrière-plan que Safari lui-même a pour l'audio — ce serait alors une limitation d'iOS non contournable en JS, pas un bug du site. Reste à confirmer.
 
-Piste restante, désormais nécessaire (les fixes passifs — `<audio>`, `mediaSession`, mode standalone — sont épuisés sans résultat) :
-- Déboguer via Web Inspector distant (Mac connecté à l'iPhone) pour voir les erreurs/avertissements réels côté device au moment précis du verrouillage — actuellement aucune visibilité sur ce qui se passe concrètement sur le téléphone. Nécessite Louis en direct (Mac + iPhone + câble).
+Piste restante, désormais nécessaire (les fixes passifs — `<audio>`, `mediaSession`, mode standalone — sont épuisés sans résultat). Louis n'a pas de Mac (donc pas de Web Inspector distant classique) : log de diagnostic embarqué dans le site à la place (`js/reader-debug.js`), écrit dans `localStorage` (survit même si iOS tue et recharge la page en arrière-plan) et affiché en overlay sur l'écran via `?debug=1` dans l'URL. Trace les événements `audioEl` (play/pause/stalled/suspend/waiting/ended/error, self vs. externe), les handlers `mediaSession` (Bluetooth), et le cycle de vie de la page (visibilitychange, pageshow/pagehide + un id de boot aléatoire pour repérer un redémarrage complet du processus).
+- Reste à Louis : ouvrir le site avec `?debug=1` (ex: `https://louis-cagnion.github.io/Devpedia/?debug=1`, à réappliquer après ajout à l'écran d'accueil), lancer la lecture, verrouiller, attendre, déverrouiller, et lire l'overlay en bas de l'écran.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
