@@ -628,6 +628,10 @@
             {
               "id": "automatisation-workflow",
               "label": "Automation with Visual Workflows"
+            },
+            {
+              "id": "n8n-prise-en-main-de-linterface",
+              "label": "n8n: getting started with the interface"
             }
           ]
         }
