@@ -108,16 +108,21 @@
     display: none;
 }
 
-/* cf. js/reader-debug.js -- only mounted at all behind ?debug=1, so no need to hide it by default */
+/* cf. js/reader-debug.js -- only mounted at all behind ?debug=1, so no need to hide it by default.
+   Anchored below the navbar rather than at the bottom: .readerFloatingBar (the mobile play/pause
+   controls this is meant to debug) lives at inset-block-end: 0 -- overlapping it there would hide
+   the very buttons needed to drive the test it's used for. pointer-events: none as a second line of
+   defense, so a long log (tall enough to reach the controls anyway) still can't eat their taps;
+   the overlay auto-scrolls itself on every new line (cf. logEvent()), so it needs no touch input. */
 #readerDebugOverlay {
     position: fixed;
-    inset-block-end: 0;
+    inset-block-start: var(--navbar-height, 57px);
     inset-inline: 0;
-    max-height: 40vh;
+    max-height: 30vh;
     overflow-y: auto;
+    pointer-events: none;
     margin: 0;
     padding: 0.5rem;
-    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
     background-color: rgba(0, 0, 0, 0.85);
     color: #0f0;
     font-size: 0.7rem;
