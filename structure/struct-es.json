@@ -485,10 +485,6 @@
               "label": "¿Qué es el cloud?"
             },
             {
-              "id": "automatisation-workflow",
-              "label": "La automatización mediante workflow visual"
-            },
-            {
               "id": "elk-agregation-de-logs",
               "label": "ELK: centralizar y consultar los logs de una infraestructura"
             }
@@ -591,6 +587,17 @@
             {
               "id": "sockets-et-io-non-bloquante",
               "label": "Sockets y E/S no bloqueante"
+            }
+          ]
+        },
+        {
+          "id": "automatisation",
+          "label": "Automatisation",
+          "folder": "Automatisation",
+          "chapters": [
+            {
+              "id": "automatisation-workflow",
+              "label": "La automatización mediante workflow visual"
             }
           ]
         }

@@ -485,10 +485,6 @@
               "label": "What Is the Cloud?"
             },
             {
-              "id": "automatisation-workflow",
-              "label": "Automation with Visual Workflows"
-            },
-            {
               "id": "elk-agregation-de-logs",
               "label": "ELK: Centralizing and Querying Infrastructure Logs"
             }
@@ -591,6 +587,17 @@
             {
               "id": "sockets-et-io-non-bloquante",
               "label": "Sockets and Non-Blocking I/O"
+            }
+          ]
+        },
+        {
+          "id": "automatisation",
+          "label": "Automatisation",
+          "folder": "Automatisation",
+          "chapters": [
+            {
+              "id": "automatisation-workflow",
+              "label": "Automation with Visual Workflows"
             }
           ]
         }
