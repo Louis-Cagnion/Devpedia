@@ -19,11 +19,22 @@
  * - an optional `---`-fenced frontmatter block may precede that heading, holding build-time
  *   metadata only (currently just `order`, an integer used to sort chapters, and, on a
  *   subject's own main file, to sort that subject among its siblings the same way).
+ *
+ * Hard cap, not just a convention: nesting stops at exactly 2 levels (category > subject >
+ * chapters). A subfolder inside a subject's folder is never descended into — buildSubject() only
+ * lists the subject folder's own .md files as chapters, so a 3rd level is silently ignored rather
+ * than erroring. The URL scheme (`?c=&s=&p=`, see nav-url.js) and the site's rendering
+ * (router.js/sidebar.js reading `category.subjects ?? category.chapters`) share the same
+ * assumption. If a subject ever needs its own internal grouping (e.g. "Langages" already has 12
+ * subjects and could plausibly want one), that's a deliberate schema change across all of these
+ * places, not a one-line fix here.
  */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { resolveLegacyCategory } from "../js/legacy-category-redirects.js";
+import { splitFrontmatter } from "../js/frontmatter.js";
+import { slugify } from "../js/text.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_CONTENT_DIR = path.join(__dirname, "..", "content");
@@ -37,8 +48,7 @@ const DEFAULT_STRUCT_PATH = path.join(__dirname, "..", "structure", "struct.json
  * @returns {string}
  */
 function readBody(filePath) {
-    const raw = fs.readFileSync(filePath, "utf-8");
-    return raw.startsWith("---") ? raw.split("---").slice(2).join("---").trim() : raw.trim();
+    return splitFrontmatter(fs.readFileSync(filePath, "utf-8")).body;
 }
 
 /**
@@ -51,8 +61,9 @@ function readBody(filePath) {
 function readFrontmatter(filePath) {
     const raw = fs.readFileSync(filePath, "utf-8");
     const fields = {};
-    if (!raw.startsWith("---")) return fields;
-    const yaml = raw.split("---")[1].trim();
+    const { frontmatter } = splitFrontmatter(raw);
+    if (frontmatter === null) return fields;
+    const yaml = frontmatter.trim();
     yaml.split("\n").forEach(line => {
         const sepIndex = line.indexOf(": ");
         if (sepIndex === -1) return;
@@ -72,24 +83,6 @@ function readTitle(filePath) {
     const firstLine = readBody(filePath).split("\n")[0];
     const match = firstLine.match(/^#\s+(.*)/);
     return match ? match[1].trim() : firstLine.trim();
-}
-
-/**
- * @brief Builds a kebab-case id from `name`.
- *
- * @param {string} name
- *
- * @returns {string}
- */
-function slugify(name) {
-    return name
-        /* Décompose chaque lettre accentuée en "lettre + accent", puis retire les accents :
-           sans cette étape, "Représentation" donnerait "repr-sentation". */
-        .normalize("NFD")
-        .replace(/\p{Diacritic}/gu, "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
 }
 
 function listMarkdownFiles(dir) {

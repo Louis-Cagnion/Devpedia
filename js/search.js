@@ -1,6 +1,7 @@
 import { loadCategory, navigateToSubject, navigateToChapter } from "./router.js";
 import { createTag } from "./tags.js";
 import { t, tEntityLabel } from "./i18n.js";
+import { stripDiacritics } from "./text.js";
 
 /**
  * @brief Lowercases and strips accents from `text`, for accent-insensitive matching.
@@ -10,7 +11,7 @@ import { t, tEntityLabel } from "./i18n.js";
  * @returns {string}
  */
 function normalize(text) {
-    return text.toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
+    return stripDiacritics(text.toLowerCase());
 }
 
 /**

@@ -46,18 +46,25 @@ export const LEGACY_CATEGORY_REDIRECTS = {
 
 /**
  * @brief Rewrites a navigation target to its new location if `target.categoryId` is a folded-away
- * top-level category, otherwise returns it unchanged.
+ * top-level category, following the chain if that new location was itself folded away again by a
+ * later reorganization, otherwise returns it unchanged.
  *
  * @param {{categoryId: string, subjectId: string|null, pageId: string}} target
  *
  * @returns {{categoryId: string, subjectId: string|null, pageId: string}}
  */
 export function resolveLegacyCategory(target) {
-    const redirect = LEGACY_CATEGORY_REDIRECTS[target.categoryId];
-    if (!redirect) return target;
-    if (redirect.asSubject)
-        return { categoryId: redirect.newCategory, subjectId: target.categoryId, pageId: target.pageId };
-    if (!target.subjectId)
-        return { categoryId: redirect.newCategory, subjectId: null, pageId: redirect.newCategory };
-    return { categoryId: redirect.newCategory, subjectId: target.subjectId, pageId: target.pageId };
+    let current = target;
+    const seen = new Set();
+    while (LEGACY_CATEGORY_REDIRECTS[current.categoryId] && !seen.has(current.categoryId)) {
+        seen.add(current.categoryId);
+        const redirect = LEGACY_CATEGORY_REDIRECTS[current.categoryId];
+        if (redirect.asSubject)
+            current = { categoryId: redirect.newCategory, subjectId: current.categoryId, pageId: current.pageId };
+        else if (!current.subjectId)
+            current = { categoryId: redirect.newCategory, subjectId: null, pageId: redirect.newCategory };
+        else
+            current = { categoryId: redirect.newCategory, subjectId: current.subjectId, pageId: current.pageId };
+    }
+    return current;
 }

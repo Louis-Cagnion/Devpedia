@@ -8,6 +8,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { splitFrontmatter } from "../js/frontmatter.js";
+import { stripDiacritics } from "../js/text.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -35,7 +37,7 @@ const BLOCK_COMMENT_MARKERS = {
  * @returns {string}
  */
 function stripAccents(text) {
-    return text.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+    return stripDiacritics(text).toLowerCase();
 }
 
 /* Keyed by the accent-stripped form of each French entry, since real identifiers in code
@@ -503,10 +505,8 @@ function extractCodeLineParts(line, codeLang) {
  */
 export function readFrontmatterAndBody(filePath) {
     const raw = fs.readFileSync(filePath, "utf-8");
-    if (!raw.startsWith("---"))
-        return { frontmatter: "", body: raw.trim() };
-    const parts = raw.split("---");
-    return { frontmatter: `---${parts[1]}---\n\n`, body: parts.slice(2).join("---").trim() };
+    const { frontmatter, body } = splitFrontmatter(raw);
+    return { frontmatter: frontmatter === null ? "" : `---${frontmatter}---\n\n`, body };
 }
 
 /**

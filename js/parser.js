@@ -1,5 +1,7 @@
 import { createTag } from "./tags.js";
 import { renderChartBlock } from "./charts.js";
+import { splitFrontmatter } from "./frontmatter.js";
+import { slugify } from "./text.js";
 
 /**
  * @brief Strips a file's optional `---`-fenced frontmatter and returns its markdown body.
@@ -9,8 +11,7 @@ import { renderChartBlock } from "./charts.js";
  * @returns {string}
  */
 export function parseMdContent(rawContent) {
-    const body = rawContent.startsWith("---") ? rawContent.split("---").slice(2).join("---") : rawContent;
-    return body.trim();
+    return splitFrontmatter(rawContent).body;
 }
 
 /**
@@ -133,12 +134,7 @@ const headingRegex = /^(#{1,5})\s+(.*)/;
  * @returns {string}
  */
 function slugifyHeading(text) {
-    return text
-        .toLowerCase()
-        .replace(/<[^>]+>/g, "")
-        .normalize("NFD").replace(/\p{Diacritic}/gu, "")
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+    return slugify(text.replace(/<[^>]+>/g, ""));
 }
 
 /**
