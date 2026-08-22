@@ -35,9 +35,9 @@ Catégorie créée, les 3 chapitres explicitement demandés en place (vocabulair
 À compléter en écrivant (pas figé) pour une section réellement complète : tests unitaires, tests d'intégration, tests end-to-end, TDD, mocks/stubs/fakes en détail, couverture de code (et ses pièges : 100% de couverture ≠ absence de bugs), et si le niveau « bonnes pratiques avancées » est visé — property-based testing, tests de mutation.
 
 ## 5. Nouvelle catégorie : Gestion de projet
-Catégorie créée, 2 chapitres en place (méthodologies Agile/Scrum/Kanban, backlog et user stories — faits le 22/08/2026, avec lien ajouté depuis `azure-devops-plateforme.md` et `roles-equipe-developpement.md`). Reste à ajouter des chapitres.
+Catégorie créée, 4 chapitres en place (méthodologies Agile/Scrum/Kanban, backlog et user stories, estimation, outils de suivi — faits le 22/08/2026, avec lien backlog ajouté depuis `azure-devops-plateforme.md` et `roles-equipe-developpement.md`).
 
-- **Chapitres à ajouter** (pas figé, à trancher en écrivant, « et plus si affinité ») : estimation (points de complexité vs estimation en temps, planning poker) ; outils de suivi (board physique/Jira/Trello/Linear, ticket, epic) ; éventuellement SAFe/Scrumban pour les cas hybrides, OKR pour le lien objectifs ↔ exécution.
+Éventuellement, à compléter en écrivant (pas figé) : SAFe/Scrumban pour les cas hybrides, OKR pour le lien objectifs ↔ exécution.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
