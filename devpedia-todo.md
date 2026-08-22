@@ -8,11 +8,7 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 Catégorie créée, 4 chapitres en place (concepts fondamentaux, Solidity bases du langage, déployer et interagir avec un smart contract, réseaux blockchain/EVM/testnet — faits le 22/08/2026). Le parcours standard EVM (Ethereum/Avalanche) est couvert. Reste, à trancher en écrivant comme la section Tests : backends sur ICP (paradigme différent, canisters, Motoko/Rust — nécessitera une recherche dédiée avant rédaction).
 
 ## 2. Section Automatisation (n8n)
-Les 4 chapitres prévus sont faits (22/08/2026) : « Prise en main de l'interface », « Catalogue des fonctionnalités / types de nœuds », « Le format JSON d'un workflow » (vérifié auprès de la doc officielle n8n avant rédaction), « L'industrialisation » (self-hosted vs cloud, variables d'environnement vs `$vars`, credentials, environnements dev/prod, supervision des exécutions, sécurité/NODES_EXCLUDE — vérifié auprès de la doc officielle n8n).
-
-Potentiellement d'autres chapitres n8n, à compléter en écrivant (même logique que la section Tests ci-dessous).
-
-**Décidé (22/08/2026)** : contenu générique uniquement (l'outil vu de l'extérieur), sans documenter l'usage concret de ce dépôt par `git-scrapping` — évite de mélanger doc générale et doc spécifique à un projet. Le cas `git-scrapping` peut être mentionné en exemple ponctuel sans devenir le fil conducteur. Plus rien ne bloque l'écriture.
+Les 4 chapitres prévus sont faits (22/08/2026) : « Prise en main de l'interface », « Catalogue des fonctionnalités / types de nœuds », « Le format JSON d'un workflow » (vérifié auprès de la doc officielle n8n avant rédaction), « L'industrialisation » (self-hosted vs cloud, variables d'environnement vs `$vars`, credentials, environnements dev/prod, supervision des exécutions, sécurité/NODES_EXCLUDE — vérifié auprès de la doc officielle n8n). Section complète, rien de concret restant.
 
 ## 3. Lecture écran verrouillé / téléphone en poche (Bluetooth) — **décision structurelle bloquante**
 Objectif de Louis (21/08/2026) : pouvoir lire en marchant, casque Bluetooth, téléphone verrouillé et en poche, sans avoir à le tenir ni le garder allumé.
@@ -29,12 +25,7 @@ Ce qui fonctionne de façon fiable dans ce cas (mécanisme utilisé par tout lec
 
 Une fois une architecture pré-rendue effectivement implémentée (si retenue) : mettre à jour `content/IA/Voix IA/choisir-fournisseur-mise-en-production.md`, qui justifie aujourd'hui le choix de la Web Speech API par le fait que Devpédia est « 100% statique... sans serveur ni étape de build » (confirmé au passage : `.github/workflows/pages.yml` ne fait que checkout + upload, aucun build actuellement). Un pré-rendu audio (ex. Piper exécuté à la publication) introduirait une **étape de build** sans nécessiter de **serveur d'inférence live** — nuance absente du chapitre, qui traite aujourd'hui les deux comme un seul bloc. À corriger dans ce chapitre seulement une fois ce point effectivement implémenté, pas avant (éviter de documenter une architecture qui n'existe pas encore).
 
-## 4. Catégorie Tests
-Catégorie créée, les 3 chapitres explicitement demandés en place (vocabulaire QA/ISTQB, pyramide de test, architecture de test — faits le 22/08/2026). Section complète demandée, pas des chapitres isolés.
-
-À compléter en écrivant (pas figé) pour une section réellement complète : tests unitaires, tests d'intégration, tests end-to-end, TDD, mocks/stubs/fakes en détail, couverture de code (et ses pièges : 100% de couverture ≠ absence de bugs), et si le niveau « bonnes pratiques avancées » est visé — property-based testing, tests de mutation.
-
-## 5. Nouvelle catégorie : Gestion de projet
+## 4. Nouvelle catégorie : Gestion de projet
 Catégorie créée, 4 chapitres en place (méthodologies Agile/Scrum/Kanban, backlog et user stories, estimation, outils de suivi — faits le 22/08/2026, avec lien backlog ajouté depuis `azure-devops-plateforme.md` et `roles-equipe-developpement.md`).
 
 Éventuellement, à compléter en écrivant (pas figé) : SAFe/Scrumban pour les cas hybrides, OKR pour le lien objectifs ↔ exécution.
