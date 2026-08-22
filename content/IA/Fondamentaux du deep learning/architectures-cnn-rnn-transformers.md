@@ -43,7 +43,7 @@ Chaque étape reçoit à la fois l'élément courant **et** l'état caché de l'
 
 ### Le problème du gradient qui s'évanouit
 
-Pour une séquence longue, la rétropropagation (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) doit remonter à travers **toutes** les étapes précédentes : le gradient peut devenir extrêmement petit (ou extrêmement grand) au fur et à mesure, rendant l'apprentissage de dépendances **lointaines** dans la séquence très difficile. Des variantes comme **LSTM** et **GRU** ajoutent des mécanismes de portes (*gates*) pour mieux contrôler quelle information conserver ou oublier, atténuant ce problème.
+Pour une séquence longue, la rétropropagation (voir [L'entraînement d'un modèle et la descente de gradient](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) doit remonter à travers **toutes** les étapes précédentes : le gradient peut devenir extrêmement petit (ou extrêmement grand) au fur et à mesure, rendant l'apprentissage de dépendances **lointaines** dans la séquence très difficile. Des variantes comme **[LSTM](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)** et **GRU** ajoutent des mécanismes de portes (*gates*) pour mieux contrôler quelle information conserver ou oublier, atténuant ce problème.
 
 > **Piège :** utiliser un RNN "simple" (sans portes) sur des séquences longues où des dépendances lointaines comptent (le début d'un paragraphe influence sa conclusion, par exemple) : le gradient qui s'évanouit rend cet apprentissage peu fiable en pratique.
 >

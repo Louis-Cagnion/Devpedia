@@ -131,9 +131,18 @@ O capítulo [NLP e LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) distingue, de forma gené
                           explicitamente rotulados como "nocivos"
 ```
 
+| Etapa | Para se aprofundar |
+|---|---|
+| Pré-treinamento | Veja sua definição em [NLP e LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) |
+| SFT | [InstructGPT](https://arxiv.org/abs/2203.02155), o artigo que popularizou esse pipeline SFT + RLHF para assistentes conversacionais |
+| RLHF | [Deep reinforcement learning from human preferences](https://arxiv.org/abs/1706.03741), o artigo fundador do RLHF |
+| Constitutional AI | [A página de pesquisa da Anthropic sobre Constitutional AI](https://www.anthropic.com/news/claude-s-constitution) |
+
 > **Cuidado:** confundir essas etapas com o fine-tuning genérico já visto em [NLP e LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm): SFT, RLHF e Constitutional AI são cada um um método de fine-tuning entre outros possíveis, não sinônimos do termo genérico.
 >
 > **Boa prática:** distinguir, diante do anúncio de um novo modelo, a natureza real de seu pós-treinamento (apenas exemplos supervisionados? um modelo de recompensa aprendido? uma fase de autocrítica?) em vez de supor um único "fine-tuning" indiferenciado.
+
+Um assistente moderno como o descrito aqui se apoia em um único modelo generalista, que cuida ao mesmo tempo da conversa, da geração de código e da chamada de ferramentas. Nem sempre foi assim: modelos antigos como o **Codex** (o modelo especializado em código da OpenAI, anterior a essa unificação) eram treinados separadamente para um uso específico, uma abordagem que os assistentes atuais substituem por um único modelo pós-treinado para cobrir todos esses casos de uma vez.
 
 ## O que reter
 

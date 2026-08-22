@@ -43,7 +43,7 @@ Each step receives both the current element **and** the hidden state from the pr
 
 ### The Fading Gradient Problem
 
-For a long sequence, backpropagation (see [Model Training and Gradient Descent](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) must propagate backward through **all** preceding stages: the gradient can become extremely small (or extremely large) along the way, making it very difficult to learn dependencies **that are far apart** in the sequence. Variants such as **LSTM** and **GRU** add gate mechanisms to better control which information to retain or forget, mitigating this problem.
+For a long sequence, backpropagation (see [Model Training and Gradient Descent](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) must propagate backward through **all** preceding stages: the gradient can become extremely small (or extremely large) along the way, making it very difficult to learn dependencies **that are far apart** in the sequence. Variants such as **[LSTM](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)** and **GRU** add gate mechanisms to better control which information to retain or forget, mitigating this problem.
 
 > **Pitfall:** Using a “simple” RNN (without gates) on long sequences where distant dependencies matter (for example, the beginning of a paragraph influences its conclusion): the vanishing gradient makes this learning method unreliable in practice.
 >

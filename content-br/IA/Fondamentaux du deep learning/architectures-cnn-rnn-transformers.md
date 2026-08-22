@@ -43,7 +43,7 @@ Cada etapa recebe ao mesmo tempo o elemento atual **e** o estado oculto da etapa
 
 ### O problema do gradiente que desaparece
 
-Para uma sequência longa, a retropropagação (veja [O treinamento de um modelo e a descida do gradiente](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) precisa percorrer **todas** as etapas anteriores: o gradiente pode se tornar extremamente pequeno (ou extremamente grande) ao longo do caminho, tornando o aprendizado de dependências **distantes** na sequência muito difícil. Variantes como **LSTM** e **GRU** adicionam mecanismos de portas (*gates*) para controlar melhor qual informação manter ou esquecer, atenuando esse problema.
+Para uma sequência longa, a retropropagação (veja [O treinamento de um modelo e a descida do gradiente](/?c=ia&s=fondamentaux-du-deep-learning&p=entrainement-descente-de-gradient)) precisa percorrer **todas** as etapas anteriores: o gradiente pode se tornar extremamente pequeno (ou extremamente grande) ao longo do caminho, tornando o aprendizado de dependências **distantes** na sequência muito difícil. Variantes como **[LSTM](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)** e **GRU** adicionam mecanismos de portas (*gates*) para controlar melhor qual informação manter ou esquecer, atenuando esse problema.
 
 > **Cuidado:** usar uma RNN "simples" (sem portas) em sequências longas onde dependências distantes importam (o início de um parágrafo influencia sua conclusão, por exemplo): o gradiente que desaparece torna esse aprendizado pouco confiável na prática.
 >

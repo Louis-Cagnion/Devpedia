@@ -32,7 +32,7 @@ Essa abordagem funciona bem em um texto limpo, impresso, com caracteres bem sepa
 
 ## O deep learning evita a segmentação caractere por caractere
 
-Um **CRNN** (*Convolutional Recurrent Neural Network*) combina as duas [arquiteturas vistas anteriormente](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) em vez de inventar uma nova:
+Um **CRNN** (*Convolutional Recurrent Neural Network*) combina uma CNN e uma RNN com portas ([LSTM/GRU, já vistas](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers)) em vez de inventar uma nova arquitetura:
 
 ```text
 Imagem da linha inteira

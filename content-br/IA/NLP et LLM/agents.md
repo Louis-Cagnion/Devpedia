@@ -32,6 +32,19 @@ O modelo não consegue executar essa função ele mesmo; ele apenas **decide** q
 >
 > **Boa prática:** validar os argumentos recebidos (tipos, valores esperados) antes de executar a função real, exatamente como se validaria uma entrada vinda de qualquer fonte não confiável.
 
+## JSON Schema: um sistema de tipos para os argumentos de uma ferramenta
+
+A seção `parameters` do exemplo anterior segue uma convenção padrão chamada **JSON Schema**: ela cumpre o mesmo papel que um sistema de tipos em uma linguagem clássica, expresso em JSON em vez de na sintaxe da linguagem.
+
+| JSON Schema | Equivalente em uma linguagem tipada clássica |
+|---|---|
+| `type: "string"` / `"integer"` / `"boolean"` | `string` / `int` / `bool` |
+| `type: "array", items: {...}` | Um array/lista tipada |
+| `type: "object", properties: {...}, required: [...]` | Uma struct/classe com campos obrigatórios |
+| `enum: ["fr", "en", "es"]` | Um tipo enumerado |
+
+Uma linguagem tipada clássica valida uma chamada descrita em JSON Schema com suas próprias ferramentas: em [Python](/?c=langages-de-programmation&s=python&p=python), a biblioteca **Pydantic** transforma diretamente um esquema em uma classe validada; em Node.js, a biblioteca **Ajv** valida um objeto JSON contra um esquema; em Go, as tags `json` nos campos de uma struct cumprem um papel parecido, sem uma biblioteca de validação JSON Schema tão padrão quanto as duas anteriores.
+
 ## Um parâmetro livre em vez de um valor fixo: de onde vem a variação
 
 O parâmetro `cidade` do exemplo anterior só assume valores de um conjunto limitado e previsível (nomes de cidades). Nada obriga um parâmetro a ser tão restrito: ele pode igualmente ser um **texto livre que o próprio modelo escreve**, como um comando shell, uma consulta SQL ou um trecho de código:
@@ -112,6 +125,8 @@ A escolha segue a mesma lógica de outros lugares na arquitetura de software: um
 | **Orquestrador/trabalhadores** | Um agente "orquestrador" decompõe a tarefa, decide qual agente especializado chamar e em que ordem, e então reúne seus resultados | A ordem das etapas depende da própria tarefa e não pode ser fixada com antecedência |
 | **Estado compartilhado** (*blackboard*) | Os agentes não falam diretamente entre si: eles leem e escrevem em um espaço comum (um banco, um documento compartilhado), cada um reagindo ao que os outros depositaram ali | Vários agentes precisam colaborar sem dependência estrita de ordem, cada um contribuindo quando tiver o que oferecer |
 | **Avaliador/otimizador** | Um agente gera uma primeira versão, um segundo papel (o mesmo modelo ou outro) a critica de acordo com critérios explícitos, e então uma nova versão incorpora essa crítica, repetido até um critério de parada (veja o detalhe em [O assistente de IA agêntico no terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal)) | A qualidade da saída importa mais que a latência, e existe um critério de julgamento explícito (checklist, testes, formato esperado) |
+
+Qualquer que seja o padrão escolhido, cada subagente começa por padrão com um contexto **vazio**: é o prompt redigido pelo agente que chama que constitui todo o contexto transmitido, não uma herança automática do histórico do agente pai. Um subagente que precise de uma informação estabelecida antes na conversa deve recebê-la explicitamente nesse prompt, salvo mecanismo dedicado de cópia completa do histórico.
 
 > **Cuidado:** com um estado compartilhado principalmente, nada impede que dois agentes ajam com base em informações que se tornaram inconsistentes entre si (um leu o estado antes que o outro o modificasse), a mesma classe de problema que um acesso concorrente a um recurso compartilhado na programação clássica.
 >

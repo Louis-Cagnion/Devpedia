@@ -132,9 +132,18 @@ Le chapitre [NLP et LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) distingue, de façon gé
                           explicitement etiquetes "nuisibles"
 ```
 
+| Étape | Pour aller plus loin |
+|---|---|
+| Pré-entraînement | Voir sa définition dans [NLP et LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) |
+| SFT | [InstructGPT](https://arxiv.org/abs/2203.02155), le papier qui a popularisé ce pipeline SFT + RLHF pour les assistants conversationnels |
+| RLHF | [Deep reinforcement learning from human preferences](https://arxiv.org/abs/1706.03741), le papier fondateur du RLHF |
+| Constitutional AI | [La page de recherche d'Anthropic sur Constitutional AI](https://www.anthropic.com/news/claude-s-constitution) |
+
 > **Piège :** confondre ces étapes avec le fine-tuning générique déjà vu dans [NLP et LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) : SFT, RLHF et Constitutional AI sont chacune une méthode de fine-tuning parmi d'autres possibles, pas des synonymes du terme générique.
 >
 > **Bonne pratique :** distinguer, face à l'annonce d'un nouveau modèle, la nature réelle de son post-entraînement (des exemples supervisés seulement ? un modèle de récompense appris ? une phase d'auto-critique ?) plutôt que de supposer un unique "fine-tuning" indifférencié.
+
+Un assistant moderne comme celui décrit ici s'appuie sur un modèle unique et généraliste, qui gère à la fois la conversation, la génération de code et l'appel d'outils. Cela n'a pas toujours été le cas : d'anciens modèles comme **Codex** (le modèle spécialisé code d'OpenAI, antérieur à cette unification) étaient entraînés séparément pour un usage précis, une approche que les assistants actuels remplacent par un modèle unique post-entraîné pour couvrir l'ensemble de ces cas à la fois.
 
 ## Ce qu'il faut retenir
 

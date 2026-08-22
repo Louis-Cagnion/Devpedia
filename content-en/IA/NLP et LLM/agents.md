@@ -32,6 +32,19 @@ It is the code surrounding the model that receives this decision, actually execu
 >
 > **Best practice:** Validate the received arguments (types, expected values) before executing the actual function, just as you would validate input from any untrusted source.
 
+## JSON Schema: a type system for a tool's arguments
+
+The `parameters` section of the previous example follows a standard convention called **JSON Schema**: it plays the same role as a type system in a classic language, expressed in JSON rather than in language syntax.
+
+| JSON Schema | Equivalent in a classic typed language |
+|---|---|
+| `type: "string"` / `"integer"` / `"boolean"` | `string` / `int` / `bool` |
+| `type: "array", items: {...}` | A typed array/list |
+| `type: "object", properties: {...}, required: [...]` | A struct/class with required fields |
+| `enum: ["fr", "en", "es"]` | An enum type |
+
+A classic typed language validates a call described in JSON Schema with its own tools: in [Python](/?c=langages-de-programmation&s=python&p=python), the **Pydantic** library turns a schema directly into a validated class; in Node.js, the **Ajv** library validates a JSON object against a schema; in Go, `json` tags on a struct's fields play a similar role, though without a JSON Schema validation library as standard as the two above.
+
 ## A free-form parameter rather than a fixed value: where does the variation come from?
 
 The `city` parameter in the previous example takes values only from a limited and predictable set (city names). There is no requirement for a parameter to be so restricted: it can just as easily be **free-form text written by the model itself**, such as a shell command, an SQL query, or a code snippet:
@@ -112,6 +125,8 @@ The choice follows the same logic as elsewhere in software architecture: a singl
 | **Orchestrator / Workers** | An “orchestrator” agent breaks down the task, decides which specialized agent to call and in what order, and then combines their results | The order of the steps depends on the task itself and cannot be fixed in advance |
 | **Shared state** (*blackboard*) | Agents do not communicate directly with one another: they read from and write to a shared space (a database, a shared document), with each agent reacting to what others have posted there | Multiple agents must collaborate without a strict order of dependency, with each contributing when it has something to contribute |
 | **Evaluator / Optimizer** | An agent generates an initial version; a second agent (the same model or a different one) evaluates it based on explicit criteria; then a new version incorporates this feedback, repeated until a termination criterion is met (see details in [The Agent-Based AI Assistant in the Terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal)) | Output quality matters more than latency, and an explicit evaluation criterion exists (checklist, tests, expected format) |
+
+Whichever pattern is used, every sub-agent starts by default with an **empty** context: the prompt written by the calling agent makes up the entire transmitted context, not an automatic inheritance of the parent agent's history. A sub-agent that needs information established earlier in the conversation must have it explicitly passed in that prompt, unless a dedicated full-history-copy mechanism is in place.
 
 > **Pitfall:** particularly with a shared state, there is nothing to prevent two agents from acting based on information that has become inconsistent with each other (one read the state before the other modified it): the same class of problem as concurrent access to a shared resource in traditional programming.
 >

@@ -39,7 +39,7 @@ Cada etapa recibe tanto el elemento actual **como** el estado oculto de la etapa
 
 ### El problema del gradiente que se desvanece
 
-En el caso de una secuencia larga, la retropropagación (véase el capítulo sobre el descenso del gradiente) debe remontarse a través de **todas** las etapas anteriores; el gradiente puede volverse extremadamente pequeño (o extremadamente grande) a medida que avanza, lo que dificulta mucho el aprendizaje de dependencias **lejanas** en la secuencia. Variantes como **LSTM** y **GRU** añaden mecanismos de puertas (*gates*) para controlar mejor qué información conservar u olvidar, lo que mitiga este problema.
+En el caso de una secuencia larga, la retropropagación (véase el capítulo sobre el descenso del gradiente) debe remontarse a través de **todas** las etapas anteriores; el gradiente puede volverse extremadamente pequeño (o extremadamente grande) a medida que avanza, lo que dificulta mucho el aprendizaje de dependencias **lejanas** en la secuencia. Variantes como **[LSTM](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)** y **GRU** añaden mecanismos de puertas (*gates*) para controlar mejor qué información conservar u olvidar, lo que mitiga este problema.
 
 ## Los Transformers: el mecanismo de atención
 

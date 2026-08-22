@@ -32,6 +32,19 @@ C'est le code qui entoure le modèle qui reçoit cette décision, exécute réel
 >
 > **Bonne pratique :** valider les arguments reçus (types, valeurs attendues) avant d'exécuter la fonction réelle, exactement comme on validerait une entrée venue de n'importe quelle source non fiable.
 
+## JSON Schema : un système de types pour les arguments d'un outil
+
+La section `parameters` de l'exemple précédent suit une convention standard appelée **JSON Schema** : elle joue le même rôle qu'un système de types dans un langage classique, exprimé en JSON plutôt qu'en syntaxe de langage.
+
+| JSON Schema | Équivalent dans un langage typé classique |
+|---|---|
+| `type: "string"` / `"integer"` / `"boolean"` | `string` / `int` / `bool` |
+| `type: "array", items: {...}` | Un tableau/une liste typée |
+| `type: "object", properties: {...}, required: [...]` | Une structure/classe avec des champs obligatoires |
+| `enum: ["fr", "en", "es"]` | Un type énuméré |
+
+Un langage typé classique valide un appel décrit en JSON Schema avec ses propres outils : en [Python](/?c=langages-de-programmation&s=python&p=python), la bibliothèque **Pydantic** transforme directement un schéma en classe validée ; en Node.js, la bibliothèque **Ajv** valide un objet JSON contre un schéma ; en Go, les tags `json` posés sur les champs d'une structure jouent un rôle proche, sans bibliothèque de validation JSON Schema aussi standard que les deux précédentes.
+
 ## Un paramètre libre plutôt qu'une valeur fixe : d'où vient la variation
 
 Le paramètre `ville` de l'exemple précédent ne prend ses valeurs que dans un ensemble limité et prévisible (des noms de villes). Rien n'oblige un paramètre à être aussi contraint : il peut tout aussi bien être un **texte libre que le modèle rédige lui-même**, comme une commande shell, une requête [SQL](/?c=domain-specific-languages-dsl&p=sql) ou un extrait de code :
@@ -112,6 +125,8 @@ Le choix suit la même logique qu'ailleurs en architecture logicielle : un seul 
 | **Orchestrateur / travailleurs** | Un agent "orchestrateur" décompose la tâche, décide quel agent spécialisé appeler et dans quel ordre, puis assemble leurs résultats | L'ordre des étapes dépend de la tâche elle-même et ne peut pas être figé à l'avance |
 | **État partagé** (*blackboard*) | Les agents ne se parlent pas directement : ils lisent et écrivent dans un espace commun (une base, un document partagé), chacun réagissant à ce que les autres y ont déposé | Plusieurs agents doivent collaborer sans dépendance stricte d'ordre, chacun contribuant quand il a de quoi le faire |
 | **Évaluateur / optimiseur** | Un agent génère une première version, un second rôle (le même modèle ou un autre) la critique selon des critères explicites, puis une nouvelle version intègre cette critique, répété jusqu'à un critère d'arrêt (voir le détail dans [L'assistant IA agentique en terminal](/?c=ia&s=applications-llm&p=assistant-agentique-terminal)) | La qualité de sortie compte plus que la latence, et un critère de jugement explicite existe (checklist, tests, format attendu) |
+
+Quel que soit le patron retenu, chaque sous-agent démarre par défaut avec un contexte **vide** : c'est le prompt rédigé par l'agent appelant qui constitue tout le contexte transmis, pas un héritage automatique de l'historique de l'agent parent. Un sous-agent qui a besoin d'une information établie plus tôt dans la conversation doit se la voir explicitement transmise dans ce prompt, sauf mécanisme dédié de copie d'historique complet.
 
 > **Piège :** avec un état partagé notamment, rien n'empêche deux agents d'agir sur la base d'informations devenues incohérentes entre elles (l'un a lu l'état avant que l'autre ne le modifie), la même classe de problème qu'un accès concurrent à une ressource partagée en programmation classique.
 >

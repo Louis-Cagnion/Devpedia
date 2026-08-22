@@ -131,9 +131,18 @@ The chapter [NLP and LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) makes a general distinc
                           explicitly labeled "harmful"
 ```
 
+| Step | To go further |
+|---|---|
+| Pre-training | See its definition in [NLP and LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm) |
+| SFT | [InstructGPT](https://arxiv.org/abs/2203.02155), the paper that popularized this SFT + RLHF pipeline for conversational assistants |
+| RLHF | [Deep reinforcement learning from human preferences](https://arxiv.org/abs/1706.03741), the foundational RLHF paper |
+| Constitutional AI | [Anthropic's research page on Constitutional AI](https://www.anthropic.com/news/claude-s-constitution) |
+
 > **Pitfall:** confusing these steps with the generic fine-tuning already discussed in [NLP and LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm): SFT, RLHF, and Constitutional AI are each one of several possible fine-tuning methods, not synonyms for the generic term.
 >
 > **Best practice:** When a new model is announced, identify the actual nature of its post-training process (supervised examples only? a learned reward model? a self-critique phase?) rather than assuming a single, undifferentiated form of “fine-tuning.”
+
+A modern assistant like the one described here relies on a single, general-purpose model that handles conversation, code generation, and tool calling all at once. This wasn't always the case: older models like **Codex** (OpenAI's earlier code-specialized model, predating this unification) were trained separately for one specific use, an approach today's assistants replace with a single model post-trained to cover all these cases at once.
 
 ## Key Takeaways
 
