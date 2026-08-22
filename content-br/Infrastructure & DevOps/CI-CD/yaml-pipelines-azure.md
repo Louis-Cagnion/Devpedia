@@ -47,7 +47,7 @@ steps:
 
 ## As tasks: steps prontas para uso
 
-Uma **task** é um step predefinido pelo Azure DevOps (ou pelo marketplace) para uma ação comum, em vez de escrever o comando bruto na mão:
+Uma **task** é um step padrão pelo Azure DevOps (ou pelo marketplace) para uma ação comum, em vez de escrever o comando bruto na mão:
 
 ```yaml
 steps:

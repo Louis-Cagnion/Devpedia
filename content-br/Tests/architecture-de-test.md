@@ -55,7 +55,7 @@ Um **test double** é um substituto fictício de uma dependência real (um banco
 
 | Termo | Papel |
 |---|---|
-| **Stub** | Retorna uma resposta fixa e predefinida, sem lógica ("quando chamado, sempre retorna este resultado") |
+| **Stub** | Retorna uma resposta fixa e padrão, sem lógica ("quando chamado, sempre retorna este resultado") |
 | **Mock** | Como um stub, mas também verifica *como* foi usado (se foi chamado, com quais argumentos, quantas vezes) |
 | **Fake** | Uma implementação simplificada mas funcional (ex. um banco de dados em memória no lugar de um real) |
 

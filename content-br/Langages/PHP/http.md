@@ -31,7 +31,7 @@ curl_close($ch);
 ?>
 ```
 
-`CURLOPT_*` são constantes inteiras predefinidas pela extensão cURL (como flags de `open()` em C): cada uma configura um aspecto preciso da requisição.
+`CURLOPT_*` são constantes inteiras padrão pela extensão cURL (como flags de `open()` em C): cada uma configura um aspecto preciso da requisição.
 
 ### Converter um retorno "à moda C" em exceção
 

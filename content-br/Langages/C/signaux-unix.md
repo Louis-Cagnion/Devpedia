@@ -51,7 +51,7 @@ Sem `signal(SIGINT, handler)`, um Ctrl-C teria terminado o programa imediatament
 
 ## Comunicar entre processos por sinal (IPC)
 
-`SIGUSR1`/`SIGUSR2` não têm nenhum sentido predefinido: um programa pode usá-los como mecanismo de comunicação entre processos (*IPC*, *Inter-Process Communication*), estabelecendo sua própria convenção. Exemplo: transmitir um bit de cada vez, `SIGUSR1` para `0`, `SIGUSR2` para `1`:
+`SIGUSR1`/`SIGUSR2` não têm nenhum sentido padrão: um programa pode usá-los como mecanismo de comunicação entre processos (*IPC*, *Inter-Process Communication*), estabelecendo sua própria convenção. Exemplo: transmitir um bit de cada vez, `SIGUSR1` para `0`, `SIGUSR2` para `1`:
 
 ```c
 // Lado emissor (conhece o PID do receptor)
@@ -83,7 +83,7 @@ Um handler é executado interrompendo o código normal do programa, potencialmen
 
 | | |
 |---|---|
-| **Para lembrar** | Um sinal interrompe um processo a qualquer momento para executar um handler, diferente de uma chamada de função clássica. `SIGUSR1`/`SIGUSR2` não têm sentido predefinido e podem servir de canal de comunicação entre processos. |
+| **Para lembrar** | Um sinal interrompe um processo a qualquer momento para executar um handler, diferente de uma chamada de função clássica. `SIGUSR1`/`SIGUSR2` não têm sentido padrão e podem servir de canal de comunicação entre processos. |
 | **Ferramentas utilizáveis** | `signal()` para interceptar um sinal, `kill()` para enviar um, `volatile sig_atomic_t` para comunicar entre um handler e o resto do programa. |
 | **Armadilhas a evitar** | Chamar uma função não async-signal-safe (como `printf()`) dentro de um handler. |
 | **Boas práticas** | Manter um handler mínimo (modificar uma única variável `sig_atomic_t`) e tratar o sinal no loop principal do programa, nunca dentro do handler. |
