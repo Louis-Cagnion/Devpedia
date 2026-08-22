@@ -18,6 +18,10 @@
         {
           "id": "concepts-fondamentaux-blockchain",
           "label": "Conceptos fundamentales de la blockchain"
+        },
+        {
+          "id": "solidity-bases-du-langage",
+          "label": "Solidity: fundamentos del lenguaje"
         }
       ]
     },
