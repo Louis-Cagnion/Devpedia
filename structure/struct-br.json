@@ -1574,6 +1574,10 @@
         {
           "id": "tests-dintegration",
           "label": "Os testes de integração"
+        },
+        {
+          "id": "tests-end-to-end",
+          "label": "Os testes end-to-end"
         }
       ]
     },
