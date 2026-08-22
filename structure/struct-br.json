@@ -1566,6 +1566,10 @@
         {
           "id": "architecture-de-test",
           "label": "Arquitetura de uma suíte de testes"
+        },
+        {
+          "id": "tests-unitaires",
+          "label": "Os testes unitários"
         }
       ]
     },

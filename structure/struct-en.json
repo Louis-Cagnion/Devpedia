@@ -1546,6 +1546,10 @@
         {
           "id": "architecture-de-test",
           "label": "Test suite architecture"
+        },
+        {
+          "id": "tests-unitaires",
+          "label": "Unit tests"
         }
       ]
     },
