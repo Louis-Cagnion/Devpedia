@@ -231,7 +231,9 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
 
 /**
  * @brief Recursively walks `root`, appending a "speak" entry per leaf, a set of entries per
- * `table`, and a "pause" entry per `pre` block, in document order.
+ * `table`, and a "pause" entry per `pre` block, in document order. Exported so
+ * scripts/generate-audio.mjs can build the exact same reading plan against a linkedom document,
+ * keeping live playback and pre-generated audio derived from a single source of truth.
  *
  * @param {HTMLElement} root
  * @param {string} lang the page's language code
@@ -239,7 +241,7 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
  * @param {string} pageId the page's own id
  * @param {Array} entries the plan being built, appended to in place
  */
-function collectSegments(root, lang, context, pageId, entries) {
+export function collectSegments(root, lang, context, pageId, entries) {
     Array.from(root.children).forEach(element => {
         if (element.matches(IGNORED_SELECTOR)) return;
         if (element.tagName === "PRE") {

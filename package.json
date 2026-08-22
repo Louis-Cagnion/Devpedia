@@ -1,0 +1,9 @@
+{
+  "name": "devpedia",
+  "private": true,
+  "type": "module",
+  "description": "Build/generation tooling for Devpedia. The site itself ships zero dependencies and runs unbundled in the browser; everything here is dev-only (structure generation, audio pre-generation).",
+  "devDependencies": {
+    "linkedom": "^0.18.5"
+  }
+}

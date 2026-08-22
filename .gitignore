@@ -1,3 +1,9 @@
 .env
 node_modules/
 cato-ca-bundle.pem
+
+# Local generation tooling for scripts/generate-audio.mjs (Piper TTS): Python venv and downloaded
+# voice models, both regenerable from scripts/generate-audio.mjs's own setup instructions, never
+# committed -- only their output (audio/) is.
+.venv-piper/
+.piper-voices/
