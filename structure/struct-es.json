@@ -258,6 +258,10 @@
           "label": "El WAF: filtrar el tráfico antes de que llegue a la aplicación"
         },
         {
+          "id": "hashicorp-vault",
+          "label": "HashiCorp Vault: más allá del archivo .env"
+        },
+        {
           "id": "tests-et-audit-de-securite",
           "label": "Pruebas y auditoría de seguridad"
         },
