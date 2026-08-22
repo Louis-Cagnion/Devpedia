@@ -299,6 +299,10 @@
             {
               "id": "safe-et-scrumban",
               "label": "SAFe y Scrumban: los casos híbridos"
+            },
+            {
+              "id": "okr",
+              "label": "Los OKR"
             }
           ]
         }
