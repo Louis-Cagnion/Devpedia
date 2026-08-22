@@ -18,34 +18,28 @@ Ordre déjà validé par Louis (19/08/2026), du plus rapide au plus lent :
 
 Décision restante à trancher avant d'écrire les chapitres n8n : contenu générique (l'outil vu de l'extérieur) ou documentant aussi l'usage concret de ce dépôt (le workflow d'orchestration nocturne de `git-scrapping`, cf. section « Automatic orchestration (n8n) » du README) — risque de mélanger doc générale et doc spécifique à un projet.
 
-## 3. Lecteur audio — enchaînement automatique au chapitre suivant
-Aujourd'hui `reader-control.js` ne connaît que la navigation par paragraphe (`previousParagraph`/`nextParagraph`) au sein d'un même chapitre ; pas de notion de « chapitre suivant/précédent » au sens navigation entre pages (`?c=...&p=...`). À construire :
-- Détection de fin de lecture du chapitre.
-- Timer de 5s annulable par un clic sur n'importe quel contrôle du lecteur.
-- Résolution du chapitre suivant dans `structure/struct.json` (respecter l'ordre des `chapters`/`subjects`, y compris le passage d'une catégorie à la suivante en fin de catégorie).
-
-## 4. Lecteur audio — synchronisation boutons médias Bluetooth
+## 3. Lecteur audio — synchronisation boutons médias Bluetooth
 Permettre suivant/précédent/lecture-pause depuis un casque Bluetooth, comme pour de la musique.
 - Mécanisme : [MediaSession API](https://developer.mozilla.org/fr/docs/Web/API/MediaSession) (`navigator.mediaSession.setActionHandler('nexttrack'/'previoustrack'/'play'/'pause', ...)`) — aucune intégration actuelle (`mediaSession` absent de `js/`).
-- Se brancher sur la même notion de « chapitre suivant/précédent » que la tâche 3, plutôt que dupliquer la logique.
+- Se brancher sur la résolution de chapitre suivant/précédent déjà écrite pour l'enchaînement automatique (`resolveNextChapterAcrossSite` dans `js/router.js`, fait le 22/08/2026) plutôt que dupliquer la logique — l'exporter et écrire son équivalent « précédent » au passage.
 - `pause`/`play` synchronisé dans les deux sens avec le bouton déjà présent (`primaryButton` dans `reader-control.js`) : un appui Bluetooth met à jour l'état visuel du bouton, et inversement un clic met à jour `navigator.mediaSession.playbackState`.
 - Vitesse de lecture : exposer un contrôle (lent/normal/rapide ou slider) branché sur `SpeechSynthesisUtterance.rate` (`js/reader.js`) — indépendant de MediaSession, à traiter dans la même tâche puisque ça touche le même écran de contrôle.
 
-## 4bis. Lecture écran verrouillé / téléphone en poche (Bluetooth) — **décision structurelle bloquante**
+## 3bis. Lecture écran verrouillé / téléphone en poche (Bluetooth) — **décision structurelle bloquante**
 Objectif de Louis (21/08/2026) : pouvoir lire en marchant, casque Bluetooth, téléphone verrouillé et en poche, sans avoir à le tenir ni le garder allumé.
 
-**Constat qui remet en cause l'approche actuelle** : le lecteur repose sur `window.speechSynthesis` (Web Speech API, `js/reader.js:25-26`), pas sur un élément `<audio>`. Or `speechSynthesis` n'est pas traité par les navigateurs mobiles comme une vraie lecture média — Chrome et Safari le suspendent quand l'onglet perd le focus ou que l'écran se verrouille (comportement particulièrement agressif sur iOS Safari). MediaSession (tâche 4) résout la synchronisation des boutons Bluetooth, mais ne garantit pas que le son continue une fois l'écran verrouillé : ce sont deux problèmes distincts.
+**Constat qui remet en cause l'approche actuelle** : le lecteur repose sur `window.speechSynthesis` (Web Speech API, `js/reader.js:25-26`), pas sur un élément `<audio>`. Or `speechSynthesis` n'est pas traité par les navigateurs mobiles comme une vraie lecture média — Chrome et Safari le suspendent quand l'onglet perd le focus ou que l'écran se verrouille (comportement particulièrement agressif sur iOS Safari). MediaSession (tâche 3) résout la synchronisation des boutons Bluetooth, mais ne garantit pas que le son continue une fois l'écran verrouillé : ce sont deux problèmes distincts.
 
 Ce qui fonctionne de façon fiable dans ce cas (mécanisme utilisé par tout lecteur audio/podcast web) : un élément `<audio>` qui joue un **fichier audio pré-généré** (pas de synthèse vocale en direct dans le navigateur), couplé à MediaSession — c'est ce que l'OS reconnaît comme une session de lecture média légitime à maintenir en arrière-plan.
 
-Décision à trancher avec Louis avant d'investir dans les tâches 3/4 en profondeur (impact architecture, pas juste une option de plus) :
+Décision à trancher avec Louis avant d'investir dans la tâche 3 en profondeur (impact architecture, pas juste une option de plus) :
 - **Pré-générer l'audio** (moteur TTS type Piper/Coqui — auto-hébergé, gratuit — ou API cloud type Google Cloud TTS/Amazon Polly/Azure/ElevenLabs, exécuté à la publication du chapitre, fichier audio stocké/caché par paragraphe ou chapitre, servi via `<audio>`) : lecture fiable écran verrouillé, la vitesse reste ajustable en direct (`audio.playbackRate`, comme `SpeechSynthesisUtterance.rate` aujourd'hui — pas de perte sur ce point). Coût réel : pipeline de génération/stockage à construire, et un fichier figé par voix/langue (déjà aligné avec la structure `content-<lang>/` existante) au lieu du choix de voix instantané actuel du navigateur. Un moteur auto-hébergé permettrait probablement de réutiliser la table de prononciation custom (`reader-pronunciation.js`) plus facilement qu'une voix cloud générique — à vérifier au moment de choisir.
 - **Garder `speechSynthesis` en direct** : le plus simple à maintenir, mais le confort visé (poche, écran verrouillé) restera probablement irréalisable de façon fiable multi-navigateurs, quel que soit l'effort mis dans MediaSession/Wake Lock.
 
-Une fois cette décision tranchée en faveur du pré-rendu : mettre à jour `content/IA/Voix IA/choisir-fournisseur-mise-en-production.md`, qui justifie aujourd'hui le choix de la Web Speech API par le fait que Devpédia est « 100% statique... sans serveur ni étape de build » (confirmé au passage : `.github/workflows/pages.yml` ne fait que checkout + upload, aucun build actuellement). Un pré-rendu audio (ex. Piper exécuté à la publication) introduirait une **étape de build** sans nécessiter de **serveur d'inférence live** — nuance absente du chapitre, qui traite aujourd'hui les deux comme un seul bloc. À corriger dans ce chapitre seulement une fois 4bis effectivement implémenté, pas avant (éviter de documenter une architecture qui n'existe pas encore).
+Une fois cette décision tranchée en faveur du pré-rendu : mettre à jour `content/IA/Voix IA/choisir-fournisseur-mise-en-production.md`, qui justifie aujourd'hui le choix de la Web Speech API par le fait que Devpédia est « 100% statique... sans serveur ni étape de build » (confirmé au passage : `.github/workflows/pages.yml` ne fait que checkout + upload, aucun build actuellement). Un pré-rendu audio (ex. Piper exécuté à la publication) introduirait une **étape de build** sans nécessiter de **serveur d'inférence live** — nuance absente du chapitre, qui traite aujourd'hui les deux comme un seul bloc. À corriger dans ce chapitre seulement une fois 3bis effectivement implémenté, pas avant (éviter de documenter une architecture qui n'existe pas encore).
 - Piste intermédiaire à vérifier expérimentalement avant de trancher : tester en conditions réelles (écran verrouillé, Android puis iOS) si un `MediaSession.playbackState = "playing"` actif suffit à prolonger `speechSynthesis` au-delà de quelques secondes — les sources consultées le 21/08/2026 ne confirment ce comportement sur aucune plateforme.
 
-## 5. Nouvelle catégorie : Tests
+## 4. Nouvelle catégorie : Tests
 Aucune catégorie dédiée à la méthodologie de test logiciel aujourd'hui (`tests-et-audit-de-securite.md` dans `Cybersécurité` couvre l'audit sécu, pas ça). Section complète demandée, pas des chapitres isolés.
 
 Chapitres demandés explicitement :
@@ -55,7 +49,7 @@ Chapitres demandés explicitement :
 
 À compléter en écrivant (pas figé) pour une section réellement complète : tests unitaires, tests d'intégration, tests end-to-end, TDD, mocks/stubs/fakes en détail, couverture de code (et ses pièges : 100% de couverture ≠ absence de bugs), et si le niveau « bonnes pratiques avancées » est visé — property-based testing, tests de mutation.
 
-## 6. Section prompt engineering (developpement approfondi)
+## 5. Section prompt engineering (developpement approfondi)
 Objectif de Louis : aller beaucoup plus loin que l'existant, jusqu'à pouvoir lancer un seul prompt et laisser l'IA mener un projet de A à Z sans s'arrêter, en choisissant elle-même les meilleures options (dépendances, librairies, fonctions, outils, variables, techniques, bonnes pratiques) selon le but recherché, from scratch ou non. Il faut notamment identifier à l'avance quelles informations l'IA a besoin pour y arriver.
 
 Point explicite de Louis, à respecter avant de rédiger quoi que ce soit : sa vision n'est pas à prendre pour acquise. Il veut un vrai débat sur le fonctionnement réel du prompt engineering, pas une section qui va dans son sens pour lui faire plaisir — contester son point de vue et proposer d'autres approches si elles sont plus justes.
