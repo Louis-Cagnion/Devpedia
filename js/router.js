@@ -7,6 +7,7 @@ import { buildReadingPlan, stopReading } from "./reader.js";
 import { t, tEntityLabel } from "./i18n.js";
 import { resolveAcrossLanguages } from "./router-language-fallback.js";
 import { PENDING_NAV_KEY, buildNavUrl, parseNavParams, pushNavUrl, replayingUrl } from "./nav-url.js";
+import { resolveLegacyCategory } from "./legacy-category-redirects.js";
 
 /**
  * @brief Renders the result of {@link resolveAcrossLanguages}, in the active language if found
@@ -45,14 +46,17 @@ function renderAcrossLanguages(categoryId, subjectId, pageId) {
 }
 
 /**
- * @brief Navigates to whatever `target` describes: a category's, subject's, or chapter's page.
+ * @brief Navigates to whatever `rawTarget` describes: a category's, subject's, or chapter's page.
+ * Resolved through {@link resolveLegacyCategory} first, so an old folded-away category id still
+ * lands on its new location.
  *
- * @param {{categoryId: string, subjectId: string|null, pageId: string}} target
+ * @param {{categoryId: string, subjectId: string|null, pageId: string}} rawTarget
  *
  * @returns {boolean} whether navigation happened, directly or (if `categoryId` doesn't exist in
  *   the active language) asynchronously via {@link renderAcrossLanguages}
  */
-function navigateToTarget({ categoryId, subjectId, pageId }) {
+function navigateToTarget(rawTarget) {
+    const { categoryId, subjectId, pageId } = resolveLegacyCategory(rawTarget);
     const category = findCategory({ id: categoryId });
     if (!category) {
         renderAcrossLanguages(categoryId, subjectId, pageId);
@@ -77,7 +81,7 @@ export function resumePendingNavigation() {
         const raw = sessionStorage.getItem(PENDING_NAV_KEY);
         sessionStorage.removeItem(PENDING_NAV_KEY);
         if (raw) {
-            const { categoryId, subjectId, pageId } = JSON.parse(raw);
+            const { categoryId, subjectId, pageId } = resolveLegacyCategory(JSON.parse(raw));
             const category = findCategory({ id: categoryId });
             if (categoryId === "acceuil") {
                 generateHomePage();
