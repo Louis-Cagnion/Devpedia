@@ -11,7 +11,7 @@ Décidé le 22/08/2026 : les liens internes existants (jusqu'à 441 fichiers pou
 - [x] **Fondamentaux** (Bases de l'informatique, Algorithmes, Mathématiques) — fait le 22/08/2026. Graphisme à ajouter comme 4e sous-catégorie une fois ce chapitre écrit.
 - [ ] **Langages** (Langages de programmation, Langages de balisage, DSL, Shells) — Langages de programmation/balisage/Shells ont déjà leurs propres `subjects` : à aplatir en sous-catégories directes de `Langages` plutôt que d'imbriquer un niveau de plus (redirect déjà prévu avec `asSubject: false`).
 - [x] **Données** (Bases de données, Data Science, Représentation des données, Traitement de documents) — fait le 22/08/2026.
-- [ ] **Infrastructure & DevOps** (Infrastructure, Docker, CI-CD, Administration système, Réseaux, + Automatisation une fois créée).
+- [x] **Infrastructure & DevOps** (Infrastructure, Docker, CI-CD, Administration système, Réseaux) — fait le 22/08/2026. Automatisation à ajouter comme 6e sous-catégorie une fois créée.
 - [ ] **Sécurité** (Cybersécurité, Authentification) — Authentification a déjà ses propres `subjects` : même aplatissement que pour Langages (redirect déjà prévu avec `asSubject: false`).
 - [ ] **Qualité, performance et outils** (Qualité et architecture du code, Performance, Git).
 
