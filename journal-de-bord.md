@@ -2,6 +2,14 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Décisions bloquantes tranchées (2026-08-22)
+
+**Portée des chapitres n8n** : générique uniquement (l'outil vu de l'extérieur), sans documenter l'usage concret de `git-scrapping` par ce dépôt — évite de mélanger doc générale et doc spécifique à un projet. Le cas `git-scrapping` peut être cité en exemple ponctuel sans devenir le fil conducteur de la section.
+
+**Lecture écran verrouillé (Bluetooth)** : tester d'abord si `MediaSession.playbackState = "playing"` (actif depuis la synchronisation Bluetooth livrée le même jour) suffit à prolonger `speechSynthesis` au-delà de quelques secondes, avant d'investir dans un pipeline de pré-génération audio. Options envisagées si le test échoue, pour référence :
+- **Pré-générer l'audio** (moteur TTS type Piper/Coqui auto-hébergé, ou API cloud type Google Cloud TTS/Amazon Polly/Azure/ElevenLabs, exécuté à la publication du chapitre, fichier stocké par paragraphe ou chapitre, servi via `<audio>`) : lecture fiable écran verrouillé, vitesse toujours ajustable en direct (`audio.playbackRate`). Coût réel : pipeline génération/stockage à construire, voix figée par langue au lieu du choix instantané actuel du navigateur. Un moteur auto-hébergé réutiliserait probablement plus facilement la table de prononciation custom (`reader-pronunciation.js`) qu'une voix cloud générique.
+- **Garder `speechSynthesis` en direct, abandonner l'objectif** : le plus simple à maintenir, mais le confort visé restera probablement irréalisable de façon fiable multi-navigateurs.
+
 ## Regroupement des 26+ catégories top-level en 10 (2026-08-22)
 
 Décidé avec Louis : Fondamentaux (Bases de l'informatique, Algorithmes, Mathématiques), Données (Bases de données, Data Science, Représentation des données, Traitement de documents), Infrastructure & DevOps (Infrastructure, Docker, CI-CD, Administration système, Réseaux), Sécurité (Cybersécurité, Authentification), Qualité, performance et outils (Qualité et architecture du code, Performance, Git), Langages (Langages de programmation, Langages de balisage, Shells, DSL), Gestion de projet et organisation (Organisation en entreprise, Gestion de projet). IA, UI-UX et Blockchain restent top-level. Les catégories qui avaient déjà leurs propres `subjects` (Langages de programmation, Langages de balisage, Shells, Authentification) sont aplaties en sous-catégories directes du nouveau parent plutôt que d'imbriquer un niveau de plus (vérifié au préalable qu'aucun id de sujet ne se recoupe entre les catégories fusionnées).
