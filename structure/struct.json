@@ -1590,6 +1590,10 @@
         {
           "id": "mocks-stubs-et-fakes-en-detail",
           "label": "Mocks, stubs et fakes en détail"
+        },
+        {
+          "id": "property-based-testing",
+          "label": "Le property-based testing"
         }
       ]
     },

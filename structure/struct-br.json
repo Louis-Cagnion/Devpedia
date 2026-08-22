@@ -1610,6 +1610,10 @@
         {
           "id": "mocks-stubs-et-fakes-en-detail",
           "label": "Mocks, stubs e fakes em detalhe"
+        },
+        {
+          "id": "property-based-testing",
+          "label": "O property-based testing"
         }
       ]
     },
