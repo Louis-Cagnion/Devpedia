@@ -263,10 +263,19 @@ if ("mediaSession" in navigator) {
         const previous = resolvePreviousChapterAcrossSite();
         if (previous) navigateToChapter(previous.categoryId, previous.subjectId, previous.id);
     });
+    let lastMetadataTitle = null;
     onStatusChange(status => {
         navigator.mediaSession.playbackState = status.isPlaying ? "playing"
             : (status.isPaused || status.isPausedAtCode) ? "paused"
             : "none";
+        /* Without metadata, iOS never recognizes this as a real "Now Playing" session -- Bluetooth
+           play/pause falls through to whatever app it considers active instead (e.g. Musique),
+           confirmed on a real iPhone (Louis, 2026-08-22). */
+        const title = document.querySelector(`.${appState.curPageId}Div .pageTitle`)?.textContent;
+        if (title && title !== lastMetadataTitle) {
+            navigator.mediaSession.metadata = new MediaMetadata({ title, artist: "Devpedia" });
+            lastMetadataTitle = title;
+        }
     });
 }
 

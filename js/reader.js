@@ -76,6 +76,22 @@ let isPausedAtCode = false;
 const audioEl = new Audio();
 let hasPregenAudio = false;
 
+/* The current "speak" entry's own end position in audioEl's timeline (seconds), or null when
+   nothing is being watched. Advancing on `timeupdate` instead of a setTimeout(entry.durationMs) is
+   deliberate: iOS Safari fully suspends JS timers on a backgrounded/locked tab, but keeps firing
+   media element events for audio that's actively playing (the whole point of "background audio")
+   -- a setTimeout-based chain silently stopped advancing past the first clip once the phone
+   locked, confirmed on a real iPhone (Louis, 2026-08-22). Comparing against currentTime (the
+   audio's own timeline) also makes this immune to readerRate scaling for free, unlike a delay
+   that had to be manually divided by it. */
+let currentEntryEndSeconds = null;
+audioEl.addEventListener("timeupdate", () => {
+    if (!isPlaying || currentEntryEndSeconds === null || audioEl.currentTime < currentEntryEndSeconds) return;
+    currentEntryEndSeconds = null;
+    planIndex++;
+    speakNext();
+});
+
 /* Playback speed, applied to each utterance in speakNext() and persisted across visits like
    js/lang.js's own language choice. Falls back to 1 for a stored value outside READER_RATES
    (corrupted storage, or a removed step from an earlier version). */
@@ -277,6 +293,7 @@ function cancelCurrentUtterance() {
     generation++;
     if (SPEECH_SUPPORTED) synth.cancel();
     audioEl.pause();
+    currentEntryEndSeconds = null;
 }
 
 /* hasPregenAudio deliberately isn't reset here: this runs on every stop/start (not just a new
@@ -425,14 +442,10 @@ function speakNext() {
 function speakNextViaAudio(entry) {
     const myGeneration = generation;
     scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs);
+    currentEntryEndSeconds = (entry.startMs + entry.durationMs) / 1000;
     audioEl.currentTime = entry.startMs / 1000;
     audioEl.playbackRate = readerRate;
     audioEl.play();
-    setTimeout(() => {
-        if (generation !== myGeneration) return;
-        planIndex++;
-        speakNext();
-    }, entry.durationMs / readerRate);
 }
 
 /**
