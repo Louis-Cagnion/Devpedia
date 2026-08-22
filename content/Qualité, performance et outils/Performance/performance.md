@@ -1,4 +1,8 @@
-# Description
+---
+order: 2
+---
+
+# Performance
 
 Optimiser un programme, c'est d'abord comprendre où passe son temps, et c'est rarement là où on le croit. Cette section rassemble des principes de performance qui ne dépendent pas d'un langage particulier : ils s'appliquent aussi bien à un script [Python](/?c=langages-de-programmation&s=python&p=python) qu'à une page web ou à un accès en base de données.
 

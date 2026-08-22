@@ -1,4 +1,8 @@
-# Description
+---
+order: 2
+---
+
+# Performance
 
 Optimizing a program starts with understanding where its time actually goes, and it's rarely where you'd think. This section gathers performance principles that don't depend on any particular language: they apply just as well to a Python script as to a web page or a database access.
 

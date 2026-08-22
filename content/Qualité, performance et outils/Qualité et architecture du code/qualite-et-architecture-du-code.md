@@ -1,4 +1,8 @@
-# Description
+---
+order: 1
+---
+
+# Qualité et architecture du code
 
 Un programme qui produit le bon résultat n'est pas forcément un programme facile à faire évoluer. Cette section rassemble des principes de qualité et d'architecture qui ne dépendent pas d'un langage particulier : ils s'appliquent aussi bien à un script [Python](/?c=langages-de-programmation&s=python&p=python) qu'à un projet [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ou une base de code C.
 

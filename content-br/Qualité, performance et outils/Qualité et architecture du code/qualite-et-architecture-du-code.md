@@ -1,4 +1,8 @@
-# Description
+---
+order: 1
+---
+
+# Qualité et architecture du code
 
 Um programa que produz o resultado correto não é necessariamente um programa fácil de evoluir. Esta seção reúne princípios de qualidade e arquitetura que não dependem de uma linguagem específica: eles se aplicam tanto a um script Python quanto a um projeto JavaScript ou uma base de código C.
 

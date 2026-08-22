@@ -505,65 +505,150 @@
       ]
     },
     {
-      "id": "git",
-      "label": "Git",
-      "folder": "Git",
-      "chapters": [
+      "id": "qualite-performance-outils",
+      "label": "Qualité, performance et outils",
+      "folder": "Qualité, performance et outils",
+      "subjects": [
         {
-          "id": "concepts-de-base",
-          "label": "Les concepts de base de Git"
+          "id": "qualite-et-architecture-du-code",
+          "label": "Qualité et architecture du code",
+          "folder": "Qualité et architecture du code",
+          "chapters": [
+            {
+              "id": "responsabilite-unique-et-couplage",
+              "label": "Responsabilité unique et faible couplage"
+            },
+            {
+              "id": "microservices",
+              "label": "Microservices : découper une application en services indépendants"
+            },
+            {
+              "id": "eviter-la-repetition-structures-indexees",
+              "label": "Éviter la répétition : structures indexées plutôt que du code dupliqué"
+            },
+            {
+              "id": "source-unique-de-verite",
+              "label": "Source unique de vérité"
+            },
+            {
+              "id": "sens-des-dependances-avant-de-centraliser",
+              "label": "Vérifier le sens des dépendances avant de centraliser"
+            },
+            {
+              "id": "genericite-dependre-de-la-structure",
+              "label": "Généricité : dépendre de la structure plutôt que de valeurs figées"
+            },
+            {
+              "id": "un-seul-mecanisme-par-information",
+              "label": "Un seul mécanisme par information"
+            },
+            {
+              "id": "conventions-de-documentation",
+              "label": "Conventions de documentation du code par langage"
+            }
+          ]
         },
         {
-          "id": "commandes-essentielles",
-          "label": "Les commandes essentielles"
+          "id": "performance",
+          "label": "Performance",
+          "folder": "Performance",
+          "chapters": [
+            {
+              "id": "mesurer-avant-d-optimiser",
+              "label": "Mesurer avant d'optimiser"
+            },
+            {
+              "id": "attentes-et-temps-morts",
+              "label": "Attendre sans perdre de temps"
+            },
+            {
+              "id": "limiter-les-aller-retours",
+              "label": "Limiter les allers-retours"
+            },
+            {
+              "id": "parallelisme",
+              "label": "Parallélisme : trouver la contrainte réelle"
+            },
+            {
+              "id": "traitements-longs",
+              "label": "Les traitements longs"
+            },
+            {
+              "id": "cache-cpu-et-simd",
+              "label": "Cache CPU et vectorisation (SIMD)"
+            },
+            {
+              "id": "eviter-le-recalcul-redondant",
+              "label": "Éviter le recalcul redondant"
+            },
+            {
+              "id": "heap-des-runtimes-manages",
+              "label": "Le heap d'un runtime managé"
+            }
+          ]
         },
         {
-          "id": "gitignore",
-          "label": "Le fichier .gitignore"
-        },
-        {
-          "id": "branches",
-          "label": "Les branches"
-        },
-        {
-          "id": "annuler-et-historique",
-          "label": "Annuler des changements et naviguer dans l'historique"
-        },
-        {
-          "id": "stash",
-          "label": "Le stash"
-        },
-        {
-          "id": "tags",
-          "label": "Les tags"
-        },
-        {
-          "id": "remotes",
-          "label": "Les dépôts distants (remotes)"
-        },
-        {
-          "id": "github-et-plateformes",
-          "label": "GitHub et les plateformes d'hébergement Git"
-        },
-        {
-          "id": "pull-requests-github",
-          "label": "Les pull requests sur GitHub"
-        },
-        {
-          "id": "issues-et-projets-github",
-          "label": "Issues et gestion de projet sur GitHub"
-        },
-        {
-          "id": "resoudre-conflits",
-          "label": "Résoudre un conflit de fusion"
-        },
-        {
-          "id": "rebase",
-          "label": "Le rebase"
-        },
-        {
-          "id": "architecture-interne",
-          "label": "L'architecture interne de Git"
+          "id": "git",
+          "label": "Git",
+          "folder": "Git",
+          "chapters": [
+            {
+              "id": "concepts-de-base",
+              "label": "Les concepts de base de Git"
+            },
+            {
+              "id": "commandes-essentielles",
+              "label": "Les commandes essentielles"
+            },
+            {
+              "id": "gitignore",
+              "label": "Le fichier .gitignore"
+            },
+            {
+              "id": "branches",
+              "label": "Les branches"
+            },
+            {
+              "id": "annuler-et-historique",
+              "label": "Annuler des changements et naviguer dans l'historique"
+            },
+            {
+              "id": "stash",
+              "label": "Le stash"
+            },
+            {
+              "id": "tags",
+              "label": "Les tags"
+            },
+            {
+              "id": "remotes",
+              "label": "Les dépôts distants (remotes)"
+            },
+            {
+              "id": "github-et-plateformes",
+              "label": "GitHub et les plateformes d'hébergement Git"
+            },
+            {
+              "id": "pull-requests-github",
+              "label": "Les pull requests sur GitHub"
+            },
+            {
+              "id": "issues-et-projets-github",
+              "label": "Issues et gestion de projet sur GitHub"
+            },
+            {
+              "id": "resoudre-conflits",
+              "label": "Résoudre un conflit de fusion"
+            },
+            {
+              "id": "rebase",
+              "label": "Le rebase"
+            },
+            {
+              "id": "architecture-interne",
+              "label": "L'architecture interne de Git"
+            }
+          ]
         }
       ]
     },
@@ -1243,84 +1328,6 @@
               "label": "Méthodologies : Agile, Scrum, Kanban"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "performance",
-      "label": "Performance",
-      "folder": "Performance",
-      "chapters": [
-        {
-          "id": "mesurer-avant-d-optimiser",
-          "label": "Mesurer avant d'optimiser"
-        },
-        {
-          "id": "attentes-et-temps-morts",
-          "label": "Attendre sans perdre de temps"
-        },
-        {
-          "id": "limiter-les-aller-retours",
-          "label": "Limiter les allers-retours"
-        },
-        {
-          "id": "parallelisme",
-          "label": "Parallélisme : trouver la contrainte réelle"
-        },
-        {
-          "id": "traitements-longs",
-          "label": "Les traitements longs"
-        },
-        {
-          "id": "cache-cpu-et-simd",
-          "label": "Cache CPU et vectorisation (SIMD)"
-        },
-        {
-          "id": "eviter-le-recalcul-redondant",
-          "label": "Éviter le recalcul redondant"
-        },
-        {
-          "id": "heap-des-runtimes-manages",
-          "label": "Le heap d'un runtime managé"
-        }
-      ]
-    },
-    {
-      "id": "qualite-et-architecture-du-code",
-      "label": "Qualité et architecture du code",
-      "folder": "Qualité et architecture du code",
-      "chapters": [
-        {
-          "id": "responsabilite-unique-et-couplage",
-          "label": "Responsabilité unique et faible couplage"
-        },
-        {
-          "id": "microservices",
-          "label": "Microservices : découper une application en services indépendants"
-        },
-        {
-          "id": "eviter-la-repetition-structures-indexees",
-          "label": "Éviter la répétition : structures indexées plutôt que du code dupliqué"
-        },
-        {
-          "id": "source-unique-de-verite",
-          "label": "Source unique de vérité"
-        },
-        {
-          "id": "sens-des-dependances-avant-de-centraliser",
-          "label": "Vérifier le sens des dépendances avant de centraliser"
-        },
-        {
-          "id": "genericite-dependre-de-la-structure",
-          "label": "Généricité : dépendre de la structure plutôt que de valeurs figées"
-        },
-        {
-          "id": "un-seul-mecanisme-par-information",
-          "label": "Un seul mécanisme par information"
-        },
-        {
-          "id": "conventions-de-documentation",
-          "label": "Conventions de documentation du code par langage"
         }
       ]
     },
