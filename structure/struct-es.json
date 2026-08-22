@@ -372,6 +372,10 @@
             {
               "id": "mcp",
               "label": "MCP (Model Context Protocol): estandarizar las herramientas de un agente"
+            },
+            {
+              "id": "skills",
+              "label": "Los skills: empaquetar una capacidad reutilizable para un agente"
             }
           ]
         },
