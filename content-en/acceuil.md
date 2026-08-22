@@ -6,7 +6,7 @@ Welcome to **Devpedia**, a knowledge base that explains software development fro
 
 | Your situation | Starting point |
 |---|---|
-| You've never used a terminal or written a line of code | [Computer Science Basics](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers): the foundation on which the rest of the site is built |
+| You've never used a terminal or written a line of code | [Computer Science Basics](/?c=fondamentaux&s=bases-de-l-informatique&p=code-programmes-et-fichiers): the foundation on which the rest of the site is built |
 | You already know how to code and are looking for a specific language or topic | The navigation bar (on the left, or at the top on mobile) and the search function list all categories |
 
 ## What this site covers

@@ -6,7 +6,7 @@ Bem-vindo ao **Devpedia**, uma base de conhecimento que explica o desenvolviment
 
 | Sua situação | Ponto de partida |
 |---|---|
-| Você nunca usou um terminal nem escreveu uma linha de código | [Fundamentos da computação](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers): a base sobre a qual todo o resto do site se apoia |
+| Você nunca usou um terminal nem escreveu uma linha de código | [Fundamentos da computação](/?c=fondamentaux&s=bases-de-l-informatique&p=code-programmes-et-fichiers): a base sobre a qual todo o resto do site se apoia |
 | Você já sabe programar e está procurando uma linguagem ou um assunto específico | A barra de navegação (à esquerda, ou no topo no celular) e a busca listam todas as categorias |
 
 ## O que o site cobre
