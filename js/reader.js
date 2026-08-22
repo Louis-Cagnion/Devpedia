@@ -1,4 +1,5 @@
 import { appState } from "./state.js";
+import { getStoredLanguage } from "./lang.js";
 import {
     speakableCode,
     speakableText,
@@ -63,6 +64,17 @@ let plan = [];
 let planIndex = 0;
 let isPlaying = false;
 let isPausedAtCode = false;
+
+/* Pre-generated audio (Piper TTS, cf. scripts/generate-audio.mjs), preferred over live
+   speechSynthesis when available for a chapter: iOS never recognizes speechSynthesis as a real
+   media session, so Bluetooth/lock-screen controls fall through to another app instead of the
+   site (confirmed on a real iPhone, 22/08/2026) -- a genuine <audio> element is what fixes that.
+   One shared element, reused across pages/plans; "speak" entries gain their own startMs/durationMs
+   (and a "pause" entry its own afterMs) from audio/<lang>/<chapterId>.json when it matches the
+   current plan 1:1, entry for entry. A mismatch (stale/regenerated content) falls back to
+   speechSynthesis for that page rather than risking a plan/audio desync. */
+const audioEl = new Audio();
+let hasPregenAudio = false;
 
 /* Playback speed, applied to each utterance in speakNext() and persisted across visits like
    js/lang.js's own language choice. Falls back to 1 for a stored value outside READER_RATES
@@ -264,8 +276,12 @@ export function collectSegments(root, lang, context, pageId, entries) {
 function cancelCurrentUtterance() {
     generation++;
     if (SPEECH_SUPPORTED) synth.cancel();
+    audioEl.pause();
 }
 
+/* hasPregenAudio deliberately isn't reset here: this runs on every stop/start (not just a new
+   page), and pre-generated audio, once loaded for the current plan, stays valid across those --
+   only buildReadingPlan() (a genuinely new page) should drop it back to false. */
 function resetPlayback() {
     cancelCurrentUtterance();
     planIndex = 0;
@@ -289,6 +305,37 @@ function collapseConsecutivePauses(entries) {
 }
 
 /**
+ * @brief Fetches audio/<lang>/<chapterId>.json and, only if its entries match `plan`'s own
+ * "speak"/"pause" sequence 1:1 (same count, same kind in the same order -- the one sane proxy for
+ * "still the same content" without hashing the source), merges each entry's startMs/durationMs
+ * (or a pause's afterMs) onto the matching `plan` entry and points `audioEl` at the matching mp3.
+ * Runs after buildReadingPlan() has already made `plan` usable for speechSynthesis, so a slow or
+ * failed fetch degrades to today's behavior rather than blocking the page.
+ *
+ * @param {Array} builtPlan the exact `plan` this call was kicked off for, to detect a page change
+ *   racing ahead of this fetch (`plan` may already point somewhere else by the time it resolves)
+ */
+async function loadPregenAudio(builtPlan) {
+    const langCode = getStoredLanguage() || "fr";
+    const chapterId = appState.curPageId;
+    let timing;
+    try {
+        const response = await fetch(`./audio/${langCode}/${chapterId}.json`);
+        if (!response.ok) return;
+        timing = await response.json();
+    } catch {
+        return;
+    }
+    if (plan !== builtPlan) return; // the page moved on while this fetch was in flight
+    if (timing.length !== builtPlan.length) return;
+    const matches = timing.every((t, i) => t.kind === builtPlan[i].kind);
+    if (!matches) return;
+    timing.forEach((t, i) => Object.assign(builtPlan[i], t));
+    audioEl.src = `./audio/${langCode}/${chapterId}.mp3`;
+    hasPregenAudio = true;
+}
+
+/**
  * @brief Rebuilds the reading plan from the page currently in `pageDiv`, stopping whatever was
  * being read before. Call once per page render, after its content has been generated.
  *
@@ -296,6 +343,7 @@ function collapseConsecutivePauses(entries) {
  */
 export function buildReadingPlan(pageDiv) {
     resetPlayback();
+    hasPregenAudio = false; // a genuinely new page: re-earned by loadPregenAudio() below, if at all
     const entries = [];
     const context = PAGE_SPECIFIC_CONTEXT.has(appState.curPageId)
         ? appState.curPageId
@@ -303,6 +351,7 @@ export function buildReadingPlan(pageDiv) {
     collectSegments(pageDiv, document.documentElement.lang || "fr", context, appState.curPageId, entries);
     plan = collapseConsecutivePauses(entries);
     notify();
+    loadPregenAudio(plan);
 }
 
 /** @brief Stops any reading in progress and rewinds to the start of the current plan, without discarding it. */
@@ -319,9 +368,14 @@ export function pauseReading() {
     notify();
 }
 
+/** @brief Whether playback can start at all: either engine available, and a plan to read. */
+function canPlay() {
+    return (SPEECH_SUPPORTED || hasPregenAudio) && plan.length > 0;
+}
+
 /** @brief Resumes reading after pauseReading(), re-speaking the clause `planIndex` still points at. */
 export function resumeReading() {
-    if (!SPEECH_SUPPORTED || !plan.length) return;
+    if (!canPlay()) return;
     isPaused = false;
     speakNext();
 }
@@ -356,6 +410,39 @@ function speakNext() {
        later clauses need their own scroll trigger too. */
     if (!isElementFullyVisible(entry.highlightTarget))
         entry.highlightTarget.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (hasPregenAudio) speakNextViaAudio(entry);
+    else speakNextViaSynthesis(entry);
+}
+
+/**
+ * @brief Plays `entry`'s slice of the shared pre-generated audio file (seek to its startMs, play
+ * for its exact durationMs), the audio-backed counterpart to speakNextViaSynthesis() below. Word
+ * timing reuses scheduleEstimatedWords() with the entry's real durationMs instead of an estimated
+ * rate -- exact rather than guessed, since the clip's real length is already known.
+ *
+ * @param {Object} entry the current plan[planIndex], already known to be a "speak" entry
+ */
+function speakNextViaAudio(entry) {
+    const myGeneration = generation;
+    scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs);
+    audioEl.currentTime = entry.startMs / 1000;
+    audioEl.playbackRate = readerRate;
+    audioEl.play();
+    setTimeout(() => {
+        if (generation !== myGeneration) return;
+        planIndex++;
+        speakNext();
+    }, entry.durationMs / readerRate);
+}
+
+/**
+ * @brief Speaks `entry` through the Web Speech API, the live-synthesis counterpart to
+ * speakNextViaAudio() above -- today's only path for a chapter with no matching pre-generated
+ * audio (cf. loadPregenAudio()).
+ *
+ * @param {Object} entry the current plan[planIndex], already known to be a "speak" entry
+ */
+function speakNextViaSynthesis(entry) {
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
     utterance.rate = readerRate;
@@ -383,7 +470,7 @@ function speakNext() {
 
 /** @brief Restarts reading from the beginning of the plan. Called by the "Lire depuis le début" button. */
 export function startReading() {
-    if (!SPEECH_SUPPORTED || !plan.length) return;
+    if (!canPlay()) return;
     resetPlayback();
     speakNext();
 }
@@ -428,7 +515,7 @@ function findVisibleEntryIndex() {
 
 /** @brief Starts reading from whichever paragraph is currently at the top of the screen. */
 export function startFromVisible() {
-    if (!SPEECH_SUPPORTED || !plan.length) return;
+    if (!canPlay()) return;
     resetPlayback();
     const index = findVisibleEntryIndex();
     plan[index]?.group?.scrollIntoView({ behavior: "smooth", block: "start" });

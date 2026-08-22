@@ -97,6 +97,12 @@
         flex: 1 1 auto;
         justify-content: center;
     }
+    /* The bar itself is pinned to the bottom of the screen here, so a menu opening downward (the
+       desktop default) would land below the viewport -- open upward instead. */
+    .readerFloatingBar .readerRateMenu {
+        top: auto;
+        bottom: calc(100% + 0.4rem);
+    }
 }
 
 @media (max-width: 480px) {

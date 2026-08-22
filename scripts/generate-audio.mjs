@@ -75,6 +75,8 @@ function setupBrowserGlobals() {
     window.hljs = { highlightElement: () => {} };
     // reader.js reads/writes the persisted playback rate at module load time; unused here.
     globalThis.localStorage = { getItem: () => null, setItem: () => {} };
+    // reader.js creates its shared <audio> element at module load time too; never played here.
+    globalThis.Audio = function () { return document.createElement("audio"); };
     /* linkedom's Text has no splitText(), which collectLeafSegments() needs to cut a clause out
        mid-text-node. Standard DOM semantics: truncate this node, insert a new sibling with the
        remainder, return that sibling. */
@@ -234,7 +236,7 @@ async function generateChapter(lang, { chapterId, mdPath, context }) {
         const listFile = path.join(tmpDir, "concat.txt");
         fs.writeFileSync(listFile, concatList.map(p => `file '${p}'`).join("\n"));
         execFileSync("ffmpeg", [
-            "-y", "-f", "concat", "-safe", "0", "-i", listFile,
+            "-y", "-hide_banner", "-loglevel", "warning", "-f", "concat", "-safe", "0", "-i", listFile,
             "-codec:a", "libmp3lame", "-b:a", "32k", "-ac", "1", "-ar", "22050",
             mp3Path,
         ], { stdio: ["ignore", "ignore", "inherit"] });

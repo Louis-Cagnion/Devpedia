@@ -153,17 +153,22 @@ export function calibrateRate(measuredRate) {
 
 /**
  * @brief Schedules setActiveWord() calls timed to land roughly when each word of `entry.text`
- * should start being spoken, estimated from `charsPerSecond`. Runs alongside the real `boundary`
- * event rather than instead of it, which always wins when it fires.
+ * should start being spoken. Estimated from `charsPerSecond` by default -- runs alongside the real
+ * `boundary` event rather than instead of it, which always wins when it fires (speechSynthesis
+ * path). Given `knownDurationMs`, uses that exact clip length instead of the estimate and skips the
+ * acceleration ramp entirely, since there's nothing left to guess (pre-generated audio path,
+ * cf. speakNextViaAudio() in reader.js): the real duration is already an exact fit, start to end.
  *
  * @param {{text: string, words: HTMLElement[], highlightTarget: HTMLElement}} entry
  * @param {() => boolean} isStillCurrent reports whether this call's playback generation is still
  *   the active one
+ * @param {number|null} [knownDurationMs] this entry's real spoken duration, if already known
  */
-export function scheduleEstimatedWords(entry, isStillCurrent) {
+export function scheduleEstimatedWords(entry, isStillCurrent, knownDurationMs = null) {
     if (!entry.words.length) return; // nothing to highlight word by word
     const totalWords = entry.words.length;
-    const maxAcceleration = Math.min(MAX_ACCELERATION_CAP, totalWords * MAX_ACCELERATION_PER_WORD);
+    const rate = knownDurationMs ? entry.text.length / (knownDurationMs / 1000) : charsPerSecond;
+    const maxAcceleration = knownDurationMs ? 0 : Math.min(MAX_ACCELERATION_CAP, totalWords * MAX_ACCELERATION_PER_WORD);
     let wordIndex = 0;
     let cumulativeMs = 0;
     let lastCharIndex = 0;
@@ -171,7 +176,7 @@ export function scheduleEstimatedWords(entry, isStillCurrent) {
         /* Rate ramps applied per-gap since the previous word, not from match.index directly, for
            a smooth curve rather than a jump recomputed from scratch each time. */
         const progress = wordIndex / totalWords;
-        const effectiveRate = charsPerSecond * (1 + maxAcceleration * progress);
+        const effectiveRate = rate * (1 + maxAcceleration * progress);
         cumulativeMs += ((match.index - lastCharIndex) / effectiveRate) * 1000;
         lastCharIndex = match.index;
         const index = wordIndex++;
