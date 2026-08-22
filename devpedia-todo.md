@@ -10,11 +10,12 @@ Catégorie créée, premier chapitre en place (concepts fondamentaux : bloc, has
 ## 2. Section Automatisation (n8n)
 Ordre déjà validé par Louis (19/08/2026), du plus rapide au plus lent :
 
-1. **Chapitre n8n « Prise en main de l'interface »** (canvas, nœuds, connexions, panneau d'exécution, test manuel avant activation).
-2. **Chapitre n8n « Catalogue des fonctionnalités / types de nœuds »** (trigger, action, code node JS/Python, nœuds conditionnels/branchement, error workflow).
-3. **Chapitre n8n « Le format JSON d'un workflow »** (structure de l'export, portabilité entre instances, import/export, versionner comme du code) : nécessite d'exporter et d'inspecter un vrai workflow avant de rédiger, pas juste de la description théorique.
-4. **Chapitre n8n « L'industrialisation »** (self-hosted vs n8n cloud, variables d'environnement, credentials, environnements dev/prod, supervision des exécutions, sécurité de l'éditeur/restriction des nœuds sensibles comme Execute Command) : le plus transversal, donc le plus long à structurer.
-5. Potentiellement d'autres chapitres n8n, à compléter en écrivant (même logique que la section Tests ci-dessous).
+Chapitres faits le 22/08/2026 : « Prise en main de l'interface » (canvas, nœuds, connexions, panneau d'exécution, test manuel), « Catalogue des fonctionnalités / types de nœuds » (trigger, action, code node JS/Python, nœuds conditionnels/branchement, error workflow).
+
+Restants :
+1. **Chapitre n8n « Le format JSON d'un workflow »** (structure de l'export, portabilité entre instances, import/export, versionner comme du code) : nécessite d'exporter et d'inspecter un vrai workflow avant de rédiger, pas juste de la description théorique.
+2. **Chapitre n8n « L'industrialisation »** (self-hosted vs n8n cloud, variables d'environnement, credentials, environnements dev/prod, supervision des exécutions, sécurité de l'éditeur/restriction des nœuds sensibles comme Execute Command) : le plus transversal, donc le plus long à structurer.
+3. Potentiellement d'autres chapitres n8n, à compléter en écrivant (même logique que la section Tests ci-dessous).
 
 **Décidé (22/08/2026)** : contenu générique uniquement (l'outil vu de l'extérieur), sans documenter l'usage concret de ce dépôt par `git-scrapping` — évite de mélanger doc générale et doc spécifique à un projet. Le cas `git-scrapping` peut être mentionné en exemple ponctuel sans devenir le fil conducteur. Plus rien ne bloque l'écriture.
 
