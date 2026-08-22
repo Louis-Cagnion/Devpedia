@@ -640,6 +640,10 @@
             {
               "id": "n8n-le-format-json-dun-workflow",
               "label": "n8n : le format JSON d'un workflow"
+            },
+            {
+              "id": "n8n-lindustrialisation",
+              "label": "n8n : l'industrialisation"
             }
           ]
         }
