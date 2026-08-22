@@ -13,7 +13,7 @@ Décidé le 22/08/2026 : les liens internes existants (jusqu'à 441 fichiers pou
 - [x] **Données** (Bases de données, Data Science, Représentation des données, Traitement de documents) — fait le 22/08/2026.
 - [x] **Infrastructure & DevOps** (Infrastructure, Docker, CI-CD, Administration système, Réseaux) — fait le 22/08/2026. Automatisation à ajouter comme 6e sous-catégorie une fois créée.
 - [x] **Sécurité** (Cybersécurité, Authentification) — fait le 22/08/2026, sous-catégories d'Authentification aplaties directement sous Sécurité.
-- [ ] **Qualité, performance et outils** (Qualité et architecture du code, Performance, Git).
+- [x] **Qualité, performance et outils** (Qualité et architecture du code, Performance, Git) — fait le 22/08/2026.
 
 Catégories qui restent top-level telles quelles : IA, UI-UX, Blockchain (décidé le 22/08/2026).
 
