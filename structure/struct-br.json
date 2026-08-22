@@ -22,6 +22,10 @@
         {
           "id": "solidity-bases-du-langage",
           "label": "Solidity: fundamentos da linguagem"
+        },
+        {
+          "id": "deployer-et-interagir-avec-un-smart-contract",
+          "label": "Implantar e interagir com um smart contract"
         }
       ]
     },
