@@ -26,6 +26,10 @@
         {
           "id": "deployer-et-interagir-avec-un-smart-contract",
           "label": "Deploying and interacting with a smart contract"
+        },
+        {
+          "id": "reseaux-blockchain",
+          "label": "Blockchain networks"
         }
       ]
     },
