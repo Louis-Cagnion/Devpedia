@@ -183,6 +183,16 @@ function generateNavBar(categories = []) {
     };
     setNavBarHeightVar();
     new ResizeObserver(setNavBarHeightVar).observe(navBar);
+
+    // Same idea for the mobile floating reader bar, so .page can reserve exactly enough room at
+    // the bottom of the document -- a fixed guess fell short whenever its buttons wrapped to 2 rows.
+    if (floatingBar) {
+        const setFloatingBarHeightVar = () => {
+            document.documentElement.style.setProperty("--floating-bar-height", `${floatingBar.getBoundingClientRect().height}px`);
+        };
+        setFloatingBarHeightVar();
+        new ResizeObserver(setFloatingBarHeightVar).observe(floatingBar);
+    }
 }
 
 async function fetchStructJson() {

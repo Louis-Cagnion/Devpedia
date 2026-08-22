@@ -2,7 +2,7 @@
 .page {
     max-width: 900px;
     margin: 0 auto;
-    padding: 1.5rem 1.25rem 4rem;
+    padding: 1.5rem 1.25rem calc(var(--floating-bar-height, 0px) + 1.5rem);
 }
 
 /* underlined even at rest (unlike the global `a`) — a link whose label is itself an inline
