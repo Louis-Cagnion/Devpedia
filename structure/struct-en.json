@@ -11,33 +11,144 @@
       ]
     },
     {
-      "id": "administration-systeme",
-      "label": "Administration système",
-      "folder": "Administration système",
-      "chapters": [
+      "id": "infrastructure-devops",
+      "label": "Infrastructure & DevOps",
+      "folder": "Infrastructure & DevOps",
+      "subjects": [
         {
-          "id": "virtualisation-et-choix-dos",
-          "label": "Virtualization and Choosing an OS"
+          "id": "infrastructure",
+          "label": "Infrastructure",
+          "folder": "Infrastructure",
+          "chapters": [
+            {
+              "id": "api-et-http",
+              "label": "Exchanging Data: API and HTTP"
+            },
+            {
+              "id": "websocket-et-temps-reel",
+              "label": "WebSocket: real-time communication"
+            },
+            {
+              "id": "json",
+              "label": "The JSON Format"
+            },
+            {
+              "id": "cpu-vs-gpu",
+              "label": "CPU vs. GPU: Parallel Computing"
+            },
+            {
+              "id": "le-cloud",
+              "label": "What Is the Cloud?"
+            },
+            {
+              "id": "automatisation-workflow",
+              "label": "Automation with Visual Workflows"
+            },
+            {
+              "id": "elk-agregation-de-logs",
+              "label": "ELK: Centralizing and Querying Infrastructure Logs"
+            }
+          ]
         },
         {
-          "id": "partitionnement-et-lvm",
-          "label": "Partitioning and LVM"
+          "id": "docker",
+          "label": "Docker",
+          "folder": "Docker",
+          "chapters": [
+            {
+              "id": "concepts-de-base",
+              "label": "Basic Concepts"
+            },
+            {
+              "id": "dockerfile",
+              "label": "The Dockerfile"
+            },
+            {
+              "id": "commandes-essentielles",
+              "label": "Essential Commands"
+            },
+            {
+              "id": "volumes-et-reseaux",
+              "label": "Volumes and Networks"
+            },
+            {
+              "id": "docker-compose",
+              "label": "Docker Compose"
+            },
+            {
+              "id": "bonnes-pratiques-et-securite",
+              "label": "Best Practices and Security"
+            }
+          ]
         },
         {
-          "id": "selinux-vs-apparmor",
-          "label": "SELinux vs AppArmor"
+          "id": "ci-cd",
+          "label": "CI-CD",
+          "folder": "CI-CD",
+          "chapters": [
+            {
+              "id": "pipeline-cicd",
+              "label": "What Is a CI/CD Pipeline?"
+            },
+            {
+              "id": "azure-devops-plateforme",
+              "label": "Azure DevOps as a Platform"
+            },
+            {
+              "id": "yaml-pipelines-azure",
+              "label": "Azure Pipeline YAML Syntax"
+            },
+            {
+              "id": "azure-pipelines-vs-github-actions",
+              "label": "Azure Pipelines vs. GitHub Actions"
+            }
+          ]
         },
         {
-          "id": "durcissement-ssh-sudo-mots-de-passe",
-          "label": "Hardening SSH, sudo, and Passwords"
+          "id": "administration-systeme",
+          "label": "Administration système",
+          "folder": "Administration système",
+          "chapters": [
+            {
+              "id": "virtualisation-et-choix-dos",
+              "label": "Virtualization and Choosing an OS"
+            },
+            {
+              "id": "partitionnement-et-lvm",
+              "label": "Partitioning and LVM"
+            },
+            {
+              "id": "selinux-vs-apparmor",
+              "label": "SELinux vs AppArmor"
+            },
+            {
+              "id": "durcissement-ssh-sudo-mots-de-passe",
+              "label": "Hardening SSH, sudo, and Passwords"
+            },
+            {
+              "id": "pare-feu-ufw-firewalld",
+              "label": "Firewalls: UFW and firewalld"
+            },
+            {
+              "id": "supervision-systeme",
+              "label": "Reading System State"
+            }
+          ]
         },
         {
-          "id": "pare-feu-ufw-firewalld",
-          "label": "Firewalls: UFW and firewalld"
-        },
-        {
-          "id": "supervision-systeme",
-          "label": "Reading System State"
+          "id": "reseaux",
+          "label": "Réseaux",
+          "folder": "Réseaux",
+          "chapters": [
+            {
+              "id": "fondamentaux-reseau",
+              "label": "Network Fundamentals"
+            },
+            {
+              "id": "sockets-et-io-non-bloquante",
+              "label": "Sockets and Non-Blocking I/O"
+            }
+          ]
         }
       ]
     },
@@ -320,29 +431,6 @@
       ]
     },
     {
-      "id": "ci-cd",
-      "label": "CI-CD",
-      "folder": "CI-CD",
-      "chapters": [
-        {
-          "id": "pipeline-cicd",
-          "label": "What Is a CI/CD Pipeline?"
-        },
-        {
-          "id": "azure-devops-plateforme",
-          "label": "Azure DevOps as a Platform"
-        },
-        {
-          "id": "yaml-pipelines-azure",
-          "label": "Azure Pipeline YAML Syntax"
-        },
-        {
-          "id": "azure-pipelines-vs-github-actions",
-          "label": "Azure Pipelines vs. GitHub Actions"
-        }
-      ]
-    },
-    {
       "id": "cybersecurite",
       "label": "Cybersécurité",
       "folder": "Cybersécurité",
@@ -390,37 +478,6 @@
         {
           "id": "owasp-top-10",
           "label": "The OWASP Top 10: the industry-standard reference"
-        }
-      ]
-    },
-    {
-      "id": "docker",
-      "label": "Docker",
-      "folder": "Docker",
-      "chapters": [
-        {
-          "id": "concepts-de-base",
-          "label": "Basic Concepts"
-        },
-        {
-          "id": "dockerfile",
-          "label": "The Dockerfile"
-        },
-        {
-          "id": "commandes-essentielles",
-          "label": "Essential Commands"
-        },
-        {
-          "id": "volumes-et-reseaux",
-          "label": "Volumes and Networks"
-        },
-        {
-          "id": "docker-compose",
-          "label": "Docker Compose"
-        },
-        {
-          "id": "bonnes-pratiques-et-securite",
-          "label": "Best Practices and Security"
         }
       ]
     },
@@ -707,41 +764,6 @@
               "label": "Game AI by Imitation: Learning from a Human Player"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "infrastructure",
-      "label": "Infrastructure",
-      "folder": "Infrastructure",
-      "chapters": [
-        {
-          "id": "api-et-http",
-          "label": "Exchanging Data: API and HTTP"
-        },
-        {
-          "id": "websocket-et-temps-reel",
-          "label": "WebSocket: real-time communication"
-        },
-        {
-          "id": "json",
-          "label": "The JSON Format"
-        },
-        {
-          "id": "cpu-vs-gpu",
-          "label": "CPU vs. GPU: Parallel Computing"
-        },
-        {
-          "id": "le-cloud",
-          "label": "What Is the Cloud?"
-        },
-        {
-          "id": "automatisation-workflow",
-          "label": "Automation with Visual Workflows"
-        },
-        {
-          "id": "elk-agregation-de-logs",
-          "label": "ELK: Centralizing and Querying Infrastructure Logs"
         }
       ]
     },
@@ -1299,21 +1321,6 @@
         {
           "id": "conventions-de-documentation",
           "label": "Code Documentation Conventions by Language"
-        }
-      ]
-    },
-    {
-      "id": "reseaux",
-      "label": "Réseaux",
-      "folder": "Réseaux",
-      "chapters": [
-        {
-          "id": "fondamentaux-reseau",
-          "label": "Network Fundamentals"
-        },
-        {
-          "id": "sockets-et-io-non-bloquante",
-          "label": "Sockets and Non-Blocking I/O"
         }
       ]
     },

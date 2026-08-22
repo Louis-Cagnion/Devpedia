@@ -11,33 +11,144 @@
       ]
     },
     {
-      "id": "administration-systeme",
-      "label": "Administration système",
-      "folder": "Administration système",
-      "chapters": [
+      "id": "infrastructure-devops",
+      "label": "Infrastructure & DevOps",
+      "folder": "Infrastructure & DevOps",
+      "subjects": [
         {
-          "id": "virtualisation-et-choix-dos",
-          "label": "Virtualização e escolha de SO"
+          "id": "infrastructure",
+          "label": "Infrastructure",
+          "folder": "Infrastructure",
+          "chapters": [
+            {
+              "id": "api-et-http",
+              "label": "As trocas de dados: API e HTTP"
+            },
+            {
+              "id": "websocket-et-temps-reel",
+              "label": "WebSocket: a comunicação em tempo real"
+            },
+            {
+              "id": "json",
+              "label": "O formato JSON"
+            },
+            {
+              "id": "cpu-vs-gpu",
+              "label": "CPU vs GPU: o cálculo paralelo"
+            },
+            {
+              "id": "le-cloud",
+              "label": "O que é a nuvem (cloud)?"
+            },
+            {
+              "id": "automatisation-workflow",
+              "label": "A automação por workflow visual"
+            },
+            {
+              "id": "elk-agregation-de-logs",
+              "label": "ELK: centralizar e consultar os logs de uma infraestrutura"
+            }
+          ]
         },
         {
-          "id": "partitionnement-et-lvm",
-          "label": "Particionamento e LVM"
+          "id": "docker",
+          "label": "Docker",
+          "folder": "Docker",
+          "chapters": [
+            {
+              "id": "concepts-de-base",
+              "label": "Os conceitos básicos"
+            },
+            {
+              "id": "dockerfile",
+              "label": "O Dockerfile"
+            },
+            {
+              "id": "commandes-essentielles",
+              "label": "Os comandos essenciais"
+            },
+            {
+              "id": "volumes-et-reseaux",
+              "label": "Volumes e redes"
+            },
+            {
+              "id": "docker-compose",
+              "label": "Docker Compose"
+            },
+            {
+              "id": "bonnes-pratiques-et-securite",
+              "label": "Boas práticas e segurança"
+            }
+          ]
         },
         {
-          "id": "selinux-vs-apparmor",
-          "label": "SELinux vs AppArmor"
+          "id": "ci-cd",
+          "label": "CI-CD",
+          "folder": "CI-CD",
+          "chapters": [
+            {
+              "id": "pipeline-cicd",
+              "label": "O que é um pipeline CI/CD?"
+            },
+            {
+              "id": "azure-devops-plateforme",
+              "label": "Azure DevOps como plataforma"
+            },
+            {
+              "id": "yaml-pipelines-azure",
+              "label": "A sintaxe YAML dos pipelines Azure"
+            },
+            {
+              "id": "azure-pipelines-vs-github-actions",
+              "label": "Azure Pipelines contra GitHub Actions"
+            }
+          ]
         },
         {
-          "id": "durcissement-ssh-sudo-mots-de-passe",
-          "label": "Endurecimento de SSH, sudo e senhas"
+          "id": "administration-systeme",
+          "label": "Administration système",
+          "folder": "Administration système",
+          "chapters": [
+            {
+              "id": "virtualisation-et-choix-dos",
+              "label": "Virtualização e escolha de SO"
+            },
+            {
+              "id": "partitionnement-et-lvm",
+              "label": "Particionamento e LVM"
+            },
+            {
+              "id": "selinux-vs-apparmor",
+              "label": "SELinux vs AppArmor"
+            },
+            {
+              "id": "durcissement-ssh-sudo-mots-de-passe",
+              "label": "Endurecimento de SSH, sudo e senhas"
+            },
+            {
+              "id": "pare-feu-ufw-firewalld",
+              "label": "Firewall: UFW e firewalld"
+            },
+            {
+              "id": "supervision-systeme",
+              "label": "Ler o estado do sistema"
+            }
+          ]
         },
         {
-          "id": "pare-feu-ufw-firewalld",
-          "label": "Firewall: UFW e firewalld"
-        },
-        {
-          "id": "supervision-systeme",
-          "label": "Ler o estado do sistema"
+          "id": "reseaux",
+          "label": "Réseaux",
+          "folder": "Réseaux",
+          "chapters": [
+            {
+              "id": "fondamentaux-reseau",
+              "label": "Fundamentos de rede"
+            },
+            {
+              "id": "sockets-et-io-non-bloquante",
+              "label": "Sockets e E/S não bloqueante"
+            }
+          ]
         }
       ]
     },
@@ -375,29 +486,6 @@
       ]
     },
     {
-      "id": "ci-cd",
-      "label": "CI-CD",
-      "folder": "CI-CD",
-      "chapters": [
-        {
-          "id": "pipeline-cicd",
-          "label": "O que é um pipeline CI/CD?"
-        },
-        {
-          "id": "azure-devops-plateforme",
-          "label": "Azure DevOps como plataforma"
-        },
-        {
-          "id": "yaml-pipelines-azure",
-          "label": "A sintaxe YAML dos pipelines Azure"
-        },
-        {
-          "id": "azure-pipelines-vs-github-actions",
-          "label": "Azure Pipelines contra GitHub Actions"
-        }
-      ]
-    },
-    {
       "id": "cybersecurite",
       "label": "Cybersécurité",
       "folder": "Cybersécurité",
@@ -445,37 +533,6 @@
         {
           "id": "owasp-top-10",
           "label": "O OWASP Top 10: a referência padrão da indústria"
-        }
-      ]
-    },
-    {
-      "id": "docker",
-      "label": "Docker",
-      "folder": "Docker",
-      "chapters": [
-        {
-          "id": "concepts-de-base",
-          "label": "Os conceitos básicos"
-        },
-        {
-          "id": "dockerfile",
-          "label": "O Dockerfile"
-        },
-        {
-          "id": "commandes-essentielles",
-          "label": "Os comandos essenciais"
-        },
-        {
-          "id": "volumes-et-reseaux",
-          "label": "Volumes e redes"
-        },
-        {
-          "id": "docker-compose",
-          "label": "Docker Compose"
-        },
-        {
-          "id": "bonnes-pratiques-et-securite",
-          "label": "Boas práticas e segurança"
         }
       ]
     },
@@ -762,41 +819,6 @@
               "label": "IA de jogo por imitação: aprender com um jogador humano"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "infrastructure",
-      "label": "Infrastructure",
-      "folder": "Infrastructure",
-      "chapters": [
-        {
-          "id": "api-et-http",
-          "label": "As trocas de dados: API e HTTP"
-        },
-        {
-          "id": "websocket-et-temps-reel",
-          "label": "WebSocket: a comunicação em tempo real"
-        },
-        {
-          "id": "json",
-          "label": "O formato JSON"
-        },
-        {
-          "id": "cpu-vs-gpu",
-          "label": "CPU vs GPU: o cálculo paralelo"
-        },
-        {
-          "id": "le-cloud",
-          "label": "O que é a nuvem (cloud)?"
-        },
-        {
-          "id": "automatisation-workflow",
-          "label": "A automação por workflow visual"
-        },
-        {
-          "id": "elk-agregation-de-logs",
-          "label": "ELK: centralizar e consultar os logs de uma infraestrutura"
         }
       ]
     },
@@ -1374,21 +1396,6 @@
         {
           "id": "conventions-de-documentation",
           "label": "Convenções de documentação do código por linguagem"
-        }
-      ]
-    },
-    {
-      "id": "reseaux",
-      "label": "Réseaux",
-      "folder": "Réseaux",
-      "chapters": [
-        {
-          "id": "fondamentaux-reseau",
-          "label": "Fundamentos de rede"
-        },
-        {
-          "id": "sockets-et-io-non-bloquante",
-          "label": "Sockets e E/S não bloqueante"
         }
       ]
     },
