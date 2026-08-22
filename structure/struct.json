@@ -11,6 +11,17 @@
       ]
     },
     {
+      "id": "blockchain",
+      "label": "Blockchain",
+      "folder": "Blockchain",
+      "chapters": [
+        {
+          "id": "concepts-fondamentaux-blockchain",
+          "label": "Concepts fondamentaux de la blockchain"
+        }
+      ]
+    },
+    {
       "id": "donnees",
       "label": "Données",
       "folder": "Données",
