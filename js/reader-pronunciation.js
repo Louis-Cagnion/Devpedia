@@ -397,6 +397,9 @@ const PROSE_SYMBOL_SPEECH = {
         "≠": "différent de",
         "°": "degrés",
         "×": "fois",
+        "↔": "relié à",
+        "±": "plus ou moins",
+        "…": "",
         "^": POWER_OF_SPEECH.fr.of,
         "C#": CSHARP_SPEECH,
         "OCaml": OCAML_SPEECH,
@@ -408,9 +411,9 @@ const PROSE_SYMBOL_SPEECH = {
         "Shells": SHELL_SPEECH_FR,
         "shells": SHELL_SPEECH_FR,
     },
-    en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "^": POWER_OF_SPEECH.en.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
-    es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "^": POWER_OF_SPEECH.es.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
-    br: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "^": POWER_OF_SPEECH.br.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "↔": "linked to", "±": "plus or minus", "…": "", "^": POWER_OF_SPEECH.en.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "↔": "vinculado a", "±": "más o menos", "…": "", "^": POWER_OF_SPEECH.es.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
+    br: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "maior ou igual a", "≠": "diferente de", "°": "graus", "×": "vezes", "↔": "ligado a", "±": "mais ou menos", "…": "", "^": POWER_OF_SPEECH.br.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
 };
 
 /* "→" means a numeric/character range ("0 → 255") on the two pages below, "leads to"/sequence
