@@ -413,6 +413,7 @@ function speakNext() {
     if (entry.kind === "pause") {
         isPlaying = false;
         isPausedAtCode = true;
+        audioEl.pause();
         clearHighlight();
         entry.element.scrollIntoView({ behavior: "smooth", block: "center" });
         notify();

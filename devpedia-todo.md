@@ -9,12 +9,10 @@ Objectif de Louis (21/08/2026) : pouvoir lire en marchant, casque Bluetooth, té
 
 Audio pré-généré (Piper TTS, hors ligne) implémenté et en ligne (pilote de 5 chapitres × FR/EN/ES/BR), lecteur basculé sur un vrai élément `<audio>` avec `navigator.mediaSession.metadata` renseigné. **Testé le 22/08/2026 par Louis sur iPhone/Safari (onglet normal, pas ajouté à l'écran d'accueil) : toujours cassé.** Écran allumé, la lecture directe sur le site fonctionne bien au casque Bluetooth. Mais dès l'écran verrouillé, l'écran de verrouillage affiche l'app Musique en pause (pas Devpedia) : iOS ne reconnaît la session Devpedia comme active à aucun moment, et appuyer sur play depuis le casque relance Musique/iTunes au lieu de reprendre le site.
 
-Pistes restantes à tester :
-- Ajouter le site à l'écran d'accueil (mode PWA) plutôt que Safari en onglet normal : iOS traite parfois différemment le background audio dans ce cas.
-- Si ça ne suffit pas, déboguer via Web Inspector distant (Mac connecté à l'iPhone) pour voir les erreurs/avertissements réels côté device — actuellement aucune visibilité sur ce qui se passe concrètement sur le téléphone au moment du verrouillage.
+Mode "ajout à l'écran d'accueil" implémenté (`manifest.json`, icônes `icons/`, balises `apple-touch-icon`/`apple-mobile-web-app-*` dans `index.html`) : reste à tester par Louis sur iPhone (ajouter le site depuis Safari, puis relancer l'app depuis l'écran d'accueil, écran verrouillé + casque Bluetooth).
 
-## 2. Bug : l'audio pré-généré continue de jouer pendant une pause sur un bloc de code
-Dans `js/reader.js`, la branche `"pause"` de `speakNext()` ne coupe jamais `audioEl.pause()` (contrairement au chemin `speechSynthesis`, où rien ne joue en continu). Comme les clips synthétisés sont concaténés sans creux pour les blocs de code (`scripts/generate-audio.mjs`), l'audio continue de jouer silencieusement par-dessus l'état "en pause" affiché à l'écran, et peut avoir dépassé le début de l'entrée suivante quand l'utilisateur clique sur "Continuer".
+Piste restante si ça ne suffit pas :
+- Déboguer via Web Inspector distant (Mac connecté à l'iPhone) pour voir les erreurs/avertissements réels côté device — actuellement aucune visibilité sur ce qui se passe concrètement sur le téléphone au moment du verrouillage.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
