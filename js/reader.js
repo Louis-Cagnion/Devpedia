@@ -342,34 +342,47 @@ function collapseConsecutivePauses(entries) {
     return entries.filter((entry, i) => entry.kind !== "pause" || entries[i - 1]?.kind !== "pause");
 }
 
+/* The blob: URL currently loaded into audioEl, if any -- tracked so loadPregenAudio() can revoke
+   the previous one (blob: URLs otherwise leak for the page's lifetime) before creating the next. */
+let audioObjectUrl = null;
+
 /**
- * @brief Fetches audio/<lang>/<chapterId>.json and, only if its entries match `plan`'s own
- * "speak"/"pause" sequence 1:1 (same count, same kind in the same order -- the one sane proxy for
- * "still the same content" without hashing the source), merges each entry's startMs/durationMs
- * (or a pause's afterMs) onto the matching `plan` entry and points `audioEl` at the matching mp3.
- * Runs after buildReadingPlan() has already made `plan` usable for speechSynthesis, so a slow or
- * failed fetch degrades to today's behavior rather than blocking the page.
+ * @brief Fetches audio/<lang>/<chapterId>.json and .mp3 together and, only if the JSON's entries
+ * match `plan`'s own "speak"/"pause" sequence 1:1 (same count, same kind in the same order -- the
+ * one sane proxy for "still the same content" without hashing the source), merges each entry's
+ * startMs/durationMs (or a pause's afterMs) onto the matching `plan` entry and points `audioEl` at
+ * the mp3, loaded whole into a blob: URL rather than left to stream from the network -- iOS throttles
+ * background network access hard enough that a streaming src can stall and re-buffer mid-word once
+ * the phone locks (confirmed on a real iPhone, 22/08/2026); a blob: URL needs no network at all once
+ * loaded, so nothing the OS does to the connection can interrupt it. Runs after buildReadingPlan()
+ * has already made `plan` usable for speechSynthesis, so a slow or failed fetch degrades to today's
+ * behavior rather than blocking the page.
  *
  * @param {Array} builtPlan the exact `plan` this call was kicked off for, to detect a page change
- *   racing ahead of this fetch (`plan` may already point somewhere else by the time it resolves)
+ *   racing ahead of these fetches (`plan` may already point somewhere else by the time they resolve)
  */
 async function loadPregenAudio(builtPlan) {
     const langCode = getStoredLanguage() || "fr";
     const chapterId = appState.curPageId;
-    let timing;
+    let timing, blob;
     try {
-        const response = await fetch(`./audio/${langCode}/${chapterId}.json`);
-        if (!response.ok) return;
-        timing = await response.json();
+        const [timingResponse, audioResponse] = await Promise.all([
+            fetch(`./audio/${langCode}/${chapterId}.json`),
+            fetch(`./audio/${langCode}/${chapterId}.mp3`),
+        ]);
+        if (!timingResponse.ok || !audioResponse.ok) return;
+        [timing, blob] = await Promise.all([timingResponse.json(), audioResponse.blob()]);
     } catch {
         return;
     }
-    if (plan !== builtPlan) return; // the page moved on while this fetch was in flight
+    if (plan !== builtPlan) return; // the page moved on while these fetches were in flight
     if (timing.length !== builtPlan.length) return;
     const matches = timing.every((t, i) => t.kind === builtPlan[i].kind);
     if (!matches) return;
     timing.forEach((t, i) => Object.assign(builtPlan[i], t));
-    audioEl.src = `./audio/${langCode}/${chapterId}.mp3`;
+    if (audioObjectUrl) URL.revokeObjectURL(audioObjectUrl);
+    audioObjectUrl = URL.createObjectURL(blob);
+    audioEl.src = audioObjectUrl;
     hasPregenAudio = true;
 }
 
