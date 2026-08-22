@@ -214,6 +214,17 @@
               "label": "The Derivative and the Gradient"
             }
           ]
+        },
+        {
+          "id": "graphisme",
+          "label": "Graphisme",
+          "folder": "Graphisme",
+          "chapters": [
+            {
+              "id": "rendu-3d-bas-niveau-et-fenetrage",
+              "label": "Low-level 3D rendering and windowing: raycasting à la Wolfenstein"
+            }
+          ]
         }
       ]
     },

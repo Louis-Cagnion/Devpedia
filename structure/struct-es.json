@@ -214,6 +214,17 @@
               "label": "La derivada y el gradiente"
             }
           ]
+        },
+        {
+          "id": "graphisme",
+          "label": "Graphisme",
+          "folder": "Graphisme",
+          "chapters": [
+            {
+              "id": "rendu-3d-bas-niveau-et-fenetrage",
+              "label": "Renderizado 3D de bajo nivel y ventanas: raycasting al estilo Wolfenstein"
+            }
+          ]
         }
       ]
     },
