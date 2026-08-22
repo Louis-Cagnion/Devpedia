@@ -152,8 +152,8 @@ export function calibrateRate(measuredRate) {
 }
 
 /**
- * @brief Schedules setActiveWord() calls timed to land roughly when each word of `entry.text`
- * should start being spoken. Estimated from `charsPerSecond` by default -- runs alongside the real
+ * @brief Schedules setActiveWord() calls timed to land roughly when each of `entry.words` should
+ * start being spoken. Estimated from `charsPerSecond` by default -- runs alongside the real
  * `boundary` event rather than instead of it, which always wins when it fires (speechSynthesis
  * path). Given `knownDurationMs`, uses that exact clip length instead of the estimate and skips the
  * acceleration ramp entirely, since there's nothing left to guess (pre-generated audio path,
@@ -167,24 +167,26 @@ export function calibrateRate(measuredRate) {
 export function scheduleEstimatedWords(entry, isStillCurrent, knownDurationMs = null) {
     if (!entry.words.length) return; // nothing to highlight word by word
     const totalWords = entry.words.length;
+    /* `entry.text` (what's actually spoken) can have a different word count than `entry.words`
+       (the DOM spans actually highlighted) whenever speakableText() rewrites a symbol into
+       several spoken words or the reverse (an arrow, a superscript, "%"...). Distributing time by
+       each DOM word's own character length -- instead of re-tokenizing entry.text and assuming
+       its Nth match lines up with entry.words[N] -- keeps every scheduled index inside
+       entry.words' own bounds no matter how the two diverge (Louis, 2026-08-22: the highlight
+       used to jump backward mid-sentence once that assumption broke). */
     const rate = knownDurationMs ? entry.text.length / (knownDurationMs / 1000) : charsPerSecond;
     const maxAcceleration = knownDurationMs ? 0 : Math.min(MAX_ACCELERATION_CAP, totalWords * MAX_ACCELERATION_PER_WORD);
-    let wordIndex = 0;
     let cumulativeMs = 0;
-    let lastCharIndex = 0;
-    for (const match of entry.text.matchAll(WORD_PATTERN)) {
-        /* Rate ramps applied per-gap since the previous word, not from match.index directly, for
-           a smooth curve rather than a jump recomputed from scratch each time. */
-        const progress = wordIndex / totalWords;
+    entry.words.forEach((word, index) => {
+        const progress = index / totalWords;
         const effectiveRate = rate * (1 + maxAcceleration * progress);
-        cumulativeMs += ((match.index - lastCharIndex) / effectiveRate) * 1000;
-        lastCharIndex = match.index;
-        const index = wordIndex++;
         const delayMs = cumulativeMs;
         setTimeout(() => {
             /* A short entry can hand the highlight to the next one before all its own timers
                fire -- without this check, a late timer would move the highlight on the wrong entry. */
             if (isStillCurrent() && highlightedTarget === entry.highlightTarget) setActiveWord(index);
         }, delayMs);
-    }
+        // +1 for the space following the word, matching the gap the old char-index math counted.
+        cumulativeMs += ((word.textContent.length + 1) / effectiveRate) * 1000;
+    });
 }
