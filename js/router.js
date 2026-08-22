@@ -3,7 +3,7 @@ import { parseAppendText, parseMdContent } from "./parser.js";
 import { createTag } from "./tags.js";
 import { fetchFileToTextOrJson, findCategory, findSubject, getContentDir } from "./utils.js";
 import { setPageOutline, syncSidebars } from "./sidebar.js";
-import { buildReadingPlan, stopReading } from "./reader.js";
+import { buildReadingPlan, stopReading, onPlaybackComplete } from "./reader.js";
 import { t, tEntityLabel } from "./i18n.js";
 import { resolveAcrossLanguages } from "./router-language-fallback.js";
 import { PENDING_NAV_KEY, buildNavUrl, parseNavParams, pushNavUrl, replayingUrl } from "./nav-url.js";
@@ -142,6 +142,71 @@ function clearChapterNeighbors() {
     currentNextChapter = null;
 }
 
+/* Chapter auto-advance: reader.js reports only that the plan finished, with no notion of
+   navigation itself, so the site-wide "what's next" resolution and the actual page change happen
+   here instead. */
+const AUTO_ADVANCE_DELAY_MS = 5000;
+let autoAdvanceTimeoutId = null;
+
+/** @brief Cancels a pending chapter auto-advance, if any, removing its on-screen notice everywhere it was shown. */
+function cancelAutoAdvance() {
+    if (autoAdvanceTimeoutId === null) return;
+    clearTimeout(autoAdvanceTimeoutId);
+    autoAdvanceTimeoutId = null;
+    document.querySelectorAll(".readerAutoAdvanceNotice").forEach(notice => notice.remove());
+}
+
+/**
+ * @brief Returns every chapter of the site in reading order, subjects and subject-less
+ * categories both flattened to the same {categoryId, subjectId, id} shape.
+ *
+ * @returns {Array<{categoryId: string, subjectId: string|null, id: string}>}
+ */
+function flattenChapters() {
+    const entries = [];
+    appState.categories.forEach(category => {
+        (category.subjects ?? [{ id: null, chapters: category.chapters ?? [] }]).forEach(subject => {
+            (subject.chapters ?? []).forEach(chapter => {
+                entries.push({ categoryId: category.id, subjectId: subject.id, id: chapter.id });
+            });
+        });
+    });
+    return entries;
+}
+
+/**
+ * @brief Returns the chapter right after the one currently displayed, crossing subject and
+ * category boundaries -- unlike currentNextChapter above, which stops at the end of the current
+ * subject/category.
+ *
+ * @returns {{categoryId: string, subjectId: string|null, id: string}|null} null past the site's last chapter
+ */
+function resolveNextChapterAcrossSite() {
+    const entries = flattenChapters();
+    const curIndex = entries.findIndex(entry =>
+        entry.categoryId === appState.curCategory && entry.subjectId === appState.curSubject && entry.id === appState.curPageId
+    );
+    return curIndex === -1 ? null : (entries[curIndex + 1] ?? null);
+}
+
+// Read-aloud reaching the end of a chapter on its own offers to move on to the next one.
+onPlaybackComplete(() => {
+    const next = resolveNextChapterAcrossSite();
+    if (!next) return;
+    document.querySelectorAll(".readerControl").forEach(control => {
+        control.append(createTag("p", { class: "readerAutoAdvanceNotice" }, { textContent: t("readerAutoAdvanceNotice") }));
+    });
+    autoAdvanceTimeoutId = setTimeout(() => {
+        autoAdvanceTimeoutId = null;
+        navigateToChapter(next.categoryId, next.subjectId, next.id);
+    }, AUTO_ADVANCE_DELAY_MS);
+});
+
+// Any interaction with either reader control (desktop/mobile) cancels a pending auto-advance.
+document.addEventListener("click", e => {
+    if (e.target.closest(".readerControl")) cancelAutoAdvance();
+});
+
 /**
  * @brief Reports whether arrow keys should type a character at `target` rather than navigate.
  *
@@ -168,6 +233,7 @@ document.addEventListener("keydown", (e) => {
 
 /** @brief Removes the page currently displayed, if any. */
 function clearCurrentPage() {
+    cancelAutoAdvance();
     stopReading();
     const currentDiv = document.querySelector(`.${appState.curPageId}Div`);
     if (currentDiv)

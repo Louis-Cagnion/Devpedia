@@ -18,7 +18,8 @@
     "readerPreviousParagraph": "⏪ Paragraphe précédent",
     "readerSpeed": "Vitesse de lecture",
     "readerUnavailable": "🔇 Lecture audio indisponible : aucune voix détectée dans ce navigateur. Essayez un autre navigateur (Chrome, Firefox, Safari...).",
-    "pageFallbackNotice": "Cette page n'est pas encore traduite : la voici dans une autre langue disponible."
+    "pageFallbackNotice": "Cette page n'est pas encore traduite : la voici dans une autre langue disponible.",
+    "readerAutoAdvanceNotice": "▶ Chapitre suivant dans 5 secondes..."
   },
   "en": {
     "categories": "Categories",
@@ -40,6 +41,7 @@
     "readerSpeed": "Reading speed",
     "readerUnavailable": "🔇 Read-aloud unavailable: no voice detected in this browser. Try another browser (Chrome, Firefox, Safari...).",
     "pageFallbackNotice": "This page isn't translated yet: showing it in another available language.",
+    "readerAutoAdvanceNotice": "▶ Next chapter in 5 seconds...",
     "categoryLabels": {
       "acceuil": "Home",
       "ia": "AI",
@@ -107,6 +109,7 @@
     "readerSpeed": "Velocidad de lectura",
     "readerUnavailable": "🔇 Lectura en voz alta no disponible: no se detectó ninguna voz en este navegador. Prueba otro navegador (Chrome, Firefox, Safari...).",
     "pageFallbackNotice": "Esta página aún no está traducida: mostrándola en otro idioma disponible.",
+    "readerAutoAdvanceNotice": "▶ Siguiente capítulo en 5 segundos...",
     "categoryLabels": {
       "acceuil": "Inicio",
       "ia": "IA",
@@ -174,6 +177,7 @@
     "readerSpeed": "Velocidade de leitura",
     "readerUnavailable": "🔇 Leitura em voz alta indisponível: nenhuma voz detectada neste navegador. Tente outro navegador (Chrome, Firefox, Safari...).",
     "pageFallbackNotice": "Esta página ainda não foi traduzida: mostrando em outro idioma disponível.",
+    "readerAutoAdvanceNotice": "▶ Próximo capítulo em 5 segundos...",
     "categoryLabels": {
       "acceuil": "Início",
       "ia": "IA",

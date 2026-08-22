@@ -48,6 +48,13 @@
     font-size: 0.9rem;
 }
 
+.readerAutoAdvanceNotice {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
 /* shown only below the mobile breakpoint, cf. responsive.css -- .rightSidebar (which carries
    the desktop instance) is hidden there, same as .leftSidebar */
 .readerFloatingBar {

@@ -91,6 +91,20 @@ let generation = 0;
 // Subscribers registered through onStatusChange() below.
 const listeners = new Set();
 
+// Subscribers registered through onPlaybackComplete() below.
+const completionListeners = new Set();
+
+/**
+ * @brief Subscribes `listener` to be called whenever playback reaches the natural end of the
+ * plan (the last entry finished on its own, not a manual stop/pause). Used by router.js to offer
+ * auto-advance to the next chapter, without reader.js itself knowing about page navigation.
+ *
+ * @param {() => void} listener
+ */
+export function onPlaybackComplete(listener) {
+    completionListeners.add(listener);
+}
+
 /**
  * @brief Returns a snapshot of the current playback state.
  *
@@ -317,6 +331,7 @@ function speakNext() {
         isPlaying = false;
         isPausedAtCode = false;
         notify();
+        completionListeners.forEach(listener => listener());
         return;
     }
     const entry = plan[planIndex];
