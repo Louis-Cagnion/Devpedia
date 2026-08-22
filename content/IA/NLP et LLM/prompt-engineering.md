@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 2
 ---
 
 # Le prompt engineering : structurer une requête pour de meilleurs résultats

@@ -1,5 +1,5 @@
 ---
-order: 15
+order: 2
 ---
 
 # O assistente de IA agêntico no terminal: além do prompt simples

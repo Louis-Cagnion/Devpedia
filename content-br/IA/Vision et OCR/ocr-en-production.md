@@ -1,5 +1,5 @@
 ---
-order: 23
+order: 7
 ---
 
 # Colocação em produção e monitoramento de um pipeline OCR

@@ -1,5 +1,5 @@
 ---
-order: 19
+order: 3
 ---
 
 # Modelos "Document AI": entender um documento além do texto puro

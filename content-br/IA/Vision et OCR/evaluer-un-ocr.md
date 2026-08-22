@@ -1,5 +1,5 @@
 ---
-order: 21
+order: 5
 ---
 
 # Avaliar um OCR: CER, WER e taxa de reconhecimento por campo

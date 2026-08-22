@@ -1,5 +1,5 @@
 ---
-order: 10
+order: 6
 ---
 
 # RAG: aumentar un LLM con datos externos

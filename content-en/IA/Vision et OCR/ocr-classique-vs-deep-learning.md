@@ -1,5 +1,5 @@
 ---
-order: 18
+order: 1
 ---
 
 # OCR: from classic pattern recognition to deep learning

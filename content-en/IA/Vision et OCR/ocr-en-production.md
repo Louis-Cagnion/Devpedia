@@ -1,5 +1,5 @@
 ---
-order: 24
+order: 7
 ---
 
 # OCR pipeline deployment and monitoring

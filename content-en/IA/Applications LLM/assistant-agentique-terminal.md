@@ -1,5 +1,5 @@
 ---
-order: 15
+order: 2
 ---
 
 # The agent-based AI assistant in the terminal: beyond the simple prompt

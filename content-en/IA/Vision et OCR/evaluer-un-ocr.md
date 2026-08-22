@@ -1,5 +1,5 @@
 ---
-order: 22
+order: 5
 ---
 
 # Evaluating an OCR: CER, WER, and per-field recognition rate

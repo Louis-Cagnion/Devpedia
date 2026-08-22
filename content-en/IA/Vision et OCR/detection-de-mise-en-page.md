@@ -1,5 +1,5 @@
 ---
-order: 19
+order: 2
 ---
 
 # Layout detection: bounding boxes, confidence score, and duplicate removal

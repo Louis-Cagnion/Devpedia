@@ -1,5 +1,5 @@
 ---
-order: 15
+order: 2
 ---
 
 # L'assistant IA agentique en terminal : au-delà du prompt simple

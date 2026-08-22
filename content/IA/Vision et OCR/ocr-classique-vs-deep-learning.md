@@ -1,5 +1,5 @@
 ---
-order: 17
+order: 1
 ---
 
 # OCR : de la reconnaissance de motifs classique au deep learning

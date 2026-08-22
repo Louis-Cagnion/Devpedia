@@ -1,5 +1,5 @@
 ---
-order: 20
+order: 3
 ---
 
 # "Document AI" models: understanding a document beyond plain text

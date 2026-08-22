@@ -1,5 +1,5 @@
 ---
-order: 14
+order: 1
 ---
 
 # Construire un chatbot : architecture, configuration et mise à l'échelle

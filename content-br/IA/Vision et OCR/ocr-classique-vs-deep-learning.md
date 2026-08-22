@@ -1,5 +1,5 @@
 ---
-order: 17
+order: 1
 ---
 
 # OCR: do reconhecimento de padrões clássico ao deep learning

@@ -1,5 +1,5 @@
 ---
-order: 20
+order: 4
 ---
 
 # Entraîner et fine-tuner un modèle de vision pour un cas métier

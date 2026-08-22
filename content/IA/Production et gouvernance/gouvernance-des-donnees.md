@@ -1,5 +1,5 @@
 ---
-order: 12
+order: 2
 ---
 
 # Gouvernance des données pour un système IA

@@ -1,5 +1,5 @@
 ---
-order: 20
+order: 4
 ---
 
 # Treinar e fazer fine-tuning de um modelo de visão para um caso de negócio

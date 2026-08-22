@@ -1,5 +1,5 @@
 ---
-order: 18
+order: 2
 ---
 
 # Detecção de layout: caixas delimitadoras, score de confiança e remoção de duplicatas

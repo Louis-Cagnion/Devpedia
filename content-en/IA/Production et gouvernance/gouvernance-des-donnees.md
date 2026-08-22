@@ -1,5 +1,5 @@
 ---
-order: 12
+order: 2
 ---
 
 # Data Governance for an AI System

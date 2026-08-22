@@ -1,5 +1,5 @@
 ---
-order: 13
+order: 3
 ---
 
 # Réglementation européenne de l'IA : l'AI Act

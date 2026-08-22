@@ -1,5 +1,5 @@
 ---
-order: 24
+order: 8
 ---
 
 # Governança de dados para documentos escaneados

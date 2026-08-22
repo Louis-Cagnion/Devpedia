@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 2
 ---
 
 # Prompt Engineering: Structuring a Request for Better Results

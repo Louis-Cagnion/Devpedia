@@ -1,5 +1,5 @@
 ---
-order: 8
+order: 4
 ---
 
 # Reducing Response Variance: Self-Consistency, Majority Voting, and Ensembling

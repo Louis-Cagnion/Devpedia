@@ -1,5 +1,5 @@
 ---
-order: 18
+order: 2
 ---
 
 # Détection de mise en page : boîtes englobantes, score de confiance et suppression des doublons

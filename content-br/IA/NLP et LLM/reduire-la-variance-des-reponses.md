@@ -1,5 +1,5 @@
 ---
-order: 8
+order: 4
 ---
 
 # Reduzir a variância das respostas: self-consistency, voto majoritário e ensembling

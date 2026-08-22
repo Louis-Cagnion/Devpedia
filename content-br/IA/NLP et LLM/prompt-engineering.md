@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 2
 ---
 
 # Prompt engineering: estruturar uma requisição para melhores resultados

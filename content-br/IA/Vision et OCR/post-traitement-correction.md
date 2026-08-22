@@ -1,5 +1,5 @@
 ---
-order: 22
+order: 6
 ---
 
 # Pós-processamento e correção de um OCR

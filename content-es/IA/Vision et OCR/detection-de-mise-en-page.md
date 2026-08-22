@@ -1,5 +1,5 @@
 ---
-order: 18
+order: 2
 ---
 
 # Detección de maquetación: cajas delimitadoras, score de confianza y eliminación de duplicados

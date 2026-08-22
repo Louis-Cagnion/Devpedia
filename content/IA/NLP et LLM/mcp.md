@@ -1,5 +1,5 @@
 ---
-order: 12
+order: 8
 ---
 
 # MCP (Model Context Protocol) : standardiser les outils d'un agent
