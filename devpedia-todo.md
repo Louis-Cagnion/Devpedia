@@ -4,13 +4,7 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `prompt.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
-## 1. Catégorie Blockchain
-Catégorie créée, 4 chapitres en place (concepts fondamentaux, Solidity bases du langage, déployer et interagir avec un smart contract, réseaux blockchain/EVM/testnet — faits le 22/08/2026). Le parcours standard EVM (Ethereum/Avalanche) est couvert. Reste, à trancher en écrivant comme la section Tests : backends sur ICP (paradigme différent, canisters, Motoko/Rust — nécessitera une recherche dédiée avant rédaction).
-
-## 2. Section Automatisation (n8n)
-Les 4 chapitres prévus sont faits (22/08/2026) : « Prise en main de l'interface », « Catalogue des fonctionnalités / types de nœuds », « Le format JSON d'un workflow » (vérifié auprès de la doc officielle n8n avant rédaction), « L'industrialisation » (self-hosted vs cloud, variables d'environnement vs `$vars`, credentials, environnements dev/prod, supervision des exécutions, sécurité/NODES_EXCLUDE — vérifié auprès de la doc officielle n8n). Section complète, rien de concret restant.
-
-## 3. Lecture écran verrouillé / téléphone en poche (Bluetooth) — **décision structurelle bloquante**
+## 1. Lecture écran verrouillé / téléphone en poche (Bluetooth) — **décision structurelle bloquante**
 Objectif de Louis (21/08/2026) : pouvoir lire en marchant, casque Bluetooth, téléphone verrouillé et en poche, sans avoir à le tenir ni le garder allumé.
 
 **Constat qui remet en cause l'approche actuelle** : le lecteur repose sur `window.speechSynthesis` (Web Speech API, `js/reader.js:25-26`), pas sur un élément `<audio>`. Or `speechSynthesis` n'est pas traité par les navigateurs mobiles comme une vraie lecture média — Chrome et Safari le suspendent quand l'onglet perd le focus ou que l'écran se verrouille (comportement particulièrement agressif sur iOS Safari). La synchronisation Bluetooth (play/pause/piste suivante-précédente via MediaSession API, livrée le 22/08/2026) résout la synchronisation des boutons, mais ne garantit pas que le son continue une fois l'écran verrouillé : ce sont deux problèmes distincts.
