@@ -45,10 +45,9 @@ Point explicite de Louis, à respecter avant de rédiger quoi que ce soit : sa v
 Étape 1 (avant toute rédaction) : discussion avec Louis pour caler l'angle de la section, en s'appuyant sur le fonctionnement réel de l'IA plutôt que sur l'intuition de Louis seule.
 
 ## 9. Nouvelle catégorie : Gestion de projet
-Catégorie créée, `methodologies-agile-scrum-kanban.md` déplacé et premier chapitre en place (fait le 22/08/2026). Reste à ajouter des chapitres.
+Catégorie créée, 2 chapitres en place (méthodologies Agile/Scrum/Kanban, backlog et user stories — faits le 22/08/2026, avec lien ajouté depuis `azure-devops-plateforme.md` et `roles-equipe-developpement.md`). Reste à ajouter des chapitres.
 
-- **Chapitres à ajouter** (pas figé, à trancher en écrivant, « et plus si affinité ») : backlog et user stories (rédaction, critères d'acceptation, INVEST) ; estimation (points de complexité vs estimation en temps, planning poker) ; outils de suivi (board physique/Jira/Trello/Linear, ticket, epic) ; éventuellement SAFe/Scrumban pour les cas hybrides, OKR pour le lien objectifs ↔ exécution.
-- **Vérifié le 21/08/2026** : la notion de backlog n'est nulle part expliquée en profondeur dans le site aujourd'hui, seulement nommée sans lien dans `CI-CD/azure-devops-plateforme.md` (tableau des services Boards) et dans `Organisation en entreprise/roles-equipe-developpement.md` (rôle du Product Owner). Une fois le chapitre « backlog et user stories » ci-dessus écrit, mettre à jour ces deux chapitres pour y ajouter un lien vers lui (règle 7bis de `prompt.md` : jargon nommé doit être défini ou lié).
+- **Chapitres à ajouter** (pas figé, à trancher en écrivant, « et plus si affinité ») : estimation (points de complexité vs estimation en temps, planning poker) ; outils de suivi (board physique/Jira/Trello/Linear, ticket, epic) ; éventuellement SAFe/Scrumban pour les cas hybrides, OKR pour le lien objectifs ↔ exécution.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
