@@ -201,41 +201,121 @@
       ]
     },
     {
-      "id": "bases-de-donnees",
-      "label": "Bases de données",
-      "folder": "Bases de données",
-      "chapters": [
+      "id": "donnees",
+      "label": "Données",
+      "folder": "Données",
+      "subjects": [
         {
-          "id": "modeles-en-etoile",
-          "label": "El modelo en estrella"
+          "id": "bases-de-donnees",
+          "label": "Bases de données",
+          "folder": "Bases de données",
+          "chapters": [
+            {
+              "id": "modeles-en-etoile",
+              "label": "El modelo en estrella"
+            },
+            {
+              "id": "architecture-medaillon",
+              "label": "La arquitectura medallón"
+            },
+            {
+              "id": "table-pont",
+              "label": "La tabla puente"
+            },
+            {
+              "id": "schemas-et-tables-techniques",
+              "label": "Esquemas y tablas técnicas"
+            },
+            {
+              "id": "entrepot-vs-data-lake",
+              "label": "Almacén de datos contra data lake"
+            },
+            {
+              "id": "les-index",
+              "label": "Los índices"
+            },
+            {
+              "id": "orm",
+              "label": "El ORM: mapear objetos sobre tablas relacionales"
+            },
+            {
+              "id": "bases-de-donnees-a-fort-trafic",
+              "label": "Bases de datos de alto tráfico: nunca bloquear al usuario con un recálculo costoso"
+            }
+          ]
         },
         {
-          "id": "architecture-medaillon",
-          "label": "La arquitectura medallón"
+          "id": "data-science",
+          "label": "Data Science",
+          "folder": "Data Science",
+          "chapters": [
+            {
+              "id": "jupyter-notebooks",
+              "label": "Los cuadernos Jupyter"
+            },
+            {
+              "id": "numpy",
+              "label": "NumPy: cálculo numérico"
+            },
+            {
+              "id": "pandas",
+              "label": "pandas: manipulación de datos tabulares"
+            },
+            {
+              "id": "matplotlib",
+              "label": "Matplotlib: visualización de datos"
+            },
+            {
+              "id": "machine-learning-scikit-learn",
+              "label": "Introducción al aprendizaje automático (scikit-learn)"
+            }
+          ]
         },
         {
-          "id": "table-pont",
-          "label": "La tabla puente"
+          "id": "representation-des-donnees",
+          "label": "Représentation des données",
+          "folder": "Représentation des données",
+          "chapters": [
+            {
+              "id": "entiers-et-debordements",
+              "label": "Los enteros, los bits y los desbordamientos"
+            },
+            {
+              "id": "nombres-flottants",
+              "label": "Los números de coma flotante (IEEE 754)"
+            },
+            {
+              "id": "encodage-des-textes",
+              "label": "La codificación de textos (ASCII, Unicode, UTF-8)"
+            },
+            {
+              "id": "organisation-en-memoire",
+              "label": "La organización de los datos en memoria"
+            },
+            {
+              "id": "aleatoire-et-generateurs",
+              "label": "El azar y los generadores"
+            }
+          ]
         },
         {
-          "id": "schemas-et-tables-techniques",
-          "label": "Esquemas y tablas técnicas"
-        },
-        {
-          "id": "entrepot-vs-data-lake",
-          "label": "Almacén de datos contra data lake"
-        },
-        {
-          "id": "les-index",
-          "label": "Los índices"
-        },
-        {
-          "id": "orm",
-          "label": "El ORM: mapear objetos sobre tablas relacionales"
-        },
-        {
-          "id": "bases-de-donnees-a-fort-trafic",
-          "label": "Bases de datos de alto tráfico: nunca bloquear al usuario con un recálculo costoso"
+          "id": "traitement-de-documents",
+          "label": "Traitement de documents",
+          "folder": "Traitement de documents",
+          "chapters": [
+            {
+              "id": "extraction-pdf",
+              "label": "Extraer el texto y las páginas de un PDF"
+            },
+            {
+              "id": "ocr-structure",
+              "label": "El OCR estructurado y el análisis de maquetación"
+            },
+            {
+              "id": "arbitrage-local-cloud-vision",
+              "label": "Arbitraje local vs cloud para un modelo de visión"
+            }
+          ]
         }
       ]
     },
@@ -310,33 +390,6 @@
         {
           "id": "owasp-top-10",
           "label": "El OWASP Top 10: el referente estándar de la industria"
-        }
-      ]
-    },
-    {
-      "id": "data-science",
-      "label": "Data Science",
-      "folder": "Data Science",
-      "chapters": [
-        {
-          "id": "jupyter-notebooks",
-          "label": "Los cuadernos Jupyter"
-        },
-        {
-          "id": "numpy",
-          "label": "NumPy: cálculo numérico"
-        },
-        {
-          "id": "pandas",
-          "label": "pandas: manipulación de datos tabulares"
-        },
-        {
-          "id": "matplotlib",
-          "label": "Matplotlib: visualización de datos"
-        },
-        {
-          "id": "machine-learning-scikit-learn",
-          "label": "Introducción al aprendizaje automático (scikit-learn)"
         }
       ]
     },
@@ -1250,33 +1303,6 @@
       ]
     },
     {
-      "id": "representation-des-donnees",
-      "label": "Représentation des données",
-      "folder": "Représentation des données",
-      "chapters": [
-        {
-          "id": "entiers-et-debordements",
-          "label": "Los enteros, los bits y los desbordamientos"
-        },
-        {
-          "id": "nombres-flottants",
-          "label": "Los números de coma flotante (IEEE 754)"
-        },
-        {
-          "id": "encodage-des-textes",
-          "label": "La codificación de textos (ASCII, Unicode, UTF-8)"
-        },
-        {
-          "id": "organisation-en-memoire",
-          "label": "La organización de los datos en memoria"
-        },
-        {
-          "id": "aleatoire-et-generateurs",
-          "label": "El azar y los generadores"
-        }
-      ]
-    },
-    {
       "id": "reseaux",
       "label": "Réseaux",
       "folder": "Réseaux",
@@ -1448,25 +1474,6 @@
               "label": "Cómo funciona PowerShell (arquitectura interna)"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "traitement-de-documents",
-      "label": "Traitement de documents",
-      "folder": "Traitement de documents",
-      "chapters": [
-        {
-          "id": "extraction-pdf",
-          "label": "Extraer el texto y las páginas de un PDF"
-        },
-        {
-          "id": "ocr-structure",
-          "label": "El OCR estructurado y el análisis de maquetación"
-        },
-        {
-          "id": "arbitrage-local-cloud-vision",
-          "label": "Arbitraje local vs cloud para un modelo de visión"
         }
       ]
     },

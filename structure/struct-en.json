@@ -201,41 +201,121 @@
       ]
     },
     {
-      "id": "bases-de-donnees",
-      "label": "Bases de données",
-      "folder": "Bases de données",
-      "chapters": [
+      "id": "donnees",
+      "label": "Données",
+      "folder": "Données",
+      "subjects": [
         {
-          "id": "modeles-en-etoile",
-          "label": "The Star Schema"
+          "id": "bases-de-donnees",
+          "label": "Bases de données",
+          "folder": "Bases de données",
+          "chapters": [
+            {
+              "id": "modeles-en-etoile",
+              "label": "The Star Schema"
+            },
+            {
+              "id": "architecture-medaillon",
+              "label": "The Medallion Architecture"
+            },
+            {
+              "id": "table-pont",
+              "label": "The Bridge Table"
+            },
+            {
+              "id": "schemas-et-tables-techniques",
+              "label": "Schemas and Technical Tables"
+            },
+            {
+              "id": "entrepot-vs-data-lake",
+              "label": "Data Warehouse vs. Data Lake"
+            },
+            {
+              "id": "les-index",
+              "label": "Indexes"
+            },
+            {
+              "id": "orm",
+              "label": "The ORM: Mapping Objects onto Relational Tables"
+            },
+            {
+              "id": "bases-de-donnees-a-fort-trafic",
+              "label": "High-Traffic Databases: Never Block the User on a Costly Recalculation"
+            }
+          ]
         },
         {
-          "id": "architecture-medaillon",
-          "label": "The Medallion Architecture"
+          "id": "data-science",
+          "label": "Data Science",
+          "folder": "Data Science",
+          "chapters": [
+            {
+              "id": "jupyter-notebooks",
+              "label": "Jupyter notebooks"
+            },
+            {
+              "id": "numpy",
+              "label": "NumPy: Numerical Computation"
+            },
+            {
+              "id": "pandas",
+              "label": "pandas: manipulating tabular data"
+            },
+            {
+              "id": "matplotlib",
+              "label": "Matplotlib: visualizing data"
+            },
+            {
+              "id": "machine-learning-scikit-learn",
+              "label": "Introduction to Machine Learning (scikit-learn)"
+            }
+          ]
         },
         {
-          "id": "table-pont",
-          "label": "The Bridge Table"
+          "id": "representation-des-donnees",
+          "label": "Représentation des données",
+          "folder": "Représentation des données",
+          "chapters": [
+            {
+              "id": "entiers-et-debordements",
+              "label": "Integers, Bits, and Overflow"
+            },
+            {
+              "id": "nombres-flottants",
+              "label": "Floating-Point Numbers (IEEE 754)"
+            },
+            {
+              "id": "encodage-des-textes",
+              "label": "Text Encoding (ASCII, Unicode, UTF-8)"
+            },
+            {
+              "id": "organisation-en-memoire",
+              "label": "How Data Is Laid Out in Memory"
+            },
+            {
+              "id": "aleatoire-et-generateurs",
+              "label": "Randomness and Generators"
+            }
+          ]
         },
         {
-          "id": "schemas-et-tables-techniques",
-          "label": "Schemas and Technical Tables"
-        },
-        {
-          "id": "entrepot-vs-data-lake",
-          "label": "Data Warehouse vs. Data Lake"
-        },
-        {
-          "id": "les-index",
-          "label": "Indexes"
-        },
-        {
-          "id": "orm",
-          "label": "The ORM: Mapping Objects onto Relational Tables"
-        },
-        {
-          "id": "bases-de-donnees-a-fort-trafic",
-          "label": "High-Traffic Databases: Never Block the User on a Costly Recalculation"
+          "id": "traitement-de-documents",
+          "label": "Traitement de documents",
+          "folder": "Traitement de documents",
+          "chapters": [
+            {
+              "id": "extraction-pdf",
+              "label": "Extracting text and pages from a PDF"
+            },
+            {
+              "id": "ocr-structure",
+              "label": "Structured OCR and layout analysis"
+            },
+            {
+              "id": "arbitrage-local-cloud-vision",
+              "label": "Local vs. cloud trade-off for a vision model"
+            }
+          ]
         }
       ]
     },
@@ -310,33 +390,6 @@
         {
           "id": "owasp-top-10",
           "label": "The OWASP Top 10: the industry-standard reference"
-        }
-      ]
-    },
-    {
-      "id": "data-science",
-      "label": "Data Science",
-      "folder": "Data Science",
-      "chapters": [
-        {
-          "id": "jupyter-notebooks",
-          "label": "Jupyter notebooks"
-        },
-        {
-          "id": "numpy",
-          "label": "NumPy: Numerical Computation"
-        },
-        {
-          "id": "pandas",
-          "label": "pandas: manipulating tabular data"
-        },
-        {
-          "id": "matplotlib",
-          "label": "Matplotlib: visualizing data"
-        },
-        {
-          "id": "machine-learning-scikit-learn",
-          "label": "Introduction to Machine Learning (scikit-learn)"
         }
       ]
     },
@@ -1250,33 +1303,6 @@
       ]
     },
     {
-      "id": "representation-des-donnees",
-      "label": "Représentation des données",
-      "folder": "Représentation des données",
-      "chapters": [
-        {
-          "id": "entiers-et-debordements",
-          "label": "Integers, Bits, and Overflow"
-        },
-        {
-          "id": "nombres-flottants",
-          "label": "Floating-Point Numbers (IEEE 754)"
-        },
-        {
-          "id": "encodage-des-textes",
-          "label": "Text Encoding (ASCII, Unicode, UTF-8)"
-        },
-        {
-          "id": "organisation-en-memoire",
-          "label": "How Data Is Laid Out in Memory"
-        },
-        {
-          "id": "aleatoire-et-generateurs",
-          "label": "Randomness and Generators"
-        }
-      ]
-    },
-    {
       "id": "reseaux",
       "label": "Réseaux",
       "folder": "Réseaux",
@@ -1448,25 +1474,6 @@
               "label": "Oh My Zsh"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "traitement-de-documents",
-      "label": "Traitement de documents",
-      "folder": "Traitement de documents",
-      "chapters": [
-        {
-          "id": "extraction-pdf",
-          "label": "Extracting text and pages from a PDF"
-        },
-        {
-          "id": "ocr-structure",
-          "label": "Structured OCR and layout analysis"
-        },
-        {
-          "id": "arbitrage-local-cloud-vision",
-          "label": "Local vs. cloud trade-off for a vision model"
         }
       ]
     },

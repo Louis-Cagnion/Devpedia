@@ -201,41 +201,121 @@
       ]
     },
     {
-      "id": "bases-de-donnees",
-      "label": "Bases de données",
-      "folder": "Bases de données",
-      "chapters": [
+      "id": "donnees",
+      "label": "Données",
+      "folder": "Données",
+      "subjects": [
         {
-          "id": "modeles-en-etoile",
-          "label": "O modelo em estrela"
+          "id": "bases-de-donnees",
+          "label": "Bases de données",
+          "folder": "Bases de données",
+          "chapters": [
+            {
+              "id": "modeles-en-etoile",
+              "label": "O modelo em estrela"
+            },
+            {
+              "id": "architecture-medaillon",
+              "label": "A arquitetura medalhão"
+            },
+            {
+              "id": "table-pont",
+              "label": "A tabela ponte"
+            },
+            {
+              "id": "schemas-et-tables-techniques",
+              "label": "Esquemas e tabelas técnicas"
+            },
+            {
+              "id": "entrepot-vs-data-lake",
+              "label": "Data warehouse contra data lake"
+            },
+            {
+              "id": "les-index",
+              "label": "Os índices"
+            },
+            {
+              "id": "orm",
+              "label": "O ORM: mapear objetos em tabelas relacionais"
+            },
+            {
+              "id": "bases-de-donnees-a-fort-trafic",
+              "label": "Bancos de dados de alto tráfego: nunca bloquear o usuário em um recálculo custoso"
+            }
+          ]
         },
         {
-          "id": "architecture-medaillon",
-          "label": "A arquitetura medalhão"
+          "id": "data-science",
+          "label": "Data Science",
+          "folder": "Data Science",
+          "chapters": [
+            {
+              "id": "jupyter-notebooks",
+              "label": "Os notebooks Jupyter"
+            },
+            {
+              "id": "numpy",
+              "label": "NumPy: o cálculo numérico"
+            },
+            {
+              "id": "pandas",
+              "label": "pandas: manipular dados tabulares"
+            },
+            {
+              "id": "matplotlib",
+              "label": "Matplotlib: visualizar dados"
+            },
+            {
+              "id": "machine-learning-scikit-learn",
+              "label": "Introdução ao machine learning (scikit-learn)"
+            }
+          ]
         },
         {
-          "id": "table-pont",
-          "label": "A tabela ponte"
+          "id": "representation-des-donnees",
+          "label": "Représentation des données",
+          "folder": "Représentation des données",
+          "chapters": [
+            {
+              "id": "entiers-et-debordements",
+              "label": "Os inteiros, os bits e os overflows"
+            },
+            {
+              "id": "nombres-flottants",
+              "label": "Os números de ponto flutuante (IEEE 754)"
+            },
+            {
+              "id": "encodage-des-textes",
+              "label": "A codificação de textos (ASCII, Unicode, UTF-8)"
+            },
+            {
+              "id": "organisation-en-memoire",
+              "label": "A organização dos dados em memória"
+            },
+            {
+              "id": "aleatoire-et-generateurs",
+              "label": "A aleatoriedade e os geradores"
+            }
+          ]
         },
         {
-          "id": "schemas-et-tables-techniques",
-          "label": "Esquemas e tabelas técnicas"
-        },
-        {
-          "id": "entrepot-vs-data-lake",
-          "label": "Data warehouse contra data lake"
-        },
-        {
-          "id": "les-index",
-          "label": "Os índices"
-        },
-        {
-          "id": "orm",
-          "label": "O ORM: mapear objetos em tabelas relacionais"
-        },
-        {
-          "id": "bases-de-donnees-a-fort-trafic",
-          "label": "Bancos de dados de alto tráfego: nunca bloquear o usuário em um recálculo custoso"
+          "id": "traitement-de-documents",
+          "label": "Traitement de documents",
+          "folder": "Traitement de documents",
+          "chapters": [
+            {
+              "id": "extraction-pdf",
+              "label": "Extrair o texto e as páginas de um PDF"
+            },
+            {
+              "id": "ocr-structure",
+              "label": "O OCR estruturado e a análise de layout"
+            },
+            {
+              "id": "arbitrage-local-cloud-vision",
+              "label": "Arbitragem local vs cloud para um modelo de visão"
+            }
+          ]
         }
       ]
     },
@@ -365,33 +445,6 @@
         {
           "id": "owasp-top-10",
           "label": "O OWASP Top 10: a referência padrão da indústria"
-        }
-      ]
-    },
-    {
-      "id": "data-science",
-      "label": "Data Science",
-      "folder": "Data Science",
-      "chapters": [
-        {
-          "id": "jupyter-notebooks",
-          "label": "Os notebooks Jupyter"
-        },
-        {
-          "id": "numpy",
-          "label": "NumPy: o cálculo numérico"
-        },
-        {
-          "id": "pandas",
-          "label": "pandas: manipular dados tabulares"
-        },
-        {
-          "id": "matplotlib",
-          "label": "Matplotlib: visualizar dados"
-        },
-        {
-          "id": "machine-learning-scikit-learn",
-          "label": "Introdução ao machine learning (scikit-learn)"
         }
       ]
     },
@@ -1325,33 +1378,6 @@
       ]
     },
     {
-      "id": "representation-des-donnees",
-      "label": "Représentation des données",
-      "folder": "Représentation des données",
-      "chapters": [
-        {
-          "id": "entiers-et-debordements",
-          "label": "Os inteiros, os bits e os overflows"
-        },
-        {
-          "id": "nombres-flottants",
-          "label": "Os números de ponto flutuante (IEEE 754)"
-        },
-        {
-          "id": "encodage-des-textes",
-          "label": "A codificação de textos (ASCII, Unicode, UTF-8)"
-        },
-        {
-          "id": "organisation-en-memoire",
-          "label": "A organização dos dados em memória"
-        },
-        {
-          "id": "aleatoire-et-generateurs",
-          "label": "A aleatoriedade e os geradores"
-        }
-      ]
-    },
-    {
       "id": "reseaux",
       "label": "Réseaux",
       "folder": "Réseaux",
@@ -1523,25 +1549,6 @@
               "label": "Como funciona o PowerShell (arquitetura interna)"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "traitement-de-documents",
-      "label": "Traitement de documents",
-      "folder": "Traitement de documents",
-      "chapters": [
-        {
-          "id": "extraction-pdf",
-          "label": "Extrair o texto e as páginas de um PDF"
-        },
-        {
-          "id": "ocr-structure",
-          "label": "O OCR estruturado e a análise de layout"
-        },
-        {
-          "id": "arbitrage-local-cloud-vision",
-          "label": "Arbitragem local vs cloud para um modelo de visão"
         }
       ]
     },
