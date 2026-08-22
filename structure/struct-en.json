@@ -180,6 +180,10 @@
           "label": "The code editor and the IDE"
         },
         {
+          "id": "raccourcis-clavier-vs-code",
+          "label": "Being Efficient with Code Through Keyboard Shortcuts"
+        },
+        {
           "id": "arborescence-et-chemins",
           "label": "File structure and paths"
         },

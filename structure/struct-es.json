@@ -180,6 +180,10 @@
           "label": "El editor de código y el IDE"
         },
         {
+          "id": "raccourcis-clavier-vs-code",
+          "label": "Ser eficiente con el código gracias a los atajos de teclado"
+        },
+        {
           "id": "arborescence-et-chemins",
           "label": "Estructura de archivos y rutas"
         },

@@ -180,6 +180,10 @@
           "label": "L'éditeur de code et l'IDE"
         },
         {
+          "id": "raccourcis-clavier-vs-code",
+          "label": "Être efficace sur le code grâce aux raccourcis clavier"
+        },
+        {
           "id": "arborescence-et-chemins",
           "label": "Arborescence de fichiers et chemins"
         },
