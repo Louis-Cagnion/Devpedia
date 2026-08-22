@@ -93,7 +93,83 @@ Si una tarea puede durar más que el intervalo que la relanza (ej. cada 5 minuto
 
 ## `systemd timers`, una alternativa en sistemas basados en systemd
 
-En las distribuciones que usan `systemd`, los **timers** cubren la misma necesidad con además dependencias explícitas entre servicios, un mejor registro (integrado con `journalctl`), y una ejecución garantizada incluso si la máquina estaba apagada en el momento previsto. Más verbosos de configurar que una simple línea de crontab, se prefieren en entornos de servidor modernos por esta razón; `cron` sigue siendo ampliamente suficiente para un uso personal o puntual.
+[`systemd`](https://www.freedesktop.org/software/systemd/man/systemd.html) es el sistema de inicialización usado por la mayoría de las distribuciones Linux modernas (Ubuntu, Debian, Fedora...): es él quien arranca y supervisa todos los servicios en segundo plano de la máquina — `cron` mismo forma parte de esos servicios en estas distribuciones. En un sistema basado en `systemd`, los **timers** cubren la misma necesidad que una línea de crontab, con una configuración más verbosa pero más explícita.
+
+### Dos archivos en lugar de una línea
+
+`systemd` configura cada comportamiento en una **unit** (unidad), un archivo de texto que describe *qué hacer* o *cuándo hacerlo*. Una tarea planificada necesita dos, vinculadas por su nombre de archivo:
+
+```text
+backup.service   ┐
+                 ├─ mismo nombre, extensión diferente
+backup.timer     ┘
+```
+
+El archivo `.service` describe el comando a ejecutar:
+
+```ini
+[Unit]
+Description=Copia de seguridad nocturna de documentos   # texto mostrado en los registros/el estado
+
+[Service]
+Type=oneshot                                        # se ejecuta una vez y luego se detiene (no un servicio que sigue corriendo)
+WorkingDirectory=/home/usuario/scripts              # directorio de trabajo antes de lanzar el comando
+ExecStart=/usr/bin/python3 backup.py                # ruta absoluta, misma trampa del entorno mínimo que cron
+```
+
+El archivo `.timer` describe cuándo activar el servicio del mismo nombre:
+
+```ini
+[Unit]
+Description=Planifica backup.service todos los días
+
+[Timer]
+OnCalendar=daily                                    # equivalente de @daily en cron
+Persistent=true                                     # recupera la ejecución perdida si la máquina estaba apagada (ver más abajo)
+
+[Install]
+WantedBy=timers.target                              # necesario para que "enable" active realmente el timer
+```
+
+Ambos archivos van en `/etc/systemd/system/` (alcance del sistema, requiere permisos de root) o en `~/.config/systemd/user/` (alcance del usuario, ver más abajo). Una vez colocados:
+
+```bash
+systemctl daemon-reload              # relee los archivos de unidad tras crear/modificar uno
+systemctl enable --now backup.timer  # activa el timer al arrancar Y lo inicia de inmediato
+systemctl list-timers                # lista los timers activos y su próxima ejecución
+journalctl -u backup.service         # consulta los registros de este servicio (reemplaza la redirección manual a un archivo de log)
+```
+
+### `Persistent=true`: la recuperación no es automática
+
+Este es el matiz más importante a recordar: sin `Persistent=true`, un timer se comporta exactamente como `cron` — si la máquina está apagada en el momento previsto (ej. `OnCalendar=daily` a medianoche en un portátil apagado por la noche), la ejecución simplemente se pierde, no se recupera. `Persistent=true` cambia esto: `systemd` anota en disco la fecha de la última ejecución, y si el timer descubre en el siguiente arranque que se perdió una ejecución, la dispara de inmediato en lugar de esperar a la siguiente hora planificada.
+
+| | Solo `OnCalendar` | `OnCalendar` + `Persistent=true` |
+|---|---|---|
+| Máquina encendida a la hora prevista | Se ejecuta a la hora prevista | Se ejecuta a la hora prevista |
+| Máquina apagada a la hora prevista | Ejecución perdida (como `cron`) | Se ejecuta en el siguiente arranque del timer |
+
+### Alcance de sistema o de usuario (`--user`)
+
+Un timer colocado en `/etc/systemd/system/` corre independientemente de cualquier sesión abierta, pero requiere permisos de root para crearse. Un timer colocado en `~/.config/systemd/user/` no requiere permisos especiales, pero depende de una instancia de `systemd` propia del usuario (comandos con el prefijo `--user`: `systemctl --user enable --now ...`) — instancia que, por defecto, solo arranca cuando ese usuario abre una sesión, y se detiene al cerrarla.
+
+Este último punto importa para la recuperación: un timer `--user` con `Persistent=true` solo puede recuperar una ejecución perdida en el siguiente inicio de sesión, no en el simple arranque de la máquina, si nadie se conecta enseguida. [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permite levantar este límite para un usuario dado:
+
+```bash
+loginctl enable-linger usuario   # la instancia systemd --user de "usuario" arranca desde el boot, sesión abierta o no
+```
+
+### ¿`cron` o `systemd timer`?
+
+| | `cron` | `systemd timer` |
+|---|---|---|
+| Rattrapaje si la máquina estaba apagada | No | Sí, con `Persistent=true` |
+| Registro | Email (rara vez configurado) o redirección manual | Integrado (`journalctl`) |
+| Dependencias entre tareas | No gestionadas nativamente | Sí (una unit puede depender de otra) |
+| Configuración | Una línea en el crontab | Dos archivos por tarea |
+| Alcance de usuario sin permisos de root | Sí, nativamente | Sí, vía `--user` (+ `loginctl enable-linger` para correr fuera de sesión) |
+
+`cron` sigue siendo ampliamente suficiente para un uso personal o puntual sin necesidad de recuperación; los timers `systemd` se vuelven preferibles en cuanto una ejecución perdida deba recuperarse automáticamente, o en entornos de servidor modernos que ya se apoyan en `systemd` para todo lo demás.
 
 ---
 
@@ -101,7 +177,7 @@ En las distribuciones que usan `systemd`, los **timers** cubren la misma necesid
 
 | | |
 |---|---|
-| **Para recordar** | `cron` ejecuta comandos a intervalos regulares definidos en un crontab (5 campos de tiempo). Corre en un entorno mínimo (sin `.bashrc`, `PATH` reducido): muy diferente de una terminal abierta manualmente. |
-| **Herramientas utilizables** | `crontab -e`/`-l`, cadenas especiales (`@daily`, `@reboot`...), `flock` para evitar ejecuciones concurrentes. |
-| **Trampas a evitar** | Suponer que el `PATH`/entorno de cron es idéntico al de una terminal interactiva; dejar que una tarea falle silenciosamente sin redirección de salida. |
-| **Buenas prácticas** | Usar rutas absolutas en un comando cron; redirigir sistemáticamente la salida a un archivo de log. |
+| **Para recordar** | `cron` ejecuta comandos a intervalos regulares definidos en un crontab (5 campos de tiempo). Corre en un entorno mínimo (sin `.bashrc`, `PATH` reducido): muy diferente de una terminal abierta manualmente. Los timers de `systemd` cubren la misma necesidad con la capacidad de recuperar ejecuciones perdidas. |
+| **Herramientas utilizables** | `crontab -e`/`-l`, cadenas especiales (`@daily`, `@reboot`...), `flock` para evitar ejecuciones concurrentes; `.service`/`.timer` + `systemctl (--user) enable --now` + `journalctl` del lado de `systemd`. |
+| **Trampas a evitar** | Suponer que el `PATH`/entorno de cron es idéntico al de una terminal interactiva; dejar que una tarea falle silenciosamente sin redirección de salida; creer que un `.timer` recupera automáticamente una ejecución perdida sin `Persistent=true`; olvidar que un timer `--user` solo corre durante una sesión abierta, salvo `loginctl enable-linger`. |
+| **Buenas prácticas** | Usar rutas absolutas en un comando cron; redirigir sistemáticamente la salida a un archivo de log; añadir `Persistent=true` a todo `.timer` donde la recuperación sea necesaria. |
