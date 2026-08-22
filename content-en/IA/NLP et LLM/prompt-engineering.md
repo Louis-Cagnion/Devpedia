@@ -36,6 +36,47 @@ The choice between asking a question and proceeding on an explicit assumption de
 >
 > **Best practice:** always specify the expected behavior for missing information, rather than relying on the model's common sense.
 
+## Reducing checkpoints: decision criteria defined in advance
+
+Giving explicit instructions (above) reduces ambiguity about the expected format or tone, but often falls short on finer, recurring decisions: which dependency to pick, which implementation style to favor. Without further guidance, the model settles these choices based solely on its training probabilities, that is, the statistically most common option for a problem that resembles this one, not necessarily the right one for this specific project with these specific constraints. Providing explicit decision criteria up front avoids having to settle these choices one by one.
+
+Two layers of criteria, not to be confused:
+
+| Layer | Examples | Scope |
+|---|---|---|
+| **Generic** | Clarity, security, maintainability, simplicity (KISS/YAGNI), scalability | Reusable as-is from one project to the next |
+| **Project-specific** | Stack already in place, deployment target, budget, license constraints | To be redefined for each new project, in the initial prompt |
+
+```text
+Without criteria  ->  "use the best library to parse CSV"
+                       (the model picks the most popular one in its
+                       training data, not necessarily right for this
+                       project)
+
+With criteria      ->  "Libraries already in use on this project: see
+                        package.json. Constraint: MIT/Apache license
+                        only. Priority: lightweight (few transitive
+                        dependencies) over feature richness."
+```
+
+These two layers aren't enough on their own: valid criteria taken individually often conflict on the same decision (the most scalable solution isn't always the simplest one). Without a rule to settle this conflict, the model goes back to guessing, just with more precise vocabulary. The solution is an **explicit hierarchy** between criteria, used as a tiebreaker only when several of them pull in opposite directions on the same choice:
+
+```text
+Priority (most important first):
+  1. Security: never a trade-off, even at the cost of simplicity
+  2. Reliability: handle error cases explicitly
+  3. Performance: when a path is identified as critical
+  4. Simplicity: all else equal on the above, pick the
+     simplest solution
+
+-> A more complex but safer encryption wins over a simpler but
+   weaker implementation (rule 1 > rule 4).
+```
+
+> **Pitfall:** defining generic and project-specific criteria without ever specifying how to arbitrate between them in case of conflict. The model then applies whichever criterion it deems a priority itself, which amounts to leaving it the same interpretive latitude as having no criteria at all.
+>
+> **Best practice:** pair any list of criteria with an explicit hierarchy between them, and reserve a checkpoint only for conflicts that hierarchy itself doesn't resolve.
+
 ## Spotting an imprecise prompt and offering a refined version
 
 The previous section covers the case where information is missing *midway* through a task already underway. A prompt can also be imprecise *from the start*: a vague goal, an unspecified format, a choice that actually belongs to the person making the request, to the point that no attempt, however careful, has any good reason to head in one direction rather than another. In that case, the best response is neither to guess nor to produce a generic result: it's to return a **refined version of the prompt**, precisely listing what's missing and proposing a concrete rephrasing, before committing to work that stands a good chance of needing to be redone:
@@ -256,7 +297,7 @@ None of these techniques adds knowledge or capability the model hasn't already a
 
 | | |
 |---|---|
-| **Key takeaways** | Prompt engineering methodically phrases an LLM's input: explicit role and instructions, spotting an imprecise prompt before committing (via a targeted question or several concrete directions), examples (few-shot), step-by-step reasoning (chain-of-thought), separating instructions/context/data, breaking a complex task into verifiable steps. It adds no capability the model doesn't already have. |
-| **Tools you can use** | A reusable prompt template (see the template above); a *golden set* of representative cases to evaluate a prompt before considering it stable. |
-| **Pitfalls to avoid** | Not specifying the expected behavior for missing information. Making refinement requests a habit even on an already precise prompt. Offering too many options, or ones too similar to each other. Unrepresentative or biased few-shot examples. Mixing instructions and data without delimiting them. Taking chain-of-thought reasoning as proof of accuracy. Rushing toward implementation before validating framing and design. Validating a prompt on a single successful attempt. |
-| **Best practices** | Always specify the expected behavior in case of ambiguity. Reserve refinement for cases of real ambiguity, with a default assumption alongside the question. Faced with stylistic or creative uncertainty, offer 2-3 short, clearly distinct directions rather than an abstract question. Choose few-shot examples representative of the real diversity of cases. Always explicitly delimit instructions, context, and data. Replay a prompt against several cases before considering it reliable. |
+| **Key takeaways** | Prompt engineering methodically phrases an LLM's input: explicit role and instructions, decision criteria (generic + project-specific) with a hierarchy to arbitrate their conflicts, spotting an imprecise prompt before committing (via a targeted question or several concrete directions), examples (few-shot), step-by-step reasoning (chain-of-thought), separating instructions/context/data, breaking a complex task into verifiable steps. It adds no capability the model doesn't already have. |
+| **Tools you can use** | A reusable prompt template (see the template above); a criteria hierarchy for recurring decisions; a *golden set* of representative cases to evaluate a prompt before considering it stable. |
+| **Pitfalls to avoid** | Not specifying the expected behavior for missing information. Giving decision criteria with no hierarchy to settle their conflicts. Making refinement requests a habit even on an already precise prompt. Offering too many options, or ones too similar to each other. Unrepresentative or biased few-shot examples. Mixing instructions and data without delimiting them. Taking chain-of-thought reasoning as proof of accuracy. Rushing toward implementation before validating framing and design. Validating a prompt on a single successful attempt. |
+| **Best practices** | Always specify the expected behavior in case of ambiguity. Pair any list of criteria with an explicit hierarchy, reserved for conflicts it alone doesn't resolve. Reserve refinement for cases of real ambiguity, with a default assumption alongside the question. Faced with stylistic or creative uncertainty, offer 2-3 short, clearly distinct directions rather than an abstract question. Choose few-shot examples representative of the real diversity of cases. Always explicitly delimit instructions, context, and data. Replay a prompt against several cases before considering it reliable. |

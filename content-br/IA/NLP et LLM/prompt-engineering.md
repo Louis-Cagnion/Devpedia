@@ -36,6 +36,47 @@ A escolha entre fazer uma pergunta e avançar sobre uma suposição explícita d
 >
 > **Boa prática:** sempre especificar explicitamente a conduta esperada diante de uma informação ausente, em vez de contar com o bom senso do modelo.
 
+## Reduzir os pontos de parada: critérios de decisão definidos com antecedência
+
+Dar instruções explícitas (visto acima) reduz a ambiguidade sobre o formato ou o tom esperado, mas costuma ser insuficiente diante de decisões recorrentes mais finas: qual dependência escolher, qual estilo de implementação priorizar. Sem mais precisão, o modelo resolve essas escolhas apenas a partir de suas probabilidades de treinamento, ou seja, a opção estatisticamente mais frequente para um problema parecido com este, não necessariamente a certa para este projeto específico com estas restrições. Fornecer desde o início critérios de decisão explícitos evita ter que resolver essas escolhas uma a uma.
+
+Duas camadas de critérios, que não devem ser confundidas:
+
+| Camada | Exemplos | Alcance |
+|---|---|---|
+| **Genéricos** | Clareza, segurança, manutenibilidade, simplicidade (KISS/YAGNI), escalabilidade | Reutilizáveis tal como estão de um projeto para outro |
+| **Específicos do projeto** | Stack já imposta, alvo de implantação, orçamento, restrições de licença | A redefinir a cada novo projeto, no prompt inicial |
+
+```text
+Sem critérios  ->  "use a melhor biblioteca para fazer parsing de CSV"
+                    (o modelo escolhe a mais popular em seus dados de
+                    treinamento, não necessariamente adequada para
+                    este projeto)
+
+Com critérios  ->  "Bibliotecas já presentes neste projeto: ver
+                    package.json. Restrição: apenas licença
+                    MIT/Apache. Prioridade: leveza (poucas
+                    dependências transitivas) sobre riqueza funcional."
+```
+
+Essas duas camadas não bastam sozinhas: critérios válidos tomados isoladamente costumam entrar em conflito sobre uma mesma decisão (a solução mais escalável nem sempre é a mais simples). Sem uma regra para resolver esse conflito, o modelo volta a adivinhar, só que com um vocabulário mais preciso. A solução é uma **hierarquia explícita** entre critérios, usada como árbitro apenas quando vários deles puxam em direções opostas sobre uma mesma escolha:
+
+```text
+Prioridade (a mais importante primeiro):
+  1. Segurança: nunca uma concessão, mesmo às custas da simplicidade
+  2. Confiabilidade: tratar os casos de erro explicitamente
+  3. Desempenho: quando um caminho é identificado como crítico
+  4. Simplicidade: em igualdade nos critérios anteriores, escolher
+     a solução mais simples
+
+-> Uma criptografia mais complexa mas mais segura vence uma
+   implementação mais simples mas mais fraca (regra 1 > regra 4).
+```
+
+> **Cuidado:** definir critérios genéricos e específicos sem nunca especificar como arbitrá-los entre si em caso de conflito. O modelo aplica então o critério que ele mesmo considera prioritário, o que equivale a lhe dar a mesma margem de interpretação que sem critério nenhum.
+>
+> **Boa prática:** acompanhar toda lista de critérios de uma hierarquia explícita entre eles, e reservar um ponto de parada apenas para os conflitos que essa hierarquia sozinha não resolve.
+
 ## Identificar um prompt impreciso e propor uma versão refinada
 
 A seção anterior trata do caso em que uma informação falta *no meio* da tarefa, uma vez já iniciada. Um prompt também pode ser impreciso *desde o início* (um objetivo vago, um formato não especificado, uma escolha que na verdade pertence a quem pergunta), a ponto de nenhuma tentativa, mesmo cautelosa, ter um bom motivo para seguir em uma direção em vez de outra. Nesse caso, a melhor resposta não é adivinhar, nem produzir um resultado genérico: é devolver uma **versão refinada do prompt**, que lista precisamente o que falta e propõe uma reformulação concreta, antes de se comprometer com um trabalho que tem boas chances de precisar ser refeito:
@@ -253,7 +294,7 @@ Nenhuma dessas técnicas adiciona conhecimento ou capacidade que o modelo já n�
 
 | | |
 |---|---|
-| **O que reter** | O prompt engineering formula a entrada de um LLM metodicamente: papel e instruções explícitas, identificação de um prompt impreciso antes de se comprometer (por uma pergunta pontual ou por várias direções concretas), exemplos (few-shot), raciocínio passo a passo (chain-of-thought), separação instruções/contexto/dados, decomposição de uma tarefa complexa em etapas verificáveis. Não adiciona nenhuma capacidade que o modelo já não tenha. |
-| **Ferramentas úteis** | Um template de prompt reutilizável (veja o modelo acima); um *golden set* de casos representativos para avaliar um prompt antes de considerá-lo estável. |
-| **Armadilhas a evitar** | Não especificar a conduta a seguir diante de uma informação ausente. Sistematizar um pedido de refinamento mesmo em um prompt já preciso. Multiplicar as direções propostas ou torná-las muito parecidas entre si. Exemplos few-shot não representativos ou tendenciosos. Misturar instruções e dados sem delimitá-los. Tomar um raciocínio chain-of-thought como prova de exatidão. Apressar-se para a implementação antes de ter validado enquadramento e concepção. Validar um prompt em uma única tentativa bem-sucedida. |
-| **Boas práticas** | Sempre especificar a conduta esperada em caso de ambiguidade. Reservar o refinamento para casos de ambiguidade real, com uma suposição padrão além da pergunta. Diante de uma incerteza estilística ou criativa, propor 2-3 direções curtas e claramente distintas em vez de uma pergunta abstrata. Escolher exemplos few-shot representativos da diversidade real dos casos. Sempre delimitar explicitamente instruções, contexto e dados. Executar um prompt em vários casos antes de considerá-lo confiável. |
+| **O que reter** | O prompt engineering formula a entrada de um LLM metodicamente: papel e instruções explícitas, critérios de decisão (genéricos + específicos do projeto) com uma hierarquia para arbitrar seus conflitos, identificação de um prompt impreciso antes de se comprometer (por uma pergunta pontual ou por várias direções concretas), exemplos (few-shot), raciocínio passo a passo (chain-of-thought), separação instruções/contexto/dados, decomposição de uma tarefa complexa em etapas verificáveis. Não adiciona nenhuma capacidade que o modelo já não tenha. |
+| **Ferramentas úteis** | Um template de prompt reutilizável (veja o modelo acima); uma hierarquia de critérios para as decisões recorrentes; um *golden set* de casos representativos para avaliar um prompt antes de considerá-lo estável. |
+| **Armadilhas a evitar** | Não especificar a conduta a seguir diante de uma informação ausente. Dar critérios de decisão sem hierarquia para resolver seus conflitos. Sistematizar um pedido de refinamento mesmo em um prompt já preciso. Multiplicar as direções propostas ou torná-las muito parecidas entre si. Exemplos few-shot não representativos ou tendenciosos. Misturar instruções e dados sem delimitá-los. Tomar um raciocínio chain-of-thought como prova de exatidão. Apressar-se para a implementação antes de ter validado enquadramento e concepção. Validar um prompt em uma única tentativa bem-sucedida. |
+| **Boas práticas** | Sempre especificar a conduta esperada em caso de ambiguidade. Acompanhar toda lista de critérios de uma hierarquia explícita, reservada aos conflitos que ela sozinha não resolve. Reservar o refinamento para casos de ambiguidade real, com uma suposição padrão além da pergunta. Diante de uma incerteza estilística ou criativa, propor 2-3 direções curtas e claramente distintas em vez de uma pergunta abstrata. Escolher exemplos few-shot representativos da diversidade real dos casos. Sempre delimitar explicitamente instruções, contexto e dados. Executar um prompt em vários casos antes de considerá-lo confiável. |
