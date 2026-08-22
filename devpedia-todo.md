@@ -8,7 +8,7 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 Décidé le 22/08/2026 : les liens internes existants (jusqu'à 441 fichiers pour une seule catégorie) restent fonctionnels grâce à une table de redirection dans `js/legacy-category-redirects.js` (`LEGACY_CATEGORY_REDIRECTS`), câblée dans `js/router.js` — aucun contenu à réécrire pour ça. Une fusion à la fois, commit+push après chacune.
 
 - [x] **Gestion de projet et organisation** (Organisation en entreprise, Gestion de projet) — fait le 22/08/2026.
-- [ ] **Fondamentaux** (Bases de l'informatique, Algorithmes, Mathématiques, + Graphisme une fois écrit).
+- [x] **Fondamentaux** (Bases de l'informatique, Algorithmes, Mathématiques) — fait le 22/08/2026. Graphisme à ajouter comme 4e sous-catégorie une fois ce chapitre écrit.
 - [ ] **Langages** (Langages de programmation, Langages de balisage, DSL, Shells) — Langages de programmation/balisage/Shells ont déjà leurs propres `subjects` : à aplatir en sous-catégories directes de `Langages` plutôt que d'imbriquer un niveau de plus (redirect déjà prévu avec `asSubject: false`).
 - [ ] **Données** (Bases de données, Data Science, Représentation des données, Traitement de documents).
 - [ ] **Infrastructure & DevOps** (Infrastructure, Docker, CI-CD, Administration système, Réseaux, + Automatisation une fois créée).
