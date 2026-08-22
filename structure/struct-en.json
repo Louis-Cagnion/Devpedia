@@ -132,6 +132,18 @@
             {
               "id": "aleatoire-et-generateurs",
               "label": "Randomness and Generators"
+            },
+            {
+              "id": "metadonnees-exif-et-format-raw",
+              "label": "EXIF metadata and the RAW format: what a photo contains beyond the image"
+            },
+            {
+              "id": "hachage-perceptuel-similarite-dimages",
+              "label": "Perceptual hashing: recognizing similar images, not identical ones"
+            },
+            {
+              "id": "empreinte-audio-reconnaissance-musicale",
+              "label": "Audio fingerprinting: recognizing a song in a few seconds"
             }
           ]
         },
@@ -547,6 +559,10 @@
               "label": "What Is the Cloud?"
             },
             {
+              "id": "tpu-npu-lpu-vpu",
+              "label": "Beyond the GPU: TPU, NPU, LPU, and VPU"
+            },
+            {
               "id": "elk-agregation-de-logs",
               "label": "ELK: Centralizing and Querying Infrastructure Logs"
             },
@@ -584,6 +600,10 @@
             {
               "id": "bonnes-pratiques-et-securite",
               "label": "Best Practices and Security"
+            },
+            {
+              "id": "conteneurs-manages-ecs-et-fargate",
+              "label": "Managed containers in the cloud: ECS and Fargate"
             }
           ]
         },
@@ -680,6 +700,33 @@
             {
               "id": "n8n-lindustrialisation",
               "label": "n8n: going to production"
+            }
+          ]
+        },
+        {
+          "id": "conception-a-grande-echelle",
+          "label": "Conception à grande échelle",
+          "folder": "Conception à grande échelle",
+          "chapters": [
+            {
+              "id": "system-design-lexercice",
+              "label": "\"System design\" as a kind of exercise"
+            },
+            {
+              "id": "autoscaling-et-repartition-de-charge",
+              "label": "Autoscaling and load balancing"
+            },
+            {
+              "id": "cdn-et-diffusion-adaptative",
+              "label": "CDN and adaptive streaming: the Netflix case"
+            },
+            {
+              "id": "fil-dactualite-fan-out",
+              "label": "The news feed: building everyone's feed (fan-out)"
+            },
+            {
+              "id": "direct-et-chat-a-grande-echelle",
+              "label": "Large-scale live streaming and chat"
             }
           ]
         }
@@ -1497,6 +1544,10 @@
             {
               "id": "owasp-top-10",
               "label": "The OWASP Top 10: the industry-standard reference"
+            },
+            {
+              "id": "fingerprinting-navigateur-et-appareil",
+              "label": "Fingerprinting: recognizing a device without storing anything on it"
             }
           ]
         },
