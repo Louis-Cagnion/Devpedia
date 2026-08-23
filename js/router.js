@@ -174,9 +174,9 @@ function cancelAutoAdvance() {
 
 /**
  * @brief Returns every chapter of the site in reading order, subjects and subject-less
- * categories both flattened to the same {categoryId, subjectId, id} shape.
+ * categories both flattened to the same {categoryId, subjectId, id, label} shape.
  *
- * @returns {Array<{categoryId: string, subjectId: string|null, id: string}>}
+ * @returns {Array<{categoryId: string, subjectId: string|null, id: string, label: string}>}
  */
 function flattenChapters() {
     const entries = [];
@@ -185,7 +185,7 @@ function flattenChapters() {
     appState.categories.filter(category => category.id !== "acceuil").forEach(category => {
         (category.subjects ?? [{ id: null, chapters: category.chapters ?? [] }]).forEach(subject => {
             (subject.chapters ?? []).forEach(chapter => {
-                entries.push({ categoryId: category.id, subjectId: subject.id, id: chapter.id });
+                entries.push({ categoryId: category.id, subjectId: subject.id, id: chapter.id, label: chapter.label });
             });
         });
     });
@@ -196,7 +196,7 @@ function flattenChapters() {
  * @brief Returns the index, within the site-wide flattened chapter list, of the chapter currently
  * displayed.
  *
- * @param {Array<{categoryId: string, subjectId: string|null, id: string}>} entries
+ * @param {Array<{categoryId: string, subjectId: string|null, id: string, label: string}>} entries
  *
  * @returns {number} -1 if the current page isn't a chapter (home, a category, a subject)
  */
@@ -209,14 +209,28 @@ function curChapterIndex(entries) {
 /**
  * @brief Returns the chapter right after the one currently displayed, crossing subject and
  * category boundaries -- unlike currentNextChapter above, which stops at the end of the current
- * subject/category. Used by read-aloud's own auto-advance once a chapter finishes on its own.
+ * subject/category. Used by read-aloud's own auto-advance once a chapter finishes on its own, and
+ * by renderChapter() as the on-page "next chapter" button's fallback at the end of a section.
  *
- * @returns {{categoryId: string, subjectId: string|null, id: string}|null} null past the site's last chapter
+ * @returns {{categoryId: string, subjectId: string|null, id: string, label: string}|null} null past the site's last chapter
  */
 export function resolveNextChapterAcrossSite() {
     const entries = flattenChapters();
     const curIndex = curChapterIndex(entries);
     return curIndex === -1 ? null : (entries[curIndex + 1] ?? null);
+}
+
+/**
+ * @brief Returns the chapter right before the one currently displayed, crossing subject and
+ * category boundaries the same way resolveNextChapterAcrossSite() does. Used by renderChapter()
+ * as the on-page "previous chapter" button's fallback at the start of a section.
+ *
+ * @returns {{categoryId: string, subjectId: string|null, id: string, label: string}|null} null before the site's first chapter
+ */
+export function resolvePreviousChapterAcrossSite() {
+    const entries = flattenChapters();
+    const curIndex = curChapterIndex(entries);
+    return curIndex <= 0 ? null : entries[curIndex - 1];
 }
 
 // Read-aloud reaching the end of a chapter on its own offers to move on to the next one.
@@ -541,8 +555,16 @@ async function renderChapter(categoryId, path, chapter, subjectId = null, resolv
     const curIndex = chapters.findIndex(c => c.id === chapter.id);
     const previousChapter = chapters[curIndex - 1];
     const nextChapter = chapters[curIndex + 1];
-    currentPreviousChapter = previousChapter && {categoryId, subjectId, id: previousChapter.id, label: previousChapter.label};
-    currentNextChapter = nextChapter && {categoryId, subjectId, id: nextChapter.id, label: nextChapter.label};
+    /* At a section's first/last chapter, fall back to the adjacent section's own last/first
+       chapter (Louis, 23/08/2026: wanted a way to move on without going back to the subject
+       list) instead of leaving the button off entirely -- appState.cur* is already set to this
+       chapter above, so resolve*ChapterAcrossSite() resolves relative to it correctly. */
+    currentPreviousChapter = previousChapter
+        ? {categoryId, subjectId, id: previousChapter.id, label: previousChapter.label}
+        : resolvePreviousChapterAcrossSite();
+    currentNextChapter = nextChapter
+        ? {categoryId, subjectId, id: nextChapter.id, label: nextChapter.label}
+        : resolveNextChapterAcrossSite();
     generatePageContent(chapterInfos, chapter.id, true, currentPreviousChapter, currentNextChapter, createBreadcrumb(category, subject), fallbackNoticeFor(lang));
 }
 

@@ -22,8 +22,13 @@ Signalé par Louis (23/08/2026) : le Bluetooth changeait de chapitre au lieu de 
 Signalé par Louis (23/08/2026) : après avoir cliqué "Continuer" pour passer un bloc de code, ça lit environ une seconde puis se bloque. Pas encore diagnostiqué -- les symptômes précédents de cette investigation (verrouillage, seek, reprise) touchent tous `speakNextViaAudio()`/`js/reader.js`, mais rien d'identifié avec certitude sans données du téléphone : le sandbox de cette session est trop instable pour ce genre de test (cf. point 1 ci-dessus).
 - Reste à Louis : reproduire avec l'overlay de debug actif (5 taps sur le logo) et partager les lignes du log autour du moment où ça bloque (`js/reader-debug.js`, log dans `localStorage`).
 
-## 4. Navigation section précédente/suivante en bout de section
-Demandé par Louis (23/08/2026) : au premier/dernier chapitre d'une section, ajouter un bouton (même style que les boutons chapitre précédent/suivant déjà présents sur la page) qui bascule vers la section adjacente (dernier chapitre de la précédente / premier de la suivante) au lieu de ne rien afficher. Pas encore implémenté. Sans lien avec l'auto-advance audio (`resolveNextChapterAcrossSite()` traverse déjà les sections pour la lecture automatique) -- purement la navigation manuelle à l'écran.
+## 4. Auto-advance vers le chapitre suivant : le délai de 5s ne s'écoulait pas si verrouillé
+Signalé par Louis (23/08/2026) : le délai avant de passer automatiquement au chapitre suivant reposait sur un `setTimeout`, suspendu par iOS une fois l'écran verrouillé -- le changement de chapitre n'arrivait donc jamais tout seul en poche. Corrigé (23/08/2026) : `playAutoAdvanceSilence()` (`js/reader.js`) fait jouer un clip silencieux de 5s à travers le même `audioEl` que la lecture pré-générée, dont les événements continuent d'arriver même verrouillé.
+- Reste à Louis : confirmer sur iPhone, écran verrouillé, qu'un chapitre qui se termine enchaîne bien tout seul sur le suivant après 5s.
+
+## 5. Pause de lecture sur les parenthèses
+Demandé par Louis (23/08/2026) : la lecture ne marquait aucune pause en croisant une parenthèse. Corrigé (23/08/2026) : `CLAUSE_END_PATTERN` (`js/reader-clauses.js`) traite `(` et `)` comme des frontières de clause. Audio des 5 chapitres pilotes régénérée en conséquence (4 langues).
+- Reste à Louis : confirmer que le rythme de lecture sonne mieux sur une incise entre parenthèses.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
