@@ -366,6 +366,34 @@ blockquote {
     border-end-end-radius: var(--radius);
 }
 
+/* Same parallelogram/semi-transparent-black panel as .chapterPage p, but with a gradient left
+   edge (same pairing as .pageTitle/h3-h6's underline) instead of the plain solid accent border
+   used elsewhere on the site -- a thin second polygon tracing the exact same diagonal as the
+   panel's own left edge, so the gradient stripe follows the lean rather than staying vertical. */
+.chapterPage blockquote {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-inline-start: none;
+    padding-inline-start: 1.5rem;
+    clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 100%, 1rem 100%);
+}
+
+.chapterPage blockquote::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--accent-warm), var(--accent));
+    clip-path: polygon(0 0, 4px 0, calc(1rem + 4px) 100%, 1rem 100%);
+}
+
+/* A paragraph nested inside a blockquote sits on the blockquote's own panel already -- reset
+   the panel/shape .chapterPage p would otherwise add a second time. */
+.chapterPage blockquote p {
+    background: none;
+    padding: 0;
+    clip-path: none;
+}
+
 blockquote p {
     margin: 0;
 }
