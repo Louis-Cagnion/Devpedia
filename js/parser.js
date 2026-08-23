@@ -71,6 +71,10 @@ function escapeHtml(text) {
  * README) gets `class="contentLink"` so router.js can intercept its clicks and navigate through
  * the SPA instead of reloading the page; anything else is treated as an external link and opens
  * in a new tab, `rel="noopener noreferrer"` guarding against tabnabbing (cf. HTML liens-et-images.md).
+ * The leading `/` is stripped from the emitted `href`: the site is served from a subpath (GitHub
+ * Pages project site), so a root-absolute href 404s whenever it's followed outside router.js's
+ * click interception (new tab, copied link, JS disabled, crawlers) -- a relative href resolves
+ * against the current document instead and stays correct under any deployment path.
  *
  * @param {string} text
  *
@@ -79,7 +83,7 @@ function escapeHtml(text) {
 function renderLinks(text) {
     return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, url) =>
         url.startsWith("/")
-            ? `<a class="contentLink" href="${url}">${label}</a>`
+            ? `<a class="contentLink" href="${url.slice(1)}">${label}</a>`
             : `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
     );
 }
