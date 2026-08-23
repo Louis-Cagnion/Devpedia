@@ -64,12 +64,17 @@
     pointer-events: none;
 }
 
+/* The vertical leg of each bracket is offset to meet the parallelogram's own diagonal edge
+   at the exact corner it starts from (1rem in from the left at the bottom, 1rem in from the
+   right at the top, matching the clip-path polygon above) rather than the rectangular box
+   edge -- anchored at x:0/x:100% it would sit inside the clipped-away sliver right where it's
+   supposed to connect to the horizontal leg, and never actually meet it. */
 .chapterPage p::before,
 .chapterPage .content-list li::before {
     background-image:
         linear-gradient(to right, var(--accent-warm), transparent 50%),
         linear-gradient(to top, var(--accent-warm), transparent 50%);
-    background-position: bottom left, bottom left;
+    background-position: bottom left, 1rem top;
     background-size: 100% 2px, 2px 100%;
     background-repeat: no-repeat, no-repeat;
 }
@@ -79,7 +84,7 @@
     background-image:
         linear-gradient(to left, var(--accent), transparent 50%),
         linear-gradient(to bottom, var(--accent), transparent 50%);
-    background-position: top right, top right;
+    background-position: top right, calc(100% - 1rem) top;
     background-size: 100% 2px, 2px 100%;
     background-repeat: no-repeat, no-repeat;
 }
