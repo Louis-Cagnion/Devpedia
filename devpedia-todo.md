@@ -26,7 +26,11 @@ Signalé par Louis (23/08/2026) : le délai avant de passer automatiquement au c
 Demandé par Louis (23/08/2026) : la lecture ne marquait aucune pause en croisant une parenthèse. Corrigé (23/08/2026) : `CLAUSE_END_PATTERN` (`js/reader-clauses.js`) traite `(` et `)` comme des frontières de clause. Audio des 5 chapitres pilotes régénérée en conséquence (4 langues).
 - Reste à Louis : confirmer que le rythme de lecture sonne mieux sur une incise entre parenthèses.
 
-## 5. Traduire le subject Sécurité offensive (en/es/br)
+## 5. Tester l'audio prégénéré C/C++/PHP/SQL/Git (4 langues)
+Prégénéré (23/08/2026) via `scripts/generate-audio.mjs --context=c,cpp,php,git` (SQL déjà fait) : 60 chapitres, 4 langues, namespacés par dossier catégorie/sujet (`audio/<lang>/<catégorie>[/<sujet>]/<chapitreId>`) pour éviter la collision d'id corrigée le même jour (ex. `variables` existait à la fois en C et PHP).
+- Reste à Louis : écouter quelques chapitres de chaque sujet sur iPhone, confirmer que l'audio prégénéré se charge bien (pas de repli silencieux sur `speechSynthesis`) et que la prononciation correspond à la table déjà validée.
+
+## 6. Traduire le subject Sécurité offensive (en/es/br)
 Les 9 chapitres français sont rédigés (23/08/2026) : nouveau subject `Sécurité/Sécurité offensive` (page d'accueil + bas niveau, corruption mémoire, rétro-ingénierie, escalade de privilèges, CTF, exploitation cryptographique, outils de fuzzing, architecture ARM, exploitation web côté attaquant), enregistrés dans `structure/struct.json`, liens validés. Reste à traduire dans `content-en/`, `content-es/`, `content-br/` (mêmes chemins relatifs, dossier `Sécurité/Sécurité offensive` inclus) puis régénérer `struct-en.json`/`struct-es.json`/`struct-br.json` (via `buildStruct`/`validateInternalLinks`/`writeStruct` de `scripts/generate-struct.js`, cf. commit b68e2bf pour la liste exacte des fichiers). Convention déjà validée par Louis pour un chapitre tout neuf : 3 agents en parallèle, un par langue.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
