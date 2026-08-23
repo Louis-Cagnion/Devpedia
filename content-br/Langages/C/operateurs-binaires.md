@@ -75,7 +75,7 @@ opcoes ^= FLAG_ANEXAR;    // ALTERNAR um bit
 
 É exatamente o mecanismo das chamadas de sistema: `open("f.txt", O_WRONLY | O_CREAT)` combina flags com `|`, e a função depois as testa com `&`. Veja o capítulo [Chamadas de sistema e descritores](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs).
 
-As permissões de arquivo Unix seguem a mesma lógica em base 8: `0644` codifica três grupos de três bits (leitura/escrita/execução para o dono, o grupo, os outros). Veja também o capítulo [Permissões e arquivos](/?c=shells&s=bash&p=permissions-et-fichiers) de Bash.
+As permissões de arquivo Unix seguem a mesma lógica em base 8: `0644` codifica três grupos de três bits (leitura/escrita/execução para o dono, o grupo, os outros). Veja também o capítulo [Permissões e arquivos](/?c=shells&s=bash&p=permissions-et-fichiers) de [Bash](/?c=shells&s=bash&p=bash).
 
 **Por que flags em vez de booleanos separados?** Um único `unsigned int` armazena 32 opções independentes, se passa em um único argumento, e se testa em uma única instrução de processador.
 

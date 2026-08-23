@@ -20,7 +20,7 @@ Um **PDF** (*Portable Document Format*) é um formato de arquivo projetado para 
 
 ## Extrair o texto nativo: blocos, posições, tamanho de fonte
 
-Uma biblioteca como [**PyMuPDF**](https://pymupdf.readthedocs.io) (módulo Python `pymupdf`) abre um PDF e dá acesso, página por página, à sua estrutura interna: o texto nunca é retornado como uma única string grande, mas dividido em **blocos** (um parágrafo, uma célula de tabela...), eles próprios divididos em linhas e depois em **spans** (uma porção de texto que compartilha a mesma fonte e o mesmo tamanho):
+Uma biblioteca como [**PyMuPDF**](https://pymupdf.readthedocs.io) (módulo [Python](/?c=langages-de-programmation&s=python&p=python) `pymupdf`) abre um PDF e dá acesso, página por página, à sua estrutura interna: o texto nunca é retornado como uma única string grande, mas dividido em **blocos** (um parágrafo, uma célula de tabela...), eles próprios divididos em linhas e depois em **spans** (uma porção de texto que compartilha a mesma fonte e o mesmo tamanho):
 
 ```python
 import pymupdf

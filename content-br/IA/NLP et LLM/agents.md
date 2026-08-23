@@ -26,7 +26,7 @@ O modelo não consegue executar essa função ele mesmo; ele apenas **decide** q
 { "chamada": "obter_clima", "argumentos": { "cidade": "Curitiba" } }
 ```
 
-É o código em volta do modelo que recebe essa decisão, executa de fato a função correspondente (Python, a chamada [HTTP](/?c=infrastructure&p=api-et-http), a consulta SQL...), e devolve seu resultado ao modelo para que ele continue.
+É o código em volta do modelo que recebe essa decisão, executa de fato a função correspondente (Python, a chamada [HTTP](/?c=infrastructure&p=api-et-http), a consulta [SQL](/?c=domain-specific-languages-dsl&p=sql)...), e devolve seu resultado ao modelo para que ele continue.
 
 > **Cuidado:** confiar cegamente nos argumentos produzidos pelo modelo antes de passá-los para a função real: o modelo nunca "sabe" de verdade o que uma função faz além de sua descrição em texto; uma descrição imprecisa ou ambígua produz chamadas com os argumentos errados tão certeiramente quanto uma função mal documentada engana um desenvolvedor humano que só lesse sua assinatura.
 >

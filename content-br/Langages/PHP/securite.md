@@ -4,7 +4,7 @@ order: 14
 
 # Proteger seus dados
 
-Ao recuperar dados vindos do usuário (formulários, URL, cookies...), sempre é preciso considerá-los **não confiáveis**, mesmo que pareçam corretos. Um visitante mal-intencionado pode enviar qualquer coisa: código HTML, JavaScript, ou consultas SQL malformadas. PHP fornece várias funções para filtrar, validar e escapar esses dados.
+Ao recuperar dados vindos do usuário (formulários, URL, cookies...), sempre é preciso considerá-los **não confiáveis**, mesmo que pareçam corretos. Um visitante mal-intencionado pode enviar qualquer coisa: código [HTML](/?c=langages-de-balisage&s=html&p=html), [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), ou consultas SQL malformadas. PHP fornece várias funções para filtrar, validar e escapar esses dados.
 
 Este capítulo cobre primeiro as proteções diretamente acionáveis em PHP (validação, XSS, injeção SQL, senhas), depois situa essas proteções em um panorama mais amplo das famílias de ataques que uma aplicação web pode sofrer: algumas se defendem no nível do código aplicativo, outras no nível da rede ou da infraestrutura.
 

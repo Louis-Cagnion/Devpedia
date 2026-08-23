@@ -47,7 +47,7 @@ Um pacote instalado hoje sem falhas conhecidas pode revelar uma mais tarde: por 
 
 | Ferramenta | Ecossistema | Papel |
 |---|---|---|
-| `npm audit` | JavaScript/Node.js | Compara as dependências instaladas com um banco de falhas conhecidas |
+| `npm audit` | [JavaScript](/?c=langages&s=javascript&p=javascript)/Node.js | Compara as dependências instaladas com um banco de falhas conhecidas |
 | `pip-audit` | Python | O equivalente para pacotes Python |
 | [Dependabot](https://docs.github.com/en/code-security/dependabot) | Multi-ecossistema (integrado ao GitHub) | Abre automaticamente uma pull request quando uma dependência tem uma falha conhecida e uma correção disponível |
 

@@ -4,7 +4,7 @@ order: 6
 
 # Os laços
 
-O PowerShell oferece as mesmas estruturas básicas que o Bash (`for`, `while`, até uma condição), mais um laço `foreach` dedicado a percorrer objetos, o mais usado na prática, já que quase tudo no PowerShell é uma coleção de objetos em vez de texto bruto.
+O PowerShell oferece as mesmas estruturas básicas que o [Bash](/?c=shells&s=bash&p=bash) (`for`, `while`, até uma condição), mais um laço `foreach` dedicado a percorrer objetos, o mais usado na prática, já que quase tudo no PowerShell é uma coleção de objetos em vez de texto bruto.
 
 ## O laço `foreach` (percorrer uma coleção)
 

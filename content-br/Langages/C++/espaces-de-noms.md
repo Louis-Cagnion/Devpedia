@@ -4,7 +4,7 @@ order: 2
 
 # Os espaços de nomes (namespaces)
 
-Um **espaço de nomes** (*namespace*) reúne identificadores (funções, classes, variáveis) sob um prefixo comum, para evitar colisões de nomes entre diferentes partes de um projeto ou diferentes bibliotecas: a mesma necessidade dos namespaces PHP, cujo [autoloading](/?c=langages-de-programmation&s=php&p=autoloading) mostra um uso concreto.
+Um **espaço de nomes** (*namespace*) reúne identificadores (funções, classes, variáveis) sob um prefixo comum, para evitar colisões de nomes entre diferentes partes de um projeto ou diferentes bibliotecas: a mesma necessidade dos namespaces [PHP](/?c=langages-de-programmation&s=php&p=php), cujo [autoloading](/?c=langages-de-programmation&s=php&p=autoloading) mostra um uso concreto.
 
 ## Declarar e usar um namespace
 

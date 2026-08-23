@@ -37,7 +37,7 @@ Um idioma **RTL** (*right-to-left*, como o árabe ou o hebraico) não se limita 
 
 > **Armadilha:** traduzir apenas o texto e deixar o layout idêntico (ícones de navegação, alinhamento, ordem dos elementos). O resultado mistura um texto que se lê da direita para a esquerda com uma interface sempre pensada da esquerda para a direita, incoerente e confuso para um usuário RTL.
 >
-> **Boa prática:** usar propriedades CSS "lógicas" (`margin-inline-start` em vez de `margin-left`, por exemplo) que se invertem automaticamente conforme o sentido da página, em vez de propriedades físicas fixas que precisariam ser duplicadas manualmente para cada sentido.
+> **Boa prática:** usar propriedades [CSS](/?c=langages&s=css&p=css) "lógicas" (`margin-inline-start` em vez de `margin-left`, por exemplo) que se invertem automaticamente conforme o sentido da página, em vez de propriedades físicas fixas que precisariam ser duplicadas manualmente para cada sentido.
 
 Alguns ícones deliberadamente **nunca** se invertem, mesmo em RTL: os que representam um objeto do mundo real cuja orientação tem um sentido universal (um relógio, um símbolo de reprodução ▶ em muitas convenções) permanecem idênticos, enquanto os ícones puramente direcionais (setas, chevrons de navegação) se invertem.
 

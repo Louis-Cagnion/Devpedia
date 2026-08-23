@@ -4,7 +4,7 @@ order: 1
 
 # As referências
 
-Uma **referência** é um apelido: outro nome para uma variável já existente, nunca uma variável independente. Ela resolve um problema muito concreto do C: passar uma variável a uma função para que ela pudesse modificá-la até então obrigava a manipular explicitamente [ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs).
+Uma **referência** é um apelido: outro nome para uma variável já existente, nunca uma variável independente. Ela resolve um problema muito concreto do [C](/?c=langages-de-programmation&s=c&p=c): passar uma variável a uma função para que ela pudesse modificá-la até então obrigava a manipular explicitamente [ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs).
 
 ## Declarar uma referência
 

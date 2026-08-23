@@ -4,7 +4,7 @@ order: 6
 
 # O gerenciamento de memória
 
-Ao contrário de linguagens como PHP ou JavaScript, que gerenciam automaticamente a memória via um coletor de lixo (*garbage collector*), o C deixa ao desenvolvedor a responsabilidade completa de alocar e liberar a memória de que seu programa precisa. É isso que permite performances elevadas e um controle fino dos recursos, ao preço de uma vigilância constante.
+Ao contrário de linguagens como [PHP](/?c=langages-de-programmation&s=php&p=php) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), que gerenciam automaticamente a memória via um coletor de lixo (*garbage collector*), o C deixa ao desenvolvedor a responsabilidade completa de alocar e liberar a memória de que seu programa precisa. É isso que permite performances elevadas e um controle fino dos recursos, ao preço de uma vigilância constante.
 
 ## Stack (pilha) e Heap (monte)
 
@@ -98,7 +98,7 @@ free(p); // double free: comportamento indefinido
 
 ## O estouro de buffer (*buffer overflow*), um bug com consequências de segurança
 
-Ao contrário dos três bugs anteriores (que corrompem a memória do próprio programa, sem intenção externa), um estouro de buffer é frequentemente **o resultado de uma entrada controlada por um atacante**: o que faz dele historicamente uma das falhas de segurança mais exploradas em C/C++.
+Ao contrário dos três bugs anteriores (que corrompem a memória do próprio programa, sem intenção externa), um estouro de buffer é frequentemente **o resultado de uma entrada controlada por um atacante**: o que faz dele historicamente uma das falhas de segurança mais exploradas em C/[C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
 ```c
 char buffer[16];

@@ -8,7 +8,7 @@ Os capítulos anteriores ([modelo em estrela](/?c=bases-de-donnees&p=modeles-en-
 
 ## O esquema: um espaço de nomes para as tabelas
 
-Um **esquema** SQL é um espaço de nomes dentro de um banco de dados: cada tabela pertence a ele, e seu nome completo se escreve `esquema.tabela` (por exemplo `dim.produto` em vez de apenas `produto`). Duas tabelas de mesmo nome podem coexistir sem conflito se estiverem em esquemas diferentes, e um esquema serve principalmente para indicar de relance o papel de uma tabela em um banco que contém centenas delas.
+Um **esquema** [SQL](/?c=domain-specific-languages-dsl&p=sql) é um espaço de nomes dentro de um banco de dados: cada tabela pertence a ele, e seu nome completo se escreve `esquema.tabela` (por exemplo `dim.produto` em vez de apenas `produto`). Duas tabelas de mesmo nome podem coexistir sem conflito se estiverem em esquemas diferentes, e um esquema serve principalmente para indicar de relance o papel de uma tabela em um banco que contém centenas delas.
 
 ```sql
 CREATE SCHEMA dim;

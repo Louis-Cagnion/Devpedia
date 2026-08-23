@@ -4,7 +4,7 @@ order: 11
 
 # Os HTMLElements
 
-Um `HTMLElement` é a representação em JavaScript de uma tag HTML no DOM. Cada tag (`<div>`, `<p>`, `<a>`...) se torna um objeto `HTMLElement` acessível e manipulável em JavaScript.
+Um `HTMLElement` é a representação em JavaScript de uma tag [HTML](/?c=langages-de-balisage&s=html&p=html) no DOM. Cada tag (`<div>`, `<p>`, `<a>`...) se torna um objeto `HTMLElement` acessível e manipulável em JavaScript.
 
 ```javascript
 const div = document.querySelector('div');
@@ -46,7 +46,7 @@ p.replaceWith(outroElemento);
 
 | Método | Retorna |
 |---|---|
-| `document.querySelector(seletor)` | O primeiro elemento correspondente ao seletor CSS, ou `null` |
+| `document.querySelector(seletor)` | O primeiro elemento correspondente ao seletor [CSS](/?c=langages-de-balisage&s=css&p=css), ou `null` |
 | `document.querySelectorAll(seletor)` | Todos os elementos correspondentes, na forma de uma `NodeList` (congelada) |
 | `document.getElementById(id)` | O elemento com esse id (alternativa mais antiga, menos flexível) |
 | `document.getElementsByClassName(classe)` | Os elementos com essa classe, na forma de uma `HTMLCollection` (**viva**) |

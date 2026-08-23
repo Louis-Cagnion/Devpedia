@@ -36,7 +36,7 @@ Uma chamada de função C clássica (`adicao(2, 3)`) executa inteiramente no **e
 
 ## Sinalizar um erro: `errno`
 
-A maioria das chamadas de sistema sinaliza uma falha retornando `-1` (ou `NULL` para as que retornam um ponteiro), e definindo a variável global `errno` com um código descrevendo a causa precisa: o mesmo princípio das funções C históricas mencionadas no capítulo sobre funções (`@` em PHP enfrenta o mesmo tipo de convenção de erro "à moda C"):
+A maioria das chamadas de sistema sinaliza uma falha retornando `-1` (ou `NULL` para as que retornam um ponteiro), e definindo a variável global `errno` com um código descrevendo a causa precisa: o mesmo princípio das funções C históricas mencionadas no capítulo sobre funções (`@` em [PHP](/?c=langages-de-programmation&s=php&p=php) enfrenta o mesmo tipo de convenção de erro "à moda C"):
 
 ```c
 #include <errno.h>
@@ -69,7 +69,7 @@ read(fd, buffer, tamanho);
 close(fd);
 ```
 
-> **Nota:** esses três números (`0`/`1`/`2`) são exatamente os "fluxos" (*stdin*/*stdout*/*stderr*) mencionados no capítulo sobre redirecionamentos do Bash: um redirecionamento como `2>` não faz nada além de manipular, por baixo dos panos, esse descritor número `2` do processo em questão.
+> **Nota:** esses três números (`0`/`1`/`2`) são exatamente os "fluxos" (*stdin*/*stdout*/*stderr*) mencionados no capítulo sobre redirecionamentos do [Bash](/?c=shells&s=bash&p=bash): um redirecionamento como `2>` não faz nada além de manipular, por baixo dos panos, esse descritor número `2` do processo em questão.
 
 ## `dup2()`: fazer um descritor apontar para outro recurso
 

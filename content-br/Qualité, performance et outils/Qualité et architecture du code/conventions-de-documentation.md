@@ -6,7 +6,7 @@ order: 8
 
 Documentar uma função (o que ela faz, seus parâmetros, o que ela retorna) é um princípio universal, mas a **sintaxe exata** para fazer isso não é a mesma de uma linguagem para outra. Cada ecossistema tem sua própria convenção, reconhecida por suas próprias ferramentas: uma IDE a usa para exibir uma dica ao passar o mouse sobre uma chamada, um gerador de documentação a transforma em um site consultável. Escrever uma documentação que não segue nenhuma dessas convenções (um simples parágrafo livre, por exemplo) priva o projeto desses dois benefícios, mesmo que o conteúdo em si esteja correto.
 
-## Python: Google style e NumPy style
+## [Python](/?c=langages&s=python&p=python): Google style e NumPy style
 
 Python não tem sintaxe imposta pela própria linguagem, mas duas convenções dominam na prática, ambas reconhecidas pelos geradores de documentação ([Sphinx](https://www.sphinx-doc.org)):
 
@@ -30,7 +30,7 @@ def convertir_devise(montant, taux):
 | Densidade | Mais compacta | Mais verbosa, cada parâmetro em várias linhas |
 | Contexto de uso típico | Projetos aplicativos generalistas | Bibliotecas científicas (numpy, pandas, scikit-learn) |
 
-## JavaScript / TypeScript: JSDoc
+## [JavaScript](/?c=langages&s=javascript&p=javascript) / TypeScript: JSDoc
 
 [JSDoc](https://jsdoc.app) precede a função com um comentário `/** ... */`, com tags `@param`/`@returns`:
 
@@ -65,9 +65,9 @@ double convertirDevise(double montant, double taux) {
 }
 ```
 
-A ferramenta `javadoc`, fornecida com o JDK, gera diretamente um site HTML consultável a partir desses comentários: é assim que a própria documentação oficial da biblioteca padrão Java é produzida.
+A ferramenta `javadoc`, fornecida com o JDK, gera diretamente um site [HTML](/?c=langages&s=html&p=html) consultável a partir desses comentários: é assim que a própria documentação oficial da biblioteca padrão Java é produzida.
 
-## C / C++: Doxygen
+## [C](/?c=langages&s=c&p=c) / [C++](/?c=langages&s=cpp&p=cpp): Doxygen
 
 [Doxygen](https://www.doxygen.nl) retoma uma sintaxe muito próxima do Javadoc, mas também cobre o C, que não tem equivalente nativo:
 

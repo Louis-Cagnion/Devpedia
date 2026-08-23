@@ -4,7 +4,7 @@ order: 3
 
 # Os laços
 
-Python oferece `for` e `while`, mas o laço `for` funciona diferentemente de PHP/C/JS: ele sempre percorre diretamente os elementos de um iterável, nunca um contador numérico manipulado manualmente.
+Python oferece `for` e `while`, mas o laço `for` funciona diferentemente de [PHP](/?c=langages-de-programmation&s=php&p=php)/[C](/?c=langages-de-programmation&s=c&p=c)/JS: ele sempre percorre diretamente os elementos de um iterável, nunca um contador numérico manipulado manualmente.
 
 ## O laço `for`
 

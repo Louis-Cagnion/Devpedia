@@ -10,7 +10,7 @@ Um computador não armazena letras, apenas números. Uma **codificação** é a 
 
 O **ASCII** (*American Standard Code for Information Interchange*), padronizado em 1963, associa um número de 0 a 127 aos caracteres do inglês. Ele, portanto, cabe em 7 bits, armazenados em um byte.
 
-| Caractere | Código |
+| Caractere | [C](/?c=langages-de-programmation&s=c&p=c)ódigo |
 |---|---|
 | `A` → `Z` | 65 → 90 |
 | `a` → `z` | 97 → 122 |
@@ -100,17 +100,17 @@ Esse sintoma é muito reconhecível e permite rastrear a causa:
 | `?` ou `�` | Caractere ausente na codificação de destino, substituído |
 | Acentos corretos exceto em uma planilha | Separador ou BOM ausente na abertura |
 
-A correção nunca é "substituir os caracteres", mas **declarar a codificação correta** no ponto de leitura. Cada camada precisa ser consistente: a tag HTML (`<meta charset="utf-8">`, veja o capítulo [Estrutura de um documento](/?c=langages-de-balisage&s=html&p=structure-dun-document)), [o cabeçalho HTTP](/?c=infrastructure&p=api-et-http), a codificação dos arquivos-fonte, e o conjunto de caracteres do banco de dados (`utf8mb4` para o [MySQL](https://dev.mysql.com/doc/): `utf8` sozinho é um falso amigo limitado a 3 bytes, que rejeita emojis).
+A correção nunca é "substituir os caracteres", mas **declarar a codificação correta** no ponto de leitura. Cada camada precisa ser consistente: a tag [HTML](/?c=langages-de-balisage&s=html&p=html) (`<meta charset="utf-8">`, veja o capítulo [Estrutura de um documento](/?c=langages-de-balisage&s=html&p=structure-dun-document)), [o cabeçalho HTTP](/?c=infrastructure&p=api-et-http), a codificação dos arquivos-fonte, e o conjunto de caracteres do banco de dados (`utf8mb4` para o [MySQL](https://dev.mysql.com/doc/): `utf8` sozinho é um falso amigo limitado a 3 bytes, que rejeita emojis).
 
 ## O BOM
 
 O **BOM** (*Byte Order Mark*, `U+FEFF`) é uma marca opcional no início de um arquivo indicando a codificação. Ele é indispensável em UTF-16 para indicar a ordem dos bytes, mas **inútil em UTF-8**, onde a ordem é fixa.
 
-Ele continua, no entanto, comum no Windows, onde algumas ferramentas (incluindo o [Excel](https://www.microsoft.com/microsoft-365/excel)) o usam para reconhecer um arquivo UTF-8. Daí um dilema clássico: um CSV destinado ao Excel precisa do BOM para exibir corretamente os acentos, enquanto um arquivo-fonte PHP com BOM provoca um envio prematuro de conteúdo e quebra os cabeçalhos HTTP.
+Ele continua, no entanto, comum no Windows, onde algumas ferramentas (incluindo o [Excel](https://www.microsoft.com/microsoft-365/excel)) o usam para reconhecer um arquivo UTF-8. Daí um dilema clássico: um CSV destinado ao Excel precisa do BOM para exibir corretamente os acentos, enquanto um arquivo-fonte [PHP](/?c=langages-de-programmation&s=php&p=php) com BOM provoca um envio prematuro de conteúdo e quebra os cabeçalhos HTTP.
 
 ## UTF-16 e UTF-32
 
-- **UTF-16**: 2 ou 4 bytes por caractere. Usado internamente por Java, C#, JavaScript e Windows. Os caracteres fora do plano básico (os emojis) ocupam duas unidades de 16 bits, chamadas *surrogate pair*: daí o fato de que em JavaScript, `"😀".length` retorna **2**.
+- **UTF-16**: 2 ou 4 bytes por caractere. Usado internamente por Java, C#, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) e Windows. Os caracteres fora do plano básico (os emojis) ocupam duas unidades de 16 bits, chamadas *surrogate pair*: daí o fato de que em JavaScript, `"😀".length` retorna **2**.
 - **UTF-32**: 4 bytes por caractere, tamanho fixo. Simples de indexar, mas gasta muito espaço; raramente usado para armazenamento.
 
 ## Resumo

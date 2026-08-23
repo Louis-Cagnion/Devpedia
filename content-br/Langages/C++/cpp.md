@@ -13,4 +13,4 @@ Entre os conceitos essenciais introduzidos pelo C++ em relação ao C, destacam-
 
 A aprendizagem do C++ permite manter o controle de baixo nível do C (memória, desempenho, ausência de recolha de resíduos) ao mesmo tempo que se dispõe de ferramentas de nível superior para estruturar um projeto de grande dimensão, um compromisso que explica a sua presença duradoura em motores de jogos, sistemas incorporados exigentes e software que requer simultaneamente desempenho e elevada complexidade lógica.
 
-> **Nota:** ao contrário do PHP, do Python ou do JavaScript, o C++ continua a **ser** **compilado** para código de máquina nativo (ver capítulo sobre compilação, secção C): sem máquina virtual nem interpretador entre o código e a sua execução.
+> **Nota:** ao contrário do PHP, do [Python](/?c=langages-de-programmation&s=python&p=python) ou do [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), o C++ continua a **ser** **compilado** para código de máquina nativo (ver capítulo sobre compilação, secção C): sem máquina virtual nem interpretador entre o código e a sua execução.

@@ -92,7 +92,7 @@ Os overflows de inteiros não são uma curiosidade acadêmica:
 | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp) | Tamanho fixo escolhido explicitamente. Overflow com sinal = comportamento indefinido |
 | [Java](https://docs.oracle.com/en/java/), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/) | Tamanho fixo, wraparound definido para todos os inteiros |
 | **[Python](/?c=langages-de-programmation&s=python&p=python)** | Inteiros de **tamanho arbitrário**: crescem enquanto a memória permitir, nenhum overflow |
-| JavaScript | Sem tipo inteiro de verdade: tudo é float, portanto exato só até 2⁵³ (veja [Os números de ponto flutuante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` para ir além |
+| [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) | Sem tipo inteiro de verdade: tudo é float, portanto exato só até 2⁵³ (veja [Os números de ponto flutuante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` para ir além |
 | [PHP](/?c=langages-de-programmation&s=php&p=php) | Inteiro nativo; em caso de overflow, conversão automática para `float` (portanto perda de precisão) |
 
 Python ilustra bem o compromisso: nunca dar overflow é confortável, mas cada inteiro é um objeto mais pesado e mais lento que um inteiro de máquina. É uma das razões pelas quais bibliotecas de cálculo como o NumPy usam tipos de tamanho fixo (`int32`, `int64`). Veja o capítulo [NumPy](/?c=data-science&p=numpy).

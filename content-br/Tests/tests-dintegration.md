@@ -23,7 +23,7 @@ Teste de integração:
   -> verifica se o código e o banco de dados realmente concordam
 ```
 
-Um teste unitário pode passar enquanto um teste de integração falha no mesmo código: por exemplo, se a função chama corretamente o banco de dados, mas com uma consulta SQL sintaticamente inválida que o mock nunca detecta.
+Um teste unitário pode passar enquanto um teste de integração falha no mesmo código: por exemplo, se a função chama corretamente o banco de dados, mas com uma consulta [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql) sintaticamente inválida que o mock nunca detecta.
 
 ## Onde traçar o limite: quais componentes incluir
 

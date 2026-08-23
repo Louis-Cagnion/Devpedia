@@ -4,7 +4,7 @@ order: 1
 
 # Os seletores
 
-Um **seletor** determina a quais elementos HTML uma regra CSS se aplica: do mais simples (uma tag) ao mais preciso (uma combinação de atributos e posição na árvore do documento).
+Um **seletor** determina a quais elementos [HTML](/?c=langages-de-balisage&s=html&p=html) uma regra CSS se aplica: do mais simples (uma tag) ao mais preciso (uma combinação de atributos e posição na árvore do documento).
 
 ## Seletores básicos
 

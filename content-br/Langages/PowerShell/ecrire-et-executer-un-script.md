@@ -24,7 +24,7 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 | `RemoteSigned` | Scripts locais executam livremente; os baixados precisam ser assinados |
 | `Unrestricted` | Todos os scripts executam, com um simples aviso para os baixados |
 
-> **Nota:** essa política é específica do Windows (`RemoteSigned` é uma escolha comum em desenvolvimento): no Linux/macOS com `pwsh`, ela não tem nenhum efeito, a segurança então se apoiando nas permissões do arquivo como para um script Bash (veja [Permissões e manipulação de arquivos](/?c=shells&s=powershell&p=permissions-et-fichiers)).
+> **Nota:** essa política é específica do Windows (`RemoteSigned` é uma escolha comum em desenvolvimento): no Linux/macOS com `pwsh`, ela não tem nenhum efeito, a segurança então se apoiando nas permissões do arquivo como para um script [Bash](/?c=shells&s=bash&p=bash) (veja [Permissões e manipulação de arquivos](/?c=shells&s=powershell&p=permissions-et-fichiers)).
 
 ## Executar um script
 

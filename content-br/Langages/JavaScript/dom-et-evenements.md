@@ -4,7 +4,7 @@ order: 12
 
 # O DOM e o gerenciamento de eventos
 
-O **DOM** (*Document Object Model*) é a representação em memória de uma página HTML, na forma de uma árvore de objetos manipuláveis por JavaScript: cada tag se torna um nó dessa árvore, com suas próprias propriedades e métodos.
+O **DOM** (*Document Object Model*) é a representação em memória de uma página [HTML](/?c=langages-de-balisage&s=html&p=html), na forma de uma árvore de objetos manipuláveis por JavaScript: cada tag se torna um nó dessa árvore, com suas próprias propriedades e métodos.
 
 ## Selecionar elementos
 

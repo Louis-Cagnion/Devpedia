@@ -4,7 +4,7 @@ order: 11
 
 # Permissões e manipulação de arquivos
 
-O Windows não usa o modelo de permissões Unix (proprietário/grupo/outros, `rwx`) visto no capítulo equivalente do Bash: ele se apoia em **listas de controle de acesso** (ACL, *Access Control List*), mais refinadas mas mais verbosas. Este capítulo cobre esse sistema assim como os comandos básicos para manipular arquivos e diretórios.
+O Windows não usa o modelo de permissões Unix (proprietário/grupo/outros, `rwx`) visto no capítulo equivalente do [Bash](/?c=shells&s=bash&p=bash): ele se apoia em **listas de controle de acesso** (ACL, *Access Control List*), mais refinadas mas mais verbosas. Este capítulo cobre esse sistema assim como os comandos básicos para manipular arquivos e diretórios.
 
 ## Ler as permissões com `Get-Acl`
 

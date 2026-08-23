@@ -26,7 +26,7 @@ Os cookies servem tipicamente para:
 - O valor a armazenar
 - A data de expiração (em timestamp Unix, `time()` retorna a hora atual, então `time() + 3600` significa "em 1h")
 
-> **Nota importante:** `setcookie()` deve ser chamada **antes** de qualquer exibição HTML (antes de qualquer tag, espaço ou quebra de linha), pois ela modifica os cabeçalhos (*headers*) HTTP da resposta. É a mesma lógica da tag de fechamento `?>` mencionada mais acima.
+> **Nota importante:** `setcookie()` deve ser chamada **antes** de qualquer exibição [HTML](/?c=langages-de-balisage&s=html&p=html) (antes de qualquer tag, espaço ou quebra de linha), pois ela modifica os cabeçalhos (*headers*) HTTP da resposta. É a mesma lógica da tag de fechamento `?>` mencionada mais acima.
 
 ### Ler um cookie
 Uma vez criado, um cookie é acessível via a variável global `$_COOKIE`:
@@ -75,7 +75,7 @@ Para remover um cookie, recria-se ele com uma data de expiração **no passado**
 ```
 
 - `secure`: o cookie só é transmitido se a conexão for HTTPS.
-- `httponly`: impede que JavaScript (`document.cookie`) acesse o cookie, o que limita os danos em caso de falha XSS.
+- `httponly`: impede que [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`document.cookie`) acesse o cookie, o que limita os danos em caso de falha XSS.
 - `samesite`: impede que o cookie seja enviado em uma requisição vinda de outro site, o que protege contra ataques CSRF.
 
 > **Nota:** nunca armazene informações sensíveis (senha, número de cartão de crédito...) em um cookie, mesmo protegido. Um cookie continua manipulável pelo próprio usuário. Para dados sensíveis do lado do servidor, prefira as **sessões** (`$_SESSION`).

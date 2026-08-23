@@ -4,7 +4,7 @@ order: 4
 
 # As tabelas HTML
 
-Uma tabela HTML serve para representar dados **tabulares** (linhas/colunas realmente ligadas entre si, como uma exportação de banco de dados, veja [SQL](/?c=domain-specific-languages-dsl&p=sql)); nunca para diagramar visualmente uma página inteira, um uso histórico hoje substituído pelo CSS ([Flexbox](/?c=langages-de-balisage&s=css&p=flexbox)/[Grid](/?c=langages-de-balisage&s=css&p=grid)).
+Uma tabela HTML serve para representar dados **tabulares** (linhas/colunas realmente ligadas entre si, como uma exportação de banco de dados, veja [SQL](/?c=domain-specific-languages-dsl&p=sql)); nunca para diagramar visualmente uma página inteira, um uso histórico hoje substituído pelo [CSS](/?c=langages-de-balisage&s=css&p=css) ([Flexbox](/?c=langages-de-balisage&s=css&p=flexbox)/[Grid](/?c=langages-de-balisage&s=css&p=grid)).
 
 ## Estrutura básica
 

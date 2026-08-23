@@ -34,7 +34,7 @@ SecRule ARGS "@detectSQLi" \
 | Elemento da regra | Papel |
 |---|---|
 | `ARGS` | Alvo: todos os parâmetros da requisição (query string, corpo do formulário) |
-| `@detectSQLi` | Operador: detecção de padrão de injeção SQL, fornecida pelo motor do CRS |
+| `@detectSQLi` | Operador: detecção de padrão de injeção [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql), fornecida pelo motor do CRS |
 | `deny,status:403` | Ação: bloquear a requisição com um código `403 Forbidden` |
 
 ## O compromisso: falsos positivos contra falsos negativos

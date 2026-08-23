@@ -4,7 +4,7 @@ order: 3
 
 # O modelo de caixa (box model)
 
-Cada elemento HTML é representado pelo CSS como uma caixa retangular, composta de quatro camadas concêntricas: entender esse modelo é indispensável para dominar tamanhos, espaçamentos e alinhamentos.
+Cada elemento [HTML](/?c=langages-de-balisage&s=html&p=html) é representado pelo CSS como uma caixa retangular, composta de quatro camadas concêntricas: entender esse modelo é indispensável para dominar tamanhos, espaçamentos e alinhamentos.
 
 ## As quatro camadas
 

@@ -4,7 +4,7 @@ order: 4
 
 # Matplotlib: visualizar dados
 
-O **Matplotlib** é a biblioteca de visualização mais usada em Python: a maioria das outras bibliotecas de gráficos ([seaborn](https://seaborn.pydata.org), pandas `.plot()`...) são construídas sobre ela, ou se inspiram diretamente nela.
+O **Matplotlib** é a biblioteca de visualização mais usada em [Python](/?c=langages-de-programmation&s=python&p=python): a maioria das outras bibliotecas de gráficos ([seaborn](https://seaborn.pydata.org), pandas `.plot()`...) são construídas sobre ela, ou se inspiram diretamente nela.
 
 ## As duas formas de usar o Matplotlib
 

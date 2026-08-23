@@ -52,7 +52,7 @@ Dois usuários com a mesma senha obtêm assim hashes diferentes, e uma rainbow t
 
 ## Passando para a implementação
 
-Na prática, escolher o algoritmo, gerar o sal e gerenciar sua integração ao hash final fica a cargo de uma função dedicada da linguagem utilizada, nunca a ser reimplementada por conta própria: veja [`password_hash()` e `password_verify()`](/?c=langages-de-programmation&s=php&p=securite) para a implementação concreta em PHP, que usa bcrypt por padrão e detalha como o sal é integrado ao hash armazenado.
+Na prática, escolher o algoritmo, gerar o sal e gerenciar sua integração ao hash final fica a cargo de uma função dedicada da linguagem utilizada, nunca a ser reimplementada por conta própria: veja [`password_hash()` e `password_verify()`](/?c=langages-de-programmation&s=php&p=securite) para a implementação concreta em [PHP](/?c=langages-de-programmation&s=php&p=php), que usa bcrypt por padrão e detalha como o sal é integrado ao hash armazenado.
 
 ---
 

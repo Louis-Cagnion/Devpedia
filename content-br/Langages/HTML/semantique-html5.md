@@ -78,7 +78,7 @@ Antes do HTML5, a estruturação de uma página baseava-se quase exclusivamente 
 
 - **Acessibilidade** (ver capítulo dedicado): um leitor de tela pode sugerir saltar diretamente para `<nav>` ou `<main>`, algo que nenhuma `<div class="nav">` permite de forma tão fiável.
 - **SEO**: os motores de busca compreendem melhor a estrutura e a importância relativa do conteúdo.
-- **Legibilidade do código**: `<header>`/`<main>`/`<footer>` documentam a estrutura diretamente no HTML, sem ser necessário ler os nomes das classes CSS para adivinhar a função de cada bloco.
+- **Legibilidade do código**: `<header>`/`<main>`/`<footer>` documentam a estrutura diretamente no HTML, sem ser necessário ler os nomes das classes [CSS](/?c=langages-de-balisage&s=css&p=css) para adivinhar a função de cada bloco.
 
 > **Melhores práticas:** utilizar uma etiqueta semântica sempre que esta corresponder à função real do conteúdo, e recorrer a `<div>` (puramente genérico, sem significado) apenas para um simples contêiner técnico necessário à formatação CSS, sem significado próprio.
 

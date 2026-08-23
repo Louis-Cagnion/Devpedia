@@ -4,7 +4,7 @@ order: 4
 
 # Variáveis de ambiente
 
-Como no Bash, uma variável de ambiente é transmitida automaticamente aos processos filhos, mas o PowerShell a acessa via um espaço de nomes dedicado (`$env:`), distinto de suas variáveis comuns, em vez de uma simples convenção (`export`) aplicada a uma variável normal.
+Como no [Bash](/?c=shells&s=bash&p=bash), uma variável de ambiente é transmitida automaticamente aos processos filhos, mas o PowerShell a acessa via um espaço de nomes dedicado (`$env:`), distinto de suas variáveis comuns, em vez de uma simples convenção (`export`) aplicada a uma variável normal.
 
 ## Ler e modificar uma variável de ambiente
 

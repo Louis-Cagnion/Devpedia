@@ -4,7 +4,7 @@ order: 13
 
 # A programação assíncrona (callbacks, Promises, async/await)
 
-JavaScript executa em uma **única thread** (ao contrário das [threads](/?c=langages-de-programmation&s=c&p=threads) em C): só pode fazer uma coisa por vez. Ainda assim, uma requisição de rede ou um timer não bloqueiam o programa inteiro esperando: é o papel do modelo assíncrono, construído em torno do **loop de eventos** (*event loop*).
+JavaScript executa em uma **única thread** (ao contrário das [threads](/?c=langages-de-programmation&s=c&p=threads) em [C](/?c=langages-de-programmation&s=c&p=c)): só pode fazer uma coisa por vez. Ainda assim, uma requisição de rede ou um timer não bloqueiam o programa inteiro esperando: é o papel do modelo assíncrono, construído em torno do **loop de eventos** (*event loop*).
 
 ## O princípio: o loop de eventos
 

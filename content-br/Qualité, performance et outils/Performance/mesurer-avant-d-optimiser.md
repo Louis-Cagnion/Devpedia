@@ -20,7 +20,7 @@ Metade do tempo estava indo em observar um banner **que nunca aparecia**: o cons
 
 ## Fazer profiling por fases, não linha por linha
 
-Um profiler clássico ([`cProfile`](https://docs.python.org/3/library/profile.html) em Python, a aba Performance de um navegador) dá o tempo por função. Isso é útil para cálculo, bem menos quando o programa passa o tempo **esperando**: tudo aparece sob um punhado de funções de espera, sem dizer *por que* se está esperando.
+Um profiler clássico ([`cProfile`](https://docs.python.org/3/library/profile.html) em [Python](/?c=langages-de-programmation&s=python&p=python), a aba Performance de um navegador) dá o tempo por função. Isso é útil para cálculo, bem menos quando o programa passa o tempo **esperando**: tudo aparece sob um punhado de funções de espera, sem dizer *por que* se está esperando.
 
 Nesse caso, instrumentar você mesmo as fases lógicas é mais informativo. O princípio: envolver as funções-chave para acumular seu tempo, sem tocar no código medido.
 

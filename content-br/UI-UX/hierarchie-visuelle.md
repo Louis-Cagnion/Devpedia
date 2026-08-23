@@ -86,7 +86,7 @@ O olho parte do canto superior esquerdo, varre para a direita, desce em diagonal
 
 ## Passando para a implementação
 
-Este capítulo permanece deliberadamente independente de uma linguagem: as alavancas acima (tamanho, espaçamento, posição...) se traduzem concretamente em CSS via [O modelo de caixa](/?c=langages-de-balisage&s=css&p=box-model) (espaçamento, dimensões) e [O posicionamento](/?c=langages-de-balisage&s=css&p=positionnement) (posicionamento dos elementos na tela).
+Este capítulo permanece deliberadamente independente de uma linguagem: as alavancas acima (tamanho, espaçamento, posição...) se traduzem concretamente em [CSS](/?c=langages-de-balisage&s=css&p=css) via [O modelo de caixa](/?c=langages-de-balisage&s=css&p=box-model) (espaçamento, dimensões) e [O posicionamento](/?c=langages-de-balisage&s=css&p=positionnement) (posicionamento dos elementos na tela).
 
 ---
 

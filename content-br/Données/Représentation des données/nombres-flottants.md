@@ -10,7 +10,7 @@ Esse é provavelmente o comportamento mais confuso da programação, e o que mai
 0.1 + 0.2   ==>  0.30000000000000004
 ```
 
-Esse resultado é idêntico em JavaScript, em [Python](/?c=langages-de-programmation&s=python&p=python), em [C](/?c=langages-de-programmation&s=c&p=c), em [PHP](/?c=langages-de-programmation&s=php&p=php), em [Java](https://docs.oracle.com/en/java/) e em [C#](https://learn.microsoft.com/en-us/dotnet/csharp/). Portanto, **não** é um defeito de uma linguagem: é uma consequência de como o processador codifica os números decimais, descrita pela norma **IEEE 754**, que todas essas linguagens usam porque é o hardware que a impõe.
+Esse resultado é idêntico em [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), em [Python](/?c=langages-de-programmation&s=python&p=python), em [C](/?c=langages-de-programmation&s=c&p=c), em [PHP](/?c=langages-de-programmation&s=php&p=php), em [Java](https://docs.oracle.com/en/java/) e em [C#](https://learn.microsoft.com/en-us/dotnet/csharp/). Portanto, **não** é um defeito de uma linguagem: é uma consequência de como o processador codifica os números decimais, descrita pela norma **IEEE 754**, que todas essas linguagens usam porque é o hardware que a impõe.
 
 ## Por que uma aproximação?
 

@@ -14,7 +14,7 @@ contador := !contador + 1   (* := atribui um novo valor *)
 print_int !contador         (* ! le o valor atual -> 1 *)
 ```
 
-A sintaxe `ref`/`:=`/`!` torna toda mutação **visível no código**: impossível mutar um valor por acidente, ao contrário de uma variável Python ou JavaScript, mutável por padrão sem nenhuma marca distintiva no local onde é modificada.
+A sintaxe `ref`/`:=`/`!` torna toda mutação **visível no código**: impossível mutar um valor por acidente, ao contrário de uma variável [Python](/?c=langages-de-programmation&s=python&p=python) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), mutável por padrão sem nenhuma marca distintiva no local onde é modificada.
 
 ## Estruturas de dados persistentes
 

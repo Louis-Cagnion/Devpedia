@@ -69,7 +69,7 @@ O **pairing** consiste em escolher uma fonte para os títulos e outra para o cor
 
 ## Passando para a implementação
 
-Como para uma paleta de cores, uma escala de tamanhos e uma lista de fontes se declaram em CSS como valores reutilizáveis: veja [Variáveis CSS e a cascata](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
+Como para uma paleta de cores, uma escala de tamanhos e uma lista de fontes se declaram em [CSS](/?c=langages-de-balisage&s=css&p=css) como valores reutilizáveis: veja [Variáveis CSS e a cascata](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
 
 ---
 

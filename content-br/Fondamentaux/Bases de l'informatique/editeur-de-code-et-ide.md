@@ -45,7 +45,7 @@ nome = "Joao"                     # "Joao" e uma string -> outra cor
 | Ferramenta | Categoria | Linguagens visadas |
 |---|---|---|
 | [VS Code](https://code.visualstudio.com) | Editor de código extensível | Generalista: quase todas, via extensões |
-| [PyCharm](https://www.jetbrains.com/pycharm/) | IDE completa | Python |
+| [PyCharm](https://www.jetbrains.com/pycharm/) | IDE completa | [Python](/?c=langages-de-programmation&s=python&p=python) |
 | [Visual Studio](https://visualstudio.microsoft.com) (não confundir com VS Code) | IDE completa | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/), [.NET](https://learn.microsoft.com/en-us/dotnet/) |
 
 ## Por onde começar

@@ -4,7 +4,7 @@ order: 1
 
 # Comandos básicos
 
-Ao contrário do Bash, onde `cd`, `ls` ou `cp` são nomes curtos já familiares para muita gente, as cmdlets do PowerShell seguem a convenção `Verbo-Substantivo` (`Set-Location`, `Get-ChildItem`, `Copy-Item`), mais longas, mas explícitas e previsíveis uma vez entendido o verbo (veja a tabela dos verbos padrão no capítulo sobre funções). Este capítulo cobre os comandos usados primeiro em um terminal, antes mesmo de escrever o menor script: se locomover, listar, ler um arquivo, e encontrar ajuda sobre um comando desconhecido.
+Ao contrário do [Bash](/?c=shells&s=bash&p=bash), onde `cd`, `ls` ou `cp` são nomes curtos já familiares para muita gente, as cmdlets do PowerShell seguem a convenção `Verbo-Substantivo` (`Set-Location`, `Get-ChildItem`, `Copy-Item`), mais longas, mas explícitas e previsíveis uma vez entendido o verbo (veja a tabela dos verbos padrão no capítulo sobre funções). Este capítulo cobre os comandos usados primeiro em um terminal, antes mesmo de escrever o menor script: se locomover, listar, ler um arquivo, e encontrar ajuda sobre um comando desconhecido.
 
 ## Se locomover: `Set-Location` e `Get-Location`
 

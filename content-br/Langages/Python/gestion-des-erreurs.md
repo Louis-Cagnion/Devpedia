@@ -4,7 +4,7 @@ order: 7
 
 # O tratamento de erros
 
-Python sinaliza um erro lançando uma **exceção**, que interrompe a execução normal do programa a menos que seja interceptada por um bloco `try`/`except`, um mecanismo semelhante às exceções PHP modernas (`throw`/`catch`).
+Python sinaliza um erro lançando uma **exceção**, que interrompe a execução normal do programa a menos que seja interceptada por um bloco `try`/`except`, um mecanismo semelhante às exceções [PHP](/?c=langages-de-programmation&s=php&p=php) modernas (`throw`/`catch`).
 
 ## `try` / `except`
 

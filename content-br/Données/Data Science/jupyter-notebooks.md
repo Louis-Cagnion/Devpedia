@@ -10,7 +10,7 @@ Um **notebook Jupyter** é um documento interativo que combina código executáv
 
 Um notebook (arquivo `.ipynb`) é uma sequência de **células**, de dois tipos:
 
-- **Célula de código**: Python, executável de forma independente (`Shift+Enter` para executar).
+- **Célula de código**: [Python](/?c=langages-de-programmation&s=python&p=python), executável de forma independente (`Shift+Enter` para executar).
 - **Célula Markdown**: texto formatado (títulos, listas, fórmulas matemáticas via [LaTeX](https://www.latex-project.org)), para documentar o processo ao lado do código.
 
 ```python

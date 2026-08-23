@@ -4,7 +4,7 @@ order: 8
 
 # Expansão e coringas (wildcards)
 
-O PowerShell retoma a ideia do globbing do Bash (substituir um padrão pela lista real de arquivos correspondentes), mas sob um nome diferente (*wildcards*) e com regras ligeiramente distintas, além de um operador de correspondência de padrão reutilizável fora dos nomes de arquivo.
+O PowerShell retoma a ideia do globbing do [Bash](/?c=shells&s=bash&p=bash) (substituir um padrão pela lista real de arquivos correspondentes), mas sob um nome diferente (*wildcards*) e com regras ligeiramente distintas, além de um operador de correspondência de padrão reutilizável fora dos nomes de arquivo.
 
 ## Os wildcards: `*`, `?`, `[]`
 

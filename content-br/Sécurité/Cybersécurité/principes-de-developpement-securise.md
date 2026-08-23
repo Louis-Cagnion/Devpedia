@@ -118,6 +118,6 @@ Esse reflexo se alinha com a robustez geral esperada de qualquer código: um err
 | | |
 |---|---|
 | **Para lembrar** | Quatro princípios reduzem a maioria das falhas: pensar a segurança desde a concepção, validar toda entrada externa com uma lista branca, aplicar o menor privilégio, empilhar várias camadas de defesa independentes. |
-| **Ferramentas utilizáveis** | `filter_input()` (PHP) e equivalentes em outras linguagens para validação por lista branca; contas de aplicação dedicadas com direitos restritos para o banco de dados. |
+| **Ferramentas utilizáveis** | `filter_input()` ([PHP](/?c=langages&s=php&p=php)) e equivalentes em outras linguagens para validação por lista branca; contas de aplicação dedicadas com direitos restritos para o banco de dados. |
 | **Armadilhas a evitar** | Validar um dado apenas no lado do cliente; usar uma lista negra em vez de uma lista branca; conceder acesso por padrão diante de um erro inesperado (*fail open*). |
 | **Boas práticas** | Revalidar sempre no servidor; restringir cada componente ao estritamente necessário; negar o acesso por padrão em caso de dúvida (*fail closed*). |

@@ -81,7 +81,7 @@ int contagem = std::count_if(numeros.begin(), numeros.end(), estaAcimaDoLimite);
 | `std::find` | Busca a primeira ocorrência de um valor |
 | `std::count` / `std::count_if` | Conta as ocorrências (com ou sem condição) |
 | `std::for_each` | Aplica uma função a cada elemento |
-| `std::transform` | Produz um novo intervalo aplicando uma função a cada elemento (equivalente de `map` em Python/JS) |
+| `std::transform` | Produz um novo intervalo aplicando uma função a cada elemento (equivalente de `map` em [Python](/?c=langages-de-programmation&s=python&p=python)/JS) |
 | `std::accumulate` | Reduz um intervalo a um único valor (equivalente de `reduce`) |
 
 > **Nota:** usar esses algoritmos em vez de laços manuais torna a intenção explícita (`std::sort` diz "eu ordeno", um laço com um algoritmo de ordenação escrito à mão exige deduzir isso): um ganho de legibilidade direto, além de evitar reimplementar (e potencialmente implementar mal) uma lógica já padronizada e otimizada.

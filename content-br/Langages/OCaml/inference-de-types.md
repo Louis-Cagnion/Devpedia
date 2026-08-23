@@ -6,7 +6,7 @@ order: 5
 
 ## Estático, mas sem anotações
 
-O OCaml é **estaticamente tipado**: cada expressão tem um tipo fixado de uma vez por todas, verificado antes mesmo da execução, como em C (cf. capítulo [As variáveis e tipos de dados](/?c=langages-de-programmation&s=c&p=variables)). Ao contrário do C, esse tipo quase nunca precisa ser escrito explicitamente:
+O OCaml é **estaticamente tipado**: cada expressão tem um tipo fixado de uma vez por todas, verificado antes mesmo da execução, como em [C](/?c=langages-de-programmation&s=c&p=c) (cf. capítulo [As variáveis e tipos de dados](/?c=langages-de-programmation&s=c&p=variables)). Ao contrário do C, esse tipo quase nunca precisa ser escrito explicitamente:
 
 ```ocaml
 let soma x y = x + y
@@ -29,11 +29,11 @@ let aplicar_duas_vezes f x = f (f x)
 (* -> aplicar_duas_vezes : ('a -> 'a) -> 'a -> 'a *)
 ```
 
-O segundo exemplo ilustra o **polimorfismo paramétrico**: `'a` significa "um tipo qualquer, a determinar conforme a chamada", a mesma ideia de um template C++ (cf. capítulo [Os templates](/?c=langages-de-programmation&s=cpp&p=templates)), mas resolvida automaticamente por inferência em vez de declarada explicitamente a cada uso (`template<typename T>`).
+O segundo exemplo ilustra o **polimorfismo paramétrico**: `'a` significa "um tipo qualquer, a determinar conforme a chamada", a mesma ideia de um template [C++](/?c=langages-de-programmation&s=cpp&p=cpp) (cf. capítulo [Os templates](/?c=langages-de-programmation&s=cpp&p=templates)), mas resolvida automaticamente por inferência em vez de declarada explicitamente a cada uso (`template<typename T>`).
 
 ## Comparado à tipagem dinâmica e à tipagem gradual
 
-| | C | Python (anotações) | OCaml |
+| | C | [Python](/?c=langages-de-programmation&s=python&p=python) (anotações) | OCaml |
 |---|---|---|---|
 | Verificação | Na compilação | À escolha: nunca, ou via um [verificador externo](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) (`mypy`) | Na compilação, sistematicamente |
 | Anotação necessária | Sempre (`int x`) | Opcional | Nunca (deduzida) |

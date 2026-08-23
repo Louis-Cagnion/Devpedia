@@ -6,7 +6,7 @@ order: 13
 
 Tudo que o Bash faz na superfície (variáveis, laços, pipes, redirecionamentos) se apoia em uma mecânica bem simples de descrever: um laço que lê uma linha, a divide, a interpreta, e depois lança processos via as chamadas de sistema padrão do [capítulo sobre gerenciamento de processos em C](/?c=langages-de-programmation&s=c&p=processus) (`fork`, `execve`, `wait`). Este capítulo descreve essa mecânica, com o objetivo de entender (ou até reconstruir) um shell mínimo.
 
-> **Pré-requisito:** este capítulo supõe conhecido o que é uma **chamada de sistema** e um **descritor de arquivo** (`STDIN_FILENO`, `dup2()`...). Veja [o capítulo dedicado](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) no tópico C se esses conceitos ainda não estiverem claros.
+> **Pré-requisito:** este capítulo supõe conhecido o que é uma **chamada de sistema** e um **descritor de arquivo** (`STDIN_FILENO`, `dup2()`...). Veja [o capítulo dedicado](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) no tópico [C](/?c=langages-de-programmation&s=c&p=c) se esses conceitos ainda não estiverem claros.
 
 ## O laço principal (REPL)
 

@@ -94,7 +94,7 @@ Repository::encontrar(1);
 
 `use` não carrega o próprio arquivo: ele apenas indica ao motor PHP a qual nome completo corresponde o nome curto usado mais abaixo. É um mecanismo de [autoloading](/?c=langages-de-programmation&s=php&p=autoloading) que se encarrega de encontrar e carregar o arquivo correspondente, no momento em que a classe é realmente usada.
 
-> **Nota:** `Classe::metodo()` (com `::`) se parece com `Classe->metodo()` mas nunca é usado com uma instância: é o equivalente quase direto de um namespace + método estático em C++.
+> **Nota:** `Classe::metodo()` (com `::`) se parece com `Classe->metodo()` mas nunca é usado com uma instância: é o equivalente quase direto de um namespace + método estático em [C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
 ## Injeção de dependências
 

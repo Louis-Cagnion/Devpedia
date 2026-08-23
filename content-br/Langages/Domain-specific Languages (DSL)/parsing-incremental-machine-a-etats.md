@@ -17,7 +17,7 @@ order: 3
 
 Um parser incremental nunca conhece "o documento inteiro": ele só sabe o que acontece **agora**, mais o que o código escolheu explicitamente memorizar desde o início. É essa restrição que lhe dá o nome de **máquina de estados**: o programa precisa manter ele mesmo um estado ("estou atualmente dentro de uma linha de tabela? de uma célula?"), atualizado a cada evento recebido.
 
-## `HTMLParser`: um exemplo concreto em Python
+## `HTMLParser`: um exemplo concreto em [Python](/?c=langages&s=python&p=python)
 
 O módulo padrão `html.parser` fornece `HTMLParser`, uma classe para herdar: três métodos, chamados automaticamente a cada tag ou fragmento de texto encontrado durante a leitura.
 

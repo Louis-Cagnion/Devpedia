@@ -8,7 +8,7 @@ order: 1
 
 Uma **regex** (expressão regular, *regular expression*) é uma mini-linguagem que descreve um **padrão** (pattern) de caracteres. Esse padrão serve para buscar, validar ou extrair partes de texto que correspondam a uma estrutura dada.
 
-Isso **não é** uma linguagem de programação: sem variáveis, sem laços, sem funções. Uma regex precisa ser interpretada por um **motor de regex**, integrado à linguagem que você usa (JavaScript, Python, etc.), via métodos como `.test()` ou `.match()`.
+Isso **não é** uma linguagem de programação: sem variáveis, sem laços, sem funções. Uma regex precisa ser interpretada por um **motor de regex**, integrado à linguagem que você usa ([JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), [Python](/?c=langages-de-programmation&s=python&p=python), etc.), via métodos como `.test()` ou `.match()`.
 
 ## As bases da sintaxe
 

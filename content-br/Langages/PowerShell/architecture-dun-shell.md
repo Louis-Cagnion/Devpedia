@@ -4,7 +4,7 @@ order: 13
 
 # Como funciona o PowerShell (arquitetura interna)
 
-O PowerShell se apoia na mesma mecânica de fundo que o Bash (um laço que lê, interpreta e executa), mas não roda diretamente sobre o sistema operacional como um simples executável nativo: é um ambiente construído sobre o [**.NET Runtime**](https://learn.microsoft.com/en-us/dotnet/), o que explica ao mesmo tempo seus objetos tipados (veja [As variáveis](/?c=shells&s=powershell&p=variables) e [Redirecionamentos e pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) e algumas de suas diferenças de desempenho em relação ao Bash.
+O PowerShell se apoia na mesma mecânica de fundo que o [Bash](/?c=shells&s=bash&p=bash) (um laço que lê, interpreta e executa), mas não roda diretamente sobre o sistema operacional como um simples executável nativo: é um ambiente construído sobre o [**.NET Runtime**](https://learn.microsoft.com/en-us/dotnet/), o que explica ao mesmo tempo seus objetos tipados (veja [As variáveis](/?c=shells&s=powershell&p=variables) e [Redirecionamentos e pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) e algumas de suas diferenças de desempenho em relação ao Bash.
 
 > **Pré-requisito:** este capítulo supõe conhecido o que é um processo (`fork`/`exec`), veja o capítulo sobre a arquitetura de um shell (tópico Bash), que detalha esse mecanismo do lado Unix; os conceitos se reencontram aqui, mas implementados de forma diferente no Windows.
 
@@ -36,7 +36,7 @@ Escritas diretamente na linguagem PowerShell (`function Saudar { ... }`, veja [A
 
 ### Os comandos externos
 
-Para um executável como `notepad.exe`, o PowerShell delega ao sistema operacional Windows a criação de um novo processo (papel equivalente a `fork`/`execve` em C, mas via a API Windows `CreateProcess`):
+Para um executável como `notepad.exe`, o PowerShell delega ao sistema operacional Windows a criação de um novo processo (papel equivalente a `fork`/`execve` em [C](/?c=langages-de-programmation&s=c&p=c), mas via a API Windows `CreateProcess`):
 
 ```text
 CreateProcess("notepad.exe", argumentos, ...)

@@ -20,7 +20,7 @@ typeof NaN;   // "number"
 Math.trunc(5 / 2)  // 2   -> e preciso pedir explicitamente
 ```
 
-A ausência de divisão inteira nativa é uma armadilha frequente para quem vem de C ou Python (`5 // 2`).
+A ausência de divisão inteira nativa é uma armadilha frequente para quem vem de C ou [Python](/?c=langages-de-programmation&s=python&p=python) (`5 // 2`).
 
 ## Comparar decimais
 

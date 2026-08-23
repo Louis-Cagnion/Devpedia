@@ -83,6 +83,6 @@ Uma grade e um ritmo vertical se constroem concretamente com [Flexbox](/?c=langa
 | | |
 |---|---|
 | **Para lembrar** | O espaço negativo é uma ferramenta ativa, não um vazio a preencher. Uma grade (colunas, calhas, margens) alinha os elementos entre si, e uma escala de espaçamento fixa (múltiplos de 4 ou 8px) garante um ritmo vertical coerente. |
-| **Ferramentas utilizáveis** | Nenhuma ferramenta específica: a grade e a escala se definem no projeto, e depois se implementam em CSS (Flexbox, Grid). |
+| **Ferramentas utilizáveis** | Nenhuma ferramenta específica: a grade e a escala se definem no projeto, e depois se implementam em [CSS](/?c=langages-de-balisage&s=css&p=css) (Flexbox, Grid). |
 | **Armadilhas a evitar** | Preencher cada espaço disponível por medo do vazio; alinhar elementos a olho em vez de sobre uma grade; inventar um valor de espaçamento caso a caso. |
 | **Boas práticas** | Definir grade e escala de espaçamento antes de posicionar o menor elemento; sempre reutilizar os mesmos valores de espaçamento para um mesmo tipo de transição. |

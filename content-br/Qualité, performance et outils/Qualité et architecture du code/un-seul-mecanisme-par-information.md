@@ -19,7 +19,7 @@ order: 5
 # Os ponteiros em C
 ```
 
-O frontmatter diz "Os ponteiros", o corpo do arquivo diz "Os ponteiros em C". Qual é o título verdadeiro? O gerador do site precisa escolher uma regra de prioridade (o frontmatter vence? o heading vence? o último escrito?), e essa regra se torna ela mesma uma fonte de bugs: alguém modifica o heading pensando estar mudando o título exibido, sem saber que o frontmatter (invisível na leitura rápida do arquivo) prevalece.
+O frontmatter diz "Os ponteiros", o corpo do arquivo diz "Os ponteiros em [C](/?c=langages-de-programmation&s=c&p=c)". Qual é o título verdadeiro? O gerador do site precisa escolher uma regra de prioridade (o frontmatter vence? o heading vence? o último escrito?), e essa regra se torna ela mesma uma fonte de bugs: alguém modifica o heading pensando estar mudando o título exibido, sem saber que o frontmatter (invisível na leitura rápida do arquivo) prevalece.
 
 Este site evita deliberadamente o problema: o frontmatter de um capítulo **nunca** carrega um campo `title`, apenas metadados de construção (`order`, para a ordenação pedagógica). O título exibido vem unicamente do primeiro `# Heading` do corpo: uma única fonte, um único lugar a modificar, nenhuma regra de prioridade para documentar ou lembrar.
 

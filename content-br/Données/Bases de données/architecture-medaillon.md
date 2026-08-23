@@ -103,6 +103,6 @@ Nada impede tecnicamente uma ferramenta de relatório de se conectar diretamente
 | | |
 |---|---|
 | **Para lembrar** | A arquitetura medalhão divide um pipeline de dados em três cópias sucessivas: bronze (bruta, intacta), prata (limpa, esquema estável), ouro (agregada para uma necessidade de negócio precisa, frequentemente modelada em [estrela](/?c=bases-de-donnees&p=modeles-en-etoile)). |
-| **Ferramentas utilizáveis** | Consultas SQL de transformação (`INSERT ... SELECT`, deduplicação por `ROW_NUMBER()`, agregação por `GROUP BY`) para fazer uma tabela passar de uma camada para a seguinte. |
+| **Ferramentas utilizáveis** | Consultas [SQL](/?c=domain-specific-languages-dsl&p=sql) de transformação (`INSERT ... SELECT`, deduplicação por `ROW_NUMBER()`, agregação por `GROUP BY`) para fazer uma tabela passar de uma camada para a seguinte. |
 | **Armadilhas a evitar** | Corrigir ou filtrar já na bronze; aplicar uma regra de limpeza não documentada; criar uma tabela ouro por dashboard; conectar uma ferramenta de relatório diretamente à bronze ou à prata. |
 | **Boas práticas** | Bronze apenas em modo de adição; regras de limpeza rastreáveis; tabelas ouro pensadas por necessidade de negócio reutilizável; a ouro como único ponto de entrada para consumidores externos ao pipeline. |

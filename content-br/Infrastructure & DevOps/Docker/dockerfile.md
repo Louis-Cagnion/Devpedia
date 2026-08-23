@@ -48,7 +48,7 @@ O processo lançado por `CMD`/`ENTRYPOINT` recebe o PID 1 dentro do contêiner (
 CMD ["nginx", "-g", "daemon off;"]   # nginx fica em primeiro plano: o Docker tem um processo para monitorar
 ```
 
-> **Nota:** PID 1 tem um papel particular no Linux, independentemente do Docker (cf. capítulo [O gerenciamento de processos](/?c=shells&s=bash&p=gestion-des-processus), tópico Bash): o kernel não aplica a ele a ação padrão de um sinal como `SIGTERM` se ele não instalou explicitamente seu próprio manipulador: `docker stop` pode então parecer não fazer nada em um processo que não trata esse sinal por conta própria. Também é o PID 1 quem precisa recolher (*reap*) os processos zumbis que lança; um ponto a observar se a imagem inicia vários subprocessos por conta própria.
+> **Nota:** PID 1 tem um papel particular no Linux, independentemente do Docker (cf. capítulo [O gerenciamento de processos](/?c=shells&s=bash&p=gestion-des-processus), tópico [Bash](/?c=shells&s=bash&p=bash)): o kernel não aplica a ele a ação padrão de um sinal como `SIGTERM` se ele não instalou explicitamente seu próprio manipulador: `docker stop` pode então parecer não fazer nada em um processo que não trata esse sinal por conta própria. Também é o PID 1 quem precisa recolher (*reap*) os processos zumbis que lança; um ponto a observar se a imagem inicia vários subprocessos por conta própria.
 
 ## Cada instrução cria uma camada, e a ordem importa
 
@@ -69,7 +69,7 @@ COPY . .
 
 ## Os builds multi-estágio
 
-Um build multi-estágio separa o ambiente de **compilação** (pesado: compilador, ferramentas de build) do ambiente de **execução** (leve: apenas o binário final), o mesmo princípio de separar compilação e ligação em C (cf. capítulo [O processo de compilação](/?c=langages-de-programmation&s=c&p=compilation)): o resultado final não precisa da cadeia de ferramentas que o produziu.
+Um build multi-estágio separa o ambiente de **compilação** (pesado: compilador, ferramentas de build) do ambiente de **execução** (leve: apenas o binário final), o mesmo princípio de separar compilação e ligação em [C](/?c=langages-de-programmation&s=c&p=c) (cf. capítulo [O processo de compilação](/?c=langages-de-programmation&s=c&p=compilation)): o resultado final não precisa da cadeia de ferramentas que o produziu.
 
 ```dockerfile
 # Etapa 1: compilacao, com toda a toolchain Go

@@ -146,7 +146,7 @@ p1 == p2    // falso: os enderecos sao diferentes
 
 Dois ponteiros podem então perfeitamente conter o mesmo valor sem serem iguais, e vice-versa.
 
-> Essa distinção (comparação por **referência** ou por **valor**) não é exclusiva do C, ela se encontra na maioria das linguagens. Em Python, `is` compara a identidade (o equivalente de `p1 == p2`) e `==` compara o valor (o equivalente de `*p1 == *p2`); veja o capítulo [Variáveis](/?c=langages-de-programmation&s=python&p=variables) de Python. Comparar strings em C ilustra a mesma armadilha: `str1 == str2` compara dois endereços, não dois textos: é preciso `strcmp()`.
+> Essa distinção (comparação por **referência** ou por **valor**) não é exclusiva do C, ela se encontra na maioria das linguagens. Em [Python](/?c=langages-de-programmation&s=python&p=python), `is` compara a identidade (o equivalente de `p1 == p2`) e `==` compara o valor (o equivalente de `*p1 == *p2`); veja o capítulo [Variáveis](/?c=langages-de-programmation&s=python&p=variables) de Python. Comparar strings em C ilustra a mesma armadilha: `str1 == str2` compara dois endereços, não dois textos: é preciso `strcmp()`.
 
 ## `const` com ponteiros
 

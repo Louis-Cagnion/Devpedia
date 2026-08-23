@@ -23,7 +23,7 @@ random.seed(42)                # voltamos para a mesma semente
 print(random.randint(1, 100))  # 82 -> identico
 ```
 
-Em C, `rand()` sem `srand()` usa implicitamente a semente `1`: um programa relançado produz **exatamente a mesma sequência**. Daí o hábito de semear com a hora atual:
+Em [C](/?c=langages-de-programmation&s=c&p=c), `rand()` sem `srand()` usa implicitamente a semente `1`: um programa relançado produz **exatamente a mesma sequência**. Daí o hábito de semear com a hora atual:
 
 ```c
 srand(time(NULL));   // semente diferente a cada segundo
@@ -50,9 +50,9 @@ Mais grave: um PRNG clássico é projetado para ser **rápido e bem distribuído
 | Previsível? | Sim, a partir do estado | Não, mesmo conhecendo as saídas |
 | Fonte da semente | Frequentemente o relógio | Entropia do sistema |
 | C | `rand()` | `getrandom()`, `/dev/urandom` |
-| Python | `random` | `secrets` |
-| PHP | `rand()`, `mt_rand()` | `random_bytes()`, `random_int()` |
-| JavaScript | `Math.random()` | `crypto.getRandomValues()` |
+| [Python](/?c=langages-de-programmation&s=python&p=python) | `random` | `secrets` |
+| [PHP](/?c=langages-de-programmation&s=php&p=php) | `rand()`, `mt_rand()` | `random_bytes()`, `random_int()` |
+| [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) | `Math.random()` | `crypto.getRandomValues()` |
 
 **A regra é simples e sem exceção: sempre que o valor precisar ser imprevisível, use um CSPRNG.** Isso vale para tokens de sessão, tokens CSRF, códigos de redefinição de senha, salts, identificadores secretos, chaves.
 

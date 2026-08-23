@@ -35,7 +35,7 @@ resumir "Joao" "Silva"
 
 ## Nenhum valor de retorno de verdade: apenas um código de saída
 
-`return` em Bash **não** retorna um valor no sentido de PHP/C: ele só fixa o **código de saída** da função (um inteiro de 0 a 255, recuperável via `$?`), exatamente como `exit` para um script inteiro:
+`return` em Bash **não** retorna um valor no sentido de [PHP](/?c=langages-de-programmation&s=php&p=php)/C: ele só fixa o **código de saída** da função (um inteiro de 0 a 255, recuperável via `$?`), exatamente como `exit` para um script inteiro:
 
 ```bash
 e_par() {

@@ -33,7 +33,7 @@ Propriedade: "ordenar duas vezes dá o mesmo resultado que ordenar uma vez"
   Para toda lista L: ordenar(ordenar(L)) == ordenar(L)
 ```
 
-Uma ferramenta de property-based testing (por exemplo [fast-check](https://fast-check.dev) em JavaScript, [Hypothesis](https://hypothesis.readthedocs.io) em Python, ou [QuickCheck](https://hackage.haskell.org/package/QuickCheck), a ferramenta histórica da área em Haskell) então gera automaticamente centenas de entradas aleatórias que respeitam as restrições dadas, e verifica a propriedade em cada uma.
+Uma ferramenta de property-based testing (por exemplo [fast-check](https://fast-check.dev) em [JavaScript](/?c=langages&s=javascript&p=javascript), [Hypothesis](https://hypothesis.readthedocs.io) em [Python](/?c=langages&s=python&p=python), ou [QuickCheck](https://hackage.haskell.org/package/QuickCheck), a ferramenta histórica da área em Haskell) então gera automaticamente centenas de entradas aleatórias que respeitam as restrições dadas, e verifica a propriedade em cada uma.
 
 ```text
 Teste property-based para "ordenar não muda o tamanho":

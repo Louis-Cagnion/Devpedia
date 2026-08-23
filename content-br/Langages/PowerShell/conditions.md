@@ -4,7 +4,7 @@ order: 5
 
 # As condições
 
-Ao contrário do Bash, onde uma condição passa pelo código de saída de um comando de teste (`[`, `[[`), o PowerShell tem verdadeiros **operadores de comparação embutidos na linguagem**, como em [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou em [C](/?c=langages-de-programmation&s=c&p=conditions).
+Ao contrário do [Bash](/?c=shells&s=bash&p=bash), onde uma condição passa pelo código de saída de um comando de teste (`[`, `[[`), o PowerShell tem verdadeiros **operadores de comparação embutidos na linguagem**, como em [PHP](/?c=langages-de-programmation&s=php&p=conditions) ou em [C](/?c=langages-de-programmation&s=c&p=conditions).
 
 ## `if` / `elseif` / `else`
 
@@ -18,7 +18,7 @@ if ($idade -ge 18) {
 }
 ```
 
-- Os blocos são delimitados por chaves `{ }`, como em C/PHP/JavaScript, não por palavras-chave de fechamento (`fi`).
+- Os blocos são delimitados por chaves `{ }`, como em [C](/?c=langages-de-programmation&s=c&p=c)/[PHP](/?c=langages-de-programmation&s=php&p=php)/[JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), não por palavras-chave de fechamento (`fi`).
 - A condição entre parênteses é uma verdadeira expressão booleana, não a chamada de um comando externo como o `[` do Bash.
 
 ## Os operadores de comparação

@@ -4,7 +4,7 @@ order: 8
 
 # CSS
 
-CSS (*Cascading Style Sheets*) é a linguagem que descreve a **aparência** de um documento [HTML](/?c=langages-de-balisage&s=html&p=html) (cores, tamanhos, posicionamento, layout), separando deliberadamente essa apresentação da estrutura (HTML) e do comportamento (JavaScript).
+CSS (*Cascading Style Sheets*) é a linguagem que descreve a **aparência** de um documento [HTML](/?c=langages-de-balisage&s=html&p=html) (cores, tamanhos, posicionamento, layout), separando deliberadamente essa apresentação da estrutura (HTML) e do comportamento ([JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)).
 
 Entre os conceitos essenciais do CSS, destacam-se:
 

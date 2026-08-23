@@ -4,7 +4,7 @@ order: 7
 
 # RAII e os ponteiros inteligentes
 
-Em C (veja [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire)), cada `malloc()` deve ser seguido de um `free()` manual: esquecido uma única vez, é um vazamento de memória; chamado duas vezes, um crash. **RAII** (*Resource Acquisition Is Initialization*) é o princípio central de C++ para eliminar essa classe inteira de bugs, apoiando-se em um mecanismo já visto: o destrutor (veja [As classes e objetos](/?c=langages-de-programmation&s=cpp&p=classes-et-objets)).
+Em [C](/?c=langages-de-programmation&s=c&p=c) (veja [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire)), cada `malloc()` deve ser seguido de um `free()` manual: esquecido uma única vez, é um vazamento de memória; chamado duas vezes, um crash. **RAII** (*Resource Acquisition Is Initialization*) é o princípio central de C++ para eliminar essa classe inteira de bugs, apoiando-se em um mecanismo já visto: o destrutor (veja [As classes e objetos](/?c=langages-de-programmation&s=cpp&p=classes-et-objets)).
 
 ## O princípio RAII
 

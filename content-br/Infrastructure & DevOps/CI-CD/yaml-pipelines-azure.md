@@ -68,7 +68,7 @@ steps:
   - script: deploy.sh --password minhaSenha123
 ```
 
-> **Armadilha:** escrever uma senha, uma chave de API ou um token de acesso diretamente no `azure-pipelines.yml`. Esse arquivo é versionado no repositório Git: o segredo continua visível no histórico mesmo depois de removido de uma versão posterior.
+> **Armadilha:** escrever uma senha, uma chave de API ou um token de acesso diretamente no `azure-pipelines.yml`. Esse arquivo é versionado no repositório [Git](/?c=git&p=git): o segredo continua visível no histórico mesmo depois de removido de uma versão posterior.
 >
 > **Boa prática:** armazenar os segredos em um **grupo de variáveis** (*variable group*) ou uma biblioteca dedicada do Azure DevOps, e depois referenciá-los no YAML pelo nome (`$(minhaSenha)`): o arquivo versionado nunca contém o valor em si.
 

@@ -18,7 +18,7 @@ f(5)  -> 10
 
 > **Analogia:** uma máquina de bebidas automática bem calibrada: apertar o botão "A1" sempre dá a mesma bebida. Se um dia o mesmo botão desse ora um suco, ora um café, isso não seria mais uma função no sentido matemático: o resultado deixaria de depender só da entrada.
 
-> **Cuidado:** uma função em programação (veja [As funções](/?c=shells&s=bash&p=fonctions) em Bash, ou seu equivalente em qualquer outra linguagem) **não** tem essa garantia: uma função que lê a hora atual, sorteia um número [aleatório](/?c=representation-des-donnees&p=aleatoire-et-generateurs), ou lê um arquivo pode retornar um resultado diferente a cada chamada, com a mesma entrada. Chamamos isso de função **não determinística**: um termo que vai voltar para explicar por que certos sistemas (incluindo um [LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm)) nunca respondem exatamente a mesma coisa duas vezes.
+> **Cuidado:** uma função em programação (veja [As funções](/?c=shells&s=bash&p=fonctions) em [Bash](/?c=shells&s=bash&p=bash), ou seu equivalente em qualquer outra linguagem) **não** tem essa garantia: uma função que lê a hora atual, sorteia um número [aleatório](/?c=representation-des-donnees&p=aleatoire-et-generateurs), ou lê um arquivo pode retornar um resultado diferente a cada chamada, com a mesma entrada. Chamamos isso de função **não determinística**: um termo que vai voltar para explicar por que certos sistemas (incluindo um [LLM](/?c=ia&s=nlp-llm&p=nlp-et-llm)) nunca respondem exatamente a mesma coisa duas vezes.
 >
 > **Boa prática:** em programação, preferir uma função determinística (mesma entrada → sempre mesma saída) sempre que possível: uma mesma chamada dá então um resultado previsível, portanto mais simples de testar e depurar.
 

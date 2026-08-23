@@ -6,7 +6,7 @@ order: 1
 
 ## Instruções contra expressões
 
-Em C, Python ou JavaScript, um `if` é uma **instrução**: ele não produz nenhum valor, apenas dispara a execução de um bloco ou de outro.
+Em C, [Python](/?c=langages-de-programmation&s=python&p=python) ou [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), um `if` é uma **instrução**: ele não produz nenhum valor, apenas dispara a execução de um bloco ou de outro.
 
 ```python
 # Python : if e uma instrucao, cada branch precisa atribuir explicitamente

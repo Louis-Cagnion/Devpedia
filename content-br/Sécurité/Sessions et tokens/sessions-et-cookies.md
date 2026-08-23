@@ -33,7 +33,7 @@ Cookie: session_id=a8f3d9...         ->    encontra a sessao a8f3d9...,
 
 Um **cookie** é um pequeno dado que o servidor pede ao navegador para guardar, e que este devolve automaticamente a cada requisição para o mesmo site: é o veículo mais comum para transportar o identificador de sessão de uma requisição para outra, sem que o desenvolvedor precise cuidar disso manualmente a cada chamada.
 
-Este capítulo permanece deliberadamente independente da linguagem utilizada: veja [Gerenciar conexões](/?c=langages-de-programmation&s=php&p=connexions) para a implementação concreta em PHP (`setcookie()`, `$_SESSION`, o identificador `PHPSESSID` gerado automaticamente).
+Este capítulo permanece deliberadamente independente da linguagem utilizada: veja [Gerenciar conexões](/?c=langages-de-programmation&s=php&p=connexions) para a implementação concreta em [PHP](/?c=langages-de-programmation&s=php&p=php) (`setcookie()`, `$_SESSION`, o identificador `PHPSESSID` gerado automaticamente).
 
 ## Por que o identificador de sessão deve ser imprevisível
 
@@ -50,7 +50,7 @@ Mesmo com um identificador perfeitamente imprevisível, um atacante que consegue
 
 > **Cuidado:** supor que um identificador de sessão imprevisível basta para proteger uma sessão. Um identificador imprevisível impede que ele seja *adivinhado*, mas não protege contra o fato de ser *roubado* uma vez que já existe.
 >
-> **Boa prática:** transmitir o cookie de sessão apenas por HTTPS, proibir seu acesso ao JavaScript, e limitar seu envio às requisições que realmente vêm do site (veja as opções `secure`/`httponly`/`samesite` detalhadas em [Gerenciar conexões](/?c=langages-de-programmation&s=php&p=connexions)).
+> **Boa prática:** transmitir o cookie de sessão apenas por HTTPS, proibir seu acesso ao [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), e limitar seu envio às requisições que realmente vêm do site (veja as opções `secure`/`httponly`/`samesite` detalhadas em [Gerenciar conexões](/?c=langages-de-programmation&s=php&p=connexions)).
 
 ---
 

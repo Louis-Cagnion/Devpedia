@@ -21,7 +21,7 @@ Um fluxo de trabalho tem apenas um gatilho ativo por vez (o que realmente o inic
 
 ## Os nós de código: sair do no-code quando necessário
 
-O **Code node** executa diretamente JavaScript ou Python dentro do fluxo de trabalho, para tratamentos específicos demais para um conector pré-configurado (uma transformação de dados complexa, um cálculo, uma filtragem sob medida):
+O **Code node** executa diretamente [JavaScript](/?c=langages&s=javascript&p=javascript) ou [Python](/?c=langages&s=python&p=python) dentro do fluxo de trabalho, para tratamentos específicos demais para um conector pré-configurado (uma transformação de dados complexa, um cálculo, uma filtragem sob medida):
 
 ```javascript
 // Code node (JavaScript): mantém apenas os itens cujo valor

@@ -41,7 +41,7 @@ Modelo de deteccao de layout (rapido, ~40x mais rapido que o pipeline completo)
 
 ## Reconstruir a grade: linhas, colunas, células mescladas
 
-Uma tabela detectada não se limita a uma grade retangular uniforme: uma célula de cabeçalho pode se estender por várias colunas, ou uma célula da primeira coluna pode cobrir várias linhas. Dois conceitos descrevem essas fusões, herdados diretamente do vocabulário HTML de tabelas:
+Uma tabela detectada não se limita a uma grade retangular uniforme: uma célula de cabeçalho pode se estender por várias colunas, ou uma célula da primeira coluna pode cobrir várias linhas. Dois conceitos descrevem essas fusões, herdados diretamente do vocabulário [HTML](/?c=langages-de-balisage&s=html&p=html) de tabelas:
 
 ```text
 +----------+----------------------+

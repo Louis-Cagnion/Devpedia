@@ -4,7 +4,7 @@ order: 1
 
 # Os arquivos de inicialização
 
-O Bash carrega, dependendo do caso, `~/.bashrc`, `~/.bash_profile` ou `~/.profile` (veja [Variáveis de ambiente](/?c=shells&s=bash&p=variables-denvironnement) em Bash). O Zsh divide essa mesma necessidade em **quatro arquivos distintos**, cada um com um papel preciso: entender essa distinção evita as surpresas clássicas ("minha variável não aparece no meu script mas funciona no meu terminal").
+O [Bash](/?c=shells&s=bash&p=bash) carrega, dependendo do caso, `~/.bashrc`, `~/.bash_profile` ou `~/.profile` (veja [Variáveis de ambiente](/?c=shells&s=bash&p=variables-denvironnement) em Bash). O Zsh divide essa mesma necessidade em **quatro arquivos distintos**, cada um com um papel preciso: entender essa distinção evita as surpresas clássicas ("minha variável não aparece no meu script mas funciona no meu terminal").
 
 ## Os quatro arquivos, e quando cada um carrega
 

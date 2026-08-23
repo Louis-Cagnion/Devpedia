@@ -8,7 +8,7 @@ Uma **thread** (linha de execução) é, como um processo, uma sequência de ins
 
 ## Criar e esperar uma thread
 
-A biblioteca POSIX threads (`pthread`) fornece as funções básicas; a compilação exige a opção `-pthread` ([`gcc`](https://gcc.gnu.org) `-pthread main.c -o programa`). O padrão **POSIX** é apresentado no capítulo [Escrever um script](/?c=shells&s=bash&p=scripts-et-shebang) de Bash.
+A biblioteca POSIX threads (`pthread`) fornece as funções básicas; a compilação exige a opção `-pthread` ([`gcc`](https://gcc.gnu.org) `-pthread main.c -o programa`). O padrão **POSIX** é apresentado no capítulo [Escrever um script](/?c=shells&s=bash&p=scripts-et-shebang) de [Bash](/?c=shells&s=bash&p=bash).
 
 ```c
 #include <pthread.h>

@@ -4,7 +4,7 @@ order: 5
 
 # Os dicionários e os conjuntos
 
-O **dicionário** (`dict`) associa chaves a valores, exatamente como um array associativo em PHP. O **conjunto** (`set`) armazena valores únicos, sem ordem nem duplicatas. As duas estruturas se apoiam internamente em uma [tabela hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage): é isso que permite que `dicionario["chave"]` ou `"valor" in conjunto` sejam quase instantâneos, mesmo em uma coleção muito grande.
+O **dicionário** (`dict`) associa chaves a valores, exatamente como um array associativo em [PHP](/?c=langages-de-programmation&s=php&p=php). O **conjunto** (`set`) armazena valores únicos, sem ordem nem duplicatas. As duas estruturas se apoiam internamente em uma [tabela hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage): é isso que permite que `dicionario["chave"]` ou `"valor" in conjunto` sejam quase instantâneos, mesmo em uma coleção muito grande.
 
 ## Os dicionários
 

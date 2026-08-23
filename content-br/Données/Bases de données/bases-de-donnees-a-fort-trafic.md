@@ -12,7 +12,7 @@ Uma página exibe uma lista de opções de filtro (as regiões disponíveis, as 
 
 > **Cuidado:** recalcular um dado custoso a cada requisição de usuário simplesmente porque a consulta está correta e dá o resultado certo. Uma consulta correta ainda pode ser uma má ideia se seu custo for desproporcional à atualidade realmente necessária de seu resultado.
 >
-> **Boa prática:** antes de otimizar a própria consulta (índices, reescrita SQL), perguntar-se primeiro se o resultado realmente precisa ser recalculado a cada visita, ou se pode ser armazenado em cache.
+> **Boa prática:** antes de otimizar a própria consulta (índices, reescrita [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql)), perguntar-se primeiro se o resultado realmente precisa ser recalculado a cada visita, ou se pode ser armazenado em cache.
 
 ## Cache e stale-while-revalidate
 

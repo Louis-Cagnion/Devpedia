@@ -86,7 +86,7 @@ $sql = "SELECT * FROM clientes WHERE cidade = '" . $_GET['cidade'] . "'";
 ?>
 ```
 
-Se `$_GET['cidade']` contivesse `Lyon' OR '1'='1`, a consulta se tornaria uma condição sempre verdadeira, retornando todas as linhas da tabela. Equivalente conceitual de um [estouro de buffer](/?c=langages-de-programmation&s=c&p=memoire) em C: uma entrada não controlada que modifica a **estrutura** do comando, em vez de permanecer um simples dado.
+Se `$_GET['cidade']` contivesse `Lyon' OR '1'='1`, a consulta se tornaria uma condição sempre verdadeira, retornando todas as linhas da tabela. Equivalente conceitual de um [estouro de buffer](/?c=langages-de-programmation&s=c&p=memoire) em [C](/?c=langages-de-programmation&s=c&p=c): uma entrada não controlada que modifica a **estrutura** do comando, em vez de permanecer um simples dado.
 
 Os espaços reservados nomeados (`:cidade`) impedem isso estruturalmente: o valor passado a `execute()` é **sempre** tratado como dado puro pelo driver, nunca reinterpretado como SQL, seja qual for seu conteúdo.
 

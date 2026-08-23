@@ -36,7 +36,7 @@ Um **alvo tátil** (*touch target*) é a área que um dedo ou cursor precisa alc
 
 A **navegação por teclado** permite usar toda uma interface sem mouse: `Tab` para passar de um elemento interativo ao seguinte, `Enter`/`Espaço` para ativá-lo, `Esc` para fechar uma janela. Ela é indispensável para usuários que não conseguem usar um mouse, e também acelera o uso para qualquer pessoa.
 
-> **Armadilha:** só pensar na navegação por teclado no momento de codificar, com a maquete já fechada. A ordem visual dos elementos, escolhida livremente na maquete, nem sempre corresponde a uma ordem de tabulação lógica: uma correção no código (reordenar manualmente, reestruturar o HTML) se torna necessária depois.
+> **Armadilha:** só pensar na navegação por teclado no momento de codificar, com a maquete já fechada. A ordem visual dos elementos, escolhida livremente na maquete, nem sempre corresponde a uma ordem de tabulação lógica: uma correção no código (reordenar manualmente, reestruturar o [HTML](/?c=langages-de-balisage&s=html&p=html)) se torna necessária depois.
 >
 > **Boa prática:** definir já na maquete a ordem lógica de navegação (qual elemento recebe o foco primeiro, e depois em qual ordem). Uma ordem que segue o sentido de leitura natural (de cima para baixo, da esquerda para a direita) evita esse problema na grande maioria dos casos.
 

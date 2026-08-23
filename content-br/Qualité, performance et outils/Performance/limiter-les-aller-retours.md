@@ -57,7 +57,7 @@ FROM clientes c
 LEFT JOIN pedidos p ON p.cliente_id = c.id;
 ```
 
-Veja a seção [SQL](/?c=domain-specific-languages-dsl&p=sql) para os joins, e o capítulo [Conexões](/?c=langages-de-programmation&s=php&p=connexions) de PHP para `PDO`.
+Veja a seção [SQL](/?c=domain-specific-languages-dsl&p=sql) para os joins, e o capítulo [Conexões](/?c=langages-de-programmation&s=php&p=connexions) de [PHP](/?c=langages-de-programmation&s=php&p=php) para `PDO`.
 
 > De passagem, escrever uma consulta por elemento concatenando uma variável na string SQL acumula dois problemas: a lentidão **e** a injeção SQL. As consultas preparadas resolvem o segundo, o join resolve o primeiro.
 
@@ -66,7 +66,7 @@ Veja a seção [SQL](/?c=domain-specific-languages-dsl&p=sql) para os joins, e o
 O padrão aparece em toda fronteira a ser atravessada:
 
 - **API HTTP**: privilegiar um endpoint que aceita uma lista de identificadores em vez de chamar *n* vezes o endpoint unitário;
-- **Sistema de arquivos**: ler um arquivo de uma vez em vez de caractere por caractere (é o papel dos buffers, veja [Chamadas de sistema e descritores](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) em C);
+- **Sistema de arquivos**: ler um arquivo de uma vez em vez de caractere por caractere (é o papel dos buffers, veja [Chamadas de sistema e descritores](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) em [C](/?c=langages-de-programmation&s=c&p=c));
 - **DOM**: acumular as modificações e depois aplicá-las, em vez de modificar o documento em um laço: cada escrita pode disparar um recálculo de layout.
 
 ## Saber quando não fazer isso

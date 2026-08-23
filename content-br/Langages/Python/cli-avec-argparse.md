@@ -116,7 +116,7 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-Um teste pode então chamar `main(["process", "test.pdf", "--marca", "peugeot"])` diretamente, sem nunca invocar um terminal de verdade, e verificar o valor inteiro retornado (`0` = sucesso, outro valor = falha) exatamente como o [código de saída](/?c=shells&s=bash&p=scripts-et-shebang) de um script Bash.
+Um teste pode então chamar `main(["process", "test.pdf", "--marca", "peugeot"])` diretamente, sem nunca invocar um terminal de verdade, e verificar o valor inteiro retornado (`0` = sucesso, outro valor = falha) exatamente como o [código de saída](/?c=shells&s=bash&p=scripts-et-shebang) de um script [Bash](/?c=shells&s=bash&p=bash).
 
 ---
 

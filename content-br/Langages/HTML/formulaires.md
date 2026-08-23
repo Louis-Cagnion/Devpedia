@@ -19,7 +19,7 @@ Um formulário HTML coleta dados digitados pelo usuário, para enviá-los a um s
 
 - `action`: a URL para onde os dados são enviados na submissão.
 - `method`: `GET` (dados visíveis na URL, para uma busca por exemplo) ou `POST` (dados no corpo da requisição, para dados sensíveis ou volumosos; veja [As trocas de dados: API e HTTP](/?c=infrastructure&p=api-et-http) para a diferença completa).
-- `name` em cada campo: é esse valor, **não** `id`, que identifica o campo do lado do servidor (`$_POST['email']` em PHP, por exemplo).
+- `name` em cada campo: é esse valor, **não** `id`, que identifica o campo do lado do servidor (`$_POST['email']` em [PHP](/?c=langages-de-programmation&s=php&p=php), por exemplo).
 
 ## `<label>`: indispensável, não decorativo
 

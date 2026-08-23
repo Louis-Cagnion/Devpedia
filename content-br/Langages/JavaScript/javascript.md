@@ -1,13 +1,13 @@
 # JavaScript
 
-O JavaScript é considerado uma linguagem de programação de **alto nível**, uma vez que oculta grande parte dos detalhes técnicos relacionados com o hardware e a gestão da memória. Ao contrário das linguagens de **baixo nível**, como o C, que exigem que o programador gere manualmente a memória e os endereços, o JavaScript automatiza estes aspetos através de um recolhedor de lixo (*garbage collector*), permitindo que o programador se concentre na lógica da aplicação.
+O JavaScript é considerado uma linguagem de programação de **alto nível**, uma vez que oculta grande parte dos detalhes técnicos relacionados com o hardware e a gestão da memória. Ao contrário das linguagens de **baixo nível**, como o [C](/?c=langages-de-programmation&s=c&p=c), que exigem que o programador gere manualmente a memória e os endereços, o JavaScript automatiza estes aspetos através de um recolhedor de lixo (*garbage collector*), permitindo que o programador se concentre na lógica da aplicação.
 
 Entre os conceitos essenciais utilizados em JavaScript, destacam-se, nomeadamente:
 
 - As variáveis e a tipagem dinâmica
 - Tabelas e objetos
 - Programação orientada a objetos (classes, protótipos, herança)
-- Manipulação do DOM (HTML, CSS) para criar interfaces interativas
+- Manipulação do DOM ([HTML](/?c=langages-de-balisage&s=html&p=html), CSS) para criar interfaces interativas
 - Gestão de eventos (cliques, formulários, teclado)
 - Programação assíncrona (callbacks, promessas, async/await) e pedidos de rede (fetch, AJAX)
 

@@ -6,7 +6,7 @@ order: 4
 
 A memória é um imenso array de bytes numerados. Entender como os valores são dispostos nela explica vários comportamentos confusos: por que uma struct ocupa mais espaço que a soma de seus campos, ou por que um arquivo binário escrito em uma máquina pode ser ilegível em outra.
 
-> Este capítulo trata da **disposição** dos dados. Para a alocação (pilha, heap, `malloc`/`free`) e os bugs associados, veja o capítulo [A gestão de memória](/?c=langages-de-programmation&s=c&p=memoire) de C.
+> Este capítulo trata da **disposição** dos dados. Para a alocação (pilha, heap, `malloc`/`free`) e os bugs associados, veja o capítulo [A gestão de memória](/?c=langages-de-programmation&s=c&p=memoire) de [C](/?c=langages-de-programmation&s=c&p=c).
 
 ## A unidade de endereçamento é o byte
 

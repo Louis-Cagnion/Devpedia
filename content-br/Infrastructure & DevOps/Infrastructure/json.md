@@ -4,7 +4,7 @@ order: 3
 
 # O formato JSON
 
-Uma [API](/?c=infrastructure&p=api-et-http) responde com dados; ainda é preciso um formato comum para escrevê-los, que o programa que os recebe consiga entender sem ambiguidade. O **JSON** (*JavaScript Object Notation*) é o formato mais usado para isso: um texto estruturado, legível tanto por um humano quanto por um programa.
+Uma [API](/?c=infrastructure&p=api-et-http) responde com dados; ainda é preciso um formato comum para escrevê-los, que o programa que os recebe consiga entender sem ambiguidade. O **JSON** (*[JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) Object Notation*) é o formato mais usado para isso: um texto estruturado, legível tanto por um humano quanto por um programa.
 
 ## Os tipos de valores em JSON
 

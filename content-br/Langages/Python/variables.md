@@ -4,7 +4,7 @@ order: 1
 
 # As variáveis e tipos básicos
 
-Para lembrar, [uma variável é uma caixa etiquetada que contém um valor](/?c=bases-de-l-informatique&p=la-variable). Python é **dinamicamente tipado**: uma variável não tem um tipo declarado antecipadamente, ela simplesmente assume o tipo do valor que lhe é atribuído, e pode mudar de tipo livremente durante o programa (ao contrário de PHP ou C, onde o tipo de uma propriedade/variável tipada permanece fixo uma vez declarado).
+Para lembrar, [uma variável é uma caixa etiquetada que contém um valor](/?c=bases-de-l-informatique&p=la-variable). Python é **dinamicamente tipado**: uma variável não tem um tipo declarado antecipadamente, ela simplesmente assume o tipo do valor que lhe é atribuído, e pode mudar de tipo livremente durante o programa (ao contrário de [PHP](/?c=langages-de-programmation&s=php&p=php) ou [C](/?c=langages-de-programmation&s=c&p=c), onde o tipo de uma propriedade/variável tipada permanece fixo uma vez declarado).
 
 ## Declarar uma variável
 
@@ -47,7 +47,7 @@ a or b   # OU logico (nao '||')
 not a    # NAO logico (nao '!')
 ```
 
-> **Nota:** Python usa as palavras-chave `and`/`or`/`not` em vez dos símbolos `&&`/`||`/`!` encontrados em PHP, JavaScript ou C.
+> **Nota:** Python usa as palavras-chave `and`/`or`/`not` em vez dos símbolos `&&`/`||`/`!` encontrados em PHP, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ou C.
 
 ## `==` e `is`: o valor ou o objeto?
 

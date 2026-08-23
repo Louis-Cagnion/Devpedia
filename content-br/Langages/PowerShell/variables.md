@@ -6,7 +6,7 @@ order: 3
 
 Para lembrar, [uma variável é uma caixa etiquetada que contém um valor](/?c=bases-de-l-informatique&p=la-variable): o que segue cobre apenas o que é específico do PowerShell.
 
-Ao contrário do Bash, onde tudo é manipulado como texto, uma variável PowerShell mantém o **tipo real** de seu valor: um número continua sendo um número, uma lista continua sendo uma lista de objetos, sem conversão implícita para string. Toda variável começa com `$`, inclusive na atribuição (sem a regra "sem `$` para escrever, com `$` para ler" como no Bash).
+Ao contrário do [Bash](/?c=shells&s=bash&p=bash), onde tudo é manipulado como texto, uma variável PowerShell mantém o **tipo real** de seu valor: um número continua sendo um número, uma lista continua sendo uma lista de objetos, sem conversão implícita para string. Toda variável começa com `$`, inclusive na atribuição (sem a regra "sem `$` para escrever, com `$` para ler" como no Bash).
 
 ## Declarar e ler uma variável
 

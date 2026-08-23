@@ -45,7 +45,7 @@ O n8n não oferece uma única instância com um seletor "dev/prod" integrado: ca
 | Método | Funcionamento |
 |---|---|
 | **Export/import manual** | Baixar o JSON da instância de origem, importá-lo na instância de destino (visto no capítulo anterior) |
-| **Source Control (Git)** | Uma instância n8n se conecta a uma branch de um repositório Git; um mesmo fluxo de trabalho versionado pode ser enviado de um ambiente para outro seguindo o fluxo Git habitual (dev → staging → produção) |
+| **Source Control ([Git](/?c=qualite-performance-et-outils&s=git&p=git))** | Uma instância n8n se conecta a uma branch de um repositório Git; um mesmo fluxo de trabalho versionado pode ser enviado de um ambiente para outro seguindo o fluxo Git habitual (dev → staging → produção) |
 
 > **Cilada:** enviar uma mudança diretamente para produção sem passar por um ambiente intermediário, em particular para um fluxo de trabalho que toca dados reais (um banco de dados de produção, um envio de email para clientes reais).
 >

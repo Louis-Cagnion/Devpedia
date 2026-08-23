@@ -75,8 +75,8 @@ Documentos/fotos/../trabalho/relatorio.docx
 
 Trocar a pasta atual e listar o conteúdo de uma pasta são duas ações básicas, mas o nome exato dos comandos depende do shell usado, já visto no [capítulo sobre o terminal](/?c=bases-de-l-informatique&p=le-terminal):
 
-- No Bash: veja [Permissões e manipulação de arquivos](/?c=shells&s=bash&p=permissions-et-fichiers).
-- No PowerShell: veja [Comandos básicos](/?c=shells&s=powershell&p=commandes-de-base).
+- No [Bash](/?c=shells&s=bash&p=bash): veja [Permissões e manipulação de arquivos](/?c=shells&s=bash&p=permissions-et-fichiers).
+- No [PowerShell](/?c=shells&s=powershell&p=powershell): veja [Comandos básicos](/?c=shells&s=powershell&p=commandes-de-base).
 
 ---
 

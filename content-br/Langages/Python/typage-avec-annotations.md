@@ -4,7 +4,7 @@ order: 11
 
 # A tipagem com anotações
 
-Python continua **dinamicamente tipado** mesmo com anotações de tipo: ao contrário de PHP (veja [As funções e métodos mais úteis](/?c=langages-de-programmation&s=php&p=methodes)), onde um tipo declarado é verificado e aplicado **na execução**, as anotações Python são apenas indicações **opcionais**, nunca verificadas pelo próprio interpretador.
+Python continua **dinamicamente tipado** mesmo com anotações de tipo: ao contrário de [PHP](/?c=langages-de-programmation&s=php&p=php) (veja [As funções e métodos mais úteis](/?c=langages-de-programmation&s=php&p=methodes)), onde um tipo declarado é verificado e aplicado **na execução**, as anotações Python são apenas indicações **opcionais**, nunca verificadas pelo próprio interpretador.
 
 ## Anotar variáveis e funções
 

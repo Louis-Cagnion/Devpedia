@@ -21,7 +21,7 @@ cartao.dataset.role;      // "cartao-produto"
 cartao.dataset.emEstoque; // "true" -> "data-em-estoque" vira "emEstoque" em camelCase do lado JS
 ```
 
-`data-*` permite anexar um dado a um elemento HTML, recuperável em JavaScript via `.dataset`: um jeito padrão de fazer uma informação circular do HTML para o JavaScript, sem precisar de variáveis globais ou requisições adicionais.
+`data-*` permite anexar um dado a um elemento HTML, recuperável em [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) via `.dataset`: um jeito padrão de fazer uma informação circular do HTML para o JavaScript, sem precisar de variáveis globais ou requisições adicionais.
 
 > **Nota:** qualquer nome depois de `data-` é válido (`data-qualquer-coisa`): a única regra é a conversão automática de **kebab-case** (palavras separadas por hífens, `data-em-estoque`) para **camelCase** (cada palavra seguinte colada e capitalizada, `emEstoque`) em JavaScript, uma simples convenção de nomenclatura, não um mecanismo próprio de `data-*`.
 
@@ -64,7 +64,7 @@ O **ARIA** (*Accessible Rich Internet Applications*) adiciona informações de a
 <button class="botao-personalizado">Botao personalizado</button>
 ```
 
-Um `<button>` nativo já gerencia a acessibilidade pelo teclado (foco via Tab, ativação via Enter/Espaço) e o anúncio de seu papel por um leitor de tela: é por isso que a "regra de ouro" acima recomenda partir de um `<button>` de verdade, reestilizado em CSS se necessário, em vez de recriar um botão a partir de uma `<div>`.
+Um `<button>` nativo já gerencia a acessibilidade pelo teclado (foco via Tab, ativação via Enter/Espaço) e o anúncio de seu papel por um leitor de tela: é por isso que a "regra de ouro" acima recomenda partir de um `<button>` de verdade, reestilizado em [CSS](/?c=langages-de-balisage&s=css&p=css) se necessário, em vez de recriar um botão a partir de uma `<div>`.
 
 Se um caso específico realmente impede usar um `<button>` nativo, recriar seu comportamento exige mais do que apenas `tabindex`/`role`:
 

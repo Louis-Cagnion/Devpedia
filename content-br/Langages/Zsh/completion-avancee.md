@@ -4,7 +4,7 @@ order: 4
 
 # A completação avançada
 
-O Bash completa nomes de arquivos e, para alguns comandos, oferece uma lista simples via a tecla Tab. O sistema de completação do zsh (`compsys`) é um motor à parte, sensível ao **contexto**: ele sabe que depois de `git checkout` deve sugerir nomes de branches, e que depois de `kill`, PIDs de processos em execução, não apenas nomes de arquivos.
+O [Bash](/?c=shells&s=bash&p=bash) completa nomes de arquivos e, para alguns comandos, oferece uma lista simples via a tecla Tab. O sistema de completação do zsh (`compsys`) é um motor à parte, sensível ao **contexto**: ele sabe que depois de `git checkout` deve sugerir nomes de branches, e que depois de `kill`, PIDs de processos em execução, não apenas nomes de arquivos.
 
 ## Ativar o sistema de completação
 
