@@ -22,14 +22,18 @@
     /* solid var(--bg) first: the non-negotiable scrim that keeps --text/--text-muted
        contrast identical to every other page type, whatever sits above it */
     background-color: var(--bg);
+    /* two dot layers, the second offset by half a tile in both x and y, so dots line up
+       along diagonals rather than a plain orthogonal grid */
     background-image:
+        radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0),
         radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0),
         radial-gradient(ellipse at 15% 10%, color-mix(in srgb, var(--accent-warm) 10%, transparent), transparent 45%),
         radial-gradient(ellipse at 85% 90%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 45%);
     /* tiled starfield (not enumerated dot positions) so it scales to any chapter length
        for free, no image asset, no extra HTTP request */
-    background-size: 40px 40px, auto, auto;
-    background-repeat: repeat, no-repeat, no-repeat;
+    background-size: 40px 40px, 40px 40px, auto, auto;
+    background-position: 0 0, 20px 20px, 0 0, 0 0;
+    background-repeat: repeat, repeat, no-repeat, no-repeat;
     opacity: 0.5;
 }
 
