@@ -18,5 +18,12 @@ Signalé par Louis (23/08/2026) : le Bluetooth changeait de chapitre au lieu de 
 - Ajout d'une `artwork` (`icons/icon-192.png`/`icon-512.png`) au `MediaMetadata` : sans image, iOS retombe sur ses boutons ±10s génériques au lieu d'afficher précédent/suivant -- cause probable de l'absence des flèches, à confirmer sur iPhone (pas vérifiable sans device).
 - Reste à Louis : confirmer sur iPhone, écran verrouillé, que les flèches précédent/suivant apparaissent bien et changent de paragraphe (et pas de chapitre).
 
+## 3. La lecture bloque après avoir passé un bloc de code (probablement écran verrouillé)
+Signalé par Louis (23/08/2026) : après avoir cliqué "Continuer" pour passer un bloc de code, ça lit environ une seconde puis se bloque. Pas encore diagnostiqué -- les symptômes précédents de cette investigation (verrouillage, seek, reprise) touchent tous `speakNextViaAudio()`/`js/reader.js`, mais rien d'identifié avec certitude sans données du téléphone : le sandbox de cette session est trop instable pour ce genre de test (cf. point 1 ci-dessus).
+- Reste à Louis : reproduire avec l'overlay de debug actif (5 taps sur le logo) et partager les lignes du log autour du moment où ça bloque (`js/reader-debug.js`, log dans `localStorage`).
+
+## 4. Navigation section précédente/suivante en bout de section
+Demandé par Louis (23/08/2026) : au premier/dernier chapitre d'une section, ajouter un bouton (même style que les boutons chapitre précédent/suivant déjà présents sur la page) qui bascule vers la section adjacente (dernier chapitre de la précédente / premier de la suivante) au lieu de ne rien afficher. Pas encore implémenté. Sans lien avec l'auto-advance audio (`resolveNextChapterAcrossSite()` traverse déjà les sections pour la lecture automatique) -- purement la navigation manuelle à l'écran.
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).

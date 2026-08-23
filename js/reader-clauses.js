@@ -1,10 +1,12 @@
 import { HAS_SPOKEN_CONTENT } from "./reader-pronunciation.js";
 import { WORD_PATTERN } from "./reader-highlight.js";
 
-/* A clause boundary: sentence-ending marks, or a comma/semicolon/colon not between two digits
-   (a decimal/ratio, not a pause). Split this granularly, not per sentence, since Chrome's
-   speechSynthesis can silently cut a long utterance short partway through (Louis, 2026-08-16). */
-export const CLAUSE_END_PATTERN = /[.!?…]+[)»"'’”]*|[,;:](?!\d)/g;
+/* A clause boundary: sentence-ending marks, a comma/semicolon/colon not between two digits
+   (a decimal/ratio, not a pause), or a parenthesis -- without one, a parenthetical read at the
+   same pace as the surrounding sentence didn't sound like an aside (Louis, 23/08/2026). Split
+   this granularly, not per sentence, since Chrome's speechSynthesis can silently cut a long
+   utterance short partway through (Louis, 2026-08-16). */
+export const CLAUSE_END_PATTERN = /[.!?…]+[)»"'’”]*|[,;:](?!\d)|[()]/g;
 
 /**
  * @brief Splits synthesized text into clauses at CLAUSE_END_PATTERN, carrying each clause's own
