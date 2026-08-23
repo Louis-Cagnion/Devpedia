@@ -1622,6 +1622,17 @@
               "label": "Authentification multifacteur"
             }
           ]
+        },
+        {
+          "id": "securite-offensive",
+          "label": "Sécurité offensive",
+          "folder": "Sécurité offensive",
+          "chapters": [
+            {
+              "id": "bas-niveau-execution-dun-programme",
+              "label": "Comment un programme s'exécute réellement"
+            }
+          ]
         }
       ]
     },
