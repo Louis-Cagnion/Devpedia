@@ -364,10 +364,12 @@ code {
    directly on the code itself would double it up. */
 .chapterPage code {
     border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    background-color: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .chapterPage pre code {
     border: none;
+    background-color: var(--bg-elevated-2);
 }
 
 /* td already uses --bg-elevated-2 (cf. below) — a plain `code` span there would be
