@@ -78,7 +78,7 @@ pip install requests       # instala ÚNICAMENTE en este entorno, no globalmente
 deactivate                 # sale del entorno virtual
 ```
 
-> **Nota:** una vez activado, `pip install` y `python` apuntan a los ejecutables **del entorno virtual**, no a los instalados globalmente en el sistema: esto es lo que garantiza el aislamiento. La carpeta `.venv/` nunca debe versionarse con Git (ver [El archivo .gitignore](/?c=git&p=gitignore)): se regenera por completo a partir de `requirements.txt`.
+> **Nota:** una vez activado, `pip install` y `python` apuntan a los ejecutables **del entorno virtual**, no a los instalados globalmente en el sistema: esto es lo que garantiza el aislamiento. La carpeta `.venv/` nunca debe versionarse con [Git](/?c=git&p=git) (ver [El archivo .gitignore](/?c=git&p=gitignore)): se regenera por completo a partir de `requirements.txt`.
 
 ## Organizar un proyecto en paquete
 

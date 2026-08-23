@@ -8,7 +8,7 @@ Un **hilo** (*thread*, hilo de ejecución) es, como un proceso, una secuencia de
 
 ## Crear y esperar un hilo
 
-La biblioteca POSIX threads (`pthread`) proporciona las funciones básicas; la compilación requiere la opción `-pthread` ([`gcc`](https://gcc.gnu.org) `-pthread main.c -o programa`). La norma **POSIX** se presenta en el capítulo [Escribir un script](/?c=shells&s=bash&p=scripts-et-shebang) de Bash.
+La biblioteca POSIX threads (`pthread`) proporciona las funciones básicas; la compilación requiere la opción `-pthread` ([`gcc`](https://gcc.gnu.org) `-pthread main.c -o programa`). La norma **POSIX** se presenta en el capítulo [Escribir un script](/?c=shells&s=bash&p=scripts-et-shebang) de [Bash](/?c=shells&s=bash&p=bash).
 
 ```c
 #include <pthread.h>

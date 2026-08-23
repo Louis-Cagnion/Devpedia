@@ -36,7 +36,7 @@ Un **objetivo táctil** (*touch target*) es la zona que un dedo o un cursor debe
 
 La **navegación por teclado** permite usar toda una interfaz sin ratón: `Tab` para pasar de un elemento interactivo al siguiente, `Enter`/`Espacio` para activarlo, `Esc` para cerrar una ventana. Es indispensable para los usuarios que no pueden usar un ratón, y también acelera el uso para cualquiera.
 
-> **Trampa:** pensar la navegación por teclado solo al momento de programar, una vez fijada la maqueta. El orden visual de los elementos, elegido libremente en la maqueta, no siempre corresponde entonces a un orden de tabulación lógico: un ajuste en código (reordenar manualmente, reestructurar el HTML) se vuelve necesario después.
+> **Trampa:** pensar la navegación por teclado solo al momento de programar, una vez fijada la maqueta. El orden visual de los elementos, elegido libremente en la maqueta, no siempre corresponde entonces a un orden de tabulación lógico: un ajuste en código (reordenar manualmente, reestructurar el [HTML](/?c=langages-de-balisage&s=html&p=html)) se vuelve necesario después.
 >
 > **Buena práctica:** definir desde la maqueta el orden lógico de navegación (qué elemento recibe el foco primero, y luego en qué orden). Un orden que sigue el sentido de lectura natural (de arriba hacia abajo, de izquierda a derecha) evita este problema en la gran mayoría de los casos.
 

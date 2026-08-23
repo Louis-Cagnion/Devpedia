@@ -4,7 +4,7 @@ order: 13
 
 # La programación asíncrona (callbacks, Promises, async/await)
 
-JavaScript se ejecuta en un **único hilo** (a diferencia de los [hilos](/?c=langages-de-programmation&s=c&p=threads) en C): solo puede hacer una cosa a la vez. Sin embargo, una solicitud de red o un temporizador no bloquean todo el programa mientras esperan: esa es la función del modelo asíncrono, construido en torno al **bucle de eventos** (*event loop*).
+JavaScript se ejecuta en un **único hilo** (a diferencia de los [hilos](/?c=langages-de-programmation&s=c&p=threads) en [C](/?c=langages-de-programmation&s=c&p=c)): solo puede hacer una cosa a la vez. Sin embargo, una solicitud de red o un temporizador no bloquean todo el programa mientras esperan: esa es la función del modelo asíncrono, construido en torno al **bucle de eventos** (*event loop*).
 
 ## El principio: el bucle de eventos
 

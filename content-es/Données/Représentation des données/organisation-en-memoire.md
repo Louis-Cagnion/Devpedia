@@ -6,7 +6,7 @@ order: 4
 
 La memoria es un inmenso array de bytes numerados. Entender cómo se disponen los valores ahí explica varios comportamientos desconcertantes: por qué una estructura ocupa más espacio que la suma de sus campos, o por qué un archivo binario escrito en una máquina puede ser ilegible en otra.
 
-> Este capítulo trata la **disposición** de los datos. Para la asignación (pila, heap, `malloc`/`free`) y los bugs asociados, ver el capítulo [La gestión de la memoria](/?c=langages-de-programmation&s=c&p=memoire) de C.
+> Este capítulo trata la **disposición** de los datos. Para la asignación (pila, heap, `malloc`/`free`) y los bugs asociados, ver el capítulo [La gestión de la memoria](/?c=langages-de-programmation&s=c&p=memoire) de [C](/?c=langages-de-programmation&s=c&p=c).
 
 ## La unidad de direccionamiento es el byte
 

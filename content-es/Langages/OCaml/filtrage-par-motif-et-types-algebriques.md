@@ -15,7 +15,7 @@ type forma =
   | Triangulo of float * float * float (* tres lados *)
 ```
 
-Un valor de tipo `forma` es **exactamente una** de estas tres posibilidades, nunca una mezcla ni otra cosa, a diferencia de una clase base con herencia (cf. capítulo [Herencia y polimorfismo](/?c=langages-de-programmation&s=cpp&p=heritage-et-polymorphisme), sección C++), donde el conjunto de subclases posibles permanece abierto: cualquiera puede añadir una nueva en otra parte del código.
+Un valor de tipo `forma` es **exactamente una** de estas tres posibilidades, nunca una mezcla ni otra cosa, a diferencia de una clase base con herencia (cf. capítulo [Herencia y polimorfismo](/?c=langages-de-programmation&s=cpp&p=heritage-et-polymorphisme), sección [C++](/?c=langages-de-programmation&s=cpp&p=cpp)), donde el conjunto de subclases posibles permanece abierto: cualquiera puede añadir una nueva en otra parte del código.
 
 ## El filtrado por patrones (`match`)
 
@@ -31,7 +31,7 @@ let area forma =
       sqrt (s *. (s -. a) *. (s -. b) *. (s -. c))
 ```
 
-Comparado con un `switch` (cf. capítulo [Las condiciones](/?c=langages-de-programmation&s=c&p=conditions), sección C), la diferencia no es solo estética: cada rama **extrae** directamente `radio`, o `ancho` y `alto`, sin acceso manual a campos (`forma.radio`) ni distinción de tipo previa.
+Comparado con un `switch` (cf. capítulo [Las condiciones](/?c=langages-de-programmation&s=c&p=conditions), sección [C](/?c=langages-de-programmation&s=c&p=c)), la diferencia no es solo estética: cada rama **extrae** directamente `radio`, o `ancho` y `alto`, sin acceso manual a campos (`forma.radio`) ni distinción de tipo previa.
 
 ## La exhaustividad verificada en la compilación
 
@@ -45,7 +45,7 @@ let area_incompleta forma =
   (* Warning 8: este filtrado no es exhaustivo -- el caso Triangulo no esta cubierto *)
 ```
 
-Es solo una **advertencia** por defecto (el programa compila de todos modos), pero un proyecto serio suele activar la opción que convierte este tipo de advertencia en un error bloqueante, haciendo así de la exhaustividad una garantía, no una simple sugerencia. Es una diferencia estructural mayor con un `switch`/`if-elif` en C, PHP o JavaScript: ahí un caso olvidado compila sin la menor advertencia, y falla solo en la **ejecución**, si y solo si ese caso preciso se presenta algún día en producción, uno de los fallos silenciosos más costosos de diagnosticar, ya que solo se manifiesta meses después de escribir el código, sobre una entrada que nadie había anticipado. En OCaml, añadir un nuevo caso a un tipo variante (`Rombo of float`) hace que inmediatamente salgan a la luz, desde la compilación, **todos** los `match` del programa entero que deberían actualizarse para gestionarlo.
+Es solo una **advertencia** por defecto (el programa compila de todos modos), pero un proyecto serio suele activar la opción que convierte este tipo de advertencia en un error bloqueante, haciendo así de la exhaustividad una garantía, no una simple sugerencia. Es una diferencia estructural mayor con un `switch`/`if-elif` en C, [PHP](/?c=langages-de-programmation&s=php&p=php) o [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript): ahí un caso olvidado compila sin la menor advertencia, y falla solo en la **ejecución**, si y solo si ese caso preciso se presenta algún día en producción, uno de los fallos silenciosos más costosos de diagnosticar, ya que solo se manifiesta meses después de escribir el código, sobre una entrada que nadie había anticipado. En OCaml, añadir un nuevo caso a un tipo variante (`Rombo of float`) hace que inmediatamente salgan a la luz, desde la compilación, **todos** los `match` del programa entero que deberían actualizarse para gestionarlo.
 
 ## El tipo `option`, una alternativa estructural a `null`
 
@@ -64,7 +64,7 @@ match encontrar_usuario 42 with
 | None -> print_endline "Usuario no encontrado"
 ```
 
-La diferencia con `None` en Python (cf. capítulo [Las variables](/?c=langages-de-programmation&s=python&p=variables) para `is None`) es que el compilador **obliga** a tratar el caso `None`: el tipo de una función que puede no encontrar nada es explícitamente `string option`, nunca simplemente `string`. Es por tanto imposible olvidar verificar la ausencia de valor sin que el compilador lo señale, mientras que un [`NullPointerException`](https://docs.oracle.com/en/java/) o un `TypeError: 'NoneType' object is not subscriptable` en Python solo aparece en la ejecución, en el camino de código preciso que lo olvidó.
+La diferencia con `None` en [Python](/?c=langages-de-programmation&s=python&p=python) (cf. capítulo [Las variables](/?c=langages-de-programmation&s=python&p=variables) para `is None`) es que el compilador **obliga** a tratar el caso `None`: el tipo de una función que puede no encontrar nada es explícitamente `string option`, nunca simplemente `string`. Es por tanto imposible olvidar verificar la ausencia de valor sin que el compilador lo señale, mientras que un [`NullPointerException`](https://docs.oracle.com/en/java/) o un `TypeError: 'NoneType' object is not subscriptable` en Python solo aparece en la ejecución, en el camino de código preciso que lo olvidó.
 
 ---
 

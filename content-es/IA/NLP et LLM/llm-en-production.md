@@ -18,7 +18,7 @@ Un LLM sobresale en las tareas cuya entrada y salida son **lenguaje**: entender 
 | Calcular un IVA o una fecha de vencimiento | No | Un LLM predice el token más plausible, no el resultado exacto de un cálculo (ver más abajo) |
 | Decidir solo una acción irreversible (enviar una transferencia) | No, no sin salvaguarda humana | Respuesta no determinista, nunca garantizada al 100% |
 
-> **Nota:** para el cálculo exacto, la arquitectura correcta no es prompt-ear mejor al LLM, es darle una herramienta (una función Python, una consulta SQL) que llame y cuyo resultado transmita (ver el capítulo [Agentes](/?c=ia&s=nlp-llm&p=agents)). El LLM sigue siendo excelente para entender *que hay que* calcular un IVA y *con qué números*, pero nunca debe ser la calculadora en sí.
+> **Nota:** para el cálculo exacto, la arquitectura correcta no es prompt-ear mejor al LLM, es darle una herramienta (una función [Python](/?c=langages-de-programmation&s=python&p=python), una consulta [SQL](/?c=domain-specific-languages-dsl&p=sql)) que llame y cuyo resultado transmita (ver el capítulo [Agentes](/?c=ia&s=nlp-llm&p=agents)). El LLM sigue siendo excelente para entender *que hay que* calcular un IVA y *con qué números*, pero nunca debe ser la calculadora en sí.
 
 ## Los límites estructurales a conocer antes de diseñar
 

@@ -111,9 +111,9 @@ El **factor de carga** (número de entradas ÷ tamaño del array) mide cuán lle
 
 ## Dónde se esconden ya las tablas hash a tu alrededor
 
-- Los arrays **asociativos** de PHP (véase [Las variables](/?c=langages-de-programmation&s=php&p=variables)) están, internamente, implementados con una estructura muy cercana a una tabla hash.
-- El modelo de almacenamiento de objetos de Git (véase [La arquitectura interna de Git](/?c=git&p=architecture-interne)) **es** directamente una tabla hash: la clave de cada objeto es el hash SHA-1 de su contenido, y la subcarpeta `.git/objects/xx/` cumple exactamente el papel de una casilla (*bucket*).
-- Los diccionarios de Python (`dict`) se basan en el mismo principio.
+- Los arrays **asociativos** de [PHP](/?c=langages-de-programmation&s=php&p=php) (véase [Las variables](/?c=langages-de-programmation&s=php&p=variables)) están, internamente, implementados con una estructura muy cercana a una tabla hash.
+- El modelo de almacenamiento de objetos de [Git](/?c=git&p=git) (véase [La arquitectura interna de Git](/?c=git&p=architecture-interne)) **es** directamente una tabla hash: la clave de cada objeto es el hash SHA-1 de su contenido, y la subcarpeta `.git/objects/xx/` cumple exactamente el papel de una casilla (*bucket*).
+- Los diccionarios de [Python](/?c=langages-de-programmation&s=python&p=python) (`dict`) se basan en el mismo principio.
 
 Entender las tablas hash es, por tanto, entender un mecanismo que se repite silenciosamente en casi la totalidad de los lenguajes y herramientas modernos.
 

@@ -22,7 +22,7 @@ Los enlaces (`<a>`) y las imágenes (`<img>`) son dos etiquetas fundamentales de
 <a href="https://ejemplo.com" target="_blank" rel="noopener noreferrer">Abre en una nueva pestaña</a>
 ```
 
-> **Nota:** `target="_blank"` sin `rel="noopener"` permite que la nueva página abierta acceda (mediante JavaScript) al objeto `window` de la página de origen: un riesgo de seguridad menor, pero real (*tabnabbing*). `noopener` (y `noreferrer`, que además impide el envío de la URL de origen) deben acompañar sistemáticamente a cualquier `target="_blank"`.
+> **Nota:** `target="_blank"` sin `rel="noopener"` permite que la nueva página abierta acceda (mediante [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) al objeto `window` de la página de origen: un riesgo de seguridad menor, pero real (*tabnabbing*). `noopener` (y `noreferrer`, que además impide el envío de la URL de origen) deben acompañar sistemáticamente a cualquier `target="_blank"`.
 
 ### Enlaces relativos frente a absolutos
 

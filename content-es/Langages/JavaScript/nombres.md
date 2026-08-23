@@ -20,7 +20,7 @@ typeof NaN;   // "number"
 Math.trunc(5 / 2)  // 2   -> hay que pedirla explícitamente
 ```
 
-La ausencia de división entera nativa es una trampa frecuente para quien viene de C o de Python (`5 // 2`).
+La ausencia de división entera nativa es una trampa frecuente para quien viene de C o de [Python](/?c=langages-de-programmation&s=python&p=python) (`5 // 2`).
 
 ## Comparar decimales
 

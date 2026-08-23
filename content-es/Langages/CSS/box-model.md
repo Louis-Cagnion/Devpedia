@@ -4,7 +4,7 @@ order: 3
 
 # El modelo de caja (box model)
 
-Cada elemento HTML se representa en CSS como una caja rectangular, compuesta por cuatro capas concéntricas: comprender este modelo es imprescindible para dominar los tamaños, los espacios y las alineaciones.
+Cada elemento [HTML](/?c=langages-de-balisage&s=html&p=html) se representa en CSS como una caja rectangular, compuesta por cuatro capas concéntricas: comprender este modelo es imprescindible para dominar los tamaños, los espacios y las alineaciones.
 
 ## Las cuatro capas
 

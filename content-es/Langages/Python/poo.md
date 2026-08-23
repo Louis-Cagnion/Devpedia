@@ -4,7 +4,7 @@ order: 10
 
 # La programación orientada a objetos
 
-Python es un lenguaje orientado a objetos de principio a fin: incluso un `int` o un `str` es en realidad un objeto, instancia de una clase. La sintaxis de las clases personalizadas se parece a la de PHP, con una diferencia inmediata: `self` (el equivalente de `$this`) es un parámetro **explícito** de cada método, nunca implícito.
+Python es un lenguaje orientado a objetos de principio a fin: incluso un `int` o un `str` es en realidad un objeto, instancia de una clase. La sintaxis de las clases personalizadas se parece a la de [PHP](/?c=langages-de-programmation&s=php&p=php), con una diferencia inmediata: `self` (el equivalente de `$this`) es un parámetro **explícito** de cada método, nunca implícito.
 
 ## Declarar una clase
 

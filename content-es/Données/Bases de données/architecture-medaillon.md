@@ -103,6 +103,6 @@ Nada impide técnicamente que una herramienta de reporting se conecte directamen
 | | |
 |---|---|
 | **Para recordar** | La arquitectura medallón divide un pipeline de datos en tres copias sucesivas: bronce (bruta, intacta), plata (limpia, esquema estable), oro (agregada para una necesidad de negocio precisa, a menudo modelada en [estrella](/?c=bases-de-donnees&p=modeles-en-etoile)). |
-| **Herramientas utilizables** | Consultas SQL de transformación (`INSERT ... SELECT`, dedup por `ROW_NUMBER()`, agregación por `GROUP BY`) para hacer pasar una tabla de una capa a la siguiente. |
+| **Herramientas utilizables** | Consultas [SQL](/?c=domain-specific-languages-dsl&p=sql) de transformación (`INSERT ... SELECT`, dedup por `ROW_NUMBER()`, agregación por `GROUP BY`) para hacer pasar una tabla de una capa a la siguiente. |
 | **Trampas a evitar** | Corregir o filtrar desde el bronce; aplicar una regla de limpieza no documentada; crear una tabla oro por panel; conectar una herramienta de reporting directamente al bronce o a la plata. |
 | **Buenas prácticas** | Bronce solo en modo añadir; reglas de limpieza trazables; tablas oro pensadas por necesidad de negocio reutilizable; el oro como único punto de entrada para los consumidores externos al pipeline. |

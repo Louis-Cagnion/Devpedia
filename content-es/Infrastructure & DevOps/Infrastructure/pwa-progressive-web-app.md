@@ -8,7 +8,7 @@ Una **PWA** (*Progressive Web App*) es un sitio web clásico al que dos mecanism
 
 ## El service worker: un script que corre entre el sitio y la red
 
-Un **service worker** es un script de JavaScript que el navegador ejecuta en segundo plano, por separado de la propia página, capaz de interceptar cada petición de red que el sitio emite antes de que llegue realmente a internet:
+Un **service worker** es un script de [JavaScript](/?c=langages&s=javascript&p=javascript) que el navegador ejecuta en segundo plano, por separado de la propia página, capaz de interceptar cada petición de red que el sitio emite antes de que llegue realmente a internet:
 
 ```text
 Sin service worker:                Con service worker:
@@ -30,7 +30,7 @@ Esta posición de intermediario permite servir un recurso ya guardado en caché 
 
 | Estrategia | Principio | Adecuada para |
 |---|---|---|
-| **Caché primero** (*cache-first*) | Sirve la versión en caché si existe, solo va a la red si no hay nada en caché | Recursos que cambian raramente (logo, fuente, CSS versionado) |
+| **Caché primero** (*cache-first*) | Sirve la versión en caché si existe, solo va a la red si no hay nada en caché | Recursos que cambian raramente (logo, fuente, [CSS](/?c=langages&s=css&p=css) versionado) |
 | **Red primero** (*network-first*) | Intenta la red primero, solo recurre a la caché si falla | Contenido que debe mantenerse al día mientras la red responda |
 | **Caducado durante la actualización** (*stale-while-revalidate*) | Sirve inmediatamente la versión en caché, mientras la refresca en segundo plano para la próxima visita | Contenido que tolera una ligera caducidad, ya visto en [bases de datos de alto tráfico](/?c=donnees&s=bases-de-donnees&p=bases-de-donnees-a-fort-trafic) para el mismo compromiso del lado del servidor |
 
@@ -38,7 +38,7 @@ Ninguna de estas estrategias es universalmente la correcta: la elección depende
 
 ## El manifest: lo que hace que un sitio sea instalable
 
-Un archivo **manifest** (`manifest.json`), enlazado desde la página HTML, declara la información que un navegador o sistema operativo usa para ofrecer instalar el sitio como una aplicación: su nombre, un icono en varios tamaños, un color de tema, y un modo de visualización (`standalone` oculta la barra de direcciones del navegador, para parecerse a una aplicación nativa).
+Un archivo **manifest** (`manifest.json`), enlazado desde la página [HTML](/?c=langages&s=html&p=html), declara la información que un navegador o sistema operativo usa para ofrecer instalar el sitio como una aplicación: su nombre, un icono en varios tamaños, un color de tema, y un modo de visualización (`standalone` oculta la barra de direcciones del navegador, para parecerse a una aplicación nativa).
 
 ```json
 {

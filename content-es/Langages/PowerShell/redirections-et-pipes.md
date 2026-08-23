@@ -4,7 +4,7 @@ order: 9
 
 # Redirecciones y pipes
 
-PowerShell retoma las mismas ideas que Bash (redirigir un flujo hacia un archivo, encadenar comandos vía un pipe), pero con una diferencia fundamental: un pipe de Bash transporta **texto**, un pipe de PowerShell transporta verdaderos **objetos .NET**, con sus propiedades y métodos intactos.
+PowerShell retoma las mismas ideas que [Bash](/?c=shells&s=bash&p=bash) (redirigir un flujo hacia un archivo, encadenar comandos vía un pipe), pero con una diferencia fundamental: un pipe de Bash transporta **texto**, un pipe de PowerShell transporta verdaderos **objetos .NET**, con sus propiedades y métodos intactos.
 
 ## Redirigir la salida hacia un archivo
 

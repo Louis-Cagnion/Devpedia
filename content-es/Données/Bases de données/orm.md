@@ -4,7 +4,7 @@ order: 7
 
 # El ORM: mapear objetos sobre tablas relacionales
 
-Un programa orientado a objetos manipula clases e instancias; una base relacional almacena tablas y filas. Los dos modelos no se superponen de forma natural (una relación entre dos objetos no es una clave foránea, una herencia de clases no tiene equivalente directo en SQL): un **ORM** (*Object-Relational Mapping*) automatiza la traducción entre ambos, para escribir código contra objetos en lugar de consultas SQL manuales.
+Un programa orientado a objetos manipula clases e instancias; una base relacional almacena tablas y filas. Los dos modelos no se superponen de forma natural (una relación entre dos objetos no es una clave foránea, una herencia de clases no tiene equivalente directo en [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql)): un **ORM** (*Object-Relational Mapping*) automatiza la traducción entre ambos, para escribir código contra objetos en lugar de consultas SQL manuales.
 
 ## Lo que un ORM automatiza
 

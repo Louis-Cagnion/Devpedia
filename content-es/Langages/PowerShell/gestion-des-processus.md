@@ -4,7 +4,7 @@ order: 12
 
 # La gestión de procesos
 
-Como en Bash, cada comando lanzado inicia un **proceso**; PowerShell también permite lanzar comandos en segundo plano, supervisar los procesos en curso, y detenerlos de forma correcta (o no).
+Como en [Bash](/?c=shells&s=bash&p=bash), cada comando lanzado inicia un **proceso**; PowerShell también permite lanzar comandos en segundo plano, supervisar los procesos en curso, y detenerlos de forma correcta (o no).
 
 ## Primer plano vs segundo plano
 

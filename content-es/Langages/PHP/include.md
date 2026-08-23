@@ -4,7 +4,7 @@ order: 7
 
 # Incluir funciones
 
-Para insertar funciones PHP en código HTML, podemos usar la estructura del lenguaje *include*:
+Para insertar funciones PHP en código [HTML](/?c=langages-de-balisage&s=html&p=html), podemos usar la estructura del lenguaje *include*:
 
 ```php
 <?php

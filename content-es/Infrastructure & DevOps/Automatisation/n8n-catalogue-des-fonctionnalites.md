@@ -21,7 +21,7 @@ Un flujo de trabajo solo tiene un disparador activo a la vez (el que realmente l
 
 ## Los nodos de código: salir del no-code cuando hace falta
 
-El **Code node** ejecuta directamente JavaScript o Python dentro del flujo de trabajo, para tratamientos demasiado específicos para un conector preconfigurado (una transformación de datos compleja, un cálculo, un filtrado a medida):
+El **Code node** ejecuta directamente [JavaScript](/?c=langages&s=javascript&p=javascript) o [Python](/?c=langages&s=python&p=python) dentro del flujo de trabajo, para tratamientos demasiado específicos para un conector preconfigurado (una transformación de datos compleja, un cálculo, un filtrado a medida):
 
 ```javascript
 // Code node (JavaScript): conserva solo los elementos cuyo

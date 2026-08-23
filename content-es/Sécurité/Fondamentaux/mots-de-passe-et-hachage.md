@@ -52,7 +52,7 @@ Dos usuarios con la misma contraseña obtienen así hashes diferentes, y una rai
 
 ## Pasar a la implementación
 
-En la práctica, elegir el algoritmo, generar la sal y gestionar su integración al hash final lo asume una función dedicada del lenguaje utilizado, nunca a reimplementar uno mismo: ver [`password_hash()` y `password_verify()`](/?c=langages-de-programmation&s=php&p=securite) para la implementación concreta en PHP, que usa bcrypt por defecto y detalla cómo se integra la sal en el hash almacenado.
+En la práctica, elegir el algoritmo, generar la sal y gestionar su integración al hash final lo asume una función dedicada del lenguaje utilizado, nunca a reimplementar uno mismo: ver [`password_hash()` y `password_verify()`](/?c=langages-de-programmation&s=php&p=securite) para la implementación concreta en [PHP](/?c=langages-de-programmation&s=php&p=php), que usa bcrypt por defecto y detalla cómo se integra la sal en el hash almacenado.
 
 ---
 

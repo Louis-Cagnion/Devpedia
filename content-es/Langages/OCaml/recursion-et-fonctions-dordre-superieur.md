@@ -35,7 +35,7 @@ El compilador OCaml reconoce esta forma y la optimiza en un simple bucle a nivel
 
 ## Funciones de orden superior: `map`, `filter`, `fold`
 
-Una función de orden superior toma una función como argumento, o devuelve una, el mismo principio que un decorador Python (cf. capítulo [Los decoradores](/?c=langages-de-programmation&s=python&p=decorateurs)), generalizado a toda la biblioteca estándar de listas en lugar de reservado a un caso de uso preciso.
+Una función de orden superior toma una función como argumento, o devuelve una, el mismo principio que un decorador [Python](/?c=langages-de-programmation&s=python&p=python) (cf. capítulo [Los decoradores](/?c=langages-de-programmation&s=python&p=decorateurs)), generalizado a toda la biblioteca estándar de listas en lugar de reservado a un caso de uso preciso.
 
 ```ocaml
 let cuadrados = List.map (fun x -> x * x) [1; 2; 3; 4]        (* [1; 4; 9; 16] *)

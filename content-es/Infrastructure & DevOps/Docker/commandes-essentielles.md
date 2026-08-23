@@ -19,7 +19,7 @@ docker run -d --name servidor -p 8080:80 mi-app:1.0
 
 | Opción | Efecto |
 |---|---|
-| `-d` | Desacoplado (*detached*): el contenedor corre en segundo plano, la terminal sigue disponible, mismo principio que `&` en Bash |
+| `-d` | Desacoplado (*detached*): el contenedor corre en segundo plano, la terminal sigue disponible, mismo principio que `&` en [Bash](/?c=shells&s=bash&p=bash) |
 | `--name` | Da un nombre explícito al contenedor, en lugar de un identificador generado aleatoriamente |
 | `-p 8080:80` | Publica el puerto: el puerto `80` del contenedor se vuelve accesible en el puerto `8080` del host (ver [Volúmenes y redes](/?c=docker&p=volumes-et-reseaux)) |
 | `-it` | Interactivo + pseudo-terminal (*tty*): necesario para un contenedor con el que se quiere interactuar directamente (ej. un shell) |

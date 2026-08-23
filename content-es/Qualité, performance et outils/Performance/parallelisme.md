@@ -66,7 +66,7 @@ if len(resultados) < esperado:
     advertir(f"{len(resultados)} resultados de {esperado} esperados")
 ```
 
-## `spawn` vs `fork`: dos formas de iniciar un worker Python
+## `spawn` vs `fork`: dos formas de iniciar un worker [Python](/?c=langages&s=python&p=python)
 
 En Python, `multiprocessing.Pool` puede iniciar cada worker de dos formas diferentes, con consecuencias prácticas reales:
 

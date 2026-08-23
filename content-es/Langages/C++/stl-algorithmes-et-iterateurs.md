@@ -81,7 +81,7 @@ int cuenta = std::count_if(numeros.begin(), numeros.end(), estaPorEncimaDelUmbra
 | `std::find` | Busca la primera aparición de un valor |
 | `std::count` / `std::count_if` | Cuenta las apariciones (con o sin condición) |
 | `std::for_each` | Aplica una función a cada elemento |
-| `std::transform` | Produce un nuevo rango aplicando una función a cada elemento (equivalente a `map` en Python/JS) |
+| `std::transform` | Produce un nuevo rango aplicando una función a cada elemento (equivalente a `map` en [Python](/?c=langages-de-programmation&s=python&p=python)/JS) |
 | `std::accumulate` | Reduce un rango a un único valor (equivalente a `reduce`) |
 
 > **Nota:** usar estos algoritmos en lugar de bucles manuales hace la intención explícita (`std::sort` dice "estoy ordenando", un bucle con un algoritmo de ordenación escrito a mano obliga a deducirlo): una ganancia de legibilidad directa, además de evitar reimplementar (y potencialmente implementar mal) una lógica ya estandarizada y optimizada.

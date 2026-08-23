@@ -4,7 +4,7 @@ order: 1
 
 # Los archivos de inicio
 
-Bash carga según el caso `~/.bashrc`, `~/.bash_profile` o `~/.profile` (ver [Variables de entorno](/?c=shells&s=bash&p=variables-denvironnement) en Bash). Zsh divide esta misma necesidad en **cuatro archivos distintos**, cada uno con un rol preciso: entender esta distinción evita las sorpresas clásicas ("mi variable no es visible en mi script aunque funciona en mi terminal").
+[Bash](/?c=shells&s=bash&p=bash) carga según el caso `~/.bashrc`, `~/.bash_profile` o `~/.profile` (ver [Variables de entorno](/?c=shells&s=bash&p=variables-denvironnement) en Bash). Zsh divide esta misma necesidad en **cuatro archivos distintos**, cada uno con un rol preciso: entender esta distinción evita las sorpresas clásicas ("mi variable no es visible en mi script aunque funciona en mi terminal").
 
 ## Los cuatro archivos, y cuándo se carga cada uno
 

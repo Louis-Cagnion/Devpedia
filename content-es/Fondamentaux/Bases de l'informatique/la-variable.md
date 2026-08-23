@@ -37,7 +37,7 @@ Todo valor tiene un **tipo**, que determina qué se puede hacer con él (sumar d
 >
 > **Buena práctica:** convertir explícitamente un valor al tipo deseado antes de una operación que mezcla tipos, en lugar de contar con una conversión automática cuyo comportamiento exacto no está garantizado de un lenguaje a otro.
 
-La sintaxis exacta para crear una variable cambia de un lenguaje a otro (el símbolo `=` no siempre basta, algunos lenguajes exigen precisar el tipo de antemano); cada capítulo de lenguaje de este sitio (Python, C, PHP...) cubre su propia sintaxis en detalle.
+La sintaxis exacta para crear una variable cambia de un lenguaje a otro (el símbolo `=` no siempre basta, algunos lenguajes exigen precisar el tipo de antemano); cada capítulo de lenguaje de este sitio ([Python](/?c=langages-de-programmation&s=python&p=python), C, [PHP](/?c=langages-de-programmation&s=php&p=php)...) cubre su propia sintaxis en detalle.
 
 ---
 

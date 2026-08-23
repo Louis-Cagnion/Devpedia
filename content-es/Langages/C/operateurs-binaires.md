@@ -75,7 +75,7 @@ opciones ^= BANDERA_AGREGAR;     // ALTERNAR   un bit
 
 Es exactamente el mecanismo de las llamadas al sistema: `open("f.txt", O_WRONLY | O_CREAT)` combina indicadores con `|`, y la función luego los comprueba con `&`. Véase el capítulo [Las llamadas al sistema y los descriptores de archivo](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs).
 
-Los permisos de archivos Unix siguen la misma lógica en base 8: `0644` codifica tres grupos de tres bits (lectura/escritura/ejecución para el propietario, el grupo, los demás). Véase también el capítulo [Permisos y gestión de archivos](/?c=shells&s=bash&p=permissions-et-fichiers) de Bash.
+Los permisos de archivos Unix siguen la misma lógica en base 8: `0644` codifica tres grupos de tres bits (lectura/escritura/ejecución para el propietario, el grupo, los demás). Véase también el capítulo [Permisos y gestión de archivos](/?c=shells&s=bash&p=permissions-et-fichiers) de [Bash](/?c=shells&s=bash&p=bash).
 
 **¿Por qué usar indicadores en lugar de booleanos separados?** Un único `unsigned int` almacena 32 opciones independientes, se pasa en un solo argumento, y se comprueba en una sola instrucción de procesador.
 

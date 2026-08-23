@@ -6,7 +6,7 @@ order: 5
 
 ## Estático, pero sin anotaciones
 
-OCaml es de **tipado estático**: cada expresión tiene un tipo fijado de una vez por todas, verificado incluso antes de la ejecución, como en C (cf. capítulo [Las variables y tipos de datos](/?c=langages-de-programmation&s=c&p=variables)). A diferencia de C, este tipo casi nunca necesita escribirse explícitamente:
+OCaml es de **tipado estático**: cada expresión tiene un tipo fijado de una vez por todas, verificado incluso antes de la ejecución, como en [C](/?c=langages-de-programmation&s=c&p=c) (cf. capítulo [Las variables y tipos de datos](/?c=langages-de-programmation&s=c&p=variables)). A diferencia de C, este tipo casi nunca necesita escribirse explícitamente:
 
 ```ocaml
 let suma x y = x + y
@@ -29,11 +29,11 @@ let aplicar_dos_veces f x = f (f x)
 (* -> aplicar_dos_veces : ('a -> 'a) -> 'a -> 'a *)
 ```
 
-El segundo ejemplo ilustra el **polimorfismo paramétrico**: `'a` significa "un tipo cualquiera, a determinar según la llamada", la misma idea que un template C++ (cf. capítulo [Las plantillas](/?c=langages-de-programmation&s=cpp&p=templates)), pero resuelta automáticamente por inferencia en lugar de declarada explícitamente en cada uso (`template<typename T>`).
+El segundo ejemplo ilustra el **polimorfismo paramétrico**: `'a` significa "un tipo cualquiera, a determinar según la llamada", la misma idea que un template [C++](/?c=langages-de-programmation&s=cpp&p=cpp) (cf. capítulo [Las plantillas](/?c=langages-de-programmation&s=cpp&p=templates)), pero resuelta automáticamente por inferencia en lugar de declarada explícitamente en cada uso (`template<typename T>`).
 
 ## Comparado con el tipado dinámico y el tipado gradual
 
-| | C | Python (anotaciones) | OCaml |
+| | C | [Python](/?c=langages-de-programmation&s=python&p=python) (anotaciones) | OCaml |
 |---|---|---|---|
 | Verificación | En la compilación | A elección: nunca, o vía un [verificador externo](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) (`mypy`) | En la compilación, sistemáticamente |
 | Anotación requerida | Siempre (`int x`) | Opcional | Nunca (deducida) |

@@ -29,7 +29,7 @@ if ($conectado) {
 }
 ```
 
-**Sintaxis alternativa (con `:` y `end...`)**, pensada para combinar PHP y HTML de forma más limpia:
+**Sintaxis alternativa (con `:` y `end...`)**, pensada para combinar PHP y [HTML](/?c=langages-de-balisage&s=html&p=html) de forma más limpia:
 
 ```php
 <?php if ($conectado): ?>

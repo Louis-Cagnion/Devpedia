@@ -4,7 +4,7 @@ order: 10
 
 # Procesamiento de texto y objetos
 
-Donde Bash se apoya en [herramientas de texto especializadas](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`), PowerShell hace el mismo trabajo con cmdlets genéricas que filtran, transforman y seleccionan **objetos**: el texto es solo un caso particular, aquel donde el objeto manipulado es una cadena.
+Donde [Bash](/?c=shells&s=bash&p=bash) se apoya en [herramientas de texto especializadas](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`), PowerShell hace el mismo trabajo con cmdlets genéricas que filtran, transforman y seleccionan **objetos**: el texto es solo un caso particular, aquel donde el objeto manipulado es una cadena.
 
 ## `Select-String`: buscar texto (equivalente de `grep`)
 

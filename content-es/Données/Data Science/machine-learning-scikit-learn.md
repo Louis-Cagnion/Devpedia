@@ -78,7 +78,7 @@ mean_squared_error(y_test, predictions)    # error cuadrático medio -> para la 
 
 ## El desarrollo típico de un proyecto de aprendizaje automático
 
-1. Recopilar y limpiar los datos (valores que faltan; véase el capítulo sobre pandas).
+1. Recopilar y limpiar los datos (valores que faltan; véase el capítulo sobre [pandas](/?c=data-science&p=pandas)).
 2. Dividir en conjuntos de entrenamiento y de prueba.
 3. Elegir uno o varios algoritmos candidatos y entrenarlos (`fit`).
 4. Evaluar en el conjunto de pruebas (`predict` + una métrica adecuada al problema).

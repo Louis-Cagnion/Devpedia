@@ -4,7 +4,7 @@ order: 3
 
 # Expansión y comodines avanzados
 
-El globbing básico (`*`, `?`, `[abc]`) funciona de forma idéntica en zsh (ver [Expansión y comodines](/?c=shells&s=bash&p=expansion-et-jokers) en Bash). Zsh va bastante más lejos una vez activado el modo extendido, con patrones que Bash simplemente no entiende.
+El globbing básico (`*`, `?`, `[abc]`) funciona de forma idéntica en zsh (ver [Expansión y comodines](/?c=shells&s=bash&p=expansion-et-jokers) en [Bash](/?c=shells&s=bash&p=bash)). Zsh va bastante más lejos una vez activado el modo extendido, con patrones que Bash simplemente no entiende.
 
 ## Activar el globbing extendido
 

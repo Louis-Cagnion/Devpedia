@@ -4,7 +4,7 @@ order: 3
 
 # Los bucles
 
-Python ofrece `for` y `while`, pero el bucle `for` funciona de forma diferente a PHP/C/JS: siempre recorre directamente los elementos de un iterable, nunca un contador numérico manipulado manualmente.
+Python ofrece `for` y `while`, pero el bucle `for` funciona de forma diferente a [PHP](/?c=langages-de-programmation&s=php&p=php)/[C](/?c=langages-de-programmation&s=c&p=c)/JS: siempre recorre directamente los elementos de un iterable, nunca un contador numérico manipulado manualmente.
 
 ## El bucle `for`
 

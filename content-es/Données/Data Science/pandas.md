@@ -4,7 +4,7 @@ order: 3
 
 # pandas: manipulación de datos tabulares
 
-**pandas** ofrece dos estructuras para manipular datos tabulares: la «`Series`» (una sola columna, indexada) y el «`DataFrame`» (una matriz bidimensional con columnas con nombre), que es el equivalente en Python a una tabla SQL (véase el capítulo dedicado a ello) o a una hoja de cálculo, pero que se puede manipular mediante código.
+**pandas** ofrece dos estructuras para manipular datos tabulares: la «`Series`» (una sola columna, indexada) y el «`DataFrame`» (una matriz bidimensional con columnas con nombre), que es el equivalente en [Python](/?c=langages-de-programmation&s=python&p=python) a una tabla [SQL](/?c=domain-specific-languages-dsl&p=sql) (véase el capítulo dedicado a ello) o a una hoja de cálculo, pero que se puede manipular mediante código.
 
 ## Crear un DataFrame
 
@@ -97,7 +97,7 @@ datos["categorie"] = datos["age"].apply(lambda edad: "jeune" if edad < 30 else "
 # apply(): ejecuta una función sobre cada valor de la columna
 ```
 
-> **Nota (rendimiento):** `.apply()` ejecuta la función de Python línea por línea, sin aprovechar la vectorización de NumPy (véase el capítulo dedicado a ello); para una condición sencilla como esta, `np.where(datos["edad"] < 30, "jeune", "senior")` hace exactamente lo mismo, pero mucho más rápido con un conjunto de datos grande. `.apply()` sigue siendo útil cuando la lógica es demasiado compleja para expresarla con las funciones vectorizadas de pandas/NumPy.
+> **Nota (rendimiento):** `.apply()` ejecuta la función de Python línea por línea, sin aprovechar la vectorización de [NumPy](/?c=data-science&p=numpy) (véase el capítulo dedicado a ello); para una condición sencilla como esta, `np.where(datos["edad"] < 30, "jeune", "senior")` hace exactamente lo mismo, pero mucho más rápido con un conjunto de datos grande. `.apply()` sigue siendo útil cuando la lógica es demasiado compleja para expresarla con las funciones vectorizadas de pandas/NumPy.
 
 ## Valores que faltan
 

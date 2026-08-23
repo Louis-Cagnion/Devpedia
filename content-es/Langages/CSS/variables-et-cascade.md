@@ -41,7 +41,7 @@ Este capítulo aborda dos mecanismos transversales de CSS: las **variables perso
 }
 ```
 
-> **Nota:** a diferencia de una variable [Sass](https://sass-lang.com)/[Less](https://lesscss.org) (resueltas de una vez por todas en la compilación), una variable CSS nativa está **viva** en el navegador: modificable incluso en JavaScript (`elemento.style.setProperty('--margen-interno', '30px')`), y reevaluada dinámicamente según el elemento en el que se consulta.
+> **Nota:** a diferencia de una variable [Sass](https://sass-lang.com)/[Less](https://lesscss.org) (resueltas de una vez por todas en la compilación), una variable CSS nativa está **viva** en el navegador: modificable incluso en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`elemento.style.setProperty('--margen-interno', '30px')`), y reevaluada dinámicamente según el elemento en el que se consulta.
 
 ## La cascada: tres criterios, en este orden
 

@@ -12,9 +12,9 @@ La mayoría de las herramientas de este tipo ([Figma](https://www.figma.com), [S
 
 | Concepto | Rol | Equivalente ya visto |
 |---|---|---|
-| Capa (*layer*) | Cada elemento (texto, forma, imagen) existe de forma independiente, apilado sobre los demás | Similar al apilamiento de los elementos HTML en un documento |
+| Capa (*layer*) | Cada elemento (texto, forma, imagen) existe de forma independiente, apilado sobre los demás | Similar al apilamiento de los elementos [HTML](/?c=langages-de-balisage&s=html&p=html) en un documento |
 | Componente | Un elemento reutilizable (botón, tarjeta...), definido una vez e instanciado en todas partes | La [biblioteca de componentes](/?c=ui-ux&p=design-systems) de un design system |
-| Auto-layout | Un contenedor que reposiciona y redimensiona su contenido automáticamente según reglas (espaciado, alineación), en lugar de posiciones fijadas a mano | [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox) en CSS: el mismo principio, en la herramienta de diseño en lugar de en el código |
+| Auto-layout | Un contenedor que reposiciona y redimensiona su contenido automáticamente según reglas (espaciado, alineación), en lugar de posiciones fijadas a mano | [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox) en [CSS](/?c=langages-de-balisage&s=css&p=css): el mismo principio, en la herramienta de diseño en lugar de en el código |
 
 Trabajar con componentes y auto-layout en la herramienta de diseño, en lugar de con posiciones fijas, produce maquetas que ya se comportan como lo hará la interfaz programada (un botón que se adapta a la longitud de su texto, por ejemplo); la brecha entre la maqueta y el resultado programado se reduce así.
 
@@ -24,7 +24,7 @@ Trabajar con componentes y auto-layout en la herramienta de diseño, en lugar de
 
 ## Las herramientas de animación para interacciones avanzadas
 
-Una transición simple (un botón que cambia ligeramente de color al pasar el cursor) se cubre directamente en CSS. Una interacción más elaborada (varios elementos animados en un orden preciso, un movimiento que reacciona al gesto del usuario, una física de resorte en lugar de una simple aceleración lineal) supera lo que las transiciones CSS básicas cubren cómodamente, y entonces se apoya en una biblioteca JavaScript dedicada a la animación ([GSAP](https://gsap.com), Framer Motion, entre otras):
+Una transición simple (un botón que cambia ligeramente de color al pasar el cursor) se cubre directamente en CSS. Una interacción más elaborada (varios elementos animados en un orden preciso, un movimiento que reacciona al gesto del usuario, una física de resorte en lugar de una simple aceleración lineal) supera lo que las transiciones CSS básicas cubren cómodamente, y entonces se apoya en una biblioteca [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) dedicada a la animación ([GSAP](https://gsap.com), Framer Motion, entre otras):
 
 | | Transición CSS | Biblioteca de animación JS |
 |---|---|---|

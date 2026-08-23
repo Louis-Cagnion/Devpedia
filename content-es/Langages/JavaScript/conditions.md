@@ -20,7 +20,7 @@ if (edad >= 18) {
 }
 ```
 
-## `==` vs `===`: aún más crítico que en PHP
+## `==` vs `===`: aún más crítico que en [PHP](/?c=langages-de-programmation&s=php&p=php)
 
 ```javascript
 0 == "0"           // true  -> se convierte a número antes de comparar

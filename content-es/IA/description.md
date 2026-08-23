@@ -8,6 +8,6 @@ Esta sección cubre la inteligencia artificial moderna, a partir de una base com
 
 El hilo conductor de la parte LLM es que un LLM solo casi nunca basta: tiene una memoria de trabajo limitada, ningún conocimiento de los eventos posteriores a su entrenamiento, y no puede actuar solo sobre el mundo real. El RAG y los agentes son las dos formas habituales de compensar estas limitaciones, y el precio de esta potencia adicional se paga en coste, en riesgos operativos y en obligaciones de gobernanza.
 
-Para las herramientas Python usadas para manipular datos y construir modelos clásicos (NumPy, pandas, scikit-learn...), véase la sección [Data Science](/?c=data-science): esta sección se centra en los modelos en sí y en los sistemas construidos a su alrededor, independientemente del lenguaje usado para implementarlos.
+Para las herramientas [Python](/?c=langages&s=python&p=python) usadas para manipular datos y construir modelos clásicos (NumPy, pandas, scikit-learn...), véase la sección [Data Science](/?c=data-science): esta sección se centra en los modelos en sí y en los sistemas construidos a su alrededor, independientemente del lenguaje usado para implementarlos.
 
 A continuación encontrarás las distintas nociones:

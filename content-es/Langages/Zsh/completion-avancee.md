@@ -4,7 +4,7 @@ order: 4
 
 # La finalización avanzada
 
-Bash completa nombres de archivos y, para ciertos comandos, propone una lista plana con la tecla Tab. El sistema de finalización de zsh (`compsys`) es un motor completo, sensible al **contexto**: sabe que después de `git checkout` debe proponer nombres de ramas, y que después de `kill`, PID de procesos en ejecución, no solo nombres de archivos.
+[Bash](/?c=shells&s=bash&p=bash) completa nombres de archivos y, para ciertos comandos, propone una lista plana con la tecla Tab. El sistema de finalización de zsh (`compsys`) es un motor completo, sensible al **contexto**: sabe que después de `git checkout` debe proponer nombres de ramas, y que después de `kill`, PID de procesos en ejecución, no solo nombres de archivos.
 
 ## Activar el sistema de finalización
 

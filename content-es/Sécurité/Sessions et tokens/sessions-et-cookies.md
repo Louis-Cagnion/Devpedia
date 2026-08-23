@@ -33,7 +33,7 @@ Cookie: session_id=a8f3d9...          ->    recupera la sesion a8f3d9...,
 
 Una **cookie** es un pequeño dato que el servidor pide al navegador que conserve, y que este reenvía automáticamente en cada petición hacia el mismo sitio: es el vehículo más común para transportar el identificador de sesión de una petición a otra, sin que el desarrollador tenga que ocuparse manualmente en cada llamada.
 
-Este capítulo permanece deliberadamente independiente del lenguaje utilizado: ver [Gestión de conexiones](/?c=langages-de-programmation&s=php&p=connexions) para la implementación concreta en PHP (`setcookie()`, `$_SESSION`, el identificador `PHPSESSID` generado automáticamente).
+Este capítulo permanece deliberadamente independiente del lenguaje utilizado: ver [Gestión de conexiones](/?c=langages-de-programmation&s=php&p=connexions) para la implementación concreta en [PHP](/?c=langages-de-programmation&s=php&p=php) (`setcookie()`, `$_SESSION`, el identificador `PHPSESSID` generado automáticamente).
 
 ## Por qué el identificador de sesión debe ser imprevisible
 
@@ -50,7 +50,7 @@ Incluso con un identificador perfectamente imprevisible, un atacante que logra *
 
 > **Trampa:** suponer que un identificador de sesión imprevisible basta para asegurar una sesión. Un identificador imprevisible impide *adivinarlo*, pero no protege contra el hecho de *robarlo* una vez que existe.
 >
-> **Buena práctica:** transmitir la cookie de sesión únicamente en HTTPS, prohibir su acceso a JavaScript, y limitar su envío a las peticiones que realmente provienen del sitio (ver las opciones `secure`/`httponly`/`samesite` detalladas en [Gestión de conexiones](/?c=langages-de-programmation&s=php&p=connexions)).
+> **Buena práctica:** transmitir la cookie de sesión únicamente en HTTPS, prohibir su acceso a [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), y limitar su envío a las peticiones que realmente provienen del sitio (ver las opciones `secure`/`httponly`/`samesite` detalladas en [Gestión de conexiones](/?c=langages-de-programmation&s=php&p=connexions)).
 
 ---
 

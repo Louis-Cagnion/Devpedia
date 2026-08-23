@@ -36,7 +36,7 @@ Una llamada a una función C clásica (`suma(2, 3)`) se ejecuta íntegramente en
 
 ## Señalar un error: `errno`
 
-La mayoría de las llamadas al sistema indican un fallo devolviendo `-1` (o `NULL` para las que devuelven un puntero), y estableciendo la variable global `errno` con un código que describe la causa precisa: el mismo principio que las funciones históricas de C mencionadas en el capítulo sobre funciones (`@` en PHP responde al mismo tipo de convención de error "al estilo C"):
+La mayoría de las llamadas al sistema indican un fallo devolviendo `-1` (o `NULL` para las que devuelven un puntero), y estableciendo la variable global `errno` con un código que describe la causa precisa: el mismo principio que las funciones históricas de C mencionadas en el capítulo sobre funciones (`@` en [PHP](/?c=langages-de-programmation&s=php&p=php) responde al mismo tipo de convención de error "al estilo C"):
 
 ```c
 #include <errno.h>
@@ -69,7 +69,7 @@ read(fd, buffer, tamano);
 close(fd);
 ```
 
-> **Nota:** estos tres números (`0`/`1`/`2`) son exactamente los "flujos" (*stdin*/*stdout*/*stderr*) mencionados en el capítulo sobre redirecciones de Bash: una redirección como `2>` no hace otra cosa, por debajo, que manipular este descriptor número `2` del proceso en cuestión.
+> **Nota:** estos tres números (`0`/`1`/`2`) son exactamente los "flujos" (*stdin*/*stdout*/*stderr*) mencionados en el capítulo sobre redirecciones de [Bash](/?c=shells&s=bash&p=bash): una redirección como `2>` no hace otra cosa, por debajo, que manipular este descriptor número `2` del proceso en cuestión.
 
 ## `dup2()`: hacer que un descriptor apunte a otro recurso
 

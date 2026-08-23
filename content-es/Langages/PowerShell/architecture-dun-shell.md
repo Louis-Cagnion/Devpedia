@@ -2,9 +2,9 @@
 order: 13
 ---
 
-# Cómo funciona PowerShell (arquitectura interna)
+# [C](/?c=langages-de-programmation&s=c&p=c)ómo funciona PowerShell (arquitectura interna)
 
-PowerShell se apoya en la misma mecánica de fondo que Bash (un bucle que lee, interpreta y ejecuta), pero no corre directamente sobre el sistema operativo como un simple ejecutable nativo: es un entorno construido sobre el [**.NET Runtime**](https://learn.microsoft.com/en-us/dotnet/), lo que explica tanto sus objetos tipados (ver [Las variables](/?c=shells&s=powershell&p=variables) y [Redirecciones y pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) como algunas de sus diferencias de rendimiento con Bash.
+PowerShell se apoya en la misma mecánica de fondo que [Bash](/?c=shells&s=bash&p=bash) (un bucle que lee, interpreta y ejecuta), pero no corre directamente sobre el sistema operativo como un simple ejecutable nativo: es un entorno construido sobre el [**.NET Runtime**](https://learn.microsoft.com/en-us/dotnet/), lo que explica tanto sus objetos tipados (ver [Las variables](/?c=shells&s=powershell&p=variables) y [Redirecciones y pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) como algunas de sus diferencias de rendimiento con Bash.
 
 > **Prerrequisito:** este capítulo supone conocido qué es un proceso (`fork`/`exec`), ver el capítulo sobre la arquitectura de un shell (sección Bash), que detalla este mecanismo del lado Unix; los conceptos se encuentran aquí también, pero implementados de forma diferente en Windows.
 

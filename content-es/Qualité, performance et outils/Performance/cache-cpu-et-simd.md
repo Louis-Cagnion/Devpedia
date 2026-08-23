@@ -36,7 +36,7 @@ Llamar a una función vectorizada (`array.sum()`, `array * 2`) tiene, como una l
 
 Es este segundo punto lo que se llama **SIMD** (*Single Instruction, Multiple Data*): una instrucción de procesador que aplica la misma operación a varios valores contiguos de golpe (ej. sumar 8 enteros en una sola instrucción, en lugar de 8 instrucciones separadas). SIMD solo es explotable si los datos son **contiguos y de tamaño uniforme**: exactamente lo que garantiza un array tipado, y nunca lo que garantiza una colección de objetos dispersos.
 
-## Por qué un array NumPy es rápido y una lista Python no lo es
+## Por qué un array NumPy es rápido y una lista [Python](/?c=langages-de-programmation&s=python&p=python) no lo es
 
 Una lista Python es un array de **punteros** hacia objetos, potencialmente dispersos en cualquier lugar del heap y de tamaños diferentes. Un bucle `for` sobre una lista Python debe, en cada iteración: seguir un puntero (acceso a memoria potencialmente fuera de caché), verificar el tipo del objeto apuntado, y luego llamar a la rutina correcta: todo ello dirigido por el intérprete, instrucción por instrucción.
 

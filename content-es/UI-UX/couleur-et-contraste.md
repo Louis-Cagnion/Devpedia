@@ -87,7 +87,7 @@ Un color no evoca lo mismo en todas partes, hay que matizarlo según el público
 
 ## Pasar a la implementación
 
-En CSS, una paleta de colores se declara como un conjunto de valores reutilizables en lugar de repetirse en cada regla: ver [Variables CSS y la cascada](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
+En [CSS](/?c=langages-de-balisage&s=css&p=css), una paleta de colores se declara como un conjunto de valores reutilizables en lugar de repetirse en cada regla: ver [Variables CSS y la cascada](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
 
 ---
 

@@ -83,6 +83,6 @@ Una cuadrícula y un ritmo vertical se construyen concretamente con [Flexbox](/?
 | | |
 |---|---|
 | **Para recordar** | El espacio negativo es una herramienta activa, no un vacío que llenar. Una cuadrícula (columnas, canaletas, márgenes) alinea los elementos entre sí, y una escala de espaciado fija (múltiplos de 4 u 8px) garantiza un ritmo vertical coherente. |
-| **Herramientas utilizables** | Ninguna herramienta específica: la cuadrícula y la escala se definen en el diseño, y luego se implementan en CSS (Flexbox, Grid). |
+| **Herramientas utilizables** | Ninguna herramienta específica: la cuadrícula y la escala se definen en el diseño, y luego se implementan en [CSS](/?c=langages-de-balisage&s=css&p=css) (Flexbox, Grid). |
 | **Trampas a evitar** | Llenar cada espacio disponible por miedo al vacío; alinear elementos a ojo en lugar de sobre una cuadrícula; inventar un valor de espaciado caso por caso. |
 | **Buenas prácticas** | Definir la cuadrícula y la escala de espaciado antes de colocar el menor elemento; reutilizar siempre los mismos valores de espaciado para un mismo tipo de transición. |

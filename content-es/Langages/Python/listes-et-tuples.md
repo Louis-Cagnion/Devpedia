@@ -24,7 +24,7 @@ len(frutas)                  # número de elementos
 "manzana" in frutas           # True/False -> prueba la presencia de un valor
 ```
 
-> **Nota:** a diferencia de un array en C (tamaño fijo, un solo tipo), una lista Python es un array **dinámico** heterogéneo: crece automáticamente, y cada elemento puede ser de un tipo diferente, al precio de un sobrecoste de memoria por elemento (cada elemento es en realidad una referencia a un objeto Python, no un valor bruto contiguo como en C).
+> **Nota:** a diferencia de un array en [C](/?c=langages-de-programmation&s=c&p=c) (tamaño fijo, un solo tipo), una lista Python es un array **dinámico** heterogéneo: crece automáticamente, y cada elemento puede ser de un tipo diferente, al precio de un sobrecoste de memoria por elemento (cada elemento es en realidad una referencia a un objeto Python, no un valor bruto contiguo como en C).
 
 ## El slicing en detalle
 

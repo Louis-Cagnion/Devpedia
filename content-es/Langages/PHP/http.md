@@ -8,7 +8,7 @@ PHP ofrece al menos dos formas nativas de hacer peticiones HTTP salientes (consu
 
 > Una **API** (*Application Programming Interface*, interfaz de programación) es el contrato mediante el cual un software expone sus funcionalidades a otro: qué peticiones enviar, en qué formato, y qué respuestas esperar. El término designa tanto un servicio web consultable por HTTP (el caso aquí) como el conjunto de funciones públicas de una biblioteca.
 >
-> Las respuestas de una API web suelen estar en formato **JSON** (*JavaScript Object Notation*): un formato de texto de representación de datos estructurados, legible por un humano, nacido en JavaScript pero hoy independiente de cualquier lenguaje. PHP lo convierte con `json_encode()` / `json_decode()`.
+> Las respuestas de una API web suelen estar en formato **JSON** (*[JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) Object Notation*): un formato de texto de representación de datos estructurados, legible por un humano, nacido en JavaScript pero hoy independiente de cualquier lenguaje. PHP lo convierte con `json_encode()` / `json_decode()`.
 
 ## cURL
 
@@ -31,7 +31,7 @@ curl_close($ch);
 ?>
 ```
 
-`CURLOPT_*` son constantes enteras predefinidas por la extensión cURL (como los flags de `open()` en C): cada una configura un aspecto preciso de la petición.
+`CURLOPT_*` son constantes enteras predefinidas por la extensión cURL (como los flags de `open()` en [C](/?c=langages-de-programmation&s=c&p=c)): cada una configura un aspecto preciso de la petición.
 
 ### Convertir un retorno "a la C" en excepción
 

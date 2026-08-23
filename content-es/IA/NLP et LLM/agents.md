@@ -26,7 +26,7 @@ El modelo no puede ejecutar esta función él mismo; solo **decide** que sería 
 { "llamada": "obtener_tiempo", "argumentos": { "ciudad": "Montpellier" } }
 ```
 
-Es el código que rodea al modelo el que recibe esta decisión, ejecuta realmente la función correspondiente (Python, la llamada [HTTP](/?c=infrastructure&p=api-et-http), la consulta SQL...), y devuelve su resultado al modelo para que continúe.
+Es el código que rodea al modelo el que recibe esta decisión, ejecuta realmente la función correspondiente (Python, la llamada [HTTP](/?c=infrastructure&p=api-et-http), la consulta [SQL](/?c=domain-specific-languages-dsl&p=sql)...), y devuelve su resultado al modelo para que continúe.
 
 > **Trampa:** confiar ciegamente en los argumentos producidos por el modelo antes de pasarlos a la función real: el modelo nunca "sabe" realmente qué hace una función más allá de su descripción de texto, una descripción imprecisa o ambigua produce llamadas con los argumentos equivocados tan seguro como una función mal documentada engaña a un desarrollador humano que solo leyera su firma.
 >

@@ -10,7 +10,7 @@ Un **cuaderno de Jupyter** es un documento interactivo que combina código ejecu
 
 Un cuaderno (archivo `.ipynb`) es una secuencia de **celdas** de dos tipos:
 
-- **Bloque de código**: en Python, ejecutable de forma independiente (utiliza `Shift+Entrada` para ejecutarlo).
+- **Bloque de código**: en [Python](/?c=langages-de-programmation&s=python&p=python), ejecutable de forma independiente (utiliza `Shift+Entrada` para ejecutarlo).
 - **Celdas Markdown**: texto formateado (títulos, listas, fórmulas matemáticas mediante LaTeX), para documentar el proceso junto al código.
 
 ```python
@@ -62,7 +62,7 @@ Comandos especiales, propios de Jupyter, que no están presentes en el propio le
 - Explorar por pequeños pasos sucesivos (cargar los datos, limpiarlos, visualizarlos, entrenar un modelo) sin tener que volver a ejecutar todo el proceso en cada prueba.
 - Documentar el proceso y los resultados en paralelo (celdas Markdown + gráficos), lo cual resulta útil para compartir un análisis con otras personas.
 
-Consulta también los capítulos sobre pandas y Matplotlib, las dos bibliotecas más utilizadas en un cuaderno.
+Consulta también los capítulos sobre [pandas](/?c=data-science&p=pandas) y [Matplotlib](/?c=data-science&p=matplotlib), las dos bibliotecas más utilizadas en un cuaderno.
 
 ---
 

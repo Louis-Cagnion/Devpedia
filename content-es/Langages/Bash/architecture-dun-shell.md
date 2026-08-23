@@ -2,7 +2,7 @@
 order: 13
 ---
 
-# Cómo funciona un shell (arquitectura interna)
+# [C](/?c=langages-de-programmation&s=c&p=c)ómo funciona un shell (arquitectura interna)
 
 Todo lo que Bash hace en superficie (variables, bucles, pipes, redirecciones) se basa en un mecanismo bastante sencillo de describir: un bucle que lee una línea, la divide, la interpreta, y luego lanza procesos vía las llamadas al sistema estándar del [capítulo sobre la gestión de procesos en C](/?c=langages-de-programmation&s=c&p=processus) (`fork`, `execve`, `wait`). Este capítulo describe este mecanismo, con el objetivo de entender (o incluso reconstruir) un shell mínimo.
 

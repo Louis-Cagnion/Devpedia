@@ -4,7 +4,7 @@ order: 2
 
 # Performance
 
-Optimizar un programa es, ante todo, entender en qué se le va el tiempo, y raramente es donde uno cree. Esta sección reúne principios de rendimiento que no dependen de un lenguaje en particular: se aplican tanto a un script Python como a una página web o a un acceso a base de datos.
+Optimizar un programa es, ante todo, entender en qué se le va el tiempo, y raramente es donde uno cree. Esta sección reúne principios de rendimiento que no dependen de un lenguaje en particular: se aplican tanto a un script [Python](/?c=langages-de-programmation&s=python&p=python) como a una página web o a un acceso a base de datos.
 
 El hilo conductor es una distinción que aparece en todas partes: el tiempo que su programa **pierde solo** (esperas fijas, trabajo rehecho, idas y vueltas innecesarias) y el tiempo que **pasa esperando a otro** (la red, un disco, un servicio remoto). El primero se elimina sin contrapartida. El segundo se rodea, a veces, pero a menudo se paga en otro lado, y ahí es donde empiezan las decisiones de compromiso.
 

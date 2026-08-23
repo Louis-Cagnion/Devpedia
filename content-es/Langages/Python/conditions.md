@@ -4,7 +4,7 @@ order: 2
 
 # Las condiciones
 
-Python usa `if`/`elif`/`else`, sin ninguna llave: es la **indentación** misma la que delimita los bloques de código, a diferencia de PHP, C o JavaScript.
+Python usa `if`/`elif`/`else`, sin ninguna llave: es la **indentación** misma la que delimita los bloques de código, a diferencia de [PHP](/?c=langages-de-programmation&s=php&p=php), C o [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript).
 
 ## `if` / `elif` / `else`
 

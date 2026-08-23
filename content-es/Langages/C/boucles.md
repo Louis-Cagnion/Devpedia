@@ -54,7 +54,7 @@ for (int i = 0; i < 5; i++) {
 }
 ```
 
-> **Nota:** a diferencia de PHP o JavaScript, no existe **ningún medio nativo** de conocer el tamaño de un array a partir únicamente del puntero: `array[5]` "sabe" cuántos elementos contiene mientras se manipule como array estático, pero esta información desaparece en cuanto se pasa a una función (en ese caso se comporta como un simple puntero, véase [Los punteros](/?c=langages-de-programmation&s=c&p=pointeurs)). El tamaño debe entonces transmitirse por separado.
+> **Nota:** a diferencia de [PHP](/?c=langages-de-programmation&s=php&p=php) o [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), no existe **ningún medio nativo** de conocer el tamaño de un array a partir únicamente del puntero: `array[5]` "sabe" cuántos elementos contiene mientras se manipule como array estático, pero esta información desaparece en cuanto se pasa a una función (en ese caso se comporta como un simple puntero, véase [Los punteros](/?c=langages-de-programmation&s=c&p=pointeurs)). El tamaño debe entonces transmitirse por separado.
 
 ```c
 void mostrar(int *array, int tamano) // el tamaño debe pasarse explícitamente

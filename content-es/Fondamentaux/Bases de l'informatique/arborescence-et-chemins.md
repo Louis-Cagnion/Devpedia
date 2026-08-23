@@ -75,8 +75,8 @@ Documentos/fotos/../trabajo/informe.docx
 
 Cambiar de carpeta actual y listar el contenido de una carpeta son dos acciones básicas, pero el nombre exacto de los comandos depende del shell usado, ya visto en el [capítulo sobre la terminal](/?c=bases-de-l-informatique&p=le-terminal):
 
-- En Bash: ver [Permisos y manipulación de archivos](/?c=shells&s=bash&p=permissions-et-fichiers).
-- En PowerShell: ver [Comandos básicos](/?c=shells&s=powershell&p=commandes-de-base).
+- En [Bash](/?c=shells&s=bash&p=bash): ver [Permisos y manipulación de archivos](/?c=shells&s=bash&p=permissions-et-fichiers).
+- En [PowerShell](/?c=shells&s=powershell&p=powershell): ver [Comandos básicos](/?c=shells&s=powershell&p=commandes-de-base).
 
 ---
 

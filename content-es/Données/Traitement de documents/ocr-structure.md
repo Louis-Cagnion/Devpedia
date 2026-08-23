@@ -41,7 +41,7 @@ Modelo de deteccion de maquetacion (rapido, ~40x mas rapido que el pipeline comp
 
 ## Reconstruir la cuadrícula: filas, columnas, celdas fusionadas
 
-Una tabla detectada no se limita a una cuadrícula rectangular uniforme: una celda de encabezado puede extenderse sobre varias columnas, o una celda de la primera columna puede cubrir varias filas. Dos nociones describen estas fusiones, heredadas directamente del vocabulario HTML de las tablas:
+Una tabla detectada no se limita a una cuadrícula rectangular uniforme: una celda de encabezado puede extenderse sobre varias columnas, o una celda de la primera columna puede cubrir varias filas. Dos nociones describen estas fusiones, heredadas directamente del vocabulario [HTML](/?c=langages-de-balisage&s=html&p=html) de las tablas:
 
 ```text
 +----------+----------------------+

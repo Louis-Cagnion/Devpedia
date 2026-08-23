@@ -34,7 +34,7 @@ if (nota >= 16) {
 }
 ```
 
-> **Nota:** a diferencia de PHP, en C no existe una sintaxis alternativa con `:`/`endif`: las llaves `{ }` son la única forma de escritura disponible (son opcionales solo si el bloque contiene una única instrucción, pero se desaconseja encarecidamente omitirlas: son una fuente clásica de errores si se añade una línea por error sin las llaves).
+> **Nota:** a diferencia de [PHP](/?c=langages-de-programmation&s=php&p=php), en C no existe una sintaxis alternativa con `:`/`endif`: las llaves `{ }` son la única forma de escritura disponible (son opcionales solo si el bloque contiene una única instrucción, pero se desaconseja encarecidamente omitirlas: son una fuente clásica de errores si se añade una línea por error sin las llaves).
 
 ## El operador ternario
 

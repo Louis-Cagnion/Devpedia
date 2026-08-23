@@ -4,7 +4,7 @@ order: 4
 
 # Matplotlib: visualización de datos
 
-**Matplotlib** es la biblioteca de visualización más extendida en Python; la mayoría de las demás bibliotecas de gráficos (seaborn, pandas`.plot()` etc.) se basan en ella o se inspiran directamente en ella.
+**Matplotlib** es la biblioteca de visualización más extendida en [Python](/?c=langages-de-programmation&s=python&p=python); la mayoría de las demás bibliotecas de gráficos (seaborn, [pandas](/?c=data-science&p=pandas)`.plot()` etc.) se basan en ella o se inspiran directamente en ella.
 
 ## Las dos formas de utilizar Matplotlib
 

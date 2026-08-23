@@ -4,7 +4,7 @@ order: 10
 
 # La gestión de errores
 
-JavaScript señala un error lanzando una **excepción** (`throw`), interceptable con `try`/`catch`: un mecanismo similar al de PHP o Python.
+JavaScript señala un error lanzando una **excepción** (`throw`), interceptable con `try`/`catch`: un mecanismo similar al de [PHP](/?c=langages-de-programmation&s=php&p=php) o [Python](/?c=langages-de-programmation&s=python&p=python).
 
 ## `try` / `catch` / `finally`
 

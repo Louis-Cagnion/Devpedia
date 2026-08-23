@@ -4,7 +4,7 @@ order: 4
 
 # Aprendizaje profundo con PyTorch
 
-**PyTorch** es uno de los dos marcos de trabajo de aprendizaje profundo más utilizados (junto con TensorFlow). Proporciona el **tensor** (similar al`ndarray`e NumPy, véase el capítulo dedicado a este tema, pero con soporte para GPU y diferenciación automática), y automatiza toda la mecánica del capítulo sobre el descenso del gradiente.
+**PyTorch** es uno de los dos marcos de trabajo de aprendizaje profundo más utilizados (junto con TensorFlow). Proporciona el **tensor** (similar al`ndarray`e [NumPy](/?c=data-science&p=numpy), véase el capítulo dedicado a este tema, pero con soporte para [GPU](/?c=infrastructure&p=cpu-vs-gpu) y diferenciación automática), y automatiza toda la mecánica del capítulo sobre el descenso del gradiente.
 
 ## El tensor: un «`ndarray`» capaz de calcular su propio gradiente
 

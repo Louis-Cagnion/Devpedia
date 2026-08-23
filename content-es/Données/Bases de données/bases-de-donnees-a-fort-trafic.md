@@ -12,7 +12,7 @@ Una página muestra una lista de opciones de filtro (las regiones disponibles, l
 
 > **Trampa:** recalcular un dato costoso en cada petición de usuario simplemente porque la consulta es correcta y da el resultado correcto. Una consulta correcta puede seguir siendo una mala idea si su coste es desproporcionado respecto a la frescura realmente necesaria de su resultado.
 >
-> **Buena práctica:** antes de optimizar la consulta en sí (índices, reescritura SQL), preguntarse primero si el resultado realmente necesita recalcularse en cada visita, o si puede almacenarse en caché.
+> **Buena práctica:** antes de optimizar la consulta en sí (índices, reescritura [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql)), preguntarse primero si el resultado realmente necesita recalcularse en cada visita, o si puede almacenarse en caché.
 
 ## Caché y stale-while-revalidate
 

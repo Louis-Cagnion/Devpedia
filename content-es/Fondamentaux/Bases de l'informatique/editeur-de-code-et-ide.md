@@ -45,7 +45,7 @@ nombre = "Juan"                   # "Juan" es una cadena de texto -> otro color
 | Herramienta | Categoría | Lenguajes objetivo |
 |---|---|---|
 | [VS Code](https://code.visualstudio.com) | Editor de código extensible | Generalista: casi todos, vía extensiones |
-| [PyCharm](https://www.jetbrains.com/pycharm/) | IDE completo | Python |
+| [PyCharm](https://www.jetbrains.com/pycharm/) | IDE completo | [Python](/?c=langages-de-programmation&s=python&p=python) |
 | [Visual Studio](https://visualstudio.microsoft.com) (no confundir con VS Code) | IDE completo | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/), [.NET](https://learn.microsoft.com/en-us/dotnet/) |
 
 ## Por dónde empezar

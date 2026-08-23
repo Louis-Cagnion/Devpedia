@@ -118,6 +118,6 @@ Este reflejo coincide con la robustez general esperada de cualquier código: un 
 | | |
 |---|---|
 | **Para recordar** | Cuatro principios reducen la mayoría de los fallos: pensar la seguridad desde el diseño, validar toda entrada externa con una lista blanca, aplicar el mínimo privilegio, apilar varias capas de defensa independientes. |
-| **Herramientas utilizables** | `filter_input()` (PHP) y equivalentes en otros lenguajes para la validación por lista blanca; cuentas de aplicación dedicadas con permisos restringidos para la base de datos. |
+| **Herramientas utilizables** | `filter_input()` ([PHP](/?c=langages&s=php&p=php)) y equivalentes en otros lenguajes para la validación por lista blanca; cuentas de aplicación dedicadas con permisos restringidos para la base de datos. |
 | **Errores a evitar** | Validar un dato solo en el lado del cliente; usar una lista negra en lugar de una lista blanca; conceder acceso por defecto ante un error inesperado (*fail open*). |
 | **Buenas prácticas** | Revalidar siempre en el servidor; restringir cada componente a lo estrictamente necesario; denegar el acceso por defecto ante la duda (*fail closed*). |

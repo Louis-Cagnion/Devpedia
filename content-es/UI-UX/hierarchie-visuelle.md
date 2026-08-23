@@ -86,7 +86,7 @@ El ojo parte arriba a la izquierda, barre hacia la derecha, baja en diagonal, y 
 
 ## Pasar a la implementación
 
-Este capítulo permanece deliberadamente independiente de un lenguaje: las palancas anteriores (tamaño, espaciado, posición...) se traducen concretamente en CSS mediante [El modelo de caja](/?c=langages-de-balisage&s=css&p=box-model) (espaciado, dimensiones) y [El posicionamiento](/?c=langages-de-balisage&s=css&p=positionnement) (colocación de los elementos en pantalla).
+Este capítulo permanece deliberadamente independiente de un lenguaje: las palancas anteriores (tamaño, espaciado, posición...) se traducen concretamente en [CSS](/?c=langages-de-balisage&s=css&p=css) mediante [El modelo de caja](/?c=langages-de-balisage&s=css&p=box-model) (espaciado, dimensiones) y [El posicionamiento](/?c=langages-de-balisage&s=css&p=positionnement) (colocación de los elementos en pantalla).
 
 ---
 

@@ -4,7 +4,7 @@ order: 7
 
 # La gestión de errores
 
-Python señala un error lanzando una **excepción**, que interrumpe la ejecución normal del programa salvo que sea interceptada por un bloque `try`/`except`, un mecanismo similar a las excepciones PHP modernas (`throw`/`catch`).
+Python señala un error lanzando una **excepción**, que interrumpe la ejecución normal del programa salvo que sea interceptada por un bloque `try`/`except`, un mecanismo similar a las excepciones [PHP](/?c=langages-de-programmation&s=php&p=php) modernas (`throw`/`catch`).
 
 ## `try` / `except`
 

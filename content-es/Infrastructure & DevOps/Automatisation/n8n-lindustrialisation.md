@@ -45,7 +45,7 @@ n8n no ofrece una única instancia con un selector "dev/prod" integrado: cada en
 | Método | Funcionamiento |
 |---|---|
 | **Export/import manual** | Descargar el JSON desde la instancia origen, importarlo en la instancia destino (visto en el capítulo anterior) |
-| **Source Control (Git)** | Una instancia de n8n se conecta a una rama de un repositorio Git; un mismo flujo de trabajo versionado puede empujarse de un entorno a otro siguiendo el flujo Git habitual (dev → staging → producción) |
+| **Source Control ([Git](/?c=qualite-performance-et-outils&s=git&p=git))** | Una instancia de n8n se conecta a una rama de un repositorio Git; un mismo flujo de trabajo versionado puede empujarse de un entorno a otro siguiendo el flujo Git habitual (dev → staging → producción) |
 
 > **Trampa:** empujar un cambio directamente a producción sin pasar por un entorno intermedio, en particular para un flujo de trabajo que toca datos reales (una base de datos de producción, un envío de correo a clientes reales).
 >

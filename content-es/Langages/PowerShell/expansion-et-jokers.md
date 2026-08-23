@@ -4,7 +4,7 @@ order: 8
 
 # Expansión y comodines (wildcards)
 
-PowerShell retoma la idea del globbing de Bash (reemplazar un patrón por la lista real de archivos correspondientes), pero con un nombre diferente (*wildcards*) y con reglas ligeramente distintas, además de un operador de coincidencia de patrones reutilizable fuera de los nombres de archivo.
+PowerShell retoma la idea del globbing de [Bash](/?c=shells&s=bash&p=bash) (reemplazar un patrón por la lista real de archivos correspondientes), pero con un nombre diferente (*wildcards*) y con reglas ligeramente distintas, además de un operador de coincidencia de patrones reutilizable fuera de los nombres de archivo.
 
 ## Los wildcards: `*`, `?`, `[]`
 

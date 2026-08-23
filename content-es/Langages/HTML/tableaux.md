@@ -4,7 +4,7 @@ order: 4
 
 # Las tablas HTML
 
-Una tabla HTML sirve para representar datos **tabulares** (filas/columnas realmente relacionadas entre sí, como una exportación de una base de datos; véase [SQL](/?c=domain-specific-languages-dsl&p=sql)); nunca para maquetar visualmente una página entera, un uso histórico hoy sustituido por CSS ([Flexbox](/?c=langages-de-balisage&s=css&p=flexbox)/[Grid](/?c=langages-de-balisage&s=css&p=grid)).
+Una tabla HTML sirve para representar datos **tabulares** (filas/columnas realmente relacionadas entre sí, como una exportación de una base de datos; véase [SQL](/?c=domain-specific-languages-dsl&p=sql)); nunca para maquetar visualmente una página entera, un uso histórico hoy sustituido por [CSS](/?c=langages-de-balisage&s=css&p=css) ([Flexbox](/?c=langages-de-balisage&s=css&p=flexbox)/[Grid](/?c=langages-de-balisage&s=css&p=grid)).
 
 ## Estructura básica
 

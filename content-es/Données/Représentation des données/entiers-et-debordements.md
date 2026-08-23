@@ -92,7 +92,7 @@ Los desbordamientos de enteros no son una curiosidad académica:
 | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp) | Tamaño fijo elegido explícitamente. Desbordamiento con signo = comportamiento indefinido |
 | [Java](https://docs.oracle.com/en/java/), [C#](https://learn.microsoft.com/en-us/dotnet/csharp/) | Tamaño fijo, wraparound definido para todos los enteros |
 | **[Python](/?c=langages-de-programmation&s=python&p=python)** | Enteros de **tamaño arbitrario**: crecen mientras la memoria siga, ningún desbordamiento |
-| JavaScript | Sin verdadero tipo entero: todo es flotante, por tanto exacto solo hasta 2⁵³ (ver [Los números de coma flotante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` para ir más allá |
+| [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) | Sin verdadero tipo entero: todo es flotante, por tanto exacto solo hasta 2⁵³ (ver [Los números de coma flotante](/?c=representation-des-donnees&p=nombres-flottants)). `BigInt` para ir más allá |
 | [PHP](/?c=langages-de-programmation&s=php&p=php) | Entero nativo; en caso de desbordamiento, conversión automática a `float` (por tanto pérdida de precisión) |
 
 Python ilustra bien el compromiso: no desbordar nunca es cómodo, pero cada entero es un objeto más pesado y más lento que un entero máquina. Es una de las razones por las que las bibliotecas de cálculo como NumPy usan tipos de tamaño fijo (`int32`, `int64`). Ver el capítulo [NumPy](/?c=data-science&p=numpy).

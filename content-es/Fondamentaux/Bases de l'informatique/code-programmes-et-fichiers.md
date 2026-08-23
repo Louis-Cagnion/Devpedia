@@ -68,7 +68,7 @@ El código escrito por un humano no siempre es lo que el procesador ejecuta dire
 |---|---|---|
 | Qué ocurre | Otro programa, el **intérprete**, lee el código y lo ejecuta directamente, línea por línea | Un programa, el **compilador**, transforma primero todo el código en una forma que el procesador entiende nativamente |
 | Cuándo empieza la ejecución | Inmediatamente | Solo una vez terminada la transformación (la **compilación**) |
-| Ejemplo de lenguaje | Python, JavaScript | C, C++ |
+| Ejemplo de lenguaje | Python, JavaScript | C, [C++](/?c=langages-de-programmation&s=cpp&p=cpp) |
 
 > **Profundizar:** este capítulo se detiene en esta distinción de principio; el detalle de lo que ocurre durante una compilación (etapas, errores posibles) se cubre en [El proceso de compilación](/?c=langages-de-programmation&s=c&p=compilation).
 

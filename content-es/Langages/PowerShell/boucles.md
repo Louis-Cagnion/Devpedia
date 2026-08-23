@@ -4,7 +4,7 @@ order: 6
 
 # Los bucles
 
-PowerShell propone las mismas estructuras básicas que Bash (`for`, `while`, hasta una condición), además de un bucle `foreach` dedicado al recorrido de objetos, el más usado en la práctica, ya que casi todo en PowerShell es una colección de objetos en lugar de texto plano.
+PowerShell propone las mismas estructuras básicas que [Bash](/?c=shells&s=bash&p=bash) (`for`, `while`, hasta una condición), además de un bucle `foreach` dedicado al recorrido de objetos, el más usado en la práctica, ya que casi todo en PowerShell es una colección de objetos en lugar de texto plano.
 
 ## El bucle `foreach` (recorrido de colección)
 

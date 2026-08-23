@@ -23,7 +23,7 @@ Una **función** es un bloque de código reutilizable, que tiene un nombre y que
     echo $doble(5); // muestra 10
 ?>
 ```
-> **Nota:** a diferencia de JavaScript, donde una función flecha puede escribirse con llaves y un `return` (`(n) => { return n * 2; }`), PHP solo permite la forma corta con una única expresión, sin llaves ni `return` (`fn($n) => $n * 2;`).
+> **Nota:** a diferencia de [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), donde una función flecha puede escribirse con llaves y un `return` (`(n) => { return n * 2; }`), PHP solo permite la forma corta con una única expresión, sin llaves ni `return` (`fn($n) => $n * 2;`).
 
 Un **método** es exactamente lo mismo que una función, con una sola diferencia: se define **dentro de una clase**, y se usa sobre un objeto (ver [La programación orientada a objetos](/?c=langages-de-programmation&s=php&p=poo)).
 
@@ -74,11 +74,11 @@ function encontrarUsuario(int $id): ?array
 ?>
 ```
 
-> **Nota:** `?array` es una declaración de contrato, no una simple costumbre de escritura: es el equivalente en PHP de [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) en C++ moderno o de [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) en Python: la función puede devolver ese tipo concreto, O `null`, nada más.
+> **Nota:** `?array` es una declaración de contrato, no una simple costumbre de escritura: es el equivalente en PHP de [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) en [C++](/?c=langages-de-programmation&s=cpp&p=cpp) moderno o de [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) en [Python](/?c=langages-de-programmation&s=python&p=python): la función puede devolver ese tipo concreto, O `null`, nada más.
 
 ## Suprimir un warning esperado con `@`
 
-Muchas funciones nativas de PHP devuelven `false` en caso de fallo en lugar de lanzar una excepción (un estilo cercano al de C, donde `fopen()` devuelve un puntero nulo y establece `errno`). Cuando ese fallo ya está previsto y gestionado por el resto del código, el operador `@` colocado delante de la llamada suprime el warning que PHP emitiría en otro caso:
+Muchas funciones nativas de PHP devuelven `false` en caso de fallo en lugar de lanzar una excepción (un estilo cercano al de [C](/?c=langages-de-programmation&s=c&p=c), donde `fopen()` devuelve un puntero nulo y establece `errno`). Cuando ese fallo ya está previsto y gestionado por el resto del código, el operador `@` colocado delante de la llamada suprime el warning que PHP emitiría en otro caso:
 
 ```php
 <?php

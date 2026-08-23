@@ -48,7 +48,7 @@ Por eso un comando que nunca termina pero por lo demás no hace **nada** (`tail 
 CMD ["nginx", "-g", "daemon off;"]   # nginx permanece en primer plano: Docker tiene un proceso que vigilar
 ```
 
-> **Nota:** el PID 1 tiene un rol particular en Linux, independiente de Docker (cf. capítulo [La gestión de procesos](/?c=shells&s=bash&p=gestion-des-processus), sección Bash): el kernel no le aplica la acción por defecto de una señal como `SIGTERM` si no ha instalado explícitamente su propio manejador: `docker stop` puede entonces parecer no hacer nada sobre un proceso que no gestiona esa señal por sí mismo. También es el PID 1 quien debe recuperar (*reap*) los procesos zombis que lanza; un punto a vigilar si la imagen lanza ella misma varios subprocesos.
+> **Nota:** el PID 1 tiene un rol particular en Linux, independiente de Docker (cf. capítulo [La gestión de procesos](/?c=shells&s=bash&p=gestion-des-processus), sección [Bash](/?c=shells&s=bash&p=bash)): el kernel no le aplica la acción por defecto de una señal como `SIGTERM` si no ha instalado explícitamente su propio manejador: `docker stop` puede entonces parecer no hacer nada sobre un proceso que no gestiona esa señal por sí mismo. También es el PID 1 quien debe recuperar (*reap*) los procesos zombis que lanza; un punto a vigilar si la imagen lanza ella misma varios subprocesos.
 
 ## Cada instrucción crea una capa, y el orden importa
 
@@ -69,7 +69,7 @@ Por eso los archivos que cambian con menos frecuencia (dependencias) se copian e
 
 ## Los builds multi-etapa
 
-Un build multi-etapa separa el entorno de **compilación** (pesado: compilador, herramientas de build) del entorno de **ejecución** (ligero: solo el binario final), el mismo principio que separar compilación y enlazado en C (cf. capítulo [El proceso de compilación](/?c=langages-de-programmation&s=c&p=compilation)): el resultado final no necesita la cadena de herramientas que lo produjo.
+Un build multi-etapa separa el entorno de **compilación** (pesado: compilador, herramientas de build) del entorno de **ejecución** (ligero: solo el binario final), el mismo principio que separar compilación y enlazado en [C](/?c=langages-de-programmation&s=c&p=c) (cf. capítulo [El proceso de compilación](/?c=langages-de-programmation&s=c&p=compilation)): el resultado final no necesita la cadena de herramientas que lo produjo.
 
 ```dockerfile
 # Etapa 1: compilacion, con toda la toolchain de Go

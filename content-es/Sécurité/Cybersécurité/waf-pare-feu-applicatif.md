@@ -34,7 +34,7 @@ SecRule ARGS "@detectSQLi" \
 | Elemento de la regla | Función |
 |---|---|
 | `ARGS` | Objetivo: todos los parámetros de la petición (query string, cuerpo del formulario) |
-| `@detectSQLi` | Operador: detección de patrón de inyección SQL, proporcionada por el motor del CRS |
+| `@detectSQLi` | Operador: detección de patrón de inyección [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql), proporcionada por el motor del CRS |
 | `deny,status:403` | Acción: bloquear la petición con un código `403 Forbidden` |
 
 ## El compromiso: falsos positivos frente a falsos negativos

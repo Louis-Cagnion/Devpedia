@@ -21,7 +21,7 @@ tarjeta.dataset.role;          // "tarjeta-producto"
 tarjeta.dataset.enExistencia;  // "true" -> "data-en-existencia" se convierte en "enExistencia" en camelCase del lado de JS
 ```
 
-`data-*` permite asociar un dato a un elemento HTML, recuperable en JavaScript mediante `.dataset`: una forma estándar de hacer circular información del HTML hacia el JavaScript, sin necesidad de variables globales ni de peticiones adicionales.
+`data-*` permite asociar un dato a un elemento HTML, recuperable en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) mediante `.dataset`: una forma estándar de hacer circular información del HTML hacia el JavaScript, sin necesidad de variables globales ni de peticiones adicionales.
 
 > **Nota:** cualquier nombre después de `data-` es válido (`data-cualquier-cosa`); la única regla es la conversión automática de **kebab-case** (palabras separadas por guiones, `data-en-existencia`) a **camelCase** (cada palabra siguiente pegada y con mayúscula inicial, `enExistencia`) en JavaScript, una simple convención de nomenclatura, no un mecanismo propio de `data-*`.
 
@@ -64,7 +64,7 @@ Gran parte de la accesibilidad se deriva directamente de los capítulos anterior
 <button class="boton-personalizado">Botón personalizado</button>
 ```
 
-Un `<button>` nativo ya gestiona la accesibilidad por teclado (foco mediante Tab, activación mediante Intro/Espacio) y el anuncio de su rol por parte de un lector de pantalla: por eso la "regla de oro" anterior recomienda partir de un `<button>` real, restilizado en CSS si hace falta, en lugar de recrear un botón a partir de una `<div>`.
+Un `<button>` nativo ya gestiona la accesibilidad por teclado (foco mediante Tab, activación mediante Intro/Espacio) y el anuncio de su rol por parte de un lector de pantalla: por eso la "regla de oro" anterior recomienda partir de un `<button>` real, restilizado en [CSS](/?c=langages-de-balisage&s=css&p=css) si hace falta, en lugar de recrear un botón a partir de una `<div>`.
 
 Si un caso concreto impide realmente usar un `<button>` nativo, recrear su comportamiento exige más que solo `tabindex`/`role`:
 

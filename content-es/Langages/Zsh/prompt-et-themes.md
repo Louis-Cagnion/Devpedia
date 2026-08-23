@@ -4,7 +4,7 @@ order: 5
 
 # Personalizar el prompt
 
-Bash construye su indicador mediante la variable `PS1`, con códigos de escape que empiezan por `\` (`\u`, `\h`, `\w`...). Zsh usa su propia variable, `PROMPT` (alias histórico: `PS1`, siempre aceptado), con códigos de escape que empiezan por `%`: una sintaxis completamente diferente, no solo un cambio de nombre.
+[Bash](/?c=shells&s=bash&p=bash) construye su indicador mediante la variable `PS1`, con códigos de escape que empiezan por `\` (`\u`, `\h`, `\w`...). Zsh usa su propia variable, `PROMPT` (alias histórico: `PS1`, siempre aceptado), con códigos de escape que empiezan por `%`: una sintaxis completamente diferente, no solo un cambio de nombre.
 
 ## La variable `PROMPT`
 
@@ -40,7 +40,7 @@ RPROMPT='%D{%H:%M:%S}'
 # muestra la hora actual a la derecha, mientras la linea de comandos este vacia
 ```
 
-## `vcs_info`: información de Git integrada al prompt
+## `vcs_info`: información de [Git](/?c=git&p=git) integrada al prompt
 
 Zsh provee de forma nativa una función capaz de mostrar la rama Git actual en el prompt, sin dependencia externa:
 

@@ -23,7 +23,7 @@ Prueba de integración:
   -> verifica que el código y la base de datos realmente concuerdan
 ```
 
-Una prueba unitaria puede pasar mientras una prueba de integración falla sobre el mismo código: por ejemplo, si la función llama correctamente a la base de datos, pero con una consulta SQL sintácticamente inválida que el mock nunca detecta.
+Una prueba unitaria puede pasar mientras una prueba de integración falla sobre el mismo código: por ejemplo, si la función llama correctamente a la base de datos, pero con una consulta [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql) sintácticamente inválida que el mock nunca detecta.
 
 ## Dónde trazar el límite: qué componentes incluir
 

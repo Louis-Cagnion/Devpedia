@@ -4,7 +4,7 @@ order: 6
 
 # La gestión de la memoria
 
-A diferencia de lenguajes como PHP o JavaScript, que gestionan automáticamente la memoria mediante un recolector de basura (*garbage collector*), el lenguaje C deja en manos del desarrollador la responsabilidad total de asignar y liberar la memoria que necesita su programa. Esto es lo que permite un alto rendimiento y un control preciso de los recursos, a cambio de una vigilancia constante.
+A diferencia de lenguajes como [PHP](/?c=langages-de-programmation&s=php&p=php) o [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), que gestionan automáticamente la memoria mediante un recolector de basura (*garbage collector*), el lenguaje C deja en manos del desarrollador la responsabilidad total de asignar y liberar la memoria que necesita su programa. Esto es lo que permite un alto rendimiento y un control preciso de los recursos, a cambio de una vigilancia constante.
 
 ## Pila (stack) y montón (heap)
 
@@ -98,7 +98,7 @@ free(p); // double free: comportamiento indefinido
 
 ## El desbordamiento de búfer (*buffer overflow*), un error con consecuencias de seguridad
 
-A diferencia de los tres errores anteriores (que corrompen la memoria del propio programa, sin intención externa), un desbordamiento de búfer suele ser **el resultado de una entrada controlada por un atacante**: lo que históricamente lo convierte en una de las vulnerabilidades de seguridad más explotadas en C/C++.
+A diferencia de los tres errores anteriores (que corrompen la memoria del propio programa, sin intención externa), un desbordamiento de búfer suele ser **el resultado de una entrada controlada por un atacante**: lo que históricamente lo convierte en una de las vulnerabilidades de seguridad más explotadas en C/[C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
 ```c
 char buffer[16];

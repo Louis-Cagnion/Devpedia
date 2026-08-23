@@ -86,7 +86,7 @@ $sql = "SELECT * FROM clientes WHERE ciudad = '" . $_GET['ciudad'] . "'";
 ?>
 ```
 
-Si `$_GET['ciudad']` contuviera `Lyon' OR '1'='1`, la consulta se convertiría en una condición siempre verdadera, devolviendo todas las filas de la tabla. Equivalente conceptual a un [desbordamiento de búfer](/?c=langages-de-programmation&s=c&p=memoire) en C: una entrada no controlada que modifica la **estructura** de la orden, en lugar de quedarse como un simple dato.
+Si `$_GET['ciudad']` contuviera `Lyon' OR '1'='1`, la consulta se convertiría en una condición siempre verdadera, devolviendo todas las filas de la tabla. Equivalente conceptual a un [desbordamiento de búfer](/?c=langages-de-programmation&s=c&p=memoire) en [C](/?c=langages-de-programmation&s=c&p=c): una entrada no controlada que modifica la **estructura** de la orden, en lugar de quedarse como un simple dato.
 
 Los marcadores de posición con nombre (`:ciudad`) lo impiden estructuralmente: el valor pasado a `execute()` **siempre** es tratado como dato puro por el driver, nunca reinterpretado como SQL, sea cual sea su contenido.
 

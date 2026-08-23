@@ -64,7 +64,7 @@ Sens du calcul normal (forward) :  Entrée -> Couche 1 -> Couche 2 -> Sortie -> 
 Sens de la rétropropagation :      Entrée <- Couche 1 <- Couche 2 <- Sortie <- Perte
 ```
 
-> **Nota:** no es necesario comprender este proceso en profundidad desde un punto de vista matemático para utilizar un marco de trabajo como PyTorch (véase el capítulo dedicado a ello): la «`autograd`» (derivación automática) realiza este cálculo de forma automática. Basta con comprender el **principio** (propagar el error hacia atrás, capa por capa, mediante la regla de la derivación en cadena) para entender por qué surgen ciertos problemas de entrenamiento (por ejemplo, el «gradiente de desaparición»; véase el capítulo sobre las arquitecturas CNN/RNN/Transformer).
+> **Nota:** no es necesario comprender este proceso en profundidad desde un punto de vista matemático para utilizar un marco de trabajo como [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch) (véase el capítulo dedicado a ello): la «`autograd`» (derivación automática) realiza este cálculo de forma automática. Basta con comprender el **principio** (propagar el error hacia atrás, capa por capa, mediante la regla de la derivación en cadena) para entender por qué surgen ciertos problemas de entrenamiento (por ejemplo, el «gradiente de desaparición»; véase el capítulo sobre las arquitecturas CNN/RNN/Transformer).
 
 ## Epochas, lotes y descenso de gradiente estocástico
 

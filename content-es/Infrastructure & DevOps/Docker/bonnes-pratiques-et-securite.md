@@ -37,7 +37,7 @@ Un valor pasado por `ENV` o `ARG` sigue siendo legible en los metadatos de la im
 ARG DB_PASSWORD=contrasena123
 ```
 
-Los secretos deben inyectarse **en la ejecución** (variables de entorno pasadas a `docker run -e`, archivos montados vía un volumen, o un gestor de secretos dedicado), nunca grabados en una capa de la imagen, el mismo principio que nunca commitear una clave de API en el código fuente (cf. capítulo [Asegurar tus datos](/?c=langages-de-programmation&s=php&p=securite), sección PHP).
+Los secretos deben inyectarse **en la ejecución** (variables de entorno pasadas a `docker run -e`, archivos montados vía un volumen, o un gestor de secretos dedicado), nunca grabados en una capa de la imagen, el mismo principio que nunca commitear una clave de API en el código fuente (cf. capítulo [Asegurar tus datos](/?c=langages-de-programmation&s=php&p=securite), sección [PHP](/?c=langages-de-programmation&s=php&p=php)).
 
 ### Secretos de Docker Compose vs simples variables de entorno
 

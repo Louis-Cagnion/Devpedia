@@ -34,7 +34,7 @@ source $ZSH/oh-my-zsh.sh
 
 | Plugin | Aporta |
 |---|---|
-| `git` | Decenas de alias Git (`gst` = `git status`, `gco` = `git checkout`...) y el nombre de la rama actual en el prompt vía `vcs_info` |
+| `git` | Decenas de alias [Git](/?c=git&p=git) (`gst` = `git status`, `gco` = `git checkout`...) y el nombre de la rama actual en el prompt vía `vcs_info` |
 | `zsh-autosuggestions` | Sugiere el final de un comando ya escrito en el pasado, en gris, a validar con → |
 | `zsh-syntax-highlighting` | Colorea la línea de comandos en tiempo real (verde = comando válido, rojo = inválido) incluso antes de ejecutarla |
 | `docker`, `npm`, `python`... | Finalización y alias específicos de la herramienta correspondiente |
@@ -51,7 +51,7 @@ gcmsg  # git commit -m
 gp     # git push
 ```
 
-Estos alias (ver [Variables de entorno](/?c=shells&s=bash&p=variables-denvironnement) en Bash para el mecanismo `alias` en sí, idéntico en zsh) están definidos por el plugin, no por zsh ni por Oh My Zsh mismos; su lista completa depende de la versión del plugin instalada.
+Estos alias (ver [Variables de entorno](/?c=shells&s=bash&p=variables-denvironnement) en [Bash](/?c=shells&s=bash&p=bash) para el mecanismo `alias` en sí, idéntico en zsh) están definidos por el plugin, no por zsh ni por Oh My Zsh mismos; su lista completa depende de la versión del plugin instalada.
 
 ## Personalizar sin tocar el núcleo de Oh My Zsh
 

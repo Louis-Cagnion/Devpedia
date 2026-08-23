@@ -26,7 +26,7 @@ Las cookies sirven típicamente para:
 - El valor a almacenar
 - La fecha de caducidad (en timestamp Unix; `time()` devuelve la hora actual, así que `time() + 3600` significa "dentro de 1h")
 
-> **Nota importante:** `setcookie()` debe llamarse **antes** de cualquier salida HTML (antes de la mínima etiqueta, espacio o salto de línea), porque modifica las cabeceras (*headers*) HTTP de la respuesta. Es la misma lógica que para la etiqueta de cierre `?>` mencionada más arriba.
+> **Nota importante:** `setcookie()` debe llamarse **antes** de cualquier salida [HTML](/?c=langages-de-balisage&s=html&p=html) (antes de la mínima etiqueta, espacio o salto de línea), porque modifica las cabeceras (*headers*) HTTP de la respuesta. Es la misma lógica que para la etiqueta de cierre `?>` mencionada más arriba.
 
 ### Leer una cookie
 Una vez creada, una cookie es accesible vía la variable global `$_COOKIE`:
@@ -75,7 +75,7 @@ Para eliminar una cookie, se recrea con una fecha de caducidad **en el pasado**:
 ```
 
 - `secure`: la cookie solo se transmite si la conexión es HTTPS.
-- `httponly`: impide que JavaScript (`document.cookie`) acceda a la cookie, lo que limita los daños en caso de un fallo XSS.
+- `httponly`: impide que [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`document.cookie`) acceda a la cookie, lo que limita los daños en caso de un fallo XSS.
 - `samesite`: impide que la cookie se envíe en una solicitud proveniente de otro sitio, lo que protege contra los ataques CSRF.
 
 > **Nota:** nunca almacenes información sensible (contraseña, número de tarjeta bancaria...) en una cookie, ni siquiera segura. Una cookie sigue siendo manipulable por el propio usuario. Para datos sensibles del lado del servidor, prefiere las **sesiones** (`$_SESSION`).
