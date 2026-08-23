@@ -46,9 +46,9 @@
    would need a more complex path than this shape calls for. */
 .chapterPage p,
 .chapterPage .content-list li {
-    background-color: var(--bg-elevated);
+    background-color: rgba(0, 0, 0, 0.45);
     padding: 0.6rem 1.3rem;
-    clip-path: polygon(1rem 0, 100% 0, calc(100% - 1rem) 100%, 0 100%);
+    clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 100%, 1rem 100%);
 }
 
 .chapterPage .content-list li {
