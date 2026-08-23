@@ -132,8 +132,21 @@ export function stopAutoAdvanceSilence() {
 let currentEntryEndSeconds = null;
 audioEl.addEventListener("timeupdate", () => {
     if (!isPlaying || currentEntryEndSeconds === null || audioEl.currentTime < currentEntryEndSeconds) return;
+    /* A single tick can represent far more real time than usual once iOS throttles this tab's own
+       JS on a locked screen: the audio itself keeps playing the whole time, but this handler may
+       not run again until several entries later. Advancing planIndex just one step here used to
+       leave it (and the highlight/scroll/resume position that follow it) stuck on a since-passed
+       entry -- speakNextViaAudio() would then see currentTime far outside that stale entry's own
+       range and seek backward into audio already heard (Louis, 23/08/2026). Catching up in a loop
+       until planIndex lands on the entry that actually contains currentTime keeps all of those in
+       sync instead. A "pause" entry (afterMs, no real duration) always stops the loop: audio can't
+       have physically played past a code block on its own, so reaching one here would mean a stale
+       plan, not one to skip through silently. */
+    while (planIndex < plan.length && plan[planIndex].kind === "speak" &&
+        audioEl.currentTime >= (plan[planIndex].startMs + plan[planIndex].durationMs) / 1000) {
+        planIndex++;
+    }
     currentEntryEndSeconds = null;
-    planIndex++;
     speakNext();
 });
 
