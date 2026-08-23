@@ -496,13 +496,12 @@ function appendBottomChapterNav(pageDiv, pageId, previousChapter, nextChapter) {
  * @param {HTMLElement|null} [breadcrumb]
  * @param {string|null} [notice] shown when this page had to be substituted from another language
  * @param {string|null} [titleOverride] translated title to use instead of the page's own `#` heading
- * @param {string|null} [extraClass] extra class on the page div (e.g. "chapterPage" for a stylized background)
  *
  * @returns {HTMLElement} the page div
  */
-function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null, breadcrumb = null, notice = null, titleOverride = null, extraClass = null) {
+function generatePageContent(textInfos, pageId, withReturnButton, previousChapter = null, nextChapter = null, breadcrumb = null, notice = null, titleOverride = null) {
     const text = parseMdContent(textInfos);
-    const pageDiv = createTag("div", {class: `page${extraClass ? " " + extraClass : ""} ${pageId}Div`});
+    const pageDiv = createTag("div", {class: `page ${pageId}Div`});
     if (notice)
         pageDiv.append(createTag("div", {class: "pageFallbackNotice"}, {textContent: notice}));
     if (breadcrumb)
@@ -602,7 +601,7 @@ async function renderChapter(categoryId, path, chapter, subjectId = null, resolv
     currentNextChapter = nextChapter
         ? {categoryId, subjectId, id: nextChapter.id, label: nextChapter.label}
         : resolveNextChapterAcrossSite();
-    generatePageContent(chapterInfos, chapter.id, true, currentPreviousChapter, currentNextChapter, createBreadcrumb(category, subject), fallbackNoticeFor(lang), null, "chapterPage");
+    generatePageContent(chapterInfos, chapter.id, true, currentPreviousChapter, currentNextChapter, createBreadcrumb(category, subject), fallbackNoticeFor(lang));
 }
 
 /**
