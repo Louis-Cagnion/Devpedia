@@ -356,6 +356,20 @@ code {
     vertical-align: middle;
 }
 
+/* Inline code was the one piece of chapter content left with no tie to the new theme at all --
+   same accent-tinted border as the table grid (a restrained touch, not a gradient: unlike
+   tables/code blocks, inline code is as frequent as strong/em within a paragraph, so it gets
+   the "frequent element" treatment rather than the "rare/structural" one). Cancelled on `pre
+   code`, which already has its own gradient frame on the surrounding `pre` -- a second border
+   directly on the code itself would double it up. */
+.chapterPage code {
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.chapterPage pre code {
+    border: none;
+}
+
 /* td already uses --bg-elevated-2 (cf. below) — a plain `code` span there would be
    invisible against its own background, so it needs a lighter shade to stand out */
 td code {
