@@ -1642,6 +1642,49 @@
               "label": "Autenticação multifator"
             }
           ]
+        },
+        {
+          "id": "securite-offensive",
+          "label": "Sécurité offensive",
+          "folder": "Sécurité offensive",
+          "chapters": [
+            {
+              "id": "bas-niveau-execution-dun-programme",
+              "label": "Como um programa é executado de verdade"
+            },
+            {
+              "id": "corruption-memoire",
+              "label": "A corrupção de memória"
+            },
+            {
+              "id": "bases-retro-ingenierie",
+              "label": "Os fundamentos da engenharia reversa"
+            },
+            {
+              "id": "escalade-de-privileges",
+              "label": "A escalada de privilégios"
+            },
+            {
+              "id": "ctf-capture-the-flag",
+              "label": "O CTF: Capture The Flag"
+            },
+            {
+              "id": "exploitation-cryptographique",
+              "label": "A exploração criptográfica"
+            },
+            {
+              "id": "outils-de-fuzzing",
+              "label": "Ferramentas avançadas de fuzzing"
+            },
+            {
+              "id": "architecture-arm",
+              "label": "A arquitetura ARM"
+            },
+            {
+              "id": "exploitation-web-cote-attaquant",
+              "label": "A exploração web do lado do atacante"
+            }
+          ]
         }
       ]
     },

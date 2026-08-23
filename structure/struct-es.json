@@ -1622,6 +1622,49 @@
               "label": "Autenticación multifactor"
             }
           ]
+        },
+        {
+          "id": "securite-offensive",
+          "label": "Sécurité offensive",
+          "folder": "Sécurité offensive",
+          "chapters": [
+            {
+              "id": "bas-niveau-execution-dun-programme",
+              "label": "Cómo se ejecuta realmente un programa"
+            },
+            {
+              "id": "corruption-memoire",
+              "label": "La corrupción de memoria"
+            },
+            {
+              "id": "bases-retro-ingenierie",
+              "label": "Las bases de la ingeniería inversa"
+            },
+            {
+              "id": "escalade-de-privileges",
+              "label": "La escalada de privilegios"
+            },
+            {
+              "id": "ctf-capture-the-flag",
+              "label": "El CTF: Capture The Flag"
+            },
+            {
+              "id": "exploitation-cryptographique",
+              "label": "La explotación criptográfica"
+            },
+            {
+              "id": "outils-de-fuzzing",
+              "label": "Las herramientas de fuzzing avanzadas"
+            },
+            {
+              "id": "architecture-arm",
+              "label": "La arquitectura ARM"
+            },
+            {
+              "id": "exploitation-web-cote-attaquant",
+              "label": "La explotación web desde el lado del atacante"
+            }
+          ]
         }
       ]
     },

@@ -1622,6 +1622,49 @@
               "label": "Multi-Factor Authentication"
             }
           ]
+        },
+        {
+          "id": "securite-offensive",
+          "label": "Sécurité offensive",
+          "folder": "Sécurité offensive",
+          "chapters": [
+            {
+              "id": "bas-niveau-execution-dun-programme",
+              "label": "How a Program Actually Executes"
+            },
+            {
+              "id": "corruption-memoire",
+              "label": "Memory Corruption"
+            },
+            {
+              "id": "bases-retro-ingenierie",
+              "label": "The Basics of Reverse Engineering"
+            },
+            {
+              "id": "escalade-de-privileges",
+              "label": "Privilege Escalation"
+            },
+            {
+              "id": "ctf-capture-the-flag",
+              "label": "CTF: Capture The Flag"
+            },
+            {
+              "id": "exploitation-cryptographique",
+              "label": "Cryptographic Exploitation"
+            },
+            {
+              "id": "outils-de-fuzzing",
+              "label": "Advanced Fuzzing Tools"
+            },
+            {
+              "id": "architecture-arm",
+              "label": "The ARM Architecture"
+            },
+            {
+              "id": "exploitation-web-cote-attaquant",
+              "label": "Web Exploitation From the Attacker's Side"
+            }
+          ]
         }
       ]
     },
