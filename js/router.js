@@ -12,6 +12,8 @@ import {
     resumeReading,
     pauseReading,
     continueAfterCode,
+    nextParagraph,
+    previousParagraph,
 } from "./reader.js";
 import { logEvent } from "./reader-debug.js";
 import { t, tEntityLabel } from "./i18n.js";
@@ -203,7 +205,7 @@ function curChapterIndex(entries) {
 /**
  * @brief Returns the chapter right after the one currently displayed, crossing subject and
  * category boundaries -- unlike currentNextChapter above, which stops at the end of the current
- * subject/category. Used both for read-aloud auto-advance and for MediaSession's "next track".
+ * subject/category. Used by read-aloud's own auto-advance once a chapter finishes on its own.
  *
  * @returns {{categoryId: string, subjectId: string|null, id: string}|null} null past the site's last chapter
  */
@@ -211,19 +213,6 @@ export function resolveNextChapterAcrossSite() {
     const entries = flattenChapters();
     const curIndex = curChapterIndex(entries);
     return curIndex === -1 ? null : (entries[curIndex + 1] ?? null);
-}
-
-/**
- * @brief Returns the chapter right before the one currently displayed, crossing subject and
- * category boundaries the same way resolveNextChapterAcrossSite() does. Used by MediaSession's
- * "previous track".
- *
- * @returns {{categoryId: string, subjectId: string|null, id: string}|null} null before the site's first chapter
- */
-export function resolvePreviousChapterAcrossSite() {
-    const entries = flattenChapters();
-    const curIndex = curChapterIndex(entries);
-    return curIndex <= 0 ? null : entries[curIndex - 1];
 }
 
 // Read-aloud reaching the end of a chapter on its own offers to move on to the next one.
@@ -260,13 +249,11 @@ if ("mediaSession" in navigator) {
     });
     navigator.mediaSession.setActionHandler("nexttrack", () => {
         logEvent("mediaSession:nexttrack");
-        const next = resolveNextChapterAcrossSite();
-        if (next) navigateToChapter(next.categoryId, next.subjectId, next.id);
+        nextParagraph();
     });
     navigator.mediaSession.setActionHandler("previoustrack", () => {
         logEvent("mediaSession:previoustrack");
-        const previous = resolvePreviousChapterAcrossSite();
-        if (previous) navigateToChapter(previous.categoryId, previous.subjectId, previous.id);
+        previousParagraph();
     });
     let lastMetadataTitle = null;
     onStatusChange(status => {
@@ -278,7 +265,17 @@ if ("mediaSession" in navigator) {
            confirmed on a real iPhone (Louis, 2026-08-22). */
         const title = document.querySelector(`.${appState.curPageId}Div .pageTitle`)?.textContent;
         if (title && title !== lastMetadataTitle) {
-            navigator.mediaSession.metadata = new MediaMetadata({ title, artist: "Devpedia" });
+            /* Without artwork, iOS's lock-screen widget falls back to its own generic seek-±10s
+               buttons instead of the previoustrack/nexttrack ones registered above (Louis, 23/08/2026:
+               only saw skip-10s, play/pause, and the audio output picker -- no previous/next). */
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title,
+                artist: "Devpedia",
+                artwork: [
+                    { src: "./icons/icon-192.png", sizes: "192x192", type: "image/png" },
+                    { src: "./icons/icon-512.png", sizes: "512x512", type: "image/png" },
+                ],
+            });
             lastMetadataTitle = title;
         }
     });
