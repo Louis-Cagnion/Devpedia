@@ -44,8 +44,7 @@
    part of the same graphic language rather than a generic rounded card. clip-path replaces
    border-radius here: a polygon's corners are sharp by construction, rounding them back in
    would need a more complex path than this shape calls for. */
-.chapterPage p,
-.chapterPage .content-list li {
+.chapterPage p {
     position: relative;
     background-color: rgba(0, 0, 0, 0.45);
     padding: 0.6rem 1.3rem;
@@ -58,8 +57,29 @@
    the texture -- color is reserved for the rarer, more structural elements below (titles,
    blockquote, tables, code), where it still reads as deliberate rather than repetitive. */
 
+/* List items can't just reuse .chapterPage p's rule above: clip-path clips its whole element,
+   pseudo-elements included, even ones positioned outside the box via a negative inset -- so a
+   marker placed to the left of a clipped <li> gets clipped away exactly like the native
+   ::marker did (see the fix further down), and a marker placed *inside* the clip region sits on
+   top of the dark panel instead of outside it, which Louis asked to avoid. The panel here moves
+   to a ::after inset from the left by a fixed gutter (1.3rem), carrying its own clip-path scoped
+   to *its own* box -- the <li> itself stays completely unclipped, so a ::before marker anywhere
+   on it, gutter included, always renders. */
 .chapterPage .content-list li {
-    padding-inline-end: 1.2rem;
+    position: relative;
+    isolation: isolate;
+    padding: 0.6rem 1.2rem 0.6rem 2.6rem;
+}
+
+.chapterPage .content-list li::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset-inline-start: 1.3rem;
+    inset-inline-end: 0;
+    inset-block: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 100%, 1rem 100%);
 }
 
 /* Diamond accent echoing the sidebar's category markers, tying a chapter's own titles back
@@ -296,10 +316,10 @@ em {
 .chapterPage ul.content-list li::before {
     content: "";
     position: absolute;
-    inset-inline-start: 0.35rem;
-    top: 0.55em;
-    width: 0.4rem;
-    height: 0.4rem;
+    inset-inline-start: 0.3rem;
+    top: 50%;
+    width: 0.55rem;
+    height: 0.55rem;
     border: 1px solid var(--accent);
     transform: translateY(-50%) rotate(45deg);
 }
@@ -315,10 +335,12 @@ em {
 .chapterPage ol.content-list li::before {
     content: counter(chapterListCounter) ".";
     position: absolute;
-    inset-inline-start: 0.35rem;
+    inset-inline-start: 0.1rem;
+    top: 50%;
+    transform: translateY(-50%);
     color: var(--accent);
     font-weight: 600;
-    font-size: 0.85em;
+    font-size: 1em;
 }
 
 /* inline code and fenced code blocks — always LTR: code syntax reads left-to-right
