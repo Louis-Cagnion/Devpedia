@@ -38,12 +38,17 @@
 }
 
 /* Dense-prose text gets an actual opaque panel on the textured background above, the same
-   "raised surface" token already used for blockquote/table/childButton elsewhere on the site. */
+   "raised surface" token already used for blockquote/table/childButton elsewhere on the site.
+   A parallelogram rather than a plain rectangle -- top edge offset from the bottom edge, same
+   lean as the diagonal band cutting across the reference image's diamonds -- so it reads as
+   part of the same graphic language rather than a generic rounded card. clip-path replaces
+   border-radius here: a polygon's corners are sharp by construction, rounding them back in
+   would need a more complex path than this shape calls for. */
 .chapterPage p,
 .chapterPage .content-list li {
     background-color: var(--bg-elevated);
-    padding: 0.6rem 0.9rem;
-    border-radius: var(--radius);
+    padding: 0.6rem 1.3rem;
+    clip-path: polygon(1rem 0, 100% 0, calc(100% - 1rem) 100%, 0 100%);
 }
 
 .chapterPage .content-list li {
