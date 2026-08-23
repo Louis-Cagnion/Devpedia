@@ -480,25 +480,15 @@ function speakNextViaAudio(entry) {
     currentEntryEndSeconds = (entry.startMs + entry.durationMs) / 1000;
     audioEl.playbackRate = readerRate;
 
-    /* Calling play() right after setting currentTime, without waiting for the seek it triggers to
-       actually land, played an instant of stale audio from wherever the clip previously was before
-       snapping to entry's real start -- audible as each segment's first word getting cut and
-       restarting (reported by Louis, 22/08/2026). Skipped when already close enough (the common
-       case: consecutive entries are concatenated back-to-back in the same clip, cf.
-       scripts/generate-audio.mjs, so there's often no real seek to wait for -- and a currentTime
-       write that lands on the same value the element already reports can fail to ever fire "seeked").
-       The "seeked" listener alone still isn't enough: on a real iPhone, a "seeking"/"seeked" pair was
-       observed with no "play" ever following it, playback silently stuck until the next entry's own
-       transition happened to recover it several seconds later (confirmed via js/reader-debug.js,
-       23/08/2026) -- a raced listener attached just after an already in-flight seek started, most
-       likely. playOnce() plus the fallback timer below guarantees play() always fires eventually,
-       "seeked" or not. */
+    /* Clips are concatenated gapless (scripts/generate-audio.mjs), so a re-seek here is only ever
+       correcting timeupdate's own ~250ms polling overshoot -- exactly what iOS fails once locked (devpedia-todo.md). */
+    const SEEK_TOLERANCE_SECONDS = 1;
     const targetSeconds = entry.startMs / 1000;
     const play = () => {
         if (generation !== myGeneration) return;
         audioEl.play().catch(err => logEvent("audioEl:play-rejected", err.message));
     };
-    if (Math.abs(audioEl.currentTime - targetSeconds) < 0.05) {
+    if (Math.abs(audioEl.currentTime - targetSeconds) < SEEK_TOLERANCE_SECONDS) {
         play();
     } else {
         let played = false;
