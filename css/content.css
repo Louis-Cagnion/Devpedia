@@ -46,9 +46,49 @@
    would need a more complex path than this shape calls for. */
 .chapterPage p,
 .chapterPage .content-list li {
+    position: relative;
     background-color: rgba(0, 0, 0, 0.45);
     padding: 0.6rem 1.3rem;
     clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 100%, 1rem 100%);
+}
+
+/* Two thin gradient corner brackets, same accent-warm/accent pairing as the blockquote border
+   and title underlines, each fading out by the middle of the two edges it runs along -- warm
+   at bottom-left, cool at top-right, opposite corners, echoing the same warm-to-cool diagonal
+   flow the panel's own lean already suggests. */
+.chapterPage p::before, .chapterPage p::after,
+.chapterPage .content-list li::before, .chapterPage .content-list li::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.chapterPage p::before,
+.chapterPage .content-list li::before {
+    background-image:
+        linear-gradient(to right, var(--accent-warm), transparent 50%),
+        linear-gradient(to top, var(--accent-warm), transparent 50%);
+    background-position: bottom left, bottom left;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
+}
+
+.chapterPage p::after,
+.chapterPage .content-list li::after {
+    background-image:
+        linear-gradient(to left, var(--accent), transparent 50%),
+        linear-gradient(to bottom, var(--accent), transparent 50%);
+    background-position: top right, top right;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
+}
+
+/* A paragraph nested inside a blockquote already gets its shape reset (see below) -- reset
+   these corner brackets on it too, rather than layering a second decoration on top of the
+   blockquote's own gradient border. */
+.chapterPage blockquote p::before, .chapterPage blockquote p::after {
+    content: none;
 }
 
 .chapterPage .content-list li {
