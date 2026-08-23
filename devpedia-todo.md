@@ -26,5 +26,17 @@ Signalé par Louis (23/08/2026) : le délai avant de passer automatiquement au c
 Demandé par Louis (23/08/2026) : la lecture ne marquait aucune pause en croisant une parenthèse. Corrigé (23/08/2026) : `CLAUSE_END_PATTERN` (`js/reader-clauses.js`) traite `(` et `)` comme des frontières de clause. Audio des 5 chapitres pilotes régénérée en conséquence (4 langues).
 - Reste à Louis : confirmer que le rythme de lecture sonne mieux sur une incise entre parenthèses.
 
+## 5. Traduire les chapitres Redis et P2P/BitTorrent (en/es/br)
+Chapitres rédigés en français le 23/08/2026 (`Données/Bases de données/redis.md`, `Infrastructure & DevOps/Réseaux/protocoles-pair-a-pair.md`, enregistrés dans `structure/struct.json` via `node scripts/generate-struct.js`). Reste à traduire dans `content-en/`, `content-es/`, `content-br/` (mêmes chemins relatifs) puis régénérer `struct-en.json`/`struct-es.json`/`struct-br.json` (le générateur accepte un dossier de contenu et un chemin de struct en paramètres, cf. commentaire d'en-tête de `scripts/generate-struct.js`). Convention déjà validée par Louis pour un chapitre tout neuf : 3 agents en parallèle, un par langue.
+
+## 6. Sécurité offensive / exploitation binaire
+Repéré en comparant Devpedia à pwn.college (23/08/2026) : la catégorie Sécurité couvre uniquement la sécurité applicative/web (OWASP, SAST/DAST, crypto, secrets), rien sur la sécurité bas niveau. Chantier le plus volumineux des trois de cette série, probablement plusieurs chapitres distincts dans `Sécurité/Cybersécurité` plutôt qu'un seul, à cadrer/découper avant rédaction (cf. schéma projet complexe). Couvrir a minima :
+- Le rappel bas niveau nécessaire au reste (registres, pile/*stack*, tas/*heap*) : comment un programme compilé s'exécute réellement, niveau où Devpedia ne descend jamais aujourd'hui.
+- La corruption mémoire comme famille de faille distincte de celles de `types-de-failles.md` (qui ne couvre que le web) : *buffer overflow* (écriture au-delà d'un tampon alloué), *use-after-free*, format string.
+- Les bases de la rétro-ingénierie : désassembleur (ex. Ghidra, `objdump`) et débogueur (ex. `gdb`) pour inspecter un binaire sans son code source, lecture minimale d'assembleur x86.
+- L'escalade de privilèges (accès limité qui devient accès complet root/administrateur via une mauvaise configuration ou une faille), à relier à `rbac-et-abac.md` et `authentification-vs-autorisation.md` déjà existants côté défense.
+- Le CTF (*Capture The Flag*) comme format d'entraînement : *jeopardy* (défis indépendants par catégorie) vs *attack-defense* (services à défendre et attaquer en direct), à relier au pentest/bug bounty déjà couverts dans `tests-et-audit-de-securite.md`.
+- Le rappel du cadre légal déjà posé pour le pentest dans `tests-et-audit-de-securite.md` : ces techniques ne s'appliquent que dans un environnement autorisé (CTF, lab dédié type pwn.college), jamais sur un système réel sans mandat.
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).

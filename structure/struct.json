@@ -78,6 +78,10 @@
             {
               "id": "bases-de-donnees-a-fort-trafic",
               "label": "Bases de données à fort trafic : ne jamais bloquer l'utilisateur sur un recalcul coûteux"
+            },
+            {
+              "id": "redis",
+              "label": "Redis : le store clé-valeur en mémoire"
             }
           ]
         },
@@ -673,6 +677,10 @@
             {
               "id": "sockets-et-io-non-bloquante",
               "label": "Sockets et E/S non bloquante"
+            },
+            {
+              "id": "protocoles-pair-a-pair",
+              "label": "Les protocoles pair-à-pair (P2P)"
             }
           ]
         },
