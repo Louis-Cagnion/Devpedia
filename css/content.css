@@ -1,8 +1,151 @@
-/* page layout, common to home / category / subject / chapter pages */
+/* page layout, common to home / category / subject / chapter pages. isolation: isolate scopes
+   the stylized background below (a ::before layer) to this element's own stacking context, so
+   its z-index: -1 sits behind this page's own content without reaching into an ancestor's. */
 .page {
+    position: relative;
+    isolation: isolate;
     max-width: 900px;
     margin: 0 auto;
     padding: 1.5rem 1.25rem calc(var(--floating-bar-height, 0px) + 1.5rem);
+    /* a short chapter's own content is shorter than the viewport: without this, .page::before's
+       inset: 0 background stops right where the content does, leaving a plain --bg gap below it
+       down to the actual bottom of the window. Floors .page's own box at the viewport height
+       (minus the sticky navbar) so the background always reaches the bottom of the page. */
+    min-height: calc(100vh - var(--navbar-height, 57px));
+}
+
+.page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    /* solid var(--bg) first: the non-negotiable scrim that keeps --text/--text-muted
+       contrast identical to every other page type, whatever sits above it */
+    background-color: var(--bg);
+    /* two dot layers, the second offset by half a tile in both x and y, so dots line up
+       along diagonals rather than a plain orthogonal grid */
+    background-image:
+        radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0),
+        radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0),
+        radial-gradient(ellipse at 15% 10%, color-mix(in srgb, var(--accent-warm) 10%, transparent), transparent 45%),
+        radial-gradient(ellipse at 85% 90%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 45%);
+    /* tiled starfield (not enumerated dot positions) so it scales to any chapter length
+       for free, no image asset, no extra HTTP request */
+    background-size: 40px 40px, 40px 40px, auto, auto;
+    background-position: 0 0, 20px 20px, 0 0, 0 0;
+    background-repeat: repeat, repeat, no-repeat, no-repeat;
+    opacity: 0.5;
+}
+
+/* Dense-prose text gets an actual opaque panel on the textured background above, the same
+   "raised surface" token already used for blockquote/table/childButton elsewhere on the site.
+   A parallelogram rather than a plain rectangle -- top edge offset from the bottom edge, same
+   lean as the diagonal band cutting across the reference image's diamonds -- so it reads as
+   part of the same graphic language rather than a generic rounded card. clip-path replaces
+   border-radius here: a polygon's corners are sharp by construction, rounding them back in
+   would need a more complex path than this shape calls for. */
+.page p {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.45);
+    padding: 0.6rem 1.3rem;
+    clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 100%, 1rem 100%);
+}
+
+/* Corner brackets (gradient accents on every single paragraph/list item) were dropped here:
+   on a page with a dozen+ paragraphs, that much repeated color read as noise rather than
+   structure. The parallelogram + dark panel above already sets p/li apart from plain text on
+   the texture -- color is reserved for the rarer, more structural elements below (titles,
+   blockquote, tables, code), where it still reads as deliberate rather than repetitive. */
+
+/* List items can't just reuse .page p's rule above: clip-path clips its whole element,
+   pseudo-elements included, even ones positioned outside the box via a negative inset -- so a
+   marker placed to the left of a clipped <li> gets clipped away exactly like the native
+   ::marker did (see the fix further down), and a marker placed *inside* the clip region sits on
+   top of the dark panel instead of outside it, which Louis asked to avoid. The panel here moves
+   to a ::after inset from the left by a fixed gutter (1.3rem), carrying its own clip-path scoped
+   to *its own* box -- the <li> itself stays completely unclipped, so a ::before marker anywhere
+   on it, gutter included, always renders. */
+.page .content-list li {
+    position: relative;
+    isolation: isolate;
+    padding: 0.6rem 1.2rem 0.6rem 2.6rem;
+}
+
+.page .content-list li::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset-inline-start: 1.3rem;
+    inset-inline-end: 0;
+    inset-block: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 100%, 1rem 100%);
+}
+
+/* Diamond accent echoing the sidebar's category markers, tying a page's own titles back
+   to the site's new theme instead of leaving them as plain text over the texture. */
+.page .pageTitle,
+.page h3, .page h4, .page h5, .page h6 {
+    position: relative;
+    padding-inline-start: 1.6rem;
+}
+
+.page .pageTitle::before,
+.page h3::before, .page h4::before, .page h5::before, .page h6::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.5em;
+    border: 1px solid var(--accent);
+    transform: translateY(-50%) rotate(45deg);
+}
+
+/* shrinks with heading depth, same principle as the sidebar's category/subject/chapter
+   diamonds: size alone reads as how deep a heading sits in the page's own outline */
+.page .pageTitle::before { width: 1rem; height: 1rem; }
+.page h3::before { width: 0.8rem; height: 0.8rem; }
+.page h4::before { width: 0.6rem; height: 0.6rem; }
+.page h5::before { width: 0.5rem; height: 0.5rem; }
+.page h6::before { width: 0.4rem; height: 0.4rem; }
+
+.page .pageTitle {
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, var(--accent-warm), var(--accent)) 1;
+}
+
+/* Subtitles get the same gradient-bar idea as .pageTitle, but sized to the text itself
+   (width: fit-content) rather than the full line, and the gradient reversed -- reads as a
+   section break rather than a repeat of the main title's full-width treatment. */
+.page h3, .page h4, .page h5, .page h6 {
+    width: fit-content;
+    padding-bottom: 0.3rem;
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, var(--accent), var(--accent-warm)) 1;
+}
+
+/* Breadcrumb reads as part of the navigation chrome (same tone as navbar/sidebars) rather
+   than floating loose on the page's own textured background. */
+.page .pageBreadcrumb {
+    display: inline-flex;
+    background-color: var(--bg-deep);
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+}
+
+/* Reads as a small chrome label now (cf. .sidebarSectionTitle's same uppercase/letter-spacing
+   treatment) rather than plain link text -- underline moves to hover-only, matching how every
+   other clickable chrome element on the site (sidebar buttons, nav buttons) signals interactivity
+   through a color/state change rather than a permanent underline. */
+.page .breadcrumbCategory, .page .breadcrumbSubject {
+    text-decoration: none;
+}
+
+.page .breadcrumbCategory:hover, .page .breadcrumbSubject:hover {
+    text-decoration: underline;
 }
 
 /* underlined even at rest (unlike the global `a`) — a link whose label is itself an inline
@@ -124,7 +267,7 @@ em {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    background: transparent;
+    background-color: var(--bg-deep);
     border: 1px solid var(--border);
     color: var(--text-muted);
     border-radius: var(--radius);
@@ -177,6 +320,45 @@ em {
     color: var(--accent);
 }
 
+/* Native ::marker is positioned in the list's own reserved gutter, outside the <li>'s own box
+   -- which .page p/.content-list li's clip-path (further up this file) was silently
+   clipping away, since a pseudo-element belongs to its host's clip region regardless of where
+   it visually sits. Markers are rebuilt here as an ordinary ::before instead, inside the panel's
+   existing left padding, so they're guaranteed to fall within the visible clipped area. */
+.page .content-list {
+    list-style: none;
+}
+
+.page ul.content-list li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.3rem;
+    top: 50%;
+    width: 0.55rem;
+    height: 0.55rem;
+    border: 1px solid var(--accent);
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.page ol.content-list {
+    counter-reset: chapterListCounter;
+}
+
+.page ol.content-list li {
+    counter-increment: chapterListCounter;
+}
+
+.page ol.content-list li::before {
+    content: counter(chapterListCounter) ".";
+    position: absolute;
+    inset-inline-start: 0.1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 1em;
+}
+
 /* inline code and fenced code blocks — always LTR: code syntax reads left-to-right
    regardless of the page's language, exactly like on GitHub or MDN's Arabic docs */
 code {
@@ -188,6 +370,24 @@ code {
     direction: ltr;
     unicode-bidi: embed;
     vertical-align: middle;
+}
+
+/* Inline code was the one piece of page content left with no tie to the new theme at all --
+   a tinted background is enough to tie it in while still blending into the surrounding
+   sentence; a visible border read as too sharp an edge for something this frequent (as
+   frequent as strong/em within a paragraph), so it was dropped in favor of color alone. */
+.page code {
+    background-color: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* .hljs (css/vendor/hljs-theme.css, loaded after this file) sets its own near-black
+   background (#1e1e1e) on highlighted blocks, but `.page pre code` is more specific
+   (1 class + 2 elements vs 1 class) and was winning regardless -- painting every code block,
+   highlighted or not, in the old light Nord grey. Matched to --bg-deep (close enough to
+   #1e1e1e that highlighted and unhighlighted blocks now read the same) instead of overriding
+   it away. */
+.page pre code {
+    background-color: var(--bg-deep);
 }
 
 /* td already uses --bg-elevated-2 (cf. below) — a plain `code` span there would be
@@ -205,6 +405,40 @@ pre {
     text-align: left;
 }
 
+/* The fading corner-bracket accent originally tried on every paragraph (dropped there for
+   being too repeated) moved here instead: code blocks are rare enough per page that the
+   same warm-to-cool pairing reads as a deliberate accent rather than noise. Plain rectangle,
+   so (unlike the parallelogram p/li used to be) the brackets are just two straight strips
+   anchored at the real corners -- no clip-path tracing needed. */
+.page pre {
+    position: relative;
+}
+
+.page pre::before, .page pre::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.page pre::before {
+    background-image:
+        linear-gradient(to right, var(--accent-warm), transparent 50%),
+        linear-gradient(to top, var(--accent-warm), transparent 50%);
+    background-position: bottom left, bottom left;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
+}
+
+.page pre::after {
+    background-image:
+        linear-gradient(to left, var(--accent), transparent 50%),
+        linear-gradient(to bottom, var(--accent), transparent 50%);
+    background-position: top right, top right;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
+}
+
 /* `code` is inline by default: without this, an unhighlighted fenced block (no `.hljs` class)
    paints its background one line-box at a time instead of one contiguous block, unlike a
    highlighted one (hljs-theme.css's own `.hljs` class already gives it this box). */
@@ -218,6 +452,37 @@ pre code {
 .tableWrapper {
     overflow-x: auto;
     margin: 0.5rem 0 1.5rem 0;
+}
+
+/* same fading corner brackets as .page pre, around the table as a whole rather than
+   re-coloring every individual cell border (cf. th/td below, left as plain var(--border)) */
+.page .tableWrapper {
+    position: relative;
+}
+
+.page .tableWrapper::before, .page .tableWrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.page .tableWrapper::before {
+    background-image:
+        linear-gradient(to right, var(--accent-warm), transparent 50%),
+        linear-gradient(to top, var(--accent-warm), transparent 50%);
+    background-position: bottom left, bottom left;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
+}
+
+.page .tableWrapper::after {
+    background-image:
+        linear-gradient(to left, var(--accent), transparent 50%),
+        linear-gradient(to bottom, var(--accent), transparent 50%);
+    background-position: top right, top right;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
 }
 
 table {
@@ -241,6 +506,22 @@ td {
     background-color: var(--bg-elevated-2);
 }
 
+/* Table cells were still the light blue-grey Nord surfaces from before this redesign, the one
+   piece of page content left out of the semi-transparent-black panel treatment everywhere
+   else (p/li/blockquote) -- brought in line here, plus an accent-tinted grid instead of the
+   plain neutral --border, echoing the warm/cool frame around the table as a whole. */
+.page th, .page td {
+    border-color: color-mix(in srgb, var(--accent) 25%, var(--border));
+}
+
+.page th {
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+.page td {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
 /* notes / callouts (markdown blockquotes) */
 blockquote {
     margin: 0.5rem 0 1.5rem 0;
@@ -251,6 +532,34 @@ blockquote {
     border-end-start-radius: 0;
     border-start-end-radius: var(--radius);
     border-end-end-radius: var(--radius);
+}
+
+/* Same parallelogram/semi-transparent-black panel as .page p, but with a gradient left
+   edge (same pairing as .pageTitle/h3-h6's underline) instead of the plain solid accent border
+   used elsewhere on the site -- a thin second polygon tracing the exact same diagonal as the
+   panel's own left edge, so the gradient stripe follows the lean rather than staying vertical. */
+.page blockquote {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.45);
+    border-inline-start: none;
+    padding-inline-start: 1.5rem;
+    clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 100%, 1rem 100%);
+}
+
+.page blockquote::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--accent-warm), var(--accent));
+    clip-path: polygon(0 0, 4px 0, calc(1rem + 4px) 100%, 1rem 100%);
+}
+
+/* A paragraph nested inside a blockquote sits on the blockquote's own panel already -- reset
+   the panel/shape .page p would otherwise add a second time. */
+.page blockquote p {
+    background: none;
+    padding: 0;
+    clip-path: none;
 }
 
 blockquote p {
@@ -270,17 +579,25 @@ hr {
 
 /* shown when a page doesn't exist yet in the active language and got substituted from another
    one (cf. router-language-fallback.js's resolveAcrossLanguages / router.js's fallbackNoticeFor)
-   -- same shape as a blockquote note, italicized to read as a system message rather than
-   authored page content */
+   -- same dark panel + gradient left edge as .page blockquote, italicized to read as a system
+   message rather than authored page content. Gradient reversed (accent-strong first) to stay
+   visually distinct from a blockquote's accent-warm start. */
 .pageFallbackNotice {
+    position: relative;
     margin: 0 0 1rem 0;
-    padding: 0.7rem 1rem;
-    border-inline-start: 3px solid var(--accent-strong);
-    background-color: var(--bg-elevated);
-    border-start-end-radius: var(--radius);
-    border-end-end-radius: var(--radius);
+    padding: 0.7rem 1rem 0.7rem 1.5rem;
+    background-color: rgba(0, 0, 0, 0.45);
+    clip-path: polygon(0 0, calc(100% - 1rem) 0, 100% 100%, 1rem 100%);
     font-style: italic;
     color: var(--text-muted);
+}
+
+.pageFallbackNotice::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--accent-strong), var(--accent));
+    clip-path: polygon(0 0, 4px 0, calc(1rem + 4px) 100%, 1rem 100%);
 }
 
 /* navigation lists: subjects of a category, chapters of a subject/category */
@@ -299,24 +616,45 @@ hr {
     height: 100%;
 }
 
+/* Same dark semi-transparent panel + accent-tinted border as the rest of the theme (table
+   grid, inline code), plus a small diamond echoing the sidebar's own entries for the same
+   category/subject/chapter -- these cards are effectively that same navigation, just laid
+   out as a grid instead of a tree. */
 .childButton {
+    position: relative;
     width: 100%;
     height: 100%;
     display: block;
     text-align: start;
-    background-color: var(--bg-elevated);
-    border: 1px solid var(--border);
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
     border-radius: var(--radius);
-    padding: 0.9rem 1rem;
+    padding: 0.9rem 1rem 0.9rem 2.1rem;
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 }
 
+.childButton::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.9rem;
+    top: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    border: 1px solid var(--accent);
+    transform: translateY(-50%) rotate(45deg);
+    transition: border-color 0.15s ease;
+}
+
 .childButton:hover {
-    background-color: var(--bg-hover);
+    background-color: rgba(0, 0, 0, 0.55);
     border-color: var(--accent);
     transform: translateY(-1px);
+}
+
+.childButton:hover::before {
+    border-color: var(--accent-strong);
 }
 
 .childButton:active {

@@ -12,6 +12,9 @@
     --accent-strong: #8fbcbb;
     --accent-contrast: #2e3440;
     --radius: 10px;
+    --bg-deep: #1c2028;
+    --accent-warm: #d08770;
+    --font-display: "Orbitron", "Michroma", sans-serif;
 }
 
 html, body {

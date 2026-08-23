@@ -11,168 +11,6 @@
       ]
     },
     {
-      "id": "blockchain",
-      "label": "Blockchain",
-      "folder": "Blockchain",
-      "chapters": [
-        {
-          "id": "concepts-fondamentaux-blockchain",
-          "label": "Conceitos fundamentais da blockchain"
-        },
-        {
-          "id": "solidity-bases-du-langage",
-          "label": "Solidity: fundamentos da linguagem"
-        },
-        {
-          "id": "deployer-et-interagir-avec-un-smart-contract",
-          "label": "Implantar e interagir com um smart contract"
-        },
-        {
-          "id": "reseaux-blockchain",
-          "label": "As redes blockchain"
-        },
-        {
-          "id": "backends-sur-icp",
-          "label": "Os backends no ICP"
-        }
-      ]
-    },
-    {
-      "id": "donnees",
-      "label": "Données",
-      "folder": "Données",
-      "subjects": [
-        {
-          "id": "bases-de-donnees",
-          "label": "Bases de données",
-          "folder": "Bases de données",
-          "chapters": [
-            {
-              "id": "modeles-en-etoile",
-              "label": "O modelo em estrela"
-            },
-            {
-              "id": "architecture-medaillon",
-              "label": "A arquitetura medalhão"
-            },
-            {
-              "id": "table-pont",
-              "label": "A tabela ponte"
-            },
-            {
-              "id": "schemas-et-tables-techniques",
-              "label": "Esquemas e tabelas técnicas"
-            },
-            {
-              "id": "entrepot-vs-data-lake",
-              "label": "Data warehouse contra data lake"
-            },
-            {
-              "id": "les-index",
-              "label": "Os índices"
-            },
-            {
-              "id": "orm",
-              "label": "O ORM: mapear objetos em tabelas relacionais"
-            },
-            {
-              "id": "bases-de-donnees-a-fort-trafic",
-              "label": "Bancos de dados de alto tráfego: nunca bloquear o usuário em um recálculo custoso"
-            },
-            {
-              "id": "redis",
-              "label": "Redis: o armazenamento chave-valor em memória"
-            }
-          ]
-        },
-        {
-          "id": "data-science",
-          "label": "Data Science",
-          "folder": "Data Science",
-          "chapters": [
-            {
-              "id": "jupyter-notebooks",
-              "label": "Os notebooks Jupyter"
-            },
-            {
-              "id": "numpy",
-              "label": "NumPy: o cálculo numérico"
-            },
-            {
-              "id": "pandas",
-              "label": "pandas: manipular dados tabulares"
-            },
-            {
-              "id": "matplotlib",
-              "label": "Matplotlib: visualizar dados"
-            },
-            {
-              "id": "machine-learning-scikit-learn",
-              "label": "Introdução ao machine learning (scikit-learn)"
-            }
-          ]
-        },
-        {
-          "id": "representation-des-donnees",
-          "label": "Représentation des données",
-          "folder": "Représentation des données",
-          "chapters": [
-            {
-              "id": "entiers-et-debordements",
-              "label": "Os inteiros, os bits e os overflows"
-            },
-            {
-              "id": "nombres-flottants",
-              "label": "Os números de ponto flutuante (IEEE 754)"
-            },
-            {
-              "id": "encodage-des-textes",
-              "label": "A codificação de textos (ASCII, Unicode, UTF-8)"
-            },
-            {
-              "id": "organisation-en-memoire",
-              "label": "A organização dos dados em memória"
-            },
-            {
-              "id": "aleatoire-et-generateurs",
-              "label": "A aleatoriedade e os geradores"
-            },
-            {
-              "id": "metadonnees-exif-et-format-raw",
-              "label": "Metadados EXIF e formato RAW: o que uma foto contém além da imagem"
-            },
-            {
-              "id": "hachage-perceptuel-similarite-dimages",
-              "label": "O hash perceptual: reconhecer imagens semelhantes, não idênticas"
-            },
-            {
-              "id": "empreinte-audio-reconnaissance-musicale",
-              "label": "A impressão digital de áudio: reconhecer uma música em poucos segundos"
-            }
-          ]
-        },
-        {
-          "id": "traitement-de-documents",
-          "label": "Traitement de documents",
-          "folder": "Traitement de documents",
-          "chapters": [
-            {
-              "id": "extraction-pdf",
-              "label": "Extrair o texto e as páginas de um PDF"
-            },
-            {
-              "id": "ocr-structure",
-              "label": "O OCR estruturado e a análise de layout"
-            },
-            {
-              "id": "arbitrage-local-cloud-vision",
-              "label": "Arbitragem local vs cloud para um modelo de visão"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "fondamentaux",
       "label": "Fondamentaux",
       "folder": "Fondamentaux",
@@ -266,475 +104,6 @@
             {
               "id": "rendu-3d-bas-niveau-et-fenetrage",
               "label": "Renderização 3D de baixo nível e janelamento: raycasting estilo Wolfenstein"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "gestion-de-projet-et-organisation",
-      "label": "Gestion de projet et organisation",
-      "folder": "Gestion de projet et organisation",
-      "subjects": [
-        {
-          "id": "organisation-en-entreprise",
-          "label": "Organisation en entreprise",
-          "folder": "Organisation en entreprise",
-          "chapters": [
-            {
-              "id": "roles-equipe-developpement",
-              "label": "Os papéis em uma equipe de desenvolvimento"
-            },
-            {
-              "id": "cycle-de-vie-dun-projet",
-              "label": "O ciclo de vida de um projeto"
-            },
-            {
-              "id": "documentation-et-communication-equipe",
-              "label": "Documentação e comunicação em equipe"
-            }
-          ]
-        },
-        {
-          "id": "gestion-de-projet",
-          "label": "Gestion de projet",
-          "folder": "Gestion de projet",
-          "chapters": [
-            {
-              "id": "methodologies-agile-scrum-kanban",
-              "label": "Metodologias: Agile, Scrum, Kanban"
-            },
-            {
-              "id": "backlog-et-user-stories",
-              "label": "O backlog e as user stories"
-            },
-            {
-              "id": "estimation",
-              "label": "A estimativa"
-            },
-            {
-              "id": "outils-de-suivi",
-              "label": "As ferramentas de acompanhamento"
-            },
-            {
-              "id": "safe-et-scrumban",
-              "label": "SAFe e Scrumban: os casos híbridos"
-            },
-            {
-              "id": "okr",
-              "label": "Os OKR"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "ia",
-      "label": "IA",
-      "folder": "IA",
-      "subjects": [
-        {
-          "id": "fondamentaux-du-deep-learning",
-          "label": "Fondamentaux du deep learning",
-          "folder": "Fondamentaux du deep learning",
-          "chapters": [
-            {
-              "id": "reseaux-de-neurones",
-              "label": "As redes neurais: os fundamentos"
-            },
-            {
-              "id": "entrainement-descente-de-gradient",
-              "label": "O treinamento de um modelo e a descida do gradiente"
-            },
-            {
-              "id": "architectures-cnn-rnn-transformers",
-              "label": "Arquiteturas: CNN, RNN e Transformers"
-            },
-            {
-              "id": "deep-learning-pytorch",
-              "label": "Deep learning com PyTorch"
-            }
-          ]
-        },
-        {
-          "id": "nlp-llm",
-          "label": "NLP et LLM",
-          "folder": "NLP et LLM",
-          "chapters": [
-            {
-              "id": "nlp-et-llm",
-              "label": "Processamento de linguagem natural (NLP) e grandes modelos de linguagem (LLM)"
-            },
-            {
-              "id": "prompt-engineering",
-              "label": "Prompt engineering: estruturar uma requisição para melhores resultados"
-            },
-            {
-              "id": "llm-en-production",
-              "label": "LLM em produção: casos de uso e limites"
-            },
-            {
-              "id": "reduire-la-variance-des-reponses",
-              "label": "Reduzir a variância das respostas: self-consistency, voto majoritário e ensembling"
-            },
-            {
-              "id": "agents",
-              "label": "Agentes: loop de reflexão/ação e orquestração"
-            },
-            {
-              "id": "rag",
-              "label": "RAG: aumentar um LLM com dados externos"
-            },
-            {
-              "id": "prompt-injection",
-              "label": "Prompt injection: quando um dado se faz passar por instrução"
-            },
-            {
-              "id": "mcp",
-              "label": "MCP (Model Context Protocol): padronizar as ferramentas de um agente"
-            },
-            {
-              "id": "skills",
-              "label": "Os skills: empacotar uma capacidade reutilizável para um agente"
-            }
-          ]
-        },
-        {
-          "id": "applications-llm",
-          "label": "Applications LLM",
-          "folder": "Applications LLM",
-          "chapters": [
-            {
-              "id": "chatbot",
-              "label": "Construindo um chatbot: arquitetura, configuração e escalonamento"
-            },
-            {
-              "id": "assistant-agentique-terminal",
-              "label": "O assistente de IA agêntico no terminal: além do prompt simples"
-            }
-          ]
-        },
-        {
-          "id": "vision-et-ocr",
-          "label": "Vision et OCR",
-          "folder": "Vision et OCR",
-          "chapters": [
-            {
-              "id": "ocr-classique-vs-deep-learning",
-              "label": "OCR: do reconhecimento de padrões clássico ao deep learning"
-            },
-            {
-              "id": "detection-de-mise-en-page",
-              "label": "Detecção de layout: caixas delimitadoras, score de confiança e remoção de duplicatas"
-            },
-            {
-              "id": "modeles-document-ai",
-              "label": "Modelos \"Document AI\": entender um documento além do texto puro"
-            },
-            {
-              "id": "fine-tuning-modele-vision",
-              "label": "Treinar e fazer fine-tuning de um modelo de visão para um caso de negócio"
-            },
-            {
-              "id": "evaluer-un-ocr",
-              "label": "Avaliar um OCR: CER, WER e taxa de reconhecimento por campo"
-            },
-            {
-              "id": "post-traitement-correction",
-              "label": "Pós-processamento e correção de um OCR"
-            },
-            {
-              "id": "ocr-en-production",
-              "label": "Colocação em produção e monitoramento de um pipeline OCR"
-            },
-            {
-              "id": "gouvernance-documents-scannes",
-              "label": "Governança de dados para documentos escaneados"
-            }
-          ]
-        },
-        {
-          "id": "voix-ia",
-          "label": "Voix IA",
-          "folder": "Voix IA",
-          "chapters": [
-            {
-              "id": "synthese-classique-vs-deep-learning",
-              "label": "Síntese de voz: da concatenação clássica ao deep learning"
-            },
-            {
-              "id": "controler-la-prosodie",
-              "label": "Controlar a prosódia"
-            },
-            {
-              "id": "modeles-modernes-synthese",
-              "label": "Modelos modernos de síntese: os codecs neurais"
-            },
-            {
-              "id": "cloner-une-voix",
-              "label": "Clonar uma voz: técnica e questões éticas/legais"
-            },
-            {
-              "id": "fine-tuning-synthese-vocale",
-              "label": "Treinar e fazer fine-tuning de um modelo de síntese de voz"
-            },
-            {
-              "id": "evaluer-synthese-vocale",
-              "label": "Avaliar uma síntese de voz: MOS, inteligibilidade, latência"
-            },
-            {
-              "id": "choisir-fournisseur-mise-en-production",
-              "label": "Escolher um fornecedor e colocar em produção"
-            },
-            {
-              "id": "gouvernance-voix-ia",
-              "label": "Governança de um pipeline de voz IA"
-            }
-          ]
-        },
-        {
-          "id": "production-et-gouvernance",
-          "label": "Production et gouvernance",
-          "folder": "Production et gouvernance",
-          "chapters": [
-            {
-              "id": "gestion-dun-llm",
-              "label": "Monitoramento e gestão operacional de um LLM"
-            },
-            {
-              "id": "gouvernance-des-donnees",
-              "label": "Governança de dados para um sistema de IA"
-            },
-            {
-              "id": "reglementation-europeenne-ia",
-              "label": "Regulamentação europeia de IA: o AI Act"
-            },
-            {
-              "id": "watermarking-ia",
-              "label": "Watermarking do conteúdo gerado por IA"
-            },
-            {
-              "id": "stack-ia",
-              "label": "A stack de IA: as camadas de uma aplicação em produção"
-            }
-          ]
-        },
-        {
-          "id": "jeux-et-agents",
-          "label": "Jeux et agents",
-          "folder": "Jeux et agents",
-          "chapters": [
-            {
-              "id": "ia-de-jeu-par-imitation",
-              "label": "IA de jogo por imitação: aprender com um jogador humano"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "infrastructure-devops",
-      "label": "Infrastructure & DevOps",
-      "folder": "Infrastructure & DevOps",
-      "subjects": [
-        {
-          "id": "infrastructure",
-          "label": "Infrastructure",
-          "folder": "Infrastructure",
-          "chapters": [
-            {
-              "id": "api-et-http",
-              "label": "As trocas de dados: API e HTTP"
-            },
-            {
-              "id": "websocket-et-temps-reel",
-              "label": "WebSocket: a comunicação em tempo real"
-            },
-            {
-              "id": "json",
-              "label": "O formato JSON"
-            },
-            {
-              "id": "cpu-vs-gpu",
-              "label": "CPU vs GPU: o cálculo paralelo"
-            },
-            {
-              "id": "le-cloud",
-              "label": "O que é a nuvem (cloud)?"
-            },
-            {
-              "id": "tpu-npu-lpu-vpu",
-              "label": "Além da GPU: TPU, NPU, LPU e VPU"
-            },
-            {
-              "id": "elk-agregation-de-logs",
-              "label": "ELK: centralizar e consultar os logs de uma infraestrutura"
-            },
-            {
-              "id": "pwa-progressive-web-app",
-              "label": "A PWA: um site que se comporta como um aplicativo"
-            }
-          ]
-        },
-        {
-          "id": "docker",
-          "label": "Docker",
-          "folder": "Docker",
-          "chapters": [
-            {
-              "id": "concepts-de-base",
-              "label": "Os conceitos básicos"
-            },
-            {
-              "id": "dockerfile",
-              "label": "O Dockerfile"
-            },
-            {
-              "id": "commandes-essentielles",
-              "label": "Os comandos essenciais"
-            },
-            {
-              "id": "volumes-et-reseaux",
-              "label": "Volumes e redes"
-            },
-            {
-              "id": "docker-compose",
-              "label": "Docker Compose"
-            },
-            {
-              "id": "bonnes-pratiques-et-securite",
-              "label": "Boas práticas e segurança"
-            },
-            {
-              "id": "conteneurs-manages-ecs-et-fargate",
-              "label": "Contêineres gerenciados na nuvem: ECS e Fargate"
-            }
-          ]
-        },
-        {
-          "id": "ci-cd",
-          "label": "CI-CD",
-          "folder": "CI-CD",
-          "chapters": [
-            {
-              "id": "pipeline-cicd",
-              "label": "O que é um pipeline CI/CD?"
-            },
-            {
-              "id": "azure-devops-plateforme",
-              "label": "Azure DevOps como plataforma"
-            },
-            {
-              "id": "yaml-pipelines-azure",
-              "label": "A sintaxe YAML dos pipelines Azure"
-            },
-            {
-              "id": "azure-pipelines-vs-github-actions",
-              "label": "Azure Pipelines contra GitHub Actions"
-            }
-          ]
-        },
-        {
-          "id": "administration-systeme",
-          "label": "Administration système",
-          "folder": "Administration système",
-          "chapters": [
-            {
-              "id": "virtualisation-et-choix-dos",
-              "label": "Virtualização e escolha de SO"
-            },
-            {
-              "id": "partitionnement-et-lvm",
-              "label": "Particionamento e LVM"
-            },
-            {
-              "id": "selinux-vs-apparmor",
-              "label": "SELinux vs AppArmor"
-            },
-            {
-              "id": "durcissement-ssh-sudo-mots-de-passe",
-              "label": "Endurecimento de SSH, sudo e senhas"
-            },
-            {
-              "id": "pare-feu-ufw-firewalld",
-              "label": "Firewall: UFW e firewalld"
-            },
-            {
-              "id": "supervision-systeme",
-              "label": "Ler o estado do sistema"
-            }
-          ]
-        },
-        {
-          "id": "reseaux",
-          "label": "Réseaux",
-          "folder": "Réseaux",
-          "chapters": [
-            {
-              "id": "fondamentaux-reseau",
-              "label": "Fundamentos de rede"
-            },
-            {
-              "id": "sockets-et-io-non-bloquante",
-              "label": "Sockets e E/S não bloqueante"
-            },
-            {
-              "id": "protocoles-pair-a-pair",
-              "label": "Os protocolos ponto a ponto (P2P)"
-            }
-          ]
-        },
-        {
-          "id": "automatisation",
-          "label": "Automatisation",
-          "folder": "Automatisation",
-          "chapters": [
-            {
-              "id": "automatisation-workflow",
-              "label": "A automação por workflow visual"
-            },
-            {
-              "id": "n8n-prise-en-main-de-linterface",
-              "label": "n8n: primeiros passos com a interface"
-            },
-            {
-              "id": "n8n-catalogue-des-fonctionnalites",
-              "label": "n8n: catálogo de funcionalidades e tipos de nós"
-            },
-            {
-              "id": "n8n-le-format-json-dun-workflow",
-              "label": "n8n: o formato JSON de um fluxo de trabalho"
-            },
-            {
-              "id": "n8n-lindustrialisation",
-              "label": "n8n: colocando em produção"
-            }
-          ]
-        },
-        {
-          "id": "conception-a-grande-echelle",
-          "label": "Conception à grande échelle",
-          "folder": "Conception à grande échelle",
-          "chapters": [
-            {
-              "id": "system-design-lexercice",
-              "label": "O \"system design\" como tipo de exercício"
-            },
-            {
-              "id": "autoscaling-et-repartition-de-charge",
-              "label": "Autoscaling e distribuição de carga"
-            },
-            {
-              "id": "cdn-et-diffusion-adaptative",
-              "label": "CDN e transmissão adaptativa: o caso Netflix"
-            },
-            {
-              "id": "fil-dactualite-fan-out",
-              "label": "O feed de notícias: construir o fluxo de cada um (fan-out)"
-            },
-            {
-              "id": "direct-et-chat-a-grande-echelle",
-              "label": "Transmissão ao vivo e chat em grande escala"
             }
           ]
         }
@@ -1516,6 +885,400 @@
       ]
     },
     {
+      "id": "donnees",
+      "label": "Données",
+      "folder": "Données",
+      "subjects": [
+        {
+          "id": "bases-de-donnees",
+          "label": "Bases de données",
+          "folder": "Bases de données",
+          "chapters": [
+            {
+              "id": "modeles-en-etoile",
+              "label": "O modelo em estrela"
+            },
+            {
+              "id": "architecture-medaillon",
+              "label": "A arquitetura medalhão"
+            },
+            {
+              "id": "table-pont",
+              "label": "A tabela ponte"
+            },
+            {
+              "id": "schemas-et-tables-techniques",
+              "label": "Esquemas e tabelas técnicas"
+            },
+            {
+              "id": "entrepot-vs-data-lake",
+              "label": "Data warehouse contra data lake"
+            },
+            {
+              "id": "les-index",
+              "label": "Os índices"
+            },
+            {
+              "id": "orm",
+              "label": "O ORM: mapear objetos em tabelas relacionais"
+            },
+            {
+              "id": "bases-de-donnees-a-fort-trafic",
+              "label": "Bancos de dados de alto tráfego: nunca bloquear o usuário em um recálculo custoso"
+            },
+            {
+              "id": "redis",
+              "label": "Redis: o armazenamento chave-valor em memória"
+            }
+          ]
+        },
+        {
+          "id": "data-science",
+          "label": "Data Science",
+          "folder": "Data Science",
+          "chapters": [
+            {
+              "id": "jupyter-notebooks",
+              "label": "Os notebooks Jupyter"
+            },
+            {
+              "id": "numpy",
+              "label": "NumPy: o cálculo numérico"
+            },
+            {
+              "id": "pandas",
+              "label": "pandas: manipular dados tabulares"
+            },
+            {
+              "id": "matplotlib",
+              "label": "Matplotlib: visualizar dados"
+            },
+            {
+              "id": "machine-learning-scikit-learn",
+              "label": "Introdução ao machine learning (scikit-learn)"
+            }
+          ]
+        },
+        {
+          "id": "representation-des-donnees",
+          "label": "Représentation des données",
+          "folder": "Représentation des données",
+          "chapters": [
+            {
+              "id": "entiers-et-debordements",
+              "label": "Os inteiros, os bits e os overflows"
+            },
+            {
+              "id": "nombres-flottants",
+              "label": "Os números de ponto flutuante (IEEE 754)"
+            },
+            {
+              "id": "encodage-des-textes",
+              "label": "A codificação de textos (ASCII, Unicode, UTF-8)"
+            },
+            {
+              "id": "organisation-en-memoire",
+              "label": "A organização dos dados em memória"
+            },
+            {
+              "id": "aleatoire-et-generateurs",
+              "label": "A aleatoriedade e os geradores"
+            },
+            {
+              "id": "metadonnees-exif-et-format-raw",
+              "label": "Metadados EXIF e formato RAW: o que uma foto contém além da imagem"
+            },
+            {
+              "id": "hachage-perceptuel-similarite-dimages",
+              "label": "O hash perceptual: reconhecer imagens semelhantes, não idênticas"
+            },
+            {
+              "id": "empreinte-audio-reconnaissance-musicale",
+              "label": "A impressão digital de áudio: reconhecer uma música em poucos segundos"
+            }
+          ]
+        },
+        {
+          "id": "traitement-de-documents",
+          "label": "Traitement de documents",
+          "folder": "Traitement de documents",
+          "chapters": [
+            {
+              "id": "extraction-pdf",
+              "label": "Extrair o texto e as páginas de um PDF"
+            },
+            {
+              "id": "ocr-structure",
+              "label": "O OCR estruturado e a análise de layout"
+            },
+            {
+              "id": "arbitrage-local-cloud-vision",
+              "label": "Arbitragem local vs cloud para um modelo de visão"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tests",
+      "label": "Tests",
+      "folder": "Tests",
+      "chapters": [
+        {
+          "id": "vocabulaire-qa-istqb",
+          "label": "Vocabulário de testes de software (QA, ISTQB)"
+        },
+        {
+          "id": "pyramide-de-test",
+          "label": "A pirâmide de testes"
+        },
+        {
+          "id": "architecture-de-test",
+          "label": "Arquitetura de uma suíte de testes"
+        },
+        {
+          "id": "tests-unitaires",
+          "label": "Os testes unitários"
+        },
+        {
+          "id": "tests-dintegration",
+          "label": "Os testes de integração"
+        },
+        {
+          "id": "tests-end-to-end",
+          "label": "Os testes end-to-end"
+        },
+        {
+          "id": "tdd",
+          "label": "O TDD (Test-Driven Development)"
+        },
+        {
+          "id": "couverture-de-code",
+          "label": "A cobertura de código"
+        },
+        {
+          "id": "mocks-stubs-et-fakes-en-detail",
+          "label": "Mocks, stubs e fakes em detalhe"
+        },
+        {
+          "id": "property-based-testing",
+          "label": "O property-based testing"
+        },
+        {
+          "id": "tests-de-mutation",
+          "label": "Os testes de mutação"
+        }
+      ]
+    },
+    {
+      "id": "infrastructure-devops",
+      "label": "Infrastructure & DevOps",
+      "folder": "Infrastructure & DevOps",
+      "subjects": [
+        {
+          "id": "infrastructure",
+          "label": "Infrastructure",
+          "folder": "Infrastructure",
+          "chapters": [
+            {
+              "id": "api-et-http",
+              "label": "As trocas de dados: API e HTTP"
+            },
+            {
+              "id": "websocket-et-temps-reel",
+              "label": "WebSocket: a comunicação em tempo real"
+            },
+            {
+              "id": "json",
+              "label": "O formato JSON"
+            },
+            {
+              "id": "cpu-vs-gpu",
+              "label": "CPU vs GPU: o cálculo paralelo"
+            },
+            {
+              "id": "le-cloud",
+              "label": "O que é a nuvem (cloud)?"
+            },
+            {
+              "id": "tpu-npu-lpu-vpu",
+              "label": "Além da GPU: TPU, NPU, LPU e VPU"
+            },
+            {
+              "id": "elk-agregation-de-logs",
+              "label": "ELK: centralizar e consultar os logs de uma infraestrutura"
+            },
+            {
+              "id": "pwa-progressive-web-app",
+              "label": "A PWA: um site que se comporta como um aplicativo"
+            }
+          ]
+        },
+        {
+          "id": "docker",
+          "label": "Docker",
+          "folder": "Docker",
+          "chapters": [
+            {
+              "id": "concepts-de-base",
+              "label": "Os conceitos básicos"
+            },
+            {
+              "id": "dockerfile",
+              "label": "O Dockerfile"
+            },
+            {
+              "id": "commandes-essentielles",
+              "label": "Os comandos essenciais"
+            },
+            {
+              "id": "volumes-et-reseaux",
+              "label": "Volumes e redes"
+            },
+            {
+              "id": "docker-compose",
+              "label": "Docker Compose"
+            },
+            {
+              "id": "bonnes-pratiques-et-securite",
+              "label": "Boas práticas e segurança"
+            },
+            {
+              "id": "conteneurs-manages-ecs-et-fargate",
+              "label": "Contêineres gerenciados na nuvem: ECS e Fargate"
+            }
+          ]
+        },
+        {
+          "id": "ci-cd",
+          "label": "CI-CD",
+          "folder": "CI-CD",
+          "chapters": [
+            {
+              "id": "pipeline-cicd",
+              "label": "O que é um pipeline CI/CD?"
+            },
+            {
+              "id": "azure-devops-plateforme",
+              "label": "Azure DevOps como plataforma"
+            },
+            {
+              "id": "yaml-pipelines-azure",
+              "label": "A sintaxe YAML dos pipelines Azure"
+            },
+            {
+              "id": "azure-pipelines-vs-github-actions",
+              "label": "Azure Pipelines contra GitHub Actions"
+            }
+          ]
+        },
+        {
+          "id": "administration-systeme",
+          "label": "Administration système",
+          "folder": "Administration système",
+          "chapters": [
+            {
+              "id": "virtualisation-et-choix-dos",
+              "label": "Virtualização e escolha de SO"
+            },
+            {
+              "id": "partitionnement-et-lvm",
+              "label": "Particionamento e LVM"
+            },
+            {
+              "id": "selinux-vs-apparmor",
+              "label": "SELinux vs AppArmor"
+            },
+            {
+              "id": "durcissement-ssh-sudo-mots-de-passe",
+              "label": "Endurecimento de SSH, sudo e senhas"
+            },
+            {
+              "id": "pare-feu-ufw-firewalld",
+              "label": "Firewall: UFW e firewalld"
+            },
+            {
+              "id": "supervision-systeme",
+              "label": "Ler o estado do sistema"
+            }
+          ]
+        },
+        {
+          "id": "reseaux",
+          "label": "Réseaux",
+          "folder": "Réseaux",
+          "chapters": [
+            {
+              "id": "fondamentaux-reseau",
+              "label": "Fundamentos de rede"
+            },
+            {
+              "id": "sockets-et-io-non-bloquante",
+              "label": "Sockets e E/S não bloqueante"
+            },
+            {
+              "id": "protocoles-pair-a-pair",
+              "label": "Os protocolos ponto a ponto (P2P)"
+            }
+          ]
+        },
+        {
+          "id": "automatisation",
+          "label": "Automatisation",
+          "folder": "Automatisation",
+          "chapters": [
+            {
+              "id": "automatisation-workflow",
+              "label": "A automação por workflow visual"
+            },
+            {
+              "id": "n8n-prise-en-main-de-linterface",
+              "label": "n8n: primeiros passos com a interface"
+            },
+            {
+              "id": "n8n-catalogue-des-fonctionnalites",
+              "label": "n8n: catálogo de funcionalidades e tipos de nós"
+            },
+            {
+              "id": "n8n-le-format-json-dun-workflow",
+              "label": "n8n: o formato JSON de um fluxo de trabalho"
+            },
+            {
+              "id": "n8n-lindustrialisation",
+              "label": "n8n: colocando em produção"
+            }
+          ]
+        },
+        {
+          "id": "conception-a-grande-echelle",
+          "label": "Conception à grande échelle",
+          "folder": "Conception à grande échelle",
+          "chapters": [
+            {
+              "id": "system-design-lexercice",
+              "label": "O \"system design\" como tipo de exercício"
+            },
+            {
+              "id": "autoscaling-et-repartition-de-charge",
+              "label": "Autoscaling e distribuição de carga"
+            },
+            {
+              "id": "cdn-et-diffusion-adaptative",
+              "label": "CDN e transmissão adaptativa: o caso Netflix"
+            },
+            {
+              "id": "fil-dactualite-fan-out",
+              "label": "O feed de notícias: construir o fluxo de cada um (fan-out)"
+            },
+            {
+              "id": "direct-et-chat-a-grande-echelle",
+              "label": "Transmissão ao vivo e chat em grande escala"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "securite",
       "label": "Sécurité",
       "folder": "Sécurité",
@@ -1685,53 +1448,206 @@
       ]
     },
     {
-      "id": "tests",
-      "label": "Tests",
-      "folder": "Tests",
-      "chapters": [
+      "id": "ia",
+      "label": "IA",
+      "folder": "IA",
+      "subjects": [
         {
-          "id": "vocabulaire-qa-istqb",
-          "label": "Vocabulário de testes de software (QA, ISTQB)"
+          "id": "fondamentaux-du-deep-learning",
+          "label": "Fondamentaux du deep learning",
+          "folder": "Fondamentaux du deep learning",
+          "chapters": [
+            {
+              "id": "reseaux-de-neurones",
+              "label": "As redes neurais: os fundamentos"
+            },
+            {
+              "id": "entrainement-descente-de-gradient",
+              "label": "O treinamento de um modelo e a descida do gradiente"
+            },
+            {
+              "id": "architectures-cnn-rnn-transformers",
+              "label": "Arquiteturas: CNN, RNN e Transformers"
+            },
+            {
+              "id": "deep-learning-pytorch",
+              "label": "Deep learning com PyTorch"
+            }
+          ]
         },
         {
-          "id": "pyramide-de-test",
-          "label": "A pirâmide de testes"
+          "id": "nlp-llm",
+          "label": "NLP et LLM",
+          "folder": "NLP et LLM",
+          "chapters": [
+            {
+              "id": "nlp-et-llm",
+              "label": "Processamento de linguagem natural (NLP) e grandes modelos de linguagem (LLM)"
+            },
+            {
+              "id": "prompt-engineering",
+              "label": "Prompt engineering: estruturar uma requisição para melhores resultados"
+            },
+            {
+              "id": "llm-en-production",
+              "label": "LLM em produção: casos de uso e limites"
+            },
+            {
+              "id": "reduire-la-variance-des-reponses",
+              "label": "Reduzir a variância das respostas: self-consistency, voto majoritário e ensembling"
+            },
+            {
+              "id": "agents",
+              "label": "Agentes: loop de reflexão/ação e orquestração"
+            },
+            {
+              "id": "rag",
+              "label": "RAG: aumentar um LLM com dados externos"
+            },
+            {
+              "id": "prompt-injection",
+              "label": "Prompt injection: quando um dado se faz passar por instrução"
+            },
+            {
+              "id": "mcp",
+              "label": "MCP (Model Context Protocol): padronizar as ferramentas de um agente"
+            },
+            {
+              "id": "skills",
+              "label": "Os skills: empacotar uma capacidade reutilizável para um agente"
+            }
+          ]
         },
         {
-          "id": "architecture-de-test",
-          "label": "Arquitetura de uma suíte de testes"
+          "id": "applications-llm",
+          "label": "Applications LLM",
+          "folder": "Applications LLM",
+          "chapters": [
+            {
+              "id": "chatbot",
+              "label": "Construindo um chatbot: arquitetura, configuração e escalonamento"
+            },
+            {
+              "id": "assistant-agentique-terminal",
+              "label": "O assistente de IA agêntico no terminal: além do prompt simples"
+            }
+          ]
         },
         {
-          "id": "tests-unitaires",
-          "label": "Os testes unitários"
+          "id": "vision-et-ocr",
+          "label": "Vision et OCR",
+          "folder": "Vision et OCR",
+          "chapters": [
+            {
+              "id": "ocr-classique-vs-deep-learning",
+              "label": "OCR: do reconhecimento de padrões clássico ao deep learning"
+            },
+            {
+              "id": "detection-de-mise-en-page",
+              "label": "Detecção de layout: caixas delimitadoras, score de confiança e remoção de duplicatas"
+            },
+            {
+              "id": "modeles-document-ai",
+              "label": "Modelos \"Document AI\": entender um documento além do texto puro"
+            },
+            {
+              "id": "fine-tuning-modele-vision",
+              "label": "Treinar e fazer fine-tuning de um modelo de visão para um caso de negócio"
+            },
+            {
+              "id": "evaluer-un-ocr",
+              "label": "Avaliar um OCR: CER, WER e taxa de reconhecimento por campo"
+            },
+            {
+              "id": "post-traitement-correction",
+              "label": "Pós-processamento e correção de um OCR"
+            },
+            {
+              "id": "ocr-en-production",
+              "label": "Colocação em produção e monitoramento de um pipeline OCR"
+            },
+            {
+              "id": "gouvernance-documents-scannes",
+              "label": "Governança de dados para documentos escaneados"
+            }
+          ]
         },
         {
-          "id": "tests-dintegration",
-          "label": "Os testes de integração"
+          "id": "voix-ia",
+          "label": "Voix IA",
+          "folder": "Voix IA",
+          "chapters": [
+            {
+              "id": "synthese-classique-vs-deep-learning",
+              "label": "Síntese de voz: da concatenação clássica ao deep learning"
+            },
+            {
+              "id": "controler-la-prosodie",
+              "label": "Controlar a prosódia"
+            },
+            {
+              "id": "modeles-modernes-synthese",
+              "label": "Modelos modernos de síntese: os codecs neurais"
+            },
+            {
+              "id": "cloner-une-voix",
+              "label": "Clonar uma voz: técnica e questões éticas/legais"
+            },
+            {
+              "id": "fine-tuning-synthese-vocale",
+              "label": "Treinar e fazer fine-tuning de um modelo de síntese de voz"
+            },
+            {
+              "id": "evaluer-synthese-vocale",
+              "label": "Avaliar uma síntese de voz: MOS, inteligibilidade, latência"
+            },
+            {
+              "id": "choisir-fournisseur-mise-en-production",
+              "label": "Escolher um fornecedor e colocar em produção"
+            },
+            {
+              "id": "gouvernance-voix-ia",
+              "label": "Governança de um pipeline de voz IA"
+            }
+          ]
         },
         {
-          "id": "tests-end-to-end",
-          "label": "Os testes end-to-end"
+          "id": "production-et-gouvernance",
+          "label": "Production et gouvernance",
+          "folder": "Production et gouvernance",
+          "chapters": [
+            {
+              "id": "gestion-dun-llm",
+              "label": "Monitoramento e gestão operacional de um LLM"
+            },
+            {
+              "id": "gouvernance-des-donnees",
+              "label": "Governança de dados para um sistema de IA"
+            },
+            {
+              "id": "reglementation-europeenne-ia",
+              "label": "Regulamentação europeia de IA: o AI Act"
+            },
+            {
+              "id": "watermarking-ia",
+              "label": "Watermarking do conteúdo gerado por IA"
+            },
+            {
+              "id": "stack-ia",
+              "label": "A stack de IA: as camadas de uma aplicação em produção"
+            }
+          ]
         },
         {
-          "id": "tdd",
-          "label": "O TDD (Test-Driven Development)"
-        },
-        {
-          "id": "couverture-de-code",
-          "label": "A cobertura de código"
-        },
-        {
-          "id": "mocks-stubs-et-fakes-en-detail",
-          "label": "Mocks, stubs e fakes em detalhe"
-        },
-        {
-          "id": "property-based-testing",
-          "label": "O property-based testing"
-        },
-        {
-          "id": "tests-de-mutation",
-          "label": "Os testes de mutação"
+          "id": "jeux-et-agents",
+          "label": "Jeux et agents",
+          "folder": "Jeux et agents",
+          "chapters": [
+            {
+              "id": "ia-de-jeu-par-imitation",
+              "label": "IA de jogo por imitação: aprender com um jogador humano"
+            }
+          ]
         }
       ]
     },
@@ -1783,6 +1699,90 @@
         {
           "id": "outils-du-metier",
           "label": "As ferramentas da profissão"
+        }
+      ]
+    },
+    {
+      "id": "blockchain",
+      "label": "Blockchain",
+      "folder": "Blockchain",
+      "chapters": [
+        {
+          "id": "concepts-fondamentaux-blockchain",
+          "label": "Conceitos fundamentais da blockchain"
+        },
+        {
+          "id": "solidity-bases-du-langage",
+          "label": "Solidity: fundamentos da linguagem"
+        },
+        {
+          "id": "deployer-et-interagir-avec-un-smart-contract",
+          "label": "Implantar e interagir com um smart contract"
+        },
+        {
+          "id": "reseaux-blockchain",
+          "label": "As redes blockchain"
+        },
+        {
+          "id": "backends-sur-icp",
+          "label": "Os backends no ICP"
+        }
+      ]
+    },
+    {
+      "id": "gestion-de-projet-et-organisation",
+      "label": "Gestion de projet et organisation",
+      "folder": "Gestion de projet et organisation",
+      "subjects": [
+        {
+          "id": "organisation-en-entreprise",
+          "label": "Organisation en entreprise",
+          "folder": "Organisation en entreprise",
+          "chapters": [
+            {
+              "id": "roles-equipe-developpement",
+              "label": "Os papéis em uma equipe de desenvolvimento"
+            },
+            {
+              "id": "cycle-de-vie-dun-projet",
+              "label": "O ciclo de vida de um projeto"
+            },
+            {
+              "id": "documentation-et-communication-equipe",
+              "label": "Documentação e comunicação em equipe"
+            }
+          ]
+        },
+        {
+          "id": "gestion-de-projet",
+          "label": "Gestion de projet",
+          "folder": "Gestion de projet",
+          "chapters": [
+            {
+              "id": "methodologies-agile-scrum-kanban",
+              "label": "Metodologias: Agile, Scrum, Kanban"
+            },
+            {
+              "id": "backlog-et-user-stories",
+              "label": "O backlog e as user stories"
+            },
+            {
+              "id": "estimation",
+              "label": "A estimativa"
+            },
+            {
+              "id": "outils-de-suivi",
+              "label": "As ferramentas de acompanhamento"
+            },
+            {
+              "id": "safe-et-scrumban",
+              "label": "SAFe e Scrumban: os casos híbridos"
+            },
+            {
+              "id": "okr",
+              "label": "Os OKR"
+            }
+          ]
         }
       ]
     }

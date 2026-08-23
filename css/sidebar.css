@@ -5,8 +5,9 @@
 .sidebarSectionTitle {
     color: var(--text-muted);
     text-transform: uppercase;
+    font-family: var(--font-display);
     font-size: 0.75rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     margin: 0 0 0.6rem 0;
 }
 
@@ -18,6 +19,10 @@
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+.sidebarTree {
+    counter-reset: sidebarCategoryCounter;
 }
 
 .sidebarChildList, .sidebarChapterList {
@@ -45,26 +50,127 @@
 }
 
 .sidebarCategoryButton {
+    position: relative;
     color: var(--text);
     font-weight: 600;
+    counter-increment: sidebarCategoryCounter;
+    padding-inline-start: 3rem;
 }
 
-/* --bg-hover and the accent-tinted color-mix() both landed under WCAG AA contrast (4.5:1)
-   against var(--accent) text -- --bg-elevated reads as a highlight just the same, at 5.03:1. */
+/* diamond outline (rotated) -- carries only the shape, no text, so the rotation
+   doesn't distort the counter digits in ::after below */
+.sidebarCategoryButton::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.4rem;
+    top: 50%;
+    width: 1.4rem;
+    height: 1.4rem;
+    border: 1px solid var(--text-muted);
+    transform: translateY(-50%) rotate(45deg);
+    transition: border-color 0.15s ease;
+}
+
+/* category number, unrotated and overlaid on the diamond above */
+.sidebarCategoryButton::after {
+    content: counter(sidebarCategoryCounter, decimal-leading-zero);
+    position: absolute;
+    inset-inline-start: 0.4rem;
+    top: 50%;
+    width: 1.4rem;
+    transform: translateY(-50%);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.sidebarCategoryButton.open::before, .sidebarCategoryButton.current::before,
+.sidebarCategoryButton:hover::before {
+    border-color: var(--accent);
+}
+
+.sidebarCategoryButton.open::after, .sidebarCategoryButton.current::after,
+.sidebarCategoryButton:hover::after {
+    color: var(--accent);
+}
+
+/* Same diamond motif one and two levels down, unnumbered (only the category level, already
+   the site's top-level navigation entries, carries a number) and shrinking with depth: the
+   smaller a diamond, the deeper in the chapter tree, so size alone reads as depth. */
+.sidebarSubjectButton {
+    position: relative;
+    padding-inline-start: 2.3rem;
+}
+
+.sidebarSubjectButton::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.5rem;
+    top: 50%;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--text-muted);
+    transform: translateY(-50%) rotate(45deg);
+    transition: border-color 0.15s ease;
+}
+
+.sidebarChapterButton {
+    position: relative;
+    padding-inline-start: 1.8rem;
+}
+
+.sidebarChapterButton::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.55rem;
+    top: 50%;
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 1px solid var(--text-muted);
+    transform: translateY(-50%) rotate(45deg);
+    transition: border-color 0.15s ease;
+}
+
+.sidebarSubjectButton.open::before, .sidebarSubjectButton.current::before,
+.sidebarSubjectButton:hover::before,
+.sidebarChapterButton.current::before, .sidebarChapterButton:hover::before {
+    border-color: var(--accent);
+}
+
+/* Same dark semi-transparent panel as .childButton/.page p elsewhere in the theme, instead of
+   the old flat --bg-elevated fill. Composited over the sidebar's own --bg-deep background this
+   lands at ~9.4:1 contrast against var(--accent) text, above the 5.03:1 --bg-elevated gave and
+   still clear of the WCAG AA floor (4.5:1) that ruled out --bg-hover/color-mix() here before. */
 .sidebarCategoryButton.open, .sidebarSubjectButton.open {
-    background-color: var(--bg-elevated);
+    background-color: rgba(0, 0, 0, 0.45);
     color: var(--accent);
 }
 
 .sidebarCategoryButton.current, .sidebarSubjectButton.current, .sidebarChapterButton.current {
-    background-color: var(--bg-elevated);
+    background-color: rgba(0, 0, 0, 0.45);
     color: var(--accent);
     border-inline-start: 3px solid var(--accent);
     padding-inline-start: calc(0.5rem - 3px);
 }
 
+/* each level's own base padding-inline-start is wider than 0.5rem (room for its own diamond
+   marker) -- override again here, after the shared rule above, so it wins */
+.sidebarCategoryButton.current {
+    padding-inline-start: calc(3rem - 3px);
+}
+
+.sidebarSubjectButton.current {
+    padding-inline-start: calc(2.3rem - 3px);
+}
+
+.sidebarChapterButton.current {
+    padding-inline-start: calc(1.8rem - 3px);
+}
+
 .sidebarCategoryButton:hover, .sidebarSubjectButton:hover, .sidebarChapterButton:hover {
-    background-color: var(--bg-elevated);
+    background-color: rgba(0, 0, 0, 0.45);
     color: var(--accent);
 }
 
@@ -83,11 +189,23 @@
     line-height: 1.3;
 }
 
+/* same shrinking-diamond motif as the category/subject/chapter tree and the chapter's own
+   headings, instead of a plain bullet -- size again reads as heading depth (outline-h2..h6,
+   set by sidebar.js's renderOutline() from the actual heading level). */
 .pageOutlineList a::before {
-    content: "•";
-    color: var(--accent);
-    margin-inline-end: 0.5em;
+    content: "";
+    display: inline-block;
+    border: 1px solid var(--accent);
+    transform: rotate(45deg);
+    margin-inline-end: 0.6em;
+    vertical-align: middle;
 }
+
+.outline-h2 a::before { width: 0.85rem; height: 0.85rem; }
+.outline-h3 a::before { width: 0.7rem; height: 0.7rem; }
+.outline-h4 a::before { width: 0.4rem; height: 0.4rem; }
+.outline-h5 a::before { width: 0.34rem; height: 0.34rem; }
+.outline-h6 a::before { width: 0.28rem; height: 0.28rem; }
 
 .pageOutlineList a:hover {
     background-color: var(--bg-hover);
@@ -95,6 +213,6 @@
     text-decoration: none;
 }
 
-.pageOutlineList .outline-h4 { margin-inline-start: 1rem; }
-.pageOutlineList .outline-h5 { margin-inline-start: 2rem; }
-.pageOutlineList .outline-h6 { margin-inline-start: 3rem; }
+.pageOutlineList .outline-h4 { margin-inline-start: 1.3rem; }
+.pageOutlineList .outline-h5 { margin-inline-start: 2.2rem; }
+.pageOutlineList .outline-h6 { margin-inline-start: 3.2rem; }
