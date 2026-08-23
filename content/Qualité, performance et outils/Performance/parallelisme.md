@@ -68,7 +68,7 @@ if len(resultats) < attendu:
 
 ## `spawn` vs `fork` : deux façons de démarrer un worker Python
 
-En Python, `multiprocessing.Pool` peut démarrer chaque worker de deux façons différentes, avec des conséquences pratiques réelles :
+En [Python](/?c=langages&s=python&p=python), `multiprocessing.Pool` peut démarrer chaque worker de deux façons différentes, avec des conséquences pratiques réelles :
 
 | | `fork` | `spawn` |
 |---|---|---|

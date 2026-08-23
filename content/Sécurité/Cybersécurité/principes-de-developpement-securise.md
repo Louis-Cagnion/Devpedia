@@ -118,6 +118,6 @@ Ce réflexe rejoint la robustesse générale attendue de tout code : une erreur 
 | | |
 |---|---|
 | **À retenir** | Quatre principes réduisent la majorité des failles : penser la sécurité dès la conception, valider toute entrée externe par liste blanche, appliquer le moindre privilège, empiler plusieurs couches de défense indépendantes. |
-| **Outils utilisables** | `filter_input()` (PHP) et équivalents dans d'autres langages pour la validation par liste blanche ; comptes applicatifs dédiés à droits restreints pour la base de données. |
+| **Outils utilisables** | `filter_input()` ([PHP](/?c=langages&s=php&p=php)) et équivalents dans d'autres langages pour la validation par liste blanche ; comptes applicatifs dédiés à droits restreints pour la base de données. |
 | **Pièges à éviter** | Valider une donnée uniquement côté client ; utiliser une liste noire plutôt qu'une liste blanche ; autoriser un accès par défaut en cas d'erreur inattendue (*fail open*). |
 | **Bonnes pratiques** | Revalider systématiquement côté serveur ; restreindre chaque composant au strict nécessaire ; refuser l'accès par défaut en cas de doute (*fail closed*). |

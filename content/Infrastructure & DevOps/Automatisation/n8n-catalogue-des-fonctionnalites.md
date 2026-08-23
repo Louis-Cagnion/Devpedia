@@ -21,7 +21,7 @@ Un workflow n'a qu'un seul déclencheur actif à la fois (celui qui l'a réellem
 
 ## Les nœuds de code : sortir du no-code quand il le faut
 
-Le **Code node** exécute directement du JavaScript ou du Python à l'intérieur du workflow, pour les traitements trop spécifiques pour un connecteur préconfiguré (une transformation de données complexe, un calcul, un filtrage sur mesure) :
+Le **Code node** exécute directement du [JavaScript](/?c=langages&s=javascript&p=javascript) ou du [Python](/?c=langages&s=python&p=python) à l'intérieur du workflow, pour les traitements trop spécifiques pour un connecteur préconfiguré (une transformation de données complexe, un calcul, un filtrage sur mesure) :
 
 ```javascript
 // Code node (JavaScript) : ne garde que les éléments dont le

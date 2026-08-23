@@ -37,7 +37,7 @@ Une langue **RTL** (*right-to-left*, comme l'arabe ou l'hébreu) ne se contente 
 
 > **Piège :** ne traduire que le texte et laisser la mise en page identique (icônes de navigation, alignement, ordre des éléments). Le résultat mélange un texte qui se lit de droite à gauche avec une interface toujours pensée de gauche à droite, incohérent et déroutant pour un utilisateur RTL.
 >
-> **Bonne pratique :** utiliser des propriétés CSS "logiques" (`margin-inline-start` plutôt que `margin-left`, par exemple) qui s'inversent automatiquement selon le sens de la page, plutôt que des propriétés physiques figées qu'il faudrait dupliquer manuellement pour chaque sens.
+> **Bonne pratique :** utiliser des propriétés [CSS](/?c=langages&s=css&p=css) "logiques" (`margin-inline-start` plutôt que `margin-left`, par exemple) qui s'inversent automatiquement selon le sens de la page, plutôt que des propriétés physiques figées qu'il faudrait dupliquer manuellement pour chaque sens.
 
 Certaines icônes ne s'inversent volontairement **jamais**, même en RTL : celles qui représentent un objet du monde réel dont l'orientation a un sens universel (une horloge, un symbole de lecture ▶ dans beaucoup de conventions) restent identiques, alors que les icônes purement directionnelles (flèches, chevrons de navigation) s'inversent.
 

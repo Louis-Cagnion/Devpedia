@@ -39,7 +39,7 @@ SecRule ARGS "@detectSQLi" \
 
 ## Le compromis : faux positifs contre faux négatifs
 
-Un jeu de règles trop strict bloque parfois des requêtes légitimes (un commentaire utilisateur qui contient, par coïncidence, une chaîne ressemblant à du code SQL) ; un jeu trop permissif laisse passer des attaques réelles. La plupart des déploiements de WAF passent par un **mode d'apprentissage** (*detection only*, qui journalise sans bloquer) avant d'activer le blocage, pour ajuster les règles au trafic réel de l'application sans casser un usage légitime dès la mise en production.
+Un jeu de règles trop strict bloque parfois des requêtes légitimes (un commentaire utilisateur qui contient, par coïncidence, une chaîne ressemblant à du code [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql)) ; un jeu trop permissif laisse passer des attaques réelles. La plupart des déploiements de WAF passent par un **mode d'apprentissage** (*detection only*, qui journalise sans bloquer) avant d'activer le blocage, pour ajuster les règles au trafic réel de l'application sans casser un usage légitime dès la mise en production.
 
 > **Piège :** activer le blocage immédiatement en production, sans phase d'observation préalable. Une règle trop agressive peut bloquer une part du trafic légitime sans que personne ne le remarque avant que les utilisateurs concernés ne se plaignent.
 >

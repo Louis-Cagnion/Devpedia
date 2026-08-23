@@ -47,7 +47,7 @@ Un paquet installé aujourd'hui sans faille connue peut en révéler une plus ta
 
 | Outil | Écosystème | Rôle |
 |---|---|---|
-| `npm audit` | JavaScript/Node.js | Compare les dépendances installées à une base de failles connues |
+| `npm audit` | [JavaScript](/?c=langages&s=javascript&p=javascript)/Node.js | Compare les dépendances installées à une base de failles connues |
 | `pip-audit` | Python | Équivalent pour les paquets Python |
 | [Dependabot](https://docs.github.com/en/code-security/dependabot) | Multi-écosystèmes (intégré à GitHub) | Ouvre automatiquement une pull request quand une dépendance a une faille connue et un correctif disponible |
 

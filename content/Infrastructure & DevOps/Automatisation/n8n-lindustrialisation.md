@@ -45,7 +45,7 @@ n8n ne propose pas un seul instance avec un sélecteur "dev/prod" intégré : ch
 | Méthode | Fonctionnement |
 |---|---|
 | **Export/import manuel** | Télécharger le JSON depuis l'instance source, l'importer sur l'instance cible (vu au chapitre précédent) |
-| **Source Control (Git)** | Une instance n8n se connecte à une branche d'un dépôt Git ; un même workflow versionné peut être poussé d'un environnement à l'autre en suivant le flux Git habituel (dev → staging → production) |
+| **Source Control ([Git](/?c=qualite-performance-et-outils&s=git&p=git))** | Une instance n8n se connecte à une branche d'un dépôt Git ; un même workflow versionné peut être poussé d'un environnement à l'autre en suivant le flux Git habituel (dev → staging → production) |
 
 > **Piège :** pousser un changement directement en production sans passer par un environnement intermédiaire, en particulier pour un workflow qui touche des données réelles (une base de données de production, un envoi d'e-mail à de vrais clients).
 >

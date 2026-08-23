@@ -8,7 +8,7 @@ Une **PWA** (*Progressive Web App*) est un site web classique auquel deux mécan
 
 ## Le service worker : un script qui tourne entre le site et le réseau
 
-Un **service worker** est un script JavaScript que le navigateur exécute en arrière-plan, séparément de la page elle-même, capable d'intercepter chaque requête réseau que le site émet avant qu'elle n'atteigne réellement internet :
+Un **service worker** est un script [JavaScript](/?c=langages&s=javascript&p=javascript) que le navigateur exécute en arrière-plan, séparément de la page elle-même, capable d'intercepter chaque requête réseau que le site émet avant qu'elle n'atteigne réellement internet :
 
 ```text
 Sans service worker :              Avec service worker :
@@ -30,7 +30,7 @@ Cette position d'intermédiaire permet de servir une ressource déjà mise en ca
 
 | Stratégie | Principe | Adaptée à |
 |---|---|---|
-| **Cache d'abord** (*cache-first*) | Sert la version en cache si elle existe, ne va sur le réseau que si rien n'est en cache | Ressources qui changent rarement (logo, police, CSS versionné) |
+| **Cache d'abord** (*cache-first*) | Sert la version en cache si elle existe, ne va sur le réseau que si rien n'est en cache | Ressources qui changent rarement (logo, police, [CSS](/?c=langages&s=css&p=css) versionné) |
 | **Réseau d'abord** (*network-first*) | Tente le réseau en premier, ne retombe sur le cache qu'en cas d'échec | Contenu qui doit rester à jour tant que le réseau répond |
 | **Périmé pendant le rafraîchissement** (*stale-while-revalidate*) | Sert immédiatement la version en cache, tout en la rafraîchissant en arrière-plan pour la prochaine visite | Contenu qui tolère une légère péremption, déjà vu dans [bases de données à fort trafic](/?c=donnees&s=bases-de-donnees&p=bases-de-donnees-a-fort-trafic) pour le même compromis côté serveur |
 
@@ -38,7 +38,7 @@ Aucune de ces stratégies n'est universellement la bonne : le choix dépend de l
 
 ## Le manifest : ce qui rend un site installable
 
-Un fichier **manifest** (`manifest.json`), lié depuis la page HTML, déclare les informations qu'un navigateur ou un système d'exploitation utilise pour proposer d'installer le site comme une application : son nom, une icône dans plusieurs tailles, une couleur de thème, et un mode d'affichage (`standalone` masque la barre d'adresse du navigateur, pour ressembler à une application native).
+Un fichier **manifest** (`manifest.json`), lié depuis la page [HTML](/?c=langages&s=html&p=html), déclare les informations qu'un navigateur ou un système d'exploitation utilise pour proposer d'installer le site comme une application : son nom, une icône dans plusieurs tailles, une couleur de thème, et un mode d'affichage (`standalone` masque la barre d'adresse du navigateur, pour ressembler à une application native).
 
 ```json
 {

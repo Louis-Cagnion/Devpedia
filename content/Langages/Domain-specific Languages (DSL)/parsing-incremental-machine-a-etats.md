@@ -17,7 +17,7 @@ order: 3
 
 Un parseur incrémental ne connaît jamais "tout le document" : il ne sait que ce qui se passe **maintenant**, plus ce que le code a explicitement choisi de mémoriser depuis le début. C'est cette contrainte qui lui donne son nom de **machine à états** : le programme doit maintenir lui-même un état ("suis-je actuellement à l'intérieur d'une ligne de tableau ? d'une cellule ?"), mis à jour à chaque événement reçu.
 
-## `HTMLParser` : un exemple concret en Python
+## `HTMLParser` : un exemple concret en [Python](/?c=langages&s=python&p=python)
 
 Le module standard `html.parser` fournit `HTMLParser`, une classe à hériter : trois méthodes, appelées automatiquement à chaque balise ou fragment de texte rencontré pendant la lecture.
 

@@ -23,7 +23,7 @@ Test d'intégration :
   -> vérifie que le code et la base de données s'entendent vraiment
 ```
 
-Un test unitaire peut passer alors qu'un test d'intégration échoue sur le même code : par exemple si la fonction appelle correctement la base de données, mais avec une requête SQL syntaxiquement invalide que le mock, lui, ne détecte jamais.
+Un test unitaire peut passer alors qu'un test d'intégration échoue sur le même code : par exemple si la fonction appelle correctement la base de données, mais avec une requête [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql) syntaxiquement invalide que le mock, lui, ne détecte jamais.
 
 ## Où tracer la limite : quels composants inclure
 

@@ -33,7 +33,7 @@ Propriété : "trier deux fois donne le même résultat que trier une fois"
   Pour toute liste L : trier(trier(L)) == trier(L)
 ```
 
-Un outil de property-based testing (par exemple [fast-check](https://fast-check.dev) en JavaScript, [Hypothesis](https://hypothesis.readthedocs.io) en Python, ou [QuickCheck](https://hackage.haskell.org/package/QuickCheck), l'outil historique du domaine en Haskell) génère ensuite automatiquement des centaines d'entrées aléatoires respectant les contraintes données, et vérifie la propriété sur chacune.
+Un outil de property-based testing (par exemple [fast-check](https://fast-check.dev) en [JavaScript](/?c=langages&s=javascript&p=javascript), [Hypothesis](https://hypothesis.readthedocs.io) en [Python](/?c=langages&s=python&p=python), ou [QuickCheck](https://hackage.haskell.org/package/QuickCheck), l'outil historique du domaine en Haskell) génère ensuite automatiquement des centaines d'entrées aléatoires respectant les contraintes données, et vérifie la propriété sur chacune.
 
 ```text
 Test property-based pour "trier ne change pas la taille" :

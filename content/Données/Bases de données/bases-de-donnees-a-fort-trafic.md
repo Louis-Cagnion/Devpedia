@@ -12,7 +12,7 @@ Une page affiche une liste d'options de filtre (les régions disponibles, les ca
 
 > **Piège :** recalculer une donnée coûteuse à chaque requête utilisateur simplement parce que la requête est correcte et donne le bon résultat. Une requête correcte peut rester une mauvaise idée si son coût est disproportionné par rapport à la fraîcheur réellement nécessaire de son résultat.
 >
-> **Bonne pratique :** avant d'optimiser la requête elle-même (index, réécriture SQL), se demander d'abord si le résultat a vraiment besoin d'être recalculé à chaque visite, ou s'il peut être mis en cache.
+> **Bonne pratique :** avant d'optimiser la requête elle-même (index, réécriture [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql)), se demander d'abord si le résultat a vraiment besoin d'être recalculé à chaque visite, ou s'il peut être mis en cache.
 
 ## Cache et stale-while-revalidate
 

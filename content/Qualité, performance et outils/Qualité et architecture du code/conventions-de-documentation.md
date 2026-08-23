@@ -6,7 +6,7 @@ order: 8
 
 Documenter une fonction (ce qu'elle fait, ses paramètres, ce qu'elle renvoie) est un principe universel, mais la **syntaxe exacte** pour le faire n'est pas la même d'un langage à l'autre. Chaque écosystème a sa propre convention, reconnue par ses propres outils : un IDE l'utilise pour afficher une infobulle au survol d'un appel, un générateur de documentation la transforme en site consultable. Écrire une documentation qui ne suit aucune de ces conventions (un simple paragraphe libre, par exemple) prive le projet de ces deux bénéfices, même si le contenu lui-même est correct.
 
-## Python : Google style et NumPy style
+## [Python](/?c=langages&s=python&p=python) : Google style et NumPy style
 
 Python n'a pas de syntaxe imposée par le langage lui-même, mais deux conventions dominent en pratique, toutes deux reconnues par les générateurs de documentation ([Sphinx](https://www.sphinx-doc.org)) :
 
@@ -30,7 +30,7 @@ def convertir_devise(montant, taux):
 | Densité | Plus compacte | Plus verbeuse, chaque paramètre sur plusieurs lignes |
 | Contexte d'usage typique | Projets applicatifs généralistes | Bibliothèques scientifiques (numpy, pandas, scikit-learn) |
 
-## JavaScript / TypeScript : JSDoc
+## [JavaScript](/?c=langages&s=javascript&p=javascript) / TypeScript : JSDoc
 
 [JSDoc](https://jsdoc.app) précède la fonction d'un commentaire `/** ... */`, avec des balises `@param`/`@returns` :
 
@@ -65,9 +65,9 @@ double convertirDevise(double montant, double taux) {
 }
 ```
 
-L'outil `javadoc`, fourni avec le JDK, génère directement un site HTML consultable à partir de ces commentaires : c'est la documentation officielle de la bibliothèque standard Java elle-même qui est produite ainsi.
+L'outil `javadoc`, fourni avec le JDK, génère directement un site [HTML](/?c=langages&s=html&p=html) consultable à partir de ces commentaires : c'est la documentation officielle de la bibliothèque standard Java elle-même qui est produite ainsi.
 
-## C / C++ : Doxygen
+## [C](/?c=langages&s=c&p=c) / [C++](/?c=langages&s=cpp&p=cpp) : Doxygen
 
 [Doxygen](https://www.doxygen.nl) reprend une syntaxe très proche de Javadoc, mais couvre aussi le C, qui n'a pas d'équivalent natif :
 
