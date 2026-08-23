@@ -21,10 +21,12 @@
  *   node scripts/generate-audio.mjs <chapter-id> [<chapter-id> ...]   # generate specific chapters
  *   node scripts/generate-audio.mjs --all                              # generate the whole site
  *
- * Output, per chapter per language (never overwrites content/, only writes under audio/):
- *   audio/<lang>/<chapter-id>.mp3    concatenated speech, in reading order
- *   audio/<lang>/<chapter-id>.json   [{ kind: "speak", groupIndex, startMs, durationMs } |
- *                                     { kind: "pause", groupIndex, afterMs }, ...]
+ * Output, per chapter per language (never overwrites content/, only writes under audio/), namespaced
+ * by category/subject folder like content/ itself -- a bare chapter id isn't unique site-wide (e.g.
+ * "variables" exists under both `c` and `php`):
+ *   audio/<lang>/<category folder>[/<subject folder>]/<chapter-id>.mp3    concatenated speech, in reading order
+ *   audio/<lang>/<category folder>[/<subject folder>]/<chapter-id>.json  [{ kind: "speak", groupIndex, startMs, durationMs } |
+ *                                                                          { kind: "pause", groupIndex, afterMs }, ...]
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -111,7 +113,7 @@ function loadStructures() {
  *
  * @param {Object} struct one language's parsed struct*.json
  *
- * @returns {Array<{chapterId: string, mdPath: string, context: string}>}
+ * @returns {Array<{chapterId: string, mdPath: string, context: string, audioPath: string}>}
  */
 function flattenChapters(struct, contentDir) {
     const chapters = [];
@@ -121,7 +123,11 @@ function flattenChapters(struct, contentDir) {
                 const dirParts = [category.folder, subject.folder].filter(Boolean);
                 const mdPath = path.join(ROOT, contentDir, ...dirParts, `${chapter.id}.md`);
                 const context = PAGE_SPECIFIC_CONTEXT.has(chapter.id) ? chapter.id : (subject.id ?? category.id);
-                chapters.push({ chapterId: chapter.id, mdPath, context });
+                // Mirrors content/'s own category/subject namespacing: a chapter id alone isn't
+                // unique site-wide (e.g. "variables" under both `c` and `php`) -- cf. reader.js's
+                // own chapterAudioPath() (Louis, 23/08/2026).
+                const audioPath = path.join(...dirParts, chapter.id);
+                chapters.push({ chapterId: chapter.id, mdPath, context, audioPath });
             });
         });
     });
@@ -194,9 +200,9 @@ function synthesizeEntries(entries, outDir) {
  * @brief Generates the audio + timing JSON for one chapter in one language.
  *
  * @param {string} lang internal site language code ("fr", "en", "es", "br")
- * @param {{chapterId: string, mdPath: string, context: string}} chapterInfo
+ * @param {{chapterId: string, mdPath: string, context: string, audioPath: string}} chapterInfo
  */
-async function generateChapter(lang, { chapterId, mdPath, context }) {
+async function generateChapter(lang, { chapterId, mdPath, context, audioPath }) {
     if (!fs.existsSync(mdPath)) {
         console.warn(`  skip ${chapterId}: no ${mdPath}`);
         return;
@@ -227,10 +233,9 @@ async function generateChapter(lang, { chapterId, mdPath, context }) {
         cumulativeMs += durationMs;
     });
 
-    const langDir = path.join(AUDIO_DIR, lang);
-    fs.mkdirSync(langDir, { recursive: true });
-    const mp3Path = path.join(langDir, `${chapterId}.mp3`);
-    const jsonPath = path.join(langDir, `${chapterId}.json`);
+    const mp3Path = path.join(AUDIO_DIR, lang, `${audioPath}.mp3`);
+    const jsonPath = path.join(AUDIO_DIR, lang, `${audioPath}.json`);
+    fs.mkdirSync(path.dirname(mp3Path), { recursive: true });
 
     if (concatList.length > 0) {
         const listFile = path.join(tmpDir, "concat.txt");
@@ -243,7 +248,7 @@ async function generateChapter(lang, { chapterId, mdPath, context }) {
     }
     fs.writeFileSync(jsonPath, JSON.stringify(timing));
     fs.rmSync(tmpDir, { recursive: true, force: true });
-    console.log(`  ${lang}/${chapterId}: ${concatList.length} clips, ${(cumulativeMs / 1000).toFixed(1)}s`);
+    console.log(`  ${lang}/${audioPath}: ${concatList.length} clips, ${(cumulativeMs / 1000).toFixed(1)}s`);
 }
 
 async function main() {

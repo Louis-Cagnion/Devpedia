@@ -1,5 +1,6 @@
 import { appState } from "./state.js";
 import { getStoredLanguage } from "./lang.js";
+import { findCategory, findSubject } from "./utils.js";
 import {
     speakableCode,
     speakableText,
@@ -404,28 +405,44 @@ function collapseConsecutivePauses(entries) {
 let audioObjectUrl = null;
 
 /**
- * @brief Fetches audio/<lang>/<chapterId>.json and .mp3 together and, only if the JSON's entries
- * match `plan`'s own "speak"/"pause" sequence 1:1 (same count, same kind in the same order -- the
- * one sane proxy for "still the same content" without hashing the source), merges each entry's
- * startMs/durationMs (or a pause's afterMs) onto the matching `plan` entry and points `audioEl` at
- * the mp3, loaded whole into a blob: URL rather than left to stream from the network -- iOS throttles
- * background network access hard enough that a streaming src can stall and re-buffer mid-word once
- * the phone locks (confirmed on a real iPhone, 22/08/2026); a blob: URL needs no network at all once
- * loaded, so nothing the OS does to the connection can interrupt it. Runs after buildReadingPlan()
- * has already made `plan` usable for speechSynthesis, so a slow or failed fetch degrades to today's
- * behavior rather than blocking the page.
+ * @brief Returns the chapter's path under audio/<lang>/, mirroring content/<category
+ * folder>/<subject folder>/<chapterId> -- a chapter id alone isn't unique site-wide (e.g.
+ * "variables" exists under both `c` and `php`), so the audio tree needs the same category/subject
+ * namespacing as content/ itself to avoid two different chapters silently sharing one file
+ * (Louis, 23/08/2026).
+ *
+ * @returns {string}
+ */
+function chapterAudioPath() {
+    const category = findCategory({ id: appState.curCategory });
+    const subject = appState.curSubject ? findSubject(category, appState.curSubject) : null;
+    const folderParts = [category?.folder, subject?.folder].filter(Boolean);
+    return [...folderParts, appState.curPageId].join("/");
+}
+
+/**
+ * @brief Fetches audio/<lang>/<chapterAudioPath()>.json and .mp3 together and, only if the JSON's
+ * entries match `plan`'s own "speak"/"pause" sequence 1:1 (same count, same kind in the same order
+ * -- the one sane proxy for "still the same content" without hashing the source), merges each
+ * entry's startMs/durationMs (or a pause's afterMs) onto the matching `plan` entry and points
+ * `audioEl` at the mp3, loaded whole into a blob: URL rather than left to stream from the network --
+ * iOS throttles background network access hard enough that a streaming src can stall and re-buffer
+ * mid-word once the phone locks (confirmed on a real iPhone, 22/08/2026); a blob: URL needs no
+ * network at all once loaded, so nothing the OS does to the connection can interrupt it. Runs after
+ * buildReadingPlan() has already made `plan` usable for speechSynthesis, so a slow or failed fetch
+ * degrades to today's behavior rather than blocking the page.
  *
  * @param {Array} builtPlan the exact `plan` this call was kicked off for, to detect a page change
  *   racing ahead of these fetches (`plan` may already point somewhere else by the time they resolve)
  */
 async function loadPregenAudio(builtPlan) {
     const langCode = getStoredLanguage() || "fr";
-    const chapterId = appState.curPageId;
+    const chapterPath = chapterAudioPath();
     let timing, blob;
     try {
         const [timingResponse, audioResponse] = await Promise.all([
-            fetch(`./audio/${langCode}/${chapterId}.json`),
-            fetch(`./audio/${langCode}/${chapterId}.mp3`),
+            fetch(`./audio/${langCode}/${chapterPath}.json`),
+            fetch(`./audio/${langCode}/${chapterPath}.mp3`),
         ]);
         if (!timingResponse.ok || !audioResponse.ok) return;
         [timing, blob] = await Promise.all([timingResponse.json(), audioResponse.blob()]);
