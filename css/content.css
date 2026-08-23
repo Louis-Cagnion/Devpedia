@@ -37,11 +37,21 @@
     opacity: 0.5;
 }
 
-/* Lifts the dense-prose text off the textured background above (soft dark halo, not a solid
-   backdrop panel -- keeps the background's dots/washes visible through the letterforms while
-   still reading clearly at a glance, the way a photo-backed heading keeps its caption legible). */
+/* Dense-prose text gets an actual opaque panel on the textured background above, the same
+   "raised surface" token already used for blockquote/table/childButton elsewhere on the site. */
 .chapterPage p,
-.chapterPage li,
+.chapterPage .content-list li {
+    background-color: var(--bg-elevated);
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius);
+}
+
+.chapterPage .content-list li {
+    padding-inline-end: 1.2rem;
+}
+
+/* Headings/emphasis stay directly on the texture (no panel, cf. .pageTitle/h3-h6's own diamond
+   treatment below) -- the halo keeps them legible without boxing every heading in a card. */
 .chapterPage h2, .chapterPage h3, .chapterPage h4, .chapterPage h5, .chapterPage h6,
 .chapterPage strong, .chapterPage em {
     /* each shadow layer is only ~partially opaque on its own; stacking several identical
@@ -50,6 +60,40 @@
     text-shadow:
         0 0 2px var(--bg), 0 0 2px var(--bg), 0 0 2px var(--bg), 0 0 2px var(--bg),
         0 0 6px var(--bg), 0 0 6px var(--bg), 0 0 6px var(--bg), 0 0 6px var(--bg);
+}
+
+/* Diamond accent echoing the sidebar's category markers, tying a chapter's own titles back
+   to the site's new theme instead of leaving them as plain text over the texture. */
+.chapterPage .pageTitle,
+.chapterPage h3, .chapterPage h4, .chapterPage h5, .chapterPage h6 {
+    position: relative;
+    padding-inline-start: 1.6rem;
+}
+
+.chapterPage .pageTitle::before,
+.chapterPage h3::before, .chapterPage h4::before, .chapterPage h5::before, .chapterPage h6::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0.5em;
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 1px solid var(--accent);
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.chapterPage .pageTitle {
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, var(--accent-warm), var(--accent)) 1;
+}
+
+/* Breadcrumb reads as part of the navigation chrome (same tone as navbar/sidebars) rather
+   than floating loose on the chapter's own textured background. */
+.chapterPage .pageBreadcrumb {
+    display: inline-flex;
+    background-color: var(--bg-deep);
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius);
 }
 
 /* underlined even at rest (unlike the global `a`) — a link whose label is itself an inline
