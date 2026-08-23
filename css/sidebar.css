@@ -5,8 +5,9 @@
 .sidebarSectionTitle {
     color: var(--text-muted);
     text-transform: uppercase;
+    font-family: var(--font-display);
     font-size: 0.75rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     margin: 0 0 0.6rem 0;
 }
 
@@ -18,6 +19,10 @@
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+.sidebarTree {
+    counter-reset: sidebarCategoryCounter;
 }
 
 .sidebarChildList, .sidebarChapterList {
@@ -45,8 +50,50 @@
 }
 
 .sidebarCategoryButton {
+    position: relative;
     color: var(--text);
     font-weight: 600;
+    counter-increment: sidebarCategoryCounter;
+    padding-inline-start: 3rem;
+}
+
+/* diamond outline (rotated) -- carries only the shape, no text, so the rotation
+   doesn't distort the counter digits in ::after below */
+.sidebarCategoryButton::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.4rem;
+    top: 50%;
+    width: 1.4rem;
+    height: 1.4rem;
+    border: 1px solid var(--text-muted);
+    transform: translateY(-50%) rotate(45deg);
+    transition: border-color 0.15s ease;
+}
+
+/* category number, unrotated and overlaid on the diamond above */
+.sidebarCategoryButton::after {
+    content: counter(sidebarCategoryCounter, decimal-leading-zero);
+    position: absolute;
+    inset-inline-start: 0.4rem;
+    top: 50%;
+    width: 1.4rem;
+    transform: translateY(-50%);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.sidebarCategoryButton.open::before, .sidebarCategoryButton.current::before,
+.sidebarCategoryButton:hover::before {
+    border-color: var(--accent);
+}
+
+.sidebarCategoryButton.open::after, .sidebarCategoryButton.current::after,
+.sidebarCategoryButton:hover::after {
+    color: var(--accent);
 }
 
 /* --bg-hover and the accent-tinted color-mix() both landed under WCAG AA contrast (4.5:1)
@@ -61,6 +108,12 @@
     color: var(--accent);
     border-inline-start: 3px solid var(--accent);
     padding-inline-start: calc(0.5rem - 3px);
+}
+
+/* category level's own base padding-inline-start is 3rem, not 0.5rem (room for the
+   diamond marker) -- override again here, after the shared rule above, so it wins */
+.sidebarCategoryButton.current {
+    padding-inline-start: calc(3rem - 3px);
 }
 
 .sidebarCategoryButton:hover, .sidebarSubjectButton:hover, .sidebarChapterButton:hover {

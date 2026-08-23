@@ -1,3 +1,7 @@
+---
+order: 8
+---
+
 # Descrição
 
 Esta seção cobre a inteligência artificial moderna, a partir de uma base comum (**Fundamentos do deep learning**: como um modelo aprende e funciona internamente), e então três famílias de modelos construídas sobre essa base de acordo com o tipo de dado processado: o texto, até os grandes modelos de linguagem (**NLP e LLM**, e então exemplos concretos de aplicações em **Aplicações LLM**), a imagem, principalmente o reconhecimento de caracteres (**Visão e OCR**), e o áudio, a síntese de voz (**Voz IA**). A parte **Produção e governança** cobre o que envolve um sistema de IA uma vez em uso real: monitoramento, regulamentação, obrigações sobre os dados que passam por ele, qualquer que seja a modalidade tratada.

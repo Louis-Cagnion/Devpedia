@@ -15,7 +15,7 @@
         max-height: calc(100vh - var(--navbar-height, 57px));
         overflow-y: auto;
         padding: 1rem;
-        background-color: var(--bg-elevated);
+        background-color: var(--bg-deep);
         border-top: 1px solid var(--border);
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         z-index: 20;
@@ -133,6 +133,7 @@
         width: 320px;
         overflow-y: auto;
         padding: 1.25rem 1rem;
+        background-color: var(--bg-deep);
     }
     .leftSidebar {
         left: 0;
@@ -151,9 +152,11 @@
     }
     /* top-level categories specifically were flagged as too spaced out from one
        another: base.css's margin: 0.1rem 0 is shared with subject/chapter
-       buttons, so override it here rather than tighten it globally. */
+       buttons, so override it here rather than tighten it globally. Reopened a
+       little (Louis, 23/08/2026) once the diamond markers made the rows feel
+       cramped against each other again. */
     .leftSidebar .sidebarCategoryButton {
-        margin-block: 0.02rem;
+        margin-block: 0.3rem;
     }
     .leftSidebar .sidebarChildList,
     .leftSidebar .sidebarChapterList {

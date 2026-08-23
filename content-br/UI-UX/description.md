@@ -1,3 +1,7 @@
+---
+order: 9
+---
+
 # Description
 
 Esta categoria cobre o design de interface (UI) e experiência do usuário (UX): como uma página ou aplicação se comunica visualmente, guia a atenção e permanece utilizável por qualquer pessoa. Ela parte dos princípios visuais básicos (hierarquia, cor, tipografia, espaçamento) antes de abordar os métodos de projeto (pesquisa com usuários, prototipagem, design systems).

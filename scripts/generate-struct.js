@@ -178,10 +178,13 @@ function buildSubject(categoryDir, subjectFolder) {
 function buildCategory(contentDir, categoryFolder) {
     const categoryDir = path.join(contentDir, categoryFolder);
     const subjectFolders = listSubdirectories(categoryDir);
+    const descriptionPath = path.join(categoryDir, "description.md");
+    const order = fs.existsSync(descriptionPath) ? readFrontmatter(descriptionPath).order : undefined;
     const category = {
         id: slugify(categoryFolder),
         label: categoryFolder,
-        folder: categoryFolder
+        folder: categoryFolder,
+        order: order === undefined ? null : Number(order)
     };
     if (subjectFolders.length > 0) {
         const subjects = subjectFolders.map(subjectFolder => buildSubject(categoryDir, subjectFolder));
@@ -295,8 +298,11 @@ export function buildStruct(contentDir = DEFAULT_CONTENT_DIR) {
         chapters: [{ id: "acceuil", label: readTitle(path.join(contentDir, "acceuil.md")) }]
     };
     const categoryFolders = listSubdirectories(contentDir);
-    const categories = [home, ...categoryFolders.map(folder => buildCategory(contentDir, folder))];
-    return { categories };
+    const categories = categoryFolders.map(folder => buildCategory(contentDir, folder));
+    sortByOrder(categories);
+    const orderedCategories = categories.map(({id, label, folder, subjects, chapters}) =>
+        subjects ? {id, label, folder, subjects} : {id, label, folder, chapters});
+    return { categories: [home, ...orderedCategories] };
 }
 
 /**

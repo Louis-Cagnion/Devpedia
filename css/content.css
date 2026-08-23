@@ -5,6 +5,34 @@
     padding: 1.5rem 1.25rem calc(var(--floating-bar-height, 0px) + 1.5rem);
 }
 
+/* stylized background for chapter pages only (router.js's generatePageContent() extraClass
+   param) -- ::before layer, never the .page itself, so it can sit at z-index: -1 without
+   fighting the page's own stacking context for its children */
+.chapterPage {
+    position: relative;
+    isolation: isolate;
+}
+
+.chapterPage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    /* solid var(--bg) first: the non-negotiable scrim that keeps --text/--text-muted
+       contrast identical to every other page type, whatever sits above it */
+    background-color: var(--bg);
+    background-image:
+        radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0),
+        radial-gradient(ellipse at 15% 10%, color-mix(in srgb, var(--accent-warm) 10%, transparent), transparent 45%),
+        radial-gradient(ellipse at 85% 90%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 45%);
+    /* tiled starfield (not enumerated dot positions) so it scales to any chapter length
+       for free, no image asset, no extra HTTP request */
+    background-size: 40px 40px, auto, auto;
+    background-repeat: repeat, no-repeat, no-repeat;
+    opacity: 0.5;
+}
+
 /* underlined even at rest (unlike the global `a`) — a link whose label is itself an inline
    code span has no color of its own to read as a link by (`code` sets its own text color,
    overriding the inherited one), so the underline is what actually marks it as clickable */

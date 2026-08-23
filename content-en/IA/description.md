@@ -1,3 +1,7 @@
+---
+order: 8
+---
+
 # Description
 
 This section covers modern artificial intelligence, starting from a common foundation (**Fundamentals of Deep Learning**: how a model learns and works internally), then three families of models built on that foundation depending on the type of data handled: text, up to large language models (**NLP and LLM**, followed by concrete application examples in **LLM Applications**), images, in particular character recognition (**Vision and OCR**), and audio, speech synthesis (**AI Voice**). The **Production and Governance** part covers what surrounds an AI system once in real use: monitoring, regulation, obligations on the data flowing through it, whatever the modality involved.

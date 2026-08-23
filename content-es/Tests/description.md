@@ -1,3 +1,7 @@
+---
+order: 5
+---
+
 # Description
 
 Esta categoría cubre las pruebas de software (testing): cómo comprobar que un programa hace realmente lo que se supone que debe hacer, antes de que un usuario lo descubra por las malas. Parte del vocabulario normalizado de la disciplina antes de abordar los distintos tipos de pruebas, su organización y las herramientas que las mantienen manejables.
