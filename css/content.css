@@ -130,6 +130,21 @@
     background-color: var(--bg-deep);
     padding: 0.4rem 0.75rem;
     border-radius: var(--radius);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.85rem;
+}
+
+/* Reads as a small chrome label now (cf. .sidebarSectionTitle's same uppercase/letter-spacing
+   treatment) rather than plain link text -- underline moves to hover-only, matching how every
+   other clickable chrome element on the site (sidebar buttons, nav buttons) signals interactivity
+   through a color/state change rather than a permanent underline. */
+.chapterPage .breadcrumbCategory, .chapterPage .breadcrumbSubject {
+    text-decoration: none;
+}
+
+.chapterPage .breadcrumbCategory:hover, .chapterPage .breadcrumbSubject:hover {
+    text-decoration: underline;
 }
 
 /* underlined even at rest (unlike the global `a`) — a link whose label is itself an inline
