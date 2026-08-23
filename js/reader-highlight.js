@@ -163,8 +163,12 @@ export function calibrateRate(measuredRate) {
  * @param {() => boolean} isStillCurrent reports whether this call's playback generation is still
  *   the active one
  * @param {number|null} [knownDurationMs] this entry's real spoken duration, if already known
+ * @param {number} [startOffsetMs] how far into the entry playback is already positioned (a resume
+ *   picking the same entry back up mid-way, cf. speakNextViaAudio() in reader.js) -- words whose
+ *   estimated start already elapsed fire on the next tick instead of waiting their originally
+ *   scheduled delay, catching the highlight up to the real playback position almost instantly.
  */
-export function scheduleEstimatedWords(entry, isStillCurrent, knownDurationMs = null) {
+export function scheduleEstimatedWords(entry, isStillCurrent, knownDurationMs = null, startOffsetMs = 0) {
     if (!entry.words.length) return; // nothing to highlight word by word
     const totalWords = entry.words.length;
     /* `entry.text` (what's actually spoken) can have a different word count than `entry.words`
@@ -180,7 +184,7 @@ export function scheduleEstimatedWords(entry, isStillCurrent, knownDurationMs = 
     entry.words.forEach((word, index) => {
         const progress = index / totalWords;
         const effectiveRate = rate * (1 + maxAcceleration * progress);
-        const delayMs = cumulativeMs;
+        const delayMs = cumulativeMs - startOffsetMs;
         setTimeout(() => {
             /* A short entry can hand the highlight to the next one before all its own timers
                fire -- without this check, a late timer would move the highlight on the wrong entry. */

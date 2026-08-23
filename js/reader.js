@@ -476,19 +476,28 @@ function speakNext() {
  */
 function speakNextViaAudio(entry) {
     const myGeneration = generation;
-    scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs);
     currentEntryEndSeconds = (entry.startMs + entry.durationMs) / 1000;
     audioEl.playbackRate = readerRate;
 
-    /* Clips are concatenated gapless (scripts/generate-audio.mjs), so a re-seek here is only ever
-       correcting timeupdate's own ~250ms polling overshoot -- exactly what iOS fails once locked (devpedia-todo.md). */
-    const SEEK_TOLERANCE_SECONDS = 1;
-    const targetSeconds = entry.startMs / 1000;
+    /* Clips are concatenated gapless (scripts/generate-audio.mjs): currentTime already sitting
+       inside this entry's own range means either a normal transition (timeupdate's ~250ms polling
+       landed a little past the boundary) or resumeReading() picking the same entry back up after a
+       pause -- neither needs a seek, and the word highlight below must resume from the elapsed
+       offset instead of word 0 (Louis, 23/08/2026: resuming after a lock-screen pause reset both
+       audio and highlight to the entry's start instead of continuing where it left off). Only a
+       genuine jump elsewhere (replay/previous/next paragraph) leaves currentTime outside this
+       entry's range and actually needs one. */
+    const entryStartSeconds = entry.startMs / 1000;
+    const entryEndSeconds = entryStartSeconds + entry.durationMs / 1000;
+    const withinEntry = audioEl.currentTime >= entryStartSeconds && audioEl.currentTime < entryEndSeconds;
+    const offsetMs = withinEntry ? (audioEl.currentTime - entryStartSeconds) * 1000 : 0;
+    scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs, offsetMs);
+
     const play = () => {
         if (generation !== myGeneration) return;
         audioEl.play().catch(err => logEvent("audioEl:play-rejected", err.message));
     };
-    if (Math.abs(audioEl.currentTime - targetSeconds) < SEEK_TOLERANCE_SECONDS) {
+    if (withinEntry) {
         play();
     } else {
         let played = false;
@@ -499,7 +508,7 @@ function speakNextViaAudio(entry) {
         };
         audioEl.addEventListener("seeked", playOnce, { once: true });
         setTimeout(playOnce, 300);
-        audioEl.currentTime = targetSeconds;
+        audioEl.currentTime = entryStartSeconds;
     }
 }
 
