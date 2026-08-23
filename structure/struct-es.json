@@ -78,6 +78,10 @@
             {
               "id": "bases-de-donnees-a-fort-trafic",
               "label": "Bases de datos de alto tráfico: nunca bloquear al usuario con un recálculo costoso"
+            },
+            {
+              "id": "redis",
+              "label": "Redis: el almacén clave-valor en memoria"
             }
           ]
         },
@@ -673,6 +677,10 @@
             {
               "id": "sockets-et-io-non-bloquante",
               "label": "Sockets y E/S no bloqueante"
+            },
+            {
+              "id": "protocoles-pair-a-pair",
+              "label": "Los protocolos entre pares (P2P)"
             }
           ]
         },

@@ -78,6 +78,10 @@
             {
               "id": "bases-de-donnees-a-fort-trafic",
               "label": "High-traffic databases: never block the user on a costly recalculation"
+            },
+            {
+              "id": "redis",
+              "label": "Redis: The In-Memory Key-Value Store"
             }
           ]
         },
@@ -673,6 +677,10 @@
             {
               "id": "sockets-et-io-non-bloquante",
               "label": "Sockets and Non-Blocking I/O"
+            },
+            {
+              "id": "protocoles-pair-a-pair",
+              "label": "Peer-to-Peer (P2P) Protocols"
             }
           ]
         },
