@@ -19,6 +19,7 @@
  *
  * Usage:
  *   node scripts/generate-audio.mjs <chapter-id> [<chapter-id> ...]   # generate specific chapters
+ *   node scripts/generate-audio.mjs --context=<id>[,<id>...]          # every chapter under these subject/category ids
  *   node scripts/generate-audio.mjs --all                              # generate the whole site
  *
  * Output, per chapter per language (never overwrites content/, only writes under audio/), namespaced
@@ -255,9 +256,15 @@ async function main() {
     setupBrowserGlobals();
     const args = process.argv.slice(2);
     const generateAll = args.includes("--all");
-    const requestedIds = generateAll ? null : new Set(args);
-    if (!generateAll && requestedIds.size === 0) {
-        console.error("Usage: node scripts/generate-audio.mjs <chapter-id> [...] | --all");
+    const contextArg = args.find(a => a.startsWith("--context="));
+    // A bare chapter id isn't unique site-wide (cf. flattenChapters()'s own audioPath comment) --
+    // requesting one by id alone would also pull in an unrelated subject's chapter of the same
+    // name. --context restricts to chapters whose own subject/category id is in the given list,
+    // for pregenerating everything under an already pronunciation-validated subject at once.
+    const requestedContexts = contextArg ? new Set(contextArg.slice("--context=".length).split(",")) : null;
+    const requestedIds = generateAll || requestedContexts ? null : new Set(args);
+    if (!generateAll && !requestedContexts && requestedIds.size === 0) {
+        console.error("Usage: node scripts/generate-audio.mjs <chapter-id> [...] | --context=<id>[,<id>...] | --all");
         process.exit(1);
     }
 
@@ -265,7 +272,7 @@ async function main() {
     for (const lang of Object.keys(SITE_LANGUAGES)) {
         const { contentDir } = SITE_LANGUAGES[lang];
         const chapters = flattenChapters(structs[lang], contentDir)
-            .filter(c => generateAll || requestedIds.has(c.chapterId));
+            .filter(c => generateAll || requestedContexts?.has(c.context) || requestedIds?.has(c.chapterId));
         if (chapters.length === 0) continue;
         console.log(`${lang}: ${chapters.length} chapter(s)`);
         for (const chapterInfo of chapters) {
