@@ -312,13 +312,38 @@ pre {
     text-align: left;
 }
 
-/* Same warm-to-cool accent pairing as the corner brackets/blockquote border, but as a full,
-   non-fading frame around the whole rectangle -- code blocks and tables stay plain rectangles
-   (no clip-path lean like p/li/blockquote), the diagonal gradient direction alone is enough to
-   read as part of the same graphic language without slanting a structured grid of cells/lines. */
+/* The fading corner-bracket accent originally tried on every paragraph (dropped there for
+   being too repeated) moved here instead: code blocks are rare enough per chapter that the
+   same warm-to-cool pairing reads as a deliberate accent rather than noise. Plain rectangle,
+   so (unlike the parallelogram p/li used to be) the brackets are just two straight strips
+   anchored at the real corners -- no clip-path tracing needed. */
 .chapterPage pre {
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, var(--accent-warm), var(--accent)) 1;
+    position: relative;
+}
+
+.chapterPage pre::before, .chapterPage pre::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.chapterPage pre::before {
+    background-image:
+        linear-gradient(to right, var(--accent-warm), transparent 50%),
+        linear-gradient(to top, var(--accent-warm), transparent 50%);
+    background-position: bottom left, bottom left;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
+}
+
+.chapterPage pre::after {
+    background-image:
+        linear-gradient(to left, var(--accent), transparent 50%),
+        linear-gradient(to bottom, var(--accent), transparent 50%);
+    background-position: top right, top right;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
 }
 
 /* `code` is inline by default: without this, an unhighlighted fenced block (no `.hljs` class)
@@ -336,11 +361,35 @@ pre code {
     margin: 0.5rem 0 1.5rem 0;
 }
 
-/* same full-frame treatment as .chapterPage pre, around the table as a whole rather than
+/* same fading corner brackets as .chapterPage pre, around the table as a whole rather than
    re-coloring every individual cell border (cf. th/td below, left as plain var(--border)) */
 .chapterPage .tableWrapper {
-    border: 2px solid transparent;
-    border-image: linear-gradient(45deg, var(--accent-warm), var(--accent)) 1;
+    position: relative;
+}
+
+.chapterPage .tableWrapper::before, .chapterPage .tableWrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.chapterPage .tableWrapper::before {
+    background-image:
+        linear-gradient(to right, var(--accent-warm), transparent 50%),
+        linear-gradient(to top, var(--accent-warm), transparent 50%);
+    background-position: bottom left, bottom left;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
+}
+
+.chapterPage .tableWrapper::after {
+    background-image:
+        linear-gradient(to left, var(--accent), transparent 50%),
+        linear-gradient(to bottom, var(--accent), transparent 50%);
+    background-position: top right, top right;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
 }
 
 table {
