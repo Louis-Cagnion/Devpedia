@@ -284,6 +284,43 @@ em {
     color: var(--accent);
 }
 
+/* Native ::marker is positioned in the list's own reserved gutter, outside the <li>'s own box
+   -- which .chapterPage p/.content-list li's clip-path (further up this file) was silently
+   clipping away, since a pseudo-element belongs to its host's clip region regardless of where
+   it visually sits. Markers are rebuilt here as an ordinary ::before instead, inside the panel's
+   existing left padding, so they're guaranteed to fall within the visible clipped area. */
+.chapterPage .content-list {
+    list-style: none;
+}
+
+.chapterPage ul.content-list li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.35rem;
+    top: 0.55em;
+    width: 0.4rem;
+    height: 0.4rem;
+    border: 1px solid var(--accent);
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.chapterPage ol.content-list {
+    counter-reset: chapterListCounter;
+}
+
+.chapterPage ol.content-list li {
+    counter-increment: chapterListCounter;
+}
+
+.chapterPage ol.content-list li::before {
+    content: counter(chapterListCounter) ".";
+    position: absolute;
+    inset-inline-start: 0.35rem;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85em;
+}
+
 /* inline code and fenced code blocks — always LTR: code syntax reads left-to-right
    regardless of the page's language, exactly like on GitHub or MDN's Arabic docs */
 code {
