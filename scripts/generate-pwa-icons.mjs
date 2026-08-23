@@ -1,7 +1,7 @@
 /**
  * @brief Generates the app icons needed for "Add to Home Screen" (manifest.json + iOS
- * apple-touch-icon), one PNG per required size, encoded from scratch (zlib is Node's own
- * built-in, no image library needed for a single-glyph icon this simple).
+ * apple-touch-icon), one PNG per required size (encoding shared with generate-favicon.mjs via
+ * png-encoder.mjs).
  *
  * Draws a blocky "D" (site's accent color, css/base.css's --accent) on the site's own dark
  * background (--bg), so the installed icon reads as the same app as the site itself.
@@ -11,8 +11,8 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import zlib from "node:zlib";
 import { fileURLToPath } from "node:url";
+import { encodePng } from "./png-encoder.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ICONS_DIR = path.join(__dirname, "..", "icons");
@@ -33,24 +33,6 @@ const GLYPH_D = [
     "1100110",
     "1111000",
 ];
-
-function crc32(buf) {
-    let crc = ~0;
-    for (const byte of buf) {
-        crc ^= byte;
-        for (let i = 0; i < 8; i++) crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
-    }
-    return ~crc >>> 0;
-}
-
-function pngChunk(type, data) {
-    const typeBuf = Buffer.from(type, "ascii");
-    const lengthBuf = Buffer.alloc(4);
-    lengthBuf.writeUInt32BE(data.length);
-    const crcBuf = Buffer.alloc(4);
-    crcBuf.writeUInt32BE(crc32(Buffer.concat([typeBuf, data])));
-    return Buffer.concat([lengthBuf, typeBuf, data, crcBuf]);
-}
 
 /** @brief Renders one size as a raw RGBA pixel buffer: background fill + the centered, scaled glyph. */
 function renderIcon(size) {
@@ -78,27 +60,6 @@ function renderIcon(size) {
         }
     }
     return pixels;
-}
-
-function encodePng(size, pixels) {
-    const ihdr = Buffer.alloc(13);
-    ihdr.writeUInt32BE(size, 0);
-    ihdr.writeUInt32BE(size, 4);
-    ihdr.writeUInt8(8, 8); // bit depth
-    ihdr.writeUInt8(6, 9); // color type: RGBA
-
-    const raw = Buffer.alloc(size * (size * 4 + 1));
-    for (let y = 0; y < size; y++) {
-        raw[y * (size * 4 + 1)] = 0; // filter: none
-        pixels.copy(raw, y * (size * 4 + 1) + 1, y * size * 4, (y + 1) * size * 4);
-    }
-
-    return Buffer.concat([
-        Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
-        pngChunk("IHDR", ihdr),
-        pngChunk("IDAT", zlib.deflateSync(raw)),
-        pngChunk("IEND", Buffer.alloc(0)),
-    ]);
 }
 
 fs.mkdirSync(ICONS_DIR, { recursive: true });
