@@ -30,5 +30,17 @@ Demandé par Louis (23/08/2026) : la lecture ne marquait aucune pause en croisan
 Prégénéré (23/08/2026) via `scripts/generate-audio.mjs --context=c,cpp,php,git` (SQL déjà fait) : 60 chapitres, 4 langues, namespacés par dossier catégorie/sujet (`audio/<lang>/<catégorie>[/<sujet>]/<chapitreId>`) pour éviter la collision d'id corrigée le même jour (ex. `variables` existait à la fois en C et PHP).
 - Reste à Louis : écouter quelques chapitres de chaque sujet sur iPhone, confirmer que l'audio prégénéré se charge bien (pas de repli silencieux sur `speechSynthesis`) et que la prononciation correspond à la table déjà validée.
 
+## 6. Finir d'appliquer le nouveau thème UI/UX (branche `ui-ux-redesign`)
+Refonte visuelle menée cette session sur la branche `ui-ux-redesign` (poussée sur le remote, pas encore fusionnée sur `main` — accord avec Louis : attendre que 100% du site soit stylisé avant de fusionner et supprimer la branche). Déjà fait : fond étoilé + dégradé chaud/froid sur `.page` (toutes les pages, plus seulement les chapitres), panneaux en parallélogramme sur paragraphes/listes, losanges numérotés par profondeur (sidebar, titres, sommaire, cartes `.childButton`), cadres dégradés sur tableaux/blocs de code, blockquote à bordure dégradée, code inline teinté, fil d'Ariane restylé, scrollbar dégradée, favicon losange transparent.
+
+Reste à aligner (encore sur l'ancien `--bg-elevated`/`--bg-elevated-2`) :
+- Menus déroulants de la navbar : résultats de recherche (`.searchResults`), sélecteur de langue (`.langDropdown`), "voir plus" catégories (`.categoriesDropdown`) — `css/navbar.css`
+- Contrôles du lecteur audio : barre flottante mobile (`.readerFloatingBar`), menu de vitesse (`.readerRateMenu`) — `css/reader.css`/`css/responsive.css`
+- États survolé/actif des boutons de sidebar (`.sidebarCategoryButton.open/.current`, etc.) — `css/sidebar.css`
+- `.pageFallbackNotice` (bandeau de substitution de langue) — `css/content.css`
+- `css/charts.css` : entièrement intact, pas touché cette session
+
+Une fois ces éléments alignés : fusionner `ui-ux-redesign` sur `main` et supprimer la branche (déjà validé par Louis).
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
