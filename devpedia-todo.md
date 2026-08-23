@@ -26,10 +26,7 @@ Signalé par Louis (23/08/2026) : le délai avant de passer automatiquement au c
 Demandé par Louis (23/08/2026) : la lecture ne marquait aucune pause en croisant une parenthèse. Corrigé (23/08/2026) : `CLAUSE_END_PATTERN` (`js/reader-clauses.js`) traite `(` et `)` comme des frontières de clause. Audio des 5 chapitres pilotes régénérée en conséquence (4 langues).
 - Reste à Louis : confirmer que le rythme de lecture sonne mieux sur une incise entre parenthèses.
 
-## 5. Traduire les chapitres Redis et P2P/BitTorrent (en/es/br)
-Chapitres rédigés en français le 23/08/2026 (`Données/Bases de données/redis.md`, `Infrastructure & DevOps/Réseaux/protocoles-pair-a-pair.md`, enregistrés dans `structure/struct.json` via `node scripts/generate-struct.js`, liens validés). Traduction lancée le jour même via 3 agents en parallèle (un par langue, convention déjà validée par Louis pour un chapitre tout neuf) vers `content-en/`, `content-es/`, `content-br/` + `struct-en.json`/`struct-es.json`/`struct-br.json`. Reste à faire une fois les agents revenus : relire leur travail, committer, pousser.
-
-## 6. Sécurité offensive / exploitation binaire
+## 5. Sécurité offensive / exploitation binaire
 Repéré en comparant Devpedia à pwn.college (23/08/2026) : la catégorie Sécurité couvre uniquement la sécurité applicative/web (OWASP, SAST/DAST, crypto, secrets), rien sur la sécurité bas niveau. Chantier le plus volumineux des trois de cette série, probablement plusieurs chapitres distincts dans `Sécurité/Cybersécurité` plutôt qu'un seul, à cadrer/découper avant rédaction (cf. schéma projet complexe). Couvrir a minima :
 - Le rappel bas niveau nécessaire au reste (registres, pile/*stack*, tas/*heap*) : comment un programme compilé s'exécute réellement, niveau où Devpedia ne descend jamais aujourd'hui.
 - La corruption mémoire comme famille de faille distincte de celles de `types-de-failles.md` (qui ne couvre que le web) : *buffer overflow* (écriture au-delà d'un tampon alloué), *use-after-free*, format string.
