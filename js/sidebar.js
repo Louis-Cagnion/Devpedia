@@ -154,7 +154,18 @@ function renderOutline(container) {
     const ul = createTag("ul", { class: "pageOutlineList" });
     currentOutline.forEach(({ level, id, text }) => {
         const li = createTag("li", { class: `outline-h${level}` });
-        li.append(createTag("a", { href: `#${id}` }, { textContent: text }));
+        const link = createTag("a", { href: `#${id}` }, { textContent: text });
+        /* The browser's own "jump to fragment on click" never fires here (confirmed: even a
+           bare `location.hash = id` assignment, with no click/router involved, doesn't scroll
+           on this page) -- scrolled explicitly instead of relying on it. */
+        link.addEventListener("click", (e) => {
+            const target = document.getElementById(id);
+            if (!target) return;
+            e.preventDefault();
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+            history.pushState(null, "", `#${id}`);
+        });
+        li.append(link);
         ul.append(li);
     });
     container.append(ul);
