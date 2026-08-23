@@ -364,8 +364,14 @@ code {
     background-color: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
+/* .hljs (css/vendor/hljs-theme.css, loaded after this file) sets its own near-black
+   background (#1e1e1e) on highlighted blocks, but `.chapterPage pre code` is more specific
+   (1 class + 2 elements vs 1 class) and was winning regardless -- painting every code block,
+   highlighted or not, in the old light Nord grey. Matched to --bg-deep (close enough to
+   #1e1e1e that highlighted and unhighlighted blocks now read the same) instead of overriding
+   it away. */
 .chapterPage pre code {
-    background-color: var(--bg-elevated-2);
+    background-color: var(--bg-deep);
 }
 
 /* td already uses --bg-elevated-2 (cf. below) — a plain `code` span there would be
