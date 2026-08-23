@@ -96,6 +96,49 @@
     color: var(--accent);
 }
 
+/* Same diamond motif one and two levels down, unnumbered (only the category level, already
+   the site's top-level navigation entries, carries a number) and shrinking with depth: the
+   smaller a diamond, the deeper in the chapter tree, so size alone reads as depth. */
+.sidebarSubjectButton {
+    position: relative;
+    padding-inline-start: 2.3rem;
+}
+
+.sidebarSubjectButton::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.5rem;
+    top: 50%;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid var(--text-muted);
+    transform: translateY(-50%) rotate(45deg);
+    transition: border-color 0.15s ease;
+}
+
+.sidebarChapterButton {
+    position: relative;
+    padding-inline-start: 1.8rem;
+}
+
+.sidebarChapterButton::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0.55rem;
+    top: 50%;
+    width: 0.6rem;
+    height: 0.6rem;
+    border: 1px solid var(--text-muted);
+    transform: translateY(-50%) rotate(45deg);
+    transition: border-color 0.15s ease;
+}
+
+.sidebarSubjectButton.open::before, .sidebarSubjectButton.current::before,
+.sidebarSubjectButton:hover::before,
+.sidebarChapterButton.current::before, .sidebarChapterButton:hover::before {
+    border-color: var(--accent);
+}
+
 /* --bg-hover and the accent-tinted color-mix() both landed under WCAG AA contrast (4.5:1)
    against var(--accent) text -- --bg-elevated reads as a highlight just the same, at 5.03:1. */
 .sidebarCategoryButton.open, .sidebarSubjectButton.open {
@@ -110,10 +153,18 @@
     padding-inline-start: calc(0.5rem - 3px);
 }
 
-/* category level's own base padding-inline-start is 3rem, not 0.5rem (room for the
-   diamond marker) -- override again here, after the shared rule above, so it wins */
+/* each level's own base padding-inline-start is wider than 0.5rem (room for its own diamond
+   marker) -- override again here, after the shared rule above, so it wins */
 .sidebarCategoryButton.current {
     padding-inline-start: calc(3rem - 3px);
+}
+
+.sidebarSubjectButton.current {
+    padding-inline-start: calc(2.3rem - 3px);
+}
+
+.sidebarChapterButton.current {
+    padding-inline-start: calc(1.8rem - 3px);
 }
 
 .sidebarCategoryButton:hover, .sidebarSubjectButton:hover, .sidebarChapterButton:hover {
