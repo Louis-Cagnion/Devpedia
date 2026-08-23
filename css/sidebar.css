@@ -187,11 +187,23 @@
     line-height: 1.3;
 }
 
+/* same shrinking-diamond motif as the category/subject/chapter tree and the chapter's own
+   headings, instead of a plain bullet -- size again reads as heading depth (outline-h2..h6,
+   set by sidebar.js's renderOutline() from the actual heading level). */
 .pageOutlineList a::before {
-    content: "•";
-    color: var(--accent);
-    margin-inline-end: 0.5em;
+    content: "";
+    display: inline-block;
+    border: 1px solid var(--accent);
+    transform: rotate(45deg);
+    margin-inline-end: 0.6em;
+    vertical-align: middle;
 }
+
+.outline-h2 a::before { width: 0.8rem; height: 0.8rem; }
+.outline-h3 a::before { width: 0.65rem; height: 0.65rem; }
+.outline-h4 a::before { width: 0.5rem; height: 0.5rem; }
+.outline-h5 a::before { width: 0.4rem; height: 0.4rem; }
+.outline-h6 a::before { width: 0.32rem; height: 0.32rem; }
 
 .pageOutlineList a:hover {
     background-color: var(--bg-hover);

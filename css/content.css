@@ -77,11 +77,17 @@
     position: absolute;
     inset-inline-start: 0;
     top: 0.5em;
-    width: 0.7rem;
-    height: 0.7rem;
     border: 1px solid var(--accent);
     transform: translateY(-50%) rotate(45deg);
 }
+
+/* shrinks with heading depth, same principle as the sidebar's category/subject/chapter
+   diamonds: size alone reads as how deep a heading sits in the chapter's own outline */
+.chapterPage .pageTitle::before { width: 1rem; height: 1rem; }
+.chapterPage h3::before { width: 0.8rem; height: 0.8rem; }
+.chapterPage h4::before { width: 0.6rem; height: 0.6rem; }
+.chapterPage h5::before { width: 0.5rem; height: 0.5rem; }
+.chapterPage h6::before { width: 0.4rem; height: 0.4rem; }
 
 .chapterPage .pageTitle {
     border-bottom: 2px solid transparent;
