@@ -180,7 +180,7 @@ em {
 /* inline code and fenced code blocks — always LTR: code syntax reads left-to-right
    regardless of the page's language, exactly like on GitHub or MDN's Arabic docs */
 code {
-    font-family: monospace;
+    font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
     background-color: var(--bg-elevated-2);
     color: var(--accent-strong);
     padding: 0.15em 0.4em;
