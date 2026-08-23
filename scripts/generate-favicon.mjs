@@ -5,8 +5,8 @@
  *
  * Draws a filled diamond -- the UI redesign's own recurring marker (sidebar categories, chapter
  * titles, child cards) -- split diagonally between css/base.css's --accent-warm (bottom-left)
- * and --accent (top-right), on the --bg-deep chrome background, so the tab icon echoes the same
- * warm-to-cool motif used throughout the site rather than being a generic unrelated mark.
+ * and --accent (top-right), on a transparent background (no --bg-deep fill: a plain colored mark
+ * reads as a proper icon, not a swatch, and works on either a light or dark browser tab).
  *
  * Usage: node scripts/generate-favicon.mjs
  * Output: icons/favicon-<size>.png for each of FAVICON_SIZES.
@@ -19,15 +19,13 @@ import { encodePng } from "./png-encoder.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ICONS_DIR = path.join(__dirname, "..", "icons");
 
-const BG_COLOR = [0x1c, 0x20, 0x28]; // --bg-deep
 const WARM_COLOR = [0xd0, 0x87, 0x70]; // --accent-warm
 const COOL_COLOR = [0x88, 0xc0, 0xd0]; // --accent
 const FAVICON_SIZES = [16, 32, 48];
 
-/** @brief Renders one size as a raw RGBA pixel buffer: --bg-deep fill + a centered diamond, split diagonally warm/cool. */
+/** @brief Renders one size as a raw RGBA pixel buffer: transparent, except a centered diamond split diagonally warm/cool. */
 function renderFavicon(size) {
-    const pixels = Buffer.alloc(size * size * 4);
-    for (let i = 0; i < size * size; i++) pixels.set([...BG_COLOR, 255], i * 4);
+    const pixels = Buffer.alloc(size * size * 4); // zero-filled: fully transparent everywhere by default
 
     const cx = (size - 1) / 2;
     const cy = (size - 1) / 2;
