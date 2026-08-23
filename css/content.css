@@ -88,6 +88,16 @@
     border-image: linear-gradient(90deg, var(--accent-warm), var(--accent)) 1;
 }
 
+/* Subtitles get the same gradient-bar idea as .pageTitle, but sized to the text itself
+   (width: fit-content) rather than the full line, and the gradient reversed -- reads as a
+   section break rather than a repeat of the main title's full-width treatment. */
+.chapterPage h3, .chapterPage h4, .chapterPage h5, .chapterPage h6 {
+    width: fit-content;
+    padding-bottom: 0.3rem;
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(90deg, var(--accent), var(--accent-warm)) 1;
+}
+
 /* Breadcrumb reads as part of the navigation chrome (same tone as navbar/sidebars) rather
    than floating loose on the chapter's own textured background. */
 .chapterPage .pageBreadcrumb {
