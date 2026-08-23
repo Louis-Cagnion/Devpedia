@@ -44,7 +44,12 @@
 .chapterPage li,
 .chapterPage h2, .chapterPage h3, .chapterPage h4, .chapterPage h5, .chapterPage h6,
 .chapterPage strong, .chapterPage em {
-    text-shadow: 0 1px 6px var(--bg), 0 1px 2px var(--bg);
+    /* each shadow layer is only ~partially opaque on its own; stacking several identical
+       ones builds up a halo dense enough to actually read against the background, since
+       text-shadow's color can't take its own alpha boost otherwise */
+    text-shadow:
+        0 0 2px var(--bg), 0 0 2px var(--bg), 0 0 2px var(--bg), 0 0 2px var(--bg),
+        0 0 6px var(--bg), 0 0 6px var(--bg), 0 0 6px var(--bg), 0 0 6px var(--bg);
 }
 
 /* underlined even at rest (unlike the global `a`) — a link whose label is itself an inline
@@ -166,7 +171,7 @@ em {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    background: transparent;
+    background-color: var(--bg-deep);
     border: 1px solid var(--border);
     color: var(--text-muted);
     border-radius: var(--radius);
