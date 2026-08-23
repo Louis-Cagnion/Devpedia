@@ -357,18 +357,14 @@ code {
 }
 
 /* Inline code was the one piece of chapter content left with no tie to the new theme at all --
-   same accent-tinted border as the table grid (a restrained touch, not a gradient: unlike
-   tables/code blocks, inline code is as frequent as strong/em within a paragraph, so it gets
-   the "frequent element" treatment rather than the "rare/structural" one). Cancelled on `pre
-   code`, which already has its own gradient frame on the surrounding `pre` -- a second border
-   directly on the code itself would double it up. */
+   a tinted background is enough to tie it in while still blending into the surrounding
+   sentence; a visible border read as too sharp an edge for something this frequent (as
+   frequent as strong/em within a paragraph), so it was dropped in favor of color alone. */
 .chapterPage code {
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
     background-color: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .chapterPage pre code {
-    border: none;
     background-color: var(--bg-elevated-2);
 }
 
