@@ -97,19 +97,6 @@
     padding-inline-end: 1.2rem;
 }
 
-/* Headings stay directly on the texture (no panel, cf. .pageTitle/h3-h6's own diamond
-   treatment below) -- the halo keeps them legible without boxing every heading in a card.
-   strong/em are excluded: they live inside p/li/blockquote, which already sit on their own
-   opaque panel, so the halo on them was pure redundant shadow with nothing to lift off of. */
-.chapterPage h2, .chapterPage h3, .chapterPage h4, .chapterPage h5, .chapterPage h6 {
-    /* each shadow layer is only ~partially opaque on its own; stacking several identical
-       ones builds up a halo dense enough to actually read against the background, since
-       text-shadow's color can't take its own alpha boost otherwise */
-    text-shadow:
-        0 0 2px var(--bg), 0 0 2px var(--bg), 0 0 2px var(--bg), 0 0 2px var(--bg),
-        0 0 6px var(--bg), 0 0 6px var(--bg), 0 0 6px var(--bg), 0 0 6px var(--bg);
-}
-
 /* Diamond accent echoing the sidebar's category markers, tying a chapter's own titles back
    to the site's new theme instead of leaving them as plain text over the texture. */
 .chapterPage .pageTitle,
@@ -360,6 +347,15 @@ pre {
     text-align: left;
 }
 
+/* Same warm-to-cool accent pairing as the corner brackets/blockquote border, but as a full,
+   non-fading frame around the whole rectangle -- code blocks and tables stay plain rectangles
+   (no clip-path lean like p/li/blockquote), the diagonal gradient direction alone is enough to
+   read as part of the same graphic language without slanting a structured grid of cells/lines. */
+.chapterPage pre {
+    border: 2px solid transparent;
+    border-image: linear-gradient(45deg, var(--accent-warm), var(--accent)) 1;
+}
+
 /* `code` is inline by default: without this, an unhighlighted fenced block (no `.hljs` class)
    paints its background one line-box at a time instead of one contiguous block, unlike a
    highlighted one (hljs-theme.css's own `.hljs` class already gives it this box). */
@@ -373,6 +369,13 @@ pre code {
 .tableWrapper {
     overflow-x: auto;
     margin: 0.5rem 0 1.5rem 0;
+}
+
+/* same full-frame treatment as .chapterPage pre, around the table as a whole rather than
+   re-coloring every individual cell border (cf. th/td below, left as plain var(--border)) */
+.chapterPage .tableWrapper {
+    border: 2px solid transparent;
+    border-image: linear-gradient(45deg, var(--accent-warm), var(--accent)) 1;
 }
 
 table {
