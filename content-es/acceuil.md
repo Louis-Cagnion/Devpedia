@@ -13,9 +13,9 @@ Cuando un capítulo necesita un concepto ya explicado en otra parte del sitio, r
 
 ## Lo que cubre el sitio
 
-- Lenguajes de programación: C, [C++](/?c=langages&s=cpp&p=cpp), [PHP](/?c=langages&s=php&p=php), [Python](/?c=langages&s=python&p=python), [JavaScript](/?c=langages&s=javascript&p=javascript), [OCaml](/?c=langages&s=ocaml&p=ocaml)
-- Lenguajes de marcado e interfaz: [HTML](/?c=langages&s=html&p=html), [CSS](/?c=langages&s=css&p=css), UI/UX
+- Lenguajes de programación: [C](/?c=langages&s=c&p=c), [C++](/?c=langages&s=cpp&p=cpp), [PHP](/?c=langages&s=php&p=php), [Python](/?c=langages&s=python&p=python), [JavaScript](/?c=langages&s=javascript&p=javascript), [OCaml](/?c=langages&s=ocaml&p=ocaml)
+- Lenguajes de marcado e interfaz: [HTML](/?c=langages&s=html&p=html), [CSS](/?c=langages&s=css&p=css), [UI/UX](/?c=ui-ux)
 - Línea de comandos y control de versiones: [Bash](/?c=langages&s=bash&p=bash), [PowerShell](/?c=langages&s=powershell&p=powershell), [Zsh](/?c=langages&s=zsh&p=zsh), [Git](/?c=qualite-performance-et-outils&s=git&p=git)
-- Infraestructura, bases de datos ([SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql)), Docker
-- Data Science e Inteligencia Artificial
-- Matemáticas, representación de datos, rendimiento, calidad y arquitectura del código
+- [Infraestructura](/?c=infrastructure-devops&s=infrastructure&p=infrastructure), [bases de datos](/?c=donnees&s=bases-de-donnees&p=bases-de-donnees) ([SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql)), [Docker](/?c=infrastructure-devops&s=docker&p=docker)
+- [Data Science](/?c=donnees&s=data-science&p=data-science) e [Inteligencia Artificial](/?c=ia)
+- [Matemáticas](/?c=fondamentaux&s=mathematiques&p=mathematiques), [representación de datos](/?c=donnees&s=representation-des-donnees&p=representation-des-donnees), [rendimiento](/?c=qualite-performance-et-outils&s=performance&p=performance), [calidad y arquitectura del código](/?c=qualite-performance-et-outils&s=qualite-et-architecture-du-code&p=qualite-et-architecture-du-code)
