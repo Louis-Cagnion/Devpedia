@@ -9,15 +9,43 @@
 }
 
 .chartWrapper {
+    position: relative;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 1rem;
-    background-color: var(--bg-elevated);
+    background-color: var(--bg-deep);
     display: flex;
     justify-content: center;
     overflow-x: auto;
     flex: 1 1 200px;
     min-width: 0;
+}
+
+/* Same fading corner-bracket accent as .page pre/.page .tableWrapper (content.css), tying
+   chart panels into the same visual language as the other boxed content types on a page. */
+.chartWrapper::before, .chartWrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.chartWrapper::before {
+    background-image:
+        linear-gradient(to right, var(--accent-warm), transparent 50%),
+        linear-gradient(to top, var(--accent-warm), transparent 50%);
+    background-position: bottom left, bottom left;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
+}
+
+.chartWrapper::after {
+    background-image:
+        linear-gradient(to left, var(--accent), transparent 50%),
+        linear-gradient(to bottom, var(--accent), transparent 50%);
+    background-position: top right, top right;
+    background-size: 100% 2px, 2px 100%;
+    background-repeat: no-repeat, no-repeat;
 }
 
 .chartSvg {

@@ -139,15 +139,17 @@
     border-color: var(--accent);
 }
 
-/* --bg-hover and the accent-tinted color-mix() both landed under WCAG AA contrast (4.5:1)
-   against var(--accent) text -- --bg-elevated reads as a highlight just the same, at 5.03:1. */
+/* Same dark semi-transparent panel as .childButton/.page p elsewhere in the theme, instead of
+   the old flat --bg-elevated fill. Composited over the sidebar's own --bg-deep background this
+   lands at ~9.4:1 contrast against var(--accent) text, above the 5.03:1 --bg-elevated gave and
+   still clear of the WCAG AA floor (4.5:1) that ruled out --bg-hover/color-mix() here before. */
 .sidebarCategoryButton.open, .sidebarSubjectButton.open {
-    background-color: var(--bg-elevated);
+    background-color: rgba(0, 0, 0, 0.45);
     color: var(--accent);
 }
 
 .sidebarCategoryButton.current, .sidebarSubjectButton.current, .sidebarChapterButton.current {
-    background-color: var(--bg-elevated);
+    background-color: rgba(0, 0, 0, 0.45);
     color: var(--accent);
     border-inline-start: 3px solid var(--accent);
     padding-inline-start: calc(0.5rem - 3px);
@@ -168,7 +170,7 @@
 }
 
 .sidebarCategoryButton:hover, .sidebarSubjectButton:hover, .sidebarChapterButton:hover {
-    background-color: var(--bg-elevated);
+    background-color: rgba(0, 0, 0, 0.45);
     color: var(--accent);
 }
 

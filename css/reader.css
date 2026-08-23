@@ -68,8 +68,8 @@
     list-style: none;
     margin: 0;
     padding: 0.4rem;
-    background-color: var(--bg-elevated);
-    border: 1px solid var(--border);
+    background-color: var(--bg-deep);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
     border-radius: var(--radius);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
     z-index: 30;
@@ -154,6 +154,18 @@ tr.readerActiveParagraph > td {
 
 tr.readerActiveParagraph > th {
     background-color: color-mix(in srgb, var(--accent) 15%, var(--bg-elevated));
+}
+
+/* Rules above target a table's generic (non-.page) surface; inside chapter content -- the only
+   place a table with this class actually renders -- .page td/th already darken to
+   rgba(0,0,0,0.4)/(0.55) instead (content.css), so the highlight needs its own base here too,
+   or a row lighting up would revert it to the old flat surface. */
+.page tr.readerActiveParagraph > td {
+    background-color: color-mix(in srgb, var(--accent) 15%, var(--bg-deep));
+}
+
+.page tr.readerActiveParagraph > th {
+    background-color: color-mix(in srgb, var(--accent) 20%, var(--bg-deep));
 }
 
 /* The one active word (cf. setActiveWord() in reader.js), replacing readerActiveParagraph's
