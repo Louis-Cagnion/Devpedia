@@ -399,6 +399,22 @@ td {
     background-color: var(--bg-elevated-2);
 }
 
+/* Table cells were still the light blue-grey Nord surfaces from before this redesign, the one
+   piece of chapter content left out of the semi-transparent-black panel treatment everywhere
+   else (p/li/blockquote) -- brought in line here, plus an accent-tinted grid instead of the
+   plain neutral --border, echoing the warm/cool frame around the table as a whole. */
+.chapterPage th, .chapterPage td {
+    border-color: color-mix(in srgb, var(--accent) 25%, var(--border));
+}
+
+.chapterPage th {
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+.chapterPage td {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
 /* notes / callouts (markdown blockquotes) */
 blockquote {
     margin: 0.5rem 0 1.5rem 0;
