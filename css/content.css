@@ -50,10 +50,11 @@
     padding-inline-end: 1.2rem;
 }
 
-/* Headings/emphasis stay directly on the texture (no panel, cf. .pageTitle/h3-h6's own diamond
-   treatment below) -- the halo keeps them legible without boxing every heading in a card. */
-.chapterPage h2, .chapterPage h3, .chapterPage h4, .chapterPage h5, .chapterPage h6,
-.chapterPage strong, .chapterPage em {
+/* Headings stay directly on the texture (no panel, cf. .pageTitle/h3-h6's own diamond
+   treatment below) -- the halo keeps them legible without boxing every heading in a card.
+   strong/em are excluded: they live inside p/li/blockquote, which already sit on their own
+   opaque panel, so the halo on them was pure redundant shadow with nothing to lift off of. */
+.chapterPage h2, .chapterPage h3, .chapterPage h4, .chapterPage h5, .chapterPage h6 {
     /* each shadow layer is only ~partially opaque on its own; stacking several identical
        ones builds up a halo dense enough to actually read against the background, since
        text-shadow's color can't take its own alpha boost otherwise */
