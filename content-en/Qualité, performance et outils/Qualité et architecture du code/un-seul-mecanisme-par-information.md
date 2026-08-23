@@ -19,7 +19,7 @@ order: 5
 # Pointers in C
 ```
 
-The frontmatter says "Pointers", the body of the file says "Pointers in C". Which one is the real title? The site generator has to pick a priority rule (does the frontmatter win? does the heading win? whichever was written last?), and that rule itself becomes a source of bugs: someone changes the heading thinking they're changing the displayed title, not knowing that the frontmatter (invisible on a quick read of the file) takes precedence.
+The frontmatter says "Pointers", the body of the file says "Pointers in [C](/?c=langages-de-programmation&s=c&p=c)". Which one is the real title? The site generator has to pick a priority rule (does the frontmatter win? does the heading win? whichever was written last?), and that rule itself becomes a source of bugs: someone changes the heading thinking they're changing the displayed title, not knowing that the frontmatter (invisible on a quick read of the file) takes precedence.
 
 This site deliberately avoids the problem: a chapter's frontmatter **never** carries a `title` field, only build metadata (`order`, for pedagogical sorting). The displayed title comes only from the body's first `# Heading`: a single source, a single place to change, no priority rule to document or remember.
 

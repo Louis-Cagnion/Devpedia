@@ -23,7 +23,7 @@ random.seed(42)                 # starting over from the same seed
 print(random.randint(1, 100))   # 82 -> identical
 ```
 
-In C, `rand()` with no `srand()` implicitly uses seed `1`: a program run again produces **exactly the same sequence**. Hence the habit of seeding with the current time:
+In [C](/?c=langages-de-programmation&s=c&p=c), `rand()` with no `srand()` implicitly uses seed `1`: a program run again produces **exactly the same sequence**. Hence the habit of seeding with the current time:
 
 ```c
 srand(time(NULL));   // different seed every second
@@ -50,9 +50,9 @@ Worse: a classic PRNG is designed to be **fast and well distributed**, not unpre
 | Predictable? | Yes, from the state | No, even knowing the outputs |
 | Seed source | Often the clock | System entropy |
 | C | `rand()` | `getrandom()`, `/dev/urandom` |
-| Python | `random` | `secrets` |
-| PHP | `rand()`, `mt_rand()` | `random_bytes()`, `random_int()` |
-| JavaScript | `Math.random()` | `crypto.getRandomValues()` |
+| [Python](/?c=langages-de-programmation&s=python&p=python) | `random` | `secrets` |
+| [PHP](/?c=langages-de-programmation&s=php&p=php) | `rand()`, `mt_rand()` | `random_bytes()`, `random_int()` |
+| [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) | `Math.random()` | `crypto.getRandomValues()` |
 
 **The rule is simple and has no exception: as soon as a value must be unpredictable, use a CSPRNG.** This covers session tokens, CSRF tokens, password reset codes, salts, secret identifiers, keys.
 

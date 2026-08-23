@@ -103,6 +103,6 @@ Nothing technically prevents a reporting tool from connecting directly to bronze
 | | |
 |---|---|
 | **Key Points** | The medallion architecture splits a data pipeline into three successive copies: bronze (raw, untouched), silver (cleaned, stable schema), gold (aggregated for a specific business need, often modeled as a [star schema](/?c=bases-de-donnees&p=modeles-en-etoile)). |
-| **Available Tools** | Transformation SQL queries (`INSERT ... SELECT`, deduplication via `ROW_NUMBER()`, aggregation via `GROUP BY`) to move a table from one layer to the next. |
+| **Available Tools** | Transformation [SQL](/?c=domain-specific-languages-dsl&p=sql) queries (`INSERT ... SELECT`, deduplication via `ROW_NUMBER()`, aggregation via `GROUP BY`) to move a table from one layer to the next. |
 | **Pitfalls to Avoid** | Correcting or filtering as early as bronze; applying an undocumented cleaning rule; creating one gold table per dashboard; connecting a reporting tool directly to bronze or silver. |
 | **Best Practices** | Bronze as append-only; traceable cleaning rules; gold tables designed for a reusable business need; gold as the single entry point for consumers outside the pipeline. |

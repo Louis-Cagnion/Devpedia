@@ -86,7 +86,7 @@ The eye starts at the top left, sweeps to the right, comes back down diagonally,
 
 ## Moving to implementation
 
-This chapter deliberately stays independent of any language: the levers above (size, spacing, position...) concretely translate into CSS via [The Box Model](/?c=langages-de-balisage&s=css&p=box-model) (spacing, dimensions) and [Positioning](/?c=langages-de-balisage&s=css&p=positionnement) (placing elements on screen).
+This chapter deliberately stays independent of any language: the levers above (size, spacing, position...) concretely translate into [CSS](/?c=langages-de-balisage&s=css&p=css) via [The Box Model](/?c=langages-de-balisage&s=css&p=box-model) (spacing, dimensions) and [Positioning](/?c=langages-de-balisage&s=css&p=positionnement) (placing elements on screen).
 
 ---
 

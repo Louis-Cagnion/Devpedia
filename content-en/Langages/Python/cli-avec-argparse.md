@@ -116,7 +116,7 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-A test can then call `main(["process", "test.pdf", "--brand", "peugeot"])` directly, without ever invoking a real terminal, and check the returned integer (`0` = success, any other value = failure), exactly like a Bash script's [exit code](/?c=shells&s=bash&p=scripts-et-shebang).
+A test can then call `main(["process", "test.pdf", "--brand", "peugeot"])` directly, without ever invoking a real terminal, and check the returned integer (`0` = success, any other value = failure), exactly like a [Bash](/?c=shells&s=bash&p=bash) script's [exit code](/?c=shells&s=bash&p=scripts-et-shebang).
 
 ---
 

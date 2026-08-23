@@ -4,7 +4,7 @@ order: 4
 
 # Environment Variables
 
-Like in Bash, an environment variable is automatically passed to child processes, but PowerShell accesses it through a dedicated namespace (`$env:`), distinct from its regular variables, rather than a simple convention (`export`) applied to a normal variable.
+Like in [Bash](/?c=shells&s=bash&p=bash), an environment variable is automatically passed to child processes, but PowerShell accesses it through a dedicated namespace (`$env:`), distinct from its regular variables, rather than a simple convention (`export`) applied to a normal variable.
 
 ## Reading and modifying an environment variable
 

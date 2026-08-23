@@ -4,7 +4,7 @@ order: 2
 
 # NumPy: Numerical Computation
 
-**NumPy** (*Numerical Python*) provides the `ndarray` type: a multidimensional array of values **of a single type**, stored contiguously in memory, exactly like a C array (see [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs) and [Memory](/?c=langages-de-programmation&s=c&p=memoire) in C), rather than as a Python list (where each element is a separate reference to an object). This is the building block upon which pandas, scikit-learn, and virtually the entire Python data science ecosystem are built.
+**NumPy** (*Numerical [Python](/?c=langages-de-programmation&s=python&p=python)*) provides the `ndarray` type: a multidimensional array of values **of a single type**, stored contiguously in memory, exactly like a [C](/?c=langages-de-programmation&s=c&p=c) array (see [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs) and [Memory](/?c=langages-de-programmation&s=c&p=memoire) in C), rather than as a Python list (where each element is a separate reference to an object). This is the building block upon which pandas, scikit-learn, and virtually the entire Python data science ecosystem are built.
 
 ## Why not just Python lists?
 

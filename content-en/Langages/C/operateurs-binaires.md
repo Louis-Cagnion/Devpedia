@@ -75,7 +75,7 @@ options ^= FLAG_APPEND;               // TOGGLE  a bit
 
 This is exactly the mechanism behind system calls: `open("f.txt", O_WRONLY | O_CREAT)` combines flags with `|`, and the function then tests them with `&`. See the [System Calls and File Descriptors](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) chapter.
 
-Unix file permissions follow the same logic in base 8: `0644` encodes three groups of three bits (read/write/execute for the owner, the group, others). See also Bash's [Permissions and Files](/?c=shells&s=bash&p=permissions-et-fichiers) chapter.
+Unix file permissions follow the same logic in base 8: `0644` encodes three groups of three bits (read/write/execute for the owner, the group, others). See also [Bash](/?c=shells&s=bash&p=bash)'s [Permissions and Files](/?c=shells&s=bash&p=permissions-et-fichiers) chapter.
 
 **Why flags rather than separate booleans?** A single `unsigned int` stores 32 independent options, passes as a single argument, and is tested in one processor instruction.
 

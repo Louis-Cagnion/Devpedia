@@ -35,7 +35,7 @@ The OCaml compiler recognizes this shape and optimizes it into a plain loop in t
 
 ## Higher-order functions: `map`, `filter`, `fold`
 
-A higher-order function takes a function as an argument, or returns one, the same principle as a Python decorator (see the [Decorators](/?c=langages-de-programmation&s=python&p=decorateurs) chapter), generalized across the entire standard list library rather than reserved for one specific use case.
+A higher-order function takes a function as an argument, or returns one, the same principle as a [Python](/?c=langages-de-programmation&s=python&p=python) decorator (see the [Decorators](/?c=langages-de-programmation&s=python&p=decorateurs) chapter), generalized across the entire standard list library rather than reserved for one specific use case.
 
 ```ocaml
 let squares = List.map (fun x -> x * x) [1; 2; 3; 4]           (* [1; 4; 9; 16] *)

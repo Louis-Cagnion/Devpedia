@@ -33,7 +33,7 @@ Property: "sorting twice gives the same result as sorting once"
   For any list L: sort(sort(L)) == sort(L)
 ```
 
-A property-based testing tool (for example [fast-check](https://fast-check.dev) in JavaScript, [Hypothesis](https://hypothesis.readthedocs.io) in Python, or [QuickCheck](https://hackage.haskell.org/package/QuickCheck), the field's original tool in Haskell) then automatically generates hundreds of random inputs meeting the given constraints, and checks the property on each.
+A property-based testing tool (for example [fast-check](https://fast-check.dev) in [JavaScript](/?c=langages&s=javascript&p=javascript), [Hypothesis](https://hypothesis.readthedocs.io) in [Python](/?c=langages&s=python&p=python), or [QuickCheck](https://hackage.haskell.org/package/QuickCheck), the field's original tool in Haskell) then automatically generates hundreds of random inputs meeting the given constraints, and checks the property on each.
 
 ```text
 Property-based test for "sorting doesn't change the size":

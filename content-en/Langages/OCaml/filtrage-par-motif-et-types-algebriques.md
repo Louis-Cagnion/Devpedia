@@ -15,7 +15,7 @@ type shape =
   | Triangle of float * float * float    (* three sides *)
 ```
 
-A value of type `shape` is **exactly one** of these three possibilities, never a mix or anything else, unlike a base class with inheritance (see the [Inheritance and Polymorphism](/?c=langages-de-programmation&s=cpp&p=heritage-et-polymorphisme) chapter, C++ section), where the set of possible subclasses stays open: anyone can add a new one elsewhere in the code.
+A value of type `shape` is **exactly one** of these three possibilities, never a mix or anything else, unlike a base class with inheritance (see the [Inheritance and Polymorphism](/?c=langages-de-programmation&s=cpp&p=heritage-et-polymorphisme) chapter, [C++](/?c=langages-de-programmation&s=cpp&p=cpp) section), where the set of possible subclasses stays open: anyone can add a new one elsewhere in the code.
 
 ## Pattern matching (`match`)
 
@@ -31,7 +31,7 @@ let area shape =
       sqrt (s *. (s -. a) *. (s -. b) *. (s -. c))
 ```
 
-Compared to a `switch` (see the [Conditions](/?c=langages-de-programmation&s=c&p=conditions) chapter, C section), the difference isn't just cosmetic: each branch **extracts** `radius`, or `width` and `height`, directly, with no manual field access (`shape.radius`) or prior type check.
+Compared to a `switch` (see the [Conditions](/?c=langages-de-programmation&s=c&p=conditions) chapter, [C](/?c=langages-de-programmation&s=c&p=c) section), the difference isn't just cosmetic: each branch **extracts** `radius`, or `width` and `height`, directly, with no manual field access (`shape.radius`) or prior type check.
 
 ## Exhaustiveness checked at compile time
 
@@ -45,7 +45,7 @@ let incomplete_area shape =
   (* Warning 8: this pattern matching is not exhaustive -- the Triangle case is not covered *)
 ```
 
-By default this is only a **warning** (the program still compiles), but a serious project generally enables the option that turns this kind of warning into a blocking error, making exhaustiveness a guarantee, not just a suggestion. This is a major structural difference from a `switch`/`if-elif` in C, PHP, or JavaScript: a forgotten case there compiles with no warning at all, and only fails at **runtime**, if and only if that exact case ever comes up in production, one of the most expensive silent failures to diagnose, since it only shows up months after the code was written, on an input nobody anticipated. In OCaml, adding a new case to a variant type (`Rhombus of float`) immediately surfaces, right at compile time, **every** `match` in the entire program that needs updating to handle it.
+By default this is only a **warning** (the program still compiles), but a serious project generally enables the option that turns this kind of warning into a blocking error, making exhaustiveness a guarantee, not just a suggestion. This is a major structural difference from a `switch`/`if-elif` in C, [PHP](/?c=langages-de-programmation&s=php&p=php), or [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript): a forgotten case there compiles with no warning at all, and only fails at **runtime**, if and only if that exact case ever comes up in production, one of the most expensive silent failures to diagnose, since it only shows up months after the code was written, on an input nobody anticipated. In OCaml, adding a new case to a variant type (`Rhombus of float`) immediately surfaces, right at compile time, **every** `match` in the entire program that needs updating to handle it.
 
 ## The `option` type, a structural alternative to `null`
 
@@ -64,7 +64,7 @@ match find_user 42 with
 | None -> print_endline "User not found"
 ```
 
-The difference from `None` in Python (see the [Variables](/?c=langages-de-programmation&s=python&p=variables) chapter for `is None`) is that the compiler **forces** the `None` case to be handled: the type of a function that might find nothing is explicitly `string option`, never just `string`. It's therefore impossible to forget to check for a missing value without the compiler flagging it, where a [`NullPointerException`](https://docs.oracle.com/en/java/) or a `TypeError: 'NoneType' object is not subscriptable` in Python only shows up at runtime, on the exact code path that forgot it.
+The difference from `None` in [Python](/?c=langages-de-programmation&s=python&p=python) (see the [Variables](/?c=langages-de-programmation&s=python&p=variables) chapter for `is None`) is that the compiler **forces** the `None` case to be handled: the type of a function that might find nothing is explicitly `string option`, never just `string`. It's therefore impossible to forget to check for a missing value without the compiler flagging it, where a [`NullPointerException`](https://docs.oracle.com/en/java/) or a `TypeError: 'NoneType' object is not subscriptable` in Python only shows up at runtime, on the exact code path that forgot it.
 
 ---
 

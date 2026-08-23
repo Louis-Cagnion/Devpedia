@@ -4,7 +4,7 @@ order: 7
 
 # The ORM: mapping objects onto relational tables
 
-An object-oriented program manipulates classes and instances; a relational database stores tables and rows. The two models don't overlap naturally (a relationship between two objects isn't a foreign key, class inheritance has no direct SQL equivalent): an **ORM** (*Object-Relational Mapping*) automates the translation between the two, so code is written against objects rather than manual SQL queries.
+An object-oriented program manipulates classes and instances; a relational database stores tables and rows. The two models don't overlap naturally (a relationship between two objects isn't a foreign key, class inheritance has no direct [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql) equivalent): an **ORM** (*Object-Relational Mapping*) automates the translation between the two, so code is written against objects rather than manual SQL queries.
 
 ## What an ORM automates
 

@@ -21,7 +21,7 @@ carte.dataset.role;     // "carte-produit"
 carte.dataset.enStock;  // "true" -> "data-en-stock" becomes "enStock" in camelCase on the JS side
 ```
 
-`data-*` lets you attach data to an HTML element, retrievable in JavaScript via `.dataset`: a standard way to pass information from HTML to JavaScript, with no need for global variables or extra requests.
+`data-*` lets you attach data to an HTML element, retrievable in [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) via `.dataset`: a standard way to pass information from HTML to JavaScript, with no need for global variables or extra requests.
 
 > **Note:** any name after `data-` is valid (`data-whatever`): the only rule is the automatic conversion from **kebab-case** (words separated by hyphens, `data-en-stock`) to **camelCase** (each following word glued together and capitalized, `enStock`) in JavaScript, just a naming convention, not a mechanism specific to `data-*`.
 
@@ -64,7 +64,7 @@ A good part of accessibility follows directly from the previous chapters: `alt` 
 <button class="bouton-personnalise">Custom button</button>
 ```
 
-A native `<button>` already handles keyboard accessibility (focus via Tab, activation via Enter/Space) and having its role announced by a screen reader: that's why the "golden rule" above recommends starting from a real `<button>`, restyled in CSS if needed, rather than recreating a button from a `<div>`.
+A native `<button>` already handles keyboard accessibility (focus via Tab, activation via Enter/Space) and having its role announced by a screen reader: that's why the "golden rule" above recommends starting from a real `<button>`, restyled in [CSS](/?c=langages-de-balisage&s=css&p=css) if needed, rather than recreating a button from a `<div>`.
 
 If a specific case truly prevents using a native `<button>`, recreating its behavior requires more than just `tabindex`/`role`:
 

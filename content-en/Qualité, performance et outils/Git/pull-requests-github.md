@@ -72,7 +72,7 @@ A **branch protection rule** prevents pushing directly to a sensitive branch (ty
 | Common condition | Effect |
 |---|---|
 | Require at least one approved review | The merge is blocked until an *Approve* has been given |
-| Require automated checks to pass | The merge is blocked until CI/CD (tests, build) has succeeded on the branch's latest version |
+| Require automated checks to pass | The merge is blocked until [CI/CD](/?c=ci-cd&p=pipeline-cicd) (tests, build) has succeeded on the branch's latest version |
 | Forbid direct pushes | Any change to this branch must go through a pull request, no exception |
 
 > **Pitfall:** relying solely on team discipline ("we never push directly to `main`") without a technical protection rule. Nothing then prevents an accidental direct push, nor a premature merge of a pull request not yet approved.

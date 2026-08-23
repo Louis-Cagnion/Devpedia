@@ -58,7 +58,7 @@ To test multiple conditions in sequence, use `elseif`:
 
 ## Alternative Syntax
 
-As with other control structures, conditions can be written using `:` and `end...`, which is useful for mixing with HTML:
+As with other control structures, conditions can be written using `:` and `end...`, which is useful for mixing with [HTML](/?c=langages-de-balisage&s=html&p=html):
 
 ```php
 <?php if ($age >= 18): ?>

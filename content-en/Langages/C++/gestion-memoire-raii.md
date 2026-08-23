@@ -4,7 +4,7 @@ order: 7
 
 # RAII and Smart Pointers
 
-In C (see the chapter on memory management), every `malloc()` must be followed by a manual `free()`: forget it just once, and you get a memory leak; call it twice, and you get a crash. **RAII** (*Resource Acquisition Is Initialization*) is the central principle of C++ for eliminating this entire class of bugs, relying on a mechanism we’ve already seen: the destructor (see the chapter on classes and objects).
+In [C](/?c=langages-de-programmation&s=c&p=c) (see the chapter on memory management), every `malloc()` must be followed by a manual `free()`: forget it just once, and you get a memory leak; call it twice, and you get a crash. **RAII** (*Resource Acquisition Is Initialization*) is the central principle of C++ for eliminating this entire class of bugs, relying on a mechanism we’ve already seen: the destructor (see the chapter on classes and objects).
 
 ## The RAII Principle
 

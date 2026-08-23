@@ -11,7 +11,7 @@ order: 9
 | Nature | Software installed on your machine | A web service, operated by a company (Microsoft) |
 | Role | Manages history, branches, commits **locally** | Hosts a copy of the repository online, accessible to multiple people |
 | Works without the other? | Yes: Git works perfectly fine without ever touching GitHub | No: GitHub hosts **Git** repositories, it doesn't replace the tool |
-| Competitors | (Git has no competitor: it's the standard) | [GitLab](https://gitlab.com), [Bitbucket](https://bitbucket.org), Azure Repos (see Azure DevOps): different platforms, all built on Git |
+| Competitors | (Git has no competitor: it's the standard) | [GitLab](https://gitlab.com), [Bitbucket](https://bitbucket.org), Azure Repos (see [Azure DevOps](/?c=ci-cd&p=azure-devops-plateforme)): different platforms, all built on Git |
 
 > **Pitfall:** using "Git" and "GitHub" as synonyms. A purely local Git repository (never pushed anywhere) is a perfectly valid Git repository, with no connection to GitHub whatsoever. Conversely, a repository hosted on GitHub remains an ordinary Git repository; every command from the [Remote repositories](/?c=git&p=remotes) chapter (`push`, `pull`, `fetch`, `clone`) applies identically.
 

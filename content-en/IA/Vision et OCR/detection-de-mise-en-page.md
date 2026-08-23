@@ -130,6 +130,6 @@ See also [Structured OCR and layout analysis](/?c=traitement-de-documents&p=ocr-
 | | |
 |---|---|
 | **Key takeaways** | A detection model produces bounding boxes (4 coordinates), each with a class and a confidence score. It often detects the same region several times: IoU (intersection area / union area) measures the overlap between two boxes, and NMS keeps only the highest-scoring box among those that overlap heavily, class by class. |
-| **Tools you can use** | Computer vision libraries ([torchvision](https://pytorch.org/vision/stable/index.html), for instance) provide ready-made NMS implementations, faster than pure Python code on a large number of boxes. |
+| **Tools you can use** | Computer vision libraries ([torchvision](https://pytorch.org/vision/stable/index.html), for instance) provide ready-made NMS implementations, faster than pure [Python](/?c=langages-de-programmation&s=python&p=python) code on a large number of boxes. |
 | **Pitfalls to avoid** | Keeping low-confidence boxes without filtering. Miscomputing the union by counting the intersection twice. Applying NMS across different classes rather than separately per class. Keeping a default IoU threshold without validating it on your own documents. |
 | **Best practices** | Filter by confidence score before any processing. Double-check the union formula (inclusion-exclusion). Apply NMS separately per class. Tune the IoU threshold on documents representative of the actual use case. |

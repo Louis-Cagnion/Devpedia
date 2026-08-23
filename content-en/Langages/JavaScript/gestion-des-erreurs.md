@@ -4,7 +4,7 @@ order: 9
 
 # Error Handling
 
-JavaScript signals an error by throwing an **exception** (`throw`), which can be intercepted using `try` / `catch`, a mechanism similar to that used in PHP or Python.
+JavaScript signals an error by throwing an **exception** (`throw`), which can be intercepted using `try` / `catch`, a mechanism similar to that used in [PHP](/?c=langages-de-programmation&s=php&p=php) or [Python](/?c=langages-de-programmation&s=python&p=python).
 
 ## `try` / `catch` / `finally`
 

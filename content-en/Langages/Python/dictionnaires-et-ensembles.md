@@ -4,7 +4,7 @@ order: 5
 
 # Dictionaries and Sets
 
-The **dictionary** (`dict`) associates keys with values, just like an associative array in PHP. The set (`set`) stores unique values, in no particular order and without duplicates. Both structures are internally based on a **hash table** (see the dedicated chapter, section C): this is what allows `dico["key"]` or `"value" in ensemble` to be nearly instantaneous, even with a very large collection.
+The **dictionary** (`dict`) associates keys with values, just like an associative array in [PHP](/?c=langages-de-programmation&s=php&p=php). The set (`set`) stores unique values, in no particular order and without duplicates. Both structures are internally based on a **hash table** (see the dedicated chapter, section C): this is what allows `dico["key"]` or `"value" in ensemble` to be nearly instantaneous, even with a very large collection.
 
 ## Dictionaries
 

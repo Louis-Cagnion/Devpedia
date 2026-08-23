@@ -12,9 +12,9 @@ Most tools of this kind ([Figma](https://www.figma.com), [Sketch](https://www.sk
 
 | Concept | Role | Equivalent already seen |
 |---|---|---|
-| Layer | Each element (text, shape, image) exists independently, stacked on top of the others | Similar to the stacking of HTML elements in a document |
+| Layer | Each element (text, shape, image) exists independently, stacked on top of the others | Similar to the stacking of [HTML](/?c=langages-de-balisage&s=html&p=html) elements in a document |
 | Component | A reusable element (button, card...), defined once and instantiated everywhere | A design system's [component library](/?c=ui-ux&p=design-systems) |
-| Auto-layout | A container that repositions and resizes its content automatically based on rules (spacing, alignment), rather than hand-set fixed positions | [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox) in CSS: the same principle, in the design tool rather than in code |
+| Auto-layout | A container that repositions and resizes its content automatically based on rules (spacing, alignment), rather than hand-set fixed positions | [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox) in [CSS](/?c=langages-de-balisage&s=css&p=css): the same principle, in the design tool rather than in code |
 
 Working with components and auto-layout in the design tool, rather than with fixed positions, produces mockups that already behave the way the coded interface will (a button that adapts to its text's length, for instance), reducing the gap between the mockup and the coded result.
 
@@ -24,7 +24,7 @@ Working with components and auto-layout in the design tool, rather than with fix
 
 ## Animation tools for advanced interactions
 
-A simple transition (a button that slightly changes color on hover) is covered directly in CSS. A more elaborate interaction (several elements animated in a precise order, a movement that reacts to the user's gesture, spring physics rather than plain linear easing) goes beyond what basic CSS transitions comfortably cover, and then relies on a JavaScript library dedicated to animation ([GSAP](https://gsap.com), Framer Motion, among others):
+A simple transition (a button that slightly changes color on hover) is covered directly in CSS. A more elaborate interaction (several elements animated in a precise order, a movement that reacts to the user's gesture, spring physics rather than plain linear easing) goes beyond what basic CSS transitions comfortably cover, and then relies on a [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) library dedicated to animation ([GSAP](https://gsap.com), Framer Motion, among others):
 
 | | CSS transition | JS animation library |
 |---|---|---|

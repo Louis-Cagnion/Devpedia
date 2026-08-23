@@ -41,7 +41,7 @@ This chapter covers two cross-cutting mechanisms in CSS: **custom variables** (r
 }
 ```
 
-> **Note:** unlike a [Sass](https://sass-lang.com)/[Less](https://lesscss.org) variable (resolved once and for all at compile time), a native CSS variable is **alive** in the browser: modifiable even from JavaScript (`element.style.setProperty('--marge-interne', '30px')`), and re-evaluated dynamically depending on the element where it's read.
+> **Note:** unlike a [Sass](https://sass-lang.com)/[Less](https://lesscss.org) variable (resolved once and for all at compile time), a native CSS variable is **alive** in the browser: modifiable even from [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`element.style.setProperty('--marge-interne', '30px')`), and re-evaluated dynamically depending on the element where it's read.
 
 ## The cascade: three criteria, in this order
 

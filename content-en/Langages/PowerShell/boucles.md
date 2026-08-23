@@ -4,7 +4,7 @@ order: 6
 
 # Loops
 
-PowerShell offers the same basic structures as Bash (`for`, `while`, up to a condition), plus a `foreach` loop dedicated to walking through objects, the most used in practice, since almost everything in PowerShell is a collection of objects rather than plain text.
+PowerShell offers the same basic structures as [Bash](/?c=shells&s=bash&p=bash) (`for`, `while`, up to a condition), plus a `foreach` loop dedicated to walking through objects, the most used in practice, since almost everything in PowerShell is a collection of objects rather than plain text.
 
 ## The `foreach` loop (walking a collection)
 

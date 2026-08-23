@@ -4,7 +4,7 @@ order: 11
 
 # Permissions and File Manipulation
 
-Windows doesn't use the Unix permission model (owner/group/others, `rwx`) seen in Bash's equivalent chapter: it relies on **Access Control Lists** (ACLs), finer-grained but more verbose. This chapter covers this system as well as the basic commands for manipulating files and folders.
+Windows doesn't use the Unix permission model (owner/group/others, `rwx`) seen in [Bash](/?c=shells&s=bash&p=bash)'s equivalent chapter: it relies on **Access Control Lists** (ACLs), finer-grained but more verbose. This chapter covers this system as well as the basic commands for manipulating files and folders.
 
 ## Reading permissions with `Get-Acl`
 

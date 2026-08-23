@@ -68,7 +68,7 @@ steps:
   - script: deploy.sh --password myPassword123
 ```
 
-> **Pitfall:** writing a password, an API key, or an access token directly into `azure-pipelines.yml`. This file is versioned in the Git repository: the secret stays visible in the history even after it's removed from a later version.
+> **Pitfall:** writing a password, an API key, or an access token directly into `azure-pipelines.yml`. This file is versioned in the [Git](/?c=git&p=git) repository: the secret stays visible in the history even after it's removed from a later version.
 >
 > **Best practice:** store secrets in a **variable group** or a dedicated Azure DevOps library, then reference them in the YAML by name (`$(password)`): the versioned file then never contains the value itself.
 

@@ -21,7 +21,7 @@ A workflow has only one active trigger at a time (the one that actually started 
 
 ## Code nodes: stepping out of no-code when needed
 
-The **Code node** runs JavaScript or Python directly inside the workflow, for processing too specific for a preconfigured connector (a complex data transformation, a calculation, custom filtering):
+The **Code node** runs [JavaScript](/?c=langages&s=javascript&p=javascript) or [Python](/?c=langages&s=python&p=python) directly inside the workflow, for processing too specific for a preconfigured connector (a complex data transformation, a calculation, custom filtering):
 
 ```javascript
 // Code node (JavaScript): keep only items whose amount exceeds

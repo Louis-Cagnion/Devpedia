@@ -63,7 +63,7 @@ try {
 }
 ```
 
-## Exceptions and RAII: Why This Mechanism Is Safe in C++
+## Exceptions and [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii): Why This Mechanism Is Safe in C++
 
 ```cpp
 void traiter() {
@@ -83,4 +83,4 @@ void fonctionSure() noexcept {
 }
 ```
 
-> **Best practice:** Throw an exception only in truly **exceptional** situations (unforeseen error, violated invariant), never for normal control flow (an exception incurs a significant runtime cost compared to a simple `if`, unlike a traditional error return).
+> **Best practice:** Throw an exception only in truly **exceptional** situations (unforeseen error, violated [invariant](/?c=performance&p=traitements-longs)), never for normal control flow (an exception incurs a significant runtime cost compared to a simple `if`, unlike a traditional error return).

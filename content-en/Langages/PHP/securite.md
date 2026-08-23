@@ -4,7 +4,7 @@ order: 14
 
 # Securing your data
 
-When you retrieve data coming from the user (forms, URLs, cookies...), you should always treat it as **untrusted**, even if it looks correct. A malicious visitor can send anything: HTML code, JavaScript, or malformed SQL queries. PHP provides several functions to filter, validate, and escape this data.
+When you retrieve data coming from the user (forms, URLs, cookies...), you should always treat it as **untrusted**, even if it looks correct. A malicious visitor can send anything: [HTML](/?c=langages-de-balisage&s=html&p=html) code, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), or malformed SQL queries. PHP provides several functions to filter, validate, and escape this data.
 
 This chapter first covers the protections directly actionable in PHP (validation, XSS, SQL injection, passwords), then places these protections within a broader picture of the families of attacks a web application can suffer: some are defended against at the application code level, others at the network or infrastructure level.
 

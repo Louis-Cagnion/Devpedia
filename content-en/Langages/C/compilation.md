@@ -4,7 +4,7 @@ order: 8
 
 # The Compilation Process
 
-Unlike PHP or JavaScript, which are interpreted directly at runtime, a C program must be **compiled into machine code** before it can be run. This compilation process occurs in four distinct stages, which are generally hidden behind a single command ([`gcc`](https://gcc.gnu.org) `main.c -o program`), but it is helpful to understand them separately in order to troubleshoot certain errors.
+Unlike [PHP](/?c=langages-de-programmation&s=php&p=php) or [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), which are interpreted directly at runtime, a C program must be **compiled into machine code** before it can be run. This compilation process occurs in four distinct stages, which are generally hidden behind a single command ([`gcc`](https://gcc.gnu.org) `main.c -o program`), but it is helpful to understand them separately in order to troubleshoot certain errors.
 
 ## The Four Steps
 

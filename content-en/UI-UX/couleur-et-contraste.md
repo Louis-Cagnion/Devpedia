@@ -87,7 +87,7 @@ A color doesn't evoke the same thing everywhere, to be weighed against the actua
 
 ## Moving to implementation
 
-In CSS, a color palette is declared as a set of reusable values rather than repeated in every rule: see [CSS Variables and the Cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
+In [CSS](/?c=langages-de-balisage&s=css&p=css), a color palette is declared as a set of reusable values rather than repeated in every rule: see [CSS Variables and the Cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
 
 ---
 

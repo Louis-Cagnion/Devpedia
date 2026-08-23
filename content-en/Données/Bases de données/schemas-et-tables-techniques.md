@@ -8,7 +8,7 @@ The previous chapters ([star schema](/?c=bases-de-donnees&p=modeles-en-etoile), 
 
 ## The schema: a namespace for tables
 
-A SQL **schema** is a namespace inside a database: every table belongs to one, and its full name is written `schema.table` (for example `dim.product` rather than just `product`). Two tables with the same name can coexist without conflict if they're in different schemas, and a schema mainly serves to signal a table's role at a glance in a database that contains hundreds of them.
+A [SQL](/?c=domain-specific-languages-dsl&p=sql) **schema** is a namespace inside a database: every table belongs to one, and its full name is written `schema.table` (for example `dim.product` rather than just `product`). Two tables with the same name can coexist without conflict if they're in different schemas, and a schema mainly serves to signal a table's role at a glance in a database that contains hundreds of them.
 
 ```sql
 CREATE SCHEMA dim;

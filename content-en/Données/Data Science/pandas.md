@@ -4,7 +4,7 @@ order: 3
 
 # pandas: manipulating tabular data
 
-**pandas** provides two structures for manipulating tabular data: the `Series` (a single column, indexed) and the `DataFrame` (a two-dimensional array with named columns), the Python equivalent of an [SQL](/?c=domain-specific-languages-dsl&p=sql) table or a spreadsheet, but manipulable via code.
+**pandas** provides two structures for manipulating tabular data: the `Series` (a single column, indexed) and the `DataFrame` (a two-dimensional array with named columns), the [Python](/?c=langages-de-programmation&s=python&p=python) equivalent of an [SQL](/?c=domain-specific-languages-dsl&p=sql) table or a spreadsheet, but manipulable via code.
 
 ## Create a DataFrame
 

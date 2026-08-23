@@ -26,7 +26,7 @@ The model cannot execute this function on its own: it merely **determines** that
 { "call": "get_weather", "arguments": { "city": "Montpellier" } }
 ```
 
-It is the code surrounding the model that receives this decision, actually executes the corresponding function (Python, the [HTTP](/?c=infrastructure&p=api-et-http) call, the SQL query...), and returns its result to the model so that it can continue.
+It is the code surrounding the model that receives this decision, actually executes the corresponding function (Python, the [HTTP](/?c=infrastructure&p=api-et-http) call, the [SQL](/?c=domain-specific-languages-dsl&p=sql) query...), and returns its result to the model so that it can continue.
 
 > **Pitfall:** blindly trusting the arguments produced by the model before passing them to the actual function: the model never truly “knows” what a function does beyond its textual description; an imprecise or ambiguous description results in calls with the wrong arguments just as surely as a poorly documented function misleads a human developer who reads only its signature.
 >

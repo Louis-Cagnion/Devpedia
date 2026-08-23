@@ -52,7 +52,7 @@ Two users with the same password thus get different hashes, and a rainbow table 
 
 ## Moving to Implementation
 
-In practice, choosing the algorithm, generating the salt, and handling its integration into the final hash is handled by a dedicated function in the language used, never something to reimplement yourself: see [`password_hash()` and `password_verify()`](/?c=langages-de-programmation&s=php&p=securite) for the concrete PHP implementation, which uses bcrypt by default and details how the salt is embedded in the stored hash.
+In practice, choosing the algorithm, generating the salt, and handling its integration into the final hash is handled by a dedicated function in the language used, never something to reimplement yourself: see [`password_hash()` and `password_verify()`](/?c=langages-de-programmation&s=php&p=securite) for the concrete [PHP](/?c=langages-de-programmation&s=php&p=php) implementation, which uses bcrypt by default and details how the salt is embedded in the stored hash.
 
 ---
 

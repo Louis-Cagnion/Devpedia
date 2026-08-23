@@ -47,7 +47,7 @@ A package installed today with no known flaw can reveal one later: that's why de
 
 | Tool | Ecosystem | Role |
 |---|---|---|
-| `npm audit` | JavaScript/Node.js | Compares installed dependencies against a database of known flaws |
+| `npm audit` | [JavaScript](/?c=langages&s=javascript&p=javascript)/Node.js | Compares installed dependencies against a database of known flaws |
 | `pip-audit` | Python | The equivalent for Python packages |
 | [Dependabot](https://docs.github.com/en/code-security/dependabot) | Multi-ecosystem (built into GitHub) | Automatically opens a pull request when a dependency has a known flaw and a fix is available |
 

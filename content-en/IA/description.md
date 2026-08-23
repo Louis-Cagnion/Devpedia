@@ -8,6 +8,6 @@ This section covers modern artificial intelligence, starting from a common found
 
 The throughline of the LLM part is that a single LLM is almost never enough: it has bounded working memory, no knowledge of events after its training cutoff, and cannot act on the real world on its own. RAG and agents are the two common ways to compensate for these limits, and the price of this extra power is paid in cost, operational risk, and governance obligations.
 
-For the Python tools used to manipulate data and build classic models (NumPy, pandas, scikit-learn...), see the [Data Science](/?c=data-science) section: this section focuses on the models themselves and the systems built around them, independently of the language used to implement them.
+For the [Python](/?c=langages&s=python&p=python) tools used to manipulate data and build classic models (NumPy, pandas, scikit-learn...), see the [Data Science](/?c=data-science) section: this section focuses on the models themselves and the systems built around them, independently of the language used to implement them.
 
 You'll find the different topics below:

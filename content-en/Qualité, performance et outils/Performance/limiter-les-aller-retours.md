@@ -57,7 +57,7 @@ FROM customers c
 LEFT JOIN orders o ON o.customer_id = c.id;
 ```
 
-See the [SQL](/?c=domain-specific-languages-dsl&p=sql) section for joins, and PHP's [Connections](/?c=langages-de-programmation&s=php&p=connexions) chapter for `PDO`.
+See the [SQL](/?c=domain-specific-languages-dsl&p=sql) section for joins, and [PHP](/?c=langages-de-programmation&s=php&p=php)'s [Connections](/?c=langages-de-programmation&s=php&p=connexions) chapter for `PDO`.
 
 > Along the way, writing one query per element by concatenating a variable into the SQL string stacks two problems: slowness **and** SQL injection. Prepared statements fix the second, the join fixes the first.
 
@@ -66,7 +66,7 @@ See the [SQL](/?c=domain-specific-languages-dsl&p=sql) section for joins, and PH
 The pattern shows up anywhere there's a boundary to cross:
 
 - **HTTP API**: prefer an endpoint that accepts a list of IDs rather than calling the single-item endpoint *n* times;
-- **File system**: read a file all at once rather than character by character (that's the role of buffers, see [System Calls and File Descriptors](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) in C);
+- **File system**: read a file all at once rather than character by character (that's the role of buffers, see [System Calls and File Descriptors](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) in [C](/?c=langages-de-programmation&s=c&p=c));
 - **DOM**: accumulate changes then apply them, rather than modifying the document inside a loop: every write can trigger a layout recalculation.
 
 ## Knowing when not to do it

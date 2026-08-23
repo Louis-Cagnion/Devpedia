@@ -78,7 +78,7 @@ Before HTML5, structuring a page relied almost entirely on generic `<div>`s, dis
 
 - **Accessibility** (see [data-* Attributes and Accessibility](/?c=langages-de-balisage&s=html&p=attributs-data-et-accessibilite)): a screen reader can offer to jump straight to `<nav>` or `<main>`, something no `<div class="nav">` allows as reliably.
 - **[SEO](https://developer.mozilla.org/en-US/docs/Glossary/SEO)**: search engines better understand the structure and relative importance of content.
-- **Code readability**: `<header>`/`<main>`/`<footer>` document the structure directly in the HTML, with no need to read CSS class names to guess each block's role.
+- **Code readability**: `<header>`/`<main>`/`<footer>` document the structure directly in the HTML, with no need to read [CSS](/?c=langages-de-balisage&s=css&p=css) class names to guess each block's role.
 
 > **Best practice:** use a semantic tag as soon as it matches the content's actual role, and only fall back on `<div>` (purely generic, meaningless) for a simple technical container needed for CSS layout, with no meaning of its own.
 

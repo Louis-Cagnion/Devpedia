@@ -10,7 +10,7 @@ This is probably the most confusing behavior in programming, and the one most of
 0.1 + 0.2   ==>  0.30000000000000004
 ```
 
-This result is identical in JavaScript, [Python](/?c=langages-de-programmation&s=python&p=python), [C](/?c=langages-de-programmation&s=c&p=c), [PHP](/?c=langages-de-programmation&s=php&p=php), [Java](https://docs.oracle.com/en/java/), and [C#](https://learn.microsoft.com/en-us/dotnet/csharp/). So it's **not** a flaw in any one language: it's a consequence of how the processor encodes decimal numbers, described by the **IEEE 754** standard, which all these languages use because the hardware requires it.
+This result is identical in [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), [Python](/?c=langages-de-programmation&s=python&p=python), [C](/?c=langages-de-programmation&s=c&p=c), [PHP](/?c=langages-de-programmation&s=php&p=php), [Java](https://docs.oracle.com/en/java/), and [C#](https://learn.microsoft.com/en-us/dotnet/csharp/). So it's **not** a flaw in any one language: it's a consequence of how the processor encodes decimal numbers, described by the **IEEE 754** standard, which all these languages use because the hardware requires it.
 
 ## Why an approximation?
 

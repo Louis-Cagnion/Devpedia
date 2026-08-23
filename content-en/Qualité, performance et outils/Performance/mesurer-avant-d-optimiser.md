@@ -20,7 +20,7 @@ Half the time was spent watching for a banner **that never appeared**: consent h
 
 ## Profile by phase, not line by line
 
-A classic profiler ([`cProfile`](https://docs.python.org/3/library/profile.html) in Python, a browser's Performance tab) gives time per function. That's useful for computation, much less so when the program spends its time **waiting**: everything shows up under a handful of waiting functions, with no indication of *why* it's waiting.
+A classic profiler ([`cProfile`](https://docs.python.org/3/library/profile.html) in [Python](/?c=langages-de-programmation&s=python&p=python), a browser's Performance tab) gives time per function. That's useful for computation, much less so when the program spends its time **waiting**: everything shows up under a handful of waiting functions, with no indication of *why* it's waiting.
 
 In this case, instrumenting the logical phases yourself is more informative. The principle: wrap the key functions to accumulate their time, without touching the code being measured.
 

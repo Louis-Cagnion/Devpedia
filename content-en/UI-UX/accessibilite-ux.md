@@ -36,7 +36,7 @@ A **touch target** is the area a finger or cursor must reach to activate an elem
 
 **Keyboard navigation** makes it possible to use an entire interface with no mouse: `Tab` to move from one interactive element to the next, `Enter`/`Space` to activate it, `Escape` to close a window. It's essential for users who can't use a mouse, and also speeds up use for anyone.
 
-> **Pitfall:** only thinking about keyboard navigation once coding begins, after the mockup is locked in. The visual order of elements, chosen freely in the mockup, doesn't necessarily match a logical tab order: a fix in code (manually reordering, restructuring the HTML) then becomes necessary after the fact.
+> **Pitfall:** only thinking about keyboard navigation once coding begins, after the mockup is locked in. The visual order of elements, chosen freely in the mockup, doesn't necessarily match a logical tab order: a fix in code (manually reordering, restructuring the [HTML](/?c=langages-de-balisage&s=html&p=html)) then becomes necessary after the fact.
 >
 > **Best practice:** define the logical navigation order right in the mockup (which element gets focus first, then in what order). An order that follows the natural reading direction (top to bottom, left to right) avoids this problem in the vast majority of cases.
 

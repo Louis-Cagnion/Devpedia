@@ -5,7 +5,7 @@
 A **regex** (regular* *expression) is a mini-language that describes a pattern of characters. This pattern is used to search for, validate, or extract portions of text that match a given structure.
 
 
-It is not a programming language: no variables, no loops, no functions. A regex needs to be interpreted by a **regex engine**, which is built into the language you’re using (JavaScript, Python, etc.), via methods such as `.test()` or `.match()`.
+It is not a programming language: no variables, no loops, no functions. A regex needs to be interpreted by a **regex engine**, which is built into the language you’re using ([JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), [Python](/?c=langages-de-programmation&s=python&p=python), etc.), via methods such as `.test()` or `.match()`.
 
 
 ## The Basics of Syntax

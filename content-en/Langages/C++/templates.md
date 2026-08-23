@@ -4,7 +4,7 @@ order: 10
 
 # Templates (Generic Programming)
 
-A **template** allows you to write a function or class **just once**, applicable to any type, without sacrificing type checking at compile time or performance (unlike dynamically typed languages such as Python or PHP; see the relevant chapters).
+A **template** allows you to write a function or class **just once**, applicable to any type, without sacrificing type checking at compile time or performance (unlike dynamically typed languages such as [Python](/?c=langages-de-programmation&s=python&p=python) or [PHP](/?c=langages-de-programmation&s=php&p=php); see the relevant chapters).
 
 ## Without a template: duplication
 

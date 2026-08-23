@@ -4,7 +4,7 @@ order: 4
 
 # Matplotlib: visualizing data
 
-**Matplotlib** is the most widely used visualization library in Python: most other graphics libraries ([seaborn](https://seaborn.pydata.org), pandas`.plot()`, etc.) are built on top of it or are directly inspired by it.
+**Matplotlib** is the most widely used visualization library in [Python](/?c=langages-de-programmation&s=python&p=python): most other graphics libraries ([seaborn](https://seaborn.pydata.org), pandas`.plot()`, etc.) are built on top of it or are directly inspired by it.
 
 ## The Two Ways to Use Matplotlib
 

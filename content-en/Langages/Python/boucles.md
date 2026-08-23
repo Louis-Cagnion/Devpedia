@@ -4,7 +4,7 @@ order: 3
 
 # Loops
 
-Python offers `for` and `while`, but the `for` loop works differently from PHP/C/JS: it always iterates directly over the elements of an iterable, never over a numeric counter that is manipulated manually.
+Python offers `for` and `while`, but the `for` loop works differently from [PHP](/?c=langages-de-programmation&s=php&p=php)/[C](/?c=langages-de-programmation&s=c&p=c)/JS: it always iterates directly over the elements of an iterable, never over a numeric counter that is manipulated manually.
 
 ## `for` Loop
 

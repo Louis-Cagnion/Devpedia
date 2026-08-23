@@ -33,7 +33,7 @@ Cookie: session_id=a8f3d9...         ->    looks up session a8f3d9...,
 
 A **cookie** is a small piece of data the server asks the browser to keep, and which the browser sends back automatically on every request to the same site: it's the most common vehicle for carrying the session identifier from one request to the next, without the developer having to handle it manually on every call.
 
-This chapter stays deliberately independent of the language used: see [Manage Connections](/?c=langages-de-programmation&s=php&p=connexions) for the concrete PHP implementation (`setcookie()`, `$_SESSION`, the automatically generated `PHPSESSID` identifier).
+This chapter stays deliberately independent of the language used: see [Manage Connections](/?c=langages-de-programmation&s=php&p=connexions) for the concrete [PHP](/?c=langages-de-programmation&s=php&p=php) implementation (`setcookie()`, `$_SESSION`, the automatically generated `PHPSESSID` identifier).
 
 ## Why the Session Identifier Must Be Unpredictable
 
@@ -50,7 +50,7 @@ Even with a perfectly unpredictable identifier, an attacker who manages to **ste
 
 > **Pitfall:** assuming an unpredictable session identifier is enough to secure a session. An unpredictable identifier stops it from being *guessed*, but doesn't protect against it being *stolen* once it exists.
 >
-> **Best practice:** only transmit the session cookie over HTTPS, block access to it from JavaScript, and restrict it to requests genuinely coming from the site (see the `secure`/`httponly`/`samesite` options detailed in [Manage Connections](/?c=langages-de-programmation&s=php&p=connexions)).
+> **Best practice:** only transmit the session cookie over HTTPS, block access to it from [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), and restrict it to requests genuinely coming from the site (see the `secure`/`httponly`/`samesite` options detailed in [Manage Connections](/?c=langages-de-programmation&s=php&p=connexions)).
 
 ---
 

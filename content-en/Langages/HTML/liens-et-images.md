@@ -22,7 +22,7 @@ Links (`<a>`) and images (`<img>`) are two fundamental tags of the web: one conn
 <a href="https://example.com" target="_blank" rel="noopener noreferrer">Opens in a new tab</a>
 ```
 
-> **Note:** `target="_blank"` without `rel="noopener"` lets the new page access (via JavaScript) the original page's `window` object: a minor but real security risk (*tabnabbing*). `noopener` (and `noreferrer`, which also prevents the original URL from being sent) should always accompany any `target="_blank"`.
+> **Note:** `target="_blank"` without `rel="noopener"` lets the new page access (via [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) the original page's `window` object: a minor but real security risk (*tabnabbing*). `noopener` (and `noreferrer`, which also prevents the original URL from being sent) should always accompany any `target="_blank"`.
 
 ### Relative vs. absolute links
 

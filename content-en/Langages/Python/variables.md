@@ -4,7 +4,7 @@ order: 1
 
 # Basic Variables and Types
 
-Python is **dynamically typed**: a variable does not have a type declared in advance; it simply takes on the type of the value assigned to it, and can freely change types during the course of the program (unlike PHP or C, where the type of a typed property or variable remains fixed once declared).
+Python is **dynamically typed**: a variable does not have a type declared in advance; it simply takes on the type of the value assigned to it, and can freely change types during the course of the program (unlike [PHP](/?c=langages-de-programmation&s=php&p=php) or [C](/?c=langages-de-programmation&s=c&p=c), where the type of a typed property or variable remains fixed once declared).
 
 ## Declare a variable
 
@@ -47,7 +47,7 @@ a or b    # Logical OR (not '||')
 not a     # Logical "NOT" (not '!')
 ```
 
-> **Note:** Python uses the keywords `and` / `or` / `not` rather than the symbols `&&` / `||` / `!` found in PHP, JavaScript, or C.
+> **Note:** Python uses the keywords `and` / `or` / `not` rather than the symbols `&&` / `||` / `!` found in PHP, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), or C.
 
 ## `==` vs `is`: value or object?
 

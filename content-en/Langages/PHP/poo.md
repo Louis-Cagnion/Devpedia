@@ -92,9 +92,9 @@ Repository::trouver(1);
 ?>
 ```
 
-`use` It does not load the file itself: it simply tells the PHP engine which full filename corresponds to the short name used below. This is an autoloading mechanism (see the dedicated chapter) that is responsible for locating and loading the corresponding file when the class is actually used.
+`use` It does not load the file itself: it simply tells the PHP engine which full filename corresponds to the short name used below. This is an [autoloading](/?c=langages-de-programmation&s=php&p=autoloading) mechanism (see the dedicated chapter) that is responsible for locating and loading the corresponding file when the class is actually used.
 
-> **Note:** `Classe::methode()` (with `::`) looks like `Classe->methode()` but is never used with an instance: it is the near-exact equivalent of a namespace plus a static method in C++.
+> **Note:** `Classe::methode()` (with `::`) looks like `Classe->methode()` but is never used with an instance: it is the near-exact equivalent of a namespace plus a static method in [C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
 ## Dependency injection
 

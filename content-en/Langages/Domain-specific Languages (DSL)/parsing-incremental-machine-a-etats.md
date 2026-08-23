@@ -17,7 +17,7 @@ order: 3
 
 An incremental parser never knows "the whole document": it only knows what's happening **right now**, plus whatever the code has explicitly chosen to remember since the start. This constraint is what gives it its name, **state machine**: the program itself has to maintain a state ("am I currently inside a table row? A cell?"), updated with each event received.
 
-## `HTMLParser`: a concrete example in Python
+## `HTMLParser`: a concrete example in [Python](/?c=langages&s=python&p=python)
 
 The standard `html.parser` module provides `HTMLParser`, a class to subclass: three methods, automatically called for every tag or text fragment encountered while reading.
 

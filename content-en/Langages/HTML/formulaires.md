@@ -19,7 +19,7 @@ An HTML form collects data entered by the user, to send it to a server (via `GET
 
 - `action`: the URL the data is sent to on submission.
 - `method`: `GET` (data visible in the URL, for a search for example) or `POST` (data in the request body, for sensitive or large amounts of data; see [Data Exchange: API and HTTP](/?c=infrastructure&p=api-et-http) for the full difference).
-- `name` on each field: it's this value, **not** `id`, that identifies the field server-side (`$_POST['email']` in PHP, for example).
+- `name` on each field: it's this value, **not** `id`, that identifies the field server-side (`$_POST['email']` in [PHP](/?c=langages-de-programmation&s=php&p=php), for example).
 
 ## `<label>`: essential, not decorative
 

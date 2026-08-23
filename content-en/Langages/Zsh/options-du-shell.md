@@ -4,7 +4,7 @@ order: 2
 
 # The Options System (`setopt`)
 
-Bash enables optional behaviors case by case (`shopt -s name`, `set -o name`, each with its own command). Zsh centralizes this into a single, coherent mechanism: `setopt`/`unsetopt`, with dozens of named options that change the shell's behavior.
+[Bash](/?c=shells&s=bash&p=bash) enables optional behaviors case by case (`shopt -s name`, `set -o name`, each with its own command). Zsh centralizes this into a single, coherent mechanism: `setopt`/`unsetopt`, with dozens of named options that change the shell's behavior.
 
 ## Enabling and disabling an option
 

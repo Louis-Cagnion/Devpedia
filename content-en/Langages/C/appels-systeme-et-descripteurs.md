@@ -36,7 +36,7 @@ A standard C function call (`addition(2, 3)`) executes entirely in **user** spac
 
 ## Report an error: `errno`
 
-Most system calls signal a failure by returning `-1` (or `NULL` for those that return a pointer), and by setting the global variable `errno` to a code describing the specific cause: the same principle as the historical C functions discussed in the chapter on functions (PHP’s `@` follows the same kind of “C-style” error convention):
+Most system calls signal a failure by returning `-1` (or `NULL` for those that return a pointer), and by setting the global variable `errno` to a code describing the specific cause: the same principle as the historical C functions discussed in the chapter on functions ([PHP](/?c=langages-de-programmation&s=php&p=php)’s `@` follows the same kind of “C-style” error convention):
 
 ```c
 #include <errno.h>
@@ -69,7 +69,7 @@ read(fd, buffer, size);
 close(fd);
 ```
 
-> **Note:** These three numbers (`0` / `1` / `2`) are exactly the "streams" (*stdin/stdout/stderr*) mentioned in the chapter on Bash redirection: a redirection such as `2>` does nothing more, behind the scenes, than manipulate the process's descriptor number `2`.
+> **Note:** These three numbers (`0` / `1` / `2`) are exactly the "streams" (*stdin/stdout/stderr*) mentioned in the chapter on [Bash](/?c=shells&s=bash&p=bash) redirection: a redirection such as `2>` does nothing more, behind the scenes, than manipulate the process's descriptor number `2`.
 
 ## `dup2()`: Make a descriptor point to another resource
 

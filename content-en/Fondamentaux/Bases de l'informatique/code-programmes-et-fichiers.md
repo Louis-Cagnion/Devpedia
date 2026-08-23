@@ -68,7 +68,7 @@ Code written by a human is not always what the processor executes directly. Ther
 |---|---|---|
 | What happens | Another program, **the interpreter**, reads the code and executes it directly, line by line | A program, the **compiler**, first converts all the code into a form that the processor natively understands |
 | When execution begins | Immediately | Only after the transformation (**compilation**) is complete |
-| Example languages | Python, JavaScript | C, C++ |
+| Example languages | Python, JavaScript | C, [C++](/?c=langages-de-programmation&s=cpp&p=cpp) |
 
 > **Further reading:** This chapter focuses on this fundamental distinction; the details of what happens during compilation (steps, possible errors) are covered in [The Compilation Process](/?c=langages-de-programmation&s=c&p=compilation).
 

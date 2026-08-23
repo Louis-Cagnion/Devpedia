@@ -4,7 +4,7 @@ order: 4
 
 # HTML Tables
 
-An HTML table is used to display **tabular** data (rows/columns genuinely linked to each other, like a database export, see [SQL](/?c=domain-specific-languages-dsl&p=sql)); never to visually lay out an entire page, a historical use now replaced by CSS ([Flexbox](/?c=langages-de-balisage&s=css&p=flexbox)/[Grid](/?c=langages-de-balisage&s=css&p=grid)).
+An HTML table is used to display **tabular** data (rows/columns genuinely linked to each other, like a database export, see [SQL](/?c=domain-specific-languages-dsl&p=sql)); never to visually lay out an entire page, a historical use now replaced by [CSS](/?c=langages-de-balisage&s=css&p=css) ([Flexbox](/?c=langages-de-balisage&s=css&p=flexbox)/[Grid](/?c=langages-de-balisage&s=css&p=grid)).
 
 ## Basic structure
 

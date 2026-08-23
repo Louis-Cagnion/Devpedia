@@ -4,7 +4,7 @@ order: 11
 
 # Typing with Annotations
 
-Python remains **dynamically typed** even with type annotations: unlike PHP (see the chapter on typed functions in PHP), where a declared type is checked and enforced **at runtime**, Python annotations are merely **optional** hints that are never checked by the interpreter itself.
+Python remains **dynamically typed** even with type annotations: unlike [PHP](/?c=langages-de-programmation&s=php&p=php) (see the chapter on typed functions in PHP), where a declared type is checked and enforced **at runtime**, Python annotations are merely **optional** hints that are never checked by the interpreter itself.
 
 ## Commenting on Variables and Functions
 

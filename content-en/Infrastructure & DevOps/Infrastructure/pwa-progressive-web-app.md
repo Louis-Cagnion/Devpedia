@@ -8,7 +8,7 @@ A **PWA** (*Progressive Web App*) is a regular website with two mechanisms added
 
 ## The service worker: a script that runs between the site and the network
 
-A **service worker** is a JavaScript script the browser runs in the background, separately from the page itself, able to intercept every network request the site makes before it actually reaches the internet:
+A **service worker** is a [JavaScript](/?c=langages&s=javascript&p=javascript) script the browser runs in the background, separately from the page itself, able to intercept every network request the site makes before it actually reaches the internet:
 
 ```text
 Without a service worker:          With a service worker:
@@ -30,7 +30,7 @@ This middleman position lets the site serve an already-cached resource even when
 
 | Strategy | Principle | Suited to |
 |---|---|---|
-| **Cache-first** | Serves the cached version if it exists, only goes to the network if nothing is cached | Resources that rarely change (logo, font, versioned CSS) |
+| **Cache-first** | Serves the cached version if it exists, only goes to the network if nothing is cached | Resources that rarely change (logo, font, versioned [CSS](/?c=langages&s=css&p=css)) |
 | **Network-first** | Tries the network first, only falls back to the cache on failure | Content that must stay current as long as the network responds |
 | **Stale-while-revalidate** | Immediately serves the cached version while refreshing it in the background for the next visit | Content that tolerates slight staleness, already seen in [high-traffic databases](/?c=donnees&s=bases-de-donnees&p=bases-de-donnees-a-fort-trafic) for the same trade-off on the server side |
 
@@ -38,7 +38,7 @@ None of these strategies is universally the right one: the choice depends on how
 
 ## The manifest: what makes a site installable
 
-A **manifest** file (`manifest.json`), linked from the HTML page, declares the information a browser or operating system uses to offer installing the site as an application: its name, an icon in several sizes, a theme color, and a display mode (`standalone` hides the browser's address bar, to look like a native application).
+A **manifest** file (`manifest.json`), linked from the [HTML](/?c=langages&s=html&p=html) page, declares the information a browser or operating system uses to offer installing the site as an application: its name, an icon in several sizes, a theme color, and a display mode (`standalone` hides the browser's address bar, to look like a native application).
 
 ```json
 {

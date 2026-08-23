@@ -4,7 +4,7 @@ order: 7
 
 # Error Handling
 
-Python signals an error by raising an **exception**, which interrupts the program's normal execution unless it is caught by a block `try` / `except`, a mechanism similar to modern PHP exceptions (`throw` / `catch`).
+Python signals an error by raising an **exception**, which interrupts the program's normal execution unless it is caught by a block `try` / `except`, a mechanism similar to modern [PHP](/?c=langages-de-programmation&s=php&p=php) exceptions (`throw` / `catch`).
 
 ## `try` / `except`
 

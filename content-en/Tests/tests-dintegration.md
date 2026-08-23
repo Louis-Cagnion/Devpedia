@@ -23,7 +23,7 @@ Integration test:
   -> checks that the code and the database really agree
 ```
 
-A unit test can pass while an integration test fails on the same code: for example if the function correctly calls the database, but with a syntactically invalid SQL query that the mock never detects.
+A unit test can pass while an integration test fails on the same code: for example if the function correctly calls the database, but with a syntactically invalid [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql) query that the mock never detects.
 
 ## Where to draw the line: which components to include
 

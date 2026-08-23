@@ -45,8 +45,8 @@ name = "Jean"                    # "Jean" is a text string -> a different color
 | Tool | Category | Target languages |
 |---|---|---|
 | VS Code | Extensible code editor | General-purpose: supports almost everything via extensions |
-| PyCharm | Full-featured IDE | Python |
-| Visual Studio (not to be confused with VS Code) | Full-featured IDE | C, C++, C#, .NET |
+| PyCharm | Full-featured IDE | [Python](/?c=langages-de-programmation&s=python&p=python) |
+| Visual Studio (not to be confused with VS Code) | Full-featured IDE | [C](/?c=langages-de-programmation&s=c&p=c), [C++](/?c=langages-de-programmation&s=cpp&p=cpp), C#, .NET |
 
 ## Where to Start
 

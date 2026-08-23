@@ -118,6 +118,6 @@ This mirrors the general robustness expected of any code: an error should fail e
 | | |
 |---|---|
 | **Key takeaway** | Four principles cut down most flaws: designing for security from the start, validating every external input with an allowlist, applying least privilege, and stacking several independent layers of defense. |
-| **Tools you can use** | `filter_input()` (PHP) and equivalents in other languages for allowlist validation; dedicated application accounts with restricted rights for the database. |
+| **Tools you can use** | `filter_input()` ([PHP](/?c=langages&s=php&p=php)) and equivalents in other languages for allowlist validation; dedicated application accounts with restricted rights for the database. |
 | **Pitfalls to avoid** | Validating data only client-side; using a denylist instead of an allowlist; granting access by default on an unexpected error (*fail open*). |
 | **Best practices** | Always re-validate server-side; restrict every component to the strict minimum it needs; deny access by default when in doubt (*fail closed*). |

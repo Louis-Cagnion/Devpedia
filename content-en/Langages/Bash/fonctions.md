@@ -35,7 +35,7 @@ summarize "John" "Smith"
 
 ## No real return value: only an exit code
 
-`return` in Bash does **not** return a value in the PHP/C sense: it only sets the function's **exit code** (an integer from 0 to 255, retrievable via `$?`), exactly like `exit` for an entire script:
+`return` in Bash does **not** return a value in the [PHP](/?c=langages-de-programmation&s=php&p=php)/C sense: it only sets the function's **exit code** (an integer from 0 to 255, retrievable via `$?`), exactly like `exit` for an entire script:
 
 ```bash
 is_even() {

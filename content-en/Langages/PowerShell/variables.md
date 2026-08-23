@@ -6,7 +6,7 @@ order: 3
 
 As a reminder, [a variable is a labeled box that holds a value](/?c=bases-de-l-informatique&p=la-variable): what follows only covers what's specific to PowerShell.
 
-Unlike Bash, where everything is handled as text, a PowerShell variable keeps the **actual type** of its value: a number stays a number, a list stays a list of objects, with no implicit conversion to a string. Every variable starts with `$`, including at assignment (no "no `$` to write, `$` to read" rule like in Bash).
+Unlike [Bash](/?c=shells&s=bash&p=bash), where everything is handled as text, a PowerShell variable keeps the **actual type** of its value: a number stays a number, a list stays a list of objects, with no implicit conversion to a string. Every variable starts with `$`, including at assignment (no "no `$` to write, `$` to read" rule like in Bash).
 
 ## Declaring and reading a variable
 

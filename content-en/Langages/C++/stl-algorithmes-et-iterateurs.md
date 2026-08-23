@@ -55,7 +55,7 @@ std::for_each(numbers.begin(), numbers.end(), [](int n) {
 
 ## Lambdas (C++11+)
 
-A **lambda** is an anonymous function written directly where it is used, the same concept as JavaScript closures or Python lambdas (see the relevant chapters):
+A **lambda** is an anonymous function written directly where it is used, the same concept as JavaScript closures or [Python](/?c=langages-de-programmation&s=python&p=python) lambdas (see the relevant chapters):
 
 ```cpp
 auto carre = [](int x) { return x * x; };

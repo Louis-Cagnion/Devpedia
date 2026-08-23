@@ -4,7 +4,7 @@ order: 1
 
 # Selectors
 
-A **selector** determines which HTML elements a CSS rule applies to: from the simplest (a tag) to the most precise (a combination of attributes and position in the document tree).
+A **selector** determines which [HTML](/?c=langages-de-balisage&s=html&p=html) elements a CSS rule applies to: from the simplest (a tag) to the most precise (a combination of attributes and position in the document tree).
 
 ## Basic selectors
 

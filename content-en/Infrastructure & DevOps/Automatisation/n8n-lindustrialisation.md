@@ -45,7 +45,7 @@ n8n doesn't offer a single instance with a built-in "dev/prod" switcher: each en
 | Method | How it works |
 |---|---|
 | **Manual export/import** | Download the JSON from the source instance, import it on the target instance (seen in the previous chapter) |
-| **Source Control (Git)** | An n8n instance connects to a Git repository branch; a single versioned workflow can be pushed from one environment to another following the usual Git flow (dev → staging → production) |
+| **Source Control ([Git](/?c=qualite-performance-et-outils&s=git&p=git))** | An n8n instance connects to a Git repository branch; a single versioned workflow can be pushed from one environment to another following the usual Git flow (dev → staging → production) |
 
 > **Pitfall:** pushing a change directly to production without going through an intermediate environment, especially for a workflow touching real data (a production database, an email sent to real customers).
 >

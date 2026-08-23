@@ -83,6 +83,6 @@ A grid and a vertical rhythm are concretely built with [Flexbox](/?c=langages-de
 | | |
 |---|---|
 | **Key takeaways** | Negative space is an active tool, not a void to fill. A grid (columns, gutters, margins) aligns elements with one another, and a fixed spacing scale (multiples of 4 or 8px) guarantees a coherent vertical rhythm. |
-| **Tools you can use** | No specific tool: the grid and scale are defined at design time, then implemented in CSS (Flexbox, Grid). |
+| **Tools you can use** | No specific tool: the grid and scale are defined at design time, then implemented in [CSS](/?c=langages-de-balisage&s=css&p=css) (Flexbox, Grid). |
 | **Pitfalls to avoid** | Filling every available space out of horror vacui; aligning elements by eye rather than on a grid; inventing a spacing value case by case. |
 | **Best practices** | Define the grid and spacing scale before placing a single element; always reuse the same spacing values for a given type of transition. |

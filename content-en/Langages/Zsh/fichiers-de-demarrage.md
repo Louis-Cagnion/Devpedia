@@ -4,7 +4,7 @@ order: 1
 
 # Startup Files
 
-Bash loads `~/.bashrc`, `~/.bash_profile`, or `~/.profile` depending on the case (see [Environment Variables](/?c=shells&s=bash&p=variables-denvironnement) in Bash). Zsh splits this same need into **four distinct files**, each with a precise role: understanding this distinction avoids the classic surprise ("my variable isn't visible in my script even though it works in my terminal").
+[Bash](/?c=shells&s=bash&p=bash) loads `~/.bashrc`, `~/.bash_profile`, or `~/.profile` depending on the case (see [Environment Variables](/?c=shells&s=bash&p=variables-denvironnement) in Bash). Zsh splits this same need into **four distinct files**, each with a precise role: understanding this distinction avoids the classic surprise ("my variable isn't visible in my script even though it works in my terminal").
 
 ## The four files, and when each one loads
 

@@ -6,7 +6,7 @@ order: 5
 
 ## Static, but with no annotations
 
-OCaml is **statically typed**: every expression has a type fixed once and for all, checked before execution even begins, as in C (see the [Variables and Data Types](/?c=langages-de-programmation&s=c&p=variables) chapter). Unlike C, this type almost never needs to be written explicitly:
+OCaml is **statically typed**: every expression has a type fixed once and for all, checked before execution even begins, as in [C](/?c=langages-de-programmation&s=c&p=c) (see the [Variables and Data Types](/?c=langages-de-programmation&s=c&p=variables) chapter). Unlike C, this type almost never needs to be written explicitly:
 
 ```ocaml
 let add x y = x + y
@@ -29,11 +29,11 @@ let apply_twice f x = f (f x)
 (* -> apply_twice : ('a -> 'a) -> 'a -> 'a *)
 ```
 
-The second example illustrates **parametric polymorphism**: `'a` means "some type, to be determined based on the call", the same idea as a C++ template (see the [Templates](/?c=langages-de-programmation&s=cpp&p=templates) chapter), but resolved automatically by inference rather than declared explicitly at each use (`template<typename T>`).
+The second example illustrates **parametric polymorphism**: `'a` means "some type, to be determined based on the call", the same idea as a [C++](/?c=langages-de-programmation&s=cpp&p=cpp) template (see the [Templates](/?c=langages-de-programmation&s=cpp&p=templates) chapter), but resolved automatically by inference rather than declared explicitly at each use (`template<typename T>`).
 
 ## Compared to dynamic typing and gradual typing
 
-| | C | Python (annotations) | OCaml |
+| | C | [Python](/?c=langages-de-programmation&s=python&p=python) (annotations) | OCaml |
 |---|---|---|---|
 | Checking | At compile time | Optional: never, or via an [external checker](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) (`mypy`) | At compile time, systematically |
 | Annotation required | Always (`int x`) | Optional | Never (inferred) |

@@ -4,7 +4,7 @@ order: 11
 
 # HTMLElements
 
-An `HTMLElement` is the JavaScript representation of an HTML tag in the DOM. Every tag (`<div>`, `<p>`, `<a>`...) becomes an `HTMLElement` object that can be accessed and manipulated in JavaScript.
+An `HTMLElement` is the JavaScript representation of an [HTML](/?c=langages-de-balisage&s=html&p=html) tag in the DOM. Every tag (`<div>`, `<p>`, `<a>`...) becomes an `HTMLElement` object that can be accessed and manipulated in JavaScript.
 
 ```javascript
 const div = document.querySelector('div');
@@ -56,7 +56,7 @@ p.replaceWith(otherElement);
 
 ## Accessing existing elements
 
-**`querySelector`** returns the first element matching the given CSS selector, or `null` if none exists.
+**`querySelector`** returns the first element matching the given [CSS](/?c=langages-de-balisage&s=css&p=css) selector, or `null` if none exists.
 ```javascript
 const title = document.querySelector('h1');
 const div = document.querySelector('.my-class');

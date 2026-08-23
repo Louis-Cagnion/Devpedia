@@ -6,7 +6,7 @@ order: 8
 
 Documenting a function (what it does, its parameters, what it returns) is a universal principle, but the **exact syntax** for doing so isn't the same from one language to another. Each ecosystem has its own convention, recognized by its own tools: an IDE uses it to show a tooltip when hovering over a call, a documentation generator turns it into a browsable site. Writing documentation that follows none of these conventions (a plain free-form paragraph, for instance) deprives the project of both benefits, even if the content itself is correct.
 
-## Python: Google style and NumPy style
+## [Python](/?c=langages&s=python&p=python): Google style and NumPy style
 
 Python has no syntax imposed by the language itself, but two conventions dominate in practice, both recognized by documentation generators ([Sphinx](https://www.sphinx-doc.org)):
 
@@ -30,7 +30,7 @@ def convertir_devise(montant, taux):
 | Density | More compact | More verbose, each parameter spans several lines |
 | Typical usage context | General-purpose application projects | Scientific libraries (numpy, pandas, scikit-learn) |
 
-## JavaScript / TypeScript: JSDoc
+## [JavaScript](/?c=langages&s=javascript&p=javascript) / TypeScript: JSDoc
 
 [JSDoc](https://jsdoc.app) precedes the function with a `/** ... */` comment, with `@param`/`@returns` tags:
 
@@ -65,9 +65,9 @@ double convertirDevise(double montant, double taux) {
 }
 ```
 
-The `javadoc` tool, bundled with the JDK, generates a browsable HTML site directly from these comments: this is how the official documentation for the Java standard library itself is produced.
+The `javadoc` tool, bundled with the JDK, generates a browsable [HTML](/?c=langages&s=html&p=html) site directly from these comments: this is how the official documentation for the Java standard library itself is produced.
 
-## C / C++: Doxygen
+## [C](/?c=langages&s=c&p=c) / [C++](/?c=langages&s=cpp&p=cpp): Doxygen
 
 [Doxygen](https://www.doxygen.nl) uses a syntax very close to Javadoc, but also covers C, which has no native equivalent:
 

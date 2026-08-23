@@ -8,7 +8,7 @@ PHP offers at least two native ways to make outbound HTTP requests (such as quer
 
 > An **API** (*Application Programming Interface*) is the contract by which one piece of software exposes its functionality to another: which requests to send, in what format, and what responses to expect. The term covers both a web service reachable over HTTP (the case here) and the full set of public functions of a library.
 >
-> A web API's responses are most often in **JSON** (*JavaScript Object Notation*) format: a human-readable text format for representing structured data, born in JavaScript but today independent of any language. PHP converts it with `json_encode()` / `json_decode()`.
+> A web API's responses are most often in **JSON** (*[JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) Object Notation*) format: a human-readable text format for representing structured data, born in JavaScript but today independent of any language. PHP converts it with `json_encode()` / `json_decode()`.
 
 ## cURL
 
@@ -31,7 +31,7 @@ curl_close($ch);
 ?>
 ```
 
-`CURLOPT_*` are integer constants predefined by the cURL extension (similar to C `open()` flags): each one configures a specific aspect of the request.
+`CURLOPT_*` are integer constants predefined by the cURL extension (similar to [C](/?c=langages-de-programmation&s=c&p=c) `open()` flags): each one configures a specific aspect of the request.
 
 ### Convert a "C-style" return to an exception
 

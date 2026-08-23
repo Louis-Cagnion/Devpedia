@@ -24,7 +24,7 @@ len(fruits)                  # number of items
 "pomme" in fruits             # True/False -> checks for the presence of a value
 ```
 
-> **Note:** Unlike a C array (fixed size, single type), a Python list is a heterogeneous **dynamic** array: it grows automatically, and each element can be of a different type, at the cost of additional memory per element (each element is actually a reference to a Python object, not a contiguous raw value as in C).
+> **Note:** Unlike a [C](/?c=langages-de-programmation&s=c&p=c) array (fixed size, single type), a Python list is a heterogeneous **dynamic** array: it grows automatically, and each element can be of a different type, at the cost of additional memory per element (each element is actually a reference to a Python object, not a contiguous raw value as in C).
 
 ## Slicing in Detail
 

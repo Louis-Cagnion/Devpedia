@@ -37,7 +37,7 @@ An **RTL** (*right-to-left*) language, such as Arabic or Hebrew, doesn't just re
 
 > **Pitfall:** translating only the text and leaving the layout unchanged (navigation icons, alignment, element order). The result mixes text that reads right to left with an interface still designed left to right — inconsistent and confusing for an RTL user.
 >
-> **Best practice:** use "logical" CSS properties (`margin-inline-start` rather than `margin-left`, for example), which flip automatically depending on the page direction, instead of fixed physical properties that would need to be manually duplicated for each direction.
+> **Best practice:** use "logical" [CSS](/?c=langages&s=css&p=css) properties (`margin-inline-start` rather than `margin-left`, for example), which flip automatically depending on the page direction, instead of fixed physical properties that would need to be manually duplicated for each direction.
 
 Some icons deliberately **never** flip, even in RTL: those representing a real-world object whose orientation has a universal meaning (a clock, a play symbol ▶ in many conventions) stay the same, while purely directional icons (arrows, navigation chevrons) do flip.
 

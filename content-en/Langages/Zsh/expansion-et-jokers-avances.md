@@ -4,7 +4,7 @@ order: 3
 
 # Advanced Expansion and Wildcards
 
-Basic globbing (`*`, `?`, `[abc]`) works identically in zsh (see [Expansion and Wildcards](/?c=shells&s=bash&p=expansion-et-jokers) in Bash). Zsh goes noticeably further once extended mode is enabled, with patterns Bash simply doesn't understand.
+Basic globbing (`*`, `?`, `[abc]`) works identically in zsh (see [Expansion and Wildcards](/?c=shells&s=bash&p=expansion-et-jokers) in [Bash](/?c=shells&s=bash&p=bash)). Zsh goes noticeably further once extended mode is enabled, with patterns Bash simply doesn't understand.
 
 ## Enabling extended globbing
 

@@ -1,13 +1,13 @@
 # JavaScript
 
-JavaScript is considered a **high-level** programming language because it hides much of the technical detail related to the machine and memory management. Unlike **low-level** languages such as C, which require developers to manually manage memory and addresses, JavaScript automates these aspects using a garbage collector, allowing developers to focus on application logic.
+JavaScript is considered a **high-level** programming language because it hides much of the technical detail related to the machine and memory management. Unlike **low-level** languages such as [C](/?c=langages-de-programmation&s=c&p=c), which require developers to manually manage memory and addresses, JavaScript automates these aspects using a garbage collector, allowing developers to focus on application logic.
 
 Some of the key concepts used in JavaScript include:
 
 - Variables and Dynamic Typing
 - Paintings and Objects
 - Object-oriented programming (classes, prototypes, inheritance)
-- Manipulating the DOM (HTML, CSS) to Create Interactive Interfaces
+- Manipulating the DOM ([HTML](/?c=langages-de-balisage&s=html&p=html), CSS) to Create Interactive Interfaces
 - Event Handling (clicks, forms, keyboard)
 - Asynchronous Programming (callbacks, promises, async/await) and Network Requests (fetch, AJAX)
 

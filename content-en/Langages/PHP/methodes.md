@@ -23,7 +23,7 @@ A **function** is a reusable block of code that has a name and can accept inform
     echo $double(5); // Poster 10
 ?>
 ```
-> **Note:** Unlike JavaScript, where an arrow function can be written using curly braces and a `return` (`(n) => { return n * 2; }`), PHP only allows the short form with a single expression, without curly braces or a `return` (`fn($n) => $n * 2;`).
+> **Note:** Unlike [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), where an arrow function can be written using curly braces and a `return` (`(n) => { return n * 2; }`), PHP only allows the short form with a single expression, without curly braces or a `return` (`fn($n) => $n * 2;`).
 
 A **method** is exactly the same as a function, with one difference: it is defined **within a class**, and it is used on an object (see the chapters on classes and object-oriented programming).
 
@@ -74,11 +74,11 @@ function trouverUtilisateur(int $id): ?array
 ?>
 ```
 
-> **Note:** `?array` is a contract declaration, not just a coding convention: it is the PHP equivalent of [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) in modern C++ or [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) in Python: the function can return this specific type, OR `null`, but nothing else.
+> **Note:** `?array` is a contract declaration, not just a coding convention: it is the PHP equivalent of [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) in modern [C++](/?c=langages-de-programmation&s=cpp&p=cpp) or [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) in [Python](/?c=langages-de-programmation&s=python&p=python): the function can return this specific type, OR `null`, but nothing else.
 
 ## Remove an expected warning using `@`
 
-Many native PHP functions return `false` in case of failure rather than throwing an exception (similar to C, where `fopen()` returns a null pointer and sets `errno`). When this failure is already anticipated and handled by the rest of the code, placing the `@` operator before the call suppresses the warning that PHP would otherwise issue:
+Many native PHP functions return `false` in case of failure rather than throwing an exception (similar to [C](/?c=langages-de-programmation&s=c&p=c), where `fopen()` returns a null pointer and sets `errno`). When this failure is already anticipated and handled by the rest of the code, placing the `@` operator before the call suppresses the warning that PHP would otherwise issue:
 
 ```php
 <?php

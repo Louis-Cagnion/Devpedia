@@ -4,7 +4,7 @@ order: 11
 
 # The DOM and Event Handling
 
-The **DOM** (*Document Object Model*) is the in-memory representation of an HTML page, in the form of a tree of objects that can be manipulated by JavaScript: each tag becomes a node in this tree, with its own properties and methods.
+The **DOM** (*Document Object Model*) is the in-memory representation of an [HTML](/?c=langages-de-balisage&s=html&p=html) page, in the form of a tree of objects that can be manipulated by JavaScript: each tag becomes a node in this tree, with its own properties and methods.
 
 ## Select items
 

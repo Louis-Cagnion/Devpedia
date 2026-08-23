@@ -19,7 +19,7 @@ docker run -d --name serveur -p 8080:80 mon-app:1.0
 
 | Option | Effect |
 |---|---|
-| `-d` | Detached: the container runs in the background, and the terminal remains available, same principle as `&` in Bash |
+| `-d` | Detached: the container runs in the background, and the terminal remains available, same principle as `&` in [Bash](/?c=shells&s=bash&p=bash) |
 | `--name` | Give the container an explicit name, rather than a randomly generated identifier |
 | `-p 8080:80` | Publish the port: the container's port `80` becomes accessible on the host's port `8080` (see [Volumes and Networks](/?c=docker&p=volumes-et-reseaux)) |
 | `-it` | Interactive + pseudo-terminal (*tty*): required for a container with which you want to interact directly (e.g., a shell) |

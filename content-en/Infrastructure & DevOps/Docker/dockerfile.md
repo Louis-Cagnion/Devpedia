@@ -48,7 +48,7 @@ That’s why a command that never terminates but otherwise does **nothing** (`ta
 CMD ["nginx", "-g", "daemon off;"]   # nginx remains at the forefront: Docker has a process to monitor
 ```
 
-> **Note:** PID 1 has a special role in Linux, independent of Docker (see the chapter [Process Management](/?c=shells&s=bash&p=gestion-des-processus), under the Bash section): the kernel does not apply the default action for a signal such as `SIGTERM` to it if it has not explicitly set up its own handler: so `docker stop` may appear to do nothing on a process that does not handle this signal itself. It is also PID 1 that must reclaim (*reap*) the zombie processes it launches; this is something to watch out for if the image itself launches multiple subprocesses.
+> **Note:** PID 1 has a special role in Linux, independent of Docker (see the chapter [Process Management](/?c=shells&s=bash&p=gestion-des-processus), under the [Bash](/?c=shells&s=bash&p=bash) section): the kernel does not apply the default action for a signal such as `SIGTERM` to it if it has not explicitly set up its own handler: so `docker stop` may appear to do nothing on a process that does not handle this signal itself. It is also PID 1 that must reclaim (*reap*) the zombie processes it launches; this is something to watch out for if the image itself launches multiple subprocesses.
 
 ## Each instruction creates a layer, and the order matters
 
@@ -69,7 +69,7 @@ That is why the files that change the least often (dependencies) are copied and 
 
 ## Multi-stage builds
 
-A multi-stage build separates the **compilation** environment (heavy: compiler, build tools) from the runtime environment (lightweight: only the final binary), the same principle as separating compilation and linking in C (see the chapter [The Compilation Process](/?c=langages-de-programmation&s=c&p=compilation)): the final result does not require the toolchain that produced it.
+A multi-stage build separates the **compilation** environment (heavy: compiler, build tools) from the runtime environment (lightweight: only the final binary), the same principle as separating compilation and linking in [C](/?c=langages-de-programmation&s=c&p=c) (see the chapter [The Compilation Process](/?c=langages-de-programmation&s=c&p=compilation)): the final result does not require the toolchain that produced it.
 
 ```dockerfile
 # Step 1: Compilation, using the entire Go toolchain

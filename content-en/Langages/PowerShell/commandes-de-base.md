@@ -4,7 +4,7 @@ order: 1
 
 # Basic Commands
 
-Unlike Bash, where `cd`, `ls`, or `cp` are short names already familiar to many, PowerShell cmdlets follow the `Verb-Noun` convention (`Set-Location`, `Get-ChildItem`, `Copy-Item`), longer, but explicit and predictable once you understand the verb (see the table of standard verbs in the chapter on functions). This chapter covers the commands used first in a terminal, before writing a single script: moving around, listing, reading a file, and finding help on an unfamiliar command.
+Unlike [Bash](/?c=shells&s=bash&p=bash), where `cd`, `ls`, or `cp` are short names already familiar to many, PowerShell cmdlets follow the `Verb-Noun` convention (`Set-Location`, `Get-ChildItem`, `Copy-Item`), longer, but explicit and predictable once you understand the verb (see the table of standard verbs in the chapter on functions). This chapter covers the commands used first in a terminal, before writing a single script: moving around, listing, reading a file, and finding help on an unfamiliar command.
 
 ## Moving around: `Set-Location` and `Get-Location`
 

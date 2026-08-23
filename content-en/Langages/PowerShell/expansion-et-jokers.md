@@ -4,7 +4,7 @@ order: 8
 
 # Expansion and Wildcards
 
-PowerShell reuses Bash globbing's idea (replacing a pattern with the actual list of matching files), but under a different name (*wildcards*) and with slightly different rules, plus a pattern-matching operator reusable outside of file names.
+PowerShell reuses [Bash](/?c=shells&s=bash&p=bash) globbing's idea (replacing a pattern with the actual list of matching files), but under a different name (*wildcards*) and with slightly different rules, plus a pattern-matching operator reusable outside of file names.
 
 ## Wildcards: `*`, `?`, `[]`
 

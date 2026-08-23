@@ -4,7 +4,7 @@ order: 2
 
 # Conditions
 
-Python uses `if` / `elif` / `else`, without any curly braces: it is the **indentation** itself that delimits code blocks, unlike PHP, C, or JavaScript.
+Python uses `if` / `elif` / `else`, without any curly braces: it is the **indentation** itself that delimits code blocks, unlike [PHP](/?c=langages-de-programmation&s=php&p=php), C, or [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript).
 
 ## `if` / `elif` / `else`
 

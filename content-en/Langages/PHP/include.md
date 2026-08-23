@@ -4,7 +4,7 @@ order: 7
 
 # Include functions
 
-To embed PHP functions in HTML code, we can use the `*include*` statement:
+To embed PHP functions in [HTML](/?c=langages-de-balisage&s=html&p=html) code, we can use the `*include*` statement:
 
 ```php
 <?php

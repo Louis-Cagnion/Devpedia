@@ -111,9 +111,9 @@ The **load factor** (number of entries ÷ array size) measures how full the tabl
 
 ## Where Hash Tables Are Already Hiding All Around You
 
-- PHP **associative** arrays (see [PHP variables](/?c=langages-de-programmation&s=php&p=variables)) are internally implemented using a structure very similar to a hash table.
-- Git's object storage model (see [Git's internal architecture](/?c=git&p=architecture-interne)) **is** essentially a hash table: the key for each object is the SHA-1 hash of its content, and the subdirectory `.git/objects/xx/` acts exactly like a bucket.
-- Python dictionaries (`dict`) are based on the same principle.
+- [PHP](/?c=langages-de-programmation&s=php&p=php) **associative** arrays (see [PHP variables](/?c=langages-de-programmation&s=php&p=variables)) are internally implemented using a structure very similar to a hash table.
+- [Git](/?c=git&p=git)'s object storage model (see [Git's internal architecture](/?c=git&p=architecture-interne)) **is** essentially a hash table: the key for each object is the SHA-1 hash of its content, and the subdirectory `.git/objects/xx/` acts exactly like a bucket.
+- [Python](/?c=langages-de-programmation&s=python&p=python) dictionaries (`dict`) are based on the same principle.
 
 Understanding hash tables, therefore, means understanding a mechanism that operates silently in virtually all modern languages and tools.
 

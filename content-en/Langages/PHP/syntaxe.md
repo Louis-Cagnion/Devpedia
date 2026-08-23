@@ -29,7 +29,7 @@ if ($connecte) {
 }
 ```
 
-**Alternative syntax (using `:` and `end...`)**, designed to blend PHP and HTML more seamlessly:
+**Alternative syntax (using `:` and `end...`)**, designed to blend PHP and [HTML](/?c=langages-de-balisage&s=html&p=html) more seamlessly:
 
 ```php
 <?php if ($connecte): ?>

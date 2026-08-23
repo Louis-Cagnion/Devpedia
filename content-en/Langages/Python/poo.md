@@ -4,7 +4,7 @@ order: 10
 
 # Object-Oriented Programming
 
-Python is an end-to-end object-oriented language: even a `int` or `str` is actually an object, an instance of a class. The syntax for custom classes resembles that of PHP, with one immediate difference: `self` (the equivalent of `$this`) is an **explicit** parameter of every method; it is never implicit.
+Python is an end-to-end object-oriented language: even a `int` or `str` is actually an object, an instance of a class. The syntax for custom classes resembles that of [PHP](/?c=langages-de-programmation&s=php&p=php), with one immediate difference: `self` (the equivalent of `$this`) is an **explicit** parameter of every method; it is never implicit.
 
 ## Declare a Class
 

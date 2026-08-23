@@ -4,7 +4,7 @@ order: 5
 
 # Customizing the Prompt
 
-Bash builds its prompt via the `PS1` variable, with escape codes starting with `\` (`\u`, `\h`, `\w`...). Zsh uses its own variable, `PROMPT` (historical alias: `PS1`, still accepted), with escape codes starting with `%`, an entirely different syntax, not just a renaming.
+[Bash](/?c=shells&s=bash&p=bash) builds its prompt via the `PS1` variable, with escape codes starting with `\` (`\u`, `\h`, `\w`...). Zsh uses its own variable, `PROMPT` (historical alias: `PS1`, still accepted), with escape codes starting with `%`, an entirely different syntax, not just a renaming.
 
 ## The `PROMPT` variable
 
@@ -40,7 +40,7 @@ RPROMPT='%D{%H:%M:%S}'
 # displays the current time on the right, as long as the command line is empty
 ```
 
-## `vcs_info`: Git information built into the prompt
+## `vcs_info`: [Git](/?c=git&p=git) information built into the prompt
 
 Zsh natively provides a function able to display the current Git branch in the prompt, with no external dependency:
 

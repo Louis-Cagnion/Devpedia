@@ -34,7 +34,7 @@ if (note >= 16) {
 }
 ```
 
-> **Note:** Unlike PHP, there is no alternative syntax using `:` or `endif` in C: curly braces `{ }` are the only available notation (optional only if the block contains a single statement, but omitting them is strongly discouraged: a common source of bugs if a line is accidentally added without the curly braces).
+> **Note:** Unlike [PHP](/?c=langages-de-programmation&s=php&p=php), there is no alternative syntax using `:` or `endif` in C: curly braces `{ }` are the only available notation (optional only if the block contains a single statement, but omitting them is strongly discouraged: a common source of bugs if a line is accidentally added without the curly braces).
 
 ## The ternary operator
 

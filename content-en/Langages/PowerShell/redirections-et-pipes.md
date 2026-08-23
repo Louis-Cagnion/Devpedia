@@ -4,7 +4,7 @@ order: 9
 
 # Redirections and Pipes
 
-PowerShell reuses the same ideas as Bash (redirecting a stream to a file, chaining commands via a pipe), but with one fundamental difference: a Bash pipe carries **text**, a PowerShell pipe carries actual **.NET objects**, with their properties and methods intact.
+PowerShell reuses the same ideas as [Bash](/?c=shells&s=bash&p=bash) (redirecting a stream to a file, chaining commands via a pipe), but with one fundamental difference: a Bash pipe carries **text**, a PowerShell pipe carries actual **.NET objects**, with their properties and methods intact.
 
 ## Redirecting output to a file
 

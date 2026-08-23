@@ -4,7 +4,7 @@ order: 6
 
 # Memory Management
 
-Unlike languages such as PHP or JavaScript, which automatically manage memory using a garbage collector, C places the full responsibility for allocating and freeing the memory required by the program on the developer. This is what enables high performance and fine-grained control over resources, at the cost of requiring constant vigilance.
+Unlike languages such as [PHP](/?c=langages-de-programmation&s=php&p=php) or [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), which automatically manage memory using a garbage collector, C places the full responsibility for allocating and freeing the memory required by the program on the developer. This is what enables high performance and fine-grained control over resources, at the cost of requiring constant vigilance.
 
 ## Stack and Heap
 
@@ -97,7 +97,7 @@ free(p); // double free : comportement indéfini
 
 ## Buffer overflow: a bug with security consequences
 
-Unlike the three previous bugs (which corrupt the program's own memory, with no outside intent), a buffer overflow is often **the result of input controlled by an attacker**: which historically makes it one of the most exploited security flaws in C/C++.
+Unlike the three previous bugs (which corrupt the program's own memory, with no outside intent), a buffer overflow is often **the result of input controlled by an attacker**: which historically makes it one of the most exploited security flaws in C/[C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
 ```c
 char buffer[16];

@@ -37,7 +37,7 @@ Every value has a **type**, which determines what can be done with it (adding tw
 >
 > **Best practice:** Explicitly convert a value to the desired type before performing an operation that mixes types, rather than relying on automatic conversion, whose exact behavior is not guaranteed across different languages.
 
-The exact syntax for creating a variable varies from one language to another (the symbol `=` is not always sufficient; some languages require you to specify the type in advance); each language chapter on this site (Python, C, PHP...) covers its own syntax in detail.
+The exact syntax for creating a variable varies from one language to another (the symbol `=` is not always sufficient; some languages require you to specify the type in advance); each language chapter on this site ([Python](/?c=langages-de-programmation&s=python&p=python), C, [PHP](/?c=langages-de-programmation&s=php&p=php)...) covers its own syntax in detail.
 
 ---
 

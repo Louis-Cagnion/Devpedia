@@ -74,7 +74,7 @@ Flexbox always reasons in terms of a **main axis** (the one set by `flex-directi
 }
 ```
 
-> **Note (accessibility):** `order` only changes the **visual** order: keyboard tab order and the order read by a screen reader stay the ones from the HTML. A mismatch between the two can disorient a keyboard or screen-reader user; reserve it for purely decorative reordering, never to fix a content order that doesn't make sense in the HTML itself.
+> **Note (accessibility):** `order` only changes the **visual** order: keyboard tab order and the order read by a screen reader stay the ones from the [HTML](/?c=langages-de-balisage&s=html&p=html). A mismatch between the two can disorient a keyboard or screen-reader user; reserve it for purely decorative reordering, never to fix a content order that doesn't make sense in the HTML itself.
 
 ```css
 .colonne-principale { flex-grow: 2; }   /* takes up twice as much space as .colonne-laterale */

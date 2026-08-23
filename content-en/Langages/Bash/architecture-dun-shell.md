@@ -6,7 +6,7 @@ order: 13
 
 Everything Bash does on the surface (variables, loops, pipes, redirections) rests on a mechanism simple enough to describe: a loop that reads a line, splits it, interprets it, then launches processes via the standard system calls from [C's process management chapter](/?c=langages-de-programmation&s=c&p=processus) (`fork`, `execve`, `wait`). This chapter describes that mechanism, with the goal of understanding, or even rebuilding, a minimal shell.
 
-> **Prerequisite:** this chapter assumes you know what a **system call** and a **file descriptor** (`STDIN_FILENO`, `dup2()`...) are; see [the dedicated chapter](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) in the C section if these concepts aren't clear yet.
+> **Prerequisite:** this chapter assumes you know what a **system call** and a **file descriptor** (`STDIN_FILENO`, `dup2()`...) are; see [the dedicated chapter](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) in the [C](/?c=langages-de-programmation&s=c&p=c) section if these concepts aren't clear yet.
 
 ## The main loop (REPL)
 

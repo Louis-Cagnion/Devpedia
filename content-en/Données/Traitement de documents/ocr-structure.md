@@ -41,7 +41,7 @@ Layout detection model (fast, ~40x faster than the full pipeline)
 
 ## Reconstructing the grid: rows, columns, merged cells
 
-A detected table isn't limited to a uniform rectangular grid: a header cell can span several columns, or a cell in the first column can cover several rows. Two concepts describe these merges, borrowed directly from HTML table vocabulary:
+A detected table isn't limited to a uniform rectangular grid: a header cell can span several columns, or a cell in the first column can cover several rows. Two concepts describe these merges, borrowed directly from [HTML](/?c=langages-de-balisage&s=html&p=html) table vocabulary:
 
 ```text
 +----------+----------------------+
@@ -60,7 +60,7 @@ A detected table isn't limited to a uniform rectangular grid: a header cell can 
 | `colspan` (*column span*) | A cell occupies several columns on the same row |
 | `rowspan` (*row span*) | A cell occupies several rows on the same column |
 
-A structured OCR model (such as PP-StructureV3, used in this chapter's source project) typically returns this grid in **HTML** format (`<table>`, `<tr>`, `<td colspan="...">`), the same format as a web page: reconstructing, from this HTML, the exact position (row, column) of each cell while accounting for ongoing merges, is a full incremental parsing exercise in its own right.
+A structured OCR model (such as [PP-StructureV3](/?c=ia&s=vision-et-ocr&p=modeles-document-ai), used in this chapter's source project) typically returns this grid in **HTML** format (`<table>`, `<tr>`, `<td colspan="...">`), the same format as a web page: reconstructing, from this HTML, the exact position (row, column) of each cell while accounting for ongoing merges, is a full incremental parsing exercise in its own right.
 
 > **Pitfall:** ignoring the merges and assuming a reconstructed table always has the same number of cells on every row. A row where a column is "skipped" because of a `rowspan` that started higher up would, without accounting for it, silently misalign the content with the column it's actually associated with.
 >

@@ -18,7 +18,7 @@ An LLM excels at tasks where the input and output are **language**: understandin
 | Computing sales tax or a due date | No | An LLM predicts the most plausible token, not the exact result of a computation (see below) |
 | Deciding on an irreversible action alone (sending a wire transfer) | No, not without a human safeguard | Non-deterministic answer, never 100% guaranteed |
 
-> **Note:** for exact computation, the right architecture isn't to prompt the LLM better, it's to give it a tool (a Python function, a SQL query) that it calls and whose result it relays (see the [Agents](/?c=ia&s=nlp-llm&p=agents) chapter). The LLM remains excellent at understanding *that* sales tax needs computing and *with which numbers*, but should never be the calculator itself.
+> **Note:** for exact computation, the right architecture isn't to prompt the LLM better, it's to give it a tool (a [Python](/?c=langages-de-programmation&s=python&p=python) function, a [SQL](/?c=domain-specific-languages-dsl&p=sql) query) that it calls and whose result it relays (see the [Agents](/?c=ia&s=nlp-llm&p=agents) chapter). The LLM remains excellent at understanding *that* sales tax needs computing and *with which numbers*, but should never be the calculator itself.
 
 ## Structural limits to know before you design
 

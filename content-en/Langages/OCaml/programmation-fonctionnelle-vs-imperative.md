@@ -6,7 +6,7 @@ order: 1
 
 ## Statements vs. expressions
 
-In C, Python, or JavaScript, an `if` is a **statement**: it produces no value, it only triggers the execution of one block or another.
+In C, [Python](/?c=langages-de-programmation&s=python&p=python), or [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), an `if` is a **statement**: it produces no value, it only triggers the execution of one block or another.
 
 ```python
 # Python: if is a statement, each branch must explicitly assign

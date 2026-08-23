@@ -78,7 +78,7 @@ pip install requests       # installs ONLY in this environment, not globally
 deactivate                 # exits the virtual environment
 ```
 
-> **Note:** Once enabled, `pip install` and `python` point to the executables **in the virtual environment**, not those installed globally on the system: this is what ensures isolation. The `.venv/` folder must never be versioned with Git (see [The .gitignore file](/?c=git&p=gitignore)): it is fully regenerated from `requirements.txt`.
+> **Note:** Once enabled, `pip install` and `python` point to the executables **in the virtual environment**, not those installed globally on the system: this is what ensures isolation. The `.venv/` folder must never be versioned with [Git](/?c=git&p=git) (see [The .gitignore file](/?c=git&p=gitignore)): it is fully regenerated from `requirements.txt`.
 
 ## Organizing a Project into a Package
 

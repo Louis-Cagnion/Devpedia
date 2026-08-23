@@ -36,7 +36,7 @@ Calling a vectorized function (`array.sum()`, `array * 2`) has, like a network c
 
 This second point is called **SIMD** (*Single Instruction, Multiple Data*): a processor instruction that applies the same operation to several contiguous values at once (e.g. adding 8 integers in a single instruction, rather than 8 separate instructions). SIMD can only be exploited if the data is **contiguous and of uniform size**: exactly what a typed array guarantees, and never what a collection of scattered objects guarantees.
 
-## Why a NumPy array is fast and a Python list isn't
+## Why a NumPy array is fast and a [Python](/?c=langages-de-programmation&s=python&p=python) list isn't
 
 A Python list is an array of **pointers** to objects, potentially scattered anywhere on the heap and of different sizes. A `for` loop over a Python list must, on every iteration: follow a pointer (a memory access potentially outside cache), check the type of the pointed-to object, then call the right routine: all driven by the interpreter, instruction by instruction.
 

@@ -75,8 +75,8 @@ Documents/photos/../travail/rapport.docx
 
 Changing the current directory and listing the contents of a directory are two basic actions, but the exact names of the commands depend on the shell being used, as discussed in the [chapter on the terminal](/?c=bases-de-l-informatique&p=le-terminal):
 
-- In Bash: see [Permissions and File Handling](/?c=shells&s=bash&p=permissions-et-fichiers).
-- In PowerShell: see [Basic Commands](/?c=shells&s=powershell&p=commandes-de-base).
+- In [Bash](/?c=shells&s=bash&p=bash): see [Permissions and File Handling](/?c=shells&s=bash&p=permissions-et-fichiers).
+- In [PowerShell](/?c=shells&s=powershell&p=powershell): see [Basic Commands](/?c=shells&s=powershell&p=commandes-de-base).
 
 ---
 

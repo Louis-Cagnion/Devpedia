@@ -37,7 +37,7 @@ A value passed via `ENV` or `ARG` remains readable in the image's metadata (`doc
 ARG DB_PASSWORD=motdepasse123
 ```
 
-Secrets must be injected **at runtime** (environment variables passed to `docker run -e`, files mounted via a volume, or a dedicated secret manager), never hardcoded into any layer of the image, the same principle as never committing an API key to the source code (see the chapter [Securing Your Data](/?c=langages-de-programmation&s=php&p=securite), PHP section).
+Secrets must be injected **at runtime** (environment variables passed to `docker run -e`, files mounted via a volume, or a dedicated secret manager), never hardcoded into any layer of the image, the same principle as never committing an API key to the source code (see the chapter [Securing Your Data](/?c=langages-de-programmation&s=php&p=securite), [PHP](/?c=langages-de-programmation&s=php&p=php) section).
 
 ### Docker Compose Secrets vs. Simple Environment Variables
 

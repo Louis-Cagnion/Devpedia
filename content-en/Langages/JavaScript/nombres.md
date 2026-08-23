@@ -20,7 +20,7 @@ typeof NaN;       // "number"
 Math.trunc(5 / 2) // 2   -> you have to ask for it explicitly
 ```
 
-The lack of native integer division is a frequent pitfall for anyone coming from C or Python (`5 // 2`).
+The lack of native integer division is a frequent pitfall for anyone coming from C or [Python](/?c=langages-de-programmation&s=python&p=python) (`5 // 2`).
 
 ## Comparing decimals
 

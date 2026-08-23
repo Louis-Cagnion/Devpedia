@@ -4,7 +4,7 @@ order: 4
 
 # Advanced Completion
 
-Bash completes file names and, for some commands, offers a flat list via the Tab key. Zsh's completion system (`compsys`) is a full-fledged engine, aware of **context**: it knows that after `git checkout` it should offer branch names, and that after `kill`, PIDs of running processes, not just file names.
+[Bash](/?c=shells&s=bash&p=bash) completes file names and, for some commands, offers a flat list via the Tab key. Zsh's completion system (`compsys`) is a full-fledged engine, aware of **context**: it knows that after `git checkout` it should offer branch names, and that after `kill`, PIDs of running processes, not just file names.
 
 ## Enabling the completion system
 

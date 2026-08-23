@@ -14,7 +14,7 @@ counter := !counter + 1     (* := assigns a new value *)
 print_int !counter           (* ! reads the current value -> 1 *)
 ```
 
-The `ref`/`:=`/`!` syntax makes every mutation **visible in the code**: impossible to mutate a value by accident, unlike a Python or JavaScript variable, mutable by default with no distinctive mark at the spot where it's modified.
+The `ref`/`:=`/`!` syntax makes every mutation **visible in the code**: impossible to mutate a value by accident, unlike a [Python](/?c=langages-de-programmation&s=python&p=python) or [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) variable, mutable by default with no distinctive mark at the spot where it's modified.
 
 ## Persistent data structures
 

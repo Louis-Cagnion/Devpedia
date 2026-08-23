@@ -1,6 +1,6 @@
 # SQL
 
-SQL (*Structured Query Language*) is a single-purpose language designed to query and manipulate data stored in tables. Like regex, it is not a general-purpose programming language: it has no loops, no user-defined functions, and no variables in the traditional sense. It is interpreted by a database engine (MySQL, PostgreSQL, SQL Server, SQLite, etc.), typically controlled from a host language (PHP, Python, JS, etc.) via a connector.
+SQL (*Structured Query Language*) is a single-purpose language designed to query and manipulate data stored in tables. Like regex, it is not a general-purpose programming language: it has no loops, no user-defined functions, and no variables in the traditional sense. It is interpreted by a database engine (MySQL, PostgreSQL, SQL Server, SQLite, etc.), typically controlled from a host language ([PHP](/?c=langages-de-programmation&s=php&p=php), [Python](/?c=langages-de-programmation&s=python&p=python), [JS](/?c=langages-de-programmation&s=javascript&p=javascript), etc.) via a connector.
 
 ## A table, like a spreadsheet sheet
 
@@ -82,7 +82,7 @@ $sql = "SELECT * FROM customers WHERE city = '" . $_GET['city'] . "'";
 ?>
 ```
 
-If `$_GET['city']` contained `Lyon' OR '1'='1`, the query would become a condition that is always true, returning all rows in the table. Conceptually equivalent to a buffer overflow in C: an unchecked input that alters the **structure** of the command, rather than remaining mere data.
+If `$_GET['city']` contained `Lyon' OR '1'='1`, the query would become a condition that is always true, returning all rows in the table. Conceptually equivalent to a buffer overflow in [C](/?c=langages-de-programmation&s=c&p=c): an unchecked input that alters the **structure** of the command, rather than remaining mere data.
 
 `:city` prevent this at the structural level: the value passed to `execute()` is **always** treated as raw data by the driver and is never interpreted as SQL, regardless of its contents.
 

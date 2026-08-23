@@ -4,7 +4,7 @@ order: 1
 
 # References
 
-A **reference** is an alias, another name for an existing variable, never an independent variable. It solves a very specific problem in C: until now, passing a variable to a function so that the function could modify it required explicitly manipulating pointers (see the chapter on pointers, under the C section).
+A **reference** is an alias, another name for an existing variable, never an independent variable. It solves a very specific problem in [C](/?c=langages-de-programmation&s=c&p=c): until now, passing a variable to a function so that the function could modify it required explicitly manipulating pointers (see the chapter on pointers, under the C section).
 
 ## Report a reference
 

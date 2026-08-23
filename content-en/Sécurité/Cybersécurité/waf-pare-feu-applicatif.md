@@ -34,7 +34,7 @@ SecRule ARGS "@detectSQLi" \
 | Rule element | Role |
 |---|---|
 | `ARGS` | Target: all request parameters (query string, form body) |
-| `@detectSQLi` | Operator: SQL injection pattern detection, provided by the CRS engine |
+| `@detectSQLi` | Operator: [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql) injection pattern detection, provided by the CRS engine |
 | `deny,status:403` | Action: block the request with a `403 Forbidden` code |
 
 ## The Trade-off: False Positives vs. False Negatives

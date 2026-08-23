@@ -26,7 +26,7 @@ Cookies are typically used to:
 - The value to be stored
 - The expiration date (as a Unix timestamp; `time()` returns the current time, so `time() + 3600` means "in 1 hour")
 
-> **Important note:** `setcookie()` must be called **before** any HTML is rendered (before any tags, spaces, or line breaks), because it modifies the HTTP headers of the response. This follows the same logic as the closing `?>` tag mentioned above.
+> **Important note:** `setcookie()` must be called **before** any [HTML](/?c=langages-de-balisage&s=html&p=html) is rendered (before any tags, spaces, or line breaks), because it modifies the HTTP headers of the response. This follows the same logic as the closing `?>` tag mentioned above.
 
 ### Read a cookie
 Once created, a cookie can be accessed via the global variable `$_COOKIE`:
@@ -75,7 +75,7 @@ To delete a cookie, you can recreate it with an expiration date **in the past**:
 ```
 
 - `secure` : The cookie is only sent if the connection is via HTTPS.
-- `httponly` : Prevents JavaScript (`document.cookie`) from accessing the cookie, which limits the damage in the event of an XSS vulnerability.
+- `httponly` : Prevents [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`document.cookie`) from accessing the cookie, which limits the damage in the event of an XSS vulnerability.
 - `samesite` : Prevents the cookie from being sent in a request originating from another site, thereby protecting against CSRF attacks.
 
 > **Note:** Never store sensitive information (passwords, credit card numbers, etc.) in a cookie, even a secure one. A cookie can still be manipulated by the user. For sensitive data on the server side, use **sessions** instead (`$_SESSION`).

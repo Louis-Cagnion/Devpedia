@@ -4,7 +4,7 @@ order: 3
 
 # The Box Model
 
-Each HTML element is represented by CSS as a rectangular box consisting of four concentric layers: understanding this model is essential for mastering sizing, spacing, and alignment.
+Each [HTML](/?c=langages-de-balisage&s=html&p=html) element is represented by CSS as a rectangular box consisting of four concentric layers: understanding this model is essential for mastering sizing, spacing, and alignment.
 
 ## The Four Layers
 

@@ -4,7 +4,7 @@ order: 12
 
 # Asynchronous Programming (Callbacks, Promises, async/await)
 
-JavaScript runs on a **single thread** (unlike the threads discussed in the dedicated chapter on C): it can only do one thing at a time. However, a network request or a timer does not block the entire program while waiting: that is the role of the asynchronous model, built around the **event*** ***loop**.
+JavaScript runs on a **single thread** (unlike the [threads](/?c=langages-de-programmation&s=c&p=threads) discussed in the dedicated chapter on [C](/?c=langages-de-programmation&s=c&p=c)): it can only do one thing at a time. However, a network request or a timer does not block the entire program while waiting: that is the role of the asynchronous model, built around the **event*** ***loop**.
 
 ## The Concept: The Event Loop
 

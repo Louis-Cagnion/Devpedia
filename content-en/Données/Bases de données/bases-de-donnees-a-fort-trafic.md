@@ -12,7 +12,7 @@ A page displays a list of filter options (available regions, product categories.
 
 > **Pitfall:** recalculating a costly value on every user request simply because the query is correct and produces the right result. A correct query can still be a bad idea if its cost is disproportionate to how fresh its result actually needs to be.
 >
-> **Best practice:** before optimizing the query itself (indexes, SQL rewrite), first ask whether the result really needs recalculating on every visit, or whether it can be cached.
+> **Best practice:** before optimizing the query itself (indexes, [SQL](/?c=langages&s=domain-specific-languages-dsl&p=sql) rewrite), first ask whether the result really needs recalculating on every visit, or whether it can be cached.
 
 ## Cache and stale-while-revalidate
 

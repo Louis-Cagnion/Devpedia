@@ -27,7 +27,7 @@ char uppercase = lowercase - 32;
 int value = digit_char - '0';    // '7' - '0' = 55 - 48 = 7
 ```
 
-This is why, in C, a `char` **is** an integer: `'A'` and `65` are the same value. See the [Variables and Data Types](/?c=langages-de-programmation&s=c&p=variables) chapter.
+This is why, in [C](/?c=langages-de-programmation&s=c&p=c), a `char` **is** an integer: `'A'` and `65` are the same value. See the [Variables and Data Types](/?c=langages-de-programmation&s=c&p=variables) chapter.
 
 Codes 0 to 31 aren't printable characters but **control characters**, a legacy of teleprinters: `\n` (10, line feed), `\t` (9, tab), `\0` (0, string terminator in C).
 
@@ -100,17 +100,17 @@ This symptom is very recognizable and helps trace back to the cause:
 | `?` or `�` | Character missing from the target encoding, replaced |
 | Correct accents except in a spreadsheet | Missing separator or BOM on open |
 
-The fix is never to "replace the characters" but to **declare the right encoding** at the point of reading. Every layer must be consistent: the HTML tag (`<meta charset="utf-8">`, see the [Document Structure](/?c=langages-de-balisage&s=html&p=structure-dun-document) chapter), [the HTTP header](/?c=infrastructure&p=api-et-http), the source files' encoding, and the database's character set (`utf8mb4` for [MySQL](https://dev.mysql.com/doc/): plain `utf8` there is a false friend limited to 3 bytes, which rejects emoji).
+The fix is never to "replace the characters" but to **declare the right encoding** at the point of reading. Every layer must be consistent: the [HTML](/?c=langages-de-balisage&s=html&p=html) tag (`<meta charset="utf-8">`, see the [Document Structure](/?c=langages-de-balisage&s=html&p=structure-dun-document) chapter), [the HTTP header](/?c=infrastructure&p=api-et-http), the source files' encoding, and the database's character set (`utf8mb4` for [MySQL](https://dev.mysql.com/doc/): plain `utf8` there is a false friend limited to 3 bytes, which rejects emoji).
 
 ## The BOM
 
 The **BOM** (*Byte Order Mark*, `U+FEFF`) is an optional marker at the start of a file signaling its encoding. It's essential in UTF-16 to indicate byte order, but **useless in UTF-8**, where the order is fixed.
 
-It nonetheless remains common on Windows, where some tools (including [Excel](https://www.microsoft.com/microsoft-365/excel)) use it to recognize a UTF-8 file. Hence a classic trade-off: a CSV meant for Excel needs the BOM to display accents correctly, whereas a PHP source file with a BOM causes content to be sent prematurely and breaks HTTP headers.
+It nonetheless remains common on Windows, where some tools (including [Excel](https://www.microsoft.com/microsoft-365/excel)) use it to recognize a UTF-8 file. Hence a classic trade-off: a CSV meant for Excel needs the BOM to display accents correctly, whereas a [PHP](/?c=langages-de-programmation&s=php&p=php) source file with a BOM causes content to be sent prematurely and breaks HTTP headers.
 
 ## UTF-16 and UTF-32
 
-- **UTF-16**: 2 or 4 bytes per character. Used internally by Java, C#, JavaScript, and Windows. Characters outside the basic plane (emoji) occupy two 16-bit units there, called a *surrogate pair*, which is why, in JavaScript, `"😀".length` returns **2**.
+- **UTF-16**: 2 or 4 bytes per character. Used internally by Java, C#, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), and Windows. Characters outside the basic plane (emoji) occupy two 16-bit units there, called a *surrogate pair*, which is why, in JavaScript, `"😀".length` returns **2**.
 - **UTF-32**: 4 bytes per character, fixed size. Simple to index, but wastes a lot of space; rarely used for storage.
 
 ## Summary

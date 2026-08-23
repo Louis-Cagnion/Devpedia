@@ -6,7 +6,7 @@ order: 4
 
 Memory is a huge array of numbered bytes. Understanding how values are arranged in it explains several confusing behaviors: why a structure takes up more space than the sum of its fields, or why a binary file written on one machine can be unreadable on another.
 
-> This chapter covers data **layout**. For allocation (stack, heap, `malloc`/`free`) and the bugs that go with it, see C's [Memory Management](/?c=langages-de-programmation&s=c&p=memoire) chapter.
+> This chapter covers data **layout**. For allocation (stack, heap, `malloc`/`free`) and the bugs that go with it, see [C](/?c=langages-de-programmation&s=c&p=c)'s [Memory Management](/?c=langages-de-programmation&s=c&p=memoire) chapter.
 
 ## The addressing unit is the byte
 

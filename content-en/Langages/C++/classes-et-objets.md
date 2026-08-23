@@ -66,7 +66,7 @@ private:
 };
 ```
 
-The `~NomClasse()` is automatically executed as soon as the object is destroyed (end of scope for a local object, `delete` for a dynamically allocated object): this is the basis of the RAII mechanism (see the dedicated chapter), which is central to C++ to ensure that resources are never forgotten to be released.
+The `~NomClasse()` is automatically executed as soon as the object is destroyed (end of scope for a local object, `delete` for a dynamically allocated object): this is the basis of the [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii) mechanism (see the dedicated chapter), which is central to C++ to ensure that resources are never forgotten to be released.
 
 ## Methods`const`
 

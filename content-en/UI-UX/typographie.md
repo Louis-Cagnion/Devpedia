@@ -69,7 +69,7 @@ Three settings determine whether a text reads comfortably or tires the eye:
 
 ## Moving to implementation
 
-Like a color palette, a size scale and a font list are declared in CSS as reusable values: see [CSS Variables and the Cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
+Like a color palette, a size scale and a font list are declared in [CSS](/?c=langages-de-balisage&s=css&p=css) as reusable values: see [CSS Variables and the Cascade](/?c=langages-de-balisage&s=css&p=variables-et-cascade).
 
 ---
 

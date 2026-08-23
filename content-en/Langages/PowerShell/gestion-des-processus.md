@@ -4,7 +4,7 @@ order: 12
 
 # Process Management
 
-As with Bash, every command launched starts a **process**. PowerShell also makes it possible to launch commands in the background, monitor running processes, and stop them cleanly (or not).
+As with [Bash](/?c=shells&s=bash&p=bash), every command launched starts a **process**. PowerShell also makes it possible to launch commands in the background, monitor running processes, and stop them cleanly (or not).
 
 ## Foreground vs. background
 
