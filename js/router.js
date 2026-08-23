@@ -14,6 +14,8 @@ import {
     continueAfterCode,
     nextParagraph,
     previousParagraph,
+    playAutoAdvanceSilence,
+    stopAutoAdvanceSilence,
 } from "./reader.js";
 import { logEvent } from "./reader-debug.js";
 import { t, tEntityLabel } from "./i18n.js";
@@ -156,15 +158,17 @@ function clearChapterNeighbors() {
 
 /* Chapter auto-advance: reader.js reports only that the plan finished, with no notion of
    navigation itself, so the site-wide "what's next" resolution and the actual page change happen
-   here instead. */
-const AUTO_ADVANCE_DELAY_MS = 5000;
-let autoAdvanceTimeoutId = null;
+   here instead. The countdown itself is a silent clip played through reader.js's own audioEl
+   (playAutoAdvanceSilence()), not a plain setTimeout: iOS suspends JS timers once the screen
+   locks, which used to leave a chapter finished mid-walk never actually advancing until the next
+   unlock (Louis, 23/08/2026). */
+let autoAdvancePending = false;
 
 /** @brief Cancels a pending chapter auto-advance, if any, removing its on-screen notice everywhere it was shown. */
 function cancelAutoAdvance() {
-    if (autoAdvanceTimeoutId === null) return;
-    clearTimeout(autoAdvanceTimeoutId);
-    autoAdvanceTimeoutId = null;
+    if (!autoAdvancePending) return;
+    autoAdvancePending = false;
+    stopAutoAdvanceSilence();
     document.querySelectorAll(".readerAutoAdvanceNotice").forEach(notice => notice.remove());
 }
 
@@ -222,10 +226,12 @@ onPlaybackComplete(() => {
     document.querySelectorAll(".readerControl").forEach(control => {
         control.append(createTag("p", { class: "readerAutoAdvanceNotice" }, { textContent: t("readerAutoAdvanceNotice") }));
     });
-    autoAdvanceTimeoutId = setTimeout(() => {
-        autoAdvanceTimeoutId = null;
+    autoAdvancePending = true;
+    playAutoAdvanceSilence(() => {
+        if (!autoAdvancePending) return; // cancelAutoAdvance() already ran while the silence played
+        autoAdvancePending = false;
         navigateToChapter(next.categoryId, next.subjectId, next.id);
-    }, AUTO_ADVANCE_DELAY_MS);
+    });
 });
 
 // Any interaction with either reader control (desktop/mobile) cancels a pending auto-advance.

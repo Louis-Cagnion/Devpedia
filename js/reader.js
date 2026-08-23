@@ -77,6 +77,50 @@ let isPausedAtCode = false;
 const audioEl = new Audio();
 let hasPregenAudio = false;
 
+/* A silent clip (generated once with `ffmpeg -f lavfi -i anullsrc=r=22050:cl=mono -t 5 -codec:a
+   libmp3lame -b:a 32k -ac 1 -ar 22050`, matching scripts/generate-audio.mjs's own encoding)
+   played through audioEl to bridge router.js's auto-advance countdown before a chapter change:
+   same reasoning as currentEntryEndSeconds above -- a JS setTimeout doesn't fire reliably once
+   iOS suspends timers on a locked screen, but this element's own "ended" event still does
+   (Louis, 23/08/2026: wanted auto-advance to survive a locked phone too). Fetched once, lazily,
+   the first time it's actually needed rather than at module load (most sessions never reach a
+   chapter's end, cf. Performance's own no-recompute-what-isn't-needed principle). */
+const AUTO_ADVANCE_SILENCE_PATH = "./audio/silence-5s.mp3";
+let silenceObjectUrlPromise = null;
+let silenceAbortController = null;
+
+/**
+ * @brief Plays AUTO_ADVANCE_SILENCE_PATH once through the shared audioEl and calls `onEnded` when
+ * it finishes -- router.js's lock-survivable stand-in for a setTimeout-based auto-advance delay.
+ * A fetch failure degrades to calling `onEnded` immediately rather than never auto-advancing.
+ *
+ * @param {() => void} onEnded
+ */
+export async function playAutoAdvanceSilence(onEnded) {
+    if (!silenceObjectUrlPromise) {
+        silenceObjectUrlPromise = fetch(AUTO_ADVANCE_SILENCE_PATH)
+            .then(response => response.blob())
+            .then(blob => URL.createObjectURL(blob))
+            .catch(() => null);
+    }
+    const objectUrl = await silenceObjectUrlPromise;
+    if (!objectUrl) {
+        onEnded();
+        return;
+    }
+    silenceAbortController = new AbortController();
+    audioEl.src = objectUrl;
+    audioEl.currentTime = 0;
+    audioEl.addEventListener("ended", onEnded, { once: true, signal: silenceAbortController.signal });
+    audioEl.play().catch(err => logEvent("audioEl:play-rejected", err.message));
+}
+
+/** @brief Stops a playAutoAdvanceSilence() in progress, if any, without calling its `onEnded`. */
+export function stopAutoAdvanceSilence() {
+    silenceAbortController?.abort();
+    audioEl.pause();
+}
+
 /* The current "speak" entry's own end position in audioEl's timeline (seconds), or null when
    nothing is being watched. Advancing on `timeupdate` instead of a setTimeout(entry.durationMs) is
    deliberate: iOS Safari fully suspends JS timers on a backgrounded/locked tab, but keeps firing
