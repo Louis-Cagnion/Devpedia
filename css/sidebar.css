@@ -199,11 +199,11 @@
     vertical-align: middle;
 }
 
-.outline-h2 a::before { width: 0.8rem; height: 0.8rem; }
-.outline-h3 a::before { width: 0.65rem; height: 0.65rem; }
-.outline-h4 a::before { width: 0.5rem; height: 0.5rem; }
-.outline-h5 a::before { width: 0.4rem; height: 0.4rem; }
-.outline-h6 a::before { width: 0.32rem; height: 0.32rem; }
+.outline-h2 a::before { width: 0.85rem; height: 0.85rem; }
+.outline-h3 a::before { width: 0.7rem; height: 0.7rem; }
+.outline-h4 a::before { width: 0.4rem; height: 0.4rem; }
+.outline-h5 a::before { width: 0.34rem; height: 0.34rem; }
+.outline-h6 a::before { width: 0.28rem; height: 0.28rem; }
 
 .pageOutlineList a:hover {
     background-color: var(--bg-hover);
@@ -211,6 +211,6 @@
     text-decoration: none;
 }
 
-.pageOutlineList .outline-h4 { margin-inline-start: 1rem; }
-.pageOutlineList .outline-h5 { margin-inline-start: 2rem; }
-.pageOutlineList .outline-h6 { margin-inline-start: 3rem; }
+.pageOutlineList .outline-h4 { margin-inline-start: 1.3rem; }
+.pageOutlineList .outline-h5 { margin-inline-start: 2.2rem; }
+.pageOutlineList .outline-h6 { margin-inline-start: 3.2rem; }
