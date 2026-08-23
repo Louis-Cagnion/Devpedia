@@ -325,6 +325,42 @@ document.addEventListener("keydown", (e) => {
     navigateToChapter(chapter.categoryId, chapter.subjectId, chapter.id);
 });
 
+/* Single-finger horizontal swipe moves to the previous/next chapter, the touch counterpart to the
+   ArrowLeft/ArrowRight handler above -- swipe left for next, mirroring a photo gallery rather than
+   the arrow keys' own "left = previous" (Louis, 23/08/2026). Ignored inside pre/table/chart
+   containers, which already scroll horizontally on their own (cf. content.css, charts.css). A
+   second finger touching down fires its own touchstart with touches.length > 1, which resets
+   swipeStartX below -- enough on its own to make a multi-finger gesture a no-op, since it stays
+   null until a fresh single-finger touchstart sets it again. */
+const SWIPE_MIN_DISTANCE_PX = 60;
+const SWIPE_IGNORED_SELECTOR = "pre, .tableWrapper, .chartWrapper";
+let swipeStartX = null;
+let swipeStartY = null;
+
+document.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1 || e.target.closest(SWIPE_IGNORED_SELECTOR)) {
+        swipeStartX = null;
+        return;
+    }
+    swipeStartX = e.touches[0].clientX;
+    swipeStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener("touchcancel", () => { swipeStartX = null; }, { passive: true });
+
+document.addEventListener("touchend", (e) => {
+    if (swipeStartX === null || e.changedTouches.length !== 1) return;
+    const deltaX = e.changedTouches[0].clientX - swipeStartX;
+    const deltaY = e.changedTouches[0].clientY - swipeStartY;
+    swipeStartX = null;
+    if (Math.abs(deltaX) < SWIPE_MIN_DISTANCE_PX || Math.abs(deltaY) >= Math.abs(deltaX)) return;
+    const isRtl = document.documentElement.dir === "rtl";
+    const wantsNext = (deltaX < 0) !== isRtl;
+    const chapter = wantsNext ? currentNextChapter : currentPreviousChapter;
+    if (!chapter) return;
+    navigateToChapter(chapter.categoryId, chapter.subjectId, chapter.id);
+}, { passive: true });
+
 /** @brief Removes the page currently displayed, if any. */
 function clearCurrentPage() {
     cancelAutoAdvance();
