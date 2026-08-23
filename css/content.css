@@ -37,6 +37,16 @@
     opacity: 0.5;
 }
 
+/* Lifts the dense-prose text off the textured background above (soft dark halo, not a solid
+   backdrop panel -- keeps the background's dots/washes visible through the letterforms while
+   still reading clearly at a glance, the way a photo-backed heading keeps its caption legible). */
+.chapterPage p,
+.chapterPage li,
+.chapterPage h2, .chapterPage h3, .chapterPage h4, .chapterPage h5, .chapterPage h6,
+.chapterPage strong, .chapterPage em {
+    text-shadow: 0 1px 6px var(--bg), 0 1px 2px var(--bg);
+}
+
 /* underlined even at rest (unlike the global `a`) — a link whose label is itself an inline
    code span has no color of its own to read as a link by (`code` sets its own text color,
    overriding the inherited one), so the underline is what actually marks it as clickable */
