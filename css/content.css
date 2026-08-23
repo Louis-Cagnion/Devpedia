@@ -64,29 +64,26 @@
     pointer-events: none;
 }
 
-/* The vertical leg of each bracket is offset to meet the parallelogram's own diagonal edge
-   at the exact corner it starts from (1rem in from the left at the bottom, 1rem in from the
-   right at the top, matching the clip-path polygon above) rather than the rectangular box
-   edge -- anchored at x:0/x:100% it would sit inside the clipped-away sliver right where it's
-   supposed to connect to the horizontal leg, and never actually meet it. */
+/* Each bracket is clipped to a thin (2px) strip that actually follows the panel's own edges --
+   the sloped one included, unlike a straight vertical guess -- traced as one path: outer edge
+   = the exact edge of the .chapterPage p/li clip-path polygon above (shared corner point),
+   inner edge = the same line offset 2px inward. A radial-gradient centered on the shared
+   corner (rather than two linear-gradients, one per leg) fades naturally along both legs at
+   once from a single center, instead of needing to be stitched from two separate directions. */
 .chapterPage p::before,
 .chapterPage .content-list li::before {
-    background-image:
-        linear-gradient(to right, var(--accent-warm), transparent 50%),
-        linear-gradient(to top, var(--accent-warm), transparent 50%);
-    background-position: bottom left, 1rem top;
-    background-size: 100% 2px, 2px 100%;
-    background-repeat: no-repeat, no-repeat;
+    clip-path: polygon(
+        0 0, 2px 0, calc(1rem + 2px) calc(100% - 2px), 100% calc(100% - 2px), 100% 100%, 1rem 100%
+    );
+    background-image: radial-gradient(circle at 1rem 100%, var(--accent-warm), transparent 60%);
 }
 
 .chapterPage p::after,
 .chapterPage .content-list li::after {
-    background-image:
-        linear-gradient(to left, var(--accent), transparent 50%),
-        linear-gradient(to bottom, var(--accent), transparent 50%);
-    background-position: top right, calc(100% - 1rem) top;
-    background-size: 100% 2px, 2px 100%;
-    background-repeat: no-repeat, no-repeat;
+    clip-path: polygon(
+        100% 100%, calc(100% - 2px) 100%, calc(100% - 1rem - 2px) 2px, 0 2px, 0 0, calc(100% - 1rem) 0
+    );
+    background-image: radial-gradient(circle at calc(100% - 1rem) 0, var(--accent), transparent 60%);
 }
 
 /* A paragraph nested inside a blockquote already gets its shape reset (see below) -- reset
