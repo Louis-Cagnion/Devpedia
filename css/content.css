@@ -7,6 +7,11 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 1.5rem 1.25rem calc(var(--floating-bar-height, 0px) + 1.5rem);
+    /* a short chapter's own content is shorter than the viewport: without this, .page::before's
+       inset: 0 background stops right where the content does, leaving a plain --bg gap below it
+       down to the actual bottom of the window. Floors .page's own box at the viewport height
+       (minus the sticky navbar) so the background always reaches the bottom of the page. */
+    min-height: calc(100vh - var(--navbar-height, 57px));
 }
 
 .page::before {
