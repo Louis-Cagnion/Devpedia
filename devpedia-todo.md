@@ -30,5 +30,16 @@ Demandé par Louis (23/08/2026) : la lecture ne marquait aucune pause en croisan
 Prégénéré (23/08/2026) via `scripts/generate-audio.mjs --context=c,cpp,php,git` (SQL déjà fait) : 60 chapitres, 4 langues, namespacés par dossier catégorie/sujet (`audio/<lang>/<catégorie>[/<sujet>]/<chapitreId>`) pour éviter la collision d'id corrigée le même jour (ex. `variables` existait à la fois en C et PHP).
 - Reste à Louis : écouter quelques chapitres de chaque sujet sur iPhone, confirmer que l'audio prégénéré se charge bien (pas de repli silencieux sur `speechSynthesis`) et que la prononciation correspond à la table déjà validée.
 
+## 6. Fond étoilé des pages chapitre invisible sur mobile (iOS 16.7.16) : deux correctifs déjà tentés, sans effet
+Signalé par Louis (25/08/2026) : le fond stylisé des pages chapitre (`css/content.css`, `.page::before` — pointillés + halo chaud/froid) reste gris uni sur son iPhone (iOS 16.7.16, Safari), y compris en navigation privée (cache écarté), alors qu'il s'affiche normalement sur desktop. Reproduit sur tous les chapitres (pas spécifique au nouveau chapitre OS qui a révélé le bug), pas seulement en PWA installée.
+
+Deux hypothèses testées et invalidées par le retest de Louis :
+1. `color-mix()` non supporté sur mobile ancien → couches concernées isolées dans un `@supports`. Insuffisant : iOS 16.7.16 est censé supporter `color-mix()` (support Safari depuis 16.2), donc `@supports` réactivait la même déclaration combinée, toujours grise.
+2. `color-mix()` retiré entièrement, remplacé par des `rgba()` + triplets RGB précalculés (`--accent-rgb`/`--accent-warm-rgb` dans `base.css`), sur l'hypothèse d'un bug de rendu WebKit spécifique à `color-mix()` comme stop de couleur. Toujours gris après redéploiement confirmé (CSS de prod vérifié à jour) et retest en navigation privée.
+
+Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `var()`, `rgba()`, `radial-gradient()`, `inset: 0`) : la piste "fonction CSS non supportée" est probablement épuisée, ce qui pointe plutôt vers autre chose (le pseudo-élément entier qui ne se peint pas, plutôt qu'une seule couche de fond qui échoue) — voir `journal-de-bord.md` pour le détail des deux tentatives.
+
+Test demandé à Louis avant de tenter un 3ᵉ correctif à l'aveugle (pour savoir si le bug dépend de la largeur mobile ou du moteur WebKit lui-même, indépendamment de la largeur) : sur la page d'un chapitre, bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement une fois en mode "version pour ordinateur" (toujours sur le téléphone). Si le test ne suffit pas à trancher, l'étape suivante est un accès à l'inspecteur Safari distant (via un Mac connecté à l'iPhone) plutôt que de continuer à deviner sans données réelles de l'appareil.
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
