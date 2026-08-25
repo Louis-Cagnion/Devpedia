@@ -27,15 +27,32 @@
        along diagonals rather than a plain orthogonal grid */
     background-image:
         radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0),
-        radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0),
-        radial-gradient(ellipse at 15% 10%, color-mix(in srgb, var(--accent-warm) 10%, transparent), transparent 45%),
-        radial-gradient(ellipse at 85% 90%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 45%);
+        radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0);
     /* tiled starfield (not enumerated dot positions) so it scales to any chapter length
        for free, no image asset, no extra HTTP request */
-    background-size: 40px 40px, 40px 40px, auto, auto;
-    background-position: 0 0, 20px 20px, 0 0, 0 0;
-    background-repeat: repeat, repeat, no-repeat, no-repeat;
+    background-size: 40px 40px, 40px 40px;
+    background-position: 0 0, 20px 20px;
+    background-repeat: repeat, repeat;
     opacity: 0.5;
+}
+
+/* The warm/cool corner glow layers below use color-mix(), unsupported on older mobile
+   browsers (Safari < 16.2, Chrome < 111). A single unsupported value in background-image's
+   comma-separated list invalidates the whole declaration, not just that layer -- so on an
+   unsupporting browser, gating them in the base rule above would silently drop the dot
+   starfield too, leaving flat --bg. Adding them only inside @supports keeps the starfield
+   working everywhere and layers the glow on top only where color-mix() actually renders. */
+@supports (background: color-mix(in srgb, red 10%, transparent)) {
+    .page::before {
+        background-image:
+            radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0),
+            radial-gradient(1px 1px at 1px 1px, var(--text-muted) 1px, transparent 0),
+            radial-gradient(ellipse at 15% 10%, color-mix(in srgb, var(--accent-warm) 10%, transparent), transparent 45%),
+            radial-gradient(ellipse at 85% 90%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 45%);
+        background-size: 40px 40px, 40px 40px, auto, auto;
+        background-position: 0 0, 20px 20px, 0 0, 0 0;
+        background-repeat: repeat, repeat, no-repeat, no-repeat;
+    }
 }
 
 /* Dense-prose text gets an actual opaque panel on the textured background above, the same
