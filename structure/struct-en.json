@@ -1259,6 +1259,17 @@
               "label": "Large-scale live streaming and chat"
             }
           ]
+        },
+        {
+          "id": "systemes-d-exploitation",
+          "label": "Operating Systems",
+          "folder": "Systèmes d'exploitation",
+          "chapters": [
+            {
+              "id": "creer-un-systeme-d-exploitation",
+              "label": "Building an Operating System, Step by Step"
+            }
+          ]
         }
       ]
     },

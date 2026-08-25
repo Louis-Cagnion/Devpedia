@@ -1259,6 +1259,17 @@
               "label": "Diffusion en direct et chat à grande échelle"
             }
           ]
+        },
+        {
+          "id": "systemes-d-exploitation",
+          "label": "Systèmes d'exploitation",
+          "folder": "Systèmes d'exploitation",
+          "chapters": [
+            {
+              "id": "creer-un-systeme-d-exploitation",
+              "label": "Créer un système d'exploitation, étape par étape"
+            }
+          ]
         }
       ]
     },

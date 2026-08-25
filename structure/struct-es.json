@@ -1259,6 +1259,17 @@
               "label": "Transmisión en directo y chat a gran escala"
             }
           ]
+        },
+        {
+          "id": "systemes-d-exploitation",
+          "label": "Sistemas operativos",
+          "folder": "Systèmes d'exploitation",
+          "chapters": [
+            {
+              "id": "creer-un-systeme-d-exploitation",
+              "label": "Crear un sistema operativo, paso a paso"
+            }
+          ]
         }
       ]
     },
