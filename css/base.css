@@ -14,6 +14,11 @@
     --radius: 10px;
     --bg-deep: #1c2028;
     --accent-warm: #d08770;
+    /* RGB triplets (no "#", no color function) so callers can drop them into rgba(var(--x-rgb), alpha)
+       for a translucent tint without color-mix(), which some WebKit builds fail to paint as a
+       gradient color stop despite advertising support via @supports. */
+    --accent-rgb: 136, 192, 208;
+    --accent-warm-rgb: 208, 135, 112;
     --font-display: "Orbitron", "Michroma", sans-serif;
 }
 
