@@ -2,6 +2,12 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Nouvelle sous-section "Systèmes d'exploitation" + bug de fond mobile trouvé en vérifiant (2026-08-25)
+
+Nouvelle sous-section `Infrastructure & DevOps/Systèmes d'exploitation` (order 8), un seul chapitre `creer-un-systeme-d-exploitation.md` : de l'affichage d'un caractère (ASCII → glyphe → framebuffer) jusqu'au système de fenêtrage, renvoi vers osdev.org en fin de chapitre plutôt que de retraiter en détail ce que ce wiki couvre déjà. Placement (Infrastructure & DevOps plutôt que Fondamentaux, jugé trop grand public pour ce niveau de détail) tranché par Louis via question à choix. Traduit EN/ES/BR par 3 agents en parallèle (chantier de chapitre inédit, cf. mémoire long-terme dédiée), `node scripts/generate-struct.js` propre (liens internes validés).
+
+**Bug trouvé en vérifiant l'affichage** (signalé par Louis en cours de route, indépendant de ce nouveau chapitre) : le fond étoilé des pages de chapitre (`css/content.css`, `.page::before`) restait gris uni sur mobile alors qu'il s'affichait normalement sur desktop. Cause : 2 des 4 couches de `background-image` utilisaient `color-mix()` (support Safari < 16.2 / Chrome < 111 absent), et une valeur invalide dans une liste `background-image` séparée par virgules invalide *toute* la déclaration, pas seulement la couche fautive — un mobile trop ancien perdait donc aussi les 2 couches de pointillés, qui n'avaient pourtant rien d'incompatible. Fix : pointillés dans la règle de base (toujours supportés), couches `color-mix()` déplacées dans un bloc `@supports` séparé.
+
 ## 6 nouveaux chapitres issus d'une capture Instagram, dont une nouvelle sous-section "Conception à grande échelle" (2026-08-22)
 
 Point de départ : une capture d'écran (`IMG_9833.png`, carrousel Instagram du compte `rick.theengineer`) comparant CPU/GPU/TPU/NPU/LPU/VPU, puis un tour des vignettes de reels du même compte pour repérer d'autres sujets absents du site. Image supprimée du dépôt une fois son contenu exploité (elle n'était pas trackée par git).
