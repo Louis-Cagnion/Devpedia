@@ -21,6 +21,8 @@
  *   node scripts/generate-audio.mjs <chapter-id> [<chapter-id> ...]   # generate specific chapters
  *   node scripts/generate-audio.mjs --context=<id>[,<id>...]          # every chapter under these subject/category ids
  *   node scripts/generate-audio.mjs --all                              # generate the whole site
+ *   Add --lang=<code>[,<code>...] to any of the above to restrict to specific site languages
+ *   (fr, en, es, br); defaults to all of them.
  *
  * Output, per chapter per language (never overwrites content/, only writes under audio/), namespaced
  * by category/subject folder like content/ itself -- a bare chapter id isn't unique site-wide (e.g.
@@ -262,14 +264,18 @@ async function main() {
     // name. --context restricts to chapters whose own subject/category id is in the given list,
     // for pregenerating everything under an already pronunciation-validated subject at once.
     const requestedContexts = contextArg ? new Set(contextArg.slice("--context=".length).split(",")) : null;
-    const requestedIds = generateAll || requestedContexts ? null : new Set(args);
+    const langArg = args.find(a => a.startsWith("--lang="));
+    const requestedLangs = langArg ? new Set(langArg.slice("--lang=".length).split(",")) : null;
+    const positionalArgs = args.filter(a => a !== "--all" && !a.startsWith("--context=") && !a.startsWith("--lang="));
+    const requestedIds = generateAll || requestedContexts ? null : new Set(positionalArgs);
     if (!generateAll && !requestedContexts && requestedIds.size === 0) {
-        console.error("Usage: node scripts/generate-audio.mjs <chapter-id> [...] | --context=<id>[,<id>...] | --all");
+        console.error("Usage: node scripts/generate-audio.mjs <chapter-id> [...] | --context=<id>[,<id>...] | --all  [--lang=<code>[,<code>...]]");
         process.exit(1);
     }
 
     const structs = loadStructures();
     for (const lang of Object.keys(SITE_LANGUAGES)) {
+        if (requestedLangs && !requestedLangs.has(lang)) continue;
         const { contentDir } = SITE_LANGUAGES[lang];
         const chapters = flattenChapters(structs[lang], contentDir)
             .filter(c => generateAll || requestedContexts?.has(c.context) || requestedIds?.has(c.chapterId));
