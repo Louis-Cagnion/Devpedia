@@ -2,6 +2,12 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Ajout ciblé dans `rebase.md` : reformuler un commit sans éditeur interactif (2026-08-27)
+
+Demande de Louis pendant l'attente d'un autre chantier (projet `git-scrapping-infomediaires`) : relire Devpedia et ajouter les notions non couvertes issues du travail en cours ailleurs. `content/Git` (dossier top-level) est vide — legacy, le vrai sujet Git vit sous `Qualité, performance et outils/Git/`, à garder en tête si un futur nettoyage de dossiers fantômes est fait.
+
+Notion trouvée en pratique dans l'autre session : reformuler le message d'un commit non-HEAD sans `rebase -i` (qui ouvre un éditeur, donc échoue sans terminal attaché — cas d'un agent automatisé). Technique : `reset --soft` vers la base commune, puis recommit un par un via `git show <hash>:<fichier>` pour reconstituer l'état intermédiaire de chaque commit. Déjà couvert : `rebase -i`/`reword` (méthode standard) dans `rebase.md`, `reset --soft` sur le dernier commit seulement dans `annuler-et-historique.md`. Pas couvert : l'utiliser sur plusieurs commits pour un reword ciblé sans éditeur — ajouté comme sous-section de `rebase.md` (juste après le rebase interactif, alternative au même besoin) plutôt qu'un nouveau chapitre, vu l'étroitesse du sujet.
+
 ## Nouvelle sous-section "Systèmes d'exploitation" + bug de fond mobile trouvé en vérifiant (2026-08-25)
 
 Nouvelle sous-section `Infrastructure & DevOps/Systèmes d'exploitation` (order 8), un seul chapitre `creer-un-systeme-d-exploitation.md` : de l'affichage d'un caractère (ASCII → glyphe → framebuffer) jusqu'au système de fenêtrage, renvoi vers osdev.org en fin de chapitre plutôt que de retraiter en détail ce que ce wiki couvre déjà. Placement (Infrastructure & DevOps plutôt que Fondamentaux, jugé trop grand public pour ce niveau de détail) tranché par Louis via question à choix. Traduit EN/ES/BR par 3 agents en parallèle (chantier de chapitre inédit, cf. mémoire long-terme dédiée), `node scripts/generate-struct.js` propre (liens internes validés).

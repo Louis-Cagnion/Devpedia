@@ -64,6 +64,26 @@ Chaque ligne peut être modifiée avant de sauvegarder :
 
 Utile par exemple pour nettoyer un historique de travail ("Corrige une typo", "Oups", "Vraiment corrige la typo cette fois") en un seul commit propre avant de le partager.
 
+## Reformuler sans éditeur interactif : `reset --soft` + recommit ciblé
+
+`rebase -i` ouvre un éditeur de texte interactif, ce qui échoue tel quel dans un contexte sans terminal attaché (script, CI, agent automatisé). Pour reformuler le message d'un commit qui n'est pas le dernier, sans passer par un éditeur, `git reset --soft` vers la base commune permet de tout remettre en scène puis de recommiter chaque commit un par un avec le bon message :
+
+```bash
+git reset --soft <commit-avant-le-plus-ancien-a-reformuler>
+git reset            # désempile tout (le dossier de travail garde l'état final)
+
+# pour chaque commit à recréer dans l'ordre d'origine :
+git show <ancien-hash-du-commit>:chemin/fichier.py > chemin/fichier.py  # remet CE fichier a son etat a ce commit-la
+git add chemin/fichier.py ...
+git commit -F message-corrige.txt   # jamais -m pour un message multi-ligne avec accents : voir plus bas
+```
+
+`git show <hash>:<chemin>` extrait le contenu d'un fichier tel qu'il était à un commit précis, ce qui permet de reconstituer l'état intermédiaire de chaque commit avant de le recommiter, y compris quand un même fichier a changé sur plusieurs des commits à reformuler.
+
+> **Note :** rédiger un message multi-ligne accentué directement dans `git commit -m "$(cat <<'EOF' ... EOF)"` (heredoc bash) est une source d'erreur fréquente : le message tapé « à la volée » dans un appel de commande retombe facilement sur une convention ASCII (ex. "vehicule" au lieu de "véhicule") sans que rien ne le signale. Écrire le message dans un fichier texte, le relire, puis `git commit -F fichier.txt` évite ce piège en séparant la rédaction de l'exécution de la commande.
+
+Cette méthode ne change ni le contenu ni l'ordre des commits, seulement leurs messages : c'est un `reword` manuel, plus verbeux que `rebase -i` mais utilisable sans aucune interaction humaine.
+
 ## La règle d'or : ne jamais rebaser un historique déjà partagé
 
 ```bash
