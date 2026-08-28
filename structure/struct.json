@@ -1529,6 +1529,17 @@
           ]
         },
         {
+          "id": "configuration-de-llms",
+          "label": "Configuration de LLMs",
+          "folder": "Configuration de LLMs",
+          "chapters": [
+            {
+              "id": "hooks",
+              "label": "Les hooks : automatiser un agent LLM à des points précis de son cycle de vie"
+            }
+          ]
+        },
+        {
           "id": "vision-et-ocr",
           "label": "Vision et OCR",
           "folder": "Vision et OCR",
