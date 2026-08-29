@@ -2,9 +2,11 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
-## Essais successifs sur PowerShell/Git, sur demande explicite de Louis (2026-08-29)
+## Essais successifs sur PowerShell/Git, jusqu'à validation par Louis (2026-08-29)
 
-Louis a demandé plusieurs variantes à la suite ("pour voir") plutôt que d'attendre un nouveau signalement à chaque fois : PowerShell "Power Shell" -> "Power-Shell" -> "PoweurShell" -> "Pow-eur-shell" ; Git "Gui te" -> "Gui-t" -> "Gui t'" -> retour à "Gui te". Non motivés par un mécanisme particulier identifié, simples essais à confirmer par écoute.
+Louis a demandé plusieurs variantes à la suite ("pour voir") plutôt que d'attendre un nouveau signalement à chaque fois : PowerShell "Power Shell" -> "Power-Shell" -> "PoweurShell" -> "Pow-eur-shell" -> "Powe-eur-shell" ; Git "Gui te" -> "Gui-t" -> "Gui t'" -> "Gui tte". Les deux dernières versions, testées par Louis lui-même (édition directe du fichier), sont confirmées correctes -- **prononciation de l'accueil validée** pour toutes les corrections du jour (sigles, UI/UX, Zsh, PowerShell, Git, Blockchain).
+
+Reste en attente : les chapitres Git/PHP/PowerShell/Zsh/HTML/CSS/Blockchain gardent l'ancienne prononciation dans leur audio pré-généré (seul l'accueil a été régénéré à chaque itération, sur consigne explicite de Louis) -- une régénération plus large de ces contextes reste à faire, maintenant que la table est stabilisée.
 
 ## Blockchain + Zsh en tiret (2026-08-29)
 
