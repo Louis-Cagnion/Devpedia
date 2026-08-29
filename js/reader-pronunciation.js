@@ -353,12 +353,12 @@ const OCAML_SPEECH = "O Caml";
 /* "Devpédia" is read "Deuvpédia" -- the plain "e" in "Dev" comes out as a schwa (Louis,
    2026-08-16). Respelled for speech only; fr content only, other languages write it unaccented. */
 const DEVPEDIA_SPEECH_FR = "Dévpédia";
-/* "PowerShell" blended into "powshell". Tried "Power Shell", "Power-Shell" -- "PoweurShell" being
-   tried next, on Louis's own request (29/08/2026). */
-const POWERSHELL_SPEECH = "PoweurShell";
-/* "Git" read "gi" (soft g, silent t). Tried "Guite" ("yite"), "G I T" (rejected), "Gui te",
-   "Gui-t" -- "Gui t'" being tried next, on Louis's own request (29/08/2026). */
-const GIT_SPEECH_FR = "Gui t'";
+/* "PowerShell" blended into "powshell". Tried "Power Shell", "Power-Shell", "PoweurShell" --
+   "Pow-eur-shell" being tried next, on Louis's own request (29/08/2026). */
+const POWERSHELL_SPEECH = "Pow-eur-shell";
+/* "Git" read "gi" (soft g, silent t). Tried "Guite" ("yite"), "G I T" (rejected), "Gui-t",
+   "Gui t'" -- settled back on "Gui te", on Louis's own request (29/08/2026). */
+const GIT_SPEECH_FR = "Gui te";
 /* Hyphenated rather than space-separated: confirmed more reliable for forcing a clean letter-by-
    letter break on this voice (Louis, 29/08/2026, after "U-I, U-X" fixed "UI/UX"). Not yet confirmed for Zsh specifically. */
 const ZSH_SPEECH_FR = "Z-S-H";

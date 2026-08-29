@@ -63,11 +63,11 @@ Test demandé à Louis avant de tenter un 3ᵉ correctif à l'aveugle (pour savo
 Signalé par Louis (29/08/2026) en plusieurs retours successifs (détail complet dans `journal-de-bord.md`). État actuel :
 - Sigles en MAJUSCULES (PHP, HTML, CI/CD...) : mécanisme générique `spellOutAcronymsFr()`, lettres séparées par un espace. **Confirmé fiable par Louis** : nouvelle règle standard pour tout nom à dire lettre par lettre -> tiret entre les lettres (ex. `Z-S-H`), pas simple espace.
 - UI/UX (cas spécifique) : `U-I, U-X`, confirmé bon à l'oreille.
-- PowerShell : `Power Shell` -> `Power-Shell` -> `PoweurShell` (essais successifs de Louis, "pour voir") : version actuelle, pas encore confirmée. Zsh (`Z-S-H`, tiret) : mis à jour préventivement, pas encore confirmé spécifiquement.
-- Git : `Guite` (raté) -> `G I T` (rejeté à l'oreille) -> `Gui te` -> `Gui-t` -> `Gui t'` (essais successifs de Louis, "pour voir") : version actuelle, pas encore confirmée.
+- PowerShell : `Power Shell` -> `Power-Shell` -> `PoweurShell` -> `Pow-eur-shell` (essais successifs de Louis, "pour voir") : version actuelle, pas encore confirmée. Zsh (`Z-S-H`, tiret) : mis à jour préventivement, pas encore confirmé spécifiquement.
+- Git : `Guite` (raté) -> `G I T` (rejeté à l'oreille) -> `Gui-t` -> `Gui t'` -> retour à `Gui te` (Louis a tranché) : version actuelle.
 - Blockchain : lu à la française -> respelé `Block cheine` (suggestion de Louis), pas encore confirmé.
 - **Important** : seul l'audio de l'accueil a été régénéré à chaque retouche (sur demande explicite de Louis) -- Git/PHP/PowerShell/Zsh/HTML/CSS/Blockchain restent datés avec l'ancienne prononciation tant qu'aucune régénération plus large n'est demandée. Un retour "toujours mal prononcé" doit d'abord faire vérifier que la page testée est bien l'accueil, pas un chapitre de ces sujets.
-- Reste à Louis : confirmer à l'oreille sur l'accueil PowerShell (`PoweurShell`), Git (`Gui t'`), Zsh, Blockchain.
+- Reste à Louis : confirmer à l'oreille sur l'accueil PowerShell (`Pow-eur-shell`), Git (`Gui te`), Zsh, Blockchain.
 - Reste à Louis : confirmer à l'oreille sur l'accueil, chaque point ci-dessus.
 
 ## 12. Section "Ce que couvre le site" de l'accueil : réécrite, à valider

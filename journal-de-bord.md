@@ -4,7 +4,7 @@ Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièg
 
 ## Essais successifs sur PowerShell/Git, sur demande explicite de Louis (2026-08-29)
 
-Louis a demandé plusieurs variantes à la suite ("pour voir") plutôt que d'attendre un nouveau signalement à chaque fois : PowerShell "Power Shell" -> "Power-Shell" -> "PoweurShell" ; Git "Gui te" -> "Gui-t" -> "Gui t'". Non motivés par un mécanisme particulier identifié, simples essais à confirmer par écoute.
+Louis a demandé plusieurs variantes à la suite ("pour voir") plutôt que d'attendre un nouveau signalement à chaque fois : PowerShell "Power Shell" -> "Power-Shell" -> "PoweurShell" -> "Pow-eur-shell" ; Git "Gui te" -> "Gui-t" -> "Gui t'" -> retour à "Gui te". Non motivés par un mécanisme particulier identifié, simples essais à confirmer par écoute.
 
 ## Blockchain + Zsh en tiret (2026-08-29)
 
