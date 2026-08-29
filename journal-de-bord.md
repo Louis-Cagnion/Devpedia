@@ -2,6 +2,12 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Liens manquants sur la réécriture + bug de prononciation des sigles séparés par "/" (2026-08-29)
+
+Louis a repéré, sur la réécriture de "Ce que couvre le site" du même jour, plusieurs sujets nommés en prose sans lien (réseaux, CI/CD, administration système, deep learning, NLP/LLM, vision et OCR, voix, production et gouvernance, authentification, sécurité offensive, unitaires/intégration/end-to-end/TDD) ainsi qu'"intelligence artificielle" qui avait perdu son lien en cours de réécriture. Chacun relié à un chapitre représentatif de son sujet, liens vérifiés (`node scripts/generate-struct.js`) et un lien testé en direct (`?c=securite` seul affiche une page "Description" générée automatiquement listant les sujets -- confirme qu'un lien de catégorie nue fonctionne même sans chapitre portant l'id de la catégorie).
+
+**Bug de prononciation trouvé au passage** : "UI/UX" lu "uzi/uzx". Cause : `spellOutAcronymsFr()` (ajouté plus tôt le même jour) épelait bien "UI" et "UX" séparément, mais laissait le "/" brut entre les deux, imprononçable. Une vingtaine d'autres sigles du site suivent le même schéma (`CI/CD`, `TCP/UDP`, `CER/WER`...) : généralisé plutôt que corrigé au cas par cas -- le motif reconnaît maintenant une chaîne de sigles séparés par "/", épelle chacun et les relie par une virgule ("CI/CD" -> "C I, C D").
+
 ## Section "Ce que couvre le site" réécrite + micro-ajustement scroll (2026-08-29)
 
 Section obsolète depuis l'ajout de nouveau contenu et de changements de structure (Sécurité, Tests, Blockchain, Gestion de projet et organisation absents ; profondeur IA/Infrastructure sous-représentée). Réécrite en listant les 11 catégories actuelles, liens vérifiés via `node scripts/generate-struct.js` (aucun cassé) et un lien testé en direct dans le navigateur. Audio FR de l'accueil régénéré en conséquence (texte changé). Fait en français uniquement pour l'instant, EN/ES/BR pas encore repris.

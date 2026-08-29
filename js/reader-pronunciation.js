@@ -430,13 +430,16 @@ const ARROW_SPEECH = {
     other: { fr: "puis", en: "then", es: "luego", br: "depois" },
 };
 
-/* Any standalone ALL-CAPS token (2+ letters, e.g. HTML/CSS/UI/UX/API) is spelled out by letter,
-   said that way even in French dev speech; new abbreviations need no table entry (Louis,
-   29/08/2026). Excludes short French conjunctions capitalized for emphasis ("en temps ET en mémoire"). */
-const ACRONYM_PATTERN = /\b[A-Z]{2,}\b/g;
+/* Any standalone ALL-CAPS token, or several joined by "/" (CI/CD, TCP/UDP...), is spelled out by
+   letter; a bare "/" left between two spelled-out acronyms was itself unreadable ("UI/UX" ->
+   "uzi/uzx", Louis, 29/08/2026). Excludes short French conjunctions capitalized for emphasis. */
+const ACRONYM_PATTERN = /\b[A-Z]{2,}(?:\/[A-Z]{2,})*\b/g;
 const ACRONYM_EXCLUDED_WORDS_FR = new Set(["ET", "OU", "NON", "SI", "MAIS", "DONC", "OR", "NI", "CAR"]);
+function spellOutSingleAcronym(word) {
+    return ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(" ");
+}
 function spellOutAcronymsFr(text) {
-    return text.replace(ACRONYM_PATTERN, word => (ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(" ")));
+    return text.replace(ACRONYM_PATTERN, match => match.split("/").map(spellOutSingleAcronym).join(", "));
 }
 
 function decodeSuperscript(run, lang) {
