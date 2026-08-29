@@ -36,7 +36,7 @@ X_entrainement, X_test, y_entrainement, y_test = train_test_split(X, y, test_siz
 
 A continuación, el modelo **solo** se evalúa con `X_test` / `y_test`, nunca con los datos que se han utilizado para entrenarlo.
 
-## Sobreaaprendizaje (*overfitting*) y subaprendizaje (*underfitting*)
+## Sobreajuste (*overfitting*) y subajuste (*underfitting*)
 
 | | Puntuación en el entrenamiento | Puntuación en la prueba |
 |---|---|---|
