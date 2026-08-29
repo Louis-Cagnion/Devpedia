@@ -360,7 +360,12 @@ const POWERSHELL_SPEECH = "Power Shell";
    like an acronym (rejected: not how it's said out loud) -- splitting it into two words forces
    the syllable break "Guite" alone didn't get (Louis, 29/08/2026, still not confirmed by ear). */
 const GIT_SPEECH_FR = "Gui te";
-const ZSH_SPEECH_FR = "Z S H";
+/* Hyphenated rather than space-separated: confirmed more reliable for forcing a clean letter-by-
+   letter break on this voice (Louis, 29/08/2026, after "U-I, U-X" fixed "UI/UX"). Not yet confirmed for Zsh specifically. */
+const ZSH_SPEECH_FR = "Z-S-H";
+/* "Blockchain" read with French vowel/consonant rules instead of English -- respelled with French
+   spelling conventions for the same sounds, on Louis's own suggestion (29/08/2026). */
+const BLOCKCHAIN_SPEECH_FR = "Block cheine";
 /* "cf." read as "confère" instead of two letters; "Ctrl" read as raw letters instead of
    "contrôle"; "shells" given an English plural "z" sound despite being an invariable loan-word
    here. All Louis, 2026-08-16 ("prompt" -- same report -- is handled separately below). */
@@ -418,6 +423,8 @@ const PROSE_SYMBOL_SPEECH = {
         "git": GIT_SPEECH_FR,
         "Zsh": ZSH_SPEECH_FR,
         "zsh": ZSH_SPEECH_FR,
+        "Blockchain": BLOCKCHAIN_SPEECH_FR,
+        "blockchain": BLOCKCHAIN_SPEECH_FR.toLowerCase(),
     },
     en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "↔": "linked to", "±": "plus or minus", "…": "", "^": POWER_OF_SPEECH.en.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
     es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "↔": "vinculado a", "±": "más o menos", "…": "", "^": POWER_OF_SPEECH.es.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },

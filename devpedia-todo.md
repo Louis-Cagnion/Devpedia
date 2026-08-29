@@ -59,13 +59,15 @@ Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `
 
 Test demandé à Louis avant de tenter un 3ᵉ correctif à l'aveugle (pour savoir si le bug dépend de la largeur mobile ou du moteur WebKit lui-même, indépendamment de la largeur) : sur la page d'un chapitre, bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement une fois en mode "version pour ordinateur" (toujours sur le téléphone). Si le test ne suffit pas à trancher, l'étape suivante est un accès à l'inspecteur Safari distant (via un Mac connecté à l'iPhone) plutôt que de continuer à deviner sans données réelles de l'appareil.
 
-## 11. Nouvelles corrections de prononciation FR à confirmer à l'oreille (5 retouches)
-Signalé par Louis (29/08/2026) en plusieurs retours successifs (détail complet dans `journal-de-bord.md`). État actuel après la 5ᵉ retouche :
-- Sigles en MAJUSCULES (PHP, HTML, CI/CD...) : mécanisme générique `spellOutAcronymsFr()`, lettres séparées par un espace.
-- UI/UX (cas spécifique, en dehors du mécanisme générique après deux échecs dessus) : `U-I, U-X` (tiret pour forcer la coupure).
-- PowerShell ("Power Shell"), Zsh (`Z S H`) : entrées dédiées, casse mixte non couverte par le mécanisme générique.
-- Git : `Guite` (raté, "yite") puis `G I T` (rejeté à l'oreille par Louis) puis `Gui te` (suggéré par Louis lui-même) : version actuelle, pas encore confirmée.
-- **Important** : seul l'audio de l'accueil a été régénéré à chaque retouche (sur demande explicite de Louis) -- Git/PHP/PowerShell/Zsh/HTML/CSS restent datés avec l'ancienne prononciation tant qu'aucune régénération plus large n'est demandée. Un retour "toujours mal prononcé" doit d'abord faire vérifier que la page testée est bien l'accueil, pas un chapitre de ces sujets.
+## 11. Nouvelles corrections de prononciation FR à confirmer à l'oreille (6 retouches)
+Signalé par Louis (29/08/2026) en plusieurs retours successifs (détail complet dans `journal-de-bord.md`). État actuel :
+- Sigles en MAJUSCULES (PHP, HTML, CI/CD...) : mécanisme générique `spellOutAcronymsFr()`, lettres séparées par un espace. **Confirmé fiable par Louis** : nouvelle règle standard pour tout nom à dire lettre par lettre -> tiret entre les lettres (ex. `Z-S-H`), pas simple espace.
+- UI/UX (cas spécifique) : `U-I, U-X`, confirmé bon à l'oreille.
+- PowerShell ("Power Shell") : entrée dédiée. Zsh (`Z-S-H`, tiret) : mis à jour préventivement, pas encore confirmé spécifiquement.
+- Git : `Guite` (raté) puis `G I T` (rejeté à l'oreille) puis `Gui te` (suggéré par Louis) : version actuelle, pas encore confirmée.
+- Blockchain : lu à la française -> respelé `Block cheine` (suggestion de Louis), pas encore confirmé.
+- **Important** : seul l'audio de l'accueil a été régénéré à chaque retouche (sur demande explicite de Louis) -- Git/PHP/PowerShell/Zsh/HTML/CSS/Blockchain restent datés avec l'ancienne prononciation tant qu'aucune régénération plus large n'est demandée. Un retour "toujours mal prononcé" doit d'abord faire vérifier que la page testée est bien l'accueil, pas un chapitre de ces sujets.
+- Reste à Louis : confirmer à l'oreille sur l'accueil Zsh, Git, Blockchain.
 - Reste à Louis : confirmer à l'oreille sur l'accueil, chaque point ci-dessus.
 
 ## 12. Section "Ce que couvre le site" de l'accueil : réécrite, à valider

@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Blockchain + Zsh en tiret (2026-08-29)
+
+Après le succès du tiret sur UI/UX, Louis a validé cette technique comme fiable pour tout nom à dire lettre par lettre ("tu peux reprendre la même structure") : Zsh passé de `Z S H` (espace) à `Z-S-H` (tiret), pas encore confirmé spécifiquement mais préventif plutôt que d'attendre un retour négatif. "Blockchain" signalé lu à la française plutôt qu'à l'anglaise : respelé "Block cheine" (suggestion de Louis), pas un cas de lettres séparées mais même famille de correctifs (PowerShell, OCaml).
+
 ## UI/UX : 5e retouche, cas spécial au lieu d'une règle générale (2026-08-29)
 
 "UI/UX" restait "usi/utix" même avec l'espace restauré (identique au tout premier essai). Contrairement aux tentatives précédentes qui touchaient le mécanisme générique (`spellOutAcronymsFr()`) et risquaient de régresser HTML/CSS à chaque fois, cette fois traité comme un cas spécial isolé : un tiret entre les deux lettres de chaque moitié ("U-I, U-X"), même technique que "dé-référenc" pour "déréférencement". Le mécanisme générique (espace) reste inchangé pour tous les autres sigles.
