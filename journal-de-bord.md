@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Surlignage figé en bas de page après une lecture complète (2026-08-29)
+
+Signalé par Louis : après une lecture qui va jusqu'au bout de la page, cliquer sur "Écouter cette page" laissait le surlignage figé en bas, sur le dernier mot. Cause : la branche de fin de plan de `speakNext()` (`js/reader.js`) ne faisait ni `clearHighlight()` ni scroll, contrairement à la branche "pause" juste en dessous qui fait les deux. Le scroll restait donc calé sur le dernier paragraphe, et `startFromVisible()` (bouton "Écouter cette page") relit alors ce même dernier paragraphe via `findVisibleEntryIndex()`, donnant l'impression que ça ne bouge plus. Corrigé en alignant cette branche sur celle du dessous : `clearHighlight()` + scroll vers le tout premier élément du plan.
+
 ## Audio pré-généré pas vraiment prioritaire au démarrage (2026-08-29)
 
 Demandé par Louis : que l'audio pré-généré (voix Piper) soit réellement la voix par défaut. Jusque-là, `buildReadingPlan()` lançait le fetch du mp3/json en arrière-plan sans l'attendre : un clic sur lecture juste après le chargement de la page pouvait démarrer sur la synthèse live (voix robot) le temps que le fetch réponde, puis basculer sur le pregen pour les entrées suivantes -- changement de voix en plein milieu. Corrigé : les 4 points d'entrée qui démarrent/reprennent la lecture depuis un état arrêté (`startReading`, `startFromVisible`, `resumeReading`, `continueAfterCode`) attendent désormais le chargement (borné à 3s pour ne pas bloquer indéfiniment sur un réseau mort) avant de choisir le moteur. Un garde sur `generation` évite qu'un clic suivi d'une navigation pendant l'attente ne relance la lecture sur la mauvaise page.

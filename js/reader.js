@@ -527,6 +527,11 @@ function speakNext() {
     if (planIndex >= plan.length) {
         isPlaying = false;
         isPausedAtCode = false;
+        clearHighlight();
+        /* Without this, the viewport stays scrolled to the last paragraph: startFromVisible()
+           ("Écouter cette page") would then read findVisibleEntryIndex() as the very last entry
+           and immediately re-read just that one, looking stuck there (Louis, 29/08/2026). */
+        (plan[0]?.group ?? plan[0]?.element)?.scrollIntoView({ behavior: "smooth", block: "start" });
         notify();
         completionListeners.forEach(listener => listener());
         return;
