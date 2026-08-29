@@ -610,7 +610,8 @@ function speakNextViaAudio(entry) {
     const entryEndSeconds = entryStartSeconds + entry.durationMs / 1000;
     const withinEntry = audioEl.currentTime >= entryStartSeconds && audioEl.currentTime < entryEndSeconds;
     const offsetMs = withinEntry ? (audioEl.currentTime - entryStartSeconds) * 1000 : 0;
-    scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs, offsetMs);
+    // Divided by readerRate: these are clip-content ms, but the scheduled setTimeouts are wall-clock (Louis, 29/08/2026).
+    scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs / readerRate, offsetMs / readerRate);
 
     const play = () => {
         if (generation !== myGeneration) return;

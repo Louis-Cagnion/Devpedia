@@ -356,11 +356,10 @@ const DEVPEDIA_SPEECH_FR = "Dévpédia";
 /* "PowerShell" blended into "powshell" -- forced apart into its two real words, same fix family
    as OCaml above (Louis, 29/08/2026). */
 const POWERSHELL_SPEECH = "Power Shell";
-/* "Git" read "gi" (soft g, silent t). A phonetic respelling ("Guite") was tried first but came out
-   "yite" (hard g lost anyway on this voice) -- spelled out by letter instead, like PHP/HTML,
-   even though that's not how it's said out loud (Louis, 29/08/2026). "Zsh" read as an attempted
-   word instead of its own letters too -- same treatment, on Louis's own request. */
-const GIT_SPEECH_FR = "G I T";
+/* "Git" read "gi" (soft g, silent t). Tried "Guite" (came out "yite"), then spelled by letter
+   like an acronym (rejected: not how it's said out loud) -- splitting it into two words forces
+   the syllable break "Guite" alone didn't get (Louis, 29/08/2026, still not confirmed by ear). */
+const GIT_SPEECH_FR = "Gui te";
 const ZSH_SPEECH_FR = "Z S H";
 /* "cf." read as "confère" instead of two letters; "Ctrl" read as raw letters instead of
    "contrôle"; "shells" given an English plural "z" sound despite being an invariable loan-word
@@ -435,12 +434,12 @@ const ARROW_SPEECH = {
 };
 
 /* Any standalone ALL-CAPS token, or several joined by "/" (CI/CD, TCP/UDP...), is spelled out by
-   letter, comma between each: a plain space still blended short vowel-heavy pairs ("UI" -> "usi",
-   Louis, 29/08/2026). Excludes short French conjunctions capitalized for emphasis. */
+   letter. A comma between every letter, tried for a 2-letter pair still blending ("UI" -> "usi"),
+   broke longer ones like HTML/CSS instead (Louis, 29/08/2026) -- reverted to a plain space. */
 const ACRONYM_PATTERN = /\b[A-Z]{2,}(?:\/[A-Z]{2,})*\b/g;
 const ACRONYM_EXCLUDED_WORDS_FR = new Set(["ET", "OU", "NON", "SI", "MAIS", "DONC", "OR", "NI", "CAR"]);
 function spellOutSingleAcronym(word) {
-    return ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(", ");
+    return ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(" ");
 }
 function spellOutAcronymsFr(text) {
     return text.replace(ACRONYM_PATTERN, match => match.split("/").map(spellOutSingleAcronym).join(", "));
