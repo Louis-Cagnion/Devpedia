@@ -357,6 +357,8 @@ const DEVPEDIA_SPEECH_FR = "Dévpédia";
    "GUI"/"CLI" in prose (le-terminal.md, outside any code span), Louis, 2026-08-16. */
 const GUI_SPEECH = "G U I";
 const CLI_SPEECH = "C L I";
+/* "PHP" read as a blended made-up word instead of its own letters (Louis, 29/08/2026). */
+const PHP_SPEECH = "P H P";
 /* "cf." read as "confère" instead of two letters; "Ctrl" read as raw letters instead of
    "contrôle"; "shells" given an English plural "z" sound despite being an invariable loan-word
    here. All Louis, 2026-08-16 ("prompt" -- same report -- is handled separately below). */
@@ -406,6 +408,7 @@ const PROSE_SYMBOL_SPEECH = {
         "Devpédia": DEVPEDIA_SPEECH_FR,
         "GUI": GUI_SPEECH,
         "CLI": CLI_SPEECH,
+        "PHP": PHP_SPEECH,
         "cf.": CF_SPEECH_FR,
         "Ctrl": CTRL_SPEECH_FR,
         "Shells": SHELL_SPEECH_FR,
