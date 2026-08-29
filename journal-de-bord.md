@@ -2,6 +2,15 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Suite de l'audit : boutons toujours désynchronisés en changeant de paragraphe (2026-08-29)
+
+Le premier correctif de l'audit (`play()` rejeté) n'a pas suffi : Louis a retesté et le bouton play/pause repassait sur "Reprendre" en cliquant "paragraphe suivant/précédent" alors que la voix continuait de lire. Signalé aussi : le surlignage se bloque en général entre deux sections de lecture séparées par de la ponctuation, pas seulement en entrant dans un tableau.
+
+**Root cause commune aux deux symptômes**, tous deux dans `js/reader.js`/`js/reader-highlight.js` :
+1. `audioEl.pause()` déclenche son événement `pause` de façon asynchrone (mise en file, pas synchrone -- spec HTML), jamais synchrone. Un saut de paragraphe appelle `cancelCurrentUtterance()` (qui pause l'ancien) puis relance immédiatement la lecture de la nouvelle entrée ; l'événement `pause` de l'ANCIEN arrive parfois APRÈS que la NOUVELLE ait déjà démarré, et l'écouteur générique (qui ne se fiait qu'à `isPlaying`) le classait à tort comme une coupure externe de la lecture EN COURS. Corrigé par `pauseAudioEl()` : marque explicitement qu'un `pause()` est attendu avant de l'appeler, au lieu de le déduire après coup d'`isPlaying` (qui a déjà été remis à `true` pour la nouvelle entrée le temps que l'événement arrive).
+2. Distinction affinée sur le premier correctif de l'audit : seul `NotAllowedError` (autoplay vraiment bloqué) signifie que rien ne joue réellement -- un `AbortError` (seek/pause qui se chevauchent, typiquement pendant un saut de paragraphe) ne l'implique pas, la voix continue. Retomber sur "en pause" pour ce cas-là désynchronisait le bouton d'une lecture pourtant toujours active.
+3. `scheduleEstimatedWords()` avait déjà son propre risque de minuteur périmé (corrigé dans la foulée) : son garde comparait `highlightedTarget` (partagé par toutes les entrées d'une même ligne de tableau) au lieu de `entry.words` lui-même, laissant un minuteur d'une entrée antérieure de la même ligne corrompre le surlignage d'une entrée plus récente -- exactement le "surlignage bloqué entre deux sections séparées par une ponctuation" signalé en général, pas seulement aux tables.
+
 ## Audit demandé par Louis : boutons désynchronisés de la voix (2026-08-29)
 
 Louis, frustré après plusieurs correctifs ponctuels dans la journée : "les boutons ne sont absolument pas synchronisés avec la voix, il faut vraiment que tu fasses un audit". Relecture ciblée de `js/reader.js` sur la synchronisation état interne (`isPlaying`/`isPaused`) ↔ moteur audio réel, plutôt qu'un nouveau correctif isolé.

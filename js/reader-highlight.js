@@ -186,9 +186,9 @@ export function scheduleEstimatedWords(entry, isStillCurrent, knownDurationMs = 
         const effectiveRate = rate * (1 + maxAcceleration * progress);
         const delayMs = cumulativeMs - startOffsetMs;
         setTimeout(() => {
-            /* A short entry can hand the highlight to the next one before all its own timers
-               fire -- without this check, a late timer would move the highlight on the wrong entry. */
-            if (isStillCurrent() && highlightedTarget === entry.highlightTarget) setActiveWord(index);
+            // Checked against entry.words, not highlightedTarget: a table row's entries share one
+            // target, so a stale timer from an earlier one there could otherwise still pass (Louis, 29/08/2026).
+            if (isStillCurrent() && highlightedWords === entry.words) setActiveWord(index);
         }, delayMs);
         // +1 for the space following the word, matching the gap the old char-index math counted.
         // `word` is null for a connector/label with no real DOM word (reader-table.js): nominal length.

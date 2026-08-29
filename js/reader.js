@@ -119,7 +119,7 @@ export async function playAutoAdvanceSilence(onEnded) {
 /** @brief Stops a playAutoAdvanceSilence() in progress, if any, without calling its `onEnded`. */
 export function stopAutoAdvanceSilence() {
     silenceAbortController?.abort();
-    audioEl.pause();
+    pauseAudioEl();
 }
 
 /* The current "speak" entry's own end position in audioEl's timeline (seconds), or null when
@@ -151,17 +151,33 @@ audioEl.addEventListener("timeupdate", () => {
     speakNext();
 });
 
+/* pause()'s "pause" event is queued, not synchronous: from a jump it can fire only after the next
+   entry already started, wrongly reporting a still-playing voice as externally paused (Louis,
+   29/08/2026). Marking it expected up front survives that reordering; inferring it from isPlaying afterward doesn't. */
+let expectingPause = false;
+function pauseAudioEl() {
+    expectingPause = true;
+    audioEl.pause();
+}
+
 /* iOS can silently stop audioEl on its own (screen lock, backgrounding, a call coming in...)
-   without ever going through pauseReading()/cancelCurrentUtterance() -- every self-initiated pause
-   sets isPlaying false before calling audioEl.pause(), so isPlaying still being true here is exactly
-   what marks this one as external, and the cue to resync state once the page wakes back up. */
+   without ever going through pauseAudioEl() -- exactly the case this still needs to catch. */
 audioEl.addEventListener("pause", () => {
-    logEvent("audioEl:pause", isPlaying ? "(external)" : "(self)");
+    if (expectingPause) {
+        expectingPause = false;
+        logEvent("audioEl:pause", "(self)");
+        return;
+    }
+    logEvent("audioEl:pause", "(external)");
     if (!isPlaying) return;
     isPlaying = false;
     isPaused = true;
     notify();
 });
+// A pause() call that doesn't actually change anything (already paused) never fires "pause" --
+// clearing the flag on the next real "playing" keeps a stale expectation from eating a later,
+// genuinely external pause.
+audioEl.addEventListener("playing", () => { expectingPause = false; });
 
 // Purely diagnostic (cf. js/reader-debug.js): no state changes, just a timeline of what audioEl did.
 ["play", "playing", "stalled", "suspend", "waiting", "ended", "seeking", "seeked"].forEach(type =>
@@ -371,7 +387,7 @@ export function collectSegments(root, lang, context, pageId, entries) {
 function cancelCurrentUtterance() {
     generation++;
     if (SPEECH_SUPPORTED) synth.cancel();
-    audioEl.pause();
+    pauseAudioEl();
     currentEntryEndSeconds = null;
 }
 
@@ -551,7 +567,7 @@ function speakNext() {
     if (entry.kind === "pause") {
         isPlaying = false;
         isPausedAtCode = true;
-        audioEl.pause();
+        pauseAudioEl();
         clearHighlight();
         entry.element.scrollIntoView({ behavior: "smooth", block: "center" });
         notify();
@@ -601,11 +617,11 @@ function speakNextViaAudio(entry) {
         if (generation !== myGeneration) return;
         audioEl.play().catch(err => {
             logEvent("audioEl:play-rejected", err.message);
-            /* A rejected play() (e.g. autoplay blocked after an async gap consumed the user
-               gesture, cf. waitForPregenAudio()) otherwise leaves isPlaying stuck true forever --
-               nothing plays, but every button still reads "Pause" (Louis, 29/08/2026). Falling
-               back to "paused" lets the next tap on "Reprendre" retry with a fresh gesture. */
-            if (generation !== myGeneration) return;
+            /* Only NotAllowedError (autoplay actually blocked) means nothing is really playing --
+               an AbortError from an overlapping seek/pause (e.g. a quick paragraph jump) doesn't;
+               audio keeps flowing, so falling back to "paused" here would desync the button from
+               a voice that's still reading (Louis, 29/08/2026). */
+            if (generation !== myGeneration || err.name !== "NotAllowedError") return;
             isPlaying = false;
             isPaused = true;
             notify();
