@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Essais à l'aveugle sur PowerShell/Git, sur demande explicite de Louis (2026-08-29)
+
+Louis a demandé d'essayer directement deux nouvelles variantes ("pour voir") plutôt que d'attendre un nouveau signalement : "Power-Shell" (tiret, au lieu de "Power Shell") et "Gui-t" (tiret sans e final, au lieu de "Gui te") pour Git. Non motivés par un mécanisme particulier, simples essais à confirmer par écoute.
+
 ## Blockchain + Zsh en tiret (2026-08-29)
 
 Après le succès du tiret sur UI/UX, Louis a validé cette technique comme fiable pour tout nom à dire lettre par lettre ("tu peux reprendre la même structure") : Zsh passé de `Z S H` (espace) à `Z-S-H` (tiret), pas encore confirmé spécifiquement mais préventif plutôt que d'attendre un retour négatif. "Blockchain" signalé lu à la française plutôt qu'à l'anglaise : respelé "Block cheine" (suggestion de Louis), pas un cas de lettres séparées mais même famille de correctifs (PowerShell, OCaml).
