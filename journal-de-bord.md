@@ -2,6 +2,12 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Section "Ce que couvre le site" réécrite + micro-ajustement scroll (2026-08-29)
+
+Section obsolète depuis l'ajout de nouveau contenu et de changements de structure (Sécurité, Tests, Blockchain, Gestion de projet et organisation absents ; profondeur IA/Infrastructure sous-représentée). Réécrite en listant les 11 catégories actuelles, liens vérifiés via `node scripts/generate-struct.js` (aucun cassé) et un lien testé en direct dans le navigateur. Audio FR de l'accueil régénéré en conséquence (texte changé). Fait en français uniquement pour l'instant, EN/ES/BR pas encore repris.
+
+Micro-ajustement demandé par Louis sur le correctif "surlignage figé en bas de page" du même jour : retiré le scroll automatique vers le haut à la fin naturelle d'une lecture (`speakNext()`, `js/reader.js`) -- le `clearHighlight()` reste, mais la page ne bouge plus toute seule ; seul "Lire depuis le début" doit ramener en haut.
+
 ## Suite de l'audit : boutons toujours désynchronisés en changeant de paragraphe (2026-08-29)
 
 Le premier correctif de l'audit (`play()` rejeté) n'a pas suffi : Louis a retesté et le bouton play/pause repassait sur "Reprendre" en cliquant "paragraphe suivant/précédent" alors que la voix continuait de lire. Signalé aussi : le surlignage se bloque en général entre deux sections de lecture séparées par de la ponctuation, pas seulement en entrant dans un tableau.

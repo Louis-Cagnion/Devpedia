@@ -555,10 +555,9 @@ function speakNext() {
         isPlaying = false;
         isPausedAtCode = false;
         clearHighlight();
-        /* Without this, the viewport stays scrolled to the last paragraph: startFromVisible()
-           ("Écouter cette page") would then read findVisibleEntryIndex() as the very last entry
-           and immediately re-read just that one, looking stuck there (Louis, 29/08/2026). */
-        (plan[0]?.group ?? plan[0]?.element)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        /* Deliberately no scroll-to-top here: Louis wants the page to stay where it is once the
+           chapter finishes, only "Lire depuis le début" (startReading()) returns to the top
+           (29/08/2026). "Écouter cette page" resuming near the end right after is expected. */
         notify();
         completionListeners.forEach(listener => listener());
         return;

@@ -59,9 +59,9 @@ Test demandé à Louis avant de tenter un 3ᵉ correctif à l'aveugle (pour savo
 Signalé par Louis (29/08/2026) : PHP lu en un mot au lieu des lettres, PowerShell lu "powshell", Git lu "gi". Corrigé le même jour (détail dans `journal-de-bord.md`) : mécanisme générique `spellOutAcronymsFr()` (tout sigle en MAJUSCULES épelé lettre par lettre, plus besoin d'entrée au cas par cas) + PowerShell/Git respelés individuellement.
 - Reste à Louis : confirmer à l'oreille PHP (`P H P`), PowerShell (`Power Shell`) et surtout Git (`Guite`, respelling le moins sûr des trois) ; signaler aussi tout autre sigle qui sonnerait encore mal malgré le nouveau mécanisme général.
 
-## 11. Section "Ce que couvre le site" de l'accueil obsolète
-Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de structure de projet se sont accumulés depuis la dernière rédaction de cette section (`content/acceuil.md`).
-- Reste à faire : relire la section, l'aligner sur la structure/le contenu actuels du site.
+## 11. Section "Ce que couvre le site" de l'accueil : réécrite, à valider
+Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de structure de projet s'étaient accumulés depuis la dernière rédaction. Réécrite (`content/acceuil.md`) pour couvrir les 11 catégories actuelles (Sécurité, Tests, Blockchain, Gestion de projet et organisation, et la profondeur IA/Infrastructure ajoutées depuis n'étaient pas mentionnées) ; liens vérifiés (`node scripts/generate-struct.js`, aucun lien cassé) et un cliqué en direct. Audio FR régénéré en conséquence.
+- Reste à Louis : relire le choix des sujets mis en avant et la formulation, en français uniquement pour l'instant (EN/ES/BR pas encore mis à jour).
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 10 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
