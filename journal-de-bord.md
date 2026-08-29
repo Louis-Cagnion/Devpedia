@@ -2,6 +2,15 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Prononciation FR : 2e et 3e retouches après écoute de Louis (2026-08-29)
+
+Suite du chantier prononciation du jour, deux nouveaux retours à l'oreille de Louis après déploiement :
+- "UI/UX" toujours mal ("usi/utix" au lieu d'"uzi/uzx" précédemment) : un simple espace entre les lettres épelées ne suffisait pas à séparer des paires courtes et très vocaliques ("U I"). Remplacé par une virgule entre CHAQUE lettre (`spellOutSingleAcronym()`, `js/reader-pronunciation.js`), pas seulement entre les sigles d'une chaîne séparée par "/".
+- "Guite" (respelling de "Git" tenté plus tôt) prononcé "yite" : le "gu" n'a pas forcé le g dur sur cette voix, contrairement à l'hypothèse phonétique de départ. Abandon du respelling, "Git" épelé lettre par lettre comme un sigle (`G I T`) même si ce n'est pas ainsi qu'il se dit à l'oral -- accepté comme compromis après un respelling raté.
+- "Zsh" lu comme un mot tenté au lieu de ses lettres, signalé directement par Louis (pas une observation de code) : même traitement lettre par lettre (`Z S H`), "Zsh"/"zsh" ajoutés à la table.
+
+Aucun de ces trois n'est confirmé à l'oreille pour l'instant (juste déployé).
+
 ## Liens manquants sur la réécriture + bug de prononciation des sigles séparés par "/" (2026-08-29)
 
 Louis a repéré, sur la réécriture de "Ce que couvre le site" du même jour, plusieurs sujets nommés en prose sans lien (réseaux, CI/CD, administration système, deep learning, NLP/LLM, vision et OCR, voix, production et gouvernance, authentification, sécurité offensive, unitaires/intégration/end-to-end/TDD) ainsi qu'"intelligence artificielle" qui avait perdu son lien en cours de réécriture. Chacun relié à un chapitre représentatif de son sujet, liens vérifiés (`node scripts/generate-struct.js`) et un lien testé en direct (`?c=securite` seul affiche une page "Description" générée automatiquement listant les sujets -- confirme qu'un lien de catégorie nue fonctionne même sans chapitre portant l'id de la catégorie).

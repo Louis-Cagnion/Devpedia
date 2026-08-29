@@ -356,10 +356,12 @@ const DEVPEDIA_SPEECH_FR = "Dévpédia";
 /* "PowerShell" blended into "powshell" -- forced apart into its two real words, same fix family
    as OCaml above (Louis, 29/08/2026). */
 const POWERSHELL_SPEECH = "Power Shell";
-/* "Git" read "gi" (soft g, silent t): "gu" before "i" forces the hard g, trailing mute "e" forces
-   the t to sound (same trick as "prompt" -> "prompte" below, cf. "petit"/"petite"). Said as one
-   word, not spelled by letter like PHP/HTML. Best-effort respelling, not yet confirmed by ear. */
-const GIT_SPEECH_FR = "Guite";
+/* "Git" read "gi" (soft g, silent t). A phonetic respelling ("Guite") was tried first but came out
+   "yite" (hard g lost anyway on this voice) -- spelled out by letter instead, like PHP/HTML,
+   even though that's not how it's said out loud (Louis, 29/08/2026). "Zsh" read as an attempted
+   word instead of its own letters too -- same treatment, on Louis's own request. */
+const GIT_SPEECH_FR = "G I T";
+const ZSH_SPEECH_FR = "Z S H";
 /* "cf." read as "confère" instead of two letters; "Ctrl" read as raw letters instead of
    "contrôle"; "shells" given an English plural "z" sound despite being an invariable loan-word
    here. All Louis, 2026-08-16 ("prompt" -- same report -- is handled separately below). */
@@ -415,6 +417,8 @@ const PROSE_SYMBOL_SPEECH = {
         "powershell": POWERSHELL_SPEECH,
         "Git": GIT_SPEECH_FR,
         "git": GIT_SPEECH_FR,
+        "Zsh": ZSH_SPEECH_FR,
+        "zsh": ZSH_SPEECH_FR,
     },
     en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "↔": "linked to", "±": "plus or minus", "…": "", "^": POWER_OF_SPEECH.en.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
     es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "↔": "vinculado a", "±": "más o menos", "…": "", "^": POWER_OF_SPEECH.es.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
@@ -431,12 +435,12 @@ const ARROW_SPEECH = {
 };
 
 /* Any standalone ALL-CAPS token, or several joined by "/" (CI/CD, TCP/UDP...), is spelled out by
-   letter; a bare "/" left between two spelled-out acronyms was itself unreadable ("UI/UX" ->
-   "uzi/uzx", Louis, 29/08/2026). Excludes short French conjunctions capitalized for emphasis. */
+   letter, comma between each: a plain space still blended short vowel-heavy pairs ("UI" -> "usi",
+   Louis, 29/08/2026). Excludes short French conjunctions capitalized for emphasis. */
 const ACRONYM_PATTERN = /\b[A-Z]{2,}(?:\/[A-Z]{2,})*\b/g;
 const ACRONYM_EXCLUDED_WORDS_FR = new Set(["ET", "OU", "NON", "SI", "MAIS", "DONC", "OR", "NI", "CAR"]);
 function spellOutSingleAcronym(word) {
-    return ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(" ");
+    return ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(", ");
 }
 function spellOutAcronymsFr(text) {
     return text.replace(ACRONYM_PATTERN, match => match.split("/").map(spellOutSingleAcronym).join(", "));
