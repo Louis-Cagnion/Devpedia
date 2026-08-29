@@ -2,9 +2,9 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
-## Essais à l'aveugle sur PowerShell/Git, sur demande explicite de Louis (2026-08-29)
+## Essais successifs sur PowerShell/Git, sur demande explicite de Louis (2026-08-29)
 
-Louis a demandé d'essayer directement deux nouvelles variantes ("pour voir") plutôt que d'attendre un nouveau signalement : "Power-Shell" (tiret, au lieu de "Power Shell") et "Gui-t" (tiret sans e final, au lieu de "Gui te") pour Git. Non motivés par un mécanisme particulier, simples essais à confirmer par écoute.
+Louis a demandé plusieurs variantes à la suite ("pour voir") plutôt que d'attendre un nouveau signalement à chaque fois : PowerShell "Power Shell" -> "Power-Shell" -> "PoweurShell" ; Git "Gui te" -> "Gui-t" -> "Gui t'". Non motivés par un mécanisme particulier identifié, simples essais à confirmer par écoute.
 
 ## Blockchain + Zsh en tiret (2026-08-29)
 
