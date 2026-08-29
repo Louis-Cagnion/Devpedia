@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Audio pré-généré pas vraiment prioritaire au démarrage (2026-08-29)
+
+Demandé par Louis : que l'audio pré-généré (voix Piper) soit réellement la voix par défaut. Jusque-là, `buildReadingPlan()` lançait le fetch du mp3/json en arrière-plan sans l'attendre : un clic sur lecture juste après le chargement de la page pouvait démarrer sur la synthèse live (voix robot) le temps que le fetch réponde, puis basculer sur le pregen pour les entrées suivantes -- changement de voix en plein milieu. Corrigé : les 4 points d'entrée qui démarrent/reprennent la lecture depuis un état arrêté (`startReading`, `startFromVisible`, `resumeReading`, `continueAfterCode`) attendent désormais le chargement (borné à 3s pour ne pas bloquer indéfiniment sur un réseau mort) avant de choisir le moteur. Un garde sur `generation` évite qu'un clic suivi d'une navigation pendant l'attente ne relance la lecture sur la mauvaise page.
+
 ## Voix bloquée sur le tableau de l'accueil : bug Chrome + accueil jamais pré-généré (2026-08-29)
 
 Signalé par Louis en testant l'audio français fraîchement généré : la lecture se bloquait sur le tableau "Par où commencer ?" de l'accueil, sans erreur console. Reproduit en local (serveur statique + Chrome) : `speechSynthesis.speaking`/`pending` tombaient à `false` sans jamais déclencher `onend`/`onerror`, sur les deux lignes du tableau indépendamment de leur contenu (pas spécifique au lien "Bases de l'informatique" suspecté au départ).

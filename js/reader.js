@@ -476,7 +476,18 @@ export function buildReadingPlan(pageDiv) {
     collectSegments(pageDiv, document.documentElement.lang || "fr", context, appState.curPageId, entries);
     plan = collapseConsecutivePauses(entries);
     notify();
-    loadPregenAudio(plan);
+    pregenAudioReady = loadPregenAudio(plan);
+}
+
+/* Pregen audio is the preferred voice (Piper, not the browser's robotic one), but its fetch is
+   async: without this, pressing play right after a page loads could start speaking through
+   speechSynthesis, then switch voices mid-page once the fetch resolves a moment later (Louis,
+   29/08/2026). Every entry point that starts/resumes speech from a stopped state awaits this
+   (bounded, so a stalled fetch can't hang playback forever) before deciding which engine to use. */
+const PREGEN_AUDIO_WAIT_MS = 3000;
+let pregenAudioReady = Promise.resolve();
+function waitForPregenAudio() {
+    return Promise.race([pregenAudioReady, new Promise(resolve => setTimeout(resolve, PREGEN_AUDIO_WAIT_MS))]);
 }
 
 /** @brief Stops any reading in progress and rewinds to the start of the current plan, without discarding it. */
@@ -499,8 +510,11 @@ function canPlay() {
 }
 
 /** @brief Resumes reading after pauseReading(), re-speaking the clause `planIndex` still points at. */
-export function resumeReading() {
+export async function resumeReading() {
     if (!canPlay()) return;
+    const myGeneration = generation;
+    await waitForPregenAudio();
+    if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     isPaused = false;
     speakNext();
 }
@@ -650,9 +664,12 @@ function speakNextViaSynthesis(entry, isRetry = false) {
 }
 
 /** @brief Restarts reading from the beginning of the plan. Called by the "Lire depuis le début" button. */
-export function startReading() {
+export async function startReading() {
     if (!canPlay()) return;
     resetPlayback();
+    const myGeneration = generation;
+    await waitForPregenAudio();
+    if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
 }
 
@@ -695,19 +712,25 @@ function findVisibleEntryIndex() {
 }
 
 /** @brief Starts reading from whichever paragraph is currently at the top of the screen. */
-export function startFromVisible() {
+export async function startFromVisible() {
     if (!canPlay()) return;
     resetPlayback();
     const index = findVisibleEntryIndex();
     plan[index]?.group?.scrollIntoView({ behavior: "smooth", block: "start" });
     planIndex = index;
+    const myGeneration = generation;
+    await waitForPregenAudio();
+    if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
 }
 
 /** @brief Resumes reading past a paused code block. Called by the "Continuer" button. */
-export function continueAfterCode() {
+export async function continueAfterCode() {
     if (!isPausedAtCode) return;
     planIndex++;
+    const myGeneration = generation;
+    await waitForPregenAudio();
+    if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
 }
 
