@@ -2,6 +2,18 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Fin de journée sur la lecture audio : pauses aux clauses, FR pregen-only, nouveau chapitre (2026-08-29)
+
+**Pause de lecture aux clauses (parenthèses, virgules...) enfin audible en pré-généré** : `splitIntoClauses()` (23/08) ne faisait que découper le texte/surlignage, jamais insérer de vrai silence -- les clips restaient concaténés bout à bout sans aucun blanc (Louis : "la voix ne fait pas de pause en croisant une parenthèse"). Ajout de `getClausePauseClip()`/`CLAUSE_PAUSE_MS` (`scripts/generate-audio.mjs`, 180ms de silence généré une fois par run, inséré entre deux entrées consécutives d'un même paragraphe). Validé à l'oreille par Louis sur `code-programmes-et-fichiers`.
+
+**Plus de repli sur la voix du navigateur pour le français** : après plusieurs confusions du jour entre voix Piper et voix robot (accueil, SQL), Louis a tranché : "retire toute voix qui n'est pas pregenérée" (scope précisé : FR seulement, EN/ES/BR gardent le repli). `canPlay()`/`speakNext()` (`js/reader.js`) exigent maintenant l'audio pré-généré pour une page FR ; `hasPlan` reflète cette contrainte (bouton désactivé plutôt qu'un clic silencieux qui ne fait rien). Conséquence assumée : une page FR sans audio à jour ne lit plus rien du tout tant qu'elle n'est pas régénérée (au lieu de lire avec la mauvaise voix).
+
+**Nouveau chapitre "Le serveur local"** (`content/Fondamentaux/Bases de l'informatique/serveur-local-de-developpement.md`, order 8) : à la demande de Louis, suite à sa propre question sur comment lancer un serveur statique pour ses tests d'écoute. Traduit EN/ES/BR par 3 agents en parallèle (chantier de chapitre inédit).
+
+**Corrections ponctuelles sur `code-programmes-et-fichiers.md`** (repérées par Louis en écoutant l'audio régénéré du chapitre) : lien manquant sur "(chapitre dédié)" -> `/?c=langages`, lien manquant sur "processeur" -> `cpu-vs-gpu`, deux reformulations de phrase, "README"/".md" mal prononcés ("ride mi"/"point M-D", même famille que les autres respellings du jour).
+
+**Signalé, pas encore corrigé** : un bégaiement occasionnel en début de section ("lit 2 fois le début du premier mot") -- probablement l'imprécision de seek inhérente au MP3 (découpage par frame, pas échantillon exact) lors d'un changement de section, à investiguer plus tard plutôt que deviner à l'aveugle.
+
 ## SQL ajouté aux exceptions au tiret (2026-08-29)
 
 "SQL" mal prononcé avec l'espace du mécanisme générique. Plutôt qu'un nouveau `? :` isolé comme pour UI/UX, la table de cas spéciaux a été généralisée en objet `ACRONYM_OVERRIDES_FR` (un sigle -> sa respellation au tiret), SQL ajouté dessus (`S-Q-L`). Accueil régénéré (seule page qui le mentionne, testée par Louis).

@@ -270,11 +270,18 @@ function englishRewrite(text, context) {
         .replace(KEYWORD_RESPELLING_PATTERN, name => KEYWORD_RESPELLING[name]);
 }
 
-/* Some extensions are said as a whole word, not spelled out -- ".py" is "dot pie", not "dot P Y".
-   Matched only right after a literal "." (cf. FILENAME_DOT_PATTERN below); this table only
-   respells the letters, the dot itself is still read separately. */
-const FILE_EXTENSION_RESPELLING = { py: "pi" };
+/* Some extensions are said as a whole word or spelled by letter, not left as raw letters -- ".py"
+   is "dot pie", ".md" is "dot M-D" (letters, hyphenated per Louis's own standard, 29/08/2026), not
+   "dot M D" or "dot md". Matched only right after a literal "." (cf. FILENAME_DOT_PATTERN below);
+   this table only respells the letters, the dot itself is still read separately. */
+const FILE_EXTENSION_RESPELLING = { py: "pi", md: "M-D" };
 const FILE_EXTENSION_RESPELLING_PATTERN = new RegExp(`(?<=\\.)(${Object.keys(FILE_EXTENSION_RESPELLING).join("|")})\\b`, "g");
+
+/* "README" read as a mumbled made-up word instead of the English word it is -- respelled with
+   French spelling conventions for the same sound ("ride mi"), on Louis's own suggestion
+   (29/08/2026). Case-insensitive: same word whether cited as "README" or "readme". */
+const FILENAME_RESPELLING = { readme: "ride mi" };
+const FILENAME_RESPELLING_PATTERN = new RegExp(`\\b(${Object.keys(FILENAME_RESPELLING).join("|")})\\b`, "gi");
 
 /* A "." with no space right after it (`texte.txt`, `~/.bashrc`) gets dropped/mumbled otherwise
    (Louis, 2026-08-16). Kept out of englishRewrite(): which word this reads as depends only on the
@@ -295,6 +302,7 @@ const FILENAME_DOT_SPEECH = { fr: "point", en: "dot", es: "punto", br: "ponto" }
  */
 export function speakableCode(text, context, lang) {
     return englishRewrite(text, context)
+        .replace(FILENAME_RESPELLING_PATTERN, name => FILENAME_RESPELLING[name.toLowerCase()])
         .replace(FILE_EXTENSION_RESPELLING_PATTERN, ext => FILE_EXTENSION_RESPELLING[ext])
         .replace(FILENAME_DOT_PATTERN, ` ${FILENAME_DOT_SPEECH[lang] ?? FILENAME_DOT_SPEECH.fr} `)
         .replace(IDENTIFIER_UNDERSCORE_PATTERN, " ")

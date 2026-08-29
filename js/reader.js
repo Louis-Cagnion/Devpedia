@@ -236,7 +236,9 @@ export function onPlaybackComplete(listener) {
  */
 export function getReaderStatus() {
     return {
-        hasPlan: plan.length > 0,
+        // Not just plan.length: a French page with no matching pregen audio can't play at all
+        // now (no more wrong-voice fallback, Louis, 29/08/2026) -- the buttons should say so.
+        hasPlan: canPlay(),
         isPlaying,
         isPaused,
         isPausedAtCode,
@@ -468,7 +470,7 @@ async function loadPregenAudio(builtPlan) {
     if (plan !== builtPlan) return; // the page moved on while these fetches were in flight
     if (timing.length !== builtPlan.length) return;
     const matches = timing.every((t, i) => t.kind === builtPlan[i].kind);
-    if (!matches) { console.log("TEMP-DEBUG-KIND-MISMATCH", timing.findIndex((t,i)=>t.kind!==builtPlan[i].kind)); return; }
+    if (!matches) return;
     timing.forEach((t, i) => Object.assign(builtPlan[i], t));
     if (audioObjectUrl) URL.revokeObjectURL(audioObjectUrl);
     audioObjectUrl = URL.createObjectURL(blob);
@@ -530,9 +532,16 @@ export function pauseReading() {
     notify();
 }
 
+/* French only ever uses pre-generated audio now: a French page falling back to speechSynthesis
+   was the whole source of the "wrong voice" confusion during today's pronunciation fixes (Louis,
+   29/08/2026) -- other languages keep the fallback since their pregen coverage lags behind. */
+function isFrenchPage() {
+    return (getStoredLanguage() || "fr") === "fr";
+}
+
 /** @brief Whether playback can start at all: either engine available, and a plan to read. */
 function canPlay() {
-    return (SPEECH_SUPPORTED || hasPregenAudio) && plan.length > 0;
+    return ((!isFrenchPage() && SPEECH_SUPPORTED) || hasPregenAudio) && plan.length > 0;
 }
 
 /** @brief Resumes reading after pauseReading(), re-speaking the clause `planIndex` still points at. */
@@ -582,7 +591,8 @@ function speakNext() {
     if (!isElementFullyVisible(entry.highlightTarget))
         entry.highlightTarget.scrollIntoView({ behavior: "smooth", block: "start" });
     if (hasPregenAudio) speakNextViaAudio(entry);
-    else speakNextViaSynthesis(entry);
+    // canPlay() already keeps a French page with no pregen audio from reaching here at all.
+    else if (!isFrenchPage()) speakNextViaSynthesis(entry);
 }
 
 /**
@@ -612,6 +622,16 @@ function speakNextViaAudio(entry) {
     const offsetMs = withinEntry ? (audioEl.currentTime - entryStartSeconds) * 1000 : 0;
     // Divided by readerRate: these are clip-content ms, but the scheduled setTimeouts are wall-clock (Louis, 29/08/2026).
     scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs / readerRate, offsetMs / readerRate);
+
+    // Before a pause, audio for what follows starts instantly (gapless): the ~250ms timeupdate poll alone leaks a few words of it (Louis, 29/08/2026).
+    if (plan[planIndex + 1]?.kind === "pause") {
+        const myIndex = planIndex;
+        setTimeout(() => {
+            if (generation !== myGeneration || planIndex !== myIndex) return;
+            planIndex++;
+            speakNext();
+        }, (entry.durationMs - offsetMs) / readerRate);
+    }
 
     const play = () => {
         if (generation !== myGeneration) return;

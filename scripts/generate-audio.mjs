@@ -65,6 +65,22 @@ const SITE_LANGUAGES = {
 
 const PAGE_SPECIFIC_CONTEXT = new Set(["sql", "le-terminal"]);
 
+/* Clips are concatenated with zero gap: splitIntoClauses() (js/reader-clauses.js) only splits
+   text/highlighting, it never added actual silence, so a clause break (parenthesis, comma...)
+   never sounded like a pause in pre-generated audio, unlike live speechSynthesis's own natural
+   inter-utterance gap (Louis, 29/08/2026). Generated once, reused for every chapter this run. */
+const CLAUSE_PAUSE_MS = 180;
+let clausePauseClipPath = null;
+function getClausePauseClip() {
+    if (clausePauseClipPath) return clausePauseClipPath;
+    clausePauseClipPath = path.join(fs.mkdtempSync(path.join(ROOT, ".audio-tmp-")), "pause.wav");
+    execFileSync("ffmpeg", [
+        "-y", "-hide_banner", "-loglevel", "warning", "-f", "lavfi", "-i", "anullsrc=r=22050:cl=mono",
+        "-t", String(CLAUSE_PAUSE_MS / 1000), "-c:a", "pcm_s16le", clausePauseClipPath,
+    ], { stdio: ["ignore", "ignore", "inherit"] });
+    return clausePauseClipPath;
+}
+
 /**
  * @brief Sets up a linkedom document as reader.js/parser.js's expected browser globals, plus
  * small polyfills for what they need but linkedom doesn't provide.
@@ -222,6 +238,7 @@ async function generateChapter(lang, { chapterId, mdPath, context, audioPath }) 
     const concatList = [];
     let cumulativeMs = 0;
 
+    let previousSpeakGroup = null;
     entries.forEach((entry, i) => {
         const group = entry.kind === "speak" ? entry.group : entry.element;
         if (!groupIndexOf.has(group)) groupIndexOf.set(group, groupIndexOf.size);
@@ -229,12 +246,19 @@ async function generateChapter(lang, { chapterId, mdPath, context, audioPath }) 
 
         if (entry.kind === "pause") {
             timing.push({ kind: "pause", groupIndex, afterMs: cumulativeMs });
+            previousSpeakGroup = null; // a "Continuer" click is already its own boundary
             return;
+        }
+        // A same-paragraph clause split (cf. CLAUSE_PAUSE_MS above); a new paragraph gets its own scroll/highlight cue instead.
+        if (previousSpeakGroup === entry.group) {
+            concatList.push(getClausePauseClip());
+            cumulativeMs += CLAUSE_PAUSE_MS;
         }
         const durationMs = durations.get(i);
         timing.push({ kind: "speak", groupIndex, startMs: cumulativeMs, durationMs });
         concatList.push(path.join(tmpDir, `${i}.wav`));
         cumulativeMs += durationMs;
+        previousSpeakGroup = entry.group;
     });
 
     const mp3Path = path.join(AUDIO_DIR, lang, `${audioPath}.mp3`);
@@ -286,6 +310,7 @@ async function main() {
             await generateChapter(lang, chapterInfo);
         }
     }
+    if (clausePauseClipPath) fs.rmSync(path.dirname(clausePauseClipPath), { recursive: true, force: true });
 }
 
 main();

@@ -4,9 +4,9 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `prompt.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
-## 1. Bug de fond corrigé : 57 chapitres FR avec 2+ blocs de code adjacents ignoraient l'audio pré-généré
-Trouvé en vérifiant le chapitre SQL à la demande de Louis (détail dans `journal-de-bord.md`) : `buildPlanForChapter()` (`scripts/generate-audio.mjs`) n'appliquait pas `collapseConsecutivePauses()` comme le fait `buildReadingPlan()` côté navigateur, désynchronisant d'une entrée le plan généré dès que 2 blocs de code se suivent -- retour silencieux sur la voix robot du navigateur pour toute la page, sans erreur visible. Corrigé, SQL régénéré et vérifié.
-- Reste à faire : régénérer l'audio FR des 56 autres chapitres concernés (probablement autant en EN/ES/BR) : `complexite-et-notation-big-o`, `les-probabilites-de-base`, `vecteurs-et-produit-scalaire`, `documentation-et-communication-equipe`, `annuler-et-historique`, `pull-requests-github`, `architecture-interne`, `rebase`, `eviter-le-recalcul-redondant`, `reseaux-de-neurones`, `llm-en-production`, `evaluer-un-ocr`, `detection-de-mise-en-page`, `gestion-des-secrets`, `securite-api-web`, et 42 autres (relancer l'audit : grep de 2 blocs \`\`\` consécutifs séparés uniquement par des lignes vides, sur chaque langue).
+## 1. Urgent : 57 chapitres FR sans audio pré-généré ne lisent plus RIEN
+Root cause déjà corrigée (2+ blocs de code adjacents désynchronisaient le plan généré d'une entrée, détail dans `journal-de-bord.md`), mais la portée s'est aggravée le même jour : Louis a fait retirer tout repli sur la voix du navigateur pour le français (point 4 ci-dessous) -- une page FR sans audio pré-généré à jour ne lit donc plus RIEN du tout (avant : lisait avec la mauvaise voix). Ces 57 chapitres FR sont dans ce cas.
+- Reste à faire, priorité haute : régénérer l'audio FR de `complexite-et-notation-big-o`, `les-probabilites-de-base`, `vecteurs-et-produit-scalaire`, `documentation-et-communication-equipe`, `annuler-et-historique`, `pull-requests-github`, `architecture-interne`, `rebase`, `eviter-le-recalcul-redondant`, `reseaux-de-neurones`, `llm-en-production`, `evaluer-un-ocr`, `detection-de-mise-en-page`, `gestion-des-secrets`, `securite-api-web`, et 42 autres (relancer l'audit : grep de 2 blocs \`\`\` consécutifs séparés uniquement par des lignes vides). Probablement autant en EN/ES/BR, mais ceux-là gardent le repli sur la voix du navigateur en attendant (moins urgent).
 
 ## 2. Boutons de lecture désynchronisés de la voix : audit en 2 passes, à confirmer
 Signalé par Louis (29/08/2026) : "les boutons ne sont absolument pas synchronisés avec la voix". Audit de `js/reader.js`/`js/reader-highlight.js` en deux temps (détail dans `journal-de-bord.md`) :
@@ -44,9 +44,9 @@ Signalé par Louis (23/08/2026) : le Bluetooth changeait de chapitre au lieu de 
 Signalé par Louis (23/08/2026) : le délai avant de passer automatiquement au chapitre suivant reposait sur un `setTimeout`, suspendu par iOS une fois l'écran verrouillé -- le changement de chapitre n'arrivait donc jamais tout seul en poche. Corrigé (23/08/2026) : `playAutoAdvanceSilence()` (`js/reader.js`) fait jouer un clip silencieux de 5s à travers le même `audioEl` que la lecture pré-générée, dont les événements continuent d'arriver même verrouillé.
 - Reste à Louis : confirmer sur iPhone, écran verrouillé, qu'un chapitre qui se termine enchaîne bien tout seul sur le suivant après 5s.
 
-## 9. Pause de lecture sur les parenthèses
-Demandé par Louis (23/08/2026) : la lecture ne marquait aucune pause en croisant une parenthèse. Corrigé (23/08/2026) : `CLAUSE_END_PATTERN` (`js/reader-clauses.js`) traite `(` et `)` comme des frontières de clause. Audio des 5 chapitres pilotes régénérée en conséquence (4 langues).
-- Reste à Louis : confirmer que le rythme de lecture sonne mieux sur une incise entre parenthèses.
+## 9. Bégaiement occasionnel en début de section : à investiguer
+Signalé par Louis (29/08/2026) : "des fois quand la voix lit une section, elle bug au début et lit 2 fois le début du premier mot". Pas encore diagnostiqué -- hypothèse de départ (non vérifiée) : imprécision de seek inhérente au MP3 (découpage par frame, jamais échantillon exact) au moment de sauter vers une nouvelle section dans `speakNextViaAudio()` (`js/reader.js`), à la différence d'une transition clause-à-clause dans le même paragraphe qui ne seeke jamais.
+- Reste à faire : reproduire de façon fiable, confirmer l'hypothèse avant de corriger à l'aveugle.
 
 ## 10. Tester l'audio prégénéré C/C++/PHP/SQL/Git (4 langues)
 Prégénéré (23/08/2026) via `scripts/generate-audio.mjs --context=c,cpp,php,git` (SQL déjà fait) : 60 chapitres, 4 langues, namespacés par dossier catégorie/sujet (`audio/<lang>/<catégorie>[/<sujet>]/<chapitreId>`) pour éviter la collision d'id corrigée le même jour (ex. `variables` existait à la fois en C et PHP).
@@ -75,6 +75,10 @@ Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de struc
 ## 14. 5 nouveaux chapitres sur les algorithmes de ML classiques : à relire
 Écrits (29/08/2026) suite à un reel Instagram (@rick.theengineer) comparant 5 algorithmes sur un même graphe : `content/Données/Data Science/regression-lineaire.md`, `regression-logistique.md`, `arbres-de-decision.md`, `svm.md`, `k-plus-proches-voisins.md` (order 6 à 10, suite de `machine-learning-scikit-learn.md`). Plan zéro-connaissance appliqué (`prompt.md`), liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé), chaque chapitre relié aux notions déjà enseignées (produit scalaire, dérivée/gradient, probabilités) plutôt que de les répéter. Traduits EN/ES/BR le même jour (3 agents parallèles, 1 par langue), ancres recalculées sur les titres réellement traduits, liens validés dans les 4 arborescences (`content`/`content-en`/`content-es`/`content-br`).
 - Reste à Louis : relire les 5 chapitres (FR d'abord, EN/ES/BR ensuite si tu veux vérifier la traduction) ; audio pas encore généré.
+
+## 15. Nouveau chapitre "Le serveur local" : à relire
+Écrit (29/08/2026) suite à la propre question de Louis sur comment lancer un serveur statique pour ses tests d'écoute : `content/Fondamentaux/Bases de l'informatique/serveur-local-de-developpement.md` (order 8, fin de la rubrique). Traduit EN/ES/BR le même jour (3 agents parallèles, 1 par langue). Liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé).
+- Reste à Louis : relire (FR d'abord) ; audio pas encore généré.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
