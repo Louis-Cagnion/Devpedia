@@ -586,18 +586,45 @@ function speakNextViaAudio(entry) {
     }
 }
 
+/* Chrome silently drops a speak() call made in quick succession after the previous utterance's
+   onend (e.g. a table row's several short entries chained back to back): neither onstart nor
+   onend ever fires, freezing playback with nothing queued and no error (Louis, 29/08/2026, "Par
+   où commencer ?" table). speakNextViaSynthesis()'s watchdog below detects this (no onstart within
+   this delay) and recovers by retrying once, then skipping the entry rather than hanging forever. */
+const SYNTHESIS_WATCHDOG_MS = 3000;
+
+/* cancel() doesn't unstick the engine if the very next speak() follows immediately -- confirmed
+   empirically (Louis, 29/08/2026): only a real gap after cancel() lets a fresh speak() take. */
+const SYNTHESIS_RECOVERY_DELAY_MS = 300;
+
 /**
  * @brief Speaks `entry` through the Web Speech API, the live-synthesis counterpart to
  * speakNextViaAudio() above -- today's only path for a chapter with no matching pre-generated
  * audio (cf. loadPregenAudio()).
  *
  * @param {Object} entry the current plan[planIndex], already known to be a "speak" entry
+ * @param {boolean} isRetry whether this is already the one watchdog-triggered retry
  */
-function speakNextViaSynthesis(entry) {
+function speakNextViaSynthesis(entry, isRetry = false) {
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
     utterance.rate = readerRate;
     const myGeneration = generation;
+    let started = false;
+    const watchdog = setTimeout(() => {
+        if (generation !== myGeneration || started) return;
+        logEvent("synthesis:silent-drop", isRetry ? "giving up, skipping entry" : "retrying once");
+        synth.cancel();
+        setTimeout(() => {
+            if (generation !== myGeneration) return;
+            if (isRetry) {
+                planIndex++;
+                speakNext();
+            } else {
+                speakNextViaSynthesis(entry, true);
+            }
+        }, SYNTHESIS_RECOVERY_DELAY_MS);
+    }, SYNTHESIS_WATCHDOG_MS);
     utterance.onboundary = event => {
         if (generation !== myGeneration) return;
         setActiveWord(wordIndexAtChar(entry.text, event.charIndex));
@@ -606,11 +633,14 @@ function speakNextViaSynthesis(entry) {
     // Anchored on onstart, not on speak(): the queueing gap would otherwise inflate short entries.
     utterance.onstart = () => {
         if (generation !== myGeneration) return;
+        started = true;
+        clearTimeout(watchdog);
         startedAt = Date.now();
     };
     scheduleEstimatedWords(entry, () => generation === myGeneration);
     utterance.onend = utterance.onerror = () => {
         if (generation !== myGeneration) return;
+        clearTimeout(watchdog);
         const elapsedSeconds = startedAt === null ? 0 : (Date.now() - startedAt) / 1000;
         if (entry.words.length && elapsedSeconds > 0.1) calibrateRate(entry.text.length / elapsedSeconds);
         planIndex++;

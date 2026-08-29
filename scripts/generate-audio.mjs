@@ -120,7 +120,7 @@ function loadStructures() {
  */
 function flattenChapters(struct, contentDir) {
     const chapters = [];
-    struct.categories.filter(c => c.id !== "acceuil").forEach(category => {
+    struct.categories.forEach(category => {
         (category.subjects ?? [{ id: null, folder: null, chapters: category.chapters ?? [] }]).forEach(subject => {
             (subject.chapters ?? []).forEach(chapter => {
                 const dirParts = [category.folder, subject.folder].filter(Boolean);

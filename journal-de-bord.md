@@ -2,7 +2,13 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
-## Nouvelle sous-section "Systèmes d'exploitation" + bug de fond mobile trouvé en vérifiant (2026-08-25)
+## Voix bloquée sur le tableau de l'accueil : bug Chrome + accueil jamais pré-généré (2026-08-29)
+
+Signalé par Louis en testant l'audio français fraîchement généré : la lecture se bloquait sur le tableau "Par où commencer ?" de l'accueil, sans erreur console. Reproduit en local (serveur statique + Chrome) : `speechSynthesis.speaking`/`pending` tombaient à `false` sans jamais déclencher `onend`/`onerror`, sur les deux lignes du tableau indépendamment de leur contenu (pas spécifique au lien "Bases de l'informatique" suspecté au départ).
+
+Cause : un bug connu de l'API Web Speech de Chrome, où `speak()` appelé juste après le `onend` de l'utterance précédente (le cas d'une ligne de tableau, découpée en 5 entrées courtes chaînées via `setTimeout(speakNext, 0)`) ne déclenche parfois plus aucun événement, sans erreur. Confirmé empiriquement que `cancel()` seul ne suffit pas à débloquer le moteur : un `speak()` relancé immédiatement après `cancel()` échoue pareil, seul un vrai délai (~300ms) entre les deux permet à la resynthèse de repartir. Corrigé par un watchdog dans `speakNextViaSynthesis()` (`js/reader.js`) : si `onstart` n'arrive pas sous 3s, `cancel()` + délai + un retry, puis abandon de l'entrée (jamais de blocage permanent).
+
+Pourquoi seulement l'accueil : `scripts/generate-audio.mjs` excluait `acceuil` de la pré-génération (`c.id !== "acceuil"`), sans raison de fond retrouvée — toutes les autres pages lisent un mp3 continu (insensible à ce bug), l'accueil retombait seul sur la synthèse live. Exclusion retirée ; audio pré-généré pour les 4 langues.
 
 Nouvelle sous-section `Infrastructure & DevOps/Systèmes d'exploitation` (order 8), un seul chapitre `creer-un-systeme-d-exploitation.md` : de l'affichage d'un caractère (ASCII → glyphe → framebuffer) jusqu'au système de fenêtrage, renvoi vers osdev.org en fin de chapitre plutôt que de retraiter en détail ce que ce wiki couvre déjà. Placement (Infrastructure & DevOps plutôt que Fondamentaux, jugé trop grand public pour ce niveau de détail) tranché par Louis via question à choix. Traduit EN/ES/BR par 3 agents en parallèle (chantier de chapitre inédit, cf. mémoire long-terme dédiée), `node scripts/generate-struct.js` propre (liens internes validés).
 

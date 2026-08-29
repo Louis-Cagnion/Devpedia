@@ -4,10 +4,9 @@ Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dan
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `prompt.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
-## 1. Finir la génération audio française
-Lancé le 27/08 (~21:55) : 3 exécutions parallèles de `scripts/generate-audio.mjs --lang=fr --context=...` (nouveau flag `--lang` ajouté au script pour limiter la génération à une seule langue, avant il régénérait toujours les 4). Vise les 343 chapitres français (Louis a choisi de tout regénérer, y compris les 66 déjà faits, plutôt que d'attendre la validation de prononciation restante — cf. point "Hors séquence" plus bas). Stoppé proprement en fin de session (27/08) à la demande de Louis avant qu'un des 3 lots soit fini ; dossiers `.audio-tmp-*` orphelins déjà nettoyés, aucun mp3 partiel laissé (l'écriture du mp3 d'un chapitre n'a lieu qu'une fois toute sa synthèse terminée).
-- Reste à faire : comparer `structure/struct.json` (343 chapitres attendus) à `audio/fr/` pour lister les chapitres encore sans mp3, relancer `generate-audio.mjs --lang=fr` uniquement sur ceux-là (`--context=` ou liste d'ids), puis commit/push (`scripts/generate-audio.mjs` modifié + tout `audio/fr/` généré ce jour-là).
-- Louis écoutera au fur et à mesure (en marchant) une fois relancé, et remontera des observations de prononciation à corriger au fil de l'eau.
+## 1. Voix bloquée sur le tableau de l'accueil : corrigé, à confirmer
+Signalé par Louis (29/08/2026) en testant l'audio français : la lecture se bloquait sur le tableau "Par où commencer ?" de l'accueil. Corrigé (29/08/2026, détail dans `journal-de-bord.md`) : watchdog anti-blocage dans `speakNextViaSynthesis()` (`js/reader.js`) + audio pré-généré pour `acceuil` désormais inclus (`scripts/generate-audio.mjs`, 4 langues déjà générées).
+- Reste à Louis : réécouter l'accueil (chaque langue) et confirmer que le tableau se lit en entier sans blocage, mp3 pré-généré chargé (pas de repli silencieux sur la synthèse live sauf coupure réseau).
 
 ## 2. Reprise après verrouillage écran : audio, surlignage et scroll perdent la position réelle
 Signalé par Louis (23/08/2026), en deux temps :
