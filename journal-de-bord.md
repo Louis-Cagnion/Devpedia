@@ -2,6 +2,18 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Audit demandé par Louis : boutons désynchronisés de la voix (2026-08-29)
+
+Louis, frustré après plusieurs correctifs ponctuels dans la journée : "les boutons ne sont absolument pas synchronisés avec la voix, il faut vraiment que tu fasses un audit". Relecture ciblée de `js/reader.js` sur la synchronisation état interne (`isPlaying`/`isPaused`) ↔ moteur audio réel, plutôt qu'un nouveau correctif isolé.
+
+**Trouvaille principale** : `speakNextViaAudio()` appelle `speakNext()` qui met `isPlaying = true` AVANT même que `audioEl.play()` ait réellement démarré ; si `play()` est rejeté (politique autoplay du navigateur -- confirmé en local : `NotAllowedError`, "user didn't interact with the document first"), seul un `logEvent()` de diagnostic existait : `isPlaying` restait bloqué à `true` pour toujours, sans que rien ne le corrige, pendant que le bouton affiche "Pause" et qu'aucun son ne joue. Aggravé par le correctif du jour sur l'attente de l'audio pré-généré (`waitForPregenAudio()`) : le délai entre le tap de l'utilisateur et l'appel réel à `play()` peut suffire, sur un réseau lent, à invalider la fraîcheur du geste utilisateur qu'exige la politique autoplay.
+
+Deux correctifs, tous deux dans `js/reader.js` :
+1. Le `catch` de `audioEl.play()` remet l'état à "en pause" (au lieu de logguer seulement) : un nouveau tap sur "Reprendre" repart avec un geste utilisateur frais.
+2. `notifyOptimisticPlay()` : bascule immédiatement le bouton sur "Pause" au moment du tap, avant même l'attente de `waitForPregenAudio()` -- sans ça, le bouton n'affichait rien de nouveau pendant tout le délai (jusqu'à 3s), donnant l'impression d'un bouton mort.
+
+Autres pistes de désync envisagées et écartées pour l'instant (non liées au symptôme précis rapporté) : le changement de vitesse de lecture (`setReaderRate()`) ne s'applique qu'à l'entrée suivante, pas à l'audio déjà en cours -- décalage mineur, pas un blocage, laissé tel quel sauf signalement contraire.
+
 ## Crash silencieux en sautant de paragraphe dans un tableau (2026-08-29)
 
 Signalé par Louis : "paragraphe suivant"/"paragraphe précédent" bloquaient la voix en entrant dans un tableau. Reproduit : `scheduleEstimatedWords()` (`js/reader-highlight.js`) plantait sur `word.textContent` quand `word` vaut `null` -- le cas d'une entrée purement composée de texte de connecteur/label sans vrai mot DOM (ex. "Votre situation :", `reader-table.js`'s `wordsForPlainText()`). Le garde initial (`!entry.words.length`) ne couvrait que le tableau vide, pas "que des `null`".

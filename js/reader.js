@@ -490,6 +490,16 @@ function waitForPregenAudio() {
     return Promise.race([pregenAudioReady, new Promise(resolve => setTimeout(resolve, PREGEN_AUDIO_WAIT_MS))]);
 }
 
+/* Without this, every button reflects whatever it showed before the tap for the whole
+   waitForPregenAudio() wait -- looking unresponsive (Louis, 29/08/2026: "les boutons ne sont
+   absolument pas synchronisés avec la voix"). Corrected already if play() itself later fails
+   (cf. its own catch in speakNextViaAudio()). */
+function notifyOptimisticPlay() {
+    isPlaying = true;
+    isPausedAtCode = false;
+    notify();
+}
+
 /** @brief Stops any reading in progress and rewinds to the start of the current plan, without discarding it. */
 export function stopReading() {
     resetPlayback();
@@ -513,9 +523,10 @@ function canPlay() {
 export async function resumeReading() {
     if (!canPlay()) return;
     const myGeneration = generation;
+    isPaused = false;
+    notifyOptimisticPlay();
     await waitForPregenAudio();
     if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
-    isPaused = false;
     speakNext();
 }
 
@@ -588,7 +599,17 @@ function speakNextViaAudio(entry) {
 
     const play = () => {
         if (generation !== myGeneration) return;
-        audioEl.play().catch(err => logEvent("audioEl:play-rejected", err.message));
+        audioEl.play().catch(err => {
+            logEvent("audioEl:play-rejected", err.message);
+            /* A rejected play() (e.g. autoplay blocked after an async gap consumed the user
+               gesture, cf. waitForPregenAudio()) otherwise leaves isPlaying stuck true forever --
+               nothing plays, but every button still reads "Pause" (Louis, 29/08/2026). Falling
+               back to "paused" lets the next tap on "Reprendre" retry with a fresh gesture. */
+            if (generation !== myGeneration) return;
+            isPlaying = false;
+            isPaused = true;
+            notify();
+        });
     };
     if (withinEntry) {
         play();
@@ -673,6 +694,7 @@ export async function startReading() {
     if (!canPlay()) return;
     resetPlayback();
     const myGeneration = generation;
+    notifyOptimisticPlay();
     await waitForPregenAudio();
     if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
@@ -724,6 +746,7 @@ export async function startFromVisible() {
     plan[index]?.group?.scrollIntoView({ behavior: "smooth", block: "start" });
     planIndex = index;
     const myGeneration = generation;
+    notifyOptimisticPlay();
     await waitForPregenAudio();
     if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
@@ -734,6 +757,7 @@ export async function continueAfterCode() {
     if (!isPausedAtCode) return;
     planIndex++;
     const myGeneration = generation;
+    notifyOptimisticPlay();
     await waitForPregenAudio();
     if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
