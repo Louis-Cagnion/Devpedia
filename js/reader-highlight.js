@@ -191,6 +191,7 @@ export function scheduleEstimatedWords(entry, isStillCurrent, knownDurationMs = 
             if (isStillCurrent() && highlightedTarget === entry.highlightTarget) setActiveWord(index);
         }, delayMs);
         // +1 for the space following the word, matching the gap the old char-index math counted.
-        cumulativeMs += ((word.textContent.length + 1) / effectiveRate) * 1000;
+        // `word` is null for a connector/label with no real DOM word (reader-table.js): nominal length.
+        cumulativeMs += ((word?.textContent?.length ?? 4) + 1) / effectiveRate * 1000;
     });
 }

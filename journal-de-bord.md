@@ -2,6 +2,14 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Crash silencieux en sautant de paragraphe dans un tableau (2026-08-29)
+
+Signalé par Louis : "paragraphe suivant"/"paragraphe précédent" bloquaient la voix en entrant dans un tableau. Reproduit : `scheduleEstimatedWords()` (`js/reader-highlight.js`) plantait sur `word.textContent` quand `word` vaut `null` -- le cas d'une entrée purement composée de texte de connecteur/label sans vrai mot DOM (ex. "Votre situation :", `reader-table.js`'s `wordsForPlainText()`). Le garde initial (`!entry.words.length`) ne couvrait que le tableau vide, pas "que des `null`".
+
+Pourquoi seulement au clic sur "paragraphe suivant/précédent" et jamais en lecture normale : `jumpToParagraph()` cible directement ce genre d'entrée courte (premier segment d'une ligne de tableau), alors que la boucle de rattrapage du `timeupdate` (lecture normale, avance au fil de l'audio) passe dessus sans jamais appeler `speakNext()` pour elle spécifiquement, son timing étant trop bref pour être capté entre deux ticks. Corrigé par un accès nul-sûr (`word?.textContent?.length ?? 4`) plutôt que de changer le comportement de saut lui-même.
+
+Piège de repro rencontré en chemin : après une édition, un serveur de dev local relancé sur le MÊME port gardait un module JS mis en cache par Chrome malgré une navigation fraîche -- changer de port a suffi à le confirmer.
+
 ## Prononciation FR généralisée pour tous les sigles + PowerShell/Git (2026-08-29)
 
 Demandé par Louis : au lieu d'un correctif au cas par cas (PHP fait le jour même après GUI/CLI le 16/08), toute abréviation en MAJUSCULES (HTML, CSS, UI, UX, API, SQL...) doit être épelée lettre par lettre par la voix française, sans qu'une nouvelle entrée dans la table soit nécessaire à chaque fois. Ajout de `spellOutAcronymsFr()` (`js/reader-pronunciation.js`) : tout token isolé de 2+ lettres majuscules est épelé, sauf une courte liste de conjonctions françaises (ET, OU, NON...) qui peuvent apparaître en capitales d'emphase dans le contenu (`ET` confirmé, `content/Fondamentaux/Algorithmes/complexite-et-notation-big-o.md`). Les entrées `GUI`/`CLI`/`PHP` de la table, désormais redondantes avec ce mécanisme, retirées.
