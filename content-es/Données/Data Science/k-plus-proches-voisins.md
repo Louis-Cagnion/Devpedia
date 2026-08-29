@@ -51,7 +51,7 @@ Este compromiso (ningún entrenamiento, pero una predicción cada vez más costo
 |---|---|
 | Demasiado pequeño (ej.: 1) | Muy sensible al ruido: un solo vecino atípico cambia la predicción ([sobreajuste](/?c=donnees&s=data-science&p=machine-learning-scikit-learn#sobreajuste-overfitting-y-subajuste-underfitting)) |
 | Demasiado grande | Suaviza demasiado la frontera entre categorías, hasta ignorar los patrones locales reales ([subajuste](/?c=donnees&s=data-science&p=machine-learning-scikit-learn#sobreajuste-overfitting-y-subajuste-underfitting)) |
-| Equilibrado | Elegido por [validación cruzada](/?c=donnees&s=data-science&p=machine-learning-scikit-learn) probando varios valores |
+| Equilibrado | Elegido por [validación cruzada](/?c=donnees&s=data-science&p=machine-learning-scikit-learn#la-validacion-cruzada-cross-validation) probando varios valores |
 
 > **Trampa:** como el [SVM](/?c=donnees&s=data-science&p=svm#trampa-las-entradas-sin-escalar-distorsionan-el-margen), k-NN se basa por completo en distancias: entradas no escaladas a la misma escala (`StandardScaler`) distorsionan las distancias calculadas, exactamente por la misma razón.
 
