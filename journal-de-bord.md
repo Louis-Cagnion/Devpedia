@@ -2,6 +2,16 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Bug de fond : chapitres à 2+ blocs de code adjacents jamais lus en Piper (2026-08-29)
+
+Louis a demandé de générer l'audio du chapitre SQL pour vérifier sa prononciation seule, puis a eu un doute : "la voix n'est pas la même que la pré-génération de l'accueil". Vérifié en direct : `speechSynthesis.speaking` était `true` sur cette page -- la voix robot du navigateur jouait au lieu du Piper pré-généré, malgré un mp3/json fraîchement régénéré et correctement chargé (200 sur les deux requêtes).
+
+**Diagnostic** : `loadPregenAudio()` (`js/reader.js`) rejette l'audio pré-généré dès que son nombre d'entrées ne correspond pas exactement au plan reconstruit côté client. En comparant entrée par entrée le plan généré par le script (`scripts/generate-audio.mjs`) à celui construit en direct dans le navigateur (dump console des deux séquences, diffées en Python), l'écart trouvé était exactement UN entrée en trop côté script, à l'endroit précis de deux blocs de code Markdown consécutifs : deux entrées `"pause"` de suite côté script, une seule côté navigateur.
+
+**Root cause** : `buildReadingPlan()` (navigateur) appelle `collapseConsecutivePauses()` après `collectSegments()`, qui fusionne les pauses consécutives (plusieurs blocs de code à la suite ne devraient demander qu'un seul clic "Continuer"). `buildPlanForChapter()` (`scripts/generate-audio.mjs`) appelait `collectSegments()` seul, sans jamais appliquer ce même filtrage -- toute page avec 2 blocs de code adjacents désynchronisait son plan généré du plan réel par exactement une entrée, invalidant silencieusement TOUT l'audio pré-généré de cette page (repli sur la voix robot, sans erreur visible). Un audit du contenu FR trouve 57 chapitres concernés (probablement autant en EN/ES/BR).
+
+Corrigé : `collapseConsecutivePauses()` exportée depuis `js/reader.js`, appliquée aussi dans `buildPlanForChapter()`. Chapitre SQL régénéré et vérifié en direct (`speechSynthesis.speaking` repasse à `false`) -- les 56 autres chapitres concernés restent à régénérer.
+
 ## Essais successifs sur PowerShell/Git, jusqu'à validation par Louis (2026-08-29)
 
 Louis a demandé plusieurs variantes à la suite ("pour voir") plutôt que d'attendre un nouveau signalement à chaque fois : PowerShell "Power Shell" -> "Power-Shell" -> "PoweurShell" -> "Pow-eur-shell" -> "Powe-eur-shell" ; Git "Gui te" -> "Gui-t" -> "Gui t'" -> "Gui tte". Les deux dernières versions, testées par Louis lui-même (édition directe du fichier), sont confirmées correctes -- **prononciation de l'accueil validée** pour toutes les corrections du jour (sigles, UI/UX, Zsh, PowerShell, Git, Blockchain).

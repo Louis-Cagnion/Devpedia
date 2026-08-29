@@ -150,7 +150,7 @@ function flattenChapters(struct, contentDir) {
  */
 async function buildPlanForChapter(mdPath, bcp47, context, chapterId) {
     const { parseMdContent, parseAppendText } = await import("../js/parser.js");
-    const { collectSegments } = await import("../js/reader.js");
+    const { collectSegments, collapseConsecutivePauses } = await import("../js/reader.js");
     const raw = fs.readFileSync(mdPath, "utf-8");
     const text = parseMdContent(raw);
     const pageDiv = document.createElement("div");
@@ -159,7 +159,8 @@ async function buildPlanForChapter(mdPath, bcp47, context, chapterId) {
     const entries = [];
     collectSegments(pageDiv, bcp47, context, chapterId, entries);
     pageDiv.remove();
-    return entries;
+    // Matches buildReadingPlan(): without it, 2+ adjacent `pre` blocks desync this from the live plan by one entry (Louis, 29/08/2026, "sql").
+    return collapseConsecutivePauses(entries);
 }
 
 /**

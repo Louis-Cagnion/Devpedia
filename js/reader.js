@@ -412,7 +412,7 @@ function resetPlayback() {
  *
  * @returns {Array}
  */
-function collapseConsecutivePauses(entries) {
+export function collapseConsecutivePauses(entries) {
     return entries.filter((entry, i) => entry.kind !== "pause" || entries[i - 1]?.kind !== "pause");
 }
 
@@ -468,7 +468,7 @@ async function loadPregenAudio(builtPlan) {
     if (plan !== builtPlan) return; // the page moved on while these fetches were in flight
     if (timing.length !== builtPlan.length) return;
     const matches = timing.every((t, i) => t.kind === builtPlan[i].kind);
-    if (!matches) return;
+    if (!matches) { console.log("TEMP-DEBUG-KIND-MISMATCH", timing.findIndex((t,i)=>t.kind!==builtPlan[i].kind)); return; }
     timing.forEach((t, i) => Object.assign(builtPlan[i], t));
     if (audioObjectUrl) URL.revokeObjectURL(audioObjectUrl);
     audioObjectUrl = URL.createObjectURL(blob);
