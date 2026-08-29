@@ -353,12 +353,13 @@ const OCAML_SPEECH = "O Caml";
 /* "Devpédia" is read "Deuvpédia" -- the plain "e" in "Dev" comes out as a schwa (Louis,
    2026-08-16). Respelled for speech only; fr content only, other languages write it unaccented. */
 const DEVPEDIA_SPEECH_FR = "Dévpédia";
-/* Acronyms read as a mumbled word instead of their own letters, spelled out like "EOF" above --
-   "GUI"/"CLI" in prose (le-terminal.md, outside any code span), Louis, 2026-08-16. */
-const GUI_SPEECH = "G U I";
-const CLI_SPEECH = "C L I";
-/* "PHP" read as a blended made-up word instead of its own letters (Louis, 29/08/2026). */
-const PHP_SPEECH = "P H P";
+/* "PowerShell" blended into "powshell" -- forced apart into its two real words, same fix family
+   as OCaml above (Louis, 29/08/2026). */
+const POWERSHELL_SPEECH = "Power Shell";
+/* "Git" read "gi" (soft g, silent t): "gu" before "i" forces the hard g, trailing mute "e" forces
+   the t to sound (same trick as "prompt" -> "prompte" below, cf. "petit"/"petite"). Said as one
+   word, not spelled by letter like PHP/HTML. Best-effort respelling, not yet confirmed by ear. */
+const GIT_SPEECH_FR = "Guite";
 /* "cf." read as "confère" instead of two letters; "Ctrl" read as raw letters instead of
    "contrôle"; "shells" given an English plural "z" sound despite being an invariable loan-word
    here. All Louis, 2026-08-16 ("prompt" -- same report -- is handled separately below). */
@@ -406,13 +407,14 @@ const PROSE_SYMBOL_SPEECH = {
         "C#": CSHARP_SPEECH,
         "OCaml": OCAML_SPEECH,
         "Devpédia": DEVPEDIA_SPEECH_FR,
-        "GUI": GUI_SPEECH,
-        "CLI": CLI_SPEECH,
-        "PHP": PHP_SPEECH,
         "cf.": CF_SPEECH_FR,
         "Ctrl": CTRL_SPEECH_FR,
         "Shells": SHELL_SPEECH_FR,
         "shells": SHELL_SPEECH_FR,
+        "PowerShell": POWERSHELL_SPEECH,
+        "powershell": POWERSHELL_SPEECH,
+        "Git": GIT_SPEECH_FR,
+        "git": GIT_SPEECH_FR,
     },
     en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "↔": "linked to", "±": "plus or minus", "…": "", "^": POWER_OF_SPEECH.en.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
     es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "↔": "vinculado a", "±": "más o menos", "…": "", "^": POWER_OF_SPEECH.es.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
@@ -428,6 +430,15 @@ const ARROW_SPEECH = {
     other: { fr: "puis", en: "then", es: "luego", br: "depois" },
 };
 
+/* Any standalone ALL-CAPS token (2+ letters, e.g. HTML/CSS/UI/UX/API) is spelled out by letter,
+   said that way even in French dev speech; new abbreviations need no table entry (Louis,
+   29/08/2026). Excludes short French conjunctions capitalized for emphasis ("en temps ET en mémoire"). */
+const ACRONYM_PATTERN = /\b[A-Z]{2,}\b/g;
+const ACRONYM_EXCLUDED_WORDS_FR = new Set(["ET", "OU", "NON", "SI", "MAIS", "DONC", "OR", "NI", "CAR"]);
+function spellOutAcronymsFr(text) {
+    return text.replace(ACRONYM_PATTERN, word => (ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(" ")));
+}
+
 function decodeSuperscript(run, lang) {
     const signs = POWER_OF_SPEECH[lang] ?? POWER_OF_SPEECH.en;
     return [...run].map(ch => SUPERSCRIPT_DIGITS[ch] ?? signs[ch] ?? ch).join("");
@@ -440,7 +451,8 @@ export const DECORATIVE_EMOJI = "📋";
 
 /**
  * @brief Rewrites page-language prose text into a form a TTS engine pronounces correctly:
- * arrows, the recap emoji, superscripts, "prompt"/"déréférencement" (fr), and prose symbols.
+ * arrows, the recap emoji, superscripts, "prompt"/"déréférencement"/ALL-CAPS acronyms (fr), and
+ * prose symbols.
  *
  * @param {string} text raw prose text
  * @param {string} lang the page's own language code (e.g. "fr", "en")
@@ -458,6 +470,7 @@ export function speakableText(text, lang, pageId) {
     if (lang === "fr") {
         result = result.replace(PROMPT_WORD_PATTERN, ` ${PROMPT_SPEECH_FR} `);
         result = result.replace(DEREFERENCE_PATTERN, DEREFERENCE_SPEECH_FR);
+        result = spellOutAcronymsFr(result);
     }
     const symbols = PROSE_SYMBOL_SPEECH[lang] ?? PROSE_SYMBOL_SPEECH.en;
     for (const [symbol, phrase] of Object.entries(symbols)) {

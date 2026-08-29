@@ -2,6 +2,16 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Prononciation FR généralisée pour tous les sigles + PowerShell/Git (2026-08-29)
+
+Demandé par Louis : au lieu d'un correctif au cas par cas (PHP fait le jour même après GUI/CLI le 16/08), toute abréviation en MAJUSCULES (HTML, CSS, UI, UX, API, SQL...) doit être épelée lettre par lettre par la voix française, sans qu'une nouvelle entrée dans la table soit nécessaire à chaque fois. Ajout de `spellOutAcronymsFr()` (`js/reader-pronunciation.js`) : tout token isolé de 2+ lettres majuscules est épelé, sauf une courte liste de conjonctions françaises (ET, OU, NON...) qui peuvent apparaître en capitales d'emphase dans le contenu (`ET` confirmé, `content/Fondamentaux/Algorithmes/complexite-et-notation-big-o.md`). Les entrées `GUI`/`CLI`/`PHP` de la table, désormais redondantes avec ce mécanisme, retirées.
+
+Audit du contenu (regex majuscules hors code fences/spans) avant d'appliquer le changement site entier : ~90 sigles distincts trouvés, tous de vrais sigles sauf ce seul cas de conjonction emphase.
+
+Deux autres corrections signalées le même jour, hors sigles (mots à casse mixte, pas concernés par le mécanisme ci-dessus) :
+- "PowerShell" lu en un seul mot fusionné ("powshell") : séparé en "Power Shell", même famille que le correctif OCaml du 16/08.
+- "Git" lu "gi" (g doux, t muet) : respelé "Guite" (le "gu" force le g dur, le e muet final force le t à sonner, même mécanisme que "prompt" → "prompte"). Non confirmé à l'oreille, contrairement aux autres correctifs de cette session.
+
 ## Surlignage figé en bas de page après une lecture complète (2026-08-29)
 
 Signalé par Louis : après une lecture qui va jusqu'au bout de la page, cliquer sur "Écouter cette page" laissait le surlignage figé en bas, sur le dernier mot. Cause : la branche de fin de plan de `speakNext()` (`js/reader.js`) ne faisait ni `clearHighlight()` ni scroll, contrairement à la branche "pause" juste en dessous qui fait les deux. Le scroll restait donc calé sur le dernier paragraphe, et `startFromVisible()` (bouton "Écouter cette page") relit alors ce même dernier paragraphe via `findVisibleEntryIndex()`, donnant l'impression que ça ne bouge plus. Corrigé en alignant cette branche sur celle du dessous : `clearHighlight()` + scroll vers le tout premier élément du plan.

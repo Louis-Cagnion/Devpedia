@@ -45,5 +45,13 @@ Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `
 
 Test demandé à Louis avant de tenter un 3ᵉ correctif à l'aveugle (pour savoir si le bug dépend de la largeur mobile ou du moteur WebKit lui-même, indépendamment de la largeur) : sur la page d'un chapitre, bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement une fois en mode "version pour ordinateur" (toujours sur le téléphone). Si le test ne suffit pas à trancher, l'étape suivante est un accès à l'inspecteur Safari distant (via un Mac connecté à l'iPhone) plutôt que de continuer à deviner sans données réelles de l'appareil.
 
+## 8. Nouvelles corrections de prononciation FR à confirmer à l'oreille
+Signalé par Louis (29/08/2026) : PHP lu en un mot au lieu des lettres, PowerShell lu "powshell", Git lu "gi". Corrigé le même jour (détail dans `journal-de-bord.md`) : mécanisme générique `spellOutAcronymsFr()` (tout sigle en MAJUSCULES épelé lettre par lettre, plus besoin d'entrée au cas par cas) + PowerShell/Git respelés individuellement.
+- Reste à Louis : confirmer à l'oreille PHP (`P H P`), PowerShell (`Power Shell`) et surtout Git (`Guite`, respelling le moins sûr des trois) ; signaler aussi tout autre sigle qui sonnerait encore mal malgré le nouveau mécanisme général.
+
+## 9. Section "Ce que couvre le site" de l'accueil obsolète
+Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de structure de projet se sont accumulés depuis la dernière rédaction de cette section (`content/acceuil.md`).
+- Reste à faire : relire la section, l'aligner sur la structure/le contenu actuels du site.
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
-- **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL/Git/PHP (déjà validés le 2026-08-15).
+- **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 8 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
