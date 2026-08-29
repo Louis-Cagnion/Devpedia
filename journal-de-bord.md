@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## SQL ajouté aux exceptions au tiret (2026-08-29)
+
+"SQL" mal prononcé avec l'espace du mécanisme générique. Plutôt qu'un nouveau `? :` isolé comme pour UI/UX, la table de cas spéciaux a été généralisée en objet `ACRONYM_OVERRIDES_FR` (un sigle -> sa respellation au tiret), SQL ajouté dessus (`S-Q-L`). Accueil régénéré (seule page qui le mentionne, testée par Louis).
+
 ## Bug de fond : chapitres à 2+ blocs de code adjacents jamais lus en Piper (2026-08-29)
 
 Louis a demandé de générer l'audio du chapitre SQL pour vérifier sa prononciation seule, puis a eu un doute : "la voix n'est pas la même que la pré-génération de l'accueil". Vérifié en direct : `speechSynthesis.speaking` était `true` sur cette page -- la voix robot du navigateur jouait au lieu du Piper pré-généré, malgré un mp3/json fraîchement régénéré et correctement chargé (200 sur les deux requêtes).

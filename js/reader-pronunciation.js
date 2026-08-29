@@ -444,13 +444,18 @@ const ARROW_SPEECH = {
    blending ("usi/utix"): a hyphen forces the break here, same trick as "dé-référenc" below. */
 const ACRONYM_PATTERN = /\b[A-Z]{2,}(?:\/[A-Z]{2,})*\b/g;
 const ACRONYM_EXCLUDED_WORDS_FR = new Set(["ET", "OU", "NON", "SI", "MAIS", "DONC", "OR", "NI", "CAR"]);
-const UI_UX_SPEECH_FR = "U-I, U-X";
+/* Acronyms still wrong with the plain-space default: hyphenated instead (same trick as
+   "dé-référenc" below), added here one at a time as Louis flags each one by ear. */
+const ACRONYM_OVERRIDES_FR = {
+    "UI/UX": "U-I, U-X",
+    SQL: "S-Q-L",
+};
 function spellOutSingleAcronym(word) {
     return ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(" ");
 }
 function spellOutAcronymsFr(text) {
     return text.replace(ACRONYM_PATTERN, match =>
-        match === "UI/UX" ? UI_UX_SPEECH_FR : match.split("/").map(spellOutSingleAcronym).join(", "));
+        ACRONYM_OVERRIDES_FR[match] ?? match.split("/").map(spellOutSingleAcronym).join(", "));
 }
 
 function decodeSuperscript(run, lang) {
