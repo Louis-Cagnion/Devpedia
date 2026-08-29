@@ -59,12 +59,14 @@ Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `
 
 Test demandé à Louis avant de tenter un 3ᵉ correctif à l'aveugle (pour savoir si le bug dépend de la largeur mobile ou du moteur WebKit lui-même, indépendamment de la largeur) : sur la page d'un chapitre, bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement une fois en mode "version pour ordinateur" (toujours sur le téléphone). Si le test ne suffit pas à trancher, l'étape suivante est un accès à l'inspecteur Safari distant (via un Mac connecté à l'iPhone) plutôt que de continuer à deviner sans données réelles de l'appareil.
 
-## 11. Nouvelles corrections de prononciation FR à confirmer à l'oreille (4 retouches)
-Signalé par Louis (29/08/2026) en plusieurs retours successifs (détail complet dans `journal-de-bord.md`). État actuel après la 4ᵉ retouche :
-- Sigles en MAJUSCULES (PHP, HTML, UI/UX, CI/CD...) : mécanisme générique `spellOutAcronymsFr()`, lettres séparées par un espace. Une virgule entre chaque lettre a été essayée pour UI/UX, mais cassait HTML/CSS : revenu à l'espace, UI/UX reste imparfait ("usi/utix" au dernier retour).
+## 11. Nouvelles corrections de prononciation FR à confirmer à l'oreille (5 retouches)
+Signalé par Louis (29/08/2026) en plusieurs retours successifs (détail complet dans `journal-de-bord.md`). État actuel après la 5ᵉ retouche :
+- Sigles en MAJUSCULES (PHP, HTML, CI/CD...) : mécanisme générique `spellOutAcronymsFr()`, lettres séparées par un espace.
+- UI/UX (cas spécifique, en dehors du mécanisme générique après deux échecs dessus) : `U-I, U-X` (tiret pour forcer la coupure).
 - PowerShell ("Power Shell"), Zsh (`Z S H`) : entrées dédiées, casse mixte non couverte par le mécanisme générique.
-- Git : `Guite` (raté, "yite") puis `G I T` (rejeté à l'oreille par Louis, "ne doit pas être lu avec des lettres séparées") puis `Gui te` (suggéré par Louis lui-même) : version actuelle, pas encore confirmée.
-- Reste à Louis : confirmer à l'oreille HTML/CSS (espace restauré), Git (`Gui te`) ; UI/UX reste un défaut connu sans solution pour l'instant. Audio régénéré pour git/php/powershell/zsh/html/css (pas le reste du site).
+- Git : `Guite` (raté, "yite") puis `G I T` (rejeté à l'oreille par Louis) puis `Gui te` (suggéré par Louis lui-même) : version actuelle, pas encore confirmée.
+- **Important** : seul l'audio de l'accueil a été régénéré à chaque retouche (sur demande explicite de Louis) -- Git/PHP/PowerShell/Zsh/HTML/CSS restent datés avec l'ancienne prononciation tant qu'aucune régénération plus large n'est demandée. Un retour "toujours mal prononcé" doit d'abord faire vérifier que la page testée est bien l'accueil, pas un chapitre de ces sujets.
+- Reste à Louis : confirmer à l'oreille sur l'accueil, chaque point ci-dessus.
 
 ## 12. Section "Ce que couvre le site" de l'accueil : réécrite, à valider
 Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de structure de projet s'étaient accumulés depuis la dernière rédaction. Réécrite (`content/acceuil.md`) pour couvrir les 11 catégories actuelles (Sécurité, Tests, Blockchain, Gestion de projet et organisation, et la profondeur IA/Infrastructure ajoutées depuis n'étaient pas mentionnées), chaque sujet nommé relié à un chapitre représentatif ; liens vérifiés (`node scripts/generate-struct.js`, aucun lien cassé) et un cliqué en direct. "voix" reformulé en "voix IA" (Louis : plus clair). Audio FR régénéré à chaque changement de texte/prononciation.

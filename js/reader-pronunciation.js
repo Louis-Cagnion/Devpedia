@@ -434,15 +434,17 @@ const ARROW_SPEECH = {
 };
 
 /* Any standalone ALL-CAPS token, or several joined by "/" (CI/CD, TCP/UDP...), is spelled out by
-   letter. A comma between every letter, tried for a 2-letter pair still blending ("UI" -> "usi"),
-   broke longer ones like HTML/CSS instead (Louis, 29/08/2026) -- reverted to a plain space. */
+   letter with a plain space (comma tried and reverted, cf. journal-de-bord.md). "UI/UX" alone kept
+   blending ("usi/utix"): a hyphen forces the break here, same trick as "dé-référenc" below. */
 const ACRONYM_PATTERN = /\b[A-Z]{2,}(?:\/[A-Z]{2,})*\b/g;
 const ACRONYM_EXCLUDED_WORDS_FR = new Set(["ET", "OU", "NON", "SI", "MAIS", "DONC", "OR", "NI", "CAR"]);
+const UI_UX_SPEECH_FR = "U-I, U-X";
 function spellOutSingleAcronym(word) {
     return ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(" ");
 }
 function spellOutAcronymsFr(text) {
-    return text.replace(ACRONYM_PATTERN, match => match.split("/").map(spellOutSingleAcronym).join(", "));
+    return text.replace(ACRONYM_PATTERN, match =>
+        match === "UI/UX" ? UI_UX_SPEECH_FR : match.split("/").map(spellOutSingleAcronym).join(", "));
 }
 
 function decodeSuperscript(run, lang) {

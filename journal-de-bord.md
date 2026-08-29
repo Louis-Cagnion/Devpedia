@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## UI/UX : 5e retouche, cas spécial au lieu d'une règle générale (2026-08-29)
+
+"UI/UX" restait "usi/utix" même avec l'espace restauré (identique au tout premier essai). Contrairement aux tentatives précédentes qui touchaient le mécanisme générique (`spellOutAcronymsFr()`) et risquaient de régresser HTML/CSS à chaque fois, cette fois traité comme un cas spécial isolé : un tiret entre les deux lettres de chaque moitié ("U-I, U-X"), même technique que "dé-référenc" pour "déréférencement". Le mécanisme générique (espace) reste inchangé pour tous les autres sigles.
+
 ## Surlignage désynchronisé de la vitesse de lecture + 4e retouche prononciation (2026-08-29)
 
 **Surlignage/vitesse** : Louis soupçonnait (sans certitude) le surlignage de ne pas suivre la vitesse de lecture choisie (×1.25/×1.5/×2). Confirmé en lisant le code : `scheduleEstimatedWords()` (`js/reader-highlight.js`) calcule ses délais à partir d'`entry.durationMs`, la durée réelle du clip audio À VITESSE NORMALE (1x) -- jamais ajustée par `readerRate`. À une vitesse différente de 1x, l'audio (dont `audioEl.playbackRate` suit bien `readerRate`) et les minuteurs de surlignage (en millisecondes réelles, indépendants de `playbackRate`) divergent de plus en plus au fil de l'entrée. `speakNextViaSynthesis()` n'a pas ce problème : son `charsPerSecond` est calibré à partir du temps réel écoulé, donc déjà à la bonne vitesse. Corrigé en divisant `durationMs`/l'offset par `readerRate` avant de les passer à `scheduleEstimatedWords()` (`speakNextViaAudio()`, `js/reader.js`), sans toucher à la fonction partagée elle-même.
