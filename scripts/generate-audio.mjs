@@ -138,8 +138,16 @@ function flattenChapters(struct, contentDir) {
     const chapters = [];
     struct.categories.forEach(category => {
         (category.subjects ?? [{ id: null, folder: null, chapters: category.chapters ?? [] }]).forEach(subject => {
-            (subject.chapters ?? []).forEach(chapter => {
-                const dirParts = [category.folder, subject.folder].filter(Boolean);
+            const dirParts = [category.folder, subject.folder].filter(Boolean);
+            const subjectChapters = subject.chapters ?? [];
+            // router.js (navigateToSubject) also renders the subject's own <subjectId>.md as a
+            // real, spoken page when landing on the subject -- not listed in `chapters`, so it
+            // was silently skipped by this script until 47/47 subjects were found with no
+            // landing-page audio at all in any language (Louis, 30/08/2026).
+            if (subject.id && !subjectChapters.some(c => c.id === subject.id)) {
+                subjectChapters.push({ id: subject.id });
+            }
+            subjectChapters.forEach(chapter => {
                 const mdPath = path.join(ROOT, contentDir, ...dirParts, `${chapter.id}.md`);
                 const context = PAGE_SPECIFIC_CONTEXT.has(chapter.id) ? chapter.id : (subject.id ?? category.id);
                 // Mirrors content/'s own category/subject namespacing: a chapter id alone isn't
