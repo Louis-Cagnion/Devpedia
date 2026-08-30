@@ -1,5 +1,24 @@
 import { createTag } from "./tags.js";
 
+/**
+ * @brief Returns the `<code>` element `node` itself is, or wraps as its only child (`` [`code`]
+ * (url) `` -- a filename linked to its docs, e.g.) -- both need the same code-span pronunciation
+ * treatment, just a different highlight target. Shared by reader.js's collectLeafSegments() and
+ * reader-table.js's cellSpokenParts() (Louis, 30/08/2026: `cmd.exe` linked to its docs read
+ * completely raw, since only a bare `<code>` child was ever recognized).
+ *
+ * @param {Node} node
+ *
+ * @returns {HTMLElement|null}
+ */
+export function codeSpanIn(node) {
+    if (node.nodeType !== Node.ELEMENT_NODE) return null;
+    if (node.tagName === "CODE") return node;
+    if (node.tagName === "A" && node.children.length === 1 && node.firstElementChild.tagName === "CODE")
+        return node.firstElementChild;
+    return null;
+}
+
 /* Two mutually exclusive highlight tiers for the "speak" entry currently playing --
    READER_HIGHLIGHT_CLASS marks the whole entry, READER_ACTIVE_WORD_CLASS the one word currently
    spoken, replacing (not layering on) the whole-entry highlight while it's active. */

@@ -19,6 +19,7 @@ import {
     wrapSegmentWords,
     calibrateRate,
     scheduleEstimatedWords,
+    codeSpanIn,
 } from "./reader-highlight.js";
 import { logEvent, initReaderDebugOverlay, initReaderDebugToggle } from "./reader-debug.js";
 
@@ -87,6 +88,7 @@ let hasPregenAudio = false;
    the first time it's actually needed rather than at module load (most sessions never reach a
    chapter's end, cf. Performance's own no-recompute-what-isn't-needed principle). */
 const AUTO_ADVANCE_SILENCE_PATH = "./audio/silence-5s.mp3";
+export const AUTO_ADVANCE_SILENCE_SECONDS = 5;
 let silenceObjectUrlPromise = null;
 let silenceAbortController = null;
 
@@ -96,8 +98,12 @@ let silenceAbortController = null;
  * A fetch failure degrades to calling `onEnded` immediately rather than never auto-advancing.
  *
  * @param {() => void} onEnded
+ * @param {(secondsRemaining: number) => void} [onTick] called once up front with
+ *   AUTO_ADVANCE_SILENCE_SECONDS, then again on every audioEl "timeupdate" -- driven off the
+ *   audio's own clock like currentEntryEndSeconds elsewhere, so it keeps ticking under the same
+ *   iOS-lock conditions `onEnded` itself already survives, unlike a plain setInterval.
  */
-export async function playAutoAdvanceSilence(onEnded) {
+export async function playAutoAdvanceSilence(onEnded, onTick) {
     if (!silenceObjectUrlPromise) {
         silenceObjectUrlPromise = fetch(AUTO_ADVANCE_SILENCE_PATH)
             .then(response => response.blob())
@@ -113,6 +119,12 @@ export async function playAutoAdvanceSilence(onEnded) {
     audioEl.src = objectUrl;
     audioEl.currentTime = 0;
     audioEl.addEventListener("ended", onEnded, { once: true, signal: silenceAbortController.signal });
+    if (onTick) {
+        onTick(AUTO_ADVANCE_SILENCE_SECONDS);
+        audioEl.addEventListener("timeupdate", () => {
+            onTick(Math.max(1, AUTO_ADVANCE_SILENCE_SECONDS - Math.floor(audioEl.currentTime)));
+        }, { signal: silenceAbortController.signal });
+    }
     audioEl.play().catch(err => logEvent("audioEl:play-rejected", err.message));
 }
 
@@ -318,25 +330,51 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
     /* A static snapshot: wrapSegmentWords()/this loop's own Text.splitText() mutate leaf's
        children as buffered runs flush, desyncing a live NodeList mid-iteration otherwise. */
     Array.from(leaf.childNodes).forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
-            const code = node.textContent.trim();
+        const codeNode = codeSpanIn(node);
+        if (codeNode) {
+            const code = codeNode.textContent.trim();
             if (!code) return;
             const spoken = speakableCode(code, context, lang);
-            if (!needsEnglishVoice(code, context)) {
-                // Raw `code`, not `spoken`: keeps this node's own word count aligned for wrapSegmentWords().
+            /* needsEnglishVoice() checked before the "untouched" fold-into-buffer case below: inline
+               code now defaults to the English voice (Louis, 30/08/2026), so plenty of English code
+               that speakableCode() leaves byte-for-byte unchanged (bare command names, real syntax
+               with no respelling rule of its own) still needs its own English-voice entry, not a
+               silent fold into the surrounding French sentence. */
+            if (needsEnglishVoice(code, context)) {
+                flushBuffer();
+                entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf, highlightTarget: node, words: [] });
+            } else if (spoken === code) {
+                // Untouched by speakableCode() and confirmed to stay in the page's own voice: folds
+                // into the surrounding sentence, its word count still matching the DOM node's own.
                 buffer += ` ${code} `;
                 segmentNodes.push(node);
             } else {
+                /* Rewritten (e.g. a filename's dot/extension spelled out) but still the page's own
+                   voice: needs its own entry too, same as the English-voice case above -- `spoken`'s
+                   word count no longer matches `code`'s own, so it can't fold into the surrounding
+                   buffer without desyncing wrapSegmentWords() (Louis, 30/08/2026: ".txt" silently
+                   losing its "point" this way). */
                 flushBuffer();
-                entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf, highlightTarget: node, words: [] });
+                entries.push({ kind: "speak", text: spoken, lang, group: leaf, highlightTarget: node, words: [] });
             }
         } else if (node.nodeType === Node.TEXT_NODE) {
             let current = node;
             CLAUSE_END_PATTERN.lastIndex = 0;
             let match;
-            while ((match = CLAUSE_END_PATTERN.exec(current.textContent))) {
+            while (current && (match = CLAUSE_END_PATTERN.exec(current.textContent))) {
                 const cutAt = match.index + match[0].length;
-                if (cutAt >= current.textContent.length) break;
+                if (cutAt >= current.textContent.length) {
+                    /* The boundary is this text run's own last character (e.g. "(" right before a
+                       markdown link): nothing left to split off here, but the clause still ends now
+                       -- otherwise it silently glues onto whatever element follows instead of
+                       starting a fresh one there (Louis, 30/08/2026: parentheses are a separator
+                       like any other punctuation, regardless of what follows them). */
+                    buffer += current.textContent;
+                    segmentNodes.push(current);
+                    flushBuffer();
+                    current = null;
+                    break;
+                }
                 const rest = current.splitText(cutAt);
                 buffer += current.textContent;
                 segmentNodes.push(current);
@@ -344,8 +382,10 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
                 current = rest;
                 CLAUSE_END_PATTERN.lastIndex = 0;
             }
-            buffer += current.textContent;
-            segmentNodes.push(current);
+            if (current) {
+                buffer += current.textContent;
+                segmentNodes.push(current);
+            }
         } else {
             buffer += node.textContent;
             segmentNodes.push(node);
@@ -468,14 +508,21 @@ async function loadPregenAudio(builtPlan) {
         return;
     }
     if (plan !== builtPlan) return; // the page moved on while these fetches were in flight
-    if (timing.length !== builtPlan.length) return;
-    const matches = timing.every((t, i) => t.kind === builtPlan[i].kind);
-    if (!matches) return;
+    if (timing.length !== builtPlan.length) {
+        logEvent("pregen:mismatch", `length timing=${timing.length} plan=${builtPlan.length}`);
+        return;
+    }
+    const mismatchIndex = timing.findIndex((t, i) => t.kind !== builtPlan[i].kind);
+    if (mismatchIndex !== -1) {
+        logEvent("pregen:mismatch", `kind at index=${mismatchIndex} timing=${timing[mismatchIndex].kind} plan=${builtPlan[mismatchIndex].kind}`);
+        return;
+    }
     timing.forEach((t, i) => Object.assign(builtPlan[i], t));
     if (audioObjectUrl) URL.revokeObjectURL(audioObjectUrl);
     audioObjectUrl = URL.createObjectURL(blob);
     audioEl.src = audioObjectUrl;
     hasPregenAudio = true;
+    notify(); // buildReadingPlan()'s own notify() already ran before this fetch resolved, buttons disabled since; re-render now that hasPregenAudio flipped true.
 }
 
 /**
@@ -603,6 +650,16 @@ function speakNext() {
  *
  * @param {Object} entry the current plan[planIndex], already known to be a "speak" entry
  */
+/* Slack allowed on either side of an entry's own [start, end) range in the "already there, no seek
+   needed" check below. Consecutive clips are meant to be concatenated exactly gapless, but a real
+   MP3 encode can leave a few ms of frame-alignment slop between them; without slack, that slop can
+   land currentTime just outside the entry a natural multi-entry catch-up (cf. the "timeupdate"
+   listener above) just landed on -- more likely the faster playback runs, since more short entries
+   get skipped per ~250ms poll tick -- triggering an unnecessary seek that repeats a sliver of audio
+   already played (Louis, 30/08/2026: words repeating mid-sentence at ×1.5, several short clause
+   entries in a row). */
+const ENTRY_BOUNDARY_TOLERANCE_SECONDS = 0.1;
+
 function speakNextViaAudio(entry) {
     const myGeneration = generation;
     currentEntryEndSeconds = (entry.startMs + entry.durationMs) / 1000;
@@ -618,8 +675,9 @@ function speakNextViaAudio(entry) {
        entry's range and actually needs one. */
     const entryStartSeconds = entry.startMs / 1000;
     const entryEndSeconds = entryStartSeconds + entry.durationMs / 1000;
-    const withinEntry = audioEl.currentTime >= entryStartSeconds && audioEl.currentTime < entryEndSeconds;
-    const offsetMs = withinEntry ? (audioEl.currentTime - entryStartSeconds) * 1000 : 0;
+    const withinEntry = audioEl.currentTime >= entryStartSeconds - ENTRY_BOUNDARY_TOLERANCE_SECONDS
+        && audioEl.currentTime < entryEndSeconds + ENTRY_BOUNDARY_TOLERANCE_SECONDS;
+    const offsetMs = withinEntry ? Math.min(entry.durationMs, Math.max(0, (audioEl.currentTime - entryStartSeconds) * 1000)) : 0;
     // Divided by readerRate: these are clip-content ms, but the scheduled setTimeouts are wall-clock (Louis, 29/08/2026).
     scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs / readerRate, offsetMs / readerRate);
 

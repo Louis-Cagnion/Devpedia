@@ -59,6 +59,10 @@ Certains outils (Live Server) rechargent la page automatiquement à chaque fichi
 >
 > **Bonne pratique :** pour un test sensible au temps, préférer un outil sans rechargement automatique (`http.server`, `php -S`) : la page ne bouge que lorsqu'on la recharge soi-même, au moment choisi.
 
+> **Piège :** croire qu'un simple F5, voire un rechargement complet (`Ctrl+Maj+R`, ou `Cmd+Maj+R` sur macOS), vide toujours le **cache** du navigateur (sa copie de certains fichiers, gardée pour éviter de les redemander à chaque fois). Avec `python3 -m http.server` ou `php -S`, qui ne précisent pas combien de temps garder ces copies, il peut resservir une ancienne version d'un fichier chargé par `fetch` ou par un module JS malgré un rechargement complet, voire après avoir "effacé les données du site" depuis le cadenas de la barre d'adresse (qui ne vide pas toujours ce cache-là selon le navigateur).
+>
+> **Bonne pratique :** le moyen le plus simple et le plus fiable reste de changer le port du serveur local (`python3 -m http.server 8001` au lieu de `8000`) : un port différent est une adresse différente pour le navigateur, donc un cache vide d'office, sans rien à nettoyer. Sinon, vider le cache depuis les réglages du navigateur plutôt que depuis le cadenas (dans Chrome : `chrome://settings/clearBrowserData`, période "Toutes les périodes", case "Images et fichiers en cache").
+
 ---
 
 ## 📋 Récapitulatif
@@ -67,5 +71,5 @@ Certains outils (Live Server) rechargent la page automatiquement à chaque fichi
 |---|---|
 | **À retenir** | Un fichier ouvert en `file://` n'a pas accès à `fetch`, aux modules JS, ni au rechargement automatique : un **serveur local** lève ces restrictions en servant les fichiers comme le ferait un vrai serveur, mais accessible uniquement depuis sa propre machine (`localhost`). |
 | **Outils utilisables** | `python3 -m http.server`, `npx serve`, `php -S`, l'extension Live Server de VS Code. |
-| **Pièges à éviter** | Chercher un bug de code face à une erreur CORS/`Failed to fetch` alors que la page tourne en `file://`. Utiliser un outil à rechargement automatique pour un test sensible au temps (audio, animation) : le rechargement peut l'interrompre en plein milieu. |
-| **Bonnes pratiques** | Toujours tester depuis un serveur local dès que la page charge un autre fichier. Choisir un outil sans rechargement automatique pour un test sensible au temps. |
+| **Pièges à éviter** | Chercher un bug de code face à une erreur CORS/`Failed to fetch` alors que la page tourne en `file://`. Utiliser un outil à rechargement automatique pour un test sensible au temps (audio, animation) : le rechargement peut l'interrompre en plein milieu. Croire qu'un F5, voire un rechargement complet, vide toujours le cache du navigateur. |
+| **Bonnes pratiques** | Toujours tester depuis un serveur local dès que la page charge un autre fichier. Choisir un outil sans rechargement automatique pour un test sensible au temps. Si une modification ne se voit toujours pas, changer le port du serveur local (cache vide d'office) plutôt que de s'acharner à vider le cache existant. |

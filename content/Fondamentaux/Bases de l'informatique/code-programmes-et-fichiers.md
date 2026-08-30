@@ -54,7 +54,7 @@ Un **fichier** est une unité de données stockée sur le disque de l'ordinateur
 
 > **Analogie :** un fichier, c'est comme une feuille de papier rangée dans un classeur (le **dossier**), avec un nom écrit sur l'onglet pour la retrouver.
 
-Le code source est presque toujours écrit dans un fichier texte ; comprendre ce qu'est un "fichier" est nécessaire avant de pouvoir naviguer dans une arborescence de dossiers ou ouvrir quoi que ce soit dans un éditeur (deux chapitres à venir).
+Le code source est presque toujours écrit dans un fichier texte ; comprendre ce qu'est un "fichier" est nécessaire avant de pouvoir naviguer dans [une arborescence de dossiers](/?c=fondamentaux&s=bases-de-l-informatique&p=arborescence-et-chemins) ou ouvrir quoi que ce soit dans [un éditeur](/?c=fondamentaux&s=bases-de-l-informatique&p=editeur-de-code-et-ide) (deux chapitres à venir).
 
 > **Piège :** croire que renommer un fichier change ce qu'il contient : renommer `notes.txt` en `notes.py` ne transforme pas du texte quelconque en code [Python](/?c=langages-de-programmation&s=python&p=python) valide. L'extension n'est qu'une **indication** pour les humains et les outils (quel éditeur ouvrir, quelle coloration appliquer) ; ce qui décide vraiment de la nature d'un fichier, c'est ce qui l'ouvre et l'interprète, jamais son nom.
 >
@@ -64,7 +64,7 @@ Le code source est presque toujours écrit dans un fichier texte ; comprendre ce
 
 Le code écrit par un humain n'est pas toujours ce que le [processeur](/?c=infrastructure-devops&s=infrastructure&p=cpu-vs-gpu) exécute directement. Deux approches existent :
 
-| | Interprété | Compilé |
+| | Langage interprété | Langage compilé |
 |---|---|---|
 | Ce qui se passe | Un autre programme, l'**interpréteur**, lit le code et l'exécute directement, ligne par ligne | Un programme, le **compilateur**, transforme d'abord tout le code en une forme que le processeur comprend nativement |
 | Quand l'exécution démarre | Immédiatement | Seulement une fois la transformation (la **compilation**) terminée |

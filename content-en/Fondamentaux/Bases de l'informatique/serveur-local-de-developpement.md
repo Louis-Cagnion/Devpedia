@@ -59,6 +59,10 @@ Some tools (Live Server) reload the page automatically every time a file is modi
 >
 > **Best practice:** for a timing-sensitive test, prefer a tool without automatic reload (`http.server`, `php -S`): the page only changes when you reload it yourself, at the moment you choose.
 
+> **Pitfall:** assuming a plain F5, or even a full reload (`Ctrl+Shift+R`, or `Cmd+Shift+R` on macOS), always empties the browser's **cache** (its copy of some files, kept to avoid requesting them again every time). With `python3 -m http.server` or `php -S`, which don't specify how long to keep those copies, it can keep serving an old version of a file loaded via `fetch` or a JS module despite a full reload, even after "clearing site data" from the address bar's padlock (which doesn't always empty that cache, depending on the browser).
+>
+> **Best practice:** the simplest and most reliable fix is to change the local server's port (`python3 -m http.server 8001` instead of `8000`): a different port is a different address to the browser, so an automatically empty cache, nothing to clean up. Otherwise, clear the cache from the browser's own settings rather than from the padlock (in Chrome: `chrome://settings/clearBrowserData`, time range "All time", check "Cached images and files").
+
 ---
 
 ## 📋 Summary
@@ -67,5 +71,5 @@ Some tools (Live Server) reload the page automatically every time a file is modi
 |---|---|
 | **Key Points** | A file opened under `file://` has no access to `fetch`, to JS modules, or to automatic reload: a **local server** lifts these restrictions by serving files the way a real server would, but reachable only from its own machine (`localhost`). |
 | **Available tools** | `python3 -m http.server`, `npx serve`, `php -S`, the Live Server extension for VS Code. |
-| **Pitfalls to Avoid** | Looking for a bug in your code when faced with a CORS error/`Failed to fetch` while the page is running under `file://`. Using a tool with automatic reload for a timing-sensitive test (audio, animation): the reload can interrupt it mid-way. |
-| **Best Practices** | Always test from a local server as soon as the page loads another file. Choose a tool without automatic reload for a timing-sensitive test. |
+| **Pitfalls to Avoid** | Looking for a bug in your code when faced with a CORS error/`Failed to fetch` while the page is running under `file://`. Using a tool with automatic reload for a timing-sensitive test (audio, animation): the reload can interrupt it mid-way. Assuming an F5, or even a full reload, always empties the browser's cache. |
+| **Best Practices** | Always test from a local server as soon as the page loads another file. Choose a tool without automatic reload for a timing-sensitive test. If a change still doesn't show up, change the local server's port (automatically empty cache) rather than fighting to clear the existing one. |

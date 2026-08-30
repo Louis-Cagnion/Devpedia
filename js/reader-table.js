@@ -1,6 +1,6 @@
 import { speakableCode, speakableText, needsEnglishVoice } from "./reader-pronunciation.js";
 import { splitIntoClauses } from "./reader-clauses.js";
-import { wrapSegmentWords, WORD_PATTERN } from "./reader-highlight.js";
+import { wrapSegmentWords, WORD_PATTERN, codeSpanIn } from "./reader-highlight.js";
 
 /**
  * @brief Returns one `null` placeholder per word in `text`, for a synthesized label or connector
@@ -82,8 +82,9 @@ function cellSpokenParts(cell, lang, context) {
        node flushes, desyncing a live NodeList mid-iteration otherwise (same reasoning as reader.js's
        own collectLeafSegments). */
     Array.from(cell.childNodes).forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
-            const code = node.textContent.trim();
+        const codeNode = codeSpanIn(node);
+        if (codeNode) {
+            const code = codeNode.textContent.trim();
             if (!code) return;
             const spoken = speakableCode(code, context, lang);
             if (needsEnglishVoice(code, context)) {
