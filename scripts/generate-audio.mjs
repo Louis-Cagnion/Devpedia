@@ -21,6 +21,8 @@
  *   node scripts/generate-audio.mjs <chapter-id> [<chapter-id> ...]   # generate specific chapters
  *   node scripts/generate-audio.mjs --context=<id>[,<id>...]          # every chapter under these subject/category ids
  *   node scripts/generate-audio.mjs --all                              # generate the whole site
+ *   Add --lang=<code>[,<code>...] to any of the above to restrict to specific site languages
+ *   (fr, en, es, br); defaults to all of them.
  *
  * Output, per chapter per language (never overwrites content/, only writes under audio/), namespaced
  * by category/subject folder like content/ itself -- a bare chapter id isn't unique site-wide (e.g.
@@ -62,6 +64,22 @@ const SITE_LANGUAGES = {
 };
 
 const PAGE_SPECIFIC_CONTEXT = new Set(["sql", "le-terminal"]);
+
+/* Clips are concatenated with zero gap: splitIntoClauses() (js/reader-clauses.js) only splits
+   text/highlighting, it never added actual silence, so a clause break (parenthesis, comma...)
+   never sounded like a pause in pre-generated audio, unlike live speechSynthesis's own natural
+   inter-utterance gap (Louis, 29/08/2026). Generated once, reused for every chapter this run. */
+const CLAUSE_PAUSE_MS = 180;
+let clausePauseClipPath = null;
+function getClausePauseClip() {
+    if (clausePauseClipPath) return clausePauseClipPath;
+    clausePauseClipPath = path.join(fs.mkdtempSync(path.join(ROOT, ".audio-tmp-")), "pause.wav");
+    execFileSync("ffmpeg", [
+        "-y", "-hide_banner", "-loglevel", "warning", "-f", "lavfi", "-i", "anullsrc=r=22050:cl=mono",
+        "-t", String(CLAUSE_PAUSE_MS / 1000), "-c:a", "pcm_s16le", clausePauseClipPath,
+    ], { stdio: ["ignore", "ignore", "inherit"] });
+    return clausePauseClipPath;
+}
 
 /**
  * @brief Sets up a linkedom document as reader.js/parser.js's expected browser globals, plus
@@ -118,10 +136,18 @@ function loadStructures() {
  */
 function flattenChapters(struct, contentDir) {
     const chapters = [];
-    struct.categories.filter(c => c.id !== "acceuil").forEach(category => {
+    struct.categories.forEach(category => {
         (category.subjects ?? [{ id: null, folder: null, chapters: category.chapters ?? [] }]).forEach(subject => {
-            (subject.chapters ?? []).forEach(chapter => {
-                const dirParts = [category.folder, subject.folder].filter(Boolean);
+            const dirParts = [category.folder, subject.folder].filter(Boolean);
+            const subjectChapters = subject.chapters ?? [];
+            // router.js (navigateToSubject) also renders the subject's own <subjectId>.md as a
+            // real, spoken page when landing on the subject -- not listed in `chapters`, so it
+            // was silently skipped by this script until 47/47 subjects were found with no
+            // landing-page audio at all in any language (Louis, 30/08/2026).
+            if (subject.id && !subjectChapters.some(c => c.id === subject.id)) {
+                subjectChapters.push({ id: subject.id });
+            }
+            subjectChapters.forEach(chapter => {
                 const mdPath = path.join(ROOT, contentDir, ...dirParts, `${chapter.id}.md`);
                 const context = PAGE_SPECIFIC_CONTEXT.has(chapter.id) ? chapter.id : (subject.id ?? category.id);
                 // Mirrors content/'s own category/subject namespacing: a chapter id alone isn't
@@ -148,7 +174,7 @@ function flattenChapters(struct, contentDir) {
  */
 async function buildPlanForChapter(mdPath, bcp47, context, chapterId) {
     const { parseMdContent, parseAppendText } = await import("../js/parser.js");
-    const { collectSegments } = await import("../js/reader.js");
+    const { collectSegments, collapseConsecutivePauses } = await import("../js/reader.js");
     const raw = fs.readFileSync(mdPath, "utf-8");
     const text = parseMdContent(raw);
     const pageDiv = document.createElement("div");
@@ -157,7 +183,8 @@ async function buildPlanForChapter(mdPath, bcp47, context, chapterId) {
     const entries = [];
     collectSegments(pageDiv, bcp47, context, chapterId, entries);
     pageDiv.remove();
-    return entries;
+    // Matches buildReadingPlan(): without it, 2+ adjacent `pre` blocks desync this from the live plan by one entry (Louis, 29/08/2026, "sql").
+    return collapseConsecutivePauses(entries);
 }
 
 /**
@@ -219,6 +246,7 @@ async function generateChapter(lang, { chapterId, mdPath, context, audioPath }) 
     const concatList = [];
     let cumulativeMs = 0;
 
+    let previousSpeakGroup = null;
     entries.forEach((entry, i) => {
         const group = entry.kind === "speak" ? entry.group : entry.element;
         if (!groupIndexOf.has(group)) groupIndexOf.set(group, groupIndexOf.size);
@@ -226,12 +254,19 @@ async function generateChapter(lang, { chapterId, mdPath, context, audioPath }) 
 
         if (entry.kind === "pause") {
             timing.push({ kind: "pause", groupIndex, afterMs: cumulativeMs });
+            previousSpeakGroup = null; // a "Continuer" click is already its own boundary
             return;
+        }
+        // A same-paragraph clause split (cf. CLAUSE_PAUSE_MS above); a new paragraph gets its own scroll/highlight cue instead.
+        if (previousSpeakGroup === entry.group) {
+            concatList.push(getClausePauseClip());
+            cumulativeMs += CLAUSE_PAUSE_MS;
         }
         const durationMs = durations.get(i);
         timing.push({ kind: "speak", groupIndex, startMs: cumulativeMs, durationMs });
         concatList.push(path.join(tmpDir, `${i}.wav`));
         cumulativeMs += durationMs;
+        previousSpeakGroup = entry.group;
     });
 
     const mp3Path = path.join(AUDIO_DIR, lang, `${audioPath}.mp3`);
@@ -262,14 +297,18 @@ async function main() {
     // name. --context restricts to chapters whose own subject/category id is in the given list,
     // for pregenerating everything under an already pronunciation-validated subject at once.
     const requestedContexts = contextArg ? new Set(contextArg.slice("--context=".length).split(",")) : null;
-    const requestedIds = generateAll || requestedContexts ? null : new Set(args);
+    const langArg = args.find(a => a.startsWith("--lang="));
+    const requestedLangs = langArg ? new Set(langArg.slice("--lang=".length).split(",")) : null;
+    const positionalArgs = args.filter(a => a !== "--all" && !a.startsWith("--context=") && !a.startsWith("--lang="));
+    const requestedIds = generateAll || requestedContexts ? null : new Set(positionalArgs);
     if (!generateAll && !requestedContexts && requestedIds.size === 0) {
-        console.error("Usage: node scripts/generate-audio.mjs <chapter-id> [...] | --context=<id>[,<id>...] | --all");
+        console.error("Usage: node scripts/generate-audio.mjs <chapter-id> [...] | --context=<id>[,<id>...] | --all  [--lang=<code>[,<code>...]]");
         process.exit(1);
     }
 
     const structs = loadStructures();
     for (const lang of Object.keys(SITE_LANGUAGES)) {
+        if (requestedLangs && !requestedLangs.has(lang)) continue;
         const { contentDir } = SITE_LANGUAGES[lang];
         const chapters = flattenChapters(structs[lang], contentDir)
             .filter(c => generateAll || requestedContexts?.has(c.context) || requestedIds?.has(c.chapterId));
@@ -279,6 +318,7 @@ async function main() {
             await generateChapter(lang, chapterInfo);
         }
     }
+    if (clausePauseClipPath) fs.rmSync(path.dirname(clausePauseClipPath), { recursive: true, force: true });
 }
 
 main();

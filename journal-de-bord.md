@@ -2,6 +2,154 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Grosse session lecture audio : cache navigateur, 2 bugs de segmentation, voix par défaut du code inline (2026-08-30)
+
+**Faux "l'audio ne marche plus" #1 : cache HTTP du serveur local.** Louis a re-signalé les boutons désactivés sur `code-programmes-et-fichiers` après le point 12 déjà connu (audio pré-généré antérieur à un changement de code/contenu). Diagnostic en trois manches : d'abord soupçonné le cache HTTP (`python -m http.server` n'envoie aucun `Cache-Control`, un simple F5 ne revalide pas les sous-ressources chargées en `fetch`) -- confirmé sur un port jamais visité (fonctionne immédiatement) contre le port habituel de Louis (contenu périmé persistant). Piège découvert au passage : ni un Ctrl+Maj+R simulé, ni "Effacer les données du site" depuis le cadenas de Chrome, ne vident forcément ce cache-là selon la version du navigateur -- le seul correctif garanti et immédiat est de changer de port (nouvelle origine = cache vide d'office). Ajouté au chapitre "Le serveur local" (4 langues) comme piège pédagogique.
+
+**Faux "l'audio ne marche plus" #2 : vrai bug de segmentation cette fois.** Après le fix du cache, le même symptôme est réapparu, cette fois un vrai désaccord `timing=173 plan=175` entre l'audio pré-généré et le plan reconstruit en direct -- causé par mon propre correctif du jour (voir plus bas) qui change le découpage. Résolu en régénérant la page concernée ; a établi le protocole pour le reste de la session : tout changement à `collectSegments()`/`speakableCode()`/`speakableText()` implique de régénérer l'audio FR des pages déjà testées, sous peine de casser ce qui marchait.
+
+**Bug 1 : un lien markdown collé à une ponctuation de fin de clause casse le découpage.** Signalé indirectement ("Pythonne" au lieu de "Python" dans une liste entre parenthèses). `collectLeafSegments()` (`js/reader.js`) ne clôturait jamais une clause quand le caractère de fin (`(`, `,`...) était le dernier d'un nœud texte suivi d'un élément (`<a>`) : `if (cutAt >= current.textContent.length) break;` sautait le flush au lieu de le faire quand même. Row concret : "...grammaire (Python," partait comme un seul bloc au lieu de couper avant "Python", donnant une prosodie de fin de longue clause à un mot qui aurait dû être seul. Corrigé : flush systématique dès la frontière trouvée, avec ou sans texte à scinder derrière. Confirmé par Louis comme la bonne interprétation des parenthèses (déjà voulues comme séparateur au même titre que les autres ponctuations).
+
+**Bug 2 : un span de code non modifié par `speakableCode()` pliait dans la phrase sans jamais vérifier `needsEnglishVoice()`.** Repéré via ".txt" qui perdait son "point". `collectLeafSegments()`/`cellSpokenParts()` (`reader-table.js` avait déjà la bonne logique, seul `reader.js` avait le bug) testaient `spoken === code` AVANT `needsEnglishVoice()` : un span inchangé par la réécriture rejoignait toujours le buffer de la phrase, peu importe la langue qu'il aurait dû avoir. Réordonné pour vérifier `needsEnglishVoice()` en premier.
+
+**Voix anglaise par défaut sur tout le code inline (demande explicite de Louis).** `needsEnglishVoice()` fonctionnait en liste blanche (anglais seulement si une réécriture connue s'applique) ; inversé en liste noire (anglais par défaut, français seulement si un signal explicite le justifie : symbole/mot-clé/nom de fichier déjà forcé en français, ou accent français détecté dans le code via `FRENCH_ACCENT_PATTERN`). Limite assumée et communiquée à Louis : un identifiant d'exemple français sans accent (`nom_dossier`) n'a aucun signal pour rester en français et basculera aussi en anglais -- à traiter au cas par cas si signalé, comme le reste des tables de prononciation.
+
+**`` [`code`](url) `` jamais reconnu comme span de code.** `cmd.exe` (lien vers sa doc officielle) se lisait complètement brut : le `<code>` généré par le markdown `` [`code`](url) `` est un enfant du `<a>`, jamais un enfant direct du paragraphe, donc jamais vu par la vérification `node.tagName === "CODE"`. Concerne 30 fichiers du site (grep `\[\`...\`\]`). Corrigé génériquement via `codeSpanIn()` (nouveau, `js/reader-highlight.js` -- déjà importé par `reader.js` ET `reader-table.js`, évite un import circulaire avec `reader-table.js` qui importe déjà depuis `reader.js`), reconnaît un `<code>` direct ou enveloppé dans un `<a>` unique.
+
+**Bandeau "chapitre suivant dans N secondes" ne disparaissait pas au changement de page.** `cancelAutoAdvance()` (`js/router.js`) ne nettoyait le DOM que si `autoAdvancePending` était encore vrai -- or le déclenchement naturel du décompte le passe à faux juste avant de naviguer, rendant l'appel de nettoyage de la page suivante inopérant. Nettoyage rendu inconditionnel. Décompte rendu dynamique (5,4,3,2,1) à la demande de Louis : `playAutoAdvanceSilence()` accepte un callback de tick piloté par l'horloge du clip audio lui-même (fiable même écran verrouillé), `readerAutoAdvanceNotice` (`ui-strings.json`, 4 langues) prend des marqueurs `{n}`/`{s}` pour le nombre et l'accord singulier/pluriel.
+
+**Répétitions de mots signalées à ×1.5, plusieurs clauses courtes à la suite.** Même famille que le bégaiement occasionnel déjà noté le 29/08 (point todo #9), avec cette fois un exemple précis et une piste plus solide : le "rattrapage" du `timeupdate` (`js/reader.js`) suppose les clips parfaitement concaténés sans blanc, mais un vrai encodage MP3 laisse quelques ms de flou d'alignement par frame -- plus un rattrapage saute d'entrées courtes d'un coup (plus probable à vitesse élevée), plus ce flou peut faire atterrir `currentTime` juste hors de la plage revendiquée par l'entrée cible, déclenchant un seek arrière inutile qui répète un bout d'audio déjà joué. Corrigé avec une tolérance de 100ms sur la vérification "suis-je déjà dans cette entrée" (`ENTRY_BOUNDARY_TOLERANCE_SECONDS`). Raisonnement solide mais non vérifiable à l'oreille depuis ce sandbox -- reste à confirmer par Louis.
+
+**Refactor de la table de prononciation, demandé explicitement par Louis ("pas très scalable").** `js/reader-pronunciation.js` : les respellings FR simples (Git, PowerShell, Zsh, Blockchain, macOS, User, Spotlight...) sont passés d'une constante nommée + un commentaire par mot à une seule table plate (`WORD_RESPELLING_FR`) ; le `if (lang === "fr")` de `speakableText()` qui accumulait un `.replace()` par cas particulier (prompt, déréférencement, Command-Line, Command) est devenu une boucle sur un tableau de paires `[pattern, remplacement]` (`WORD_BOUNDARY_RESPELLING_FR`).
+
+**Lot de respellings FR ajoutées aujourd'hui** (toutes vérifiées en isolation via `speakableText()`/`speakableCode()`, pas encore toutes à l'oreille) : `.txt` -> "T-X-T", `macOS` -> "mac O-S", `GUI`/`CLI` -> "G-U-I"/"C-L-I" (`ACRONYM_OVERRIDES_FR`), `User`/`user` -> "Useur"/"useur", `Command`/`Command-Line` -> "Commande"/"Commande-la-ine", `Cmd`/`Alt` (touches clavier, span de code) -> "Commande"/"halte", `cmd.exe` -> "C-M-D point exé", `graphique`/`Graphique` -> "graphik"/"Graphik" (fin "-que" avalée par la voix), `>`/`$`/`%` sur `le-terminal.md` spécifiquement -> "flèche"/"dollar"/"pourcent" désormais en voix FR (bug trouvé au passage : ces entrées `CONTEXT_OPERATOR_SPEECH` étaient françaises mais routées vers la voix anglaise, `needsEnglishVoice()` supposant à tort que toute réécriture d'opérateur est anglaise -- sorties dans leur propre table `CODE_CONTEXT_SYMBOL_RESPELLING_FR`, court-circuitée avant `englishRewrite()`). `Spotlight`/`Graphical User Interface`/`Command-Line Interface` confirmés devoir rester en voix anglaise (ajoutés/gardés dans `KEYWORD_SPEECH`).
+
+Portée des régénérations audio du jour : uniquement le sujet "Bases de l'informatique" (FR), approuvé explicitement par Louis -- le reste du site n'a pas encore l'audio à jour avec les bugs de segmentation corrigés aujourd'hui, dont l'ampleur (algorithme central, pas juste du vocabulaire) rend une régénération FR complète de plus en plus justifiée.
+
+## Fin de journée sur la lecture audio : pauses aux clauses, FR pregen-only, nouveau chapitre (2026-08-29)
+
+**Pause de lecture aux clauses (parenthèses, virgules...) enfin audible en pré-généré** : `splitIntoClauses()` (23/08) ne faisait que découper le texte/surlignage, jamais insérer de vrai silence -- les clips restaient concaténés bout à bout sans aucun blanc (Louis : "la voix ne fait pas de pause en croisant une parenthèse"). Ajout de `getClausePauseClip()`/`CLAUSE_PAUSE_MS` (`scripts/generate-audio.mjs`, 180ms de silence généré une fois par run, inséré entre deux entrées consécutives d'un même paragraphe). Validé à l'oreille par Louis sur `code-programmes-et-fichiers`.
+
+**Plus de repli sur la voix du navigateur pour le français** : après plusieurs confusions du jour entre voix Piper et voix robot (accueil, SQL), Louis a tranché : "retire toute voix qui n'est pas pregenérée" (scope précisé : FR seulement, EN/ES/BR gardent le repli). `canPlay()`/`speakNext()` (`js/reader.js`) exigent maintenant l'audio pré-généré pour une page FR ; `hasPlan` reflète cette contrainte (bouton désactivé plutôt qu'un clic silencieux qui ne fait rien). Conséquence assumée : une page FR sans audio à jour ne lit plus rien du tout tant qu'elle n'est pas régénérée (au lieu de lire avec la mauvaise voix).
+
+**Nouveau chapitre "Le serveur local"** (`content/Fondamentaux/Bases de l'informatique/serveur-local-de-developpement.md`, order 8) : à la demande de Louis, suite à sa propre question sur comment lancer un serveur statique pour ses tests d'écoute. Traduit EN/ES/BR par 3 agents en parallèle (chantier de chapitre inédit).
+
+**Corrections ponctuelles sur `code-programmes-et-fichiers.md`** (repérées par Louis en écoutant l'audio régénéré du chapitre) : lien manquant sur "(chapitre dédié)" -> `/?c=langages`, lien manquant sur "processeur" -> `cpu-vs-gpu`, deux reformulations de phrase, "README"/".md" mal prononcés ("ride mi"/"point M-D", même famille que les autres respellings du jour).
+
+**Signalé, pas encore corrigé** : un bégaiement occasionnel en début de section ("lit 2 fois le début du premier mot") -- probablement l'imprécision de seek inhérente au MP3 (découpage par frame, pas échantillon exact) lors d'un changement de section, à investiguer plus tard plutôt que deviner à l'aveugle.
+
+## SQL ajouté aux exceptions au tiret (2026-08-29)
+
+"SQL" mal prononcé avec l'espace du mécanisme générique. Plutôt qu'un nouveau `? :` isolé comme pour UI/UX, la table de cas spéciaux a été généralisée en objet `ACRONYM_OVERRIDES_FR` (un sigle -> sa respellation au tiret), SQL ajouté dessus (`S-Q-L`). Accueil régénéré (seule page qui le mentionne, testée par Louis).
+
+## Bug de fond : chapitres à 2+ blocs de code adjacents jamais lus en Piper (2026-08-29)
+
+Louis a demandé de générer l'audio du chapitre SQL pour vérifier sa prononciation seule, puis a eu un doute : "la voix n'est pas la même que la pré-génération de l'accueil". Vérifié en direct : `speechSynthesis.speaking` était `true` sur cette page -- la voix robot du navigateur jouait au lieu du Piper pré-généré, malgré un mp3/json fraîchement régénéré et correctement chargé (200 sur les deux requêtes).
+
+**Diagnostic** : `loadPregenAudio()` (`js/reader.js`) rejette l'audio pré-généré dès que son nombre d'entrées ne correspond pas exactement au plan reconstruit côté client. En comparant entrée par entrée le plan généré par le script (`scripts/generate-audio.mjs`) à celui construit en direct dans le navigateur (dump console des deux séquences, diffées en Python), l'écart trouvé était exactement UN entrée en trop côté script, à l'endroit précis de deux blocs de code Markdown consécutifs : deux entrées `"pause"` de suite côté script, une seule côté navigateur.
+
+**Root cause** : `buildReadingPlan()` (navigateur) appelle `collapseConsecutivePauses()` après `collectSegments()`, qui fusionne les pauses consécutives (plusieurs blocs de code à la suite ne devraient demander qu'un seul clic "Continuer"). `buildPlanForChapter()` (`scripts/generate-audio.mjs`) appelait `collectSegments()` seul, sans jamais appliquer ce même filtrage -- toute page avec 2 blocs de code adjacents désynchronisait son plan généré du plan réel par exactement une entrée, invalidant silencieusement TOUT l'audio pré-généré de cette page (repli sur la voix robot, sans erreur visible). Un audit du contenu FR trouve 57 chapitres concernés (probablement autant en EN/ES/BR).
+
+Corrigé : `collapseConsecutivePauses()` exportée depuis `js/reader.js`, appliquée aussi dans `buildPlanForChapter()`. Chapitre SQL régénéré et vérifié en direct (`speechSynthesis.speaking` repasse à `false`) -- les 56 autres chapitres concernés restent à régénérer.
+
+## Essais successifs sur PowerShell/Git, jusqu'à validation par Louis (2026-08-29)
+
+Louis a demandé plusieurs variantes à la suite ("pour voir") plutôt que d'attendre un nouveau signalement à chaque fois : PowerShell "Power Shell" -> "Power-Shell" -> "PoweurShell" -> "Pow-eur-shell" -> "Powe-eur-shell" ; Git "Gui te" -> "Gui-t" -> "Gui t'" -> "Gui tte". Les deux dernières versions, testées par Louis lui-même (édition directe du fichier), sont confirmées correctes -- **prononciation de l'accueil validée** pour toutes les corrections du jour (sigles, UI/UX, Zsh, PowerShell, Git, Blockchain).
+
+Reste en attente : les chapitres Git/PHP/PowerShell/Zsh/HTML/CSS/Blockchain gardent l'ancienne prononciation dans leur audio pré-généré (seul l'accueil a été régénéré à chaque itération, sur consigne explicite de Louis) -- une régénération plus large de ces contextes reste à faire, maintenant que la table est stabilisée.
+
+## Blockchain + Zsh en tiret (2026-08-29)
+
+Après le succès du tiret sur UI/UX, Louis a validé cette technique comme fiable pour tout nom à dire lettre par lettre ("tu peux reprendre la même structure") : Zsh passé de `Z S H` (espace) à `Z-S-H` (tiret), pas encore confirmé spécifiquement mais préventif plutôt que d'attendre un retour négatif. "Blockchain" signalé lu à la française plutôt qu'à l'anglaise : respelé "Block cheine" (suggestion de Louis), pas un cas de lettres séparées mais même famille de correctifs (PowerShell, OCaml).
+
+## UI/UX : 5e retouche, cas spécial au lieu d'une règle générale (2026-08-29)
+
+"UI/UX" restait "usi/utix" même avec l'espace restauré (identique au tout premier essai). Contrairement aux tentatives précédentes qui touchaient le mécanisme générique (`spellOutAcronymsFr()`) et risquaient de régresser HTML/CSS à chaque fois, cette fois traité comme un cas spécial isolé : un tiret entre les deux lettres de chaque moitié ("U-I, U-X"), même technique que "dé-référenc" pour "déréférencement". Le mécanisme générique (espace) reste inchangé pour tous les autres sigles.
+
+## Surlignage désynchronisé de la vitesse de lecture + 4e retouche prononciation (2026-08-29)
+
+**Surlignage/vitesse** : Louis soupçonnait (sans certitude) le surlignage de ne pas suivre la vitesse de lecture choisie (×1.25/×1.5/×2). Confirmé en lisant le code : `scheduleEstimatedWords()` (`js/reader-highlight.js`) calcule ses délais à partir d'`entry.durationMs`, la durée réelle du clip audio À VITESSE NORMALE (1x) -- jamais ajustée par `readerRate`. À une vitesse différente de 1x, l'audio (dont `audioEl.playbackRate` suit bien `readerRate`) et les minuteurs de surlignage (en millisecondes réelles, indépendants de `playbackRate`) divergent de plus en plus au fil de l'entrée. `speakNextViaSynthesis()` n'a pas ce problème : son `charsPerSecond` est calibré à partir du temps réel écoulé, donc déjà à la bonne vitesse. Corrigé en divisant `durationMs`/l'offset par `readerRate` avant de les passer à `scheduleEstimatedWords()` (`speakNextViaAudio()`, `js/reader.js`), sans toucher à la fonction partagée elle-même.
+
+**Prononciation, 4e passage** : deux corrections de la veille se sont révélées mauvaises à l'oreille par Louis :
+- La virgule entre chaque lettre (ajoutée pour "UI/UX") cassait les sigles plus longs comme HTML/CSS. Revenu à l'espace simple ; UI/UX reste imparfait plutôt que de risquer une nouvelle régression sur le cas courant.
+- "G I T" (épelé comme un sigle) jugé faux à l'oral par Louis autant que "Guite" (sorti "yite"). Sur sa suggestion : "Gui te", scindé en deux mots pour forcer la coupure syllabique que "Guite" seul n'obtenait pas. Toujours pas confirmé à l'oreille.
+
+## Prononciation FR : 2e et 3e retouches après écoute de Louis (2026-08-29)
+
+Suite du chantier prononciation du jour, deux nouveaux retours à l'oreille de Louis après déploiement :
+- "UI/UX" toujours mal ("usi/utix" au lieu d'"uzi/uzx" précédemment) : un simple espace entre les lettres épelées ne suffisait pas à séparer des paires courtes et très vocaliques ("U I"). Remplacé par une virgule entre CHAQUE lettre (`spellOutSingleAcronym()`, `js/reader-pronunciation.js`), pas seulement entre les sigles d'une chaîne séparée par "/".
+- "Guite" (respelling de "Git" tenté plus tôt) prononcé "yite" : le "gu" n'a pas forcé le g dur sur cette voix, contrairement à l'hypothèse phonétique de départ. Abandon du respelling, "Git" épelé lettre par lettre comme un sigle (`G I T`) même si ce n'est pas ainsi qu'il se dit à l'oral -- accepté comme compromis après un respelling raté.
+- "Zsh" lu comme un mot tenté au lieu de ses lettres, signalé directement par Louis (pas une observation de code) : même traitement lettre par lettre (`Z S H`), "Zsh"/"zsh" ajoutés à la table.
+
+Aucun de ces trois n'est confirmé à l'oreille pour l'instant (juste déployé).
+
+## Liens manquants sur la réécriture + bug de prononciation des sigles séparés par "/" (2026-08-29)
+
+Louis a repéré, sur la réécriture de "Ce que couvre le site" du même jour, plusieurs sujets nommés en prose sans lien (réseaux, CI/CD, administration système, deep learning, NLP/LLM, vision et OCR, voix, production et gouvernance, authentification, sécurité offensive, unitaires/intégration/end-to-end/TDD) ainsi qu'"intelligence artificielle" qui avait perdu son lien en cours de réécriture. Chacun relié à un chapitre représentatif de son sujet, liens vérifiés (`node scripts/generate-struct.js`) et un lien testé en direct (`?c=securite` seul affiche une page "Description" générée automatiquement listant les sujets -- confirme qu'un lien de catégorie nue fonctionne même sans chapitre portant l'id de la catégorie).
+
+**Bug de prononciation trouvé au passage** : "UI/UX" lu "uzi/uzx". Cause : `spellOutAcronymsFr()` (ajouté plus tôt le même jour) épelait bien "UI" et "UX" séparément, mais laissait le "/" brut entre les deux, imprononçable. Une vingtaine d'autres sigles du site suivent le même schéma (`CI/CD`, `TCP/UDP`, `CER/WER`...) : généralisé plutôt que corrigé au cas par cas -- le motif reconnaît maintenant une chaîne de sigles séparés par "/", épelle chacun et les relie par une virgule ("CI/CD" -> "C I, C D").
+
+## Section "Ce que couvre le site" réécrite + micro-ajustement scroll (2026-08-29)
+
+Section obsolète depuis l'ajout de nouveau contenu et de changements de structure (Sécurité, Tests, Blockchain, Gestion de projet et organisation absents ; profondeur IA/Infrastructure sous-représentée). Réécrite en listant les 11 catégories actuelles, liens vérifiés via `node scripts/generate-struct.js` (aucun cassé) et un lien testé en direct dans le navigateur. Audio FR de l'accueil régénéré en conséquence (texte changé). Fait en français uniquement pour l'instant, EN/ES/BR pas encore repris.
+
+Micro-ajustement demandé par Louis sur le correctif "surlignage figé en bas de page" du même jour : retiré le scroll automatique vers le haut à la fin naturelle d'une lecture (`speakNext()`, `js/reader.js`) -- le `clearHighlight()` reste, mais la page ne bouge plus toute seule ; seul "Lire depuis le début" doit ramener en haut.
+
+## Suite de l'audit : boutons toujours désynchronisés en changeant de paragraphe (2026-08-29)
+
+Le premier correctif de l'audit (`play()` rejeté) n'a pas suffi : Louis a retesté et le bouton play/pause repassait sur "Reprendre" en cliquant "paragraphe suivant/précédent" alors que la voix continuait de lire. Signalé aussi : le surlignage se bloque en général entre deux sections de lecture séparées par de la ponctuation, pas seulement en entrant dans un tableau.
+
+**Root cause commune aux deux symptômes**, tous deux dans `js/reader.js`/`js/reader-highlight.js` :
+1. `audioEl.pause()` déclenche son événement `pause` de façon asynchrone (mise en file, pas synchrone -- spec HTML), jamais synchrone. Un saut de paragraphe appelle `cancelCurrentUtterance()` (qui pause l'ancien) puis relance immédiatement la lecture de la nouvelle entrée ; l'événement `pause` de l'ANCIEN arrive parfois APRÈS que la NOUVELLE ait déjà démarré, et l'écouteur générique (qui ne se fiait qu'à `isPlaying`) le classait à tort comme une coupure externe de la lecture EN COURS. Corrigé par `pauseAudioEl()` : marque explicitement qu'un `pause()` est attendu avant de l'appeler, au lieu de le déduire après coup d'`isPlaying` (qui a déjà été remis à `true` pour la nouvelle entrée le temps que l'événement arrive).
+2. Distinction affinée sur le premier correctif de l'audit : seul `NotAllowedError` (autoplay vraiment bloqué) signifie que rien ne joue réellement -- un `AbortError` (seek/pause qui se chevauchent, typiquement pendant un saut de paragraphe) ne l'implique pas, la voix continue. Retomber sur "en pause" pour ce cas-là désynchronisait le bouton d'une lecture pourtant toujours active.
+3. `scheduleEstimatedWords()` avait déjà son propre risque de minuteur périmé (corrigé dans la foulée) : son garde comparait `highlightedTarget` (partagé par toutes les entrées d'une même ligne de tableau) au lieu de `entry.words` lui-même, laissant un minuteur d'une entrée antérieure de la même ligne corrompre le surlignage d'une entrée plus récente -- exactement le "surlignage bloqué entre deux sections séparées par une ponctuation" signalé en général, pas seulement aux tables.
+
+## Audit demandé par Louis : boutons désynchronisés de la voix (2026-08-29)
+
+Louis, frustré après plusieurs correctifs ponctuels dans la journée : "les boutons ne sont absolument pas synchronisés avec la voix, il faut vraiment que tu fasses un audit". Relecture ciblée de `js/reader.js` sur la synchronisation état interne (`isPlaying`/`isPaused`) ↔ moteur audio réel, plutôt qu'un nouveau correctif isolé.
+
+**Trouvaille principale** : `speakNextViaAudio()` appelle `speakNext()` qui met `isPlaying = true` AVANT même que `audioEl.play()` ait réellement démarré ; si `play()` est rejeté (politique autoplay du navigateur -- confirmé en local : `NotAllowedError`, "user didn't interact with the document first"), seul un `logEvent()` de diagnostic existait : `isPlaying` restait bloqué à `true` pour toujours, sans que rien ne le corrige, pendant que le bouton affiche "Pause" et qu'aucun son ne joue. Aggravé par le correctif du jour sur l'attente de l'audio pré-généré (`waitForPregenAudio()`) : le délai entre le tap de l'utilisateur et l'appel réel à `play()` peut suffire, sur un réseau lent, à invalider la fraîcheur du geste utilisateur qu'exige la politique autoplay.
+
+Deux correctifs, tous deux dans `js/reader.js` :
+1. Le `catch` de `audioEl.play()` remet l'état à "en pause" (au lieu de logguer seulement) : un nouveau tap sur "Reprendre" repart avec un geste utilisateur frais.
+2. `notifyOptimisticPlay()` : bascule immédiatement le bouton sur "Pause" au moment du tap, avant même l'attente de `waitForPregenAudio()` -- sans ça, le bouton n'affichait rien de nouveau pendant tout le délai (jusqu'à 3s), donnant l'impression d'un bouton mort.
+
+Autres pistes de désync envisagées et écartées pour l'instant (non liées au symptôme précis rapporté) : le changement de vitesse de lecture (`setReaderRate()`) ne s'applique qu'à l'entrée suivante, pas à l'audio déjà en cours -- décalage mineur, pas un blocage, laissé tel quel sauf signalement contraire.
+
+## Crash silencieux en sautant de paragraphe dans un tableau (2026-08-29)
+
+Signalé par Louis : "paragraphe suivant"/"paragraphe précédent" bloquaient la voix en entrant dans un tableau. Reproduit : `scheduleEstimatedWords()` (`js/reader-highlight.js`) plantait sur `word.textContent` quand `word` vaut `null` -- le cas d'une entrée purement composée de texte de connecteur/label sans vrai mot DOM (ex. "Votre situation :", `reader-table.js`'s `wordsForPlainText()`). Le garde initial (`!entry.words.length`) ne couvrait que le tableau vide, pas "que des `null`".
+
+Pourquoi seulement au clic sur "paragraphe suivant/précédent" et jamais en lecture normale : `jumpToParagraph()` cible directement ce genre d'entrée courte (premier segment d'une ligne de tableau), alors que la boucle de rattrapage du `timeupdate` (lecture normale, avance au fil de l'audio) passe dessus sans jamais appeler `speakNext()` pour elle spécifiquement, son timing étant trop bref pour être capté entre deux ticks. Corrigé par un accès nul-sûr (`word?.textContent?.length ?? 4`) plutôt que de changer le comportement de saut lui-même.
+
+Piège de repro rencontré en chemin : après une édition, un serveur de dev local relancé sur le MÊME port gardait un module JS mis en cache par Chrome malgré une navigation fraîche -- changer de port a suffi à le confirmer.
+
+## Prononciation FR généralisée pour tous les sigles + PowerShell/Git (2026-08-29)
+
+Demandé par Louis : au lieu d'un correctif au cas par cas (PHP fait le jour même après GUI/CLI le 16/08), toute abréviation en MAJUSCULES (HTML, CSS, UI, UX, API, SQL...) doit être épelée lettre par lettre par la voix française, sans qu'une nouvelle entrée dans la table soit nécessaire à chaque fois. Ajout de `spellOutAcronymsFr()` (`js/reader-pronunciation.js`) : tout token isolé de 2+ lettres majuscules est épelé, sauf une courte liste de conjonctions françaises (ET, OU, NON...) qui peuvent apparaître en capitales d'emphase dans le contenu (`ET` confirmé, `content/Fondamentaux/Algorithmes/complexite-et-notation-big-o.md`). Les entrées `GUI`/`CLI`/`PHP` de la table, désormais redondantes avec ce mécanisme, retirées.
+
+Audit du contenu (regex majuscules hors code fences/spans) avant d'appliquer le changement site entier : ~90 sigles distincts trouvés, tous de vrais sigles sauf ce seul cas de conjonction emphase.
+
+Deux autres corrections signalées le même jour, hors sigles (mots à casse mixte, pas concernés par le mécanisme ci-dessus) :
+- "PowerShell" lu en un seul mot fusionné ("powshell") : séparé en "Power Shell", même famille que le correctif OCaml du 16/08.
+- "Git" lu "gi" (g doux, t muet) : respelé "Guite" (le "gu" force le g dur, le e muet final force le t à sonner, même mécanisme que "prompt" → "prompte"). Non confirmé à l'oreille, contrairement aux autres correctifs de cette session.
+
+## Surlignage figé en bas de page après une lecture complète (2026-08-29)
+
+Signalé par Louis : après une lecture qui va jusqu'au bout de la page, cliquer sur "Écouter cette page" laissait le surlignage figé en bas, sur le dernier mot. Cause : la branche de fin de plan de `speakNext()` (`js/reader.js`) ne faisait ni `clearHighlight()` ni scroll, contrairement à la branche "pause" juste en dessous qui fait les deux. Le scroll restait donc calé sur le dernier paragraphe, et `startFromVisible()` (bouton "Écouter cette page") relit alors ce même dernier paragraphe via `findVisibleEntryIndex()`, donnant l'impression que ça ne bouge plus. Corrigé en alignant cette branche sur celle du dessous : `clearHighlight()` + scroll vers le tout premier élément du plan.
+
+## Audio pré-généré pas vraiment prioritaire au démarrage (2026-08-29)
+
+Demandé par Louis : que l'audio pré-généré (voix Piper) soit réellement la voix par défaut. Jusque-là, `buildReadingPlan()` lançait le fetch du mp3/json en arrière-plan sans l'attendre : un clic sur lecture juste après le chargement de la page pouvait démarrer sur la synthèse live (voix robot) le temps que le fetch réponde, puis basculer sur le pregen pour les entrées suivantes -- changement de voix en plein milieu. Corrigé : les 4 points d'entrée qui démarrent/reprennent la lecture depuis un état arrêté (`startReading`, `startFromVisible`, `resumeReading`, `continueAfterCode`) attendent désormais le chargement (borné à 3s pour ne pas bloquer indéfiniment sur un réseau mort) avant de choisir le moteur. Un garde sur `generation` évite qu'un clic suivi d'une navigation pendant l'attente ne relance la lecture sur la mauvaise page.
+
+## Voix bloquée sur le tableau de l'accueil : bug Chrome + accueil jamais pré-généré (2026-08-29)
+
+Signalé par Louis en testant l'audio français fraîchement généré : la lecture se bloquait sur le tableau "Par où commencer ?" de l'accueil, sans erreur console. Reproduit en local (serveur statique + Chrome) : `speechSynthesis.speaking`/`pending` tombaient à `false` sans jamais déclencher `onend`/`onerror`, sur les deux lignes du tableau indépendamment de leur contenu (pas spécifique au lien "Bases de l'informatique" suspecté au départ).
+
+Cause : un bug connu de l'API Web Speech de Chrome, où `speak()` appelé juste après le `onend` de l'utterance précédente (le cas d'une ligne de tableau, découpée en 5 entrées courtes chaînées via `setTimeout(speakNext, 0)`) ne déclenche parfois plus aucun événement, sans erreur. Confirmé empiriquement que `cancel()` seul ne suffit pas à débloquer le moteur : un `speak()` relancé immédiatement après `cancel()` échoue pareil, seul un vrai délai (~300ms) entre les deux permet à la resynthèse de repartir. Corrigé par un watchdog dans `speakNextViaSynthesis()` (`js/reader.js`) : si `onstart` n'arrive pas sous 3s, `cancel()` + délai + un retry, puis abandon de l'entrée (jamais de blocage permanent).
+
+Pourquoi seulement l'accueil : `scripts/generate-audio.mjs` excluait `acceuil` de la pré-génération (`c.id !== "acceuil"`), sans raison de fond retrouvée — toutes les autres pages lisent un mp3 continu (insensible à ce bug), l'accueil retombait seul sur la synthèse live. Exclusion retirée ; audio pré-généré pour les 4 langues.
+
 ## Ajout ciblé dans `rebase.md` : reformuler un commit sans éditeur interactif (2026-08-27)
 
 Demande de Louis pendant l'attente d'un autre chantier (projet `git-scrapping-infomediaires`) : relire Devpedia et ajouter les notions non couvertes issues du travail en cours ailleurs. `content/Git` (dossier top-level) est vide — legacy, le vrai sujet Git vit sous `Qualité, performance et outils/Git/`, à garder en tête si un futur nettoyage de dossiers fantômes est fait.

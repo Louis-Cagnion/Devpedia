@@ -597,7 +597,7 @@
             },
             {
               "id": "architecture-dun-shell",
-              "label": "Cómo funciona un shell (arquitectura interna)"
+              "label": "[C](/?c=langages-de-programmation&s=c&p=c)ómo funciona un shell (arquitectura interna)"
             },
             {
               "id": "automatisation-cron",
@@ -691,7 +691,7 @@
             },
             {
               "id": "architecture-dun-shell",
-              "label": "Cómo funciona PowerShell (arquitectura interna)"
+              "label": "[C](/?c=langages-de-programmation&s=c&p=c)ómo funciona PowerShell (arquitectura interna)"
             }
           ]
         },
@@ -1262,12 +1262,16 @@
         },
         {
           "id": "systemes-d-exploitation",
-          "label": "Sistemas operativos",
+          "label": "Systèmes d'exploitation",
           "folder": "Systèmes d'exploitation",
           "chapters": [
             {
               "id": "creer-un-systeme-d-exploitation",
               "label": "Crear un sistema operativo, paso a paso"
+            },
+            {
+              "id": "systemes-d-exploitation",
+              "label": "Sistemas operativos"
             }
           ]
         }
@@ -1525,6 +1529,17 @@
             {
               "id": "assistant-agentique-terminal",
               "label": "El asistente de IA agéntico en terminal: más allá del prompt simple"
+            }
+          ]
+        },
+        {
+          "id": "configuration-de-llms",
+          "label": "Configuration de LLMs",
+          "folder": "Configuration de LLMs",
+          "chapters": [
+            {
+              "id": "hooks",
+              "label": "Los hooks: automatizar un agente LLM en puntos precisos de su ciclo de vida"
             }
           ]
         },

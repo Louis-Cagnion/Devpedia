@@ -178,14 +178,6 @@ const CONTEXT_OPERATOR_SPEECH = {
         "*": "all columns",
         "$": "variable",
     },
-    /* le-terminal.md cites `>`/`$`/`%` as plain prompt-ending characters, not shell operators
-       (before any shell is introduced) -- read by their everyday French names instead, overriding
-       GLOBAL_OPERATOR_SPEECH's own "$": "variable" which would otherwise apply here too. */
-    "le-terminal": {
-        ">": "flèche",
-        "$": "dollar",
-        "%": "pourcent",
-    },
 };
 
 /* Pages whose own meaning for a shared subject/category context's symbols diverges from that
@@ -239,6 +231,11 @@ const IDENTIFIER_UNDERSCORE_PATTERN = /_/g;
 const RC_FILE_SPEECH = { bashrc: "bash R C", zshrc: "zsh R C" };
 const RC_FILE_PATTERN = new RegExp(`(\\.)?\\b(${Object.keys(RC_FILE_SPEECH).join("|")})\\b`, "g");
 
+/* A French accent anywhere in a code span is an unambiguous signal it's French content (an example
+   identifier, not real code syntax) -- used by needsEnglishVoice() below to keep it in the page's
+   own voice even though inline code now defaults to English. */
+const FRENCH_ACCENT_PATTERN = /[àâäéèêëïîôöùûüÿçœæ]/i;
+
 /* Some bare KEYWORD_SPEECH keywords are mis-read as a mumbled blob otherwise -- "shopt" heard as
    one word instead of "S H opt" ("sh" alone read as the "hush" sound, Louis, 2026-08-16). Kept
    separate from KEYWORD_SPEECH since most keywords there need no respelling at all. */
@@ -270,11 +267,25 @@ function englishRewrite(text, context) {
         .replace(KEYWORD_RESPELLING_PATTERN, name => KEYWORD_RESPELLING[name]);
 }
 
-/* Some extensions are said as a whole word, not spelled out -- ".py" is "dot pie", not "dot P Y".
-   Matched only right after a literal "." (cf. FILENAME_DOT_PATTERN below); this table only
-   respells the letters, the dot itself is still read separately. */
-const FILE_EXTENSION_RESPELLING = { py: "pi" };
+/* Some extensions are said as a whole word or spelled by letter, not left as raw letters -- ".py"
+   is "dot pie", ".md" is "dot M-D" (letters, hyphenated per Louis's own standard, 29/08/2026), not
+   "dot M D" or "dot md". Matched only right after a literal "." (cf. FILENAME_DOT_PATTERN below);
+   this table only respells the letters, the dot itself is still read separately. */
+const FILE_EXTENSION_RESPELLING = { py: "pi", md: "M-D", txt: "T-X-T", exe: "exé" };
 const FILE_EXTENSION_RESPELLING_PATTERN = new RegExp(`(?<=\\.)(${Object.keys(FILE_EXTENSION_RESPELLING).join("|")})\\b`, "g");
+
+/* "README" read as a mumbled made-up word instead of the English word it is -- respelled with
+   French spelling conventions for the same sound ("ride mi"), on Louis's own suggestion
+   (29/08/2026). Case-insensitive: same word whether cited as "README" or "readme". */
+const FILENAME_RESPELLING = { readme: "ride mi" };
+const FILENAME_RESPELLING_PATTERN = new RegExp(`\\b(${Object.keys(FILENAME_RESPELLING).join("|")})\\b`, "gi");
+
+/* Case-sensitive, unlike FILENAME_RESPELLING above: lowercase "cmd" only means the Windows
+   executable (`cmd.exe`) -- capitalized "Cmd" is the keyboard modifier key, already spelled
+   "Commande" by CODE_KEYWORD_RESPELLING_FR below, which this would otherwise collide with if it
+   matched case-insensitively too (Louis, 30/08/2026). */
+const FILENAME_RESPELLING_CS = { cmd: "C-M-D" };
+const FILENAME_RESPELLING_CS_PATTERN = new RegExp(`\\b(${Object.keys(FILENAME_RESPELLING_CS).join("|")})\\b`, "g");
 
 /* A "." with no space right after it (`texte.txt`, `~/.bashrc`) gets dropped/mumbled otherwise
    (Louis, 2026-08-16). Kept out of englishRewrite(): which word this reads as depends only on the
@@ -282,9 +293,27 @@ const FILE_EXTENSION_RESPELLING_PATTERN = new RegExp(`(?<=\\.)(${Object.keys(FIL
 const FILENAME_DOT_PATTERN = /\.(?!\s)/g;
 const FILENAME_DOT_SPEECH = { fr: "point", en: "dot", es: "punto", br: "ponto" };
 
+/* Bare keyboard-key names read with English sounds instead of French ones -- unlike
+ * KEYWORD_RESPELLING above, these respellings are themselves French, so they must never flip
+ * needsEnglishVoice() (which only looks at englishRewrite()'s own output): applied as its own
+ * step after it instead. One line per key as Louis flags it by ear. */
+const CODE_KEYWORD_RESPELLING_FR = { Cmd: "Commande", Alt: "halte" };
+const CODE_KEYWORD_RESPELLING_FR_PATTERN = new RegExp(`\\b(${Object.keys(CODE_KEYWORD_RESPELLING_FR).join("|")})\\b`, "g");
+
+/* Symbols cited bare (a whole code span with nothing else in it) with a page-specific French
+ * meaning instead of their usual operator one -- e.g. le-terminal.md's own `>`/`$`/`%`, prompt-
+ * ending characters before any shell is introduced, read by their everyday French name rather than
+ * a shell operator (which GLOBAL_OPERATOR_SPEECH still gives "$" elsewhere). Checked ahead of
+ * englishRewrite() entirely, same reasoning as CODE_KEYWORD_RESPELLING_FR above: its French output
+ * must never be mistaken for one of that function's own (inherently English) rewrites. */
+const CODE_CONTEXT_SYMBOL_RESPELLING_FR = {
+    "le-terminal": { ">": "flèche", "$": "dollar", "%": "pourcent" },
+};
+
 /**
  * @brief Rewrites inline-code text into a form a TTS engine pronounces correctly: operators,
- * CLI flags, rc-files, keywords, file extensions, filename dots, and identifier underscores.
+ * CLI flags, rc-files, keywords, file extensions, filename dots, identifier underscores, and
+ * (fr only) bare keyboard-key names and page-specific symbols.
  *
  * @param {string} text raw inline-code text
  * @param {string} context the page's subject id, or its category id when there's no subject
@@ -294,12 +323,18 @@ const FILENAME_DOT_SPEECH = { fr: "point", en: "dot", es: "punto", br: "ponto" }
  * @returns {string} the text as it should actually be spoken
  */
 export function speakableCode(text, context, lang) {
-    return englishRewrite(text, context)
+    if (lang === "fr" && CODE_CONTEXT_SYMBOL_RESPELLING_FR[context]?.[text] !== undefined)
+        return CODE_CONTEXT_SYMBOL_RESPELLING_FR[context][text];
+    let result = englishRewrite(text, context)
+        .replace(FILENAME_RESPELLING_PATTERN, name => FILENAME_RESPELLING[name.toLowerCase()])
         .replace(FILE_EXTENSION_RESPELLING_PATTERN, ext => FILE_EXTENSION_RESPELLING[ext])
         .replace(FILENAME_DOT_PATTERN, ` ${FILENAME_DOT_SPEECH[lang] ?? FILENAME_DOT_SPEECH.fr} `)
-        .replace(IDENTIFIER_UNDERSCORE_PATTERN, " ")
-        .replace(/\s+/g, " ")
-        .trim();
+        .replace(IDENTIFIER_UNDERSCORE_PATTERN, " ");
+    if (lang === "fr") {
+        result = result.replace(FILENAME_RESPELLING_CS_PATTERN, name => FILENAME_RESPELLING_CS[name]);
+        result = result.replace(CODE_KEYWORD_RESPELLING_FR_PATTERN, name => CODE_KEYWORD_RESPELLING_FR[name]);
+    }
+    return result.replace(/\s+/g, " ").trim();
 }
 
 /* Bare command/builtin names always English regardless of page language -- a curated set, not a
@@ -317,6 +352,7 @@ const KEYWORD_SPEECH = new Set([
     "SHARE_HISTORY",
     "Graphical User Interface",
     "Command-Line Interface",
+    "Spotlight",
     /* The SQL column type, read as a French word ("décimal") instead of the English one by a
        French voice otherwise (nombres-flottants.md's own recap row, reported by Louis on
        2026-08-16 alongside the fabs() fix above). */
@@ -337,8 +373,23 @@ const KEYWORD_SPEECH = new Set([
  * @returns {boolean} true if `code` needs the English voice
  */
 export function needsEnglishVoice(code, context) {
+    if (CODE_CONTEXT_SYMBOL_RESPELLING_FR[context]?.[code] !== undefined) return false;
     if (englishRewrite(code, context) !== code) return true;
-    return KEYWORD_SPEECH.has(code);
+    if (KEYWORD_SPEECH.has(code)) return true;
+    CODE_KEYWORD_RESPELLING_FR_PATTERN.lastIndex = 0;
+    if (CODE_KEYWORD_RESPELLING_FR_PATTERN.test(code)) return false;
+    FILENAME_RESPELLING_PATTERN.lastIndex = 0;
+    if (FILENAME_RESPELLING_PATTERN.test(code)) return false;
+    FILENAME_RESPELLING_CS_PATTERN.lastIndex = 0;
+    if (FILENAME_RESPELLING_CS_PATTERN.test(code)) return false;
+    FILE_EXTENSION_RESPELLING_PATTERN.lastIndex = 0;
+    if (FILE_EXTENSION_RESPELLING_PATTERN.test(code)) return false;
+    if (FRENCH_ACCENT_PATTERN.test(code)) return false;
+    /* Inline code defaults to the English voice now: real code syntax, even cited in a French
+       tutorial, reads in English unless something above forces it to stay French (Louis,
+       30/08/2026). An unaccented French example identifier (`nom_dossier`) has no signal here to
+       catch it -- flag any one heard in the wrong voice and it joins one of the tables above. */
+    return true;
 }
 
 /* Typographic symbols in prose, which TTS skips or reads unpredictably. Keyed by language. "~"
@@ -350,29 +401,43 @@ const CSHARP_SPEECH = "C sharp";
 /* "OCaml" read as one word by a French voice lands on "au calme" ("at ease") -- the inserted
    space forces the syllables apart (Louis, 2026-08-16). Matters more than C#: its own subject. */
 const OCAML_SPEECH = "O Caml";
-/* "Devpédia" is read "Deuvpédia" -- the plain "e" in "Dev" comes out as a schwa (Louis,
-   2026-08-16). Respelled for speech only; fr content only, other languages write it unaccented. */
-const DEVPEDIA_SPEECH_FR = "Dévpédia";
-/* Acronyms read as a mumbled word instead of their own letters, spelled out like "EOF" above --
-   "GUI"/"CLI" in prose (le-terminal.md, outside any code span), Louis, 2026-08-16. */
-const GUI_SPEECH = "G U I";
-const CLI_SPEECH = "C L I";
-/* "cf." read as "confère" instead of two letters; "Ctrl" read as raw letters instead of
-   "contrôle"; "shells" given an English plural "z" sound despite being an invariable loan-word
-   here. All Louis, 2026-08-16 ("prompt" -- same report -- is handled separately below). */
-const CF_SPEECH_FR = "C F";
-const CTRL_SPEECH_FR = "contrôle";
-const SHELL_SPEECH_FR = "shell";
-/* "prompt" loses its final "t" sound like the French word "prompt" (quick) does -- a silent
-   trailing "e" forces it through. Matched by whole word rather than through PROSE_SYMBOL_SPEECH's
-   plain substring replace: it collides with "prompts"/"prompting" used elsewhere in AI content. */
-const PROMPT_WORD_PATTERN = /\bprompt\b/gi;
-const PROMPT_SPEECH_FR = "prompte";
-/* "déréférencement" is read "dé" then the second "é" spelled out letter by letter -- confirmed
-   live (2026-08-16) the text handed to the engine is already correct, so this is the voice itself
-   choking on the "éré" cluster. A silent hyphen after "dé" breaks the two syllables apart. */
-const DEREFERENCE_PATTERN = /\bdéréférenc/gi;
-const DEREFERENCE_SPEECH_FR = "dé-référenc";
+/* Simple French-voice word respellings, one line per word as Louis flags it by ear: a word (most
+   often English/foreign, occasionally a French one the voice itself swallows) the TTS engine
+   mangles or blends into a mumble, respelled to force the right sound. Safe as a plain
+   PROSE_SYMBOL_SPEECH substring entry (cf. WORD_BOUNDARY_RESPELLING_FR below for a respelling that
+   isn't). A lowercase variant is added only where the site actually cites the word lowercase
+   somewhere. */
+const WORD_RESPELLING_FR = {
+    "Devpédia": "Dévpédia",
+    "graphique": "graphik", "Graphique": "Graphik", // final "-que" trails off into a faint mumble otherwise
+    "cf.": "C F", // read "confère" instead of two letters otherwise
+    "Ctrl": "contrôle",
+    "Shells": "shell", "shells": "shell", // invariable loan-word here, not an English plural
+    "PowerShell": "Powe-eur-shell", "powershell": "powe-eur-shell",
+    "Git": "Gui tte", "git": "gui tte", // soft g, silent t otherwise
+    "Zsh": "Z-S-H", "zsh": "z-s-h",
+    "Blockchain": "Block cheine", "blockchain": "block cheine",
+    "macOS": "mac O-S",
+    "User": "Useur", "user": "useur",
+};
+
+/* French-voice respellings that would collide with themselves or with real prose elsewhere if
+   applied as a plain PROSE_SYMBOL_SPEECH substring entry -- matched by whole word (regex) instead.
+   Order matters: a longer phrase must come before a shorter one it starts with (Command-Line before
+   Command), same reasoning CLAUSE_END_PATTERN needs the longest match first. */
+const WORD_BOUNDARY_RESPELLING_FR = [
+    // "prompt" loses its final "t" sound like the French word "prompt" (quick) does; collides with
+    // "prompts"/"prompting" elsewhere in AI content as a plain substring.
+    [/\bprompt\b/gi, "prompte"],
+    // "déréférencement" chokes on its "éré" cluster; a silent hyphen breaks the two syllables apart.
+    [/\bdéréférenc/gi, "dé-référenc"],
+    // "Commande..." itself starts with "Command" again, which a plain "Command" substring entry
+    // would re-match on its own output ("Command-Line" came out "Commande e-la-ine").
+    [/\bCommand-Line\b/g, "Commande-la-ine"],
+    [/\bcommand-line\b/g, "commande-la-ine"],
+    [/\bCommand\b/g, "Commande"],
+    [/\bcommand\b/g, "commande"],
+];
 
 /* Unicode superscripts ("2ⁿ⁻¹") are silently skipped by TTS engines -- decoded back to normal-size
    text and prefixed with a localized "to the power of". Declared before PROSE_SYMBOL_SPEECH so its
@@ -403,13 +468,7 @@ const PROSE_SYMBOL_SPEECH = {
         "^": POWER_OF_SPEECH.fr.of,
         "C#": CSHARP_SPEECH,
         "OCaml": OCAML_SPEECH,
-        "Devpédia": DEVPEDIA_SPEECH_FR,
-        "GUI": GUI_SPEECH,
-        "CLI": CLI_SPEECH,
-        "cf.": CF_SPEECH_FR,
-        "Ctrl": CTRL_SPEECH_FR,
-        "Shells": SHELL_SPEECH_FR,
-        "shells": SHELL_SPEECH_FR,
+        ...WORD_RESPELLING_FR,
     },
     en: { "≈": "approximately equal to", "~": "approximately", "≥": "greater than or equal to", "≠": "different from", "°": "degrees", "×": "times", "↔": "linked to", "±": "plus or minus", "…": "", "^": POWER_OF_SPEECH.en.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
     es: { "≈": "aproximadamente igual a", "~": "aproximadamente", "≥": "mayor o igual a", "≠": "diferente de", "°": "grados", "×": "por", "↔": "vinculado a", "±": "más o menos", "…": "", "^": POWER_OF_SPEECH.es.of, "C#": CSHARP_SPEECH, "OCaml": OCAML_SPEECH },
@@ -425,6 +484,27 @@ const ARROW_SPEECH = {
     other: { fr: "puis", en: "then", es: "luego", br: "depois" },
 };
 
+/* Any standalone ALL-CAPS token, or several joined by "/" (CI/CD, TCP/UDP...), is spelled out by
+   letter with a plain space (comma tried and reverted, cf. journal-de-bord.md). "UI/UX" alone kept
+   blending ("usi/utix"): a hyphen forces the break here, same trick as "dé-référenc" below. */
+const ACRONYM_PATTERN = /\b[A-Z]{2,}(?:\/[A-Z]{2,})*\b/g;
+const ACRONYM_EXCLUDED_WORDS_FR = new Set(["ET", "OU", "NON", "SI", "MAIS", "DONC", "OR", "NI", "CAR"]);
+/* Acronyms still wrong with the plain-space default: hyphenated instead (same trick as
+   "dé-référenc" below), added here one at a time as Louis flags each one by ear. */
+const ACRONYM_OVERRIDES_FR = {
+    "UI/UX": "U-I, U-X",
+    SQL: "S-Q-L",
+    GUI: "G-U-I",
+    CLI: "C-L-I",
+};
+function spellOutSingleAcronym(word) {
+    return ACRONYM_EXCLUDED_WORDS_FR.has(word) ? word : word.split("").join(" ");
+}
+function spellOutAcronymsFr(text) {
+    return text.replace(ACRONYM_PATTERN, match =>
+        ACRONYM_OVERRIDES_FR[match] ?? match.split("/").map(spellOutSingleAcronym).join(", "));
+}
+
 function decodeSuperscript(run, lang) {
     const signs = POWER_OF_SPEECH[lang] ?? POWER_OF_SPEECH.en;
     return [...run].map(ch => SUPERSCRIPT_DIGITS[ch] ?? signs[ch] ?? ch).join("");
@@ -437,7 +517,8 @@ export const DECORATIVE_EMOJI = "📋";
 
 /**
  * @brief Rewrites page-language prose text into a form a TTS engine pronounces correctly:
- * arrows, the recap emoji, superscripts, "prompt"/"déréférencement" (fr), and prose symbols.
+ * arrows, the recap emoji, superscripts, "prompt"/"déréférencement"/ALL-CAPS acronyms (fr), and
+ * prose symbols.
  *
  * @param {string} text raw prose text
  * @param {string} lang the page's own language code (e.g. "fr", "en")
@@ -453,8 +534,8 @@ export function speakableText(text, lang, pageId) {
         .replaceAll(DECORATIVE_EMOJI, "")
         .replace(SUPERSCRIPT_RUN, run => ` ${powerOfWord} ${decodeSuperscript(run, lang)} `);
     if (lang === "fr") {
-        result = result.replace(PROMPT_WORD_PATTERN, ` ${PROMPT_SPEECH_FR} `);
-        result = result.replace(DEREFERENCE_PATTERN, DEREFERENCE_SPEECH_FR);
+        for (const [pattern, replacement] of WORD_BOUNDARY_RESPELLING_FR) result = result.replace(pattern, replacement);
+        result = spellOutAcronymsFr(result);
     }
     const symbols = PROSE_SYMBOL_SPEECH[lang] ?? PROSE_SYMBOL_SPEECH.en;
     for (const [symbol, phrase] of Object.entries(symbols)) {

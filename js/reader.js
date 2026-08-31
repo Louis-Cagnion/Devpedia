@@ -19,6 +19,7 @@ import {
     wrapSegmentWords,
     calibrateRate,
     scheduleEstimatedWords,
+    codeSpanIn,
 } from "./reader-highlight.js";
 import { logEvent, initReaderDebugOverlay, initReaderDebugToggle } from "./reader-debug.js";
 
@@ -87,6 +88,7 @@ let hasPregenAudio = false;
    the first time it's actually needed rather than at module load (most sessions never reach a
    chapter's end, cf. Performance's own no-recompute-what-isn't-needed principle). */
 const AUTO_ADVANCE_SILENCE_PATH = "./audio/silence-5s.mp3";
+export const AUTO_ADVANCE_SILENCE_SECONDS = 5;
 let silenceObjectUrlPromise = null;
 let silenceAbortController = null;
 
@@ -96,8 +98,12 @@ let silenceAbortController = null;
  * A fetch failure degrades to calling `onEnded` immediately rather than never auto-advancing.
  *
  * @param {() => void} onEnded
+ * @param {(secondsRemaining: number) => void} [onTick] called once up front with
+ *   AUTO_ADVANCE_SILENCE_SECONDS, then again on every audioEl "timeupdate" -- driven off the
+ *   audio's own clock like currentEntryEndSeconds elsewhere, so it keeps ticking under the same
+ *   iOS-lock conditions `onEnded` itself already survives, unlike a plain setInterval.
  */
-export async function playAutoAdvanceSilence(onEnded) {
+export async function playAutoAdvanceSilence(onEnded, onTick) {
     if (!silenceObjectUrlPromise) {
         silenceObjectUrlPromise = fetch(AUTO_ADVANCE_SILENCE_PATH)
             .then(response => response.blob())
@@ -113,13 +119,19 @@ export async function playAutoAdvanceSilence(onEnded) {
     audioEl.src = objectUrl;
     audioEl.currentTime = 0;
     audioEl.addEventListener("ended", onEnded, { once: true, signal: silenceAbortController.signal });
+    if (onTick) {
+        onTick(AUTO_ADVANCE_SILENCE_SECONDS);
+        audioEl.addEventListener("timeupdate", () => {
+            onTick(Math.max(1, AUTO_ADVANCE_SILENCE_SECONDS - Math.floor(audioEl.currentTime)));
+        }, { signal: silenceAbortController.signal });
+    }
     audioEl.play().catch(err => logEvent("audioEl:play-rejected", err.message));
 }
 
 /** @brief Stops a playAutoAdvanceSilence() in progress, if any, without calling its `onEnded`. */
 export function stopAutoAdvanceSilence() {
     silenceAbortController?.abort();
-    audioEl.pause();
+    pauseAudioEl();
 }
 
 /* The current "speak" entry's own end position in audioEl's timeline (seconds), or null when
@@ -151,17 +163,33 @@ audioEl.addEventListener("timeupdate", () => {
     speakNext();
 });
 
+/* pause()'s "pause" event is queued, not synchronous: from a jump it can fire only after the next
+   entry already started, wrongly reporting a still-playing voice as externally paused (Louis,
+   29/08/2026). Marking it expected up front survives that reordering; inferring it from isPlaying afterward doesn't. */
+let expectingPause = false;
+function pauseAudioEl() {
+    expectingPause = true;
+    audioEl.pause();
+}
+
 /* iOS can silently stop audioEl on its own (screen lock, backgrounding, a call coming in...)
-   without ever going through pauseReading()/cancelCurrentUtterance() -- every self-initiated pause
-   sets isPlaying false before calling audioEl.pause(), so isPlaying still being true here is exactly
-   what marks this one as external, and the cue to resync state once the page wakes back up. */
+   without ever going through pauseAudioEl() -- exactly the case this still needs to catch. */
 audioEl.addEventListener("pause", () => {
-    logEvent("audioEl:pause", isPlaying ? "(external)" : "(self)");
+    if (expectingPause) {
+        expectingPause = false;
+        logEvent("audioEl:pause", "(self)");
+        return;
+    }
+    logEvent("audioEl:pause", "(external)");
     if (!isPlaying) return;
     isPlaying = false;
     isPaused = true;
     notify();
 });
+// A pause() call that doesn't actually change anything (already paused) never fires "pause" --
+// clearing the flag on the next real "playing" keeps a stale expectation from eating a later,
+// genuinely external pause.
+audioEl.addEventListener("playing", () => { expectingPause = false; });
 
 // Purely diagnostic (cf. js/reader-debug.js): no state changes, just a timeline of what audioEl did.
 ["play", "playing", "stalled", "suspend", "waiting", "ended", "seeking", "seeked"].forEach(type =>
@@ -220,7 +248,9 @@ export function onPlaybackComplete(listener) {
  */
 export function getReaderStatus() {
     return {
-        hasPlan: plan.length > 0,
+        // Not just plan.length: a French page with no matching pregen audio can't play at all
+        // now (no more wrong-voice fallback, Louis, 29/08/2026) -- the buttons should say so.
+        hasPlan: canPlay(),
         isPlaying,
         isPaused,
         isPausedAtCode,
@@ -300,25 +330,51 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
     /* A static snapshot: wrapSegmentWords()/this loop's own Text.splitText() mutate leaf's
        children as buffered runs flush, desyncing a live NodeList mid-iteration otherwise. */
     Array.from(leaf.childNodes).forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE && node.tagName === "CODE") {
-            const code = node.textContent.trim();
+        const codeNode = codeSpanIn(node);
+        if (codeNode) {
+            const code = codeNode.textContent.trim();
             if (!code) return;
             const spoken = speakableCode(code, context, lang);
-            if (!needsEnglishVoice(code, context)) {
-                // Raw `code`, not `spoken`: keeps this node's own word count aligned for wrapSegmentWords().
+            /* needsEnglishVoice() checked before the "untouched" fold-into-buffer case below: inline
+               code now defaults to the English voice (Louis, 30/08/2026), so plenty of English code
+               that speakableCode() leaves byte-for-byte unchanged (bare command names, real syntax
+               with no respelling rule of its own) still needs its own English-voice entry, not a
+               silent fold into the surrounding French sentence. */
+            if (needsEnglishVoice(code, context)) {
+                flushBuffer();
+                entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf, highlightTarget: node, words: [] });
+            } else if (spoken === code) {
+                // Untouched by speakableCode() and confirmed to stay in the page's own voice: folds
+                // into the surrounding sentence, its word count still matching the DOM node's own.
                 buffer += ` ${code} `;
                 segmentNodes.push(node);
             } else {
+                /* Rewritten (e.g. a filename's dot/extension spelled out) but still the page's own
+                   voice: needs its own entry too, same as the English-voice case above -- `spoken`'s
+                   word count no longer matches `code`'s own, so it can't fold into the surrounding
+                   buffer without desyncing wrapSegmentWords() (Louis, 30/08/2026: ".txt" silently
+                   losing its "point" this way). */
                 flushBuffer();
-                entries.push({ kind: "speak", text: spoken, lang: "en-US", group: leaf, highlightTarget: node, words: [] });
+                entries.push({ kind: "speak", text: spoken, lang, group: leaf, highlightTarget: node, words: [] });
             }
         } else if (node.nodeType === Node.TEXT_NODE) {
             let current = node;
             CLAUSE_END_PATTERN.lastIndex = 0;
             let match;
-            while ((match = CLAUSE_END_PATTERN.exec(current.textContent))) {
+            while (current && (match = CLAUSE_END_PATTERN.exec(current.textContent))) {
                 const cutAt = match.index + match[0].length;
-                if (cutAt >= current.textContent.length) break;
+                if (cutAt >= current.textContent.length) {
+                    /* The boundary is this text run's own last character (e.g. "(" right before a
+                       markdown link): nothing left to split off here, but the clause still ends now
+                       -- otherwise it silently glues onto whatever element follows instead of
+                       starting a fresh one there (Louis, 30/08/2026: parentheses are a separator
+                       like any other punctuation, regardless of what follows them). */
+                    buffer += current.textContent;
+                    segmentNodes.push(current);
+                    flushBuffer();
+                    current = null;
+                    break;
+                }
                 const rest = current.splitText(cutAt);
                 buffer += current.textContent;
                 segmentNodes.push(current);
@@ -326,8 +382,10 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
                 current = rest;
                 CLAUSE_END_PATTERN.lastIndex = 0;
             }
-            buffer += current.textContent;
-            segmentNodes.push(current);
+            if (current) {
+                buffer += current.textContent;
+                segmentNodes.push(current);
+            }
         } else {
             buffer += node.textContent;
             segmentNodes.push(node);
@@ -371,7 +429,7 @@ export function collectSegments(root, lang, context, pageId, entries) {
 function cancelCurrentUtterance() {
     generation++;
     if (SPEECH_SUPPORTED) synth.cancel();
-    audioEl.pause();
+    pauseAudioEl();
     currentEntryEndSeconds = null;
 }
 
@@ -396,7 +454,7 @@ function resetPlayback() {
  *
  * @returns {Array}
  */
-function collapseConsecutivePauses(entries) {
+export function collapseConsecutivePauses(entries) {
     return entries.filter((entry, i) => entry.kind !== "pause" || entries[i - 1]?.kind !== "pause");
 }
 
@@ -450,14 +508,21 @@ async function loadPregenAudio(builtPlan) {
         return;
     }
     if (plan !== builtPlan) return; // the page moved on while these fetches were in flight
-    if (timing.length !== builtPlan.length) return;
-    const matches = timing.every((t, i) => t.kind === builtPlan[i].kind);
-    if (!matches) return;
+    if (timing.length !== builtPlan.length) {
+        logEvent("pregen:mismatch", `length timing=${timing.length} plan=${builtPlan.length}`);
+        return;
+    }
+    const mismatchIndex = timing.findIndex((t, i) => t.kind !== builtPlan[i].kind);
+    if (mismatchIndex !== -1) {
+        logEvent("pregen:mismatch", `kind at index=${mismatchIndex} timing=${timing[mismatchIndex].kind} plan=${builtPlan[mismatchIndex].kind}`);
+        return;
+    }
     timing.forEach((t, i) => Object.assign(builtPlan[i], t));
     if (audioObjectUrl) URL.revokeObjectURL(audioObjectUrl);
     audioObjectUrl = URL.createObjectURL(blob);
     audioEl.src = audioObjectUrl;
     hasPregenAudio = true;
+    notify(); // buildReadingPlan()'s own notify() already ran before this fetch resolved, buttons disabled since; re-render now that hasPregenAudio flipped true.
 }
 
 /**
@@ -476,7 +541,28 @@ export function buildReadingPlan(pageDiv) {
     collectSegments(pageDiv, document.documentElement.lang || "fr", context, appState.curPageId, entries);
     plan = collapseConsecutivePauses(entries);
     notify();
-    loadPregenAudio(plan);
+    pregenAudioReady = loadPregenAudio(plan);
+}
+
+/* Pregen audio is the preferred voice (Piper, not the browser's robotic one), but its fetch is
+   async: without this, pressing play right after a page loads could start speaking through
+   speechSynthesis, then switch voices mid-page once the fetch resolves a moment later (Louis,
+   29/08/2026). Every entry point that starts/resumes speech from a stopped state awaits this
+   (bounded, so a stalled fetch can't hang playback forever) before deciding which engine to use. */
+const PREGEN_AUDIO_WAIT_MS = 3000;
+let pregenAudioReady = Promise.resolve();
+function waitForPregenAudio() {
+    return Promise.race([pregenAudioReady, new Promise(resolve => setTimeout(resolve, PREGEN_AUDIO_WAIT_MS))]);
+}
+
+/* Without this, every button reflects whatever it showed before the tap for the whole
+   waitForPregenAudio() wait -- looking unresponsive (Louis, 29/08/2026: "les boutons ne sont
+   absolument pas synchronisés avec la voix"). Corrected already if play() itself later fails
+   (cf. its own catch in speakNextViaAudio()). */
+function notifyOptimisticPlay() {
+    isPlaying = true;
+    isPausedAtCode = false;
+    notify();
 }
 
 /** @brief Stops any reading in progress and rewinds to the start of the current plan, without discarding it. */
@@ -493,15 +579,26 @@ export function pauseReading() {
     notify();
 }
 
+/* French only ever uses pre-generated audio now: a French page falling back to speechSynthesis
+   was the whole source of the "wrong voice" confusion during today's pronunciation fixes (Louis,
+   29/08/2026) -- other languages keep the fallback since their pregen coverage lags behind. */
+function isFrenchPage() {
+    return (getStoredLanguage() || "fr") === "fr";
+}
+
 /** @brief Whether playback can start at all: either engine available, and a plan to read. */
 function canPlay() {
-    return (SPEECH_SUPPORTED || hasPregenAudio) && plan.length > 0;
+    return ((!isFrenchPage() && SPEECH_SUPPORTED) || hasPregenAudio) && plan.length > 0;
 }
 
 /** @brief Resumes reading after pauseReading(), re-speaking the clause `planIndex` still points at. */
-export function resumeReading() {
+export async function resumeReading() {
     if (!canPlay()) return;
+    const myGeneration = generation;
     isPaused = false;
+    notifyOptimisticPlay();
+    await waitForPregenAudio();
+    if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
 }
 
@@ -513,6 +610,10 @@ function speakNext() {
     if (planIndex >= plan.length) {
         isPlaying = false;
         isPausedAtCode = false;
+        clearHighlight();
+        /* Deliberately no scroll-to-top here: Louis wants the page to stay where it is once the
+           chapter finishes, only "Lire depuis le début" (startReading()) returns to the top
+           (29/08/2026). "Écouter cette page" resuming near the end right after is expected. */
         notify();
         completionListeners.forEach(listener => listener());
         return;
@@ -521,7 +622,7 @@ function speakNext() {
     if (entry.kind === "pause") {
         isPlaying = false;
         isPausedAtCode = true;
-        audioEl.pause();
+        pauseAudioEl();
         clearHighlight();
         entry.element.scrollIntoView({ behavior: "smooth", block: "center" });
         notify();
@@ -537,7 +638,8 @@ function speakNext() {
     if (!isElementFullyVisible(entry.highlightTarget))
         entry.highlightTarget.scrollIntoView({ behavior: "smooth", block: "start" });
     if (hasPregenAudio) speakNextViaAudio(entry);
-    else speakNextViaSynthesis(entry);
+    // canPlay() already keeps a French page with no pregen audio from reaching here at all.
+    else if (!isFrenchPage()) speakNextViaSynthesis(entry);
 }
 
 /**
@@ -548,6 +650,16 @@ function speakNext() {
  *
  * @param {Object} entry the current plan[planIndex], already known to be a "speak" entry
  */
+/* Slack allowed on either side of an entry's own [start, end) range in the "already there, no seek
+   needed" check below. Consecutive clips are meant to be concatenated exactly gapless, but a real
+   MP3 encode can leave a few ms of frame-alignment slop between them; without slack, that slop can
+   land currentTime just outside the entry a natural multi-entry catch-up (cf. the "timeupdate"
+   listener above) just landed on -- more likely the faster playback runs, since more short entries
+   get skipped per ~250ms poll tick -- triggering an unnecessary seek that repeats a sliver of audio
+   already played (Louis, 30/08/2026: words repeating mid-sentence at ×1.5, several short clause
+   entries in a row). */
+const ENTRY_BOUNDARY_TOLERANCE_SECONDS = 0.1;
+
 function speakNextViaAudio(entry) {
     const myGeneration = generation;
     currentEntryEndSeconds = (entry.startMs + entry.durationMs) / 1000;
@@ -563,13 +675,35 @@ function speakNextViaAudio(entry) {
        entry's range and actually needs one. */
     const entryStartSeconds = entry.startMs / 1000;
     const entryEndSeconds = entryStartSeconds + entry.durationMs / 1000;
-    const withinEntry = audioEl.currentTime >= entryStartSeconds && audioEl.currentTime < entryEndSeconds;
-    const offsetMs = withinEntry ? (audioEl.currentTime - entryStartSeconds) * 1000 : 0;
-    scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs, offsetMs);
+    const withinEntry = audioEl.currentTime >= entryStartSeconds - ENTRY_BOUNDARY_TOLERANCE_SECONDS
+        && audioEl.currentTime < entryEndSeconds + ENTRY_BOUNDARY_TOLERANCE_SECONDS;
+    const offsetMs = withinEntry ? Math.min(entry.durationMs, Math.max(0, (audioEl.currentTime - entryStartSeconds) * 1000)) : 0;
+    // Divided by readerRate: these are clip-content ms, but the scheduled setTimeouts are wall-clock (Louis, 29/08/2026).
+    scheduleEstimatedWords(entry, () => generation === myGeneration, entry.durationMs / readerRate, offsetMs / readerRate);
+
+    // Before a pause, audio for what follows starts instantly (gapless): the ~250ms timeupdate poll alone leaks a few words of it (Louis, 29/08/2026).
+    if (plan[planIndex + 1]?.kind === "pause") {
+        const myIndex = planIndex;
+        setTimeout(() => {
+            if (generation !== myGeneration || planIndex !== myIndex) return;
+            planIndex++;
+            speakNext();
+        }, (entry.durationMs - offsetMs) / readerRate);
+    }
 
     const play = () => {
         if (generation !== myGeneration) return;
-        audioEl.play().catch(err => logEvent("audioEl:play-rejected", err.message));
+        audioEl.play().catch(err => {
+            logEvent("audioEl:play-rejected", err.message);
+            /* Only NotAllowedError (autoplay actually blocked) means nothing is really playing --
+               an AbortError from an overlapping seek/pause (e.g. a quick paragraph jump) doesn't;
+               audio keeps flowing, so falling back to "paused" here would desync the button from
+               a voice that's still reading (Louis, 29/08/2026). */
+            if (generation !== myGeneration || err.name !== "NotAllowedError") return;
+            isPlaying = false;
+            isPaused = true;
+            notify();
+        });
     };
     if (withinEntry) {
         play();
@@ -586,18 +720,45 @@ function speakNextViaAudio(entry) {
     }
 }
 
+/* Chrome silently drops a speak() call made in quick succession after the previous utterance's
+   onend (e.g. a table row's several short entries chained back to back): neither onstart nor
+   onend ever fires, freezing playback with nothing queued and no error (Louis, 29/08/2026, "Par
+   où commencer ?" table). speakNextViaSynthesis()'s watchdog below detects this (no onstart within
+   this delay) and recovers by retrying once, then skipping the entry rather than hanging forever. */
+const SYNTHESIS_WATCHDOG_MS = 3000;
+
+/* cancel() doesn't unstick the engine if the very next speak() follows immediately -- confirmed
+   empirically (Louis, 29/08/2026): only a real gap after cancel() lets a fresh speak() take. */
+const SYNTHESIS_RECOVERY_DELAY_MS = 300;
+
 /**
  * @brief Speaks `entry` through the Web Speech API, the live-synthesis counterpart to
  * speakNextViaAudio() above -- today's only path for a chapter with no matching pre-generated
  * audio (cf. loadPregenAudio()).
  *
  * @param {Object} entry the current plan[planIndex], already known to be a "speak" entry
+ * @param {boolean} isRetry whether this is already the one watchdog-triggered retry
  */
-function speakNextViaSynthesis(entry) {
+function speakNextViaSynthesis(entry, isRetry = false) {
     const utterance = new SpeechSynthesisUtterance(entry.text);
     utterance.lang = entry.lang;
     utterance.rate = readerRate;
     const myGeneration = generation;
+    let started = false;
+    const watchdog = setTimeout(() => {
+        if (generation !== myGeneration || started) return;
+        logEvent("synthesis:silent-drop", isRetry ? "giving up, skipping entry" : "retrying once");
+        synth.cancel();
+        setTimeout(() => {
+            if (generation !== myGeneration) return;
+            if (isRetry) {
+                planIndex++;
+                speakNext();
+            } else {
+                speakNextViaSynthesis(entry, true);
+            }
+        }, SYNTHESIS_RECOVERY_DELAY_MS);
+    }, SYNTHESIS_WATCHDOG_MS);
     utterance.onboundary = event => {
         if (generation !== myGeneration) return;
         setActiveWord(wordIndexAtChar(entry.text, event.charIndex));
@@ -606,11 +767,14 @@ function speakNextViaSynthesis(entry) {
     // Anchored on onstart, not on speak(): the queueing gap would otherwise inflate short entries.
     utterance.onstart = () => {
         if (generation !== myGeneration) return;
+        started = true;
+        clearTimeout(watchdog);
         startedAt = Date.now();
     };
     scheduleEstimatedWords(entry, () => generation === myGeneration);
     utterance.onend = utterance.onerror = () => {
         if (generation !== myGeneration) return;
+        clearTimeout(watchdog);
         const elapsedSeconds = startedAt === null ? 0 : (Date.now() - startedAt) / 1000;
         if (entry.words.length && elapsedSeconds > 0.1) calibrateRate(entry.text.length / elapsedSeconds);
         planIndex++;
@@ -620,9 +784,13 @@ function speakNextViaSynthesis(entry) {
 }
 
 /** @brief Restarts reading from the beginning of the plan. Called by the "Lire depuis le début" button. */
-export function startReading() {
+export async function startReading() {
     if (!canPlay()) return;
     resetPlayback();
+    const myGeneration = generation;
+    notifyOptimisticPlay();
+    await waitForPregenAudio();
+    if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
 }
 
@@ -665,19 +833,27 @@ function findVisibleEntryIndex() {
 }
 
 /** @brief Starts reading from whichever paragraph is currently at the top of the screen. */
-export function startFromVisible() {
+export async function startFromVisible() {
     if (!canPlay()) return;
     resetPlayback();
     const index = findVisibleEntryIndex();
     plan[index]?.group?.scrollIntoView({ behavior: "smooth", block: "start" });
     planIndex = index;
+    const myGeneration = generation;
+    notifyOptimisticPlay();
+    await waitForPregenAudio();
+    if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
 }
 
 /** @brief Resumes reading past a paused code block. Called by the "Continuer" button. */
-export function continueAfterCode() {
+export async function continueAfterCode() {
     if (!isPausedAtCode) return;
     planIndex++;
+    const myGeneration = generation;
+    notifyOptimisticPlay();
+    await waitForPregenAudio();
+    if (generation !== myGeneration) return; // stale: playback was reset/navigated away while waiting
     speakNext();
 }
 

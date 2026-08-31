@@ -47,6 +47,10 @@
             {
               "id": "le-bug",
               "label": "Le bug"
+            },
+            {
+              "id": "serveur-local-de-developpement",
+              "label": "Le serveur local : tester une page web sans la mettre en ligne"
             }
           ]
         },
@@ -940,6 +944,26 @@
             {
               "id": "machine-learning-scikit-learn",
               "label": "Introduction au machine learning (scikit-learn)"
+            },
+            {
+              "id": "regression-lineaire",
+              "label": "La régression linéaire"
+            },
+            {
+              "id": "regression-logistique",
+              "label": "La régression logistique"
+            },
+            {
+              "id": "arbres-de-decision",
+              "label": "Les arbres de décision"
+            },
+            {
+              "id": "svm",
+              "label": "Les SVM (séparateurs à vaste marge)"
+            },
+            {
+              "id": "k-plus-proches-voisins",
+              "label": "Les k plus proches voisins (k-NN)"
             }
           ]
         },
@@ -1525,6 +1549,17 @@
             {
               "id": "assistant-agentique-terminal",
               "label": "L'assistant IA agentique en terminal : au-delà du prompt simple"
+            }
+          ]
+        },
+        {
+          "id": "configuration-de-llms",
+          "label": "Configuration de LLMs",
+          "folder": "Configuration de LLMs",
+          "chapters": [
+            {
+              "id": "hooks",
+              "label": "Les hooks : automatiser un agent LLM à des points précis de son cycle de vie"
             }
           ]
         },

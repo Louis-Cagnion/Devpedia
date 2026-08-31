@@ -53,7 +53,7 @@ Résultat affiché dans le terminal
 | Système | Comment l'ouvrir |
 |---|---|
 | Windows | Menu Démarrer → taper "Terminal" ou "[PowerShell](/?c=shells&s=powershell&p=powershell)" → Entrée |
-| macOS | Spotlight (`Cmd + Espace`) → taper "Terminal" → Entrée |
+| macOS | `Spotlight` (`Cmd + Espace`) → taper "Terminal" → Entrée |
 | Linux | Selon l'environnement de bureau : souvent `Ctrl + Alt + T`, ou dans le menu des applications |
 
 Une fois ouvert, le terminal affiche une ligne qui se termine par un symbole (`>`, `$`, `%`...) suivi d'un curseur clignotant : c'est le **prompt**. Il attend que vous tapiez quelque chose ; rien ne s'exécute avant d'appuyer sur `Entrée`.

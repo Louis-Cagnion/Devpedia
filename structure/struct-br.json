@@ -1278,12 +1278,16 @@
         },
         {
           "id": "systemes-d-exploitation",
-          "label": "Sistemas operacionais",
+          "label": "Systèmes d'exploitation",
           "folder": "Systèmes d'exploitation",
           "chapters": [
             {
               "id": "creer-un-systeme-d-exploitation",
               "label": "Criar um sistema operacional, passo a passo"
+            },
+            {
+              "id": "systemes-d-exploitation",
+              "label": "Sistemas operacionais"
             }
           ]
         }
@@ -1541,6 +1545,17 @@
             {
               "id": "assistant-agentique-terminal",
               "label": "O assistente de IA agêntico no terminal: além do prompt simples"
+            }
+          ]
+        },
+        {
+          "id": "configuration-de-llms",
+          "label": "Configuration de LLMs",
+          "folder": "Configuration de LLMs",
+          "chapters": [
+            {
+              "id": "hooks",
+              "label": "Hooks: automatizar um agente LLM em pontos precisos de seu ciclo de vida"
             }
           ]
         },

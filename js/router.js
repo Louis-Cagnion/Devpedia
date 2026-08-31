@@ -16,6 +16,7 @@ import {
     previousParagraph,
     playAutoAdvanceSilence,
     stopAutoAdvanceSilence,
+    AUTO_ADVANCE_SILENCE_SECONDS,
 } from "./reader.js";
 import { logEvent } from "./reader-debug.js";
 import { t, tEntityLabel } from "./i18n.js";
@@ -164,12 +165,19 @@ function clearChapterNeighbors() {
    unlock (Louis, 23/08/2026). */
 let autoAdvancePending = false;
 
-/** @brief Cancels a pending chapter auto-advance, if any, removing its on-screen notice everywhere it was shown. */
+/**
+ * @brief Removes any on-screen auto-advance notice, everywhere it was shown, and stops a still-
+ * pending countdown underneath it. Always removes the notice, even once the countdown has already
+ * fired on its own (autoAdvancePending already false there): clearCurrentPage() calls this while
+ * rendering the next chapter, right after that same natural firing already cleared the flag, and
+ * needs the leftover notice gone from the new page regardless (Louis, 30/08/2026: the banner
+ * survived a chapter change instead of disappearing with it).
+ */
 function cancelAutoAdvance() {
+    document.querySelectorAll(".readerAutoAdvanceNotice").forEach(notice => notice.remove());
     if (!autoAdvancePending) return;
     autoAdvancePending = false;
     stopAutoAdvanceSilence();
-    document.querySelectorAll(".readerAutoAdvanceNotice").forEach(notice => notice.remove());
 }
 
 /**
@@ -233,19 +241,33 @@ export function resolvePreviousChapterAcrossSite() {
     return curIndex <= 0 ? null : entries[curIndex - 1];
 }
 
+/* {s} carries the plural "s" (or none for 1) -- every language's own ui-strings.json entry
+   pluralizes its own "second(s)" word the same way, so one shared marker covers all four. */
+function autoAdvanceNoticeText(secondsRemaining) {
+    return t("readerAutoAdvanceNotice")
+        .replace("{n}", secondsRemaining)
+        .replace("{s}", secondsRemaining === 1 ? "" : "s");
+}
+
 // Read-aloud reaching the end of a chapter on its own offers to move on to the next one.
 onPlaybackComplete(() => {
     const next = resolveNextChapterAcrossSite();
     if (!next) return;
+    const notices = [];
     document.querySelectorAll(".readerControl").forEach(control => {
-        control.append(createTag("p", { class: "readerAutoAdvanceNotice" }, { textContent: t("readerAutoAdvanceNotice") }));
+        const notice = createTag("p", { class: "readerAutoAdvanceNotice" }, { textContent: autoAdvanceNoticeText(AUTO_ADVANCE_SILENCE_SECONDS) });
+        control.append(notice);
+        notices.push(notice);
     });
     autoAdvancePending = true;
-    playAutoAdvanceSilence(() => {
-        if (!autoAdvancePending) return; // cancelAutoAdvance() already ran while the silence played
-        autoAdvancePending = false;
-        navigateToChapter(next.categoryId, next.subjectId, next.id);
-    });
+    playAutoAdvanceSilence(
+        () => {
+            if (!autoAdvancePending) return; // cancelAutoAdvance() already ran while the silence played
+            autoAdvancePending = false;
+            navigateToChapter(next.categoryId, next.subjectId, next.id);
+        },
+        secondsRemaining => notices.forEach(notice => { notice.textContent = autoAdvanceNoticeText(secondsRemaining); })
+    );
 });
 
 // Any interaction with either reader control (desktop/mobile) cancels a pending auto-advance.

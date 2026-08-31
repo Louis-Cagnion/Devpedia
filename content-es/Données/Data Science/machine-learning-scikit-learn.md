@@ -36,7 +36,23 @@ X_entrainement, X_test, y_entrainement, y_test = train_test_split(X, y, test_siz
 
 A continuación, el modelo **solo** se evalúa con `X_test` / `y_test`, nunca con los datos que se han utilizado para entrenarlo.
 
-## Sobreaaprendizaje (*overfitting*) y subaprendizaje (*underfitting*)
+## Un tercer conjunto: la validación
+
+Ajustar un modelo (comparar varios algoritmos, elegir hiperparámetros) basándose en la puntuación obtenida en `X_test` equivale a hacer trampa indirectamente: las decisiones tomadas en este proceso acaban influidas por esa puntuación, que deja entonces de representar un conjunto realmente nunca visto. La práctica correcta introduce un tercer conjunto, la **validación**, utilizado durante el ajuste en lugar de al final:
+
+| Conjunto | Función |
+|---|---|
+| Entrenamiento | Ajustar los parámetros internos del modelo (`fit`) |
+| Validación | Comparar modelos/hiperparámetros entre sí, antes de cualquier prueba final |
+| Prueba | Evaluar una sola vez, al final, el modelo elegido |
+
+```python
+X_entrainement, X_temp, y_entrainement, y_temp = train_test_split(X, y, test_size=0.4)
+X_validacion, X_test, y_validacion, y_test = train_test_split(X_temp, y_temp, test_size=0.5)
+# 60% entrenamiento / 20% validación / 20% prueba
+```
+
+## Sobreajuste (*overfitting*) y subajuste (*underfitting*)
 
 | | Puntuación en el entrenamiento | Puntuación en la prueba |
 |---|---|---|
@@ -67,14 +83,70 @@ modelo.score(X_test, y_test)                    # evalúa la calidad de las pred
 
 > **Nota:** la elección del algoritmo depende del tipo de `y`. En este caso, `y` es **categórico** (`"oui"` / `"non"`): se trata de un problema de clasificación, de ahí que se utilice `LogisticRegression` (a pesar de su nombre, es un algoritmo de clasificación, no de regresión). `LinearRegression` se utiliza cuando `y` es un valor **numérico continuo** que se va a predecir (un precio, una temperatura...); utilizarlo con etiquetas de texto, como en este caso, provocaría un error.
 
-## Medir la calidad de un modelo
+## La validación cruzada (*cross-validation*)
+
+Con pocos datos, reservar un 40 % para validación+prueba (véase más arriba) resulta costoso; la validación cruzada resuelve este problema sin sacrificar tantos datos de entrenamiento:
 
 ```python
-from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.model_selection import cross_val_score
 
-accuracy_score(y_test, predictions)       # % de predicciones correctas -> para la clasificación
-mean_squared_error(y_test, predictions)    # error cuadrático medio -> para la regresión
+scores = cross_val_score(LogisticRegression(), X_entrainement, y_entrainement, cv=5)
+# divide X_entrainement en 5 bloques ("folds"); entrena 5 veces, usando cada bloque como validación por turnos
+scores.mean()   # media de las 5 puntuaciones -> estimación más fiable que una sola división entrenamiento/validación
 ```
+
+Así, cada ejemplo sirve tanto para el entrenamiento (4 veces de cada 5) como para la validación (1 vez de cada 5), sin tocar nunca `X_test`: la media de las 5 puntuaciones suaviza el efecto de una división especialmente favorable o desfavorable que una sola partición podría producir por azar.
+
+## Medir la calidad de un modelo
+
+Para la regresión (`y` numérico continuo), el error cuadrático medio basta en la mayoría de los casos:
+
+```python
+from sklearn.metrics import mean_squared_error
+
+mean_squared_error(y_test, predictions)   # error cuadrático medio
+```
+
+Para la clasificación, la exactitud (`accuracy_score`, % de predicciones correctas) no basta en cuanto las clases están desequilibradas: las métricas siguientes lo tienen en cuenta, a partir de la **matriz de confusión**.
+
+### La matriz de confusión
+
+Para una clasificación binaria (positivo/negativo), cada predicción cae en una de estas cuatro casillas:
+
+| | Predicho positivo | Predicho negativo |
+|---|---|---|
+| **Realmente positivo** | Verdadero positivo (VP) | Falso negativo (FN) |
+| **Realmente negativo** | Falso positivo (FP) | Verdadero negativo (VN) |
+
+```python
+from sklearn.metrics import confusion_matrix
+
+confusion_matrix(y_test, predictions)
+# [[VN, FP],
+#  [FN, VP]]
+```
+
+### Las métricas derivadas
+
+| Métrica | Fórmula | Responde a |
+|---|---|---|
+| Exactitud (*accuracy*) | (VP + VN) / total | Del total de predicciones, ¿qué proporción es correcta? |
+| Precisión (*precision*) | VP / (VP + FP) | De los casos predichos como positivos, ¿cuántos lo son realmente? |
+| Exhaustividad (*recall*, o sensibilidad) | VP / (VP + FN) | De los casos realmente positivos, ¿cuántos se han detectado? |
+| Especificidad (*specificity*) | VN / (VN + FP) | De los casos realmente negativos, ¿cuántos se han descartado correctamente? |
+| F1-score | 2 × (precisión × exhaustividad) / (precisión + exhaustividad) | Media armónica de la precisión y la exhaustividad, en una sola cifra |
+
+```python
+from sklearn.metrics import precision_score, recall_score, f1_score, classification_report
+
+precision_score(y_test, predictions)
+recall_score(y_test, predictions)
+f1_score(y_test, predictions)
+
+print(classification_report(y_test, predictions))   # precisión, exhaustividad y F1 a la vez, por clase
+```
+
+> **Nota:** la exactitud es engañosa en clases desequilibradas: un detector de fraude que siempre responde "no" alcanza un 99 % de exactitud si el 1 % de las transacciones son fraudulentas, aunque resulte inútil (exhaustividad del 0 %). Precisión y exhaustividad casi siempre se evalúan juntas: mejorar una suele ir en detrimento de la otra (mover el umbral de decisión hacia "positivo" aumenta la exhaustividad pero reduce la precisión, y viceversa); el F1-score resume este compromiso en una sola cifra, útil para comparar modelos sin arbitrar manualmente entre ambas cada vez. La especificidad completa el panorama por el lado negativo: útil cuando un falso positivo sale caro (p. ej.: una prueba médica innecesaria), mientras que la exhaustividad se centra en el coste de un falso negativo (p. ej.: una enfermedad no detectada).
 
 ## El desarrollo típico de un proyecto de aprendizaje automático
 
@@ -84,7 +156,7 @@ mean_squared_error(y_test, predictions)    # error cuadrático medio -> para la 
 4. Evaluar en el conjunto de pruebas (`predict` + una métrica adecuada al problema).
 5. Ajustar (otro algoritmo, otros parámetros, más datos...) y volver a empezar.
 
-Véase también el capítulo sobre redes neuronales: una familia concreta de modelos, más compleja que la de scikit-learn, pero basada exactamente en los mismos principios básicos (datos de entrenamiento/prueba, aprendizaje, generalización).
+Véase también el capítulo sobre [las redes neuronales](/?c=ia&s=fondamentaux-du-deep-learning&p=reseaux-de-neurones): una familia concreta de modelos, más compleja que la de scikit-learn, pero basada exactamente en los mismos principios básicos (datos de entrenamiento/prueba, aprendizaje, generalización).
 
 ---
 
