@@ -90,5 +90,9 @@ Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de struc
 Écrit (29/08/2026) suite à la propre question de Louis sur comment lancer un serveur statique pour ses tests d'écoute : `content/Fondamentaux/Bases de l'informatique/serveur-local-de-developpement.md` (order 8, fin de la rubrique). Traduit EN/ES/BR le même jour (3 agents parallèles, 1 par langue). Liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé).
 - Reste à Louis : relire (FR d'abord) ; audio pas encore généré.
 
+## 17. Notion absente : `Path.mkdir(parents=True, exist_ok=True)`
+Repérée en revue de `write_reports_by_group`/`complete_reports_dir` (`git-scrapping-infomediaires`, `/review`, 01/09/2026). Le chapitre `manipuler-des-fichiers-et-dossiers.md` couvre déjà `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.with_name()`/`.with_suffix()`/`shutil.rmtree()` mais pas la création de dossier.
+- Reste à faire : ajouter une sous-section `.mkdir()` juste après `.exists()`/`.is_file()`/`.is_dir()` : `dossier.mkdir()` échoue (`FileNotFoundError`) si un parent manque et (`FileExistsError`) si le dossier existe déjà ; `parents=True` crée aussi les parents manquants, `exist_ok=True` rend l'appel silencieux si le dossier est déjà là — la combinaison des deux est le pattern idiomatique "créer si besoin" sans `if not dossier.exists(): ...` avant.
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
