@@ -2,7 +2,7 @@
 
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
-**Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `prompt.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
+**Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
 ## 1. Urgent : 57 chapitres FR sans audio pré-généré ne lisent plus RIEN
 Root cause déjà corrigée (2+ blocs de code adjacents désynchronisaient le plan généré d'une entrée, détail dans `journal-de-bord.md`), mais la portée s'est aggravée le même jour : Louis a fait retirer tout repli sur la voix du navigateur pour le français (point 4 ci-dessous) -- une page FR sans audio pré-généré à jour ne lit donc plus RIEN du tout (avant : lisait avec la mauvaise voix). Ces 57 chapitres FR sont dans ce cas.
@@ -89,6 +89,11 @@ Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de struc
 ## 15. Nouveau chapitre "Le serveur local" : à relire
 Écrit (29/08/2026) suite à la propre question de Louis sur comment lancer un serveur statique pour ses tests d'écoute : `content/Fondamentaux/Bases de l'informatique/serveur-local-de-developpement.md` (order 8, fin de la rubrique). Traduit EN/ES/BR le même jour (3 agents parallèles, 1 par langue). Liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé).
 - Reste à Louis : relire (FR d'abord) ; audio pas encore généré.
+
+## 17. Chapitre SQL (`content/Langages/Domain-specific Languages (DSL)/sql.md`) : lacunes comblées (01/09/2026)
+
+Lacunes repérées en migrant un projet vers SQL Server (01/09/2026), intégrées directement dans `sql.md` (choix retenu plutôt qu'un second chapitre dans `content/Bases de données`, encore vide : ces notions prolongent la pratique de SQL déjà couverte par le chapitre, plutôt que de relever d'une théorie des bases de données à part) : DDL vs DML, `CREATE TABLE` (types, `NOT NULL`, `PRIMARY KEY`/`FOREIGN KEY`), index (avec le piège de la limite 900 octets sur SQL Server), limites d'`ALTER TABLE`, `NULL` vs valeur sentinelle, pilotage Python via `pyodbc` (à côté de la section PDO), SCD2. Traduit EN/ES/BR le même jour (noms de table/colonnes gardés en français en EN comme le reste du chapitre, traduits en ES/BR comme le reste du chapitre). Liens internes validés dans les 4 arborescences (0 lien cassé).
+- Reste à Louis : relire (FR d'abord, EN/ES/BR ensuite si tu veux vérifier la traduction) ; audio pas encore régénéré.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
