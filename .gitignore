@@ -7,3 +7,6 @@ cato-ca-bundle.pem
 # committed -- only their output (audio/) is.
 .venv-piper/
 .piper-voices/
+# Per-chapter temp WAV chunks, normally self-deleted once concatenated -- survives a crash
+# mid-chapter.
+.audio-tmp-*/

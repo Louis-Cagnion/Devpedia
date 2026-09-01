@@ -18,7 +18,10 @@
  *       fr_FR-siwis-medium en_US-lessac-medium es_ES-davefx-medium pt_BR-faber-medium
  *
  * Usage:
- *   node scripts/generate-audio.mjs <chapter-id> [<chapter-id> ...]   # generate specific chapters
+ *   node scripts/generate-audio.mjs <chapter-id|audio-path> [...]     # generate specific chapters
+ *                                                                      (audio-path disambiguates an id shared
+ *                                                                      by several subjects, e.g. "Langages/PHP/exceptions" --
+ *                                                                      the same category/subject folder path as audio/<lang>/...)
  *   node scripts/generate-audio.mjs --context=<id>[,<id>...]          # every chapter under these subject/category ids
  *   node scripts/generate-audio.mjs --all                              # generate the whole site
  *   Add --lang=<code>[,<code>...] to any of the above to restrict to specific site languages
@@ -311,7 +314,7 @@ async function main() {
         if (requestedLangs && !requestedLangs.has(lang)) continue;
         const { contentDir } = SITE_LANGUAGES[lang];
         const chapters = flattenChapters(structs[lang], contentDir)
-            .filter(c => generateAll || requestedContexts?.has(c.context) || requestedIds?.has(c.chapterId));
+            .filter(c => generateAll || requestedContexts?.has(c.context) || requestedIds?.has(c.chapterId) || requestedIds?.has(c.audioPath));
         if (chapters.length === 0) continue;
         console.log(`${lang}: ${chapters.length} chapter(s)`);
         for (const chapterInfo of chapters) {

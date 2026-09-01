@@ -2,6 +2,16 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Régénération complète de l'audio FR cassé par le bug des blocs adjacents (2026-09-01)
+
+Le comptage à l'œil du 29/08 (57 chapitres) sous-estimait la portée : un script Python rejouant le critère de l'audit (deux blocs \`\`\` consécutifs séparés uniquement par des lignes vides) en trouve 61. Root cause déjà corrigée à cette date ; régénération lancée pour les 61 via `scripts/generate-audio.mjs`.
+
+Bug annexe découvert en cours de route : `needsEnglishVoice()` (`js/reader-pronunciation.js`), depuis son inversion en liste noire le 30/08, force la voix anglaise par défaut même sur un span de code purement ponctuation (`[]`, `{}`, `[=]`, syntaxe de capture lambda C++, `stl-algorithmes-et-iterateurs.md`) -- rien à prononcer dans aucune voix. Piper (`piper_batch.py`) écrivait alors un WAV sans frame, plantant tout le batch (`wave.Error: # channels not specified`). Corrigé en repliant ce type de span (aucune lettre/chiffre, `HAS_SPOKEN_CONTENT`) sur la voix de la page plutôt que de forcer l'anglais.
+
+Trois id de chapitre ambigus site-wide (`regex` sous DSL et JavaScript, `exceptions` sous PHP et C++, `boucles` sous PowerShell et cinq autres langages) auraient sinon régénéré des chapitres déjà corrects. `scripts/generate-audio.mjs` accepte désormais aussi un `audioPath` complet (`<dossier catégorie>/[<dossier sujet>/]<id>`, ex. `Langages/PHP/exceptions`) en argument positionnel pour désambiguïser sans élargir la portée.
+
+61/61 chapitres FR confirmés régénérés (date de modification des fichiers `audio/fr/...`).
+
 ## Chapitre SQL complété : DDL, index, NULL vs sentinelle, pyodbc, SCD2 (2026-09-01)
 
 Lacunes repérées par Louis en migrant un projet vers SQL Server (schéma, historisation, requêtes Python) : DDL vs DML jamais nommé, `CREATE TABLE` (types, `NOT NULL`, `PRIMARY KEY`/`FOREIGN KEY`), index (piège de la limite 900 octets sur SQL Server, pousse vers une clé technique `IDENTITY` plutôt qu'une clé naturelle large), limites d'`ALTER TABLE` (réordonner des colonnes impose de recréer la table), `NULL` comme donnée manquante vs valeur sentinelle (`-1`), pilotage Python via `pyodbc`, SCD2 (historiser un changement plutôt qu'écraser une ligne).

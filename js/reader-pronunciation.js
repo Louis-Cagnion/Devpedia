@@ -389,6 +389,12 @@ export function needsEnglishVoice(code, context) {
        tutorial, reads in English unless something above forces it to stay French (Louis,
        30/08/2026). An unaccented French example identifier (`nom_dossier`) has no signal here to
        catch it -- flag any one heard in the wrong voice and it joins one of the tables above. */
+    /* A span with no letter/digit at all (bare punctuation like a lambda capture "[]"/"{}"/"[=]")
+       has nothing any voice can pronounce -- forcing it into its own English entry sent Piper an
+       unspeakable string and crashed the whole batch (empty synthesis output, "stl-algorithmes-
+       et-iterateurs.md", 01/09/2026). Left in the page's own voice instead, folding harmlessly
+       into the surrounding sentence like before the English-default flip above. */
+    if (!HAS_SPOKEN_CONTENT.test(code)) return false;
     return true;
 }
 
