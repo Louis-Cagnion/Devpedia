@@ -132,11 +132,32 @@ Quel que soit le patron retenu, chaque sous-agent démarre par défaut avec un c
 >
 > **Bonne pratique :** prévoir explicitement, pour chacun de ces trois patrons, que faire si un agent échoue ou produit un résultat inexploitable (un agent "vérificateur" intercalé, un contrôle de format en sortie de chaque étape) et qui a le dernier mot en cas d'écriture concurrente, les mêmes parades qu'un accès concurrent classique (verrouillage, un seul agent autorisé à écrire à la fois).
 
+## Sessions pairs asynchrones : quand aucun agent n'est parent de l'autre
+
+Les quatre patrons ci-dessus supposent tous un agent APPELANT qui décompose une tâche et démarre des sous-agents à contexte vide (voir la remarque juste au-dessus du tableau). Un autre cas existe : deux sessions déjà en cours, chacune avec son propre historique complet (et potentiellement son propre humain en conversation), sans lien parent/enfant entre elles.
+
+```text
+Session A (depot "site-web")               Session B (depot "scraper", deja en cours)
+     |                                                |
+     | 1. consulte un REGISTRE des sessions actives   |
+     |------------------------------------------------>
+     | 2. envoie un message asynchrone (boite aux lettres)
+     |------------------------------------------------>
+     |                                                | 3. traite au PROCHAIN tour d'outil de B, pas immediatement
+     |                                                | 4. B repond, ou continue son propre travail
+```
+
+Ce patron repose sur deux mécanismes distincts : la **découverte** (un registre recense les sessions actives, pour que l'une puisse en trouver une autre sans configuration préalable) et le **message asynchrone** (contrairement à un appel d'outil classique, bloquant, il est déposé et traité au prochain tour de l'agent destinataire, sans garantie de délai ni de réponse). Un mécanisme annexe complète souvent ce patron : la **souscription** (« préviens-moi quand tu es de nouveau inactif »), qui évite d'avoir à interroger en boucle (*polling*) si un pair a terminé sa tâche.
+
+> **Piège :** traiter un message asynchrone comme un appel synchrone. Rien ne garantit que le destinataire le traite immédiatement (il peut être occupé sur autre chose), ni même qu'il réponde (sa session a pu se terminer entre-temps) : un usage qui suppose une réponse rapide et fiable doit prévoir explicitement un cas d'absence de réponse.
+>
+> **Bonne pratique :** réserver ce patron à des signalements ponctuels entre tâches par ailleurs indépendantes (ex. deux agents travaillant chacun sur un dépôt différent, mais reliés par une dépendance commune), pas à une coordination qui exige un ordre strict ou une réponse immédiate : dans ce cas, revenir à l'orchestrateur/travailleurs ci-dessus, où l'agent appelant attend réellement le résultat.
+
 ## Ce qu'il faut retenir
 
 | | |
 |---|---|
-| **À retenir** | Un agent donne des outils à un LLM (function calling) et le laisse décider lui-même, à chaque étape, quel outil appeler et quand s'arrêter (boucle ReAct), par opposition à un script à séquence fixe écrit à l'avance. |
-| **Outils utilisables** | Une description JSON de chaque outil disponible (nom, paramètres, description) ; un plafond de tours/budget pour borner la boucle. |
-| **Pièges à éviter** | Faire confiance aveuglément aux arguments générés par le modèle. Un paramètre libre (commande, requête) traité sans les mêmes précautions qu'une entrée non fiable. Une boucle non bornée. Un coût qui s'accumule silencieusement. Une action irréversible décidée sans confirmation humaine. |
-| **Bonnes pratiques** | Valider les arguments reçus avant d'exécuter un outil. Traiter tout paramètre libre généré par le modèle comme une entrée non fiable. Imposer un plafond dur sur le nombre de tours. Surveiller le coût cumulé d'une boucle. Exiger une confirmation humaine avant toute action à conséquence réelle. |
+| **À retenir** | Un agent donne des outils à un LLM (function calling) et le laisse décider lui-même, à chaque étape, quel outil appeler et quand s'arrêter (boucle ReAct), par opposition à un script à séquence fixe écrit à l'avance. Plusieurs agents se coordonnent selon quelques patrons récurrents (pipeline, orchestrateur/travailleurs, état partagé, évaluateur/optimiseur, ou sessions pairs asynchrones sans lien parent/enfant). |
+| **Outils utilisables** | Une description JSON de chaque outil disponible (nom, paramètres, description) ; un plafond de tours/budget pour borner la boucle ; un registre de sessions et une messagerie asynchrone pour coordonner des agents pairs. |
+| **Pièges à éviter** | Faire confiance aveuglément aux arguments générés par le modèle. Un paramètre libre (commande, requête) traité sans les mêmes précautions qu'une entrée non fiable. Une boucle non bornée. Un coût qui s'accumule silencieusement. Une action irréversible décidée sans confirmation humaine. Traiter un message asynchrone entre sessions pairs comme un appel synchrone garanti. |
+| **Bonnes pratiques** | Valider les arguments reçus avant d'exécuter un outil. Traiter tout paramètre libre généré par le modèle comme une entrée non fiable. Imposer un plafond dur sur le nombre de tours. Surveiller le coût cumulé d'une boucle. Exiger une confirmation humaine avant toute action à conséquence réelle. Réserver les sessions pairs asynchrones aux signalements ponctuels, pas à une coordination stricte. |
