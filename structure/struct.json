@@ -1841,37 +1841,6 @@
       "chapters": []
     },
     {
-      "id": "authentification",
-      "label": "Authentification",
-      "folder": "Authentification",
-      "subjects": [
-        {
-          "id": "delegation-et-federation-d-identite",
-          "label": "Délégation et fédération d'identité",
-          "folder": "Délégation et fédération d'identité",
-          "chapters": []
-        },
-        {
-          "id": "fondamentaux",
-          "label": "Fondamentaux",
-          "folder": "Fondamentaux",
-          "chapters": []
-        },
-        {
-          "id": "renforcer-l-authentification",
-          "label": "Renforcer l'authentification",
-          "folder": "Renforcer l'authentification",
-          "chapters": []
-        },
-        {
-          "id": "sessions-et-tokens",
-          "label": "Sessions et tokens",
-          "folder": "Sessions et tokens",
-          "chapters": []
-        }
-      ]
-    },
-    {
       "id": "bases-de-donnees",
       "label": "Bases de données",
       "folder": "Bases de données",
@@ -1926,68 +1895,6 @@
       "chapters": []
     },
     {
-      "id": "langages-de-balisage",
-      "label": "Langages de balisage",
-      "folder": "Langages de balisage",
-      "subjects": [
-        {
-          "id": "css",
-          "label": "CSS",
-          "folder": "CSS",
-          "chapters": []
-        },
-        {
-          "id": "html",
-          "label": "HTML",
-          "folder": "HTML",
-          "chapters": []
-        }
-      ]
-    },
-    {
-      "id": "langages-de-programmation",
-      "label": "Langages de programmation",
-      "folder": "Langages de programmation",
-      "subjects": [
-        {
-          "id": "c",
-          "label": "C",
-          "folder": "C",
-          "chapters": []
-        },
-        {
-          "id": "c",
-          "label": "C++",
-          "folder": "C++",
-          "chapters": []
-        },
-        {
-          "id": "javascript",
-          "label": "JavaScript",
-          "folder": "JavaScript",
-          "chapters": []
-        },
-        {
-          "id": "ocaml",
-          "label": "OCaml",
-          "folder": "OCaml",
-          "chapters": []
-        },
-        {
-          "id": "php",
-          "label": "PHP",
-          "folder": "PHP",
-          "chapters": []
-        },
-        {
-          "id": "python",
-          "label": "Python",
-          "folder": "Python",
-          "chapters": []
-        }
-      ]
-    },
-    {
       "id": "mathematiques",
       "label": "Mathématiques",
       "folder": "Mathématiques",
@@ -2022,31 +1929,6 @@
       "label": "Réseaux",
       "folder": "Réseaux",
       "chapters": []
-    },
-    {
-      "id": "shells",
-      "label": "Shells",
-      "folder": "Shells",
-      "subjects": [
-        {
-          "id": "bash",
-          "label": "Bash",
-          "folder": "Bash",
-          "chapters": []
-        },
-        {
-          "id": "powershell",
-          "label": "PowerShell",
-          "folder": "PowerShell",
-          "chapters": []
-        },
-        {
-          "id": "zsh",
-          "label": "Zsh",
-          "folder": "Zsh",
-          "chapters": []
-        }
-      ]
     },
     {
       "id": "traitement-de-documents",
