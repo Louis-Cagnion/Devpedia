@@ -134,6 +134,17 @@ mots = ["Python", "est", "lisible"]
 
 > **Piège :** l'ordre est inversé par rapport à l'intuition venue d'autres langages : c'est le SÉPARATEUR qui appelle `.join()`, jamais la liste (`", ".join(mots)`, pas `mots.join(", ")`). `.join()` exige aussi que tous les éléments soient déjà des chaînes ; assembler une liste de nombres lève une `TypeError` sans conversion préalable (`", ".join(str(n) for n in nombres)`).
 
+## Découper un texte en lignes : `str.splitlines()`
+
+```python
+texte = "ligne1\nligne2\r\nligne3"
+
+texte.splitlines()  # ["ligne1", "ligne2", "ligne3"]     -> reconnaît \n ET \r\n, aucun \n dans le résultat
+texte.split("\n")   # ["ligne1", "ligne2", "ligne3\r"]   -> "\r" traîne, resté collé à "ligne3"
+```
+
+`.splitlines()` reconnaît aussi bien `\n` (fins de ligne Unix) que `\r\n` (Windows) comme séparateur, sans jamais laisser de caractère de saut de ligne dans le résultat : plus fiable que `.split("\n")` sur un texte dont l'origine (donc la convention de fin de ligne) n'est pas garantie, par exemple un fichier téléchargé ou généré sur une autre machine.
+
 ## Résumé des types de base
 
 | Type | Exemple | Équivalent [PHP](/?c=langages-de-programmation&s=php&p=php) |

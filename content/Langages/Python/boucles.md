@@ -47,6 +47,19 @@ for nom, age in zip(noms, ages):
 
 `zip()` s'arrête dès que la **plus courte** des collections est épuisée, même si les autres contiennent encore des éléments.
 
+## `any()` / `all()` : tester une condition sur tout un itérable
+
+```python
+ages = [16, 20, 15, 30]
+
+any(age >= 18 for age in ages)  # True  -> AU MOINS UN élément vérifie la condition
+all(age >= 18 for age in ages)  # False -> il en faudrait un pour CHAQUE élément
+```
+
+`any(iterable)` renvoie `True` dès qu'un élément est vrai, sans forcément parcourir le reste (court-circuit, comme `or`) ; `all(iterable)` renvoie `True` seulement si tous le sont, et s'arrête au premier faux (comme `and`). Les deux s'utilisent typiquement directement sur une [expression génératrice](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) (sans construire de liste intermédiaire), ce qui évite de parcourir toute la collection si la réponse est déjà connue.
+
+> **Piège :** sur un itérable VIDE, les résultats surprennent souvent : `any([])` vaut `False` (aucun élément vrai trouvé), `all([])` vaut `True` (vacuité : « tous » les zéro éléments vérifient bien la condition, faute d'un seul qui la contredise).
+
 ## La boucle `while`
 
 ```python
@@ -98,6 +111,6 @@ Contrairement à une boucle `for` en [C](/?c=langages-de-programmation&s=c&p=c) 
 | | |
 |---|---|
 | **À retenir** | `for` parcourt directement les éléments d'un itérable (jamais un compteur manuel) ; `range()` génère une séquence de nombres si besoin. `enumerate()`/`zip()` couvrent les besoins d'index et de parcours parallèle. |
-| **Outils utilisables** | `enumerate()`, `zip()`, la clause `else` d'une boucle (exécutée si aucun `break`). |
+| **Outils utilisables** | `enumerate()`, `zip()`, `any()`/`all()`, la clause `else` d'une boucle (exécutée si aucun `break`). |
 | **Pièges à éviter** | Itérer sur `range(len(liste))` puis indexer manuellement, plutôt que d'utiliser directement `for element in liste` ou `enumerate()`. |
 | **Bonnes pratiques** | Utiliser `enumerate()` dès qu'un index est nécessaire en plus de la valeur, plutôt que de le gérer manuellement. |
