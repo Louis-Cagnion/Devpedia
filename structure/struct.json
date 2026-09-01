@@ -383,6 +383,18 @@
             {
               "id": "cli-avec-argparse",
               "label": "Construire une CLI avec `argparse`"
+            },
+            {
+              "id": "manipuler-des-fichiers-et-dossiers",
+              "label": "Manipuler des fichiers et des dossiers avec `pathlib`"
+            },
+            {
+              "id": "dates-et-heures",
+              "label": "Le module `datetime`"
+            },
+            {
+              "id": "sous-processus-et-flux-standard",
+              "label": "Sous-processus et redirection des flux standard"
             }
           ]
         },
@@ -1815,6 +1827,232 @@
           ]
         }
       ]
+    },
+    {
+      "id": "administration-systeme",
+      "label": "Administration système",
+      "folder": "Administration système",
+      "chapters": []
+    },
+    {
+      "id": "algorithmes",
+      "label": "Algorithmes",
+      "folder": "Algorithmes",
+      "chapters": []
+    },
+    {
+      "id": "authentification",
+      "label": "Authentification",
+      "folder": "Authentification",
+      "subjects": [
+        {
+          "id": "delegation-et-federation-d-identite",
+          "label": "Délégation et fédération d'identité",
+          "folder": "Délégation et fédération d'identité",
+          "chapters": []
+        },
+        {
+          "id": "fondamentaux",
+          "label": "Fondamentaux",
+          "folder": "Fondamentaux",
+          "chapters": []
+        },
+        {
+          "id": "renforcer-l-authentification",
+          "label": "Renforcer l'authentification",
+          "folder": "Renforcer l'authentification",
+          "chapters": []
+        },
+        {
+          "id": "sessions-et-tokens",
+          "label": "Sessions et tokens",
+          "folder": "Sessions et tokens",
+          "chapters": []
+        }
+      ]
+    },
+    {
+      "id": "bases-de-donnees",
+      "label": "Bases de données",
+      "folder": "Bases de données",
+      "chapters": []
+    },
+    {
+      "id": "bases-de-l-informatique",
+      "label": "Bases de l'informatique",
+      "folder": "Bases de l'informatique",
+      "chapters": []
+    },
+    {
+      "id": "ci-cd",
+      "label": "CI-CD",
+      "folder": "CI-CD",
+      "chapters": []
+    },
+    {
+      "id": "cybersecurite",
+      "label": "Cybersécurité",
+      "folder": "Cybersécurité",
+      "chapters": []
+    },
+    {
+      "id": "data-science",
+      "label": "Data Science",
+      "folder": "Data Science",
+      "chapters": []
+    },
+    {
+      "id": "docker",
+      "label": "Docker",
+      "folder": "Docker",
+      "chapters": []
+    },
+    {
+      "id": "domain-specific-languages-dsl",
+      "label": "Domain-specific Languages (DSL)",
+      "folder": "Domain-specific Languages (DSL)",
+      "chapters": []
+    },
+    {
+      "id": "git",
+      "label": "Git",
+      "folder": "Git",
+      "chapters": []
+    },
+    {
+      "id": "infrastructure",
+      "label": "Infrastructure",
+      "folder": "Infrastructure",
+      "chapters": []
+    },
+    {
+      "id": "langages-de-balisage",
+      "label": "Langages de balisage",
+      "folder": "Langages de balisage",
+      "subjects": [
+        {
+          "id": "css",
+          "label": "CSS",
+          "folder": "CSS",
+          "chapters": []
+        },
+        {
+          "id": "html",
+          "label": "HTML",
+          "folder": "HTML",
+          "chapters": []
+        }
+      ]
+    },
+    {
+      "id": "langages-de-programmation",
+      "label": "Langages de programmation",
+      "folder": "Langages de programmation",
+      "subjects": [
+        {
+          "id": "c",
+          "label": "C",
+          "folder": "C",
+          "chapters": []
+        },
+        {
+          "id": "c",
+          "label": "C++",
+          "folder": "C++",
+          "chapters": []
+        },
+        {
+          "id": "javascript",
+          "label": "JavaScript",
+          "folder": "JavaScript",
+          "chapters": []
+        },
+        {
+          "id": "ocaml",
+          "label": "OCaml",
+          "folder": "OCaml",
+          "chapters": []
+        },
+        {
+          "id": "php",
+          "label": "PHP",
+          "folder": "PHP",
+          "chapters": []
+        },
+        {
+          "id": "python",
+          "label": "Python",
+          "folder": "Python",
+          "chapters": []
+        }
+      ]
+    },
+    {
+      "id": "mathematiques",
+      "label": "Mathématiques",
+      "folder": "Mathématiques",
+      "chapters": []
+    },
+    {
+      "id": "organisation-en-entreprise",
+      "label": "Organisation en entreprise",
+      "folder": "Organisation en entreprise",
+      "chapters": []
+    },
+    {
+      "id": "performance",
+      "label": "Performance",
+      "folder": "Performance",
+      "chapters": []
+    },
+    {
+      "id": "qualite-et-architecture-du-code",
+      "label": "Qualité et architecture du code",
+      "folder": "Qualité et architecture du code",
+      "chapters": []
+    },
+    {
+      "id": "representation-des-donnees",
+      "label": "Représentation des données",
+      "folder": "Représentation des données",
+      "chapters": []
+    },
+    {
+      "id": "reseaux",
+      "label": "Réseaux",
+      "folder": "Réseaux",
+      "chapters": []
+    },
+    {
+      "id": "shells",
+      "label": "Shells",
+      "folder": "Shells",
+      "subjects": [
+        {
+          "id": "bash",
+          "label": "Bash",
+          "folder": "Bash",
+          "chapters": []
+        },
+        {
+          "id": "powershell",
+          "label": "PowerShell",
+          "folder": "PowerShell",
+          "chapters": []
+        },
+        {
+          "id": "zsh",
+          "label": "Zsh",
+          "folder": "Zsh",
+          "chapters": []
+        }
+      ]
+    },
+    {
+      "id": "traitement-de-documents",
+      "label": "Traitement de documents",
+      "folder": "Traitement de documents",
+      "chapters": []
     }
   ]
 }

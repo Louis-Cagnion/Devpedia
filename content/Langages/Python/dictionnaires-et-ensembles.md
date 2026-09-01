@@ -24,6 +24,17 @@ personne.get("telephone", "inconnu")  # "inconnu" -> valeur par défaut si absen
 
 > **Note :** `personne["telephone"]` (accès direct par crochets) lève une `KeyError` si la clé n'existe pas ; contrairement à `.get()`, qui renvoie `None` (ou une valeur par défaut fournie) sans jamais planter. Préférer `.get()` dès que l'absence de la clé est un cas normal, pas une erreur.
 
+### Pourquoi une clé de dict doit être hachable
+
+```python
+cache = {}
+cache[("site_a", 42)] = "boutique A"  # un TUPLE comme clé : fonctionne, un tuple est immuable donc hachable
+
+cache[["site_a", 42]] = "boutique A"  # TypeError: unhashable type: 'list' -> une liste est mutable, jamais hachable
+```
+
+Une clé de dictionnaire doit être **hachable** (un nombre fixe, calculé une fois pour toutes, qui permet de la localiser instantanément dans la table de hachage sous-jacente) : elle doit donc être **immutable** (`str`, nombre, `tuple`), jamais `list`/`dict`, qui peuvent changer de contenu après coup et rendraient ce nombre invalide. Un `tuple` de plusieurs valeurs sert couramment de **clé composite** : `(site, identifiant)` distingue deux entrées qui partageraient le même `identifiant` sur deux sites différents, ce qu'une seule des deux valeurs ne permettrait pas.
+
 ### Parcourir un dictionnaire
 
 ```python
@@ -43,6 +54,22 @@ for valeur in personne.values():
 carres = {x: x ** 2 for x in range(5)}
 # {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
 ```
+
+### `setdefault()` : construire un dict de listes en une ligne
+
+```python
+shops_par_site = {}
+
+for site, shop_id in paires:
+    if site not in shops_par_site:  # sans setdefault : cette vérification manuelle est nécessaire...
+        shops_par_site[site] = []
+    shops_par_site[site].append(shop_id)
+
+# équivalent en une seule ligne :
+shops_par_site.setdefault(site, []).append(shop_id)
+```
+
+`dico.setdefault(cle, valeur_par_defaut)` renvoie la valeur de `cle` si elle existe déjà (sans y toucher), ou l'insère avec `valeur_par_defaut` PUIS la renvoie si elle n'existe pas encore. Enchaîné avec `.append()`, ce motif regroupe des éléments par catégorie (ici, la liste des boutiques par site) sans jamais tester explicitement si la clé existe déjà.
 
 ## Les ensembles (`set`)
 

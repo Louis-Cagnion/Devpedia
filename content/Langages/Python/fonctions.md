@@ -61,6 +61,20 @@ def afficher_infos(**options):  # **kwargs : regroupe les arguments nommés en e
 afficher_infos(nom="Jean", age=25)
 ```
 
+### Déballer un dict existant dans un appel
+
+`**` fonctionne aussi dans l'autre sens : étaler les clés/valeurs d'un dict ORDINAIRE (pas forcément nommé `kwargs`, ni collecté via `**kwargs`) en arguments nommés d'un appel :
+
+```python
+def presenter(nom, age):
+    return f"{nom} a {age} ans"
+
+infos = {"nom": "Alice", "age": 30}
+presenter(**infos)              # équivaut à presenter(nom="Alice", age=30)
+```
+
+À bien distinguer : `**kwargs` dans une **définition** de fonction COLLECTE les arguments nommés en excès dans un dict (vu ci-dessus) ; `**mon_dict` dans un **appel** fait l'inverse, il DÉBALLE un dict déjà existant pour l'étaler en arguments.
+
 ## Arguments uniquement par mot-clé
 
 Un `*` seul dans la signature force tout ce qui suit à être passé par nom, jamais par position :

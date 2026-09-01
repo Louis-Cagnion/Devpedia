@@ -100,6 +100,16 @@ print(f"Dans 10 ans : {age + 10} ans")  # une vraie expression, pas juste une va
 
 Les f-strings (préfixe `f` avant les guillemets) sont la méthode moderne recommandée, remplaçant `"{} a {} ans".format(nom, age)` ou la concaténation avec `+`.
 
+### Le drapeau de conversion `!r`
+
+```python
+texte = ""
+print(f"Reçu : {texte!r}")   # Reçu : '' -> repr() : montre les guillemets, donc la chaîne vide se voit
+print(f"Reçu : {texte}")     # Reçu :    -> insertion normale : rien à voir, illisible dans un message de debug
+```
+
+`!r` appelle `repr(x)` avant l'insertion (équivalent à `f"{repr(x)}"`) : utile dans un message d'erreur pour distinguer `""` (chaîne vide) de `" "` (espace), ou plus généralement pour voir la valeur exacte reçue plutôt que son affichage "propre". `!s` (`str(x)`, le comportement par défaut) et `!a` (`ascii(x)`, échappe les caractères non-ASCII) existent aussi, plus rarement utiles.
+
 ## Immutabilité des chaînes de caractères
 
 Comme en [PHP](/?c=langages-de-programmation&s=php&p=php), une chaîne Python est **immuable** : toute "modification" crée en réalité une nouvelle chaîne, elle ne modifie jamais l'originale en mémoire.
@@ -111,6 +121,18 @@ print(texte)   # toujours "bonjour"
 
 texte = texte.upper()  # il faut réassigner pour "garder" le changement
 ```
+
+## Assembler une liste en chaîne : `str.join()`
+
+```python
+mots = ["Python", "est", "lisible"]
+
+" ".join(mots)   # "Python est lisible"
+", ".join(mots)  # "Python, est, lisible"
+"".join(mots)    # "Pythonestlisible" -> séparateur vide : aucun caractère entre les éléments
+```
+
+> **Piège :** l'ordre est inversé par rapport à l'intuition venue d'autres langages : c'est le SÉPARATEUR qui appelle `.join()`, jamais la liste (`", ".join(mots)`, pas `mots.join(", ")`). `.join()` exige aussi que tous les éléments soient déjà des chaînes ; assembler une liste de nombres lève une `TypeError` sans conversion préalable (`", ".join(str(n) for n in nombres)`).
 
 ## Résumé des types de base
 

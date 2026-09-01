@@ -26,6 +26,18 @@ len(fruits)                 # nombre d'éléments
 
 > **Note :** contrairement à un tableau en [C](/?c=langages-de-programmation&s=c&p=c) (taille fixe, un seul type), une liste Python est un tableau **dynamique** hétérogène : elle grandit automatiquement, et chaque élément peut être d'un type différent, au prix d'un surcoût mémoire par élément (chaque élément est en réalité une référence vers un objet Python, pas une valeur brute contiguë comme en [C](/?c=langages-de-programmation&s=c&p=c)).
 
+### `.append()` vs `.extend()`
+
+```python
+fruits.append("kiwi")              # déjà vu : ajoute UN SEUL élément (même si c'est une liste, imbriquée telle quelle)
+fruits.extend(["kiwi", "mangue"])  # ajoute CHAQUE élément de l'itérable donné, un par un, à la fin
+
+fruits.append(["a", "b"])  # [..., ["a", "b"]] -> UN élément, imbriqué
+fruits.extend(["a", "b"])  # [..., "a", "b"]   -> DEUX éléments, à plat
+```
+
+> **Piège :** confondre les deux méthodes sur une liste imbriquée : `.append(x)` ajoute toujours `x` tel quel comme un seul élément, jamais son contenu déplié.
+
 ## Le slicing en détail
 
 ```python
@@ -57,6 +69,24 @@ print(latitude)   # 48.8566
 a, b, c = 1, 2, 3  # fonctionne aussi sans parenthèses explicites : un tuple implicite
 a, b = b, a        # échange de valeurs, sans variable temporaire
 ```
+
+## `sorted()` : trier sans modifier l'original
+
+```python
+notes = [12, 5, 18, 9]
+
+sorted(notes)  # [5, 9, 12, 18] -> NOUVELLE liste triée, notes reste inchangée
+notes.sort()   # trie EN PLACE, ne renvoie rien (None), notes est modifiée
+```
+
+`sorted(iterable)` fonctionne aussi sur des chaînes de caractères : le tri est alors **lexicographique** (caractère par caractère, comme un dictionnaire), ce qui trie aussi chronologiquement des dates écrites à longueur fixe (`AAAA-MM-JJ...`), sans avoir besoin de les parser :
+
+```python
+runs = ["2026-08-14_101530", "2026-08-06_090000", "2026-08-14_090000"]
+sorted(runs)  # ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> ordre chronologique, "gratuit"
+```
+
+> **Piège :** ce tri lexicographique ne fonctionne QUE si tous les éléments comparés ont la même longueur (ex. toujours `AAAA-MM-JJ`) : `"9"` se classe APRÈS `"10"` en tri lexicographique (`"9" > "1"` caractère par caractère), contrairement à un tri numérique.
 
 ## Les compréhensions de liste
 
