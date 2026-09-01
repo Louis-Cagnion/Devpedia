@@ -1,6 +1,6 @@
 # Audit zéro-connaissance
 
-Suivi de travail (pas destiné au public) pour la réécriture de Devpedia niveau zéro-connaissance. Contient uniquement les écarts **encore ouverts** détectés en relisant un chapitre contre la checklist de `prompt.md` (section "Méthode") : jargon non défini, notion présupposée sans lien, plateforme/produit externe nommé sans être enseigné ni introduit (ex : GitHub), tableau/schéma manquant là où un paragraphe suffirait moins bien, redite au lieu d'un lien, récapitulatif final absent ou mal formaté.
+Suivi de travail (pas destiné au public) pour la réécriture de Devpedia niveau zéro-connaissance. Contient uniquement les écarts **encore ouverts** détectés en relisant un chapitre contre la checklist de `plan-zero-connaissance.md` (section "Méthode") : jargon non défini, notion présupposée sans lien, plateforme/produit externe nommé sans être enseigné ni introduit (ex : GitHub), tableau/schéma manquant là où un paragraphe suffirait moins bien, redite au lieu d'un lien, récapitulatif final absent ou mal formaté.
 
 Processus : après avoir retravaillé un lot de chapitres, les relire contre cette checklist, noter les écarts trouvés ci-dessous, les corriger, puis relire à nouveau — jusqu'à ce que la section de la tâche en cours soit vide. Une tâche ne disparaît de ce fichier qu'une fois entièrement propre.
 
