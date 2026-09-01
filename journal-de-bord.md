@@ -2,6 +2,14 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre SQL complété : DDL, index, NULL vs sentinelle, pyodbc, SCD2 (2026-09-01)
+
+Lacunes repérées par Louis en migrant un projet vers SQL Server (schéma, historisation, requêtes Python) : DDL vs DML jamais nommé, `CREATE TABLE` (types, `NOT NULL`, `PRIMARY KEY`/`FOREIGN KEY`), index (piège de la limite 900 octets sur SQL Server, pousse vers une clé technique `IDENTITY` plutôt qu'une clé naturelle large), limites d'`ALTER TABLE` (réordonner des colonnes impose de recréer la table), `NULL` comme donnée manquante vs valeur sentinelle (`-1`), pilotage Python via `pyodbc`, SCD2 (historiser un changement plutôt qu'écraser une ligne).
+
+Choix retenu : tout intégrer dans `sql.md` existant plutôt qu'un second chapitre dans `content/Bases de données` (dossier déjà créé mais vide). Raison : ces notions prolongent la pratique de SQL déjà couverte par le chapitre (SELECT/JOIN/PDO), pas une théorie des bases de données à part ; `pyodbc` est le pendant direct de la section PDO déjà là ; index/NULL/SCD2 n'ont de sens qu'après `CREATE TABLE`, les séparer aurait cassé la progression pédagogique. `Bases de données` reste réservé à une vraie matière théorique future (normalisation, ACID, transactions).
+
+Traduit EN/ES/BR le même jour : noms de table/colonnes gardés en français en EN (convention déjà en place dans le reste du chapitre EN), traduits en ES/BR (convention déjà en place dans ces deux fichiers). Liens internes validés dans les 4 arborescences.
+
 ## Grosse session lecture audio : cache navigateur, 2 bugs de segmentation, voix par défaut du code inline (2026-08-30)
 
 **Faux "l'audio ne marche plus" #1 : cache HTTP du serveur local.** Louis a re-signalé les boutons désactivés sur `code-programmes-et-fichiers` après le point 12 déjà connu (audio pré-généré antérieur à un changement de code/contenu). Diagnostic en trois manches : d'abord soupçonné le cache HTTP (`python -m http.server` n'envoie aucun `Cache-Control`, un simple F5 ne revalide pas les sous-ressources chargées en `fetch`) -- confirmé sur un port jamais visité (fonctionne immédiatement) contre le port habituel de Louis (contenu périmé persistant). Piège découvert au passage : ni un Ctrl+Maj+R simulé, ni "Effacer les données du site" depuis le cadenas de Chrome, ne vident forcément ce cache-là selon la version du navigateur -- le seul correctif garanti et immédiat est de changer de port (nouvelle origine = cache vide d'office). Ajouté au chapitre "Le serveur local" (4 langues) comme piège pédagogique.
