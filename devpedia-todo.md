@@ -83,15 +83,15 @@ Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de struc
 - Reste à Louis : relire le choix des sujets mis en avant et la formulation, en français uniquement pour l'instant (EN/ES/BR pas encore mis à jour).
 
 ## 14. 5 nouveaux chapitres sur les algorithmes de ML classiques : à relire
-Écrits (29/08/2026) suite à un reel Instagram (@rick.theengineer) comparant 5 algorithmes sur un même graphe : `content/Données/Data Science/regression-lineaire.md`, `regression-logistique.md`, `arbres-de-decision.md`, `svm.md`, `k-plus-proches-voisins.md` (order 6 à 10, suite de `machine-learning-scikit-learn.md`). Plan zéro-connaissance appliqué (`prompt.md`), liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé), chaque chapitre relié aux notions déjà enseignées (produit scalaire, dérivée/gradient, probabilités) plutôt que de les répéter. Traduits EN/ES/BR le même jour (3 agents parallèles, 1 par langue), ancres recalculées sur les titres réellement traduits, liens validés dans les 4 arborescences (`content`/`content-en`/`content-es`/`content-br`).
-- Reste à Louis : relire les 5 chapitres (FR d'abord, EN/ES/BR ensuite si tu veux vérifier la traduction) ; audio pas encore généré.
+Écrits (29/08/2026) suite à un reel Instagram (@rick.theengineer) comparant 5 algorithmes sur un même graphe : `content/Données/Data Science/regression-lineaire.md`, `regression-logistique.md`, `arbres-de-decision.md`, `svm.md`, `k-plus-proches-voisins.md` (order 6 à 10, suite de `machine-learning-scikit-learn.md`). Plan zéro-connaissance appliqué (`plan-zero-connaissance.md`), liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé), chaque chapitre relié aux notions déjà enseignées (produit scalaire, dérivée/gradient, probabilités) plutôt que de les répéter. Traduits EN/ES/BR le même jour (3 agents parallèles, 1 par langue), ancres recalculées sur les titres réellement traduits, liens validés dans les 4 arborescences (`content`/`content-en`/`content-es`/`content-br`). Audio FR généré le 01/09/2026.
+- Reste à Louis : relire les 5 chapitres (FR d'abord, EN/ES/BR ensuite si tu veux vérifier la traduction).
 
 ## 15. Nouveau chapitre "Le serveur local" : à relire
-Écrit (29/08/2026) suite à la propre question de Louis sur comment lancer un serveur statique pour ses tests d'écoute : `content/Fondamentaux/Bases de l'informatique/serveur-local-de-developpement.md` (order 8, fin de la rubrique). Traduit EN/ES/BR le même jour (3 agents parallèles, 1 par langue). Liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé).
-- Reste à Louis : relire (FR d'abord) ; audio pas encore généré.
+Écrit (29/08/2026) suite à la propre question de Louis sur comment lancer un serveur statique pour ses tests d'écoute : `content/Fondamentaux/Bases de l'informatique/serveur-local-de-developpement.md` (order 8, fin de la rubrique). Traduit EN/ES/BR le même jour (3 agents parallèles, 1 par langue). Liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé). Audio FR généré le 01/09/2026.
+- Reste à Louis : relire (FR d'abord).
 
 ## 17. Chapitre SQL (`content/Langages/Domain-specific Languages (DSL)/sql.md`) : à relire
-- Reste à Louis : relire les ajouts du 01/09/2026 (DDL/DML, `CREATE TABLE`, index, `ALTER TABLE`, `NULL` vs sentinelle, `pyodbc`, SCD2 ; détail et raison des choix dans `journal-de-bord.md`), FR d'abord, EN/ES/BR ensuite si tu veux vérifier la traduction ; audio pas encore régénéré.
+- Reste à Louis : relire les ajouts du 01/09/2026 (DDL/DML, `CREATE TABLE`, index, `ALTER TABLE`, `NULL` vs sentinelle, `pyodbc`, SCD2 ; détail et raison des choix dans `journal-de-bord.md`), FR d'abord, EN/ES/BR ensuite si tu veux vérifier la traduction. Audio FR déjà régénéré (point 1).
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
