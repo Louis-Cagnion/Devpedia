@@ -26,6 +26,18 @@ len(frutas)                  # numero de elementos
 
 > **Nota:** ao contrário de um array em [C](/?c=langages-de-programmation&s=c&p=c) (tamanho fixo, um único tipo), uma lista Python é um array **dinâmico** heterogêneo: ela cresce automaticamente, e cada elemento pode ser de um tipo diferente, ao custo de um sobrecusto de memória por elemento (cada elemento é na verdade uma referência a um objeto Python, não um valor bruto contíguo como em C).
 
+### `.append()` vs `.extend()`
+
+```python
+frutas.append("kiwi")               # ja visto: adiciona UM UNICO elemento (mesmo que seja uma lista, aninhada tal qual)
+frutas.extend(["kiwi", "manga"])    # adiciona CADA elemento do iteravel dado, um a um, ao final
+
+frutas.append(["a", "b"])  # [..., ["a", "b"]] -> UM elemento, aninhado
+frutas.extend(["a", "b"])  # [..., "a", "b"]   -> DOIS elementos, achatados
+```
+
+> **Armadilha:** confundir os dois métodos em uma lista aninhada: `.append(x)` sempre adiciona `x` tal qual como um único elemento, nunca seu conteúdo desempacotado.
+
 ## O slicing em detalhe
 
 ```python
@@ -57,6 +69,24 @@ print(latitude)   # 48.8566
 a, b, c = 1, 2, 3  # funciona tambem sem parenteses explicitos: uma tupla implicita
 a, b = b, a        # troca de valores, sem variavel temporaria
 ```
+
+## `sorted()`: ordenar sem modificar o original
+
+```python
+notas = [12, 5, 18, 9]
+
+sorted(notas)  # [5, 9, 12, 18] -> NOVA lista ordenada, notas permanece inalterada
+notas.sort()   # ordena NO LUGAR, nao retorna nada (None), notas e modificada
+```
+
+`sorted(iterable)` também funciona em strings: a ordenação é então **lexicográfica** (caractere por caractere, como um dicionário), o que também ordena cronologicamente datas escritas em comprimento fixo (`AAAA-MM-DD...`), sem precisar analisá-las:
+
+```python
+runs = ["2026-08-14_101530", "2026-08-06_090000", "2026-08-14_090000"]
+sorted(runs)  # ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> ordem cronologica, "de graca"
+```
+
+> **Armadilha:** essa ordenação lexicográfica só funciona se todos os elementos comparados tiverem o mesmo comprimento (ex. sempre `AAAA-MM-DD`): `"9"` fica DEPOIS de `"10"` em uma ordenação lexicográfica (`"9" > "1"` caractere por caractere), ao contrário de uma ordenação numérica.
 
 ## As compreensões de lista
 

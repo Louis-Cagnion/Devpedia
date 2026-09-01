@@ -24,6 +24,17 @@ persona.get("telefono", "desconocido")  # "desconocido" -> valor por defecto si 
 
 > **Nota:** `persona["telefono"]` (acceso directo por corchetes) lanza un `KeyError` si la clave no existe; a diferencia de `.get()`, que devuelve `None` (o un valor por defecto proporcionado) sin fallar nunca. Preferir `.get()` en cuanto la ausencia de la clave sea un caso normal, no un error.
 
+### Por qué una clave de dict debe ser hachable
+
+```python
+cache = {}
+cache[("sitio_a", 42)] = "tienda A"  # un TUPLE como clave: funciona, un tuple es inmutable, por tanto hachable
+
+cache[["sitio_a", 42]] = "tienda A"  # TypeError: unhashable type: 'list' -> una lista es mutable, nunca hachable
+```
+
+Una clave de diccionario debe ser **hachable** (un número fijo, calculado de una vez por todas, que permite localizarla instantáneamente en la tabla hash subyacente): por tanto debe ser **inmutable** (`str`, número, `tuple`), nunca `list`/`dict`, que pueden cambiar de contenido después y invalidarían ese número. Un `tuple` de varios valores sirve habitualmente como **clave compuesta**: `(sitio, id)` distingue dos entradas que compartieran el mismo `id` en dos sitios diferentes, algo que ninguno de los dos valores por separado permitiría.
+
 ### Recorrer un diccionario
 
 ```python
@@ -43,6 +54,22 @@ for valor in persona.values():
 cuadrados = {x: x ** 2 for x in range(5)}
 # {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
 ```
+
+### `setdefault()`: construir un dict de listas en una línea
+
+```python
+tiendas_por_sitio = {}
+
+for sitio, id_tienda in pares:
+    if sitio not in tiendas_por_sitio:  # sin setdefault: esta comprobación manual es necesaria...
+        tiendas_por_sitio[sitio] = []
+    tiendas_por_sitio[sitio].append(id_tienda)
+
+# equivalente en una sola línea:
+tiendas_por_sitio.setdefault(sitio, []).append(id_tienda)
+```
+
+`dict.setdefault(clave, valor_por_defecto)` devuelve el valor de `clave` si ya existe (sin tocarlo), o lo inserta con `valor_por_defecto` Y LUEGO lo devuelve si aún no existe. Encadenado con `.append()`, este patrón agrupa elementos por categoría (aquí, la lista de tiendas por sitio) sin comprobar nunca explícitamente si la clave ya existe.
 
 ## Los conjuntos (`set`)
 

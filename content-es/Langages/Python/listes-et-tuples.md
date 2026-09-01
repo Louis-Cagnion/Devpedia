@@ -26,6 +26,18 @@ len(frutas)                  # número de elementos
 
 > **Nota:** a diferencia de un array en [C](/?c=langages-de-programmation&s=c&p=c) (tamaño fijo, un solo tipo), una lista Python es un array **dinámico** heterogéneo: crece automáticamente, y cada elemento puede ser de un tipo diferente, al precio de un sobrecoste de memoria por elemento (cada elemento es en realidad una referencia a un objeto Python, no un valor bruto contiguo como en C).
 
+### `.append()` vs `.extend()`
+
+```python
+frutas.append("kiwi")               # ya visto: añade UN SOLO elemento (incluso si es una lista, anidada tal cual)
+frutas.extend(["kiwi", "mango"])    # añade CADA elemento del iterable dado, uno por uno, al final
+
+frutas.append(["a", "b"])  # [..., ["a", "b"]] -> UN elemento, anidado
+frutas.extend(["a", "b"])  # [..., "a", "b"]   -> DOS elementos, aplanados
+```
+
+> **Trampa:** confundir los dos métodos sobre una lista anidada: `.append(x)` siempre añade `x` tal cual como un solo elemento, nunca su contenido desplegado.
+
 ## El slicing en detalle
 
 ```python
@@ -57,6 +69,24 @@ print(latitud)   # 48.8566
 a, b, c = 1, 2, 3  # también funciona sin paréntesis explícitos: una tupla implícita
 a, b = b, a        # intercambio de valores, sin variable temporal
 ```
+
+## `sorted()`: ordenar sin modificar el original
+
+```python
+notas = [12, 5, 18, 9]
+
+sorted(notas)  # [5, 9, 12, 18] -> NUEVA lista ordenada, notas permanece sin cambios
+notas.sort()   # ordena EN EL SITIO, no devuelve nada (None), notas se modifica
+```
+
+`sorted(iterable)` también funciona sobre cadenas de texto: el orden es entonces **lexicográfico** (carácter por carácter, como un diccionario), lo que también ordena cronológicamente fechas escritas a longitud fija (`AAAA-MM-DD...`), sin necesidad de analizarlas:
+
+```python
+runs = ["2026-08-14_101530", "2026-08-06_090000", "2026-08-14_090000"]
+sorted(runs)  # ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> orden cronológico, "gratis"
+```
+
+> **Trampa:** este orden lexicográfico solo funciona si todos los elementos comparados tienen la misma longitud (ej. siempre `AAAA-MM-DD`): `"9"` se clasifica DESPUÉS de `"10"` en un orden lexicográfico (`"9" > "1"` carácter por carácter), a diferencia de un orden numérico.
 
 ## Las comprensiones de lista
 

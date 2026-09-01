@@ -61,6 +61,20 @@ def mostrar_info(**opciones):  # **kwargs: agrupa los argumentos con nombre en e
 mostrar_info(nombre="Juan", edad=25)
 ```
 
+### Desempaquetar un dict existente en una llamada
+
+`**` también funciona al revés: repartir las claves/valores de un dict ORDINARIO (no necesariamente llamado `kwargs`, ni recogido vía `**kwargs`) como argumentos con nombre de una llamada:
+
+```python
+def presentar(nombre, edad):
+    return f"{nombre} tiene {edad} años"
+
+info = {"nombre": "Alicia", "edad": 30}
+presentar(**info)              # equivale a presentar(nombre="Alicia", edad=30)
+```
+
+Hay que distinguir bien: `**kwargs` en una **definición** de función RECOGE los argumentos con nombre en exceso en un dict (visto arriba); `**mi_dict` en una **llamada** hace lo contrario, DESEMPAQUETA un dict ya existente para repartirlo en argumentos.
+
 ## Argumentos solo por palabra clave
 
 Un `*` solo en la firma obliga a que todo lo que le sigue se pase por nombre, nunca por posición:

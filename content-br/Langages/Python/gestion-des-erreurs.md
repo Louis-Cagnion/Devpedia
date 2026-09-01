@@ -47,6 +47,26 @@ finally:
 
 `finally` é usado tipicamente para liberar um recurso (fechar um arquivo, uma conexão...) tenha havido erro ou não.
 
+## Os modos de `open()`
+
+`open(caminho)` (visto acima) abre por padrão em **leitura**. Um segundo argumento precisa o modo de abertura:
+
+| Modo | Significa | Se o arquivo já existe |
+|---|---|---|
+| `"r"` | Leitura (padrão) | Lê seu conteúdo |
+| `"w"` | Escrita | **SOBRESCREVE** todo o conteúdo existente |
+| `"a"` | Anexar (*append*) | Escreve na SEQUÊNCIA, sem apagar nada |
+| `"x"` | Criação exclusiva | Falha com `FileExistsError` |
+
+```python
+with open("log.txt", "a", encoding="utf-8") as f:
+    f.write("Nova linha\n")   # adicionada ao final, o conteúdo anterior permanece intacto
+```
+
+> **Armadilha:** confundir `"w"` e `"a"` faz perder silenciosamente o conteúdo existente de um arquivo (`"w"` o sobrescreve já na abertura, antes mesmo de escrever qualquer coisa). Reservar `"w"` para um arquivo que se queira substituir deliberadamente.
+
+> **Nota:** um arquivo aberto com `"a"` para ficar aberto durante toda a duração de um programa (ex. um arquivo de log) geralmente dispensa `with`, já que o recurso NÃO deve ser liberado após um único bloco: `with` continua preferível em todos os outros casos.
+
 ## Lançar suas próprias exceções
 
 ```python

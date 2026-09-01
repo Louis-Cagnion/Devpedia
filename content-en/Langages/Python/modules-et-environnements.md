@@ -122,6 +122,37 @@ pip install -e .   # "editable" install
 
 An **editable** install (`pip install -e .`) installs the project without copying its files into the virtual environment: it instead creates a `.pth` file that points to the source folder. Modifying the source code takes effect immediately, with no reinstallation needed, which makes this command essential during active development of a library.
 
+## "Portable" Python (*embeddable*) and the `._pth` file
+
+A classic Python installation automatically adds the launched script's folder to `sys.path` (the list of folders where `import` looks for a module). The **embeddable Python** distribution (a minimal ZIP distribution from [python.org](https://docs.python.org/3/using/windows.html#the-embeddable-package), requiring no administrator rights, used for example to ship a tool without depending on a system install) works differently:
+
+```text
+python-3.12.0-embed-amd64/
+├── python.exe
+├── python312.zip     # the standard library, compressed
+├── python312._pth    # the FROZEN list of sys.path folders
+└── my_script.py
+```
+
+```text
+# python312._pth
+python312.zip
+.
+#import site          # commented out: site-packages disabled, lighter install
+```
+
+The `._pth` file **freezes** `sys.path` entirely to this list: unlike a classic install, the launched script's folder is NOT added to it automatically.
+
+```python
+# my_script.py, located in the same folder
+import sys
+sys.path.insert(0, ".")  # without this, a sibling package not listed in ._pth stays unfindable
+
+import my_package
+```
+
+> **Pitfall:** a project that runs fine with a classic Python install can fail with `ModuleNotFoundError` once deployed on an embeddable Python, for lack of this manual `sys.path.insert(0, ...)` before importing any sibling package.
+
 ---
 
 ## 📋 Summary

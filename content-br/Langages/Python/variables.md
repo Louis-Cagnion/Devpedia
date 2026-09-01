@@ -100,6 +100,16 @@ print(f"Em 10 anos: {idade + 10} anos")       # uma expressao real, nao apenas u
 
 As f-strings (prefixo `f` antes das aspas) são o método moderno recomendado, substituindo `"{} tem {} anos".format(nome, idade)` ou a concatenação com `+`.
 
+### O sinalizador de conversão `!r`
+
+```python
+texto = ""
+print(f"Recebido: {texto!r}")   # Recebido: '' -> repr(): mostra as aspas, entao a string vazia fica visivel
+print(f"Recebido: {texto}")     # Recebido:    -> insercao normal: nada para ver, ilegivel em uma mensagem de debug
+```
+
+`!r` chama `repr(x)` antes da inserção (equivalente a `f"{repr(x)}"`): útil em uma mensagem de erro para distinguir `""` (string vazia) de `" "` (espaço), ou mais genericamente para ver o valor exato recebido em vez de sua exibição "limpa". `!s` (`str(x)`, o comportamento padrão) e `!a` (`ascii(x)`, escapa os caracteres não-ASCII) também existem, mais raramente úteis.
+
 ## Imutabilidade das strings
 
 Como em PHP, uma string Python é **imutável**: toda "modificação" na verdade cria uma nova string, ela nunca modifica a original na memória.
@@ -111,6 +121,29 @@ print(texto)   # ainda "ola"
 
 texto = texto.upper()  # e preciso reatribuir para "manter" a mudanca
 ```
+
+## Juntar uma lista em uma string: `str.join()`
+
+```python
+palavras = ["Python", "e", "legivel"]
+
+" ".join(palavras)   # "Python e legivel"
+", ".join(palavras)  # "Python, e, legivel"
+"".join(palavras)    # "Pythonelegivel" -> separador vazio: nenhum caractere entre os elementos
+```
+
+> **Armadilha:** a ordem é invertida em relação à intuição vinda de outras linguagens: é o SEPARADOR que chama `.join()`, nunca a lista (`", ".join(palavras)`, não `palavras.join(", ")`). `.join()` também exige que todos os elementos já sejam strings; juntar uma lista de números levanta um `TypeError` sem uma conversão prévia (`", ".join(str(n) for n in numeros)`).
+
+## Dividir um texto em linhas: `str.splitlines()`
+
+```python
+texto = "linha1\nlinha2\r\nlinha3"
+
+texto.splitlines()  # ["linha1", "linha2", "linha3"]     -> reconhece \n E \r\n, nenhum \n no resultado
+texto.split("\n")   # ["linha1", "linha2", "linha3\r"]   -> "\r" fica grudado em "linha3"
+```
+
+`.splitlines()` reconhece tanto `\n` (fim de linha Unix) quanto `\r\n` (Windows) como separador, sem nunca deixar um caractere de quebra de linha no resultado: mais confiável que `.split("\n")` em um texto cuja origem (e portanto a convenção de fim de linha) não é garantida, por exemplo um arquivo baixado ou gerado em outra máquina.
 
 ## Resumo dos tipos básicos
 

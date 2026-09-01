@@ -39,6 +39,25 @@ print(Counter.total_crees)   # 2 -> shared
 print(c1.id, c2.id)             # 1 2 -> unique to each person
 ```
 
+## Reading an attribute by its name: `getattr()`
+
+```python
+u = Vehicule("Peugeot", "308")
+
+u.brand                          # "Peugeot" -> the attribute name must be known when writing the code
+getattr(u, "brand")               # "Peugeot" -> the same, but the name comes from a STRING, resolved at runtime
+getattr(u, "color", None)         # None      -> fallback value if the attribute doesn't exist (like dict.get())
+```
+
+`getattr(object, name, default)` lets you apply the same treatment to a LIST of attribute names, computed at runtime (e.g. a loop variable), without writing an `if`/`elif` per attribute:
+
+```python
+for field in ["brand", "model"]:
+    print(f"{field}: {getattr(u, field)}")
+```
+
+`setattr(object, name, value)` (writes an attribute by its name) and `hasattr(object, name)` (tests its existence, `True`/`False`) follow the same principle.
+
 ## The Legacy
 
 ```python
@@ -106,6 +125,28 @@ print(p1 == Point(1, 2))  # True -> thanks to __eq__
 | `__eq__` | `obj1 == obj2` |
 | `__len__` | `len(obj)` |
 | `__getitem__` | `obj[key]` |
+
+### Reflected methods (`__radd__`...) and `NotImplemented`
+
+```python
+class Distance:
+    def __init__(self, meters):
+        self.meters = meters
+
+    def __add__(self, other):     # called when Distance is the LEFT operand: d + 5
+        if isinstance(other, (int, float)):
+            return Distance(self.meters + other)
+        return NotImplemented     # "I don't know how to handle this type" -> Python tries another method
+
+    def __radd__(self, other):    # called when Distance is the RIGHT operand: 5 + d
+        return self.__add__(other)
+
+d = Distance(100)
+d + 5  # Distance(105) -> via __add__
+5 + d  # Distance(105) -> via __radd__, because int.__add__(5, d) fails and returns NotImplemented
+```
+
+When `left + right` is evaluated, Python first tries `left.__add__(right)`. If that method doesn't exist or returns **`NotImplemented`** (a special value, not to be confused with the `NotImplementedError` exception), Python then tries the right-hand object's **reflected** method: `right.__radd__(left)`. Every special method has its reflected counterpart (`__radd__`, `__rsub__`, `__rtruediv__`...): this is the mechanism that lets `pathlib.Path` (see [Manipulating Files and Folders](/?c=langages-de-programmation&s=python&p=manipuler-des-fichiers-et-dossiers)) define `__rtruediv__`, so that `"folder" / path` works even with a plain string on the left.
 
 ## `@property` : a computed attribute accessed without parentheses
 

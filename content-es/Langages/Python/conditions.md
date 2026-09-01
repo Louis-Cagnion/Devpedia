@@ -50,6 +50,21 @@ else:
     print("Ningún usuario")
 ```
 
+## `and`/`or` devuelven un valor, no solo un booleano
+
+```python
+estado = "activo"
+resultado = estado and "encontrado"    # "encontrado" -> estado es truthy, and devuelve su SEGUNDO operando
+resultado = "" and "encontrado"        # ""           -> "" es falsy, and se detiene y devuelve su PRIMER operando
+
+apodo = ""
+nombre_mostrado = apodo or "Anónimo"   # "Anónimo" -> or devuelve el primer operando truthy encontrado
+```
+
+`and`/`or` nunca recalculan un `True`/`False`: devuelven uno de sus dos operandos, sin evaluar el otro más allá de lo necesario (**evaluación en cortocircuito**). `a and b` devuelve `a` si `a` es falsy (sin siquiera evaluar `b`), si no `b`; `a or b` devuelve `a` si `a` es truthy, si no `b`. Este idioma permite una llamada condicional (`conectado and desconectar()`, solo llama a `desconectar()` si `conectado` es verdadero) o un valor de respaldo (`nombre = apodo or "Anónimo"`).
+
+> **Trampa:** este atajo sigue siendo poco legible para una simple prueba condicional clásica; reservarlo para una expresión (asignación, argumento) que necesite un valor de respaldo o una llamada condicional corta, mantener un `if` explícito en todos los demás casos.
+
 ## El operador ternario
 
 ```python
@@ -105,7 +120,7 @@ match dia:
 
 | | |
 |---|---|
-| **Para recordar** | `if`/`elif`/`else` estructura el control de flujo, sin llaves: la indentación delimita los bloques. Ciertos valores (`0`, `""`, `[]`, `None`) son "falsy" sin ser `False`. |
+| **Para recordar** | `if`/`elif`/`else` estructura el control de flujo, sin llaves: la indentación delimita los bloques. Ciertos valores (`0`, `""`, `[]`, `None`) son "falsy" sin ser `False`. `and`/`or` devuelven uno de sus operandos, no solo un booleano. |
 | **Herramientas utilizables** | Operador ternario (`x if cond else y`), operador morsa (`:=`), `match`/`case` (Python 3.10+). |
 | **Trampas a evitar** | Una indentación incoherente: provoca un `IndentationError`, no un simple aviso. |
 | **Buenas prácticas** | Probar directamente `if coleccion:` en lugar de `if len(coleccion) > 0:`, apoyándose en el comportamiento truthy/falsy. |

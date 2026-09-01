@@ -61,6 +61,20 @@ def exibir_informacoes(**opcoes):  # **kwargs: agrupa os argumentos nomeados exc
 exibir_informacoes(nome="Joao", idade=25)
 ```
 
+### Desempacotar um dict existente em uma chamada
+
+`**` também funciona ao contrário: espalhar as chaves/valores de um dict COMUM (não necessariamente chamado `kwargs`, nem coletado via `**kwargs`) como argumentos nomeados de uma chamada:
+
+```python
+def apresentar(nome, idade):
+    return f"{nome} tem {idade} anos"
+
+info = {"nome": "Alice", "idade": 30}
+apresentar(**info)              # equivale a apresentar(nome="Alice", idade=30)
+```
+
+É preciso distinguir bem: `**kwargs` em uma **definição** de função COLETA os argumentos nomeados em excesso em um dict (visto acima); `**meu_dict` em uma **chamada** faz o oposto, DESEMPACOTA um dict já existente para espalhá-lo em argumentos.
+
 ## Argumentos apenas por palavra-chave
 
 Um `*` sozinho na assinatura obriga tudo que segue a ser passado por nome, nunca por posição:

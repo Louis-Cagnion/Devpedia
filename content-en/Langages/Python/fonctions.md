@@ -61,6 +61,20 @@ def afficher_infos(**options):  # **kwargs: groups excess named arguments into a
 afficher_infos(name="Jean", age=25)
 ```
 
+### Unpacking an existing dict in a call
+
+`**` also works the other way around: spreading the keys/values of an ORDINARY dict (not necessarily named `kwargs`, nor collected via `**kwargs`) as named arguments of a call:
+
+```python
+def introduce(name, age):
+    return f"{name} is {age} years old"
+
+info = {"name": "Alice", "age": 30}
+introduce(**info)              # equivalent to introduce(name="Alice", age=30)
+```
+
+Careful to distinguish: `**kwargs` in a function **definition** COLLECTS excess named arguments into a dict (seen above); `**my_dict` in a **call** does the opposite, it UNPACKS an existing dict to spread it as arguments.
+
 ## Keyword-only arguments
 
 A `*` alone in the signature forces everything that follows to be passed by name, never by position:

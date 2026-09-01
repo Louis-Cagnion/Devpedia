@@ -122,6 +122,37 @@ pip install -e .   # instalación "editable"
 
 La instalación **editable** (`pip install -e .`) instala el proyecto sin copiar sus archivos al entorno virtual: en su lugar crea un archivo `.pth` que apunta a la carpeta fuente. Modificar el código fuente surte efecto inmediatamente, sin reinstalación, lo que hace que este comando sea indispensable en desarrollo activo de una biblioteca.
 
+## El Python "portable" (*embeddable*) y el archivo `._pth`
+
+Una instalación Python clásica añade automáticamente la carpeta del script lanzado a `sys.path` (la lista de carpetas donde `import` busca un módulo). El **Python embebido** (distribución ZIP mínima de [python.org](https://docs.python.org/3/using/windows.html#the-embeddable-package), sin necesitar derechos de administrador, usada por ejemplo para distribuir una herramienta sin depender de una instalación del sistema) funciona de forma diferente:
+
+```text
+python-3.12.0-embed-amd64/
+├── python.exe
+├── python312.zip     # la biblioteca estándar, comprimida
+├── python312._pth    # la lista CONGELADA de carpetas de sys.path
+└── mi_script.py
+```
+
+```text
+# python312._pth
+python312.zip
+.
+#import site          # comentado: site-packages desactivado, instalación más ligera
+```
+
+El archivo `._pth` **congela** por completo `sys.path` a esta lista: a diferencia de una instalación clásica, la carpeta del script lanzado NO se añade automáticamente.
+
+```python
+# mi_script.py, ubicado en la misma carpeta
+import sys
+sys.path.insert(0, ".")  # sin esto, un paquete vecino no listado en ._pth queda ilocalizable
+
+import mi_paquete
+```
+
+> **Trampa:** un proyecto que funciona sin problema con una instalación Python clásica puede fallar con `ModuleNotFoundError` una vez desplegado en un Python embebido, por falta de este `sys.path.insert(0, ...)` manual antes de importar cualquier paquete vecino.
+
 ---
 
 ## 📋 Resumen

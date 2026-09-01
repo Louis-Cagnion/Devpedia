@@ -50,6 +50,21 @@ else:
     print("Aucun utilisateur")
 ```
 
+## `and`/`or` return a value, not just a boolean
+
+```python
+status = "active"
+result = status and "found"    # "found" -> status is truthy, and returns its SECOND operand
+result = "" and "found"        # ""      -> "" is falsy, and stops and returns its FIRST operand
+
+nickname = ""
+display_name = nickname or "Anonymous"  # "Anonymous" -> or returns the first truthy operand encountered
+```
+
+`and`/`or` never recompute a `True`/`False`: they return one of their two operands, without evaluating the other beyond what's necessary (**short-circuit evaluation**). `a and b` returns `a` if `a` is falsy (without even evaluating `b`), otherwise `b`; `a or b` returns `a` if `a` is truthy, otherwise `b`. This idiom allows a conditional call (`connected and disconnect()`, only calls `disconnect()` if `connected` is true) or a fallback value (`name = nickname or "Anonymous"`).
+
+> **Pitfall:** this shortcut remains hard to read for a plain conditional test; reserve it for an expression (assignment, argument) needing a fallback value or a short conditional call, keep an explicit `if` everywhere else.
+
 ## The ternary operator
 
 ```python
@@ -98,3 +113,14 @@ match jour:
     case _:            # '_' : equivalent to the "default" in a switch statement
         print("Autre jour")
 ```
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `if`/`elif`/`else` structures control flow, no curly braces: indentation delimits blocks. Certain values (`0`, `""`, `[]`, `None`) are "falsy" without being `False`. `and`/`or` return one of their operands, not just a boolean. |
+| **Tools you can use** | Ternary operator (`x if cond else y`), walrus operator (`:=`), `match`/`case` (Python 3.10+). |
+| **Pitfalls to avoid** | Inconsistent indentation: causes an `IndentationError`, not just a warning. |
+| **Best practices** | Test `if collection:` directly instead of `if len(collection) > 0:`, relying on truthy/falsy behavior. |

@@ -122,6 +122,37 @@ pip install -e .   # instalacao "editable"
 
 A instalação **editável** (`pip install -e .`) instala o projeto sem copiar seus arquivos para o ambiente virtual: em vez disso, ela cria um arquivo `.pth` que aponta para a pasta de origem. Modificar o código-fonte tem efeito imediato, sem reinstalação, o que torna esse comando indispensável no desenvolvimento ativo de uma biblioteca.
 
+## O Python "portátil" (*embeddable*) e o arquivo `._pth`
+
+Uma instalação Python clássica adiciona automaticamente a pasta do script lançado a `sys.path` (a lista de pastas onde `import` procura um módulo). O **Python embarcado** (distribuição ZIP mínima do [python.org](https://docs.python.org/3/using/windows.html#the-embeddable-package), sem exigir direitos de administrador, usada por exemplo para entregar uma ferramenta sem depender de uma instalação do sistema) funciona de forma diferente:
+
+```text
+python-3.12.0-embed-amd64/
+├── python.exe
+├── python312.zip     # a biblioteca padrão, comprimida
+├── python312._pth    # a lista CONGELADA das pastas de sys.path
+└── meu_script.py
+```
+
+```text
+# python312._pth
+python312.zip
+.
+#import site          # comentado: site-packages desativado, instalação mais leve
+```
+
+O arquivo `._pth` **congela** inteiramente o `sys.path` nessa lista: ao contrário de uma instalação clássica, a pasta do script lançado NÃO é adicionada automaticamente.
+
+```python
+# meu_script.py, situado na mesma pasta
+import sys
+sys.path.insert(0, ".")  # sem isso, um pacote vizinho nao listado no ._pth fica inencontravel
+
+import meu_pacote
+```
+
+> **Armadilha:** um projeto que roda sem problema com uma instalação Python clássica pode falhar com `ModuleNotFoundError` uma vez implantado em um Python embarcado, por falta desse `sys.path.insert(0, ...)` manual antes de importar qualquer pacote vizinho.
+
 ---
 
 ## 📋 Recapitulando

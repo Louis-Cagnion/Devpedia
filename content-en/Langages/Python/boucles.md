@@ -47,6 +47,19 @@ for name, age in zip(noms, ages):
 
 `zip()` stops as soon as the **shortest** collection is exhausted, even if the others still contain elements.
 
+## `any()` / `all()`: testing a condition across an entire iterable
+
+```python
+ages = [16, 20, 15, 30]
+
+any(age >= 18 for age in ages)  # True  -> AT LEAST ONE element satisfies the condition
+all(age >= 18 for age in ages)  # False -> it would take EVERY element to satisfy it
+```
+
+`any(iterable)` returns `True` as soon as one element is true, without necessarily going through the rest (short-circuit, like `or`); `all(iterable)` returns `True` only if all of them are, and stops at the first false one (like `and`). Both are typically used directly on a [generator expression](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) (without building an intermediate list), which avoids scanning the whole collection if the answer is already known.
+
+> **Pitfall:** on an EMPTY iterable, the results often surprise: `any([])` is `False` (no true element found), `all([])` is `True` (vacuous truth: "all" of the zero elements do satisfy the condition, since none of them contradicts it).
+
 ## `while` Loop
 
 ```python
@@ -90,3 +103,14 @@ else:
 ## No direct access to the index in a `for`
 
 Unlike a C `for` loop (`for (int i = 0; i < taille; i++)`), the Python loop never explicitly manipulates an index; `enumerate()` is the idiomatic way to obtain one when necessary, rather than iterating over `range(len(list))` and then manually indexing.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `for` iterates directly over the elements of an iterable (never a manual counter); `range()` generates a sequence of numbers when needed. `enumerate()`/`zip()` cover index and parallel iteration needs. `any()`/`all()` test a condition across an entire iterable. |
+| **Tools you can use** | `enumerate()`, `zip()`, `any()`/`all()`, a loop's `else` clause (executed if no `break`). |
+| **Pitfalls to avoid** | Iterating over `range(len(list))` and then indexing manually, instead of using `for element in list` or `enumerate()` directly. |
+| **Best practices** | Use `enumerate()` as soon as an index is needed alongside the value, rather than managing it manually. |

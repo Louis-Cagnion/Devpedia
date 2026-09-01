@@ -24,6 +24,17 @@ person.get("telephone", "inconnu") # "unknown" -> default value if missing
 
 > **Note:** `person["telephone"]` (direct access using square brackets) raises an `KeyError` if the key does not exist; unlike `.get()`, which returns `None` (or a specified default value) without ever crashing. Use `.get()` whenever the absence of the key is expected behavior, not an error.
 
+### Why a dict key must be hashable
+
+```python
+cache = {}
+cache[("site_a", 42)] = "shop A"  # a TUPLE as key: works, a tuple is immutable so hashable
+
+cache[["site_a", 42]] = "shop A"  # TypeError: unhashable type: 'list' -> a list is mutable, never hashable
+```
+
+A dictionary key must be **hashable** (a fixed number, computed once and for all, that lets it be located instantly in the underlying hash table): it must therefore be **immutable** (`str`, a number, `tuple`), never `list`/`dict`, which can change content afterward and would invalidate that number. A `tuple` of several values commonly serves as a **composite key**: `(site, id)` distinguishes two entries that would share the same `id` on two different sites, something neither value alone could do.
+
 ### Browse a dictionary
 
 ```python
@@ -44,7 +55,23 @@ carres = {x: x ** 2 for x in range(5)}
 # {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
 ```
 
-## 
+### `setdefault()`: building a dict of lists in one line
+
+```python
+shops_by_site = {}
+
+for site, shop_id in pairs:
+    if site not in shops_by_site:  # without setdefault: this manual check is needed...
+        shops_by_site[site] = []
+    shops_by_site[site].append(shop_id)
+
+# equivalent in a single line:
+shops_by_site.setdefault(site, []).append(shop_id)
+```
+
+`dict.setdefault(key, default)` returns the value of `key` if it already exists (without touching it), or inserts it with `default` AND THEN returns it if it doesn't exist yet. Chained with `.append()`, this pattern groups elements by category (here, the list of shops per site) without ever explicitly testing whether the key already exists.
+
+## Sets (`set`)
 
 ```python
 fruits = {"pomme", "banane", "cerise"}

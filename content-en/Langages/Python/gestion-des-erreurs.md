@@ -47,6 +47,26 @@ finally:
 
 `finally` is typically used to release a resource (close a file, a connection, etc.) regardless of whether an error occurred.
 
+## The modes of `open()`
+
+`open(path)` (seen above) opens in **read** mode by default. A second argument specifies the opening mode:
+
+| Mode | Means | If the file already exists |
+|---|---|---|
+| `"r"` | Read (default) | Reads its content |
+| `"w"` | Write | **OVERWRITES** all existing content |
+| `"a"` | Append | Writes to the END, without erasing anything |
+| `"x"` | Exclusive creation | Fails with `FileExistsError` |
+
+```python
+with open("log.txt", "a", encoding="utf-8") as f:
+    f.write("New line\n")   # added at the end, previous content stays intact
+```
+
+> **Pitfall:** confusing `"w"` and `"a"` silently loses a file's existing content (`"w"` overwrites it upon opening, even before writing anything). Reserve `"w"` for a file you deliberately want to replace.
+
+> **Note:** a file opened with `"a"` meant to stay open for a program's whole lifetime (e.g. a log file) usually skips `with`, since the resource must NOT be released after a single block: `with` remains preferable in every other case.
+
 ## Throwing Your Own Exceptions
 
 ```python

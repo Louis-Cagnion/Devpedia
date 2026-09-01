@@ -100,6 +100,16 @@ print(f"Dans 10 ans : {age + 10} ans") # a real expression, not just a variable
 
 F-strings (with the prefix `f` before the quotation marks) are the recommended modern method, replacing `"{} a {} ans".format(name, age)` or concatenation with `+`.
 
+### The `!r` conversion flag
+
+```python
+text = ""
+print(f"Received: {text!r}")   # Received: '' -> repr(): shows the quotes, so the empty string is visible
+print(f"Received: {text}")     # Received:    -> normal insertion: nothing to see, unreadable in a debug message
+```
+
+`!r` calls `repr(x)` before insertion (equivalent to `f"{repr(x)}"`): useful in an error message to distinguish `""` (empty string) from `" "` (space), or more generally to see the exact value received rather than its "clean" display. `!s` (`str(x)`, the default behavior) and `!a` (`ascii(x)`, escapes non-ASCII characters) also exist, more rarely useful.
+
 ## Immutability of Strings
 
 Just like in PHP, a Python string is **immutable**: any "modification" actually creates a new string; it never modifies the original one in memory.
@@ -111,6 +121,29 @@ print(text)        # always "hello"
 
 text = text.upper()  # You need to reassign it to "save" the change
 ```
+
+## Joining a list into a string: `str.join()`
+
+```python
+words = ["Python", "is", "readable"]
+
+" ".join(words)   # "Python is readable"
+", ".join(words)  # "Python, is, readable"
+"".join(words)    # "Pythonisreadable" -> empty separator: no character between elements
+```
+
+> **Pitfall:** the order is reversed compared to the intuition from other languages: it's the SEPARATOR that calls `.join()`, never the list (`", ".join(words)`, not `words.join(", ")`). `.join()` also requires that every element already be a string; joining a list of numbers raises a `TypeError` without a prior conversion (`", ".join(str(n) for n in numbers)`).
+
+## Splitting text into lines: `str.splitlines()`
+
+```python
+text = "line1\nline2\r\nline3"
+
+text.splitlines()  # ["line1", "line2", "line3"]     -> recognizes both \n AND \r\n, no \n left in the result
+text.split("\n")   # ["line1", "line2", "line3\r"]    -> "\r" lingers, stuck to "line3"
+```
+
+`.splitlines()` recognizes both `\n` (Unix line endings) and `\r\n` (Windows) as a separator, never leaving a line-break character in the result: more reliable than `.split("\n")` on text whose origin (and therefore line-ending convention) isn't guaranteed, for example a file downloaded or generated on another machine.
 
 ## Summary of Basic Types
 

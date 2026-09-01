@@ -47,6 +47,19 @@ for nombre, edad in zip(nombres, edades):
 
 `zip()` se detiene en cuanto se agota la **más corta** de las colecciones, incluso si las demás aún contienen elementos.
 
+## `any()` / `all()`: probar una condición en todo un iterable
+
+```python
+edades = [16, 20, 15, 30]
+
+any(edad >= 18 for edad in edades)  # True  -> AL MENOS UN elemento cumple la condición
+all(edad >= 18 for edad in edades)  # False -> haría falta que la cumplieran TODOS
+```
+
+`any(iterable)` devuelve `True` en cuanto un elemento es verdadero, sin recorrer necesariamente el resto (cortocircuito, como `or`); `all(iterable)` devuelve `True` solo si todos lo son, y se detiene en el primer falso (como `and`). Ambas se usan típicamente directamente sobre una [expresión generadora](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) (sin construir una lista intermedia), lo que evita recorrer toda la colección si la respuesta ya se conoce.
+
+> **Trampa:** sobre un iterable VACÍO, los resultados suelen sorprender: `any([])` vale `False` (no se encontró ningún elemento verdadero), `all([])` vale `True` (vacuidad: "todos" los cero elementos cumplen la condición, ya que ninguno la contradice).
+
 ## El bucle `while`
 
 ```python
@@ -97,7 +110,7 @@ A diferencia de un bucle `for` en C (`for (int i = 0; i < tamanio; i++)`), el bu
 
 | | |
 |---|---|
-| **Para recordar** | `for` recorre directamente los elementos de un iterable (nunca un contador manual); `range()` genera una secuencia de números si hace falta. `enumerate()`/`zip()` cubren las necesidades de índice y recorrido en paralelo. |
-| **Herramientas utilizables** | `enumerate()`, `zip()`, la cláusula `else` de un bucle (ejecutada si no hubo `break`). |
+| **Para recordar** | `for` recorre directamente los elementos de un iterable (nunca un contador manual); `range()` genera una secuencia de números si hace falta. `enumerate()`/`zip()` cubren las necesidades de índice y recorrido en paralelo. `any()`/`all()` prueban una condición en todo un iterable. |
+| **Herramientas utilizables** | `enumerate()`, `zip()`, `any()`/`all()`, la cláusula `else` de un bucle (ejecutada si no hubo `break`). |
 | **Trampas a evitar** | Iterar sobre `range(len(lista))` e indexar manualmente, en lugar de usar directamente `for elemento in lista` o `enumerate()`. |
 | **Buenas prácticas** | Usar `enumerate()` en cuanto se necesita un índice además del valor, en lugar de gestionarlo manualmente. |

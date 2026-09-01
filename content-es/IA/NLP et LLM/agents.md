@@ -132,11 +132,32 @@ Sea cual sea el patrón elegido, cada subagente arranca por defecto con un conte
 >
 > **Buena práctica:** prever explícitamente, para cada uno de estos tres patrones, qué hacer si un agente falla o produce un resultado inutilizable (un agente "verificador" intercalado, un control de formato a la salida de cada etapa) y quién tiene la última palabra en caso de escritura concurrente, los mismos remedios que un acceso concurrente clásico (bloqueo, un solo agente autorizado a escribir a la vez).
 
+## Sesiones pares asíncronas: cuando ningún agente es el padre del otro
+
+Los cuatro patrones anteriores suponen todos un agente LLAMADOR que descompone una tarea e inicia subagentes con contexto vacío (ver la observación justo encima de la tabla). Existe otro caso: dos sesiones ya en curso, cada una con su propio historial completo (y potencialmente su propio humano en la conversación), sin relación padre/hijo entre ellas.
+
+```text
+Sesión A (repo "site-web")                  Sesión B (repo "scraper", ya en curso)
+     |                                                |
+     | 1. consulta un REGISTRO de sesiones activas    |
+     |------------------------------------------------>
+     | 2. envía un mensaje asíncrono (buzón)
+     |------------------------------------------------>
+     |                                                | 3. procesado en el PRÓXIMO turno de herramienta de B, no inmediatamente
+     |                                                | 4. B responde, o continúa su propio trabajo
+```
+
+Este patrón se apoya en dos mecanismos distintos: el **descubrimiento** (un registro recoge las sesiones activas, para que una pueda encontrar a otra sin configuración previa) y el **mensaje asíncrono** (a diferencia de una llamada a herramienta clásica, bloqueante, se deposita y se procesa en el próximo turno del agente destinatario, sin garantía de plazo ni de respuesta). Un mecanismo complementario suele completar este patrón: la **suscripción** («avísame cuando vuelvas a estar inactivo»), que evita tener que consultar en bucle (*polling*) si un par ha terminado su tarea.
+
+> **Trampa:** tratar un mensaje asíncrono como una llamada síncrona. Nada garantiza que el destinatario lo procese de inmediato (puede estar ocupado con otra cosa), ni siquiera que responda (su sesión pudo haber terminado mientras tanto): un uso que suponga una respuesta rápida y fiable debe prever explícitamente el caso de ausencia de respuesta.
+>
+> **Buena práctica:** reservar este patrón para avisos puntuales entre tareas por lo demás independientes (ej. dos agentes trabajando cada uno en un repo distinto, pero unidos por una dependencia común), no para una coordinación que exija un orden estricto o una respuesta inmediata: en ese caso, volver al orquestador/trabajadores de arriba, donde el agente llamador realmente espera el resultado.
+
 ## Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Un agente da herramientas a un LLM (function calling) y lo deja decidir él mismo, en cada etapa, qué herramienta llamar y cuándo detenerse (bucle ReAct), a diferencia de un script de secuencia fija escrito de antemano. |
-| **Herramientas utilizables** | Una descripción JSON de cada herramienta disponible (nombre, parámetros, descripción); un tope de turnos/presupuesto para acotar el bucle. |
-| **Trampas a evitar** | Confiar ciegamente en los argumentos generados por el modelo. Un parámetro libre (comando, consulta) tratado sin las mismas precauciones que una entrada no fiable. Un bucle no acotado. Un coste que se acumula silenciosamente. Una acción irreversible decidida sin confirmación humana. |
-| **Buenas prácticas** | Validar los argumentos recibidos antes de ejecutar una herramienta. Tratar todo parámetro libre generado por el modelo como una entrada no fiable. Imponer un tope duro sobre el número de turnos. Vigilar el coste acumulado de un bucle. Exigir una confirmación humana antes de toda acción con consecuencia real. |
+| **Para recordar** | Un agente da herramientas a un LLM (function calling) y lo deja decidir él mismo, en cada etapa, qué herramienta llamar y cuándo detenerse (bucle ReAct), a diferencia de un script de secuencia fija escrito de antemano. Varios agentes se coordinan según algunos patrones recurrentes (pipeline, orquestador/trabajadores, estado compartido, evaluador/optimizador, o sesiones pares asíncronas sin relación padre/hijo). |
+| **Herramientas utilizables** | Una descripción JSON de cada herramienta disponible (nombre, parámetros, descripción); un tope de turnos/presupuesto para acotar el bucle; un registro de sesiones y una mensajería asíncrona para coordinar agentes pares. |
+| **Trampas a evitar** | Confiar ciegamente en los argumentos generados por el modelo. Un parámetro libre (comando, consulta) tratado sin las mismas precauciones que una entrada no fiable. Un bucle no acotado. Un coste que se acumula silenciosamente. Una acción irreversible decidida sin confirmación humana. Tratar un mensaje asíncrono entre sesiones pares como una llamada síncrona garantizada. |
+| **Buenas prácticas** | Validar los argumentos recibidos antes de ejecutar una herramienta. Tratar todo parámetro libre generado por el modelo como una entrada no fiable. Imponer un tope duro sobre el número de turnos. Vigilar el coste acumulado de un bucle. Exigir una confirmación humana antes de toda acción con consecuencia real. Reservar las sesiones pares asíncronas para avisos puntuales, no para una coordinación estricta. |

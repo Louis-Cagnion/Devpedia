@@ -116,6 +116,8 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
+> **Nota:** `sys.exit(x)` es un atajo que internamente lanza él mismo `raise SystemExit(x)`: las dos sintaxis son estrictamente equivalentes. `raise SystemExit("mensaje")` es útil en una función que NO es `main()`, para detener el programa inmediatamente con un mensaje de error limpio, sin necesidad de importar `sys` solo para eso.
+
 Un test puede entonces llamar a `main(["process", "test.pdf", "--marca", "peugeot"])` directamente, sin invocar nunca una terminal real, y verificar el valor entero devuelto (`0` = éxito, otro valor = fallo) exactamente como el [código de salida](/?c=shells&s=bash&p=scripts-et-shebang) de un script [Bash](/?c=shells&s=bash&p=bash).
 
 ---

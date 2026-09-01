@@ -24,6 +24,17 @@ pessoa.get("telefone", "desconhecido")  # "desconhecido" -> valor padrao se ause
 
 > **Nota:** `pessoa["telefone"]` (acesso direto por colchetes) lança um `KeyError` se a chave não existir; ao contrário de `.get()`, que retorna `None` (ou um valor padrão fornecido) sem nunca travar. Preferir `.get()` assim que a ausência da chave for um caso normal, não um erro.
 
+### Por que uma chave de dict deve ser hasheável
+
+```python
+cache = {}
+cache[("site_a", 42)] = "loja A"  # uma TUPLE como chave: funciona, uma tuple e imutavel, logo hasheavel
+
+cache[["site_a", 42]] = "loja A"  # TypeError: unhashable type: 'list' -> uma lista e mutavel, nunca hasheavel
+```
+
+Uma chave de dicionário deve ser **hasheável** (um número fixo, calculado de uma vez por todas, que permite localizá-la instantaneamente na tabela hash subjacente): ela deve, portanto, ser **imutável** (`str`, número, `tuple`), nunca `list`/`dict`, que podem mudar de conteúdo depois e invalidariam esse número. Uma `tuple` de vários valores costuma servir como **chave composta**: `(site, id)` distingue duas entradas que compartilhassem o mesmo `id` em dois sites diferentes, algo que nenhum dos dois valores sozinho permitiria.
+
 ### Percorrer um dicionário
 
 ```python
@@ -43,6 +54,22 @@ for valor in pessoa.values():
 quadrados = {x: x ** 2 for x in range(5)}
 # {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
 ```
+
+### `setdefault()`: construir um dict de listas em uma linha
+
+```python
+lojas_por_site = {}
+
+for site, id_loja in pares:
+    if site not in lojas_por_site:  # sem setdefault: essa verificacao manual e necessaria...
+        lojas_por_site[site] = []
+    lojas_por_site[site].append(id_loja)
+
+# equivalente em uma unica linha:
+lojas_por_site.setdefault(site, []).append(id_loja)
+```
+
+`dict.setdefault(chave, valor_padrao)` retorna o valor de `chave` se ela já existir (sem tocar nela), ou a insere com `valor_padrao` E ENTÃO a retorna se ainda não existir. Encadeado com `.append()`, esse padrão agrupa elementos por categoria (aqui, a lista de lojas por site) sem nunca testar explicitamente se a chave já existe.
 
 ## Os conjuntos (`set`)
 

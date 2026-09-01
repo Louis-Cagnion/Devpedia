@@ -47,6 +47,19 @@ for nome, idade in zip(nomes, idades):
 
 `zip()` para assim que a **mais curta** das coleções se esgota, mesmo que as outras ainda contenham elementos.
 
+## `any()` / `all()`: testar uma condição em todo um iterável
+
+```python
+idades = [16, 20, 15, 30]
+
+any(idade >= 18 for idade in idades)  # True  -> PELO MENOS UM elemento satisfaz a condição
+all(idade >= 18 for idade in idades)  # False -> seria preciso que TODOS satisfizessem
+```
+
+`any(iterable)` retorna `True` assim que um elemento é verdadeiro, sem necessariamente percorrer o resto (curto-circuito, como `or`); `all(iterable)` retorna `True` somente se todos forem, e para no primeiro falso (como `and`). Ambas costumam ser usadas diretamente sobre uma [expressão geradora](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) (sem construir uma lista intermediária), o que evita percorrer toda a coleção se a resposta já é conhecida.
+
+> **Armadilha:** sobre um iterável VAZIO, os resultados costumam surpreender: `any([])` vale `False` (nenhum elemento verdadeiro encontrado), `all([])` vale `True` (vacuidade: "todos" os zero elementos satisfazem a condição, já que nenhum a contradiz).
+
 ## O laço `while`
 
 ```python
@@ -97,7 +110,7 @@ Ao contrário de um laço `for` em C (`for (int i = 0; i < tamanho; i++)`), o la
 
 | | |
 |---|---|
-| **Para lembrar** | `for` percorre diretamente os elementos de um iterável (nunca um contador manual); `range()` gera uma sequência de números se necessário. `enumerate()`/`zip()` cobrem as necessidades de índice e percurso paralelo. |
-| **Ferramentas utilizáveis** | `enumerate()`, `zip()`, a cláusula `else` de um laço (executada se nenhum `break`). |
+| **Para lembrar** | `for` percorre diretamente os elementos de um iterável (nunca um contador manual); `range()` gera uma sequência de números se necessário. `enumerate()`/`zip()` cobrem as necessidades de índice e percurso paralelo. `any()`/`all()` testam uma condição em todo um iterável. |
+| **Ferramentas utilizáveis** | `enumerate()`, `zip()`, `any()`/`all()`, a cláusula `else` de um laço (executada se nenhum `break`). |
 | **Armadilhas a evitar** | Iterar sobre `range(len(lista))` e depois indexar manualmente, em vez de usar diretamente `for elemento in lista` ou `enumerate()`. |
 | **Boas práticas** | Usar `enumerate()` assim que um índice for necessário além do valor, em vez de gerenciá-lo manualmente. |

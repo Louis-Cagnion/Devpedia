@@ -132,11 +132,32 @@ Qualquer que seja o padrão escolhido, cada subagente começa por padrão com um
 >
 > **Boa prática:** prever explicitamente, para cada um desses três padrões, o que fazer se um agente falhar ou produzir um resultado inutilizável (um agente "verificador" intercalado, um controle de formato na saída de cada etapa) e quem tem a palavra final em caso de escrita concorrente, as mesmas soluções de um acesso concorrente clássico (bloqueio, um único agente autorizado a escrever por vez).
 
+## Sessões pares assíncronas: quando nenhum agente é pai do outro
+
+Os quatro padrões acima supõem todos um agente CHAMADOR que decompõe uma tarefa e inicia subagentes com contexto vazio (veja a observação logo acima da tabela). Existe outro caso: duas sessões já em andamento, cada uma com seu próprio histórico completo (e potencialmente seu próprio humano na conversa), sem vínculo pai/filho entre elas.
+
+```text
+Sessão A (repo "site-web")                  Sessão B (repo "scraper", ja em andamento)
+     |                                                |
+     | 1. consulta um REGISTRO das sessões ativas     |
+     |------------------------------------------------>
+     | 2. envia uma mensagem assíncrona (caixa de correio)
+     |------------------------------------------------>
+     |                                                | 3. processada no PRÓXIMO turno de ferramenta de B, nao imediatamente
+     |                                                | 4. B responde, ou continua seu proprio trabalho
+```
+
+Esse padrão se apoia em dois mecanismos distintos: a **descoberta** (um registro reúne as sessões ativas, para que uma possa encontrar outra sem configuração prévia) e a **mensagem assíncrona** (ao contrário de uma chamada de ferramenta clássica, bloqueante, ela é depositada e processada no próximo turno do agente destinatário, sem garantia de prazo nem de resposta). Um mecanismo complementar costuma completar esse padrão: a **assinatura** («me avise quando você estiver ocioso de novo»), que evita ter que consultar em loop (*polling*) se um par terminou sua tarefa.
+
+> **Cuidado:** tratar uma mensagem assíncrona como uma chamada síncrona. Nada garante que o destinatário a processe imediatamente (ele pode estar ocupado com outra coisa), nem mesmo que responda (sua sessão pode ter terminado nesse meio-tempo): um uso que supõe uma resposta rápida e confiável deve prever explicitamente o caso de ausência de resposta.
+>
+> **Boa prática:** reservar esse padrão para avisos pontuais entre tarefas por outro lado independentes (ex.: dois agentes trabalhando cada um em um repo diferente, mas ligados por uma dependência comum), não para uma coordenação que exija uma ordem estrita ou uma resposta imediata: nesse caso, voltar ao orquestrador/trabalhadores acima, onde o agente chamador realmente espera o resultado.
+
 ## O que reter
 
 | | |
 |---|---|
-| **O que reter** | Um agente dá ferramentas a um LLM (function calling) e o deixa decidir por si mesmo, a cada etapa, qual ferramenta chamar e quando parar (loop ReAct), em oposição a um script de sequência fixa escrito com antecedência. |
-| **Ferramentas úteis** | Uma descrição JSON de cada ferramenta disponível (nome, parâmetros, descrição); um limite de turnos/orçamento para restringir o loop. |
-| **Armadilhas a evitar** | Confiar cegamente nos argumentos gerados pelo modelo. Um parâmetro livre (comando, consulta) tratado sem as mesmas precauções de uma entrada não confiável. Um loop não limitado. Um custo que se acumula silenciosamente. Uma ação irreversível decidida sem confirmação humana. |
-| **Boas práticas** | Validar os argumentos recebidos antes de executar uma ferramenta. Tratar qualquer parâmetro livre gerado pelo modelo como uma entrada não confiável. Impor um limite rígido no número de turnos. Monitorar o custo acumulado de um loop. Exigir confirmação humana antes de qualquer ação com consequência real. |
+| **O que reter** | Um agente dá ferramentas a um LLM (function calling) e o deixa decidir por si mesmo, a cada etapa, qual ferramenta chamar e quando parar (loop ReAct), em oposição a um script de sequência fixa escrito com antecedência. Vários agentes se coordenam segundo alguns padrões recorrentes (pipeline, orquestrador/trabalhadores, estado compartilhado, avaliador/otimizador, ou sessões pares assíncronas sem vínculo pai/filho). |
+| **Ferramentas úteis** | Uma descrição JSON de cada ferramenta disponível (nome, parâmetros, descrição); um limite de turnos/orçamento para restringir o loop; um registro de sessões e uma mensageria assíncrona para coordenar agentes pares. |
+| **Armadilhas a evitar** | Confiar cegamente nos argumentos gerados pelo modelo. Um parâmetro livre (comando, consulta) tratado sem as mesmas precauções de uma entrada não confiável. Um loop não limitado. Um custo que se acumula silenciosamente. Uma ação irreversível decidida sem confirmação humana. Tratar uma mensagem assíncrona entre sessões pares como uma chamada síncrona garantida. |
+| **Boas práticas** | Validar os argumentos recebidos antes de executar uma ferramenta. Tratar qualquer parâmetro livre gerado pelo modelo como uma entrada não confiável. Impor um limite rígido no número de turnos. Monitorar o custo acumulado de um loop. Exigir confirmação humana antes de qualquer ação com consequência real. Reservar as sessões pares assíncronas para avisos pontuais, não para uma coordenação estrita. |

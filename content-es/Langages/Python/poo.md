@@ -39,6 +39,25 @@ print(Contador.total_creados)  # 2 -> compartido
 print(c1.id, c2.id)            # 1 2 -> propio de cada uno
 ```
 
+## Leer un atributo por su nombre: `getattr()`
+
+```python
+u = Vehiculo("Peugeot", "308")
+
+u.marca                            # "Peugeot" -> el nombre del atributo debe conocerse al escribir el código
+getattr(u, "marca")                # "Peugeot" -> lo mismo, pero el nombre viene de una CADENA, resuelta en ejecución
+getattr(u, "color", None)          # None      -> valor de repuesto si el atributo no existe (como dict.get())
+```
+
+`getattr(objeto, nombre, defecto)` permite aplicar el mismo tratamiento a una LISTA de nombres de atributos, calculada en tiempo de ejecución (ej. una variable de bucle), sin escribir un `if`/`elif` por atributo:
+
+```python
+for campo in ["marca", "modelo"]:
+    print(f"{campo}: {getattr(u, campo)}")
+```
+
+`setattr(objeto, nombre, valor)` (escribe un atributo por su nombre) y `hasattr(objeto, nombre)` (prueba su existencia, `True`/`False`) siguen el mismo principio.
+
 ## La herencia
 
 ```python
@@ -106,6 +125,28 @@ print(p1 == Punto(1, 2))  # True -> gracias a __eq__
 | `__eq__` | `obj1 == obj2` |
 | `__len__` | `len(obj)` |
 | `__getitem__` | `obj[clave]` |
+
+### Métodos reflejados (`__radd__`...) y `NotImplemented`
+
+```python
+class Distancia:
+    def __init__(self, metros):
+        self.metros = metros
+
+    def __add__(self, otro):      # llamado cuando Distancia es el operando IZQUIERDO: d + 5
+        if isinstance(otro, (int, float)):
+            return Distancia(self.metros + otro)
+        return NotImplemented     # "no sé tratar este tipo" -> Python reintenta con otro método
+
+    def __radd__(self, otro):     # llamado cuando Distancia es el operando DERECHO: 5 + d
+        return self.__add__(otro)
+
+d = Distancia(100)
+d + 5  # Distancia(105) -> vía __add__
+5 + d  # Distancia(105) -> vía __radd__, porque int.__add__(5, d) falla y devuelve NotImplemented
+```
+
+Cuando se evalúa `izquierda + derecha`, Python primero intenta `izquierda.__add__(derecha)`. Si ese método no existe o devuelve **`NotImplemented`** (un valor especial, que no hay que confundir con la excepción `NotImplementedError`), Python reintenta con el método **reflejado** del objeto de la derecha: `derecha.__radd__(izquierda)`. Cada método especial tiene su equivalente reflejado (`__radd__`, `__rsub__`, `__rtruediv__`...): este mecanismo es el que permite por ejemplo a `pathlib.Path` (ver [Manipular archivos y carpetas](/?c=langages-de-programmation&s=python&p=manipuler-des-fichiers-et-dossiers)) definir `__rtruediv__`, para que `"carpeta" / ruta` funcione incluso con una simple cadena a la izquierda.
 
 ## `@property`: un atributo calculado, accedido sin paréntesis
 
