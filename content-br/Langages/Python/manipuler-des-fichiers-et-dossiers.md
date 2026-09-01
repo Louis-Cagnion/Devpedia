@@ -23,6 +23,29 @@ pasta.is_dir()   # True/False
 
 > **Equivalência:** um objeto `Path` também expõe `.open()` como MÉTODO, estritamente equivalente à função nativa `open()` (mesmos argumentos: modo, `encoding`...): `pasta.open("a", encoding="utf-8")` evita voltar a passar por `open(str(pasta), "a", encoding="utf-8")` uma vez que já se tem um `Path` em mãos.
 
+## Criar uma pasta: `.mkdir()`
+
+```python
+pasta = Path("relatorios") / "2026"
+
+pasta.mkdir()                              # FileNotFoundError se "relatorios" ainda não existir (o pai)
+pasta.mkdir(parents=True)                  # cria também os pais que faltarem -> não há mais FileNotFoundError
+pasta.mkdir(exist_ok=True)                 # FileExistsError se a pasta já existir (sem parents=True)
+pasta.mkdir(parents=True, exist_ok=True)   # os dois combinados: NUNCA reclama, cria o que faltar
+```
+
+`parents=True, exist_ok=True` é o padrão idiomático "criar a pasta se precisar": substitui um `if not pasta.exists(): pasta.mkdir()` explícito por uma única linha que nunca quebra, exista a pasta ou não. Uso comum: criar a pasta pai de um arquivo logo antes de abri-lo para escrita.
+
+```python
+caminho_arquivo = Path("relatorios") / "2026" / "agosto.txt"
+
+caminho_arquivo.parent.mkdir(parents=True, exist_ok=True)   # cria "relatorios/2026" antes de escrever o arquivo
+with caminho_arquivo.open("w", encoding="utf-8") as f:
+    f.write("concluído")
+```
+
+> **Armadilha:** esquecer `exist_ok=True` faz um script relançado uma segunda vez falhar sobre uma pasta já criada na primeira passagem (`FileExistsError`), um caso frequente para uma pasta de saída recriada a cada execução.
+
 ## Decompor um caminho: `.name`, `.stem`, `.suffix`
 
 ```python
@@ -120,7 +143,7 @@ with open("estados.jsonl", encoding="utf-8") as f:
 
 | | |
 |---|---|
-| **Para lembrar** | `pathlib.Path` representa um caminho como um objeto manipulável (`/` para construir, `.stem`/`.suffix`/`.with_name()` para decompor, `.open()` equivalente a `open()`). `shutil.rmtree()` remove uma pasta não vazia, o que `Path.rmdir()` recusa. `csv.DictReader` lê um CSV em dicts nomeados por cabeçalho, `csv.reader` em listas posicionais. `json.dumps`/`loads` convertem objeto Python e texto JSON nos dois sentidos; o formato JSON Lines (uma linha = um objeto) permite adicionar entradas sem reescrever todo o arquivo. |
-| **Ferramentas utilizáveis** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
-| **Armadilhas a evitar** | `.with_name()` substitui o último segmento do caminho onde `/` adiciona um novo. `shutil.rmtree(ignore_errors=True)` torna uma falha silenciosa. Esquecer `newline=""` com `csv` pode quebrar valores multilinha entre aspas. Esquecer `ensure_ascii=False` torna ilegíveis os acentos no JSON produzido (sem quebrar `json.loads()`). |
-| **Boas práticas** | Verificar `pasta.exists()` após um `rmtree(ignore_errors=True)` em vez de supor o sucesso. Preferir `DictReader`/`DictWriter` a um acesso por índice assim que um CSV tiver cabeçalhos. Usar JSON Lines para um arquivo de estado que cresce durante a execução, um arquivo JSON clássico para um objeto fixo. |
+| **Para lembrar** | `pathlib.Path` representa um caminho como um objeto manipulável (`/` para construir, `.stem`/`.suffix`/`.with_name()` para decompor, `.open()` equivalente a `open()`, `.mkdir()` para criar uma pasta). `shutil.rmtree()` remove uma pasta não vazia, o que `Path.rmdir()` recusa. `csv.DictReader` lê um CSV em dicts nomeados por cabeçalho, `csv.reader` em listas posicionais. `json.dumps`/`loads` convertem objeto Python e texto JSON nos dois sentidos; o formato JSON Lines (uma linha = um objeto) permite adicionar entradas sem reescrever todo o arquivo. |
+| **Ferramentas utilizáveis** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
+| **Armadilhas a evitar** | `.with_name()` substitui o último segmento do caminho onde `/` adiciona um novo. `.mkdir()` sem `exist_ok=True` falha se a pasta já existir. `shutil.rmtree(ignore_errors=True)` torna uma falha silenciosa. Esquecer `newline=""` com `csv` pode quebrar valores multilinha entre aspas. Esquecer `ensure_ascii=False` torna ilegíveis os acentos no JSON produzido (sem quebrar `json.loads()`). |
+| **Boas práticas** | Usar `pasta.mkdir(parents=True, exist_ok=True)` (ou `caminho_arquivo.parent.mkdir(...)`) em vez de um `if not pasta.exists(): ...` antes de escrever um arquivo. Verificar `pasta.exists()` após um `rmtree(ignore_errors=True)` em vez de supor o sucesso. Preferir `DictReader`/`DictWriter` a um acesso por índice assim que um CSV tiver cabeçalhos. Usar JSON Lines para um arquivo de estado que cresce durante a execução, um arquivo JSON clássico para um objeto fixo. |

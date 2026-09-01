@@ -23,6 +23,29 @@ dossier.is_dir()   # True/False
 
 > **Équivalence :** un objet `Path` expose aussi `.open()` comme MÉTHODE, strictement équivalente à la fonction native `open()` (mêmes arguments : mode, `encoding`...) : `dossier.open("a", encoding="utf-8")` évite de repasser par `open(str(dossier), "a", encoding="utf-8")` une fois qu'on a déjà un `Path` sous la main.
 
+## Créer un dossier : `.mkdir()`
+
+```python
+dossier = Path("rapports") / "2026"
+
+dossier.mkdir()                              # FileNotFoundError si "rapports" n'existe pas encore (le parent)
+dossier.mkdir(parents=True)                  # crée aussi les parents manquants -> plus de FileNotFoundError
+dossier.mkdir(exist_ok=True)                 # FileExistsError si le dossier existe déjà (sans parents=True)
+dossier.mkdir(parents=True, exist_ok=True)   # les deux combinés : ne râle JAMAIS, crée ce qui manque
+```
+
+`parents=True, exist_ok=True` est le pattern idiomatique « créer le dossier si besoin » : il remplace un `if not dossier.exists(): dossier.mkdir()` explicite par une seule ligne qui ne plante jamais, que le dossier existe déjà ou non. Usage courant : créer le dossier parent d'un fichier juste avant de l'ouvrir en écriture.
+
+```python
+chemin_fichier = Path("rapports") / "2026" / "aout.txt"
+
+chemin_fichier.parent.mkdir(parents=True, exist_ok=True)   # crée "rapports/2026" avant d'écrire le fichier
+with chemin_fichier.open("w", encoding="utf-8") as f:
+    f.write("terminé")
+```
+
+> **Piège :** oublier `exist_ok=True` fait planter un script relancé une seconde fois sur un dossier déjà créé au premier passage (`FileExistsError`), un cas fréquent pour un dossier de sortie recréé à chaque exécution.
+
 ## Décomposer un chemin : `.name`, `.stem`, `.suffix`
 
 ```python
@@ -120,7 +143,7 @@ with open("etats.jsonl", encoding="utf-8") as f:
 
 | | |
 |---|---|
-| **À retenir** | `pathlib.Path` représente un chemin comme un objet manipulable (`/` pour construire, `.stem`/`.suffix`/`.with_name()` pour décomposer, `.open()` équivalent à `open()`). `shutil.rmtree()` supprime un dossier non vide, ce que `Path.rmdir()` refuse. `csv.DictReader` lit un CSV en dicts nommés par en-tête, `csv.reader` en listes positionnelles. `json.dumps`/`loads` convertissent objet Python et texte JSON dans les deux sens ; le format JSON Lines (une ligne = un objet) permet d'ajouter des entrées sans réécrire tout le fichier. |
-| **Outils utilisables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
-| **Pièges à éviter** | `.with_name()` remplace le dernier segment du chemin là où `/` en ajoute un nouveau. `shutil.rmtree(ignore_errors=True)` rend un échec silencieux. Oublier `newline=""` avec `csv` peut casser des valeurs multi-lignes entre guillemets. Oublier `ensure_ascii=False` rend les accents illisibles dans le JSON produit (sans casser `json.loads()`). |
-| **Bonnes pratiques** | Vérifier `dossier.exists()` après un `rmtree(ignore_errors=True)` plutôt que de supposer le succès. Préférer `DictReader`/`DictWriter` à un accès par index dès qu'un CSV a des en-têtes. Utiliser le JSON Lines pour un fichier d'état qui grossit au fil de l'exécution, un fichier JSON classique pour un objet figé. |
+| **À retenir** | `pathlib.Path` représente un chemin comme un objet manipulable (`/` pour construire, `.stem`/`.suffix`/`.with_name()` pour décomposer, `.open()` équivalent à `open()`, `.mkdir()` pour créer un dossier). `shutil.rmtree()` supprime un dossier non vide, ce que `Path.rmdir()` refuse. `csv.DictReader` lit un CSV en dicts nommés par en-tête, `csv.reader` en listes positionnelles. `json.dumps`/`loads` convertissent objet Python et texte JSON dans les deux sens ; le format JSON Lines (une ligne = un objet) permet d'ajouter des entrées sans réécrire tout le fichier. |
+| **Outils utilisables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
+| **Pièges à éviter** | `.with_name()` remplace le dernier segment du chemin là où `/` en ajoute un nouveau. `.mkdir()` sans `exist_ok=True` plante si le dossier existe déjà. `shutil.rmtree(ignore_errors=True)` rend un échec silencieux. Oublier `newline=""` avec `csv` peut casser des valeurs multi-lignes entre guillemets. Oublier `ensure_ascii=False` rend les accents illisibles dans le JSON produit (sans casser `json.loads()`). |
+| **Bonnes pratiques** | Utiliser `dossier.mkdir(parents=True, exist_ok=True)` (ou `chemin_fichier.parent.mkdir(...)`) plutôt qu'un `if not dossier.exists(): ...` avant d'écrire un fichier. Vérifier `dossier.exists()` après un `rmtree(ignore_errors=True)` plutôt que de supposer le succès. Préférer `DictReader`/`DictWriter` à un accès par index dès qu'un CSV a des en-têtes. Utiliser le JSON Lines pour un fichier d'état qui grossit au fil de l'exécution, un fichier JSON classique pour un objet figé. |
