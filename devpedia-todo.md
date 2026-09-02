@@ -93,5 +93,16 @@ Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de struc
 ## 17. Chapitre SQL (`content/Langages/Domain-specific Languages (DSL)/sql.md`) : à relire
 - Reste à Louis : relire les ajouts du 01/09/2026 (DDL/DML, `CREATE TABLE`, index, `ALTER TABLE`, `NULL` vs sentinelle, `pyodbc`, SCD2 ; détail et raison des choix dans `journal-de-bord.md`), FR d'abord, EN/ES/BR ensuite si tu veux vérifier la traduction. Audio FR déjà régénéré (point 1).
 
+## 18. Nouvelle notion candidate : comment Claude Code utilise Bash ET PowerShell en même temps
+Question de Louis (02/09/2026) en session `git-scrapping-infomediaires` : il a remarqué que Claude exécute parfois des commandes Bash (syntaxe Unix, `/dev/null`, etc.) alors que son terminal réel est PowerShell, et voulait comprendre le mécanisme.
+
+Explication à retranscrire dans un futur chapitre (rubrique la plus proche : `content/Fondamentaux/Bases de l'informatique/` ou une rubrique dédiée à l'outillage Claude Code si elle existe déjà) :
+- Claude Code expose à Claude deux outils shell distincts et permanents : un outil "Bash" et un outil "PowerShell". Ce ne sont pas des vues sur le terminal visible de l'utilisateur, ce sont deux intégrations séparées du harnais.
+- Sur Windows, l'outil "Bash" ne lance pas `cmd.exe` : il lance **Git Bash** (le shell POSIX fourni avec Git pour Windows), s'il est installé. D'où la syntaxe Unix (`/dev/null`, guillemets simples, `$VAR`) qui fonctionne même si l'utilisateur a ouvert une fenêtre PowerShell.
+- L'outil "PowerShell" lance lui `powershell.exe` et attend une syntaxe PowerShell (`$env:VAR`, pas de `&&`/`||` sous PowerShell 5.1, etc.).
+- Le choix entre les deux à chaque commande est fait par le modèle (Claude), pas imposé par le terminal dans lequel la session a été démarrée — d'où l'impression que "l'interface Windows" reste accessible même en écrivant des commandes Bash.
+- Piège pédagogique à mentionner : ça explique pourquoi mélanger les deux syntaxes dans un seul appel (ex. un pipe Unix passé à PowerShell) échoue, et pourquoi corriger un souci de syntaxe demande d'abord d'identifier quel outil a réellement été appelé.
+- Reste à Louis : valider l'angle (chapitre outillage Claude Code vs terminal en général) avant rédaction, suivre `plan-zero-connaissance.md` pour le niveau de langage.
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
