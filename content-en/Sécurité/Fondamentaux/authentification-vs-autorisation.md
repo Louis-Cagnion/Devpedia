@@ -52,6 +52,27 @@ The chapter on [APIs and HTTP](/?c=infrastructure&p=api-et-http) presents the st
 >
 > **Best practice:** when facing an access error, check which code it is before looking for the cause: a `401` is fixed by providing or renewing valid credentials, a `403` is never fixed that way since the identity is already accepted, only the role or permissions need to change.
 
+## A Simple Mechanism: HTTP Basic Authentication
+
+**HTTP Basic** is an authentication mechanism carried by the HTTP protocol itself, rather than by the application: it's the browser that displays its own login pop-up (not a login form designed by the site), and credentials travel in an `Authorization` header on every request.
+
+```text
+Client                                  Server
+------                                  ------
+request without Authorization header -> 401, header "WWW-Authenticate: Basic"
+(the browser shows its pop-up)
+request with header
+"Authorization: Basic dXNlcjpwYXNz"  -> 200, if credentials are valid
+```
+
+The transmitted header is nothing more than `username:password` encoded in **Base64** (`dXNlcjpwYXNz` decodes to `user:pass`).
+
+> **Pitfall:** believing Base64 encoding protects the credentials in any way. Base64 is **neither hashing nor encryption** (see the distinction laid out in [Applied Cryptography](/?c=authentification&s=cybersecurite&p=cryptographie-appliquee)): it's just a representation, instantly decodable by anyone who intercepts the request, no key required at all.
+>
+> **Best practice:** only use HTTP Basic over a systematic HTTPS connection, never in plaintext: without HTTPS, credentials travel literally in the clear over the network.
+
+Another difference from the mechanisms already covered ([sessions/cookies](/?c=authentification&s=sessions-et-tokens&p=sessions-et-cookies), [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens)): HTTP Basic has no proper server-side logout concept. The browser retains the credentials for the domain as long as the tab stays open, and automatically resends them on every subsequent request; there's no direct equivalent to deleting a session cookie or a JWT expiring.
+
 ## Why the Distinction Matters in Practice
 
 Confusing the two mechanisms leads to fixing the wrong problem: resetting the password of a user who gets a `403` changes nothing, since their identity was already valid, the problem comes from their rights. Conversely, changing the permissions of an account that gets a `401` does nothing as long as authentication itself keeps failing.
@@ -66,7 +87,7 @@ Confusing the two mechanisms leads to fixing the wrong problem: resetting the pa
 
 | | |
 |---|---|
-| **Key takeaways** | Authentication proves who you are (via one or more factors: knowledge, possession, inherence); authorization determines what you're allowed to do once identified. Two distinct mechanisms, often confused. |
-| **Tools you can use** | HTTP codes `401` (authentication) and `403` (authorization) to precisely diagnose which of the two mechanisms is failing. |
-| **Pitfalls to avoid** | Trusting the name `Unauthorized` for code `401`, which actually signals an authentication problem, not an authorization one. Fixing the wrong mechanism (resetting a password when facing a `403`, for instance). |
-| **Best practices** | Always identify which of the two mechanisms is at fault before acting. Rely on the status code returned by an API to decide quickly. |
+| **Key takeaways** | Authentication proves who you are (via one or more factors: knowledge, possession, inherence); authorization determines what you're allowed to do once identified. Two distinct mechanisms, often confused. HTTP Basic is a simple authentication mechanism carried by HTTP itself, to be reserved for a systematic HTTPS connection. |
+| **Tools you can use** | HTTP codes `401` (authentication) and `403` (authorization) to precisely diagnose which of the two mechanisms is failing; the `Authorization: Basic` header for simple HTTP authentication. |
+| **Pitfalls to avoid** | Trusting the name `Unauthorized` for code `401`, which actually signals an authentication problem, not an authorization one. Fixing the wrong mechanism (resetting a password when facing a `403`, for instance). Believing that HTTP Basic's Base64 encoding protects credentials. |
+| **Best practices** | Always identify which of the two mechanisms is at fault before acting. Rely on the status code returned by an API to decide quickly. Only use HTTP Basic over HTTPS, never in plaintext. |
