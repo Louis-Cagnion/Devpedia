@@ -108,6 +108,69 @@ As soon as the "light" comparison (the fields already present on the results car
 
 > Not to be confused with a **network latency** optimization. What's being avoided here is redundant CPU/logic work (recomputing an already-known answer), not an I/O delay. Deliberate pauses between requests (rate limiting, courtesy toward a remote server) or waiting for an interface animation don't fall under this principle: they remain necessary even when no recomputation is at stake, and removing them risks getting blocked, not just being slow. This is exactly the distinction drawn at the end of [Waiting Without Wasting Time](/?c=performance&p=attentes-et-temps-morts): a protective delay isn't waste to eliminate.
 
+## Atomic writes: never a half-written read
+
+An in-memory memoized cache (previous section) disappears when the process stops; a **file-based cache** survives a restart, but introduces a new risk: a concurrent reader can open the cache file **while it's still being written**.
+
+```python
+# Risk: a concurrent reader may read this file half-written
+with open("cache.json", "w") as f:
+    json.dump(result, f)   # if the process is interrupted here, the file is corrupted
+```
+
+```python
+# Atomic write: write to a temporary file, then rename it
+import os
+
+tmp_path = "cache.json.tmp"
+with open(tmp_path, "w") as f:
+    json.dump(result, f)
+os.replace(tmp_path, "cache.json")   # rename(): atomic at the filesystem level
+```
+
+`os.replace()` (like `rename()` in most languages) is **atomic** at the filesystem level: at any instant, `cache.json` points either to the complete old version or the complete new version, never to an intermediate state. No concurrent reader can ever see a half-written file, unlike a direct write interrupted mid-way.
+
+> **Pitfall:** writing directly to the final cache file, assuming an interruption (crash, power cut) is rare enough to ignore. A corrupted cache file can then crash every subsequent reader, long after the initial incident.
+>
+> **Best practice:** always write to a temporary file then rename it to the final name, for any file read by another process while it might be rewritten.
+
+## Stale-while-revalidate: answer right away, recompute behind the scenes
+
+The memoization seen above has a flaw at scale: if the cache is empty or stale, the request that triggers the recomputation **waits** for it before answering. The **stale-while-revalidate** pattern (borrowed from the HTTP [`Cache-Control: stale-while-revalidate`](https://developer.mozilla.org/docs/Web/HTTP/Headers/Cache-Control#stale-while-revalidate) header) changes this rule: answer **immediately** with the cached value, even if stale, and only recompute in the background.
+
+```text
+Classic cache (blocking):           Stale-while-revalidate:
+
+request -> cache stale?             request -> cache stale?
+              |  yes                              |  yes
+              v                                    v
+        recompute (wait)                    answer with the stale value
+              |                              AND trigger a background recompute
+              v                                    |
+           answer                            (the next call gets the
+                                              fresh value)
+```
+
+```python
+recompute_lock = threading.Lock()
+
+def cached_value(key):
+    entry = cache.get(key)
+    if entry is None:
+        return recompute_and_store(key)   # very first call: no choice but to wait
+
+    if entry.is_stale() and recompute_lock.acquire(blocking=False):
+        threading.Thread(target=lambda: recompute_and_store(key, recompute_lock)).start()
+
+    return entry.value   # answers immediately, stale or not
+```
+
+The anti-concurrency lock (`recompute_lock`) prevents an expensive recomputation from being triggered N times in parallel while it's already running for the same key: only the very first thread to acquire it actually triggers the recomputation, the others keep serving the stale value in the meantime.
+
+> **Pitfall:** applying stale-while-revalidate without an anti-concurrency lock, on a key subject to many simultaneous requests: every request that detects a stale cache triggers its own expensive recomputation, which can cancel out the whole benefit (or even make load worse than a classic blocking cache).
+>
+> **Best practice:** never make a stale cache block the user for a simple refresh; reserve waiting for the very first call, with no cached value at all.
+
 ## Summary
 
 | Situation | Without the principle | With the principle |
@@ -125,7 +188,7 @@ In all four cases, the gain doesn't come from a computation made faster, but fro
 
 | | |
 |---|---|
-| **Key takeaways** | Never recompute a result that nothing could have changed since it was last computed: memoization, incremental reprocessing, or dirty rectangles all apply the same idea at different scales. |
-| **Tools you can use** | An in-memory cache per input (memoization), a progress marker to only reprocess what's new, a "light" comparison before an expensive check. |
-| **Pitfalls to avoid** | Memoizing without identifying what would invalidate the result: a cache that's never invalidated becomes a source of stale data. |
-| **Best practices** | Always define the invalidation condition before memoizing; distinguish avoidable recomputation (this principle) from a deliberate protective pause (to keep). |
+| **Key takeaways** | Never recompute a result that nothing could have changed since it was last computed: memoization, incremental reprocessing, or dirty rectangles all apply the same idea at different scales. A file cache adds two techniques: atomic writes (never a half-written read) and stale-while-revalidate (answer fast, recompute behind the scenes). |
+| **Tools you can use** | An in-memory cache per input (memoization), a progress marker to only reprocess what's new, a "light" comparison before an expensive check, `rename()`/`os.replace()` for an atomic write, an anti-concurrency lock for a background recomputation. |
+| **Pitfalls to avoid** | Memoizing without identifying what would invalidate the result: a cache that's never invalidated becomes a source of stale data. Writing directly to a cache file read by other processes. Applying stale-while-revalidate without an anti-concurrency lock. |
+| **Best practices** | Always define the invalidation condition before memoizing; distinguish avoidable recomputation (this principle) from a deliberate protective pause (to keep); write a cache file through a renamed temporary file; only make the user wait on the very first call with no cache. |

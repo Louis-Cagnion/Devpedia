@@ -108,6 +108,69 @@ Assim que a comparação "leve" (os campos já presentes no cartão de resultado
 
 > Não confundir com uma otimização da **latência de rede**. Aqui, o que se evita é um trabalho redundante do lado CPU/lógica (recalcular uma resposta já conhecida), não um atraso de E/S. As pausas voluntárias entre requisições (limite de taxa, cortesia com um servidor remoto) ou a espera de uma animação de interface não fazem parte desse princípio: continuam necessárias mesmo quando nenhum recálculo está em jogo, e removê-las expõe a um bloqueio, não a uma simples lentidão. É exatamente a distinção colocada no final de [Esperar sem perder tempo](/?c=performance&p=attentes-et-temps-morts): um atraso de proteção não é um desperdício a eliminar.
 
+## Escrita atômica: nunca uma leitura pela metade
+
+Um cache memoizado em memória (seção anterior) desaparece quando o processo para; um **cache de arquivo** sobrevive a uma reinicialização, mas introduz um risco novo: um leitor concorrente pode abrir o arquivo de cache **enquanto ele ainda está sendo escrito**.
+
+```python
+# Risco: um leitor concorrente pode ler este arquivo pela metade
+with open("cache.json", "w") as f:
+    json.dump(resultado, f)   # se o processo for interrompido aqui, o arquivo fica corrompido
+```
+
+```python
+# Escrita atomica: escrever em um arquivo temporario, depois renomea-lo
+import os
+
+caminho_tmp = "cache.json.tmp"
+with open(caminho_tmp, "w") as f:
+    json.dump(resultado, f)
+os.replace(caminho_tmp, "cache.json")   # rename(): atomico no nivel do sistema de arquivos
+```
+
+`os.replace()` (como `rename()` na maioria das linguagens) é **atômico** no nível do sistema de arquivos: a qualquer momento, `cache.json` aponta para a versão antiga completa ou para a nova versão completa, nunca para um estado intermediário. Nenhum leitor concorrente pode então jamais ver um arquivo pela metade, ao contrário de uma escrita direta interrompida no meio do caminho.
+
+> **Armadilha:** escrever diretamente no arquivo de cache final, assumindo que uma interrupção (travamento, queda de energia) é rara o suficiente para ignorar. Um arquivo de cache corrompido pode então derrubar todos os leitores seguintes, muito depois do incidente inicial.
+>
+> **Boa prática:** sempre escrever em um arquivo temporário e depois renomeá-lo para o nome final, para qualquer arquivo lido por outro processo enquanto ele puder ser reescrito.
+
+## Stale-while-revalidate: responder na hora, recalcular por trás
+
+A memoização vista acima tem um defeito em grande escala: se o cache está vazio ou vencido, a requisição que dispara o recálculo **espera** por esse recálculo antes de responder. O padrão **stale-while-revalidate** (emprestado do cabeçalho HTTP [`Cache-Control: stale-while-revalidate`](https://developer.mozilla.org/docs/Web/HTTP/Headers/Cache-Control#stale-while-revalidate)) muda essa regra: responder **imediatamente** com o valor em cache, mesmo vencido, e só recalcular em segundo plano.
+
+```text
+Cache classico (bloqueante):        Stale-while-revalidate:
+
+requisicao -> cache vencido?        requisicao -> cache vencido?
+              |  sim                               |  sim
+              v                                    v
+        recalcula (espera)                  responde com o valor vencido
+              |                              E dispara um recalculo em segundo plano
+              v                                    |
+          responde                           (a proxima chamada recebe o
+                                              valor atualizado)
+```
+
+```python
+trava_recalculo = threading.Lock()
+
+def valor_com_cache(chave):
+    entrada = cache.get(chave)
+    if entrada is None:
+        return recalcular_e_guardar(chave)   # primeira chamada: nao ha escolha a nao ser esperar
+
+    if entrada.esta_vencida() and trava_recalculo.acquire(blocking=False):
+        threading.Thread(target=lambda: recalcular_e_guardar(chave, trava_recalculo)).start()
+
+    return entrada.valor   # responde imediatamente, vencido ou nao
+```
+
+A trava anti-concorrência (`trava_recalculo`) evita que um recálculo custoso seja disparado N vezes em paralelo enquanto já está em andamento para a mesma chave: só a primeira thread a adquiri-la dispara de fato o recálculo, as outras continuam servindo o valor vencido enquanto isso.
+
+> **Armadilha:** aplicar stale-while-revalidate sem trava anti-concorrência, em uma chave sujeita a muitas requisições simultâneas: cada requisição que detecta o cache vencido dispara seu próprio recálculo custoso, o que pode anular todo o benefício (ou até agravar a carga em relação a um cache bloqueante clássico).
+>
+> **Boa prática:** nunca deixar um cache vencido fazer o usuário esperar por uma simples atualização; reservar a espera apenas para a primeira chamada, sem nenhum valor em cache.
+
 ## Recapitulando
 
 | Situação | Sem o princípio | Com o princípio |
@@ -125,7 +188,7 @@ Nos quatro casos, o ganho não vem de um cálculo tornado mais rápido, mas de u
 
 | | |
 |---|---|
-| **Para lembrar** | Nunca recalcular um resultado que nada pôde mudar desde seu último cálculo: memoização, reprocessamento incremental, ou dirty rectangle aplicam todos a mesma ideia em escalas diferentes. |
-| **Ferramentas utilizáveis** | Um cache em memória por entrada (memoização), uma marca de progresso para só reprocessar o novo, uma comparação "leve" antes de uma verificação custosa. |
-| **Armadilhas a evitar** | Memoizar sem identificar o que invalidaria o resultado: um cache nunca invalidado se torna uma fonte de dados vencidos. |
-| **Boas práticas** | Sempre definir a condição de invalidação antes de memoizar; distinguir um recálculo evitável (este princípio) de uma pausa voluntária de proteção (a manter). |
+| **Para lembrar** | Nunca recalcular um resultado que nada pôde mudar desde seu último cálculo: memoização, reprocessamento incremental, ou dirty rectangle aplicam todos a mesma ideia em escalas diferentes. Um cache de arquivo acrescenta duas técnicas: a escrita atômica (nunca uma leitura pela metade) e o stale-while-revalidate (responder rápido, recalcular por trás). |
+| **Ferramentas utilizáveis** | Um cache em memória por entrada (memoização), uma marca de progresso para só reprocessar o novo, uma comparação "leve" antes de uma verificação custosa, `rename()`/`os.replace()` para uma escrita atômica, uma trava anti-concorrência para um recálculo em segundo plano. |
+| **Armadilhas a evitar** | Memoizar sem identificar o que invalidaria o resultado: um cache nunca invalidado se torna uma fonte de dados vencidos. Escrever diretamente em um arquivo de cache lido por outros processos. Aplicar stale-while-revalidate sem trava anti-concorrência. |
+| **Boas práticas** | Sempre definir a condição de invalidação antes de memoizar; distinguir um recálculo evitável (este princípio) de uma pausa voluntária de proteção (a manter); escrever um arquivo de cache por meio de um arquivo temporário renomeado; só fazer o usuário esperar na primeira chamada sem cache. |

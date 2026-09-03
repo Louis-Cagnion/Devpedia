@@ -108,6 +108,69 @@ Dès que la comparaison "légère" (les champs déjà présents sur la carte de 
 
 > À ne pas confondre avec une optimisation de la **latence réseau**. Ici, ce qu'on évite est un travail redondant côté CPU/logique (recalculer une réponse déjà connue), pas un délai d'E/S. Les pauses volontaires entre requêtes (limite de débit, politesse envers un serveur distant) ou l'attente d'une animation d'interface ne relèvent pas de ce principe : elles restent nécessaires même quand aucun recalcul n'est en jeu, et les supprimer expose à un blocage, pas à une simple lenteur. C'est exactement la distinction posée en fin de [Attendre sans perdre de temps](/?c=performance&p=attentes-et-temps-morts) : un délai de protection n'est pas un gaspillage à éliminer.
 
+## Écriture atomique : jamais de lecture à moitié écrite
+
+Un cache mémoïsé en mémoire (section précédente) disparaît à l'arrêt du processus ; un **cache fichier** survit à un redémarrage, mais introduit un risque nouveau : un lecteur concurrent peut ouvrir le fichier de cache **pendant qu'il est en cours d'écriture**.
+
+```python
+# Risque : un lecteur concurrent peut lire ce fichier a moitie ecrit
+with open("cache.json", "w") as f:
+    json.dump(resultat, f)   # si le processus est interrompu ici, le fichier est corrompu
+```
+
+```python
+# Ecriture atomique : ecrire dans un fichier temporaire, puis le renommer
+import os
+
+chemin_tmp = "cache.json.tmp"
+with open(chemin_tmp, "w") as f:
+    json.dump(resultat, f)
+os.replace(chemin_tmp, "cache.json")   # rename() : atomique au niveau du systeme de fichiers
+```
+
+`os.replace()` (comme `rename()` dans la plupart des langages) est **atomique** au niveau du système de fichiers : à tout instant, `cache.json` pointe soit vers l'ancienne version complète, soit vers la nouvelle version complète, jamais vers un état intermédiaire. Aucun lecteur concurrent ne peut donc jamais voir un fichier à moitié écrit, contrairement à une écriture directe interrompue en cours de route.
+
+> **Piège :** écrire directement dans le fichier de cache final, en supposant qu'une interruption (plantage, coupure) est un cas assez rare pour être ignoré. Un fichier de cache corrompu peut ensuite faire planter tous les lecteurs suivants, bien après l'incident initial.
+>
+> **Bonne pratique :** toujours écrire dans un fichier temporaire puis renommer vers le nom final, pour tout fichier lu par un autre processus pendant qu'il peut être réécrit.
+
+## Stale-while-revalidate : répondre tout de suite, recalculer derrière
+
+La mémoïsation vue plus haut a un défaut à grande échelle : si le cache est vide ou périmé, la requête qui déclenche le recalcul **attend** ce recalcul avant de répondre. Le pattern **stale-while-revalidate** (littéralement "périmé pendant la revalidation", emprunté à l'en-tête HTTP [`Cache-Control: stale-while-revalidate`](https://developer.mozilla.org/docs/Web/HTTP/Headers/Cache-Control#stale-while-revalidate)) change cette règle : répondre **immédiatement** avec la valeur en cache, même périmée, et ne recalculer qu'en tâche de fond.
+
+```text
+Cache classique (bloquant) :        Stale-while-revalidate :
+
+requete -> cache perime ?           requete -> cache perime ?
+              |  oui                             |  oui
+              v                                  v
+        recalcule (attend)                repond avec la valeur perimee
+              |                            ET declenche un recalcul en fond
+              v                                  |
+           repond                          (le prochain appel recoit la
+                                             valeur fraiche)
+```
+
+```python
+verrou_recalcul = threading.Lock()
+
+def valeur_avec_cache(cle):
+    entree = cache.get(cle)
+    if entree is None:
+        return recalculer_et_stocker(cle)   # tout premier appel : pas d'autre choix que d'attendre
+
+    if entree.est_perimee() and verrou_recalcul.acquire(blocking=False):
+        threading.Thread(target=lambda: recalculer_et_stocker(cle, verrou_recalcul)).start()
+
+    return entree.valeur   # repond immediatement, perimee ou non
+```
+
+Le verrou anti-concurrence (`verrou_recalcul`) évite qu'un recalcul coûteux soit relancé N fois en parallèle pendant qu'il est déjà en cours pour la même clé : seul le tout premier thread à l'acquérir déclenche réellement le recalcul, les autres continuent de servir la valeur périmée en attendant.
+
+> **Piège :** appliquer stale-while-revalidate sans verrou anti-concurrence, sur une clé soumise à beaucoup de requêtes simultanées : chaque requête qui détecte le cache périmé relance son propre recalcul coûteux, ce qui peut annuler tout le bénéfice (voire aggraver la charge par rapport à un cache bloquant classique).
+>
+> **Bonne pratique :** ne jamais laisser un cache périmé attendre l'utilisateur pour un simple rafraîchissement ; réserver l'attente au tout premier appel, sans aucune valeur en cache.
+
 ## Récapitulatif
 
 | Situation | Sans le principe | Avec le principe |
@@ -125,7 +188,7 @@ Dans les quatre cas, le gain ne vient pas d'un calcul rendu plus rapide, mais d'
 
 | | |
 |---|---|
-| **À retenir** | Ne jamais recalculer un résultat que rien n'a pu changer depuis son dernier calcul : mémoïsation, retraitement incrémental, ou dirty rectangle appliquent tous la même idée à des échelles différentes. |
-| **Outils utilisables** | Un cache en mémoire par entrée (mémoïsation), une marque de progression pour ne retraiter que le nouveau, une comparaison "légère" avant une vérification coûteuse. |
-| **Pièges à éviter** | Mémoïser sans identifier ce qui invaliderait le résultat : un cache jamais invalidé devient une source de données périmées. |
-| **Bonnes pratiques** | Toujours définir la condition d'invalidation avant de mémoïser ; distinguer un recalcul évitable (ce principe) d'une pause volontaire de protection (à conserver). |
+| **À retenir** | Ne jamais recalculer un résultat que rien n'a pu changer depuis son dernier calcul : mémoïsation, retraitement incrémental, ou dirty rectangle appliquent tous la même idée à des échelles différentes. Un cache fichier ajoute deux techniques : l'écriture atomique (jamais de lecture à moitié écrite) et le stale-while-revalidate (répondre vite, recalculer derrière). |
+| **Outils utilisables** | Un cache en mémoire par entrée (mémoïsation), une marque de progression pour ne retraiter que le nouveau, une comparaison "légère" avant une vérification coûteuse, `rename()`/`os.replace()` pour une écriture atomique, un verrou anti-concurrence pour un recalcul en tâche de fond. |
+| **Pièges à éviter** | Mémoïser sans identifier ce qui invaliderait le résultat : un cache jamais invalidé devient une source de données périmées. Écrire directement dans un fichier de cache lu par d'autres processus. Appliquer stale-while-revalidate sans verrou anti-concurrence. |
+| **Bonnes pratiques** | Toujours définir la condition d'invalidation avant de mémoïser ; distinguer un recalcul évitable (ce principe) d'une pause volontaire de protection (à conserver) ; écrire un fichier de cache via un fichier temporaire renommé ; ne faire attendre l'utilisateur qu'au tout premier appel sans cache. |
