@@ -42,6 +42,47 @@ Two details that make a real difference in practice:
 - **Filter before counting.** If you skip elements inside the loop, progress counters and the completion estimate become wrong (they include work that cost nothing). Computing the list of what's left first keeps both accurate.
 - **Separate state from the deliverable.** This file is internal plumbing, not a result: giving it an explicit name (`.partial`) and deleting it at the end avoids it being mistaken for the output. Keeping it distinct from the deliverable also avoids an external tool (a spreadsheet app, for instance) re-saving it in a format that would break resumption.
 
+## Reading a large file as a stream rather than loading it all
+
+A file of a few kilobytes loads entirely into memory without a second thought. A file of several hundred megabytes (a product catalog XML export, say) changes things: loading it in one block can be enough to exhaust available memory.
+
+```text
+Full load (DOM):        entire file -> tree in memory -> traversal
+                         memory proportional to file size
+
+Streaming (SAX/XMLReader): file -> read node by node -> processed as it streams
+                            near-constant memory, regardless of file size
+```
+
+| | Full load (DOM, SimpleXML) | Streaming (SAX, `XMLReader`) |
+|---|---|---|
+| Memory used | Proportional to file size | Near constant |
+| Code simplicity | Simple: the whole document is navigable at once | More verbose: you must manually advance through the stream |
+| Suited to | Reasonably sized files (up to a few tens of MB) | Large files, where loading everything would crash the process |
+
+```php
+<?php
+$reader = new XMLReader();
+$reader->open('catalog.xml');
+
+while ($reader->read()) {
+    if ($reader->nodeType === XMLReader::ELEMENT && $reader->name === 'product') {
+        $product = new SimpleXMLElement($reader->readOuterXML());   // only one <product> in memory at a time
+        process($product);
+    }
+}
+$reader->close();
+?>
+```
+
+`XMLReader` advances through the file one node at a time, never loading the entire tree: each time a `<product>` is encountered, only that fragment is momentarily turned into an object, processed, then released on the next pass.
+
+The same trade-off exists beyond PHP: [`xml.etree.ElementTree.iterparse`](https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.iterparse) in Python, or the [`sax`](https://www.npmjs.com/package/sax) library in Node.js.
+
+> **Pitfall:** loading a large XML file with `SimpleXML`/DOM "because it works in dev" (a small test file), without having tested against a volume representative of production.
+>
+> **Best practice:** as soon as a file can exceed a few tens of megabytes in production, prefer a streaming parser (`XMLReader` or equivalent) over a full load, even if the code becomes a bit more verbose.
+
 ## Showing progress
 
 A 20-minute process with no display is indistinguishable from a stuck program. Displaying progress and an estimated time remaining costs a few lines:
@@ -92,7 +133,7 @@ The lesson is direct: for a long, unsupervised process, test the **content** of 
 
 | | |
 |---|---|
-| **Key takeaways** | A process running several minutes must be able to resume after an interruption (incremental saving), display its progress, and detect a partial failure rather than silently masking it. |
-| **Tools you can use** | The JSON Lines format for resilient incremental saving, `time.monotonic()` for a reliable duration estimate, an invariant check at the end of the process. |
-| **Pitfalls to avoid** | A silent `except`/`break` that leaves a partial result unflagged; only checking the return code, not the actual content produced. |
-| **Best practices** | Compare the number of elements obtained to the number expected; keep the internal state file (`.partial`) separate from the final deliverable. |
+| **Key takeaways** | A process running several minutes must be able to resume after an interruption (incremental saving), read a large file as a stream rather than loading it all, display its progress, and detect a partial failure rather than silently masking it. |
+| **Tools you can use** | The JSON Lines format for resilient incremental saving, a streaming parser (`XMLReader`, `iterparse`) for a large file, `time.monotonic()` for a reliable duration estimate, an invariant check at the end of the process. |
+| **Pitfalls to avoid** | A silent `except`/`break` that leaves a partial result unflagged; only checking the return code, not the actual content produced; loading a large file entirely into memory without testing it against a representative volume. |
+| **Best practices** | Compare the number of elements obtained to the number expected; keep the internal state file (`.partial`) separate from the final deliverable; prefer a streaming parser as soon as a file can exceed a few tens of megabytes. |

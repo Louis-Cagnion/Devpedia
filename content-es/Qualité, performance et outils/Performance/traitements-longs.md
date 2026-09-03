@@ -42,6 +42,47 @@ Dos detalles que marcan la diferencia en el uso:
 - **Filtrar antes de contar.** Si se saltan elementos dentro del bucle, los contadores de progreso y la estimación de finalización se vuelven falsos (incluyen trabajo que no costó nada). Calcular primero la lista de lo que queda hace que ambos sean exactos.
 - **Separar el estado del entregable.** Este archivo es mecánica interna, no un resultado: darle un nombre explícito (`.parcial`) y eliminarlo al final evita que se lo confunda con la salida. Mantenerlo separado del entregable también evita que una herramienta externa (una hoja de cálculo, por ejemplo) lo reguarde en un formato que rompería la reanudación.
 
+## Leer un archivo grande sobre la marcha en vez de cargarlo todo
+
+Un archivo de pocos kilobytes se carga entero en memoria sin pensarlo. Un archivo de varios cientos de megabytes (una exportación XML de catálogo de productos, por ejemplo) cambia las cosas: cargarlo de un bloque puede bastar para agotar la memoria disponible.
+
+```text
+Carga completa (DOM):        archivo entero -> arbol en memoria -> recorrido
+                              memoria proporcional al tamano del archivo
+
+Streaming (SAX/XMLReader):   archivo -> leido nodo por nodo -> procesado sobre la marcha
+                              memoria casi constante, sea cual sea el tamano del archivo
+```
+
+| | Carga completa (DOM, SimpleXML) | Streaming (SAX, `XMLReader`) |
+|---|---|---|
+| Memoria usada | Proporcional al tamaño del archivo | Casi constante |
+| Simplicidad del código | Simple: todo el documento es navegable de una vez | Más verboso: hay que avanzar manualmente en el flujo |
+| Adecuado para | Archivos de tamaño razonable (hasta unas decenas de MB) | Archivos voluminosos, donde cargar todo haría fallar el proceso |
+
+```php
+<?php
+$lector = new XMLReader();
+$lector->open('catalogo.xml');
+
+while ($lector->read()) {
+    if ($lector->nodeType === XMLReader::ELEMENT && $lector->name === 'producto') {
+        $producto = new SimpleXMLElement($lector->readOuterXML());   // un solo <producto> en memoria a la vez
+        procesar($producto);
+    }
+}
+$lector->close();
+?>
+```
+
+`XMLReader` avanza en el archivo un nodo a la vez, sin cargar nunca la totalidad del árbol: cada vez que se encuentra un `<producto>`, solo ese fragmento se convierte momentáneamente en objeto, se procesa, y luego se libera en la siguiente vuelta.
+
+El mismo compromiso existe más allá de PHP: [`xml.etree.ElementTree.iterparse`](https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.iterparse) en Python, o la biblioteca [`sax`](https://www.npmjs.com/package/sax) en Node.js.
+
+> **Trampa:** cargar un archivo XML voluminoso con `SimpleXML`/DOM "porque funciona en desarrollo" (un archivo de prueba reducido), sin haberlo probado con un volumen representativo de producción.
+>
+> **Buena práctica:** en cuanto un archivo pueda superar unas decenas de megabytes en producción, preferir un parser en streaming (`XMLReader` o equivalente) a la carga completa, aunque el código se vuelva un poco más verboso.
+
 ## Mostrar el avance
 
 Un procesamiento de 20 minutos sin visualización es indistinguible de un programa bloqueado. Mostrar el avance y una estimación del tiempo restante cuesta unas pocas líneas:
@@ -92,7 +133,7 @@ La lección es directa: para un procesamiento largo y no supervisado, pruebe el 
 
 | | |
 |---|---|
-| **Para recordar** | Un procesamiento de varios minutos debe poder reanudarse tras un corte (guardado sobre la marcha), mostrar su avance, y detectar un fallo parcial en lugar de ocultarlo silenciosamente. |
-| **Herramientas utilizables** | El formato JSON Lines para un guardado incremental resiliente, `time.monotonic()` para una estimación de duración fiable, una verificación de invariante al final del procesamiento. |
-| **Trampas a evitar** | Un `except`/`break` silencioso que deja un resultado parcial sin señalarlo; verificar solo el código de retorno, no el contenido real producido. |
-| **Buenas prácticas** | Comparar el número de elementos obtenidos con el número esperado; separar el archivo de estado interno (`.parcial`) del entregable final. |
+| **Para recordar** | Un procesamiento de varios minutos debe poder reanudarse tras un corte (guardado sobre la marcha), leer un archivo grande sobre la marcha en vez de cargarlo todo, mostrar su avance, y detectar un fallo parcial en lugar de ocultarlo silenciosamente. |
+| **Herramientas utilizables** | El formato JSON Lines para un guardado incremental resiliente, un parser en streaming (`XMLReader`, `iterparse`) para un archivo grande, `time.monotonic()` para una estimación de duración fiable, una verificación de invariante al final del procesamiento. |
+| **Trampas a evitar** | Un `except`/`break` silencioso que deja un resultado parcial sin señalarlo; verificar solo el código de retorno, no el contenido real producido; cargar un archivo grande enteramente en memoria sin haberlo probado con un volumen representativo. |
+| **Buenas prácticas** | Comparar el número de elementos obtenidos con el número esperado; separar el archivo de estado interno (`.parcial`) del entregable final; preferir un parser en streaming en cuanto un archivo pueda superar unas decenas de megabytes. |
