@@ -104,5 +104,96 @@ Explication à retranscrire dans un futur chapitre (rubrique la plus proche : `c
 - Piège pédagogique à mentionner : ça explique pourquoi mélanger les deux syntaxes dans un seul appel (ex. un pipe Unix passé à PowerShell) échoue, et pourquoi corriger un souci de syntaxe demande d'abord d'identifier quel outil a réellement été appelé.
 - Reste à Louis : valider l'angle (chapitre outillage Claude Code vs terminal en général) avant rédaction, suivre `plan-zero-connaissance.md` pour le niveau de langage.
 
+## 19. Nouvelle notion candidate : Elasticsearch (moteur de recherche/BDD documentaire)
+
+Repéré en auditant le projet `poc-borne-git` (mode `/review` détourné en audit de couverture Devpedia, demande de Louis, 03/09/2026) : le moteur de recherche complet du projet (catalogue véhicules, filtres, recherche en langage naturel) repose sur Elasticsearch — absent de tout `content/`, alors que `redis.md` existe déjà pour une autre base non relationnelle.
+
+Explication à retranscrire dans un futur chapitre (rubrique la plus proche : `content/Données/Bases de données/`, à côté de `redis.md`) :
+- Base orientée documents (JSON), indexée pour la recherche plein texte plutôt que pour des jointures relationnelles — situer par rapport à SQL/`redis.md` déjà couverts.
+- Requêtes construites en JSON (DSL Query), agrégations, pagination `from`/`size`.
+- Fuzzy matching (tolérance aux fautes de frappe/variantes, paramètre `fuzziness`) et ses pièges (trop permissif sur un champ à valeurs exactes issu d'une facette — bug réel rencontré dans ce projet).
+- Scripts Painless (tri/scoring personnalisé côté serveur ES).
+- Import en masse (Bulk API) par lots plutôt qu'un document à la fois.
+- Reste à Louis : valider l'angle (chapitre Elasticsearch générique vs actionné à travers cet exemple précis) avant rédaction, suivre `plan-zero-connaissance.md`.
+
+## 20. Nouvelle notion candidate : HMAC — signature symétrique par secret partagé
+
+Repéré dans le même audit : `cryptographie-appliquee.md` couvre la signature numérique uniquement côté **asymétrique** (clé privée pour signer, clé publique pour vérifier — § *La signature numérique*). Le projet audité signe des tokens auto-suffisants avec HMAC-SHA256, qui est **symétrique** : le même secret sert à signer et à vérifier, aucune clé publique. Lacune précise dans un chapitre existant plutôt qu'un nouveau chapitre.
+
+Explication à retranscrire (dans `cryptographie-appliquee.md`, nouvelle section à côté de la signature asymétrique existante) :
+- HMAC = hachage combiné à une clé secrète partagée (`hash_hmac('sha256', $donnees, $secret)` en PHP) : contrairement à la signature asymétrique déjà couverte, le vérificateur doit connaître le même secret que le signataire — pas de clé publique séparée.
+- Cas d'usage concret : un token auto-suffisant (façon JWT, déjà couvert dans `jwt-et-tokens.md`) signé HMAC plutôt que par une bibliothèque JWT complète — même principe (données + signature, vérification sans stockage serveur), format plus artisanal.
+- Toujours comparer la signature reçue avec `hash_equals()` (déjà couvert dans `PHP/securite.md`), jamais `==`/`===`.
+- Reste à Louis : valider l'angle (extension de `cryptographie-appliquee.md` vs nouveau chapitre dédié HMAC) avant rédaction.
+
+## 21. Nouvelle notion candidate : classement/score bayésien (formule IMDB)
+
+Repéré dans le même audit : deux domaines du projet (classement d'avis Google, classement Call Center) utilisent la même formule de moyenne pondérée par le volume — l'algorithme de classement historiquement popularisé par IMDB pour éviter qu'une fiche à 1 avis 5 étoiles batte une fiche à 500 avis 4,8 étoiles. Absent de `Fondamentaux/Algorithmes/` et de `Données/Data Science/`.
+
+Explication à retranscrire (rubrique la plus proche : `Fondamentaux/Algorithmes/`, en complément de `tri-par-comparaison.md`) :
+- Problème résolu : une simple moyenne favorise à tort les petits échantillons (un score parfait sur 2 avis n'est pas plus fiable qu'un bon score sur 500).
+- Formule : `note_ajustée = (R·v + m·C) / (v + m)` — `R` = moyenne brute de l'élément, `v` = son nombre d'avis, `C` = moyenne globale de référence, `m` = seuil de confiance (poids donné à la moyenne globale tant que `v` est petit).
+- Interprétation : quand `v` est grand devant `m`, la formule tend vers la moyenne brute `R` ; quand `v` est petit, elle tend vers la référence globale `C` — un lissage progressif, pas un seuil brutal.
+- Reste à Louis : valider l'angle et la rubrique avant rédaction, suivre `plan-zero-connaissance.md`.
+
+## 22. Nouvelle notion candidate : Web Speech API (reconnaissance vocale navigateur)
+
+Repéré dans le même audit : le projet utilise la Web Speech API du navigateur (`SpeechRecognition`) pour la saisie vocale d'une recherche. Absent de `Langages/JavaScript/`.
+
+Explication à retranscrire (rubrique la plus proche : `Langages/JavaScript/`) :
+- API navigateur (pas une bibliothèque tierce) exposant la reconnaissance vocale (`webkitSpeechRecognition`/`SpeechRecognition`) et la synthèse vocale (`speechSynthesis`, déjà rencontrée côté Devpedia lui-même — cf. `js/reader.js` du site Devpedia) directement en JS.
+- Support navigateur inégal (préfixe `webkit` encore nécessaire sur certains navigateurs) : toujours prévoir un repli si l'API est absente.
+- Modèle événementiel (`onresult`, `onerror`) plutôt qu'une promesse — à situer par rapport à `Langages/JavaScript/asynchrone.md` déjà couvert.
+- Reste à Louis : valider l'angle avant rédaction.
+
+## 23. Nouvelle notion candidate : parsing XML en streaming (XMLReader) vs DOM
+
+Repéré dans le même audit : l'import du stock véhicules (fichiers XML volumineux) utilise `XMLReader` en PHP, qui lit le fichier au fil de l'eau par lots plutôt que de le charger entièrement en mémoire (`SimpleXML`/DOM). Absent de `Langages/PHP/` et de `Qualité, performance et outils/Performance/`.
+
+Explication à retranscrire (rubrique la plus proche : `Qualité, performance et outils/Performance/traitements-longs.md`, ou nouveau chapitre PHP dédié) :
+- DOM/SimpleXML : charge tout le document en mémoire d'un coup, simple à utiliser mais mémoire proportionnelle à la taille du fichier — problématique sur un gros fichier.
+- Style "streaming"/SAX : lit et traite le document nœud par nœud, mémoire quasi constante, mais code plus verbeux (avancer manuellement dans le flux).
+- Concept transférable au-delà de PHP (le même compromis existe en Python `xml.etree.iterparse`, Node `sax`, etc.) — bon candidat pour un exemple concret dans un chapitre plus général sur le traitement de gros fichiers.
+- Reste à Louis : valider l'angle (chapitre PHP spécifique vs généralisé) avant rédaction.
+
+## 24. Nouvelle notion candidate : traits PHP
+
+Repéré dans le même audit : le projet compose une classe (`SalesRepository`) à partir de deux traits (`use SalesSummaryQueries; use SalesGroupedQueries;`) pour scinder un fichier trop long sans passer par l'héritage. Absent de `Langages/PHP/poo.md`.
+
+Explication à retranscrire (dans `poo.md`, section à ajouter) :
+- Un trait regroupe des méthodes réutilisables, importées dans une classe via `use NomDuTrait;` — ni héritage (une seule classe mère possible en PHP) ni interface (un trait fournit du code, pas juste un contrat).
+- Différence avec l'héritage : une classe peut utiliser plusieurs traits à la fois (contourne la limite d'héritage simple de PHP), et un trait n'est pas instanciable seul.
+- Cas d'usage concret du projet : scinder une classe volumineuse par responsabilité (méthodes de synthèse vs méthodes de détail groupé) sans changer son API publique ni sa hiérarchie de classes.
+- Reste à Louis : valider l'angle avant rédaction.
+
+## 25. Nouvelle notion candidate : écriture atomique de fichier + cache stale-while-revalidate
+
+Repéré dans le même audit : deux techniques de cache fichier robustes utilisées dans le projet, absentes de `Qualité, performance et outils/Performance/`.
+
+Explication à retranscrire (rubrique la plus proche : `Performance/eviter-le-recalcul-redondant.md`, extension) :
+- **Écriture atomique** : écrire dans un fichier temporaire (`.tmp`) puis le renommer (`rename()`) vers le nom final, plutôt qu'écrire directement dans le fichier de cache — un `rename()` est atomique au niveau du système de fichiers, donc aucun lecteur concurrent ne peut jamais voir un fichier à moitié écrit (contrairement à une écriture directe interrompue en cours de route).
+- **Stale-while-revalidate** : renvoyer immédiatement une valeur en cache même périmée plutôt que de bloquer la requête utilisateur le temps de recalculer, et déclencher le recalcul en tâche de fond (avec un verrou anti-concurrence pour ne pas relancer N fois le même recalcul coûteux) — seul le tout premier appel sans aucun cache existant doit attendre. Terme standard emprunté au cache HTTP (en-tête `Cache-Control: stale-while-revalidate`), appliqué ici à un cache fichier applicatif.
+- Reste à Louis : valider l'angle (un chapitre ou deux sections distinctes) avant rédaction.
+
+## 26. Nouvelle notion candidate : OpenAPI (spécification/contrat d'API REST)
+
+Repéré dans le même audit : le projet documente son API REST via un fichier `openapi.yaml`, consommé par une intégration GPT Actions externe. Absent de `Infrastructure & DevOps/Infrastructure/api-et-http.md` et de tout autre chapitre.
+
+Explication à retranscrire (rubrique la plus proche : `api-et-http.md`, extension, ou `IA/Applications LLM/` pour le lien avec les intégrations LLM) :
+- Format standard (YAML/JSON) décrivant les endpoints d'une API REST — routes, paramètres, formats de réponse — de façon lisible à la fois par des humains et par des outils (génération de documentation interactive de type Swagger UI, génération de client, ou ici : description d'actions consommables par un agent LLM).
+- Contrat unique : la spec sert à la fois de documentation et de source de vérité vérifiable (peut être testée contre l'implémentation réelle).
+- Lien avec l'IA : de plus en plus utilisé comme format d'entrée pour décrire à un LLM quelles actions/API externes il peut appeler (GPT Actions, function calling) — à relier à `IA/NLP et LLM/` si ce chapitre existe déjà pour les agents/tool use.
+- Reste à Louis : valider l'angle et la rubrique avant rédaction.
+
+## 27. Nouvelle notion candidate : authentification HTTP Basic
+
+Repéré dans le même audit : deux endpoints d'administration du projet (`import_web.php`, `atlas-geocode.php`) utilisent l'authentification HTTP Basic. Absent de `Sécurité/Fondamentaux/` et de `Sécurité/Sessions et tokens/` (qui couvrent sessions/cookies et JWT, mais pas ce mécanisme plus ancien).
+
+Explication à retranscrire (rubrique la plus proche : `Sécurité/Fondamentaux/authentification-vs-autorisation.md`, extension, ou nouveau chapitre dans `Sessions et tokens`) :
+- Mécanisme simple porté par le protocole HTTP lui-même (en-tête `Authorization: Basic base64(user:pass)`) plutôt que par l'application (pas de formulaire de connexion, le navigateur affiche sa propre pop-up).
+- Identifiants encodés en Base64, **pas chiffrés** — à situer par rapport à la distinction hachage/chiffrement/encodage déjà vue ailleurs (`cryptographie-appliquee.md`) : Base64 n'est même pas du chiffrement, juste une représentation, lisible instantanément par quiconque intercepte la requête. D'où l'exigence stricte de HTTPS avec ce mécanisme.
+- Pas de notion de déconnexion propre côté serveur (le navigateur retient les identifiants pour le domaine tant que l'onglet reste ouvert) — à contraster avec sessions/JWT déjà couverts.
+- Reste à Louis : valider l'angle avant rédaction.
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
