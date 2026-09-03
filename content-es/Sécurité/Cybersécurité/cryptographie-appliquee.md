@@ -47,6 +47,30 @@ En la práctica, ambos se combinan a menudo: TLS (ver el panorama de ataques de 
 
 Una **firma digital** demuestra que un dato realmente proviene del emisor esperado, y que no ha sido modificado desde entonces: el emisor firma con su clave **privada**, y cualquiera puede verificarla con la clave **pública** (lo inverso del cifrado, donde se cifra con la clave pública del destinatario). El principio es el mismo que la firma de un [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens): garantizar la integridad, nunca la confidencialidad por sí sola.
 
+## HMAC: la firma simétrica por secreto compartido
+
+La firma vista más arriba es **asimétrica**: una clave privada firma, una clave pública verifica. **HMAC** (*Hash-based Message Authentication Code*) firma de otra forma, de manera **simétrica**: un hash combinado con una clave secreta, conocida tanto por quien firma como por quien verifica.
+
+| | Firma asimétrica | HMAC |
+|---|---|---|
+| Quién firma | El poseedor de la clave privada | Cualquiera que conozca el secreto compartido |
+| Quién verifica | Cualquiera, con la clave pública | Solo alguien que conozca el mismo secreto |
+| Clave pública separada | Sí | No: un solo secreto, nunca transmitido |
+
+```php
+<?php
+$firma = hash_hmac('sha256', $datos, $secreto);
+// $firma acompaña a $datos; quien verifica recalcula el HMAC con el mismo $secreto
+// y compara el resultado con la firma recibida.
+?>
+```
+
+Caso de uso concreto: un **token autosuficiente**, con el mismo principio que un [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens) (datos + firma, sin almacenamiento en el servidor necesario para verificar), pero firmado directamente con HMAC en lugar de mediante una biblioteca JWT completa: un formato más artesanal, para una necesidad más simple.
+
+> **Trampa:** comparar la firma recibida con la recalculada usando `==`/`===`. Como con cualquier secreto comparado en PHP (ver [Asegurar tus datos](/?c=langages-de-programmation&s=php&p=securite)), esto expone a un ataque de temporización.
+>
+> **Buena práctica:** comparar siempre con `hash_equals()`, nunca con `==`/`===`, para toda comparación de firma o secreto.
+
 ## Errores comunes a evitar
 
 | Error | Por qué es peligroso | Buena práctica |
@@ -63,7 +87,7 @@ Una **firma digital** demuestra que un dato realmente proviene del emisor espera
 
 | | |
 |---|---|
-| **Para recordar** | El hashing es unidireccional (verificar/comparar); el cifrado es reversible (proteger y luego leer de nuevo). El cifrado simétrico usa una sola clave compartida; el asimétrico, un par de claves pública/privada. Una firma digital garantiza la integridad, no la confidencialidad. |
-| **Herramientas utilizables** | AES (simétrico), RSA/ECC (asimétrico), una biblioteca criptográfica estándar del lenguaje usado en lugar de una implementación casera. |
-| **Errores a evitar** | Confundir hashing y cifrado; implementar tu propio algoritmo; reutilizar la misma clave en todas partes; usar un generador aleatorio no criptográfico para una clave o sal. |
-| **Buenas prácticas** | Una clave dedicada por uso; un CSPRNG para todo secreto; algoritmos estándar, nunca artesanales; una clave almacenada separadamente de los datos que protege. |
+| **Para recordar** | El hashing es unidireccional (verificar/comparar); el cifrado es reversible (proteger y luego leer de nuevo). El cifrado simétrico usa una sola clave compartida; el asimétrico, un par de claves pública/privada. Una firma digital (asimétrica) o HMAC (simétrico) garantiza la integridad, no la confidencialidad. |
+| **Herramientas utilizables** | AES (simétrico), RSA/ECC (asimétrico), HMAC (`hash_hmac()`) para una firma simétrica, una biblioteca criptográfica estándar del lenguaje usado en lugar de una implementación casera. |
+| **Errores a evitar** | Confundir hashing y cifrado; implementar tu propio algoritmo; reutilizar la misma clave en todas partes; usar un generador aleatorio no criptográfico para una clave o sal; comparar una firma HMAC con `==`/`===`. |
+| **Buenas prácticas** | Una clave dedicada por uso; un CSPRNG para todo secreto; algoritmos estándar, nunca artesanales; una clave almacenada separadamente de los datos que protege; `hash_equals()` para toda comparación de firma o secreto. |

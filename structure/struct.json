@@ -980,6 +980,10 @@
             {
               "id": "k-plus-proches-voisins",
               "label": "Les k plus proches voisins (k-NN)"
+            },
+            {
+              "id": "classement-bayesien",
+              "label": "Le classement bayésien : corriger une moyenne trop naïve"
             }
           ]
         },

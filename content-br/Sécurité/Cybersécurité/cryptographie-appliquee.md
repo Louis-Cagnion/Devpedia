@@ -47,6 +47,30 @@ Na prática, os dois costumam se combinar: o TLS (ver o panorama de ataques de r
 
 Uma **assinatura digital** prova que um dado realmente vem do remetente esperado, e que não foi alterado desde então: o remetente assina com sua chave **privada**, e qualquer um pode verificar com a chave **pública** (o inverso da criptografia, em que se criptografa com a chave pública do destinatário). O princípio é o mesmo da assinatura de um [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens): garantir a integridade, nunca a confidencialidade por si só.
 
+## HMAC: a assinatura simétrica por segredo compartilhado
+
+A assinatura vista acima é **assimétrica**: uma chave privada assina, uma chave pública verifica. **HMAC** (*Hash-based Message Authentication Code*) assina de outra forma, de maneira **simétrica**: um hash combinado com uma chave secreta, conhecida tanto por quem assina quanto por quem verifica.
+
+| | Assinatura assimétrica | HMAC |
+|---|---|---|
+| Quem assina | O detentor da chave privada | Qualquer um que conheça o segredo compartilhado |
+| Quem verifica | Qualquer um, com a chave pública | Somente quem conhece o mesmo segredo |
+| Chave pública separada | Sim | Não: um único segredo, nunca transmitido |
+
+```php
+<?php
+$assinatura = hash_hmac('sha256', $dados, $segredo);
+// $assinatura acompanha $dados; quem verifica recalcula o HMAC com o mesmo $segredo
+// e compara o resultado com a assinatura recebida.
+?>
+```
+
+Caso de uso concreto: um **token autossuficiente**, no mesmo princípio de um [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens) (dados + assinatura, sem armazenamento no servidor necessário para verificar), mas assinado diretamente com HMAC em vez de por uma biblioteca JWT completa: um formato mais artesanal, para uma necessidade mais simples.
+
+> **Armadilha:** comparar a assinatura recebida com a recalculada usando `==`/`===`. Como qualquer segredo comparado em PHP (ver [Protegendo seus dados](/?c=langages-de-programmation&s=php&p=securite)), isso expõe a um ataque de temporização.
+>
+> **Boa prática:** sempre comparar com `hash_equals()`, nunca com `==`/`===`, para qualquer comparação de assinatura ou segredo.
+
 ## Erros comuns a evitar
 
 | Erro | Por que é perigoso | Boa prática |
@@ -63,7 +87,7 @@ Uma **assinatura digital** prova que um dado realmente vem do remetente esperado
 
 | | |
 |---|---|
-| **Para lembrar** | O hashing é unidirecional (verificar/comparar); a criptografia é reversível (proteger e depois ler novamente). A criptografia simétrica usa uma única chave compartilhada; a assimétrica, um par de chaves pública/privada. Uma assinatura digital garante integridade, não confidencialidade. |
-| **Ferramentas utilizáveis** | AES (simétrica), RSA/ECC (assimétrica), uma biblioteca de criptografia padrão da linguagem usada em vez de uma implementação caseira. |
-| **Armadilhas a evitar** | Confundir hashing e criptografia; implementar seu próprio algoritmo; reutilizar a mesma chave em todo lugar; usar um gerador aleatório não criptográfico para uma chave ou salt. |
-| **Boas práticas** | Uma chave dedicada por uso; um CSPRNG para tudo que for secreto; algoritmos padrão, nunca caseiros; uma chave armazenada separadamente dos dados que protege. |
+| **Para lembrar** | O hashing é unidirecional (verificar/comparar); a criptografia é reversível (proteger e depois ler novamente). A criptografia simétrica usa uma única chave compartilhada; a assimétrica, um par de chaves pública/privada. Uma assinatura digital (assimétrica) ou HMAC (simétrico) garante integridade, não confidencialidade. |
+| **Ferramentas utilizáveis** | AES (simétrica), RSA/ECC (assimétrica), HMAC (`hash_hmac()`) para uma assinatura simétrica, uma biblioteca de criptografia padrão da linguagem usada em vez de uma implementação caseira. |
+| **Armadilhas a evitar** | Confundir hashing e criptografia; implementar seu próprio algoritmo; reutilizar a mesma chave em todo lugar; usar um gerador aleatório não criptográfico para uma chave ou salt; comparar uma assinatura HMAC com `==`/`===`. |
+| **Boas práticas** | Uma chave dedicada por uso; um CSPRNG para tudo que for secreto; algoritmos padrão, nunca caseiros; uma chave armazenada separadamente dos dados que protege; `hash_equals()` para qualquer comparação de assinatura ou segredo. |

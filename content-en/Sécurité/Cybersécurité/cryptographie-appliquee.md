@@ -47,6 +47,30 @@ In practice, the two are often combined: TLS (see the network attack overview in
 
 A **digital signature** proves that a piece of data really comes from the expected sender, and hasn't been altered since: the sender signs with their **private** key, and anyone can verify it with the **public** key (the reverse of encryption, where you encrypt with the recipient's public key). The principle is the same as a [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens) signature: guaranteeing integrity, never confidentiality on its own.
 
+## HMAC: symmetric signing with a shared secret
+
+The signature above is **asymmetric**: a private key signs, a public key verifies. **HMAC** (*Hash-based Message Authentication Code*) signs differently, in a **symmetric** way: a hash combined with a secret key, known to both the signer and the verifier.
+
+| | Asymmetric signature | HMAC |
+|---|---|---|
+| Who signs | The holder of the private key | Anyone who knows the shared secret |
+| Who verifies | Anyone, with the public key | Only someone who knows the same secret |
+| Separate public key | Yes | No: a single secret, never transmitted |
+
+```php
+<?php
+$signature = hash_hmac('sha256', $data, $secret);
+// $signature travels alongside $data; the verifier recomputes the HMAC with the same
+// $secret and compares the result to the received signature.
+?>
+```
+
+Concrete use case: a **self-contained token**, on the same principle as a [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens) (data + signature, no server-side storage needed to verify), but signed directly with HMAC rather than through a full JWT library: a more homemade format, for a simpler need.
+
+> **Pitfall:** comparing the received signature to the recomputed one with `==`/`===`. As with any secret compared in PHP (see [Securing Your Data](/?c=langages-de-programmation&s=php&p=securite)), this exposes you to a timing attack.
+>
+> **Best practice:** always compare with `hash_equals()`, never `==`/`===`, for any signature or secret comparison.
+
 ## Common mistakes to avoid
 
 | Mistake | Why it's dangerous | Best practice |
@@ -63,7 +87,7 @@ A **digital signature** proves that a piece of data really comes from the expect
 
 | | |
 |---|---|
-| **Key takeaway** | Hashing is one-way (verify/compare); encryption is reversible (protect, then read back). Symmetric encryption uses a single shared key; asymmetric uses a public/private key pair. A digital signature guarantees integrity, not confidentiality. |
-| **Tools you can use** | AES (symmetric), RSA/ECC (asymmetric), a standard cryptography library for the language in use rather than a homemade implementation. |
-| **Pitfalls to avoid** | Confusing hashing and encryption; implementing your own algorithm; reusing the same key everywhere; using a non-cryptographic random generator for a key or salt. |
-| **Best practices** | A dedicated key per use; a CSPRNG for anything secret; standard algorithms, never homemade ones; a key stored separately from the data it protects. |
+| **Key takeaway** | Hashing is one-way (verify/compare); encryption is reversible (protect, then read back). Symmetric encryption uses a single shared key; asymmetric uses a public/private key pair. A digital signature (asymmetric) or HMAC (symmetric) guarantees integrity, not confidentiality. |
+| **Tools you can use** | AES (symmetric), RSA/ECC (asymmetric), HMAC (`hash_hmac()`) for a symmetric signature, a standard cryptography library for the language in use rather than a homemade implementation. |
+| **Pitfalls to avoid** | Confusing hashing and encryption; implementing your own algorithm; reusing the same key everywhere; using a non-cryptographic random generator for a key or salt; comparing an HMAC signature with `==`/`===`. |
+| **Best practices** | A dedicated key per use; a CSPRNG for anything secret; standard algorithms, never homemade ones; a key stored separately from the data it protects; `hash_equals()` for any signature or secret comparison. |

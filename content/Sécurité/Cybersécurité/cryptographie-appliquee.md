@@ -47,6 +47,30 @@ En pratique, les deux se combinent souvent : TLS (voir le panorama des attaques 
 
 Une **signature numérique** prouve qu'une donnée vient bien de l'émetteur attendu, et n'a pas été modifiée depuis : l'émetteur signe avec sa clé **privée**, et n'importe qui peut vérifier avec sa clé **publique** (l'inverse du chiffrement, où on chiffre avec la clé publique du destinataire). Le principe est le même que la signature d'un [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens) : garantir l'intégrité, jamais la confidentialité à elle seule.
 
+## HMAC : la signature symétrique par secret partagé
+
+La signature vue plus haut est **asymétrique** : une clé privée signe, une clé publique vérifie. **HMAC** (*Hash-based Message Authentication Code*) signe autrement, de façon **symétrique** : un hachage combiné à une clé secrète, connue à la fois du signataire et du vérificateur.
+
+| | Signature asymétrique | HMAC |
+|---|---|---|
+| Qui signe | Le détenteur de la clé privée | N'importe qui connaît le secret partagé |
+| Qui vérifie | N'importe qui, avec la clé publique | Uniquement quelqu'un qui connaît le même secret |
+| Clé publique séparée | Oui | Non : un seul secret, jamais transmis |
+
+```php
+<?php
+$signature = hash_hmac('sha256', $donnees, $secret);
+// $signature accompagne $donnees ; le vérificateur recalcule le HMAC avec le même $secret
+// et compare le résultat à la signature reçue.
+?>
+```
+
+Cas d'usage concret : un **token auto-suffisant**, sur le même principe qu'un [JWT](/?c=securite&s=sessions-et-tokens&p=jwt-et-tokens) (données + signature, aucun stockage serveur nécessaire pour vérifier), mais signé HMAC directement plutôt que via une bibliothèque JWT complète : un format plus artisanal, pour un besoin plus simple.
+
+> **Piège :** comparer la signature reçue à la signature recalculée avec `==`/`===`. Comme pour tout secret comparé en PHP (voir [Sécuriser vos données](/?c=langages&s=php&p=securite)), ça expose à une attaque par timing.
+>
+> **Bonne pratique :** toujours comparer avec `hash_equals()`, jamais `==`/`===`, pour toute comparaison de signature ou de secret.
+
 ## Erreurs courantes à éviter
 
 | Erreur | Pourquoi c'est dangereux | Bonne pratique |
@@ -63,7 +87,7 @@ Une **signature numérique** prouve qu'une donnée vient bien de l'émetteur att
 
 | | |
 |---|---|
-| **À retenir** | Le hachage est à sens unique (vérifier/comparer) ; le chiffrement est réversible (protéger puis relire). Le chiffrement symétrique utilise une seule clé partagée ; l'asymétrique une paire clé publique/privée. Une signature numérique garantit l'intégrité, pas la confidentialité. |
-| **Outils utilisables** | AES (symétrique), RSA/ECC (asymétrique), une bibliothèque cryptographique standard du langage utilisé plutôt qu'une implémentation maison. |
-| **Pièges à éviter** | Confondre hachage et chiffrement ; implémenter son propre algorithme ; réutiliser une même clé partout ; utiliser un générateur aléatoire non cryptographique pour une clé ou un sel. |
-| **Bonnes pratiques** | Une clé dédiée par usage ; un CSPRNG pour tout secret ; des algorithmes standards, jamais artisanaux ; une clé stockée séparément des données qu'elle protège. |
+| **À retenir** | Le hachage est à sens unique (vérifier/comparer) ; le chiffrement est réversible (protéger puis relire). Le chiffrement symétrique utilise une seule clé partagée ; l'asymétrique une paire clé publique/privée. Une signature numérique (asymétrique) ou HMAC (symétrique) garantit l'intégrité, pas la confidentialité. |
+| **Outils utilisables** | AES (symétrique), RSA/ECC (asymétrique), HMAC (`hash_hmac()`) pour une signature symétrique, une bibliothèque cryptographique standard du langage utilisé plutôt qu'une implémentation maison. |
+| **Pièges à éviter** | Confondre hachage et chiffrement ; implémenter son propre algorithme ; réutiliser une même clé partout ; utiliser un générateur aléatoire non cryptographique pour une clé ou un sel ; comparer une signature HMAC avec `==`/`===`. |
+| **Bonnes pratiques** | Une clé dédiée par usage ; un CSPRNG pour tout secret ; des algorithmes standards, jamais artisanaux ; une clé stockée séparément des données qu'elle protège ; `hash_equals()` pour toute comparaison de signature ou de secret. |
