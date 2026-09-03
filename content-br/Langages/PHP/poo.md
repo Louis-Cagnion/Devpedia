@@ -96,6 +96,51 @@ Repository::encontrar(1);
 
 > **Nota:** `Classe::metodo()` (com `::`) se parece com `Classe->metodo()` mas nunca é usado com uma instância: é o equivalente quase direto de um namespace + método estático em [C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
+## Os traits: compartilhar código sem herança
+
+Um **trait** reúne métodos reutilizáveis, importados em uma classe via `use NomeDoTrait;` (a mesma palavra-chave `use` do [namespace](#namespaces-e-use), mas com papel diferente: aqui se importa código, não apenas um atalho de nome). Não é herança (apenas uma classe mãe possível em PHP), nem uma interface (um trait fornece uma implementação, não apenas um contrato de métodos a cumprir).
+
+```php
+<?php
+trait ResumoVendas
+{
+    public function totalVendas(): float
+    {
+        return array_sum($this->vendas);
+    }
+}
+
+trait DetalheVendasPorCategoria
+{
+    public function vendasPorCategoria(): array
+    {
+        return array_count_values(array_column($this->vendas, 'categoria'));
+    }
+}
+
+class RepositorioVendas
+{
+    use ResumoVendas;
+    use DetalheVendasPorCategoria;
+
+    public function __construct(private array $vendas) {}
+}
+
+$repo = new RepositorioVendas([/* ... */]);
+$repo->totalVendas();            // metodo fornecido por ResumoVendas
+$repo->vendasPorCategoria();     // metodo fornecido por DetalheVendasPorCategoria
+```
+
+| | Herança | Interface | Trait |
+|---|---|---|---|
+| Fornece uma implementação | Sim | Não (apenas contrato) | Sim |
+| Quantidade usável por classe | Uma única classe mãe | Várias interfaces | Vários traits |
+| Instanciável sozinho | Não (mas a classe mãe sim) | Não | Nunca |
+
+Um caso de uso concreto: uma classe que cresce demais (por exemplo `RepositorioVendas`, com métodos de resumo e métodos de detalhe agrupado ao mesmo tempo) pode ser dividida por responsabilidade em vários traits, sem mudar sua API pública nem sua hierarquia de classes: `$repo->totalVendas()` continua funcionando exatamente igual para o código chamador, venha o método diretamente da classe ou de um trait importado.
+
+> **Nota:** contornar assim o limite de herança simples do PHP (uma classe só pode herdar de uma única classe mãe) não torna os traits um substituto da herança: um trait não define uma relação "é um" entre dois tipos, apenas compartilha código entre classes que não têm necessariamente nenhum parentesco.
+
 ## Injeção de dependências
 
 Em vez de criar ela mesma os objetos de que precisa (`new`), uma classe pode recebê-los "de fora", como parâmetros de seu construtor: é a **injeção de dependências**. A classe que os recebe não precisa saber como esses objetos são construídos, apenas qual contrato (quais métodos) eles respeitam.
@@ -131,7 +176,7 @@ Os parâmetros anuláveis com um fallback `??` (veja [As funções e métodos ma
 
 | | |
 |---|---|
-| **Para lembrar** | Uma classe reúne propriedades e métodos; `new` cria uma instância dela. Um namespace evita colisões de nomes entre módulos. A injeção de dependências recebe os objetos necessários como parâmetro em vez de criá-los ele mesmo. |
-| **Ferramentas utilizáveis** | `__construct`, propriedades tipadas, métodos `static`, `namespace`/`use`. |
-| **Armadilhas a evitar** | Criar diretamente (`new`) as dependências de uma classe em vez de recebê-las como parâmetro: torna a classe difícil de testar isoladamente. |
-| **Boas práticas** | Tipar as propriedades para que definam um contrato real; injetar as dependências em vez de instanciá-las diretamente, para facilitar os testes. |
+| **Para lembrar** | Uma classe reúne propriedades e métodos; `new` cria uma instância dela. Um namespace evita colisões de nomes entre módulos. Um trait compartilha código entre classes sem passar pela herança. A injeção de dependências recebe os objetos necessários como parâmetro em vez de criá-los ele mesmo. |
+| **Ferramentas utilizáveis** | `__construct`, propriedades tipadas, métodos `static`, `namespace`/`use`, traits (`trait`/`use`). |
+| **Armadilhas a evitar** | Criar diretamente (`new`) as dependências de uma classe em vez de recebê-las como parâmetro: torna a classe difícil de testar isoladamente. Confundir um trait com herança: ele não cria nenhuma relação "é um" entre tipos. |
+| **Boas práticas** | Tipar as propriedades para que definam um contrato real; injetar as dependências em vez de instanciá-las diretamente, para facilitar os testes; dividir uma classe grande demais em traits por responsabilidade, sem mudar sua API pública. |

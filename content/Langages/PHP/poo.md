@@ -96,6 +96,51 @@ Repository::trouver(1);
 
 > **Note :** `Classe::methode()` (avec `::`) ressemble à `Classe->methode()` mais ne s'utilise jamais avec une instance : c'est l'équivalent quasi direct d'un namespace + méthode statique en [C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
+## Les traits : partager du code sans héritage
+
+Un **trait** regroupe des méthodes réutilisables, importées dans une classe via `use NomDuTrait;` (même mot-clé `use` que pour un [namespace](#namespaces-et-use), mais un rôle différent : ici, on importe du code, pas juste un raccourci de nom). Ce n'est ni de l'héritage (une seule classe mère possible en PHP), ni une interface (un trait fournit une implémentation, pas seulement un contrat de méthodes à respecter).
+
+```php
+<?php
+trait ResumeVentes
+{
+    public function totalVentes(): float
+    {
+        return array_sum($this->ventes);
+    }
+}
+
+trait DetailVentesParCategorie
+{
+    public function ventesParCategorie(): array
+    {
+        return array_count_values(array_column($this->ventes, 'categorie'));
+    }
+}
+
+class DepotVentes
+{
+    use ResumeVentes;
+    use DetailVentesParCategorie;
+
+    public function __construct(private array $ventes) {}
+}
+
+$depot = new DepotVentes([/* ... */]);
+$depot->totalVentes();            // methode fournie par ResumeVentes
+$depot->ventesParCategorie();      // methode fournie par DetailVentesParCategorie
+```
+
+| | Héritage | Interface | Trait |
+|---|---|---|---|
+| Fournit une implémentation | Oui | Non (contrat seulement) | Oui |
+| Nombre utilisable par classe | Un seul parent | Plusieurs interfaces | Plusieurs traits |
+| Instanciable seul | Non (mais la classe mère l'est) | Non | Jamais |
+
+Un cas d'usage concret : une classe qui grossit trop (par exemple `DepotVentes` avec à la fois des méthodes de synthèse et des méthodes de détail groupé) peut être scindée par responsabilité en plusieurs traits, sans changer son API publique ni sa hiérarchie de classes : `$depot->totalVentes()` continue de fonctionner exactement pareil pour le code appelant, que la méthode vienne directement de la classe ou d'un trait importé.
+
+> **Note :** contourner ainsi la limite d'héritage simple de PHP (une classe ne peut hériter que d'une seule classe mère) ne fait pas des traits un substitut à l'héritage : un trait ne définit pas de relation "est un" entre deux types, il partage seulement du code entre des classes qui n'ont pas forcément de lien de parenté.
+
 ## Injection de dépendances
 
 Plutôt que de créer elle-même les objets dont elle a besoin (`new`), une classe peut les recevoir "de l'extérieur", en paramètres de son constructeur : c'est l'**injection de dépendances**. La classe qui les reçoit n'a pas besoin de savoir comment ces objets sont construits, seulement quel contrat (quelles méthodes) ils respectent.
@@ -131,7 +176,7 @@ Les paramètres nullables avec un repli `??` (voir [Les fonctions et méthodes l
 
 | | |
 |---|---|
-| **À retenir** | Une classe regroupe propriétés et méthodes ; `new` en crée une instance. Un namespace évite les collisions de noms entre modules. L'injection de dépendances reçoit les objets nécessaires en paramètre plutôt que de les créer soi-même. |
-| **Outils utilisables** | `__construct`, propriétés typées, méthodes `static`, `namespace`/`use`. |
-| **Pièges à éviter** | Créer directement (`new`) les dépendances d'une classe plutôt que de les recevoir en paramètre : rend la classe difficile à tester isolément. |
-| **Bonnes pratiques** | Typer les propriétés pour qu'elles définissent un vrai contrat ; injecter les dépendances plutôt que de les instancier en dur, pour faciliter les tests. |
+| **À retenir** | Une classe regroupe propriétés et méthodes ; `new` en crée une instance. Un namespace évite les collisions de noms entre modules. Un trait partage du code entre classes sans passer par l'héritage. L'injection de dépendances reçoit les objets nécessaires en paramètre plutôt que de les créer soi-même. |
+| **Outils utilisables** | `__construct`, propriétés typées, méthodes `static`, `namespace`/`use`, traits (`trait`/`use`). |
+| **Pièges à éviter** | Créer directement (`new`) les dépendances d'une classe plutôt que de les recevoir en paramètre : rend la classe difficile à tester isolément. Confondre un trait avec l'héritage : il ne crée aucune relation "est un" entre types. |
+| **Bonnes pratiques** | Typer les propriétés pour qu'elles définissent un vrai contrat ; injecter les dépendances plutôt que de les instancier en dur, pour faciliter les tests ; scinder une classe trop volumineuse en traits par responsabilité, sans changer son API publique. |
