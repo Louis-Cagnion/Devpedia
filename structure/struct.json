@@ -1558,6 +1558,10 @@
             {
               "id": "skills",
               "label": "Les skills : packager une compétence réutilisable pour un agent"
+            },
+            {
+              "id": "openapi",
+              "label": "OpenAPI : décrire un contrat d'API, pour des humains et pour des machines"
             }
           ]
         },
