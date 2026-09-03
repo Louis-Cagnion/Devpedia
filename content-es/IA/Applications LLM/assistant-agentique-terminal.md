@@ -71,6 +71,36 @@ El [RAG](/?c=ia&s=nlp-llm&p=rag) consulta una base **pre-indexada de antemano** 
 >
 > **Buena práctica:** citar la fuente de toda información recuperada por búsqueda web, para que un humano pueda verificar el origen en lugar de confiar solo en el asistente.
 
+### Dos herramientas de shell distintas en Windows: Bash y PowerShell
+
+Un asistente que ejecuta comandos no dispone de una sola herramienta "terminal": el entorno de ejecución (la aplicación que hace funcionar al asistente, ver [Cliente y servidor MCP](/?c=ia&s=nlp-llm&p=mcp)) puede exponer varias herramientas de shell **distintas y permanentes**, cada una con sus propias reglas. En Windows, un caso concreto es frecuente: dos herramientas llamadas "Bash" y "PowerShell" coexisten, y no son dos vistas sobre la misma terminal visible en pantalla, sino dos integraciones separadas.
+
+| | Herramienta "Bash" | Herramienta "PowerShell" |
+|---|---|---|
+| Lo que lanza realmente en Windows | [Git Bash](https://gitforwindows.org) (el shell [Bash](/?c=langages&s=bash&p=bash) incluido con Git para Windows), si está instalado | [`powershell.exe`](https://learn.microsoft.com/powershell/) |
+| Sintaxis esperada | Sintaxis Unix: `/dev/null`, comillas simples, `$VAR` | Sintaxis PowerShell: `$env:VAR`, sin `&&`/`\|\|` en PowerShell 5.1 |
+
+```text
+Ventana abierta por el usuario: PowerShell
+        |
+        v
+El asistente elige, comando por comando, que herramienta llamar
+        |
+   ------------------------
+   |                      |
+   v                      v
+Herramienta "Bash"    Herramienta "PowerShell"
+(lanza Git Bash)      (lanza powershell.exe)
+   |                      |
+sintaxis Unix         sintaxis PowerShell
+```
+
+La elección entre ambas, en cada comando, la hace el propio asistente (el modelo), no la impone la terminal en la que se abrió la sesión: por eso la sintaxis Unix (`/dev/null`, etc.) funciona incluso en una ventana PowerShell.
+
+> **Trampa:** mezclar ambas sintaxis en una sola llamada (por ejemplo, un pipe Unix pasado a la herramienta PowerShell) falla, sin que el error indique claramente cuál de las dos sintaxis se esperaba.
+>
+> **Buena práctica:** ante un comando que falla por un motivo de sintaxis, identificar primero qué herramienta de shell fue realmente llamada (Bash o PowerShell) antes de corregir el comando.
+
 ## El patrón evaluador-optimizador
 
 La tabla de los [patrones de coordinación multi-agente](/?c=ia&s=nlp-llm&p=agents) cubre el encadenamiento secuencial, el orquestador/trabajadores y el estado compartido. Un cuarto patrón, igual de habitual para un asistente que produce contenido (código, texto, plan): el **evaluador-optimizador**.
@@ -149,7 +179,7 @@ Un asistente moderno como el descrito aquí se apoya en un único modelo general
 
 | | |
 |---|---|
-| **Para recordar** | Un asistente agéntico combina generación pura (a distinguir de un dato realmente recuperado), razonamiento interno extendido nativo (≠ chain-of-thought prompteado), categorías de herramientas concretas (diff vs reescritura, búsqueda en vivo vs RAG), el patrón evaluador-optimizador, la caché de prompt, la compactación de contexto, y varias etapas de post-entrenamiento (SFT, RLHF, Constitutional AI). |
-| **Herramientas utilizables** | Una herramienta de edición por diff/patch para archivos voluminosos, una herramienta de búsqueda web en directo para información fresca, una caché de prompt para prefijos estables, un mecanismo de compactación para sesiones largas. |
-| **Trampas a evitar** | Confundir un dato inventado y un dato recuperado. Tomar un razonamiento mostrado por un relato fiel. Aplicar un patch sobre un archivo cambiado desde su última lectura. Confiar en una fuente web sin curaduría. Un bucle evaluador-optimizador sin criterio de parada. Invalidar la caché modificando su prefijo estable. Perder información crítica al compactar. Confundir SFT/RLHF/Constitutional AI con un fine-tuning genérico. |
-| **Buenas prácticas** | Verificar que realmente se usó una herramienta para todo dato factual verificable. Releer un archivo justo antes de calcular un patch. Citar la fuente de toda información encontrada por búsqueda web. Definir un criterio de parada medible para un ciclo evaluador-optimizador. Mantener estable el prefijo destinado a la caché. Preservar los elementos críticos fuera del resumen compactable. Identificar la naturaleza real del post-entrenamiento de un modelo en lugar de suponerlo genérico. |
+| **Para recordar** | Un asistente agéntico combina generación pura (a distinguir de un dato realmente recuperado), razonamiento interno extendido nativo (≠ chain-of-thought prompteado), categorías de herramientas concretas (diff vs reescritura, búsqueda en vivo vs RAG, shells Bash/PowerShell distintas), el patrón evaluador-optimizador, la caché de prompt, la compactación de contexto, y varias etapas de post-entrenamiento (SFT, RLHF, Constitutional AI). |
+| **Herramientas utilizables** | Una herramienta de edición por diff/patch para archivos voluminosos, una herramienta de búsqueda web en directo para información fresca, una o varias herramientas de shell (Bash, PowerShell) según la plataforma, una caché de prompt para prefijos estables, un mecanismo de compactación para sesiones largas. |
+| **Trampas a evitar** | Confundir un dato inventado y un dato recuperado. Tomar un razonamiento mostrado por un relato fiel. Aplicar un patch sobre un archivo cambiado desde su última lectura. Confiar en una fuente web sin curaduría. Mezclar sintaxis Bash y PowerShell en una misma llamada. Un bucle evaluador-optimizador sin criterio de parada. Invalidar la caché modificando su prefijo estable. Perder información crítica al compactar. Confundir SFT/RLHF/Constitutional AI con un fine-tuning genérico. |
+| **Buenas prácticas** | Verificar que realmente se usó una herramienta para todo dato factual verificable. Releer un archivo justo antes de calcular un patch. Citar la fuente de toda información encontrada por búsqueda web. Identificar qué herramienta de shell fue realmente llamada antes de corregir un error de sintaxis. Definir un criterio de parada medible para un ciclo evaluador-optimizador. Mantener estable el prefijo destinado a la caché. Preservar los elementos críticos fuera del resumen compactable. Identificar la naturaleza real del post-entrenamiento de un modelo en lugar de suponerlo genérico. |

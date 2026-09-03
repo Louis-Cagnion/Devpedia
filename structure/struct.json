@@ -929,6 +929,10 @@
             {
               "id": "redis",
               "label": "Redis : le store clé-valeur en mémoire"
+            },
+            {
+              "id": "elasticsearch",
+              "label": "Elasticsearch : la base orientée documents pour la recherche"
             }
           ]
         },

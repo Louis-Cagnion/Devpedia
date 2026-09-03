@@ -71,6 +71,36 @@ O [RAG](/?c=ia&s=nlp-llm&p=rag) consulta uma base **pré-indexada com antecedên
 >
 > **Boa prática:** citar a fonte de qualquer informação obtida por busca na web, para que um humano possa verificar a origem em vez de confiar apenas no assistente.
 
+### Duas ferramentas de shell distintas no Windows: Bash e PowerShell
+
+Um assistente que executa comandos não tem apenas uma ferramenta "terminal": o ambiente de execução (o aplicativo que roda o assistente, ver [Cliente e servidor MCP](/?c=ia&s=nlp-llm&p=mcp)) pode expor várias ferramentas de shell **distintas e permanentes**, cada uma com suas próprias regras. No Windows, um caso concreto é comum: duas ferramentas chamadas "Bash" e "PowerShell" coexistem, e não são duas visões do mesmo terminal visível na tela, mas duas integrações separadas.
+
+| | Ferramenta "Bash" | Ferramenta "PowerShell" |
+|---|---|---|
+| O que ela realmente executa no Windows | [Git Bash](https://gitforwindows.org) (o shell [Bash](/?c=langages&s=bash&p=bash) incluído no Git para Windows), se instalado | [`powershell.exe`](https://learn.microsoft.com/powershell/) |
+| Sintaxe esperada | Sintaxe Unix: `/dev/null`, aspas simples, `$VAR` | Sintaxe PowerShell: `$env:VAR`, sem `&&`/`\|\|` no PowerShell 5.1 |
+
+```text
+Janela aberta pelo usuario: PowerShell
+        |
+        v
+O assistente escolhe, comando por comando, qual ferramenta chamar
+        |
+   ------------------------
+   |                      |
+   v                      v
+Ferramenta "Bash"     Ferramenta "PowerShell"
+(executa Git Bash)    (executa powershell.exe)
+   |                      |
+sintaxe Unix          sintaxe PowerShell
+```
+
+A escolha entre as duas, a cada comando, é feita pelo próprio assistente (o modelo), não imposta pelo terminal em que a sessão foi aberta: é por isso que a sintaxe Unix (`/dev/null`, etc.) funciona mesmo em uma janela PowerShell.
+
+> **Armadilha:** misturar as duas sintaxes em uma única chamada (por exemplo, um pipe Unix passado para a ferramenta PowerShell) falha, sem que o erro indique claramente qual das duas sintaxes era esperada.
+>
+> **Boa prática:** diante de um comando que falha por um motivo de sintaxe, identificar primeiro qual ferramenta de shell foi realmente chamada (Bash ou PowerShell) antes de corrigir o comando.
+
 ## O padrão avaliador-otimizador
 
 A tabela de [padrões de coordenação multiagente](/?c=ia&s=nlp-llm&p=agents) cobre o encadeamento sequencial, o orquestrador/trabalhadores e o estado compartilhado. Um quarto padrão, igualmente comum para um assistente que produz conteúdo (código, texto, plano): o **avaliador-otimizador**.
@@ -148,7 +178,7 @@ Um assistente moderno como o descrito aqui se apoia em um único modelo generali
 
 | | |
 |---|---|
-| **O que reter** | Um assistente agêntico combina geração pura (a distinguir de um dado realmente obtido), raciocínio interno estendido nativo (≠ chain-of-thought via prompt), categorias concretas de ferramentas (diff vs reescrita, busca em tempo real vs RAG), o padrão avaliador-otimizador, o cache de prompt, a compactação de contexto, e várias etapas de pós-treinamento (SFT, RLHF, Constitutional AI). |
-| **Ferramentas úteis** | Uma ferramenta de edição por diff/patch para arquivos grandes, uma ferramenta de busca na web em tempo real para informação atualizada, um cache de prompt para prefixos estáveis, um mecanismo de compactação para sessões longas. |
-| **Armadilhas a evitar** | Confundir um dado inventado com um dado obtido. Tomar um raciocínio exibido como um relato fiel. Aplicar um patch em um arquivo alterado desde sua última leitura. Confiar em uma fonte web sem curadoria. Um ciclo avaliador-otimizador sem critério de parada. Invalidar o cache modificando seu prefixo estável. Perder uma informação crítica ao compactar. Confundir SFT/RLHF/Constitutional AI com um fine-tuning genérico. |
-| **Boas práticas** | Verificar que uma ferramenta foi realmente usada para qualquer dado factual verificável. Reler um arquivo antes de calcular um patch. Citar a fonte de qualquer informação encontrada por busca na web. Definir um critério de parada mensurável para um ciclo avaliador-otimizador. Manter estável o prefixo destinado ao cache. Preservar os elementos críticos fora do resumo compactável. Identificar a natureza real do pós-treinamento de um modelo em vez de supô-lo genérico. |
+| **O que reter** | Um assistente agêntico combina geração pura (a distinguir de um dado realmente obtido), raciocínio interno estendido nativo (≠ chain-of-thought via prompt), categorias concretas de ferramentas (diff vs reescrita, busca em tempo real vs RAG, shells Bash/PowerShell distintos), o padrão avaliador-otimizador, o cache de prompt, a compactação de contexto, e várias etapas de pós-treinamento (SFT, RLHF, Constitutional AI). |
+| **Ferramentas úteis** | Uma ferramenta de edição por diff/patch para arquivos grandes, uma ferramenta de busca na web em tempo real para informação atualizada, uma ou mais ferramentas de shell (Bash, PowerShell) conforme a plataforma, um cache de prompt para prefixos estáveis, um mecanismo de compactação para sessões longas. |
+| **Armadilhas a evitar** | Confundir um dado inventado com um dado obtido. Tomar um raciocínio exibido como um relato fiel. Aplicar um patch em um arquivo alterado desde sua última leitura. Confiar em uma fonte web sem curadoria. Misturar sintaxe Bash e PowerShell em uma mesma chamada. Um ciclo avaliador-otimizador sem critério de parada. Invalidar o cache modificando seu prefixo estável. Perder uma informação crítica ao compactar. Confundir SFT/RLHF/Constitutional AI com um fine-tuning genérico. |
+| **Boas práticas** | Verificar que uma ferramenta foi realmente usada para qualquer dado factual verificável. Reler um arquivo antes de calcular um patch. Citar a fonte de qualquer informação encontrada por busca na web. Identificar qual ferramenta de shell foi realmente chamada antes de corrigir um erro de sintaxe. Definir um critério de parada mensurável para um ciclo avaliador-otimizador. Manter estável o prefixo destinado ao cache. Preservar os elementos críticos fora do resumo compactável. Identificar a natureza real do pós-treinamento de um modelo em vez de supô-lo genérico. |

@@ -71,6 +71,36 @@ The [RAG](/?c=ia&s=nlp-llm&p=rag) queries a database **that is pre-indexed in ad
 >
 > **Best practice:** Cite the source of any information found through a web search, so that a human can verify the source rather than relying solely on the assistant.
 
+### Two distinct shell tools on Windows: Bash and PowerShell
+
+An assistant that runs commands doesn't have a single "terminal" tool: the harness (the application running the assistant, see [MCP client and server](/?c=ia&s=nlp-llm&p=mcp)) can expose several **distinct, permanent** shell tools, each with its own rules. On Windows, a common concrete case: two tools named "Bash" and "PowerShell" coexist, and they aren't two views onto the same terminal window visible on screen, but two separate integrations.
+
+| | The "Bash" tool | The "PowerShell" tool |
+|---|---|---|
+| What it actually launches on Windows | [Git Bash](https://gitforwindows.org) (the [Bash](/?c=langages&s=bash&p=bash) shell bundled with Git for Windows), if installed | [`powershell.exe`](https://learn.microsoft.com/powershell/) |
+| Syntax expected | Unix syntax: `/dev/null`, single quotes, `$VAR` | PowerShell syntax: `$env:VAR`, no `&&`/`\|\|` under PowerShell 5.1 |
+
+```text
+Window opened by the user: PowerShell
+        |
+        v
+The assistant picks, command by command, which tool to call
+        |
+   ------------------------
+   |                      |
+   v                      v
+"Bash" tool            "PowerShell" tool
+(launches Git Bash)    (launches powershell.exe)
+   |                      |
+Unix syntax           PowerShell syntax
+```
+
+The choice between the two, for each command, is made by the assistant itself (the model), not imposed by the terminal the session was opened in: this is why Unix syntax (`/dev/null`, etc.) works even in a PowerShell window.
+
+> **Pitfall:** mixing both syntaxes in a single call (for example, a Unix pipe passed to the PowerShell tool) fails, without the error clearly indicating which of the two syntaxes was expected.
+>
+> **Best practice:** when a command fails for a syntax reason, first identify which shell tool was actually called (Bash or PowerShell) before fixing the command.
+
 ## The Evaluator-Optimizer Pattern
 
 The table of [multi-agent coordination patterns](/?c=ia&s=nlp-llm&p=agents) covers sequential execution, orchestrator/workers, and shared state. A fourth pattern, equally common for an assistant that generates content (code, text, plans): **the evaluator-optimizer**.
@@ -148,7 +178,7 @@ A modern assistant like the one described here relies on a single, general-purpo
 
 | | |
 |---|---|
-| **Key Points** | An agent-based assistant combines pure generation (as distinct from data actually retrieved), native extended internal reasoning (≠ prompted chain-of-thought), concrete tool categories (diff vs. rewriting, live search vs. RAG), the evaluator-optimizer pattern, prompt caching, context compaction, and several post-training steps (SFT, RLHF, Constitutional AI). |
-| **Available Tools** | A diff/patch editor for large files, a live web search tool for up-to-date information, a prompt cache for stable prefixes, and a compaction mechanism for long sessions. |
-| **Pitfalls to Avoid** | Confusing invented data with retrieved data. Mistaking a displayed line of reasoning for an accurate account. Applying a patch to a file that has changed since it was last read. Trusting an uncurated web source. An evaluator-optimizer loop without a termination criterion. Invalidating the cache by modifying its stable prefix. Losing critical information during compression. Confusing SFT/RLHF/Constitutional AI with generic fine-tuning. |
-| **Best Practices** | Verify that a tool was actually used for any verifiable factual data. Review a file just before calculating a patch. Cite the source of any information found through web searches. Define a measurable termination criterion for an evaluator-optimizer cycle. Keep the cache prefix stable. Keep critical elements out of the compressible summary. Identify the actual nature of a model’s post-training rather than assuming it is generic. |
+| **Key Points** | An agent-based assistant combines pure generation (as distinct from data actually retrieved), native extended internal reasoning (≠ prompted chain-of-thought), concrete tool categories (diff vs. rewriting, live search vs. RAG, distinct Bash/PowerShell shells), the evaluator-optimizer pattern, prompt caching, context compaction, and several post-training steps (SFT, RLHF, Constitutional AI). |
+| **Available Tools** | A diff/patch editor for large files, a live web search tool for up-to-date information, one or more shell tools (Bash, PowerShell) depending on the platform, a prompt cache for stable prefixes, and a compaction mechanism for long sessions. |
+| **Pitfalls to Avoid** | Confusing invented data with retrieved data. Mistaking a displayed line of reasoning for an accurate account. Applying a patch to a file that has changed since it was last read. Trusting an uncurated web source. Mixing Bash and PowerShell syntax in a single call. An evaluator-optimizer loop without a termination criterion. Invalidating the cache by modifying its stable prefix. Losing critical information during compression. Confusing SFT/RLHF/Constitutional AI with generic fine-tuning. |
+| **Best Practices** | Verify that a tool was actually used for any verifiable factual data. Review a file just before calculating a patch. Cite the source of any information found through web searches. Identify which shell tool was actually called before fixing a syntax error. Define a measurable termination criterion for an evaluator-optimizer cycle. Keep the cache prefix stable. Keep critical elements out of the compressible summary. Identify the actual nature of a model’s post-training rather than assuming it is generic. |
