@@ -458,6 +458,10 @@
             {
               "id": "ssr-vs-csr",
               "label": "SSR vs CSR : où le HTML est-il construit ?"
+            },
+            {
+              "id": "web-speech-api",
+              "label": "La Web Speech API : reconnaissance et synthèse vocales dans le navigateur"
             }
           ]
         },
