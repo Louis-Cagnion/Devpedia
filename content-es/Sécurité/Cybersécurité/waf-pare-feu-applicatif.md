@@ -47,7 +47,7 @@ Un conjunto de reglas demasiado estricto a veces bloquea peticiones legítimas (
 
 ## Lo que el WAF no cubre
 
-El WAF filtra el tráfico HTTP entrante; no protege ni los secretos de la aplicación (clave de API, contraseña de base de datos — ver [Gestión de secretos](/?c=cybersecurite&p=gestion-des-secrets) para ese aspecto, distinto del filtrado de red), ni una dependencia vulnerable ya instalada (ver [Seguridad de las dependencias](/?c=cybersecurite&p=securite-des-dependances)), ni una mala configuración del lado del servidor. Cada una de estas capas de seguridad responde a una amenaza diferente; ninguna sustituye a las demás.
+El WAF filtra el tráfico HTTP entrante; no protege ni los secretos de la aplicación (clave de API, contraseña de base de datos; ver [Gestión de secretos](/?c=cybersecurite&p=gestion-des-secrets) para ese aspecto, distinto del filtrado de red), ni una dependencia vulnerable ya instalada (ver [Seguridad de las dependencias](/?c=cybersecurite&p=securite-des-dependances)), ni una mala configuración del lado del servidor. Cada una de estas capas de seguridad responde a una amenaza diferente; ninguna sustituye a las demás.
 
 ---
 

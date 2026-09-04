@@ -4,7 +4,7 @@ order: 12
 
 # O fingerprinting: reconhecer um aparelho sem armazenar nada nele
 
-Um site normalmente reconhece um visitante ao depositar um identificador em um [cookie](/?c=securite&s=sessions-et-tokens&p=sessions-et-cookies) no aparelho dele, e depois relê-lo a cada visita. O **fingerprinting** (ou "coleta de impressão digital") alcança um objetivo parecido — reconhecer o mesmo aparelho de uma visita para outra — mas sem armazenar nada: ele combina uma série de detalhes técnicos já expostos pelo navegador para formar uma assinatura quase única.
+Um site normalmente reconhece um visitante ao depositar um identificador em um [cookie](/?c=securite&s=sessions-et-tokens&p=sessions-et-cookies) no aparelho dele, e depois relê-lo a cada visita. O **fingerprinting** (ou "coleta de impressão digital") alcança um objetivo parecido (reconhecer o mesmo aparelho de uma visita para outra) mas sem armazenar nada: ele combina uma série de detalhes técnicos já expostos pelo navegador para formar uma assinatura quase única.
 
 ## O princípio: combinar detalhes anódinos, individualmente pouco únicos
 
@@ -57,7 +57,7 @@ Uma técnica muito usada consiste em fazer o navegador desenhar, em um elemento 
 
 | | |
 |---|---|
-| **O que reter** | O fingerprinting reconhece um aparelho combinando detalhes técnicos já expostos pelo navegador (tela, fuso, fontes, renderização gráfica), sem armazenar nada nele — ao contrário de um cookie. |
+| **O que reter** | O fingerprinting reconhece um aparelho combinando detalhes técnicos já expostos pelo navegador (tela, fuso, fontes, renderização gráfica), sem armazenar nada nele, ao contrário de um cookie. |
 | **Ferramentas úteis** | As proteções antifingerprinting integradas ao Firefox/Safari, ou uma extensão dedicada. |
 | **Armadilhas a evitar** | Achar que excluir os cookies ou navegar em modo privado impede qualquer rastreamento. |
 | **Boas práticas** | Reservar o fingerprinting a usos defensivos justificados (fraude, bots) em vez do contorno discreto de uma recusa de rastreamento. |

@@ -57,7 +57,7 @@ Advance the ray step by step across the map:
   -> distance traveled = distance to the wall, in that direction
 ```
 
-Once that distance is known, the wall height to draw on screen for that column follows directly: the shorter the distance, the taller the wall appears (near), the longer the distance, the shorter it appears (far) — exactly like a real object shrinking with distance.
+Once that distance is known, the wall height to draw on screen for that column follows directly: the shorter the distance, the taller the wall appears (near), the longer the distance, the shorter it appears (far), exactly like a real object shrinking with distance.
 
 > **Pitfall:** advancing the ray in fixed steps that are too large, which can make it "jump" over a thin wall without ever detecting the collision. A step that's too small, on the other hand, slows down the computation for every column of the image.
 >
@@ -65,7 +65,7 @@ Once that distance is known, the wall height to draw on screen for that column f
 
 ## What raycasting doesn't compute
 
-Classic raycasting only handles a single height level per column: it can't represent real relief (stairs, a bridge over a corridor) or look realistically up or down, unlike a real 3D engine that computes a full volume. It's this deliberate trade-off — sacrificing geometric realism for computational speed — that made the technique playable on the hardware of the time, and that still makes it a useful first project today for understanding 3D rendering without the complexity of a full engine.
+Classic raycasting only handles a single height level per column: it can't represent real relief (stairs, a bridge over a corridor) or look realistically up or down, unlike a real 3D engine that computes a full volume. It's this deliberate trade-off (sacrificing geometric realism for computational speed) that made the technique playable on the hardware of the time, and that still makes it a useful first project today for understanding 3D rendering without the complexity of a full engine.
 
 ---
 

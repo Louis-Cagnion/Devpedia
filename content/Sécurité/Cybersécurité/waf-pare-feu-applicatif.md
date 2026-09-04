@@ -47,7 +47,7 @@ Un jeu de règles trop strict bloque parfois des requêtes légitimes (un commen
 
 ## Ce que le WAF ne couvre pas
 
-Le WAF filtre le trafic HTTP entrant ; il ne protège ni les secrets applicatifs (clé d'API, mot de passe de base de données — voir [Gestion des secrets](/?c=cybersecurite&p=gestion-des-secrets) pour ce volet, distinct du filtrage réseau), ni une dépendance vulnérable déjà installée (voir [Sécurité des dépendances](/?c=cybersecurite&p=securite-des-dependances)), ni une mauvaise configuration côté serveur. Chacune de ces couches de sécurité répond à une menace différente ; aucune ne remplace les autres.
+Le WAF filtre le trafic HTTP entrant ; il ne protège ni les secrets applicatifs (clé d'API, mot de passe de base de données ; voir [Gestion des secrets](/?c=cybersecurite&p=gestion-des-secrets) pour ce volet, distinct du filtrage réseau), ni une dépendance vulnérable déjà installée (voir [Sécurité des dépendances](/?c=cybersecurite&p=securite-des-dependances)), ni une mauvaise configuration côté serveur. Chacune de ces couches de sécurité répond à une menace différente ; aucune ne remplace les autres.
 
 ## Ce qu'il faut retenir
 

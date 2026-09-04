@@ -93,7 +93,7 @@ If a task can take longer than the interval that relaunches it (e.g. every 5 min
 
 ## `systemd timers`, an alternative on systemd-based systems
 
-[`systemd`](https://www.freedesktop.org/software/systemd/man/systemd.html) is the init system used by most modern Linux distributions (Ubuntu, Debian, Fedora...): it's what starts and supervises every background service on the machine — `cron` itself is one of those services on these distributions. On a systemd-based system, **timers** cover the same need as a crontab line, with a more verbose but more explicit setup.
+[`systemd`](https://www.freedesktop.org/software/systemd/man/systemd.html) is the init system used by most modern Linux distributions (Ubuntu, Debian, Fedora...): it's what starts and supervises every background service on the machine; `cron` itself is one of those services on these distributions. On a systemd-based system, **timers** cover the same need as a crontab line, with a more verbose but more explicit setup.
 
 ### Two files instead of one line
 
@@ -142,7 +142,7 @@ journalctl -u backup.service         # reads this service's logs (replaces a man
 
 ### `Persistent=true`: catching up isn't automatic
 
-This is the most important nuance to remember: without `Persistent=true`, a timer behaves exactly like `cron` — if the machine is off at the scheduled time (e.g. `OnCalendar=daily` at midnight on a laptop that's off overnight), the run is simply lost, not caught up. `Persistent=true` changes this: `systemd` tracks the last run's date on disk, and if the timer discovers at the next startup that a deadline was missed, it triggers the run immediately instead of waiting for the next scheduled time.
+This is the most important nuance to remember: without `Persistent=true`, a timer behaves exactly like `cron`: if the machine is off at the scheduled time (e.g. `OnCalendar=daily` at midnight on a laptop that's off overnight), the run is simply lost, not caught up. `Persistent=true` changes this: `systemd` tracks the last run's date on disk, and if the timer discovers at the next startup that a deadline was missed, it triggers the run immediately instead of waiting for the next scheduled time.
 
 | | `OnCalendar` alone | `OnCalendar` + `Persistent=true` |
 |---|---|---|
@@ -151,9 +151,9 @@ This is the most important nuance to remember: without `Persistent=true`, a time
 
 ### System scope or user scope (`--user`)
 
-A timer placed in `/etc/systemd/system/` runs independently of any open session, but requires root to create. A timer placed in `~/.config/systemd/user/` doesn't require special permissions, but relies on a `systemd` instance dedicated to that user (commands prefixed with `--user`: `systemctl --user enable --now ...`) — an instance that, by default, only starts when that user opens a session, and stops when it ends.
+A timer placed in `/etc/systemd/system/` runs independently of any open session, but requires root to create. A timer placed in `~/.config/systemd/user/` doesn't require special permissions, but relies on a `systemd` instance dedicated to that user (commands prefixed with `--user`: `systemctl --user enable --now ...`): an instance that, by default, only starts when that user opens a session, and stops when it ends.
 
-This last point matters for catching up: a `--user` timer with `Persistent=true` can only catch up a missed run at the next login — not at the machine's mere startup, if no one logs in right away. [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) lifts this limit for a given user:
+This last point matters for catching up: a `--user` timer with `Persistent=true` can only catch up a missed run at the next login, not at the machine's mere startup, if no one logs in right away. [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) lifts this limit for a given user:
 
 ```bash
 loginctl enable-linger user   # "user"'s systemd --user instance starts at boot, session open or not

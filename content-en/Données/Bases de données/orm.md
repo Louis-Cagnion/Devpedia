@@ -88,7 +88,7 @@ const users = await prisma.user.findMany({ include: { orders: true } });
 
 ## When an ORM isn't the right answer
 
-An ORM excels at simple [CRUD](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees), but sometimes forces a complex analytical query (multiple aggregations, windowing, many joins — see [Data warehouse vs data lake](/?c=bases-de-donnees&p=entrepot-vs-data-lake) for this kind of OLAP need) into a syntax designed to manipulate objects, not to express an analytical query. Raw SQL, or a *query builder* closer to SQL than a full ORM, often stays clearer and more performant for this kind of case.
+An ORM excels at simple [CRUD](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees), but sometimes forces a complex analytical query (multiple aggregations, windowing, many joins; see [Data warehouse vs data lake](/?c=bases-de-donnees&p=entrepot-vs-data-lake) for this kind of OLAP need) into a syntax designed to manipulate objects, not to express an analytical query. Raw SQL, or a *query builder* closer to SQL than a full ORM, often stays clearer and more performant for this kind of case.
 
 ---
 

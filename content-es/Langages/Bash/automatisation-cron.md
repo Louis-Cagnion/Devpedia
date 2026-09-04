@@ -93,7 +93,7 @@ Si una tarea puede durar más que el intervalo que la relanza (ej. cada 5 minuto
 
 ## `systemd timers`, una alternativa en sistemas basados en systemd
 
-[`systemd`](https://www.freedesktop.org/software/systemd/man/systemd.html) es el sistema de inicialización usado por la mayoría de las distribuciones Linux modernas (Ubuntu, Debian, Fedora...): es él quien arranca y supervisa todos los servicios en segundo plano de la máquina — `cron` mismo forma parte de esos servicios en estas distribuciones. En un sistema basado en `systemd`, los **timers** cubren la misma necesidad que una línea de crontab, con una configuración más verbosa pero más explícita.
+[`systemd`](https://www.freedesktop.org/software/systemd/man/systemd.html) es el sistema de inicialización usado por la mayoría de las distribuciones Linux modernas (Ubuntu, Debian, Fedora...): es él quien arranca y supervisa todos los servicios en segundo plano de la máquina; `cron` mismo forma parte de esos servicios en estas distribuciones. En un sistema basado en `systemd`, los **timers** cubren la misma necesidad que una línea de crontab, con una configuración más verbosa pero más explícita.
 
 ### Dos archivos en lugar de una línea
 
@@ -142,7 +142,7 @@ journalctl -u backup.service         # consulta los registros de este servicio (
 
 ### `Persistent=true`: la recuperación no es automática
 
-Este es el matiz más importante a recordar: sin `Persistent=true`, un timer se comporta exactamente como `cron` — si la máquina está apagada en el momento previsto (ej. `OnCalendar=daily` a medianoche en un portátil apagado por la noche), la ejecución simplemente se pierde, no se recupera. `Persistent=true` cambia esto: `systemd` anota en disco la fecha de la última ejecución, y si el timer descubre en el siguiente arranque que se perdió una ejecución, la dispara de inmediato en lugar de esperar a la siguiente hora planificada.
+Este es el matiz más importante a recordar: sin `Persistent=true`, un timer se comporta exactamente como `cron`: si la máquina está apagada en el momento previsto (ej. `OnCalendar=daily` a medianoche en un portátil apagado por la noche), la ejecución simplemente se pierde, no se recupera. `Persistent=true` cambia esto: `systemd` anota en disco la fecha de la última ejecución, y si el timer descubre en el siguiente arranque que se perdió una ejecución, la dispara de inmediato en lugar de esperar a la siguiente hora planificada.
 
 | | Solo `OnCalendar` | `OnCalendar` + `Persistent=true` |
 |---|---|---|
@@ -151,7 +151,7 @@ Este es el matiz más importante a recordar: sin `Persistent=true`, un timer se 
 
 ### Alcance de sistema o de usuario (`--user`)
 
-Un timer colocado en `/etc/systemd/system/` corre independientemente de cualquier sesión abierta, pero requiere permisos de root para crearse. Un timer colocado en `~/.config/systemd/user/` no requiere permisos especiales, pero depende de una instancia de `systemd` propia del usuario (comandos con el prefijo `--user`: `systemctl --user enable --now ...`) — instancia que, por defecto, solo arranca cuando ese usuario abre una sesión, y se detiene al cerrarla.
+Un timer colocado en `/etc/systemd/system/` corre independientemente de cualquier sesión abierta, pero requiere permisos de root para crearse. Un timer colocado en `~/.config/systemd/user/` no requiere permisos especiales, pero depende de una instancia de `systemd` propia del usuario (comandos con el prefijo `--user`: `systemctl --user enable --now ...`): instancia que, por defecto, solo arranca cuando ese usuario abre una sesión, y se detiene al cerrarla.
 
 Este último punto importa para la recuperación: un timer `--user` con `Persistent=true` solo puede recuperar una ejecución perdida en el siguiente inicio de sesión, no en el simple arranque de la máquina, si nadie se conecta enseguida. [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permite levantar este límite para un usuario dado:
 

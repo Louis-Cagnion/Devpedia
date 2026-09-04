@@ -4,7 +4,7 @@ order: 12
 
 # El fingerprinting: reconocer un dispositivo sin almacenar nada en él
 
-Un sitio suele reconocer a un visitante depositando un identificador en una [cookie](/?c=securite&s=sessions-et-tokens&p=sessions-et-cookies) en su dispositivo, y luego releyéndolo en cada visita. El **fingerprinting** (o "toma de huella") alcanza un objetivo parecido —reconocer el mismo dispositivo de una visita a otra— pero sin almacenar nada en absoluto: combina una serie de detalles técnicos ya expuestos por el navegador para formar una firma casi única.
+Un sitio suele reconocer a un visitante depositando un identificador en una [cookie](/?c=securite&s=sessions-et-tokens&p=sessions-et-cookies) en su dispositivo, y luego releyéndolo en cada visita. El **fingerprinting** (o "toma de huella") alcanza un objetivo parecido (reconocer el mismo dispositivo de una visita a otra) pero sin almacenar nada en absoluto: combina una serie de detalles técnicos ya expuestos por el navegador para formar una firma casi única.
 
 ## El principio: combinar detalles anodinos, poco únicos individualmente
 
@@ -57,7 +57,7 @@ Una técnica muy utilizada consiste en hacer que el navegador dibuje, en un elem
 
 | | |
 |---|---|
-| **Para recordar** | El fingerprinting reconoce un dispositivo combinando detalles técnicos ya expuestos por el navegador (pantalla, huso horario, fuentes, renderizado gráfico), sin almacenar nada en él — a diferencia de una cookie. |
+| **Para recordar** | El fingerprinting reconoce un dispositivo combinando detalles técnicos ya expuestos por el navegador (pantalla, huso horario, fuentes, renderizado gráfico), sin almacenar nada en él, a diferencia de una cookie. |
 | **Herramientas utilizables** | Las protecciones antifingerprinting integradas en Firefox/Safari, o una extensión dedicada. |
 | **Trampas a evitar** | Creer que eliminar las cookies o navegar en privado impide todo seguimiento. |
 | **Buenas prácticas** | Reservar el fingerprinting para usos defensivos justificados (fraude, bots) en lugar de para eludir discretamente un rechazo de seguimiento. |

@@ -93,7 +93,7 @@ Si une tâche peut durer plus longtemps que l'intervalle qui la relance (ex. tou
 
 ## `systemd timers`, une alternative sur les systèmes basés sur systemd
 
-[`systemd`](https://www.freedesktop.org/software/systemd/man/systemd.html) est le système d'initialisation utilisé par la majorité des distributions Linux modernes (Ubuntu, Debian, Fedora...) : c'est lui qui démarre et supervise l'ensemble des services en arrière-plan de la machine — `cron` en fait lui-même partie sur ces distributions. Sur un système basé sur `systemd`, les **timers** couvrent le même besoin qu'une ligne de crontab, avec une configuration plus verbeuse mais un fonctionnement plus explicite.
+[`systemd`](https://www.freedesktop.org/software/systemd/man/systemd.html) est le système d'initialisation utilisé par la majorité des distributions Linux modernes (Ubuntu, Debian, Fedora...) : c'est lui qui démarre et supervise l'ensemble des services en arrière-plan de la machine ; `cron` en fait lui-même partie sur ces distributions. Sur un système basé sur `systemd`, les **timers** couvrent le même besoin qu'une ligne de crontab, avec une configuration plus verbeuse mais un fonctionnement plus explicite.
 
 ### Deux fichiers au lieu d'une ligne
 
@@ -142,7 +142,7 @@ journalctl -u sauvegarde.service     # consulte les journaux de ce service (remp
 
 ### `Persistent=true` : le rattrapage n'est pas automatique
 
-C'est la nuance la plus importante à retenir : sans `Persistent=true`, un timer se comporte exactement comme `cron` — si la machine est éteinte au moment prévu (ex. `OnCalendar=daily` à minuit sur un ordinateur portable éteint la nuit), l'exécution est simplement perdue, pas rattrapée. `Persistent=true` change ce comportement : `systemd` note sur disque la date de la dernière exécution, et si le timer découvre au démarrage suivant qu'une échéance a été manquée, il déclenche l'exécution immédiatement au lieu d'attendre la prochaine échéance planifiée.
+C'est la nuance la plus importante à retenir : sans `Persistent=true`, un timer se comporte exactement comme `cron` : si la machine est éteinte au moment prévu (ex. `OnCalendar=daily` à minuit sur un ordinateur portable éteint la nuit), l'exécution est simplement perdue, pas rattrapée. `Persistent=true` change ce comportement : `systemd` note sur disque la date de la dernière exécution, et si le timer découvre au démarrage suivant qu'une échéance a été manquée, il déclenche l'exécution immédiatement au lieu d'attendre la prochaine échéance planifiée.
 
 | | `OnCalendar` seul | `OnCalendar` + `Persistent=true` |
 |---|---|---|
@@ -151,9 +151,9 @@ C'est la nuance la plus importante à retenir : sans `Persistent=true`, un timer
 
 ### Portée système ou portée utilisateur (`--user`)
 
-Un timer placé dans `/etc/systemd/system/` tourne indépendamment de toute session ouverte, mais demande les droits root pour être créé. Un timer placé dans `~/.config/systemd/user/` ne demande pas de droits particuliers, mais s'appuie sur une instance `systemd` propre à l'utilisateur (commandes préfixées par `--user` : `systemctl --user enable --now ...`) — instance qui, par défaut, ne démarre qu'à l'ouverture d'une session pour cet utilisateur, et s'arrête à sa fermeture.
+Un timer placé dans `/etc/systemd/system/` tourne indépendamment de toute session ouverte, mais demande les droits root pour être créé. Un timer placé dans `~/.config/systemd/user/` ne demande pas de droits particuliers, mais s'appuie sur une instance `systemd` propre à l'utilisateur (commandes préfixées par `--user` : `systemctl --user enable --now ...`) : instance qui, par défaut, ne démarre qu'à l'ouverture d'une session pour cet utilisateur, et s'arrête à sa fermeture.
 
-Cette dernière limite compte pour le rattrapage : un timer `--user` avec `Persistent=true` ne peut rattraper une exécution manquée qu'à la prochaine ouverture de session — pas au simple démarrage de la machine, si personne ne s'y connecte tout de suite. [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permet de lever cette limite pour un utilisateur donné :
+Cette dernière limite compte pour le rattrapage : un timer `--user` avec `Persistent=true` ne peut rattraper une exécution manquée qu'à la prochaine ouverture de session, pas au simple démarrage de la machine, si personne ne s'y connecte tout de suite. [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permet de lever cette limite pour un utilisateur donné :
 
 ```bash
 loginctl enable-linger user   # l'instance systemd --user de "user" démarre dès le boot, session ouverte ou non

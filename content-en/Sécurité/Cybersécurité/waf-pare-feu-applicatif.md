@@ -47,7 +47,7 @@ A rule set that's too strict sometimes blocks legitimate requests (a user commen
 
 ## What the WAF Doesn't Cover
 
-The WAF filters incoming HTTP traffic; it protects neither application secrets (API key, database password — see [Secrets Management](/?c=cybersecurite&p=gestion-des-secrets) for that aspect, distinct from network filtering), nor an already-installed vulnerable dependency (see [Dependency Security](/?c=cybersecurite&p=securite-des-dependances)), nor a server-side misconfiguration. Each of these security layers addresses a different threat; none replaces the others.
+The WAF filters incoming HTTP traffic; it protects neither application secrets (API key, database password; see [Secrets Management](/?c=cybersecurite&p=gestion-des-secrets) for that aspect, distinct from network filtering), nor an already-installed vulnerable dependency (see [Dependency Security](/?c=cybersecurite&p=securite-des-dependances)), nor a server-side misconfiguration. Each of these security layers addresses a different threat; none replaces the others.
 
 ---
 

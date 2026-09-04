@@ -33,7 +33,7 @@ Esse bloco é legível por qualquer software que saiba lê-lo (visualizador de i
 
 > **Cuidado:** compartilhar uma foto on-line sem saber que ela ainda contém suas coordenadas GPS do EXIF. Uma foto tirada em casa e postada publicamente pode assim revelar um endereço preciso a quem quer que inspecione o arquivo, mesmo que nada na imagem em si sugira isso.
 >
-> **Boa prática:** a maioria das redes sociais remove automaticamente o EXIF das fotos publicadas, mas um arquivo enviado diretamente (e-mail, mensageria, upload em um site) o mantém intacto — verificar antes de qualquer envio de uma foto cuja localização não deva ser compartilhada, usando a ferramenta do próprio sistema operacional ou um utilitário dedicado à remoção de EXIF.
+> **Boa prática:** a maioria das redes sociais remove automaticamente o EXIF das fotos publicadas, mas um arquivo enviado diretamente (e-mail, mensageria, upload em um site) o mantém intacto: verificar antes de qualquer envio de uma foto cuja localização não deva ser compartilhada, usando a ferramenta do próprio sistema operacional ou um utilitário dedicado à remoção de EXIF.
 
 ## O que reter
 

@@ -4,7 +4,7 @@ order: 12
 
 # Fingerprinting: recognizing a device without storing anything on it
 
-A site usually recognizes a visitor by dropping an identifier into a [cookie](/?c=securite&s=sessions-et-tokens&p=sessions-et-cookies) on their device, then reading it back on every visit. **Fingerprinting** achieves a similar goal — recognizing the same device from one visit to the next — but without storing anything at all: it combines a series of technical details the browser already exposes to form a near-unique signature.
+A site usually recognizes a visitor by dropping an identifier into a [cookie](/?c=securite&s=sessions-et-tokens&p=sessions-et-cookies) on their device, then reading it back on every visit. **Fingerprinting** achieves a similar goal (recognizing the same device from one visit to the next) but without storing anything at all: it combines a series of technical details the browser already exposes to form a near-unique signature.
 
 ## The principle: combining innocuous details, individually not very unique
 
@@ -57,7 +57,7 @@ A widely used technique has the browser draw, in an invisible element of the pag
 
 | | |
 |---|---|
-| **To remember** | Fingerprinting recognizes a device by combining technical details the browser already exposes (screen, time zone, fonts, graphics rendering), without storing anything on it — unlike a cookie. |
+| **To remember** | Fingerprinting recognizes a device by combining technical details the browser already exposes (screen, time zone, fonts, graphics rendering), without storing anything on it, unlike a cookie. |
 | **Usable tools** | The anti-fingerprinting protections built into Firefox/Safari, or a dedicated extension. |
 | **Pitfalls to avoid** | Believing that deleting your cookies or browsing privately prevents all tracking. |
 | **Best practices** | Reserve fingerprinting for justified defensive uses (fraud, bots) rather than as a quiet workaround for a tracking refusal. |

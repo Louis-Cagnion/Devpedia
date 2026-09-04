@@ -20,7 +20,7 @@ Server C: local logs                 Server B -/       |
    to look for an error
 ```
 
-Without centralization, tracking down a specific error means connecting to each machine one by one and searching through each file separately — an approach that doesn't scale beyond a handful of servers.
+Without centralization, tracking down a specific error means connecting to each machine one by one and searching through each file separately, an approach that doesn't scale beyond a handful of servers.
 
 ## ELK: three tools, one pipeline
 

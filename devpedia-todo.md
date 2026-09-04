@@ -1,5 +1,7 @@
 # TODO — Devpedia
 
+> Prochaine tâche : régénérer l'audio FR des 10 chapitres du point 18 (`scripts/generate-audio.mjs`) ; setup Piper local absent sur ce poste (`.venv-piper`/`.piper-voices` à recréer, voir docstring du script) et `ffmpeg` introuvable dans le PATH, à installer avant de lancer le script. Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-17) ou une décision de Louis (point 19).
+
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
@@ -106,6 +108,10 @@ Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de struc
 - `content/IA/NLP et LLM/openapi.md` (nouveau)
 - `content/Sécurité/Fondamentaux/authentification-vs-autorisation.md` (section HTTP Basic)
 - Reste à Louis/à faire : régénérer l'audio FR de ces 10 chapitres (`scripts/generate-audio.mjs`), puis écouter et confirmer.
+
+## 19. Chapitre candidat : connecter une appli PHP locale à SQL Server
+Matière réunie le 04/09/2026 sur un autre projet (détail dans `journal-de-bord.md`) : restauration `.bak` en SSMS, login dédié (pas `sa`), piège `php -S localhost` qui bind en IPv6 seul sur Windows, extensions PHP manquantes bloquant `composer install` une par une, fichier hosts Windows (admin requis) pour un hostname local, `redirect_uri` OAuth qui doit correspondre exactement à ce qui est déclaré côté fournisseur.
+- Reste à Louis : décider si ce sujet mérite un chapitre Devpedia (probablement dans Infrastructure ou Bases de données), et si oui le rédiger en suivant le plan zéro-connaissance.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).

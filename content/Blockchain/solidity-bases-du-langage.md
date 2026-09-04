@@ -75,7 +75,7 @@ Remarquez l'ordre exact des trois lignes dans `retirer()` : d'abord la vérifica
 
 > **Piège :** envoyer les fonds *avant* de mettre à jour le solde interne. Un contrat destinataire malveillant peut, au moment de recevoir les fonds, rappeler immédiatement `retirer()` avant que le solde n'ait été décrémenté : comme le solde affiche encore son ancienne valeur, la vérification passe à nouveau, et les fonds peuvent être retirés plusieurs fois pour un seul dépôt. C'est une **attaque par réentrance** (*reentrancy*), une des causes les plus fréquentes de vols de fonds réels sur des smart contracts.
 >
-> **Bonne pratique :** toujours vérifier les conditions, puis mettre à jour toutes les variables d'état, et seulement en dernier interagir avec l'extérieur (envoyer des fonds, appeler un autre contrat) — jamais l'inverse.
+> **Bonne pratique :** toujours vérifier les conditions, puis mettre à jour toutes les variables d'état, et seulement en dernier interagir avec l'extérieur (envoyer des fonds, appeler un autre contrat) ; jamais l'inverse.
 
 ---
 

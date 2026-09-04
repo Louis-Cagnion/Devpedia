@@ -47,7 +47,7 @@ Uma vez autenticado, o cliente recebe um **token do Vault** temporário, que ane
 
 ## Controlar o acesso: as policies
 
-Uma **policy** do Vault define, em texto, quais caminhos de segredos um token pode ler, escrever ou listar — o mesmo princípio do [controle de acesso (IDOR)](/?c=cybersecurite&p=owasp-top-10) visto em outro lugar, aplicado aqui aos próprios segredos em vez de aos dados de uma aplicação:
+Uma **policy** do Vault define, em texto, quais caminhos de segredos um token pode ler, escrever ou listar: o mesmo princípio do [controle de acesso (IDOR)](/?c=cybersecurite&p=owasp-top-10) visto em outro lugar, aplicado aqui aos próprios segredos em vez de aos dados de uma aplicação:
 
 ```text
 # Policy simplificada: somente leitura sobre os segredos da aplicacao "faturamento"

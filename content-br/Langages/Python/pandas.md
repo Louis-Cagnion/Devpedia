@@ -2,9 +2,9 @@
 order: 15
 ---
 
-# pandas — manipulação de dados tabulares
+# pandas: manipulação de dados tabulares
 
-**O pandas** disponibiliza duas estruturas para a manipulação de dados tabulares: a «`Series`» (uma única coluna, indexada) e o «`DataFrame`» (uma matriz bidimensional com colunas nomeadas) — o equivalente em Python a uma tabela SQL (ver capítulo dedicado) ou a uma folha de cálculo, mas que pode ser manipulada através de código.
+**O pandas** disponibiliza duas estruturas para a manipulação de dados tabulares: a «`Series`» (uma única coluna, indexada) e o «`DataFrame`» (uma matriz bidimensional com colunas nomeadas): o equivalente em Python a uma tabela SQL (ver capítulo dedicado) ou a uma folha de cálculo, mas que pode ser manipulada através de código.
 
 ## Criar um DataFrame
 
@@ -48,7 +48,7 @@ dados.iloc[0]              # linha na POSIÇÃO 0 (sempre a primeira, mesmo que 
 dados.loc[0, "nom"]         # valor exato: linha 0, coluna «nome»
 ```
 
-> **Nota:** `loc` seleciona por **etiqueta** (o rótulo do índice, que pode ser um nome, uma data...), `iloc` por **posição numérica** — ambas coincidem por padrão (índice numérico de 0 a n), mas divergem assim que o índice for personalizado (por exemplo, ordenado, filtrado ou baseado em datas).
+> **Nota:** `loc` seleciona por **etiqueta** (o rótulo do índice, que pode ser um nome, uma data...), `iloc` por **posição numérica**; ambas coincidem por padrão (índice numérico de 0 a n), mas divergem assim que o índice for personalizado (por exemplo, ordenado, filtrado ou baseado em datas).
 
 ## Filtrar com uma máscara booleana
 
@@ -57,7 +57,7 @@ dados[dados["age"] > 25]
 # mantém apenas as linhas em que a condição é verdadeira -> equivalente a um «WHERE» em SQL
 
 dados[(dados["age"] > 20) & (dados["ville"] == "Lyon")]
-# combinar várias condições: & (e), | (ou) — NÃO «and»/«or», reservados para valores booleanos simples
+# combinar várias condições: & (e), | (ou), NÃO «and»/«or», reservados para valores booleanos simples
 ```
 
 ## `groupby` : agrupar por categoria
@@ -97,7 +97,7 @@ dados["categorie"] = dados["age"].apply(lambda idade: "jeune" if idade < 30 else
 # apply(): executa uma função em cada valor da coluna
 ```
 
-> **Nota (desempenho):** `.apply()` executa a função Python linha a linha, sem tirar partido da vetorização do NumPy (ver capítulo dedicado) — para uma condição simples como esta, `np.where(dados["idade"] < 30, "jeune", "senior")` faz exatamente o mesmo, mas de forma muito mais rápida num conjunto de dados de grande dimensão. `.apply()` continua a ser útil para uma lógica demasiado complexa para ser expressa com as funções vetorizadas do pandas/NumPy.
+> **Nota (desempenho):** `.apply()` executa a função Python linha a linha, sem tirar partido da vetorização do NumPy (ver capítulo dedicado); para uma condição simples como esta, `np.where(dados["idade"] < 30, "jeune", "senior")` faz exatamente o mesmo, mas de forma muito mais rápida num conjunto de dados de grande dimensão. `.apply()` continua a ser útil para uma lógica demasiado complexa para ser expressa com as funções vetorizadas do pandas/NumPy.
 
 ## Valores em falta
 

@@ -4,7 +4,7 @@ order: 12
 
 # Le fingerprinting : reconnaître un appareil sans rien y stocker
 
-Un site reconnaît habituellement un visiteur en déposant un identifiant dans un [cookie](/?c=securite&s=sessions-et-tokens&p=sessions-et-cookies) sur son appareil, puis en le relisant à chaque visite. Le **fingerprinting** (ou "prise d'empreinte") atteint un but proche — reconnaître le même appareil d'une visite à l'autre — mais sans rien stocker du tout : il combine une série de détails techniques déjà exposés par le navigateur pour former une signature quasi unique.
+Un site reconnaît habituellement un visiteur en déposant un identifiant dans un [cookie](/?c=securite&s=sessions-et-tokens&p=sessions-et-cookies) sur son appareil, puis en le relisant à chaque visite. Le **fingerprinting** (ou "prise d'empreinte") atteint un but proche (reconnaître le même appareil d'une visite à l'autre) mais sans rien stocker du tout : il combine une série de détails techniques déjà exposés par le navigateur pour former une signature quasi unique.
 
 ## Le principe : combiner des détails anodins, individuellement peu uniques
 
@@ -57,7 +57,7 @@ Une technique très utilisée consiste à faire dessiner par le navigateur, dans
 
 | | |
 |---|---|
-| **À retenir** | Le fingerprinting reconnaît un appareil en combinant des détails techniques déjà exposés par le navigateur (écran, fuseau, polices, rendu graphique), sans rien stocker dessus — contrairement à un cookie. |
+| **À retenir** | Le fingerprinting reconnaît un appareil en combinant des détails techniques déjà exposés par le navigateur (écran, fuseau, polices, rendu graphique), sans rien stocker dessus, contrairement à un cookie. |
 | **Outils utilisables** | Les protections anti-fingerprinting intégrées à Firefox/Safari, ou une extension dédiée. |
 | **Pièges à éviter** | Croire que supprimer ses cookies ou naviguer en privé empêche tout suivi. |
 | **Bonnes pratiques** | Réserver le fingerprinting aux usages défensifs justifiés (fraude, bots) plutôt qu'au contournement discret d'un refus de suivi. |

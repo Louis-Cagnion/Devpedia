@@ -88,7 +88,7 @@ const utilisateurs = await prisma.utilisateur.findMany({ include: { commandes: t
 
 ## Quand un ORM n'est pas la bonne réponse
 
-Un ORM excelle sur du [CRUD](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees) simple, mais force parfois une requête d'analyse complexe (agrégations multiples, fenêtrage, jointures nombreuses — voir [Entrepôt vs Data Lake](/?c=bases-de-donnees&p=entrepot-vs-data-lake) pour ce type de besoin OLAP) dans une syntaxe pensée pour manipuler des objets, pas pour exprimer une requête analytique. Le SQL brut, ou un *query builder* plus proche du SQL qu'un ORM complet, reste souvent plus clair et plus performant pour ce genre de cas.
+Un ORM excelle sur du [CRUD](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees) simple, mais force parfois une requête d'analyse complexe (agrégations multiples, fenêtrage, jointures nombreuses ; voir [Entrepôt vs Data Lake](/?c=bases-de-donnees&p=entrepot-vs-data-lake) pour ce type de besoin OLAP) dans une syntaxe pensée pour manipuler des objets, pas pour exprimer une requête analytique. Le SQL brut, ou un *query builder* plus proche du SQL qu'un ORM complet, reste souvent plus clair et plus performant pour ce genre de cas.
 
 ## Ce qu'il faut retenir
 

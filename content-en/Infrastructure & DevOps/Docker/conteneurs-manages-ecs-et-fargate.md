@@ -32,7 +32,7 @@ The chapter on [the cloud](/?c=infrastructure-devops&s=infrastructure&p=le-cloud
 
 > **Analogy:** ECS on EC2 is like renting an empty commercial space and installing the shelving yourself; Fargate is like renting a stand that's already equipped, ready to receive merchandise, without ever having to deal with the space itself.
 
-Other providers offer services equivalent to Fargate (Google Cloud Run, Azure Container Apps): the principle — provide a container, never manage the underlying machine — stays the same from one provider to another.
+Other providers offer services equivalent to Fargate (Google Cloud Run, Azure Container Apps): the principle (provide a container, never manage the underlying machine) stays the same from one provider to another.
 
 > **Pitfall:** believing that a managed service exempts you from any thought about sizing. You still need to specify how much memory and computing power to allocate to each container, and how many copies to run in parallel: poor sizing is still possible, only the physical management of machines disappears.
 >

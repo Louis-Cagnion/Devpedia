@@ -18,7 +18,7 @@ x.shape       # torch.Size([3])
 x + 2          # operações vetorizadas, tal como no NumPy
 ```
 
-Um tensor PyTorch pode ser executado na CPU ou numa **GPU** (`x.to("cuda")`), que executa as mesmas operações vetorizadas de forma massivamente paralela — é isso que torna viável o treino de redes com milhões, ou mesmo milhares de milhões, de parâmetros.
+Um tensor PyTorch pode ser executado na CPU ou numa **GPU** (`x.to("cuda")`), que executa as mesmas operações vetorizadas de forma massivamente paralela: é isso que torna viável o treino de redes com milhões, ou mesmo milhares de milhões, de parâmetros.
 
 ## `autograd` : a diferenciação automática
 
@@ -32,7 +32,7 @@ y.backward()    # calcula dy/dx automaticamente (retropropagação, ver capítul
 print(x.grad)   # 8,0 -> pois dy/dx = 2x + 2, calculado para x = 3 -> 2 × 3 + 2 = 8
 ```
 
-`requires_grad=True` indica ao PyTorch para memorizar cada operação aplicada a este tensor; o «`.backward()`» reconstrói então automaticamente esta cadeia de operações para calcular o gradiente — exatamente o mecanismo descrito conceptualmente no capítulo sobre o gradiente descendente, mas totalmente automatizado.
+`requires_grad=True` indica ao PyTorch para memorizar cada operação aplicada a este tensor; o «`.backward()`» reconstrói então automaticamente esta cadeia de operações para calcular o gradiente: exatamente o mecanismo descrito conceptualmente no capítulo sobre o gradiente descendente, mas totalmente automatizado.
 
 ## Definir uma rede com o «`nn.Module`»
 
@@ -77,9 +77,9 @@ for epoque in range(100):
         print(f"Époque {epoque} : perte = {perte.item():.4f}")
 ```
 
-Este ciclo é a estrutura praticamente universal de qualquer treino em PyTorch: prever, medir o erro, retropropagar, ajustar — repetido tantas épocas quantas forem necessárias para que a perda diminua suficientemente (ver o capítulo sobre o gradiente descendente para saber o que cada etapa significa realmente).
+Este ciclo é a estrutura praticamente universal de qualquer treino em PyTorch: prever, medir o erro, retropropagar, ajustar, repetido tantas épocas quantas forem necessárias para que a perda diminua suficientemente (ver o capítulo sobre o gradiente descendente para saber o que cada etapa significa realmente).
 
-> **Nota:** `optimiseur.zero_grad()` é um passo fácil de esquecer, mas essencial — por padrão, o PyTorch **acumula** os gradientes a cada `.backward()` em vez de os substituir, uma decisão de conceção útil para alguns casos avançados, mas que distorceria o treino padrão se os gradientes nunca fossem reinicializados entre dois lotes.
+> **Nota:** `optimiseur.zero_grad()` é um passo fácil de esquecer, mas essencial: por padrão, o PyTorch **acumula** os gradientes a cada `.backward()` em vez de os substituir, uma decisão de conceção útil para alguns casos avançados, mas que distorceria o treino padrão se os gradientes nunca fossem reinicializados entre dois lotes.
 
 ## Modo de avaliação vs. modo de treino
 
@@ -91,6 +91,6 @@ with torch.no_grad():   # desativa o acompanhamento dos gradientes: mais rápido
 modelo.train()   # Reativa o modo de treino para a continuação
 ```
 
-> **Nota:** o **dropout** é uma técnica de regularização que desativa aleatoriamente uma parte dos neurónios a cada iteração, apenas durante o treino — isto impede que a rede dependa excessivamente de alguns neurónios específicos e reduz o sobreaprendizado (ver capítulo sobre o scikit-learn). É desativado no modo de avaliação (`modelo.eval()`): neste caso, pretende-se uma previsão estável, utilizando todos os neurónios.
+> **Nota:** o **dropout** é uma técnica de regularização que desativa aleatoriamente uma parte dos neurónios a cada iteração, apenas durante o treino: isto impede que a rede dependa excessivamente de alguns neurónios específicos e reduz o sobreaprendizado (ver capítulo sobre o scikit-learn). É desativado no modo de avaliação (`modelo.eval()`): neste caso, pretende-se uma previsão estável, utilizando todos os neurónios.
 
 Ver também o capítulo sobre as arquiteturas CNN/RNN/Transformer: o PyTorch fornece camadas prontas a utilizar para cada uma delas (`nn.Conv2d`, `nn.LSTM`, `nn.TransformerEncoder`...), com base nos mesmos blocos de construção básicos aqui apresentados.

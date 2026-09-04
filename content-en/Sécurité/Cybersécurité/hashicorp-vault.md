@@ -47,7 +47,7 @@ Once authenticated, the client receives a temporary **Vault token**, which it at
 
 ## Controlling access: policies
 
-A Vault **policy** defines, in text, which secret paths a token can read, write, or list — the same principle as [access control (IDOR)](/?c=cybersecurite&p=owasp-top-10) covered elsewhere, applied here to the secrets themselves rather than to an application's data:
+A Vault **policy** defines, in text, which secret paths a token can read, write, or list: the same principle as [access control (IDOR)](/?c=cybersecurite&p=owasp-top-10) covered elsewhere, applied here to the secrets themselves rather than to an application's data:
 
 ```text
 # Simplified policy: read-only access to the "billing" application's secrets

@@ -20,7 +20,7 @@ A product designed with i18n in mind from the start can add a language through l
 
 A translation almost never takes up the same space as the original text: a short English word can become a German phrase twice as long, a space that's enough in French might not be enough in another language.
 
-> **Pitfall:** designing a mockup with fixed-size containers, sized to fit the text length in a single language (often English, the original design language). Longer translated text overflows, gets truncated, or breaks the layout — discovered only once the translation has been added.
+> **Pitfall:** designing a mockup with fixed-size containers, sized to fit the text length in a single language (often English, the original design language). Longer translated text overflows, gets truncated, or breaks the layout, discovered only once the translation has been added.
 >
 > **Best practice:** test the layout with artificially lengthened text right from the design stage (a technique called *pseudo-localization*), rather than waiting for a real translation to discover the problem; plan for containers that adapt to content instead of a fixed width.
 
@@ -35,7 +35,7 @@ An **RTL** (*right-to-left*) language, such as Arabic or Hebrew, doesn't just re
 | Main navigation order | Left to right | Right to left |
 | Progress bar | Fills toward the right | Fills toward the left |
 
-> **Pitfall:** translating only the text and leaving the layout unchanged (navigation icons, alignment, element order). The result mixes text that reads right to left with an interface still designed left to right — inconsistent and confusing for an RTL user.
+> **Pitfall:** translating only the text and leaving the layout unchanged (navigation icons, alignment, element order). The result mixes text that reads right to left with an interface still designed left to right, inconsistent and confusing for an RTL user.
 >
 > **Best practice:** use "logical" [CSS](/?c=langages&s=css&p=css) properties (`margin-inline-start` rather than `margin-left`, for example), which flip automatically depending on the page direction, instead of fixed physical properties that would need to be manually duplicated for each direction.
 

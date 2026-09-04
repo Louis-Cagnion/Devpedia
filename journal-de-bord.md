@@ -2,6 +2,23 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Vérification avant coupure d'une semaine : tirets cadratins résiduels (2026-09-04)
+
+Vérification de routine (todo/journal/git à jour, sync remote, em dash, struct.json) avant une absence d'une semaine de Louis. A trouvé 33 fichiers avec un tiret cadratin « — », en violation de la règle du projet établie le 2026-08-11 (le balayage de l'époque ne couvrait que `content/`, 11 fichiers) : les traductions EN (13)/ES (8)/BR (12, dont 4 chapitres Python sans équivalent FR concerné) accumulées depuis n'avaient pas été vérifiées. Tout corrigé (deux-points, point-virgule, parenthèses ou virgule selon le contexte, cohérent avec la ponctuation déjà utilisée côté FR quand un équivalent existait, ex. liens MDN de `content-br/Langages/JavaScript/HTMLElements.md` remis en `:` comme en FR). `struct.json` régénéré, aucun lien cassé. Plus aucune occurrence dans les 4 arborescences.
+
+## Connecter une appli PHP locale à SQL Server, hors Devpedia (2026-09-04)
+
+Session sur un autre projet (`Backoffice-TC`, Slim 4 + SQL Server) : matière candidate à un futur chapitre Devpedia sur la mise en place d'un environnement de dev local pour une appli PHP qui parle à une base externe. Détail complet dans `devpedia-todo.md`, point correspondant.
+
+- **Restauration `.bak` en SSMS** : deux fichiers de sauvegarde SQL Server (`.bak`) restaurés en local via SSMS (Restore Database > Device), sous les noms d'origine.
+- **Login dédié, pas `sa`** : `CREATE LOGIN ... WITH PASSWORD`, puis `CREATE USER`/`ALTER ROLE db_owner ADD MEMBER` sur chaque base restaurée (droits owner limités à ces deux bases, pas de sysadmin sur l'instance).
+- **Piège `php -S localhost:PORT` sur Windows** : le serveur de dev intégré se bind parfois uniquement en IPv6 (`[::1]:PORT`), invisible pour un hostname qui résout en IPv4 (`127.0.0.1`) via le fichier hosts. Correctif : binder explicitement sur `127.0.0.1:PORT` (ou l'IP/hostname réellement voulu), jamais sur le nom générique `localhost`.
+- **Extensions PHP manquantes silencieusement bloquantes** : `composer install` échoue extension par extension (`openssl`, puis `gd`, puis `zip`, puis `sodium` ici) plutôt que de lister tout le manque d'un coup — chaque `;extension=xxx` à décommenter dans `php.ini` (`php --ini` pour le localiser), en vérifiant que la DLL existe dans `ext/` avant.
+- **Fichier hosts Windows** : `C:\Windows\System32\drivers\etc\hosts` n'est éditable qu'en admin (accès refusé sinon, y compris pour un agent). Ajout d'un hostname local (`127.0.0.1  mondomaine.local`) utile pour tester un flux OAuth (Google/Okta) qui exige un `redirect_uri` fixe plutôt que `localhost:PORT`.
+- **OAuth et redirect_uri exact** : Google et Okta refusent tout `redirect_uri` qui ne correspond pas EXACTEMENT à une URL déjà déclarée dans leur console d'admin (Google Cloud Console / admin Okta) — ajouter le hostname local au hosts et lancer le serveur dessus ne suffit pas, il faut aussi déclarer cette même URL côté fournisseur OAuth.
+- **Proxy TLS d'entreprise et Composer** : chaque paquet échoue une fois en téléchargement direct (dist, `SSL routines::certificate verify failed`, le certificat racine de l'entreprise n'étant pas reconnu par la config OpenSSL de PHP) avant de réussir via un clone Git en repli automatique — ralentit `composer install` sans le bloquer. Même famille de piège que le cas Docker/Playwright déjà documenté ailleurs (magasin de certs par runtime, pas un seul endroit à corriger).
+- **Fuite de secrets constatée en passant** : un fichier `.env_copie` contenant des secrets de prod en clair (mot de passe DB, SMTP, clients OAuth) était suivi par Git et poussé sur le remote de ce projet — sans rapport avec Devpedia, mais le réflexe de vérifier qu'un fichier `.env*` copié est bien gitignoré avant de le committer vaut d'être noté ici aussi.
+
 ## Régénération complète de l'audio FR cassé par le bug des blocs adjacents (2026-09-01)
 
 Le comptage à l'œil du 29/08 (57 chapitres) sous-estimait la portée : un script Python rejouant le critère de l'audit (deux blocs \`\`\` consécutifs séparés uniquement par des lignes vides) en trouve 61. Root cause déjà corrigée à cette date ; régénération lancée pour les 61 via `scripts/generate-audio.mjs`.

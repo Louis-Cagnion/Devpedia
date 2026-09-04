@@ -33,7 +33,7 @@ This block can be read by any software that knows how to read it (image viewer, 
 
 > **Pitfall:** sharing a photo online without knowing it still carries its EXIF GPS coordinates. A photo taken at home and posted publicly can thus reveal a precise address to anyone who inspects the file, even if nothing in the image itself suggests it.
 >
-> **Best practice:** most social networks automatically strip EXIF from published photos, but a file sent directly (email, messaging, upload to a site) keeps it intact — check this before sending any photo whose location shouldn't be shared, using your operating system's tool or a dedicated EXIF-removal utility.
+> **Best practice:** most social networks automatically strip EXIF from published photos, but a file sent directly (email, messaging, upload to a site) keeps it intact: check this before sending any photo whose location shouldn't be shared, using your operating system's tool or a dedicated EXIF-removal utility.
 
 ## 📋 Summary
 

@@ -57,7 +57,7 @@ Avancer le rayon pas a pas sur la carte :
   -> distance parcourue = distance jusqu'au mur, dans cette direction
 ```
 
-Une fois cette distance connue, la hauteur du mur à dessiner à l'écran pour cette colonne en découle directement : plus la distance est courte, plus le mur paraît haut (proche), plus elle est longue, plus il paraît bas (éloigné) — exactement comme un objet réel rapetisse avec la distance.
+Une fois cette distance connue, la hauteur du mur à dessiner à l'écran pour cette colonne en découle directement : plus la distance est courte, plus le mur paraît haut (proche), plus elle est longue, plus il paraît bas (éloigné), exactement comme un objet réel rapetisse avec la distance.
 
 > **Piège :** avancer le rayon par pas fixes trop grands, ce qui peut le faire "sauter" par-dessus un mur fin sans jamais détecter la collision. Un pas trop petit, à l'inverse, ralentit le calcul pour chaque colonne de l'image.
 >
@@ -65,7 +65,7 @@ Une fois cette distance connue, la hauteur du mur à dessiner à l'écran pour c
 
 ## Ce que le raycasting ne calcule pas
 
-Le raycasting classique ne gère qu'un seul niveau de hauteur par colonne : il ne peut pas représenter un vrai relief (des marches, un pont au-dessus d'un couloir) ni regarder vers le haut ou le bas de façon réaliste, contrairement à un vrai moteur 3D qui calcule un volume complet. C'est ce compromis délibéré — sacrifier le réalisme géométrique pour la vitesse de calcul — qui rendait la technique jouable sur le matériel de l'époque, et qui la rend encore aujourd'hui utile comme premier projet pour comprendre le rendu 3D sans la complexité d'un moteur complet.
+Le raycasting classique ne gère qu'un seul niveau de hauteur par colonne : il ne peut pas représenter un vrai relief (des marches, un pont au-dessus d'un couloir) ni regarder vers le haut ou le bas de façon réaliste, contrairement à un vrai moteur 3D qui calcule un volume complet. C'est ce compromis délibéré (sacrifier le réalisme géométrique pour la vitesse de calcul) qui rendait la technique jouable sur le matériel de l'époque, et qui la rend encore aujourd'hui utile comme premier projet pour comprendre le rendu 3D sans la complexité d'un moteur complet.
 
 ---
 

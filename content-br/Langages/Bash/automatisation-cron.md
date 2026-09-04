@@ -93,7 +93,7 @@ Se uma tarefa pode durar mais tempo que o intervalo que a relança (ex. a cada 5
 
 ## `systemd timers`, uma alternativa em sistemas baseados em systemd
 
-O [`systemd`](https://www.freedesktop.org/software/systemd/man/systemd.html) é o sistema de inicialização usado pela maioria das distribuições Linux modernas (Ubuntu, Debian, Fedora...): é ele quem inicia e supervisiona todos os serviços em segundo plano da máquina — o próprio `cron` faz parte desses serviços nessas distribuições. Em um sistema baseado em `systemd`, os **timers** cobrem a mesma necessidade que uma linha de crontab, com uma configuração mais verbosa, porém mais explícita.
+O [`systemd`](https://www.freedesktop.org/software/systemd/man/systemd.html) é o sistema de inicialização usado pela maioria das distribuições Linux modernas (Ubuntu, Debian, Fedora...): é ele quem inicia e supervisiona todos os serviços em segundo plano da máquina; o próprio `cron` faz parte desses serviços nessas distribuições. Em um sistema baseado em `systemd`, os **timers** cobrem a mesma necessidade que uma linha de crontab, com uma configuração mais verbosa, porém mais explícita.
 
 ### Dois arquivos em vez de uma linha
 
@@ -142,7 +142,7 @@ journalctl -u backup.service         # consulta os logs desse servico (substitui
 
 ### `Persistent=true`: a recuperação não é automática
 
-Esse é o detalhe mais importante a lembrar: sem `Persistent=true`, um timer se comporta exatamente como o `cron` — se a máquina está desligada no momento previsto (ex. `OnCalendar=daily` à meia-noite em um notebook desligado durante a noite), a execução é simplesmente perdida, não recuperada. `Persistent=true` muda isso: o `systemd` registra em disco a data da última execução, e se o timer descobre, na próxima inicialização, que um prazo foi perdido, ele dispara a execução imediatamente em vez de esperar o próximo horário planejado.
+Esse é o detalhe mais importante a lembrar: sem `Persistent=true`, um timer se comporta exatamente como o `cron`: se a máquina está desligada no momento previsto (ex. `OnCalendar=daily` à meia-noite em um notebook desligado durante a noite), a execução é simplesmente perdida, não recuperada. `Persistent=true` muda isso: o `systemd` registra em disco a data da última execução, e se o timer descobre, na próxima inicialização, que um prazo foi perdido, ele dispara a execução imediatamente em vez de esperar o próximo horário planejado.
 
 | | Apenas `OnCalendar` | `OnCalendar` + `Persistent=true` |
 |---|---|---|
@@ -151,9 +151,9 @@ Esse é o detalhe mais importante a lembrar: sem `Persistent=true`, um timer se 
 
 ### Escopo de sistema ou de usuário (`--user`)
 
-Um timer colocado em `/etc/systemd/system/` roda independentemente de qualquer sessão aberta, mas exige root para ser criado. Um timer colocado em `~/.config/systemd/user/` não exige permissões especiais, mas depende de uma instância do `systemd` própria do usuário (comandos com o prefixo `--user`: `systemctl --user enable --now ...`) — instância que, por padrão, só inicia quando esse usuário abre uma sessão, e para quando ela termina.
+Um timer colocado em `/etc/systemd/system/` roda independentemente de qualquer sessão aberta, mas exige root para ser criado. Um timer colocado em `~/.config/systemd/user/` não exige permissões especiais, mas depende de uma instância do `systemd` própria do usuário (comandos com o prefixo `--user`: `systemctl --user enable --now ...`): instância que, por padrão, só inicia quando esse usuário abre uma sessão, e para quando ela termina.
 
-Esse último ponto importa para a recuperação: um timer `--user` com `Persistent=true` só consegue recuperar uma execução perdida no próximo login — não na simples inicialização da máquina, se ninguém fizer login logo em seguida. O [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permite remover esse limite para um usuário específico:
+Esse último ponto importa para a recuperação: um timer `--user` com `Persistent=true` só consegue recuperar uma execução perdida no próximo login, não na simples inicialização da máquina, se ninguém fizer login logo em seguida. O [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permite remover esse limite para um usuário específico:
 
 ```bash
 loginctl enable-linger usuario   # a instancia systemd --user de "usuario" inicia no boot, com sessao aberta ou nao

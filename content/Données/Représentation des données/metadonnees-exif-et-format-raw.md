@@ -33,7 +33,7 @@ Ce bloc est lisible par n'importe quel logiciel qui sait le lire (visionneuse d'
 
 > **Piège :** partager une photo en ligne sans savoir qu'elle contient encore ses coordonnées GPS EXIF. Une photo prise chez soi et postée publiquement peut ainsi révéler une adresse précise à quiconque inspecte le fichier, même si rien dans l'image elle-même ne le suggère.
 >
-> **Bonne pratique :** la plupart des réseaux sociaux suppriment automatiquement l'EXIF des photos publiées, mais un fichier envoyé directement (email, messagerie, dépôt sur un site) le conserve tel quel — le vérifier avant tout envoi d'une photo dont la localisation ne doit pas être partagée, avec l'outil de son système d'exploitation ou un utilitaire dédié à la suppression d'EXIF.
+> **Bonne pratique :** la plupart des réseaux sociaux suppriment automatiquement l'EXIF des photos publiées, mais un fichier envoyé directement (email, messagerie, dépôt sur un site) le conserve tel quel : le vérifier avant tout envoi d'une photo dont la localisation ne doit pas être partagée, avec l'outil de son système d'exploitation ou un utilitaire dédié à la suppression d'EXIF.
 
 ## Ce qu'il faut retenir
 

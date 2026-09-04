@@ -75,7 +75,7 @@ Notice the exact order of the three lines in `withdraw()`: first the check (`req
 
 > **Pitfall:** sending funds *before* updating the internal balance. A malicious recipient contract can, at the moment it receives the funds, immediately call back into `withdraw()` before the balance has been decremented: since the balance still shows its old value, the check passes again, and the funds can be withdrawn several times for a single deposit. This is a **reentrancy attack**, one of the most frequent causes of real fund theft from smart contracts.
 >
-> **Best practice:** always check conditions, then update every state variable, and only last interact with the outside (sending funds, calling another contract) — never the other way around.
+> **Best practice:** always check conditions, then update every state variable, and only last interact with the outside (sending funds, calling another contract); never the other way around.
 
 ---
 

@@ -88,7 +88,7 @@ const usuarios = await prisma.usuario.findMany({ include: { pedidos: true } });
 
 ## Quando um ORM não é a resposta certa
 
-Um ORM se destaca em [CRUD](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees) simples, mas às vezes força uma consulta de análise complexa (agregações múltiplas, janelamento, muitos joins — veja [Data warehouse contra data lake](/?c=bases-de-donnees&p=entrepot-vs-data-lake) para esse tipo de necessidade OLAP) em uma sintaxe pensada para manipular objetos, não para expressar uma consulta analítica. O SQL puro, ou um *query builder* mais próximo do SQL que um ORM completo, continua costumeiramente mais claro e mais performático para esse tipo de caso.
+Um ORM se destaca em [CRUD](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees) simples, mas às vezes força uma consulta de análise complexa (agregações múltiplas, janelamento, muitos joins; veja [Data warehouse contra data lake](/?c=bases-de-donnees&p=entrepot-vs-data-lake) para esse tipo de necessidade OLAP) em uma sintaxe pensada para manipular objetos, não para expressar uma consulta analítica. O SQL puro, ou um *query builder* mais próximo do SQL que um ORM completo, continua costumeiramente mais claro e mais performático para esse tipo de caso.
 
 ---
 
