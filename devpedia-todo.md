@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Prochaine tâche : régénérer l'audio FR des 10 chapitres du point 18 (`scripts/generate-audio.mjs`) ; setup Piper local absent sur ce poste (`.venv-piper`/`.piper-voices` à recréer, voir docstring du script) et `ffmpeg` introuvable dans le PATH, à installer avant de lancer le script. Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-17) ou une décision de Louis (point 19).
+> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-17), une décision de Louis (points 19, 21-25) ou une confirmation à l'oreille sur le point 18 (audio régénéré).
 
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
@@ -95,19 +95,9 @@ Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de struc
 ## 17. Chapitre SQL (`content/Langages/Domain-specific Languages (DSL)/sql.md`) : à relire
 - Reste à Louis : relire les ajouts du 01/09/2026 (DDL/DML, `CREATE TABLE`, index, `ALTER TABLE`, `NULL` vs sentinelle, `pyodbc`, SCD2 ; détail et raison des choix dans `journal-de-bord.md`), FR d'abord, EN/ES/BR ensuite si tu veux vérifier la traduction. Audio FR déjà régénéré (point 1).
 
-## 18. Régénérer l'audio FR des chapitres touchés par les 10 notions candidates (points 18-27 ex-todo)
-10 chapitres FR nouveaux/modifiés (audit `poc-borne-git`), traduits EN/ES/BR le jour même, liens internes validés, mais sans audio pré-généré pour le texte ajouté/modifié :
-- `content/IA/Applications LLM/assistant-agentique-terminal.md` (section Bash/PowerShell)
-- `content/Données/Bases de données/elasticsearch.md` (nouveau)
-- `content/Sécurité/Cybersécurité/cryptographie-appliquee.md` (section HMAC)
-- `content/Données/Data Science/classement-bayesien.md` (nouveau)
-- `content/Langages/JavaScript/web-speech-api.md` (nouveau)
-- `content/Qualité, performance et outils/Performance/traitements-longs.md` (section XMLReader/streaming)
-- `content/Langages/PHP/poo.md` (section traits)
-- `content/Qualité, performance et outils/Performance/eviter-le-recalcul-redondant.md` (sections écriture atomique + stale-while-revalidate)
-- `content/IA/NLP et LLM/openapi.md` (nouveau)
-- `content/Sécurité/Fondamentaux/authentification-vs-autorisation.md` (section HTTP Basic)
-- Reste à Louis/à faire : régénérer l'audio FR de ces 10 chapitres (`scripts/generate-audio.mjs`), puis écouter et confirmer.
+## 18. Audio FR régénéré pour 10 chapitres touchés par des notions candidates : à confirmer
+Audio FR régénéré (`scripts/generate-audio.mjs`, id désambiguïsé `Langages/PHP/poo` pour éviter la collision avec les `poo.md` Python/JavaScript) pour : `assistant-agentique-terminal` (section Bash/PowerShell), `elasticsearch` (nouveau), `cryptographie-appliquee` (section HMAC), `classement-bayesien` (nouveau), `web-speech-api` (nouveau), `traitements-longs` (section XMLReader/streaming), PHP `poo` (section traits), `eviter-le-recalcul-redondant` (sections écriture atomique + stale-while-revalidate), `openapi` (nouveau), `authentification-vs-autorisation` (section HTTP Basic).
+- Reste à Louis : écouter ces 10 chapitres et confirmer.
 
 ## 19. Chapitre candidat : connecter une appli PHP locale à SQL Server
 Matière réunie le 04/09/2026 sur un autre projet (détail dans `journal-de-bord.md`) : restauration `.bak` en SSMS, login dédié (pas `sa`), piège `php -S localhost` qui bind en IPv6 seul sur Windows, extensions PHP manquantes bloquant `composer install` une par une, fichier hosts Windows (admin requis) pour un hostname local, `redirect_uri` OAuth qui doit correspondre exactement à ce qui est déclaré côté fournisseur.
