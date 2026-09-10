@@ -108,6 +108,10 @@
             {
               "id": "rendu-3d-bas-niveau-et-fenetrage",
               "label": "Rendu 3D bas niveau et fenêtrage : le raycasting façon Wolfenstein"
+            },
+            {
+              "id": "wavefront-obj-et-modele-de-phong",
+              "label": "Le format Wavefront .obj et le modèle de Phong"
             }
           ]
         }
@@ -206,6 +210,10 @@
             {
               "id": "lecture-formatee-scanf",
               "label": "La lecture formatée : `scanf` et `sscanf`"
+            },
+            {
+              "id": "lecture-de-fichiers",
+              "label": "Lire un fichier ligne par ligne : `fopen`, `fgets`, `getline`"
             }
           ]
         },
@@ -1839,6 +1847,10 @@
             {
               "id": "okr",
               "label": "Les OKR"
+            },
+            {
+              "id": "decoupage-en-graphe-de-dependances",
+              "label": "Découper un projet en graphe de dépendances"
             }
           ]
         }

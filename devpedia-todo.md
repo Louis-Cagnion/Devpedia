@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-17), une décision de Louis (points 19, 21-26) ou une confirmation à l'oreille sur le point 18 (audio régénéré).
+> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-17, 18), une décision de Louis (points 19, 21-26) ou une relecture de Louis (point 27).
 
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
@@ -156,6 +156,10 @@ Question de Louis (10/09/2026, session `/review` sur le projet SCOP) : pourquoi 
 - Couture UV (*UV seam*) : un même sommet 3D (un seul indice `v`) peut être partagé par plusieurs faces qui ont chacune besoin d'une UV différente pour lui (exemple concret : les 3 faces d'un cube qui se rencontrent à un coin, dépliées à des endroits différents de la texture 2D) — impossible à représenter avec un indice unique partagé entre position et UV.
 - Piège rencontré dans le code de Louis (`set_vertex_uv`, `src/parsing/parser.c`) : stocker l'UV indexée par sommet (`vertex_uv[v_idx]`) plutôt que par couple (sommet, face) fait qu'une couture UV réelle écraserait silencieusement l'UV d'un sommet à chaque face qui le référence avec un `vt` différent — seule la dernière écriture survit. Bon exemple concret pour illustrer pourquoi le rendu 3D "sérieux" duplique en général les sommets aux coutures UV (un sommet par couple unique (v, vt) envoyé à la carte graphique) plutôt que de dédupliquer uniquement par position.
 - Reste à Louis : décider si cette extension va dans le chapitre existant (section supplémentaire après "Des faces à nombre de sommets variable") ou mérite son propre chapitre, et la rédiger suivant le plan zéro-connaissance.
+
+## 27. Nouveau chapitre "Lire un fichier ligne par ligne" (`fopen`/`fgets`/`getline`) : à relire
+Trouvé écrit sur disque (08/09/2026) mais jamais committé ni suivi : `content/Langages/C/lecture-de-fichiers.md` (order 22, suite de `lecture-formatee-scanf.md`) : flux bufferisés de la libc vs appels système bruts, `fgets` (buffer taille fixe, risque de troncature) vs `getline` (buffer auto-alloué/réalloué). Traduit EN/ES/BR (3 agents parallèles), liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé). Audio FR généré.
+- Reste à Louis : relire (FR d'abord).
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
