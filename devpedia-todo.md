@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-18), une décision de Louis (points 19, 21-25) ou une relecture de Louis (points 20, 26).
+> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-18), une décision de Louis (points 19, 21-24) ou une relecture de Louis (points 20, 25, 26).
 
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
@@ -144,11 +144,9 @@ Matière réunie le 10/09/2026 en session `/review` sur le projet SCOP de Louis 
 - `strstr()` : cherche une sous-chaîne dans une chaîne, renvoie un pointeur vers la première occurrence ou `NULL` ; absent de Devpedia alors que `strlen()` est déjà couvert dans `content/Langages/C/variables.md` — pourrait s'ajouter au même chapitre plutôt qu'un nouveau.
 - Reste à Louis : décider dans quelle(s) rubrique(s) Devpedia ranger ces notions (probablement `Langages/C`, `strstr` dans `variables.md` existant, les trois autres en chapitre(s) séparé(s) ou dans `c.md`), et les rédiger en chapitres suivant le plan zéro-connaissance.
 
-## 25. Chapitres candidats : strchr, atof/atoi, évaluation court-circuit && / || en C
-Matière réunie le 10/09/2026 en session `/review` sur le projet SCOP de Louis (rendu 3D OpenGL), pas encore rédigée en chapitres :
-- `strchr()` : cherche un *caractère* (pas une sous-chaîne, à distinguer de `strstr()`) dans une chaîne, renvoie un pointeur vers sa première occurrence ou `NULL`. Absent de Devpedia.
-- `atof()`/`atoi()` : convertissent une chaîne de caractères en `double`/`int` (ex. `"3.14"` → `3.14`, `"42"` → `42`) ; absents de Devpedia alors que `strlen`/`strcmp` sont déjà couverts dans `content/Langages/C/variables.md`.
-- Évaluation court-circuit de `&&`/`||` en C : déjà couverte pour Python (`Langages/Python/conditions.md`), Bash (`Langages/Bash/redirections-et-pipes.md`) et CSS, mais absente pour le C — et le code de Louis en fait un usage plus poussé que l'évitement d'erreur habituel (ex. `null && null.prop`) : enchaîner plusieurs `&&`/`||` pour combiner un aiguillage conditionnel ET la détection d'échec d'une fonction en une seule expression (`!strcmp(type, "v") && add_vector(...)`), un style qu'il vaut la peine de nommer comme pattern à part entière (lisible une fois compris, mais surprenant sans être signalé).
+## 25. strchr/atof/atoi et court-circuit &&/|| en C : ajoutés, à relire
+`strchr`/`atof`/`atoi` ajoutés dans `content/Langages/C/variables.md` (à côté de `strlen`/`strcmp`), court-circuit `&&`/`||` (avec le pattern aiguillage + détection d'échec, ex. `!strcmp(type, "v") && add_vector(...)`) ajouté dans `content/Langages/C/boucles.md` (Louis : "plus parlant dans les boucles"). Audio FR régénéré. Pas encore traduit EN/ES/BR (ajout à un chapitre existant, pas un nouveau chapitre).
+- Reste à Louis : relire les deux ajouts (FR).
 - Reste à Louis : décider dans quelle(s) rubrique(s) Devpedia ranger ces notions (`strchr`/`atof`/`atoi` probablement dans `variables.md` existant à côté de `strlen`/`strcmp`, le court-circuit en C dans `conditions.md` ou `boucles.md`), et les rédiger en chapitres suivant le plan zéro-connaissance.
 
 ## 26. Nouveau chapitre "Lire un fichier ligne par ligne" (`fopen`/`fgets`/`getline`) : à relire

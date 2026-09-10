@@ -106,6 +106,49 @@ Une chaîne est donc simplement une suite de caractères stockés de manière co
 
 Voir aussi [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire) pour les fonctions à privilégier (`strncpy`, `snprintf`...) afin de ne jamais écrire au-delà de la taille réellement allouée d'une chaîne.
 
+### Chercher et comparer une chaîne : `strcmp`, `strchr`
+
+```c
+#include <string.h>
+
+int strcmp(const char *s1, const char *s2);
+char *strchr(const char *s, int c);
+```
+
+| Fonction | Rôle | Renvoie |
+|---|---|---|
+| `strcmp(s1, s2)` | Compare deux chaînes caractère par caractère | `0` si égales ; une valeur négative ou positive sinon, selon laquelle précède l'autre dans l'ordre ASCII |
+| `strchr(s, c)` | Cherche la première occurrence du **caractère** `c` dans `s` | Un pointeur vers cette occurrence, ou `NULL` si absent |
+
+```c
+if (strcmp(name, "admin") == 0) {
+    printf("Bienvenue, administrateur.\n");
+}
+
+char *at = strchr("user@example.com", '@');
+if (at != NULL) {
+    printf("Domaine : %s\n", at + 1);
+}
+```
+
+> **Piège :** `strcmp()` ne renvoie pas un booléen. `if (strcmp(a, b))` est vrai quand les chaînes sont **différentes** (résultat non nul) -- l'inverse de ce que suggère intuitivement un nom qui commence par "str**cmp**are". Oublier le `== 0` est une source classique de logique inversée.
+
+### Convertir une chaîne en nombre : `atof`, `atoi`
+
+```c
+#include <stdlib.h>
+
+double atof(const char *s);
+int atoi(const char *s);
+```
+
+| Fonction | Convertit vers | Exemple |
+|---|---|---|
+| `atof(s)` | `double` | `atof("3.14")` -> `3.14` |
+| `atoi(s)` | `int` | `atoi("42")` -> `42` |
+
+> **Piège :** ni `atof()` ni `atoi()` ne signalent une chaîne invalide. `atoi("abc")` renvoie `0`, exactement comme `atoi("0")` : aucun moyen de distinguer une conversion réussie vers zéro d'un échec de conversion. Pour une entrée à valider (donnée utilisateur, argument de ligne de commande), préférer `strtol()`/`strtod()` : mêmes conversions, mais qui indiquent où la lecture s'est arrêtée, ce qui permet de détecter un échec.
+
 ## Les pointeurs
 
 Les pointeurs sont l'une des caractéristiques les plus importantes du langage C.
@@ -172,6 +215,6 @@ La maîtrise de ces types est indispensable avant d'aborder des concepts plus av
 | | |
 |---|---|
 | **À retenir** | Chaque variable C a un type fixe qui détermine sa taille en mémoire, les valeurs possibles et les opérations autorisées : `int`, `char`, `bool` (C99), `float`/`double`, tableau de `char` (chaîne), `struct`, pointeur. |
-| **Outils utilisables** | `stdbool.h` pour un vrai type booléen ; `sizeof` pour la taille d'un type à la compilation ; `strlen()` pour la longueur réelle d'une chaîne à l'exécution. |
-| **Pièges à éviter** | Confondre `'A'` et `"A"`. Assigner à un `bool` une valeur qu'il ne restitue pas telle quelle. Comparer deux flottants avec `==`. Confondre `sizeof` sur un tableau et sur le pointeur qui lui succède une fois passé à une fonction. Comparer deux `struct` avec `==` ou `memcmp` (octets de remplissage). |
-| **Bonnes pratiques** | Choisir le type le plus étroit qui couvre réellement les valeurs attendues, plutôt qu'un `int`/`double` par défaut systématique. Comparer les flottants par écart, les chaînes avec `strcmp`, les structures champ par champ. |
+| **Outils utilisables** | `stdbool.h` pour un vrai type booléen ; `sizeof` pour la taille d'un type à la compilation ; `strlen()` pour la longueur réelle d'une chaîne à l'exécution ; `strcmp()`/`strchr()` pour comparer/chercher dans une chaîne ; `atof()`/`atoi()` pour la convertir en nombre. |
+| **Pièges à éviter** | Confondre `'A'` et `"A"`. Assigner à un `bool` une valeur qu'il ne restitue pas telle quelle. Comparer deux flottants avec `==`. Confondre `sizeof` sur un tableau et sur le pointeur qui lui succède une fois passé à une fonction. Comparer deux `struct` avec `==` ou `memcmp` (octets de remplissage). Tester `strcmp()` comme un booléen sans le `== 0`. `atof()`/`atoi()` qui renvoient silencieusement `0` sur une entrée invalide. |
+| **Bonnes pratiques** | Choisir le type le plus étroit qui couvre réellement les valeurs attendues, plutôt qu'un `int`/`double` par défaut systématique. Comparer les flottants par écart, les chaînes avec `strcmp`, les structures champ par champ. Préférer `strtol()`/`strtod()` à `atoi()`/`atof()` dès qu'une entrée doit être validée. |
