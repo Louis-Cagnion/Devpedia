@@ -153,5 +153,12 @@ Matière réunie le 10/09/2026 en session `/review` sur le projet SCOP de Louis 
 - `strstr()` : cherche une sous-chaîne dans une chaîne, renvoie un pointeur vers la première occurrence ou `NULL` ; absent de Devpedia alors que `strlen()` est déjà couvert dans `content/Langages/C/variables.md` — pourrait s'ajouter au même chapitre plutôt qu'un nouveau.
 - Reste à Louis : décider dans quelle(s) rubrique(s) Devpedia ranger ces notions (probablement `Langages/C`, `strstr` dans `variables.md` existant, les trois autres en chapitre(s) séparé(s) ou dans `c.md`), et les rédiger en chapitres suivant le plan zéro-connaissance.
 
+## 25. Chapitres candidats : strchr, atof/atoi, évaluation court-circuit && / || en C
+Matière réunie le 10/09/2026 en session `/review` sur le projet SCOP de Louis (rendu 3D OpenGL), pas encore rédigée en chapitres :
+- `strchr()` : cherche un *caractère* (pas une sous-chaîne, à distinguer de `strstr()`) dans une chaîne, renvoie un pointeur vers sa première occurrence ou `NULL`. Absent de Devpedia.
+- `atof()`/`atoi()` : convertissent une chaîne de caractères en `double`/`int` (ex. `"3.14"` → `3.14`, `"42"` → `42`) ; absents de Devpedia alors que `strlen`/`strcmp` sont déjà couverts dans `content/Langages/C/variables.md`.
+- Évaluation court-circuit de `&&`/`||` en C : déjà couverte pour Python (`Langages/Python/conditions.md`), Bash (`Langages/Bash/redirections-et-pipes.md`) et CSS, mais absente pour le C — et le code de Louis en fait un usage plus poussé que l'évitement d'erreur habituel (ex. `null && null.prop`) : enchaîner plusieurs `&&`/`||` pour combiner un aiguillage conditionnel ET la détection d'échec d'une fonction en une seule expression (`!strcmp(type, "v") && add_vector(...)`), un style qu'il vaut la peine de nommer comme pattern à part entière (lisible une fois compris, mais surprenant sans être signalé).
+- Reste à Louis : décider dans quelle(s) rubrique(s) Devpedia ranger ces notions (`strchr`/`atof`/`atoi` probablement dans `variables.md` existant à côté de `strlen`/`strcmp`, le court-circuit en C dans `conditions.md` ou `boucles.md`), et les rédiger en chapitres suivant le plan zéro-connaissance.
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
