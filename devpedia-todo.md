@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-18), une décision de Louis (points 21-24) ou une relecture de Louis (points 19, 20, 25, 26).
+> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-18), une décision de Louis (points 21-24, 27) ou une relecture de Louis (points 19, 20, 25, 26).
 
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
@@ -152,6 +152,10 @@ Matière réunie le 10/09/2026 en session `/review` sur le projet SCOP de Louis 
 ## 26. Nouveau chapitre "Lire un fichier ligne par ligne" (`fopen`/`fgets`/`getline`) : à relire
 Trouvé écrit sur disque (08/09/2026) mais jamais committé ni suivi : `content/Langages/C/lecture-de-fichiers.md` (order 22, suite de `lecture-formatee-scanf.md`) : flux bufferisés de la libc vs appels système bruts, `fgets` (buffer taille fixe, risque de troncature) vs `getline` (buffer auto-alloué/réalloué). Traduit EN/ES/BR (3 agents parallèles), liens internes validés (`node scripts/generate-struct.js`, 0 lien cassé). Audio FR généré.
 - Reste à Louis : relire (FR d'abord).
+
+## 27. Chapitre candidat : strrchr
+Repéré le 10/09/2026 en session `/review` sur le projet SCOP de Louis (`parse_mtl`, `src/parsing/parser.c`, pour retrouver le dossier parent d'un chemin de fichier). `strrchr()` cherche la **dernière** occurrence d'un caractère dans une chaîne (contrairement à `strchr()`, qui cherche la première — déjà couvert mais pas encore mis en regard de `strrchr`) ; absent de Devpedia.
+- Reste à Louis : décider où le ranger (probablement `variables.md`, à côté de `strchr`/`strstr`/`strlen`/`strcmp`), et le rédiger suivant le plan zéro-connaissance.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
