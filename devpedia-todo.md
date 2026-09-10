@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-17), une décision de Louis (points 19, 21-25) ou une confirmation à l'oreille sur le point 18 (audio régénéré).
+> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-17), une décision de Louis (points 19, 21-26) ou une confirmation à l'oreille sur le point 18 (audio régénéré).
 
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
@@ -149,6 +149,13 @@ Matière réunie le 10/09/2026 en session `/review` sur le projet SCOP de Louis 
 - `atof()`/`atoi()` : convertissent une chaîne de caractères en `double`/`int` (ex. `"3.14"` → `3.14`, `"42"` → `42`) ; absents de Devpedia alors que `strlen`/`strcmp` sont déjà couverts dans `content/Langages/C/variables.md`.
 - Évaluation court-circuit de `&&`/`||` en C : déjà couverte pour Python (`Langages/Python/conditions.md`), Bash (`Langages/Bash/redirections-et-pipes.md`) et CSS, mais absente pour le C — et le code de Louis en fait un usage plus poussé que l'évitement d'erreur habituel (ex. `null && null.prop`) : enchaîner plusieurs `&&`/`||` pour combiner un aiguillage conditionnel ET la détection d'échec d'une fonction en une seule expression (`!strcmp(type, "v") && add_vector(...)`), un style qu'il vaut la peine de nommer comme pattern à part entière (lisible une fois compris, mais surprenant sans être signalé).
 - Reste à Louis : décider dans quelle(s) rubrique(s) Devpedia ranger ces notions (`strchr`/`atof`/`atoi` probablement dans `variables.md` existant à côté de `strlen`/`strcmp`, le court-circuit en C dans `conditions.md` ou `boucles.md`), et les rédiger en chapitres suivant le plan zéro-connaissance.
+
+## 26. Extension du chapitre Wavefront .obj : indexation combinée v/vt et couture UV
+Question de Louis (10/09/2026, session `/review` sur le projet SCOP) : pourquoi une face référence `v/vt` (deux indices, ex. `1/1`) plutôt qu'un seul indice partagé `n`. `content/Fondamentaux/Graphisme/wavefront-obj-et-modele-de-phong.md` existe déjà et couvre le format `.obj` de base, mais son exemple de ligne `f` (`f 16 2 3 17`) n'utilise que des indices de sommet simples — l'indexation combinée `v/vt`(/`vn`) par coin de face n'y est pas expliquée, ni pourquoi elle est nécessaire :
+- `v` (positions) et `vt` (coordonnées de texture) sont deux listes indépendantes, de longueurs généralement différentes et non alignées 1-pour-1 : une face doit donc donner un indice séparé dans chaque liste par coin.
+- Couture UV (*UV seam*) : un même sommet 3D (un seul indice `v`) peut être partagé par plusieurs faces qui ont chacune besoin d'une UV différente pour lui (exemple concret : les 3 faces d'un cube qui se rencontrent à un coin, dépliées à des endroits différents de la texture 2D) — impossible à représenter avec un indice unique partagé entre position et UV.
+- Piège rencontré dans le code de Louis (`set_vertex_uv`, `src/parsing/parser.c`) : stocker l'UV indexée par sommet (`vertex_uv[v_idx]`) plutôt que par couple (sommet, face) fait qu'une couture UV réelle écraserait silencieusement l'UV d'un sommet à chaque face qui le référence avec un `vt` différent — seule la dernière écriture survit. Bon exemple concret pour illustrer pourquoi le rendu 3D "sérieux" duplique en général les sommets aux coutures UV (un sommet par couple unique (v, vt) envoyé à la carte graphique) plutôt que de dédupliquer uniquement par position.
+- Reste à Louis : décider si cette extension va dans le chapitre existant (section supplémentaire après "Des faces à nombre de sommets variable") ou mérite son propre chapitre, et la rédiger suivant le plan zéro-connaissance.
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
