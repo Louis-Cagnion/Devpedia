@@ -113,5 +113,45 @@ Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de struc
 Matière réunie le 04/09/2026 sur un autre projet (détail dans `journal-de-bord.md`) : restauration `.bak` en SSMS, login dédié (pas `sa`), piège `php -S localhost` qui bind en IPv6 seul sur Windows, extensions PHP manquantes bloquant `composer install` une par une, fichier hosts Windows (admin requis) pour un hostname local, `redirect_uri` OAuth qui doit correspondre exactement à ce qui est déclaré côté fournisseur.
 - Reste à Louis : décider si ce sujet mérite un chapitre Devpedia (probablement dans Infrastructure ou Bases de données), et si oui le rédiger en suivant le plan zéro-connaissance.
 
+## 20. Nouveaux chapitres : format .obj/.mtl et découpage en graphe de dépendances : à relire
+Écrits (07/09/2026) suite à une session /professor sur le projet SCOP (rendu 3D OpenGL) de Louis :
+- `content/Fondamentaux/Graphisme/wavefront-obj-et-modele-de-phong.md` (order 2, suite du chapitre raycasting) : format Wavefront .obj (préfixes `v`/`vt`/`vn`/`f`/`o`, indices de sommets 1-based, faces à nombre de sommets variable à trianguler), format .mtl et modèle de Phong (`Ka`/`Kd`/`Ks`/`Ns`).
+- `content/Gestion de projet et organisation/Gestion de projet/decoupage-en-graphe-de-dependances.md` (order 7) : graphe orienté acyclique (DAG) et tri topologique pour ordonner des tâches, distinction dépendance réelle vs ordre de préférence, repérage des branches parallèles et de leurs points de convergence.
+- Reste à Louis : relire les deux chapitres.
+
+## 21. Chapitres candidats : dispersion chromatique, animation procédurale, picking souris, sélection proportionnelle
+Matière réunie le 07/09/2026 sur le projet SCOP de Louis (rendu 3D OpenGL), pas encore rédigée en chapitres :
+- Dispersion chromatique : phénomène optique réel (prisme de Newton, indice de réfraction qui varie selon la longueur d'onde) et le défi de l'approximer en rendu temps réel par rasterization plutôt que par ray tracing ; techniques citées en piste : aberration chromatique en post-traitement, réfraction par cubemap avec indice de réfraction différent par canal de couleur.
+- Animation procédurale : animation recalculée à chaque frame par une formule dépendant du temps (ex. un sinus), plutôt que préenregistrée à l'avance.
+- Picking souris en 3D (*mouse picking*) : convertir la position d'un clic à l'écran en un rayon dans l'espace 3D, via l'inverse de la matrice projection/vue.
+- Sélection proportionnelle (*proportional editing*) : déplacer un sommet avec une influence dégressive sur les sommets voisins selon la distance ; notion issue de Blender, transposable à une déformation de maillage en code.
+- Reste à Louis : décider dans quelle(s) rubrique(s) Devpedia ranger ces notions (probablement `Fondamentaux/Graphisme` pour les trois premières), et les rédiger en chapitres suivant le plan zéro-connaissance.
+
+## 22. Chapitres candidats : Makefile avancé, pkg-config, groupement shell
+Matière réunie le 07/09/2026 en debuggant le Makefile du projet SCOP de Louis, pas encore rédigée en chapitres :
+- `pkg-config` : requêter les métadonnées (flags de compilation, chemins, version) d'une bibliothèque installée via ses fichiers `.pc`, plutôt que deviner les chemins à la main ; distinction entre le nom du module `pkg-config` (ex. `glfw3`) et le nom du paquet système qui le fournit (ex. `libglfw3-dev` sous Debian/Ubuntu), les deux ne coïncidant pas forcément.
+- Syntaxe d'une règle Makefile : liste de prérequis séparés par des espaces, vs un `;` juste après les prérequis qui introduit au contraire une recette en ligne (piège rencontré : `cible: dep1; dep2` ne fait PAS de `dep2` un prérequis, `dep2` devient la première commande de la recette).
+- `.PHONY` : nécessaire pour toute cible qui ne produit pas de fichier du même nom (`clean`, `check-deps`...), sans quoi un fichier portant ce nom dans le dossier rendrait la cible silencieusement inopérante.
+- `-o` (nommer le fichier de sortie du compilateur) et `-I` (ajouter un dossier de recherche pour les `#include "..."`, à ne pas confondre avec la résolution relative au fichier courant qui s'applique en premier).
+- `()` vs `{}` en shell : `()` exécute dans un sous-shell (variables/`cd` sans effet sur le shell parent), `{}` exécute dans le shell courant mais exige un espace après `{` et un `;`/retour à la ligne avant `}` (ce sont des mots réservés, pas de simples caractères).
+- Codes ANSI de couleur terminal (`\033[31m` rouge, `32m` vert, `36m` cyan, `0m` reset) et le piège du `echo` qui n'interprète `\033` que via `-e` (ou `printf`) selon le shell utilisé.
+- Reste à Louis : décider dans quelle(s) rubrique(s) Devpedia ranger ces notions (probablement une nouvelle sous-rubrique Bash/outils de build), et les rédiger en chapitres suivant le plan zéro-connaissance.
+
+## 23. Chapitres candidats : OpenGL loader (GLAD), résolution -I/#include, vendoring, double buffering
+Matière réunie le 07/09/2026 sur le projet SCOP de Louis (rendu 3D OpenGL, session /professor sur le setup GLFW+GLAD), pas encore rédigée en chapitres :
+- OpenGL Loading Library (GLAD/GLEW) : les fonctions OpenGL modernes (au-delà d'OpenGL 1.1) ne sont pas liées statiquement mais résolues à l'exécution via un pointeur de fonction fourni par le driver (`glfwGetProcAddress`) ; rôle du define `GLFW_INCLUDE_NONE` pour laisser un loader externe fournir les prototypes.
+- Mécanisme de résolution `#include <...>` + `-I` : le préprocesseur concatène littéralement le texte entre chevrons à chaque dossier `-I`, dans l'ordre ; piège rencontré : pointer `-I` vers le sous-dossier feuille (`glad/include/glad`) au lieu du dossier parent qui contient les sous-dossiers (`glad/include`), ce qui casse la concaténation.
+- Vendoring : convention consistant à committer le code généré d'une dépendance externe (ex. GLAD) dans un dossier dédié du repo (`vendor/`, `third_party/`...) plutôt que de la lier en tant que lib système.
+- Double buffering et render loop : un dessin OpenGL reste invisible tant que `glfwSwapBuffers` n'a pas échangé le buffer arrière (dessiné) avec le buffer avant (affiché) ; pattern générique d'une boucle de rendu (poll events, clear, draw, swap).
+- Reste à Louis : décider dans quelle(s) rubrique(s) Devpedia ranger ces notions (probablement `Langages/C` ou une nouvelle sous-rubrique build/OpenGL pour les trois premières, `Fondamentaux/Graphisme` pour le double buffering), et les rédiger en chapitres suivant le plan zéro-connaissance.
+
+## 24. Chapitres candidats : arguments de ligne de commande (argc/argv), opérateur virgule, exit()/codes de retour, strstr
+Matière réunie le 10/09/2026 en session `/review` sur le projet SCOP de Louis (rendu 3D OpenGL), pas encore rédigée en chapitres :
+- Arguments de ligne de commande en C (`int main(int argc, char **argv)`) : `argc` compte les mots tapés sur la ligne de commande (nom du programme inclus), `argv` est le tableau de ces mots ; absent de Devpedia (seul `content/Langages/Python/cli-avec-argparse.md` existe, pour l'équivalent Python).
+- Opérateur virgule (`expr1, expr2`) : évalue `expr1`, ignore sa valeur, puis évalue et renvoie `expr2` ; pattern rencontré dans le code de Louis en `return printf(...), NULL;` pour afficher un message et retourner une valeur en une ligne. Absent de Devpedia.
+- `exit()` et codes de retour de processus : `exit(n)` termine immédiatement le programme et renvoie `n` au système (convention 0 = succès, non nul = erreur) ; seulement mentionné en passant dans `content/Langages/C/processus.md` (`WIFEXITED`/`WEXITSTATUS`, contexte `wait()`), jamais expliqué comme concept de base.
+- `strstr()` : cherche une sous-chaîne dans une chaîne, renvoie un pointeur vers la première occurrence ou `NULL` ; absent de Devpedia alors que `strlen()` est déjà couvert dans `content/Langages/C/variables.md` — pourrait s'ajouter au même chapitre plutôt qu'un nouveau.
+- Reste à Louis : décider dans quelle(s) rubrique(s) Devpedia ranger ces notions (probablement `Langages/C`, `strstr` dans `variables.md` existant, les trois autres en chapitre(s) séparé(s) ou dans `c.md`), et les rédiger en chapitres suivant le plan zéro-connaissance.
+
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
