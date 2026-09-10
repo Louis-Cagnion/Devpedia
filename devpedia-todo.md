@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-18), une décision de Louis (points 19, 21-24) ou une relecture de Louis (points 20, 25, 26).
+> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-18), une décision de Louis (points 21-24) ou une relecture de Louis (points 19, 20, 25, 26).
 
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
@@ -99,9 +99,9 @@ Signalé par Louis (29/08/2026) : du nouveau contenu et des changements de struc
 Audio FR régénéré (`scripts/generate-audio.mjs`, id désambiguïsé `Langages/PHP/poo` pour éviter la collision avec les `poo.md` Python/JavaScript) pour : `assistant-agentique-terminal` (section Bash/PowerShell), `elasticsearch` (nouveau), `cryptographie-appliquee` (section HMAC), `classement-bayesien` (nouveau), `web-speech-api` (nouveau), `traitements-longs` (section XMLReader/streaming), PHP `poo` (section traits), `eviter-le-recalcul-redondant` (sections écriture atomique + stale-while-revalidate), `openapi` (nouveau), `authentification-vs-autorisation` (section HTTP Basic).
 - Reste à Louis : écouter ces 10 chapitres et confirmer.
 
-## 19. Chapitre candidat : connecter une appli PHP locale à SQL Server
-Matière réunie le 04/09/2026 sur un autre projet (détail dans `journal-de-bord.md`) : restauration `.bak` en SSMS, login dédié (pas `sa`), piège `php -S localhost` qui bind en IPv6 seul sur Windows, extensions PHP manquantes bloquant `composer install` une par une, fichier hosts Windows (admin requis) pour un hostname local, `redirect_uri` OAuth qui doit correspondre exactement à ce qui est déclaré côté fournisseur.
-- Reste à Louis : décider si ce sujet mérite un chapitre Devpedia (probablement dans Infrastructure ou Bases de données), et si oui le rédiger en suivant le plan zéro-connaissance.
+## 19. Nouveau chapitre "Environnement local PHP + SQL Server" : à relire
+`content/Infrastructure & DevOps/Infrastructure/environnement-local-php-sql-server.md` (order 9, Louis : "infrastructure") : restauration `.bak` en SSMS, login dédié (pas `sa`), piège `php -S localhost` qui bind en IPv6 seul sur Windows, extensions PHP manquantes bloquant `composer install` une par une, fichier hosts (admin requis), `redirect_uri` OAuth qui doit correspondre exactement à ce qui est déclaré côté fournisseur. Traduit EN/ES/BR, audio FR généré, liens internes validés.
+- Reste à Louis : relire (FR d'abord).
 
 ## 20. Nouveaux chapitres : format .obj/.mtl et découpage en graphe de dépendances : à relire
 Écrits (07/09/2026) suite à une session /professor sur le projet SCOP (rendu 3D OpenGL) de Louis, trouvés non committés/traduits/audio (même écart que le point 27) et corrigés le 10/09 :
