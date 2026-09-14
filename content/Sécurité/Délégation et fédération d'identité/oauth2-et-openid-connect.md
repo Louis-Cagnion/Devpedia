@@ -51,6 +51,32 @@ Le **jeton d'accès** (*access token*) obtenu à l'étape 6 porte une **portée*
 | Révocation | Change le mot de passe partout, y compris pour les usages légitimes | Révoque uniquement ce jeton précis |
 | Le mot de passe transite-t-il vers le tiers ? | Oui | Jamais |
 
+## Un autre flux : *Client Credentials*, sans utilisateur
+
+Le déroulement vu plus haut (*Authorization Code*) suppose un utilisateur présent, qui se connecte et donne son consentement. Un autre cas, tout aussi courant, n'implique aucun utilisateur : un service qui doit appeler une API **pour son propre compte**, par exemple un serveur qui récupère chaque nuit des statistiques depuis l'API d'un outil de reporting.
+
+```text
+1. Le service A s'authentifie directement aupres du serveur d'autorisation
+   avec son identifiant client + son secret client (client_id/client_secret)
+2. Le serveur d'autorisation verifie ces identifiants et renvoie un jeton d'acces
+   -- sans jamais rediriger vers qui que ce soit, sans etape de consentement
+3. Le service A utilise ce jeton pour appeler l'API au nom de lui-meme,
+   pas au nom d'un utilisateur
+```
+
+Ce flux s'appelle **Client Credentials** (*identifiants du client*). Contrairement à l'*Authorization Code*, il n'y a ni redirection, ni écran de consentement, ni utilisateur final impliqué à aucune étape : seul le `client_id`/`client_secret` du service appelant prouve son identité.
+
+| | *Authorization Code* (vu plus haut) | *Client Credentials* |
+|---|---|---|
+| Qui se connecte | Un utilisateur final | Personne : le service s'authentifie lui-même |
+| Redirection navigateur | Oui (étapes 2-5) | Aucune |
+| Jeton obtenu au nom de | L'utilisateur | Le service lui-même |
+| Cas d'usage typique | "Se connecter avec Google" | Un serveur qui appelle une API tierce pour son propre traitement (import, synchronisation planifiée...) |
+
+> **Piège :** utiliser *Client Credentials* alors que l'action doit en réalité être attribuée à un utilisateur précis (ex : "quel utilisateur a demandé cet export ?"). Ce flux ne transporte aucune identité d'utilisateur : toute action effectuée avec ce jeton est indiscernable d'une action du service lui-même.
+>
+> **Bonne pratique :** réserver *Client Credentials* aux appels serveur-à-serveur qui n'ont explicitement besoin d'aucune notion d'utilisateur ; dès qu'une action doit être tracée jusqu'à une personne précise, repasser par un flux avec utilisateur (*Authorization Code*).
+
 ## OAuth ne prouve pas une identité : le rôle d'OpenID Connect
 
 OAuth 2.0 a été conçu pour l'**autorisation** (accéder à une ressource), pas pour l'**authentification** (voir [Authentification vs autorisation](/?c=authentification&s=fondamentaux&p=authentification-vs-autorisation)). Obtenir un jeton d'accès aux contacts de quelqu'un ne prouve pas formellement qui s'est connecté : une application qui utiliserait ce seul jeton pour "reconnaître" un utilisateur détourne OAuth de son objectif initial.
@@ -67,7 +93,7 @@ OAuth 2.0 a été conçu pour l'**autorisation** (accéder à une ressource), pa
 
 | | |
 |---|---|
-| **À retenir** | OAuth 2.0 permet à une application tierce d'obtenir un accès limité et révocable à une ressource, sans jamais connaître le mot de passe du compte. OpenID Connect ajoute par-dessus un jeton d'identité (un JWT) spécifiquement conçu pour l'authentification, ce qu'OAuth seul ne fournit pas. |
+| **À retenir** | OAuth 2.0 permet à une application tierce d'obtenir un accès limité et révocable à une ressource, sans jamais connaître le mot de passe du compte. *Client Credentials* obtient un jeton sans aucun utilisateur, pour un service qui agit pour son propre compte. OpenID Connect ajoute par-dessus un jeton d'identité (un JWT) spécifiquement conçu pour l'authentification, ce qu'OAuth seul ne fournit pas. |
 | **Outils utilisables** | Une bibliothèque OAuth/OIDC du langage utilisé plutôt qu'une implémentation manuelle du protocole. |
-| **Pièges à éviter** | Partager directement un mot de passe avec une application tierce. Utiliser un jeton d'accès OAuth pour authentifier un utilisateur. |
-| **Bonnes pratiques** | Toujours limiter la portée (*scope*) demandée au strict nécessaire. Utiliser OpenID Connect quand le besoin est de prouver une identité, pas seulement d'accéder à une ressource. |
+| **Pièges à éviter** | Partager directement un mot de passe avec une application tierce. Utiliser un jeton d'accès OAuth pour authentifier un utilisateur. Utiliser *Client Credentials* pour une action qui doit être attribuée à un utilisateur précis. |
+| **Bonnes pratiques** | Toujours limiter la portée (*scope*) demandée au strict nécessaire. Utiliser OpenID Connect quand le besoin est de prouver une identité, pas seulement d'accéder à une ressource. Réserver *Client Credentials* aux appels serveur-à-serveur sans notion d'utilisateur. |

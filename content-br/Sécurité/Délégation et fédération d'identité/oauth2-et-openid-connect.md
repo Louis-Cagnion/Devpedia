@@ -51,6 +51,32 @@ O **token de acesso** (*access token*) obtido na etapa 6 carrega um **escopo** (
 | Revogação | Muda a senha em todo lugar, inclusive nos usos legítimos | Revoga apenas esse token específico |
 | A senha transita até o terceiro? | Sim | Nunca |
 
+## Outro fluxo: *Client Credentials*, sem usuário
+
+O fluxo visto acima (*Authorization Code*) supõe um usuário presente, que se conecta e dá seu consentimento. Outro caso, igualmente comum, não envolve nenhum usuário: um serviço que precisa chamar uma API **por conta própria**, por exemplo um servidor que busca todas as noites estatísticas na API de uma ferramenta de relatórios.
+
+```text
+1. O servico A se autentica diretamente junto ao servidor de autorizacao
+   com seu identificador de cliente + seu segredo de cliente (client_id/client_secret)
+2. O servidor de autorizacao verifica essas credenciais e retorna um token de acesso
+   -- sem nunca redirecionar para ninguem, sem tela de consentimento
+3. O servico A usa esse token para chamar a API em nome de si mesmo,
+   nao em nome de um usuario
+```
+
+Esse fluxo se chama **Client Credentials** (*credenciais do cliente*). Ao contrário do *Authorization Code*, não há redirecionamento, nem tela de consentimento, nem usuário final envolvido em nenhuma etapa: apenas o `client_id`/`client_secret` do serviço que chama prova sua identidade.
+
+| | *Authorization Code* (visto acima) | *Client Credentials* |
+|---|---|---|
+| Quem se conecta | Um usuário final | Ninguém: o serviço se autentica a si mesmo |
+| Redirecionamento no navegador | Sim (etapas 2-5) | Nenhum |
+| Token obtido em nome de | O usuário | O próprio serviço |
+| Caso de uso típico | "Entrar com o Google" | Um servidor que chama uma API de terceiros para seu próprio processamento (importação, sincronização agendada...) |
+
+> **Cuidado:** usar *Client Credentials* quando a ação na verdade deve ser atribuída a um usuário específico (ex: "qual usuário solicitou essa exportação?"). Esse fluxo não carrega nenhuma identidade de usuário: qualquer ação feita com esse token é indistinguível de uma ação do próprio serviço.
+>
+> **Boa prática:** reservar *Client Credentials* para chamadas servidor-a-servidor que explicitamente não precisam de nenhuma noção de usuário; assim que uma ação precisar ser rastreada até uma pessoa específica, voltar a um fluxo com usuário (*Authorization Code*).
+
 ## OAuth não prova uma identidade: o papel do OpenID Connect
 
 O OAuth 2.0 foi projetado para a **autorização** (acessar um recurso), não para a **autenticação** (veja [Autenticação vs autorização](/?c=authentification&s=fondamentaux&p=authentification-vs-autorisation)). Obter um token de acesso aos contatos de alguém não prova formalmente quem se conectou: um aplicativo que usasse apenas esse token para "reconhecer" um usuário está desviando o OAuth de seu objetivo original.
@@ -67,7 +93,7 @@ O **OpenID Connect** (OIDC) adiciona uma camada de identidade sobre o OAuth 2.0,
 
 | | |
 |---|---|
-| **O que reter** | O OAuth 2.0 permite a um aplicativo de terceiros obter acesso limitado e revogável a um recurso, sem nunca conhecer a senha da conta. O OpenID Connect adiciona por cima um token de identidade (um JWT) especificamente projetado para a autenticação, o que o OAuth sozinho não fornece. |
+| **O que reter** | O OAuth 2.0 permite a um aplicativo de terceiros obter acesso limitado e revogável a um recurso, sem nunca conhecer a senha da conta. O *Client Credentials* obtém um token sem nenhum usuário, para um serviço que age por conta própria. O OpenID Connect adiciona por cima um token de identidade (um JWT) especificamente projetado para a autenticação, o que o OAuth sozinho não fornece. |
 | **Ferramentas úteis** | Uma biblioteca OAuth/OIDC da linguagem utilizada em vez de uma implementação manual do protocolo. |
-| **Armadilhas a evitar** | Compartilhar diretamente uma senha com um aplicativo de terceiros. Usar um token de acesso OAuth para autenticar um usuário. |
-| **Boas práticas** | Sempre limitar o escopo (*scope*) solicitado ao estritamente necessário. Usar o OpenID Connect quando a necessidade for provar uma identidade, não apenas acessar um recurso. |
+| **Armadilhas a evitar** | Compartilhar diretamente uma senha com um aplicativo de terceiros. Usar um token de acesso OAuth para autenticar um usuário. Usar *Client Credentials* para uma ação que deve ser atribuída a um usuário específico. |
+| **Boas práticas** | Sempre limitar o escopo (*scope*) solicitado ao estritamente necessário. Usar o OpenID Connect quando a necessidade for provar uma identidade, não apenas acessar um recurso. Reservar *Client Credentials* para chamadas servidor-a-servidor sem nenhuma noção de usuário. |

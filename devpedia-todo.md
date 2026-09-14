@@ -19,6 +19,7 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 ## 22. Notions candidates : Makefile du projet SCOP
 - `pkg-config` (métadonnées de lib via fichiers `.pc` ; nom de module `pkg-config` vs nom du paquet système, pas toujours identiques) + syntaxe Makefile (prérequis séparés par espaces vs `;` qui introduit une recette en ligne ; `.PHONY` pour une cible sans fichier de sortie ; `-o`/`-I`) → chapitre build C (nouvelle rubrique à créer).
 - `()` vs `{}` en shell (sous-shell vs shell courant, syntaxe `{ ; }`) + codes ANSI couleur terminal (`\033[...m`, piège du `echo` sans `-e`) → chapitre shell séparé, même rubrique.
+- Mode silencieux `@` en préfixe de ligne de recette (supprime l'écho de la commande avant exécution) + `MAKEFLAGS` (variable transmettant les options aux appels récursifs de `make`) → chapitre build C, avec `pkg-config`/Makefile (Louis, 14/09/2026).
 
 ## 23. Notions candidates : setup GLFW+GLAD du projet SCOP
 - OpenGL Loading Library (GLAD/GLEW : fonctions OpenGL modernes résolues à l'exécution via `glfwGetProcAddress`, pas liées statiquement) + résolution `#include <...>`/`-I` (concaténation littérale par le préprocesseur, piège du `-I` pointé sur le mauvais niveau de dossier) + vendoring (committer le code généré d'une dépendance dans le repo) → nouvelle sous-rubrique build/OpenGL.
@@ -29,15 +30,12 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 - Opérateur virgule (`expr1, expr2`, pattern `return printf(...), NULL;`) → chapitre séparé, `Langages/C`.
 - `exit()` et codes de retour de processus → chapitre séparé, `Langages/C`.
 
-## 28. Notions candidates : revue /review poc-borne-git
-- Recherche hybride Elasticsearch (clause `knn` combinée à des filtres `bool` dans une même requête, cf. `src/Chat/QueryBuilder.php`) → complément d'`elasticsearch.md`.
-- `IN (...)` paramétré dynamiquement en PDO (placeholders nommés générés pour une liste de taille variable, cf. `src/Shared/BaseDashboardRepository::sqlInParams()`) → complément de `sql.md`.
-- Reste aussi : reprendre la revue /review sur le périmètre non couvert (voir `review-progress.md` du projet poc-borne-git).
+## 28. Suite de la revue /review poc-borne-git
+- Reprendre la revue /review sur le périmètre non couvert (voir `review-progress.md` du projet poc-borne-git).
 
 ## 29. Notions candidates : suite revue /review poc-borne-git
 - Injection XXE et sa prévention (`libxml_set_external_entity_loader(fn () => null)`, `src/Chat/XmlImporter.php`) → nouveau chapitre XML.
 - `IntersectionObserver` (scroll infini), `MutationObserver` (réagir à l'arrivée de messages sans polling), debounce vs throttle (`apps/chat/assets/js/*.js`) → un seul nouveau chapitre JS/DOM navigateur.
-- Flux OAuth2 "Client Credentials" machine-à-machine (`apps/insights/index.php`, Azure AD → API Power BI) → complément d'`oauth2-et-openid-connect.md`.
 - Variable `static` locale en PHP (`src/Shared/helpers.php::frenchMonthLabel()`) → `poo.md`.
 
 ## 30. Notions candidates : suite revue /review poc-borne-git
@@ -49,11 +47,9 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 - Interception d'un setter de propriété native via `Object.defineProperty` (`apps/atlas/assets/js/shared.js::enhanceSelect()`) → nouveau sous-chapitre JS dédié.
 - Lire une custom property CSS depuis JS (`getComputedStyle(...).getPropertyValue('--orange')`, `charts.js::css()`) → complément de `css.md`/`variables.md` JS.
 - Mesure de texte via Canvas 2D `measureText()`, dispersion de points géographiques colocalisés (correction de longitude par `1/cos(latitude)`), deux chemins de rendu Google Maps (`AdvancedMarkerElement` vs `google.maps.Marker`) → rattachés aux chapitres Canvas/Google Maps du point 30.
-- `OUTER APPLY`/`CROSS APPLY` (T-SQL, `src/Atlas/VO/SalesRepository.php::unifiedSource()`) → complément de `sql.md`.
 
-## 32. Notions candidates : suite revue /review poc-borne-git
+## 32. Notion candidate : suite revue /review poc-borne-git
 - `fastcgi_finish_request()` + `register_shutdown_function()` (PHP-FPM : répondre au client tout de suite puis recalculer un cache coûteux en fond, `src/Atlas/VN/SalesRepository.php::scheduleBackgroundRefresh()`) → nouveau chapitre PHP-FPM.
-- `GROUPING SETS`/`GROUPING()` (T-SQL, total + détail en une seule requête, `src/Atlas/Events/OpenHouseRepository.php::getOverview()`) → complément de `sql.md`.
 
 ## 33. Notion candidate : suite revue /review poc-borne-git
 - Streaming de sortie HTTP progressive en PHP (`ini_set('output_buffering', 'off')` + `flush()` en boucle, `admin/import_web.php`/`admin/atlas-geocode.php` ; mécanisme inverse du point 32, la connexion reste ouverte tout du long) → complément d'`eviter-le-recalcul-redondant.md`/`pwa-progressive-web-app.md`.

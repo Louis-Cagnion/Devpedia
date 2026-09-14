@@ -51,6 +51,32 @@ The **access token** obtained at step 6 carries a specific **scope**: "read cont
 | Revocation | Changes the password everywhere, including legitimate uses | Revokes only that specific token |
 | Does the password reach the third party? | Yes | Never |
 
+## Another flow: *Client Credentials*, with no user
+
+The flow seen above (*Authorization Code*) assumes a user is present, logging in and giving consent. Another, equally common case involves no user at all: a service that needs to call an API **on its own behalf**, for instance a server that fetches statistics every night from a reporting tool's API.
+
+```text
+1. Service A authenticates directly with the authorization server
+   using its client id + client secret (client_id/client_secret)
+2. The authorization server verifies these credentials and returns an access token
+   -- with no redirection to anyone, no consent screen
+3. Service A uses that token to call the API on its own behalf,
+   not on behalf of a user
+```
+
+This flow is called **Client Credentials**. Unlike *Authorization Code*, there's no redirection, no consent screen, and no end user involved at any step: only the calling service's `client_id`/`client_secret` proves its identity.
+
+| | *Authorization Code* (seen above) | *Client Credentials* |
+|---|---|---|
+| Who logs in | An end user | No one: the service authenticates itself |
+| Browser redirection | Yes (steps 2-5) | None |
+| Token obtained on behalf of | The user | The service itself |
+| Typical use case | "Log in with Google" | A server calling a third-party API for its own processing (import, scheduled sync...) |
+
+> **Pitfall:** using *Client Credentials* when the action should actually be attributed to a specific user (e.g. "which user requested this export?"). This flow carries no user identity at all: any action taken with this token is indistinguishable from an action by the service itself.
+>
+> **Best practice:** reserve *Client Credentials* for server-to-server calls that explicitly need no notion of a user; as soon as an action must be traced back to a specific person, use a flow with a user instead (*Authorization Code*).
+
 ## OAuth Doesn't Prove Identity: OpenID Connect's Role
 
 OAuth 2.0 was designed for **authorization** (accessing a resource), not **authentication** (see [Authentication vs Authorization](/?c=authentification&s=fondamentaux&p=authentification-vs-autorisation)). Getting an access token for someone's contacts doesn't formally prove who logged in: an app that used that token alone to "recognize" a user is misusing OAuth beyond its intended purpose.
@@ -67,7 +93,7 @@ OAuth 2.0 was designed for **authorization** (accessing a resource), not **authe
 
 | | |
 |---|---|
-| **Key takeaways** | OAuth 2.0 lets a third-party app get limited, revocable access to a resource, without ever knowing the account's password. OpenID Connect adds an ID token on top (a JWT) specifically designed for authentication, something OAuth alone doesn't provide. |
+| **Key takeaways** | OAuth 2.0 lets a third-party app get limited, revocable access to a resource, without ever knowing the account's password. *Client Credentials* gets a token with no user at all, for a service acting on its own behalf. OpenID Connect adds an ID token on top (a JWT) specifically designed for authentication, something OAuth alone doesn't provide. |
 | **Tools you can use** | An OAuth/OIDC library for the language used rather than a manual implementation of the protocol. |
-| **Pitfalls to avoid** | Sharing a password directly with a third-party app. Using an OAuth access token to authenticate a user. |
-| **Best practices** | Always limit the requested scope to the strict minimum needed. Use OpenID Connect when the need is to prove an identity, not just access a resource. |
+| **Pitfalls to avoid** | Sharing a password directly with a third-party app. Using an OAuth access token to authenticate a user. Using *Client Credentials* for an action that must be attributed to a specific user. |
+| **Best practices** | Always limit the requested scope to the strict minimum needed. Use OpenID Connect when the need is to prove an identity, not just access a resource. Reserve *Client Credentials* for server-to-server calls with no notion of a user. |
