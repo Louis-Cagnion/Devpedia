@@ -106,6 +106,64 @@ A string is therefore simply a sequence of characters stored contiguously.
 
 See also [Memory Management](/?c=langages-de-programmation&s=c&p=memoire) for the functions to prefer (`strncpy`, `snprintf`...) to never write past a string's actually allocated size.
 
+### Searching and Comparing a String: `strcmp`, `strchr`, `strrchr`, `strstr`
+
+```c
+#include <string.h>
+
+int strcmp(const char *s1, const char *s2);
+char *strchr(const char *s, int c);
+char *strrchr(const char *s, int c);
+char *strstr(const char *haystack, const char *needle);
+```
+
+| Function | Role | Returns |
+|---|---|---|
+| `strcmp(s1, s2)` | Compares two strings character by character | `0` if equal; a negative or positive value otherwise, depending on which one precedes the other in ASCII order |
+| `strchr(s, c)` | Searches for the **first** occurrence of character `c` in `s` | A pointer to that occurrence, or `NULL` if absent |
+| `strrchr(s, c)` | Searches for the **last** occurrence of character `c` in `s` | A pointer to that occurrence, or `NULL` if absent |
+| `strstr(haystack, needle)` | Searches for the first occurrence of the **substring** `needle` in `haystack` | A pointer to the start of that occurrence, or `NULL` if absent |
+
+```c
+if (strcmp(name, "admin") == 0) {
+    printf("Welcome, administrator.\n");
+}
+
+char *at = strchr("user@example.com", '@');
+if (at != NULL) {
+    printf("Domain: %s\n", at + 1);
+}
+
+char *slash = strrchr("/home/louis/photo.jpg", '/');
+if (slash != NULL) {
+    printf("File name: %s\n", slash + 1);
+}
+
+if (strstr("Hello world", "world") != NULL) {
+    printf("Substring found.\n");
+}
+```
+
+> **Pitfall:** `strcmp()` doesn't return a boolean. `if (strcmp(a, b))` is true when the strings are **different** (non-zero result) -- the opposite of what a name starting with "str**cmp**are" intuitively suggests. Forgetting the `== 0` is a classic source of inverted logic.
+>
+> **Pitfall:** confusing `strchr()` (first occurrence) with `strrchr()` (last occurrence). To extract a file name from a full path, only `strrchr(path, '/')` gives the right result: `strchr()` would stop at the first `/` encountered, far too early in a multi-level path.
+
+### Converting a String to a Number: `atof`, `atoi`
+
+```c
+#include <stdlib.h>
+
+double atof(const char *s);
+int atoi(const char *s);
+```
+
+| Function | Converts to | Example |
+|---|---|---|
+| `atof(s)` | `double` | `atof("3.14")` -> `3.14` |
+| `atoi(s)` | `int` | `atoi("42")` -> `42` |
+
+> **Pitfall:** neither `atof()` nor `atoi()` reports an invalid string. `atoi("abc")` returns `0`, exactly like `atoi("0")`: there's no way to distinguish a successful conversion to zero from a failed conversion. For input that needs validation (user data, command-line argument), prefer `strtol()`/`strtod()`: same conversions, but they indicate where the reading stopped, which lets you detect a failure.
+
 ## Pointers
 
 Pointers are one of the most important features of the C language.
@@ -172,6 +230,6 @@ Mastering these types is essential before moving on to more advanced concepts su
 | | |
 |---|---|
 | **Key Points** | Every C variable has a fixed type that determines its size in memory, its possible values, and the operations allowed on it: `int`, `char`, `bool` (C99), `float`/`double`, array of `char` (string), `struct`, pointer. |
-| **Available Tools** | `stdbool.h` for a real boolean type; `sizeof` for a type's size at compile time; `strlen()` for a string's actual length at runtime. |
-| **Pitfalls to Avoid** | Confusing `'A'` with `"A"`. Assigning a `bool` a value it won't return unchanged. Comparing two floats with `==`. Confusing `sizeof` on an array with `sizeof` on the pointer it decays into once passed to a function. Comparing two `struct`s with `==` or `memcmp` (padding bytes). |
-| **Best Practices** | Choose the narrowest type that genuinely covers the expected values, rather than defaulting to `int`/`double` every time. Compare floats by difference, strings with `strcmp`, structures field by field. |
+| **Available Tools** | `stdbool.h` for a real boolean type; `sizeof` for a type's size at compile time; `strlen()` for a string's actual length at runtime; `strcmp()`/`strchr()`/`strrchr()`/`strstr()` to compare/search within a string; `atof()`/`atoi()` to convert it to a number. |
+| **Pitfalls to Avoid** | Confusing `'A'` with `"A"`. Assigning a `bool` a value it won't return unchanged. Comparing two floats with `==`. Confusing `sizeof` on an array with `sizeof` on the pointer it decays into once passed to a function. Comparing two `struct`s with `==` or `memcmp` (padding bytes). Testing `strcmp()` as a boolean without the `== 0`. Confusing `strchr()` (first occurrence) with `strrchr()` (last). `atof()`/`atoi()` silently returning `0` on invalid input. |
+| **Best Practices** | Choose the narrowest type that genuinely covers the expected values, rather than defaulting to `int`/`double` every time. Compare floats by difference, strings with `strcmp`, structures field by field. Prefer `strtol()`/`strtod()` over `atoi()`/`atof()` as soon as input needs validation. |

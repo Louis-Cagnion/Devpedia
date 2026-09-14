@@ -99,13 +99,43 @@ for (int i = 0; i < 10 && !trouve; i++) {
 }
 ```
 
+## Short-Circuit Evaluation of `&&`/`||`
+
+`&&` and `||` only evaluate their second operand if necessary (**short-circuit evaluation**), exactly as in [Python](/?c=langages-de-programmation&s=python&p=conditions): `a && b` only evaluates `b` if `a` is true (non-zero); `a || b` only evaluates `b` if `a` is false (`0`).
+
+Classic use case: avoiding an invalid pointer dereference.
+
+```c
+if (ptr != NULL && ptr->valeur > 0) {
+    ...
+}
+```
+
+If `ptr` is `NULL`, `ptr->valeur` is never evaluated: `&&` stops as soon as the first operand is false.
+
+> **Difference from Python:** in C, `&&`/`||` always return `0` or `1` (an `int`), never one of their two operands. `age > 0 && age` therefore doesn't return `age` the way the Python equivalent would -- only the short-circuit property (not evaluating the second operand when unnecessary) is usable in C, never the return value as a "fallback value".
+
+### Combining Conditional Dispatch and Failure Detection
+
+A more advanced use: chaining several `&&`/`||` to test a case AND call the matching function, in a single expression, provided each called function returns `1` on success and `0` on failure:
+
+```c
+!strcmp(type, "v")  && add_vector(mesh, values)
+|| !strcmp(type, "vt") && add_texcoord(mesh, values)
+|| !strcmp(type, "f")  && add_face(mesh, values);
+```
+
+Reads like an `if`/`else if` chain: `&&` has higher precedence than `||`, so each line forms an independent `(test && call)` pair. As soon as one pair is true (the test matches AND the call succeeds), `||` stops there; otherwise it moves on to the next pair.
+
+> **Pitfall:** this style assumes every called function follows the "`1` = success, `0` = failure" convention. A function that follows the opposite convention (`0` = success, common for system calls like `close()`) silently breaks the chain: a real success evaluated as `0` is interpreted as a failure, and `||` wrongly moves on to the next branch.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | `while` checks before, `do while` checks after (at least one execution), `for` combines initialization/condition/increment. No native `foreach`: an array is iterated through by index. |
-| **Tools you can use** | `break` (stops the loop), `continue` (skips to the next iteration). |
-| **Pitfalls to avoid** | `break` only exits the nearest loop: a control variable is needed to exit multiple nested loops. |
-| **Best practices** | Always pass an array's size explicitly to a function that iterates through it, rather than assuming it can be deduced. |
+| **Key takeaways** | `while` checks before, `do while` checks after (at least one execution), `for` combines initialization/condition/increment. No native `foreach`: an array is iterated through by index. `&&`/`||` short-circuit their second operand, but always return `0`/`1`, never an operand as in Python. |
+| **Tools you can use** | `break` (stops the loop), `continue` (skips to the next iteration). Chain `&&`/`||` to combine a test and a conditional call in a single expression. |
+| **Pitfalls to avoid** | `break` only exits the nearest loop: a control variable is needed to exit multiple nested loops. A `&&`/`||` chain assumes every called function returns `1` on success; a function that returns `0` on success (opposite convention) silently breaks it. |
+| **Best practices** | Always pass an array's size explicitly to a function that iterates through it, rather than assuming it can be deduced. Reserve `&&`/`||` chaining for functions that follow the "1 = success" convention; use an explicit `if` otherwise. |

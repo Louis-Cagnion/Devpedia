@@ -43,7 +43,9 @@ import { parseHTML } from "linkedom";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
-const PIPER_PYTHON = path.join(ROOT, ".venv-piper", "bin", "python");
+const PIPER_PYTHON = process.platform === "win32"
+    ? path.join(ROOT, ".venv-piper", "Scripts", "python.exe")
+    : path.join(ROOT, ".venv-piper", "bin", "python");
 const VOICES_DIR = path.join(ROOT, ".piper-voices");
 const AUDIO_DIR = path.join(ROOT, "audio");
 
