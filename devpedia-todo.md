@@ -56,3 +56,7 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 ## 11. Notion candidate : suite revue /review poc-borne-git
 - Streaming de sortie HTTP progressive en PHP (`ini_set('output_buffering', 'off')` + `flush()` en boucle, `admin/import_web.php`/`admin/atlas-geocode.php` ; mécanisme inverse du point 10, la connexion reste ouverte tout du long) → complément d'`eviter-le-recalcul-redondant.md`/`pwa-progressive-web-app.md`.
 - Reste aussi : chunk 7 de la revue /review (`src/Chat/ImportOrchestrator.php`, `tools/*.php`, `import.php` -- voir `review-progress.md` du projet poc-borne-git).
+
+## 12. Notions candidates : revue /review PDF_parser (Louis, 14/09/2026)
+- Chaînage d'exceptions `raise ... from exc` (conserver la cause d'origine tout en levant un type d'erreur "métier" ; `src/pdf_parser/ingestion.py::ingest()`) → complément de `gestion-des-erreurs.md` (Langages/Python).
+- Syntaxe moderne `X | None` (PEP 604, Python 3.10+) comme remplacement de `Optional[X]`/`Union[...]` du module `typing` déjà couvert → complément de `typage-avec-annotations.md` (Langages/Python).
