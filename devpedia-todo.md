@@ -1,5 +1,7 @@
 # TODO — Devpedia
 
+> Prochaine tâche : continuer les compléments/nouveaux chapitres des points 21-33 (rangement déjà tranché) -- reprendre par la variable `static` PHP dans `poo.md` (point 29), puis les compléments courts restants (`history.replaceState` dans `dom-et-evenements.md`, custom property CSS depuis JS, streaming HTTP PHP), puis les nouveaux chapitres. Régénération audio complète seulement une fois tout ajouté.
+
 > Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 11), et les points 21 à 33 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
 
 Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de décision de régénération audio à Louis -- il s'en charge à son rythme et note lui-même son retour ici quand il le fait. Le fait/pourquoi/décisions déjà tranchées (progression, historique) va dans `journal-de-bord.md`, jamais ici : seuls les points restants, avec le contexte minimal pour les exécuter sans revenir en arrière.
