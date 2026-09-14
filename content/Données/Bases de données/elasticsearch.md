@@ -83,6 +83,71 @@ Une **agrégation** calcule une statistique sur l'ensemble des documents qui cor
 
 C'est l'équivalent d'un `GROUP BY` SQL, mais calculé sur l'index de recherche lui-même plutôt que par une jointure entre tables.
 
+## La recherche hybride : combiner vecteurs et filtres exacts
+
+Un champ Elasticsearch peut aussi stocker un **embedding** (voir [RAG](/?c=ia&s=nlp-llm&p=rag)) sous le type `dense_vector` : un tableau de nombres qui représente le sens d'un texte, comparé par similarité plutôt que par égalité.
+
+```json
+// Mapping : declare un champ vectoriel a cote des champs classiques
+{
+  "mappings": {
+    "properties": {
+      "description": { "type": "text" },
+      "concession_id": { "type": "keyword" },
+      "embedding": { "type": "dense_vector", "dims": 768 }
+    }
+  }
+}
+```
+
+La clause `knn` (*k-nearest neighbors*, les k voisins les plus proches) cherche les documents dont l'`embedding` est le plus proche d'un vecteur donné -- la même similarité cosinus qu'un pipeline RAG (voir [le pipeline en quatre étapes](/?c=ia&s=nlp-llm&p=rag)), mais calculée directement par Elasticsearch plutôt que dans le code applicatif.
+
+```json
+// Cherche les 10 vehicules dont la description ressemble le plus a la question,
+// mais UNIQUEMENT dans la concession courante
+{
+  "knn": {
+    "field": "embedding",
+    "query_vector": [0.021, -0.13, 0.58],
+    "k": 10,
+    "num_candidates": 50,
+    "filter": {
+      "term": { "concession_id": "concession-42" }
+    }
+  }
+}
+```
+
+| Paramètre | Rôle |
+|---|---|
+| `field` | Le champ `dense_vector` à comparer |
+| `query_vector` | L'embedding de la question posée (calculé par le même modèle que celui utilisé à l'indexation) |
+| `k` | Combien de résultats renvoyer au final |
+| `num_candidates` | Combien de candidats explorer avant de garder les `k` meilleurs (compromis vitesse/précision : plus il est grand, plus la recherche est précise mais lente) |
+| `filter` | Une condition exacte (comme un `term`/`bool` classique) appliquée **avant** de chercher les voisins |
+
+> **Piège :** filtrer après coup (récupérer les 10 voisins les plus proches, puis exclure ceux d'une autre concession en code applicatif) peut renvoyer moins de 10 résultats, voire aucun, si tous les voisins les plus proches appartiennent à d'autres concessions. Le `filter` imbriqué dans `knn` restreint l'espace de recherche avant de chercher les voisins : la comparaison ne porte alors que sur les documents déjà filtrés.
+>
+> **Bonne pratique :** toujours passer une contrainte exacte connue à l'avance (un id de concession, une plage de dates) via le `filter` de la clause `knn` elle-même, jamais en post-traitement côté application.
+
+`knn` se combine aussi avec une recherche plein texte classique dans la même requête, pour mélanger pertinence sémantique et pertinence textuelle :
+
+```json
+{
+  "query": {
+    "match": { "description": "berline familiale" }
+  },
+  "knn": {
+    "field": "embedding",
+    "query_vector": [0.021, -0.13, 0.58],
+    "k": 10,
+    "num_candidates": 50
+  }
+}
+```
+
+Elasticsearch fusionne alors les deux classements (score textuel et score vectoriel) en un seul score final -- d'où le nom de **recherche hybride**.
+
 ## Painless : personnaliser le tri côté serveur
 
 **Painless** est un petit langage de script exécuté côté serveur Elasticsearch, utilisé quand le tri par défaut (pertinence textuelle, ou un champ simple) ne suffit pas :
@@ -119,7 +184,7 @@ Bulk API (par lots de 500): 1000 documents -> 2 requetes reseau
 
 | | |
 |---|---|
-| **À retenir** | Elasticsearch stocke des documents JSON dans des index, pensés pour la recherche plein texte plutôt que les jointures. Les requêtes s'écrivent en JSON (Query DSL) ; les agrégations calculent des statistiques sans jointure ; Painless permet un tri personnalisé côté serveur. |
-| **Outils utilisables** | `match` (plein texte, avec fuzziness optionnelle), `filter`/`term` (valeur exacte), `aggs` (agrégations), scripts Painless, Bulk API pour l'import en masse. |
-| **Pièges à éviter** | Activer le fuzzy matching sur un champ à valeurs fermées (facette) ; importer document par document plutôt que par lots. |
-| **Bonnes pratiques** | Réserver `match`/fuzziness au texte libre, `term` aux facettes ; utiliser la Bulk API par lots pour tout import volumineux. |
+| **À retenir** | Elasticsearch stocke des documents JSON dans des index, pensés pour la recherche plein texte plutôt que les jointures. Les requêtes s'écrivent en JSON (Query DSL) ; les agrégations calculent des statistiques sans jointure ; `knn` cherche par similarité vectorielle et peut se combiner à un filtre exact ou à une recherche plein texte (recherche hybride) ; Painless permet un tri personnalisé côté serveur. |
+| **Outils utilisables** | `match` (plein texte, avec fuzziness optionnelle), `filter`/`term` (valeur exacte), `knn`/`dense_vector` (similarité vectorielle), `aggs` (agrégations), scripts Painless, Bulk API pour l'import en masse. |
+| **Pièges à éviter** | Activer le fuzzy matching sur un champ à valeurs fermées (facette) ; importer document par document plutôt que par lots ; filtrer après coup une recherche `knn` au lieu d'utiliser son `filter` intégré. |
+| **Bonnes pratiques** | Réserver `match`/fuzziness au texte libre, `term` aux facettes ; utiliser la Bulk API par lots pour tout import volumineux ; passer toute contrainte exacte connue à l'avance via le `filter` de `knn`. |

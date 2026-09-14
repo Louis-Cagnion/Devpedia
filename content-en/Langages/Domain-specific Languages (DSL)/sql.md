@@ -40,6 +40,46 @@ SELECT COUNT(*) AS nb_clients FROM clients WHERE city = 'Lyon';
 
 `AS name` Assigns an alias to a column in the result (in this case, the calculated column will be named "`nb_clients`").
 
+Combined with `GROUP BY`, an aggregate function computes one value per group instead of a single global value:
+
+```sql
+SELECT city, COUNT(*) AS nb_clients
+FROM clients
+GROUP BY city;  -- one result row per distinct city
+```
+
+### `GROUPING SETS`: total and detail in a single query (T-SQL)
+
+Getting both the overall total and the per-city breakdown would normally require two separate queries (one with `GROUP BY`, one without), or a `UNION` of the two. `GROUPING SETS` (SQL Server, among others) computes both in the same pass over the table:
+
+```sql
+SELECT city, COUNT(*) AS nb_clients
+FROM clients
+GROUP BY GROUPING SETS ((city), ());
+-- (city) : one row per distinct city, like a plain GROUP BY
+-- ()     : one total row, city shown as NULL
+```
+
+| Requested set | Result |
+|---|---|
+| `(city)` | One row per distinct city, same as `GROUP BY city` alone |
+| `()` (empty set) | A single row: the total across the whole table, `city` is `NULL` |
+
+> **Pitfall:** on the total row, `city` is `NULL` -- but a `NULL` meaning "this is an aggregated total", not the same `NULL` meaning "unknown value" seen above ([`NULL`: a missing value](#null-a-missing-value-not-a-value-like-any-other)). Naively filtering `WHERE city IS NOT NULL` would drop the total row by mistake.
+>
+> **Best practice:** use `GROUPING(city)` to tell the two apart unambiguously: it's `1` on the total row (the column is `NULL` because it's aggregated), `0` otherwise (including when the real `city` value was itself `NULL`).
+
+```sql
+SELECT
+    city,
+    COUNT(*) AS nb_clients,
+    GROUPING(city) AS is_total  -- 1 = total row, 0 = detail row
+FROM clients
+GROUP BY GROUPING SETS ((city), ());
+```
+
+Related to `ROLLUP` (a hierarchy of nested totals, e.g. day → month → year) and `CUBE` (every possible combination across several columns), `GROUPING SETS` is the most explicit form of the three: each wanted column combination is spelled out by hand in parentheses.
+
 ## `JOIN` : Joining two tables on a common column
 
 A declarative way to match two collections using a shared key, instead of writing a loop with a manual search:
@@ -63,6 +103,28 @@ LEFT JOIN ventes v ON v.client_id = c.id; -- Keeps ALL left-aligned lines; retur
 > **Pitfall:** Using `JOIN` (`INNER`) when you actually want *`EVERYONE*`: a customer with zero sales would be silently excluded from the results, whereas `LEFT JOIN` would have included them with columns set to `NULL`.
 >
 > **Best practice:** Before writing the join, explicitly ask yourself whether rows without a match should be removed (`JOIN`) or remain visible (`LEFT JOIN`), both produce a syntactically valid result, but with different semantic meanings.
+
+### `OUTER APPLY` / `CROSS APPLY`: a join that can call a function per row (T-SQL)
+
+A regular `JOIN`'s `ON` condition can only reference columns, never call a function or a subquery parameterized by the current row. `APPLY` (SQL Server) lifts this limit: it runs a subquery **for every row** of the left-hand table, passing that row's columns to it as a parameter.
+
+```sql
+SELECT c.name, latest.date_achat
+FROM clients c
+OUTER APPLY (
+    SELECT TOP 1 v.date_achat
+    FROM ventes v
+    WHERE v.client_id = c.id       -- references c, the current row: impossible in a JOIN's ON
+    ORDER BY v.date_achat DESC
+) AS latest;
+```
+
+| Variant | Behavior if the subquery returns nothing |
+|---|---|
+| `CROSS APPLY` | The `clients` row disappears from the result (equivalent to `INNER JOIN`) |
+| `OUTER APPLY` | The `clients` row is kept, subquery columns set to `NULL` (equivalent to `LEFT JOIN`) |
+
+> **Note:** this same need (referencing the current row from a joined subquery) is called `LATERAL JOIN` on PostgreSQL -- an equivalent concept, different syntax depending on the engine.
 
 ## `CREATE TABLE`: creating a table (DDL)
 
@@ -143,6 +205,50 @@ $toutes = $stmt->fetchAll(\PDO::FETCH_ASSOC); // all lines
 The process is always the same: `prepare()` (enter the query, using placeholders such as `:city`) → `execute()` (provide the actual values) → `fetch()` / `fetchAll()` (retrieve the result).
 
 > **Note:** `$pdo->query($sql)` is a space-less shortcut that can only be used if `$sql` is a string that is 100% hard-coded, with no external variables concatenated into it. As soon as a single external value (user, URL, session, etc.) is included in the request, you must use `prepare()` / `execute()`.
+
+## `IN (...)` with a variable-length list in PDO
+
+PDO can only bind individual values, never an entire array as a single placeholder: `IN (:cities)` with `execute([':cities' => ['Lyon', 'Paris']])` doesn't work -- PDO would treat the array as a single value (an error, or an incorrect conversion depending on the driver).
+
+```php
+<?php
+function queryWithIn(PDO $pdo, string $sql, string $prefix, array $values): PDOStatement
+{
+    // Generates one named placeholder per value: prefix_0, prefix_1...
+    $placeholders = [];
+    $params = [];
+    foreach (array_values($values) as $i => $value) {
+        $name = ":{$prefix}_{$i}";
+        $placeholders[] = $name;
+        $params[$name] = $value;
+    }
+
+    // Replaces the {IN} marker in the given SQL with the generated placeholder list
+    $finalSql = str_replace('{IN}', implode(', ', $placeholders), $sql);
+
+    $stmt = $pdo->prepare($finalSql);
+    $stmt->execute($params);
+    return $stmt;
+}
+
+$stmt = queryWithIn(
+    $pdo,
+    'SELECT * FROM clients WHERE city IN ({IN})',
+    'city',
+    ['Lyon', 'Paris']
+);
+// Generated SQL: SELECT * FROM clients WHERE city IN (:city_0, :city_1)
+```
+
+| Step | Role |
+|---|---|
+| One named placeholder per value (`:city_0`, `:city_1`...) | Works around PDO's limit (one placeholder = one single value) |
+| `implode(', ', $placeholders)` | Builds the `(:city_0, :city_1)` list to insert into `IN (...)` |
+| `$params` | Each value is still passed separately to `execute()`, never concatenated into the SQL text |
+
+> **Pitfall:** an empty list (`$values = []`) produces a syntactically invalid `IN ()` on most SQL engines. Check that `$values` isn't empty before calling this function (or short-circuit the whole query: a search over an empty list of cities can't return any results anyway).
+>
+> **Best practice:** never concatenate the values directly into `IN (...)` (that would be the same [SQL injection](#sql-injection-why-you-should-never-concatenate-an-external-value) flaw as concatenating any other external value); always generate one placeholder per value, regardless of the list's size.
 
 ## Controlling SQL from Python with `pyodbc`
 
@@ -256,7 +362,7 @@ VALUES (1, 'Dupont', 'Paris', GETDATE(), NULL, 1);
 
 | | |
 |---|---|
-| **Key Points** | SQL queries (DML) and defines the structure (DDL) of tables (fixed columns, rows = records). `JOIN` joins two tables based on a common column; `INNER JOIN` removes rows with no matches, `LEFT JOIN` keeps them. `NULL` = unknown value, never to be confused with a sentinel value. |
-| **Tools available** | `SELECT` / `WHERE`, aggregate functions (`COUNT` / `SUM` / `AVG`), `JOIN` / `LEFT JOIN`, `CREATE TABLE` / `ALTER TABLE`, indexes, prepared queries via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php)) or `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 for historizing changes. |
-| **Pitfalls to Avoid** | Concatenating an external value directly into an SQL query (SQL injection); using `INNER JOIN` when you want to keep rows with no match; reordering columns via `ALTER TABLE` (impossible, the table must be recreated); confusing `NULL` with a sentinel value. |
-| **Best Practices** | Always use a `prepare` ( / `execute`) for an external value; limit the application account’s permissions to only what is strictly necessary (principle of least privilege); a technical key (`IDENTITY`) rather than a wide natural key for indexing. |
+| **Key Points** | SQL queries (DML) and defines the structure (DDL) of tables (fixed columns, rows = records). `JOIN` joins two tables based on a common column; `INNER JOIN` removes rows with no matches, `LEFT JOIN` keeps them; `APPLY` combines a join with a function/subquery call parameterized by row. `GROUP BY`/`GROUPING SETS` summarize by group, with or without an overall total in the same query. `NULL` = unknown value, never to be confused with a sentinel value. |
+| **Tools available** | `SELECT` / `WHERE`, aggregate functions (`COUNT` / `SUM` / `AVG`), `GROUP BY`/`GROUPING SETS`/`GROUPING()`, `JOIN` / `LEFT JOIN`/`OUTER APPLY`/`CROSS APPLY`, `CREATE TABLE` / `ALTER TABLE`, indexes, prepared queries via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php), including a variable-length `IN (...)` via generated placeholders) or `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 for historizing changes. |
+| **Pitfalls to Avoid** | Concatenating an external value directly into an SQL query (SQL injection), including inside an `IN (...)`; using `INNER JOIN` when you want to keep rows with no match; reordering columns via `ALTER TABLE` (impossible, the table must be recreated); confusing `NULL` with a sentinel value, including the total-row `NULL` from `GROUPING SETS`. |
+| **Best Practices** | Always use a `prepare` ( / `execute`) for an external value, including one placeholder per value inside an `IN (...)`; limit the application account's permissions to only what is strictly necessary (principle of least privilege); a technical key (`IDENTITY`) rather than a wide natural key for indexing; `GROUPING()` to tell a total row apart from a real `NULL` value. |

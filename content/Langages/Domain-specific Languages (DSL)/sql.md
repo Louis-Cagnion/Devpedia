@@ -44,6 +44,46 @@ SELECT COUNT(*) AS nb_clients FROM clients WHERE ville = 'Lyon';
 
 `AS nom` donne un alias à une colonne du résultat (ici, la colonne calculée s'appellera `nb_clients`).
 
+Combinée à `GROUP BY`, une fonction d'agrégation calcule une valeur par groupe plutôt qu'une seule valeur globale :
+
+```sql
+SELECT ville, COUNT(*) AS nb_clients
+FROM clients
+GROUP BY ville;  -- une ligne de resultat par ville distincte
+```
+
+### `GROUPING SETS` : total et détail en une seule requête (T-SQL)
+
+Obtenir à la fois le total global et le détail par ville demanderait normalement deux requêtes séparées (une avec `GROUP BY`, une sans), ou une `UNION` des deux. `GROUPING SETS` (SQL Server, entre autres) calcule les deux dans le même passage sur la table :
+
+```sql
+SELECT ville, COUNT(*) AS nb_clients
+FROM clients
+GROUP BY GROUPING SETS ((ville), ());
+-- (ville) : une ligne par ville, comme un GROUP BY classique
+-- ()      : une ligne de total global, ville affichee a NULL
+```
+
+| Groupe demandé | Résultat |
+|---|---|
+| `(ville)` | Une ligne par ville distincte, comme `GROUP BY ville` seul |
+| `()` (groupe vide) | Une seule ligne : le total sur l'ensemble de la table, `ville` vaut `NULL` |
+
+> **Piège :** sur la ligne de total, `ville` vaut `NULL` -- mais un `NULL` "ceci est un total agrégé", pas le même `NULL` "valeur inconnue" vu plus haut ([`NULL` : une donnée manquante](#null--une-donnee-manquante-pas-une-valeur-comme-les-autres)). Filtrer naïvement `WHERE ville IS NOT NULL` supprimerait la ligne de total par erreur.
+>
+> **Bonne pratique :** utiliser `GROUPING(ville)` pour distinguer les deux sans ambiguïté : elle vaut `1` sur la ligne de total (la colonne est `NULL` parce qu'agrégée), `0` sinon (y compris si la vraie donnée `ville` était elle-même `NULL`).
+
+```sql
+SELECT
+    ville,
+    COUNT(*) AS nb_clients,
+    GROUPING(ville) AS est_total  -- 1 = ligne de total, 0 = ligne detail
+FROM clients
+GROUP BY GROUPING SETS ((ville), ());
+```
+
+Apparentée à `ROLLUP` (hiérarchie de totaux imbriqués, ex. jour → mois → année) et `CUBE` (tous les croisements possibles entre plusieurs colonnes), `GROUPING SETS` en est la forme la plus explicite : chaque combinaison de colonnes voulue est écrite à la main entre parenthèses.
+
 ## `JOIN` : combiner deux tables sur une colonne commune
 
 Équivalent déclaratif d'apparier deux collections par une clé partagée, au lieu d'écrire une boucle avec une recherche manuelle :
@@ -67,6 +107,28 @@ LEFT JOIN ventes v ON v.client_id = c.id; -- garde TOUTES les lignes de gauche, 
 > **Piège :** utiliser `JOIN` (INNER) quand on veut en réalité *tout le monde* : un client sans aucune vente disparaîtrait silencieusement du résultat, alors qu'un `LEFT JOIN` l'aurait gardé avec des colonnes à `NULL`.
 >
 > **Bonne pratique :** se demander explicitement, avant d'écrire la jointure, si les lignes sans correspondance doivent disparaître (`JOIN`) ou rester visibles (`LEFT JOIN`), les deux produisent un résultat syntaxiquement valide, mais sémantiquement différent.
+
+### `OUTER APPLY` / `CROSS APPLY` : une jointure qui peut appeler une fonction par ligne (T-SQL)
+
+La condition `ON` d'un `JOIN` classique ne peut référencer que des colonnes, jamais appeler une fonction ou une sous-requête paramétrée par la ligne courante. `APPLY` (SQL Server) lève cette limite : il exécute une sous-requête **pour chaque ligne** de la table de gauche, en lui passant les colonnes de cette ligne en paramètre.
+
+```sql
+SELECT c.nom, derniere.date_achat
+FROM clients c
+OUTER APPLY (
+    SELECT TOP 1 v.date_achat
+    FROM ventes v
+    WHERE v.client_id = c.id       -- reference c, la ligne courante : impossible dans un ON de JOIN
+    ORDER BY v.date_achat DESC
+) AS derniere;
+```
+
+| Variante | Comportement si la sous-requête ne renvoie rien |
+|---|---|
+| `CROSS APPLY` | La ligne de `clients` disparaît du résultat (équivalent `INNER JOIN`) |
+| `OUTER APPLY` | La ligne de `clients` est gardée, colonnes de la sous-requête à `NULL` (équivalent `LEFT JOIN`) |
+
+> **Note :** ce même besoin (référencer la ligne courante depuis une sous-requête jointe) s'appelle `LATERAL JOIN` sur PostgreSQL -- notion équivalente, syntaxe différente selon le moteur.
 
 ## `CREATE TABLE` : créer une table (DDL)
 
@@ -147,6 +209,50 @@ $toutes = $stmt->fetchAll(\PDO::FETCH_ASSOC);  // toutes les lignes
 Le cycle est toujours le même : `prepare()` (écrire la requête, avec des espaces réservés comme `:ville`) → `execute()` (fournir les vraies valeurs) → `fetch()`/`fetchAll()` (récupérer le résultat).
 
 > **Note :** `$pdo->query($sql)` est un raccourci **sans** espace réservé, utilisable uniquement si `$sql` est une string 100% écrite en dur, sans aucune variable externe concaténée dedans. Dès qu'une seule valeur externe (utilisateur, URL, session...) entre dans la requête, il faut passer par `prepare()`/`execute()`.
+
+## `IN (...)` avec une liste de taille variable en PDO
+
+PDO ne permet de paramétrer que des valeurs individuelles, jamais un tableau entier en un seul espace réservé : `IN (:villes)` avec `execute([':villes' => ['Lyon', 'Paris']])` ne fonctionne pas, PDO traiterait le tableau comme une seule valeur (une erreur, ou une conversion incorrecte selon le driver).
+
+```php
+<?php
+function requeteAvecIn(PDO $pdo, string $sql, string $prefixe, array $valeurs): PDOStatement
+{
+    // Genere un placeholder nomme par valeur : prefixe_0, prefixe_1...
+    $placeholders = [];
+    $params = [];
+    foreach (array_values($valeurs) as $i => $valeur) {
+        $nom = ":{$prefixe}_{$i}";
+        $placeholders[] = $nom;
+        $params[$nom] = $valeur;
+    }
+
+    // Remplace le marqueur {IN} du SQL fourni par la liste de placeholders generee
+    $sqlFinal = str_replace('{IN}', implode(', ', $placeholders), $sql);
+
+    $stmt = $pdo->prepare($sqlFinal);
+    $stmt->execute($params);
+    return $stmt;
+}
+
+$stmt = requeteAvecIn(
+    $pdo,
+    'SELECT * FROM clients WHERE ville IN ({IN})',
+    'ville',
+    ['Lyon', 'Paris']
+);
+// SQL genere : SELECT * FROM clients WHERE ville IN (:ville_0, :ville_1)
+```
+
+| Étape | Rôle |
+|---|---|
+| Un placeholder nommé par valeur (`:ville_0`, `:ville_1`...) | Contourne la limite de PDO (un espace réservé = une seule valeur) |
+| `implode(', ', $placeholders)` | Construit la liste `(:ville_0, :ville_1)` à insérer dans le `IN (...)` |
+| `$params` | Chaque valeur reste passée séparément à `execute()`, jamais concaténée dans le texte SQL |
+
+> **Piège :** une liste vide (`$valeurs = []`) génère un `IN ()` syntaxiquement invalide pour la plupart des moteurs SQL. Vérifier `$valeurs` non vide avant d'appeler cette fonction (ou court-circuiter la requête entière : une recherche sur une liste vide de villes ne peut de toute façon renvoyer aucun résultat).
+>
+> **Bonne pratique :** ne jamais concaténer directement les valeurs dans le `IN (...)` (ce serait la même faille d'[injection SQL](#injection-sql--pourquoi-ne-jamais-concatener-une-valeur-externe) que concaténer n'importe quelle autre valeur externe) ; générer systématiquement un placeholder par valeur, quelle que soit la taille de la liste.
 
 ## Piloter SQL depuis Python avec `pyodbc`
 
@@ -260,7 +366,7 @@ VALUES (1, 'Dupont', 'Paris', GETDATE(), NULL, 1);
 
 | | |
 |---|---|
-| **À retenir** | SQL interroge (DML) et définit la structure (DDL) de tables (colonnes fixes, lignes = enregistrements). `JOIN` combine deux tables sur une colonne commune ; `INNER JOIN` élimine les lignes sans correspondance, `LEFT JOIN` les garde. `NULL` = valeur inconnue, à ne jamais confondre avec une valeur sentinelle. |
-| **Outils utilisables** | `SELECT`/`WHERE`, fonctions d'agrégation (`COUNT`/`SUM`/`AVG`), `JOIN`/`LEFT JOIN`, `CREATE TABLE`/`ALTER TABLE`, index, requêtes préparées via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php)) ou `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 pour historiser des changements. |
-| **Pièges à éviter** | Concaténer une valeur externe dans une requête SQL (injection) ; `INNER JOIN` quand on veut garder les lignes sans correspondance ; réordonner des colonnes via `ALTER TABLE` (impossible, il faut recréer la table) ; confondre `NULL` et une valeur sentinelle. |
-| **Bonnes pratiques** | Toujours une requête préparée (`prepare`/`execute`) pour une valeur externe ; limiter les droits du compte applicatif (moindre privilège) ; clé technique (`IDENTITY`) plutôt que clé naturelle large pour l'indexation. |
+| **À retenir** | SQL interroge (DML) et définit la structure (DDL) de tables (colonnes fixes, lignes = enregistrements). `JOIN` combine deux tables sur une colonne commune ; `INNER JOIN` élimine les lignes sans correspondance, `LEFT JOIN` les garde ; `APPLY` combine une jointure et un appel de fonction/sous-requête paramétrée par ligne. `GROUP BY`/`GROUPING SETS` résument par groupe, avec ou sans total global dans la même requête. `NULL` = valeur inconnue, à ne jamais confondre avec une valeur sentinelle. |
+| **Outils utilisables** | `SELECT`/`WHERE`, fonctions d'agrégation (`COUNT`/`SUM`/`AVG`), `GROUP BY`/`GROUPING SETS`/`GROUPING()`, `JOIN`/`LEFT JOIN`/`OUTER APPLY`/`CROSS APPLY`, `CREATE TABLE`/`ALTER TABLE`, index, requêtes préparées via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php), y compris un `IN (...)` de taille variable via des placeholders générés) ou `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 pour historiser des changements. |
+| **Pièges à éviter** | Concaténer une valeur externe dans une requête SQL (injection), y compris dans un `IN (...)` ; `INNER JOIN` quand on veut garder les lignes sans correspondance ; réordonner des colonnes via `ALTER TABLE` (impossible, il faut recréer la table) ; confondre `NULL` et une valeur sentinelle, y compris le `NULL` de total d'un `GROUPING SETS`. |
+| **Bonnes pratiques** | Toujours une requête préparée (`prepare`/`execute`) pour une valeur externe, y compris chaque valeur d'un `IN (...)` via un placeholder par valeur ; limiter les droits du compte applicatif (moindre privilège) ; clé technique (`IDENTITY`) plutôt que clé naturelle large pour l'indexation ; `GROUPING()` pour distinguer une ligne de total d'une vraie valeur `NULL`. |
