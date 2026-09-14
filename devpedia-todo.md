@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-18), une décision de Louis (points 21-24, 27) ou une relecture de Louis (points 19, 20, 25, 26).
+> Le reste du fichier attend une confirmation à l'oreille de Louis (points 1-18), une décision de Louis (points 21-24, 27, 28) ou une relecture de Louis (points 19, 20, 25, 26).
 
 Points restants uniquement (le fait/pourquoi/décisions déjà tranchées va dans `journal-de-bord.md`). Ordonné du plus rapide au plus lent à mettre en place ; chaque tâche garde le contexte nécessaire pour l'exécuter sans revenir en arrière.
 
@@ -156,6 +156,12 @@ Trouvé écrit sur disque (08/09/2026) mais jamais committé ni suivi : `content
 ## 27. Chapitre candidat : strrchr
 Repéré le 10/09/2026 en session `/review` sur le projet SCOP de Louis (`parse_mtl`, `src/parsing/parser.c`, pour retrouver le dossier parent d'un chemin de fichier). `strrchr()` cherche la **dernière** occurrence d'un caractère dans une chaîne (contrairement à `strchr()`, qui cherche la première — déjà couvert mais pas encore mis en regard de `strrchr`) ; absent de Devpedia.
 - Reste à Louis : décider où le ranger (probablement `variables.md`, à côté de `strchr`/`strstr`/`strlen`/`strcmp`), et le rédiger suivant le plan zéro-connaissance.
+
+## 28. 2 notions candidates issues d'une revue /review (auto-review, partielle) du projet poc-borne-git
+Revue du 14/09/2026, périmètre couvert : `router.php`, `index.php`, `setup.php`, `src/Chat/DynamicConcessionToken.php`, `src/Chat/EmbeddingService.php`, `src/Chat/QueryBuilder.php`, `src/Shared/RateLimiter.php`, `src/Shared/BaseDashboardRepository.php`, `src/Atlas/Gold/GoldSource.php`, `src/Atlas/Geocoder.php` — **non exhaustive** (reste à couvrir : apps/insights, apps/atlas, apps/satisfaction, apps/ambient, admin/, le reste de src/Chat et src/Atlas ; voir mémoire de session pour le point de reprise exact). La plupart des notions rencontrées sur ce périmètre étaient déjà couvertes (HMAC/`hash_equals` → `cryptographie-appliquee.md`/`connexions.md`, autoloading SPL → `autoloading.md`, routage/front controller → `routage.md`, rate limiting fenêtre glissante → `securite-api-web.md`, PDO/requêtes préparées → `sql.md`, embeddings/similarité cosinus → `rag.md`/`nlp-et-llm.md`, mémoïsation → `eviter-le-recalcul-redondant.md`). Deux absentes :
+1. **Recherche hybride dans Elasticsearch** (clause `knn` combinée à des filtres `bool` dans une même requête, cf. `src/Chat/QueryBuilder.php`) : `elasticsearch.md` ne mentionne ni `knn` ni `dense_vector`. Le concept générique "embedding + similarité cosinus" est déjà expliqué (`rag.md`), mais pas la mécanique ES précise pour combiner recherche vectorielle et filtres exacts (ex. contraindre le kNN à la concession courante) dans une seule requête.
+2. **Clause `IN (...)` paramétrée dynamiquement en PDO** (génération de placeholders nommés `:prefix_0, :prefix_1...` pour une liste de taille variable — PDO ne supporte pas nativement le binding direct d'un tableau dans un `IN()`), cf. `src/Shared/BaseDashboardRepository::sqlInParams()`. Les requêtes préparées sont couvertes (`sql.md`) mais pas ce cas précis, pourtant fréquent.
+- Reste à Louis : décider si ces deux notions méritent un chapitre dédié (1 → Bases de données, en complément d'`elasticsearch.md` ; 2 → complément de `sql.md` ou `connexions.md`), et si oui les rédiger en suivant le plan zéro-connaissance. Reste aussi à reprendre la revue /review sur le périmètre non couvert (voir mémoire de session `review-progress.md` du projet poc-borne-git).
 
 ## Hors séquence (pas des tâches à planifier, à traiter en continu)
 - **Validation de la table de prononciation TTS** (`js/reader-pronunciation.js`), chapitre par chapitre par Louis en écoute directe : reste tout hors C/C++/SQL (déjà validés le 2026-08-15) ; Git/PHP retirés de cette liste suite au point 12 ci-dessus (leur validation du 15/08 ne couvrait pas ces prononciations précises).
