@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 11), une traduction EN/ES/BR à faire (point 13), et les points 21 à 33 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
+> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 11), et les points 21 à 33 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
 
 Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de décision de régénération audio à Louis -- il s'en charge à son rythme et note lui-même son retour ici quand il le fait. Le fait/pourquoi/décisions déjà tranchées (progression, historique) va dans `journal-de-bord.md`, jamais ici : seuls les points restants, avec le contexte minimal pour les exécuter sans revenir en arrière.
 
@@ -9,10 +9,6 @@ Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de d
 ## 11. Fond étoilé des pages chapitre invisible sur mobile (iOS 16.7.16)
 Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il s'affiche normalement sur desktop (`css/content.css`, `.page::before`). Deux hypothèses déjà invalidées par le retest de Louis (détail dans `journal-de-bord.md`) : `@supports` autour de `color-mix()`, puis son remplacement complet par `rgba()` + triplets RGB précalculés -- toujours gris dans les deux cas. Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `var()`, `rgba()`, `radial-gradient()`, `inset: 0`).
 - Reste à Louis : sur la page d'un chapitre (iPhone), bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement dans ce mode. Si ça ne suffit pas à trancher, étape suivante : inspecteur Safari distant (Mac connecté à l'iPhone).
-
-## 13. Section "Ce que couvre le site" de l'accueil : réécrite
-`content/acceuil.md`, section réécrite pour couvrir les 11 catégories actuelles.
-- Reste à faire : traduire la section en EN/ES/BR (pas encore mis à jour).
 
 ## 21. Notions candidates : projet SCOP de Louis (rendu 3D OpenGL)
 - Dispersion chromatique (aberration chromatique en post-traitement, réfraction par cubemap à indice de réfraction variable par canal) → `Fondamentaux/Graphisme`, suite de `wavefront-obj-et-modele-de-phong.md`.
