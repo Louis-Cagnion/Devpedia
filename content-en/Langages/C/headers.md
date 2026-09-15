@@ -68,13 +68,25 @@ int addition(int a, int b);
 
 > **Note:** A header file must contain only **declarations** (function prototypes, `struct`, `typedef`, constants), never the body of a non-`static` or non-`inline` function; otherwise, every `.c` file that includes it would get its own copy of the definition, causing a "multiple definition" error during linking.
 
+## How `#include` and `-I` actually combine
+
+The preprocessor never "guesses" where an included file lives: for `#include "glad/glad.h"`, it **literally** concatenates each folder passed via [`-I`](/?c=langages&s=c&p=makefiles) with the path written after `#include`, and tests each result until it finds a file that exists:
+
+```text
+-I includes  +  #include "glad/glad.h"
+   ↓
+includes/glad/glad.h   <- path actually tested on disk
+```
+
+> **Pitfall:** pointing `-I` at the folder that directly contains `glad.h` (e.g. `-I includes/glad`) rather than its parent (`-I includes`), while the code writes `#include "glad/glad.h"`. The concatenation then gives `includes/glad/glad/glad.h`, which doesn't exist: the compiler fails with "file not found", for a path that looks correct at a glance if you only think in terms of "where the file is", without reconstructing the exact concatenation.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | A header (`.h`) contains declarations, not definitions: it lets several `.c` files share the same signatures without duplicating them. |
+| **Key takeaways** | A header (`.h`) contains declarations, not definitions: it lets several `.c` files share the same signatures without duplicating them. The preprocessor resolves `#include "..."` by literally concatenating each `-I` folder with the written path. |
 | **Tools you can use** | `#include <...>` (system library) vs `#include "..."` (project file); include guards (`#ifndef`/`#define`/`#endif` or `#pragma once`). |
-| **Pitfalls to avoid** | Putting a function's body in a header: causes a "multiple definition" error as soon as several files include it. |
+| **Pitfalls to avoid** | Putting a function's body in a header: causes a "multiple definition" error as soon as several files include it. Pointing `-I` at the wrong folder level, which breaks the concatenation with the `#include` path. |
 | **Best practices** | Always protect a header with an include guard, to support multiple indirect inclusions without error. |

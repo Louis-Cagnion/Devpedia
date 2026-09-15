@@ -68,13 +68,25 @@ int addition(int a, int b);
 
 > **Note :** un header ne doit contenir que des **déclarations** (prototypes de fonctions, `struct`, `typedef`, constantes), jamais le corps d'une fonction non-`static`/non-`inline` : sinon, chaque fichier `.c` qui l'inclut obtiendrait sa propre copie de la définition, provoquant une erreur "multiple definition" à l'édition de liens.
 
+## Comment `#include` et `-I` se combinent réellement
+
+Le préprocesseur ne "devine" jamais où se trouve un fichier inclus : pour `#include "glad/glad.h"`, il concatène **littéralement** chaque dossier passé via [`-I`](/?c=langages&s=c&p=makefiles) avec le chemin écrit après `#include`, et teste chaque résultat jusqu'à trouver un fichier qui existe :
+
+```text
+-I includes  +  #include "glad/glad.h"
+   ↓
+includes/glad/glad.h   <- chemin réellement testé sur le disque
+```
+
+> **Piège :** pointer `-I` sur le dossier qui contient directement `glad.h` (ex. `-I includes/glad`) plutôt que sur son parent (`-I includes`), alors que le code écrit `#include "glad/glad.h"`. La concaténation donne `includes/glad/glad/glad.h`, qui n'existe pas : le compilateur échoue avec "fichier introuvable", pour un chemin qui semble pourtant correct à l'œil si on ne pense qu'en termes de "où est le fichier", sans reconstruire la concaténation exacte.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Un header (`.h`) contient des déclarations, pas des définitions : il permet à plusieurs fichiers `.c` de partager les mêmes signatures sans les dupliquer. |
+| **À retenir** | Un header (`.h`) contient des déclarations, pas des définitions : il permet à plusieurs fichiers `.c` de partager les mêmes signatures sans les dupliquer. Le préprocesseur résout `#include "..."` en concaténant littéralement chaque dossier `-I` avec le chemin écrit. |
 | **Outils utilisables** | `#include <...>` (bibliothèque système) vs `#include "..."` (fichier du projet) ; include guards (`#ifndef`/`#define`/`#endif` ou `#pragma once`). |
-| **Pièges à éviter** | Mettre le corps d'une fonction dans un header : provoque une erreur "multiple definition" dès que plusieurs fichiers l'incluent. |
+| **Pièges à éviter** | Mettre le corps d'une fonction dans un header : provoque une erreur "multiple definition" dès que plusieurs fichiers l'incluent. Pointer `-I` sur le mauvais niveau de dossier, ce qui casse la concaténation avec le chemin de `#include`. |
 | **Bonnes pratiques** | Toujours protéger un header par un include guard, pour supporter une inclusion indirecte multiple sans erreur. |

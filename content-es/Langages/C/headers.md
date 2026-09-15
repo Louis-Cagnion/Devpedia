@@ -68,13 +68,25 @@ int suma(int a, int b);
 
 > **Nota:** una cabecera solo debe contener **declaraciones** (prototipos de funciones, `struct`, `typedef`, constantes), nunca el cuerpo de una función que no sea `static`/`inline`: de lo contrario, cada archivo `.c` que la incluya obtendría su propia copia de la definición, provocando un error de "multiple definition" en el enlazado.
 
+## Cómo se combinan realmente `#include` y `-I`
+
+El preprocesador nunca "adivina" dónde está un archivo incluido: para `#include "glad/glad.h"`, concatena **literalmente** cada carpeta pasada vía [`-I`](/?c=langages&s=c&p=makefiles) con la ruta escrita tras `#include`, y prueba cada resultado hasta encontrar un archivo que exista:
+
+```text
+-I includes  +  #include "glad/glad.h"
+   ↓
+includes/glad/glad.h   <- ruta realmente probada en el disco
+```
+
+> **Trampa:** apuntar `-I` a la carpeta que contiene directamente `glad.h` (ej. `-I includes/glad`) en lugar de a su carpeta padre (`-I includes`), mientras el código escribe `#include "glad/glad.h"`. La concatenación da entonces `includes/glad/glad/glad.h`, que no existe: el compilador falla con "archivo no encontrado", para una ruta que a simple vista parece correcta si solo se piensa en "dónde está el archivo", sin reconstruir la concatenación exacta.
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Una cabecera (`.h`) contiene declaraciones, no definiciones: permite que varios archivos `.c` compartan las mismas firmas sin duplicarlas. |
+| **Para recordar** | Una cabecera (`.h`) contiene declaraciones, no definiciones: permite que varios archivos `.c` compartan las mismas firmas sin duplicarlas. El preprocesador resuelve `#include "..."` concatenando literalmente cada carpeta `-I` con la ruta escrita. |
 | **Herramientas utilizables** | `#include <...>` (biblioteca del sistema) frente a `#include "..."` (archivo del proyecto); include guards (`#ifndef`/`#define`/`#endif` o `#pragma once`). |
-| **Trampas a evitar** | Poner el cuerpo de una función en una cabecera: provoca un error de "multiple definition" en cuanto varios archivos la incluyen. |
+| **Trampas a evitar** | Poner el cuerpo de una función en una cabecera: provoca un error de "multiple definition" en cuanto varios archivos la incluyen. Apuntar `-I` al nivel de carpeta equivocado, lo que rompe la concatenación con la ruta de `#include`. |
 | **Buenas prácticas** | Proteger siempre una cabecera con un include guard, para soportar una inclusión indirecta múltiple sin error. |

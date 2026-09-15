@@ -112,6 +112,10 @@
             {
               "id": "wavefront-obj-et-modele-de-phong",
               "label": "El formato Wavefront .obj y el modelo de Phong"
+            },
+            {
+              "id": "glfw-glad-et-boucle-de-rendu",
+              "label": "Abrir una ventana OpenGL moderna: GLFW, GLAD y el bucle de renderizado"
             }
           ]
         }

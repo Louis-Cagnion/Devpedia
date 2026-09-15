@@ -68,13 +68,25 @@ int adicao(int a, int b);
 
 > **Nota:** um header deve conter apenas **declarações** (protótipos de funções, `struct`, `typedef`, constantes), nunca o corpo de uma função não-`static`/não-`inline`: senão, cada arquivo `.c` que o inclui obteria sua própria cópia da definição, provocando um erro "multiple definition" na ligação.
 
+## Como `#include` e `-I` realmente se combinam
+
+O pré-processador nunca "adivinha" onde está um arquivo incluído: para `#include "glad/glad.h"`, ele concatena **literalmente** cada pasta passada via [`-I`](/?c=langages&s=c&p=makefiles) com o caminho escrito depois de `#include`, e testa cada resultado até achar um arquivo que exista:
+
+```text
+-I includes  +  #include "glad/glad.h"
+   ↓
+includes/glad/glad.h   <- caminho realmente testado no disco
+```
+
+> **Armadilha:** apontar `-I` para a pasta que contém diretamente `glad.h` (ex. `-I includes/glad`) em vez da pasta pai (`-I includes`), enquanto o código escreve `#include "glad/glad.h"`. A concatenação então dá `includes/glad/glad/glad.h`, que não existe: o compilador falha com "arquivo não encontrado", para um caminho que parece correto à primeira vista se só se pensa em "onde está o arquivo", sem reconstruir a concatenação exata.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | Um header (`.h`) contém declarações, não definições: permite que vários arquivos `.c` compartilhem as mesmas assinaturas sem duplicá-las. |
+| **Para lembrar** | Um header (`.h`) contém declarações, não definições: permite que vários arquivos `.c` compartilhem as mesmas assinaturas sem duplicá-las. O pré-processador resolve `#include "..."` concatenando literalmente cada pasta `-I` com o caminho escrito. |
 | **Ferramentas utilizáveis** | `#include <...>` (biblioteca do sistema) vs `#include "..."` (arquivo do projeto); include guards (`#ifndef`/`#define`/`#endif` ou `#pragma once`). |
-| **Armadilhas a evitar** | Colocar o corpo de uma função em um header: provoca um erro "multiple definition" assim que vários arquivos o incluem. |
+| **Armadilhas a evitar** | Colocar o corpo de uma função em um header: provoca um erro "multiple definition" assim que vários arquivos o incluem. Apontar `-I` para o nível de pasta errado, o que quebra a concatenação com o caminho do `#include`. |
 | **Boas práticas** | Sempre proteger um header com um include guard, para suportar uma inclusão indireta múltipla sem erro. |
