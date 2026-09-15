@@ -85,6 +85,27 @@ document.querySelector("#liste").addEventListener("click", (evenement) => {
 
 Cette technique, la **délégation d'événements**, évite d'avoir à réattacher un écouteur à chaque nouvel élément créé dynamiquement (voir l'exemple de `createElement` plus haut) : un seul écouteur, posé une fois sur un ancêtre stable, suffit.
 
+## Modifier l'URL sans recharger la page
+
+L'API `history` du navigateur change l'URL affichée dans la barre d'adresse sans recharger la page ni déclencher de navigation réseau :
+
+```javascript
+const params = new URLSearchParams();
+params.set("domaine", "atlas");
+
+history.replaceState(null, "", `${window.location.pathname}?${params}`);
+// URL affichée : .../page?domaine=atlas, sans recharger ni empiler d'entrée d'historique
+```
+
+Les trois arguments sont toujours les mêmes : un `state` (donnée associée à cette entrée d'historique, récupérable plus tard via l'événement `popstate` ; `null` si inutile ici), un titre (ignoré par la plupart des navigateurs), puis la nouvelle URL (qui doit rester sur le même domaine, sous peine d'erreur).
+
+| Méthode | Effet sur l'historique | Cas d'usage typique |
+|---|---|---|
+| `history.pushState(...)` | Ajoute une nouvelle entrée : le bouton "Retour" du navigateur y ramène | Changer de "page" dans une [application monopage](/?c=langages-de-programmation&s=javascript&p=ssr-vs-csr#csr-le-serveur-envoie-une-coquille-vide) sans rechargement |
+| `history.replaceState(...)` | Remplace l'entrée courante : aucune nouvelle entrée créée | Synchroniser l'URL avec un état déjà affiché (filtre, onglet actif), sans polluer l'historique |
+
+> **Note :** contrairement à `window.location.href = "..."`, ni `pushState` ni `replaceState` ne rechargent la page : le [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) déjà chargé continue de tourner, seule l'URL visible change.
+
 ---
 
 ## 📋 Récapitulatif
@@ -92,6 +113,6 @@ Cette technique, la **délégation d'événements**, évite d'avoir à réattach
 | | |
 |---|---|
 | **À retenir** | Le DOM représente une page [HTML](/?c=langages-de-balisage&s=html&p=html) sous forme d'arbre manipulable. `querySelector`/`addEventListener` sélectionnent et réagissent aux interactions ; un événement se propage des enfants vers les parents (*bubbling*). |
-| **Outils utilisables** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`. |
+| **Outils utilisables** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`. |
 | **Pièges à éviter** | Assigner une donnée utilisateur à `innerHTML` (faille XSS) ; attacher un écouteur à chaque élément individuel plutôt que déléguer, ce qui casse pour les éléments ajoutés dynamiquement après coup. |
-| **Bonnes pratiques** | Utiliser la délégation d'événements (écouteur sur un ancêtre stable) plutôt qu'un écouteur par élément, surtout si des éléments sont ajoutés dynamiquement. |
+| **Bonnes pratiques** | Utiliser la délégation d'événements (écouteur sur un ancêtre stable) plutôt qu'un écouteur par élément, surtout si des éléments sont ajoutés dynamiquement. Préférer `replaceState` à `pushState` pour synchroniser l'URL avec un état déjà affiché, sans polluer l'historique de navigation. |

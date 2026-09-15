@@ -84,3 +84,35 @@ document.querySelector("#liste").addEventListener("click", (evenement) => {
 ```
 
 This technique, known as **event delegation**, eliminates the need to reattach a listener to each new element created dynamically (see the example at `createElement` above): a single listener, attached once to a stable ancestor, is sufficient.
+
+## Changing the URL without reloading the page
+
+The browser's `history` API changes the URL shown in the address bar without reloading the page or triggering any network navigation:
+
+```javascript
+const params = new URLSearchParams();
+params.set("domaine", "atlas");
+
+history.replaceState(null, "", `${window.location.pathname}?${params}`);
+// Displayed URL: .../page?domaine=atlas, no reload and no new history entry
+```
+
+The three arguments are always the same: a `state` (data attached to this history entry, retrievable later through the `popstate` event; `null` when unused here), a title (ignored by most browsers), and the new URL (which must stay on the same origin, or the browser throws an error).
+
+| Method | Effect on history | Typical use case |
+|---|---|---|
+| `history.pushState(...)` | Adds a new entry: the browser's "Back" button returns to it | Switching "pages" in a [single-page application](/?c=langages-de-programmation&s=javascript&p=ssr-vs-csr#csr-the-server-sends-an-empty-shell) without a reload |
+| `history.replaceState(...)` | Replaces the current entry: no new entry is created | Syncing the URL with a state already shown on screen (a filter, an active tab), without cluttering navigation history |
+
+> **Note:** unlike `window.location.href = "..."`, neither `pushState` nor `replaceState` reloads the page: the already-loaded JavaScript keeps running, only the visible URL changes.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | The DOM represents an HTML page as a manipulable tree. `querySelector`/`addEventListener` select and react to interactions; an event propagates from children to parents (*bubbling*). |
+| **Tools you can use** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`. |
+| **Pitfalls to avoid** | Assigning user-supplied data to `innerHTML` (XSS vulnerability); attaching a listener to each individual element instead of delegating, which breaks for elements added dynamically afterward. |
+| **Best practices** | Use event delegation (a listener on a stable ancestor) instead of one listener per element, especially when elements are added dynamically. Prefer `replaceState` over `pushState` to sync the URL with a state already shown on screen, without cluttering navigation history. |

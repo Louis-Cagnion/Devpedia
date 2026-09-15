@@ -85,6 +85,27 @@ document.querySelector("#lista").addEventListener("click", (evento) => {
 
 Essa técnica, a **delegação de eventos**, evita ter que reanexar um listener a cada novo elemento criado dinamicamente (veja o exemplo de `createElement` acima): um único listener, colocado uma vez em um ancestral estável, é suficiente.
 
+## Alterar a URL sem recarregar a página
+
+A API `history` do navegador altera a URL exibida na barra de endereço sem recarregar a página nem disparar nenhuma navegação de rede:
+
+```javascript
+const params = new URLSearchParams();
+params.set("domaine", "atlas");
+
+history.replaceState(null, "", `${window.location.pathname}?${params}`);
+// URL exibida: .../page?domaine=atlas, sem recarregar e sem nova entrada no historico
+```
+
+Os três argumentos são sempre os mesmos: um `state` (dado associado a essa entrada do histórico, recuperável depois via o evento `popstate`; `null` quando não usado aqui), um título (ignorado pela maioria dos navegadores) e a nova URL (que precisa ficar na mesma origem, senão o navegador lança um erro).
+
+| Método | Efeito no histórico | Caso de uso típico |
+|---|---|---|
+| `history.pushState(...)` | Adiciona uma nova entrada: o botão "Voltar" do navegador retorna a ela | Trocar de "página" em uma [aplicação de página única](/?c=langages-de-programmation&s=javascript&p=ssr-vs-csr#csr-o-servidor-envia-uma-casca-vazia) sem recarregar |
+| `history.replaceState(...)` | Substitui a entrada atual: nenhuma entrada nova é criada | Sincronizar a URL com um estado já exibido na tela (um filtro, uma aba ativa), sem poluir o histórico de navegação |
+
+> **Nota:** diferente de `window.location.href = "..."`, nem `pushState` nem `replaceState` recarregam a página: o JavaScript já carregado continua executando, só a URL visível muda.
+
 ---
 
 ## 📋 Recapitulando
@@ -92,6 +113,6 @@ Essa técnica, a **delegação de eventos**, evita ter que reanexar um listener 
 | | |
 |---|---|
 | **Para lembrar** | O DOM representa uma página HTML na forma de árvore manipulável. `querySelector`/`addEventListener` selecionam e reagem às interações; um evento se propaga dos filhos para os pais (*bubbling*). |
-| **Ferramentas utilizáveis** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`. |
+| **Ferramentas utilizáveis** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`. |
 | **Armadilhas a evitar** | Atribuir um dado do usuário a `innerHTML` (falha XSS); anexar um listener a cada elemento individual em vez de delegar, o que quebra para elementos adicionados dinamicamente depois. |
-| **Boas práticas** | Usar a delegação de eventos (listener em um ancestral estável) em vez de um listener por elemento, especialmente se elementos forem adicionados dinamicamente. |
+| **Boas práticas** | Usar a delegação de eventos (listener em um ancestral estável) em vez de um listener por elemento, especialmente se elementos forem adicionados dinamicamente. Preferir `replaceState` a `pushState` para sincronizar a URL com um estado já exibido na tela, sem poluir o histórico de navegação. |

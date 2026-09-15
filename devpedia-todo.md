@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Prochaine tâche : continuer les compléments/nouveaux chapitres des points 2-11 (rangement déjà tranché) -- reprendre par les compléments courts restants (`history.replaceState` dans `dom-et-evenements.md`, custom property CSS depuis JS, streaming HTTP PHP), puis les nouveaux chapitres. Régénération audio complète seulement une fois tout ajouté.
+> Prochaine tâche : continuer les compléments/nouveaux chapitres des points 2-11 (rangement déjà tranché) -- reprendre par les compléments courts restants (custom property CSS depuis JS, streaming HTTP PHP), puis les nouveaux chapitres. Régénération audio complète seulement une fois tout ajouté.
 
 > Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1), et les points 2 à 11 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
 
@@ -42,7 +42,6 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 ## 8. Notions candidates : suite revue /review poc-borne-git
 - Chargement dynamique différé d'une lib JS via bootstrap officiel (`importLibrary()`, Google Maps JS API, `apps/atlas/index.php`) + clustering de marqueurs (`@googlemaps/markerclusterer`) → nouveau sous-chapitre "Google Maps JavaScript API".
 - Boucle Canvas 2D via `requestAnimationFrame` + mise à l'échelle `devicePixelRatio` + lissage exponentiel vers une cible mobile (`apps/ambient/assets/js/app.js`) → nouveau chapitre "Canvas 2D et animations".
-- `history.replaceState` (`apps/atlas/assets/js/app.js::syncUrl()`) → complément de `dom-et-evenements.md`.
 
 ## 9. Notions candidates : suite revue /review poc-borne-git
 - Interception d'un setter de propriété native via `Object.defineProperty` (`apps/atlas/assets/js/shared.js::enhanceSelect()`) → nouveau sous-chapitre JS dédié.
