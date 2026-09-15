@@ -144,6 +144,10 @@
               "label": "O operador vírgula"
             },
             {
+              "id": "exit-et-codes-de-retour",
+              "label": "`exit()` e os códigos de retorno"
+            },
+            {
               "id": "pointeurs",
               "label": "Os ponteiros"
             },

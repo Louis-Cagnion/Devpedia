@@ -1,5 +1,5 @@
 ---
-order: 23
+order: 24
 ---
 
 # Ler um arquivo linha por linha: `fopen`, `fgets`, `getline`

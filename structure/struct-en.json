@@ -144,6 +144,10 @@
               "label": "The comma operator"
             },
             {
+              "id": "exit-et-codes-de-retour",
+              "label": "`exit()` and return codes"
+            },
+            {
               "id": "pointeurs",
               "label": "Pointers"
             },

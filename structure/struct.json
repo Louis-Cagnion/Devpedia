@@ -144,6 +144,10 @@
               "label": "L'opérateur virgule"
             },
             {
+              "id": "exit-et-codes-de-retour",
+              "label": "`exit()` et les codes de retour"
+            },
+            {
               "id": "pointeurs",
               "label": "Les pointeurs"
             },

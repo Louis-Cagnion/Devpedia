@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 7
 ---
 
 # Los genéricos en C: despacho por etiqueta de tipo
