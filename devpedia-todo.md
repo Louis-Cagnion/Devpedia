@@ -25,3 +25,8 @@ Le comptage de `##` par fichier (FR vs EN/ES/BR) est terminé sur tout le site, 
 - Repéré dans le projet PDF_parser (`table_extraction.py`, revue `/review`) : `listes-et-tuples.md` couvre la compréhension simple (un seul `for`, avec filtrage optionnel) mais pas la variante à deux `for` du type `[x for sous_liste in liste_de_listes for x in sous_liste]`.
 - Angle à couvrir : l'ordre des clauses `for` dans une compréhension imbriquée reproduit l'ordre de boucles `for` classiques imbriquées (la première clause est la boucle EXTÉRIEURE, la suivante l'intérieure) -- piège classique de croire que l'ordre est inversé. Cas d'usage typique : aplatir une liste de listes (équivalent à `itertools.chain.from_iterable`, à mentionner comme alternative plus lisible au-delà de 2 niveaux).
 - Rubrique cible probable : `Langages/Python` (à la suite de `listes-et-tuples.md`).
+
+## 5. Notion manquante : `frozenset` (Python, variante immuable de `set`)
+- Repéré dans le projet PDF_parser (`normalization.py`, revue `/review`) : `dictionnaires-et-ensembles.md` couvre `set` (mutable, `add`/`remove`/`discard`, opérations d'ensemble) mais ne mentionne jamais `frozenset`.
+- Angle à couvrir : `frozenset` est un `set` figé après création (pas de `add`/`remove`) -- utile pour deux raisons concrètes : être hachable (donc utilisable comme clé de `dict` ou élément d'un autre `set`, ce qu'un `set` mutable ne permet pas, cf. `dictionnaires-et-ensembles.md` section "Pourquoi une clé de dict doit être hachable"), et documenter/garantir qu'une valeur passée en paramètre ne sera jamais modifiée par la fonction qui la reçoit.
+- Rubrique cible probable : `Langages/Python/dictionnaires-et-ensembles.md` (nouvelle sous-section après "Les ensembles").
