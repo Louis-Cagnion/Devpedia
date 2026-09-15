@@ -57,3 +57,4 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 ## 12. Notions candidates : revue /review PDF_parser (Louis, 14/09/2026)
 - Chaînage d'exceptions `raise ... from exc` (conserver la cause d'origine tout en levant un type d'erreur "métier" ; `src/pdf_parser/ingestion.py::ingest()`) → complément de `gestion-des-erreurs.md` (Langages/Python).
 - Syntaxe moderne `X | None` (PEP 604, Python 3.10+) comme remplacement de `Optional[X]`/`Union[...]` du module `typing` déjà couvert → complément de `typage-avec-annotations.md` (Langages/Python).
+- Détection de tableau par heuristique géométrique (`page.find_tables()` de PyMuPDF : repère les tableaux sans OCR via les lignes de grille vectorielles et l'alignement du texte natif, pas d'apprentissage automatique) → complément de `extraction-pdf.md` (Données/Traitement de documents).
