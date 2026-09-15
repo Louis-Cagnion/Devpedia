@@ -88,6 +88,33 @@ sum(x ** 2 for x in range(1000000))    # calcula la suma SIN almacenar nunca el 
 
 Ver también [Las funciones](/?c=langages-de-programmation&s=python&p=fonctions) (closures) y [NumPy](/?c=data-science&p=numpy), donde la distinción memoria inmediata vs perezosa vuelve a ser central a gran escala.
 
+## `next()` con valor por defecto: evitar `StopIteration`
+
+```python
+iterador = iter([1, 2, 3])
+
+next(iterador)              # 1
+next(iterador)              # 2
+next(iterador)              # 3
+next(iterador)              # StopIteration: ya no queda nada que producir
+
+next(iterador, "agotado")   # "agotado" -> forma de dos argumentos: sin excepcion si esta agotado
+```
+
+`next(iterable, defecto)` devuelve `defecto` en lugar de lanzar `StopIteration` cuando el iterador ya no produce nada. Combinado con una expresión generadora filtrada, esto da una forma concisa de obtener el primer elemento que cumple una condición, con un valor de repliegue si ninguno la cumple:
+
+```python
+numeros = [1, 3, 5, 8, 9]
+
+primer_par = next((x for x in numeros if x % 2 == 0), None)
+# 8 -> primer elemento par encontrado
+
+primer_negativo = next((x for x in numeros if x < 0), None)
+# None -> ningun elemento coincide, se devuelve el valor de repliegue
+```
+
+> **Buena práctica:** preferir `next((x for x in col if condicion), defecto)` a un bucle `for` manual con `break`, o a `[x for x in col if condicion][0]` (que construye toda la lista filtrada antes de quedarse solo con el primer elemento, y lanza un `IndexError` si está vacía en lugar de devolver un valor de repliegue).
+
 ## Generador vs thread: un solo flujo a la vez
 
 Un generador a veces da la impresión de "hacer dos cosas a la vez" (el código llamador, y el generador que avanza en segundo plano). Es engañoso: a diferencia de un thread (ver [Los threads (pthread)](/?c=langages-de-programmation&s=c&p=threads)), donde dos flujos de ejecución pueden realmente avanzar en paralelo sin coordinarse explícitamente, un generador nunca hace nada "en segundo plano".
@@ -117,6 +144,6 @@ El orden de salida es **totalmente determinista** y reproducible en cada ejecuci
 | | |
 |---|---|
 | **Para recordar** | Un objeto iterable implementa `__iter__`, un iterador implementa `__next__`. Una función con `yield` se convierte en un generador: perezoso, memoria constante, pero recorrible una sola vez. |
-| **Herramientas utilizables** | `iter()`/`next()`, `yield`, expresión generadora (`(x for x in ...)`). |
-| **Trampas a evitar** | Reutilizar un generador ya agotado, esperando que reproduzca sus valores. |
-| **Buenas prácticas** | Preferir un generador a una lista en cuanto la colección es grande y se recorre una sola vez secuencialmente. |
+| **Herramientas utilizables** | `iter()`/`next()` (con o sin valor por defecto), `yield`, expresión generadora (`(x for x in ...)`). |
+| **Trampas a evitar** | Reutilizar un generador ya agotado, esperando que reproduzca sus valores. Usar `next()` sin valor por defecto cuando el agotamiento del iterador es un caso normal, no un error. |
+| **Buenas prácticas** | Preferir un generador a una lista en cuanto la colección es grande y se recorre una sola vez secuencialmente. `next((x for x in col if condicion), defecto)` para obtener el primer elemento que cumple una condición, sin bucle ni lista intermedia. |

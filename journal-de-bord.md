@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## `next()` à deux arguments ajouté (2026-09-15)
+
+5e notion PDF_parser traitée pendant la régénération audio : `next(iterateur, defaut)` (forme à deux arguments, évite `StopIteration`) ajoutée dans `iterateurs-et-generateurs.md`, juste après la section "Expression génératrice" -- combinaison typique illustrée : `next((x for x in coll if condition), defaut)` pour le premier élément vérifiant une condition, sans boucle ni liste intermédiaire. FR/EN/ES/BR le jour même.
+
 ## Nouveau chapitre `regex-en-python.md` (2026-09-15)
 
 4e notion PDF_parser (l'API `re` de Python et les groupes nommés) traitée en tâche de fond pendant la régénération audio : nouveau chapitre `Langages/Python/regex-en-python.md` (order 18), en FR/EN/ES/BR le jour même. Renvoie vers le chapitre DSL `regex.md` existant pour la syntaxe générale des motifs (classes de caractères, quantificateurs, ancres), ne couvre que l'API Python (`re.compile`, `match`/`search`/`fullmatch`/`findall`/`finditer`, objet `Match`, groupes nommés `(?P<nom>...)`, `re.sub`). Au passage, le lien "Python" du chapitre DSL `regex.md` (dans les 4 langues) redirigé de l'intro générique du sujet Python vers ce nouveau chapitre spécifique, plus pertinent.
