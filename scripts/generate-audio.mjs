@@ -203,6 +203,21 @@ async function buildPlanForChapter(mdPath, bcp47, context, chapterId) {
  *
  * @returns {Map<number, number>} entry index -> duration in milliseconds
  */
+/* espeak-ng's phonemizer crashes on capital Á/Í specifically (confirmed empirically: every other
+   accented capital -- É, Ó, Ú, Ã, Â -- and both lowercase á/í work fine) when synthesizing with
+   the pt_BR-faber-medium voice: it corrupts an internal buffer into a lone UTF-16 surrogate,
+   which then fails UTF-8 re-encoding (`UnicodeEncodeError: ... surrogates not allowed`), crashing
+   piper_batch.py and the whole batch it was part of. Lowercasing just these two letters is safe:
+   pronunciation is unaffected by case for a plain accented vowel (Louis, 15/09/2026, found via
+   `content-br/UI-UX/accessibilite-ux.md`'s "Áreas clicáveis...").
+*/
+const PIPER_PTBR_CRASH_CHARS = /[ÁÍ]/g;
+const PTBR_CRASH_CHAR_FIX = { "Á": "á", "Í": "í" };
+function sanitizeForVoice(text, voice) {
+    if (voice !== "pt_BR-faber-medium") return text;
+    return text.replace(PIPER_PTBR_CRASH_CHARS, c => PTBR_CRASH_CHAR_FIX[c]);
+}
+
 function synthesizeEntries(entries, outDir) {
     const byVoice = new Map();
     entries.forEach((entry, index) => {
@@ -210,7 +225,7 @@ function synthesizeEntries(entries, outDir) {
         const voice = LANG_TO_VOICE[entry.lang] ?? LANG_TO_VOICE[entry.lang.split("-")[0]];
         if (!voice) throw new Error(`No Piper voice configured for lang "${entry.lang}"`);
         if (!byVoice.has(voice)) byVoice.set(voice, []);
-        byVoice.get(voice).push({ index: String(index), text: entry.text });
+        byVoice.get(voice).push({ index: String(index), text: sanitizeForVoice(entry.text, voice) });
     });
 
     const durations = new Map();

@@ -2,6 +2,12 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Bug Piper/espeak-ng : capitales `Á`/`Í` plantent la voix pt-BR (2026-09-15)
+
+Le lot 1 de régénération audio (`blockchain,ui-ux,tests,gestion-de-projet-et-organisation`) a planté silencieusement en tâche de fond (le wrapper de tâche de fond rapporte `exit code 0` même quand le process Node a réellement crashé avec une exception non interceptée -- à garder en tête pour la suite, ne jamais se fier à ce seul code). Investigation par bissection (script ad hoc, supprimé après usage) : `espeak-ng`, utilisé par Piper pour la voix `pt_BR-faber-medium`, corrompt un buffer interne en tentant de phonémiser une capitale accentuée précise -- confirmé empiriquement lettre par lettre : `Á` et `Í` (capitales) plantent systématiquement (`UnicodeEncodeError: ... surrogates not allowed`), alors que `É`/`Ó`/`Ú`/`Ã`/`Â` (capitales) et `á`/`í` (minuscules) fonctionnent tous sans problème. Repéré sur `content-br/UI-UX/accessibilite-ux.md` ("Áreas clicáveis..."), texte pourtant parfaitement normal.
+
+Corrigé dans `scripts/generate-audio.mjs` (`sanitizeForVoice()`) : le texte envoyé à la voix `pt_BR-faber-medium` remplace `Á`→`á` et `Í`→`í` avant synthèse -- sans effet sur la prononciation (la casse ne change rien pour une simple voyelle accentuée), et sans toucher au texte affiché sur le site (uniquement l'entrée de la synthèse pré-générée). Un futur mot BR commençant par une de ces deux lettres ne devrait donc plus jamais faire planter un lot entier.
+
 ## `next()` à deux arguments ajouté (2026-09-15)
 
 5e notion PDF_parser traitée pendant la régénération audio : `next(iterateur, defaut)` (forme à deux arguments, évite `StopIteration`) ajoutée dans `iterateurs-et-generateurs.md`, juste après la section "Expression génératrice" -- combinaison typique illustrée : `next((x for x in coll if condition), defaut)` pour le premier élément vérifiant une condition, sans boucle ni liste intermédiaire. FR/EN/ES/BR le jour même.
