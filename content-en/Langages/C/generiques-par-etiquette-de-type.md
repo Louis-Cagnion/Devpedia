@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Generics in C: dispatch by type tag

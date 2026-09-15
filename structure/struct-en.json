@@ -108,6 +108,10 @@
             {
               "id": "rendu-3d-bas-niveau-et-fenetrage",
               "label": "Low-level 3D rendering and windowing: raycasting à la Wolfenstein"
+            },
+            {
+              "id": "wavefront-obj-et-modele-de-phong",
+              "label": "The Wavefront .obj Format and the Phong Model"
             }
           ]
         }
@@ -134,6 +138,10 @@
             {
               "id": "boucles",
               "label": "Loops"
+            },
+            {
+              "id": "operateur-virgule",
+              "label": "The comma operator"
             },
             {
               "id": "pointeurs",
@@ -206,6 +214,10 @@
             {
               "id": "lecture-formatee-scanf",
               "label": "Formatted Reading: `scanf` and `sscanf`"
+            },
+            {
+              "id": "lecture-de-fichiers",
+              "label": "Reading a File Line by Line: `fopen`, `fgets`, `getline`"
             }
           ]
         },
@@ -1143,6 +1155,10 @@
             {
               "id": "pwa-progressive-web-app",
               "label": "The PWA: a website that behaves like an application"
+            },
+            {
+              "id": "environnement-local-php-sql-server",
+              "label": "Setting Up a Local Environment for a PHP Application Connected to SQL Server"
             }
           ]
         },
@@ -1839,6 +1855,10 @@
             {
               "id": "okr",
               "label": "OKRs"
+            },
+            {
+              "id": "decoupage-en-graphe-de-dependances",
+              "label": "Breaking Down a Project into a Dependency Graph"
             }
           ]
         }

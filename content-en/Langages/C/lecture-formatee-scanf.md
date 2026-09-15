@@ -1,5 +1,5 @@
 ---
-order: 21
+order: 22
 ---
 
 # Formatted Reading: `scanf` and `sscanf`

@@ -140,6 +140,10 @@
               "label": "Les boucles"
             },
             {
+              "id": "operateur-virgule",
+              "label": "L'opérateur virgule"
+            },
+            {
               "id": "pointeurs",
               "label": "Les pointeurs"
             },

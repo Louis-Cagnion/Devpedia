@@ -108,6 +108,10 @@
             {
               "id": "rendu-3d-bas-niveau-et-fenetrage",
               "label": "Renderização 3D de baixo nível e janelamento: raycasting estilo Wolfenstein"
+            },
+            {
+              "id": "wavefront-obj-et-modele-de-phong",
+              "label": "O formato Wavefront .obj e o modelo de Phong"
             }
           ]
         }
@@ -134,6 +138,10 @@
             {
               "id": "boucles",
               "label": "Os laços"
+            },
+            {
+              "id": "operateur-virgule",
+              "label": "O operador vírgula"
             },
             {
               "id": "pointeurs",
@@ -192,12 +200,12 @@
               "label": "As chamadas de sistema e os descritores de arquivo"
             },
             {
-              "id": "signaux-unix",
-              "label": "Os sinais UNIX"
-            },
-            {
               "id": "threads",
               "label": "As threads (pthread)"
+            },
+            {
+              "id": "signaux-unix",
+              "label": "Os sinais UNIX"
             },
             {
               "id": "readline-et-termios",
@@ -206,6 +214,10 @@
             {
               "id": "lecture-formatee-scanf",
               "label": "A leitura formatada: `scanf` e `sscanf`"
+            },
+            {
+              "id": "lecture-de-fichiers",
+              "label": "Ler um arquivo linha por linha: `fopen`, `fgets`, `getline`"
             }
           ]
         },
@@ -1159,6 +1171,10 @@
             {
               "id": "pwa-progressive-web-app",
               "label": "A PWA: um site que se comporta como um aplicativo"
+            },
+            {
+              "id": "environnement-local-php-sql-server",
+              "label": "Configurar um ambiente local para uma aplicação PHP conectada ao SQL Server"
             }
           ]
         },
@@ -1855,6 +1871,10 @@
             {
               "id": "okr",
               "label": "Os OKR"
+            },
+            {
+              "id": "decoupage-en-graphe-de-dependances",
+              "label": "Dividir um projeto em um grafo de dependências"
             }
           ]
         }

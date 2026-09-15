@@ -108,6 +108,10 @@
             {
               "id": "rendu-3d-bas-niveau-et-fenetrage",
               "label": "Renderizado 3D de bajo nivel y ventanas: raycasting al estilo Wolfenstein"
+            },
+            {
+              "id": "wavefront-obj-et-modele-de-phong",
+              "label": "El formato Wavefront .obj y el modelo de Phong"
             }
           ]
         }
@@ -134,6 +138,10 @@
             {
               "id": "boucles",
               "label": "Los bucles"
+            },
+            {
+              "id": "operateur-virgule",
+              "label": "El operador coma"
             },
             {
               "id": "pointeurs",
@@ -206,6 +214,10 @@
             {
               "id": "lecture-formatee-scanf",
               "label": "La lectura formateada: `scanf` y `sscanf`"
+            },
+            {
+              "id": "lecture-de-fichiers",
+              "label": "Leer un archivo línea por línea: `fopen`, `fgets`, `getline`"
             }
           ]
         },
@@ -1143,6 +1155,10 @@
             {
               "id": "pwa-progressive-web-app",
               "label": "La PWA: un sitio web que se comporta como una aplicación"
+            },
+            {
+              "id": "environnement-local-php-sql-server",
+              "label": "Configurar un entorno local para una aplicación PHP conectada a SQL Server"
             }
           ]
         },
@@ -1839,6 +1855,10 @@
             {
               "id": "okr",
               "label": "Los OKR"
+            },
+            {
+              "id": "decoupage-en-graphe-de-dependances",
+              "label": "Dividir un proyecto en un grafo de dependencias"
             }
           ]
         }

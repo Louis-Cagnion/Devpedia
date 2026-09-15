@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Prochaine tâche : tous les compléments courts sont ajoutés -- passer aux nouveaux chapitres complets des points 2-11 (rangement déjà tranché), dans l'ordre le plus court d'abord. Régénération audio complète seulement une fois tout ajouté.
+> Prochaine tâche : chapitre `operateur-virgule.md` (point 5) ajouté (FR/EN/ES/BR, order 4 dans `Langages/C`, orders 5-23 décalés en conséquence). Continuer les nouveaux chapitres complets des points 2-11 (rangement déjà tranché), toujours du plus court au plus long. Régénération audio complète seulement une fois tout ajouté.
 
 > Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1), et les points 2 à 11 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
 
@@ -29,7 +29,6 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 ## 5. Notions candidates : projet SCOP, langage C
 - Arguments de ligne de commande (`argc`/`argv`) → chapitre séparé, `Langages/C`.
-- Opérateur virgule (`expr1, expr2`, pattern `return printf(...), NULL;`) → chapitre séparé, `Langages/C`.
 - `exit()` et codes de retour de processus → chapitre séparé, `Langages/C`.
 
 ## 6. Suite de la revue /review poc-borne-git
