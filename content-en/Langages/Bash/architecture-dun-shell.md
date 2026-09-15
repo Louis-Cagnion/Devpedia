@@ -54,6 +54,44 @@ cd /tmp
 pwd                # still displays /tmp: the subshell's cd didn't survive
 ```
 
+## Grouping commands without a subshell: `{ ; }`
+
+`{ command1; command2; }` produces an effect close to `(command1; command2)` seen above, but **without** creating a subshell: the commands run directly in the current shell, with the same consequences as typing a `cd` or a variable assignment normally.
+
+```bash
+cd /tmp
+{ cd /var; pwd; }   # displays /var
+pwd                 # still displays /var: no subshell, the cd really happened here
+```
+
+| | `( ; )` | `{ ; }` |
+|---|---|---|
+| Creates a subshell | Yes | No |
+| `cd`/variable changes survive afterward | No | Yes |
+| Space after the opening symbol | Not required | **Required** |
+| `;` before the closing symbol | Not required | **Required** |
+
+> **Pitfall:** `{ls;}` (with no spaces) is a syntax error. `{` and `}` are **keywords** of the shell here, not operators like `(`/`)`: they must be separated from the rest by a space, exactly like any other word on the command line.
+
+## Coloring a terminal's output: ANSI codes
+
+A terminal doesn't just display raw text: it also interprets certain byte sequences as formatting instructions (color, bold...), the **ANSI escape codes**. A sequence starts with the `ESC` character (`\033` in octal), followed by `[`, a code, then a final letter:
+
+```bash
+printf '\033[31mText in red\033[0m\n'
+```
+
+| Code | Effect |
+|---|---|
+| `\033[31m` | Red text |
+| `\033[32m` | Green text |
+| `\033[36m` | Cyan text |
+| `\033[0m` | Resets everything (color, bold...) |
+
+> **Pitfall:** `echo '\033[31mText\033[0m'` (without `-e`) most often prints the sequence **as-is**, as raw text, rather than interpreting it. `echo`'s default behavior with an escape sequence actually depends on which shell runs it: Bash's built-in `echo` only interprets it if `-e` is passed, while `dash`'s built-in `echo` (the default `/bin/sh` on many Linux distributions) interprets it natively, without `-e`. The same line can therefore show colors inside a Makefile (whose recipes run via `/bin/sh`) and fail as-is once pasted into an interactive Bash prompt.
+>
+> **Best practice:** prefer `printf`, whose behavior is consistent across shells (it always interprets `\033` in its format string), rather than relying on `echo`'s behavior, which varies.
+
 ## Running a command: builtin vs. external
 
 Once the line is split and expanded, the shell has to distinguish two cases:
@@ -158,10 +196,10 @@ Every pipeline launched forms a **process group**, a shared identifier (`setpgid
 
 | | |
 |---|---|
-| **Key takeaways** | A shell is a REPL loop: read a line, apply expansions in a fixed order, execute (internally for a builtin, or `fork`/`execve`/`wait` for an external command). |
-| **Tools you can use** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` for pipes and redirections, the shebang so a script is recognized as executable. |
-| **Pitfalls to avoid** | Mixing up the order of expansions: it's what explains why `"$var"` protects against word splitting while `$var` alone is exposed to it. |
-| **Best practices** | Build your own mini-shell to check your understanding: read loop, parser, expansions, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. |
+| **Key takeaways** | A shell is a REPL loop: read a line, apply expansions in a fixed order, execute (internally for a builtin, or `fork`/`execve`/`wait` for an external command). `( ; )` creates a subshell, `{ ; }` groups commands without creating one. |
+| **Tools you can use** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` for pipes and redirections, the shebang so a script is recognized as executable, `printf` for ANSI codes that behave consistently across shells. |
+| **Pitfalls to avoid** | Mixing up the order of expansions: it's what explains why `"$var"` protects against word splitting while `$var` alone is exposed to it. Omitting the spaces around `{ ; }`. Relying on `echo` to interpret an ANSI code: its default behavior varies across shells. |
+| **Best practices** | Build your own mini-shell to check your understanding: read loop, parser, expansions, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. Prefer `{ ; }` over a subshell whenever a change (`cd`, a variable) needs to survive the group of commands. |
 
 ## Building your own mini-shell
 

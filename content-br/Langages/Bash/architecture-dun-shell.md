@@ -54,6 +54,44 @@ cd /tmp
 pwd               # continua exibindo /tmp: o cd do subshell nao sobreviveu
 ```
 
+## Agrupar comandos sem subshell: `{ ; }`
+
+`{ comando1; comando2; }` produz um efeito parecido com `(comando1; comando2)` visto acima, mas **sem** criar um subshell: os comandos são executados diretamente no shell atual, com as mesmas consequências de digitar um `cd` ou uma variável normalmente.
+
+```bash
+cd /tmp
+{ cd /var; pwd; }   # exibe /var
+pwd                 # continua exibindo /var: sem subshell, o cd realmente aconteceu aqui
+```
+
+| | `( ; )` | `{ ; }` |
+|---|---|---|
+| Cria um subshell | Sim | Não |
+| Mudanças de `cd`/variável sobrevivem depois | Não | Sim |
+| Espaço depois do símbolo de abertura | Não necessário | **Obrigatório** |
+| `;` antes do símbolo de fechamento | Não necessário | **Obrigatório** |
+
+> **Armadilha:** `{ls;}` (sem espaços) é um erro de sintaxe. `{` e `}` são **palavras-chave** do shell aqui, não operadores como `(`/`)`: precisam por isso ser separados do resto por um espaço, exatamente como qualquer outra palavra da linha de comando.
+
+## Colorir a saída de um terminal: os códigos ANSI
+
+Um terminal não exibe só texto puro: ele também interpreta certas sequências de bytes como instruções de formatação (cor, negrito...), os **códigos de escape ANSI**. Uma sequência começa com o caractere `ESC` (`\033` em octal), seguido de `[`, um código, e uma letra final:
+
+```bash
+printf '\033[31mTexto em vermelho\033[0m\n'
+```
+
+| Código | Efeito |
+|---|---|
+| `\033[31m` | Texto vermelho |
+| `\033[32m` | Texto verde |
+| `\033[36m` | Texto ciano |
+| `\033[0m` | Reseta tudo (cor, negrito...) |
+
+> **Armadilha:** `echo '\033[31mTexto\033[0m'` (sem `-e`) na maioria das vezes exibe a sequência **tal como está**, como texto puro, em vez de interpretá-la. O comportamento padrão do `echo` diante de uma sequência de escape depende na verdade do shell que o executa: o `echo` interno do Bash só a interpreta se `-e` for passado, enquanto o `echo` interno do `dash` (o `/bin/sh` padrão em muitas distribuições Linux) a interpreta nativamente, sem `-e`. A mesma linha pode assim mostrar cores dentro de um Makefile (cujas receitas rodam via `/bin/sh`) e falhar tal como está ao ser colada em um prompt Bash interativo.
+>
+> **Boa prática:** preferir `printf`, cujo comportamento é constante entre shells (ele sempre interpreta `\033` na sua string de formato), em vez de confiar no comportamento do `echo`, que varia.
+
 ## Executar um comando: builtin vs externo
 
 Uma vez a linha dividida e expandida, o shell precisa distinguir dois casos:
@@ -158,10 +196,10 @@ Cada pipeline lançado forma um **grupo de processos**: um identificador compart
 
 | | |
 |---|---|
-| **Para lembrar** | Um shell é um laço REPL: ler uma linha, aplicar as expansões em uma ordem fixa, executar (builtin internamente, ou `fork`/`execve`/`wait` para um comando externo). |
-| **Ferramentas utilizáveis** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` para os pipes e redirecionamentos, o shebang para que um script seja reconhecido como executável. |
-| **Armadilhas a evitar** | Confundir a ordem das expansões: é ela que explica por que `"$var"` protege da divisão em palavras enquanto `$var` sozinho fica exposto a ela. |
-| **Boas práticas** | Construir seu próprio mini-shell para verificar sua compreensão: laço de leitura, analisador, expansões, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. |
+| **Para lembrar** | Um shell é um laço REPL: ler uma linha, aplicar as expansões em uma ordem fixa, executar (builtin internamente, ou `fork`/`execve`/`wait` para um comando externo). `( ; )` cria um subshell, `{ ; }` agrupa comandos sem criar um. |
+| **Ferramentas utilizáveis** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` para os pipes e redirecionamentos, o shebang para que um script seja reconhecido como executável, `printf` para códigos ANSI confiáveis entre shells. |
+| **Armadilhas a evitar** | Confundir a ordem das expansões: é ela que explica por que `"$var"` protege da divisão em palavras enquanto `$var` sozinho fica exposto a ela. Omitir os espaços ao redor de `{ ; }`. Confiar no `echo` para interpretar um código ANSI: seu comportamento padrão varia entre shells. |
+| **Boas práticas** | Construir seu próprio mini-shell para verificar sua compreensão: laço de leitura, analisador, expansões, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. Preferir `{ ; }` a um subshell sempre que uma mudança (`cd`, uma variável) precisar sobreviver ao grupo de comandos. |
 
 ## Construir seu próprio mini-shell
 

@@ -71,13 +71,85 @@ clean:
 
 > **Nota:** llamar a un objetivo como argumento (`make clean`, `make programa`) construye **ese** objetivo concreto en lugar del primero del archivo.
 
+## Escribir la receta en la misma línea: `;`
+
+Una receta siempre sigue a la línea `objetivo: dependencias`, sangrada con una tabulación, como se vio antes. Un `;` después de la lista de dependencias permite escribir una receta corta directamente en esa misma línea, sin pasar a la siguiente:
+
+```makefile
+clean: ; rm -f *.o
+```
+
+Estrictamente equivalente a:
+
+```makefile
+clean:
+	rm -f *.o
+```
+
+> **Trampa:** confundir este `;` de Makefile con un `;` de shell habitual (que encadena dos comandos). Aquí solo separa la lista de dependencias de la receta en sí: nada que ver con encadenar comandos.
+
+## Incluir las cabeceras de una biblioteca: `-I`
+
+```makefile
+programa: main.o
+	$(CC) main.o -I includes -I libft/includes -o programa
+```
+
+`-I` añade una carpeta a la lista donde el compilador busca un archivo `#include "..."` o `#include <...>` (véase [Las cabeceras](/?c=langages&s=c&p=headers)): indispensable en cuanto un proyecto guarda sus `.h` en otro sitio distinto de la carpeta actual, o depende de una biblioteca externa.
+
+> **Trampa:** apuntar `-I` al nivel de carpeta equivocado (ej. `-I includes` cuando los archivos están en `includes/subcarpeta`). El compilador falla entonces con un mensaje de "archivo no encontrado", aunque el archivo exista realmente en algún lugar del proyecto.
+
+## Encontrar los flags de compilación de una biblioteca: `pkg-config`
+
+Enlazar una biblioteca externa (ej. [GLFW](https://www.glfw.org) para abrir una ventana OpenGL) suele requerir varios `-I` y `-l` (nombre de la biblioteca para el enlazador) distintos según la máquina y su distribución. `pkg-config` evita tener que adivinarlos a mano: cada biblioteca instala un pequeño archivo `.pc` que describe sus propios flags, y `pkg-config` los lee bajo demanda.
+
+```bash
+pkg-config --cflags glfw3        # -I/usr/include            (flags de compilación)
+pkg-config --cflags --libs glfw3 # añade -lglfw -lm ...       (+ flags del enlazador)
+```
+
+En un Makefile, `$(shell ...)` ejecuta un comando de shell y sustituye la llamada por su salida, lo que permite inyectar directamente el resultado de `pkg-config`:
+
+```makefile
+GLFW_FLAGS = $(shell pkg-config --cflags --libs glfw3)
+
+programa: main.o
+	$(CC) main.o $(GLFW_FLAGS) -o programa
+```
+
+> **Trampa:** el nombre pasado a `pkg-config` (aquí `glfw3`) no siempre es idéntico al nombre del paquete del sistema que lo instala (ej. `libglfw3-dev` en Debian/Ubuntu). `pkg-config --list-all` lista todos los módulos `.pc` realmente disponibles en la máquina cuando ese nombre exacto no se conoce de antemano.
+
+## Modo silencioso: `@` y `MAKEFLAGS`
+
+Por defecto, `make` muestra cada comando antes de ejecutarlo. Un `@` como prefijo de línea suprime esa visualización, solo para **esa línea**:
+
+```makefile
+compilar:
+	@echo "Compilando..."
+	@gcc main.c -o programa
+```
+
+Sin `@`, `make` mostraría primero la línea `gcc main.c -o programa` tal cual, además del mensaje `Compilando...` producido por su ejecución.
+
+Para aplicar este comportamiento a **todo** el archivo sin anteponer cada línea individualmente, `MAKEFLAGS += -s` al principio del archivo tiene el mismo efecto, pero de forma global:
+
+```makefile
+MAKEFLAGS += -s
+
+compilar:
+	echo "Compilando..."   # ya silencioso gracias a MAKEFLAGS; el @ es redundante aqui
+	gcc main.c -o programa
+```
+
+> **Nota:** los dos mecanismos se solapan sin entrar en conflicto. `MAKEFLAGS += -s` evita olvidar un `@` en una línea nueva añadida más tarde; `@` línea por línea permite en cambio mantener ciertas líneas deliberadamente visibles (un mensaje de error que se quiere ver incluso en modo silencioso, por ejemplo). Combinar ambos, como haría un proyecto cauteloso, es redundante pero inofensivo.
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Un Makefile describe reglas (`objetivo: dependencias` + comando) que `make` ejecuta, reconstruyendo únicamente lo que realmente ha cambiado. |
-| **Herramientas utilizables** | Variables (`CC`, `CFLAGS`), objetivos ficticios (`.PHONY`). |
-| **Trampas a evitar** | Sangrar un comando con espacios en lugar de una tabulación: error muy frecuente que rompe la regla. |
-| **Buenas prácticas** | Declarar `.PHONY` para todo objetivo que no produzca un archivo real (`clean`, `test`...), para evitar un conflicto con un archivo del mismo nombre. |
+| **Para recordar** | Un Makefile describe reglas (`objetivo: dependencias` + comando) que `make` ejecuta, reconstruyendo únicamente lo que realmente ha cambiado. Una receta corta también puede escribirse en la propia línea del objetivo, tras un `;`. |
+| **Herramientas utilizables** | Variables (`CC`, `CFLAGS`), objetivos ficticios (`.PHONY`), `-I` para las cabeceras, `pkg-config` para los flags de una biblioteca, `@`/`MAKEFLAGS += -s` para el modo silencioso. |
+| **Trampas a evitar** | Sangrar un comando con espacios en lugar de una tabulación; apuntar `-I` al nivel de carpeta equivocado; confundir el nombre `pkg-config` de una biblioteca con el nombre de su paquete del sistema. |
+| **Buenas prácticas** | Declarar `.PHONY` para todo objetivo que no produzca un archivo real (`clean`, `test`...), para evitar un conflicto con un archivo del mismo nombre; pasar por `pkg-config` en lugar de adivinar `-I`/`-l` a mano para una biblioteca externa. |

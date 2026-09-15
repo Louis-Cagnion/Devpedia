@@ -54,6 +54,44 @@ cd /tmp
 pwd               # affiche toujours /tmp : le cd du sous-shell n'a pas survécu
 ```
 
+## Regrouper des commandes sans sous-shell : `{ ; }`
+
+`{ commande1; commande2; }` produit un effet proche de `(commande1; commande2)` vu plus haut, mais **sans** créer de sous-shell : les commandes s'exécutent directement dans le shell courant, avec les mêmes conséquences qu'un `cd` ou une variable tapés normalement.
+
+```bash
+cd /tmp
+{ cd /var; pwd; }   # affiche /var
+pwd                 # affiche toujours /var : pas de sous-shell, le cd a bien eu lieu ici
+```
+
+| | `( ; )` | `{ ; }` |
+|---|---|---|
+| Crée un sous-shell | Oui | Non |
+| `cd`/variable modifiés survivent après | Non | Oui |
+| Espace après le symbole d'ouverture | Non nécessaire | **Obligatoire** |
+| `;` avant le symbole de fermeture | Non nécessaire | **Obligatoire** |
+
+> **Piège :** `{ls;}` (sans espaces) est une erreur de syntaxe. `{` et `}` sont ici des **mots-clés** du shell, pas des opérateurs comme `(`/`)` : ils doivent donc être séparés du reste par un espace, exactement comme n'importe quel autre mot de la ligne de commande.
+
+## Colorer la sortie d'un terminal : les codes ANSI
+
+Un terminal n'affiche pas que du texte brut : il interprète aussi certaines séquences d'octets comme des instructions de mise en forme (couleur, gras...), les **codes d'échappement ANSI**. Une séquence commence par le caractère `ESC` (`\033` en octal), suivi de `[`, d'un code, puis d'une lettre finale :
+
+```bash
+printf '\033[31mTexte en rouge\033[0m\n'
+```
+
+| Code | Effet |
+|---|---|
+| `\033[31m` | Texte rouge |
+| `\033[32m` | Texte vert |
+| `\033[36m` | Texte cyan |
+| `\033[0m` | Réinitialise tout (couleur, gras...) |
+
+> **Piège :** `echo '\033[31mTexte\033[0m'` (sans `-e`) affiche le plus souvent la séquence **telle quelle**, en texte brut, plutôt que de l'interpréter. Le comportement par défaut d'`echo` face à une séquence d'échappement dépend en réalité du shell qui l'exécute : le `echo` interne de Bash ne l'interprète que si `-e` est passé, alors que le `echo` interne de `dash` (le `/bin/sh` par défaut sur beaucoup de distributions Linux) l'interprète nativement, sans `-e`. Une même ligne peut donc afficher des couleurs dans un Makefile (dont les recettes s'exécutent via `/bin/sh`) et échouer telle quelle une fois copiée dans un prompt Bash interactif.
+>
+> **Bonne pratique :** préférer `printf`, dont le comportement est constant d'un shell à l'autre (il interprète toujours `\033` dans sa chaîne de format), plutôt que de compter sur celui d'`echo`, qui varie.
+
 ## Exécuter une commande : builtin vs externe
 
 Une fois la ligne découpée et expansée, le shell doit distinguer deux cas :
@@ -158,10 +196,10 @@ Chaque pipeline lancé forme un **groupe de processus** : un identifiant partag�
 
 | | |
 |---|---|
-| **À retenir** | Un shell est une boucle REPL : lire une ligne, appliquer les expansions dans un ordre fixe, exécuter (builtin en interne, ou `fork`/`execve`/`wait` pour une commande externe). |
-| **Outils utilisables** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` pour les pipes et redirections, le shebang pour qu'un script soit reconnu comme exécutable. |
-| **Pièges à éviter** | Confondre l'ordre des expansions : c'est lui qui explique pourquoi `"$var"` protège du découpage en mots alors que `$var` seul y est exposé. |
-| **Bonnes pratiques** | Construire son propre mini-shell pour vérifier sa compréhension : boucle de lecture, analyseur, expansions, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. |
+| **À retenir** | Un shell est une boucle REPL : lire une ligne, appliquer les expansions dans un ordre fixe, exécuter (builtin en interne, ou `fork`/`execve`/`wait` pour une commande externe). `( ; )` crée un sous-shell, `{ ; }` regroupe des commandes sans en créer. |
+| **Outils utilisables** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` pour les pipes et redirections, le shebang pour qu'un script soit reconnu comme exécutable, `printf` pour des codes ANSI fiables d'un shell à l'autre. |
+| **Pièges à éviter** | Confondre l'ordre des expansions : c'est lui qui explique pourquoi `"$var"` protège du découpage en mots alors que `$var` seul y est exposé. Omettre les espaces autour de `{ ; }`. Compter sur `echo` pour interpréter un code ANSI : son comportement par défaut varie d'un shell à l'autre. |
+| **Bonnes pratiques** | Construire son propre mini-shell pour vérifier sa compréhension : boucle de lecture, analyseur, expansions, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. Préférer `{ ; }` à un sous-shell quand une modification (`cd`, variable) doit survivre au groupe de commandes. |
 
 ## Construire son propre mini-shell
 
