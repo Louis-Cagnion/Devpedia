@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Prochaine tâche : continuer les compléments/nouveaux chapitres des points 2-11 (rangement déjà tranché) -- reprendre par le dernier complément court restant (streaming HTTP PHP, point 11), puis les nouveaux chapitres. Régénération audio complète seulement une fois tout ajouté.
+> Prochaine tâche : tous les compléments courts sont ajoutés -- passer aux nouveaux chapitres complets des points 2-11 (rangement déjà tranché), dans l'ordre le plus court d'abord. Régénération audio complète seulement une fois tout ajouté.
 
 > Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1), et les points 2 à 11 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
 
@@ -51,8 +51,7 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 - `fastcgi_finish_request()` + `register_shutdown_function()` (PHP-FPM : répondre au client tout de suite puis recalculer un cache coûteux en fond, `src/Atlas/VN/SalesRepository.php::scheduleBackgroundRefresh()`) → nouveau chapitre PHP-FPM.
 
 ## 11. Notion candidate : suite revue /review poc-borne-git
-- Streaming de sortie HTTP progressive en PHP (`ini_set('output_buffering', 'off')` + `flush()` en boucle, `admin/import_web.php`/`admin/atlas-geocode.php` ; mécanisme inverse du point 10, la connexion reste ouverte tout du long) → complément d'`eviter-le-recalcul-redondant.md`/`pwa-progressive-web-app.md`.
-- Reste aussi : chunk 7 de la revue /review (`src/Chat/ImportOrchestrator.php`, `tools/*.php`, `import.php` -- voir `review-progress.md` du projet poc-borne-git).
+- Reste : chunk 7 de la revue /review (`src/Chat/ImportOrchestrator.php`, `tools/*.php`, `import.php` -- voir `review-progress.md` du projet poc-borne-git).
 
 ## 12. Notions candidates : revue /review PDF_parser (Louis, 14/09/2026)
 - Chaînage d'exceptions `raise ... from exc` (conserver la cause d'origine tout en levant un type d'erreur "métier" ; `src/pdf_parser/ingestion.py::ingest()`) → complément de `gestion-des-erreurs.md` (Langages/Python).
