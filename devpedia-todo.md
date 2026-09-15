@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Prochaine tâche : continuer les compléments/nouveaux chapitres des points 2-11 (rangement déjà tranché) -- reprendre par la variable `static` PHP dans `poo.md` (point 7), puis les compléments courts restants (`history.replaceState` dans `dom-et-evenements.md`, custom property CSS depuis JS, streaming HTTP PHP), puis les nouveaux chapitres. Régénération audio complète seulement une fois tout ajouté.
+> Prochaine tâche : continuer les compléments/nouveaux chapitres des points 2-11 (rangement déjà tranché) -- reprendre par les compléments courts restants (`history.replaceState` dans `dom-et-evenements.md`, custom property CSS depuis JS, streaming HTTP PHP), puis les nouveaux chapitres. Régénération audio complète seulement une fois tout ajouté.
 
 > Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1), et les points 2 à 11 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
 
@@ -38,7 +38,6 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 ## 7. Notions candidates : suite revue /review poc-borne-git
 - Injection XXE et sa prévention (`libxml_set_external_entity_loader(fn () => null)`, `src/Chat/XmlImporter.php`) → nouveau chapitre XML.
 - `IntersectionObserver` (scroll infini), `MutationObserver` (réagir à l'arrivée de messages sans polling), debounce vs throttle (`apps/chat/assets/js/*.js`) → un seul nouveau chapitre JS/DOM navigateur.
-- Variable `static` locale en PHP (`src/Shared/helpers.php::frenchMonthLabel()`) → `poo.md`.
 
 ## 8. Notions candidates : suite revue /review poc-borne-git
 - Chargement dynamique différé d'une lib JS via bootstrap officiel (`importLibrary()`, Google Maps JS API, `apps/atlas/index.php`) + clustering de marqueurs (`@googlemaps/markerclusterer`) → nouveau sous-chapitre "Google Maps JavaScript API".
