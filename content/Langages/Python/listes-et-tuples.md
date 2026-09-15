@@ -26,6 +26,25 @@ len(fruits)                 # nombre d'éléments
 
 > **Note :** contrairement à un tableau en [C](/?c=langages-de-programmation&s=c&p=c) (taille fixe, un seul type), une liste Python est un tableau **dynamique** hétérogène : elle grandit automatiquement, et chaque élément peut être d'un type différent, au prix d'un surcoût mémoire par élément (chaque élément est en réalité une référence vers un objet Python, pas une valeur brute contiguë comme en [C](/?c=langages-de-programmation&s=c&p=c)).
 
+### Répéter une liste avec l'opérateur `*`
+
+`[x] * n` construit une nouvelle liste de taille `n`, chaque emplacement contenant `x` :
+
+```python
+zeros = [0] * 5           # [0, 0, 0, 0, 0] -> préallocation pratique pour une taille connue à l'avance
+lettres = ["a", "b"] * 3  # ["a", "b", "a", "b", "a", "b"] -> répète la SÉQUENCE entière, pas chaque élément
+```
+
+> **Piège :** `[[]] * n` ne crée PAS `n` listes indépendantes, mais `n` références vers **la même** liste vide : modifier l'une modifie donc les `n` en même temps.
+
+```python
+grille = [[]] * 3
+grille[0].append("x")
+print(grille)   # [['x'], ['x'], ['x']] -> les 3 sous-listes SONT le même objet, pas des copies
+```
+
+> **Bonne pratique :** utiliser une compréhension de liste (voir plus bas) pour obtenir `n` objets réellement distincts : `[[] for _ in range(3)]` crée une nouvelle liste vide à chaque itération, contrairement à `[[]] * 3` qui recopie `n` fois la même référence.
+
 ### `.append()` vs `.extend()`
 
 ```python
@@ -118,6 +137,6 @@ Voir aussi [Les dictionnaires et les ensembles](/?c=langages-de-programmation&s=
 | | |
 |---|---|
 | **À retenir** | Une liste est mutable, un tuple est immuable : tous deux ordonnés et hétérogènes. Le slicing (`[debut:fin:pas]`) extrait une portion ; une compréhension construit une liste en une expression. |
-| **Outils utilisables** | `append`/`insert`/`remove`/`pop`, slicing, déballage (*unpacking*), compréhensions de liste. |
-| **Pièges à éviter** | Essayer de modifier un tuple après création (`TypeError`) : utiliser une liste si le contenu doit évoluer. |
-| **Bonnes pratiques** | Utiliser un tuple pour un enregistrement fixe, une liste pour une collection destinée à évoluer ; réserver la compréhension à une transformation simple, une boucle `for` au-delà. |
+| **Outils utilisables** | `append`/`insert`/`remove`/`pop`, l'opérateur `*` pour préallouer (`[0] * n`), slicing, déballage (*unpacking*), compréhensions de liste. |
+| **Pièges à éviter** | Essayer de modifier un tuple après création (`TypeError`) : utiliser une liste si le contenu doit évoluer. `[[]] * n` qui répète la même référence au lieu de créer `n` listes distinctes. |
+| **Bonnes pratiques** | Utiliser un tuple pour un enregistrement fixe, une liste pour une collection destinée à évoluer ; préférer `[[] for _ in range(n)]` à `[[]] * n` pour des sous-listes indépendantes ; réserver la compréhension à une transformation simple, une boucle `for` au-delà. |

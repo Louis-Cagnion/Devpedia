@@ -26,6 +26,25 @@ len(frutas)                  # número de elementos
 
 > **Nota:** a diferencia de un array en [C](/?c=langages-de-programmation&s=c&p=c) (tamaño fijo, un solo tipo), una lista Python es un array **dinámico** heterogéneo: crece automáticamente, y cada elemento puede ser de un tipo diferente, al precio de un sobrecoste de memoria por elemento (cada elemento es en realidad una referencia a un objeto Python, no un valor bruto contiguo como en C).
 
+### Repetir una lista con el operador `*`
+
+`[x] * n` construye una nueva lista de tamaño `n`, cada posición contiene `x`:
+
+```python
+zeros = [0] * 5           # [0, 0, 0, 0, 0] -> preasignación práctica para un tamaño conocido de antemano
+letras = ["a", "b"] * 3   # ["a", "b", "a", "b", "a", "b"] -> repite la SECUENCIA entera, no cada elemento
+```
+
+> **Trampa:** `[[]] * n` NO crea `n` listas independientes, sino `n` referencias a **la misma** lista vacía: modificar una modifica entonces las `n` a la vez.
+
+```python
+cuadricula = [[]] * 3
+cuadricula[0].append("x")
+print(cuadricula)   # [['x'], ['x'], ['x']] -> las 3 sublistas SON el mismo objeto, no copias
+```
+
+> **Buena práctica:** usar una comprensión de lista (ver más abajo) para obtener `n` objetos realmente distintos: `[[] for _ in range(3)]` crea una lista vacía nueva en cada iteración, a diferencia de `[[]] * 3`, que copia `n` veces la misma referencia.
+
 ### `.append()` vs `.extend()`
 
 ```python
@@ -118,6 +137,6 @@ Ver también [Los diccionarios y los conjuntos](/?c=langages-de-programmation&s=
 | | |
 |---|---|
 | **Para recordar** | Una lista es mutable, una tupla es inmutable: ambas ordenadas y heterogéneas. El slicing (`[inicio:fin:paso]`) extrae una porción; una comprensión construye una lista en una expresión. |
-| **Herramientas utilizables** | `append`/`insert`/`remove`/`pop`, slicing, desempaquetado (*unpacking*), comprensiones de lista. |
-| **Trampas a evitar** | Intentar modificar una tupla tras su creación (`TypeError`): usar una lista si el contenido debe evolucionar. |
-| **Buenas prácticas** | Usar una tupla para un registro fijo, una lista para una colección destinada a evolucionar; reservar la comprensión a una transformación simple, un bucle `for` más allá. |
+| **Herramientas utilizables** | `append`/`insert`/`remove`/`pop`, el operador `*` para preasignar (`[0] * n`), slicing, desempaquetado (*unpacking*), comprensiones de lista. |
+| **Trampas a evitar** | Intentar modificar una tupla tras su creación (`TypeError`): usar una lista si el contenido debe evolucionar. `[[]] * n`, que repite la misma referencia en vez de crear `n` listas distintas. |
+| **Buenas prácticas** | Usar una tupla para un registro fijo, una lista para una colección destinada a evolucionar; preferir `[[] for _ in range(n)]` a `[[]] * n` para sublistas independientes; reservar la comprensión a una transformación simple, un bucle `for` más allá. |
