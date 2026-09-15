@@ -148,6 +148,10 @@
               "label": "`exit()` and return codes"
             },
             {
+              "id": "argc-et-argv",
+              "label": "Command-line arguments (`argc`, `argv`)"
+            },
+            {
               "id": "pointeurs",
               "label": "Pointers"
             },

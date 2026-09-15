@@ -148,6 +148,10 @@
               "label": "`exit()` e os códigos de retorno"
             },
             {
+              "id": "argc-et-argv",
+              "label": "Os argumentos da linha de comando (`argc`, `argv`)"
+            },
+            {
               "id": "pointeurs",
               "label": "Os ponteiros"
             },

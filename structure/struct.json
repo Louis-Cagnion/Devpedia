@@ -148,6 +148,10 @@
               "label": "`exit()` et les codes de retour"
             },
             {
+              "id": "argc-et-argv",
+              "label": "Les arguments de la ligne de commande (`argc`, `argv`)"
+            },
+            {
               "id": "pointeurs",
               "label": "Les pointeurs"
             },

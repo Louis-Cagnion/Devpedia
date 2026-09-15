@@ -1,5 +1,5 @@
 ---
-order: 23
+order: 24
 ---
 
 # A leitura formatada: `scanf` e `sscanf`

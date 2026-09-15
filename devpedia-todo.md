@@ -1,8 +1,8 @@
 # TODO — Devpedia
 
-> Prochaine tâche : chapitres `operateur-virgule.md` et `exit-et-codes-de-retour.md` (point 5) ajoutés (FR/EN/ES/BR, orders 4-5 dans `Langages/C`). Reprendre par le dernier item du point 5 (`argc`/`argv`), puis continuer les nouveaux chapitres complets des points 2-4 et 7-10 (rangement déjà tranché), toujours du plus court au plus long. Régénération audio complète seulement une fois tout ajouté.
+> Prochaine tâche : point 5 (ex-point 5, `argc`/`argv`) terminé -- 3 chapitres `Langages/C` ajoutés au total (`operateur-virgule.md`, `exit-et-codes-de-retour.md`, `argc-et-argv.md`, FR/EN/ES/BR, orders 4-6). Continuer les nouveaux chapitres complets des points 2-9 (rangement déjà tranché), toujours du plus court au plus long. Régénération audio complète seulement une fois tout ajouté.
 
-> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1), et les points 2 à 11 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
+> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1), et les points 2 à 10 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
 
 Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de décision de régénération audio à Louis -- il s'en charge à son rythme et note lui-même son retour ici quand il le fait. Le fait/pourquoi/décisions déjà tranchées (progression, historique) va dans `journal-de-bord.md`, jamais ici : seuls les points restants, avec le contexte minimal pour les exécuter sans revenir en arrière.
 
@@ -27,31 +27,28 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 - OpenGL Loading Library (GLAD/GLEW : fonctions OpenGL modernes résolues à l'exécution via `glfwGetProcAddress`, pas liées statiquement) + résolution `#include <...>`/`-I` (concaténation littérale par le préprocesseur, piège du `-I` pointé sur le mauvais niveau de dossier) + vendoring (committer le code généré d'une dépendance dans le repo) → nouvelle sous-rubrique build/OpenGL.
 - Double buffering et render loop (`glfwSwapBuffers`, boucle poll/clear/draw/swap) → `Fondamentaux/Graphisme` (avec le point 2).
 
-## 5. Notions candidates : projet SCOP, langage C
-- Arguments de ligne de commande (`argc`/`argv`) → chapitre séparé, `Langages/C`.
-
-## 6. Suite de la revue /review poc-borne-git
+## 5. Suite de la revue /review poc-borne-git
 - Reprendre la revue /review sur le périmètre non couvert (voir `review-progress.md` du projet poc-borne-git).
 
-## 7. Notions candidates : suite revue /review poc-borne-git
+## 6. Notions candidates : suite revue /review poc-borne-git
 - Injection XXE et sa prévention (`libxml_set_external_entity_loader(fn () => null)`, `src/Chat/XmlImporter.php`) → nouveau chapitre XML.
 - `IntersectionObserver` (scroll infini), `MutationObserver` (réagir à l'arrivée de messages sans polling), debounce vs throttle (`apps/chat/assets/js/*.js`) → un seul nouveau chapitre JS/DOM navigateur.
 
-## 8. Notions candidates : suite revue /review poc-borne-git
+## 7. Notions candidates : suite revue /review poc-borne-git
 - Chargement dynamique différé d'une lib JS via bootstrap officiel (`importLibrary()`, Google Maps JS API, `apps/atlas/index.php`) + clustering de marqueurs (`@googlemaps/markerclusterer`) → nouveau sous-chapitre "Google Maps JavaScript API".
 - Boucle Canvas 2D via `requestAnimationFrame` + mise à l'échelle `devicePixelRatio` + lissage exponentiel vers une cible mobile (`apps/ambient/assets/js/app.js`) → nouveau chapitre "Canvas 2D et animations".
 
-## 9. Notions candidates : suite revue /review poc-borne-git
+## 8. Notions candidates : suite revue /review poc-borne-git
 - Interception d'un setter de propriété native via `Object.defineProperty` (`apps/atlas/assets/js/shared.js::enhanceSelect()`) → nouveau sous-chapitre JS dédié.
-- Mesure de texte via Canvas 2D `measureText()`, dispersion de points géographiques colocalisés (correction de longitude par `1/cos(latitude)`), deux chemins de rendu Google Maps (`AdvancedMarkerElement` vs `google.maps.Marker`) → rattachés aux chapitres Canvas/Google Maps du point 8.
+- Mesure de texte via Canvas 2D `measureText()`, dispersion de points géographiques colocalisés (correction de longitude par `1/cos(latitude)`), deux chemins de rendu Google Maps (`AdvancedMarkerElement` vs `google.maps.Marker`) → rattachés aux chapitres Canvas/Google Maps du point 7.
 
-## 10. Notion candidate : suite revue /review poc-borne-git
+## 9. Notion candidate : suite revue /review poc-borne-git
 - `fastcgi_finish_request()` + `register_shutdown_function()` (PHP-FPM : répondre au client tout de suite puis recalculer un cache coûteux en fond, `src/Atlas/VN/SalesRepository.php::scheduleBackgroundRefresh()`) → nouveau chapitre PHP-FPM.
 
-## 11. Notion candidate : suite revue /review poc-borne-git
+## 10. Notion candidate : suite revue /review poc-borne-git
 - Reste : chunk 7 de la revue /review (`src/Chat/ImportOrchestrator.php`, `tools/*.php`, `import.php` -- voir `review-progress.md` du projet poc-borne-git).
 
-## 12. Notions candidates : revue /review PDF_parser (Louis, 14/09/2026)
+## 11. Notions candidates : revue /review PDF_parser (Louis, 14/09/2026)
 - Chaînage d'exceptions `raise ... from exc` (conserver la cause d'origine tout en levant un type d'erreur "métier" ; `src/pdf_parser/ingestion.py::ingest()`) → complément de `gestion-des-erreurs.md` (Langages/Python).
 - Syntaxe moderne `X | None` (PEP 604, Python 3.10+) comme remplacement de `Optional[X]`/`Union[...]` du module `typing` déjà couvert → complément de `typage-avec-annotations.md` (Langages/Python).
 - Forward reference (annotation de type entre guillemets, ex. `"pymupdf.Page"`) et bloc `if TYPE_CHECKING:` (import réservé au vérificateur de types, jamais exécuté au runtime, pour éviter un import circulaire) → complément de `typage-avec-annotations.md` (Langages/Python).
