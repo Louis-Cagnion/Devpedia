@@ -45,6 +45,30 @@ with pymupdf.open("document.pdf") as document:
 >
 > **Best practice:** characterize a block by the font size of its **longest** span (the most characters), not by the raw maximum size: a simple choice that keeps a short, isolated element (a number, a bullet) from skewing the measurement.
 
+## Detecting a Table by Geometric Heuristic
+
+Spotting a table on a page without resorting to [structured OCR](/?c=traitement-de-documents&p=ocr-structure) or a machine learning model: PyMuPDF analyzes the page's **geometry** (grid lines actually drawn in the PDF, alignment between native text blocks) to infer a table structure:
+
+```python
+with pymupdf.open("document.pdf") as document:
+    page = document[0]
+    for table in page.find_tables():
+        rows = table.extract()   # list of rows, each row = list of cells (str or None)
+        print(table.bbox, len(rows), "rows")
+```
+
+`find_tables()` returns something iterable page by page; each table found exposes its position (`bbox`) and an `extract()` method that returns its content already arranged into rows/cells, with no need to rebuild the grid yourself from raw text positions.
+
+| | Geometric heuristic (`find_tables()`) | Structured OCR |
+|---|---|---|
+| Relies on | Vector lines + native text alignment | Pixels of the rendered page |
+| Works on a scanned page | No (no native text or vector line to measure) | Yes |
+| Speed | Fast: no model to run | Slower: inference on an image |
+
+> **Pitfall:** a table with no visible borders and no clear alignment (columns separated by irregular spacing, no drawn grid) may be detected only partially, or not at all: `find_tables()` measures a geometry that is actually present, it never guesses a structure absent from the rendering.
+>
+> **Best practice:** check `find_tables()`'s result on a sample representative of the project's real tables before wiring it into a pipeline as-is, as with any heuristic based on layout.
+
 ## Rendering a page as an image
 
 Some processes (structured [OCR](/?c=traitement-de-documents&p=ocr-structure), a visual check) need the page as an **image**, independent of any native text it already contains. PyMuPDF can also produce this rendering:
@@ -86,6 +110,6 @@ A full extraction pipeline typically produces, for a given PDF, two separate col
 | | |
 |---|---|
 | **Key takeaways** | A PDF mixes native text (characters actually stored) and image content (pixels) on the same page. Native text is extracted directly, with position and font size; image content must be rendered as an image (resolution set in DPI) before being interpreted any other way. |
-| **Tools you can use** | `pymupdf`: `page.get_text("dict")` for structured text, `page.get_pixmap(dpi=...)` for an image rendering, converted to a NumPy array with `np.frombuffer`/`reshape`. |
-| **Pitfalls to avoid** | Assuming a scanned PDF contains native text. Characterizing a block by its maximum font size rather than its longest span's. Picking a default DPI without validating it on real documents. |
-| **Best practices** | Check for the actual presence of native text before designing a pipeline. Measure a block by its longest span. Test several DPI values on representative documents before settling on one. |
+| **Tools you can use** | `pymupdf`: `page.get_text("dict")` for structured text, `page.find_tables()` for geometry-based table detection, `page.get_pixmap(dpi=...)` for an image rendering, converted to a NumPy array with `np.frombuffer`/`reshape`. |
+| **Pitfalls to avoid** | Assuming a scanned PDF contains native text. Characterizing a block by its maximum font size rather than its longest span's. Expecting `find_tables()` to guess a table with no grid and no clear alignment. Picking a default DPI without validating it on real documents. |
+| **Best practices** | Check for the actual presence of native text before designing a pipeline. Measure a block by its longest span. Validate `find_tables()` on a real sample before automating it. Test several DPI values on representative documents before settling on one. |

@@ -45,6 +45,30 @@ with pymupdf.open("documento.pdf") as documento:
 >
 > **Buena práctica:** caracterizar un bloque por el tamaño de fuente del span más **largo** (el que tiene más caracteres), no por el tamaño máximo bruto: una elección simple que evita que un elemento corto y aislado (número, viñeta) falsee la medida.
 
+## Detectar una tabla por heurística geométrica
+
+Detectar una tabla en una página sin recurrir al [OCR estructurado](/?c=traitement-de-documents&p=ocr-structure) ni a un modelo de aprendizaje automático: PyMuPDF analiza la **geometría** de la página (líneas de cuadrícula realmente dibujadas en el PDF, alineación entre los bloques de texto nativo) para deducir una estructura de tabla:
+
+```python
+with pymupdf.open("documento.pdf") as documento:
+    pagina = documento[0]
+    for tabla in pagina.find_tables():
+        filas = tabla.extract()   # lista de filas, cada fila = lista de celdas (str o None)
+        print(tabla.bbox, len(filas), "filas")
+```
+
+`find_tables()` devuelve algo recorrible página por página; cada tabla encontrada expone su posición (`bbox`) y un método `extract()` que devuelve su contenido ya ordenado en filas/celdas, sin necesidad de reconstruir la cuadrícula uno mismo a partir de las posiciones brutas del texto.
+
+| | Heurística geométrica (`find_tables()`) | OCR estructurado |
+|---|---|---|
+| Se apoya en | Líneas vectoriales + alineación del texto nativo | Píxeles de la página renderizada |
+| Funciona en una página escaneada | No (sin texto nativo ni línea vectorial que medir) | Sí |
+| Velocidad | Rápida: ningún modelo que ejecutar | Más lenta: inferencia sobre una imagen |
+
+> **Trampa:** una tabla sin bordes visibles ni alineación clara (columnas separadas por espacios irregulares, sin cuadrícula dibujada) puede detectarse solo parcialmente, o no detectarse en absoluto: `find_tables()` mide una geometría realmente presente, nunca adivina una estructura ausente del renderizado.
+>
+> **Buena práctica:** verificar el resultado de `find_tables()` en una muestra representativa de las tablas reales del proyecto antes de integrarlo tal cual en un pipeline, como con cualquier heurística basada en la maquetación.
+
 ## Renderizar una página como una imagen
 
 Algunos tratamientos (el [OCR estructurado](/?c=traitement-de-documents&p=ocr-structure), una verificación visual) necesitan la página como una **imagen**, independientemente de cualquier texto nativo que ya contenga. PyMuPDF también puede producir este renderizado:
@@ -86,6 +110,6 @@ Un pipeline de extracción completo produce típicamente, para un PDF dado, dos 
 | | |
 |---|---|
 | **Para recordar** | Un PDF mezcla texto nativo (caracteres realmente almacenados) y contenido imagen (píxeles) en una misma página. El texto nativo se extrae directamente, con posición y tamaño de fuente; el contenido imagen debe renderizarse como una imagen (resolución ajustada en DPI) antes de interpretarse de otra forma. |
-| **Herramientas utilizables** | `pymupdf`: `pagina.get_text("dict")` para el texto estructurado, `pagina.get_pixmap(dpi=...)` para un renderizado de imagen, convertido a array NumPy con `np.frombuffer`/`reshape`. |
-| **Trampas a evitar** | Suponer que un PDF escaneado contiene texto nativo. Caracterizar un bloque por su tamaño de fuente máximo en lugar del span más largo. Elegir un DPI por defecto sin validarlo con documentos reales. |
-| **Buenas prácticas** | Verificar la presencia real de texto nativo antes de diseñar un pipeline. Medir un bloque por el span más largo. Probar varios DPI en documentos representativos antes de fijar uno. |
+| **Herramientas utilizables** | `pymupdf`: `pagina.get_text("dict")` para el texto estructurado, `pagina.find_tables()` para detectar tablas por geometría, `pagina.get_pixmap(dpi=...)` para un renderizado de imagen, convertido a array NumPy con `np.frombuffer`/`reshape`. |
+| **Trampas a evitar** | Suponer que un PDF escaneado contiene texto nativo. Caracterizar un bloque por su tamaño de fuente máximo en lugar del span más largo. Esperar que `find_tables()` adivine una tabla sin cuadrícula ni alineación clara. Elegir un DPI por defecto sin validarlo con documentos reales. |
+| **Buenas prácticas** | Verificar la presencia real de texto nativo antes de diseñar un pipeline. Medir un bloque por el span más largo. Validar `find_tables()` en una muestra real antes de automatizarlo. Probar varios DPI en documentos representativos antes de fijar uno. |

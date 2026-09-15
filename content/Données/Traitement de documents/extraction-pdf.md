@@ -45,6 +45,30 @@ with pymupdf.open("document.pdf") as document:
 >
 > **Bonne pratique :** caractériser un bloc par la taille de police du span le plus **long** (le plus de caractères), pas par la taille maximale brute : un choix simple qui évite qu'un élément court et isolé (numéro, puce) fausse la mesure.
 
+## Détecter un tableau par heuristique géométrique
+
+Repérer un tableau dans une page sans recourir à l'[OCR structuré](/?c=traitement-de-documents&p=ocr-structure) ni à un modèle d'apprentissage automatique : PyMuPDF analyse la **géométrie** de la page (lignes de grille réellement dessinées dans le PDF, alignement des blocs de texte natif entre eux) pour en déduire une structure de tableau :
+
+```python
+with pymupdf.open("document.pdf") as document:
+    page = document[0]
+    for tableau in page.find_tables():
+        lignes = tableau.extract()   # liste de lignes, chaque ligne = liste de cellules (str ou None)
+        print(tableau.bbox, len(lignes), "lignes")
+```
+
+`find_tables()` renvoie un objet parcourable page par page ; chaque tableau trouvé expose sa position (`bbox`) et une méthode `extract()` qui rend son contenu déjà rangé en lignes/cellules, sans qu'il soit besoin de reconstituer la grille soi-même à partir des positions de texte brutes.
+
+| | Heuristique géométrique (`find_tables()`) | OCR structuré |
+|---|---|---|
+| S'appuie sur | Lignes vectorielles + alignement du texte natif | Pixels de la page rendue comme une image |
+| Fonctionne sur une page scannée | Non (aucun texte natif ni ligne vectorielle à mesurer) | Oui |
+| Vitesse | Rapide : pas de modèle à faire tourner | Plus lent : inférence sur une image |
+
+> **Piège :** un tableau sans bordures visibles ni alignement net (colonnes séparées par des espaces irréguliers, pas de grille dessinée) peut être détecté partiellement, voire pas du tout : `find_tables()` mesure une géométrie réellement présente, il ne devine jamais une structure absente du rendu.
+>
+> **Bonne pratique :** vérifier le résultat de `find_tables()` sur un échantillon représentatif des tableaux réels du projet avant de l'intégrer tel quel à un pipeline, comme pour toute heuristique fondée sur la mise en page.
+
 ## Rendre une page comme une image
 
 Certains traitements (l'[OCR structuré](/?c=traitement-de-documents&p=ocr-structure), une vérification visuelle) ont besoin de la page comme une **image**, indépendamment de tout texte natif qu'elle contient déjà. PyMuPDF peut aussi produire ce rendu :
@@ -86,6 +110,6 @@ Un pipeline d'extraction complet produit typiquement, pour un PDF donné, deux c
 | | |
 |---|---|
 | **À retenir** | Un PDF mélange texte natif (caractères réellement stockés) et contenu image (pixels) sur une même page. Le texte natif s'extrait directement, avec position et taille de police ; le contenu image doit être rendu comme une image (résolution réglée en DPI) avant d'être interprété autrement. |
-| **Outils utilisables** | `pymupdf` : `page.get_text("dict")` pour le texte structuré, `page.get_pixmap(dpi=...)` pour un rendu image, converti en tableau NumPy avec `np.frombuffer`/`reshape`. |
-| **Pièges à éviter** | Supposer qu'un PDF scanné contient du texte natif. Caractériser un bloc par sa taille de police maximale plutôt que celle du span le plus long. Choisir un DPI par défaut sans le valider sur des documents réels. |
-| **Bonnes pratiques** | Vérifier la présence réelle de texte natif avant de concevoir un pipeline. Mesurer un bloc par le span le plus long. Tester plusieurs DPI sur des documents représentatifs avant d'en figer un. |
+| **Outils utilisables** | `pymupdf` : `page.get_text("dict")` pour le texte structuré, `page.find_tables()` pour une détection de tableau par géométrie, `page.get_pixmap(dpi=...)` pour un rendu image, converti en tableau NumPy avec `np.frombuffer`/`reshape`. |
+| **Pièges à éviter** | Supposer qu'un PDF scanné contient du texte natif. Caractériser un bloc par sa taille de police maximale plutôt que celle du span le plus long. Attendre de `find_tables()` qu'il devine un tableau sans grille ni alignement net. Choisir un DPI par défaut sans le valider sur des documents réels. |
+| **Bonnes pratiques** | Vérifier la présence réelle de texte natif avant de concevoir un pipeline. Mesurer un bloc par le span le plus long. Valider `find_tables()` sur un échantillon réel avant de l'automatiser. Tester plusieurs DPI sur des documents représentatifs avant d'en figer un. |
