@@ -52,3 +52,6 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 ## 11. Audit qualité de la traduction EN (ordre pas encore fixé)
 4 chapitres Python trouvés à moitié traduits en tombant dessus par ailleurs (15/09/2026) : `gestion-des-erreurs.md`, `typage-avec-annotations.md`, `extraction-pdf.md`, `listes-et-tuples.md` (tous corrigés). Symptômes rencontrés : noms de variables/chaînes restés en français, lien Markdown perdu ou remplacé par du texte simple, récapitulatif final `📋 Summary` absent, alignement des commentaires de fin de ligne décalé. ES et BR contrôlés en parallèle sur ces 4 fichiers : indemnes. Reste à vérifier si d'autres chapitres EN (hors Python) sont concernés -- pas fait faute de temps dans cette session.
+
+## 12. Notion candidate : suite revue /review PDF_parser
+- Détection de tableaux par analyse de contours OpenCV, via la bibliothèque `img2table` (`table_extraction.py::_refine_undercounted_native_tables`, appel `_Img2TablePDF(...).extract_tables()`) → nouveau chapitre ou sous-chapitre dans `Données/Traitement de documents`, à rattacher à `extraction-pdf.md` (find_tables PyMuPDF déjà couvert là).
