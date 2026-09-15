@@ -43,6 +43,22 @@ Este capítulo aborda dos mecanismos transversales de CSS: las **variables perso
 
 > **Nota:** a diferencia de una variable [Sass](https://sass-lang.com)/[Less](https://lesscss.org) (resueltas de una vez por todas en la compilación), una variable CSS nativa está **viva** en el navegador: modificable incluso en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`elemento.style.setProperty('--margen-interno', '30px')`), y reevaluada dinámicamente según el elemento en el que se consulta.
 
+## Leer una variable CSS desde JavaScript
+
+La escritura de arriba (`setProperty`) tiene su inversa, la **lectura**: útil para que un renderizado que no entiende CSS (dibujo en un `<canvas>`, gráfico en SVG generado en JavaScript) siga sincronizado con los colores declarados en la hoja de estilos, sin duplicarlos a mano en el código JS.
+
+```javascript
+const colorPrimario = getComputedStyle(document.documentElement)
+    .getPropertyValue("--couleur-primaire")   // "#3366cc" (cadena bruta, espacios incluidos)
+    .trim();
+
+console.log(colorPrimario || "#000000");      // valor de repliegue si la variable no existe
+```
+
+`getComputedStyle(elemento)` devuelve el estilo **final** aplicado a ese elemento una vez resuelta la cascada (ver sección siguiente), como un objeto consultable mediante `getPropertyValue()`. A diferencia de `var(--nombre, repliegue)` en CSS, `getPropertyValue()` no tiene un valor de repliegue integrado: devuelve una cadena vacía si la variable no existe, a gestionar uno mismo (`|| "#000000"` arriba).
+
+> **Trampa:** `getPropertyValue()` siempre devuelve una cadena bruta, con los espacios originales incluidos (`" #3366cc"` por ejemplo): `.trim()` evita comparaciones o concatenaciones que fallen en silencio por un espacio invisible.
+
 ## La cascada: tres criterios, en este orden
 
 Ante varias reglas que se aplican al mismo elemento y a la misma propiedad, CSS las resuelve en este orden preciso:
@@ -94,6 +110,6 @@ Las propiedades relacionadas con el **texto** (`color`, `font-family`, `font-siz
 | | |
 |---|---|
 | **Para recordar** | Las variables CSS (`--nombre`, leídas mediante `var()`) evitan repetir un valor. Ante un conflicto entre reglas, la cascada decide en este orden: `!important` > especificidad > orden de escritura. La herencia (texto sí, caja no) es un mecanismo distinto que interactúa con la cascada. |
-| **Herramientas utilizables** | `:root` para variables globales, `var(--nombre, valor-de-respaldo)`, `elemento.style.setProperty()` para modificarlas en JavaScript. |
-| **Trampas a evitar** | Abusar de `!important`: cortocircuita toda la cascada y dificulta sobrescribir el estilo después. |
-| **Buenas prácticas** | Reservar `!important` para casos excepcionales (sobrescribir un estilo de terceros que no se controla); definir los colores/espaciados recurrentes como variables en `:root` en lugar de repetirlos. |
+| **Herramientas utilizables** | `:root` para variables globales, `var(--nombre, valor-de-respaldo)`, `elemento.style.setProperty()` para modificarlas en JavaScript, `getComputedStyle().getPropertyValue()` para leerlas. |
+| **Trampas a evitar** | Abusar de `!important`: cortocircuita toda la cascada y dificulta sobrescribir el estilo después. Olvidar `.trim()` tras `getPropertyValue()`: la cadena devuelta conserva sus espacios originales. |
+| **Buenas prácticas** | Reservar `!important` para casos excepcionales (sobrescribir un estilo de terceros que no se controla); definir los colores/espaciados recurrentes como variables en `:root` en lugar de repetirlos; leer esas variables desde JS en lugar de duplicar los colores a mano, para que un renderizado Canvas/SVG siga sincronizado con la hoja de estilos. |

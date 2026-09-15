@@ -43,6 +43,22 @@ This chapter covers two cross-cutting mechanisms in CSS: **custom variables** (r
 
 > **Note:** unlike a [Sass](https://sass-lang.com)/[Less](https://lesscss.org) variable (resolved once and for all at compile time), a native CSS variable is **alive** in the browser: modifiable even from [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`element.style.setProperty('--marge-interne', '30px')`), and re-evaluated dynamically depending on the element where it's read.
 
+## Reading a CSS variable from JavaScript
+
+The write above (`setProperty`) has its opposite, **reading**: useful so that a rendering that doesn't understand CSS (drawing on a `<canvas>`, an [SVG](/?c=langages-de-balisage&s=html&p=html) chart generated in [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) still stays in sync with the colors declared in the stylesheet, without hard-coding a duplicate copy in the JS code.
+
+```javascript
+const primaryColor = getComputedStyle(document.documentElement)
+    .getPropertyValue("--couleur-primaire")   // "#3366cc" (raw string, spaces included)
+    .trim();
+
+console.log(primaryColor || "#000000");       // fallback value if the variable doesn't exist
+```
+
+`getComputedStyle(element)` returns the **final** style applied to that element once the cascade is resolved (see the next section), as an object queried through `getPropertyValue()`. Unlike `var(--name, fallback)` in CSS, `getPropertyValue()` has no built-in fallback: it returns an empty string when the variable doesn't exist, which you have to handle yourself (`|| "#000000"` above).
+
+> **Pitfall:** `getPropertyValue()` always returns a raw string, original spaces included (`" #3366cc"` for instance): `.trim()` avoids comparisons or concatenations silently going wrong because of an invisible space.
+
 ## The cascade: three criteria, in this order
 
 Faced with several rules targeting the same element and the same property, CSS settles them in this precise order:
@@ -94,6 +110,6 @@ Properties tied to **text** (`color`, `font-family`, `font-size`, `line-height`.
 | | |
 |---|---|
 | **Key Points** | CSS variables (`--name`, read via `var()`) avoid repeating a value. Faced with a conflict between rules, the cascade settles it in order: `!important` > specificity > order written. Inheritance (text yes, box no) is a distinct mechanism that interacts with the cascade. |
-| **Available Tools** | `:root` for global variables, `var(--name, fallback-value)`, `element.style.setProperty()` to modify them from JavaScript. |
-| **Pitfalls to Avoid** | Overusing `!important`: it short-circuits the whole cascade and makes the style hard to override afterward. |
-| **Best Practices** | Reserve `!important` for exceptional cases (overriding an uncontrolled third-party style); define recurring colors/spacing as variables on `:root` rather than repeating them. |
+| **Available Tools** | `:root` for global variables, `var(--name, fallback-value)`, `element.style.setProperty()` to modify them from JavaScript, `getComputedStyle().getPropertyValue()` to read them. |
+| **Pitfalls to Avoid** | Overusing `!important`: it short-circuits the whole cascade and makes the style hard to override afterward. Forgetting `.trim()` after `getPropertyValue()`: the returned string keeps its original spaces. |
+| **Best Practices** | Reserve `!important` for exceptional cases (overriding an uncontrolled third-party style); define recurring colors/spacing as variables on `:root` rather than repeating them; read those variables from JS instead of hard-coding duplicate colors, so a Canvas/SVG rendering stays in sync with the stylesheet. |

@@ -1,6 +1,6 @@
 # TODO — Devpedia
 
-> Prochaine tâche : continuer les compléments/nouveaux chapitres des points 2-11 (rangement déjà tranché) -- reprendre par les compléments courts restants (custom property CSS depuis JS, streaming HTTP PHP), puis les nouveaux chapitres. Régénération audio complète seulement une fois tout ajouté.
+> Prochaine tâche : continuer les compléments/nouveaux chapitres des points 2-11 (rangement déjà tranché) -- reprendre par le dernier complément court restant (streaming HTTP PHP, point 11), puis les nouveaux chapitres. Régénération audio complète seulement une fois tout ajouté.
 
 > Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1), et les points 2 à 11 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
 
@@ -45,7 +45,6 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 ## 9. Notions candidates : suite revue /review poc-borne-git
 - Interception d'un setter de propriété native via `Object.defineProperty` (`apps/atlas/assets/js/shared.js::enhanceSelect()`) → nouveau sous-chapitre JS dédié.
-- Lire une custom property CSS depuis JS (`getComputedStyle(...).getPropertyValue('--orange')`, `charts.js::css()`) → complément de `css.md`/`variables.md` JS.
 - Mesure de texte via Canvas 2D `measureText()`, dispersion de points géographiques colocalisés (correction de longitude par `1/cos(latitude)`), deux chemins de rendu Google Maps (`AdvancedMarkerElement` vs `google.maps.Marker`) → rattachés aux chapitres Canvas/Google Maps du point 8.
 
 ## 10. Notion candidate : suite revue /review poc-borne-git
