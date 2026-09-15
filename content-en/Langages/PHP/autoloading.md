@@ -64,3 +64,14 @@ Example of a solution, using `$classe = 'App\Services\Facturation\Calculateur'`:
 The `return;` after `if` is executed regardless of whether the file exists (it is placed after `if (file_exists(...))`, not inside it): since namespace prefixes are mutually exclusive in their first segment, once the correct prefix is found, continuing to test the others would be pointless.
 
 > **A convention that is essential for this to work:** the namespace name and the class name must literally encode the file path: one file per class; the folder structure corresponds to the namespace structure.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `spl_autoload_register()` registers a function automatically called as soon as an unloaded class is referenced: no more need for a manual `require` for every class. |
+| **Tools you can use** | `spl_autoload_register()`, namespace-prefix-to-folder mapping. |
+| **Pitfalls to avoid** | Not exactly matching the folder structure to the namespace structure: the resolver would no longer find the file. |
+| **Best practices** | Follow the "one file per class, folder structure = namespace structure" convention so autoloading works predictably. |

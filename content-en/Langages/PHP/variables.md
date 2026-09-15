@@ -115,10 +115,10 @@ If you want to concatenate strings, there are two ways to do it:
     $str1 = "Hello";
     $str2 = "world";
 
-    echo "Le thème du jour est : {$str1} {$str2}";
-    echo 'Le thème du jour est : ' . $str1 . ' ' . $str2;
+    echo "Today's theme is: {$str1} {$str2}";
+    echo 'Today\'s theme is: ' . $str1 . ' ' . $str2;
 
-    // Both results show "Today's theme is: Hello world."
+    // Both results show "Today's theme is: Hello world"
 ?>
 ```
 
@@ -127,8 +127,8 @@ The variables below allow you to retrieve form fields based on the form's submis
 
 ```php
 <?php
-    $_GET['nom_du_champ'];
-    $_POST['nom_du_champ'];
+    $_GET['field_name'];
+    $_POST['field_name'];
 
     // field_name = 'name' attribute in HTML tags
 ?>
@@ -194,3 +194,14 @@ if (!empty($person["age"])) {
 ```
 
 > **Note:** `empty($x)` returns `true` if the variable/key does not exist at all, OR if it contains an "empty" value (`''`, `0`, `null`, `false`, empty array...). This is different from `array_key_exists()` (see the chapter on functions), which only checks for the existence of the key, even if its value is `null`.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A PHP variable is declared with `$`, with no explicit type (weakly typed). Superglobals (`$_GET`, `$_POST`, `$_SERVER`...) are visible everywhere, pre-filled by PHP. |
+| **Tools you can use** | `var_dump`/`gettype` to inspect a type, `isset()`/`empty()` to test a key without a warning, `define()` for a global constant. |
+| **Pitfalls to avoid** | Comparing with `==` rather than `===` (surprising type conversions); reading a missing array key without `isset()`/`empty()` (triggers a warning). |
+| **Best practices** | Use `===`/`!==` by default; check `isset()`/`empty()` before reading a key that might not exist. |

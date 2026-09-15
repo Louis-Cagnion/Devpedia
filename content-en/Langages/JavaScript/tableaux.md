@@ -136,3 +136,14 @@ The `...` allows you to "expand" a table, which is useful for copying it or merg
     const copie = [...arr]; // independent copy of arr
     const fusion = [...arr, 4, 5]; // [1, 2, 3, 4, 5]
 ```
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | An array stores an ordered list of values, indexed from 0, that can mix any type. Some methods modify it directly, others return a transformed copy. |
+| **Tools you can use** | `push`/`pop`/`shift`/`unshift`, `map`/`filter`/`reduce`, `find`/`findIndex`, `sort`, destructuring and spread (`...`). |
+| **Pitfalls to avoid** | Confusing a method that mutates the original array (`sort`, `splice`, `reverse`) with one that returns a copy (`slice`, `map`, `filter`). |
+| **Best practices** | Use `[...arr]` or `slice()` before a mutating operation if the original must stay intact; supply a comparison function to `sort()` to sort numbers correctly. |

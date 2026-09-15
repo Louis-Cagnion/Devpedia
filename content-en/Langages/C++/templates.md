@@ -92,3 +92,14 @@ T addition(T a, T b) { return a + b; }
 | Type error detection | Even before running the program | Only when executing the relevant code path |
 
 See also the chapter on STL containers, which is based entirely on this template mechanism.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A template writes a function/class once for any type, with compile-time checking and no runtime cost (the compiler generates one version per type actually used). |
+| **Tools you can use** | `template <typename T>`, `concepts` (C++20) to constrain the accepted types. |
+| **Pitfalls to avoid** | A template with no constraint accepts any type, including ones for which the operation makes no sense: a sometimes cryptic compile error. |
+| **Best practices** | Use `concepts` (C++20) to explicitly express the requirements on a template type, rather than letting a generic error message discover them. |

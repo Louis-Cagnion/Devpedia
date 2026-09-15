@@ -339,7 +339,7 @@
             },
             {
               "id": "connexions",
-              "label": "Manage Connections"
+              "label": "Managing Connections"
             },
             {
               "id": "http",
@@ -659,20 +659,20 @@
           "folder": "Domain-specific Languages (DSL)",
           "chapters": [
             {
-              "id": "parsing-incremental-machine-a-etats",
-              "label": "Incremental Parsing with a State Machine"
-            },
-            {
-              "id": "evaluateur-expressions-arithmetiques",
-              "label": "Arithmetic Expression Evaluator: Handling Operator Precedence"
-            },
-            {
               "id": "regex",
               "label": "Regular expressions"
             },
             {
               "id": "sql",
               "label": "SQL"
+            },
+            {
+              "id": "parsing-incremental-machine-a-etats",
+              "label": "Incremental Parsing with a State Machine"
+            },
+            {
+              "id": "evaluateur-expressions-arithmetiques",
+              "label": "Arithmetic Expression Evaluator: Handling Operator Precedence"
             }
           ]
         },
@@ -728,12 +728,12 @@
               "label": "Error Handling"
             },
             {
-              "id": "dom-et-evenements",
-              "label": "The DOM and Event Handling"
-            },
-            {
               "id": "html-elements",
               "label": "HTMLElements"
+            },
+            {
+              "id": "dom-et-evenements",
+              "label": "The DOM and Event Handling"
             },
             {
               "id": "asynchrone",

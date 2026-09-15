@@ -63,3 +63,14 @@ void afficher(const std::string &text) {   // No copying, AND the text cannot be
 | Must be initialized upon declaration | Yes, required | No |
 
 A reference is therefore more restricted than a pointer, and that is precisely what makes it safer in cases where these restrictions do not need to be bypassed (we already know that the variable exists and that its target will not change).
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A reference is an alias for an existing variable: never `null`, never reassignable after initialization, no `*`/`&` syntax at use. `const &` passes a large object with no copy and no risk of modification. |
+| **Tools you can use** | `&` in a type declaration (reference), `const &` for a read-only parameter. |
+| **Pitfalls to avoid** | Thinking a reference can be `null` or reassigned like a pointer: both are impossible. |
+| **Best practices** | Pass a large object by `const &` by default, rather than by value (expensive copy) or by raw pointer. |

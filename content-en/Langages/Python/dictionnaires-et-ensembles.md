@@ -105,3 +105,14 @@ carres_uniques = {x ** 2 for x in [-2, -1, 0, 1, 2]}
 ```
 
 See also the chapter on hash tables (Section C) for details on what actually happens in memory behind `dict` and `set`.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A `dict` maps keys to values, a `set` stores unique values with no order; both rely on a hash table, so they're near-instant for access/membership testing. |
+| **Tools you can use** | `.get()` (no error), dict/set comprehensions, set operations (`\|`, `&`, `-`, `^`). |
+| **Pitfalls to avoid** | Accessing a missing key with brackets (`dict["x"]`) rather than `.get()`: this raises a `KeyError`. |
+| **Best practices** | Use `.get()` as soon as a missing key is a normal case, not an error; `list(set(my_list))` for a quick deduplication. |

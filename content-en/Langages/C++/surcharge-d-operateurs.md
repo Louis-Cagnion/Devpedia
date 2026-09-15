@@ -88,3 +88,14 @@ Vecteur2D operator+(const Vecteur2D &autre) const {
 | `<<`, `>>` | Displaying (`std::cout`) and reading (`std::cin`) an object |
 | `[]` | Indexed access, for a type that behaves like a collection |
 | `()` | Making an object "callable" like a function (*functor*) |
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | C++ allows redefining a standard operator (`+`, `==`, `<<`...) for a custom type: `a + b` translates to `a.operator+(b)`. Without overloading, `==` compares addresses by default, not content. |
+| **Tools you can use** | `operator+`, `operator==`, `operator<<` (free function, outside the class). |
+| **Pitfalls to avoid** | Overloading an operator with behavior that contradicts its usual meaning (a `+` that would multiply). |
+| **Best practices** | Keep an overloaded operator predictable and consistent with the standard symbol's meaning: never a surprising behavior for anyone reading the code afterward. |

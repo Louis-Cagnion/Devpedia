@@ -1,3 +1,7 @@
+---
+order: 2
+---
+
 # SQL
 
 SQL (*Structured Query Language*) is a single-purpose language designed to query and manipulate data stored in tables. Like regex, it is not a general-purpose programming language: it has no loops, no user-defined functions, and no variables in the traditional sense. It is interpreted by a database engine (MySQL, PostgreSQL, SQL Server, SQLite, etc.), typically controlled from a host language ([PHP](/?c=langages-de-programmation&s=php&p=php), [Python](/?c=langages-de-programmation&s=python&p=python), [JS](/?c=langages-de-programmation&s=javascript&p=javascript), etc.) via a connector.

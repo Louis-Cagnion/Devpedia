@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 7
 ---
 
 # Objects
@@ -109,3 +109,14 @@ The `...` allows you to "expand" an object, which is useful for copying it or me
     const copie = { ...obj }; // independent copy of obj
     const fusion = { ...obj, city: 'Paris' }; // { name: 'Jean', age: 25, city: 'Paris' }
 ```
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | An object stores key/value pairs, accessible via dot notation or brackets. `Object.keys`/`values`/`entries` expose its content; spread and destructuring copy or extract properties. |
+| **Tools you can use** | `Object.keys`/`values`/`entries`/`assign`/`freeze`/`fromEntries`, `hasOwnProperty`, the `in` operator. |
+| **Pitfalls to avoid** | Thinking a spread or `Object.assign` copy is deep: it isn't, for nested properties. |
+| **Best practices** | Use `structuredClone()` for a genuinely independent copy of a nested object; `Object.freeze()` to prevent any accidental modification of an object meant to stay constant. |

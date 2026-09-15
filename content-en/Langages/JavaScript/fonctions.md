@@ -97,3 +97,14 @@ const compter = counter();
 compter();   // 1
 compter();   // 2 -> "total" was retained between calls; specific to THIS instance of counter()
 ```
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A function declaration is *hoisted* (usable before its definition), an expression is not. An arrow function has no `this` of its own: it reuses the enclosing function's. A closure keeps access to its enclosing function's variables after that function has finished running. |
+| **Tools you can use** | Default parameters, `...` (rest/spread). |
+| **Pitfalls to avoid** | Using a classic function (`function`) as a callback inside a method, expecting `this` to refer to the enclosing object: an arrow function is needed for that. |
+| **Best practices** | Prefer arrow functions for a callback internal to a method, to keep the correct `this`. |

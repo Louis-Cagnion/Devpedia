@@ -111,3 +111,14 @@ As with conditions, loops can be written using `:` and `end...`:
     <p><?= $fruit ?></p>
 <?php endforeach; ?>
 ```
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `while`/`do while`/`for` are the classic loops; `foreach` is specifically designed to iterate over an array, with or without its key. |
+| **Tools you can use** | `break`/`continue`, the alternative syntax (`:`/`end...`) for templates. |
+| **Pitfalls to avoid** | Using `for` with a manual index where `foreach` avoids any risk of an index error. |
+| **Best practices** | Prefer `foreach` as soon as you're iterating over an array, without needing to manage the index yourself. |

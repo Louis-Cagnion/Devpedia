@@ -19,14 +19,14 @@ API in 4 steps: create a handle, configure options, execute, release.
 $ch = curl_init($url);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
-    CURLOPT_POSTFIELDS     => $corpsJson,
+    CURLOPT_POSTFIELDS     => $jsonBody,
     CURLOPT_HTTPHEADER     => ['Content-Type: application/json'], // required for a JSON body
     CURLOPT_RETURNTRANSFER => true, // Return the response as a string, rather than displaying it directly
     CURLOPT_TIMEOUT        => 10,
 ]);
 
-$response  = curl_exec($ch);        // false in case of a network failure (C-style error)
-$codeHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$response = curl_exec($ch);         // false in case of a network failure (C-style error)
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 ?>
 ```
@@ -39,8 +39,8 @@ curl_close($ch);
 
 ```php
 <?php
-if ($response === false || $codeHttp !== 200) {
-    throw new \RuntimeException("HTTP $codeHttp");
+if ($response === false || $httpCode !== 200) {
+    throw new \RuntimeException("HTTP $httpCode");
 }
 ?>
 ```
@@ -57,24 +57,24 @@ $options = [
     'http' => [
         'method'  => 'POST',
         'header'  => "Content-Type: application/json\r\n",
-        'content' => $corpsJson,
+        'content' => $jsonBody,
     ],
 ];
-$contexte = stream_context_create($options);
-$response  = file_get_contents($url, false, $contexte); // false if the operation fails; same behavior as `curl_exec`
+$context = stream_context_create($options);
+$response = file_get_contents($url, false, $context); // false if the operation fails; same behavior as `curl_exec`
 ?>
 ```
 
 > **Note:** In a literal associative array, a duplicate key will silently take on its **last** value: the first assignment is dead code and is never used. This is a good reason to have a linter check this type of array (HTTP options, configuration, etc.), or to review it yourself line by line, asking, “What is the last value assigned to this key?”
 
-## `json_decode()` : an ambiguous return t`null`
+## `json_decode()`: an ambiguous `null` return
 
 ```php
 <?php
 $data = json_decode($response, true);
 
 if (json_last_error() !== JSON_ERROR_NONE) {
-    throw new \RuntimeException('Réponse JSON invalide');
+    throw new \RuntimeException('Invalid JSON response');
 }
 ?>
 ```

@@ -79,3 +79,14 @@ namespace Entreprise::Facturation {
 
 Entreprise::Facturation::Facture f;
 ```
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A namespace groups identifiers under a prefix (`Namespace::identifier`) to avoid name collisions. `using namespace` imports without a prefix; `using X::y` imports selectively. |
+| **Tools you can use** | `namespace`, `using namespace`, selective import (`using std::cout`), nested namespaces (`A::B`). |
+| **Pitfalls to avoid** | Writing `using namespace X;` in a header: forces this import onto every file that includes it. |
+| **Best practices** | Reserve `using namespace` for inside a `.cpp` file, never in a shared header. |

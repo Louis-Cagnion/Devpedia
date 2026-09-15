@@ -91,3 +91,14 @@ int Counter::totalCrees = 0;   // Required definition outside the class
 ```
 
 See also the chapters on inheritance and polymorphism, and on operator overloading, to extend a class's behavior beyond simple named methods.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A class groups data and methods together, with access control (`public`/`private`/`protected`). The constructor initializes the object, the destructor automatically releases its resources at the end of its scope. |
+| **Tools you can use** | Initialization list (`: member(value)`), `const` methods, `static` members/methods. |
+| **Pitfalls to avoid** | Forgetting that a class hides its members by default (implicit `private`), unlike a fully public C `struct`. |
+| **Best practices** | Prefer the initialization list over an assignment in the constructor's body; mark `const` any method that doesn't modify the object. |

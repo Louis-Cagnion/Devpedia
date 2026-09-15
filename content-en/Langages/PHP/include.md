@@ -12,7 +12,7 @@ To embed PHP functions in [HTML](/?c=langages-de-balisage&s=html&p=html) code, w
     include("bienvenue.php");
     include("insectes.php");
     /*
-    variantes de déclaration:
+    declaration variants:
     include "bienvenue.php";
     include "insectes.php";
     */
@@ -82,3 +82,14 @@ require __DIR__ . '/../config.php'; // always correct, regardless of where the s
 ```
 
 > **Note:** Building paths using `__DIR__ . '/path/relatif'` rather than a fixed path helps avoid errors depending on the execution context (built-in server, Apache, command line, etc.), which may not necessarily have the same "current directory."
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `include`/`require` insert a PHP file's content at the spot where the statement is written. `require` stops the script if the file isn't found, `include` only issues a warning. `require_once` only loads the file once. |
+| **Tools you can use** | `require_once`, `__DIR__`, a file ending in `return [...]` as a mini config. |
+| **Pitfalls to avoid** | Using `include` for a file essential to the program's operation (a central class): a missing file silently continues with only a warning. |
+| **Best practices** | Use `require_once` for class/function files, `__DIR__` to build paths independent of the execution context. |

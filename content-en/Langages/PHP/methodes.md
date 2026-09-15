@@ -176,3 +176,14 @@ e.g.,:
 ```
 
 > **Note:** You can find the complete list of PHP's built-in functions in the official documentation: [php.net/manual/fr/funcref.php](https://www.php.net/manual/fr/funcref.php). To add a **single** element, `$tab[] = "value";` is also preferred over `array_push($tab, "value")`: same result, without the overhead of a function call; `array_push()` is only truly useful for adding multiple elements in a single call (`array_push($tab, "a", "b", "c")`).
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A function is a reusable block of code; a method is a function defined inside a class, called via `->`/`::`. PHP checks annotated types at runtime, not at compile time. |
+| **Tools you can use** | Native functions on strings, arrays, associative arrays, math, type checking; `?Type` for a nullable type. |
+| **Pitfalls to avoid** | Using `@` to systematically silence warnings: reserve it for failures that are genuinely anticipated and checked right afterward. |
+| **Best practices** | Type a function's parameters and return value as soon as possible; use `$arr[] = value` rather than `array_push()` for a single element. |

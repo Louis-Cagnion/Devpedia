@@ -80,3 +80,14 @@ values.count(2);   // 1 if present, 0 otherwise (a set never contains duplicates
 | Unique values, order does not matter, speed is a priority | `std::unordered_set` |
 
 See also the chapter on STL iterators and algorithms, which allow you to manipulate any of these containers in a consistent manner.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | The STL provides ready-to-use generic containers: `vector` (dynamic array), `list` (doubly linked list), `map`/`set` (sorted), `unordered_map`/`unordered_set` (hash table, faster but unsorted). |
+| **Tools you can use** | `push_back`/`push_front`, `size`, `find`, for-each traversal. |
+| **Pitfalls to avoid** | Choosing `vector` for frequent front insertions (`O(n)` cost, `list` would be constant time). |
+| **Best practices** | Choose the container based on the dominant operation (index access, frequent insertion, sorted association...) rather than out of habit. |

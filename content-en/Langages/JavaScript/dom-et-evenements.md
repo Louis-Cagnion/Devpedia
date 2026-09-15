@@ -1,5 +1,5 @@
 ---
-order: 11
+order: 12
 ---
 
 # The DOM and Event Handling
@@ -9,24 +9,24 @@ The **DOM** (*Document Object Model*) is the in-memory representation of an [HTM
 ## Select items
 
 ```javascript
-document.getElementById("titre");           // a specific element, by its ID
-document.querySelector(".carte");            // the FIRST element that matches this CSS selector
-document.querySelectorAll(".carte");          // ALL matching elements (NodeList)
+document.getElementById("title");            // a specific element, by its ID
+document.querySelector(".card");              // the FIRST element that matches this CSS selector
+document.querySelectorAll(".card");            // ALL matching elements (NodeList)
 ```
 
-> **Note:** `querySelector` and `querySelectorAll` accept any CSS selector (see the relevant chapter): `.classe`, `#id`, `div > p`, `[data-role="bouton"]`... This is the most flexible method.
+> **Note:** `querySelector` and `querySelectorAll` accept any CSS selector (see the relevant chapter): `.class`, `#id`, `div > p`, `[data-role="button"]`... This is the most flexible method.
 
 ## Edit an item
 
 ```javascript
 const title = document.querySelector("h1");
 
-title.textContent = "Nouveau titre";     // Replaces the text (automatically escapes HTML)
-title.innerHTML = "<em>Titre</em>";       // Inserts raw HTML -> DANGER if the source is not trusted (XSS)
+title.textContent = "New title";           // replaces the text (automatically escapes HTML)
+title.innerHTML = "<em>Title</em>";         // inserts raw HTML -> DANGER if the source is not trusted (XSS)
 title.style.color = "red";                  // modifies a CSS style directly
-title.classList.add("actif");                // add a CSS class
-title.classList.remove("actif");
-title.classList.toggle("actif");              // Add if missing, remove if present
+title.classList.add("active");              // add a CSS class
+title.classList.remove("active");
+title.classList.toggle("active");           // add if missing, remove if present
 title.setAttribute("data-id", "42");
 ```
 
@@ -35,20 +35,20 @@ title.setAttribute("data-id", "42");
 ## Create and Insert an Element
 
 ```javascript
-const nouvelleCarte = document.createElement("div");
-nouvelleCarte.textContent = "Nouvelle carte";
-nouvelleCarte.classList.add("carte");
+const newCard = document.createElement("div");
+newCard.textContent = "New card";
+newCard.classList.add("card");
 
-document.querySelector("#liste").appendChild(nouvelleCarte);
+document.querySelector("#list").appendChild(newCard);
 ```
 
 ## Listen to events
 
 ```javascript
-const bouton = document.querySelector("#mon-bouton");
+const button = document.querySelector("#my-button");
 
-bouton.addEventListener("click", (evenement) => {
-    console.log("Bouton cliqué !", evenement.target);
+button.addEventListener("click", (event) => {
+    console.log("Button clicked!", event.target);
 });
 ```
 
@@ -63,9 +63,9 @@ bouton.addEventListener("click", (evenement) => {
 ## `preventDefault()` : Override the default behavior
 
 ```javascript
-document.querySelector("form").addEventListener("submit", (evenement) => {
-    evenement.preventDefault();   // Prevents the default page reload of a form
-    console.log("Formulaire intercepté par JavaScript");
+document.querySelector("form").addEventListener("submit", (event) => {
+    event.preventDefault();   // prevents the default page reload of a form
+    console.log("Form intercepted by JavaScript");
 });
 ```
 
@@ -74,9 +74,9 @@ document.querySelector("form").addEventListener("submit", (evenement) => {
 An event propagates from the target element to its parent elements (*bubbling*), which makes it possible to listen for an event on a common parent rather than on each child individually:
 
 ```javascript
-document.querySelector("#liste").addEventListener("click", (evenement) => {
-    if (evenement.target.classList.contains("carte")) {
-        console.log("Une carte a été cliquée :", evenement.target.textContent);
+document.querySelector("#list").addEventListener("click", (event) => {
+    if (event.target.classList.contains("card")) {
+        console.log("A card was clicked:", event.target.textContent);
     }
 });
 // works even for cards added DYNAMICALLY after this addEventListener,
@@ -91,10 +91,10 @@ The browser's `history` API changes the URL shown in the address bar without rel
 
 ```javascript
 const params = new URLSearchParams();
-params.set("domaine", "atlas");
+params.set("domain", "atlas");
 
 history.replaceState(null, "", `${window.location.pathname}?${params}`);
-// Displayed URL: .../page?domaine=atlas, no reload and no new history entry
+// Displayed URL: .../page?domain=atlas, no reload and no new history entry
 ```
 
 The three arguments are always the same: a `state` (data attached to this history entry, retrievable later through the `popstate` event; `null` when unused here), a title (ignored by most browsers), and the new URL (which must stay on the same origin, or the browser throws an error).

@@ -82,3 +82,14 @@ const somme = numbers.reduce((acc, n) => acc + n, 0); // 15 -> reduces the entir
 > **Note:** `reduce()` is the most versatile but the least immediately readable: `acc` (the accumulator) starts with the initial value provided as the second argument (`0` in this case) and is updated for each element according to the provided function.
 
 See also the chapter on functions for the syntax of arrow functions (`=>`) used here.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `for`/`while`/`do...while` are the classic loops; `for...of` iterates over an iterable's values, `for...in` over an object's keys. Functional methods (`map`/`filter`/`reduce`) often replace an explicit loop. |
+| **Tools you can use** | `break`/`continue`, `forEach`/`map`/`filter`/`reduce`. |
+| **Pitfalls to avoid** | Using `for...in` on an array: also iterates over manually added properties, with no guaranteed order. |
+| **Best practices** | `for...of` or `.forEach()` for an array; functional methods to transform/filter rather than a manual loop. |

@@ -121,3 +121,14 @@ compter()   # 2 -> "total" was indeed preserved between calls
 ```
 
 See also the chapter on decorators, which is directly based on this closure mechanism.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A Python function is a first-class object (storable, passable as an argument). `*args`/`**kwargs` handle a variable number of arguments; a closure keeps access to its enclosing function's variables. |
+| **Tools you can use** | Default parameters, keyword-only arguments (`*`), lambdas, `nonlocal`. |
+| **Pitfalls to avoid** | Using a mutable object (list, dict) as a default value: it's shared across every call, not recreated each time. |
+| **Best practices** | Use `None` as the default value for a mutable parameter, then create the real object inside the function. |

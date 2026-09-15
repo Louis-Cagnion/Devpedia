@@ -1,5 +1,5 @@
 ---
-order: 8
+order: 9
 ---
 
 # Regular Expressions
@@ -135,3 +135,14 @@ You can also name the groups to make them easier to read, and access them by nam
     const resultNamed = reNamed.exec(date);
     resultNamed.groups.annee; // '2024'
 ```
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A regex describes a search/validation/replacement pattern in a string. `test()` returns a boolean, `exec()`/`match()`/`matchAll()` give access to the match's details (including captured groups). |
+| **Tools you can use** | Flags `g`/`i`/`m`, named groups (`(?<name>...)`), `replace`/`replaceAll`/`split` on a string with a regex. |
+| **Pitfalls to avoid** | Reusing a `g` regex with `.test()`/`.exec()` in a loop without accounting for its internal state (`lastIndex`). |
+| **Best practices** | Name capture groups as soon as a regex has several, for access that's more readable than by numeric index. |
