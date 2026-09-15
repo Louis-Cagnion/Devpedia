@@ -431,6 +431,10 @@
             {
               "id": "sous-processus-et-flux-standard",
               "label": "Subprocesses and Redirecting Standard Streams"
+            },
+            {
+              "id": "regex-en-python",
+              "label": "Regex in Python: the `re` module"
             }
           ]
         },

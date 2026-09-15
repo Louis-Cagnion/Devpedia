@@ -390,6 +390,10 @@
               "label": "Subprocessos e redirecionamento dos fluxos padrão"
             },
             {
+              "id": "regex-en-python",
+              "label": "Regex em Python: o módulo `re`"
+            },
+            {
               "id": "deep-learning-pytorch",
               "label": "Deep learning com PyTorch"
             }

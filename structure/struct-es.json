@@ -431,6 +431,10 @@
             {
               "id": "sous-processus-et-flux-standard",
               "label": "Subprocesos y redirección de los flujos estándar"
+            },
+            {
+              "id": "regex-en-python",
+              "label": "Las regex en Python: el módulo `re`"
             }
           ]
         },

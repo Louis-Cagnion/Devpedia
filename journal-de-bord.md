@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Nouveau chapitre `regex-en-python.md` (2026-09-15)
+
+4e notion PDF_parser (l'API `re` de Python et les groupes nommés) traitée en tâche de fond pendant la régénération audio : nouveau chapitre `Langages/Python/regex-en-python.md` (order 18), en FR/EN/ES/BR le jour même. Renvoie vers le chapitre DSL `regex.md` existant pour la syntaxe générale des motifs (classes de caractères, quantificateurs, ancres), ne couvre que l'API Python (`re.compile`, `match`/`search`/`fullmatch`/`findall`/`finditer`, objet `Match`, groupes nommés `(?P<nom>...)`, `re.sub`). Au passage, le lien "Python" du chapitre DSL `regex.md` (dans les 4 langues) redirigé de l'intro générique du sujet Python vers ce nouveau chapitre spécifique, plus pertinent.
+
 ## 3 notions PDF_parser ajoutées + régénération audio complète lancée (2026-09-15)
 
 Les 3 notions repérées par la revue `/review` de PDF_parser (`os.environ`, compréhension imbriquée pour aplatir une liste de listes, `frozenset`) ajoutées en FR/EN/ES/BR le jour même : `os.environ` dans `modules-et-environnements.md` (avec un piège explicite pour ne pas le confondre avec l'environnement virtuel du même chapitre, deux sens différents du mot "environnement"), la compréhension imbriquée dans `listes-et-tuples.md`, `frozenset` dans `dictionnaires-et-ensembles.md`. Deux défauts pré-existants corrigés au passage dans `dictionnaires-et-ensembles.md` EN, trouvés en éditant ce même fichier : un lien interne perdu vers le chapitre des tables de hachage (remplacé par du texte vague "see the dedicated chapter, section C"), et un titre de section mal traduit ("Overall Understanding" pour "Compréhension d'ensemble").
