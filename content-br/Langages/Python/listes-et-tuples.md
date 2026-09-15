@@ -128,6 +128,26 @@ pares = [x for x in range(10) if x % 2 == 0]
 
 > **Nota:** uma compreensão continua legível para uma transformação simples em uma única linha; além disso (várias condições aninhadas, lógica complexa), um laço `for` clássico continua sendo mais claro de ler e depurar.
 
+### Compreensão aninhada: achatar uma lista de listas
+
+Uma compreensão pode encadear várias cláusulas `for`: a ordem reproduz exatamente a de laços `for` clássicos aninhados, sendo a primeira cláusula o laço EXTERIOR:
+
+```python
+listas = [[1, 2], [3, 4], [5]]
+
+achatada = [x for sublista in listas for x in sublista]
+# equivalente a:
+achatada = []
+for sublista in listas:  # laco exterior -> escrito PRIMEIRO na compreensao
+    for x in sublista:   # laco interior -> escrito SEGUNDO
+        achatada.append(x)
+# achatada vale [1, 2, 3, 4, 5]
+```
+
+> **Armadilha:** achar que a ordem das cláusulas `for` está invertida em relação a laços aninhados clássicos. Não é o caso: a cláusula mais à esquerda é sempre o laço mais exterior, exatamente como lendo a compreensão da esquerda para a direita.
+
+Além de 2 níveis de aninhamento, [`itertools.chain.from_iterable`](https://docs.python.org/3/library/itertools.html#itertools.chain.from_iterable) continua sendo uma alternativa mais legível para achatar especificamente uma lista de listas, sem reproduzir a lógica de laços aninhados.
+
 Veja também [Os dicionários e os conjuntos](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) para o equivalente das compreensões nessas estruturas, e [Iteradores e geradores](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) para a expressão geradora (variante preguiçosa de uma compreensão de lista).
 
 ---
@@ -136,7 +156,7 @@ Veja também [Os dicionários e os conjuntos](/?c=langages-de-programmation&s=py
 
 | | |
 |---|---|
-| **Para lembrar** | Uma lista é mutável, uma tupla é imutável: ambas ordenadas e heterogêneas. O slicing (`[inicio:fim:passo]`) extrai uma parte; uma compreensão constrói uma lista em uma expressão. |
-| **Ferramentas utilizáveis** | `append`/`insert`/`remove`/`pop`, o operador `*` para pré-alocar (`[0] * n`), slicing, desempacotamento (*unpacking*), compreensões de lista. |
-| **Armadilhas a evitar** | Tentar modificar uma tupla após criada (`TypeError`): usar uma lista se o conteúdo precisar evoluir. `[[]] * n`, que repete a mesma referência em vez de criar `n` listas distintas. |
+| **Para lembrar** | Uma lista é mutável, uma tupla é imutável: ambas ordenadas e heterogêneas. O slicing (`[inicio:fim:passo]`) extrai uma parte; uma compreensão constrói uma lista em uma expressão, inclusive aninhada para achatar uma lista de listas. |
+| **Ferramentas utilizáveis** | `append`/`insert`/`remove`/`pop`, o operador `*` para pré-alocar (`[0] * n`), slicing, desempacotamento (*unpacking*), compreensões de lista (simples ou aninhadas), `itertools.chain.from_iterable`. |
+| **Armadilhas a evitar** | Tentar modificar uma tupla após criada (`TypeError`): usar uma lista se o conteúdo precisar evoluir. `[[]] * n`, que repete a mesma referência em vez de criar `n` listas distintas. Achar que a ordem das cláusulas `for` de uma compreensão aninhada está invertida em relação a laços clássicos. |
 | **Boas práticas** | Usar uma tupla para um registro fixo, uma lista para uma coleção destinada a evoluir; preferir `[[] for _ in range(n)]` a `[[]] * n` para sublistas independentes; reservar a compreensão para uma transformação simples, um laço `for` além disso. |

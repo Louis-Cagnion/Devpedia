@@ -4,7 +4,7 @@ order: 5
 
 # Dictionaries and Sets
 
-The **dictionary** (`dict`) associates keys with values, just like an associative array in [PHP](/?c=langages-de-programmation&s=php&p=php). The set (`set`) stores unique values, in no particular order and without duplicates. Both structures are internally based on a **hash table** (see the dedicated chapter, section C): this is what allows `dico["key"]` or `"value" in ensemble` to be nearly instantaneous, even with a very large collection.
+The **dictionary** (`dict`) associates keys with values, just like an associative array in [PHP](/?c=langages-de-programmation&s=php&p=php). The **set** (`set`) stores unique values, in no particular order and without duplicates. Both structures are internally based on a [hash table](/?c=langages-de-programmation&s=c&p=tables-de-hachage): this is what allows `dict["key"]` or `"value" in set` to be nearly instantaneous, even with a very large collection.
 
 ## Dictionaries
 
@@ -97,14 +97,33 @@ a ^ b   # {1, 4}        -> symmetric difference (in one OR the other, but not bo
 
 > **Note:** A `set` automatically removes duplicates: `set([1, 2, 2, 3, 3, 3])` returns `{1, 2, 3}`. This is a very common way to quickly deduplicate a list in Python: `list(set(ma_liste))`.
 
-### Overall Understanding
+### Set Comprehension
 
 ```python
-carres_uniques = {x ** 2 for x in [-2, -1, 0, 1, 2]}
+unique_squares = {x ** 2 for x in [-2, -1, 0, 1, 2]}
 # {0, 1, 4} -> (-2)**2 and 2**2 are both equal to 4, so they are automatically deduplicated
 ```
 
-See also the chapter on hash tables (Section C) for details on what actually happens in memory behind `dict` and `set`.
+### `frozenset`: the immutable variant of `set`
+
+```python
+frozen = frozenset({"apple", "banana"})
+
+frozen.add("cherry")  # AttributeError: 'frozenset' object has no attribute 'add'
+```
+
+A `frozenset` is a `set` frozen after creation: no modifying method (`add`, `remove`, `discard`) exists on it. This immutability makes it **hashable**, like a tuple (see [why a dict key must be hashable](#why-a-dict-key-must-be-hashable) above) -- something a mutable `set` never allows:
+
+```python
+cache = {}
+cache[frozenset({"a", "b"})] = "result"  # works: a frozenset is hashable
+
+cache[{"a", "b"}] = "result"  # TypeError: unhashable type: 'set'
+```
+
+> **Best practice:** use `frozenset` instead of `set` for a value meant to serve as a dict key or an element of another `set`, or to document/guarantee that a function will never modify the set it receives as a parameter.
+
+See also [Hash Tables](/?c=langages-de-programmation&s=c&p=tables-de-hachage) for what actually happens in memory behind `dict` and `set`.
 
 ---
 
@@ -112,7 +131,7 @@ See also the chapter on hash tables (Section C) for details on what actually hap
 
 | | |
 |---|---|
-| **Key takeaways** | A `dict` maps keys to values, a `set` stores unique values with no order; both rely on a hash table, so they're near-instant for access/membership testing. |
-| **Tools you can use** | `.get()` (no error), dict/set comprehensions, set operations (`\|`, `&`, `-`, `^`). |
+| **Key takeaways** | A `dict` maps keys to values, a `set` stores unique values with no order; both rely on a hash table, so they're near-instant for access/membership testing. `frozenset` is the immutable, hashable variant of a `set`. |
+| **Tools you can use** | `.get()` (no error), dict/set comprehensions, set operations (`\|`, `&`, `-`, `^`), `frozenset` as a dict key or element of another `set`. |
 | **Pitfalls to avoid** | Accessing a missing key with brackets (`dict["x"]`) rather than `.get()`: this raises a `KeyError`. |
 | **Best practices** | Use `.get()` as soon as a missing key is a normal case, not an error; `list(set(my_list))` for a quick deduplication. |

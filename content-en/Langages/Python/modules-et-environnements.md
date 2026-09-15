@@ -80,6 +80,25 @@ deactivate                 # exits the virtual environment
 
 > **Note:** Once enabled, `pip install` and `python` point to the executables **in the virtual environment**, not those installed globally on the system: this is what ensures isolation. The `.venv/` folder must never be versioned with [Git](/?c=git&p=git) (see [The .gitignore file](/?c=git&p=gitignore)): it is fully regenerated from `requirements.txt`.
 
+## `os.environ`: the process's environment variables
+
+> **Note:** not to be confused with the virtual environment seen just above: a virtual environment isolates installed **libraries**, whereas `os.environ` gives access to the system's **environment variables** (key/value pairs defined outside Python, e.g. `PATH`, a secret API key...) -- two distinct notions that only share the word "environment".
+
+`os.environ` behaves like a [dictionary](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles): reading, writing, and deleting follow exactly the same rules.
+
+```python
+import os
+
+os.environ["CONFIG_PATH"]                     # raises a KeyError if the variable doesn't exist
+os.environ.get("CONFIG_PATH")                 # None if absent, no error
+os.environ.get("CONFIG_PATH", "/etc/config")  # default value if absent
+
+os.environ["NEW_VAR"] = "value"  # creates or modifies a variable
+os.environ.pop("NEW_VAR", None)  # removes it with no error if already absent (unlike del)
+```
+
+> **Pitfall:** modifying `os.environ` only changes the current Python process, and child processes launched **afterward** (via [subprocess](/?c=langages-de-programmation&s=python&p=sous-processus-et-flux-standard)), which inherit a copy of the environment at the time they're created -- never the shell that launched the script, nor the rest of the system. Closing the script and reopening a terminal will therefore never show a variable added via `os.environ[...] = ...`.
+
 ## Organizing a Project into a Package
 
 ```text
@@ -159,7 +178,7 @@ import my_package
 
 | | |
 |---|---|
-| **Key takeaways** | `import` loads a module; `if __name__ == "__main__":` distinguishes direct execution from import. `pip` installs libraries, a virtual environment isolates a project's dependencies. `pyproject.toml` describes the project itself, beyond just the versions frozen by `requirements.txt`. |
-| **Tools you can use** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `__init__.py` for a classic package, `pyproject.toml` and `pip install -e .` for modern packaging. |
-| **Pitfalls to avoid** | Installing libraries globally rather than in a virtual environment: version conflicts between projects. Forgetting `find_namespace_packages` for a project without `__init__.py`, which causes those folders to be silently ignored during installation. |
+| **Key takeaways** | `import` loads a module; `if __name__ == "__main__":` distinguishes direct execution from import. `pip` installs libraries, a virtual environment isolates a project's dependencies -- not to be confused with `os.environ`, which gives access to the system's environment variables. `pyproject.toml` describes the project itself, beyond just the versions frozen by `requirements.txt`. |
+| **Tools you can use** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `os.environ` (reading/writing/deleting like a dict), `__init__.py` for a classic package, `pyproject.toml` and `pip install -e .` for modern packaging. |
+| **Pitfalls to avoid** | Installing libraries globally rather than in a virtual environment: version conflicts between projects. Forgetting `find_namespace_packages` for a project without `__init__.py`, which causes those folders to be silently ignored during installation. Believing that modifying `os.environ` affects the parent shell or the system: it only affects the current process and its future children. |
 | **Best practices** | Always work in a virtual environment per project; version `requirements.txt`, never `.venv/`. Use `pip install -e .` during active development of a library. |

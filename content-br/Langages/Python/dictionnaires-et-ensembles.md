@@ -104,6 +104,25 @@ quadrados_unicos = {x ** 2 for x in [-2, -1, 0, 1, 2]}
 # {0, 1, 4} -> (-2)**2 e 2**2 valem ambos 4, portanto deduplicados automaticamente
 ```
 
+### `frozenset`: a variante imutável de `set`
+
+```python
+conjunto_fixo = frozenset({"maca", "banana"})
+
+conjunto_fixo.add("cereja")  # AttributeError: 'frozenset' object has no attribute 'add'
+```
+
+Um `frozenset` é um `set` fixado após sua criação: nenhum método de modificação (`add`, `remove`, `discard`) existe nele. Essa imutabilidade o torna **hasheável**, como uma tuple (veja [por que uma chave de dict deve ser hasheável](#por-que-uma-chave-de-dict-deve-ser-hasheavel) mais acima) -- algo que um `set` mutável nunca permite:
+
+```python
+cache = {}
+cache[frozenset({"a", "b"})] = "resultado"  # funciona: um frozenset e hasheavel
+
+cache[{"a", "b"}] = "resultado"  # TypeError: unhashable type: 'set'
+```
+
+> **Boa prática:** usar `frozenset` em vez de `set` para um valor destinado a servir de chave de dict ou de elemento de outro `set`, ou para documentar/garantir que uma função nunca modificará o conjunto que recebe como parâmetro.
+
 Veja também [As tabelas hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage) para o que realmente acontece na memória por trás de `dict` e `set`.
 
 ---
@@ -112,7 +131,7 @@ Veja também [As tabelas hash](/?c=langages-de-programmation&s=c&p=tables-de-hac
 
 | | |
 |---|---|
-| **Para lembrar** | Um `dict` associa chaves a valores, um `set` armazena valores únicos sem ordem; ambos se apoiam em uma tabela hash, portanto quase instantâneos em acesso/teste. |
-| **Ferramentas utilizáveis** | `.get()` (sem erro), compreensões de dict/set, operações de conjuntos (`\|`, `&`, `-`, `^`). |
+| **Para lembrar** | Um `dict` associa chaves a valores, um `set` armazena valores únicos sem ordem; ambos se apoiam em uma tabela hash, portanto quase instantâneos em acesso/teste. `frozenset` é a variante imutável e hasheável de um `set`. |
+| **Ferramentas utilizáveis** | `.get()` (sem erro), compreensões de dict/set, operações de conjuntos (`\|`, `&`, `-`, `^`), `frozenset` como chave de dict ou elemento de outro `set`. |
 | **Armadilhas a evitar** | Acessar uma chave ausente por colchetes (`dicionario["x"]`) em vez de por `.get()`: isso lança um `KeyError`. |
 | **Boas práticas** | Usar `.get()` assim que a ausência de uma chave for um caso normal, não um erro; `list(set(minha_lista))` para deduplicar rapidamente. |

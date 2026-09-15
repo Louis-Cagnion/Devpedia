@@ -128,6 +128,26 @@ pairs = [x for x in range(10) if x % 2 == 0]
 
 > **Note:** This approach remains readable for a simple, single-line transformation, but beyond that (multiple nested conditions, complex logic), a standard `for` loop is still easier to read and debug.
 
+### Nested comprehension: flattening a list of lists
+
+A comprehension can chain several `for` clauses: the order exactly mirrors that of classic nested `for` loops, with the first clause being the OUTER loop:
+
+```python
+lists = [[1, 2], [3, 4], [5]]
+
+flattened = [x for sublist in lists for x in sublist]
+# equivalent to:
+flattened = []
+for sublist in lists:   # outer loop -> written FIRST in the comprehension
+    for x in sublist:   # inner loop -> written SECOND
+        flattened.append(x)
+# flattened is [1, 2, 3, 4, 5]
+```
+
+> **Pitfall:** believing the order of `for` clauses is reversed compared to classic nested loops. It isn't: the leftmost clause is always the outermost loop, exactly as if you read the comprehension left to right.
+
+Beyond 2 levels of nesting, [`itertools.chain.from_iterable`](https://docs.python.org/3/library/itertools.html#itertools.chain.from_iterable) remains a more readable alternative specifically for flattening a list of lists, without reproducing the nested-loop logic.
+
 See also [Dictionaries and Sets](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) for the equivalent of comprehensions on these structures, and [Iterators and Generators](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) for the generator expression (a lazy variant of a list comprehension).
 
 ---
@@ -136,7 +156,7 @@ See also [Dictionaries and Sets](/?c=langages-de-programmation&s=python&p=dictio
 
 | | |
 |---|---|
-| **Key takeaways** | A list is mutable, a tuple is immutable: both ordered and heterogeneous. Slicing (`[start:stop:step]`) extracts a portion; a comprehension builds a list in a single expression. |
-| **Tools you can use** | `append`/`insert`/`remove`/`pop`, the `*` operator to preallocate (`[0] * n`), slicing, unpacking, list comprehensions. |
-| **Pitfalls to avoid** | Trying to modify a tuple after creation (`TypeError`): use a list if the content needs to change. `[[]] * n`, which repeats the same reference instead of creating `n` distinct lists. |
+| **Key takeaways** | A list is mutable, a tuple is immutable: both ordered and heterogeneous. Slicing (`[start:stop:step]`) extracts a portion; a comprehension builds a list in a single expression, including nested to flatten a list of lists. |
+| **Tools you can use** | `append`/`insert`/`remove`/`pop`, the `*` operator to preallocate (`[0] * n`), slicing, unpacking, list comprehensions (plain or nested), `itertools.chain.from_iterable`. |
+| **Pitfalls to avoid** | Trying to modify a tuple after creation (`TypeError`): use a list if the content needs to change. `[[]] * n`, which repeats the same reference instead of creating `n` distinct lists. Believing the order of a nested comprehension's `for` clauses is reversed compared to classic loops. |
 | **Best practices** | Use a tuple for a fixed record, a list for a collection meant to change; prefer `[[] for _ in range(n)]` over `[[]] * n` for independent sub-lists; reserve comprehensions for a simple transformation, a `for` loop beyond that. |

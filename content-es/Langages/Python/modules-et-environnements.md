@@ -80,6 +80,25 @@ deactivate                 # sale del entorno virtual
 
 > **Nota:** una vez activado, `pip install` y `python` apuntan a los ejecutables **del entorno virtual**, no a los instalados globalmente en el sistema: esto es lo que garantiza el aislamiento. La carpeta `.venv/` nunca debe versionarse con [Git](/?c=git&p=git) (ver [El archivo .gitignore](/?c=git&p=gitignore)): se regenera por completo a partir de `requirements.txt`.
 
+## `os.environ`: las variables de entorno del proceso
+
+> **Nota:** no confundir con el entorno virtual visto justo arriba: este aísla las **bibliotecas** instaladas, mientras que `os.environ` da acceso a las **variables de entorno** del sistema (pares clave/valor definidos fuera de Python, ej. `PATH`, una clave de API secreta...) -- dos nociones distintas que solo comparten la palabra "entorno".
+
+`os.environ` se comporta como un [diccionario](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles): lectura, escritura y eliminación siguen exactamente las mismas reglas.
+
+```python
+import os
+
+os.environ["RUTA_CONFIG"]                     # lanza un KeyError si la variable no existe
+os.environ.get("RUTA_CONFIG")                 # None si está ausente, sin error
+os.environ.get("RUTA_CONFIG", "/etc/config")  # valor por defecto si está ausente
+
+os.environ["NUEVA_VAR"] = "valor"  # crea o modifica una variable
+os.environ.pop("NUEVA_VAR", None)  # elimina sin error si ya está ausente (a diferencia de del)
+```
+
+> **Trampa:** modificar `os.environ` solo cambia el proceso Python actual, y los procesos hijos lanzados **después** (vía [subprocess](/?c=langages-de-programmation&s=python&p=sous-processus-et-flux-standard)), que heredan una copia del entorno en el momento de su creación -- nunca la shell que lanzó el script, ni el resto del sistema. Cerrar el script y volver a abrir una terminal nunca mostrará por tanto una variable añadida mediante `os.environ[...] = ...`.
+
 ## Organizar un proyecto en paquete
 
 ```text
@@ -159,7 +178,7 @@ import mi_paquete
 
 | | |
 |---|---|
-| **Para recordar** | `import` carga un módulo; `if __name__ == "__main__":` distingue ejecución directa e import. `pip` instala bibliotecas, un entorno virtual aísla las dependencias de un proyecto. `pyproject.toml` describe el proyecto en sí, más allá de las versiones fijadas por `requirements.txt`. |
-| **Herramientas utilizables** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `__init__.py` para un paquete clásico, `pyproject.toml` y `pip install -e .` para el packaging moderno. |
-| **Trampas a evitar** | Instalar bibliotecas globalmente en lugar de en un entorno virtual: conflictos de versiones entre proyectos. Olvidar `find_namespace_packages` para un proyecto sin `__init__.py`, que hace que estas carpetas se ignoren silenciosamente durante la instalación. |
+| **Para recordar** | `import` carga un módulo; `if __name__ == "__main__":` distingue ejecución directa e import. `pip` instala bibliotecas, un entorno virtual aísla las dependencias de un proyecto -- no confundir con `os.environ`, que da acceso a las variables de entorno del sistema. `pyproject.toml` describe el proyecto en sí, más allá de las versiones fijadas por `requirements.txt`. |
+| **Herramientas utilizables** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `os.environ` (lectura/escritura/eliminación como un dict), `__init__.py` para un paquete clásico, `pyproject.toml` y `pip install -e .` para el packaging moderno. |
+| **Trampas a evitar** | Instalar bibliotecas globalmente en lugar de en un entorno virtual: conflictos de versiones entre proyectos. Olvidar `find_namespace_packages` para un proyecto sin `__init__.py`, que hace que estas carpetas se ignoren silenciosamente durante la instalación. Creer que modificar `os.environ` afecta a la shell padre o al sistema: solo afecta al proceso actual y a sus futuros hijos. |
 | **Buenas prácticas** | Trabajar siempre en un entorno virtual por proyecto; versionar `requirements.txt`, nunca `.venv/`. Usar `pip install -e .` en desarrollo activo de una biblioteca. |

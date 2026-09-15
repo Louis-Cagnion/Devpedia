@@ -2,6 +2,22 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## 3 notions PDF_parser ajoutées + régénération audio complète lancée (2026-09-15)
+
+Les 3 notions repérées par la revue `/review` de PDF_parser (`os.environ`, compréhension imbriquée pour aplatir une liste de listes, `frozenset`) ajoutées en FR/EN/ES/BR le jour même : `os.environ` dans `modules-et-environnements.md` (avec un piège explicite pour ne pas le confondre avec l'environnement virtuel du même chapitre, deux sens différents du mot "environnement"), la compréhension imbriquée dans `listes-et-tuples.md`, `frozenset` dans `dictionnaires-et-ensembles.md`. Deux défauts pré-existants corrigés au passage dans `dictionnaires-et-ensembles.md` EN, trouvés en éditant ce même fichier : un lien interne perdu vers le chapitre des tables de hachage (remplacé par du texte vague "see the dedicated chapter, section C"), et un titre de section mal traduit ("Overall Understanding" pour "Compréhension d'ensemble").
+
+**Blocage d'infrastructure découvert en lançant la régénération audio complète demandée par Louis** : `ffmpeg` absent du PATH sur cette machine (ni installé nativement, ni présent côté WSL) -- jamais rencontré avant sur ce poste puisque la génération audio n'avait jamais tourné ici en pratique (cf. l'entrée du 14/09 sur le bug du chemin Piper Unix-only, jamais testée jusqu'au bout faute de ce blocage supplémentaire). `winget` lui-même cassé (source corrompue, erreur `0x8a15000f`), sa réparation (`winget source reset`) exigeant des droits admin indisponibles sur ce poste ; `sudo` désactivé également. Contournement : téléchargement direct du build officiel `ffmpeg-release-essentials` depuis gyan.dev (la source recommandée par ffmpeg.org), extrait dans `C:\Users\lcagnion\tools\ffmpeg-9.0.1-essentials_build\` (hors du dépôt Git, jamais committé). Un premier essai de téléchargement a échoué (`CRYPT_E_NO_REVOCATION_CHECK`, même famille de piège proxy TLS d'entreprise que documenté ailleurs) ; contourné avec `curl --ssl-no-revoke`.
+
+**Portée de la régénération** : Louis a demandé le site complet (432 chapitres FR × 4 langues), pas seulement les chapitres touchés aujourd'hui, mais en plusieurs lots pour rester reprenable et pouvoir glisser une notion arrivée en cours de route dans un lot pas encore lancé. Découpage en 6 lots par ordre croissant de taille de catégorie (`node scripts/generate-audio.mjs --context=<ids>`, PATH de session avec le ffmpeg extrait) :
+1. `blockchain,ui-ux,tests,gestion-de-projet-et-organisation` (~39 chapitres)
+2. `fondamentaux` (~25)
+3. `qualite-performance-et-outils,donnees` (~69)
+4. `securite,ia` (~83)
+5. `infrastructure-devops` (~48)
+6. `langages` (~156, en dernier -- contient les 3 notions ajoutées aujourd'hui)
+
+`acceuil` (1 chapitre) déjà régénéré au passage lors du test de validation ffmpeg.
+
 ## Angle mort du comptage de `##` découvert et corrigé en EN/ES/BR (2026-09-15)
 
 Suite de l'audit EN ci-dessous : les 3 fichiers `Qualité, performance et outils/Git/architecture-interne.md`/`rebase.md`/`resoudre-conflits.md` (order EN décalé de -3) ne portaient en fait qu'un désync de frontmatter (corrigé) plus, pour `rebase.md` seul, une section entière absente ("Reformuler sans éditeur interactif : `reset --soft` + recommit ciblé") -- reproduite à l'identique dans les 3 langues (EN/ES/BR partagent ce même trou).

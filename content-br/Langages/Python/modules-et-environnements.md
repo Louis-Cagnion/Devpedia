@@ -80,6 +80,25 @@ deactivate                        # sai do ambiente virtual
 
 > **Nota:** uma vez ativado, `pip install` e `python` apontam para os executáveis **do ambiente virtual**, não os instalados globalmente no sistema: é isso que garante o isolamento. A pasta `.venv/` nunca deve ser versionada com [Git](/?c=git&p=git) (veja [O arquivo .gitignore](/?c=git&p=gitignore)): ela se regenera inteiramente a partir de `requirements.txt`.
 
+## `os.environ`: as variáveis de ambiente do processo
+
+> **Nota:** não confundir com o ambiente virtual visto logo acima: este isola as **bibliotecas** instaladas, enquanto `os.environ` dá acesso às **variáveis de ambiente** do sistema (pares chave/valor definidos fora do Python, ex. `PATH`, uma chave de API secreta...) -- duas noções distintas que só compartilham a palavra "ambiente".
+
+`os.environ` se comporta como um [dicionário](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles): leitura, escrita e remoção seguem exatamente as mesmas regras.
+
+```python
+import os
+
+os.environ["CAMINHO_CONFIG"]                     # lanca um KeyError se a variavel nao existir
+os.environ.get("CAMINHO_CONFIG")                 # None se ausente, sem erro
+os.environ.get("CAMINHO_CONFIG", "/etc/config")  # valor padrao se ausente
+
+os.environ["NOVA_VAR"] = "valor"  # cria ou modifica uma variavel
+os.environ.pop("NOVA_VAR", None)  # remove sem erro se ja estiver ausente (ao contrario de del)
+```
+
+> **Armadilha:** modificar `os.environ` só muda o processo Python atual, e os processos filhos lançados **depois** (via [subprocess](/?c=langages-de-programmation&s=python&p=sous-processus-et-flux-standard)), que herdam uma cópia do ambiente no momento de sua criação -- nunca a shell que lançou o script, nem o resto do sistema. Fechar o script e reabrir um terminal nunca mostrará, portanto, uma variável adicionada via `os.environ[...] = ...`.
+
 ## Organizar um projeto em pacote
 
 ```text
@@ -159,7 +178,7 @@ import meu_pacote
 
 | | |
 |---|---|
-| **Para lembrar** | `import` carrega um módulo; `if __name__ == "__main__":` distingue execução direta e importação. `pip` instala bibliotecas, um ambiente virtual isola as dependências de um projeto. `pyproject.toml` descreve o projeto em si, além das versões fixadas apenas por `requirements.txt`. |
-| **Ferramentas utilizáveis** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `__init__.py` para um pacote clássico, `pyproject.toml` e `pip install -e .` para o packaging moderno. |
-| **Armadilhas a evitar** | Instalar bibliotecas globalmente em vez de em um ambiente virtual: conflitos de versão entre projetos. Esquecer `find_namespace_packages` para um projeto sem `__init__.py`, o que faz as pastas serem ignoradas silenciosamente na instalação. |
+| **Para lembrar** | `import` carrega um módulo; `if __name__ == "__main__":` distingue execução direta e importação. `pip` instala bibliotecas, um ambiente virtual isola as dependências de um projeto -- não confundir com `os.environ`, que dá acesso às variáveis de ambiente do sistema. `pyproject.toml` descreve o projeto em si, além das versões fixadas apenas por `requirements.txt`. |
+| **Ferramentas utilizáveis** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `os.environ` (leitura/escrita/remoção como um dict), `__init__.py` para um pacote clássico, `pyproject.toml` e `pip install -e .` para o packaging moderno. |
+| **Armadilhas a evitar** | Instalar bibliotecas globalmente em vez de em um ambiente virtual: conflitos de versão entre projetos. Esquecer `find_namespace_packages` para um projeto sem `__init__.py`, o que faz as pastas serem ignoradas silenciosamente na instalação. Achar que modificar `os.environ` afeta a shell pai ou o sistema: afeta apenas o processo atual e seus futuros filhos. |
 | **Boas práticas** | Sempre trabalhar em um ambiente virtual por projeto; versionar `requirements.txt`, nunca `.venv/`. Usar `pip install -e .` no desenvolvimento ativo de uma biblioteca. |
