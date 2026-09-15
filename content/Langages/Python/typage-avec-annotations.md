@@ -30,14 +30,67 @@ def trouver_utilisateur(id: int) -> Optional[dict]:   # dict OU None
         return None
     return {"id": id, "nom": "Dupont"}
 
-def traiter_notes(notes: List[int]) -> float:          # liste d'entiers
+def traiter_notes(notes: List[int]) -> float:         # liste d'entiers
     return sum(notes) / len(notes)
 
-def config() -> Dict[str, Union[str, int]]:            # dict dont les valeurs sont str OU int
+def config() -> Dict[str, Union[str, int]]:           # dict dont les valeurs sont str OU int
     return {"nom": "app", "version": 2}
 ```
 
 > **Note :** depuis Python 3.9+, `list[int]`/`dict[str, int]` (les types natifs directement, en minuscules) remplacent `List[int]`/`Dict[str, int]` du module `typing` pour ces cas simples ; `typing` reste nécessaire pour des constructions comme `Optional`/`Union`.
+
+## Syntaxe moderne `X | None` (Python 3.10+)
+
+Depuis Python 3.10 ([PEP 604](https://peps.python.org/pep-0604/)), l'opérateur `|` entre deux types remplace `Optional`/`Union` du module `typing`, directement sur les types eux-mêmes, sans import supplémentaire :
+
+```python
+def trouver_utilisateur(id: int) -> dict | None:   # remplace Optional[dict]
+    if id <= 0:
+        return None
+    return {"id": id, "nom": "Dupont"}
+
+def config() -> dict[str, str | int]:              # remplace Dict[str, Union[str, int]]
+    return {"nom": "app", "version": 2}
+```
+
+| Ancienne syntaxe (`typing`) | Syntaxe moderne (3.10+) |
+|---|---|
+| `Optional[dict]` | `dict \| None` |
+| `Union[str, int]` | `str \| int` |
+| `Optional[Union[str, int]]` | `str \| int \| None` |
+
+> **Note :** cette syntaxe ne remplace pas tout `typing` : des constructions comme `Callable`, `TypeVar` ou `Generic` restent nécessaires. Elle ne couvre que les cas jusqu'ici traités par `Optional`/`Union`.
+
+## Forward reference et `TYPE_CHECKING`
+
+Une **forward reference** est une annotation de type écrite entre guillemets, qui référence un type pas encore défini à cet endroit du fichier (une classe qui se référence elle-même, ou un import qui créerait une boucle) :
+
+```python
+class Noeud:
+    def __init__(self, valeur: int, suivant: "Noeud | None" = None):
+        self.valeur = valeur
+        self.suivant = suivant   # "Noeud" n'existe pas encore tant que sa propre définition n'est pas terminée
+```
+
+> **Piège :** sans les guillemets (`suivant: Noeud | None`), Python lève une `NameError` immédiate à la lecture du fichier : une annotation de fonction est évaluée dès la définition de celle-ci, pas seulement lue par un outil externe comme `mypy`. Les guillemets la transforment en simple texte, résolu seulement quand un outil en a besoin.
+
+Le bloc `if TYPE_CHECKING:` sert le même besoin entre deux fichiers : importer un type uniquement pour l'annotation, sans provoquer d'import circulaire au lancement du programme :
+
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:   # jamais vrai à l'exécution : lu seulement par mypy et les éditeurs
+    from autre_module import AutreClasse
+
+def traiter(objet: "AutreClasse") -> None:
+    ...
+```
+
+| | `import` classique | `if TYPE_CHECKING:` |
+|---|---|---|
+| Exécuté au lancement du programme | Oui | Non |
+| Lu par `mypy` / l'éditeur | Oui | Oui |
+| Risque d'import circulaire | Oui, si les deux fichiers s'importent mutuellement | Non |
 
 ## `mypy` : faire respecter les annotations malgré tout
 
@@ -62,6 +115,6 @@ mypy mon_script.py
 | | |
 |---|---|
 | **À retenir** | Les annotations de type Python (`x: int`, `-> str`) sont purement documentaires : jamais vérifiées par l'interpréteur, contrairement à un langage à typage statique ou même à [PHP](/?c=langages-de-programmation&s=php&p=php). |
-| **Outils utilisables** | Le module `typing` (`Optional`, `Union`, `List`...), `mypy` pour une vérification externe. |
-| **Pièges à éviter** | Croire qu'une annotation empêche réellement de passer une valeur du mauvais type : rien ne l'empêche à l'exécution. |
-| **Bonnes pratiques** | Annoter systématiquement un projet de taille significative, et faire tourner `mypy` en complément pour détecter les incohérences avant l'exécution. |
+| **Outils utilisables** | Le module `typing` (`Optional`, `Union`, `List`, `TYPE_CHECKING`...), la syntaxe `X \| None` (3.10+), `mypy` pour une vérification externe. |
+| **Pièges à éviter** | Croire qu'une annotation empêche réellement de passer une valeur du mauvais type : rien ne l'empêche à l'exécution. Oublier les guillemets d'une forward reference (`NameError` immédiate). |
+| **Bonnes pratiques** | Annoter systématiquement un projet de taille significative, et faire tourner `mypy` en complément pour détecter les incohérences avant l'exécution. Utiliser `if TYPE_CHECKING:` pour éviter un import circulaire causé par une seule annotation de type. |
