@@ -46,6 +46,24 @@ with file_path.open("w", encoding="utf-8") as f:
 
 > **Pitfall:** forgetting `exist_ok=True` crashes a script rerun on a folder already created on the first pass (`FileExistsError`), a frequent case for an output folder recreated on every run.
 
+## Reading/writing a whole file in one line: `.write_text()`/`.read_text()`
+
+```python
+file_path.write_text("done", encoding="utf-8")
+# equivalent to:
+with file_path.open("w", encoding="utf-8") as f:
+    f.write("done")
+
+content = file_path.read_text(encoding="utf-8")
+# equivalent to:
+with file_path.open(encoding="utf-8") as f:
+    content = f.read()
+```
+
+`write_text()`/`read_text()` open, write (or read) the entire content, then close the file, all in a single call, with no explicit `with` block: handy for a whole file processed at once, not line by line or as a stream.
+
+> **Pitfall:** using `write_text()`/`read_text()` on a large file, or one meant to be processed line by line (see below): these methods load the entire content into memory at once, whereas a classic `with` block lets you iterate over lines without ever loading everything at the same time.
+
 ## Breaking down a path: `.name`, `.stem`, `.suffix`
 
 ```python
@@ -144,6 +162,6 @@ with open("states.jsonl", encoding="utf-8") as f:
 | | |
 |---|---|
 | **Key takeaways** | `pathlib.Path` represents a path as a manipulable object (`/` to build, `.stem`/`.suffix`/`.with_name()` to break it down, `.open()` equivalent to `open()`, `.mkdir()` to create a folder). `shutil.rmtree()` removes a non-empty folder, which `Path.rmdir()` refuses. `csv.DictReader` reads a CSV into dicts named by header, `csv.reader` into positional lists. `json.dumps`/`loads` convert a Python object and JSON text both ways; the JSON Lines format (one line = one object) lets you add entries without rewriting the whole file. |
-| **Tools you can use** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
-| **Pitfalls to avoid** | `.with_name()` replaces the last segment of the path where `/` adds a new one. `.mkdir()` without `exist_ok=True` crashes if the folder already exists. `shutil.rmtree(ignore_errors=True)` makes a failure silent. Forgetting `newline=""` with `csv` can break multi-line quoted values. Forgetting `ensure_ascii=False` makes accented characters unreadable in the produced JSON (without breaking `json.loads()`). |
+| **Tools you can use** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
+| **Pitfalls to avoid** | `.with_name()` replaces the last segment of the path where `/` adds a new one. `.mkdir()` without `exist_ok=True` crashes if the folder already exists. `.write_text()`/`.read_text()` on a large file that should be processed line by line. `shutil.rmtree(ignore_errors=True)` makes a failure silent. Forgetting `newline=""` with `csv` can break multi-line quoted values. Forgetting `ensure_ascii=False` makes accented characters unreadable in the produced JSON (without breaking `json.loads()`). |
 | **Best practices** | Use `folder.mkdir(parents=True, exist_ok=True)` (or `file_path.parent.mkdir(...)`) instead of an `if not folder.exists(): ...` before writing a file. Check `folder.exists()` after a `rmtree(ignore_errors=True)` rather than assuming success. Prefer `DictReader`/`DictWriter` over index access as soon as a CSV has headers. Use JSON Lines for a state file that grows over execution, a classic JSON file for a fixed object. |

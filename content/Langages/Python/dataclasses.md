@@ -103,6 +103,32 @@ print(p2.articles)   # [] -> bien indépendante de p1, contrairement au piège d
 
 `field(default_factory=fonction)` appelle `fonction()` (ici `list`, donc `list()`) à chaque nouvelle instance plutôt qu'une seule fois à la définition de la classe : c'est ce qui évite le partage involontaire.
 
+## Convertir en `dict` : `dataclasses.asdict()`
+
+[`json.dumps()`](/?c=infrastructure&p=json) ne sait pas encoder directement une instance de dataclass, seulement des types simples (`dict`, liste, chaîne, nombre...). `asdict()` convertit récursivement une dataclass (et toute dataclass imbriquée à l'intérieur) en `dict` ordinaire, sérialisable tel quel :
+
+```python
+from dataclasses import dataclass, asdict
+import json
+
+@dataclass
+class Adresse:
+    ville: str
+    code_postal: str
+
+@dataclass
+class Personne:
+    nom: str
+    adresse: Adresse   # dataclass imbriquée
+
+p = Personne(nom="Jean", adresse=Adresse(ville="Paris", code_postal="75000"))
+
+asdict(p)   # {"nom": "Jean", "adresse": {"ville": "Paris", "code_postal": "75000"}}
+json.dumps(asdict(p))   # sérialisation directe : asdict() a déjà tout réduit à des types simples
+```
+
+> **Piège :** appeler `json.dumps()` directement sur une instance de dataclass, sans passer par `asdict()` au préalable : `TypeError: Object of type Personne is not JSON serializable`. `json.dumps()` ne sait encoder que des types simples, jamais un objet Python quelconque.
+
 ## Quand une dataclass suffit, quand une classe classique s'impose
 
 | | Dataclass | Classe classique |
@@ -120,6 +146,6 @@ Une dataclass reste une classe Python à part entière : rien n'empêche d'y ajo
 | | |
 |---|---|
 | **À retenir** | `@dataclass` génère `__init__`/`__repr__`/`__eq__` à partir des champs annotés d'une classe, évitant ce code répétitif pour une classe qui ne fait que regrouper des données. `frozen=True` rend les instances immuables (et hachables). |
-| **Outils utilisables** | `@dataclass`, `@dataclass(frozen=True)`, `@dataclass(order=True)` pour le tri, `field(default_factory=...)` pour une valeur par défaut mutable. |
-| **Pièges à éviter** | Croire que `frozen=True` protège aussi le contenu d'un champ mutable (une liste reste modifiable). Donner directement une liste/dict comme valeur par défaut d'un champ. |
-| **Bonnes pratiques** | Utiliser un type lui-même immuable (tuple) pour un vrai gel complet. Toujours passer par `field(default_factory=...)` pour une valeur par défaut mutable. Réserver la dataclass aux classes majoritairement porteuses de données. |
+| **Outils utilisables** | `@dataclass`, `@dataclass(frozen=True)`, `@dataclass(order=True)` pour le tri, `field(default_factory=...)` pour une valeur par défaut mutable, `asdict()` pour convertir en `dict` sérialisable. |
+| **Pièges à éviter** | Croire que `frozen=True` protège aussi le contenu d'un champ mutable (une liste reste modifiable). Donner directement une liste/dict comme valeur par défaut d'un champ. Appeler `json.dumps()` directement sur une dataclass sans passer par `asdict()`. |
+| **Bonnes pratiques** | Utiliser un type lui-même immuable (tuple) pour un vrai gel complet. Toujours passer par `field(default_factory=...)` pour une valeur par défaut mutable. Réserver la dataclass aux classes majoritairement porteuses de données. Passer par `asdict()` avant `json.dumps()` pour sérialiser une dataclass. |

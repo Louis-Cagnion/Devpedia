@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## 3 notions PDF_parser supplémentaires ajoutées (2026-09-15)
+
+Lot suivant repéré par l'auto-review de PDF_parser (`raw_export.py`) : `Path.write_text()`/`.read_text()` dans `manipuler-des-fichiers-et-dossiers.md`, `date.isoformat()`/`.fromisoformat()` dans `dates-et-heures.md`, `dataclasses.asdict()` dans `dataclasses.md`. FR/EN/ES/BR le jour même. Corrigé un lien manquant vers le chapitre JSON (`/?c=infrastructure&p=json`) au passage, jamais posé dans `dates-et-heures.md`/`dataclasses.md` malgré la mention explicite de JSON dans les deux.
+
 ## Bug Piper/espeak-ng : capitales `Á`/`Í` plantent la voix pt-BR (2026-09-15)
 
 Le lot 1 de régénération audio (`blockchain,ui-ux,tests,gestion-de-projet-et-organisation`) a planté silencieusement en tâche de fond (le wrapper de tâche de fond rapporte `exit code 0` même quand le process Node a réellement crashé avec une exception non interceptée -- à garder en tête pour la suite, ne jamais se fier à ce seul code). Investigation par bissection (script ad hoc, supprimé après usage) : `espeak-ng`, utilisé par Piper pour la voix `pt_BR-faber-medium`, corrompt un buffer interne en tentant de phonémiser une capitale accentuée précise -- confirmé empiriquement lettre par lettre : `Á` et `Í` (capitales) plantent systématiquement (`UnicodeEncodeError: ... surrogates not allowed`), alors que `É`/`Ó`/`Ú`/`Ã`/`Â` (capitales) et `á`/`í` (minuscules) fonctionnent tous sans problème. Repéré sur `content-br/UI-UX/accessibilite-ux.md` ("Áreas clicáveis..."), texte pourtant parfaitement normal.

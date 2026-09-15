@@ -44,6 +44,23 @@ datetime.strptime("2026-09-01_143207", "%Y-%m-%d_%H%M%S")  # opération INVERSE 
 
 > **Piège :** le format donné à `strptime()` doit correspondre EXACTEMENT à la chaîne reçue (mêmes séparateurs, même ordre) ; un format qui ne correspond pas lève une `ValueError`, pas un résultat approximatif.
 
+## Sérialiser une date : `.isoformat()`/`.fromisoformat()`
+
+[JSON](/?c=infrastructure&p=json) n'a pas de type date natif : une date doit donc être convertie en chaîne pour être stockée ou transmise, puis reconvertie à la lecture.
+
+```python
+from datetime import date
+
+aujourdhui = date(2026, 9, 15)
+
+aujourdhui.isoformat()                    # "2026-09-15" -> format fixe AAAA-MM-JJ
+date.fromisoformat("2026-09-15")          # date(2026, 9, 15) -> opération inverse
+```
+
+Contrairement à `strftime()`/`strptime()`, `isoformat()`/`fromisoformat()` n'exigent aucun code de format (`%Y`, `%m`...) : le format est toujours le même (AAAA-MM-JJ), ce qui les rend plus simples pour ce cas précis, mais inutilisables dès qu'un format différent est nécessaire.
+
+> **Bonne pratique :** utiliser `isoformat()`/`fromisoformat()` pour stocker une date dans un fichier JSON ou une base de données, plutôt que `strftime()`/`strptime()` avec un format à retenir et faire correspondre partout où la date est lue.
+
 ## `datetime.now()` vs `time.time()`
 
 ```python
@@ -61,7 +78,7 @@ datetime.now()   # 2026-09-01 14:32:07.123456 -> objet avec année/mois/jour... 
 
 | | |
 |---|---|
-| **À retenir** | `datetime.now()` donne la date/heure actuelle sous forme d'objet décomposé (année, mois, jour...). `.strftime()` le formate en chaîne à partir de codes (`%Y`, `%m`...), `.strptime()` fait l'inverse. |
-| **Outils utilisables** | `datetime.now()`, `datetime(annee, mois, jour)`, `.strftime(format)`, `.strptime(chaine, format)`, `time.time()` pour une simple durée. |
+| **À retenir** | `datetime.now()` donne la date/heure actuelle sous forme d'objet décomposé (année, mois, jour...). `.strftime()` le formate en chaîne à partir de codes (`%Y`, `%m`...), `.strptime()` fait l'inverse. `.isoformat()`/`.fromisoformat()` font la même chose, sans code de format, pour sérialiser une date (ex. en JSON). |
+| **Outils utilisables** | `datetime.now()`, `datetime(annee, mois, jour)`, `.strftime(format)`, `.strptime(chaine, format)`, `.isoformat()`/`date.fromisoformat()`, `time.time()` pour une simple durée. |
 | **Pièges à éviter** | Un format `strptime()` qui ne correspond pas exactement à la chaîne reçue lève une `ValueError`, sans résultat approximatif. |
-| **Bonnes pratiques** | Utiliser `datetime` pour tout ce qui doit être affiché/comparé comme une date ; réserver `time.time()` à une mesure de durée brute. |
+| **Bonnes pratiques** | Utiliser `datetime` pour tout ce qui doit être affiché/comparé comme une date ; réserver `time.time()` à une mesure de durée brute. `isoformat()`/`fromisoformat()` plutôt que `strftime()`/`strptime()` pour stocker une date (JSON, base de données). |

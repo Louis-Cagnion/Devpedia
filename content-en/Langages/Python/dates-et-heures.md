@@ -44,6 +44,23 @@ datetime.strptime("2026-09-01_143207", "%Y-%m-%d_%H%M%S")  # INVERSE operation o
 
 > **Pitfall:** the format given to `strptime()` must match the received string EXACTLY (same separators, same order); a format that doesn't match raises a `ValueError`, not an approximate result.
 
+## Serializing a date: `.isoformat()`/`.fromisoformat()`
+
+[JSON](/?c=infrastructure&p=json) has no native date type: a date must therefore be converted to a string to be stored or transmitted, then converted back on read.
+
+```python
+from datetime import date
+
+today = date(2026, 9, 15)
+
+today.isoformat()                     # "2026-09-15" -> fixed YYYY-MM-DD format
+date.fromisoformat("2026-09-15")      # date(2026, 9, 15) -> the reverse operation
+```
+
+Unlike `strftime()`/`strptime()`, `isoformat()`/`fromisoformat()` require no format code (`%Y`, `%m`...): the format is always the same (YYYY-MM-DD), which makes them simpler for this specific case, but unusable as soon as a different format is needed.
+
+> **Best practice:** use `isoformat()`/`fromisoformat()` to store a date in a JSON file or a database, rather than `strftime()`/`strptime()` with a format to remember and match everywhere the date is read.
+
 ## `datetime.now()` vs `time.time()`
 
 ```python
@@ -61,7 +78,7 @@ datetime.now()   # 2026-09-01 14:32:07.123456 -> object with year/month/day... a
 
 | | |
 |---|---|
-| **Key takeaways** | `datetime.now()` gives the current date/time as a broken-down object (year, month, day...). `.strftime()` formats it as a string from codes (`%Y`, `%m`...), `.strptime()` does the reverse. |
-| **Tools you can use** | `datetime.now()`, `datetime(year, month, day)`, `.strftime(format)`, `.strptime(string, format)`, `time.time()` for a plain duration. |
+| **Key takeaways** | `datetime.now()` gives the current date/time as a broken-down object (year, month, day...). `.strftime()` formats it as a string from codes (`%Y`, `%m`...), `.strptime()` does the reverse. `.isoformat()`/`.fromisoformat()` do the same thing, with no format code, to serialize a date (e.g. to JSON). |
+| **Tools you can use** | `datetime.now()`, `datetime(year, month, day)`, `.strftime(format)`, `.strptime(string, format)`, `.isoformat()`/`date.fromisoformat()`, `time.time()` for a plain duration. |
 | **Pitfalls to avoid** | A `strptime()` format that doesn't exactly match the received string raises a `ValueError`, with no approximate result. |
-| **Best practices** | Use `datetime` for anything that must be displayed/compared as a date; reserve `time.time()` for measuring a raw duration. |
+| **Best practices** | Use `datetime` for anything that must be displayed/compared as a date; reserve `time.time()` for measuring a raw duration. Prefer `isoformat()`/`fromisoformat()` over `strftime()`/`strptime()` to store a date (JSON, database). |

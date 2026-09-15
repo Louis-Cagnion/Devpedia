@@ -46,6 +46,24 @@ with ruta_archivo.open("w", encoding="utf-8") as f:
 
 > **Trampa:** olvidar `exist_ok=True` hace que un script relanzado una segunda vez falle sobre una carpeta ya creada en el primer paso (`FileExistsError`), un caso frecuente para una carpeta de salida recreada en cada ejecución.
 
+## Leer/escribir un archivo entero en una línea: `.write_text()`/`.read_text()`
+
+```python
+ruta_archivo.write_text("terminado", encoding="utf-8")
+# equivale a:
+with ruta_archivo.open("w", encoding="utf-8") as f:
+    f.write("terminado")
+
+contenido = ruta_archivo.read_text(encoding="utf-8")
+# equivale a:
+with ruta_archivo.open(encoding="utf-8") as f:
+    contenido = f.read()
+```
+
+`write_text()`/`read_text()` abren, escriben (o leen) todo el contenido, y cierran el archivo en una sola llamada, sin bloque `with` explícito: práctico para un archivo entero procesado de una vez, no línea por línea o en flujo.
+
+> **Trampa:** usar `write_text()`/`read_text()` en un archivo voluminoso o procesado línea por línea (ver más abajo): estos métodos cargan todo el contenido en memoria de una vez, mientras que un bloque `with` clásico permite iterar sobre las líneas sin cargarlo todo a la vez.
+
 ## Descomponer una ruta: `.name`, `.stem`, `.suffix`
 
 ```python
@@ -144,6 +162,6 @@ with open("estados.jsonl", encoding="utf-8") as f:
 | | |
 |---|---|
 | **Para recordar** | `pathlib.Path` representa una ruta como un objeto manipulable (`/` para construir, `.stem`/`.suffix`/`.with_name()` para descomponer, `.open()` equivalente a `open()`, `.mkdir()` para crear una carpeta). `shutil.rmtree()` elimina una carpeta no vacía, lo que `Path.rmdir()` rechaza. `csv.DictReader` lee un CSV en dicts nombrados por encabezado, `csv.reader` en listas posicionales. `json.dumps`/`loads` convierten objeto Python y texto JSON en ambos sentidos; el formato JSON Lines (una línea = un objeto) permite añadir entradas sin reescribir todo el archivo. |
-| **Herramientas utilizables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
-| **Trampas a evitar** | `.with_name()` reemplaza el último segmento de la ruta donde `/` añade uno nuevo. `.mkdir()` sin `exist_ok=True` falla si la carpeta ya existe. `shutil.rmtree(ignore_errors=True)` hace silencioso un fallo. Olvidar `newline=""` con `csv` puede romper valores multilínea entre comillas. Olvidar `ensure_ascii=False` hace ilegibles los acentos en el JSON producido (sin romper `json.loads()`). |
+| **Herramientas utilizables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
+| **Trampas a evitar** | `.with_name()` reemplaza el último segmento de la ruta donde `/` añade uno nuevo. `.mkdir()` sin `exist_ok=True` falla si la carpeta ya existe. `.write_text()`/`.read_text()` en un archivo voluminoso que debería procesarse línea por línea. `shutil.rmtree(ignore_errors=True)` hace silencioso un fallo. Olvidar `newline=""` con `csv` puede romper valores multilínea entre comillas. Olvidar `ensure_ascii=False` hace ilegibles los acentos en el JSON producido (sin romper `json.loads()`). |
 | **Buenas prácticas** | Usar `carpeta.mkdir(parents=True, exist_ok=True)` (o `ruta_archivo.parent.mkdir(...)`) en lugar de un `if not carpeta.exists(): ...` antes de escribir un archivo. Comprobar `carpeta.exists()` tras un `rmtree(ignore_errors=True)` en lugar de suponer el éxito. Preferir `DictReader`/`DictWriter` a un acceso por índice en cuanto un CSV tenga encabezados. Usar JSON Lines para un archivo de estado que crece durante la ejecución, un archivo JSON clásico para un objeto fijo. |
