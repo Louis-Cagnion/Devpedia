@@ -289,6 +289,10 @@
             {
               "id": "securite",
               "label": "Proteger seus dados"
+            },
+            {
+              "id": "php-fpm",
+              "label": "Responder ao cliente e continuar trabalhando (PHP-FPM)"
             }
           ]
         },

@@ -194,7 +194,7 @@ foreach ($lignesAImporter as $ligne) {
 
 Chaque `echo` suivi de `flush()` part vers le navigateur immédiatement, sans attendre la fin du script : l'utilisateur voit une console qui se remplit en temps réel, comme les logs d'un terminal, plutôt qu'une page blanche suivie d'un résultat final d'un coup.
 
-> **Note :** ce mécanisme est l'inverse de [`fastcgi_finish_request()`](https://www.php.net/manual/fr/function.fastcgi-finish-request.php) : là, la connexion se ferme tout de suite et le travail continue caché derrière ; ici, la connexion reste ouverte pendant tout le calcul, ce qui est justement ce qui permet d'en envoyer chaque morceau de résultat au fur et à mesure.
+> **Note :** ce mécanisme est l'inverse de [`fastcgi_finish_request()`](/?c=langages&s=php&p=php-fpm) : là, la connexion se ferme tout de suite et le travail continue caché derrière ; ici, la connexion reste ouverte pendant tout le calcul, ce qui est justement ce qui permet d'en envoyer chaque morceau de résultat au fur et à mesure.
 
 > **Piège :** ce streaming casse dès qu'un serveur intermédiaire (proxy, load balancer, Nginx en mode `fastcgi_buffering`) remet en place son propre tampon : vérifier la configuration complète de la chaîne réseau, pas seulement celle de PHP.
 

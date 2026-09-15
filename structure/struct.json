@@ -340,6 +340,10 @@
             {
               "id": "securite",
               "label": "Sécuriser vos données"
+            },
+            {
+              "id": "php-fpm",
+              "label": "Répondre au client puis continuer de travailler (PHP-FPM)"
             }
           ]
         },

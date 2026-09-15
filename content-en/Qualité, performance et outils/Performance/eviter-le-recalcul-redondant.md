@@ -194,7 +194,7 @@ foreach ($rowsToImport as $row) {
 
 Every `echo` followed by `flush()` is sent to the browser immediately, without waiting for the script to finish: the user sees a console filling up in real time, like terminal logs, instead of a blank page followed by a single final result.
 
-> **Note:** this mechanism is the opposite of [`fastcgi_finish_request()`](https://www.php.net/manual/en/function.fastcgi-finish-request.php): there, the connection closes right away and the work keeps going hidden behind it; here, the connection stays open for the whole computation, which is exactly what allows sending each piece of the result as it becomes available.
+> **Note:** this mechanism is the opposite of [`fastcgi_finish_request()`](/?c=langages&s=php&p=php-fpm): there, the connection closes right away and the work keeps going hidden behind it; here, the connection stays open for the whole computation, which is exactly what allows sending each piece of the result as it becomes available.
 
 > **Pitfall:** this streaming breaks as soon as an intermediate server (proxy, load balancer, Nginx in `fastcgi_buffering` mode) puts its own buffer back in place: check the whole network chain's configuration, not just PHP's.
 
