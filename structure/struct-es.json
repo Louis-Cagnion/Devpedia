@@ -490,6 +490,22 @@
             {
               "id": "web-speech-api",
               "label": "La Web Speech API: reconocimiento y síntesis de voz en el navegador"
+            },
+            {
+              "id": "observateurs-et-limitation-de-frequence",
+              "label": "Observadores del navegador y limitación de frecuencia"
+            },
+            {
+              "id": "intercepter-un-setter-de-propriete",
+              "label": "Interceptar un setter de propiedad nativa: `Object.defineProperty`"
+            },
+            {
+              "id": "google-maps-javascript-api",
+              "label": "La API JavaScript de Google Maps"
+            },
+            {
+              "id": "canvas-2d-et-animations",
+              "label": "Canvas 2D y animaciones"
             }
           ]
         },
@@ -765,6 +781,12 @@
               "label": "Evaluador de expresiones aritméticas: gestionar la precedencia de operadores"
             }
           ]
+        },
+        {
+          "id": "xml",
+          "label": "XML",
+          "folder": "XML",
+          "chapters": []
         }
       ]
     },

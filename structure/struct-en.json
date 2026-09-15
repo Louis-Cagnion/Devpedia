@@ -669,6 +669,12 @@
           ]
         },
         {
+          "id": "xml",
+          "label": "XML",
+          "folder": "XML",
+          "chapters": []
+        },
+        {
           "id": "javascript",
           "label": "JavaScript",
           "folder": "JavaScript",
@@ -732,6 +738,22 @@
             {
               "id": "web-speech-api",
               "label": "The Web Speech API: Speech Recognition and Synthesis in the Browser"
+            },
+            {
+              "id": "observateurs-et-limitation-de-frequence",
+              "label": "Browser observers and rate limiting"
+            },
+            {
+              "id": "intercepter-un-setter-de-propriete",
+              "label": "Intercepting a native property setter: `Object.defineProperty`"
+            },
+            {
+              "id": "google-maps-javascript-api",
+              "label": "The Google Maps JavaScript API"
+            },
+            {
+              "id": "canvas-2d-et-animations",
+              "label": "Canvas 2D and animations"
             }
           ]
         },

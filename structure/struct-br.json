@@ -661,6 +661,12 @@
           ]
         },
         {
+          "id": "xml",
+          "label": "XML",
+          "folder": "XML",
+          "chapters": []
+        },
+        {
           "id": "cpp",
           "label": "C++",
           "folder": "C++",
@@ -779,6 +785,22 @@
             {
               "id": "web-speech-api",
               "label": "A Web Speech API: reconhecimento e síntese de voz no navegador"
+            },
+            {
+              "id": "observateurs-et-limitation-de-frequence",
+              "label": "Observadores do navegador e limitação de frequência"
+            },
+            {
+              "id": "intercepter-un-setter-de-propriete",
+              "label": "Interceptar um setter de propriedade nativa: `Object.defineProperty`"
+            },
+            {
+              "id": "google-maps-javascript-api",
+              "label": "A API JavaScript do Google Maps"
+            },
+            {
+              "id": "canvas-2d-et-animations",
+              "label": "Canvas 2D e animações"
             }
           ]
         }
