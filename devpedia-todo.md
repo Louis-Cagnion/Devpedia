@@ -1,8 +1,15 @@
 # TODO : Devpedia
 
-> Prochaine tâche : régénération audio complète en cours (6 lots via `scripts/generate-audio.mjs --context=...`), lancée en tâche de fond -- voir `journal-de-bord.md` pour le détail des lots et leur ordre. Sinon, attendre le retour de Louis sur le point 1.
+> Prochaine tâche : reprendre la régénération audio complète (lot 1/6 en cours, voir point 2 pour l'état exact et la commande à relancer). Sinon, attendre le retour de Louis sur le point 1.
 
-> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1). Régénération audio en cours (voir journal).
+> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1). Régénération audio lot 1/6 en cours (point 2).
+
+## 2. Régénération audio complète : lot 1/6 en cours
+Commande : `node scripts/generate-audio.mjs --context=blockchain,ui-ux,tests,gestion-de-projet-et-organisation` (nécessite `ffmpeg` sur le PATH : `export PATH="/c/Users/lcagnion/tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"` avant, cf. `journal-de-bord.md` pour l'installation). Bug Piper/pt-BR déjà corrigé (capitales `Á`/`Í`, voir journal) -- le fait qu'un lot plante ne veut plus dire qu'il faut re-déboguer, juste relancer la même commande, elle est idempotente.
+- État à l'arrêt de la session (2026-09-15) : FR complet (Blockchain, UI-UX, Tests, Gestion) ; EN/ES complets sauf `gestion-de-projet-et-organisation` (pas commencé) ; BR complet sur Tests, UI-UX partiel (12/22 fichiers), Blockchain et Gestion pas commencés.
+- Simplement relancer la commande ci-dessus : elle retraite tout le lot (pas de reprise fine par chapitre), sans risque puisque déjà fait pour FR/une partie d'EN-ES.
+- Une fois le lot 1 terminé, enchaîner les 5 lots suivants dans cet ordre (détail dans `journal-de-bord.md`) : `fondamentaux` ; `qualite-performance-et-outils,donnees` ; `securite,ia` ; `infrastructure-devops` ; `langages` (le plus gros, en dernier).
+- Chaque lot terminé : `git add audio/` puis commit (les fichiers audio sont versionnés).
 
 Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de décision de régénération audio à Louis -- il s'en charge à son rythme et note lui-même son retour ici quand il le fait. Le fait/pourquoi/décisions déjà tranchées (progression, historique) va dans `journal-de-bord.md`, jamais ici : seuls les points restants, avec le contexte minimal pour les exécuter sans revenir en arrière.
 
