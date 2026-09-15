@@ -116,6 +116,14 @@
             {
               "id": "glfw-glad-et-boucle-de-rendu",
               "label": "Ouvrir une fenêtre OpenGL moderne : GLFW, GLAD et la boucle de rendu"
+            },
+            {
+              "id": "effets-de-rendu-et-interaction-3d",
+              "label": "Effets de rendu et interaction 3D"
+            },
+            {
+              "id": "edition-de-maillage-et-selection-proportionnelle",
+              "label": "Édition de maillage et sélection proportionnelle"
             }
           ]
         }

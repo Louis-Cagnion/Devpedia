@@ -116,6 +116,14 @@
             {
               "id": "glfw-glad-et-boucle-de-rendu",
               "label": "Opening a modern OpenGL window: GLFW, GLAD and the render loop"
+            },
+            {
+              "id": "effets-de-rendu-et-interaction-3d",
+              "label": "Rendering effects and 3D interaction"
+            },
+            {
+              "id": "edition-de-maillage-et-selection-proportionnelle",
+              "label": "Mesh editing and proportional selection"
             }
           ]
         }
