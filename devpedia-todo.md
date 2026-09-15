@@ -1,10 +1,12 @@
 # TODO — Devpedia
 
-> Prochaine tâche : point 5 (ex-point 5, `argc`/`argv`) terminé -- 3 chapitres `Langages/C` ajoutés au total (`operateur-virgule.md`, `exit-et-codes-de-retour.md`, `argc-et-argv.md`, FR/EN/ES/BR, orders 4-6). Continuer les nouveaux chapitres complets des points 2-9 (rangement déjà tranché), toujours du plus court au plus long. Régénération audio complète seulement une fois tout ajouté.
+> Prochaine tâche : points 2 à 11 remis dans l'ordre de traitement (le plus court/autonome d'abord, le plus volumineux/dépendant en dernier). Reprendre par le point 2 (compléments Python PDF_parser). Régénération audio complète seulement une fois tout ajouté.
 
-> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1), et les points 2 à 10 (chapitres/compléments à rédiger, rangement déjà tranché). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
+> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1), et les points 2 à 11 (chapitres/compléments à rédiger). L'audio (FR et autres langues) sera régénéré en un seul passage une fois tous ces chapitres ajoutés, pas point par point.
 
 Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de décision de régénération audio à Louis -- il s'en charge à son rythme et note lui-même son retour ici quand il le fait. Le fait/pourquoi/décisions déjà tranchées (progression, historique) va dans `journal-de-bord.md`, jamais ici : seuls les points restants, avec le contexte minimal pour les exécuter sans revenir en arrière.
+
+**Ordre de traitement imposé pour les points 2 à 11** : la numérotation ci-dessous EST l'ordre d'exécution (du plus court/autonome au plus volumineux/dépendant), pas un simple classement thématique -- traiter strictement dans cet ordre, ne jamais sauter un point pour un autre jugé plus intéressant, sauf instruction contraire explicite de Louis.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -12,23 +14,24 @@ Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de d
 Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il s'affiche normalement sur desktop (`css/content.css`, `.page::before`). Deux hypothèses déjà invalidées par le retest de Louis (détail dans `journal-de-bord.md`) : `@supports` autour de `color-mix()`, puis son remplacement complet par `rgba()` + triplets RGB précalculés -- toujours gris dans les deux cas. Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `var()`, `rgba()`, `radial-gradient()`, `inset: 0`).
 - Reste à Louis : sur la page d'un chapitre (iPhone), bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement dans ce mode. Si ça ne suffit pas à trancher, étape suivante : inspecteur Safari distant (Mac connecté à l'iPhone).
 
-## 2. Notions candidates : projet SCOP de Louis (rendu 3D OpenGL)
-- Dispersion chromatique (aberration chromatique en post-traitement, réfraction par cubemap à indice de réfraction variable par canal) → `Fondamentaux/Graphisme`, suite de `wavefront-obj-et-modele-de-phong.md`.
-- Animation procédurale (recalculée à chaque frame par une formule dépendant du temps, ex. un sinus) → même rubrique.
-- Picking souris en 3D (rayon depuis un clic écran via l'inverse de la matrice projection/vue) → même rubrique.
-- Sélection proportionnelle (influence dégressive sur les sommets voisins selon la distance, notion Blender) → chapitre dédié "édition de maillage", même rubrique.
+## 2. Notions candidates : revue /review PDF_parser (Louis, 14/09/2026)
+- Chaînage d'exceptions `raise ... from exc` (conserver la cause d'origine tout en levant un type d'erreur "métier" ; `src/pdf_parser/ingestion.py::ingest()`) → complément de `gestion-des-erreurs.md` (Langages/Python).
+- Syntaxe moderne `X | None` (PEP 604, Python 3.10+) comme remplacement de `Optional[X]`/`Union[...]` du module `typing` déjà couvert → complément de `typage-avec-annotations.md` (Langages/Python).
+- Forward reference (annotation de type entre guillemets, ex. `"pymupdf.Page"`) et bloc `if TYPE_CHECKING:` (import réservé au vérificateur de types, jamais exécuté au runtime, pour éviter un import circulaire) → complément de `typage-avec-annotations.md` (Langages/Python).
+- Détection de tableau par heuristique géométrique (`page.find_tables()` de PyMuPDF : repère les tableaux sans OCR via les lignes de grille vectorielles et l'alignement du texte natif, pas d'apprentissage automatique) → complément de `extraction-pdf.md` (Données/Traitement de documents).
+- Opérateur de répétition de liste (`[x] * n` pour préallouer une liste de taille connue) et son piège classique `[[]] * n` (répète le même objet liste, pas des copies) → complément de `listes-et-tuples.md` (Langages/Python).
 
-## 3. Notions candidates : Makefile du projet SCOP
+## 3. Notion candidate : suite revue /review poc-borne-git
+- `fastcgi_finish_request()` + `register_shutdown_function()` (PHP-FPM : répondre au client tout de suite puis recalculer un cache coûteux en fond, `src/Atlas/VN/SalesRepository.php::scheduleBackgroundRefresh()`) → nouveau chapitre PHP-FPM.
+
+## 4. Notions candidates : Makefile du projet SCOP
 - `pkg-config` (métadonnées de lib via fichiers `.pc` ; nom de module `pkg-config` vs nom du paquet système, pas toujours identiques) + syntaxe Makefile (prérequis séparés par espaces vs `;` qui introduit une recette en ligne ; `.PHONY` pour une cible sans fichier de sortie ; `-o`/`-I`) → chapitre build C (nouvelle rubrique à créer).
 - `()` vs `{}` en shell (sous-shell vs shell courant, syntaxe `{ ; }`) + codes ANSI couleur terminal (`\033[...m`, piège du `echo` sans `-e`) → chapitre shell séparé, même rubrique.
 - Mode silencieux `@` en préfixe de ligne de recette (supprime l'écho de la commande avant exécution) + `MAKEFLAGS` (variable transmettant les options aux appels récursifs de `make`) → chapitre build C, avec `pkg-config`/Makefile (Louis, 14/09/2026).
 
-## 4. Notions candidates : setup GLFW+GLAD du projet SCOP
+## 5. Notions candidates : setup GLFW+GLAD du projet SCOP
 - OpenGL Loading Library (GLAD/GLEW : fonctions OpenGL modernes résolues à l'exécution via `glfwGetProcAddress`, pas liées statiquement) + résolution `#include <...>`/`-I` (concaténation littérale par le préprocesseur, piège du `-I` pointé sur le mauvais niveau de dossier) + vendoring (committer le code généré d'une dépendance dans le repo) → nouvelle sous-rubrique build/OpenGL.
-- Double buffering et render loop (`glfwSwapBuffers`, boucle poll/clear/draw/swap) → `Fondamentaux/Graphisme` (avec le point 2).
-
-## 5. Suite de la revue /review poc-borne-git
-- Reprendre la revue /review sur le périmètre non couvert (voir `review-progress.md` du projet poc-borne-git).
+- Double buffering et render loop (`glfwSwapBuffers`, boucle poll/clear/draw/swap) → `Fondamentaux/Graphisme` (avec le point 11).
 
 ## 6. Notions candidates : suite revue /review poc-borne-git
 - Injection XXE et sa prévention (`libxml_set_external_entity_loader(fn () => null)`, `src/Chat/XmlImporter.php`) → nouveau chapitre XML.
@@ -42,15 +45,14 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 - Interception d'un setter de propriété native via `Object.defineProperty` (`apps/atlas/assets/js/shared.js::enhanceSelect()`) → nouveau sous-chapitre JS dédié.
 - Mesure de texte via Canvas 2D `measureText()`, dispersion de points géographiques colocalisés (correction de longitude par `1/cos(latitude)`), deux chemins de rendu Google Maps (`AdvancedMarkerElement` vs `google.maps.Marker`) → rattachés aux chapitres Canvas/Google Maps du point 7.
 
-## 9. Notion candidate : suite revue /review poc-borne-git
-- `fastcgi_finish_request()` + `register_shutdown_function()` (PHP-FPM : répondre au client tout de suite puis recalculer un cache coûteux en fond, `src/Atlas/VN/SalesRepository.php::scheduleBackgroundRefresh()`) → nouveau chapitre PHP-FPM.
+## 9. Suite de la revue /review poc-borne-git
+- Reprendre la revue /review sur le périmètre non couvert (voir `review-progress.md` du projet poc-borne-git).
 
 ## 10. Notion candidate : suite revue /review poc-borne-git
 - Reste : chunk 7 de la revue /review (`src/Chat/ImportOrchestrator.php`, `tools/*.php`, `import.php` -- voir `review-progress.md` du projet poc-borne-git).
 
-## 11. Notions candidates : revue /review PDF_parser (Louis, 14/09/2026)
-- Chaînage d'exceptions `raise ... from exc` (conserver la cause d'origine tout en levant un type d'erreur "métier" ; `src/pdf_parser/ingestion.py::ingest()`) → complément de `gestion-des-erreurs.md` (Langages/Python).
-- Syntaxe moderne `X | None` (PEP 604, Python 3.10+) comme remplacement de `Optional[X]`/`Union[...]` du module `typing` déjà couvert → complément de `typage-avec-annotations.md` (Langages/Python).
-- Forward reference (annotation de type entre guillemets, ex. `"pymupdf.Page"`) et bloc `if TYPE_CHECKING:` (import réservé au vérificateur de types, jamais exécuté au runtime, pour éviter un import circulaire) → complément de `typage-avec-annotations.md` (Langages/Python).
-- Détection de tableau par heuristique géométrique (`page.find_tables()` de PyMuPDF : repère les tableaux sans OCR via les lignes de grille vectorielles et l'alignement du texte natif, pas d'apprentissage automatique) → complément de `extraction-pdf.md` (Données/Traitement de documents).
-- Opérateur de répétition de liste (`[x] * n` pour préallouer une liste de taille connue) et son piège classique `[[]] * n` (répète le même objet liste, pas des copies) → complément de `listes-et-tuples.md` (Langages/Python).
+## 11. Notions candidates : projet SCOP de Louis (rendu 3D OpenGL)
+- Dispersion chromatique (aberration chromatique en post-traitement, réfraction par cubemap à indice de réfraction variable par canal) → `Fondamentaux/Graphisme`, suite de `wavefront-obj-et-modele-de-phong.md`.
+- Animation procédurale (recalculée à chaque frame par une formule dépendant du temps, ex. un sinus) → même rubrique.
+- Picking souris en 3D (rayon depuis un clic écran via l'inverse de la matrice projection/vue) → même rubrique.
+- Sélection proportionnelle (influence dégressive sur les sommets voisins selon la distance, notion Blender) → chapitre dédié "édition de maillage", même rubrique.
