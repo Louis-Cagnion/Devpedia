@@ -15,3 +15,8 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 ## 2. Audit qualité de la traduction EN (en cours)
 - Vérifier `Qualité, performance et outils/Git/architecture-interne.md`/`rebase.md`/`resoudre-conflits.md` : `order` EN décalé de -3 par rapport au FR, probablement des sections manquantes (méthode : `journal-de-bord.md`, entrée du 15/09/2026).
 - Balayage systématique du reste du site (FR vs EN, puis ES/BR) : comparer le nombre de sections `##` par fichier pour repérer d'autres cas, pas encore fait au-delà des chapitres déjà examinés.
+
+## 3. Notion manquante : `os.environ` (Python, variables d'environnement)
+- Repéré dans le projet PDF_parser (`table_extraction.py`, revue `/review`) : aucun chapitre dédié dans `content/` (recherche `os.environ` sans résultat).
+- Angle à couvrir : `os.environ` comme objet mapping (dict-like) donnant accès aux variables d'environnement du processus courant -- lecture (`os.environ["X"]`, `.get("X")` avec valeur de repli), écriture (`os.environ["X"] = valeur`), suppression (`.pop("X", None)` pour éviter un `KeyError` si la clé est déjà absente). Préciser qu'une modification n'affecte que le processus courant et ses enfants créés après coup (qui héritent d'une copie de l'environnement au moment de leur création), jamais le shell parent ni le système.
+- Rubrique cible probable : `Langages/Python`.
