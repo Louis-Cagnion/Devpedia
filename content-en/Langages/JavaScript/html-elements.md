@@ -40,7 +40,9 @@ element.insertAdjacentHTML('beforeend',   "<p>at the end of the content</p>");
 element.insertAdjacentHTML('afterend',    "<p>after the element</p>");
 ```
 
-> **Note (security):** like `innerHTML` (see below), `insertAdjacentHTML` interprets its argument as HTML: never insert data coming from the user into it without escaping it first, or you risk an XSS flaw (see [Security](/?c=langages-de-programmation&s=php&p=securite), same principle).
+> **Pitfall (security):** like `innerHTML` (see below), `insertAdjacentHTML` interprets its argument as HTML: inserting user-provided data into it without escaping it opens an XSS flaw (see [Security](/?c=langages-de-programmation&s=php&p=securite), same principle).
+>
+> **Best practice:** never pass unescaped user data to `insertAdjacentHTML`/`innerHTML`; use `createElement` + `textContent` when the content comes from the user.
 
 **`remove`** removes the element from the DOM.
 ```javascript
@@ -76,7 +78,9 @@ document.getElementsByClassName('my-class'); // HTMLCollection (live)
 document.getElementsByTagName('p');           // HTMLCollection (live)
 ```
 
-> **Note:** an `HTMLCollection` (returned by `getElementsByClassName`/`getElementsByTagName`) is **live**: it updates automatically as the DOM changes, unlike the `NodeList` returned by `querySelectorAll` (frozen at the time of the call). Modifying the DOM (adding/removing matching elements) **while** iterating over a live collection can therefore skip or revisit elements unexpectedly, a good reason to prefer `querySelectorAll` whenever you plan to modify the page during iteration.
+> **Pitfall:** an `HTMLCollection` (returned by `getElementsByClassName`/`getElementsByTagName`) is **live**: it updates automatically as the DOM changes, unlike the `NodeList` returned by `querySelectorAll` (frozen at the time of the call). Modifying the DOM (adding/removing matching elements) **while** iterating over a live collection can therefore skip or revisit elements unexpectedly.
+>
+> **Best practice:** prefer `querySelectorAll` whenever you plan to modify the page while iterating over the collection.
 
 ---
 
@@ -139,18 +143,9 @@ element.innerHTML;                        // '<strong>My text</strong>'
 element.innerHTML = '<em>New</em>';       // ⚠️ overwrites everything, interprets HTML
 ```
 
-> **Note (security):** assigning untrusted user data to `innerHTML` is a classic XSS flaw: the content is interpreted as real, executable HTML/JavaScript, not as text. `textContent` (above) stays safe by default, since it never interprets its content.
-
----
-
-## 📋 Summary
-
-| | |
-|---|---|
-| **Key takeaways** | An `HTMLElement` represents an HTML tag that can be manipulated in JavaScript: create it (`createElement`), select it (`querySelector`), modify its content (`textContent`/`innerHTML`), its attributes, its classes, or its style. |
-| **Tools you can use** | `querySelector`/`querySelectorAll`, `classList`, `setAttribute`/`getAttribute`, `getBoundingClientRect`. |
-| **Pitfalls to avoid** | Assigning unescaped user data to `innerHTML`/`insertAdjacentHTML` (XSS flaw); modifying a live `HTMLCollection` while iterating over it. |
-| **Best practices** | Prefer `textContent` over `innerHTML` whenever the content is plain text; prefer `querySelectorAll` (frozen) over `getElementsByClassName`/`getElementsByTagName` (live) if the DOM is modified during iteration. |
+> **Pitfall (security):** assigning untrusted user data to `innerHTML` is a classic XSS flaw: the content is interpreted as real, executable HTML/JavaScript, not as text.
+>
+> **Best practice:** prefer `textContent` over `innerHTML` whenever the expected content is plain text; it stays safe by default, since it never interprets its content.
 
 ---
 
@@ -236,3 +231,14 @@ element.offsetHeight;
 - [MDN: Element.classList](https://developer.mozilla.org/en-US/docs/Web/API/Element/classList)
 - [MDN: Element.setAttribute](https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute)
 - [MDN: insertAdjacentHTML](https://developer.mozilla.org/en-US/docs/Web/API/Element/insertAdjacentHTML)
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | An `HTMLElement` represents an HTML tag that can be manipulated in JavaScript: create it (`createElement`), select it (`querySelector`), modify its content (`textContent`/`innerHTML`), its attributes, its classes, or its style. |
+| **Tools you can use** | `querySelector`/`querySelectorAll`, `classList`, `setAttribute`/`getAttribute`, `getBoundingClientRect`. |
+| **Pitfalls to avoid** | Assigning unescaped user data to `innerHTML`/`insertAdjacentHTML` (XSS flaw); modifying a live `HTMLCollection` while iterating over it. |
+| **Best practices** | Prefer `textContent` over `innerHTML` whenever the content is plain text; prefer `querySelectorAll` (frozen) over `getElementsByClassName`/`getElementsByTagName` (live) if the DOM is modified during iteration. |

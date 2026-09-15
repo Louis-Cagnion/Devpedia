@@ -34,7 +34,10 @@ Without an activation function (or with a linear one), stacking several layers o
 | Activation function | Formula (simplified) | Typical use |
 |---|---|---|
 | **Sigmoid** | Squashes any value between 0 and 1 | Output of a binary classification (a [probability](/?c=mathematiques&p=les-probabilites-de-base)) |
+| **Tanh** | Squashes any value between -1 and 1, centered on 0 | Hidden layers of older networks (RNNs in particular); often converges better than sigmoid thanks to this centering |
 | **ReLU** (*Rectified Linear Unit*) | `max(0, x)`: lets positive values through, squashes negatives to 0 | Hidden layers, very widely used in practice (simple and cheap to compute) |
+| **Leaky ReLU** | `x` if positive, `0.01 * x` otherwise (instead of squashing to 0) | Hidden layers, like ReLU, when the "dead neuron" (see below) is an issue |
+| **GELU** | Smoothed variant of ReLU, weighted by the normal distribution | Hidden layers of modern [Transformers](/?c=ia&s=fondamentaux-du-deep-learning&p=architectures-cnn-rnn-transformers) |
 | **Softmax** | Turns a vector of scores into a [probability distribution](/?c=mathematiques&p=les-probabilites-de-base) that sums to 1 | Output of a multi-category classification |
 
 ```python
@@ -50,6 +53,10 @@ def relu(x):
 > **Pitfall:** using sigmoid on the output of a classification with **more than two** categories. Sigmoid produces an independent probability per category, with no guarantee that they sum to 1: softmax is built precisely to produce a valid probability distribution across several categories at once (see a [distribution summing to 1](/?c=mathematiques&p=les-probabilites-de-base)).
 >
 > **Best practice:** choose the output activation function based on the number of categories to distinguish: sigmoid for a binary choice, softmax as soon as more than two mutually exclusive categories are involved.
+
+> **Pitfall: the "dead neuron" (*dying ReLU*).** If a ReLU neuron's weighted input stays negative across all training examples, its output is always 0, and so is its gradient (see [the derivative and the gradient](/?c=mathematiques&p=la-derivee-et-le-gradient)): this neuron then stops learning for good, with no error to flag it.
+>
+> **Best practice:** replace ReLU with Leaky ReLU (or a similar variant) in layers where this problem is observed: the small slope kept on the negative side always lets a nonzero gradient through, letting the neuron recover.
 
 ## The layers of a network
 

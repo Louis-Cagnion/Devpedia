@@ -1,5 +1,5 @@
 ---
-order: 9
+order: 12
 ---
 
 # Resolving a merge conflict

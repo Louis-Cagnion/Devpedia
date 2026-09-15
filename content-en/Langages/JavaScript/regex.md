@@ -2,139 +2,108 @@
 order: 9
 ---
 
-# Regular Expressions
+# Regex
 
 A regex (regular expression) is a pattern used to search for, validate, or replace portions of text in a string.
 
-It can be written in two different ways:
-```javascript
-    // literal, the most common
-    const re1 = /hello/;
+It can be written in 2 different ways:
 
-    // using the RegExp constructor, which is useful when the pattern is dynamic
-    const re2 = new RegExp('hello');
+```javascript
+// literal, the most common
+const re1 = /hello/;
+
+// with the RegExp constructor, useful when the pattern is dynamic
+const re2 = new RegExp('hello');
 ```
 
 ### Flags
 
-Flags are placed after the last slash and modify the behavior of the regex.
+Flags are placed after the last slash and modify the behavior of the regex; several can be combined (`/hello/gi`):
 
-**`g`** (global) searches for all occurrences in the string, not just the first one.
-```javascript
-    const re1 = /hello/g;
-```
+| Flag | Name | Effect |
+|---|---|---|
+| `g` | *global* | Searches for **all** occurrences in the string, not just the first one |
+| `i` | *insensitive* | Ignores case: doesn't distinguish uppercase and lowercase |
+| `m` | *multiline* | `^`/`$` match the start/end of **each line**, not just of the whole string |
 
-**`i`** (case-insensitive) ignores case, so it does not distinguish between uppercase and lowercase letters.
-```javascript
-    const re2 = /hello/i;
-```
+### Regex prototypes
 
-**`m`** (multiline) enables multiline mode, which changes the behavior of `^` and `$`: they now correspond to the beginning and end of each line, rather than just the beginning and end of the entire string.
-```javascript
-    const re3 = /hello/m;
-```
+Prototypes are functions built into the RegExp object by default, letting you perform certain actions with the regex:
 
-You can combine multiple flags.
-```javascript
-    const re4 = /hello/gi;
-```
-
-### Regex Prototypes
-
-Prototypes are functions built into the RegExp object by default, allowing you to perform certain actions with the regex.
+| Method | Returns |
+|---|---|
+| `regex.test(str)` | `true`/`false` depending on whether the string matches the regex |
+| `regex.exec(str)` | Details of the first match (or `null`): index 0 = full match, subsequent indices = captured groups |
 
 ```javascript
-    const re = /wor(l)d/;
-    const str = 'hello world';
+const re = /wor(l)d/;
+const str = 'hello world';
+
+re.test(str);  // true
+re.exec(str);  // ['world', 'l', index: 6, input: 'hello world', groups: undefined]
 ```
 
-**`test`** Checks whether the string matches the regex, and simply returns `true` or `false`.
-```javascript
-    re.test(str); // true
-```
+### String prototypes using regexes
 
-**`exec`** Returns an array containing the details of the first match found, or `null` if no match is found. In this array, index 0 contains the complete match, and the subsequent indices contain the captured groups (enclosed in parentheses in the regex).
-```javascript
-    re.exec(str); // ['world', 'l', index: 6, input: 'hello world', groups: undefined]
-```
+Some prototypes of the string object accept a regex as a parameter to perform more advanced searches or replacements:
 
-### Prototypes of strings using regular expressions
-
-Some prototypes of the `string` object accept a regular expression as a parameter to perform more advanced searches or replacements.
-
-```javascript
-    const str = 'hello world';
-```
-
-**`match`** Returns the first result that matches the regex (or `null` if none). If the regex uses the `g` flag, it returns an array containing all matches instead, but without the details of the captured groups.
-```javascript
-    str.match(/o/g); // ['o', 'o']
-```
-
-**`matchAll`** Works like `match` with the `g` flag, but requires this flag. It returns an iterator that provides access to the details of each match, including captured groups.
-```javascript
-    const str = "Jean:25 Marie:30";
-    const result = [...str.matchAll(/(\w+):(\d+)/g)];
-
-    console.log(result);
-    /*  
-    [
-        [
-            "Jean:25",           // complete correspondence
-            "Jean",              // Group 1
-            "25",                // Group 2
-            index: 0,
-            input: "Jean:25 Marie:30",
-            groups: undefined
-        ],
-        [
-            "Marie:30",
-            "Marie",
-            "30",
-            index: 8,
-            input: "Jean:25 Marie:30",
-            groups: undefined
-        ]
-    ]
-    */
-```
-
-**`search`** Returns the index of the first match of the regex in the string, or `-1` if no match is found.
-```javascript
-    str.search(/world/); // 6
-```
-
-**`replace`** and **`replaceAll`** return a copy of the string with one part replaced by another: `replace` replaces only the first occurrence that matches the regex (unless the `g` flag is set), while `replaceAll` requires this flag to replace all occurrences.
-```javascript
-    str.replace(/o/g, '0'); // 'hell0 w0rld'
-    str.replaceAll(/o/g, '0'); // Requires the g flag; otherwise, an error occurs
-```
-
-**`split`** Splits the string into an array of substrings, using the regex as a separator.
-```javascript
-    str.split(/\s/); // ['hello', 'world']
-```
-
-### Capture Groups
-
-Parentheses in a regex allow you to capture a specific part of the match. These captured parts can then be retrieved using `exec` or `match`.
+| Method | Returns |
+|---|---|
+| `str.match(regex)` | First match (or `null`); with the `g` flag, all matches but without group details |
+| `str.matchAll(regex)` | Iterator over all matches, with their groups; `g` flag **required** |
+| `str.search(regex)` | Index of the first match, `-1` if absent |
+| `str.replace(regex, x)` | Replaces the first occurrence (or all, with the `g` flag) |
+| `str.replaceAll(regex, x)` | Replaces all occurrences; `g` flag **required**, otherwise an error |
+| `str.split(regex)` | Splits into an array of substrings, using the regex as a separator |
 
 ```javascript
-    const re = /(\d{4})-(\d{2})-(\d{2})/;
-    const date = '2024-06-15';
+const str = 'hello world';
 
-    const result = date.match(re);
-    result[1]; // '2024' (year)
-    result[2]; // '06' (month)
-    result[3]; // '15' (day)
+str.match(/o/g);         // ['o', 'o']
+str.search(/world/);     // 6
+str.replace(/o/g, '0');  // 'hell0 w0rld'
+str.split(/\s/);         // ['hello', 'world']
 ```
 
-You can also name the groups to make them easier to read, and access them by name using the `groups` property.
+`matchAll` gives access to the details of each match (groups included), whereas `match` with `g` only returns the raw matches:
+
 ```javascript
-    const reNamed = /(?<annee>\d{4})-(?<mois>\d{2})-(?<jour>\d{2})/;
-    const resultNamed = reNamed.exec(date);
-    resultNamed.groups.annee; // '2024'
+const str2 = "John:25 Mary:30";
+const result = [...str2.matchAll(/(\w+):(\d+)/g)];
+
+console.log(result);
+/*
+[
+    ["John:25", "John", "25", index: 0, input: "John:25 Mary:30", groups: undefined],
+    ["Mary:30", "Mary", "30", index: 8, input: "John:25 Mary:30", groups: undefined]
+]
+-> for each match: the full string, then each captured group (\w+ and \d+)
+*/
 ```
+
+### Capture groups
+
+Parentheses in a regex let you capture a specific part of the match. These captured parts can then be retrieved via `exec` or `match`:
+
+```javascript
+const re = /(\d{4})-(\d{2})-(\d{2})/;
+const date = '2024-06-15';
+
+const result = date.match(re);
+result[1];  // '2024' (year)
+result[2];  // '06' (month)
+result[3];  // '15' (day)
+```
+
+Groups can also be named to make them more readable, and accessed by name via the `groups` property:
+
+```javascript
+const reNamed = /(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})/;
+const resultNamed = reNamed.exec(date);
+resultNamed.groups.year; // '2024'
+```
+
+> **Pitfall:** a literal regex with the `g` flag, reused several times with `.test()` or `.exec()`, keeps internal state (`lastIndex`) between calls: a second `.test()` on the same regex can return `false` even though the text matches, simply because the search resumes after the position of the previous match. Creating a new regex (or resetting `lastIndex = 0`) avoids this pitfall.
 
 ---
 

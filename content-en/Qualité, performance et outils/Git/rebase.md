@@ -1,5 +1,5 @@
 ---
-order: 10
+order: 13
 ---
 
 # Rebase
@@ -63,6 +63,26 @@ Each line can be edited before saving:
 | `drop` | Completely deletes this commit |
 
 Useful, for example, for cleaning up a work history ("Fix a typo," "Oops," "Really fix the typo this time") into a single clean commit before sharing it.
+
+## Rewording without an interactive editor: `reset --soft` + targeted recommit
+
+`rebase -i` opens an interactive text editor, which fails outright in a context with no attached terminal (script, CI, automated agent). To reword the message of a commit that isn't the last one, without going through an editor, `git reset --soft` to the common base lets you unstage everything back into the working tree, then recommit each commit one by one with the right message:
+
+```bash
+git reset --soft <commit-before-the-oldest-to-reword>
+git reset            # Unstages everything (the working directory keeps the final state)
+
+# For each commit to recreate, in its original order:
+git show <old-hash-of-the-commit>:path/file.py > path/file.py  # Restores THIS file to its state at that commit
+git add path/file.py ...
+git commit -F fixed-message.txt   # Never -m for a multi-line message with accents: see below
+```
+
+`git show <hash>:<path>` extracts a file's content as it was at a specific commit, which lets you reconstruct each commit's intermediate state before recommitting it, including when the same file changed across several of the commits being reworded.
+
+> **Note:** Writing an accented multi-line message directly in `git commit -m "$(cat <<'EOF' ... EOF)"` (bash heredoc) is a frequent source of errors: a message typed "on the fly" in a command call easily falls back to an ASCII convention (e.g., "vehicule" instead of "véhicule") without anything flagging it. Writing the message to a text file, proofreading it, then `git commit -F file.txt` avoids this pitfall by separating writing the message from executing the command.
+
+This method changes neither the content nor the order of commits, only their messages: it's a manual `reword`, more verbose than `rebase -i` but usable with no human interaction at all.
 
 ## The golden rule: never rebase a history that has already been shared
 

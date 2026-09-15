@@ -721,7 +721,7 @@
             },
             {
               "id": "regex",
-              "label": "Regular Expressions"
+              "label": "Regex"
             },
             {
               "id": "gestion-des-erreurs",
@@ -923,12 +923,16 @@
               "label": "GitHub and Git hosting platforms"
             },
             {
-              "id": "resoudre-conflits",
-              "label": "Resolving a merge conflict"
-            },
-            {
               "id": "pull-requests-github",
               "label": "Pull requests on GitHub"
+            },
+            {
+              "id": "issues-et-projets-github",
+              "label": "Issues and project management on GitHub"
+            },
+            {
+              "id": "resoudre-conflits",
+              "label": "Resolving a merge conflict"
             },
             {
               "id": "rebase",
@@ -937,10 +941,6 @@
             {
               "id": "architecture-interne",
               "label": "The Internal Architecture of Git"
-            },
-            {
-              "id": "issues-et-projets-github",
-              "label": "Issues and project management on GitHub"
             }
           ]
         }

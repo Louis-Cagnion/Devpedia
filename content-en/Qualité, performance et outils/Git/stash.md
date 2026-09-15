@@ -43,6 +43,17 @@ A stash is nothing more and nothing less than a commit (see [Git's Internal Arch
 
 > **Caution:** A tool that rewrites the history without following this convention (`git filter-branch`, see [Git’s Internal Architecture](/?c=git&p=architecture-interne)) may flatten this commit to a single parent: `apply` / `pop` then become unusable (`fatal: ... is not a stash-like commit`). The content remains directly retrievable, however, since the commit tree reflects the complete state of the working directory at the time of the stash: `git checkout refs/stash -- file.txt`.
 
+## Why not just switch branches without a stash?
+
+An ordinary branch switch (`git checkout`/`switch`, see [Branches](/?c=git&p=branches)) doesn't set **anything** aside by itself: Git compares the modified file to its version on the target branch.
+
+| Situation | What happens without `stash` |
+|---|---|
+| The modified file doesn't exist, or is identical, on the target branch | Git **allows** the branch switch, and carries the uncommitted change along with it: it ends up on the new branch, outside of any commit, without you asking for it |
+| The modified file also differs on the target branch | Git **refuses** the branch switch (`error: your local changes ... would be overwritten by checkout`), so it never overwrites uncommitted work |
+
+Neither case matches what you actually want in the scenario below: the first silently mixes work in progress with another branch (easy to commit by mistake in the wrong place), the second blocks completely until something is done. `git stash` explicitly removes the change from **every** branch (working directory restored to clean), sets it aside with a message, then restores it only when you ask for it, on the branch you choose: it's this explicit setting-aside, not the mere branch switch, that guarantees nothing gets mixed up or lost.
+
 ## Typical use case
 
 ```bash

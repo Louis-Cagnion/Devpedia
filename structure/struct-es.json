@@ -1568,7 +1568,7 @@
             },
             {
               "id": "entrainement-descente-de-gradient",
-              "label": "El entrenamiento de un modelo y el descenso del gradiente"
+              "label": "El entrenamiento de un modelo y el descenso de gradiente"
             },
             {
               "id": "architectures-cnn-rnn-transformers",
