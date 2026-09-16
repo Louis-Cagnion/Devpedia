@@ -1,14 +1,16 @@
 # TODO : Devpedia
 
-> Prochaine tâche : régénération audio lot 2/6 (`fondamentaux`) à lancer avec la commande corrigée du point 2, puis enchaîner les lots 3 à 6. Sinon, attendre le retour de Louis sur le point 1.
+> Prochaine tâche : **bloqué en attente de Louis** -- instabilité espeak-ng à investiguer (point 2) avant de relancer la régénération audio. Sinon, attendre le retour de Louis sur le point 1.
 
-> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1). Régénération audio lots 2 à 6 (point 2).
+> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1). Instabilité espeak-ng à investiguer par Louis avant de reprendre la régénération audio (point 2).
 
-## 2. Régénération audio complète : lot 1/6 terminé (avec correctif), lots 2 à 6 restants
-Nécessite `ffmpeg` sur le PATH : `export PATH="/c/Users/lcagnion/tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"` avant chaque commande (cf. `journal-de-bord.md` pour l'installation). Bug Piper/pt-BR déjà corrigé (capitales `Á`/`Í`, voir journal) -- le fait qu'un lot plante ne veut plus dire qu'il faut re-déboguer, juste relancer la même commande, elle est idempotente.
+## 2. Régénération audio complète : lot 1/6 terminé, lot 2/6 partiel (30/100), instabilité espeak-ng à investiguer avant de continuer
+Nécessite `ffmpeg` sur le PATH : `export PATH="/c/Users/lcagnion/tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"` avant chaque commande (cf. `journal-de-bord.md` pour l'installation).
+- **Instabilité espeak-ng grandissante, à investiguer par Louis avant de relancer quoi que ce soit (détail complet dans `journal-de-bord.md`)** : le bug `UnicodeEncodeError: ... surrogates not allowed` déjà connu (capitales `Á`/`Í` en pt-BR, corrigé) s'est reproduit sur la voix FR puis EN pendant le lot 2, de façon de plus en plus fréquente au fil de la session (les derniers chapitres du lot 2 échouaient 3 tentatives sur 3, y compris pour `Mathematiques` où même le FR plante dès la première tentative). Aucune caractéristique du texte ne semble en cause (bisection infructueuse, contenu source vérifié). Hypothèse la plus probable : dégradation progressive de l'environnement (fuite de ressource, ou état corrompu propre à `espeak-ng`/Piper sur cette machine) plutôt qu'un caractère précis à corriger dans le code -- fait suite à plus d'une centaine d'appels `piper_batch.py` cumulés sur la session. **Ne pas relancer en boucle sans intervention de Louis** : un redémarrage de la machine (ou au moins des process Node/Python résiduels) avant de reprendre serait le premier réflexe simple à essayer.
 - **Bug de contexte corrigé (2026-09-16, détail dans `journal-de-bord.md`)** : `--context=<id>` ne matche que des ids de **subject** (ou de catégorie SEULEMENT si elle n'a pas de subjects, ex. `blockchain`/`ui-ux`/`tests`). Les commandes ci-dessous listent les vrais ids de subjects (vérifiés contre `structure/struct.json`), pas les ids de catégorie du découpage initial -- ces derniers ne généraient RIEN pour les 5 lots restants, silencieusement.
-- Lot 1 (`blockchain,ui-ux,tests` + rattrapage `organisation-en-entreprise,gestion-de-projet`) : terminé sur les 4 langues. Reste à committer `audio/` pour ce lot.
-- Lot 2 : `node scripts/generate-audio.mjs --context=bases-de-l-informatique,algorithmes,mathematiques,graphisme`
+- Lot 1 (`blockchain,ui-ux,tests` + rattrapage `organisation-en-entreprise,gestion-de-projet`) : terminé et commité sur les 4 langues.
+- Lot 2 (`fondamentaux`) : 30/100 combinaisons chapitre/langue commitées (voir `git log -- audio/*/Fondamentaux` pour le détail). Une fois l'instabilité résolue, relancer simplement la commande complète (idempotente) plutôt que de chercher à reprendre chapitre par chapitre :
+  `node scripts/generate-audio.mjs --context=bases-de-l-informatique,algorithmes,mathematiques,graphisme`
 - Lot 3 : `node scripts/generate-audio.mjs --context=qualite-et-architecture-du-code,performance,git,bases-de-donnees,data-science,representation-des-donnees,traitement-de-documents`
 - Lot 4 : `node scripts/generate-audio.mjs --context=cybersecurite,fondamentaux,sessions-et-tokens,delegation-et-federation-didentite,renforcer-lauthentification,securite-offensive,fondamentaux-du-deep-learning,nlp-llm,applications-llm,configuration-de-llms,vision-et-ocr,voix-ia,production-et-gouvernance,jeux-et-agents`
 - Lot 5 : `node scripts/generate-audio.mjs --context=infrastructure,docker,ci-cd,administration-systeme,reseaux,automatisation,conception-a-grande-echelle,systemes-d-exploitation`
