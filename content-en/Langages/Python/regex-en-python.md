@@ -31,7 +31,7 @@ pattern = re.compile(r"\d{4}-\d{2}-\d{2}")   # precompiles the pattern, reusable
 ```python
 pattern = re.compile(r"\d{4}-\d{2}-\d{2}")
 
-pattern.match("2024-06-15 is a date")     # matches: starts with the pattern
+pattern.match("2024-06-15 is a date")      # matches: starts with the pattern
 pattern.match("The 2024-06-15 is a date")  # None -> does NOT start with the pattern
 
 pattern.search("The 2024-06-15 is a date")  # matches, anywhere in the string

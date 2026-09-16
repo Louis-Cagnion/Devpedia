@@ -73,9 +73,9 @@ report.name    # "report.txt" -> full file name
 report.stem    # "report"     -> name WITHOUT the extension
 report.suffix  # ".txt"       -> the extension, with the dot
 
-report.with_name("draft.txt")                             # Path("draft.txt") -> replaces the whole name
+report.with_name("draft.txt")                              # Path("draft.txt")  -> replaces the whole name
 report.with_suffix(".csv")                                 # Path("report.csv") -> replaces just the extension
-report.with_name(f"{report.stem}.peugeot{report.suffix}")   # Path("report.peugeot.txt") -> inserts a word in the middle
+report.with_name(f"{report.stem}.peugeot{report.suffix}")  # Path("report.peugeot.txt")  -> inserts a word in the middle
 ```
 
 > **Pitfall:** `.with_name()` replaces the LAST segment of the path (the file name), unlike `/` which ADDS a new one: `Path("a/b") / "c"` gives `a/b/c`, `Path("a/b").with_name("c")` gives `a/c`.
@@ -135,8 +135,8 @@ import json
 
 user = {"name": "Léa", "notes": [15, 12, 18]}   # a plain Python dict
 
-text = json.dumps(user, ensure_ascii=False)     # '{"name": "Léa", "notes": [15, 12, 18]}' -> JSON text
-obj = json.loads(text)                         # Python object, decoded back from the text (== user)
+text = json.dumps(user, ensure_ascii=False)  # '{"name": "Léa", "notes": [15, 12, 18]}' -> JSON text
+obj = json.loads(text)                       # Python object, decoded back from the text (== user)
 ```
 
 | Function | Input | Output |

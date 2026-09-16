@@ -16,14 +16,14 @@ def addition(a, b):
 
 ```python
 # main.py file
-import calculs
+import calculations
 
-print(calculs.addition(2, 3))   # 5, accessed via the module name
+print(calculations.addition(2, 3))   # 5, accessed via the module name
 
-from calculs import addition     # imports the function directly, without a prefix
+from calculations import addition     # imports the function directly, without a prefix
 print(addition(2, 3))
 
-import calculs as c               # renames the imported module
+import calculations as c               # renames the imported module
 print(c.addition(2, 3))
 ```
 
@@ -37,7 +37,7 @@ def addition(a, b):
     return a + b
 
 if __name__ == "__main__":
-    print("Quick test:", addition(2, 3))   # runs ONLY if you run "python calculs.py" directly
+    print("Quick test:", addition(2, 3))   # runs ONLY if you run "python calculations.py" directly
 ```
 
 > **Note:** This safeguard allows a file to serve both as a reusable module (imported without executing anything unexpected) and as a standalone script (that can be tested directly), without these two uses interfering with each other.
@@ -102,22 +102,22 @@ os.environ.pop("NEW_VAR", None)  # removes it with no error if already absent (u
 ## Organizing a Project into a Package
 
 ```text
-mon_projet/
-├── mon_package/
+my_project/
+├── my_package/
 │   ├── __init__.py     # makes the folder importable as a package
-│   ├── calculs.py
+│   ├── calculations.py
 │   └── utils.py
 └── main.py
 ```
 
 ```python
-from mon_package import calculs
-from mon_package.utils import une_fonction
+from my_package import calculations
+from my_package.utils import a_function
 ```
 
 A simple `__init__.py` file (even an empty one) is all it takes to turn a folder into an importable **package**, grouping multiple modules under a single namespace.
 
-> **Note:** Since Python 3.3, `__init__.py` is no longer required for a folder to be importable: without it, Python treats it as a **namespace package** ([PEP 420](https://peps.python.org/pep-0420/)). The difference is visible in practice: on a classic package (with `__init__.py`), `mon_package.__file__` points to that file; on a namespace package, `__file__` is `None` and `__path__` becomes a special object rather than a plain list. A folder without `__init__.py` therefore remains importable, but doesn't behave exactly like a classic package for any code that inspects these attributes.
+> **Note:** Since Python 3.3, `__init__.py` is no longer required for a folder to be importable: without it, Python treats it as a **namespace package** ([PEP 420](https://peps.python.org/pep-0420/)). The difference is visible in practice: on a classic package (with `__init__.py`), `my_package.__file__` points to that file; on a namespace package, `__file__` is `None` and `__path__` becomes a special object rather than a plain list. A folder without `__init__.py` therefore remains importable, but doesn't behave exactly like a classic package for any code that inspects these attributes.
 
 ## `pyproject.toml`: Modern packaging
 
@@ -125,7 +125,7 @@ A simple `__init__.py` file (even an empty one) is all it takes to turn a folder
 
 ```toml
 [project]
-name = "mon-projet"
+name = "my-project"
 version = "0.1.0"
 dependencies = ["requests==2.31.0"]
 

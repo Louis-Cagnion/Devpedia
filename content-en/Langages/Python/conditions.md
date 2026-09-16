@@ -12,11 +12,11 @@ Python uses `if` / `elif` / `else`, without any curly braces: it is the **indent
 age = 20
 
 if age >= 18:
-    print("Vous êtes majeur.")
+    print("You are an adult.")
 elif age >= 13:
-    print("Vous êtes adolescent.")
+    print("You are a teenager.")
 else:
-    print("Vous êtes enfant.")
+    print("You are a child.")
 ```
 
 > **Note:** `elif` (a contraction of "else if") is the only keyword used to chain conditions; `else if` (as two separate words) does not exist in Python. Consistent indentation is **required**: an incorrectly indented block causes a `IndentationError`, not just a warning.
@@ -26,11 +26,11 @@ else:
 Apart from `True` and `False`, Python automatically treats certain values as false in a Boolean context (`if`, `while`...):
 
 ```python
-if []:        # False -> an empty list is "falsy"
-if "":         # False -> an empty string is "falsy"
-if 0:          # False -> zero is "falsy"
-if None:       # False
-if [1, 2]:    # True -> a non-empty list is "truthy"
+if []:      # False -> an empty list is "falsy"
+if "":      # False -> an empty string is "falsy"
+if 0:       # False -> zero is "falsy"
+if None:    # False
+if [1, 2]:  # True -> a non-empty list is "truthy"
 ```
 
 | Value | Truthy / Falsy |
@@ -42,12 +42,12 @@ if [1, 2]:    # True -> a non-empty list is "truthy"
 | Everything Else | Truthy |
 
 ```python
-utilisateurs = []
+users = []
 
-if utilisateurs:                # preferred over "if len(users) > 0:"
-    print("Il y a des utilisateurs")
+if users:                # preferred over "if len(users) > 0:"
+    print("There are users")
 else:
-    print("Aucun utilisateur")
+    print("No users")
 ```
 
 ## `and`/`or` return a value, not just a boolean
@@ -69,10 +69,10 @@ display_name = nickname or "Anonymous"  # "Anonymous" -> or returns the first tr
 
 ```python
 age = 20
-statut = "majeur" if age >= 18 else "mineur"
+status = "adult" if age >= 18 else "minor"
 ```
 
-Unlike PHP/C/JS (`condition ? valeur_si_vrai : valeur_si_faux`), Python places the condition **in the middle**: `valeur_si_vrai if condition else valeur_si_faux`.
+Unlike PHP/C/JS (`condition ? true_value : false_value`), Python places the condition **in the middle**: `true_value if condition else false_value`.
 
 ## The "morse" operator (`:=`), since Python 3.8
 
@@ -80,11 +80,11 @@ Allows you to assign a variable **and** use it in the same expression, particula
 
 ```python
 # Without the Morse operator: the "result" line is calculated twice
-if calculer_resultat() > 10:
-    print(calculer_resultat())
+if calculate_result() > 10:
+    print(calculate_result())
 
 # with the Morse operator: calculated only once, AND usable thereafter
-if (result := calculer_resultat()) > 10:
+if (result := calculate_result()) > 10:
     print(result)
 ```
 
@@ -93,25 +93,25 @@ if (result := calculer_resultat()) > 10:
 For a long time, Python did not offer a direct equivalent to `switch`; a `elif` string or a mapping dictionary served as an alternative:
 
 ```python
-def jour_semaine(jour):
-    correspondance = {
-        1: "Lundi",
-        2: "Mardi",
-        3: "Mercredi",
+def day_of_week(day):
+    mapping = {
+        1: "Monday",
+        2: "Tuesday",
+        3: "Wednesday",
     }
-    return correspondance.get(jour, "Jour inconnu")
+    return mapping.get(day, "Unknown day")
 ```
 
 Starting with Python 3.10, `match` / `case` offers a dedicated syntax that is closer to a `switch`:
 
 ```python
-match jour:
+match day:
     case 1:
-        print("Lundi")
+        print("Monday")
     case 2:
-        print("Mardi")
+        print("Tuesday")
     case _:            # '_' : equivalent to the "default" in a switch statement
-        print("Autre jour")
+        print("Other day")
 ```
 
 ---

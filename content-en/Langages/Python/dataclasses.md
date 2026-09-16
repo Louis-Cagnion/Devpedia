@@ -123,8 +123,8 @@ class Person:
 
 p = Person(name="John", address=Address(city="Paris", zip_code="75000"))
 
-asdict(p)   # {"name": "John", "address": {"city": "Paris", "zip_code": "75000"}}
-json.dumps(asdict(p))   # direct serialization: asdict() has already reduced everything to simple types
+asdict(p)              # {"name": "John", "address": {"city": "Paris", "zip_code": "75000"}}
+json.dumps(asdict(p))  # direct serialization: asdict() has already reduced everything to simple types
 ```
 
 > **Pitfall:** calling `json.dumps()` directly on a dataclass instance, without going through `asdict()` first: `TypeError: Object of type Person is not JSON serializable`. `json.dumps()` can only encode simple types, never an arbitrary Python object.
