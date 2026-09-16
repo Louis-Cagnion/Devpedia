@@ -2,6 +2,14 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Bug silencieux : `--context=<categorie>` ne génère rien pour une catégorie à subjects (2026-09-16)
+
+Le lot 1 (`blockchain,ui-ux,tests,gestion-de-projet-et-organisation`) s'est terminé avec succès (`exit code 0`, log complet) mais sans jamais toucher `gestion-de-projet-et-organisation` pour EN/ES/BR (0 fichier `audio/en|es|br/Gestion de projet et organisation/` alors que FR en avait déjà 24 d'une session antérieure) -- aucune erreur, aucune ligne de log pour cette catégorie, juste une absence totale.
+
+Cause (`scripts/generate-audio.mjs:157`) : le contexte d'un chapitre est `subject.id` s'il existe, sinon `category.id` -- jamais les deux. `gestion-de-projet-et-organisation` a deux subjects (`organisation-en-entreprise`, `gestion-de-projet`) : passer l'id de catégorie en `--context` ne matche donc AUCUN chapitre. Ça marchait pour `blockchain`/`ui-ux`/`tests` uniquement parce que ces 3 catégories sont plates (chapitres directement sous la catégorie, pas de subjects), donc `category.id` sert bien de contexte pour elles.
+
+Vérifié contre `structure/struct.json` : **les 6 lots planifiés dans le todo étaient donc faux pour toutes les catégories à subjects**, soit tout sauf `blockchain`/`ui-ux`/`tests`/`gestion-de-projet-et-organisation` (celle-ci corrigée en relançant avec les bons ids). Todo mis à jour avec les ids de subjects réels à la place des ids de catégorie pour les 5 lots restants (`fondamentaux`, `qualite-performance-et-outils,donnees`, `securite,ia`, `infrastructure-devops`, `langages`). Piège supplémentaire à surveiller : l'id de subject `fondamentaux` existe SOUS `securite` (`securite > fondamentaux`), donc `--context=fondamentaux` cible ce subject-là, jamais la catégorie racine `fondamentaux` (qui n'a pas de chapitres directs, uniquement via ses propres subjects `bases-de-l-informatique`/`algorithmes`/`mathematiques`/`graphisme`).
+
 ## 3 notions PDF_parser supplémentaires ajoutées (2026-09-15)
 
 Lot suivant repéré par l'auto-review de PDF_parser (`raw_export.py`) : `Path.write_text()`/`.read_text()` dans `manipuler-des-fichiers-et-dossiers.md`, `date.isoformat()`/`.fromisoformat()` dans `dates-et-heures.md`, `dataclasses.asdict()` dans `dataclasses.md`. FR/EN/ES/BR le jour même. Corrigé un lien manquant vers le chapitre JSON (`/?c=infrastructure&p=json`) au passage, jamais posé dans `dates-et-heures.md`/`dataclasses.md` malgré la mention explicite de JSON dans les deux.

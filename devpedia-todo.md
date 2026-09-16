@@ -1,14 +1,18 @@
 # TODO : Devpedia
 
-> Prochaine tâche : reprendre la régénération audio complète (lot 1/6 en cours, voir point 2 pour l'état exact et la commande à relancer). Sinon, attendre le retour de Louis sur le point 1.
+> Prochaine tâche : régénération audio lot 2/6 (`fondamentaux`) à lancer avec la commande corrigée du point 2, puis enchaîner les lots 3 à 6. Sinon, attendre le retour de Louis sur le point 1.
 
-> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1). Régénération audio lot 1/6 en cours (point 2).
+> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 1). Régénération audio lots 2 à 6 (point 2).
 
-## 2. Régénération audio complète : lot 1/6 en cours
-Commande : `node scripts/generate-audio.mjs --context=blockchain,ui-ux,tests,gestion-de-projet-et-organisation` (nécessite `ffmpeg` sur le PATH : `export PATH="/c/Users/lcagnion/tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"` avant, cf. `journal-de-bord.md` pour l'installation). Bug Piper/pt-BR déjà corrigé (capitales `Á`/`Í`, voir journal) -- le fait qu'un lot plante ne veut plus dire qu'il faut re-déboguer, juste relancer la même commande, elle est idempotente.
-- État à l'arrêt de la session (2026-09-15) : FR complet (Blockchain, UI-UX, Tests, Gestion) ; EN/ES complets sauf `gestion-de-projet-et-organisation` (pas commencé) ; BR complet sur Tests, UI-UX partiel (12/22 fichiers), Blockchain et Gestion pas commencés.
-- Simplement relancer la commande ci-dessus : elle retraite tout le lot (pas de reprise fine par chapitre), sans risque puisque déjà fait pour FR/une partie d'EN-ES.
-- Une fois le lot 1 terminé, enchaîner les 5 lots suivants dans cet ordre (détail dans `journal-de-bord.md`) : `fondamentaux` ; `qualite-performance-et-outils,donnees` ; `securite,ia` ; `infrastructure-devops` ; `langages` (le plus gros, en dernier).
+## 2. Régénération audio complète : lot 1/6 terminé (avec correctif), lots 2 à 6 restants
+Nécessite `ffmpeg` sur le PATH : `export PATH="/c/Users/lcagnion/tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"` avant chaque commande (cf. `journal-de-bord.md` pour l'installation). Bug Piper/pt-BR déjà corrigé (capitales `Á`/`Í`, voir journal) -- le fait qu'un lot plante ne veut plus dire qu'il faut re-déboguer, juste relancer la même commande, elle est idempotente.
+- **Bug de contexte corrigé (2026-09-16, détail dans `journal-de-bord.md`)** : `--context=<id>` ne matche que des ids de **subject** (ou de catégorie SEULEMENT si elle n'a pas de subjects, ex. `blockchain`/`ui-ux`/`tests`). Les commandes ci-dessous listent les vrais ids de subjects (vérifiés contre `structure/struct.json`), pas les ids de catégorie du découpage initial -- ces derniers ne généraient RIEN pour les 5 lots restants, silencieusement.
+- Lot 1 (`blockchain,ui-ux,tests` + rattrapage `organisation-en-entreprise,gestion-de-projet`) : terminé sur les 4 langues. Reste à committer `audio/` pour ce lot.
+- Lot 2 : `node scripts/generate-audio.mjs --context=bases-de-l-informatique,algorithmes,mathematiques,graphisme`
+- Lot 3 : `node scripts/generate-audio.mjs --context=qualite-et-architecture-du-code,performance,git,bases-de-donnees,data-science,representation-des-donnees,traitement-de-documents`
+- Lot 4 : `node scripts/generate-audio.mjs --context=cybersecurite,fondamentaux,sessions-et-tokens,delegation-et-federation-didentite,renforcer-lauthentification,securite-offensive,fondamentaux-du-deep-learning,nlp-llm,applications-llm,configuration-de-llms,vision-et-ocr,voix-ia,production-et-gouvernance,jeux-et-agents`
+- Lot 5 : `node scripts/generate-audio.mjs --context=infrastructure,docker,ci-cd,administration-systeme,reseaux,automatisation,conception-a-grande-echelle,systemes-d-exploitation`
+- Lot 6 (le plus gros, en dernier) : `node scripts/generate-audio.mjs --context=c,cpp,php,python,javascript,ocaml,html,css,bash,zsh,powershell,domain-specific-languages-dsl,xml`
 - Chaque lot terminé : `git add audio/` puis commit (les fichiers audio sont versionnés).
 
 Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de décision de régénération audio à Louis -- il s'en charge à son rythme et note lui-même son retour ici quand il le fait. Le fait/pourquoi/décisions déjà tranchées (progression, historique) va dans `journal-de-bord.md`, jamais ici : seuls les points restants, avec le contexte minimal pour les exécuter sans revenir en arrière.
