@@ -71,6 +71,29 @@ close(fd);
 
 > **Note:** These three numbers (`0` / `1` / `2`) are exactly the "streams" (*stdin/stdout/stderr*) mentioned in the chapter on [Bash](/?c=shells&s=bash&p=bash) redirection: a redirection such as `2>` does nothing more, behind the scenes, than manipulate the process's descriptor number `2`.
 
+## `open()`'s Opening Flags
+
+```c
+open(path, O_RDONLY);                            // read only
+open(path, O_WRONLY);                            // write only
+open(path, O_RDWR);                              // read AND write
+
+open(path, O_WRONLY | O_CREAT, 0644);            // creates the file if it doesn't exist yet
+open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);  // + empties the file if it already existed
+open(path, O_WRONLY | O_CREAT | O_APPEND, 0644); // + always writes at the END, without overwriting
+```
+
+| Flag | Effect |
+|---|---|
+| `O_RDONLY`/`O_WRONLY`/`O_RDWR` | Access mode (only one of the three, mutually exclusive) |
+| `O_CREAT` | Creates the file if it doesn't exist yet (otherwise `open()` fails on a missing file) |
+| `O_TRUNC` | Empties the existing file before writing (otherwise the old content would remain past the write position) |
+| `O_APPEND` | Always positions writes at the end of the file, never at the point reached by a previous `write()` |
+
+These flags combine with `|` (bitwise OR, see [Bitwise Operators](/?c=langages-de-programmation&s=c&p=operateurs-binaires)): each occupies a distinct bit of the same integer, so `O_CREAT` and `O_TRUNC` can be requested together without excluding each other.
+
+> **Note:** the last argument (`0644` above) sets the file's **permissions**, but only if `O_CREAT` actually creates it (an already-existing file keeps its current permissions, this argument is then ignored): see [Permissions and Files](/?c=shells&s=bash&p=permissions-et-fichiers) for what this octal mode means.
+
 ## `dup2()`: Make a descriptor point to another resource
 
 `dup2(source, target)` makes descriptor number `target` point to the same open resource as `source`, while closing whatever `target` previously pointed to:
@@ -94,6 +117,6 @@ When [`fork()`](/?c=langages-de-programmation&s=c&p=processus) creates a child p
 | | |
 |---|---|
 | **Key Points** | A system call asks the kernel to act on the program's behalf (files, processes, network): a controlled shift from user space to kernel space. A file descriptor is a simple integer, the index of a per-process table. |
-| **Available Tools** | `open`/`close`/`read`/`write`, `dup2`, `errno`/`strerror` to diagnose a failure. |
+| **Available Tools** | `open`/`close`/`read`/`write`, `open()`'s `O_CREAT`/`O_TRUNC`/`O_APPEND` flags, `dup2`, `errno`/`strerror` to diagnose a failure. |
 | **Pitfalls to Avoid** | Confusing a library function (`printf`) with an actual system call (`write`): the former wraps the latter. |
 | **Best Practices** | Always check the return value of a system call (`-1` or `NULL`) and consult `errno`/`strerror()` to diagnose a failure. |

@@ -71,6 +71,29 @@ close(fd);
 
 > **Nota:** esses três números (`0`/`1`/`2`) são exatamente os "fluxos" (*stdin*/*stdout*/*stderr*) mencionados no capítulo sobre redirecionamentos do [Bash](/?c=shells&s=bash&p=bash): um redirecionamento como `2>` não faz nada além de manipular, por baixo dos panos, esse descritor número `2` do processo em questão.
 
+## As flags de abertura do `open()`
+
+```c
+open(caminho, O_RDONLY);                            // somente leitura
+open(caminho, O_WRONLY);                            // somente escrita
+open(caminho, O_RDWR);                              // leitura E escrita
+
+open(caminho, O_WRONLY | O_CREAT, 0644);            // cria o arquivo se ainda nao existir
+open(caminho, O_WRONLY | O_CREAT | O_TRUNC, 0644);  // + esvazia o arquivo se ja existisse
+open(caminho, O_WRONLY | O_CREAT | O_APPEND, 0644); // + sempre escreve no FIM, sem sobrescrever
+```
+
+| Flag | Efeito |
+|---|---|
+| `O_RDONLY`/`O_WRONLY`/`O_RDWR` | Modo de acesso (apenas um dos três, mutuamente exclusivos) |
+| `O_CREAT` | Cria o arquivo se ainda não existir (senão `open()` falha sobre um arquivo ausente) |
+| `O_TRUNC` | Esvazia o arquivo existente antes de escrever (senão o conteúdo antigo permaneceria após a posição de escrita) |
+| `O_APPEND` | Sempre posiciona a escrita no fim do arquivo, nunca no ponto alcançado por um `write()` anterior |
+
+Essas flags se combinam com `|` (OR bit a bit, veja [Os operadores bit a bit](/?c=langages-de-programmation&s=c&p=operateurs-binaires)): cada uma ocupa um bit distinto do mesmo inteiro, então `O_CREAT` e `O_TRUNC` podem ser pedidas juntas sem se excluírem.
+
+> **Nota:** o último argumento (`0644` acima) define as **permissões** do arquivo, mas somente se `O_CREAT` o criar de fato (um arquivo já existente mantém suas permissões atuais, esse argumento é então ignorado): veja [Permissões e arquivos](/?c=shells&s=bash&p=permissions-et-fichiers) para o significado desse modo octal.
+
 ## `dup2()`: fazer um descritor apontar para outro recurso
 
 `dup2(origem, destino)` faz o descritor número `destino` apontar para o mesmo recurso aberto que `origem`, fechando de passagem o que `destino` apontava anteriormente:
@@ -94,6 +117,6 @@ Quando [`fork()`](/?c=langages-de-programmation&s=c&p=processus) cria um process
 | | |
 |---|---|
 | **Para lembrar** | Uma chamada de sistema pede ao kernel para agir no lugar do programa (arquivos, processos, rede): uma mudança controlada do espaço de usuário para o espaço de kernel. Um descritor de arquivo é um simples inteiro, índice de uma tabela por processo. |
-| **Ferramentas utilizáveis** | `open`/`close`/`read`/`write`, `dup2`, `errno`/`strerror` para diagnosticar uma falha. |
+| **Ferramentas utilizáveis** | `open`/`close`/`read`/`write`, flags `O_CREAT`/`O_TRUNC`/`O_APPEND` do `open()`, `dup2`, `errno`/`strerror` para diagnosticar uma falha. |
 | **Armadilhas a evitar** | Confundir uma função de biblioteca (`printf`) com uma chamada de sistema real (`write`): a primeira encapsula a segunda. |
 | **Boas práticas** | Sempre verificar o valor de retorno de uma chamada de sistema (`-1` ou `NULL`) e consultar `errno`/`strerror()` para diagnosticar uma falha. |

@@ -71,6 +71,29 @@ close(fd);
 
 > **Note :** ces trois numéros (`0`/`1`/`2`) sont exactement les "flux" (*stdin*/*stdout*/*stderr*) évoqués au chapitre sur les redirections [Bash](/?c=shells&s=bash&p=bash) : une redirection comme `2>` ne fait rien d'autre, sous le capot, que manipuler ce descripteur numéro `2` du processus concerné.
 
+## Les drapeaux d'ouverture de `open()`
+
+```c
+open(chemin, O_RDONLY);                            // lecture seule
+open(chemin, O_WRONLY);                            // écriture seule
+open(chemin, O_RDWR);                              // lecture ET écriture
+
+open(chemin, O_WRONLY | O_CREAT, 0644);            // crée le fichier s'il n'existe pas déjà
+open(chemin, O_WRONLY | O_CREAT | O_TRUNC, 0644);  // + vide le fichier s'il existait déjà
+open(chemin, O_WRONLY | O_CREAT | O_APPEND, 0644); // + écrit toujours à la FIN, sans écraser
+```
+
+| Drapeau | Effet |
+|---|---|
+| `O_RDONLY`/`O_WRONLY`/`O_RDWR` | Mode d'accès (un seul des trois, mutuellement exclusifs) |
+| `O_CREAT` | Crée le fichier s'il n'existe pas déjà (sinon `open()` échoue sur un fichier absent) |
+| `O_TRUNC` | Vide le fichier existant avant d'écrire (sinon l'ancien contenu resterait après la position d'écriture) |
+| `O_APPEND` | Positionne toujours l'écriture à la fin du fichier, jamais à l'endroit atteint par un `write()` précédent |
+
+Ces drapeaux se combinent avec `|` (OU binaire, voir [Les opérateurs binaires](/?c=langages-de-programmation&s=c&p=operateurs-binaires)) : chacun occupe un bit distinct d'un même entier, donc `O_CREAT` et `O_TRUNC` peuvent être demandés ensemble sans s'exclure l'un l'autre.
+
+> **Note :** le dernier argument (`0644` ci-dessus) fixe les **permissions** du fichier, mais seulement si `O_CREAT` le crée effectivement (un fichier déjà existant garde ses permissions actuelles, cet argument est alors ignoré) : voir [Permissions et fichiers](/?c=shells&s=bash&p=permissions-et-fichiers) pour la signification de ce mode octal.
+
 ## `dup2()` : faire pointer un descripteur vers une autre ressource
 
 `dup2(source, cible)` fait pointer le descripteur numéro `cible` vers la même ressource ouverte que `source`, en fermant au passage ce vers quoi `cible` pointait auparavant :
@@ -94,6 +117,6 @@ Quand [`fork()`](/?c=langages-de-programmation&s=c&p=processus) crée un process
 | | |
 |---|---|
 | **À retenir** | Un appel système demande au noyau d'agir à la place du programme (fichiers, processus, réseau) : un changement contrôlé d'espace utilisateur vers l'espace noyau. Un descripteur de fichier est un simple entier, indice d'une table par processus. |
-| **Outils utilisables** | `open`/`close`/`read`/`write`, `dup2`, `errno`/`strerror` pour diagnostiquer un échec. |
+| **Outils utilisables** | `open`/`close`/`read`/`write`, drapeaux `O_CREAT`/`O_TRUNC`/`O_APPEND` de `open()`, `dup2`, `errno`/`strerror` pour diagnostiquer un échec. |
 | **Pièges à éviter** | Confondre une fonction de bibliothèque (`printf`) avec un appel système réel (`write`) : la première encapsule le second. |
 | **Bonnes pratiques** | Toujours vérifier la valeur de retour d'un appel système (`-1` ou `NULL`) et consulter `errno`/`strerror()` pour diagnostiquer un échec. |

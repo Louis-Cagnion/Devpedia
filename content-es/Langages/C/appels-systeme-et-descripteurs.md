@@ -71,6 +71,29 @@ close(fd);
 
 > **Nota:** estos tres números (`0`/`1`/`2`) son exactamente los "flujos" (*stdin*/*stdout*/*stderr*) mencionados en el capítulo sobre redirecciones de [Bash](/?c=shells&s=bash&p=bash): una redirección como `2>` no hace otra cosa, por debajo, que manipular este descriptor número `2` del proceso en cuestión.
 
+## Los flags de apertura de `open()`
+
+```c
+open(ruta, O_RDONLY);                            // solo lectura
+open(ruta, O_WRONLY);                            // solo escritura
+open(ruta, O_RDWR);                              // lectura Y escritura
+
+open(ruta, O_WRONLY | O_CREAT, 0644);            // crea el archivo si aun no existe
+open(ruta, O_WRONLY | O_CREAT | O_TRUNC, 0644);  // + vacia el archivo si ya existia
+open(ruta, O_WRONLY | O_CREAT | O_APPEND, 0644); // + escribe siempre al FINAL, sin sobrescribir
+```
+
+| Flag | Efecto |
+|---|---|
+| `O_RDONLY`/`O_WRONLY`/`O_RDWR` | Modo de acceso (solo uno de los tres, mutuamente excluyentes) |
+| `O_CREAT` | Crea el archivo si aún no existe (si no, `open()` falla sobre un archivo ausente) |
+| `O_TRUNC` | Vacía el archivo existente antes de escribir (si no, el contenido antiguo permanecería tras la posición de escritura) |
+| `O_APPEND` | Sitúa siempre la escritura al final del archivo, nunca en el punto alcanzado por un `write()` anterior |
+
+Estos flags se combinan con `|` (OR a nivel de bits, ver [Los operadores a nivel de bits](/?c=langages-de-programmation&s=c&p=operateurs-binaires)): cada uno ocupa un bit distinto del mismo entero, así que `O_CREAT` y `O_TRUNC` pueden pedirse juntos sin excluirse mutuamente.
+
+> **Nota:** el último argumento (`0644` arriba) fija los **permisos** del archivo, pero solo si `O_CREAT` lo crea efectivamente (un archivo ya existente conserva sus permisos actuales, este argumento se ignora entonces): ver [Permisos y archivos](/?c=shells&s=bash&p=permissions-et-fichiers) para el significado de este modo octal.
+
 ## `dup2()`: hacer que un descriptor apunte a otro recurso
 
 `dup2(origen, destino)` hace que el descriptor número `destino` apunte al mismo recurso abierto que `origen`, cerrando de paso aquello a lo que `destino` apuntaba anteriormente:
@@ -94,6 +117,6 @@ Cuando [`fork()`](/?c=langages-de-programmation&s=c&p=processus) crea un proceso
 | | |
 |---|---|
 | **Para recordar** | Una llamada al sistema solicita al núcleo que actúe en lugar del programa (archivos, procesos, red): un cambio controlado del espacio de usuario al espacio del núcleo. Un descriptor de archivo es un simple entero, índice de una tabla por proceso. |
-| **Herramientas utilizables** | `open`/`close`/`read`/`write`, `dup2`, `errno`/`strerror` para diagnosticar un fallo. |
+| **Herramientas utilizables** | `open`/`close`/`read`/`write`, flags `O_CREAT`/`O_TRUNC`/`O_APPEND` de `open()`, `dup2`, `errno`/`strerror` para diagnosticar un fallo. |
 | **Trampas a evitar** | Confundir una función de biblioteca (`printf`) con una llamada al sistema real (`write`): la primera encapsula la segunda. |
 | **Buenas prácticas** | Comprobar siempre el valor de retorno de una llamada al sistema (`-1` o `NULL`) y consultar `errno`/`strerror()` para diagnosticar un fallo. |
