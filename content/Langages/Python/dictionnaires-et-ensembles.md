@@ -71,6 +71,22 @@ shops_par_site.setdefault(site, []).append(shop_id)
 
 `dico.setdefault(cle, valeur_par_defaut)` renvoie la valeur de `cle` si elle existe déjà (sans y toucher), ou l'insère avec `valeur_par_defaut` PUIS la renvoie si elle n'existe pas encore. Enchaîné avec `.append()`, ce motif regroupe des éléments par catégorie (ici, la liste des boutiques par site) sans jamais tester explicitement si la clé existe déjà.
 
+### `Counter` : compter des occurrences
+
+```python
+from collections import Counter
+
+compteur = Counter(["a", "b", "a", "c", "a", "b"])
+# Counter({'a': 3, 'b': 2, 'c': 1})
+
+compteur["a"]       # 3
+compteur["absent"]  # 0 -> pas de KeyError, contrairement à un dict classique
+
+compteur.most_common(2)  # [('a', 3), ('b', 2)] -> les 2 éléments les plus fréquents
+```
+
+`Counter` (module `collections`) est une sous-classe de `dict` spécialisée dans le comptage : `Counter(iterable)` compte automatiquement les occurrences de chaque élément. Accéder à une clé absente renvoie `0` au lieu de lever une `KeyError`, contrairement à un `dict` classique. `.most_common(n)` renvoie les `n` éléments les plus fréquents, triés par fréquence décroissante.
+
 ## Les ensembles (`set`)
 
 ```python
@@ -132,6 +148,6 @@ Voir aussi [Les tables de hachage](/?c=langages-de-programmation&s=c&p=tables-de
 | | |
 |---|---|
 | **À retenir** | Un `dict` associe des clés à des valeurs, un `set` stocke des valeurs uniques sans ordre ; les deux reposent sur une table de hachage, donc quasi instantanés en accès/test. `frozenset` est la variante immuable et hachable d'un `set`. |
-| **Outils utilisables** | `.get()` (sans erreur), compréhensions de dict/set, opérations d'ensembles (`\|`, `&`, `-`, `^`), `frozenset` comme clé de dict ou élément d'un autre `set`. |
+| **Outils utilisables** | `.get()` (sans erreur), compréhensions de dict/set, `Counter` pour compter des occurrences, opérations d'ensembles (`\|`, `&`, `-`, `^`), `frozenset` comme clé de dict ou élément d'un autre `set`. |
 | **Pièges à éviter** | Accéder à une clé absente par crochets (`dico["x"]`) plutôt que par `.get()` : cela lève une `KeyError`. |
 | **Bonnes pratiques** | Utiliser `.get()` dès que l'absence d'une clé est un cas normal, pas une erreur ; `list(set(ma_liste))` pour dédupliquer rapidement. |

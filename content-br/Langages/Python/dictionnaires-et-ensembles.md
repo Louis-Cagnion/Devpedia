@@ -71,6 +71,22 @@ lojas_por_site.setdefault(site, []).append(id_loja)
 
 `dict.setdefault(chave, valor_padrao)` retorna o valor de `chave` se ela já existir (sem tocar nela), ou a insere com `valor_padrao` E ENTÃO a retorna se ainda não existir. Encadeado com `.append()`, esse padrão agrupa elementos por categoria (aqui, a lista de lojas por site) sem nunca testar explicitamente se a chave já existe.
 
+### `Counter`: contar ocorrências
+
+```python
+from collections import Counter
+
+contador = Counter(["a", "b", "a", "c", "a", "b"])
+# Counter({'a': 3, 'b': 2, 'c': 1})
+
+contador["a"]        # 3
+contador["ausente"]  # 0 -> sem KeyError, diferente de um dict comum
+
+contador.most_common(2)  # [('a', 3), ('b', 2)] -> os 2 elementos mais frequentes
+```
+
+`Counter` (do módulo `collections`) é uma subclasse de `dict` especializada em contagem: `Counter(iterable)` conta automaticamente as ocorrências de cada elemento. Acessar uma chave ausente retorna `0` em vez de lançar um `KeyError`, diferente de um `dict` comum. `.most_common(n)` retorna os `n` elementos mais frequentes, ordenados por frequência decrescente.
+
 ## Os conjuntos (`set`)
 
 ```python
@@ -132,6 +148,6 @@ Veja também [As tabelas hash](/?c=langages-de-programmation&s=c&p=tables-de-hac
 | | |
 |---|---|
 | **Para lembrar** | Um `dict` associa chaves a valores, um `set` armazena valores únicos sem ordem; ambos se apoiam em uma tabela hash, portanto quase instantâneos em acesso/teste. `frozenset` é a variante imutável e hasheável de um `set`. |
-| **Ferramentas utilizáveis** | `.get()` (sem erro), compreensões de dict/set, operações de conjuntos (`\|`, `&`, `-`, `^`), `frozenset` como chave de dict ou elemento de outro `set`. |
+| **Ferramentas utilizáveis** | `.get()` (sem erro), compreensões de dict/set, `Counter` para contar ocorrências, operações de conjuntos (`\|`, `&`, `-`, `^`), `frozenset` como chave de dict ou elemento de outro `set`. |
 | **Armadilhas a evitar** | Acessar uma chave ausente por colchetes (`dicionario["x"]`) em vez de por `.get()`: isso lança um `KeyError`. |
 | **Boas práticas** | Usar `.get()` assim que a ausência de uma chave for um caso normal, não um erro; `list(set(minha_lista))` para deduplicar rapidamente. |

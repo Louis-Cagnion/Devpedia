@@ -89,6 +89,19 @@ a, b, c = 1, 2, 3  # fonctionne aussi sans parenthèses explicites : un tuple im
 a, b = b, a        # échange de valeurs, sans variable temporaire
 ```
 
+Le même `*` déballe aussi des éléments À L'INTÉRIEUR d'un littéral de liste, pour en construire une nouvelle :
+
+```python
+a = [1, 2]
+b = [3, 4]
+
+[a, b]       # [[1, 2], [3, 4]] -> imbrique les deux listes comme 2 éléments
+[*a, *b]     # [1, 2, 3, 4]     -> déplie chaque élément à plat, équivalent à a + b
+[*a, 0, *b]  # [1, 2, 0, 3, 4]  -> se mélange librement à d'autres éléments
+```
+
+`[*a, *b]` donne le même résultat que `a + b` pour deux listes, mais reste lisible avec plus de deux sources ou mélangé à d'autres éléments, ce que `+` ne permet pas aussi naturellement.
+
 ## `sorted()` : trier sans modifier l'original
 
 ```python

@@ -71,6 +71,22 @@ tiendas_por_sitio.setdefault(sitio, []).append(id_tienda)
 
 `dict.setdefault(clave, valor_por_defecto)` devuelve el valor de `clave` si ya existe (sin tocarlo), o lo inserta con `valor_por_defecto` Y LUEGO lo devuelve si aún no existe. Encadenado con `.append()`, este patrón agrupa elementos por categoría (aquí, la lista de tiendas por sitio) sin comprobar nunca explícitamente si la clave ya existe.
 
+### `Counter`: contar apariciones
+
+```python
+from collections import Counter
+
+contador = Counter(["a", "b", "a", "c", "a", "b"])
+# Counter({'a': 3, 'b': 2, 'c': 1})
+
+contador["a"]        # 3
+contador["ausente"]  # 0 -> sin KeyError, a diferencia de un dict normal
+
+contador.most_common(2)  # [('a', 3), ('b', 2)] -> los 2 elementos más frecuentes
+```
+
+`Counter` (del módulo `collections`) es una subclase de `dict` especializada en contar: `Counter(iterable)` cuenta automáticamente las apariciones de cada elemento. Acceder a una clave ausente devuelve `0` en lugar de lanzar un `KeyError`, a diferencia de un `dict` normal. `.most_common(n)` devuelve los `n` elementos más frecuentes, ordenados por frecuencia decreciente.
+
 ## Los conjuntos (`set`)
 
 ```python
@@ -132,6 +148,6 @@ Ver también [Las tablas de hash](/?c=langages-de-programmation&s=c&p=tables-de-
 | | |
 |---|---|
 | **Para recordar** | Un `dict` asocia claves a valores, un `set` almacena valores únicos sin orden; ambos se apoyan en una tabla hash, por tanto casi instantáneos en acceso/prueba. `frozenset` es la variante inmutable y hachable de un `set`. |
-| **Herramientas utilizables** | `.get()` (sin error), comprensiones de dict/set, operaciones de conjuntos (`\|`, `&`, `-`, `^`), `frozenset` como clave de dict o elemento de otro `set`. |
+| **Herramientas utilizables** | `.get()` (sin error), comprensiones de dict/set, `Counter` para contar apariciones, operaciones de conjuntos (`\|`, `&`, `-`, `^`), `frozenset` como clave de dict o elemento de otro `set`. |
 | **Trampas a evitar** | Acceder a una clave ausente por corchetes (`dico["x"]`) en lugar de por `.get()`: eso lanza un `KeyError`. |
 | **Buenas prácticas** | Usar `.get()` en cuanto la ausencia de una clave sea un caso normal, no un error; `list(set(mi_lista))` para deduplicar rápidamente. |

@@ -89,6 +89,19 @@ a, b, c = 1, 2, 3  # también funciona sin paréntesis explícitos: una tupla im
 a, b = b, a        # intercambio de valores, sin variable temporal
 ```
 
+El mismo `*` también desempaqueta elementos DENTRO de un literal de lista, para construir uno nuevo:
+
+```python
+a = [1, 2]
+b = [3, 4]
+
+[a, b]       # [[1, 2], [3, 4]] -> anida las dos listas como 2 elementos
+[*a, *b]     # [1, 2, 3, 4]     -> desempaqueta cada elemento de forma plana, equivalente a a + b
+[*a, 0, *b]  # [1, 2, 0, 3, 4]  -> se mezcla libremente con otros elementos
+```
+
+`[*a, *b]` da el mismo resultado que `a + b` para dos listas, pero sigue siendo legible con más de dos fuentes o mezclado con otros elementos, algo que `+` no permite de forma tan natural.
+
 ## `sorted()`: ordenar sin modificar el original
 
 ```python

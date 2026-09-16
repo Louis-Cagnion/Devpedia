@@ -61,6 +61,20 @@ def config() -> dict[str, str | int]:            # substitui Dict[str, Union[str
 
 > **Nota:** essa sintaxe não substitui todo o `typing`: construções como `Callable`, `TypeVar` ou `Generic` continuam necessárias. Ela cobre apenas os casos antes tratados por `Optional`/`Union`.
 
+## Alias de tipo: nomear uma união para reutilizá-la
+
+```python
+ConfigValue = str | int | float  # alias de tipo, no nível do módulo
+
+def config() -> dict[str, ConfigValue]:
+    return {"nome": "app", "versao": 2, "ratio": 1.5}
+
+def validar(valor: ConfigValue) -> bool:
+    return valor is not None
+```
+
+Uma união longa e repetida em várias assinaturas pode ser atribuída uma única vez, no nível do módulo, a uma variável nomeada em PascalCase (ou prefixada com `_` se privada ao arquivo): esse **alias de tipo** é depois reutilizado como um tipo comum (`dict[str, ConfigValue]`), sem repetir `str | int | float` em cada função que o manipula.
+
 ## Forward reference e `TYPE_CHECKING`
 
 Uma **forward reference** é uma anotação de tipo escrita entre aspas, que referencia um tipo ainda nao definido nesse ponto do arquivo (uma classe que se referencia a si mesma, ou um import que criaria um ciclo):
@@ -115,6 +129,6 @@ mypy meu_script.py
 | | |
 |---|---|
 | **Para lembrar** | As anotações de tipo Python (`x: int`, `-> str`) são puramente documentais: nunca verificadas pelo interpretador, ao contrário de uma linguagem de tipagem estática ou até mesmo do PHP. |
-| **Ferramentas utilizáveis** | O módulo `typing` (`Optional`, `Union`, `List`, `TYPE_CHECKING`...), a sintaxe `X \| None` (3.10+), `mypy` para uma verificação externa. |
+| **Ferramentas utilizáveis** | O módulo `typing` (`Optional`, `Union`, `List`, `TYPE_CHECKING`...), a sintaxe `X \| None` (3.10+), os aliases de tipo para nomear uma união reutilizada, `mypy` para uma verificação externa. |
 | **Armadilhas a evitar** | Acreditar que uma anotação realmente impede passar um valor do tipo errado: nada a impede na execução. Esquecer as aspas de uma forward reference (`NameError` imediata). |
 | **Boas práticas** | Anotar sistematicamente um projeto de porte significativo, e rodar `mypy` como complemento para detectar incoerências antes da execução. Usar `if TYPE_CHECKING:` para evitar um import circular causado por uma única anotação de tipo. |

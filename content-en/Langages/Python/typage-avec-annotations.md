@@ -61,6 +61,20 @@ def config() -> dict[str, str | int]:    # replaces Dict[str, Union[str, int]]
 
 > **Note:** this syntax does not replace all of `typing`: constructs such as `Callable`, `TypeVar` or `Generic` are still needed. It only covers cases previously handled by `Optional` / `Union`.
 
+## Type Alias: Naming a Union to Reuse It
+
+```python
+ConfigValue = str | int | float  # type alias, at module level
+
+def config() -> dict[str, ConfigValue]:
+    return {"name": "app", "version": 2, "ratio": 1.5}
+
+def validate(value: ConfigValue) -> bool:
+    return value is not None
+```
+
+A long union repeated across several signatures can be assigned once, at module level, to a name in PascalCase (or prefixed with `_` if private to the file): this **type alias** is then reused like an ordinary type (`dict[str, ConfigValue]`), without repeating `str | int | float` in every function that handles it.
+
 ## Forward References and `TYPE_CHECKING`
 
 A **forward reference** is a type annotation written in quotes, referencing a type not yet defined at that point in the file (a class referencing itself, or an import that would create a cycle):
@@ -115,6 +129,6 @@ mypy my_script.py
 | | |
 |---|---|
 | **To remember** | Python type annotations (`x: int`, `-> str`) are purely documentary: never checked by the interpreter, unlike a statically typed language or even PHP. |
-| **Usable tools** | The `typing` module (`Optional`, `Union`, `List`, `TYPE_CHECKING`...), the `X \| None` syntax (3.10+), `mypy` for external checking. |
+| **Usable tools** | The `typing` module (`Optional`, `Union`, `List`, `TYPE_CHECKING`...), the `X \| None` syntax (3.10+), type aliases to name a reused union, `mypy` for external checking. |
 | **Pitfalls to avoid** | Believing an annotation actually prevents passing a value of the wrong type: nothing prevents it at runtime. Forgetting the quotes on a forward reference (immediate `NameError`). |
 | **Best practices** | Systematically annotate any project of significant size, and run `mypy` alongside it to catch inconsistencies before execution. Use `if TYPE_CHECKING:` to avoid a circular import caused by a single type annotation. |

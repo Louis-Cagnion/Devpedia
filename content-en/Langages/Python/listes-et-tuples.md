@@ -89,6 +89,19 @@ a, b, c = 1, 2, 3  # also works without explicit parentheses: an implicit tuple
 a, b = b, a        # swap values, no temporary variable
 ```
 
+The same `*` also unpacks elements INSIDE a list literal, to build a new one:
+
+```python
+a = [1, 2]
+b = [3, 4]
+
+[a, b]       # [[1, 2], [3, 4]] -> nests the two lists as 2 elements
+[*a, *b]     # [1, 2, 3, 4]     -> unpacks each element flat, equivalent to a + b
+[*a, 0, *b]  # [1, 2, 0, 3, 4]  -> mixes freely with other elements
+```
+
+`[*a, *b]` gives the same result as `a + b` for two lists, but stays readable with more than two sources or mixed with other elements, which `+` doesn't allow as naturally.
+
 ## `sorted()`: sorting without modifying the original
 
 ```python

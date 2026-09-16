@@ -25,6 +25,18 @@ for i in range(2, 10, 2):  # de 2 à 10 (exclu), par pas de 2 -> 2, 4, 6, 8
     print(i)
 ```
 
+### Parcourir à l'envers
+
+```python
+for fruit in reversed(fruits):            # cerise, banane, pomme -> VALEURS à l'envers
+    print(fruit)
+
+for i in range(len(fruits) - 1, -1, -1):  # 2, 1, 0               -> INDICES en ordre décroissant
+    print(fruits[i])
+```
+
+`range(len(x) - 1, -1, -1)` (pas de -1) génère les indices d'une séquence en ordre décroissant : utile quand l'index lui-même est nécessaire, pas seulement la valeur. Si seule la valeur compte, `reversed(x)` est l'idiome plus lisible à préférer.
+
 ## `enumerate()` : obtenir l'index ET la valeur
 
 ```python
@@ -59,6 +71,20 @@ all(age >= 18 for age in ages)  # False -> il en faudrait un pour CHAQUE éléme
 `any(iterable)` renvoie `True` dès qu'un élément est vrai, sans forcément parcourir le reste (court-circuit, comme `or`) ; `all(iterable)` renvoie `True` seulement si tous le sont, et s'arrête au premier faux (comme `and`). Les deux s'utilisent typiquement directement sur une [expression génératrice](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) (sans construire de liste intermédiaire), ce qui évite de parcourir toute la collection si la réponse est déjà connue.
 
 > **Piège :** sur un itérable VIDE, les résultats surprennent souvent : `any([])` vaut `False` (aucun élément vrai trouvé), `all([])` vaut `True` (vacuité : « tous » les zéro éléments vérifient bien la condition, faute d'un seul qui la contredise).
+
+## `max()` / `min()` : trouver le plus grand ou le plus petit
+
+```python
+largeurs = [12, 45, 3, 28]
+
+max(largeurs)        # 45
+min(largeurs)        # 3
+max(12, 45, 3, 28)   # 45 -> fonctionne aussi sur des valeurs séparées, pas seulement un itérable
+
+max([], default=0)  # 0 -> évite une ValueError si l'itérable est vide
+```
+
+`max(iterable)`/`min(iterable)` acceptent soit plusieurs valeurs séparées, soit un seul itérable ; sans le paramètre `default=`, l'un ou l'autre lève une `ValueError` sur un itérable vide, ce qui est indispensable dès que la collection peut légitimement être vide (ex. la largeur maximale d'une liste de lignes qui peut ne contenir aucune cellule).
 
 ## La boucle `while`
 
@@ -111,6 +137,6 @@ Contrairement à une boucle `for` en [C](/?c=langages-de-programmation&s=c&p=c) 
 | | |
 |---|---|
 | **À retenir** | `for` parcourt directement les éléments d'un itérable (jamais un compteur manuel) ; `range()` génère une séquence de nombres si besoin. `enumerate()`/`zip()` couvrent les besoins d'index et de parcours parallèle. |
-| **Outils utilisables** | `enumerate()`, `zip()`, `any()`/`all()`, la clause `else` d'une boucle (exécutée si aucun `break`). |
+| **Outils utilisables** | `enumerate()`, `zip()`, `any()`/`all()`, `reversed()` pour parcourir à l'envers, la clause `else` d'une boucle (exécutée si aucun `break`). |
 | **Pièges à éviter** | Itérer sur `range(len(liste))` puis indexer manuellement, plutôt que d'utiliser directement `for element in liste` ou `enumerate()`. |
 | **Bonnes pratiques** | Utiliser `enumerate()` dès qu'un index est nécessaire en plus de la valeur, plutôt que de le gérer manuellement. |
