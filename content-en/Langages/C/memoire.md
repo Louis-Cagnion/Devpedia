@@ -127,6 +127,21 @@ fgets(buffer, sizeof(buffer), stdin);        // bounded reading right from input
 
 > **Note:** bounding the size only solves half the problem: you also need to check that the truncated data stays coherent for the rest of the program (a filename cut halfway by `strncpy` remains a syntactically valid filename, just an incorrect one). The right reflex is to always know, at every write, the destination buffer's actual size; never assume an input will respect an expected size without checking it.
 
+### The BSD `strlcpy`/`strlcat` Family
+
+Originally from BSD (not standard C, but available on macOS/\*BSD, and easy to reimplement yourself, as the `libft` library does with `ft_strlcpy`/`ft_strlcat`), these functions fix `strncpy`/`strcat`'s weak spot: detecting truncation.
+
+```c
+size_t needed = strlcpy(buffer, input, sizeof(buffer));  // ALWAYS null-terminates, unlike strncpy
+
+if (needed >= sizeof(buffer))
+{
+    // input was truncated: needed is the size the full copy would have taken
+}
+```
+
+`strlcpy()`/`strlcat()` always return the size the source (or concatenated) string would need if the buffer had been big enough, never the number of bytes actually written: comparing this value to `sizeof(buffer)` detects a truncation, which `strncpy()`/`strcat()` don't let you do directly.
+
 ## `sizeof`
 
 `sizeof` is not a function but an operator evaluated at compile time: it returns the size in bytes of a type or variable, which is essential for correctly calculating the amount of memory to allocate:
@@ -148,4 +163,4 @@ See also the chapter on pointers; understanding that chapter is a prerequisite f
 | **Key takeaways** | C leaves the developer with full responsibility for dynamic memory (the heap): `malloc`/`calloc`/`realloc` to allocate, `free` to release; the stack (local variables) is managed automatically. |
 | **Tools you can use** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind to detect leaks and invalid accesses. |
 | **Pitfalls to avoid** | Memory leak (never calling `free`), use-after-free, double free, buffer overflow, the latter of which can be exploited as a security flaw. |
-| **Best practices** | Always check that a `malloc`/`realloc` didn't return `NULL`; set a pointer to `NULL` right after its `free()`; prefer `fgets`/`strncpy`/`snprintf` over unbounded functions (`gets`/`strcpy`/`sprintf`). |
+| **Best practices** | Always check that a `malloc`/`realloc` didn't return `NULL`; set a pointer to `NULL` right after its `free()`; prefer `fgets`/`strncpy`/`snprintf` over unbounded functions (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` to detect truncation via their return value. |
