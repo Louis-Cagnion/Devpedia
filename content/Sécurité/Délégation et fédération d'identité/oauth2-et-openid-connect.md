@@ -87,13 +87,27 @@ OAuth 2.0 a été conçu pour l'**autorisation** (accéder à une ressource), pa
 >
 > **Bonne pratique :** utiliser OpenID Connect (et son jeton d'identité) dès que le besoin est de savoir *qui* se connecte, et réserver OAuth 2.0 seul aux cas où le besoin est uniquement d'accéder à une ressource au nom de l'utilisateur.
 
+## Attaques sur le flux *Authorization Code*
+
+Le déroulement en 7 étapes vu plus haut comporte trois points de contrôle qu'une implémentation négligente peut laisser ouverts :
+
+| Attaque | Étape visée | Principe | Défense |
+|---|---|---|---|
+| `redirect_uri` non validé strictement | Étape 5 (Google redirige avec le code) | Le serveur d'autorisation accepte une variante de l'URL déclarée (`https://site.example.evil.com`, ou un simple sous-chemin non prévu) : le code temporaire part alors vers l'attaquant au lieu de l'application légitime | Le serveur d'autorisation doit exiger une correspondance EXACTE, caractère pour caractère, avec l'URL déclarée à l'avance (voir aussi le piège de correspondance exacte détaillé dans [l'environnement local PHP](/?c=infrastructure-devops&s=infrastructure&p=environnement-local-php-sql-server)) |
+| `state` absent | Étapes 2 à 5 | Sans ce paramètre, rien ne relie la redirection reçue à une demande initiée par CETTE victime précise : un attaquant peut préparer son propre échange OAuth, puis piéger la victime pour qu'elle termine ce flux à sa place, la connectant de force au compte tiers de l'attaquant (une forme de [CSRF](/?c=langages&s=php&p=securite) appliquée au flux de connexion lui-même) | Générer une valeur `state` aléatoire et imprévisible avant la redirection, la stocker côté serveur/session, puis vérifier qu'elle revient identique à l'étape 5 |
+| Interception du code d'autorisation (PKCE absent) | Entre les étapes 5 et 6 | Un client "public" (une application mobile, une SPA) ne peut pas garder de secret confidentiel pour l'échange de l'étape 6 : si le code intercepté en transit (étape 5) suffit à lui seul à obtenir un jeton, un attaquant qui l'intercepte peut terminer l'échange à la place du client légitime | **PKCE** (*Proof Key for Code Exchange*) : le client génère un secret temporaire AVANT l'étape 2, n'en envoie qu'une empreinte, puis doit fournir le secret d'origine à l'étape 6 — un code intercepté seul ne suffit plus sans ce secret jamais transmis en clair |
+
+> **Piège :** considérer PKCE comme réservé aux seules applications mobiles/SPA sous prétexte qu'il a été conçu pour elles. Les recommandations actuelles du protocole l'imposent aussi pour un client confidentiel classique (serveur web), en défense supplémentaire, pas seulement pour les clients publics.
+>
+> **Bonne pratique :** valider `redirect_uri` par correspondance exacte, toujours transmettre et vérifier `state`, et activer PKCE même pour un client côté serveur qui dispose déjà d'un secret confidentiel.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | OAuth 2.0 permet à une application tierce d'obtenir un accès limité et révocable à une ressource, sans jamais connaître le mot de passe du compte. *Client Credentials* obtient un jeton sans aucun utilisateur, pour un service qui agit pour son propre compte. OpenID Connect ajoute par-dessus un jeton d'identité (un JWT) spécifiquement conçu pour l'authentification, ce qu'OAuth seul ne fournit pas. |
+| **À retenir** | OAuth 2.0 permet à une application tierce d'obtenir un accès limité et révocable à une ressource, sans jamais connaître le mot de passe du compte. *Client Credentials* obtient un jeton sans aucun utilisateur, pour un service qui agit pour son propre compte. OpenID Connect ajoute par-dessus un jeton d'identité (un JWT) spécifiquement conçu pour l'authentification, ce qu'OAuth seul ne fournit pas. Le flux *Authorization Code* expose trois points de contrôle critiques : `redirect_uri`, `state`, et l'interception du code (PKCE). |
 | **Outils utilisables** | Une bibliothèque OAuth/OIDC du langage utilisé plutôt qu'une implémentation manuelle du protocole. |
-| **Pièges à éviter** | Partager directement un mot de passe avec une application tierce. Utiliser un jeton d'accès OAuth pour authentifier un utilisateur. Utiliser *Client Credentials* pour une action qui doit être attribuée à un utilisateur précis. |
-| **Bonnes pratiques** | Toujours limiter la portée (*scope*) demandée au strict nécessaire. Utiliser OpenID Connect quand le besoin est de prouver une identité, pas seulement d'accéder à une ressource. Réserver *Client Credentials* aux appels serveur-à-serveur sans notion d'utilisateur. |
+| **Pièges à éviter** | Partager directement un mot de passe avec une application tierce. Utiliser un jeton d'accès OAuth pour authentifier un utilisateur. Utiliser *Client Credentials* pour une action qui doit être attribuée à un utilisateur précis. Valider `redirect_uri` de façon trop permissive. Omettre `state` ou PKCE. |
+| **Bonnes pratiques** | Toujours limiter la portée (*scope*) demandée au strict nécessaire. Utiliser OpenID Connect quand le besoin est de prouver une identité, pas seulement d'accéder à une ressource. Réserver *Client Credentials* aux appels serveur-à-serveur sans notion d'utilisateur. Correspondance exacte sur `redirect_uri`, `state` systématique, PKCE même côté serveur. |

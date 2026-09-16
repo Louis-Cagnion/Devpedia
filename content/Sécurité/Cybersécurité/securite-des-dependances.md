@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 8
 ---
 
 # Sécurité des dépendances et de la chaîne d'approvisionnement
@@ -41,6 +41,14 @@ pip install reqeusts    # faute de frappe -> paquet different, potentiellement m
 
 > **Bonne pratique :** copier-coller le nom exact d'un paquet depuis sa documentation officielle plutôt que le taper de mémoire, et vérifier le nombre de téléchargements/l'ancienneté d'un paquet peu connu avant de l'ajouter à un projet.
 
+## Le script d'installation automatique (*postinstall*)
+
+Certains gestionnaires de paquets (npm notamment) permettent à un paquet de déclarer un script exécuté AUTOMATIQUEMENT juste après son installation (`postinstall`), sans aucune action supplémentaire de la personne qui installe. Ce script tourne avec les mêmes droits que n'importe quel autre code du projet : un paquet malveillant (ou légitime mais compromis après coup, via un typosquatting réussi ou un compte mainteneur piraté) peut ainsi exécuter du code dès `npm install`, avant même que l'application ne démarre.
+
+> **Piège :** considérer `npm install` (ou équivalent) comme une opération neutre qui se contente de copier des fichiers, sans réaliser qu'elle peut déjà exécuter du code arbitraire au passage.
+>
+> **Bonne pratique :** passer en revue les scripts `postinstall` d'une nouvelle dépendance avant de l'ajouter (visibles dans son `package.json` publié), et envisager une option d'installation qui les désactive par défaut (`npm install --ignore-scripts`) sur un environnement sensible, en les réactivant au cas par cas si réellement nécessaires.
+
 ## Auditer ses dépendances
 
 Un paquet installé aujourd'hui sans faille connue peut en révéler une plus tard : c'est pourquoi l'audit des dépendances est un contrôle récurrent, pas une vérification unique au moment de l'installation.
@@ -61,5 +69,5 @@ Ces outils s'intègrent naturellement à un [pipeline CI/CD](/?c=ci-cd&p=pipelin
 |---|---|
 | **À retenir** | Une dépendance (directe ou indirecte) est un maillon de la chaîne d'approvisionnement logicielle : sa faille devient celle du projet. Un lockfile fige les versions exactes réellement installées, pour toute l'équipe. |
 | **Outils utilisables** | `npm audit`, `pip-audit`, Dependabot, un lockfile (`package-lock.json`, `composer.lock`, `requirements.txt`). |
-| **Pièges à éviter** | Ignorer le lockfile plutôt que de le commiter ; taper de mémoire le nom d'un paquet peu familier (risque de typosquatting) ; auditer les dépendances une seule fois, à l'installation, sans jamais revenir dessus. |
+| **Pièges à éviter** | Ignorer le lockfile plutôt que de le commiter ; taper de mémoire le nom d'un paquet peu familier (risque de typosquatting) ; installer une dépendance sans avoir revu son script `postinstall` ; auditer les dépendances une seule fois, à l'installation, sans jamais revenir dessus. |
 | **Bonnes pratiques** | Toujours commiter le lockfile ; copier-coller un nom de paquet depuis sa documentation officielle ; intégrer l'audit de dépendances au pipeline CI/CD, exécuté à chaque changement. |

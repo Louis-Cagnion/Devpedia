@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Cryptographie appliquée pour développeurs
@@ -76,9 +76,10 @@ Cas d'usage concret : un **token auto-suffisant**, sur le même principe qu'un [
 | Erreur | Pourquoi c'est dangereux | Bonne pratique |
 |---|---|---|
 | Implémenter son propre algorithme de chiffrement | Un algorithme maison n'a jamais subi l'analyse poussée des algorithmes standards, publiés et testés par toute la communauté cryptographique depuis des années | Toujours utiliser une bibliothèque cryptographique reconnue, jamais une implémentation artisanale |
-| Générer une clé ou un sel avec un générateur aléatoire classique | Un générateur non cryptographique est prévisible (voir [Pseudo-aléatoire et générateurs](/?c=representation-des-donnees&p=aleatoire-et-generateurs)) | Toujours utiliser un CSPRNG pour tout ce qui doit rester secret |
-| Réutiliser la même clé pour tout | Une clé compromise dans un contexte compromet alors tous les usages qui la partagent | Une clé dédiée par usage, avec une rotation régulière (voir [Gestion des secrets](/?c=cybersecurite&p=gestion-des-secrets)) |
-| Stocker la clé de chiffrement à côté de la donnée chiffrée | Revient à laisser la clé de la maison sous le paillasson : quiconque accède aux données accède aussi à la clé | Stocker la clé séparément (voir [Gestion des secrets](/?c=cybersecurite&p=gestion-des-secrets)) |
+| Générer une clé ou un sel avec un générateur aléatoire classique | Un générateur non cryptographique est prévisible (voir [Pseudo-aléatoire et générateurs](/?c=donnees&s=representation-des-donnees&p=aleatoire-et-generateurs)) | Toujours utiliser un CSPRNG pour tout ce qui doit rester secret |
+| Réutiliser la même clé pour tout | Une clé compromise dans un contexte compromet alors tous les usages qui la partagent | Une clé dédiée par usage, avec une rotation régulière (voir [Gestion des secrets](/?c=securite&s=cybersecurite&p=gestion-des-secrets)) |
+| Réutiliser le même IV/nonce avec la même clé | L'IV (*initialization vector*) ou le nonce est censé rendre unique chaque opération de chiffrement, même avec une clé identique ; le réutiliser avec la même clé peut permettre de déduire des informations sur les messages chiffrés (jusqu'à les décrypter entièrement selon le mode de chiffrement utilisé) | Générer un IV/nonce différent à chaque chiffrement (souvent via un CSPRNG, parfois un compteur selon l'algorithme), jamais une valeur fixe ni réutilisée |
+| Stocker la clé de chiffrement à côté de la donnée chiffrée | Revient à laisser la clé de la maison sous le paillasson : quiconque accède aux données accède aussi à la clé | Stocker la clé séparément (voir [Gestion des secrets](/?c=securite&s=cybersecurite&p=gestion-des-secrets)) |
 | Utiliser un algorithme obsolète (DES, RC4) | Cassable avec des moyens de calcul modernes, parfois en quelques heures | Utiliser les standards actuels (AES, courbes elliptiques modernes) |
 
 ---

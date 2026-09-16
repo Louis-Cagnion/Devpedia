@@ -53,13 +53,28 @@ Une session se révoque instantanément : il suffit de supprimer la donnée corr
 >
 > **Bonne pratique :** garder une durée de vie courte pour un JWT (quelques minutes à quelques heures), et prévoir un mécanisme de renouvellement plutôt qu'un token valide plusieurs jours, pour limiter la fenêtre où une révocation anticipée serait nécessaire.
 
+## Attaques courantes sur un JWT
+
+Un JWT mal *vérifié* côté serveur (pas mal *conçu* : le format lui-même est sain) ouvre plusieurs contournements, tous liés à la même cause : faire confiance à une information du token avant d'avoir confirmé sa signature.
+
+| Attaque | Principe | Défense |
+|---|---|---|
+| `alg: none` | L'en-tête du JWT déclare lui-même l'algorithme de signature (`HS256`, `none`...) ; un serveur qui fait confiance à cette déclaration et accepte `"alg": "none"` valide n'importe quel token sans vérifier aucune signature | Imposer côté serveur la liste des algorithmes acceptés, ne jamais la lire depuis le token lui-même |
+| Confusion d'algorithme (RS256 → HS256) | Un serveur configuré pour la clé PUBLIQUE d'un algorithme asymétrique (RS256) peut, si mal codé, être trompé en un token signé en HS256 (symétrique) en utilisant cette clé publique (connue de tous) comme secret HS256 | Vérifier explicitement l'algorithme attendu, ne jamais le déduire de l'en-tête du token reçu |
+| Clé secrète faible ou devinable | Un secret HS256 court ou courant (`"secret"`, `"123456"`) se retrouve par force brute hors ligne, une fois qu'un attaquant possède un seul token valide à tester | Générer le secret avec un générateur aléatoire cryptographique, aussi long que l'algorithme le permet |
+| Expiration (`exp`) non vérifiée | Le champ `exp` n'est qu'une donnée du JSON comme une autre : si le code serveur oublie de la comparer à l'heure actuelle, un token expiré reste accepté indéfiniment | Toujours utiliser la vérification d'expiration fournie par la bibliothèque JWT, jamais une lecture manuelle du champ |
+
+> **Piège :** écrire soi-même la logique de vérification d'un JWT (décoder, lire l'algorithme, vérifier la signature à la main). Chacune des lignes ci-dessus est une erreur réellement commise par des bibliothèques JWT historiques avant d'être corrigée : une bibliothèque JWT maintenue à jour a déjà intégré ces corrections, une implémentation maison les reproduit une par une.
+>
+> **Bonne pratique :** utiliser une bibliothèque JWT maintenue, lui indiquer explicitement l'algorithme attendu (jamais le lire depuis le token), et laisser sa fonction de vérification dédiée gérer l'expiration plutôt que de la relire à la main.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Un JWT encode des informations en JSON directement dans le token et les signe, ce qui permet de les vérifier sans stockage côté serveur (stateless). Ses données sont encodées, jamais chiffrées : lisibles par quiconque possède le token, seule leur modification est empêchée par la signature. |
+| **À retenir** | Un JWT encode des informations en JSON directement dans le token et les signe, ce qui permet de les vérifier sans stockage côté serveur (stateless). Ses données sont encodées, jamais chiffrées : lisibles par quiconque possède le token, seule leur modification est empêchée par la signature. Une vérification côté serveur qui fait confiance à une information du token avant d'avoir confirmé sa signature (algorithme déclaré, expiration) ouvre des contournements. |
 | **Outils utilisables** | Une bibliothèque JWT du langage utilisé pour générer et vérifier la signature, plutôt qu'une implémentation manuelle. |
-| **Pièges à éviter** | Placer une donnée sensible dans un JWT en pensant qu'elle est protégée. Choisir un JWT sans avoir anticipé le besoin de révocation anticipée. |
-| **Bonnes pratiques** | Ne mettre dans un JWT que des données qui peuvent être lues sans risque. Garder une durée de vie courte et prévoir un renouvellement plutôt qu'un token longue durée. |
+| **Pièges à éviter** | Placer une donnée sensible dans un JWT en pensant qu'elle est protégée. Choisir un JWT sans avoir anticipé le besoin de révocation anticipée. Lire l'algorithme ou l'expiration depuis le token plutôt que de les vérifier explicitement côté serveur. |
+| **Bonnes pratiques** | Ne mettre dans un JWT que des données qui peuvent être lues sans risque. Garder une durée de vie courte et prévoir un renouvellement plutôt qu'un token longue durée. Imposer l'algorithme attendu côté serveur et utiliser la vérification d'expiration native de la bibliothèque. |
