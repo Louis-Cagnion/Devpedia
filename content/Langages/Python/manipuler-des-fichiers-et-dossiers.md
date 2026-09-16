@@ -80,6 +80,15 @@ rapport.with_name(f"{rapport.stem}.peugeot{rapport.suffix}")   # Path("rapport.p
 
 > **Piège :** `.with_name()` remplace le DERNIER segment du chemin (le nom de fichier), contrairement à `/` qui en AJOUTE un nouveau : `Path("a/b") / "c"` donne `a/b/c`, `Path("a/b").with_name("c")` donne `a/c`.
 
+## Supprimer un fichier : `.unlink()`
+
+```python
+chemin_fichier.unlink()                 # FileNotFoundError si le fichier n'existe déjà plus
+chemin_fichier.unlink(missing_ok=True)  # ne râle jamais, même si le fichier est déjà absent
+```
+
+`.unlink()` supprime un FICHIER, jamais un dossier (voir `.rmdir()`/`shutil.rmtree()` plus bas pour ça). `missing_ok=True` évite une `FileNotFoundError` si le fichier a déjà été supprimé : même logique « idempotent, ne râle jamais si l'état visé est déjà atteint » que `exist_ok=True` sur `.mkdir()`.
+
 ## Supprimer un dossier non vide : `shutil.rmtree()`
 
 ```python
@@ -162,6 +171,6 @@ with open("etats.jsonl", encoding="utf-8") as f:
 | | |
 |---|---|
 | **À retenir** | `pathlib.Path` représente un chemin comme un objet manipulable (`/` pour construire, `.stem`/`.suffix`/`.with_name()` pour décomposer, `.open()` équivalent à `open()`, `.mkdir()` pour créer un dossier). `shutil.rmtree()` supprime un dossier non vide, ce que `Path.rmdir()` refuse. `csv.DictReader` lit un CSV en dicts nommés par en-tête, `csv.reader` en listes positionnelles. `json.dumps`/`loads` convertissent objet Python et texte JSON dans les deux sens ; le format JSON Lines (une ligne = un objet) permet d'ajouter des entrées sans réécrire tout le fichier. |
-| **Outils utilisables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
+| **Outils utilisables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`/`.unlink()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
 | **Pièges à éviter** | `.with_name()` remplace le dernier segment du chemin là où `/` en ajoute un nouveau. `.mkdir()` sans `exist_ok=True` plante si le dossier existe déjà. `.write_text()`/`.read_text()` sur un gros fichier qui devrait être traité ligne par ligne. `shutil.rmtree(ignore_errors=True)` rend un échec silencieux. Oublier `newline=""` avec `csv` peut casser des valeurs multi-lignes entre guillemets. Oublier `ensure_ascii=False` rend les accents illisibles dans le JSON produit (sans casser `json.loads()`). |
 | **Bonnes pratiques** | Utiliser `dossier.mkdir(parents=True, exist_ok=True)` (ou `chemin_fichier.parent.mkdir(...)`) plutôt qu'un `if not dossier.exists(): ...` avant d'écrire un fichier. Vérifier `dossier.exists()` après un `rmtree(ignore_errors=True)` plutôt que de supposer le succès. Préférer `DictReader`/`DictWriter` à un accès par index dès qu'un CSV a des en-têtes. Utiliser le JSON Lines pour un fichier d'état qui grossit au fil de l'exécution, un fichier JSON classique pour un objet figé. |

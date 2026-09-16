@@ -80,6 +80,15 @@ relatorio.with_name(f"{relatorio.stem}.peugeot{relatorio.suffix}")   # Path("rel
 
 > **Armadilha:** `.with_name()` substitui o ÚLTIMO segmento do caminho (o nome do arquivo), ao contrário de `/` que ADICIONA um novo: `Path("a/b") / "c"` dá `a/b/c`, `Path("a/b").with_name("c")` dá `a/c`.
 
+## Remover um arquivo: `.unlink()`
+
+```python
+caminho_arquivo.unlink()                 # FileNotFoundError se o arquivo já não existir
+caminho_arquivo.unlink(missing_ok=True)  # nunca quebra, mesmo se o arquivo já estiver ausente
+```
+
+`.unlink()` remove um ARQUIVO, nunca uma pasta (veja `.rmdir()`/`shutil.rmtree()` mais abaixo para isso). `missing_ok=True` evita um `FileNotFoundError` se o arquivo já tiver sido removido: a mesma lógica "idempotente, nunca quebra se o estado desejado já foi atingido" que `exist_ok=True` em `.mkdir()`.
+
 ## Remover uma pasta não vazia: `shutil.rmtree()`
 
 ```python
@@ -162,6 +171,6 @@ with open("estados.jsonl", encoding="utf-8") as f:
 | | |
 |---|---|
 | **Para lembrar** | `pathlib.Path` representa um caminho como um objeto manipulável (`/` para construir, `.stem`/`.suffix`/`.with_name()` para decompor, `.open()` equivalente a `open()`, `.mkdir()` para criar uma pasta). `shutil.rmtree()` remove uma pasta não vazia, o que `Path.rmdir()` recusa. `csv.DictReader` lê um CSV em dicts nomeados por cabeçalho, `csv.reader` em listas posicionais. `json.dumps`/`loads` convertem objeto Python e texto JSON nos dois sentidos; o formato JSON Lines (uma linha = um objeto) permite adicionar entradas sem reescrever todo o arquivo. |
-| **Ferramentas utilizáveis** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
+| **Ferramentas utilizáveis** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`/`.unlink()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
 | **Armadilhas a evitar** | `.with_name()` substitui o último segmento do caminho onde `/` adiciona um novo. `.mkdir()` sem `exist_ok=True` falha se a pasta já existir. `.write_text()`/`.read_text()` em um arquivo volumoso que deveria ser processado linha por linha. `shutil.rmtree(ignore_errors=True)` torna uma falha silenciosa. Esquecer `newline=""` com `csv` pode quebrar valores multilinha entre aspas. Esquecer `ensure_ascii=False` torna ilegíveis os acentos no JSON produzido (sem quebrar `json.loads()`). |
 | **Boas práticas** | Usar `pasta.mkdir(parents=True, exist_ok=True)` (ou `caminho_arquivo.parent.mkdir(...)`) em vez de um `if not pasta.exists(): ...` antes de escrever um arquivo. Verificar `pasta.exists()` após um `rmtree(ignore_errors=True)` em vez de supor o sucesso. Preferir `DictReader`/`DictWriter` a um acesso por índice assim que um CSV tiver cabeçalhos. Usar JSON Lines para um arquivo de estado que cresce durante a execução, um arquivo JSON clássico para um objeto fixo. |

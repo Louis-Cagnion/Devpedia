@@ -80,6 +80,15 @@ report.with_name(f"{report.stem}.peugeot{report.suffix}")   # Path("report.peuge
 
 > **Pitfall:** `.with_name()` replaces the LAST segment of the path (the file name), unlike `/` which ADDS a new one: `Path("a/b") / "c"` gives `a/b/c`, `Path("a/b").with_name("c")` gives `a/c`.
 
+## Deleting a File: `.unlink()`
+
+```python
+file_path.unlink()                 # FileNotFoundError if the file no longer exists
+file_path.unlink(missing_ok=True)  # never complains, even if the file is already gone
+```
+
+`.unlink()` deletes a FILE, never a folder (see `.rmdir()`/`shutil.rmtree()` below for that). `missing_ok=True` avoids a `FileNotFoundError` if the file has already been deleted: the same "idempotent, never complains if the target state is already reached" logic as `exist_ok=True` on `.mkdir()`.
+
 ## Removing a non-empty folder: `shutil.rmtree()`
 
 ```python
@@ -102,15 +111,15 @@ import csv
 with open("contacts.csv", newline="", encoding="utf-8") as f:
     reader = csv.reader(f, delimiter=",")
     for row in reader:
-        print(row)  # ["Jean", "Dupont", "25"] -> a plain LIST, by position
+        print(row)  # ["John", "Smith", "25"] -> a plain LIST, by position
 ```
 
 ```python
 with open("contacts.csv", newline="", encoding="utf-8") as f:
     reader = csv.DictReader(f, delimiter=",")  # uses the first row as headers
     for row in reader:
-        print(row)             # {"prenom": "Jean", "nom": "Dupont", "age": "25"} -> a DICT, by column name
-        print(row["prenom"])   # "Jean" -> access by name, more readable than by index
+        print(row)                 # {"first_name": "John", "last_name": "Smith", "age": "25"} -> a DICT, by column name
+        print(row["first_name"])   # "John" -> access by name, more readable than by index
 ```
 
 `csv.reader` returns each row as a positional list; `csv.DictReader` turns each row into a dictionary based on the header row (see [hashability and dict keys](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles)), more readable and more robust to a column reordering. `delimiter=";"` (common in France) replaces the default comma. On writing, `csv.writer`/`csv.DictWriter` follow the same reverse logic.
@@ -124,9 +133,9 @@ A CSV structures data in a table (rows/columns); the standard module [`json`](ht
 ```python
 import json
 
-user = {"nom": "Léa", "notes": [15, 12, 18]}   # a plain Python dict
+user = {"name": "Léa", "notes": [15, 12, 18]}   # a plain Python dict
 
-text = json.dumps(user, ensure_ascii=False)    # '{"nom": "Léa", "notes": [15, 12, 18]}' -> JSON text
+text = json.dumps(user, ensure_ascii=False)     # '{"name": "Léa", "notes": [15, 12, 18]}' -> JSON text
 obj = json.loads(text)                         # Python object, decoded back from the text (== user)
 ```
 
@@ -162,6 +171,6 @@ with open("states.jsonl", encoding="utf-8") as f:
 | | |
 |---|---|
 | **Key takeaways** | `pathlib.Path` represents a path as a manipulable object (`/` to build, `.stem`/`.suffix`/`.with_name()` to break it down, `.open()` equivalent to `open()`, `.mkdir()` to create a folder). `shutil.rmtree()` removes a non-empty folder, which `Path.rmdir()` refuses. `csv.DictReader` reads a CSV into dicts named by header, `csv.reader` into positional lists. `json.dumps`/`loads` convert a Python object and JSON text both ways; the JSON Lines format (one line = one object) lets you add entries without rewriting the whole file. |
-| **Tools you can use** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
+| **Tools you can use** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`/`.unlink()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
 | **Pitfalls to avoid** | `.with_name()` replaces the last segment of the path where `/` adds a new one. `.mkdir()` without `exist_ok=True` crashes if the folder already exists. `.write_text()`/`.read_text()` on a large file that should be processed line by line. `shutil.rmtree(ignore_errors=True)` makes a failure silent. Forgetting `newline=""` with `csv` can break multi-line quoted values. Forgetting `ensure_ascii=False` makes accented characters unreadable in the produced JSON (without breaking `json.loads()`). |
 | **Best practices** | Use `folder.mkdir(parents=True, exist_ok=True)` (or `file_path.parent.mkdir(...)`) instead of an `if not folder.exists(): ...` before writing a file. Check `folder.exists()` after a `rmtree(ignore_errors=True)` rather than assuming success. Prefer `DictReader`/`DictWriter` over index access as soon as a CSV has headers. Use JSON Lines for a state file that grows over execution, a classic JSON file for a fixed object. |
