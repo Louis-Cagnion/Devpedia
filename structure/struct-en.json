@@ -254,6 +254,14 @@
             {
               "id": "lecture-de-fichiers",
               "label": "Reading a File Line by Line: `fopen`, `fgets`, `getline`"
+            },
+            {
+              "id": "semaphores",
+              "label": "POSIX Semaphores"
+            },
+            {
+              "id": "mesure-du-temps",
+              "label": "Measuring Time and Waiting Precisely"
             }
           ]
         },

@@ -254,6 +254,14 @@
             {
               "id": "lecture-de-fichiers",
               "label": "Ler um arquivo linha por linha: `fopen`, `fgets`, `getline`"
+            },
+            {
+              "id": "semaphores",
+              "label": "Os semáforos POSIX"
+            },
+            {
+              "id": "mesure-du-temps",
+              "label": "Medir o tempo e esperar com precisão"
             }
           ]
         },

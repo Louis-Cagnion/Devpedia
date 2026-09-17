@@ -79,6 +79,32 @@ void *incrementar(void *argumento)
 
 > **Nota:** un mutex bloqueado y nunca desbloqueado (olvido de `pthread_mutex_unlock()`, o `return`/excepción antes de llegar a él) bloquea **definitivamente** a todos los demás hilos que esperan ese candado: un error clásico llamado **deadlock**, que ocurre cuando dos hilos se esperan mutuamente, cada uno reteniendo un candado que el otro necesita.
 
+## Evitar un deadlock mediante un orden total sobre los candados
+
+El **problema de la cena de los filósofos** (planteado por Dijkstra) ilustra bien este riesgo: N filósofos alrededor de una mesa comparten N tenedores (uno entre cada par de vecinos) y cada uno necesita sostener dos (izquierdo y derecho) para comer. Si todos toman su tenedor izquierdo al mismo tiempo, cada uno espera indefinidamente el tenedor derecho que sostiene su vecino: un deadlock generalizado. Es un caso particular de un problema más general: dos hilos necesitan cada uno **dos** mutex para continuar, pero los bloquean en un orden distinto.
+
+```text
+Hilo A:  lock(mutex1) -> espera mutex2 (retenido por B)
+Hilo B:  lock(mutex2) -> espera mutex1 (retenido por A)
+-> interbloqueo: ni A ni B puede avanzar nunca
+```
+
+La solución más simple: imponer un **orden total** arbitrario pero idéntico para todos los hilos sobre el conjunto de candados a adquirir (por ejemplo, comparar la dirección de memoria de los dos mutex y bloquear siempre primero el de dirección más baja):
+
+```c
+if (mutex_a < mutex_b) {
+    pthread_mutex_lock(mutex_a);
+    pthread_mutex_lock(mutex_b);
+} else {
+    pthread_mutex_lock(mutex_b);
+    pthread_mutex_lock(mutex_a);
+}
+```
+
+No importa qué hilo llegue primero ni en qué orden lógico le sean útiles los dos candados: todos los hilos del programa siguen la misma regla (aquí, dirección más baja primero), así que nunca puede formarse un ciclo de espera circular.
+
+> **Buena práctica:** en cuanto una función deba bloquear varios mutex a la vez, definir una única regla de orden y respetarla en todo el programa, en lugar de bloquear en el orden en que los candados aparecen mencionados localmente en el código.
+
 ## Hilos frente a procesos
 
 | | Proceso (`fork`) | Hilo (`pthread`) |
@@ -96,5 +122,5 @@ void *incrementar(void *argumento)
 |---|---|
 | **Para recordar** | Un hilo comparte la memoria con los demás hilos del mismo programa (a diferencia de un proceso surgido de `fork()`), es más ligero, pero expone a *race conditions* sobre los datos compartidos. |
 | **Herramientas utilizables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. |
-| **Trampas a evitar** | Modificar una variable compartida sin protección (*race condition*); olvidar desbloquear un mutex (*deadlock* si otro hilo espera indefinidamente). |
-| **Buenas prácticas** | Proteger todo dato compartido entre hilos con un mutex, incluso para una operación que parece simple (`contador++` no es atómica). |
+| **Trampas a evitar** | Modificar una variable compartida sin protección (*race condition*); olvidar desbloquear un mutex (*deadlock* si otro hilo espera indefinidamente); bloquear varios mutex en un orden distinto según el hilo. |
+| **Buenas prácticas** | Proteger todo dato compartido entre hilos con un mutex, incluso para una operación que parece simple (`contador++` no es atómica). Bloquear varios mutex siempre en el mismo orden (ej. por dirección de memoria) para evitar cualquier deadlock. |

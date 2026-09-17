@@ -79,6 +79,32 @@ void *incrementer(void *argument)
 
 > **Note:** A mutex that is locked and never unlocked (due to forgetting to call `pthread_mutex_unlock()`, or because `return` throws an exception before reaching that point) **permanently** blocks all other threads waiting for that lock, a classic bug called **a deadlock**, where two threads wait for each other, each holding a lock that the other needs.
 
+## Avoiding a Deadlock with a Total Lock Order
+
+The **dining philosophers problem** (posed by Dijkstra) illustrates this risk well: N philosophers around a table share N forks (one between each pair of neighbors) and each need to hold two (left and right) to eat. If they all grab their left fork at the same time, each one waits forever for the right fork held by their neighbor: a generalized deadlock. This is a special case of a more general problem: two threads each need **two** mutexes to proceed, but lock them in a different order.
+
+```text
+Thread A:  lock(mutex1) -> waits for mutex2 (held by B)
+Thread B:  lock(mutex2) -> waits for mutex1 (held by A)
+-> deadlock: neither A nor B can ever proceed
+```
+
+The simplest fix: impose a **total order**, arbitrary but identical for every thread, over the whole set of locks to be acquired (for instance, compare the two mutexes' memory addresses and always lock the one with the lower address first):
+
+```c
+if (mutex_a < mutex_b) {
+    pthread_mutex_lock(mutex_a);
+    pthread_mutex_lock(mutex_b);
+} else {
+    pthread_mutex_lock(mutex_b);
+    pthread_mutex_lock(mutex_a);
+}
+```
+
+It doesn't matter which thread arrives first or in what logical order the two locks are useful to it: every thread in the program follows the same rule (here, lowest address first), so no circular wait cycle can ever form.
+
+> **Best practice:** as soon as a function needs to lock several mutexes at once, define a single ordering rule and stick to it everywhere in the program, rather than locking in whatever order the locks happen to be mentioned locally in the code.
+
 ## Threads vs. Processes
 
 | | Process (`fork`) | Thread (`pthread`) |
@@ -96,5 +122,5 @@ void *incrementer(void *argument)
 |---|---|
 | **Key takeaways** | A thread shares memory with the other threads of the same program (unlike a process spawned by `fork()`), is lighter, but exposes shared data to *race conditions*. |
 | **Tools you can use** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. |
-| **Pitfalls to avoid** | Modifying a shared variable without protection (*race condition*); forgetting to unlock a mutex (*deadlock* if another thread waits indefinitely). |
-| **Best practices** | Protect any data shared between threads with a mutex, even for an operation that looks simple (`counter++` is not atomic). |
+| **Pitfalls to avoid** | Modifying a shared variable without protection (*race condition*); forgetting to unlock a mutex (*deadlock* if another thread waits indefinitely); locking several mutexes in a different order depending on the thread. |
+| **Best practices** | Protect any data shared between threads with a mutex, even for an operation that looks simple (`counter++` is not atomic). Always lock several mutexes in the same order (e.g. by memory address) to avoid any deadlock. |
