@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Fond étoilé : Louis revient sur le scope .chapterPage (2026-09-17)
+
+Après le correctif ci-dessous (scope restreint à `.chapterPage`, conforme au README à ce moment-là), Louis a testé en Live Server (port 5500) et signalé l'absence de fond sur l'accueil comme un problème, pas un comportement voulu : décision finale inversée, le traitement stylisé (starfield, panneaux, diamants) doit s'appliquer à toutes les pages (accueil/catégorie/sujet/chapitre), comme c'était le cas avant toute cette investigation. `.chapterPage` retiré de tous les sélecteurs de `content.css`, `README.md` mis à jour en conséquence. Le correctif de largeur (`body:has(.page)::before` fixed + `isolation: isolate`) reste, lui, inchangé et voulu.
+
 ## Fond étoilé des chapitres : scope manquant + régression body::before invisible (2026-09-17)
 
 Point todo #19 (étendre le fond étoilé à toute la largeur) a révélé un bug plus large en creusant `css/content.css` : `README.md` décrit le traitement stylisé (starfield, panneaux de paragraphe/liste, diamants de titre) comme scopé à `.chapterPage` (classe ajoutée uniquement par `renderChapter()`, `js/router.js:627`), mais aucune règle de `content.css` ne référençait réellement `.chapterPage` (grep vide) : tout s'appliquait via `.page` seul, donc en théorie aussi sur accueil/catégorie/sujet. Confirmé avec Louis avant correction (AskUserQuestion) : le scope `.chapterPage` est bien voulu, seule la largeur posait problème. Toutes les règles concernées requalifiées en `.page.chapterPage`.
