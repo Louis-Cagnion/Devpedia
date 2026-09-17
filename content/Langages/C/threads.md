@@ -105,6 +105,46 @@ Peu importe quel thread arrive en premier ni dans quel ordre logique les deux ve
 
 > **Bonne pratique :** dès qu'une fonction doit verrouiller plusieurs mutex à la fois, définir une règle d'ordre unique et s'y tenir partout dans le programme, plutôt que de verrouiller dans l'ordre où les verrous sont mentionnés localement dans le code.
 
+## Répartir un rendu entre threads : découper l'écran en bandes
+
+Un cas d'usage concret de parallélisme borné par le calcul (contrairement à un parallélisme qui attend surtout un réseau ou un disque) : répartir le [rendu par raycasting](/?c=fondamentaux&s=graphisme&p=rendu-3d-bas-niveau-et-fenetrage) entre plusieurs threads, chacun calculant une **bande verticale** de l'écran plutôt qu'un pool de tâches génériques :
+
+```text
+Ecran divise en N bandes verticales (N = nombre de threads) :
+  Thread 1 : colonnes 0 a 199
+  Thread 2 : colonnes 200 a 399
+  Thread 3 : colonnes 400 a 599
+  Thread 4 : colonnes 600 a 799 (recupere le reste si la division n'est pas exacte)
+```
+
+Plutôt que de créer et détruire des threads à chaque image (un coût inutile), chaque thread est créé **une seule fois** et reste actif tout le programme, ré-exécutant sa bande à chaque nouvelle image :
+
+```c
+pthread_mutex_t verrou_frame = PTHREAD_MUTEX_INITIALIZER;
+int frame_suivante_prete = 0;
+
+void *calculerBande(void *argument)
+{
+    while (1) {
+        pthread_mutex_lock(&verrou_frame);
+        while (!frame_suivante_prete) {
+            pthread_mutex_unlock(&verrou_frame);
+            usleep(1); // attente active : voir Mesurer le temps et attendre précisément
+            pthread_mutex_lock(&verrou_frame);
+        }
+        pthread_mutex_unlock(&verrou_frame);
+
+        // ... calculer la bande de colonnes assignée à ce thread ...
+    }
+}
+```
+
+> **Piège :** synchroniser le thread principal et les threads de rendu avec une attente active (`usleep()` en boucle sur un indicateur partagé) plutôt qu'une primitive dédiée. Ça fonctionne, mais gaspille du temps processeur à vérifier l'indicateur en boucle plutôt que de dormir jusqu'à ce qu'il change réellement.
+>
+> **Bonne pratique :** préférer une **variable de condition** (`pthread_cond_t`, `pthread_cond_wait()`/`pthread_cond_signal()`) à une attente active quand la disponibilité de l'outil le permet : le thread en attente est alors réellement suspendu, sans consommer de processeur, et réveillé uniquement quand l'état change.
+
+Ce pattern (répartir un calcul lourd entre threads persistants, chacun sur sa portion fixe des données) diffère du [parallélisme par workers indépendants](/?c=qualite-performance-et-outils&s=performance&p=parallelisme) déjà vu pour des tâches réseau/disque : ici, la contrainte est le processeur, les threads partagent la même mémoire (l'image en cours de construction), et le nombre de threads utiles est borné par le nombre de cœurs disponibles plutôt que par des cibles externes indépendantes.
+
 ## Threads vs processus
 
 | | Processus (`fork`) | Thread (`pthread`) |
@@ -121,6 +161,6 @@ Peu importe quel thread arrive en premier ni dans quel ordre logique les deux ve
 | | |
 |---|---|
 | **À retenir** | Un thread partage la mémoire avec les autres threads du même programme (contrairement à un processus issu de `fork()`), plus léger, mais expose à des *race conditions* sur les données partagées. |
-| **Outils utilisables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. |
+| **Outils utilisables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. Répartir un calcul lourd (un rendu) en bandes fixes entre threads persistants ; `pthread_cond_t` plutôt qu'une attente active pour les synchroniser. |
 | **Pièges à éviter** | Modifier une variable partagée sans protection (*race condition*) ; oublier de déverrouiller un mutex (*deadlock* si un autre thread attend indéfiniment) ; verrouiller plusieurs mutex dans un ordre différent selon le thread. |
 | **Bonnes pratiques** | Protéger toute donnée partagée entre threads par un mutex, y compris pour une opération qui paraît simple (`compteur++` n'est pas atomique). Verrouiller plusieurs mutex toujours dans le même ordre (ex. par adresse mémoire) pour éviter tout deadlock. |

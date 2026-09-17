@@ -105,6 +105,46 @@ No importa qué hilo llegue primero ni en qué orden lógico le sean útiles los
 
 > **Buena práctica:** en cuanto una función deba bloquear varios mutex a la vez, definir una única regla de orden y respetarla en todo el programa, en lugar de bloquear en el orden en que los candados aparecen mencionados localmente en el código.
 
+## Repartir un renderizado entre hilos: dividir la pantalla en bandas
+
+Un caso concreto de paralelismo limitado por el cálculo (a diferencia de un paralelismo que sobre todo espera una red o un disco): repartir un [renderizado por raycasting](/?c=fondamentaux&s=graphisme&p=rendu-3d-bas-niveau-et-fenetrage) entre varios hilos, cada uno calculando una **banda vertical** de la pantalla en lugar de un pool de tareas genéricas:
+
+```text
+Pantalla dividida en N bandas verticales (N = número de hilos):
+  Hilo 1: columnas 0 a 199
+  Hilo 2: columnas 200 a 399
+  Hilo 3: columnas 400 a 599
+  Hilo 4: columnas 600 a 799 (recoge el resto si la división no es exacta)
+```
+
+En lugar de crear y destruir hilos en cada frame (un coste innecesario), cada hilo se crea **una sola vez** y permanece activo durante todo el programa, reejecutando su banda en cada nuevo frame:
+
+```c
+pthread_mutex_t candado_frame = PTHREAD_MUTEX_INITIALIZER;
+int siguiente_frame_lista = 0;
+
+void *calcularBanda(void *argumento)
+{
+    while (1) {
+        pthread_mutex_lock(&candado_frame);
+        while (!siguiente_frame_lista) {
+            pthread_mutex_unlock(&candado_frame);
+            usleep(1); // espera activa: ver Medir el tiempo y esperar con precisión
+            pthread_mutex_lock(&candado_frame);
+        }
+        pthread_mutex_unlock(&candado_frame);
+
+        // ... calcular la banda de columnas asignada a este hilo ...
+    }
+}
+```
+
+> **Trampa:** sincronizar el hilo principal y los hilos de renderizado con una espera activa (`usleep()` en bucle sobre un indicador compartido) en lugar de una primitiva dedicada. Funciona, pero desperdicia tiempo de procesador comprobando el indicador en bucle en lugar de dormir hasta que realmente cambie.
+>
+> **Buena práctica:** preferir una **variable de condición** (`pthread_cond_t`, `pthread_cond_wait()`/`pthread_cond_signal()`) a una espera activa cuando la herramienta esté disponible: el hilo en espera queda entonces realmente suspendido, sin consumir procesador, y se despierta solo cuando el estado cambia.
+
+Este patrón (repartir un cálculo pesado entre hilos persistentes, cada uno sobre una porción fija de los datos) difiere del [paralelismo por workers independientes](/?c=qualite-performance-et-outils&s=performance&p=parallelisme) ya visto para tareas de red/disco: aquí, la restricción es el procesador, los hilos comparten la misma memoria (el frame en construcción), y el número útil de hilos está limitado por el número de núcleos disponibles en lugar de por objetivos externos independientes.
+
 ## Hilos frente a procesos
 
 | | Proceso (`fork`) | Hilo (`pthread`) |
@@ -121,6 +161,6 @@ No importa qué hilo llegue primero ni en qué orden lógico le sean útiles los
 | | |
 |---|---|
 | **Para recordar** | Un hilo comparte la memoria con los demás hilos del mismo programa (a diferencia de un proceso surgido de `fork()`), es más ligero, pero expone a *race conditions* sobre los datos compartidos. |
-| **Herramientas utilizables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. |
+| **Herramientas utilizables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. Repartir un cálculo pesado (un renderizado) en bandas fijas entre hilos persistentes; `pthread_cond_t` en lugar de una espera activa para sincronizarlos. |
 | **Trampas a evitar** | Modificar una variable compartida sin protección (*race condition*); olvidar desbloquear un mutex (*deadlock* si otro hilo espera indefinidamente); bloquear varios mutex en un orden distinto según el hilo. |
 | **Buenas prácticas** | Proteger todo dato compartido entre hilos con un mutex, incluso para una operación que parece simple (`contador++` no es atómica). Bloquear varios mutex siempre en el mismo orden (ej. por dirección de memoria) para evitar cualquier deadlock. |

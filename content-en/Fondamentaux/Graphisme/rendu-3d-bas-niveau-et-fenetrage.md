@@ -83,7 +83,77 @@ Once that distance is known, the wall height to draw on screen for that column f
 
 > **Pitfall:** advancing the ray in fixed steps that are too large, which can make it "jump" over a thin wall without ever detecting the collision. A step that's too small, on the other hand, slows down the computation for every column of the image.
 >
-> **Best practice:** use a grid-stepping algorithm (*DDA*, *Digital Differential Analyzer*) that jumps directly from one grid cell to the next instead of advancing in small fixed steps, guaranteeing no wall is missed while staying fast.
+> **Best practice:** use a grid-stepping algorithm (*DDA*, *Digital Differential Analyzer*) that jumps directly from one grid cell to the next instead of advancing in small fixed steps, guaranteeing no wall is missed while staying fast (detailed below).
+
+## The DDA algorithm: stepping grid cell by grid cell
+
+The previous approach (advancing the ray "step by step") works, but wastes computation: a small step can land in the same map cell several times before reaching the next one. **DDA** advances directly from grid cell to grid cell, computing at each step the distance to the next vertical grid line and to the next horizontal grid line, then picking whichever is closer:
+
+```text
+At each DDA step:
+  distance_x = distance to the next vertical grid line
+  distance_y = distance to the next horizontal grid line
+  if distance_x < distance_y:
+    advance to that vertical line (side of the potential wall hit: X)
+  else:
+    advance to that horizontal line (side of the potential wall hit: Y)
+  repeat until a wall is hit
+```
+
+This choice (vertical or horizontal) also records which **side** a wall is eventually hit on (north/south or east/west), information reused later to pick the right texture or slightly darken one side relative to the other.
+
+## Correcting the fisheye effect with the camera plane vector
+
+Each ray is built from two vectors: the player's **direction** (`direction_x`/`direction_y`) and a **camera plane** vector, perpendicular to the direction, representing the width of the field of view. A factor `cam_x`, sweeping from `-1` (left edge of the screen) to `1` (right edge), combines both to get the exact ray direction for each column:
+
+```text
+ray_direction = player_direction + camera_plane * cam_x
+```
+
+> **Pitfall:** using the real Euclidean distance between the player and the ray's impact point to compute the wall height on screen. Rays for the side columns travel a longer straight-line distance than the center one to reach the same wall, which would visually bend straight walls near the edges of the screen: the **fisheye** effect.
+>
+> **Best practice:** use the **perpendicular** distance to the player's direction (the distance projected onto the direction axis, rather than the straight-line distance) to compute the wall height. This correction removes the fisheye effect with no extra trigonometric computation: it's a direct byproduct of building the ray from the camera plane vector.
+
+## Mapping a texture onto a raycasted wall
+
+Once the ray's impact point is known, its **fractional** position along the hit wall (`wall_x`, the decimal part of the impact coordinate) directly gives the horizontal coordinate to read in the texture (`tex_x`):
+
+```text
+wall_x = fractional part of the impact point on the wall
+tex_x  = wall_x * texture_width
+```
+
+Vertically, a step (`step = texture_height / wall_height_on_screen`) advances through the texture one screen pixel at a time: this scale factor automatically adapts to distance, a near wall (tall on screen) moves through the texture slowly, a far wall (short on screen) stretches it. The side hit by the ray (recorded by the DDA above) determines which texture to use (north/south/east/west).
+
+## Displaying a sprite in a raycasted scene
+
+A **sprite** (a 2D object, like a character or a pickup item) has no volume in the raycasted world: it must be transformed to appear at the right position and size on screen, always facing the camera (a *billboard*, like an advertising panel always turned toward the viewer).
+
+The sprite's position relative to the player is transformed by the inverse of the camera matrix (built from the direction and camera plane already used for the rays); this computation directly gives its horizontal position on screen and its apparent distance (hence its size).
+
+> **Pitfall:** drawing a sprite without checking what has already been drawn at that spot on screen. A sprite farther away than a wall that hides it should stay invisible, otherwise it appears through walls.
+>
+> **Best practice:** keep, for every screen column, the distance of the wall already drawn by raycasting (a **z-buffer**, literally a "depth buffer"); before drawing a sprite pixel, compare its distance against the one already recorded for that column, and only draw it if it's closer. This depth test is the same principle, simplified to one dimension (one value per column rather than per pixel), as the z-buffer used in every modern 3D engine.
+
+## Simulating an infinite mouse
+
+To rotate the camera with the mouse without the cursor ever leaving the window (as in a first-person shooter), a simple technique **recenters** the cursor as soon as it gets close to a screen edge:
+
+```c
+void onMouseMove(int x, int y)
+{
+    if (x <= 10) {
+        mlx_mouse_move(window, screen_width - 11, y); // moves it near the opposite edge
+    } else if (x >= screen_width - 10) {
+        mlx_mouse_move(window, 11, y);
+    }
+    // ... use x - last_x to rotate the camera ...
+}
+```
+
+Only the **relative** movement between two successive positions (`x - last_x`) is used to rotate the camera: repositioning the cursor itself is just a trick to never be blocked by the window's edge, invisible to the user since no rotation is computed from the absolute position.
+
+> **Note:** this approach (teleporting the cursor) differs from the **pointer lock** used by web browsers for the same need, which fully hides and locks the cursor instead of moving it: two different solutions to the same problem.
 
 ## What raycasting doesn't compute
 
@@ -95,7 +165,7 @@ Classic raycasting only handles a single height level per column: it can't repre
 
 | | |
 |---|---|
-| **To remember** | A windowing library (X11, MinilibX) gives access to a display area and to keyboard/mouse events through a loop that runs continuously. Raycasting simulates 3D by casting one ray per pixel column onto a 2D map, the distance to the hit wall determining its height on screen. |
-| **Usable tools** | MinilibX/X11 for windowing on Linux. `mlx_get_data_addr()` to write directly into the image buffer rather than pixel by pixel. A DDA algorithm to advance the ray efficiently across the map's grid. |
-| **Pitfalls to avoid** | Redrawing the whole image every pass with no condition. Advancing the ray in fixed steps that are too large, risking missing a thin wall. Forgetting to divide `bits_per_pixel` by 8 when writing into the buffer. |
-| **Best practices** | Only redraw after an actual change in the game state. Use a DDA rather than small fixed steps to advance the ray. |
+| **To remember** | A windowing library (X11, MinilibX) gives access to a display area and to keyboard/mouse events through a loop that runs continuously. Raycasting simulates 3D by stepping a ray per pixel column (DDA) across a 2D map, the perpendicular distance to the hit wall determining its height on screen without a fisheye effect. |
+| **Usable tools** | MinilibX/X11 for windowing on Linux. `mlx_get_data_addr()` to write directly into the image buffer rather than pixel by pixel. DDA to advance the ray efficiently; a per-column z-buffer to correctly occlude sprites behind a wall. |
+| **Pitfalls to avoid** | Redrawing the whole image every pass with no condition. Advancing the ray in fixed steps that are too large, risking missing a thin wall. Forgetting to divide `bits_per_pixel` by 8 when writing into the buffer. Using the Euclidean distance instead of the perpendicular one (fisheye effect). Drawing a sprite without a depth test. |
+| **Best practices** | Only redraw after an actual change in the game state. Use a DDA rather than small fixed steps to advance the ray. Recenter the cursor near the edges for an infinite mouse, relying only on relative movement. |

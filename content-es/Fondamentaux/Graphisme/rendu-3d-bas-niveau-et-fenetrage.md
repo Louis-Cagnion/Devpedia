@@ -83,7 +83,77 @@ Una vez conocida esa distancia, la altura de pared a dibujar en pantalla para es
 
 > **Trampa:** avanzar el rayo en pasos fijos demasiado grandes, lo que puede hacer que "salte" por encima de una pared delgada sin llegar a detectar la colisión. Un paso demasiado pequeño, en cambio, ralentiza el cálculo para cada columna de la imagen.
 >
-> **Buena práctica:** usar un algoritmo de avance por rejilla (*DDA*, *Digital Differential Analyzer*) que salta directamente de una celda de la rejilla a la siguiente en lugar de avanzar en pequeños pasos fijos, garantizando que ninguna pared se pase por alto sin dejar de ser rápido.
+> **Buena práctica:** usar un algoritmo de avance por rejilla (*DDA*, *Digital Differential Analyzer*) que salta directamente de una celda de la rejilla a la siguiente en lugar de avanzar en pequeños pasos fijos, garantizando que ninguna pared se pase por alto sin dejar de ser rápido (detallado más abajo).
+
+## El algoritmo DDA: avanzar celda de rejilla en celda de rejilla
+
+El enfoque anterior (avanzar el rayo "paso a paso") funciona, pero desperdicia cálculo: un paso pequeño puede caer varias veces en la misma celda del mapa antes de alcanzar la siguiente. El **DDA** avanza directamente de celda de rejilla en celda de rejilla, calculando en cada paso la distancia hasta la próxima línea vertical de la rejilla y hasta la próxima línea horizontal, y eligiendo luego la más cercana de las dos:
+
+```text
+En cada paso del DDA:
+  distancia_x = distancia hasta la próxima línea vertical de la rejilla
+  distancia_y = distancia hasta la próxima línea horizontal de la rejilla
+  si distancia_x < distancia_y:
+    avanzar hasta esa línea vertical (lado del muro potencialmente golpeado: X)
+  si no:
+    avanzar hasta esa línea horizontal (lado del muro potencialmente golpeado: Y)
+  repetir hasta golpear una pared
+```
+
+Esta elección (vertical u horizontal) también memoriza por qué **lado** se golpea eventualmente una pared (norte/sur o este/oeste), información reutilizada más adelante para elegir la textura correcta u oscurecer ligeramente un lado respecto al otro.
+
+## Corregir el efecto fisheye con el vector del plano de cámara
+
+Cada rayo se construye a partir de dos vectores: la **dirección** del jugador (`direction_x`/`direction_y`) y un vector **plano de cámara**, perpendicular a la dirección, que representa el ancho del campo de visión. Un factor `cam_x`, que barre de `-1` (borde izquierdo de la pantalla) a `1` (borde derecho), combina ambos para obtener la dirección exacta del rayo de cada columna:
+
+```text
+direccion_rayo = direccion_jugador + plano_camara * cam_x
+```
+
+> **Trampa:** usar la distancia euclidiana real entre el jugador y el punto de impacto del rayo para calcular la altura de la pared en pantalla. Los rayos de las columnas laterales recorren una distancia en línea recta más larga que el del centro para alcanzar la misma pared, lo que curvaría visualmente las paredes rectas en los bordes de la pantalla: el efecto **fisheye**.
+>
+> **Buena práctica:** usar la distancia **perpendicular** a la dirección del jugador (la distancia proyectada sobre el eje de dirección, en lugar de la distancia en línea recta) para calcular la altura de la pared. Esta corrección elimina el efecto fisheye sin ningún cálculo trigonométrico adicional: es un subproducto directo de construir el rayo mediante el vector del plano de cámara.
+
+## Aplicar una textura sobre una pared raycasteada
+
+Una vez conocido el punto de impacto del rayo, su posición **fraccionaria** a lo largo de la pared golpeada (`wall_x`, la parte decimal de la coordenada de impacto) da directamente la coordenada horizontal a leer en la textura (`tex_x`):
+
+```text
+wall_x = parte fraccionaria del punto de impacto sobre la pared
+tex_x  = wall_x * ancho_textura
+```
+
+Verticalmente, un paso (`step = alto_textura / alto_pared_en_pantalla`) permite avanzar en la textura píxel de pantalla por píxel de pantalla: este factor de escala se adapta automáticamente a la distancia, una pared cercana (alta en pantalla) recorre la textura lentamente, una pared lejana (baja en pantalla) la estira. El lado golpeado por el rayo (registrado por el DDA anterior) determina qué textura usar (norte/sur/este/oeste).
+
+## Mostrar un sprite en una escena raycasteada
+
+Un **sprite** (un objeto 2D, como un personaje o un objeto recogible) no tiene volumen en el mundo raycasteado: debe transformarse para aparecer en la posición y el tamaño correctos en pantalla, siempre de cara a la cámara (un *billboard*, como un panel publicitario siempre orientado hacia el observador).
+
+La posición del sprite relativa al jugador se transforma mediante la inversa de la matriz de cámara (construida a partir de la dirección y el plano de cámara ya usados para los rayos); este cálculo da directamente su posición horizontal en pantalla y su distancia aparente (por tanto, su tamaño).
+
+> **Trampa:** dibujar un sprite sin comprobar qué se ha dibujado ya en ese lugar de la pantalla. Un sprite más lejano que una pared que lo oculta debe permanecer invisible, si no aparece a través de las paredes.
+>
+> **Buena práctica:** guardar en memoria, para cada columna de pantalla, la distancia de la pared ya dibujada por el raycasting (un **z-buffer**, literalmente "búfer de profundidad"); antes de dibujar un píxel de sprite, comparar su distancia con la ya registrada para esa columna, y dibujarlo solo si está más cerca. Esta prueba de profundidad es el mismo principio, simplificado a una dimensión (un valor por columna en lugar de por píxel), que el z-buffer usado en todos los motores 3D modernos.
+
+## Simular un ratón infinito
+
+Para rotar la cámara con el ratón sin que el cursor salga nunca de la ventana (como en un juego de disparos en primera persona), una técnica simple **recentra** el cursor en cuanto se acerca a un borde de la pantalla:
+
+```c
+void alMoverRaton(int x, int y)
+{
+    if (x <= 10) {
+        mlx_mouse_move(ventana, ancho_pantalla - 11, y); // lo recoloca cerca del borde opuesto
+    } else if (x >= ancho_pantalla - 10) {
+        mlx_mouse_move(ventana, 11, y);
+    }
+    // ... usar x - ultimo_x para rotar la cámara ...
+}
+```
+
+Solo el movimiento **relativo** entre dos posiciones sucesivas (`x - ultimo_x`) se usa para rotar la cámara: reposicionar el cursor en sí no es más que un truco para no quedar nunca bloqueado por el borde de la ventana, invisible para el usuario ya que ninguna rotación se calcula a partir de la posición absoluta.
+
+> **Nota:** este enfoque (teletransportar el cursor) difiere del **pointer lock** usado por los navegadores web para la misma necesidad, que oculta y bloquea completamente el cursor en lugar de moverlo: dos soluciones distintas al mismo problema.
 
 ## Lo que el raycasting no calcula
 
@@ -95,7 +165,7 @@ El raycasting clásico solo gestiona un único nivel de altura por columna: no p
 
 | | |
 |---|---|
-| **A recordar** | Una biblioteca de ventanas (X11, MinilibX) da acceso a una zona de visualización y a los eventos de teclado/ratón mediante un bucle que se ejecuta continuamente. El raycasting simula la 3D lanzando un rayo por columna de píxeles sobre un mapa 2D, siendo la distancia a la pared golpeada lo que determina su altura en pantalla. |
-| **Herramientas utilizables** | MinilibX/X11 para las ventanas en Linux. `mlx_get_data_addr()` para escribir directamente en el buffer de la imagen en lugar de píxel a píxel. Un algoritmo DDA para avanzar el rayo eficazmente sobre la rejilla del mapa. |
-| **Trampas a evitar** | Redibujar toda la imagen en cada pasada sin ninguna condición. Avanzar el rayo en pasos fijos demasiado grandes, arriesgándose a pasar por alto una pared delgada. Olvidar dividir `bits_per_pixel` entre 8 al escribir en el buffer. |
-| **Buenas prácticas** | Redibujar solo tras un cambio real en el estado del juego. Usar un DDA en lugar de pequeños pasos fijos para avanzar el rayo. |
+| **A recordar** | Una biblioteca de ventanas (X11, MinilibX) da acceso a una zona de visualización y a los eventos de teclado/ratón mediante un bucle que se ejecuta continuamente. El raycasting simula la 3D avanzando un rayo por columna de píxeles (DDA) sobre un mapa 2D, siendo la distancia perpendicular a la pared golpeada lo que determina su altura en pantalla sin efecto fisheye. |
+| **Herramientas utilizables** | MinilibX/X11 para las ventanas en Linux. `mlx_get_data_addr()` para escribir directamente en el buffer de la imagen en lugar de píxel a píxel. El DDA para avanzar el rayo eficazmente; un z-buffer por columna para ocluir correctamente los sprites detrás de una pared. |
+| **Trampas a evitar** | Redibujar toda la imagen en cada pasada sin ninguna condición. Avanzar el rayo en pasos fijos demasiado grandes, arriesgándose a pasar por alto una pared delgada. Olvidar dividir `bits_per_pixel` entre 8 al escribir en el buffer. Usar la distancia euclidiana en lugar de la perpendicular (efecto fisheye). Dibujar un sprite sin prueba de profundidad. |
+| **Buenas prácticas** | Redibujar solo tras un cambio real en el estado del juego. Usar un DDA en lugar de pequeños pasos fijos para avanzar el rayo. Recentrar el cursor cerca de los bordes para un ratón infinito, basándose solo en el movimiento relativo. |

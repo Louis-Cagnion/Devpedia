@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Item todo #12 terminé (DDA/fisheye, texture mapping, sprite billboarding/z-buffer, souris infinie, bandes de rendu) (2026-09-17)
+
+5 notions ajoutées (4 langues chacune), aucun nouveau chapitre : DDA, correction fisheye (vecteur plan caméra), texture mapping, sprite billboarding + z-buffer, souris infinie, toutes ajoutées à `rendu-3d-bas-niveau-et-fenetrage.md` (déjà le chapitre de référence pour le raycasting) ; parallélisation d'un rendu par bandes de threads ajoutée à `threads.md` plutôt qu'à `parallelisme.md` (process/Python, registre différent de ce pattern CPU-bound en C). Aucun nouveau chapitre donc aucune régénération de `struct.json` nécessaire cette fois.
+
 ## Item todo #11 terminé (dîner des philosophes, sémaphores POSIX, mesure du temps) (2026-09-17)
 
 3 ajouts (4 langues chacun) : section deadlock par ordre total sur les verrous (nommant explicitement le problème du dîner des philosophes) ajoutée à `threads.md` ; nouveau chapitre `semaphores.md` (sem_open/sem_wait/sem_post/sem_close/sem_unlink) ; nouveau chapitre `mesure-du-temps.md` (gettimeofday, imprécision d'usleep, attente active). Tous trois sous `Langages/C`. Vérifié au passage que la convention BR (commentaires de code systématiquement sans accents, contrairement au FR/ES) était bien respectée dans mes propres ajouts.
