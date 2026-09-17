@@ -108,6 +108,31 @@ A norma reserva certas combinações de bits para valores especiais, presentes e
 
 `NaN` tem uma propriedade propositalmente surpreendente: **não é igual a nada, nem mesmo a si mesmo**. `NaN == NaN` é falso. Isso é coerente (dois resultados inválidos não têm motivo para ser "o mesmo número"), mas exige usar uma função dedicada para detectá-lo (`isnan()` em C, `math.isnan()` em Python, `Number.isNaN()` em JavaScript).
 
+## Uma alternativa: a representação em ponto fixo
+
+Em vez de sacrificar a precisão para cobrir uma faixa enorme de valores (como faz um float), a **representação em ponto fixo** (*fixed-point*) armazena um número decimal como um inteiro comum, cujos últimos bits representam por convenção a parte fracionária:
+
+```text
+Com 8 bits fracionarios:
+  valor real = inteiro_armazenado / 2^8
+
+  inteiro_armazenado = 2560  ->  2560 / 256 = 10.0
+  inteiro_armazenado = 2688  ->  2688 / 256 = 10.5
+```
+
+Converter um inteiro comum para ponto fixo equivale a multiplicá-lo por `2^bits_fracionarios` (`10 * 256 = 2560`); converter no sentido inverso (para inteiro ou float) equivale a dividir por esse mesmo valor.
+
+| | Float (IEEE 754) | Ponto fixo |
+|---|---|---|
+| Armazenamento | Sinal + expoente + mantissa | Um inteiro comum |
+| Precisão | Relativa (depende da ordem de grandeza) | Fixa e constante (sempre o mesmo número de casas decimais) |
+| Cálculo | Requer uma unidade de ponto flutuante (FPU) | Operações inteiras simples, mais rápidas e determinísticas |
+| Uso típico | Cálculo científico, faixa de valores muito ampla | Embarcado sem FPU, jogos retrô, sinal de áudio/DSP |
+
+> **Boa prática:** o ponto fixo garante um resultado estritamente idêntico em qualquer máquina (diferente de um float, cujo arredondamento pode variar levemente conforme o compilador ou o processador): útil sempre que um cálculo precisar continuar reprodutível bit a bit, por exemplo em um jogo multijogador em que cada cliente deve obter exatamente o mesmo resultado.
+
+É a técnica por trás do formato **Q** (*Q number format*), ainda usado hoje por alguns processadores digitais de sinal (DSP) que não possuem uma unidade de ponto flutuante.
+
 ## O que cada linguagem adiciona
 
 A base é comum; as linguagens diferem apenas na embalagem:
@@ -139,6 +164,6 @@ Lembre-se principalmente de que essas diferenças não mudam nada no fundo: é o
 | | |
 |---|---|
 | **O que reter** | Um float (norma IEEE 754) armazena uma aproximação, não um valor exato: `0.1 + 0.2 != 0.3` em todas as linguagens, sem exceção. A precisão é relativa: quanto maior um número, maior o intervalo entre dois floats consecutivos. |
-| **Ferramentas úteis** | Comparação por epsilon (`math.isclose`, `fabs(a-b) < epsilon`), tipos `DECIMAL` para valores exatos. |
+| **Ferramentas úteis** | Comparação por epsilon (`math.isclose`, `fabs(a-b) < epsilon`), tipos `DECIMAL` para valores exatos. Ponto fixo para um resultado reprodutível bit a bit sem FPU. |
 | **Armadilhas a evitar** | Comparar dois floats com `==`; armazenar um valor monetário em float em vez de inteiros (centavos) ou `DECIMAL`. |
 | **Boas práticas** | Escolher um epsilon adequado à ordem de grandeza manipulada, nunca o epsilon de máquina por padrão para valores grandes. |

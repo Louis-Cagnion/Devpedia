@@ -111,11 +111,43 @@ This result isn't a coincidence specific to this example: dividing each componen
 >
 > **Best practice:** check that a vector isn't zero before normalizing it, rather than letting the program fail on a division by zero.
 
+## Geometric test: is a point inside a triangle?
+
+Given a triangle formed by three points `A`, `B`, `C` and a point `P` to test, a simple method compares **areas**: compute the area of the full triangle `ABC`, then the sum of the areas of the three sub-triangles formed by `P` and each pair of vertices (`P-A-B`, `P-B-C`, `P-C-A`). If that sum equals the full triangle's area, `P` is inside; if `P` were outside, the sum of the sub-areas would be strictly greater.
+
+A triangle's area, given its three vertices' coordinates, can be computed directly, without ever building a height or an angle, via a determinant:
+
+```text
+area(A, B, C) = |  (Bx-Ax)*(Cy-Ay) - (Cx-Ax)*(By-Ay)  |  / 2
+```
+
+```c
+double area(double ax, double ay, double bx, double by, double cx, double cy)
+{
+    return fabs((bx - ax) * (cy - ay) - (cx - ax) * (by - ay)) / 2.0;
+}
+
+int pointInTriangle(double px, double py, double ax, double ay, double bx, double by, double cx, double cy)
+{
+    double totalArea = area(ax, ay, bx, by, cx, cy);
+    double subArea1 = area(px, py, ax, ay, bx, by);
+    double subArea2 = area(px, py, bx, by, cx, cy);
+    double subArea3 = area(px, py, cx, cy, ax, ay);
+    double epsilon = 0.0001;
+
+    return fabs(totalArea - (subArea1 + subArea2 + subArea3)) < epsilon;
+}
+```
+
+> **Pitfall:** comparing the two areas with a strict equality (`==`). As with any [floating-point](/?c=donnees&s=representation-des-donnees&p=nombres-flottants) comparison, a small error margin (epsilon) is essential to tolerate computation imprecision.
+>
+> **Best practice:** this technique (summing sub-triangle areas) is an alternative to two other classic methods for the same test: barycentric coordinates, or a per-edge cross-sign test (checking that `P` is on the same side of each of the three edges); all three give the same result, the choice mostly depends on what the rest of the program already computes.
+
 ## Key takeaways
 
 | | |
 |---|---|
 | **Key takeaways** | A vector is an ordered list of numbers treated as a single entity. The dot product reduces two vectors of the same dimension to a single number, which measures how much they point in the same direction. The norm is a vector's length. |
-| **Tools you can use** | No specific tool for computing by hand; in practice, a library like [NumPy](/?c=data-science&p=numpy) performs these operations directly on whole vectors, with no explicit loop. |
-| **Pitfalls to avoid** | Adding or combining two vectors of different dimensions. Normalizing a zero vector (division by a norm of 0). |
+| **Tools you can use** | No specific tool for computing by hand; in practice, a library like [NumPy](/?c=data-science&p=numpy) performs these operations directly on whole vectors, with no explicit loop. Determinant-based area for a point-in-triangle test. |
+| **Pitfalls to avoid** | Adding or combining two vectors of different dimensions. Normalizing a zero vector (division by a norm of 0). Comparing two floating-point areas with strict equality. |
 | **Best practices** | Check that two vectors have the same dimension before any operation between them. Document what each component of a vector represents as soon as it's created. |

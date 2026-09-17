@@ -108,6 +108,31 @@ The standard reserves certain bit combinations for special values, present in ev
 
 `NaN` has a deliberately surprising property: **it's equal to nothing, not even itself**. `NaN == NaN` is false. This is consistent (two invalid results have no reason to be "the same number"), but it means a dedicated function is required to detect it (`isnan()` in C, `math.isnan()` in Python, `Number.isNaN()` in JavaScript).
 
+## An alternative: fixed-point representation
+
+Rather than sacrificing precision to cover a huge range of values (as a float does), **fixed-point representation** stores a decimal number as an ordinary integer, whose last bits conventionally represent the fractional part:
+
+```text
+With 8 fractional bits:
+  actual value = stored_integer / 2^8
+
+  stored_integer = 2560  ->  2560 / 256 = 10.0
+  stored_integer = 2688  ->  2688 / 256 = 10.5
+```
+
+Converting a plain integer to fixed-point amounts to multiplying it by `2^fractional_bits` (`10 * 256 = 2560`); converting back (to an integer or a float) amounts to dividing by that same value.
+
+| | Float (IEEE 754) | Fixed-point |
+|---|---|---|
+| Storage | Sign + exponent + mantissa | An ordinary integer |
+| Precision | Relative (depends on magnitude) | Fixed and constant (always the same number of decimals) |
+| Computation | Requires a floating-point unit (FPU) | Plain integer operations, faster and deterministic |
+| Typical use | Scientific computing, very wide value range | Embedded without an FPU, retro video games, audio/DSP |
+
+> **Best practice:** fixed-point guarantees a strictly identical result on every machine (unlike a float, whose rounding can vary slightly across compilers or processors): useful whenever a computation must stay bit-for-bit reproducible, for instance in a multiplayer game where every client must get exactly the same result.
+
+This is the technique behind the **Q** number format, still used today by some digital signal processors (DSPs) that have no floating-point unit on board.
+
 ## What each language adds on top
 
 The foundation is common; languages only differ in the packaging:
@@ -139,6 +164,6 @@ Above all, remember that these differences change nothing about the fundamentals
 | | |
 |---|---|
 | **Key takeaways** | A float (IEEE 754 standard) stores an approximation, not an exact value: `0.1 + 0.2 != 0.3` in every language, with no exception. Precision is relative: the larger a number is, the bigger the gap between two consecutive floats. |
-| **Tools you can use** | Epsilon-based comparison (`math.isclose`, `fabs(a-b) < epsilon`), `DECIMAL` types for exact amounts. |
+| **Tools you can use** | Epsilon-based comparison (`math.isclose`, `fabs(a-b) < epsilon`), `DECIMAL` types for exact amounts. Fixed-point for a bit-for-bit reproducible result with no FPU. |
 | **Pitfalls to avoid** | Comparing two floats with `==`; storing a monetary amount as a float rather than as integers (cents) or `DECIMAL`. |
 | **Best practices** | Choose an epsilon suited to the order of magnitude being handled, never the default machine epsilon for large values. |

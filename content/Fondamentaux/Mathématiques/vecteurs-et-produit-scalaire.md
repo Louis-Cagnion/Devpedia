@@ -111,11 +111,43 @@ Ce résultat n'est pas une coïncidence propre à cet exemple : diviser chaque c
 >
 > **Bonne pratique :** vérifier qu'un vecteur n'est pas nul avant de le normaliser, plutôt que de laisser le programme échouer sur une division par zéro.
 
+## Test géométrique : un point est-il à l'intérieur d'un triangle ?
+
+Étant donné un triangle formé par trois points `A`, `B`, `C` et un point `P` à tester, une méthode simple consiste à comparer des **aires** : calculer l'aire du triangle complet `ABC`, puis la somme des aires des trois sous-triangles formés par `P` et chaque paire de sommets (`P-A-B`, `P-B-C`, `P-C-A`). Si cette somme est égale à l'aire du triangle complet, `P` est à l'intérieur ; si `P` était à l'extérieur, la somme des sous-aires serait strictement supérieure.
+
+L'aire d'un triangle à partir des coordonnées de ses trois sommets se calcule directement, sans jamais construire de hauteur ni d'angle, via un déterminant :
+
+```text
+aire(A, B, C) = |  (Bx-Ax)*(Cy-Ay) - (Cx-Ax)*(By-Ay)  |  / 2
+```
+
+```c
+double aire(double ax, double ay, double bx, double by, double cx, double cy)
+{
+    return fabs((bx - ax) * (cy - ay) - (cx - ax) * (by - ay)) / 2.0;
+}
+
+int pointDansTriangle(double px, double py, double ax, double ay, double bx, double by, double cx, double cy)
+{
+    double aireTotale = aire(ax, ay, bx, by, cx, cy);
+    double aireSous1 = aire(px, py, ax, ay, bx, by);
+    double aireSous2 = aire(px, py, bx, by, cx, cy);
+    double aireSous3 = aire(px, py, cx, cy, ax, ay);
+    double epsilon = 0.0001;
+
+    return fabs(aireTotale - (aireSous1 + aireSous2 + aireSous3)) < epsilon;
+}
+```
+
+> **Piège :** comparer les deux aires avec une égalité stricte (`==`). Comme pour toute comparaison de [nombres flottants](/?c=donnees&s=representation-des-donnees&p=nombres-flottants), une petite marge d'erreur (epsilon) est indispensable pour tolérer l'imprécision des calculs.
+>
+> **Bonne pratique :** cette technique (sommer les aires de sous-triangles) est une alternative à deux autres méthodes classiques pour le même test : les coordonnées barycentriques, ou un test de signe croisé par arête (vérifier que `P` est du même côté de chacune des trois arêtes) ; les trois donnent le même résultat, le choix dépend surtout de ce que le reste du programme calcule déjà.
+
 ## Ce qu'il faut retenir
 
 | | |
 |---|---|
 | **À retenir** | Un vecteur est une liste ordonnée de nombres traitée comme une seule entité. Le produit scalaire réduit deux vecteurs de même dimension à un seul nombre, qui mesure à quel point ils pointent dans la même direction. La norme est la longueur d'un vecteur. |
-| **Outils utilisables** | Aucun outil spécifique pour le calcul à la main ; en pratique, une bibliothèque comme [NumPy](/?c=data-science&p=numpy) effectue ces opérations directement sur des vecteurs entiers, sans boucle explicite. |
-| **Pièges à éviter** | Additionner ou combiner deux vecteurs de dimensions différentes. Normaliser un vecteur nul (division par une norme de 0). |
+| **Outils utilisables** | Aucun outil spécifique pour le calcul à la main ; en pratique, une bibliothèque comme [NumPy](/?c=data-science&p=numpy) effectue ces opérations directement sur des vecteurs entiers, sans boucle explicite. Le calcul d'aire par déterminant pour un test point-dans-triangle. |
+| **Pièges à éviter** | Additionner ou combiner deux vecteurs de dimensions différentes. Normaliser un vecteur nul (division par une norme de 0). Comparer deux aires flottantes avec une égalité stricte. |
 | **Bonnes pratiques** | Vérifier que deux vecteurs ont la même dimension avant toute opération entre eux. Documenter ce que représente chaque composante d'un vecteur dès sa création. |

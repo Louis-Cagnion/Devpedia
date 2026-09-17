@@ -68,6 +68,45 @@ private:
 
 El destructor (`~NombreClase()`) se ejecuta automáticamente en cuanto el objeto se destruye (fin de ámbito para un objeto local, `delete` para un objeto asignado dinámicamente): es la base del mecanismo [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii), central en C++ para no olvidar nunca liberar un recurso.
 
+## La forma canónica ortodoxa (Rule of Three)
+
+Una clase que gestiona ella misma un recurso (memoria asignada dinámicamente, un archivo abierto...) debe definir cuatro miembros especiales juntos, nunca solo algunos: el constructor por defecto, el **constructor de copia**, el **operador de asignación por copia**, y el destructor (visto más arriba). Esta convención se llama la **forma canónica ortodoxa** (*Rule of Three*).
+
+```cpp
+class Arreglo {
+public:
+    Arreglo(int tamano) : tamano(tamano), datos(new int[tamano]) {}
+
+    // Constructor de copia: construye un NUEVO objeto a partir de otro ya existente
+    Arreglo(const Arreglo &otro) : tamano(otro.tamano), datos(new int[otro.tamano]) {
+        for (int i = 0; i < tamano; i++) datos[i] = otro.datos[i];
+    }
+
+    // Operador de asignación por copia: copia DENTRO de un objeto ya construido
+    Arreglo &operator=(const Arreglo &otro) {
+        if (this != &otro) {   // protección contra la autoasignación (a = a)
+            delete[] datos;
+            tamano = otro.tamano;
+            datos = new int[tamano];
+            for (int i = 0; i < tamano; i++) datos[i] = otro.datos[i];
+        }
+        return *this;   // permite el encadenamiento: a = b = c
+    }
+
+    ~Arreglo() { delete[] datos; }
+
+private:
+    int tamano;
+    int *datos;
+};
+```
+
+Sin constructor de copia ni operador de asignación explícitos, C++ genera versiones por defecto que copian cada miembro **tal cual** (una copia superficial): para un puntero como `datos`, eso copia la dirección, nunca los datos apuntados. Dos objetos terminarían entonces compartiendo el mismo bloque de memoria, y el primer destructor que se ejecute liberaría memoria que el otro objeto todavía cree válida.
+
+> **Trampa:** olvidar la comprobación `this != &otro` en el operador de asignación. En una **autoasignación** (`a = a`), `delete[] datos` liberaría la memoria antes de que el bucle intente releerla desde sí misma: un use-after-free sobre sus propios datos.
+>
+> **Buena práctica:** implementar los cuatro miembros juntos en cuanto uno solo sea necesario, nunca un subconjunto: un constructor de copia sin operador de asignación correspondiente (o al revés) es una señal fuerte de olvido, no una elección deliberada.
+
 ## Métodos `const`
 
 ```cpp
@@ -99,6 +138,6 @@ Véase también [Herencia y polimorfismo](/?c=langages-de-programmation&s=cpp&p=
 | | |
 |---|---|
 | **Para recordar** | Una clase agrupa datos y métodos, con un control de acceso (`public`/`private`/`protected`). El constructor inicializa el objeto, el destructor libera sus recursos automáticamente al final de su ámbito. |
-| **Herramientas utilizables** | Lista de inicialización (`: miembro(valor)`), métodos `const`, miembros/métodos `static`. |
-| **Trampas a evitar** | Olvidar que una clase oculta sus miembros por defecto (`private` implícito), a diferencia de un `struct` de C, enteramente público. |
-| **Buenas prácticas** | Preferir la lista de inicialización a una asignación en el cuerpo del constructor; marcar `const` todo método que no modifique el objeto. |
+| **Herramientas utilizables** | Lista de inicialización (`: miembro(valor)`), métodos `const`, miembros/métodos `static`. Constructor de copia y operador de asignación para una clase que gestiona un recurso. |
+| **Trampas a evitar** | Olvidar que una clase oculta sus miembros por defecto (`private` implícito), a diferencia de un `struct` de C, enteramente público. Olvidar la protección contra la autoasignación en `operator=`. |
+| **Buenas prácticas** | Preferir la lista de inicialización a una asignación en el cuerpo del constructor; marcar `const` todo método que no modifique el objeto. Implementar los cuatro miembros de la forma canónica juntos, nunca un subconjunto. |

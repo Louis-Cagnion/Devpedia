@@ -108,6 +108,31 @@ La norme réserve certaines combinaisons de bits à des valeurs spéciales, pré
 
 `NaN` a une propriété volontairement surprenante : **il n'est égal à rien, pas même à lui-même**. `NaN == NaN` est faux. C'est cohérent (deux résultats invalides n'ont aucune raison d'être "le même nombre"), mais cela impose d'utiliser une fonction dédiée pour le détecter (`isnan()` en [C](/?c=langages-de-programmation&s=c&p=c), `math.isnan()` en [Python](/?c=langages-de-programmation&s=python&p=python), `Number.isNaN()` en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)).
 
+## Une alternative : la représentation en virgule fixe
+
+Plutôt que de sacrifier la précision pour couvrir une immense plage de valeurs (comme le fait un flottant), la **représentation en virgule fixe** (*fixed-point*) stocke un nombre décimal comme un entier ordinaire, dont les derniers bits représentent conventionnellement la partie fractionnaire :
+
+```text
+Avec 8 bits fractionnaires :
+  valeur reelle = entier_stocke / 2^8
+
+  entier_stocke = 2560  ->  2560 / 256 = 10.0
+  entier_stocke = 2688  ->  2688 / 256 = 10.5
+```
+
+Convertir un entier classique en virgule fixe revient à le multiplier par `2^bits_fractionnaires` (`10 * 256 = 2560`) ; convertir en sens inverse (vers un entier ou un flottant) revient à diviser par cette même valeur.
+
+| | Flottant (IEEE 754) | Virgule fixe |
+|---|---|---|
+| Stockage | Signe + exposant + mantisse | Un entier ordinaire |
+| Précision | Relative (dépend de l'ordre de grandeur) | Fixe et constante (toujours le même nombre de décimales) |
+| Calcul | Nécessite une unité de calcul flottant (FPU) | De simples opérations entières, plus rapides et déterministes |
+| Usage typique | Calcul scientifique, plage de valeurs très large | Embarqué sans FPU, jeux vidéo rétro, signal audio/DSP |
+
+> **Bonne pratique :** la virgule fixe garantit un résultat strictement identique sur toute machine (contrairement à un flottant, dont l'arrondi peut varier légèrement selon le compilateur ou le processeur) : utile dès qu'un calcul doit rester reproductible bit à bit, par exemple dans un jeu multijoueur où chaque client doit obtenir exactement le même résultat.
+
+C'est la technique à la base du format **Q** (*Q number format*), encore utilisé aujourd'hui par certains processeurs de signal numérique (DSP) qui n'embarquent pas d'unité de calcul flottant.
+
 ## Ce que chaque langage y ajoute
 
 Le socle est commun ; les langages diffèrent seulement sur l'emballage :
@@ -139,6 +164,6 @@ Retenez surtout que ces différences ne changent rien au fond : c'est le matéri
 | | |
 |---|---|
 | **À retenir** | Un flottant (norme IEEE 754) stocke une approximation, pas une valeur exacte : `0.1 + 0.2 != 0.3` dans tous les langages, sans exception. La précision est relative : plus un nombre est grand, plus l'écart entre deux flottants consécutifs grandit. |
-| **Outils utilisables** | Comparaison par epsilon (`math.isclose`, `fabs(a-b) < epsilon`), types `DECIMAL` pour des montants exacts. |
+| **Outils utilisables** | Comparaison par epsilon (`math.isclose`, `fabs(a-b) < epsilon`), types `DECIMAL` pour des montants exacts. La virgule fixe pour un résultat reproductible bit à bit sans FPU. |
 | **Pièges à éviter** | Comparer deux flottants avec `==` ; stocker un montant monétaire en flottant plutôt qu'en entiers (centimes) ou `DECIMAL`. |
 | **Bonnes pratiques** | Choisir un epsilon adapté à l'ordre de grandeur manipulé, jamais l'epsilon machine par défaut pour de grandes valeurs. |

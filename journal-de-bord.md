@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Item todo #14 terminé (Rule of Three, virgule fixe, héritage multiple/diamant, Prototype, point-dans-triangle) (2026-09-17)
+
+5 notions ajoutées (4 langues), aucun nouveau chapitre : forme canonique orthodoxe (`classes-et-objets.md`), héritage multiple/diamant + pattern Prototype (`heritage-et-polymorphisme.md`), virgule fixe (`nombres-flottants.md`), test point-dans-triangle par comparaison d'aires (`vecteurs-et-produit-scalaire.md`). Deux trouvailles annexes notées au todo (points 20 et 21) plutôt que corrigées immédiatement (changements d'ampleur) : 8 chapitres avec un double mécanisme de résumé (`## Résumé` + `## 📋 Récapitulatif`) ; plusieurs titres mal traduits en anglais dans `classes-et-objets.md` (corrigés) et `references.md` (repéré, pas corrigé, hors périmètre).
+
 ## Item todo #13 terminé (notation CIDR, table de routage) (2026-09-17)
 
 2 notions ajoutées (4 langues), aucun nouveau chapitre : notation CIDR et table de routage/route par défaut, ajoutées à `fondamentaux-reseau.md` (juste après les sections masque de sous-réseau et passerelle par défaut qu'elles généralisent).

@@ -69,6 +69,31 @@ delete a;   // without a virtual destructor: ONLY ~Animal() is called, never ~Do
 
 Without `virtual` on the destructor, deleting a `Dog` object through an `Animal*` pointer only runs `Animal`'s destructor: any resource specific to `Dog` (allocated memory, an open file...) would never be released. Any class meant to be inherited from and handled through a base pointer must therefore always declare its destructor `virtual`.
 
+## Multiple inheritance and the diamond problem
+
+A class can inherit from several classes at once:
+
+```cpp
+class A { public: void method() {} };
+class B : public A {};
+class C : public A {};
+class D : public B, public C {};   // inherits from both B and C
+```
+
+`D` inherits from `A` through two different paths (via `B` and via `C`). Without precautions, the `D` object then contains **two** distinct `A` sub-objects, one per path: calling `d.method()` becomes ambiguous, since the compiler doesn't know which of the two to use. This is the **diamond problem**, named after the shape of the inheritance diagram.
+
+```text
+      A
+     / \
+    B   C
+     \ /
+      D
+```
+
+> **Best practice:** declare inheritance toward the shared class as **virtual** (`class B : virtual public A {}`, and likewise for `C`): the compiler then builds only a single `A` sub-object, shared by both paths, and `d.method()` is no longer ambiguous.
+
+A residual ambiguity on an inherited name (two methods with the same name coming from two different parents, for instance) is resolved through **explicit scope resolution** (`A::method()`), which forces the call toward a specific class rather than letting the compiler choose.
+
 ## Abstract classes: imposing a contract with no implementation
 
 ```cpp
@@ -92,13 +117,47 @@ Shape *impossible = new Shape();       // ERROR: abstract class, cannot be insta
 
 A class containing at least one purely virtual method (`= 0`) becomes **abstract**: it can never be instantiated directly, only inherited from; it defines a contract ("every shape must know how to compute its area") that every child class must implement.
 
+## The Prototype pattern: cloning a polymorphic object
+
+C++'s copy constructor is never virtual (there's actually no such thing as a "virtual constructor" in C++): copying an object whose real type is only known at runtime is therefore a problem.
+
+```cpp
+Shape *shape = new Circle(5);
+Shape *copy = new Shape(*shape);   // ONLY copies the Shape part!
+```
+
+`new Shape(*shape)` builds an object of the pointer's declared type (`Shape`), never the actual pointed-to type (`Circle`): everything specific to `Circle` (here, the radius) is lost, a direct consequence of the static binding seen above (see "The problem without `virtual`"), applied this time to construction rather than a method call.
+
+The **Prototype design pattern** solves this problem: each child class implements a `virtual` method that builds and returns a copy of the correct dynamic type.
+
+```cpp
+class Shape {
+public:
+    virtual Shape *clone() const = 0;
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape {
+public:
+    Circle(double radius) : radius(radius) {}
+    Circle *clone() const override { return new Circle(*this); }   // builds a Circle, not a Shape
+private:
+    double radius;
+};
+
+Shape *shape = new Circle(5);
+Shape *copy = shape->clone();   // copies a REAL Circle, radius included
+```
+
+The calling code just calls `shape->clone()` without ever knowing the concrete type: it's `virtual` that guarantees the right version of `clone()` runs, exactly like for any other polymorphic method.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | Inheritance reuses a parent class's behavior. `virtual` enables dynamic binding (the object's real type decides which method is called), essential for polymorphism. An abstract class (a `= 0` method) imposes a contract with no implementation. |
-| **Tools you can use** | `virtual`, `override`, `virtual` destructor, abstract classes. |
-| **Pitfalls to avoid** | Forgetting `virtual` on a method meant to be polymorphic (silent static binding); forgetting `virtual` on the destructor of a class meant to be handled through a base pointer (resource leak). |
-| **Best practices** | Always declare `virtual` the destructor of a class meant to be inherited from; use `override` systematically so the compiler catches a wrongly redefined signature. |
+| **Key takeaways** | Inheritance reuses a parent class's behavior. `virtual` enables dynamic binding (the object's real type decides which method is called), essential for polymorphism. An abstract class (a `= 0` method) imposes a contract with no implementation. Multiple inheritance can create a diamond problem, solved with virtual inheritance. |
+| **Tools you can use** | `virtual`, `override`, `virtual` destructor, abstract classes. Virtual inheritance for the diamond problem; a virtual `clone()` method (Prototype pattern) to copy a polymorphic object. |
+| **Pitfalls to avoid** | Forgetting `virtual` on a method meant to be polymorphic (silent static binding); forgetting `virtual` on the destructor of a class meant to be handled through a base pointer (resource leak); copying a polymorphic object via `new Base(*ptr)`, which truncates everything specific to the child class. |
+| **Best practices** | Always declare `virtual` the destructor of a class meant to be inherited from; use `override` systematically so the compiler catches a wrongly redefined signature. Declare virtual inheritance as soon as a diamond is possible. |
