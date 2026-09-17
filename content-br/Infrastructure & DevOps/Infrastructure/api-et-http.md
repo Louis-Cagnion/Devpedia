@@ -70,11 +70,27 @@ Um programa pode então ler diretamente `temperatura` ou `condicoes`, sem precis
 >
 > **Boa prática:** distinguir explicitamente, no código que chama uma API, a ausência de resposta (timeout) da rejeição explícita da requisição (código de erro); os dois exigem reações diferentes (tentar novamente, ou corrigir a requisição).
 
+## Rotear uma requisição para a regra certa: a correspondência de prefixo mais longo
+
+Um servidor web costuma configurar várias regras conforme o caminho da requisição (`/`, `/api`, `/uploads`...) para um mesmo endereço. Para escolher qual se aplica a uma requisição dada, o servidor compara seu caminho com o início de cada regra configurada, e mantém aquela cujo prefixo correspondente é o **mais longo**:
+
+```text
+Regras configuradas: "/", "/uploads", "/uploads/images"
+Requisicao: "/uploads/images/foto.png"
+
+Todas as regras correspondem no inicio do caminho ("/" corresponde a tudo),
+mas "/uploads/images" e a mais longa -> e ela que se aplica.
+```
+
+Essa **correspondência de prefixo mais longo** (*longest prefix match*) é o mesmo princípio algorítmico de uma [tabela de roteamento IP](/?c=reseaux&p=fondamentaux-reseau) escolhendo a rota mais específica entre várias que correspondem a um mesmo endereço: aqui aplicado a caminhos de URL em vez de sub-redes.
+
+> **Boa prática:** ordenar ou comparar as regras por comprimento de prefixo (ou uma estrutura dedicada como uma *trie*) em vez de parar na primeira regra que corresponde na ordem em que foi declarada: a ordem de declaração nunca deveria influenciar qual regra se aplica.
+
 ## O que reter
 
 | | |
 |---|---|
 | **O que reter** | O HTTP é o protocolo mais comum para trocar dados entre um cliente e um servidor. Uma requisição especifica um método (`GET`/`POST`/`PUT`/`DELETE`); uma resposta sempre traz um código de status. Uma API é um servidor pensado para ser usado por um programa, não por um humano. |
-| **Ferramentas úteis** | Um navegador (para um `GET` simples), ou uma ferramenta dedicada ([`curl`](https://curl.se), [Postman](https://www.postman.com), uma biblioteca HTTP na linguagem de sua escolha) para montar uma requisição completa. |
+| **Ferramentas úteis** | Um navegador (para um `GET` simples), ou uma ferramenta dedicada ([`curl`](https://curl.se), [Postman](https://www.postman.com), uma biblioteca HTTP na linguagem de sua escolha) para montar uma requisição completa. A correspondência de prefixo mais longo para rotear uma requisição para a regra configurada certa. |
 | **Armadilhas a evitar** | Usar `GET` para uma ação que modifica um dado. Ignorar o código de status de uma resposta. Confundir uma ausência de resposta com uma resposta de erro explícita. |
 | **Boas práticas** | Reservar `GET` apenas para leitura. Verificar sistematicamente o código de status antes de usar o conteúdo de uma resposta. Tratar explicitamente os casos de erro, não apenas o caminho de sucesso. |

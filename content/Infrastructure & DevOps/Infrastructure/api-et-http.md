@@ -70,11 +70,27 @@ Un programme peut alors lire directement `temperature` ou `conditions`, sans avo
 >
 > **Bonne pratique :** distinguer explicitement, dans le code qui appelle une API, l'absence de réponse (timeout) du refus explicite de la requête (code d'erreur) ; les deux appellent des réactions différentes (réessayer, ou corriger la requête).
 
+## Router une requête vers la bonne règle : la correspondance de préfixe le plus long
+
+Un serveur web configure souvent plusieurs règles selon le chemin de la requête (`/`, `/api`, `/uploads`...) pour une même adresse. Pour choisir laquelle s'applique à une requête donnée, le serveur compare son chemin au début de chaque règle configurée, et retient celle dont le préfixe correspondant est le **plus long** :
+
+```text
+Regles configurees : "/", "/uploads", "/uploads/images"
+Requete : "/uploads/images/photo.png"
+
+Toutes les regles correspondent en debut de chemin ("/" correspond a tout),
+mais "/uploads/images" est la plus longue -> c'est elle qui s'applique.
+```
+
+Cette **correspondance de préfixe le plus long** (*longest prefix match*) est le même principe algorithmique qu'une [table de routage IP](/?c=reseaux&p=fondamentaux-reseau) choisissant la route la plus spécifique parmi plusieurs qui correspondent à une même adresse : ici appliqué à des chemins d'URL plutôt qu'à des sous-réseaux.
+
+> **Bonne pratique :** trier ou comparer les règles par longueur de préfixe (ou une structure dédiée comme un *trie*) plutôt que de s'arrêter à la première règle qui correspond dans l'ordre où elle a été déclarée : l'ordre de déclaration ne devrait jamais influencer quelle règle s'applique.
+
 ## Ce qu'il faut retenir
 
 | | |
 |---|---|
 | **À retenir** | HTTP est le protocole le plus courant pour échanger des données entre un client et un serveur. Une requête précise une méthode (`GET`/`POST`/`PUT`/`DELETE`) ; une réponse porte toujours un code de statut. Une API est un serveur pensé pour être utilisé par un programme plutôt qu'un humain. |
-| **Outils utilisables** | Un navigateur (pour un `GET` simple), ou un outil dédié ([`curl`](https://curl.se), [Postman](https://www.postman.com), une bibliothèque HTTP dans le langage de son choix) pour construire une requête complète. |
+| **Outils utilisables** | Un navigateur (pour un `GET` simple), ou un outil dédié ([`curl`](https://curl.se), [Postman](https://www.postman.com), une bibliothèque HTTP dans le langage de son choix) pour construire une requête complète. La correspondance de préfixe le plus long pour router une requête vers la bonne règle configurée. |
 | **Pièges à éviter** | Utiliser `GET` pour une action qui modifie une donnée. Ignorer le code de statut d'une réponse. Confondre une absence de réponse et une réponse d'erreur explicite. |
 | **Bonnes pratiques** | Réserver `GET` à la lecture seule. Vérifier systématiquement le code de statut avant d'utiliser le contenu d'une réponse. Traiter explicitement les cas d'erreur, pas seulement le cas de succès. |

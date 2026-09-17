@@ -31,6 +31,35 @@ Nginx (recoit la requete HTTP)
 
 Un worker occupé ne traite qu'une seule requête jusqu'à ce que son script se termine : c'est justement ce détail que la technique de ce chapitre vient contourner.
 
+## Le CGI classique, l'ancêtre de FastCGI
+
+Avant FastCGI (utilisé par PHP-FPM ci-dessus), la norme **CGI** (*Common Gateway Interface*, années 1990) répondait au même besoin autrement : un processus **entièrement neuf** lancé pour **chaque** requête, via `fork()`/`execve()` (voir [Les processus](/?c=langages-de-programmation&s=c&p=processus)), plutôt qu'un pool de processus déjà démarrés.
+
+```text
+FastCGI (PHP-FPM) :                    CGI classique :
+
+Pool de workers deja lances            Un fork()/execve() PAR requete
+   |                                       |
+Requete -> worker libre traite            Requete -> nouveau processus
+   |                                       |          lance, traite, se
+Reste disponible pour la suivante         |          termine
+                                       Requete suivante -> nouveau
+                                       processus, a nouveau
+```
+
+Le script CGI ne reçoit ni méthode HTTP ni paramètres via une fonction : ces informations lui sont transmises comme **variables d'environnement**, normalisées par le standard CGI/1.1 :
+
+| Variable d'environnement | Contenu |
+|---|---|
+| `REQUEST_METHOD` | La méthode HTTP (`GET`, `POST`...) |
+| `QUERY_STRING` | Les paramètres après le `?` de l'URL |
+| `CONTENT_LENGTH` | La taille du corps de la requête, s'il y en a un |
+| `HTTP_<NOM_EN_TETE>` | Chaque en-tête HTTP reçu, en majuscules avec `_` |
+
+Le corps de la requête (pour un `POST`) est fourni sur l'entrée standard du processus (`stdin`), et sa réponse est récupérée sur sa sortie standard (`stdout`), reparsée comme un mini-en-tête HTTP suivi du corps, séparés par une ligne vide (le même format `\r\n\r\n` que pour une requête HTTP elle-même).
+
+> **Bonne pratique :** un processus entièrement neuf par requête coûte cher (temps de démarrage) ; c'est précisément ce que FastCGI (et PHP-FPM) a été conçu pour éviter, en réutilisant un pool de processus déjà démarrés plutôt que d'en lancer un neuf à chaque fois. Le CGI classique reste pertinent pour un usage ponctuel ou peu fréquent (un script exécuté rarement), où le coût de démarrage importe moins que la simplicité.
+
 ## `register_shutdown_function()` : exécuter du code à la toute fin du script
 
 Cette fonction enregistre un rappel (*callback*) qui s'exécute juste après la fin du script : que ce soit une fin normale, un `exit()`/`die()`, ou la plupart des erreurs fatales. Elle fonctionne sur n'importe quelle SAPI, pas seulement PHP-FPM.
@@ -142,7 +171,7 @@ Cette technique accélère la réponse perçue par le client, pas la capacité t
 
 | | |
 |---|---|
-| **À retenir** | PHP-FPM traite chaque requête dans un worker dédié, libéré à la fin du script. `fastcgi_finish_request()` ferme la connexion client sans arrêter le script ; `register_shutdown_function()` exécute du code juste après la fin normale du script, sur n'importe quelle SAPI. |
+| **À retenir** | PHP-FPM traite chaque requête dans un worker dédié, libéré à la fin du script. `fastcgi_finish_request()` ferme la connexion client sans arrêter le script ; `register_shutdown_function()` exécute du code juste après la fin normale du script, sur n'importe quelle SAPI. Le CGI classique (avant FastCGI) lançait un processus entièrement neuf par requête. |
 | **Outils utilisables** | `register_shutdown_function()`, `fastcgi_finish_request()`, `ignore_user_abort()`, `function_exists()` pour vérifier la disponibilité d'une fonction spécifique à une SAPI. |
 | **Pièges à éviter** | Appeler `fastcgi_finish_request()` sans `function_exists()` (erreur fatale hors PHP-FPM) ; écrire après cet appel en pensant que ça atteindra le client ; oublier `ignore_user_abort(true)` ; oublier le verrou anti-concurrence sur un cache partagé ; croire que cette technique augmente la capacité du pool plutôt que la latence perçue. |
 | **Bonnes pratiques** | Vérifier `function_exists('fastcgi_finish_request')` avant tout appel ; libérer une ressource (verrou, fichier) dans un `finally` à l'intérieur du rappel de fin ; réserver la technique à un travail de fond occasionnel et court, une vraie file d'attente pour le reste. |

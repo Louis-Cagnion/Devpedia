@@ -91,6 +91,39 @@ This approach is the basis of an **event loop**: a single loop that continuously
 >
 > **Best practice:** put sockets in non-blocking mode (`fcntl(socket, F_SETFL, O_NONBLOCK)`) alongside `select`/`poll`/`epoll`, so a `read()` call on a socket reported as "ready" but that empties out in the meantime never blocks the program.
 
+## Reassembling an HTTP Request Received in Several Pieces
+
+A `read()` call on a socket doesn't necessarily return a complete HTTP request: the network can split it into several packets, delivered to the program across several successive `read()` calls. The program therefore has to **accumulate** the received fragments into a buffer, and determine for itself when the request is complete.
+
+```text
+read() #1: "GET /page HTTP/1.1\r\nHost: exa"
+read() #2: "mple.com\r\n\r\n"
+-> accumulate both into a buffer, until the end of the headers is detected
+```
+
+Two rules determine when a request is complete:
+
+1. **The end of the headers** is marked by a blank line, the `\r\n\r\n` sequence (carriage return + line feed, twice in a row). As long as that sequence hasn't appeared in the accumulated buffer, the headers haven't been fully received yet.
+2. **For a request with a body** (typically `POST`), the `Content-Length` header states the exact number of bytes expected after `\r\n\r\n`: the request is only complete once that many bytes have actually been received, not before.
+
+```text
+buffer = buffer + received_fragment
+
+if "\r\n\r\n" not yet in buffer:
+    headers not yet complete, keep reading
+else if a body is expected (Content-Length present):
+    if bytes received after "\r\n\r\n" < Content-Length:
+        body not yet complete, keep reading
+    else:
+        request complete
+else:
+    request complete (no body expected)
+```
+
+> **Pitfall:** treating a request as finished as soon as `\r\n\r\n` appears, without checking `Content-Length` for a request with a body. A request body split across several network packets would then be treated as finished prematurely, before all its data has been received.
+>
+> **Best practice:** never assume a single `read()` is enough to receive a complete HTTP request, even on a fast local connection: always accumulate into a buffer and explicitly check both conditions (end of headers, then `Content-Length` if a body is expected) before considering the request ready to process.
+
 ---
 
 ## 📋 Summary
@@ -98,6 +131,6 @@ This approach is the basis of an **event loop**: a single loop that continuously
 | | |
 |---|---|
 | **Key takeaways** | A server socket follows the sequence `socket()` → `bind()` → `listen()` → `accept()`; classic network calls block, which makes it impossible to handle several clients with a single simple loop. |
-| **Tools you can use** | `select()`/`poll()` (portable) or `epoll()` (Linux, more scalable) to watch several sockets without blocking; `O_NONBLOCK` to make reads safe. |
-| **Pitfalls to avoid** | Blocking on a single socket (`accept()`/`read()`) in a multi-client server without multiplexing. |
+| **Tools you can use** | `select()`/`poll()` (portable) or `epoll()` (Linux, more scalable) to watch several sockets without blocking; `O_NONBLOCK` to make reads safe. An accumulator buffer to reassemble an HTTP request received across several `read()` calls. |
+| **Pitfalls to avoid** | Blocking on a single socket (`accept()`/`read()`) in a multi-client server without multiplexing. Considering an HTTP request complete as soon as `\r\n\r\n` appears without checking `Content-Length` for a body. |
 | **Best practices** | Build the server around an event loop that only acts on sockets that are actually ready. |

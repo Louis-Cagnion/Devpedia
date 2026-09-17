@@ -70,11 +70,27 @@ Un programa puede entonces leer directamente `temperatura` o `condiciones`, sin 
 >
 > **Buena práctica:** distinguir explícitamente, en el código que llama a una API, la ausencia de respuesta (timeout) del rechazo explícito de la petición (código de error); ambos requieren reacciones diferentes (reintentar, o corregir la petición).
 
+## Enrutar una petición hacia la regla correcta: la correspondencia de prefijo más largo
+
+Un servidor web suele configurar varias reglas según la ruta de la petición (`/`, `/api`, `/uploads`...) para una misma dirección. Para elegir cuál se aplica a una petición dada, el servidor compara su ruta con el inicio de cada regla configurada, y se queda con aquella cuyo prefijo coincidente sea el **más largo**:
+
+```text
+Reglas configuradas: "/", "/uploads", "/uploads/images"
+Peticion: "/uploads/images/foto.png"
+
+Todas las reglas coinciden al inicio de la ruta ("/" coincide con todo),
+pero "/uploads/images" es la mas larga -> es la que se aplica.
+```
+
+Esta **correspondencia de prefijo más largo** (*longest prefix match*) es el mismo principio algorítmico que una [tabla de enrutamiento IP](/?c=reseaux&p=fondamentaux-reseau) al elegir la ruta más específica entre varias que coinciden con una misma dirección: aquí aplicado a rutas de URL en lugar de a subredes.
+
+> **Buena práctica:** ordenar o comparar las reglas por longitud de prefijo (o una estructura dedicada como un *trie*) en lugar de detenerse en la primera regla que coincide según el orden en que fue declarada: el orden de declaración nunca debería influir en qué regla se aplica.
+
 ## Resumen
 
 | | |
 |---|---|
 | **Para recordar** | HTTP es el protocolo más común para intercambiar datos entre un cliente y un servidor. Una petición precisa un método (`GET`/`POST`/`PUT`/`DELETE`); una respuesta siempre lleva un código de estado. Una API es un servidor pensado para ser usado por un programa en lugar de un humano. |
-| **Herramientas utilizables** | Un navegador (para un `GET` simple), o una herramienta dedicada ([`curl`](https://curl.se), [Postman](https://www.postman.com), una biblioteca HTTP en el lenguaje de tu elección) para construir una petición completa. |
+| **Herramientas utilizables** | Un navegador (para un `GET` simple), o una herramienta dedicada ([`curl`](https://curl.se), [Postman](https://www.postman.com), una biblioteca HTTP en el lenguaje de tu elección) para construir una petición completa. La correspondencia de prefijo más largo para enrutar una petición hacia la regla configurada correcta. |
 | **Trampas a evitar** | Usar `GET` para una acción que modifica un dato. Ignorar el código de estado de una respuesta. Confundir una ausencia de respuesta y una respuesta de error explícita. |
 | **Buenas prácticas** | Reservar `GET` solo para lectura. Verificar sistemáticamente el código de estado antes de usar el contenido de una respuesta. Tratar explícitamente los casos de error, no solo el caso de éxito. |

@@ -31,6 +31,35 @@ Nginx (receives the HTTP request)
 
 A busy worker only handles a single request until its script ends: that is precisely the detail this chapter's technique works around.
 
+## Classic CGI, the ancestor of FastCGI
+
+Before FastCGI (used by PHP-FPM above), the **CGI** standard (*Common Gateway Interface*, 1990s) addressed the same need differently: an **entirely new** process launched for **each** request, via `fork()`/`execve()` (see [Processes](/?c=langages-de-programmation&s=c&p=processus)), rather than a pool of already-running processes.
+
+```text
+FastCGI (PHP-FPM):                     Classic CGI:
+
+Pool of already-launched workers       One fork()/execve() PER request
+   |                                       |
+Request -> free worker handles it         Request -> new process
+   |                                       |          launched, handles it,
+Stays available for the next one          |          then exits
+                                       Next request -> new process,
+                                       all over again
+```
+
+The CGI script receives neither the HTTP method nor parameters through a function call: this information is passed to it as **environment variables**, standardized by the CGI/1.1 spec:
+
+| Environment variable | Content |
+|---|---|
+| `REQUEST_METHOD` | The HTTP method (`GET`, `POST`...) |
+| `QUERY_STRING` | The parameters after the URL's `?` |
+| `CONTENT_LENGTH` | The request body's size, if there is one |
+| `HTTP_<HEADER_NAME>` | Each HTTP header received, uppercased with `_` |
+
+The request body (for a `POST`) is provided on the process's standard input (`stdin`), and its response is read from its standard output (`stdout`), reparsed as a mini HTTP header followed by the body, separated by a blank line (the same `\r\n\r\n` format as an HTTP request itself).
+
+> **Best practice:** an entirely new process per request is expensive (startup time); that's precisely what FastCGI (and PHP-FPM) was designed to avoid, by reusing a pool of already-running processes instead of launching a new one every time. Classic CGI remains relevant for occasional or infrequent use (a rarely run script), where startup cost matters less than simplicity.
+
 ## `register_shutdown_function()`: running code at the very end of the script
 
 This function registers a callback that runs right after the script ends: whether that's a normal end, an `exit()`/`die()`, or most fatal errors. It works on any SAPI, not just PHP-FPM.
@@ -142,7 +171,7 @@ This technique speeds up the response perceived by the client, not the pool's to
 
 | | |
 |---|---|
-| **Key takeaways** | PHP-FPM handles each request in a dedicated worker, freed once the script ends. `fastcgi_finish_request()` closes the client connection without stopping the script; `register_shutdown_function()` runs code right after the script's normal end, on any SAPI. |
+| **Key takeaways** | PHP-FPM handles each request in a dedicated worker, freed once the script ends. `fastcgi_finish_request()` closes the client connection without stopping the script; `register_shutdown_function()` runs code right after the script's normal end, on any SAPI. Classic CGI (before FastCGI) launched an entirely new process per request. |
 | **Tools you can use** | `register_shutdown_function()`, `fastcgi_finish_request()`, `ignore_user_abort()`, `function_exists()` to check whether a SAPI-specific function is available. |
 | **Pitfalls to avoid** | Calling `fastcgi_finish_request()` without `function_exists()` (fatal error outside PHP-FPM); writing after that call expecting it to reach the client; forgetting `ignore_user_abort(true)`; forgetting the concurrency lock on a shared cache; thinking this technique increases the pool's capacity rather than the perceived latency. |
 | **Best practices** | Check `function_exists('fastcgi_finish_request')` before any call; release a resource (lock, file) in a `finally` inside the shutdown callback; reserve the technique for occasional, short background work, a real queue for everything else. |

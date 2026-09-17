@@ -31,6 +31,35 @@ Nginx (recebe a requisicao HTTP)
 
 Um worker ocupado só atende uma requisição até seu script terminar: exatamente o detalhe que a técnica deste capítulo contorna.
 
+## O CGI clássico, o ancestral do FastCGI
+
+Antes do FastCGI (usado pelo PHP-FPM acima), a norma **CGI** (*Common Gateway Interface*, anos 1990) resolvia a mesma necessidade de outra forma: um processo **inteiramente novo** lançado para **cada** requisição, via `fork()`/`execve()` (veja [Os processos](/?c=langages-de-programmation&s=c&p=processus)), em vez de um pool de processos já em execução.
+
+```text
+FastCGI (PHP-FPM):                     CGI classico:
+
+Pool de workers ja iniciados           Um fork()/execve() POR requisicao
+   |                                       |
+Requisicao -> worker livre a atende       Requisicao -> novo processo
+   |                                       |             lancado, atende,
+Continua disponivel para a proxima        |             e termina
+                                       Proxima requisicao -> novo
+                                       processo, de novo
+```
+
+O script CGI não recebe nem o método HTTP nem os parâmetros por meio de uma função: essa informação é transmitida a ele como **variáveis de ambiente**, normalizadas pelo padrão CGI/1.1:
+
+| Variável de ambiente | Conteúdo |
+|---|---|
+| `REQUEST_METHOD` | O método HTTP (`GET`, `POST`...) |
+| `QUERY_STRING` | Os parâmetros depois do `?` da URL |
+| `CONTENT_LENGTH` | O tamanho do corpo da requisição, se houver |
+| `HTTP_<NOME_CABECALHO>` | Cada cabeçalho HTTP recebido, em maiúsculas com `_` |
+
+O corpo da requisição (para um `POST`) é fornecido na entrada padrão do processo (`stdin`), e sua resposta é lida na saída padrão (`stdout`), reanalisada como um minicabeçalho HTTP seguido do corpo, separados por uma linha em branco (o mesmo formato `\r\n\r\n` de uma requisição HTTP em si).
+
+> **Boa prática:** um processo inteiramente novo por requisição é caro (tempo de inicialização); é exatamente isso que o FastCGI (e o PHP-FPM) foi projetado para evitar, reaproveitando um pool de processos já em execução em vez de lançar um novo a cada vez. O CGI clássico continua relevante para um uso pontual ou pouco frequente (um script executado raramente), onde o custo de inicialização importa menos que a simplicidade.
+
 ## `register_shutdown_function()`: executar código bem no final do script
 
 Essa função registra um callback executado logo após o fim do script: seja um final normal, um `exit()`/`die()`, ou a maioria dos erros fatais. Funciona em qualquer SAPI, não só no PHP-FPM.
@@ -142,7 +171,7 @@ Essa técnica acelera a resposta percebida pelo cliente, não a capacidade total
 
 | | |
 |---|---|
-| **Para lembrar** | O PHP-FPM atende cada requisição em um worker dedicado, liberado ao final do script. `fastcgi_finish_request()` fecha a conexão do cliente sem parar o script; `register_shutdown_function()` executa código logo após o fim normal do script, em qualquer SAPI. |
+| **Para lembrar** | O PHP-FPM atende cada requisição em um worker dedicado, liberado ao final do script. `fastcgi_finish_request()` fecha a conexão do cliente sem parar o script; `register_shutdown_function()` executa código logo após o fim normal do script, em qualquer SAPI. O CGI clássico (antes do FastCGI) lançava um processo inteiramente novo por requisição. |
 | **Ferramentas utilizáveis** | `register_shutdown_function()`, `fastcgi_finish_request()`, `ignore_user_abort()`, `function_exists()` para checar a disponibilidade de uma função específica de uma SAPI. |
 | **Armadilhas a evitar** | Chamar `fastcgi_finish_request()` sem `function_exists()` (erro fatal fora do PHP-FPM); escrever depois dessa chamada achando que vai chegar ao cliente; esquecer `ignore_user_abort(true)`; esquecer a trava anticoncorrência em um cache compartilhado; achar que essa técnica aumenta a capacidade do pool em vez da latência percebida. |
 | **Boas práticas** | Checar `function_exists('fastcgi_finish_request')` antes de qualquer chamada; liberar um recurso (trava, arquivo) em um `finally` dentro do callback de encerramento; reservar a técnica para um trabalho de fundo ocasional e curto, uma fila de verdade para o resto. |

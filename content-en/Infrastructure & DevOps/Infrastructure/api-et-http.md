@@ -70,11 +70,27 @@ A program can then read `temperature` or `conditions` directly, without having t
 >
 > **Best practice:** explicitly distinguish, in the code that calls an API, the absence of a response (timeout) from an explicit refusal of the request (error code); the two call for different reactions (retry, or fix the request).
 
+## Routing a Request to the Right Rule: Longest Prefix Match
+
+A web server often configures several rules based on the request's path (`/`, `/api`, `/uploads`...) for a single address. To choose which one applies to a given request, the server compares its path against the start of each configured rule, and keeps the one whose matching prefix is the **longest**:
+
+```text
+Configured rules: "/", "/uploads", "/uploads/images"
+Request: "/uploads/images/photo.png"
+
+All rules match at the start of the path ("/" matches everything),
+but "/uploads/images" is the longest -> that's the one that applies.
+```
+
+This **longest prefix match** is the same algorithmic principle as an [IP routing table](/?c=reseaux&p=fondamentaux-reseau) choosing the most specific route among several that match the same address: here applied to URL paths rather than subnets.
+
+> **Best practice:** sort or compare rules by prefix length (or a dedicated structure like a *trie*) rather than stopping at the first rule that matches in declaration order: the order rules were declared should never influence which one applies.
+
 ## Key takeaways
 
 | | |
 |---|---|
 | **Key takeaways** | HTTP is the most common protocol for exchanging data between a client and a server. A request specifies a method (`GET`/`POST`/`PUT`/`DELETE`); a response always carries a status code. An API is a server designed to be used by a program rather than a human. |
-| **Tools you can use** | A browser (for a simple `GET`), or a dedicated tool ([`curl`](https://curl.se), [Postman](https://www.postman.com), an HTTP library in the language of your choice) to build a complete request. |
+| **Tools you can use** | A browser (for a simple `GET`), or a dedicated tool ([`curl`](https://curl.se), [Postman](https://www.postman.com), an HTTP library in the language of your choice) to build a complete request. Longest prefix match to route a request to the right configured rule. |
 | **Pitfalls to avoid** | Using `GET` for an action that modifies data. Ignoring a response's status code. Confusing an absent response with an explicit error response. |
 | **Best practices** | Reserve `GET` for read-only use. Systematically check the status code before using a response's content. Explicitly handle error cases, not just the success case. |

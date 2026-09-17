@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Item todo #17 terminé (CGI classique, parsing HTTP progressif, longest prefix match) (2026-09-17)
+
+3 notions ajoutées (4 langues), aucun nouveau chapitre : CGI classique par opposition à FastCGI (`php-fpm.md`), reconstitution d'une requête HTTP fragmentée via `\r\n\r\n`/`Content-Length` (`sockets-et-io-non-bloquante.md`), correspondance de préfixe le plus long pour router une requête (`api-et-http.md`, en écho à la table de routage IP déjà ajoutée à l'item #13).
+
 ## Item todo #16 terminé (ENTRYPOINT+CMD, volume épinglé, certificat TLS auto-signé) (2026-09-17)
 
 3 notions ajoutées (4 langues), aucun nouveau chapitre : `ENTRYPOINT`+`CMD` combinés via `exec "$@"` (`dockerfile.md`), volume Docker nommé épinglé à un chemin hôte (`volumes-et-reseaux.md`), certificat TLS auto-signé via `openssl` (`cryptographie-appliquee.md`).

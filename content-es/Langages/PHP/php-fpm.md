@@ -31,6 +31,35 @@ Nginx (recibe la peticion HTTP)
 
 Un worker ocupado solo atiende una petición hasta que su script termina: precisamente el detalle que la técnica de este capítulo esquiva.
 
+## El CGI clásico, el antecesor de FastCGI
+
+Antes de FastCGI (usado por PHP-FPM más arriba), la norma **CGI** (*Common Gateway Interface*, años 90) respondía a la misma necesidad de otra forma: un proceso **completamente nuevo** lanzado para **cada** petición, vía `fork()`/`execve()` (véase [Los procesos](/?c=langages-de-programmation&s=c&p=processus)), en lugar de un pool de procesos ya en marcha.
+
+```text
+FastCGI (PHP-FPM):                     CGI clasico:
+
+Pool de workers ya lanzados            Un fork()/execve() POR peticion
+   |                                       |
+Peticion -> worker libre la atiende       Peticion -> nuevo proceso
+   |                                       |          lanzado, la atiende,
+Sigue disponible para la siguiente        |          y termina
+                                       Siguiente peticion -> nuevo
+                                       proceso, otra vez
+```
+
+El script CGI no recibe ni el método HTTP ni los parámetros mediante una función: esa información se le transmite como **variables de entorno**, normalizadas por el estándar CGI/1.1:
+
+| Variable de entorno | Contenido |
+|---|---|
+| `REQUEST_METHOD` | El método HTTP (`GET`, `POST`...) |
+| `QUERY_STRING` | Los parámetros después del `?` de la URL |
+| `CONTENT_LENGTH` | El tamaño del cuerpo de la petición, si lo hay |
+| `HTTP_<NOMBRE_CABECERA>` | Cada cabecera HTTP recibida, en mayúsculas con `_` |
+
+El cuerpo de la petición (para un `POST`) se proporciona en la entrada estándar del proceso (`stdin`), y su respuesta se recoge en su salida estándar (`stdout`), reanalizada como una minicabecera HTTP seguida del cuerpo, separados por una línea en blanco (el mismo formato `\r\n\r\n` que una petición HTTP en sí).
+
+> **Buena práctica:** un proceso completamente nuevo por petición es costoso (tiempo de arranque); es precisamente lo que FastCGI (y PHP-FPM) fue diseñado para evitar, reutilizando un pool de procesos ya en marcha en lugar de lanzar uno nuevo cada vez. El CGI clásico sigue siendo pertinente para un uso puntual o poco frecuente (un script ejecutado rara vez), donde el coste de arranque importa menos que la simplicidad.
+
 ## `register_shutdown_function()`: ejecutar código justo al final del script
 
 Esta función registra un callback que se ejecuta justo después de que el script termina: ya sea un final normal, un `exit()`/`die()`, o la mayoría de errores fatales. Funciona en cualquier SAPI, no solo en PHP-FPM.
@@ -142,7 +171,7 @@ Esta técnica acelera la respuesta percibida por el cliente, no la capacidad tot
 
 | | |
 |---|---|
-| **Para recordar** | PHP-FPM atiende cada petición en un worker dedicado, liberado al final del script. `fastcgi_finish_request()` cierra la conexión del cliente sin detener el script; `register_shutdown_function()` ejecuta código justo después del final normal del script, en cualquier SAPI. |
+| **Para recordar** | PHP-FPM atiende cada petición en un worker dedicado, liberado al final del script. `fastcgi_finish_request()` cierra la conexión del cliente sin detener el script; `register_shutdown_function()` ejecuta código justo después del final normal del script, en cualquier SAPI. El CGI clásico (antes de FastCGI) lanzaba un proceso completamente nuevo por petición. |
 | **Herramientas utilizables** | `register_shutdown_function()`, `fastcgi_finish_request()`, `ignore_user_abort()`, `function_exists()` para comprobar la disponibilidad de una función específica de una SAPI. |
 | **Trampas a evitar** | Llamar a `fastcgi_finish_request()` sin `function_exists()` (error fatal fuera de PHP-FPM); escribir después de esa llamada pensando que llegará al cliente; olvidar `ignore_user_abort(true)`; olvidar el bloqueo anti-concurrencia en una caché compartida; creer que esta técnica aumenta la capacidad del pool en lugar de la latencia percibida. |
 | **Buenas prácticas** | Comprobar `function_exists('fastcgi_finish_request')` antes de cualquier llamada; liberar un recurso (bloqueo, archivo) en un `finally` dentro del callback de cierre; reservar la técnica a un trabajo de fondo ocasional y corto, una cola real para el resto. |

@@ -91,6 +91,39 @@ Cette approche est la base d'une **boucle d'événements** (*event loop*) : une 
 >
 > **Bonne pratique :** passer les sockets en mode non bloquant (`fcntl(socket, F_SETFL, O_NONBLOCK)`) en complément de `select`/`poll`/`epoll`, pour qu'un appel `read()` sur une socket annoncée comme "prête" mais qui se vide entre-temps ne bloque jamais le programme.
 
+## Reconstituer une requête HTTP reçue en plusieurs morceaux
+
+Un appel `read()` sur une socket ne renvoie pas forcément une requête HTTP complète : le réseau peut la découper en plusieurs paquets, livrés au programme en plusieurs appels `read()` successifs. Le programme doit donc **accumuler** les fragments reçus dans un tampon, et déterminer lui-même quand la requête est complète.
+
+```text
+read() #1 : "GET /page HTTP/1.1\r\nHost: exe"
+read() #2 : "mple.com\r\n\r\n"
+-> accumule les deux dans un tampon, jusqu'a detecter la fin des en-tetes
+```
+
+Deux règles déterminent quand une requête est complète :
+
+1. **La fin des en-têtes** est marquée par une ligne vide, la séquence `\r\n\r\n` (retour chariot + saut de ligne, deux fois de suite). Tant que cette séquence n'apparaît pas dans le tampon accumulé, les en-têtes ne sont pas encore entièrement reçus.
+2. **Pour une requête avec un corps** (typiquement `POST`), l'en-tête `Content-Length` indique le nombre exact d'octets attendus après `\r\n\r\n` : la requête n'est complète que lorsque ce nombre d'octets a réellement été reçu, pas avant.
+
+```text
+tampon = tampon + fragment_recu
+
+si "\r\n\r\n" pas encore dans tampon :
+    en-tetes pas encore complets, continuer a lire
+sinon si un corps est attendu (Content-Length present) :
+    si octets recus apres "\r\n\r\n" < Content-Length :
+        corps pas encore complet, continuer a lire
+    sinon :
+        requete complete
+sinon :
+    requete complete (pas de corps attendu)
+```
+
+> **Piège :** traiter une requête comme terminée dès que `\r\n\r\n` apparaît, sans vérifier `Content-Length` pour une requête avec corps. Un corps de requête coupé en plusieurs paquets réseau serait alors traité comme terminé prématurément, avant que toutes ses données n'aient été reçues.
+>
+> **Bonne pratique :** ne jamais supposer qu'un seul `read()` suffit à recevoir une requête HTTP complète, même sur une connexion locale rapide : toujours accumuler dans un tampon et vérifier explicitement les deux conditions (fin des en-têtes, puis `Content-Length` si un corps est attendu) avant de considérer la requête comme prête à traiter.
+
 ---
 
 ## 📋 Récapitulatif
@@ -98,6 +131,6 @@ Cette approche est la base d'une **boucle d'événements** (*event loop*) : une 
 | | |
 |---|---|
 | **À retenir** | Une socket serveur suit la séquence `socket()` → `bind()` → `listen()` → `accept()` ; les appels réseau classiques bloquent, ce qui empêche de gérer plusieurs clients avec une seule boucle simple. |
-| **Outils utilisables** | `select()`/`poll()` (portables) ou `epoll()` (Linux, plus scalable) pour surveiller plusieurs sockets sans bloquer ; `O_NONBLOCK` pour sécuriser les lectures. |
-| **Pièges à éviter** | Bloquer sur une seule socket (`accept()`/`read()`) dans un serveur multi-client sans multiplexion. |
+| **Outils utilisables** | `select()`/`poll()` (portables) ou `epoll()` (Linux, plus scalable) pour surveiller plusieurs sockets sans bloquer ; `O_NONBLOCK` pour sécuriser les lectures. Un tampon accumulateur pour reconstituer une requête HTTP reçue en plusieurs `read()`. |
+| **Pièges à éviter** | Bloquer sur une seule socket (`accept()`/`read()`) dans un serveur multi-client sans multiplexion. Considérer une requête HTTP complète dès `\r\n\r\n` sans vérifier `Content-Length` pour un corps. |
 | **Bonnes pratiques** | Construire le serveur autour d'une boucle d'événements qui n'agit que sur les sockets réellement prêtes. |
