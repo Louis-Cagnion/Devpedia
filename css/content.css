@@ -10,14 +10,13 @@
    below stays scoped to it (above body's own background, below body's actual children) --
    without it, a plain <body> has no stacking context of its own, so a negative z-index child
    falls back to the root's, where it renders behind body's own opaque background instead. */
-body:has(.page.chapterPage) {
+body:has(.page) {
     isolation: isolate;
 }
 
 /* Starfield background, fixed to the viewport rather than scoped to .page's own 900px-wide
-   box, so it spans the full window width instead of stopping at the centered content column.
-   :has(.page.chapterPage) keeps it scoped to chapter pages only, matching README.md. */
-body:has(.page.chapterPage)::before {
+   box, so it spans the full window width instead of stopping at the centered content column. */
+body:has(.page)::before {
     content: "";
     position: fixed;
     inset: 0;
@@ -51,7 +50,7 @@ body:has(.page.chapterPage)::before {
    part of the same graphic language rather than a generic rounded card. clip-path replaces
    border-radius here: a polygon's corners are sharp by construction, rounding them back in
    would need a more complex path than this shape calls for. */
-.page.chapterPage p {
+.page p {
     position: relative;
     background-color: rgba(0, 0, 0, 0.45);
     padding: 0.6rem 1.3rem;
@@ -72,13 +71,13 @@ body:has(.page.chapterPage)::before {
    to a ::after inset from the left by a fixed gutter (1.3rem), carrying its own clip-path scoped
    to *its own* box -- the <li> itself stays completely unclipped, so a ::before marker anywhere
    on it, gutter included, always renders. */
-.page.chapterPage .content-list li {
+.page .content-list li {
     position: relative;
     isolation: isolate;
     padding: 0.6rem 1.2rem 0.6rem 2.6rem;
 }
 
-.page.chapterPage .content-list li::after {
+.page .content-list li::after {
     content: "";
     position: absolute;
     z-index: -1;
@@ -91,17 +90,14 @@ body:has(.page.chapterPage)::before {
 
 /* Diamond accent echoing the sidebar's category markers, tying a page's own titles back
    to the site's new theme instead of leaving them as plain text over the texture. */
-.page.chapterPage .pageTitle,
-.page.chapterPage h3, .page.chapterPage h4, .page.chapterPage h5, .page.chapterPage h6 {
+.page .pageTitle,
+.page h3, .page h4, .page h5, .page h6 {
     position: relative;
     padding-inline-start: 1.6rem;
 }
 
-.page.chapterPage .pageTitle::before,
-.page.chapterPage h3::before,
-.page.chapterPage h4::before,
-.page.chapterPage h5::before,
-.page.chapterPage h6::before {
+.page .pageTitle::before,
+.page h3::before, .page h4::before, .page h5::before, .page h6::before {
     content: "";
     position: absolute;
     inset-inline-start: 0;
@@ -112,11 +108,11 @@ body:has(.page.chapterPage)::before {
 
 /* shrinks with heading depth, same principle as the sidebar's category/subject/chapter
    diamonds: size alone reads as how deep a heading sits in the page's own outline */
-.page.chapterPage .pageTitle::before { width: 1rem; height: 1rem; }
-.page.chapterPage h3::before { width: 0.8rem; height: 0.8rem; }
-.page.chapterPage h4::before { width: 0.6rem; height: 0.6rem; }
-.page.chapterPage h5::before { width: 0.5rem; height: 0.5rem; }
-.page.chapterPage h6::before { width: 0.4rem; height: 0.4rem; }
+.page .pageTitle::before { width: 1rem; height: 1rem; }
+.page h3::before { width: 0.8rem; height: 0.8rem; }
+.page h4::before { width: 0.6rem; height: 0.6rem; }
+.page h5::before { width: 0.5rem; height: 0.5rem; }
+.page h6::before { width: 0.4rem; height: 0.4rem; }
 
 .page .pageTitle {
     border-bottom: 2px solid transparent;
