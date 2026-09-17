@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Item todo #9 terminé (pile/file + algorithme glouton) et `structure/struct.json` stale trouvé (2026-09-17)
+
+Deux nouveaux chapitres créés sous `Fondamentaux/Algorithmes` (4 langues chacun) : `pile-et-file.md` (Stack/Queue, LIFO/FIFO) et `algorithme-glouton.md` (greedy, exemple du rendu de monnaie + contre-exemple où le choix glouton échoue). En régénérant `structure/struct.json` (`scripts/generate-struct.js`, jamais de mise à jour manuelle) pour y intégrer ces deux ajouts, 10 chapitres `content/Sécurité/*` d'une session précédente en étaient absents (jamais régénéré depuis leur ajout) : corrigé au passage pour les 4 langues. Vérification chapitre par chapitre : 4 de ces 10 étaient en fait déjà traduits (juste absents du struct), les 6 restants réellement jamais traduits, notés au todo #19 plutôt que traduits dans la foulée (hors périmètre de la tâche en cours, item #9).
+
 ## Item todo #8 terminé (`sigaction()` + codes ANSI) et tirets cadratins résiduels trouvés dans 10 chapitres Sécurité (2026-09-17)
 
 FR de `sigaction()` (ajouté en session précédente à `signaux-unix.md`, non commité) portait des commentaires de code sans accents (`repond`, `reception`...), contraire à la convention déjà en place dans tout `content/Langages/C/*.md` (vérifié par grep) : corrigé, puis traduit EN/ES/BR. Notion ANSI restante de l'item #8 rédigée dans `le-terminal.md` (4 langues).

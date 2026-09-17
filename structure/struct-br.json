@@ -66,6 +66,14 @@
             {
               "id": "tri-par-comparaison",
               "label": "A ordenação por comparação"
+            },
+            {
+              "id": "pile-et-file",
+              "label": "Pilha e fila: LIFO e FIFO"
+            },
+            {
+              "id": "algorithme-glouton",
+              "label": "O algoritmo guloso (Greedy algorithm)"
             }
           ]
         },

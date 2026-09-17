@@ -66,6 +66,14 @@
             {
               "id": "tri-par-comparaison",
               "label": "Comparison Sorting"
+            },
+            {
+              "id": "pile-et-file",
+              "label": "Stack and Queue: LIFO and FIFO"
+            },
+            {
+              "id": "algorithme-glouton",
+              "label": "Greedy Algorithms"
             }
           ]
         },
