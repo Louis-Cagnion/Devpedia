@@ -83,6 +83,22 @@ template <Numerique T>
 T addition(T a, T b) { return a + b; }
 ```
 
+## `typename` for a Type Dependent on a Template Parameter
+
+When a type used inside a template depends on the template parameter itself (for instance `T::iterator`, where `T` is a generic type), the compiler can't know, before the template is actually instantiated, whether `T::iterator` names a type or a value (a static member, for instance):
+
+```cpp
+template <typename T>
+void printFirst(T &container) {
+    typename T::iterator it = container.begin();   // "typename" required here
+    std::cout << *it;
+}
+```
+
+By default, the compiler assumes a name like `T::iterator` refers to a **value**, not a type. The `typename` keyword, placed right before it, lifts this ambiguity by explicitly stating "this is a type name": required whenever a type dependent on a template parameter is used this way, whether for a local variable or as a return type (`typename T::iterator myFunction(...)`).
+
+> **Pitfall:** forgetting `typename` before a nested dependent type (`T::value_type`, `T::iterator`...). A compilation error shows up, but its message ("expected expression", or similar depending on the compiler) never explicitly mentions the missing `typename` keyword, which makes it hard to diagnose without already knowing this rule.
+
 ## Templates vs. Dynamic Genericity (Python, PHP)
 
 | | C++ Templates | Dynamic Typing (Python/PHP) |
@@ -100,6 +116,6 @@ See also the chapter on STL containers, which is based entirely on this template
 | | |
 |---|---|
 | **Key takeaways** | A template writes a function/class once for any type, with compile-time checking and no runtime cost (the compiler generates one version per type actually used). |
-| **Tools you can use** | `template <typename T>`, `concepts` (C++20) to constrain the accepted types. |
-| **Pitfalls to avoid** | A template with no constraint accepts any type, including ones for which the operation makes no sense: a sometimes cryptic compile error. |
+| **Tools you can use** | `template <typename T>`, `concepts` (C++20) to constrain the accepted types. `typename` to disambiguate a type dependent on a template parameter. |
+| **Pitfalls to avoid** | A template with no constraint accepts any type, including ones for which the operation makes no sense: a sometimes cryptic compile error. Forgetting `typename` before a nested dependent type (`T::iterator`). |
 | **Best practices** | Use `concepts` (C++20) to explicitly express the requirements on a template type, rather than letting a generic error message discover them. |

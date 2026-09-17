@@ -51,7 +51,35 @@ A **ordenação por mesclagem** aplica o princípio *dividir para conquistar*: e
 
 A mesclagem de duas listas já ordenadas é **O(n)**: basta comparar os dois primeiros elementos restantes de cada lista e pegar o menor, avançando progressivamente. Combinado à divisão em duas partes (`log n` níveis de divisão), o custo total da ordenação por mesclagem é **O(n log n)**, seja qual for o estado inicial do array: ao contrário da ordenação por inserção, seu pior caso não é degradado.
 
-> **Nota:** esse compromisso entre os dois algoritmos (inserção rápida em dados quase ordenados, mesclagem estável em O(n log n) em todos os casos) é diretamente explorado por ordenações híbridas como a **ordenação por mesclagem-inserção** (*merge-insertion sort*), que insere pequenos grupos já ordenados por mesclagem com a ajuda de uma busca por inserção otimizada.
+> **Nota:** esse compromisso entre os dois algoritmos (inserção rápida em dados quase ordenados, mesclagem estável em O(n log n) em todos os casos) é diretamente explorado por ordenações híbridas, como a ordenação por mesclagem-inserção detalhada abaixo.
+
+## A ordenação por mesclagem-inserção de Ford-Johnson
+
+A **ordenação por mesclagem-inserção** (*Ford-Johnson merge-insertion sort*) leva mais longe a hibridação mencionada acima: ela minimiza o número de comparações no pior caso, aproximando-se do limite teórico ótimo (`log2(n!)`), ao custo de um algoritmo bem mais elaborado que uma ordenação por inserção ou mesclagem clássica. O princípio se desenrola em 5 etapas:
+
+1. **Agrupar os elementos em pares.**
+2. **Comparar cada par** (uma única comparação por par) para separar, em cada um, o "grande" do "pequeno".
+3. **Ordenar recursivamente** a sequência dos grandes (o mesmo algoritmo, aplicado a uma sequência menor; caso base: 0 ou 1 elemento) para obter uma sequência `S` já ordenada.
+4. **Inserir no início de `S`** o pequeno associado ao menor grande: essa inserção é gratuita, ele é necessariamente menor que todo o resto de `S`.
+5. **Inserir um a um os pequenos restantes** em `S`, por **busca binária**: como cada pequeno já é sabido menor que seu grande associado, essa informação limita a busca binária, sem necessidade de buscar além da posição de seu grande.
+
+```text
+[8, 3, 5, 1, 9, 2]
+       |
+1. Pares: (8,3) (5,1) (9,2)
+       |
+2. Grandes/pequenos: grandes = [8, 5, 9], pequenos associados = [3, 1, 2]
+       |
+3. Ordenacao recursiva dos grandes: S = [5, 8, 9]
+       |
+4. Insercao gratuita do pequeno associado ao menor grande (5 -> pequeno 1): S = [1, 5, 8, 9]
+       |
+5. Insercao por busca binaria dos pequenos restantes (3, 2) em S
+```
+
+> **Nota:** a versão ótima do algoritmo insere os pequenos restantes em uma ordem precisa, ditada pela **sequência de Jacobsthal**, para minimizar ainda mais o tamanho das subsequências percorridas por cada busca binária. Uma implementação que simplesmente insere os pequenos em ordem continua correta, mas perde parte da otimalidade teórica do algoritmo.
+>
+> **Boa prática:** essa ordenação só tem interesse real quando o número de comparações importa mais que a simplicidade do código (um exercício pedagógico, uma restrição explícita sobre o número de operações); para uso comum, uma ordenação já fornecida pela biblioteca padrão continua preferível.
 
 ## Comparando os algoritmos de ordenação
 
@@ -75,7 +103,7 @@ Uma ordenação é dita **estável** quando dois elementos considerados iguais p
 
 | | |
 |---|---|
-| **Para lembrar** | Uma ordenação por comparação só decide a ordem comparando pares de elementos. A ordenação por inserção é simples, mas O(n²); a ordenação por mesclagem garante O(n log n) em todos os casos ao custo de memória adicional. |
+| **Para lembrar** | Uma ordenação por comparação só decide a ordem comparando pares de elementos. A ordenação por inserção é simples, mas O(n²); a ordenação por mesclagem garante O(n log n) em todos os casos ao custo de memória adicional. A ordenação de Ford-Johnson minimiza o número de comparações no pior caso. |
 | **Ferramentas utilizáveis** | A tabela comparativa dos algoritmos de ordenação (complexidade, memória, estabilidade) para escolher o adequado conforme o contexto. |
 | **Armadilhas a evitar** | Esperar ficar abaixo de O(n log n) com uma ordenação por comparação pura: isso é um limite teórico, não uma falha de implementação. |
 | **Boas práticas** | Preferir a ordenação já fornecida pela linguagem, e só reimplementar uma ordenação manualmente com uma restrição precisa que a justifique. |

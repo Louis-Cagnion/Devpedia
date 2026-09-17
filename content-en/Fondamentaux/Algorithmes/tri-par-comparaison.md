@@ -51,7 +51,35 @@ This sort is **O(n²)** in the worst case (array sorted in reverse: every insert
 
 Merging two already-sorted lists is **O(n)**: it's enough to compare the two lists' first remaining elements and take the smaller one, advancing step by step. Combined with the split into halves (`log n` levels of division), the full merge sort costs **O(n log n)**, regardless of the array's initial state: unlike insertion sort, its worst case isn't degraded.
 
-> **Note:** this trade-off between the two algorithms (insertion is fast on nearly-sorted data, merge is stable at O(n log n) in every case) is directly exploited by hybrid sorts like **merge-insertion sort**, which merges small already-sorted groups using an optimized insertion search.
+> **Note:** this trade-off between the two algorithms (insertion is fast on nearly-sorted data, merge is stable at O(n log n) in every case) is directly exploited by hybrid sorts, like the merge-insertion sort detailed below.
+
+## Ford-Johnson merge-insertion sort
+
+**Merge-insertion sort** (*Ford-Johnson merge-insertion sort*) takes the hybridization mentioned above further: it minimizes the number of comparisons in the worst case, getting close to the theoretical optimal bound (`log2(n!)`), at the cost of a significantly more elaborate algorithm than a classic insertion or merge sort. The approach unfolds in 5 steps:
+
+1. **Group the elements into pairs.**
+2. **Compare each pair** (a single comparison per pair) to separate, within each, the "large" one from the "small" one.
+3. **Recursively sort** the sequence of large elements (the same algorithm, applied to a smaller sequence; base case: 0 or 1 element) to get an already-sorted sequence `S`.
+4. **Insert at the front of `S`** the small element paired with the smallest large element: this insertion is free, it's necessarily smaller than everything else in `S`.
+5. **Insert the remaining small elements one by one** into `S`, using **binary search**: since each small element is already known to be smaller than its paired large element, that fact bounds the binary search, no need to search past its large element's position.
+
+```text
+[8, 3, 5, 1, 9, 2]
+       |
+1. Pairs: (8,3) (5,1) (9,2)
+       |
+2. Large/small: large = [8, 5, 9], paired small = [3, 1, 2]
+       |
+3. Recursive sort of the large elements: S = [5, 8, 9]
+       |
+4. Free insertion of the small paired with the smallest large (5 -> small 1): S = [1, 5, 8, 9]
+       |
+5. Binary-search insertion of the remaining small elements (3, 2) into S
+```
+
+> **Note:** the optimal version of the algorithm inserts the remaining small elements in a precise order, dictated by the **Jacobsthal sequence**, to further minimize the size of the sub-sequences scanned by each binary search. An implementation that simply inserts the small elements in order is still correct, but loses some of the algorithm's theoretical optimality.
+>
+> **Best practice:** this sort is only genuinely worthwhile when the number of comparisons matters more than code simplicity (a learning exercise, an explicit constraint on the number of operations); for everyday use, a sort already provided by the standard library remains preferable.
 
 ## Comparing sorting algorithms
 
@@ -75,7 +103,7 @@ A sort is called **stable** when two elements considered equal by the comparison
 
 | | |
 |---|---|
-| **Key takeaways** | A comparison sort only decides order by comparing pairs of elements. Insertion sort is simple but O(n²); merge sort guarantees O(n log n) in every case at the cost of extra memory. |
+| **Key takeaways** | A comparison sort only decides order by comparing pairs of elements. Insertion sort is simple but O(n²); merge sort guarantees O(n log n) in every case at the cost of extra memory. Ford-Johnson merge-insertion sort minimizes the number of comparisons in the worst case. |
 | **Tools you can use** | The comparison table of sorting algorithms (complexity, memory, stability) to pick the right one for the context. |
 | **Pitfalls to avoid** | Hoping to go below O(n log n) with a pure comparison sort: it's a theoretical limit, not an implementation flaw. |
 | **Best practices** | Prefer the sort already provided by the language, and only reimplement one by hand when a specific constraint justifies it. |
