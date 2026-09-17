@@ -1,22 +1,25 @@
-/* page layout, common to home / category / subject / chapter pages. isolation: isolate scopes
-   the stylized background below (a ::before layer) to this element's own stacking context, so
-   its z-index: -1 sits behind this page's own content without reaching into an ancestor's. */
+/* page layout, common to home / category / subject / chapter pages. */
 .page {
     position: relative;
-    isolation: isolate;
     max-width: 900px;
     margin: 0 auto;
     padding: 1.5rem 1.25rem calc(var(--floating-bar-height, 0px) + 1.5rem);
-    /* a short chapter's own content is shorter than the viewport: without this, .page::before's
-       inset: 0 background stops right where the content does, leaving a plain --bg gap below it
-       down to the actual bottom of the window. Floors .page's own box at the viewport height
-       (minus the sticky navbar) so the background always reaches the bottom of the page. */
-    min-height: calc(100vh - var(--navbar-height, 57px));
 }
 
-.page::before {
+/* isolation: isolate gives body its own stacking context so the negative z-index ::before
+   below stays scoped to it (above body's own background, below body's actual children) --
+   without it, a plain <body> has no stacking context of its own, so a negative z-index child
+   falls back to the root's, where it renders behind body's own opaque background instead. */
+body:has(.page.chapterPage) {
+    isolation: isolate;
+}
+
+/* Starfield background, fixed to the viewport rather than scoped to .page's own 900px-wide
+   box, so it spans the full window width instead of stopping at the centered content column.
+   :has(.page.chapterPage) keeps it scoped to chapter pages only, matching README.md. */
+body:has(.page.chapterPage)::before {
     content: "";
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
@@ -48,7 +51,7 @@
    part of the same graphic language rather than a generic rounded card. clip-path replaces
    border-radius here: a polygon's corners are sharp by construction, rounding them back in
    would need a more complex path than this shape calls for. */
-.page p {
+.page.chapterPage p {
     position: relative;
     background-color: rgba(0, 0, 0, 0.45);
     padding: 0.6rem 1.3rem;
@@ -69,13 +72,13 @@
    to a ::after inset from the left by a fixed gutter (1.3rem), carrying its own clip-path scoped
    to *its own* box -- the <li> itself stays completely unclipped, so a ::before marker anywhere
    on it, gutter included, always renders. */
-.page .content-list li {
+.page.chapterPage .content-list li {
     position: relative;
     isolation: isolate;
     padding: 0.6rem 1.2rem 0.6rem 2.6rem;
 }
 
-.page .content-list li::after {
+.page.chapterPage .content-list li::after {
     content: "";
     position: absolute;
     z-index: -1;
@@ -88,14 +91,17 @@
 
 /* Diamond accent echoing the sidebar's category markers, tying a page's own titles back
    to the site's new theme instead of leaving them as plain text over the texture. */
-.page .pageTitle,
-.page h3, .page h4, .page h5, .page h6 {
+.page.chapterPage .pageTitle,
+.page.chapterPage h3, .page.chapterPage h4, .page.chapterPage h5, .page.chapterPage h6 {
     position: relative;
     padding-inline-start: 1.6rem;
 }
 
-.page .pageTitle::before,
-.page h3::before, .page h4::before, .page h5::before, .page h6::before {
+.page.chapterPage .pageTitle::before,
+.page.chapterPage h3::before,
+.page.chapterPage h4::before,
+.page.chapterPage h5::before,
+.page.chapterPage h6::before {
     content: "";
     position: absolute;
     inset-inline-start: 0;
@@ -106,11 +112,11 @@
 
 /* shrinks with heading depth, same principle as the sidebar's category/subject/chapter
    diamonds: size alone reads as how deep a heading sits in the page's own outline */
-.page .pageTitle::before { width: 1rem; height: 1rem; }
-.page h3::before { width: 0.8rem; height: 0.8rem; }
-.page h4::before { width: 0.6rem; height: 0.6rem; }
-.page h5::before { width: 0.5rem; height: 0.5rem; }
-.page h6::before { width: 0.4rem; height: 0.4rem; }
+.page.chapterPage .pageTitle::before { width: 1rem; height: 1rem; }
+.page.chapterPage h3::before { width: 0.8rem; height: 0.8rem; }
+.page.chapterPage h4::before { width: 0.6rem; height: 0.6rem; }
+.page.chapterPage h5::before { width: 0.5rem; height: 0.5rem; }
+.page.chapterPage h6::before { width: 0.4rem; height: 0.4rem; }
 
 .page .pageTitle {
     border-bottom: 2px solid transparent;
