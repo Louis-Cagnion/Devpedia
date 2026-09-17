@@ -37,6 +37,46 @@ Uma linha digitada **não** é executada tal como está: o Bash aplica várias p
 
 > **Nota:** é essa ordem precisa que explica por que `"$var"` (com aspas) protege da divisão em palavras (etapa 4) enquanto `$var` sozinho fica exposto a ela: as aspas só são removidas na última etapa, depois que a divisão já ocorreu (ou não) sobre o conteúdo que elas protegiam.
 
+## Como o globbing reconhece um padrão (`*.txt`): o algoritmo recursivo do `fnmatch`
+
+A etapa 5 das expansões acima (*globbing*) substitui um padrão como `*.txt` pela lista real dos arquivos que correspondem a ele. O núcleo desse mecanismo é um algoritmo recursivo de correspondência de padrões (o mesmo princípio da função padrão `fnmatch()`): `*` pode representar qualquer subsequência de caracteres, incluindo uma vazia.
+
+```text
+corresponde("*.txt", "relatorio.txt")
+  '*' encontrado -> duas tentativas:
+    1. "*" corresponde a 0 caracteres -> comparar ".txt" com "relatorio.txt" (falha)
+    2. "*" consome 1 caractere a mais -> comparar "*.txt" com "elatorio.txt" (repetir)
+  ... repetido ate que ".txt" corresponda ao fim de "relatorio.txt" -> sucesso
+```
+
+A cada `*` encontrado no padrão, o algoritmo tenta primeiro fazê-lo corresponder a zero caracteres (avançando só no padrão), senão a mais um caractere da string testada (avançando na string mantendo o `*` atual): a recursão para assim que um dos dois textos se esgota. Fora de um `*`, uma correspondência exige uma igualdade estrita caractere a caractere.
+
+> **Boa prática:** esse mesmo algoritmo (recursão sobre `*`) serve de base a qualquer busca por padrão com curingas, não só à expansão de caminho: entendê-lo permite prever o comportamento de um `*` em qualquer ferramenta que aceite curingas (busca de arquivos, filtro de log...).
+
+## Representar a linha: uma árvore de sintaxe (AST)
+
+Uma linha como `cmd1 && cmd2 || cmd3` combina vários comandos com operadores (`&&`, `||`, `|`) que não têm todos a mesma prioridade nem o mesmo sentido: executá-la palavra por palavra, na ordem de leitura, não basta para respeitar essa prioridade. O shell constrói primeiro uma **árvore de sintaxe abstrata** (AST): uma árvore binária cujos nós internos são os operadores e cujas folhas são os comandos.
+
+```text
+cmd1 && cmd2 || cmd3
+
+        OR
+       /  \
+     AND   cmd3
+    /   \
+ cmd1   cmd2
+```
+
+Executar a linha vira então um simples percurso recursivo dessa árvore:
+
+- uma folha (um comando) é lançada normalmente (`fork`/`execve`/`waitpid`, veja acima);
+- um nó `AND` só executa seu ramo direito se o esquerdo teve sucesso (código de saída `0`);
+- um nó `OR` só executa seu ramo direito se o esquerdo falhou.
+
+Os parênteses (`(cmd1 && cmd2) || cmd3`) criam uma subárvore avaliada primeiro, exatamente como em matemática: é a estrutura da árvore em si que codifica a prioridade e a associatividade dos operadores, não uma verificação repetida sobre o texto da linha.
+
+> **Nota:** esse mesmo princípio (parsing → AST → avaliação recursiva) é o de um interpretador de calculadora ou um motor de regras: assim que uma sintaxe combina elementos com operadores de prioridades diferentes, uma árvore em vez de uma leitura linear simplifica a execução.
+
 ## Os subshells: fork() sem execve()
 
 No exemplo de comando externo abaixo, o filho vindo de `fork()` chama `execve()`: ele substitui imediatamente sua imagem de memória por outro programa e deixa de ser um shell. Um **subshell** é o outro caso: um filho que **continua** sendo um shell e continua interpretando comandos, sem nunca chamar `execve()`. O Bash cria um automaticamente para:
@@ -118,6 +158,24 @@ if (pid == 0) {
 }
 ```
 
+## O código de saída de um processo morto por um sinal
+
+`waitpid()` (acima) não retorna diretamente um simples código de saída: é um status a decodificar via as macros `WIFEXITED`/`WEXITSTATUS` (saída normal) ou `WIFSIGNALED`/`WTERMSIG` (terminado por um sinal, veja [Sinais UNIX](/?c=langages-de-programmation&s=c&p=signaux-unix)). Quando um processo é morto por um sinal (`Ctrl+C` envia `SIGINT`, por exemplo) em vez de terminar normalmente via `exit()`, a convenção POSIX seguida por todos os shells consiste em expor `128 + número_do_sinal` como código de saída aparente:
+
+| Sinal | Número | Código de saída (`$?`) |
+|---|---|---|
+| `SIGINT` (Ctrl+C) | 2 | 130 |
+| `SIGQUIT` (Ctrl+\\) | 3 | 131 |
+| `SIGKILL` | 9 | 137 |
+
+```bash
+sleep 100
+# Ctrl+C durante a execucao
+echo $?   # exibe 130 (128 + 2)
+```
+
+> **Armadilha:** achar que `$?` só pode valer entre 0 e 255 por razões arbitrárias. É justamente essa faixa (um byte) que explica a convenção `128 + sinal`: além de 128, `$?` na verdade codifica "morto pelo sinal `$? - 128`", nunca um valor de retorno real escolhido pelo programa.
+
 ## Como o kernel reconhece um script executável (o shebang)
 
 Quando `execve()` recebe o caminho de um arquivo, o kernel lê seus primeiríssimos bytes para saber como lançá-lo. Se eles valerem `#!` (o [shebang](/?c=shells&s=bash&p=scripts-et-shebang)), o kernel não tenta executar o arquivo como código de máquina: ele mesmo relança `execve()`, dessa vez sobre o interpretador indicado depois de `#!`, passando a ele o caminho do script original como primeiro argumento.
@@ -186,6 +244,21 @@ execve(...);
 
 `O_TRUNC` corresponde a `>` (sobrescreve o arquivo), `O_APPEND` a `>>` (adiciona ao final); veja [Redirecionamentos e pipes](/?c=shells&s=bash&p=redirections-et-pipes) para o comportamento observado do lado do usuário.
 
+## O here-document (`<<DELIM`): redirecionar um bloco de texto sem arquivo
+
+Diferente de `<`, que redireciona a partir de um arquivo já existente, `<<DELIM` faz o shell ler as linhas seguintes de entrada **diretamente do terminal** (ou do script), até encontrar uma linha composta unicamente pelo delimitador escolhido:
+
+```bash
+cat <<FIM
+Primeira linha
+Segunda linha
+FIM
+```
+
+O shell fornece todo esse texto como entrada padrão do comando, exatamente como se viesse de um arquivo: útil para injetar um bloco multilinha sem criar um arquivo separado. Uma implementação possível (em um mini-shell) escreve cada linha lida em um arquivo temporário (`open(".heredoc", O_WRONLY | O_CREAT | O_TRUNC)`) aos poucos, e depois reabre esse arquivo em leitura como entrada do comando, uma vez alcançado o delimitador.
+
+> **Nota:** colocar o delimitador entre aspas (`<<"FIM"` ou `<<'FIM'`) desativa as expansões de variáveis dentro do bloco (`$var` permanece literal); sem aspas, as expansões habituais se aplicam normalmente ao texto do here-document.
+
 ## O controle de tarefas (jobs): `&`, `Ctrl+Z`, `fg`/`bg`
 
 Cada pipeline lançado forma um **grupo de processos**: um identificador compartilhado (`setpgid()`) que permite ao shell e ao terminal tratar todos os processos de um mesmo pipeline como uma única unidade (ex. enviar um sinal a todos ao mesmo tempo), em vez de precisar mirar em cada PID individualmente. O terminal só dá o controle do teclado a **um único** grupo por vez (`tcsetpgrp()`), o que está em primeiro plano. `Ctrl+Z` envia o sinal `SIGTSTP` a esse grupo (o suspende sem encerrá-lo), `fg`/`bg` (veja [O gerenciamento de processos](/?c=shells&s=bash&p=gestion-des-processus)) devolvem respectivamente o controle do terminal ou enviam `SIGCONT` para retomar a execução em segundo plano.
@@ -196,9 +269,9 @@ Cada pipeline lançado forma um **grupo de processos**: um identificador compart
 
 | | |
 |---|---|
-| **Para lembrar** | Um shell é um laço REPL: ler uma linha, aplicar as expansões em uma ordem fixa, executar (builtin internamente, ou `fork`/`execve`/`wait` para um comando externo). `( ; )` cria um subshell, `{ ; }` agrupa comandos sem criar um. |
-| **Ferramentas utilizáveis** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` para os pipes e redirecionamentos, o shebang para que um script seja reconhecido como executável, `printf` para códigos ANSI confiáveis entre shells. |
-| **Armadilhas a evitar** | Confundir a ordem das expansões: é ela que explica por que `"$var"` protege da divisão em palavras enquanto `$var` sozinho fica exposto a ela. Omitir os espaços ao redor de `{ ; }`. Confiar no `echo` para interpretar um código ANSI: seu comportamento padrão varia entre shells. |
+| **Para lembrar** | Um shell é um laço REPL: ler uma linha, aplicar as expansões em uma ordem fixa, executar (builtin internamente, ou `fork`/`execve`/`wait` para um comando externo). `( ; )` cria um subshell, `{ ; }` agrupa comandos sem criar um. `&&`/`\|\|`/`\|` são representados internamente como uma árvore de sintaxe (AST) que codifica sua prioridade. |
+| **Ferramentas utilizáveis** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` para os pipes e redirecionamentos, `<<DELIM` para um here-document, o shebang para que um script seja reconhecido como executável, `printf` para códigos ANSI confiáveis entre shells. |
+| **Armadilhas a evitar** | Confundir a ordem das expansões: é ela que explica por que `"$var"` protege da divisão em palavras enquanto `$var` sozinho fica exposto a ela. Omitir os espaços ao redor de `{ ; }`. Confiar no `echo` para interpretar um código ANSI: seu comportamento padrão varia entre shells. Esquecer que `$?` além de 128 codifica um sinal (`128 + número`), não um valor de retorno real. |
 | **Boas práticas** | Construir seu próprio mini-shell para verificar sua compreensão: laço de leitura, analisador, expansões, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. Preferir `{ ; }` a um subshell sempre que uma mudança (`cd`, uma variável) precisar sobreviver ao grupo de comandos. |
 
 ## Construir seu próprio mini-shell

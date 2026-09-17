@@ -681,7 +681,7 @@
             },
             {
               "id": "architecture-dun-shell",
-              "label": "[C](/?c=langages-de-programmation&s=c&p=c)ómo funciona un shell (arquitectura interna)"
+              "label": "Cómo funciona un shell (arquitectura interna)"
             },
             {
               "id": "automatisation-cron",
@@ -775,7 +775,7 @@
             },
             {
               "id": "architecture-dun-shell",
-              "label": "[C](/?c=langages-de-programmation&s=c&p=c)ómo funciona PowerShell (arquitectura interna)"
+              "label": "Cómo funciona PowerShell (arquitectura interna)"
             }
           ]
         },

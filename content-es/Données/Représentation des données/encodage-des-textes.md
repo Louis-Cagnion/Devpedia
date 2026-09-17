@@ -10,7 +10,7 @@ Un ordenador no almacena letras, solo números. Una **codificación** es la conv
 
 **ASCII** (*American Standard Code for Information Interchange*), normalizado en 1963, asocia un número de 0 a 127 a los caracteres del inglés. Cabe por tanto en 7 bits, almacenados en un byte.
 
-| Carácter | [C](/?c=langages-de-programmation&s=c&p=c)ódigo |
+| Carácter | Código |
 |---|---|
 | `A` → `Z` | 65 → 90 |
 | `a` → `z` | 97 → 122 |

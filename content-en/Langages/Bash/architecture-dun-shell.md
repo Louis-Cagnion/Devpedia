@@ -37,6 +37,46 @@ A typed line is **not** run as-is: Bash applies several expansion passes, in a f
 
 > **Note:** it's this precise order that explains why `"$var"` (with quotes) protects against word splitting (step 4) while `$var` alone is exposed to it: the quotes are only removed at the very last step, after splitting has already happened (or not) on the content they were protecting.
 
+## How globbing recognizes a pattern (`*.txt`): the recursive `fnmatch` algorithm
+
+Step 5 of the expansions above (*globbing*) replaces a pattern like `*.txt` with the actual list of files that match it. At the core of this mechanism is a recursive pattern-matching algorithm (the same principle as the standard `fnmatch()` function): `*` can stand for any subsequence of characters, including an empty one.
+
+```text
+matches("*.txt", "report.txt")
+  '*' found -> two attempts:
+    1. "*" matches 0 characters -> compare ".txt" to "report.txt" (fails)
+    2. "*" consumes 1 more character -> compare "*.txt" to "eport.txt" (retry)
+  ... repeated until ".txt" matches the end of "report.txt" -> success
+```
+
+For every `*` found in the pattern, the algorithm first tries to match it against zero characters (advancing in the pattern only), otherwise against one more character of the tested string (advancing in the string while keeping the current `*`): the recursion stops as soon as either text runs out. Outside of a `*`, a match requires a strict character-by-character equality.
+
+> **Best practice:** this same algorithm (recursion on `*`) underlies any wildcard pattern search, not just pathname expansion: understanding it lets you predict how a `*` behaves in any tool that accepts wildcards (file search, log filter...).
+
+## Representing the line: a syntax tree (AST)
+
+A line like `cmd1 && cmd2 || cmd3` combines several commands with operators (`&&`, `||`, `|`) that don't all share the same priority or meaning: running it word by word, in reading order, isn't enough to respect that priority. The shell first builds an **abstract syntax tree** (AST): a binary tree whose internal nodes are the operators and whose leaves are the commands.
+
+```text
+cmd1 && cmd2 || cmd3
+
+        OR
+       /  \
+     AND   cmd3
+    /   \
+ cmd1   cmd2
+```
+
+Running the line then becomes a simple recursive walk of that tree:
+
+- a leaf (a command) is launched normally (`fork`/`execve`/`waitpid`, see above);
+- an `AND` node only runs its right branch if the left one succeeded (exit code `0`);
+- an `OR` node only runs its right branch if the left one failed.
+
+Parentheses (`(cmd1 && cmd2) || cmd3`) create a sub-tree evaluated first, exactly like in mathematics: it's the tree's structure itself that encodes operator priority and associativity, not a repeated check on the line's text.
+
+> **Note:** this same principle (parsing → AST → recursive evaluation) is what a calculator interpreter or a rules engine uses: whenever a syntax combines elements with operators of different priorities, a tree rather than a linear reading simplifies execution.
+
 ## Subshells: fork() with no execve()
 
 In the external-command example below, the child produced by `fork()` calls `execve()`: it immediately replaces its memory image with another program and stops being a shell. A **subshell** is the other case: a child that **stays** a shell and keeps interpreting commands, never calling `execve()`. Bash automatically creates one for:
@@ -118,6 +158,24 @@ if (pid == 0) {
 }
 ```
 
+## The exit code of a process killed by a signal
+
+`waitpid()` (above) doesn't directly return a plain exit code: it's a status to decode via the `WIFEXITED`/`WEXITSTATUS` macros (normal exit) or `WIFSIGNALED`/`WTERMSIG` (killed by a signal, see [UNIX Signals](/?c=langages-de-programmation&s=c&p=signaux-unix)). When a process is killed by a signal (`Ctrl+C` sends `SIGINT`, for instance) rather than exiting normally via `exit()`, the POSIX convention followed by every shell exposes `128 + signal_number` as the apparent exit code:
+
+| Signal | Number | Exit code (`$?`) |
+|---|---|---|
+| `SIGINT` (Ctrl+C) | 2 | 130 |
+| `SIGQUIT` (Ctrl+\\) | 3 | 131 |
+| `SIGKILL` | 9 | 137 |
+
+```bash
+sleep 100
+# Ctrl+C during execution
+echo $?   # displays 130 (128 + 2)
+```
+
+> **Pitfall:** believing `$?` can only hold a value between 0 and 255 for arbitrary reasons. It's precisely that range (one byte) that explains the `128 + signal` convention: past 128, `$?` actually encodes "killed by signal `$? - 128`", never an actual return value chosen by the program.
+
 ## How the kernel recognizes an executable script (the shebang)
 
 When `execve()` receives a file's path, the kernel reads its very first bytes to know how to launch it. If they equal `#!` (the [shebang](/?c=shells&s=bash&p=scripts-et-shebang)), the kernel doesn't try to run the file as machine code: it re-invokes `execve()` itself, this time on the interpreter named after `#!`, passing it the original script's path as its first argument.
@@ -186,6 +244,21 @@ execve(...);
 
 `O_TRUNC` corresponds to `>` (overwrites the file), `O_APPEND` to `>>` (appends to the end); see [Redirections and Pipes](/?c=shells&s=bash&p=redirections-et-pipes) for the behavior observed on the user's side.
 
+## Here-documents (`<<DELIM`): redirecting a block of text with no file
+
+Unlike `<`, which redirects from an already-existing file, `<<DELIM` makes the shell read the following lines of input **directly from the terminal** (or the script), until it hits a line made up solely of the chosen delimiter:
+
+```bash
+cat <<END
+First line
+Second line
+END
+```
+
+The shell feeds all that text as the command's standard input, exactly as if it came from a file: useful for injecting a multi-line block without creating a separate file. One possible implementation (in a mini-shell) writes each line read into a temporary file (`open(".heredoc", O_WRONLY | O_CREAT | O_TRUNC)`) as it goes, then reopens that file for reading as the command's input once the delimiter is reached.
+
+> **Note:** quoting the delimiter (`<<"END"` or `<<'END'`) disables variable expansions inside the block (`$var` stays literal); without quotes, the usual expansions apply normally to the here-document's text.
+
 ## Job control: `&`, `Ctrl+Z`, `fg`/`bg`
 
 Every pipeline launched forms a **process group**, a shared identifier (`setpgid()`) that lets the shell and the terminal treat every process in the same pipeline as a single unit (e.g. sending a signal to all of them at once), rather than having to target each PID individually. The terminal only gives keyboard control to **one** group at a time (`tcsetpgrp()`), the one in the foreground. `Ctrl+Z` sends the `SIGTSTP` signal to that group (suspends it without ending it), `fg`/`bg` (see [Process Management](/?c=shells&s=bash&p=gestion-des-processus)) respectively give back terminal control or send `SIGCONT` to resume execution in the background.
@@ -196,9 +269,9 @@ Every pipeline launched forms a **process group**, a shared identifier (`setpgid
 
 | | |
 |---|---|
-| **Key takeaways** | A shell is a REPL loop: read a line, apply expansions in a fixed order, execute (internally for a builtin, or `fork`/`execve`/`wait` for an external command). `( ; )` creates a subshell, `{ ; }` groups commands without creating one. |
-| **Tools you can use** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` for pipes and redirections, the shebang so a script is recognized as executable, `printf` for ANSI codes that behave consistently across shells. |
-| **Pitfalls to avoid** | Mixing up the order of expansions: it's what explains why `"$var"` protects against word splitting while `$var` alone is exposed to it. Omitting the spaces around `{ ; }`. Relying on `echo` to interpret an ANSI code: its default behavior varies across shells. |
+| **Key takeaways** | A shell is a REPL loop: read a line, apply expansions in a fixed order, execute (internally for a builtin, or `fork`/`execve`/`wait` for an external command). `( ; )` creates a subshell, `{ ; }` groups commands without creating one. `&&`/`\|\|`/`\|` are internally represented as a syntax tree (AST) that encodes their priority. |
+| **Tools you can use** | `fork()`/`execve()`/`waitpid()`, `pipe()`/`dup2()` for pipes and redirections, `<<DELIM` for a here-document, the shebang so a script is recognized as executable, `printf` for ANSI codes that behave consistently across shells. |
+| **Pitfalls to avoid** | Mixing up the order of expansions: it's what explains why `"$var"` protects against word splitting while `$var` alone is exposed to it. Omitting the spaces around `{ ; }`. Relying on `echo` to interpret an ANSI code: its default behavior varies across shells. Forgetting that `$?` past 128 encodes a signal (`128 + number`), not an actual return value. |
 | **Best practices** | Build your own mini-shell to check your understanding: read loop, parser, expansions, `fork`/`execve`/`waitpid`, `pipe`/`dup2`/`open`. Prefer `{ ; }` over a subshell whenever a change (`cd`, a variable) needs to survive the group of commands. |
 
 ## Building your own mini-shell
