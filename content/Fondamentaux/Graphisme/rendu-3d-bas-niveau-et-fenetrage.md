@@ -29,6 +29,28 @@ Tant que la fenetre est ouverte :
 >
 > **Bonne pratique :** ne redessiner que quand l'état du jeu a réellement changé (une touche pressée, la souris déplacée), plutôt qu'à chaque tour de boucle sans condition.
 
+## Écrire directement dans le buffer mémoire de l'image
+
+MinilibX propose deux façons de poser un pixel dans une image : `mlx_pixel_put()`, un appel de fonction par pixel, ou un accès direct au buffer mémoire de l'image via `mlx_get_data_addr()`. Pour une image redessinée entièrement à chaque frame (comme un rendu par raycasting), la seconde est nettement plus rapide : un appel de fonction par pixel a un coût non négligeable, multiplié par des centaines de milliers de pixels par image.
+
+`mlx_get_data_addr()` renvoie l'adresse mémoire du premier pixel de l'image, ainsi que trois informations nécessaires pour calculer l'adresse d'un pixel précis : `line_length` (le nombre d'octets par ligne de l'image), `bits_per_pixel` (la taille en bits d'un pixel, généralement 32) et `endian` (l'ordre des octets).
+
+```c
+int line_length, bits_per_pixel, endian;
+char *buffer = mlx_get_data_addr(image, &bits_per_pixel, &line_length, &endian);
+
+void poserPixel(char *buffer, int line_length, int bits_per_pixel, int x, int y, int couleur)
+{
+    char *adresse = buffer + (y * line_length) + (x * (bits_per_pixel / 8));
+
+    *(unsigned int *)adresse = couleur; // écrit directement les 4 octets du pixel
+}
+```
+
+> **Piège :** oublier que `bits_per_pixel` s'exprime en bits, pas en octets : diviser par 8 (`bits_per_pixel / 8`) est indispensable pour obtenir le nombre d'octets à décaler par pixel, sinon l'accès mémoire vise le mauvais endroit dans le buffer.
+>
+> **Bonne pratique :** calculer `line_length` et `bits_per_pixel` une seule fois (au lancement), puis ne recalculer que l'adresse du pixel (`x`, `y` variables) à chaque écriture : ce sont les seules valeurs qui changent d'un pixel à l'autre.
+
 ## Le problème : simuler la 3D sans vraie 3D
 
 Calculer une scène 3D complète (chaque surface, chaque angle de vue) demandait, au début des années 1990, une puissance de calcul qu'aucun ordinateur grand public n'avait. Le raycasting contourne le problème : plutôt que de modéliser un vrai volume en 3D, il simule la profondeur à partir d'une carte **en 2D** (un plan vu du dessus, comme un labyrinthe), en calculant seulement la distance jusqu'au mur le plus proche dans chaque direction regardée.
@@ -74,6 +96,6 @@ Le raycasting classique ne gère qu'un seul niveau de hauteur par colonne : il n
 | | |
 |---|---|
 | **À retenir** | Une bibliothèque de fenêtrage (X11, MinilibX) donne accès à une zone d'affichage et aux événements clavier/souris via une boucle qui tourne en continu. Le raycasting simule la 3D en lançant un rayon par colonne de pixels sur une carte 2D, la distance jusqu'au mur touché déterminant sa hauteur à l'écran. |
-| **Outils utilisables** | MinilibX/X11 pour le fenêtrage sous Linux. Un algorithme DDA pour avancer le rayon efficacement sur la grille de la carte. |
-| **Pièges à éviter** | Redessiner toute l'image à chaque tour sans condition. Avancer le rayon par pas fixes trop grands, au risque de manquer un mur fin. |
+| **Outils utilisables** | MinilibX/X11 pour le fenêtrage sous Linux. `mlx_get_data_addr()` pour écrire directement dans le buffer de l'image plutôt que pixel par pixel. Un algorithme DDA pour avancer le rayon efficacement sur la grille de la carte. |
+| **Pièges à éviter** | Redessiner toute l'image à chaque tour sans condition. Avancer le rayon par pas fixes trop grands, au risque de manquer un mur fin. Oublier de diviser `bits_per_pixel` par 8 en écrivant dans le buffer. |
 | **Bonnes pratiques** | Ne redessiner qu'après un changement réel de l'état du jeu. Utiliser un DDA plutôt que des petits pas fixes pour l'avancée du rayon. |

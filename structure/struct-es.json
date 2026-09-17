@@ -105,6 +105,10 @@
             {
               "id": "la-derivee-et-le-gradient",
               "label": "La derivada y el gradiente"
+            },
+            {
+              "id": "approximation-par-serie-de-taylor",
+              "label": "La aproximación por serie de Taylor"
             }
           ]
         },
@@ -132,6 +136,10 @@
             {
               "id": "edition-de-maillage-et-selection-proportionnelle",
               "label": "Edición de malla y selección proporcional"
+            },
+            {
+              "id": "fractales-et-temps-dechappement",
+              "label": "Fractales por tiempo de escape: Mandelbrot y Julia"
             }
           ]
         }

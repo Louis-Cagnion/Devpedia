@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Item todo #7 terminé (fractales, série de Taylor, buffer MinilibX) (2026-09-17)
+
+3 ajouts (4 langues chacun) : nouvelle section sur l'écriture directe dans le buffer mémoire MinilibX (`rendu-3d-bas-niveau-et-fenetrage.md`), nouveau chapitre `fractales-et-temps-dechappement.md` (Mandelbrot/Julia, mention Multibrot en aparté) sous `Fondamentaux/Graphisme`, nouveau chapitre `approximation-par-serie-de-taylor.md` sous `Fondamentaux/Mathématiques`. `structure/struct.json` (4 langues) régénéré en conséquence.
+
 ## Item todo #10 terminé (AST, code de sortie 128+signal, heredoc, fnmatch) et bug de lien cassé trouvé dans 4 titres/cellules ES/BR (2026-09-17)
 
 4 sections ajoutées à `architecture-dun-shell.md` (Bash, 4 langues) : AST pour la priorité `&&`/`\|\|`/`\|`, convention `128 + signal` pour `$?`, here-document `<<DELIM`, algorithme récursif `fnmatch` pour le glob. En le rédigeant, repéré un bug préexistant sans rapport : dans `content-es/Langages/Bash/architecture-dun-shell.md`, `content-es/Langages/PowerShell/architecture-dun-shell.md`, `content-es/Données/.../encodage-des-textes.md` et son équivalent BR, le mot "Cómo"/"Código" (resp. "Como"/"Código") était scindé par un lien auto-inséré vers le chapitre C (`[C](...)ómo`, `[C](...)ódigo`) : un outil de génération de liens a matché la lettre "C" en tête de mot sans vérifier de limite de mot. Visible jusque dans `struct-es.json` (titre de sidebar cassé). Corrigé (lien retiré, mot restauré) dans les 4 fichiers ; balayage complet des 4 dossiers `content*` ne trouve pas d'autre occurrence.

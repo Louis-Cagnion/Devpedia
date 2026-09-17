@@ -29,6 +29,28 @@ While the window is open:
 >
 > **Best practice:** only redraw when the game state has actually changed (a key pressed, the mouse moved), rather than unconditionally on every loop pass.
 
+## Writing directly into the image's memory buffer
+
+MinilibX offers two ways to set a pixel in an image: `mlx_pixel_put()`, one function call per pixel, or direct access to the image's memory buffer via `mlx_get_data_addr()`. For an image redrawn entirely on every frame (like a raycasting render), the second is noticeably faster: a function call per pixel has a non-negligible cost, multiplied by hundreds of thousands of pixels per image.
+
+`mlx_get_data_addr()` returns the memory address of the image's first pixel, along with three pieces of information needed to compute a given pixel's address: `line_length` (the number of bytes per image row), `bits_per_pixel` (a pixel's size in bits, usually 32), and `endian` (byte order).
+
+```c
+int line_length, bits_per_pixel, endian;
+char *buffer = mlx_get_data_addr(image, &bits_per_pixel, &line_length, &endian);
+
+void putPixel(char *buffer, int line_length, int bits_per_pixel, int x, int y, int color)
+{
+    char *address = buffer + (y * line_length) + (x * (bits_per_pixel / 8));
+
+    *(unsigned int *)address = color; // writes the pixel's 4 bytes directly
+}
+```
+
+> **Pitfall:** forgetting that `bits_per_pixel` is expressed in bits, not bytes: dividing by 8 (`bits_per_pixel / 8`) is essential to get the number of bytes to offset per pixel, otherwise the memory access targets the wrong spot in the buffer.
+>
+> **Best practice:** compute `line_length` and `bits_per_pixel` once (at startup), then only recompute the pixel's address (`x`, `y` variable) on every write: those are the only values that change from one pixel to the next.
+
 ## The problem: simulating 3D without real 3D
 
 Computing a full 3D scene (every surface, every viewing angle) demanded, in the early 1990s, more computing power than any consumer computer had. Raycasting works around the problem: rather than modeling a real 3D volume, it simulates depth from a **2D** map (a top-down floor plan, like a maze), computing only the distance to the nearest wall in each direction being looked at.
@@ -74,6 +96,6 @@ Classic raycasting only handles a single height level per column: it can't repre
 | | |
 |---|---|
 | **To remember** | A windowing library (X11, MinilibX) gives access to a display area and to keyboard/mouse events through a loop that runs continuously. Raycasting simulates 3D by casting one ray per pixel column onto a 2D map, the distance to the hit wall determining its height on screen. |
-| **Usable tools** | MinilibX/X11 for windowing on Linux. A DDA algorithm to advance the ray efficiently across the map's grid. |
-| **Pitfalls to avoid** | Redrawing the whole image every pass with no condition. Advancing the ray in fixed steps that are too large, risking missing a thin wall. |
+| **Usable tools** | MinilibX/X11 for windowing on Linux. `mlx_get_data_addr()` to write directly into the image buffer rather than pixel by pixel. A DDA algorithm to advance the ray efficiently across the map's grid. |
+| **Pitfalls to avoid** | Redrawing the whole image every pass with no condition. Advancing the ray in fixed steps that are too large, risking missing a thin wall. Forgetting to divide `bits_per_pixel` by 8 when writing into the buffer. |
 | **Best practices** | Only redraw after an actual change in the game state. Use a DDA rather than small fixed steps to advance the ray. |
