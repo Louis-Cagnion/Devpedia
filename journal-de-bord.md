@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Item todo #13 terminé (notation CIDR, table de routage) (2026-09-17)
+
+2 notions ajoutées (4 langues), aucun nouveau chapitre : notation CIDR et table de routage/route par défaut, ajoutées à `fondamentaux-reseau.md` (juste après les sections masque de sous-réseau et passerelle par défaut qu'elles généralisent).
+
 ## Item todo #12 terminé (DDA/fisheye, texture mapping, sprite billboarding/z-buffer, souris infinie, bandes de rendu) (2026-09-17)
 
 5 notions ajoutées (4 langues chacune), aucun nouveau chapitre : DDA, correction fisheye (vecteur plan caméra), texture mapping, sprite billboarding + z-buffer, souris infinie, toutes ajoutées à `rendu-3d-bas-niveau-et-fenetrage.md` (déjà le chapitre de référence pour le raycasting) ; parallélisation d'un rendu par bandes de threads ajoutée à `threads.md` plutôt qu'à `parallelisme.md` (process/Python, registre différent de ce pattern CPU-bound en C). Aucun nouveau chapitre donc aucune régénération de `struct.json` nécessaire cette fois.

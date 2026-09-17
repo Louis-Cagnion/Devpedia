@@ -37,6 +37,27 @@ Masque        :  255.255.255.0
 
 Deux machines dont la partie réseau (une fois le masque appliqué) est identique peuvent se parler **directement**, sans passer par un routeur. Si la partie réseau diffère, leurs données doivent obligatoirement transiter par un routeur pour se rejoindre.
 
+## La notation CIDR : une écriture abrégée du masque
+
+Plutôt que d'écrire le masque en notation décimale pointée (`255.255.255.192`), on peut l'exprimer comme un simple nombre de bits à 1 en partant de la gauche : la **notation CIDR** (*Classless Inter-Domain Routing*).
+
+```text
+255.255.255.192
+= 11111111.11111111.11111111.11000000  (en binaire)
+= 26 bits a 1 (partie reseau) + 6 bits a 0 (partie hote)
+-> s'ecrit /26
+```
+
+Une adresse s'écrit alors directement avec son masque accolé : `192.168.1.10/26`. Cette notation est la plus courante en pratique (configuration d'interface réseau, règles de pare-feu, tables de routage), largement préférée à l'écriture décimale pointée du masque.
+
+| Masque décimal | Notation CIDR | Bits réseau |
+|---|---|---|
+| `255.255.255.0` | `/24` | 24 |
+| `255.255.255.128` | `/25` | 25 |
+| `255.255.255.192` | `/26` | 26 |
+
+> **Piège :** confondre le chiffre après le `/` avec le nombre d'adresses disponibles. `/26` désigne le nombre de bits **réseau**, pas le nombre d'hôtes : un `/26` laisse 6 bits pour la partie hôte, soit 2⁶ = 64 adresses (dont 2 réservées, réseau et diffusion).
+
 ## La passerelle par défaut : la sortie du réseau local
 
 La **passerelle par défaut** (*default gateway*) est l'adresse IP à laquelle une machine envoie ses données dès que la destination ne se trouve **pas** sur son réseau local (partie réseau différente). Il s'agit presque toujours de l'adresse du routeur local.
@@ -49,6 +70,20 @@ Ordinateur (192.168.1.10)
         v
 Passerelle / routeur (192.168.1.1) --------> reste d'Internet
 ```
+
+## La table de routage : plusieurs routes possibles
+
+Dès qu'un réseau comporte plus d'un routeur, une machine ne connaît plus une seule passerelle unique mais une **table de routage** : une liste d'entrées, chacune associant un sous-réseau de destination à la passerelle à utiliser pour l'atteindre.
+
+| Destination | Passerelle |
+|---|---|
+| `10.0.0.0/24` | `192.168.1.5` |
+| `172.16.0.0/16` | `192.168.1.9` |
+| `0.0.0.0/0` (route par défaut) | `192.168.1.1` |
+
+Le paquet suit l'entrée dont le sous-réseau de destination correspond le plus précisément à l'adresse visée. La **route par défaut** (`0.0.0.0/0`, qui correspond à n'importe quelle adresse puisqu'elle n'impose aucun bit de préfixe) est utilisée en dernier recours, quand aucune route plus spécifique ne correspond : c'est la généralisation de la passerelle par défaut unique vue plus haut, au cas de plusieurs routes explicites concurrentes.
+
+> **Bonne pratique :** face à un problème de connectivité entre deux réseaux via plusieurs routeurs, vérifier la table de routage de chaque machine impliquée avant de soupçonner une panne matérielle : une route manquante ou incorrecte produit exactement les mêmes symptômes qu'un câble débranché.
 
 ## Routeur vs switch : deux appareils, deux rôles
 
@@ -91,7 +126,7 @@ Deux services automatisent une partie de ce que ce chapitre vient d'expliquer ma
 
 | | |
 |---|---|
-| **À retenir** | Une adresse IP identifie une machine ; le masque de sous-réseau distingue la partie réseau de la partie hôte ; la passerelle sort du réseau local ; un switch relie des machines d'un même réseau, un routeur relie des réseaux entre eux. |
-| **Outils utilisables** | Le modèle OSI pour situer un problème réseau dans la bonne couche ; DHCP pour l'attribution automatique d'adresses ; NAT pour le partage d'une IP publique. |
-| **Pièges à éviter** | Confondre routeur et switch, ou croire qu'une "box" est un seul type d'appareil alors qu'elle en combine plusieurs. |
+| **À retenir** | Une adresse IP identifie une machine ; le masque de sous-réseau (souvent écrit en notation CIDR, `/26`) distingue la partie réseau de la partie hôte ; une table de routage généralise la passerelle par défaut à plusieurs routes possibles ; un switch relie des machines d'un même réseau, un routeur relie des réseaux entre eux. |
+| **Outils utilisables** | Le modèle OSI pour situer un problème réseau dans la bonne couche ; DHCP pour l'attribution automatique d'adresses ; NAT pour le partage d'une IP publique ; la table de routage pour diagnostiquer un problème de connectivité entre plusieurs réseaux. |
+| **Pièges à éviter** | Confondre routeur et switch, ou croire qu'une "box" est un seul type d'appareil alors qu'elle en combine plusieurs. Confondre le chiffre CIDR avec le nombre d'adresses disponibles. |
 | **Bonnes pratiques** | Toujours vérifier si deux machines partagent la même partie réseau avant de chercher pourquoi elles ne communiquent pas directement. |

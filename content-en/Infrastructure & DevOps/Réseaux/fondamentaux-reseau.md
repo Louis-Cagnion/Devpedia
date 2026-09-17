@@ -37,6 +37,27 @@ Mask          :  255.255.255.0
 
 Two machines whose network part (once the mask is applied) is identical can talk to each other **directly**, without going through a router. If the network part differs, their data must pass through a router to reach each other.
 
+## CIDR notation: a shorthand for the mask
+
+Rather than writing the mask in dotted-decimal notation (`255.255.255.192`), it can be expressed as a simple count of leading 1 bits: **CIDR notation** (*Classless Inter-Domain Routing*).
+
+```text
+255.255.255.192
+= 11111111.11111111.11111111.11000000  (in binary)
+= 26 bits set to 1 (network part) + 6 bits set to 0 (host part)
+-> written /26
+```
+
+An address is then written directly with its mask attached: `192.168.1.10/26`. This notation is the most common one in practice (network interface configuration, firewall rules, routing tables), largely preferred over the mask's dotted-decimal form.
+
+| Decimal mask | CIDR notation | Network bits |
+|---|---|---|
+| `255.255.255.0` | `/24` | 24 |
+| `255.255.255.128` | `/25` | 25 |
+| `255.255.255.192` | `/26` | 26 |
+
+> **Pitfall:** confusing the number after the `/` with the number of available addresses. `/26` denotes the number of **network** bits, not the number of hosts: a `/26` leaves 6 bits for the host part, i.e. 2⁶ = 64 addresses (2 of which are reserved, network and broadcast).
+
 ## The default gateway: the local network's exit
 
 The **default gateway** is the IP address a machine sends its data to as soon as the destination is **not** on its local network (different network part). It's almost always the address of the local router.
@@ -49,6 +70,20 @@ Computer (192.168.1.10)
         v
 Gateway / router (192.168.1.1) --------> the rest of the Internet
 ```
+
+## The routing table: several possible routes
+
+As soon as a network has more than one router, a machine no longer relies on a single gateway but on a **routing table**: a list of entries, each mapping a destination subnet to the gateway to use to reach it.
+
+| Destination | Gateway |
+|---|---|
+| `10.0.0.0/24` | `192.168.1.5` |
+| `172.16.0.0/16` | `192.168.1.9` |
+| `0.0.0.0/0` (default route) | `192.168.1.1` |
+
+The packet follows the entry whose destination subnet matches the target address most precisely. The **default route** (`0.0.0.0/0`, which matches any address since it imposes no prefix bits) is used as a last resort, when no more specific route matches: it's the generalization of the single default gateway seen above, for the case of several competing explicit routes.
+
+> **Best practice:** facing a connectivity problem between two networks through several routers, check the routing table of every machine involved before suspecting a hardware failure: a missing or incorrect route produces exactly the same symptoms as an unplugged cable.
 
 ## Router vs. switch: two devices, two roles
 
@@ -91,7 +126,7 @@ Two services automate part of what this chapter just explained manually:
 
 | | |
 |---|---|
-| **Key takeaways** | An IP address identifies a machine; the subnet mask separates the network part from the host part; the gateway is the exit from the local network; a switch connects machines on one network, a router connects networks to each other. |
-| **Tools you can use** | The OSI model to place a network problem in the right layer; DHCP for automatic address assignment; NAT for sharing a single public IP. |
-| **Pitfalls to avoid** | Confusing a router with a switch, or assuming a "box" is a single type of device when it actually combines several. |
+| **Key takeaways** | An IP address identifies a machine; the subnet mask (often written in CIDR notation, `/26`) separates the network part from the host part; a routing table generalizes the default gateway to several possible routes; a switch connects machines on one network, a router connects networks to each other. |
+| **Tools you can use** | The OSI model to place a network problem in the right layer; DHCP for automatic address assignment; NAT for sharing a single public IP; the routing table to diagnose a connectivity issue across several networks. |
+| **Pitfalls to avoid** | Confusing a router with a switch, or assuming a "box" is a single type of device when it actually combines several. Confusing the CIDR number with the number of available addresses. |
 | **Best practices** | Always check whether two machines share the same network part before investigating why they can't communicate directly. |

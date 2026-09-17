@@ -37,6 +37,27 @@ Mascara      :  255.255.255.0
 
 Duas máquinas cuja parte de rede (uma vez aplicada a máscara) é idêntica podem se comunicar **diretamente**, sem passar por um roteador. Se a parte de rede for diferente, seus dados obrigatoriamente precisam passar por um roteador para se encontrarem.
 
+## A notação CIDR: uma forma abreviada de escrever a máscara
+
+Em vez de escrever a máscara em notação decimal com pontos (`255.255.255.192`), pode-se expressá-la como um simples número de bits em 1 a partir da esquerda: a **notação CIDR** (*Classless Inter-Domain Routing*).
+
+```text
+255.255.255.192
+= 11111111.11111111.11111111.11000000  (em binario)
+= 26 bits em 1 (parte de rede) + 6 bits em 0 (parte de host)
+-> se escreve /26
+```
+
+Um endereço é então escrito diretamente com sua máscara anexada: `192.168.1.10/26`. Essa notação é a mais comum na prática (configuração de interface de rede, regras de firewall, tabelas de roteamento), amplamente preferida à escrita decimal com pontos da máscara.
+
+| Máscara decimal | Notação CIDR | Bits de rede |
+|---|---|---|
+| `255.255.255.0` | `/24` | 24 |
+| `255.255.255.128` | `/25` | 25 |
+| `255.255.255.192` | `/26` | 26 |
+
+> **Cilada:** confundir o número após a `/` com o número de endereços disponíveis. `/26` designa o número de bits de **rede**, não o número de hosts: um `/26` deixa 6 bits para a parte de host, ou seja, 2⁶ = 64 endereços (2 deles reservados, rede e broadcast).
+
 ## O gateway padrão: a saída da rede local
 
 O **gateway padrão** (*default gateway*) é o endereço IP para o qual uma máquina envia seus dados sempre que o destino **não** está na sua rede local (parte de rede diferente). Quase sempre, é o endereço do roteador local.
@@ -49,6 +70,20 @@ Computador (192.168.1.10)
         v
 Gateway / roteador (192.168.1.1) --------> resto da Internet
 ```
+
+## A tabela de roteamento: várias rotas possíveis
+
+Assim que uma rede tem mais de um roteador, uma máquina deixa de contar com um único gateway e passa a usar uma **tabela de roteamento**: uma lista de entradas, cada uma associando uma sub-rede de destino ao gateway a usar para alcançá-la.
+
+| Destino | Gateway |
+|---|---|
+| `10.0.0.0/24` | `192.168.1.5` |
+| `172.16.0.0/16` | `192.168.1.9` |
+| `0.0.0.0/0` (rota padrão) | `192.168.1.1` |
+
+O pacote segue a entrada cuja sub-rede de destino corresponde mais precisamente ao endereço buscado. A **rota padrão** (`0.0.0.0/0`, que corresponde a qualquer endereço por não impor nenhum bit de prefixo) é usada como último recurso, quando nenhuma rota mais específica corresponde: é a generalização do gateway padrão único visto acima, para o caso de várias rotas explícitas concorrentes.
+
+> **Boa prática:** diante de um problema de conectividade entre duas redes através de vários roteadores, verificar a tabela de roteamento de cada máquina envolvida antes de suspeitar de uma falha de hardware: uma rota ausente ou incorreta produz exatamente os mesmos sintomas que um cabo desconectado.
 
 ## Roteador vs switch: dois dispositivos, dois papéis
 
@@ -91,7 +126,7 @@ Dois serviços automatizam parte do que este capítulo acabou de explicar manual
 
 | | |
 |---|---|
-| **Para lembrar** | Um endereço IP identifica uma máquina; a máscara de sub-rede distingue a parte de rede da parte de host; o gateway leva para fora da rede local; um switch conecta máquinas de uma mesma rede, um roteador conecta redes entre si. |
-| **Ferramentas utilizáveis** | O modelo OSI para localizar um problema de rede na camada certa; DHCP para a atribuição automática de endereços; NAT para o compartilhamento de um IP público. |
-| **Armadilhas a evitar** | Confundir roteador e switch, ou achar que um "roteador Wi-Fi" é um único tipo de dispositivo quando na verdade combina vários. |
+| **Para lembrar** | Um endereço IP identifica uma máquina; a máscara de sub-rede (muitas vezes escrita em notação CIDR, `/26`) distingue a parte de rede da parte de host; uma tabela de roteamento generaliza o gateway padrão para várias rotas possíveis; um switch conecta máquinas de uma mesma rede, um roteador conecta redes entre si. |
+| **Ferramentas utilizáveis** | O modelo OSI para localizar um problema de rede na camada certa; DHCP para a atribuição automática de endereços; NAT para o compartilhamento de um IP público; a tabela de roteamento para diagnosticar um problema de conectividade entre várias redes. |
+| **Armadilhas a evitar** | Confundir roteador e switch, ou achar que um "roteador Wi-Fi" é um único tipo de dispositivo quando na verdade combina vários. Confundir o número CIDR com o número de endereços disponíveis. |
 | **Boas práticas** | Sempre verificar se duas máquinas compartilham a mesma parte de rede antes de investigar por que não se comunicam diretamente. |
