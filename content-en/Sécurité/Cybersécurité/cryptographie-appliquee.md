@@ -47,6 +47,31 @@ In practice, the two are often combined: TLS (see the network attack overview in
 
 A **digital signature** proves that a piece of data really comes from the expected sender, and hasn't been altered since: the sender signs with their **private** key, and anyone can verify it with the **public** key (the reverse of encryption, where you encrypt with the recipient's public key). The principle is the same as a [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens) signature: guaranteeing integrity, never confidentiality on its own.
 
+## The self-signed TLS certificate
+
+A **TLS certificate** binds a public key to an identity (a domain name) and carries the signature of an authority attesting to that link. A recognized **certificate authority** (CA), such as Let's Encrypt, normally signs this certificate with its own private key, letting any browser, which already knows which CAs to trust, verify that signature automatically.
+
+A **self-signed** certificate skips that step: the certificate is signed by its own private key instead of by a recognized CA.
+
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout private-key.pem -out certificate.pem \
+    -subj "/C=US/ST=CA/L=SanFrancisco/O=MyCompany/CN=example.local"
+```
+
+| Option | Role |
+|---|---|
+| `-x509` | Directly produces a self-signed certificate, rather than a simple signing request (CSR) to send to a CA |
+| `-nodes` | *No DES*: leaves the private key unencrypted on disk (no passphrase to type on every service startup) |
+| `-newkey rsa:2048` | Generates a new 2048-bit RSA key pair alongside the certificate |
+| `-subj "..."` | Directly supplies the certificate's fields, skipping the usual interactive prompts |
+
+The `CN` (*Common Name*) field must match the domain actually being served (the one expected by the connecting client): a certificate valid for `example.local` doesn't automatically protect `other-domain.local`.
+
+> **Pitfall:** believing a self-signed certificate encrypts the connection less well than one signed by a recognized CA. Encryption is identical in both cases: the only difference is the absence of a chain of trust, nothing guarantees to an outside visitor that the certificate really belongs to the announced domain, hence the security warning browsers display.
+>
+> **Best practice:** a self-signed certificate is fine for internal or learning use (local development, a service never exposed publicly); for a public-facing service, use a recognized CA (often free and automatable, via [Let's Encrypt](https://letsencrypt.org)).
+
 ## HMAC: symmetric signing with a shared secret
 
 The signature above is **asymmetric**: a private key signs, a public key verifies. **HMAC** (*Hash-based Message Authentication Code*) signs differently, in a **symmetric** way: a hash combined with a secret key, known to both the signer and the verifier.
@@ -87,7 +112,7 @@ Concrete use case: a **self-contained token**, on the same principle as a [JWT](
 
 | | |
 |---|---|
-| **Key takeaway** | Hashing is one-way (verify/compare); encryption is reversible (protect, then read back). Symmetric encryption uses a single shared key; asymmetric uses a public/private key pair. A digital signature (asymmetric) or HMAC (symmetric) guarantees integrity, not confidentiality. |
-| **Tools you can use** | AES (symmetric), RSA/ECC (asymmetric), HMAC (`hash_hmac()`) for a symmetric signature, a standard cryptography library for the language in use rather than a homemade implementation. |
+| **Key takeaway** | Hashing is one-way (verify/compare); encryption is reversible (protect, then read back). Symmetric encryption uses a single shared key; asymmetric uses a public/private key pair. A digital signature (asymmetric) or HMAC (symmetric) guarantees integrity, not confidentiality. A self-signed TLS certificate encrypts just as well as a CA-signed one, but with no chain of trust. |
+| **Tools you can use** | AES (symmetric), RSA/ECC (asymmetric), HMAC (`hash_hmac()`) for a symmetric signature, a standard cryptography library for the language in use rather than a homemade implementation. `openssl req -x509` to generate a self-signed certificate. |
 | **Pitfalls to avoid** | Confusing hashing and encryption; implementing your own algorithm; reusing the same key everywhere; using a non-cryptographic random generator for a key or salt; comparing an HMAC signature with `==`/`===`. |
 | **Best practices** | A dedicated key per use; a CSPRNG for anything secret; standard algorithms, never homemade ones; a key stored separately from the data it protects; `hash_equals()` for any signature or secret comparison. |

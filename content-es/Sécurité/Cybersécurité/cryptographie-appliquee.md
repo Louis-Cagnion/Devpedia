@@ -47,6 +47,31 @@ En la práctica, ambos se combinan a menudo: TLS (ver el panorama de ataques de 
 
 Una **firma digital** demuestra que un dato realmente proviene del emisor esperado, y que no ha sido modificado desde entonces: el emisor firma con su clave **privada**, y cualquiera puede verificarla con la clave **pública** (lo inverso del cifrado, donde se cifra con la clave pública del destinatario). El principio es el mismo que la firma de un [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens): garantizar la integridad, nunca la confidencialidad por sí sola.
 
+## El certificado TLS autofirmado
+
+Un **certificado TLS** asocia una clave pública a una identidad (un nombre de dominio) y lleva la firma de una autoridad que da fe de ese vínculo. Una **autoridad de certificación** (CA) reconocida (como Let's Encrypt) normalmente firma este certificado con su propia clave privada, lo que permite a cualquier navegador, que ya conoce las CA de confianza, verificar esa firma automáticamente.
+
+Un certificado **autofirmado** (*self-signed*) se salta ese paso: el certificado está firmado por su propia clave privada en lugar de por una CA reconocida.
+
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout clave-privada.pem -out certificado.pem \
+    -subj "/C=ES/ST=Madrid/L=Madrid/O=MiEmpresa/CN=ejemplo.local"
+```
+
+| Opción | Función |
+|---|---|
+| `-x509` | Produce directamente un certificado autofirmado, en lugar de una simple solicitud de firma (CSR) para enviar a una CA |
+| `-nodes` | *No DES*: deja la clave privada sin cifrar en disco (sin frase de contraseña que escribir en cada arranque del servicio) |
+| `-newkey rsa:2048` | Genera un nuevo par de claves RSA de 2048 bits junto con el certificado |
+| `-subj "..."` | Proporciona directamente los campos del certificado, sin pasar por las preguntas interactivas habituales |
+
+El campo `CN` (*Common Name*) debe coincidir con el nombre de dominio realmente servido (el esperado por el cliente que se conecta): un certificado válido para `ejemplo.local` no protege automáticamente `otro-dominio.local`.
+
+> **Trampa:** creer que un certificado autofirmado cifra peor la conexión que uno firmado por una CA reconocida. El cifrado es idéntico en ambos casos: la única diferencia es la ausencia de una cadena de confianza, nada garantiza a un visitante externo que el certificado pertenece realmente al dominio anunciado, de ahí la advertencia de seguridad que muestran los navegadores.
+>
+> **Buena práctica:** un certificado autofirmado sirve para un uso interno o educativo (desarrollo local, un servicio nunca expuesto públicamente); para un servicio público, usar una CA reconocida (a menudo gratuita y automatizable, vía [Let's Encrypt](https://letsencrypt.org)).
+
 ## HMAC: la firma simétrica por secreto compartido
 
 La firma vista más arriba es **asimétrica**: una clave privada firma, una clave pública verifica. **HMAC** (*Hash-based Message Authentication Code*) firma de otra forma, de manera **simétrica**: un hash combinado con una clave secreta, conocida tanto por quien firma como por quien verifica.
@@ -87,7 +112,7 @@ Caso de uso concreto: un **token autosuficiente**, con el mismo principio que un
 
 | | |
 |---|---|
-| **Para recordar** | El hashing es unidireccional (verificar/comparar); el cifrado es reversible (proteger y luego leer de nuevo). El cifrado simétrico usa una sola clave compartida; el asimétrico, un par de claves pública/privada. Una firma digital (asimétrica) o HMAC (simétrico) garantiza la integridad, no la confidencialidad. |
-| **Herramientas utilizables** | AES (simétrico), RSA/ECC (asimétrico), HMAC (`hash_hmac()`) para una firma simétrica, una biblioteca criptográfica estándar del lenguaje usado en lugar de una implementación casera. |
+| **Para recordar** | El hashing es unidireccional (verificar/comparar); el cifrado es reversible (proteger y luego leer de nuevo). El cifrado simétrico usa una sola clave compartida; el asimétrico, un par de claves pública/privada. Una firma digital (asimétrica) o HMAC (simétrico) garantiza la integridad, no la confidencialidad. Un certificado TLS autofirmado cifra igual de bien que uno firmado por una CA, pero sin cadena de confianza. |
+| **Herramientas utilizables** | AES (simétrico), RSA/ECC (asimétrico), HMAC (`hash_hmac()`) para una firma simétrica, una biblioteca criptográfica estándar del lenguaje usado en lugar de una implementación casera. `openssl req -x509` para generar un certificado autofirmado. |
 | **Errores a evitar** | Confundir hashing y cifrado; implementar tu propio algoritmo; reutilizar la misma clave en todas partes; usar un generador aleatorio no criptográfico para una clave o sal; comparar una firma HMAC con `==`/`===`. |
 | **Buenas prácticas** | Una clave dedicada por uso; un CSPRNG para todo secreto; algoritmos estándar, nunca artesanales; una clave almacenada separadamente de los datos que protege; `hash_equals()` para toda comparación de firma o secreto. |

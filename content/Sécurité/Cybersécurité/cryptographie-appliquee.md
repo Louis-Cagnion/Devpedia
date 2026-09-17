@@ -47,6 +47,31 @@ En pratique, les deux se combinent souvent : TLS (voir le panorama des attaques 
 
 Une **signature numérique** prouve qu'une donnée vient bien de l'émetteur attendu, et n'a pas été modifiée depuis : l'émetteur signe avec sa clé **privée**, et n'importe qui peut vérifier avec sa clé **publique** (l'inverse du chiffrement, où on chiffre avec la clé publique du destinataire). Le principe est le même que la signature d'un [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens) : garantir l'intégrité, jamais la confidentialité à elle seule.
 
+## Le certificat TLS auto-signé
+
+Un **certificat TLS** associe une clé publique à une identité (un nom de domaine) et porte la signature d'une autorité qui atteste ce lien. Une **autorité de certification** (CA) reconnue (comme Let's Encrypt) signe normalement ce certificat avec sa propre clé privée, ce qui permet à n'importe quel navigateur, qui connaît déjà les CA de confiance, de vérifier automatiquement cette signature.
+
+Un certificat **auto-signé** (*self-signed*) saute cette étape : le certificat est signé par sa propre clé privée plutôt que par une CA reconnue.
+
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout cle-privee.pem -out certificat.pem \
+    -subj "/C=FR/ST=IDF/L=Paris/O=MonEntreprise/CN=exemple.local"
+```
+
+| Option | Rôle |
+|---|---|
+| `-x509` | Produit directement un certificat auto-signé, plutôt qu'une simple demande de signature (CSR) à envoyer à une CA |
+| `-nodes` | *No DES* : laisse la clé privée non chiffrée sur le disque (aucune phrase de passe à saisir à chaque démarrage du service) |
+| `-newkey rsa:2048` | Génère une nouvelle paire de clés RSA de 2048 bits en même temps que le certificat |
+| `-subj "..."` | Fournit directement les champs du certificat, sans passer par les questions interactives habituelles |
+
+Le champ `CN` (*Common Name*) doit correspondre au nom de domaine réellement servi (celui attendu par le client qui se connecte) : un certificat valide pour `exemple.local` ne protège pas automatiquement `autre-domaine.local`.
+
+> **Piège :** croire qu'un certificat auto-signé chiffre moins bien la connexion qu'un certificat signé par une CA reconnue. Le chiffrement est identique dans les deux cas : la seule différence est l'absence de chaîne de confiance, rien ne garantit à un visiteur externe que le certificat appartient réellement au domaine annoncé, d'où l'avertissement de sécurité affiché par les navigateurs.
+>
+> **Bonne pratique :** un certificat auto-signé convient pour un usage interne ou pédagogique (développement local, service jamais exposé publiquement) ; pour un service public, utiliser une CA reconnue (souvent gratuite et automatisable, via [Let's Encrypt](https://letsencrypt.org)).
+
 ## HMAC : la signature symétrique par secret partagé
 
 La signature vue plus haut est **asymétrique** : une clé privée signe, une clé publique vérifie. **HMAC** (*Hash-based Message Authentication Code*) signe autrement, de façon **symétrique** : un hachage combiné à une clé secrète, connue à la fois du signataire et du vérificateur.
@@ -88,7 +113,7 @@ Cas d'usage concret : un **token auto-suffisant**, sur le même principe qu'un [
 
 | | |
 |---|---|
-| **À retenir** | Le hachage est à sens unique (vérifier/comparer) ; le chiffrement est réversible (protéger puis relire). Le chiffrement symétrique utilise une seule clé partagée ; l'asymétrique une paire clé publique/privée. Une signature numérique (asymétrique) ou HMAC (symétrique) garantit l'intégrité, pas la confidentialité. |
-| **Outils utilisables** | AES (symétrique), RSA/ECC (asymétrique), HMAC (`hash_hmac()`) pour une signature symétrique, une bibliothèque cryptographique standard du langage utilisé plutôt qu'une implémentation maison. |
+| **À retenir** | Le hachage est à sens unique (vérifier/comparer) ; le chiffrement est réversible (protéger puis relire). Le chiffrement symétrique utilise une seule clé partagée ; l'asymétrique une paire clé publique/privée. Une signature numérique (asymétrique) ou HMAC (symétrique) garantit l'intégrité, pas la confidentialité. Un certificat TLS auto-signé chiffre aussi bien qu'un certificat signé par une CA, mais sans chaîne de confiance. |
+| **Outils utilisables** | AES (symétrique), RSA/ECC (asymétrique), HMAC (`hash_hmac()`) pour une signature symétrique, une bibliothèque cryptographique standard du langage utilisé plutôt qu'une implémentation maison. `openssl req -x509` pour générer un certificat auto-signé. |
 | **Pièges à éviter** | Confondre hachage et chiffrement ; implémenter son propre algorithme ; réutiliser une même clé partout ; utiliser un générateur aléatoire non cryptographique pour une clé ou un sel ; comparer une signature HMAC avec `==`/`===`. |
 | **Bonnes pratiques** | Une clé dédiée par usage ; un CSPRNG pour tout secret ; des algorithmes standards, jamais artisanaux ; une clé stockée séparément des données qu'elle protège ; `hash_equals()` pour toute comparaison de signature ou de secret. |

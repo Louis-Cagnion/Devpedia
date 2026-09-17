@@ -29,6 +29,24 @@ docker run -v $(pwd):/app meu-app:1.0
 
 > **Armadilha frequente em desenvolvimento**: um bind mount em `/app` mascara inteiramente o que a imagem havia copiado ali no momento do build: se a imagem instala dependências em `/app/node_modules` e o bind mount sobrescreve todo o `/app` com o diretório do hospedeiro (onde `node_modules` não existe necessariamente), o contêiner inicia sem suas dependências.
 
+## Um volume nomeado fixado a um caminho de hospedeiro preciso
+
+A tabela acima apresenta volume nomeado e bind mount como duas escolhas exclusivas, mas o Docker Compose permite um híbrido: um volume nomeado (gerenciado e listado como tal pelo Docker) cujo driver é explicitamente configurado para apontar para um caminho fixo do hospedeiro.
+
+```yaml
+volumes:
+  dados_bd:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/usuario/dados/bd
+```
+
+Esse volume permanece gerenciado e listado como um volume Docker nomeado (`docker volume ls`), estando ao mesmo tempo fisicamente vinculado a uma pasta conhecida e escolhida do hospedeiro, em vez do caminho interno geralmente opaco dos volumes Docker padrão (`/var/lib/docker/volumes/...`).
+
+> **Boa prática:** usar essa técnica sempre que for preciso saber exatamente onde fazer backup dos dados de um volume, ou encontrá-los novamente após a remoção do contêiner, sem abrir mão das vantagens de gerenciamento de um volume nomeado (visível pelos comandos `docker volume`, portável entre projetos Compose).
+
 ## Redes: os contêineres se enxergam pelo nome
 
 Por padrão, o Docker cria uma rede **bridge**: cada contêiner recebe nela seu próprio endereço IP interno, e dois contêineres na mesma rede conseguem se alcançar diretamente **pelo nome**, sem configuração manual: o Docker resolve esse nome internamente, no mesmo princípio do [DNS](/?c=langages-de-programmation&s=php&p=securite) que traduz um nome de domínio em endereço IP na Internet.
@@ -69,6 +87,6 @@ Esse modo não cria nenhuma interface de rede própria do contêiner: ele reutil
 | | |
 |---|---|
 | **Para lembrar** | O sistema de arquivos de um contêiner é efêmero: só um volume (nomeado ou bind mount) persiste depois de sua remoção. Os contêineres de uma mesma rede Docker se alcançam diretamente pelo nome. |
-| **Ferramentas utilizáveis** | `-v` (volume/bind mount), `docker network create`, `-p` para publicar uma porta para fora. |
+| **Ferramentas utilizáveis** | `-v` (volume/bind mount), `docker network create`, `-p` para publicar uma porta para fora. `driver_opts` (Compose) para fixar um volume nomeado a um caminho de hospedeiro preciso. |
 | **Armadilhas a evitar** | Um bind mount que mascara um diretório já povoado pela imagem (ex. `node_modules` instalado no build, sobrescrito pelo bind mount); o modo `--network host` que remove o isolamento de rede do contêiner. |
 | **Boas práticas** | Usar um volume nomeado para dados persistentes (banco de dados), um bind mount para o código fonte em desenvolvimento; evitar `--network host` para um serviço exposto publicamente. |

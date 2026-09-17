@@ -47,6 +47,31 @@ Na prática, os dois costumam se combinar: o TLS (ver o panorama de ataques de r
 
 Uma **assinatura digital** prova que um dado realmente vem do remetente esperado, e que não foi alterado desde então: o remetente assina com sua chave **privada**, e qualquer um pode verificar com a chave **pública** (o inverso da criptografia, em que se criptografa com a chave pública do destinatário). O princípio é o mesmo da assinatura de um [JWT](/?c=authentification&s=sessions-et-tokens&p=jwt-et-tokens): garantir a integridade, nunca a confidencialidade por si só.
 
+## O certificado TLS autoassinado
+
+Um **certificado TLS** associa uma chave pública a uma identidade (um nome de domínio) e carrega a assinatura de uma autoridade que atesta esse vínculo. Uma **autoridade certificadora** (CA) reconhecida (como a Let's Encrypt) normalmente assina esse certificado com sua própria chave privada, o que permite a qualquer navegador, que já conhece as CAs confiáveis, verificar essa assinatura automaticamente.
+
+Um certificado **autoassinado** (*self-signed*) pula essa etapa: o certificado é assinado pela própria chave privada em vez de por uma CA reconhecida.
+
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout chave-privada.pem -out certificado.pem \
+    -subj "/C=BR/ST=SP/L=SaoPaulo/O=MinhaEmpresa/CN=exemplo.local"
+```
+
+| Opção | Papel |
+|---|---|
+| `-x509` | Produz diretamente um certificado autoassinado, em vez de um simples pedido de assinatura (CSR) para enviar a uma CA |
+| `-nodes` | *No DES*: deixa a chave privada sem criptografar no disco (nenhuma frase-senha para digitar a cada início do serviço) |
+| `-newkey rsa:2048` | Gera um novo par de chaves RSA de 2048 bits junto com o certificado |
+| `-subj "..."` | Fornece diretamente os campos do certificado, sem passar pelas perguntas interativas habituais |
+
+O campo `CN` (*Common Name*) deve corresponder ao nome de domínio realmente servido (o esperado pelo cliente que se conecta): um certificado válido para `exemplo.local` não protege automaticamente `outro-dominio.local`.
+
+> **Cilada:** achar que um certificado autoassinado criptografa pior a conexão que um certificado assinado por uma CA reconhecida. A criptografia é idêntica nos dois casos: a única diferença é a ausência de uma cadeia de confiança, nada garante a um visitante externo que o certificado realmente pertence ao domínio anunciado, daí o aviso de segurança exibido pelos navegadores.
+>
+> **Boa prática:** um certificado autoassinado serve para uso interno ou didático (desenvolvimento local, um serviço nunca exposto publicamente); para um serviço público, usar uma CA reconhecida (frequentemente gratuita e automatizável, via [Let's Encrypt](https://letsencrypt.org)).
+
 ## HMAC: a assinatura simétrica por segredo compartilhado
 
 A assinatura vista acima é **assimétrica**: uma chave privada assina, uma chave pública verifica. **HMAC** (*Hash-based Message Authentication Code*) assina de outra forma, de maneira **simétrica**: um hash combinado com uma chave secreta, conhecida tanto por quem assina quanto por quem verifica.
@@ -87,7 +112,7 @@ Caso de uso concreto: um **token autossuficiente**, no mesmo princípio de um [J
 
 | | |
 |---|---|
-| **Para lembrar** | O hashing é unidirecional (verificar/comparar); a criptografia é reversível (proteger e depois ler novamente). A criptografia simétrica usa uma única chave compartilhada; a assimétrica, um par de chaves pública/privada. Uma assinatura digital (assimétrica) ou HMAC (simétrico) garante integridade, não confidencialidade. |
-| **Ferramentas utilizáveis** | AES (simétrica), RSA/ECC (assimétrica), HMAC (`hash_hmac()`) para uma assinatura simétrica, uma biblioteca de criptografia padrão da linguagem usada em vez de uma implementação caseira. |
+| **Para lembrar** | O hashing é unidirecional (verificar/comparar); a criptografia é reversível (proteger e depois ler novamente). A criptografia simétrica usa uma única chave compartilhada; a assimétrica, um par de chaves pública/privada. Uma assinatura digital (assimétrica) ou HMAC (simétrico) garante integridade, não confidencialidade. Um certificado TLS autoassinado criptografa tão bem quanto um assinado por uma CA, mas sem cadeia de confiança. |
+| **Ferramentas utilizáveis** | AES (simétrica), RSA/ECC (assimétrica), HMAC (`hash_hmac()`) para uma assinatura simétrica, uma biblioteca de criptografia padrão da linguagem usada em vez de uma implementação caseira. `openssl req -x509` para gerar um certificado autoassinado. |
 | **Armadilhas a evitar** | Confundir hashing e criptografia; implementar seu próprio algoritmo; reutilizar a mesma chave em todo lugar; usar um gerador aleatório não criptográfico para uma chave ou salt; comparar uma assinatura HMAC com `==`/`===`. |
 | **Boas práticas** | Uma chave dedicada por uso; um CSPRNG para tudo que for secreto; algoritmos padrão, nunca caseiros; uma chave armazenada separadamente dos dados que protege; `hash_equals()` para qualquer comparação de assinatura ou segredo. |

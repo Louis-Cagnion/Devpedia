@@ -50,6 +50,31 @@ CMD ["nginx", "-g", "daemon off;"]   # nginx fica em primeiro plano: o Docker te
 
 > **Nota:** PID 1 tem um papel particular no Linux, independentemente do Docker (cf. capítulo [O gerenciamento de processos](/?c=shells&s=bash&p=gestion-des-processus), tópico [Bash](/?c=shells&s=bash&p=bash)): o kernel não aplica a ele a ação padrão de um sinal como `SIGTERM` se ele não instalou explicitamente seu próprio manipulador: `docker stop` pode então parecer não fazer nada em um processo que não trata esse sinal por conta própria. Também é o PID 1 quem precisa recolher (*reap*) os processos zumbis que lança; um ponto a observar se a imagem inicia vários subprocessos por conta própria.
 
+## Combinar `ENTRYPOINT` e `CMD`: preparação fixa, comando substituível
+
+A tabela acima apresenta `CMD` e `ENTRYPOINT` como duas alternativas separadas, mas um Dockerfile pode combinar as duas:
+
+```dockerfile
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["node", "server.js"]
+```
+
+O Docker então chama `ENTRYPOINT`, passando a ele `CMD` (ou qualquer comando dado ao `docker run`) como argumentos: `/entrypoint.sh` recebe `node server.js` como parâmetros.
+
+```bash
+#!/bin/sh
+# preparacao fixa, executada a cada inicio do conteiner
+chown -R app:app /data
+
+exec "$@"   # substitui este script pelo comando recebido
+```
+
+`exec "$@"` (veja [Como funciona um shell](/?c=shells&s=bash&p=architecture-dun-shell)) substitui o processo atual do script pelo comando recebido como argumentos, em vez de lançá-lo como subprocesso: o comando final herda diretamente o PID 1 (veja acima) em vez de permanecer um filho do script bash, que de outra forma continuaria sendo ele o PID 1.
+
+> **Cilada:** omitir `exec` antes de `"$@"`. Sem ele, o script bash continua sendo PID 1 e o comando real (`node server.js`) roda como filho: `docker stop` então mira o script em vez do serviço real, que pode nunca receber corretamente o sinal de parada.
+>
+> **Boa prática:** esse padrão (preparação fixa no entrypoint, comando variável em `CMD`) mantém uma etapa de configuração comum (permissões, migrações...) enquanto deixa `CMD` substituível na linha de comando (`docker run minha-imagem outro-comando` substituiria `CMD` sem tocar no entrypoint).
+
 ## Cada instrução cria uma camada, e a ordem importa
 
 Cada `RUN`/`COPY`/`ADD` adiciona uma camada, armazenada em cache: se uma instrução e tudo que a precede não mudaram desde o último build, o Docker reutiliza a camada em cache em vez de reconstruí-la.
@@ -106,6 +131,6 @@ Excluir `node_modules/` acelera o build (menos dados a transmitir); excluir `.en
 | | |
 |---|---|
 | **Para lembrar** | Um Dockerfile descreve a construção de uma imagem, instrução por instrução. Cada instrução cria uma camada em cache; a ordem importa para maximizar o reaproveitamento do cache. O contêiner vive exatamente enquanto seu processo PID 1. |
-| **Ferramentas utilizáveis** | `FROM`/`WORKDIR`/`COPY`/`RUN`/`CMD`, builds multi-estágio, `.dockerignore`. |
-| **Armadilhas a evitar** | Copiar todo o código antes de instalar as dependências (invalida o cache a cada commit); manter um contêiner "vivo" com um comando que não faz nada (`sleep infinity`) em vez de lançar o serviço de verdade em primeiro plano. |
+| **Ferramentas utilizáveis** | `FROM`/`WORKDIR`/`COPY`/`RUN`/`CMD`, builds multi-estágio, `.dockerignore`. `ENTRYPOINT` + `CMD` combinados via `exec "$@"` para uma preparação fixa seguida de um comando substituível. |
+| **Armadilhas a evitar** | Copiar todo o código antes de instalar as dependências (invalida o cache a cada commit); manter um contêiner "vivo" com um comando que não faz nada (`sleep infinity`) em vez de lançar o serviço de verdade em primeiro plano. Omitir `exec` antes de `"$@"` em um script de entrypoint. |
 | **Boas práticas** | Copiar os arquivos de dependências antes do resto do código fonte; usar um build multi-estágio para entregar apenas o binário final, sem a cadeia de compilação. |
