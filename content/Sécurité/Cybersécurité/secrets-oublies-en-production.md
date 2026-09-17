@@ -21,7 +21,7 @@ Ce risque ne vient jamais d'une faille applicative (aucun code n'est exploité) 
 
 | | |
 |---|---|
-| **Piège** | Déposer un `.env`, une sauvegarde, ou tout fichier de travail (`.git/`, un export de base) dans le même dossier que les fichiers réellement destinés à être servis au public, en supposant qu'"il n'y a pas de lien vers ce fichier donc personne ne le trouvera" — un scan automatisé teste des chemins connus (`.env`, `.git/config`, `backup.zip`...) sur des millions de sites, sans avoir besoin d'un lien |
+| **Piège** | Déposer un `.env`, une sauvegarde, ou tout fichier de travail (`.git/`, un export de base) dans le même dossier que les fichiers réellement destinés à être servis au public, en supposant qu'"il n'y a pas de lien vers ce fichier donc personne ne le trouvera" : un scan automatisé teste des chemins connus (`.env`, `.git/config`, `backup.zip`...) sur des millions de sites, sans avoir besoin d'un lien |
 | **Bonne pratique** | Stocker tout fichier sensible HORS du dossier servi publiquement par le serveur web (`public/` ou équivalent) ; configurer le serveur pour refuser explicitement toute requête vers un `.env`/`.git`/fichier de sauvegarde, en défense supplémentaire même si le placement est déjà correct |
 
 ## Un secret resté dans l'historique Git après sa suppression
@@ -39,7 +39,7 @@ N'importe qui avec accès au dépôt (y compris après un dépôt rendu privé d
 
 > **Piège :** croire qu'un `git commit` de suppression "efface" un secret déjà commité. Le seul retrait réel du fichier courant n'a aucun effet sur les versions déjà enregistrées dans l'historique.
 >
-> **Bonne pratique :** en cas de secret commité par erreur, le considérer comme définitivement compromis et le RÉVOQUER/régénérer immédiatement (nouvelle clé API, nouveau mot de passe) — c'est la seule protection fiable, une réécriture d'historique (`git filter-repo`, BFG Repo-Cleaner) n'empêche pas qu'une copie déjà clonée/forkée avant la réécriture garde l'ancien historique intact.
+> **Bonne pratique :** en cas de secret commité par erreur, le considérer comme définitivement compromis et le RÉVOQUER/régénérer immédiatement (nouvelle clé API, nouveau mot de passe) : c'est la seule protection fiable, une réécriture d'historique (`git filter-repo`, BFG Repo-Cleaner) n'empêche pas qu'une copie déjà clonée/forkée avant la réécriture garde l'ancien historique intact.
 
 ## Une seule page qui expose les secrets de TOUS les comptes
 

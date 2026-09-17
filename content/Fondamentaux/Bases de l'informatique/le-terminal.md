@@ -80,6 +80,34 @@ Le nom exact des commandes change d'un shell à l'autre (`ls` sous [Bash](/?c=sh
 >
 > **Bonne pratique :** en cas de doute sur l'effet exact d'une option rencontrée dans une commande copiée en ligne, la chercher (`--help`, documentation) avant de l'exécuter, jamais après.
 
+## Colorer une sortie dans le terminal (codes d'échappement ANSI)
+
+Un programme peut afficher du texte en couleur (rouge pour signaler une erreur, vert pour un succès...). Ce n'est pas une fonctionnalité du shell : le programme envoie une **séquence d'échappement ANSI**, une suite de caractères spéciale que le terminal reconnaît et interprète comme un ordre de mise en forme, plutôt que comme du texte à afficher tel quel.
+
+Une séquence commence par le caractère `ESC` (noté `\033` ou `\x1b` selon le langage), suivi de `[`, d'un code numérique, puis de `m` :
+
+```text
+\033[91mBonjour\033[0m
+```
+
+- `\033[91m` : démarre la couleur rouge vif (code `91`) ; tout ce qui suit s'affiche dans cette couleur.
+- `Bonjour` : texte affiché normalement, mais dans la couleur en cours.
+- `\033[0m` : réinitialise, retour à la couleur par défaut du terminal.
+
+| Code | Effet |
+|---|---|
+| `0` | Réinitialise tout (couleur, gras...) |
+| `31` / `91` | Rouge / rouge vif |
+| `32` / `92` | Vert / vert vif |
+| `33` / `93` | Jaune / jaune vif |
+| `1` | Gras |
+
+> **Piège :** oublier le code `0` de réinitialisation à la fin d'une séquence. Sans lui, la couleur "fuit" sur tout le texte affiché ensuite par le terminal, bien après la fin du programme qui l'a émise.
+>
+> **Bonne pratique :** toujours refermer une couleur ouverte par `\033[0m`, même juste avant que le programme ne s'arrête.
+
+C'est le terminal qui interprète ces séquences, jamais le shell ni le langage de programmation utilisé : elles peuvent être concaténées directement dans n'importe quelle chaîne de texte affichée, comme des caractères ordinaires.
+
 ---
 
 ## 📋 Récapitulatif

@@ -13,7 +13,7 @@ L'**escalade de privilèges** consiste, pour un attaquant déjà présent sur un
 | **Verticale** | Un accès limité devient un accès de niveau supérieur (utilisateur normal → root) |
 | **Horizontale** | Un accès reste au même niveau de droits, mais change de compte (compte utilisateur A → compte utilisateur B) |
 
-Ce même vocabulaire s'applique côté web au [contrôle d'accès défaillant](/?c=securite&s=cybersecurite&p=types-de-failles) : accéder à la commande d'un autre client (horizontal) diffère d'accéder au panneau d'administration depuis un compte client (vertical) — voir en détail ci-dessous.
+Ce même vocabulaire s'applique côté web au [contrôle d'accès défaillant](/?c=securite&s=cybersecurite&p=types-de-failles) : accéder à la commande d'un autre client (horizontal) diffère d'accéder au panneau d'administration depuis un compte client (vertical) : voir en détail ci-dessous.
 
 ## Causes fréquentes
 

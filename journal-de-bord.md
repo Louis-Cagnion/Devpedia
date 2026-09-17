@@ -2,6 +2,12 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Item todo #8 terminé (`sigaction()` + codes ANSI) et tirets cadratins résiduels trouvés dans 10 chapitres Sécurité (2026-09-17)
+
+FR de `sigaction()` (ajouté en session précédente à `signaux-unix.md`, non commité) portait des commentaires de code sans accents (`repond`, `reception`...), contraire à la convention déjà en place dans tout `content/Langages/C/*.md` (vérifié par grep) : corrigé, puis traduit EN/ES/BR. Notion ANSI restante de l'item #8 rédigée dans `le-terminal.md` (4 langues).
+
+En vérifiant l'absence de tiret cadratin sur les fichiers touchés, un balayage plus large (`grep -rl "—" content/`) a trouvé 10 chapitres de `content/Sécurité/*` (jamais traduits, donc absents des versions EN/ES/BR) où la règle n'avait pas été appliquée, hors du périmètre des deux balayages précédents (mémoire `devpedia_no_em_dash`, 2026-09-04) qui ciblaient une passe globale déjà considérée close. Tous corrigés (deux-points/point-virgule/parenthèses/virgule selon le sens de chaque phrase). Piège : l'audio fr de 4 de ces chapitres (`principes-de-developpement-securise`, `tests-et-audit-de-securite`, `oauth2-et-openid-connect`, `escalade-de-privileges`) avait déjà été régénéré par le lot 4 en tâche de fond AVANT cette correction texte : à régénérer en fr une fois le lot 4 terminé (noté dans `devpedia-todo.md`).
+
 ## Fond étoilé : Louis revient sur le scope .chapterPage (2026-09-17)
 
 Après le correctif ci-dessous (scope restreint à `.chapterPage`, conforme au README à ce moment-là), Louis a testé en Live Server (port 5500) et signalé l'absence de fond sur l'accueil comme un problème, pas un comportement voulu : décision finale inversée, le traitement stylisé (starfield, panneaux, diamants) doit s'appliquer à toutes les pages (accueil/catégorie/sujet/chapitre), comme c'était le cas avant toute cette investigation. `.chapterPage` retiré de tous les sélecteurs de `content.css`, `README.md` mis à jour en conséquence. Le correctif de largeur (`body:has(.page)::before` fixed + `isolation: isolate`) reste, lui, inchangé et voulu.

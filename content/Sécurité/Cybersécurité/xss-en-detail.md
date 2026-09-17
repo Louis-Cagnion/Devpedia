@@ -4,7 +4,7 @@ order: 11
 
 # XSS : reflected, stored et DOM-based
 
-Le principe du XSS (*Cross-Site Scripting*) est déjà posé dans [Sécuriser vos données](/?c=langages&s=php&p=securite) (`htmlspecialchars()`, cas *reflected*) et dans [Créer et manipuler des éléments](/?c=langages&s=javascript&p=html-elements) (`innerHTML` vs `textContent`, cas *DOM-based*). Ce chapitre ne répète pas ces mécanismes : il pose la distinction entre les trois variantes (ce qui change vraiment entre elles), puis couvre ce qui manque encore — le stockage en base (*stored*) et l'échappement selon le CONTEXTE d'affichage.
+Le principe du XSS (*Cross-Site Scripting*) est déjà posé dans [Sécuriser vos données](/?c=langages&s=php&p=securite) (`htmlspecialchars()`, cas *reflected*) et dans [Créer et manipuler des éléments](/?c=langages&s=javascript&p=html-elements) (`innerHTML` vs `textContent`, cas *DOM-based*). Ce chapitre ne répète pas ces mécanismes : il pose la distinction entre les trois variantes (ce qui change vraiment entre elles), puis couvre ce qui manque encore : le stockage en base (*stored*) et l'échappement selon le CONTEXTE d'affichage.
 
 ## Les trois variantes : où vit la donnée piégée avant de s'afficher
 
@@ -53,7 +53,7 @@ foreach ($commentaires as $c) {
 }
 ```
 
-> **Piège :** échapper la donnée à l'ENREGISTREMENT plutôt qu'à l'AFFICHAGE. Ça semble intuitif ("je nettoie l'entrée une fois pour toutes"), mais casse dès que la même donnée est réaffichée dans un contexte différent (page HTML, export CSV, notification email) qui n'a pas besoin du même échappement — voir contextes ci-dessous. L'échappement se fait toujours juste avant l'affichage, jamais avant le stockage.
+> **Piège :** échapper la donnée à l'ENREGISTREMENT plutôt qu'à l'AFFICHAGE. Ça semble intuitif ("je nettoie l'entrée une fois pour toutes"), mais casse dès que la même donnée est réaffichée dans un contexte différent (page HTML, export CSV, notification email) qui n'a pas besoin du même échappement (voir contextes ci-dessous). L'échappement se fait toujours juste avant l'affichage, jamais avant le stockage.
 
 ## L'échappement dépend du CONTEXTE d'affichage, pas seulement du texte
 

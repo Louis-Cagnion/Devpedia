@@ -81,7 +81,7 @@ Toutes les méthodes vues plus haut cherchent des failles AVANT qu'elles ne soie
 
 Ce log d'audit se distingue d'un log de débogage classique (destiné à comprendre un bug technique) par son objectif : reconstituer après coup qui a fait quoi, sur des actions SENSIBLES précisément (connexion, changement de droits, suppression, export de données), pas l'intégralité du trafic.
 
-> **Piège :** ne journaliser que ce qui aide à déboguer un problème technique, sans jamais capturer les actions sensibles au sens sécurité (qui a changé ce rôle, qui a exporté cette table) — une intrusion réussie mais jamais "cassée" techniquement (pas d'erreur, pas de crash) ne laisse alors aucune trace.
+> **Piège :** ne journaliser que ce qui aide à déboguer un problème technique, sans jamais capturer les actions sensibles au sens sécurité (qui a changé ce rôle, qui a exporté cette table) : une intrusion réussie mais jamais "cassée" techniquement (pas d'erreur, pas de crash) ne laisse alors aucune trace.
 >
 > **Bonne pratique :** journaliser systématiquement les actions sensibles avec qui/quoi/quand/résultat, et mettre en place une alerte sur un signal anormal simple (ex. des centaines de tentatives de connexion échouées sur un même compte) plutôt que de compter uniquement sur une relecture manuelle a posteriori.
 

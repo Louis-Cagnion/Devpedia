@@ -41,7 +41,7 @@ de l'examiner (scan antivirus, extraction d'un import), elle epuise
 sa memoire disponible sur un seul fichier de quelques Ko recu
 ```
 
-Une variante XML porte le nom d'**attaque "billion laughs"** : un document XML déclare une entité qui en référence plusieurs autres, elles-mêmes référençant plusieurs autres, sur plusieurs niveaux — un document de quelques lignes se développe en milliards d'occurrences une fois toutes les entités résolues (mécanisme d'entité déjà vu pour le [XXE](/?c=securite&s=cybersecurite&p=injections-au-dela-du-sql), ici détourné pour épuiser des ressources plutôt que pour lire un fichier).
+Une variante XML porte le nom d'**attaque "billion laughs"** : un document XML déclare une entité qui en référence plusieurs autres, elles-mêmes référençant plusieurs autres, sur plusieurs niveaux : un document de quelques lignes se développe en milliards d'occurrences une fois toutes les entités résolues (mécanisme d'entité déjà vu pour le [XXE](/?c=securite&s=cybersecurite&p=injections-au-dela-du-sql), ici détourné pour épuiser des ressources plutôt que pour lire un fichier).
 
 > **Bonne pratique :** imposer une taille maximale de décompression AVANT de décompresser entièrement un fichier (la plupart des bibliothèques de (dé)compression exposent une limite configurable), et désactiver la résolution d'entités XML externes/imbriquées par défaut (même défense que pour le XXE).
 
@@ -86,7 +86,7 @@ Attaquant : script qui declenche cette action des milliers de fois
 
 ## Email/notification bombing
 
-Un formulaire (contact, inscription, réinitialisation de mot de passe) qui envoie un email ou un SMS à une adresse/un numéro FOURNI PAR L'UTILISATEUR, sans limite de fréquence, peut être détourné pour spammer un tiers dont on connaît juste l'adresse — sans jamais avoir besoin d'accéder à son compte.
+Un formulaire (contact, inscription, réinitialisation de mot de passe) qui envoie un email ou un SMS à une adresse/un numéro FOURNI PAR L'UTILISATEUR, sans limite de fréquence, peut être détourné pour spammer un tiers dont on connaît juste l'adresse, sans jamais avoir besoin d'accéder à son compte.
 
 > **Bonne pratique :** limiter le nombre d'envois par destinataire (pas seulement par IP/compte expéditeur) sur toute fonctionnalité qui envoie une communication à une adresse fournie par un tiers.
 

@@ -73,7 +73,7 @@ Si le parseur XML résout cette entité (va réellement lire `/etc/passwd`) avan
 
 | | |
 |---|---|
-| **Défense** | Désactiver la résolution des entités externes dans la configuration du parseur XML utilisé — la plupart des bibliothèques modernes le font par défaut, mais pas toutes selon la version |
+| **Défense** | Désactiver la résolution des entités externes dans la configuration du parseur XML utilisé (la plupart des bibliothèques modernes le font par défaut, mais pas toutes selon la version) |
 
 ## Désérialisation non sûre : reconstruire un objet à partir de données non fiables
 

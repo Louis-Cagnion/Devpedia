@@ -75,7 +75,7 @@ Code vulnerable (utilisation d'un coupon a usage unique) :
 
 Les deux requêtes, envoyées à quelques millisecondes d'écart (souvent automatisées exprès pour ça), passent toutes les deux la vérification AVANT qu'aucune n'ait eu le temps de marquer le coupon comme utilisé.
 
-> **Bonne pratique :** rendre l'opération "vérifier puis agir" ATOMIQUE (une seule étape indivisible, garantie par la base de données elle-même — une contrainte d'unicité, une mise à jour conditionnelle en une seule requête) plutôt que deux étapes séparées dans le code applicatif, où une autre requête peut toujours s'intercaler entre les deux.
+> **Bonne pratique :** rendre l'opération "vérifier puis agir" ATOMIQUE (une seule étape indivisible, garantie par la base de données elle-même : une contrainte d'unicité, une mise à jour conditionnelle en une seule requête) plutôt que deux étapes séparées dans le code applicatif, où une autre requête peut toujours s'intercaler entre les deux.
 
 ## Usurpation par homographe Unicode
 

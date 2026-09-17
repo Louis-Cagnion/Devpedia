@@ -90,9 +90,9 @@ Donnee proteges, meme si UNE couche cede
 
 Si une couche est contournée (une faille non encore corrigée, par exemple), les couches suivantes limitent quand même l'impact, au lieu de laisser un accès total dès la première brèche.
 
-> **Piège :** un endpoint volontairement sans aucune authentification ni contrôle applicatif, sous prétexte qu'il n'est "censé" être joignable que depuis un réseau interne/VPN — c'est-à-dire ne compter que sur la 1ère couche du schéma ci-dessus, en pariant qu'elle ne cédera jamais. Cette hypothèse réseau peut se révéler fausse (mauvaise configuration VPN, appareil connecté au même réseau qu'un wifi invité, exposition accidentelle lors d'un changement d'infrastructure), sans qu'aucune autre couche ne reste alors pour limiter les dégâts.
+> **Piège :** un endpoint volontairement sans aucune authentification ni contrôle applicatif, sous prétexte qu'il n'est "censé" être joignable que depuis un réseau interne/VPN, c'est-à-dire ne compter que sur la 1ère couche du schéma ci-dessus, en pariant qu'elle ne cédera jamais. Cette hypothèse réseau peut se révéler fausse (mauvaise configuration VPN, appareil connecté au même réseau qu'un wifi invité, exposition accidentelle lors d'un changement d'infrastructure), sans qu'aucune autre couche ne reste alors pour limiter les dégâts.
 >
-> **Bonne pratique :** même un service censé rester interne garde un contrôle d'accès applicatif propre (authentification, vérification de droits) — exactement l'esprit de la défense en profondeur : le périmètre réseau est UNE couche parmi d'autres, jamais la seule.
+> **Bonne pratique :** même un service censé rester interne garde un contrôle d'accès applicatif propre (authentification, vérification de droits) ; exactement l'esprit de la défense en profondeur : le périmètre réseau est UNE couche parmi d'autres, jamais la seule.
 
 ## Échouer de façon sûre (*fail securely*)
 

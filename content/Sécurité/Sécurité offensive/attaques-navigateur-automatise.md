@@ -4,11 +4,11 @@ order: 10
 
 # Attaquer (et défendre) un navigateur automatisé
 
-[L'exploitation web côté attaquant](/?c=securite&s=securite-offensive&p=exploitation-web-cote-attaquant) regarde un attaquant qui cible VOTRE site. Ce chapitre inverse la perspective, pour un cas de plus en plus courant : votre propre code pilote un navigateur réel (Playwright, Selenium, Puppeteer) contre des pages que vous NE contrôlez PAS — un scraper qui visite des sites de partenaires, un outil qui automatise une tâche sur un site tiers. Cette fois, c'est VOTRE navigateur automatisé qui devient la cible.
+[L'exploitation web côté attaquant](/?c=securite&s=securite-offensive&p=exploitation-web-cote-attaquant) regarde un attaquant qui cible VOTRE site. Ce chapitre inverse la perspective, pour un cas de plus en plus courant : votre propre code pilote un navigateur réel (Playwright, Selenium, Puppeteer) contre des pages que vous NE contrôlez PAS : un scraper qui visite des sites de partenaires, un outil qui automatise une tâche sur un site tiers. Cette fois, c'est VOTRE navigateur automatisé qui devient la cible.
 
 ## Un navigateur piloté reste un navigateur complet
 
-La différence entre "lire une page" et "afficher une page dans un navigateur" compte plus qu'il n'y paraît : un script qui télécharge juste le HTML d'une page (une simple requête HTTP) ne risque rien de ce chapitre, il ne fait qu'obtenir du texte. Un navigateur PILOTÉ, lui, exécute réellement la page : JavaScript compris, comme un visiteur humain — avec les mêmes capacités qu'un navigateur normal, y compris celles dont votre script automatisé n'a jamais eu l'intention de se servir.
+La différence entre "lire une page" et "afficher une page dans un navigateur" compte plus qu'il n'y paraît : un script qui télécharge juste le HTML d'une page (une simple requête HTTP) ne risque rien de ce chapitre, il ne fait qu'obtenir du texte. Un navigateur PILOTÉ, lui, exécute réellement la page : JavaScript compris, comme un visiteur humain, avec les mêmes capacités qu'un navigateur normal, y compris celles dont votre script automatisé n'a jamais eu l'intention de se servir.
 
 ```text
 Requete HTTP simple (pas de risque de ce chapitre) :
