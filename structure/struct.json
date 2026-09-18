@@ -643,6 +643,10 @@
             {
               "id": "responsive-et-media-queries",
               "label": "Le responsive design et les media queries"
+            },
+            {
+              "id": "degrades",
+              "label": "Les dégradés CSS (linear, radial, conic)"
             }
           ]
         },

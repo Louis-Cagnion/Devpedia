@@ -643,6 +643,10 @@
             {
               "id": "responsive-et-media-queries",
               "label": "El diseño adaptativo y las consultas de medios"
+            },
+            {
+              "id": "degrades",
+              "label": "Los degradados CSS (linear, radial, conic)"
             }
           ]
         },

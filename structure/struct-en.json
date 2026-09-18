@@ -556,6 +556,10 @@
             {
               "id": "responsive-et-media-queries",
               "label": "Responsive Design and Media Queries"
+            },
+            {
+              "id": "degrades",
+              "label": "CSS Gradients (linear, radial, conic)"
             }
           ]
         },
