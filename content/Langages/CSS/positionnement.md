@@ -69,6 +69,21 @@ Reste à la même position visuelle **même en faisant défiler la page**, utili
 
 Se comporte comme `relative` tant que l'élément est visible dans son emplacement normal, puis devient `fixed` (collé au bord précisé, ici `top: 0`) dès que le défilement l'amènerait à en sortir, utilisé typiquement pour un en-tête de tableau qui reste visible pendant le défilement du contenu.
 
+### Un habillage courant pour un élément `sticky` : `backdrop-filter`
+
+Un élément `sticky` (ou `fixed`) semi-transparent reste posé au-dessus d'un contenu qui continue de défiler dessous ; `backdrop-filter: blur(...)` applique un flou à ce contenu **derrière** l'élément (jamais à l'élément lui-même, contrairement à `filter: blur(...)`) :
+
+```css
+.pied-de-formulaire {
+    position: sticky;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);   /* semi-transparent */
+    backdrop-filter: blur(8px);                     /* floute ce qui defile DERRIERE, pas le pied lui-meme */
+}
+```
+
+Le résultat (dit *glassmorphism*) laisse deviner le contenu qui défile dessous, tout en gardant le texte du pied de formulaire lisible par-dessus.
+
 ## `z-index` : gérer la superposition
 
 ```css
@@ -111,6 +126,6 @@ La note sur `z-index` ci-dessus mentionne qu'un ancêtre avec `transform` (ou `f
 | | |
 |---|---|
 | **À retenir** | `position` change comment un élément est placé : `static` (défaut, flux normal), `relative` (décalé, place réservée), `absolute` (retiré du flux, relatif à un ancêtre positionné), `fixed` (relatif à la fenêtre), `sticky` (hybride relative/fixed). `z-index` gère la superposition, mais seulement entre éléments positionnés. |
-| **Outils utilisables** | `position`, `top`/`right`/`bottom`/`left`, `z-index`. |
+| **Outils utilisables** | `position`, `top`/`right`/`bottom`/`left`, `z-index`, `backdrop-filter: blur()` pour un élément `sticky`/`fixed` semi-transparent. |
 | **Pièges à éviter** | Un `absolute` sans ancêtre `relative` se positionne par rapport à toute la page, pas au conteneur visuel attendu ; `z-index` est ignoré sur un élément `static` ; un ancêtre en `transform`/`filter` casse le positionnement `fixed` habituel d'un descendant. |
 | **Bonnes pratiques** | Toujours poser `position: relative` sur le conteneur d'un enfant en `absolute`, même sans décalage propre à ce conteneur. Réparenter sous `<body>` un panneau `fixed` qui doit rester relatif à la fenêtre malgré un ancêtre animé. |

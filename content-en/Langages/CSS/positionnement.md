@@ -69,6 +69,21 @@ Stays in the same visual position **even while scrolling the page**, used for an
 
 Behaves like `relative` as long as the element is visible in its normal spot, then becomes `fixed` (stuck to the specified edge, here `top: 0`) as soon as scrolling would carry it out of view, typically used for a table header that stays visible while the content scrolls.
 
+### A common styling touch for a `sticky` element: `backdrop-filter`
+
+A semi-transparent `sticky` (or `fixed`) element stays on top of content that keeps scrolling underneath it; `backdrop-filter: blur(...)` blurs that content **behind** the element (never the element itself, unlike `filter: blur(...)`):
+
+```css
+.form-footer {
+    position: sticky;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);   /* semi-transparent */
+    backdrop-filter: blur(8px);                     /* blurs what scrolls BEHIND it, not the footer itself */
+}
+```
+
+The result (called *glassmorphism*) lets the scrolling content underneath show through faintly, while keeping the footer's own text readable on top.
+
 ## `z-index`: managing overlap
 
 ```css
@@ -111,6 +126,6 @@ The note on `z-index` above mentions that an ancestor with `transform` (or `filt
 | | |
 |---|---|
 | **Key Points** | `position` changes how an element is placed: `static` (default, normal flow), `relative` (shifted, spot reserved), `absolute` (removed from flow, relative to a positioned ancestor), `fixed` (relative to the window), `sticky` (relative/fixed hybrid). `z-index` manages overlap, but only between positioned elements. |
-| **Available Tools** | `position`, `top`/`right`/`bottom`/`left`, `z-index`. |
+| **Available Tools** | `position`, `top`/`right`/`bottom`/`left`, `z-index`, `backdrop-filter: blur()` for a semi-transparent `sticky`/`fixed` element. |
 | **Pitfalls to Avoid** | An `absolute` with no `relative` ancestor is positioned relative to the whole page, not the expected visual container; `z-index` is ignored on a `static` element; an ancestor with `transform`/`filter` breaks a descendant's usual `fixed` positioning. |
 | **Best Practices** | Always set `position: relative` on the container of an `absolute` child, even with no offset of its own on that container. Reparent under `<body>` a `fixed` panel that needs to stay relative to the window despite an animated ancestor. |
