@@ -44,6 +44,25 @@ observador.observe(contenedor, { childList: true, subtree: true });
 
 > **Trampa:** `MutationObserver` solo detecta cambios de **estructura DOM** o de **atributo HTML**. Escribir `miSelect.value = "x"` cambia la propiedad JavaScript `value` de un `<select>`, pero no modifica ningún atributo HTML ni la estructura del DOM: nunca se notifica ninguna mutación para este tipo de escritura, ni siquiera observando `attributes: true`. Véase [interceptar un setter de propiedad](/?c=langages&s=javascript&p=intercepter-un-setter-de-propriete) para la técnica que cubre este hueco.
 
+## `ResizeObserver`: reaccionar al cambio de tamaño de un elemento
+
+Tercer miembro de la misma familia "callback ante un cambio, sin sondear en bucle": `IntersectionObserver` vigila la *visibilidad*, `MutationObserver` la *estructura DOM*, `ResizeObserver` vigila las *dimensiones* de un elemento concreto, independientemente del evento global `resize` de la ventana.
+
+```javascript
+const tabla = document.querySelector('.tabla-ancha');
+
+const observador = new ResizeObserver((entradas) => {
+    const anchura = entradas[0].contentRect.width;
+    tabla.classList.toggle('modo-compacto', anchura < 600);   // cambia en cuanto falta espacio
+});
+
+observador.observe(tabla);
+```
+
+`resize` solo se dispara con un cambio de tamaño de la VENTANA entera; un elemento puede sin embargo cambiar de anchura por muchas otras razones (una barra lateral que aparece, una fuente que carga, un padre que cambia de diseño) sin que se produzca ningún `resize`. `ResizeObserver` detecta también esos casos, observando directamente el elemento en cuestión.
+
+> **Buena práctica:** preferir `ResizeObserver` al evento `resize` en cuanto el cambio dependa del espacio realmente disponible para UN elemento concreto, no del ancho de la ventana entera (véanse también las [container queries](/?c=langages&s=css&p=responsive-et-media-queries), el equivalente CSS puro de la misma necesidad, sin JavaScript).
+
 ## Debounce y throttle: dos formas de limitar la frecuencia de una función
 
 Algunos eventos (`resize`, `scroll`, `input`) se disparan decenas de veces por segundo. Ejecutar una función costosa en cada disparo puede ralentizar toda la página. Dos técnicas limitan la frecuencia de ejecución, pero con lógicas opuestas:
@@ -88,7 +107,7 @@ El throttle anterior no usa deliberadamente ningún `setInterval`: el bloqueo se
 
 | | |
 |---|---|
-| **Para recordar** | `IntersectionObserver` detecta la visibilidad de un elemento sin recálculo manual en el scroll (scroll infinito). `MutationObserver` reacciona a un cambio del DOM sin sondear en bucle, pero no ve ni las propiedades JS asignadas directamente ni los cambios fuera del DOM. Debounce espera una pausa antes de ejecutar; throttle ejecuta como máximo una vez por intervalo. |
-| **Herramientas utilizables** | `IntersectionObserver` (`rootMargin`, `isIntersecting`), `MutationObserver` (`childList`/`subtree`/`attributes`), un debounce/throttle casero vía `setTimeout`. |
+| **Para recordar** | `IntersectionObserver` detecta la visibilidad de un elemento sin recálculo manual en el scroll (scroll infinito). `MutationObserver` reacciona a un cambio del DOM sin sondear en bucle, pero no ve ni las propiedades JS asignadas directamente ni los cambios fuera del DOM. `ResizeObserver` detecta el cambio de dimensiones de un elemento concreto, sin depender del `resize` de la ventana. Debounce espera una pausa antes de ejecutar; throttle ejecuta como máximo una vez por intervalo. |
+| **Herramientas utilizables** | `IntersectionObserver` (`rootMargin`, `isIntersecting`), `MutationObserver` (`childList`/`subtree`/`attributes`), `ResizeObserver` (`contentRect`), un debounce/throttle casero vía `setTimeout`. |
 | **Trampas a evitar** | Olvidar `observador.disconnect()` una vez que la observación deja de ser necesaria. Esperar una mutación DOM sobre una propiedad JS asignada directamente (`select.value = x`). Confundir debounce y throttle en una necesidad de reinicio repetido. |
-| **Buenas prácticas** | `rootMargin` para precargar antes de que el elemento sea realmente visible. `subtree: true` en cuanto el cambio pueda producirse a cualquier profundidad. Elegir debounce para una acción final única tras una ráfaga, throttle para un tope regular durante la ráfaga. |
+| **Buenas prácticas** | `rootMargin` para precargar antes de que el elemento sea realmente visible. `subtree: true` en cuanto el cambio pueda producirse a cualquier profundidad. `ResizeObserver` en lugar del evento `resize` para un cambio que depende del espacio de un elemento concreto. Elegir debounce para una acción final única tras una ráfaga, throttle para un tope regular durante la ráfaga. |
