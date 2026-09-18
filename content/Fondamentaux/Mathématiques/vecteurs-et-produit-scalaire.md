@@ -73,6 +73,35 @@ Ce nombre mesure à quel point deux vecteurs pointent dans la même direction :
 
 > **Bonne pratique :** cette même opération (multiplier terme à terme, puis additionner) revient dans de nombreux calculs par la suite, notamment pour combiner plusieurs entrées en une seule valeur en donnant à chacune un **poids**, un nombre qui reflète son importance relative dans le résultat final (une entrée au poids élevé pèse plus dans la somme qu'une entrée au poids faible). On dit alors que le résultat est une somme **pondérée**. Reconnaître cette opération sous cette forme évite de la redécouvrir à chaque fois sous un nom différent.
 
+## Le produit vectoriel : combiner deux vecteurs en un troisième
+
+Contrairement au produit scalaire (qui réduit deux vecteurs à un seul nombre), le **produit vectoriel** (*cross product*, noté `×`) de deux vecteurs 3D en produit un **troisième**, perpendiculaire aux deux premiers :
+
+```text
+Pour A = [a1, a2, a3] et B = [b1, b2, b3] :
+
+A × B = [ a2*b3 - a3*b2,
+          a3*b1 - a1*b3,
+          a1*b2 - a2*b1 ]
+```
+
+Exemple, avec les deux vecteurs de base des axes horizontal et vertical :
+
+```text
+A = [1, 0, 0]
+B = [0, 1, 0]
+
+A × B = [0*0 - 0*1, 0*0 - 1*0, 1*1 - 0*0] = [0, 0, 1]
+```
+
+Deux propriétés à retenir :
+- **Le résultat est perpendiculaire aux deux vecteurs de départ** : c'est la propriété exploitée pour calculer la **normale** d'une surface plane (le vecteur perpendiculaire à cette surface), en faisant le produit vectoriel de deux de ses arêtes (deux vecteurs partant d'un même sommet de la surface, pas deux positions absolues).
+- **L'ordre compte** : `A × B = -(B × A)`. Inverser l'ordre inverse le sens du résultat (règle de la main droite : pointe les doigts vers `A`, replie-les vers `B`, le pouce indique la direction de `A × B`).
+
+Le signe du produit **scalaire** entre un produit vectoriel local et une normale de référence permet de déterminer un sens de rotation : c'est le principe utilisé pour détecter un sommet convexe ou concave dans un polygone (voir [Wavefront .obj et modèle de Phong](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong), section sur l'ear clipping).
+
+> **Piège :** si les deux vecteurs de départ sont parallèles (ou si l'un des deux est nul), leur produit vectoriel donne le vecteur nul `[0,0,0]`, qui n'a pas de direction définie. Concrètement, ça correspond à 3 points alignés (aucun vrai "coin") ou à une surface dégénérée (aire nulle) : un cas à détecter explicitement plutôt qu'à laisser produire un résultat sans direction exploitable.
+
 ## La norme d'un vecteur : sa longueur
 
 Un vecteur à 2 composantes comme `[3, 4]` peut se lire comme un point sur un plan (voir le tout premier exemple de ce chapitre), atteint en partant d'un point de départ commun à tous les vecteurs : l'**origine**, le point `[0, 0]`. La **norme** d'un vecteur est la distance entre l'origine et ce point : le chemin le plus direct, en ligne droite, pas la somme des deux distances parcourues en équerre (`3 + 4 = 7` serait faux) :
@@ -115,7 +144,7 @@ Ce résultat n'est pas une coïncidence propre à cet exemple : diviser chaque c
 
 | | |
 |---|---|
-| **À retenir** | Un vecteur est une liste ordonnée de nombres traitée comme une seule entité. Le produit scalaire réduit deux vecteurs de même dimension à un seul nombre, qui mesure à quel point ils pointent dans la même direction. La norme est la longueur d'un vecteur. |
+| **À retenir** | Un vecteur est une liste ordonnée de nombres traitée comme une seule entité. Le produit scalaire réduit deux vecteurs de même dimension à un seul nombre, qui mesure à quel point ils pointent dans la même direction. Le produit vectoriel (3D uniquement) combine deux vecteurs en un troisième, perpendiculaire aux deux premiers, utile pour calculer une normale. La norme est la longueur d'un vecteur. |
 | **Outils utilisables** | Aucun outil spécifique pour le calcul à la main ; en pratique, une bibliothèque comme [NumPy](/?c=data-science&p=numpy) effectue ces opérations directement sur des vecteurs entiers, sans boucle explicite. |
-| **Pièges à éviter** | Additionner ou combiner deux vecteurs de dimensions différentes. Normaliser un vecteur nul (division par une norme de 0). |
+| **Pièges à éviter** | Additionner ou combiner deux vecteurs de dimensions différentes. Normaliser un vecteur nul (division par une norme de 0). Produit vectoriel de deux vecteurs parallèles (donne le vecteur nul, sans direction exploitable). |
 | **Bonnes pratiques** | Vérifier que deux vecteurs ont la même dimension avant toute opération entre eux. Documenter ce que représente chaque composante d'un vecteur dès sa création. |

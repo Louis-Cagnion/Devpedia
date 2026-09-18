@@ -1151,6 +1151,10 @@
             {
               "id": "pwa-progressive-web-app",
               "label": "La PWA : un site web qui se comporte comme une application"
+            },
+            {
+              "id": "environnement-local-php-sql-server",
+              "label": "Mettre en place un environnement local pour une application PHP connectée à SQL Server"
             }
           ]
         },

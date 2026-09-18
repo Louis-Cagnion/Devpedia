@@ -21,7 +21,7 @@ Matériel (disque, réseau, mémoire physique...)
 
 Un appel de fonction C classique (`addition(2, 3)`) s'exécute entièrement dans l'**espace utilisateur**, sans jamais quitter le programme. Un appel système est différent : il demande explicitement au **noyau** d'agir à la place du programme, pour une opération que celui-ci n'a pas le droit de faire lui-même. Cette demande implique un changement contrôlé de mode d'exécution (*user mode* → *kernel mode*), vérifié par le processeur : c'est ce contrôle qui empêche un programme malveillant ou buggé d'accéder directement à la mémoire ou au disque d'un autre programme.
 
-> **Note :** une fonction comme `printf()` n'est **pas** elle-même un appel système : c'est une fonction de bibliothèque, qui met en forme la chaîne de caractères en espace utilisateur, puis appelle en interne le véritable appel système (`write()`) pour l'envoyer réellement à la sortie standard.
+> **Note :** une fonction comme `printf()` n'est **pas** elle-même un appel système : c'est une fonction de bibliothèque, qui met en forme la chaîne de caractères en espace utilisateur, puis appelle en interne le véritable appel système (`write()`) pour l'envoyer réellement à la sortie standard. Le même principe s'applique en lecture, avec `fopen()`/`fgets()`/`getline()` qui encapsulent `open()`/`read()` (voir [Lire un fichier ligne par ligne](/?c=langages-de-programmation&s=c&p=lecture-de-fichiers)).
 
 ## Quelques appels système courants
 

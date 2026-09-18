@@ -64,6 +64,8 @@ Savoir à quelle étape une erreur survient aide à la diagnostiquer :
 | `fatal error: xxx.h: No such file or directory` | Préprocesseur | Fichier d'en-tête introuvable (voir [Les fichiers d'en-tête](/?c=langages-de-programmation&s=c&p=headers)) |
 | `undefined reference to 'ma_fonction'` | Édition de liens | Fonction déclarée mais jamais définie/liée (fichier `.o` ou bibliothèque manquante) |
 
+> **Piège spécifique au C :** une fonction déclarée `inline` seule (sans `static` ni `extern`) suit une sémantique particulière depuis [C99](https://en.wikipedia.org/wiki/C99) : le compilateur peut choisir de ne générer **aucun symbole appelable** pour elle, en misant uniquement sur l'inlining direct à chaque point d'appel. Si l'inlining n'a pas lieu (typiquement sans optimisation, `-O0`, souvent le réglage par défaut d'un Makefile pédagogique), l'édition de liens échoue avec `undefined reference`, même pour un appel depuis le fichier où la fonction est définie. Pour une petite fonction utilitaire locale à un seul `.c`, `static inline` est la combinaison idiomatique : `static` garantit une liaison interne (donc un symbole réellement utilisable dans ce fichier), `inline` reste une simple suggestion d'optimisation.
+
 ---
 
 ## 📋 Récapitulatif
@@ -72,5 +74,5 @@ Savoir à quelle étape une erreur survient aide à la diagnostiquer :
 |---|---|
 | **À retenir** | Un programme C passe par 4 étapes avant l'exécution : préprocesseur → compilation (assembleur) → assemblage (code machine, `.o`) → édition de liens (exécutable final). |
 | **Outils utilisables** | `gcc -E`/`-S`/`-c` pour observer chaque étape séparément. |
-| **Pièges à éviter** | Confondre une erreur de compilation (syntaxe) avec une erreur d'édition de liens (`undefined reference`, fonction jamais liée) : le message indique l'étape concernée. |
-| **Bonnes pratiques** | Compiler chaque fichier `.c` en `.o` séparément sur un projet à plusieurs fichiers, pour ne relier que ce qui a changé plutôt que tout recompiler. |
+| **Pièges à éviter** | Confondre une erreur de compilation (syntaxe) avec une erreur d'édition de liens (`undefined reference`, fonction jamais liée) : le message indique l'étape concernée. Une fonction `inline` sans `static` ni `extern` peut ne générer aucun symbole, causant un `undefined reference` même en appel local, si le compilateur ne l'inline pas réellement. |
+| **Bonnes pratiques** | Compiler chaque fichier `.c` en `.o` séparément sur un projet à plusieurs fichiers, pour ne relier que ce qui a changé plutôt que tout recompiler. Utiliser `static inline` (pas `inline` seul) pour une fonction utilitaire locale à un seul fichier. |
