@@ -75,6 +75,31 @@ div {
 @media print { }                         /* styles appliqués uniquement à l'impression */
 ```
 
+## Les container queries : mesurer le conteneur plutôt que la fenêtre
+
+Une media query mesure toujours la largeur de la **fenêtre** entière, ce qui peut être trompeur pour un composant qui n'occupe qu'une partie de l'écran (une carte dans une colonne de grille, à côté d'une barre latérale) : la fenêtre peut être large alors que l'espace réellement disponible pour ce composant précis est étroit. Une **container query** répond à ce cas précis en mesurant, non pas la fenêtre, mais le conteneur direct de l'élément :
+
+```css
+/* 1. Marquer un ancetre comme "conteneur interrogeable" */
+.carte-conteneur {
+    container-type: inline-size;  /* seule la largeur du conteneur est suivie */
+}
+
+/* 2. La regle @container reagit a LA LARGEUR DE CE CONTENEUR, pas de la fenetre */
+@container (max-width: 860px) {
+    .carte { flex-direction: column; }
+}
+```
+
+| | `@media` | `@container` |
+|---|---|---|
+| Mesure | La largeur de la fenêtre entière | La largeur du conteneur `container-type` le plus proche |
+| Cas d'usage typique | Adapter la mise en page globale de la page | Adapter un composant réutilisable, quel que soit l'espace qui lui est alloué |
+
+> **Piège :** utiliser `@media` pour adapter un composant qui n'occupe qu'une partie de l'écran (une carte dans une colonne parmi plusieurs, à côté d'une barre latérale). La fenêtre peut rester large alors que l'espace réel de ce composant est déjà étroit : le composant ne change alors jamais de mise en page, même quand il en aurait besoin.
+>
+> **Bonne pratique :** utiliser `@container` dès qu'un composant doit réagir à l'espace qui lui est réellement alloué plutôt qu'à la taille de la fenêtre entière ; réserver `@media` à une adaptation vraiment globale de la page.
+
 Voir aussi [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), dont `repeat(auto-fit, minmax(...))` permet d'obtenir un comportement responsive **sans écrire aucune media query**, une alternative complémentaire à connaître.
 
 ---
@@ -84,6 +109,6 @@ Voir aussi [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), dont `repeat(auto-
 | | |
 |---|---|
 | **À retenir** | Le responsive design adapte une page à toute taille d'écran, via des unités relatives (`%`, `rem`, `vw`/`vh`) et des media queries (`@media (min-width: ...)`) qui appliquent un style seulement à certaines largeurs. |
-| **Outils utilisables** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`. |
-| **Pièges à éviter** | Baser ses points de rupture sur des tailles d'appareils précises plutôt que sur le moment où la mise en page casse réellement visuellement. |
-| **Bonnes pratiques** | Adopter une approche *mobile first* (`min-width`, styliser d'abord le plus petit écran) ; préférer `rem` à `em` pour les tailles de police, plus prévisible en cas d'imbrication. |
+| **Outils utilisables** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`, `@container` + `container-type` pour un composant isolé. |
+| **Pièges à éviter** | Baser ses points de rupture sur des tailles d'appareils précises plutôt que sur le moment où la mise en page casse réellement visuellement. Utiliser `@media` pour un composant qui n'occupe qu'une partie de la fenêtre. |
+| **Bonnes pratiques** | Adopter une approche *mobile first* (`min-width`, styliser d'abord le plus petit écran) ; préférer `rem` à `em` pour les tailles de police, plus prévisible en cas d'imbrication ; utiliser `@container` pour un composant qui doit réagir à son propre espace, pas à la fenêtre. |

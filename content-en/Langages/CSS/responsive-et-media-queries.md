@@ -75,6 +75,31 @@ div {
 @media print { }                         /* styles applied only when printing */
 ```
 
+## Container queries: measuring the container instead of the window
+
+A media query always measures the width of the entire **window**, which can be misleading for a component that only occupies part of the screen (a card in a grid column, next to a sidebar): the window can be wide while the space actually available to that specific component is narrow. A **container query** addresses exactly this case by measuring, not the window, but the element's direct container:
+
+```css
+/* 1. Mark an ancestor as a "queryable container" */
+.carte-conteneur {
+    container-type: inline-size;  /* only the container's width is tracked */
+}
+
+/* 2. The @container rule reacts to THIS CONTAINER'S WIDTH, not the window's */
+@container (max-width: 860px) {
+    .carte { flex-direction: column; }
+}
+```
+
+| | `@media` | `@container` |
+|---|---|---|
+| Measures | The entire window's width | The nearest ancestor's width marked `container-type` |
+| Typical use case | Adapting the page's overall layout | Adapting a reusable component, regardless of the space allotted to it |
+
+> **Pitfall:** using `@media` to adapt a component that only occupies part of the screen (a card in one column among several, next to a sidebar). The window can stay wide while that component's actual space is already narrow: the component then never changes layout, even when it should.
+>
+> **Best practice:** use `@container` as soon as a component needs to react to the space actually allotted to it rather than to the entire window's size; reserve `@media` for a genuinely page-wide adaptation.
+
 See also [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), where `repeat(auto-fit, minmax(...))` achieves responsive behavior **without writing a single media query**, a complementary alternative worth knowing.
 
 ---
@@ -84,6 +109,6 @@ See also [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), where `repeat(auto-f
 | | |
 |---|---|
 | **Key Points** | Responsive design adapts a page to any screen size, via relative units (`%`, `rem`, `vw`/`vh`) and media queries (`@media (min-width: ...)`) that apply a style only at certain widths. |
-| **Available Tools** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`. |
-| **Pitfalls to Avoid** | Basing breakpoints on specific device sizes rather than on the point where the layout actually breaks down visually. |
-| **Best Practices** | Adopt a *mobile first* approach (`min-width`, style the smallest screen first); prefer `rem` over `em` for font sizes, more predictable when nested. |
+| **Available Tools** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`, `@container` + `container-type` for an isolated component. |
+| **Pitfalls to Avoid** | Basing breakpoints on specific device sizes rather than on the point where the layout actually breaks down visually. Using `@media` for a component that only occupies part of the window. |
+| **Best Practices** | Adopt a *mobile first* approach (`min-width`, style the smallest screen first); prefer `rem` over `em` for font sizes, more predictable when nested; use `@container` for a component that must react to its own space, not the window. |

@@ -75,6 +75,31 @@ div {
 @media print { }                         /* estilos aplicados únicamente al imprimir */
 ```
 
+## Las container queries: medir el contenedor en lugar de la ventana
+
+Una media query siempre mide el ancho de la **ventana** entera, lo que puede ser engañoso para un componente que solo ocupa parte de la pantalla (una tarjeta en una columna de la cuadrícula, junto a una barra lateral): la ventana puede ser ancha mientras que el espacio realmente disponible para ese componente concreto es estrecho. Una **container query** responde exactamente a este caso midiendo, no la ventana, sino el contenedor directo del elemento:
+
+```css
+/* 1. Marcar un ancestro como "contenedor consultable" */
+.carte-conteneur {
+    container-type: inline-size;  /* solo se sigue el ancho del contenedor */
+}
+
+/* 2. La regla @container reacciona al ANCHO DE ESE CONTENEDOR, no al de la ventana */
+@container (max-width: 860px) {
+    .carte { flex-direction: column; }
+}
+```
+
+| | `@media` | `@container` |
+|---|---|---|
+| Mide | El ancho de la ventana entera | El ancho del ancestro más cercano marcado `container-type` |
+| Caso de uso típico | Adaptar el diseño global de la página | Adaptar un componente reutilizable, sea cual sea el espacio que se le asigne |
+
+> **Trampa:** usar `@media` para adaptar un componente que solo ocupa parte de la pantalla (una tarjeta en una columna entre varias, junto a una barra lateral). La ventana puede seguir siendo ancha mientras el espacio real de ese componente ya es estrecho: el componente entonces nunca cambia de diseño, incluso cuando lo necesitaría.
+>
+> **Buena práctica:** usar `@container` en cuanto un componente deba reaccionar al espacio que realmente se le asigna en lugar de al tamaño de la ventana entera; reservar `@media` para una adaptación verdaderamente global de la página.
+
 Véase también [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), cuyo `repeat(auto-fit, minmax(...))` permite obtener un comportamiento adaptativo **sin escribir ninguna media query**, una alternativa complementaria que conviene conocer.
 
 ---
@@ -84,6 +109,6 @@ Véase también [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), cuyo `repeat(
 | | |
 |---|---|
 | **Para recordar** | El diseño adaptativo adapta una página a cualquier tamaño de pantalla, mediante unidades relativas (`%`, `rem`, `vw`/`vh`) y media queries (`@media (min-width: ...)`) que aplican un estilo solo a determinados anchos. |
-| **Herramientas utilizables** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`. |
-| **Trampas a evitar** | Basar los puntos de interrupción en tamaños de dispositivos concretos en lugar del momento en que el diseño realmente empieza a fallar visualmente. |
-| **Buenas prácticas** | Adoptar un enfoque *mobile first* (`min-width`, diseñar primero para la pantalla más pequeña); preferir `rem` a `em` para los tamaños de fuente, más predecible en caso de anidación. |
+| **Herramientas utilizables** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`, `@container` + `container-type` para un componente aislado. |
+| **Trampas a evitar** | Basar los puntos de interrupción en tamaños de dispositivos concretos en lugar del momento en que el diseño realmente empieza a fallar visualmente. Usar `@media` para un componente que solo ocupa parte de la ventana. |
+| **Buenas prácticas** | Adoptar un enfoque *mobile first* (`min-width`, diseñar primero para la pantalla más pequeña); preferir `rem` a `em` para los tamaños de fuente, más predecible en caso de anidación; usar `@container` para un componente que debe reaccionar a su propio espacio, no a la ventana. |

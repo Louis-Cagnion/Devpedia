@@ -75,6 +75,31 @@ div {
 @media print { }                         /* estilos aplicados apenas na impressao */
 ```
 
+## As container queries: medir o contêiner em vez da janela
+
+Uma media query sempre mede a largura da **janela** inteira, o que pode ser enganoso para um componente que ocupa apenas parte da tela (um cartão em uma coluna da grade, ao lado de uma barra lateral): a janela pode estar larga enquanto o espaço realmente disponível para esse componente específico é estreito. Uma **container query** resolve exatamente esse caso medindo, não a janela, mas o contêiner direto do elemento:
+
+```css
+/* 1. Marcar um ancestral como "conteiner consultavel" */
+.carte-conteneur {
+    container-type: inline-size;  /* apenas a largura do conteiner e acompanhada */
+}
+
+/* 2. A regra @container reage a LARGURA DESSE CONTEINER, nao a da janela */
+@container (max-width: 860px) {
+    .carte { flex-direction: column; }
+}
+```
+
+| | `@media` | `@container` |
+|---|---|---|
+| Mede | A largura da janela inteira | A largura do ancestral mais próximo marcado com `container-type` |
+| Caso de uso típico | Adaptar o layout geral da página | Adaptar um componente reutilizável, seja qual for o espaço alocado a ele |
+
+> **Cuidado:** usar `@media` para adaptar um componente que ocupa apenas parte da tela (um cartão em uma coluna entre várias, ao lado de uma barra lateral). A janela pode continuar larga enquanto o espaço real desse componente já está estreito: o componente então nunca muda de layout, mesmo quando precisaria.
+>
+> **Boa prática:** usar `@container` assim que um componente precisar reagir ao espaço realmente alocado a ele, em vez do tamanho da janela inteira; reservar `@media` para uma adaptação verdadeiramente global da página.
+
 Veja também [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), cujo `repeat(auto-fit, minmax(...))` permite obter um comportamento responsivo **sem escrever nenhuma media query**, uma alternativa complementar a conhecer.
 
 ---
@@ -84,6 +109,6 @@ Veja também [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), cujo `repeat(aut
 | | |
 |---|---|
 | **Para lembrar** | O responsive design adapta uma página a qualquer tamanho de tela, via unidades relativas (`%`, `rem`, `vw`/`vh`) e media queries (`@media (min-width: ...)`) que aplicam um estilo apenas para certas larguras. |
-| **Ferramentas utilizáveis** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`. |
-| **Armadilhas a evitar** | Basear seus pontos de corte em tamanhos de dispositivos precisos em vez do momento em que o layout realmente quebra visualmente. |
-| **Boas práticas** | Adotar uma abordagem *mobile first* (`min-width`, estilizar primeiro a tela menor); preferir `rem` a `em` para tamanhos de fonte, mais previsível em caso de aninhamento. |
+| **Ferramentas utilizáveis** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`, `@container` + `container-type` para um componente isolado. |
+| **Armadilhas a evitar** | Basear seus pontos de corte em tamanhos de dispositivos precisos em vez do momento em que o layout realmente quebra visualmente. Usar `@media` para um componente que ocupa apenas parte da janela. |
+| **Boas práticas** | Adotar uma abordagem *mobile first* (`min-width`, estilizar primeiro a tela menor); preferir `rem` a `em` para tamanhos de fonte, mais previsível em caso de aninhamento; usar `@container` para um componente que precisa reagir ao seu próprio espaço, não à janela. |
