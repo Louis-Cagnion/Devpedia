@@ -55,6 +55,27 @@ Un tableau HTML sert à représenter des données **tabulaires** (lignes/colonne
 
 `colspan` étend une cellule sur plusieurs colonnes, `rowspan` sur plusieurs lignes.
 
+## Contrôler la largeur des colonnes : `table-layout` et `<colgroup>`
+
+Par défaut (`table-layout: auto`, en [CSS](/?c=langages-de-balisage&s=css&p=css)), le navigateur ajuste la largeur de chaque colonne au contenu réel de ses cellules. `table-layout: fixed` inverse ce comportement et impose des largeurs déclarées à l'avance, quel que soit le contenu :
+
+```html
+<table style="table-layout: fixed; width: 100%;">
+    <colgroup>
+        <col style="width: 60%;">
+        <col style="width: 40%;">
+    </colgroup>
+    <tr>
+        <td>Nom</td>
+        <td>Ville</td>
+    </tr>
+</table>
+```
+
+`<colgroup>` et `<col>` déclarent la largeur de chaque colonne une seule fois, en tête de tableau, plutôt que de la répéter sur chaque cellule d'une même colonne.
+
+> **Bonne pratique :** utiliser `table-layout: fixed` + `<colgroup>` dès que plusieurs tableaux indépendants doivent rester alignés colonne par colonne (comparaison ligne à ligne entre eux) : `table-layout: auto` ajusterait chaque tableau selon son propre contenu, désalignant les colonnes d'un tableau à l'autre.
+
 ## Pied de tableau
 
 ```html
@@ -97,6 +118,6 @@ Un tableau HTML sert à représenter des données **tabulaires** (lignes/colonne
 | | |
 |---|---|
 | **À retenir** | `<table>` représente des données tabulaires réellement liées entre elles ; jamais une mise en page générale. `<thead>`/`<tbody>`/`<tfoot>` structurent le tableau ; `colspan`/`rowspan` fusionnent des cellules. |
-| **Outils utilisables** | `<caption>` (titre du tableau), `scope="col"`/`"row"` sur un `<th>` pour l'accessibilité. |
+| **Outils utilisables** | `<caption>` (titre du tableau), `scope="col"`/`"row"` sur un `<th>` pour l'accessibilité, `table-layout: fixed` + `<colgroup>` pour des largeurs de colonnes autoritaires. |
 | **Pièges à éviter** | Utiliser `<table>` pour la mise en page générale d'une page : casse la sémantique et complique le responsive. |
-| **Bonnes pratiques** | Toujours associer un `scope` à chaque `<th>` d'un tableau complexe, pour qu'un lecteur d'écran annonce le bon en-tête par cellule. |
+| **Bonnes pratiques** | Toujours associer un `scope` à chaque `<th>` d'un tableau complexe, pour qu'un lecteur d'écran annonce le bon en-tête par cellule. `table-layout: fixed` pour garder plusieurs tableaux alignés colonne par colonne. |
