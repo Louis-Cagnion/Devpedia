@@ -81,7 +81,7 @@ const somme = numbers.reduce((acc, n) => acc + n, 0); // 15 -> reduces the entir
 
 > **Note:** `reduce()` is the most versatile but the least immediately readable: `acc` (the accumulator) starts with the initial value provided as the second argument (`0` in this case) and is updated for each element according to the provided function.
 
-See also the chapter on functions for the syntax of arrow functions (`=>`) used here.
+See also [Functions](/?c=langages-de-programmation&s=javascript&p=fonctions) for the syntax of arrow functions (`=>`) used here.
 
 ---
 

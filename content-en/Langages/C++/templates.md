@@ -59,7 +59,7 @@ Pile<std::string> pileTextes;
 pileTextes.empiler("bonjour");
 ```
 
-A single definition of `Pile` that can be used with any type: this is exactly how STL containers are built (`std::vector<T>`, `std::map<K, V>`..., see the dedicated chapter).
+A single definition of `Pile` that can be used with any type: this is exactly how [the STL's containers](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) are built (`std::vector<T>`, `std::map<K, V>`...).
 
 ## Type Constraints (C++20: `concepts`)
 
@@ -107,7 +107,7 @@ By default, the compiler assumes a name like `T::iterator` refers to a **value**
 | Runtime Cost | None (code generated specifically for each type) | Slight overhead (continuous type checks) |
 | Type error detection | Even before running the program | Only when executing the relevant code path |
 
-See also the chapter on STL containers, which is based entirely on this template mechanism.
+See also [STL: Containers](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs), which is based entirely on this template mechanism.
 
 ---
 

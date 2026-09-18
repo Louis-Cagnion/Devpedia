@@ -72,7 +72,7 @@ void traiter() {
 }   // Even here, ~FileManager() runs BEFORE the exception is propagated upward
 ```
 
-When an exception is thrown, C++ performs "stack* unwinding*": each local object that is still alive has its destructor called, in the reverse order of their creation, before the exception continues to propagate upward: this ensures that a resource managed by RAII (see the dedicated chapter) is always released properly, even in the event of an unexpected error.
+When an exception is thrown, C++ performs "stack* unwinding*": each local object that is still alive has its destructor called, in the reverse order of their creation, before the exception continues to propagate upward: this ensures that a resource managed by [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii) is always released properly, even in the event of an unexpected error.
 
 ## `noexcept` : ensure that a function never returns
 

@@ -152,7 +152,7 @@ sizeof(char);      // always 1, by definition of the C standard
 sizeof(int) * 10;  // size needed for 10 integers -> pass this to malloc()
 ```
 
-See also the chapter on pointers; understanding that chapter is a prerequisite for this one.
+See also [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs); understanding that chapter is a prerequisite for this one.
 
 ---
 

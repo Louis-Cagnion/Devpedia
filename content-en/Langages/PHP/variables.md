@@ -193,7 +193,7 @@ if (!empty($person["age"])) {
 ?>
 ```
 
-> **Note:** `empty($x)` returns `true` if the variable/key does not exist at all, OR if it contains an "empty" value (`''`, `0`, `null`, `false`, empty array...). This is different from `array_key_exists()` (see the chapter on functions), which only checks for the existence of the key, even if its value is `null`.
+> **Note:** `empty($x)` returns `true` if the variable/key does not exist at all, OR if it contains an "empty" value (`''`, `0`, `null`, `false`, empty array...). This is different from `array_key_exists()` (see [The Most Useful Functions and Methods](/?c=langages-de-programmation&s=php&p=methodes)), which only checks for the existence of the key, even if its value is `null`.
 
 ---
 

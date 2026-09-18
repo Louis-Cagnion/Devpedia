@@ -30,7 +30,7 @@ title.classList.toggle("active");           // add if missing, remove if present
 title.setAttribute("data-id", "42");
 ```
 
-> **Note:** `innerHTML` with user-supplied data is a classic XSS vulnerability (see the chapter on PHP security; same principle): an attacker could inject executable code into it. `textContent` remains secure by default, since it always treats its content as plain text.
+> **Note:** `innerHTML` with user-supplied data is a classic XSS vulnerability (see [Securing your data](/?c=langages-de-programmation&s=php&p=securite), same principle): an attacker could inject executable code into it. `textContent` remains secure by default, since it always treats its content as plain text.
 
 ## Create and Insert an Element
 

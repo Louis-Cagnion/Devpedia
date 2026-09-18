@@ -4,7 +4,7 @@ order: 2
 
 # Namespaces
 
-**A namespace** groups identifiers (functions, classes, variables) under a common prefix to prevent name collisions between different parts of a project or different libraries, the same purpose as the namespaces we’ve already discussed in [PHP](/?c=langages-de-programmation&s=php&p=php) (see the dedicated chapter).
+**A namespace** groups identifiers (functions, classes, variables) under a common prefix to prevent name collisions between different parts of a project or different libraries, the same need as [PHP](/?c=langages-de-programmation&s=php&p=php) namespaces, whose [autoloading](/?c=langages-de-programmation&s=php&p=autoloading) shows a concrete usage.
 
 ## Declaring and Using a Namespace
 

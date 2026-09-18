@@ -4,7 +4,7 @@ order: 9
 
 # STL: Iterators, Algorithms, and Lambdas
 
-An **iterator** is an abstraction that allows you to iterate over any STL container (see the dedicated chapter) in the same way, whether it is a `vector` (contiguous array) or a `list` (linked list): the iteration code remains the same, even if the underlying structure is radically different.
+An **iterator** is an abstraction that allows you to iterate over any [STL container](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) in the same way, whether it is a `vector` (contiguous array) or a `list` (linked list): the iteration code remains the same, even if the underlying structure is radically different.
 
 ## The Principle of the Iterator
 
