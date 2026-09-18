@@ -1446,6 +1446,10 @@
               "label": "Applied Cryptography for Developers"
             },
             {
+              "id": "secrets-oublies-en-production",
+              "label": "Secrets Forgotten in Production"
+            },
+            {
               "id": "securite-des-dependances",
               "label": "Dependency and Supply Chain Security"
             },
@@ -1462,6 +1466,10 @@
               "label": "HashiCorp Vault: beyond the .env file"
             },
             {
+              "id": "injections-au-dela-du-sql",
+              "label": "Injection Beyond SQL"
+            },
+            {
               "id": "tests-et-audit-de-securite",
               "label": "Security Testing and Auditing"
             },
@@ -1470,8 +1478,20 @@
               "label": "The OWASP Top 10: the industry-standard reference"
             },
             {
+              "id": "xss-en-detail",
+              "label": "XSS: Reflected, Stored, and DOM-Based"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "Fingerprinting: recognizing a device without storing anything on it"
+            },
+            {
+              "id": "logique-metier-et-automatisation",
+              "label": "Business Logic and Automated Workarounds"
+            },
+            {
+              "id": "surcharge-et-deni-de-service-applicatif",
+              "label": "Overload and Application-Level Denial of Service"
             }
           ]
         },
@@ -1579,6 +1599,10 @@
             {
               "id": "exploitation-web-cote-attaquant",
               "label": "Web Exploitation From the Attacker's Side"
+            },
+            {
+              "id": "attaques-navigateur-automatise",
+              "label": "Attacking (and Defending) an Automated Browser"
             }
           ]
         }

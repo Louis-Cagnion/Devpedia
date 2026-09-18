@@ -1462,6 +1462,10 @@
               "label": "Criptografia aplicada para desenvolvedores"
             },
             {
+              "id": "secrets-oublies-en-production",
+              "label": "Segredos esquecidos em produção"
+            },
+            {
               "id": "securite-des-dependances",
               "label": "Segurança das dependências e da cadeia de suprimentos"
             },
@@ -1478,6 +1482,10 @@
               "label": "HashiCorp Vault: além do arquivo .env"
             },
             {
+              "id": "injections-au-dela-du-sql",
+              "label": "As injeções além do SQL"
+            },
+            {
               "id": "tests-et-audit-de-securite",
               "label": "Testes e auditoria de segurança"
             },
@@ -1486,8 +1494,20 @@
               "label": "O OWASP Top 10: a referência padrão da indústria"
             },
             {
+              "id": "xss-en-detail",
+              "label": "XSS: reflected, stored e DOM-based"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "O fingerprinting: reconhecer um aparelho sem armazenar nada nele"
+            },
+            {
+              "id": "logique-metier-et-automatisation",
+              "label": "Lógica de negócio e contornos automatizados"
+            },
+            {
+              "id": "surcharge-et-deni-de-service-applicatif",
+              "label": "Sobrecarga e negação de serviço em nível de aplicação"
             }
           ]
         },
@@ -1595,6 +1615,10 @@
             {
               "id": "exploitation-web-cote-attaquant",
               "label": "A exploração web do lado do atacante"
+            },
+            {
+              "id": "attaques-navigateur-automatise",
+              "label": "Atacar (e defender) um navegador automatizado"
             }
           ]
         }
