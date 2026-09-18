@@ -46,3 +46,6 @@ Issu de l'auto-review du dépôt `Scraping_infomediaires_pipeline` (mode `/revie
 
 ## 6. Commentaires de code sans accents dans `content*/` (ancienne convention abandonnée le 31/08/2026)
 `grep -rEc "// .*(ecran|echouer|meme|plutot|Echap|donnee|memoire|acces|complete)" content --include="*.md"` remonte 27 fichiers FR potentiellement concernés (probablement dupliqué en `content-en`/`content-es`/`content-br`) ; à lister précisément et corriger.
+
+## 7. Lignes de code entre 96 et anciennement 100 caractères, pas encore repassées au seuil de 95 (abaissé le 16/09/2026)
+Repéré dans `dom-et-evenements.md` (les 4 langues, ex. lignes `querySelector`/`innerHTML` déjà présentes avant le point 5). Probablement répandu dans tout `content*/`, écrit avant l'abaissement du seuil. À chiffrer (script de comptage par fichier) puis corriger par lot.

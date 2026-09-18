@@ -180,7 +180,8 @@ localStorage.removeItem("tema");
 ```javascript
 const conteudoCsv = "nome;valor\nlinha1;10\nlinha2;20";
 const arquivo = new Blob([conteudoCsv], { type: "text/csv;charset=utf-8" });
-const url = URL.createObjectURL(arquivo);  // URL temporária apontando para esse arquivo em memória
+// URL temporária apontando para esse arquivo em memória
+const url = URL.createObjectURL(arquivo);
 
 const link = document.createElement("a");
 link.href = url;
