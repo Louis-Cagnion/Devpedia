@@ -1,8 +1,8 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 1, lot 6 en cours en tâche de fond -- attendre la fin, `git add audio/` et commit, puis régénérer l'audio des 8 chapitres Kubernetes/worktree/distillation/CUDA (fichiers `.md` déjà commités, pas encore leur audio).
+> Prochaine tâche : point 1, lot 6 en cours en tâche de fond -- attendre la fin, `git add audio/` et commit, puis régénérer l'audio des 8 chapitres Kubernetes/worktree/distillation/CUDA (fichiers `.md` déjà commités, pas encore leur audio). En parallèle, si le lot 6 tourne encore : reprendre le point 4 (fichiers restants).
 
-> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 4). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2). Qualité de traduction EN à auditer plus largement (point 3).
+> Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 3). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2).
 
 ## 1. Régénération audio complète : lot 6 restant (le plus gros, en cours en tâche de fond)
 Nécessite `ffmpeg` sur le PATH : `export PATH="/c/Users/lcagnion/tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"` avant chaque commande (cf. `journal-de-bord.md` pour l'installation).
@@ -16,15 +16,12 @@ Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de d
 ## 2. 8 chapitres avec un double mécanisme de résumé (`## Résumé` + `## 📋 Récapitulatif`)
 Repéré en lisant `nombres-flottants.md` (item #14) : ce chapitre a un ancien `## Résumé` (table "À retenir/Pourquoi") juste avant le `## 📋 Récapitulatif` standard, deux mécanismes qui se recoupent largement (cf. critère Simplicité de `/best-practice`). Même motif dans 7 autres fichiers : `Langages/PHP/securite.md`, `Langages/JavaScript/nombres.md`, `Langages/C++/gestion-memoire-raii.md`, `Données/Représentation des données/organisation-en-memoire.md`, `entiers-et-debordements.md`, `encodage-des-textes.md`, `aleatoire-et-generateurs.md`. À trancher avec Louis : fusionner en gardant `## 📋 Récapitulatif` seul, ou une autre unification ; changement d'ampleur, pas à faire sans confirmation.
 
-## 3. Qualité de traduction EN par endroits médiocre (mots-à-mots visibles)
-`content-en/Langages/C++/references.md` a le même défaut (mots-à-mots, ex. "Report a reference") que celui déjà corrigé dans `classes-et-objets.md` (détail dans `journal-de-bord.md`), pas encore corrigé. À auditer plus largement dans `content-en/` : d'autres chapitres traduits à la même période pourraient avoir le même défaut.
-
-## 4. Fond étoilé des pages chapitre invisible sur mobile (iOS 16.7.16)
+## 3. Fond étoilé des pages chapitre invisible sur mobile (iOS 16.7.16)
 Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il s'affiche normalement sur desktop (`css/content.css`, `.page::before`). Deux hypothèses déjà invalidées par le retest de Louis (détail dans `journal-de-bord.md`) : `@supports` autour de `color-mix()`, puis son remplacement complet par `rgba()` + triplets RGB précalculés -- toujours gris dans les deux cas. Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `var()`, `rgba()`, `radial-gradient()`, `inset: 0`).
 - Reste à Louis : sur la page d'un chapitre (iPhone), bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement dans ce mode. Si ça ne suffit pas à trancher, étape suivante : inspecteur Safari distant (Mac connecté à l'iPhone).
 
-## 5. Commentaires de code sans accents dans `content*/` (ancienne convention abandonnée le 31/08/2026)
-`grep -rEc "// .*(ecran|echouer|meme|plutot|Echap|donnee|memoire|acces|complete)" content --include="*.md"` remonte 27 fichiers FR potentiellement concernés (probablement dupliqué en `content-en`/`content-es`/`content-br`) ; à lister précisément et corriger.
+## 4. Commentaires de code sans accents dans `content*/` (ancienne convention abandonnée le 31/08/2026)
+14 fichiers FR corrigés (voir `git log`, commit `ff20be6`). Restent, repérés par la même recherche élargie mais pas encore corrigés : `Langages/PHP/conditions.md`, `Langages/Domain-specific Languages (DSL)/sql.md`, `Langages/C++/stl-conteneurs.md`, `Langages/XML/xml.md`, `Langages/C/readline-et-termios.md`, `Langages/C/exit-et-codes-de-retour.md`, `Langages/JavaScript/nombres.md`, `Langages/JavaScript/canvas-2d-et-animations.md`, `Langages/JavaScript/fonctions.md`. Recherche jamais faite sur `content-en`/`content-es`/`content-br` (probablement dupliqué là aussi).
 
-## 6. Lignes de code entre 96 et anciennement 100 caractères, pas encore repassées au seuil de 95 (abaissé le 16/09/2026)
+## 5. Lignes de code entre 96 et anciennement 100 caractères, pas encore repassées au seuil de 95 (abaissé le 16/09/2026)
 Repéré dans `dom-et-evenements.md` (les 4 langues, ex. lignes `querySelector`/`innerHTML`), écrites avant l'abaissement du seuil. Probablement répandu dans tout `content*/`. À chiffrer (script de comptage par fichier) puis corriger par lot.
