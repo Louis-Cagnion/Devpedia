@@ -43,6 +43,24 @@ Este capítulo aborda dos mecanismos transversales de CSS: las **variables perso
 
 > **Nota:** a diferencia de una variable [Sass](https://sass-lang.com)/[Less](https://lesscss.org) (resueltas de una vez por todas en la compilación), una variable CSS nativa está **viva** en el navegador: modificable incluso en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`elemento.style.setProperty('--margen-interno', '30px')`), y reevaluada dinámicamente según el elemento en el que se consulta.
 
+## `color-mix()`: derivar un color a partir de una variable, sin declarar una nueva
+
+```css
+.boton-peligro:hover {
+    background-color: color-mix(in srgb, var(--color-peligro) 85%, black);
+    /* mezcla 85% de --color-peligro con negro: una version ligeramente oscurecida, al pasar el cursor */
+}
+```
+
+`color-mix(in <espacio-de-color>, color1 porcentaje1, color2)` mezcla dos colores en el espacio de color indicado (`srgb` es el más común), sin tener que calcular ni declarar una nueva variable dedicada para cada variante (hover, deshabilitado, un fondo ligeramente teñido...).
+
+| | Sin `color-mix()` | Con `color-mix()` |
+|---|---|---|
+| Una variante más oscura al pasar el cursor | Calcular/declarar una segunda variable (`--color-peligro-hover`) | `color-mix(in srgb, var(--color-peligro) 85%, black)` |
+| Un fondo ligeramente teñido | Una tercera variable dedicada, o un color `rgba()` fijo | `color-mix(in srgb, var(--color-peligro) 10%, transparent)` |
+
+> **Buena práctica:** usar `color-mix()` para cualquier variante puntual de un color ya declarado como variable (más claro, más oscuro, más transparente), en lugar de multiplicar variables dedicadas para cada pequeña variación.
+
 ## Leer una variable CSS desde JavaScript
 
 La escritura de arriba (`setProperty`) tiene su inversa, la **lectura**: útil para que un renderizado que no entiende CSS (dibujo en un `<canvas>`, gráfico en SVG generado en JavaScript) siga sincronizado con los colores declarados en la hoja de estilos, sin duplicarlos a mano en el código JS.
@@ -110,6 +128,6 @@ Las propiedades relacionadas con el **texto** (`color`, `font-family`, `font-siz
 | | |
 |---|---|
 | **Para recordar** | Las variables CSS (`--nombre`, leídas mediante `var()`) evitan repetir un valor. Ante un conflicto entre reglas, la cascada decide en este orden: `!important` > especificidad > orden de escritura. La herencia (texto sí, caja no) es un mecanismo distinto que interactúa con la cascada. |
-| **Herramientas utilizables** | `:root` para variables globales, `var(--nombre, valor-de-respaldo)`, `elemento.style.setProperty()` para modificarlas en JavaScript, `getComputedStyle().getPropertyValue()` para leerlas. |
+| **Herramientas utilizables** | `:root` para variables globales, `var(--nombre, valor-de-respaldo)`, `color-mix(in srgb, ...)` para derivar una variante de color, `elemento.style.setProperty()` para modificarlas en JavaScript, `getComputedStyle().getPropertyValue()` para leerlas. |
 | **Trampas a evitar** | Abusar de `!important`: cortocircuita toda la cascada y dificulta sobrescribir el estilo después. Olvidar `.trim()` tras `getPropertyValue()`: la cadena devuelta conserva sus espacios originales. |
 | **Buenas prácticas** | Reservar `!important` para casos excepcionales (sobrescribir un estilo de terceros que no se controla); definir los colores/espaciados recurrentes como variables en `:root` en lugar de repetirlos; leer esas variables desde JS en lugar de duplicar los colores a mano, para que un renderizado Canvas/SVG siga sincronizado con la hoja de estilos. |

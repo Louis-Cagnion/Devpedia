@@ -43,6 +43,24 @@ This chapter covers two cross-cutting mechanisms in CSS: **custom variables** (r
 
 > **Note:** unlike a [Sass](https://sass-lang.com)/[Less](https://lesscss.org) variable (resolved once and for all at compile time), a native CSS variable is **alive** in the browser: modifiable even from [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) (`element.style.setProperty('--marge-interne', '30px')`), and re-evaluated dynamically depending on the element where it's read.
 
+## `color-mix()`: deriving a color from a variable, without declaring a new one
+
+```css
+.danger-button:hover {
+    background-color: color-mix(in srgb, var(--couleur-danger) 85%, black);
+    /* mixes 85% of --couleur-danger with black: a slightly darkened version, on hover */
+}
+```
+
+`color-mix(in <color-space>, color1 percentage1, color2)` mixes two colors in the given color space (`srgb` is the most common), with no need to compute or declare a new dedicated variable for every variant (hover, disabled, a lightly tinted background...).
+
+| | Without `color-mix()` | With `color-mix()` |
+|---|---|---|
+| A darker variant on hover | Compute/declare a second variable (`--couleur-danger-hover`) | `color-mix(in srgb, var(--couleur-danger) 85%, black)` |
+| A lightly tinted background | A third dedicated variable, or a hardcoded `rgba()` color | `color-mix(in srgb, var(--couleur-danger) 10%, transparent)` |
+
+> **Best practice:** use `color-mix()` for any one-off variant of a color already declared as a variable (lighter, darker, more transparent), rather than multiplying dedicated variables for each small variation.
+
 ## Reading a CSS variable from JavaScript
 
 The write above (`setProperty`) has its opposite, **reading**: useful so that a rendering that doesn't understand CSS (drawing on a `<canvas>`, an [SVG](/?c=langages-de-balisage&s=html&p=html) chart generated in [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) still stays in sync with the colors declared in the stylesheet, without hard-coding a duplicate copy in the JS code.
@@ -110,6 +128,6 @@ Properties tied to **text** (`color`, `font-family`, `font-size`, `line-height`.
 | | |
 |---|---|
 | **Key Points** | CSS variables (`--name`, read via `var()`) avoid repeating a value. Faced with a conflict between rules, the cascade settles it in order: `!important` > specificity > order written. Inheritance (text yes, box no) is a distinct mechanism that interacts with the cascade. |
-| **Available Tools** | `:root` for global variables, `var(--name, fallback-value)`, `element.style.setProperty()` to modify them from JavaScript, `getComputedStyle().getPropertyValue()` to read them. |
+| **Available Tools** | `:root` for global variables, `var(--name, fallback-value)`, `color-mix(in srgb, ...)` to derive a color variant, `element.style.setProperty()` to modify them from JavaScript, `getComputedStyle().getPropertyValue()` to read them. |
 | **Pitfalls to Avoid** | Overusing `!important`: it short-circuits the whole cascade and makes the style hard to override afterward. Forgetting `.trim()` after `getPropertyValue()`: the returned string keeps its original spaces. |
 | **Best Practices** | Reserve `!important` for exceptional cases (overriding an uncontrolled third-party style); define recurring colors/spacing as variables on `:root` rather than repeating them; read those variables from JS instead of hard-coding duplicate colors, so a Canvas/SVG rendering stays in sync with the stylesheet. |
