@@ -1959,6 +1959,10 @@
               "label": "OKRs"
             },
             {
+              "id": "nps-et-satisfaction-client",
+              "label": "NPS: Measuring Customer Satisfaction and Loyalty"
+            },
+            {
               "id": "decoupage-en-graphe-de-dependances",
               "label": "Breaking Down a Project into a Dependency Graph"
             }

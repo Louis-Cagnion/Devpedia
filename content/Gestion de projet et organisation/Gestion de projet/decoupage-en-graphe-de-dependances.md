@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 8
 ---
 
 # Découper un projet en graphe de dépendances

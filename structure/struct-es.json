@@ -1959,6 +1959,10 @@
               "label": "Los OKR"
             },
             {
+              "id": "nps-et-satisfaction-client",
+              "label": "El NPS: medir la satisfacción y la fidelidad del cliente"
+            },
+            {
               "id": "decoupage-en-graphe-de-dependances",
               "label": "Dividir un proyecto en un grafo de dependencias"
             }
