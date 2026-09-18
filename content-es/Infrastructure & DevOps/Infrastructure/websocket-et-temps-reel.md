@@ -55,6 +55,33 @@ Una vez establecida la conexión, cada parte puede enviar un mensaje en cualquie
 >
 > **Buena práctica:** elegir WebSocket puro para una necesidad simple y un control total del formato de los mensajes; elegir Socket.IO (o una biblioteca equivalente) en cuanto la reconexión automática, el repliegue de compatibilidad o un modelo por eventos con nombre ahorran un tiempo de desarrollo real, aceptando la dependencia de esta biblioteca en ambos lados (servidor y cliente).
 
+## Un caso de uso concreto: el bucle de juego autoritario del lado del servidor
+
+En un juego multijugador en tiempo real (un juego de pelota tipo Pong, por ejemplo), el servidor no se limita a retransmitir mensajes: hace correr su propia simulación del juego (posición de la pelota, colisiones, puntuación) a intervalos regulares, y solo acepta de los clientes sus **entradas** (teclas pulsadas), nunca su posición. Es el modelo de **servidor autoritario**: la posición real del juego solo existe en un único lugar (el servidor), lo que impide que un cliente haga trampa anunciando él mismo una posición falsa.
+
+```text
+Cliente A -- entradas (arriba/abajo) -->
+Cliente B -- entradas (arriba/abajo) -->   Servidor: simula el juego a un ritmo fijo (ej. 60 Hz)
+                                            (posicion, colisiones, puntuacion...), luego
+                                            difunde el estado obtenido via WebSocket
+
+Los clientes nunca envian su propia posicion: reciben el estado y solo lo muestran.
+```
+
+## El ritmo de simulación (tick rate) puede diferir del ritmo de emisión
+
+El bucle de simulación corre a un intervalo fijo (el **tick**, por ejemplo cada 1/60 de segundo, es decir 60 Hz), típicamente mediante un temporizador repetido (`setInterval`). Pero nada obliga a enviar el estado del juego en cada tick: difundir uno de cada dos ticks, por ejemplo, reduce a la mitad el ancho de banda de red sin perder precisión de cálculo, ya que la simulación sigue corriendo a pleno rendimiento.
+
+| | Tick rate (simulación) | Emit rate (difusión de red) |
+|---|---|---|
+| Rol | Calcular el siguiente estado del juego | Enviar ese estado a los clientes por WebSocket |
+| ¿Puede ser más rápido que el otro? | Sí, siempre al menos igual de rápido | No, nunca más rápido que el tick rate |
+| Coste si es demasiado alto | Carga de CPU del servidor | Ancho de banda de red |
+
+> **Trampa:** calcular el desplazamiento de un tick a partir de un tiempo transcurrido (`dt`) sin límite. Si el servidor se ralentiza puntualmente (un pico de carga, una pausa del recolector de basura), el `dt` del siguiente tick puede volverse anormalmente grande, haciendo que un objeto atraviese una pared que, a un ritmo normal, habría sido detenido por la colisión en un tick intermedio.
+>
+> **Buena práctica:** limitar `dt` a un valor máximo razonable (por ejemplo nunca más de 50 ms simulados de una vez, aunque el tick real haya tardado más), para que la simulación se mantenga coherente incluso tras una ralentización puntual del servidor.
+
 ## Cuándo WebSocket es la respuesta correcta, cuándo otra cosa basta
 
 | Necesidad | Solución adaptada |
@@ -71,5 +98,5 @@ Un *webhook* se parece al tiempo real del lado del servidor (notifica sin petici
 |---|---|
 | **Para recordar** | WebSocket transforma una conexión HTTP inicial en una conexión bidireccional que permanece abierta, permitiendo al servidor enviar un mensaje sin petición previa del cliente. Socket.IO es una biblioteca construida sobre este protocolo, que añade repliegue automático, reconexión y un modelo por eventos con nombre. |
 | **Herramientas utilizables** | WebSocket puro para un control total y una necesidad simple; Socket.IO (o equivalente) cuando la reconexión automática y el repliegue de compatibilidad valen la dependencia añadida. |
-| **Trampas a evitar** | Simular tiempo real mediante polling repetido, costoso y con retraso. Conectar un cliente WebSocket puro a un servidor Socket.IO esperando que se entiendan de forma nativa. |
-| **Buenas prácticas** | Reservar WebSocket para los intercambios realmente bidireccionales y continuos; un webhook HTTP simple basta para una notificación puntual servidor a servidor. |
+| **Trampas a evitar** | Simular tiempo real mediante polling repetido, costoso y con retraso. Conectar un cliente WebSocket puro a un servidor Socket.IO esperando que se entiendan de forma nativa. Calcular un tick de simulación con un `dt` sin límite. |
+| **Buenas prácticas** | Reservar WebSocket para los intercambios realmente bidireccionales y continuos; un webhook HTTP simple basta para una notificación puntual servidor a servidor. En un juego o simulación multijugador, mantener el servidor autoritario y desacoplar el tick rate del emit rate. |
