@@ -70,10 +70,27 @@ div {
 ## Autres media features utiles
 
 ```css
-@media (orientation: portrait) { }       /* écran plus haut que large */
-@media (prefers-color-scheme: dark) { }  /* l'utilisateur a activé le mode sombre au niveau système */
-@media print { }                         /* styles appliqués uniquement à l'impression */
+@media (orientation: portrait) { }           /* écran plus haut que large */
+@media (prefers-color-scheme: dark) { }      /* l'utilisateur a activé le mode sombre au niveau système */
+@media (prefers-reduced-motion: reduce) { }  /* l'utilisateur a demandé de réduire les animations */
+@media print { }                             /* styles appliqués uniquement à l'impression */
 ```
+
+`prefers-reduced-motion` répond à une préférence d'accessibilité réglée au niveau du système d'exploitation (utilisateur sensible au mouvement, migraines, troubles vestibulaires), pas au niveau du site :
+
+```css
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+        /* volontairement PAS "animation: none" -- voir le piège ci-dessous */
+    }
+}
+```
+
+> **Piège :** remplacer l'animation par `animation: none`/`transition: none` plutôt que par une durée quasi nulle. Du code peut dépendre des événements JavaScript `animationend`/`transitionend` (par exemple, supprimer un élément une fois sa transition de sortie terminée) : `none` ne déclenche jamais ces événements, ce qui casse ce code, alors qu'une durée de `0.001ms` les déclenche toujours, presque instantanément.
+>
+> **Bonne pratique :** réduire une animation à une durée quasi nulle (`0.001ms`) plutôt que de la supprimer entièrement avec `none`, pour continuer à déclencher les événements JavaScript dont du code peut dépendre.
 
 ## Les container queries : mesurer le conteneur plutôt que la fenêtre
 
@@ -109,6 +126,6 @@ Voir aussi [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), dont `repeat(auto-
 | | |
 |---|---|
 | **À retenir** | Le responsive design adapte une page à toute taille d'écran, via des unités relatives (`%`, `rem`, `vw`/`vh`) et des media queries (`@media (min-width: ...)`) qui appliquent un style seulement à certaines largeurs. |
-| **Outils utilisables** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`, `@container` + `container-type` pour un composant isolé. |
-| **Pièges à éviter** | Baser ses points de rupture sur des tailles d'appareils précises plutôt que sur le moment où la mise en page casse réellement visuellement. Utiliser `@media` pour un composant qui n'occupe qu'une partie de la fenêtre. |
-| **Bonnes pratiques** | Adopter une approche *mobile first* (`min-width`, styliser d'abord le plus petit écran) ; préférer `rem` à `em` pour les tailles de police, plus prévisible en cas d'imbrication ; utiliser `@container` pour un composant qui doit réagir à son propre espace, pas à la fenêtre. |
+| **Outils utilisables** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme/prefers-reduced-motion)`, `@container` + `container-type` pour un composant isolé. |
+| **Pièges à éviter** | Baser ses points de rupture sur des tailles d'appareils précises plutôt que sur le moment où la mise en page casse réellement visuellement. Utiliser `@media` pour un composant qui n'occupe qu'une partie de la fenêtre. Répondre à `prefers-reduced-motion` avec `animation: none` plutôt qu'une durée quasi nulle. |
+| **Bonnes pratiques** | Adopter une approche *mobile first* (`min-width`, styliser d'abord le plus petit écran) ; préférer `rem` à `em` pour les tailles de police, plus prévisible en cas d'imbrication ; utiliser `@container` pour un composant qui doit réagir à son propre espace, pas à la fenêtre ; réduire une animation à une durée quasi nulle plutôt que de la supprimer avec `none`, pour ne pas casser un code qui dépend de `animationend`/`transitionend`. |

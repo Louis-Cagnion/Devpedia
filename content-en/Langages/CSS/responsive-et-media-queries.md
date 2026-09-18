@@ -70,10 +70,27 @@ div {
 ## Other useful media features
 
 ```css
-@media (orientation: portrait) { }       /* screen taller than it is wide */
-@media (prefers-color-scheme: dark) { }  /* the user has enabled dark mode at the system level */
-@media print { }                         /* styles applied only when printing */
+@media (orientation: portrait) { }           /* screen taller than it is wide */
+@media (prefers-color-scheme: dark) { }      /* the user has enabled dark mode at the system level */
+@media (prefers-reduced-motion: reduce) { }  /* the user has asked to reduce animations */
+@media print { }                             /* styles applied only when printing */
 ```
+
+`prefers-reduced-motion` responds to an accessibility preference set at the operating system level (a user sensitive to motion, migraines, vestibular disorders), not at the site level:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+        /* deliberately NOT "animation: none" -- see the pitfall below */
+    }
+}
+```
+
+> **Pitfall:** replacing the animation with `animation: none`/`transition: none` rather than an almost-zero duration. Code may depend on the JavaScript `animationend`/`transitionend` events (for example, removing an element once its exit transition finishes): `none` never fires these events, which breaks that code, whereas a `0.001ms` duration still fires them, almost instantly.
+>
+> **Best practice:** reduce an animation to an almost-zero duration (`0.001ms`) rather than removing it entirely with `none`, to keep firing the JavaScript events code may depend on.
 
 ## Container queries: measuring the container instead of the window
 
@@ -109,6 +126,6 @@ See also [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), where `repeat(auto-f
 | | |
 |---|---|
 | **Key Points** | Responsive design adapts a page to any screen size, via relative units (`%`, `rem`, `vw`/`vh`) and media queries (`@media (min-width: ...)`) that apply a style only at certain widths. |
-| **Available Tools** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`, `@container` + `container-type` for an isolated component. |
-| **Pitfalls to Avoid** | Basing breakpoints on specific device sizes rather than on the point where the layout actually breaks down visually. Using `@media` for a component that only occupies part of the window. |
-| **Best Practices** | Adopt a *mobile first* approach (`min-width`, style the smallest screen first); prefer `rem` over `em` for font sizes, more predictable when nested; use `@container` for a component that must react to its own space, not the window. |
+| **Available Tools** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme/prefers-reduced-motion)`, `@container` + `container-type` for an isolated component. |
+| **Pitfalls to Avoid** | Basing breakpoints on specific device sizes rather than on the point where the layout actually breaks down visually. Using `@media` for a component that only occupies part of the window. Responding to `prefers-reduced-motion` with `animation: none` rather than an almost-zero duration. |
+| **Best Practices** | Adopt a *mobile first* approach (`min-width`, style the smallest screen first); prefer `rem` over `em` for font sizes, more predictable when nested; use `@container` for a component that must react to its own space, not the window; reduce an animation to an almost-zero duration rather than removing it with `none`, so code depending on `animationend`/`transitionend` doesn't break. |

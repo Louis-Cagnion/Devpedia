@@ -70,10 +70,27 @@ div {
 ## Outras media features úteis
 
 ```css
-@media (orientation: portrait) { }       /* tela mais alta que larga */
-@media (prefers-color-scheme: dark) { }  /* o usuario ativou o modo escuro no nivel do sistema */
-@media print { }                         /* estilos aplicados apenas na impressao */
+@media (orientation: portrait) { }           /* tela mais alta que larga */
+@media (prefers-color-scheme: dark) { }      /* o usuario ativou o modo escuro no nivel do sistema */
+@media (prefers-reduced-motion: reduce) { }  /* o usuario pediu para reduzir as animacoes */
+@media print { }                             /* estilos aplicados apenas na impressao */
 ```
+
+`prefers-reduced-motion` responde a uma preferência de acessibilidade ajustada no nível do sistema operacional (usuário sensível a movimento, migrâneas, distúrbios vestibulares), não no nível do site:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+        /* deliberadamente NAO "animation: none" -- veja a armadilha abaixo */
+    }
+}
+```
+
+> **Cuidado:** substituir a animação por `animation: none`/`transition: none` em vez de uma duração quase nula. Código pode depender dos eventos JavaScript `animationend`/`transitionend` (por exemplo, remover um elemento após terminar sua transição de saída): `none` nunca dispara esses eventos, o que quebra esse código, enquanto uma duração de `0.001ms` continua disparando-os, quase instantaneamente.
+>
+> **Boa prática:** reduzir uma animação a uma duração quase nula (`0.001ms`) em vez de removê-la completamente com `none`, para continuar disparando os eventos JavaScript dos quais o código pode depender.
 
 ## As container queries: medir o contêiner em vez da janela
 
@@ -109,6 +126,6 @@ Veja também [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), cujo `repeat(aut
 | | |
 |---|---|
 | **Para lembrar** | O responsive design adapta uma página a qualquer tamanho de tela, via unidades relativas (`%`, `rem`, `vw`/`vh`) e media queries (`@media (min-width: ...)`) que aplicam um estilo apenas para certas larguras. |
-| **Ferramentas utilizáveis** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`, `@container` + `container-type` para um componente isolado. |
-| **Armadilhas a evitar** | Basear seus pontos de corte em tamanhos de dispositivos precisos em vez do momento em que o layout realmente quebra visualmente. Usar `@media` para um componente que ocupa apenas parte da janela. |
-| **Boas práticas** | Adotar uma abordagem *mobile first* (`min-width`, estilizar primeiro a tela menor); preferir `rem` a `em` para tamanhos de fonte, mais previsível em caso de aninhamento; usar `@container` para um componente que precisa reagir ao seu próprio espaço, não à janela. |
+| **Ferramentas utilizáveis** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme/prefers-reduced-motion)`, `@container` + `container-type` para um componente isolado. |
+| **Armadilhas a evitar** | Basear seus pontos de corte em tamanhos de dispositivos precisos em vez do momento em que o layout realmente quebra visualmente. Usar `@media` para um componente que ocupa apenas parte da janela. Responder a `prefers-reduced-motion` com `animation: none` em vez de uma duração quase nula. |
+| **Boas práticas** | Adotar uma abordagem *mobile first* (`min-width`, estilizar primeiro a tela menor); preferir `rem` a `em` para tamanhos de fonte, mais previsível em caso de aninhamento; usar `@container` para um componente que precisa reagir ao seu próprio espaço, não à janela; reduzir uma animação a uma duração quase nula em vez de removê-la com `none`, para não quebrar um código que dependa de `animationend`/`transitionend`. |
