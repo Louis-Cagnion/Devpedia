@@ -98,13 +98,32 @@ compter();   // 1
 compter();   // 2 -> "total" was retained between calls; specific to THIS instance of counter()
 ```
 
+## The IIFE pattern: an immediately invoked function to isolate variables
+
+An **IIFE** (*Immediately Invoked Function Expression*) is a function declared and called in a single expression, never reused by name (it usually has none):
+
+```javascript
+(function (global) {
+    const CATEGORIES = [];   // stays private, invisible from the rest of the page
+    const ICONS = {};        // same
+
+    function svg(name) { /* ... */ }   // same
+
+    global.MyLibrary = { svg };   // the ONLY point reachable from the outside
+})(window);
+```
+
+Thanks to closures (above), every variable declared inside stays private to this function: nothing outside can reach it, except what's explicitly exposed (here, `global.MyLibrary`). This pattern predates ES modules (`import`/`export`) and is still used in non-bundled JavaScript, loaded via plain `<script>` tags: without it, every variable declared at a file's top level becomes global, with the risk that another file loaded alongside declares a variable with the same name and overwrites the first one.
+
+> **Best practice:** prefer ES modules (`import`/`export`) as soon as a build tool is already in place; reserve the IIFE for cases where JavaScript is loaded directly via `<script>` tags, with no build step.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | A function declaration is *hoisted* (usable before its definition), an expression is not. An arrow function has no `this` of its own: it reuses the enclosing function's. A closure keeps access to its enclosing function's variables after that function has finished running. |
-| **Tools you can use** | Default parameters, `...` (rest/spread). |
+| **Key takeaways** | A function declaration is *hoisted* (usable before its definition), an expression is not. An arrow function has no `this` of its own: it reuses the enclosing function's. A closure keeps access to its enclosing function's variables after that function has finished running; an IIFE uses this property to isolate private variables. |
+| **Tools you can use** | Default parameters, `...` (rest/spread), an IIFE to namespace non-bundled JavaScript loaded via `<script>`. |
 | **Pitfalls to avoid** | Using a classic function (`function`) as a callback inside a method, expecting `this` to refer to the enclosing object: an arrow function is needed for that. |
-| **Best practices** | Prefer arrow functions for a callback internal to a method, to keep the correct `this`. |
+| **Best practices** | Prefer arrow functions for a callback internal to a method, to keep the correct `this`. Prefer ES modules over an IIFE as soon as a build tool is available. |

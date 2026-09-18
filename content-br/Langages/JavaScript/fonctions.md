@@ -98,13 +98,32 @@ contar();  // 1
 contar();  // 2 -> "total" persistiu entre as chamadas, proprio a ESSA instancia de contador()
 ```
 
+## O padrão IIFE: uma função imediatamente invocada para isolar variáveis
+
+Uma **IIFE** (*Immediately Invoked Function Expression*) é uma função declarada e chamada em uma única expressão, nunca reutilizada pelo nome (geralmente não tem nenhum):
+
+```javascript
+(function (global) {
+    const CATEGORIAS = [];   // permanece privada, invisivel do resto da pagina
+    const ICONES = {};       // idem
+
+    function svg(nome) { /* ... */ }   // idem
+
+    global.MinhaBiblioteca = { svg };   // o UNICO ponto acessivel de fora
+})(window);
+```
+
+Graças às closures (acima), todas as variáveis declaradas dentro permanecem privadas a essa função: nada de fora consegue acessá-las, exceto o que é explicitamente exposto (aqui, `global.MinhaBiblioteca`). Esse padrão é anterior aos módulos ES (`import`/`export`) e ainda é usado em JavaScript não empacotado (*non-bundled*), carregado por simples tags `<script>`: sem ele, cada variável declarada no primeiro nível de um arquivo se torna global, com o risco de outro arquivo carregado ao lado declarar uma variável com o mesmo nome e sobrescrever a primeira.
+
+> **Boa prática:** preferir os módulos ES (`import`/`export`) assim que uma ferramenta de build já estiver disponível; reservar a IIFE para os casos em que o JavaScript é carregado diretamente por tags `<script>`, sem etapa de build.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | Uma declaração de função sofre *hoisting* (utilizável antes de sua definição), uma expressão não. Uma função de seta não tem seu próprio `this`: ela reutiliza o da função envolvente. Uma closure mantém acesso às variáveis de sua função envolvente após a execução desta. |
-| **Ferramentas utilizáveis** | Parâmetros padrão, `...` (rest/spread). |
+| **Para lembrar** | Uma declaração de função sofre *hoisting* (utilizável antes de sua definição), uma expressão não. Uma função de seta não tem seu próprio `this`: ela reutiliza o da função envolvente. Uma closure mantém acesso às variáveis de sua função envolvente após a execução desta; uma IIFE aproveita essa propriedade para isolar variáveis privadas. |
+| **Ferramentas utilizáveis** | Parâmetros padrão, `...` (rest/spread), uma IIFE para namespacear JavaScript não empacotado carregado via `<script>`. |
 | **Armadilhas a evitar** | Usar uma função clássica (`function`) como callback em um método, esperando que `this` designe o objeto envolvente: uma função de seta é necessária para isso. |
-| **Boas práticas** | Preferir funções de seta para um callback interno a um método, para manter o `this` correto. |
+| **Boas práticas** | Preferir funções de seta para um callback interno a um método, para manter o `this` correto. Preferir módulos ES a uma IIFE assim que houver uma ferramenta de build disponível. |

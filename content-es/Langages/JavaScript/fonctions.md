@@ -98,13 +98,32 @@ contar();  // 1
 contar();  // 2 -> "total" persistió entre llamadas, propio de ESTA instancia de contador()
 ```
 
+## El patrón IIFE: una función invocada inmediatamente para aislar variables
+
+Una **IIFE** (*Immediately Invoked Function Expression*) es una función declarada e invocada en una sola expresión, nunca reutilizada por su nombre (normalmente no tiene ninguno):
+
+```javascript
+(function (global) {
+    const CATEGORIAS = [];   // permanece privada, invisible desde el resto de la pagina
+    const ICONOS = {};       // igual
+
+    function svg(nombre) { /* ... */ }   // igual
+
+    global.MiBiblioteca = { svg };   // el UNICO punto accesible desde fuera
+})(window);
+```
+
+Gracias a las closures (arriba), todas las variables declaradas dentro permanecen privadas a esta función: nada desde fuera puede acceder a ellas, salvo lo explícitamente expuesto (aquí, `global.MiBiblioteca`). Este patrón es anterior a los módulos ES (`import`/`export`) y sigue usándose en JavaScript no empaquetado (*non-bundled*), cargado mediante simples etiquetas `<script>`: sin él, cada variable declarada en el primer nivel de un archivo se vuelve global, con el riesgo de que otro archivo cargado al lado declare una variable con el mismo nombre y sobrescriba la primera.
+
+> **Buena práctica:** preferir los módulos ES (`import`/`export`) en cuanto exista ya una herramienta de build; reservar la IIFE para los casos en que el JavaScript se carga directamente mediante etiquetas `<script>`, sin paso de build.
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Una declaración de función es *hoisted* (utilizable antes de su definición), una expresión no lo es. Una función con flecha no tiene su propio `this`: reutiliza el de la función que la engloba. Una closure conserva el acceso a las variables de su función englobante después de que esta haya terminado de ejecutarse. |
-| **Herramientas utilizables** | Parámetros por defecto, `...` (rest/spread). |
+| **Para recordar** | Una declaración de función es *hoisted* (utilizable antes de su definición), una expresión no lo es. Una función con flecha no tiene su propio `this`: reutiliza el de la función que la engloba. Una closure conserva el acceso a las variables de su función englobante después de que esta haya terminado de ejecutarse; una IIFE aprovecha esta propiedad para aislar variables privadas. |
+| **Herramientas utilizables** | Parámetros por defecto, `...` (rest/spread), una IIFE para namespacer JavaScript no empaquetado cargado con `<script>`. |
 | **Trampas a evitar** | Usar una función clásica (`function`) como callback dentro de un método, esperando que `this` designe el objeto englobante: para eso hace falta una función con flecha. |
-| **Buenas prácticas** | Preferir las funciones con flecha para un callback interno a un método, para conservar el `this` correcto. |
+| **Buenas prácticas** | Preferir las funciones con flecha para un callback interno a un método, para conservar el `this` correcto. Preferir los módulos ES a una IIFE en cuanto haya una herramienta de build disponible. |
