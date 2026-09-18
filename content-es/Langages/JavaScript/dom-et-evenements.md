@@ -106,6 +106,41 @@ Los tres argumentos son siempre los mismos: un `state` (dato asociado a esta ent
 
 > **Nota:** a diferencia de `window.location.href = "..."`, ni `pushState` ni `replaceState` recargan la página: el JavaScript ya cargado sigue ejecutándose, solo cambia la URL visible.
 
+## Fullscreen y Clipboard: dos API activadas por una acción del usuario
+
+Dos API del navegador, accesibles desde JavaScript, pero que **solo pueden usarse a raíz de una acción explícita del usuario** (un clic, una tecla): por seguridad, el navegador se niega a activarlas desde código que se ejecuta por sí solo.
+
+```javascript
+// Entrar en pantalla completa
+document.querySelector("#zona-video").requestFullscreen();
+
+// Escuchar la salida de pantalla completa, incluso si el usuario la abandono
+// mediante un atajo del navegador (Escape) en lugar de un boton de la pagina
+document.addEventListener("fullscreenchange", () => {
+    const enPantallaCompleta = document.fullscreenElement !== null;
+    botonPantallaCompleta.textContent = enPantallaCompleta ? "Salir" : "Pantalla completa";
+});
+```
+
+```javascript
+// Copiar texto al portapapeles (asincrono, puede fallar: permiso denegado)
+async function copiar(texto) {
+    try {
+        await navigator.clipboard.writeText(texto);
+        mostrarConfirmacion("¡Copiado!");
+    } catch (error) {
+        mostrarConfirmacion("No se pudo copiar");
+    }
+}
+```
+
+| API | Activada por | Punto notable |
+|---|---|---|
+| Fullscreen (`requestFullscreen()`/`exitFullscreen()`) | Un clic o tecla | El evento `fullscreenchange` es necesario porque la pantalla completa puede abandonarse por una vía que el código no activó él mismo (Escape, un atajo del sistema) |
+| Clipboard (`navigator.clipboard.writeText()`) | Un clic o tecla | Siempre asíncrono (una `Promise`), y puede fallar si el usuario/navegador deniega el permiso: rodearlo siempre con un `try`/`catch` |
+
+> **Buena práctica:** escuchar siempre `fullscreenchange` para resincronizar el estado de la interfaz (texto del botón, icono) con el estado real de pantalla completa, en lugar de suponer que solo el botón de la página puede cambiarlo.
+
 ---
 
 ## 📋 Resumen
@@ -113,6 +148,6 @@ Los tres argumentos son siempre los mismos: un `state` (dato asociado a esta ent
 | | |
 |---|---|
 | **Para recordar** | El DOM representa una página HTML en forma de árbol manipulable. `querySelector`/`addEventListener` seleccionan y reaccionan a las interacciones; un evento se propaga de los hijos hacia los padres (*bubbling*). |
-| **Herramientas utilizables** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`. |
-| **Trampas a evitar** | Asignar un dato de usuario a `innerHTML` (vulnerabilidad XSS); asociar un escuchador a cada elemento individual en lugar de delegar, lo cual falla para los elementos añadidos dinámicamente después. |
-| **Buenas prácticas** | Usar la delegación de eventos (escuchador en un ancestro estable) en lugar de un escuchador por elemento, sobre todo si se añaden elementos dinámicamente. Preferir `replaceState` a `pushState` para sincronizar la URL con un estado ya mostrado en pantalla, sin ensuciar el historial de navegación. |
+| **Herramientas utilizables** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`, `requestFullscreen()`/`navigator.clipboard.writeText()`. |
+| **Trampas a evitar** | Asignar un dato de usuario a `innerHTML` (vulnerabilidad XSS); asociar un escuchador a cada elemento individual en lugar de delegar, lo cual falla para los elementos añadidos dinámicamente después; olvidar `fullscreenchange` y suponer que solo el botón de la página cambia la pantalla completa. |
+| **Buenas prácticas** | Usar la delegación de eventos (escuchador en un ancestro estable) en lugar de un escuchador por elemento, sobre todo si se añaden elementos dinámicamente. Preferir `replaceState` a `pushState` para sincronizar la URL con un estado ya mostrado en pantalla, sin ensuciar el historial de navegación. Rodear siempre `clipboard.writeText()` con un `try`/`catch`. |

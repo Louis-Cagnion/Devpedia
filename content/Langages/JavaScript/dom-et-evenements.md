@@ -106,6 +106,41 @@ Les trois arguments sont toujours les mêmes : un `state` (donnée associée à 
 
 > **Note :** contrairement à `window.location.href = "..."`, ni `pushState` ni `replaceState` ne rechargent la page : le [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) déjà chargé continue de tourner, seule l'URL visible change.
 
+## Fullscreen et Clipboard : deux API déclenchées par une action utilisateur
+
+Deux API du navigateur, accessibles en JavaScript, mais qui **ne peuvent s'utiliser que suite à une action explicite de l'utilisateur** (clic, touche) : le navigateur refuse de les déclencher depuis du code qui s'exécute tout seul, par sécurité.
+
+```javascript
+// Passer en plein ecran
+document.querySelector("#zone-video").requestFullscreen();
+
+// Ecouter la sortie du plein ecran, meme si l'utilisateur l'a quitte
+// par un raccourci navigateur (Echap) plutot que par un bouton de la page
+document.addEventListener("fullscreenchange", () => {
+    const enPleinEcran = document.fullscreenElement !== null;
+    boutonPleinEcran.textContent = enPleinEcran ? "Quitter" : "Plein ecran";
+});
+```
+
+```javascript
+// Copier du texte dans le presse-papier (asynchrone, peut echouer : autorisation refusee)
+async function copier(texte) {
+    try {
+        await navigator.clipboard.writeText(texte);
+        afficherConfirmation("Copie !");
+    } catch (erreur) {
+        afficherConfirmation("Copie impossible");
+    }
+}
+```
+
+| API | Déclenchement | Point notable |
+|---|---|---|
+| Fullscreen (`requestFullscreen()`/`exitFullscreen()`) | Clic ou touche | L'événement `fullscreenchange` est nécessaire car le plein écran peut être quitté par un chemin que le code n'a pas déclenché lui-même (Échap, raccourci système) |
+| Clipboard (`navigator.clipboard.writeText()`) | Clic ou touche | Toujours asynchrone (`Promise`), et peut échouer si l'utilisateur/le navigateur refuse l'autorisation : toujours entourer d'un `try`/`catch` |
+
+> **Bonne pratique :** toujours écouter `fullscreenchange` pour resynchroniser l'état de l'interface (texte du bouton, icône) avec l'état réel du plein écran, plutôt que de supposer que seul le bouton de la page peut le faire changer.
+
 ---
 
 ## 📋 Récapitulatif
@@ -113,6 +148,6 @@ Les trois arguments sont toujours les mêmes : un `state` (donnée associée à 
 | | |
 |---|---|
 | **À retenir** | Le DOM représente une page [HTML](/?c=langages-de-balisage&s=html&p=html) sous forme d'arbre manipulable. `querySelector`/`addEventListener` sélectionnent et réagissent aux interactions ; un événement se propage des enfants vers les parents (*bubbling*). |
-| **Outils utilisables** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`. |
-| **Pièges à éviter** | Assigner une donnée utilisateur à `innerHTML` (faille XSS) ; attacher un écouteur à chaque élément individuel plutôt que déléguer, ce qui casse pour les éléments ajoutés dynamiquement après coup. |
-| **Bonnes pratiques** | Utiliser la délégation d'événements (écouteur sur un ancêtre stable) plutôt qu'un écouteur par élément, surtout si des éléments sont ajoutés dynamiquement. Préférer `replaceState` à `pushState` pour synchroniser l'URL avec un état déjà affiché, sans polluer l'historique de navigation. |
+| **Outils utilisables** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`, `requestFullscreen()`/`navigator.clipboard.writeText()`. |
+| **Pièges à éviter** | Assigner une donnée utilisateur à `innerHTML` (faille XSS) ; attacher un écouteur à chaque élément individuel plutôt que déléguer, ce qui casse pour les éléments ajoutés dynamiquement après coup ; oublier `fullscreenchange` et supposer que seul le bouton de la page fait changer le plein écran. |
+| **Bonnes pratiques** | Utiliser la délégation d'événements (écouteur sur un ancêtre stable) plutôt qu'un écouteur par élément, surtout si des éléments sont ajoutés dynamiquement. Préférer `replaceState` à `pushState` pour synchroniser l'URL avec un état déjà affiché, sans polluer l'historique de navigation. Toujours entourer `clipboard.writeText()` d'un `try`/`catch`. |

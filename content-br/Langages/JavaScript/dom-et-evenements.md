@@ -106,6 +106,41 @@ Os três argumentos são sempre os mesmos: um `state` (dado associado a essa ent
 
 > **Nota:** diferente de `window.location.href = "..."`, nem `pushState` nem `replaceState` recarregam a página: o JavaScript já carregado continua executando, só a URL visível muda.
 
+## Fullscreen e Clipboard: duas APIs disparadas por uma ação do usuário
+
+Duas APIs do navegador, acessíveis em JavaScript, mas que **só podem ser usadas a partir de uma ação explícita do usuário** (um clique, uma tecla): por segurança, o navegador recusa dispará-las a partir de código que executa por conta própria.
+
+```javascript
+// Entrar em tela cheia
+document.querySelector("#area-video").requestFullscreen();
+
+// Escutar a saida da tela cheia, mesmo se o usuario a deixou
+// por um atalho do navegador (Esc) em vez de um botao da pagina
+document.addEventListener("fullscreenchange", () => {
+    const emTelaCheia = document.fullscreenElement !== null;
+    botaoTelaCheia.textContent = emTelaCheia ? "Sair" : "Tela cheia";
+});
+```
+
+```javascript
+// Copiar texto para a area de transferencia (assincrono, pode falhar: permissao negada)
+async function copiar(texto) {
+    try {
+        await navigator.clipboard.writeText(texto);
+        mostrarConfirmacao("Copiado!");
+    } catch (erro) {
+        mostrarConfirmacao("Não foi possível copiar");
+    }
+}
+```
+
+| API | Disparada por | Ponto notável |
+|---|---|---|
+| Fullscreen (`requestFullscreen()`/`exitFullscreen()`) | Um clique ou tecla | O evento `fullscreenchange` é necessário porque a tela cheia pode ser deixada por um caminho que o código não disparou ele mesmo (Esc, um atalho do sistema) |
+| Clipboard (`navigator.clipboard.writeText()`) | Um clique ou tecla | Sempre assíncrono (uma `Promise`), e pode falhar se o usuário/navegador negar a permissão: sempre envolver em um `try`/`catch` |
+
+> **Boa prática:** sempre escutar `fullscreenchange` para ressincronizar o estado da interface (texto do botão, ícone) com o estado real da tela cheia, em vez de supor que só o botão da própria página pode alterá-lo.
+
 ---
 
 ## 📋 Recapitulando
@@ -113,6 +148,6 @@ Os três argumentos são sempre os mesmos: um `state` (dado associado a essa ent
 | | |
 |---|---|
 | **Para lembrar** | O DOM representa uma página HTML na forma de árvore manipulável. `querySelector`/`addEventListener` selecionam e reagem às interações; um evento se propaga dos filhos para os pais (*bubbling*). |
-| **Ferramentas utilizáveis** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`. |
-| **Armadilhas a evitar** | Atribuir um dado do usuário a `innerHTML` (falha XSS); anexar um listener a cada elemento individual em vez de delegar, o que quebra para elementos adicionados dinamicamente depois. |
-| **Boas práticas** | Usar a delegação de eventos (listener em um ancestral estável) em vez de um listener por elemento, especialmente se elementos forem adicionados dinamicamente. Preferir `replaceState` a `pushState` para sincronizar a URL com um estado já exibido na tela, sem poluir o histórico de navegação. |
+| **Ferramentas utilizáveis** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`, `requestFullscreen()`/`navigator.clipboard.writeText()`. |
+| **Armadilhas a evitar** | Atribuir um dado do usuário a `innerHTML` (falha XSS); anexar um listener a cada elemento individual em vez de delegar, o que quebra para elementos adicionados dinamicamente depois; esquecer `fullscreenchange` e supor que só o botão da própria página muda a tela cheia. |
+| **Boas práticas** | Usar a delegação de eventos (listener em um ancestral estável) em vez de um listener por elemento, especialmente se elementos forem adicionados dinamicamente. Preferir `replaceState` a `pushState` para sincronizar a URL com um estado já exibido na tela, sem poluir o histórico de navegação. Sempre envolver `clipboard.writeText()` em um `try`/`catch`. |

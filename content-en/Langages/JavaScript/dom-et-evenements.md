@@ -106,6 +106,41 @@ The three arguments are always the same: a `state` (data attached to this histor
 
 > **Note:** unlike `window.location.href = "..."`, neither `pushState` nor `replaceState` reloads the page: the already-loaded JavaScript keeps running, only the visible URL changes.
 
+## Fullscreen and Clipboard: two APIs triggered by a user action
+
+Two browser APIs, reachable from JavaScript, but that **can only be used following an explicit user action** (a click, a key press): for security, the browser refuses to trigger them from code running on its own.
+
+```javascript
+// Enter fullscreen
+document.querySelector("#video-area").requestFullscreen();
+
+// Listen for leaving fullscreen, even if the user left it via
+// a browser shortcut (Escape) rather than a button on the page
+document.addEventListener("fullscreenchange", () => {
+    const isFullscreen = document.fullscreenElement !== null;
+    fullscreenButton.textContent = isFullscreen ? "Exit" : "Fullscreen";
+});
+```
+
+```javascript
+// Copy text to the clipboard (asynchronous, can fail: permission denied)
+async function copy(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        showConfirmation("Copied!");
+    } catch (error) {
+        showConfirmation("Copy failed");
+    }
+}
+```
+
+| API | Triggered by | Notable point |
+|---|---|---|
+| Fullscreen (`requestFullscreen()`/`exitFullscreen()`) | A click or key press | The `fullscreenchange` event is needed because fullscreen can be exited through a path the code didn't trigger itself (Escape, a system shortcut) |
+| Clipboard (`navigator.clipboard.writeText()`) | A click or key press | Always asynchronous (a `Promise`), and can fail if the user/browser denies permission: always wrap it in a `try`/`catch` |
+
+> **Best practice:** always listen for `fullscreenchange` to resync the interface's state (button text, icon) with the actual fullscreen state, rather than assuming only the page's own button can change it.
+
 ---
 
 ## 📋 Summary
@@ -113,6 +148,6 @@ The three arguments are always the same: a `state` (data attached to this histor
 | | |
 |---|---|
 | **Key takeaways** | The DOM represents an HTML page as a manipulable tree. `querySelector`/`addEventListener` select and react to interactions; an event propagates from children to parents (*bubbling*). |
-| **Tools you can use** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`. |
-| **Pitfalls to avoid** | Assigning user-supplied data to `innerHTML` (XSS vulnerability); attaching a listener to each individual element instead of delegating, which breaks for elements added dynamically afterward. |
-| **Best practices** | Use event delegation (a listener on a stable ancestor) instead of one listener per element, especially when elements are added dynamically. Prefer `replaceState` over `pushState` to sync the URL with a state already shown on screen, without cluttering navigation history. |
+| **Tools you can use** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`, `requestFullscreen()`/`navigator.clipboard.writeText()`. |
+| **Pitfalls to avoid** | Assigning user-supplied data to `innerHTML` (XSS vulnerability); attaching a listener to each individual element instead of delegating, which breaks for elements added dynamically afterward; forgetting `fullscreenchange` and assuming only the page's own button changes fullscreen. |
+| **Best practices** | Use event delegation (a listener on a stable ancestor) instead of one listener per element, especially when elements are added dynamically. Prefer `replaceState` over `pushState` to sync the URL with a state already shown on screen, without cluttering navigation history. Always wrap `clipboard.writeText()` in a `try`/`catch`. |
