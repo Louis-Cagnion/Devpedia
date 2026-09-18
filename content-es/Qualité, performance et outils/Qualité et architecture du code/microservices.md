@@ -43,6 +43,33 @@ Un servicio nunca debe leer ni escribir directamente en la base de datos de otro
 
 Véase [WebSocket](/?c=infrastructure&p=websocket-et-temps-reel) para una tercera forma de comunicación, pertinente cuando un servicio debe notificar a un cliente de forma continua en lugar de a otro servicio de forma puntual.
 
+## La pasarela API (API Gateway)
+
+Un [proxy inverso](/?c=docker&p=docker-compose) (Nginx, Traefik) redirige una petición al servicio correcto a nivel de red (dirección, puerto, ruta de la URL), sin leer nunca su contenido. Una **pasarela API (API Gateway)** es un servicio de aplicación por derecho propio, situado justo detrás de ese proxy inverso: recibe todas las peticiones del cliente en un único punto de entrada, sabe interpretar cada una para enrutarla al microservicio correcto, y de paso gestiona preocupaciones transversales que un proxy inverso no conoce.
+
+```text
+Cliente
+  |
+  v
+Proxy inverso (Nginx)                <- redireccion de red, no lee la peticion
+  |
+  v
+Pasarela API (servicio de aplicacion) <- enruta por dominio, gestiona CORS/metricas...
+  |                    \
+  v                     v
+Servicio Usuarios     Servicio Pedidos
+```
+
+| | Proxy inverso de red | Pasarela API (API Gateway) |
+|---|---|---|
+| Nivel | Red (dirección, puerto, ruta) | Aplicación (entiende cada petición) |
+| Rol | Redirigir al servicio correcto | Enrutar por dominio de negocio + centralizar CORS, métricas, etc. |
+| Ejemplo | Nginx, Traefik | Un servicio ([NestJS](https://nestjs.com), [Express](https://expressjs.com)...) dedicado a este rol |
+
+> **Trampa:** creer que la pasarela verifica necesariamente la identidad de quien llama (su [JWT](/?c=securite&s=sessions-et-tokens&p=jwt-et-tokens)) solo porque es el punto de entrada único. Enrutar no es autenticar: nada garantiza que una pasarela que se limita a transmitir la petición verifique algo.
+>
+> **Buena práctica:** decidir explícitamente dónde vive la verificación del token, nunca dejarlo implícito. Dos opciones válidas: la pasarela lo verifica una vez para todos los servicios (evita repetir la comprobación, pero la convierte en un único punto de confianza que hay que asegurar bien); o cada servicio lo verifica de forma independiente (la pasarela solo enruta, la confianza nunca se delega a un único punto).
+
 ## El beneficio principal: el escalado independiente
 
 En un monolito, una carga elevada sobre una sola funcionalidad (el pago durante un pico de ventas, por ejemplo) obliga a multiplicar la aplicación **entera**, incluidas las partes que no lo necesitan. Con servicios separados, solo se escala el servicio afectado, sin tocar los demás.
