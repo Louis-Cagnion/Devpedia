@@ -981,6 +981,10 @@
             {
               "id": "architecture-interne",
               "label": "La arquitectura interna de Git"
+            },
+            {
+              "id": "worktree",
+              "label": "El worktree: varias ramas abiertas a la vez"
             }
           ]
         }
@@ -1284,6 +1288,29 @@
             {
               "id": "conteneurs-manages-ecs-et-fargate",
               "label": "Contenedores gestionados en la nube: ECS y Fargate"
+            }
+          ]
+        },
+        {
+          "id": "kubernetes",
+          "label": "Kubernetes",
+          "folder": "Kubernetes",
+          "chapters": [
+            {
+              "id": "concepts-de-base",
+              "label": "Los conceptos básicos"
+            },
+            {
+              "id": "services-et-ingress",
+              "label": "Service e Ingress: enrutar el tráfico hacia los pods"
+            },
+            {
+              "id": "configmaps-et-secrets",
+              "label": "ConfigMaps y Secrets: sacar la configuración de la imagen"
+            },
+            {
+              "id": "autoscaling-et-rolling-updates",
+              "label": "Autoscaling y rolling updates"
             }
           ]
         },
@@ -1645,6 +1672,10 @@
             {
               "id": "deep-learning-pytorch",
               "label": "Aprendizaje profundo con PyTorch"
+            },
+            {
+              "id": "distillation-de-modeles",
+              "label": "La destilación de modelos"
             }
           ]
         },
