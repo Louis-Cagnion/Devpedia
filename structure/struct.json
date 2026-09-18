@@ -542,6 +542,10 @@
             {
               "id": "canvas-2d-et-animations",
               "label": "Canvas 2D et animations"
+            },
+            {
+              "id": "streams",
+              "label": "Les streams : traiter un flux de données sans tout charger en mémoire"
             }
           ]
         },

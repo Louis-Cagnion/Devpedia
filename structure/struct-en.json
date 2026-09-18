@@ -790,6 +790,10 @@
             {
               "id": "canvas-2d-et-animations",
               "label": "Canvas 2D and animations"
+            },
+            {
+              "id": "streams",
+              "label": "Streams: processing a data flow without loading it all into memory"
             }
           ]
         },
