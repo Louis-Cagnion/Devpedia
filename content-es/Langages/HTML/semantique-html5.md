@@ -82,13 +82,26 @@ Antes de HTML5, estructurar una página se basaba casi exclusivamente en `<div>`
 
 > **Buena práctica:** usar una etiqueta semántica siempre que corresponda al rol real del contenido, y recurrir a `<div>` (puramente genérica, sin significado) solo para un simple contenedor técnico necesario para la maquetación CSS, sin significado propio.
 
+## `<details>`/`<summary>`: un contenido plegable sin JavaScript
+
+```html
+<details>
+    <summary>Ver las características técnicas</summary>
+    <p>Peso: 1,8 kg. Autonomía: 12h. Garantía: 2 años.</p>
+</details>
+```
+
+`<details>` oculta todo su contenido por defecto, salvo la línea `<summary>` (siempre visible, clicable): al hacer clic en ella se abre o cierra el bloque, sin una sola línea de JavaScript. El atributo `open` (`<details open>`) lo muestra ya abierto al cargar la página.
+
+> **Nota:** abrir/cerrar un `<details>` dispara un evento `toggle`, que NO se propaga por bubbling como la mayoría de eventos del DOM; escucharlo mediante delegación (en un ancestro compartido por varios `<details>`) exige la fase de **captura**, véase [El DOM y la gestión de eventos](/?c=langages-de-programmation&s=javascript&p=dom-et-evenements#propagacion-de-eventos-y-delegacion).
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Las etiquetas semánticas de HTML5 (`<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, `<footer>`) describen el rol de una sección, a diferencia de una `<div>` genérica. `<article>` tiene sentido por sí solo, `<section>` solo dentro de su contexto. |
-| **Herramientas utilizables** | Las 7 etiquetas estructurales principales, que se combinan según el rol real de cada sección. |
-| **Trampas a evitar** | Confundir `<article>` y `<section>`; estructurarlo todo con `<div class="...">` cuando ya existe una etiqueta semántica para ese rol. |
+| **Para recordar** | Las etiquetas semánticas de HTML5 (`<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, `<footer>`) describen el rol de una sección, a diferencia de una `<div>` genérica. `<article>` tiene sentido por sí solo, `<section>` solo dentro de su contexto. `<details>`/`<summary>` añade un widget plegable nativo, sin JavaScript. |
+| **Herramientas utilizables** | Las 7 etiquetas estructurales principales, que se combinan según el rol real de cada sección; `<details>`/`<summary>` para un contenido plegable sin JavaScript. |
+| **Trampas a evitar** | Confundir `<article>` y `<section>`; estructurarlo todo con `<div class="...">` cuando ya existe una etiqueta semántica para ese rol; olvidar que el evento `toggle` de un `<details>` no se propaga por bubbling. |
 | **Buenas prácticas** | Usar una etiqueta semántica siempre que corresponda al rol real del contenido; reservar `<div>` para contenedores puramente técnicos, sin significado propio. |

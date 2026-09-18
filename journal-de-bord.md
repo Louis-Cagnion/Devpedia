@@ -1,6 +1,10 @@
 # Journal de bord — Devpedia
 
-Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
+Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
+
+## Item todo #5 terminé (`<details>`/`<summary>`, capture d'événements, Web Storage, Blob) (2026-09-18)
+
+4 notions ajoutées (4 langues), aucun nouveau chapitre : `<details>`/`<summary>` (`semantique-html5.md`), phase de capture pour un événement non-bouillonnant comme `toggle` (`dom-et-evenements.md`), `sessionStorage`/`localStorage` comme mécanisme de persistance (idem), `Blob`+`URL.createObjectURL()` pour un téléchargement client (idem). En corrigeant `dom-et-evenements.md`, plusieurs commentaires de code préexistants (FR/ES/BR) sans accents ont aussi été corrigés (hors chaînes affichées à l'exécution, seules exemptées) ; sweep plus large nécessaire ailleurs dans `content*/`, noté au point 6 du todo.
 
 ## Item todo #17 terminé (CGI classique, parsing HTTP progressif, longest prefix match) (2026-09-17)
 

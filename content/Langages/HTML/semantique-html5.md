@@ -82,13 +82,26 @@ Avant HTML5, structurer une page reposait presque uniquement sur des `<div>` gé
 
 > **Best practice :** utiliser une balise sémantique dès qu'elle correspond au rôle réel du contenu, et ne retomber sur `<div>` (purement générique, sans sens) que pour un simple conteneur technique nécessaire à la mise en page [CSS](/?c=langages-de-balisage&s=css&p=css), sans signification propre.
 
+## `<details>`/`<summary>` : un contenu repliable sans JavaScript
+
+```html
+<details>
+    <summary>Voir les caractéristiques techniques</summary>
+    <p>Poids : 1,8 kg. Autonomie : 12h. Garantie : 2 ans.</p>
+</details>
+```
+
+`<details>` masque tout son contenu par défaut, sauf la ligne `<summary>` (toujours visible, cliquable) : cliquer dessus ouvre ou ferme le bloc, sans une seule ligne de JavaScript. L'attribut `open` (`<details open>`) l'affiche déjà ouvert au chargement de la page.
+
+> **Note :** ouvrir/fermer un `<details>` déclenche un événement `toggle`, qui ne se propage PAS par bulles (*bubbling*) comme la plupart des événements DOM ; l'écouter par délégation (sur un ancêtre commun à plusieurs `<details>`) exige la phase de **capture**, voir [Le DOM et la gestion des événements](/?c=langages-de-programmation&s=javascript&p=dom-et-evenements#propagation-des-evenements-et-delegation).
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Les balises sémantiques HTML5 (`<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, `<footer>`) décrivent le rôle d'une section, contrairement à une `<div>` générique. `<article>` a un sens isolé, `<section>` seulement dans son contexte. |
-| **Outils utilisables** | Les 7 balises structurelles principales, à combiner selon le rôle réel de chaque section. |
-| **Pièges à éviter** | Confondre `<article>` et `<section>` ; tout structurer avec des `<div class="...">` alors qu'une balise sémantique existe pour ce rôle. |
+| **À retenir** | Les balises sémantiques HTML5 (`<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, `<footer>`) décrivent le rôle d'une section, contrairement à une `<div>` générique. `<article>` a un sens isolé, `<section>` seulement dans son contexte. `<details>`/`<summary>` ajoute un widget repliable natif, sans JavaScript. |
+| **Outils utilisables** | Les 7 balises structurelles principales, à combiner selon le rôle réel de chaque section ; `<details>`/`<summary>` pour un contenu repliable sans JavaScript. |
+| **Pièges à éviter** | Confondre `<article>` et `<section>` ; tout structurer avec des `<div class="...">` alors qu'une balise sémantique existe pour ce rôle ; oublier que l'événement `toggle` d'un `<details>` ne se propage pas par bulles. |
 | **Bonnes pratiques** | Utiliser une balise sémantique dès qu'elle correspond au rôle réel du contenu ; réserver `<div>` aux conteneurs purement techniques, sans signification propre. |

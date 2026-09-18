@@ -85,6 +85,19 @@ document.querySelector("#list").addEventListener("click", (event) => {
 
 This technique, known as **event delegation**, eliminates the need to reattach a listener to each new element created dynamically (see the example at `createElement` above): a single listener, attached once to a stable ancestor, is sufficient.
 
+Not every event bubbles: `toggle` (fired by a [`<details>`](/?c=langages-de-balisage&s=html&p=semantique-html5#lt-details-gt-lt-summary-gt-a-collapsible-section-with-no-javascript)), as well as `focus`, `blur` and `scroll` historically, stay confined to the element they fired on. To intercept them through delegation, you must listen during the **capture** phase (the reverse path: from the `document` down to the target element, before bubbling), via a third `true` argument:
+
+```javascript
+document.addEventListener("toggle", (event) => {
+    console.log("A details element changed state:", event.target.open);
+}, true);  // capture phase required: "toggle" does not bubble
+```
+
+| Phase | Direction | Triggered by default? |
+|---|---|---|
+| Capture | From the `document` down to the target element | No: only with `true` (or `{ capture: true }`) as the 3rd argument |
+| Bubbling | From the target element up to the `document` | Yes |
+
 ## Changing the URL without reloading the page
 
 The browser's `history` API changes the URL shown in the address bar without reloading the page or triggering any network navigation:
@@ -141,13 +154,53 @@ async function copy(text) {
 
 > **Best practice:** always listen for `fullscreenchange` to resync the interface's state (button text, icon) with the actual fullscreen state, rather than assuming only the page's own button can change it.
 
+## Persistent browser storage: `sessionStorage` and `localStorage`
+
+Two built-in browser mechanisms for keeping text data (a key/value pair) after a page reload, with no database or server involved:
+
+```javascript
+sessionStorage.setItem("audit-confirmed", "true");
+localStorage.setItem("theme", "dark");
+
+sessionStorage.getItem("audit-confirmed");  // "true", or null if absent
+localStorage.removeItem("theme");
+```
+
+| Mechanism | Scope | Survives... |
+|---|---|---|
+| `sessionStorage` | A single tab | A page reload (F5) |
+| `localStorage` | Every tab on the same origin | The browser being fully closed |
+
+> **Pitfall:** `sessionStorage`/`localStorage` only store text strings: saving an object requires converting it with `JSON.stringify()` on write and `JSON.parse()` on read.
+
+> **Security warning:** both mechanisms are reachable from any JavaScript running on the page, including a script injected through an XSS vulnerability (see [Cross-Site Scripting (XSS) in Detail](/?c=securite&s=cybersecurite&p=xss-en-detail)): never store a sensitive session token there without weighing that risk.
+
+## Generating a downloadable file client-side: `Blob` and `URL.createObjectURL()`
+
+```javascript
+const csvContent = "name;value\nrow1;10\nrow2;20";
+const file = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
+const url = URL.createObjectURL(file);  // temporary URL pointing to this in-memory file
+
+const link = document.createElement("a");
+link.href = url;
+link.download = "export.csv";
+link.click();  // triggers the download, without ever adding it to the DOM
+
+URL.revokeObjectURL(url);  // frees the memory once the download has started
+```
+
+A `Blob` (*Binary Large OBject*) represents raw data (text, binary) as a file, entirely in memory on the browser side, with no round trip to the server. `URL.createObjectURL()` gives it a temporary URL (`blob:...`) usable anywhere a file URL is expected (here, a link's `href`); `URL.revokeObjectURL()` frees it once the download has started, to avoid a memory leak.
+
+> **Best practice:** always call `URL.revokeObjectURL()` once it's no longer needed: the browser never releases this temporary URL on its own.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | The DOM represents an HTML page as a manipulable tree. `querySelector`/`addEventListener` select and react to interactions; an event propagates from children to parents (*bubbling*). |
-| **Tools you can use** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`, `requestFullscreen()`/`navigator.clipboard.writeText()`. |
-| **Pitfalls to avoid** | Assigning user-supplied data to `innerHTML` (XSS vulnerability); attaching a listener to each individual element instead of delegating, which breaks for elements added dynamically afterward; forgetting `fullscreenchange` and assuming only the page's own button changes fullscreen. |
-| **Best practices** | Use event delegation (a listener on a stable ancestor) instead of one listener per element, especially when elements are added dynamically. Prefer `replaceState` over `pushState` to sync the URL with a state already shown on screen, without cluttering navigation history. Always wrap `clipboard.writeText()` in a `try`/`catch`. |
+| **Key takeaways** | The DOM represents an HTML page as a manipulable tree. `querySelector`/`addEventListener` select and react to interactions; an event propagates from children to parents (*bubbling*), except a few exceptions (`toggle`, `focus`, `blur`, `scroll`) that require the capture phase. |
+| **Tools you can use** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`, `requestFullscreen()`/`navigator.clipboard.writeText()`, `sessionStorage`/`localStorage`, `Blob`/`URL.createObjectURL()`. |
+| **Pitfalls to avoid** | Assigning user-supplied data to `innerHTML` (XSS vulnerability); attaching a listener to each individual element instead of delegating, which breaks for elements added dynamically afterward; forgetting `fullscreenchange` and assuming only the page's own button changes fullscreen; listening for `toggle` without the capture phase (`true` as the 3rd argument), since it never bubbles; storing a sensitive token in `sessionStorage`/`localStorage`, readable by any script (XSS). |
+| **Best practices** | Use event delegation (a listener on a stable ancestor) instead of one listener per element, especially when elements are added dynamically. Prefer `replaceState` over `pushState` to sync the URL with a state already shown on screen, without cluttering navigation history. Always wrap `clipboard.writeText()` in a `try`/`catch`. Always call `URL.revokeObjectURL()` once a `Blob` download has started. |

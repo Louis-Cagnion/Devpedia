@@ -22,7 +22,7 @@ document.querySelectorAll(".card");   // TODOS os elementos correspondentes (Nod
 const titulo = document.querySelector("h1");
 
 titulo.textContent = "Novo titulo";   // substitui o texto (escapa automaticamente o HTML)
-titulo.innerHTML = "<em>Titulo</em>"; // insere HTML bruto -> PERIGO se a fonte nao for confiavel (XSS)
+titulo.innerHTML = "<em>Titulo</em>"; // insere HTML bruto -> PERIGO se a fonte não for confiável (XSS)
 titulo.style.color = "red";           // modifica um estilo CSS diretamente
 titulo.classList.add("ativo");        // adiciona uma classe CSS
 titulo.classList.remove("ativo");
@@ -64,7 +64,7 @@ botao.addEventListener("click", (evento) => {
 
 ```javascript
 document.querySelector("form").addEventListener("submit", (evento) => {
-    evento.preventDefault();   // impede o recarregamento de pagina padrao de um formulario
+    evento.preventDefault();   // impede o recarregamento de página padrão de um formulário
     console.log("Formulario interceptado pelo JavaScript");
 });
 ```
@@ -79,11 +79,24 @@ document.querySelector("#lista").addEventListener("click", (evento) => {
         console.log("Um card foi clicado:", evento.target.textContent);
     }
 });
-// funciona ate mesmo para cards adicionados DINAMICAMENTE apos esse addEventListener,
-// ao contrario de um addEventListener colocado individualmente em cada card no carregamento
+// funciona até mesmo para cards adicionados DINAMICAMENTE após esse addEventListener,
+// ao contrário de um addEventListener colocado individualmente em cada card no carregamento
 ```
 
 Essa técnica, a **delegação de eventos**, evita ter que reanexar um listener a cada novo elemento criado dinamicamente (veja o exemplo de `createElement` acima): um único listener, colocado uma vez em um ancestral estável, é suficiente.
+
+Nem todo evento se propaga por bolhas: `toggle` (disparado por um [`<details>`](/?c=langages-de-balisage&s=html&p=semantique-html5#lt-details-gt-lt-summary-gt-um-conteudo-recolhivel-sem-javascript)), além de `focus`, `blur` e `scroll` historicamente, ficam confinados ao elemento em que foram disparados. Para interceptá-los por delegação, é preciso escutar na fase de **captura** (o percurso inverso: do `document` até o elemento visado, antes das bolhas), com um terceiro argumento `true`:
+
+```javascript
+document.addEventListener("toggle", (evento) => {
+    console.log("Um details mudou de estado:", evento.target.open);
+}, true);  // fase de captura obrigatória: "toggle" não borbulha
+```
+
+| Fase | Sentido do percurso | Disparada por padrão? |
+|---|---|---|
+| Captura | Do `document` até o elemento visado | Não: apenas com `true` (ou `{ capture: true }`) como 3º argumento |
+| Bolhas (*bubbling*) | Do elemento visado até o `document` | Sim |
 
 ## Alterar a URL sem recarregar a página
 
@@ -94,7 +107,7 @@ const params = new URLSearchParams();
 params.set("domaine", "atlas");
 
 history.replaceState(null, "", `${window.location.pathname}?${params}`);
-// URL exibida: .../page?domaine=atlas, sem recarregar e sem nova entrada no historico
+// URL exibida: .../page?domaine=atlas, sem recarregar e sem nova entrada no histórico
 ```
 
 Os três argumentos são sempre os mesmos: um `state` (dado associado a essa entrada do histórico, recuperável depois via o evento `popstate`; `null` quando não usado aqui), um título (ignorado pela maioria dos navegadores) e a nova URL (que precisa ficar na mesma origem, senão o navegador lança um erro).
@@ -114,8 +127,8 @@ Duas APIs do navegador, acessíveis em JavaScript, mas que **só podem ser usada
 // Entrar em tela cheia
 document.querySelector("#area-video").requestFullscreen();
 
-// Escutar a saida da tela cheia, mesmo se o usuario a deixou
-// por um atalho do navegador (Esc) em vez de um botao da pagina
+// Escutar a saída da tela cheia, mesmo se o usuário a deixou
+// por um atalho do navegador (Esc) em vez de um botão da página
 document.addEventListener("fullscreenchange", () => {
     const emTelaCheia = document.fullscreenElement !== null;
     botaoTelaCheia.textContent = emTelaCheia ? "Sair" : "Tela cheia";
@@ -123,7 +136,7 @@ document.addEventListener("fullscreenchange", () => {
 ```
 
 ```javascript
-// Copiar texto para a area de transferencia (assincrono, pode falhar: permissao negada)
+// Copiar texto para a área de transferência (assíncrono, pode falhar: permissão negada)
 async function copiar(texto) {
     try {
         await navigator.clipboard.writeText(texto);
@@ -141,13 +154,53 @@ async function copiar(texto) {
 
 > **Boa prática:** sempre escutar `fullscreenchange` para ressincronizar o estado da interface (texto do botão, ícone) com o estado real da tela cheia, em vez de supor que só o botão da própria página pode alterá-lo.
 
+## Armazenamento persistente no navegador: `sessionStorage` e `localStorage`
+
+Dois mecanismos integrados no navegador para conservar um dado de texto (chave/valor) após recarregar a página, sem base de dados nem servidor:
+
+```javascript
+sessionStorage.setItem("auditoria-confirmada", "true");
+localStorage.setItem("tema", "escuro");
+
+sessionStorage.getItem("auditoria-confirmada");  // "true", ou null se ausente
+localStorage.removeItem("tema");
+```
+
+| Mecanismo | Alcance | Sobrevive a... |
+|---|---|---|
+| `sessionStorage` | Uma única aba | Um recarregamento de página (F5) |
+| `localStorage` | Todas as abas da mesma origem | O fechamento completo do navegador |
+
+> **Armadilha:** `sessionStorage`/`localStorage` só armazenam cadeias de texto: guardar um objeto exige convertê-lo com `JSON.stringify()` ao escrever e `JSON.parse()` ao ler.
+
+> **Atenção, segurança:** ambos os mecanismos são acessíveis a partir de qualquer script JavaScript da página, incluindo um script injetado por uma falha XSS (ver [O cross-site scripting (XSS) em detalhe](/?c=securite&s=cybersecurite&p=xss-en-detail)): nunca armazenar aí um token de sessão sensível sem avaliar esse risco.
+
+## Gerar um arquivo para download no cliente: `Blob` e `URL.createObjectURL()`
+
+```javascript
+const conteudoCsv = "nome;valor\nlinha1;10\nlinha2;20";
+const arquivo = new Blob([conteudoCsv], { type: "text/csv;charset=utf-8" });
+const url = URL.createObjectURL(arquivo);  // URL temporária apontando para esse arquivo em memória
+
+const link = document.createElement("a");
+link.href = url;
+link.download = "export.csv";
+link.click();  // dispara o download, sem chegar a adicioná-lo ao DOM
+
+URL.revokeObjectURL(url);  // libera a memória uma vez iniciado o download
+```
+
+Um `Blob` (*Binary Large OBject*) representa dados brutos (texto, binário) como um arquivo, inteiramente em memória no navegador, sem nenhuma ida e volta ao servidor. `URL.createObjectURL()` atribui a ele uma URL temporária (`blob:...`) utilizável em qualquer lugar onde uma URL de arquivo seja esperada (aqui, o `href` de um link); `URL.revokeObjectURL()` a libera uma vez iniciado o download, para evitar uma fuga de memória.
+
+> **Boa prática:** sempre chamar `URL.revokeObjectURL()` uma vez terminado o seu uso: o navegador nunca libera essa URL temporária por conta própria.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | O DOM representa uma página HTML na forma de árvore manipulável. `querySelector`/`addEventListener` selecionam e reagem às interações; um evento se propaga dos filhos para os pais (*bubbling*). |
-| **Ferramentas utilizáveis** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`, `requestFullscreen()`/`navigator.clipboard.writeText()`. |
-| **Armadilhas a evitar** | Atribuir um dado do usuário a `innerHTML` (falha XSS); anexar um listener a cada elemento individual em vez de delegar, o que quebra para elementos adicionados dinamicamente depois; esquecer `fullscreenchange` e supor que só o botão da própria página muda a tela cheia. |
-| **Boas práticas** | Usar a delegação de eventos (listener em um ancestral estável) em vez de um listener por elemento, especialmente se elementos forem adicionados dinamicamente. Preferir `replaceState` a `pushState` para sincronizar a URL com um estado já exibido na tela, sem poluir o histórico de navegação. Sempre envolver `clipboard.writeText()` em um `try`/`catch`. |
+| **Para lembrar** | O DOM representa uma página HTML na forma de árvore manipulável. `querySelector`/`addEventListener` selecionam e reagem às interações; um evento se propaga dos filhos para os pais (*bubbling*), salvo algumas exceções (`toggle`, `focus`, `blur`, `scroll`) que exigem a fase de captura. |
+| **Ferramentas utilizáveis** | `querySelector`/`querySelectorAll`, `addEventListener`, `classList`, `preventDefault()`, `history.pushState`/`replaceState`, `requestFullscreen()`/`navigator.clipboard.writeText()`, `sessionStorage`/`localStorage`, `Blob`/`URL.createObjectURL()`. |
+| **Armadilhas a evitar** | Atribuir um dado do usuário a `innerHTML` (falha XSS); anexar um listener a cada elemento individual em vez de delegar, o que quebra para elementos adicionados dinamicamente depois; esquecer `fullscreenchange` e supor que só o botão da própria página muda a tela cheia; escutar `toggle` sem a fase de captura (`true` como 3º argumento), já que nunca borbulha; armazenar um token sensível em `sessionStorage`/`localStorage`, legível por qualquer script (XSS). |
+| **Boas práticas** | Usar a delegação de eventos (listener em um ancestral estável) em vez de um listener por elemento, especialmente se elementos forem adicionados dinamicamente. Preferir `replaceState` a `pushState` para sincronizar a URL com um estado já exibido na tela, sem poluir o histórico de navegação. Sempre envolver `clipboard.writeText()` em um `try`/`catch`. Sempre chamar `URL.revokeObjectURL()` uma vez iniciado um download `Blob`. |
