@@ -77,6 +77,28 @@ Ce flux s'appelle **Client Credentials** (*identifiants du client*). Contraireme
 >
 > **Bonne pratique :** réserver *Client Credentials* aux appels serveur-à-serveur qui n'ont explicitement besoin d'aucune notion d'utilisateur ; dès qu'une action doit être tracée jusqu'à une personne précise, repasser par un flux avec utilisateur (*Authorization Code*).
 
+## Un troisième flux : le compte de service, sans secret partagé
+
+*Client Credentials* prouve l'identité d'un service avec un secret partagé (`client_id`/`client_secret`), transmis sur le réseau à chaque authentification. Un **compte de service** (*service account*, proposé par Google Cloud et d'autres fournisseurs) prouve la même chose différemment : par une clé privée qui ne quitte jamais la machine qui l'utilise.
+
+```text
+1. Le service A possede une cle privee RSA (jamais transmise sur le reseau),
+   associee a un compte de service enregistre chez le fournisseur
+2. Le service A signe lui-meme un jeton JWT avec cette cle privee,
+   attestant sa propre identite (JWT Bearer Assertion, RFC 7523)
+3. Le service A envoie ce JWT signe au serveur d'autorisation, qui verifie
+   la signature avec la cle PUBLIQUE correspondante (jamais la cle privee)
+4. Le serveur d'autorisation renvoie un jeton d'acces classique, utilise
+   ensuite comme dans Client Credentials
+```
+
+| | *Client Credentials* | Compte de service (JWT auto-signé) |
+|---|---|---|
+| Preuve d'identité | Un secret partagé, transmis à chaque appel | Une signature, calculée avec une clé privée qui ne transite jamais |
+| Si le secret/la clé fuite | Le secret partagé doit être remplacé partout où il est utilisé | Seule la clé privée compromise doit être révoquée, sans jamais avoir été interceptée en transit |
+
+> **Bonne pratique :** préférer un compte de service à *Client Credentials* quand le fournisseur le propose : aucun secret n'est jamais transmis sur le réseau, seule une signature vérifiable l'est.
+
 ## OAuth ne prouve pas une identité : le rôle d'OpenID Connect
 
 OAuth 2.0 a été conçu pour l'**autorisation** (accéder à une ressource), pas pour l'**authentification** (voir [Authentification vs autorisation](/?c=authentification&s=fondamentaux&p=authentification-vs-autorisation)). Obtenir un jeton d'accès aux contacts de quelqu'un ne prouve pas formellement qui s'est connecté : une application qui utiliserait ce seul jeton pour "reconnaître" un utilisateur détourne OAuth de son objectif initial.
@@ -107,7 +129,7 @@ Le déroulement en 7 étapes vu plus haut comporte trois points de contrôle qu'
 
 | | |
 |---|---|
-| **À retenir** | OAuth 2.0 permet à une application tierce d'obtenir un accès limité et révocable à une ressource, sans jamais connaître le mot de passe du compte. *Client Credentials* obtient un jeton sans aucun utilisateur, pour un service qui agit pour son propre compte. OpenID Connect ajoute par-dessus un jeton d'identité (un JWT) spécifiquement conçu pour l'authentification, ce qu'OAuth seul ne fournit pas. Le flux *Authorization Code* expose trois points de contrôle critiques : `redirect_uri`, `state`, et l'interception du code (PKCE). |
+| **À retenir** | OAuth 2.0 permet à une application tierce d'obtenir un accès limité et révocable à une ressource, sans jamais connaître le mot de passe du compte. *Client Credentials* obtient un jeton sans aucun utilisateur, pour un service qui agit pour son propre compte ; un compte de service fait de même sans secret partagé, via une clé privée qui ne transite jamais. OpenID Connect ajoute par-dessus un jeton d'identité (un JWT) spécifiquement conçu pour l'authentification, ce qu'OAuth seul ne fournit pas. Le flux *Authorization Code* expose trois points de contrôle critiques : `redirect_uri`, `state`, et l'interception du code (PKCE). |
 | **Outils utilisables** | Une bibliothèque OAuth/OIDC du langage utilisé plutôt qu'une implémentation manuelle du protocole. |
 | **Pièges à éviter** | Partager directement un mot de passe avec une application tierce. Utiliser un jeton d'accès OAuth pour authentifier un utilisateur. Utiliser *Client Credentials* pour une action qui doit être attribuée à un utilisateur précis. Valider `redirect_uri` de façon trop permissive. Omettre `state` ou PKCE. |
 | **Bonnes pratiques** | Toujours limiter la portée (*scope*) demandée au strict nécessaire. Utiliser OpenID Connect quand le besoin est de prouver une identité, pas seulement d'accéder à une ressource. Réserver *Client Credentials* aux appels serveur-à-serveur sans notion d'utilisateur. Correspondance exacte sur `redirect_uri`, `state` systématique, PKCE même côté serveur. |

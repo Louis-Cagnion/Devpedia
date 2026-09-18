@@ -77,6 +77,28 @@ This flow is called **Client Credentials**. Unlike *Authorization Code*, there's
 >
 > **Best practice:** reserve *Client Credentials* for server-to-server calls that explicitly need no notion of a user; as soon as an action must be traced back to a specific person, use a flow with a user instead (*Authorization Code*).
 
+## A third flow: the service account, with no shared secret
+
+*Client Credentials* proves a service's identity with a shared secret (`client_id`/`client_secret`), sent over the network on every authentication. A **service account** (offered by Google Cloud and other providers) proves the same thing differently: through a private key that never leaves the machine using it.
+
+```text
+1. Service A holds an RSA private key (never transmitted over the network),
+   associated with a service account registered with the provider
+2. Service A itself signs a JWT token with this private key,
+   asserting its own identity (JWT Bearer Assertion, RFC 7523)
+3. Service A sends this signed JWT to the authorization server, which verifies
+   the signature with the matching PUBLIC key (never the private key)
+4. The authorization server returns a regular access token, then used
+   just like in Client Credentials
+```
+
+| | *Client Credentials* | Service account (self-signed JWT) |
+|---|---|---|
+| Proof of identity | A shared secret, sent on every call | A signature, computed with a private key that never travels |
+| If the secret/key leaks | The shared secret must be replaced everywhere it's used | Only the compromised private key needs revoking, and it was never intercepted in transit |
+
+> **Best practice:** prefer a service account over *Client Credentials* when the provider offers one: no secret is ever sent over the network, only a verifiable signature is.
+
 ## OAuth Doesn't Prove Identity: OpenID Connect's Role
 
 OAuth 2.0 was designed for **authorization** (accessing a resource), not **authentication** (see [Authentication vs Authorization](/?c=authentification&s=fondamentaux&p=authentification-vs-autorisation)). Getting an access token for someone's contacts doesn't formally prove who logged in: an app that used that token alone to "recognize" a user is misusing OAuth beyond its intended purpose.
@@ -93,7 +115,7 @@ OAuth 2.0 was designed for **authorization** (accessing a resource), not **authe
 
 | | |
 |---|---|
-| **Key takeaways** | OAuth 2.0 lets a third-party app get limited, revocable access to a resource, without ever knowing the account's password. *Client Credentials* gets a token with no user at all, for a service acting on its own behalf. OpenID Connect adds an ID token on top (a JWT) specifically designed for authentication, something OAuth alone doesn't provide. |
+| **Key takeaways** | OAuth 2.0 lets a third-party app get limited, revocable access to a resource, without ever knowing the account's password. *Client Credentials* gets a token with no user at all, for a service acting on its own behalf; a service account does the same with no shared secret, via a private key that never travels. OpenID Connect adds an ID token on top (a JWT) specifically designed for authentication, something OAuth alone doesn't provide. |
 | **Tools you can use** | An OAuth/OIDC library for the language used rather than a manual implementation of the protocol. |
 | **Pitfalls to avoid** | Sharing a password directly with a third-party app. Using an OAuth access token to authenticate a user. Using *Client Credentials* for an action that must be attributed to a specific user. |
 | **Best practices** | Always limit the requested scope to the strict minimum needed. Use OpenID Connect when the need is to prove an identity, not just access a resource. Reserve *Client Credentials* for server-to-server calls with no notion of a user. |
