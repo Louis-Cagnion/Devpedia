@@ -1156,6 +1156,10 @@
             {
               "id": "arbitrage-local-cloud-vision",
               "label": "Arbitragem local vs cloud para um modelo de visão"
+            },
+            {
+              "id": "extraction-xlsx",
+              "label": "Ler uma planilha Excel (.xlsx) por script"
             }
           ]
         }

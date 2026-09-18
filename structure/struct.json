@@ -1140,6 +1140,10 @@
             {
               "id": "arbitrage-local-cloud-vision",
               "label": "Arbitrage local vs cloud pour un modèle de vision"
+            },
+            {
+              "id": "extraction-xlsx",
+              "label": "Lire un classeur Excel (.xlsx) par script"
             }
           ]
         }
