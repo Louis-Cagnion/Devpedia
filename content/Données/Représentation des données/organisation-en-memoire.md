@@ -88,8 +88,8 @@ int    x = 65;
 int   *pi = &x;
 char  *pc = (char *)&x;
 
-*pi  // 65      -> lit 4 octets, les interprete comme un entier
-*pc  // 'A'     -> lit 1 octet a la MEME adresse, l'interprete comme un caractere
+*pi  // 65      -> lit 4 octets, les interprète comme un entier
+*pc  // 'A'     -> lit 1 octet à la MÊME adresse, l'interprète comme un caractère
 ```
 
 C'est aussi pourquoi `pointeur + 1` avance de `sizeof(type)` octets et non de 1 : l'arithmétique de pointeurs compte en éléments, pas en octets. Voir le chapitre [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs).

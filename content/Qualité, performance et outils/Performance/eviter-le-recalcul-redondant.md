@@ -179,10 +179,10 @@ Par défaut, un serveur PHP garde en mémoire tout ce qu'un script produit avec 
 
 ```php
 <?php
-ini_set('output_buffering', 'off');   // desactive la mise en memoire de la sortie
-ini_set('implicit_flush', true);      // force l'envoi immediat apres chaque echo
+ini_set('output_buffering', 'off');   // désactive la mise en mémoire de la sortie
+ini_set('implicit_flush', true);      // force l'envoi immédiat après chaque echo
 while (ob_get_level() > 0) {
-    ob_end_flush();                   // vide aussi tout tampon deja ouvert par PHP lui-meme
+    ob_end_flush();                   // vide aussi tout tampon déjà ouvert par PHP lui-même
 }
 
 foreach ($lignesAImporter as $ligne) {

@@ -55,14 +55,14 @@ Ce classement recoupe très largement l'[OWASP Top 10](/?c=cybersecurite&p=owasp
 Ces catégories partagent une racine commune : une donnée ou une situation considérée à tort comme fiable. Trois réflexes réduisent la plupart de ces risques, développés en détail dans [Principes de développement sécurisé](/?c=cybersecurite&p=principes-de-developpement-securise) :
 
 ```text
-// Pseudocode -- le meme piege existe dans n'importe quel langage
+// Pseudocode -- le même piège existe dans n'importe quel langage
 requete = "SELECT * FROM users WHERE nom = '" + nomSaisiParUtilisateur + "'"
 // Si nomSaisiParUtilisateur vaut :  x'; DROP TABLE users; --
-// la requete executee n'est plus celle prevue par le developpeur
+// la requête exécutée n'est plus celle prévue par le développeur
 
 requetePreparee = "SELECT * FROM users WHERE nom = ?"
 executer(requetePreparee, [nomSaisiParUtilisateur])
-// La donnee reste une donnee, jamais interpretee comme une instruction
+// La donnée reste une donnée, jamais interprétée comme une instruction
 ```
 
 - Ne jamais faire confiance à une donnée venant de l'extérieur (utilisateur, API tierce, fichier importé) sans la valider.

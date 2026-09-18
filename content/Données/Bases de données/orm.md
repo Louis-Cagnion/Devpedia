@@ -30,7 +30,7 @@ const utilisateur = await prisma.utilisateur.create({
   data: { email: "alice@exemple.com" }
 });
 
-// Le SQL genere par l'ORM, jamais ecrit directement :
+// Le SQL généré par l'ORM, jamais écrit directement :
 // INSERT INTO utilisateurs (email) VALUES ('alice@exemple.com');
 ```
 

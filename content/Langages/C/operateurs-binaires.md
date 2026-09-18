@@ -100,7 +100,7 @@ int compter_bits(unsigned int n) {
     return total;
 }
 
-// Echanger deux entiers sans variable temporaire (curiosite, pas a utiliser)
+// Échanger deux entiers sans variable temporaire (curiosité, pas à utiliser)
 a ^= b; b ^= a; a ^= b;
 ```
 

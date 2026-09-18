@@ -37,7 +37,7 @@ Toute donnée qui entre dans un système depuis l'extérieur (champ de formulair
 | **Liste noire** (*denylist*) | Refuser explicitement les valeurs/formats connus comme dangereux | Faible : oublie forcément un cas non anticipé |
 
 ```text
-// Liste noire (fragile) : bloque ce qu'on connait deja
+// Liste noire (fragile) : bloque ce qu'on connaît déjà
 si entree contient "<script>" alors refuser
 // Un attaquant contourne avec une variante non prevue : "<ScRiPt>", "<img onerror=...>"...
 
@@ -99,18 +99,18 @@ Si une couche est contournée (une faille non encore corrigée, par exemple), le
 Quand une vérification de sécurité échoue ou plante de façon inattendue (erreur réseau, exception non prévue), le comportement par défaut doit être de **refuser** l'accès, jamais de l'accorder par défaut :
 
 ```text
-// Dangereux : une erreur inattendue autorise l'acces (fail open)
+// Dangereux : une erreur inattendue autorise l'accès (fail open)
 essayer:
-    si utilisateurEstAutorise(utilisateur) alors accorder l'acces
+    si utilisateurEstAutorise(utilisateur) alors accorder l'accès
 attraper erreur:
-    accorder l'acces   // "au cas ou, on laisse passer"
+    accorder l'accès   // "au cas où, on laisse passer"
 
-// Sur : une erreur inattendue refuse l'acces (fail closed)
+// Sûr : une erreur inattendue refuse l'accès (fail closed)
 essayer:
-    si utilisateurEstAutorise(utilisateur) alors accorder l'acces
-    sinon refuser l'acces
+    si utilisateurEstAutorise(utilisateur) alors accorder l'accès
+    sinon refuser l'accès
 attraper erreur:
-    refuser l'acces   // par defaut, sans acces confirme, pas d'acces du tout
+    refuser l'accès   // par défaut, sans accès confirmé, pas d'accès du tout
 ```
 
 Ce réflexe rejoint la robustesse générale attendue de tout code : une erreur doit échouer de façon explicite, jamais être masquée silencieusement par un comportement permissif par défaut.

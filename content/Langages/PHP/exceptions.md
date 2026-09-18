@@ -89,7 +89,7 @@ try {
 } catch (RequeteEchoueeException $e) {
     echo "Requête échouée : " . $e->getMessage();
 } finally {
-    fermerConnexion($connexion);  // toujours executee : succes, echec, ou re-throw
+    fermerConnexion($connexion);  // toujours exécutée : succès, échec, ou re-throw
 }
 ```
 

@@ -41,8 +41,8 @@ $corps_recu = file_get_contents('php://input');
 $signature_recue = $_SERVER['HTTP_X_SIGNATURE'];
 $signature_calculee = hash_hmac('sha256', $corps_recu, $secret_partage);
 
-// hash_equals() (deja vu en cryptographie appliquee) : comparaison a temps constant,
-// jamais == / === sur une signature, pour eviter une attaque par mesure de temps
+// hash_equals() (déjà vu en cryptographie appliquée) : comparaison à temps constant,
+// jamais == / === sur une signature, pour éviter une attaque par mesure de temps
 if (!hash_equals($signature_calculee, $signature_recue)) {
     http_response_code(401);
     exit;
