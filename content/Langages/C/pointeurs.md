@@ -1,5 +1,5 @@
 ---
-order: 4
+order: 7
 ---
 
 # Les pointeurs
@@ -96,27 +96,6 @@ int main(void)
 
 Sans le `*`, `incrementer(int nombre)` ne modifierait qu'une copie locale, sans effet sur `x`.
 
-### Le piège d'une struct passée par valeur, avec un champ pointeur à l'intérieur
-
-Une structure contenant un champ pointeur, passée **par valeur**, complique ce principe : la structure entière est copiée, y compris la *valeur* du pointeur (l'adresse qu'il contient). Modifier ce que ce pointeur désigne reste donc visible pour l'appelant (même mémoire partagée), mais **réaffecter le pointeur lui-même** (par exemple après un `realloc` qui déplace le bloc) ne modifie que la copie locale, exactement comme pour un `int` passé sans `&`.
-
-```c
-typedef struct { int *data; size_t count; } Buffer;
-
-void grow_wrong(Buffer buf) {          // struct recue PAR VALEUR
-    int *nouveau = realloc(buf.data, (buf.count + 1) * sizeof(int));
-    buf.data = nouveau;                // ne modifie que la copie locale de buf
-}                                       // l'appelant garde son ancien buf.data,
-                                        // potentiellement deja libere si realloc a deplace le bloc
-
-void grow_right(Buffer *buf) {         // struct recue par pointeur
-    int *nouveau = realloc(buf->data, (buf->count + 1) * sizeof(int));
-    buf->data = nouveau;               // modifie bien la structure de l'appelant
-}
-```
-
-> **Piège :** avec `grow_wrong`, si `realloc` doit déplacer le bloc, l'appelant continue de pointer vers l'ancienne adresse, que `realloc` vient pourtant de libérer en interne. Le programme peut fonctionner "par chance" un moment (l'ancienne adresse reste lisible tant qu'elle n'est pas réutilisée), avant de produire des erreurs mémoire difficiles à situer (accès invalide, double free) bien plus tard, au moment où l'appelant utilise enfin ce pointeur périmé. Valgrind révèle ce genre de bug en remontant deux traces : où le bloc a été alloué, et où il a été libéré par surprise (voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)).
-
 ## Pointeurs de fonctions
 
 Une fonction a elle aussi une adresse en mémoire, qu'on peut stocker dans un pointeur, utile pour choisir dynamiquement quelle fonction appeler (callbacks, tables de dispatch) :
@@ -169,30 +148,6 @@ Deux pointeurs peuvent donc parfaitement contenir la même valeur sans être ég
 
 > Cette distinction (comparaison par **référence** ou par **valeur**) n'est pas propre au C, elle se retrouve dans la plupart des langages. En [Python](/?c=langages-de-programmation&s=python&p=python), `is` compare l'identité (l'équivalent de `p1 == p2`) et `==` compare la valeur (l'équivalent de `*p1 == *p2`) ; voir le chapitre [Variables](/?c=langages-de-programmation&s=python&p=variables) de [Python](/?c=langages-de-programmation&s=python&p=python). Comparer des chaînes en C illustre le même piège : `str1 == str2` compare deux adresses, pas deux textes : il faut `strcmp()`.
 
-## Lire une déclaration complexe : la règle droite-gauche
-
-Un tableau de pointeurs et un pointeur vers un tableau se ressemblent à l'écriture, mais désignent des types complètement différents. Pour les distinguer sans se tromper, la **règle droite-gauche** (*right-left rule*, parfois appelée *spiral rule*) consiste à partir du nom de la variable, puis à alterner à droite et à gauche des symboles qui l'entourent (en respectant les parenthèses, qui forcent l'ordre de lecture) :
-
-```c
-int *table[5];    // table : un tableau de 5 pointeurs vers int (le [] se lit avant le *)
-int (*table)[5];  // table : un pointeur vers un tableau de 5 int (les parentheses inversent l'ordre)
-```
-
-| Déclaration | Lecture (règle droite-gauche) | Signification |
-|---|---|---|
-| `int *table[5];` | `table` → `[5]` (tableau de 5) → `*` (pointeurs vers) → `int` | Un tableau de 5 pointeurs, chacun pouvant viser une zone de taille indépendante |
-| `int (*table)[5];` | `table` → `*` (pointeur vers, grâce aux parenthèses) → `[5]` (un tableau de 5) → `int` | Un seul pointeur, qui vise un bloc de 5 `int` contigus |
-| `int *(*table)[5];` | idem, avec un `*` de plus juste avant `int` | Un pointeur vers un tableau de 5 pointeurs vers `int` |
-
-> **Piège :** prendre l'adresse d'une variable (`&`) ajoute un niveau de pointeur **juste à côté du nom**, à l'intérieur des mêmes parenthèses, jamais ailleurs dans la déclaration :
-> ```c
-> int (*table)[5];    // table : pointeur vers un tableau de 5 int
-> int (**ptable)[5];  // ptable : pointeur vers (pointeur vers un tableau de 5 int) = &table
-> ```
-> Ajouter le `*` à un autre endroit (par exemple juste avant `int`) donne un type totalement différent (ici, "pointeur vers un tableau de 5 pointeurs vers int"), sans rapport avec l'opérateur `&`.
-
-> **Bonne pratique :** un outil comme [cdecl.org](https://cdecl.org) traduit n'importe quelle déclaration C en une phrase en anglais claire : utile pour vérifier sa lecture avant de compiler, surtout sur des types combinant plusieurs `*` et `[]`.
-
 ## `const` avec les pointeurs
 
 Deux usages de `const` bien distincts, souvent confondus :
@@ -226,7 +181,7 @@ Voir aussi [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoi
 
 | | |
 |---|---|
-| **À retenir** | Un pointeur stocke l'adresse mémoire d'une variable. `&` récupère une adresse, `*` déréférence (accède à la valeur pointée). Indexer un tableau (`tab[i]`) est strictement équivalent à `*(tab + i)`. La règle droite-gauche permet de lire n'importe quelle déclaration combinant `*` et `[]` sans s'y perdre. |
-| **Outils utilisables** | Pointeurs de pointeur, pointeurs de fonction, `const` pour protéger la valeur pointée et/ou le pointeur lui-même, [cdecl.org](https://cdecl.org) pour vérifier la lecture d'une déclaration complexe. |
-| **Pièges à éviter** | Déréférencer un pointeur non initialisé ou `NULL` ; confondre comparaison d'adresses (`p1 == p2`) et de valeurs pointées (`*p1 == *p2`) ; utiliser un pointeur après son `free()` (dangling pointer) ; confondre un tableau de pointeurs (`T *tab[N]`) avec un pointeur vers un tableau (`T (*tab)[N]`) ; réaffecter le champ pointeur d'une struct reçue par valeur (invisible pour l'appelant, contrairement à modifier ce que ce pointeur désigne). |
+| **À retenir** | Un pointeur stocke l'adresse mémoire d'une variable. `&` récupère une adresse, `*` déréférence (accède à la valeur pointée). Indexer un tableau (`tab[i]`) est strictement équivalent à `*(tab + i)`. |
+| **Outils utilisables** | Pointeurs de pointeur, pointeurs de fonction, `const` pour protéger la valeur pointée et/ou le pointeur lui-même. |
+| **Pièges à éviter** | Déréférencer un pointeur non initialisé ou `NULL` ; confondre comparaison d'adresses (`p1 == p2`) et de valeurs pointées (`*p1 == *p2`) ; utiliser un pointeur après son `free()` (dangling pointer). |
 | **Bonnes pratiques** | Initialiser tout pointeur inutilisé à `NULL` et le tester avant déréférencement ; passer l'adresse d'une variable à une fonction uniquement quand elle doit réellement la modifier. |

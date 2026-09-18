@@ -80,6 +80,34 @@ O nome exato dos comandos muda de um shell para outro (`ls` no Bash se torna `Ge
 >
 > **Boa prática:** em caso de dúvida sobre o efeito exato de uma opção encontrada em um comando copiado da internet, procurar sobre ela (`--help`, documentação) antes de executá-la, nunca depois.
 
+## Colorindo a saída no terminal (códigos de escape ANSI)
+
+Um programa pode exibir texto colorido (vermelho para sinalizar um erro, verde para sucesso...). Isso não é uma funcionalidade do shell: o programa envia uma **sequência de escape ANSI**, uma sequência especial de caracteres que o terminal reconhece e interpreta como uma instrução de formatação, e não como texto a exibir tal qual.
+
+Uma sequência começa com o caractere `ESC` (escrito `\033` ou `\x1b` conforme a linguagem), seguido de `[`, um código numérico e depois `m`:
+
+```text
+\033[91mOlá\033[0m
+```
+
+- `\033[91m`: ativa o vermelho vivo (código `91`); tudo o que vem depois é exibido nessa cor.
+- `Olá`: exibido normalmente, mas na cor ativa.
+- `\033[0m`: reinicia, volta à cor padrão do terminal.
+
+| Código | Efeito |
+|---|---|
+| `0` | Reinicia tudo (cor, negrito...) |
+| `31` / `91` | Vermelho / vermelho vivo |
+| `32` / `92` | Verde / verde vivo |
+| `33` / `93` | Amarelo / amarelo vivo |
+| `1` | Negrito |
+
+> **Armadilha:** esquecer o código `0` de reinício no final de uma sequência. Sem ele, a cor "vaza" para todo o texto exibido depois pelo terminal, bem além do fim do programa que a emitiu.
+>
+> **Boa prática:** sempre fechar uma cor aberta com `\033[0m`, mesmo pouco antes de o programa terminar.
+
+É o terminal que interpreta essas sequências, nunca o shell nem a linguagem de programação usada: elas podem ser concatenadas diretamente em qualquer string exibida, como caracteres comuns.
+
 ---
 
 ## 📋 Recapitulando

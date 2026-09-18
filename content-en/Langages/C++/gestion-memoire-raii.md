@@ -88,3 +88,14 @@ Each `shared_ptr` increments a shared reference counter; the resource is release
 | Cost | Minimal | Virtually zero (no additional cost at runtime) | Reference counting (slight additional cost) |
 
 > **Modern C++ best practice:** Never use `new` or `delete` directly in application code: always use `unique_ptr` (by default) or `shared_ptr` (if sharing is truly necessary) instead, to take advantage of RAII without having to think about it every time.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | RAII ties a resource's acquisition to the constructor and its release to the destructor: the resource is necessarily released as soon as the object goes out of scope, even when an exception is thrown. `unique_ptr`/`shared_ptr` apply this principle to memory. |
+| **Tools you can use** | `unique_ptr` (exclusive ownership), `shared_ptr` (shared ownership, reference counting), `std::move`. |
+| **Pitfalls to avoid** | Using `new`/`delete` directly in modern application code: the same risks as `malloc`/`free` (leak, double free, use-after-free). |
+| **Best practices** | Always prefer `unique_ptr` by default, `shared_ptr` only when genuine sharing is needed. |

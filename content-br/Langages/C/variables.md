@@ -106,6 +106,64 @@ Uma string é então simplesmente uma sequência de caracteres armazenados de fo
 
 Veja também [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire) para as funções a priorizar (`strncpy`, `snprintf`...) para nunca escrever além do tamanho realmente alocado de uma string.
 
+### Buscar e comparar uma string: `strcmp`, `strchr`, `strrchr`, `strstr`
+
+```c
+#include <string.h>
+
+int strcmp(const char *s1, const char *s2);
+char *strchr(const char *s, int c);
+char *strrchr(const char *s, int c);
+char *strstr(const char *haystack, const char *needle);
+```
+
+| Função | Papel | Retorna |
+|---|---|---|
+| `strcmp(s1, s2)` | Compara duas strings caractere por caractere | `0` se iguais; um valor negativo ou positivo caso contrário, conforme qual precede a outra na ordem ASCII |
+| `strchr(s, c)` | Busca a **primeira** ocorrência do caractere `c` em `s` | Um ponteiro para essa ocorrência, ou `NULL` se ausente |
+| `strrchr(s, c)` | Busca a **última** ocorrência do caractere `c` em `s` | Um ponteiro para essa ocorrência, ou `NULL` se ausente |
+| `strstr(haystack, needle)` | Busca a primeira ocorrência da **substring** `needle` em `haystack` | Um ponteiro para o início dessa ocorrência, ou `NULL` se ausente |
+
+```c
+if (strcmp(nome, "admin") == 0) {
+    printf("Bem-vindo, administrador.\n");
+}
+
+char *arroba = strchr("user@example.com", '@');
+if (arroba != NULL) {
+    printf("Domínio: %s\n", arroba + 1);
+}
+
+char *barra = strrchr("/home/louis/photo.jpg", '/');
+if (barra != NULL) {
+    printf("Nome do arquivo: %s\n", barra + 1);
+}
+
+if (strstr("Olá mundo", "mundo") != NULL) {
+    printf("Substring encontrada.\n");
+}
+```
+
+> **Armadilha:** `strcmp()` não retorna um booleano. `if (strcmp(a, b))` é verdadeiro quando as strings são **diferentes** (resultado não nulo) -- o oposto do que sugere intuitivamente um nome que começa com "str**cmp**are". Esquecer o `== 0` é uma fonte clássica de lógica invertida.
+>
+> **Armadilha:** confundir `strchr()` (primeira ocorrência) com `strrchr()` (última). Para extrair o nome de um arquivo a partir de um caminho completo, apenas `strrchr(caminho, '/')` dá o resultado correto: `strchr()` pararia na primeira `/` encontrada, cedo demais em um caminho com vários níveis.
+
+### Converter uma string em número: `atof`, `atoi`
+
+```c
+#include <stdlib.h>
+
+double atof(const char *s);
+int atoi(const char *s);
+```
+
+| Função | Converte para | Exemplo |
+|---|---|---|
+| `atof(s)` | `double` | `atof("3.14")` -> `3.14` |
+| `atoi(s)` | `int` | `atoi("42")` -> `42` |
+
+> **Armadilha:** nem `atof()` nem `atoi()` sinalizam uma string inválida. `atoi("abc")` retorna `0`, exatamente como `atoi("0")`: não há como distinguir uma conversão bem-sucedida para zero de uma conversão que falhou. Para uma entrada que precisa ser validada (dado de usuário, argumento de linha de comando), preferir `strtol()`/`strtod()`: mesmas conversões, mas que indicam onde a leitura parou, o que permite detectar uma falha.
+
 ## Os ponteiros
 
 Os ponteiros são uma das características mais importantes da linguagem C.
@@ -172,6 +230,6 @@ O domínio desses tipos é indispensável antes de abordar conceitos mais avanç
 | | |
 |---|---|
 | **Para lembrar** | Cada variável C tem um tipo fixo que determina seu tamanho em memória, os valores possíveis e as operações permitidas: `int`, `char`, `bool` (C99), `float`/`double`, array de `char` (string), `struct`, ponteiro. |
-| **Ferramentas utilizáveis** | `stdbool.h` para um verdadeiro tipo booleano; `sizeof` para o tamanho de um tipo na compilação; `strlen()` para o comprimento real de uma string na execução. |
-| **Armadilhas a evitar** | Confundir `'A'` e `"A"`. Atribuir a um `bool` um valor que ele não devolve tal como foi dado. Comparar dois floats com `==`. Confundir `sizeof` em um array e no ponteiro que o sucede uma vez passado a uma função. Comparar duas `struct` com `==` ou `memcmp` (bytes de preenchimento). |
-| **Boas práticas** | Escolher o tipo mais estreito que realmente cobre os valores esperados, em vez de um `int`/`double` padrão sistemático. Comparar os floats pela diferença, as strings com `strcmp`, as estruturas campo por campo. |
+| **Ferramentas utilizáveis** | `stdbool.h` para um verdadeiro tipo booleano; `sizeof` para o tamanho de um tipo na compilação; `strlen()` para o comprimento real de uma string na execução; `strcmp()`/`strchr()`/`strrchr()`/`strstr()` para comparar/buscar em uma string; `atof()`/`atoi()` para convertê-la em número. |
+| **Armadilhas a evitar** | Confundir `'A'` e `"A"`. Atribuir a um `bool` um valor que ele não devolve tal como foi dado. Comparar dois floats com `==`. Confundir `sizeof` em um array e no ponteiro que o sucede uma vez passado a uma função. Comparar duas `struct` com `==` ou `memcmp` (bytes de preenchimento). Testar `strcmp()` como um booleano sem o `== 0`. Confundir `strchr()` (primeira ocorrência) com `strrchr()` (última). `atof()`/`atoi()` que retornam silenciosamente `0` diante de uma entrada inválida. |
+| **Boas práticas** | Escolher o tipo mais estreito que realmente cobre os valores esperados, em vez de um `int`/`double` padrão sistemático. Comparar os floats pela diferença, as strings com `strcmp`, as estruturas campo por campo. Preferir `strtol()`/`strtod()` a `atoi()`/`atof()` assim que uma entrada precisar ser validada. |

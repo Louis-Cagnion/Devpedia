@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 9
 ---
 
 # La gestión de la memoria
@@ -128,6 +128,21 @@ fgets(buffer, sizeof(buffer), stdin);        // lectura acotada desde la propia 
 
 > **Nota:** acotar el tamaño solo resuelve la mitad del problema: también hay que comprobar que el dato truncado siga siendo coherente para el resto del programa (un nombre de archivo cortado a mitad de camino por `strncpy` sigue siendo un nombre de archivo sintácticamente válido, solo que incorrecto). El buen reflejo sigue siendo conocer siempre, en cada escritura, el tamaño real del búfer de destino; nunca suponer que una entrada respetará un tamaño esperado sin comprobarlo.
 
+### La familia BSD `strlcpy`/`strlcat`
+
+De origen BSD (no es estándar C, pero está disponible en macOS/\*BSD, y es fácil de reimplementar uno mismo, como hace la biblioteca `libft` con `ft_strlcpy`/`ft_strlcat`), estas funciones corrigen el punto débil de `strncpy`/`strcat`: detectar un truncamiento.
+
+```c
+size_t necesario = strlcpy(buffer, entrada, sizeof(buffer));  // SIEMPRE termina en '\0', a diferencia de strncpy
+
+if (necesario >= sizeof(buffer))
+{
+    // entrada fue truncada: necesario es el tamaño que habría tenido la copia completa
+}
+```
+
+`strlcpy()`/`strlcat()` siempre devuelven el tamaño que tendría la cadena fuente (o concatenada) si el búfer hubiera sido lo bastante grande, nunca el número de bytes realmente escritos: comparar ese valor con `sizeof(buffer)` detecta un truncamiento, algo que `strncpy()`/`strcat()` no permiten hacer directamente.
+
 ## `sizeof`
 
 `sizeof` no es una función, sino un operador evaluado en tiempo de compilación: devuelve el tamaño en bytes de un tipo o de una variable, indispensable para calcular correctamente el tamaño que hay que asignar:
@@ -149,4 +164,4 @@ Véase también [Los punteros](/?c=langages-de-programmation&s=c&p=pointeurs), c
 | **Para recordar** | C deja en manos del desarrollador toda la responsabilidad de la memoria dinámica (montón): `malloc`/`calloc`/`realloc` para asignar, `free` para liberar; la pila (variables locales) se gestiona automáticamente. |
 | **Herramientas utilizables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind para detectar fugas y accesos no válidos. |
 | **Trampas a evitar** | Fuga de memoria (nunca se llama a `free`), use-after-free, double free, desbordamiento de búfer, este último explotable como vulnerabilidad de seguridad. |
-| **Buenas prácticas** | Comprobar siempre que un `malloc`/`realloc` no ha devuelto `NULL`; poner un puntero a `NULL` justo después de su `free()`; preferir `fgets`/`strncpy`/`snprintf` a las funciones no acotadas (`gets`/`strcpy`/`sprintf`). |
+| **Buenas prácticas** | Comprobar siempre que un `malloc`/`realloc` no ha devuelto `NULL`; poner un puntero a `NULL` justo después de su `free()`; preferir `fgets`/`strncpy`/`snprintf` a las funciones no acotadas (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar un truncamiento mediante su valor de retorno. |

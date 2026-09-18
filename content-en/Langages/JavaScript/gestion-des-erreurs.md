@@ -1,93 +1,104 @@
 ---
-order: 9
+order: 10
 ---
 
 # Error Handling
 
-JavaScript signals an error by throwing an **exception** (`throw`), which can be intercepted using `try` / `catch`, a mechanism similar to that used in [PHP](/?c=langages-de-programmation&s=php&p=php) or [Python](/?c=langages-de-programmation&s=python&p=python).
+JavaScript signals an error by throwing an **exception** (`throw`), interceptable with `try`/`catch`, a mechanism close to [PHP](/?c=langages&s=php&p=php)'s or [Python](/?c=langages&s=python&p=python)'s.
 
 ## `try` / `catch` / `finally`
 
 ```javascript
 try {
-    const result = JSON.parse("{ invalide");
+    const result = JSON.parse("{ invalid");
 } catch (error) {
-    console.log("Erreur de parsing :", error.message);
+    console.log("Parsing error:", error.message);
 } finally {
-    console.log("Tentative terminée");   // carried out in all cases
+    console.log("Attempt finished");   // runs in every case
 }
 ```
 
-## Learning from One's Own Mistakes
+## Throwing your own errors
 
 ```javascript
-function calculerAge(anneeNaissance) {
-    const anneeCourante = new Date().getFullYear();
-    if (anneeNaissance > anneeCourante) {
-        throw new Error("L'année de naissance ne peut pas être dans le futur");
+function calculateAge(birthYear) {
+    const currentYear = new Date().getFullYear();
+    if (birthYear > currentYear) {
+        throw new Error("Birth year cannot be in the future");
     }
-    return anneeCourante - anneeNaissance;
+    return currentYear - birthYear;
 }
 
 try {
-    calculerAge(3000);
+    calculateAge(3000);
 } catch (error) {
     console.log(error.message);
 }
 ```
 
-## Create a custom error type
+## Creating a custom error type
 
 ```javascript
-class SoldeInsuffisantError extends Error {
+class InsufficientBalanceError extends Error {
     constructor(message) {
         super(message);
-        this.name = "SoldeInsuffisantError";
+        this.name = "InsufficientBalanceError";
     }
 }
 
-function retirer(balance, montant) {
-    if (montant > balance) {
-        throw new SoldeInsuffisantError(`Solde de ${balance}€ insuffisant`);
+function withdraw(balance, amount) {
+    if (amount > balance) {
+        throw new InsufficientBalanceError(`Balance of $${balance} is insufficient`);
     }
-    return balance - montant;
+    return balance - amount;
 }
 
 try {
-    retirer(100, 150);
+    withdraw(100, 150);
 } catch (error) {
-    if (error instanceof SoldeInsuffisantError) {
-        console.log("Solde insuffisant :", error.message);
+    if (error instanceof InsufficientBalanceError) {
+        console.log("Insufficient balance:", error.message);
     } else {
-        throw error;   // unexpected error: let it show up rather than hide it
+        throw error;   // unexpected error: let it propagate rather than swallow it
     }
 }
 ```
 
-## Errors and Asynchronous Code
+## Errors and asynchronous code
 
-A standard `try` / `catch` **does not catch** an error from an asynchronous function if the function itself is not `await` (see the chapter on asynchronous operations):
+A classic `try`/`catch` **does not catch** an asynchronous function's error if it isn't itself `await`ed (see [Asynchronous programming](/?c=langages&s=javascript&p=asynchrone)):
 
 ```javascript
-async function chargerDonnees() {
+async function loadData() {
     try {
-        const response = await fetch("/api/donnees");
+        const response = await fetch("/api/data");
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}`);
         }
         return await response.json();
     } catch (error) {
-        console.log("Échec du chargement :", error.message);
+        console.log("Loading failed:", error.message);
     }
 }
 ```
 
-For a non-`await`ed `Promise`, `.catch()` serves the same purpose:
+For a non-`await`ed `Promise`, `.catch()` plays the same role:
 
 ```javascript
-fetch("/api/donnees")
+fetch("/api/data")
     .then(response => response.json())
-    .catch(error => console.log("Échec :", error.message));
+    .catch(error => console.log("Failed:", error.message));
 ```
 
-> **Note:** An error thrown within a `async` function does not immediately become a standard JavaScript exception: it transforms the returned `Promise` into a **rejected** promise, which can only be retrieved via `await` in a `try` or `catch`, or via `.catch()`.
+> **Note:** an error thrown inside an `async` function doesn't immediately become a classic JavaScript exception: it turns the returned `Promise` into a **rejected** promise, retrievable only via `await` in a `try`/`catch`, or via `.catch()`.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `try`/`catch`/`finally` catches an exception raised by `throw`. An error in asynchronous code that isn't `await`ed doesn't propagate into a classic `try`/`catch`: it rejects the Promise instead. |
+| **Tools you can use** | `Error` and its custom subclasses (`extends Error`), `instanceof` to distinguish error types, `.catch()` on a Promise. |
+| **Pitfalls to avoid** | Expecting a `try`/`catch` to catch a non-`await`ed Promise's error; it never will. |
+| **Best practices** | Always `await` an asynchronous operation inside a `try`/`catch`, or chain `.catch()` onto the corresponding Promise; let an unexpected error propagate rather than silently swallowing it. |

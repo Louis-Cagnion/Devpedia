@@ -51,7 +51,35 @@ Le **tri fusion** applique le principe *diviser pour régner* : il coupe le tabl
 
 La fusion de deux listes déjà triées est en **O(n)** : il suffit de comparer les deux premiers éléments restants de chaque liste et de prendre le plus petit, en avançant progressivement. Combiné au découpage en deux (`log n` niveaux de division), le tri fusion complet coûte **O(n log n)**, quel que soit l'état initial du tableau : contrairement au tri par insertion, son pire cas n'est pas dégradé.
 
-> **Note :** ce compromis entre les deux algorithmes (insertion rapide sur des données presque triées, fusion stable en O(n log n) dans tous les cas) est directement exploité par des tris hybrides comme le **tri fusion-insertion** (*merge-insertion sort*), qui insère de petits groupes déjà triés par fusion à l'aide d'une recherche par insertion optimisée.
+> **Note :** ce compromis entre les deux algorithmes (insertion rapide sur des données presque triées, fusion stable en O(n log n) dans tous les cas) est directement exploité par des tris hybrides, comme le tri fusion-insertion détaillé plus bas.
+
+## Le tri fusion-insertion de Ford-Johnson
+
+Le **tri fusion-insertion** (*Ford-Johnson merge-insertion sort*) pousse plus loin l'hybridation évoquée ci-dessus : il minimise le nombre de comparaisons dans le pire cas, en s'approchant de la borne théorique optimale (`log2(n!)`), au prix d'un algorithme nettement plus élaboré qu'un tri par insertion ou fusion classique. Le principe se déroule en 5 étapes :
+
+1. **Regrouper les éléments par paires.**
+2. **Comparer chaque paire** (une seule comparaison par paire) pour séparer, dans chacune, le "grand" du "petit".
+3. **Trier récursivement** la séquence des grands (le même algorithme, appliqué à une séquence plus petite ; cas de base : 0 ou 1 élément) pour obtenir une séquence `S` déjà triée.
+4. **Insérer en tête de `S`** le petit associé au plus petit grand : cette insertion est gratuite, il est nécessairement plus petit que tout le reste de `S`.
+5. **Insérer un par un les petits restants** dans `S`, par **recherche binaire** : chaque petit étant déjà connu inférieur à son grand associé, cette information borne la recherche binaire, inutile de chercher au-delà de la position de son grand.
+
+```text
+[8, 3, 5, 1, 9, 2]
+       |
+1. Paires : (8,3) (5,1) (9,2)
+       |
+2. Grands/petits : grands = [8, 5, 9], petits associes = [3, 1, 2]
+       |
+3. Tri recursif des grands : S = [5, 8, 9]
+       |
+4. Insertion gratuite du petit associe au plus petit grand (5 -> petit 1) : S = [1, 5, 8, 9]
+       |
+5. Insertion par recherche binaire des petits restants (3, 2) dans S
+```
+
+> **Note :** la version optimale de l'algorithme insère les petits restants dans un ordre précis, dicté par la **suite de Jacobsthal**, pour minimiser encore la taille des sous-séquences balayées par chaque recherche binaire. Une implémentation qui insère simplement les petits dans l'ordre reste correcte, mais perd une partie de l'optimalité théorique de l'algorithme.
+>
+> **Bonne pratique :** ce tri n'a d'intérêt réel que lorsque le nombre de comparaisons compte plus que la simplicité du code (un exercice pédagogique, une contrainte explicite sur le nombre d'opérations) : pour un usage courant, un tri déjà fourni par la bibliothèque standard reste préférable.
 
 ## Comparer les algorithmes de tri
 
@@ -75,7 +103,7 @@ Un tri est dit **stable** quand deux éléments considérés égaux par la compa
 
 | | |
 |---|---|
-| **À retenir** | Un tri par comparaison ne décide de l'ordre qu'en comparant des paires d'éléments. Le tri par insertion est simple mais en O(n²) ; le tri fusion garantit O(n log n) dans tous les cas au prix de mémoire supplémentaire. |
+| **À retenir** | Un tri par comparaison ne décide de l'ordre qu'en comparant des paires d'éléments. Le tri par insertion est simple mais en O(n²) ; le tri fusion garantit O(n log n) dans tous les cas au prix de mémoire supplémentaire. Le tri fusion-insertion de Ford-Johnson minimise le nombre de comparaisons dans le pire cas. |
 | **Outils utilisables** | Le tableau comparatif des algorithmes de tri (complexité, mémoire, stabilité) pour choisir le bon selon le contexte. |
 | **Pièges à éviter** | Espérer descendre sous O(n log n) avec un tri par comparaison pur : c'est une limite théorique, pas un défaut d'implémentation. |
 | **Bonnes pratiques** | Préférer le tri déjà fourni par le langage, et ne réimplémenter un tri à la main qu'avec une contrainte précise qui le justifie. |

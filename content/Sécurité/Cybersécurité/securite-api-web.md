@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 9
 ---
 
 # Sécurité des API web
@@ -68,6 +68,10 @@ Le code de statut `429 Too Many Requests` (voir les codes de statut dans [Les é
 | Par compte/clé d'API | Limite le nombre de requêtes pour un utilisateur ou une clé donnée, indépendamment de l'IP d'origine |
 | Fenêtre glissante | Recalcule le quota en continu plutôt qu'à intervalles fixes, pour éviter qu'un client ne "vide" son quota juste avant chaque réinitialisation |
 
+> **Piège :** faire vivre le compteur de tentatives côté CLIENT (un cookie, une valeur en session) plutôt que côté serveur. Un rate limiting qui existe mais se base sur une donnée que celui qu'il est censé limiter contrôle lui-même se contourne trivialement : il suffit de ne pas renvoyer ce cookie à la requête suivante pour repartir avec un compteur à zéro.
+>
+> **Bonne pratique :** toujours stocker le compteur de rate limiting côté serveur (base, cache partagé), indexé par IP et/ou compte/clé, jamais dans une donnée que le client renvoie lui-même.
+
 ## Ne jamais exposer plus que nécessaire
 
 Une réponse d'API qui renvoie l'intégralité d'un enregistrement interne (y compris des champs jamais utilisés par le client : mot de passe haché, notes internes, identifiants techniques) élargit inutilement ce qu'un attaquant peut récupérer en cas d'accès non prévu à cette réponse. Ce réflexe rejoint le principe de moindre privilège déjà vu dans [Principes de développement sécurisé](/?c=cybersecurite&p=principes-de-developpement-securise), appliqué cette fois à la donnée exposée plutôt qu'à un accès système.
@@ -80,5 +84,5 @@ Une réponse d'API qui renvoie l'intégralité d'un enregistrement interne (y co
 |---|---|
 | **À retenir** | CORS autorise explicitement certaines origines à lire la réponse d'une API malgré la politique de même origine du navigateur. Le rate limiting protège contre le brute force et la saturation. Une API ne doit exposer que les champs réellement nécessaires au client. |
 | **Outils utilisables** | En-tête `Access-Control-Allow-Origin`, code de statut `429 Too Many Requests`, clé d'API/JWT/OAuth 2.0 selon le type de client. |
-| **Pièges à éviter** | `Access-Control-Allow-Origin: *` sur une API manipulant des données sensibles ; absence de limite de débit ; renvoyer l'intégralité d'un enregistrement interne dans une réponse. |
-| **Bonnes pratiques** | Restreindre CORS aux origines réellement légitimes ; limiter le débit par compte/clé en plus de l'IP ; ne renvoyer que les champs dont le client a réellement besoin. |
+| **Pièges à éviter** | `Access-Control-Allow-Origin: *` sur une API manipulant des données sensibles ; absence de limite de débit ; compteur de rate limiting stocké côté client plutôt que serveur ; renvoyer l'intégralité d'un enregistrement interne dans une réponse. |
+| **Bonnes pratiques** | Restreindre CORS aux origines réellement légitimes ; limiter le débit par compte/clé en plus de l'IP, toujours avec un compteur stocké côté serveur ; ne renvoyer que les champs dont le client a réellement besoin. |

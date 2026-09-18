@@ -37,6 +37,27 @@ Mascara       :  255.255.255.0
 
 Dos máquinas cuya parte de red (una vez aplicada la máscara) es idéntica pueden hablarse **directamente**, sin pasar por un router. Si la parte de red difiere, sus datos deben transitar obligatoriamente por un router para encontrarse.
 
+## La notación CIDR: una forma abreviada de escribir la máscara
+
+En lugar de escribir la máscara en notación decimal con puntos (`255.255.255.192`), puede expresarse como un simple número de bits a 1 desde la izquierda: la **notación CIDR** (*Classless Inter-Domain Routing*).
+
+```text
+255.255.255.192
+= 11111111.11111111.11111111.11000000  (en binario)
+= 26 bits a 1 (parte de red) + 6 bits a 0 (parte de host)
+-> se escribe /26
+```
+
+Una dirección se escribe entonces directamente con su máscara pegada: `192.168.1.10/26`. Esta notación es la más habitual en la práctica (configuración de interfaz de red, reglas de cortafuegos, tablas de enrutamiento), ampliamente preferida a la escritura decimal con puntos de la máscara.
+
+| Máscara decimal | Notación CIDR | Bits de red |
+|---|---|---|
+| `255.255.255.0` | `/24` | 24 |
+| `255.255.255.128` | `/25` | 25 |
+| `255.255.255.192` | `/26` | 26 |
+
+> **Trampa:** confundir el número tras la `/` con el número de direcciones disponibles. `/26` designa el número de bits de **red**, no el número de hosts: un `/26` deja 6 bits para la parte de host, es decir, 2⁶ = 64 direcciones (2 de ellas reservadas, red y difusión).
+
 ## La puerta de enlace predeterminada: la salida de la red local
 
 La **puerta de enlace predeterminada** (*default gateway*) es la dirección IP a la que una máquina envía sus datos en cuanto el destino **no** se encuentra en su red local (parte de red distinta). Casi siempre es la dirección del router local.
@@ -49,6 +70,20 @@ Ordenador (192.168.1.10)
         v
 Puerta de enlace / router (192.168.1.1) --------> resto de Internet
 ```
+
+## La tabla de enrutamiento: varias rutas posibles
+
+En cuanto una red tiene más de un router, una máquina ya no cuenta con una única puerta de enlace, sino con una **tabla de enrutamiento**: una lista de entradas, cada una asociando una subred de destino con la puerta de enlace que se debe usar para alcanzarla.
+
+| Destino | Puerta de enlace |
+|---|---|
+| `10.0.0.0/24` | `192.168.1.5` |
+| `172.16.0.0/16` | `192.168.1.9` |
+| `0.0.0.0/0` (ruta por defecto) | `192.168.1.1` |
+
+El paquete sigue la entrada cuya subred de destino coincide más precisamente con la dirección buscada. La **ruta por defecto** (`0.0.0.0/0`, que coincide con cualquier dirección al no imponer ningún bit de prefijo) se usa como último recurso, cuando ninguna ruta más específica coincide: es la generalización de la puerta de enlace predeterminada única vista más arriba, al caso de varias rutas explícitas concurrentes.
+
+> **Buena práctica:** ante un problema de conectividad entre dos redes a través de varios routers, comprobar la tabla de enrutamiento de cada máquina implicada antes de sospechar de un fallo de hardware: una ruta ausente o incorrecta produce exactamente los mismos síntomas que un cable desconectado.
 
 ## Router frente a switch: dos aparatos, dos funciones
 
@@ -91,7 +126,7 @@ Dos servicios automatizan parte de lo que este capítulo acaba de explicar de fo
 
 | | |
 |---|---|
-| **Para recordar** | Una dirección IP identifica una máquina; la máscara de subred distingue la parte de red de la parte de host; la puerta de enlace da salida a la red local; un switch conecta máquinas de una misma red, un router conecta redes entre sí. |
-| **Herramientas utilizables** | El modelo OSI para situar un problema de red en la capa correcta; DHCP para la asignación automática de direcciones; NAT para compartir una IP pública. |
-| **Trampas a evitar** | Confundir router y switch, o creer que un router doméstico es un solo tipo de aparato cuando en realidad combina varios. |
+| **Para recordar** | Una dirección IP identifica una máquina; la máscara de subred (a menudo escrita en notación CIDR, `/26`) distingue la parte de red de la parte de host; una tabla de enrutamiento generaliza la puerta de enlace predeterminada a varias rutas posibles; un switch conecta máquinas de una misma red, un router conecta redes entre sí. |
+| **Herramientas utilizables** | El modelo OSI para situar un problema de red en la capa correcta; DHCP para la asignación automática de direcciones; NAT para compartir una IP pública; la tabla de enrutamiento para diagnosticar un problema de conectividad entre varias redes. |
+| **Trampas a evitar** | Confundir router y switch, o creer que un router doméstico es un solo tipo de aparato cuando en realidad combina varios. Confundir el número CIDR con el número de direcciones disponibles. |
 | **Buenas prácticas** | Comprobar siempre si dos máquinas comparten la misma parte de red antes de buscar por qué no se comunican directamente. |

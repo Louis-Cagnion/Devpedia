@@ -25,6 +25,18 @@ for i in range(2, 10, 2):  # de 2 a 10 (excluido), em passos de 2 -> 2, 4, 6, 8
     print(i)
 ```
 
+### Percorrer ao contrário
+
+```python
+for fruta in reversed(frutas):            # cereja, banana, maca -> VALORES ao contrário
+    print(fruta)
+
+for i in range(len(frutas) - 1, -1, -1):  # 2, 1, 0              -> INDICES em ordem decrescente
+    print(frutas[i])
+```
+
+`range(len(x) - 1, -1, -1)` (passo de -1) gera os índices de uma sequência em ordem decrescente: útil quando o próprio índice é necessário, não apenas o valor. Se só o valor importa, `reversed(x)` é o idioma mais legível a preferir.
+
 ## `enumerate()`: obter o índice E o valor
 
 ```python
@@ -59,6 +71,20 @@ all(idade >= 18 for idade in idades)  # False -> seria preciso que TODOS satisfi
 `any(iterable)` retorna `True` assim que um elemento é verdadeiro, sem necessariamente percorrer o resto (curto-circuito, como `or`); `all(iterable)` retorna `True` somente se todos forem, e para no primeiro falso (como `and`). Ambas costumam ser usadas diretamente sobre uma [expressão geradora](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) (sem construir uma lista intermediária), o que evita percorrer toda a coleção se a resposta já é conhecida.
 
 > **Armadilha:** sobre um iterável VAZIO, os resultados costumam surpreender: `any([])` vale `False` (nenhum elemento verdadeiro encontrado), `all([])` vale `True` (vacuidade: "todos" os zero elementos satisfazem a condição, já que nenhum a contradiz).
+
+## `max()` / `min()`: encontrar o maior ou o menor
+
+```python
+larguras = [12, 45, 3, 28]
+
+max(larguras)       # 45
+min(larguras)       # 3
+max(12, 45, 3, 28)  # 45 -> também funciona com valores separados, não apenas com um iterável
+
+max([], default=0)  # 0 -> evita um ValueError se o iterável estiver vazio
+```
+
+`max(iterable)`/`min(iterable)` aceitam vários valores separados ou um único iterável; sem o parâmetro `default=`, qualquer um dos dois lança um `ValueError` sobre um iterável vazio, o que é indispensável assim que a coleção pode legitimamente estar vazia (ex. a largura máxima de uma lista de linhas que pode não conter nenhuma célula).
 
 ## O laço `while`
 
@@ -111,6 +137,6 @@ Ao contrário de um laço `for` em C (`for (int i = 0; i < tamanho; i++)`), o la
 | | |
 |---|---|
 | **Para lembrar** | `for` percorre diretamente os elementos de um iterável (nunca um contador manual); `range()` gera uma sequência de números se necessário. `enumerate()`/`zip()` cobrem as necessidades de índice e percurso paralelo. `any()`/`all()` testam uma condição em todo um iterável. |
-| **Ferramentas utilizáveis** | `enumerate()`, `zip()`, `any()`/`all()`, a cláusula `else` de um laço (executada se nenhum `break`). |
+| **Ferramentas utilizáveis** | `enumerate()`, `zip()`, `any()`/`all()`, `reversed()` para percorrer ao contrário, a cláusula `else` de um laço (executada se nenhum `break`). |
 | **Armadilhas a evitar** | Iterar sobre `range(len(lista))` e depois indexar manualmente, em vez de usar diretamente `for elemento in lista` ou `enumerate()`. |
 | **Boas práticas** | Usar `enumerate()` assim que um índice for necessário além do valor, em vez de gerenciá-lo manualmente. |

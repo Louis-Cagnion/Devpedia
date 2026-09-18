@@ -69,6 +69,21 @@ Stays in the same visual position **even while scrolling the page**, used for an
 
 Behaves like `relative` as long as the element is visible in its normal spot, then becomes `fixed` (stuck to the specified edge, here `top: 0`) as soon as scrolling would carry it out of view, typically used for a table header that stays visible while the content scrolls.
 
+### A common styling touch for a `sticky` element: `backdrop-filter`
+
+A semi-transparent `sticky` (or `fixed`) element stays on top of content that keeps scrolling underneath it; `backdrop-filter: blur(...)` blurs that content **behind** the element (never the element itself, unlike `filter: blur(...)`):
+
+```css
+.form-footer {
+    position: sticky;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);   /* semi-transparent */
+    backdrop-filter: blur(8px);                     /* blurs what scrolls BEHIND it, not the footer itself */
+}
+```
+
+The result (called *glassmorphism*) lets the scrolling content underneath show through faintly, while keeping the footer's own text readable on top.
+
 ## `z-index`: managing overlap
 
 ```css
@@ -84,6 +99,26 @@ Behaves like `relative` as long as the element is visible in its normal spot, th
 
 > **Note:** `z-index` only takes effect on an element that's **already positioned** (`relative`, `absolute`, `fixed`, or `sticky`): on a `static` element, `z-index` is simply ignored. A higher `z-index` value displays over a lower one, but only when compared to elements that share the same "stacking context" (a group of elements compared against each other for overlap; a positioned element with a `z-index`, an opacity below 1, or a transform creates a new context for its own children: their `z-index`es are compared among themselves there, never directly to those outside it); a detail that explains certain cases where a very high `z-index` isn't enough to get above an apparently lower-priority element.
 
+## An ancestor with `transform`/`filter` also redefines a `fixed` descendant's reference
+
+The note on `z-index` above mentions that an ancestor with `transform` (or `filter`/`will-change`) creates a new stacking context. That same ancestor has a second, independent effect: it also becomes the geometric reference point (*containing block*) for its `position: fixed` descendants, which then stop being positioned relative to the window.
+
+```css
+.animated-ancestor {
+    transform: translateX(0);   /* even a "neutral" transform triggers this */
+}
+.menu {
+    position: fixed;
+    top: 0;
+    right: 0;   /* expected: the top-right corner of the WINDOW... */
+    /* ...but becomes the top-right corner of .animated-ancestor instead */
+}
+```
+
+> **Pitfall:** forgetting that `transform`/`filter`/`will-change` on an ancestor breaks a descendant's usual `fixed` positioning, tying it to that ancestor instead of the window: a distinct effect from the stacking-context change already seen above, which affects the same CSS property but for a different reason.
+>
+> **Best practice:** if a `fixed` menu/panel needs to stay positioned relative to the window despite an animated ancestor, reparent it directly under `<body>` (via JavaScript, or by placing it there in the HTML) rather than leaving it under that ancestor.
+
 ---
 
 ## 📋 Summary
@@ -91,6 +126,6 @@ Behaves like `relative` as long as the element is visible in its normal spot, th
 | | |
 |---|---|
 | **Key Points** | `position` changes how an element is placed: `static` (default, normal flow), `relative` (shifted, spot reserved), `absolute` (removed from flow, relative to a positioned ancestor), `fixed` (relative to the window), `sticky` (relative/fixed hybrid). `z-index` manages overlap, but only between positioned elements. |
-| **Available Tools** | `position`, `top`/`right`/`bottom`/`left`, `z-index`. |
-| **Pitfalls to Avoid** | An `absolute` with no `relative` ancestor is positioned relative to the whole page, not the expected visual container; `z-index` is ignored on a `static` element. |
-| **Best Practices** | Always set `position: relative` on the container of an `absolute` child, even with no offset of its own on that container. |
+| **Available Tools** | `position`, `top`/`right`/`bottom`/`left`, `z-index`, `backdrop-filter: blur()` for a semi-transparent `sticky`/`fixed` element. |
+| **Pitfalls to Avoid** | An `absolute` with no `relative` ancestor is positioned relative to the whole page, not the expected visual container; `z-index` is ignored on a `static` element; an ancestor with `transform`/`filter` breaks a descendant's usual `fixed` positioning. |
+| **Best Practices** | Always set `position: relative` on the container of an `absolute` child, even with no offset of its own on that container. Reparent under `<body>` a `fixed` panel that needs to stay relative to the window despite an animated ancestor. |

@@ -38,6 +38,20 @@ Both codes match without any message having passed between the two
 
 This is what lets an authenticator app work even without an internet connection: it only needs a roughly synchronized clock, not a network exchange.
 
+## The `otpauth://` URI: Transmitting the Initial Secret to the App
+
+The principle above assumes the app and the server already share a secret. How is that secret transmitted to them the first time, at activation? The server encodes it in a standardized URI of the form `otpauth://totp/<issuer>:<account>?secret=<secret>&issuer=<issuer>`, a scheme recognized by any TOTP app (Google Authenticator, Aegis...), regardless of which site issues it. This URI is then encoded as a QR code to be scanned by the app, which avoids the user having to retype the secret by hand (a source of errors):
+
+```text
+otpauth://totp/MySite:alice@example.com?secret=JBSWY3DPEHPK3PXP&issuer=MySite
+         \___/ \___________________/ \_________________________________/
+        type       issuer:account            parameters (secret, issuer)
+```
+
+> **Pitfall:** believing the QR code itself provides some kind of security. It's only a convenient way to encode this URI without a typing mistake: only the `secret` it contains actually matters, and anyone able to read that QR code (or intercept the URI) can generate the same TOTP codes as the legitimate user.
+>
+> **Best practice:** display this QR code only once, at activation time, over a connection that's already authenticated and encrypted; never store it or resurface it later in a re-displayable form.
+
 ## The Physical Security Key: The Most Robust Protection Against Phishing
 
 A TOTP code remains vulnerable if the user enters it themselves on a fake site that mimics the real one (a [phishing](https://en.wikipedia.org/wiki/Phishing) attack): nothing technically prevents typing the right code into the wrong place. A physical security key (FIDO2/WebAuthn) eliminates this risk differently: it cryptographically verifies the exact address of the site requesting it, and refuses to respond if the address doesn't match the one registered originally, even if the fake site looks visually identical to the real one.

@@ -38,6 +38,20 @@ Os dois codigos coincidem sem que nenhuma mensagem tenha transitado entre os doi
 
 É isso que permite a um aplicativo de autenticação funcionar mesmo sem conexão com a internet: ele só precisa de um relógio mais ou menos sincronizado, não de uma troca em rede.
 
+## A URI `otpauth://`: transmitir o segredo inicial ao aplicativo
+
+O princípio acima supõe que o aplicativo e o servidor já compartilham um segredo. Como esse segredo é transmitido a eles na primeira vez, na ativação? O servidor o codifica em uma URI padronizada no formato `otpauth://totp/<emissor>:<conta>?secret=<segredo>&issuer=<emissor>`, um esquema reconhecido por qualquer aplicativo TOTP (Google Authenticator, Aegis...), independentemente do site que a emite. Essa URI é então codificada em um QR code para ser escaneada pelo aplicativo, o que evita que o usuário precise redigitar o segredo à mão (fonte de erros):
+
+```text
+otpauth://totp/MeuSite:alice@exemplo.com?secret=JBSWY3DPEHPK3PXP&issuer=MeuSite
+         \___/ \___________________/ \______________________________/
+         tipo      emissor:conta          parametros (secret, issuer)
+```
+
+> **Armadilha:** achar que o próprio QR code traz alguma segurança adicional. Ele é apenas uma forma prática de codificar essa URI sem erro de digitação: só o `secret` que ela contém importa de fato, e qualquer pessoa capaz de ler esse QR code (ou interceptar a URI) pode gerar os mesmos códigos TOTP que o usuário legítimo.
+>
+> **Boa prática:** exibir esse QR code apenas uma vez, no momento da ativação, sobre uma conexão já autenticada e criptografada; nunca armazená-lo nem exibi-lo novamente depois de alguma forma reproduzível.
+
 ## A chave de segurança física: a proteção mais robusta contra phishing
 
 Um código TOTP continua vulnerável se o próprio usuário o digitar em um site falso que imita o verdadeiro (um ataque de [phishing](https://en.wikipedia.org/wiki/Phishing)): nada impede tecnicamente digitar o código certo no lugar errado. Uma chave de segurança física (FIDO2/WebAuthn) elimina esse risco de outra forma: ela verifica criptograficamente o endereço exato do site que a solicita, e recusa responder se o endereço não corresponder ao registrado originalmente, mesmo que o site falso seja visualmente idêntico ao verdadeiro.

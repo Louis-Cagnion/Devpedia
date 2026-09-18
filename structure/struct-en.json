@@ -66,6 +66,14 @@
             {
               "id": "tri-par-comparaison",
               "label": "Comparison Sorting"
+            },
+            {
+              "id": "pile-et-file",
+              "label": "Stack and Queue: LIFO and FIFO"
+            },
+            {
+              "id": "algorithme-glouton",
+              "label": "Greedy Algorithms"
             }
           ]
         },
@@ -97,6 +105,10 @@
             {
               "id": "la-derivee-et-le-gradient",
               "label": "The Derivative and the Gradient"
+            },
+            {
+              "id": "approximation-par-serie-de-taylor",
+              "label": "Taylor Series Approximation"
             }
           ]
         },
@@ -108,6 +120,26 @@
             {
               "id": "rendu-3d-bas-niveau-et-fenetrage",
               "label": "Low-level 3D rendering and windowing: raycasting à la Wolfenstein"
+            },
+            {
+              "id": "wavefront-obj-et-modele-de-phong",
+              "label": "The Wavefront .obj Format and the Phong Model"
+            },
+            {
+              "id": "glfw-glad-et-boucle-de-rendu",
+              "label": "Opening a modern OpenGL window: GLFW, GLAD and the render loop"
+            },
+            {
+              "id": "effets-de-rendu-et-interaction-3d",
+              "label": "Rendering effects and 3D interaction"
+            },
+            {
+              "id": "edition-de-maillage-et-selection-proportionnelle",
+              "label": "Mesh editing and proportional selection"
+            },
+            {
+              "id": "fractales-et-temps-dechappement",
+              "label": "Escape-Time Fractals: Mandelbrot and Julia"
             }
           ]
         }
@@ -134,6 +166,18 @@
             {
               "id": "boucles",
               "label": "Loops"
+            },
+            {
+              "id": "operateur-virgule",
+              "label": "The comma operator"
+            },
+            {
+              "id": "exit-et-codes-de-retour",
+              "label": "`exit()` and return codes"
+            },
+            {
+              "id": "argc-et-argv",
+              "label": "Command-line arguments (`argc`, `argv`)"
             },
             {
               "id": "pointeurs",
@@ -206,6 +250,18 @@
             {
               "id": "lecture-formatee-scanf",
               "label": "Formatted Reading: `scanf` and `sscanf`"
+            },
+            {
+              "id": "lecture-de-fichiers",
+              "label": "Reading a File Line by Line: `fopen`, `fgets`, `getline`"
+            },
+            {
+              "id": "semaphores",
+              "label": "POSIX Semaphores"
+            },
+            {
+              "id": "mesure-du-temps",
+              "label": "Measuring Time and Waiting Precisely"
             }
           ]
         },
@@ -307,7 +363,7 @@
             },
             {
               "id": "connexions",
-              "label": "Manage Connections"
+              "label": "Managing Connections"
             },
             {
               "id": "http",
@@ -320,6 +376,10 @@
             {
               "id": "securite",
               "label": "Securing your data"
+            },
+            {
+              "id": "php-fpm",
+              "label": "Responding to the client, then continuing to work (PHP-FPM)"
             }
           ]
         },
@@ -395,6 +455,10 @@
             {
               "id": "sous-processus-et-flux-standard",
               "label": "Subprocesses and Redirecting Standard Streams"
+            },
+            {
+              "id": "regex-en-python",
+              "label": "Regex in Python: the `re` module"
             }
           ]
         },
@@ -492,6 +556,10 @@
             {
               "id": "responsive-et-media-queries",
               "label": "Responsive Design and Media Queries"
+            },
+            {
+              "id": "degrades",
+              "label": "CSS Gradients (linear, radial, conic)"
             }
           ]
         },
@@ -623,22 +691,28 @@
           "folder": "Domain-specific Languages (DSL)",
           "chapters": [
             {
-              "id": "parsing-incremental-machine-a-etats",
-              "label": "Incremental Parsing with a State Machine"
-            },
-            {
-              "id": "evaluateur-expressions-arithmetiques",
-              "label": "Arithmetic Expression Evaluator: Handling Operator Precedence"
-            },
-            {
               "id": "regex",
               "label": "Regular expressions"
             },
             {
               "id": "sql",
               "label": "SQL"
+            },
+            {
+              "id": "parsing-incremental-machine-a-etats",
+              "label": "Incremental Parsing with a State Machine"
+            },
+            {
+              "id": "evaluateur-expressions-arithmetiques",
+              "label": "Arithmetic Expression Evaluator: Handling Operator Precedence"
             }
           ]
+        },
+        {
+          "id": "xml",
+          "label": "XML",
+          "folder": "XML",
+          "chapters": []
         },
         {
           "id": "javascript",
@@ -679,19 +753,19 @@
             },
             {
               "id": "regex",
-              "label": "Regular Expressions"
+              "label": "Regex"
             },
             {
               "id": "gestion-des-erreurs",
               "label": "Error Handling"
             },
             {
-              "id": "dom-et-evenements",
-              "label": "The DOM and Event Handling"
-            },
-            {
               "id": "html-elements",
               "label": "HTMLElements"
+            },
+            {
+              "id": "dom-et-evenements",
+              "label": "The DOM and Event Handling"
             },
             {
               "id": "asynchrone",
@@ -704,6 +778,26 @@
             {
               "id": "web-speech-api",
               "label": "The Web Speech API: Speech Recognition and Synthesis in the Browser"
+            },
+            {
+              "id": "observateurs-et-limitation-de-frequence",
+              "label": "Browser observers and rate limiting"
+            },
+            {
+              "id": "intercepter-un-setter-de-propriete",
+              "label": "Intercepting a native property setter: `Object.defineProperty`"
+            },
+            {
+              "id": "google-maps-javascript-api",
+              "label": "The Google Maps JavaScript API"
+            },
+            {
+              "id": "canvas-2d-et-animations",
+              "label": "Canvas 2D and animations"
+            },
+            {
+              "id": "streams",
+              "label": "Streams: processing a data flow without loading it all into memory"
             }
           ]
         },
@@ -865,12 +959,16 @@
               "label": "GitHub and Git hosting platforms"
             },
             {
-              "id": "resoudre-conflits",
-              "label": "Resolving a merge conflict"
-            },
-            {
               "id": "pull-requests-github",
               "label": "Pull requests on GitHub"
+            },
+            {
+              "id": "issues-et-projets-github",
+              "label": "Issues and project management on GitHub"
+            },
+            {
+              "id": "resoudre-conflits",
+              "label": "Resolving a merge conflict"
             },
             {
               "id": "rebase",
@@ -879,10 +977,6 @@
             {
               "id": "architecture-interne",
               "label": "The Internal Architecture of Git"
-            },
-            {
-              "id": "issues-et-projets-github",
-              "label": "Issues and project management on GitHub"
             }
           ]
         }
@@ -1046,6 +1140,10 @@
             {
               "id": "arbitrage-local-cloud-vision",
               "label": "Local vs. cloud trade-off for a vision model"
+            },
+            {
+              "id": "extraction-xlsx",
+              "label": "Reading an Excel Workbook (.xlsx) by Script"
             }
           ]
         }
@@ -1143,6 +1241,10 @@
             {
               "id": "pwa-progressive-web-app",
               "label": "The PWA: a website that behaves like an application"
+            },
+            {
+              "id": "environnement-local-php-sql-server",
+              "label": "Setting Up a Local Environment for a PHP Application Connected to SQL Server"
             }
           ]
         },
@@ -1352,6 +1454,10 @@
               "label": "Applied Cryptography for Developers"
             },
             {
+              "id": "secrets-oublies-en-production",
+              "label": "Secrets Forgotten in Production"
+            },
+            {
               "id": "securite-des-dependances",
               "label": "Dependency and Supply Chain Security"
             },
@@ -1368,6 +1474,10 @@
               "label": "HashiCorp Vault: beyond the .env file"
             },
             {
+              "id": "injections-au-dela-du-sql",
+              "label": "Injection Beyond SQL"
+            },
+            {
               "id": "tests-et-audit-de-securite",
               "label": "Security Testing and Auditing"
             },
@@ -1376,8 +1486,20 @@
               "label": "The OWASP Top 10: the industry-standard reference"
             },
             {
+              "id": "xss-en-detail",
+              "label": "XSS: Reflected, Stored, and DOM-Based"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "Fingerprinting: recognizing a device without storing anything on it"
+            },
+            {
+              "id": "logique-metier-et-automatisation",
+              "label": "Business Logic and Automated Workarounds"
+            },
+            {
+              "id": "surcharge-et-deni-de-service-applicatif",
+              "label": "Overload and Application-Level Denial of Service"
             }
           ]
         },
@@ -1485,6 +1607,10 @@
             {
               "id": "exploitation-web-cote-attaquant",
               "label": "Web Exploitation From the Attacker's Side"
+            },
+            {
+              "id": "attaques-navigateur-automatise",
+              "label": "Attacking (and Defending) an Automated Browser"
             }
           ]
         }
@@ -1839,6 +1965,14 @@
             {
               "id": "okr",
               "label": "OKRs"
+            },
+            {
+              "id": "nps-et-satisfaction-client",
+              "label": "NPS: Measuring Customer Satisfaction and Loyalty"
+            },
+            {
+              "id": "decoupage-en-graphe-de-dependances",
+              "label": "Breaking Down a Project into a Dependency Graph"
             }
           ]
         }

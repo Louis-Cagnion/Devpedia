@@ -80,6 +80,25 @@ deactivate                        # quitte l'environnement virtuel
 
 > **Note :** une fois activé, `pip install` et `python` pointent vers les exécutables **de l'environnement virtuel**, pas ceux installés globalement sur le système : c'est ce qui garantit l'isolation. Le dossier `.venv/` ne doit jamais être versionné avec [Git](/?c=git&p=git) (voir [Le fichier .gitignore](/?c=git&p=gitignore)) : il se régénère entièrement à partir de `requirements.txt`.
 
+## `os.environ` : les variables d'environnement du processus
+
+> **Note :** à ne pas confondre avec l'environnement virtuel vu juste au-dessus : celui-ci isole les **bibliothèques** installées, alors qu'`os.environ` donne accès aux **variables d'environnement** du système (des paires clé/valeur définies en dehors de Python, ex. `PATH`, une clé d'API secrète...) -- deux notions distinctes qui ne partagent que le mot "environnement".
+
+`os.environ` se comporte comme un [dictionnaire](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) : lecture, écriture, suppression suivent exactement les mêmes règles.
+
+```python
+import os
+
+os.environ["CHEMIN_CONFIG"]                     # lève une KeyError si la variable n'existe pas
+os.environ.get("CHEMIN_CONFIG")                 # None si absente, pas d'erreur
+os.environ.get("CHEMIN_CONFIG", "/etc/config")  # valeur par défaut si absente
+
+os.environ["NOUVELLE_VAR"] = "valeur"  # crée ou modifie une variable
+os.environ.pop("NOUVELLE_VAR", None)   # supprime sans erreur si déjà absente (contrairement à del)
+```
+
+> **Piège :** modifier `os.environ` ne change QUE le processus Python courant, et les processus enfants lancés **après coup** (via [subprocess](/?c=langages-de-programmation&s=python&p=sous-processus-et-flux-standard)), qui héritent d'une copie de l'environnement au moment de leur création -- jamais le shell qui a lancé le script, ni le reste du système. Fermer le script et rouvrir un terminal ne montre donc jamais une variable ajoutée via `os.environ[...] = ...`.
+
 ## Organiser un projet en package
 
 ```text
@@ -159,7 +178,7 @@ import mon_package
 
 | | |
 |---|---|
-| **À retenir** | `import` charge un module ; `if __name__ == "__main__":` distingue exécution directe et import. `pip` installe des bibliothèques, un environnement virtuel isole les dépendances d'un projet. `pyproject.toml` décrit le projet lui-même, au-delà des seules versions figées par `requirements.txt`. |
-| **Outils utilisables** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `__init__.py` pour un package classique, `pyproject.toml` et `pip install -e .` pour le packaging moderne. |
-| **Pièges à éviter** | Installer des bibliothèques globalement plutôt que dans un environnement virtuel : conflits de versions entre projets. Oublier `find_namespace_packages` pour un projet sans `__init__.py`, qui fait ignorer silencieusement ces dossiers à l'installation. |
+| **À retenir** | `import` charge un module ; `if __name__ == "__main__":` distingue exécution directe et import. `pip` installe des bibliothèques, un environnement virtuel isole les dépendances d'un projet -- à ne pas confondre avec `os.environ`, qui donne accès aux variables d'environnement du système. `pyproject.toml` décrit le projet lui-même, au-delà des seules versions figées par `requirements.txt`. |
+| **Outils utilisables** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `os.environ` (lecture/écriture/suppression comme un dict), `__init__.py` pour un package classique, `pyproject.toml` et `pip install -e .` pour le packaging moderne. |
+| **Pièges à éviter** | Installer des bibliothèques globalement plutôt que dans un environnement virtuel : conflits de versions entre projets. Oublier `find_namespace_packages` pour un projet sans `__init__.py`, qui fait ignorer silencieusement ces dossiers à l'installation. Croire qu'une modification de `os.environ` affecte le shell parent ou le système : elle ne touche que le processus courant et ses enfants futurs. |
 | **Bonnes pratiques** | Toujours travailler dans un environnement virtuel par projet ; versionner `requirements.txt`, jamais `.venv/`. Utiliser `pip install -e .` en développement actif d'une bibliothèque. |

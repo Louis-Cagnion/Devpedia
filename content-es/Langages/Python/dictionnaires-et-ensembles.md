@@ -71,6 +71,22 @@ tiendas_por_sitio.setdefault(sitio, []).append(id_tienda)
 
 `dict.setdefault(clave, valor_por_defecto)` devuelve el valor de `clave` si ya existe (sin tocarlo), o lo inserta con `valor_por_defecto` Y LUEGO lo devuelve si aún no existe. Encadenado con `.append()`, este patrón agrupa elementos por categoría (aquí, la lista de tiendas por sitio) sin comprobar nunca explícitamente si la clave ya existe.
 
+### `Counter`: contar apariciones
+
+```python
+from collections import Counter
+
+contador = Counter(["a", "b", "a", "c", "a", "b"])
+# Counter({'a': 3, 'b': 2, 'c': 1})
+
+contador["a"]        # 3
+contador["ausente"]  # 0 -> sin KeyError, a diferencia de un dict normal
+
+contador.most_common(2)  # [('a', 3), ('b', 2)] -> los 2 elementos más frecuentes
+```
+
+`Counter` (del módulo `collections`) es una subclase de `dict` especializada en contar: `Counter(iterable)` cuenta automáticamente las apariciones de cada elemento. Acceder a una clave ausente devuelve `0` en lugar de lanzar un `KeyError`, a diferencia de un `dict` normal. `.most_common(n)` devuelve los `n` elementos más frecuentes, ordenados por frecuencia decreciente.
+
 ## Los conjuntos (`set`)
 
 ```python
@@ -104,6 +120,25 @@ cuadrados_unicos = {x ** 2 for x in [-2, -1, 0, 1, 2]}
 # {0, 1, 4} -> (-2)**2 y 2**2 valen ambos 4, por tanto deduplicados automáticamente
 ```
 
+### `frozenset`: la variante inmutable de `set`
+
+```python
+conjunto_fijo = frozenset({"manzana", "platano"})
+
+conjunto_fijo.add("cereza")  # AttributeError: 'frozenset' object has no attribute 'add'
+```
+
+Un `frozenset` es un `set` fijado tras su creación: ningún método de modificación (`add`, `remove`, `discard`) existe sobre él. Esta inmutabilidad lo hace **hachable**, como un tuple (ver [por qué una clave de dict debe ser hachable](#por-que-una-clave-de-dict-debe-ser-hachable) más arriba) -- algo que un `set` mutable nunca permite:
+
+```python
+cache = {}
+cache[frozenset({"a", "b"})] = "resultado"  # funciona: un frozenset es hachable
+
+cache[{"a", "b"}] = "resultado"  # TypeError: unhashable type: 'set'
+```
+
+> **Buena práctica:** usar `frozenset` en lugar de `set` para un valor destinado a servir de clave de dict o de elemento de otro `set`, o para documentar/garantizar que una función nunca modificará el conjunto que recibe como parámetro.
+
 Ver también [Las tablas de hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage) para lo que ocurre realmente en memoria detrás de `dict` y `set`.
 
 ---
@@ -112,7 +147,7 @@ Ver también [Las tablas de hash](/?c=langages-de-programmation&s=c&p=tables-de-
 
 | | |
 |---|---|
-| **Para recordar** | Un `dict` asocia claves a valores, un `set` almacena valores únicos sin orden; ambos se apoyan en una tabla hash, por tanto casi instantáneos en acceso/prueba. |
-| **Herramientas utilizables** | `.get()` (sin error), comprensiones de dict/set, operaciones de conjuntos (`\|`, `&`, `-`, `^`). |
+| **Para recordar** | Un `dict` asocia claves a valores, un `set` almacena valores únicos sin orden; ambos se apoyan en una tabla hash, por tanto casi instantáneos en acceso/prueba. `frozenset` es la variante inmutable y hachable de un `set`. |
+| **Herramientas utilizables** | `.get()` (sin error), comprensiones de dict/set, `Counter` para contar apariciones, operaciones de conjuntos (`\|`, `&`, `-`, `^`), `frozenset` como clave de dict o elemento de otro `set`. |
 | **Trampas a evitar** | Acceder a una clave ausente por corchetes (`dico["x"]`) en lugar de por `.get()`: eso lanza un `KeyError`. |
 | **Buenas prácticas** | Usar `.get()` en cuanto la ausencia de una clave sea un caso normal, no un error; `list(set(mi_lista))` para deduplicar rápidamente. |

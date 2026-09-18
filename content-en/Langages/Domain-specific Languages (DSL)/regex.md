@@ -1,11 +1,15 @@
+---
+order: 1
+---
+
 # Regular expressions
 
 ## What is a regex?
 
-A **regex** (regular* *expression) is a mini-language that describes a pattern of characters. This pattern is used to search for, validate, or extract portions of text that match a given structure.
+A **regex** (*regular expression*) is a mini-language that describes a pattern of characters. This pattern is used to search for, validate, or extract portions of text that match a given structure.
 
 
-It is not a programming language: no variables, no loops, no functions. A regex needs to be interpreted by a **regex engine**, which is built into the language you’re using ([JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), [Python](/?c=langages-de-programmation&s=python&p=python), etc.), via methods such as `.test()` or `.match()`.
+It is not a programming language: no variables, no loops, no functions. A regex needs to be interpreted by a **regex engine**, which is built into the language you’re using ([JavaScript](/?c=langages-de-programmation&s=javascript&p=regex), [Python](/?c=langages&s=python&p=regex-en-python), etc.), via methods such as `.test()` or `.match()`.
 
 
 ## The Basics of Syntax
@@ -239,7 +243,7 @@ Summary of sections:
 - `\)` → a literal "`)`"
 - `$` → Line break required
 
-With `"[mon lien](https://exemple.com)".match(regex)`, you get `match[1] = "mon lien"` and `match[2] = "https://exemple.com"`.
+With `"[my link](https://example.com)".match(regex)`, you get `match[1] = "my link"` and `match[2] = "https://example.com"`.
 
 
 > **Pitfall:** A regex that’s too permissive (for example, forgetting to anchor it with `^` / `$`) can match much more than intended: an email validation pattern without anchoring would accept “anything containing an @” in the middle of a longer string, not just a complete email address.

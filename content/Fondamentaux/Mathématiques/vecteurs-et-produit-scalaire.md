@@ -73,35 +73,6 @@ Ce nombre mesure à quel point deux vecteurs pointent dans la même direction :
 
 > **Bonne pratique :** cette même opération (multiplier terme à terme, puis additionner) revient dans de nombreux calculs par la suite, notamment pour combiner plusieurs entrées en une seule valeur en donnant à chacune un **poids**, un nombre qui reflète son importance relative dans le résultat final (une entrée au poids élevé pèse plus dans la somme qu'une entrée au poids faible). On dit alors que le résultat est une somme **pondérée**. Reconnaître cette opération sous cette forme évite de la redécouvrir à chaque fois sous un nom différent.
 
-## Le produit vectoriel : combiner deux vecteurs en un troisième
-
-Contrairement au produit scalaire (qui réduit deux vecteurs à un seul nombre), le **produit vectoriel** (*cross product*, noté `×`) de deux vecteurs 3D en produit un **troisième**, perpendiculaire aux deux premiers :
-
-```text
-Pour A = [a1, a2, a3] et B = [b1, b2, b3] :
-
-A × B = [ a2*b3 - a3*b2,
-          a3*b1 - a1*b3,
-          a1*b2 - a2*b1 ]
-```
-
-Exemple, avec les deux vecteurs de base des axes horizontal et vertical :
-
-```text
-A = [1, 0, 0]
-B = [0, 1, 0]
-
-A × B = [0*0 - 0*1, 0*0 - 1*0, 1*1 - 0*0] = [0, 0, 1]
-```
-
-Deux propriétés à retenir :
-- **Le résultat est perpendiculaire aux deux vecteurs de départ** : c'est la propriété exploitée pour calculer la **normale** d'une surface plane (le vecteur perpendiculaire à cette surface), en faisant le produit vectoriel de deux de ses arêtes (deux vecteurs partant d'un même sommet de la surface, pas deux positions absolues).
-- **L'ordre compte** : `A × B = -(B × A)`. Inverser l'ordre inverse le sens du résultat (règle de la main droite : pointe les doigts vers `A`, replie-les vers `B`, le pouce indique la direction de `A × B`).
-
-Le signe du produit **scalaire** entre un produit vectoriel local et une normale de référence permet de déterminer un sens de rotation : c'est le principe utilisé pour détecter un sommet convexe ou concave dans un polygone (voir [Wavefront .obj et modèle de Phong](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong), section sur l'ear clipping).
-
-> **Piège :** si les deux vecteurs de départ sont parallèles (ou si l'un des deux est nul), leur produit vectoriel donne le vecteur nul `[0,0,0]`, qui n'a pas de direction définie. Concrètement, ça correspond à 3 points alignés (aucun vrai "coin") ou à une surface dégénérée (aire nulle) : un cas à détecter explicitement plutôt qu'à laisser produire un résultat sans direction exploitable.
-
 ## La norme d'un vecteur : sa longueur
 
 Un vecteur à 2 composantes comme `[3, 4]` peut se lire comme un point sur un plan (voir le tout premier exemple de ce chapitre), atteint en partant d'un point de départ commun à tous les vecteurs : l'**origine**, le point `[0, 0]`. La **norme** d'un vecteur est la distance entre l'origine et ce point : le chemin le plus direct, en ligne droite, pas la somme des deux distances parcourues en équerre (`3 + 4 = 7` serait faux) :
@@ -140,11 +111,43 @@ Ce résultat n'est pas une coïncidence propre à cet exemple : diviser chaque c
 >
 > **Bonne pratique :** vérifier qu'un vecteur n'est pas nul avant de le normaliser, plutôt que de laisser le programme échouer sur une division par zéro.
 
+## Test géométrique : un point est-il à l'intérieur d'un triangle ?
+
+Étant donné un triangle formé par trois points `A`, `B`, `C` et un point `P` à tester, une méthode simple consiste à comparer des **aires** : calculer l'aire du triangle complet `ABC`, puis la somme des aires des trois sous-triangles formés par `P` et chaque paire de sommets (`P-A-B`, `P-B-C`, `P-C-A`). Si cette somme est égale à l'aire du triangle complet, `P` est à l'intérieur ; si `P` était à l'extérieur, la somme des sous-aires serait strictement supérieure.
+
+L'aire d'un triangle à partir des coordonnées de ses trois sommets se calcule directement, sans jamais construire de hauteur ni d'angle, via un déterminant :
+
+```text
+aire(A, B, C) = |  (Bx-Ax)*(Cy-Ay) - (Cx-Ax)*(By-Ay)  |  / 2
+```
+
+```c
+double aire(double ax, double ay, double bx, double by, double cx, double cy)
+{
+    return fabs((bx - ax) * (cy - ay) - (cx - ax) * (by - ay)) / 2.0;
+}
+
+int pointDansTriangle(double px, double py, double ax, double ay, double bx, double by, double cx, double cy)
+{
+    double aireTotale = aire(ax, ay, bx, by, cx, cy);
+    double aireSous1 = aire(px, py, ax, ay, bx, by);
+    double aireSous2 = aire(px, py, bx, by, cx, cy);
+    double aireSous3 = aire(px, py, cx, cy, ax, ay);
+    double epsilon = 0.0001;
+
+    return fabs(aireTotale - (aireSous1 + aireSous2 + aireSous3)) < epsilon;
+}
+```
+
+> **Piège :** comparer les deux aires avec une égalité stricte (`==`). Comme pour toute comparaison de [nombres flottants](/?c=donnees&s=representation-des-donnees&p=nombres-flottants), une petite marge d'erreur (epsilon) est indispensable pour tolérer l'imprécision des calculs.
+>
+> **Bonne pratique :** cette technique (sommer les aires de sous-triangles) est une alternative à deux autres méthodes classiques pour le même test : les coordonnées barycentriques, ou un test de signe croisé par arête (vérifier que `P` est du même côté de chacune des trois arêtes) ; les trois donnent le même résultat, le choix dépend surtout de ce que le reste du programme calcule déjà.
+
 ## Ce qu'il faut retenir
 
 | | |
 |---|---|
-| **À retenir** | Un vecteur est une liste ordonnée de nombres traitée comme une seule entité. Le produit scalaire réduit deux vecteurs de même dimension à un seul nombre, qui mesure à quel point ils pointent dans la même direction. Le produit vectoriel (3D uniquement) combine deux vecteurs en un troisième, perpendiculaire aux deux premiers, utile pour calculer une normale. La norme est la longueur d'un vecteur. |
-| **Outils utilisables** | Aucun outil spécifique pour le calcul à la main ; en pratique, une bibliothèque comme [NumPy](/?c=data-science&p=numpy) effectue ces opérations directement sur des vecteurs entiers, sans boucle explicite. |
-| **Pièges à éviter** | Additionner ou combiner deux vecteurs de dimensions différentes. Normaliser un vecteur nul (division par une norme de 0). Produit vectoriel de deux vecteurs parallèles (donne le vecteur nul, sans direction exploitable). |
+| **À retenir** | Un vecteur est une liste ordonnée de nombres traitée comme une seule entité. Le produit scalaire réduit deux vecteurs de même dimension à un seul nombre, qui mesure à quel point ils pointent dans la même direction. La norme est la longueur d'un vecteur. |
+| **Outils utilisables** | Aucun outil spécifique pour le calcul à la main ; en pratique, une bibliothèque comme [NumPy](/?c=data-science&p=numpy) effectue ces opérations directement sur des vecteurs entiers, sans boucle explicite. Le calcul d'aire par déterminant pour un test point-dans-triangle. |
+| **Pièges à éviter** | Additionner ou combiner deux vecteurs de dimensions différentes. Normaliser un vecteur nul (division par une norme de 0). Comparer deux aires flottantes avec une égalité stricte. |
 | **Bonnes pratiques** | Vérifier que deux vecteurs ont la même dimension avant toute opération entre eux. Documenter ce que représente chaque composante d'un vecteur dès sa création. |

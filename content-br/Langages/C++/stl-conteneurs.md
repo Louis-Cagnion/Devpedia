@@ -55,6 +55,30 @@ for (const auto &[nome, idade] : idades) {  // percurso: os pares SEMPRE ordenad
 
 > **Nota:** `std::map` é internamente uma árvore balanceada (frequentemente uma [árvore rubro-negra](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree), uma variante da [árvore binária de busca](/?c=langages-de-programmation&s=c&p=arbres-binaires)): as chaves então são sempre percorridas **ordenadas**, ao contrário de um [array associativo PHP](/?c=langages-de-programmation&s=php&p=variables) ou um [`dict` Python](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) (ordem de inserção). `std::unordered_map` propõe o equivalente baseado em uma [tabela hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage), mais rápido em média mas sem ordem garantida.
 
+## Encontrar a chave mais próxima: `lower_bound`
+
+`std::map` mantém suas chaves ordenadas (visto acima): `lower_bound(chave)` aproveita diretamente essa ordenação para encontrar, em O(log n), o primeiro elemento cuja chave **não seja menor** que a buscada, sem nunca percorrer todo o contêiner:
+
+```cpp
+std::map<int, std::string> taxas = {{10, "A"}, {20, "B"}, {30, "C"}};
+
+auto it = taxas.lower_bound(20);   // encontra exatamente 20: it->second == "B"
+auto it2 = taxas.lower_bound(25);  // sem 25: retorna o primeiro elemento >= 25, ou seja 30
+```
+
+Se a chave exata não existe, `lower_bound` retorna então a primeira chave estritamente maior. Para encontrar a última chave estritamente **menor** que um valor (útil, por exemplo, para associar uma data ao dado válido mais próximo antes dela), decrementar o iterador obtido:
+
+```cpp
+auto it = taxas.lower_bound(25);
+if (it != taxas.begin()) {
+    --it;   // it agora aponta para 20, a ultima chave estritamente menor que 25
+}
+```
+
+> **Cilada:** decrementar o iterador sem verificar antes que ele não é já `begin()`: retroceder antes do primeiro elemento é um comportamento indefinido.
+>
+> **Boa prática:** `lower_bound`/seu complemento `upper_bound` (primeira chave estritamente maior) evitam uma varredura linear manual sempre que for preciso buscar a chave mais próxima em um contêiner ordenado, bem mais direto que um laço `for` com comparações.
+
 ## `std::set`: os valores únicos, ordenados
 
 ```cpp
@@ -67,6 +91,35 @@ valores.count(2);   // 1 se presente, 0 caso contrario (um set nunca contem dupl
 ```
 
 `std::unordered_set` é o equivalente baseado em uma tabela hash, mais rápido em média, sem ordem garantida.
+
+## `std::stack`: um adaptador de contêiner
+
+Diferente de `std::vector`/`std::map`, que são contêineres completos, `std::stack` é um **adaptador de contêiner** (*container adapter*): ele não armazena nada por si mesmo, mas envolve outro contêiner (`std::deque` por padrão) expondo apenas as operações LIFO (veja [Pilha e fila](/?c=fondamentaux&s=algorithmes&p=pile-et-file)):
+
+```cpp
+#include <stack>
+
+std::stack<int> pilha;
+pilha.push(1);
+pilha.push(2);
+pilha.top();    // 2: o topo, sem removê-lo
+pilha.pop();    // remove o topo (NAO retorna nada, diferente de muitas outras linguagens)
+```
+
+Deliberadamente sem iteradores (sem `begin()`/`end()`): percorrer uma pilha de outra forma que não pelo seu topo normalmente não faz sentido.
+
+> **Boa prática:** herdar publicamente de `std::stack<T>` para adicionar seus próprios `begin()`/`end()`, delegados diretamente ao contêiner subjacente (acessível via o membro protegido `c`), se uma necessidade real justificar percorrer uma pilha mesmo assim:
+
+```cpp
+template <typename T>
+class PilhaIteravel : public std::stack<T> {
+public:
+    auto begin() { return this->c.begin(); }
+    auto end() { return this->c.end(); }
+};
+```
+
+`this->c` (o contêiner subjacente, `std::deque` por padrão) normalmente é inacessível de fora do `std::stack`: essa técnica se aproveita disso diretamente a partir de uma classe filha, que herda o mesmo acesso `protected`.
 
 ## Escolher o contêiner certo
 
@@ -87,7 +140,7 @@ Veja também [A STL: iteradores, algoritmos e lambdas](/?c=langages-de-programma
 
 | | |
 |---|---|
-| **Para lembrar** | A STL fornece contêineres genéricos prontos para uso: `vector` (array dinâmico), `list` (lista duplamente encadeada), `map`/`set` (ordenados), `unordered_map`/`unordered_set` (tabela hash, mais rápidos mas não ordenados). |
-| **Ferramentas utilizáveis** | `push_back`/`push_front`, `size`, `find`, percurso for-each. |
-| **Armadilhas a evitar** | Escolher `vector` para inserções frequentes no início (custo `O(n)`, `list` seria em tempo constante). |
+| **Para lembrar** | A STL fornece contêineres genéricos prontos para uso: `vector` (array dinâmico), `list` (lista duplamente encadeada), `map`/`set` (ordenados), `unordered_map`/`unordered_set` (tabela hash, mais rápidos mas não ordenados). `std::stack` é um adaptador, não um contêiner completo. |
+| **Ferramentas utilizáveis** | `push_back`/`push_front`, `size`, `find`, percurso for-each. `lower_bound`/`upper_bound` para buscar a chave mais próxima em um `map` ordenado. |
+| **Armadilhas a evitar** | Escolher `vector` para inserções frequentes no início (custo `O(n)`, `list` seria em tempo constante). Decrementar um iterador `lower_bound` sem verificar que ele não é já `begin()`. |
 | **Boas práticas** | Escolher o contêiner conforme a operação dominante (acesso por índice, inserção frequente, associação ordenada...) em vez de por hábito. |

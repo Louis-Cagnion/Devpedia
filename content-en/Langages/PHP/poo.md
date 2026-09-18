@@ -60,6 +60,32 @@ echo Calculs::moyenne([12, 15, 9]); // no "new Calculs()"
 
 A class that contains only static methods is never used to create a `new`: it is simply a collection of related functions, with a namespace to prevent name collisions between modules or libraries (see the next section).
 
+## `static` on a local variable: a second meaning for the same keyword
+
+The `static` keyword has a second use, unrelated to the static methods above: placed in front of a **local** variable inside a function, it makes that variable keep its value from one call to the next, instead of being reset every time the function runs.
+
+```php
+<?php
+function frenchMonthLabel(DateTimeImmutable $date): string
+{
+    static $months = [
+        1 => 'Janvier', 2 => 'Février',   3 => 'Mars',     4 => 'Avril',
+        5 => 'Mai',     6 => 'Juin',      7 => 'Juillet',  8 => 'Août',
+        9 => 'Septembre', 10 => 'Octobre', 11 => 'Novembre', 12 => 'Décembre',
+    ];
+
+    return $months[(int) $date->format('n')] . ' ' . $date->format('Y');
+}
+
+echo frenchMonthLabel(new DateTimeImmutable('2026-09-15')); // "Septembre 2026"
+?>
+```
+
+- Without `static`, `$months` would be rebuilt in memory on every call to `frenchMonthLabel()`, even though its content never changes.
+- With `static`, PHP initializes `$months` only once, on the very first call to the function; later calls directly reuse the value already in memory.
+
+> **Note:** don't confuse this with `public static function` above: here `static` applies to a **variable**, not a method, the keyword's meaning changes depending on what it precedes. A static variable isn't shared across concurrent HTTP requests: each PHP process starts over with its own value, reset to its initial state.
+
 ## Namespaces and `use`
 
 A **namespace** prevents a class `Repository` in one module from conflicting with a class `Repository` in another:
@@ -177,6 +203,6 @@ Nullable parameters with a `??` fallback (see [The most useful functions and met
 | | |
 |---|---|
 | **Key takeaways** | A class groups together properties and methods; `new` creates an instance of it. A namespace prevents name collisions between modules. A trait shares code between classes without going through inheritance. Dependency injection receives the objects a class needs as parameters rather than creating them itself. |
-| **Tools you can use** | `__construct`, typed properties, `static` methods, `namespace`/`use`, traits (`trait`/`use`). |
-| **Pitfalls to avoid** | Creating a class's dependencies directly (`new`) rather than receiving them as parameters: makes the class hard to test in isolation. Confusing a trait with inheritance: it creates no "is a" relationship between types. |
+| **Tools you can use** | `__construct`, typed properties, `static` methods, local `static` variable (value kept between calls), `namespace`/`use`, traits (`trait`/`use`). |
+| **Pitfalls to avoid** | Creating a class's dependencies directly (`new`) rather than receiving them as parameters: makes the class hard to test in isolation. Confusing a trait with inheritance: it creates no "is a" relationship between types. Confusing `static` on a method (no instance needed) with `static` on a local variable (value kept between calls): same keyword, two different effects. |
 | **Best practices** | Type properties so they define a true contract; inject dependencies rather than hard-coding their instantiation, to make testing easier; split an overly large class into traits by responsibility, without changing its public API. |

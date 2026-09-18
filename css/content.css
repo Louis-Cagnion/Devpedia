@@ -1,22 +1,24 @@
-/* page layout, common to home / category / subject / chapter pages. isolation: isolate scopes
-   the stylized background below (a ::before layer) to this element's own stacking context, so
-   its z-index: -1 sits behind this page's own content without reaching into an ancestor's. */
+/* page layout, common to home / category / subject / chapter pages. */
 .page {
     position: relative;
-    isolation: isolate;
     max-width: 900px;
     margin: 0 auto;
     padding: 1.5rem 1.25rem calc(var(--floating-bar-height, 0px) + 1.5rem);
-    /* a short chapter's own content is shorter than the viewport: without this, .page::before's
-       inset: 0 background stops right where the content does, leaving a plain --bg gap below it
-       down to the actual bottom of the window. Floors .page's own box at the viewport height
-       (minus the sticky navbar) so the background always reaches the bottom of the page. */
-    min-height: calc(100vh - var(--navbar-height, 57px));
 }
 
-.page::before {
+/* isolation: isolate gives body its own stacking context so the negative z-index ::before
+   below stays scoped to it (above body's own background, below body's actual children) --
+   without it, a plain <body> has no stacking context of its own, so a negative z-index child
+   falls back to the root's, where it renders behind body's own opaque background instead. */
+body:has(.page) {
+    isolation: isolate;
+}
+
+/* Starfield background, fixed to the viewport rather than scoped to .page's own 900px-wide
+   box, so it spans the full window width instead of stopping at the centered content column. */
+body:has(.page)::before {
     content: "";
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;

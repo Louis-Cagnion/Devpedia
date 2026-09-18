@@ -64,6 +64,26 @@ Cada línea se puede modificar antes de guardar:
 
 Útil, por ejemplo, para limpiar un historial de trabajo ("Corrige una errata", "Ups", "De verdad corrige la errata esta vez") en un único commit limpio antes de compartirlo.
 
+## Reformular sin editor interactivo: `reset --soft` + recommit dirigido
+
+`rebase -i` abre un editor de texto interactivo, lo que falla tal cual en un contexto sin terminal conectado (script, CI, agente automatizado). Para reformular el mensaje de un commit que no es el último, sin pasar por un editor, `git reset --soft` hacia la base común permite volver a poner todo en el índice y luego recommitear cada commit uno por uno con el mensaje correcto:
+
+```bash
+git reset --soft <commit-anterior-al-mas-antiguo-a-reformular>
+git reset            # Desapila todo (la carpeta de trabajo conserva el estado final)
+
+# para cada commit a recrear en su orden original:
+git show <hash-antiguo-del-commit>:ruta/archivo.py > ruta/archivo.py  # restaura ESTE archivo a su estado en ese commit
+git add ruta/archivo.py ...
+git commit -F mensaje-corregido.txt   # nunca -m para un mensaje multilínea con tildes: véase más abajo
+```
+
+`git show <hash>:<ruta>` extrae el contenido de un archivo tal como estaba en un commit concreto, lo que permite reconstruir el estado intermedio de cada commit antes de recommitearlo, incluso cuando un mismo archivo cambió en varios de los commits a reformular.
+
+> **Nota:** redactar un mensaje multilínea con tildes directamente en `git commit -m "$(cat <<'EOF' ... EOF)"` (heredoc de bash) es una fuente de errores frecuente: el mensaje escrito "al vuelo" en una llamada de comando cae fácilmente en una convención ASCII (ej. "vehiculo" en lugar de "vehículo") sin que nada lo señale. Escribir el mensaje en un archivo de texto, releerlo, y luego `git commit -F archivo.txt` evita esta trampa separando la redacción de la ejecución del comando.
+
+Este método no cambia ni el contenido ni el orden de los commits, solo sus mensajes: es un `reword` manual, más verboso que `rebase -i` pero utilizable sin ninguna interacción humana.
+
 ## La regla de oro: nunca rebasar un historial ya compartido
 
 ```bash

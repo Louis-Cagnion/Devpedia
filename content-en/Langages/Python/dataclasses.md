@@ -103,6 +103,32 @@ print(c2.items)   # [] -> properly independent from c1, unlike the function pitf
 
 `field(default_factory=function)` calls `function()` (here `list`, so `list()`) for each new instance rather than once at class definition: this is what prevents unintended sharing.
 
+## Converting to a `dict`: `dataclasses.asdict()`
+
+[`json.dumps()`](/?c=infrastructure&p=json) can't directly encode a dataclass instance, only simple types (`dict`, list, string, number...). `asdict()` recursively converts a dataclass (and any nested dataclass inside it) into a plain `dict`, serializable as-is:
+
+```python
+from dataclasses import dataclass, asdict
+import json
+
+@dataclass
+class Address:
+    city: str
+    zip_code: str
+
+@dataclass
+class Person:
+    name: str
+    address: Address   # nested dataclass
+
+p = Person(name="John", address=Address(city="Paris", zip_code="75000"))
+
+asdict(p)              # {"name": "John", "address": {"city": "Paris", "zip_code": "75000"}}
+json.dumps(asdict(p))  # direct serialization: asdict() has already reduced everything to simple types
+```
+
+> **Pitfall:** calling `json.dumps()` directly on a dataclass instance, without going through `asdict()` first: `TypeError: Object of type Person is not JSON serializable`. `json.dumps()` can only encode simple types, never an arbitrary Python object.
+
 ## When a dataclass is enough, when a classic class is needed
 
 | | Dataclass | Classic class |
@@ -120,6 +146,6 @@ A dataclass remains a full-fledged Python class: nothing prevents adding methods
 | | |
 |---|---|
 | **Key takeaways** | `@dataclass` generates `__init__`/`__repr__`/`__eq__` from a class's annotated fields, avoiding this repetitive code for a class that just groups data together. `frozen=True` makes instances immutable (and hashable). |
-| **Tools you can use** | `@dataclass`, `@dataclass(frozen=True)`, `@dataclass(order=True)` for sorting, `field(default_factory=...)` for a mutable default value. |
-| **Pitfalls to avoid** | Thinking `frozen=True` also protects the contents of a mutable field (a list stays modifiable). Giving a list/dict directly as a field's default value. |
-| **Best practices** | Use a type that's itself immutable (tuple) for genuinely complete freezing. Always go through `field(default_factory=...)` for a mutable default value. Reserve dataclasses for classes that mostly carry data. |
+| **Tools you can use** | `@dataclass`, `@dataclass(frozen=True)`, `@dataclass(order=True)` for sorting, `field(default_factory=...)` for a mutable default value, `asdict()` to convert to a serializable `dict`. |
+| **Pitfalls to avoid** | Thinking `frozen=True` also protects the contents of a mutable field (a list stays modifiable). Giving a list/dict directly as a field's default value. Calling `json.dumps()` directly on a dataclass without going through `asdict()`. |
+| **Best practices** | Use a type that's itself immutable (tuple) for genuinely complete freezing. Always go through `field(default_factory=...)` for a mutable default value. Reserve dataclasses for classes that mostly carry data. Go through `asdict()` before `json.dumps()` to serialize a dataclass. |

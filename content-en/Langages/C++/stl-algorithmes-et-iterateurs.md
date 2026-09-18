@@ -85,3 +85,14 @@ int compte = std::count_if(numbers.begin(), numbers.end(), estAuDessusDuSeuil);
 | `std::accumulate` | Reduces a range to a single value (equivalent to `reduce`) |
 
 > **Note:** Using these algorithms instead of manual loops makes the intent explicit (a `std::sort` says “I’m sorting,” whereas a loop with a hand-written sorting algorithm requires the reader to infer it), a direct gain in readability, in addition to avoiding the need to reimplement (and potentially misimplement) logic that is already standardized and optimized.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | An iterator traverses any STL container uniformly (`begin()`/`end()`, `*it`, `++it`). The standard algorithms (`sort`, `find`, `accumulate`...) operate on pairs of iterators, valid on any container. |
+| **Tools you can use** | `std::sort`, `std::find`, `std::count_if`, `std::transform`, `std::accumulate`, lambdas (`[](...){ ... }`). |
+| **Pitfalls to avoid** | Dereferencing `end()`: it never points to a real element, only a position "just past" the last one. |
+| **Best practices** | Prefer a named standard algorithm (`std::sort`) over an equivalent manual loop: the intent is explicit and the logic already optimized. |

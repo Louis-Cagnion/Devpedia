@@ -44,6 +44,46 @@ SELECT COUNT(*) AS nb_clientes FROM clientes WHERE ciudad = 'Lyon';
 
 `AS nombre` da un alias a una columna del resultado (aquí, la columna calculada se llamará `nb_clientes`).
 
+Combinada con `GROUP BY`, una función de agregación calcula un valor por grupo en lugar de un único valor global:
+
+```sql
+SELECT ciudad, COUNT(*) AS nb_clientes
+FROM clientes
+GROUP BY ciudad;  -- una fila de resultado por ciudad distinta
+```
+
+### `GROUPING SETS`: total y detalle en una sola consulta (T-SQL)
+
+Obtener a la vez el total global y el detalle por ciudad normalmente requeriría dos consultas separadas (una con `GROUP BY`, otra sin él), o una `UNION` de ambas. `GROUPING SETS` (SQL Server, entre otros) calcula ambos en el mismo recorrido sobre la tabla:
+
+```sql
+SELECT ciudad, COUNT(*) AS nb_clientes
+FROM clientes
+GROUP BY GROUPING SETS ((ciudad), ());
+-- (ciudad) : una fila por ciudad distinta, como un GROUP BY clasico
+-- ()       : una fila de total global, ciudad mostrada como NULL
+```
+
+| Conjunto pedido | Resultado |
+|---|---|
+| `(ciudad)` | Una fila por ciudad distinta, igual que `GROUP BY ciudad` solo |
+| `()` (conjunto vacío) | Una única fila: el total sobre toda la tabla, `ciudad` vale `NULL` |
+
+> **Trampa:** en la fila de total, `ciudad` vale `NULL` -- pero un `NULL` que significa "esto es un total agregado", no el mismo `NULL` de "valor desconocido" visto más arriba ([`NULL`: un dato ausente](#null-un-dato-ausente-no-un-valor-como-los-demas)). Filtrar ingenuamente `WHERE ciudad IS NOT NULL` eliminaría la fila de total por error.
+>
+> **Buena práctica:** usar `GROUPING(ciudad)` para distinguir ambos casos sin ambigüedad: vale `1` en la fila de total (la columna es `NULL` porque está agregada), `0` en caso contrario (incluso si el valor real de `ciudad` era en sí mismo `NULL`).
+
+```sql
+SELECT
+    ciudad,
+    COUNT(*) AS nb_clientes,
+    GROUPING(ciudad) AS es_total  -- 1 = fila de total, 0 = fila de detalle
+FROM clientes
+GROUP BY GROUPING SETS ((ciudad), ());
+```
+
+Emparentada con `ROLLUP` (jerarquía de totales anidados, ej. día → mes → año) y `CUBE` (todos los cruces posibles entre varias columnas), `GROUPING SETS` es la forma más explícita de las tres: cada combinación de columnas deseada se escribe a mano entre paréntesis.
+
 ## `JOIN`: combinar dos tablas por una columna común
 
 Equivalente declarativo de emparejar dos colecciones mediante una clave compartida, en lugar de escribir un bucle con una búsqueda manual:
@@ -67,6 +107,28 @@ LEFT JOIN ventas v ON v.cliente_id = c.id; -- conserva TODAS las filas de la izq
 > **Trampa:** usar `JOIN` (INNER) cuando en realidad se quiere *a todo el mundo*: un cliente sin ninguna venta desaparecería silenciosamente del resultado, mientras que un `LEFT JOIN` lo habría conservado con columnas a `NULL`.
 >
 > **Buena práctica:** preguntarse explícitamente, antes de escribir la unión, si las filas sin correspondencia deben desaparecer (`JOIN`) o seguir siendo visibles (`LEFT JOIN`): ambas producen un resultado sintácticamente válido, pero semánticamente diferente.
+
+### `OUTER APPLY` / `CROSS APPLY`: una unión que puede llamar a una función por fila (T-SQL)
+
+La condición `ON` de un `JOIN` clásico solo puede referenciar columnas, nunca llamar a una función o a una subconsulta parametrizada por la fila actual. `APPLY` (SQL Server) elimina esta limitación: ejecuta una subconsulta **para cada fila** de la tabla de la izquierda, pasándole las columnas de esa fila como parámetro.
+
+```sql
+SELECT c.nombre, ultima.fecha_compra
+FROM clientes c
+OUTER APPLY (
+    SELECT TOP 1 v.fecha_compra
+    FROM ventas v
+    WHERE v.cliente_id = c.id       -- referencia c, la fila actual: imposible en un ON de JOIN
+    ORDER BY v.fecha_compra DESC
+) AS ultima;
+```
+
+| Variante | Comportamiento si la subconsulta no devuelve nada |
+|---|---|
+| `CROSS APPLY` | La fila de `clientes` desaparece del resultado (equivalente a `INNER JOIN`) |
+| `OUTER APPLY` | La fila de `clientes` se conserva, columnas de la subconsulta a `NULL` (equivalente a `LEFT JOIN`) |
+
+> **Nota:** esta misma necesidad (referenciar la fila actual desde una subconsulta unida) se llama `LATERAL JOIN` en PostgreSQL -- concepto equivalente, sintaxis diferente según el motor.
 
 ## `CREATE TABLE`: crear una tabla (DDL)
 
@@ -147,6 +209,50 @@ $todas  = $stmt->fetchAll(\PDO::FETCH_ASSOC);  // todas las filas
 El ciclo es siempre el mismo: `prepare()` (escribir la consulta, con marcadores de posición como `:ciudad`) → `execute()` (proporcionar los valores reales) → `fetch()`/`fetchAll()` (recuperar el resultado).
 
 > **Nota:** `$pdo->query($sql)` es un atajo **sin** marcador de posición, utilizable solo si `$sql` es una cadena 100 % escrita a mano, sin ninguna variable externa concatenada dentro. En cuanto un solo valor externo (usuario, URL, sesión...) entra en la consulta, hay que pasar por `prepare()`/`execute()`.
+
+## `IN (...)` con una lista de tamaño variable en PDO
+
+PDO solo permite parametrizar valores individuales, nunca un array entero en un único marcador de posición: `IN (:ciudades)` con `execute([':ciudades' => ['Lyon', 'Paris']])` no funciona -- PDO trataría el array como un único valor (un error, o una conversión incorrecta según el driver).
+
+```php
+<?php
+function consultaConIn(PDO $pdo, string $sql, string $prefijo, array $valores): PDOStatement
+{
+    // Genera un marcador de posicion con nombre por valor: prefijo_0, prefijo_1...
+    $marcadores = [];
+    $params = [];
+    foreach (array_values($valores) as $i => $valor) {
+        $nombre = ":{$prefijo}_{$i}";
+        $marcadores[] = $nombre;
+        $params[$nombre] = $valor;
+    }
+
+    // Reemplaza el marcador {IN} del SQL dado por la lista de marcadores generada
+    $sqlFinal = str_replace('{IN}', implode(', ', $marcadores), $sql);
+
+    $stmt = $pdo->prepare($sqlFinal);
+    $stmt->execute($params);
+    return $stmt;
+}
+
+$stmt = consultaConIn(
+    $pdo,
+    'SELECT * FROM clientes WHERE ciudad IN ({IN})',
+    'ciudad',
+    ['Lyon', 'Paris']
+);
+// SQL generado: SELECT * FROM clientes WHERE ciudad IN (:ciudad_0, :ciudad_1)
+```
+
+| Paso | Rol |
+|---|---|
+| Un marcador de posición con nombre por valor (`:ciudad_0`, `:ciudad_1`...) | Rodea la limitación de PDO (un marcador = un único valor) |
+| `implode(', ', $marcadores)` | Construye la lista `(:ciudad_0, :ciudad_1)` a insertar en el `IN (...)` |
+| `$params` | Cada valor sigue pasándose por separado a `execute()`, nunca concatenado en el texto SQL |
+
+> **Trampa:** una lista vacía (`$valores = []`) genera un `IN ()` sintácticamente inválido en la mayoría de los motores SQL. Comprobar que `$valores` no está vacío antes de llamar a esta función (o cortocircuitar toda la consulta: una búsqueda sobre una lista vacía de ciudades no puede devolver ningún resultado de todas formas).
+>
+> **Buena práctica:** nunca concatenar directamente los valores en el `IN (...)` (sería la misma fallo de [inyección SQL](#inyeccion-sql-por-que-nunca-concatenar-un-valor-externo) que concatenar cualquier otro valor externo); generar siempre un marcador de posición por valor, sea cual sea el tamaño de la lista.
 
 ## Controlar SQL desde Python con `pyodbc`
 
@@ -260,7 +366,7 @@ VALUES (1, 'Dupont', 'Paris', GETDATE(), NULL, 1);
 
 | | |
 |---|---|
-| **Para recordar** | SQL consulta (DML) y define la estructura (DDL) de tablas (columnas fijas, filas = registros). `JOIN` combina dos tablas por una columna común; `INNER JOIN` elimina las filas sin correspondencia, `LEFT JOIN` las conserva. `NULL` = valor desconocido, nunca confundir con un valor centinela. |
-| **Herramientas utilizables** | `SELECT`/`WHERE`, funciones de agregación (`COUNT`/`SUM`/`AVG`), `JOIN`/`LEFT JOIN`, `CREATE TABLE`/`ALTER TABLE`, índices, consultas preparadas vía PDO ([PHP](/?c=langages-de-programmation&s=php&p=php)) o `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 para conservar el historial de cambios. |
-| **Trampas a evitar** | Concatenar un valor externo directamente en una consulta SQL (inyección SQL); usar `INNER JOIN` cuando se quieren conservar las filas sin correspondencia; reordenar columnas con `ALTER TABLE` (imposible, hay que recrear la tabla); confundir `NULL` con un valor centinela. |
-| **Buenas prácticas** | Pasar siempre por una consulta preparada (`prepare`/`execute`) para un valor externo; limitar los permisos de la cuenta de aplicación a lo estrictamente necesario (principio del mínimo privilegio); clave técnica (`IDENTITY`) en lugar de clave natural ancha para indexar. |
+| **Para recordar** | SQL consulta (DML) y define la estructura (DDL) de tablas (columnas fijas, filas = registros). `JOIN` combina dos tablas por una columna común; `INNER JOIN` elimina las filas sin correspondencia, `LEFT JOIN` las conserva; `APPLY` combina una unión con una llamada a función/subconsulta parametrizada por fila. `GROUP BY`/`GROUPING SETS` resumen por grupo, con o sin total global en la misma consulta. `NULL` = valor desconocido, nunca confundir con un valor centinela. |
+| **Herramientas utilizables** | `SELECT`/`WHERE`, funciones de agregación (`COUNT`/`SUM`/`AVG`), `GROUP BY`/`GROUPING SETS`/`GROUPING()`, `JOIN`/`LEFT JOIN`/`OUTER APPLY`/`CROSS APPLY`, `CREATE TABLE`/`ALTER TABLE`, índices, consultas preparadas vía PDO ([PHP](/?c=langages-de-programmation&s=php&p=php), incluido un `IN (...)` de tamaño variable mediante marcadores generados) o `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 para conservar el historial de cambios. |
+| **Trampas a evitar** | Concatenar un valor externo directamente en una consulta SQL (inyección SQL), incluido dentro de un `IN (...)`; usar `INNER JOIN` cuando se quieren conservar las filas sin correspondencia; reordenar columnas con `ALTER TABLE` (imposible, hay que recrear la tabla); confundir `NULL` con un valor centinela, incluido el `NULL` de total de un `GROUPING SETS`. |
+| **Buenas prácticas** | Pasar siempre por una consulta preparada (`prepare`/`execute`) para un valor externo, incluido un marcador por valor dentro de un `IN (...)`; limitar los permisos de la cuenta de aplicación a lo estrictamente necesario (principio del mínimo privilegio); clave técnica (`IDENTITY`) en lugar de clave natural ancha para indexar; `GROUPING()` para distinguir una fila de total de un valor `NULL` real. |

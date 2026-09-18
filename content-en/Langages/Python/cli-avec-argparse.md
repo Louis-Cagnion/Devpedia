@@ -12,8 +12,8 @@ A **CLI** (*Command-Line Interface*) is a program you control entirely through c
 import argparse
 
 parser = argparse.ArgumentParser(prog="converter")
-parser.add_argument("file", help="Path of the file to convert")           # positional: required, identified by position
-parser.add_argument("--format", default="json", help="Output format")    # optional: identified by name, "--" in front
+parser.add_argument("file", help="Path of the file to convert")        # positional: required, identified by position
+parser.add_argument("--format", default="json", help="Output format")  # optional: identified by name, "--" in front
 
 args = parser.parse_args()
 print(args.file, args.format)

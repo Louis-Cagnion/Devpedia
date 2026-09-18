@@ -37,6 +37,20 @@ Les deux codes correspondent sans qu'aucun message n'ait transite entre les deux
 
 C'est ce qui permet à une application d'authentification de fonctionner même sans connexion internet : elle n'a besoin que d'une horloge à peu près synchronisée, pas d'un échange réseau.
 
+## L'URI `otpauth://` : transmettre le secret initial à l'application
+
+Le principe ci-dessus suppose que l'application et le serveur partagent déjà un secret. Comment ce secret leur est-il transmis la première fois, à l'activation ? Le serveur l'encode dans une URI normalisée au format `otpauth://totp/<émetteur>:<compte>?secret=<secret>&issuer=<émetteur>`, un schéma reconnu par toute application TOTP (Google Authenticator, Aegis...), indépendamment du site qui l'émet. Cette URI est ensuite encodée en QR code pour être scannée par l'application, ce qui évite à l'utilisateur de retaper le secret à la main (source d'erreur) :
+
+```text
+otpauth://totp/MonSite:alice@exemple.com?secret=JBSWY3DPEHPK3PXP&issuer=MonSite
+         \___/ \_____________________/ \____________________________________/
+        type       emetteur:compte           parametres (secret, issuer)
+```
+
+> **Piège :** croire que le QR code lui-même apporte une sécurité particulière. Il n'est qu'un moyen pratique d'encoder cette URI sans erreur de saisie : seul le `secret` qu'elle contient importe réellement, et toute personne capable de lire ce QR code (ou d'intercepter l'URI) peut générer les mêmes codes TOTP que l'utilisateur légitime.
+>
+> **Bonne pratique :** n'afficher ce QR code qu'une seule fois, au moment de l'activation, sur une connexion déjà authentifiée et chiffrée ; ne jamais le stocker ni le renvoyer plus tard sous une forme réaffichable.
+
 ## La clé de sécurité physique : la protection la plus robuste face au phishing
 
 Un code TOTP reste vulnérable si l'utilisateur le saisit lui-même sur un faux site qui imite le vrai (une attaque d'[hameçonnage](https://en.wikipedia.org/wiki/Hame%C3%A7onnage), *phishing*) : rien n'empêche techniquement de taper le bon code au mauvais endroit. Une clé de sécurité physique (FIDO2/WebAuthn) élimine ce risque différemment : elle vérifie cryptographiquement l'adresse exacte du site qui la sollicite, et refuse de répondre si l'adresse ne correspond pas à celle enregistrée à l'origine, même si le faux site est visuellement identique au vrai.

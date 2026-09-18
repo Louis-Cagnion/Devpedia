@@ -68,6 +68,45 @@ private:
 
 Le destructeur (`~NomClasse()`) s'exécute automatiquement dès que l'objet est détruit (fin de portée pour un objet local, `delete` pour un objet alloué dynamiquement) : c'est la base du mécanisme [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii), central en C++ pour ne jamais oublier de libérer une ressource.
 
+## La forme canonique orthodoxe (Rule of Three)
+
+Une classe qui gère elle-même une ressource (mémoire allouée dynamiquement, fichier ouvert...) doit définir quatre membres spéciaux ensemble, jamais seulement certains d'entre eux : le constructeur par défaut, le **constructeur de copie**, l'**opérateur d'affectation par copie**, et le destructeur (vu plus haut). Cette convention s'appelle la **forme canonique orthodoxe** (*Rule of Three*).
+
+```cpp
+class Tableau {
+public:
+    Tableau(int taille) : taille(taille), donnees(new int[taille]) {}
+
+    // Constructeur de copie : construit un NOUVEL objet à partir d'un autre déjà existant
+    Tableau(const Tableau &autre) : taille(autre.taille), donnees(new int[autre.taille]) {
+        for (int i = 0; i < taille; i++) donnees[i] = autre.donnees[i];
+    }
+
+    // Opérateur d'affectation par copie : copie DANS un objet déjà construit
+    Tableau &operator=(const Tableau &autre) {
+        if (this != &autre) {   // protection contre l'auto-affectation (a = a)
+            delete[] donnees;
+            taille = autre.taille;
+            donnees = new int[taille];
+            for (int i = 0; i < taille; i++) donnees[i] = autre.donnees[i];
+        }
+        return *this;   // permet l'enchaînement : a = b = c
+    }
+
+    ~Tableau() { delete[] donnees; }
+
+private:
+    int taille;
+    int *donnees;
+};
+```
+
+Sans constructeur de copie ni opérateur d'affectation explicites, C++ en génère des versions par défaut qui copient chaque membre **tel quel** (une copie superficielle) : pour un pointeur comme `donnees`, cela copie l'adresse, jamais les données pointées. Deux objets se retrouveraient alors à partager le même bloc mémoire, et le premier destructeur appelé libérerait une mémoire que l'autre objet croit toujours valide.
+
+> **Piège :** oublier la vérification `this != &autre` dans l'opérateur d'affectation. Sur une **auto-affectation** (`a = a`), `delete[] donnees` libérerait la mémoire avant que la boucle ne tente de la relire depuis elle-même : un use-after-free sur ses propres données.
+>
+> **Bonne pratique :** implémenter les quatre membres ensemble dès qu'un seul est nécessaire, jamais un sous-ensemble : un constructeur de copie sans opérateur d'affectation correspondant (ou l'inverse) est un signal fort d'oubli, pas un choix délibéré.
+
 ## Méthodes `const`
 
 ```cpp
@@ -99,6 +138,6 @@ Voir aussi [Héritage et polymorphisme](/?c=langages-de-programmation&s=cpp&p=he
 | | |
 |---|---|
 | **À retenir** | Une classe regroupe données et méthodes, avec un contrôle d'accès (`public`/`private`/`protected`). Le constructeur initialise l'objet, le destructeur libère ses ressources automatiquement à la fin de sa portée. |
-| **Outils utilisables** | Liste d'initialisation (`: membre(valeur)`), méthodes `const`, membres/méthodes `static`. |
-| **Pièges à éviter** | Oublier qu'une classe cache ses membres par défaut (`private` implicite), contrairement à un `struct` C entièrement public. |
-| **Bonnes pratiques** | Préférer la liste d'initialisation à une affectation dans le corps du constructeur ; marquer `const` toute méthode qui ne modifie pas l'objet. |
+| **Outils utilisables** | Liste d'initialisation (`: membre(valeur)`), méthodes `const`, membres/méthodes `static`. Constructeur de copie et opérateur d'affectation pour une classe qui gère une ressource. |
+| **Pièges à éviter** | Oublier qu'une classe cache ses membres par défaut (`private` implicite), contrairement à un `struct` C entièrement public. Oublier la protection contre l'auto-affectation dans `operator=`. |
+| **Bonnes pratiques** | Préférer la liste d'initialisation à une affectation dans le corps du constructeur ; marquer `const` toute méthode qui ne modifie pas l'objet. Implémenter les quatre membres de la forme canonique ensemble, jamais un sous-ensemble. |

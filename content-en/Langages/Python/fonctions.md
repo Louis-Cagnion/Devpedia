@@ -18,47 +18,47 @@ result = addition(2, 3)   # 5
 ## Default Settings
 
 ```python
-def saluer(name, message="Bonjour"):
+def greet(name, message="Hello"):
     return f"{message} {name}"
 
-saluer("Jean")               # "Hello, Jean"
-saluer("Jean", "Salut")       # "Hi, Jean"
+greet("John")            # "Hello John"
+greet("John", "Hi")      # "Hi John"
 ```
 
 > **Common pitfall: Never use a mutable object (list, dict) as a default value.** The default value is evaluated **only once**, when the function is defined, not on every call:
 
 ```python
-def ajouter_a_liste(element, list=[]):  # WARNING: This list is SHARED across all calls
-    list.append(element)
-    return list
+def add_to_list(item, items=[]):  # WARNING: This list is SHARED across all calls
+    items.append(item)
+    return items
 
-ajouter_a_liste(1)   # [1]
-ajouter_a_liste(2)   # [1, 2] -> not [2]! The same default list was reused
+add_to_list(1)   # [1]
+add_to_list(2)   # [1, 2] -> not [2]! The same default list was reused
 ```
 
 Best practice:
 
 ```python
-def ajouter_a_liste(element, list=None):
-    if list is None:
-        list = []   # a NEW list, created with each call
-    list.append(element)
-    return list
+def add_to_list(item, items=None):
+    if items is None:
+        items = []   # a NEW list, created with each call
+    items.append(item)
+    return items
 ```
 
 ## `*args` and `**kwargs`: a variable number of arguments
 
 ```python
-def somme(*numbers):          # *args: groups any excess positional arguments into a tuple
+def total(*numbers):          # *args: groups any excess positional arguments into a tuple
     return sum(numbers)
 
-somme(1, 2, 3, 4)   # 10
+total(1, 2, 3, 4)   # 10
 
-def afficher_infos(**options):  # **kwargs: groups excess named arguments into a dict**
+def display_info(**options):  # **kwargs: groups excess named arguments into a dict
     for key, value in options.items():
         print(f"{key} : {value}")
 
-afficher_infos(name="Jean", age=25)
+display_info(name="John", age=25)
 ```
 
 ### Unpacking an existing dict in a call
@@ -80,11 +80,11 @@ Careful to distinguish: `**kwargs` in a function **definition** COLLECTS excess 
 A `*` alone in the signature forces everything that follows to be passed by name, never by position:
 
 ```python
-def creer_utilisateur(name, *, email, actif=True):
-    return {"nom": name, "email": email, "actif": actif}
+def create_user(name, *, email, active=True):
+    return {"name": name, "email": email, "active": active}
 
-creer_utilisateur("Jean", email="jean@exemple.com")   # OK
-creer_utilisateur("Jean", "jean@exemple.com")           # TypeError: "email" must be named
+create_user("John", email="john@example.com")   # OK
+create_user("John", "john@example.com")         # TypeError: "email" must be named
 ```
 
 ## Lambda Functions
@@ -97,7 +97,7 @@ double(5)   # 10
 
 # Typical use: as an argument to a function that expects a callback
 numbers = [5, 2, 8, 1]
-nombres_tries = sorted(numbers, key=lambda x: -x)  # descending order
+sorted_numbers = sorted(numbers, key=lambda x: -x)  # descending order
 ```
 
 ## Closures and `nonlocal`
@@ -108,16 +108,27 @@ A nested function can read the variables of the enclosing function; to **modify*
 def counter():
     total = 0
 
-    def incrementer():
-        nonlocal total   # Without this, "total += 1" would create a new LOCAL variable to be incremented()
+    def increment():
+        nonlocal total   # Without this, "total += 1" would create a new LOCAL variable inside increment(), instead of modifying the enclosing one
         total += 1
         return total
 
-    return incrementer
+    return increment
 
-compter = counter()
-compter()   # 1
-compter()   # 2 -> "total" was indeed preserved between calls
+count = counter()
+count()   # 1
+count()   # 2 -> "total" was indeed preserved between calls
 ```
 
 See also the chapter on decorators, which is directly based on this closure mechanism.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A Python function is a first-class object (storable, passable as an argument). `*args`/`**kwargs` handle a variable number of arguments; a closure keeps access to its enclosing function's variables. |
+| **Tools you can use** | Default parameters, keyword-only arguments (`*`), lambdas, `nonlocal`. |
+| **Pitfalls to avoid** | Using a mutable object (list, dict) as a default value: it's shared across every call, not recreated each time. |
+| **Best practices** | Use `None` as the default value for a mutable parameter, then create the real object inside the function. |

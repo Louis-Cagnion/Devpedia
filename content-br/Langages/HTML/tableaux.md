@@ -55,6 +55,27 @@ Uma tabela HTML serve para representar dados **tabulares** (linhas/colunas realm
 
 `colspan` estende uma célula por várias colunas, `rowspan` por várias linhas.
 
+## Controlar a largura das colunas: `table-layout` e `<colgroup>`
+
+Por padrão (`table-layout: auto`, em [CSS](/?c=langages-de-balisage&s=css&p=css)), o navegador ajusta a largura de cada coluna ao conteúdo real de suas células. `table-layout: fixed` inverte esse comportamento e impõe larguras declaradas antecipadamente, independentemente do conteúdo:
+
+```html
+<table style="table-layout: fixed; width: 100%;">
+    <colgroup>
+        <col style="width: 60%;">
+        <col style="width: 40%;">
+    </colgroup>
+    <tr>
+        <td>Nome</td>
+        <td>Cidade</td>
+    </tr>
+</table>
+```
+
+`<colgroup>` e `<col>` declaram a largura de cada coluna uma única vez, no topo da tabela, em vez de repeti-la em cada célula de uma mesma coluna.
+
+> **Boa prática:** usar `table-layout: fixed` + `<colgroup>` assim que várias tabelas independentes precisarem permanecer alinhadas coluna por coluna (uma comparação linha a linha entre elas): `table-layout: auto` ajustaria cada tabela conforme seu próprio conteúdo, desalinhando as colunas de uma tabela para outra.
+
 ## Rodapé de tabela
 
 ```html
@@ -97,6 +118,6 @@ Uma tabela HTML serve para representar dados **tabulares** (linhas/colunas realm
 | | |
 |---|---|
 | **Para lembrar** | `<table>` representa dados tabulares realmente ligados entre si; nunca um layout geral. `<thead>`/`<tbody>`/`<tfoot>` estruturam a tabela; `colspan`/`rowspan` mesclam células. |
-| **Ferramentas utilizáveis** | `<caption>` (título da tabela), `scope="col"`/`"row"` em um `<th>` para a acessibilidade. |
+| **Ferramentas utilizáveis** | `<caption>` (título da tabela), `scope="col"`/`"row"` em um `<th>` para a acessibilidade, `table-layout: fixed` + `<colgroup>` para larguras de coluna autoritativas. |
 | **Armadilhas a evitar** | Usar `<table>` para o layout geral de uma página: quebra a semântica e complica a responsividade. |
-| **Boas práticas** | Sempre associar um `scope` a cada `<th>` de uma tabela complexa, para que um leitor de tela anuncie o cabeçalho correto por célula. |
+| **Boas práticas** | Sempre associar um `scope` a cada `<th>` de uma tabela complexa, para que um leitor de tela anuncie o cabeçalho correto por célula. `table-layout: fixed` para manter várias tabelas alinhadas coluna por coluna. |

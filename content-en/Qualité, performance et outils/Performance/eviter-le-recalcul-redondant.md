@@ -171,6 +171,33 @@ The anti-concurrency lock (`recompute_lock`) prevents an expensive recomputation
 >
 > **Best practice:** never make a stale cache block the user for a simple refresh; reserve waiting for the very first call, with no cached value at all.
 
+## Progressive HTTP streaming: when the computation is unavoidable
+
+All the previous techniques avoid an avoidable recomputation. This one applies to the opposite case: a computation that is genuinely **unavoidable** (importing a large file, calling a slow external service) and that no cache can shorten. The only remaining lever is how the user perceives the wait.
+
+By default, a PHP server keeps everything a script writes with `echo` in memory, and only sends it to the browser once the script finishes (or its buffer fills up): the user sees a blank page until the end, even though the script may have already produced a useful result long before.
+
+```php
+<?php
+ini_set('output_buffering', 'off');   // turns off output buffering
+ini_set('implicit_flush', true);      // forces immediate sending after each echo
+while (ob_get_level() > 0) {
+    ob_end_flush();                   // also flushes any buffer already opened by PHP itself
+}
+
+foreach ($rowsToImport as $row) {
+    importRow($row);
+    echo "Row imported: {$row->id}<br>\n";
+    flush();                          // sends this echo to the browser right away
+}
+```
+
+Every `echo` followed by `flush()` is sent to the browser immediately, without waiting for the script to finish: the user sees a console filling up in real time, like terminal logs, instead of a blank page followed by a single final result.
+
+> **Note:** this mechanism is the opposite of [`fastcgi_finish_request()`](/?c=langages&s=php&p=php-fpm): there, the connection closes right away and the work keeps going hidden behind it; here, the connection stays open for the whole computation, which is exactly what allows sending each piece of the result as it becomes available.
+
+> **Pitfall:** this streaming breaks as soon as an intermediate server (proxy, load balancer, Nginx in `fastcgi_buffering` mode) puts its own buffer back in place: check the whole network chain's configuration, not just PHP's.
+
 ## Summary
 
 | Situation | Without the principle | With the principle |
@@ -188,7 +215,7 @@ In all four cases, the gain doesn't come from a computation made faster, but fro
 
 | | |
 |---|---|
-| **Key takeaways** | Never recompute a result that nothing could have changed since it was last computed: memoization, incremental reprocessing, or dirty rectangles all apply the same idea at different scales. A file cache adds two techniques: atomic writes (never a half-written read) and stale-while-revalidate (answer fast, recompute behind the scenes). |
-| **Tools you can use** | An in-memory cache per input (memoization), a progress marker to only reprocess what's new, a "light" comparison before an expensive check, `rename()`/`os.replace()` for an atomic write, an anti-concurrency lock for a background recomputation. |
-| **Pitfalls to avoid** | Memoizing without identifying what would invalidate the result: a cache that's never invalidated becomes a source of stale data. Writing directly to a cache file read by other processes. Applying stale-while-revalidate without an anti-concurrency lock. |
-| **Best practices** | Always define the invalidation condition before memoizing; distinguish avoidable recomputation (this principle) from a deliberate protective pause (to keep); write a cache file through a renamed temporary file; only make the user wait on the very first call with no cache. |
+| **Key takeaways** | Never recompute a result that nothing could have changed since it was last computed: memoization, incremental reprocessing, or dirty rectangles all apply the same idea at different scales. A file cache adds two techniques: atomic writes (never a half-written read) and stale-while-revalidate (answer fast, recompute behind the scenes). When the computation is unavoidable (nothing to cache), progressive HTTP streaming is the only way left to improve perceived wait time. |
+| **Tools you can use** | An in-memory cache per input (memoization), a progress marker to only reprocess what's new, a "light" comparison before an expensive check, `rename()`/`os.replace()` for an atomic write, an anti-concurrency lock for a background recomputation, `flush()`/`ob_end_flush()` for progressive HTTP streaming. |
+| **Pitfalls to avoid** | Memoizing without identifying what would invalidate the result: a cache that's never invalidated becomes a source of stale data. Writing directly to a cache file read by other processes. Applying stale-while-revalidate without an anti-concurrency lock. Streaming an HTTP response without checking that no intermediate proxy puts its own buffer back in place. |
+| **Best practices** | Always define the invalidation condition before memoizing; distinguish avoidable recomputation (this principle) from a deliberate protective pause (to keep); write a cache file through a renamed temporary file; only make the user wait on the very first call with no cache; stream the HTTP response as soon as a long, unavoidable computation produces results progressively. |

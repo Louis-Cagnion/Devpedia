@@ -55,6 +55,33 @@ Once the connection is established, either side can send a message at any time, 
 >
 > **Best practice:** choose raw WebSocket for a simple need and full control over the message format; choose Socket.IO (or an equivalent library) as soon as automatic reconnection, the compatibility fallback, or a named-event model save real development time, while accepting the dependency on this library on both sides (server and client).
 
+## A concrete use case: the authoritative server-side game loop
+
+In a real-time multiplayer game (a Pong-style ball game, for instance), the server doesn't just relay messages: it runs its own simulation of the game (ball position, collisions, score) at regular intervals, and only ever accepts **inputs** from clients (keys pressed), never their position. This is the **authoritative server** model: the game's real position only ever exists in one place (the server), which stops a client from cheating by announcing a false position of its own.
+
+```text
+Client A -- inputs (up/down) -->
+Client B -- inputs (up/down) -->   Server: simulates the game at a fixed rate (e.g. 60 Hz)
+                                    (position, collisions, score...), then broadcasts
+                                    the resulting state via WebSocket
+
+Clients never send their own position: they receive the state and just display it.
+```
+
+## Simulation rate (tick rate) can differ from emit rate
+
+The simulation loop runs at a fixed interval (the **tick**, e.g. every 1/60th of a second, i.e. 60 Hz), typically via a repeating timer (`setInterval`). But nothing forces sending the game state on every tick: broadcasting every other tick, for example, halves network bandwidth without losing any calculation precision, since the simulation keeps running at full speed.
+
+| | Tick rate (simulation) | Emit rate (network broadcast) |
+|---|---|---|
+| Role | Compute the next game state | Send that state to clients over WebSocket |
+| Can it be faster than the other? | Yes, always at least as fast | No, never faster than the tick rate |
+| Cost if too high | Server CPU load | Network bandwidth |
+
+> **Pitfall:** computing a tick's movement from an uncapped elapsed time (`dt`). If the server slows down momentarily (a load spike, a garbage collector pause), the next tick's `dt` can become abnormally large, letting an object pass straight through a wall that, at a normal rate, would have been stopped by the collision at an intermediate tick.
+>
+> **Best practice:** cap `dt` at a reasonable maximum value (e.g. never more than 50 ms of simulated time at once, even if the actual tick took longer), so the simulation stays consistent even after a momentary server slowdown.
+
 ## When WebSocket is the right answer, and when something else is enough
 
 | Need | Suitable solution |
@@ -71,5 +98,5 @@ A *webhook* looks like real time on the server side (it notifies with no explici
 |---|---|
 | **Key takeaways** | WebSocket upgrades an initial HTTP connection into a bidirectional connection that stays open, letting the server send a message with no prior request from the client. Socket.IO is a library built on this protocol, adding automatic fallback, reconnection, and a named-event model. |
 | **Tools you can use** | Raw WebSocket for full control and a simple need; Socket.IO (or equivalent) when automatic reconnection and the compatibility fallback are worth the added dependency. |
-| **Pitfalls to avoid** | Simulating real time with repeated polling, which is costly and lags behind. Connecting a raw WebSocket client to a Socket.IO server and expecting them to understand each other natively. |
-| **Best practices** | Reserve WebSocket for exchanges that are genuinely bidirectional and continuous; a simple HTTP webhook is enough for a one-off server-to-server notification. |
+| **Pitfalls to avoid** | Simulating real time with repeated polling, which is costly and lags behind. Connecting a raw WebSocket client to a Socket.IO server and expecting them to understand each other natively. Computing a simulation tick with an uncapped `dt`. |
+| **Best practices** | Reserve WebSocket for exchanges that are genuinely bidirectional and continuous; a simple HTTP webhook is enough for a one-off server-to-server notification. For a multiplayer game or simulation, keep the server authoritative and decouple the tick rate from the emit rate. |

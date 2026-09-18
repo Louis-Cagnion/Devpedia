@@ -91,6 +91,39 @@ Este enfoque es la base de un **bucle de eventos** (*event loop*): un único buc
 >
 > **Buena práctica:** poner los sockets en modo no bloqueante (`fcntl(socket, F_SETFL, O_NONBLOCK)`) como complemento de `select`/`poll`/`epoll`, para que una llamada `read()` sobre un socket anunciado como "listo" pero que se vacía entretanto no bloquee nunca el programa.
 
+## Reconstituir una petición HTTP recibida en varios fragmentos
+
+Una llamada a `read()` sobre un socket no devuelve necesariamente una petición HTTP completa: la red puede dividirla en varios paquetes, entregados al programa en varias llamadas `read()` sucesivas. El programa debe entonces **acumular** los fragmentos recibidos en un búfer, y determinar por sí mismo cuándo la petición está completa.
+
+```text
+read() #1: "GET /pagina HTTP/1.1\r\nHost: eje"
+read() #2: "mplo.com\r\n\r\n"
+-> acumula ambos en un buffer, hasta detectar el fin de las cabeceras
+```
+
+Dos reglas determinan cuándo una petición está completa:
+
+1. **El fin de las cabeceras** se marca con una línea en blanco, la secuencia `\r\n\r\n` (retorno de carro + salto de línea, dos veces seguidas). Mientras esa secuencia no aparezca en el búfer acumulado, las cabeceras aún no se han recibido por completo.
+2. **Para una petición con cuerpo** (típicamente `POST`), la cabecera `Content-Length` indica el número exacto de bytes esperados después de `\r\n\r\n`: la petición solo está completa cuando ese número de bytes se ha recibido realmente, no antes.
+
+```text
+buffer = buffer + fragmento_recibido
+
+si "\r\n\r\n" aun no esta en el buffer:
+    cabeceras aun no completas, seguir leyendo
+si no, si se espera un cuerpo (Content-Length presente):
+    si bytes recibidos despues de "\r\n\r\n" < Content-Length:
+        cuerpo aun no completo, seguir leyendo
+    si no:
+        peticion completa
+si no:
+    peticion completa (no se espera cuerpo)
+```
+
+> **Trampa:** tratar una petición como terminada en cuanto aparece `\r\n\r\n`, sin comprobar `Content-Length` para una petición con cuerpo. Un cuerpo de petición dividido en varios paquetes de red se trataría entonces como terminado prematuramente, antes de que se hayan recibido todos sus datos.
+>
+> **Buena práctica:** nunca suponer que un solo `read()` basta para recibir una petición HTTP completa, incluso en una conexión local rápida: acumular siempre en un búfer y comprobar explícitamente ambas condiciones (fin de las cabeceras, y luego `Content-Length` si se espera un cuerpo) antes de considerar la petición lista para procesar.
+
 ---
 
 ## 📋 Resumen
@@ -98,6 +131,6 @@ Este enfoque es la base de un **bucle de eventos** (*event loop*): un único buc
 | | |
 |---|---|
 | **Para recordar** | Un socket de servidor sigue la secuencia `socket()` → `bind()` → `listen()` → `accept()`; las llamadas de red clásicas bloquean, lo que impide gestionar varios clientes con un único bucle simple. |
-| **Herramientas utilizables** | `select()`/`poll()` (portables) o `epoll()` (Linux, más escalable) para vigilar varios sockets sin bloquear; `O_NONBLOCK` para asegurar las lecturas. |
-| **Trampas a evitar** | Bloquear en un solo socket (`accept()`/`read()`) en un servidor multicliente sin multiplexión. |
+| **Herramientas utilizables** | `select()`/`poll()` (portables) o `epoll()` (Linux, más escalable) para vigilar varios sockets sin bloquear; `O_NONBLOCK` para asegurar las lecturas. Un búfer acumulador para reconstituir una petición HTTP recibida en varias llamadas `read()`. |
+| **Trampas a evitar** | Bloquear en un solo socket (`accept()`/`read()`) en un servidor multicliente sin multiplexión. Considerar una petición HTTP completa en cuanto aparece `\r\n\r\n` sin comprobar `Content-Length` para un cuerpo. |
 | **Buenas prácticas** | Construir el servidor alrededor de un bucle de eventos que solo actúa sobre los sockets realmente listos. |

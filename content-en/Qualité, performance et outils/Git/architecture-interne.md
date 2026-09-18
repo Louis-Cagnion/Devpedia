@@ -1,5 +1,5 @@
 ---
-order: 11
+order: 14
 ---
 
 # The Internal Architecture of Git

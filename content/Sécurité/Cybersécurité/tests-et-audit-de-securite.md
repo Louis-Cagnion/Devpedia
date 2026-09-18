@@ -1,5 +1,5 @@
 ---
-order: 10
+order: 19
 ---
 
 # Tests et audit de sécurité
@@ -66,7 +66,24 @@ Un **programme de bug bounty** invite n'importe quel chercheur en sécurité ext
 
 ## Où s'intègrent l'audit de dépendances et le suivi des CVE
 
-L'audit des bibliothèques tierces (`npm audit`, `pip-audit`, déjà détaillé dans [Sécurité des dépendances](/?c=cybersecurite&p=securite-des-dependances)) et la veille sur les identifiants [CVE](/?c=cybersecurite&p=types-de-failles) complètent ces méthodes : SAST/DAST/fuzzing/pentest cherchent des failles **dans le code écrit par le projet**, l'audit de dépendances cherche des failles **déjà connues dans le code écrit par d'autres**, réutilisé par le projet.
+L'audit des bibliothèques tierces (`npm audit`, `pip-audit`, déjà détaillé dans [Sécurité des dépendances](/?c=securite&s=cybersecurite&p=securite-des-dependances)) et la veille sur les identifiants [CVE](/?c=securite&s=cybersecurite&p=types-de-failles) complètent ces méthodes : SAST/DAST/fuzzing/pentest cherchent des failles **dans le code écrit par le projet**, l'audit de dépendances cherche des failles **déjà connues dans le code écrit par d'autres**, réutilisé par le projet.
+
+## Journalisation et détection : savoir qu'une attaque a eu lieu
+
+Toutes les méthodes vues plus haut cherchent des failles AVANT qu'elles ne soient exploitées. La **journalisation** (*logging*) et sa supervision couvrent le cas où une attaque a malgré tout lieu : sans trace exploitable, elle passe simplement inaperçue, parfois pendant des mois.
+
+| Ce qu'un log d'audit minimal doit capturer | Exemple |
+|---|---|
+| QUI | Compte/IP à l'origine de l'action |
+| QUOI | L'action précise effectuée (connexion, modification, suppression, export) |
+| QUAND | Horodatage précis |
+| RÉSULTAT | Succès ou échec, avec le motif d'échec le cas échéant |
+
+Ce log d'audit se distingue d'un log de débogage classique (destiné à comprendre un bug technique) par son objectif : reconstituer après coup qui a fait quoi, sur des actions SENSIBLES précisément (connexion, changement de droits, suppression, export de données), pas l'intégralité du trafic.
+
+> **Piège :** ne journaliser que ce qui aide à déboguer un problème technique, sans jamais capturer les actions sensibles au sens sécurité (qui a changé ce rôle, qui a exporté cette table) : une intrusion réussie mais jamais "cassée" techniquement (pas d'erreur, pas de crash) ne laisse alors aucune trace.
+>
+> **Bonne pratique :** journaliser systématiquement les actions sensibles avec qui/quoi/quand/résultat, et mettre en place une alerte sur un signal anormal simple (ex. des centaines de tentatives de connexion échouées sur un même compte) plutôt que de compter uniquement sur une relecture manuelle a posteriori.
 
 ---
 
@@ -74,7 +91,7 @@ L'audit des bibliothèques tierces (`npm audit`, `pip-audit`, déjà détaillé 
 
 | | |
 |---|---|
-| **À retenir** | SAST analyse le code sans l'exécuter ; DAST attaque l'application en fonctionnement ; le fuzzing bombarde un programme d'entrées inattendues pour provoquer un plantage révélateur ; un pentest est une attaque simulée par un professionnel mandaté, dans un périmètre défini. |
-| **Outils utilisables** | Un analyseur SAST/DAST intégré au pipeline CI/CD, un fuzzer, un programme de bug bounty pour une surveillance continue. |
-| **Pièges à éviter** | Confondre un pentest autorisé avec une intrusion réelle ; ne tester la sécurité qu'une seule fois, au lieu d'un contrôle continu à chaque changement. |
-| **Bonnes pratiques** | Intégrer SAST au pipeline CI/CD, dès le premier commit ; définir un périmètre et des règles d'engagement écrites avant tout pentest. |
+| **À retenir** | SAST analyse le code sans l'exécuter ; DAST attaque l'application en fonctionnement ; le fuzzing bombarde un programme d'entrées inattendues pour provoquer un plantage révélateur ; un pentest est une attaque simulée par un professionnel mandaté, dans un périmètre défini. La journalisation des actions sensibles (qui/quoi/quand/résultat) permet de détecter une attaque qui a malgré tout réussi. |
+| **Outils utilisables** | Un analyseur SAST/DAST intégré au pipeline CI/CD, un fuzzer, un programme de bug bounty pour une surveillance continue, un système d'alerte sur log anormal. |
+| **Pièges à éviter** | Confondre un pentest autorisé avec une intrusion réelle ; ne tester la sécurité qu'une seule fois, au lieu d'un contrôle continu à chaque changement ; ne journaliser que ce qui aide au débogage technique, sans les actions sensibles. |
+| **Bonnes pratiques** | Intégrer SAST au pipeline CI/CD, dès le premier commit ; définir un périmètre et des règles d'engagement écrites avant tout pentest ; journaliser systématiquement qui/quoi/quand/résultat sur toute action sensible. |

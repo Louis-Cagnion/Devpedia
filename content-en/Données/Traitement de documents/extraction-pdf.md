@@ -45,6 +45,74 @@ with pymupdf.open("document.pdf") as document:
 >
 > **Best practice:** characterize a block by the font size of its **longest** span (the most characters), not by the raw maximum size: a simple choice that keeps a short, isolated element (a number, a bullet) from skewing the measurement.
 
+## Detecting a Table by Geometric Heuristic
+
+Spotting a table on a page without resorting to [structured OCR](/?c=traitement-de-documents&p=ocr-structure) or a machine learning model: PyMuPDF analyzes the page's **geometry** (grid lines actually drawn in the PDF, alignment between native text blocks) to infer a table structure:
+
+```python
+with pymupdf.open("document.pdf") as document:
+    page = document[0]
+    for table in page.find_tables():
+        rows = table.extract()   # list of rows, each row = list of cells (str or None)
+        print(table.bbox, len(rows), "rows")
+```
+
+`find_tables()` returns something iterable page by page; each table found exposes its position (`bbox`) and an `extract()` method that returns its content already arranged into rows/cells, with no need to rebuild the grid yourself from raw text positions.
+
+| | Geometric heuristic (`find_tables()`) | Structured OCR |
+|---|---|---|
+| Relies on | Vector lines + native text alignment | Pixels of the rendered page |
+| Works on a scanned page | No (no native text or vector line to measure) | Yes |
+| Speed | Fast: no model to run | Slower: inference on an image |
+
+> **Pitfall:** a table with no visible borders and no clear alignment (columns separated by irregular spacing, no drawn grid) may be detected only partially, or not at all: `find_tables()` measures a geometry that is actually present, it never guesses a structure absent from the rendering.
+>
+> **Best practice:** check `find_tables()`'s result on a sample representative of the project's real tables before wiring it into a pipeline as-is, as with any heuristic based on layout.
+
+## Catching an undercounted number of columns with `img2table`
+
+The `find_tables()` pitfall seen above (a table with no drawn grid is poorly detected) has a frequent special case: a table that **is** detected, but with **fewer columns than reality**, for lack of clear visual separation between them. [`img2table`](https://github.com/xavctn/img2table) specifically solves this case: rather than relying on native text alignment, it analyzes the page's **contours** (via OpenCV) as an image, while still reusing the PDF's native text (no OCR) to fill in the detected cells.
+
+```python
+from img2table.document import PDF as Img2TablePDF
+
+results = Img2TablePDF(
+    src="document.pdf", pages=[0], pdf_text_extraction=True
+).extract_tables(borderless_tables=True, implicit_rows=False, implicit_columns=False)
+```
+
+`pdf_text_extraction=True` tells `img2table` to reuse the PDF's native text rather than invoking OCR: faster, and reliable as soon as the PDF already contains native text (see above). `borderless_tables=True` enables contour-based detection for a table with no visible border, precisely the case that trips up `find_tables()`.
+
+### Combining both rather than picking one
+
+`img2table` isn't systematically better than `find_tables()`: running a contour analysis on every page, including ones whose tables are already correctly detected, costs time for no benefit. A more targeted strategy is to only re-run `img2table` on pages where a `find_tables()` table is judged structurally suspect (a simple signal: a cell that concatenates several distinct numeric values, a symptom of columns wrongly merged), then only replace the native table with its `img2table` version if that version actually counts more columns:
+
+```python
+def catch_undercounted_tables(pdf_path, native_tables):
+    suspect_pages = {t.page for t in native_tables if looks_structurally_suspect(t.cells)}
+    if not suspect_pages:
+        return native_tables   # nothing to catch: no img2table cost paid for nothing
+
+    candidates_by_page = Img2TablePDF(
+        src=pdf_path, pages=[p - 1 for p in suspect_pages], pdf_text_extraction=True
+    ).extract_tables(borderless_tables=True, implicit_rows=False, implicit_columns=False)
+
+    result = []
+    for native_table in native_tables:
+        candidates = [c for c in candidates_by_page.get(native_table.page - 1, [])
+                      if containment_ratio(c.bbox, native_table.bbox) >= 0.7]
+        best = max((count_columns(c) for c in candidates), default=0)
+        if candidates and best > count_columns(native_table.cells):
+            result.extend(candidates)   # img2table does better: prefer it
+        else:
+            result.append(native_table)   # find_tables() was good enough
+    return result
+```
+
+> **Pitfall:** directly comparing an `img2table` table's coordinates (`bbox`) to a `find_tables()` table's without prior conversion. `img2table` returns its coordinates in the pixel space of its own internal rendering, at a fixed resolution (200 DPI), independent of whatever DPI might be used elsewhere in the pipeline to [render the page as an image](#rendering-a-page-as-an-image): without rescaling to that same reference DPI, two tables at the same real position on the page can appear not to overlap at all.
+>
+> **Best practice:** never assign the same `img2table` candidate to more than one native table: as soon as a candidate is chosen to replace a table, exclude it from the remaining candidates for the next native tables on the same page, to avoid a single contour-detected table serving as a replacement twice.
+
 ## Rendering a page as an image
 
 Some processes (structured [OCR](/?c=traitement-de-documents&p=ocr-structure), a visual check) need the page as an **image**, independent of any native text it already contains. PyMuPDF can also produce this rendering:
@@ -86,6 +154,6 @@ A full extraction pipeline typically produces, for a given PDF, two separate col
 | | |
 |---|---|
 | **Key takeaways** | A PDF mixes native text (characters actually stored) and image content (pixels) on the same page. Native text is extracted directly, with position and font size; image content must be rendered as an image (resolution set in DPI) before being interpreted any other way. |
-| **Tools you can use** | `pymupdf`: `page.get_text("dict")` for structured text, `page.get_pixmap(dpi=...)` for an image rendering, converted to a NumPy array with `np.frombuffer`/`reshape`. |
-| **Pitfalls to avoid** | Assuming a scanned PDF contains native text. Characterizing a block by its maximum font size rather than its longest span's. Picking a default DPI without validating it on real documents. |
-| **Best practices** | Check for the actual presence of native text before designing a pipeline. Measure a block by its longest span. Test several DPI values on representative documents before settling on one. |
+| **Tools you can use** | `pymupdf`: `page.get_text("dict")` for structured text, `page.find_tables()` for geometry-based table detection, `page.get_pixmap(dpi=...)` for an image rendering, converted to a NumPy array with `np.frombuffer`/`reshape`. `img2table` (OpenCV contour detection + native text) to catch an undercounted number of columns from `find_tables()`. |
+| **Pitfalls to avoid** | Assuming a scanned PDF contains native text. Characterizing a block by its maximum font size rather than its longest span's. Expecting `find_tables()` to guess a table with no grid and no clear alignment. Picking a default DPI without validating it on real documents. Comparing `img2table`/`find_tables()` `bbox` values without rescaling them to the same DPI. |
+| **Best practices** | Check for the actual presence of native text before designing a pipeline. Measure a block by its longest span. Validate `find_tables()` on a real sample before automating it. Test several DPI values on representative documents before settling on one. Only re-run `img2table` on suspect pages, and only replace a native table if `img2table` actually counts more columns. |

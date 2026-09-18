@@ -30,14 +30,81 @@ def encontrar_usuario(id: int) -> Optional[dict]:   # dict OU None
         return None
     return {"id": id, "nome": "Silva"}
 
-def processar_notas(notas: List[int]) -> float:      # lista de inteiros
+def processar_notas(notas: List[int]) -> float:     # lista de inteiros
     return sum(notas) / len(notas)
 
-def config() -> Dict[str, Union[str, int]]:           # dict cujos valores sao str OU int
+def config() -> Dict[str, Union[str, int]]:         # dict cujos valores sao str OU int
     return {"nome": "app", "versao": 2}
 ```
 
 > **Nota:** desde o Python 3.9+, `list[int]`/`dict[str, int]` (os tipos nativos diretamente, em minúsculas) substituem `List[int]`/`Dict[str, int]` do módulo `typing` para esses casos simples; `typing` continua necessário para construções como `Optional`/`Union`.
+
+## Sintaxe moderna `X | None` (Python 3.10+)
+
+Desde o Python 3.10 ([PEP 604](https://peps.python.org/pep-0604/)), o operador `|` entre dois tipos substitui `Optional`/`Union` do módulo `typing`, diretamente nos próprios tipos, sem import adicional:
+
+```python
+def encontrar_usuario(id: int) -> dict | None:   # substitui Optional[dict]
+    if id <= 0:
+        return None
+    return {"id": id, "nome": "Silva"}
+
+def config() -> dict[str, str | int]:            # substitui Dict[str, Union[str, int]]
+    return {"nome": "app", "versao": 2}
+```
+
+| Sintaxe antiga (`typing`) | Sintaxe moderna (3.10+) |
+|---|---|
+| `Optional[dict]` | `dict \| None` |
+| `Union[str, int]` | `str \| int` |
+| `Optional[Union[str, int]]` | `str \| int \| None` |
+
+> **Nota:** essa sintaxe não substitui todo o `typing`: construções como `Callable`, `TypeVar` ou `Generic` continuam necessárias. Ela cobre apenas os casos antes tratados por `Optional`/`Union`.
+
+## Alias de tipo: nomear uma união para reutilizá-la
+
+```python
+ConfigValue = str | int | float  # alias de tipo, no nível do módulo
+
+def config() -> dict[str, ConfigValue]:
+    return {"nome": "app", "versao": 2, "ratio": 1.5}
+
+def validar(valor: ConfigValue) -> bool:
+    return valor is not None
+```
+
+Uma união longa e repetida em várias assinaturas pode ser atribuída uma única vez, no nível do módulo, a uma variável nomeada em PascalCase (ou prefixada com `_` se privada ao arquivo): esse **alias de tipo** é depois reutilizado como um tipo comum (`dict[str, ConfigValue]`), sem repetir `str | int | float` em cada função que o manipula.
+
+## Forward reference e `TYPE_CHECKING`
+
+Uma **forward reference** é uma anotação de tipo escrita entre aspas, que referencia um tipo ainda nao definido nesse ponto do arquivo (uma classe que se referencia a si mesma, ou um import que criaria um ciclo):
+
+```python
+class No:
+    def __init__(self, valor: int, proximo: "No | None" = None):
+        self.valor = valor
+        self.proximo = proximo   # "No" ainda nao existe enquanto sua propria definicao nao termina
+```
+
+> **Armadilha:** sem as aspas (`proximo: No | None`), Python lança uma `NameError` imediata ao ler o arquivo: as anotações de uma função são avaliadas assim que ela é definida, não apenas lidas por uma ferramenta externa como `mypy`. As aspas a transformam em texto simples, resolvido somente quando uma ferramenta precisa dele.
+
+O bloco `if TYPE_CHECKING:` atende a mesma necessidade entre dois arquivos: importar um tipo apenas para a anotação, sem causar um import circular ao iniciar o programa:
+
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:   # nunca verdadeiro na execucao: lido apenas por mypy e editores
+    from outro_modulo import OutraClasse
+
+def processar(objeto: "OutraClasse") -> None:
+    ...
+```
+
+| | `import` normal | `if TYPE_CHECKING:` |
+|---|---|---|
+| Executado ao iniciar o programa | Sim | Não |
+| Lido por `mypy` / o editor | Sim | Sim |
+| Risco de import circular | Sim, se os dois arquivos se importam mutuamente | Não |
 
 ## `mypy`: fazer respeitar as anotações apesar de tudo
 
@@ -62,6 +129,6 @@ mypy meu_script.py
 | | |
 |---|---|
 | **Para lembrar** | As anotações de tipo Python (`x: int`, `-> str`) são puramente documentais: nunca verificadas pelo interpretador, ao contrário de uma linguagem de tipagem estática ou até mesmo do PHP. |
-| **Ferramentas utilizáveis** | O módulo `typing` (`Optional`, `Union`, `List`...), `mypy` para uma verificação externa. |
-| **Armadilhas a evitar** | Acreditar que uma anotação realmente impede passar um valor do tipo errado: nada a impede na execução. |
-| **Boas práticas** | Anotar sistematicamente um projeto de porte significativo, e rodar `mypy` como complemento para detectar incoerências antes da execução. |
+| **Ferramentas utilizáveis** | O módulo `typing` (`Optional`, `Union`, `List`, `TYPE_CHECKING`...), a sintaxe `X \| None` (3.10+), os aliases de tipo para nomear uma união reutilizada, `mypy` para uma verificação externa. |
+| **Armadilhas a evitar** | Acreditar que uma anotação realmente impede passar um valor do tipo errado: nada a impede na execução. Esquecer as aspas de uma forward reference (`NameError` imediata). |
+| **Boas práticas** | Anotar sistematicamente um projeto de porte significativo, e rodar `mypy` como complemento para detectar incoerências antes da execução. Usar `if TYPE_CHECKING:` para evitar um import circular causado por uma única anotação de tipo. |

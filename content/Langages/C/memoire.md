@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 9
 ---
 
 # La gestion de la mémoire
@@ -67,42 +67,6 @@ tab = nouveauTab; // le bloc a pu être déplacé ailleurs en mémoire
 
 `realloc()` conserve le contenu existant (tronqué si la nouvelle taille est plus petite), mais peut déplacer le bloc en mémoire si besoin : c'est pour ça qu'on ne réassigne jamais `tab` directement avant d'avoir vérifié que `realloc()` n'a pas renvoyé `NULL`.
 
-### Faire grandir un tableau dynamique : la croissance géométrique
-
-Ajouter des éléments un par un à un tableau dynamique sans en connaître le nombre final à l'avance pose un problème : rappeler `realloc()` à **chaque** ajout (une case de plus à chaque fois) fonctionne, mais chaque appel a un coût (recherche d'un emplacement libre, copie éventuelle de tout le contenu existant). Répété des milliers de fois, ce coût devient dominant.
-
-La solution classique (celle qu'utilisent en interne `std::vector` en [C++](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) ou les listes de [Python](/?c=langages-de-programmation&s=python&p=listes-et-tuples)) est la **croissance géométrique** : ne pas agrandir le bloc d'une case à la fois, mais **doubler** sa capacité à chaque fois qu'elle est dépassée, en gardant `count` (le nombre d'éléments réellement utilisés) distinct de `capacity` (la taille réellement allouée) :
-
-```c
-int *tab = NULL;
-size_t count = 0, capacity = 0;
-
-void ajouter(int valeur)
-{
-    if (count == capacity) {
-        capacity = capacity ? capacity * 2 : 8;
-        tab = realloc(tab, capacity * sizeof(int));
-    }
-    tab[count] = valeur;
-    count++;
-}
-```
-
-Doubler la capacité amortit le coût des réallocations : le nombre total d'appels à `realloc()` reste proportionnel à log2(nombre d'éléments), au prix d'un peu de mémoire réservée mais non utilisée (`capacity - count` cases). C'est un compromis délibéré entre mémoire et vitesse, à l'opposé d'un `realloc()` systématique à chaque ajout.
-
-## Copier un bloc de mémoire brut : `memcpy()`
-
-`strcpy()`/`strncpy()` (vus plus haut) ne copient que des **chaînes de caractères** : elles s'arrêtent au premier octet `'\0'` rencontré. Pour copier un bloc de mémoire quelconque (un tableau de `float`, une structure, tout ce qui n'est pas garanti être une chaîne terminée par `'\0'`), il faut `memcpy()`, qui copie un nombre d'**octets** fixé explicitement, sans se soucier du contenu :
-
-```c
-float source[3] = {1.0f, 2.0f, 3.0f};
-float destination[3];
-
-memcpy(destination, source, sizeof(source)); // copie les 3 float, soit sizeof(source) octets
-```
-
-> **Piège :** `memcpy(dest, src, n)` attend une taille en **octets**, pas un nombre d'éléments. `memcpy(destination, source, 3)` ne copierait que les 3 premiers octets de `source` (moins d'un seul `float` sur la plupart des machines, où `sizeof(float)` vaut 4), pas les 3 `float` en entier. Le réflexe le plus sûr est de dériver cette taille directement de la variable copiée (`sizeof(source)`) plutôt que de recalculer le nombre d'octets à la main.
-
 ## Libérer la mémoire : `free()`
 
 Chaque `malloc()`/`calloc()`/`realloc()` réussi doit correspondre à exactement un `free()`, quand le bloc n'est plus utile :
@@ -131,8 +95,6 @@ free(p); // double free : comportement indéfini
 ```
 
 > **Note :** ces bugs ne provoquent pas toujours un crash immédiat et visible : c'est ce qui les rend difficiles à détecter. Un outil comme [**Valgrind**](https://valgrind.org) (`valgrind ./mon_programme`) exécute le programme et rapporte précisément les fuites mémoire et les accès invalides, avec la ligne de code responsable.
-
-> **Piège :** un tableau alloué dynamiquement mais **vide** (aucun élément réel, juste le `NULL` de fin, par exemple le résultat d'un split sur une chaîne vide) reste un bloc réellement `malloc`é : il doit être `free()` comme n'importe quel autre, même s'il ne contient rien à libérer individuellement à l'intérieur. Une fonction de nettoyage qui traite "tableau vide" comme "rien à faire" et sort sans libérer le conteneur lui-même provoque une fuite, silencieuse tant que le cas vide n'est pas testé.
 
 ## Le débordement de tampon (*buffer overflow*), un bug avec des conséquences de sécurité
 
@@ -166,6 +128,21 @@ fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, 
 
 > **Note :** borner la taille ne suffit qu'à moitié : il faut aussi vérifier que la donnée tronquée reste cohérente pour la suite du programme (un nom de fichier coupé à mi-chemin par `strncpy` reste un nom de fichier syntaxiquement valide, juste incorrect). Le bon réflexe reste de toujours connaître, à chaque écriture, la taille réelle du buffer de destination ; jamais de supposer qu'une entrée respectera une taille attendue sans le vérifier.
 
+### La famille BSD `strlcpy`/`strlcat`
+
+D'origine BSD (pas standard C, mais disponible sur macOS/\*BSD, et facilement réimplémentable soi-même, comme le fait la bibliothèque `libft` avec `ft_strlcpy`/`ft_strlcat`), ces fonctions corrigent le point faible de `strncpy`/`strcat` : détecter une troncature.
+
+```c
+size_t taille_reelle = strlcpy(buffer, entree, sizeof(buffer));  // termine TOUJOURS par '\0', contrairement à strncpy
+
+if (taille_reelle >= sizeof(buffer))
+{
+    // entree a été tronquée : taille_reelle est la taille qu'aurait fait la copie complète
+}
+```
+
+`strlcpy()`/`strlcat()` renvoient toujours la taille qu'aurait la chaîne source (ou concaténée) si le buffer avait été assez grand, jamais le nombre d'octets réellement écrits : comparer cette valeur à `sizeof(buffer)` détecte une troncature, ce que `strncpy()`/`strcat()` ne permettent pas directement.
+
 ## `sizeof`
 
 `sizeof` n'est pas une fonction mais un opérateur évalué à la compilation : il renvoie la taille en octets d'un type ou d'une variable, indispensable pour calculer correctement la taille à allouer :
@@ -184,7 +161,7 @@ Voir aussi [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs), dont 
 
 | | |
 |---|---|
-| **À retenir** | Le C laisse au développeur la responsabilité complète de la mémoire dynamique (heap) : `malloc`/`calloc`/`realloc` pour allouer, `free` pour libérer ; la stack (variables locales) est gérée automatiquement. Un tableau dynamique qui grandit par ajouts successifs gagne à doubler sa capacité plutôt qu'à faire un `realloc` par élément. `memcpy` copie un nombre d'octets fixe, indépendamment du contenu, là où `strcpy` s'arrête au premier `'\0'`. |
-| **Outils utilisables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, `memcpy`, Valgrind pour détecter fuites et accès invalides. |
-| **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon, ce dernier pouvant être exploité comme faille de sécurité. Passer un nombre d'éléments à `memcpy` au lieu d'un nombre d'octets. |
-| **Bonnes pratiques** | Toujours vérifier qu'un `malloc`/`realloc` n'a pas renvoyé `NULL` ; mettre un pointeur à `NULL` juste après son `free()` ; préférer `fgets`/`strncpy`/`snprintf` aux fonctions non bornées (`gets`/`strcpy`/`sprintf`) ; dériver la taille passée à `memcpy`/`realloc` de `sizeof(variable)` plutôt que de la retaper en dur à plusieurs endroits. |
+| **À retenir** | Le C laisse au développeur la responsabilité complète de la mémoire dynamique (heap) : `malloc`/`calloc`/`realloc` pour allouer, `free` pour libérer ; la stack (variables locales) est gérée automatiquement. |
+| **Outils utilisables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind pour détecter fuites et accès invalides. |
+| **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon, ce dernier pouvant être exploité comme faille de sécurité. |
+| **Bonnes pratiques** | Toujours vérifier qu'un `malloc`/`realloc` n'a pas renvoyé `NULL` ; mettre un pointeur à `NULL` juste après son `free()` ; préférer `fgets`/`strncpy`/`snprintf` aux fonctions non bornées (`gets`/`strcpy`/`sprintf`) ; `strlcpy`/`strlcat` pour détecter une troncature via leur valeur de retour. |

@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 10
 ---
 
 # Los archivos de cabecera (.h)
@@ -35,6 +35,39 @@ int main(void)
 
 `main.c` solo necesita conocer la **firma** de `suma()` (mediante `#include "calculos.h"`) para llamarla: el cuerpo real se proporciona en el momento del [enlazado](/?c=langages-de-programmation&s=c&p=compilation), a partir del archivo objeto compilado desde `calculos.c`.
 
+## `static` en una función: nunca exponerla en una cabecera
+
+```c
+// utilidades.c
+static int cuadrado(int x)   // enlace INTERNO: invisible fuera de utilidades.c
+{
+    return x * x;
+}
+
+int cubo(int x)   // enlace externo (por defecto): declarable en utilidades.h, llamable desde otro lado
+{
+    return x * cuadrado(x);
+}
+```
+
+`static` aplicado a una función restringe su visibilidad a su propio archivo `.c` (su *unidad de traducción*): el enlazador nunca la ve desde otro archivo, aunque su prototipo estuviera declarado en una cabecera. Es el reflejo habitual para una función utilitaria interna, que no tiene ninguna razón para llamarse desde otro lado (ej. en `libft`, `ft_split.c` declara `static` sus funciones internas `ft_cnt_words`, `len_word`, `ft_free`, `write_split`, nunca presentes en `libft.h`).
+
+## `static` en una variable local: duración de almacenamiento estática
+
+```c
+char *get_next_line(int fd)
+{
+    static char *linea_guardada;   // se conserva entre llamadas, nunca se recrea
+
+    // ... usa y actualiza linea_guardada ...
+    return (linea);
+}
+```
+
+En una **variable local**, `static` cambia un aspecto completamente distinto: su **duración de vida**, no su visibilidad. Una variable local clásica se recrea en cada llamada a la función y se destruye al `return` (almacenada en la pila); una variable local `static` solo se inicializa una vez, en la primera llamada, y luego conserva su valor de una llamada a otra (almacenada en el mismo segmento de memoria que las variables globales). Es este mecanismo el que permite a `get_next_line()` "recordar" lo que queda por leer después de un `\n`, sin variable global ni parámetro adicional.
+
+> **Trampa:** la misma palabra clave, dos efectos sin relación según lo que califique: en una función (sección anterior), `static` restringe la **visibilidad** (enlace interno); en una variable local, cambia la **duración de vida**, sin afectar su visibilidad (siempre limitada a la función que la declara).
+
 ## `#include <...>` frente a `#include "..."`
 
 ```c
@@ -68,13 +101,25 @@ int suma(int a, int b);
 
 > **Nota:** una cabecera solo debe contener **declaraciones** (prototipos de funciones, `struct`, `typedef`, constantes), nunca el cuerpo de una función que no sea `static`/`inline`: de lo contrario, cada archivo `.c` que la incluya obtendría su propia copia de la definición, provocando un error de "multiple definition" en el enlazado.
 
+## Cómo se combinan realmente `#include` y `-I`
+
+El preprocesador nunca "adivina" dónde está un archivo incluido: para `#include "glad/glad.h"`, concatena **literalmente** cada carpeta pasada vía [`-I`](/?c=langages&s=c&p=makefiles) con la ruta escrita tras `#include`, y prueba cada resultado hasta encontrar un archivo que exista:
+
+```text
+-I includes  +  #include "glad/glad.h"
+   ↓
+includes/glad/glad.h   <- ruta realmente probada en el disco
+```
+
+> **Trampa:** apuntar `-I` a la carpeta que contiene directamente `glad.h` (ej. `-I includes/glad`) en lugar de a su carpeta padre (`-I includes`), mientras el código escribe `#include "glad/glad.h"`. La concatenación da entonces `includes/glad/glad/glad.h`, que no existe: el compilador falla con "archivo no encontrado", para una ruta que a simple vista parece correcta si solo se piensa en "dónde está el archivo", sin reconstruir la concatenación exacta.
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Una cabecera (`.h`) contiene declaraciones, no definiciones: permite que varios archivos `.c` compartan las mismas firmas sin duplicarlas. |
-| **Herramientas utilizables** | `#include <...>` (biblioteca del sistema) frente a `#include "..."` (archivo del proyecto); include guards (`#ifndef`/`#define`/`#endif` o `#pragma once`). |
-| **Trampas a evitar** | Poner el cuerpo de una función en una cabecera: provoca un error de "multiple definition" en cuanto varios archivos la incluyen. |
+| **Para recordar** | Una cabecera (`.h`) contiene declaraciones, no definiciones: permite que varios archivos `.c` compartan las mismas firmas sin duplicarlas. El preprocesador resuelve `#include "..."` concatenando literalmente cada carpeta `-I` con la ruta escrita. `static` en una función restringe su visibilidad; en una variable local, cambia su duración de vida. |
+| **Herramientas utilizables** | `#include <...>` (biblioteca del sistema) frente a `#include "..."` (archivo del proyecto); include guards (`#ifndef`/`#define`/`#endif` o `#pragma once`); `static` para una función interna a un archivo o una variable local persistente. |
+| **Trampas a evitar** | Poner el cuerpo de una función en una cabecera: provoca un error de "multiple definition" en cuanto varios archivos la incluyen. Apuntar `-I` al nivel de carpeta equivocado, lo que rompe la concatenación con la ruta de `#include`. |
 | **Buenas prácticas** | Proteger siempre una cabecera con un include guard, para soportar una inclusión indirecta múltiple sin error. |

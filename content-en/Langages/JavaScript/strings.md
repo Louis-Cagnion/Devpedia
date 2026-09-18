@@ -4,89 +4,70 @@ order: 4
 
 # Strings
 
-A string is a sequence of characters used to represent text. In JavaScript, it can be written in three different ways:
-```javascript
-    // single quotes
-    const st1 = 'Hello world';
-
-    // double quotes
-    const str2 = "Hello world";
-
-    // backticks, which are useful for writing across multiple lines or inserting variables (template literals)
-    const str3 = `
-    Ce format
-    permet d'écrire
-    une string sur
-    plusieurs lignes
-    `;
-```
-
-### Thong Prototypes
-
-Prototypes are functions built into the string object by default, allowing you to perform certain actions on the string. A string is immutable: these functions never modify it; they always return a new value.
+A string is a sequence of characters, used to represent text. In JavaScript, it can be written 3 different ways:
 
 ```javascript
-    const str = 'hello world';
+// single quotes
+const str1 = 'Hello world';
+
+// double quotes: strictly equivalent to single quotes
+const str2 = "Hello world";
+
+// backticks (template literals): the only ones that allow interpolation and multi-line text
+const name = 'John';
+const str3 = `Hello ${name}!`;   // 'Hello John!' -> ${...} inserts a variable directly
+
+const str4 = `Line 1
+Line 2`;                          // line breaks in the source code are kept as-is
 ```
 
-**`includes`** Checks whether the string contains a given substring, and returns either `true` or `false`.
+### String prototypes
+
+Prototypes are functions built into the string object by default, letting you perform certain actions on the string. A string is **immutable** in JavaScript: none of these methods modify it, each always returns a new value.
+
+| Method | Effect |
+|---|---|
+| `includes(substring)` | Tests whether a substring is present (`true`/`false`) |
+| `length` | Property (not a method): number of characters |
+| `slice(start, end)` | Extracts a portion (`end` excluded) |
+| `toUpperCase()` / `toLowerCase()` | Copies entirely in uppercase / lowercase |
+| `trim()` | Copies without unneeded spaces at the start and end |
+| `replace(a, b)` / `replaceAll(a, b)` | Replaces the first occurrence / every occurrence |
+| `split(separator)` | Splits into an array of substrings |
+| `indexOf(substring)` | Index of the first occurrence, `-1` if absent |
+| `startsWith(x)` / `endsWith(x)` | Tests whether the string starts / ends with `x` |
+| `repeat(n)` | Repeats the string `n` times |
+| `concat(other)` | Joins several strings |
+
 ```javascript
-    str.includes('hello'); // true
+const str = 'hello world';
+
+str.includes('hello');       // true
+str.slice(0, 5);             // 'hello'
+str.toUpperCase();           // 'HELLO WORLD'
+str.trim();                  // copy with no extra spaces
+str.replace('hello', 'hi');  // 'hi world', a single occurrence
+str.replaceAll('o', '0');    // 'hell0 w0rld', every occurrence
+str.split(' ');              // ['hello', 'world']
+str.startsWith('hello');     // true
+str.repeat(2);                // 'hello worldhello world'
 ```
 
-**`length`** is not a function but a property: it returns the number of characters in the string.
-```javascript
-    str.length; // 11
-```
+> **Pitfall:** all these methods return a **new** string, without ever modifying the original. `str.toUpperCase();` alone changes nothing about `str`; you have to reassign it: `str = str.toUpperCase();`.
+>
+> **Best practice:** always reassign (or directly use) a string method's result, never assume it modified the original variable.
 
-**`slice`** Returns a portion of the string between a start index (inclusive) and an end index (exclusive).
-```javascript
-    str.slice(0, 5); // 'hello'
-```
+### Regexes
 
-**`toUpperCase`** and `**`toLowerCase`**` return a copy of the string in all uppercase or all lowercase.
-```javascript
-    str.toUpperCase(); // 'HELLO WORLD'
-    str.toLowerCase(); // 'hello world'
-```
+[Regexes](/?c=langages&s=javascript&p=regex) can be used to search for or collect information within strings.
 
-**`trim`** Returns a copy of the string without the unnecessary spaces at the beginning and end.
-```javascript
-    str.trim();
-```
+---
 
-**`replace`** and **`replaceAll`** return a copy of the string with one part replaced by another: `replace` replaces only the first occurrence, while `replaceAll` replaces all occurrences.
-```javascript
-    str.replace('hello', 'hi'); // 'hi world'
-    str.replaceAll('o', '0'); // 'hell0 w0rld'
-```
+## 📋 Summary
 
-**`split`** Splits the string into an array of substrings, using a separator specified as a parameter.
-```javascript
-    str.split(' '); // ['hello', 'world']
-```
-
-**`indexOf`** Searches for a substring in the string and returns the index of its first occurrence. If it does not exist, it returns `-1`.
-```javascript
-    str.indexOf('world'); // 6
-```
-
-**`startsWith`** and `**`endsWith`**` check whether the string begins or ends with a given value, and return `true` or `false`.
-```javascript
-    str.startsWith('hello'); // true
-    str.endsWith('world'); // true
-```
-
-**`repeat`** Returns a new string by repeating the original string a certain number of times.
-```javascript
-    str.repeat(2); // 'hello worldhello world'
-```
-
-**`concat`** concatenates several strings and returns the result, without modifying the original strings.
-```javascript
-    str.concat(' !'); // 'Hello, world!'
-```
-
-### Regular Expressions
-
-You can use regular expressions to search for or extract information from strings (see regular expressions).
+| | |
+|---|---|
+| **Key takeaways** | A string is declared with single quotes, double quotes, or backticks (*template literals*, for interpolation and multi-line text). It's immutable: every method returns a new string. |
+| **Tools you can use** | `includes`, `slice`, `toUpperCase`/`toLowerCase`, `trim`, `replace`/`replaceAll`, `split`, `indexOf`, `startsWith`/`endsWith`. |
+| **Pitfalls to avoid** | Calling a transformation method (`toUpperCase`, `trim`...) without reassigning the result, thinking the original string changed. |
+| **Best practices** | Use backticks for any string that interpolates a variable or spans multiple lines, rather than concatenation with `+`. |

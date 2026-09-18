@@ -50,6 +50,31 @@ CMD ["nginx", "-g", "daemon off;"]   # nginx remains at the forefront: Docker ha
 
 > **Note:** PID 1 has a special role in Linux, independent of Docker (see the chapter [Process Management](/?c=shells&s=bash&p=gestion-des-processus), under the [Bash](/?c=shells&s=bash&p=bash) section): the kernel does not apply the default action for a signal such as `SIGTERM` to it if it has not explicitly set up its own handler: so `docker stop` may appear to do nothing on a process that does not handle this signal itself. It is also PID 1 that must reclaim (*reap*) the zombie processes it launches; this is something to watch out for if the image itself launches multiple subprocesses.
 
+## Combining `ENTRYPOINT` and `CMD`: fixed setup, replaceable command
+
+The table above presents `CMD` and `ENTRYPOINT` as two separate alternatives, but a Dockerfile can combine both:
+
+```dockerfile
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["node", "server.js"]
+```
+
+Docker then calls `ENTRYPOINT`, passing it `CMD` (or any command given to `docker run`) as arguments: `/entrypoint.sh` receives `node server.js` as parameters.
+
+```bash
+#!/bin/sh
+# Fixed setup, run on every container startup
+chown -R app:app /data
+
+exec "$@"   # replaces this script with the received command
+```
+
+`exec "$@"` (see [How a Shell Works](/?c=shells&s=bash&p=architecture-dun-shell)) replaces the script's current process with the command received as arguments, rather than launching it as a subprocess: the final command directly inherits PID 1 (see above) instead of remaining a child of the bash script, which would otherwise stay PID 1 itself.
+
+> **Pitfall:** omitting `exec` before `"$@"`. Without it, the bash script stays PID 1 and the actual command (`node server.js`) runs as a child: `docker stop` then targets the script rather than the real service, which may never receive the stop signal correctly.
+>
+> **Best practice:** this pattern (fixed setup in the entrypoint, variable command in `CMD`) keeps a common configuration step (permissions, migrations...) while still letting `CMD` be replaced on the command line (`docker run my-image another-command` would replace `CMD` without touching the entrypoint).
+
 ## Each instruction creates a layer, and the order matters
 
 Each `RUN` / `COPY` / `ADD` adds a cached layer: if an instruction and everything preceding it have not changed since the last build, Docker reuses the cached layer rather than rebuilding it.
@@ -106,6 +131,6 @@ Excluding `node_modules/` speeds up the build (less data to transfer); excluding
 | | |
 |---|---|
 | **Key Points** | A Dockerfile describes the build of an image, instruction by instruction. Each instruction creates a cached layer; the order matters to maximize cache reuse. The container lives for exactly as long as its PID 1 process. |
-| **Tools available** | `FROM` / `WORKDIR` / `COPY` / `RUN` / `CMD`, multi-stage builds, `.dockerignore`. |
-| **Pitfalls to Avoid** | Copying all the code before installing dependencies (invalidates the cache with every commit); keeping a container "alive" with a command that does nothing (`sleep infinity`) rather than running the actual service in the foreground. |
+| **Tools available** | `FROM` / `WORKDIR` / `COPY` / `RUN` / `CMD`, multi-stage builds, `.dockerignore`. `ENTRYPOINT` + `CMD` combined via `exec "$@"` for a fixed setup followed by a replaceable command. |
+| **Pitfalls to Avoid** | Copying all the code before installing dependencies (invalidates the cache with every commit); keeping a container "alive" with a command that does nothing (`sleep infinity`) rather than running the actual service in the foreground. Omitting `exec` before `"$@"` in an entrypoint script. |
 | **Best Practices** | Copy dependency files before the rest of the source code; use a multi-stage build to deliver only the final binary, without the build artifacts. |

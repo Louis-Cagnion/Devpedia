@@ -9,17 +9,17 @@ C++ provides a structured error-handling mechanism (`try` / `catch` / `throw`), 
 ## `try` / `catch` / `throw`
 
 ```cpp
-double diviser(double a, double b) {
+double divide(double a, double b) {
     if (b == 0) {
-        throw std::runtime_error("Division par zéro");
+        throw std::runtime_error("Division by zero");
     }
     return a / b;
 }
 
 try {
-    double result = diviser(10, 0);
+    double result = divide(10, 0);
 } catch (const std::runtime_error &error) {
-    std::cout << "Erreur : " << error.what() << "\n";
+    std::cout << "Error: " << error.what() << "\n";
 }
 ```
 
@@ -84,3 +84,14 @@ void fonctionSure() noexcept {
 ```
 
 > **Best practice:** Throw an exception only in truly **exceptional** situations (unforeseen error, violated [invariant](/?c=performance&p=traitements-longs)), never for normal control flow (an exception incurs a significant runtime cost compared to a simple `if`, unlike a traditional error return).
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | `try`/`catch`/`throw` structures error handling. The standard hierarchy (`std::exception` and its derivatives) allows catching by precise type. *Stack unwinding* guarantees that a RAII resource is released even when an exception is thrown. |
+| **Tools you can use** | `std::runtime_error`, `std::logic_error`, custom exceptions inheriting from `std::exception`, `noexcept`. |
+| **Pitfalls to avoid** | Using an exception for normal control flow: a non-negligible cost compared to a simple `if`. |
+| **Best practices** | Catch the most precise type possible rather than `std::exception` systematically; reserve exceptions for genuinely exceptional situations. |

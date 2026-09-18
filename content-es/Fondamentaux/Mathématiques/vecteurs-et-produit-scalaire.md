@@ -111,11 +111,43 @@ Este resultado no es una coincidencia propia de este ejemplo: dividir cada compo
 >
 > **Buena práctica:** verificar que un vector no es nulo antes de normalizarlo, en lugar de dejar que el programa falle en una división por cero.
 
+## Prueba geométrica: ¿está un punto dentro de un triángulo?
+
+Dado un triángulo formado por tres puntos `A`, `B`, `C` y un punto `P` a probar, un método simple consiste en comparar **áreas**: calcular el área del triángulo completo `ABC`, y luego la suma de las áreas de los tres subtriángulos formados por `P` y cada par de vértices (`P-A-B`, `P-B-C`, `P-C-A`). Si esa suma es igual al área del triángulo completo, `P` está dentro; si `P` estuviera fuera, la suma de las subáreas sería estrictamente mayor.
+
+El área de un triángulo a partir de las coordenadas de sus tres vértices se calcula directamente, sin construir nunca una altura ni un ángulo, mediante un determinante:
+
+```text
+area(A, B, C) = |  (Bx-Ax)*(Cy-Ay) - (Cx-Ax)*(By-Ay)  |  / 2
+```
+
+```c
+double area(double ax, double ay, double bx, double by, double cx, double cy)
+{
+    return fabs((bx - ax) * (cy - ay) - (cx - ax) * (by - ay)) / 2.0;
+}
+
+int puntoEnTriangulo(double px, double py, double ax, double ay, double bx, double by, double cx, double cy)
+{
+    double areaTotal = area(ax, ay, bx, by, cx, cy);
+    double areaSub1 = area(px, py, ax, ay, bx, by);
+    double areaSub2 = area(px, py, bx, by, cx, cy);
+    double areaSub3 = area(px, py, cx, cy, ax, ay);
+    double epsilon = 0.0001;
+
+    return fabs(areaTotal - (areaSub1 + areaSub2 + areaSub3)) < epsilon;
+}
+```
+
+> **Trampa:** comparar las dos áreas con una igualdad estricta (`==`). Como con cualquier comparación de [números flotantes](/?c=donnees&s=representation-des-donnees&p=nombres-flottants), un pequeño margen de error (epsilon) es indispensable para tolerar la imprecisión de los cálculos.
+>
+> **Buena práctica:** esta técnica (sumar las áreas de los subtriángulos) es una alternativa a otros dos métodos clásicos para la misma prueba: las coordenadas baricéntricas, o una prueba de signo cruzado por arista (comprobar que `P` está del mismo lado de cada una de las tres aristas); las tres dan el mismo resultado, la elección depende sobre todo de lo que el resto del programa ya calcule.
+
 ## Lo que hay que recordar
 
 | | |
 |---|---|
 | **Para recordar** | Un vector es una lista ordenada de números tratada como una sola entidad. El producto escalar reduce dos vectores de la misma dimensión a un solo número, que mide hasta qué punto apuntan en la misma dirección. La norma es la longitud de un vector. |
-| **Herramientas utilizables** | Ninguna herramienta específica para el cálculo a mano; en la práctica, una biblioteca como [NumPy](/?c=data-science&p=numpy) efectúa estas operaciones directamente sobre vectores enteros, sin bucle explícito. |
-| **Trampas a evitar** | Sumar o combinar dos vectores de dimensiones diferentes. Normalizar un vector nulo (división por una norma de 0). |
+| **Herramientas utilizables** | Ninguna herramienta específica para el cálculo a mano; en la práctica, una biblioteca como [NumPy](/?c=data-science&p=numpy) efectúa estas operaciones directamente sobre vectores enteros, sin bucle explícito. El cálculo de área por determinante para una prueba punto-en-triángulo. |
+| **Trampas a evitar** | Sumar o combinar dos vectores de dimensiones diferentes. Normalizar un vector nulo (división por una norma de 0). Comparar dos áreas flotantes con igualdad estricta. |
 | **Buenas prácticas** | Verificar que dos vectores tienen la misma dimensión antes de cualquier operación entre ellos. Documentar qué representa cada componente de un vector desde su creación. |

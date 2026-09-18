@@ -1,5 +1,5 @@
 ---
-order: 19
+order: 22
 ---
 
 # Les signaux UNIX
@@ -67,6 +67,44 @@ void handler(int sig)
 
 Chaque caractère transmis nécessite alors 8 signaux (un par bit), le récepteur reconstruisant l'octet au fur et à mesure. C'est plus lent qu'un [descripteur de fichier](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) classique, mais fonctionne sans aucun canal de communication préalable, seul le PID du destinataire est nécessaire.
 
+## `sigaction()` : un handler enrichi avec `siginfo_t`
+
+`signal()` ne fournit qu'un handler minimal, qui reçoit uniquement le numéro du signal. `sigaction()` est une alternative plus complète : avec le drapeau `SA_SIGINFO`, le handler reçoit en plus une structure `siginfo_t` décrivant l'émetteur du signal, notamment son PID (`si_pid`) :
+
+```c
+#include <signal.h>
+#include <unistd.h>
+
+void handler(int sig, siginfo_t *info, void *contexte)
+{
+    kill(info->si_pid, SIGUSR2);   // répond directement à l'émetteur
+}
+
+int main(void)
+{
+    struct sigaction sa;
+
+    sa.sa_sigaction = handler;   // handler enrichi (au lieu de sa_handler)
+    sa.sa_flags = SA_SIGINFO;    // active la réception de siginfo_t
+    sigemptyset(&sa.sa_mask);    // aucun signal supplémentaire bloqué pendant le handler
+
+    sigaction(SIGUSR1, &sa, NULL);
+
+    while (1)
+        pause();
+}
+```
+
+| | `signal()` | `sigaction()` |
+|---|---|---|
+| Handler | `void (*)(int)` (`sa_handler`) | `void (*)(int, siginfo_t *, void *)` (`sa_sigaction`) |
+| Information reçue | Numéro du signal seul | + PID de l'émetteur (`info->si_pid`), et plus |
+| Activation | Immédiate | Nécessite `sa_flags = SA_SIGINFO` |
+
+Utile dès qu'un handler doit réagir différemment selon l'émetteur, par exemple lui répondre directement (`kill(info->si_pid, ...)`) sans qu'aucun canal n'ait transmis son PID autrement que par le signal reçu.
+
+> Détail complet des champs de `siginfo_t` (`si_code`, `si_status`...) : [`man sigaction`](https://man7.org/linux/man-pages/man2/sigaction.2.html).
+
 ## Écrire un handler sûr
 
 Un handler s'exécute en interrompant le code normal du programme, potentiellement **en plein milieu** d'une autre fonction (y compris une fonction de la bibliothèque standard) : il ne peut donc pas se comporter comme une fonction ordinaire.
@@ -84,6 +122,6 @@ Un handler s'exécute en interrompant le code normal du programme, potentielleme
 | | |
 |---|---|
 | **À retenir** | Un signal interrompt un processus à n'importe quel moment pour exécuter un handler, contrairement à un appel de fonction classique. `SIGUSR1`/`SIGUSR2` n'ont pas de sens prédéfini et peuvent servir de canal de communication entre processus. |
-| **Outils utilisables** | `signal()` pour intercepter un signal, `kill()` pour en envoyer un, `volatile sig_atomic_t` pour communiquer entre un handler et le reste du programme. |
+| **Outils utilisables** | `signal()` pour intercepter un signal, `sigaction()` pour un handler enrichi (accès au PID de l'émetteur via `siginfo_t`), `kill()` pour en envoyer un, `volatile sig_atomic_t` pour communiquer entre un handler et le reste du programme. |
 | **Pièges à éviter** | Appeler une fonction non async-signal-safe (comme `printf()`) dans un handler. |
 | **Bonnes pratiques** | Garder un handler minimal (modifier une seule variable `sig_atomic_t`) et traiter le signal dans la boucle principale du programme, jamais dans le handler lui-même. |

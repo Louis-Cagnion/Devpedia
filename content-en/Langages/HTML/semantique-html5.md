@@ -82,13 +82,26 @@ Before HTML5, structuring a page relied almost entirely on generic `<div>`s, dis
 
 > **Best practice:** use a semantic tag as soon as it matches the content's actual role, and only fall back on `<div>` (purely generic, meaningless) for a simple technical container needed for CSS layout, with no meaning of its own.
 
+## `<details>`/`<summary>`: a collapsible section with no JavaScript
+
+```html
+<details>
+    <summary>View technical specifications</summary>
+    <p>Weight: 1.8 kg. Battery life: 12h. Warranty: 2 years.</p>
+</details>
+```
+
+`<details>` hides all its content by default, except the `<summary>` line (always visible, clickable): clicking it opens or closes the block, with not a single line of JavaScript. The `open` attribute (`<details open>`) shows it already open on page load.
+
+> **Note:** opening/closing a `<details>` fires a `toggle` event, which does NOT bubble like most DOM events; listening for it through delegation (on an ancestor shared by several `<details>`) requires the **capture** phase, see [The DOM and Event Handling](/?c=langages-de-programmation&s=javascript&p=dom-et-evenements#event-propagation-and-delegation).
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key Points** | HTML5 semantic tags (`<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, `<footer>`) describe a section's role, unlike a generic `<div>`. `<article>` makes sense in isolation, `<section>` only within its context. |
-| **Available Tools** | The 7 main structural tags, combined according to each section's actual role. |
-| **Pitfalls to Avoid** | Confusing `<article>` and `<section>`; structuring everything with `<div class="...">` when a semantic tag exists for that role. |
+| **Key Points** | HTML5 semantic tags (`<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<aside>`, `<footer>`) describe a section's role, unlike a generic `<div>`. `<article>` makes sense in isolation, `<section>` only within its context. `<details>`/`<summary>` adds a native collapsible widget, with no JavaScript. |
+| **Available Tools** | The 7 main structural tags, combined according to each section's actual role; `<details>`/`<summary>` for a collapsible section with no JavaScript. |
+| **Pitfalls to Avoid** | Confusing `<article>` and `<section>`; structuring everything with `<div class="...">` when a semantic tag exists for that role; forgetting that a `<details>`'s `toggle` event does not bubble. |
 | **Best Practices** | Use a semantic tag as soon as it matches the content's actual role; reserve `<div>` for purely technical containers, with no meaning of its own. |

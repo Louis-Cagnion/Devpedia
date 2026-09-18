@@ -108,6 +108,31 @@ La norma reserva ciertas combinaciones de bits para valores especiales, presente
 
 `NaN` tiene una propiedad deliberadamente sorprendente: **no es igual a nada, ni siquiera a sí mismo**. `NaN == NaN` es falso. Es coherente (dos resultados inválidos no tienen ninguna razón para ser "el mismo número"), pero obliga a usar una función dedicada para detectarlo (`isnan()` en C, `math.isnan()` en Python, `Number.isNaN()` en JavaScript).
 
+## Una alternativa: la representación en coma fija
+
+En lugar de sacrificar precisión para cubrir un rango enorme de valores (como hace un flotante), la **representación en coma fija** (*fixed-point*) almacena un número decimal como un entero normal, cuyos últimos bits representan por convención la parte fraccionaria:
+
+```text
+Con 8 bits fraccionarios:
+  valor real = entero_almacenado / 2^8
+
+  entero_almacenado = 2560  ->  2560 / 256 = 10.0
+  entero_almacenado = 2688  ->  2688 / 256 = 10.5
+```
+
+Convertir un entero normal a coma fija equivale a multiplicarlo por `2^bits_fraccionarios` (`10 * 256 = 2560`); convertir en sentido inverso (a entero o a flotante) equivale a dividir por ese mismo valor.
+
+| | Flotante (IEEE 754) | Coma fija |
+|---|---|---|
+| Almacenamiento | Signo + exponente + mantisa | Un entero normal |
+| Precisión | Relativa (depende del orden de magnitud) | Fija y constante (siempre el mismo número de decimales) |
+| Cálculo | Requiere una unidad de coma flotante (FPU) | Simples operaciones enteras, más rápidas y deterministas |
+| Uso típico | Cálculo científico, rango de valores muy amplio | Embebido sin FPU, videojuegos retro, señal de audio/DSP |
+
+> **Buena práctica:** la coma fija garantiza un resultado estrictamente idéntico en cualquier máquina (a diferencia de un flotante, cuyo redondeo puede variar ligeramente según el compilador o el procesador): útil en cuanto un cálculo deba seguir siendo reproducible bit a bit, por ejemplo en un juego multijugador donde cada cliente debe obtener exactamente el mismo resultado.
+
+Es la técnica en la que se basa el formato **Q** (*Q number format*), todavía usado hoy por algunos procesadores digitales de señal (DSP) que no incorporan una unidad de coma flotante.
+
 ## Lo que añade cada lenguaje
 
 La base es común; los lenguajes solo difieren en el envoltorio:
@@ -139,6 +164,6 @@ Recuerda sobre todo que estas diferencias no cambian nada de fondo: es el hardwa
 | | |
 |---|---|
 | **Para recordar** | Un flotante (norma IEEE 754) almacena una aproximación, no un valor exacto: `0.1 + 0.2 != 0.3` en todos los lenguajes, sin excepción. La precisión es relativa: cuanto más grande es un número, mayor es la brecha entre dos flotantes consecutivos. |
-| **Herramientas utilizables** | Comparación por epsilon (`math.isclose`, `fabs(a-b) < epsilon`), tipos `DECIMAL` para importes exactos. |
+| **Herramientas utilizables** | Comparación por epsilon (`math.isclose`, `fabs(a-b) < epsilon`), tipos `DECIMAL` para importes exactos. La coma fija para un resultado reproducible bit a bit sin FPU. |
 | **Trampas a evitar** | Comparar dos flotantes con `==`; almacenar un importe monetario en flotante en lugar de en enteros (céntimos) o `DECIMAL`. |
 | **Buenas prácticas** | Elegir un epsilon adaptado al orden de magnitud manejado, nunca el epsilon de máquina por defecto para valores grandes. |

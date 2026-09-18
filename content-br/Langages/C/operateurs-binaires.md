@@ -1,5 +1,5 @@
 ---
-order: 16
+order: 19
 ---
 
 # Os operadores binários

@@ -73,3 +73,14 @@ To write comments in PHP, you have two options:
 ```
 
 > **Note:** `//` is the most common convention for writing a single-line comment.
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | PHP code is written between `<?php ?>`; the alternative syntax (`:`/`end...`) makes mixing with [HTML](/?c=langages&s=html&p=html) easier. Every statement ends with `;`. |
+| **Tools you can use** | `<?= $var ?>` (display shorthand), comments `//`, `#`, `/* */`. |
+| **Pitfalls to avoid** | Displaying user data without `htmlspecialchars()`: risk of an XSS flaw. |
+| **Best practices** | Omit the closing `?>` tag at the end of a 100% PHP file; use the alternative syntax in templates that mix PHP and [HTML](/?c=langages&s=html&p=html). |

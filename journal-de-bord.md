@@ -1,6 +1,152 @@
 # Journal de bord — Devpedia
 
-Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le detail mecanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
+Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
+
+## Item todo #5 terminé (`<details>`/`<summary>`, capture d'événements, Web Storage, Blob) (2026-09-18)
+
+4 notions ajoutées (4 langues), aucun nouveau chapitre : `<details>`/`<summary>` (`semantique-html5.md`), phase de capture pour un événement non-bouillonnant comme `toggle` (`dom-et-evenements.md`), `sessionStorage`/`localStorage` comme mécanisme de persistance (idem), `Blob`+`URL.createObjectURL()` pour un téléchargement client (idem). En corrigeant `dom-et-evenements.md`, plusieurs commentaires de code préexistants (FR/ES/BR) sans accents ont aussi été corrigés (hors chaînes affichées à l'exécution, seules exemptées) ; sweep plus large nécessaire ailleurs dans `content*/`, noté au point 6 du todo.
+
+## Item todo #17 terminé (CGI classique, parsing HTTP progressif, longest prefix match) (2026-09-17)
+
+3 notions ajoutées (4 langues), aucun nouveau chapitre : CGI classique par opposition à FastCGI (`php-fpm.md`), reconstitution d'une requête HTTP fragmentée via `\r\n\r\n`/`Content-Length` (`sockets-et-io-non-bloquante.md`), correspondance de préfixe le plus long pour router une requête (`api-et-http.md`, en écho à la table de routage IP déjà ajoutée à l'item #13).
+
+## Item todo #16 terminé (ENTRYPOINT+CMD, volume épinglé, certificat TLS auto-signé) (2026-09-17)
+
+3 notions ajoutées (4 langues), aucun nouveau chapitre : `ENTRYPOINT`+`CMD` combinés via `exec "$@"` (`dockerfile.md`), volume Docker nommé épinglé à un chemin hôte (`volumes-et-reseaux.md`), certificat TLS auto-signé via `openssl` (`cryptographie-appliquee.md`).
+
+## Item todo #15 terminé (Ford-Johnson, std::stack, typename, lower_bound) (2026-09-17)
+
+4 notions ajoutées (4 langues), aucun nouveau chapitre : tri fusion-insertion de Ford-Johnson (`tri-par-comparaison.md`, remplace la simple mention existante par une explication complète en 5 étapes), `std::stack` comme adaptateur de conteneur et `lower_bound` (`stl-conteneurs.md`), `typename` pour un type dépendant (`templates.md`).
+
+## Item todo #14 terminé (Rule of Three, virgule fixe, héritage multiple/diamant, Prototype, point-dans-triangle) (2026-09-17)
+
+5 notions ajoutées (4 langues), aucun nouveau chapitre : forme canonique orthodoxe (`classes-et-objets.md`), héritage multiple/diamant + pattern Prototype (`heritage-et-polymorphisme.md`), virgule fixe (`nombres-flottants.md`), test point-dans-triangle par comparaison d'aires (`vecteurs-et-produit-scalaire.md`). Deux trouvailles annexes notées au todo (points 20 et 21) plutôt que corrigées immédiatement (changements d'ampleur) : 8 chapitres avec un double mécanisme de résumé (`## Résumé` + `## 📋 Récapitulatif`) ; plusieurs titres mal traduits en anglais dans `classes-et-objets.md` (corrigés) et `references.md` (repéré, pas corrigé, hors périmètre).
+
+## Item todo #13 terminé (notation CIDR, table de routage) (2026-09-17)
+
+2 notions ajoutées (4 langues), aucun nouveau chapitre : notation CIDR et table de routage/route par défaut, ajoutées à `fondamentaux-reseau.md` (juste après les sections masque de sous-réseau et passerelle par défaut qu'elles généralisent).
+
+## Item todo #12 terminé (DDA/fisheye, texture mapping, sprite billboarding/z-buffer, souris infinie, bandes de rendu) (2026-09-17)
+
+5 notions ajoutées (4 langues chacune), aucun nouveau chapitre : DDA, correction fisheye (vecteur plan caméra), texture mapping, sprite billboarding + z-buffer, souris infinie, toutes ajoutées à `rendu-3d-bas-niveau-et-fenetrage.md` (déjà le chapitre de référence pour le raycasting) ; parallélisation d'un rendu par bandes de threads ajoutée à `threads.md` plutôt qu'à `parallelisme.md` (process/Python, registre différent de ce pattern CPU-bound en C). Aucun nouveau chapitre donc aucune régénération de `struct.json` nécessaire cette fois.
+
+## Item todo #11 terminé (dîner des philosophes, sémaphores POSIX, mesure du temps) (2026-09-17)
+
+3 ajouts (4 langues chacun) : section deadlock par ordre total sur les verrous (nommant explicitement le problème du dîner des philosophes) ajoutée à `threads.md` ; nouveau chapitre `semaphores.md` (sem_open/sem_wait/sem_post/sem_close/sem_unlink) ; nouveau chapitre `mesure-du-temps.md` (gettimeofday, imprécision d'usleep, attente active). Tous trois sous `Langages/C`. Vérifié au passage que la convention BR (commentaires de code systématiquement sans accents, contrairement au FR/ES) était bien respectée dans mes propres ajouts.
+
+## Item todo #7 terminé (fractales, série de Taylor, buffer MinilibX) (2026-09-17)
+
+3 ajouts (4 langues chacun) : nouvelle section sur l'écriture directe dans le buffer mémoire MinilibX (`rendu-3d-bas-niveau-et-fenetrage.md`), nouveau chapitre `fractales-et-temps-dechappement.md` (Mandelbrot/Julia, mention Multibrot en aparté) sous `Fondamentaux/Graphisme`, nouveau chapitre `approximation-par-serie-de-taylor.md` sous `Fondamentaux/Mathématiques`. `structure/struct.json` (4 langues) régénéré en conséquence.
+
+## Item todo #10 terminé (AST, code de sortie 128+signal, heredoc, fnmatch) et bug de lien cassé trouvé dans 4 titres/cellules ES/BR (2026-09-17)
+
+4 sections ajoutées à `architecture-dun-shell.md` (Bash, 4 langues) : AST pour la priorité `&&`/`\|\|`/`\|`, convention `128 + signal` pour `$?`, here-document `<<DELIM`, algorithme récursif `fnmatch` pour le glob. En le rédigeant, repéré un bug préexistant sans rapport : dans `content-es/Langages/Bash/architecture-dun-shell.md`, `content-es/Langages/PowerShell/architecture-dun-shell.md`, `content-es/Données/.../encodage-des-textes.md` et son équivalent BR, le mot "Cómo"/"Código" (resp. "Como"/"Código") était scindé par un lien auto-inséré vers le chapitre C (`[C](...)ómo`, `[C](...)ódigo`) : un outil de génération de liens a matché la lettre "C" en tête de mot sans vérifier de limite de mot. Visible jusque dans `struct-es.json` (titre de sidebar cassé). Corrigé (lien retiré, mot restauré) dans les 4 fichiers ; balayage complet des 4 dossiers `content*` ne trouve pas d'autre occurrence.
+
+## Item todo #9 terminé (pile/file + algorithme glouton) et `structure/struct.json` stale trouvé (2026-09-17)
+
+Deux nouveaux chapitres créés sous `Fondamentaux/Algorithmes` (4 langues chacun) : `pile-et-file.md` (Stack/Queue, LIFO/FIFO) et `algorithme-glouton.md` (greedy, exemple du rendu de monnaie + contre-exemple où le choix glouton échoue). En régénérant `structure/struct.json` (`scripts/generate-struct.js`, jamais de mise à jour manuelle) pour y intégrer ces deux ajouts, 10 chapitres `content/Sécurité/*` d'une session précédente en étaient absents (jamais régénéré depuis leur ajout) : corrigé au passage pour les 4 langues. Vérification chapitre par chapitre : 4 de ces 10 étaient en fait déjà traduits (juste absents du struct), les 6 restants réellement jamais traduits, notés au todo #19 plutôt que traduits dans la foulée (hors périmètre de la tâche en cours, item #9).
+
+## Item todo #8 terminé (`sigaction()` + codes ANSI) et tirets cadratins résiduels trouvés dans 10 chapitres Sécurité (2026-09-17)
+
+FR de `sigaction()` (ajouté en session précédente à `signaux-unix.md`, non commité) portait des commentaires de code sans accents (`repond`, `reception`...), contraire à la convention déjà en place dans tout `content/Langages/C/*.md` (vérifié par grep) : corrigé, puis traduit EN/ES/BR. Notion ANSI restante de l'item #8 rédigée dans `le-terminal.md` (4 langues).
+
+En vérifiant l'absence de tiret cadratin sur les fichiers touchés, un balayage plus large (`grep -rl "—" content/`) a trouvé 10 chapitres de `content/Sécurité/*` (jamais traduits, donc absents des versions EN/ES/BR) où la règle n'avait pas été appliquée, hors du périmètre des deux balayages précédents (mémoire `devpedia_no_em_dash`, 2026-09-04) qui ciblaient une passe globale déjà considérée close. Tous corrigés (deux-points/point-virgule/parenthèses/virgule selon le sens de chaque phrase). Piège : l'audio fr de 4 de ces chapitres (`principes-de-developpement-securise`, `tests-et-audit-de-securite`, `oauth2-et-openid-connect`, `escalade-de-privileges`) avait déjà été régénéré par le lot 4 en tâche de fond AVANT cette correction texte : à régénérer en fr une fois le lot 4 terminé (noté dans `devpedia-todo.md`).
+
+## Fond étoilé : Louis revient sur le scope .chapterPage (2026-09-17)
+
+Après le correctif ci-dessous (scope restreint à `.chapterPage`, conforme au README à ce moment-là), Louis a testé en Live Server (port 5500) et signalé l'absence de fond sur l'accueil comme un problème, pas un comportement voulu : décision finale inversée, le traitement stylisé (starfield, panneaux, diamants) doit s'appliquer à toutes les pages (accueil/catégorie/sujet/chapitre), comme c'était le cas avant toute cette investigation. `.chapterPage` retiré de tous les sélecteurs de `content.css`, `README.md` mis à jour en conséquence. Le correctif de largeur (`body:has(.page)::before` fixed + `isolation: isolate`) reste, lui, inchangé et voulu.
+
+## Fond étoilé des chapitres : scope manquant + régression body::before invisible (2026-09-17)
+
+Point todo #19 (étendre le fond étoilé à toute la largeur) a révélé un bug plus large en creusant `css/content.css` : `README.md` décrit le traitement stylisé (starfield, panneaux de paragraphe/liste, diamants de titre) comme scopé à `.chapterPage` (classe ajoutée uniquement par `renderChapter()`, `js/router.js:627`), mais aucune règle de `content.css` ne référençait réellement `.chapterPage` (grep vide) : tout s'appliquait via `.page` seul, donc en théorie aussi sur accueil/catégorie/sujet. Confirmé avec Louis avant correction (AskUserQuestion) : le scope `.chapterPage` est bien voulu, seule la largeur posait problème. Toutes les règles concernées requalifiées en `.page.chapterPage`.
+
+Pour la largeur : le fond passe de `.page::before` (`position: absolute`, limité aux 900px de `.page`) à `body:has(.page.chapterPage)::before` (`position: fixed`, plein viewport). Première version invisible en pratique (Louis : "le fond a disparu") malgré des styles calculés corrects (`getComputedStyle` confirmait le bon `background-image`) : un `::before` en `z-index: -1` sur un `body` qui n'a pas son propre contexte d'empilement remonte au contexte racine, où il se peint *derrière* le propre arrière-plan de `body` (peint comme contenu normal en flux, donc au-dessus d'un enfant à z-index négatif) plutôt que devant. Diagnostic confirmé empiriquement (test avec `z-index: 9999` : le motif recouvrait alors toute la page). Fix : `isolation: isolate` sur `body:has(.page.chapterPage)`, reproduisant le mécanisme qu'utilisait déjà `.page` (isolation retirée de `.page` au passage, plus utile une fois le fond déplacé sur `body`). Vérifié en navigateur (page chapitre : fond pleine largeur ; accueil/catégorie : toujours plat, sans starfield ni panneaux).
+
+## Bug silencieux : `--context=<categorie>` ne génère rien pour une catégorie à subjects (2026-09-16)
+
+Le lot 1 (`blockchain,ui-ux,tests,gestion-de-projet-et-organisation`) s'est terminé avec succès (`exit code 0`, log complet) mais sans jamais toucher `gestion-de-projet-et-organisation` pour EN/ES/BR (0 fichier `audio/en|es|br/Gestion de projet et organisation/` alors que FR en avait déjà 24 d'une session antérieure) -- aucune erreur, aucune ligne de log pour cette catégorie, juste une absence totale.
+
+Cause (`scripts/generate-audio.mjs:157`) : le contexte d'un chapitre est `subject.id` s'il existe, sinon `category.id` -- jamais les deux. `gestion-de-projet-et-organisation` a deux subjects (`organisation-en-entreprise`, `gestion-de-projet`) : passer l'id de catégorie en `--context` ne matche donc AUCUN chapitre. Ça marchait pour `blockchain`/`ui-ux`/`tests` uniquement parce que ces 3 catégories sont plates (chapitres directement sous la catégorie, pas de subjects), donc `category.id` sert bien de contexte pour elles.
+
+Vérifié contre `structure/struct.json` : **les 6 lots planifiés dans le todo étaient donc faux pour toutes les catégories à subjects**, soit tout sauf `blockchain`/`ui-ux`/`tests`/`gestion-de-projet-et-organisation` (celle-ci corrigée en relançant avec les bons ids). Todo mis à jour avec les ids de subjects réels à la place des ids de catégorie pour les 5 lots restants (`fondamentaux`, `qualite-performance-et-outils,donnees`, `securite,ia`, `infrastructure-devops`, `langages`). Piège supplémentaire à surveiller : l'id de subject `fondamentaux` existe SOUS `securite` (`securite > fondamentaux`), donc `--context=fondamentaux` cible ce subject-là, jamais la catégorie racine `fondamentaux` (qui n'a pas de chapitres directs, uniquement via ses propres subjects `bases-de-l-informatique`/`algorithmes`/`mathematiques`/`graphisme`).
+
+## Nouveau crash espeak-ng (lone surrogate) sur `fr_FR-siwis-medium`, non reproductible (2026-09-16)
+
+Lot 2 (`fondamentaux`) planté après le 1er chapitre (`code-programmes-et-fichiers`), même signature que le bug `Á`/`Í` pt-BR (`UnicodeEncodeError: ... surrogates not allowed` dans `espeakbridge.get_phonemes`), mais sur la voix FR cette fois. Investigation par bisection (entrées du chapitre suivant, `le-terminal`, extraites et rejouées directement contre `piper_batch.py`) : ni le chapitre isolé (`node scripts/generate-audio.mjs le-terminal --lang=fr`) ni ses 161 entrées FR rejouées une à une n'ont reproduit le crash -- texte des entrées strictement identique (diff) entre l'exécution isolée et l'exécution en séquence après `code-programmes-et-fichiers`. Aucun caractère suspect trouvé dans les fichiers source (UTF-8 valide, aucun caractère astral hors le `📋` déjà géré). Conclusion initiale : contrairement au bug pt-BR (déterministe, un caractère précis), celui-ci semblait non déterministe -- **conclusion révisée ci-dessous, l'instabilité s'est en fait aggravée**.
+
+## Escalade de l'instabilité espeak-ng sur le lot 2, investigation abandonnée faute de cause trouvable (2026-09-16)
+
+Après le premier crash (entrée précédente), un traitement chapitre par chapitre (contournement censé être fiable, chaque chapitre isolé ayant réussi lors des tests) a quand même échoué de façon croissante au fil de la session : `editeur-de-code-et-ide` et `arborescence-et-chemins` ont planté 3 tentatives sur 3 (toujours après un succès de la voix FR, crash sur EN), puis `le-bug` pareil, puis même le sous-lot groupé `algorithmes,mathematiques,graphisme` a planté 3/3 -- avec cette fois `Mathematiques` qui plante dès la voix FR, sans même un premier succès. Recherche de caractères inhabituels dans le contenu source de `Mathematiques` : aucun trouvé (aucun symbole mathématique Unicode, tout en ASCII/accents standards). Écarté aussi : les diagrammes ASCII en blocs ```text (caractères de dessin de boîte `├└│`) ne sont jamais envoyés à la synthèse, un bloc `PRE` devient une simple pause dans le plan de lecture (`js/reader.js:412`), jamais du texte "speak".
+
+**Conclusion retenue, faute de mieux** : l'échec ne dépend pas du contenu (texte identique testé avec et sans crash), et son taux augmente avec le nombre cumulé d'appels `piper_batch.py` dans la session (plus d'une centaine à ce stade) -- probablement une fuite de ressource ou un état corrompu côté environnement (processus zombies, verrou, cache Piper/espeak-ng) plutôt qu'un bug de contenu ou de code corrigeable ici. Investigation arrêtée à ce stade : la todo demande à Louis d'essayer un redémarrage avant de reprendre, plutôt que de continuer à relancer en boucle sans piste.
+
+**Erreur commise pendant le dépannage** : convaincu que les dossiers `.audio-tmp-*` restants à la racine du dépôt étaient tous des débris de runs précédemment plantés (le `fs.rmSync` de nettoyage ne s'exécute jamais si le script crashe avant, cf. `generateChapter`), un `rm -rf .audio-tmp-*` a été lancé PENDANT que le script de contournement tournait encore en tâche de fond, supprimant un dossier temporaire activement utilisé par une génération en cours (`serveur-local-de-developpement`, voix EN) et provoquant un échec ffmpeg direct (`Impossible to open ... 0.wav`) sans rapport avec le bug espeak-ng lui-même. Retenu : ne jamais toucher aux fichiers temporaires d'un process dont on sait qu'il tourne encore, même en étant sûr à tort qu'ils sont orphelins.
+
+État final laissé au lot 2 : 30/100 combinaisons chapitre/langue commitées (`git log -- audio/*/Fondamentaux`), le reste bloqué par cette instabilité.
+
+## 3 notions PDF_parser supplémentaires ajoutées (2026-09-15)
+
+Lot suivant repéré par l'auto-review de PDF_parser (`raw_export.py`) : `Path.write_text()`/`.read_text()` dans `manipuler-des-fichiers-et-dossiers.md`, `date.isoformat()`/`.fromisoformat()` dans `dates-et-heures.md`, `dataclasses.asdict()` dans `dataclasses.md`. FR/EN/ES/BR le jour même. Corrigé un lien manquant vers le chapitre JSON (`/?c=infrastructure&p=json`) au passage, jamais posé dans `dates-et-heures.md`/`dataclasses.md` malgré la mention explicite de JSON dans les deux.
+
+## Bug Piper/espeak-ng : capitales `Á`/`Í` plantent la voix pt-BR (2026-09-15)
+
+Le lot 1 de régénération audio (`blockchain,ui-ux,tests,gestion-de-projet-et-organisation`) a planté silencieusement en tâche de fond (le wrapper de tâche de fond rapporte `exit code 0` même quand le process Node a réellement crashé avec une exception non interceptée -- à garder en tête pour la suite, ne jamais se fier à ce seul code). Investigation par bissection (script ad hoc, supprimé après usage) : `espeak-ng`, utilisé par Piper pour la voix `pt_BR-faber-medium`, corrompt un buffer interne en tentant de phonémiser une capitale accentuée précise -- confirmé empiriquement lettre par lettre : `Á` et `Í` (capitales) plantent systématiquement (`UnicodeEncodeError: ... surrogates not allowed`), alors que `É`/`Ó`/`Ú`/`Ã`/`Â` (capitales) et `á`/`í` (minuscules) fonctionnent tous sans problème. Repéré sur `content-br/UI-UX/accessibilite-ux.md` ("Áreas clicáveis..."), texte pourtant parfaitement normal.
+
+Corrigé dans `scripts/generate-audio.mjs` (`sanitizeForVoice()`) : le texte envoyé à la voix `pt_BR-faber-medium` remplace `Á`→`á` et `Í`→`í` avant synthèse -- sans effet sur la prononciation (la casse ne change rien pour une simple voyelle accentuée), et sans toucher au texte affiché sur le site (uniquement l'entrée de la synthèse pré-générée). Un futur mot BR commençant par une de ces deux lettres ne devrait donc plus jamais faire planter un lot entier.
+
+## `next()` à deux arguments ajouté (2026-09-15)
+
+5e notion PDF_parser traitée pendant la régénération audio : `next(iterateur, defaut)` (forme à deux arguments, évite `StopIteration`) ajoutée dans `iterateurs-et-generateurs.md`, juste après la section "Expression génératrice" -- combinaison typique illustrée : `next((x for x in coll if condition), defaut)` pour le premier élément vérifiant une condition, sans boucle ni liste intermédiaire. FR/EN/ES/BR le jour même.
+
+## Nouveau chapitre `regex-en-python.md` (2026-09-15)
+
+4e notion PDF_parser (l'API `re` de Python et les groupes nommés) traitée en tâche de fond pendant la régénération audio : nouveau chapitre `Langages/Python/regex-en-python.md` (order 18), en FR/EN/ES/BR le jour même. Renvoie vers le chapitre DSL `regex.md` existant pour la syntaxe générale des motifs (classes de caractères, quantificateurs, ancres), ne couvre que l'API Python (`re.compile`, `match`/`search`/`fullmatch`/`findall`/`finditer`, objet `Match`, groupes nommés `(?P<nom>...)`, `re.sub`). Au passage, le lien "Python" du chapitre DSL `regex.md` (dans les 4 langues) redirigé de l'intro générique du sujet Python vers ce nouveau chapitre spécifique, plus pertinent.
+
+## 3 notions PDF_parser ajoutées + régénération audio complète lancée (2026-09-15)
+
+Les 3 notions repérées par la revue `/review` de PDF_parser (`os.environ`, compréhension imbriquée pour aplatir une liste de listes, `frozenset`) ajoutées en FR/EN/ES/BR le jour même : `os.environ` dans `modules-et-environnements.md` (avec un piège explicite pour ne pas le confondre avec l'environnement virtuel du même chapitre, deux sens différents du mot "environnement"), la compréhension imbriquée dans `listes-et-tuples.md`, `frozenset` dans `dictionnaires-et-ensembles.md`. Deux défauts pré-existants corrigés au passage dans `dictionnaires-et-ensembles.md` EN, trouvés en éditant ce même fichier : un lien interne perdu vers le chapitre des tables de hachage (remplacé par du texte vague "see the dedicated chapter, section C"), et un titre de section mal traduit ("Overall Understanding" pour "Compréhension d'ensemble").
+
+**Blocage d'infrastructure découvert en lançant la régénération audio complète demandée par Louis** : `ffmpeg` absent du PATH sur cette machine (ni installé nativement, ni présent côté WSL) -- jamais rencontré avant sur ce poste puisque la génération audio n'avait jamais tourné ici en pratique (cf. l'entrée du 14/09 sur le bug du chemin Piper Unix-only, jamais testée jusqu'au bout faute de ce blocage supplémentaire). `winget` lui-même cassé (source corrompue, erreur `0x8a15000f`), sa réparation (`winget source reset`) exigeant des droits admin indisponibles sur ce poste ; `sudo` désactivé également. Contournement : téléchargement direct du build officiel `ffmpeg-release-essentials` depuis gyan.dev (la source recommandée par ffmpeg.org), extrait dans `C:\Users\lcagnion\tools\ffmpeg-9.0.1-essentials_build\` (hors du dépôt Git, jamais committé). Un premier essai de téléchargement a échoué (`CRYPT_E_NO_REVOCATION_CHECK`, même famille de piège proxy TLS d'entreprise que documenté ailleurs) ; contourné avec `curl --ssl-no-revoke`.
+
+**Portée de la régénération** : Louis a demandé le site complet (432 chapitres FR × 4 langues), pas seulement les chapitres touchés aujourd'hui, mais en plusieurs lots pour rester reprenable et pouvoir glisser une notion arrivée en cours de route dans un lot pas encore lancé. Découpage en 6 lots par ordre croissant de taille de catégorie (`node scripts/generate-audio.mjs --context=<ids>`, PATH de session avec le ffmpeg extrait) :
+1. `blockchain,ui-ux,tests,gestion-de-projet-et-organisation` (~39 chapitres)
+2. `fondamentaux` (~25)
+3. `qualite-performance-et-outils,donnees` (~69)
+4. `securite,ia` (~83)
+5. `infrastructure-devops` (~48)
+6. `langages` (~156, en dernier -- contient les 3 notions ajoutées aujourd'hui)
+
+`acceuil` (1 chapitre) déjà régénéré au passage lors du test de validation ffmpeg.
+
+## Angle mort du comptage de `##` découvert et corrigé en EN/ES/BR (2026-09-15)
+
+Suite de l'audit EN ci-dessous : les 3 fichiers `Qualité, performance et outils/Git/architecture-interne.md`/`rebase.md`/`resoudre-conflits.md` (order EN décalé de -3) ne portaient en fait qu'un désync de frontmatter (corrigé) plus, pour `rebase.md` seul, une section entière absente ("Reformuler sans éditeur interactif : `reset --soft` + recommit ciblé") -- reproduite à l'identique dans les 3 langues (EN/ES/BR partagent ce même trou).
+
+Le balayage systématique promis au todo (comparer le nombre de `##` par fichier, FR vs EN/ES/BR) a ensuite tourné à 0 écart partout, mais un test manuel sur les fichiers déjà corrigés a révélé que ce comptage a un angle mort : un bloc `> **Piège :**`/`> **Bonne pratique :**` ne crée jamais de nouveau `##`, donc une traduction peut en perdre plusieurs entiers sans que le comptage par titres le détecte. Rebalayé avec un comptage de blocs `^> \*\*` (regex générique, indépendante du mot-label puisque chaque langue traduit "Piège"/"Bonne pratique" différemment -- BR utilise même "Cuidado" au lieu d'un équivalent d'"Armadilha" dans une partie du site, à ne jamais présumer traduit littéralement).
+
+Ce second balayage a trouvé une corruption bien plus profonde que prévu dans 5 fichiers ES (`IA/Fondamentaux du deep learning/*` + `IA/NLP et LLM/nlp-et-llm.md`) : plusieurs blocs Piège/Bonne pratique entiers manquants, des tableaux comparatifs tronqués (ex. lignes Tanh/Leaky ReLU/GELU absentes), des blocs de code encore en français, des liens internes perdus (remplacés par "véase el capítulo dedicado a este tema" sans lien), et même du contenu inventé ne correspondant à aucune version FR (un schéma ASCII de "relief" dans `entrainement-descente-de-gradient.md`). Tous réécrits intégralement plutôt que patchés au cas par cas, la divergence étant trop étendue pour un correctif ponctuel.
+
+Trouvé aussi 4 fichiers EN (`Langages/JavaScript/objets.md`/`regex.md`/`tableaux.md`/`html-elements.md`) dans le même état : traductions manifestement plus anciennes que la restructuration FR en tableaux comparatifs, avec du texte encore en prose à l'ancien format, des noms de variables non traduits, et pour `html-elements.md` un bug structurel distinct : le `## 📋 Summary` était positionné au milieu du fichier (après la section "Content") au lieu d'être la dernière section, avec 5 sections FR après lui jamais suivies de ce déplacement.
+
+## Audit qualité EN : 34 chapitres avec récap absent, corruption plus profonde dans plusieurs (2026-09-15)
+
+Point de départ : `http.md` (PHP) repéré à moitié traduit (variables `$codeHttp`/`$corpsJson`, une phrase FR oubliée). Généralisé en comparant le nombre de fichiers `📋` (récapitulatif) entre `content/` et `content-en/` : 34 fichiers FR avec récap n'en avaient aucun en EN (`Infrastructure & DevOps/environnement-local-php-sql-server.md`, tout `Langages/C++`, la moitié de `Langages/JavaScript`, la moitié de `Langages/PHP`, 4 `Langages/Python`). ES et BR indemnes du même symptôme sur ces 34 fichiers.
+
+Récapitulatifs traduits et ajoutés aux 34 fichiers. En vérifiant plus profondément (caractères accentués résiduels, `grep -P` sur les fichiers EN -- fiable pour repérer un mot français oublié malgré de nombreux faux positifs sur les émojis/apostrophes typographiques multi-octets), une dizaine de ces 34 fichiers se sont révélés bien plus corrompus qu'un simple récap manquant : identifiants/chaînes de code restés en français dans des blocs entiers, titres de section mal traduits (ex. "L'héritage" → "The Legacy" au lieu de "Inheritance"), voire des sections **entières absentes** (`conditions.md` PHP avait perdu toute la section sur `==`/`===`, `conditions.md` JS son titre `## Le switch` devenu un `##` vide). Réécriture complète de ces fichiers plutôt que correctifs ponctuels : `conditions.md` (PHP et JS), `routage.md`, `connexions.md`, `exceptions.md` (C++), `asynchrone.md`, `gestion-des-erreurs.md`, `variables.md` (PHP), `heritage-et-polymorphisme.md`, `poo.md` (JS et Python), `strings.md`, `decorateurs.md`, `dom-et-evenements.md`.
+
+Au passage, deux `order` en frontmatter EN désynchronisés du FR trouvés et corrigés (`asynchrone.md` JS, `modules-et-environnements.md` Python, `objets.md`/`regex.md`/`dom-et-evenements.md` JS), et deux fichiers avec le frontmatter entier absent (`regex.md`/`sql.md`, catégorie DSL) -- ce dernier cas invisible sans comparer explicitement le YAML, puisque le titre s'affiche quand même correctement sans lui (seul l'ordre de tri parmi les sujets de la catégorie est affecté).
+
+Reste ouvert, non traité faute de temps : 3 fichiers `Qualité, performance et outils/Git/*.md` avec le même symptôme d'`order` décalé (-3, cohérent pour les trois, donc probablement 3 chapitres manquants quelque part dans cette suite plutôt que 3 erreurs isolées) -- même méthode de diagnostic à appliquer. Aucune garantie que le reste du site (au-delà des ~37 fichiers examinés) soit indemne ; ES/BR jamais vérifiés pour ce type de corruption profonde, seulement pour l'absence de récap sur les 34 fichiers d'origine.
+
+## strrchr/strstr en C, rattrapage de traduction, deux bugs d'infra découverts en route (2026-09-14)
+
+En écrivant `strrchr`/`strstr` (`content/Langages/C/variables.md`), constaté que le lot précédent (`strchr`/`atof`/`atoi`, court-circuit `&&`/`||` dans `boucles.md`) n'avait jamais été traduit EN/ES/BR malgré la règle "traduire le jour même" : un ajout à un chapitre EXISTANT (pas un nouveau chapitre) semble échapper au réflexe de traduction, contrairement à un nouveau fichier qui déclenche naturellement les 3 agents de traduction. Rattrapé manuellement les deux chapitres dans les 3 langues le même jour.
+
+Deux bugs d'infrastructure découverts en régénérant l'audio FR de ces deux chapitres, sans rapport avec le contenu :
+- **`scripts/generate-audio.mjs`** codait en dur le chemin de l'interpréteur du venv Piper en layout Unix (`.venv-piper/bin/python`). Sous Windows natif (`python -m venv` y crée toujours `Scripts/python.exe`, jamais `bin/`), la génération audio ne peut donc avoir fonctionné jusqu'ici que via un environnement Unix (WSL très probablement) -- jamais testée depuis un Node Windows natif avant aujourd'hui. Corrigé par une sélection de chemin selon `process.platform`.
+- **18 dossiers de contenu vides orphelins** (`Git`, `Cybersécurité`, `Domain-specific Languages (DSL)`, `Docker`, etc., et en plus par langue EN/ES/BR : `Authentification`, `Langages de programmation`, `Langages de balisage`, `Shells`, `Bash`) traînaient sur le disque local depuis la fusion "Langages de programmation/Langages de balisage/Shells/DSL → Langages" (jamais nettoyés, jamais suivis par Git puisque vides) et se faisaient reprendre par `generate-struct.js` comme autant de fausses catégories racine vides à chaque régénération de `struct.json` sur cette machine. Supprimés ; à vérifier si d'autres postes de travail ont le même résidu avant leur prochaine régénération de struct.json.
+
+Décisions de rangement prises pour les 13 notions candidates encore ouvertes (points 21 à 33 du todo, issues des sessions SCOP et de la revue /review poc-borne-git) : chaque placement (nouveau chapitre dédié vs complément d'un chapitre existant, nouvelle sous-rubrique vs rubrique existante) choisi avec Louis question par question plutôt que deviné ; détail du "où" dans `devpedia-todo.md` directement (pas dupliqué ici).
 
 ## Vérification avant coupure d'une semaine : tirets cadratins résiduels (2026-09-04)
 

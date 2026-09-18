@@ -52,13 +52,42 @@ Même avec un identifiant parfaitement imprévisible, un attaquant qui parvient 
 >
 > **Bonne pratique :** transmettre le cookie de session uniquement en HTTPS, en interdire l'accès à [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), et en limiter l'envoi aux requêtes provenant réellement du site (voir les options `secure`/`httponly`/`samesite` détaillées dans [Gérer les connexions](/?c=langages-de-programmation&s=php&p=connexions)).
 
+## Fixation de session : imposer un identifiant plutôt que le voler
+
+Le vol de session (vu plus haut) suppose que l'attaquant récupère un identifiant DÉJÀ utilisé par la victime. La **fixation de session** (*session fixation*) prend le problème à l'envers : l'attaquant impose à la victime un identifiant qu'il connaît DÉJÀ, avant même qu'elle ne se connecte.
+
+```text
+1. L'attaquant obtient un identifiant de session valide mais pas encore authentifie
+   (ex : simplement en visitant le site lui-meme, ou via un lien piege qui en impose un)
+2. L'attaquant envoie a la victime un lien contenant CET identifiant
+   (ex : https://site.example/?session_id=abc123, si le site accepte un id fourni par l'URL)
+3. La victime clique, se connecte normalement avec ses identifiants
+   -> le serveur associe la session abc123 (deja connue de l'attaquant) a la victime,
+      au lieu d'en generer une NOUVELLE a la connexion
+4. L'attaquant utilise ce meme identifiant abc123 : il est maintenant connecte
+   en tant que victime, sans avoir rien vole
+```
+
+> **Piège :** régénérer un cookie de session automatiquement... sauf au moment précis de la connexion, en gardant par erreur le même identifiant qu'avant l'authentification. C'est justement l'étape où la fixation frappe.
+>
+> **Bonne pratique :** régénérer systématiquement un TOUT NOUVEL identifiant de session au moment où l'utilisateur s'authentifie (jamais réutiliser celui d'avant la connexion), et ne jamais accepter un identifiant de session fourni via l'URL plutôt qu'un cookie.
+
+## Invalidation à la déconnexion et sessions concurrentes
+
+Deux angles supplémentaires, souvent oubliés parce qu'ils ne sont jamais testés en usage normal :
+
+| Angle | Le piège | La bonne pratique |
+|---|---|---|
+| Déconnexion | Le bouton "Se déconnecter" supprime le cookie côté NAVIGATEUR, mais la session correspondante reste valide côté serveur | Supprimer explicitement la session côté serveur à la déconnexion, pas seulement le cookie côté client |
+| Sessions concurrentes | Un compte compromis reste accessible à l'attaquant même après que la victime a changé son mot de passe, si son ancienne session reste valide ailleurs | Invalider toutes les sessions actives d'un compte au changement de mot de passe ; proposer à l'utilisateur une liste de ses sessions actives et la possibilité de les révoquer |
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | HTTP est sans état : sans mécanisme supplémentaire, le serveur ne se souvient de rien entre deux requêtes. Une session (côté serveur) associée à un identifiant transmis via un cookie résout ce problème : le client renvoie l'identifiant à chaque requête, le serveur retrouve la session correspondante. |
+| **À retenir** | HTTP est sans état : sans mécanisme supplémentaire, le serveur ne se souvient de rien entre deux requêtes. Une session (côté serveur) associée à un identifiant transmis via un cookie résout ce problème : le client renvoie l'identifiant à chaque requête, le serveur retrouve la session correspondante. La fixation de session impose un identifiant connu de l'attaquant AVANT la connexion, distincte du vol qui récupère un identifiant déjà utilisé. |
 | **Outils utilisables** | Un générateur aléatoire cryptographique pour l'identifiant de session ; les options `secure`/`httponly`/`samesite` d'un cookie pour limiter le risque de vol. |
-| **Pièges à éviter** | Un identifiant de session prévisible (compteur, valeur devinable). Croire qu'un identifiant imprévisible suffit, sans se protéger contre le vol du cookie lui-même. |
-| **Bonnes pratiques** | Générer l'identifiant de session avec un CSPRNG. Sécuriser le cookie de session (HTTPS uniquement, inaccessible à [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), limité aux requêtes du site). |
+| **Pièges à éviter** | Un identifiant de session prévisible (compteur, valeur devinable). Croire qu'un identifiant imprévisible suffit, sans se protéger contre le vol du cookie lui-même. Garder le même identifiant de session avant et après la connexion. Ne supprimer le cookie qu'côté client à la déconnexion. |
+| **Bonnes pratiques** | Générer l'identifiant de session avec un CSPRNG. Sécuriser le cookie de session (HTTPS uniquement, inaccessible à [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), limité aux requêtes du site). Régénérer l'identifiant à la connexion. Invalider la session côté serveur à la déconnexion et au changement de mot de passe. |

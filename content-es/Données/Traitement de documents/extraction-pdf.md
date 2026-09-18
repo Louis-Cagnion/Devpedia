@@ -45,6 +45,74 @@ with pymupdf.open("documento.pdf") as documento:
 >
 > **Buena práctica:** caracterizar un bloque por el tamaño de fuente del span más **largo** (el que tiene más caracteres), no por el tamaño máximo bruto: una elección simple que evita que un elemento corto y aislado (número, viñeta) falsee la medida.
 
+## Detectar una tabla por heurística geométrica
+
+Detectar una tabla en una página sin recurrir al [OCR estructurado](/?c=traitement-de-documents&p=ocr-structure) ni a un modelo de aprendizaje automático: PyMuPDF analiza la **geometría** de la página (líneas de cuadrícula realmente dibujadas en el PDF, alineación entre los bloques de texto nativo) para deducir una estructura de tabla:
+
+```python
+with pymupdf.open("documento.pdf") as documento:
+    pagina = documento[0]
+    for tabla in pagina.find_tables():
+        filas = tabla.extract()   # lista de filas, cada fila = lista de celdas (str o None)
+        print(tabla.bbox, len(filas), "filas")
+```
+
+`find_tables()` devuelve algo recorrible página por página; cada tabla encontrada expone su posición (`bbox`) y un método `extract()` que devuelve su contenido ya ordenado en filas/celdas, sin necesidad de reconstruir la cuadrícula uno mismo a partir de las posiciones brutas del texto.
+
+| | Heurística geométrica (`find_tables()`) | OCR estructurado |
+|---|---|---|
+| Se apoya en | Líneas vectoriales + alineación del texto nativo | Píxeles de la página renderizada |
+| Funciona en una página escaneada | No (sin texto nativo ni línea vectorial que medir) | Sí |
+| Velocidad | Rápida: ningún modelo que ejecutar | Más lenta: inferencia sobre una imagen |
+
+> **Trampa:** una tabla sin bordes visibles ni alineación clara (columnas separadas por espacios irregulares, sin cuadrícula dibujada) puede detectarse solo parcialmente, o no detectarse en absoluto: `find_tables()` mide una geometría realmente presente, nunca adivina una estructura ausente del renderizado.
+>
+> **Buena práctica:** verificar el resultado de `find_tables()` en una muestra representativa de las tablas reales del proyecto antes de integrarlo tal cual en un pipeline, como con cualquier heurística basada en la maquetación.
+
+## Corregir un subconteo de columnas con `img2table`
+
+La trampa de `find_tables()` vista antes (una tabla sin cuadrícula dibujada se detecta mal) tiene un caso particular frecuente: una tabla **detectada**, pero con **menos columnas de las reales**, por falta de separación visual clara entre ellas. [`img2table`](https://github.com/xavctn/img2table) resuelve específicamente ese caso: en lugar de apoyarse en la alineación del texto nativo, analiza los **contornos** de la página (vía OpenCV) como una imagen, reutilizando a la vez el texto nativo del PDF (sin OCR) para rellenar las celdas detectadas.
+
+```python
+from img2table.document import PDF as Img2TablePDF
+
+resultados = Img2TablePDF(
+    src="documento.pdf", pages=[0], pdf_text_extraction=True
+).extract_tables(borderless_tables=True, implicit_rows=False, implicit_columns=False)
+```
+
+`pdf_text_extraction=True` pide a `img2table` que reutilice el texto nativo del PDF en lugar de invocar un OCR: más rápido, y fiable en cuanto el PDF ya contiene texto nativo (véase antes). `borderless_tables=True` activa la detección por contornos para una tabla sin borde visible, precisamente el caso que hace fallar a `find_tables()`.
+
+### Combinar ambos en lugar de elegir uno
+
+`img2table` no es sistemáticamente mejor que `find_tables()`: lanzar un análisis de contornos en cada página, incluidas aquellas cuyas tablas ya están correctamente detectadas, cuesta tiempo sin beneficio. Una estrategia más selectiva consiste en relanzar `img2table` solo en las páginas cuya tabla de `find_tables()` se considera estructuralmente sospechosa (una señal simple: una celda que concatena varios valores numéricos distintos, síntoma de columnas fusionadas por error), y luego reemplazar la tabla nativa por su versión `img2table` solo si esta cuenta realmente más columnas:
+
+```python
+def corregir_tablas_subcontadas(ruta_pdf, tablas_nativas):
+    paginas_sospechosas = {t.page for t in tablas_nativas if parece_estructuralmente_sospechosa(t.celdas)}
+    if not paginas_sospechosas:
+        return tablas_nativas   # nada que corregir: ningun coste de img2table pagado en vano
+
+    candidatos_por_pagina = Img2TablePDF(
+        src=ruta_pdf, pages=[p - 1 for p in paginas_sospechosas], pdf_text_extraction=True
+    ).extract_tables(borderless_tables=True, implicit_rows=False, implicit_columns=False)
+
+    resultado = []
+    for tabla_nativa in tablas_nativas:
+        candidatos = [c for c in candidatos_por_pagina.get(tabla_nativa.page - 1, [])
+                      if tasa_de_solapamiento(c.bbox, tabla_nativa.bbox) >= 0.7]
+        mejor = max((contar_columnas(c) for c in candidatos), default=0)
+        if candidatos and mejor > contar_columnas(tabla_nativa.celdas):
+            resultado.extend(candidatos)   # img2table lo hace mejor: se prefiere
+        else:
+            resultado.append(tabla_nativa)   # find_tables() ya bastaba
+    return resultado
+```
+
+> **Trampa:** comparar directamente las coordenadas (`bbox`) de una tabla `img2table` con las de una tabla `find_tables()` sin conversión previa. `img2table` devuelve sus coordenadas en el espacio de píxeles de su propio renderizado interno, a una resolución fija (200 DPI), independiente del DPI que pueda usarse en otra parte del pipeline para [renderizar la página como imagen](#renderizar-una-pagina-como-una-imagen): sin reescalar a ese mismo DPI de referencia, dos tablas en la misma posición real de la página pueden parecer no solaparse en absoluto.
+>
+> **Buena práctica:** nunca asignar el mismo candidato `img2table` a más de una tabla nativa: en cuanto se elige un candidato para reemplazar una tabla, excluirlo de los candidatos restantes para las siguientes tablas nativas de la misma página, para evitar que una sola tabla detectada por contornos sirva de reemplazo dos veces.
+
 ## Renderizar una página como una imagen
 
 Algunos tratamientos (el [OCR estructurado](/?c=traitement-de-documents&p=ocr-structure), una verificación visual) necesitan la página como una **imagen**, independientemente de cualquier texto nativo que ya contenga. PyMuPDF también puede producir este renderizado:
@@ -86,6 +154,6 @@ Un pipeline de extracción completo produce típicamente, para un PDF dado, dos 
 | | |
 |---|---|
 | **Para recordar** | Un PDF mezcla texto nativo (caracteres realmente almacenados) y contenido imagen (píxeles) en una misma página. El texto nativo se extrae directamente, con posición y tamaño de fuente; el contenido imagen debe renderizarse como una imagen (resolución ajustada en DPI) antes de interpretarse de otra forma. |
-| **Herramientas utilizables** | `pymupdf`: `pagina.get_text("dict")` para el texto estructurado, `pagina.get_pixmap(dpi=...)` para un renderizado de imagen, convertido a array NumPy con `np.frombuffer`/`reshape`. |
-| **Trampas a evitar** | Suponer que un PDF escaneado contiene texto nativo. Caracterizar un bloque por su tamaño de fuente máximo en lugar del span más largo. Elegir un DPI por defecto sin validarlo con documentos reales. |
-| **Buenas prácticas** | Verificar la presencia real de texto nativo antes de diseñar un pipeline. Medir un bloque por el span más largo. Probar varios DPI en documentos representativos antes de fijar uno. |
+| **Herramientas utilizables** | `pymupdf`: `pagina.get_text("dict")` para el texto estructurado, `pagina.find_tables()` para detectar tablas por geometría, `pagina.get_pixmap(dpi=...)` para un renderizado de imagen, convertido a array NumPy con `np.frombuffer`/`reshape`. `img2table` (detección por contornos OpenCV + texto nativo) para corregir un subconteo de columnas de `find_tables()`. |
+| **Trampas a evitar** | Suponer que un PDF escaneado contiene texto nativo. Caracterizar un bloque por su tamaño de fuente máximo en lugar del span más largo. Esperar que `find_tables()` adivine una tabla sin cuadrícula ni alineación clara. Elegir un DPI por defecto sin validarlo con documentos reales. Comparar valores `bbox` de `img2table`/`find_tables()` sin reescalarlos al mismo DPI. |
+| **Buenas prácticas** | Verificar la presencia real de texto nativo antes de diseñar un pipeline. Medir un bloque por el span más largo. Validar `find_tables()` en una muestra real antes de automatizarlo. Probar varios DPI en documentos representativos antes de fijar uno. Relanzar `img2table` solo en páginas sospechosas, y reemplazar una tabla nativa solo si `img2table` cuenta realmente más columnas. |

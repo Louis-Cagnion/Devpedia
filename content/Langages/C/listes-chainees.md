@@ -1,5 +1,5 @@
 ---
-order: 12
+order: 15
 ---
 
 # Les listes chaînées
@@ -91,55 +91,6 @@ void libererListe(Maillon *tete)
 
 > **Note :** l'ordre compte ici : appeler `free(courant)` puis lire `courant->suivant` serait un **use-after-free** (voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire)) : la valeur du pointeur `suivant` doit être récupérée avant la libération du maillon qui la contient.
 
-## Liste doublement chaînée : remonter dans les deux sens
-
-Un maillon classique ne référence que le suivant : impossible de revenir en arrière sans repartir de la tête. Une **liste doublement chaînée** ajoute un second pointeur, vers le maillon **précédent** :
-
-```c
-typedef struct Joueur
-{
-    char *nom;
-    struct Joueur *suivant;
-    struct Joueur *precedent;
-} Joueur;
-```
-
-Retirer un maillon du milieu devient direct, sans reparcourir la liste depuis le début : il suffit de reconnecter ses deux voisins entre eux.
-
-```c
-void retirer(Joueur *cible)
-{
-    if (cible->precedent)
-        cible->precedent->suivant = cible->suivant;
-    if (cible->suivant)
-        cible->suivant->precedent = cible->precedent;
-    free(cible);
-}
-```
-
-## Liste circulaire : boucler plutôt que s'arrêter à `NULL`
-
-Une liste **circulaire** relie son dernier maillon au premier (au lieu de `NULL`), et le premier au dernier si elle est aussi doublement chaînée. Utile pour tout ce qui tourne en boucle par nature (l'ordre de passage de joueurs autour d'une table, les sommets d'un polygone fermé) :
-
-```text
-Alice <-> Bob <-> Carol
-  ^                 |
-  |_________________|
-```
-
-`Alice.precedent` pointe vers `Carol`, et `Carol.suivant` pointe vers `Alice` : plus aucun `NULL` ne marque une fin, puisqu'il n'y en a pas. Insérer un nouveau maillon entre deux existants (`P` et `C`) ne demande que 4 réaffectations de pointeurs, aucun décalage :
-
-```text
-nouveau.suivant = C
-nouveau.precedent = P
-P.suivant = nouveau
-C.precedent = nouveau
-```
-
-> **Piège :** un maillon unique, tout juste créé avec `suivant`/`precedent` à `NULL`, n'est pas encore une liste circulaire valide (une liste circulaire à un seul élément aurait `suivant` et `precedent` pointant vers lui-même). La toute première insertion dans une liste vide doit donc être traitée comme un cas particulier (créer la boucle à 2 éléments), avant que les insertions suivantes ne suivent la règle générale ci-dessus.
-
-> **Bonne pratique :** ce type de structure est particulièrement adapté à l'ear clipping (voir [Wavefront .obj et modèle de Phong](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong)) : les sommets d'un polygone forment naturellement une boucle, et retirer un sommet "découpé" ne demande que de reconnecter ses deux voisins, sans décaler un tableau d'indices.
-
 ## Liste chaînée vs tableau
 
 | | Tableau | Liste chaînée |
@@ -155,7 +106,7 @@ C.precedent = nouveau
 
 | | |
 |---|---|
-| **À retenir** | Une liste chaînée relie des maillons dispersés en mémoire via un pointeur "suivant" ; contrairement à un tableau, insérer en tête est en temps constant, mais l'accès par index nécessite un parcours complet. Une liste doublement chaînée ajoute un pointeur "précédent" pour retirer un maillon sans reparcourir la liste ; une liste circulaire boucle son dernier maillon vers le premier au lieu de `NULL`. |
-| **Outils utilisables** | Une `struct` auto-référentielle (`struct Maillon *suivant`), `malloc`/`free` par maillon, un second pointeur `precedent` pour le chaînage double. |
-| **Pièges à éviter** | Libérer un maillon avant de sauvegarder son pointeur `suivant` (use-after-free) ; oublier de libérer chaque maillon individuellement (fuite mémoire). Traiter la toute première insertion dans une liste circulaire comme le cas général, sans créer explicitement la boucle initiale à 2 éléments. |
+| **À retenir** | Une liste chaînée relie des maillons dispersés en mémoire via un pointeur "suivant" ; contrairement à un tableau, insérer en tête est en temps constant, mais l'accès par index nécessite un parcours complet. |
+| **Outils utilisables** | Une `struct` auto-référentielle (`struct Maillon *suivant`), `malloc`/`free` par maillon. |
+| **Pièges à éviter** | Libérer un maillon avant de sauvegarder son pointeur `suivant` (use-after-free) ; oublier de libérer chaque maillon individuellement (fuite mémoire). |
 | **Bonnes pratiques** | Toujours sauvegarder `courant->suivant` avant de `free(courant)` ; vérifier chaque `malloc()` contre `NULL` avant de l'utiliser. |

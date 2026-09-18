@@ -111,11 +111,43 @@ Esse resultado não é uma coincidência particular desse exemplo: dividir cada 
 >
 > **Boa prática:** verificar que um vetor não é nulo antes de normalizá-lo, em vez de deixar o programa falhar em uma divisão por zero.
 
+## Teste geométrico: um ponto está dentro de um triângulo?
+
+Dado um triângulo formado por três pontos `A`, `B`, `C` e um ponto `P` a testar, um método simples consiste em comparar **áreas**: calcular a área do triângulo completo `ABC`, depois a soma das áreas dos três subtriângulos formados por `P` e cada par de vértices (`P-A-B`, `P-B-C`, `P-C-A`). Se essa soma for igual à área do triângulo completo, `P` está dentro; se `P` estivesse fora, a soma das subáreas seria estritamente maior.
+
+A área de um triângulo a partir das coordenadas de seus três vértices se calcula diretamente, sem nunca construir uma altura nem um ângulo, via um determinante:
+
+```text
+area(A, B, C) = |  (Bx-Ax)*(Cy-Ay) - (Cx-Ax)*(By-Ay)  |  / 2
+```
+
+```c
+double area(double ax, double ay, double bx, double by, double cx, double cy)
+{
+    return fabs((bx - ax) * (cy - ay) - (cx - ax) * (by - ay)) / 2.0;
+}
+
+int pontoNoTriangulo(double px, double py, double ax, double ay, double bx, double by, double cx, double cy)
+{
+    double areaTotal = area(ax, ay, bx, by, cx, cy);
+    double areaSub1 = area(px, py, ax, ay, bx, by);
+    double areaSub2 = area(px, py, bx, by, cx, cy);
+    double areaSub3 = area(px, py, cx, cy, ax, ay);
+    double epsilon = 0.0001;
+
+    return fabs(areaTotal - (areaSub1 + areaSub2 + areaSub3)) < epsilon;
+}
+```
+
+> **Cuidado:** comparar as duas áreas com uma igualdade estrita (`==`). Como em qualquer comparação de [números de ponto flutuante](/?c=donnees&s=representation-des-donnees&p=nombres-flottants), uma pequena margem de erro (epsilon) é indispensável para tolerar a imprecisão dos cálculos.
+>
+> **Boa prática:** essa técnica (somar as áreas dos subtriângulos) é uma alternativa a outros dois métodos clássicos para o mesmo teste: as coordenadas baricêntricas, ou um teste de sinal cruzado por aresta (verificar que `P` está do mesmo lado de cada uma das três arestas); os três dão o mesmo resultado, a escolha depende sobretudo do que o resto do programa já calcula.
+
 ## O que reter
 
 | | |
 |---|---|
 | **O que reter** | Um vetor é uma lista ordenada de números tratada como uma única entidade. O produto escalar reduz dois vetores de mesma dimensão a um único número, que mede o quanto eles apontam na mesma direção. A norma é o comprimento de um vetor. |
-| **Ferramentas úteis** | Nenhuma ferramenta específica para o cálculo manual; na prática, uma biblioteca como o [NumPy](/?c=data-science&p=numpy) realiza essas operações diretamente em vetores inteiros, sem loop explícito. |
-| **Armadilhas a evitar** | Somar ou combinar dois vetores de dimensões diferentes. Normalizar um vetor nulo (divisão por uma norma de 0). |
+| **Ferramentas úteis** | Nenhuma ferramenta específica para o cálculo manual; na prática, uma biblioteca como o [NumPy](/?c=data-science&p=numpy) realiza essas operações diretamente em vetores inteiros, sem loop explícito. O cálculo de área por determinante para um teste ponto-no-triângulo. |
+| **Armadilhas a evitar** | Somar ou combinar dois vetores de dimensões diferentes. Normalizar um vetor nulo (divisão por uma norma de 0). Comparar duas áreas de ponto flutuante com igualdade estrita. |
 | **Boas práticas** | Verificar que dois vetores têm a mesma dimensão antes de qualquer operação entre eles. Documentar o que cada componente de um vetor representa desde sua criação. |

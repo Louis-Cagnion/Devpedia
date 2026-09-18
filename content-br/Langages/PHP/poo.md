@@ -60,6 +60,32 @@ echo Calculos::media([12, 15, 9]); // sem "new Calculos()"
 
 Uma classe que só tem métodos estáticos nunca serve para fazer um `new`: é um simples agrupamento de funções ligadas entre si, com um namespace para evitar colisões de nomes entre módulos ou bibliotecas (veja a seção seguinte).
 
+## `static` em variável local: um segundo sentido para a mesma palavra-chave
+
+A palavra-chave `static` tem um segundo uso, sem relação com os métodos estáticos vistos acima: colocada antes de uma variável **local** dentro de uma função, faz com que essa variável mantenha seu valor de uma chamada para outra, em vez de ser reiniciada a cada execução.
+
+```php
+<?php
+function rotuloMesEmFrances(DateTimeImmutable $data): string
+{
+    static $meses = [
+        1 => 'Janvier', 2 => 'Février',   3 => 'Mars',     4 => 'Avril',
+        5 => 'Mai',     6 => 'Juin',      7 => 'Juillet',  8 => 'Août',
+        9 => 'Septembre', 10 => 'Octobre', 11 => 'Novembre', 12 => 'Décembre',
+    ];
+
+    return $meses[(int) $data->format('n')] . ' ' . $data->format('Y');
+}
+
+echo rotuloMesEmFrances(new DateTimeImmutable('2026-09-15')); // "Septembre 2026"
+?>
+```
+
+- Sem `static`, `$meses` seria reconstruído na memória a cada chamada de `rotuloMesEmFrances()`, mesmo que seu conteúdo nunca mude.
+- Com `static`, o PHP inicializa `$meses` uma única vez, na primeiríssima execução da função; as chamadas seguintes reutilizam diretamente o valor já guardado na memória.
+
+> **Nota:** não confundir com `public static function` visto acima: aqui `static` se aplica a uma **variável**, não a um método, a palavra-chave muda de sentido conforme o que ela precede. Uma variável estática não é compartilhada entre requisições HTTP simultâneas: cada processo PHP recomeça com seu próprio valor, reiniciado do zero.
+
 ## Namespaces e `use`
 
 Um **namespace** evita que uma classe `Repository` de um módulo entre em colisão com uma classe `Repository` de outro:
@@ -177,6 +203,6 @@ Os parâmetros anuláveis com um fallback `??` (veja [As funções e métodos ma
 | | |
 |---|---|
 | **Para lembrar** | Uma classe reúne propriedades e métodos; `new` cria uma instância dela. Um namespace evita colisões de nomes entre módulos. Um trait compartilha código entre classes sem passar pela herança. A injeção de dependências recebe os objetos necessários como parâmetro em vez de criá-los ele mesmo. |
-| **Ferramentas utilizáveis** | `__construct`, propriedades tipadas, métodos `static`, `namespace`/`use`, traits (`trait`/`use`). |
-| **Armadilhas a evitar** | Criar diretamente (`new`) as dependências de uma classe em vez de recebê-las como parâmetro: torna a classe difícil de testar isoladamente. Confundir um trait com herança: ele não cria nenhuma relação "é um" entre tipos. |
+| **Ferramentas utilizáveis** | `__construct`, propriedades tipadas, métodos `static`, variável local `static` (valor mantido entre chamadas), `namespace`/`use`, traits (`trait`/`use`). |
+| **Armadilhas a evitar** | Criar diretamente (`new`) as dependências de uma classe em vez de recebê-las como parâmetro: torna a classe difícil de testar isoladamente. Confundir um trait com herança: ele não cria nenhuma relação "é um" entre tipos. Confundir `static` em um método (não exige instância) com `static` em uma variável local (valor mantido entre chamadas): mesma palavra-chave, dois efeitos diferentes. |
 | **Boas práticas** | Tipar as propriedades para que definam um contrato real; injetar as dependências em vez de instanciá-las diretamente, para facilitar os testes; dividir uma classe grande demais em traits por responsabilidade, sem mudar sua API pública. |

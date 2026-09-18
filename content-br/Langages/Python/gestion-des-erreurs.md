@@ -39,7 +39,7 @@ try:
 except FileNotFoundError:
     print("Arquivo nao encontrado")
 else:
-    print("Arquivo aberto com sucesso")   # executado APENAS se nenhuma excecao ocorreu
+    print("Arquivo aberto com sucesso")    # executado APENAS se nenhuma excecao ocorreu
     arquivo.close()
 finally:
     print("Tentativa concluida")           # executado EM TODOS OS CASOS, excecao ou nao
@@ -95,6 +95,38 @@ except SaldoInsuficienteError as erro:
 
 Uma exceção personalizada herda de `Exception` (ou de uma subclasse mais precisa), o que permite distingui-la das outras em um `except` direcionado, em vez de depender de uma mensagem de erro genérica.
 
+## Encadeando uma exceção com `raise ... from`
+
+Quando uma função intercepta uma exceção técnica e lança outra mais significativa para quem chama (um erro "de negócio"), `raise ... from` mantém um rastro da causa original:
+
+```python
+class ConfigurationError(Exception):
+    pass
+
+def carregar_configuracao(caminho):
+    try:
+        with open(caminho) as arquivo:
+            return arquivo.read()
+    except FileNotFoundError as erro:
+        raise ConfigurationError(f"Configuracao nao encontrada: {caminho}") from erro
+
+try:
+    carregar_configuracao("config.ini")
+except ConfigurationError as erro:
+    print(erro)              # mensagem de negocio, legivel por quem chama
+    print(erro.__cause__)    # FileNotFoundError original, ainda acessivel
+```
+
+Quem chama pode interceptar apenas `ConfigurationError` (sem conhecer `FileNotFoundError`), mantendo, via `__cause__`, a exceção técnica completa para depuração.
+
+| Forma | O que é mantido | Mensagem exibida no traceback |
+|---|---|---|
+| `raise Nova(...)` (sem `from`, dentro de um `except`) | Encadeamento implícito (`__context__`) | "During handling of the above exception, another exception occurred" |
+| `raise Nova(...) from erro` | Encadeamento explícito (`__cause__`) | "The above exception was the direct cause of the following exception" |
+| `raise Nova(...) from None` | Nada: a causa original é apagada | Nenhum rastro da exceção original |
+
+> **Armadilha:** `raise ... from None` faz a exceção original desaparecer do traceback, inclusive nos logs. Reservar para os casos em que o detalhe técnico realmente não acrescenta nada para quem chama; na dúvida, manter `from erro` em vez de cortar o rastro.
+
 ## O gerenciador de contexto `with`
 
 `with` garante que um recurso seja liberado corretamente, **mesmo em caso de exceção**: um arquivo aberto com `with` sempre se fecha automaticamente ao sair do bloco:
@@ -116,4 +148,4 @@ with open("dados.txt") as arquivo:
 | **Para lembrar** | `try`/`except`/`else`/`finally` estrutura o tratamento de erros. `with` garante que um recurso seja liberado mesmo em caso de exceção, via `__enter__`/`__exit__`. |
 | **Ferramentas utilizáveis** | Exceções personalizadas (herdam de `Exception`), `with`, `raise`. |
 | **Armadilhas a evitar** | Interceptar `Exception` (ou um `except:` puro) de forma muito ampla: esconde erros de programação que deveriam, em vez disso, travar o programa para serem corrigidos. |
-| **Boas práticas** | Interceptar o tipo de exceção mais preciso possível; usar `with` para todo recurso que precisa ser fechado/liberado. |
+| **Boas práticas** | Interceptar o tipo de exceção mais preciso possível; usar `with` para todo recurso que precisa ser fechado/liberado; encadear com `raise ... from erro` para transformar um erro técnico em erro de negócio sem perder a causa original. |

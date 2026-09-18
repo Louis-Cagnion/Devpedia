@@ -80,6 +80,34 @@ The exact names of commands vary from one shell to another (`ls` in Bash becomes
 >
 > **Best practice:** If you’re unsure about the exact effect of an option in a command you’ve copied online, look it up (`--help`, documentation) before executing it, never after.
 
+## Coloring Terminal Output (ANSI Escape Codes)
+
+A program can display colored text (red for an error, green for success...). This isn't a shell feature: the program sends an **ANSI escape sequence**, a special string of characters the terminal recognizes and interprets as a formatting instruction rather than text to display as-is.
+
+A sequence starts with the `ESC` character (written `\033` or `\x1b` depending on the language), followed by `[`, a numeric code, then `m`:
+
+```text
+\033[91mHello\033[0m
+```
+
+- `\033[91m`: starts bright red (code `91`); everything that follows is displayed in that color.
+- `Hello`: displayed normally, but in the current color.
+- `\033[0m`: resets, back to the terminal's default color.
+
+| Code | Effect |
+|---|---|
+| `0` | Resets everything (color, bold...) |
+| `31` / `91` | Red / bright red |
+| `32` / `92` | Green / bright green |
+| `33` / `93` | Yellow / bright yellow |
+| `1` | Bold |
+
+> **Pitfall:** forgetting the `0` reset code at the end of a sequence. Without it, the color "leaks" onto all the text the terminal displays afterward, well past the end of the program that emitted it.
+>
+> **Best practice:** always close a color opened with `\033[0m`, even right before the program exits.
+
+The terminal is what interprets these sequences, never the shell or the programming language used: they can be concatenated directly into any displayed string, like ordinary characters.
+
 ---
 
 ## 📋 Summary

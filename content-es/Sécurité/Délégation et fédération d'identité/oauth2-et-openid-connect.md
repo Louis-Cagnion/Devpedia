@@ -51,6 +51,54 @@ El **token de acceso** (*access token*) obtenido en el paso 6 tiene un **alcance
 | Revocación | Cambia la contraseña en todas partes, incluidos los usos legítimos | Revoca únicamente ese token preciso |
 | ¿Transita la contraseña hacia el tercero? | Sí | Nunca |
 
+## Otro flujo: *Client Credentials*, sin usuario
+
+El desarrollo visto arriba (*Authorization Code*) supone un usuario presente, que se conecta y da su consentimiento. Otro caso, igual de común, no implica ningún usuario: un servicio que debe llamar a una API **por cuenta propia**, por ejemplo un servidor que recupera cada noche estadísticas desde la API de una herramienta de reporting.
+
+```text
+1. El servicio A se autentica directamente ante el servidor de autorizacion
+   con su identificador de cliente + su secreto de cliente (client_id/client_secret)
+2. El servidor de autorizacion verifica esas credenciales y devuelve un token de acceso
+   -- sin redirigir nunca a nadie, sin pantalla de consentimiento
+3. El servicio A usa ese token para llamar a la API en nombre de si mismo,
+   no en nombre de un usuario
+```
+
+Este flujo se llama **Client Credentials** (*credenciales del cliente*). A diferencia de *Authorization Code*, no hay redirección, ni pantalla de consentimiento, ni usuario final implicado en ninguna etapa: solo el `client_id`/`client_secret` del servicio que llama demuestra su identidad.
+
+| | *Authorization Code* (visto arriba) | *Client Credentials* |
+|---|---|---|
+| Quién se conecta | Un usuario final | Nadie: el servicio se autentica a sí mismo |
+| Redirección del navegador | Sí (pasos 2-5) | Ninguna |
+| Token obtenido en nombre de | El usuario | El propio servicio |
+| Caso de uso típico | "Iniciar sesión con Google" | Un servidor que llama a una API externa para su propio procesamiento (importación, sincronización programada...) |
+
+> **Trampa:** usar *Client Credentials* cuando la acción en realidad debe atribuirse a un usuario concreto (ej: "¿qué usuario solicitó esta exportación?"). Este flujo no transporta ninguna identidad de usuario: toda acción realizada con este token es indistinguible de una acción del propio servicio.
+>
+> **Buena práctica:** reservar *Client Credentials* para llamadas servidor-a-servidor que explícitamente no necesitan ninguna noción de usuario; en cuanto una acción deba rastrearse hasta una persona concreta, volver a un flujo con usuario (*Authorization Code*).
+
+## Un tercer flujo: la cuenta de servicio, sin secreto compartido
+
+*Client Credentials* prueba la identidad de un servicio con un secreto compartido (`client_id`/`client_secret`), enviado por la red en cada autenticación. Una **cuenta de servicio** (*service account*, ofrecida por Google Cloud y otros proveedores) prueba lo mismo de otra forma: mediante una clave privada que nunca sale de la máquina que la usa.
+
+```text
+1. El servicio A posee una clave privada RSA (nunca transmitida por la red),
+   asociada a una cuenta de servicio registrada en el proveedor
+2. El servicio A firma el mismo un token JWT con esa clave privada,
+   atestando su propia identidad (JWT Bearer Assertion, RFC 7523)
+3. El servicio A envia ese JWT firmado al servidor de autorizacion, que verifica
+   la firma con la clave PUBLICA correspondiente (nunca la clave privada)
+4. El servidor de autorizacion devuelve un token de acceso normal, usado
+   despues igual que en Client Credentials
+```
+
+| | *Client Credentials* | Cuenta de servicio (JWT autofirmado) |
+|---|---|---|
+| Prueba de identidad | Un secreto compartido, enviado en cada llamada | Una firma, calculada con una clave privada que nunca viaja |
+| Si el secreto/la clave se filtra | El secreto compartido debe reemplazarse en todos los sitios donde se usa | Solo hay que revocar la clave privada comprometida, y nunca fue interceptada en tránsito |
+
+> **Buena práctica:** preferir una cuenta de servicio a *Client Credentials* cuando el proveedor la ofrezca: ningún secreto se transmite nunca por la red, solo una firma verificable.
+
 ## OAuth no prueba una identidad: el rol de OpenID Connect
 
 OAuth 2.0 fue diseñado para la **autorización** (acceder a un recurso), no para la **autenticación** (ver [Autenticación vs autorización](/?c=authentification&s=fondamentaux&p=authentification-vs-autorisation)). Obtener un token de acceso a los contactos de alguien no prueba formalmente quién se conectó: una aplicación que usara ese solo token para "reconocer" a un usuario desvía OAuth de su objetivo inicial.
@@ -67,7 +115,7 @@ OAuth 2.0 fue diseñado para la **autorización** (acceder a un recurso), no par
 
 | | |
 |---|---|
-| **Para recordar** | OAuth 2.0 permite a una aplicación externa obtener un acceso limitado y revocable a un recurso, sin conocer nunca la contraseña de la cuenta. OpenID Connect añade encima un token de identidad (un JWT) específicamente diseñado para la autenticación, algo que OAuth solo no proporciona. |
+| **Para recordar** | OAuth 2.0 permite a una aplicación externa obtener un acceso limitado y revocable a un recurso, sin conocer nunca la contraseña de la cuenta. *Client Credentials* obtiene un token sin ningún usuario, para un servicio que actúa por cuenta propia; una cuenta de servicio hace lo mismo sin secreto compartido, mediante una clave privada que nunca viaja. OpenID Connect añade encima un token de identidad (un JWT) específicamente diseñado para la autenticación, algo que OAuth solo no proporciona. |
 | **Herramientas utilizables** | Una biblioteca OAuth/OIDC del lenguaje utilizado en lugar de una implementación manual del protocolo. |
-| **Trampas a evitar** | Compartir directamente una contraseña con una aplicación externa. Usar un token de acceso OAuth para autenticar a un usuario. |
-| **Buenas prácticas** | Limitar siempre el alcance (*scope*) solicitado a lo estrictamente necesario. Usar OpenID Connect cuando la necesidad sea probar una identidad, no solo acceder a un recurso. |
+| **Trampas a evitar** | Compartir directamente una contraseña con una aplicación externa. Usar un token de acceso OAuth para autenticar a un usuario. Usar *Client Credentials* para una acción que debe atribuirse a un usuario concreto. |
+| **Buenas prácticas** | Limitar siempre el alcance (*scope*) solicitado a lo estrictamente necesario. Usar OpenID Connect cuando la necesidad sea probar una identidad, no solo acceder a un recurso. Reservar *Client Credentials* para llamadas servidor-a-servidor sin ninguna noción de usuario. |

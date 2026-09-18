@@ -171,6 +171,33 @@ A trava anti-concorrência (`trava_recalculo`) evita que um recálculo custoso s
 >
 > **Boa prática:** nunca deixar um cache vencido fazer o usuário esperar por uma simples atualização; reservar a espera apenas para a primeira chamada, sem nenhum valor em cache.
 
+## Streaming HTTP progressivo: quando o cálculo é inevitável
+
+Todas as técnicas anteriores evitam um recálculo evitável. Esta se aplica ao caso contrário: um cálculo realmente **inevitável** (importar um arquivo grande, chamar um serviço externo lento) que nenhum cache pode encurtar. A única alavanca que resta é como o usuário percebe a espera.
+
+Por padrão, um servidor PHP mantém na memória tudo o que um script produz com `echo`, e só envia ao navegador quando o script termina (ou seu buffer enche): o usuário vê uma página branca até o fim, mesmo que o script já tenha produzido um resultado útil há bastante tempo.
+
+```php
+<?php
+ini_set('output_buffering', 'off');   // desativa o armazenamento em buffer da saida
+ini_set('implicit_flush', true);      // forca o envio imediato apos cada echo
+while (ob_get_level() > 0) {
+    ob_end_flush();                   // tambem esvazia qualquer buffer ja aberto pelo proprio PHP
+}
+
+foreach ($linhasAImportar as $linha) {
+    importarLinha($linha);
+    echo "Linha importada: {$linha->id}<br>\n";
+    flush();                          // envia esse echo ao navegador imediatamente
+}
+```
+
+Cada `echo` seguido de `flush()` vai para o navegador imediatamente, sem esperar o script terminar: o usuário vê uma console se enchendo em tempo real, como os logs de um terminal, em vez de uma página branca seguida de um resultado final de uma vez só.
+
+> **Nota:** esse mecanismo é o inverso de [`fastcgi_finish_request()`](/?c=langages&s=php&p=php-fpm): lá, a conexão fecha imediatamente e o trabalho continua escondido por trás; aqui, a conexão fica aberta durante todo o cálculo, o que é justamente o que permite enviar cada pedaço do resultado conforme fica disponível.
+
+> **Armadilha:** esse streaming quebra assim que um servidor intermediário (proxy, load balancer, Nginx em modo `fastcgi_buffering`) coloca seu próprio buffer de volta: verificar a configuração de toda a cadeia de rede, não só a do PHP.
+
 ## Recapitulando
 
 | Situação | Sem o princípio | Com o princípio |
@@ -188,7 +215,7 @@ Nos quatro casos, o ganho não vem de um cálculo tornado mais rápido, mas de u
 
 | | |
 |---|---|
-| **Para lembrar** | Nunca recalcular um resultado que nada pôde mudar desde seu último cálculo: memoização, reprocessamento incremental, ou dirty rectangle aplicam todos a mesma ideia em escalas diferentes. Um cache de arquivo acrescenta duas técnicas: a escrita atômica (nunca uma leitura pela metade) e o stale-while-revalidate (responder rápido, recalcular por trás). |
-| **Ferramentas utilizáveis** | Um cache em memória por entrada (memoização), uma marca de progresso para só reprocessar o novo, uma comparação "leve" antes de uma verificação custosa, `rename()`/`os.replace()` para uma escrita atômica, uma trava anti-concorrência para um recálculo em segundo plano. |
-| **Armadilhas a evitar** | Memoizar sem identificar o que invalidaria o resultado: um cache nunca invalidado se torna uma fonte de dados vencidos. Escrever diretamente em um arquivo de cache lido por outros processos. Aplicar stale-while-revalidate sem trava anti-concorrência. |
-| **Boas práticas** | Sempre definir a condição de invalidação antes de memoizar; distinguir um recálculo evitável (este princípio) de uma pausa voluntária de proteção (a manter); escrever um arquivo de cache por meio de um arquivo temporário renomeado; só fazer o usuário esperar na primeira chamada sem cache. |
+| **Para lembrar** | Nunca recalcular um resultado que nada pôde mudar desde seu último cálculo: memoização, reprocessamento incremental, ou dirty rectangle aplicam todos a mesma ideia em escalas diferentes. Um cache de arquivo acrescenta duas técnicas: a escrita atômica (nunca uma leitura pela metade) e o stale-while-revalidate (responder rápido, recalcular por trás). Quando o cálculo é inevitável (nada para colocar em cache), o streaming HTTP progressivo é a única alavanca que resta para melhorar a espera percebida. |
+| **Ferramentas utilizáveis** | Um cache em memória por entrada (memoização), uma marca de progresso para só reprocessar o novo, uma comparação "leve" antes de uma verificação custosa, `rename()`/`os.replace()` para uma escrita atômica, uma trava anti-concorrência para um recálculo em segundo plano, `flush()`/`ob_end_flush()` para um streaming HTTP progressivo. |
+| **Armadilhas a evitar** | Memoizar sem identificar o que invalidaria o resultado: um cache nunca invalidado se torna uma fonte de dados vencidos. Escrever diretamente em um arquivo de cache lido por outros processos. Aplicar stale-while-revalidate sem trava anti-concorrência. Fazer streaming de uma resposta HTTP sem checar que nenhum proxy intermediário coloca seu próprio buffer de volta. |
+| **Boas práticas** | Sempre definir a condição de invalidação antes de memoizar; distinguir um recálculo evitável (este princípio) de uma pausa voluntária de proteção (a manter); escrever um arquivo de cache por meio de um arquivo temporário renomeado; só fazer o usuário esperar na primeira chamada sem cache; fazer streaming da resposta HTTP assim que um cálculo longo e inevitável produzir resultados progressivamente. |

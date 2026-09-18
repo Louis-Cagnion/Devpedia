@@ -26,6 +26,25 @@ len(fruits)                 # nombre d'éléments
 
 > **Note :** contrairement à un tableau en [C](/?c=langages-de-programmation&s=c&p=c) (taille fixe, un seul type), une liste Python est un tableau **dynamique** hétérogène : elle grandit automatiquement, et chaque élément peut être d'un type différent, au prix d'un surcoût mémoire par élément (chaque élément est en réalité une référence vers un objet Python, pas une valeur brute contiguë comme en [C](/?c=langages-de-programmation&s=c&p=c)).
 
+### Répéter une liste avec l'opérateur `*`
+
+`[x] * n` construit une nouvelle liste de taille `n`, chaque emplacement contenant `x` :
+
+```python
+zeros = [0] * 5           # [0, 0, 0, 0, 0] -> préallocation pratique pour une taille connue à l'avance
+lettres = ["a", "b"] * 3  # ["a", "b", "a", "b", "a", "b"] -> répète la SÉQUENCE entière, pas chaque élément
+```
+
+> **Piège :** `[[]] * n` ne crée PAS `n` listes indépendantes, mais `n` références vers **la même** liste vide : modifier l'une modifie donc les `n` en même temps.
+
+```python
+grille = [[]] * 3
+grille[0].append("x")
+print(grille)   # [['x'], ['x'], ['x']] -> les 3 sous-listes SONT le même objet, pas des copies
+```
+
+> **Bonne pratique :** utiliser une compréhension de liste (voir plus bas) pour obtenir `n` objets réellement distincts : `[[] for _ in range(3)]` crée une nouvelle liste vide à chaque itération, contrairement à `[[]] * 3` qui recopie `n` fois la même référence.
+
 ### `.append()` vs `.extend()`
 
 ```python
@@ -70,6 +89,19 @@ a, b, c = 1, 2, 3  # fonctionne aussi sans parenthèses explicites : un tuple im
 a, b = b, a        # échange de valeurs, sans variable temporaire
 ```
 
+Le même `*` déballe aussi des éléments À L'INTÉRIEUR d'un littéral de liste, pour en construire une nouvelle :
+
+```python
+a = [1, 2]
+b = [3, 4]
+
+[a, b]       # [[1, 2], [3, 4]] -> imbrique les deux listes comme 2 éléments
+[*a, *b]     # [1, 2, 3, 4]     -> déplie chaque élément à plat, équivalent à a + b
+[*a, 0, *b]  # [1, 2, 0, 3, 4]  -> se mélange librement à d'autres éléments
+```
+
+`[*a, *b]` donne le même résultat que `a + b` pour deux listes, mais reste lisible avec plus de deux sources ou mélangé à d'autres éléments, ce que `+` ne permet pas aussi naturellement.
+
 ## `sorted()` : trier sans modifier l'original
 
 ```python
@@ -109,6 +141,26 @@ pairs = [x for x in range(10) if x % 2 == 0]
 
 > **Note :** une compréhension reste lisible pour une transformation simple sur une seule ligne ; au-delà (plusieurs conditions imbriquées, logique complexe), une boucle `for` classique reste plus claire à lire et à déboguer.
 
+### Compréhension imbriquée : aplatir une liste de listes
+
+Une compréhension peut enchaîner plusieurs clauses `for` : l'ordre reproduit exactement celui de boucles `for` classiques imbriquées, la première clause étant la boucle EXTÉRIEURE :
+
+```python
+listes = [[1, 2], [3, 4], [5]]
+
+aplatie = [x for sous_liste in listes for x in sous_liste]
+# équivalent à :
+aplatie = []
+for sous_liste in listes:  # boucle extérieure -> écrite EN PREMIER dans la compréhension
+    for x in sous_liste:   # boucle intérieure -> écrite EN SECOND
+        aplatie.append(x)
+# aplatie vaut [1, 2, 3, 4, 5]
+```
+
+> **Piège :** croire que l'ordre des clauses `for` est inversé par rapport à des boucles imbriquées classiques. Ce n'est pas le cas : la clause la plus à gauche est toujours la boucle la plus extérieure, exactement comme en lisant la compréhension de gauche à droite.
+
+Au-delà de 2 niveaux d'imbrication, [`itertools.chain.from_iterable`](https://docs.python.org/3/library/itertools.html#itertools.chain.from_iterable) reste une alternative plus lisible pour aplatir spécifiquement une liste de listes, sans reproduire la logique de boucles imbriquées.
+
 Voir aussi [Les dictionnaires et les ensembles](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) pour l'équivalent des compréhensions sur ces structures, et [Itérateurs et générateurs](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) pour l'expression génératrice (variante paresseuse d'une compréhension de liste).
 
 ---
@@ -117,7 +169,7 @@ Voir aussi [Les dictionnaires et les ensembles](/?c=langages-de-programmation&s=
 
 | | |
 |---|---|
-| **À retenir** | Une liste est mutable, un tuple est immuable : tous deux ordonnés et hétérogènes. Le slicing (`[debut:fin:pas]`) extrait une portion ; une compréhension construit une liste en une expression. |
-| **Outils utilisables** | `append`/`insert`/`remove`/`pop`, slicing, déballage (*unpacking*), compréhensions de liste. |
-| **Pièges à éviter** | Essayer de modifier un tuple après création (`TypeError`) : utiliser une liste si le contenu doit évoluer. |
-| **Bonnes pratiques** | Utiliser un tuple pour un enregistrement fixe, une liste pour une collection destinée à évoluer ; réserver la compréhension à une transformation simple, une boucle `for` au-delà. |
+| **À retenir** | Une liste est mutable, un tuple est immuable : tous deux ordonnés et hétérogènes. Le slicing (`[debut:fin:pas]`) extrait une portion ; une compréhension construit une liste en une expression, y compris imbriquée pour aplatir une liste de listes. |
+| **Outils utilisables** | `append`/`insert`/`remove`/`pop`, l'opérateur `*` pour préallouer (`[0] * n`), slicing, déballage (*unpacking*), compréhensions de liste (simples ou imbriquées), `itertools.chain.from_iterable`. |
+| **Pièges à éviter** | Essayer de modifier un tuple après création (`TypeError`) : utiliser une liste si le contenu doit évoluer. `[[]] * n` qui répète la même référence au lieu de créer `n` listes distinctes. Croire que l'ordre des clauses `for` d'une compréhension imbriquée est inversé par rapport à des boucles classiques. |
+| **Bonnes pratiques** | Utiliser un tuple pour un enregistrement fixe, une liste pour une collection destinée à évoluer ; préférer `[[] for _ in range(n)]` à `[[]] * n` pour des sous-listes indépendantes ; réserver la compréhension à une transformation simple, une boucle `for` au-delà. |

@@ -9,22 +9,22 @@ Python is **dynamically typed**: a variable does not have a type declared in adv
 ## Declare a variable
 
 ```python
-age = 25            # int
-price = 9.99          # float
-name = "Devpedia"      # str
-actif = True          # bool
-rien = None           # equivalent to null/NULL
+age = 25           # int
+price = 9.99       # float
+name = "Devpedia"  # str
+active = True      # bool
+nothing = None     # equivalent to null/NULL
 
-age = "vingt-cinq"    # Perfectly valid: `age` becomes a `str` without declaring anything
+age = "twenty-five"    # Perfectly valid: `age` becomes a `str` without declaring anything
 ```
 
-> **Note:** Unlike PHP (`$variable`), Python does not use any special symbol to denote a variable: just a name, in lowercase with underscores by convention (`nom_utilisateur`, not `nomUtilisateur`).
+> **Note:** Unlike PHP (`$variable`), Python does not use any special symbol to denote a variable: just a name, in lowercase with underscores by convention (`user_name`, not `userName`).
 
 ## Check the type of a variable
 
 ```python
 type(age)             # <class 'int'>
-isinstance(age, int)   # True -> preferred over type() == int for conditional checks
+isinstance(age, int)  # True -> preferred over type() == int for conditional checks
 ```
 
 ## Operators
@@ -32,13 +32,13 @@ isinstance(age, int)   # True -> preferred over type() == int for conditional ch
 ```python
 a, b = 5, 3   # multiple assignments on a single line
 
-a + b    # 8
-a - b    # 2
-a * b    # 15
-a / b     # 1.6666... -> real division, always a float
-a // b    # 1 -> integer division (floor division)
-a % b     # 2 -> modulo
-a ** b    # 125 -> power
+a + b   # 8
+a - b   # 2
+a * b   # 15
+a / b   # 1.6666... -> real division, always a float
+a // b  # 1 -> integer division (floor division)
+a % b   # 2 -> modulo
+a ** b  # 125 -> power
 
 a == b    # False
 a != b    # True
@@ -91,14 +91,14 @@ This is what explains the `None` sentinel pattern used for mutable default argum
 ## F-strings: Inserting Variables into Text
 
 ```python
-name = "Jean"
+name = "John"
 age = 25
 
-print(f"{name} a {age} ans")           # Jean is 25 years old
-print(f"Dans 10 ans : {age + 10} ans") # a real expression, not just a variable
+print(f"{name} is {age} years old")          # John is 25 years old
+print(f"In 10 years: {age + 10} years old")  # a real expression, not just a variable
 ```
 
-F-strings (with the prefix `f` before the quotation marks) are the recommended modern method, replacing `"{} a {} ans".format(name, age)` or concatenation with `+`.
+F-strings (with the prefix `f` before the quotation marks) are the recommended modern method, replacing `"{} is {} years old".format(name, age)` or concatenation with `+`.
 
 ### The `!r` conversion flag
 
@@ -115,9 +115,9 @@ print(f"Received: {text}")     # Received:    -> normal insertion: nothing to se
 Just like in PHP, a Python string is **immutable**: any "modification" actually creates a new string; it never modifies the original one in memory.
 
 ```python
-text = "bonjour"
+text = "hello"
 text.upper()      # returns "HELLO", DOES NOT MODIFY the text
-print(text)        # always "hello"
+print(text)       # always "hello"
 
 text = text.upper()  # You need to reassign it to "save" the change
 ```

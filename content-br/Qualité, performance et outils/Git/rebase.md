@@ -64,6 +64,26 @@ Cada linha pode ser modificada antes de salvar:
 
 Útil por exemplo para limpar um histórico de trabalho ("Corrige um erro de digitação", "Ops", "Realmente corrige o erro dessa vez") em um único commit limpo antes de compartilhá-lo.
 
+## Reformular sem editor interativo: `reset --soft` + recommit direcionado
+
+`rebase -i` abre um editor de texto interativo, o que falha nesse formato em um contexto sem terminal anexado (script, CI, agente automatizado). Para reformular a mensagem de um commit que não é o último, sem passar por um editor, `git reset --soft` até a base comum permite recolocar tudo em stage e então recommitar cada commit um a um com a mensagem correta:
+
+```bash
+git reset --soft <commit-antes-do-mais-antigo-a-reformular>
+git reset            # desempilha tudo (a pasta de trabalho mantém o estado final)
+
+# para cada commit a recriar na ordem original:
+git show <hash-antigo-do-commit>:caminho/arquivo.py > caminho/arquivo.py  # restaura ESSE arquivo ao seu estado nesse commit
+git add caminho/arquivo.py ...
+git commit -F mensagem-corrigida.txt   # nunca -m para uma mensagem multilinha com acentos: veja mais abaixo
+```
+
+`git show <hash>:<caminho>` extrai o conteúdo de um arquivo tal como ele estava em um commit específico, o que permite reconstruir o estado intermediário de cada commit antes de recommitá-lo, mesmo quando um mesmo arquivo mudou em vários dos commits a reformular.
+
+> **Nota:** redigir uma mensagem multilinha acentuada diretamente em `git commit -m "$(cat <<'EOF' ... EOF)"` (heredoc bash) é uma fonte de erro frequente: a mensagem digitada "na hora" em uma chamada de comando cai facilmente numa convenção ASCII (ex. "veiculo" em vez de "veículo") sem que nada sinalize isso. Escrever a mensagem em um arquivo de texto, revisá-la, e então `git commit -F arquivo.txt` evita essa armadilha separando a redação da execução do comando.
+
+Esse método não muda nem o conteúdo nem a ordem dos commits, apenas suas mensagens: é um `reword` manual, mais verboso que `rebase -i` mas utilizável sem nenhuma interação humana.
+
 ## A regra de ouro: nunca rebasear um histórico já compartilhado
 
 ```bash

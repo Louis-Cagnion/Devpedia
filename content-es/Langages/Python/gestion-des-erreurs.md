@@ -95,6 +95,38 @@ except SaldoInsuficienteError as error:
 
 Una excepción personalizada hereda de `Exception` (o de una subclase más precisa), lo que permite distinguirla de las demás en un `except` específico, en lugar de apoyarse en un mensaje de error genérico.
 
+## Encadenar una excepción con `raise ... from`
+
+Cuando una función intercepta una excepción técnica y lanza otra más significativa para quien la llama (un error "de negocio"), `raise ... from` conserva un rastro de la causa original:
+
+```python
+class ConfigurationError(Exception):
+    pass
+
+def cargar_configuracion(ruta):
+    try:
+        with open(ruta) as archivo:
+            return archivo.read()
+    except FileNotFoundError as error:
+        raise ConfigurationError(f"Configuración no encontrada: {ruta}") from error
+
+try:
+    cargar_configuracion("config.ini")
+except ConfigurationError as error:
+    print(error)              # mensaje de negocio, legible por quien llama
+    print(error.__cause__)    # FileNotFoundError original, sigue accesible
+```
+
+Quien llama puede interceptar solo `ConfigurationError` (sin conocer `FileNotFoundError`), conservando, vía `__cause__`, la excepción técnica completa para depuración.
+
+| Forma | Qué se conserva | Mensaje mostrado en la traza |
+|---|---|---|
+| `raise Nueva(...)` (sin `from`, dentro de un `except`) | Encadenamiento implícito (`__context__`) | "During handling of the above exception, another exception occurred" |
+| `raise Nueva(...) from error` | Encadenamiento explícito (`__cause__`) | "The above exception was the direct cause of the following exception" |
+| `raise Nueva(...) from None` | Nada: la causa original se borra | Ninguna traza de la excepción original |
+
+> **Trampa:** `raise ... from None` hace desaparecer la excepción original de la traza, incluso en los logs. Reservarlo para los casos donde el detalle técnico realmente no aporta nada a quien llama; en caso de duda, mantener `from error` en vez de cortar la traza.
+
 ## El gestor de contexto `with`
 
 `with` garantiza que un recurso se libere correctamente, **incluso en caso de excepción**: un archivo abierto con `with` siempre se cierra automáticamente al salir del bloque:
@@ -116,4 +148,4 @@ with open("datos.txt") as archivo:
 | **Para recordar** | `try`/`except`/`else`/`finally` estructura la gestión de errores. `with` garantiza que un recurso se libere incluso en caso de excepción, vía `__enter__`/`__exit__`. |
 | **Herramientas utilizables** | Excepciones personalizadas (heredan de `Exception`), `with`, `raise`. |
 | **Trampas a evitar** | Interceptar `Exception` (o un `except:` desnudo) demasiado ampliamente: enmascara errores de programación que deberían más bien hacer fallar el programa para ser corregidos. |
-| **Buenas prácticas** | Interceptar el tipo de excepción más preciso posible; usar `with` para todo recurso que deba cerrarse/liberarse. |
+| **Buenas prácticas** | Interceptar el tipo de excepción más preciso posible; usar `with` para todo recurso que deba cerrarse/liberarse; encadenar con `raise ... from error` para convertir un error técnico en error de negocio sin perder la causa original. |

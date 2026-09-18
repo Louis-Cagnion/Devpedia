@@ -1,5 +1,5 @@
 ---
-order: 18
+order: 22
 ---
 
 # Os sinais UNIX
@@ -67,6 +67,44 @@ void handler(int sig)
 
 Cada caractere transmitido exige então 8 sinais (um por bit), o receptor reconstruindo o byte aos poucos. É mais lento que um [descritor de arquivo](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) clássico, mas funciona sem nenhum canal de comunicação prévio, apenas o PID do destinatário é necessário.
 
+## `sigaction()`: um handler enriquecido com `siginfo_t`
+
+`signal()` fornece apenas um handler mínimo, que recebe só o número do sinal. `sigaction()` é uma alternativa mais completa: com a flag `SA_SIGINFO`, o handler recebe também uma estrutura `siginfo_t` descrevendo o emissor do sinal, principalmente seu PID (`si_pid`):
+
+```c
+#include <signal.h>
+#include <unistd.h>
+
+void handler(int sig, siginfo_t *info, void *contexto)
+{
+    kill(info->si_pid, SIGUSR2);   // responde diretamente ao emissor
+}
+
+int main(void)
+{
+    struct sigaction sa;
+
+    sa.sa_sigaction = handler;   // handler enriquecido (em vez de sa_handler)
+    sa.sa_flags = SA_SIGINFO;    // ativa o recebimento de siginfo_t
+    sigemptyset(&sa.sa_mask);    // nenhum sinal extra bloqueado durante o handler
+
+    sigaction(SIGUSR1, &sa, NULL);
+
+    while (1)
+        pause();
+}
+```
+
+| | `signal()` | `sigaction()` |
+|---|---|---|
+| Handler | `void (*)(int)` (`sa_handler`) | `void (*)(int, siginfo_t *, void *)` (`sa_sigaction`) |
+| Informação recebida | Apenas o número do sinal | + PID do emissor (`info->si_pid`), e mais |
+| Ativação | Imediata | Requer `sa_flags = SA_SIGINFO` |
+
+Útil sempre que um handler precisa reagir de forma diferente conforme o emissor, por exemplo respondendo diretamente a ele (`kill(info->si_pid, ...)`) sem que nenhum canal tenha transmitido seu PID de outra forma além do próprio sinal recebido.
+
+> Detalhe completo dos campos de `siginfo_t` (`si_code`, `si_status`...): [`man sigaction`](https://man7.org/linux/man-pages/man2/sigaction.2.html).
+
 ## Escrever um handler seguro
 
 Um handler é executado interrompendo o código normal do programa, potencialmente **bem no meio** de outra função (inclusive uma função da biblioteca padrão): ele não pode, portanto, se comportar como uma função comum.
@@ -84,6 +122,6 @@ Um handler é executado interrompendo o código normal do programa, potencialmen
 | | |
 |---|---|
 | **Para lembrar** | Um sinal interrompe um processo a qualquer momento para executar um handler, diferente de uma chamada de função clássica. `SIGUSR1`/`SIGUSR2` não têm sentido padrão e podem servir de canal de comunicação entre processos. |
-| **Ferramentas utilizáveis** | `signal()` para interceptar um sinal, `kill()` para enviar um, `volatile sig_atomic_t` para comunicar entre um handler e o resto do programa. |
+| **Ferramentas utilizáveis** | `signal()` para interceptar um sinal, `sigaction()` para um handler enriquecido (acesso ao PID do emissor via `siginfo_t`), `kill()` para enviar um, `volatile sig_atomic_t` para comunicar entre um handler e o resto do programa. |
 | **Armadilhas a evitar** | Chamar uma função não async-signal-safe (como `printf()`) dentro de um handler. |
 | **Boas práticas** | Manter um handler mínimo (modificar uma única variável `sig_atomic_t`) e tratar o sinal no loop principal do programa, nunca dentro do handler. |

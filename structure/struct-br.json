@@ -66,6 +66,14 @@
             {
               "id": "tri-par-comparaison",
               "label": "A ordenação por comparação"
+            },
+            {
+              "id": "pile-et-file",
+              "label": "Pilha e fila: LIFO e FIFO"
+            },
+            {
+              "id": "algorithme-glouton",
+              "label": "O algoritmo guloso (Greedy algorithm)"
             }
           ]
         },
@@ -97,6 +105,10 @@
             {
               "id": "la-derivee-et-le-gradient",
               "label": "A derivada e o gradiente"
+            },
+            {
+              "id": "approximation-par-serie-de-taylor",
+              "label": "A aproximação por série de Taylor"
             }
           ]
         },
@@ -108,6 +120,26 @@
             {
               "id": "rendu-3d-bas-niveau-et-fenetrage",
               "label": "Renderização 3D de baixo nível e janelamento: raycasting estilo Wolfenstein"
+            },
+            {
+              "id": "wavefront-obj-et-modele-de-phong",
+              "label": "O formato Wavefront .obj e o modelo de Phong"
+            },
+            {
+              "id": "glfw-glad-et-boucle-de-rendu",
+              "label": "Abrir uma janela OpenGL moderna: GLFW, GLAD e o loop de renderização"
+            },
+            {
+              "id": "effets-de-rendu-et-interaction-3d",
+              "label": "Efeitos de renderização e interação 3D"
+            },
+            {
+              "id": "edition-de-maillage-et-selection-proportionnelle",
+              "label": "Edição de malha e seleção proporcional"
+            },
+            {
+              "id": "fractales-et-temps-dechappement",
+              "label": "Fractais por tempo de escape: Mandelbrot e Julia"
             }
           ]
         }
@@ -134,6 +166,18 @@
             {
               "id": "boucles",
               "label": "Os laços"
+            },
+            {
+              "id": "operateur-virgule",
+              "label": "O operador vírgula"
+            },
+            {
+              "id": "exit-et-codes-de-retour",
+              "label": "`exit()` e os códigos de retorno"
+            },
+            {
+              "id": "argc-et-argv",
+              "label": "Os argumentos da linha de comando (`argc`, `argv`)"
             },
             {
               "id": "pointeurs",
@@ -192,12 +236,12 @@
               "label": "As chamadas de sistema e os descritores de arquivo"
             },
             {
-              "id": "signaux-unix",
-              "label": "Os sinais UNIX"
-            },
-            {
               "id": "threads",
               "label": "As threads (pthread)"
+            },
+            {
+              "id": "signaux-unix",
+              "label": "Os sinais UNIX"
             },
             {
               "id": "readline-et-termios",
@@ -206,6 +250,18 @@
             {
               "id": "lecture-formatee-scanf",
               "label": "A leitura formatada: `scanf` e `sscanf`"
+            },
+            {
+              "id": "lecture-de-fichiers",
+              "label": "Ler um arquivo linha por linha: `fopen`, `fgets`, `getline`"
+            },
+            {
+              "id": "semaphores",
+              "label": "Os semáforos POSIX"
+            },
+            {
+              "id": "mesure-du-temps",
+              "label": "Medir o tempo e esperar com precisão"
             }
           ]
         },
@@ -269,6 +325,10 @@
             {
               "id": "securite",
               "label": "Proteger seus dados"
+            },
+            {
+              "id": "php-fpm",
+              "label": "Responder ao cliente e continuar trabalhando (PHP-FPM)"
             }
           ]
         },
@@ -352,6 +412,10 @@
             {
               "id": "sous-processus-et-flux-standard",
               "label": "Subprocessos e redirecionamento dos fluxos padrão"
+            },
+            {
+              "id": "regex-en-python",
+              "label": "Regex em Python: o módulo `re`"
             },
             {
               "id": "deep-learning-pytorch",
@@ -453,6 +517,10 @@
             {
               "id": "responsive-et-media-queries",
               "label": "O responsive design e as media queries"
+            },
+            {
+              "id": "degrades",
+              "label": "Os degradês CSS (linear, radial, conic)"
             }
           ]
         },
@@ -633,6 +701,12 @@
           ]
         },
         {
+          "id": "xml",
+          "label": "XML",
+          "folder": "XML",
+          "chapters": []
+        },
+        {
           "id": "cpp",
           "label": "C++",
           "folder": "C++",
@@ -751,6 +825,26 @@
             {
               "id": "web-speech-api",
               "label": "A Web Speech API: reconhecimento e síntese de voz no navegador"
+            },
+            {
+              "id": "observateurs-et-limitation-de-frequence",
+              "label": "Observadores do navegador e limitação de frequência"
+            },
+            {
+              "id": "intercepter-un-setter-de-propriete",
+              "label": "Interceptar um setter de propriedade nativa: `Object.defineProperty`"
+            },
+            {
+              "id": "google-maps-javascript-api",
+              "label": "A API JavaScript do Google Maps"
+            },
+            {
+              "id": "canvas-2d-et-animations",
+              "label": "Canvas 2D e animações"
+            },
+            {
+              "id": "streams",
+              "label": "Streams: processar um fluxo de dados sem carregá-lo todo na memória"
             }
           ]
         }
@@ -1062,6 +1156,10 @@
             {
               "id": "arbitrage-local-cloud-vision",
               "label": "Arbitragem local vs cloud para um modelo de visão"
+            },
+            {
+              "id": "extraction-xlsx",
+              "label": "Ler uma planilha Excel (.xlsx) por script"
             }
           ]
         }
@@ -1159,6 +1257,10 @@
             {
               "id": "pwa-progressive-web-app",
               "label": "A PWA: um site que se comporta como um aplicativo"
+            },
+            {
+              "id": "environnement-local-php-sql-server",
+              "label": "Configurar um ambiente local para uma aplicação PHP conectada ao SQL Server"
             }
           ]
         },
@@ -1368,6 +1470,10 @@
               "label": "Criptografia aplicada para desenvolvedores"
             },
             {
+              "id": "secrets-oublies-en-production",
+              "label": "Segredos esquecidos em produção"
+            },
+            {
               "id": "securite-des-dependances",
               "label": "Segurança das dependências e da cadeia de suprimentos"
             },
@@ -1384,6 +1490,10 @@
               "label": "HashiCorp Vault: além do arquivo .env"
             },
             {
+              "id": "injections-au-dela-du-sql",
+              "label": "As injeções além do SQL"
+            },
+            {
               "id": "tests-et-audit-de-securite",
               "label": "Testes e auditoria de segurança"
             },
@@ -1392,8 +1502,20 @@
               "label": "O OWASP Top 10: a referência padrão da indústria"
             },
             {
+              "id": "xss-en-detail",
+              "label": "XSS: reflected, stored e DOM-based"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "O fingerprinting: reconhecer um aparelho sem armazenar nada nele"
+            },
+            {
+              "id": "logique-metier-et-automatisation",
+              "label": "Lógica de negócio e contornos automatizados"
+            },
+            {
+              "id": "surcharge-et-deni-de-service-applicatif",
+              "label": "Sobrecarga e negação de serviço em nível de aplicação"
             }
           ]
         },
@@ -1501,6 +1623,10 @@
             {
               "id": "exploitation-web-cote-attaquant",
               "label": "A exploração web do lado do atacante"
+            },
+            {
+              "id": "attaques-navigateur-automatise",
+              "label": "Atacar (e defender) um navegador automatizado"
             }
           ]
         }
@@ -1855,6 +1981,14 @@
             {
               "id": "okr",
               "label": "Os OKR"
+            },
+            {
+              "id": "nps-et-satisfaction-client",
+              "label": "O NPS: medir a satisfação e a fidelidade do cliente"
+            },
+            {
+              "id": "decoupage-en-graphe-de-dependances",
+              "label": "Dividir um projeto em um grafo de dependências"
             }
           ]
         }

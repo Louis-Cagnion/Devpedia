@@ -26,6 +26,25 @@ len(frutas)                  # numero de elementos
 
 > **Nota:** ao contrário de um array em [C](/?c=langages-de-programmation&s=c&p=c) (tamanho fixo, um único tipo), uma lista Python é um array **dinâmico** heterogêneo: ela cresce automaticamente, e cada elemento pode ser de um tipo diferente, ao custo de um sobrecusto de memória por elemento (cada elemento é na verdade uma referência a um objeto Python, não um valor bruto contíguo como em C).
 
+### Repetir uma lista com o operador `*`
+
+`[x] * n` constrói uma nova lista de tamanho `n`, cada posição contendo `x`:
+
+```python
+zeros = [0] * 5           # [0, 0, 0, 0, 0] -> pre-alocacao pratica para um tamanho conhecido de antemao
+letras = ["a", "b"] * 3   # ["a", "b", "a", "b", "a", "b"] -> repete a SEQUENCIA inteira, nao cada elemento
+```
+
+> **Armadilha:** `[[]] * n` NÃO cria `n` listas independentes, mas `n` referências para **a mesma** lista vazia: modificar uma modifica então as `n` ao mesmo tempo.
+
+```python
+grade = [[]] * 3
+grade[0].append("x")
+print(grade)   # [['x'], ['x'], ['x']] -> as 3 sublistas SAO o mesmo objeto, nao copias
+```
+
+> **Boa prática:** usar uma compreensão de lista (ver mais abaixo) para obter `n` objetos realmente distintos: `[[] for _ in range(3)]` cria uma nova lista vazia a cada iteração, ao contrário de `[[]] * 3`, que copia `n` vezes a mesma referência.
+
 ### `.append()` vs `.extend()`
 
 ```python
@@ -70,6 +89,19 @@ a, b, c = 1, 2, 3  # funciona tambem sem parenteses explicitos: uma tupla implic
 a, b = b, a        # troca de valores, sem variavel temporaria
 ```
 
+O mesmo `*` também desempacota elementos DENTRO de um literal de lista, para construir uma nova:
+
+```python
+a = [1, 2]
+b = [3, 4]
+
+[a, b]       # [[1, 2], [3, 4]] -> aninha as duas listas como 2 elementos
+[*a, *b]     # [1, 2, 3, 4]     -> desempacota cada elemento de forma plana, equivalente a a + b
+[*a, 0, *b]  # [1, 2, 0, 3, 4]  -> mistura-se livremente com outros elementos
+```
+
+`[*a, *b]` dá o mesmo resultado que `a + b` para duas listas, mas continua legível com mais de duas fontes ou misturado com outros elementos, o que `+` não permite de forma tão natural.
+
 ## `sorted()`: ordenar sem modificar o original
 
 ```python
@@ -109,6 +141,26 @@ pares = [x for x in range(10) if x % 2 == 0]
 
 > **Nota:** uma compreensão continua legível para uma transformação simples em uma única linha; além disso (várias condições aninhadas, lógica complexa), um laço `for` clássico continua sendo mais claro de ler e depurar.
 
+### Compreensão aninhada: achatar uma lista de listas
+
+Uma compreensão pode encadear várias cláusulas `for`: a ordem reproduz exatamente a de laços `for` clássicos aninhados, sendo a primeira cláusula o laço EXTERIOR:
+
+```python
+listas = [[1, 2], [3, 4], [5]]
+
+achatada = [x for sublista in listas for x in sublista]
+# equivalente a:
+achatada = []
+for sublista in listas:  # laco exterior -> escrito PRIMEIRO na compreensao
+    for x in sublista:   # laco interior -> escrito SEGUNDO
+        achatada.append(x)
+# achatada vale [1, 2, 3, 4, 5]
+```
+
+> **Armadilha:** achar que a ordem das cláusulas `for` está invertida em relação a laços aninhados clássicos. Não é o caso: a cláusula mais à esquerda é sempre o laço mais exterior, exatamente como lendo a compreensão da esquerda para a direita.
+
+Além de 2 níveis de aninhamento, [`itertools.chain.from_iterable`](https://docs.python.org/3/library/itertools.html#itertools.chain.from_iterable) continua sendo uma alternativa mais legível para achatar especificamente uma lista de listas, sem reproduzir a lógica de laços aninhados.
+
 Veja também [Os dicionários e os conjuntos](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) para o equivalente das compreensões nessas estruturas, e [Iteradores e geradores](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) para a expressão geradora (variante preguiçosa de uma compreensão de lista).
 
 ---
@@ -117,7 +169,7 @@ Veja também [Os dicionários e os conjuntos](/?c=langages-de-programmation&s=py
 
 | | |
 |---|---|
-| **Para lembrar** | Uma lista é mutável, uma tupla é imutável: ambas ordenadas e heterogêneas. O slicing (`[inicio:fim:passo]`) extrai uma parte; uma compreensão constrói uma lista em uma expressão. |
-| **Ferramentas utilizáveis** | `append`/`insert`/`remove`/`pop`, slicing, desempacotamento (*unpacking*), compreensões de lista. |
-| **Armadilhas a evitar** | Tentar modificar uma tupla após criada (`TypeError`): usar uma lista se o conteúdo precisar evoluir. |
-| **Boas práticas** | Usar uma tupla para um registro fixo, uma lista para uma coleção destinada a evoluir; reservar a compreensão para uma transformação simples, um laço `for` além disso. |
+| **Para lembrar** | Uma lista é mutável, uma tupla é imutável: ambas ordenadas e heterogêneas. O slicing (`[inicio:fim:passo]`) extrai uma parte; uma compreensão constrói uma lista em uma expressão, inclusive aninhada para achatar uma lista de listas. |
+| **Ferramentas utilizáveis** | `append`/`insert`/`remove`/`pop`, o operador `*` para pré-alocar (`[0] * n`), slicing, desempacotamento (*unpacking*), compreensões de lista (simples ou aninhadas), `itertools.chain.from_iterable`. |
+| **Armadilhas a evitar** | Tentar modificar uma tupla após criada (`TypeError`): usar uma lista se o conteúdo precisar evoluir. `[[]] * n`, que repete a mesma referência em vez de criar `n` listas distintas. Achar que a ordem das cláusulas `for` de uma compreensão aninhada está invertida em relação a laços clássicos. |
+| **Boas práticas** | Usar uma tupla para um registro fixo, uma lista para uma coleção destinada a evoluir; preferir `[[] for _ in range(n)]` a `[[]] * n` para sublistas independentes; reservar a compreensão para uma transformação simples, um laço `for` além disso. |

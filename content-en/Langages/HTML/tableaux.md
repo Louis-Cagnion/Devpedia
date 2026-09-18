@@ -55,6 +55,27 @@ An HTML table is used to display **tabular** data (rows/columns genuinely linked
 
 `colspan` extends a cell across several columns, `rowspan` across several rows.
 
+## Controlling column widths: `table-layout` and `<colgroup>`
+
+By default (`table-layout: auto`, in [CSS](/?c=langages-de-balisage&s=css&p=css)), the browser adjusts each column's width to the actual content of its cells. `table-layout: fixed` reverses this behavior and enforces widths declared upfront, regardless of content:
+
+```html
+<table style="table-layout: fixed; width: 100%;">
+    <colgroup>
+        <col style="width: 60%;">
+        <col style="width: 40%;">
+    </colgroup>
+    <tr>
+        <td>Name</td>
+        <td>City</td>
+    </tr>
+</table>
+```
+
+`<colgroup>` and `<col>` declare each column's width once, at the top of the table, rather than repeating it on every cell of the same column.
+
+> **Best practice:** use `table-layout: fixed` + `<colgroup>` as soon as several independent tables need to stay aligned column by column (a row-by-row comparison between them): `table-layout: auto` would adjust each table according to its own content, misaligning columns from one table to the next.
+
 ## Table footer
 
 ```html
@@ -97,6 +118,6 @@ An HTML table is used to display **tabular** data (rows/columns genuinely linked
 | | |
 |---|---|
 | **Key Points** | `<table>` represents tabular data that's genuinely linked together; never a general page layout. `<thead>`/`<tbody>`/`<tfoot>` structure the table; `colspan`/`rowspan` merge cells. |
-| **Available Tools** | `<caption>` (table title), `scope="col"`/`"row"` on a `<th>` for accessibility. |
+| **Available Tools** | `<caption>` (table title), `scope="col"`/`"row"` on a `<th>` for accessibility, `table-layout: fixed` + `<colgroup>` for authoritative column widths. |
 | **Pitfalls to Avoid** | Using `<table>` for a page's general layout: breaks semantics and complicates responsiveness. |
-| **Best Practices** | Always associate a `scope` with every `<th>` of a complex table, so a screen reader announces the right header per cell. |
+| **Best Practices** | Always associate a `scope` with every `<th>` of a complex table, so a screen reader announces the right header per cell. `table-layout: fixed` to keep several tables aligned column by column. |

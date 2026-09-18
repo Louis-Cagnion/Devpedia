@@ -68,6 +68,45 @@ private:
 
 O destrutor (`~NomeClasse()`) executa automaticamente assim que o objeto é destruído (fim de escopo para um objeto local, `delete` para um objeto alocado dinamicamente): é a base do mecanismo [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii), central em C++ para nunca esquecer de liberar um recurso.
 
+## A forma canônica ortodoxa (Rule of Three)
+
+Uma classe que gerencia ela mesma um recurso (memória alocada dinamicamente, um arquivo aberto...) deve definir quatro membros especiais juntos, nunca apenas alguns: o construtor padrão, o **construtor de cópia**, o **operador de atribuição por cópia**, e o destrutor (visto acima). Essa convenção se chama **forma canônica ortodoxa** (*Rule of Three*).
+
+```cpp
+class Array {
+public:
+    Array(int tamanho) : tamanho(tamanho), dados(new int[tamanho]) {}
+
+    // Construtor de copia: constroi um NOVO objeto a partir de outro ja existente
+    Array(const Array &outro) : tamanho(outro.tamanho), dados(new int[outro.tamanho]) {
+        for (int i = 0; i < tamanho; i++) dados[i] = outro.dados[i];
+    }
+
+    // Operador de atribuicao por copia: copia DENTRO de um objeto ja construido
+    Array &operator=(const Array &outro) {
+        if (this != &outro) {   // protecao contra a autoatribuicao (a = a)
+            delete[] dados;
+            tamanho = outro.tamanho;
+            dados = new int[tamanho];
+            for (int i = 0; i < tamanho; i++) dados[i] = outro.dados[i];
+        }
+        return *this;   // permite o encadeamento: a = b = c
+    }
+
+    ~Array() { delete[] dados; }
+
+private:
+    int tamanho;
+    int *dados;
+};
+```
+
+Sem construtor de cópia nem operador de atribuição explícitos, C++ gera versões padrão que copiam cada membro **tal como está** (uma cópia superficial): para um ponteiro como `dados`, isso copia o endereço, nunca os dados apontados. Dois objetos acabariam então compartilhando o mesmo bloco de memória, e o primeiro destrutor executado liberaria memória que o outro objeto ainda acredita válida.
+
+> **Cilada:** esquecer a verificação `this != &outro` no operador de atribuição. Em uma **autoatribuição** (`a = a`), `delete[] dados` liberaria a memória antes que o laço tentasse relê-la a partir dela mesma: um use-after-free sobre os próprios dados.
+>
+> **Boa prática:** implementar os quatro membros juntos assim que um só for necessário, nunca um subconjunto: um construtor de cópia sem operador de atribuição correspondente (ou o inverso) é um sinal forte de esquecimento, não uma escolha deliberada.
+
 ## Métodos `const`
 
 ```cpp
@@ -99,6 +138,6 @@ Veja também [Herança e polimorfismo](/?c=langages-de-programmation&s=cpp&p=her
 | | |
 |---|---|
 | **Para lembrar** | Uma classe reúne dados e métodos, com um controle de acesso (`public`/`private`/`protected`). O construtor inicializa o objeto, o destrutor libera seus recursos automaticamente ao fim de seu escopo. |
-| **Ferramentas utilizáveis** | Lista de inicialização (`: membro(valor)`), métodos `const`, membros/métodos `static`. |
-| **Armadilhas a evitar** | Esquecer que uma classe esconde seus membros por padrão (`private` implícito), ao contrário de uma `struct` C inteiramente pública. |
-| **Boas práticas** | Preferir a lista de inicialização a uma atribuição no corpo do construtor; marcar `const` todo método que não modifica o objeto. |
+| **Ferramentas utilizáveis** | Lista de inicialização (`: membro(valor)`), métodos `const`, membros/métodos `static`. Construtor de cópia e operador de atribuição para uma classe que gerencia um recurso. |
+| **Armadilhas a evitar** | Esquecer que uma classe esconde seus membros por padrão (`private` implícito), ao contrário de uma `struct` C inteiramente pública. Esquecer a proteção contra autoatribuição em `operator=`. |
+| **Boas práticas** | Preferir a lista de inicialização a uma atribuição no corpo do construtor; marcar `const` todo método que não modifica o objeto. Implementar os quatro membros da forma canônica juntos, nunca um subconjunto. |

@@ -39,7 +39,7 @@ try:
 except FileNotFoundError:
     print("Fichier introuvable")
 else:
-    print("Fichier ouvert avec succès")   # exécuté SEULEMENT si aucune exception n'a eu lieu
+    print("Fichier ouvert avec succès")    # exécuté SEULEMENT si aucune exception n'a eu lieu
     fichier.close()
 finally:
     print("Tentative terminée")            # exécuté DANS TOUS LES CAS, exception ou pas
@@ -95,6 +95,38 @@ except SoldeInsuffisantError as erreur:
 
 Une exception personnalisée hérite de `Exception` (ou d'une sous-classe plus précise), ce qui permet de la distinguer des autres dans un `except` ciblé, plutôt que de se reposer sur un message d'erreur générique.
 
+## Chaîner une exception avec `raise ... from`
+
+Quand une fonction intercepte une exception technique et en relance une autre plus parlante pour l'appelant (une erreur "métier"), `raise ... from` garde une trace de la cause d'origine :
+
+```python
+class ConfigurationError(Exception):
+    pass
+
+def charger_configuration(chemin):
+    try:
+        with open(chemin) as fichier:
+            return fichier.read()
+    except FileNotFoundError as erreur:
+        raise ConfigurationError(f"Configuration introuvable : {chemin}") from erreur
+
+try:
+    charger_configuration("config.ini")
+except ConfigurationError as erreur:
+    print(erreur)             # message métier, lisible par l'appelant
+    print(erreur.__cause__)   # FileNotFoundError d'origine, toujours accessible
+```
+
+L'appelant peut intercepter uniquement `ConfigurationError` (sans connaître `FileNotFoundError`), tout en gardant, via `__cause__`, l'exception technique complète pour le debug.
+
+| Forme | Ce qui est gardé | Message affiché dans la trace |
+|---|---|---|
+| `raise Nouvelle(...)` (sans `from`, dans un `except`) | Chaînage implicite (`__context__`) | "During handling of the above exception, another exception occurred" |
+| `raise Nouvelle(...) from erreur` | Chaînage explicite (`__cause__`) | "The above exception was the direct cause of the following exception" |
+| `raise Nouvelle(...) from None` | Rien : la cause d'origine est effacée | Aucune trace de l'exception d'origine |
+
+> **Piège :** `raise ... from None` fait disparaître l'exception d'origine de la trace, y compris dans les logs. À réserver aux cas où le détail technique n'apporte vraiment rien à l'appelant ; dans le doute, garder `from erreur` plutôt que de couper la trace.
+
 ## Le gestionnaire de contexte `with`
 
 `with` garantit qu'une ressource est correctement libérée, **même en cas d'exception** : un fichier ouvert avec `with` se ferme toujours automatiquement à la sortie du bloc :
@@ -116,4 +148,4 @@ with open("donnees.txt") as fichier:
 | **À retenir** | `try`/`except`/`else`/`finally` structure la gestion d'erreurs. `with` garantit qu'une ressource est libérée même en cas d'exception, via `__enter__`/`__exit__`. |
 | **Outils utilisables** | Exceptions personnalisées (héritent de `Exception`), `with`, `raise`. |
 | **Pièges à éviter** | Intercepter `Exception` (ou un `except:` nu) trop largement : masque des erreurs de programmation qui devraient plutôt faire planter le programme pour être corrigées. |
-| **Bonnes pratiques** | Intercepter le type d'exception le plus précis possible ; utiliser `with` pour toute ressource qui doit être fermée/libérée. |
+| **Bonnes pratiques** | Intercepter le type d'exception le plus précis possible ; utiliser `with` pour toute ressource qui doit être fermée/libérée ; chaîner avec `raise ... from erreur` pour convertir une erreur technique en erreur métier sans perdre la cause d'origine. |

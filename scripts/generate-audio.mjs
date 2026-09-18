@@ -43,7 +43,9 @@ import { parseHTML } from "linkedom";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 
-const PIPER_PYTHON = path.join(ROOT, ".venv-piper", "bin", "python");
+const PIPER_PYTHON = process.platform === "win32"
+    ? path.join(ROOT, ".venv-piper", "Scripts", "python.exe")
+    : path.join(ROOT, ".venv-piper", "bin", "python");
 const VOICES_DIR = path.join(ROOT, ".piper-voices");
 const AUDIO_DIR = path.join(ROOT, "audio");
 
@@ -201,6 +203,21 @@ async function buildPlanForChapter(mdPath, bcp47, context, chapterId) {
  *
  * @returns {Map<number, number>} entry index -> duration in milliseconds
  */
+/* espeak-ng's phonemizer crashes on capital Á/Í specifically (confirmed empirically: every other
+   accented capital -- É, Ó, Ú, Ã, Â -- and both lowercase á/í work fine) when synthesizing with
+   the pt_BR-faber-medium voice: it corrupts an internal buffer into a lone UTF-16 surrogate,
+   which then fails UTF-8 re-encoding (`UnicodeEncodeError: ... surrogates not allowed`), crashing
+   piper_batch.py and the whole batch it was part of. Lowercasing just these two letters is safe:
+   pronunciation is unaffected by case for a plain accented vowel (Louis, 15/09/2026, found via
+   `content-br/UI-UX/accessibilite-ux.md`'s "Áreas clicáveis...").
+*/
+const PIPER_PTBR_CRASH_CHARS = /[ÁÍ]/g;
+const PTBR_CRASH_CHAR_FIX = { "Á": "á", "Í": "í" };
+function sanitizeForVoice(text, voice) {
+    if (voice !== "pt_BR-faber-medium") return text;
+    return text.replace(PIPER_PTBR_CRASH_CHARS, c => PTBR_CRASH_CHAR_FIX[c]);
+}
+
 function synthesizeEntries(entries, outDir) {
     const byVoice = new Map();
     entries.forEach((entry, index) => {
@@ -208,7 +225,7 @@ function synthesizeEntries(entries, outDir) {
         const voice = LANG_TO_VOICE[entry.lang] ?? LANG_TO_VOICE[entry.lang.split("-")[0]];
         if (!voice) throw new Error(`No Piper voice configured for lang "${entry.lang}"`);
         if (!byVoice.has(voice)) byVoice.set(voice, []);
-        byVoice.get(voice).push({ index: String(index), text: entry.text });
+        byVoice.get(voice).push({ index: String(index), text: sanitizeForVoice(entry.text, voice) });
     });
 
     const durations = new Map();
@@ -242,52 +259,55 @@ async function generateChapter(lang, { chapterId, mdPath, context, audioPath }) 
     const entries = await buildPlanForChapter(mdPath, bcp47, context, chapterId);
 
     const tmpDir = fs.mkdtempSync(path.join(ROOT, ".audio-tmp-"));
-    const durations = synthesizeEntries(entries, tmpDir);
+    try {
+        const durations = synthesizeEntries(entries, tmpDir);
 
-    const groupIndexOf = new Map();
-    const timing = [];
-    const concatList = [];
-    let cumulativeMs = 0;
+        const groupIndexOf = new Map();
+        const timing = [];
+        const concatList = [];
+        let cumulativeMs = 0;
 
-    let previousSpeakGroup = null;
-    entries.forEach((entry, i) => {
-        const group = entry.kind === "speak" ? entry.group : entry.element;
-        if (!groupIndexOf.has(group)) groupIndexOf.set(group, groupIndexOf.size);
-        const groupIndex = groupIndexOf.get(group);
+        let previousSpeakGroup = null;
+        entries.forEach((entry, i) => {
+            const group = entry.kind === "speak" ? entry.group : entry.element;
+            if (!groupIndexOf.has(group)) groupIndexOf.set(group, groupIndexOf.size);
+            const groupIndex = groupIndexOf.get(group);
 
-        if (entry.kind === "pause") {
-            timing.push({ kind: "pause", groupIndex, afterMs: cumulativeMs });
-            previousSpeakGroup = null; // a "Continuer" click is already its own boundary
-            return;
+            if (entry.kind === "pause") {
+                timing.push({ kind: "pause", groupIndex, afterMs: cumulativeMs });
+                previousSpeakGroup = null; // a "Continuer" click is already its own boundary
+                return;
+            }
+            // A same-paragraph clause split (cf. CLAUSE_PAUSE_MS above); a new paragraph gets its own scroll/highlight cue instead.
+            if (previousSpeakGroup === entry.group) {
+                concatList.push(getClausePauseClip());
+                cumulativeMs += CLAUSE_PAUSE_MS;
+            }
+            const durationMs = durations.get(i);
+            timing.push({ kind: "speak", groupIndex, startMs: cumulativeMs, durationMs });
+            concatList.push(path.join(tmpDir, `${i}.wav`));
+            cumulativeMs += durationMs;
+            previousSpeakGroup = entry.group;
+        });
+
+        const mp3Path = path.join(AUDIO_DIR, lang, `${audioPath}.mp3`);
+        const jsonPath = path.join(AUDIO_DIR, lang, `${audioPath}.json`);
+        fs.mkdirSync(path.dirname(mp3Path), { recursive: true });
+
+        if (concatList.length > 0) {
+            const listFile = path.join(tmpDir, "concat.txt");
+            fs.writeFileSync(listFile, concatList.map(p => `file '${p}'`).join("\n"));
+            execFileSync("ffmpeg", [
+                "-y", "-hide_banner", "-loglevel", "warning", "-f", "concat", "-safe", "0", "-i", listFile,
+                "-codec:a", "libmp3lame", "-b:a", "32k", "-ac", "1", "-ar", "22050",
+                mp3Path,
+            ], { stdio: ["ignore", "ignore", "inherit"] });
         }
-        // A same-paragraph clause split (cf. CLAUSE_PAUSE_MS above); a new paragraph gets its own scroll/highlight cue instead.
-        if (previousSpeakGroup === entry.group) {
-            concatList.push(getClausePauseClip());
-            cumulativeMs += CLAUSE_PAUSE_MS;
-        }
-        const durationMs = durations.get(i);
-        timing.push({ kind: "speak", groupIndex, startMs: cumulativeMs, durationMs });
-        concatList.push(path.join(tmpDir, `${i}.wav`));
-        cumulativeMs += durationMs;
-        previousSpeakGroup = entry.group;
-    });
-
-    const mp3Path = path.join(AUDIO_DIR, lang, `${audioPath}.mp3`);
-    const jsonPath = path.join(AUDIO_DIR, lang, `${audioPath}.json`);
-    fs.mkdirSync(path.dirname(mp3Path), { recursive: true });
-
-    if (concatList.length > 0) {
-        const listFile = path.join(tmpDir, "concat.txt");
-        fs.writeFileSync(listFile, concatList.map(p => `file '${p}'`).join("\n"));
-        execFileSync("ffmpeg", [
-            "-y", "-hide_banner", "-loglevel", "warning", "-f", "concat", "-safe", "0", "-i", listFile,
-            "-codec:a", "libmp3lame", "-b:a", "32k", "-ac", "1", "-ar", "22050",
-            mp3Path,
-        ], { stdio: ["ignore", "ignore", "inherit"] });
+        fs.writeFileSync(jsonPath, JSON.stringify(timing));
+        console.log(`  ${lang}/${audioPath}: ${concatList.length} clips, ${(cumulativeMs / 1000).toFixed(1)}s`);
+    } finally {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
     }
-    fs.writeFileSync(jsonPath, JSON.stringify(timing));
-    fs.rmSync(tmpDir, { recursive: true, force: true });
-    console.log(`  ${lang}/${audioPath}: ${concatList.length} clips, ${(cumulativeMs / 1000).toFixed(1)}s`);
 }
 
 async function main() {
@@ -310,6 +330,7 @@ async function main() {
     }
 
     const structs = loadStructures();
+    const failures = [];
     for (const lang of Object.keys(SITE_LANGUAGES)) {
         if (requestedLangs && !requestedLangs.has(lang)) continue;
         const { contentDir } = SITE_LANGUAGES[lang];
@@ -318,10 +339,21 @@ async function main() {
         if (chapters.length === 0) continue;
         console.log(`${lang}: ${chapters.length} chapter(s)`);
         for (const chapterInfo of chapters) {
-            await generateChapter(lang, chapterInfo);
+            try {
+                await generateChapter(lang, chapterInfo);
+            } catch (err) {
+                /* One flaky chapter (e.g. the known espeak-ng crash) must not abort the whole
+                   batch: log it and continue (Louis, 17/09/2026). */
+                console.error(`  FAILED ${lang}/${chapterInfo.audioPath}: ${err.message}`);
+                failures.push(`${lang}/${chapterInfo.audioPath}`);
+            }
         }
     }
     if (clausePauseClipPath) fs.rmSync(path.dirname(clausePauseClipPath), { recursive: true, force: true });
+    if (failures.length > 0) {
+        console.error(`\n${failures.length} chapter(s) failed:\n${failures.map(f => `  ${f}`).join("\n")}`);
+        process.exitCode = 1;
+    }
 }
 
 main();

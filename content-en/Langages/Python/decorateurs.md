@@ -4,39 +4,39 @@ order: 9
 
 # Decorators
 
-A **decorator** wraps one function inside another to add behavior (timing, logging, permission checks, etc.) without modifying its code: this mechanism relies directly on first-class functions and closures (see the chapter on functions).
+A **decorator** wraps a function inside another one, to add behavior to it (timing, logging, permission checks...) without modifying its code; this mechanism relies directly on first-class functions and closures (see [Functions](/?c=langages&s=python&p=fonctions)).
 
 ## The principle, without the syntactic sugar
 
 ```python
-def mon_decorateur(fonction):
-    def enveloppe(*args, **kwargs):
-        print("Avant l'appel")
-        result = fonction(*args, **kwargs)
-        print("Après l'appel")
+def my_decorator(function):
+    def wrapper(*args, **kwargs):
+        print("Before the call")
+        result = function(*args, **kwargs)
+        print("After the call")
         return result
-    return enveloppe
+    return wrapper
 
-def dire_bonjour(name):
-    print(f"Bonjour {name}")
+def say_hello(name):
+    print(f"Hello {name}")
 
-dire_bonjour = mon_decorateur(dire_bonjour)   # replaces the function with its wrapped version
-dire_bonjour("Jean")
+say_hello = my_decorator(say_hello)   # replaces the function with its wrapped version
+say_hello("John")
 # Before the call
-# Hello, Jean
+# Hello John
 # After the call
 ```
 
-## The syntax`@`
+## The `@` syntax
 
-`@mon_decorateur` "above a function" is simply a shorthand for "`fonction = mon_decorateur(fonction)`":
+`@my_decorator` above a function is simply shorthand for `function = my_decorator(function)`:
 
 ```python
-@mon_decorateur
-def dire_bonjour(name):
-    print(f"Bonjour {name}")
+@my_decorator
+def say_hello(name):
+    print(f"Hello {name}")
 
-dire_bonjour("Jean")   # exactly the same result as in the previous example
+say_hello("John")   # exactly the same result as the previous example
 ```
 
 ## Practical example: timing a function
@@ -44,79 +44,90 @@ dire_bonjour("Jean")   # exactly the same result as in the previous example
 ```python
 import time
 
-def chronometrer(fonction):
-    def enveloppe(*args, **kwargs):
-        debut = time.time()
-        result = fonction(*args, **kwargs)
-        duree = time.time() - debut
-        print(f"{fonction.__name__} a pris {duree:.4f}s")
+def time_it(function):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = function(*args, **kwargs)
+        duration = time.time() - start
+        print(f"{function.__name__} took {duration:.4f}s")
         return result
-    return enveloppe
+    return wrapper
 
-@chronometrer
-def calcul_long():
+@time_it
+def long_computation():
     total = sum(x ** 2 for x in range(1000000))
     return total
 
-calcul_long()   # calcul_long took 0.0834 seconds
+long_computation()   # long_computation took 0.0834s
 ```
 
-## Preserving Metadata with `functools.wraps`
+## Preserving metadata with `functools.wraps`
 
-Without taking precautions, the decorated function "loses" its original name and documentation, which are replaced by those of the wrapper function:
+Without precaution, the decorated function "loses" its original name and docstring, replaced by the wrapper function's:
 
 ```python
-print(calcul_long.__name__)   # "envelope" -> not very useful for debugging
+print(long_computation.__name__)   # "wrapper" -> not very useful for debugging
 ```
 
 ```python
 from functools import wraps
 
-def chronometrer(fonction):
-    @wraps(fonction)   # preserves __name__, __doc__... from the original function
-    def enveloppe(*args, **kwargs):
-        # ... the same logic as before ...
-        return fonction(*args, **kwargs)
-    return enveloppe
+def time_it(function):
+    @wraps(function)   # preserves __name__, __doc__... of the original function
+    def wrapper(*args, **kwargs):
+        # ... same logic as before ...
+        return function(*args, **kwargs)
+    return wrapper
 
-@chronometrer   # redecorated with this new version of Chronometrer
-def calcul_long():
+@time_it   # re-decorated with this new version of time_it
+def long_computation():
     total = sum(x ** 2 for x in range(1000000))
     return total
 
-print(calcul_long.__name__)   # "calcul_long" -> corrected
+print(long_computation.__name__)   # "long_computation" -> fixed
 ```
 
-> **Note:** Redefining `chronometrer` does not retroactively change a function that has already been decorated with its old version: `calcul_long` must be redecorated here for `@wraps` to actually take effect.
+> **Note:** redefining `time_it` doesn't retroactively change a function already decorated by its old version: `long_computation` has to be re-decorated here for `@wraps` to actually apply.
 
-## An interior designer with his own ideas
+## A decorator with its own arguments
 
-To configure a decorator (e.g., `@repeter(3)` instead of `@repeter`), an additional level of nesting is required:
+To parameterize a decorator (e.g. `@repeat(3)` rather than `@repeat`), one extra level of nesting is needed:
 
 ```python
-def repeter(nombre_de_fois):
-    def decorateur(fonction):
-        def enveloppe(*args, **kwargs):
-            for _ in range(nombre_de_fois):
-                result = fonction(*args, **kwargs)
+def repeat(number_of_times):
+    def decorator(function):
+        def wrapper(*args, **kwargs):
+            for _ in range(number_of_times):
+                result = function(*args, **kwargs)
             return result
-        return enveloppe
-    return decorateur
+        return wrapper
+    return decorator
 
-@repeter(3)
-def saluer():
-    print("Bonjour !")
+@repeat(3)
+def greet():
+    print("Hello!")
 
-saluer()   # displays "Hello!" three times
+greet()   # displays "Hello!" three times
 ```
 
-`repeter(3)` First returns `decorateur` (a function that takes a function), which is then applied to `saluer`, hence the three levels of nested functions.
+`repeat(3)` first returns `decorator` (a function that takes a function), which is then applied to `greet`, hence the three levels of nested functions.
 
-## Common decorators in the standard library
+## Common decorators from the standard library
 
-| Interior Designer | Role |
+| Decorator | Role |
 |---|---|
-| `@property` | Converts a method into a calculated property (see the chapter on OOP) |
-| `@staticmethod` | A method that requires neither `self` nor the class |
-| `@classmethod` | A method that takes the class itself (`cls`) rather than an instance |
-| `@functools.lru_cache` | Automatically caches the result of a function for arguments that have already been encountered |
+| `@property` | Turns a method into a computed attribute (see [Object-oriented programming](/?c=langages&s=python&p=poo)) |
+| `@staticmethod` | A method that needs neither `self` nor the class |
+| `@classmethod` | A method that receives the class itself (`cls`) rather than an instance |
+| `@functools.lru_cache` | Automatically caches a function's result for arguments already seen |
+
+---
+
+## 📋 Summary
+
+| | |
+|---|---|
+| **Key takeaways** | A decorator (`@name`) wraps a function to add behavior without modifying its code: `@decorator def f()` is equivalent to `f = decorator(f)`. |
+| **Tools you can use** | `functools.wraps` (preserves metadata), `@property`/`@staticmethod`/`@classmethod`, `@functools.lru_cache`. |
+| **Pitfalls to avoid** | Forgetting `@wraps`: the decorated function loses its original `__name__`/`__doc__`, which complicates debugging. |
+| **Best practices** | Always use `@wraps(function)` in a custom decorator's wrapper function. |

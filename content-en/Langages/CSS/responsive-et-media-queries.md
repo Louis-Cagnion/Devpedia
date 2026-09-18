@@ -70,10 +70,52 @@ div {
 ## Other useful media features
 
 ```css
-@media (orientation: portrait) { }       /* screen taller than it is wide */
-@media (prefers-color-scheme: dark) { }  /* the user has enabled dark mode at the system level */
-@media print { }                         /* styles applied only when printing */
+@media (orientation: portrait) { }           /* screen taller than it is wide */
+@media (prefers-color-scheme: dark) { }      /* the user has enabled dark mode at the system level */
+@media (prefers-reduced-motion: reduce) { }  /* the user has asked to reduce animations */
+@media print { }                             /* styles applied only when printing */
 ```
+
+`prefers-reduced-motion` responds to an accessibility preference set at the operating system level (a user sensitive to motion, migraines, vestibular disorders), not at the site level:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+        /* deliberately NOT "animation: none" -- see the pitfall below */
+    }
+}
+```
+
+> **Pitfall:** replacing the animation with `animation: none`/`transition: none` rather than an almost-zero duration. Code may depend on the JavaScript `animationend`/`transitionend` events (for example, removing an element once its exit transition finishes): `none` never fires these events, which breaks that code, whereas a `0.001ms` duration still fires them, almost instantly.
+>
+> **Best practice:** reduce an animation to an almost-zero duration (`0.001ms`) rather than removing it entirely with `none`, to keep firing the JavaScript events code may depend on.
+
+## Container queries: measuring the container instead of the window
+
+A media query always measures the width of the entire **window**, which can be misleading for a component that only occupies part of the screen (a card in a grid column, next to a sidebar): the window can be wide while the space actually available to that specific component is narrow. A **container query** addresses exactly this case by measuring, not the window, but the element's direct container:
+
+```css
+/* 1. Mark an ancestor as a "queryable container" */
+.carte-conteneur {
+    container-type: inline-size;  /* only the container's width is tracked */
+}
+
+/* 2. The @container rule reacts to THIS CONTAINER'S WIDTH, not the window's */
+@container (max-width: 860px) {
+    .carte { flex-direction: column; }
+}
+```
+
+| | `@media` | `@container` |
+|---|---|---|
+| Measures | The entire window's width | The nearest ancestor's width marked `container-type` |
+| Typical use case | Adapting the page's overall layout | Adapting a reusable component, regardless of the space allotted to it |
+
+> **Pitfall:** using `@media` to adapt a component that only occupies part of the screen (a card in one column among several, next to a sidebar). The window can stay wide while that component's actual space is already narrow: the component then never changes layout, even when it should.
+>
+> **Best practice:** use `@container` as soon as a component needs to react to the space actually allotted to it rather than to the entire window's size; reserve `@media` for a genuinely page-wide adaptation.
 
 See also [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), where `repeat(auto-fit, minmax(...))` achieves responsive behavior **without writing a single media query**, a complementary alternative worth knowing.
 
@@ -84,6 +126,6 @@ See also [CSS Grid](/?c=langages-de-balisage&s=css&p=grid), where `repeat(auto-f
 | | |
 |---|---|
 | **Key Points** | Responsive design adapts a page to any screen size, via relative units (`%`, `rem`, `vw`/`vh`) and media queries (`@media (min-width: ...)`) that apply a style only at certain widths. |
-| **Available Tools** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme)`. |
-| **Pitfalls to Avoid** | Basing breakpoints on specific device sizes rather than on the point where the layout actually breaks down visually. |
-| **Best Practices** | Adopt a *mobile first* approach (`min-width`, style the smallest screen first); prefer `rem` over `em` for font sizes, more predictable when nested. |
+| **Available Tools** | `rem`/`em`/`vw`/`vh`, `@media (min-width/max-width/orientation/prefers-color-scheme/prefers-reduced-motion)`, `@container` + `container-type` for an isolated component. |
+| **Pitfalls to Avoid** | Basing breakpoints on specific device sizes rather than on the point where the layout actually breaks down visually. Using `@media` for a component that only occupies part of the window. Responding to `prefers-reduced-motion` with `animation: none` rather than an almost-zero duration. |
+| **Best Practices** | Adopt a *mobile first* approach (`min-width`, style the smallest screen first); prefer `rem` over `em` for font sizes, more predictable when nested; use `@container` for a component that must react to its own space, not the window; reduce an animation to an almost-zero duration rather than removing it with `none`, so code depending on `animationend`/`transitionend` doesn't break. |

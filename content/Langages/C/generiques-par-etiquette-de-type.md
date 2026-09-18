@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 8
 ---
 
 # Les génériques en C : dispatch par étiquette de type

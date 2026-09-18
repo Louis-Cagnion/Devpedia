@@ -1,5 +1,5 @@
 ---
-order: 13
+order: 16
 ---
 
 # Les arbres binaires

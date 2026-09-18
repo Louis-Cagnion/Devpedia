@@ -62,6 +62,8 @@ Face à un chatbot qui ne fait que répondre en texte, une injection réussie fa
 >
 > **Bonne pratique :** la confirmation humaine avant toute action à conséquence réelle (déjà recommandée dans [Agents](/?c=ia&s=nlp-llm&p=agents)) protège aussi contre ce scénario précis : un agent qui *propose* une action au lieu de l'exécuter directement laisse un humain intercepter une décision prise sur la foi d'une instruction empoisonnée.
 
+**Un risque distinct, même sans injection réussie :** un connecteur d'actions externes (type GPT Actions, plugin) donne au LLM une clé/un jeton d'accès à un système externe. Même si aucune instruction empoisonnée ne parvient jamais à manipuler le modèle, une clé mal restreinte côté serveur (censée ne porter que sur un seul tenant/compte, mais valide en réalité plus largement) permet à l'outil d'accéder à plus que prévu dès qu'il est appelé, indépendamment de toute prompt injection. La défense est la même que le moindre privilège déjà recommandé plus haut, appliquée cette fois à la PORTÉE de la clé elle-même, pas seulement aux actions que l'outil expose.
+
 ## L'injection différée : l'attaque attend son moment
 
 Dans une conversation à plusieurs tours (voir [Construire un chatbot](/?c=ia&s=applications-llm&p=chatbot)), l'instruction malveillante n'a pas besoin d'arriver au premier message : elle peut être glissée plusieurs tours plus tard, une fois la conversation "installée", en espérant qu'à ce stade le modèle lui accorde plus de poids qu'au system prompt initial, potentiellement déjà repoussé loin dans l'historique (voir la gestion de la fenêtre de contexte dans [Construire un chatbot](/?c=ia&s=applications-llm&p=chatbot)).

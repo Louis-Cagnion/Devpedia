@@ -29,6 +29,24 @@ docker run -v $(pwd):/app mon-app:1.0
 
 > **A common pitfall in development**: A bind mount on `/app` completely masks what the image had copied to that location at build time: if the image installs dependencies in `/app/node_modules` and the bind mount overwrites everything in `/app` with the host’s directory (where `node_modules` may not exist), the container will start without its dependencies.
 
+## A named volume pinned to a specific host path
+
+The table above presents named volumes and bind mounts as two exclusive choices, but Docker Compose allows a hybrid: a named volume (managed and listed as such by Docker) whose driver is explicitly configured to point to a fixed host path.
+
+```yaml
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/user/data/db
+```
+
+This volume stays managed and listed as a named Docker volume (`docker volume ls`), while being physically tied to a known, chosen folder on the host, rather than the generally opaque internal path of default Docker volumes (`/var/lib/docker/volumes/...`).
+
+> **Best practice:** use this technique whenever you need to know precisely where a volume's data is backed up, or find it again after the container is removed, without giving up a named volume's management benefits (visible through the `docker volume` commands, portable across Compose projects).
+
 ## Networking: Containers are identified by their names
 
 By default, Docker creates a **bridge** network: each container is assigned its own internal IP address, and two containers on the same network can communicate directly **using their names**, without any manual configuration: Docker resolves this name internally, using the same principle as [DNS](/?c=langages-de-programmation&s=php&p=securite), which translates a domain name into an IP address on the Internet.
@@ -69,6 +87,6 @@ This mode does not create any container-specific network interface: it directly 
 | | |
 |---|---|
 | **Key Points** | A container’s file system is ephemeral: only a volume (named or bind-mounted) persists after the container is deleted. Containers on the same Docker network can connect directly to each other by name. |
-| **Tools available** | `-v` (volume/bind mount), `docker network create`, `-p` for publishing a port externally. |
+| **Tools available** | `-v` (volume/bind mount), `docker network create`, `-p` for publishing a port externally. `driver_opts` (Compose) to pin a named volume to a specific host path. |
 | **Pitfalls to Avoid** | A bind mount that overwrites a folder already populated by the image (e.g., `node_modules` installed during the build, overwritten by the bind mount); the "`--network host`" mode, which removes the container's network isolation. |
 | **Best Practices** | Use a named volume for persistent data (database) and a bind mount for source code under development; avoid using `--network host` for a publicly exposed service. |

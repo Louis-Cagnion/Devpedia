@@ -26,6 +26,25 @@ len(frutas)                  # número de elementos
 
 > **Nota:** a diferencia de un array en [C](/?c=langages-de-programmation&s=c&p=c) (tamaño fijo, un solo tipo), una lista Python es un array **dinámico** heterogéneo: crece automáticamente, y cada elemento puede ser de un tipo diferente, al precio de un sobrecoste de memoria por elemento (cada elemento es en realidad una referencia a un objeto Python, no un valor bruto contiguo como en C).
 
+### Repetir una lista con el operador `*`
+
+`[x] * n` construye una nueva lista de tamaño `n`, cada posición contiene `x`:
+
+```python
+zeros = [0] * 5           # [0, 0, 0, 0, 0] -> preasignación práctica para un tamaño conocido de antemano
+letras = ["a", "b"] * 3   # ["a", "b", "a", "b", "a", "b"] -> repite la SECUENCIA entera, no cada elemento
+```
+
+> **Trampa:** `[[]] * n` NO crea `n` listas independientes, sino `n` referencias a **la misma** lista vacía: modificar una modifica entonces las `n` a la vez.
+
+```python
+cuadricula = [[]] * 3
+cuadricula[0].append("x")
+print(cuadricula)   # [['x'], ['x'], ['x']] -> las 3 sublistas SON el mismo objeto, no copias
+```
+
+> **Buena práctica:** usar una comprensión de lista (ver más abajo) para obtener `n` objetos realmente distintos: `[[] for _ in range(3)]` crea una lista vacía nueva en cada iteración, a diferencia de `[[]] * 3`, que copia `n` veces la misma referencia.
+
 ### `.append()` vs `.extend()`
 
 ```python
@@ -70,6 +89,19 @@ a, b, c = 1, 2, 3  # también funciona sin paréntesis explícitos: una tupla im
 a, b = b, a        # intercambio de valores, sin variable temporal
 ```
 
+El mismo `*` también desempaqueta elementos DENTRO de un literal de lista, para construir uno nuevo:
+
+```python
+a = [1, 2]
+b = [3, 4]
+
+[a, b]       # [[1, 2], [3, 4]] -> anida las dos listas como 2 elementos
+[*a, *b]     # [1, 2, 3, 4]     -> desempaqueta cada elemento de forma plana, equivalente a a + b
+[*a, 0, *b]  # [1, 2, 0, 3, 4]  -> se mezcla libremente con otros elementos
+```
+
+`[*a, *b]` da el mismo resultado que `a + b` para dos listas, pero sigue siendo legible con más de dos fuentes o mezclado con otros elementos, algo que `+` no permite de forma tan natural.
+
 ## `sorted()`: ordenar sin modificar el original
 
 ```python
@@ -109,6 +141,26 @@ pares = [x for x in range(10) if x % 2 == 0]
 
 > **Nota:** una comprensión sigue siendo legible para una transformación simple en una sola línea; más allá (varias condiciones anidadas, lógica compleja), un bucle `for` clásico sigue siendo más claro de leer y depurar.
 
+### Comprensión anidada: aplanar una lista de listas
+
+Una comprensión puede encadenar varias cláusulas `for`: el orden reproduce exactamente el de bucles `for` clásicos anidados, siendo la primera cláusula el bucle EXTERIOR:
+
+```python
+listas = [[1, 2], [3, 4], [5]]
+
+aplanada = [x for sublista in listas for x in sublista]
+# equivalente a:
+aplanada = []
+for sublista in listas:  # bucle exterior -> escrito PRIMERO en la comprensión
+    for x in sublista:   # bucle interior -> escrito SEGUNDO
+        aplanada.append(x)
+# aplanada vale [1, 2, 3, 4, 5]
+```
+
+> **Trampa:** creer que el orden de las cláusulas `for` está invertido respecto a bucles anidados clásicos. No es así: la cláusula más a la izquierda es siempre el bucle más exterior, exactamente como leyendo la comprensión de izquierda a derecha.
+
+Más allá de 2 niveles de anidamiento, [`itertools.chain.from_iterable`](https://docs.python.org/3/library/itertools.html#itertools.chain.from_iterable) sigue siendo una alternativa más legible para aplanar específicamente una lista de listas, sin reproducir la lógica de bucles anidados.
+
 Ver también [Los diccionarios y los conjuntos](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles) para el equivalente de las comprensiones sobre estas estructuras, y [Iteradores y generadores](/?c=langages-de-programmation&s=python&p=iterateurs-et-generateurs) para la expresión generadora (variante perezosa de una comprensión de lista).
 
 ---
@@ -117,7 +169,7 @@ Ver también [Los diccionarios y los conjuntos](/?c=langages-de-programmation&s=
 
 | | |
 |---|---|
-| **Para recordar** | Una lista es mutable, una tupla es inmutable: ambas ordenadas y heterogéneas. El slicing (`[inicio:fin:paso]`) extrae una porción; una comprensión construye una lista en una expresión. |
-| **Herramientas utilizables** | `append`/`insert`/`remove`/`pop`, slicing, desempaquetado (*unpacking*), comprensiones de lista. |
-| **Trampas a evitar** | Intentar modificar una tupla tras su creación (`TypeError`): usar una lista si el contenido debe evolucionar. |
-| **Buenas prácticas** | Usar una tupla para un registro fijo, una lista para una colección destinada a evolucionar; reservar la comprensión a una transformación simple, un bucle `for` más allá. |
+| **Para recordar** | Una lista es mutable, una tupla es inmutable: ambas ordenadas y heterogéneas. El slicing (`[inicio:fin:paso]`) extrae una porción; una comprensión construye una lista en una expresión, incluso anidada para aplanar una lista de listas. |
+| **Herramientas utilizables** | `append`/`insert`/`remove`/`pop`, el operador `*` para preasignar (`[0] * n`), slicing, desempaquetado (*unpacking*), comprensiones de lista (simples o anidadas), `itertools.chain.from_iterable`. |
+| **Trampas a evitar** | Intentar modificar una tupla tras su creación (`TypeError`): usar una lista si el contenido debe evolucionar. `[[]] * n`, que repite la misma referencia en vez de crear `n` listas distintas. Creer que el orden de las cláusulas `for` de una comprensión anidada está invertido respecto a bucles clásicos. |
+| **Buenas prácticas** | Usar una tupla para un registro fijo, una lista para una colección destinada a evolucionar; preferir `[[] for _ in range(n)]` a `[[]] * n` para sublistas independientes; reservar la comprensión a una transformación simple, un bucle `for` más allá. |

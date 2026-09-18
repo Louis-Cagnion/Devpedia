@@ -44,6 +44,46 @@ SELECT COUNT(*) AS nb_clientes FROM clientes WHERE cidade = 'Lyon';
 
 `AS nome` dá um alias a uma coluna do resultado (aqui, a coluna calculada se chamará `nb_clientes`).
 
+Combinada com `GROUP BY`, uma função de agregação calcula um valor por grupo em vez de um único valor global:
+
+```sql
+SELECT cidade, COUNT(*) AS nb_clientes
+FROM clientes
+GROUP BY cidade;  -- uma linha de resultado por cidade distinta
+```
+
+### `GROUPING SETS`: total e detalhe em uma única consulta (T-SQL)
+
+Obter ao mesmo tempo o total global e o detalhe por cidade normalmente exigiria duas consultas separadas (uma com `GROUP BY`, outra sem), ou um `UNION` das duas. `GROUPING SETS` (SQL Server, entre outros) calcula ambos na mesma passada pela tabela:
+
+```sql
+SELECT cidade, COUNT(*) AS nb_clientes
+FROM clientes
+GROUP BY GROUPING SETS ((cidade), ());
+-- (cidade) : uma linha por cidade distinta, como um GROUP BY classico
+-- ()       : uma linha de total global, cidade exibida como NULL
+```
+
+| Conjunto pedido | Resultado |
+|---|---|
+| `(cidade)` | Uma linha por cidade distinta, igual a `GROUP BY cidade` sozinho |
+| `()` (conjunto vazio) | Uma única linha: o total sobre toda a tabela, `cidade` vale `NULL` |
+
+> **Armadilha:** na linha de total, `cidade` vale `NULL` -- mas um `NULL` que significa "isto é um total agregado", não o mesmo `NULL` de "valor desconhecido" visto acima ([`NULL`: um dado ausente](#null-um-dado-ausente-nao-um-valor-como-os-outros)). Filtrar ingenuamente `WHERE cidade IS NOT NULL` removeria a linha de total por engano.
+>
+> **Boa prática:** usar `GROUPING(cidade)` para distinguir os dois sem ambiguidade: vale `1` na linha de total (a coluna é `NULL` porque está agregada), `0` caso contrário (mesmo se o valor real de `cidade` fosse ele próprio `NULL`).
+
+```sql
+SELECT
+    cidade,
+    COUNT(*) AS nb_clientes,
+    GROUPING(cidade) AS eh_total  -- 1 = linha de total, 0 = linha de detalhe
+FROM clientes
+GROUP BY GROUPING SETS ((cidade), ());
+```
+
+Aparentada com `ROLLUP` (hierarquia de totais aninhados, ex. dia → mês → ano) e `CUBE` (todos os cruzamentos possíveis entre várias colunas), `GROUPING SETS` é a forma mais explícita das três: cada combinação de colunas desejada é escrita à mão entre parênteses.
+
 ## `JOIN`: combinar duas tabelas por uma coluna comum
 
 Equivalente declarativo de emparelhar duas coleções por uma chave compartilhada, em vez de escrever um laço com uma busca manual:
@@ -67,6 +107,28 @@ LEFT JOIN vendas v ON v.cliente_id = c.id; -- mantem TODAS as linhas da esquerda
 > **Armadilha:** usar `JOIN` (INNER) quando na verdade se quer *todo mundo*: um cliente sem nenhuma venda desapareceria silenciosamente do resultado, enquanto um `LEFT JOIN` o teria mantido com colunas em `NULL`.
 >
 > **Boa prática:** perguntar-se explicitamente, antes de escrever a junção, se as linhas sem correspondência devem desaparecer (`JOIN`) ou permanecer visíveis (`LEFT JOIN`); ambas produzem um resultado sintaticamente válido, mas semanticamente diferente.
+
+### `OUTER APPLY` / `CROSS APPLY`: uma junção que pode chamar uma função por linha (T-SQL)
+
+A condição `ON` de um `JOIN` clássico só pode referenciar colunas, nunca chamar uma função ou uma subconsulta parametrizada pela linha atual. `APPLY` (SQL Server) remove essa limitação: ele executa uma subconsulta **para cada linha** da tabela da esquerda, passando as colunas dessa linha como parâmetro.
+
+```sql
+SELECT c.nome, ultima.data_compra
+FROM clientes c
+OUTER APPLY (
+    SELECT TOP 1 v.data_compra
+    FROM vendas v
+    WHERE v.cliente_id = c.id       -- referencia c, a linha atual: impossivel em um ON de JOIN
+    ORDER BY v.data_compra DESC
+) AS ultima;
+```
+
+| Variante | Comportamento se a subconsulta não retornar nada |
+|---|---|
+| `CROSS APPLY` | A linha de `clientes` desaparece do resultado (equivalente a `INNER JOIN`) |
+| `OUTER APPLY` | A linha de `clientes` é mantida, colunas da subconsulta em `NULL` (equivalente a `LEFT JOIN`) |
+
+> **Nota:** essa mesma necessidade (referenciar a linha atual a partir de uma subconsulta unida) se chama `LATERAL JOIN` no PostgreSQL -- conceito equivalente, sintaxe diferente conforme o motor.
 
 ## `CREATE TABLE`: criar uma tabela (DDL)
 
@@ -147,6 +209,50 @@ $todas  = $stmt->fetchAll(\PDO::FETCH_ASSOC);  // todas as linhas
 O ciclo é sempre o mesmo: `prepare()` (escrever a consulta, com espaços reservados como `:cidade`) → `execute()` (fornecer os valores reais) → `fetch()`/`fetchAll()` (recuperar o resultado).
 
 > **Nota:** `$pdo->query($sql)` é um atalho **sem** espaço reservado, utilizável apenas se `$sql` for uma string 100% fixa, sem nenhuma variável externa concatenada nela. Assim que um único valor externo (usuário, URL, sessão...) entra na consulta, é preciso passar por `prepare()`/`execute()`.
+
+## `IN (...)` com uma lista de tamanho variável no PDO
+
+O PDO só permite parametrizar valores individuais, nunca um array inteiro em um único placeholder: `IN (:cidades)` com `execute([':cidades' => ['Lyon', 'Paris']])` não funciona -- o PDO trataria o array como um único valor (um erro, ou uma conversão incorreta conforme o driver).
+
+```php
+<?php
+function consultaComIn(PDO $pdo, string $sql, string $prefixo, array $valores): PDOStatement
+{
+    // Gera um placeholder nomeado por valor: prefixo_0, prefixo_1...
+    $placeholders = [];
+    $params = [];
+    foreach (array_values($valores) as $i => $valor) {
+        $nome = ":{$prefixo}_{$i}";
+        $placeholders[] = $nome;
+        $params[$nome] = $valor;
+    }
+
+    // Substitui o marcador {IN} do SQL informado pela lista de placeholders gerada
+    $sqlFinal = str_replace('{IN}', implode(', ', $placeholders), $sql);
+
+    $stmt = $pdo->prepare($sqlFinal);
+    $stmt->execute($params);
+    return $stmt;
+}
+
+$stmt = consultaComIn(
+    $pdo,
+    'SELECT * FROM clientes WHERE cidade IN ({IN})',
+    'cidade',
+    ['Lyon', 'Paris']
+);
+// SQL gerado: SELECT * FROM clientes WHERE cidade IN (:cidade_0, :cidade_1)
+```
+
+| Etapa | Papel |
+|---|---|
+| Um placeholder nomeado por valor (`:cidade_0`, `:cidade_1`...) | Contorna o limite do PDO (um placeholder = um único valor) |
+| `implode(', ', $placeholders)` | Constrói a lista `(:cidade_0, :cidade_1)` a inserir no `IN (...)` |
+| `$params` | Cada valor continua sendo passado separadamente a `execute()`, nunca concatenado no texto SQL |
+
+> **Armadilha:** uma lista vazia (`$valores = []`) gera um `IN ()` sintaticamente inválido na maioria dos motores SQL. Verificar que `$valores` não está vazio antes de chamar essa função (ou encerrar a consulta inteira mais cedo: uma busca sobre uma lista vazia de cidades não pode retornar nenhum resultado de qualquer forma).
+>
+> **Boa prática:** nunca concatenar diretamente os valores no `IN (...)` (seria a mesma falha de [injeção SQL](#injecao-sql-por-que-nunca-concatenar-um-valor-externo) que concatenar qualquer outro valor externo); gerar sempre um placeholder por valor, seja qual for o tamanho da lista.
 
 ## Controlar o SQL a partir do Python com `pyodbc`
 
@@ -260,7 +366,7 @@ VALUES (1, 'Dupont', 'Paris', GETDATE(), NULL, 1);
 
 | | |
 |---|---|
-| **Para lembrar** | SQL consulta (DML) e define a estrutura (DDL) de tabelas (colunas fixas, linhas = registros). `JOIN` combina duas tabelas por uma coluna comum; `INNER JOIN` elimina as linhas sem correspondência, `LEFT JOIN` as mantém. `NULL` = valor desconhecido, nunca confundir com um valor sentinela. |
-| **Ferramentas utilizáveis** | `SELECT`/`WHERE`, funções de agregação (`COUNT`/`SUM`/`AVG`), `JOIN`/`LEFT JOIN`, `CREATE TABLE`/`ALTER TABLE`, índices, consultas preparadas via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php)) ou `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 para preservar o histórico de mudanças. |
-| **Armadilhas a evitar** | Concatenar um valor externo diretamente em uma consulta SQL (injeção SQL); usar `INNER JOIN` quando se quer manter as linhas sem correspondência; reordenar colunas com `ALTER TABLE` (impossível, é preciso recriar a tabela); confundir `NULL` com um valor sentinela. |
-| **Boas práticas** | Sempre passar por uma consulta preparada (`prepare`/`execute`) para um valor externo; limitar os direitos da conta aplicativa ao estritamente necessário (princípio do menor privilégio); chave técnica (`IDENTITY`) em vez de chave natural larga para indexação. |
+| **Para lembrar** | SQL consulta (DML) e define a estrutura (DDL) de tabelas (colunas fixas, linhas = registros). `JOIN` combina duas tabelas por uma coluna comum; `INNER JOIN` elimina as linhas sem correspondência, `LEFT JOIN` as mantém; `APPLY` combina uma junção com uma chamada de função/subconsulta parametrizada por linha. `GROUP BY`/`GROUPING SETS` resumem por grupo, com ou sem total global na mesma consulta. `NULL` = valor desconhecido, nunca confundir com um valor sentinela. |
+| **Ferramentas utilizáveis** | `SELECT`/`WHERE`, funções de agregação (`COUNT`/`SUM`/`AVG`), `GROUP BY`/`GROUPING SETS`/`GROUPING()`, `JOIN`/`LEFT JOIN`/`OUTER APPLY`/`CROSS APPLY`, `CREATE TABLE`/`ALTER TABLE`, índices, consultas preparadas via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php), incluindo um `IN (...)` de tamanho variável via placeholders gerados) ou `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 para preservar o histórico de mudanças. |
+| **Armadilhas a evitar** | Concatenar um valor externo diretamente em uma consulta SQL (injeção SQL), inclusive dentro de um `IN (...)`; usar `INNER JOIN` quando se quer manter as linhas sem correspondência; reordenar colunas com `ALTER TABLE` (impossível, é preciso recriar a tabela); confundir `NULL` com um valor sentinela, inclusive o `NULL` de total de um `GROUPING SETS`. |
+| **Boas práticas** | Sempre passar por uma consulta preparada (`prepare`/`execute`) para um valor externo, inclusive um placeholder por valor dentro de um `IN (...)`; limitar os direitos da conta aplicativa ao estritamente necessário (princípio do menor privilégio); chave técnica (`IDENTITY`) em vez de chave natural larga para indexação; `GROUPING()` para distinguir uma linha de total de um valor `NULL` real. |

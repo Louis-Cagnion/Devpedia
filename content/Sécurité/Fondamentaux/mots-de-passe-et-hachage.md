@@ -54,13 +54,27 @@ Deux utilisateurs avec le même mot de passe obtiennent ainsi des hash différen
 
 En pratique, choisir l'algorithme, générer le sel et gérer son intégration au hash final est pris en charge par une fonction dédiée du langage utilisé, jamais à réimplémenter soi-même : voir [`password_hash()` et `password_verify()`](/?c=langages-de-programmation&s=php&p=securite) pour l'implémentation concrète en [PHP](/?c=langages-de-programmation&s=php&p=php), qui utilise bcrypt par défaut et détaille comment le sel est intégré au hash stocké.
 
+## Politique de mot de passe : protéger AVANT la fuite, pas seulement après
+
+Tout ce qui précède protège une base de données déjà volée. Une autre ligne de défense, complémentaire, agit plus tôt : empêcher un mot de passe trop faible d'exister en premier lieu.
+
+| Règle | Pourquoi |
+|---|---|
+| Longueur minimale (12 caractères ou plus, plutôt qu'une exigence de complexité type "1 majuscule + 1 chiffre + 1 symbole") | La longueur augmente le nombre de combinaisons à tester bien plus efficacement qu'une règle de composition, que les utilisateurs contournent souvent de façon prévisible (`Password1!`) |
+| Rejet des mots de passe déjà connus dans des fuites publiques | Un mot de passe peut être long et "complexe" tout en étant déjà dans toutes les listes utilisées par les attaquants (`motdepasse123!`) : un service comme [Have I Been Pwned](https://haveibeenpwned.com/Passwords) permet de vérifier, sans jamais envoyer le mot de passe en clair (l'API n'échange qu'un préfixe de son hash), s'il apparaît dans des fuites déjà répertoriées |
+| Aucune expiration forcée périodique ("changez votre mot de passe tous les 90 jours") | Contre-intuitif mais documenté (recommandations [NIST](https://pages.nist.gov/800-63-3/sp800-63b.html)) : forcer un changement régulier pousse à des variations prévisibles (`Ete2026!` → `Automne2026!`) plutôt qu'à un mot de passe réellement plus sûr ; ne redemander un changement qu'en cas de compromission avérée |
+
+> **Piège :** confondre politique de mot de passe (avant stockage, à la création) et hachage (au stockage). Les deux sont nécessaires : un hachage parfait ne rend pas un mot de passe faible plus difficile à deviner par un attaquant qui teste des mots de passe COURANTS plutôt que de casser le hash lui-même.
+>
+> **Bonne pratique :** exiger une longueur minimale généreuse plutôt qu'une règle de composition complexe, vérifier contre une liste de mots de passe compromis connus, et ne forcer un changement qu'en cas de compromission avérée plutôt que sur un calendrier fixe.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Un mot de passe se hache toujours avant stockage, jamais en clair. Une fonction de hachage rapide (SHA-256, MD5) facilite les attaques par dictionnaire ; une fonction lente et réglable dédiée (bcrypt, Argon2) les ralentit délibérément. Le sel empêche les attaques par précalcul (rainbow tables) et garantit un hash différent pour un même mot de passe entre deux utilisateurs. |
-| **Outils utilisables** | bcrypt, Argon2, scrypt pour le hachage ; un générateur aléatoire cryptographique pour le sel. |
-| **Pièges à éviter** | Utiliser SHA-256/MD5 pour hacher un mot de passe. Réimplémenter soi-même la génération du sel ou la comparaison des hash plutôt que d'utiliser les fonctions dédiées du langage. |
-| **Bonnes pratiques** | Toujours utiliser une fonction de hachage conçue pour les mots de passe, jamais une fonction de hachage générale. Laisser la génération du sel à une fonction dédiée plutôt que la coder à la main. |
+| **À retenir** | Un mot de passe se hache toujours avant stockage, jamais en clair. Une fonction de hachage rapide (SHA-256, MD5) facilite les attaques par dictionnaire ; une fonction lente et réglable dédiée (bcrypt, Argon2) les ralentit délibérément. Le sel empêche les attaques par précalcul (rainbow tables) et garantit un hash différent pour un même mot de passe entre deux utilisateurs. Une politique de mot de passe à la création (longueur, liste de fuites connues) protège en amont, avant même que le hachage n'entre en jeu. |
+| **Outils utilisables** | bcrypt, Argon2, scrypt pour le hachage ; un générateur aléatoire cryptographique pour le sel ; l'API [Have I Been Pwned](https://haveibeenpwned.com/Passwords) pour vérifier un mot de passe contre les fuites connues. |
+| **Pièges à éviter** | Utiliser SHA-256/MD5 pour hacher un mot de passe. Réimplémenter soi-même la génération du sel ou la comparaison des hash plutôt que d'utiliser les fonctions dédiées du langage. Imposer une expiration périodique forcée plutôt qu'une longueur minimale généreuse. |
+| **Bonnes pratiques** | Toujours utiliser une fonction de hachage conçue pour les mots de passe, jamais une fonction de hachage générale. Laisser la génération du sel à une fonction dédiée plutôt que la coder à la main. Exiger une longueur minimale généreuse, vérifier contre une liste de fuites connues, ne forcer un changement qu'en cas de compromission avérée. |

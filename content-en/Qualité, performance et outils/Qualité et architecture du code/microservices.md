@@ -43,6 +43,33 @@ A service should never read from or write directly to another service's database
 
 See [WebSocket](/?c=infrastructure&p=websocket-et-temps-reel) for a third form of communication, relevant when a service needs to keep notifying a client continuously rather than another service just once.
 
+## The API gateway
+
+A [reverse proxy](/?c=docker&p=docker-compose) (Nginx, Traefik) redirects a request to the right service at the network level (address, port, URL path), without ever reading its content. An **API gateway** is a full application-level service, sitting right behind that reverse proxy: it receives every client request on a single entry point, is able to interpret each one to route it to the right microservice, and along the way handles cross-cutting concerns a reverse proxy knows nothing about.
+
+```text
+Client
+  |
+  v
+Reverse proxy (Nginx)               <- network redirection, never reads the request
+  |
+  v
+API gateway (application service)   <- routes by domain, handles CORS/metrics...
+  |                    \
+  v                     v
+Users service         Orders service
+```
+
+| | Network reverse proxy | API gateway |
+|---|---|---|
+| Level | Network (address, port, path) | Application (understands each request) |
+| Role | Redirect to the right service | Route by business domain + centralize CORS, metrics, etc. |
+| Example | Nginx, Traefik | A service ([NestJS](https://nestjs.com), [Express](https://expressjs.com)...) dedicated to this role |
+
+> **Pitfall:** assuming the gateway necessarily checks the caller's identity (its [JWT](/?c=securite&s=sessions-et-tokens&p=jwt-et-tokens)) just because it's the single entry point. Routing isn't authenticating: nothing guarantees a gateway that just forwards the request checks anything at all.
+>
+> **Best practice:** explicitly decide where the token check lives, never leave it implicit. Two valid choices: the gateway checks it once for every service (avoids repeating the check, but turns it into a single point of trust to secure carefully); or each service checks it independently (the gateway only routes, trust is never delegated to a single point).
+
 ## The main benefit: independent scaling
 
 In a monolith, a high load on a single feature (payment during a sales spike, for example) forces the **entire** application to be scaled up, including the parts that don't need it. With separate services, only the affected service is scaled, without touching the others.

@@ -43,6 +43,33 @@ Un service ne doit jamais lire ou écrire directement dans la base de données d
 
 Voir [WebSocket](/?c=infrastructure&p=websocket-et-temps-reel) pour une troisième forme de communication, pertinente quand un service doit notifier un client en continu plutôt qu'un autre service ponctuellement.
 
+## La passerelle API (API Gateway)
+
+Le [reverse proxy](/?c=docker&p=docker-compose) (Nginx, Traefik) redirige une requête vers le bon service au niveau du réseau (adresse, port, chemin d'URL), sans jamais lire son contenu. Une **passerelle API (API Gateway)** est un service applicatif à part entière, placé juste derrière ce reverse proxy : elle reçoit toutes les requêtes du client sur un point d'entrée unique, sait interpréter chacune pour la router vers le bon microservice, et gère au passage des préoccupations transverses qu'un reverse proxy ne connaît pas.
+
+```text
+Client
+  |
+  v
+Reverse proxy (Nginx)              <- redirection reseau, ne lit pas la requete
+  |
+  v
+Passerelle API (service applicatif) <- route par domaine, gere CORS/metriques...
+  |                    \
+  v                     v
+Service Utilisateurs   Service Commandes
+```
+
+| | Reverse proxy réseau | Passerelle API (API Gateway) |
+|---|---|---|
+| Niveau | Réseau (adresse, port, chemin) | Applicatif (comprend chaque requête) |
+| Rôle | Rediriger vers le bon service | Router par domaine métier + centraliser CORS, métriques, etc. |
+| Exemple | Nginx, Traefik | Un service ([NestJS](https://nestjs.com), [Express](https://expressjs.com)...) dédié à ce rôle |
+
+> **Piège :** croire que la passerelle vérifie forcément l'identité de l'appelant (son [JWT](/?c=securite&s=sessions-et-tokens&p=jwt-et-tokens)) puisqu'elle est le point d'entrée unique. Router n'est pas authentifier : rien ne garantit qu'une passerelle qui se contente de transmettre la requête vérifie quoi que ce soit.
+>
+> **Bonne pratique :** décider explicitement où vit la vérification du jeton, jamais la laisser implicite. Deux choix valables : la passerelle vérifie une fois pour tous les services (évite la répétition, mais en fait un point de confiance unique à bien sécuriser) ; ou chaque service revérifie indépendamment (la passerelle ne route que, la confiance n'est jamais déléguée à un seul point).
+
 ## Le bénéfice principal : la mise à l'échelle indépendante
 
 Dans un monolithe, une charge élevée sur une seule fonctionnalité (le paiement lors d'un pic de vente, par exemple) oblige à démultiplier l'application **entière**, y compris les parties qui n'en ont pas besoin. Avec des services séparés, seul le service concerné est mis à l'échelle, sans toucher aux autres.

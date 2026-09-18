@@ -66,6 +66,14 @@
             {
               "id": "tri-par-comparaison",
               "label": "Le tri par comparaison"
+            },
+            {
+              "id": "pile-et-file",
+              "label": "Pile et file : LIFO et FIFO"
+            },
+            {
+              "id": "algorithme-glouton",
+              "label": "L'algorithme glouton (Greedy algorithm)"
             }
           ]
         },
@@ -97,6 +105,10 @@
             {
               "id": "la-derivee-et-le-gradient",
               "label": "La dérivée et le gradient"
+            },
+            {
+              "id": "approximation-par-serie-de-taylor",
+              "label": "L'approximation par série de Taylor"
             }
           ]
         },
@@ -112,6 +124,22 @@
             {
               "id": "wavefront-obj-et-modele-de-phong",
               "label": "Le format Wavefront .obj et le modèle de Phong"
+            },
+            {
+              "id": "glfw-glad-et-boucle-de-rendu",
+              "label": "Ouvrir une fenêtre OpenGL moderne : GLFW, GLAD et la boucle de rendu"
+            },
+            {
+              "id": "effets-de-rendu-et-interaction-3d",
+              "label": "Effets de rendu et interaction 3D"
+            },
+            {
+              "id": "edition-de-maillage-et-selection-proportionnelle",
+              "label": "Édition de maillage et sélection proportionnelle"
+            },
+            {
+              "id": "fractales-et-temps-dechappement",
+              "label": "Les fractales par temps d'échappement : Mandelbrot et Julia"
             }
           ]
         }
@@ -138,6 +166,18 @@
             {
               "id": "boucles",
               "label": "Les boucles"
+            },
+            {
+              "id": "operateur-virgule",
+              "label": "L'opérateur virgule"
+            },
+            {
+              "id": "exit-et-codes-de-retour",
+              "label": "`exit()` et les codes de retour"
+            },
+            {
+              "id": "argc-et-argv",
+              "label": "Les arguments de la ligne de commande (`argc`, `argv`)"
             },
             {
               "id": "pointeurs",
@@ -214,6 +254,14 @@
             {
               "id": "lecture-de-fichiers",
               "label": "Lire un fichier ligne par ligne : `fopen`, `fgets`, `getline`"
+            },
+            {
+              "id": "semaphores",
+              "label": "Les sémaphores POSIX"
+            },
+            {
+              "id": "mesure-du-temps",
+              "label": "Mesurer le temps et attendre précisément"
             }
           ]
         },
@@ -328,6 +376,10 @@
             {
               "id": "securite",
               "label": "Sécuriser vos données"
+            },
+            {
+              "id": "php-fpm",
+              "label": "Répondre au client puis continuer de travailler (PHP-FPM)"
             }
           ]
         },
@@ -403,6 +455,10 @@
             {
               "id": "sous-processus-et-flux-standard",
               "label": "Sous-processus et redirection des flux standard"
+            },
+            {
+              "id": "regex-en-python",
+              "label": "Les regex en Python : le module `re`"
             }
           ]
         },
@@ -470,6 +526,26 @@
             {
               "id": "web-speech-api",
               "label": "La Web Speech API : reconnaissance et synthèse vocales dans le navigateur"
+            },
+            {
+              "id": "observateurs-et-limitation-de-frequence",
+              "label": "Observateurs du navigateur et limitation de fréquence"
+            },
+            {
+              "id": "intercepter-un-setter-de-propriete",
+              "label": "Intercepter un setter de propriété native : `Object.defineProperty`"
+            },
+            {
+              "id": "google-maps-javascript-api",
+              "label": "L'API JavaScript Google Maps"
+            },
+            {
+              "id": "canvas-2d-et-animations",
+              "label": "Canvas 2D et animations"
+            },
+            {
+              "id": "streams",
+              "label": "Les streams : traiter un flux de données sans tout charger en mémoire"
             }
           ]
         },
@@ -567,6 +643,10 @@
             {
               "id": "responsive-et-media-queries",
               "label": "Le responsive design et les media queries"
+            },
+            {
+              "id": "degrades",
+              "label": "Les dégradés CSS (linear, radial, conic)"
             }
           ]
         },
@@ -745,6 +825,12 @@
               "label": "Évaluateur d'expressions arithmétiques : gérer la précédence des opérateurs"
             }
           ]
+        },
+        {
+          "id": "xml",
+          "label": "XML",
+          "folder": "XML",
+          "chapters": []
         }
       ]
     },
@@ -1054,6 +1140,10 @@
             {
               "id": "arbitrage-local-cloud-vision",
               "label": "Arbitrage local vs cloud pour un modèle de vision"
+            },
+            {
+              "id": "extraction-xlsx",
+              "label": "Lire un classeur Excel (.xlsx) par script"
             }
           ]
         }
@@ -1360,8 +1450,16 @@
               "label": "Gestion des secrets"
             },
             {
+              "id": "secrets-oublies-en-production",
+              "label": "Secrets oubliés en production"
+            },
+            {
               "id": "cryptographie-appliquee",
               "label": "Cryptographie appliquée pour développeurs"
+            },
+            {
+              "id": "securite-des-webhooks",
+              "label": "Sécurité des webhooks"
             },
             {
               "id": "securite-des-dependances",
@@ -1370,6 +1468,34 @@
             {
               "id": "securite-api-web",
               "label": "Sécurité des API web"
+            },
+            {
+              "id": "injections-au-dela-du-sql",
+              "label": "Les injections au-delà du SQL"
+            },
+            {
+              "id": "xss-en-detail",
+              "label": "XSS : reflected, stored et DOM-based"
+            },
+            {
+              "id": "ssrf-en-detail",
+              "label": "SSRF : contourner la liste blanche"
+            },
+            {
+              "id": "upload-de-fichiers",
+              "label": "Upload de fichiers : validation, Zip Slip, CSV Injection"
+            },
+            {
+              "id": "failles-de-navigateur",
+              "label": "Failles côté navigateur"
+            },
+            {
+              "id": "logique-metier-et-automatisation",
+              "label": "Logique métier et contournements automatisés"
+            },
+            {
+              "id": "surcharge-et-deni-de-service-applicatif",
+              "label": "Surcharge et déni de service applicatif"
             },
             {
               "id": "waf-pare-feu-applicatif",
@@ -1497,6 +1623,10 @@
             {
               "id": "exploitation-web-cote-attaquant",
               "label": "L'exploitation web côté attaquant"
+            },
+            {
+              "id": "attaques-navigateur-automatise",
+              "label": "Attaquer (et défendre) un navigateur automatisé"
             }
           ]
         }
@@ -1851,6 +1981,10 @@
             {
               "id": "okr",
               "label": "Les OKR"
+            },
+            {
+              "id": "nps-et-satisfaction-client",
+              "label": "Le NPS : mesurer la satisfaction et la fidélité client"
             },
             {
               "id": "decoupage-en-graphe-de-dependances",

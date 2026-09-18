@@ -38,6 +38,20 @@ Ambos codigos coinciden sin que haya transitado ningun mensaje entre ambos
 
 Esto es lo que permite a una aplicación de autenticación funcionar incluso sin conexión a internet: solo necesita un reloj más o menos sincronizado, no un intercambio de red.
 
+## La URI `otpauth://`: transmitir el secreto inicial a la aplicación
+
+El principio anterior supone que la aplicación y el servidor ya comparten un secreto. ¿Cómo se les transmite ese secreto la primera vez, en la activación? El servidor lo codifica en una URI normalizada con el formato `otpauth://totp/<emisor>:<cuenta>?secret=<secreto>&issuer=<emisor>`, un esquema reconocido por cualquier aplicación TOTP (Google Authenticator, Aegis...), independientemente del sitio que la emita. Esta URI se codifica luego en un código QR para ser escaneada por la aplicación, lo que evita que el usuario tenga que volver a escribir el secreto a mano (fuente de errores):
+
+```text
+otpauth://totp/MiSitio:alice@ejemplo.com?secret=JBSWY3DPEHPK3PXP&issuer=MiSitio
+         \___/ \___________________/ \______________________________/
+        tipo      emisor:cuenta          parametros (secret, issuer)
+```
+
+> **Trampa:** creer que el código QR en sí mismo aporta alguna seguridad. No es más que una forma práctica de codificar esta URI sin error de escritura: solo importa realmente el `secret` que contiene, y cualquiera capaz de leer ese código QR (o de interceptar la URI) puede generar los mismos códigos TOTP que el usuario legítimo.
+>
+> **Buena práctica:** mostrar este código QR una sola vez, en el momento de la activación, sobre una conexión ya autenticada y cifrada; nunca almacenarlo ni volver a mostrarlo más tarde en una forma reproducible.
+
 ## La llave de seguridad física: la protección más robusta frente al phishing
 
 Un código TOTP sigue siendo vulnerable si el usuario lo introduce él mismo en un sitio falso que imita al verdadero (un ataque de *phishing*): nada impide técnicamente escribir el código correcto en el lugar equivocado. Una llave de seguridad física (FIDO2/WebAuthn) elimina este riesgo de otra forma: verifica criptográficamente la dirección exacta del sitio que la solicita, y se niega a responder si la dirección no corresponde a la registrada originalmente, incluso si el sitio falso es visualmente idéntico al verdadero.

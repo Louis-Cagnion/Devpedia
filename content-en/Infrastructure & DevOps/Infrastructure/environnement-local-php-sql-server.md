@@ -88,11 +88,11 @@ On a corporate network filtered by a TLS proxy (which inspects encrypted traffic
 
 ---
 
-## Key takeaways
+## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | Restore a local copy (`.bak` via SSMS) rather than developing against a remote database. Create a dedicated application user (`db_owner` on the one relevant database), never `sa`. `php -S localhost` can bind to IPv6 only on Windows. `composer install` fails on one missing PHP extension at a time, not all at once. The hosts file (admin rights required) gives `127.0.0.1` a stable name, useful in particular for an OAuth `redirect_uri` that must match exactly what's declared on the provider's side. |
+| **Key takeaways** | Restore a local copy (`.bak` via SSMS) rather than developing against a remote database. Create a dedicated application user (`db_owner` on the one database concerned), never `sa`. `php -S localhost` can bind to IPv6 only on Windows. `composer install` fails on one missing PHP extension at a time, not all at once. The hosts file (admin rights required) gives `127.0.0.1` a stable name, useful in particular for an OAuth `redirect_uri` that must match exactly what's declared on the provider's side. |
 | **Tools you can use** | SSMS (*Restore Database* > *Device*) to restore a `.bak`. `CREATE LOGIN`/`CREATE USER`/`ALTER ROLE db_owner` for a dedicated application user. `php --ini` to locate the active `php.ini`. The hosts file for a stable local hostname. |
-| **Pitfalls to avoid** | Connecting as `sa` from an application. Binding `php -S` to `localhost` rather than an explicit IPv4 address. Fixing a single missing PHP extension and assuming the problem is solved. Editing the hosts file without administrator rights. Adding a local hostname without also declaring it as a `redirect_uri` on the OAuth provider's side. |
-| **Best practices** | Always restore a local copy rather than developing against production data. Limit an application account's rights to only the databases it uses. Re-read the exact name of the missing extension on every new `composer install` failure. Check Composer's logs in case of unusual slowness rather than ignoring it. |
+| **Pitfalls to avoid** | Connecting as `sa` from an application. Binding `php -S` to `localhost` rather than an explicit IPv4 address. Fixing a single missing PHP extension and assuming the problem is solved. Editing the hosts file without administrator rights. Adding a local hostname without also declaring it as the `redirect_uri` on the OAuth provider's side. |
+| **Best practices** | Always restore a local copy rather than developing against production data. Limit an application account's rights to only the databases it uses. Reread the exact name of the missing extension on every new `composer install` failure. Check Composer's logs on unusual slowness rather than ignoring it. |

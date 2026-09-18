@@ -43,6 +43,33 @@ Um serviço nunca deve ler ou escrever diretamente no banco de dados de outro: e
 
 Veja [WebSocket](/?c=infrastructure&p=websocket-et-temps-reel) para uma terceira forma de comunicação, pertinente quando um serviço precisa notificar um cliente continuamente em vez de outro serviço pontualmente.
 
+## O gateway de API (API Gateway)
+
+Um [proxy reverso](/?c=docker&p=docker-compose) (Nginx, Traefik) redireciona uma requisição para o serviço certo no nível de rede (endereço, porta, caminho da URL), sem nunca ler seu conteúdo. Um **gateway de API (API Gateway)** é um serviço de aplicação por si só, posicionado logo atrás desse proxy reverso: ele recebe todas as requisições do cliente em um único ponto de entrada, sabe interpretar cada uma para roteá-la ao microsserviço certo, e de passagem cuida de preocupações transversais que um proxy reverso não conhece.
+
+```text
+Cliente
+  |
+  v
+Proxy reverso (Nginx)                 <- redirecionamento de rede, nao le a requisicao
+  |
+  v
+Gateway de API (servico de aplicacao) <- roteia por dominio, cuida de CORS/metricas...
+  |                    \
+  v                     v
+Servico Usuarios       Servico Pedidos
+```
+
+| | Proxy reverso de rede | Gateway de API (API Gateway) |
+|---|---|---|
+| Nível | Rede (endereço, porta, caminho) | Aplicação (entende cada requisição) |
+| Papel | Redirecionar para o serviço certo | Rotear por domínio de negócio + centralizar CORS, métricas, etc. |
+| Exemplo | Nginx, Traefik | Um serviço ([NestJS](https://nestjs.com), [Express](https://expressjs.com)...) dedicado a esse papel |
+
+> **Armadilha:** achar que o gateway necessariamente verifica a identidade de quem chama (seu [JWT](/?c=securite&s=sessions-et-tokens&p=jwt-et-tokens)) só porque é o ponto de entrada único. Rotear não é autenticar: nada garante que um gateway que só encaminha a requisição verifique alguma coisa.
+>
+> **Boa prática:** decidir explicitamente onde vive a verificação do token, nunca deixar isso implícito. Duas escolhas válidas: o gateway verifica uma vez para todos os serviços (evita repetir a checagem, mas o transforma em um único ponto de confiança a proteger bem); ou cada serviço verifica de forma independente (o gateway só roteia, a confiança nunca é delegada a um único ponto).
+
 ## O benefício principal: a escalabilidade independente
 
 Em um monolito, uma carga elevada sobre uma única funcionalidade (o pagamento durante um pico de vendas, por exemplo) obriga a multiplicar a aplicação inteira, incluindo as partes que não precisam disso. Com serviços separados, apenas o serviço envolvido é escalado, sem afetar os outros.

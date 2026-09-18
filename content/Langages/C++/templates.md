@@ -83,6 +83,22 @@ template <Numerique T>
 T addition(T a, T b) { return a + b; }
 ```
 
+## `typename` pour un type dépendant d'un paramètre de template
+
+Quand un type utilisé à l'intérieur d'un template dépend du paramètre de template lui-même (par exemple `T::iterator`, où `T` est un type générique), le compilateur ne peut pas savoir, avant que le template ne soit réellement instancié, si `T::iterator` désigne un type ou une valeur (un membre statique, par exemple) :
+
+```cpp
+template <typename T>
+void afficherPremier(T &conteneur) {
+    typename T::iterator it = conteneur.begin();   // "typename" indispensable ici
+    std::cout << *it;
+}
+```
+
+Par défaut, le compilateur suppose qu'un nom comme `T::iterator` désigne une **valeur**, pas un type. Le mot-clé `typename`, placé juste avant, lève cette ambiguïté en affirmant explicitement "ceci est un nom de type" : requis dès qu'un type dépendant d'un paramètre de template est utilisé de cette façon, que ce soit pour une variable locale ou comme type de retour (`typename T::iterator maFonction(...)`).
+
+> **Piège :** oublier `typename` devant un type dépendant imbriqué (`T::valeur_type`, `T::iterator`...) : une erreur de compilation apparaît, mais son message ("expected expression", ou équivalent selon le compilateur) ne mentionne jamais explicitement le mot `typename` manquant, ce qui la rend difficile à diagnostiquer sans connaître cette règle à l'avance.
+
 ## Templates vs généricité dynamique (Python, PHP)
 
 | | Templates C++ | Typage dynamique ([Python](/?c=langages-de-programmation&s=python&p=python)/[PHP](/?c=langages-de-programmation&s=php&p=php)) |
@@ -100,6 +116,6 @@ Voir aussi [La STL : les conteneurs](/?c=langages-de-programmation&s=cpp&p=stl-c
 | | |
 |---|---|
 | **À retenir** | Un template écrit une fonction/classe une seule fois pour n'importe quel type, avec vérification à la compilation et sans coût à l'exécution (le compilateur génère une version par type utilisé). |
-| **Outils utilisables** | `template <typename T>`, `concepts` (C++20) pour contraindre les types acceptés. |
-| **Pièges à éviter** | Un template sans contrainte accepte n'importe quel type, y compris ceux pour lesquels l'opération n'a pas de sens : erreur de compilation parfois cryptique. |
+| **Outils utilisables** | `template <typename T>`, `concepts` (C++20) pour contraindre les types acceptés. `typename` pour désambiguïser un type dépendant d'un paramètre de template. |
+| **Pièges à éviter** | Un template sans contrainte accepte n'importe quel type, y compris ceux pour lesquels l'opération n'a pas de sens : erreur de compilation parfois cryptique. Oublier `typename` devant un type dépendant imbriqué (`T::iterator`). |
 | **Bonnes pratiques** | Utiliser les `concepts` (C++20) pour exprimer explicitement les exigences sur un type template, plutôt que de laisser un message d'erreur générique le découvrir. |

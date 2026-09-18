@@ -83,6 +83,71 @@ An **aggregation** computes a statistic over all the documents matching a query,
 
 This is the equivalent of a SQL `GROUP BY`, but computed directly on the search index rather than through a join between tables.
 
+## Hybrid search: combining vectors and exact filters
+
+An Elasticsearch field can also store an **embedding** (see [RAG](/?c=ia&s=nlp-llm&p=rag)) as a `dense_vector` type: an array of numbers that represents the meaning of a text, compared by similarity rather than equality.
+
+```json
+// Mapping: declares a vector field alongside regular fields
+{
+  "mappings": {
+    "properties": {
+      "description": { "type": "text" },
+      "dealership_id": { "type": "keyword" },
+      "embedding": { "type": "dense_vector", "dims": 768 }
+    }
+  }
+}
+```
+
+The `knn` clause (*k-nearest neighbors*) looks for documents whose `embedding` is closest to a given vector -- the same cosine similarity as a RAG pipeline (see [the four-step pipeline](/?c=ia&s=nlp-llm&p=rag)), but computed directly by Elasticsearch instead of in application code.
+
+```json
+// Finds the 10 vehicles whose description best matches the question,
+// but ONLY within the current dealership
+{
+  "knn": {
+    "field": "embedding",
+    "query_vector": [0.021, -0.13, 0.58],
+    "k": 10,
+    "num_candidates": 50,
+    "filter": {
+      "term": { "dealership_id": "dealership-42" }
+    }
+  }
+}
+```
+
+| Parameter | Role |
+|---|---|
+| `field` | The `dense_vector` field to compare against |
+| `query_vector` | The embedding of the question asked (computed by the same model used at indexing time) |
+| `k` | How many results to return in the end |
+| `num_candidates` | How many candidates to explore before keeping the best `k` (a speed/accuracy trade-off: the larger it is, the more accurate but slower the search) |
+| `filter` | An exact condition (like a regular `term`/`bool`) applied **before** looking for neighbors |
+
+> **Pitfall:** filtering afterward (fetching the 10 nearest neighbors, then excluding those from another dealership in application code) can return fewer than 10 results, or even none, if all the nearest neighbors belong to other dealerships. The `filter` nested inside `knn` narrows the search space before looking for neighbors: the comparison then only runs over the already-filtered documents.
+>
+> **Best practice:** always pass an exact constraint known in advance (a dealership id, a date range) through `knn`'s own `filter`, never as post-processing in application code.
+
+`knn` also combines with a regular full-text search in the same query, to blend semantic relevance with textual relevance:
+
+```json
+{
+  "query": {
+    "match": { "description": "family sedan" }
+  },
+  "knn": {
+    "field": "embedding",
+    "query_vector": [0.021, -0.13, 0.58],
+    "k": 10,
+    "num_candidates": 50
+  }
+}
+```
+
+Elasticsearch then merges the two rankings (text score and vector score) into a single final score -- hence the name **hybrid search**.
+
 ## Painless: customizing sort order server-side
 
 **Painless** is a small scripting language executed on the Elasticsearch server, used when the default sort (text relevance, or a simple field) isn't enough:
@@ -119,7 +184,7 @@ Bulk API (batches of 500): 1000 documents -> 2 network requests
 
 | | |
 |---|---|
-| **Key Points** | Elasticsearch stores JSON documents in indices, built for full-text search rather than joins. Queries are written in JSON (Query DSL); aggregations compute statistics without joins; Painless allows custom server-side sorting. |
-| **Available Tools** | `match` (full-text, with optional fuzziness), `filter`/`term` (exact value), `aggs` (aggregations), Painless scripts, Bulk API for mass imports. |
-| **Pitfalls to Avoid** | Enabling fuzzy matching on a closed-value field (facet); importing document by document instead of in batches. |
-| **Best Practices** | Reserve `match`/fuzziness for free text, `term` for facets; use the Bulk API in batches for any large import. |
+| **Key Points** | Elasticsearch stores JSON documents in indices, built for full-text search rather than joins. Queries are written in JSON (Query DSL); aggregations compute statistics without joins; `knn` searches by vector similarity and can combine with an exact filter or a full-text search (hybrid search); Painless allows custom server-side sorting. |
+| **Available Tools** | `match` (full-text, with optional fuzziness), `filter`/`term` (exact value), `knn`/`dense_vector` (vector similarity), `aggs` (aggregations), Painless scripts, Bulk API for mass imports. |
+| **Pitfalls to Avoid** | Enabling fuzzy matching on a closed-value field (facet); importing document by document instead of in batches; filtering a `knn` search afterward instead of using its built-in `filter`. |
+| **Best Practices** | Reserve `match`/fuzziness for free text, `term` for facets; use the Bulk API in batches for any large import; pass any exact constraint known in advance through `knn`'s `filter`. |

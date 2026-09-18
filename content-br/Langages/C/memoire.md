@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 9
 ---
 
 # O gerenciamento de memória
@@ -128,6 +128,21 @@ fgets(buffer, sizeof(buffer), stdin);        // leitura limitada ja na captura, 
 
 > **Nota:** limitar o tamanho só resolve metade do problema: também é preciso verificar que o dado truncado permanece coerente para o resto do programa (um nome de arquivo cortado no meio por `strncpy` continua sendo um nome de arquivo sintaticamente válido, apenas incorreto). O reflexo correto continua sendo sempre conhecer, a cada escrita, o tamanho real do buffer de destino; nunca supor que uma entrada respeitará um tamanho esperado sem verificá-lo.
 
+### A família BSD `strlcpy`/`strlcat`
+
+De origem BSD (nao e padrao C, mas disponivel em macOS/\*BSD, e facil de reimplementar, como faz a biblioteca `libft` com `ft_strlcpy`/`ft_strlcat`), essas funções corrigem o ponto fraco de `strncpy`/`strcat`: detectar um truncamento.
+
+```c
+size_t necessario = strlcpy(buffer, entrada, sizeof(buffer));  // SEMPRE termina com '\0', ao contrario de strncpy
+
+if (necessario >= sizeof(buffer))
+{
+    // entrada foi truncada: necessario e o tamanho que a copia completa teria
+}
+```
+
+`strlcpy()`/`strlcat()` sempre retornam o tamanho que a string de origem (ou concatenada) teria se o buffer fosse grande o suficiente, nunca o número de bytes realmente escritos: comparar esse valor com `sizeof(buffer)` detecta um truncamento, algo que `strncpy()`/`strcat()` não permitem fazer diretamente.
+
 ## `sizeof`
 
 `sizeof` não é uma função, mas um operador avaliado na compilação: ele retorna o tamanho em bytes de um tipo ou de uma variável, indispensável para calcular corretamente o tamanho a alocar:
@@ -149,4 +164,4 @@ Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs), cuja
 | **Para lembrar** | O C deixa ao desenvolvedor a responsabilidade completa da memória dinâmica (heap): `malloc`/`calloc`/`realloc` para alocar, `free` para liberar; a stack (variáveis locais) é gerenciada automaticamente. |
 | **Ferramentas utilizáveis** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind para detectar vazamentos e acessos inválidos. |
 | **Armadilhas a evitar** | Vazamento de memória (nunca um `free`), use-after-free, double free, estouro de buffer, este último podendo ser explorado como falha de segurança. |
-| **Boas práticas** | Sempre verificar se um `malloc`/`realloc` não retornou `NULL`; colocar um ponteiro em `NULL` logo após seu `free()`; preferir `fgets`/`strncpy`/`snprintf` às funções sem limite (`gets`/`strcpy`/`sprintf`). |
+| **Boas práticas** | Sempre verificar se um `malloc`/`realloc` não retornou `NULL`; colocar um ponteiro em `NULL` logo após seu `free()`; preferir `fgets`/`strncpy`/`snprintf` às funções sem limite (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar um truncamento pelo valor de retorno. |
