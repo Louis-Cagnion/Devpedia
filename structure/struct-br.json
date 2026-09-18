@@ -930,6 +930,10 @@
             {
               "id": "heap-des-runtimes-manages",
               "label": "O heap de um runtime gerenciado"
+            },
+            {
+              "id": "recouvrement-de-latence",
+              "label": "Sobrepor a latência com um pool em rodízio"
             }
           ]
         },

@@ -914,6 +914,10 @@
             {
               "id": "heap-des-runtimes-manages",
               "label": "Le heap d'un runtime managé"
+            },
+            {
+              "id": "recouvrement-de-latence",
+              "label": "Recouvrir la latence avec un pool tournant"
             }
           ]
         },

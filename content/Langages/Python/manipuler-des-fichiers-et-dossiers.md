@@ -164,13 +164,33 @@ with open("etats.jsonl", encoding="utf-8") as f:
         print(entree["id"])
 ```
 
+### Ne relire que ce qui a été ajouté depuis la dernière lecture : `.seek()`/`.tell()`
+
+Un fichier de log grossit pendant qu'un autre processus l'alimente en continu. Le relire en entier à intervalle régulier pour n'en extraire que les nouvelles lignes gaspille du temps sur un fichier qui devient volumineux ; retenir la position déjà lue permet de ne relire que ce qui a été écrit depuis.
+
+```python
+position = 0
+
+def lire_les_nouvelles_lignes(chemin):
+    global position
+    with open(chemin, encoding="utf-8") as f:
+        f.seek(position)              # reprend là où la lecture précédente s'est arrêtée
+        nouvelles_lignes = f.readlines()
+        position = f.tell()           # mémorise la position atteinte, pour le prochain appel
+    return nouvelles_lignes
+```
+
+`.tell()` renvoie la position actuelle du curseur de lecture (en octets depuis le début du fichier) ; `.seek(position)` y replace le curseur avant de lire. En retenant `position` entre deux appels, chaque passage ne relit que les octets écrits depuis le précédent, jamais le fichier entier.
+
+> **Note :** c'est le mécanisme sous-jacent de `tail -f` en [Bash](/?c=shells&s=bash&p=redirections-et-pipes) ou `Get-Content -Wait` en [PowerShell](/?c=shells&s=powershell&p=powershell) : ces commandes suivent elles-mêmes un fichier qui grossit en ne relisant que son contenu ajouté, jamais depuis le début.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | `pathlib.Path` représente un chemin comme un objet manipulable (`/` pour construire, `.stem`/`.suffix`/`.with_name()` pour décomposer, `.open()` équivalent à `open()`, `.mkdir()` pour créer un dossier). `shutil.rmtree()` supprime un dossier non vide, ce que `Path.rmdir()` refuse. `csv.DictReader` lit un CSV en dicts nommés par en-tête, `csv.reader` en listes positionnelles. `json.dumps`/`loads` convertissent objet Python et texte JSON dans les deux sens ; le format JSON Lines (une ligne = un objet) permet d'ajouter des entrées sans réécrire tout le fichier. |
-| **Outils utilisables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`/`.unlink()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
-| **Pièges à éviter** | `.with_name()` remplace le dernier segment du chemin là où `/` en ajoute un nouveau. `.mkdir()` sans `exist_ok=True` plante si le dossier existe déjà. `.write_text()`/`.read_text()` sur un gros fichier qui devrait être traité ligne par ligne. `shutil.rmtree(ignore_errors=True)` rend un échec silencieux. Oublier `newline=""` avec `csv` peut casser des valeurs multi-lignes entre guillemets. Oublier `ensure_ascii=False` rend les accents illisibles dans le JSON produit (sans casser `json.loads()`). |
-| **Bonnes pratiques** | Utiliser `dossier.mkdir(parents=True, exist_ok=True)` (ou `chemin_fichier.parent.mkdir(...)`) plutôt qu'un `if not dossier.exists(): ...` avant d'écrire un fichier. Vérifier `dossier.exists()` après un `rmtree(ignore_errors=True)` plutôt que de supposer le succès. Préférer `DictReader`/`DictWriter` à un accès par index dès qu'un CSV a des en-têtes. Utiliser le JSON Lines pour un fichier d'état qui grossit au fil de l'exécution, un fichier JSON classique pour un objet figé. |
+| **À retenir** | `pathlib.Path` représente un chemin comme un objet manipulable (`/` pour construire, `.stem`/`.suffix`/`.with_name()` pour décomposer, `.open()` équivalent à `open()`, `.mkdir()` pour créer un dossier). `shutil.rmtree()` supprime un dossier non vide, ce que `Path.rmdir()` refuse. `csv.DictReader` lit un CSV en dicts nommés par en-tête, `csv.reader` en listes positionnelles. `json.dumps`/`loads` convertissent objet Python et texte JSON dans les deux sens ; le format JSON Lines (une ligne = un objet) permet d'ajouter des entrées sans réécrire tout le fichier. `.seek()`/`.tell()` permettent de ne relire que ce qu'un fichier qui grossit a reçu depuis la dernière lecture. |
+| **Outils utilisables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`/`.unlink()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`, `.seek()`/`.tell()`. |
+| **Pièges à éviter** | `.with_name()` remplace le dernier segment du chemin là où `/` en ajoute un nouveau. `.mkdir()` sans `exist_ok=True` plante si le dossier existe déjà. `.write_text()`/`.read_text()` sur un gros fichier qui devrait être traité ligne par ligne. `shutil.rmtree(ignore_errors=True)` rend un échec silencieux. Oublier `newline=""` avec `csv` peut casser des valeurs multi-lignes entre guillemets. Oublier `ensure_ascii=False` rend les accents illisibles dans le JSON produit (sans casser `json.loads()`). Relire un fichier de log entier à chaque passage au lieu de retenir la position déjà lue. |
+| **Bonnes pratiques** | Utiliser `dossier.mkdir(parents=True, exist_ok=True)` (ou `chemin_fichier.parent.mkdir(...)`) plutôt qu'un `if not dossier.exists(): ...` avant d'écrire un fichier. Vérifier `dossier.exists()` après un `rmtree(ignore_errors=True)` plutôt que de supposer le succès. Préférer `DictReader`/`DictWriter` à un accès par index dès qu'un CSV a des en-têtes. Utiliser le JSON Lines pour un fichier d'état qui grossit au fil de l'exécution, un fichier JSON classique pour un objet figé. Mémoriser la position (`.tell()`) après chaque lecture d'un fichier qui grossit, pour y repositionner le curseur (`.seek()`) au passage suivant. |

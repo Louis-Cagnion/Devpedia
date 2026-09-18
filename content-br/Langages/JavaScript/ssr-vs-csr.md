@@ -54,13 +54,33 @@ Após uma renderização SSR, a página exibida ainda é apenas [HTML](/?c=infra
 >
 > **Boa prática:** garantir que a renderização produza exatamente o mesmo resultado no servidor e no cliente, a partir dos mesmos dados; injetar explicitamente na página os dados usados na renderização do servidor, para que o JavaScript de hidratação os reutilize tal como estão, em vez de recalculá-los de forma diferente.
 
+## Onde esses dados são concretamente transmitidos: `__NEXT_DATA__`
+
+A boa prática acima ("transmitir explicitamente esses dados ao cliente em vez de recalculá-los") ganha uma forma concreta no Next.js: os dados usados na renderização do servidor são serializados em JSON e injetados diretamente na página, em uma tag dedicada:
+
+```html
+<script id="__NEXT_DATA__" type="application/json">
+  {"props": {"pageProps": {"titulo": "Bem-vindo Alice", "notas": [15, 12, 18]}}}
+</script>
+```
+
+O JavaScript de hidratação lê esse JSON ao iniciar em vez de recalcular os mesmos dados de outra forma (uma nova chamada de API, um novo cálculo): é isso que garante que a renderização no cliente obtenha exatamente o mesmo resultado da renderização no servidor, sem a armadilha descrita acima.
+
+Essa tag continua legível por qualquer um, não apenas pelo JavaScript da própria página:
+
+```javascript
+JSON.parse(document.getElementById("__NEXT_DATA__").textContent)
+```
+
+Um script de terceiros (uma ferramenta de extração de dados, por exemplo) pode assim recuperar diretamente os dados estruturados da página sem precisar analisar o HTML renderizado: bem mais estável, já que o formato dos dados muda com muito menos frequência do que a aparência visual da página.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | O CSR constrói o conteúdo no navegador após a execução do JavaScript (primeira exibição atrasada, carga baixa no servidor); o SSR constrói o HTML no lado do servidor antes do envio (exibição imediata, melhor indexação, carga mais alta no servidor). A hidratação reconecta o JavaScript a um HTML SSR já exibido, sem reconstruí-lo. |
-| **Ferramentas utilizáveis** | Os frameworks com renderização SSR integrada (Next.js, Nuxt e equivalentes) para combinar exibição imediata e interatividade após a hidratação. |
+| **Para lembrar** | O CSR constrói o conteúdo no navegador após a execução do JavaScript (primeira exibição atrasada, carga baixa no servidor); o SSR constrói o HTML no lado do servidor antes do envio (exibição imediata, melhor indexação, carga mais alta no servidor). A hidratação reconecta o JavaScript a um HTML SSR já exibido, sem reconstruí-lo. O Next.js transmite os dados da renderização do servidor ao cliente via uma tag JSON dedicada (`__NEXT_DATA__`). |
+| **Ferramentas utilizáveis** | Os frameworks com renderização SSR integrada (Next.js, Nuxt e equivalentes) para combinar exibição imediata e interatividade após a hidratação; `__NEXT_DATA__` para ler diretamente os dados estruturados de uma página Next.js. |
 | **Armadilhas a evitar** | Uma renderização no servidor que produz um resultado diferente da renderização no cliente durante a hidratação, forçando uma reconstrução completa no lado do cliente. |
 | **Boas práticas** | Garantir uma renderização idêntica entre servidor e cliente a partir dos mesmos dados; transmitir explicitamente esses dados ao cliente em vez de recalculá-los durante a hidratação. |

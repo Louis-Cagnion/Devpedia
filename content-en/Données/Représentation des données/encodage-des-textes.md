@@ -113,6 +113,33 @@ It nonetheless remains common on Windows, where some tools (including [Excel](ht
 - **UTF-16**: 2 or 4 bytes per character. Used internally by Java, C#, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), and Windows. Characters outside the basic plane (emoji) occupy two 16-bit units there, called a *surrogate pair*, which is why, in JavaScript, `"😀".length` returns **2**.
 - **UTF-32**: 4 bytes per character, fixed size. Simple to index, but wastes a lot of space; rarely used for storage.
 
+## Stripping accents from text: Unicode normalization (NFKD)
+
+Comparing or searching text while ignoring accents (grouping "café" and "cafe" as the same entry, for instance) requires separating each accented letter from its accent. The standard `unicodedata` module provides this decomposition without reinventing a lookup table:
+
+```python
+import unicodedata
+
+def strip_accents(text):
+    decomposed = unicodedata.normalize("NFKD", text)   # "é" -> "e" + combining acute accent
+    return "".join(c for c in decomposed if not unicodedata.combining(c))
+
+strip_accents("café")   # "cafe"
+```
+
+`unicodedata.normalize("NFKD", ...)` decomposes each accented character into its base letter followed by a separate **combining character** (the accent itself, its own code point); `unicodedata.combining(c)` returns true for these combining characters, which can then simply be filtered out.
+
+NFKD is one of the 4 standard Unicode normalization forms:
+
+| Form | Effect |
+|---|---|
+| NFC | Recomposes: shortest form, one code point per visible character when possible |
+| NFD | Decomposes: base letter + separate combining accents |
+| NFKC | Like NFC, also unifying presentation variants (e.g. ligature `ﬁ` → `fi`) |
+| NFKD | Like NFD, with the same unification as NFKC |
+
+> **Pitfall:** two visually identical texts can be composed differently in memory (`é` as a single code point `U+00E9`, or as two, `U+0065` + `U+0301`) and thus fail an `==` comparison even though they display the same way. Normalizing both texts into the same form before comparing them avoids this pitfall.
+
 ## Summary
 
 | Concept | Key point |
@@ -123,6 +150,7 @@ It nonetheless remains common on Windows, where some tools (including [Excel](ht
 | Character ≠ byte | `strlen` in C counts bytes, not letters |
 | Mojibake `Ã©` | UTF-8 read as Latin-1: fix the declaration, not the text |
 | BOM | Useless in UTF-8, but expected by Excel, harmful at the start of a PHP source file |
+| Unicode normalization | NFC/NFD/NFKC/NFKD: two visually identical texts can be composed differently in memory |
 
 ---
 
@@ -130,7 +158,7 @@ It nonetheless remains common on Windows, where some tools (including [Excel](ht
 
 | | |
 |---|---|
-| **Key takeaways** | An encoding maps each character to a number (Unicode: the catalog) then to bytes (UTF-8: the format). UTF-8 is ASCII-compatible and encodes a character in 1 to 4 bytes, so a character isn't necessarily a byte. |
-| **Tools you can use** | `<meta charset="utf-8">`, `utf8mb4` for MySQL, a dedicated library for counting graphemes. |
-| **Pitfalls to avoid** | Reading a UTF-8 file with the wrong encoding declared (mojibake, `Ã©`); splitting a string at an exact byte offset without accounting for multi-byte characters. |
-| **Best practices** | Declare the right encoding at every layer (file, HTTP, database) rather than "fixing" characters that are already corrupted. |
+| **Key takeaways** | An encoding maps each character to a number (Unicode: the catalog) then to bytes (UTF-8: the format). UTF-8 is ASCII-compatible and encodes a character in 1 to 4 bytes, so a character isn't necessarily a byte. Unicode normalization (NFC/NFD/NFKC/NFKD) recomposes or decomposes an accented character, notably to compare or search text while ignoring accents. |
+| **Tools you can use** | `<meta charset="utf-8">`, `utf8mb4` for MySQL, a dedicated library for counting graphemes, `unicodedata.normalize()`/`unicodedata.combining()` to normalize text or strip its accents. |
+| **Pitfalls to avoid** | Reading a UTF-8 file with the wrong encoding declared (mojibake, `Ã©`); splitting a string at an exact byte offset without accounting for multi-byte characters; comparing two visually identical texts composed differently in memory without normalizing them first. |
+| **Best practices** | Declare the right encoding at every layer (file, HTTP, database) rather than "fixing" characters that are already corrupted. Normalize two texts into the same Unicode form before comparing or searching them. |

@@ -914,6 +914,10 @@
             {
               "id": "heap-des-runtimes-manages",
               "label": "El heap de un runtime gestionado"
+            },
+            {
+              "id": "recouvrement-de-latence",
+              "label": "Solapar la latencia con un pool en tiovivo"
             }
           ]
         },

@@ -31,6 +31,24 @@ Driven browser (Playwright/Selenium/Puppeteer):
 | Automated-driver fingerprinting | Some pages detect the presence of an automated browser (JavaScript properties specific to Playwright/Selenium) to adapt their behavior: showing different content, or triggering a targeted anti-bot defense |
 | Injection into extracted data | If the script then trusts the text extracted from the page (a title, a price) without treating it as untrusted external data, a booby-trapped value can propagate further into whatever system receives that result (see the principle already laid out in [The Main Families of Vulnerabilities](/?c=securite&s=cybersecurite&p=types-de-failles)) |
 
+## The concrete signal anti-bots read: `navigator.webdriver`
+
+The WebDriver protocol, used by Playwright, Selenium, and similar tools to drive a browser, exposes by default a JavaScript property readable by any page:
+
+```javascript
+navigator.webdriver   // true if driven via WebDriver, false/undefined otherwise
+```
+
+Any script on the page, and thus any anti-bot system, can read this property to distinguish a human visitor from a script, with no need to analyze subtler behavior. The countermeasure is to redefine this property before any other script on the page runs:
+
+```javascript
+Object.defineProperty(navigator, "webdriver", { get: () => undefined });
+```
+
+Injected at the very start of each page's load (`context.add_init_script(...)` in Playwright), this redefinition hides the most direct signal, without changing anything else about the browser's behavior.
+
+> **Pitfall:** masking `navigator.webdriver` doesn't make a driven browser undetectable: advanced anti-bot systems combine dozens of signals (click timing, screen resolution, installed fonts...), not just this property. Treating it as the only thing to fix gives a false sense of security.
+
 ## The key distinction: "scraping data" versus "executing a page"
 
 The central defensive reflex fits in one sentence: an automation script only ever needs a small slice of what a full browser can do (load a page, read its content, click on expected elements). Everything else (downloads, popups, system permissions, clipboard access) must be explicitly RESTRICTED, never left at the defaults designed for interactive human use.
@@ -52,7 +70,7 @@ The central defensive reflex fits in one sentence: an automation script only eve
 
 | | |
 |---|---|
-| **Key takeaways** | A browser driven by a script (Playwright/Selenium/Puppeteer) actually executes the pages it visits, with every capability of a normal browser: a malicious page can attempt an auto-triggered download, hijack the clipboard, disrupt the script via a popup, or detect the automation itself. |
-| **Tools you can use** | Intercepting native dialogs (`page.on("dialog")`); disabling downloads or using a dedicated isolated folder; denying browser permissions by default. |
-| **Pitfalls to avoid** | Leaving a browser's human-oriented defaults in place for an automated driver. Trusting data extracted from an uncontrolled page without treating it as external. |
+| **Key takeaways** | A browser driven by a script (Playwright/Selenium/Puppeteer) actually executes the pages it visits, with every capability of a normal browser: a malicious page can attempt an auto-triggered download, hijack the clipboard, disrupt the script via a popup, or detect the automation itself via `navigator.webdriver`. |
+| **Tools you can use** | Intercepting native dialogs (`page.on("dialog")`); disabling downloads or using a dedicated isolated folder; denying browser permissions by default; masking `navigator.webdriver` via `context.add_init_script(...)`. |
+| **Pitfalls to avoid** | Leaving a browser's human-oriented defaults in place for an automated driver. Trusting data extracted from an uncontrolled page without treating it as external. Believing a driven browser becomes undetectable once `navigator.webdriver` is masked. |
 | **Best practices** | Explicitly restrict the driven browser to the minimum the task needs. Systematically intercept every unexpected dialog/download. Escape any extracted data before reuse, like any other external data. |

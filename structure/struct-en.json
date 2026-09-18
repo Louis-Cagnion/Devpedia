@@ -914,6 +914,10 @@
             {
               "id": "heap-des-runtimes-manages",
               "label": "A Managed Runtime's Heap"
+            },
+            {
+              "id": "recouvrement-de-latence",
+              "label": "Overlapping Latency with a Round-Robin Pool"
             }
           ]
         },

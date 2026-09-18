@@ -113,6 +113,33 @@ Il reste néanmoins courant sous Windows, où certains outils (dont [Excel](http
 - **UTF-16** : 2 ou 4 octets par caractère. Utilisé en interne par Java, C#, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) et Windows. Les caractères hors du plan de base (les emojis) y occupent deux unités de 16 bits, appelées *surrogate pair* : d'où le fait qu'en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), `"😀".length` renvoie **2**.
 - **UTF-32** : 4 octets par caractère, taille fixe. Simple à indexer, mais gaspille beaucoup d'espace ; rarement utilisé pour du stockage.
 
+## Retirer les accents d'un texte : la normalisation Unicode (NFKD)
+
+Comparer ou rechercher du texte en ignorant les accents (regrouper "café" et "cafe" comme une même entrée, par exemple) demande de séparer chaque lettre accentuée de son accent. Le module standard `unicodedata` fournit cette décomposition sans réinventer de table de correspondance :
+
+```python
+import unicodedata
+
+def retirer_les_accents(texte):
+    decompose = unicodedata.normalize("NFKD", texte)   # "é" -> "e" + accent aigu combinant
+    return "".join(c for c in decompose if not unicodedata.combining(c))
+
+retirer_les_accents("café")   # "cafe"
+```
+
+`unicodedata.normalize("NFKD", ...)` décompose chaque caractère accentué en sa lettre de base suivie d'un **caractère combinant** séparé (l'accent lui-même, un point de code à part) ; `unicodedata.combining(c)` renvoie vrai pour ces caractères combinants, qu'il suffit alors de filtrer.
+
+NFKD est une des 4 formes de normalisation Unicode standard :
+
+| Forme | Effet |
+|---|---|
+| NFC | Recompose : forme la plus courte, un point de code par caractère visible quand c'est possible |
+| NFD | Décompose : lettre de base + accents combinants séparés |
+| NFKC | Comme NFC, en unifiant aussi les variantes de présentation (ex. ligature `ﬁ` → `fi`) |
+| NFKD | Comme NFD, avec la même unification que NFKC |
+
+> **Piège :** deux textes visuellement identiques peuvent être composés différemment en mémoire (`é` en un seul point de code `U+00E9`, ou en deux `U+0065` + `U+0301`) et donc échouer une comparaison `==` alors qu'ils s'affichent pareil. Normaliser les deux textes dans la même forme avant de les comparer évite ce piège.
+
 ## Résumé
 
 | Notion | À retenir |
@@ -123,6 +150,7 @@ Il reste néanmoins courant sous Windows, où certains outils (dont [Excel](http
 | Caractère ≠ octet | `strlen` en [C](/?c=langages-de-programmation&s=c&p=c) compte des octets, pas des lettres |
 | Mojibake `Ã©` | UTF-8 lu comme du Latin-1 : corriger la déclaration, pas le texte |
 | BOM | Inutile en UTF-8, mais attendu par Excel, néfaste en tête d'un source [PHP](/?c=langages-de-programmation&s=php&p=php) |
+| Normalisation Unicode | NFC/NFD/NFKC/NFKD : deux textes visuellement identiques peuvent être composés différemment en mémoire |
 
 ---
 
@@ -130,7 +158,7 @@ Il reste néanmoins courant sous Windows, où certains outils (dont [Excel](http
 
 | | |
 |---|---|
-| **À retenir** | Un encodage associe chaque caractère à un nombre (Unicode : le catalogue) puis à des octets (UTF-8 : le format). UTF-8 est compatible ASCII et code un caractère sur 1 à 4 octets : un caractère n'est donc pas forcément un octet. |
-| **Outils utilisables** | `<meta charset="utf-8">`, `utf8mb4` pour MySQL, une bibliothèque dédiée pour compter des graphèmes. |
-| **Pièges à éviter** | Lire un fichier UTF-8 avec le mauvais encodage déclaré (mojibake, `Ã©`) ; découper une chaîne à l'octet près sans tenir compte des caractères multi-octets. |
-| **Bonnes pratiques** | Déclarer le bon encodage à chaque couche (fichier, HTTP, base de données) plutôt que de "réparer" des caractères déjà corrompus. |
+| **À retenir** | Un encodage associe chaque caractère à un nombre (Unicode : le catalogue) puis à des octets (UTF-8 : le format). UTF-8 est compatible ASCII et code un caractère sur 1 à 4 octets : un caractère n'est donc pas forcément un octet. La normalisation Unicode (NFC/NFD/NFKC/NFKD) recompose ou décompose un caractère accentué, notamment pour comparer ou rechercher du texte en ignorant les accents. |
+| **Outils utilisables** | `<meta charset="utf-8">`, `utf8mb4` pour MySQL, une bibliothèque dédiée pour compter des graphèmes, `unicodedata.normalize()`/`unicodedata.combining()` pour normaliser un texte ou en retirer les accents. |
+| **Pièges à éviter** | Lire un fichier UTF-8 avec le mauvais encodage déclaré (mojibake, `Ã©`) ; découper une chaîne à l'octet près sans tenir compte des caractères multi-octets ; comparer deux textes visuellement identiques mais composés différemment en mémoire sans les normaliser d'abord. |
+| **Bonnes pratiques** | Déclarer le bon encodage à chaque couche (fichier, HTTP, base de données) plutôt que de "réparer" des caractères déjà corrompus. Normaliser deux textes dans la même forme Unicode avant de les comparer ou de les rechercher. |

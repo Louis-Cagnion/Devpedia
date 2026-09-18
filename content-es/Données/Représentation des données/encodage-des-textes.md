@@ -113,6 +113,33 @@ Sigue siendo no obstante común en Windows, donde algunas herramientas (entre el
 - **UTF-16**: 2 o 4 bytes por carácter. Usado internamente por Java, C#, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) y Windows. Los caracteres fuera del plano base (los emojis) ocupan ahí dos unidades de 16 bits, llamadas *surrogate pair*: de ahí que en JavaScript, `"😀".length` devuelva **2**.
 - **UTF-32**: 4 bytes por carácter, tamaño fijo. Simple de indexar, pero desperdicia mucho espacio; raramente usado para almacenamiento.
 
+## Quitar los acentos de un texto: la normalización Unicode (NFKD)
+
+Comparar o buscar texto ignorando los acentos (agrupar "café" y "cafe" como una misma entrada, por ejemplo) exige separar cada letra acentuada de su acento. El módulo estándar `unicodedata` ofrece esta descomposición sin reinventar una tabla de correspondencia:
+
+```python
+import unicodedata
+
+def quitar_acentos(texto):
+    descompuesto = unicodedata.normalize("NFKD", texto)   # "é" -> "e" + acento agudo combinante
+    return "".join(c for c in descompuesto if not unicodedata.combining(c))
+
+quitar_acentos("café")   # "cafe"
+```
+
+`unicodedata.normalize("NFKD", ...)` descompone cada carácter acentuado en su letra base seguida de un **carácter combinante** aparte (el acento mismo, un punto de código independiente); `unicodedata.combining(c)` devuelve verdadero para esos caracteres combinantes, que basta entonces con filtrar.
+
+NFKD es una de las 4 formas de normalización Unicode estándar:
+
+| Forma | Efecto |
+|---|---|
+| NFC | Recompone: forma más corta, un punto de código por carácter visible cuando es posible |
+| NFD | Descompone: letra base + acentos combinantes separados |
+| NFKC | Como NFC, unificando además las variantes de presentación (ej. ligadura `ﬁ` → `fi`) |
+| NFKD | Como NFD, con la misma unificación que NFKC |
+
+> **Trampa:** dos textos visualmente idénticos pueden estar compuestos de forma distinta en memoria (`é` en un solo punto de código `U+00E9`, o en dos, `U+0065` + `U+0301`) y por tanto fallar una comparación `==` aunque se muestren igual. Normalizar ambos textos a la misma forma antes de compararlos evita esta trampa.
+
 ## Resumen
 
 | Noción | A recordar |
@@ -123,6 +150,7 @@ Sigue siendo no obstante común en Windows, donde algunas herramientas (entre el
 | Carácter ≠ byte | `strlen` en C cuenta bytes, no letras |
 | Mojibake `Ã©` | UTF-8 leído como Latin-1: corregir la declaración, no el texto |
 | BOM | Inútil en UTF-8, pero esperado por Excel, nocivo al inicio de un fuente PHP |
+| Normalización Unicode | NFC/NFD/NFKC/NFKD: dos textos visualmente idénticos pueden estar compuestos de forma distinta en memoria |
 
 ---
 
@@ -130,7 +158,7 @@ Sigue siendo no obstante común en Windows, donde algunas herramientas (entre el
 
 | | |
 |---|---|
-| **Para recordar** | Una codificación asocia cada carácter a un número (Unicode: el catálogo) y luego a bytes (UTF-8: el formato). UTF-8 es compatible con ASCII y codifica un carácter en 1 a 4 bytes: un carácter por tanto no es necesariamente un byte. |
-| **Herramientas utilizables** | `<meta charset="utf-8">`, `utf8mb4` para MySQL, una biblioteca dedicada para contar grafemas. |
-| **Trampas a evitar** | Leer un archivo UTF-8 con la codificación equivocada declarada (mojibake, `Ã©`); dividir una cadena al byte exacto sin tener en cuenta los caracteres multibyte. |
-| **Buenas prácticas** | Declarar la codificación correcta en cada capa (archivo, HTTP, base de datos) en lugar de "reparar" caracteres ya corruptos. |
+| **Para recordar** | Una codificación asocia cada carácter a un número (Unicode: el catálogo) y luego a bytes (UTF-8: el formato). UTF-8 es compatible con ASCII y codifica un carácter en 1 a 4 bytes: un carácter por tanto no es necesariamente un byte. La normalización Unicode (NFC/NFD/NFKC/NFKD) recompone o descompone un carácter acentuado, en particular para comparar o buscar texto ignorando los acentos. |
+| **Herramientas utilizables** | `<meta charset="utf-8">`, `utf8mb4` para MySQL, una biblioteca dedicada para contar grafemas, `unicodedata.normalize()`/`unicodedata.combining()` para normalizar un texto o quitarle los acentos. |
+| **Trampas a evitar** | Leer un archivo UTF-8 con la codificación equivocada declarada (mojibake, `Ã©`); dividir una cadena al byte exacto sin tener en cuenta los caracteres multibyte; comparar dos textos visualmente idénticos pero compuestos de forma distinta en memoria sin normalizarlos antes. |
+| **Buenas prácticas** | Declarar la codificación correcta en cada capa (archivo, HTTP, base de datos) en lugar de "reparar" caracteres ya corruptos. Normalizar dos textos a la misma forma Unicode antes de compararlos o buscarlos. |
