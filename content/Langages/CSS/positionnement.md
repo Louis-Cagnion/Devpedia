@@ -84,6 +84,26 @@ Se comporte comme `relative` tant que l'élément est visible dans son emplaceme
 
 > **Note :** `z-index` n'a d'effet que sur un élément **déjà positionné** (`relative`, `absolute`, `fixed` ou `sticky`) : sur un élément `static`, `z-index` est purement et simplement ignoré. Une valeur de `z-index` plus élevée s'affiche par-dessus une valeur plus faible, mais uniquement en comparaison d'éléments qui partagent le même "contexte d'empilement" (un groupe d'éléments comparés entre eux pour la superposition ; un élément positionné avec un `z-index`, une opacité inférieure à 1, ou une transformation crée un nouveau contexte pour ses propres enfants : leurs `z-index` s'y comparent entre eux, jamais directement à ceux de l'extérieur) ; un détail qui explique certains cas où un `z-index` très élevé ne suffit pas à passer au-dessus d'un élément apparemment moins prioritaire.
 
+## Un ancêtre avec `transform`/`filter` redéfinit aussi la référence d'un `fixed`
+
+La note sur `z-index` ci-dessus mentionne qu'un ancêtre avec `transform` (ou `filter`/`will-change`) crée un nouveau contexte d'empilement. Ce même ancêtre a un second effet, indépendant du premier : il devient aussi le point de référence géométrique (*containing block*) de ses descendants en `position: fixed`, qui cessent alors de se positionner par rapport à la fenêtre.
+
+```css
+.ancetre-anime {
+    transform: translateX(0);   /* meme un transform "neutre" declenche cet effet */
+}
+.menu {
+    position: fixed;
+    top: 0;
+    right: 0;   /* attendu : coin superieur droit de la FENETRE... */
+    /* ...mais devient le coin superieur droit de .ancetre-anime, pas de la fenetre */
+}
+```
+
+> **Piège :** oublier que `transform`/`filter`/`will-change` sur un ancêtre casse le positionnement `fixed` habituel d'un descendant, en le rattachant à cet ancêtre plutôt qu'à la fenêtre : un effet distinct du changement de contexte d'empilement déjà vu plus haut, qui touche la même propriété CSS mais pour une raison différente.
+>
+> **Bonne pratique :** si un menu/panneau `fixed` doit rester positionné par rapport à la fenêtre malgré un ancêtre animé, le réparenter directement sous `<body>` (en JavaScript, ou en le déclarant à cet endroit dans le HTML) plutôt que de le laisser sous l'ancêtre concerné.
+
 ---
 
 ## 📋 Récapitulatif
@@ -92,5 +112,5 @@ Se comporte comme `relative` tant que l'élément est visible dans son emplaceme
 |---|---|
 | **À retenir** | `position` change comment un élément est placé : `static` (défaut, flux normal), `relative` (décalé, place réservée), `absolute` (retiré du flux, relatif à un ancêtre positionné), `fixed` (relatif à la fenêtre), `sticky` (hybride relative/fixed). `z-index` gère la superposition, mais seulement entre éléments positionnés. |
 | **Outils utilisables** | `position`, `top`/`right`/`bottom`/`left`, `z-index`. |
-| **Pièges à éviter** | Un `absolute` sans ancêtre `relative` se positionne par rapport à toute la page, pas au conteneur visuel attendu ; `z-index` est ignoré sur un élément `static`. |
-| **Bonnes pratiques** | Toujours poser `position: relative` sur le conteneur d'un enfant en `absolute`, même sans décalage propre à ce conteneur. |
+| **Pièges à éviter** | Un `absolute` sans ancêtre `relative` se positionne par rapport à toute la page, pas au conteneur visuel attendu ; `z-index` est ignoré sur un élément `static` ; un ancêtre en `transform`/`filter` casse le positionnement `fixed` habituel d'un descendant. |
+| **Bonnes pratiques** | Toujours poser `position: relative` sur le conteneur d'un enfant en `absolute`, même sans décalage propre à ce conteneur. Réparenter sous `<body>` un panneau `fixed` qui doit rester relatif à la fenêtre malgré un ancêtre animé. |

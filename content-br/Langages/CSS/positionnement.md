@@ -84,6 +84,26 @@ Se comporta como `relative` enquanto o elemento está visível em seu lugar norm
 
 > **Nota:** `z-index` só tem efeito em um elemento **já posicionado** (`relative`, `absolute`, `fixed` ou `sticky`): em um elemento `static`, `z-index` é simplesmente ignorado. Um valor de `z-index` mais alto é exibido por cima de um valor menor, mas apenas em comparação com elementos que compartilham o mesmo "contexto de empilhamento" (um grupo de elementos comparados entre si para a sobreposição; um elemento posicionado com um `z-index`, uma opacidade menor que 1, ou uma transformação cria um novo contexto para seus próprios filhos: seus `z-index` se comparam ali entre si, nunca diretamente com os de fora); um detalhe que explica alguns casos em que um `z-index` bem alto não basta para passar por cima de um elemento aparentemente menos prioritário.
 
+## Um ancestral com `transform`/`filter` também redefine a referência de um `fixed`
+
+A nota sobre `z-index` acima menciona que um ancestral com `transform` (ou `filter`/`will-change`) cria um novo contexto de empilhamento. Esse mesmo ancestral tem um segundo efeito, independente do primeiro: ele também se torna o ponto de referência geométrico (*containing block*) de seus descendentes em `position: fixed`, que então deixam de se posicionar em relação à janela.
+
+```css
+.ancestral-animado {
+    transform: translateX(0);   /* mesmo um transform "neutro" dispara esse efeito */
+}
+.menu {
+    position: fixed;
+    top: 0;
+    right: 0;   /* esperado: o canto superior direito da JANELA... */
+    /* ...mas se torna o canto superior direito de .ancestral-animado */
+}
+```
+
+> **Cuidado:** esquecer que `transform`/`filter`/`will-change` em um ancestral quebra o posicionamento `fixed` habitual de um descendente, atrelando-o a esse ancestral em vez de à janela: um efeito distinto da mudança de contexto de empilhamento já vista acima, que afeta a mesma propriedade CSS mas por um motivo diferente.
+>
+> **Boa prática:** se um menu/painel `fixed` precisa continuar posicionado em relação à janela apesar de um ancestral animado, reparentá-lo diretamente sob `<body>` (via JavaScript, ou declarando-o ali no HTML) em vez de deixá-lo sob esse ancestral.
+
 ---
 
 ## 📋 Recapitulando
@@ -92,5 +112,5 @@ Se comporta como `relative` enquanto o elemento está visível em seu lugar norm
 |---|---|
 | **Para lembrar** | `position` muda como um elemento é colocado: `static` (padrão, fluxo normal), `relative` (deslocado, lugar reservado), `absolute` (retirado do fluxo, relativo a um ancestral posicionado), `fixed` (relativo à janela), `sticky` (híbrido relative/fixed). `z-index` gerencia a sobreposição, mas apenas entre elementos posicionados. |
 | **Ferramentas utilizáveis** | `position`, `top`/`right`/`bottom`/`left`, `z-index`. |
-| **Armadilhas a evitar** | Um `absolute` sem ancestral `relative` se posiciona em relação à página inteira, não ao contêiner visual esperado; `z-index` é ignorado em um elemento `static`. |
-| **Boas práticas** | Sempre colocar `position: relative` no contêiner de um filho em `absolute`, mesmo sem deslocamento próprio nesse contêiner. |
+| **Armadilhas a evitar** | Um `absolute` sem ancestral `relative` se posiciona em relação à página inteira, não ao contêiner visual esperado; `z-index` é ignorado em um elemento `static`; um ancestral com `transform`/`filter` quebra o posicionamento `fixed` habitual de um descendente. |
+| **Boas práticas** | Sempre colocar `position: relative` no contêiner de um filho em `absolute`, mesmo sem deslocamento próprio nesse contêiner. Reparentar sob `<body>` um painel `fixed` que precise continuar relativo à janela apesar de um ancestral animado. |
