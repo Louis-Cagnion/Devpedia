@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 1, lot 6 en cours en tâche de fond -- attendre la fin, puis `git add audio/` et commit.
+> Prochaine tâche : point 1, lot 6 en cours en tâche de fond -- attendre la fin, `git add audio/` et commit, puis régénérer l'audio des 8 chapitres Kubernetes/worktree/distillation/CUDA (fichiers `.md` déjà commités, pas encore leur audio).
 
 > Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 4). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2). Qualité de traduction EN à auditer plus largement (point 3).
 
