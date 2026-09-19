@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 5 -- `content/` FR terminé, passer à `content-en`/`content-es`/`content-br` (chiffrer d'abord avec le compteur Python correct, cf. point 5 : le premier chiffrage `awk` comptait des octets, pas des caractères). Point 4 (BR, accents) pas encore commencé, même découpage par chapitre.
+> Prochaine tâche : point 5 terminé sur les 4 langues. Reprendre le point 4 (accents manquants dans `content-br`), même découpage par chapitre confirmé par Louis le 19/09/2026.
 
 > Restent : un test navigateur en attente de Louis (point 3). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2).
 
@@ -22,25 +22,9 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 ## 4. Accents manquants dans les commentaires de code de `content-br/` (portugais, ancienne convention FR abandonnée le 31/08/2026 apparemment aussi appliquée aux traductions)
 `content/` (FR) entièrement corrigé (commits `ff20be6` et `83e6cb2`). `content-en/` n'a pas ce problème (l'anglais n'utilise pas ces diacritiques). `content-es/` vérifié sur 3 fichiers volumineux (`methodes.md`, `variables.md`, `nombres.md`) : accents déjà corrects, rien à faire a priori, mais pas de balayage exhaustif. `content-br/` : confirmé fautif sur `Langages/PHP/conditions.md` (`notacao`/`cientifica`/`sao`/`numericas`/`conteudo` sans diacritiques portugais). 252 fichiers `content-br/*.md` contiennent des commentaires de code (`/tmp/.../scratchpad/find_comments.sh content-br` pour la liste triée par volume), ampleur non vérifiée au-delà de cet échantillon. Chantier plus gros que la correction FR : nécessite un balayage systématique (mots portugais courants sans diacritique : `nao`, `sao`, `entao`, `funcao`, `posicao`, `variavel`, `numero`, `indice`, `referencia`...) plutôt qu'une relecture manuelle fichier par fichier ; à chiffrer avant de se lancer, risque d'introduire un mauvais diacritique sans relecture native.
 
-## 5. Lignes de code de plus de 95 caractères dans `content-en`/`content-es`/`content-br`, à reformater selon les règles de `/best-practice`
-**`content/` FR terminé** (commits `48d3a50`..`50004a0`, 19/09/2026). Méthode : un chapitre à la fois (découpage confirmé par Louis). Commentaire de fin de ligne trop long déplacé au-dessus du code plutôt que raccourci (script `/tmp/.../scratchpad/fix_long_lines.py`, ne touche jamais le code lui-même, uniquement la position d'un commentaire identifié sans ambiguïté hors chaîne). Compréhension/appel de fonction/définition trop long : explosé un élément par ligne à la main. Exception assumée et documentée par fichier : un diagramme ASCII/Unicode (arbre, flux, alignement de données) n'est jamais retouché même au-delà de 95 caractères, le couper détruirait l'information visuelle.
+## 5. Lignes de code de plus de 95 caractères dans `content*/` : TERMINÉ (19/09/2026)
+Les 4 langues sont sous le seuil de 95 caractères, exception documentée faite des diagrammes ASCII/Unicode (arbre, flux, alignement de données) : les couper détruirait l'information visuelle, jamais retouchés même au-delà de 95 caractères. Commits `48d3a50`..`524ce410`. Méthode : script conservateur (`/tmp/.../scratchpad/fix_long_lines.py`, déplace un commentaire de fin de ligne trouvé sans ambiguïté hors chaîne, ne touche jamais le code) pour le gros du volume, puis passage manuel fichier par fichier pour les compréhensions/appels de fonction à exploser et les diagrammes à trancher au cas par cas.
 
-**Correction de méthode importante (19/09/2026) :** le premier chiffrage ("1719 lignes sur les 4 langues") comptait des **octets**, pas des caractères -- `awk`/`mawk` sur ce système ne gère pas l'UTF-8, et `length()` compte 2 octets pour chaque caractère accentué. Sur du contenu français truffé d'accents, ça gonflait artificiellement le nombre de lignes détectées (ex : FR est retombé de 180 lignes "détectées" à 60 lignes réellement >95 caractères une fois recompté correctement). Ne jamais recompter avec `awk`/`wc -m` sans vérifier l'encodage : utiliser Python (`len()` sur une chaîne décodée UTF-8 compte des caractères, pas des octets), cf. script de comptage ci-dessous. Cette correction ne remet pas en cause les lignes déjà reformatées pour FR (déplacer un commentaire par ailleurs trop long à l'œil n'est jamais nuisible), mais le chiffrage initial donné à Louis était surestimé.
+**Point de méthode à retenir pour tout futur chiffrage de longueur de ligne :** `awk`/`mawk` sur ce système ne gère pas l'UTF-8, `length()` y compte des octets, pas des caractères (2 octets par caractère accentué) -- ça avait gonflé le chiffrage initial ("1719 lignes") d'environ 3x sur le FR. Toujours compter avec Python (`len()` sur du texte décodé UTF-8), jamais avec `awk`/`wc -m` sans vérifier l'encodage au préalable.
 
-Prochaine étape : chiffrer et traiter `content-en`, `content-es`, `content-br` avec le compteur correct :
-```bash
-find content-en content-es content-br -name "*.md" -print0 | xargs -0 python3 - <<'EOF'
-import sys
-LIMIT = 95
-for path in sys.argv[1:]:
-    with open(path, encoding="utf-8") as f:
-        lines = f.read().split("\n")
-    in_code = False
-    for i, line in enumerate(lines, start=1):
-        if line.startswith("```"):
-            in_code = not in_code
-            continue
-        if in_code and len(line) > LIMIT:
-            print(f"{path}:{i}:{len(line)}")
-EOF
-```
+**Découverte annexe non traitée ici :** `content-es` a, comme `content-br`, des accents manquants dans certains blocs (diagrammes texte notamment) -- corrigés seulement là où déjà ouverts pour la longueur de ligne, pas d'audit exhaustif. À traiter comme un point 4 bis si Louis le souhaite, une fois le point 4 (BR) fait.
