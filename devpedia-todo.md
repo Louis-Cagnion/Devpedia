@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 4 (BR) et 5 (lignes longues), découpage confirmé par Louis le 19/09/2026 : un chapitre (un fichier `.md`) à la fois, jamais par langage/dossier entier d'un coup. Point 5, chapitre suivant : `content/Langages/Bash/traitement-de-texte.md` (13 lignes).
+> Prochaine tâche : points 4 (BR) et 5 (lignes longues), découpage confirmé par Louis le 19/09/2026 : un chapitre (un fichier `.md`) à la fois, jamais par langage/dossier entier d'un coup. Point 5, chapitre suivant : `content/Qualité, performance et outils/Git/commandes-essentielles.md` (10 lignes).
 
 > Restent : un test navigateur en attente de Louis (point 3). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2).
 
