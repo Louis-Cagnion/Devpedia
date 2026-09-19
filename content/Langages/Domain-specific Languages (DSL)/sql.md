@@ -91,13 +91,15 @@ Apparentée à `ROLLUP` (hiérarchie de totaux imbriqués, ex. jour → mois →
 ```sql
 SELECT c.nom, v.date_achat
 FROM clients c
-JOIN ventes v ON v.client_id = c.id; -- INNER JOIN : les lignes sans correspondance disparaissent
+-- INNER JOIN : les lignes sans correspondance disparaissent
+JOIN ventes v ON v.client_id = c.id;
 ```
 
 ```sql
 SELECT c.nom, v.date_achat
 FROM clients c
-LEFT JOIN ventes v ON v.client_id = c.id; -- garde TOUTES les lignes de gauche, NULL si pas de correspondance
+-- garde TOUTES les lignes de gauche, NULL si pas de correspondance
+LEFT JOIN ventes v ON v.client_id = c.id;
 ```
 
 - `c`/`v` sont des alias de table, indispensables dès que deux tables partagent un nom de colonne (`c.nom` vs un éventuel `v.nom`, sans ambiguïté).
@@ -118,7 +120,8 @@ FROM clients c
 OUTER APPLY (
     SELECT TOP 1 v.date_achat
     FROM ventes v
-    WHERE v.client_id = c.id       -- reference c, la ligne courante : impossible dans un ON de JOIN
+    -- référence c, la ligne courante : impossible dans un ON de JOIN
+    WHERE v.client_id = c.id
     ORDER BY v.date_achat DESC
 ) AS derniere;
 ```
@@ -143,7 +146,8 @@ CREATE TABLE ventes (
     id         INT IDENTITY PRIMARY KEY,
     client_id  INT NOT NULL,
     date_achat DATE NOT NULL,
-    FOREIGN KEY (client_id) REFERENCES clients(id)  -- chaque vente doit pointer vers un client existant
+    -- chaque vente doit pointer vers un client existant
+    FOREIGN KEY (client_id) REFERENCES clients(id)
 );
 ```
 
@@ -183,7 +187,8 @@ CREATE INDEX idx_clients_ville ON clients(ville);
 
 ```sql
 SELECT AVG(remise) FROM ventes;
--- AVG/SUM/COUNT(colonne) ignorent les lignes à NULL : une remise à NULL ne compte pas comme 0
+-- AVG/SUM/COUNT(colonne) ignorent les lignes à NULL : une remise à NULL
+-- ne compte pas comme 0
 ```
 
 > **Piège :** stocker `-1` au lieu de `NULL` pour "pas de remise" fausse `AVG(remise)`, qui compterait alors `-1` comme une vraie valeur numérique au lieu de l'ignorer.
@@ -267,12 +272,14 @@ connexion = pyodbc.connect(
 )  # ouvre la connexion vers la base
 
 curseur = connexion.cursor()
-curseur.execute("SELECT * FROM clients WHERE ville = ?", "Lyon")  # ? = espace réservé, valeur passée séparément
+# ? = espace réservé, valeur passée séparément
+curseur.execute("SELECT * FROM clients WHERE ville = ?", "Lyon")
 
 une_ligne = curseur.fetchone()   # une seule ligne
 toutes    = curseur.fetchall()   # toutes les lignes
 
-connexion.commit()  # valide les écritures (INSERT/UPDATE/DELETE) ; inutile après un simple SELECT
+# valide les écritures (INSERT/UPDATE/DELETE) ; inutile après un simple SELECT
+connexion.commit()
 ```
 
 Même cycle que PDO : `connect()` (ouvrir la connexion) → `cursor()` → `execute()` (avec `?` comme espace réservé, valeur passée à part, jamais concaténée) → `fetchone()`/`fetchall()`. `executemany()` répète une même requête pour une liste de jeux de valeurs (insertion en masse), plus rapide qu'une boucle de `execute()` un par un.
@@ -319,7 +326,8 @@ Au-delà de l'injection SQL (qui protège le *comment* on interroge la base), un
 ```sql
 -- au lieu de donner tous les droits à un seul compte applicatif :
 GRANT SELECT, INSERT, UPDATE ON boutique.commandes TO 'app_boutique'@'%';
--- pas de DROP, DELETE, ni accès aux autres tables/bases, si l'application n'en a jamais besoin
+-- pas de DROP, DELETE, ni accès aux autres tables/bases, si l'application
+-- n'en a jamais besoin
 ```
 
 Concrètement, un compte applicatif compromis (via une faille dans le code, une fuite d'identifiants...) ne peut faire de dégâts qu'à la mesure de ses propres droits : un compte limité à `SELECT`/`INSERT`/`UPDATE` sur une seule table ne permet pas à un attaquant de supprimer toute une base de données, même s'il parvient à exécuter des requêtes arbitraires. C'est une protection **complémentaire** aux requêtes préparées, pas un substitut : elle limite les dégâts *si* une injection a quand même lieu (bug non détecté, requête dynamique mal construite...), plutôt que d'empêcher l'injection elle-même.
@@ -329,7 +337,8 @@ Concrètement, un compte applicatif compromis (via une faille dans le code, une 
 Un `UPDATE` classique écrase l'ancienne valeur pour toujours :
 
 ```sql
-UPDATE clients SET ville = 'Paris' WHERE id = 1;  -- l'ancienne ville 'Lyon' est perdue définitivement
+-- l'ancienne ville 'Lyon' est perdue définitivement
+UPDATE clients SET ville = 'Paris' WHERE id = 1;
 ```
 
 Le motif **SCD2** (*[Slowly Changing Dimension](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-2/) type 2*) évite cette perte : au lieu d'écraser une ligne, on ferme la version actuelle et on en insère une nouvelle, en gardant les deux.
