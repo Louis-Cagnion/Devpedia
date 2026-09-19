@@ -10,11 +10,16 @@ order: 3
 
 ```text
 # Comentario
-*.log              # ignora todos los archivos que terminan en .log, esten donde esten
-node_modules/       # ignora esta carpeta entera, en la raiz o en cualquier otro lugar
-/build              # el '/' como prefijo restringe a la raiz del repositorio unicamente
-.env                # ignora este archivo preciso
-!important.log      # excepcion: NO ignorar este archivo preciso, a pesar de la regla *.log de arriba
+# ignora todos los archivos que terminan en .log, esten donde esten
+*.log
+# ignora esta carpeta entera, en la raiz o en cualquier otro lugar
+node_modules/
+# el '/' como prefijo restringe a la raiz del repositorio unicamente
+/build
+# ignora este archivo preciso
+.env
+# excepcion: NO ignorar este archivo preciso, a pesar de la regla *.log de arriba
+!important.log
 ```
 
 | Patrón | Significado |

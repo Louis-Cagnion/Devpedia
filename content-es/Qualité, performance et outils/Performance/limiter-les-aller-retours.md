@@ -26,10 +26,12 @@ La corrección consiste en trasladar el bucle **al lado donde están los datos**
 
 ```python
 # 1 ida y vuelta, sea cual sea el numero de anuncios
-tarjetas = pagina.evaluar("""() => Array.from(document.querySelectorAll('article')).map(tarjeta => ({
+tarjetas = pagina.evaluar(
+    """() => Array.from(document.querySelectorAll('article')).map(tarjeta => ({
     href: tarjeta.querySelector('a')?.getAttribute('href'),
     texto: tarjeta.innerText,
-}))""")
+}))"""
+)
 
 for tarjeta in tarjetas:                      # procesamiento local, gratuito
     analizar(tarjeta["href"], tarjeta["texto"])

@@ -54,7 +54,9 @@ lineas_nuevas = [l for l in todo_el_archivo if l.marca_temporal > ultima_marca_t
 for linea in lineas_nuevas:
     resultados.append(procesar(linea))
 
-escribir_marca_de_progreso(lineas_nuevas[-1].marca_temporal if lineas_nuevas else ultima_marca_temporal)
+escribir_marca_de_progreso(
+    lineas_nuevas[-1].marca_temporal if lineas_nuevas else ultima_marca_temporal,
+)
 ```
 
 El coste del procesamiento se vuelve proporcional a lo que **cambió**, no al tamaño total de los datos: una ganancia que se acentúa a medida que el volumen ya procesado crece frente al volumen realmente nuevo.

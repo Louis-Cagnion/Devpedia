@@ -91,7 +91,11 @@ resultados = Img2TablePDF(
 
 ```python
 def corregir_tablas_subcontadas(ruta_pdf, tablas_nativas):
-    paginas_sospechosas = {t.page for t in tablas_nativas if parece_estructuralmente_sospechosa(t.celdas)}
+    paginas_sospechosas = {
+        t.page
+        for t in tablas_nativas
+        if parece_estructuralmente_sospechosa(t.celdas)
+    }
     if not paginas_sospechosas:
         return tablas_nativas   # nada que corregir: ningun coste de img2table pagado en vano
 
@@ -140,7 +144,14 @@ El renderizado producido por `get_pixmap` debe convertirse luego en un array de 
 ```python
 import numpy as np
 
-imagen = np.frombuffer(pixmap.samples, dtype=np.uint8).reshape(pixmap.height, pixmap.width, pixmap.n)
+imagen = np.frombuffer(
+    pixmap.samples,
+    dtype=np.uint8,
+).reshape(
+    pixmap.height,
+    pixmap.width,
+    pixmap.n,
+)
 ```
 
 `pixmap.samples` es una secuencia bruta de bytes (los píxeles, uno tras otro); `reshape` la reorganiza en un [array NumPy](/?c=data-science&p=numpy) de 3 dimensiones (altura, anchura, canales de color), la forma esperada por casi todas las bibliotecas de visión por computador.

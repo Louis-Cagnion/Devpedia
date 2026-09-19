@@ -19,7 +19,11 @@ Los enlaces (`<a>`) y las imágenes (`<img>`) son dos etiquetas fundamentales de
 ### El atributo `target`
 
 ```html
-<a href="https://ejemplo.com" target="_blank" rel="noopener noreferrer">Abre en una nueva pestaña</a>
+<a
+    href="https://ejemplo.com"
+    target="_blank"
+    rel="noopener noreferrer"
+>Abre en una nueva pestaña</a>
 ```
 
 > **Nota:** `target="_blank"` sin `rel="noopener"` permite que la nueva página abierta acceda (mediante [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) al objeto `window` de la página de origen: un riesgo de seguridad menor, pero real (*tabnabbing*). `noopener` (y `noreferrer`, que además impide el envío de la URL de origen) deben acompañar sistemáticamente a cualquier `target="_blank"`.
@@ -27,7 +31,9 @@ Los enlaces (`<a>`) y las imágenes (`<img>`) son dos etiquetas fundamentales de
 ### Enlaces relativos frente a absolutos
 
 ```html
-<a href="https://ejemplo.com/pagina">Absoluto: siempre el mismo destino, sea cual sea el sitio</a>
+<a href="https://ejemplo.com/pagina">
+    Absoluto: siempre el mismo destino, sea cual sea el sitio
+</a>
 <a href="/pagina">Relativo a la raíz: depende del dominio actual</a>
 <a href="pagina">Relativo a la carpeta actual: depende de la URL actual</a>
 ```

@@ -13,7 +13,8 @@ Un **secreto** es una información que otorga acceso si se conoce: contraseña, 
 clave_api = "sk_live_51H8xJ2eZvKYlo2C..."
 
 // Una vez que este codigo se sube a Git, este secreto queda expuesto:
-// - a cualquiera con acceso al repositorio (incluso uno privado, si ese acceso se filtra algun dia)
+// - a cualquiera con acceso al repositorio (incluso uno privado, si ese acceso se filtra
+//   algun dia)
 // - de forma permanente en el historial, aunque la linea se elimine despues
 //   (ver Deshacer cambios y navegar por el historial)
 ```

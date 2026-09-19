@@ -57,7 +57,8 @@ Una RNN procesa una secuencia **de forma secuencial** (es imposible calcular el 
 "El gato que duerme en el sofá es negro"
                                   ^
                    la atención permite que "es negro" se relacione directamente con "gato",
-                   pese a la distancia en la frase, sin pasar por todas las palabras intermedias
+                   pese a la distancia en la frase, sin pasar por todas las palabras
+                   intermedias
 ```
 
 - La atención se puede calcular **en paralelo** para toda la secuencia (a diferencia de una RNN), lo que ha permitido entrenar modelos mucho más grandes, con una cantidad de datos mucho mayor.

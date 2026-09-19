@@ -75,7 +75,8 @@ git commit
 
 # 2. Varios -m: cada uno se convierte en un parrafo separado por una linea vacia, sin abrir
 # editor
-git commit -m "Corrige el calculo del descuento" -m "El porcentaje solo se aplicaba al primer articulo, no al total."
+git commit -m "Corrige el calculo del descuento" \
+    -m "El porcentaje solo se aplicaba al primer articulo, no al total."
 
 # 3. Una cadena multilinea pasada a un solo -m (util para automatizar un commit, o desde una
 # herramienta que genera el mensaje)

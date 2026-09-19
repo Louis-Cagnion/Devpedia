@@ -17,7 +17,7 @@ Almacén de datos (schema-on-write):
   archivo fuente --> verificado contra el esquema --> rechazado o insertado en una tabla tipada
 
 Data lake (schema-on-read):
-  archivo fuente --> almacenado tal cual, sin verificación --> estructura decidida en el momento de la lectura
+  archivo fuente --> almacenado tal cual, sin verificación --> estructura decidida al leer
 ```
 
 ## Visión de conjunto

@@ -53,7 +53,13 @@ Ambas siguen siendo complementarias más que competidoras: una métrica alerta d
 Un log escrito como una simple frase libre (`"Error al procesar el pedido 1234"`) sigue siendo difícil de filtrar con precisión una vez acumulados millones de líneas. Un log **estructurado**, casi siempre en JSON, separa cada información en su propio campo:
 
 ```json
-{"timestamp": "2026-08-20T14:03:27Z", "nivel": "error", "service": "commandes", "id_commande": 1234, "mensaje": "Echec du paiement"}
+{
+    "timestamp": "2026-08-20T14:03:27Z",
+    "nivel": "error",
+    "service": "commandes",
+    "id_commande": 1234,
+    "mensaje": "Echec du paiement"
+}
 ```
 
 > **Trampa:** registrar en texto libre sin estructurar, y descubrir en producción que es imposible filtrar con precisión por servicio, nivel de gravedad o identificador sin recurrir a expresiones regulares frágiles sobre el texto del mensaje.

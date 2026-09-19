@@ -61,7 +61,8 @@ El **WER** aplica el mismo cálculo (distancia de edición, relacionada con la l
 
 ```python
 def wer(texto_reconocido, texto_real):
-    return distancia_levenshtein(texto_reconocido.split(), texto_real.split()) / len(texto_real.split())
+    distancia = distancia_levenshtein(texto_reconocido.split(), texto_real.split())
+    return distancia / len(texto_real.split())
 ```
 
 | | CER | WER |
