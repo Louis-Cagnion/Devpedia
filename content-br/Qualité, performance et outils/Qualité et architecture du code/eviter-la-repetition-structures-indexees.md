@@ -13,7 +13,7 @@ parser.add_argument("--profile-dir", default=str(Path.home() / ".scraper_profile
 parser.add_argument("--headless", action="store_true")
 parser.add_argument("--site", choices=["leboncoin", "lacentrale", "vivacar", "zoomcar"])
 parser.add_argument("--output", default="rapports/rapport.txt")
-# ... mais umas dez, cada uma na sua propria chamada
+# ... mais umas dez, cada uma na sua própria chamada
 ```
 
 Cada linha se parece com as outras, mas adicionar uma opção, remover uma, ou mudar um comportamento comum a todas (por exemplo, validar um tipo) obriga a repetir a mesma modificação em cada lugar, e é fácil esquecer uma.

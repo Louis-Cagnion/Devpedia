@@ -10,7 +10,7 @@ No Linux/Unix, cada arquivo e diretório carrega **permissões** que determinam 
 
 ```bash
 ls -l arquivo.txt
-# -rw-r--r-- 1 usuario grupo 1024 28 jul 10:00 arquivo.txt
+# -rw-r--r-- 1 usuário grupo 1024 28 jul 10:00 arquivo.txt
 ```
 
 Os 10 primeiros caracteres se decompõem assim:
@@ -31,7 +31,7 @@ Cada grupo de três caracteres representa **leitura** (`r`), **escrita** (`w`) e
 ### Notação simbólica
 
 ```bash
-chmod u+x script.sh    # adiciona o direito de execucao para o proprietario (user)
+chmod u+x script.sh    # adiciona o direito de execução para o proprietario (user)
 chmod g-w arquivo.txt  # remove o direito de escrita para o grupo
 chmod o=r arquivo.txt  # fixa os direitos dos outros como somente leitura, nada mais
 chmod a+r arquivo.txt  # adiciona a leitura para todo mundo (all)
@@ -68,15 +68,15 @@ chown usuario:grupo arquivo.txt   # muda proprietario E grupo de uma vez
 ## Comandos básicos sobre arquivos
 
 ```bash
-mkdir diretorio                    # cria um diretorio
-mkdir -p a/b/c                     # cria toda a arvore de uma vez, sem erro se ja existir
-# cria um arquivo vazio (ou atualiza sua data de modificacao se existir)
+mkdir diretorio                    # cria um diretório
+mkdir -p a/b/c                     # cria toda a árvore de uma vez, sem erro se já existir
+# cria um arquivo vazio (ou atualiza sua data de modificação se existir)
 touch arquivo.txt
 cp origem.txt destino.txt          # copia um arquivo
-cp -r diretorio_origem diretorio_destino  # copia recursiva, necessaria para um diretorio
-mv antigo.txt novo.txt             # move OU renomeia (as duas sao a mesma operacao para mv)
+cp -r diretorio_origem diretorio_destino  # copia recursiva, necessária para um diretório
+mv antigo.txt novo.txt             # move OU renomeia (as duas são a mesma operação para mv)
 rm arquivo.txt                     # remove um arquivo (definitivo, sem lixeira)
-rm -r diretorio                    # remove um diretorio e todo seu conteudo
+rm -r diretorio                    # remove um diretório e todo seu conteúdo
 ```
 
 > **Nota:** `rm -rf` (recursivo + `-f` para ignorar confirmações/erros) é irreversível e não pede nenhuma confirmação: um alvo mal direcionado (ex. um caminho com um espaço a mais, `rm -rf ~ /diretorio` em vez de `rm -rf ~/diretorio`) pode excluir muito mais do que o previsto.
@@ -84,10 +84,10 @@ rm -r diretorio                    # remove um diretorio e todo seu conteudo
 ## `find`: buscar arquivos
 
 ```bash
-find . -name "*.txt"                  # todos os arquivos .txt, a partir do diretorio atual
+find . -name "*.txt"                  # todos os arquivos .txt, a partir do diretório atual
 find /var/log -mtime -7               # arquivos modificados nos ultimos 7 dias
-find . -type d -name "node_modules"   # todos os diretorios chamados "node_modules"
-find . -name "*.tmp" -delete          # encontra E exclui em um unico comando
+find . -type d -name "node_modules"   # todos os diretórios chamados "node_modules"
+find . -name "*.tmp" -delete          # encontra E exclui em um único comando
 ```
 
 Veja também [Processamento de texto](/?c=shells&s=bash&p=traitement-de-texte) (`grep`, `sed`, `awk`) para ir mais longe na exploração do conteúdo desses arquivos.

@@ -12,9 +12,9 @@ O cast à moda C executa **silenciosamente** qualquer conversão solicitada, at�
 
 ```cpp
 int inteiro = 65;
-char letra = (char)inteiro;          // conversao numerica inofensiva
+char letra = (char)inteiro;          // conversão numérica inofensiva
 const char *texto = "oi";
-// remove um "const": bem mais arriscado, mas sintaxe identica
+// remove um "const": bem mais arriscado, mas sintaxe idêntica
 char *modificavel = (char *)texto;
 ```
 
@@ -26,10 +26,10 @@ Os quatro casts do C++ tornam essa distinção explícita e, sobretudo, **pesqui
 
 ```cpp
 double preco = 19.99;
-int arredondado = static_cast<int>(preco); // conversao numerica explicita
+int arredondado = static_cast<int>(preco); // conversão numérica explícita
 
 Derivada derivada;
-Base *base = static_cast<Base *>(&derivada); // upcast: sempre valido
+Base *base = static_cast<Base *>(&derivada); // upcast: sempre válido
 ```
 
 ## `dynamic_cast`: a descida segura em uma hierarquia
@@ -37,7 +37,7 @@ Base *base = static_cast<Base *>(&derivada); // upcast: sempre valido
 Descer (*downcast*) de uma classe base para uma classe derivada é arriscado: o ponteiro de base pode, na verdade, apontar para qualquer classe derivada da hierarquia, não necessariamente a desejada. `dynamic_cast` verifica esse ponto **em tempo de execução**, graças ao [RTTI](https://en.cppreference.com/w/cpp/language/rtti) (*Run-Time Type Information*, as informações de tipo mantidas pelas classes polimórficas):
 
 ```cpp
-// retorna um ponteiro para um tipo derivado desconhecido em tempo de compilacao
+// retorna um ponteiro para um tipo derivado desconhecido em tempo de compilação
 Base *base = obterUmObjeto();
 
 Derivada *derivada = dynamic_cast<Derivada *>(base);
@@ -60,7 +60,7 @@ if (derivada != nullptr) {
 `const_cast` é o único dos quatro que **nunca** muda o tipo subjacente nem a representação binária do valor: ele apenas adiciona ou remove a qualificação `const`.
 
 ```cpp
-// funcao externa que nunca modifica "string", mas nao declara isso
+// função externa que nunca modifica "string", mas não declara isso
 void apiAntiga(char *string);
 
 void chamar(const char *texto)

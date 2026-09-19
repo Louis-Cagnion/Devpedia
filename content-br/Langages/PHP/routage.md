@@ -21,10 +21,10 @@ $uri  = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $arquivo = $rotas[$uri] ?? null;
 
 if ($arquivo && file_exists(__DIR__ . $arquivo)) {
-    require __DIR__ . $arquivo; // o "handler" e um arquivo executado, nao uma funcao chamada
+    require __DIR__ . $arquivo; // o "handler" e um arquivo executado, não uma função chamada
 } else {
     http_response_code(404);
-    echo "Pagina nao encontrada";
+    echo "Página não encontrada";
 }
 ?>
 ```
@@ -52,13 +52,13 @@ Consequência concreta: uma pasta contendo classes ou dados sensíveis (credenci
 // roteador.php
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-// 1) bloqueios explicitos primeiro
+// 1) bloqueios explícitos primeiro
 $pastasBloqueadas = ['/data/', '/src/'];
 foreach ($pastasBloqueadas as $pasta) {
     if (str_starts_with($uri, $pasta)) {
         http_response_code(403);
         echo 'Acesso negado.';
-        return true; // ja respondido, nao fazer mais nada
+        return true; // já respondido, não fazer mais nada
     }
 }
 
@@ -67,7 +67,7 @@ if (is_file(__DIR__ . $uri)) {
     return false;
 }
 
-// 3) senao, dispatch aplicativo
+// 3) senão, dispatch aplicativo
 require __DIR__ . '/index.php';
 return true;
 ?>
@@ -85,7 +85,7 @@ return true;
 <?php
 if (!$usuarioConectado) {
     header('Location: /login');
-    exit; // indispensavel: sem isso, o resto do script executa mesmo assim
+    exit; // indispensável: sem isso, o resto do script executa mesmo assim
 }
 ?>
 ```

@@ -22,7 +22,7 @@ Na maioria dos sistemas, apenas uma pequena parte do OpenGL (uma versão antiga,
 
 ```c
 if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
-    fprintf(stderr, "Nao foi possivel carregar o OpenGL\n");
+    fprintf(stderr, "Não foi possível carregar o OpenGL\n");
     exit(1);
 }
 ```

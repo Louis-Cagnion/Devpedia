@@ -36,10 +36,10 @@ cat /proc/loadavg
 ## Exemplo: extrair uma métrica precisa
 
 ```bash
-# porcentagem de memoria utilizada, calculada a partir de /proc/meminfo
+# porcentagem de memória utilizada, calculada a partir de /proc/meminfo
 total=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
 disponivel=$(awk '/MemAvailable/ {print $2}' /proc/meminfo)
-echo "$(( (total - disponivel) * 100 / total ))% de memoria utilizada"
+echo "$(( (total - disponível) * 100 / total ))% de memória utilizada"
 ```
 
 Esse tipo de extração (via `awk`, ver [Processamento de texto](/?c=shells&s=bash&p=traitement-de-texte)) é a base de um script de supervisão do sistema: cada métrica da tabela acima é lida, formatada e depois reunida em uma única mensagem, que o [`cron`](/?c=shells&s=bash&p=automatisation-cron) pode em seguida difundir periodicamente (por exemplo via `wall`, que exibe uma mensagem para todos os usuários conectados).

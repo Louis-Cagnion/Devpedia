@@ -45,14 +45,14 @@ CREATE TABLE admin.acompanhamento_cargas (
 ```
 
 ```sql
--- le apenas o que chegou desde a ultima carga bem-sucedida, em vez de reler tudo
+-- le apenas o que chegou desde a última carga bem-sucedida, em vez de reler tudo
 SELECT *
 FROM fonte_vendas
 WHERE data_modificacao > (
     SELECT ultima_carga FROM admin.acompanhamento_cargas WHERE nome_fonte = 'vendas'
 );
 
--- depois, uma vez a carga concluida com sucesso, avanca-se o marcador
+-- depois, uma vez a carga concluida com sucesso, avança-se o marcador
 UPDATE admin.acompanhamento_cargas
 SET ultima_carga = NOW()
 WHERE nome_fonte = 'vendas';

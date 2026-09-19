@@ -11,9 +11,9 @@ order: 15
 ```python
 from pathlib import Path
 
-# "/" constroi o caminho, PORTAVEL (\ no Windows, / no resto)
+# "/" constroi o caminho, PORTÁVEL (\ no Windows, / no resto)
 pasta = Path("relatorios") / "2026" / "agosto.txt"
-print(pasta)                                        # relatorios/2026/agosto.txt
+print(pasta)                                        # relatórios/2026/agosto.txt
 
 pasta.exists()   # True/False -> o arquivo/pasta existe mesmo no disco?
 pasta.is_file()  # True/False
@@ -29,7 +29,7 @@ pasta.is_dir()   # True/False
 ```python
 pasta = Path("relatorios") / "2026"
 
-# FileNotFoundError se "relatorios" ainda não existir (o pai)
+# FileNotFoundError se "relatórios" ainda não existir (o pai)
 pasta.mkdir()
 # cria também os pais que faltarem -> não há mais FileNotFoundError
 pasta.mkdir(parents=True)
@@ -44,7 +44,7 @@ pasta.mkdir(parents=True, exist_ok=True)
 ```python
 caminho_arquivo = Path("relatorios") / "2026" / "agosto.txt"
 
-# cria "relatorios/2026" antes de escrever o arquivo
+# cria "relatórios/2026" antes de escrever o arquivo
 caminho_arquivo.parent.mkdir(parents=True, exist_ok=True)
 with caminho_arquivo.open("w", encoding="utf-8") as f:
     f.write("concluído")
@@ -75,15 +75,15 @@ with caminho_arquivo.open(encoding="utf-8") as f:
 ```python
 relatorio = Path("relatorio.txt")
 
-relatorio.name    # "relatorio.txt" -> nome completo do arquivo
-relatorio.stem    # "relatorio"     -> nome SEM a extensão
+relatorio.name    # "relatório.txt" -> nome completo do arquivo
+relatorio.stem    # "relatório"     -> nome SEM a extensão
 relatorio.suffix  # ".txt"          -> a extensão, com o ponto
 
 # Path("rascunho.txt") -> substitui o nome inteiro
 relatorio.with_name("rascunho.txt")
-# Path("relatorio.csv") -> substitui so a extensao
+# Path("relatório.csv") -> substitui só a extensão
 relatorio.with_suffix(".csv")
-# Path("relatorio.peugeot.txt") -> insere uma palavra no meio
+# Path("relatório.peugeot.txt") -> insere uma palavra no meio
 relatorio.with_name(f"{relatorio.stem}.peugeot{relatorio.suffix}")
 ```
 
@@ -101,11 +101,11 @@ caminho_arquivo.unlink(missing_ok=True)  # nunca quebra, mesmo se o arquivo já 
 ## Remover uma pasta não vazia: `shutil.rmtree()`
 
 ```python
-# OSError se a pasta nao estiver vazia -> pathlib se recusa deliberadamente a apagar conteudo
+# OSError se a pasta não estiver vazia -> pathlib se recusa deliberadamente a apagar conteúdo
 pasta.rmdir()
 
 import shutil
-shutil.rmtree(pasta)                      # remove a pasta E todo seu conteudo, recursivamente
+shutil.rmtree(pasta)                      # remove a pasta E todo seu conteúdo, recursivamente
 # qualquer erro (arquivo bloqueado...) e ignorado, silenciosamente
 shutil.rmtree(pasta, ignore_errors=True)
 ```
@@ -122,7 +122,7 @@ import csv
 with open("contatos.csv", newline="", encoding="utf-8") as f:
     leitor = csv.reader(f, delimiter=",")
     for linha in leitor:
-        print(linha)  # ["Joao", "Silva", "25"] -> uma simples LISTA, por posicao
+        print(linha)  # ["Joao", "Silva", "25"] -> uma simples LISTA, por posição
 ```
 
 ```python
@@ -131,7 +131,7 @@ with open("contatos.csv", newline="", encoding="utf-8") as f:
     for linha in leitor:
         # {"nome": "Joao", "sobrenome": "Silva", "idade": "25"} -> um DICT, por nome de coluna
         print(linha)
-        print(linha["nome"])     # "Joao" -> acesso por nome, mais legivel que por indice
+        print(linha["nome"])     # "Joao" -> acesso por nome, mais legível que por índice
 ```
 
 `csv.reader` retorna cada linha como uma lista posicional; `csv.DictReader` transforma cada linha em um dicionário a partir da linha de cabeçalho (veja [hasheabilidade e chaves de dict](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles)), mais legível e mais robusto a um reordenamento de colunas. `delimiter=";"` (comum na França) substitui a vírgula padrão. Na escrita, `csv.writer`/`csv.DictWriter` seguem a mesma lógica inversa.
@@ -149,7 +149,7 @@ usuario = {"nome": "Léa", "notas": [15, 12, 18]}   # um dict Python "normal"
 
 # '{"nome": "Léa", "notas": [15, 12, 18]}' -> texto JSON
 texto = json.dumps(usuario, ensure_ascii=False)
-# objeto Python, decodificado de volta a partir do texto (== usuario)
+# objeto Python, decodificado de volta a partir do texto (== usuário)
 objeto = json.loads(texto)
 ```
 

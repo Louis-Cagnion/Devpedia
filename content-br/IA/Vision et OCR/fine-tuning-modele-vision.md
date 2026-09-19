@@ -39,11 +39,11 @@ Uma vez carregado o modelo pré-treinado, existem várias estratégias, de acord
 **Congelar** uma camada significa excluí-la do cálculo de gradiente: seus pesos permanecem fixos em seu valor pré-treinado, a retropropagação nunca os modifica.
 
 ```python
-# Carregar um modelo pre-treinado e congelar seu "backbone" (as camadas de extracao de padroes)
+# Carregar um modelo pre-treinado e congelar seu "backbone" (as camadas de extração de padrões)
 for parametro in modelo.backbone.parameters():
-    parametro.requires_grad = False   # excluido do calculo de gradiente, veja autograd
+    parametro.requires_grad = False   # excluido do cálculo de gradiente, veja autograd
 
-# Apenas a nova camada de saida, adicionada para este caso de negocio, continua treinavel
+# Apenas a nova camada de saída, adicionada para este caso de negocio, continua treinável
 modelo.cabeca_de_saida = nn.Linear(tamanho_features, numero_categorias_negocio)
 ```
 
@@ -61,7 +61,7 @@ from torchvision import transforms
 aumentacao = transforms.Compose([
     # leve desalinhamento do escaneamento
     transforms.RandomRotation(degrees=5),
-    # variacao de iluminacao/qualidade de escaneamento
+    # variação de iluminação/qualidade de escaneamento
     transforms.ColorJitter(brightness=0.2, contrast=0.2),
     # leve desfoque (foto em vez de scanner)
     transforms.GaussianBlur(kernel_size=3),

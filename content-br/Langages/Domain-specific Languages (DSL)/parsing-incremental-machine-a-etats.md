@@ -61,7 +61,7 @@ class ParserTabela(HTMLParser):
     def __init__(self):
         super().__init__()
         self.linhas = []             # todas as linhas completas, uma vez fechadas
-        self._linha_atual = None     # None = "nao esta atualmente dentro de um <tr>"
+        self._linha_atual = None     # None = "não esta atualmente dentro de um <tr>"
         self._celula_atual = None
 
     def handle_starttag(self, tag, attrs):
@@ -104,11 +104,11 @@ Eventos recebidos em ordem:               Grade reconstruida:
 Na linha 1, o único evento recebido é `<td>C</td>`: nada, nesse evento isolado, diz em qual coluna `C` deve cair. É preciso que o código se lembre, desde a linha anterior, que a coluna 0 ainda está "ocupada" pela célula `A` por mais uma volta:
 
 ```python
-colunas_ocupadas = {}  # {indice da coluna: numero de linhas restantes ocupadas por uma fusao}
+colunas_ocupadas = {}  # {índice da coluna: número de linhas restantes ocupadas por uma fusão}
 
 def posicionar_celula(coluna_inicial, rowspan, colunas_ocupadas):
     coluna = coluna_inicial
-    # essa coluna ainda esta presa por uma fusao anterior
+    # essa coluna ainda esta presa por uma fusão anterior
     while colunas_ocupadas.get(coluna, 0) > 0:
         # -> deslocar para a primeira coluna realmente livre
         coluna += 1

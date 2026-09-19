@@ -69,7 +69,7 @@ Se você precisar do índice (ou da chave) além do valor:
     $frutas = ["maca", "banana", "cereja"];
 
     foreach ($frutas as $indice => $fruta) {
-        echo "{$indice}: {$fruta}";
+        echo "{$índice}: {$fruta}";
     }
 ?>
 ```
@@ -83,10 +83,10 @@ Se você precisar do índice (ou da chave) além do valor:
 <?php
     for ($i = 0; $i < 10; $i++) {
         if ($i == 5) {
-            break; // para o laco assim que $i vale 5
+            break; // para o laço assim que $i vale 5
         }
         if ($i % 2 == 0) {
-            continue; // ignora os numeros pares
+            continue; // ignora os números pares
         }
         echo $i;
     }

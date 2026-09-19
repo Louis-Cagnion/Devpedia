@@ -14,10 +14,10 @@ Antes do `IntersectionObserver`, saber se um elemento estava visível na tela ex
 const sentinela = document.querySelector('.sentinela-paginacao');
 
 const observador = new IntersectionObserver((entradas) => {
-    if (entradas[0].isIntersecting) {   // a sentinela acabou de entrar na area visivel
+    if (entradas[0].isIntersecting) {   // a sentinela acabou de entrar na área visível
         carregarProximaPagina();
     }
-// dispara 200px ANTES de a sentinela estar realmente visivel
+// dispara 200px ANTES de a sentinela estar realmente visível
 }, { rootMargin: '200px' });
 
 observador.observe(sentinela);
@@ -54,7 +54,7 @@ const tabela = document.querySelector('.tabela-larga');
 
 const observador = new ResizeObserver((entradas) => {
     const largura = entradas[0].contentRect.width;
-    tabela.classList.toggle('modo-compacto', largura < 600);   // muda assim que falta espaco
+    tabela.classList.toggle('modo-compacto', largura < 600);   // muda assim que falta espaço
 });
 
 observador.observe(tabela);
@@ -75,7 +75,7 @@ Alguns eventos (`resize`, `scroll`, `input`) disparam dezenas de vezes por segun
 | Uso típico | Busca em tempo real (esperar o usuário terminar de digitar) | Reiniciar um timer de inatividade (limitar, sem nunca bloquear completamente) |
 
 ```javascript
-// Debounce: so executa depois de 300ms sem nova chamada
+// Debounce: só executa depois de 300ms sem nova chamada
 function debounce(fn, atraso) {
     let temporizador = null;
     return (...args) => {
@@ -86,7 +86,7 @@ function debounce(fn, atraso) {
 ```
 
 ```javascript
-// Throttle: trava as chamadas seguintes por 1000ms apos a primeira
+// Throttle: trava as chamadas seguintes por 1000ms após a primeira
 let travado = false;
 
 function aoDetectarAtividade() {

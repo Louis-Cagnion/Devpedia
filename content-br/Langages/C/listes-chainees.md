@@ -21,7 +21,7 @@ Como para [uma árvore binária](/?c=langages-de-programmation&s=c&p=arbres-bina
 ## Criar e encadear nós
 
 ```c
-// a verificar contra NULL na pratica (veja O gerenciamento de memoria)
+// a verificar contra NULL na prática (veja O gerenciamento de memória)
 No *primeiro = malloc(sizeof(No));
 primeiro->valor = 10;
 
@@ -60,7 +60,7 @@ No *inserirNoInicio(No *cabeca, int valor)
 {
     No *novo = malloc(sizeof(No));
     if (novo == NULL) {
-        return cabeca; // falha de alocacao: devolver a lista inalterada em vez de travar
+        return cabeca; // falha de alocação: devolver a lista inalterada em vez de travar
     }
     novo->valor = valor;
     novo->seguinte = cabeca;  // o novo no aponta para a antiga cabeca

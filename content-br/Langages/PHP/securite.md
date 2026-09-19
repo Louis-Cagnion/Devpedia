@@ -18,7 +18,7 @@ Permite recuperar **e** validar/filtrar ao mesmo tempo um dado vindo de `$_GET`,
     $idade = filter_input(INPUT_GET, 'idade', FILTER_VALIDATE_INT);
 
     if ($email === false) {
-        echo "Email invalido.";
+        echo "Email inválido.";
     }
 ?>
 ```
@@ -30,8 +30,8 @@ Alguns filtros comuns:
 ```php
 <?php
     FILTER_VALIDATE_EMAIL;   // verifica um formato de email
-    FILTER_VALIDATE_INT;     // verifica um numero inteiro
-    FILTER_VALIDATE_FLOAT;   // verifica um numero decimal
+    FILTER_VALIDATE_INT;     // verifica um número inteiro
+    FILTER_VALIDATE_FLOAT;   // verifica um número decimal
     FILTER_VALIDATE_URL;     // verifica uma URL
     FILTER_SANITIZE_STRING;  // limpa uma string (obsoleto desde o PHP 8.1)
 ?>
@@ -63,7 +63,7 @@ Se você inserir diretamente um dado do usuário em uma consulta SQL, um visitan
     // ❌ Perigoso: o dado e inserido diretamente na consulta
     $consulta = "SELECT * FROM users WHERE email = '" . $_POST['email'] . "'";
 
-    // ✅ Seguro: o dado passa por um espaco reservado, nunca interpretado como SQL
+    // ✅ Seguro: o dado passa por um espaço reservado, nunca interpretado como SQL
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
     $stmt->execute(['email' => $_POST['email']]);
 ?>
@@ -78,7 +78,7 @@ Uma senha **nunca** deve ser armazenada em texto claro em um banco de dados. PHP
     // Hashea a senha
     $user['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Salva o hash no banco de dados (nao a senha em texto claro)
+    // Salva o hash no banco de dados (não a senha em texto claro)
     $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :password)");
     $stmt->execute([
         'email' => $_POST['email'],
@@ -92,7 +92,7 @@ Uma senha **nunca** deve ser armazenada em texto claro em um banco de dados. PHP
 
     // Compara a senha informada com o hash recuperado do banco
     if (password_verify($_POST['password'], $user['password'])) {
-        echo "Conexao bem-sucedida.";
+        echo "Conexão bem-sucedida.";
     } else {
         echo "Senha incorreta.";
     }
@@ -156,7 +156,7 @@ Se a vítima estiver conectada ao seu banco no mesmo navegador, essa requisiçã
 <?php
 session_start();
 
-// na geracao do formulario
+// na geração do formulário
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -169,13 +169,13 @@ if (empty($_SESSION['csrf_token'])) {
 
 ```php
 <?php
-// no recebimento do formulario
+// no recebimento do formulário
 session_start();
 
 $tokenRecebido = $_POST['csrf_token'] ?? '';
 if (!hash_equals($_SESSION['csrf_token'] ?? '', $tokenRecebido)) {
     http_response_code(403);
-    exit('Requisicao recusada (token CSRF invalido).');
+    exit('Requisição recusada (token CSRF inválido).');
 }
 // processamento normal...
 ?>
@@ -223,7 +223,7 @@ Classificada A10 no [OWASP Top 10](/?c=cybersecurite&p=owasp-top-10). Forçar um
 
 ```php
 <?php
-// perigoso se $_GET['url'] puder visar um endereco interno (ex: http://169.254.169.254/,
+// perigoso se $_GET['url'] puder visar um endereço interno (ex: http://169.254.169.254/,
 // http://localhost:6379/...)
 $resposta = file_get_contents($_GET['url']);
 ?>

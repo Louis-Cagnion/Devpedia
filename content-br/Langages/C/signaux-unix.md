@@ -31,12 +31,12 @@ volatile sig_atomic_t recu = 0;
 
 void handler(int sig)
 {
-    recu = 1;   // o handler quase nao faz nada: veja "handler minimo" mais abaixo
+    recu = 1;   // o handler quase não faz nada: veja "handler mínimo" mais abaixo
 }
 
 int main(void)
 {
-    // Ctrl-C nao interrompe mais o programa, chama handler() no lugar
+    // Ctrl-C não interrompe mais o programa, chama handler() no lugar
     signal(SIGINT, handler);
 
     while (!recu) {
@@ -58,11 +58,11 @@ Sem `signal(SIGINT, handler)`, um Ctrl-C teria terminado o programa imediatament
 // Lado emissor (conhece o PID do receptor)
 kill(pid_recepteur, bit ? SIGUSR2 : SIGUSR1);
 
-// Lado receptor: um handler por bit possivel
+// Lado receptor: um handler por bit possível
 void handler(int sig)
 {
     bit_recu = (sig == SIGUSR2) ? 1 : 0;
-    // acumular esse bit em um byte em construcao...
+    // acumular esse bit em um byte em construção...
 }
 ```
 

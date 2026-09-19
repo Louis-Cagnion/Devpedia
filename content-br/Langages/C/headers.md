@@ -9,12 +9,12 @@ Um arquivo de cabeçalho (*header*, extensão `.h`) contém **declarações**: e
 ## Declaração vs definição
 
 ```c
-// calculos.h, declaracao: "essa funcao existe, aqui esta sua assinatura"
+// calculos.h, declaração: "essa função existe, aqui esta sua assinatura"
 int adicao(int a, int b);
 ```
 
 ```c
-// calculos.c, definicao: o corpo real da funcao
+// calculos.c, definição: o corpo real da função
 #include "calculos.h"
 
 int adicao(int a, int b)
@@ -38,13 +38,13 @@ int main(void)
 ## `static` em uma função: nunca expô-la em um header
 
 ```c
-// utilitarios.c
-static int quadrado(int x)   // ligacao INTERNA: invisivel fora de utilitarios.c
+// utilitários.c
+static int quadrado(int x)   // ligação INTERNA: invisível fora de utilitários.c
 {
     return x * x;
 }
 
-// ligacao externa (padrao): declaravel em utilitarios.h, chamavel em outro lugar
+// ligação externa (padrão): declarável em utilitários.h, chamável em outro lugar
 int cubo(int x)
 {
     return x * quadrado(x);
@@ -72,9 +72,9 @@ Em uma **variável local**, `static` muda um aspecto completamente diferente: su
 ## `#include <...>` vs `#include "..."`
 
 ```c
-// colchetes angulares: busca nos diretorios do sistema (biblioteca padrao)
+// colchetes angulares: busca nos diretórios do sistema (biblioteca padrão)
 #include <stdio.h>
-#include "calculos.h"  // aspas: busca primeiro no diretorio atual do projeto
+#include "calculos.h"  // aspas: busca primeiro no diretório atual do projeto
 ```
 
 ## Os include guards

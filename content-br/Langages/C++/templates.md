@@ -26,7 +26,7 @@ T maximo(T a, T b) {
 
 maximo(3, 7);                   // T deduzido automaticamente como int
 maximo(3.5, 2.1);               // T deduzido como double
-maximo<std::string>("a", "b");  // T especificado explicitamente se necessario
+maximo<std::string>("a", "b");  // T especificado explicitamente se necessário
 ```
 
 O compilador **gera** uma versão distinta da função para cada tipo realmente usado (`maximo<int>`, `maximo<double>`...): é isso que se chama instanciação de template, realizada inteiramente na compilação, sem nenhum custo na execução.
@@ -40,7 +40,7 @@ public:
     void empilhar(T valor) { elementos.push_back(valor); }
     T desempilhar() {
         if (estaVazia()) {
-            // veja As excecoes: nunca desempilhar vazia
+            // veja As exceções: nunca desempilhar vazia
             throw std::out_of_range("Pilha vazia");
         }
         T ultimo = elementos.back();
@@ -71,7 +71,7 @@ template <typename T>
 T adicao(T a, T b) { return a + b; }
 
 adicao(2, 3);      // OK
-adicao("a", "b");  // Erro de compilacao potencialmente criptico conforme o tipo
+adicao("a", "b");  // Erro de compilação potencialmente criptico conforme o tipo
 ```
 
 Desde o C++20, os **concepts** permitem expressar explicitamente as exigências sobre `T`, para uma mensagem de erro mais clara e uma intenção de código mais legível:
@@ -91,7 +91,7 @@ Quando um tipo usado dentro de um template depende do próprio parâmetro de tem
 ```cpp
 template <typename T>
 void imprimirPrimeiro(T &container) {
-    typename T::iterator it = container.begin();   // "typename" indispensavel aqui
+    typename T::iterator it = container.begin();   // "typename" indispensável aqui
     std::cout << *it;
 }
 ```

@@ -11,7 +11,7 @@ Um projeto real raramente envolve um único contêiner: uma API, seu banco de da
 ```yaml
 services:
   api:
-    build: .                    # constroi a imagem a partir do Dockerfile do diretorio atual
+    build: .                    # constroi a imagem a partir do Dockerfile do diretório atual
     ports:
       - "8080:3000"
     environment:
@@ -31,9 +31,9 @@ volumes:
 ```
 
 ```bash
-# constroi (se necessario) e inicia todos os servicos em segundo plano
+# constroi (se necessário) e inicia todos os serviços em segundo plano
 docker compose up -d
-docker compose logs -f api    # acompanha os logs de um servico especifico
+docker compose logs -f api    # acompanha os logs de um serviço específico
 docker compose down           # para e remove os conteineres (os volumes nomeados sobrevivem)
 ```
 
@@ -50,7 +50,7 @@ docker compose down           # para e remove os conteineres (os volumes nomeado
 O Compose não reconstrói uma imagem automaticamente a cada `up` se ela já existe em cache:
 
 ```bash
-docker compose up -d --build   # forca a reconstrucao das imagens antes de iniciar
+docker compose up -d --build   # forca a reconstrução das imagens antes de iniciar
 ```
 
 ## Reinício automático em caso de falha
@@ -68,7 +68,7 @@ Por padrão, um contêiner que trava permanece parado; `restart` define a condut
 services:
   api:
     build: .
-    restart: unless-stopped   # reinicia apos uma falha ou um reboot da maquina hospedeira
+    restart: unless-stopped   # reinicia após uma falha ou um reboot da maquina hospedeira
 ```
 
 ## Declarar explicitamente sua rede

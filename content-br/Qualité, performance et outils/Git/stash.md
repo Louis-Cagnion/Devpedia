@@ -9,11 +9,11 @@ order: 6
 ## Guardar suas modificações
 
 ```bash
-# guarda todas as modificacoes rastreadas, deixa o diretorio "limpo"
+# guarda todas as modificações rastreadas, deixa o diretório "limpo"
 git stash
 # com uma mensagem, para se localizar depois
-git stash push -m "em andamento: formulario de contato"
-# inclui tambem os arquivos nao rastreados (novos, nunca adicionados)
+git stash push -m "em andamento: formulário de contato"
+# inclui também os arquivos não rastreados (novos, nunca adicionados)
 git stash -u
 ```
 
@@ -23,11 +23,11 @@ Depois de um `git stash`, `git status` não mostra mais nenhuma modificação, c
 
 ```bash
 git stash list
-# stash@{0}: em andamento: formulario de contato
-# stash@{1}: WIP on main: a3f9c1d Corrige o calculo de desconto
+# stash@{0}: em andamento: formulário de contato
+# stash@{1}: WIP on main: a3f9c1d Corrige o cálculo de desconto
 
 git stash apply            # reaplica o stash mais recente, SEM retira-lo da pilha
-git stash apply stash@{1}  # reaplica um stash especifico
+git stash apply stash@{1}  # reaplica um stash específico
 git stash pop              # reaplica o stash mais recente, E o retira da pilha
 ```
 
@@ -36,7 +36,7 @@ git stash pop              # reaplica o stash mais recente, E o retira da pilha
 ## Remover um stash
 
 ```bash
-git stash drop stash@{0}  # remove um stash especifico, sem reaplica-lo
+git stash drop stash@{0}  # remove um stash específico, sem reaplica-lo
 git stash clear           # remove TODOS os stashes da pilha
 ```
 

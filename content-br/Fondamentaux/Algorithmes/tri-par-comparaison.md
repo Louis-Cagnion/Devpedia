@@ -21,7 +21,7 @@ void ordenacaoInsercao(int array[], int tamanho)
             array[j + 1] = array[j]; // desloca o elemento para a direita
             j--;
         }
-        array[j + 1] = valor; // insere na posicao correta
+        array[j + 1] = valor; // insere na posição correta
     }
 }
 ```

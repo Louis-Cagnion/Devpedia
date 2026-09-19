@@ -55,7 +55,7 @@ typedef struct Entrada
 {
     char *chave;
     int valor;
-    struct Entrada *seguinte; // varias entradas podem compartilhar o mesmo indice
+    struct Entrada *seguinte; // várias entradas podem compartilhar o mesmo índice
 } Entrada;
 
 typedef struct TabelaHash
@@ -74,11 +74,11 @@ void inserir(TabelaHash *tabela, const char *chave, int valor)
 
     Entrada *nova = malloc(sizeof(Entrada));
     if (nova == NULL) {
-        return; // falha de alocacao (veja O gerenciamento de memoria): desiste-se da insercao
+        return; // falha de alocação (veja O gerenciamento de memória): desiste-se da inserção
     }
     nova->chave = strdup(chave);
     nova->valor = valor;
-    nova->seguinte = tabela->posicoes[indice]; // insercao no inicio da lista desse bucket
+    nova->seguinte = tabela->posicoes[indice]; // inserção no início da lista desse bucket
     tabela->posicoes[indice] = nova;
 }
 ```

@@ -62,7 +62,7 @@ A diferença entre o quadrante "diz" e os outros três é frequentemente a desco
 Um **teste de usabilidade** consiste em observar uma pessoa real tentando realizar uma tarefa precisa no produto (existente ou um protótipo, veja o futuro capítulo sobre prototipagem), sem ajudá-la nem explicar como fazer: suas hesitações e erros revelam os pontos de atrito reais, frequentemente diferentes dos que a equipe de projeto havia previsto.
 
 ```text
-Tarefa dada    : "Encontre como exportar este relatorio em PDF."
+Tarefa dada    : "Encontre como exportar este relatório em PDF."
 Observacao     : a pessoa procura no menu "Arquivo" por 45 segundos
                  antes de notar o icone de exportacao, isolado
                  na barra lateral sem texto nem tooltip.

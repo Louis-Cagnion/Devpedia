@@ -29,7 +29,7 @@ double imposto = Faturamento::calcularImposto(100);
 ```cpp
 using namespace Faturamento;
 
-Fatura f;                  // nao precisa mais do prefixo "Faturamento::"
+Fatura f;                  // não precisa mais do prefixo "Faturamento::"
 double imposto = calcularImposto(100);
 ```
 
@@ -43,8 +43,8 @@ std::cout << "Ola";        // idem para "cout"
 ```
 
 ```cpp
-// Em OUTRO bloco/arquivo, apos "using namespace std;":
-using namespace std;          // torna "vector", "cout"... utilizaveis sem prefixo
+// Em OUTRO bloco/arquivo, após "using namespace std;":
+using namespace std;          // torna "vector", "cout"... utilizáveis sem prefixo
 
 vector<int> outrosNumeros;
 cout << "Ola";
@@ -55,10 +55,10 @@ cout << "Ola";
 ## Importação seletiva
 
 ```cpp
-using std::cout;    // importa APENAS "cout", nao todo o namespace std
+using std::cout;    // importa APENAS "cout", não todo o namespace std
 
 cout << "Ola";      // funciona
-vector<int> v;      // ERRO: "vector" ainda precisa de std:: (nao importado)
+vector<int> v;      // ERRO: "vector" ainda precisa de std:: (não importado)
 ```
 
 Um meio-termo entre a pesadez do prefixo sistemático e o risco de um `using namespace` completo: importar apenas o que é realmente usado, nomeadamente.

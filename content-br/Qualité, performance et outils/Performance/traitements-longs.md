@@ -70,7 +70,7 @@ $leitor->open('catalogo.xml');
 
 while ($leitor->read()) {
     if ($leitor->nodeType === XMLReader::ELEMENT && $leitor->name === 'produto') {
-        // apenas um <produto> em memoria por vez
+        // apenas um <produto> em memória por vez
         $produto = new SimpleXMLElement($leitor->readOuterXML());
         processar($produto);
     }
@@ -93,7 +93,7 @@ Um processamento de 20 minutos sem exibição é indistinguível de um programa 
 
 ```python
 def tempo_restante(inicio, feitos, total):
-    if feitos < 2:                      # ainda sem ritmo mensuravel
+    if feitos < 2:                      # ainda sem ritmo mensurável
         return ""
     restante = (time.monotonic() - inicio) / feitos * (total - feitos)
     if restante < 90:

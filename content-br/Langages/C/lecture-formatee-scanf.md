@@ -34,8 +34,8 @@ int trouves = sscanf("25/12/2026", "%d/%d/%d", &jour, &mois, &annee);
 int jour, mois, annee;
 int trouves = sscanf("25-12", "%d/%d/%d", &jour, &mois, &annee);
 
-// trouves vale 0: o primeiro "/" esperado nao corresponde ao "-" real,
-// o parsing para antes mesmo de ler "jour" -> jour permanece NAO INICIALIZADO
+// trouves vale 0: o primeiro "/" esperado não corresponde ao "-" real,
+// o parsing para antes mesmo de ler "jour" -> jour permanece NÃO INICIALIZADO
 ```
 
 > **Armadilha:** ignorar o valor de retorno de `sscanf` e usar diretamente as variáveis que deveriam ter sido preenchidas. Se o formato não corresponder inteiramente à string de origem, algumas variáveis **nunca são escritas**: lê-las depois lê um valor não inicializado, um comportamento indefinido que pode funcionar "por sorte" em teste e falhar silenciosamente em outro lugar.

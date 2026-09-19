@@ -62,14 +62,14 @@ O bit de peso alto age então como um indicador de sinal: `0` para positivo, `1`
 O que acontece quando um resultado não cabe mais no número de bits alocados? Os bits excedentes são **perdidos**, e o valor "dá a volta".
 
 ```c
-unsigned char x = 255;  // 1111 1111, o maximo
+unsigned char x = 255;  // 1111 1111, o máximo
 x = x + 1;              // 0000 0000 -> 0 !
 ```
 
 É o comportamento chamado *wraparound*: volta-se ao início, como um odômetro de carro. Para um inteiro **com sinal**, o efeito é mais surpreendente:
 
 ```c
-signed char y = 127;  // 0111 1111, o maximo
+signed char y = 127;  // 0111 1111, o máximo
 y = y + 1;            // 1000 0000 -> -128 !
 ```
 

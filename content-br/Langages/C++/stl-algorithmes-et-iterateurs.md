@@ -13,7 +13,7 @@ std::vector<int> numeros = {1, 2, 3};
 
 std::vector<int>::iterator it = numeros.begin();
 while (it != numeros.end()) {
-    // "*it" desreferencia o iterador, como um ponteiro (veja Os ponteiros, secao C)
+    // "*it" desreferência o iterador, como um ponteiro (veja Os ponteiros, seção C)
     std::cout << *it << " ";
     ++it;
 }

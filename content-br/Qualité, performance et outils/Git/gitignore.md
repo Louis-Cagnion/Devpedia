@@ -50,7 +50,7 @@ Um `.gitignore` clássico (visto acima) é um arquivo do projeto como qualquer o
 A solução é um segundo arquivo, colocado fora de qualquer repositório, no seu diretório pessoal:
 
 ```bash
-# 1. Criar o arquivo, onde voce quiser (ex. o diretorio pessoal)
+# 1. Criar o arquivo, onde você quiser (ex. o diretório pessoal)
 echo ".idea/" > ~/.gitignore_global
 echo "*.swp" >> ~/.gitignore_global
 

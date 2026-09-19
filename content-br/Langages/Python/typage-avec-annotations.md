@@ -34,7 +34,7 @@ def encontrar_usuario(id: int) -> Optional[dict]:   # dict OU None
 def processar_notas(notas: List[int]) -> float:     # lista de inteiros
     return sum(notas) / len(notas)
 
-def config() -> Dict[str, Union[str, int]]:         # dict cujos valores sao str OU int
+def config() -> Dict[str, Union[str, int]]:         # dict cujos valores são str OU int
     return {"nome": "app", "versao": 2}
 ```
 
@@ -84,7 +84,7 @@ Uma **forward reference** é uma anotação de tipo escrita entre aspas, que ref
 class No:
     def __init__(self, valor: int, proximo: "No | None" = None):
         self.valor = valor
-        # "No" ainda nao existe enquanto sua propria definicao nao termina
+        # "No" ainda não existe enquanto sua própria definição não termina
         self.proximo = proximo
 ```
 
@@ -95,7 +95,7 @@ O bloco `if TYPE_CHECKING:` atende a mesma necessidade entre dois arquivos: impo
 ```python
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:   # nunca verdadeiro na execucao: lido apenas por mypy e editores
+if TYPE_CHECKING:   # nunca verdadeiro na execução: lido apenas por mypy e editores
     from outro_modulo import OutraClasse
 
 def processar(objeto: "OutraClasse") -> None:
@@ -115,7 +115,7 @@ Já que Python nunca aplica suas próprias anotações, uma ferramenta externa c
 ```bash
 pip install mypy
 mypy meu_script.py
-# meu_script.py:5: error: Argument 1 to "adicao" has incompatible type "str"; expected "int"
+# meu_script.py:5: error: Argument 1 to "adição" has incompatible type "str"; expected "int"
 ```
 
 ## Por que anotar apesar de tudo

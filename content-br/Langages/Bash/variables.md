@@ -11,9 +11,9 @@ O Bash só tem um único tipo de dado real: a **string**; até um número é man
 ## Declarar e ler uma variável
 
 ```bash
-nome="Joao"     # nenhum espaco ao redor do '=' : "nome = Joao" e um erro de sintaxe
+nome="Joao"     # nenhum espaço ao redor do '=' : "nome = Joao" e um erro de sintaxe
 echo $nome      # Joao
-echo "${nome}"  # Joao -> as chaves delimitam explicitamente o nome da variavel
+echo "${nome}"  # Joao -> as chaves delimitam explicitamente o nome da variável
 echo "Ola ${nome} !"
 ```
 
@@ -26,8 +26,8 @@ echo "Ola ${nome} !"
 ```bash
 nome="Joao"
 
-echo "Ola $nome"  # Ola Joao -> as aspas duplas interpretam as variaveis
-echo 'Ola $nome'  # Ola $nome -> as aspas simples desativam qualquer interpretacao
+echo "Ola $nome"  # Ola Joao -> as aspas duplas interpretam as variáveis
+echo 'Ola $nome'  # Ola $nome -> as aspas simples desativam qualquer interpretação
 ```
 
 | Aspas | Variáveis interpretadas? | Uso típico |
@@ -49,7 +49,7 @@ data_de_hoje=$(date +%Y-%m-%d)
 echo "Estamos em $data_de_hoje"
 
 numero_arquivos=$(ls | wc -l)
-echo "Ha $numero_arquivos arquivos aqui"
+echo "Há $número_arquivos arquivos aqui"
 ```
 
 `$(...)` é a sintaxe moderna, preferida em relação aos antigos \`crases\` (`` `date` ``), menos legíveis e impossíveis de aninhar facilmente.
@@ -63,9 +63,9 @@ echo "Ha $numero_arquivos arquivos aqui"
 Se um script constrói um comando interpolando diretamente nele um valor externo (entrada do usuário, argumento, conteúdo de um arquivo baixado...), esse valor pode conter caracteres especiais do shell (`;`, `|`, `` ` ``, `$(...)`) que **mudam a estrutura do comando executado**, em vez de continuar sendo um simples dado:
 
 ```bash
-nome_arquivo="relatorio.txt; rm -rf ~"   # valor recebido de fora, nao controlado
+nome_arquivo="relatório.txt; rm -rf ~"   # valor recebido de fora, não controlado
 
-eval "cat $nome_arquivo"    # PERIGO: executa de fato "cat relatorio.txt" DEPOIS "rm -rf ~"
+eval "cat $nome_arquivo"    # PERIGO: executa de fato "cat relatório.txt" DEPOIS "rm -rf ~"
 ```
 
 `eval` reinterpreta sua string como uma nova linha de comando completa: é exatamente esse mecanismo que transforma um `;` contido no dado em uma verdadeira **segunda ordem**, em vez de um caractere inofensivo em um nome de arquivo. Mesmo sem `eval`, a substituição de comando (`$(...)`, acima) ou uma variável não protegida por aspas em um comando que aceita ele mesmo código (ex. `ssh host "$comando"`) criam o mesmo risco.
@@ -84,7 +84,7 @@ b=3
 
 echo $((a + b))  # 8
 echo $((a * b))  # 15
-echo $((a / b))  # 1 -> divisao inteira apenas, o Bash nao lida com decimais
+echo $((a / b))  # 1 -> divisão inteira apenas, o Bash não lida com decimais
 ```
 
 > **O que é um "contexto aritmético explícito"?** É uma sintaxe precisa que o Bash reconhece e dentro da qual ele interpreta o conteúdo como uma expressão numérica em vez de como texto: `$((...))` (para obter o resultado), `((...))` sozinho (para um cálculo ou um teste, sem recuperar valor, usado por exemplo em `for ((i = 0; i < 5; i++))`, veja [Os laços](/?c=shells&s=bash&p=boucles)), o comando `let` (`let "a = a + 1"`), ou ainda os operadores numéricos `-eq`, `-lt`, `-gt`... dentro de `[ ]`/`[[ ]]` (veja [As condições](/?c=shells&s=bash&p=conditions)). Fora dessas sintaxes precisas, `+`, `-`, `*` são apenas caracteres comuns em uma string.
@@ -103,13 +103,13 @@ Por padrão, uma variável declarada em uma função continua **global** (visív
 
 ```bash
 contar() {
-    local total=0   # visivel apenas dentro de contar()
+    local total=0   # visível apenas dentro de contar()
     total=$((total + 1))
     echo $total
 }
 
 contar
-echo "$total"  # vazio: total nao existe fora da funcao
+echo "$total"  # vazio: total não existe fora da função
 ```
 
 > **Armadilha:** esquecer `local` em uma função que reutiliza um nome de variável comum (`i`, `total`, `resultado`...): a variável se torna global silenciosamente, e pode sobrescrever uma variável de mesmo nome usada em outro lugar do script, sem nenhum erro sinalizado.

@@ -28,7 +28,7 @@ public:
 
 ```cpp
 Animal *a = new Cachorro("Rex");
-std::cout << a->falar();   // exibe "..." -> NAO "Rex late"!
+std::cout << a->falar();   // exibe "..." -> NÃO "Rex late"!
 ```
 
 > **Armadilha clássica:** sem a palavra-chave `virtual`, C++ escolhe qual versão de `falar()` chamar baseando-se no **tipo declarado** do ponteiro (`Animal*`), não no tipo real do objeto apontado (`Cachorro`): um mecanismo chamado *ligação estática*. O resultado parece "ignorar" a herança, o que costuma surpreender quem vem de uma linguagem como [PHP](/?c=langages-de-programmation&s=php&p=poo), [Python](/?c=langages-de-programmation&s=python&p=poo) ou [Java](https://docs.oracle.com/en/java/), onde esse comportamento é automático.
@@ -39,7 +39,7 @@ std::cout << a->falar();   // exibe "..." -> NAO "Rex late"!
 class Animal {
 public:
     Animal(std::string nome) : nome(nome) {}
-    virtual std::string falar() const { return "..."; }  // "virtual" ativa a LIGACAO DINAMICA
+    virtual std::string falar() const { return "..."; }  // "virtual" ativa a Ligação DINAMICA
     virtual ~Animal() {}                                 // destrutor virtual: veja nota abaixo
 protected:
     std::string nome;
@@ -53,7 +53,7 @@ public:
 };
 
 Animal *a = new Cachorro("Rex");
-std::cout << a->falar();   // "Rex late" -> a versao CORRETA e chamada, gracas a "virtual"
+std::cout << a->falar();   // "Rex late" -> a versão CORRETA e chamada, gracas a "virtual"
 delete a;
 ```
 
@@ -100,7 +100,7 @@ Uma ambiguidade residual sobre um nome herdado (dois métodos com o mesmo nome v
 ```cpp
 class FormaGeometrica {
 public:
-    // "= 0": funcao PURAMENTE virtual, nenhuma implementacao aqui
+    // "= 0": função PURAMENTE virtual, nenhuma implementação aqui
     virtual double area() const = 0;
     virtual ~FormaGeometrica() {}
 };
@@ -114,7 +114,7 @@ private:
 };
 
 FormaGeometrica *forma = new Circulo(5);                  // OK
-// ERRO: classe abstrata, nao instanciavel
+// ERRO: classe abstrata, não instanciável
 FormaGeometrica *impossivel = new FormaGeometrica();
 ```
 
@@ -126,7 +126,7 @@ O construtor de cópia de C++ nunca é virtual (aliás, não existe "construtor 
 
 ```cpp
 FormaGeometrica *forma = new Circulo(5);
-FormaGeometrica *copia = new FormaGeometrica(*forma);   // SO copia a parte FormaGeometrica!
+FormaGeometrica *copia = new FormaGeometrica(*forma);   // Só copia a parte FormaGeometrica!
 ```
 
 `new FormaGeometrica(*forma)` constrói um objeto do tipo declarado do ponteiro (`FormaGeometrica`), nunca do tipo real apontado (`Circulo`): tudo o que é específico de `Circulo` (aqui, o raio) é perdido, uma consequência direta da vinculação estática vista acima (veja "O problema sem `virtual`" mais acima), aplicada dessa vez à construção em vez de a uma chamada de método.
@@ -143,14 +143,14 @@ public:
 class Circulo : public FormaGeometrica {
 public:
     Circulo(double raio) : raio(raio) {}
-    // constroi um Circulo, nao uma FormaGeometrica
+    // constroi um Circulo, não uma FormaGeometrica
     Circulo *clonar() const override { return new Circulo(*this); }
 private:
     double raio;
 };
 
 FormaGeometrica *forma = new Circulo(5);
-FormaGeometrica *copia = forma->clonar();   // copia um Circulo DE VERDADE, raio incluido
+FormaGeometrica *copia = forma->clonar();   // copia um Circulo DE VERDADE, raio incluído
 ```
 
 O código chamador apenas chama `forma->clonar()` sem nunca conhecer o tipo concreto: é o `virtual` que garante que a versão correta de `clonar()` seja executada, exatamente como para qualquer outro método polimórfico.

@@ -32,12 +32,12 @@ echo "Ola"
 
 ```bash
 #!/bin/bash
-echo "Compativel apenas com Bash"
+echo "Compatível apenas com Bash"
 ```
 
 ```bash
 #!/bin/sh
-echo "Portavel para qualquer shell POSIX (dash, bash em modo sh, etc.)"
+echo "Portável para qualquer shell POSIX (dash, bash em modo sh, etc.)"
 ```
 
 Na prática: usar `#!/bin/bash` (e executá-lo com `bash`) assim que o script usa uma extensão Bash, o que é o caso da maioria dos scripts deste site; reservar `#!/bin/sh` a scripts deliberadamente limitados às funcionalidades POSIX básicas, por exemplo para um script de sistema que deve funcionar mesmo em uma máquina onde `bash` não está instalado.
@@ -49,9 +49,9 @@ Na prática: usar `#!/bin/bash` (e executá-lo com `bash`) assim que o script us
 ## Tornar um script executável
 
 ```bash
-# adiciona o direito de execucao (veja Permissoes e manipulacao de arquivos)
+# adiciona o direito de execução (veja Permissões e manipulação de arquivos)
 chmod +x script.sh
-# executa o script (o "./" e necessario se o diretorio atual nao esta no $PATH)
+# executa o script (o "./" e necessário se o diretório atual não esta no $PATH)
 ./script.sh
 ```
 
@@ -72,7 +72,7 @@ bash script.sh
 echo "Script: $0"
 echo "Primeiro argumento: $1"
 echo "Todos os argumentos: $@"
-echo "Numero de argumentos: $#"
+echo "Número de argumentos: $#"
 ```
 
 ```bash
@@ -80,7 +80,7 @@ echo "Numero de argumentos: $#"
 # Script: ./script.sh
 # Primeiro argumento: alice
 # Todos os argumentos: alice bob
-# Numero de argumentos: 2
+# Número de argumentos: 2
 ```
 
 `$0`, `$1`, `$@` e `$#` fazem parte de um conjunto mais amplo de **variáveis especiais**, todas lidas automaticamente pelo Bash sem nunca serem atribuídas explicitamente:
@@ -107,8 +107,8 @@ Cada comando, e portanto cada script, termina com um **código de saída**: `0` 
 #!/bin/bash
 
 if [ ! -f "config.txt" ]; then
-    # >&2 : envia essa mensagem para a saida de erro (stderr)
-    echo "Erro: arquivo de configuracao ausente" >&2
+    # >&2 : envia essa mensagem para a saída de erro (stderr)
+    echo "Erro: arquivo de configuração ausente" >&2
     exit 1
 fi
 
@@ -143,9 +143,9 @@ Por padrão, o Bash continua executando as linhas seguintes mesmo se um comando 
 
 ```bash
 #!/bin/bash
-set -e   # para imediatamente o script se um comando falhar (codigo de saida nao nulo)
+set -e   # para imediatamente o script se um comando falhar (código de saída não nulo)
 
-cd /diretorio/inexistente   # se esse diretorio nao existe, o script para aqui
+cd /diretorio/inexistente   # se esse diretório não existe, o script para aqui
 echo "Esta linha nunca executa se cd falhou"
 ```
 
@@ -155,15 +155,15 @@ Outras opções reforçam a robustez de um script, frequentemente combinadas:
 #!/bin/bash
 set -euo pipefail
 # -e : para no primeiro erro
-# -u : erro se uma variavel nao definida for usada
-# -o pipefail : um pipe falha se QUALQUER UMA de suas etapas falhar (nao apenas a ultima)
+# -u : erro se uma variável não definida for usada
+# -o pipefail : um pipe falha se QUALQUER UMA de suas etapas falhar (não apenas a última)
 ```
 
 Um caso concreto onde `set -e` não é disparado, apesar de uma falha real:
 
 ```bash
 set -e
-# falha, mas set -e NAO para aqui sem pipefail: so grep conta
+# falha, mas set -e NÃO para aqui sem pipefail: só grep conta
 comando_que_falha | grep "padrao"
 ```
 

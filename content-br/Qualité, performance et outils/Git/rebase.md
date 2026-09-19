@@ -89,7 +89,7 @@ Esse método não muda nem o conteúdo nem a ordem dos commits, apenas suas mens
 ## A regra de ouro: nunca rebasear um histórico já compartilhado
 
 ```bash
-# EVITAR se outras pessoas ja obtiveram esses commits:
+# EVITAR se outras pessoas já obtiveram esses commits:
 git rebase main
 git push --force
 ```

@@ -21,11 +21,11 @@ print(resultado.stdout)
 `subprocess.run()` espera o processo lançado terminar antes de continuar.
 
 ```python
-# NAO BLOQUEANTE: retorna IMEDIATAMENTE, o processo roda em paralelo
+# NÃO BLOQUEANTE: retorna IMEDIATAMENTE, o processo roda em paralelo
 processo = subprocess.Popen(["ls", "-la"])
 # ... fazer outra coisa enquanto "processo" e executado ...
-processo.wait()  # espera explicitamente o fim, se necessario
-processo.poll()  # None se ainda em andamento, senao o codigo de retorno
+processo.wait()  # espera explicitamente o fim, se necessário
+processo.poll()  # None se ainda em andamento, senão o código de retorno
 ```
 
 `subprocess.run()` (o mais comum) lança um processo e ESPERA seu término antes de continuar; `subprocess.Popen()` lança um processo e retorna imediatamente um objeto que o representa, útil para lançar VÁRIOS processos em paralelo (um por site, um por arquivo...) sem esperar cada um antes de iniciar o próximo.
@@ -38,7 +38,7 @@ processo.poll()  # None se ainda em andamento, senao o codigo de retorno
 import sys
 
 # "/usr/bin/python3.12" ou "C:\...\python.exe" -> caminho ABSOLUTO do interpretador que executa
-# ESTE codigo
+# ESTE código
 sys.executable
 
 # relanca um script com o MESMO interpretador/ambiente
@@ -66,10 +66,10 @@ class FluxoDuplo:  # duplica cada escrita para dois destinos
         self.arquivo_log.flush()
 
 log = open("execucao.log", "a", encoding="utf-8")
-# substitui o objeto do modulo pelo duplo, sem tocar no resto do codigo
+# substitui o objeto do módulo pelo duplo, sem tocar no resto do código
 sys.stderr = FluxoDuplo(sys.stderr, log)
 
-print("Erro", file=sys.stderr)  # aparece na tela E e escrito em execucao.log
+print("Erro", file=sys.stderr)  # aparece na tela E e escrito em execução.log
 ```
 
 `sys.stdout`/`sys.stderr` são simples objetos, substituíveis como qualquer outra variável de módulo: atribuir a eles um objeto que exponha `.write()`/`.flush()` intercepta silenciosamente tudo que já é escrito em outro lugar com `print(..., file=sys.stderr)`. O nome **Tee** vem do comando Unix `tee` (já visto em [Bash](/?c=shells&s=bash&p=redirections-et-pipes)/[PowerShell](/?c=shells&s=powershell&p=powershell)), que duplica um fluxo para vários destinos ao mesmo tempo.

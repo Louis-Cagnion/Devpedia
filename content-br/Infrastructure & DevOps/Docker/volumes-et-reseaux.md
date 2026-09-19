@@ -23,7 +23,7 @@ Aqui, `meus-dados` é um **volume nomeado**, gerenciado pelo Docker e armazenado
 | Uso típico | Dados persistentes de um banco de dados, de um serviço | Montar o código fonte em desenvolvimento para ver as mudanças sem reconstruir a imagem |
 
 ```bash
-# Bind mount: o diretorio atual do hospedeiro vira /app no conteiner
+# Bind mount: o diretório atual do hospedeiro vira /app no conteiner
 docker run -v $(pwd):/app meu-app:1.0
 ```
 

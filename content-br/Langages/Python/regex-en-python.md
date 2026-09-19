@@ -11,7 +11,7 @@ Ao contrário do [JavaScript](/?c=langages&s=javascript&p=regex), Python não te
 ```python
 import re
 
-padrao = re.compile(r"\d{4}-\d{2}-\d{2}")   # pre-compila o padrao, reutilizavel
+padrao = re.compile(r"\d{4}-\d{2}-\d{2}")   # pre-compila o padrão, reutilizável
 ```
 
 > **Nota:** o prefixo `r"..."` (string bruta, *raw string*) impede que o Python interprete `\d` como uma sequência de escape inválida: indispensável assim que um padrão contém uma barra invertida.
@@ -31,8 +31,8 @@ padrao = re.compile(r"\d{4}-\d{2}-\d{2}")   # pre-compila o padrao, reutilizavel
 ```python
 padrao = re.compile(r"\d{4}-\d{2}-\d{2}")
 
-padrao.match("2024-06-15 e uma data")      # corresponde: comeca com o padrao
-padrao.match("A data e 2024-06-15")        # None -> NAO comeca com o padrao
+padrao.match("2024-06-15 e uma data")      # corresponde: comeca com o padrão
+padrao.match("A data e 2024-06-15")        # None -> NÃO comeca com o padrão
 
 padrao.search("A data e 2024-06-15")       # corresponde, em qualquer lugar da string
 ```
@@ -46,10 +46,10 @@ padrao.search("A data e 2024-06-15")       # corresponde, em qualquer lugar da s
 ```python
 resultado = padrao.search("A data e 2024-06-15")
 
-resultado.group(0)   # "2024-06-15" -> a correspondencia completa
-resultado[0]         # equivalente, notacao abreviada
-resultado.start()    # 8 -> indice de inicio na string
-resultado.end()      # 18 -> indice de fim
+resultado.group(0)   # "2024-06-15" -> a correspondência completa
+resultado[0]         # equivalente, notação abreviada
+resultado.start()    # 8 -> índice de início na string
+resultado.end()      # 18 -> índice de fim
 ```
 
 `resultado.group(0)` (ou `resultado[0]`) sempre retorna a correspondência completa, tenha o padrão grupos ou não. Se nenhuma correspondência for encontrada, `search()`/`match()` retornam `None`: chamar `.group()` nisso lança um `AttributeError` ("NoneType não tem atributo group").
@@ -83,7 +83,7 @@ padrao = re.compile(r"(?P<ano>\d{4})-(?P<mes>\d{2})-(?P<dia>\d{2})")
 resultado = padrao.search("2024-06-15")
 
 resultado.group("ano")   # "2024"
-resultado["ano"]         # equivalente, notacao abreviada
+resultado["ano"]         # equivalente, notação abreviada
 resultado.groupdict()    # {"ano": "2024", "mes": "06", "dia": "15"}
 ```
 
@@ -97,7 +97,7 @@ texto = "A data e 2024-06-15"
 re.sub(r"\d{4}-\d{2}-\d{2}", "DD/MM/AAAA", texto)
 # "A data e DD/MM/AAAA"
 
-# reutilizar um grupo capturado na substituicao, com \1, \2...
+# reutilizar um grupo capturado na substituição, com \1, \2...
 re.sub(r"(\d{4})-(\d{2})-(\d{2})", r"\3/\2/\1", texto)
 # "A data e 15/06/2024"
 ```

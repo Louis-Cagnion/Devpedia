@@ -36,7 +36,7 @@ Navegador pilotado (Playwright/Selenium/Puppeteer):
 O protocolo WebDriver, usado pelo Playwright, Selenium e ferramentas similares para pilotar um navegador, expõe por padrão uma propriedade JavaScript legível por qualquer página:
 
 ```javascript
-navigator.webdriver   // true se pilotado via WebDriver, false/undefined caso contrario
+navigator.webdriver   // true se pilotado via WebDriver, false/undefined caso contrário
 ```
 
 Qualquer script da página, e portanto qualquer sistema anti-bot, pode ler essa propriedade para distinguir um visitante humano de um script, sem precisar analisar um comportamento mais sutil. A contramedida consiste em redefinir essa propriedade antes de qualquer outro script da página:

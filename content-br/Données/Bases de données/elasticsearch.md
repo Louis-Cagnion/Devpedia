@@ -158,7 +158,7 @@ O Elasticsearch então funde os dois rankings (score textual e score vetorial) e
   "sort": {
     "_script": {
       "type": "number",
-      "script": { "source": "doc['nota'].value * doc['nb_avaliacoes'].value" },
+      "script": { "source": "doc['nota'].value * doc['nb_avaliações'].value" },
       "order": "desc"
     }
   }

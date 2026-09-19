@@ -7,7 +7,7 @@ order: 3
 ## Construir e iniciar
 
 ```bash
-# constroi uma imagem chamada "meu-app", tag "1.0", a partir do Dockerfile do diretorio atual
+# constroi uma imagem chamada "meu-app", tag "1.0", a partir do Dockerfile do diretório atual
 # (.)
 docker build -t meu-app:1.0 .
 docker run meu-app:1.0         # inicia um conteiner a partir dessa imagem
@@ -31,9 +31,9 @@ docker run -d --name servidor -p 8080:80 meu-app:1.0
 ## Observar o que está rodando
 
 ```bash
-docker ps               # conteineres em execucao
+docker ps               # conteineres em execução
 docker ps -a            # todos os conteineres, incluindo os parados
-docker logs servidor    # saida padrao/erro do conteiner "servidor"
+docker logs servidor    # saída padrão/erro do conteiner "servidor"
 docker logs -f servidor # acompanha os logs em tempo real (equivalente a `tail -f`)
 ```
 
@@ -60,7 +60,7 @@ docker rmi meu-app:1.0  # remove uma imagem
 > **Nota:** `docker stop` seguido de `docker kill` reproduz exatamente a mesma hierarquia SIGTERM → SIGKILL vista no capítulo sobre gerenciamento de processos: o Docker não reinventa um mecanismo de parada, ele pilota o do sistema hospedeiro.
 
 ```bash
-# remove conteineres parados, imagens nao usadas, caches de build nao usados
+# remove conteineres parados, imagens não usadas, caches de build não usados
 docker system prune
 ```
 

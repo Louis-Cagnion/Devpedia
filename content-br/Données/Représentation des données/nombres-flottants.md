@@ -77,7 +77,7 @@ Em Python:
 
 ```python
 import math
-math.isclose(0.1 + 0.2, 0.3)     # True -> gerencia a tolerancia para voce
+math.isclose(0.1 + 0.2, 0.3)     # True -> gerência a tolerância para você
 ```
 
 Em JavaScript:

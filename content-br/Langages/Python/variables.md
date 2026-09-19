@@ -15,7 +15,7 @@ nome = "Devpedia"    # str
 ativo = True         # bool
 nada = None          # equivalente de null/NULL
 
-idade = "vinte e cinco"    # perfeitamente valido: idade se torna um str, sem declarar nada
+idade = "vinte e cinco"    # perfeitamente válido: idade se torna um str, sem declarar nada
 ```
 
 > **Nota:** ao contrário de PHP (`$variavel`), Python não usa nenhum símbolo particular para designar uma variável: apenas um nome, em minúsculas com underscores por convenção (`nome_usuario`, não `nomeUsuario`).
@@ -24,27 +24,27 @@ idade = "vinte e cinco"    # perfeitamente valido: idade se torna um str, sem de
 
 ```python
 type(idade)             # <class 'int'>
-isinstance(idade, int)  # True -> preferido a type() == int para verificacoes condicionais
+isinstance(idade, int)  # True -> preferido a type() == int para verificações condicionais
 ```
 
 ## Os operadores
 
 ```python
-a, b = 5, 3   # atribuicao multipla em uma unica linha
+a, b = 5, 3   # atribuição multipla em uma única linha
 
 a + b   # 8
 a - b   # 2
 a * b   # 15
-a / b   # 1.6666... -> divisao real, sempre um float
-a // b  # 1 -> divisao inteira (floor division)
-a % b   # 2 -> modulo
-a ** b  # 125 -> potencia
+a / b   # 1.6666... -> divisão real, sempre um float
+a // b  # 1 -> divisão inteira (floor division)
+a % b   # 2 -> módulo
+a ** b  # 125 -> potência
 
 a == b   # False
 a != b   # True
-a and b  # E logico (nao '&&')
-a or b   # OU logico (nao '||')
-not a    # NAO logico (nao '!')
+a and b  # E lógico (não '&&')
+a or b   # OU lógico (não '||')
+not a    # NÃO lógico (não '!')
 ```
 
 > **Nota:** Python usa as palavras-chave `and`/`or`/`not` em vez dos símbolos `&&`/`||`/`!` encontrados em PHP, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) ou C.
@@ -63,8 +63,8 @@ a = [1, 2, 3]
 b = [1, 2, 3]
 c = a
 
-a == b  # True  -> mesmo conteudo
-a is b  # False -> duas listas distintas na memoria
+a == b  # True  -> mesmo conteúdo
+a is b  # False -> duas listas distintas na memória
 a is c  # True  -> c e a designam o mesmo objeto
 ```
 
@@ -95,7 +95,7 @@ nome = "Joao"
 idade = 25
 
 print(f"{nome} tem {idade} anos")             # Joao tem 25 anos
-print(f"Em 10 anos: {idade + 10} anos")       # uma expressao real, nao apenas uma variavel
+print(f"Em 10 anos: {idade + 10} anos")       # uma expressão real, não apenas uma variável
 ```
 
 As f-strings (prefixo `f` antes das aspas) são o método moderno recomendado, substituindo `"{} tem {} anos".format(nome, idade)` ou a concatenação com `+`.
@@ -104,9 +104,9 @@ As f-strings (prefixo `f` antes das aspas) são o método moderno recomendado, s
 
 ```python
 texto = ""
-# Recebido: '' -> repr(): mostra as aspas, entao a string vazia fica visivel
+# Recebido: '' -> repr(): mostra as aspas, então a string vazia fica visível
 print(f"Recebido: {texto!r}")
-# Recebido:    -> insercao normal: nada para ver, ilegivel em uma mensagem de debug
+# Recebido:    -> inserção normal: nada para ver, ilegível em uma mensagem de debug
 print(f"Recebido: {texto}")
 ```
 
@@ -118,7 +118,7 @@ Como em PHP, uma string Python é **imutável**: toda "modificação" na verdade
 
 ```python
 texto = "ola"
-texto.upper()  # retorna "OLA", NAO MODIFICA texto
+texto.upper()  # retorna "OLA", NÃO MODIFICA texto
 print(texto)   # ainda "ola"
 
 texto = texto.upper()  # e preciso reatribuir para "manter" a mudanca
@@ -127,11 +127,11 @@ texto = texto.upper()  # e preciso reatribuir para "manter" a mudanca
 ## Juntar uma lista em uma string: `str.join()`
 
 ```python
-palavras = ["Python", "e", "legivel"]
+palavras = ["Python", "e", "legível"]
 
-" ".join(palavras)   # "Python e legivel"
-", ".join(palavras)  # "Python, e, legivel"
-"".join(palavras)    # "Pythonelegivel" -> separador vazio: nenhum caractere entre os elementos
+" ".join(palavras)   # "Python e legível"
+", ".join(palavras)  # "Python, e, legível"
+"".join(palavras)    # "Pythonelegível" -> separador vazio: nenhum caractere entre os elementos
 ```
 
 > **Armadilha:** a ordem é invertida em relação à intuição vinda de outras linguagens: é o SEPARADOR que chama `.join()`, nunca a lista (`", ".join(palavras)`, não `palavras.join(", ")`). `.join()` também exige que todos os elementos já sejam strings; juntar uma lista de números levanta um `TypeError` sem uma conversão prévia (`", ".join(str(n) for n in numeros)`).

@@ -9,7 +9,7 @@ O PowerShell retoma as mesmas ideias que o [Bash](/?c=shells&s=bash&p=bash) (red
 ## Redirecionar a saída para um arquivo
 
 ```powershell
-"Ola" > arquivo.txt      # sobrescreve arquivo.txt (ou o cria) com esse conteudo
+"Ola" > arquivo.txt      # sobrescreve arquivo.txt (ou o cria) com esse conteúdo
 "De novo" >> arquivo.txt # adiciona ao final de arquivo.txt, sem sobrescrever
 ```
 
@@ -18,7 +18,7 @@ O PowerShell retoma as mesmas ideias que o [Bash](/?c=shells&s=bash&p=bash) (red
 ## Redirecionar a entrada a partir de um arquivo
 
 ```powershell
-# o PowerShell nao tem operador "<" direto: passa-se por uma cmdlet
+# o PowerShell não tem operador "<" direto: passa-se por uma cmdlet
 Get-Content lista.txt | Sort-Object
 ```
 
@@ -29,8 +29,8 @@ Get-Content lista.txt | Sort-Object
 Os fluxos são numerados de forma diferente do Bash: `1` = saída padrão, `2` = erro, mas também `3` (aviso), `4` (verboso), `5` (depuração), `6` (informação); o PowerShell distingue mais fluxos do que os três do Unix:
 
 ```powershell
-Comando-QueFalha 2> erros.log      # apenas a saida de erro vai para erros.log
-Comando 1> saida.log 2> erros.log  # separa saida normal e erros em dois arquivos
+Comando-QueFalha 2> erros.log      # apenas a saída de erro vai para erros.log
+Comando 1> saida.log 2> erros.log  # separa saída normal e erros em dois arquivos
 # atalho PowerShell: redireciona TODOS os fluxos para tudo.log
 Comando *> tudo.log
 ```
@@ -42,13 +42,13 @@ Comando *> tudo.log
 Papel equivalente a `/dev/null` no Unix:
 
 ```powershell
-Comando-Barulhento > $null 2>&1   # ignora toda saida normal E todo erro
+Comando-Barulhento > $null 2>&1   # ignora toda saída normal E todo erro
 ```
 
 ## Os pipes (`|`): encadear comandos, com objetos de verdade
 
 ```powershell
-# filtra por propriedade, nao por texto
+# filtra por propriedade, não por texto
 Get-ChildItem | Where-Object { $_.Extension -eq ".txt" }
 Select-String "404" access.log | Measure-Object | Select-Object -ExpandProperty Count
 # os 5 processos mais pesados

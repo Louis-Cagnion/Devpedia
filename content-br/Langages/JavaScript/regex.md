@@ -12,7 +12,7 @@ Ela pode ser escrita de 2 formas diferentes:
 // literal, a mais comum
 const re1 = /hello/;
 
-// com o construtor RegExp, util quando o padrao e dinamico
+// com o construtor RegExp, útil quando o padrão e dinamico
 const re2 = new RegExp('hello');
 ```
 

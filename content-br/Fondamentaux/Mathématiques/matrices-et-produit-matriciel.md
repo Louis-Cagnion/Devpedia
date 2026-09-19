@@ -130,7 +130,7 @@ Uma matriz 2×3 se torna uma matriz 3×2. A transposta serve na maioria das veze
 Calcular `A · B` para duas matrizes *n*×*n* exige, no método ingênuo, *n*³ multiplicações; um custo que cresce **muito** mais rápido que o tamanho das matrizes:
 
 ```python
-# Versao ingenua: tres loops encadeados
+# Versão ingenua: três loops encadeados
 def produto_matricial(A, B, n):
     resultado = [[0] * n for _ in range(n)]
     for i in range(n):

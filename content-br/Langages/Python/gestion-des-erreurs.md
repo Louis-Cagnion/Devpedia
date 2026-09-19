@@ -12,20 +12,20 @@ Python sinaliza um erro lançando uma **exceção**, que interrompe a execução
 try:
     resultado = 10 / 0
 except ZeroDivisionError:
-    print("Impossivel dividir por zero")
+    print("Impossível dividir por zero")
 ```
 
 ## Interceptar vários tipos de exceções
 
 ```python
 try:
-    numero = int(input("Digite um numero: "))
+    numero = int(input("Digite um número: "))
     resultado = 10 / numero
 except ValueError:
-    print("Isso nao e um numero valido")
+    print("Isso não e um número válido")
 except ZeroDivisionError:
-    print("Impossivel dividir por zero")
-except Exception as erro:   # pega todo o resto -> deve ficar por ULTIMO
+    print("Impossível dividir por zero")
+except Exception as erro:   # pega todo o resto -> deve ficar por Último
     print(f"Erro inesperado: {erro}")
 ```
 
@@ -37,12 +37,12 @@ except Exception as erro:   # pega todo o resto -> deve ficar por ULTIMO
 try:
     arquivo = open("dados.txt")
 except FileNotFoundError:
-    print("Arquivo nao encontrado")
+    print("Arquivo não encontrado")
 else:
-    print("Arquivo aberto com sucesso")    # executado APENAS se nenhuma excecao ocorreu
+    print("Arquivo aberto com sucesso")    # executado APENAS se nenhuma exceção ocorreu
     arquivo.close()
 finally:
-    print("Tentativa concluida")           # executado EM TODOS OS CASOS, excecao ou nao
+    print("Tentativa concluida")           # executado EM TODOS OS CASOS, exceção ou não
 ```
 
 `finally` é usado tipicamente para liberar um recurso (fechar um arquivo, uma conexão...) tenha havido erro ou não.
@@ -72,7 +72,7 @@ with open("log.txt", "a", encoding="utf-8") as f:
 ```python
 def calcular_idade(ano_nascimento):
     if ano_nascimento > 2026:
-        raise ValueError("O ano de nascimento nao pode estar no futuro")
+        raise ValueError("O ano de nascimento não pode estar no futuro")
     return 2026 - ano_nascimento
 ```
 
@@ -108,13 +108,13 @@ def carregar_configuracao(caminho):
         with open(caminho) as arquivo:
             return arquivo.read()
     except FileNotFoundError as erro:
-        raise ConfigurationError(f"Configuracao nao encontrada: {caminho}") from erro
+        raise ConfigurationError(f"Configuração não encontrada: {caminho}") from erro
 
 try:
     carregar_configuracao("config.ini")
 except ConfigurationError as erro:
-    print(erro)              # mensagem de negocio, legivel por quem chama
-    print(erro.__cause__)    # FileNotFoundError original, ainda acessivel
+    print(erro)              # mensagem de negocio, legível por quem chama
+    print(erro.__cause__)    # FileNotFoundError original, ainda acessível
 ```
 
 Quem chama pode interceptar apenas `ConfigurationError` (sem conhecer `FileNotFoundError`), mantendo, via `__cause__`, a exceção técnica completa para depuração.
@@ -134,7 +134,7 @@ Quem chama pode interceptar apenas `ConfigurationError` (sem conhecer `FileNotFo
 ```python
 with open("dados.txt") as arquivo:
     conteudo = arquivo.read()
-# arquivo.close() e chamado automaticamente aqui, tenha tudo corrido bem ou nao
+# arquivo.close() e chamado automaticamente aqui, tenha tudo corrido bem ou não
 ```
 
 > **Nota:** isso se apoia nos métodos especiais `__enter__`/`__exit__` (veja [A programação orientada a objetos](/?c=langages-de-programmation&s=python&p=poo)); qualquer classe personalizada pode definir esses dois métodos para se tornar utilizável com `with` (ex. gerenciar a abertura/fechamento de uma conexão de rede ou banco de dados).

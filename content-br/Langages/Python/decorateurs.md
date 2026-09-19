@@ -20,7 +20,7 @@ def meu_decorador(funcao):
 def dizer_ola(nome):
     print(f"Ola {nome}")
 
-dizer_ola = meu_decorador(dizer_ola)   # substitui a funcao por sua versao envolvida
+dizer_ola = meu_decorador(dizer_ola)   # substitui a função por sua versão envolvida
 dizer_ola("Joao")
 # Antes da chamada
 # Ola Joao
@@ -49,7 +49,7 @@ def cronometrar(funcao):
         inicio = time.time()
         resultado = funcao(*args, **kwargs)
         duracao = time.time() - inicio
-        print(f"{funcao.__name__} levou {duracao:.4f}s")
+        print(f"{função.__name__} levou {duração:.4f}s")
         return resultado
     return envelope
 
@@ -58,7 +58,7 @@ def calculo_longo():
     total = sum(x ** 2 for x in range(1000000))
     return total
 
-calculo_longo()   # calculo_longo levou 0.0834s
+calculo_longo()   # cálculo_longo levou 0.0834s
 ```
 
 ## Preservar os metadados com `functools.wraps`
@@ -66,25 +66,25 @@ calculo_longo()   # calculo_longo levou 0.0834s
 Sem precaução, a função decorada "perde" seu nome e sua documentação de origem, substituídos pelos da função de envelope:
 
 ```python
-print(calculo_longo.__name__)   # "envelope" -> nao muito util para depurar
+print(calculo_longo.__name__)   # "envelope" -> não muito útil para depurar
 ```
 
 ```python
 from functools import wraps
 
 def cronometrar(funcao):
-    @wraps(funcao)   # preserva __name__, __doc__... da funcao original
+    @wraps(funcao)   # preserva __name__, __doc__... da função original
     def envelope(*args, **kwargs):
-        # ... mesma logica que antes ...
+        # ... mesma lógica que antes ...
         return funcao(*args, **kwargs)
     return envelope
 
-@cronometrar   # redecorado com essa nova versao de cronometrar
+@cronometrar   # redecorado com essa nova versão de cronometrar
 def calculo_longo():
     total = sum(x ** 2 for x in range(1000000))
     return total
 
-print(calculo_longo.__name__)   # "calculo_longo" -> corrigido
+print(calculo_longo.__name__)   # "cálculo_longo" -> corrigido
 ```
 
 > **Nota:** redefinir `cronometrar` não muda nada retroativamente em uma função já decorada por sua versão antiga: `calculo_longo` precisa ser redecorada aqui para que `@wraps` se aplique realmente.
@@ -107,7 +107,7 @@ def repetir(numero_de_vezes):
 def saudar():
     print("Ola!")
 
-saudar()   # exibe "Ola!" tres vezes
+saudar()   # exibe "Ola!" três vezes
 ```
 
 `repetir(3)` primeiro retorna `decorador` (uma função que recebe uma função), que é então aplicado a `saudar`, daí os três níveis de funções aninhadas.

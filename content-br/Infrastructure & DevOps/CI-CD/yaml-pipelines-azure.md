@@ -63,7 +63,7 @@ steps:
 ## Armadilha: colocar um segredo em texto puro no arquivo YAML
 
 ```yaml
-# nunca faca isso: a senha aparece em texto puro no historico do Git
+# nunca faca isso: a senha aparece em texto puro no histórico do Git
 steps:
   - script: deploy.sh --password minhaSenha123
 ```

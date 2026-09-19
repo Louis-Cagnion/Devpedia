@@ -11,9 +11,9 @@ order: 14
 Cada usuário tem seu próprio **crontab**, uma lista de tarefas agendadas, editada com:
 
 ```bash
-crontab -e  # abre o crontab no editor padrao
+crontab -e  # abre o crontab no editor padrão
 crontab -l  # exibe o crontab atual sem abri-lo
-crontab -r  # remove todo o crontab do usuario atual
+crontab -r  # remove todo o crontab do usuário atual
 ```
 
 Cada linha segue um formato de 5 campos de tempo, seguidos do comando a executar:
@@ -65,7 +65,7 @@ Um script que funciona perfeitamente quando lançado manualmente pode então fal
 # Evitar: supoe que "python3" esta no PATH do cron
 0 3 * * *   python3 backup.py
 
-# Mais seguro: caminho absoluto para o executavel E o script
+# Mais seguro: caminho absoluto para o executável E o script
 0 3 * * *   /usr/bin/python3 /home/usuario/scripts/backup.py
 ```
 
@@ -112,11 +112,11 @@ O arquivo `.service` descreve o comando a executar:
 Description=Backup noturno dos documentos           # texto exibido nos logs/no status
 
 [Service]
-# executa uma vez e para (nao um servico que fica rodando)
+# executa uma vez e para (não um serviço que fica rodando)
 Type=oneshot
-# diretorio de trabalho antes de lancar o comando
+# diretório de trabalho antes de lancar o comando
 WorkingDirectory=/home/usuario/scripts
-# caminho absoluto, mesma armadilha do ambiente minimo que o cron
+# caminho absoluto, mesma armadilha do ambiente mínimo que o cron
 ExecStart=/usr/bin/python3 backup.py
 ```
 
@@ -128,21 +128,21 @@ Description=Agenda backup.service todos os dias
 
 [Timer]
 OnCalendar=daily                                    # equivalente a @daily no cron
-# recupera a execucao perdida se a maquina estava desligada (ver abaixo)
+# recupera a execução perdida se a maquina estava desligada (ver abaixo)
 Persistent=true
 
 [Install]
-# necessario para que "enable" ative de fato o timer
+# necessário para que "enable" ative de fato o timer
 WantedBy=timers.target
 ```
 
 Os dois arquivos vão em `/etc/systemd/system/` (escopo do sistema, exige permissão de root) ou em `~/.config/systemd/user/` (escopo do usuário, ver abaixo). Uma vez colocados:
 
 ```bash
-systemctl daemon-reload              # rele os arquivos de unidade apos criar/editar um
+systemctl daemon-reload              # rele os arquivos de unidade após criar/editar um
 systemctl enable --now backup.timer  # ativa o timer no boot E o inicia imediatamente
-systemctl list-timers                # lista os timers ativos e sua proxima execucao
-# consulta os logs desse servico (substitui o redirecionamento manual para um arquivo de log)
+systemctl list-timers                # lista os timers ativos e sua próxima execução
+# consulta os logs desse serviço (substitui o redirecionamento manual para um arquivo de log)
 journalctl -u backup.service
 ```
 
@@ -162,7 +162,7 @@ Um timer colocado em `/etc/systemd/system/` roda independentemente de qualquer s
 Esse último ponto importa para a recuperação: um timer `--user` com `Persistent=true` só consegue recuperar uma execução perdida no próximo login, não na simples inicialização da máquina, se ninguém fizer login logo em seguida. O [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permite remover esse limite para um usuário específico:
 
 ```bash
-# a instancia systemd --user de "usuario" inicia no boot, com sessao aberta ou nao
+# a instância systemd --user de "usuário" inicia no boot, com sessão aberta ou não
 loginctl enable-linger usuario
 ```
 

@@ -66,7 +66,7 @@ botao.addEventListener("click", (evento) => {
 ```javascript
 document.querySelector("form").addEventListener("submit", (evento) => {
     evento.preventDefault();   // impede o recarregamento de página padrão de um formulário
-    console.log("Formulario interceptado pelo JavaScript");
+    console.log("Formulário interceptado pelo JavaScript");
 });
 ```
 

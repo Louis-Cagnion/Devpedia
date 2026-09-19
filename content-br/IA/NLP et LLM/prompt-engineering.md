@@ -82,7 +82,7 @@ Prioridade (a mais importante primeiro):
 A seção anterior trata do caso em que uma informação falta *no meio* da tarefa, uma vez já iniciada. Um prompt também pode ser impreciso *desde o início* (um objetivo vago, um formato não especificado, uma escolha que na verdade pertence a quem pergunta), a ponto de nenhuma tentativa, mesmo cautelosa, ter um bom motivo para seguir em uma direção em vez de outra. Nesse caso, a melhor resposta não é adivinhar, nem produzir um resultado genérico: é devolver uma **versão refinada do prompt**, que lista precisamente o que falta e propõe uma reformulação concreta, antes de se comprometer com um trabalho que tem boas chances de precisar ser refeito:
 
 ```text
-Prompt recebido :  "Faca um relatorio sobre as vendas."
+Prompt recebido :  "Faca um relatório sobre as vendas."
 
 Sem refinamento  ->  um relatorio produzido ao acaso de suposicoes implicitas
                       (qual periodo? quais produtos? qual formato? para quem?)
@@ -116,8 +116,8 @@ Sem direcoes  ->  um unico slogan, em um tom escolhido arbitrariamente
 Com direcoes  ->  "Tres direcoes possiveis, me diga qual desenvolver:
                    1. Humoristica: 'Seu sofa vai precisar achar um novo
                       melhor amigo.'
-                   2. Factual: 'Acompanhe seu progresso, dia apos dia.'
-                   3. Premium: 'Performance, sem concessoes.'"
+                   2. Factual: 'Acompanhe seu progresso, dia após dia.'
+                   3. Premium: 'Performance, sem concessões.'"
 ```
 
 Cada direção deve permanecer curta (uma linha, não um parágrafo): o objetivo é fazer escolher uma direção, não entregar um trabalho pronto em várias versões: o desenvolvimento completo vem depois da escolha, uma vez validada a direção.
@@ -133,7 +133,7 @@ Em vez de descrever abstratamente o formato ou estilo esperado, dar diretamente 
 ```text
 Classifique o sentimento de cada avaliacao em positivo/negativo/neutro.
 
-Avaliacao : "Entrega rapida, produto conforme."          -> positivo
+Avaliacao : "Entrega rápida, produto conforme."          -> positivo
 Avaliacao : "Correto sem mais, nada excepcional."         -> neutro
 Avaliacao : "Pacote chegou danificado, nenhuma resposta do SAC." -> negativo
 
@@ -253,11 +253,11 @@ Objetivos : [...]  |  Restricoes : [...]  |  Recursos disponiveis : """[...]"""
 -> Nao implemente nada: liste riscos, informacoes ausentes, decisoes a tomar.
 
 [2. Concepcao]
-Enquadramento validado : """[saida da etapa 1]"""
+Enquadramento validado : """[saída da etapa 1]"""
 -> Divisao em subtarefas, dependencias entre elas, arquitetura geral. Sempre sem codificar.
 
 [3. Plano de implementacao]
-Concepcao validada : """[saida da etapa 2]"""
+Concepcao validada : """[saída da etapa 2]"""
 -> Para cada subtarefa: entradas, saida esperada, arquivos envolvidos, criterios de sucesso.
 
 [4. Realizacao de uma subtarefa]
@@ -265,16 +265,16 @@ Contexto relevante + arquitetura validada : """[...]"""  |  Subtarefa atual : ""
 -> Realize apenas essa subtarefa; sinalize sem corrigir um problema detectado em outro lugar.
 
 [5. Verificacao independente]
-Resultado a verificar : """[saida da etapa 4]"""  |  Criterios de sucesso : """[...]"""
+Resultado a verificar : """[saída da etapa 4]"""  |  Criterios de sucesso : """[...]"""
 -> Aja como um revisor independente. Nao modifique nada. Classifique os problemas encontrados
    (CRITICO / IMPORTANTE / MENOR), conclua com APROVADO ou A CORRIGIR.
 
 [6. Correcao]
-Resultado da verificacao : """[saida da etapa 5]"""
+Resultado da verificacao : """[saída da etapa 5]"""
 -> Corrija apenas os problemas listados, sem tocar no resto.
 
 [7. Testes e finalizacao]
-Estado final : """[...]"""  |  Requisitos iniciais : """[saida da etapa 1]"""
+Estado final : """[...]"""  |  Requisitos iniciais : """[saída da etapa 1]"""
 -> Verifique se cada requisito esta satisfeito; liste o que resta, se houver.
 ```
 

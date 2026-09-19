@@ -47,7 +47,7 @@ int desempilhar(No **topo)
     No *antigo = *topo;
     int valor = antigo->valor;
 
-    *topo = antigo->proximo;   // o proximo vira o novo topo
+    *topo = antigo->proximo;   // o próximo vira o novo topo
     free(antigo);
     return valor;
 }

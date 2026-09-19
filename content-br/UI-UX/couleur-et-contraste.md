@@ -64,7 +64,7 @@ O **WCAG** (*Web Content Accessibility Guidelines*) é um conjunto de regras de 
    essa e a UNICA diferenca entre os dois.
 
 ✅ Bom: o campo com erro e bordado de vermelho, E exibe um icone ⚠, E uma mensagem de texto
-   ("Formato de email invalido"): tres indicios, dois dos quais nao dependem da percepcao
+   ("Formato de email inválido"): tres indicios, dois dos quais nao dependem da percepcao
    de cores.
 ```
 

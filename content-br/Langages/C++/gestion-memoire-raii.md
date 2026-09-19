@@ -16,10 +16,10 @@ public:
     GerenciadorArquivo(const std::string &caminho) {
         arquivo.open(caminho);
         if (!arquivo.is_open()) {
-            throw std::runtime_error("Impossivel abrir: " + caminho); // veja As excecoes
+            throw std::runtime_error("Impossível abrir: " + caminho); // veja As exceções
         }
     }
-    // chamado automaticamente, mesmo em caso de excecao!
+    // chamado automaticamente, mesmo em caso de exceção!
     ~GerenciadorArquivo() { arquivo.close(); }
 private:
     std::ifstream arquivo;
@@ -36,11 +36,11 @@ void processarArquivo() {
 ## `new`/`delete`: a versão C++ de `malloc`/`free`
 
 ```cpp
-int *p = new int(42);  // aloca E inicializa em uma unica operacao
+int *p = new int(42);  // aloca E inicializa em uma única operação
 delete p;              // libera
 
 int *array = new int[10];  // aloca um array dinamico
-// "[]" obrigatorio para liberar um array, senao comportamento indefinido
+// "[]" obrigatório para liberar um array, senão comportamento indefinido
 delete[] array;
 ```
 
@@ -56,9 +56,9 @@ Um ponteiro inteligente aplica RAII à própria gestão de memória: ele **é** 
 #include <memory>
 
 std::unique_ptr<int> p = std::make_unique<int>(42);
-std::cout << *p;   // 42 -> desreferencia como um ponteiro bruto
+std::cout << *p;   // 42 -> desreferência como um ponteiro bruto
 
-// NAO precisa de delete: quando p sai de escopo, a memoria e liberada automaticamente
+// NÃO precisa de delete: quando p sai de escopo, a memória e liberada automaticamente
 ```
 
 Um `unique_ptr` só pode ter um **único** proprietário; copiá-lo é proibido (erro de compilação), apenas o deslocamento (`std::move`) é possível, o que transfere a propriedade de um `unique_ptr` para outro:
@@ -74,7 +74,7 @@ std::unique_ptr<int> p2 = std::move(p1);   // p2 se torna proprietario, p1 se to
 std::shared_ptr<int> p1 = std::make_shared<int>(42);
 std::shared_ptr<int> p2 = p1;   // OK, copia permitida: p1 E p2 compartilham o mesmo recurso
 
-// a memoria so e liberada quando o ULTIMO shared_ptr que a referencia e destruido
+// a memória só e liberada quando o Último shared_ptr que a referência e destruido
 ```
 
 Cada `shared_ptr` incrementa um contador de referências compartilhado; o recurso só é liberado automaticamente quando esse contador chega a zero.

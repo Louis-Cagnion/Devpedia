@@ -15,7 +15,7 @@ function Saudar {
 }
 
 Saudar -Nome "Joao"  # Ola Joao !
-# tambem funciona: o PowerShell aceita um argumento posicional se o nome for omitido
+# também funciona: o PowerShell aceita um argumento posicional se o nome for omitido
 Saudar "Joao"
 ```
 
@@ -29,9 +29,9 @@ function Resumir {
         [string]$Nome,
         [string]$Sobrenome
     )
-    Write-Output "Nome da funcao: $($MyInvocation.MyCommand.Name)"
+    Write-Output "Nome da função: $($MyInvocation.MyCommand.Name)"
     Write-Output "Primeiro parametro: $Nome"
-    Write-Output "Todos os argumentos nao declarados: $args"
+    Write-Output "Todos os argumentos não declarados: $args"
 }
 
 Resumir -Nome "Silva" -Sobrenome "Joao"
@@ -61,7 +61,7 @@ Na prática, `return` é até opcional: **toda saída não atribuída** no corpo
 ```powershell
 function Soma {
     param([int]$A, [int]$B)
-    $A + $B   # essa linha, nao atribuida, se torna o valor de retorno da funcao
+    $A + $B   # essa linha, não atribuída, se torna o valor de retorno da função
 }
 
 $resultado = Soma -A 4 -B 6

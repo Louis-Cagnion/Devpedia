@@ -13,7 +13,7 @@ Uma função PHP clássica sinaliza um erro retornando um valor especial (`false
 function dividir(float $a, float $b): float
 {
     if ($b === 0.0) {
-        throw new DivisionByZeroError("Divisao por zero");
+        throw new DivisionByZeroError("Divisão por zero");
     }
     return $a / $b;
 }
@@ -21,7 +21,7 @@ function dividir(float $a, float $b): float
 try {
     echo dividir(10, 0);
 } catch (DivisionByZeroError $e) {
-    echo "Erro: " . $e->getMessage();  // "Erro: Divisao por zero"
+    echo "Erro: " . $e->getMessage();  // "Erro: Divisão por zero"
 }
 ```
 
@@ -46,9 +46,9 @@ PHP distingue duas grandes famílias de objetos que podem ser lançados e interc
 ```php
 <?php
 try {
-    strlen();  // chamada sem o parametro obrigatorio
+    strlen();  // chamada sem o parametro obrigatório
 } catch (ArgumentCountError $e) {
-    echo "Erro de programacao: " . $e->getMessage();
+    echo "Erro de programação: " . $e->getMessage();
 }
 ```
 
@@ -112,7 +112,7 @@ class EstoqueInsuficienteException extends Exception
     ) {
         parent::__construct(
             "Estoque insuficiente para {$produto}: {$quantidadeSolicitada} solicitados, "
-            . "{$quantidadeDisponivel} disponiveis"
+            . "{$quantidadeDisponível} disponíveis"
         );
     }
 
@@ -138,7 +138,7 @@ Relançar uma nova exceção a partir de um bloco `catch` pode fazer perder o ra
 try {
     $dados = json_decode($respostaApi, flags: JSON_THROW_ON_ERROR);
 } catch (JsonException $e) {
-    throw new ApiIndisponivelException("Resposta da API invalida", previous: $e);
+    throw new ApiIndisponivelException("Resposta da API inválida", previous: $e);
 }
 ```
 
@@ -147,7 +147,7 @@ try {
 try {
     chamarApi();
 } catch (ApiIndisponivelException $e) {
-    echo $e->getMessage();               // "Resposta da API invalida"
+    echo $e->getMessage();               // "Resposta da API inválida"
     echo $e->getPrevious()->getMessage(); // "Syntax error" (o erro JSON de origem)
 }
 ```

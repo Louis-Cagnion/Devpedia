@@ -13,7 +13,7 @@ Ao contrário do [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensado pa
     display: grid;
     grid-template-columns: 200px 200px 200px;  /* 3 colunas de 200px cada */
     grid-template-rows: 100px 100px;           /* 2 linhas de 100px cada */
-    gap: 10px;                                 /* espaco entre as celulas, linhas E colunas */
+    gap: 10px;                                 /* espaço entre as celulas, linhas E colunas */
 }
 ```
 
@@ -22,7 +22,7 @@ Ao contrário do [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensado pa
 ```css
 .container {
     display: grid;
-    /* 3 colunas: a 2a ocupa 2x mais espaco que as outras 2 */
+    /* 3 colunas: a 2a ocupa 2x mais espaço que as outras 2 */
     grid-template-columns: 1fr 2fr 1fr;
 }
 ```

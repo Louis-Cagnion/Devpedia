@@ -11,7 +11,7 @@ Cada comando Unix se comunica por padrão via três fluxos: a **entrada padrão*
 ## Redirecionar a saída para um arquivo
 
 ```bash
-echo "Ola" > arquivo.txt   # sobrescreve arquivo.txt (ou o cria) com esse conteudo
+echo "Ola" > arquivo.txt   # sobrescreve arquivo.txt (ou o cria) com esse conteúdo
 echo "De novo" >> arquivo.txt  # adiciona ao final de arquivo.txt, sem sobrescrever
 ```
 
@@ -20,7 +20,7 @@ echo "De novo" >> arquivo.txt  # adiciona ao final de arquivo.txt, sem sobrescre
 ## Redirecionar a entrada a partir de um arquivo
 
 ```bash
-# le lista.txt como entrada padrao de "sort", em vez de esperar uma digitacao
+# le lista.txt como entrada padrão de "sort", em vez de esperar uma digitação
 sort < lista.txt
 ```
 
@@ -29,8 +29,8 @@ sort < lista.txt
 Os fluxos são numerados: `0` = entrada padrão, `1` = saída padrão, `2` = saída de erro.
 
 ```bash
-comando_que_falha 2> erros.log       # apenas a saida de erro vai para erros.log
-comando 1> saida.log 2> erros.log    # separa saida normal e erros em dois arquivos
+comando_que_falha 2> erros.log       # apenas a saída de erro vai para erros.log
+comando 1> saida.log 2> erros.log    # separa saída normal e erros em dois arquivos
 # redireciona stdout para tudo.log, DEPOIS stderr para onde vai stdout
 comando > tudo.log 2>&1
 comando &> tudo.log                  # atalho Bash equivalente a "> tudo.log 2>&1"
@@ -43,7 +43,7 @@ comando &> tudo.log                  # atalho Bash equivalente a "> tudo.log 2>&
 Um arquivo especial que "engole" tudo que se escreve nele, sem nunca armazenar nada: útil para descartar um fluxo do qual não se precisa:
 
 ```bash
-comando_barulhento > /dev/null 2>&1   # ignora toda saida normal E todo erro
+comando_barulhento > /dev/null 2>&1   # ignora toda saída normal E todo erro
 ```
 
 ## Os pipes (`|`): encadear comandos
@@ -71,9 +71,9 @@ comando1 || comando2  # lanca comando2 SOMENTE se comando1 falhou
 Na prática:
 
 ```bash
-mkdir -p build && cd build                 # so entra no diretorio se ele foi realmente criado
+mkdir -p build && cd build                 # só entra no diretório se ele foi realmente criado
 ./configure && make && make install        # a cadeia para assim que uma etapa falha
-grep -q "TODO" *.md || echo "nenhum TODO"  # mensagem de reserva se grep nao encontra nada
+grep -q "TODO" *.md || echo "nenhum TODO"  # mensagem de reserva se grep não encontra nada
 ```
 
 Fala-se de avaliação de **curto-circuito** (*short-circuit*): `&&` só executa a continuação se necessário, exatamente como os operadores lógicos de outras linguagens.

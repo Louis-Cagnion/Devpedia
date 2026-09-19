@@ -11,7 +11,7 @@ Um **seletor** determina a quais elementos [HTML](/?c=langages-de-balisage&s=htm
 ```css
 h1 { }        /* todos os elementos <h1> */
 .cartao { }   /* todos os elementos com class="cartao" */
-#cabecalho { }  /* o unico elemento com id="cabecalho" */
+#cabecalho { }  /* o único elemento com id="cabecalho" */
 * { }         /* absolutamente todos os elementos */
 ```
 
@@ -21,9 +21,9 @@ h1 { }        /* todos os elementos <h1> */
 
 ```css
 article p { }    /* todo <p> descendente de <article>, em QUALQUER profundidade */
-article > p { }  /* todo <p> FILHO DIRETO de <article>, nao mais fundo */
-h2 + p { }       /* o <p> imediatamente APOS um <h2>, no mesmo nivel */
-h2 ~ p { }       /* TODOS os <p> que seguem um <h2>, no mesmo nivel */
+article > p { }  /* todo <p> FILHO DIRETO de <article>, não mais fundo */
+h2 + p { }       /* o <p> imediatamente Após um <h2>, no mesmo nível */
+h2 ~ p { }       /* TODOS os <p> que seguem um <h2>, no mesmo nível */
 ```
 
 ## Seletores de atributo
@@ -41,7 +41,7 @@ a[href*="exemplo"] { }   /* href que CONTEM "exemplo" em qualquer lugar */
 a:hover { }            /* quando o mouse passa sobre o elemento */
 input:focus { }        /* quando o campo tem foco (clique ou tab) */
 li:first-child { }     /* o primeiro filho de seu pai */
-li:last-child { }      /* o ultimo filho de seu pai */
+li:last-child { }      /* o último filho de seu pai */
 li:nth-child(2) { }    /* o 2o filho precisamente */
 li:nth-child(odd) { }  /* todos os filhos impares (1o, 3o, 5o...) */
 input:disabled { }     /* um campo desativado */
@@ -51,9 +51,9 @@ input:required { }     /* um campo marcado "required" no HTML (veja Os formulár
 ## Pseudo-elementos: mirar em uma parte de um elemento
 
 ```css
-p::first-line { }             /* apenas a primeira linha exibida do paragrafo */
-p::before { content: "→ "; }  /* insere conteudo ANTES do texto real do paragrafo */
-p::after { content: " ✓"; }   /* insere conteudo DEPOIS */
+p::first-line { }             /* apenas a primeira linha exibida do parágrafo */
+p::before { content: "→ "; }  /* insere conteúdo ANTES do texto real do parágrafo */
+p::after { content: " ✓"; }   /* insere conteúdo DEPOIS */
 ```
 
 > **Nota:** `::before`/`::after` exigem uma propriedade `content` para serem visíveis (mesmo vazia, `content: "";`), muito usados para adicionar um elemento puramente decorativo (ícone, seta...) sem sobrecarregar o HTML com uma tag adicional sem significado semântico real (veja [Semântica HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5)).

@@ -20,7 +20,7 @@ $ch = curl_init($url);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $corpoJson,
-    // indispensavel para um corpo JSON
+    // indispensável para um corpo JSON
     CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
     // retornar a resposta como string, em vez de exibi-la diretamente
     CURLOPT_RETURNTRANSFER => true,
@@ -78,7 +78,7 @@ $resposta = file_get_contents($url, false, $contexto);
 $dados = json_decode($resposta, true);
 
 if (json_last_error() !== JSON_ERROR_NONE) {
-    throw new \RuntimeException('Resposta JSON invalida');
+    throw new \RuntimeException('Resposta JSON inválida');
 }
 ?>
 ```

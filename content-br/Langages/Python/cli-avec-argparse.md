@@ -12,19 +12,19 @@ Uma **CLI** (*Command-Line Interface*, interface de linha de comando) é um prog
 import argparse
 
 parser = argparse.ArgumentParser(prog="conversor")
-# posicional: obrigatorio, identificado pela posicao
+# posicional: obrigatório, identificado pela posição
 parser.add_argument("arquivo", help="Caminho do arquivo a converter")
 # opcional: identificado pelo nome, "--" na frente
-parser.add_argument("--formato", default="json", help="Formato de saida")
+parser.add_argument("--formato", default="json", help="Formato de saída")
 
 args = parser.parse_args()
 print(args.arquivo, args.formato)
 ```
 
 ```bash
-# arquivo="relatorio.csv", formato="json" (valor padrao)
+# arquivo="relatório.csv", formato="json" (valor padrão)
 python conversor.py relatorio.csv
-python conversor.py relatorio.csv --formato=xml  # arquivo="relatorio.csv", formato="xml"
+python conversor.py relatorio.csv --formato=xml  # arquivo="relatório.csv", formato="xml"
 ```
 
 | | Posicional | Opcional |
@@ -63,7 +63,7 @@ python conversor.py --help
 #
 # options:
 #   -h, --help         show this help message and exit
-#   --formato FORMATO  Formato de saida
+#   --formato FORMATO  Formato de saída
 ```
 
 > **Boa prática:** sempre fornecer `help=` em cada argumento, inclusive os que parecem óbvios no momento de escrever: é esse texto que aparecerá para um usuário que descobre a ferramenta meses depois, sem o contexto que o autor tinha em mente.
@@ -90,7 +90,7 @@ if args.command == "process":
 
 ```bash
 pdf_parser process relatorio.pdf --marca peugeot
-# Processando relatorio.pdf para a marca peugeot
+# Processando relatório.pdf para a marca peugeot
 
 pdf_parser process relatorio.pdf
 # error: the following arguments are required: --marca
@@ -112,10 +112,10 @@ import sys
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="pdf_parser")
-    # ... declaracao dos argumentos ...
-    # argv=None -> argparse le sys.argv sozinho ; senao, usa a lista fornecida
+    # ... declaração dos argumentos ...
+    # argv=None -> argparse le sys.argv sozinho ; senão, usa a lista fornecida
     args = parser.parse_args(argv)
-    # ... logica do programa ...
+    # ... lógica do programa ...
     return 0
 
 if __name__ == "__main__":

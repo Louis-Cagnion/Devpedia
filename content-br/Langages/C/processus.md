@@ -75,13 +75,13 @@ int main(void)
 
     if (pid == 0) {
         printf("Filho: estou trabalhando...\n");
-        return 42; // codigo de saida do filho
+        return 42; // código de saída do filho
     } else {
         int status;
-        wait(&status); // o pai espera aqui ate que o filho termine
+        wait(&status); // o pai espera aqui até que o filho termine
 
         if (WIFEXITED(status)) {
-            printf("O filho terminou com o codigo %d\n", WEXITSTATUS(status));
+            printf("O filho terminou com o código %d\n", WEXITSTATUS(status));
         }
     }
 }

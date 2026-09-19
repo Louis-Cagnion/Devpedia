@@ -18,7 +18,7 @@ spl_autoload_register(function (string $classe) {
 });
 
 $obj = new MinhaClasse(); // PHP chama automaticamente o resolvedor com "MinhaClasse"
-// -> nenhum require manual necessario em outro lugar do projeto
+// -> nenhum require manual necessário em outro lugar do projeto
 ?>
 ```
 

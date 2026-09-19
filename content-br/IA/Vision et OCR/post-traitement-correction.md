@@ -13,14 +13,14 @@ A correção por dicionário compara cada palavra reconhecida a uma lista de pal
 ```python
 def corrigir_por_dicionario(palavra, lexico, distancia_max=2):
     if palavra in lexico:
-        return palavra   # ja e uma palavra valida, nada a corrigir
+        return palavra   # já e uma palavra válida, nada a corrigir
 
     candidatos = [(entrada, distancia_levenshtein(palavra, entrada)) for entrada in lexico]
     melhor_entrada, melhor_distancia = min(candidatos, key=lambda c: c[1])
 
     if melhor_distancia <= distancia_max:
-        return melhor_entrada   # suficientemente proxima: corrige-se
-    # muito diferente de qualquer palavra conhecida: nao se toca em nada
+        return melhor_entrada   # suficientemente próxima: corrige-se
+    # muito diferente de qualquer palavra conhecida: não se toca em nada
     return palavra
 ```
 
@@ -56,7 +56,7 @@ import re
 def formato_cnpj_valido(texto):
     return re.fullmatch(r"\d{14}", texto) is not None
 
-# False -> um espaco extra, sinaliza um erro provavel de OCR
+# False -> um espaço extra, sinaliza um erro provável de OCR
 formato_cnpj_valido("1234567890123 4")
 formato_cnpj_valido("12345678901234")   # True
 ```

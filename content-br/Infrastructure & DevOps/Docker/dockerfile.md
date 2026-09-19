@@ -9,20 +9,20 @@ Um **Dockerfile** é uma receita em texto: uma sequência de instruções descre
 ## As instruções essenciais
 
 ```dockerfile
-FROM node:20-alpine        # imagem base: Node.js 20 em uma distribuicao Alpine (minima)
-# diretorio de trabalho no conteiner para todas as instrucoes seguintes
+FROM node:20-alpine        # imagem base: Node.js 20 em uma distribuição Alpine (mínima)
+# diretório de trabalho no conteiner para todas as instruções seguintes
 WORKDIR /app
 
 COPY package*.json ./       # copia esses arquivos da maquina hospedeira para a imagem
-RUN npm install              # executa um comando DURANTE a construcao da imagem
+RUN npm install              # executa um comando DURANTE a construção da imagem
 
-COPY . .                    # copia o resto do codigo fonte
+COPY . .                    # copia o resto do código fonte
 
-ENV NODE_ENV=production     # variavel de ambiente, disponivel no build e na execucao
-# documenta a porta usada (nao abre nada por si so, cf. capitulo redes)
+ENV NODE_ENV=production     # variável de ambiente, disponível no build e na execução
+# documenta a porta usada (não abre nada por si só, cf. capítulo redes)
 EXPOSE 3000
 
-CMD ["node", "server.js"]    # comando executado quando o CONTEINER inicia, nao durante o build
+CMD ["node", "server.js"]    # comando executado quando o CONTEINER inicia, não durante o build
 ```
 
 | Instrução | Papel |
@@ -66,7 +66,7 @@ O Docker então chama `ENTRYPOINT`, passando a ele `CMD` (ou qualquer comando da
 
 ```bash
 #!/bin/sh
-# preparacao fixa, executada a cada inicio do conteiner
+# preparação fixa, executada a cada início do conteiner
 chown -R app:app /data
 
 exec "$@"   # substitui este script pelo comando recebido
@@ -83,11 +83,11 @@ exec "$@"   # substitui este script pelo comando recebido
 Cada `RUN`/`COPY`/`ADD` adiciona uma camada, armazenada em cache: se uma instrução e tudo que a precede não mudaram desde o último build, o Docker reutiliza a camada em cache em vez de reconstruí-la.
 
 ```dockerfile
-# Ordem ruim: a menor mudanca de codigo fonte invalida o cache do `npm install`
+# Ordem ruim: a menor mudanca de código fonte inválida o cache do `npm install`
 COPY . .
 RUN npm install
 
-# Ordem boa: `npm install` so e refeito se package.json realmente mudar
+# Ordem boa: `npm install` só e refeito se package.json realmente mudar
 COPY package*.json ./
 RUN npm install
 COPY . .
@@ -100,13 +100,13 @@ COPY . .
 Um build multi-estágio separa o ambiente de **compilação** (pesado: compilador, ferramentas de build) do ambiente de **execução** (leve: apenas o binário final), o mesmo princípio de separar compilação e ligação em [C](/?c=langages-de-programmation&s=c&p=c) (cf. capítulo [O processo de compilação](/?c=langages-de-programmation&s=c&p=compilation)): o resultado final não precisa da cadeia de ferramentas que o produziu.
 
 ```dockerfile
-# Etapa 1: compilacao, com toda a toolchain Go
+# Etapa 1: compilação, com toda a toolchain Go
 FROM golang:1.22 AS builder
 WORKDIR /app
 COPY . .
 RUN go build -o servidor
 
-# Etapa 2: execucao, imagem minima sem nenhuma ferramenta de compilacao
+# Etapa 2: execução, imagem mínima sem nenhuma ferramenta de compilação
 FROM alpine:3.19
 COPY --from=builder /app/servidor /usr/local/bin/servidor
 CMD ["servidor"]

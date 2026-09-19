@@ -8,7 +8,7 @@ Para inserir funções PHP em código [HTML](/?c=langages-de-balisage&s=html&p=h
 
 ```php
 <?php
-    // inclui um arquivo contendo as funcoes de que precisamos
+    // inclui um arquivo contendo as funções de que precisamos
     include("boasvindas.php");
     include("insetos.php");
     /*
@@ -43,7 +43,7 @@ Para inserir funções PHP em código [HTML](/?c=langages-de-balisage&s=html&p=h
 ```php
 <?php
 require_once "config.php";  // carregado
-require_once "config.php";  // ignorado silenciosamente, ja carregado
+require_once "config.php";  // ignorado silenciosamente, já carregado
 ?>
 ```
 
@@ -76,7 +76,7 @@ Esse padrão frequentemente serve como arquivo de config/dados simples, sem prec
 
 ```php
 <?php
-// em /app/pages/inicio.php
+// em /app/pages/início.php
 // sempre correto, seja qual for o local de onde o script e executado
 require __DIR__ . '/../config.php';
 ?>

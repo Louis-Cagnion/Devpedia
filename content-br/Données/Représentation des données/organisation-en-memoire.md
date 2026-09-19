@@ -33,7 +33,7 @@ struct Exemplo {
     char  c;  // 1 byte
 };
 
-sizeof(struct Exemplo)   // 12, e nao 6 !
+sizeof(struct Exemplo)   // 12, e não 6 !
 ```
 
 O que o compilador realmente faz:
@@ -89,7 +89,7 @@ int   *pi = &x;
 char  *pc = (char *)&x;
 
 *pi  // 65      -> le 4 bytes, interpreta-os como um inteiro
-*pc  // 'A'     -> le 1 byte no MESMO endereco, interpreta-o como um caractere
+*pc  // 'A'     -> le 1 byte no MESMO endereço, interpreta-o como um caractere
 ```
 
 É também por isso que `ponteiro + 1` avança `sizeof(tipo)` bytes e não 1: a aritmética de ponteiros conta em elementos, não em bytes. Veja o capítulo [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs).

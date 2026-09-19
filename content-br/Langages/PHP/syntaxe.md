@@ -8,7 +8,7 @@ Para escrever e manipular código em PHP, você precisará abrir tags:
 
 ```php
 <?php
-    //codigo...
+    //código...
 ?>
 ```
 
@@ -60,8 +60,8 @@ Para escrever comentários em PHP, você tem 2 opções:
 
 ```php
 <?php
-    // Comentario em uma unica linha
-    # Alternativa para uma unica linha
+    // Comentário em uma única linha
+    # Alternativa para uma única linha
 
     /*
         Comentario

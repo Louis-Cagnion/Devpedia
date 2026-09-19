@@ -12,7 +12,7 @@ O PowerShell retoma a ideia do globbing do [Bash](/?c=shells&s=bash&p=bash) (sub
 Get-ChildItem *.txt             # todos os arquivos que terminam em .txt
 Get-ChildItem arquivo?.txt      # arquivo1.txt, arquivoA.txt... ('?' = exatamente 1 caractere)
 Get-ChildItem arquivo[123].txt  # arquivo1.txt, arquivo2.txt ou arquivo3.txt apenas
-Get-ChildItem arquivo[a-z].txt  # uma unica letra minuscula nessa posicao
+Get-ChildItem arquivo[a-z].txt  # uma única letra minúscula nessa posição
 ```
 
 | Padrão | Significa |
@@ -42,7 +42,7 @@ if ("arquivo1.txt" -like "arquivo?.txt") {
 
 ```powershell
 Get-ChildItem *.xyz
-# se nenhum arquivo .xyz existe, o comando nao retorna nada -> sem erro silencioso como no Bash
+# se nenhum arquivo .xyz existe, o comando não retorna nada -> sem erro silencioso como no Bash
 ```
 
 > **Nota:** essa é uma diferença importante em relação ao Bash, onde `echo *.xyz` exibe literalmente o texto `*.xyz` se nada corresponder; o PowerShell, por sua vez, sempre resolve o padrão em uma lista de verdade (eventualmente vazia), nunca na string bruta do padrão não resolvido.
@@ -56,7 +56,7 @@ Equivalente mais próximo da expansão de chaves `{1..5}` do Bash, mas limitado 
 # 1 2 3 4 5
 
 foreach ($n in 'a'[0]..'e'[0]) { [char]$n }
-# a b c d e -> mais verboso que no Bash, o PowerShell nao tem equivalente direto de {a..e}
+# a b c d e -> mais verboso que no Bash, o PowerShell não tem equivalente direto de {a..e}
 ```
 
 Para gerar vários caminhos de uma vez (equivalente de `arquivo{1,2,3}.txt` ou `mkdir -p a/{b,c}`), basta combinar um laço com uma coleção explícita:
@@ -75,8 +75,8 @@ Set-Location ~\projetos  # equivalente a Set-Location $HOME\projetos
 ## Impedir a expansão: as aspas simples
 
 ```powershell
-Write-Output *.txt    # o PowerShell tenta resolver o padrao conforme o contexto do comando
-Write-Output '*.txt'  # exibe literalmente *.txt -> as aspas simples desativam a interpretacao
+Write-Output *.txt    # o PowerShell tenta resolver o padrão conforme o contexto do comando
+Write-Output '*.txt'  # exibe literalmente *.txt -> as aspas simples desativam a interpretação
 ```
 
 > **Nota:** ao contrário do Bash onde `*` é expandido pelo próprio shell antes mesmo de o comando recebê-lo, no PowerShell é cada cmdlet que decide interpretar ou não um wildcard recebido como argumento: `Write-Output *.txt` então só exibe o texto `*.txt`, enquanto `Get-ChildItem *.txt` o resolve corretamente em uma lista de arquivos.

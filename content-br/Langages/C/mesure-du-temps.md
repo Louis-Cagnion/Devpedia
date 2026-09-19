@@ -33,7 +33,7 @@ void esperaPrecisa(long duracaoMs)
     long inicio = tempoAtualMs(); // gettimeofday(), veja acima
 
     while (tempoAtualMs() - inicio < duracaoMs) {
-        usleep(1000); // reavalia a cada milissegundo em vez de um unico usleep() longo
+        usleep(1000); // reavalia a cada milissegundo em vez de um único usleep() longo
     }
 }
 ```

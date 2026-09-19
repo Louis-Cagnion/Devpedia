@@ -9,7 +9,7 @@ Uma classe [comum](/?c=langages-de-programmation&s=python&p=poo) cujo papel se l
 ## Antes/depois: o mesmo `Point` do capítulo de POO
 
 ```python
-# Versao classica (veja A programacao orientada a objetos)
+# Versão clássica (veja A programação orientada a objetos)
 class Point:
     def __init__(self, x, y):
         self.x = x
@@ -23,7 +23,7 @@ class Point:
 ```
 
 ```python
-# Versao dataclass: equivalente, sem escrever __init__/__repr__/__eq__ na mao
+# Versão dataclass: equivalente, sem escrever __init__/__repr__/__eq__ na mão
 from dataclasses import dataclass
 
 @dataclass
@@ -35,7 +35,7 @@ p1 = Point(1, 2)
 p2 = Point(1, 2)
 
 print(p1)        # Point(x=1, y=2)  -> __repr__ gerado automaticamente
-print(p1 == p2)  # True             -> __eq__ gerado automaticamente, comparacao campo a campo
+print(p1 == p2)  # True             -> __eq__ gerado automaticamente, comparação campo a campo
 ```
 
 Cada linha `x: int` declara ao mesmo tempo um campo **e** seu tipo: `@dataclass` lê essas anotações para construir `__init__(self, x, y)` automaticamente, na ordem em que os campos são declarados.
@@ -61,7 +61,7 @@ class BlocoTexto:
     texto: str
 
 bloco = BlocoTexto(pagina=1, texto="Ola")
-# FrozenInstanceError : impossivel modificar um campo apos a criacao
+# FrozenInstanceError : impossível modificar um campo após a criação
 bloco.texto = "Modificado"
 ```
 
@@ -75,8 +75,8 @@ class Grupo:
     membros: list
 
 g = Grupo(membros=["Alice"])
-g.membros = ["Bob"]      # FrozenInstanceError : o proprio campo esta protegido
-g.membros.append("Bob")  # funciona sem erro : a LISTA, essa, continua mutavel
+g.membros = ["Bob"]      # FrozenInstanceError : o próprio campo esta protegido
+g.membros.append("Bob")  # funciona sem erro : a LISTA, essa, continua mutável
 ```
 
 > **Boa prática:** para uma imutabilidade realmente completa, use tipos eles mesmos imutáveis para os campos (uma [tupla](/?c=langages-de-programmation&s=python&p=listes-et-tuples) em vez de uma lista), não apenas `frozen=True` na classe envolvente.
@@ -90,17 +90,17 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Carrinho:
-    # ValueError lancada na definicao da classe : lista mutavel proibida como padrao direto
+    # ValueError lancada na definição da classe : lista mutável proibida como padrão direto
     itens: list = []
 
 @dataclass
 class Carrinho:
-    itens: list = field(default_factory=list)   # correto : uma NOVA lista a cada instancia
+    itens: list = field(default_factory=list)   # correto : uma NOVA lista a cada instância
 
 c1 = Carrinho()
 c2 = Carrinho()
 c1.itens.append("maca")
-print(c2.itens)   # [] -> bem independente de c1, ao contrario da armadilha das funcoes
+print(c2.itens)   # [] -> bem independente de c1, ao contrário da armadilha das funções
 ```
 
 `field(default_factory=funcao)` chama `funcao()` (aqui `list`, portanto `list()`) a cada nova instância em vez de uma única vez na definição da classe: é isso que evita o compartilhamento involuntário.
@@ -123,10 +123,10 @@ class Pessoa:
     nome: str
     endereco: Endereco   # dataclass aninhada
 
-p = Pessoa(nome="Joao", endereco=Endereco(cidade="Sao Paulo", cep="01000-000"))
+p = Pessoa(nome="Joao", endereco=Endereco(cidade="São Paulo", cep="01000-000"))
 
-asdict(p)   # {"nome": "Joao", "endereco": {"cidade": "Sao Paulo", "cep": "01000-000"}}
-json.dumps(asdict(p))   # serializacao direta: asdict() ja reduziu tudo a tipos simples
+asdict(p)   # {"nome": "Joao", "endereço": {"cidade": "São Paulo", "cep": "01000-000"}}
+json.dumps(asdict(p))   # serialização direta: asdict() já reduziu tudo a tipos simples
 ```
 
 > **Armadilha:** chamar `json.dumps()` diretamente sobre uma instância de dataclass, sem passar antes por `asdict()`: `TypeError: Object of type Pessoa is not JSON serializable`. `json.dumps()` só sabe codificar tipos simples, nunca um objeto Python qualquer.

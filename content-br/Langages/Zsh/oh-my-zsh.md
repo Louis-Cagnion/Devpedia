@@ -57,7 +57,7 @@ Esses aliases (veja [Variáveis de ambiente](/?c=shells&s=bash&p=variables-denvi
 
 ```bash
 # ~/.oh-my-zsh/custom/meus-alias.zsh
-alias meualias="meu_comando --com --opcoes"
+alias meualias="meu_comando --com --opções"
 ```
 
 Todo arquivo `.zsh` colocado em `~/.oh-my-zsh/custom/` é carregado automaticamente, o que evita modificar os arquivos internos do framework (que seriam sobrescritos na próxima atualização) para adicionar seus próprios aliases ou funções.

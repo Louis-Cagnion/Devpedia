@@ -16,10 +16,10 @@ pessoa["email"] = "joao@exemplo.com"    # adiciona uma nova chave
 pessoa["idade"] = 26                    # modifica uma chave existente
 del pessoa["idade"]                     # remove uma chave
 
-pessoa.get("telefone")              # None se a chave nao existir (sem erro)
-pessoa.get("telefone", "desconhecido")  # "desconhecido" -> valor padrao se ausente
+pessoa.get("telefone")              # None se a chave não existir (sem erro)
+pessoa.get("telefone", "desconhecido")  # "desconhecido" -> valor padrão se ausente
 
-"nome" in pessoa            # True -> testa a presenca de uma CHAVE (nao de um valor)
+"nome" in pessoa            # True -> testa a presenca de uma CHAVE (não de um valor)
 ```
 
 > **Nota:** `pessoa["telefone"]` (acesso direto por colchetes) lança um `KeyError` se a chave não existir; ao contrário de `.get()`, que retorna `None` (ou um valor padrão fornecido) sem nunca travar. Preferir `.get()` assim que a ausência da chave for um caso normal, não um erro.
@@ -28,10 +28,10 @@ pessoa.get("telefone", "desconhecido")  # "desconhecido" -> valor padrao se ause
 
 ```python
 cache = {}
-# uma TUPLE como chave: funciona, uma tuple e imutavel, logo hasheavel
+# uma TUPLE como chave: funciona, uma tuple e imutável, logo hasheável
 cache[("site_a", 42)] = "loja A"
 
-# TypeError: unhashable type: 'list' -> uma lista e mutavel, nunca hasheavel
+# TypeError: unhashable type: 'list' -> uma lista e mutável, nunca hasheável
 cache[["site_a", 42]] = "loja A"
 ```
 
@@ -63,11 +63,11 @@ quadrados = {x: x ** 2 for x in range(5)}
 lojas_por_site = {}
 
 for site, id_loja in pares:
-    if site not in lojas_por_site:  # sem setdefault: essa verificacao manual e necessaria...
+    if site not in lojas_por_site:  # sem setdefault: essa verificação manual e necessária...
         lojas_por_site[site] = []
     lojas_por_site[site].append(id_loja)
 
-# equivalente em uma unica linha:
+# equivalente em uma única linha:
 lojas_por_site.setdefault(site, []).append(id_loja)
 ```
 
@@ -108,9 +108,9 @@ a = {1, 2, 3}
 b = {2, 3, 4}
 
 a | b  # {1, 2, 3, 4} -> uniao
-a & b  # {2, 3}       -> intersecao
-a - b  # {1}           -> diferenca (em a, mas nao em b)
-a ^ b  # {1, 4}        -> diferenca simetrica (em um OU outro, nao os dois)
+a & b  # {2, 3}       -> interseção
+a - b  # {1}           -> diferença (em a, mas não em b)
+a ^ b  # {1, 4}        -> diferença simetrica (em um OU outro, não os dois)
 ```
 
 > **Nota:** um `set` elimina automaticamente as duplicatas: `set([1, 2, 2, 3, 3, 3])` dá `{1, 2, 3}`. É uma forma muito comum de deduplicar rapidamente uma lista em Python: `list(set(minha_lista))`.
@@ -134,7 +134,7 @@ Um `frozenset` é um `set` fixado após sua criação: nenhum método de modific
 
 ```python
 cache = {}
-cache[frozenset({"a", "b"})] = "resultado"  # funciona: um frozenset e hasheavel
+cache[frozenset({"a", "b"})] = "resultado"  # funciona: um frozenset e hasheável
 
 cache[{"a", "b"}] = "resultado"  # TypeError: unhashable type: 'set'
 ```

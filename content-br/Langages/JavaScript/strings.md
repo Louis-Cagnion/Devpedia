@@ -13,12 +13,12 @@ const str1 = 'Hello world';
 // aspas duplas: estritamente equivalentes as aspas simples
 const str2 = "Hello world";
 
-// backticks (template literals): as unicas que permitem interpolacao e multi-linha
+// backticks (template literals): as unicas que permitem interpolação e multi-linha
 const nome = 'Joao';
-const str3 = `Ola ${nome}!`;   // 'Ola Joao!' -> ${...} insere diretamente uma variavel
+const str3 = `Ola ${nome}!`;   // 'Ola Joao!' -> ${...} insere diretamente uma variável
 
 const str4 = `Linha 1
-// as quebras de linha do codigo fonte sao mantidas tal como estao
+// as quebras de linha do código fonte são mantidas tal como estão
 Linha 2`;
 ```
 
@@ -46,9 +46,9 @@ const str = 'hello world';
 str.includes('hello');       // true
 str.slice(0, 5);             // 'hello'
 str.toUpperCase();           // 'HELLO WORLD'
-str.trim();                  // copia sem espacos superfluos
-str.replace('hello', 'hi');  // 'hi world', uma unica ocorrencia
-str.replaceAll('o', '0');    // 'hell0 w0rld', todas as ocorrencias
+str.trim();                  // copia sem espaços superfluos
+str.replace('hello', 'hi');  // 'hi world', uma única ocorrência
+str.replaceAll('o', '0');    // 'hell0 w0rld', todas as ocorrências
 str.split(' ');              // ['hello', 'world']
 str.startsWith('hello');     // true
 str.repeat(2);                // 'hello worldhello world'

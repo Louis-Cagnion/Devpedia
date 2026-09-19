@@ -20,10 +20,10 @@ O **ASCII** (*American Standard Code for Information Interchange*), padronizado 
 Duas propriedades dessa tabela são exploradas o tempo todo:
 
 ```c
-// Passar de uma minuscula para uma maiuscula: 32 de diferenca, ou seja, um unico bit
+// Passar de uma minúscula para uma maiúscula: 32 de diferença, ou seja, um único bit
 char maiuscula = minuscula - 32;
 
-// Converter um digito-caractere em seu valor numerico
+// Converter um digito-caractere em seu valor numérico
 int valor = caractere - '0';    // '7' - '0' = 55 - 48 = 7
 ```
 

@@ -12,9 +12,9 @@ O Bash não tem operadores de comparação embutidos na linguagem como em [PHP](
 idade=18
 
 if [ $idade -ge 18 ]; then
-    echo "Voce e maior de idade."
+    echo "Você e maior de idade."
 else
-    echo "Voce e menor de idade."
+    echo "Você e menor de idade."
 fi
 ```
 
@@ -24,7 +24,7 @@ fi
 ## `[ ]` vs `[[ ]]`
 
 ```bash
-# [[ ]] : sintaxe estendida Bash, && e || diretamente utilizaveis
+# [[ ]] : sintaxe estendida Bash, && e || diretamente utilizáveis
 [[ $idade -ge 18 && $idade -lt 65 ]]
 [ $idade -ge 18 ] && [ $idade -lt 65 ]  # [ ] : POSIX, exige combinar dois testes separados
 ```
@@ -77,7 +77,7 @@ if [ -f "config.php" ]; then
 fi
 
 if [ -d "/var/www" ]; then
-    echo "O diretorio existe"
+    echo "O diretório existe"
 fi
 ```
 
@@ -93,7 +93,7 @@ fi
 
 ```bash
 if [[ -f "config.php" && -r "config.php" ]]; then
-    echo "O arquivo existe e e legivel"
+    echo "O arquivo existe e e legível"
 fi
 ```
 

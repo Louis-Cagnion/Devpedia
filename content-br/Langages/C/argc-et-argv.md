@@ -57,7 +57,7 @@ if (argc < 2) {
     fprintf(stderr, "Uso: %s <argumento>\n", argv[0]);
     return 1;
 }
-printf("Argumento recebido: %s\n", argv[1]);   // so alcancado se argc >= 2
+printf("Argumento recebido: %s\n", argv[1]);   // só alcancado se argc >= 2
 ```
 
 ## Converter um argumento em número

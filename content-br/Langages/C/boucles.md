@@ -73,10 +73,10 @@ void exibir(int *array, int tamanho) // o tamanho precisa ser passado explicitam
 ```c
 for (int i = 0; i < 10; i++) {
     if (i == 5) {
-        break; // para o laco assim que i vale 5
+        break; // para o laço assim que i vale 5
     }
     if (i % 2 == 0) {
-        continue; // ignora os numeros pares
+        continue; // ignora os números pares
     }
     printf("%d\n", i);
 }
@@ -93,7 +93,7 @@ for (int i = 0; i < 10 && !encontrado; i++) {
     for (int j = 0; j < 10; j++) {
         if (i * j == 42) {
             encontrado = 1;
-            break; // so sai do laco interno
+            break; // só sai do laço interno
         }
     }
 }

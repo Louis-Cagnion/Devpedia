@@ -42,7 +42,7 @@ se entrada contem "<script>" entao rejeitar
 // Um atacante contorna com uma variante nao prevista: "<ScRiPt>", "<img onerror=...>"...
 
 // Lista branca (robusta): so permite o que e esperado
-se entrada corresponde exatamente ao formato "email valido" entao aceitar
+se entrada corresponde exatamente ao formato "email válido" entao aceitar
 // Tudo o mais e rejeitado, inclusive uma variante nao antecipada
 ```
 
@@ -99,7 +99,7 @@ Quando uma verificação de segurança falha ou quebra de forma inesperada (erro
 tentar:
     se usuarioEstaAutorizado(usuario) entao conceder acesso
 capturar erro:
-    conceder acesso   // "por precaucao, deixamos passar"
+    conceder acesso   // "por precaução, deixamos passar"
 
 // Seguro: um erro inesperado nega acesso (fail closed)
 tentar:

@@ -14,7 +14,7 @@ A **engenharia reversa** (*reverse engineering*) consiste em entender o funciona
 | **Depurador** (*debugger*) | Executa de fato o programa, permitindo suspendê-lo a qualquer momento para inspecionar registradores, pilha e memória (ver [Como um programa é executado de verdade](/?c=securite&s=securite-offensive&p=bas-niveau-execution-dun-programme)) | `gdb` |
 
 ```text
-Desmontador :  Binario --> leitura apenas --> "aqui estao as instrucoes que ele contem"
+Desmontador :  Binario --> leitura apenas --> "aqui estão as instruções que ele contem"
 
 Depurador :    Binario --> execucao --> pausa em um ponto escolhido --> "aqui esta o estado
                                                                           REAL da memoria

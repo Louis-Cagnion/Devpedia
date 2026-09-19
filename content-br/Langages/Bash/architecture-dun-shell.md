@@ -91,7 +91,7 @@ Um subshell herda uma **cópia** das variáveis do shell pai no momento em que i
 ```bash
 cd /tmp
 (cd /var && pwd)  # exibe /var, no subshell
-pwd               # continua exibindo /tmp: o cd do subshell nao sobreviveu
+pwd               # continua exibindo /tmp: o cd do subshell não sobreviveu
 ```
 
 ## Agrupar comandos sem subshell: `{ ; }`
@@ -148,11 +148,11 @@ Para um programa como `ls` ou `grep`, o shell reproduz exatamente o mecanismo do
 pid_t pid = fork();
 
 if (pid == 0) {
-    // processo filho: substitui sua imagem de memoria pelo programa solicitado
+    // processo filho: substitui sua imagem de memória pelo programa solicitado
     execve("/bin/ls", argumentos, ambiente);
-    _exit(127); // alcancado apenas se execve falhou (comando nao encontrado, por exemplo)
+    _exit(127); // alcancado apenas se execve falhou (comando não encontrado, por exemplo)
 } else {
-    // processo pai (o proprio shell): espera o fim do filho
+    // processo pai (o próprio shell): espera o fim do filho
     int status;
     waitpid(pid, &status, 0);
 }
@@ -170,7 +170,7 @@ if (pid == 0) {
 
 ```bash
 sleep 100
-# Ctrl+C durante a execucao
+# Ctrl+C durante a execução
 echo $?   # exibe 130 (128 + 2)
 ```
 
@@ -209,7 +209,7 @@ pipe(fds); // fds[0] = extremidade de leitura, fds[1] = extremidade de escrita
 
 pid_t p1 = fork();
 if (p1 == 0) {
-    dup2(fds[1], STDOUT_FILENO); // a saida padrao de cmd1 vira a escrita do pipe
+    dup2(fds[1], STDOUT_FILENO); // a saída padrão de cmd1 vira a escrita do pipe
     close(fds[0]);
     close(fds[1]);
     execve("/bin/ls", ...);
@@ -217,7 +217,7 @@ if (p1 == 0) {
 
 pid_t p2 = fork();
 if (p2 == 0) {
-    dup2(fds[0], STDIN_FILENO); // a entrada padrao de cmd2 vira a leitura do pipe
+    dup2(fds[0], STDIN_FILENO); // a entrada padrão de cmd2 vira a leitura do pipe
     close(fds[0]);
     close(fds[1]);
     execve("/usr/bin/grep", ...);
@@ -237,7 +237,7 @@ Mesma lógica que para um pipe, mas a "origem" é um arquivo aberto com `open()`
 
 ```c
 int fd = open("saida.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-dup2(fd, STDOUT_FILENO); // tudo que o programa escreve em stdout agora vai para saida.txt
+dup2(fd, STDOUT_FILENO); // tudo que o programa escreve em stdout agora vai para saída.txt
 close(fd);
 execve(...);
 ```

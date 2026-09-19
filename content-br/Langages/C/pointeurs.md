@@ -13,8 +13,8 @@ int idade = 25;
 int *ptr = &idade;
 
 printf("%d\n", idade);  // 25          -> o valor
-printf("%p\n", &idade); // 0x7ffee...  -> o endereco de memoria de idade
-printf("%p\n", ptr);    // 0x7ffee...  -> o mesmo endereco, armazenado em ptr
+printf("%p\n", &idade); // 0x7ffee...  -> o endereço de memória de idade
+printf("%p\n", ptr);    // 0x7ffee...  -> o mesmo endereço, armazenado em ptr
 printf("%d\n", *ptr);   // 25          -> o valor apontado por ptr
 ```
 
@@ -38,7 +38,7 @@ int array[3] = {10, 20, 30};
 int *p = array;
 
 printf("%d\n", *p);        // 10
-printf("%d\n", *(p + 1));  // 20 -> avanca de sizeof(int) bytes, nao de 1 byte
+printf("%d\n", *(p + 1));  // 20 -> avança de sizeof(int) bytes, não de 1 byte
 printf("%d\n", *(p + 2));  // 30
 ```
 
@@ -59,7 +59,7 @@ int array[5] = {1, 2, 3, 4, 5};
 
 printf("%d\n", array[2]);      // 3
 printf("%d\n", *(array + 2));  // 3
-printf("%d\n", 2[array]);      // 3 tambem!
+printf("%d\n", 2[array]);      // 3 também!
 ```
 
 > `2[array]` não serve para nada na prática e só tem lugar em perguntas de pegadinha de entrevista. Por outro lado, entender *por que* isso compila é útil: ancora o fato de que em C, indexar um array **é** aritmética de ponteiros, e nada mais.
@@ -73,7 +73,7 @@ int idade = 25;
 int *ptr = &idade;
 int **ptrPtr = &ptr;
 
-printf("%d\n", **ptrPtr); // 25 -> desreferencia duas vezes: ptrPtr -> ptr -> idade
+printf("%d\n", **ptrPtr); // 25 -> desreferência duas vezes: ptrPtr -> ptr -> idade
 ```
 
 ## Passar um ponteiro a uma função (passagem por endereço)
@@ -83,7 +83,7 @@ Em C, os argumentos são passados **por valor** (uma cópia) por padrão: uma fu
 ```c
 void incrementar(int *numero)
 {
-    (*numero)++; // modifica o valor no endereco apontado, portanto a variavel original
+    (*numero)++; // modifica o valor no endereço apontado, portanto a variável original
 }
 
 int main(void)
@@ -121,7 +121,7 @@ int *ptr = NULL;
 if (ptr != NULL) {
     printf("%d\n", *ptr);
 } else {
-    printf("ptr nao aponta para nada.\n");
+    printf("ptr não aponta para nada.\n");
 }
 ```
 
@@ -132,13 +132,13 @@ if (ptr != NULL) {
 Com um ponteiro, há duas coisas distintas a comparar, e confundir as duas é uma fonte de erros:
 
 ```c
-int a = 5;  // armazenada no endereco 0x1000
-int b = 5;  // armazenada no endereco 0x2000
+int a = 5;  // armazenada no endereço 0x1000
+int b = 5;  // armazenada no endereço 0x2000
 int *p1 = &a;
 int *p2 = &b;
 
-p1 == p2    // falso: os enderecos sao diferentes
-*p1 == *p2  // verdadeiro: os valores apontados sao identicos
+p1 == p2    // falso: os enderecos são diferentes
+*p1 == *p2  // verdadeiro: os valores apontados são idênticos
 ```
 
 - `p1 == p2` compara os **endereços**: "esses dois ponteiros designam o mesmo local de memória?"
@@ -153,8 +153,8 @@ Dois ponteiros podem então perfeitamente conter o mesmo valor sem serem iguais,
 Dois usos de `const` bem distintos, frequentemente confundidos:
 
 ```c
-const int *p1;       // p1 pode mudar de endereco, mas nao modificar o valor apontado
-int *const p2 = &x;  // p2 nao pode mais mudar de endereco, mas pode modificar o valor apontado
+const int *p1;       // p1 pode mudar de endereço, mas não modificar o valor apontado
+int *const p2 = &x;  // p2 não pode mais mudar de endereço, mas pode modificar o valor apontado
 ```
 
 | Escrita | O que é protegido |

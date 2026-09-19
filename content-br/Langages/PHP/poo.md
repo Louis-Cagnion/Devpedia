@@ -54,7 +54,7 @@ class Calculos
     }
 }
 
-echo Calculos::media([12, 15, 9]); // sem "new Calculos()"
+echo Calculos::media([12, 15, 9]); // sem "new Cálculos()"
 ?>
 ```
 
@@ -108,10 +108,10 @@ A partir de outro arquivo, duas formas de chamar essa classe:
 
 ```php
 <?php
-// 1) caminho completo, absoluto a partir da raiz (o \ inicial e opcional mas explicito)
+// 1) caminho completo, absoluto a partir da raiz (o \ inicial e opcional mas explícito)
 \App\Faturamento\Repository::encontrar(1);
 
-// 2) importacao no topo do arquivo, depois nome curto
+// 2) importação no topo do arquivo, depois nome curto
 use App\Faturamento\Repository;
 
 Repository::encontrar(1);
@@ -153,8 +153,8 @@ class RepositorioVendas
 }
 
 $repo = new RepositorioVendas([/* ... */]);
-$repo->totalVendas();            // metodo fornecido por ResumoVendas
-$repo->vendasPorCategoria();     // metodo fornecido por DetalheVendasPorCategoria
+$repo->totalVendas();            // método fornecido por ResumoVendas
+$repo->vendasPorCategoria();     // método fornecido por DetalheVendasPorCategoria
 ```
 
 | | Herança | Interface | Trait |
@@ -180,15 +180,15 @@ class ServicoNotificacao
 
     public function __construct(?Mailer $mailer = null, ?Logger $logger = null)
     {
-        $this->mailer = $mailer ?? new SmtpMailer();  // valor padrao se nada for fornecido
+        $this->mailer = $mailer ?? new SmtpMailer();  // valor padrão se nada for fornecido
         $this->logger = $logger ?? new FileLogger();
     }
 }
 
-// uso normal: dependencias padrao
+// uso normal: dependências padrão
 $servico = new ServicoNotificacao();
 
-// para testes, ou uma necessidade pontual: dependencias substituidas explicitamente
+// para testes, ou uma necessidade pontual: dependências substituidas explicitamente
 $servico = new ServicoNotificacao(new MailerDeTeste(), new LoggerEmMemoria());
 ```
 

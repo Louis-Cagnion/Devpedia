@@ -21,7 +21,7 @@ Assim que `display: flex` é colocado em um elemento, todos os seus **filhos dir
 ```css
 .container {
     display: flex;
-    flex-direction: row;      /* padrao: esquerda para direita */
+    flex-direction: row;      /* padrão: esquerda para direita */
     /* flex-direction: column;   -> de cima para baixo */
     /* flex-direction: row-reverse; */
 }
@@ -34,10 +34,10 @@ Todo Flexbox raciocina em termos de **eixo principal** (o de `flex-direction`) e
 ```css
 .container {
     display: flex;
-    justify-content: flex-start;     /* padrao: agrupados no inicio */
+    justify-content: flex-start;     /* padrão: agrupados no início */
     /* justify-content: center;        -> centralizados */
-    /* justify-content: space-between;  -> espaco igual ENTRE os elementos, nada nas bordas */
-    /* justify-content: space-around;    -> espaco igual AO REDOR de cada elemento */
+    /* justify-content: space-between;  -> espaço igual ENTRE os elementos, nada nas bordas */
+    /* justify-content: space-around;    -> espaço igual AO REDOR de cada elemento */
 }
 ```
 
@@ -46,7 +46,7 @@ Todo Flexbox raciocina em termos de **eixo principal** (o de `flex-direction`) e
 ```css
 .container {
     display: flex;
-    align-items: stretch;       /* padrao: estica os elementos por toda a altura disponivel */
+    align-items: stretch;       /* padrão: estica os elementos por toda a altura disponível */
     /* align-items: center;       -> centraliza verticalmente (se flex-direction: row) */
     /* align-items: flex-start;     -> alinha no topo */
     /* align-items: flex-end;        -> alinha embaixo */
@@ -67,18 +67,18 @@ Todo Flexbox raciocina em termos de **eixo principal** (o de `flex-direction`) e
 
 ```css
 .elemento {
-    /* pode crescer para ocupar o espaco restante (1 = parte igual entre elementos) */
+    /* pode crescer para ocupar o espaço restante (1 = parte igual entre elementos) */
     flex-grow: 1;
-    flex-shrink: 1;     /* pode encolher se faltar espaco (padrao) */
+    flex-shrink: 1;     /* pode encolher se faltar espaço (padrão) */
     flex-basis: 200px;  /* tamanho inicial, antes de aplicar grow/shrink */
-    order: 2;           /* muda a ordem de exibicao SEM tocar no HTML */
+    order: 2;           /* muda a ordem de exibição SEM tocar no HTML */
 }
 ```
 
 > **Nota (acessibilidade):** `order` só muda a ordem **visual**: a ordem de tabulação pelo teclado e a lida por um leitor de tela continuam sendo as do [HTML](/?c=langages-de-balisage&s=html&p=html). Um descompasso entre as duas pode desorientar um usuário de teclado ou de leitor de tela; a reservar para reordenações puramente decorativas, nunca para consertar uma ordem de conteúdo que não faz sentido no próprio HTML.
 
 ```css
-.coluna-principal { flex-grow: 2; }   /* ocupa duas vezes mais espaco que .coluna-lateral */
+.coluna-principal { flex-grow: 2; }   /* ocupa duas vezes mais espaço que .coluna-lateral */
 .coluna-lateral { flex-grow: 1; }
 ```
 
@@ -87,8 +87,8 @@ Todo Flexbox raciocina em termos de **eixo principal** (o de `flex-direction`) e
 ```css
 .container {
     display: flex;
-    flex-wrap: nowrap;   /* padrao: tudo cabe em uma unica linha, encolhe se necessario */
-    /* flex-wrap: wrap;     -> passa para a linha seguinte se faltar espaco */
+    flex-wrap: nowrap;   /* padrão: tudo cabe em uma única linha, encolhe se necessário */
+    /* flex-wrap: wrap;     -> passa para a linha seguinte se faltar espaço */
 }
 ```
 

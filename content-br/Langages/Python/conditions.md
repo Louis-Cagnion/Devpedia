@@ -12,11 +12,11 @@ Python usa `if`/`elif`/`else`, sem nenhuma chave: é a própria **indentação**
 idade = 20
 
 if idade >= 18:
-    print("Voce e maior de idade.")
+    print("Você e maior de idade.")
 elif idade >= 13:
-    print("Voce e adolescente.")
+    print("Você e adolescente.")
 else:
-    print("Voce e crianca.")
+    print("Você e crianca.")
 ```
 
 > **Nota:** `elif` (contração de "else if") é a única palavra-chave para encadear condições; `else if` em duas palavras não existe em Python. A indentação coerente é **obrigatória**: um bloco mal indentado provoca um `IndentationError`, não apenas um aviso.
@@ -30,7 +30,7 @@ if []:      # False -> uma lista vazia e "falsy"
 if "":      # False -> uma string vazia e "falsy"
 if 0:       # False -> zero e "falsy"
 if None:    # False
-if [1, 2]:  # True -> uma lista nao vazia e "truthy"
+if [1, 2]:  # True -> uma lista não vazia e "truthy"
 ```
 
 | Valor | Truthy / Falsy |
@@ -44,10 +44,10 @@ if [1, 2]:  # True -> uma lista nao vazia e "truthy"
 ```python
 usuarios = []
 
-if usuarios:                # preferido a "if len(usuarios) > 0:"
-    print("Ha usuarios")
+if usuarios:                # preferido a "if len(usuários) > 0:"
+    print("Há usuários")
 else:
-    print("Nenhum usuario")
+    print("Nenhum usuário")
 ```
 
 ## `and`/`or` retornam um valor, não apenas um booleano
@@ -86,7 +86,7 @@ Permite atribuir uma variável **e** usá-la na mesma expressão, principalmente
 if calcular_resultado() > 10:
     print(calcular_resultado())
 
-# com o operador morsa: calculada uma unica vez, E utilizavel depois
+# com o operador morsa: calculada uma única vez, E utilizável depois
 if (resultado := calcular_resultado()) > 10:
     print(resultado)
 ```

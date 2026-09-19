@@ -61,7 +61,7 @@ let encontrar_usuario id =
 
 match encontrar_usuario 42 with
 | Some nome -> print_endline nome
-| None -> print_endline "Usuario nao encontrado"
+| None -> print_endline "Usuário não encontrado"
 ```
 
 A diferença em relação ao `None` em [Python](/?c=langages-de-programmation&s=python&p=python) (cf. capítulo [As variáveis](/?c=langages-de-programmation&s=python&p=variables) para `is None`) é que o compilador **força** a tratar o caso `None`: o tipo de uma função que pode não encontrar nada é explicitamente `string option`, nunca simplesmente `string`. É portanto impossível esquecer de verificar a ausência de valor sem que o compilador sinalize isso, enquanto um [`NullPointerException`](https://docs.oracle.com/en/java/) ou um `TypeError: 'NoneType' object is not subscriptable` em Python só aparece na execução, no caminho de código específico que o esqueceu.

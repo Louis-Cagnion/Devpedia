@@ -9,11 +9,11 @@ O Git oferece vários comandos para voltar atrás, em níveis diferentes: desfaz
 ## Desfazer modificações não commitadas
 
 ```bash
-# restaura um arquivo ao seu ultimo estado commitado, sobrescreve as modificacoes locais
+# restaura um arquivo ao seu último estado commitado, sobrescreve as modificações locais
 git checkout -- arquivo.txt
 git restore arquivo.txt      # equivalente moderno do comando acima
 
-# retira um arquivo do staging, SEM tocar em suas modificacoes no diretorio de trabalho
+# retira um arquivo do staging, SEM tocar em suas modificações no diretório de trabalho
 git restore --staged arquivo.txt
 ```
 
@@ -22,11 +22,11 @@ git restore --staged arquivo.txt
 ## `git reset`: mover a branch atual para trás
 
 ```bash
-# desfaz o ultimo commit, mas mantem tudo em staging (pronto para recommitar)
+# desfaz o último commit, mas mantem tudo em staging (pronto para recommitar)
 git reset --soft HEAD~1
-# desfaz o ultimo commit E o staging, mantem as modificacoes no diretorio de trabalho (padrao)
+# desfaz o último commit E o staging, mantem as modificações no diretório de trabalho (padrão)
 git reset --mixed HEAD~1
-# desfaz o ultimo commit, o staging, E as proprias modificacoes -> perda definitiva
+# desfaz o último commit, o staging, E as proprias modificações -> perda definitiva
 git reset --hard HEAD~1
 ```
 
@@ -53,7 +53,7 @@ Mesmo depois de um `reset --hard` ou uma manipulação malsucedida, o Git na ver
 ```bash
 git reflog
 # a3f9c1d HEAD@{0}: reset: moving to HEAD~1
-# e4f5g6h HEAD@{1}: commit: Corrige o calculo de desconto
+# e4f5g6h HEAD@{1}: commit: Corrige o cálculo de desconto
 ```
 
 ```bash

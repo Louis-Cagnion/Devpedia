@@ -67,7 +67,7 @@ X_validacao, X_test, y_validacao, y_test = train_test_split(X_temp, y_temp, test
 Seja qual for o algoritmo escolhido, o scikit-learn expõe sistematicamente a mesma interface:
 
 ```python
-# classificação: y é categórico ("sim"/"nao")
+# classificação: y é categórico ("sim"/"não")
 from sklearn.linear_model import LogisticRegression
 
 modelo = LogisticRegression()

@@ -22,7 +22,7 @@ Tomado isoladamente, nenhum dos detalhes abaixo identifica ninguém: milhões de
 ```text
 Resolucao + Fuso + Idioma + Navegador + Fontes + Renderizacao grafica
         ↓ (combinados e reduzidos a um valor unico, por hash)
-                    "impressao digital" quase unica do aparelho
+                    "impressão digital" quase unica do aparelho
 ```
 
 > **Analogia:** nenhuma das medidas de uma pessoa (altura, número do calçado, cor dos olhos) a identifica sozinha entre milhões de indivíduos, mas a combinação precisa delas reduz o campo a pouquíssimas pessoas. O fingerprinting faz a mesma coisa com características técnicas do navegador.
@@ -32,7 +32,7 @@ Resolucao + Fuso + Idioma + Navegador + Fontes + Renderizacao grafica
 Uma técnica muito usada consiste em fazer o navegador desenhar, em um elemento invisível da página, um texto ou uma forma geométrica precisa, e depois reler os pixels obtidos. O resultado exato depende da placa gráfica, do driver e do motor de renderização de fontes instalados, de modo que duas máquinas diferentes produzem quase sempre um resultado ligeiramente diferente, mesmo a partir do mesmo código:
 
 ```text
-1. O site pede ao navegador: "desenhe este texto em uma area oculta"
+1. O site pede ao navegador: "desenhe este texto em uma área oculta"
 2. O navegador desenha, usando sua placa grafica e suas fontes
 3. O site rele os pixels obtidos, pixel por pixel
 4. Esses pixels sao reduzidos a uma impressao unica (hash)

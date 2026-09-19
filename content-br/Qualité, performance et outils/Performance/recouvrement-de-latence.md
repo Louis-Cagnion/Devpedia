@@ -38,7 +38,7 @@ for i, item in enumerate(items):
     posicoes[i % N] = buscar(item)                     # inicia a rodada i, sem esperar
 
 for i in range(len(items) - N, len(items)):
-    resultados.append(extrair(posicoes[i % N]))        # esvazia as ultimas N posicoes
+    resultados.append(extrair(posicoes[i % N]))        # esvazia as ultimas N posições
 ```
 
 Na rodada `i`, `buscar(item)` começa **antes** de `extrair(...)` da rodada `i - N` terminar de executar: o processamento de um item ocorre enquanto a espera de rede do próximo já avança. Nenhuma das duas rodadas espera pela outra, e nunca há mais de N esperas em andamento ao mesmo tempo.

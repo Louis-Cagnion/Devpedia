@@ -45,7 +45,7 @@ div {
     padding: 20px;
     border: 2px solid black;
 }
-/* Largura REALMENTE ocupada na tela: 300 + 20+20 (padding) + 2+2 (border) = 344px, NAO
+/* Largura REALMENTE ocupada na tela: 300 + 20+20 (padding) + 2+2 (border) = 344px, NÃO
    300px! */
 ```
 
@@ -63,7 +63,7 @@ div {
     padding: 20px;
     border: 2px solid black;
 }
-/* Largura real: exatamente 300px -> padding e border agora estao INCLUIDOS nesse valor */
+/* Largura real: exatamente 300px -> padding e border agora estão INCLUIDOS nesse valor */
 ```
 
 `border-box` faz com que `width`/`height` designem o tamanho **total** da caixa (borda incluída), o `padding` "corroendo" o espaço do conteúdo em vez de se somar por cima, um comportamento bem mais previsível, que se tornou a convenção de fato na quase totalidade dos projetos modernos (frequentemente aplicado globalmente com `* { box-sizing: border-box; }`).
@@ -77,10 +77,10 @@ margin: 10px 20px 30px 40px;
 /* Dois valores: cima/baixo e depois esquerda/direita */
 margin: 10px 20px;
 
-/* Um valor: os quatro lados identicos */
+/* Um valor: os quatro lados idênticos */
 margin: 10px;
 
-/* Mirar em um unico lado */
+/* Mirar em um único lado */
 margin-top: 10px;
 padding-left: 20px;
 ```

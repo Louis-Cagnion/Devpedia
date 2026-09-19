@@ -112,7 +112,7 @@ def corrigir_tabelas_subcontadas(caminho_pdf, tabelas_nativas):
         if candidatos and melhor > contar_colunas(tabela_nativa.celulas):
             resultado.extend(candidatos)   # img2table faz melhor: preferido
         else:
-            resultado.append(tabela_nativa)   # find_tables() ja bastava
+            resultado.append(tabela_nativa)   # find_tables() já bastava
     return resultado
 ```
 

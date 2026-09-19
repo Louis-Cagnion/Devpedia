@@ -11,16 +11,16 @@ Como no [Bash](/?c=shells&s=bash&p=bash), cada comando lançado inicia um **proc
 ```powershell
 # lanca como tarefa em segundo plano (job)
 Start-Job -ScriptBlock { .\processamento_longo.ps1 }
-Write-Output "O console fica disponivel imediatamente"
+Write-Output "O console fica disponível imediatamente"
 ```
 
 ## Gerenciar tarefas em segundo plano (`Get-Job`, `Receive-Job`)
 
 ```powershell
 $job = Start-Job -ScriptBlock { .\processamento_longo.ps1 }
-Get-Job          # lista os jobs da sessao atual, com seu estado
+Get-Job          # lista os jobs da sessão atual, com seu estado
 Wait-Job $job    # espera o fim do job (bloqueante), equivalente de um "fg" que esperaria
-Receive-Job $job # recupera a saida produzida pelo job
+Receive-Job $job # recupera a saída produzida pelo job
 ```
 
 > **Nota:** ao contrário do Bash onde `fg`/`bg` alternam uma tarefa entre primeiro plano e segundo plano da **mesma** sessão do console, um `Job` do PowerShell roda em um processo separado desde o início: `Receive-Job` recupera seu resultado depois de terminado, em vez de "trazê-lo de volta" para o console atual.
@@ -28,7 +28,7 @@ Receive-Job $job # recupera a saida produzida pelo job
 ## Ver os processos em execução (`Get-Process`)
 
 ```powershell
-# lista todos os processos, com CPU, memoria, PID...
+# lista todos os processos, com CPU, memória, PID...
 Get-Process
 # filtra por nome, equivalente de "ps aux | grep"
 Get-Process | Where-Object { $_.Name -like "*chrome*" }
@@ -39,7 +39,7 @@ Get-Process | Sort-Object CPU -Descending | Select-Object -First 5
 ## Encerrar um processo (`Stop-Process`)
 
 ```powershell
-Stop-Process -Id 1234         # pede a parada do processo (equivalente mais proximo de SIGTERM)
+Stop-Process -Id 1234         # pede a parada do processo (equivalente mais próximo de SIGTERM)
 # parada forcada, sem esperar um fechamento limpo (equivalente de SIGKILL)
 Stop-Process -Id 1234 -Force
 Stop-Process -Name "notepad"  # mira pelo nome em vez do PID

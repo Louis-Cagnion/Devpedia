@@ -57,7 +57,7 @@ Temperatura alta (ex. 1.5) -> achata a diferenca, as alternativas voltam a compe
 resposta = client.chat.completions.create(
     model="...",
     messages=[...],
-    temperature=0.2,  # estreita o sorteio: respostas estaveis, pouca variacao entre chamadas
+    temperature=0.2,  # estreita o sorteio: respostas estáveis, pouca variação entre chamadas
 )
 ```
 

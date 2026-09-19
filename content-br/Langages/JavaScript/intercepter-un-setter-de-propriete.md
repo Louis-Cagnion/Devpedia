@@ -39,7 +39,7 @@ Object.defineProperty(meuSelect, 'value', {
     },
     set(novoValor) {
         propriedadeNativa.set.call(meuSelect, novoValor);   // escreve de fato o valor
-        sincronizarExibicao();                                // + dispara a sincronizacao
+        sincronizarExibicao();                                // + dispara a sincronização
     },
     configurable: true,
 });

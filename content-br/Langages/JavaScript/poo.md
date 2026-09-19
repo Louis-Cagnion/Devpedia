@@ -44,7 +44,7 @@ class Cachorro extends Animal {
 
 class CachorroDeGuarda extends Cachorro {
     falar() {
-        return super.falar() + " ruidosamente";   // chama o metodo da classe pai
+        return super.falar() + " ruidosamente";   // chama o método da classe pai
     }
 }
 ```
@@ -58,7 +58,7 @@ class Calculos {
     }
 }
 
-Calculos.adicao(2, 3);   // nao precisa de "new Calculos()"
+Calculos.adicao(2, 3);   // não precisa de "new Cálculos()"
 ```
 
 ## Getters e setters
@@ -69,11 +69,11 @@ class Circulo {
         this.raio = raio;
     }
 
-    get area() {                 // acessado SEM parenteses: circulo.area
+    get area() {                 // acessado SEM parenteses: circulo.área
         return Math.PI * this.raio ** 2;
     }
 
-    set diametro(valor) {         // "circulo.diametro = 10" chama esse metodo
+    set diametro(valor) {         // "circulo.diametro = 10" chama esse método
         this.raio = valor / 2;
     }
 }
@@ -87,7 +87,7 @@ c.diametro = 10;       // equivale a c.raio = 5
 
 ```javascript
 class ContaBancaria {
-    #saldo = 0;   // o "#" torna essa propriedade inacessivel de fora da classe
+    #saldo = 0;   // o "#" torna essa propriedade inacessível de fora da classe
 
     depositar(valor) {
         this.#saldo += valor;
@@ -101,13 +101,13 @@ class ContaBancaria {
 const conta = new ContaBancaria();
 conta.depositar(100);
 console.log(conta.saldo);   // 100
-console.log(conta.#saldo);  // SyntaxError: #saldo nao e acessivel aqui
+console.log(conta.#saldo);  // SyntaxError: #saldo não e acessível aqui
 ```
 
 ## O que se esconde por trás de `class`: o protótipo
 
 ```javascript
-// "function" -> uma classe E uma funcao especial
+// "function" -> uma classe E uma função especial
 console.log(typeof Veiculo);
 console.log(v.__proto__ === Veiculo.prototype);  // true
 ```

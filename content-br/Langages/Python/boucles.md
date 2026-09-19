@@ -42,7 +42,7 @@ for i in range(len(frutas) - 1, -1, -1):
 
 ```python
 for indice, fruta in enumerate(frutas):
-    print(f"{indice}: {fruta}")
+    print(f"{índice}: {fruta}")
 # 0: maca
 # 1: banana
 # 2: cereja
@@ -94,7 +94,7 @@ i = 0
 
 while i < 5:
     print(i)
-    i += 1   # Python nao tem operador i++ ou ++i: e preciso escrever i += 1
+    i += 1   # Python não tem operador i++ ou ++i: e preciso escrever i += 1
 ```
 
 ## `break` e `continue`
@@ -119,10 +119,10 @@ numeros = [1, 3, 5, 7]
 
 for n in numeros:
     if n % 2 == 0:
-        print("Numero par encontrado")
+        print("Número par encontrado")
         break
 else:
-    print("Nenhum numero par na lista")  # executado apenas se nenhum break ocorreu
+    print("Nenhum número par na lista")  # executado apenas se nenhum break ocorreu
 ```
 
 > **Nota:** essa construção frequentemente surpreende desenvolvedores vindos de outras linguagens (o `else` parece se ligar ao `if` acima, mas na verdade se liga ao `for`). Ela evita um padrão clássico em que seria necessária uma variável "bandeira" (`encontrado = False`, definida como `True` no `if`, testada depois do laço).

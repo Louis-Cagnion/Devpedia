@@ -12,15 +12,15 @@ Python distingue duas estruturas ordenadas de coleções: a **lista**, mutável,
 frutas = ["maca", "banana", "cereja"]
 
 frutas[0]     # "maca"
-frutas[-1]    # "cereja" -> indice negativo: conta a partir do fim
-frutas[0:2]   # ["maca", "banana"] -> slicing: elementos do indice 0 (incluido) a 2 (excluido)
+frutas[-1]    # "cereja" -> índice negativo: conta a partir do fim
+frutas[0:2]   # ["maca", "banana"] -> slicing: elementos do índice 0 (incluído) a 2 (excluido)
 frutas[::-1]  # ["cereja", "banana", "maca"] -> inverte a lista (passo -1)
 
 frutas.append("kiwi")       # adiciona ao final
-frutas.insert(0, "manga")   # insere em um indice preciso
-frutas.remove("banana")     # remove a primeira ocorrencia desse valor
-frutas.pop()                 # remove E retorna o ultimo elemento
-len(frutas)                  # numero de elementos
+frutas.insert(0, "manga")   # insere em um índice preciso
+frutas.remove("banana")     # remove a primeira ocorrência desse valor
+frutas.pop()                 # remove E retorna o último elemento
+len(frutas)                  # número de elementos
 "maca" in frutas             # True/False -> testa a presenca de um valor
 ```
 
@@ -31,9 +31,9 @@ len(frutas)                  # numero de elementos
 `[x] * n` constrói uma nova lista de tamanho `n`, cada posição contendo `x`:
 
 ```python
-# [0, 0, 0, 0, 0] -> pre-alocacao pratica para um tamanho conhecido de antemao
+# [0, 0, 0, 0, 0] -> pre-alocação prática para um tamanho conhecido de antemao
 zeros = [0] * 5
-# ["a", "b", "a", "b", "a", "b"] -> repete a SEQUENCIA inteira, nao cada elemento
+# ["a", "b", "a", "b", "a", "b"] -> repete a SEQUÊNCIA inteira, não cada elemento
 letras = ["a", "b"] * 3
 ```
 
@@ -42,7 +42,7 @@ letras = ["a", "b"] * 3
 ```python
 grade = [[]] * 3
 grade[0].append("x")
-print(grade)   # [['x'], ['x'], ['x']] -> as 3 sublistas SAO o mesmo objeto, nao copias
+print(grade)   # [['x'], ['x'], ['x']] -> as 3 sublistas São o mesmo objeto, não copias
 ```
 
 > **Boa prática:** usar uma compreensão de lista (ver mais abaixo) para obter `n` objetos realmente distintos: `[[] for _ in range(3)]` cria uma nova lista vazia a cada iteração, ao contrário de `[[]] * 3`, que copia `n` vezes a mesma referência.
@@ -50,9 +50,9 @@ print(grade)   # [['x'], ['x'], ['x']] -> as 3 sublistas SAO o mesmo objeto, nao
 ### `.append()` vs `.extend()`
 
 ```python
-# ja visto: adiciona UM UNICO elemento (mesmo que seja uma lista, aninhada tal qual)
+# já visto: adiciona UM Único elemento (mesmo que seja uma lista, aninhada tal qual)
 frutas.append("kiwi")
-# adiciona CADA elemento do iteravel dado, um a um, ao final
+# adiciona CADA elemento do iterável dado, um a um, ao final
 frutas.extend(["kiwi", "manga"])
 
 frutas.append(["a", "b"])  # [..., ["a", "b"]] -> UM elemento, aninhado
@@ -66,9 +66,9 @@ frutas.extend(["a", "b"])  # [..., "a", "b"]   -> DOIS elementos, achatados
 ```python
 numeros = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-numeros[2:5]  # [2, 3, 4] -> do indice 2 (incluido) a 5 (excluido)
-numeros[:3]   # [0, 1, 2] -> desde o inicio
-numeros[7:]   # [7, 8, 9] -> ate o fim
+numeros[2:5]  # [2, 3, 4] -> do índice 2 (incluído) a 5 (excluido)
+numeros[:3]   # [0, 1, 2] -> desde o início
+numeros[7:]   # [7, 8, 9] -> até o fim
 numeros[::2]  # [0, 2, 4, 6, 8] -> um elemento a cada dois
 ```
 
@@ -78,7 +78,7 @@ numeros[::2]  # [0, 2, 4, 6, 8] -> um elemento a cada dois
 coordenadas = (48.8566, 2.3522)
 
 coordenadas[0]      # 48.8566
-coordenadas[0] = 0  # TypeError: uma tupla nao pode ser modificada apos criada
+coordenadas[0] = 0  # TypeError: uma tupla não pode ser modificada após criada
 ```
 
 Uma tupla serve tipicamente para representar um registro fixo (um par de coordenadas, um ponto RGB...) em vez de uma coleção destinada a evoluir.
@@ -89,8 +89,8 @@ Uma tupla serve tipicamente para representar um registro fixo (um par de coorden
 latitude, longitude = coordenadas
 print(latitude)   # 48.8566
 
-a, b, c = 1, 2, 3  # funciona tambem sem parenteses explicitos: uma tupla implicita
-a, b = b, a        # troca de valores, sem variavel temporaria
+a, b, c = 1, 2, 3  # funciona também sem parenteses explícitos: uma tupla implícita
+a, b = b, a        # troca de valores, sem variável temporária
 ```
 
 O mesmo `*` também desempacota elementos DENTRO de um literal de lista, para construir uma nova:
@@ -113,7 +113,7 @@ b = [3, 4]
 notas = [12, 5, 18, 9]
 
 sorted(notas)  # [5, 9, 12, 18] -> NOVA lista ordenada, notas permanece inalterada
-notas.sort()   # ordena NO LUGAR, nao retorna nada (None), notas e modificada
+notas.sort()   # ordena NO LUGAR, não retorna nada (None), notas e modificada
 ```
 
 `sorted(iterable)` também funciona em strings: a ordenação é então **lexicográfica** (caractere por caractere, como um dicionário), o que também ordena cronologicamente datas escritas em comprimento fixo (`AAAA-MM-DD...`), sem precisar analisá-las:
@@ -158,8 +158,8 @@ listas = [[1, 2], [3, 4], [5]]
 achatada = [x for sublista in listas for x in sublista]
 # equivalente a:
 achatada = []
-for sublista in listas:  # laco exterior -> escrito PRIMEIRO na compreensao
-    for x in sublista:   # laco interior -> escrito SEGUNDO
+for sublista in listas:  # laço exterior -> escrito PRIMEIRO na compreensão
+    for x in sublista:   # laço interior -> escrito SEGUNDO
         achatada.append(x)
 # achatada vale [1, 2, 3, 4, 5]
 ```

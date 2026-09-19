@@ -20,7 +20,7 @@ Diferente do [modelo por Promise visto na programação assíncrona](/?c=langage
 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 if (!Recognition) {
-    // Alternativa obrigatoria: a API nao existe neste navegador
+    // Alternativa obrigatória: a API não existe neste navegador
     mostrarBuscaClassica();
 } else {
     const reconhecimento = new Recognition();

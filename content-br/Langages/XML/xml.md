@@ -42,7 +42,7 @@ while ($leitor->read()) {
         $no  = $leitor->expand();           // expande ESTE elemento em um mini-DOM local
         $doc = new DOMDocument();
         $doc->appendChild($doc->importNode($no, true));
-        // ... extrair os dados de $doc, e passar para o proximo anuncio
+        // ... extrair os dados de $doc, e passar para o próximo anuncio
     }
 }
 $leitor->close();

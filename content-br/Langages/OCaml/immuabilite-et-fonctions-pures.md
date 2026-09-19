@@ -27,9 +27,9 @@ let lista_b = 1 :: lista_a   (* lista_b = [1; 2; 3; 4] *)
 ```
 
 ```python
-# Python: append() muta a lista existente, so sobra uma unica lista
+# Python: append() muta a lista existente, só sobra uma única lista
 lista_a = [2, 3, 4]
-lista_a.append(1)   # lista_a vira [2, 3, 4, 1] -- a original nao existe mais
+lista_a.append(1)   # lista_a vira [2, 3, 4, 1] -- a original não existe mais
 ```
 
 Essa estrutura chamada **persistente** torna possível manter várias versões de uma mesma coleção sem nunca copiá-las integralmente: `lista_a` e `lista_b` coexistem, compartilham a memória do que têm em comum, e nenhuma das duas pode corromper a outra.

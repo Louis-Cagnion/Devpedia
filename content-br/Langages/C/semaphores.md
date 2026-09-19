@@ -19,8 +19,8 @@ sem_t semaforo;
 // contador inicial em 3 (0 = compartilhado entre threads do mesmo processo)
 sem_init(&semaforo, 0, 3);
 
-sem_wait(&semaforo); // decrementa; bloqueia se ja estiver em 0
-// ... secao que nao deve ultrapassar 3 acessos simultaneos ...
+sem_wait(&semaforo); // decrementa; bloqueia se já estiver em 0
+// ... seção que não deve ultrapassar 3 acessos simultaneos ...
 sem_post(&semaforo); // incrementa, acorda uma eventual thread em espera
 ```
 
@@ -32,14 +32,14 @@ Diferente de `sem_init()` (limitado a um mesmo processo), `sem_open()` cria ou a
 #include <semaphore.h>
 #include <fcntl.h>
 
-sem_t *garfos = sem_open("/garfos", O_CREAT, 0644, 5); // 5 garfos disponiveis
+sem_t *garfos = sem_open("/garfos", O_CREAT, 0644, 5); // 5 garfos disponíveis
 
-sem_wait(garfos); // pega um garfo (bloqueia se os 5 ja estiverem tomados)
+sem_wait(garfos); // pega um garfo (bloqueia se os 5 já estiverem tomados)
 // ... usar o recurso compartilhado ...
 sem_post(garfos); // devolve o garfo
 
 sem_close(garfos);     // libera o descritor local a este processo
-// destroi o objeto nomeado do sistema (uma unica vez, ao final do programa)
+// destroi o objeto nomeado do sistema (uma única vez, ao final do programa)
 sem_unlink("/garfos");
 ```
 

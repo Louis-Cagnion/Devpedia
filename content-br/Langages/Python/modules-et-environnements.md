@@ -18,12 +18,12 @@ def adicao(a, b):
 # arquivo main.py
 import calculos
 
-print(calculos.adicao(2, 3))   # 5, acesso via o nome do modulo
+print(calculos.adicao(2, 3))   # 5, acesso via o nome do módulo
 
-from calculos import adicao     # importa diretamente a funcao, sem prefixo
+from calculos import adicao     # importa diretamente a função, sem prefixo
 print(adicao(2, 3))
 
-import calculos as c             # renomeia o modulo importado
+import calculos as c             # renomeia o módulo importado
 print(c.adicao(2, 3))
 ```
 
@@ -37,8 +37,8 @@ def adicao(a, b):
     return a + b
 
 if __name__ == "__main__":
-    # so executa SE lancarmos "python calculos.py" diretamente
-    print("Teste rapido:", adicao(2, 3))
+    # só executa SE lancarmos "python calculos.py" diretamente
+    print("Teste rápido:", adicao(2, 3))
 ```
 
 > **Nota:** essa proteção permite que um arquivo sirva tanto como módulo reutilizável (importado sem executar nada inesperado) quanto como script autônomo (testável diretamente), sem que esses dois usos interfiram entre si.
@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
 ```bash
 pip install requests          # instala uma biblioteca
-pip install requests==2.31.0  # instala uma versao precisa
+pip install requests==2.31.0  # instala uma versão precisa
 pip uninstall requests        # desinstala
 pip list                      # lista as bibliotecas instaladas
 ```
@@ -61,7 +61,7 @@ numpy==1.26.0
 
 ```bash
 pip freeze > requirements.txt    # gera esse arquivo a partir do ambiente atual
-pip install -r requirements.txt  # reinstala exatamente as mesmas versoes em outro lugar
+pip install -r requirements.txt  # reinstala exatamente as mesmas versões em outro lugar
 ```
 
 ## Os ambientes virtuais
@@ -74,7 +74,7 @@ python -m venv .venv          # cria um ambiente virtual na pasta .venv
 source .venv/bin/activate  # ativa o ambiente (Linux/macOS)
 .venv\Scripts\activate     # ativa o ambiente (Windows)
 
-pip install requests             # instala APENAS nesse ambiente, nao globalmente
+pip install requests             # instala APENAS nesse ambiente, não globalmente
 
 deactivate                        # sai do ambiente virtual
 ```
@@ -90,12 +90,12 @@ deactivate                        # sai do ambiente virtual
 ```python
 import os
 
-os.environ["CAMINHO_CONFIG"]                     # lanca um KeyError se a variavel nao existir
+os.environ["CAMINHO_CONFIG"]                     # lanca um KeyError se a variável não existir
 os.environ.get("CAMINHO_CONFIG")                 # None se ausente, sem erro
-os.environ.get("CAMINHO_CONFIG", "/etc/config")  # valor padrao se ausente
+os.environ.get("CAMINHO_CONFIG", "/etc/config")  # valor padrão se ausente
 
-os.environ["NOVA_VAR"] = "valor"  # cria ou modifica uma variavel
-os.environ.pop("NOVA_VAR", None)  # remove sem erro se ja estiver ausente (ao contrario de del)
+os.environ["NOVA_VAR"] = "valor"  # cria ou modifica uma variável
+os.environ.pop("NOVA_VAR", None)  # remove sem erro se já estiver ausente (ao contrário de del)
 ```
 
 > **Armadilha:** modificar `os.environ` só muda o processo Python atual, e os processos filhos lançados **depois** (via [subprocess](/?c=langages-de-programmation&s=python&p=sous-processus-et-flux-standard)), que herdam uma cópia do ambiente no momento de sua criação -- nunca a shell que lançou o script, nem o resto do sistema. Fechar o script e reabrir um terminal nunca mostrará, portanto, uma variável adicionada via `os.environ[...] = ...`.
@@ -137,7 +137,7 @@ where = ["."]
 `[tool.setuptools.packages.find]` detecta automaticamente os pacotes clássicos (com `__init__.py`); um projeto que se apoia em namespace packages deve usar `find_namespace_packages` no lugar, caso contrário as pastas sem `__init__.py` são silenciosamente ignoradas na instalação.
 
 ```bash
-pip install -e .   # instalacao "editable"
+pip install -e .   # instalação "editable"
 ```
 
 A instalação **editável** (`pip install -e .`) instala o projeto sem copiar seus arquivos para o ambiente virtual: em vez disso, ela cria um arquivo `.pth` que aponta para a pasta de origem. Modificar o código-fonte tem efeito imediato, sem reinstalação, o que torna esse comando indispensável no desenvolvimento ativo de uma biblioteca.
@@ -166,7 +166,7 @@ O arquivo `._pth` **congela** inteiramente o `sys.path` nessa lista: ao contrár
 ```python
 # meu_script.py, situado na mesma pasta
 import sys
-sys.path.insert(0, ".")  # sem isso, um pacote vizinho nao listado no ._pth fica inencontravel
+sys.path.insert(0, ".")  # sem isso, um pacote vizinho não listado no ._pth fica inencontrável
 
 import meu_pacote
 ```

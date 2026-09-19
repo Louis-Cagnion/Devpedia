@@ -20,8 +20,8 @@ Essas duas linhas, colocadas em `~/.zshrc` (veja [Os arquivos de inicialização
 ## O que isso muda na prática
 
 ```bash
-git checkout <Tab>  # sugere as branches locais, nao os arquivos do diretorio
-kill -9 <Tab>       # sugere os PIDs de processos em execucao, com seu nome
+git checkout <Tab>  # sugere as branches locais, não os arquivos do diretório
+kill -9 <Tab>       # sugere os PIDs de processos em execução, com seu nome
 ssh <Tab>           # sugere os hosts conhecidos (~/.ssh/config, ~/.ssh/known_hosts)
 ```
 

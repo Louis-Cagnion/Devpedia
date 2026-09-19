@@ -9,7 +9,7 @@ Um **remote** é uma referência a uma cópia do repositório hospedada em outro
 ## Ver e adicionar um remote
 
 ```bash
-# lista os remotes configurados (frequentemente so "origin")
+# lista os remotes configurados (frequentemente só "origin")
 git remote -v
 git remote add origin https://exemplo.com/projeto.git
 ```
@@ -20,9 +20,9 @@ git remote add origin https://exemplo.com/projeto.git
 
 ```bash
 git push origin main     # envia os commits da branch local "main" para o remote "origin"
-# -u: memoriza essa ligacao, para poder depois escrever apenas "git push"
+# -u: memoriza essa ligação, para poder depois escrever apenas "git push"
 git push -u origin main
-git push                 # uma vez a ligacao memorizada
+git push                 # uma vez a ligação memorizada
 ```
 
 ## Forçar um push depois de uma reescrita de histórico
@@ -30,10 +30,10 @@ git push                 # uma vez a ligacao memorizada
 Depois de um `rebase`, um `commit --amend`, ou uma reescrita de histórico (veja [A arquitetura interna do Git](/?c=git&p=architecture-interne)), os commits locais não têm mais os mesmos hashes que os já enviados: um `push` normal é então rejeitado (*non fast-forward*), o remote não encontrando seus antigos commits como ancestrais dos novos.
 
 ```bash
-# sobrescreve o historico remoto sem condicao, perigoso se outra pessoa enviou algo nesse meio
+# sobrescreve o histórico remoto sem condição, perigoso se outra pessoa enviou algo nesse meio
 # tempo
 git push --force origin main
-# sobrescreve apenas se o remote ainda estiver no estado visto no ultimo fetch
+# sobrescreve apenas se o remote ainda estiver no estado visto no último fetch
 git push --force-with-lease origin main
 ```
 
@@ -42,7 +42,7 @@ git push --force-with-lease origin main
 ## `fetch` vs `pull`
 
 ```bash
-git fetch origin      # baixa os novos commits do remote, SEM tocar no diretorio de trabalho
+git fetch origin      # baixa os novos commits do remote, SEM tocar no diretório de trabalho
 git pull origin main  # equivalente a: git fetch + git merge (mescla imediatamente)
 ```
 
@@ -54,7 +54,7 @@ Uma branch local pode ser ligada a uma branch remota, o que permite ao Git saber
 
 ```bash
 git branch -vv                  # mostra qual branch remota cada branch local rastreia
-git push -u origin minha-branch # estabelece essa ligacao de rastreamento ja no primeiro push
+git push -u origin minha-branch # estabelece essa ligação de rastreamento já no primeiro push
 ```
 
 ## Clonar um remote já configurado
@@ -70,9 +70,9 @@ git clone https://exemplo.com/projeto.git
 `git bundle` empacota tudo ou parte de um repositório (commits, branches, tags) em um único arquivo binário, sem precisar de um servidor remoto:
 
 ```bash
-# captura todas as refs (branches, tags, HEAD) em um unico arquivo
+# captura todas as refs (branches, tags, HEAD) em um único arquivo
 git bundle create backup.bundle --all
-git bundle verify backup.bundle           # verifica que o bundle esta completo e utilizavel
+git bundle verify backup.bundle           # verifica que o bundle esta completo e utilizável
 git clone backup.bundle novo-diretorio    # um bundle se clona como um remote comum
 ```
 

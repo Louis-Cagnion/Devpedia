@@ -11,8 +11,8 @@ Cada pacote instalado em uma imagem é uma **superfície de ataque** (mais um po
 ## Fixar as versões, nunca usar `latest` em produção
 
 ```dockerfile
-FROM node:latest   # evitar: o conteudo real de "latest" muda com o tempo, sem avisar
-FROM node:20.11.1  # reproduzivel: o mesmo Dockerfile sempre constroi a mesma coisa
+FROM node:latest   # evitar: o conteúdo real de "latest" muda com o tempo, sem avisar
+FROM node:20.11.1  # reproduzível: o mesmo Dockerfile sempre constroi a mesma coisa
 ```
 
 Uma imagem `latest` que muda silenciosamente sob os pés de uma implantação falha da pior forma possível: o build tem sucesso, mas com um conteúdo diferente da última vez: seria melhor que uma versão ausente fizesse o build falhar explicitamente em vez de construir mesmo assim com um conteúdo imprevisível.
@@ -33,7 +33,7 @@ Essa precaução se conecta ao [princípio do menor privilégio](/?c=domain-spec
 Um valor passado por `ENV` ou `ARG` continua legível nos metadados da imagem (`docker history`), mesmo depois de um build multi-estágio que não o copia para a imagem final: o segredo existiu em uma camada intermediária, e essa camada continua inspecionável.
 
 ```dockerfile
-# EVITAR: a senha continua visivel no historico da imagem
+# EVITAR: a senha continua visível no histórico da imagem
 ARG DB_PASSWORD=minhasenha123
 ```
 

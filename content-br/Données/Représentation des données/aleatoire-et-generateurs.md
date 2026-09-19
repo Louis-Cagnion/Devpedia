@@ -20,7 +20,7 @@ print(random.randint(1, 100))  # 82
 print(random.randint(1, 100))  # 15
 
 random.seed(42)                # voltamos para a mesma semente
-print(random.randint(1, 100))  # 82 -> identico
+print(random.randint(1, 100))  # 82 -> idêntico
 ```
 
 Em [C](/?c=langages-de-programmation&s=c&p=c), `rand()` sem `srand()` usa implicitamente a semente `1`: um programa relançado produz **exatamente a mesma sequência**. Daí o hábito de semear com a hora atual:
@@ -58,11 +58,11 @@ Mais grave: um PRNG clássico é projetado para ser **rápido e bem distribuído
 
 ```python
 import secrets
-token = secrets.token_hex(32)     # imprevisivel
+token = secrets.token_hex(32)     # imprevisível
 ```
 
 ```php
-$token = bin2hex(random_bytes(32));   // e nao uniqid() ou mt_rand()
+$token = bin2hex(random_bytes(32));   // e não uniqid() ou mt_rand()
 ```
 
 Veja o capítulo [Protegendo seus dados](/?c=langages-de-programmation&s=php&p=securite) de PHP, onde os tokens CSRF se baseiam justamente em `random_bytes()`.
@@ -89,8 +89,8 @@ int sorteio = rand() % 3;   // 0..2
 A solução é **rejeitar** os sorteios que caem na zona excedente, ou mais simplesmente usar uma função que faz isso por você:
 
 ```python
-random.randint(0, 2)  # gerencia a distribuicao uniforme
-secrets.randbelow(3)  # idem, em versao criptografica
+random.randint(0, 2)  # gerência a distribuição uniforme
+secrets.randbelow(3)  # idem, em versão criptografica
 ```
 
 O mesmo raciocínio se aplica a `Math.random()` em JavaScript ou `mt_rand()` em PHP: prefira a função dedicada a um `%` improvisado.

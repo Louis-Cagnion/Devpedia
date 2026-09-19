@@ -14,9 +14,9 @@ A **STL** (*Standard Template Library*) fornece estruturas de dados genéricas (
 std::vector<int> numeros = {1, 2, 3};
 
 numeros.push_back(4);  // adiciona ao final
-numeros[0];            // acesso direto por indice, como um array C
-numeros.size();        // numero de elementos
-numeros.pop_back();    // remove o ultimo elemento
+numeros[0];            // acesso direto por índice, como um array C
+numeros.size();        // número de elementos
+numeros.pop_back();    // remove o último elemento
 
 for (int n : numeros) {  // percurso simples, como um for-each
     std::cout << n << " ";
@@ -31,7 +31,7 @@ for (int n : numeros) {  // percurso simples, como um for-each
 #include <list>
 
 std::list<int> lista = {1, 2, 3};
-lista.push_front(0);   // insercao no inicio em tempo constante -> std::vector seria O(n) aqui
+lista.push_front(0);   // inserção no início em tempo constante -> std::vector seria O(n) aqui
 ```
 
 Ao contrário de `std::vector`, inserir no meio ou no início de uma `std::list` não exige nenhum deslocamento dos outros elementos (veja [As listas encadeadas](/?c=langages-de-programmation&s=c&p=listes-chainees)), ao custo de um acesso por índice impossível em tempo constante (`lista[2]` não existe, é preciso percorrer).
@@ -46,7 +46,7 @@ idades["Joao"] = 25;
 idades["Maria"] = 30;
 
 idades["Joao"];                    // 25
-// testa a existencia de uma chave (nenhum operador "in" direto em C++)
+// testa a existência de uma chave (nenhum operador "in" direto em C++)
 idades.find("Ali") != idades.end();
 
 for (const auto &[nome, idade] : idades) {  // percurso: os pares SEMPRE ordenados por chave
@@ -72,7 +72,7 @@ Se a chave exata não existe, `lower_bound` retorna então a primeira chave estr
 ```cpp
 auto it = taxas.lower_bound(25);
 if (it != taxas.begin()) {
-    --it;   // it agora aponta para 20, a ultima chave estritamente menor que 25
+    --it;   // it agora aponta para 20, a última chave estritamente menor que 25
 }
 ```
 
@@ -88,7 +88,7 @@ if (it != taxas.begin()) {
 std::set<int> valores = {3, 1, 2, 1};   // {1, 2, 3} -> ordenado E deduplicado automaticamente
 
 valores.insert(4);
-valores.count(2);   // 1 se presente, 0 caso contrario (um set nunca contem duplicata)
+valores.count(2);   // 1 se presente, 0 caso contrário (um set nunca contem duplicata)
 ```
 
 `std::unordered_set` é o equivalente baseado em uma tabela hash, mais rápido em média, sem ordem garantida.
@@ -104,7 +104,7 @@ std::stack<int> pilha;
 pilha.push(1);
 pilha.push(2);
 pilha.top();    // 2: o topo, sem removê-lo
-pilha.pop();    // remove o topo (NAO retorna nada, diferente de muitas outras linguagens)
+pilha.pop();    // remove o topo (NÃO retorna nada, diferente de muitas outras linguagens)
 ```
 
 Deliberadamente sem iteradores (sem `begin()`/`end()`): percorrer uma pilha de outra forma que não pelo seu topo normalmente não faz sentido.

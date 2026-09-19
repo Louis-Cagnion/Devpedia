@@ -10,7 +10,7 @@ O elemento [HTML](/?c=langages&s=html&p=html) `<canvas>` expõe uma área de des
 
 ```javascript
 const canvas = document.querySelector('canvas');
-const ctx = canvas.getContext('2d');   // "2d": desenho 2D classico (em oposicao a "webgl")
+const ctx = canvas.getContext('2d');   // "2d": desenho 2D clássico (em oposição a "webgl")
 
 ctx.fillStyle = 'rgba(2,96,231,0.5)';
 ctx.fillRect(10, 10, 100, 50);         // retangulo preenchido: x, y, largura, altura
@@ -22,11 +22,11 @@ Um pixel CSS (o tamanho exibido) nem sempre corresponde a um pixel físico da te
 
 ```javascript
 function redimensionar() {
-    // limite em 2: alem disso, custo desnecessario
+    // limite em 2: alem disso, custo desnecessário
     const proporcao = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
 
-    // resolucao REAL do canvas (pixels fisicos)
+    // resolução REAL do canvas (pixels fisicos)
     canvas.width  = Math.floor(rect.width  * proporcao);
     canvas.height = Math.floor(rect.height * proporcao);
     // para desenhar depois em coordenadas CSS
@@ -48,7 +48,7 @@ function redimensionar() {
 function frame(agora) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);   // apaga a imagem anterior
     desenharCena(agora);
-    requestAnimationFrame(frame);                         // reagenda a proxima chamada
+    requestAnimationFrame(frame);                         // reagenda a próxima chamada
 }
 requestAnimationFrame(frame);
 ```
@@ -66,7 +66,7 @@ let x = posicaoInicial;
 
 function frame() {
     const alvo = calcularNovoAlvo();
-    x += (alvo - x) * 0.04;   // avanca 4% da distancia restante a cada quadro
+    x += (alvo - x) * 0.04;   // avança 4% da distância restante a cada quadro
     desenharEm(x);
     requestAnimationFrame(frame);
 }

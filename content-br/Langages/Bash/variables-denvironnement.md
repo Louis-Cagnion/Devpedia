@@ -9,16 +9,16 @@ Uma variável de ambiente é uma variável transmitida automaticamente aos proce
 ## Variável local vs variável exportada
 
 ```bash
-NOME="Joao"  # variavel de shell comum: visivel apenas nesse script/sessao
+NOME="Joao"  # variável de shell comum: visível apenas nesse script/sessão
 # a partir de agora, transmitida aos processos filhos (outros scripts, comandos...)
 export NOME
 
-export EMAIL="joao@exemplo.com"  # declaracao e export em uma unica linha
+export EMAIL="joao@exemplo.com"  # declaração e export em uma única linha
 ```
 
 ```bash
 # subscript.sh
-echo "$NOME"    # exibe "Joao" se NOME foi exportada pelo script chamador, vazio senao
+echo "$NOME"    # exibe "Joao" se NOME foi exportada pelo script chamador, vazio senão
 ```
 
 > **Nota:** o export só funciona em um sentido: do pai para o filho. Um subscript que modifica uma variável exportada não pode repassar essa mudança para o script que o lançou: cada processo tem sua própria cópia do ambiente.
@@ -26,10 +26,10 @@ echo "$NOME"    # exibe "Joao" se NOME foi exportada pelo script chamador, vazio
 ## Variáveis de ambiente comuns
 
 ```bash
-echo $PATH   # lista dos diretorios onde o shell procura os comandos executaveis
-echo $HOME   # diretorio pessoal do usuario atual
-echo $USER   # nome do usuario atual
-echo $PWD    # diretorio de trabalho atual
+echo $PATH   # lista dos diretórios onde o shell procura os comandos executáveis
+echo $HOME   # diretório pessoal do usuário atual
+echo $USER   # nome do usuário atual
+echo $PWD    # diretório de trabalho atual
 echo $SHELL  # caminho do shell usado
 ```
 
@@ -41,7 +41,7 @@ Quando você digita `ls`, o shell procura um executável chamado `ls` em cada um
 echo $PATH
 # /usr/local/bin:/usr/bin:/bin
 
-export PATH="$PATH:/meu/diretorio/scripts"  # adiciona um diretorio extra a busca
+export PATH="$PATH:/meu/diretorio/scripts"  # adiciona um diretório extra a busca
 ```
 
 > **Nota:** a ordem importa: o primeiro diretório do `$PATH` que contém um executável com esse nome é usado, o que permite por exemplo fazer uma versão personalizada de um comando passar antes da versão do sistema.
