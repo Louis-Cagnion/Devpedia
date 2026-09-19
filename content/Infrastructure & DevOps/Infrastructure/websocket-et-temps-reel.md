@@ -65,7 +65,8 @@ Client B -- entrees (haut/bas) -->   Serveur : simule le jeu a un rythme fixe (e
                                       (position, collisions, score...), puis diffuse
                                       l'etat obtenu via WebSocket a tous les clients
 
-Les clients n'envoient jamais leur position : ils recoivent l'etat et l'affichent, sans rien calculer.
+Les clients n'envoient jamais leur position : ils reçoivent l'état et l'affichent,
+sans rien calculer.
 ```
 
 ## Le rythme de simulation (tick rate) peut différer du rythme d'émission

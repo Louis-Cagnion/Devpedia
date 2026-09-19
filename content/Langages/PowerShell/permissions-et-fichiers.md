@@ -26,7 +26,11 @@ Chaque ligne d'accès associe une **identité** (utilisateur ou groupe) à un **
 
 ```powershell
 $acl = Get-Acl fichier.txt
-$regle = New-Object System.Security.AccessControl.FileSystemAccessRule("DESKTOP\jean", "ReadAndExecute", "Allow")
+$regle = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    "DESKTOP\jean",
+    "ReadAndExecute",
+    "Allow"
+)
 $acl.SetAccessRule($regle)
 Set-Acl fichier.txt $acl
 ```
@@ -63,7 +67,9 @@ Remove-Item -Recurse dossier                     # supprime un dossier et tout s
 ```powershell
 # tous les fichiers .txt, récursivement
 Get-ChildItem -Path . -Filter "*.txt" -Recurse
-Get-ChildItem -Path C:\logs -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }  # modifiés récemment
+# modifiés récemment
+Get-ChildItem -Path C:\logs -Recurse |
+    Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }
 # tous les dossiers nommés "node_modules"
 Get-ChildItem -Recurse -Directory -Filter "node_modules"
 # trouve ET supprime en une seule chaîne

@@ -7,8 +7,8 @@ order: 1
 Le chapitre sur [les API et HTTP](/?c=infrastructure&p=api-et-http) présente comment un client envoie une requête et reçoit une réponse. Ce qu'il ne dit pas encore : HTTP est un protocole **sans état** (*stateless*), chaque requête est traitée indépendamment des précédentes, comme si le serveur avait une amnésie totale entre deux requêtes. Sans mécanisme supplémentaire, un site devrait redemander l'identifiant et le mot de passe à chaque nouvelle page consultée.
 
 ```text
-Requete 1 : POST /login (email + mot de passe)  -> le serveur verifie, repond "connexion reussie"
-Requete 2 : GET /profil                          -> le serveur ne sait RIEN de la requete 1 :
+Requête 1 : POST /login (email + mot de passe)  -> le serveur vérifie, répond "connexion réussie"
+Requête 2 : GET /profil                          -> le serveur ne sait RIEN de la requête 1 :
                                                      pour lui, c'est un visiteur anonyme
 ```
 

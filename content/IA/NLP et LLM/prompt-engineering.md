@@ -252,7 +252,7 @@ Objectifs : [...]  |  Contraintes : [...]  |  Ressources disponibles : """[...]"
 
 [2. Conception]
 Cadrage validé : """[sortie de l'étape 1]"""
--> Découpage en sous-tâches, dépendances entre elles, architecture générale. Toujours sans coder.
+-> Découpage en sous-tâches, dépendances entre elles, architecture générale, sans coder.
 
 [3. Plan d'implémentation]
 Conception validée : """[sortie de l'étape 2]"""

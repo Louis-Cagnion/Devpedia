@@ -90,7 +90,11 @@ resultats = Img2TablePDF(
 
 ```python
 def rattraper_tableaux_sous_comptes(chemin_pdf, tableaux_natifs):
-    pages_suspectes = {t.page for t in tableaux_natifs if semble_structurellement_suspect(t.cellules)}
+    pages_suspectes = {
+        t.page
+        for t in tableaux_natifs
+        if semble_structurellement_suspect(t.cellules)
+    }
     if not pages_suspectes:
         return tableaux_natifs   # rien a rattraper : aucun cout d'img2table paye pour rien
 
@@ -139,7 +143,14 @@ Le rendu produit par `get_pixmap` doit ensuite être converti en un tableau de n
 ```python
 import numpy as np
 
-image = np.frombuffer(pixmap.samples, dtype=np.uint8).reshape(pixmap.height, pixmap.width, pixmap.n)
+image = np.frombuffer(
+    pixmap.samples,
+    dtype=np.uint8,
+).reshape(
+    pixmap.height,
+    pixmap.width,
+    pixmap.n,
+)
 ```
 
 `pixmap.samples` est une suite brute d'octets (les pixels, un après l'autre) ; `reshape` la réorganise en un [tableau NumPy](/?c=data-science&p=numpy) à 3 dimensions (hauteur, largeur, canaux de couleur), la forme attendue par la quasi-totalité des bibliothèques de vision par ordinateur.

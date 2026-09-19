@@ -24,7 +24,8 @@ Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables person
 
 ```css
 .bouton {
-    background-color: var(--couleur-primaire, blue);   /* "blue" : valeur de secours si la variable n'existe pas */
+    /* "blue" : valeur de secours si la variable n'existe pas */
+    background-color: var(--couleur-primaire, blue);
 }
 ```
 
@@ -37,7 +38,8 @@ Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables person
 }
 
 .carte.compacte {
-    --marge-interne: 8px;   /* redéfinit la variable UNIQUEMENT pour les éléments avec cette classe supplémentaire */
+    /* redéfinit la variable UNIQUEMENT pour les éléments avec cette classe supplémentaire */
+    --marge-interne: 8px;
 }
 ```
 
@@ -48,7 +50,8 @@ Ce chapitre couvre deux mécanismes transversaux de CSS : les **variables person
 ```css
 .bouton-danger:hover {
     background-color: color-mix(in srgb, var(--couleur-danger) 85%, black);
-    /* melange 85% de --couleur-danger avec du noir : une version legerement assombrie, au survol */
+    /* mélange 85% de --couleur-danger avec du noir : une version légèrement assombrie, au
+       survol */
 }
 ```
 
@@ -114,7 +117,8 @@ Le sélecteur le plus spécifique gagne, indépendamment de l'ordre d'écriture 
 
 ```css
 body {
-    color: #333;        /* HÉRITÉ : tous les descendants (p, span, li...) reprennent cette couleur de texte */
+    /* HÉRITÉ : tous les descendants (p, span, li...) reprennent cette couleur de texte */
+    color: #333;
     border: 1px solid;  /* PAS hérité : chaque élément a sa propre bordure, ou aucune */
 }
 ```

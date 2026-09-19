@@ -93,7 +93,8 @@ Un `git commit` "normal" n'est, sous le capot, rien de plus qu'un enchaînement 
 Un `rebase` ou un `commit --amend` ne réécrivent que les commits **après** le point modifié. Parfois il faut aller plus loin : retirer un fichier (secret, gros binaire...) de **chaque** commit où il a existé, du tout premier au dernier : un simple `rm` + nouveau commit ne suffit pas, puisque le fichier reste lisible dans les commits précédents.
 
 ```bash
-git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" --prune-empty -- --all
+git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" \
+    --prune-empty -- --all
 ```
 
 `--index-filter` rejoue cette commande sur l'index de **chaque** commit de l'historique (sur toutes les refs, via `--all`), reconstruit un nouveau tree sans le fichier, puis un nouveau commit, ce qui, par la mécanique vue plus haut (le hash d'un commit dépend de celui de son parent), change le hash de **tous** les commits à partir du premier concerné.

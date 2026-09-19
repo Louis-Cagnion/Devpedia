@@ -18,8 +18,11 @@ class EtatDAvancement:
         self.chemin = Path(f"{chemin}.partiel")
         self.resultats = []
         if reprise and self.chemin.exists():
-            self.resultats = [json.loads(ligne) for ligne
-                              in self.chemin.read_text(encoding="utf-8").splitlines() if ligne.strip()]
+            self.resultats = [
+                json.loads(ligne)
+                for ligne in self.chemin.read_text(encoding="utf-8").splitlines()
+                if ligne.strip()
+            ]
         else:
             self.chemin.unlink(missing_ok=True)
         self.faits = {cle(r) for r in self.resultats}
@@ -93,7 +96,9 @@ def temps_restant(debut, faits, total):
     if faits < 2:                      # pas encore de cadence mesurable
         return ""
     restant = (time.monotonic() - debut) / faits * (total - faits)
-    return f" ~{int(restant)}s restantes" if restant < 90 else f" ~{round(restant / 60)} min restantes"
+    if restant < 90:
+        return f" ~{int(restant)}s restantes"
+    return f" ~{round(restant / 60)} min restantes"
 ```
 
 Utilisez `time.monotonic()` et non `time.time()` : le second peut reculer (synchronisation d'horloge, changement d'heure) et produire des durées négatives.

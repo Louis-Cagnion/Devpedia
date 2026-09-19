@@ -13,7 +13,8 @@ Contrairement à [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensé pou
     display: grid;
     grid-template-columns: 200px 200px 200px;  /* 3 colonnes de 200px chacune */
     grid-template-rows: 100px 100px;           /* 2 lignes de 100px chacune */
-    gap: 10px;                                 /* espace entre les cellules, lignes ET colonnes */
+    /* espace entre les cellules, lignes ET colonnes */
+    gap: 10px;
 }
 ```
 
@@ -22,7 +23,8 @@ Contrairement à [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensé pou
 ```css
 .conteneur {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;   /* 3 colonnes : la 2e occupe 2x plus d'espace que les 2 autres */
+    /* 3 colonnes : la 2e occupe 2x plus d'espace que les 2 autres */
+    grid-template-columns: 1fr 2fr 1fr;
 }
 ```
 
@@ -31,7 +33,8 @@ Contrairement à [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensé pou
 ```css
 .conteneur {
     display: grid;
-    grid-template-columns: 250px 1fr;   /* colonne latérale fixe, colonne principale qui occupe le reste */
+    /* colonne latérale fixe, colonne principale qui occupe le reste */
+    grid-template-columns: 250px 1fr;
 }
 ```
 
@@ -60,7 +63,8 @@ Contrairement à [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensé pou
 
 ```css
 .element {
-    grid-column: 1 / 3;  /* s'étend de la ligne de grille 1 à la ligne 3 -> occupe 2 colonnes */
+    /* s'étend de la ligne de grille 1 à la ligne 3 -> occupe 2 colonnes */
+    grid-column: 1 / 3;
     grid-row: 2 / 4;     /* s'étend sur 2 lignes verticalement */
 }
 ```

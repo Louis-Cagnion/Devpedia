@@ -78,7 +78,8 @@ Un élément `sticky` (ou `fixed`) semi-transparent reste posé au-dessus d'un c
     position: sticky;
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.7);   /* semi-transparent */
-    backdrop-filter: blur(8px);                     /* floute ce qui defile DERRIERE, pas le pied lui-meme */
+    /* floute ce qui défile DERRIÈRE, pas le pied lui-même */
+    backdrop-filter: blur(8px);
 }
 ```
 

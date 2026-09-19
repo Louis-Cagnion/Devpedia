@@ -12,9 +12,9 @@ Un **webhook** est l'inverse d'un appel d'API classique : au lieu que votre appl
 Service tiers (paiement) -----> POST https://votre-site.example/webhooks/paiement
                                  { "commande_id": 42, "statut": "paye" }
 
-Attaquant (a devine ou trouve l'URL) -----> POST https://votre-site.example/webhooks/paiement
+Attaquant (a deviné ou trouvé l'URL) -----> POST https://votre-site.example/webhooks/paiement
                                              { "commande_id": 42, "statut": "paye" }
-                                             (FAUSSE notification, commande jamais reellement payee)
+                                             (FAUSSE notification, commande jamais réellement payée)
 ```
 
 Sans vérification, le code qui reçoit ce webhook ne peut pas distinguer les deux requêtes : les deux arrivent avec la même forme, sur la même URL.

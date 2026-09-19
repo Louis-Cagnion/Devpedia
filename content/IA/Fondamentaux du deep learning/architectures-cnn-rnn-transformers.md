@@ -57,7 +57,8 @@ Un RNN traite une séquence **séquentiellement** (impossible de calculer l'éta
 "Le chat qui dort sur le canapé est noir"
                                     ^
                      l'attention permet à "est noir" de se relier directement à "chat",
-                     malgré la distance dans la phrase, sans passer par tous les mots intermédiaires
+                     malgré la distance dans la phrase, sans passer par tous les mots
+                     intermédiaires
 ```
 
 - L'attention peut se calculer **en parallèle** pour toute la séquence (contrairement à un RNN), ce qui a permis d'entraîner des modèles bien plus grands, sur bien plus de données.
