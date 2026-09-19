@@ -2,6 +2,16 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Item todo #4 terminé : accents espagnols manquants dans `content-es/` (2026-09-19)
+
+87 fichiers corrigés (commit `0a776ba8`), même méthode que pour `content-br/` (dictionnaire + règle de suffixe déterministe, cette fois `-cion`/`-sion` → `-ción`/`-sión`, jamais sur le pluriel `-ciones`/`-siones` qui reste correct sans accent en espagnol). Mots volontairement non touchés (lecture ambiguë sans contexte) : `el`/`él`, `se`/`sé`, `si`/`sí`, `que`/`qué`, `este`/`esté`, `esta`/`está`, `fallo`/`falló`.
+
+## Item todo #5 terminé : mots ambigus non corrigés dans `content-br/` (2026-09-19)
+
+Relecture individuelle de chaque occurrence de `esta`/`está` (11), `contem`/`contém`/`contêm` (11), `mantem`/`mantém` (8), `media`/`média` (2) : le sens dépend du contexte grammatical (singulier/pluriel pour `contem`, démonstratif/verbe pour `esta`), jamais automatisable sans le lire. `continua` s'est avéré déjà correct partout (forme verbale du présent, jamais l'adjectif `contínua`, qui aurait eu besoin d'un accent) : aucune occurrence à corriger. En lisant le contexte de ces mots, plusieurs `e`/`é` (verbe "être") voisins ont aussi été repérés et corrigés (même relecture, même prudence). Quelques expressions figées `à direita`/`à esquerda`/`à toa` corrigées aussi.
+
+**Reste non traité** : la revue de `a`/`à` n'a couvert que les expressions figées reconnaissables (`à direita`, `à esquerda`, `à toa`), pas une relecture exhaustive des ~370 lignes contenant un `a` isolé (la immense majorité est l'article/préposition `a`, correcte sans accent ; la contraction `à` y est rare) -- risque de quelques `à` isolés encore manqués, faible probabilité vu l'échantillonnage fait.
+
 ## Item todo #4 terminé : accents portugais manquants dans `content-br/` (2026-09-19)
 
 199 fichiers corrigés (commit `d609c81e`) via un dictionnaire portugais (mots sans lecture valide non accentuée : `nao`, `sao`, `padrao`...) plus des règles de suffixe déterministes (`-cao`→`-ção`, `-encia`→`-ência`, `-ancia`→`-ância`, `-avel`→`-ável`, `-ivel`→`-ível`, `-sao`→`-são`), appliqué aux commentaires de code et aux chaînes de caractères multi-mots (messages d'erreur, prompts). Jamais touché : mots ambigus à plusieurs lectures valides (`e`/`é`, `a`/`à`, `esta`/`está`, `contem`/`contém`/`contêm`), ni chaînes d'un seul mot (clé de dict/JSON risquant d'être référencée ailleurs).

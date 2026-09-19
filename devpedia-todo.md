@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 4 (accents ES) ou point 5 (mots ambigus BR), aucun ordre imposé entre les deux, à chiffrer avant de commencer.
+> Prochaine tâche : plus rien d'auto-exécutable pour l'instant. Le point 4 restant (revue exhaustive `a`/`à` en BR) attend une décision de Louis (faible probabilité de gain, gros volume à relire).
 
 > Restent : un test navigateur en attente de Louis (point 3). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2).
 
@@ -19,8 +19,5 @@ Repéré en lisant `nombres-flottants.md` (item #14) : ce chapitre a un ancien `
 Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il s'affiche normalement sur desktop (`css/content.css`, `.page::before`). Deux hypothèses déjà invalidées par le retest de Louis (détail dans `journal-de-bord.md`) : `@supports` autour de `color-mix()`, puis son remplacement complet par `rgba()` + triplets RGB précalculés -- toujours gris dans les deux cas. Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `var()`, `rgba()`, `radial-gradient()`, `inset: 0`).
 - Reste à Louis : sur la page d'un chapitre (iPhone), bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement dans ce mode. Si ça ne suffit pas à trancher, étape suivante : inspecteur Safari distant (Mac connecté à l'iPhone).
 
-## 4. Accents manquants dans `content-es/` (espagnol), repérés par endroits dans des diagrammes texte
-Même défaut que celui déjà corrigé dans `content-br/` (voir `journal-de-bord.md`), mais pas encore audité ni corrigé pour l'espagnol. À chiffrer avant de s'y lancer.
-
-## 5. Mots ambigus non corrigés dans `content-br/` (portugais)
-Le correctif d'accents de `content-br/` (voir `journal-de-bord.md`) a volontairement laissé de côté les mots à plusieurs lectures valides selon le contexte (`e`/`é`, `a`/`à`, `esta`/`está`, `contem`/`contém`/`contêm`, `media`/`média`/`mídia`, `continua`/`contínua`) : chaque occurrence doit être relue individuellement pour choisir la bonne forme, pas automatisable sans risque.
+## 4. Revue exhaustive de `a`/`à` isolés dans `content-br/` (portugais), si Louis le souhaite
+Le correctif d'accents de `content-br/` (voir `journal-de-bord.md`) n'a couvert que les expressions figées reconnaissables (`à direita`, `à esquerda`, `à toa`), pas les ~370 lignes contenant un `a` isolé : très grande majorité déjà correcte (article/préposition), mais quelques `à` isolés (contraction) possiblement encore manqués.
