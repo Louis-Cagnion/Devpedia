@@ -73,9 +73,11 @@ git reset --soft <commit-avant-le-plus-ancien-a-reformuler>
 git reset            # désempile tout (le dossier de travail garde l'état final)
 
 # pour chaque commit à recréer dans l'ordre d'origine :
-git show <ancien-hash-du-commit>:chemin/fichier.py > chemin/fichier.py  # remet CE fichier a son etat a ce commit-la
+# remet CE fichier a son etat a ce commit-la
+git show <ancien-hash-du-commit>:chemin/fichier.py > chemin/fichier.py
 git add chemin/fichier.py ...
-git commit -F message-corrige.txt   # jamais -m pour un message multi-ligne avec accents : voir plus bas
+# jamais -m pour un message multi-ligne avec accents : voir plus bas
+git commit -F message-corrige.txt
 ```
 
 `git show <hash>:<chemin>` extrait le contenu d'un fichier tel qu'il était à un commit précis, ce qui permet de reconstituer l'état intermédiaire de chaque commit avant de le recommiter, y compris quand un même fichier a changé sur plusieurs des commits à reformuler.

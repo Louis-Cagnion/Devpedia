@@ -10,7 +10,8 @@ Avant d'exécuter une commande, Bash remplace certains motifs qu'elle contient p
 
 ```bash
 ls *.txt             # tous les fichiers se terminant par .txt
-ls fichier?.txt      # fichier1.txt, fichierA.txt... ('?' = exactement 1 caractère, n'importe lequel)
+# fichier1.txt, fichierA.txt... ('?' = exactement 1 caractère, n'importe lequel)
+ls fichier?.txt
 ls fichier[123].txt  # fichier1.txt, fichier2.txt ou fichier3.txt uniquement
 ls fichier[a-z].txt  # une seule lettre minuscule à cette position
 ```
@@ -29,7 +30,8 @@ ls fichier[a-z].txt  # une seule lettre minuscule à cette position
 
 ```bash
 echo *.xyz
-# si aucun fichier .xyz n'existe, Bash affiche littéralement "*.xyz" (le motif n'est pas remplacé)
+# si aucun fichier .xyz n'existe, Bash affiche littéralement "*.xyz" (le motif n'est pas
+# remplacé)
 ```
 
 C'est une source classique de bugs : un script qui suppose que `*.xyz` désigne toujours une liste de fichiers réels peut recevoir le texte brut `*.xyz` comme unique "nom de fichier" si le dossier ne contient rien de tel.
@@ -66,7 +68,8 @@ cd ~/projets  # équivalent à cd $HOME/projets
 ```bash
 echo *.txt    # remplacé par la liste réelle des fichiers .txt
 echo "*.txt"  # affiche littéralement *.txt -> les guillemets doubles désactivent le globbing
-echo '*.txt'  # même résultat, guillemets simples encore plus stricts (désactivent aussi $variable)
+# même résultat, guillemets simples encore plus stricts (désactivent aussi $variable)
+echo '*.txt'
 ```
 
 Voir aussi [Les variables](/?c=shells&s=bash&p=variables) pour la distinction guillemets simples/doubles vis-à-vis de l'interprétation de `$variable`.

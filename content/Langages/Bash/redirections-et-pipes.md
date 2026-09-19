@@ -20,7 +20,8 @@ echo "Encore" >> fichier.txt  # ajoute à la fin de fichier.txt, sans écraser
 ## Rediriger l'entrée depuis un fichier
 
 ```bash
-sort < liste.txt   # lit liste.txt comme entrée standard de "sort", plutôt que d'attendre une saisie clavier
+# lit liste.txt comme entrée standard de "sort", plutôt que d'attendre une saisie clavier
+sort < liste.txt
 ```
 
 ## Rediriger la sortie d'erreur
@@ -30,7 +31,8 @@ Les flux sont numérotés : `0` = entrée standard, `1` = sortie standard, `2` =
 ```bash
 commande_qui_echoue 2> erreurs.log     # seule la sortie d'erreur va dans erreurs.log
 commande 1> sortie.log 2> erreurs.log  # sépare sortie normale et erreurs dans deux fichiers
-commande > tout.log 2>&1               # redirige stdout dans tout.log, PUIS stderr vers là où va stdout
+# redirige stdout dans tout.log, PUIS stderr vers là où va stdout
+commande > tout.log 2>&1
 commande &> tout.log                   # raccourci Bash équivalent à "> tout.log 2>&1"
 ```
 

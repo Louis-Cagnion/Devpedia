@@ -11,9 +11,11 @@ Contrairement à [Bash](/?c=shells&s=bash&p=bash), où tout est manipulé comme 
 ## Déclarer et lire une variable
 
 ```powershell
-$nom = "Jean"                  # pas de règle stricte sur les espaces autour du '=', contrairement à Bash
+# pas de règle stricte sur les espaces autour du '=', contrairement à Bash
+$nom = "Jean"
 Write-Output $nom              # Jean
-Write-Output "Bonjour $nom !"  # Bonjour Jean ! -> interpolation directe dans une chaîne double-guillemets
+# Bonjour Jean ! -> interpolation directe dans une chaîne double-guillemets
+Write-Output "Bonjour $nom !"
 ```
 
 > **Note :** `$nom` seul (sans `Write-Output`) affiche aussi sa valeur dans la console : PowerShell affiche automatiquement le résultat de toute expression qui n'est pas explicitement assignée ou supprimée, un comportement proche d'un REPL.
@@ -23,8 +25,10 @@ Write-Output "Bonjour $nom !"  # Bonjour Jean ! -> interpolation directe dans un
 ```powershell
 $nom = "Jean"
 
-Write-Output "Bonjour $nom"  # Bonjour Jean -> les guillemets doubles interprètent les variables
-Write-Output 'Bonjour $nom'  # Bonjour $nom -> les guillemets simples désactivent toute interprétation
+# Bonjour Jean -> les guillemets doubles interprètent les variables
+Write-Output "Bonjour $nom"
+# Bonjour $nom -> les guillemets simples désactivent toute interprétation
+Write-Output 'Bonjour $nom'
 ```
 
 Pour insérer une propriété ou le résultat d'une expression (pas seulement une variable simple), il faut l'entourer de `$(...)` à l'intérieur des guillemets doubles :

@@ -67,12 +67,14 @@ X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, te
 Quel que soit l'algorithme choisi, scikit-learn expose systématiquement la même interface :
 
 ```python
-from sklearn.linear_model import LogisticRegression   # classification : y est catégoriel ("oui"/"non")
+# classification : y est catégoriel ("oui"/"non")
+from sklearn.linear_model import LogisticRegression
 
 modele = LogisticRegression()
 modele.fit(X_entrainement, y_entrainement)  # "apprend" à partir des données d'entraînement
 
-predictions = modele.predict(X_test)        # applique ce qui a été appris à de nouvelles données
+# applique ce qui a été appris à de nouvelles données
+predictions = modele.predict(X_test)
 
 modele.score(X_test, y_test)                # évalue la qualité des prédictions sur le test
 ```
@@ -91,8 +93,10 @@ Avec peu de données, réserver 40% pour validation+test (cf. plus haut) devient
 from sklearn.model_selection import cross_val_score
 
 scores = cross_val_score(LogisticRegression(), X_entrainement, y_entrainement, cv=5)
-# découpe X_entrainement en 5 blocs ("folds") ; entraîne 5 fois en gardant chaque bloc comme validation à son tour
-scores.mean()   # moyenne des 5 scores -> estimation plus fiable qu'un seul découpage train/validation
+# découpe X_entrainement en 5 blocs ("folds") ; entraîne 5 fois en gardant chaque bloc comme
+# validation à son tour
+# moyenne des 5 scores -> estimation plus fiable qu'un seul découpage train/validation
+scores.mean()
 ```
 
 Chaque exemple sert ainsi à la fois à l'entraînement (4 fois sur 5) et à la validation (1 fois sur 5), sans jamais toucher à `X_test` : la moyenne des 5 scores lisse l'effet d'un découpage particulièrement favorable ou défavorable qu'un split unique pourrait produire par hasard.
@@ -143,7 +147,8 @@ precision_score(y_test, predictions)
 recall_score(y_test, predictions)
 f1_score(y_test, predictions)
 
-print(classification_report(y_test, predictions))   # précision, rappel et F1 à la fois, par classe
+# précision, rappel et F1 à la fois, par classe
+print(classification_report(y_test, predictions))
 ```
 
 > **Note :** l'exactitude est trompeuse sur des classes déséquilibrées : un détecteur de fraude qui répond toujours "non" atteint 99% d'exactitude si 1% des transactions sont frauduleuses, tout en étant inutile (rappel de 0%). Précision et rappel s'évaluent presque toujours ensemble : augmenter l'un se fait généralement au détriment de l'autre (repousser le seuil de décision vers "positif" augmente le rappel mais fait baisser la précision, et inversement), le F1-score résume ce compromis en un seul chiffre, pratique pour comparer des modèles sans arbitrer manuellement entre les deux à chaque fois. La spécificité complète le tableau côté négatifs : utile quand un faux positif coûte cher (ex : un examen médical inutile déclenché à tort), alors que le rappel se concentre sur le coût d'un faux négatif (ex : une maladie non détectée).

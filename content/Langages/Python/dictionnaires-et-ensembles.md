@@ -28,9 +28,11 @@ personne.get("telephone", "inconnu")  # "inconnu" -> valeur par défaut si absen
 
 ```python
 cache = {}
-cache[("site_a", 42)] = "boutique A"  # un TUPLE comme clé : fonctionne, un tuple est immuable donc hachable
+# un TUPLE comme clé : fonctionne, un tuple est immuable donc hachable
+cache[("site_a", 42)] = "boutique A"
 
-cache[["site_a", 42]] = "boutique A"  # TypeError: unhashable type: 'list' -> une liste est mutable, jamais hachable
+# TypeError: unhashable type: 'list' -> une liste est mutable, jamais hachable
+cache[["site_a", 42]] = "boutique A"
 ```
 
 Une clé de dictionnaire doit être **hachable** (un nombre fixe, calculé une fois pour toutes, qui permet de la localiser instantanément dans la table de hachage sous-jacente) : elle doit donc être **immutable** (`str`, nombre, `tuple`), jamais `list`/`dict`, qui peuvent changer de contenu après coup et rendraient ce nombre invalide. Un `tuple` de plusieurs valeurs sert couramment de **clé composite** : `(site, identifiant)` distingue deux entrées qui partageraient le même `identifiant` sur deux sites différents, ce qu'une seule des deux valeurs ne permettrait pas.
@@ -61,7 +63,8 @@ carres = {x: x ** 2 for x in range(5)}
 shops_par_site = {}
 
 for site, shop_id in paires:
-    if site not in shops_par_site:  # sans setdefault : cette vérification manuelle est nécessaire...
+    # sans setdefault : cette vérification manuelle est nécessaire...
+    if site not in shops_par_site:
         shops_par_site[site] = []
     shops_par_site[site].append(shop_id)
 

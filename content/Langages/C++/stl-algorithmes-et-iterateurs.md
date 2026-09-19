@@ -13,7 +13,8 @@ std::vector<int> nombres = {1, 2, 3};
 
 std::vector<int>::iterator it = nombres.begin();
 while (it != nombres.end()) {
-    std::cout << *it << " ";   // "*it" déréférence l'itérateur, comme un pointeur (voir Les pointeurs, rubrique C)
+    // "*it" déréférence l'itérateur, comme un pointeur (voir Les pointeurs, rubrique C)
+    std::cout << *it << " ";
     ++it;
 }
 ```

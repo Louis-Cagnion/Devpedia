@@ -15,10 +15,12 @@ const str2 = "Hello world";
 
 // backticks (template literals) : seuls à permettre l'interpolation et le multi-ligne
 const nom = 'Jean';
-const str3 = `Bonjour ${nom} !`;   // 'Bonjour Jean !' -> ${...} insère directement une variable
+// 'Bonjour Jean !' -> ${...} insère directement une variable
+const str3 = `Bonjour ${nom} !`;
 
 const str4 = `Ligne 1
-Ligne 2`;                          // les retours à la ligne du code source sont conservés tels quels
+// les retours à la ligne du code source sont conservés tels quels
+Ligne 2`;
 ```
 
 ### Les prototypes de strings

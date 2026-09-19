@@ -46,7 +46,8 @@ La référence évite la syntaxe `*`/`&` à l'appel et à l'intérieur de la fon
 Passer un gros objet par valeur (une copie complète) à chaque appel de fonction coûte du temps et de la mémoire. Passer par référence évite la copie, mais autorise la fonction à modifier l'original ; `const &` combine les deux avantages :
 
 ```cpp
-void afficher(const std::string &texte) {   // pas de copie, ET texte ne peut pas être modifié ici
+// pas de copie, ET texte ne peut pas être modifié ici
+void afficher(const std::string &texte) {
     std::cout << texte;
 }
 ```

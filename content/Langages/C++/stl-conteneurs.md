@@ -46,7 +46,8 @@ ages["Jean"] = 25;
 ages["Marie"] = 30;
 
 ages["Jean"];                    // 25
-ages.find("Ali") != ages.end();  // teste l'existence d'une clé (pas d'opérateur "in" direct en C++)
+// teste l'existence d'une clé (pas d'opérateur "in" direct en C++)
+ages.find("Ali") != ages.end();
 
 for (const auto &[nom, age] : ages) {  // parcours : les paires sont TOUJOURS triées par clé
     std::cout << nom << " : " << age << "\n";
@@ -103,7 +104,8 @@ std::stack<int> pile;
 pile.push(1);
 pile.push(2);
 pile.top();    // 2 : le sommet, sans le retirer
-pile.pop();    // retire le sommet (ne renvoie RIEN, contrairement à beaucoup d'autres langages)
+// retire le sommet (ne renvoie RIEN, contrairement à beaucoup d'autres langages)
+pile.pop();
 ```
 
 Volontairement dépourvu d'itérateurs (pas de `begin()`/`end()`) : parcourir une pile autrement que par son sommet n'a normalement pas de sens.

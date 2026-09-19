@@ -9,12 +9,14 @@ Une **branche** est simplement un pointeur mobile vers un commit : elle permet d
 ## Créer et changer de branche
 
 ```bash
-git branch                               # liste les branches existantes, celle courante est marquée d'un *
+# liste les branches existantes, celle courante est marquée d'un *
+git branch
 git branch nouvelle-fonctionnalite       # crée une nouvelle branche, sans y basculer
 git checkout nouvelle-fonctionnalite     # bascule sur cette branche
 git checkout -b nouvelle-fonctionnalite  # raccourci : crée ET bascule en une seule commande
 
-git switch nouvelle-fonctionnalite     # équivalent moderne de "checkout" pour changer de branche
+# équivalent moderne de "checkout" pour changer de branche
+git switch nouvelle-fonctionnalite
 git switch -c nouvelle-fonctionnalite  # équivalent moderne de "checkout -b"
 ```
 

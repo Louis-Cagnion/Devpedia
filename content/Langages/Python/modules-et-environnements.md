@@ -37,7 +37,8 @@ def addition(a, b):
     return a + b
 
 if __name__ == "__main__":
-    print("Test rapide :", addition(2, 3))   # ne s'exécute QUE si on lance "python calculs.py" directement
+    # ne s'exécute QUE si on lance "python calculs.py" directement
+    print("Test rapide :", addition(2, 3))
 ```
 
 > **Note :** ce garde-fou permet à un fichier de servir à la fois de module réutilisable (importé sans rien exécuter d'inattendu) et de script autonome (testable directement), sans que ces deux usages interfèrent.
@@ -94,7 +95,8 @@ os.environ.get("CHEMIN_CONFIG")                 # None si absente, pas d'erreur
 os.environ.get("CHEMIN_CONFIG", "/etc/config")  # valeur par défaut si absente
 
 os.environ["NOUVELLE_VAR"] = "valeur"  # crée ou modifie une variable
-os.environ.pop("NOUVELLE_VAR", None)   # supprime sans erreur si déjà absente (contrairement à del)
+# supprime sans erreur si déjà absente (contrairement à del)
+os.environ.pop("NOUVELLE_VAR", None)
 ```
 
 > **Piège :** modifier `os.environ` ne change QUE le processus Python courant, et les processus enfants lancés **après coup** (via [subprocess](/?c=langages-de-programmation&s=python&p=sous-processus-et-flux-standard)), qui héritent d'une copie de l'environnement au moment de leur création -- jamais le shell qui a lancé le script, ni le reste du système. Fermer le script et rouvrir un terminal ne montre donc jamais une variable ajoutée via `os.environ[...] = ...`.

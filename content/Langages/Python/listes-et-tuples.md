@@ -31,8 +31,10 @@ len(fruits)                 # nombre d'éléments
 `[x] * n` construit une nouvelle liste de taille `n`, chaque emplacement contenant `x` :
 
 ```python
-zeros = [0] * 5           # [0, 0, 0, 0, 0] -> préallocation pratique pour une taille connue à l'avance
-lettres = ["a", "b"] * 3  # ["a", "b", "a", "b", "a", "b"] -> répète la SÉQUENCE entière, pas chaque élément
+# [0, 0, 0, 0, 0] -> préallocation pratique pour une taille connue à l'avance
+zeros = [0] * 5
+# ["a", "b", "a", "b", "a", "b"] -> répète la SÉQUENCE entière, pas chaque élément
+lettres = ["a", "b"] * 3
 ```
 
 > **Piège :** `[[]] * n` ne crée PAS `n` listes indépendantes, mais `n` références vers **la même** liste vide : modifier l'une modifie donc les `n` en même temps.
@@ -48,8 +50,10 @@ print(grille)   # [['x'], ['x'], ['x']] -> les 3 sous-listes SONT le même objet
 ### `.append()` vs `.extend()`
 
 ```python
-fruits.append("kiwi")              # déjà vu : ajoute UN SEUL élément (même si c'est une liste, imbriquée telle quelle)
-fruits.extend(["kiwi", "mangue"])  # ajoute CHAQUE élément de l'itérable donné, un par un, à la fin
+# déjà vu : ajoute UN SEUL élément (même si c'est une liste, imbriquée telle quelle)
+fruits.append("kiwi")
+# ajoute CHAQUE élément de l'itérable donné, un par un, à la fin
+fruits.extend(["kiwi", "mangue"])
 
 fruits.append(["a", "b"])  # [..., ["a", "b"]] -> UN élément, imbriqué
 fruits.extend(["a", "b"])  # [..., "a", "b"]   -> DEUX éléments, à plat
@@ -115,7 +119,9 @@ notes.sort()   # trie EN PLACE, ne renvoie rien (None), notes est modifiée
 
 ```python
 runs = ["2026-08-14_101530", "2026-08-06_090000", "2026-08-14_090000"]
-sorted(runs)  # ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> ordre chronologique, "gratuit"
+# ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> ordre chronologique,
+# "gratuit"
+sorted(runs)
 ```
 
 > **Piège :** ce tri lexicographique ne fonctionne QUE si tous les éléments comparés ont la même longueur (ex. toujours `AAAA-MM-JJ`) : `"9"` se classe APRÈS `"10"` en tri lexicographique (`"9" > "1"` caractère par caractère), contrairement à un tri numérique.

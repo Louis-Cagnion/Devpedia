@@ -56,7 +56,8 @@ id_vente | id_promotion
 Faire un `JOIN` naïf entre `fait_ventes` et `pont_ventes_promotions` produit une ligne par association, pas une ligne par vente. Une vente à 100€ qui a deux promotions apparaît deux fois dans le résultat : la sommer directement double le montant.
 
 ```sql
--- piège : cette requête compte la vente 1 deux fois (une par promotion), donc 200€ au lieu de 100€
+-- piège : cette requête compte la vente 1 deux fois (une par promotion), donc 200€ au lieu de
+-- 100€
 SELECT SUM(f.montant)
 FROM fait_ventes f
 JOIN pont_ventes_promotions p ON p.id_vente = f.id_vente;
@@ -70,10 +71,12 @@ JOIN pont_ventes_promotions p ON p.id_vente = f.id_vente;
 CREATE TABLE pont_ventes_promotions (
     id_vente      INT,
     id_promotion  INT,
-    poids         DECIMAL(4, 2)   -- part du montant attribuée à cette promotion (somme = 1 par vente)
+    -- part du montant attribuée à cette promotion (somme = 1 par vente)
+    poids         DECIMAL(4, 2)
 );
 
--- avec la pondération, la somme redevient correcte : 100€ répartis en 50€ + 50€, pas 100€ + 100€
+-- avec la pondération, la somme redevient correcte : 100€ répartis en 50€ + 50€, pas 100€ +
+-- 100€
 SELECT SUM(f.montant * p.poids)
 FROM fait_ventes f
 JOIN pont_ventes_promotions p ON p.id_vente = f.id_vente;

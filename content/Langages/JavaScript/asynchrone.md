@@ -10,7 +10,8 @@ JavaScript s'exécute sur un **seul thread** (contrairement aux [threads](/?c=la
 
 ```javascript
 console.log("1");
-setTimeout(() => console.log("2"), 0);   // même avec 0ms, s'exécute APRÈS le reste du code synchrone
+// même avec 0ms, s'exécute APRÈS le reste du code synchrone
+setTimeout(() => console.log("2"), 0);
 console.log("3");
 
 // Affiche : 1, 3, 2
@@ -77,7 +78,8 @@ Promise.all([
 
 ```javascript
 async function chargerUtilisateur(id) {
-    const reponse = await fetch(`/api/utilisateurs/${id}`);   // "attend" la Promise, sans bloquer le thread
+    // "attend" la Promise, sans bloquer le thread
+    const reponse = await fetch(`/api/utilisateurs/${id}`);
     const donnees = await reponse.json();
     return donnees;
 }

@@ -20,7 +20,8 @@ int main(void)
 
     while ((ligne = readline("mon_shell$ ")) != NULL) {
         if (*ligne) {
-            add_history(ligne);   // ajoute cette ligne à l'historique (flèche haut la retrouve)
+            // ajoute cette ligne à l'historique (flèche haut la retrouve)
+            add_history(ligne);
         }
 
         printf("Vous avez tape : %s\n", ligne);
@@ -47,7 +48,8 @@ struct termios ancien, nouveau;
 
 tcgetattr(STDIN_FILENO, &ancien);   // sauvegarde la configuration actuelle du terminal
 nouveau = ancien;
-nouveau.c_lflag &= ~(ICANON | ECHO);   // désactive le mode canonique ET l'affichage automatique
+// désactive le mode canonique ET l'affichage automatique
+nouveau.c_lflag &= ~(ICANON | ECHO);
 tcsetattr(STDIN_FILENO, TCSANOW, &nouveau);   // applique le nouveau mode
 
 // ... lecture touche par touche, sans attendre Entrée, sans écho automatique ...

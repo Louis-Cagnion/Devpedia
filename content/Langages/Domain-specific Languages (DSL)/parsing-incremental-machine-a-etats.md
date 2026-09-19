@@ -104,12 +104,15 @@ Evenements recus dans l'ordre :         Grille reconstruite :
 Sur la ligne 1, le seul événement reçu est `<td>C</td>` : rien, dans cet événement isolé, ne dit à quelle colonne `C` doit atterrir. Il faut que le code se souvienne, depuis la ligne précédente, que la colonne 0 est encore "prise" par la cellule `A` pour un tour de plus :
 
 ```python
-colonnes_occupees = {}  # {index de colonne: nombre de lignes restantes occupées par une fusion}
+# {index de colonne: nombre de lignes restantes occupées par une fusion}
+colonnes_occupees = {}
 
 def placer_cellule(colonne_de_depart, rowspan, colonnes_occupees):
     colonne = colonne_de_depart
-    while colonnes_occupees.get(colonne, 0) > 0:  # cette colonne est encore prise par une fusion précédente
-        colonne += 1                              # -> décaler vers la première colonne réellement libre
+    # cette colonne est encore prise par une fusion précédente
+    while colonnes_occupees.get(colonne, 0) > 0:
+        # -> décaler vers la première colonne réellement libre
+        colonne += 1
     if rowspan > 1:
         colonnes_occupees[colonne] = rowspan
     return colonne

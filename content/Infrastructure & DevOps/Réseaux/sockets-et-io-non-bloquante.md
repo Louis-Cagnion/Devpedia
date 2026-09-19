@@ -31,7 +31,8 @@ int main(void)
     struct sockaddr_in adresse;
     adresse.sin_family = AF_INET;
     adresse.sin_addr.s_addr = INADDR_ANY;   // accepte les connexions sur toutes les interfaces
-    adresse.sin_port = htons(8080);         // port 8080, converti dans l'ordre attendu par le réseau
+    // port 8080, converti dans l'ordre attendu par le réseau
+    adresse.sin_port = htons(8080);
 
     bind(serveur, (struct sockaddr *)&adresse, sizeof(adresse));
     listen(serveur, 10); // 10 = nombre de connexions en attente autorisées avant refus

@@ -12,15 +12,18 @@ Une **CLI** (*Command-Line Interface*, interface en ligne de commande) est un pr
 import argparse
 
 parser = argparse.ArgumentParser(prog="convertisseur")
-parser.add_argument("fichier", help="Chemin du fichier à convertir")      # positionnel : obligatoire, identifié par sa position
-parser.add_argument("--format", default="json", help="Format de sortie")  # optionnel : identifié par son nom, "--" devant
+# positionnel : obligatoire, identifié par sa position
+parser.add_argument("fichier", help="Chemin du fichier à convertir")
+# optionnel : identifié par son nom, "--" devant
+parser.add_argument("--format", default="json", help="Format de sortie")
 
 args = parser.parse_args()
 print(args.fichier, args.format)
 ```
 
 ```bash
-python convertisseur.py rapport.csv               # fichier="rapport.csv", format="json" (valeur par défaut)
+# fichier="rapport.csv", format="json" (valeur par défaut)
+python convertisseur.py rapport.csv
 python convertisseur.py rapport.csv --format=xml  # fichier="rapport.csv", format="xml"
 ```
 
@@ -34,8 +37,10 @@ python convertisseur.py rapport.csv --format=xml  # fichier="rapport.csv", forma
 ## Types, valeurs par défaut, drapeaux booléens
 
 ```python
-parser.add_argument("--repetitions", type=int, default=1)  # convertit automatiquement la chaîne reçue en int
-parser.add_argument("--verbeux", action="store_true")      # drapeau booléen : présent -> True, absent -> False
+# convertit automatiquement la chaîne reçue en int
+parser.add_argument("--repetitions", type=int, default=1)
+# drapeau booléen : présent -> True, absent -> False
+parser.add_argument("--verbeux", action="store_true")
 
 args = parser.parse_args(["--repetitions", "3", "--verbeux"])
 print(args.repetitions, args.verbeux)   # 3 True
@@ -108,7 +113,8 @@ import sys
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="pdf_parser")
     # ... déclaration des arguments ...
-    args = parser.parse_args(argv)   # argv=None -> argparse lit sys.argv lui-même ; sinon, utilise la liste fournie
+    # argv=None -> argparse lit sys.argv lui-même ; sinon, utilise la liste fournie
+    args = parser.parse_args(argv)
     # ... logique du programme ...
     return 0
 

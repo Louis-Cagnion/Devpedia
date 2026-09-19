@@ -216,7 +216,8 @@ Le jeton de connexion vu plus haut est un secret **opaque** (aléatoire, sans si
 <?php
 function creerToken(string $donnee, string $secret): string
 {
-    $encode = base64_encode($donnee);                 // encodé, PAS chiffré : lisible si décodé
+    // encodé, PAS chiffré : lisible si décodé
+    $encode = base64_encode($donnee);
     $signature = hash_hmac('sha256', $encode, $secret);
     return $encode . '.' . $signature;
 }

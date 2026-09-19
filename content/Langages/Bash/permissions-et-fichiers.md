@@ -69,11 +69,14 @@ chown utilisateur:groupe fichier.txt  # change propriétaire ET groupe en une fo
 
 ```bash
 mkdir dossier                      # crée un dossier
-mkdir -p a/b/c                     # crée toute l'arborescence en une fois, sans erreur si elle existe déjà
-touch fichier.txt                  # crée un fichier vide (ou met à jour sa date de modification s'il existe)
+# crée toute l'arborescence en une fois, sans erreur si elle existe déjà
+mkdir -p a/b/c
+# crée un fichier vide (ou met à jour sa date de modification s'il existe)
+touch fichier.txt
 cp source.txt destination.txt      # copie un fichier
 cp -r dossier_source dossier_dest  # copie récursive, nécessaire pour un dossier
-mv ancien.txt nouveau.txt          # déplace OU renomme (les deux sont la même opération pour mv)
+# déplace OU renomme (les deux sont la même opération pour mv)
+mv ancien.txt nouveau.txt
 rm fichier.txt                     # supprime un fichier (définitif, pas de corbeille)
 rm -r dossier                      # supprime un dossier et tout son contenu
 ```

@@ -10,7 +10,8 @@ Une variable d'environnement est une variable transmise automatiquement aux proc
 
 ```bash
 NOM="Jean"  # variable de shell classique : visible uniquement dans ce script/cette session
-export NOM  # à partir de maintenant, transmise aux processus enfants (autres scripts, commandes...)
+# à partir de maintenant, transmise aux processus enfants (autres scripts, commandes...)
+export NOM
 
 export EMAIL="jean@exemple.com"  # déclaration et export en une seule ligne
 ```

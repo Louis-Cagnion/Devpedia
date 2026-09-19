@@ -114,9 +114,11 @@ Après une réécriture d'historique (ou un simple `reset --hard`), les anciens 
 Un objet n'est réellement supprimé du dépôt local que lorsque plus rien ne le retient :
 
 ```bash
-git reflog expire --expire=now --all  # vide immédiatement le reflog de toutes les refs (au lieu d'attendre l'expiration par défaut)
+# vide immédiatement le reflog de toutes les refs (au lieu d'attendre l'expiration par défaut)
+git reflog expire --expire=now --all
 git gc --prune=now                    # supprime tout objet devenu inaccessible ("unreachable")
-git fsck --unreachable                # liste les objets encore présents mais non référencés par aucune branche/tag/reflog
+# liste les objets encore présents mais non référencés par aucune branche/tag/reflog
+git fsck --unreachable
 ```
 
 > **Note :** ce nettoyage ne concerne que le dépôt **local**. Un dépôt distant ([GitHub](/?c=git&p=github-et-plateformes), GitLab...) applique son propre `gc` selon son propre calendrier : après un `push --force` qui retire un fichier sensible de l'historique, l'ancien commit peut rester accessible côté serveur via son hash exact (une requête ciblée, pas une navigation normale) jusqu'à ce que le serveur fasse son propre nettoyage. Pour une garantie de suppression immédiate côté serveur, seul le support de la plateforme peut agir.

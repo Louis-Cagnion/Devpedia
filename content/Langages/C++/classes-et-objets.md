@@ -110,7 +110,8 @@ Sans constructeur de copie ni opérateur d'affectation explicites, C++ en génè
 ## Méthodes `const`
 
 ```cpp
-std::string description() const {   // "const" ici : garantit que cette méthode NE modifie PAS l'objet
+// "const" ici : garantit que cette méthode NE modifie PAS l'objet
+std::string description() const {
     return marque + " " + modele;
 }
 ```

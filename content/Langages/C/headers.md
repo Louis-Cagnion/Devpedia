@@ -71,7 +71,8 @@ Sur une **variable locale**, `static` change un tout autre aspect : sa **durée 
 ## `#include <...>` vs `#include "..."`
 
 ```c
-#include <stdio.h>    // chevrons : cherche dans les répertoires système (bibliothèque standard)
+// chevrons : cherche dans les répertoires système (bibliothèque standard)
+#include <stdio.h>
 #include "calculs.h"  // guillemets : cherche d'abord dans le répertoire courant du projet
 ```
 

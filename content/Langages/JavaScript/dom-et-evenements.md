@@ -22,7 +22,8 @@ document.querySelectorAll(".carte");  // TOUS les éléments correspondants (Nod
 const titre = document.querySelector("h1");
 
 titre.textContent = "Nouveau titre";  // remplace le texte (échappe automatiquement le HTML)
-titre.innerHTML = "<em>Titre</em>";   // insère du HTML brut -> DANGER si la source n'est pas fiable (XSS)
+// insère du HTML brut -> DANGER si la source n'est pas fiable (XSS)
+titre.innerHTML = "<em>Titre</em>";
 titre.style.color = "red";            // modifie un style CSS directement
 titre.classList.add("actif");         // ajoute une classe CSS
 titre.classList.remove("actif");

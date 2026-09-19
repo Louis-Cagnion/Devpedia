@@ -157,7 +157,8 @@ verrou_recalcul = threading.Lock()
 def valeur_avec_cache(cle):
     entree = cache.get(cle)
     if entree is None:
-        return recalculer_et_stocker(cle)   # tout premier appel : pas d'autre choix que d'attendre
+        # tout premier appel : pas d'autre choix que d'attendre
+        return recalculer_et_stocker(cle)
 
     if entree.est_perimee() and verrou_recalcul.acquire(blocking=False):
         threading.Thread(target=lambda: recalculer_et_stocker(cle, verrou_recalcul)).start()

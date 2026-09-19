@@ -30,7 +30,8 @@ Get-ChildItem -Path C:\logs  # liste un dossier précis sans s'y déplacer
 ```powershell
 Get-Content fichier.txt          # affiche tout le fichier, équivalent de "cat"
 Get-Content fichier.txt -Tail 5  # les 5 dernières lignes, équivalent de "tail"
-Get-Content fichier.txt -Wait    # continue à afficher les lignes ajoutées au fichier, équivalent de "tail -f"
+# continue à afficher les lignes ajoutées au fichier, équivalent de "tail -f"
+Get-Content fichier.txt -Wait
 ```
 
 Voir le chapitre sur le traitement de texte pour aller plus loin (recherche, remplacement, tri sur le contenu lu par `Get-Content`).

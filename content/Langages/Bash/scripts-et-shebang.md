@@ -49,8 +49,10 @@ En pratique : utiliser `#!/bin/bash` (et l'exécuter avec `bash`) dès que le sc
 ## Rendre un script exécutable
 
 ```bash
-chmod +x script.sh  # ajoute le droit d'exécution (voir Permissions et manipulation de fichiers)
-./script.sh         # exécute le script (le "./" est nécessaire si le dossier courant n'est pas dans $PATH)
+# ajoute le droit d'exécution (voir Permissions et manipulation de fichiers)
+chmod +x script.sh
+# exécute le script (le "./" est nécessaire si le dossier courant n'est pas dans $PATH)
+./script.sh
 ```
 
 Alternative sans avoir besoin de `chmod +x` : lancer explicitement l'interpréteur sur le fichier :
@@ -105,7 +107,8 @@ Chaque commande, et donc chaque script, se termine avec un **code de sortie** : 
 #!/bin/bash
 
 if [ ! -f "config.txt" ]; then
-    echo "Erreur : fichier de config manquant" >&2   # >&2 : envoie ce message vers la sortie d'erreur (stderr)
+    # >&2 : envoie ce message vers la sortie d'erreur (stderr)
+    echo "Erreur : fichier de config manquant" >&2
     exit 1
 fi
 
@@ -153,14 +156,16 @@ D'autres options renforcent la robustesse d'un script, souvent combinées :
 set -euo pipefail
 # -e : arrêt à la première erreur
 # -u : erreur si une variable non définie est utilisée
-# -o pipefail : un pipe échoue si N'IMPORTE LAQUELLE de ses commandes échoue (pas seulement la dernière)
+# -o pipefail : un pipe échoue si N'IMPORTE LAQUELLE de ses commandes échoue (pas seulement la
+# dernière)
 ```
 
 Un cas concret où `set -e` ne se déclenche pas, malgré un échec réel :
 
 ```bash
 set -e
-commande_qui_echoue | grep "motif"   # échoue, mais set -e ne s'arrête PAS ici sans pipefail : seul grep compte
+# échoue, mais set -e ne s'arrête PAS ici sans pipefail : seul grep compte
+commande_qui_echoue | grep "motif"
 ```
 
 > **Piège :** `set -e` ne couvre pas tout ce qu'on pourrait attendre. Une commande qui échoue **n'arrête rien** si elle est testée par un `if`, combinée avec `&&`/`||`, ou si elle n'est pas la dernière d'un pipeline (sans `pipefail`, comme dans l'exemple ci-dessus) : dans ces trois cas, Bash considère l'échec "attendu et déjà géré", donc `set -e` ne se déclenche pas.

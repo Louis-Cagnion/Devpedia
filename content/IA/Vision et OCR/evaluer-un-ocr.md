@@ -31,7 +31,8 @@ def distance_levenshtein(a, b):
     for i in range(1, len(a) + 1):
         for j in range(1, len(b) + 1):
             if a[i - 1] == b[j - 1]:
-                table[i][j] = table[i - 1][j - 1]              # caracteres identiques, rien a faire
+                # caracteres identiques, rien a faire
+                table[i][j] = table[i - 1][j - 1]
             else:
                 table[i][j] = 1 + min(
                     table[i - 1][j],      # suppression

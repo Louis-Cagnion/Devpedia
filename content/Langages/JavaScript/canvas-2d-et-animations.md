@@ -22,12 +22,15 @@ Un pixel CSS (la taille affichée) ne correspond pas toujours à un pixel physiq
 
 ```javascript
 function redimensionner() {
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);   // plafonne à 2 : au-delà, coût inutile
+    // plafonne à 2 : au-delà, coût inutile
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
 
-    canvas.width  = Math.floor(rect.width  * ratio);   // résolution RÉELLE du canvas (pixels physiques)
+    // résolution RÉELLE du canvas (pixels physiques)
+    canvas.width  = Math.floor(rect.width  * ratio);
     canvas.height = Math.floor(rect.height * ratio);
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);         // pour dessiner ensuite en coordonnées CSS
+    // pour dessiner ensuite en coordonnées CSS
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 }
 ```
 

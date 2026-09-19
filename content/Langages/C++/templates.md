@@ -40,7 +40,8 @@ public:
     void empiler(T valeur) { elements.push_back(valeur); }
     T depiler() {
         if (estVide()) {
-            throw std::out_of_range("Pile vide"); // voir Les exceptions : jamais dépiler à vide
+            // voir Les exceptions : jamais dépiler à vide
+            throw std::out_of_range("Pile vide");
         }
         T dernier = elements.back();
         elements.pop_back();

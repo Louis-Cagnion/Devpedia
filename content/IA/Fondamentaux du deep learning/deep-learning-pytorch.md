@@ -27,7 +27,8 @@ Un tenseur PyTorch peut vivre sur le CPU ou sur un GPU (`x.to("cuda")`), qui ex�
 ## `autograd` : la différenciation automatique
 
 ```python
-x = torch.tensor(3.0, requires_grad=True)   # "suis les opérations sur x pour pouvoir dériver plus tard"
+# "suis les opérations sur x pour pouvoir dériver plus tard"
+x = torch.tensor(3.0, requires_grad=True)
 
 y = x ** 2 + 2 * x
 
@@ -46,7 +47,8 @@ import torch.nn as nn
 class ReseauSimple(nn.Module):
     def __init__(self):
         super().__init__()
-        self.couche1 = nn.Linear(10, 32)   # couche entièrement connectée : 10 entrées -> 32 sorties
+        # couche entièrement connectée : 10 entrées -> 32 sorties
+        self.couche1 = nn.Linear(10, 32)
         self.activation = nn.ReLU()
         self.couche2 = nn.Linear(32, 1)     # 32 entrées -> 1 sortie
 
@@ -74,10 +76,12 @@ fonction_perte = nn.MSELoss()                         # erreur quadratique moyen
 optimiseur = optim.SGD(modele.parameters(), lr=0.01)  # descente de gradient stochastique
 
 for epoque in range(100):
-    predictions = modele(X_entrainement)                    # équivaut à modele.forward(X_entrainement)
+    # équivaut à modele.forward(X_entrainement)
+    predictions = modele(X_entrainement)
     perte = fonction_perte(predictions, y_entrainement)
 
-    optimiseur.zero_grad()  # réinitialise les gradients (sinon ils s'additionnent d'une itération à l'autre)
+    # réinitialise les gradients (sinon ils s'additionnent d'une itération à l'autre)
+    optimiseur.zero_grad()
     perte.backward()        # calcule les gradients (rétropropagation automatique)
     optimiseur.step()       # ajuste les poids selon les gradients calculés
 
@@ -95,7 +99,8 @@ Cette boucle est la structure quasi universelle de tout entraînement PyTorch : 
 
 ```python
 modele.eval()          # désactive des comportements spécifiques à l'entraînement (ex. dropout)
-with torch.no_grad():  # désactive le suivi des gradients : plus rapide, inutile hors entraînement
+# désactive le suivi des gradients : plus rapide, inutile hors entraînement
+with torch.no_grad():
     predictions = modele(X_test)
 
 modele.train()   # réactive le mode entraînement pour la suite

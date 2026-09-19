@@ -77,8 +77,10 @@ Sens de la rétropropagation :      Entrée <- Couche 1 <- Couche 2 <- Sortie <-
 ## Époques, batches, et descente de gradient stochastique
 
 ```python
-for epoque in range(nombre_epoques):                      # une "époque" = un passage complet sur TOUTES les données
-    for lot in donnees_par_lots(donnees, taille_lot=32):  # un "batch"/lot = un petit sous-ensemble
+# une "époque" = un passage complet sur TOUTES les données
+for epoque in range(nombre_epoques):
+    # un "batch"/lot = un petit sous-ensemble
+    for lot in donnees_par_lots(donnees, taille_lot=32):
         predictions = modele.forward(lot)
         perte = calculer_perte(predictions, vraies_valeurs)
         gradients = retropropager(perte)

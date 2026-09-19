@@ -53,7 +53,8 @@ Repérer un tableau dans une page sans recourir à l'[OCR structuré](/?c=traite
 with pymupdf.open("document.pdf") as document:
     page = document[0]
     for tableau in page.find_tables():
-        lignes = tableau.extract()   # liste de lignes, chaque ligne = liste de cellules (str ou None)
+        # liste de lignes, chaque ligne = liste de cellules (str ou None)
+        lignes = tableau.extract()
         print(tableau.bbox, len(lignes), "lignes")
 ```
 

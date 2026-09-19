@@ -9,7 +9,8 @@ Un **remote** est une référence vers une copie du dépôt hébergée ailleurs 
 ## Voir et ajouter un remote
 
 ```bash
-git remote -v                                  # liste les remotes configurés (souvent juste "origin")
+# liste les remotes configurés (souvent juste "origin")
+git remote -v
 git remote add origin https://exemple.com/projet.git
 ```
 
@@ -18,7 +19,8 @@ git remote add origin https://exemple.com/projet.git
 ## `push` : envoyer des commits locaux
 
 ```bash
-git push origin main     # envoie les commits de la branche locale "main" vers le remote "origin"
+# envoie les commits de la branche locale "main" vers le remote "origin"
+git push origin main
 git push -u origin main  # -u : mémorise ce lien, pour pouvoir ensuite écrire juste "git push"
 git push                 # une fois le lien mémorisé
 ```
@@ -28,8 +30,11 @@ git push                 # une fois le lien mémorisé
 Après un `rebase`, un `commit --amend`, ou une réécriture d'historique (voir [L'architecture interne de Git](/?c=git&p=architecture-interne)), les commits locaux n'ont plus les mêmes hash que ceux déjà poussés : un `push` normal est alors rejeté (*non fast-forward*), le remote ne retrouvant pas ses anciens commits comme ancêtres des nouveaux.
 
 ```bash
-git push --force origin main             # écrase l'historique distant sans condition, dangereux si quelqu'un d'autre a poussé entre-temps
-git push --force-with-lease origin main  # écrase seulement si le remote est encore dans l'état vu lors du dernier fetch
+# écrase l'historique distant sans condition, dangereux si quelqu'un d'autre a poussé
+# entre-temps
+git push --force origin main
+# écrase seulement si le remote est encore dans l'état vu lors du dernier fetch
+git push --force-with-lease origin main
 ```
 
 > **Note :** `--force-with-lease` compare l'état réel du remote à ce que la branche de suivi locale (`origin/main`) connaissait lors du dernier `fetch` : s'ils diffèrent (quelqu'un d'autre a poussé entre-temps, ou cette branche de suivi a elle-même été modifiée par une opération locale), le push est rejeté (`stale info`) plutôt que d'écraser un travail qu'on n'a pas vu. Toujours préférer `--force-with-lease` à `--force`, sauf certitude absolue d'être seul sur la branche.
@@ -37,7 +42,8 @@ git push --force-with-lease origin main  # écrase seulement si le remote est en
 ## `fetch` vs `pull`
 
 ```bash
-git fetch origin      # télécharge les nouveaux commits du remote, SANS toucher au dossier de travail
+# télécharge les nouveaux commits du remote, SANS toucher au dossier de travail
+git fetch origin
 git pull origin main  # équivalent à : git fetch + git merge (fusionne immédiatement)
 ```
 
@@ -65,7 +71,8 @@ git clone https://exemple.com/projet.git
 `git bundle` empaquette tout ou partie d'un dépôt (commits, branches, tags) dans un unique fichier binaire, sans avoir besoin d'un serveur remote :
 
 ```bash
-git bundle create sauvegarde.bundle --all    # capture toutes les refs (branches, tags, HEAD) dans un seul fichier
+# capture toutes les refs (branches, tags, HEAD) dans un seul fichier
+git bundle create sauvegarde.bundle --all
 git bundle verify sauvegarde.bundle          # vérifie que le bundle est complet et exploitable
 git clone sauvegarde.bundle nouveau-dossier  # un bundle se clone comme un remote classique
 ```

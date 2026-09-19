@@ -237,7 +237,8 @@ Même logique que pour un pipe, mais la "source" est un fichier ouvert avec `ope
 
 ```c
 int fd = open("sortie.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-dup2(fd, STDOUT_FILENO); // tout ce qu'écrit le programme sur stdout part maintenant dans sortie.txt
+// tout ce qu'écrit le programme sur stdout part maintenant dans sortie.txt
+dup2(fd, STDOUT_FILENO);
 close(fd);
 execve(...);
 ```

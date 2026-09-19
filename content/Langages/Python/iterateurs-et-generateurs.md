@@ -130,7 +130,8 @@ def taches():
 
 t = taches()
 print("Avant le premier next")
-print(next(t))     # "Démarrage" s'affiche ICI, au moment de l'appel, pas avant, pas en arrière-plan
+# "Démarrage" s'affiche ICI, au moment de l'appel, pas avant, pas en arrière-plan
+print(next(t))
 print("Avant le deuxième next")
 print(next(t))     # "Reprise après A" s'affiche ICI, jamais entre-temps
 ```

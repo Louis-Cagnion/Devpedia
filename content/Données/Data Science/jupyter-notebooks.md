@@ -51,7 +51,8 @@ Si on exécute la cellule 2 **plusieurs fois de suite** sans relancer la cellule
 Des commandes spéciales, propres à Jupyter, absentes du langage [Python](/?c=langages-de-programmation&s=python&p=python) lui-même :
 
 ```python
-%matplotlib inline     # affiche les graphiques Matplotlib directement sous la cellule, sans fenêtre séparée
+# affiche les graphiques Matplotlib directement sous la cellule, sans fenêtre séparée
+%matplotlib inline
 %timeit ma_fonction()  # mesure automatiquement le temps d'exécution, sur plusieurs répétitions
 %%time                 # (en début de cellule) chronomètre l'exécution de toute la cellule
 ```

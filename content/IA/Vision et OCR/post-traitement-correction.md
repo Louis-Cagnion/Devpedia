@@ -55,7 +55,8 @@ import re
 def format_siret_valide(texte):
     return re.fullmatch(r"\d{14}", texte) is not None
 
-format_siret_valide("1234567890123 4")  # False -> un espace en trop, signale une erreur probable d'OCR
+# False -> un espace en trop, signale une erreur probable d'OCR
+format_siret_valide("1234567890123 4")
 format_siret_valide("12345678901234")   # True
 ```
 

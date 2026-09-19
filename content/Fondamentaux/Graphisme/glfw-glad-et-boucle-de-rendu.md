@@ -49,7 +49,8 @@ Tampon avant (affiché à l'écran)     Tampon arrière (en cours de dessin)
 ```
 
 ```c
-glfwSwapBuffers(fenetre);   // échange les deux tampons, jamais un dessin pixel par pixel direct à l'écran
+// échange les deux tampons, jamais un dessin pixel par pixel direct à l'écran
+glfwSwapBuffers(fenetre);
 ```
 
 ## La boucle de rendu
@@ -58,10 +59,13 @@ Comme la boucle d'événements du chapitre précédent, une boucle de rendu Open
 
 ```c
 while (!glfwWindowShouldClose(fenetre)) {
-    glfwPollEvents();                              // 1. récupérer les événements (clavier, souris...)
+    // 1. récupérer les événements (clavier, souris...)
+    glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // 2. effacer l'image précédente
-    dessinerLaScene();                             // 3. dessiner la nouvelle image (tampon arrière)
-    glfwSwapBuffers(fenetre);                       // 4. l'afficher d'un coup (double buffering)
+    // 3. dessiner la nouvelle image (tampon arrière)
+    dessinerLaScene();
+    // 4. l'afficher d'un coup (double buffering)
+    glfwSwapBuffers(fenetre);
 }
 ```
 

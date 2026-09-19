@@ -63,7 +63,8 @@ std::ostream &operator<<(std::ostream &os, const Point &p) {
 }
 
 Point p(3, 4);
-std::cout << p;   // (3, 4) -> sans cette surcharge : erreur de compilation, << ne connaît pas Point
+// (3, 4) -> sans cette surcharge : erreur de compilation, << ne connaît pas Point
+std::cout << p;
 ```
 
 > **Note :** cette surcharge s'écrit en dehors de la classe (une fonction libre, pas une méthode), car l'objet de gauche de `<<` est le flux (`std::ostream`), pas le `Point` ; `p << std::cout` n'aurait pas de sens, mais `std::cout << p` doit fonctionner.

@@ -48,7 +48,8 @@ Contrairement à `%d`/`%f` qui écrivent toujours une taille fixe, `%s` recopie 
 
 ```c
 char nom[16];
-sscanf(entree_utilisateur, "%s", nom);   // si entree_utilisateur fait plus de 15 caracteres : depassement de tampon
+// si entree_utilisateur fait plus de 15 caracteres : depassement de tampon
+sscanf(entree_utilisateur, "%s", nom);
 ```
 
 > **Piège :** la même classe de vulnérabilité que celle déjà rencontrée avec les chaînes de format de `printf` (voir le chapitre sur les [fonctions variadiques](/?c=langages-de-programmation&s=c&p=fonctions-variadiques)) : une entrée non contrôlée qui dépasse la taille du tampon écrit en dehors de la mémoire qui lui est allouée.

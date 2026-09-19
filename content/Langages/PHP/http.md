@@ -20,8 +20,10 @@ $ch = curl_init($url);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $corpsJson,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],  // indispensable pour un corps JSON
-    CURLOPT_RETURNTRANSFER => true,                                // renvoyer la réponse en string, plutôt que l'afficher directement
+    // indispensable pour un corps JSON
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+    // renvoyer la réponse en string, plutôt que l'afficher directement
+    CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT        => 10,
 ]);
 
@@ -61,7 +63,8 @@ $options = [
     ],
 ];
 $contexte = stream_context_create($options);
-$reponse  = file_get_contents($url, false, $contexte); // false en cas d'échec, même style que curl_exec
+// false en cas d'échec, même style que curl_exec
+$reponse  = file_get_contents($url, false, $contexte);
 ?>
 ```
 
@@ -116,7 +119,8 @@ $contexte = stream_context_create($options);
 
 $reponse = file_get_contents($url, false, $contexte);
 // avec ignore_errors : $reponse contient le corps même pour un 404/500
-// sans ignore_errors  : $reponse vaut false pour un 404/500, alors même que le serveur a répondu
+// sans ignore_errors  : $reponse vaut false pour un 404/500, alors même que le serveur a
+// répondu
 ```
 
 Conséquence directe sur une conversion "valeur de retour → exception" comme celle vue plus haut (`if ($reponse === false) { throw ... }`) : avec `ignore_errors => true`, ce test ne se déclenche plus **du tout** pour une erreur HTTP (4xx/5xx) : seulement pour un échec de communication plus radical (serveur injoignable, DNS ne résout pas, timeout réseau, un cas où PHP ne reçoit rien, pas même des en-têtes).

@@ -20,7 +20,8 @@ Un programme C dispose de deux zones mémoire principales pour ses données :
 ```c
 void exemple(void)
 {
-    int x = 5;                     // sur la stack, libéré automatiquement à la fin de la fonction
+    // sur la stack, libéré automatiquement à la fin de la fonction
+    int x = 5;
     int *p = malloc(sizeof(int));  // sur le heap, reste alloué jusqu'à free(p)
     *p = 5;
     free(p);
@@ -114,9 +115,11 @@ Si `entree_utilisateur` dépasse 16 octets, `strcpy()` continue d'écrire au-del
 ```c
 strcpy(buffer, entree);                       // dangereux : aucune limite
 strncpy(buffer, entree, sizeof(buffer) - 1);  // borné à la taille réelle du buffer
-buffer[sizeof(buffer) - 1] = '\0';            // strncpy ne garantit pas la terminaison si la source est trop longue
+// strncpy ne garantit pas la terminaison si la source est trop longue
+buffer[sizeof(buffer) - 1] = '\0';
 
-fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, plutôt que de corriger après coup
+// lecture bornée dès la saisie, plutôt que de corriger après coup
+fgets(buffer, sizeof(buffer), stdin);
 ```
 
 | Fonction risquée | Alternative bornée |
@@ -133,7 +136,8 @@ fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, 
 D'origine BSD (pas standard C, mais disponible sur macOS/\*BSD, et facilement réimplémentable soi-même, comme le fait la bibliothèque `libft` avec `ft_strlcpy`/`ft_strlcat`), ces fonctions corrigent le point faible de `strncpy`/`strcat` : détecter une troncature.
 
 ```c
-size_t taille_reelle = strlcpy(buffer, entree, sizeof(buffer));  // termine TOUJOURS par '\0', contrairement à strncpy
+// termine TOUJOURS par '\0', contrairement à strncpy
+size_t taille_reelle = strlcpy(buffer, entree, sizeof(buffer));
 
 if (taille_reelle >= sizeof(buffer))
 {

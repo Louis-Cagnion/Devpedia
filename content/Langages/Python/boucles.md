@@ -31,7 +31,8 @@ for i in range(2, 10, 2):  # de 2 à 10 (exclu), par pas de 2 -> 2, 4, 6, 8
 for fruit in reversed(fruits):            # cerise, banane, pomme -> VALEURS à l'envers
     print(fruit)
 
-for i in range(len(fruits) - 1, -1, -1):  # 2, 1, 0               -> INDICES en ordre décroissant
+# 2, 1, 0               -> INDICES en ordre décroissant
+for i in range(len(fruits) - 1, -1, -1):
     print(fruits[i])
 ```
 
@@ -79,7 +80,8 @@ largeurs = [12, 45, 3, 28]
 
 max(largeurs)        # 45
 min(largeurs)        # 3
-max(12, 45, 3, 28)   # 45 -> fonctionne aussi sur des valeurs séparées, pas seulement un itérable
+# 45 -> fonctionne aussi sur des valeurs séparées, pas seulement un itérable
+max(12, 45, 3, 28)
 
 max([], default=0)  # 0 -> évite une ValueError si l'itérable est vide
 ```

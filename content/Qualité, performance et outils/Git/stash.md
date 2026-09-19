@@ -9,9 +9,12 @@ order: 6
 ## Mettre de côté ses modifications
 
 ```bash
-git stash                                             # met de côté toutes les modifications suivies, remet le dossier "propre"
-git stash push -m "en cours : formulaire de contact"  # avec un message, pour s'y retrouver plus tard
-git stash -u                                          # inclut aussi les fichiers non suivis (nouveaux, jamais ajoutés)
+# met de côté toutes les modifications suivies, remet le dossier "propre"
+git stash
+# avec un message, pour s'y retrouver plus tard
+git stash push -m "en cours : formulaire de contact"
+# inclut aussi les fichiers non suivis (nouveaux, jamais ajoutés)
+git stash -u
 ```
 
 Après un `git stash`, `git status` ne montre plus aucune modification, comme si on venait de commiter, sauf que rien n'apparaît dans l'historique (`git log`) : les modifications sont stockées à part, dans une pile.
