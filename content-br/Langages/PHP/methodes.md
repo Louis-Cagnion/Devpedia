@@ -112,7 +112,8 @@ PHP fornece uma enorme quantidade de funções nativas já prontas para uso, cla
 ```php
 <?php
     count([1, 2, 3]);                      // 3 -> numero de elementos
-    $arr[] = "valor";                      // adiciona um elemento ao final (preferido a array_push() para um unico elemento)
+    // adiciona um elemento ao final (preferido a array_push() para um unico elemento)
+    $arr[] = "valor";
     array_pop($arr);                       // remove e retorna o ultimo elemento
     array_merge($arr1, $arr2);             // mescla dois arrays
     in_array("maca", $frutas);             // true/false -> verifica a presenca de um valor
@@ -134,7 +135,8 @@ PHP fornece uma enorme quantidade de funções nativas já prontas para uso, cla
     unset($pessoa["idade"]);            // remove uma chave (e seu valor) do array
     ksort($pessoa);                    // ordena o array pelas chaves
     asort($pessoa);                    // ordena o array pelos valores (mantendo as chaves)
-    array_combine(["a", "b"], [1, 2]);   // ["a" => 1, "b" => 2] -> cria um array associativo a partir de 2 arrays
+    // ["a" => 1, "b" => 2] -> cria um array associativo a partir de 2 arrays
+    array_combine(["a", "b"], [1, 2]);
     array_flip($pessoa);               // inverte chaves e valores
 ?>
 ```

@@ -10,7 +10,8 @@ Uma variável de ambiente é uma variável transmitida automaticamente aos proce
 
 ```bash
 NOME="Joao"  # variavel de shell comum: visivel apenas nesse script/sessao
-export NOME  # a partir de agora, transmitida aos processos filhos (outros scripts, comandos...)
+# a partir de agora, transmitida aos processos filhos (outros scripts, comandos...)
+export NOME
 
 export EMAIL="joao@exemplo.com"  # declaracao e export em uma unica linha
 ```

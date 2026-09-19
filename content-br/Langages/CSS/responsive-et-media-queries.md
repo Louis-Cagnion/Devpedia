@@ -13,7 +13,8 @@ div {
     width: 300px;       /* fixo, nao se adapta a NADA */
     width: 50%;         /* relativo ao pai */
     font-size: 1.5rem;  /* relativo ao tamanho de fonte raiz (<html>), independente do pai */
-    font-size: 1.5em;   /* relativo ao tamanho de fonte do PAI direto (pode se acumular em cascata) */
+    /* relativo ao tamanho de fonte do PAI direto (pode se acumular em cascata) */
+    font-size: 1.5em;
     width: 50vw;        /* relativo a largura da janela (viewport width) */
     height: 100vh;      /* relativo a altura da janela (viewport height) */
 }
@@ -71,7 +72,8 @@ div {
 
 ```css
 @media (orientation: portrait) { }           /* tela mais alta que larga */
-@media (prefers-color-scheme: dark) { }      /* o usuario ativou o modo escuro no nivel do sistema */
+/* o usuario ativou o modo escuro no nivel do sistema */
+@media (prefers-color-scheme: dark) { }
 @media (prefers-reduced-motion: reduce) { }  /* o usuario pediu para reduzir as animacoes */
 @media print { }                             /* estilos aplicados apenas na impressao */
 ```

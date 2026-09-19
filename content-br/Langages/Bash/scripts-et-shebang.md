@@ -49,8 +49,10 @@ Na prática: usar `#!/bin/bash` (e executá-lo com `bash`) assim que o script us
 ## Tornar um script executável
 
 ```bash
-chmod +x script.sh  # adiciona o direito de execucao (veja Permissoes e manipulacao de arquivos)
-./script.sh         # executa o script (o "./" e necessario se o diretorio atual nao esta no $PATH)
+# adiciona o direito de execucao (veja Permissoes e manipulacao de arquivos)
+chmod +x script.sh
+# executa o script (o "./" e necessario se o diretorio atual nao esta no $PATH)
+./script.sh
 ```
 
 Alternativa sem precisar de `chmod +x`: lançar explicitamente o interpretador sobre o arquivo:
@@ -105,7 +107,8 @@ Cada comando, e portanto cada script, termina com um **código de saída**: `0` 
 #!/bin/bash
 
 if [ ! -f "config.txt" ]; then
-    echo "Erro: arquivo de configuracao ausente" >&2   # >&2 : envia essa mensagem para a saida de erro (stderr)
+    # >&2 : envia essa mensagem para a saida de erro (stderr)
+    echo "Erro: arquivo de configuracao ausente" >&2
     exit 1
 fi
 
@@ -160,7 +163,8 @@ Um caso concreto onde `set -e` não é disparado, apesar de uma falha real:
 
 ```bash
 set -e
-comando_que_falha | grep "padrao"   # falha, mas set -e NAO para aqui sem pipefail: so grep conta
+# falha, mas set -e NAO para aqui sem pipefail: so grep conta
+comando_que_falha | grep "padrao"
 ```
 
 > **Armadilha:** `set -e` não cobre tudo que se poderia esperar. Um comando que falha **não para nada** se ele for testado por um `if`, combinado com `&&`/`||`, ou se não for o último de um pipeline (sem `pipefail`, como no exemplo acima): nesses três casos, o Bash considera a falha "esperada e já tratada", então `set -e` não é disparado.

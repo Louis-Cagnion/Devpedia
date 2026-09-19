@@ -34,7 +34,8 @@ O atributo `for` do `<label>` precisa corresponder ao `id` do campo: clicar no l
 
 ```html
 <input type="text" name="nome">
-<input type="email" name="email">          <!-- validacao basica do formato de email pelo navegador -->
+<!-- validacao basica do formato de email pelo navegador -->
+<input type="email" name="email">
 <input type="password" name="senha">       <!-- mascara a digitacao -->
 <input type="number" name="idade" min="0" max="120">
 <input type="date" name="nascimento">
@@ -80,7 +81,8 @@ O atributo `for` do `<label>` precisa corresponder ao `id` do campo: clicar no l
 ```html
 <button type="submit">Enviar</button>              <!-- submete o formulario -->
 <button type="reset">Limpar</button>                <!-- esvazia todos os campos -->
-<button type="button">Nao faz nada sozinho</button> <!-- util para um comportamento gerenciado em JavaScript -->
+<!-- util para um comportamento gerenciado em JavaScript -->
+<button type="button">Nao faz nada sozinho</button>
 ```
 
 ---

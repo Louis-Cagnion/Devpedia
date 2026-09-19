@@ -67,7 +67,8 @@ X_validacao, X_test, y_validacao, y_test = train_test_split(X_temp, y_temp, test
 Seja qual for o algoritmo escolhido, o scikit-learn expõe sistematicamente a mesma interface:
 
 ```python
-from sklearn.linear_model import LogisticRegression   # classificação: y é categórico ("sim"/"nao")
+# classificação: y é categórico ("sim"/"nao")
+from sklearn.linear_model import LogisticRegression
 
 modelo = LogisticRegression()
 modelo.fit(X_treinamento, y_treinamento)  # "aprende" a partir dos dados de treinamento
@@ -91,8 +92,10 @@ Com poucos dados, reservar 40% para validação+teste (como visto acima) se torn
 from sklearn.model_selection import cross_val_score
 
 scores = cross_val_score(LogisticRegression(), X_treinamento, y_treinamento, cv=5)
-# divide X_treinamento em 5 blocos ("folds"); treina 5 vezes, mantendo cada bloco como validação por vez
-scores.mean()   # média dos 5 scores -> estimativa mais confiável que uma única divisão treino/validação
+# divide X_treinamento em 5 blocos ("folds"); treina 5 vezes, mantendo cada bloco como
+# validação por vez
+# média dos 5 scores -> estimativa mais confiável que uma única divisão treino/validação
+scores.mean()
 ```
 
 Cada exemplo serve assim tanto para o treinamento (4 vezes em 5) quanto para a validação (1 vez em 5), sem nunca tocar em `X_test`: a média dos 5 scores suaviza o efeito de uma divisão particularmente favorável ou desfavorável que uma única divisão poderia produzir por acaso.
@@ -143,7 +146,8 @@ precision_score(y_test, predicoes)
 recall_score(y_test, predicoes)
 f1_score(y_test, predicoes)
 
-print(classification_report(y_test, predicoes))   # precisão, recall e F1 ao mesmo tempo, por classe
+# precisão, recall e F1 ao mesmo tempo, por classe
+print(classification_report(y_test, predicoes))
 ```
 
 > **Nota:** a exatidão é enganosa em classes desbalanceadas: um detector de fraude que sempre responde "não" atinge 99% de exatidão se 1% das transações forem fraudulentas, embora seja inútil (recall de 0%). Precisão e recall quase sempre se avaliam juntos: aumentar um geralmente se dá em detrimento do outro (deslocar o limiar de decisão para "positivo" aumenta o recall mas reduz a precisão, e vice-versa); o F1-score resume essa troca em um único número, prático para comparar modelos sem arbitrar manualmente entre os dois a cada vez. A especificidade completa o quadro do lado dos negativos: útil quando um falso positivo custa caro (ex.: um exame médico inútil disparado erroneamente), enquanto o recall se concentra no custo de um falso negativo (ex.: uma doença não detectada).

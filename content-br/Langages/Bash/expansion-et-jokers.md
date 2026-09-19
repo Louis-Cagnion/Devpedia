@@ -10,7 +10,8 @@ Antes de executar um comando, o Bash substitui certos padrões que ele contém p
 
 ```bash
 ls *.txt             # todos os arquivos que terminam em .txt
-ls arquivo?.txt      # arquivo1.txt, arquivoA.txt... ('?' = exatamente 1 caractere, qualquer um)
+# arquivo1.txt, arquivoA.txt... ('?' = exatamente 1 caractere, qualquer um)
+ls arquivo?.txt
 ls arquivo[123].txt  # arquivo1.txt, arquivo2.txt ou arquivo3.txt apenas
 ls arquivo[a-z].txt  # uma unica letra minuscula nessa posicao
 ```

@@ -70,7 +70,8 @@ chown usuario:grupo arquivo.txt   # muda proprietario E grupo de uma vez
 ```bash
 mkdir diretorio                    # cria um diretorio
 mkdir -p a/b/c                     # cria toda a arvore de uma vez, sem erro se ja existir
-touch arquivo.txt                  # cria um arquivo vazio (ou atualiza sua data de modificacao se existir)
+# cria um arquivo vazio (ou atualiza sua data de modificacao se existir)
+touch arquivo.txt
 cp origem.txt destino.txt          # copia um arquivo
 cp -r diretorio_origem diretorio_destino  # copia recursiva, necessaria para um diretorio
 mv antigo.txt novo.txt             # move OU renomeia (as duas sao a mesma operacao para mv)

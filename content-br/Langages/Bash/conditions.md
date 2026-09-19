@@ -24,7 +24,8 @@ fi
 ## `[ ]` vs `[[ ]]`
 
 ```bash
-[[ $idade -ge 18 && $idade -lt 65 ]]    # [[ ]] : sintaxe estendida Bash, && e || diretamente utilizaveis
+# [[ ]] : sintaxe estendida Bash, && e || diretamente utilizaveis
+[[ $idade -ge 18 && $idade -lt 65 ]]
 [ $idade -ge 18 ] && [ $idade -lt 65 ]  # [ ] : POSIX, exige combinar dois testes separados
 ```
 

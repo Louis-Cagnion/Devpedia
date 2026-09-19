@@ -9,7 +9,8 @@ Como no [Bash](/?c=shells&s=bash&p=bash), cada comando lançado inicia um **proc
 ## Primeiro plano vs segundo plano
 
 ```powershell
-Start-Job -ScriptBlock { .\processamento_longo.ps1 }   # lanca como tarefa em segundo plano (job)
+# lanca como tarefa em segundo plano (job)
+Start-Job -ScriptBlock { .\processamento_longo.ps1 }
 Write-Output "O console fica disponivel imediatamente"
 ```
 
@@ -27,16 +28,20 @@ Receive-Job $job # recupera a saida produzida pelo job
 ## Ver os processos em execução (`Get-Process`)
 
 ```powershell
-Get-Process                                                         # lista todos os processos, com CPU, memoria, PID...
-Get-Process | Where-Object { $_.Name -like "*chrome*" }             # filtra por nome, equivalente de "ps aux | grep"
-Get-Process | Sort-Object CPU -Descending | Select-Object -First 5  # os 5 processos mais pesados em CPU
+# lista todos os processos, com CPU, memoria, PID...
+Get-Process
+# filtra por nome, equivalente de "ps aux | grep"
+Get-Process | Where-Object { $_.Name -like "*chrome*" }
+# os 5 processos mais pesados em CPU
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 5
 ```
 
 ## Encerrar um processo (`Stop-Process`)
 
 ```powershell
 Stop-Process -Id 1234         # pede a parada do processo (equivalente mais proximo de SIGTERM)
-Stop-Process -Id 1234 -Force  # parada forcada, sem esperar um fechamento limpo (equivalente de SIGKILL)
+# parada forcada, sem esperar um fechamento limpo (equivalente de SIGKILL)
+Stop-Process -Id 1234 -Force
 Stop-Process -Name "notepad"  # mira pelo nome em vez do PID
 ```
 
@@ -56,7 +61,8 @@ Ao contrário de `nohup` no Bash, um `Job` do PowerShell (`Start-Job`) já roda 
 
 ```powershell
 Get-Process -Name "*processamento_longo*"                 # equivalente de pgrep
-Get-Process -Name "*processamento_longo*" | Stop-Process  # encontra E encerra, equivalente de pkill
+# encontra E encerra, equivalente de pkill
+Get-Process -Name "*processamento_longo*" | Stop-Process
 ```
 
 > **`Get-Process` vs `Stop-Process`**: como o par `pgrep`/`pkill` no Bash, buscar um processo (leitura) e encerrá-lo (ação) continuam sendo duas cmdlets distintas, combinadas por um pipe em vez de por uma flag compartilhada. O mesmo risco existe que com `pkill`: um filtro `-Name` amplo demais pode atingir mais processos do que o previsto.

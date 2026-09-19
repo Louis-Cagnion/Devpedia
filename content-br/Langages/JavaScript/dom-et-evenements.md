@@ -22,7 +22,8 @@ document.querySelectorAll(".card");   // TODOS os elementos correspondentes (Nod
 const titulo = document.querySelector("h1");
 
 titulo.textContent = "Novo titulo";   // substitui o texto (escapa automaticamente o HTML)
-titulo.innerHTML = "<em>Titulo</em>"; // insere HTML bruto -> PERIGO se a fonte não for confiável (XSS)
+// insere HTML bruto -> PERIGO se a fonte não for confiável (XSS)
+titulo.innerHTML = "<em>Titulo</em>";
 titulo.style.color = "red";           // modifica um estilo CSS diretamente
 titulo.classList.add("ativo");        // adiciona uma classe CSS
 titulo.classList.remove("ativo");

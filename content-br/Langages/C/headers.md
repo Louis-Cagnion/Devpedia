@@ -44,7 +44,8 @@ static int quadrado(int x)   // ligacao INTERNA: invisivel fora de utilitarios.c
     return x * x;
 }
 
-int cubo(int x)   // ligacao externa (padrao): declaravel em utilitarios.h, chamavel em outro lugar
+// ligacao externa (padrao): declaravel em utilitarios.h, chamavel em outro lugar
+int cubo(int x)
 {
     return x * quadrado(x);
 }
@@ -71,7 +72,8 @@ Em uma **variável local**, `static` muda um aspecto completamente diferente: su
 ## `#include <...>` vs `#include "..."`
 
 ```c
-#include <stdio.h>     // colchetes angulares: busca nos diretorios do sistema (biblioteca padrao)
+// colchetes angulares: busca nos diretorios do sistema (biblioteca padrao)
+#include <stdio.h>
 #include "calculos.h"  // aspas: busca primeiro no diretorio atual do projeto
 ```
 

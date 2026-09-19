@@ -64,7 +64,8 @@ Cada processo inicia com três descritores já abertos:
 | `2` | `STDERR_FILENO` | Saída de erro |
 
 ```c
-int fd = open("arquivo.txt", O_RDONLY); // retorna, por exemplo, 3: o proximo espaco livre DESSE processo
+// retorna, por exemplo, 3: o proximo espaco livre DESSE processo
+int fd = open("arquivo.txt", O_RDONLY);
 read(fd, buffer, tamanho);
 close(fd);
 ```
@@ -80,7 +81,8 @@ open(caminho, O_RDWR);                              // leitura E escrita
 
 open(caminho, O_WRONLY | O_CREAT, 0644);            // cria o arquivo se ainda nao existir
 open(caminho, O_WRONLY | O_CREAT | O_TRUNC, 0644);  // + esvazia o arquivo se ja existisse
-open(caminho, O_WRONLY | O_CREAT | O_APPEND, 0644); // + sempre escreve no FIM, sem sobrescrever
+// + sempre escreve no FIM, sem sobrescrever
+open(caminho, O_WRONLY | O_CREAT | O_APPEND, 0644);
 ```
 
 | Flag | Efeito |
@@ -100,8 +102,10 @@ Essas flags se combinam com `|` (OR bit a bit, veja [Os operadores bit a bit](/?
 
 ```c
 int fd = open("saida.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-dup2(fd, STDOUT_FILENO);  // dai em diante, escrever em "stdout" (1) escreve na verdade em "saida.txt"
-close(fd);                // o original pode ser fechado: o destino (1) continua valido, apontando para o mesmo recurso
+// dai em diante, escrever em "stdout" (1) escreve na verdade em "saida.txt"
+dup2(fd, STDOUT_FILENO);
+// o original pode ser fechado: o destino (1) continua valido, apontando para o mesmo recurso
+close(fd);
 ```
 
 É exatamente esse mecanismo que o capítulo sobre a arquitetura de um shell usa para implementar tanto os redirecionamentos (`>`, `<`) quanto os pipes (`|`): em ambos os casos, faz-se um descritor padrão (`0`, `1`, `2`) apontar para um recurso diferente logo antes de executar o programa alvo.

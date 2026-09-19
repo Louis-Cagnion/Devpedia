@@ -37,7 +37,8 @@ def adicao(a, b):
     return a + b
 
 if __name__ == "__main__":
-    print("Teste rapido:", adicao(2, 3))   # so executa SE lancarmos "python calculos.py" diretamente
+    # so executa SE lancarmos "python calculos.py" diretamente
+    print("Teste rapido:", adicao(2, 3))
 ```
 
 > **Nota:** essa proteção permite que um arquivo sirva tanto como módulo reutilizável (importado sem executar nada inesperado) quanto como script autônomo (testável diretamente), sem que esses dois usos interfiram entre si.

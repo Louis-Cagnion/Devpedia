@@ -34,7 +34,8 @@ bg %1          # relanca em segundo plano uma tarefa suspensa por Ctrl+Z
 ```bash
 ps aux             # lista todos os processos do sistema, com usuario, CPU, memoria...
 ps aux | grep php  # filtra para ver apenas os processos relacionados a "php"
-top                # visao interativa, atualizada ao vivo, ordenada por consumo de CPU por padrao
+# visao interativa, atualizada ao vivo, ordenada por consumo de CPU por padrao
+top
 ```
 
 ## Encerrar um processo (`kill`)
@@ -80,7 +81,8 @@ nohup processamento_longo.sh &
 
 ```bash
 pgrep -f "processamento_longo.sh"  # exibe o(s) PID correspondente(s) ao padrao dado
-pkill -f "processamento_longo.sh"  # encontra E encerra em um unico comando (envia SIGTERM por padrao)
+# encontra E encerra em um unico comando (envia SIGTERM por padrao)
+pkill -f "processamento_longo.sh"
 ```
 
 > **`kill` vs `pkill`**: `kill` precisa de um **PID** já conhecido (`kill 1234`): é o único jeito de enviar um sinal a um processo preciso sem errar o alvo. `pkill` evita precisar procurar esse PID manualmente: ele envia o sinal a todo processo cujo nome (ou linha de comando completa com `-f`) corresponde ao padrão dado, o que equivale a encadear `pgrep` e depois `kill` em cada PID encontrado. O risco de `pkill` é então atingir mais processos do que o previsto se o padrão for amplo demais (ex. `pkill -f script.sh` em uma máquina onde vários scripts contêm "script.sh" no nome).

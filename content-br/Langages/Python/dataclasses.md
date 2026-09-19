@@ -61,7 +61,8 @@ class BlocoTexto:
     texto: str
 
 bloco = BlocoTexto(pagina=1, texto="Ola")
-bloco.texto = "Modificado"   # FrozenInstanceError : impossivel modificar um campo apos a criacao
+# FrozenInstanceError : impossivel modificar um campo apos a criacao
+bloco.texto = "Modificado"
 ```
 
 Uma dataclass `frozen=True` também se torna **hashável** (utilizável como chave de `dict` ou elemento de um `set`) assim que todos os seus campos também o são, ao contrário de uma dataclass comum (mutável, portanto não hashável por padrão): uma consequência direta do mesmo princípio de que uma [tupla é hashável mas uma lista não é](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles).
@@ -89,7 +90,8 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Carrinho:
-    itens: list = []   # ValueError lancada na definicao da classe : lista mutavel proibida como padrao direto
+    # ValueError lancada na definicao da classe : lista mutavel proibida como padrao direto
+    itens: list = []
 
 @dataclass
 class Carrinho:

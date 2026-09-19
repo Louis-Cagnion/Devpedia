@@ -22,9 +22,11 @@ setopt            # lista todas as opcoes atualmente ativas
 ```bash
 setopt AUTO_CD           # digitar um nome de diretorio sozinho (sem "cd") ja move para ele
 setopt EXTENDED_GLOB     # ativa o globbing estendido (veja Expansao e coringas avancados)
-setopt SHARE_HISTORY     # compartilha o historico de comandos em tempo real entre todos os terminais abertos
+# compartilha o historico de comandos em tempo real entre todos os terminais abertos
+setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS  # nao registra um comando identico ao anterior no historico
-setopt CORRECT           # sugere uma correcao se um comando digitado nao existe ("did you mean...")
+# sugere uma correcao se um comando digitado nao existe ("did you mean...")
+setopt CORRECT
 ```
 
 | Opção | Efeito |

@@ -74,9 +74,12 @@ Em JavaScript moderno, transformar ou filtrar um array passa mais frequentemente
 const numeros = [1, 2, 3, 4, 5];
 
 numeros.forEach(n => console.log(n));                  // executa uma funcao para cada elemento
-const dobros = numeros.map(n => n * 2);                // [2, 4, 6, 8, 10] -> transforma cada elemento
-const pares = numeros.filter(n => n % 2 === 0);        // [2, 4] -> mantem apenas o que corresponde
-const soma = numeros.reduce((acc, n) => acc + n, 0);   // 15 -> reduz todo o array a um unico valor
+// [2, 4, 6, 8, 10] -> transforma cada elemento
+const dobros = numeros.map(n => n * 2);
+// [2, 4] -> mantem apenas o que corresponde
+const pares = numeros.filter(n => n % 2 === 0);
+// 15 -> reduz todo o array a um unico valor
+const soma = numeros.reduce((acc, n) => acc + n, 0);
 ```
 
 > **Nota:** `reduce()` é o mais versátil mas o menos imediatamente legível: `acc` (o acumulador) parte do valor inicial fornecido no segundo argumento (`0` aqui), e se atualiza a cada elemento conforme a função fornecida.

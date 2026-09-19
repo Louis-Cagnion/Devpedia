@@ -17,7 +17,8 @@ const observador = new IntersectionObserver((entradas) => {
     if (entradas[0].isIntersecting) {   // a sentinela acabou de entrar na area visivel
         carregarProximaPagina();
     }
-}, { rootMargin: '200px' });            // dispara 200px ANTES de a sentinela estar realmente visivel
+// dispara 200px ANTES de a sentinela estar realmente visivel
+}, { rootMargin: '200px' });
 
 observador.observe(sentinela);
 ```

@@ -28,7 +28,8 @@ A **seleção proporcional** (noção popularizada pela ferramenta de modelagem 
 float distancia = distancia_3d(vertice_vizinho.posicao, vertice_selecionado.posicao);
 
 if (distancia < raio_influencia) {
-    float fator = 1.0f - (distancia / raio_influencia);   // 1.0 no centro, 0.0 na borda do raio
+    // 1.0 no centro, 0.0 na borda do raio
+    float fator = 1.0f - (distancia / raio_influencia);
     vertice_vizinho.posicao += deslocamento * fator;
 }
 ```

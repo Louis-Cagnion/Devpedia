@@ -21,7 +21,8 @@ Como para [uma árvore binária](/?c=langages-de-programmation&s=c&p=arbres-bina
 ## Criar e encadear nós
 
 ```c
-No *primeiro = malloc(sizeof(No));   // a verificar contra NULL na pratica (veja O gerenciamento de memoria)
+// a verificar contra NULL na pratica (veja O gerenciamento de memoria)
+No *primeiro = malloc(sizeof(No));
 primeiro->valor = 10;
 
 No *segundo = malloc(sizeof(No));

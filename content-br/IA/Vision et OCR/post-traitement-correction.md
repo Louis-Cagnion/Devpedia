@@ -20,7 +20,8 @@ def corrigir_por_dicionario(palavra, lexico, distancia_max=2):
 
     if melhor_distancia <= distancia_max:
         return melhor_entrada   # suficientemente proxima: corrige-se
-    return palavra                # muito diferente de qualquer palavra conhecida: nao se toca em nada
+    # muito diferente de qualquer palavra conhecida: nao se toca em nada
+    return palavra
 ```
 
 > **Cuidado:** usar um dicionário de idioma genérico (as palavras do português comum) em um documento de negócio. Um nome próprio, uma referência de produto ou um identificador técnico (CNPJ, um número de pedido) não pertence a nenhum dicionário generalista: o mecanismo de correção os "corrigiria" para a palavra do dicionário mais próxima, muitas vezes uma palavra totalmente diferente da correta.
@@ -55,7 +56,8 @@ import re
 def formato_cnpj_valido(texto):
     return re.fullmatch(r"\d{14}", texto) is not None
 
-formato_cnpj_valido("1234567890123 4")  # False -> um espaco extra, sinaliza um erro provavel de OCR
+# False -> um espaco extra, sinaliza um erro provavel de OCR
+formato_cnpj_valido("1234567890123 4")
 formato_cnpj_valido("12345678901234")   # True
 ```
 

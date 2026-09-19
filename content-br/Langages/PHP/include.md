@@ -77,7 +77,8 @@ Esse padrão frequentemente serve como arquivo de config/dados simples, sem prec
 ```php
 <?php
 // em /app/pages/inicio.php
-require __DIR__ . '/../config.php'; // sempre correto, seja qual for o local de onde o script e executado
+// sempre correto, seja qual for o local de onde o script e executado
+require __DIR__ . '/../config.php';
 ?>
 ```
 

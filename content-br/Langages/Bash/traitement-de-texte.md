@@ -17,7 +17,8 @@ grep -n "erro" arquivo.log           # exibe tambem o numero da linha
 grep -c "erro" arquivo.log           # conta o numero de linhas correspondentes, sem exibi-las
 grep -E "erro|warning" arquivo.log   # -E ativa as regex estendidas (cf. capitulo sobre regex)
 grep -l "TODO" *.md                  # exibe apenas os NOMES dos arquivos que contem o padrao
-grep -q "TODO" *.md                  # nao exibe nada: serve apenas para testar a presenca (veja abaixo)
+# nao exibe nada: serve apenas para testar a presenca (veja abaixo)
+grep -q "TODO" *.md
 ```
 
 Como muitas ferramentas Unix, essas flags são iniciais de palavras em inglês em vez de letras arbitrárias: `-i` = *ignore case*, `-v` = *invert*, `-r` = *recursive*, `-n` = *line number*, `-c` = *count*, `-E` = *extended (regex)*, `-l` = *files with matches (list)*, `-q` = *quiet*. Uma vez conhecidas essas palavras, lembrar a flag se torna natural: esse princípio se repete na maioria dos comandos deste capítulo e do seguinte.
@@ -74,14 +75,17 @@ O comando mais usado é `s/padrao/substituicao/` (o "s" de *substitute*): ele bu
 
 ```bash
 sed 's/antigo/novo/' arquivo.txt      # substitui a 1a ocorrencia por linha, exibe o resultado
-sed 's/antigo/novo/g' arquivo.txt     # 'g' (global): substitui TODAS as ocorrencias de cada linha
-sed -i 's/antigo/novo/g' arquivo.txt  # -i: modifica o arquivo diretamente (in place), sem exibir nada
+# 'g' (global): substitui TODAS as ocorrencias de cada linha
+sed 's/antigo/novo/g' arquivo.txt
+# -i: modifica o arquivo diretamente (in place), sem exibir nada
+sed -i 's/antigo/novo/g' arquivo.txt
 ```
 
 O outro comando comum é `p` (*print*), que exibe explicitamente uma linha; combinado com `-n` (que desativa a exibição automática de cada linha processada), ele permite exibir apenas certas linhas em vez do arquivo inteiro:
 
 ```bash
-sed -n '2,4p' arquivo.txt   # -n: nao exibe NADA por padrao ; '2,4p': exibe explicitamente as linhas 2 a 4
+# -n: nao exibe NADA por padrao ; '2,4p': exibe explicitamente as linhas 2 a 4
+sed -n '2,4p' arquivo.txt
 ```
 
 > **Nota:** sem `-n`, `sed '2,4p'` exibiria cada linha do arquivo uma vez (comportamento padrão), e as linhas 2 a 4 uma segunda vez (por causa do `p`): `-n` e `p` funcionam quase sempre em par.
@@ -116,7 +120,8 @@ cut -c 1-5 arquivo.txt       # extrai os caracteres 1 a 5 de cada linha
 
 ```bash
 sort arquivo.txt            # ordenacao alfabetica
-sort -n numeros.txt         # ordenacao numerica (indispensavel para numeros, senao ordena como texto)
+# ordenacao numerica (indispensavel para numeros, senao ordena como texto)
+sort -n numeros.txt
 sort -r arquivo.txt         # ordenacao decrescente
 sort arquivo.txt | uniq     # remove as linhas duplicadas CONSECUTIVAS apenas
 sort arquivo.txt | uniq -c  # conta as ocorrencias de cada linha

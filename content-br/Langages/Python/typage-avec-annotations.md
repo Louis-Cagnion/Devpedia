@@ -15,7 +15,8 @@ nome: str = "Joao"
 def adicao(a: int, b: int) -> int:
     return a + b
 
-adicao("dois", "tres")   # NENHUM erro ao executar: Python executa mesmo assim, sem verificar os tipos
+# NENHUM erro ao executar: Python executa mesmo assim, sem verificar os tipos
+adicao("dois", "tres")
 ```
 
 > **Nota:** ao contrário de PHP onde `function f(int $x): int` lança um `TypeError` se passarmos algo diferente de um inteiro, as anotações Python são pura documentação para um humano (ou uma ferramenta externa): o interpretador nunca as faz cumprir.
@@ -83,7 +84,8 @@ Uma **forward reference** é uma anotação de tipo escrita entre aspas, que ref
 class No:
     def __init__(self, valor: int, proximo: "No | None" = None):
         self.valor = valor
-        self.proximo = proximo   # "No" ainda nao existe enquanto sua propria definicao nao termina
+        # "No" ainda nao existe enquanto sua propria definicao nao termina
+        self.proximo = proximo
 ```
 
 > **Armadilha:** sem as aspas (`proximo: No | None`), Python lança uma `NameError` imediata ao ler o arquivo: as anotações de uma função são avaliadas assim que ela é definida, não apenas lidas por uma ferramenta externa como `mypy`. As aspas a transformam em texto simples, resolvido somente quando uma ferramenta precisa dele.

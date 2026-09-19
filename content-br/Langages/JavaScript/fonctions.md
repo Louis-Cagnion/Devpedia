@@ -36,9 +36,12 @@ Aqui, `adicao` é uma variável como qualquer outra: ela só existe a partir da 
 ## Funções de seta (*arrow functions*)
 
 ```javascript
-const adicao = (a, b) => a + b;                   // uma unica expressao: retorno implicito, sem "return"
-const quadrado = x => x * x;                      // parenteses opcionais com um unico parametro
-const saudar = () => { console.log("Ola"); }      // corpo multi-linha: chaves + "return" explicito exigido
+// uma unica expressao: retorno implicito, sem "return"
+const adicao = (a, b) => a + b;
+// parenteses opcionais com um unico parametro
+const quadrado = x => x * x;
+// corpo multi-linha: chaves + "return" explicito exigido
+const saudar = () => { console.log("Ola"); }
 ```
 
 ### A verdadeira diferença: `this`
@@ -50,7 +53,8 @@ const objeto = {
 
     exibirClassico: function () {
         this.valores.forEach(function (v) {
-            console.log(this.nome, v);   // "this" aqui e undefined (ou o objeto global): NAO "objeto"!
+            // "this" aqui e undefined (ou o objeto global): NAO "objeto"!
+            console.log(this.nome, v);
         });
     },
 
@@ -67,11 +71,13 @@ const objeto = {
 ## Parâmetros padrão, rest e spread
 
 ```javascript
-function saudar(nome, mensagem = "Ola") {   // valor padrao se o argumento for omitido/undefined
+// valor padrao se o argumento for omitido/undefined
+function saudar(nome, mensagem = "Ola") {
     return `${mensagem} ${nome}`;
 }
 
-function soma(...numeros) {                   // "rest": agrupa os argumentos excedentes em um array
+// "rest": agrupa os argumentos excedentes em um array
+function soma(...numeros) {
     return numeros.reduce((total, n) => total + n, 0);
 }
 soma(1, 2, 3, 4);   // 10

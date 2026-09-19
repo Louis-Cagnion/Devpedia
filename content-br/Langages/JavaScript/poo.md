@@ -107,7 +107,8 @@ console.log(conta.#saldo);  // SyntaxError: #saldo nao e acessivel aqui
 ## O que se esconde por trás de `class`: o protótipo
 
 ```javascript
-console.log(typeof Veiculo);                     // "function" -> uma classe E uma funcao especial
+// "function" -> uma classe E uma funcao especial
+console.log(typeof Veiculo);
 console.log(v.__proto__ === Veiculo.prototype);  // true
 ```
 

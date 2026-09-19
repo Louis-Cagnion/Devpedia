@@ -40,7 +40,8 @@ public:
     void empilhar(T valor) { elementos.push_back(valor); }
     T desempilhar() {
         if (estaVazia()) {
-            throw std::out_of_range("Pilha vazia"); // veja As excecoes: nunca desempilhar vazia
+            // veja As excecoes: nunca desempilhar vazia
+            throw std::out_of_range("Pilha vazia");
         }
         T ultimo = elementos.back();
         elementos.pop_back();

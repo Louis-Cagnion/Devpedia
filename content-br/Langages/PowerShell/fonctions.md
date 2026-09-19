@@ -15,7 +15,8 @@ function Saudar {
 }
 
 Saudar -Nome "Joao"  # Ola Joao !
-Saudar "Joao"        # tambem funciona: o PowerShell aceita um argumento posicional se o nome for omitido
+# tambem funciona: o PowerShell aceita um argumento posicional se o nome for omitido
+Saudar "Joao"
 ```
 
 > **Convenção de nomenclatura:** as cmdlets e funções PowerShell seguem a grafia `Verbo-Substantivo` (`Get-ChildItem`, `Saudar` aqui em versão simplificada); um conjunto de verbos padrão (`Get`, `Set`, `New`, `Remove`...) é até imposto por convenção para as cmdlets oficiais, para que um mesmo verbo se comporte de forma previsível de um comando para outro.

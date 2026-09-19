@@ -38,7 +38,8 @@ Entre parênteses depois de um padrão, um **qualificador** filtra os resultados
 ls *(.)          # apenas arquivos regulares (nao diretorios, nao links)
 ls *(/)          # apenas diretorios
 ls *(*)          # apenas arquivos executaveis
-ls *(.om[1])     # o arquivo regular modificado mais recentemente (ordenado por data, pega o 1o)
+# o arquivo regular modificado mais recentemente (ordenado por data, pega o 1o)
+ls *(.om[1])
 ls *.log(.Lm-7)  # arquivos .log com mais de 7 dias de modificacao
 ```
 

@@ -45,7 +45,8 @@ div {
     padding: 20px;
     border: 2px solid black;
 }
-/* Largura REALMENTE ocupada na tela: 300 + 20+20 (padding) + 2+2 (border) = 344px, NAO 300px! */
+/* Largura REALMENTE ocupada na tela: 300 + 20+20 (padding) + 2+2 (border) = 344px, NAO
+   300px! */
 ```
 
 > **Nota:** por padrão (`box-sizing: content-box`), `width` só define o tamanho do **conteúdo**: `padding` e `border` se somam por cima, aumentando a caixa realmente exibida além do valor declarado. É uma fonte muito frequente de layouts que "transbordam" de forma inesperada.

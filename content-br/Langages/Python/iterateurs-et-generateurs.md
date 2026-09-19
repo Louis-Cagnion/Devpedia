@@ -130,7 +130,8 @@ def tarefas():
 
 t = tarefas()
 print("Antes do primeiro next")
-print(next(t))     # "Iniciando" e exibido AQUI, no momento da chamada, nao antes, nao em segundo plano
+# "Iniciando" e exibido AQUI, no momento da chamada, nao antes, nao em segundo plano
+print(next(t))
 print("Antes do segundo next")
 print(next(t))     # "Retomando apos A" e exibido AQUI, nunca antes
 ```

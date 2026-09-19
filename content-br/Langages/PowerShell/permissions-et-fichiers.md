@@ -49,9 +49,11 @@ New-Item -ItemType Directory -Path diretorio       # cria um diretorio
 New-Item -ItemType Directory -Path a\b\c -Force    # cria toda a arvore de uma vez
 New-Item -ItemType File -Path arquivo.txt          # cria um arquivo vazio
 Copy-Item origem.txt destino.txt                    # copia um arquivo
-Copy-Item -Recurse diretorio_origem diretorio_dest  # copia recursiva, necessaria para um diretorio
+# copia recursiva, necessaria para um diretorio
+Copy-Item -Recurse diretorio_origem diretorio_dest
 Move-Item antigo.txt novo.txt                       # move OU renomeia, como mv no Bash
-Remove-Item arquivo.txt                             # remove um arquivo (vai para a lixeira por padrao no explorador, mas nao aqui)
+# remove um arquivo (vai para a lixeira por padrao no explorador, mas nao aqui)
+Remove-Item arquivo.txt
 Remove-Item -Recurse diretorio                      # remove um diretorio e todo seu conteudo
 ```
 
@@ -60,10 +62,13 @@ Remove-Item -Recurse diretorio                      # remove um diretorio e todo
 ## `Get-ChildItem -Recurse`: buscar arquivos (equivalente de `find`)
 
 ```powershell
-Get-ChildItem -Path . -Filter "*.txt" -Recurse                                                       # todos os arquivos .txt, recursivamente
+# todos os arquivos .txt, recursivamente
+Get-ChildItem -Path . -Filter "*.txt" -Recurse
 Get-ChildItem -Path C:\logs -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }  # modificados recentemente
-Get-ChildItem -Recurse -Directory -Filter "node_modules"                                             # todos os diretorios chamados "node_modules"
-Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item                                                 # encontra E exclui em uma unica cadeia
+# todos os diretorios chamados "node_modules"
+Get-ChildItem -Recurse -Directory -Filter "node_modules"
+# encontra E exclui em uma unica cadeia
+Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item
 ```
 
 Veja também [Processamento de texto e objetos](/?c=shells&s=powershell&p=traitement-de-texte) (`Select-String`, `-replace`, `ConvertFrom-Json`) para ir mais longe na exploração do conteúdo desses arquivos.

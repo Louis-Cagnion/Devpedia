@@ -29,7 +29,8 @@ O **UFW** (*Uncomplicated Firewall*) é a ferramenta padrão no Debian/Ubuntu; e
 
 ```bash
 ufw default deny incoming   # recusa todo o trafego de entrada por padrao
-ufw allow 2222/tcp          # permite apenas a porta SSH (aqui redefinida, veja o capitulo anterior)
+# permite apenas a porta SSH (aqui redefinida, veja o capitulo anterior)
+ufw allow 2222/tcp
 ufw enable                  # ativa o firewall com essas regras
 ufw status                  # lista as regras ativas
 ```

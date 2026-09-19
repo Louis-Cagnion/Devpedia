@@ -31,8 +31,10 @@ len(frutas)                  # numero de elementos
 `[x] * n` constrói uma nova lista de tamanho `n`, cada posição contendo `x`:
 
 ```python
-zeros = [0] * 5           # [0, 0, 0, 0, 0] -> pre-alocacao pratica para um tamanho conhecido de antemao
-letras = ["a", "b"] * 3   # ["a", "b", "a", "b", "a", "b"] -> repete a SEQUENCIA inteira, nao cada elemento
+# [0, 0, 0, 0, 0] -> pre-alocacao pratica para um tamanho conhecido de antemao
+zeros = [0] * 5
+# ["a", "b", "a", "b", "a", "b"] -> repete a SEQUENCIA inteira, nao cada elemento
+letras = ["a", "b"] * 3
 ```
 
 > **Armadilha:** `[[]] * n` NÃO cria `n` listas independentes, mas `n` referências para **a mesma** lista vazia: modificar uma modifica então as `n` ao mesmo tempo.
@@ -48,8 +50,10 @@ print(grade)   # [['x'], ['x'], ['x']] -> as 3 sublistas SAO o mesmo objeto, nao
 ### `.append()` vs `.extend()`
 
 ```python
-frutas.append("kiwi")               # ja visto: adiciona UM UNICO elemento (mesmo que seja uma lista, aninhada tal qual)
-frutas.extend(["kiwi", "manga"])    # adiciona CADA elemento do iteravel dado, um a um, ao final
+# ja visto: adiciona UM UNICO elemento (mesmo que seja uma lista, aninhada tal qual)
+frutas.append("kiwi")
+# adiciona CADA elemento do iteravel dado, um a um, ao final
+frutas.extend(["kiwi", "manga"])
 
 frutas.append(["a", "b"])  # [..., ["a", "b"]] -> UM elemento, aninhado
 frutas.extend(["a", "b"])  # [..., "a", "b"]   -> DOIS elementos, achatados
@@ -96,7 +100,8 @@ a = [1, 2]
 b = [3, 4]
 
 [a, b]       # [[1, 2], [3, 4]] -> aninha as duas listas como 2 elementos
-[*a, *b]     # [1, 2, 3, 4]     -> desempacota cada elemento de forma plana, equivalente a a + b
+# [1, 2, 3, 4]     -> desempacota cada elemento de forma plana, equivalente a a + b
+[*a, *b]
 [*a, 0, *b]  # [1, 2, 0, 3, 4]  -> mistura-se livremente com outros elementos
 ```
 
@@ -115,7 +120,9 @@ notas.sort()   # ordena NO LUGAR, nao retorna nada (None), notas e modificada
 
 ```python
 runs = ["2026-08-14_101530", "2026-08-06_090000", "2026-08-14_090000"]
-sorted(runs)  # ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> ordem cronologica, "de graca"
+# ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> ordem cronologica, "de
+# graca"
+sorted(runs)
 ```
 
 > **Armadilha:** essa ordenação lexicográfica só funciona se todos os elementos comparados tiverem o mesmo comprimento (ex. sempre `AAAA-MM-DD`): `"9"` fica DEPOIS de `"10"` em uma ordenação lexicográfica (`"9" > "1"` caractere por caractere), ao contrário de uma ordenação numérica.

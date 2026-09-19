@@ -114,9 +114,12 @@ Depois de uma reescrita de histórico (ou um simples `reset --hard`), os commits
 Um objeto só é realmente removido do repositório local quando nada mais o retém:
 
 ```bash
-git reflog expire --expire=now --all  # esvazia imediatamente o reflog de todas as refs (em vez de esperar a expiracao padrao)
-git gc --prune=now                    # remove qualquer objeto que se tornou inacessivel ("unreachable")
-git fsck --unreachable                # lista os objetos ainda presentes mas nao referenciados por nenhuma branch/tag/reflog
+# esvazia imediatamente o reflog de todas as refs (em vez de esperar a expiracao padrao)
+git reflog expire --expire=now --all
+# remove qualquer objeto que se tornou inacessivel ("unreachable")
+git gc --prune=now
+# lista os objetos ainda presentes mas nao referenciados por nenhuma branch/tag/reflog
+git fsck --unreachable
 ```
 
 > **Nota:** essa limpeza diz respeito apenas ao repositório **local**. Um repositório remoto ([GitHub](/?c=git&p=github-et-plateformes), GitLab...) aplica seu próprio `gc` conforme seu próprio calendário: depois de um `push --force` que remove um arquivo sensível do histórico, o commit antigo pode continuar acessível do lado do servidor via seu hash exato (uma requisição direcionada, não uma navegação normal) até que o servidor faça sua própria limpeza. Para uma garantia de remoção imediata do lado do servidor, apenas o suporte da plataforma pode agir.

@@ -67,7 +67,8 @@ Todo Flexbox raciocina em termos de **eixo principal** (o de `flex-direction`) e
 
 ```css
 .elemento {
-    flex-grow: 1;       /* pode crescer para ocupar o espaco restante (1 = parte igual entre elementos) */
+    /* pode crescer para ocupar o espaco restante (1 = parte igual entre elementos) */
+    flex-grow: 1;
     flex-shrink: 1;     /* pode encolher se faltar espaco (padrao) */
     flex-basis: 200px;  /* tamanho inicial, antes de aplicar grow/shrink */
     order: 2;           /* muda a ordem de exibicao SEM tocar no HTML */

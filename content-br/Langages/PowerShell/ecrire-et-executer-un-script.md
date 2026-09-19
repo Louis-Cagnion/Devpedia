@@ -30,7 +30,8 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 
 ```powershell
 .\script.ps1                 # o ".\" e necessario mesmo se o diretorio atual contem o script
-powershell -File script.ps1  # alternativa: lancar explicitamente o interpretador sobre o arquivo
+# alternativa: lancar explicitamente o interpretador sobre o arquivo
+powershell -File script.ps1
 ```
 
 > **Nota:** ao contrário do Bash, digitar simplesmente `script.ps1` sem prefixo de caminho nunca funciona, mesmo que o script seja executável: o PowerShell nunca procura no diretório atual por padrão, mesmo se ele estiver presente em `$env:PATH`, para evitar que um arquivo malicioso do diretório atual seja executado por engano no lugar de um comando do sistema de mesmo nome.

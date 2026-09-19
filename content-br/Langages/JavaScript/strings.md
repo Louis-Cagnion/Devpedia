@@ -18,7 +18,8 @@ const nome = 'Joao';
 const str3 = `Ola ${nome}!`;   // 'Ola Joao!' -> ${...} insere diretamente uma variavel
 
 const str4 = `Linha 1
-Linha 2`;                     // as quebras de linha do codigo fonte sao mantidas tal como estao
+// as quebras de linha do codigo fonte sao mantidas tal como estao
+Linha 2`;
 ```
 
 ### Os protótipos de strings

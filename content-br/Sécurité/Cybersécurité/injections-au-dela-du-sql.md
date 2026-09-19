@@ -32,7 +32,8 @@ subprocess.run(f"convert {nome_arquivo} saida.png", shell=True)
 
 # SEGURO: cada argumento continua sendo um dado separado, nunca interpretado como shell
 subprocess.run(["convert", nome_arquivo, "saida.png"])
-# O nome_arquivo inteiro (incluindo o "; rm -rf /") e passado como UM UNICO argumento a convert,
+# O nome_arquivo inteiro (incluindo o "; rm -rf /") e passado como UM UNICO argumento a
+# convert,
 # que falhara de forma limpa (arquivo nao encontrado) em vez de executar qualquer coisa
 ```
 

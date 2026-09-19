@@ -97,7 +97,8 @@ JOIN vendas v ON v.cliente_id = c.id; -- INNER JOIN: as linhas sem correspondenc
 ```sql
 SELECT c.nome, v.data_compra
 FROM clientes c
-LEFT JOIN vendas v ON v.cliente_id = c.id; -- mantem TODAS as linhas da esquerda, NULL se nao houver correspondencia
+-- mantem TODAS as linhas da esquerda, NULL se nao houver correspondencia
+LEFT JOIN vendas v ON v.cliente_id = c.id;
 ```
 
 - `c`/`v` são aliases de tabela, indispensáveis assim que duas tabelas compartilham um nome de coluna (`c.nome` vs uma eventual `v.nome`, sem ambiguidade).
@@ -143,7 +144,8 @@ CREATE TABLE vendas (
     id           INT IDENTITY PRIMARY KEY,
     cliente_id   INT NOT NULL,
     data_compra  DATE NOT NULL,
-    FOREIGN KEY (cliente_id) REFERENCES clientes(id)  -- toda venda deve apontar para um cliente existente
+    -- toda venda deve apontar para um cliente existente
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
 ```
 
@@ -267,12 +269,14 @@ conexao = pyodbc.connect(
 )  # abre a conexao com o banco de dados
 
 cursor = conexao.cursor()
-cursor.execute("SELECT * FROM clientes WHERE cidade = ?", "Lyon")  # ? = espaco reservado, valor passado a parte
+# ? = espaco reservado, valor passado a parte
+cursor.execute("SELECT * FROM clientes WHERE cidade = ?", "Lyon")
 
 uma_linha = cursor.fetchone()  # uma unica linha
 todas     = cursor.fetchall()  # todas as linhas
 
-conexao.commit()  # confirma as escritas (INSERT/UPDATE/DELETE); desnecessario apos um simples SELECT
+# confirma as escritas (INSERT/UPDATE/DELETE); desnecessario apos um simples SELECT
+conexao.commit()
 ```
 
 Mesmo ciclo que o PDO: `connect()` (abrir a conexão) → `cursor()` → `execute()` (com `?` como espaço reservado, valor passado à parte, nunca concatenado) → `fetchone()`/`fetchall()`. `executemany()` repete a mesma consulta para uma lista de conjuntos de valores (inserção em massa), mais rápido que um laço de `execute()` um por um.
@@ -329,7 +333,8 @@ Concretamente, uma conta aplicativa comprometida (via uma falha no código, um v
 Um `UPDATE` clássico sobrescreve o valor anterior para sempre:
 
 ```sql
-UPDATE clientes SET cidade = 'Paris' WHERE id = 1;  -- a cidade anterior 'Lyon' e perdida definitivamente
+-- a cidade anterior 'Lyon' e perdida definitivamente
+UPDATE clientes SET cidade = 'Paris' WHERE id = 1;
 ```
 
 O padrão **SCD2** (*[Slowly Changing Dimension](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-2/) tipo 2*) evita essa perda: em vez de sobrescrever uma linha, fecha-se a versão atual e insere-se uma nova, mantendo as duas.

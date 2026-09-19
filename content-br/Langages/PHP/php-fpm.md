@@ -129,10 +129,12 @@ private function agendarAtualizacaoEmSegundoPlano(string $arquivo): void
     $bloqueio = $arquivo . '.em_andamento';
 
     if (is_file($bloqueio) && (time() - (int) @filemtime($bloqueio)) < 600) {
-        return;                           // uma atualização já está em andamento, não precisa de outra
+        // uma atualização já está em andamento, não precisa de outra
+        return;
     }
 
-    $identificador = @fopen($bloqueio, 'x');   // 'x': falha se o arquivo já existe (criação atômica)
+    // 'x': falha se o arquivo já existe (criação atômica)
+    $identificador = @fopen($bloqueio, 'x');
     if ($identificador === false) return;      // outro worker já ganhou a corrida
     fclose($identificador);
 
@@ -140,12 +142,14 @@ private function agendarAtualizacaoEmSegundoPlano(string $arquivo): void
 
     register_shutdown_function(function () use ($arquivo, $bloqueio) {
         if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();     // o cliente recebe sua resposta aqui, a conexão se fecha
+            // o cliente recebe sua resposta aqui, a conexão se fecha
+            fastcgi_finish_request();
         }
         try {
             $this->atualizarAgora($arquivo);
         } finally {
-            @unlink($bloqueio);           // sempre liberado, mesmo se o cálculo lançou uma exceção
+            // sempre liberado, mesmo se o cálculo lançou uma exceção
+            @unlink($bloqueio);
         }
     });
 }

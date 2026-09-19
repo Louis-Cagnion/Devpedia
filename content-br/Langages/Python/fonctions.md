@@ -28,7 +28,8 @@ saudar("Joao", "Oi")      # "Oi Joao"
 > **Armadilha clássica: nunca usar um objeto mutável (lista, dict) como valor padrão.** O valor padrão é avaliado **apenas uma vez**, na definição da função, não a cada chamada:
 
 ```python
-def adicionar_a_lista(elemento, lista=[]):  # PERIGO: essa lista e COMPARTILHADA entre todas as chamadas
+# PERIGO: essa lista e COMPARTILHADA entre todas as chamadas
+def adicionar_a_lista(elemento, lista=[]):
     lista.append(elemento)
     return lista
 
@@ -54,7 +55,8 @@ def soma(*numeros):           # *args: agrupa os argumentos posicionais excedent
 
 soma(1, 2, 3, 4)   # 10
 
-def exibir_informacoes(**opcoes):  # **kwargs: agrupa os argumentos nomeados excedentes em um dict
+# **kwargs: agrupa os argumentos nomeados excedentes em um dict
+def exibir_informacoes(**opcoes):
     for chave, valor in opcoes.items():
         print(f"{chave}: {valor}")
 
@@ -109,7 +111,8 @@ def contador():
     total = 0
 
     def incrementar():
-        nonlocal total   # sem isso, "total += 1" criaria uma nova variavel LOCAL a incrementar()
+        # sem isso, "total += 1" criaria uma nova variavel LOCAL a incrementar()
+        nonlocal total
         total += 1
         return total
 

@@ -48,7 +48,8 @@ protected:
 class Cachorro : public Animal {
 public:
     Cachorro(std::string nome) : Animal(nome) {}
-    std::string falar() const override { return nome + " late"; }   // "override": verificado pelo compilador
+    // "override": verificado pelo compilador
+    std::string falar() const override { return nome + " late"; }
 };
 
 Animal *a = new Cachorro("Rex");
@@ -99,7 +100,8 @@ Uma ambiguidade residual sobre um nome herdado (dois métodos com o mesmo nome v
 ```cpp
 class FormaGeometrica {
 public:
-    virtual double area() const = 0;   // "= 0": funcao PURAMENTE virtual, nenhuma implementacao aqui
+    // "= 0": funcao PURAMENTE virtual, nenhuma implementacao aqui
+    virtual double area() const = 0;
     virtual ~FormaGeometrica() {}
 };
 
@@ -112,7 +114,8 @@ private:
 };
 
 FormaGeometrica *forma = new Circulo(5);                  // OK
-FormaGeometrica *impossivel = new FormaGeometrica();      // ERRO: classe abstrata, nao instanciavel
+// ERRO: classe abstrata, nao instanciavel
+FormaGeometrica *impossivel = new FormaGeometrica();
 ```
 
 Uma classe contendo pelo menos um método puramente virtual (`= 0`) se torna **abstrata**: ela nunca pode ser instanciada diretamente, apenas herdada: ela define um contrato ("toda forma geométrica deve saber calcular sua área") que cada classe filha deve implementar.
@@ -140,7 +143,8 @@ public:
 class Circulo : public FormaGeometrica {
 public:
     Circulo(double raio) : raio(raio) {}
-    Circulo *clonar() const override { return new Circulo(*this); }   // constroi um Circulo, nao uma FormaGeometrica
+    // constroi um Circulo, nao uma FormaGeometrica
+    Circulo *clonar() const override { return new Circulo(*this); }
 private:
     double raio;
 };

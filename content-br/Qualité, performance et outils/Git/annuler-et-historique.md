@@ -9,10 +9,12 @@ O Git oferece vários comandos para voltar atrás, em níveis diferentes: desfaz
 ## Desfazer modificações não commitadas
 
 ```bash
-git checkout -- arquivo.txt  # restaura um arquivo ao seu ultimo estado commitado, sobrescreve as modificacoes locais
+# restaura um arquivo ao seu ultimo estado commitado, sobrescreve as modificacoes locais
+git checkout -- arquivo.txt
 git restore arquivo.txt      # equivalente moderno do comando acima
 
-git restore --staged arquivo.txt  # retira um arquivo do staging, SEM tocar em suas modificacoes no diretorio de trabalho
+# retira um arquivo do staging, SEM tocar em suas modificacoes no diretorio de trabalho
+git restore --staged arquivo.txt
 ```
 
 > **Nota:** `git checkout -- arquivo.txt` e `git restore arquivo.txt` são **irreversíveis**: as modificações não commitadas são perdidas definitivamente, ao contrário de um commit que sempre se pode recuperar (cf. `git reflog` mais abaixo).
@@ -20,9 +22,12 @@ git restore --staged arquivo.txt  # retira um arquivo do staging, SEM tocar em s
 ## `git reset`: mover a branch atual para trás
 
 ```bash
-git reset --soft HEAD~1   # desfaz o ultimo commit, mas mantem tudo em staging (pronto para recommitar)
-git reset --mixed HEAD~1  # desfaz o ultimo commit E o staging, mantem as modificacoes no diretorio de trabalho (padrao)
-git reset --hard HEAD~1   # desfaz o ultimo commit, o staging, E as proprias modificacoes -> perda definitiva
+# desfaz o ultimo commit, mas mantem tudo em staging (pronto para recommitar)
+git reset --soft HEAD~1
+# desfaz o ultimo commit E o staging, mantem as modificacoes no diretorio de trabalho (padrao)
+git reset --mixed HEAD~1
+# desfaz o ultimo commit, o staging, E as proprias modificacoes -> perda definitiva
+git reset --hard HEAD~1
 ```
 
 | Opção | Commit desfeito | Staging | Diretório de trabalho |
@@ -52,7 +57,8 @@ git reflog
 ```
 
 ```bash
-git checkout e4f5g6h              # recupera o estado de um commit "perdido" encontrado via reflog
+# recupera o estado de um commit "perdido" encontrado via reflog
+git checkout e4f5g6h
 git branch recuperacao e4f5g6h    # ou cria diretamente uma branch a partir desse commit
 ```
 

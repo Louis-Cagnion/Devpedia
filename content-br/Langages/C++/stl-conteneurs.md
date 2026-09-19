@@ -46,7 +46,8 @@ idades["Joao"] = 25;
 idades["Maria"] = 30;
 
 idades["Joao"];                    // 25
-idades.find("Ali") != idades.end();  // testa a existencia de uma chave (nenhum operador "in" direto em C++)
+// testa a existencia de uma chave (nenhum operador "in" direto em C++)
+idades.find("Ali") != idades.end();
 
 for (const auto &[nome, idade] : idades) {  // percurso: os pares SEMPRE ordenados por chave
     std::cout << nome << " : " << idade << "\n";

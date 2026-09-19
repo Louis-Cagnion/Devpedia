@@ -26,7 +26,8 @@ git show v1.0.0    # exibe os detalhes da tag (e o commit associado)
 ## Marcar um commit passado
 
 ```bash
-git tag -a v0.9.0 a3f9c1d -m "Versao beta"   # marca um commit especifico, nao necessariamente o mais recente
+# marca um commit especifico, nao necessariamente o mais recente
+git tag -a v0.9.0 a3f9c1d -m "Versao beta"
 ```
 
 ## Enviar tags para um remote

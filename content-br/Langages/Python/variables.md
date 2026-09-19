@@ -104,8 +104,10 @@ As f-strings (prefixo `f` antes das aspas) são o método moderno recomendado, s
 
 ```python
 texto = ""
-print(f"Recebido: {texto!r}")   # Recebido: '' -> repr(): mostra as aspas, entao a string vazia fica visivel
-print(f"Recebido: {texto}")     # Recebido:    -> insercao normal: nada para ver, ilegivel em uma mensagem de debug
+# Recebido: '' -> repr(): mostra as aspas, entao a string vazia fica visivel
+print(f"Recebido: {texto!r}")
+# Recebido:    -> insercao normal: nada para ver, ilegivel em uma mensagem de debug
+print(f"Recebido: {texto}")
 ```
 
 `!r` chama `repr(x)` antes da inserção (equivalente a `f"{repr(x)}"`): útil em uma mensagem de erro para distinguir `""` (string vazia) de `" "` (espaço), ou mais genericamente para ver o valor exato recebido em vez de sua exibição "limpa". `!s` (`str(x)`, o comportamento padrão) e `!a` (`ascii(x)`, escapa os caracteres não-ASCII) também existem, mais raramente úteis.
@@ -139,7 +141,8 @@ palavras = ["Python", "e", "legivel"]
 ```python
 texto = "linha1\nlinha2\r\nlinha3"
 
-texto.splitlines()  # ["linha1", "linha2", "linha3"]     -> reconhece \n E \r\n, nenhum \n no resultado
+# ["linha1", "linha2", "linha3"]     -> reconhece \n E \r\n, nenhum \n no resultado
+texto.splitlines()
 texto.split("\n")   # ["linha1", "linha2", "linha3\r"]   -> "\r" fica grudado em "linha3"
 ```
 

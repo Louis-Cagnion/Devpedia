@@ -20,7 +20,8 @@ int main(void)
 
     while ((ligne = readline("mon_shell$ ")) != NULL) {
         if (*ligne) {
-            add_history(ligne);   // adiciona essa linha ao historico (seta para cima a recupera)
+            // adiciona essa linha ao historico (seta para cima a recupera)
+            add_history(ligne);
         }
 
         printf("Voce digitou : %s\n", ligne);

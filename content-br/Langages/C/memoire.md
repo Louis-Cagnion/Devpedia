@@ -114,9 +114,11 @@ Se `entrada_usuario` ultrapassar 16 bytes, `strcpy()` continua escrevendo além 
 ```c
 strcpy(buffer, entrada);                       // perigoso: nenhum limite
 strncpy(buffer, entrada, sizeof(buffer) - 1);  // limitado ao tamanho real do buffer
-buffer[sizeof(buffer) - 1] = '\0';             // strncpy nao garante a terminacao se a origem for muito longa
+// strncpy nao garante a terminacao se a origem for muito longa
+buffer[sizeof(buffer) - 1] = '\0';
 
-fgets(buffer, sizeof(buffer), stdin);        // leitura limitada ja na captura, em vez de corrigir depois
+// leitura limitada ja na captura, em vez de corrigir depois
+fgets(buffer, sizeof(buffer), stdin);
 ```
 
 | Função arriscada | Alternativa limitada |
@@ -133,7 +135,8 @@ fgets(buffer, sizeof(buffer), stdin);        // leitura limitada ja na captura, 
 De origem BSD (nao e padrao C, mas disponivel em macOS/\*BSD, e facil de reimplementar, como faz a biblioteca `libft` com `ft_strlcpy`/`ft_strlcat`), essas funções corrigem o ponto fraco de `strncpy`/`strcat`: detectar um truncamento.
 
 ```c
-size_t necessario = strlcpy(buffer, entrada, sizeof(buffer));  // SEMPRE termina com '\0', ao contrario de strncpy
+// SEMPRE termina com '\0', ao contrario de strncpy
+size_t necessario = strlcpy(buffer, entrada, sizeof(buffer));
 
 if (necessario >= sizeof(buffer))
 {

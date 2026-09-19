@@ -36,7 +36,8 @@ void handler(int sig)
 
 int main(void)
 {
-    signal(SIGINT, handler);   // Ctrl-C nao interrompe mais o programa, chama handler() no lugar
+    // Ctrl-C nao interrompe mais o programa, chama handler() no lugar
+    signal(SIGINT, handler);
 
     while (!recu) {
         pause();   // espera um sinal sem consumir CPU

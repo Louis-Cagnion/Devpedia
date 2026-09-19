@@ -19,7 +19,8 @@ public:
             throw std::runtime_error("Impossivel abrir: " + caminho); // veja As excecoes
         }
     }
-    ~GerenciadorArquivo() { arquivo.close(); }   // chamado automaticamente, mesmo em caso de excecao!
+    // chamado automaticamente, mesmo em caso de excecao!
+    ~GerenciadorArquivo() { arquivo.close(); }
 private:
     std::ifstream arquivo;
 };
@@ -39,7 +40,8 @@ int *p = new int(42);  // aloca E inicializa em uma unica operacao
 delete p;              // libera
 
 int *array = new int[10];  // aloca um array dinamico
-delete[] array;             // "[]" obrigatorio para liberar um array, senao comportamento indefinido
+// "[]" obrigatorio para liberar um array, senao comportamento indefinido
+delete[] array;
 ```
 
 `new`/`delete` substituem `malloc`/`free`, mas sofrem exatamente os mesmos riscos (esquecimento de `delete`, `delete` duplo, *use-after-free*, veja [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire) em C): é por isso que em C++ moderno, eles raramente são usados **diretamente**.

@@ -67,7 +67,8 @@ $leitor->open('catalogo.xml');
 
 while ($leitor->read()) {
     if ($leitor->nodeType === XMLReader::ELEMENT && $leitor->name === 'produto') {
-        $produto = new SimpleXMLElement($leitor->readOuterXML());   // apenas um <produto> em memoria por vez
+        // apenas um <produto> em memoria por vez
+        $produto = new SimpleXMLElement($leitor->readOuterXML());
         processar($produto);
     }
 }

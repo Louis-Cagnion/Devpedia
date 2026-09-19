@@ -26,7 +26,8 @@ int main(void)
     pthread_t thread;
     int valor = 42;
 
-    pthread_create(&thread, NULL, tarefa, &valor);  // lanca a thread, executa "tarefa" em paralelo
+    // lanca a thread, executa "tarefa" em paralelo
+    pthread_create(&thread, NULL, tarefa, &valor);
     pthread_join(thread, NULL);                     // espera essa thread terminar
 
     return 0;

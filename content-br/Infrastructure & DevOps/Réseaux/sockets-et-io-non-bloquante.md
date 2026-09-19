@@ -31,7 +31,8 @@ int main(void)
     struct sockaddr_in endereco;
     endereco.sin_family = AF_INET;
     endereco.sin_addr.s_addr = INADDR_ANY;   // aceita conexoes em todas as interfaces
-    endereco.sin_port = htons(8080);         // porta 8080, convertida na ordem esperada pela rede
+    // porta 8080, convertida na ordem esperada pela rede
+    endereco.sin_port = htons(8080);
 
     bind(servidor, (struct sockaddr *)&endereco, sizeof(endereco));
     listen(servidor, 10); // 10 = numero de conexoes em espera permitidas antes de recusar

@@ -11,9 +11,11 @@ Ao contrário do [Bash](/?c=shells&s=bash&p=bash), onde tudo é manipulado como 
 ## Declarar e ler uma variável
 
 ```powershell
-$nome = "Joao"                # nenhuma regra estrita sobre espacos ao redor do '=', ao contrario do Bash
+# nenhuma regra estrita sobre espacos ao redor do '=', ao contrario do Bash
+$nome = "Joao"
 Write-Output $nome            # Joao
-Write-Output "Ola $nome !"    # Ola Joao ! -> interpolacao direta em uma string com aspas duplas
+# Ola Joao ! -> interpolacao direta em uma string com aspas duplas
+Write-Output "Ola $nome !"
 ```
 
 > **Nota:** `$nome` sozinho (sem `Write-Output`) também exibe seu valor no console: o PowerShell exibe automaticamente o resultado de toda expressão que não é explicitamente atribuída ou suprimida, um comportamento próximo de um REPL.

@@ -223,7 +223,8 @@ Classificada A10 no [OWASP Top 10](/?c=cybersecurite&p=owasp-top-10). Forçar um
 
 ```php
 <?php
-// perigoso se $_GET['url'] puder visar um endereco interno (ex: http://169.254.169.254/, http://localhost:6379/...)
+// perigoso se $_GET['url'] puder visar um endereco interno (ex: http://169.254.169.254/,
+// http://localhost:6379/...)
 $resposta = file_get_contents($_GET['url']);
 ?>
 ```

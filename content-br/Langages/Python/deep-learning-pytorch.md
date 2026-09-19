@@ -23,7 +23,8 @@ Um tensor PyTorch pode ser executado na CPU ou numa **GPU** (`x.to("cuda")`), qu
 ## `autograd` : a diferenciação automática
 
 ```python
-x = torch.tensor(3.0, requires_grad=True)   # «Regista as operações realizadas em x para poder derivar mais tarde»
+# «Regista as operações realizadas em x para poder derivar mais tarde»
+x = torch.tensor(3.0, requires_grad=True)
 
 y = x ** 2 + 2 * x
 
@@ -42,7 +43,8 @@ import torch.nn as nn
 class ReseauSimple(nn.Module):
     def __init__(self):
         super().__init__()
-        self.couche1 = nn.Linear(10, 32)   # camada totalmente conectada: 10 entradas -> 32 saídas
+        # camada totalmente conectada: 10 entradas -> 32 saídas
+        self.couche1 = nn.Linear(10, 32)
         self.activation = nn.ReLU()
         self.couche2 = nn.Linear(32, 1)     # 32 entradas -> 1 saída
 
@@ -62,14 +64,17 @@ modelo = ReseauSimple()
 ```python
 import torch.optim as optim
 
-fonction_perte = nn.MSELoss()                             # erro quadrático médio (ver capítulo dedicado)
+# erro quadrático médio (ver capítulo dedicado)
+fonction_perte = nn.MSELoss()
 optimiseur = optim.SGD(modelo.parameters(), lr=0.01)        # descida do gradiente estocástico
 
 for epoque in range(100):
-    predictions = modelo(X_entrainement)                    # equivale a modele.forward(X_treino)
+    # equivale a modele.forward(X_treino)
+    predictions = modelo(X_entrainement)
     perte = fonction_perte(predictions, y_entrainement)
 
-    optimiseur.zero_grad()   # reinicia os gradientes (caso contrário, estes somam-se de uma iteração para a outra)
+    # reinicia os gradientes (caso contrário, estes somam-se de uma iteração para a outra)
+    optimiseur.zero_grad()
     perte.backward()          # calcula os gradientes (retropropagação automática)
     optimiseur.step()          # ajusta os pesos de acordo com os gradientes calculados
 
@@ -85,7 +90,8 @@ Este ciclo é a estrutura praticamente universal de qualquer treino em PyTorch: 
 
 ```python
 modelo.eval()    # desativa comportamentos específicos do treino (por exemplo, dropout)
-with torch.no_grad():   # desativa o acompanhamento dos gradientes: mais rápido, desnecessário fora do treino
+# desativa o acompanhamento dos gradientes: mais rápido, desnecessário fora do treino
+with torch.no_grad():
     predictions = modelo(X_test)
 
 modelo.train()   # Reativa o modo de treino para a continuação

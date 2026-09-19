@@ -54,11 +54,14 @@ else:
 
 ```python
 status = "ativo"
-resultado = status and "encontrado"    # "encontrado" -> status e truthy, and retorna seu SEGUNDO operando
-resultado = "" and "encontrado"        # ""           -> "" e falsy, and para e retorna seu PRIMEIRO operando
+# "encontrado" -> status e truthy, and retorna seu SEGUNDO operando
+resultado = status and "encontrado"
+# ""           -> "" e falsy, and para e retorna seu PRIMEIRO operando
+resultado = "" and "encontrado"
 
 apelido = ""
-nome_exibido = apelido or "Anonimo"    # "Anonimo" -> or retorna o primeiro operando truthy encontrado
+# "Anonimo" -> or retorna o primeiro operando truthy encontrado
+nome_exibido = apelido or "Anonimo"
 ```
 
 `and`/`or` nunca recalculam um `True`/`False`: eles retornam um dos seus dois operandos, sem avaliar o outro além do necessário (**avaliação em curto-circuito**). `a and b` retorna `a` se `a` for falsy (sem sequer avaliar `b`), senão `b`; `a or b` retorna `a` se `a` for truthy, senão `b`. Esse idioma permite uma chamada condicional (`conectado and desconectar()`, só chama `desconectar()` se `conectado` for verdadeiro) ou um valor de reserva (`nome = apelido or "Anonimo"`).

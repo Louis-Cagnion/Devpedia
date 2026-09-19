@@ -10,7 +10,8 @@ Um **Dockerfile** é uma receita em texto: uma sequência de instruções descre
 
 ```dockerfile
 FROM node:20-alpine        # imagem base: Node.js 20 em uma distribuicao Alpine (minima)
-WORKDIR /app                # diretorio de trabalho no conteiner para todas as instrucoes seguintes
+# diretorio de trabalho no conteiner para todas as instrucoes seguintes
+WORKDIR /app
 
 COPY package*.json ./       # copia esses arquivos da maquina hospedeira para a imagem
 RUN npm install              # executa um comando DURANTE a construcao da imagem
@@ -18,7 +19,8 @@ RUN npm install              # executa um comando DURANTE a construcao da imagem
 COPY . .                    # copia o resto do codigo fonte
 
 ENV NODE_ENV=production     # variavel de ambiente, disponivel no build e na execucao
-EXPOSE 3000                  # documenta a porta usada (nao abre nada por si so, cf. capitulo redes)
+# documenta a porta usada (nao abre nada por si so, cf. capitulo redes)
+EXPOSE 3000
 
 CMD ["node", "server.js"]    # comando executado quando o CONTEINER inicia, nao durante o build
 ```
@@ -45,7 +47,8 @@ O processo lançado por `CMD`/`ENTRYPOINT` recebe o PID 1 dentro do contêiner (
 É por isso que um comando que nunca termina mas por outro lado não faz **nada** (`tail -f /dev/null`, `sleep infinity`, `while true; do sleep 1; done`) é um reflexo ruim para "manter o contêiner vivo": isso mascara o problema real (o serviço que se quer realmente rodar parou, ou nunca foi iniciado) em vez de resolvê-lo. A boa prática é lançar diretamente, como PID 1, o serviço desejado **em primeiro plano** (*foreground*); a maioria dos daemons tem uma opção dedicada para isso, que os impede de se destacar em segundo plano como fariam nativamente (`nginx -g 'daemon off;'`, por exemplo):
 
 ```dockerfile
-CMD ["nginx", "-g", "daemon off;"]   # nginx fica em primeiro plano: o Docker tem um processo para monitorar
+# nginx fica em primeiro plano: o Docker tem um processo para monitorar
+CMD ["nginx", "-g", "daemon off;"]
 ```
 
 > **Nota:** PID 1 tem um papel particular no Linux, independentemente do Docker (cf. capítulo [O gerenciamento de processos](/?c=shells&s=bash&p=gestion-des-processus), tópico [Bash](/?c=shells&s=bash&p=bash)): o kernel não aplica a ele a ação padrão de um sinal como `SIGTERM` se ele não instalou explicitamente seu próprio manipulador: `docker stop` pode então parecer não fazer nada em um processo que não trata esse sinal por conta própria. Também é o PID 1 quem precisa recolher (*reap*) os processos zumbis que lança; um ponto a observar se a imagem inicia vários subprocessos por conta própria.

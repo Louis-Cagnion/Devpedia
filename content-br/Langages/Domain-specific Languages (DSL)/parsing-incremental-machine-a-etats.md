@@ -108,8 +108,10 @@ colunas_ocupadas = {}  # {indice da coluna: numero de linhas restantes ocupadas 
 
 def posicionar_celula(coluna_inicial, rowspan, colunas_ocupadas):
     coluna = coluna_inicial
-    while colunas_ocupadas.get(coluna, 0) > 0:  # essa coluna ainda esta presa por uma fusao anterior
-        coluna += 1                             # -> deslocar para a primeira coluna realmente livre
+    # essa coluna ainda esta presa por uma fusao anterior
+    while colunas_ocupadas.get(coluna, 0) > 0:
+        # -> deslocar para a primeira coluna realmente livre
+        coluna += 1
     if rowspan > 1:
         colunas_ocupadas[coluna] = rowspan
     return coluna

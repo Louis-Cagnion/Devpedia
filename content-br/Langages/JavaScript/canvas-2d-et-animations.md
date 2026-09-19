@@ -22,12 +22,15 @@ Um pixel CSS (o tamanho exibido) nem sempre corresponde a um pixel físico da te
 
 ```javascript
 function redimensionar() {
-    const proporcao = Math.min(window.devicePixelRatio || 1, 2);   // limite em 2: alem disso, custo desnecessario
+    // limite em 2: alem disso, custo desnecessario
+    const proporcao = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
 
-    canvas.width  = Math.floor(rect.width  * proporcao);   // resolucao REAL do canvas (pixels fisicos)
+    // resolucao REAL do canvas (pixels fisicos)
+    canvas.width  = Math.floor(rect.width  * proporcao);
     canvas.height = Math.floor(rect.height * proporcao);
-    ctx.setTransform(proporcao, 0, 0, proporcao, 0, 0);      // para desenhar depois em coordenadas CSS
+    // para desenhar depois em coordenadas CSS
+    ctx.setTransform(proporcao, 0, 0, proporcao, 0, 0);
 }
 ```
 
@@ -81,7 +84,8 @@ A cada quadro, a posição nunca pula direto para o alvo: ela avança apenas uma
 Um canvas 2D também serve, de forma indireta, para medir com precisão a largura que um texto ocuparia com uma determinada fonte, **sem nunca desenhar nem exibir esse canvas**:
 
 ```javascript
-const ctxMedida = document.createElement('canvas').getContext('2d');   // nunca adicionado ao DOM
+// nunca adicionado ao DOM
+const ctxMedida = document.createElement('canvas').getContext('2d');
 
 function larguraTexto(texto, tamanhoFonte = 11) {
     ctxMedida.font = `${tamanhoFonte}px sans-serif`;

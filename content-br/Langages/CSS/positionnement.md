@@ -78,7 +78,8 @@ Um elemento `sticky` (ou `fixed`) semitransparente permanece por cima de um cont
     position: sticky;
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.7);   /* semitransparente */
-    backdrop-filter: blur(8px);                     /* desfoca o que rola POR TRAS, nao o rodape em si */
+    /* desfoca o que rola POR TRAS, nao o rodape em si */
+    backdrop-filter: blur(8px);
 }
 ```
 

@@ -9,8 +9,10 @@ Este capítulo cobre o ciclo de trabalho do Git mais comum: iniciar um repositó
 ## Criar ou recuperar um repositório
 
 ```bash
-git init                                  # transforma o diretorio atual em um repositorio Git (vazio, sem historico)
-git clone https://exemplo.com/projeto.git # recupera um repositorio existente, com todo seu historico
+# transforma o diretorio atual em um repositorio Git (vazio, sem historico)
+git init
+# recupera um repositorio existente, com todo seu historico
+git clone https://exemplo.com/projeto.git
 ```
 
 ## Ver o estado do diretório de trabalho
@@ -36,7 +38,9 @@ git add -p           # modo interativo: escolher precisamente quais blocos de li
 
 ```bash
 git commit -m "Corrige o calculo do desconto"
-git commit -am "Mensagem"   # atalho: adiciona automaticamente os arquivos ja rastreados E modificados, sem "git add" previo
+# atalho: adiciona automaticamente os arquivos ja rastreados E modificados, sem "git add"
+# previo
+git commit -am "Mensagem"
 ```
 
 > **Nota:** `-a` (em `-am`) só adiciona os arquivos já rastreados pelo Git: um arquivo totalmente novo, nunca adicionado antes, sempre precisa passar por um `git add` explícito pelo menos uma vez.
@@ -66,13 +70,15 @@ em vez do total: um bug introduzido no ultimo refactor de
 `git commit -m "mensagem"` com um único `-m` só produz um título, sem descrição. Três formas de obter os dois:
 
 ```bash
-# 1. Sem -m: abre o editor configurado (vim, nano...), onde se digita titulo, linha vazia, e depois descricao
+# 1. Sem -m: abre o editor configurado (vim, nano...), onde se digita titulo, linha vazia, e
+# depois descricao
 git commit
 
 # 2. Varios -m: cada um se torna um paragrafo separado por uma linha vazia, sem abrir editor
 git commit -m "Corrige o calculo do desconto" -m "O percentual so era aplicado ao primeiro item, nao ao total."
 
-# 3. Uma string multilinha passada a um unico -m (util para automatizar um commit, ou a partir de uma ferramenta que gera a mensagem)
+# 3. Uma string multilinha passada a um unico -m (util para automatizar um commit, ou a partir
+# de uma ferramenta que gera a mensagem)
 git commit -m "$(cat <<'EOF'
 Corrige o calculo do desconto
 
@@ -92,7 +98,8 @@ EOF
 ```bash
 git log                          # historico completo, do mais recente ao mais antigo
 git log --oneline                # uma linha por commit, mais legivel para uma visao rapida
-git log --oneline --graph --all  # visualiza tambem as branches e seus pontos de divergencia/mesclagem
+# visualiza tambem as branches e seus pontos de divergencia/mesclagem
+git log --oneline --graph --all
 git log -p arquivo.txt           # historico detalhado (com diff) de um arquivo especifico
 ```
 
@@ -107,7 +114,8 @@ git diff commit1 commit2  # diferencas entre dois commits especificos
 ## Ver o detalhe de um commit
 
 ```bash
-git show a3f9c1d   # exibe a mensagem, o autor, a data e o diff completo desse commit especifico
+# exibe a mensagem, o autor, a data e o diff completo desse commit especifico
+git show a3f9c1d
 ```
 
 ---

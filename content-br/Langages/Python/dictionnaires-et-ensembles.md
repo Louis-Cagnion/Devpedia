@@ -28,9 +28,11 @@ pessoa.get("telefone", "desconhecido")  # "desconhecido" -> valor padrao se ause
 
 ```python
 cache = {}
-cache[("site_a", 42)] = "loja A"  # uma TUPLE como chave: funciona, uma tuple e imutavel, logo hasheavel
+# uma TUPLE como chave: funciona, uma tuple e imutavel, logo hasheavel
+cache[("site_a", 42)] = "loja A"
 
-cache[["site_a", 42]] = "loja A"  # TypeError: unhashable type: 'list' -> uma lista e mutavel, nunca hasheavel
+# TypeError: unhashable type: 'list' -> uma lista e mutavel, nunca hasheavel
+cache[["site_a", 42]] = "loja A"
 ```
 
 Uma chave de dicionário deve ser **hasheável** (um número fixo, calculado de uma vez por todas, que permite localizá-la instantaneamente na tabela hash subjacente): ela deve, portanto, ser **imutável** (`str`, número, `tuple`), nunca `list`/`dict`, que podem mudar de conteúdo depois e invalidariam esse número. Uma `tuple` de vários valores costuma servir como **chave composta**: `(site, id)` distingue duas entradas que compartilhassem o mesmo `id` em dois sites diferentes, algo que nenhum dos dois valores sozinho permitiria.

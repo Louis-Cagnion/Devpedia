@@ -48,7 +48,8 @@ Ao contrário de `%d`/`%f`, que sempre escrevem um tamanho fixo, `%s` copia uma 
 
 ```c
 char nom[16];
-sscanf(entree_utilisateur, "%s", nom);   // se entree_utilisateur tiver mais de 15 caracteres: estouro de buffer
+// se entree_utilisateur tiver mais de 15 caracteres: estouro de buffer
+sscanf(entree_utilisateur, "%s", nom);
 ```
 
 > **Armadilha:** a mesma classe de vulnerabilidade já encontrada com as strings de formato de `printf` (veja o capítulo sobre as [funções variádicas](/?c=langages-de-programmation&s=c&p=fonctions-variadiques)): uma entrada não controlada que ultrapassa o tamanho do buffer escreve fora da memória alocada para ele.

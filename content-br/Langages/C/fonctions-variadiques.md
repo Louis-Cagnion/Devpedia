@@ -46,7 +46,8 @@ soma(3, 10, 20, 30); // 60 -> numero = 3, os 3 argumentos seguintes sao somados
 `printf` não tem **nenhum meio nativo** de saber quantos argumentos variáveis foram fornecidos: é a própria string de formato que serve de guia, contando o número de `%` que ela contém.
 
 ```c
-printf("%d %d %d\n", 1, 2, 3); // a string anuncia 3 valores -> printf le 3 argumentos variadicos
+// a string anuncia 3 valores -> printf le 3 argumentos variadicos
+printf("%d %d %d\n", 1, 2, 3);
 ```
 
 > **Nota:** é por isso que um número errado de `%` em relação aos argumentos reais (ou o inverso) não provoca **nenhum erro de compilação**: apenas um comportamento indefinido em tempo de execução (leitura de dados que não são argumentos reais). É uma fonte clássica de falhas de segurança ("format string vulnerability") quando uma string de formato vem diretamente de uma entrada de usuário não controlada.
@@ -65,10 +66,13 @@ printf("%010d\n", 42);      // "0000000042"  -> '0': preenche com zeros em vez d
 printf("%#x\n", 255);       // "0xff"        -> '#': forma alternativa (prefixo 0x/0X para x/X)
 printf("%+d\n", 42);        // "+42"         -> '+': forca a exibicao do sinal, mesmo positivo
 
-printf("%10d\n", 42);       // "        42" -> largura MINIMA: preenchida com espacos se necessario
-printf("%.3d\n", 5);        // "005"        -> precisao sobre um inteiro: numero minimo de digitos
+// "        42" -> largura MINIMA: preenchida com espacos se necessario
+printf("%10d\n", 42);
+// "005"        -> precisao sobre um inteiro: numero minimo de digitos
+printf("%.3d\n", 5);
 
-printf("%*d\n", 10, 42);    // equivalente a "%10d" -> '*': a largura e lida a partir dos argumentos, nao escrita direto
+// equivalente a "%10d" -> '*': a largura e lida a partir dos argumentos, nao escrita direto
+printf("%*d\n", 10, 42);
 ```
 
 | Elemento | Papel |

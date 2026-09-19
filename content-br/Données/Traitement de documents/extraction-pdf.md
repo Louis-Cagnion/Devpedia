@@ -28,12 +28,14 @@ import pymupdf
 with pymupdf.open("documento.pdf") as documento:
     for numero_pagina, pagina in enumerate(documento, start=1):
         for bloco in pagina.get_text("dict")["blocks"]:
-            if bloco["type"] != 0:      # 0 = bloco de texto ; 1 = bloco de imagem, ignorado aqui
+            # 0 = bloco de texto ; 1 = bloco de imagem, ignorado aqui
+            if bloco["type"] != 0:
                 continue
             spans = [span for linha in bloco["lines"] for span in linha["spans"]]
             texto = "".join(span["text"] for span in spans).strip()
             if not texto:
-                continue                 # bloco vazio (espaçamento, linha em branco): nada a guardar
+                # bloco vazio (espaçamento, linha em branco): nada a guardar
+                continue
             print(numero_pagina, bloco["bbox"], texto)
 ```
 
@@ -53,7 +55,8 @@ Identificar uma tabela em uma página sem recorrer ao [OCR estruturado](/?c=trai
 with pymupdf.open("documento.pdf") as documento:
     pagina = documento[0]
     for tabela in pagina.find_tables():
-        linhas = tabela.extract()   # lista de linhas, cada linha = lista de celulas (str ou None)
+        # lista de linhas, cada linha = lista de celulas (str ou None)
+        linhas = tabela.extract()
         print(tabela.bbox, len(linhas), "linhas")
 ```
 

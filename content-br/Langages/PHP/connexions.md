@@ -216,7 +216,8 @@ O token de conexão visto acima é um segredo **opaco** (aleatório, sem signifi
 <?php
 function criarToken(string $dado, string $segredo): string
 {
-    $codificado = base64_encode($dado);                 // codificado, NAO cifrado: legivel se decodificado
+    // codificado, NAO cifrado: legivel se decodificado
+    $codificado = base64_encode($dado);
     $assinatura = hash_hmac('sha256', $codificado, $segredo);
     return $codificado . '.' . $assinatura;
 }

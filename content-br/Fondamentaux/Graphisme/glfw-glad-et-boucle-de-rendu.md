@@ -12,7 +12,8 @@ O [GLFW](https://www.glfw.org) cumpre, para OpenGL, um papel parecido ao do Mini
 
 ```c
 GLFWwindow *janela = glfwCreateWindow(800, 600, "Titulo", NULL, NULL);
-glfwMakeContextCurrent(janela);   // ativa esse contexto para todas as chamadas OpenGL seguintes
+// ativa esse contexto para todas as chamadas OpenGL seguintes
+glfwMakeContextCurrent(janela);
 ```
 
 ## Carregar as funções OpenGL modernas: GLAD
@@ -49,7 +50,8 @@ Buffer da frente (exibido na tela)     Buffer de tras (sendo desenhado)
 ```
 
 ```c
-glfwSwapBuffers(janela);   // troca os dois buffers, nunca um desenho pixel a pixel direto na tela
+// troca os dois buffers, nunca um desenho pixel a pixel direto na tela
+glfwSwapBuffers(janela);
 ```
 
 ## O loop de renderização
@@ -60,8 +62,10 @@ Assim como o loop de eventos do capítulo anterior, um loop de renderização Op
 while (!glfwWindowShouldClose(janela)) {
     glfwPollEvents();                              // 1. coletar os eventos (teclado, mouse...)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // 2. apagar a imagem anterior
-    desenharCena();                                 // 3. desenhar a nova imagem (buffer de tras)
-    glfwSwapBuffers(janela);                         // 4. exibi-la de uma vez (double buffering)
+    // 3. desenhar a nova imagem (buffer de tras)
+    desenharCena();
+    // 4. exibi-la de uma vez (double buffering)
+    glfwSwapBuffers(janela);
 }
 ```
 

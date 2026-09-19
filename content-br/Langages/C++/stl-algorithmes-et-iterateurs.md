@@ -13,7 +13,8 @@ std::vector<int> numeros = {1, 2, 3};
 
 std::vector<int>::iterator it = numeros.begin();
 while (it != numeros.end()) {
-    std::cout << *it << " ";   // "*it" desreferencia o iterador, como um ponteiro (veja Os ponteiros, secao C)
+    // "*it" desreferencia o iterador, como um ponteiro (veja Os ponteiros, secao C)
+    std::cout << *it << " ";
     ++it;
 }
 ```
@@ -64,7 +65,8 @@ std::cout << quadrado(5);   // 25
 
 ```cpp
 int limite = 3;
-auto estaAcimaDoLimite = [limite](int x) { return x > limite; };   // captura "limite" por valor
+// captura "limite" por valor
+auto estaAcimaDoLimite = [limite](int x) { return x > limite; };
 
 int contagem = std::count_if(numeros.begin(), numeros.end(), estaAcimaDoLimite);
 ```

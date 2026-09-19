@@ -31,7 +31,8 @@ for i in range(2, 10, 2):  # de 2 a 10 (excluido), em passos de 2 -> 2, 4, 6, 8
 for fruta in reversed(frutas):            # cereja, banana, maca -> VALORES ao contrário
     print(fruta)
 
-for i in range(len(frutas) - 1, -1, -1):  # 2, 1, 0              -> INDICES em ordem decrescente
+# 2, 1, 0              -> INDICES em ordem decrescente
+for i in range(len(frutas) - 1, -1, -1):
     print(frutas[i])
 ```
 

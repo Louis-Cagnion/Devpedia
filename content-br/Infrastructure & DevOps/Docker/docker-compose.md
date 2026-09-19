@@ -31,7 +31,8 @@ volumes:
 ```
 
 ```bash
-docker compose up -d          # constroi (se necessario) e inicia todos os servicos em segundo plano
+# constroi (se necessario) e inicia todos os servicos em segundo plano
+docker compose up -d
 docker compose logs -f api    # acompanha os logs de um servico especifico
 docker compose down           # para e remove os conteineres (os volumes nomeados sobrevivem)
 ```

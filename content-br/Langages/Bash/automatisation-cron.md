@@ -112,9 +112,12 @@ O arquivo `.service` descreve o comando a executar:
 Description=Backup noturno dos documentos           # texto exibido nos logs/no status
 
 [Service]
-Type=oneshot                                        # executa uma vez e para (nao um servico que fica rodando)
-WorkingDirectory=/home/usuario/scripts              # diretorio de trabalho antes de lancar o comando
-ExecStart=/usr/bin/python3 backup.py                # caminho absoluto, mesma armadilha do ambiente minimo que o cron
+# executa uma vez e para (nao um servico que fica rodando)
+Type=oneshot
+# diretorio de trabalho antes de lancar o comando
+WorkingDirectory=/home/usuario/scripts
+# caminho absoluto, mesma armadilha do ambiente minimo que o cron
+ExecStart=/usr/bin/python3 backup.py
 ```
 
 O arquivo `.timer` descreve quando disparar o serviço de mesmo nome:
@@ -125,10 +128,12 @@ Description=Agenda backup.service todos os dias
 
 [Timer]
 OnCalendar=daily                                    # equivalente a @daily no cron
-Persistent=true                                     # recupera a execucao perdida se a maquina estava desligada (ver abaixo)
+# recupera a execucao perdida se a maquina estava desligada (ver abaixo)
+Persistent=true
 
 [Install]
-WantedBy=timers.target                              # necessario para que "enable" ative de fato o timer
+# necessario para que "enable" ative de fato o timer
+WantedBy=timers.target
 ```
 
 Os dois arquivos vão em `/etc/systemd/system/` (escopo do sistema, exige permissão de root) ou em `~/.config/systemd/user/` (escopo do usuário, ver abaixo). Uma vez colocados:
@@ -137,7 +142,8 @@ Os dois arquivos vão em `/etc/systemd/system/` (escopo do sistema, exige permis
 systemctl daemon-reload              # rele os arquivos de unidade apos criar/editar um
 systemctl enable --now backup.timer  # ativa o timer no boot E o inicia imediatamente
 systemctl list-timers                # lista os timers ativos e sua proxima execucao
-journalctl -u backup.service         # consulta os logs desse servico (substitui o redirecionamento manual para um arquivo de log)
+# consulta os logs desse servico (substitui o redirecionamento manual para um arquivo de log)
+journalctl -u backup.service
 ```
 
 ### `Persistent=true`: a recuperação não é automática
@@ -156,7 +162,8 @@ Um timer colocado em `/etc/systemd/system/` roda independentemente de qualquer s
 Esse último ponto importa para a recuperação: um timer `--user` com `Persistent=true` só consegue recuperar uma execução perdida no próximo login, não na simples inicialização da máquina, se ninguém fizer login logo em seguida. O [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permite remover esse limite para um usuário específico:
 
 ```bash
-loginctl enable-linger usuario   # a instancia systemd --user de "usuario" inicia no boot, com sessao aberta ou nao
+# a instancia systemd --user de "usuario" inicia no boot, com sessao aberta ou nao
+loginctl enable-linger usuario
 ```
 
 ### `cron` ou `systemd timer`?

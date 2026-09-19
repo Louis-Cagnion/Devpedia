@@ -157,7 +157,8 @@ trava_recalculo = threading.Lock()
 def valor_com_cache(chave):
     entrada = cache.get(chave)
     if entrada is None:
-        return recalcular_e_guardar(chave)   # primeira chamada: nao ha escolha a nao ser esperar
+        # primeira chamada: nao ha escolha a nao ser esperar
+        return recalcular_e_guardar(chave)
 
     if entrada.esta_vencida() and trava_recalculo.acquire(blocking=False):
         threading.Thread(target=lambda: recalcular_e_guardar(chave, trava_recalculo)).start()
@@ -182,7 +183,8 @@ Por padrão, um servidor PHP mantém na memória tudo o que um script produz com
 ini_set('output_buffering', 'off');   // desativa o armazenamento em buffer da saida
 ini_set('implicit_flush', true);      // forca o envio imediato apos cada echo
 while (ob_get_level() > 0) {
-    ob_end_flush();                   // tambem esvazia qualquer buffer ja aberto pelo proprio PHP
+    // tambem esvazia qualquer buffer ja aberto pelo proprio PHP
+    ob_end_flush();
 }
 
 foreach ($linhasAImportar as $linha) {

@@ -23,7 +23,8 @@ datetime(2026, 1, 1)  # constroi uma data precisa em vez de "agora"
 ## Formatar como string: `.strftime()`
 
 ```python
-agora.strftime("%Y-%m-%d_%H%M%S")  # "2026-09-01_143207" -> formato compacto, usavel em um nome de arquivo
+# "2026-09-01_143207" -> formato compacto, usavel em um nome de arquivo
+agora.strftime("%Y-%m-%d_%H%M%S")
 agora.strftime("%d/%m/%Y")         # "01/09/2026"        -> formato europeu comum
 ```
 
@@ -39,7 +40,8 @@ agora.strftime("%d/%m/%Y")         # "01/09/2026"        -> formato europeu comu
 ## Analisar uma string como data: `.strptime()`
 
 ```python
-datetime.strptime("2026-09-01_143207", "%Y-%m-%d_%H%M%S")  # operacao INVERSA de strftime, mesma tabela de codigos
+# operacao INVERSA de strftime, mesma tabela de codigos
+datetime.strptime("2026-09-01_143207", "%Y-%m-%d_%H%M%S")
 ```
 
 > **Armadilha:** o formato passado a `strptime()` deve corresponder EXATAMENTE à string recebida (mesmos separadores, mesma ordem); um formato que não corresponde levanta um `ValueError`, não um resultado aproximado.
@@ -66,7 +68,8 @@ Ao contrário de `strftime()`/`strptime()`, `isoformat()`/`fromisoformat()` não
 ```python
 import time
 
-time.time()      # 1798819927.123456 -> numero BRUTO de segundos desde 1 de janeiro de 1970 (epoch Unix)
+# 1798819927.123456 -> numero BRUTO de segundos desde 1 de janeiro de 1970 (epoch Unix)
+time.time()
 datetime.now()   # 2026-09-01 14:32:07.123456 -> objeto com ano/mes/dia... ja decompostos
 ```
 

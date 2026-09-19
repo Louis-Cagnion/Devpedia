@@ -32,7 +32,8 @@ dados = pd.read_csv("clients.csv")
 
 dados.head()        # Primeiras 5 linhas
 dados.info()          # tipos de colunas, valores em falta, memória utilizada
-dados.describe()       # Estatísticas (média, desvio-padrão, mínimo/máximo) das colunas numéricas
+# Estatísticas (média, desvio-padrão, mínimo/máximo) das colunas numéricas
+dados.describe()
 dados.shape             # (número_de_linhas, número_de_colunas)
 dados.columns            # lista de nomes de colunas
 ```
@@ -44,7 +45,8 @@ dados["age"]             # uma única coluna -> uma Series
 dados[["nom", "age"]]     # várias colunas -> um DataFrame
 
 dados.loc[0]              # linha do ÍNDICE 0 (o índice apresentado à esquerda da tabela)
-dados.iloc[0]              # linha na POSIÇÃO 0 (sempre a primeira, mesmo que o índice tenha sido alterado)
+# linha na POSIÇÃO 0 (sempre a primeira, mesmo que o índice tenha sido alterado)
+dados.iloc[0]
 dados.loc[0, "nom"]         # valor exato: linha 0, coluna «nome»
 ```
 
@@ -57,7 +59,8 @@ dados[dados["age"] > 25]
 # mantém apenas as linhas em que a condição é verdadeira -> equivalente a um «WHERE» em SQL
 
 dados[(dados["age"] > 20) & (dados["ville"] == "Lyon")]
-# combinar várias condições: & (e), | (ou), NÃO «and»/«or», reservados para valores booleanos simples
+# combinar várias condições: & (e), | (ou), NÃO «and»/«or», reservados para valores booleanos
+# simples
 ```
 
 ## `groupby` : agrupar por categoria
@@ -102,7 +105,8 @@ dados["categorie"] = dados["age"].apply(lambda idade: "jeune" if idade < 30 else
 ## Valores em falta
 
 ```python
-dados.isna()              # tabela de True/False, com «True» nos casos em que o valor está em falta (NaN)
+# tabela de True/False, com «True» nos casos em que o valor está em falta (NaN)
+dados.isna()
 dados.dropna()              # elimina as linhas que contenham pelo menos um valor em falta
 dados.fillna(0)               # substitui os valores em falta por um valor por defeito
 ```

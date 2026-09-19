@@ -18,7 +18,8 @@ O PowerShell retoma as mesmas ideias que o [Bash](/?c=shells&s=bash&p=bash) (red
 ## Redirecionar a entrada a partir de um arquivo
 
 ```powershell
-Get-Content lista.txt | Sort-Object   # o PowerShell nao tem operador "<" direto: passa-se por uma cmdlet
+# o PowerShell nao tem operador "<" direto: passa-se por uma cmdlet
+Get-Content lista.txt | Sort-Object
 ```
 
 > **Nota:** ao contrário do Bash (`sort < lista.txt`), o PowerShell não tem um verdadeiro redirecionamento de entrada padrão: a convenção é produzir o conteúdo do arquivo via uma cmdlet (`Get-Content`) e depois enviá-lo ao pipeline.
@@ -30,7 +31,8 @@ Os fluxos são numerados de forma diferente do Bash: `1` = saída padrão, `2` =
 ```powershell
 Comando-QueFalha 2> erros.log      # apenas a saida de erro vai para erros.log
 Comando 1> saida.log 2> erros.log  # separa saida normal e erros em dois arquivos
-Comando *> tudo.log                # atalho PowerShell: redireciona TODOS os fluxos para tudo.log
+# atalho PowerShell: redireciona TODOS os fluxos para tudo.log
+Comando *> tudo.log
 ```
 
 > **Nota:** `*>` não tem equivalente direto no Bash (que só tem `&>` para stdout+stderr): o PowerShell pode agrupar até seis fluxos distintos em um único redirecionamento.
@@ -46,9 +48,11 @@ Comando-Barulhento > $null 2>&1   # ignora toda saida normal E todo erro
 ## Os pipes (`|`): encadear comandos, com objetos de verdade
 
 ```powershell
-Get-ChildItem | Where-Object { $_.Extension -eq ".txt" }     # filtra por propriedade, nao por texto
+# filtra por propriedade, nao por texto
+Get-ChildItem | Where-Object { $_.Extension -eq ".txt" }
 Select-String "404" access.log | Measure-Object | Select-Object -ExpandProperty Count
-Get-Process | Sort-Object CPU -Descending | Select-Object -First 5     # os 5 processos mais pesados
+# os 5 processos mais pesados
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 5
 ```
 
 > **Nota:** `Where-Object { $_.Extension -eq ".txt" }` filtra sobre uma propriedade real do objeto arquivo, enquanto `grep ".txt"` no Bash só busca o texto ".txt" em qualquer lugar da linha: um arquivo chamado `relatorio.txt.bak` corresponderia ao `grep` mas não a `-eq ".txt"`, mais preciso.
@@ -58,7 +62,8 @@ Get-Process | Sort-Object CPU -Descending | Select-Object -First 5     # os 5 pr
 Equivalente direto de `tee` no Bash:
 
 ```powershell
-Get-ChildItem | Tee-Object -FilePath resultados.txt   # exibe o resultado E o salva em um arquivo
+# exibe o resultado E o salva em um arquivo
+Get-ChildItem | Tee-Object -FilePath resultados.txt
 ```
 
 ## Resumo dos símbolos

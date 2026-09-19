@@ -11,7 +11,8 @@ order: 15
 ```python
 from pathlib import Path
 
-pasta = Path("relatorios") / "2026" / "agosto.txt"  # "/" constroi o caminho, PORTAVEL (\ no Windows, / no resto)
+# "/" constroi o caminho, PORTAVEL (\ no Windows, / no resto)
+pasta = Path("relatorios") / "2026" / "agosto.txt"
 print(pasta)                                        # relatorios/2026/agosto.txt
 
 pasta.exists()   # True/False -> o arquivo/pasta existe mesmo no disco?
@@ -28,10 +29,14 @@ pasta.is_dir()   # True/False
 ```python
 pasta = Path("relatorios") / "2026"
 
-pasta.mkdir()                              # FileNotFoundError se "relatorios" ainda não existir (o pai)
-pasta.mkdir(parents=True)                  # cria também os pais que faltarem -> não há mais FileNotFoundError
-pasta.mkdir(exist_ok=True)                 # FileExistsError se a pasta já existir (sem parents=True)
-pasta.mkdir(parents=True, exist_ok=True)   # os dois combinados: NUNCA reclama, cria o que faltar
+# FileNotFoundError se "relatorios" ainda não existir (o pai)
+pasta.mkdir()
+# cria também os pais que faltarem -> não há mais FileNotFoundError
+pasta.mkdir(parents=True)
+# FileExistsError se a pasta já existir (sem parents=True)
+pasta.mkdir(exist_ok=True)
+# os dois combinados: NUNCA reclama, cria o que faltar
+pasta.mkdir(parents=True, exist_ok=True)
 ```
 
 `parents=True, exist_ok=True` é o padrão idiomático "criar a pasta se precisar": substitui um `if not pasta.exists(): pasta.mkdir()` explícito por uma única linha que nunca quebra, exista a pasta ou não. Uso comum: criar a pasta pai de um arquivo logo antes de abri-lo para escrita.
@@ -39,7 +44,8 @@ pasta.mkdir(parents=True, exist_ok=True)   # os dois combinados: NUNCA reclama, 
 ```python
 caminho_arquivo = Path("relatorios") / "2026" / "agosto.txt"
 
-caminho_arquivo.parent.mkdir(parents=True, exist_ok=True)   # cria "relatorios/2026" antes de escrever o arquivo
+# cria "relatorios/2026" antes de escrever o arquivo
+caminho_arquivo.parent.mkdir(parents=True, exist_ok=True)
 with caminho_arquivo.open("w", encoding="utf-8") as f:
     f.write("concluído")
 ```
@@ -73,9 +79,12 @@ relatorio.name    # "relatorio.txt" -> nome completo do arquivo
 relatorio.stem    # "relatorio"     -> nome SEM a extensão
 relatorio.suffix  # ".txt"          -> a extensão, com o ponto
 
-relatorio.with_name("rascunho.txt")                                  # Path("rascunho.txt") -> substitui o nome inteiro
-relatorio.with_suffix(".csv")                                         # Path("relatorio.csv") -> substitui so a extensao
-relatorio.with_name(f"{relatorio.stem}.peugeot{relatorio.suffix}")   # Path("relatorio.peugeot.txt") -> insere uma palavra no meio
+# Path("rascunho.txt") -> substitui o nome inteiro
+relatorio.with_name("rascunho.txt")
+# Path("relatorio.csv") -> substitui so a extensao
+relatorio.with_suffix(".csv")
+# Path("relatorio.peugeot.txt") -> insere uma palavra no meio
+relatorio.with_name(f"{relatorio.stem}.peugeot{relatorio.suffix}")
 ```
 
 > **Armadilha:** `.with_name()` substitui o ÚLTIMO segmento do caminho (o nome do arquivo), ao contrário de `/` que ADICIONA um novo: `Path("a/b") / "c"` dá `a/b/c`, `Path("a/b").with_name("c")` dá `a/c`.
@@ -92,11 +101,13 @@ caminho_arquivo.unlink(missing_ok=True)  # nunca quebra, mesmo se o arquivo já 
 ## Remover uma pasta não vazia: `shutil.rmtree()`
 
 ```python
-pasta.rmdir()  # OSError se a pasta nao estiver vazia -> pathlib se recusa deliberadamente a apagar conteudo
+# OSError se a pasta nao estiver vazia -> pathlib se recusa deliberadamente a apagar conteudo
+pasta.rmdir()
 
 import shutil
 shutil.rmtree(pasta)                      # remove a pasta E todo seu conteudo, recursivamente
-shutil.rmtree(pasta, ignore_errors=True)  # qualquer erro (arquivo bloqueado...) e ignorado, silenciosamente
+# qualquer erro (arquivo bloqueado...) e ignorado, silenciosamente
+shutil.rmtree(pasta, ignore_errors=True)
 ```
 
 `shutil` («*shell utilities*», módulo padrão) fornece operações de arquivos de nível mais alto que `pathlib`. `shutil.rmtree()` equivale a `rm -rf` em [Bash](/?c=shells&s=bash&p=redirections-et-pipes) ou `Remove-Item -Recurse` em [PowerShell](/?c=shells&s=powershell&p=powershell); `shutil.copy()`/`shutil.move()` cobrem a cópia e o deslocamento.
@@ -118,7 +129,8 @@ with open("contatos.csv", newline="", encoding="utf-8") as f:
 with open("contatos.csv", newline="", encoding="utf-8") as f:
     leitor = csv.DictReader(f, delimiter=",")  # usa a primeira linha como cabecalhos
     for linha in leitor:
-        print(linha)             # {"nome": "Joao", "sobrenome": "Silva", "idade": "25"} -> um DICT, por nome de coluna
+        # {"nome": "Joao", "sobrenome": "Silva", "idade": "25"} -> um DICT, por nome de coluna
+        print(linha)
         print(linha["nome"])     # "Joao" -> acesso por nome, mais legivel que por indice
 ```
 
@@ -135,8 +147,10 @@ import json
 
 usuario = {"nome": "Léa", "notas": [15, 12, 18]}   # um dict Python "normal"
 
-texto = json.dumps(usuario, ensure_ascii=False)    # '{"nome": "Léa", "notas": [15, 12, 18]}' -> texto JSON
-objeto = json.loads(texto)                         # objeto Python, decodificado de volta a partir do texto (== usuario)
+# '{"nome": "Léa", "notas": [15, 12, 18]}' -> texto JSON
+texto = json.dumps(usuario, ensure_ascii=False)
+# objeto Python, decodificado de volta a partir do texto (== usuario)
+objeto = json.loads(texto)
 ```
 
 | Função | Entrada | Saída |
@@ -154,7 +168,8 @@ Um arquivo JSON clássico contém um único objeto ou array raiz: adicionar uma 
 
 ```python
 with open("estados.jsonl", "a", encoding="utf-8") as f:
-    f.write(json.dumps({"id": 1, "status": "ok"}, ensure_ascii=False) + "\n")   # ADICIONA uma linha, sem tocar no resto do arquivo
+    # ADICIONA uma linha, sem tocar no resto do arquivo
+    f.write(json.dumps({"id": 1, "status": "ok"}, ensure_ascii=False) + "\n")
 ```
 
 ```python

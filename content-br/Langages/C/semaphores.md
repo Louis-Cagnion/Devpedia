@@ -16,7 +16,8 @@ Um **semáforo** é um contador protegido, compartilhado entre threads ou entre 
 
 sem_t semaforo;
 
-sem_init(&semaforo, 0, 3); // contador inicial em 3 (0 = compartilhado entre threads do mesmo processo)
+// contador inicial em 3 (0 = compartilhado entre threads do mesmo processo)
+sem_init(&semaforo, 0, 3);
 
 sem_wait(&semaforo); // decrementa; bloqueia se ja estiver em 0
 // ... secao que nao deve ultrapassar 3 acessos simultaneos ...
@@ -38,7 +39,8 @@ sem_wait(garfos); // pega um garfo (bloqueia se os 5 ja estiverem tomados)
 sem_post(garfos); // devolve o garfo
 
 sem_close(garfos);     // libera o descritor local a este processo
-sem_unlink("/garfos"); // destroi o objeto nomeado do sistema (uma unica vez, ao final do programa)
+// destroi o objeto nomeado do sistema (uma unica vez, ao final do programa)
+sem_unlink("/garfos");
 ```
 
 | Função | Papel |
