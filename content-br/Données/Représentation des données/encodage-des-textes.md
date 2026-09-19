@@ -140,18 +140,6 @@ NFKD é uma das 4 formas de normalização Unicode padrão:
 
 > **Cuidado:** dois textos visualmente idênticos podem estar compostos de forma diferente em memória (`é` em um único ponto de código `U+00E9`, ou em dois, `U+0065` + `U+0301`) e assim falhar uma comparação `==` mesmo exibindo-se do mesmo jeito. Normalizar os dois textos na mesma forma antes de compará-los evita essa armadilha.
 
-## Resumo
-
-| Noção | A reter |
-|---|---|
-| ASCII | 128 caracteres, 7 bits, base de tudo o resto |
-| Unicode | Um catálogo de pontos de código, **não** uma codificação |
-| UTF-8 | 1 a 4 bytes, compatível com ASCII, padrão de fato da web |
-| Caractere ≠ byte | `strlen` em C conta bytes, não letras |
-| Mojibake `Ã©` | UTF-8 lido como Latin-1: corrigir a declaração, não o texto |
-| BOM | Inútil em UTF-8, mas esperado pelo Excel, prejudicial no início de um fonte PHP |
-| Normalização Unicode | NFC/NFD/NFKC/NFKD: dois textos visualmente idênticos podem estar compostos de forma diferente em memória |
-
 ---
 
 ## 📋 Recapitulando

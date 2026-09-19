@@ -140,18 +140,6 @@ NFKD is one of the 4 standard Unicode normalization forms:
 
 > **Pitfall:** two visually identical texts can be composed differently in memory (`é` as a single code point `U+00E9`, or as two, `U+0065` + `U+0301`) and thus fail an `==` comparison even though they display the same way. Normalizing both texts into the same form before comparing them avoids this pitfall.
 
-## Summary
-
-| Concept | Key point |
-|---|---|
-| ASCII | 128 characters, 7 bits, the foundation for everything else |
-| Unicode | A catalog of code points, **not** an encoding |
-| UTF-8 | 1 to 4 bytes, ASCII-compatible, the web's de facto standard |
-| Character ≠ byte | `strlen` in C counts bytes, not letters |
-| Mojibake `Ã©` | UTF-8 read as Latin-1: fix the declaration, not the text |
-| BOM | Useless in UTF-8, but expected by Excel, harmful at the start of a PHP source file |
-| Unicode normalization | NFC/NFD/NFKC/NFKD: two visually identical texts can be composed differently in memory |
-
 ---
 
 ## 📋 Summary
