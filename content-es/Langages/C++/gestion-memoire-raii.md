@@ -83,16 +83,6 @@ Cada `shared_ptr` incrementa un contador de referencias compartido; el recurso s
 
 > **Nota:** `shared_ptr` tiene un coste (el contador de referencias, actualizado de forma **thread-safe**: sin riesgo de [race condition](/?c=langages-de-programmation&s=c&p=threads) si varios hilos lo modifican a la vez) superior al de `unique_ptr`: hay que reservarlo para los casos en los que un recurso tenga realmente varios propietarios legítimos, no por defecto.
 
-## Resumen
-
-| | `new`/`delete` puro | `unique_ptr` | `shared_ptr` |
-|---|---|---|---|
-| Liberación automática | No | Sí | Sí |
-| Número de propietarios | N/D | Uno solo | Varios |
-| Coste | Mínimo | Prácticamente nulo (sin sobrecoste en la ejecución) | Recuento de referencias (ligero sobrecoste) |
-
-> **Buena práctica en C++ moderno:** nunca uses `new`/`delete` directamente en el código de la aplicación; prefiere siempre `unique_ptr` (por defecto) o `shared_ptr` (si realmente es necesario compartir), para beneficiarte de RAII sin tener que pensar en ello cada vez.
-
 ---
 
 ## 📋 Resumen
