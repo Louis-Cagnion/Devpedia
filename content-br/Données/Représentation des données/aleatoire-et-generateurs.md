@@ -95,16 +95,6 @@ secrets.randbelow(3)  # idem, em versão criptografica
 
 O mesmo raciocínio se aplica a `Math.random()` em JavaScript ou `mt_rand()` em PHP: prefira a função dedicada a um `%` improvisado.
 
-## Resumo
-
-| A reter | |
-|---|---|
-| Um PRNG é determinístico | Mesma semente → mesma sequência |
-| O determinismo é útil | Testes, reprodutibilidade científica, geração procedural |
-| Semente = relógio | Previsível: nunca para segurança |
-| Valor que precisa ser secreto | CSPRNG obrigatório (`secrets`, `random_bytes`, `crypto`) |
-| Trazer para um intervalo | Evitar `%` bruto: viés do módulo |
-
 ---
 
 ## 📋 Recapitulando

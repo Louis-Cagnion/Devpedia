@@ -95,16 +95,6 @@ secrets.randbelow(3)      # same, cryptographic version
 
 The same reasoning applies to `Math.random()` in JavaScript or `mt_rand()` in PHP: prefer the dedicated function over an improvised `%`.
 
-## Summary
-
-| Key point | |
-|---|---|
-| A PRNG is deterministic | Same seed → same sequence |
-| Determinism is useful | Tests, scientific reproducibility, procedural generation |
-| Seed = clock | Predictable: never for security |
-| Value that must be secret | CSPRNG required (`secrets`, `random_bytes`, `crypto`) |
-| Bringing into a range | Avoid raw `%`: modulo bias |
-
 ---
 
 ## 📋 Summary
