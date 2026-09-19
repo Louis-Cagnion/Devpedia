@@ -75,8 +75,6 @@ function escapeHtml(text) {
  * Pages project site), so a root-absolute href 404s whenever it's followed outside router.js's
  * click interception (new tab, copied link, JS disabled, crawlers) -- a relative href resolves
  * against the current document instead and stays correct under any deployment path.
- * `contenteditable="false"` on both variants: the page body is a caret-navigable (not editable)
- * region, and a plain click no longer activates a link inside an editable ancestor otherwise.
  *
  * @param {string} text
  *
@@ -85,8 +83,8 @@ function escapeHtml(text) {
 function renderLinks(text) {
     return text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, url) =>
         url.startsWith("/")
-            ? `<a class="contentLink" contenteditable="false" href="${url.slice(1)}">${label}</a>`
-            : `<a contenteditable="false" href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
+            ? `<a class="contentLink" href="${url.slice(1)}">${label}</a>`
+            : `<a href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
     );
 }
 
