@@ -1,8 +1,8 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 5 chiffré (1719 lignes) mais trop volumineux pour continuer sans découpage par lot -- demander à Louis comment le débiter (par langage ? par dossier ?) avant de reprendre.
+> Prochaine tâche : points 4 (BR) et 5 (lignes longues), découpage confirmé par Louis le 19/09/2026 : un chapitre (un fichier `.md`) à la fois, jamais par langage/dossier entier d'un coup. Point 5, chapitre suivant : `content/Langages/Bash/traitement-de-texte.md` (13 lignes).
 
-> Restent : un test navigateur en attente de Louis (point 3). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2). Ampleur du point 4 (BR) et du point 5 à découper avec Louis avant de reprendre seul.
+> Restent : un test navigateur en attente de Louis (point 3). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2).
 
 ## 1. Régénération audio complète : terminée (lots 1 à 6 + 8 chapitres Kubernetes/worktree/distillation/CUDA)
 Nécessite `ffmpeg` sur le PATH : `export PATH="/c/Users/lcagnion/tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"` avant chaque commande (cf. `journal-de-bord.md` pour l'installation).
