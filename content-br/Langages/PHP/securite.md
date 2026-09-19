@@ -231,30 +231,13 @@ $resposta = file_get_contents($_GET['url']);
 
 Todo código que constrói uma URL/host de destino a partir de uma entrada influenciada, mesmo indiretamente, pelo usuário (veja [Fazer chamadas HTTP nativamente](/?c=langages-de-programmation&s=php&p=http)) é um candidato à auditoria SSRF. **Proteção:** validar o host alvo contra uma lista branca explícita em vez de confiar em uma URL arbitrária fornecida pelo cliente.
 
-## Resumo
-
-| Risco | Defesa principal |
-|---|---|
-| Dado malformado (email, número...) | `filter_input()` |
-| Injeção de HTML/JS (XSS) | `htmlspecialchars()` |
-| Injeção SQL | Consultas preparadas (PDO) |
-| Senha em texto claro | `password_hash()` / `password_verify()` |
-| CSRF | Token CSRF em sessão, verificado via `hash_equals()` |
-| MITM / DNS spoofing | Verificação de certificado SSL (`verify_peer`/`verify_peer_name`) |
-| Sniffing | HTTPS sistemático |
-| Session hijacking | Cookie `httponly`/`secure`, identificador de sessão com alta entropia |
-| Brute force | Limitação do número de tentativas (*rate limiting*) |
-| SSRF | Lista branca dos hosts/URLs permitidos |
-
-> **Nota:** nenhuma dessas proteções substitui o HTTPS, que criptografa os dados trocados entre o navegador e o servidor.
-
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | Todo dado do usuário é não confiável por padrão. As principais falhas aplicativas (XSS, injeção SQL, CSRF) são neutralizadas por mecanismos dedicados (`htmlspecialchars`, consultas preparadas, token CSRF): outros ataques visam a rede ou a infraestrutura, fora do código aplicativo sozinho. |
-| **Ferramentas utilizáveis** | `filter_input()`, `htmlspecialchars()`, PDO (consultas preparadas), `password_hash`/`password_verify`, `hash_equals()`. |
+| **Para lembrar** | Todo dado do usuário é não confiável por padrão. As principais falhas aplicativas (XSS, injeção SQL, CSRF) são neutralizadas por mecanismos dedicados (`htmlspecialchars`, consultas preparadas, token CSRF); outros ataques visam a rede ou a infraestrutura (MITM, DNS spoofing, sniffing, session hijacking, brute force, SSRF), fora do código aplicativo sozinho. Nenhuma dessas proteções substitui o HTTPS, que criptografa os dados trocados entre o navegador e o servidor. |
+| **Ferramentas utilizáveis** | `filter_input()`, `htmlspecialchars()`, PDO (consultas preparadas), `password_hash`/`password_verify`, `hash_equals()`, verificação de certificado SSL/TLS (`verify_peer`), cookies `httponly`/`secure`, limitação do número de tentativas (*rate limiting*), lista branca de hosts para SSRF. |
 | **Armadilhas a evitar** | Comparar dois hashes com `==` (falha *magic hash*); concatenar um dado do usuário diretamente em uma consulta SQL. |
 | **Boas práticas** | Sempre validar/escapar um dado do usuário conforme seu uso (exibição, SQL, comparação); HTTPS sistemático, sem exceção para um dado considerado "não tão sensível". |

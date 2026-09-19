@@ -231,30 +231,13 @@ $response = file_get_contents($_GET['url']);
 
 Any code that builds a destination URL/host from input influenced, even indirectly, by the user (see [Making native HTTP calls](/?c=langages-de-programmation&s=php&p=http)) is a candidate for an SSRF audit. **Protection:** validate the target host against an explicit allowlist rather than trusting an arbitrary URL supplied by the client.
 
-## Summary
-
-| Risk | Main defense |
-|---|---|
-| Malformed data (email, number...) | `filter_input()` |
-| HTML/JS injection (XSS) | `htmlspecialchars()` |
-| SQL injection | Prepared statements (PDO) |
-| Plaintext password | `password_hash()` / `password_verify()` |
-| CSRF | Session CSRF token, verified via `hash_equals()` |
-| MITM / DNS spoofing | SSL certificate verification (`verify_peer`/`verify_peer_name`) |
-| Sniffing | HTTPS everywhere |
-| Session hijacking | `httponly`/`secure` cookie, high-entropy session identifier |
-| Brute force | Rate limiting the number of attempts |
-| SSRF | Allowlist of authorized hosts/URLs |
-
-> **Note:** none of these protections replace HTTPS, which encrypts the data exchanged between the browser and the server.
-
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | All user data is untrusted by default. The main application flaws (XSS, SQL injection, CSRF) are neutralized by dedicated mechanisms (`htmlspecialchars`, prepared statements, CSRF token); other attacks target the network or infrastructure, outside the application code alone. |
-| **Tools you can use** | `filter_input()`, `htmlspecialchars()`, PDO (prepared statements), `password_hash`/`password_verify`, `hash_equals()`. |
+| **Key takeaways** | All user data is untrusted by default. The main application flaws (XSS, SQL injection, CSRF) are neutralized by dedicated mechanisms (`htmlspecialchars`, prepared statements, CSRF token); other attacks target the network or infrastructure (MITM, DNS spoofing, sniffing, session hijacking, brute force, SSRF), outside the application code alone. None of these protections replace HTTPS, which encrypts the data exchanged between the browser and the server. |
+| **Tools you can use** | `filter_input()`, `htmlspecialchars()`, PDO (prepared statements), `password_hash`/`password_verify`, `hash_equals()`, SSL/TLS certificate verification (`verify_peer`), `httponly`/`secure` cookies, rate limiting the number of attempts, allowlist of hosts for SSRF. |
 | **Pitfalls to avoid** | Comparing two hashes with `==` (the *magic hash* flaw); concatenating user data directly into an SQL query. |
 | **Best practices** | Always validate/escape user data according to its use (display, SQL, comparison); HTTPS everywhere, with no exception for data deemed "not that sensitive". |
