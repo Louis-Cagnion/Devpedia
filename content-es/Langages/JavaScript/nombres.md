@@ -111,17 +111,6 @@ Number("");          // 0     -> trampa clásica: la cadena vacía se convierte 
 
 `toLocaleString` se encarga por sí solo de los separadores de miles y de la coma decimal española: no hace falta reconstruirlos a mano.
 
-## Resumen
-
-| Trampa | Reflejo |
-|---|---|
-| Un solo tipo `number` (flotante) | `Math.trunc()` para una división entera |
-| `0.1 + 0.2 !== 0.3` | Comparar mediante un margen de error |
-| Importes monetarios | Trabajar en centavos |
-| Identificadores > 2⁵³ | Transportarlos como cadena, o usar `BigInt` |
-| `NaN !== NaN` | `Number.isNaN()`, nunca `isNaN()` |
-| `Number("")` vale `0` | Validar antes de convertir |
-
 ---
 
 ## 📋 Resumen
@@ -130,5 +119,5 @@ Number("");          // 0     -> trampa clásica: la cadena vacía se convierte 
 |---|---|
 | **Para recordar** | JavaScript solo tiene un tipo numérico (`number`, flotante IEEE 754): no hay distinción nativa entre entero y decimal. `BigInt` elimina el límite de los enteros grandes exactos (2⁵³ − 1). |
 | **Herramientas utilizables** | `Math.trunc`, `Number.isNaN`, `Number.isSafeInteger`, `toFixed`/`toLocaleString` para mostrar valores. |
-| **Trampas a evitar** | Comparar dos flotantes con `===`; usar el `isNaN()` global (convierte antes de comprobar) en lugar de `Number.isNaN()`. |
-| **Buenas prácticas** | Trabajar en centavos para los importes monetarios; transportar un identificador grande como cadena de caracteres en lugar de como `number`. |
+| **Trampas a evitar** | Comparar dos flotantes con `===`; usar el `isNaN()` global (convierte antes de comprobar) en lugar de `Number.isNaN()`; `Number("")` vale `0`, validar siempre antes de convertir. |
+| **Buenas prácticas** | Trabajar en centavos para los importes monetarios; transportar un identificador grande como cadena de caracteres o como `BigInt` en lugar de como `number`. |

@@ -111,17 +111,6 @@ Number("");          // 0     -> armadilha clássica: a string vazia vira 0
 
 `toLocaleString` cuida sozinho dos separadores de milhar e da vírgula decimal: dispensa reconstruí-los na mão.
 
-## Resumo
-
-| Armadilha | Reflexo |
-|---|---|
-| Um único tipo `number` (float) | `Math.trunc()` para uma divisão inteira |
-| `0.1 + 0.2 !== 0.3` | Comparar via uma margem de erro |
-| Valores monetários | Trabalhar em centavos |
-| Identificadores > 2⁵³ | Transportá-los como string, ou usar `BigInt` |
-| `NaN !== NaN` | `Number.isNaN()`, nunca `isNaN()` |
-| `Number("")` vale `0` | Validar antes de converter |
-
 ---
 
 ## 📋 Recapitulando
@@ -130,5 +119,5 @@ Number("");          // 0     -> armadilha clássica: a string vazia vira 0
 |---|---|
 | **Para lembrar** | O JavaScript tem apenas um tipo numérico (`number`, float IEEE 754): sem distinção nativa inteiro/decimal. `BigInt` remove o limite dos grandes inteiros exatos (2⁵³ − 1). |
 | **Ferramentas utilizáveis** | `Math.trunc`, `Number.isNaN`, `Number.isSafeInteger`, `toFixed`/`toLocaleString` para exibição. |
-| **Armadilhas a evitar** | Comparar dois floats com `===`; usar o `isNaN()` global (converte antes de testar) em vez de `Number.isNaN()`. |
-| **Boas práticas** | Trabalhar em centavos para valores monetários; transportar um identificador grande como string em vez de `number`. |
+| **Armadilhas a evitar** | Comparar dois floats com `===`; usar o `isNaN()` global (converte antes de testar) em vez de `Number.isNaN()`; `Number("")` vale `0`, sempre validar antes de converter. |
+| **Boas práticas** | Trabalhar em centavos para valores monetários; transportar um identificador grande como string ou como `BigInt` em vez de `number`. |

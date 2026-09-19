@@ -111,17 +111,6 @@ Number("");          // 0     -> piège classique : la chaîne vide devient 0
 
 `toLocaleString` gère seul les séparateurs de milliers et la virgule décimale française : inutile de les reconstruire à la main.
 
-## Résumé
-
-| Piège | Réflexe |
-|---|---|
-| Un seul type `number` (flottant) | `Math.trunc()` pour une division entière |
-| `0.1 + 0.2 !== 0.3` | Comparer via une marge d'erreur |
-| Montants monétaires | Travailler en centimes |
-| Identifiants > 2⁵³ | Les transporter en chaîne, ou utiliser `BigInt` |
-| `NaN !== NaN` | `Number.isNaN()`, jamais `isNaN()` |
-| `Number("")` vaut `0` | Valider avant de convertir |
-
 ---
 
 ## 📋 Récapitulatif
@@ -130,5 +119,5 @@ Number("");          // 0     -> piège classique : la chaîne vide devient 0
 |---|---|
 | **À retenir** | JavaScript n'a qu'un seul type numérique (`number`, flottant IEEE 754) : pas de distinction entier/décimal native. `BigInt` lève la limite des grands entiers exacts (2⁵³ − 1). |
 | **Outils utilisables** | `Math.trunc`, `Number.isNaN`, `Number.isSafeInteger`, `toFixed`/`toLocaleString` pour l'affichage. |
-| **Pièges à éviter** | Comparer deux flottants avec `===` ; utiliser `isNaN()` global (convertit avant de tester) plutôt que `Number.isNaN()`. |
-| **Bonnes pratiques** | Travailler en centimes pour des montants ; transporter un grand identifiant en chaîne de caractères plutôt qu'en `number`. |
+| **Pièges à éviter** | Comparer deux flottants avec `===` ; utiliser `isNaN()` global (convertit avant de tester) plutôt que `Number.isNaN()` ; `Number("")` vaut `0`, toujours valider avant de convertir. |
+| **Bonnes pratiques** | Travailler en centimes pour des montants ; transporter un grand identifiant en chaîne de caractères ou en `BigInt` plutôt qu'en `number`. |
