@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Convention confirmée : le README.md racine reste en anglais (2026-09-19)
+
+Vérification demandée par la règle "Langue du README" de `/best-practice` (français par défaut, sauf convention anglaise délibérée déjà établie dans le dépôt) : Louis a confirmé explicitement que l'anglais est un choix délibéré pour `README.md`, pas un oubli. Convention à ne plus reremettre en question sans qu'il en dise autrement -- seuls les titres de catégories principales du README ont par ailleurs été traduits de français vers anglais ce même jour pour rester cohérents avec le reste du document.
+
 ## Item todo #1 terminé : cause racine des échecs espeak-ng trouvée -- instabilité d'environnement, pas de contenu (2026-09-19)
 
 Les 17 chapitres listés avaient été laissés en échec sur la machine Windows de la session précédente, y compris les deux (`editeur-de-code-et-ide`, `complexite-et-notation-big-o`) qui échouaient dans les 4 langues -- une hypothèse de caractère partagé entre traductions avait été notée dans le todo, jamais vérifiée. Recherche des caractères inhabituels dans les 8 fichiers source (4 langues × 2 chapitres) : rien de suspect en dehors de `ⁿ` (exposant, présent dans les 4 versions de `complexite-et-notation-big-o` mais absent d'`editeur-de-code-et-ide`, donc pas une explication commune aux deux) et de guillemets typographiques ordinaires, déjà utilisés ailleurs sans jamais planter. Piste abandonnée.

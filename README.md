@@ -6,6 +6,17 @@ Live at: https://louis-cagnion.github.io/Devpedia/
 
 Deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`: a plain static-file deploy (`upload-pages-artifact` + `deploy-pages`), with no Jekyll build step — the site is a JS SPA that fetches Markdown at runtime, so a Jekyll build isn't just unnecessary, it actively breaks on any file with the wrong Liquid-looking syntax.
 
+## Table of contents
+
+- [Content](#content)
+- [Translations](#translations)
+- [Running locally](#running-locally)
+- [Content structure](#content-structure)
+- [Interface](#interface)
+- [Design](#design)
+- [AI usage](#ai-usage)
+- [Contributors](#contributors)
+
 ## Content
 
 Chapters live under `content/`, grouped into 11 top-level categories, most split further into subjects (e.g. a language, a sub-topic). The full up-to-date tree is `structure/struct.json` (or the site's own sidebar); this section stays at the "what does each category cover" level rather than listing every chapter, so it doesn't go stale every time one is added:
@@ -26,7 +37,7 @@ Security isn't confined to the Security category alone — it's also woven into 
 
 ## Translations
 
-`content/` is the French source of truth, translated by hand into `content-<lang>/` (the automated DeepL pipeline this project used to have was retired once its API subscription lapsed). `scripts/apply-variable-glossary.mjs` still retrofits `scripts/variable-glossary.json`'s identifier renaming onto translated files with zero API calls, reusing the text-segmentation logic in `scripts/markdown-segmenter.mjs` (which splits a chapter into natural-language vs. code/markdown-syntax pieces so only the former ever gets rewritten). Currently translated: English, Spanish, Portuguese (Brazil) — see `structure/languages.json`. The language switcher lives in the navbar (`js/lang.js`).
+`content/` is the French source of truth, translated by hand into `content-<lang>/`. `scripts/apply-variable-glossary.mjs` retrofits `scripts/variable-glossary.json`'s identifier renaming onto translated files with zero API calls, reusing the text-segmentation logic in `scripts/markdown-segmenter.mjs` (which splits a chapter into natural-language vs. code/markdown-syntax pieces so only the former ever gets rewritten). Currently translated: English, Spanish, Portuguese (Brazil) — see `structure/languages.json`. The language switcher lives in the navbar (`js/lang.js`).
 
 ## Running locally
 
@@ -71,3 +82,11 @@ Besides Markdown rendering, the site includes a few hand-built pieces worth know
 `css/` is one file per concern: `init.css` (browser resets), `base.css` (`:root` design tokens, see below), `navbar.css`/`sidebar.css`/`content.css`/`reader.css` (per-area rules), `responsive.css` (breakpoints, kept separate rather than interleaved so a component's mobile/desktop variants aren't split across files), and `charts.css`. Fonts (Inter for body text, JetBrains Mono for code, Orbitron for the display accents below) load from Google Fonts via a single `<link>` in `index.html`.
 
 The palette is Nord-derived (`--bg`, `--bg-elevated`, `--bg-elevated-2`, `--accent`, `--accent-strong`...), extended with `--bg-deep` (a near-black tone for the navbar/both sidebars, visually distinct from page content), `--accent-warm` (Nord's own Aurora orange, paired with the existing cyan `--accent` for a warm-to-cool accent) and `--font-display` (Orbitron, reserved for short labels and markers: never body text, which stays on Inter for legibility at length). Every page (home, category, subject, chapter alike) gets the same stylized treatment: a tiled starfield + warm/cool radial-gradient wash spanning the full viewport width behind the content (`body::before`, fixed), paragraphs/list items as a parallelogram panel (`clip-path`) rather than a plain rectangle, and a diamond marker (echoing the sidebar's own numbered category markers) that shrinks with heading depth on titles and with tree depth in the sidebar/outline.
+
+## AI usage
+
+This project is developed in close collaboration with Claude Code (Anthropic's AI coding assistant): writing and reviewing content chapters in all four languages, implementing and refactoring site features, debugging build/audio-generation pipelines, and maintaining this README and the project's internal tracking files. Every AI-authored change is reviewed before being committed.
+
+## Contributors
+
+- Louis Cagnion ([@Louis-Cagnion](https://github.com/Louis-Cagnion))
