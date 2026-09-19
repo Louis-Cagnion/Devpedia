@@ -10,7 +10,8 @@ A **tag** is a pointer to a specific commit, much like a branch, but unlike a br
 
 ```bash
 git tag v1.0.0                 # "lightweight" tag: simple pointer, no metadata
-git tag -a v1.0.0 -m "First stable release"   # "Annotated" tag: includes author, date, and message
+# "Annotated" tag: includes author, date, and message
+git tag -a v1.0.0 -m "First stable release"
 ```
 
 > **Note:** An annotated tag (`-a`) is generally preferable for a true released version: it is committed as a full-fledged Git object (with its own message and author), unlike a lightweight tag, which is simply an alias to a commit hash.
@@ -26,7 +27,8 @@ git show v1.0.0               # Displays the tag details (and the associated com
 ## Tagging a past commit
 
 ```bash
-git tag -a v0.9.0 a3f9c1d -m "Beta version"   # Tag a specific commit, not necessarily the most recent one
+# Tag a specific commit, not necessarily the most recent one
+git tag -a v0.9.0 a3f9c1d -m "Beta version"
 ```
 
 ## Pushing tags to a remote

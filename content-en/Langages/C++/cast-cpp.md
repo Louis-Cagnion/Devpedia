@@ -58,7 +58,8 @@ if (derived != nullptr) {
 `const_cast` is the only one of the four that **never** changes the underlying type or the binary representation of the value: it only adds or removes the `const` qualifier.
 
 ```cpp
-void legacyAPI(char *string); // external function that never modifies "string", but doesn't declare it
+// external function that never modifies "string", but doesn't declare it
+void legacyAPI(char *string);
 
 void call(const char *text)
 {
@@ -76,7 +77,8 @@ void call(const char *text)
 int value = 42;
 int *intPointer = &value;
 
-uintptr_t rawAddress = reinterpret_cast<uintptr_t>(intPointer); // the pointer, viewed as a plain integer
+// the pointer, viewed as a plain integer
+uintptr_t rawAddress = reinterpret_cast<uintptr_t>(intPointer);
 ```
 
 Reserved for low-level cases (raw pointer manipulation, hardware interfacing, binary serialization): using it outside that context is almost always a sign of a design problem elsewhere.

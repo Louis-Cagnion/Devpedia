@@ -39,7 +39,8 @@ now.strftime("%d/%m/%Y")         # "01/09/2026"        -> common European format
 ## Parsing a string into a date: `.strptime()`
 
 ```python
-datetime.strptime("2026-09-01_143207", "%Y-%m-%d_%H%M%S")  # INVERSE operation of strftime, same code table
+# INVERSE operation of strftime, same code table
+datetime.strptime("2026-09-01_143207", "%Y-%m-%d_%H%M%S")
 ```
 
 > **Pitfall:** the format given to `strptime()` must match the received string EXACTLY (same separators, same order); a format that doesn't match raises a `ValueError`, not an approximate result.
@@ -66,8 +67,10 @@ Unlike `strftime()`/`strptime()`, `isoformat()`/`fromisoformat()` require no for
 ```python
 import time
 
-time.time()      # 1798819927.123456 -> RAW number of seconds since January 1, 1970 (Unix epoch)
-datetime.now()   # 2026-09-01 14:32:07.123456 -> object with year/month/day... already broken down
+# 1798819927.123456 -> RAW number of seconds since January 1, 1970 (Unix epoch)
+time.time()
+# 2026-09-01 14:32:07.123456 -> object with year/month/day... already broken down
+datetime.now()
 ```
 
 `time.time()` is suited for measuring a DURATION (difference between two calls); `datetime` is suited as soon as you need to display, compare, or break down a readable date/time. See also [`sorted()` on strings](/?c=langages-de-programmation&s=python&p=listes-et-tuples) for sorting timestamps written in `%Y-%m-%d...` format without going through `datetime` at all.

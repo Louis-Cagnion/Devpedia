@@ -27,7 +27,8 @@ A PyTorch tensor can live on the CPU or on a GPU (`x.to("cuda")`), which runs th
 ## `autograd`: automatic differentiation
 
 ```python
-x = torch.tensor(3.0, requires_grad=True)   # "track operations on x so it can be differentiated later"
+# "track operations on x so it can be differentiated later"
+x = torch.tensor(3.0, requires_grad=True)
 
 y = x ** 2 + 2 * x
 
@@ -77,7 +78,8 @@ for epoch in range(100):
     predictions = model(X_train)                     # equivalent to model.forward(X_train)
     loss = loss_function(predictions, y_train)
 
-    optimizer.zero_grad()   # resets the gradients (otherwise they'd add up from one iteration to the next)
+    # resets the gradients (otherwise they'd add up from one iteration to the next)
+    optimizer.zero_grad()
     loss.backward()          # computes the gradients (automatic backpropagation)
     optimizer.step()          # adjusts the weights based on the computed gradients
 

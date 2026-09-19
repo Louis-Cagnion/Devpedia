@@ -48,7 +48,8 @@ Unlike `%d`/`%f`, which always write a fixed size, `%s` copies a string of **var
 
 ```c
 char nom[16];
-sscanf(entree_utilisateur, "%s", nom);   // if entree_utilisateur is longer than 15 characters: buffer overflow
+// if entree_utilisateur is longer than 15 characters: buffer overflow
+sscanf(entree_utilisateur, "%s", nom);
 ```
 
 > **Pitfall:** the same class of vulnerability already encountered with `printf`'s format strings (see the chapter on [variadic functions](/?c=langages-de-programmation&s=c&p=fonctions-variadiques)): unchecked input that exceeds the buffer size writes outside the memory allocated for it.

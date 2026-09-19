@@ -16,10 +16,12 @@ public:
     GestionnaireFichier(const std::string &path) {
         file.open(path);
         if (!file.is_open()) {
-            throw std::runtime_error("Impossible d'ouvrir : " + path); // cf. chapitre sur les exceptions
+            // cf. chapitre sur les exceptions
+            throw std::runtime_error("Impossible d'ouvrir : " + path);
         }
     }
-    ~GestionnaireFichier() { file.close(); }   // called automatically, even if an exception occurs!
+    // called automatically, even if an exception occurs!
+    ~GestionnaireFichier() { file.close(); }
 private:
     std::ifstream file;
 };
@@ -39,7 +41,8 @@ int *p = new int(42);   // allocates AND initializes in a single operation
 delete p;                 // releases
 
 int *array = new int[10];   // allocates a dynamic array
-delete[] array;               // "[]" is required to free an array; otherwise, behavior is undefined
+// "[]" is required to free an array; otherwise, behavior is undefined
+delete[] array;
 ```
 
 `new` / `delete` replace `malloc` / `free` but are subject to exactly the same risks (forgetting `delete`, duplicate `delete`, *use-after-free*; see Chapter C on memory), which is why, in modern C++, they are rarely used **directly**.

@@ -20,7 +20,8 @@ echo "Again" >> file.txt   # appends to the end of file.txt, without overwriting
 ## Redirecting input from a file
 
 ```bash
-sort < list.txt   # reads list.txt as "sort"'s standard input, rather than waiting for keyboard input
+# reads list.txt as "sort"'s standard input, rather than waiting for keyboard input
+sort < list.txt
 ```
 
 ## Redirecting standard error
@@ -30,7 +31,8 @@ The streams are numbered: `0` = standard input, `1` = standard output, `2` = sta
 ```bash
 failing_command 2> errors.log     # only standard error goes into errors.log
 command 1> output.log 2> errors.log  # separates normal output and errors into two files
-command > all.log 2>&1               # redirects stdout into all.log, THEN stderr to wherever stdout goes
+# redirects stdout into all.log, THEN stderr to wherever stdout goes
+command > all.log 2>&1
 command &> all.log                    # Bash shortcut equivalent to "> all.log 2>&1"
 ```
 

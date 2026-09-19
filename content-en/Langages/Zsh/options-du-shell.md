@@ -24,7 +24,8 @@ setopt AUTO_CD           # typing a folder name alone (with no "cd") moves into 
 setopt EXTENDED_GLOB      # enables extended globbing (see Advanced Expansion and Wildcards)
 setopt SHARE_HISTORY       # shares command history live across all open terminals
 setopt HIST_IGNORE_DUPS    # doesn't log a command identical to the previous one in history
-setopt CORRECT             # suggests a correction if a typed command doesn't exist ("did you mean...")
+# suggests a correction if a typed command doesn't exist ("did you mean...")
+setopt CORRECT
 ```
 
 | Option | Effect |

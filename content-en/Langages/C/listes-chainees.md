@@ -21,7 +21,8 @@ As with [a binary tree](/?c=langages-de-programmation&s=c&p=arbres-binaires), `s
 ## Creating and Linking Chains
 
 ```c
-Maillon *premier = malloc(sizeof(Maillon));   // check against NULL in practice (see memory management)
+// check against NULL in practice (see memory management)
+Maillon *premier = malloc(sizeof(Maillon));
 premier->value = 10;
 
 Maillon *second = malloc(sizeof(Maillon));

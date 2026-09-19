@@ -11,7 +11,8 @@ order: 15
 ```python
 from pathlib import Path
 
-folder = Path("reports") / "2026" / "august.txt"  # "/" builds the path, PORTABLE (\ on Windows, / elsewhere)
+# "/" builds the path, PORTABLE (\ on Windows, / elsewhere)
+folder = Path("reports") / "2026" / "august.txt"
 print(folder)                                     # reports/2026/august.txt
 
 folder.exists()   # True/False -> does the file/folder actually exist on disk?
@@ -28,10 +29,14 @@ folder.is_dir()   # True/False
 ```python
 folder = Path("reports") / "2026"
 
-folder.mkdir()                              # FileNotFoundError if "reports" doesn't exist yet (the parent)
-folder.mkdir(parents=True)                  # also creates missing parents -> no more FileNotFoundError
-folder.mkdir(exist_ok=True)                 # FileExistsError if the folder already exists (without parents=True)
-folder.mkdir(parents=True, exist_ok=True)   # both combined: NEVER complains, creates whatever is missing
+# FileNotFoundError if "reports" doesn't exist yet (the parent)
+folder.mkdir()
+# also creates missing parents -> no more FileNotFoundError
+folder.mkdir(parents=True)
+# FileExistsError if the folder already exists (without parents=True)
+folder.mkdir(exist_ok=True)
+# both combined: NEVER complains, creates whatever is missing
+folder.mkdir(parents=True, exist_ok=True)
 ```
 
 `parents=True, exist_ok=True` is the idiomatic "create the folder if needed" pattern: it replaces an explicit `if not folder.exists(): folder.mkdir()` with a single line that never crashes, whether the folder already exists or not. Common usage: creating a file's parent folder right before opening it for writing.
@@ -39,7 +44,8 @@ folder.mkdir(parents=True, exist_ok=True)   # both combined: NEVER complains, cr
 ```python
 file_path = Path("reports") / "2026" / "august.txt"
 
-file_path.parent.mkdir(parents=True, exist_ok=True)   # creates "reports/2026" before writing the file
+# creates "reports/2026" before writing the file
+file_path.parent.mkdir(parents=True, exist_ok=True)
 with file_path.open("w", encoding="utf-8") as f:
     f.write("done")
 ```
@@ -73,9 +79,12 @@ report.name    # "report.txt" -> full file name
 report.stem    # "report"     -> name WITHOUT the extension
 report.suffix  # ".txt"       -> the extension, with the dot
 
-report.with_name("draft.txt")                              # Path("draft.txt")  -> replaces the whole name
-report.with_suffix(".csv")                                 # Path("report.csv") -> replaces just the extension
-report.with_name(f"{report.stem}.peugeot{report.suffix}")  # Path("report.peugeot.txt")  -> inserts a word in the middle
+# Path("draft.txt")  -> replaces the whole name
+report.with_name("draft.txt")
+# Path("report.csv") -> replaces just the extension
+report.with_suffix(".csv")
+# Path("report.peugeot.txt")  -> inserts a word in the middle
+report.with_name(f"{report.stem}.peugeot{report.suffix}")
 ```
 
 > **Pitfall:** `.with_name()` replaces the LAST segment of the path (the file name), unlike `/` which ADDS a new one: `Path("a/b") / "c"` gives `a/b/c`, `Path("a/b").with_name("c")` gives `a/c`.
@@ -92,10 +101,12 @@ file_path.unlink(missing_ok=True)  # never complains, even if the file is alread
 ## Removing a non-empty folder: `shutil.rmtree()`
 
 ```python
-folder.rmdir()  # OSError if the folder isn't empty -> pathlib deliberately refuses to delete content
+# OSError if the folder isn't empty -> pathlib deliberately refuses to delete content
+folder.rmdir()
 
 import shutil
-shutil.rmtree(folder)                      # removes the folder AND all its content, recursively
+# removes the folder AND all its content, recursively
+shutil.rmtree(folder)
 shutil.rmtree(folder, ignore_errors=True)  # any error (locked file...) is ignored, silently
 ```
 
@@ -118,7 +129,8 @@ with open("contacts.csv", newline="", encoding="utf-8") as f:
 with open("contacts.csv", newline="", encoding="utf-8") as f:
     reader = csv.DictReader(f, delimiter=",")  # uses the first row as headers
     for row in reader:
-        print(row)                 # {"first_name": "John", "last_name": "Smith", "age": "25"} -> a DICT, by column name
+        # {"first_name": "John", "last_name": "Smith", "age": "25"} -> a DICT, by column name
+        print(row)
         print(row["first_name"])   # "John" -> access by name, more readable than by index
 ```
 
@@ -135,8 +147,10 @@ import json
 
 user = {"name": "Léa", "notes": [15, 12, 18]}   # a plain Python dict
 
-text = json.dumps(user, ensure_ascii=False)  # '{"name": "Léa", "notes": [15, 12, 18]}' -> JSON text
-obj = json.loads(text)                       # Python object, decoded back from the text (== user)
+# '{"name": "Léa", "notes": [15, 12, 18]}' -> JSON text
+text = json.dumps(user, ensure_ascii=False)
+# Python object, decoded back from the text (== user)
+obj = json.loads(text)
 ```
 
 | Function | Input | Output |
@@ -154,7 +168,8 @@ A classic JSON file holds a single root object or array: adding an entry forces 
 
 ```python
 with open("states.jsonl", "a", encoding="utf-8") as f:
-    f.write(json.dumps({"id": 1, "status": "ok"}, ensure_ascii=False) + "\n")   # ADDS a line, without touching the rest of the file
+    # ADDS a line, without touching the rest of the file
+    f.write(json.dumps({"id": 1, "status": "ok"}, ensure_ascii=False) + "\n")
 ```
 
 ```python

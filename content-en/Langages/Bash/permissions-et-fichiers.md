@@ -70,7 +70,8 @@ chown user:group file.txt      # changes owner AND group at once
 ```bash
 mkdir folder                # creates a folder
 mkdir -p a/b/c                # creates the whole tree at once, no error if it already exists
-touch file.txt               # creates an empty file (or updates its modification date if it exists)
+# creates an empty file (or updates its modification date if it exists)
+touch file.txt
 cp source.txt destination.txt        # copies a file
 cp -r source_folder dest_folder      # recursive copy, needed for a folder
 mv old.txt new.txt          # moves OR renames (both are the same operation for mv)

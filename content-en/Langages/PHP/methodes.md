@@ -112,7 +112,8 @@ PHP provides a vast number of built-in functions that are ready to use, listed b
 ```php
 <?php
     count([1, 2, 3]);                  // 3 -> number of elements
-    $tab[] = "valeur";                  // Adds an element to the end (preferred over `array_push()` for a single element)
+    // Adds an element to the end (preferred over `array_push()` for a single element)
+    $tab[] = "valeur";
     array_pop($tab);                   // removes and returns the last element
     array_merge($tab1, $tab2);         // merges two tables
     in_array("pomme", $fruits);        // true/false -> checks for the presence of a value
@@ -134,7 +135,8 @@ PHP provides a vast number of built-in functions that are ready to use, listed b
     unset($person["age"]);            // removes a key (and its value) from the array
     ksort($person);                   // sorts the table by the keys
     asort($person);                   // sorts the array by values (while preserving the keys)
-    array_combine(["a", "b"], [1, 2]);  // ["a" => 1, "b" => 2] -> creates an associative array from two arrays
+    // ["a" => 1, "b" => 2] -> creates an associative array from two arrays
+    array_combine(["a", "b"], [1, 2]);
     array_flip($person);              // key-value pairs
 ?>
 ```

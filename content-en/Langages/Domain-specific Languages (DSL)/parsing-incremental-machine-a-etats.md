@@ -108,7 +108,8 @@ occupied_columns = {}  # {column index: number of rows remaining occupied by a m
 
 def place_cell(starting_column, rowspan, occupied_columns):
     column = starting_column
-    while occupied_columns.get(column, 0) > 0:  # this column is still taken by a previous merge
+    # this column is still taken by a previous merge
+    while occupied_columns.get(column, 0) > 0:
         column += 1                              # -> shift to the first genuinely free column
     if rowspan > 1:
         occupied_columns[column] = rowspan

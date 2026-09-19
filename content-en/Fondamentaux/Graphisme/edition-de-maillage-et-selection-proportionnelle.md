@@ -28,7 +28,8 @@ Isolated move of the center vertex:          With proportional selection:
 float distance = distance_3d(neighbor_vertex.position, selected_vertex.position);
 
 if (distance < influence_radius) {
-    float factor = 1.0f - (distance / influence_radius);   // 1.0 at the center, 0.0 at the radius's edge
+    // 1.0 at the center, 0.0 at the radius's edge
+    float factor = 1.0f - (distance / influence_radius);
     neighbor_vertex.position += displacement * factor;
 }
 ```

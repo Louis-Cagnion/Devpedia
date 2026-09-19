@@ -51,7 +51,8 @@ If cell 2 is executed **several times in a row** without restarting cell 1, `x` 
 Special commands unique to Jupyter that are not part of the Python language itself:
 
 ```python
-%matplotlib inline    # Displays Matplotlib plots directly below the cell, without a separate window
+# Displays Matplotlib plots directly below the cell, without a separate window
+%matplotlib inline
 %timeit ma_fonction()   # automatically measures execution time over multiple iterations
 %%time                  # (at the beginning of the cell) times the execution of the entire cell
 ```

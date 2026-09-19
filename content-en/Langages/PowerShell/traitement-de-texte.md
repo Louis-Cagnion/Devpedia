@@ -12,7 +12,8 @@ Where [Bash](/?c=shells&s=bash&p=bash) relies on [specialized text tools](/?c=sh
 Select-String "error" file.log            # displays lines containing "error"
 Select-String -CaseSensitive "Error" file.log   # case-sensitive (the opposite of the default)
 Select-String -NotMatch "error" file.log   # inverted: lines that do NOT contain "error"
-Select-String "TODO" -Path .\* -Recurse         # recursive search across every file in a folder
+# recursive search across every file in a folder
+Select-String "TODO" -Path .\* -Recurse
 Select-String "error" file.log | Measure-Object   # counts matching lines
 Select-String -Pattern "error|warning" file.log   # pattern = an actual .NET regex by default
 ```
@@ -61,7 +62,8 @@ For unstructured text closer to how `awk` is used (splitting on spaces), `-split
 Get-Content file.txt | Sort-Object                     # alphabetical sort
 Get-Content numbers.txt | Sort-Object { [int]$_ }        # explicit numeric sort
 Get-Content file.txt | Sort-Object -Descending          # descending sort
-Get-Content file.txt | Sort-Object -Unique               # sorts AND deduplicates in a single step
+# sorts AND deduplicates in a single step
+Get-Content file.txt | Sort-Object -Unique
 Get-Content file.txt | Group-Object | Sort-Object Count -Descending   # counts occurrences
 ```
 

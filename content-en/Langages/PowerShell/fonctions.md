@@ -15,7 +15,8 @@ function Greet {
 }
 
 Greet -Name "John"   # Hello John!
-Greet "John"         # also works: PowerShell accepts a positional argument if the name is omitted
+# also works: PowerShell accepts a positional argument if the name is omitted
+Greet "John"
 ```
 
 > **Naming convention:** PowerShell cmdlets and functions follow `Verb-Noun` casing (`Get-ChildItem`, `Greet` here simplified): a set of standard verbs (`Get`, `Set`, `New`, `Remove`...) is even mandated by convention for official cmdlets, so the same verb behaves predictably from one command to another.

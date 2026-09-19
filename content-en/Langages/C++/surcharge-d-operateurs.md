@@ -43,7 +43,8 @@ public:
 
 Point p1(1, 2);
 Point p2(1, 2);
-std::cout << (p1 == p2);   // true -> without overloading, would compare the ADDRESSES, not the content
+// true -> without overloading, would compare the ADDRESSES, not the content
+std::cout << (p1 == p2);
 ```
 
 > **Note:** Without the `==` overload, comparing two objects using `==` compares their **memory addresses** by default (as if comparing two pointers), never their contents, a common source of error for those who expect an automatic "by value" comparison.
@@ -63,7 +64,8 @@ std::ostream &operator<<(std::ostream &os, const Point &p) {
 }
 
 Point p(3, 4);
-std::cout << p;   // (3, 4) -> without this overloading: compilation error, << does not recognize Point
+// (3, 4) -> without this overloading: compilation error, << does not recognize Point
+std::cout << p;
 ```
 
 > **Note:** This overloading is defined outside the class (as a free function, not a method), because the left-hand side of `<<` is the stream (`std::ostream`), not the `Point`: `p << std::cout` would not make sense, but `std::cout << p` should work.

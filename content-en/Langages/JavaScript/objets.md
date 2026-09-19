@@ -61,7 +61,8 @@ Object.values(obj);   // ['John', 25]
 Object.entries(obj);  // [['name', 'John'], ['age', 25]]
 
 const copy = Object.assign({}, obj);                       // copy of obj
-const merged = Object.assign({}, obj, { city: 'Paris' });  // { name: 'John', age: 25, city: 'Paris' }
+// { name: 'John', age: 25, city: 'Paris' }
+const merged = Object.assign({}, obj, { city: 'Paris' });
 
 Object.freeze(obj);
 obj.age = 30;                    // has no effect, obj.age stays 25
@@ -77,7 +78,8 @@ const obj = { name: 'John', age: 25 };
 obj.hasOwnProperty('name');     // true -> key present on the object itself
 obj.hasOwnProperty('unknown');  // false
 
-'name' in obj;                     // true -> also tests inherited properties, unlike hasOwnProperty
+// true -> also tests inherited properties, unlike hasOwnProperty
+'name' in obj;
 ```
 
 `hasOwnProperty` is a prototype available directly on an object; `in` also checks whether a key exists, but including inherited properties.
@@ -90,7 +92,8 @@ obj.hasOwnProperty('unknown');  // false
 const obj = { name: 'John', age: 25 };
 const { name, age } = obj;   // name = 'John', age = 25
 
-const { name: firstName } = obj; // renames the variable during destructuring -> firstName = 'John'
+// renames the variable during destructuring -> firstName = 'John'
+const { name: firstName } = obj;
 ```
 
 **Spread** (`...`) lets you "unfold" an object, which is useful for copying it or merging several together.

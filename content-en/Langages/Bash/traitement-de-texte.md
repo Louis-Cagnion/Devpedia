@@ -81,7 +81,8 @@ sed -i 's/old/new/g' file.txt     # -i: modifies the file directly (in place), d
 The other common command is `p` (*print*), which explicitly displays a line: combined with `-n` (which disables the automatic display of every processed line), it makes it possible to display only certain lines rather than the whole file:
 
 ```bash
-sed -n '2,4p' file.txt   # -n: displays NOTHING by default; '2,4p': explicitly displays lines 2 through 4
+# -n: displays NOTHING by default; '2,4p': explicitly displays lines 2 through 4
+sed -n '2,4p' file.txt
 ```
 
 > **Note:** without `-n`, `sed '2,4p'` would display every line of the file once (default behavior), and lines 2 through 4 a second time (because of the `p`): `-n` and `p` almost always work as a pair.
@@ -116,7 +117,8 @@ cut -c 1-5 file.txt               # extracts characters 1 through 5 of each line
 
 ```bash
 sort file.txt                  # alphabetical sort
-sort -n numbers.txt              # numeric sort (essential for numbers, otherwise sorted as strings)
+# numeric sort (essential for numbers, otherwise sorted as strings)
+sort -n numbers.txt
 sort -r file.txt                 # descending sort
 sort file.txt | uniq            # removes CONSECUTIVE duplicate lines only
 sort file.txt | uniq -c          # counts the occurrences of each line

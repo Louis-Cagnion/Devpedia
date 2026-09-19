@@ -9,10 +9,12 @@ Git offers several commands for undoing changes at different levels: undoing an 
 ## Discard uncommitted changes
 
 ```bash
-git checkout -- file.txt   # Restores a file to its last committed state and overwrites local changes
+# Restores a file to its last committed state and overwrites local changes
+git checkout -- file.txt
 git restore file.txt        # Modern equivalent of the command above
 
-git restore --staged file.txt  # Removes a file from staging WITHOUT affecting its changes in the working directory
+# Removes a file from staging WITHOUT affecting its changes in the working directory
+git restore --staged file.txt
 ```
 
 > **Note:** `git checkout -- file.txt` and `git restore file.txt` are **irreversible**: uncommitted changes are permanently lost, unlike a commit, which can always be recovered (see `git reflog` below).
@@ -20,9 +22,13 @@ git restore --staged file.txt  # Removes a file from staging WITHOUT affecting i
 ## `git reset` : Move the current branch backward
 
 ```bash
-git reset --soft HEAD~1    # Undoes the last commit, but keeps everything in staging (ready to be committed again)
-git reset --mixed HEAD~1   # Discards the last commit AND the staging area, but keeps the changes in the working directory (by default)
-git reset --hard HEAD~1    # Undoes the last commit, the staging, AND the changes themselves -> permanent loss
+# Undoes the last commit, but keeps everything in staging (ready to be committed again)
+git reset --soft HEAD~1
+# Discards the last commit AND the staging area, but keeps the changes in the working directory
+# (by default)
+git reset --mixed HEAD~1
+# Undoes the last commit, the staging, AND the changes themselves -> permanent loss
+git reset --hard HEAD~1
 ```
 
 | Option | Canceled commit | Staging | Working directory |

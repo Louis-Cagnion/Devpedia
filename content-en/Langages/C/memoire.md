@@ -113,9 +113,11 @@ If `user_input` exceeds 16 bytes, `strcpy()` keeps writing past `buffer`'s bound
 ```c
 strcpy(buffer, input);                       // dangerous: no limit at all
 strncpy(buffer, input, sizeof(buffer) - 1);  // bounded to the buffer's actual size
-buffer[sizeof(buffer) - 1] = '\0';           // strncpy doesn't guarantee termination if the source is too long
+// strncpy doesn't guarantee termination if the source is too long
+buffer[sizeof(buffer) - 1] = '\0';
 
-fgets(buffer, sizeof(buffer), stdin);        // bounded reading right from input, rather than fixing it up afterward
+// bounded reading right from input, rather than fixing it up afterward
+fgets(buffer, sizeof(buffer), stdin);
 ```
 
 | Risky function | Bounded alternative |
@@ -132,7 +134,8 @@ fgets(buffer, sizeof(buffer), stdin);        // bounded reading right from input
 Originally from BSD (not standard C, but available on macOS/\*BSD, and easy to reimplement yourself, as the `libft` library does with `ft_strlcpy`/`ft_strlcat`), these functions fix `strncpy`/`strcat`'s weak spot: detecting truncation.
 
 ```c
-size_t needed = strlcpy(buffer, input, sizeof(buffer));  // ALWAYS null-terminates, unlike strncpy
+// ALWAYS null-terminates, unlike strncpy
+size_t needed = strlcpy(buffer, input, sizeof(buffer));
 
 if (needed >= sizeof(buffer))
 {

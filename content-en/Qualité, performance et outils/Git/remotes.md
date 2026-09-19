@@ -9,7 +9,8 @@ A **remote** is a reference to a copy of the repository hosted elsewhere ([GitHu
 ## View and add a remote
 
 ```bash
-git remote -v                                  # Lists the configured remotes (often just "origin")
+# Lists the configured remotes (often just "origin")
+git remote -v
 git remote add origin https://exemple.com/projet.git
 ```
 
@@ -18,7 +19,8 @@ git remote add origin https://exemple.com/projet.git
 ## `push` : Send local commits
 
 ```bash
-git push origin main               # Pushes commits from the local "main" branch to the "origin" remote
+# Pushes commits from the local "main" branch to the "origin" remote
+git push origin main
 git push -u origin main             # -u: saves this link so you can later just type "git push"
 git push                             # once the link has been saved
 ```
@@ -28,8 +30,11 @@ git push                             # once the link has been saved
 After a `rebase`, a `commit --amend`, or a history rewrite (see [Git's Internal Architecture](/?c=git&p=architecture-interne)), local commits no longer have the same hashes as those already pushed: a normal `push` is then rejected (*non-fast-forward*), since the remote cannot find its old commits as ancestors of the new ones.
 
 ```bash
-git push --force origin main             # Unconditionally overwrites the remote history, dangerous if someone else has pushed changes in the meantime
-git push --force-with-lease origin main   # Overwrite only if the remote is still in the state observed during the last fetch
+# Unconditionally overwrites the remote history, dangerous if someone else has pushed changes
+# in the meantime
+git push --force origin main
+# Overwrite only if the remote is still in the state observed during the last fetch
+git push --force-with-lease origin main
 ```
 
 > **Note:** `--force-with-lease` compares the actual state of the remote with what the local tracking branch (`origin/main`) knew at the time of the last `fetch`: if they differ (someone else has pushed in the meantime, or this tracking branch has itself been modified by a local operation), the push is rejected (`stale info`) rather than overwriting work you haven’t seen. Always prefer `--force-with-lease` to `--force`, unless you are absolutely certain you are the only one on the branch.
@@ -37,7 +42,8 @@ git push --force-with-lease origin main   # Overwrite only if the remote is stil
 ## `fetch` vs `pull`
 
 ```bash
-git fetch origin    # Download the new commits from the remote repository WITHOUT modifying the working directory
+# Download the new commits from the remote repository WITHOUT modifying the working directory
+git fetch origin
 git pull origin main # Equivalent to: git fetch + git merge (merges immediately)
 ```
 
@@ -49,7 +55,8 @@ A local branch can be linked to a remote branch, which allows Git to know where 
 
 ```bash
 git branch -vv                     # shows which remote branch each local branch tracks
-git push -u origin ma-branche       # Establishes this tracking link as soon as the first push is made
+# Establishes this tracking link as soon as the first push is made
+git push -u origin ma-branche
 ```
 
 ## Cloning an Already Configured Remote
@@ -65,8 +72,10 @@ git clone https://exemple.com/projet.git
 `git bundle` Packages all or part of a repository (commits, branches, tags) into a single binary file, without requiring a remote server:
 
 ```bash
-git bundle create sauvegarde.bundle --all   # Captures all refs (branches, tags, HEAD) into a single file
-git bundle verify sauvegarde.bundle          # Verifies that the bundle is complete and functional
+# Captures all refs (branches, tags, HEAD) into a single file
+git bundle create sauvegarde.bundle --all
+# Verifies that the bundle is complete and functional
+git bundle verify sauvegarde.bundle
 git clone sauvegarde.bundle nouveau-folder   # A bundle is cloned just like a standard remote.
 ```
 

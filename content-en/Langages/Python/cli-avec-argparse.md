@@ -12,8 +12,10 @@ A **CLI** (*Command-Line Interface*) is a program you control entirely through c
 import argparse
 
 parser = argparse.ArgumentParser(prog="converter")
-parser.add_argument("file", help="Path of the file to convert")        # positional: required, identified by position
-parser.add_argument("--format", default="json", help="Output format")  # optional: identified by name, "--" in front
+# positional: required, identified by position
+parser.add_argument("file", help="Path of the file to convert")
+# optional: identified by name, "--" in front
+parser.add_argument("--format", default="json", help="Output format")
 
 args = parser.parse_args()
 print(args.file, args.format)
@@ -34,8 +36,10 @@ python converter.py report.csv --format=xml  # file="report.csv", format="xml"
 ## Types, default values, boolean flags
 
 ```python
-parser.add_argument("--repeats", type=int, default=1)  # automatically converts the received string to an int
-parser.add_argument("--verbose", action="store_true")  # boolean flag: present -> True, absent -> False
+# automatically converts the received string to an int
+parser.add_argument("--repeats", type=int, default=1)
+# boolean flag: present -> True, absent -> False
+parser.add_argument("--verbose", action="store_true")
 
 args = parser.parse_args(["--repeats", "3", "--verbose"])
 print(args.repeats, args.verbose)   # 3 True
@@ -108,7 +112,8 @@ import sys
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="pdf_parser")
     # ... argument declarations ...
-    args = parser.parse_args(argv)   # argv=None -> argparse reads sys.argv itself; otherwise, uses the given list
+    # argv=None -> argparse reads sys.argv itself; otherwise, uses the given list
+    args = parser.parse_args(argv)
     # ... program logic ...
     return 0
 

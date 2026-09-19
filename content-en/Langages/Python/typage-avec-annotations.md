@@ -15,7 +15,8 @@ name: str = "John"
 def addition(a: int, b: int) -> int:
     return a + b
 
-addition("two", "three")   # NO errors on startup: Python runs anyway, without checking the types
+# NO errors on startup: Python runs anyway, without checking the types
+addition("two", "three")
 ```
 
 > **Note:** Unlike PHP, where `function f(int $x): int` raises a `TypeError` if anything other than an integer is passed, Python annotations are purely for human (or external tool) documentation: the interpreter never enforces them.
@@ -33,7 +34,8 @@ def find_user(id: int) -> Optional[dict]:         # dict OR None
 def process_grades(grades: List[int]) -> float:   # list of integers
     return sum(grades) / len(grades)
 
-def config() -> Dict[str, Union[str, int]]:       # a `dict` whose values are either `str` or `int`
+# a `dict` whose values are either `str` or `int`
+def config() -> Dict[str, Union[str, int]]:
     return {"name": "app", "version": 2}
 ```
 
@@ -83,7 +85,8 @@ A **forward reference** is a type annotation written in quotes, referencing a ty
 class Node:
     def __init__(self, value: int, next: "Node | None" = None):
         self.value = value
-        self.next = next   # "Node" does not exist yet while its own definition is still being read
+        # "Node" does not exist yet while its own definition is still being read
+        self.next = next
 ```
 
 > **Pitfall:** without the quotes (`next: Node | None`), Python raises an immediate `NameError` while reading the file: a function's annotations are evaluated as soon as it is defined, not just read by an external tool like `mypy`. The quotes turn it into plain text, resolved only when a tool actually needs it.
@@ -113,7 +116,8 @@ Since Python never enforces its own annotations, an external tool such as `mypy`
 ```bash
 pip install mypy
 mypy my_script.py
-# my_script.py:5: error: Argument 1 to "addition" has an incompatible type "str"; expected "int"
+# my_script.py:5: error: Argument 1 to "addition" has an incompatible type "str"; expected
+# "int"
 ```
 
 ## Why Annotate Anyway?

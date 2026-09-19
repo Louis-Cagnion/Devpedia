@@ -223,7 +223,8 @@ Ranked A10 in the [OWASP Top 10](/?c=cybersecurite&p=owasp-top-10). Forcing a se
 
 ```php
 <?php
-// dangerous if $_GET['url'] can target an internal address (e.g. http://169.254.169.254/, http://localhost:6379/...)
+// dangerous if $_GET['url'] can target an internal address (e.g. http://169.254.169.254/,
+// http://localhost:6379/...)
 $response = file_get_contents($_GET['url']);
 ?>
 ```

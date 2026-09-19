@@ -10,7 +10,8 @@ The **DOM** (*Document Object Model*) is the in-memory representation of an [HTM
 
 ```javascript
 document.getElementById("title");            // a specific element, by its ID
-document.querySelector(".card");              // the FIRST element that matches this CSS selector
+// the FIRST element that matches this CSS selector
+document.querySelector(".card");
 document.querySelectorAll(".card");            // ALL matching elements (NodeList)
 ```
 
@@ -22,7 +23,8 @@ document.querySelectorAll(".card");            // ALL matching elements (NodeLis
 const title = document.querySelector("h1");
 
 title.textContent = "New title";           // replaces the text (automatically escapes HTML)
-title.innerHTML = "<em>Title</em>";         // inserts raw HTML -> DANGER if the source is not trusted (XSS)
+// inserts raw HTML -> DANGER if the source is not trusted (XSS)
+title.innerHTML = "<em>Title</em>";
 title.style.color = "red";                  // modifies a CSS style directly
 title.classList.add("active");              // add a CSS class
 title.classList.remove("active");

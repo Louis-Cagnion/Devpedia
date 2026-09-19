@@ -67,14 +67,16 @@ X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, te
 Regardless of the algorithm chosen, scikit-learn consistently exposes the same interface:
 
 ```python
-from sklearn.linear_model import LogisticRegression   # Classification: y is categorical ("yes"/"no")
+# Classification: y is categorical ("yes"/"no")
+from sklearn.linear_model import LogisticRegression
 
 model = LogisticRegression()
 model.fit(X_entrainement, y_entrainement)   # "learns" from training data
 
 predictions = model.predict(X_test)           # applies what has been learned to new data
 
-model.score(X_test, y_test)                    # Evaluates the quality of predictions during testing
+# Evaluates the quality of predictions during testing
+model.score(X_test, y_test)
 ```
 
 - `fit(X, y)` : Adjusts the model's internal parameters so that it best fits the provided data.
@@ -91,8 +93,10 @@ With limited data, setting aside 40% for validation and testing (see above) beco
 from sklearn.model_selection import cross_val_score
 
 scores = cross_val_score(LogisticRegression(), X_entrainement, y_entrainement, cv=5)
-# Splits X_training into 5 blocks ("folds"); trains 5 times, using each block as validation in turn
-scores.mean()   # Average of the 5 scores -> a more reliable estimate than a single train/validation split
+# Splits X_training into 5 blocks ("folds"); trains 5 times, using each block as validation in
+# turn
+# Average of the 5 scores -> a more reliable estimate than a single train/validation split
+scores.mean()
 ```
 
 Each example thus serves both as a practice exercise (4 out of 5 times) and as a validation exercise (1 out of 5 times), without ever affecting `X_test`: the average of the 5 scores smooths out the effect of a particularly favorable or unfavorable split that a single split might produce by chance.
@@ -143,7 +147,8 @@ precision_score(y_test, predictions)
 recall_score(y_test, predictions)
 f1_score(y_test, predictions)
 
-print(classification_report(y_test, predictions))   # Detailed information, overview, and F1 help all in one place, organized by class
+# Detailed information, overview, and F1 help all in one place, organized by class
+print(classification_report(y_test, predictions))
 ```
 
 > **Note:** Accuracy is misleading for imbalanced classes: a fraud detector that always responds “no” achieves 99% accuracy if 1% of transactions are fraudulent, yet is useless (0% recall). Precision and recall are almost always evaluated together: increasing one generally comes at the expense of the other (shifting the decision threshold toward “positive” increases recall but decreases precision, and vice versa), the F1-score summarizes this trade-off in a single number, which is useful for comparing models without having to manually balance the two each time. Specificity completes the picture on the negative side: it’s useful when a false positive is costly (e.g., an unnecessary medical test triggered by mistake), whereas recall focuses on the cost of a false negative (e.g., an undetected disease).

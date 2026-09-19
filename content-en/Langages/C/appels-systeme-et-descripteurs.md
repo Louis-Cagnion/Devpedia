@@ -47,7 +47,8 @@ Most system calls signal a failure by returning `-1` (or `NULL` for those that r
 int fd = open("missing_file.txt", O_RDONLY);
 
 if (fd == -1) {
-    printf("Error: %s\n", strerror(errno)); // translates the errno code into a readable message
+    // translates the errno code into a readable message
+    printf("Error: %s\n", strerror(errno));
 }
 ```
 
@@ -80,7 +81,8 @@ open(path, O_RDWR);                              // read AND write
 
 open(path, O_WRONLY | O_CREAT, 0644);            // creates the file if it doesn't exist yet
 open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);  // + empties the file if it already existed
-open(path, O_WRONLY | O_CREAT | O_APPEND, 0644); // + always writes at the END, without overwriting
+// + always writes at the END, without overwriting
+open(path, O_WRONLY | O_CREAT | O_APPEND, 0644);
 ```
 
 | Flag | Effect |
@@ -100,8 +102,10 @@ These flags combine with `|` (bitwise OR, see [Bitwise Operators](/?c=langages-d
 
 ```c
 int fd = open("output.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-dup2(fd, STDOUT_FILENO);  // from now on, writing to "stdout" (1) actually writes into "output.txt"
-close(fd);                // the original can be closed: the target (1) remains valid, pointing to the same resource
+// from now on, writing to "stdout" (1) actually writes into "output.txt"
+dup2(fd, STDOUT_FILENO);
+// the original can be closed: the target (1) remains valid, pointing to the same resource
+close(fd);
 ```
 
 This is exactly the mechanism that the chapter on shell architecture uses to implement both redirection (`>`, `<`) and pipes (`|`): in both cases, a standard descriptor (`0`, `1`, `2`) is redirected to a different resource just before the target program is executed.

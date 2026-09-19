@@ -21,7 +21,8 @@ curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $jsonBody,
     CURLOPT_HTTPHEADER     => ['Content-Type: application/json'], // required for a JSON body
-    CURLOPT_RETURNTRANSFER => true, // Return the response as a string, rather than displaying it directly
+    // Return the response as a string, rather than displaying it directly
+    CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT        => 10,
 ]);
 
@@ -61,7 +62,8 @@ $options = [
     ],
 ];
 $context = stream_context_create($options);
-$response = file_get_contents($url, false, $context); // false if the operation fails; same behavior as `curl_exec`
+// false if the operation fails; same behavior as `curl_exec`
+$response = file_get_contents($url, false, $context);
 ?>
 ```
 
@@ -92,7 +94,8 @@ A stream context's `ssl` block (see the example above) controls two **independen
 $options = [
     'ssl' => [
         'verify_peer'      => false,  // is the certificate signed by a recognized authority?
-        'verify_peer_name' => false,  // does the certificate's name match the domain being called?
+        // does the certificate's name match the domain being called?
+        'verify_peer_name' => false,
     ],
 ];
 ?>

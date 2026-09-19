@@ -40,7 +40,8 @@ public:
     void empiler(T value) { elements.push_back(value); }
     T depiler() {
         if (estVide()) {
-            throw std::out_of_range("Pile vide"); // See the chapter on exceptions: Never unload an empty stack
+            // See the chapter on exceptions: Never unload an empty stack
+            throw std::out_of_range("Pile vide");
         }
         T dernier = elements.back();
         elements.pop_back();

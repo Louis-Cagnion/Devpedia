@@ -50,7 +50,8 @@ In practice: use `#!/bin/bash` (and run it with `bash`) as soon as the script us
 
 ```bash
 chmod +x script.sh   # adds execute permission (see Permissions and File Manipulation)
-./script.sh            # runs the script (the "./" is needed if the current folder isn't in $PATH)
+# runs the script (the "./" is needed if the current folder isn't in $PATH)
+./script.sh
 ```
 
 An alternative with no need for `chmod +x`: explicitly launch the interpreter on the file:
@@ -105,7 +106,8 @@ Every command, and therefore every script, ends with an **exit code**: `0` means
 #!/bin/bash
 
 if [ ! -f "config.txt" ]; then
-    echo "Error: config file missing" >&2   # >&2: sends this message to standard error (stderr)
+    # >&2: sends this message to standard error (stderr)
+    echo "Error: config file missing" >&2
     exit 1
 fi
 
@@ -160,7 +162,8 @@ A concrete case where `set -e` doesn't trigger, despite an actual failure:
 
 ```bash
 set -e
-failing_command | grep "pattern"   # fails, but set -e does NOT stop here without pipefail: only grep counts
+# fails, but set -e does NOT stop here without pipefail: only grep counts
+failing_command | grep "pattern"
 ```
 
 > **Pitfall:** `set -e` doesn't cover everything you might expect. A failing command **stops nothing** if it's tested by an `if`, combined with `&&`/`||`, or if it isn't the last one in a pipeline (with no `pipefail`, as in the example above): in these three cases, Bash considers the failure "expected and already handled", so `set -e` doesn't trigger.

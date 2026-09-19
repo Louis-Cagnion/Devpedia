@@ -48,7 +48,8 @@ protected:
 class Dog : public Animal {
 public:
     Dog(std::string name) : Animal(name) {}
-    std::string speak() const override { return name + " barks"; }   // "override": checked by the compiler
+    // "override": checked by the compiler
+    std::string speak() const override { return name + " barks"; }
 };
 
 Animal *a = new Dog("Rex");
@@ -99,7 +100,8 @@ A residual ambiguity on an inherited name (two methods with the same name coming
 ```cpp
 class Shape {
 public:
-    virtual double area() const = 0;   // "= 0": PURELY virtual function, no implementation here
+    // "= 0": PURELY virtual function, no implementation here
+    virtual double area() const = 0;
     virtual ~Shape() {}
 };
 
@@ -140,7 +142,8 @@ public:
 class Circle : public Shape {
 public:
     Circle(double radius) : radius(radius) {}
-    Circle *clone() const override { return new Circle(*this); }   // builds a Circle, not a Shape
+    // builds a Circle, not a Shape
+    Circle *clone() const override { return new Circle(*this); }
 private:
     double radius;
 };

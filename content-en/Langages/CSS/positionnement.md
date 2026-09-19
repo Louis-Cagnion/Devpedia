@@ -78,7 +78,8 @@ A semi-transparent `sticky` (or `fixed`) element stays on top of content that ke
     position: sticky;
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.7);   /* semi-transparent */
-    backdrop-filter: blur(8px);                     /* blurs what scrolls BEHIND it, not the footer itself */
+    /* blurs what scrolls BEHIND it, not the footer itself */
+    backdrop-filter: blur(8px);
 }
 ```
 

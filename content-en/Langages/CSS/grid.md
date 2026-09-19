@@ -22,7 +22,8 @@ Unlike [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), which is designed fo
 ```css
 .conteneur {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;   /* 3 columns: the 2nd takes up 2x more space than the other 2 */
+    /* 3 columns: the 2nd takes up 2x more space than the other 2 */
+    grid-template-columns: 1fr 2fr 1fr;
 }
 ```
 
@@ -31,7 +32,8 @@ Unlike [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), which is designed fo
 ```css
 .conteneur {
     display: grid;
-    grid-template-columns: 250px 1fr;   /* fixed side column, main column that takes up the rest */
+    /* fixed side column, main column that takes up the rest */
+    grid-template-columns: 250px 1fr;
 }
 ```
 

@@ -12,8 +12,10 @@ order: 7
 div {
     width: 300px;       /* fixed, adapts to NOTHING */
     width: 50%;         /* relative to the parent */
-    font-size: 1.5rem;  /* relative to the root font size (<html>), independent of the parent */
-    font-size: 1.5em;   /* relative to the DIRECT parent's font size (can stack up in cascade) */
+    /* relative to the root font size (<html>), independent of the parent */
+    font-size: 1.5rem;
+    /* relative to the DIRECT parent's font size (can stack up in cascade) */
+    font-size: 1.5em;
     width: 50vw;        /* relative to the window width (viewport width) */
     height: 100vh;      /* relative to the window height (viewport height) */
 }
@@ -71,7 +73,8 @@ div {
 
 ```css
 @media (orientation: portrait) { }           /* screen taller than it is wide */
-@media (prefers-color-scheme: dark) { }      /* the user has enabled dark mode at the system level */
+/* the user has enabled dark mode at the system level */
+@media (prefers-color-scheme: dark) { }
 @media (prefers-reduced-motion: reduce) { }  /* the user has asked to reduce animations */
 @media print { }                             /* styles applied only when printing */
 ```

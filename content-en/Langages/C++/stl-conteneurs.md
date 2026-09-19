@@ -31,7 +31,8 @@ for (int n : numbers) {              // simple loop, like a for-each loop
 #include <list>
 
 std::list<int> list = {1, 2, 3};
-list.push_front(0);   // Insertion at the beginning in constant time -> std::vector would be O(n) here
+// Insertion at the beginning in constant time -> std::vector would be O(n) here
+list.push_front(0);
 ```
 
 Unlike `std::vector`, inserting in the middle or at the beginning of a `std::list` does not require any reordering of the other elements (see [Linked Lists](/?c=langages-de-programmation&s=c&p=listes-chainees)), at the cost of making index-based access impossible in constant time (there is no `list[2]`; you must iterate through the list).
@@ -46,7 +47,8 @@ ages["Jean"] = 25;
 ages["Marie"] = 30;
 
 ages["Jean"];                       // 25
-ages.find("Ali") != ages.end();       // checks for the existence of a key (there is no direct "in" operator in C++)
+// checks for the existence of a key (there is no direct "in" operator in C++)
+ages.find("Ali") != ages.end();
 
 for (const auto &[name, age] : ages) {   // Process: Pairs are ALWAYS sorted by key
     std::cout << name << " : " << age << "\n";

@@ -42,7 +42,8 @@ else:
     print("File opened successfully")    # executed ONLY if no exception has occurred
     file.close()
 finally:
-    print("Attempt finished")            # executed IN ALL CASES, whether there is an exception or not
+    # executed IN ALL CASES, whether there is an exception or not
+    print("Attempt finished")
 ```
 
 `finally` is typically used to release a resource (close a file, a connection, etc.) regardless of whether an error occurred.

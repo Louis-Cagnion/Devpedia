@@ -43,7 +43,8 @@ top                 # interactive view, refreshed live, sorted by CPU usage by d
 
 ```bash
 kill 1234        # sends SIGTERM (15): politely asks the process to terminate cleanly
-kill -9 1234      # sends SIGKILL (9): forces immediate termination, with no chance for the process to react
+# sends SIGKILL (9): forces immediate termination, with no chance for the process to react
+kill -9 1234
 ```
 
 | Signal | Number | Effect |
@@ -80,7 +81,8 @@ nohup long_process.sh &
 
 ```bash
 pgrep -f "long_process.sh"   # displays the PID(s) matching the given pattern
-pkill -f "long_process.sh"    # finds AND terminates in a single command (sends SIGTERM by default)
+# finds AND terminates in a single command (sends SIGTERM by default)
+pkill -f "long_process.sh"
 ```
 
 > **`kill` vs. `pkill`**: `kill` needs an already-known **PID** (`kill 1234`): it's the only way to send a signal to a specific process with no risk of targeting the wrong one. `pkill` avoids having to look up that PID by hand: it sends the signal to any process whose name (or full command line with `-f`) matches the given pattern, which amounts to chaining `pgrep` then `kill` on each PID found. The risk with `pkill`, then, is targeting more processes than intended if the pattern is too broad (e.g. `pkill -f script.sh` on a machine where several scripts have "script.sh" in their name).

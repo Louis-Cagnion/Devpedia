@@ -13,7 +13,9 @@ std::vector<int> numbers = {1, 2, 3};
 
 std::vector<int>::iterator it = numbers.begin();
 while (it != numbers.end()) {
-    std::cout << *it << " ";   // "*it" dereferences the iterator, just like a pointer (see the relevant chapter, under the C section)
+    // "*it" dereferences the iterator, just like a pointer (see the relevant chapter, under
+    // the C section)
+    std::cout << *it << " ";
     ++it;
 }
 ```
@@ -64,7 +66,8 @@ std::cout << carre(5);   // 25
 
 ```cpp
 int seuil = 3;
-auto estAuDessusDuSeuil = [seuil](int x) { return x > seuil; };   // "threshold" capture by value
+// "threshold" capture by value
+auto estAuDessusDuSeuil = [seuil](int x) { return x > seuil; };
 
 int compte = std::count_if(numbers.begin(), numbers.end(), estAuDessusDuSeuil);
 ```

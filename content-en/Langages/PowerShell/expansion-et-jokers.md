@@ -75,7 +75,8 @@ Set-Location ~\projects       # equivalent to Set-Location $HOME\projects
 ## Preventing expansion: single quotes
 
 ```powershell
-Write-Output *.txt      # PowerShell tries to resolve the pattern depending on the command's context
+# PowerShell tries to resolve the pattern depending on the command's context
+Write-Output *.txt
 Write-Output '*.txt'     # literally displays *.txt -> single quotes disable interpretation
 ```
 

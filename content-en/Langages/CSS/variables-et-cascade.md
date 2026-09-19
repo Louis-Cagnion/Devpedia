@@ -24,7 +24,8 @@ This chapter covers two cross-cutting mechanisms in CSS: **custom variables** (r
 
 ```css
 .bouton {
-    background-color: var(--couleur-primaire, blue);   /* "blue": fallback value if the variable doesn't exist */
+    /* "blue": fallback value if the variable doesn't exist */
+    background-color: var(--couleur-primaire, blue);
 }
 ```
 
@@ -37,7 +38,8 @@ This chapter covers two cross-cutting mechanisms in CSS: **custom variables** (r
 }
 
 .carte.compacte {
-    --marge-interne: 8px;   /* redefines the variable ONLY for elements with this extra class */
+    /* redefines the variable ONLY for elements with this extra class */
+    --marge-interne: 8px;
 }
 ```
 
@@ -114,7 +116,8 @@ At strictly equal specificity, the rule declared **last** in the file (or the la
 
 ```css
 body {
-    color: #333;        /* INHERITED: every descendant (p, span, li...) picks up this text color */
+    /* INHERITED: every descendant (p, span, li...) picks up this text color */
+    color: #333;
     border: 1px solid;  /* NOT inherited: each element has its own border, or none */
 }
 ```

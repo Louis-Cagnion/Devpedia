@@ -48,7 +48,8 @@ const arr = [1, 2, 3, 4, 5];
 
 arr.includes(3);                     // true
 arr.push(6);                         // arr becomes [1, 2, 3, 4, 5, 6]
-arr.pop();                           // removes 6 and returns it, arr becomes [1, 2, 3, 4, 5] again
+// removes 6 and returns it, arr becomes [1, 2, 3, 4, 5] again
+arr.pop();
 arr.slice(0, 2);                     // [1, 2], copy -> arr unchanged
 arr.map(n => n * 2);                 // [2, 4, 6, 8, 10], copy -> arr unchanged
 arr.filter(n => n > 2);              // [3, 4, 5]

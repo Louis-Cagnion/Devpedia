@@ -97,7 +97,8 @@ JOIN ventes v ON v.client_id = c.id; -- INNER JOIN: Rows with no matches are rem
 ```sql
 SELECT c.name, v.date_achat
 FROM clients c
-LEFT JOIN ventes v ON v.client_id = c.id; -- Keeps ALL left-aligned lines; returns NULL if no match is found
+-- Keeps ALL left-aligned lines; returns NULL if no match is found
+LEFT JOIN ventes v ON v.client_id = c.id;
 ```
 
 - `c` / `v` are table aliases, which are essential whenever two tables share a column name (e.g., `c.name` vs. `v.name`, to avoid ambiguity).
@@ -143,7 +144,8 @@ CREATE TABLE ventes (
     id         INT IDENTITY PRIMARY KEY,
     client_id  INT NOT NULL,
     date_achat DATE NOT NULL,
-    FOREIGN KEY (client_id) REFERENCES clients(id)  -- every sale must point to an existing customer
+    -- every sale must point to an existing customer
+    FOREIGN KEY (client_id) REFERENCES clients(id)
 );
 ```
 
@@ -267,7 +269,8 @@ connection = pyodbc.connect(
 )  # opens the connection to the database
 
 cursor = connection.cursor()
-cursor.execute("SELECT * FROM clients WHERE city = ?", "Lyon")  # ? = placeholder, value passed separately
+# ? = placeholder, value passed separately
+cursor.execute("SELECT * FROM clients WHERE city = ?", "Lyon")
 
 one_row  = cursor.fetchone()   # a single row
 all_rows = cursor.fetchall()   # every row
@@ -319,7 +322,8 @@ Beyond SQL injection (which protects *how* the database is queried), a best secu
 ```sql
 -- Instead of granting full access to a single application account:
 GRANT SELECT, INSERT, UPDATE ON boutique.commandes TO 'app_boutique'@'%';
--- No DROP, DELETE, or access to other tables or databases, unless the application ever needs them
+-- No DROP, DELETE, or access to other tables or databases, unless the application ever needs
+-- them
 ```
 
 In practice, a compromised application account (due to a code vulnerability, a credential leak, etc.) can only cause damage commensurate with its own permissions: an account limited to `SELECT` / `INSERT` / `UPDATE` on a single table does not allow an attacker to delete an entire database, even if they manage to execute arbitrary queries. This is a **complementary** safeguard to prepared statements, not a substitute: it limits the damage *if* an injection does occur (undetected bug, poorly constructed dynamic query, etc.), rather than preventing the injection itself.

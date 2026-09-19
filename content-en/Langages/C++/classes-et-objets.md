@@ -110,7 +110,8 @@ Without an explicit copy constructor or assignment operator, C++ generates defau
 ## `const` methods
 
 ```cpp
-std::string description() const {   // "const" here: ensures that this method does NOT modify the object
+// "const" here: ensures that this method does NOT modify the object
+std::string description() const {
     return brand + " " + model;
 }
 ```

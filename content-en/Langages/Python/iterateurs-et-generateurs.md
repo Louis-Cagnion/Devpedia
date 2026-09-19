@@ -64,7 +64,8 @@ for number in counter(5):
 
 ```python
 def squares_list(n):
-    return [x ** 2 for x in range(n)]   # calculates and stores EVERYTHING in memory, all at once
+    # calculates and stores EVERYTHING in memory, all at once
+    return [x ** 2 for x in range(n)]
 
 def squares_generator(n):
     for x in range(n):
@@ -130,7 +131,8 @@ def tasks():
 
 t = tasks()
 print("Before the first next")
-print(next(t))     # "Starting" is printed HERE, at the moment of the call, not before, not in the background
+# "Starting" is printed HERE, at the moment of the call, not before, not in the background
+print(next(t))
 print("Before the second next")
 print(next(t))     # "Resuming after A" is printed HERE, never in between
 ```

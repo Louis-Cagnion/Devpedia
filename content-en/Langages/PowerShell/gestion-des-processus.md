@@ -18,7 +18,8 @@ Write-Output "The console is immediately available again"
 ```powershell
 $job = Start-Job -ScriptBlock { .\long_process.ps1 }
 Get-Job                        # lists the current session's jobs, with their state
-Wait-Job $job                   # waits for the job to finish (blocking), equivalent to an "fg" that would wait
+# waits for the job to finish (blocking), equivalent to an "fg" that would wait
+Wait-Job $job
 Receive-Job $job                # retrieves the output produced by the job
 ```
 
@@ -28,15 +29,19 @@ Receive-Job $job                # retrieves the output produced by the job
 
 ```powershell
 Get-Process                                    # lists every process, with CPU, memory, PID...
-Get-Process | Where-Object { $_.Name -like "*chrome*" }   # filters by name, equivalent to "ps aux | grep"
-Get-Process | Sort-Object CPU -Descending | Select-Object -First 5   # the 5 heaviest CPU consumers
+# filters by name, equivalent to "ps aux | grep"
+Get-Process | Where-Object { $_.Name -like "*chrome*" }
+# the 5 heaviest CPU consumers
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 5
 ```
 
 ## Ending a process (`Stop-Process`)
 
 ```powershell
-Stop-Process -Id 1234              # requests the process to stop (closest equivalent to SIGTERM)
-Stop-Process -Id 1234 -Force        # forced stop, with no wait for a clean shutdown (equivalent to SIGKILL)
+# requests the process to stop (closest equivalent to SIGTERM)
+Stop-Process -Id 1234
+# forced stop, with no wait for a clean shutdown (equivalent to SIGKILL)
+Stop-Process -Id 1234 -Force
 Stop-Process -Name "notepad"         # targets by name rather than PID
 ```
 
@@ -56,7 +61,8 @@ Unlike `nohup` in Bash, a PowerShell `Job` (`Start-Job`) already runs in a proce
 
 ```powershell
 Get-Process -Name "*long_process*"                          # equivalent to pgrep
-Get-Process -Name "*long_process*" | Stop-Process             # finds AND terminates, equivalent to pkill
+# finds AND terminates, equivalent to pkill
+Get-Process -Name "*long_process*" | Stop-Process
 ```
 
 > **`Get-Process` vs. `Stop-Process`**: like the `pgrep`/`pkill` pair in Bash, finding a process (reading) and terminating it (acting) remain two separate cmdlets, combined via a pipe rather than a shared flag. The same risk exists as with `pkill`: an overly broad `-Name` filter can target more processes than intended.

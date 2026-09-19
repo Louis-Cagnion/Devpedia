@@ -29,7 +29,8 @@ try {
 #include <stdexcept>
 
 std::exception              // base class for all standard exceptions
-  ├── std::logic_error        // error that can be detected before execution (e.g., invalid argument)
+  // error that can be detected before execution (e.g., invalid argument)
+  ├── std::logic_error
   │     ├── std::invalid_argument
   │     └── std::out_of_range
   └── std::runtime_error       // an error that can only be detected at runtime
@@ -78,8 +79,10 @@ When an exception is thrown, C++ performs "stack* unwinding*": each local object
 
 ```cpp
 void fonctionSure() noexcept {
-    // The compiler can optimize the code, knowing that no exception will be thrown from here on.
-    // If an exception is thrown despite this, the program terminates immediately (std::terminate)
+    // The compiler can optimize the code, knowing that no exception will be thrown from here
+    // on.
+    // If an exception is thrown despite this, the program terminates immediately
+    // (std::terminate)
 }
 ```
 

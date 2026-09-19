@@ -22,12 +22,15 @@ A CSS pixel (the displayed size) doesn't always match a physical screen pixel: a
 
 ```javascript
 function resize() {
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);   // cap at 2: beyond that, needless cost
+    // cap at 2: beyond that, needless cost
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
 
-    canvas.width  = Math.floor(rect.width  * ratio);   // the canvas's REAL resolution (physical pixels)
+    // the canvas's REAL resolution (physical pixels)
+    canvas.width  = Math.floor(rect.width  * ratio);
     canvas.height = Math.floor(rect.height * ratio);
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);          // so later drawing can use CSS coordinates
+    // so later drawing can use CSS coordinates
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 }
 ```
 
@@ -81,7 +84,8 @@ On every frame, the position never jumps straight to the target: it only moves b
 A 2D canvas also serves, in a roundabout way, to precisely measure the width a piece of text would take with a given font, **without ever drawing or displaying that canvas**:
 
 ```javascript
-const measureCtx = document.createElement('canvas').getContext('2d');   // never added to the DOM
+// never added to the DOM
+const measureCtx = document.createElement('canvas').getContext('2d');
 
 function textWidth(text, fontSize = 11) {
     measureCtx.font = `${fontSize}px sans-serif`;

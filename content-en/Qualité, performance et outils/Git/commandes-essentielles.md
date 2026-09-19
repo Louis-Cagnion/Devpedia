@@ -9,8 +9,10 @@ This chapter covers the most common Git workflow: initializing a repository (or 
 ## Create or retrieve a repository
 
 ```bash
-git init                              # Converts the current directory into a Git repository (empty, no history)
-git clone https://exemple.com/projet.git   # Retrieves an existing repository, along with its entire history
+# Converts the current directory into a Git repository (empty, no history)
+git init
+# Retrieves an existing repository, along with its entire history
+git clone https://exemple.com/projet.git
 ```
 
 ## View the status of the workbook
@@ -26,7 +28,8 @@ Shows which files have been modified, which are in the staging area, and which a
 ```bash
 git add file.txt        # Adds a specific file
 git add folder/            # adds an entire folder
-git add .                   # Adds everything that has changed in the current folder and its subfolders
+# Adds everything that has changed in the current folder and its subfolders
+git add .
 git add -p                  # Interactive mode: Choose exactly which blocks of lines to add
 ```
 
@@ -36,7 +39,9 @@ git add -p                  # Interactive mode: Choose exactly which blocks of l
 
 ```bash
 git commit -m "Corrects the discount calculation"
-git commit -am "Message"   # Shortcut: Automatically adds files that are already tracked AND have been modified, without needing to run "git add" first
+# Shortcut: Automatically adds files that are already tracked AND have been modified, without
+# needing to run "git add" first
+git commit -am "Message"
 ```
 
 > **Note:** `-a` (in `-am`) only adds files already tracked by Git: a brand-new file that has never been added before must always be explicitly added with `git add` at least once.
@@ -66,13 +71,16 @@ It's this blank line, and only this blank line, that tells a tool like [GitHub](
 `git commit -m "message"` with a single `-m` only produces a title, with no description. Three ways to get both:
 
 ```bash
-# 1. Without -m: opens your configured editor (vim, nano...), where you type title, blank line, then description
+# 1. Without -m: opens your configured editor (vim, nano...), where you type title, blank line,
+# then description
 git commit
 
-# 2. Multiple -m: each becomes a separate paragraph divided by a blank line, without opening an editor
+# 2. Multiple -m: each becomes a separate paragraph divided by a blank line, without opening an
+# editor
 git commit -m "Fix the discount calculation" -m "The percentage was only applied to the first item, not the total."
 
-# 3. A multi-line string passed to a single -m (useful for scripting a commit, or from a tool that generates the message)
+# 3. A multi-line string passed to a single -m (useful for scripting a commit, or from a tool
+# that generates the message)
 git commit -m "$(cat <<'EOF'
 Fix the discount calculation
 
@@ -100,7 +108,8 @@ git log -p file.txt        # Detailed history (with diff) of a specific file
 
 ```bash
 git diff                     # differences not yet added to staging
-git diff --staged             # Changes already added to the staging environment but not yet committed
+# Changes already added to the staging environment but not yet committed
+git diff --staged
 git diff commit1 commit2      # Differences between two specific commits
 ```
 

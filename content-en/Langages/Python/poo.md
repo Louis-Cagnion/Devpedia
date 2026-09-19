@@ -44,9 +44,12 @@ print(c1.id, c2.id)            # 1 2 -> specific to each one
 ```python
 u = Vehicle("Peugeot", "308")
 
-u.brand                        # "Peugeot" -> the attribute name must be known when writing the code
-getattr(u, "brand")            # "Peugeot" -> the same, but the name comes from a STRING, resolved at runtime
-getattr(u, "color", None)      # None      -> fallback value if the attribute doesn't exist (like dict.get())
+# "Peugeot" -> the attribute name must be known when writing the code
+u.brand
+# "Peugeot" -> the same, but the name comes from a STRING, resolved at runtime
+getattr(u, "brand")
+# None      -> fallback value if the attribute doesn't exist (like dict.get())
+getattr(u, "color", None)
 ```
 
 `getattr(object, name, default)` lets you apply the same treatment to a LIST of attribute names, computed at runtime (e.g. a loop variable), without writing an `if`/`elif` per attribute:
@@ -136,14 +139,16 @@ class Distance:
     def __add__(self, other):     # called when Distance is the LEFT operand: d + 5
         if isinstance(other, (int, float)):
             return Distance(self.meters + other)
-        return NotImplemented     # "I don't know how to handle this type" -> Python tries another method
+        # "I don't know how to handle this type" -> Python tries another method
+        return NotImplemented
 
     def __radd__(self, other):    # called when Distance is the RIGHT operand: 5 + d
         return self.__add__(other)
 
 d = Distance(100)
 d + 5  # Distance(105) -> via __add__
-5 + d  # Distance(105) -> via __radd__, because int.__add__(5, d) fails and returns NotImplemented
+# Distance(105) -> via __radd__, because int.__add__(5, d) fails and returns NotImplemented
+5 + d
 ```
 
 When `left + right` is evaluated, Python first tries `left.__add__(right)`. If that method doesn't exist or returns **`NotImplemented`** (a special value, not to be confused with the `NotImplementedError` exception), Python then tries the right-hand object's **reflected** method: `right.__radd__(left)`. Every special method has its reflected counterpart (`__radd__`, `__rsub__`, `__rtruediv__`...): this mechanism is, for example, what lets `pathlib.Path` (see [Working with files and folders](/?c=langages&s=python&p=manipuler-des-fichiers-et-dossiers)) define `__rtruediv__`, so that `"folder" / path` works even with a plain string on the left.

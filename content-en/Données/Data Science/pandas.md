@@ -57,7 +57,8 @@ data[data["age"] > 25]
 # Keeps only the rows where the condition is true -> equivalent to a "WHERE" clause in SQL
 
 data[(data["age"] > 20) & (data["city"] == "Lyon")]
-# Combine multiple conditions: & (and), | (or) -- NOT "and"/"or," which are reserved for simple Booleans
+# Combine multiple conditions: & (and), | (or) -- NOT "and"/"or," which are reserved for simple
+# Booleans
 ```
 
 ## `groupby` : group by category
@@ -102,7 +103,8 @@ data["category"] = data["age"].apply(lambda age: "young" if age < 30 else "senio
 ## Missing values
 
 ```python
-data.isna()              # True/False array, where "True" is used where a value is missing (NaN)
+# True/False array, where "True" is used where a value is missing (NaN)
+data.isna()
 data.dropna()              # Removes lines containing at least one missing value
 data.fillna(0)               # Replaces missing values with a default value
 ```

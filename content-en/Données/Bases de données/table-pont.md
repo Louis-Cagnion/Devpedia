@@ -70,7 +70,8 @@ JOIN sales_promotions_bridge p ON p.sale_id = f.sale_id;
 CREATE TABLE sales_promotions_bridge (
     sale_id       INT,
     promotion_id  INT,
-    weight        DECIMAL(4, 2)   -- share of the amount attributed to this promotion (sums to 1 per sale)
+    -- share of the amount attributed to this promotion (sums to 1 per sale)
+    weight        DECIMAL(4, 2)
 );
 
 -- with weighting, the sum becomes correct again: $100 split into $50 + $50, not $100 + $100
