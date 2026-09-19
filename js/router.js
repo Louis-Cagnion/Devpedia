@@ -507,6 +507,21 @@ function appendBottomChapterNav(pageDiv, pageId, previousChapter, nextChapter) {
 }
 
 /**
+ * @brief Makes a rendered markdown body navigable with a text caret (click to place it, arrow
+ * keys to move it) like in a text editor, while forbidding any actual edit. `beforeinput` covers
+ * every content-changing path in one place (typing, IME, paste, cut, drag-move, delete), so no
+ * per-key handling is needed. Links keep `contenteditable="false"` (set in parser.js) since a
+ * link inside an editable region no longer activates on a plain click otherwise.
+ *
+ * @param {HTMLElement} bodyDiv
+ */
+function makeBodyCaretNavigable(bodyDiv) {
+    bodyDiv.contentEditable = "true";
+    bodyDiv.spellcheck = false;
+    bodyDiv.addEventListener("beforeinput", (e) => e.preventDefault());
+}
+
+/**
  * @brief Renders a markdown page's full content (notice, breadcrumb, nav, body, chapter nav)
  * into a new page div and builds its reading plan.
  *
@@ -531,7 +546,10 @@ function generatePageContent(textInfos, pageId, withReturnButton, previousChapte
         pageDiv.append(breadcrumb);
     if (withReturnButton || previousChapter || nextChapter)
         createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter, nextChapter);
-    const outline = parseAppendText(pageDiv, pageId, text);
+    const bodyDiv = createTag("div", {class: "pageBody"});
+    pageDiv.append(bodyDiv);
+    const outline = parseAppendText(bodyDiv, pageId, text);
+    makeBodyCaretNavigable(bodyDiv);
     if (titleOverride) {
         const titleEl = pageDiv.querySelector(".pageTitle");
         if (titleEl)
