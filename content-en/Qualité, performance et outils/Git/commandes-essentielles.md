@@ -77,7 +77,8 @@ git commit
 
 # 2. Multiple -m: each becomes a separate paragraph divided by a blank line, without opening an
 # editor
-git commit -m "Fix the discount calculation" -m "The percentage was only applied to the first item, not the total."
+git commit -m "Fix the discount calculation" \
+    -m "The percentage was only applied to the first item, not the total."
 
 # 3. A multi-line string passed to a single -m (useful for scripting a commit, or from a tool
 # that generates the message)

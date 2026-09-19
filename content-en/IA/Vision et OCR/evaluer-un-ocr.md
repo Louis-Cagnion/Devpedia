@@ -62,7 +62,8 @@ A CER of 0 means perfect recognition; a CER of 0.05 (5%) means that, on average,
 
 ```python
 def wer(recognized_text, actual_text):
-    return levenshtein_distance(recognized_text.split(), actual_text.split()) / len(actual_text.split())
+    distance = levenshtein_distance(recognized_text.split(), actual_text.split())
+    return distance / len(actual_text.split())
 ```
 
 | | CER | WER |

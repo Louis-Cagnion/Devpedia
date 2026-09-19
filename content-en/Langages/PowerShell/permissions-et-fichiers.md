@@ -26,7 +26,11 @@ Each access line maps an **identity** (user or group) to a **right** (`FullContr
 
 ```powershell
 $acl = Get-Acl file.txt
-$rule = New-Object System.Security.AccessControl.FileSystemAccessRule("DESKTOP\john", "ReadAndExecute", "Allow")
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    "DESKTOP\john",
+    "ReadAndExecute",
+    "Allow"
+)
 $acl.SetAccessRule($rule)
 Set-Acl file.txt $acl
 ```
@@ -64,7 +68,9 @@ Remove-Item -Recurse folder
 ```powershell
 # every .txt file, recursively
 Get-ChildItem -Path . -Filter "*.txt" -Recurse
-Get-ChildItem -Path C:\logs -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }  # recently modified
+# recently modified
+Get-ChildItem -Path C:\logs -Recurse |
+    Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }
 # every folder named "node_modules"
 Get-ChildItem -Recurse -Directory -Filter "node_modules"
 # finds AND deletes in a single chain

@@ -57,7 +57,8 @@ An RNN processes a sequence **sequentially** (it is impossible to compute step 5
 "The cat sleeping on the couch is black."
                                ^
                      attention lets "is black" connect directly to "cat",
-                     despite the distance in the sentence, without passing through every word in between
+                     despite the distance in the sentence, without passing through every
+                     word in between
 ```
 
 - Attention can be computed **in parallel** across the entire sequence (unlike an RNN), which has made it possible to train much larger models on much more data.

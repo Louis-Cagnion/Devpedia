@@ -12,7 +12,8 @@ A C++ **class** combines what a [C `struct`](/?c=langages-de-programmation&s=c&p
 class Vehicule {
 public:
     // const&: prevents the received strings from being copied (see the chapter on references)
-    Vehicule(const std::string &brand, const std::string &model) : brand(brand), model(model) {}
+    Vehicule(const std::string &brand, const std::string &model)
+        : brand(brand), model(model) {}
 
     std::string description() const {
         return brand + " " + model;

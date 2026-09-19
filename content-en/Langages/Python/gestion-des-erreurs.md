@@ -85,7 +85,9 @@ class InsufficientBalanceError(Exception):
 
 def withdraw(balance, amount):
     if amount > balance:
-        raise InsufficientBalanceError(f"Balance of {balance}€ insufficient to withdraw {amount}€")
+        raise InsufficientBalanceError(
+            f"Balance of {balance}€ insufficient to withdraw {amount}€"
+        )
     return balance - amount
 
 try:

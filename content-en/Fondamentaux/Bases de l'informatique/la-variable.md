@@ -12,7 +12,7 @@ A **variable** is a labeled container that holds a value, which can be accessed 
 name = "John"  → creates a box named "name", puts the value "John" in it
 age = 25       → creates a box named "age", puts the value 25 in it
 display name   → reads the "name" box, displays "John"
-age = 26       → replaces the content of the "age" box with 26: the value changes, the box stays the same
+age = 26       → replaces the content of "age": the value changes, the box stays the same
 ```
 
 > **Analogy:** a labeled locker in a locker room: you can change what’s inside without ever changing the label on it.

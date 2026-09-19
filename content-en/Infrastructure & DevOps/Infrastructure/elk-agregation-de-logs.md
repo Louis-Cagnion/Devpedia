@@ -53,7 +53,13 @@ The two remain complementary rather than competing: a metric alerts you that a p
 A log written as a plain free-form sentence (`"Error while processing order 1234"`) remains hard to filter precisely once millions of lines have piled up. A **structured** log, most often in JSON, separates each piece of information into its own field:
 
 ```json
-{"timestamp": "2026-08-20T14:03:27Z", "level": "error", "service": "commandes", "id_commande": 1234, "message": "Echec du paiement"}
+{
+    "timestamp": "2026-08-20T14:03:27Z",
+    "level": "error",
+    "service": "commandes",
+    "id_commande": 1234,
+    "message": "Echec du paiement"
+}
 ```
 
 > **Pitfall:** logging in unstructured free text, then discovering in production that it's impossible to filter precisely by service, severity level, or identifier without resorting to fragile regular expressions on the message text.

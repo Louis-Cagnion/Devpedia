@@ -18,8 +18,11 @@ class ProgressState:
         self.path = Path(f"{path}.partial")
         self.results = []
         if resume and self.path.exists():
-            self.results = [json.loads(line) for line
-                            in self.path.read_text(encoding="utf-8").splitlines() if line.strip()]
+            self.results = [
+                json.loads(line)
+                for line in self.path.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            ]
         else:
             self.path.unlink(missing_ok=True)
         self.done = {key(r) for r in self.results}
@@ -93,7 +96,9 @@ def time_remaining(start, done, total):
     if done < 2:                      # not enough data yet for a rate estimate
         return ""
     remaining = (time.monotonic() - start) / done * (total - done)
-    return f" ~{int(remaining)}s remaining" if remaining < 90 else f" ~{round(remaining / 60)} min remaining"
+    if remaining < 90:
+        return f" ~{int(remaining)}s remaining"
+    return f" ~{round(remaining / 60)} min remaining"
 ```
 
 Use `time.monotonic()`, not `time.time()`: the latter can go backward (clock sync, a time change) and produce negative durations.

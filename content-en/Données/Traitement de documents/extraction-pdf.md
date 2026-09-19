@@ -138,7 +138,14 @@ The rendering produced by `get_pixmap` then needs to be converted into an array 
 ```python
 import numpy as np
 
-image = np.frombuffer(pixmap.samples, dtype=np.uint8).reshape(pixmap.height, pixmap.width, pixmap.n)
+image = np.frombuffer(
+    pixmap.samples,
+    dtype=np.uint8,
+).reshape(
+    pixmap.height,
+    pixmap.width,
+    pixmap.n,
+)
 ```
 
 `pixmap.samples` is a raw sequence of bytes (the pixels, one after another); `reshape` reorganizes it into a 3-dimensional [NumPy array](/?c=data-science&p=numpy) (height, width, color channels), the shape expected by nearly every computer vision library.

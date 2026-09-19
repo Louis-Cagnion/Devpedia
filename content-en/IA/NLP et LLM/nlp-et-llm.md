@@ -12,7 +12,7 @@ A model never processes a whole sentence as a single block: the text is first sp
 
 ```text
 "The cats are sleeping" -> ["The", "cats", "are", "sleeping"]      -> word-level tokenization
-"The cats are sleeping" -> ["The", "cat", "s", "are", "sleep", "ing"] -> subword tokenization (more common)
+"The cats are sleeping" -> ["The", "cat", "s", "are", "sleep", "ing"] -> subword tokenization
 ```
 
 Word-level tokenization runs into a vocabulary problem: every possible word (including conjugation variants, rare words, proper nouns...) would need its own entry, a potentially unbounded vocabulary. **Subword** tokenization (e.g. the *Byte-Pair Encoding* algorithm) splits rare words into more common fragments, keeping a fixed, manageable vocabulary size (typically tens of thousands of entries) while still being able to represent any word, even one never seen as-is during training.

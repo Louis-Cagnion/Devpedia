@@ -41,7 +41,8 @@ For an executable like `notepad.exe`, PowerShell delegates creating a new proces
 ```text
 CreateProcess("notepad.exe", arguments, ...)
 // the new process starts in parallel
-// PowerShell waits for it to finish (or continues, if launched in the background) depending on context
+// PowerShell waits for it to finish (or continues, if launched in the background)
+// depending on context
 ```
 
 ## The object pipeline: what `|` actually carries
