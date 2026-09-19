@@ -101,17 +101,6 @@ This is also why `pointer + 1` advances by `sizeof(type)` bytes and not by 1: po
 - a Python list of 1,000 integers takes up much more than 4,000 bytes, because each integer is an **object** with its own header;
 - this is precisely why NumPy exists: a NumPy array stores raw contiguous values, aligned, with no per-element header: hence order-of-magnitude speedups on numeric computation (see [NumPy](/?c=data-science&p=numpy)).
 
-## Summary
-
-| Concept | Key point |
-|---|---|
-| Addressing unit | The byte; a single bit isn't addressable |
-| Alignment | A value of *n* bytes is placed at an address that's a multiple of *n* |
-| Padding | A structure ≥ the sum of its fields; declaration order matters |
-| `sizeof` | Always measure, never compute by hand |
-| Endianness | Byte order; networking mandates big-endian |
-| Writing raw memory | To avoid: serialize into a defined format instead |
-
 ---
 
 ## 📋 Summary

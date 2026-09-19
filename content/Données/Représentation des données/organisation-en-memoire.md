@@ -101,17 +101,6 @@ C'est aussi pourquoi `pointeur + 1` avance de `sizeof(type)` octets et non de 1 
 - une liste [Python](/?c=langages-de-programmation&s=python&p=python) de 1 000 entiers occupe beaucoup plus que 4 000 octets, car chaque entier est un **objet** avec son en-tête ;
 - c'est précisément pour cette raison que NumPy existe : un tableau NumPy stocke des valeurs brutes contiguës, alignées, sans en-tête par élément : d'où des gains de vitesse d'un ordre de grandeur sur du calcul numérique (voir [NumPy](/?c=data-science&p=numpy)).
 
-## Résumé
-
-| Notion | À retenir |
-|---|---|
-| Unité d'adressage | L'octet ; un bit seul n'est pas adressable |
-| Alignement | Une valeur de *n* octets se place à une adresse multiple de *n* |
-| Padding | Une structure ≥ somme de ses champs ; l'ordre de déclaration compte |
-| `sizeof` | Toujours mesurer, jamais calculer à la main |
-| Endianness | Ordre des octets ; le réseau impose le big-endian |
-| Écrire de la mémoire brute | À éviter : sérialiser dans un format défini |
-
 ---
 
 ## 📋 Récapitulatif

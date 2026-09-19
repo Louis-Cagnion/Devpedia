@@ -101,17 +101,6 @@ char  *pc = (char *)&x;
 - uma lista Python de 1.000 inteiros ocupa muito mais que 4.000 bytes, porque cada inteiro é um **objeto** com seu próprio cabeçalho;
 - é exatamente por essa razão que o NumPy existe: um array NumPy armazena valores brutos contíguos, alinhados, sem cabeçalho por elemento: daí ganhos de velocidade de uma ordem de grandeza em cálculo numérico (veja [NumPy](/?c=data-science&p=numpy)).
 
-## Resumo
-
-| Noção | A reter |
-|---|---|
-| Unidade de endereçamento | O byte; um único bit não é endereçável |
-| Alinhamento | Um valor de *n* bytes se coloca em um endereço múltiplo de *n* |
-| Padding | Uma struct ≥ soma de seus campos; a ordem de declaração conta |
-| `sizeof` | Sempre medir, nunca calcular manualmente |
-| Endianness | Ordem dos bytes; a rede impõe o big-endian |
-| Escrever memória bruta | Evitar: serializar em um formato definido |
-
 ---
 
 ## 📋 Recapitulando
