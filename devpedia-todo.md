@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 4 et 5 terminés. Reste ouvert : le point 4 bis (accents ES, cf. point 5) si Louis le demande, sinon rien d'auto-exécutable ne reste dans ce fichier -- tout le reste attend Louis (points 1, 2, 3).
+> Prochaine tâche : point 4 (accents ES) ou point 5 (mots ambigus BR), aucun ordre imposé entre les deux, à chiffrer avant de commencer.
 
 > Restent : un test navigateur en attente de Louis (point 3). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2).
 
@@ -19,14 +19,8 @@ Repéré en lisant `nombres-flottants.md` (item #14) : ce chapitre a un ancien `
 Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il s'affiche normalement sur desktop (`css/content.css`, `.page::before`). Deux hypothèses déjà invalidées par le retest de Louis (détail dans `journal-de-bord.md`) : `@supports` autour de `color-mix()`, puis son remplacement complet par `rgba()` + triplets RGB précalculés -- toujours gris dans les deux cas. Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `var()`, `rgba()`, `radial-gradient()`, `inset: 0`).
 - Reste à Louis : sur la page d'un chapitre (iPhone), bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement dans ce mode. Si ça ne suffit pas à trancher, étape suivante : inspecteur Safari distant (Mac connecté à l'iPhone).
 
-## 4. Accents manquants dans `content-br/` (portugais) : TERMINÉ pour l'essentiel (19/09/2026)
-`content/` (FR) déjà corrigé (commits `ff20be6`, `83e6cb2`). `content-en/` non concerné (pas de diacritiques en anglais). Commit `d609c81e` : 199 fichiers `content-br/` corrigés via un dictionnaire portugais (mots sans lecture valide non accentuée : `nao`, `sao`, `padrao`, `variavel`, `numero`...) plus des règles de suffixe déterministes (`-cao`→`-ção`, `-encia`→`-ência`, `-ancia`→`-ância`, `-avel`→`-ável`, `-ivel`→`-ível`, `-sao`→`-são`), appliqué aux commentaires de code ET aux chaînes de caractères multi-mots (messages d'erreur, prompts), avec une passe de cohérence pour qu'un nom de fichier fictif (`calculos.h`...) reste identique partout où il est cité. Jamais touché : mots ambigus à plusieurs lectures valides sans le contexte (`e`/`é`, `a`/`à`, `esta`/`está`, `contem`/`contém`/`contêm`, `media`/`média`/`mídia`, `continua`/`contínua`) ni chaînes d'un seul mot (clés de dict/JSON, attributs risquant d'être référencés ailleurs dans l'exemple).
+## 4. Accents manquants dans `content-es/` (espagnol), repérés par endroits dans des diagrammes texte
+Même défaut que celui déjà corrigé dans `content-br/` (voir `journal-de-bord.md`), mais pas encore audité ni corrigé pour l'espagnol. À chiffrer avant de s'y lancer.
 
-**Reste, si Louis le souhaite** : un balayage ciblé des mots ambigus ci-dessus (nécessite de lire le contexte de chaque occurrence pour choisir la bonne forme, pas automatisable sans risque) ; et une vérification qu'aucun mot portugais rare n'a été oublié par le dictionnaire (couverture large mais pas garantie exhaustive à 100%).
-
-## 5. Lignes de code de plus de 95 caractères dans `content*/` : TERMINÉ (19/09/2026)
-Les 4 langues sont sous le seuil de 95 caractères, exception documentée faite des diagrammes ASCII/Unicode (arbre, flux, alignement de données) : les couper détruirait l'information visuelle, jamais retouchés même au-delà de 95 caractères. Commits `48d3a50`..`524ce410`. Méthode : script conservateur (`/tmp/.../scratchpad/fix_long_lines.py`, déplace un commentaire de fin de ligne trouvé sans ambiguïté hors chaîne, ne touche jamais le code) pour le gros du volume, puis passage manuel fichier par fichier pour les compréhensions/appels de fonction à exploser et les diagrammes à trancher au cas par cas.
-
-**Point de méthode à retenir pour tout futur chiffrage de longueur de ligne :** `awk`/`mawk` sur ce système ne gère pas l'UTF-8, `length()` y compte des octets, pas des caractères (2 octets par caractère accentué) -- ça avait gonflé le chiffrage initial ("1719 lignes") d'environ 3x sur le FR. Toujours compter avec Python (`len()` sur du texte décodé UTF-8), jamais avec `awk`/`wc -m` sans vérifier l'encodage au préalable.
-
-**Découverte annexe non traitée ici :** `content-es` a, comme `content-br`, des accents manquants dans certains blocs (diagrammes texte notamment) -- corrigés seulement là où déjà ouverts pour la longueur de ligne, pas d'audit exhaustif. À traiter comme un point 4 bis si Louis le souhaite, une fois le point 4 (BR) fait.
+## 5. Mots ambigus non corrigés dans `content-br/` (portugais)
+Le correctif d'accents de `content-br/` (voir `journal-de-bord.md`) a volontairement laissé de côté les mots à plusieurs lectures valides selon le contexte (`e`/`é`, `a`/`à`, `esta`/`está`, `contem`/`contém`/`contêm`, `media`/`média`/`mídia`, `continua`/`contínua`) : chaque occurrence doit être relue individuellement pour choisir la bonne forme, pas automatisable sans risque.

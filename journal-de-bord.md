@@ -2,6 +2,20 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Item todo #4 terminé : accents portugais manquants dans `content-br/` (2026-09-19)
+
+199 fichiers corrigés (commit `d609c81e`) via un dictionnaire portugais (mots sans lecture valide non accentuée : `nao`, `sao`, `padrao`...) plus des règles de suffixe déterministes (`-cao`→`-ção`, `-encia`→`-ência`, `-ancia`→`-ância`, `-avel`→`-ável`, `-ivel`→`-ível`, `-sao`→`-são`), appliqué aux commentaires de code et aux chaînes de caractères multi-mots (messages d'erreur, prompts). Jamais touché : mots ambigus à plusieurs lectures valides (`e`/`é`, `a`/`à`, `esta`/`está`, `contem`/`contém`/`contêm`), ni chaînes d'un seul mot (clé de dict/JSON risquant d'être référencée ailleurs).
+
+Piège trouvé et corrigé en cours de route : une première version du script de cohérence des noms de fichiers fictifs (`calculos.h`/`calculos.c` cités plusieurs fois dans un même chapitre) prenait la première orthographe rencontrée comme référence -- si un commentaire accentué précédait le vrai `#include`, ça accentuait le nom de fichier partout, y compris dans le `#include` réel. Corrigé pour toujours préférer la forme non accentuée (convention normale d'un nom de fichier). Un deuxième piège plus étroit : un commentaire citant littéralement une valeur de sortie du code juste au-dessus (`Python/variables.md`, `"".join(["Python", "e", "legivel"])` → `"Pythonelegivel"`) s'est retrouvé désynchronisé de la vraie valeur une fois le commentaire accentué ; corrigé en accentuant aussi la chaîne source pour rester cohérent.
+
+Reste non traité, noté pour plus tard si besoin : le même problème existe par endroits dans `content-es/` (accents manquants dans certains diagrammes), pas d'audit exhaustif fait.
+
+## Item todo #5 terminé : lignes de code de plus de 95 caractères, 4 langues (2026-09-19)
+
+Chantier complet sur `content`, `content-en`, `content-es`, `content-br` (commits `48d3a50`..`524ce410`). Méthode : script conservateur qui déplace un commentaire de fin de ligne trop long au-dessus du code (jamais le code lui-même) pour le gros du volume, puis passage manuel fichier par fichier pour les compréhensions/appels de fonction à exploser et pour trancher les diagrammes ASCII/Unicode (jamais coupés, ça détruirait l'info visuelle).
+
+Piège de méthode découvert en cours de route : le chiffrage initial ("1719 lignes sur les 4 langues") comptait des **octets**, pas des caractères -- `awk`/`mawk` sur ce système ne gère pas l'UTF-8, `length()` compte 2 octets par caractère accentué. Sur du contenu très accentué, ça gonflait le total détecté d'environ 3x (FR : 180 lignes "détectées" → 60 réellement >95 caractères une fois recompté en Python). Toujours compter avec Python (`len()` sur du texte décodé UTF-8) pour ce genre de chiffrage, jamais `awk`/`wc -m` sans vérifier l'encodage au préalable.
+
 ## Item todo #5 terminé (`<details>`/`<summary>`, capture d'événements, Web Storage, Blob) (2026-09-18)
 
 4 notions ajoutées (4 langues), aucun nouveau chapitre : `<details>`/`<summary>` (`semantique-html5.md`), phase de capture pour un événement non-bouillonnant comme `toggle` (`dom-et-evenements.md`), `sessionStorage`/`localStorage` comme mécanisme de persistance (idem), `Blob`+`URL.createObjectURL()` pour un téléchargement client (idem). En corrigeant `dom-et-evenements.md`, plusieurs commentaires de code préexistants (FR/ES/BR) sans accents ont aussi été corrigés (hors chaînes affichées à l'exécution, seules exemptées) ; sweep plus large nécessaire ailleurs dans `content*/`, noté au point 6 du todo.
