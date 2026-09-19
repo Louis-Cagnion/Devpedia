@@ -46,7 +46,7 @@ note_ajustee(R=4.8, v=500, C=4.2, m=50)   # ~4.71 : tres proche de la moyenne br
 v = 0        v petit          v = m           v grand          v -> infini
   |             |                |                |                 |
   C ────────────┼────────────────┼────────────────┼─────────────────R
-              proche de C    a mi-chemin      proche de R       egal a R
+              proche de C    à mi-chemin      proche de R       égal à R
 ```
 
 Aucun seuil brutal ("moins de `m` avis = fiche ignorée") : la transition entre `C` et `R` est continue, proportionnelle au nombre d'avis déjà collectés.

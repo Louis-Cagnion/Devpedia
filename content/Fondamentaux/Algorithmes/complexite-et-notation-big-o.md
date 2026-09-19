@@ -25,7 +25,8 @@ void afficherUnePremiereFois(int tableau[], int taille)
 void afficherTout(int tableau[], int taille)
 {
     for (int i = 0; i < taille; i++) {
-        printf("%d\n", tableau[i]); // 1 opération par élément -> "taille" opérations au total
+        // 1 opération par élément -> "taille" opérations au total
+        printf("%d\n", tableau[i]);
     }
 }
 ```
