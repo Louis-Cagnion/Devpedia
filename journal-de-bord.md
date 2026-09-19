@@ -2,6 +2,12 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait (quels fichiers, quelle catégorie). Ce qui a été traité et commité ne doit pas apparaître ici comme une simple reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Revue exhaustive des `a` isolés dans `content-br/` terminée (2026-09-19)
+
+Les ~370 lignes signalées lors de l'item #5 ont été relues intégralement (4 lots) : immense majorité déjà correcte (article/préposition), seuls quelques cas de crasis authentiques trouvés et corrigés (`acesso às outras tabelas`, `à direita`/`à esquerda`/`à toa` déjà couverts précédemment). Au passage, une quinzaine d'accents manquants sans lien avec `a`/`à` ont aussi été repérés et ajoutés au dictionnaire (`gracas`→`graças`, `mes`→`mês`, `cabecalho(s)`→`cabeçalho(s)`, `presenca`→`presença`, `seguranca`→`segurança`, `forca`→`força`, `maquina`→`máquina`, `mudanca`→`mudança`, `relogio`→`relógio`, `conteiner`→`contêiner`, `negocio`→`negócio`, `canonico`→`canônico`, `cabeca`→`cabeça`, un `e`→`é` isolé dans `gestion-des-erreurs.md`), plus deux corrections manuelles ciblées (`sql.md` : `acesso as` → `acesso às` ; `listes-chainees.md` : `no`→`nó`/`cabeca`→`cabeça` en commentaire, en laissant intact le nom de variable C réel `cabeca`).
+
+**Reste non traité, hors périmètre de cette revue** : quelques blocs `text` non balisés contenant de la prose descriptive (pas des diagrammes ASCII) avec des accents manquants, protégés par la règle "jamais toucher un langage de bloc de code non reconnu" (ex. `fine-tuning-modele-vision.md` lignes 16-20, `authentification-vs-autorisation.md` lignes 62-64). Signalé ici pour référence future, pas ajouté au todo faute de portée définie.
+
 ## Item todo #4 terminé : accents espagnols manquants dans `content-es/` (2026-09-19)
 
 87 fichiers corrigés (commit `0a776ba8`), même méthode que pour `content-br/` (dictionnaire + règle de suffixe déterministe, cette fois `-cion`/`-sion` → `-ción`/`-sión`, jamais sur le pluriel `-ciones`/`-siones` qui reste correct sans accent en espagnol). Mots volontairement non touchés (lecture ambiguë sans contexte) : `el`/`él`, `se`/`sé`, `si`/`sí`, `que`/`qué`, `este`/`esté`, `esta`/`está`, `fallo`/`falló`.
