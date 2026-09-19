@@ -218,7 +218,7 @@ PDO ne permet de paramétrer que des valeurs individuelles, jamais un tableau en
 <?php
 function requeteAvecIn(PDO $pdo, string $sql, string $prefixe, array $valeurs): PDOStatement
 {
-    // Genere un placeholder nomme par valeur : prefixe_0, prefixe_1...
+    // Génère un placeholder nommé par valeur : préfixe_0, préfixe_1...
     $placeholders = [];
     $params = [];
     foreach (array_values($valeurs) as $i => $valeur) {
@@ -227,7 +227,7 @@ function requeteAvecIn(PDO $pdo, string $sql, string $prefixe, array $valeurs): 
         $params[$nom] = $valeur;
     }
 
-    // Remplace le marqueur {IN} du SQL fourni par la liste de placeholders generee
+    // Remplace le marqueur {IN} du SQL fourni par la liste de placeholders générée
     $sqlFinal = str_replace('{IN}', implode(', ', $placeholders), $sql);
 
     $stmt = $pdo->prepare($sqlFinal);
@@ -241,7 +241,7 @@ $stmt = requeteAvecIn(
     'ville',
     ['Lyon', 'Paris']
 );
-// SQL genere : SELECT * FROM clients WHERE ville IN (:ville_0, :ville_1)
+// SQL généré : SELECT * FROM clients WHERE ville IN (:ville_0, :ville_1)
 ```
 
 | Étape | Rôle |

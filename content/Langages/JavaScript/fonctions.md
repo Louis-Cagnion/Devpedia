@@ -104,12 +104,12 @@ Une **IIFE** (*Immediately Invoked Function Expression*) est une fonction décla
 
 ```javascript
 (function (global) {
-    const CATEGORIES = [];   // reste privee, invisible depuis le reste de la page
+    const CATEGORIES = [];   // reste privée, invisible depuis le reste de la page
     const ICONS = {};        // idem
 
     function svg(nom) { /* ... */ }   // idem
 
-    global.MaBibliotheque = { svg };   // SEUL point accessible depuis l'exterieur
+    global.MaBibliotheque = { svg };   // SEUL point accessible depuis l'extérieur
 })(window);
 ```
 

@@ -16,7 +16,7 @@ typeof 42.5;  // "number"
 typeof NaN;   // "number"
 
 42 === 42.0;       // true : aucune distinction
-5 / 2;             // 2.5 -> pas de division entiere implicite
+5 / 2;             // 2.5 -> pas de division entière implicite
 Math.trunc(5 / 2)  // 2   -> il faut la demander explicitement
 ```
 
@@ -28,14 +28,14 @@ Comme partout, on ne compare pas deux flottants avec `===` mais via une marge d'
 
 ```js
 const epsilon = 0.0001;
-if (Math.abs(a - b) < epsilon) { /* consideres comme egaux */ }
+if (Math.abs(a - b) < epsilon) { /* considérés comme égaux */ }
 ```
 
 JavaScript fournit `Number.EPSILON` (≈ `2,22e-16`), qui est l'écart entre `1` et le flottant suivant. Utile pour des valeurs proches de 1, mais **trop strict** dès qu'on manipule de grands nombres :
 
 ```js
 Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON;          // true
-Math.abs(1e9 + 0.1 - (1e9 + 0.2)) < Number.EPSILON;  // false, alors que l'ecart est infime
+Math.abs(1e9 + 0.1 - (1e9 + 0.2)) < Number.EPSILON;  // false, alors que l'écart est infime
 ```
 
 Pour des montants, la bonne pratique reste de travailler en **centimes**, avec des entiers.
@@ -64,9 +64,9 @@ Depuis ES2020, `BigInt` lève cette limite. Il se note avec un `n` final :
 Deux contraintes à connaître :
 
 ```js
-1n + 1;         // TypeError : on ne melange pas BigInt et number
+1n + 1;         // TypeError : on ne mélange pas BigInt et number
 1n + BigInt(1)  // 2n : conversion explicite obligatoire
-5n / 2n;        // 2n : division entiere, la partie decimale est tronquee
+5n / 2n;        // 2n : division entière, la partie décimale est tronquée
 ```
 
 `BigInt` sert aux grands identifiants et à la cryptographie, pas aux calculs décimaux : il ne gère que des entiers.
@@ -79,10 +79,10 @@ Deux contraintes à connaître :
 0 / 0;            // NaN
 parseInt("abc");  // NaN
 
-NaN === NaN;         // false : NaN n'egale rien, pas meme lui-meme
-Number.isNaN(NaN);   // true  -> la bonne facon de tester
+NaN === NaN;         // false : NaN n'égale rien, pas même lui-même
+Number.isNaN(NaN);   // true  -> la bonne façon de tester
 isNaN("abc");        // true  -> ATTENTION : convertit d'abord, donc trompeur
-Number.isNaN("abc")  // false -> "abc" n'est pas NaN, c'est une chaine
+Number.isNaN("abc")  // false -> "abc" n'est pas NaN, c'est une chaîne
 ```
 
 Préférez systématiquement `Number.isNaN()` à l'ancienne fonction globale `isNaN()`, qui convertit son argument avant de tester et produit des faux positifs.
@@ -92,9 +92,9 @@ Préférez systématiquement `Number.isNaN()` à l'ancienne fonction globale `is
 ```js
 Number("42");        // 42
 Number("42px");      // NaN   -> strict : tout ou rien
-parseInt("42px");    // 42    -> tolerant : s'arrete au premier caractere invalide
+parseInt("42px");    // 42    -> tolérant : s'arrête au premier caractère invalide
 parseFloat("3.9m");  // 3.9
-Number("");          // 0     -> piege classique : la chaine vide devient 0
+Number("");          // 0     -> piège classique : la chaîne vide devient 0
 ```
 
 `parseInt` accepte un second argument, la base, qu'il est prudent de toujours préciser : `parseInt("08", 10)`.
@@ -102,7 +102,7 @@ Number("");          // 0     -> piege classique : la chaine vide devient 0
 ## Formater pour l'affichage
 
 ```js
-(1234.5678).toFixed(2);          // "1234.57" -> renvoie une CHAINE, pas un nombre
+(1234.5678).toFixed(2);          // "1234.57" -> renvoie une CHAÎNE, pas un nombre
 (0.000001234).toExponential(2);  // "1.23e-6"
 
 (1234567.891).toLocaleString("fr-FR", { style: "currency", currency: "EUR" });

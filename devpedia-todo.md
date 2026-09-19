@@ -1,12 +1,11 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 1, lot 6 en cours en tâche de fond -- attendre la fin, `git add audio/` et commit, puis régénérer l'audio des 8 chapitres Kubernetes/worktree/distillation/CUDA (fichiers `.md` déjà commités, pas encore leur audio). En parallèle, si le lot 6 tourne encore : reprendre le point 4 (fichiers restants).
+> Prochaine tâche : point 4 (accents manquants dans les commentaires de code), fichiers FR restants listés ci-dessous, puis recherche jamais faite sur `content-en`/`content-es`/`content-br`.
 
 > Restent : un test navigateur en attente de Louis pour continuer l'investigation (point 3). 17 chapitres en échec espeak-ng à investiguer par Louis (point 1). Double mécanisme de résumé dans 8 chapitres à trancher avec Louis (point 2).
 
-## 1. Régénération audio complète : lot 6 restant (le plus gros, en cours en tâche de fond)
+## 1. Régénération audio complète : terminée (lots 1 à 6 + 8 chapitres Kubernetes/worktree/distillation/CUDA)
 Nécessite `ffmpeg` sur le PATH : `export PATH="/c/Users/lcagnion/tools/ffmpeg-9.0.1-essentials_build/bin:$PATH"` avant chaque commande (cf. `journal-de-bord.md` pour l'installation).
-- Lot 6 lancé : `node scripts/generate-audio.mjs --context=c,cpp,php,python,javascript,ocaml,html,css,bash,zsh,powershell,domain-specific-languages-dsl,xml`. Une fois terminé : `git add audio/` puis commit.
 - **17 chapitres en échec espeak-ng (`UnicodeEncodeError: ... surrogates not allowed`), à investiguer par Louis, détail dans `journal-de-bord.md`** : `fr/editeur-de-code-et-ide`, `fr/complexite-et-notation-big-o`, `en/code-programmes-et-fichiers`, `en/editeur-de-code-et-ide`, `en/arborescence-et-chemins`, `en/le-bug`, `en/complexite-et-notation-big-o`, `es/editeur-de-code-et-ide`, `es/complexite-et-notation-big-o`, `es/le-logarithme`, `es/wavefront-obj-et-modele-de-phong`, `br/editeur-de-code-et-ide`, `br/complexite-et-notation-big-o`, `en/architecture-interne`, `en/jupyter-notebooks`, `en/machine-learning-scikit-learn`, `es/k-plus-proches-voisins`. `editeur-de-code-et-ide` et `complexite-et-notation-big-o` échouent dans les 4 langues (pointe vers un caractère du contenu source partagé entre traductions), les 15 autres restent plus proches d'un flaky d'environnement. Retenter individuellement une fois la cause identifiée : `node scripts/generate-audio.mjs <chemin-audio> --lang=<code>`.
 
 Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de décision de régénération audio à Louis -- il s'en charge à son rythme et note lui-même son retour ici quand il le fait. Le fait/pourquoi/décisions déjà tranchées (progression, historique) va dans `journal-de-bord.md`, jamais ici : seuls les points restants, avec le contexte minimal pour les exécuter sans revenir en arrière.

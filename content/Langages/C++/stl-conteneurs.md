@@ -63,7 +63,7 @@ for (const auto &[nom, age] : ages) {  // parcours : les paires sont TOUJOURS tr
 std::map<int, std::string> taux = {{10, "A"}, {20, "B"}, {30, "C"}};
 
 auto it = taux.lower_bound(20);   // trouve exactement 20 : it->second == "B"
-auto it2 = taux.lower_bound(25);  // pas de 25 : renvoie le premier element >= 25, donc 30
+auto it2 = taux.lower_bound(25);  // pas de 25 : renvoie le premier élément >= 25, donc 30
 ```
 
 Si la clé exacte n'existe pas, `lower_bound` renvoie donc la première clé strictement supérieure. Pour trouver la dernière clé strictement **inférieure** à une valeur (utile par exemple pour associer une date à la donnée valide la plus proche avant elle), décrémenter l'itérateur obtenu :
@@ -71,7 +71,7 @@ Si la clé exacte n'existe pas, `lower_bound` renvoie donc la première clé str
 ```cpp
 auto it = taux.lower_bound(25);
 if (it != taux.begin()) {
-    --it;   // it pointe maintenant sur 20, la derniere cle strictement inferieure a 25
+    --it;   // it pointe maintenant sur 20, la dernière clé strictement inférieure à 25
 }
 ```
 
@@ -103,7 +103,7 @@ std::stack<int> pile;
 pile.push(1);
 pile.push(2);
 pile.top();    // 2 : le sommet, sans le retirer
-pile.pop();    // retire le sommet (ne renvoie RIEN, contrairement a beaucoup d'autres langages)
+pile.pop();    // retire le sommet (ne renvoie RIEN, contrairement à beaucoup d'autres langages)
 ```
 
 Volontairement dépourvu d'itérateurs (pas de `begin()`/`end()`) : parcourir une pile autrement que par son sommet n'a normalement pas de sens.

@@ -27,7 +27,7 @@ void verifier_configuration(Config *config)
 {
     if (config == NULL) {
         fprintf(stderr, "Erreur : configuration manquante\n");
-        exit(1);   // termine le programme immediatement, meme si on n'est pas dans main
+        exit(1);   // termine le programme immédiatement, même si on n'est pas dans main
     }
 }
 ```
@@ -45,8 +45,8 @@ void verifier_configuration(Config *config)
 ```c
 #include <stdlib.h>
 
-exit(EXIT_SUCCESS);   // equivalent a exit(0)
-exit(EXIT_FAILURE);   // equivalent a exit(1)
+exit(EXIT_SUCCESS);   // équivalent à exit(0)
+exit(EXIT_FAILURE);   // équivalent à exit(1)
 ```
 
 `EXIT_SUCCESS` et `EXIT_FAILURE` (définies dans `<stdlib.h>`) valent respectivement `0` et `1` : les utiliser plutôt que les chiffres bruts rend l'intention explicite à la lecture, sans changer le comportement.
