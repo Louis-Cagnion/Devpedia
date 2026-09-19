@@ -43,7 +43,8 @@ public:
 
 Punto p1(1, 2);
 Punto p2(1, 2);
-std::cout << (p1 == p2);   // true -> sin sobrecarga, compararía las DIRECCIONES, no el contenido
+// true -> sin sobrecarga, compararía las DIRECCIONES, no el contenido
+std::cout << (p1 == p2);
 ```
 
 > **Nota:** sin sobrecarga de `==`, comparar dos objetos con `==` compara por defecto su **dirección de memoria** (como comparar dos punteros), nunca su contenido: una fuente de errores frecuente para quien espera una comparación "por valor" automática.

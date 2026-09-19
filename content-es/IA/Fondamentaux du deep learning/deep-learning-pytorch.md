@@ -27,7 +27,8 @@ Un tensor de PyTorch puede vivir en la CPU o en una GPU (`x.to("cuda")`), que ej
 ## `autograd`: la diferenciación automática
 
 ```python
-x = torch.tensor(3.0, requires_grad=True)   # "sigue las operaciones sobre x para poder derivar más adelante"
+# "sigue las operaciones sobre x para poder derivar más adelante"
+x = torch.tensor(3.0, requires_grad=True)
 
 y = x ** 2 + 2 * x
 
@@ -74,10 +75,12 @@ funcion_perdida = nn.MSELoss()                       # Error cuadrático medio
 optimizador = optim.SGD(modelo.parameters(), lr=0.01) # Descenso de gradiente estocástico
 
 for epoca in range(100):
-    predicciones = modelo(X_entrenamiento)                    # Equivale a modelo.forward(X_entrenamiento)
+    # Equivale a modelo.forward(X_entrenamiento)
+    predicciones = modelo(X_entrenamiento)
     perdida = funcion_perdida(predicciones, y_entrenamiento)
 
-    optimizador.zero_grad()  # Reinicia los gradientes (si no, se suman de una iteración a otra)
+    # Reinicia los gradientes (si no, se suman de una iteración a otra)
+    optimizador.zero_grad()
     perdida.backward()       # Calcula los gradientes (retropropagación automática)
     optimizador.step()       # Ajusta los pesos según los gradientes calculados
 
@@ -95,7 +98,8 @@ Este bucle es la estructura casi universal de cualquier entrenamiento con PyTorc
 
 ```python
 modelo.eval()          # Desactiva comportamientos propios del entrenamiento (ej. dropout)
-with torch.no_grad():  # Desactiva el seguimiento de gradientes: más rápido, innecesario fuera del entrenamiento
+# Desactiva el seguimiento de gradientes: más rápido, innecesario fuera del entrenamiento
+with torch.no_grad():
     predicciones = modelo(X_test)
 
 modelo.train()   # Reactiva el modo entrenamiento para lo que sigue

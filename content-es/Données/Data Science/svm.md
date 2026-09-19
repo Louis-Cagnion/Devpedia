@@ -33,7 +33,8 @@ from sklearn.svm import SVC
 modelo = SVC(kernel="linear")
 modelo.fit(X_entrenamiento, y_entrenamiento)
 
-modelo.support_vectors_    # los únicos ejemplos que determinan la frontera (a menudo un puñado, entre cientos)
+# los únicos ejemplos que determinan la frontera (a menudo un puñado, entre cientos)
+modelo.support_vectors_
 ```
 
 ## El *kernel trick*: cuando una recta no basta
@@ -43,7 +44,8 @@ Si las dos categorías no son separables por una línea recta, un SVM con núcle
 ```python
 modelo_curvo = SVC(kernel="rbf")   # núcleo RBF: permite una frontera curva
 modelo_curvo.fit(X_entrenamiento, y_entrenamiento)
-# puede alcanzar el 100% donde kernel="linear" se estancaba en el 60%, en un problema no separable linealmente
+# puede alcanzar el 100% donde kernel="linear" se estancaba en el 60%, en un problema no
+# separable linealmente
 ```
 
 Técnicamente, el núcleo evita calcular explícitamente las coordenadas en ese espacio transformado (potencialmente de muy alta dimensión): calcula directamente, mediante una fórmula matemática, hasta qué punto dos puntos estarían "cerca" una vez transformados, lo cual basta para el algoritmo sin construir nunca el espacio transformado en sí.
@@ -56,7 +58,8 @@ Un SVM mide **distancias** entre puntos para encontrar el margen máximo: una ca
 from sklearn.preprocessing import StandardScaler
 
 escalador = StandardScaler()
-X_escalado = escalador.fit_transform(X_entrenamiento)   # centra y reduce cada columna (media 0, desviación típica 1)
+# centra y reduce cada columna (media 0, desviación típica 1)
+X_escalado = escalador.fit_transform(X_entrenamiento)
 ```
 
 ---

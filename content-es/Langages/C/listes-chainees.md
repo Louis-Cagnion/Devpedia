@@ -21,7 +21,8 @@ Como en el caso de [un árbol binario](/?c=langages-de-programmation&s=c&p=arbre
 ## Crear y encadenar eslabones
 
 ```c
-Eslabon *primero = malloc(sizeof(Eslabon));   // a comprobar contra NULL en la práctica (véase La gestión de la memoria)
+// a comprobar contra NULL en la práctica (véase La gestión de la memoria)
+Eslabon *primero = malloc(sizeof(Eslabon));
 primero->valor = 10;
 
 Eslabon *segundo = malloc(sizeof(Eslabon));

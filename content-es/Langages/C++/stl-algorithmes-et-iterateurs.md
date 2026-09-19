@@ -13,7 +13,8 @@ std::vector<int> numeros = {1, 2, 3};
 
 std::vector<int>::iterator it = numeros.begin();
 while (it != numeros.end()) {
-    std::cout << *it << " ";   // "*it" desreferencia el iterador, como un puntero (véase Los punteros, apartado C)
+    // "*it" desreferencia el iterador, como un puntero (véase Los punteros, apartado C)
+    std::cout << *it << " ";
     ++it;
 }
 ```
@@ -41,7 +42,8 @@ En lugar de escribir manualmente un bucle para cada operación habitual, la STL 
 
 std::vector<int> numeros = {5, 3, 1, 4, 2};
 
-std::sort(numeros.begin(), numeros.end());               // ordena en el sitio -> {1, 2, 3, 4, 5}
+// ordena en el sitio -> {1, 2, 3, 4, 5}
+std::sort(numeros.begin(), numeros.end());
 
 auto it = std::find(numeros.begin(), numeros.end(), 3);  // iterador que apunta al valor 3
 bool encontrado = (it != numeros.end());
@@ -64,7 +66,8 @@ std::cout << cuadrado(5);   // 25
 
 ```cpp
 int umbral = 3;
-auto estaPorEncimaDelUmbral = [umbral](int x) { return x > umbral; };   // captura "umbral" por valor
+// captura "umbral" por valor
+auto estaPorEncimaDelUmbral = [umbral](int x) { return x > umbral; };
 
 int cuenta = std::count_if(numeros.begin(), numeros.end(), estaPorEncimaDelUmbral);
 ```

@@ -9,7 +9,8 @@ Una **rama** es simplemente un puntero móvil hacia un commit: permite hacer evo
 ## Crear y cambiar de rama
 
 ```bash
-git branch                            # lista las ramas existentes, la actual esta marcada con un *
+# lista las ramas existentes, la actual esta marcada con un *
+git branch
 git branch nueva-funcionalidad        # crea una nueva rama, sin cambiar a ella
 git checkout nueva-funcionalidad      # cambia a esta rama
 git checkout -b nueva-funcionalidad   # atajo: crea Y cambia en un solo comando

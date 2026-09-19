@@ -32,7 +32,8 @@ datos = pd.read_csv("clients.csv")
 
 datos.head()        # Las primeras 5 líneas
 datos.info()          # tipos de columnas, valores perdidos, memoria utilizada
-datos.describe()       # Estadísticas (media, desviación típica, mínimo/máximo) de las columnas numéricas
+# Estadísticas (media, desviación típica, mínimo/máximo) de las columnas numéricas
+datos.describe()
 datos.shape             # (número_de_líneas, número_de_columnas)
 datos.columns            # Lista de nombres de columnas
 ```
@@ -43,8 +44,10 @@ datos.columns            # Lista de nombres de columnas
 datos["age"]             # una sola columna -> una serie
 datos[["nom", "age"]]     # varias columnas -> un DataFrame
 
-datos.loc[0]              # línea de ÍNDICE 0 (el índice que aparece a la izquierda de la tabla)
-datos.iloc[0]              # línea de POSICIÓN 0 (siempre la primera, aunque se haya modificado el índice)
+# línea de ÍNDICE 0 (el índice que aparece a la izquierda de la tabla)
+datos.loc[0]
+# línea de POSICIÓN 0 (siempre la primera, aunque se haya modificado el índice)
+datos.iloc[0]
 datos.loc[0, "nom"]         # valor exacto: fila 0, columna «nombre»
 ```
 
@@ -54,10 +57,12 @@ datos.loc[0, "nom"]         # valor exacto: fila 0, columna «nombre»
 
 ```python
 datos[datos["age"] > 25]
-# solo conserva las líneas en las que la condición es verdadera -> equivalente a un «WHERE» en SQL
+# solo conserva las líneas en las que la condición es verdadera -> equivalente a un «WHERE» en
+# SQL
 
 datos[(datos["age"] > 20) & (datos["ville"] == "Lyon")]
-# Combinar varias condiciones: & (y), | (o). NO «and»/«or», reservados para los booleanos simples
+# Combinar varias condiciones: & (y), | (o). NO «and»/«or», reservados para los booleanos
+# simples
 ```
 
 ## `groupby` : agrupar por categoría

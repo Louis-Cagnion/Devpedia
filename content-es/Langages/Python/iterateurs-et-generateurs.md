@@ -83,7 +83,8 @@ Equivalente a una comprensión de lista, pero perezosa: reemplaza los corchetes 
 cuadrados = (x ** 2 for x in range(10))         # generador, nada se ha calculado todavía
 lista_cuadrados = [x ** 2 for x in range(10)]   # lista, todo se calcula de inmediato
 
-sum(x ** 2 for x in range(1000000))    # calcula la suma SIN almacenar nunca el millón de valores
+# calcula la suma SIN almacenar nunca el millón de valores
+sum(x ** 2 for x in range(1000000))
 ```
 
 Ver también [Las funciones](/?c=langages-de-programmation&s=python&p=fonctions) (closures) y [NumPy](/?c=data-science&p=numpy), donde la distinción memoria inmediata vs perezosa vuelve a ser central a gran escala.
@@ -98,7 +99,8 @@ next(iterador)              # 2
 next(iterador)              # 3
 next(iterador)              # StopIteration: ya no queda nada que producir
 
-next(iterador, "agotado")   # "agotado" -> forma de dos argumentos: sin excepcion si esta agotado
+# "agotado" -> forma de dos argumentos: sin excepcion si esta agotado
+next(iterador, "agotado")
 ```
 
 `next(iterable, defecto)` devuelve `defecto` en lugar de lanzar `StopIteration` cuando el iterador ya no produce nada. Combinado con una expresión generadora filtrada, esto da una forma concisa de obtener el primer elemento que cumple una condición, con un valor de repliegue si ninguno la cumple:
@@ -130,7 +132,8 @@ def tareas():
 
 t = tareas()
 print("Antes del primer next")
-print(next(t))     # "Inicio" se muestra AQUÍ, en el momento de la llamada, no antes, no en segundo plano
+# "Inicio" se muestra AQUÍ, en el momento de la llamada, no antes, no en segundo plano
+print(next(t))
 print("Antes del segundo next")
 print(next(t))     # "Reanudación tras A" se muestra AQUÍ, nunca mientras tanto
 ```

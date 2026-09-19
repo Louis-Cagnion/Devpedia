@@ -77,7 +77,8 @@ Este patrón suele servir como archivo de configuración/datos simple, sin neces
 ```php
 <?php
 // en /app/pages/inicio.php
-require __DIR__ . '/../config.php'; // siempre correcto, sea cual sea el lugar desde donde se lanza el script
+// siempre correcto, sea cual sea el lugar desde donde se lanza el script
+require __DIR__ . '/../config.php';
 ?>
 ```
 

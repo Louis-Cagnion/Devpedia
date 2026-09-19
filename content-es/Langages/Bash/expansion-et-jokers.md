@@ -29,7 +29,8 @@ ls archivo[a-z].txt  # una sola letra minúscula en esa posición
 
 ```bash
 echo *.xyz
-# si no existe ningún archivo .xyz, Bash muestra literalmente "*.xyz" (el patrón no se sustituye)
+# si no existe ningún archivo .xyz, Bash muestra literalmente "*.xyz" (el patrón no se
+# sustituye)
 ```
 
 Es una fuente clásica de bugs: un script que supone que `*.xyz` siempre designa una lista de archivos reales puede recibir el texto plano `*.xyz` como único "nombre de archivo" si la carpeta no contiene nada de eso.
@@ -66,7 +67,8 @@ cd ~/proyectos  # equivalente a cd $HOME/proyectos
 ```bash
 echo *.txt    # sustituido por la lista real de archivos .txt
 echo "*.txt"  # muestra literalmente *.txt -> las comillas dobles desactivan el globbing
-echo '*.txt'  # mismo resultado, comillas simples aún más estrictas (también desactivan $variable)
+# mismo resultado, comillas simples aún más estrictas (también desactivan $variable)
+echo '*.txt'
 ```
 
 Ver también [Las variables](/?c=shells&s=bash&p=variables) para la distinción comillas simples/dobles respecto a la interpretación de `$variable`.

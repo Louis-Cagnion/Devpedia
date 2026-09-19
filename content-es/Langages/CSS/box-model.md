@@ -45,7 +45,8 @@ div {
     padding: 20px;
     border: 2px solid black;
 }
-/* Ancho REALMENTE ocupado en pantalla: 300 + 20+20 (padding) + 2+2 (border) = 344px, ¡NO 300px! */
+/* Ancho REALMENTE ocupado en pantalla: 300 + 20+20 (padding) + 2+2 (border) = 344px, ¡NO
+   300px! */
 ```
 
 > **Nota:** por defecto (`box-sizing: content-box`), `width` solo define el tamaño del **contenido**: `padding` y `border` se suman por encima, ampliando la caja que realmente se muestra más allá del valor declarado. Esta es una fuente muy frecuente de diseños que "se desbordan" de forma inesperada.

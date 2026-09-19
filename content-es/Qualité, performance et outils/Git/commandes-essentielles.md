@@ -9,8 +9,10 @@ Este capítulo cubre el ciclo de trabajo Git más común: inicializar un reposit
 ## Crear u obtener un repositorio
 
 ```bash
-git init                                  # convierte el directorio actual en un repositorio Git (vacio, sin historial)
-git clone https://ejemplo.com/proyecto.git  # obtiene un repositorio existente, con todo su historial
+# convierte el directorio actual en un repositorio Git (vacio, sin historial)
+git init
+# obtiene un repositorio existente, con todo su historial
+git clone https://ejemplo.com/proyecto.git
 ```
 
 ## Ver el estado del directorio de trabajo
@@ -36,7 +38,8 @@ git add -p           # modo interactivo: elegir con precision que bloques de lin
 
 ```bash
 git commit -m "Corrige el calculo del descuento"
-git commit -am "Mensaje"   # atajo: anade automaticamente los archivos ya seguidos Y modificados, sin "git add" previo
+# atajo: anade automaticamente los archivos ya seguidos Y modificados, sin "git add" previo
+git commit -am "Mensaje"
 ```
 
 > **Nota:** `-a` (en `-am`) solo añade los archivos ya seguidos por Git: un archivo completamente nuevo, nunca añadido antes, siempre debe pasar al menos una vez por un `git add` explícito.
@@ -66,13 +69,16 @@ Es esta línea vacía, y solo ella, la que indica a una herramienta como [GitHub
 `git commit -m "mensaje"` con un único `-m` solo produce un título, sin descripción. Tres formas de obtener ambos:
 
 ```bash
-# 1. Sin -m: abre el editor configurado (vim, nano...), donde escribir titulo, linea vacia, luego descripcion
+# 1. Sin -m: abre el editor configurado (vim, nano...), donde escribir titulo, linea vacia,
+# luego descripcion
 git commit
 
-# 2. Varios -m: cada uno se convierte en un parrafo separado por una linea vacia, sin abrir editor
+# 2. Varios -m: cada uno se convierte en un parrafo separado por una linea vacia, sin abrir
+# editor
 git commit -m "Corrige el calculo del descuento" -m "El porcentaje solo se aplicaba al primer articulo, no al total."
 
-# 3. Una cadena multilinea pasada a un solo -m (util para automatizar un commit, o desde una herramienta que genera el mensaje)
+# 3. Una cadena multilinea pasada a un solo -m (util para automatizar un commit, o desde una
+# herramienta que genera el mensaje)
 git commit -m "$(cat <<'EOF'
 Corrige el calculo del descuento
 
@@ -92,7 +98,8 @@ EOF
 ```bash
 git log                          # historial completo, del mas reciente al mas antiguo
 git log --oneline                # una linea por commit, mas legible para una revision rapida
-git log --oneline --graph --all  # visualiza tambien las ramas y sus puntos de divergencia/fusion
+# visualiza tambien las ramas y sus puntos de divergencia/fusion
+git log --oneline --graph --all
 git log -p archivo.txt           # historial detallado (con diff) de un archivo preciso
 ```
 
@@ -107,7 +114,8 @@ git diff commit1 commit2  # diferencias entre dos commits precisos
 ## Ver el detalle de un commit
 
 ```bash
-git show a3f9c1d   # muestra el mensaje, el autor, la fecha y el diff completo de ese commit preciso
+# muestra el mensaje, el autor, la fecha y el diff completo de ese commit preciso
+git show a3f9c1d
 ```
 
 ---

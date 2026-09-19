@@ -9,9 +9,11 @@ order: 6
 ## Guardar las modificaciones
 
 ```bash
-git stash                                          # guarda todas las modificaciones seguidas, deja el directorio "limpio"
+# guarda todas las modificaciones seguidas, deja el directorio "limpio"
+git stash
 git stash push -m "en curso: formulario de contacto"  # con un mensaje, para ubicarse mas tarde
-git stash -u                                       # incluye tambien los archivos no seguidos (nuevos, nunca añadidos)
+# incluye tambien los archivos no seguidos (nuevos, nunca añadidos)
+git stash -u
 ```
 
 Tras un `git stash`, `git status` ya no muestra ninguna modificación, como si se acabara de commitear, salvo que nada aparece en el historial (`git log`): las modificaciones se almacenan aparte, en una pila.

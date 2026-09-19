@@ -148,7 +148,8 @@ El principio:
     $token = bin2hex(random_bytes(32)); // token aleatorio (64 caracteres hexadecimales)
     $tokenHash = hash('sha256', $token);
 
-    // se almacena $tokenHash en base de datos, ligado al usuario (ej: columna "remember_token")
+    // se almacena $tokenHash en base de datos, ligado al usuario (ej: columna
+    // "remember_token")
 
     // se envía $token (sin hashear) en una cookie segura, de larga duración
     setcookie("remember_token", $token, time() + 60 * 60 * 24 * 30, "/", "", true, true);
@@ -216,7 +217,8 @@ El token de conexión visto más arriba es un secreto **opaco** (aleatorio, sin 
 <?php
 function crearToken(string $dato, string $secreto): string
 {
-    $codificado = base64_encode($dato);                    // codificado, NO cifrado: legible si se decodifica
+    // codificado, NO cifrado: legible si se decodifica
+    $codificado = base64_encode($dato);
     $firma = hash_hmac('sha256', $codificado, $secreto);
     return $codificado . '.' . $firma;
 }

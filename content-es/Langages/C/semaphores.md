@@ -16,7 +16,8 @@ Un **semáforo** es un contador protegido, compartido entre hilos o entre proces
 
 sem_t semaforo;
 
-sem_init(&semaforo, 0, 3); // contador inicial a 3 (0 = compartido entre hilos del mismo proceso)
+// contador inicial a 3 (0 = compartido entre hilos del mismo proceso)
+sem_init(&semaforo, 0, 3);
 
 sem_wait(&semaforo); // decrementa; bloquea si ya está a 0
 // ... sección que no debe superar 3 accesos simultáneos ...
@@ -38,7 +39,8 @@ sem_wait(tenedores); // toma un tenedor (bloquea si los 5 ya están tomados)
 sem_post(tenedores); // devuelve el tenedor
 
 sem_close(tenedores);     // libera el descriptor local a este proceso
-sem_unlink("/tenedores"); // destruye el objeto con nombre del sistema (una sola vez, al final del programa)
+// destruye el objeto con nombre del sistema (una sola vez, al final del programa)
+sem_unlink("/tenedores");
 ```
 
 | Función | Rol |

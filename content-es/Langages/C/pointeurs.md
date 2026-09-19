@@ -83,7 +83,8 @@ En C, los argumentos se pasan **por valor** (una copia) de forma predeterminada:
 ```c
 void incrementar(int *numero)
 {
-    (*numero)++; // modifica el valor en la dirección apuntada, por lo tanto la variable original
+    // modifica el valor en la dirección apuntada, por lo tanto la variable original
+    (*numero)++;
 }
 
 int main(void)
@@ -154,7 +155,8 @@ Dos usos de `const` bien distintos, a menudo confundidos:
 
 ```c
 const int *p1;       // p1 puede cambiar de dirección, pero no modificar el valor apuntado
-int *const p2 = &x;  // p2 ya no puede cambiar de dirección, pero puede modificar el valor apuntado
+// p2 ya no puede cambiar de dirección, pero puede modificar el valor apuntado
+int *const p2 = &x;
 ```
 
 | Notación | Qué está protegido |

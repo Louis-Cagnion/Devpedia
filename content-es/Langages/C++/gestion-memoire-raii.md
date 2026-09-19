@@ -16,10 +16,12 @@ public:
     GestorArchivo(const std::string &ruta) {
         archivo.open(ruta);
         if (!archivo.is_open()) {
-            throw std::runtime_error("No se pudo abrir: " + ruta); // véase el capítulo sobre excepciones
+            // véase el capítulo sobre excepciones
+            throw std::runtime_error("No se pudo abrir: " + ruta);
         }
     }
-    ~GestorArchivo() { archivo.close(); }   // se ejecuta automáticamente, ¡incluso en caso de excepción!
+    // se ejecuta automáticamente, ¡incluso en caso de excepción!
+    ~GestorArchivo() { archivo.close(); }
 private:
     std::ifstream archivo;
 };
@@ -39,7 +41,8 @@ int *p = new int(42);  // asigna E inicializa en una sola operación
 delete p;              // libera
 
 int *matriz = new int[10];  // asigna un array dinámico
-delete[] matriz;            // "[]" obligatorio para liberar un array, si no, comportamiento indefinido
+// "[]" obligatorio para liberar un array, si no, comportamiento indefinido
+delete[] matriz;
 ```
 
 `new`/`delete` sustituyen a `malloc`/`free`, pero presentan exactamente los mismos riesgos (olvido de `delete`, doble `delete`, *use-after-free*, véase [La gestión de la memoria](/?c=langages-de-programmation&s=c&p=memoire) en C): por eso, en C++ moderno, rara vez se usan **directamente**.
@@ -63,7 +66,8 @@ Un `unique_ptr` solo puede tener un **único** propietario: copiarlo está prohi
 
 ```cpp
 std::unique_ptr<int> p1 = std::make_unique<int>(42);
-std::unique_ptr<int> p2 = std::move(p1);   // p2 pasa a ser el propietario, p1 pasa a ser nullptr
+// p2 pasa a ser el propietario, p1 pasa a ser nullptr
+std::unique_ptr<int> p2 = std::move(p1);
 ```
 
 ### `shared_ptr`: propiedad compartida, con recuento de referencias

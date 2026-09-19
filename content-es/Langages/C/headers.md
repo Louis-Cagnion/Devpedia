@@ -44,7 +44,8 @@ static int cuadrado(int x)   // enlace INTERNO: invisible fuera de utilidades.c
     return x * x;
 }
 
-int cubo(int x)   // enlace externo (por defecto): declarable en utilidades.h, llamable desde otro lado
+// enlace externo (por defecto): declarable en utilidades.h, llamable desde otro lado
+int cubo(int x)
 {
     return x * cuadrado(x);
 }

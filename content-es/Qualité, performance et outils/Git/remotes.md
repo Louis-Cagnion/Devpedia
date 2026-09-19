@@ -9,7 +9,8 @@ Un **remote** es una referencia hacia una copia del repositorio alojada en otro 
 ## Ver y añadir un remote
 
 ```bash
-git remote -v                                  # lista los remotes configurados (a menudo solo "origin")
+# lista los remotes configurados (a menudo solo "origin")
+git remote -v
 git remote add origin https://ejemplo.com/proyecto.git
 ```
 
@@ -28,8 +29,10 @@ git push                 # una vez memorizado el enlace
 Tras un `rebase`, un `commit --amend`, o una reescritura del historial (véase [La arquitectura interna de Git](/?c=git&p=architecture-interne)), los commits locales ya no tienen los mismos hash que los ya enviados: un `push` normal es entonces rechazado (*non fast-forward*), pues el remote ya no encuentra sus antiguos commits como ancestros de los nuevos.
 
 ```bash
-git push --force origin main             # sobrescribe el historial remoto sin condicion, peligroso si alguien mas empujo mientras tanto
-git push --force-with-lease origin main  # sobrescribe solo si el remote sigue en el estado visto en el ultimo fetch
+# sobrescribe el historial remoto sin condicion, peligroso si alguien mas empujo mientras tanto
+git push --force origin main
+# sobrescribe solo si el remote sigue en el estado visto en el ultimo fetch
+git push --force-with-lease origin main
 ```
 
 > **Nota:** `--force-with-lease` compara el estado real del remote con lo que la rama de seguimiento local (`origin/main`) conocía en el último `fetch`: si difieren (alguien más empujó mientras tanto, o esa rama de seguimiento fue modificada por una operación local), el push se rechaza (`stale info`) en lugar de sobrescribir un trabajo que no se vio. Preferir siempre `--force-with-lease` a `--force`, salvo certeza absoluta de estar solo en la rama.
@@ -37,7 +40,8 @@ git push --force-with-lease origin main  # sobrescribe solo si el remote sigue e
 ## `fetch` vs `pull`
 
 ```bash
-git fetch origin      # descarga los nuevos commits del remote, SIN tocar el directorio de trabajo
+# descarga los nuevos commits del remote, SIN tocar el directorio de trabajo
+git fetch origin
 git pull origin main  # equivalente a: git fetch + git merge (fusiona inmediatamente)
 ```
 
@@ -65,7 +69,8 @@ git clone https://ejemplo.com/proyecto.git
 `git bundle` empaqueta todo o parte de un repositorio (commits, ramas, tags) en un único archivo binario, sin necesitar un servidor remoto:
 
 ```bash
-git bundle create respaldo.bundle --all    # captura todas las refs (ramas, tags, HEAD) en un solo archivo
+# captura todas las refs (ramas, tags, HEAD) en un solo archivo
+git bundle create respaldo.bundle --all
 git bundle verify respaldo.bundle          # verifica que el bundle este completo y utilizable
 git clone respaldo.bundle nueva-carpeta    # un bundle se clona como un remote clasico
 ```

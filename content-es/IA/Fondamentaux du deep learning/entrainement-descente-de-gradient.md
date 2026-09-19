@@ -77,8 +77,10 @@ Sentido de la retropropagación:        Entrada <- Capa 1 <- Capa 2 <- Salida <-
 ## Épocas, lotes y descenso de gradiente estocástico
 
 ```python
-for epoca in range(numero_epocas):                     # una "época" = una pasada completa por TODOS los datos
-    for lote in datos_por_lotes(datos, tamano_lote=32):  # un "batch"/lote = un pequeño subconjunto
+# una "época" = una pasada completa por TODOS los datos
+for epoca in range(numero_epocas):
+    # un "batch"/lote = un pequeño subconjunto
+    for lote in datos_por_lotes(datos, tamano_lote=32):
         predicciones = modelo.forward(lote)
         perdida = calcular_perdida(predicciones, valores_reales)
         gradientes = retropropagar(perdida)

@@ -18,7 +18,8 @@ Este capítulo cubre dos familias de atributos transversales, utilizables en cas
 const tarjeta = document.querySelector("div");
 tarjeta.dataset.id;            // "42"
 tarjeta.dataset.role;          // "tarjeta-producto"
-tarjeta.dataset.enExistencia;  // "true" -> "data-en-existencia" se convierte en "enExistencia" en camelCase del lado de JS
+// "true" -> "data-en-existencia" se convierte en "enExistencia" en camelCase del lado de JS
+tarjeta.dataset.enExistencia;
 ```
 
 `data-*` permite asociar un dato a un elemento HTML, recuperable en [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) mediante `.dataset`: una forma estándar de hacer circular información del HTML hacia el JavaScript, sin necesidad de variables globales ni de peticiones adicionales.

@@ -223,7 +223,8 @@ Clasificada A10 en el [OWASP Top 10](/?c=cybersecurite&p=owasp-top-10). Forzar a
 
 ```php
 <?php
-// peligroso si $_GET['url'] puede apuntar a una dirección interna (ej: http://169.254.169.254/, http://localhost:6379/...)
+// peligroso si $_GET['url'] puede apuntar a una dirección interna (ej:
+// http://169.254.169.254/, http://localhost:6379/...)
 $respuesta = file_get_contents($_GET['url']);
 ?>
 ```

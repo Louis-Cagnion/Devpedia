@@ -42,7 +42,8 @@ if ("archivo1.txt" -like "archivo?.txt") {
 
 ```powershell
 Get-ChildItem *.xyz
-# si no existe ningún archivo .xyz, el comando no devuelve nada -> sin error silencioso como en Bash
+# si no existe ningún archivo .xyz, el comando no devuelve nada -> sin error silencioso como en
+# Bash
 ```
 
 > **Nota:** es una diferencia importante con Bash, donde `echo *.xyz` muestra literalmente el texto `*.xyz` si nada coincide; PowerShell, en cambio, siempre resuelve el patrón en una lista real (eventualmente vacía), nunca en la cadena bruta del patrón no resuelto.
@@ -76,7 +77,8 @@ Set-Location ~\proyectos # equivalente a Set-Location $HOME\proyectos
 
 ```powershell
 Write-Output *.txt    # PowerShell intenta resolver el patrón según el contexto del comando
-Write-Output '*.txt'  # muestra literalmente *.txt -> las comillas simples desactivan la interpretación
+# muestra literalmente *.txt -> las comillas simples desactivan la interpretación
+Write-Output '*.txt'
 ```
 
 > **Nota:** contrariamente a Bash donde `*` es expandido por el propio shell incluso antes de que el comando lo reciba, en PowerShell es cada cmdlet la que decide interpretar o no un wildcard recibido como argumento: `Write-Output *.txt` por tanto solo muestra el texto `*.txt`, mientras que `Get-ChildItem *.txt` sí lo resuelve en una lista de archivos.

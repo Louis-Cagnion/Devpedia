@@ -55,7 +55,8 @@ import re
 def formato_codigo_postal_valido(texto):
     return re.fullmatch(r"\d{5}", texto) is not None
 
-formato_codigo_postal_valido("2801 8")  # False -> un espacio de mas, señala un error probable de OCR
+# False -> un espacio de mas, señala un error probable de OCR
+formato_codigo_postal_valido("2801 8")
 formato_codigo_postal_valido("28018")   # True
 ```
 

@@ -69,8 +69,10 @@ chown usuario:grupo archivo.txt   # cambia propietario Y grupo de una vez
 
 ```bash
 mkdir carpeta                        # crea una carpeta
-mkdir -p a/b/c                       # crea toda la estructura de una vez, sin error si ya existe
-touch archivo.txt                    # crea un archivo vacío (o actualiza su fecha de modificación si existe)
+# crea toda la estructura de una vez, sin error si ya existe
+mkdir -p a/b/c
+# crea un archivo vacío (o actualiza su fecha de modificación si existe)
+touch archivo.txt
 cp origen.txt destino.txt            # copia un archivo
 cp -r carpeta_origen carpeta_destino # copia recursiva, necesaria para una carpeta
 mv antiguo.txt nuevo.txt             # mueve O renombra (ambas son la misma operación para mv)

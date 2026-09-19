@@ -121,7 +121,8 @@ Comparar o buscar texto ignorando los acentos (agrupar "café" y "cafe" como una
 import unicodedata
 
 def quitar_acentos(texto):
-    descompuesto = unicodedata.normalize("NFKD", texto)   # "é" -> "e" + acento agudo combinante
+    # "é" -> "e" + acento agudo combinante
+    descompuesto = unicodedata.normalize("NFKD", texto)
     return "".join(c for c in descompuesto if not unicodedata.combining(c))
 
 quitar_acentos("café")   # "cafe"

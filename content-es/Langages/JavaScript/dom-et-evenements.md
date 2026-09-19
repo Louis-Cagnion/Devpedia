@@ -22,7 +22,8 @@ document.querySelectorAll(".tarjeta"); // TODOS los elementos coincidentes (Node
 const titulo = document.querySelector("h1");
 
 titulo.textContent = "Nuevo título";  // sustituye el texto (escapa automáticamente el HTML)
-titulo.innerHTML = "<em>Título</em>"; // inserta HTML sin procesar -> PELIGRO si la fuente no es fiable (XSS)
+// inserta HTML sin procesar -> PELIGRO si la fuente no es fiable (XSS)
+titulo.innerHTML = "<em>Título</em>";
 titulo.style.color = "red";           // modifica un estilo CSS directamente
 titulo.classList.add("activo");       // añade una clase CSS
 titulo.classList.remove("activo");
@@ -80,7 +81,8 @@ document.querySelector("#lista").addEventListener("click", (evento) => {
     }
 });
 // funciona incluso para tarjetas añadidas DINÁMICAMENTE después de este addEventListener,
-// a diferencia de un addEventListener colocado individualmente en cada tarjeta al cargar la página
+// a diferencia de un addEventListener colocado individualmente en cada tarjeta al cargar la
+// página
 ```
 
 Esta técnica, la **delegación de eventos**, evita tener que volver a asociar un escuchador a cada nuevo elemento creado dinámicamente (véase el ejemplo de `createElement` más arriba): un único escuchador, colocado una vez en un ancestro estable, basta.

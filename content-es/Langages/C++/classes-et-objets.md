@@ -110,7 +110,8 @@ Sin constructor de copia ni operador de asignación explícitos, C++ genera vers
 ## Métodos `const`
 
 ```cpp
-std::string descripcion() const {   // "const" aquí: garantiza que este método NO modifica el objeto
+// "const" aquí: garantiza que este método NO modifica el objeto
+std::string descripcion() const {
     return marca + " " + modelo;
 }
 ```

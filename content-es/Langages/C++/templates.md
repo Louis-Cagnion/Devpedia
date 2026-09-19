@@ -40,7 +40,8 @@ public:
     void apilar(T valor) { elementos.push_back(valor); }
     T desapilar() {
         if (estaVacia()) {
-            throw std::out_of_range("Pila vacía"); // véase Las excepciones: nunca desapilar en vacío
+            // véase Las excepciones: nunca desapilar en vacío
+            throw std::out_of_range("Pila vacía");
         }
         T ultimo = elementos.back();
         elementos.pop_back();

@@ -53,11 +53,13 @@ from sklearn.tree import DecisionTreeClassifier
 X = [[1, 1, 0], [1, 1, 1], [0, 1, 0], [1, 0, 0], [0, 0, 1]]
 y = [1, 0, 0, 0, 0]
 
-modelo = DecisionTreeClassifier(max_depth=3)   # max_depth: limita el número de preguntas en cascada
+# max_depth: limita el número de preguntas en cascada
+modelo = DecisionTreeClassifier(max_depth=3)
 modelo.fit(X, y)
 
 modelo.predict([[1, 1, 0]])           # [1] -> clasificado "Deporte"
-modelo.feature_importances_            # importancia relativa de cada característica en las decisiones del árbol
+# importancia relativa de cada característica en las decisiones del árbol
+modelo.feature_importances_
 ```
 
 ## Cómo elige el árbol sus preguntas

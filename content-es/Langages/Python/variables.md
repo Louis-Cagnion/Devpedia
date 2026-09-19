@@ -24,7 +24,8 @@ edad = "veinticinco"  # perfectamente válido: edad se convierte en un str, sin 
 
 ```python
 type(edad)             # <class 'int'>
-isinstance(edad, int)  # True -> preferible a type() == int para las comprobaciones condicionales
+# True -> preferible a type() == int para las comprobaciones condicionales
+isinstance(edad, int)
 ```
 
 ## Los operadores
@@ -104,8 +105,10 @@ Las f-strings (prefijo `f` antes de las comillas) son el método moderno recomen
 
 ```python
 texto = ""
-print(f"Recibido: {texto!r}")   # Recibido: '' -> repr(): muestra las comillas, así la cadena vacía se ve
-print(f"Recibido: {texto}")     # Recibido:    -> inserción normal: nada que ver, ilegible en un mensaje de depuración
+# Recibido: '' -> repr(): muestra las comillas, así la cadena vacía se ve
+print(f"Recibido: {texto!r}")
+# Recibido:    -> inserción normal: nada que ver, ilegible en un mensaje de depuración
+print(f"Recibido: {texto}")
 ```
 
 `!r` llama a `repr(x)` antes de la inserción (equivalente a `f"{repr(x)}"`): útil en un mensaje de error para distinguir `""` (cadena vacía) de `" "` (espacio), o más en general para ver el valor exacto recibido en lugar de su presentación "limpia". `!s` (`str(x)`, el comportamiento por defecto) y `!a` (`ascii(x)`, escapa los caracteres no-ASCII) también existen, más raramente útiles.
@@ -129,7 +132,8 @@ palabras = ["Python", "es", "legible"]
 
 " ".join(palabras)   # "Python es legible"
 ", ".join(palabras)  # "Python, es, legible"
-"".join(palabras)    # "Pythoneslegible" -> separador vacío: ningún carácter entre los elementos
+# "Pythoneslegible" -> separador vacío: ningún carácter entre los elementos
+"".join(palabras)
 ```
 
 > **Trampa:** el orden está invertido respecto a la intuición de otros lenguajes: es el SEPARADOR quien llama a `.join()`, nunca la lista (`", ".join(palabras)`, no `palabras.join(", ")`). `.join()` también exige que todos los elementos ya sean cadenas; unir una lista de números lanza un `TypeError` sin una conversión previa (`", ".join(str(n) for n in numeros)`).
@@ -139,7 +143,8 @@ palabras = ["Python", "es", "legible"]
 ```python
 texto = "linea1\nlinea2\r\nlinea3"
 
-texto.splitlines()  # ["linea1", "linea2", "linea3"]     -> reconoce \n Y \r\n, ningún \n en el resultado
+# ["linea1", "linea2", "linea3"]     -> reconoce \n Y \r\n, ningún \n en el resultado
+texto.splitlines()
 texto.split("\n")   # ["linea1", "linea2", "linea3\r"]   -> "\r" queda pegado a "linea3"
 ```
 

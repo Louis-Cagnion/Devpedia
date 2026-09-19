@@ -18,7 +18,8 @@ const nombre = 'Juan';
 const str3 = `¡Hola ${nombre}!`;   // '¡Hola Juan!' -> ${...} inserta directamente una variable
 
 const str4 = `Línea 1
-Línea 2`;                          // los saltos de línea del código fuente se conservan tal cual
+// los saltos de línea del código fuente se conservan tal cual
+Línea 2`;
 ```
 
 ### Los prototipos de strings

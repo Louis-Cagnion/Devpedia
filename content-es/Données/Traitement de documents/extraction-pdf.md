@@ -28,12 +28,14 @@ import pymupdf
 with pymupdf.open("documento.pdf") as documento:
     for numero_pagina, pagina in enumerate(documento, start=1):
         for bloque in pagina.get_text("dict")["blocks"]:
-            if bloque["type"] != 0:      # 0 = bloque de texto; 1 = bloque imagen, ignorado aquí
+            # 0 = bloque de texto; 1 = bloque imagen, ignorado aquí
+            if bloque["type"] != 0:
                 continue
             spans = [span for linea in bloque["lines"] for span in linea["spans"]]
             texto = "".join(span["text"] for span in spans).strip()
             if not texto:
-                continue                # bloque vacío (espaciado, línea en blanco): nada que conservar
+                # bloque vacío (espaciado, línea en blanco): nada que conservar
+                continue
             print(numero_pagina, bloque["bbox"], texto)
 ```
 

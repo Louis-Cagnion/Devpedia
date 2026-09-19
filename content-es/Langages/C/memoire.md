@@ -20,7 +20,8 @@ Un programa en C dispone de dos áreas principales de memoria para sus datos:
 ```c
 void ejemplo(void)
 {
-    int x = 5;                     // en la pila, liberado automáticamente al final de la función
+    // en la pila, liberado automáticamente al final de la función
+    int x = 5;
     int *p = malloc(sizeof(int));  // en el montón, permanece asignado hasta free(p)
     *p = 5;
     free(p);
@@ -114,9 +115,11 @@ Si `entrada_usuario` supera los 16 bytes, `strcpy()` sigue escribiendo más all�
 ```c
 strcpy(buffer, entrada);                      // peligroso: sin límite alguno
 strncpy(buffer, entrada, sizeof(buffer) - 1); // acotado al tamaño real del búfer
-buffer[sizeof(buffer) - 1] = '\0';            // strncpy no garantiza la terminación si la fuente es demasiado larga
+// strncpy no garantiza la terminación si la fuente es demasiado larga
+buffer[sizeof(buffer) - 1] = '\0';
 
-fgets(buffer, sizeof(buffer), stdin);        // lectura acotada desde la propia entrada, en vez de corregir después
+// lectura acotada desde la propia entrada, en vez de corregir después
+fgets(buffer, sizeof(buffer), stdin);
 ```
 
 | Función arriesgada | Alternativa acotada |
@@ -133,7 +136,8 @@ fgets(buffer, sizeof(buffer), stdin);        // lectura acotada desde la propia 
 De origen BSD (no es estándar C, pero está disponible en macOS/\*BSD, y es fácil de reimplementar uno mismo, como hace la biblioteca `libft` con `ft_strlcpy`/`ft_strlcat`), estas funciones corrigen el punto débil de `strncpy`/`strcat`: detectar un truncamiento.
 
 ```c
-size_t necesario = strlcpy(buffer, entrada, sizeof(buffer));  // SIEMPRE termina en '\0', a diferencia de strncpy
+// SIEMPRE termina en '\0', a diferencia de strncpy
+size_t necesario = strlcpy(buffer, entrada, sizeof(buffer));
 
 if (necesario >= sizeof(buffer))
 {

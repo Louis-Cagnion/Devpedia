@@ -35,7 +35,8 @@ p1 = Punto(1, 2)
 p2 = Punto(1, 2)
 
 print(p1)        # Punto(x=1, y=2)  -> __repr__ generado automáticamente
-print(p1 == p2)  # True             -> __eq__ generado automáticamente, comparación campo por campo
+# True             -> __eq__ generado automáticamente, comparación campo por campo
+print(p1 == p2)
 ```
 
 Cada línea `x: int` declara a la vez un campo **y** su tipo: `@dataclass` lee estas anotaciones para construir `__init__(self, x, y)` automáticamente, en el orden en que se declaran los campos.
@@ -61,7 +62,8 @@ class BloqueTexto:
     texto: str
 
 bloque = BloqueTexto(pagina=1, texto="Hola")
-bloque.texto = "Modificado"   # FrozenInstanceError: imposible modificar un campo tras la creación
+# FrozenInstanceError: imposible modificar un campo tras la creación
+bloque.texto = "Modificado"
 ```
 
 Una dataclass `frozen=True` se vuelve además **hasheable** (usable como clave de `dict` o elemento de un `set`) en cuanto todos sus campos lo son ellos mismos, a diferencia de una dataclass ordinaria (mutable, por tanto no hasheable por defecto): una consecuencia directa del mismo principio por el que [una tupla es hasheable pero una lista no lo es](/?c=langages-de-programmation&s=python&p=dictionnaires-et-ensembles).
@@ -89,16 +91,20 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Carrito:
-    articulos: list = []   # ValueError lanzada en la definición de la clase: lista mutable prohibida como defecto directo
+    # ValueError lanzada en la definición de la clase: lista mutable prohibida como defecto
+    # directo
+    articulos: list = []
 
 @dataclass
 class Carrito:
-    articulos: list = field(default_factory=list)   # correcto: una NUEVA lista en cada instancia
+    # correcto: una NUEVA lista en cada instancia
+    articulos: list = field(default_factory=list)
 
 p1 = Carrito()
 p2 = Carrito()
 p1.articulos.append("manzana")
-print(p2.articulos)   # [] -> bien independiente de p1, a diferencia de la trampa de las funciones
+# [] -> bien independiente de p1, a diferencia de la trampa de las funciones
+print(p2.articulos)
 ```
 
 `field(default_factory=funcion)` llama a `funcion()` (aquí `list`, por tanto `list()`) en cada nueva instancia en lugar de una sola vez en la definición de la clase: eso es lo que evita el compartimiento involuntario.

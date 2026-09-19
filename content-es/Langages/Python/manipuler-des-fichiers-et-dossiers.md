@@ -11,7 +11,8 @@ order: 15
 ```python
 from pathlib import Path
 
-carpeta = Path("informes") / "2026" / "agosto.txt"  # "/" construye la ruta, PORTABLE (\ en Windows, / en el resto)
+# "/" construye la ruta, PORTABLE (\ en Windows, / en el resto)
+carpeta = Path("informes") / "2026" / "agosto.txt"
 print(carpeta)                                      # informes/2026/agosto.txt
 
 carpeta.exists()   # True/False -> ¿existe realmente el archivo/carpeta en el disco?
@@ -28,10 +29,14 @@ carpeta.is_dir()   # True/False
 ```python
 carpeta = Path("informes") / "2026"
 
-carpeta.mkdir()                              # FileNotFoundError si "informes" no existe aún (el padre)
-carpeta.mkdir(parents=True)                  # crea también los padres que falten -> ya no hay FileNotFoundError
-carpeta.mkdir(exist_ok=True)                 # FileExistsError si la carpeta ya existe (sin parents=True)
-carpeta.mkdir(parents=True, exist_ok=True)   # ambos combinados: NUNCA se queja, crea lo que falte
+# FileNotFoundError si "informes" no existe aún (el padre)
+carpeta.mkdir()
+# crea también los padres que falten -> ya no hay FileNotFoundError
+carpeta.mkdir(parents=True)
+# FileExistsError si la carpeta ya existe (sin parents=True)
+carpeta.mkdir(exist_ok=True)
+# ambos combinados: NUNCA se queja, crea lo que falte
+carpeta.mkdir(parents=True, exist_ok=True)
 ```
 
 `parents=True, exist_ok=True` es el patrón idiomático «crear la carpeta si hace falta»: reemplaza un `if not carpeta.exists(): carpeta.mkdir()` explícito por una sola línea que nunca falla, exista ya la carpeta o no. Uso habitual: crear la carpeta padre de un archivo justo antes de abrirlo en escritura.
@@ -39,7 +44,8 @@ carpeta.mkdir(parents=True, exist_ok=True)   # ambos combinados: NUNCA se queja,
 ```python
 ruta_archivo = Path("informes") / "2026" / "agosto.txt"
 
-ruta_archivo.parent.mkdir(parents=True, exist_ok=True)   # crea "informes/2026" antes de escribir el archivo
+# crea "informes/2026" antes de escribir el archivo
+ruta_archivo.parent.mkdir(parents=True, exist_ok=True)
 with ruta_archivo.open("w", encoding="utf-8") as f:
     f.write("terminado")
 ```
@@ -73,9 +79,12 @@ informe.name    # "informe.txt" -> nombre completo del archivo
 informe.stem    # "informe"     -> nombre SIN la extensión
 informe.suffix  # ".txt"        -> la extensión, con el punto
 
-informe.with_name("borrador.txt")                              # Path("borrador.txt") -> reemplaza el nombre entero
-informe.with_suffix(".csv")                                     # Path("informe.csv")   -> reemplaza solo la extensión
-informe.with_name(f"{informe.stem}.peugeot{informe.suffix}")   # Path("informe.peugeot.txt") -> inserta una palabra en medio
+# Path("borrador.txt") -> reemplaza el nombre entero
+informe.with_name("borrador.txt")
+# Path("informe.csv")   -> reemplaza solo la extensión
+informe.with_suffix(".csv")
+# Path("informe.peugeot.txt") -> inserta una palabra en medio
+informe.with_name(f"{informe.stem}.peugeot{informe.suffix}")
 ```
 
 > **Trampa:** `.with_name()` reemplaza el ÚLTIMO segmento de la ruta (el nombre del archivo), a diferencia de `/` que AÑADE uno nuevo: `Path("a/b") / "c"` da `a/b/c`, `Path("a/b").with_name("c")` da `a/c`.
@@ -92,11 +101,14 @@ ruta_archivo.unlink(missing_ok=True)  # nunca falla, incluso si el archivo ya es
 ## Eliminar una carpeta no vacía: `shutil.rmtree()`
 
 ```python
-carpeta.rmdir()  # OSError si la carpeta no está vacía -> pathlib se niega deliberadamente a eliminar contenido
+# OSError si la carpeta no está vacía -> pathlib se niega deliberadamente a eliminar contenido
+carpeta.rmdir()
 
 import shutil
-shutil.rmtree(carpeta)                      # elimina la carpeta Y todo su contenido, recursivamente
-shutil.rmtree(carpeta, ignore_errors=True)  # cualquier error (archivo bloqueado...) se ignora, en silencio
+# elimina la carpeta Y todo su contenido, recursivamente
+shutil.rmtree(carpeta)
+# cualquier error (archivo bloqueado...) se ignora, en silencio
+shutil.rmtree(carpeta, ignore_errors=True)
 ```
 
 `shutil` («*shell utilities*», módulo estándar) proporciona operaciones de archivos de más alto nivel que `pathlib`. `shutil.rmtree()` equivale a `rm -rf` en [Bash](/?c=shells&s=bash&p=redirections-et-pipes) o `Remove-Item -Recurse` en [PowerShell](/?c=shells&s=powershell&p=powershell); `shutil.copy()`/`shutil.move()` cubren la copia y el desplazamiento.
@@ -118,7 +130,9 @@ with open("contactos.csv", newline="", encoding="utf-8") as f:
 with open("contactos.csv", newline="", encoding="utf-8") as f:
     lector = csv.DictReader(f, delimiter=",")  # usa la primera línea como encabezados
     for fila in lector:
-        print(fila)              # {"nombre": "Juan", "apellido": "Perez", "edad": "25"} -> un DICT, por nombre de columna
+        # {"nombre": "Juan", "apellido": "Perez", "edad": "25"} -> un DICT, por nombre de
+        # columna
+        print(fila)
         print(fila["nombre"])    # "Juan" -> acceso por nombre, más legible que por índice
 ```
 
@@ -135,8 +149,10 @@ import json
 
 usuario = {"nombre": "Léa", "notas": [15, 12, 18]}   # un dict Python "normal"
 
-texto = json.dumps(usuario, ensure_ascii=False)      # '{"nombre": "Léa", "notas": [15, 12, 18]}' -> texto JSON
-objeto = json.loads(texto)                           # objeto Python, redecodificado desde el texto (== usuario)
+# '{"nombre": "Léa", "notas": [15, 12, 18]}' -> texto JSON
+texto = json.dumps(usuario, ensure_ascii=False)
+# objeto Python, redecodificado desde el texto (== usuario)
+objeto = json.loads(texto)
 ```
 
 | Función | Entrada | Salida |
@@ -154,13 +170,15 @@ Un archivo JSON clásico contiene un único objeto o array raíz: añadir una en
 
 ```python
 with open("estados.jsonl", "a", encoding="utf-8") as f:
-    f.write(json.dumps({"id": 1, "status": "ok"}, ensure_ascii=False) + "\n")   # AÑADE una línea, sin tocar el resto del archivo
+    # AÑADE una línea, sin tocar el resto del archivo
+    f.write(json.dumps({"id": 1, "status": "ok"}, ensure_ascii=False) + "\n")
 ```
 
 ```python
 with open("estados.jsonl", encoding="utf-8") as f:
     for linea in f:
-        entrada = json.loads(linea)   # cada línea se decodifica independientemente de las demás
+        # cada línea se decodifica independientemente de las demás
+        entrada = json.loads(linea)
         print(entrada["id"])
 ```
 

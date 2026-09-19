@@ -209,7 +209,8 @@ pipe(fds); // fds[0] = extremo de lectura, fds[1] = extremo de escritura
 
 pid_t p1 = fork();
 if (p1 == 0) {
-    dup2(fds[1], STDOUT_FILENO); // la salida estándar de cmd1 se convierte en la escritura del pipe
+    // la salida estándar de cmd1 se convierte en la escritura del pipe
+    dup2(fds[1], STDOUT_FILENO);
     close(fds[0]);
     close(fds[1]);
     execve("/bin/ls", ...);
@@ -217,7 +218,8 @@ if (p1 == 0) {
 
 pid_t p2 = fork();
 if (p2 == 0) {
-    dup2(fds[0], STDIN_FILENO); // la entrada estándar de cmd2 se convierte en la lectura del pipe
+    // la entrada estándar de cmd2 se convierte en la lectura del pipe
+    dup2(fds[0], STDIN_FILENO);
     close(fds[0]);
     close(fds[1]);
     execve("/usr/bin/grep", ...);

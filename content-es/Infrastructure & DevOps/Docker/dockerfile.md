@@ -10,7 +10,8 @@ Un **Dockerfile** es una receta en texto: una serie de instrucciones que describ
 
 ```dockerfile
 FROM node:20-alpine        # imagen base: Node.js 20 sobre una distribucion Alpine (minima)
-WORKDIR /app                # carpeta de trabajo dentro del contenedor para todas las instrucciones siguientes
+# carpeta de trabajo dentro del contenedor para todas las instrucciones siguientes
+WORKDIR /app
 
 COPY package*.json ./       # copia estos archivos desde la maquina host hacia la imagen
 RUN npm install              # ejecuta un comando DURANTE la construccion de la imagen
@@ -18,9 +19,11 @@ RUN npm install              # ejecuta un comando DURANTE la construccion de la 
 COPY . .                    # copia el resto del codigo fuente
 
 ENV NODE_ENV=production     # variable de entorno, disponible en el build y en la ejecucion
-EXPOSE 3000                  # documenta el puerto usado (no abre nada por si sola, cf. capitulo redes)
+# documenta el puerto usado (no abre nada por si sola, cf. capitulo redes)
+EXPOSE 3000
 
-CMD ["node", "server.js"]   # comando ejecutado cuando el CONTENEDOR arranca, no durante el build
+# comando ejecutado cuando el CONTENEDOR arranca, no durante el build
+CMD ["node", "server.js"]
 ```
 
 | Instrucción | Rol |
@@ -45,7 +48,8 @@ El proceso lanzado por `CMD`/`ENTRYPOINT` recibe el PID 1 dentro del contenedor 
 Por eso un comando que nunca termina pero por lo demás no hace **nada** (`tail -f /dev/null`, `sleep infinity`, `while true; do sleep 1; done`) es un mal reflejo para "mantener vivo el contenedor": eso enmascara el verdadero problema (el servicio que realmente se quiere ejecutar se detuvo, o nunca se lanzó) en lugar de resolverlo. La buena práctica es lanzar directamente, como PID 1, el servicio deseado **en primer plano** (*foreground*); la mayoría de los daemons tienen una opción dedicada para esto, que les impide desprenderse en segundo plano como harían de forma nativa (`nginx -g 'daemon off;'`, por ejemplo):
 
 ```dockerfile
-CMD ["nginx", "-g", "daemon off;"]   # nginx permanece en primer plano: Docker tiene un proceso que vigilar
+# nginx permanece en primer plano: Docker tiene un proceso que vigilar
+CMD ["nginx", "-g", "daemon off;"]
 ```
 
 > **Nota:** el PID 1 tiene un rol particular en Linux, independiente de Docker (cf. capítulo [La gestión de procesos](/?c=shells&s=bash&p=gestion-des-processus), sección [Bash](/?c=shells&s=bash&p=bash)): el kernel no le aplica la acción por defecto de una señal como `SIGTERM` si no ha instalado explícitamente su propio manejador: `docker stop` puede entonces parecer no hacer nada sobre un proceso que no gestiona esa señal por sí mismo. También es el PID 1 quien debe recuperar (*reap*) los procesos zombis que lanza; un punto a vigilar si la imagen lanza ella misma varios subprocesos.

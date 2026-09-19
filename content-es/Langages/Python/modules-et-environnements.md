@@ -37,7 +37,8 @@ def suma(a, b):
     return a + b
 
 if __name__ == "__main__":
-    print("Prueba rápida:", suma(2, 3))   # se ejecuta SOLO si se lanza "python calculos.py" directamente
+    # se ejecuta SOLO si se lanza "python calculos.py" directamente
+    print("Prueba rápida:", suma(2, 3))
 ```
 
 > **Nota:** este resguardo permite que un archivo sirva a la vez de módulo reutilizable (importado sin ejecutar nada inesperado) y de script autónomo (probable directamente), sin que ambos usos interfieran.

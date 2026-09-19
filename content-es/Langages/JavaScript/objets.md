@@ -61,7 +61,8 @@ Object.values(obj);   // ['Juan', 25]
 Object.entries(obj);  // [['nombre', 'Juan'], ['edad', 25]]
 
 const copia = Object.assign({}, obj);                        // copia de obj
-const fusion = Object.assign({}, obj, { ciudad: 'Madrid' });  // { nombre: 'Juan', edad: 25, ciudad: 'Madrid' }
+// { nombre: 'Juan', edad: 25, ciudad: 'Madrid' }
+const fusion = Object.assign({}, obj, { ciudad: 'Madrid' });
 
 Object.freeze(obj);
 obj.edad = 30;                    // no tiene ningún efecto, obj.edad sigue siendo 25
@@ -77,7 +78,8 @@ const obj = { nombre: 'Juan', edad: 25 };
 obj.hasOwnProperty('nombre');       // true -> clave presente en el propio objeto
 obj.hasOwnProperty('desconocida');  // false
 
-'nombre' in obj;                      // true -> también comprueba las propiedades heredadas, a diferencia de hasOwnProperty
+// true -> también comprueba las propiedades heredadas, a diferencia de hasOwnProperty
+'nombre' in obj;
 ```
 
 `hasOwnProperty` es un prototipo disponible directamente en un objeto; `in` también comprueba la existencia de una clave, pero incluyendo las propiedades heredadas.
@@ -90,7 +92,8 @@ El **destructuring** permite extraer directamente ciertas propiedades de un obje
 const obj = { nombre: 'Juan', edad: 25 };
 const { nombre, edad } = obj;   // nombre = 'Juan', edad = 25
 
-const { nombre: alias } = obj; // renombra la variable durante el destructuring -> alias = 'Juan'
+// renombra la variable durante el destructuring -> alias = 'Juan'
+const { nombre: alias } = obj;
 ```
 
 El **spread** (`...`) permite "desplegar" un objeto, lo cual resulta útil para copiarlo o fusionar varios entre sí.

@@ -59,9 +59,12 @@ Con pocos ejemplos disponibles, la **aumentación de datos** (*data augmentation
 from torchvision import transforms
 
 aumentacion = transforms.Compose([
-    transforms.RandomRotation(degrees=5),                    # ligero desalineamiento del escaneo
-    transforms.ColorJitter(brightness=0.2, contrast=0.2),    # variacion de iluminacion/calidad de escaneo
-    transforms.GaussianBlur(kernel_size=3),                  # ligero desenfoque (foto en lugar de escaner)
+    # ligero desalineamiento del escaneo
+    transforms.RandomRotation(degrees=5),
+    # variacion de iluminacion/calidad de escaneo
+    transforms.ColorJitter(brightness=0.2, contrast=0.2),
+    # ligero desenfoque (foto en lugar de escaner)
+    transforms.GaussianBlur(kernel_size=3),
 ])
 ```
 

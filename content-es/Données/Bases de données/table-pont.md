@@ -56,7 +56,8 @@ id_venta | id_promocion
 Hacer un `JOIN` ingenuo entre `hecho_ventas` y `puente_ventas_promociones` produce una fila por asociación, no una fila por venta. Una venta de 100€ que tiene dos promociones aparece dos veces en el resultado: sumarla directamente duplica el importe.
 
 ```sql
--- trampa: esta consulta cuenta la venta 1 dos veces (una por promocion), por tanto 200€ en lugar de 100€
+-- trampa: esta consulta cuenta la venta 1 dos veces (una por promocion), por tanto 200€ en
+-- lugar de 100€
 SELECT SUM(f.importe)
 FROM hecho_ventas f
 JOIN puente_ventas_promociones p ON p.id_venta = f.id_venta;
@@ -70,10 +71,12 @@ JOIN puente_ventas_promociones p ON p.id_venta = f.id_venta;
 CREATE TABLE puente_ventas_promociones (
     id_venta      INT,
     id_promocion  INT,
-    peso          DECIMAL(4, 2)   -- parte del importe atribuida a esta promocion (suma = 1 por venta)
+    -- parte del importe atribuida a esta promocion (suma = 1 por venta)
+    peso          DECIMAL(4, 2)
 );
 
--- con la ponderacion, la suma vuelve a ser correcta: 100€ repartidos en 50€ + 50€, no 100€ + 100€
+-- con la ponderacion, la suma vuelve a ser correcta: 100€ repartidos en 50€ + 50€, no 100€ +
+-- 100€
 SELECT SUM(f.importe * p.peso)
 FROM hecho_ventas f
 JOIN puente_ventas_promociones p ON p.id_venta = f.id_venta;

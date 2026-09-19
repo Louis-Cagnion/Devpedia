@@ -31,9 +31,11 @@ volumes:
 ```
 
 ```bash
-docker compose up -d        # construye (si es necesario) y arranca todos los servicios en segundo plano
+# construye (si es necesario) y arranca todos los servicios en segundo plano
+docker compose up -d
 docker compose logs -f api  # sigue los logs de un servicio concreto
-docker compose down         # detiene y elimina los contenedores (los volumenes con nombre sobreviven)
+# detiene y elimina los contenedores (los volumenes con nombre sobreviven)
+docker compose down
 ```
 
 > **YAML es sensible a la indentación**, exactamente como [Python](/?c=langages-de-programmation&s=python&p=python): dos líneas al mismo nivel deben tener la misma indentación, y una tabulación suele ser inválida ahí (YAML solo acepta espacios). Un error de indentación cambia silenciosamente la estructura del documento en lugar de provocar un error explícito: es lo primero a verificar ante un comportamiento inesperado.

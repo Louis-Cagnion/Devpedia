@@ -157,7 +157,8 @@ bloqueo_recalculo = threading.Lock()
 def valor_con_cache(clave):
     entrada = cache.get(clave)
     if entrada is None:
-        return recalcular_y_guardar(clave)   # la primera llamada: no hay otra opcion que esperar
+        # la primera llamada: no hay otra opcion que esperar
+        return recalcular_y_guardar(clave)
 
     if entrada.esta_obsoleta() and bloqueo_recalculo.acquire(blocking=False):
         threading.Thread(target=lambda: recalcular_y_guardar(clave, bloqueo_recalculo)).start()

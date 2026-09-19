@@ -58,7 +58,8 @@ try {
     retirar(100, 150);
 } catch (const SaldoInsuficienteException &e) {
     std::cout << e.what() << "\n";
-} catch (const std::exception &e) {   // red de seguridad para cualquier otra excepción estándar
+// red de seguridad para cualquier otra excepción estándar
+} catch (const std::exception &e) {
     std::cout << "Error inesperado: " << e.what() << "\n";
 }
 ```
@@ -79,7 +80,8 @@ Cuando se lanza una excepción, C++ "desenrolla la pila" (*stack unwinding*): ca
 ```cpp
 void funcionSegura() noexcept {
     // el compilador puede optimizar sabiendo que ninguna excepción saldrá de aquí
-    // si a pesar de todo escapa una excepción, el programa se detiene de inmediato (std::terminate)
+    // si a pesar de todo escapa una excepción, el programa se detiene de inmediato
+    // (std::terminate)
 }
 ```
 

@@ -50,7 +50,8 @@ En la práctica: usar `#!/bin/bash` (y ejecutarlo con `bash`) en cuanto el scrip
 
 ```bash
 chmod +x script.sh  # añade el permiso de ejecución (ver Permisos y manipulación de archivos)
-./script.sh         # ejecuta el script (el "./" es necesario si la carpeta actual no está en $PATH)
+# ejecuta el script (el "./" es necesario si la carpeta actual no está en $PATH)
+./script.sh
 ```
 
 Alternativa sin necesidad de `chmod +x`: lanzar explícitamente el intérprete sobre el archivo:
@@ -105,7 +106,8 @@ Cada comando, y por tanto cada script, termina con un **código de salida**: `0`
 #!/bin/bash
 
 if [ ! -f "config.txt" ]; then
-    echo "Error: falta el archivo de config" >&2   # >&2: envía este mensaje a la salida de error (stderr)
+    # >&2: envía este mensaje a la salida de error (stderr)
+    echo "Error: falta el archivo de config" >&2
     exit 1
 fi
 
@@ -140,7 +142,8 @@ Por defecto, Bash sigue ejecutando las líneas siguientes incluso si un comando 
 
 ```bash
 #!/bin/bash
-set -e   # detiene inmediatamente el script si un comando falla (código de salida distinto de cero)
+# detiene inmediatamente el script si un comando falla (código de salida distinto de cero)
+set -e
 
 cd /carpeta/inexistente   # si esta carpeta no existe, el script se detiene aquí
 echo "Esta línea nunca se ejecuta si cd falló"
@@ -160,7 +163,8 @@ Un caso concreto donde `set -e` no se dispara, a pesar de un fallo real:
 
 ```bash
 set -e
-comando_que_falla | grep "patron"   # falla, pero set -e NO se detiene aquí sin pipefail: solo cuenta grep
+# falla, pero set -e NO se detiene aquí sin pipefail: solo cuenta grep
+comando_que_falla | grep "patron"
 ```
 
 > **Trampa:** `set -e` no cubre todo lo que se podría esperar. Un comando que falla **no detiene nada** si está probado por un `if`, combinado con `&&`/`||`, o si no es el último de un pipeline (sin `pipefail`, como en el ejemplo de arriba): en estos tres casos, Bash considera el fallo "esperado y ya gestionado", así que `set -e` no se dispara.

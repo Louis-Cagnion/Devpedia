@@ -24,7 +24,8 @@ Este capítulo aborda dos mecanismos transversales de CSS: las **variables perso
 
 ```css
 .boton {
-    background-color: var(--color-primario, blue);   /* "blue": valor de respaldo si la variable no existe */
+    /* "blue": valor de respaldo si la variable no existe */
+    background-color: var(--color-primario, blue);
 }
 ```
 
@@ -37,7 +38,8 @@ Este capítulo aborda dos mecanismos transversales de CSS: las **variables perso
 }
 
 .tarjeta.compacta {
-    --margen-interno: 8px;   /* redefine la variable ÚNICAMENTE para los elementos con esta clase adicional */
+    /* redefine la variable ÚNICAMENTE para los elementos con esta clase adicional */
+    --margen-interno: 8px;
 }
 ```
 
@@ -48,7 +50,8 @@ Este capítulo aborda dos mecanismos transversales de CSS: las **variables perso
 ```css
 .boton-peligro:hover {
     background-color: color-mix(in srgb, var(--color-peligro) 85%, black);
-    /* mezcla 85% de --color-peligro con negro: una version ligeramente oscurecida, al pasar el cursor */
+    /* mezcla 85% de --color-peligro con negro: una version ligeramente oscurecida, al pasar
+       el cursor */
 }
 ```
 
@@ -114,7 +117,8 @@ A especificidad estrictamente igual, gana la regla declarada **en último lugar*
 
 ```css
 body {
-    color: #333;         /* HEREDADO: todos los descendientes (p, span, li...) adoptan este color de texto */
+    /* HEREDADO: todos los descendientes (p, span, li...) adoptan este color de texto */
+    color: #333;
     border: 1px solid;   /* NO heredado: cada elemento tiene su propio borde, o ninguno */
 }
 ```

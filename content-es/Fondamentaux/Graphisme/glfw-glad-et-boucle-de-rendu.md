@@ -12,7 +12,8 @@ El [capítulo sobre raycasting](/?c=fondamentaux&s=graphisme&p=rendu-3d-bas-nive
 
 ```c
 GLFWwindow *ventana = glfwCreateWindow(800, 600, "Titulo", NULL, NULL);
-glfwMakeContextCurrent(ventana);   // activa este contexto para todas las llamadas OpenGL siguientes
+// activa este contexto para todas las llamadas OpenGL siguientes
+glfwMakeContextCurrent(ventana);
 ```
 
 ## Cargar las funciones OpenGL modernas: GLAD
@@ -49,7 +50,8 @@ Bufer delantero (mostrado en pantalla)   Bufer trasero (en curso de dibujo)
 ```
 
 ```c
-glfwSwapBuffers(ventana);   // intercambia los dos bufers, nunca un dibujo pixel a pixel directo en pantalla
+// intercambia los dos bufers, nunca un dibujo pixel a pixel directo en pantalla
+glfwSwapBuffers(ventana);
 ```
 
 ## El bucle de renderizado
@@ -58,10 +60,13 @@ Como el bucle de eventos del capítulo anterior, un bucle de renderizado OpenGL 
 
 ```c
 while (!glfwWindowShouldClose(ventana)) {
-    glfwPollEvents();                              // 1. recoger los eventos (teclado, raton...)
+    // 1. recoger los eventos (teclado, raton...)
+    glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // 2. borrar la imagen anterior
-    dibujarEscena();                                // 3. dibujar la nueva imagen (bufer trasero)
-    glfwSwapBuffers(ventana);                        // 4. mostrarla de golpe (double buffering)
+    // 3. dibujar la nueva imagen (bufer trasero)
+    dibujarEscena();
+    // 4. mostrarla de golpe (double buffering)
+    glfwSwapBuffers(ventana);
 }
 ```
 

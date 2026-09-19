@@ -14,7 +14,8 @@ El cast al estilo C efectúa **silenciosamente** cualquier conversión solicitad
 int entero = 65;
 char letra = (char)entero;           // conversion numerica inocua
 const char *texto = "hola";
-char *modificable = (char *)texto;   // quita un "const": mucho mas arriesgado, pero sintaxis identica
+// quita un "const": mucho mas arriesgado, pero sintaxis identica
+char *modificable = (char *)texto;
 ```
 
 Los cuatro cast de C++ hacen esta distinción explícita, y sobre todo **localizable**: `grep -r "reinterpret_cast"` encuentra de inmediato todos los puntos de riesgo de un proyecto, algo que un cast al estilo C no permite.
@@ -36,7 +37,8 @@ Base *base = static_cast<Base *>(&derivada); // upcast: siempre valido
 Descender (*downcast*) de una clase base a una clase derivada es arriesgado: el puntero de base puede, en realidad, apuntar a cualquier clase derivada de la jerarquía, no forzosamente a la buscada. `dynamic_cast` verifica esto **en tiempo de ejecución**, gracias al [RTTI](https://en.cppreference.com/w/cpp/language/rtti) (*Run-Time Type Information*, la información de tipo conservada por las clases polimórficas):
 
 ```cpp
-Base *base = obtenerUnObjeto(); // devuelve un puntero a un tipo derivado desconocido en la compilacion
+// devuelve un puntero a un tipo derivado desconocido en la compilacion
+Base *base = obtenerUnObjeto();
 
 Derivada *derivada = dynamic_cast<Derivada *>(base);
 if (derivada != nullptr) {
@@ -58,7 +60,8 @@ if (derivada != nullptr) {
 `const_cast` es el único de los cuatro que **nunca** cambia el tipo subyacente ni la representación binaria del valor: solo añade o quita la calificación `const`.
 
 ```cpp
-void apiAntigua(char *cadena); // funcion externa que nunca modifica "cadena", pero no lo declara
+// funcion externa que nunca modifica "cadena", pero no lo declara
+void apiAntigua(char *cadena);
 
 void llamar(const char *texto)
 {
@@ -76,7 +79,8 @@ void llamar(const char *texto)
 int valor = 42;
 int *punteroInt = &valor;
 
-uintptr_t direccionBruta = reinterpret_cast<uintptr_t>(punteroInt); // el puntero, visto como un simple entero
+// el puntero, visto como un simple entero
+uintptr_t direccionBruta = reinterpret_cast<uintptr_t>(punteroInt);
 ```
 
 Reservado a casos de bajo nivel (manipulación de punteros en bruto, interfaz con hardware, serialización binaria): un uso fuera de este contexto es casi siempre señal de un problema de diseño en otra parte.

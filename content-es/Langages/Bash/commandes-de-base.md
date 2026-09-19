@@ -98,7 +98,9 @@ man cd
 
 ```bash
 help cd   # documentación del builtin cd, proporcionada por Bash mismo
-man bash  # alternativa: todos los builtins también están documentados ahí, en la sección "SHELL BUILTIN COMMANDS"
+# alternativa: todos los builtins también están documentados ahí, en la sección "SHELL BUILTIN
+# COMMANDS"
+man bash
 ```
 
 ---

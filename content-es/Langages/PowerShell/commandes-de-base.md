@@ -30,7 +30,8 @@ Get-ChildItem -Path C:\logs  # lista una carpeta precisa sin moverse a ella
 ```powershell
 Get-Content archivo.txt          # muestra todo el archivo, equivalente a "cat"
 Get-Content archivo.txt -Tail 5  # las 5 últimas líneas, equivalente a "tail"
-Get-Content archivo.txt -Wait    # sigue mostrando las líneas añadidas al archivo, equivalente a "tail -f"
+# sigue mostrando las líneas añadidas al archivo, equivalente a "tail -f"
+Get-Content archivo.txt -Wait
 ```
 
 Ver el capítulo sobre procesamiento de texto para ir más lejos (búsqueda, reemplazo, orden sobre el contenido leído por `Get-Content`).

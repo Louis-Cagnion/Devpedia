@@ -10,11 +10,14 @@ Donde [Bash](/?c=shells&s=bash&p=bash) se apoya en [herramientas de texto especi
 
 ```powershell
 Select-String "error" archivo.log                   # muestra las líneas que contienen "error"
-Select-String -CaseSensitive "Error" archivo.log    # sensible a mayúsculas (lo contrario del defecto)
+# sensible a mayúsculas (lo contrario del defecto)
+Select-String -CaseSensitive "Error" archivo.log
 Select-String -NotMatch "error" archivo.log         # inverso: líneas que NO contienen "error"
-Select-String "TODO" -Path .\* -Recurse             # búsqueda recursiva en todos los archivos de una carpeta
+# búsqueda recursiva en todos los archivos de una carpeta
+Select-String "TODO" -Path .\* -Recurse
 Select-String "error" archivo.log | Measure-Object  # cuenta las líneas coincidentes
-Select-String -Pattern "error|warning" archivo.log  # patrón = una verdadera regex .NET por defecto
+# patrón = una verdadera regex .NET por defecto
+Select-String -Pattern "error|warning" archivo.log
 ```
 
 > **Nota:** contrariamente a `grep` donde hay que agregar `-E` para activar las regex extendidas, `Select-String` interpreta su patrón como una regex **por defecto**: usar `-SimpleMatch` para volver a una búsqueda de texto literal, lo contrario de la convención de Bash.
@@ -28,8 +31,10 @@ Select-String "error" archivo.log | Select-Object LineNumber, Line
 ## `-replace`: buscar y reemplazar (equivalente de `sed`)
 
 ```powershell
-(Get-Content archivo.txt) -replace "viejo", "nuevo"                              # reemplaza todas las ocurrencias por línea
-(Get-Content archivo.txt) -replace "viejo", "nuevo" | Set-Content archivo.txt    # modifica el archivo
+# reemplaza todas las ocurrencias por línea
+(Get-Content archivo.txt) -replace "viejo", "nuevo"
+# modifica el archivo
+(Get-Content archivo.txt) -replace "viejo", "nuevo" | Set-Content archivo.txt
 ```
 
 > **Nota:** `-replace` reemplaza **todas** las ocurrencias por defecto (lo contrario de `sed 's///'` sin `g`, que solo reemplaza la primera): no hay que agregar ninguna bandera equivalente a la `g` de `sed`, ese comportamiento es el que rige por defecto.
@@ -45,7 +50,8 @@ Para procesar solo ciertas líneas (equivalente de una dirección `sed '2,4s///'
 Donde `awk` divide manualmente una línea en campos (`$1`, `$2`...), PowerShell convierte directamente un formato estructurado en objetos tipados:
 
 ```powershell
-Import-Csv datos.csv | Select-Object Nombre, Edad    # columnas accesibles por su nombre, no por posición
+# columnas accesibles por su nombre, no por posición
+Import-Csv datos.csv | Select-Object Nombre, Edad
 Get-Content datos.json | ConvertFrom-Json | Select-Object -ExpandProperty usuario
 ```
 
@@ -59,10 +65,13 @@ Para un texto no estructurado cercano al uso de `awk` (división por espacios), 
 
 ```powershell
 Get-Content archivo.txt | Sort-Object                                   # orden alfabético
-Get-Content numeros.txt | Sort-Object { [int]$_ }                       # orden numérico explícito
+# orden numérico explícito
+Get-Content numeros.txt | Sort-Object { [int]$_ }
 Get-Content archivo.txt | Sort-Object -Descending                       # orden descendente
-Get-Content archivo.txt | Sort-Object -Unique                           # ordena Y deduplica en un solo paso
-Get-Content archivo.txt | Group-Object | Sort-Object Count -Descending  # cuenta las ocurrencias
+# ordena Y deduplica en un solo paso
+Get-Content archivo.txt | Sort-Object -Unique
+# cuenta las ocurrencias
+Get-Content archivo.txt | Group-Object | Sort-Object Count -Descending
 ```
 
 > **Nota:** contrariamente a `uniq` en Bash (que solo detecta duplicados **adyacentes**, de ahí la obligación de ordenar antes), `Sort-Object -Unique` y `Group-Object` funcionan sobre el conjunto de la colección, sin importar el orden inicial: no hace falta ordenar previamente para deduplicar correctamente.

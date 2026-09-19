@@ -57,7 +57,8 @@ Temperatura alta (ej. 1.5) -> aplana la brecha, las alternativas vuelven a ser c
 respuesta = client.chat.completions.create(
     model="...",
     messages=[...],
-    temperature=0.2,  # estrecha el sorteo: respuestas estables, poca variacion de una llamada a otra
+    # estrecha el sorteo: respuestas estables, poca variacion de una llamada a otra
+    temperature=0.2,
 )
 ```
 

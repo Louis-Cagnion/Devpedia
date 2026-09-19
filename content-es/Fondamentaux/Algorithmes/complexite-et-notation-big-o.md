@@ -25,7 +25,8 @@ void mostrarUnaVez(int arreglo[], int tamano)
 void mostrarTodo(int arreglo[], int tamano)
 {
     for (int i = 0; i < tamano; i++) {
-        printf("%d\n", arreglo[i]); // 1 operacion por elemento -> "tamano" operaciones en total
+        // 1 operacion por elemento -> "tamano" operaciones en total
+        printf("%d\n", arreglo[i]);
     }
 }
 ```

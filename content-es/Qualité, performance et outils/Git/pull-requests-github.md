@@ -20,7 +20,8 @@ La **pull request** (PR) es el mecanismo central de colaboración en [GitHub](/?
 git checkout -b correccion-visualizacion
 # ... modificaciones, commits ...
 git push -u origin correccion-visualizacion
-# -> la apertura de la pull request se hace después en el sitio de GitHub, no en línea de comandos
+# -> la apertura de la pull request se hace después en el sitio de GitHub, no en línea de
+# comandos
 ```
 
 > **Nota:** una pull request no es un objeto Git: solo existe en la base de datos de GitHub (metadatos, comentarios, historial de revisión). El único objeto Git implicado es la rama en sí; eliminar la pull request en GitHub no borra ningún commit.

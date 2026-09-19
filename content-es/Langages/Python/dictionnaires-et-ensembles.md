@@ -28,9 +28,11 @@ persona.get("telefono", "desconocido")  # "desconocido" -> valor por defecto si 
 
 ```python
 cache = {}
-cache[("sitio_a", 42)] = "tienda A"  # un TUPLE como clave: funciona, un tuple es inmutable, por tanto hachable
+# un TUPLE como clave: funciona, un tuple es inmutable, por tanto hachable
+cache[("sitio_a", 42)] = "tienda A"
 
-cache[["sitio_a", 42]] = "tienda A"  # TypeError: unhashable type: 'list' -> una lista es mutable, nunca hachable
+# TypeError: unhashable type: 'list' -> una lista es mutable, nunca hachable
+cache[["sitio_a", 42]] = "tienda A"
 ```
 
 Una clave de diccionario debe ser **hachable** (un número fijo, calculado de una vez por todas, que permite localizarla instantáneamente en la tabla hash subyacente): por tanto debe ser **inmutable** (`str`, número, `tuple`), nunca `list`/`dict`, que pueden cambiar de contenido después y invalidarían ese número. Un `tuple` de varios valores sirve habitualmente como **clave compuesta**: `(sitio, id)` distingue dos entradas que compartieran el mismo `id` en dos sitios diferentes, algo que ninguno de los dos valores por separado permitiría.
@@ -61,7 +63,8 @@ cuadrados = {x: x ** 2 for x in range(5)}
 tiendas_por_sitio = {}
 
 for sitio, id_tienda in pares:
-    if sitio not in tiendas_por_sitio:  # sin setdefault: esta comprobación manual es necesaria...
+    # sin setdefault: esta comprobación manual es necesaria...
+    if sitio not in tiendas_por_sitio:
         tiendas_por_sitio[sitio] = []
     tiendas_por_sitio[sitio].append(id_tienda)
 
