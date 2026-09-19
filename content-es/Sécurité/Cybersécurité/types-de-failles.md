@@ -31,7 +31,7 @@ Fallo introducido --> Descubierto --> Reportado al fabricante --> Corregido (par
                           |
                           v
           Si se explota ANTES de ser reportado/corregido: es un "zero-day"
-          (el fabricante tuvo "cero dias" para protegerse)
+          (el fabricante tuvo "cero días" para protegerse)
 ```
 
 Un **zero-day** es, por tanto, un fallo explotado antes de que el fabricante del software siquiera lo conozca, y por tanto antes de que exista un parche. Es la situación más peligrosa para los usuarios: ninguna actualización puede protegerlos todavía. Una vez que el fallo se conoce y se corrige, cualquier sistema que no aplique el parche sigue expuesto, esta vez sin excusa: la información es pública, a menudo bajo un identificador **CVE** (*Common Vulnerabilities and Exposures*), un catálogo público de fallos conocidos, consultable en la [base de datos oficial de CVE](https://www.cve.org).

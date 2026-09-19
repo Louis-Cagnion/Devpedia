@@ -29,7 +29,7 @@ Es una aplicación directa del principio de mínimo privilegio (ya visto aplicad
 
 ```bash
 ufw default deny incoming   # rechaza todo el trafico entrante por defecto
-# autoriza unicamente el puerto SSH (aqui redefinido, vease el capitulo anterior)
+# autoriza únicamente el puerto SSH (aquí redefinido, véase el capitulo anterior)
 ufw allow 2222/tcp
 ufw enable                  # activa el cortafuegos con estas reglas
 ufw status                  # lista las reglas activas

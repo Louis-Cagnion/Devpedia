@@ -89,8 +89,8 @@ int sorteo = rand() % 3;   // 0..2
 El remedio es **rechazar** los sorteos que caen en la zona excedente, o más simplemente usar una función que lo hace por ti:
 
 ```python
-random.randint(0, 2)  # gestiona la distribucion uniforme
-secrets.randbelow(3)  # idem, en version criptografica
+random.randint(0, 2)  # gestiona la distribución uniforme
+secrets.randbelow(3)  # idem, en versión criptografica
 ```
 
 El mismo razonamiento se aplica a `Math.random()` en JavaScript o `mt_rand()` en PHP: prefiere la función dedicada a un `%` improvisado.

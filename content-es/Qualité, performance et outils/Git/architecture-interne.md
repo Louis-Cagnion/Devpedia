@@ -53,7 +53,7 @@ commit ---> tree (raiz del proyecto)
 
 ```bash
 cat .git/refs/heads/main
-# a3f9c1d4e5f6...  -> solo 40 caracteres hexadecimales, nada mas
+# a3f9c1d4e5f6...  -> solo 40 caracteres hexadecimales, nada más
 ```
 
 Una rama no es **literalmente nada más** que un archivo que contiene un hash de commit. `git branch nueva` simplemente crea un nuevo archivo en `.git/refs/heads/`, copiado desde el commit actual.
@@ -117,11 +117,11 @@ Tras una reescritura de historial (o un simple `reset --hard`), los commits anti
 Un objeto solo se elimina realmente del repositorio local cuando ya nada lo retiene:
 
 ```bash
-# vacia inmediatamente el reflog de todas las refs (en lugar de esperar la expiracion por
+# vacía inmediatamente el reflog de todas las refs (en lugar de esperar la expiración por
 # defecto)
 git reflog expire --expire=now --all
 git gc --prune=now                    # elimina todo objeto vuelto inalcanzable ("unreachable")
-# lista los objetos aun presentes pero no referenciados por ninguna rama/tag/reflog
+# lista los objetos aún presentes pero no referenciados por ninguna rama/tag/reflog
 git fsck --unreachable
 ```
 

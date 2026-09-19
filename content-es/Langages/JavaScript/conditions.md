@@ -61,7 +61,7 @@ const apodo = usuario.apodo ?? "Invitado";
 // "??" solo recurre al valor por defecto SI el valor es null/undefined (no 0, "", false)
 
 const ciudad = usuario?.direccion?.ciudad ?? "Desconocida";
-// "?." : si "usuario" o "direccion" es null/undefined, se detiene inmediatamente y devuelve
+// "?." : si "usuario" o "dirección" es null/undefined, se detiene inmediatamente y devuelve
 // undefined
 // -> evita un TypeError "Cannot read properties of undefined" en cascada
 ```

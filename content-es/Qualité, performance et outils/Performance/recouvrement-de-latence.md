@@ -38,7 +38,7 @@ for i, item in enumerate(items):
     huecos[i % N] = obtener(item)                    # inicia la vuelta i, sin esperar
 
 for i in range(len(items) - N, len(items)):
-    resultados.append(extraer(huecos[i % N]))        # vacia los ultimos N huecos
+    resultados.append(extraer(huecos[i % N]))        # vacía los últimos N huecos
 ```
 
 En la vuelta `i`, `obtener(item)` empieza **antes** de que `extraer(...)` de la vuelta `i - N` haya terminado de ejecutarse: el procesamiento de un elemento transcurre mientras la espera de red del siguiente ya avanza. Ninguna de las dos vueltas espera a la otra, y nunca hay más de N esperas en vuelo a la vez.

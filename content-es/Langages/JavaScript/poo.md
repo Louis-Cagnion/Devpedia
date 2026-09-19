@@ -58,7 +58,7 @@ class Calculos {
     }
 }
 
-Calculos.suma(2, 3);   // no hace falta "new Calculos()"
+Calculos.suma(2, 3);   // no hace falta "new Cálculos()"
 ```
 
 ## Getters y setters

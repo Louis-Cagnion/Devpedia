@@ -11,7 +11,7 @@ A diferencia de [JavaScript](/?c=langages&s=javascript&p=regex), Python no tiene
 ```python
 import re
 
-patron = re.compile(r"\d{4}-\d{2}-\d{2}")   # precompila el patron, reutilizable
+patron = re.compile(r"\d{4}-\d{2}-\d{2}")   # precompila el patrón, reutilizable
 ```
 
 > **Nota:** el prefijo `r"..."` (cadena cruda, *raw string*) evita que Python interprete `\d` como una secuencia de escape inválida: indispensable en cuanto un patrón contiene una barra invertida.
@@ -31,8 +31,8 @@ patron = re.compile(r"\d{4}-\d{2}-\d{2}")   # precompila el patron, reutilizable
 ```python
 patron = re.compile(r"\d{4}-\d{2}-\d{2}")
 
-patron.match("2024-06-15 es una fecha")      # coincide: empieza con el patron
-patron.match("El 2024-06-15 es una fecha")   # None -> NO empieza con el patron
+patron.match("2024-06-15 es una fecha")      # coincide: empieza con el patrón
+patron.match("El 2024-06-15 es una fecha")   # None -> NO empieza con el patrón
 
 patron.search("El 2024-06-15 es una fecha")  # coincide, en cualquier parte de la cadena
 ```
@@ -47,7 +47,7 @@ patron.search("El 2024-06-15 es una fecha")  # coincide, en cualquier parte de l
 resultado = patron.search("El 2024-06-15 es una fecha")
 
 resultado.group(0)   # "2024-06-15" -> la coincidencia completa
-resultado[0]         # equivalente, notacion abreviada
+resultado[0]         # equivalente, notación abreviada
 resultado.start()    # 3 -> indice de inicio en la cadena
 resultado.end()      # 13 -> indice de fin
 ```
@@ -68,9 +68,9 @@ resultado.end()      # 13 -> indice de fin
 patron = re.compile(r"(\d{4})-(\d{2})-(\d{2})")
 resultado = patron.search("2024-06-15")
 
-resultado.group(1)   # "2024" (ano)
+resultado.group(1)   # "2024" (año)
 resultado.group(2)   # "06" (mes)
-resultado.group(3)   # "15" (dia)
+resultado.group(3)   # "15" (día)
 resultado.groups()   # ("2024", "06", "15") -> todos los grupos en una tupla
 ```
 
@@ -83,8 +83,8 @@ patron = re.compile(r"(?P<anio>\d{4})-(?P<mes>\d{2})-(?P<dia>\d{2})")
 resultado = patron.search("2024-06-15")
 
 resultado.group("anio")   # "2024"
-resultado["anio"]         # equivalente, notacion abreviada
-resultado.groupdict()     # {"anio": "2024", "mes": "06", "dia": "15"}
+resultado["anio"]         # equivalente, notación abreviada
+resultado.groupdict()     # {"anio": "2024", "mes": "06", "día": "15"}
 ```
 
 > **Buena práctica:** nombrar los grupos en cuanto un patrón tenga varios -- `resultado["anio"]` sigue siendo correcto aunque se añada o quite un grupo en otra parte del patrón, a diferencia de `resultado.group(2)`, cuyo número depende de la posición.

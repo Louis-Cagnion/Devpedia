@@ -41,13 +41,13 @@ La **memoización** guarda en memoria el resultado para una entrada dada y lo re
 El mismo principio se aplica a la escala de un procesamiento entero, no solo de una llamada de función. Si solo una parte de los datos ha cambiado desde el último pase, volver a procesar todo equivale a rehacer todo el trabajo ya validado para modificar solo un fragmento.
 
 ```python
-# en cada ejecucion: se vuelve a procesar las 50 000 lineas del archivo
+# en cada ejecución: se vuelve a procesar las 50 000 líneas del archivo
 for linea in todo_el_archivo:
     resultados.append(procesar(linea))
 ```
 
 ```python
-# solo se vuelve a procesar lo llegado desde el ultimo pase
+# solo se vuelve a procesar lo llegado desde el último pase
 ultima_marca_temporal = leer_marca_de_progreso()
 lineas_nuevas = [l for l in todo_el_archivo if l.marca_temporal > ultima_marca_temporal]
 
@@ -76,7 +76,7 @@ def dibujar_frame(pantalla, escena):
 Si un tick solo mueve un personaje unos pocos píxeles, el resto del decorado es idéntico píxel por píxel al frame anterior: recalcularlo no cambia nada el resultado, solo el tiempo empleado en obtenerlo.
 
 ```python
-# solo se redibujan los rectangulos marcados como "sucios" (modificados desde el ultimo tick)
+# solo se redibujan los rectangulos marcados como "sucios" (modificados desde el último tick)
 def dibujar_frame(pantalla, escena, zonas_modificadas):
     for zona in zonas_modificadas:
         for x, y in zona.pixeles():
@@ -117,7 +117,7 @@ Una caché memoizada en memoria (sección anterior) desaparece al detenerse el p
 ```python
 # Riesgo: un lector concurrente puede leer este archivo a medio escribir
 with open("cache.json", "w") as f:
-    json.dump(resultado, f)   # si el proceso se interrumpe aqui, el archivo queda corrupto
+    json.dump(resultado, f)   # si el proceso se interrumpe aquí, el archivo queda corrupto
 ```
 
 ```python
@@ -159,7 +159,7 @@ bloqueo_recalculo = threading.Lock()
 def valor_con_cache(clave):
     entrada = cache.get(clave)
     if entrada is None:
-        # la primera llamada: no hay otra opcion que esperar
+        # la primera llamada: no hay otra opción que esperar
         return recalcular_y_guardar(clave)
 
     if entrada.esta_obsoleta() and bloqueo_recalculo.acquire(blocking=False):
@@ -182,16 +182,16 @@ Por defecto, un servidor PHP mantiene en memoria todo lo que un script produce c
 
 ```php
 <?php
-ini_set('output_buffering', 'off');   // desactiva el almacenamiento en bufer de la salida
+ini_set('output_buffering', 'off');   // desactiva el almacenamiento en búfer de la salida
 ini_set('implicit_flush', true);      // fuerza el envio inmediato tras cada echo
 while (ob_get_level() > 0) {
-    ob_end_flush();                   // vacia tambien cualquier bufer ya abierto por PHP mismo
+    ob_end_flush();                   // vacía también cualquier búfer ya abierto por PHP mismo
 }
 
 foreach ($filasAImportar as $fila) {
     importarFila($fila);
     echo "Fila importada: {$fila->id}<br>\n";
-    flush();                          // envia este echo al navegador de inmediato
+    flush();                          // envía este echo al navegador de inmediato
 }
 ```
 

@@ -37,7 +37,7 @@ Sin equivalente en Bash: zsh puede mostrar un segundo indicador, alineado en el 
 
 ```bash
 RPROMPT='%D{%H:%M:%S}'
-# muestra la hora actual a la derecha, mientras la linea de comandos este vacia
+# muestra la hora actual a la derecha, mientras la línea de comandos este vacía
 ```
 
 ## `vcs_info`: información de [Git](/?c=git&p=git) integrada al prompt

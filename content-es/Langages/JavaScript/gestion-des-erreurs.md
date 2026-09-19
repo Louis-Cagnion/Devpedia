@@ -10,7 +10,7 @@ JavaScript señala un error lanzando una **excepción** (`throw`), interceptable
 
 ```javascript
 try {
-    const resultado = JSON.parse("{ invalido");
+    const resultado = JSON.parse("{ inválido");
 } catch (error) {
     console.log("Error de análisis:", error.message);
 } finally {

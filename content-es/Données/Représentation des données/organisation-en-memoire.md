@@ -89,7 +89,7 @@ int   *pi = &x;
 char  *pc = (char *)&x;
 
 *pi  // 65      -> lee 4 bytes, los interpreta como un entero
-*pc  // 'A'     -> lee 1 byte en la MISMA direccion, lo interpreta como un caracter
+*pc  // 'A'     -> lee 1 byte en la MISMA dirección, lo interpreta como un carácter
 ```
 
 Es también por eso que `puntero + 1` avanza `sizeof(tipo)` bytes y no 1: la aritmética de punteros cuenta en elementos, no en bytes. Ver el capítulo [Los punteros](/?c=langages-de-programmation&s=c&p=pointeurs).

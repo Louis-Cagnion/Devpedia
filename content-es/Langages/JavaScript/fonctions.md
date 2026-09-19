@@ -115,7 +115,7 @@ Una **IIFE** (*Immediately Invoked Function Expression*) es una función declara
 
     function svg(nombre) { /* ... */ }   // igual
 
-    global.MiBiblioteca = { svg };   // el UNICO punto accesible desde fuera
+    global.MiBiblioteca = { svg };   // el Único punto accesible desde fuera
 })(window);
 ```
 

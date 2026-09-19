@@ -93,7 +93,7 @@ Un procesamiento de 20 minutos sin visualización es indistinguible de un progra
 
 ```python
 def tiempo_restante(inicio, hechos, total):
-    if hechos < 2:                      # aun no hay ritmo medible
+    if hechos < 2:                      # aún no hay ritmo medible
         return ""
     restante = (time.monotonic() - inicio) / hechos * (total - hechos)
     if restante < 90:

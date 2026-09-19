@@ -137,7 +137,7 @@ Para aplicar este comportamiento a **todo** el archivo sin anteponer cada línea
 MAKEFLAGS += -s
 
 compilar:
-	echo "Compilando..."   # ya silencioso gracias a MAKEFLAGS; el @ es redundante aqui
+	echo "Compilando..."   # ya silencioso gracias a MAKEFLAGS; el @ es redundante aquí
 	gcc main.c -o programa
 ```
 

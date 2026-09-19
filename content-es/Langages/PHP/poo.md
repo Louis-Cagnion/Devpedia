@@ -54,7 +54,7 @@ class Calculos
     }
 }
 
-echo Calculos::media([12, 15, 9]); // sin "new Calculos()"
+echo Calculos::media([12, 15, 9]); // sin "new Cálculos()"
 ?>
 ```
 

@@ -60,7 +60,7 @@ char *get_next_line(int fd)
 {
     static char *linea_guardada;   // se conserva entre llamadas, nunca se recrea
 
-    // ... usa y actualiza linea_guardada ...
+    // ... usa y actualiza línea_guardada ...
     return (linea);
 }
 ```

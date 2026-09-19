@@ -35,9 +35,9 @@ def distancia_levenshtein(a, b):
                 tabla[i][j] = tabla[i - 1][j - 1]
             else:
                 tabla[i][j] = 1 + min(
-                    tabla[i - 1][j],      # eliminacion
-                    tabla[i][j - 1],      # insercion
-                    tabla[i - 1][j - 1],  # sustitucion
+                    tabla[i - 1][j],      # eliminación
+                    tabla[i][j - 1],      # inserción
+                    tabla[i - 1][j - 1],  # sustitución
                 )
     return tabla[len(a)][len(b)]
 ```

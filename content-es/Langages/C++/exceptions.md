@@ -11,7 +11,7 @@ C++ ofrece un mecanismo de errores estructurado (`try`/`catch`/`throw`), una alt
 ```cpp
 double dividir(double a, double b) {
     if (b == 0) {
-        throw std::runtime_error("Division por cero");
+        throw std::runtime_error("División por cero");
     }
     return a / b;
 }

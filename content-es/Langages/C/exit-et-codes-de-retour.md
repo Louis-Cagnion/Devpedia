@@ -12,7 +12,7 @@ Un programa en C siempre termina con un **código de retorno**: un entero que le
 int main(void)
 {
     // ... procesamiento ...
-    return 0;   // el programa termina aqui, codigo de retorno 0
+    return 0;   // el programa termina aquí, código de retorno 0
 }
 ```
 
@@ -26,7 +26,7 @@ En `main` (y solo en `main`), `return valor;` termina todo el programa y fija su
 void verificar_configuracion(Config *config)
 {
     if (config == NULL) {
-        fprintf(stderr, "Error: falta la configuracion\n");
+        fprintf(stderr, "Error: falta la configuración\n");
         exit(1);   // termina el programa de inmediato, incluso fuera de main
     }
 }

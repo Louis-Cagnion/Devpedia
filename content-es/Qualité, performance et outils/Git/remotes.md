@@ -19,7 +19,7 @@ git remote add origin https://ejemplo.com/proyecto.git
 ## `push`: enviar commits locales
 
 ```bash
-git push origin main     # envia los commits de la rama local "main" hacia el remote "origin"
+git push origin main     # envía los commits de la rama local "main" hacia el remote "origin"
 git push -u origin main  # -u: memoriza este enlace, para poder luego escribir solo "git push"
 git push                 # una vez memorizado el enlace
 ```
@@ -29,9 +29,9 @@ git push                 # una vez memorizado el enlace
 Tras un `rebase`, un `commit --amend`, o una reescritura del historial (véase [La arquitectura interna de Git](/?c=git&p=architecture-interne)), los commits locales ya no tienen los mismos hash que los ya enviados: un `push` normal es entonces rechazado (*non fast-forward*), pues el remote ya no encuentra sus antiguos commits como ancestros de los nuevos.
 
 ```bash
-# sobrescribe el historial remoto sin condicion, peligroso si alguien mas empujo mientras tanto
+# sobrescribe el historial remoto sin condición, peligroso si alguien más empujo mientras tanto
 git push --force origin main
-# sobrescribe solo si el remote sigue en el estado visto en el ultimo fetch
+# sobrescribe solo si el remote sigue en el estado visto en el último fetch
 git push --force-with-lease origin main
 ```
 

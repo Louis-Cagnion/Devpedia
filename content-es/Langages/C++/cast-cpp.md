@@ -12,9 +12,9 @@ El cast al estilo C efectúa **silenciosamente** cualquier conversión solicitad
 
 ```cpp
 int entero = 65;
-char letra = (char)entero;           // conversion numerica inocua
+char letra = (char)entero;           // conversión numerica inocua
 const char *texto = "hola";
-// quita un "const": mucho mas arriesgado, pero sintaxis identica
+// quita un "const": mucho más arriesgado, pero sintaxis identica
 char *modificable = (char *)texto;
 ```
 
@@ -26,10 +26,10 @@ Los cuatro cast de C++ hacen esta distinción explícita, y sobre todo **localiz
 
 ```cpp
 double precio = 19.99;
-int redondeado = static_cast<int>(precio); // conversion numerica explicita
+int redondeado = static_cast<int>(precio); // conversión numerica explicita
 
 Derivada derivada;
-Base *base = static_cast<Base *>(&derivada); // upcast: siempre valido
+Base *base = static_cast<Base *>(&derivada); // upcast: siempre válido
 ```
 
 ## `dynamic_cast`: el descenso seguro en una jerarquía
@@ -37,12 +37,12 @@ Base *base = static_cast<Base *>(&derivada); // upcast: siempre valido
 Descender (*downcast*) de una clase base a una clase derivada es arriesgado: el puntero de base puede, en realidad, apuntar a cualquier clase derivada de la jerarquía, no forzosamente a la buscada. `dynamic_cast` verifica esto **en tiempo de ejecución**, gracias al [RTTI](https://en.cppreference.com/w/cpp/language/rtti) (*Run-Time Type Information*, la información de tipo conservada por las clases polimórficas):
 
 ```cpp
-// devuelve un puntero a un tipo derivado desconocido en la compilacion
+// devuelve un puntero a un tipo derivado desconocido en la compilación
 Base *base = obtenerUnObjeto();
 
 Derivada *derivada = dynamic_cast<Derivada *>(base);
 if (derivada != nullptr) {
-    // el cast tuvo exito: "base" apuntaba realmente a una "Derivada"
+    // el cast tuvo éxito: "base" apuntaba realmente a una "Derivada"
 } else {
     // el cast fallo: "base" apuntaba a otro tipo derivado
 }
@@ -60,7 +60,7 @@ if (derivada != nullptr) {
 `const_cast` es el único de los cuatro que **nunca** cambia el tipo subyacente ni la representación binaria del valor: solo añade o quita la calificación `const`.
 
 ```cpp
-// funcion externa que nunca modifica "cadena", pero no lo declara
+// función externa que nunca modifica "cadena", pero no lo declara
 void apiAntigua(char *cadena);
 
 void llamar(const char *texto)

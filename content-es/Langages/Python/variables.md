@@ -37,7 +37,7 @@ a + b   # 8
 a - b   # 2
 a * b   # 15
 a / b   # 1.6666... -> división real, siempre un float
-a // b  # 1 -> división entera (floor division)
+a // b  # 1 -> división entera (floor división)
 a % b   # 2 -> módulo
 a ** b  # 125 -> potencia
 
@@ -143,9 +143,9 @@ palabras = ["Python", "es", "legible"]
 ```python
 texto = "linea1\nlinea2\r\nlinea3"
 
-# ["linea1", "linea2", "linea3"]     -> reconoce \n Y \r\n, ningún \n en el resultado
+# ["línea1", "línea2", "línea3"]     -> reconoce \n Y \r\n, ningún \n en el resultado
 texto.splitlines()
-texto.split("\n")   # ["linea1", "linea2", "linea3\r"]   -> "\r" queda pegado a "linea3"
+texto.split("\n")   # ["línea1", "línea2", "línea3\r"]   -> "\r" queda pegado a "línea3"
 ```
 
 `.splitlines()` reconoce tanto `\n` (fin de línea Unix) como `\r\n` (Windows) como separador, sin dejar nunca un carácter de salto de línea en el resultado: más fiable que `.split("\n")` sobre un texto cuyo origen (y por tanto la convención de fin de línea) no está garantizado, por ejemplo un archivo descargado o generado en otra máquina.

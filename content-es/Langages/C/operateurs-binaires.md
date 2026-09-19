@@ -94,7 +94,7 @@ int es_potencia_de_2(unsigned int n) {
 int contar_bits(unsigned int n) {
     int total = 0;
     while (n) {
-        n &= n - 1;      // borra el bit a 1 mas a la derecha
+        n &= n - 1;      // borra el bit a 1 más a la derecha
         total++;
     }
     return total;

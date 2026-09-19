@@ -52,7 +52,7 @@ Nodo *insertar(Nodo *raiz, int valor)
     } else if (valor > raiz->valor) {
         raiz->derecho = insertar(raiz->derecho, valor);
     }
-    // valor == raiz->valor: ya está presente, no se hace nada
+    // valor == raíz->valor: ya está presente, no se hace nada
 
     return raiz;
 }

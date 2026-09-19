@@ -20,10 +20,10 @@ Un ordenador no almacena letras, solo números. Una **codificación** es la conv
 Dos propiedades de esta tabla se explotan constantemente:
 
 ```c
-// Pasar de minuscula a mayuscula: 32 de diferencia, es decir un solo bit
+// Pasar de minúscula a mayuscula: 32 de diferencia, es decir un solo bit
 char mayuscula = minuscula - 32;
 
-// Convertir un caracter-digito a su valor numerico
+// Convertir un carácter-digito a su valor numerico
 int valor = caracter - '0';    // '7' - '0' = 55 - 48 = 7
 ```
 

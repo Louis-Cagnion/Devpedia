@@ -147,14 +147,14 @@ public:
 class Circulo : public FormaGeometrica {
 public:
     Circulo(double radio) : radio(radio) {}
-    // construye un Circulo, no una FormaGeometrica
+    // construye un Círculo, no una FormaGeometrica
     Circulo *clonar() const override { return new Circulo(*this); }
 private:
     double radio;
 };
 
 FormaGeometrica *forma = new Circulo(5);
-FormaGeometrica *copia = forma->clonar();   // copia un VERDADERO Circulo, radio incluido
+FormaGeometrica *copia = forma->clonar();   // copia un VERDADERO Círculo, radio incluido
 ```
 
 El código llamador se limita a llamar a `forma->clonar()` sin conocer nunca el tipo concreto: es `virtual` quien garantiza que se ejecute la versión correcta de `clonar()`, exactamente igual que para cualquier otro método polimórfico.

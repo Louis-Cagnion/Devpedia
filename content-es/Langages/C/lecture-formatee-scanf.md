@@ -48,7 +48,7 @@ A diferencia de `%d`/`%f`, que siempre escriben un tamaño fijo, `%s` copia una 
 
 ```c
 char nom[16];
-// si entree_utilisateur tiene mas de 15 caracteres: desbordamiento de bufer
+// si entree_utilisateur tiene más de 15 caracteres: desbordamiento de búfer
 sscanf(entree_utilisateur, "%s", nom);
 ```
 

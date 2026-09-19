@@ -86,7 +86,7 @@ div {
     * {
         animation-duration: 0.001ms !important;
         transition-duration: 0.001ms !important;
-        /* deliberadamente NO "animation: none" -- vease la trampa abajo */
+        /* deliberadamente NO "animation: none" -- véase la trampa abajo */
     }
 }
 ```

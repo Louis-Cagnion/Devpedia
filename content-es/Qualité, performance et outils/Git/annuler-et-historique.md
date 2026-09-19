@@ -9,7 +9,7 @@ Git ofrece varios comandos para retroceder, a distintos niveles: deshacer una mo
 ## Deshacer modificaciones no commiteadas
 
 ```bash
-# restaura un archivo a su ultimo estado commiteado, sobrescribe las modificaciones locales
+# restaura un archivo a su último estado commiteado, sobrescribe las modificaciones locales
 git checkout -- archivo.txt
 git restore archivo.txt      # equivalente moderno del comando anterior
 
@@ -22,12 +22,12 @@ git restore --staged archivo.txt
 ## `git reset`: retroceder la rama actual
 
 ```bash
-# anula el ultimo commit, pero mantiene todo en staging (listo para volver a commitear)
+# anula el último commit, pero mantiene todo en staging (listo para volver a commitear)
 git reset --soft HEAD~1
-# anula el ultimo commit Y el staging, mantiene las modificaciones en el directorio de trabajo
+# anula el último commit Y el staging, mantiene las modificaciones en el directorio de trabajo
 # (por defecto)
 git reset --mixed HEAD~1
-# anula el ultimo commit, el staging, Y las modificaciones mismas -> perdida definitiva
+# anula el último commit, el staging, Y las modificaciones mismas -> perdida definitiva
 git reset --hard HEAD~1
 ```
 
@@ -54,7 +54,7 @@ Incluso tras un `reset --hard` o una manipulación fallida, Git en realidad cons
 ```bash
 git reflog
 # a3f9c1d HEAD@{0}: reset: moving to HEAD~1
-# e4f5g6h HEAD@{1}: commit: Corrige el calculo del descuento
+# e4f5g6h HEAD@{1}: commit: Corrige el cálculo del descuento
 ```
 
 ```bash

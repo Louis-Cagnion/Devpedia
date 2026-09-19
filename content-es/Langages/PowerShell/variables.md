@@ -26,7 +26,7 @@ Write-Output "Hola $nombre !"
 $nombre = "Juan"
 
 Write-Output "Hola $nombre"  # Hola Juan -> las comillas dobles interpretan las variables
-# Hola $nombre -> las comillas simples desactivan toda interpretacion
+# Hola $nombre -> las comillas simples desactivan toda interpretación
 Write-Output 'Hola $nombre'
 ```
 
@@ -63,7 +63,7 @@ $b = 3
 
 Write-Output ($a + $b)  # 8
 Write-Output ($a * $b)  # 15
-Write-Output ($a / $b)  # 1.66666666666667 -> division real, no entera como en Bash
+Write-Output ($a / $b)  # 1.66666666666667 -> división real, no entera como en Bash
 ```
 
 ## Variables automáticas

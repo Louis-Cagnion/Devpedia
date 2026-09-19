@@ -36,7 +36,7 @@ Como `source ~/.bashrc` en Bash:
 
 ```bash
 source ~/.zshrc
-# equivalente, mas corto:
+# equivalente, más corto:
 . ~/.zshrc
 ```
 

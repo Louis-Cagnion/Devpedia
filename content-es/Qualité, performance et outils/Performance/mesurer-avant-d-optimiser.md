@@ -30,7 +30,7 @@ import time
 timings = []
 
 def cronometrar(modulo, nombre):
-    """Reemplaza modulo.nombre por una version que registra su tiempo de ejecucion."""
+    """Reemplaza modulo.nombre por una versión que registra su tiempo de ejecución."""
     original = getattr(modulo, nombre)
 
     def envoltura(*args, **kwargs):

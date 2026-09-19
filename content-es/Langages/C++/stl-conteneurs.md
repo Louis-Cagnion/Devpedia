@@ -74,7 +74,7 @@ Si la clave exacta no existe, `lower_bound` devuelve entonces la primera clave e
 ```cpp
 auto it = tasas.lower_bound(25);
 if (it != tasas.begin()) {
-    --it;   // it ahora apunta a 20, la ultima clave estrictamente menor que 25
+    --it;   // it ahora apunta a 20, la última clave estrictamente menor que 25
 }
 ```
 

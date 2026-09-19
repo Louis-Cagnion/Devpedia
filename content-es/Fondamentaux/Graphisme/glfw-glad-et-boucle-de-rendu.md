@@ -60,10 +60,10 @@ Como el bucle de eventos del capítulo anterior, un bucle de renderizado OpenGL 
 
 ```c
 while (!glfwWindowShouldClose(ventana)) {
-    // 1. recoger los eventos (teclado, raton...)
+    // 1. recoger los eventos (teclado, ratón...)
     glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // 2. borrar la imagen anterior
-    // 3. dibujar la nueva imagen (bufer trasero)
+    // 3. dibujar la nueva imagen (búfer trasero)
     dibujarEscena();
     // 4. mostrarla de golpe (double buffering)
     glfwSwapBuffers(ventana);

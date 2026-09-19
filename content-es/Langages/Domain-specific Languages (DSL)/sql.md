@@ -220,7 +220,7 @@ PDO solo permite parametrizar valores individuales, nunca un array entero en un 
 <?php
 function consultaConIn(PDO $pdo, string $sql, string $prefijo, array $valores): PDOStatement
 {
-    // Genera un marcador de posicion con nombre por valor: prefijo_0, prefijo_1...
+    // Genera un marcador de posición con nombre por valor: prefijo_0, prefijo_1...
     $marcadores = [];
     $params = [];
     foreach (array_values($valores) as $i => $valor) {

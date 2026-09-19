@@ -27,7 +27,7 @@ Una mala solución, practicada históricamente, consiste en dar directamente la 
 ## El desarrollo simplificado
 
 ```text
-1. El usuario hace clic en "Iniciar sesion con Google" en la aplicacion externa
+1. El usuario hace clic en "Iniciar sesión con Google" en la aplicacion externa
 2. La aplicacion externa redirige al usuario hacia Google
 3. El usuario se conecta EN GOOGLE (nunca en la aplicacion externa)
 4. Google pide al usuario su consentimiento: "Esta aplicacion quiere

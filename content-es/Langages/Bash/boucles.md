@@ -57,7 +57,7 @@ La combinación más frecuente en scripting Bash para procesar un archivo de tex
 
 ```bash
 while read -r linea; do
-    echo "Línea leída: $linea"
+    echo "Línea leída: $línea"
 done < archivo.txt
 ```
 

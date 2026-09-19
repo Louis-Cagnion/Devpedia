@@ -13,7 +13,7 @@ La corrección por diccionario compara cada palabra reconocida con una lista de 
 ```python
 def corregir_por_diccionario(palabra, lexico, distancia_max=2):
     if palabra in lexico:
-        return palabra   # ya es una palabra valida, nada que corregir
+        return palabra   # ya es una palabra válida, nada que corregir
 
     candidatos = [(entrada, distancia_levenshtein(palabra, entrada)) for entrada in lexico]
     mejor_entrada, mejor_distancia = min(candidatos, key=lambda c: c[1])
@@ -55,7 +55,7 @@ import re
 def formato_codigo_postal_valido(texto):
     return re.fullmatch(r"\d{5}", texto) is not None
 
-# False -> un espacio de mas, señala un error probable de OCR
+# False -> un espacio de más, señala un error probable de OCR
 formato_codigo_postal_valido("2801 8")
 formato_codigo_postal_valido("28018")   # True
 ```

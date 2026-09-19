@@ -129,7 +129,7 @@ class Persona:
 
 p = Persona(nombre="Juan", direccion=Direccion(ciudad="Madrid", codigo_postal="28001"))
 
-asdict(p)   # {"nombre": "Juan", "direccion": {"ciudad": "Madrid", "codigo_postal": "28001"}}
+asdict(p)   # {"nombre": "Juan", "dirección": {"ciudad": "Madrid", "código_postal": "28001"}}
 json.dumps(asdict(p))   # serialización directa: asdict() ya redujo todo a tipos simples
 ```
 

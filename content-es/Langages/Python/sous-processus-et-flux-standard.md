@@ -69,7 +69,7 @@ log = open("ejecucion.log", "a", encoding="utf-8")
 # reemplaza el objeto del módulo por el doble, sin tocar el resto del código
 sys.stderr = FlujoDoble(sys.stderr, log)
 
-print("Error", file=sys.stderr)  # se muestra en pantalla Y se escribe en ejecucion.log
+print("Error", file=sys.stderr)  # se muestra en pantalla Y se escribe en ejecución.log
 ```
 
 `sys.stdout`/`sys.stderr` son simples objetos, reemplazables como cualquier otra variable de módulo: asignarles un objeto que exponga `.write()`/`.flush()` intercepta silenciosamente todo lo que ya se escribe en otra parte con `print(..., file=sys.stderr)`. El nombre **Tee** viene del comando Unix `tee` (ya visto en [Bash](/?c=shells&s=bash&p=redirections-et-pipes)/[PowerShell](/?c=shells&s=powershell&p=powershell)), que duplica un flujo hacia varios destinos a la vez.

@@ -43,7 +43,7 @@ git rebase --abort
 ## El rebase interactivo: reescribir el historial local
 
 ```bash
-git rebase -i HEAD~3   # abre un editor para los ultimos 3 commits
+git rebase -i HEAD~3   # abre un editor para los últimos 3 commits
 ```
 
 ```text

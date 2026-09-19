@@ -31,9 +31,9 @@ docker run -d --name servidor -p 8080:80 mi-app:1.0
 ## Observar lo que corre
 
 ```bash
-docker ps               # contenedores en ejecucion
+docker ps               # contenedores en ejecución
 docker ps -a             # todos los contenedores, incluidos los detenidos
-docker logs servidor    # salida estandar/error del contenedor "servidor"
+docker logs servidor    # salida estándar/error del contenedor "servidor"
 docker logs -f servidor # sigue los logs en directo (equivalente a `tail -f`)
 ```
 
@@ -50,10 +50,10 @@ docker exec -it servidor sh    # abre un shell interactivo dentro del contenedor
 ## Detener y limpiar
 
 ```bash
-# envia SIGTERM, deja que el contenedor se detenga limpiamente (cf. [tabla de
+# envía SIGTERM, deja que el contenedor se detenga limpiamente (cf. [tabla de
 # señales](/?c=shells&s=bash&p=gestion-des-processus), sección Bash)
 docker stop servidor
-docker kill servidor    # envia SIGKILL, parada inmediata e incondicional
+docker kill servidor    # envía SIGKILL, parada inmediata e incondicional
 docker rm servidor      # elimina un contenedor detenido
 docker rmi mi-app:1.0   # elimina una imagen
 ```

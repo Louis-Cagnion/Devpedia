@@ -17,7 +17,7 @@ La **notación Big-O** (escrita `O(...)`) describe cómo evoluciona el coste de 
 ```c
 void mostrarUnaVez(int arreglo[], int tamano)
 {
-    printf("%d\n", arreglo[0]); // siempre 1 sola operacion, sea cual sea "tamano"
+    printf("%d\n", arreglo[0]); // siempre 1 sola operación, sea cual sea "tamaño"
 }
 ```
 
@@ -25,7 +25,7 @@ void mostrarUnaVez(int arreglo[], int tamano)
 void mostrarTodo(int arreglo[], int tamano)
 {
     for (int i = 0; i < tamano; i++) {
-        // 1 operacion por elemento -> "tamano" operaciones en total
+        // 1 operación por elemento -> "tamaño" operaciones en total
         printf("%d\n", arreglo[i]);
     }
 }

@@ -162,7 +162,7 @@ if (empty($_SESSION['csrf_token'])) {
 }
 ?>
 <form action="/transferencia" method="POST">
-    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+    <input type="hidden" name="csrf_token" value="<?= $_SESsión['csrf_token'] ?>">
     <!-- ... resto del formulario ... -->
 </form>
 ```

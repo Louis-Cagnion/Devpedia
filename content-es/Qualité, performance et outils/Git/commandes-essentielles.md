@@ -9,7 +9,7 @@ Este capítulo cubre el ciclo de trabajo Git más común: inicializar un reposit
 ## Crear u obtener un repositorio
 
 ```bash
-# convierte el directorio actual en un repositorio Git (vacio, sin historial)
+# convierte el directorio actual en un repositorio Git (vacío, sin historial)
 git init
 # obtiene un repositorio existente, con todo su historial
 git clone https://ejemplo.com/proyecto.git
@@ -26,10 +26,10 @@ Muestra qué archivos están modificados, cuáles están en la zona de staging, 
 ## Añadir modificaciones al staging
 
 ```bash
-git add archivo.txt  # anade un archivo preciso
-git add carpeta/      # anade toda una carpeta
-git add .            # anade todo lo que cambio en el directorio actual y sus subdirectorios
-git add -p           # modo interactivo: elegir con precision que bloques de lineas anadir
+git add archivo.txt  # añade un archivo preciso
+git add carpeta/      # añade toda una carpeta
+git add .            # añade todo lo que cambio en el directorio actual y sus subdirectorios
+git add -p           # modo interactivo: elegir con precisión que bloques de líneas añadir
 ```
 
 > **Nota:** `git add .` también añade los archivos no seguidos: asegúrate de que [.gitignore](/?c=git&p=gitignore) esté actualizado antes, para no añadir accidentalmente archivos que nunca deberían entrar en el historial (secretos, dependencias, archivos generados...).
@@ -37,8 +37,8 @@ git add -p           # modo interactivo: elegir con precision que bloques de lin
 ## Crear un commit
 
 ```bash
-git commit -m "Corrige el calculo del descuento"
-# atajo: anade automaticamente los archivos ya seguidos Y modificados, sin "git add" previo
+git commit -m "Corrige el cálculo del descuento"
+# atajo: añade automaticamente los archivos ya seguidos Y modificados, sin "git add" previo
 git commit -am "Mensaje"
 ```
 
@@ -69,16 +69,16 @@ Es esta línea vacía, y solo ella, la que indica a una herramienta como [GitHub
 `git commit -m "mensaje"` con un único `-m` solo produce un título, sin descripción. Tres formas de obtener ambos:
 
 ```bash
-# 1. Sin -m: abre el editor configurado (vim, nano...), donde escribir titulo, linea vacia,
-# luego descripcion
+# 1. Sin -m: abre el editor configurado (vim, nano...), donde escribir titulo, línea vacía,
+# luego descripción
 git commit
 
-# 2. Varios -m: cada uno se convierte en un parrafo separado por una linea vacia, sin abrir
+# 2. Varios -m: cada uno se convierte en un parrafo separado por una línea vacía, sin abrir
 # editor
-git commit -m "Corrige el calculo del descuento" \
+git commit -m "Corrige el cálculo del descuento" \
     -m "El porcentaje solo se aplicaba al primer articulo, no al total."
 
-# 3. Una cadena multilinea pasada a un solo -m (util para automatizar un commit, o desde una
+# 3. Una cadena multilínea pasada a un solo -m (útil para automatizar un commit, o desde una
 # herramienta que genera el mensaje)
 git commit -m "$(cat <<'EOF'
 Corrige el calculo del descuento
@@ -97,9 +97,9 @@ EOF
 ## Consultar el historial
 
 ```bash
-git log                          # historial completo, del mas reciente al mas antiguo
-git log --oneline                # una linea por commit, mas legible para una revision rapida
-# visualiza tambien las ramas y sus puntos de divergencia/fusion
+git log                          # historial completo, del más reciente al más antiguo
+git log --oneline                # una línea por commit, más legible para una revisión rapida
+# visualiza también las ramas y sus puntos de divergencia/fusión
 git log --oneline --graph --all
 git log -p archivo.txt           # historial detallado (con diff) de un archivo preciso
 ```
@@ -107,8 +107,8 @@ git log -p archivo.txt           # historial detallado (con diff) de un archivo 
 ## Ver las diferencias
 
 ```bash
-git diff                  # diferencias aun no anadidas al staging
-git diff --staged         # diferencias ya anadidas al staging, aun no commiteadas
+git diff                  # diferencias aún no añadidas al staging
+git diff --staged         # diferencias ya añadidas al staging, aún no commiteadas
 git diff commit1 commit2  # diferencias entre dos commits precisos
 ```
 

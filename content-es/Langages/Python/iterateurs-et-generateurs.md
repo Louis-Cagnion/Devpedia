@@ -99,7 +99,7 @@ next(iterador)              # 2
 next(iterador)              # 3
 next(iterador)              # StopIteration: ya no queda nada que producir
 
-# "agotado" -> forma de dos argumentos: sin excepcion si esta agotado
+# "agotado" -> forma de dos argumentos: sin excepción si esta agotado
 next(iterador, "agotado")
 ```
 
@@ -112,7 +112,7 @@ primer_par = next((x for x in numeros if x % 2 == 0), None)
 # 8 -> primer elemento par encontrado
 
 primer_negativo = next((x for x in numeros if x < 0), None)
-# None -> ningun elemento coincide, se devuelve el valor de repliegue
+# None -> ningún elemento coincide, se devuelve el valor de repliegue
 ```
 
 > **Buena práctica:** preferir `next((x for x in col if condicion), defecto)` a un bucle `for` manual con `break`, o a `[x for x in col if condicion][0]` (que construye toda la lista filtrada antes de quedarse solo con el primer elemento, y lanza un `IndexError` si está vacía en lugar de devolver un valor de repliegue).

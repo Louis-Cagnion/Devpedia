@@ -37,7 +37,7 @@ int main(void)
     bind(servidor, (struct sockaddr *)&direccion, sizeof(direccion));
     listen(servidor, 10); // 10 = numero de conexiones en espera permitidas antes de rechazar
 
-    int cliente = accept(servidor, NULL, NULL); // bloquea aqui hasta una conexion
+    int cliente = accept(servidor, NULL, NULL); // bloquea aquí hasta una conexion
 
     char buffer[1024];
     read(cliente, buffer, sizeof(buffer));

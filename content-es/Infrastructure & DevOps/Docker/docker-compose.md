@@ -51,7 +51,7 @@ docker compose down
 Compose no reconstruye una imagen automáticamente en cada `up` si ya existe en caché:
 
 ```bash
-docker compose up -d --build   # fuerza la reconstruccion de las imagenes antes de arrancar
+docker compose up -d --build   # fuerza la reconstrucción de las imagenes antes de arrancar
 ```
 
 ## Reinicio automático en caso de caída

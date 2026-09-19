@@ -50,7 +50,7 @@ Este capítulo aborda dos mecanismos transversales de CSS: las **variables perso
 ```css
 .boton-peligro:hover {
     background-color: color-mix(in srgb, var(--color-peligro) 85%, black);
-    /* mezcla 85% de --color-peligro con negro: una version ligeramente oscurecida, al pasar
+    /* mezcla 85% de --color-peligro con negro: una versión ligeramente oscurecida, al pasar
        el cursor */
 }
 ```

@@ -9,16 +9,16 @@ Un **Dockerfile** es una receta en texto: una serie de instrucciones que describ
 ## Las instrucciones esenciales
 
 ```dockerfile
-FROM node:20-alpine        # imagen base: Node.js 20 sobre una distribucion Alpine (minima)
+FROM node:20-alpine        # imagen base: Node.js 20 sobre una distribución Alpine (minima)
 # carpeta de trabajo dentro del contenedor para todas las instrucciones siguientes
 WORKDIR /app
 
 COPY package*.json ./       # copia estos archivos desde la maquina host hacia la imagen
-RUN npm install              # ejecuta un comando DURANTE la construccion de la imagen
+RUN npm install              # ejecuta un comando DURANTE la construcción de la imagen
 
-COPY . .                    # copia el resto del codigo fuente
+COPY . .                    # copia el resto del código fuente
 
-ENV NODE_ENV=production     # variable de entorno, disponible en el build y en la ejecucion
+ENV NODE_ENV=production     # variable de entorno, disponible en el build y en la ejecución
 # documenta el puerto usado (no abre nada por si sola, cf. capitulo redes)
 EXPOSE 3000
 
@@ -67,7 +67,7 @@ Docker entonces llama a `ENTRYPOINT`, pasándole `CMD` (o cualquier comando dado
 
 ```bash
 #!/bin/sh
-# Preparacion fija, ejecutada en cada arranque del contenedor
+# Preparación fija, ejecutada en cada arranque del contenedor
 chown -R app:app /data
 
 exec "$@"   # reemplaza este script por el comando recibido
@@ -84,7 +84,7 @@ exec "$@"   # reemplaza este script por el comando recibido
 Cada `RUN`/`COPY`/`ADD` añade una capa, guardada en caché: si una instrucción y todo lo que la precede no ha cambiado desde el último build, Docker reutiliza la capa en caché en lugar de reconstruirla.
 
 ```dockerfile
-# Mal orden: el menor cambio en el codigo fuente invalida la cache de `npm install`
+# Mal orden: el menor cambio en el código fuente inválida la caché de `npm install`
 COPY . .
 RUN npm install
 
@@ -101,13 +101,13 @@ Por eso los archivos que cambian con menos frecuencia (dependencias) se copian e
 Un build multi-etapa separa el entorno de **compilación** (pesado: compilador, herramientas de build) del entorno de **ejecución** (ligero: solo el binario final), el mismo principio que separar compilación y enlazado en [C](/?c=langages-de-programmation&s=c&p=c) (cf. capítulo [El proceso de compilación](/?c=langages-de-programmation&s=c&p=compilation)): el resultado final no necesita la cadena de herramientas que lo produjo.
 
 ```dockerfile
-# Etapa 1: compilacion, con toda la toolchain de Go
+# Etapa 1: compilación, con toda la toolchain de Go
 FROM golang:1.22 AS builder
 WORKDIR /app
 COPY . .
 RUN go build -o servidor
 
-# Etapa 2: ejecucion, imagen minima sin ninguna herramienta de compilacion
+# Etapa 2: ejecución, imagen minima sin ninguna herramienta de compilación
 FROM alpine:3.19
 COPY --from=builder /app/servidor /usr/local/bin/servidor
 CMD ["servidor"]

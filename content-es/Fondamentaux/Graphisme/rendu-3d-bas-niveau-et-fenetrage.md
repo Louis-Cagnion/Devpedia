@@ -147,7 +147,7 @@ void alMoverRaton(int x, int y)
     } else if (x >= ancho_pantalla - 10) {
         mlx_mouse_move(ventana, 11, y);
     }
-    // ... usar x - ultimo_x para rotar la cámara ...
+    // ... usar x - último_x para rotar la cámara ...
 }
 ```
 

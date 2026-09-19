@@ -38,9 +38,9 @@ Entre paréntesis después de un patrón, un **calificador** filtra los resultad
 ls *(.)          # solo los archivos regulares (ni carpetas, ni enlaces)
 ls *(/)          # solo las carpetas
 ls *(*)          # solo los archivos ejecutables
-# el archivo regular modificado mas recientemente (ordenado por fecha, se toma el 1o)
+# el archivo regular modificado más recientemente (ordenado por fecha, se toma el 1o)
 ls *(.om[1])
-ls *.log(.Lm-7)  # archivos .log con mas de 7 dias de modificacion
+ls *.log(.Lm-7)  # archivos .log con más de 7 días de modificación
 ```
 
 | Calificador | Filtra por... |

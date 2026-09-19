@@ -29,7 +29,7 @@ double iva = Facturacion::calcularIVA(100);
 ```cpp
 using namespace Facturacion;
 
-Factura f;              // ya no hace falta el prefijo "Facturacion::"
+Factura f;              // ya no hace falta el prefijo "Facturación::"
 double iva = calcularIVA(100);
 ```
 

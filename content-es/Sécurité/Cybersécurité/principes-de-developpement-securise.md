@@ -42,7 +42,7 @@ si entrada contiene "<script>" entonces rechazar
 // Un atacante lo evita con una variante no prevista: "<ScRiPt>", "<img onerror=...>"...
 
 // Lista blanca (robusta): solo permite lo esperado
-si entrada coincide exactamente con el formato "email valido" entonces aceptar
+si entrada coincide exactamente con el formato "email válido" entonces aceptar
 // Todo lo demas se rechaza, incluida una variante no anticipada
 ```
 

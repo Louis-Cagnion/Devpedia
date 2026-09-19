@@ -59,7 +59,7 @@ IoU = area(###) / area(A union B)
 
 ```python
 def iou(caja_a, caja_b):
-    # Coordenadas del rectangulo de interseccion
+    # Coordenadas del rectangulo de intersección
     x_min = max(caja_a.x_min, caja_b.x_min)
     y_min = max(caja_a.y_min, caja_b.y_min)
     x_max = min(caja_a.x_max, caja_b.x_max)
@@ -99,7 +99,7 @@ def nms(cajas, umbral_iou=0.5):
     cajas_ordenadas = sorted(cajas, key=lambda b: b.score, reverse=True)
     conservadas = []
     while cajas_ordenadas:
-        mejor = cajas_ordenadas.pop(0)   # score mas alto restante
+        mejor = cajas_ordenadas.pop(0)   # score más alto restante
         conservadas.append(mejor)
         cajas_ordenadas = [
             b for b in cajas_ordenadas

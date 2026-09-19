@@ -82,11 +82,11 @@ Si el analizador XML resuelve esta entidad (va realmente a leer `/etc/passwd`) a
 ```python
 import pickle
 
-# PELIGROSO: pickle.loads() puede ejecutar codigo arbitrario contenido en el dato,
+# PELIGROSO: pickle.loads() puede ejecutar código arbitrario contenido en el dato,
 # si este proviene de una fuente no fiable (subida, parametro, mensaje recibido)
 objeto = pickle.loads(dato_recibido_del_exterior)
 
-# SEGURO: un formato de serializacion que solo representa VALORES (nunca codigo)
+# SEGURO: un formato de serialización que solo representa VALORES (nunca código)
 import json
 objeto = json.loads(dato_recibido_del_exterior)
 ```

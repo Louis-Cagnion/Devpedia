@@ -46,7 +46,7 @@ Este patrón tiene nombre en el mundo de las bases de datos: el **problema N+1**
 ```php
 $clientes = $bd->query("SELECT id, nombre FROM clientes")->fetchAll();
 foreach ($clientes as $cliente) {
-    // 1 consulta SQL por cliente: ahi esta el "+N"
+    // 1 consulta SQL por cliente: ahí esta el "+N"
     $pedidos = $bd->query("SELECT * FROM pedidos WHERE cliente_id = {$cliente['id']}");
 }
 ```

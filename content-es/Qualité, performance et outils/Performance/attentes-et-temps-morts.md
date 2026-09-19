@@ -29,7 +29,7 @@ La formulación correcta es: *esperar a que el resultado esté ahí*, con un top
 
 ```python
 def esperar_hasta(condicion, timeout_s=5, intervalo_ms=150):
-    """Espera a que condicion() sea verdadera. Devuelve False si se supera el plazo."""
+    """Espera a que condición() sea verdadera. Devuelve False si se supera el plazo."""
     for _ in range(int(timeout_s * 1000 / intervalo_ms)):
         if condicion():
             return True
