@@ -72,7 +72,7 @@ git clone https://exemplo.com/projeto.git
 ```bash
 # captura todas as refs (branches, tags, HEAD) em um único arquivo
 git bundle create backup.bundle --all
-git bundle verify backup.bundle           # verifica que o bundle esta completo e utilizável
+git bundle verify backup.bundle           # verifica que o bundle está completo e utilizável
 git clone backup.bundle novo-diretorio    # um bundle se clona como um remote comum
 ```
 

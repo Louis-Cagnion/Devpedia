@@ -12,7 +12,7 @@ Um `void*` pode armazenar o endereço de qualquer dado, mas perde toda informaç
 
 ```c
 void exibir(void *dado) {
-    printf("%d\n", *(int *)dado);  // supoe que dado aponta um int: perigoso
+    printf("%d\n", *(int *)dado);  // supõe que dado aponta um int: perigoso
 }
 ```
 

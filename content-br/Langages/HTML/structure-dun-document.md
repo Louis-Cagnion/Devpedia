@@ -65,7 +65,7 @@ Uma tag aberta por último deve ser fechada primeiro: uma sobreposição, embora
 ## Os comentários
 
 ```html
-<!-- Este comentário nunca e exibido na página -->
+<!-- Este comentário nunca é exibido na página -->
 ```
 
 Veja também [A semântica do HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5), que detalha a organização típica do conteúdo dentro de `<body>`.

@@ -51,7 +51,7 @@ Na prática: usar `#!/bin/bash` (e executá-lo com `bash`) assim que o script us
 ```bash
 # adiciona o direito de execução (veja Permissões e manipulação de arquivos)
 chmod +x script.sh
-# executa o script (o "./" e necessário se o diretório atual não esta no $PATH)
+# executa o script (o "./" é necessário se o diretório atual não está no $PATH)
 ./script.sh
 ```
 

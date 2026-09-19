@@ -42,7 +42,7 @@ if ("") {}         // falsy
 if (null) {}       // falsy
 if (undefined) {}  // falsy
 if (NaN) {}        // falsy
-if ([]) {}         // TRUTHY! (ao contrário de PHP, onde um array vazio e falsy)
+if ([]) {}         // TRUTHY! (ao contrário de PHP, onde um array vazio é falsy)
 if ({}) {}         // TRUTHY!
 ```
 

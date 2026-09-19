@@ -121,7 +121,7 @@ texto = "ola"
 texto.upper()  # retorna "OLA", NÃO MODIFICA texto
 print(texto)   # ainda "ola"
 
-texto = texto.upper()  # e preciso reatribuir para "manter" a mudanca
+texto = texto.upper()  # é preciso reatribuir para "manter" a mudança
 ```
 
 ## Juntar uma lista em uma string: `str.join()`

@@ -134,7 +134,7 @@ Quem chama pode interceptar apenas `ConfigurationError` (sem conhecer `FileNotFo
 ```python
 with open("dados.txt") as arquivo:
     conteudo = arquivo.read()
-# arquivo.close() e chamado automaticamente aqui, tenha tudo corrido bem ou não
+# arquivo.close() é chamado automaticamente aqui, tenha tudo corrido bem ou não
 ```
 
 > **Nota:** isso se apoia nos métodos especiais `__enter__`/`__exit__` (veja [A programação orientada a objetos](/?c=langages-de-programmation&s=python&p=poo)); qualquer classe personalizada pode definir esses dois métodos para se tornar utilizável com `with` (ex. gerenciar a abertura/fechamento de uma conexão de rede ou banco de dados).

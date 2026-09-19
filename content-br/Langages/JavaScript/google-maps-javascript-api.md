@@ -78,7 +78,7 @@ const el = document.createElement('div');
 el.className = 'meu-marcador-animado';
 new AdvancedMarkerElement({ map, position, content: el });
 
-// google.maps.Marker (legado): renderização SVG fixa, sem pre-requisito de configuração
+// google.maps.Marker (legado): renderização SVG fixa, sem pré-requisito de configuração
 new google.maps.Marker({ map, position, icon: meuIconeSvg });
 ```
 

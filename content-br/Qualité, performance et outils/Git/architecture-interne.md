@@ -60,7 +60,7 @@ Uma branch **não é literalmente nada mais** do que um arquivo contendo um hash
 
 ```bash
 cat .git/HEAD
-# ref: refs/heads/main   -> HEAD não contem um hash, mas o CAMINHO para a ref atual
+# ref: refs/heads/main   -> HEAD não contém um hash, mas o CAMINHO para a ref atual
 ```
 
 `HEAD` é um ponteiro para um ponteiro: trocar de branch (`git checkout outra-branch`) só modifica uma única linha em `.git/HEAD`, que passa a referenciar outro arquivo de `refs/heads/`. Em modo *detached HEAD* (veja [As tags](/?c=git&p=tags)), `.git/HEAD` contém diretamente um hash de commit, sem passar por uma ref nomeada.

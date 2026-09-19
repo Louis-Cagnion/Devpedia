@@ -62,7 +62,7 @@ Um comando lançado pelo cron não executa no mesmo contexto que um terminal abe
 Um script que funciona perfeitamente quando lançado manualmente pode então falhar silenciosamente sob o cron, com um erro `command not found` invisível já que nada exibe essa saída por padrão (cf. seção seguinte). Duas precauções sistemáticas:
 
 ```bash
-# Evitar: supoe que "python3" esta no PATH do cron
+# Evitar: supõe que "python3" está no PATH do cron
 0 3 * * *   python3 backup.py
 
 # Mais seguro: caminho absoluto para o executável E o script

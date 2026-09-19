@@ -76,7 +76,7 @@ const numeros = [1, 2, 3, 4, 5];
 numeros.forEach(n => console.log(n));                  // executa uma função para cada elemento
 // [2, 4, 6, 8, 10] -> transforma cada elemento
 const dobros = numeros.map(n => n * 2);
-// [2, 4] -> mantem apenas o que corresponde
+// [2, 4] -> mantém apenas o que corresponde
 const pares = numeros.filter(n => n % 2 === 0);
 // 15 -> reduz todo o array a um único valor
 const soma = numeros.reduce((acc, n) => acc + n, 0);

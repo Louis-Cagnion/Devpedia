@@ -21,7 +21,7 @@ $uri  = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 $arquivo = $rotas[$uri] ?? null;
 
 if ($arquivo && file_exists(__DIR__ . $arquivo)) {
-    require __DIR__ . $arquivo; // o "handler" e um arquivo executado, não uma função chamada
+    require __DIR__ . $arquivo; // o "handler" é um arquivo executado, não uma função chamada
 } else {
     http_response_code(404);
     echo "Página não encontrada";

@@ -9,7 +9,7 @@ Um arquivo de cabeçalho (*header*, extensão `.h`) contém **declarações**: e
 ## Declaração vs definição
 
 ```c
-// calculos.h, declaração: "essa função existe, aqui esta sua assinatura"
+// calculos.h, declaração: "essa função existe, aqui está sua assinatura"
 int adicao(int a, int b);
 ```
 

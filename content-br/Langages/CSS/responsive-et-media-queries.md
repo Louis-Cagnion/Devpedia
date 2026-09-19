@@ -101,7 +101,7 @@ Uma media query sempre mede a largura da **janela** inteira, o que pode ser enga
 ```css
 /* 1. Marcar um ancestral como "conteiner consultável" */
 .carte-conteneur {
-    container-type: inline-size;  /* apenas a largura do conteiner e acompanhada */
+    container-type: inline-size;  /* apenas a largura do contêiner é acompanhada */
 }
 
 /* 2. A regra @container reage a LARGURA DESSE CONTEINER, não a da janela */

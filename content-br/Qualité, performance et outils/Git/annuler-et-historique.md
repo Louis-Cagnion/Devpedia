@@ -22,9 +22,9 @@ git restore --staged arquivo.txt
 ## `git reset`: mover a branch atual para trás
 
 ```bash
-# desfaz o último commit, mas mantem tudo em staging (pronto para recommitar)
+# desfaz o último commit, mas mantém tudo em staging (pronto para recommitar)
 git reset --soft HEAD~1
-# desfaz o último commit E o staging, mantem as modificações no diretório de trabalho (padrão)
+# desfaz o último commit E o staging, mantém as modificações no diretório de trabalho (padrão)
 git reset --mixed HEAD~1
 # desfaz o último commit, o staging, E as proprias modificações -> perda definitiva
 git reset --hard HEAD~1

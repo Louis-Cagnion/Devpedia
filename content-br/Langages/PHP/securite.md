@@ -46,7 +46,7 @@ Se você exibir um dado do usuário na página (ex: um comentário, um apelido),
     $comentario = "<script>alert('hackeado');</script>";
 
     echo htmlspecialchars($comentario);
-    // exibe o texto tal como esta, sem executar o script
+    // exibe o texto tal como está, sem executar o script
 ?>
 ```
 
@@ -60,7 +60,7 @@ Se você inserir diretamente um dado do usuário em uma consulta SQL, um visitan
 
 ```php
 <?php
-    // ❌ Perigoso: o dado e inserido diretamente na consulta
+    // ❌ Perigoso: o dado é inserido diretamente na consulta
     $consulta = "SELECT * FROM users WHERE email = '" . $_POST['email'] . "'";
 
     // ✅ Seguro: o dado passa por um espaço reservado, nunca interpretado como SQL

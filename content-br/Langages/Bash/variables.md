@@ -11,7 +11,7 @@ O Bash só tem um único tipo de dado real: a **string**; até um número é man
 ## Declarar e ler uma variável
 
 ```bash
-nome="Joao"     # nenhum espaço ao redor do '=' : "nome = Joao" e um erro de sintaxe
+nome="Joao"     # nenhum espaço ao redor do '=' : "nome = Joao" é um erro de sintaxe
 echo $nome      # Joao
 echo "${nome}"  # Joao -> as chaves delimitam explicitamente o nome da variável
 echo "Ola ${nome} !"

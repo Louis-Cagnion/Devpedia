@@ -28,10 +28,10 @@ pessoa.get("telefone", "desconhecido")  # "desconhecido" -> valor padrão se aus
 
 ```python
 cache = {}
-# uma TUPLE como chave: funciona, uma tuple e imutável, logo hasheável
+# uma TUPLE como chave: funciona, uma tuple é imutável, logo hasheável
 cache[("site_a", 42)] = "loja A"
 
-# TypeError: unhashable type: 'list' -> uma lista e mutável, nunca hasheável
+# TypeError: unhashable type: 'list' -> uma lista é mutável, nunca hasheável
 cache[["site_a", 42]] = "loja A"
 ```
 
@@ -63,7 +63,7 @@ quadrados = {x: x ** 2 for x in range(5)}
 lojas_por_site = {}
 
 for site, id_loja in pares:
-    if site not in lojas_por_site:  # sem setdefault: essa verificação manual e necessária...
+    if site not in lojas_por_site:  # sem setdefault: essa verificação manual é necessária...
         lojas_por_site[site] = []
     lojas_por_site[site].append(id_loja)
 
@@ -107,7 +107,7 @@ frutas.discard("manga")   # remove um elemento, SEM erro se ausente
 a = {1, 2, 3}
 b = {2, 3, 4}
 
-a | b  # {1, 2, 3, 4} -> uniao
+a | b  # {1, 2, 3, 4} -> união
 a & b  # {2, 3}       -> interseção
 a - b  # {1}           -> diferença (em a, mas não em b)
 a ^ b  # {1, 4}        -> diferença simetrica (em um OU outro, não os dois)
@@ -134,7 +134,7 @@ Um `frozenset` é um `set` fixado após sua criação: nenhum método de modific
 
 ```python
 cache = {}
-cache[frozenset({"a", "b"})] = "resultado"  # funciona: um frozenset e hasheável
+cache[frozenset({"a", "b"})] = "resultado"  # funciona: um frozenset é hasheável
 
 cache[{"a", "b"}] = "resultado"  # TypeError: unhashable type: 'set'
 ```

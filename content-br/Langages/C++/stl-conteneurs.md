@@ -88,7 +88,7 @@ if (it != taxas.begin()) {
 std::set<int> valores = {3, 1, 2, 1};   // {1, 2, 3} -> ordenado E deduplicado automaticamente
 
 valores.insert(4);
-valores.count(2);   // 1 se presente, 0 caso contrário (um set nunca contem duplicata)
+valores.count(2);   // 1 se presente, 0 caso contrário (um set nunca contém duplicata)
 ```
 
 `std::unordered_set` é o equivalente baseado em uma tabela hash, mais rápido em média, sem ordem garantida.

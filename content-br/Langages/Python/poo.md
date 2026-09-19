@@ -136,12 +136,12 @@ class Distancia:
     def __init__(self, metros):
         self.metros = metros
 
-    def __add__(self, outro):     # chamado quando Distância e o operando ESQUERDO: d + 5
+    def __add__(self, outro):     # chamado quando Distância é o operando ESQUERDO: d + 5
         if isinstance(outro, (int, float)):
             return Distancia(self.metros + outro)
         return NotImplemented     # "não sei tratar esse tipo" -> Python tenta outro método
 
-    def __radd__(self, outro):    # chamado quando Distância e o operando DIREITO: 5 + d
+    def __radd__(self, outro):    # chamado quando Distância é o operando DIREITO: 5 + d
         return self.__add__(outro)
 
 d = Distancia(100)

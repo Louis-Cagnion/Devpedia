@@ -12,7 +12,7 @@ Onde o [Bash](/?c=shells&s=bash&p=bash) se apoia em [ferramentas de texto especi
 Select-String "erro" arquivo.log                   # exibe as linhas contendo "erro"
 # sensível a maiúsculas/minúsculas (o inverso do padrão)
 Select-String -CaseSensitive "Erro" arquivo.log
-Select-String -NotMatch "erro" arquivo.log         # inverte: linhas que NÃO contem "erro"
+Select-String -NotMatch "erro" arquivo.log         # inverte: linhas que NÃO contêm "erro"
 # busca recursiva em todos os arquivos de um diretório
 Select-String "TODO" -Path .\* -Recurse
 Select-String "erro" arquivo.log | Measure-Object  # conta as linhas correspondentes
@@ -90,7 +90,7 @@ Select-String "404" access.log |
     ForEach-Object { ($_.Line -split " ")[0] } |
     Group-Object |
     Sort-Object Count -Descending
-# 1) mantem as linhas de erro 404
+# 1) mantém as linhas de erro 404
 # 2) extrai o endereço IP (1o campo de cada linha)
 # 3) agrupa os IPs idênticos
 # 4) ordena por número de ocorrências decrescente -> os IPs mais frequentes primeiro

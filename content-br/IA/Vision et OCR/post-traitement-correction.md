@@ -13,7 +13,7 @@ A correção por dicionário compara cada palavra reconhecida a uma lista de pal
 ```python
 def corrigir_por_dicionario(palavra, lexico, distancia_max=2):
     if palavra in lexico:
-        return palavra   # já e uma palavra válida, nada a corrigir
+        return palavra   # já é uma palavra válida, nada a corrigir
 
     candidatos = [(entrada, distancia_levenshtein(palavra, entrada)) for entrada in lexico]
     melhor_entrada, melhor_distancia = min(candidatos, key=lambda c: c[1])

@@ -39,7 +39,7 @@ Uma vez carregado o modelo pré-treinado, existem várias estratégias, de acord
 **Congelar** uma camada significa excluí-la do cálculo de gradiente: seus pesos permanecem fixos em seu valor pré-treinado, a retropropagação nunca os modifica.
 
 ```python
-# Carregar um modelo pre-treinado e congelar seu "backbone" (as camadas de extração de padrões)
+# Carregar um modelo pré-treinado e congelar seu "backbone" (as camadas de extração de padrões)
 for parametro in modelo.backbone.parameters():
     parametro.requires_grad = False   # excluido do cálculo de gradiente, veja autograd
 

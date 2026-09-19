@@ -17,7 +17,7 @@ typeof NaN;   // "number"
 
 42 === 42.0;       // true : nenhuma distinção
 5 / 2;             // 2.5 -> sem divisão inteira implícita
-Math.trunc(5 / 2)  // 2   -> e preciso pedir explicitamente
+Math.trunc(5 / 2)  // 2   -> é preciso pedir explicitamente
 ```
 
 A ausência de divisão inteira nativa é uma armadilha frequente para quem vem de C ou [Python](/?c=langages-de-programmation&s=python&p=python) (`5 // 2`).
@@ -66,7 +66,7 @@ Duas restrições a conhecer:
 ```js
 1n + 1;         // TypeError : não se mistura BigInt e number
 1n + BigInt(1)  // 2n : conversão explícita obrigatória
-5n / 2n;        // 2n : divisão inteira, a parte decimal e truncada
+5n / 2n;        // 2n : divisão inteira, a parte decimal é truncada
 ```
 
 `BigInt` serve para grandes identificadores e criptografia, não para cálculos decimais: só lida com inteiros.
@@ -79,10 +79,10 @@ Duas restrições a conhecer:
 0 / 0;            // NaN
 parseInt("abc");  // NaN
 
-NaN === NaN;         // false : NaN não e igual a nada, nem a ele mesmo
+NaN === NaN;         // false : NaN não é igual a nada, nem a ele mesmo
 Number.isNaN(NaN);   // true  -> a forma correta de testar
 isNaN("abc");        // true  -> ATENÇÃO: converte antes, então engana
-Number.isNaN("abc")  // false -> "abc" não e NaN, e uma string
+Number.isNaN("abc")  // false -> "abc" não é NaN, é uma string
 ```
 
 Prefira sistematicamente `Number.isNaN()` à antiga função global `isNaN()`, que converte seu argumento antes de testar e produz falsos positivos.

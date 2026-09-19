@@ -50,11 +50,11 @@ Para decidir se duas caixas designam a mesma área (a deduplicar) ou duas áreas
 Caixa A          Caixa B
 ┌────────┐
 │    ┌───┼────┐
-│    │###│    │    ### = intersecao (compartilhada por A e B)
+│    │###│    │    ### = interseção (compartilhada por A e B)
 └────┼───┘    │
      └────────┘
 
-IoU = area(###) / area(A uniao B)
+IoU = área(###) / área(A união B)
 ```
 
 ```python

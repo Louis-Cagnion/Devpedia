@@ -23,7 +23,7 @@ print(resultado.stdout)
 ```python
 # NÃO BLOQUEANTE: retorna IMEDIATAMENTE, o processo roda em paralelo
 processo = subprocess.Popen(["ls", "-la"])
-# ... fazer outra coisa enquanto "processo" e executado ...
+# ... fazer outra coisa enquanto "processo" é executado ...
 processo.wait()  # espera explicitamente o fim, se necessário
 processo.poll()  # None se ainda em andamento, senão o código de retorno
 ```
@@ -69,7 +69,7 @@ log = open("execucao.log", "a", encoding="utf-8")
 # substitui o objeto do módulo pelo duplo, sem tocar no resto do código
 sys.stderr = FluxoDuplo(sys.stderr, log)
 
-print("Erro", file=sys.stderr)  # aparece na tela E e escrito em execução.log
+print("Erro", file=sys.stderr)  # aparece na tela E é escrito em execução.log
 ```
 
 `sys.stdout`/`sys.stderr` são simples objetos, substituíveis como qualquer outra variável de módulo: atribuir a eles um objeto que exponha `.write()`/`.flush()` intercepta silenciosamente tudo que já é escrito em outro lugar com `print(..., file=sys.stderr)`. O nome **Tee** vem do comando Unix `tee` (já visto em [Bash](/?c=shells&s=bash&p=redirections-et-pipes)/[PowerShell](/?c=shells&s=powershell&p=powershell)), que duplica um fluxo para vários destinos ao mesmo tempo.

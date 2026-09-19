@@ -61,7 +61,7 @@ class ParserTabela(HTMLParser):
     def __init__(self):
         super().__init__()
         self.linhas = []             # todas as linhas completas, uma vez fechadas
-        self._linha_atual = None     # None = "não esta atualmente dentro de um <tr>"
+        self._linha_atual = None     # None = "não está atualmente dentro de um <tr>"
         self._celula_atual = None
 
     def handle_starttag(self, tag, attrs):
@@ -108,7 +108,7 @@ colunas_ocupadas = {}  # {índice da coluna: número de linhas restantes ocupada
 
 def posicionar_celula(coluna_inicial, rowspan, colunas_ocupadas):
     coluna = coluna_inicial
-    # essa coluna ainda esta presa por uma fusão anterior
+    # essa coluna ainda está presa por uma fusão anterior
     while colunas_ocupadas.get(coluna, 0) > 0:
         # -> deslocar para a primeira coluna realmente livre
         coluna += 1

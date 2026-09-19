@@ -97,7 +97,7 @@ JOIN vendas v ON v.cliente_id = c.id; -- INNER JOIN: as linhas sem correspondên
 ```sql
 SELECT c.nome, v.data_compra
 FROM clientes c
--- mantem TODAS as linhas da esquerda, NULL se não houver correspondência
+-- mantém TODAS as linhas da esquerda, NULL se não houver correspondência
 LEFT JOIN vendas v ON v.cliente_id = c.id;
 ```
 
@@ -333,7 +333,7 @@ Concretamente, uma conta aplicativa comprometida (via uma falha no código, um v
 Um `UPDATE` clássico sobrescreve o valor anterior para sempre:
 
 ```sql
--- a cidade anterior 'Lyon' e perdida definitivamente
+-- a cidade anterior 'Lyon' é perdida definitivamente
 UPDATE clientes SET cidade = 'Paris' WHERE id = 1;
 ```
 

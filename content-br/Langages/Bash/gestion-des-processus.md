@@ -74,7 +74,7 @@ Um processo lançado em segundo plano com `&` ainda recebe um sinal de parada se
 ```bash
 nohup processamento_longo.sh &
 # o processo continua mesmo depois do fechamento do terminal
-# sua saída padrão e redirecionada por padrão para um arquivo nohup.out
+# sua saída padrão é redirecionada por padrão para um arquivo nohup.out
 ```
 
 ## Encontrar o PID de um processo pelo nome

@@ -81,7 +81,7 @@ Equivalente de uma compreensão de lista, mas preguiçosa: substituir os colchet
 
 ```python
 quadrados = (x ** 2 for x in range(10))       # gerador, nada foi calculado ainda
-lista_quadrados = [x ** 2 for x in range(10)]  # lista, tudo e calculado imediatamente
+lista_quadrados = [x ** 2 for x in range(10)]  # lista, tudo é calculado imediatamente
 
 sum(x ** 2 for x in range(1000000))    # calcula a soma SEM nunca armazenar os 1M de valores
 ```
@@ -110,7 +110,7 @@ primeiro_par = next((x for x in numeros if x % 2 == 0), None)
 # 8 -> primeiro elemento par encontrado
 
 primeiro_negativo = next((x for x in numeros if x < 0), None)
-# None -> nenhum elemento corresponde, o valor de reserva e retornado
+# None -> nenhum elemento corresponde, o valor de reserva é retornado
 ```
 
 > **Boa prática:** preferir `next((x for x in colecao if condicao), padrao)` a um laço `for` manual com `break`, ou a `[x for x in colecao if condicao][0]` (que constrói toda a lista filtrada antes de manter apenas o primeiro elemento, e lança um `IndexError` se estiver vazia em vez de retornar um valor de reserva).
@@ -130,10 +130,10 @@ def tarefas():
 
 t = tarefas()
 print("Antes do primeiro next")
-# "Iniciando" e exibido AQUI, no momento da chamada, não antes, não em segundo plano
+# "Iniciando" é exibido AQUI, no momento da chamada, não antes, não em segundo plano
 print(next(t))
 print("Antes do segundo next")
-print(next(t))     # "Retomando após A" e exibido AQUI, nunca antes
+print(next(t))     # "Retomando após A" é exibido AQUI, nunca antes
 ```
 
 A ordem de exibição é **inteiramente determinística** e reproduzível a cada execução, ao contrário de duas threads independentes, cuja ordem de execução relativa não é previsível sem sincronização explícita (mutex, `pthread_join`...). É por isso que se fala em **corrotina** em vez de paralelismo para descrever `yield`: a função "coopera" com seu chamador devolvendo-lhe explicitamente o controle a cada `yield`, em vez de ser interrompida à força por um escalonador como faria uma thread.

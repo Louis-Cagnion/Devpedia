@@ -51,7 +51,7 @@ comando_barulhento > /dev/null 2>&1   # ignora toda saída normal E todo erro
 Um pipe conecta a saída padrão de um comando à entrada padrão do seguinte:
 
 ```bash
-ls -l | grep ".txt"                # mantem apenas as linhas contendo ".txt"
+ls -l | grep ".txt"                # mantém apenas as linhas contendo ".txt"
 grep "404" access.log | wc -l      # conta as linhas contendo "404" no arquivo
 ps aux | sort -k 3 -nr | head -5   # os 5 processos que mais consomem CPU
 ```

@@ -58,7 +58,7 @@ int *array = malloc(3 * sizeof(int));
 int *novoArray = realloc(array, 6 * sizeof(int));
 
 if (novoArray == NULL) {
-    // realloc falhou: o bloco antigo "array" ainda e válido, não perde-lo
+    // realloc falhou: o bloco antigo "array" ainda é válido, não perde-lo
     free(array);
     return;
 }
@@ -75,7 +75,7 @@ Cada `malloc()`/`calloc()`/`realloc()` bem-sucedido deve corresponder a exatamen
 int *p = malloc(sizeof(int));
 *p = 42;
 free(p);
-// p ainda contem o endereço antigo ("dangling pointer"): não deve mais ser usado
+// p ainda contém o endereço antigo ("dangling pointer"): não deve mais ser usado
 p = NULL; // boa prática: impede um uso acidental após a liberação
 ```
 
@@ -140,7 +140,7 @@ size_t necessario = strlcpy(buffer, entrada, sizeof(buffer));
 
 if (necessario >= sizeof(buffer))
 {
-    // entrada foi truncada: necessário e o tamanho que a copia completa teria
+    // entrada foi truncada: necessário é o tamanho que a cópia completa teria
 }
 ```
 

@@ -28,7 +28,7 @@ private:
 void processarArquivo() {
     GerenciadorArquivo ga("dados.txt");
     // ... usar ga ...
-}   // <- aqui, ~GerenciadorArquivo() executa automaticamente: o arquivo e fechado, garantido
+}   // <- aqui, ~GerenciadorArquivo() executa automaticamente: o arquivo é fechado, garantido
 ```
 
 > **Nota:** ao contrário de um simples `close()` chamado manualmente ao fim da função, RAII garante a liberação mesmo se uma exceção interromper a função no meio: o destrutor executa durante o "desenrolar da pilha" (*stack unwinding*) causado pela exceção, onde uma chamada manual seria simplesmente pulada.
@@ -58,7 +58,7 @@ Um ponteiro inteligente aplica RAII à própria gestão de memória: ele **é** 
 std::unique_ptr<int> p = std::make_unique<int>(42);
 std::cout << *p;   // 42 -> desreferência como um ponteiro bruto
 
-// NÃO precisa de delete: quando p sai de escopo, a memória e liberada automaticamente
+// NÃO precisa de delete: quando p sai de escopo, a memória é liberada automaticamente
 ```
 
 Um `unique_ptr` só pode ter um **único** proprietário; copiá-lo é proibido (erro de compilação), apenas o deslocamento (`std::move`) é possível, o que transfere a propriedade de um `unique_ptr` para outro:
@@ -74,7 +74,7 @@ std::unique_ptr<int> p2 = std::move(p1);   // p2 se torna proprietario, p1 se to
 std::shared_ptr<int> p1 = std::make_shared<int>(42);
 std::shared_ptr<int> p2 = p1;   // OK, copia permitida: p1 E p2 compartilham o mesmo recurso
 
-// a memória só e liberada quando o Último shared_ptr que a referência e destruido
+// a memória só é liberada quando o último shared_ptr que a referência é destruído
 ```
 
 Cada `shared_ptr` incrementa um contador de referências compartilhado; o recurso só é liberado automaticamente quando esse contador chega a zero.

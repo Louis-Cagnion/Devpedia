@@ -89,7 +89,7 @@ Um scraper de anúncios classificados comparava dois anúncios para saber se des
 
 ```python
 def sao_potencialmente_duplicados(anuncio_a, anuncio_b):
-    # tudo já esta disponível nos cartoes da página de resultados
+    # tudo já está disponível nos cartões da página de resultados
     return (
         anuncio_a.marca == anuncio_b.marca
         and anuncio_a.modelo == anuncio_b.modelo

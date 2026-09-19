@@ -106,7 +106,7 @@ pasta.rmdir()
 
 import shutil
 shutil.rmtree(pasta)                      # remove a pasta E todo seu conteúdo, recursivamente
-# qualquer erro (arquivo bloqueado...) e ignorado, silenciosamente
+# qualquer erro (arquivo bloqueado...) é ignorado, silenciosamente
 shutil.rmtree(pasta, ignore_errors=True)
 ```
 
@@ -175,7 +175,7 @@ with open("estados.jsonl", "a", encoding="utf-8") as f:
 ```python
 with open("estados.jsonl", encoding="utf-8") as f:
     for linha in f:
-        entrada = json.loads(linha)   # cada linha e decodificada independentemente das outras
+        entrada = json.loads(linha)   # cada linha é decodificada independentemente das outras
         print(entrada["id"])
 ```
 

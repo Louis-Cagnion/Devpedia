@@ -11,12 +11,12 @@ Boa parte do poder do [terminal Unix](/?c=shells&s=bash&p=scripts-et-shebang) ve
 ```bash
 grep "erro" arquivo.log              # exibe as linhas contendo "erro"
 grep -i "erro" arquivo.log           # insensível a maiúsculas/minúsculas (-i)
-grep -v "erro" arquivo.log           # inverte: exibe as linhas que NÃO contem "erro"
+grep -v "erro" arquivo.log           # inverte: exibe as linhas que NÃO contêm "erro"
 grep -r "TODO" .                     # busca recursiva em todos os arquivos de um diretório
 grep -n "erro" arquivo.log           # exibe também o número da linha
 grep -c "erro" arquivo.log           # conta o número de linhas correspondentes, sem exibi-las
 grep -E "erro|warning" arquivo.log   # -E ativa as regex estendidas (cf. capítulo sobre regex)
-grep -l "TODO" *.md                  # exibe apenas os NOMES dos arquivos que contem o padrão
+grep -l "TODO" *.md                  # exibe apenas os NOMES dos arquivos que contêm o padrão
 # não exibe nada: serve apenas para testar a presenca (veja abaixo)
 grep -q "TODO" *.md
 ```
@@ -49,8 +49,8 @@ Um `|` não escapado sem `-E` é buscado **literalmente**: `grep "a|b"` busca a 
 É isso que permite encadeá-lo com `&&` ou `||` (veja [Redirecionamentos e pipes](/?c=shells&s=bash&p=redirections-et-pipes)):
 
 ```bash
-grep -rl "padrao" *.md || echo "ausente"  # mensagem de reserva se nada e encontrado
-grep -q "padrao" f.txt && processar f.txt # só processa o arquivo se ele contem o padrão
+grep -rl "padrao" *.md || echo "ausente"  # mensagem de reserva se nada é encontrado
+grep -q "padrao" f.txt && processar f.txt # só processa o arquivo se ele contém o padrão
 ```
 
 Com `-q`, `grep` para na primeira correspondência e não exibe nada: é a forma a privilegiar quando só o resultado do teste importa, principalmente em arquivos grandes.
@@ -141,7 +141,7 @@ wc -c arquivo.txt  # número de bytes
 
 ```bash
 grep "404" access.log | awk '{ print $1 }' | sort | uniq -c | sort -rn
-# 1) mantem as linhas de erro 404
+# 1) mantém as linhas de erro 404
 # 2) extrai o endereço IP (1o campo)
 # 3) ordena para agrupar os IPs idênticos
 # 4) conta as ocorrências de cada IP

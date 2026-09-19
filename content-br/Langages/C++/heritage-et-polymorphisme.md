@@ -53,7 +53,7 @@ public:
 };
 
 Animal *a = new Cachorro("Rex");
-std::cout << a->falar();   // "Rex late" -> a versão CORRETA e chamada, gracas a "virtual"
+std::cout << a->falar();   // "Rex late" -> a versão CORRETA é chamada, graças a "virtual"
 delete a;
 ```
 
@@ -65,7 +65,7 @@ delete a;
 
 ```cpp
 Animal *a = new Cachorro("Rex");
-delete a;   // sem destrutor virtual: SOMENTE ~Animal() e chamado, nunca ~Cachorro()
+delete a;   // sem destrutor virtual: SOMENTE ~Animal() é chamado, nunca ~Cachorro()
 ```
 
 Sem `virtual` no destrutor, remover um objeto `Cachorro` via um ponteiro `Animal*` executa apenas o destrutor de `Animal`: qualquer recurso próprio de `Cachorro` (memória alocada, arquivo aberto...) nunca seria liberado. Toda classe destinada a ser herdada e manipulada por ponteiro de base deve, portanto, sistematicamente declarar seu destrutor `virtual`.

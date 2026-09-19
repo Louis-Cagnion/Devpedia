@@ -101,7 +101,7 @@ class ContaBancaria {
 const conta = new ContaBancaria();
 conta.depositar(100);
 console.log(conta.saldo);   // 100
-console.log(conta.#saldo);  // SyntaxError: #saldo não e acessível aqui
+console.log(conta.#saldo);  // SyntaxError: #saldo não é acessível aqui
 ```
 
 ## O que se esconde por trás de `class`: o protótipo

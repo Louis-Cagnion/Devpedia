@@ -11,7 +11,7 @@ Ao contrário do [JavaScript](/?c=langages&s=javascript&p=regex), Python não te
 ```python
 import re
 
-padrao = re.compile(r"\d{4}-\d{2}-\d{2}")   # pre-compila o padrão, reutilizável
+padrao = re.compile(r"\d{4}-\d{2}-\d{2}")   # pré-compila o padrão, reutilizável
 ```
 
 > **Nota:** o prefixo `r"..."` (string bruta, *raw string*) impede que o Python interprete `\d` como uma sequência de escape inválida: indispensável assim que um padrão contém uma barra invertida.
@@ -92,14 +92,14 @@ resultado.groupdict()    # {"ano": "2024", "mes": "06", "dia": "15"}
 ## Substituir com `re.sub()`
 
 ```python
-texto = "A data e 2024-06-15"
+texto = "A data é 2024-06-15"
 
 re.sub(r"\d{4}-\d{2}-\d{2}", "DD/MM/AAAA", texto)
-# "A data e DD/MM/AAAA"
+# "A data é DD/MM/AAAA"
 
 # reutilizar um grupo capturado na substituição, com \1, \2...
 re.sub(r"(\d{4})-(\d{2})-(\d{2})", r"\3/\2/\1", texto)
-# "A data e 15/06/2024"
+# "A data é 15/06/2024"
 ```
 
 Veja também [A regex](/?c=langages&s=domain-specific-languages-dsl&p=regex) para a sintaxe geral dos padrões (classes de caracteres, quantificadores, âncoras, asserções), comum a todas as linguagens.

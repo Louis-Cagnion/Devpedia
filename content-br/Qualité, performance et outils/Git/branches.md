@@ -9,7 +9,7 @@ Uma **branch** é simplesmente um ponteiro móvel para um commit: ela permite fa
 ## Criar e trocar de branch
 
 ```bash
-git branch                        # lista as branches existentes, a atual e marcada com um *
+git branch                        # lista as branches existentes, a atual é marcada com um *
 git branch nova-funcionalidade    # cria uma nova branch, sem mudar para ela
 git checkout nova-funcionalidade  # muda para essa branch
 git checkout -b nova-funcionalidade  # atalho: cria E muda em um único comando

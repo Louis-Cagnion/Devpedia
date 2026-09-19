@@ -32,7 +32,7 @@ h2 ~ p { }       /* TODOS os <p> que seguem um <h2>, no mesmo nível */
 input[type="email"] { }  /* todo <input> com esse atributo E esse valor exato */
 a[href^="https"] { }     /* href que COMECA com "https" */
 a[href$=".pdf"] { }      /* href que TERMINA com ".pdf" */
-a[href*="exemplo"] { }   /* href que CONTEM "exemplo" em qualquer lugar */
+a[href*="exemplo"] { }   /* href que CONTÉM "exemplo" em qualquer lugar */
 ```
 
 ## Pseudo-classes: mirar em um estado

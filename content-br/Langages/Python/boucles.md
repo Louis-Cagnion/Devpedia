@@ -94,7 +94,7 @@ i = 0
 
 while i < 5:
     print(i)
-    i += 1   # Python não tem operador i++ ou ++i: e preciso escrever i += 1
+    i += 1   # Python não tem operador i++ ou ++i: é preciso escrever i += 1
 ```
 
 ## `break` e `continue`

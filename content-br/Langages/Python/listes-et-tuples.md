@@ -31,7 +31,7 @@ len(frutas)                  # número de elementos
 `[x] * n` constrói uma nova lista de tamanho `n`, cada posição contendo `x`:
 
 ```python
-# [0, 0, 0, 0, 0] -> pre-alocação prática para um tamanho conhecido de antemao
+# [0, 0, 0, 0, 0] -> pré-alocação prática para um tamanho conhecido de antemão
 zeros = [0] * 5
 # ["a", "b", "a", "b", "a", "b"] -> repete a SEQUÊNCIA inteira, não cada elemento
 letras = ["a", "b"] * 3
@@ -113,7 +113,7 @@ b = [3, 4]
 notas = [12, 5, 18, 9]
 
 sorted(notas)  # [5, 9, 12, 18] -> NOVA lista ordenada, notas permanece inalterada
-notas.sort()   # ordena NO LUGAR, não retorna nada (None), notas e modificada
+notas.sort()   # ordena NO LUGAR, não retorna nada (None), notas é modificada
 ```
 
 `sorted(iterable)` também funciona em strings: a ordenação é então **lexicográfica** (caractere por caractere, como um dicionário), o que também ordena cronologicamente datas escritas em comprimento fixo (`AAAA-MM-DD...`), sem precisar analisá-las:

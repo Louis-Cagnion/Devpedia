@@ -55,7 +55,7 @@ FROM bronze_vendas
 WHERE produto IS NOT NULL AND produto != ''   -- descarta linhas sem produto
 QUALIFY ROW_NUMBER() OVER (
     PARTITION BY id ORDER BY data DESC
-) = 1;                                        -- mantem apenas uma linha por id duplicado
+) = 1;                                        -- mantém apenas uma linha por id duplicado
 ```
 
 > **Armadilha:** adivinhar uma regra de limpeza em vez de documentá-la explicitamente. Se "linha sem produto descartada" não está escrito em lugar nenhum, a próxima pessoa que retomar o pipeline não sabe se a ausência dessas linhas na prata é proposital ou um bug.

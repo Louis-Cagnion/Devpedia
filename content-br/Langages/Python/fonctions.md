@@ -28,7 +28,7 @@ saudar("Joao", "Oi")      # "Oi Joao"
 > **Armadilha clássica: nunca usar um objeto mutável (lista, dict) como valor padrão.** O valor padrão é avaliado **apenas uma vez**, na definição da função, não a cada chamada:
 
 ```python
-# PERIGO: essa lista e COMPARTILHADA entre todas as chamadas
+# PERIGO: essa lista é COMPARTILHADA entre todas as chamadas
 def adicionar_a_lista(elemento, lista=[]):
     lista.append(elemento)
     return lista

@@ -10,7 +10,7 @@ Uma **referência** é um apelido: outro nome para uma variável já existente, 
 
 ```cpp
 int idade = 25;
-int &refIdade = idade;   // refIdade e OUTRO NOME para idade, não uma copia
+int &refIdade = idade;   // refIdade é OUTRO NOME para idade, não uma cópia
 
 refIdade = 30;
 std::cout << idade;      // 30 -> modificar refIdade modifica diretamente idade

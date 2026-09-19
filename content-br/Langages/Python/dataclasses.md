@@ -75,7 +75,7 @@ class Grupo:
     membros: list
 
 g = Grupo(membros=["Alice"])
-g.membros = ["Bob"]      # FrozenInstanceError : o próprio campo esta protegido
+g.membros = ["Bob"]      # FrozenInstanceError : o próprio campo está protegido
 g.membros.append("Bob")  # funciona sem erro : a LISTA, essa, continua mutável
 ```
 

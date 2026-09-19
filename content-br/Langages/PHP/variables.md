@@ -117,10 +117,10 @@ Se você quiser concatenar strings, tem 2 métodos:
     $str1 = "Hello";
     $str2 = "world";
 
-    echo "O tema do dia e: {$str1} {$str2}";
-    echo 'O tema do dia e: ' . $str1 . ' ' . $str2;
+    echo "O tema do dia é: {$str1} {$str2}";
+    echo 'O tema do dia é: ' . $str1 . ' ' . $str2;
 
-    //os dois resultados dao "O tema do dia e: Hello world".
+    //os dois resultados dão "O tema do dia é: Hello world".
 ?>
 ```
 
@@ -191,7 +191,7 @@ echo $pessoa["idade"]; // Warning: Undefined array key "idade"
 if (!empty($pessoa["idade"])) {
     echo $pessoa["idade"];
 }
-// equivalente a: a chave existe E seu valor não e vazio, nem null, nem false, nem 0...
+// equivalente a: a chave existe E seu valor não é vazio, nem null, nem false, nem 0...
 ?>
 ```
 

@@ -53,7 +53,7 @@ const objeto = {
 
     exibirClassico: function () {
         this.valores.forEach(function (v) {
-            // "this" aqui e undefined (ou o objeto global): NÃO "objeto"!
+            // "this" aqui é undefined (ou o objeto global): NÃO "objeto"!
             console.log(this.nome, v);
         });
     },

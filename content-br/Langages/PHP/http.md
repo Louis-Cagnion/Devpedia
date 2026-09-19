@@ -95,7 +95,7 @@ O bloco `ssl` de um contexto de fluxo (cf. exemplo acima) controla duas verifica
 <?php
 $opcoes = [
     'ssl' => [
-        // o certificado e assinado por uma autoridade reconhecida?
+        // o certificado é assinado por uma autoridade reconhecida?
         'verify_peer'      => false,
         'verify_peer_name' => false,  // o nome do certificado corresponde ao dominio chamado?
     ],
@@ -120,7 +120,7 @@ $opcoes = ['http' => ['ignore_errors' => true]];
 $contexto = stream_context_create($opcoes);
 
 $resposta = file_get_contents($url, false, $contexto);
-// com ignore_errors: $resposta contem o corpo mesmo para um 404/500
+// com ignore_errors: $resposta contém o corpo mesmo para um 404/500
 // sem ignore_errors : $resposta vale false para um 404/500, mesmo que o servidor tenha
 // respondido
 ```

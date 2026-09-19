@@ -26,11 +26,11 @@ else:
 Além de `True`/`False`, Python considera automaticamente certos valores como falsos em um contexto booleano (`if`, `while`...):
 
 ```python
-if []:      # False -> uma lista vazia e "falsy"
-if "":      # False -> uma string vazia e "falsy"
-if 0:       # False -> zero e "falsy"
+if []:      # False -> uma lista vazia é "falsy"
+if "":      # False -> uma string vazia é "falsy"
+if 0:       # False -> zero é "falsy"
 if None:    # False
-if [1, 2]:  # True -> uma lista não vazia e "truthy"
+if [1, 2]:  # True -> uma lista não vazia é "truthy"
 ```
 
 | Valor | Truthy / Falsy |
@@ -54,9 +54,9 @@ else:
 
 ```python
 status = "ativo"
-# "encontrado" -> status e truthy, and retorna seu SEGUNDO operando
+# "encontrado" -> status é truthy, and retorna seu SEGUNDO operando
 resultado = status and "encontrado"
-# ""           -> "" e falsy, and para e retorna seu PRIMEIRO operando
+# ""           -> "" é falsy, and para e retorna seu PRIMEIRO operando
 resultado = "" and "encontrado"
 
 apelido = ""
@@ -82,7 +82,7 @@ Ao contrário de PHP/C/JS (`condicao ? valor_se_verdadeiro : valor_se_falso`), P
 Permite atribuir uma variável **e** usá-la na mesma expressão, principalmente em uma condição:
 
 ```python
-# sem o operador morsa: a linha "resultado" e calculada duas vezes
+# sem o operador morsa: a linha "resultado" é calculada duas vezes
 if calcular_resultado() > 10:
     print(calcular_resultado())
 

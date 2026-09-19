@@ -30,7 +30,7 @@ ls arquivo[a-z].txt  # uma única letra minúscula nessa posição
 
 ```bash
 echo *.xyz
-# se nenhum arquivo .xyz existe, o Bash exibe literalmente "*.xyz" (o padrão não e substituido)
+# se nenhum arquivo .xyz existe, o Bash exibe literalmente "*.xyz" (o padrão não é substituído)
 ```
 
 Isso é uma fonte clássica de bugs: um script que supõe que `*.xyz` sempre designa uma lista de arquivos reais pode receber o texto bruto `*.xyz` como único "nome de arquivo" se o diretório não contiver nada assim.

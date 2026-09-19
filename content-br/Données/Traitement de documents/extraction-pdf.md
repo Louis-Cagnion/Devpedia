@@ -98,7 +98,7 @@ def corrigir_tabelas_subcontadas(caminho_pdf, tabelas_nativas):
         if parece_estruturalmente_suspeita(t.celulas)
     }
     if not paginas_suspeitas:
-        return tabelas_nativas   # nada a corrigir: nenhum custo de img2table pago a toa
+        return tabelas_nativas   # nada a corrigir: nenhum custo de img2table pago à toa
 
     candidatos_por_pagina = Img2TablePDF(
         src=caminho_pdf, pages=[p - 1 for p in paginas_suspeitas], pdf_text_extraction=True

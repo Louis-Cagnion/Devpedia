@@ -108,7 +108,7 @@ A partir de outro arquivo, duas formas de chamar essa classe:
 
 ```php
 <?php
-// 1) caminho completo, absoluto a partir da raiz (o \ inicial e opcional mas explícito)
+// 1) caminho completo, absoluto a partir da raiz (o \ inicial é opcional mas explícito)
 \App\Faturamento\Repository::encontrar(1);
 
 // 2) importação no topo do arquivo, depois nome curto

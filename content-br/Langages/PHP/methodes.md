@@ -54,7 +54,7 @@ function calcularDesconto(float $preco, int $porcentagem): float
 }
 
 calcularDesconto(100, 10);     // OK -> 90.0
-calcularDesconto("cem", 10);   // TypeError: "cem" não e um float
+calcularDesconto("cem", 10);   // TypeError: "cem" não é um float
 ?>
 ```
 
@@ -103,7 +103,7 @@ PHP fornece uma enorme quantidade de funções nativas já prontas para uso, cla
     substr("Hello", 1, 3);           // "ell" -> extrai uma parte da string
     explode(",", "a,b,c");           // ["a", "b", "c"] -> divide uma string em array
     implode(",", ["a", "b"]);        // "a,b" -> junta um array em uma string
-    str_contains("Hello", "ell");    // true -> verifica se uma string contem outra
+    str_contains("Hello", "ell");    // true -> verifica se uma string contém outra
 ?>
 ```
 
@@ -173,7 +173,7 @@ exemplo:
     is_array($var);   // true/false
     is_null($var);    // true/false
     empty($var);      // true se vazio, null, ou não definido
-    isset($var);      // true se a variável existe e não e null
+    isset($var);      // true se a variável existe e não é null
 ?>
 ```
 
