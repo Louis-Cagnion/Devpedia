@@ -111,7 +111,8 @@ class EstoqueInsuficienteException extends Exception
         private int $quantidadeDisponivel
     ) {
         parent::__construct(
-            "Estoque insuficiente para {$produto}: {$quantidadeSolicitada} solicitados, {$quantidadeDisponivel} disponiveis"
+            "Estoque insuficiente para {$produto}: {$quantidadeSolicitada} solicitados, "
+            . "{$quantidadeDisponivel} disponiveis"
         );
     }
 

@@ -75,7 +75,8 @@ em vez do total: um bug introduzido no ultimo refactor de
 git commit
 
 # 2. Varios -m: cada um se torna um paragrafo separado por uma linha vazia, sem abrir editor
-git commit -m "Corrige o calculo do desconto" -m "O percentual so era aplicado ao primeiro item, nao ao total."
+git commit -m "Corrige o calculo do desconto" \
+    -m "O percentual so era aplicado ao primeiro item, nao ao total."
 
 # 3. Uma string multilinha passada a um unico -m (util para automatizar um commit, ou a partir
 # de uma ferramenta que gera a mensagem)

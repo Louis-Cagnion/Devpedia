@@ -12,7 +12,8 @@ Uma **classe** C++ reúne o que uma [`struct` C](/?c=langages-de-programmation&s
 class Veiculo {
 public:
     // const& : evita copiar as strings recebidas (veja As referências)
-    Veiculo(const std::string &marca, const std::string &modelo) : marca(marca), modelo(modelo) {}
+    Veiculo(const std::string &marca, const std::string &modelo)
+        : marca(marca), modelo(modelo) {}
 
     std::string descricao() const {
         return marca + " " + modelo;

@@ -19,7 +19,11 @@ Os links (`<a>`) e as imagens (`<img>`) são dois elementos fundamentais da web:
 ### O atributo `target`
 
 ```html
-<a href="https://exemplo.com" target="_blank" rel="noopener noreferrer">Abre em uma nova aba</a>
+<a
+    href="https://exemplo.com"
+    target="_blank"
+    rel="noopener noreferrer"
+>Abre em uma nova aba</a>
 ```
 
 > **Nota:** `target="_blank"` sem `rel="noopener"` deixa a nova página aberta acessar (via [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript)) o objeto `window` da página de origem: um risco de segurança pequeno mas real (*tabnabbing*). `noopener` (e `noreferrer`, que além disso impede o envio da URL de origem) devem acompanhar sistematicamente todo `target="_blank"`.

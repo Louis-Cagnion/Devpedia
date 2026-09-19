@@ -26,10 +26,12 @@ A correção consiste em mover o laço **para o lado onde estão os dados**, e f
 
 ```python
 # 1 ida-e-volta, seja qual for o numero de anuncios
-cartoes = pagina.avaliar("""() => Array.from(document.querySelectorAll('article')).map(cartao => ({
+cartoes = pagina.avaliar(
+    """() => Array.from(document.querySelectorAll('article')).map(cartao => ({
     href: cartao.querySelector('a')?.getAttribute('href'),
     texto: cartao.innerText,
-}))""")
+}))"""
+)
 
 for cartao in cartoes:                      # processamento local, gratuito
     analisar(cartao["href"], cartao["texto"])

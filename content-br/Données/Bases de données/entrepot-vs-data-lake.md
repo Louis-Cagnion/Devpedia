@@ -17,7 +17,7 @@ Data warehouse (schema-on-write):
   arquivo fonte --> verificado contra o esquema --> rejeitado ou inserido em uma tabela tipada
 
 Data lake (schema-on-read):
-  arquivo fonte --> armazenado tal como esta, sem verificacao --> estrutura decidida no momento da leitura
+  arquivo fonte --> armazenado tal como esta, sem verificacao --> estrutura decidida na leitura
 ```
 
 ## Visão geral

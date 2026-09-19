@@ -92,7 +92,11 @@ O `img2table` não é sistematicamente melhor que o `find_tables()`: rodar uma a
 
 ```python
 def corrigir_tabelas_subcontadas(caminho_pdf, tabelas_nativas):
-    paginas_suspeitas = {t.page for t in tabelas_nativas if parece_estruturalmente_suspeita(t.celulas)}
+    paginas_suspeitas = {
+        t.page
+        for t in tabelas_nativas
+        if parece_estruturalmente_suspeita(t.celulas)
+    }
     if not paginas_suspeitas:
         return tabelas_nativas   # nada a corrigir: nenhum custo de img2table pago a toa
 
@@ -141,7 +145,14 @@ A renderização produzida por `get_pixmap` precisa então ser convertida em um 
 ```python
 import numpy as np
 
-imagem = np.frombuffer(pixmap.samples, dtype=np.uint8).reshape(pixmap.height, pixmap.width, pixmap.n)
+imagem = np.frombuffer(
+    pixmap.samples,
+    dtype=np.uint8,
+).reshape(
+    pixmap.height,
+    pixmap.width,
+    pixmap.n,
+)
 ```
 
 `pixmap.samples` é uma sequência bruta de bytes (os pixels, um após o outro); `reshape` a reorganiza em um [array NumPy](/?c=data-science&p=numpy) de 3 dimensões (altura, largura, canais de cor), o formato esperado pela quase totalidade das bibliotecas de visão computacional.

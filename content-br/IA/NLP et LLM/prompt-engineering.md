@@ -201,7 +201,7 @@ Sua missao : [objetivo principal, em uma frase].
 2. [instrucao precisa]
 
 Restricoes : [conteudo a respeitar] ; [o que evitar].
-Se uma informacao necessaria estiver ausente : [faca uma pergunta / sinalize a suposicao feita].
+Se faltar uma informacao necessaria: [faca uma pergunta / sinalize a suposicao feita].
 
 ## Contexto
 """

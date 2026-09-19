@@ -28,7 +28,10 @@ Codigo existente, em qualquer parte do projeto:
 
 ```javascript
 // Pega o getter/setter nativos ANTES de substitui-los, para poder chama-los depois
-const propriedadeNativa = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+const propriedadeNativa = Object.getOwnPropertyDescriptor(
+    HTMLSelectElement.prototype,
+    'value',
+);
 
 Object.defineProperty(meuSelect, 'value', {
     get() {

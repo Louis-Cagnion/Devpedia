@@ -42,7 +42,9 @@ spl_autoload_register(function (string $classe): void {
 
     foreach ($namespaces as $prefixo => $pastaBase) {
         if (str_starts_with($classe, $prefixo)) {
-            $caminho = $pastaBase . str_replace('\\', '/', substr($classe, strlen($prefixo))) . '.php';
+            $caminho = $pastaBase
+                . str_replace('\\', '/', substr($classe, strlen($prefixo)))
+                . '.php';
             if (file_exists($caminho)) {
                 require $caminho;
             }
