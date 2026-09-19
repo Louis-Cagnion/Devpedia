@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 2 (fusionner ou trancher le double résumé dans les 8 chapitres concernés, décision de Louis déjà prise), puis point 1 (causer racine des échecs espeak-ng).
+> Prochaine tâche : point 1 (cause racine des échecs espeak-ng).
 
 > Restent : un test navigateur en attente de Louis (point 3).
 
@@ -11,9 +11,6 @@ Nécessite `ffmpeg` sur le PATH : `export PATH="/c/Users/lcagnion/tools/ffmpeg-9
 Convention de suivi : ce fichier ne demande plus de relecture, d'écoute ni de décision de régénération audio à Louis -- il s'en charge à son rythme et note lui-même son retour ici quand il le fait. Le fait/pourquoi/décisions déjà tranchées (progression, historique) va dans `journal-de-bord.md`, jamais ici : seuls les points restants, avec le contexte minimal pour les exécuter sans revenir en arrière.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
-
-## 2. 8 chapitres avec un double mécanisme de résumé (`## Résumé` + `## 📋 Récapitulatif`)
-Chapitres concernés : `nombres-flottants.md`, `Langages/PHP/securite.md`, `Langages/JavaScript/nombres.md`, `Langages/C++/gestion-memoire-raii.md`, `Données/Représentation des données/organisation-en-memoire.md`, `entiers-et-debordements.md`, `encodage-des-textes.md`, `aleatoire-et-generateurs.md`. Décision de Louis : un seul résumé par chapitre -- fusionner les deux sections si pertinent, sinon garder la plus complète et supprimer l'autre. À faire chapitre par chapitre, dans les 4 langues.
 
 ## 3. Fond étoilé des pages chapitre invisible sur mobile (iOS 16.7.16)
 Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il s'affiche normalement sur desktop (`css/content.css`, `.page::before`). Deux hypothèses déjà invalidées par le retest de Louis (détail dans `journal-de-bord.md`) : `@supports` autour de `color-mix()`, puis son remplacement complet par `rgba()` + triplets RGB précalculés -- toujours gris dans les deux cas. Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `var()`, `rgba()`, `radial-gradient()`, `inset: 0`).
