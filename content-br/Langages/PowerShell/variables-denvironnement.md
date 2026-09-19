@@ -28,7 +28,7 @@ Write-Output $env:NOME
 $env:PATH
 $env:USERPROFILE   # diretório pessoal do usuário atual (equivalente a $HOME)
 $env:USERNAME      # nome do usuário atual
-$env:COMPUTERNAME  # nome da maquina
+$env:COMPUTERNAME  # nome da máquina
 ```
 
 ## `$env:PATH`: como o PowerShell encontra um comando

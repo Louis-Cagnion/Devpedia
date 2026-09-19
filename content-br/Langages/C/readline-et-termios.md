@@ -48,7 +48,7 @@ struct termios ancien, nouveau;
 
 tcgetattr(STDIN_FILENO, &ancien);   // salva a configuração atual do terminal
 nouveau = ancien;
-nouveau.c_lflag &= ~(ICANON | ECHO);   // desativa o modo canonico E a exibição automática
+nouveau.c_lflag &= ~(ICANON | ECHO);   // desativa o modo canônico E a exibição automática
 tcsetattr(STDIN_FILENO, TCSANOW, &nouveau);   // aplica o novo modo
 
 // ... leitura tecla por tecla, sem esperar Enter, sem eco automático ...

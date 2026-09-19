@@ -43,7 +43,7 @@ Uma vez carregado o modelo pré-treinado, existem várias estratégias, de acord
 for parametro in modelo.backbone.parameters():
     parametro.requires_grad = False   # excluido do cálculo de gradiente, veja autograd
 
-# Apenas a nova camada de saída, adicionada para este caso de negocio, continua treinável
+# Apenas a nova camada de saída, adicionada para este caso de negócio, continua treinável
 modelo.cabeca_de_saida = nn.Linear(tamanho_features, numero_categorias_negocio)
 ```
 

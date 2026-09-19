@@ -44,7 +44,7 @@ top
 
 ```bash
 kill 1234     # envia SIGTERM (15): pede educadamente ao processo para terminar de forma limpa
-kill -9 1234  # envia SIGKILL (9): forca a parada imediata, sem deixar o processo reagir
+kill -9 1234  # envia SIGKILL (9): força a parada imediata, sem deixar o processo reagir
 ```
 
 | Sinal | Número | Efeito |

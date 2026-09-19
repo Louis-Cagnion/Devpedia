@@ -32,7 +32,7 @@ Cada linha segue um formato de 5 campos de tempo, seguidos do comando a executar
 0 3 * * *        /home/usuario/scripts/backup.sh          # todos os dias as 3h00
 */15 * * * *      /home/usuario/scripts/verificar-espaco.sh  # a cada 15 minutos
 0 9 * * 1          /home/usuario/scripts/relatorio-semanal.sh  # toda segunda as 9h00
-0 0 1 * *          /home/usuario/scripts/limpar-logs.sh    # todo dia 1 do mes, a meia-noite
+0 0 1 * *          /home/usuario/scripts/limpar-logs.sh    # todo dia 1 do mês, a meia-noite
 ```
 
 Um `*` significa "para todo valor possível desse campo"; `*/15` no campo dos minutos significa "a cada 15 minutos" (0, 15, 30, 45).
@@ -128,7 +128,7 @@ Description=Agenda backup.service todos os dias
 
 [Timer]
 OnCalendar=daily                                    # equivalente a @daily no cron
-# recupera a execução perdida se a maquina estava desligada (ver abaixo)
+# recupera a execução perdida se a máquina estava desligada (ver abaixo)
 Persistent=true
 
 [Install]

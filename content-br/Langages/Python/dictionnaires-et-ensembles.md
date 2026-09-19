@@ -19,7 +19,7 @@ del pessoa["idade"]                     # remove uma chave
 pessoa.get("telefone")              # None se a chave não existir (sem erro)
 pessoa.get("telefone", "desconhecido")  # "desconhecido" -> valor padrão se ausente
 
-"nome" in pessoa            # True -> testa a presenca de uma CHAVE (não de um valor)
+"nome" in pessoa            # True -> testa a presença de uma CHAVE (não de um valor)
 ```
 
 > **Nota:** `pessoa["telefone"]` (acesso direto por colchetes) lança um `KeyError` se a chave não existir; ao contrário de `.get()`, que retorna `None` (ou um valor padrão fornecido) sem nunca travar. Preferir `.get()` assim que a ausência da chave for um caso normal, não um erro.

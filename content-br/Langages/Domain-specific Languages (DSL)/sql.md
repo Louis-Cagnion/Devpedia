@@ -323,7 +323,7 @@ Além da injeção SQL (que protege o *como* se consulta o banco), uma boa prát
 ```sql
 -- em vez de dar todos os direitos a uma única conta aplicativa:
 GRANT SELECT, INSERT, UPDATE ON loja.pedidos TO 'app_loja'@'%';
--- sem DROP, DELETE, nem acesso as outras tabelas/bancos, se a aplicação nunca precisar deles
+-- sem DROP, DELETE, nem acesso às outras tabelas/bancos, se a aplicação nunca precisar deles
 ```
 
 Concretamente, uma conta aplicativa comprometida (via uma falha no código, um vazamento de credenciais...) só pode causar danos na medida de seus próprios direitos: uma conta limitada a `SELECT`/`INSERT`/`UPDATE` em uma única tabela não permite a um atacante apagar um banco de dados inteiro, mesmo que consiga executar consultas arbitrárias. É uma proteção **complementar** às consultas preparadas, não um substituto: ela limita os danos *se* uma injeção acontecer mesmo assim (bug não detectado, consulta dinâmica mal construída...), em vez de impedir a própria injeção.

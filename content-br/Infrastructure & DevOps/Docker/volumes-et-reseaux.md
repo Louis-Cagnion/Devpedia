@@ -23,7 +23,7 @@ Aqui, `meus-dados` é um **volume nomeado**, gerenciado pelo Docker e armazenado
 | Uso típico | Dados persistentes de um banco de dados, de um serviço | Montar o código fonte em desenvolvimento para ver as mudanças sem reconstruir a imagem |
 
 ```bash
-# Bind mount: o diretório atual do hospedeiro vira /app no conteiner
+# Bind mount: o diretório atual do hospedeiro vira /app no contêiner
 docker run -v $(pwd):/app meu-app:1.0
 ```
 
@@ -65,7 +65,7 @@ A partir do contêiner `api`, conectar-se ao banco de dados se faz visando o hos
 
 ```bash
 docker run -p 8080:80 meu-app:1.0
-# hospedeiro:8080  -->  conteiner:80
+# hospedeiro:8080  -->  contêiner:80
 ```
 
 Dois contêineres na mesma rede já se comunicam entre si sem `-p` (eles se enxergam diretamente na rede interna); `-p` só é necessário para expor um serviço **fora** do Docker, para a máquina hospedeira ou para o exterior.

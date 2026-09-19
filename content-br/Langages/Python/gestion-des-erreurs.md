@@ -22,7 +22,7 @@ try:
     numero = int(input("Digite um número: "))
     resultado = 10 / numero
 except ValueError:
-    print("Isso não e um número válido")
+    print("Isso não é um número válido")
 except ZeroDivisionError:
     print("Impossível dividir por zero")
 except Exception as erro:   # pega todo o resto -> deve ficar por Último
@@ -113,7 +113,7 @@ def carregar_configuracao(caminho):
 try:
     carregar_configuracao("config.ini")
 except ConfigurationError as erro:
-    print(erro)              # mensagem de negocio, legível por quem chama
+    print(erro)              # mensagem de negócio, legível por quem chama
     print(erro.__cause__)    # FileNotFoundError original, ainda acessível
 ```
 

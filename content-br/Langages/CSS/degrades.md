@@ -39,7 +39,7 @@ Parte de um ponto central e progride para fora, em círculos (ou elipses) cada v
     height: 100px;
     border-radius: 50%;   /* torna o elemento redondo */
     background: conic-gradient(#4a90d9 75%, #e0e0e0 0);
-    /* a cor "gira" em torno do centro, como os ponteiros de um relogio */
+    /* a cor "gira" em torno do centro, como os ponteiros de um relógio */
 }
 ```
 

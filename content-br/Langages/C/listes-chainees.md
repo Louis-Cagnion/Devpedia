@@ -63,8 +63,8 @@ No *inserirNoInicio(No *cabeca, int valor)
         return cabeca; // falha de alocação: devolver a lista inalterada em vez de travar
     }
     novo->valor = valor;
-    novo->seguinte = cabeca;  // o novo no aponta para a antiga cabeca
-    return novo;              // torna-se a nova cabeca
+    novo->seguinte = cabeca;  // o novo nó aponta para a antiga cabeça
+    return novo;              // torna-se a nova cabeça
 }
 
 // uso:

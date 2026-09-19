@@ -116,7 +116,7 @@ PHP fornece uma enorme quantidade de funções nativas já prontas para uso, cla
     $arr[] = "valor";
     array_pop($arr);                       // remove e retorna o último elemento
     array_merge($arr1, $arr2);             // mescla dois arrays
-    in_array("maca", $frutas);             // true/false -> verifica a presenca de um valor
+    in_array("maca", $frutas);             // true/false -> verifica a presença de um valor
     array_search("maca", $frutas);         // retorna a chave/índice encontrado
     sort($arr);                            // ordena um array (valores)
     array_map(fn($n) => $n * 2, $arr);     // aplica uma função a cada elemento

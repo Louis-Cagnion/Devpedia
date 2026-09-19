@@ -91,7 +91,7 @@ const data = '2024-06-15';
 
 const resultado = data.match(re);
 resultado[1];  // '2024' (ano)
-resultado[2];  // '06' (mes)
+resultado[2];  // '06' (mês)
 resultado[3];  // '15' (dia)
 ```
 

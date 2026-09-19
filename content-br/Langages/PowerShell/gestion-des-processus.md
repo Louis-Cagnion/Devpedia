@@ -40,7 +40,7 @@ Get-Process | Sort-Object CPU -Descending | Select-Object -First 5
 
 ```powershell
 Stop-Process -Id 1234         # pede a parada do processo (equivalente mais próximo de SIGTERM)
-# parada forcada, sem esperar um fechamento limpo (equivalente de SIGKILL)
+# parada forçada, sem esperar um fechamento limpo (equivalente de SIGKILL)
 Stop-Process -Id 1234 -Force
 Stop-Process -Name "notepad"  # mira pelo nome em vez do PID
 ```

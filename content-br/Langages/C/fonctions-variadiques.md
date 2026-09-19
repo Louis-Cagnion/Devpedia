@@ -64,7 +64,7 @@ Cada `%` introduz uma sintaxe precisa que precisa ser reanalisada caractere por 
 printf("%-10d|\n", 42);     // "42        |" -> '-': justificado à ESQUERDA (padrão: à direita)
 printf("%010d\n", 42);      // "0000000042"  -> '0': preenche com zeros em vez de espaços
 printf("%#x\n", 255);       // "0xff"        -> '#': forma alternativa (prefixo 0x/0X para x/X)
-printf("%+d\n", 42);        // "+42"         -> '+': forca a exibição do sinal, mesmo positivo
+printf("%+d\n", 42);        // "+42"         -> '+': força a exibição do sinal, mesmo positivo
 
 // "        42" -> largura Mínima: preenchida com espaços se necessário
 printf("%10d\n", 42);

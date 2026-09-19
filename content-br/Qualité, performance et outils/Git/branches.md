@@ -64,8 +64,8 @@ Depois: main:     A -- B -- E ------- F (merge commit, dois pais)
 ## Remover uma branch
 
 ```bash
-git branch -d feature  # remove, apenas se a branch já foi mesclada (seguranca)
-git branch -D feature  # forca a remoção, mesmo que nunca tenha sido mesclada
+git branch -d feature  # remove, apenas se a branch já foi mesclada (segurança)
+git branch -D feature  # força a remoção, mesmo que nunca tenha sido mesclada
 ```
 
 > **Nota:** `git branch -D` em uma branch nunca mesclada pode fazer perder o acesso a commits que não existem mais em nenhum outro lugar. Eles geralmente continuam recuperáveis por um tempo via `git reflog` (veja [Desfazer mudanças e navegar no histórico](/?c=git&p=annuler-et-historique)), mas é melhor verificar com `git log feature` (ou uma mesclagem/`git branch -d`) antes de forçar a remoção.

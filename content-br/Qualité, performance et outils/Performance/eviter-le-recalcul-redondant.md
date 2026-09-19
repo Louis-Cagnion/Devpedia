@@ -181,7 +181,7 @@ Por padrão, um servidor PHP mantém na memória tudo o que um script produz com
 ```php
 <?php
 ini_set('output_buffering', 'off');   // desativa o armazenamento em buffer da saída
-ini_set('implicit_flush', true);      // forca o envio imediato após cada echo
+ini_set('implicit_flush', true);      // força o envio imediato após cada echo
 while (ob_get_level() > 0) {
     // também esvazia qualquer buffer já aberto pelo próprio PHP
     ob_end_flush();

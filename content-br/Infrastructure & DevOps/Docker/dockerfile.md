@@ -10,10 +10,10 @@ Um **Dockerfile** é uma receita em texto: uma sequência de instruções descre
 
 ```dockerfile
 FROM node:20-alpine        # imagem base: Node.js 20 em uma distribuição Alpine (mínima)
-# diretório de trabalho no conteiner para todas as instruções seguintes
+# diretório de trabalho no contêiner para todas as instruções seguintes
 WORKDIR /app
 
-COPY package*.json ./       # copia esses arquivos da maquina hospedeira para a imagem
+COPY package*.json ./       # copia esses arquivos da máquina hospedeira para a imagem
 RUN npm install              # executa um comando DURANTE a construção da imagem
 
 COPY . .                    # copia o resto do código fonte
@@ -22,7 +22,7 @@ ENV NODE_ENV=production     # variável de ambiente, disponível no build e na e
 # documenta a porta usada (não abre nada por si só, cf. capítulo redes)
 EXPOSE 3000
 
-CMD ["node", "server.js"]    # comando executado quando o CONTEINER inicia, não durante o build
+CMD ["node", "server.js"]    # comando executado quando o Contêiner inicia, não durante o build
 ```
 
 | Instrução | Papel |
@@ -66,7 +66,7 @@ O Docker então chama `ENTRYPOINT`, passando a ele `CMD` (ou qualquer comando da
 
 ```bash
 #!/bin/sh
-# preparação fixa, executada a cada início do conteiner
+# preparação fixa, executada a cada início do contêiner
 chown -R app:app /data
 
 exec "$@"   # substitui este script pelo comando recebido
@@ -83,7 +83,7 @@ exec "$@"   # substitui este script pelo comando recebido
 Cada `RUN`/`COPY`/`ADD` adiciona uma camada, armazenada em cache: se uma instrução e tudo que a precede não mudaram desde o último build, o Docker reutiliza a camada em cache em vez de reconstruí-la.
 
 ```dockerfile
-# Ordem ruim: a menor mudanca de código fonte inválida o cache do `npm install`
+# Ordem ruim: a menor mudança de código fonte inválida o cache do `npm install`
 COPY . .
 RUN npm install
 

@@ -17,7 +17,7 @@ grep -n "erro" arquivo.log           # exibe também o número da linha
 grep -c "erro" arquivo.log           # conta o número de linhas correspondentes, sem exibi-las
 grep -E "erro|warning" arquivo.log   # -E ativa as regex estendidas (cf. capítulo sobre regex)
 grep -l "TODO" *.md                  # exibe apenas os NOMES dos arquivos que contêm o padrão
-# não exibe nada: serve apenas para testar a presenca (veja abaixo)
+# não exibe nada: serve apenas para testar a presença (veja abaixo)
 grep -q "TODO" *.md
 ```
 

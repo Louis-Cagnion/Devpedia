@@ -99,12 +99,12 @@ div {
 Uma media query sempre mede a largura da **janela** inteira, o que pode ser enganoso para um componente que ocupa apenas parte da tela (um cartão em uma coluna da grade, ao lado de uma barra lateral): a janela pode estar larga enquanto o espaço realmente disponível para esse componente específico é estreito. Uma **container query** resolve exatamente esse caso medindo, não a janela, mas o contêiner direto do elemento:
 
 ```css
-/* 1. Marcar um ancestral como "conteiner consultável" */
+/* 1. Marcar um ancestral como "contêiner consultável" */
 .carte-conteneur {
     container-type: inline-size;  /* apenas a largura do contêiner é acompanhada */
 }
 
-/* 2. A regra @container reage a LARGURA DESSE CONTEINER, não a da janela */
+/* 2. A regra @container reage a LARGURA DESSE Contêiner, não a da janela */
 @container (max-width: 860px) {
     .carte { flex-direction: column; }
 }

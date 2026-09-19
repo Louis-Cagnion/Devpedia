@@ -116,8 +116,8 @@ class Ponto:
 
 p1 = Ponto(1, 2)
 p2 = Ponto(3, 4)
-print(p1 + p2)            # (4, 6) -> gracas a __add__
-print(p1 == Ponto(1, 2))  # True -> gracas a __eq__
+print(p1 + p2)            # (4, 6) -> graças a __add__
+print(p1 == Ponto(1, 2))  # True -> graças a __eq__
 ```
 
 | Método especial | Disparado por |

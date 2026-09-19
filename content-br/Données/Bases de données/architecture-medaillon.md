@@ -67,7 +67,7 @@ QUALIFY ROW_NUMBER() OVER (
 A camada **ouro** agrega e modela os dados da prata para um uso de negócio preciso: vendas totais por região, taxa de cancelamento mensal, etc. É tipicamente aqui que se encontra o [modelo em estrela](/?c=bases-de-donnees&p=modeles-en-etoile): uma tabela de fatos e suas dimensões, prontas para serem consultadas diretamente por um dashboard, sem que ele precise conhecer as etapas de limpeza anteriores.
 
 ```sql
--- tabela "ouro": vendas agregadas por produto e por mes, a partir da prata
+-- tabela "ouro": vendas agregadas por produto e por mês, a partir da prata
 INSERT INTO ouro_vendas_mensais (produto, mes, total_quantidade, total_valor)
 SELECT produto, DATE_TRUNC('month', data_venda), SUM(quantidade), SUM(quantidade * preco)
 FROM prata_vendas

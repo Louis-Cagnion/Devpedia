@@ -127,7 +127,7 @@ with open("contatos.csv", newline="", encoding="utf-8") as f:
 
 ```python
 with open("contatos.csv", newline="", encoding="utf-8") as f:
-    leitor = csv.DictReader(f, delimiter=",")  # usa a primeira linha como cabecalhos
+    leitor = csv.DictReader(f, delimiter=",")  # usa a primeira linha como cabeçalhos
     for linha in leitor:
         # {"nome": "Joao", "sobrenome": "Silva", "idade": "25"} -> um DICT, por nome de coluna
         print(linha)

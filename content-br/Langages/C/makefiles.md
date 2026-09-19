@@ -137,7 +137,7 @@ Para aplicar esse comportamento a **todo** o arquivo sem prefixar cada linha ind
 MAKEFLAGS += -s
 
 compilar:
-	echo "Compilando..."   # já silencioso gracas ao MAKEFLAGS; o @ fica redundante aqui
+	echo "Compilando..."   # já silencioso graças ao MAKEFLAGS; o @ fica redundante aqui
 	gcc main.c -o programa
 ```
 

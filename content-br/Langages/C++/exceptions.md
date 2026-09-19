@@ -58,7 +58,7 @@ try {
     sacar(100, 150);
 } catch (const SaldoInsuficienteException &e) {
     std::cout << e.what() << "\n";
-} catch (const std::exception &e) {   // rede de seguranca para qualquer outra exceção padrão
+} catch (const std::exception &e) {   // rede de segurança para qualquer outra exceção padrão
     std::cout << "Erro inesperado: " << e.what() << "\n";
 }
 ```

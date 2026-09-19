@@ -69,7 +69,7 @@ padrao = re.compile(r"(\d{4})-(\d{2})-(\d{2})")
 resultado = padrao.search("2024-06-15")
 
 resultado.group(1)   # "2024" (ano)
-resultado.group(2)   # "06" (mes)
+resultado.group(2)   # "06" (mês)
 resultado.group(3)   # "15" (dia)
 resultado.groups()   # ("2024", "06", "15") -> todos os grupos em uma tupla
 ```
@@ -84,7 +84,7 @@ resultado = padrao.search("2024-06-15")
 
 resultado.group("ano")   # "2024"
 resultado["ano"]         # equivalente, notação abreviada
-resultado.groupdict()    # {"ano": "2024", "mes": "06", "dia": "15"}
+resultado.groupdict()    # {"ano": "2024", "mês": "06", "dia": "15"}
 ```
 
 > **Boa prática:** nomear os grupos assim que um padrão tiver vários -- `resultado["ano"]` continua correto mesmo que um grupo seja adicionado ou removido em outra parte do padrão, ao contrário de `resultado.group(2)`, cujo número depende da posição.

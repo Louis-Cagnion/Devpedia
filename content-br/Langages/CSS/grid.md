@@ -85,7 +85,7 @@ Linhas de grade verticais:  1    2    3    4
     display: grid;
     grid-template-columns: 200px 1fr;
     grid-template-areas:
-        "cabecalho  cabecalho"
+        "cabeçalho  cabeçalho"
         "lateral principal"
         "rodape    rodape";
 }

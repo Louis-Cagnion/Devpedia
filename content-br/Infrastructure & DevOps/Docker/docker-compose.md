@@ -34,7 +34,7 @@ volumes:
 # constroi (se necessário) e inicia todos os serviços em segundo plano
 docker compose up -d
 docker compose logs -f api    # acompanha os logs de um serviço específico
-docker compose down           # para e remove os conteineres (os volumes nomeados sobrevivem)
+docker compose down           # para e remove os contêineres (os volumes nomeados sobrevivem)
 ```
 
 > **YAML é sensível à indentação**, exatamente como [Python](/?c=langages-de-programmation&s=python&p=python): duas linhas no mesmo nível devem ter a mesma indentação, e uma tabulação geralmente é inválida ali (YAML só aceita espaços). Um erro de indentação muda silenciosamente a estrutura do documento em vez de provocar um erro explícito: é o primeiro ponto a verificar em caso de comportamento inesperado.
@@ -50,7 +50,7 @@ docker compose down           # para e remove os conteineres (os volumes nomeado
 O Compose não reconstrói uma imagem automaticamente a cada `up` se ela já existe em cache:
 
 ```bash
-docker compose up -d --build   # forca a reconstrução das imagens antes de iniciar
+docker compose up -d --build   # força a reconstrução das imagens antes de iniciar
 ```
 
 ## Reinício automático em caso de falha
@@ -68,7 +68,7 @@ Por padrão, um contêiner que trava permanece parado; `restart` define a condut
 services:
   api:
     build: .
-    restart: unless-stopped   # reinicia após uma falha ou um reboot da maquina hospedeira
+    restart: unless-stopped   # reinicia após uma falha ou um reboot da máquina hospedeira
 ```
 
 ## Declarar explicitamente sua rede

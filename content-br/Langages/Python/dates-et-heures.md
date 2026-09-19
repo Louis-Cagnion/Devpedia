@@ -70,7 +70,7 @@ import time
 
 # 1798819927.123456 -> número BRUTO de segundos desde 1 de janeiro de 1970 (epoch Unix)
 time.time()
-datetime.now()   # 2026-09-01 14:32:07.123456 -> objeto com ano/mes/dia... já decompostos
+datetime.now()   # 2026-09-01 14:32:07.123456 -> objeto com ano/mês/dia... já decompostos
 ```
 
 `time.time()` serve para medir uma DURAÇÃO (diferença entre duas chamadas); `datetime` serve assim que é preciso exibir, comparar ou decompor uma data/hora legível. Veja também [`sorted()` em strings](/?c=langages-de-programmation&s=python&p=listes-et-tuples) para ordenar timestamps escritos no formato `%Y-%m-%d...` sem passar por `datetime` de forma alguma.

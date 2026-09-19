@@ -11,7 +11,7 @@ Um **seletor** determina a quais elementos [HTML](/?c=langages-de-balisage&s=htm
 ```css
 h1 { }        /* todos os elementos <h1> */
 .cartao { }   /* todos os elementos com class="cartao" */
-#cabecalho { }  /* o único elemento com id="cabecalho" */
+#cabecalho { }  /* o único elemento com id="cabeçalho" */
 * { }         /* absolutamente todos os elementos */
 ```
 

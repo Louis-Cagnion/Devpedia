@@ -77,7 +77,7 @@ Isso fica concreto assim que um mesmo nome existe em **várias** seções ao mes
 
 ```bash
 man printf    # sem especificar, abre a seção mais baixa encontrada: aqui, a 1 (comando)
-man 3 printf  # forca a abertura da seção 3: a função C, não o comando
+man 3 printf  # força a abertura da seção 3: a função C, não o comando
 ```
 
 Para saber em quais seções um nome existe antes de escolher:
