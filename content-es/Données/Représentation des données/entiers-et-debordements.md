@@ -127,17 +127,6 @@ El coste es claro frente a una multiplicación nativa: multiplicar *n* por *m* c
 
 El corolario de esta representación binaria es que se puede actuar sobre los bits mismos: máscaras, desplazamientos, banderas. Es el objeto del capítulo [Los operadores binarios](/?c=langages-de-programmation&s=c&p=operateurs-binaires) en C.
 
-## Resumen
-
-| A recordar | |
-|---|---|
-| *n* bits | 2ⁿ valores; máx sin signo = 2ⁿ − 1 |
-| Negativos | Complemento a dos: invertir los bits, sumar 1 |
-| Rango con signo asimétrico | El cero se cuenta del lado positivo |
-| Desbordamiento | Los bits sobrantes se pierden, el valor da la vuelta |
-| En C, con signo que desborda | Comportamiento **indefinido**: usar sin signo |
-| Precisión arbitraria | Representar el número como cadena de cifras y multiplicar como a mano, para superar cualquier tamaño nativo |
-
 ---
 
 ## 📋 Resumen

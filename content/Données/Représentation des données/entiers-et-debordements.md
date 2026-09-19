@@ -127,17 +127,6 @@ Le coût est net par rapport à une multiplication native : une multiplication �
 
 Le corollaire de cette représentation binaire est qu'on peut agir sur les bits eux-mêmes : masques, décalages, drapeaux. C'est l'objet du chapitre [Les opérateurs binaires](/?c=langages-de-programmation&s=c&p=operateurs-binaires) en [C](/?c=langages-de-programmation&s=c&p=c).
 
-## Résumé
-
-| À retenir | |
-|---|---|
-| *n* bits | 2ⁿ valeurs ; max non signé = 2ⁿ − 1 |
-| Négatifs | Complément à deux : inverser les bits, ajouter 1 |
-| Plage signée asymétrique | Le zéro est compté du côté positif |
-| Débordement | Les bits en trop sont perdus, la valeur boucle |
-| En C, signé qui déborde | Comportement **indéfini** : utiliser du non signé |
-| Précision arbitraire | Représenter le nombre en chaîne de chiffres et multiplier comme à la main, pour dépasser toute taille native |
-
 ---
 
 ## 📋 Récapitulatif
