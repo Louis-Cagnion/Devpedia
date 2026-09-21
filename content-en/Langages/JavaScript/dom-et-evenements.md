@@ -87,6 +87,18 @@ document.querySelector("#list").addEventListener("click", (event) => {
 
 This technique, known as **event delegation**, eliminates the need to reattach a listener to each new element created dynamically (see the example at `createElement` above): a single listener, attached once to a stable ancestor, is sufficient.
 
+A more robust alternative to `classList.contains()`: `element.closest(selector)` walks up from the clicked element to the nearest ancestor (itself included) that matches the given CSS selector, or returns `null` if none matches. It also covers a click on a descendant of the target (e.g. an icon inside a button), whereas `classList.contains()` only matches if the clicked element IS exactly the target.
+
+```javascript
+document.querySelector("#list").addEventListener("click", (event) => {
+    const card = event.target.closest(".card");
+    if (card) {
+        console.log("A card was clicked:", card.textContent);
+    }
+});
+// closest() matches even a click on a child of the card (e.g. an inner icon)
+```
+
 Not every event bubbles: `toggle` (fired by a [`<details>`](/?c=langages-de-balisage&s=html&p=semantique-html5#lt-details-gt-lt-summary-gt-a-collapsible-section-with-no-javascript)), as well as `focus`, `blur` and `scroll` historically, stay confined to the element they fired on. To intercept them through delegation, you must listen during the **capture** phase (the reverse path: from the `document` down to the target element, before bubbling), via a third `true` argument:
 
 ```javascript

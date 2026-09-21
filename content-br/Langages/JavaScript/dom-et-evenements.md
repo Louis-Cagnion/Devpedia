@@ -86,6 +86,18 @@ document.querySelector("#lista").addEventListener("click", (evento) => {
 
 Essa técnica, a **delegação de eventos**, evita ter que reanexar um listener a cada novo elemento criado dinamicamente (veja o exemplo de `createElement` acima): um único listener, colocado uma vez em um ancestral estável, é suficiente.
 
+Alternativa mais robusta a `classList.contains()`: `element.closest(seletor)` sobe do elemento clicado até o primeiro ancestral (ele mesmo incluído) que corresponde ao seletor CSS dado, ou retorna `null` se nenhum corresponder. Ela também cobre o clique em um descendente do alvo (ex. um ícone dentro de um botão), enquanto `classList.contains()` só corresponde se o elemento clicado FOR exatamente o alvo.
+
+```javascript
+document.querySelector("#lista").addEventListener("click", (evento) => {
+    const card = evento.target.closest(".card");
+    if (card) {
+        console.log("Um card foi clicado:", card.textContent);
+    }
+});
+// closest() corresponde até mesmo a um clique em um filho do card (ex. um ícone interno)
+```
+
 Nem todo evento se propaga por bolhas: `toggle` (disparado por um [`<details>`](/?c=langages-de-balisage&s=html&p=semantique-html5#lt-details-gt-lt-summary-gt-um-conteudo-recolhivel-sem-javascript)), além de `focus`, `blur` e `scroll` historicamente, ficam confinados ao elemento em que foram disparados. Para interceptá-los por delegação, é preciso escutar na fase de **captura** (o percurso inverso: do `document` até o elemento visado, antes das bolhas), com um terceiro argumento `true`:
 
 ```javascript

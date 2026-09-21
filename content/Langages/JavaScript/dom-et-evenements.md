@@ -86,6 +86,18 @@ document.querySelector("#liste").addEventListener("click", (evenement) => {
 
 Cette technique, la **délégation d'événements**, évite d'avoir à réattacher un écouteur à chaque nouvel élément créé dynamiquement (voir l'exemple de `createElement` plus haut) : un seul écouteur, posé une fois sur un ancêtre stable, suffit.
 
+Alternative plus robuste à `classList.contains()` : `element.closest(selecteur)` remonte depuis l'élément cliqué jusqu'au premier ancêtre (lui compris) qui correspond au sélecteur CSS donné, ou renvoie `null` si aucun ne correspond. Elle couvre aussi le clic sur un descendant de la cible (ex. une icône à l'intérieur d'un bouton), là où `classList.contains()` ne matche que si l'élément cliqué EST exactement la cible.
+
+```javascript
+document.querySelector("#liste").addEventListener("click", (evenement) => {
+    const carte = evenement.target.closest(".carte");
+    if (carte) {
+        console.log("Une carte a été cliquée :", carte.textContent);
+    }
+});
+// closest() matche même un clic sur un enfant de la carte (ex. une icône interne)
+```
+
 Tous les événements ne se propagent pas par bulles : `toggle` (déclenché par un [`<details>`](/?c=langages-de-balisage&s=html&p=semantique-html5#lt-details-gt-lt-summary-gt-un-contenu-repliable-sans-javascript)), ainsi qu'historiquement `focus`, `blur` et `scroll`, restent confinés à leur élément d'origine. Pour les intercepter par délégation, il faut écouter en phase de **capture** (le trajet inverse : du `document` vers l'élément ciblé, avant les bulles), via un troisième argument `true` :
 
 ```javascript
