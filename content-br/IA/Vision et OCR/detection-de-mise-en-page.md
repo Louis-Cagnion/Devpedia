@@ -50,22 +50,22 @@ Para decidir se duas caixas designam a mesma área (a deduplicar) ou duas áreas
 Caixa A          Caixa B
 ┌────────┐
 │    ┌───┼────┐
-│    │###│    │    ### = intersecao (compartilhada por A e B)
+│    │###│    │    ### = interseção (compartilhada por A e B)
 └────┼───┘    │
      └────────┘
 
-IoU = area(###) / area(A uniao B)
+IoU = área(###) / área(A união B)
 ```
 
 ```python
 def iou(caixa_a, caixa_b):
-    # Coordenadas do retangulo de intersecao
+    # Coordenadas do retangulo de interseção
     x_min = max(caixa_a.x_min, caixa_b.x_min)
     y_min = max(caixa_a.y_min, caixa_b.y_min)
     x_max = min(caixa_a.x_max, caixa_b.x_max)
     y_max = min(caixa_a.y_max, caixa_b.y_max)
 
-    largura_intersecao = max(0, x_max - x_min)   # 0 se as caixas nao se tocam
+    largura_intersecao = max(0, x_max - x_min)   # 0 se as caixas não se tocam
     altura_intersecao = max(0, y_max - y_min)
     area_intersecao = largura_intersecao * altura_intersecao
 

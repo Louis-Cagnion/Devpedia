@@ -53,7 +53,7 @@ commit ---> tree (raiz del proyecto)
 
 ```bash
 cat .git/refs/heads/main
-# a3f9c1d4e5f6...  -> solo 40 caracteres hexadecimales, nada mas
+# a3f9c1d4e5f6...  -> solo 40 caracteres hexadecimales, nada más
 ```
 
 Una rama no es **literalmente nada más** que un archivo que contiene un hash de commit. `git branch nueva` simplemente crea un nuevo archivo en `.git/refs/heads/`, copiado desde el commit actual.
@@ -79,9 +79,11 @@ Los comandos del día a día (`add`, `commit`, `merge`...) son el **porcelain**:
 
 ```bash
 echo "contenido" | git hash-object -w --stdin  # crea un blob, muestra su hash
-git cat-file -p a3f9c1d                        # muestra el contenido descomprimido de un objeto
+# muestra el contenido descomprimido de un objeto
+git cat-file -p a3f9c1d
 git cat-file -t a3f9c1d                        # muestra su tipo (blob/tree/commit/tag)
-git write-tree                                 # construye un objeto tree desde el indice actual
+# construye un objeto tree desde el indice actual
+git write-tree
 git commit-tree a3f9c1d -m "mensaje"           # crea manualmente un objeto commit
 git update-ref refs/heads/main a3f9c1d         # mueve manualmente una rama hacia un commit
 ```
@@ -93,7 +95,8 @@ Un `git commit` "normal" no es, bajo el capó, más que un encadenamiento de `wr
 Un `rebase` o un `commit --amend` solo reescriben los commits **posteriores** al punto modificado. A veces hay que ir más lejos: retirar un archivo (secreto, binario grande...) de **cada** commit donde existió, del primero al último: un simple `rm` + nuevo commit no basta, ya que el archivo sigue siendo legible en los commits anteriores.
 
 ```bash
-git filter-branch --index-filter "git rm --cached --ignore-unmatch secreto.pem" --prune-empty -- --all
+git filter-branch --index-filter "git rm --cached --ignore-unmatch secreto.pem" \
+    --prune-empty -- --all
 ```
 
 `--index-filter` repite este comando sobre el índice de **cada** commit del historial (sobre todas las refs, vía `--all`), reconstruye un nuevo tree sin el archivo, luego un nuevo commit, lo que, por el mecanismo visto arriba (el hash de un commit depende del de su padre), cambia el hash de **todos** los commits a partir del primero afectado.
@@ -114,9 +117,12 @@ Tras una reescritura de historial (o un simple `reset --hard`), los commits anti
 Un objeto solo se elimina realmente del repositorio local cuando ya nada lo retiene:
 
 ```bash
-git reflog expire --expire=now --all  # vacia inmediatamente el reflog de todas las refs (en lugar de esperar la expiracion por defecto)
+# vacía inmediatamente el reflog de todas las refs (en lugar de esperar la expiración por
+# defecto)
+git reflog expire --expire=now --all
 git gc --prune=now                    # elimina todo objeto vuelto inalcanzable ("unreachable")
-git fsck --unreachable                # lista los objetos aun presentes pero no referenciados por ninguna rama/tag/reflog
+# lista los objetos aún presentes pero no referenciados por ninguna rama/tag/reflog
+git fsck --unreachable
 ```
 
 > **Nota:** esta limpieza solo concierne al repositorio **local**. Un repositorio remoto ([GitHub](/?c=git&p=github-et-plateformes), GitLab...) aplica su propio `gc` según su propio calendario: tras un `push --force` que retira un archivo sensible del historial, el commit antiguo puede seguir siendo accesible del lado del servidor vía su hash exacto (una consulta puntual, no una navegación normal) hasta que el servidor haga su propia limpieza. Para una garantía de eliminación inmediata del lado del servidor, solo el soporte de la plataforma puede actuar.

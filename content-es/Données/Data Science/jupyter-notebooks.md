@@ -51,9 +51,11 @@ Si se ejecuta la celda 2 **varias veces seguidas** sin volver a ejecutar la celd
 Comandos especiales, propios de Jupyter, que no están presentes en el propio lenguaje Python:
 
 ```python
-%matplotlib inline    # muestra los gráficos de Matplotlib directamente debajo de la celda, sin una ventana separada
+# muestra los gráficos de Matplotlib directamente debajo de la celda, sin una ventana separada
+%matplotlib inline
 %timeit ma_fonction()   # mide automáticamente el tiempo de ejecución, tras varias repeticiones
-%%time                  # (al principio de la celda) mide el tiempo de ejecución de toda la celda
+# (al principio de la celda) mide el tiempo de ejecución de toda la celda
+%%time
 ```
 
 ## ¿Por qué este formato es adecuado para la ciencia de datos?

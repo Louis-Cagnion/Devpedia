@@ -89,7 +89,7 @@ int   *pi = &x;
 char  *pc = (char *)&x;
 
 *pi  // 65      -> lee 4 bytes, los interpreta como un entero
-*pc  // 'A'     -> lee 1 byte en la MISMA direccion, lo interpreta como un caracter
+*pc  // 'A'     -> lee 1 byte en la MISMA dirección, lo interpreta como un carácter
 ```
 
 Es también por eso que `puntero + 1` avanza `sizeof(tipo)` bytes y no 1: la aritmética de punteros cuenta en elementos, no en bytes. Ver el capítulo [Los punteros](/?c=langages-de-programmation&s=c&p=pointeurs).
@@ -100,17 +100,6 @@ Es también por eso que `puntero + 1` avanza `sizeof(tipo)` bytes y no 1: la ari
 
 - una lista Python de 1000 enteros ocupa mucho más que 4000 bytes, porque cada entero es un **objeto** con su cabecera;
 - es precisamente por esta razón que existe NumPy: un array NumPy almacena valores brutos contiguos, alineados, sin cabecera por elemento: de ahí ganancias de velocidad de un orden de magnitud en cálculo numérico (ver [NumPy](/?c=data-science&p=numpy)).
-
-## Resumen
-
-| Noción | A recordar |
-|---|---|
-| Unidad de direccionamiento | El byte; un bit solo no es direccionable |
-| Alineación | Un valor de *n* bytes se coloca en una dirección múltiplo de *n* |
-| Padding | Una estructura ≥ suma de sus campos; el orden de declaración importa |
-| `sizeof` | Siempre medir, nunca calcular a mano |
-| Endianness | Orden de los bytes; la red impone el big-endian |
-| Escribir memoria bruta | A evitar: serializar en un formato definido |
 
 ---
 

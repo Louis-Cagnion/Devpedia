@@ -107,7 +107,8 @@ console.log(account.#balance);   // SyntaxError: #balance is not accessible here
 ## What's Behind "`class`": The Prototype
 
 ```javascript
-console.log(typeof Vehicle);                      // "function" -> a class IS a special function
+// "function" -> a class IS a special function
+console.log(typeof Vehicle);
 console.log(v.__proto__ === Vehicle.prototype);    // true
 ```
 

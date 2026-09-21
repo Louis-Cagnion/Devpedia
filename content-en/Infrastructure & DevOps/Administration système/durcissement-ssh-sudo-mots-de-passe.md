@@ -33,11 +33,15 @@ A system left with its default settings is still vulnerable to automated attacks
 `sudo` lets an authorized user run a command with `root` privileges, without sharing the `root` password itself. Its configuration file (`/etc/sudoers`, edited via `visudo`) accepts several hardening settings:
 
 ```text
-Defaults passwd_tries=3                          # 3 password attempts maximum
+# 3 password attempts maximum
+Defaults passwd_tries=3
 Defaults badpass_message="Incorrect password, attempt refused."
-Defaults logfile="/var/log/sudo/sudo.log"        # logs every sudo command
-Defaults log_input, log_output                    # also logs what was typed/displayed
-Defaults use_pty                                  # runs the command in a dedicated pseudo-terminal
+# logs every sudo command
+Defaults logfile="/var/log/sudo/sudo.log"
+# also logs what was typed/displayed
+Defaults log_input, log_output
+# runs the command in a dedicated pseudo-terminal
+Defaults use_pty
 Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 ```
 

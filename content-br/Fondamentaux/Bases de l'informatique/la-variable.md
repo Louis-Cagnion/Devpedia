@@ -12,7 +12,7 @@ Uma **variável** é uma caixa etiquetada que contém um valor, consultável ou 
 nome = "Joao"  → cria uma caixa chamada "nome", guarda nela o valor "Joao"
 idade = 25     → cria uma caixa chamada "idade", guarda nela o valor 25
 exibir nome    → vai ler a caixa "nome", exibe "Joao"
-idade = 26     → substitui o conteudo da caixa "idade" por 26: o valor muda, a caixa permanece a mesma
+idade = 26     → substitui o conteudo de "idade": o valor muda, a caixa permanece a mesma
 ```
 
 > **Analogia:** um armário etiquetado em um vestiário: pode-se mudar o que ele contém sem nunca mudar a etiqueta colada nele.

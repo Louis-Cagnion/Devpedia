@@ -12,7 +12,8 @@ A C++ **class** combines what a [C `struct`](/?c=langages-de-programmation&s=c&p
 class Vehicule {
 public:
     // const&: prevents the received strings from being copied (see the chapter on references)
-    Vehicule(const std::string &brand, const std::string &model) : brand(brand), model(model) {}
+    Vehicule(const std::string &brand, const std::string &model)
+        : brand(brand), model(model) {}
 
     std::string description() const {
         return brand + " " + model;
@@ -110,7 +111,8 @@ Without an explicit copy constructor or assignment operator, C++ generates defau
 ## `const` methods
 
 ```cpp
-std::string description() const {   // "const" here: ensures that this method does NOT modify the object
+// "const" here: ensures that this method does NOT modify the object
+std::string description() const {
     return brand + " " + model;
 }
 ```

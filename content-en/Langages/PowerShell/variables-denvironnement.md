@@ -15,7 +15,8 @@ Write-Output $env:NAME       # John
 
 ```powershell
 # subscript.ps1
-Write-Output $env:NAME    # displays "John" if NAME was set by the calling process, empty otherwise
+# displays "John" if NAME was set by the calling process, empty otherwise
+Write-Output $env:NAME
 ```
 
 > **Note:** as with `export` in Bash, propagation only works from parent to child: a subscript that modifies `$env:NAME` never propagates that change back to the script that launched it, each process having its own copy of the environment.
@@ -23,7 +24,8 @@ Write-Output $env:NAME    # displays "John" if NAME was set by the calling proce
 ## Common environment variables
 
 ```powershell
-$env:PATH     # list of folders where PowerShell looks for executables (separated by ";" on Windows)
+# list of folders where PowerShell looks for executables (separated by ";" on Windows)
+$env:PATH
 $env:USERPROFILE   # current user's home folder (equivalent to $HOME)
 $env:USERNAME  # current user's name
 $env:COMPUTERNAME  # machine name

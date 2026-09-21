@@ -130,7 +130,7 @@ Una matriz 2×3 se convierte en una matriz 3×2. La transpuesta sirve casi siemp
 Calcular `A · B` para dos matrices *n*×*n* requiere, con el método ingenuo, *n*³ multiplicaciones; un costo que crece **mucho** más rápido que el tamaño de las matrices:
 
 ```python
-# Version ingenua: tres bucles anidados
+# Versión ingenua: tres bucles anidados
 def producto_matricial(A, B, n):
     resultado = [[0] * n for _ in range(n)]
     for i in range(n):

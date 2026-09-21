@@ -162,7 +162,7 @@ if (empty($_SESSION['csrf_token'])) {
 }
 ?>
 <form action="/transferencia" method="POST">
-    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+    <input type="hidden" name="csrf_token" value="<?= $_SESsión['csrf_token'] ?>">
     <!-- ... resto del formulario ... -->
 </form>
 ```
@@ -223,29 +223,13 @@ Clasificada A10 en el [OWASP Top 10](/?c=cybersecurite&p=owasp-top-10). Forzar a
 
 ```php
 <?php
-// peligroso si $_GET['url'] puede apuntar a una dirección interna (ej: http://169.254.169.254/, http://localhost:6379/...)
+// peligroso si $_GET['url'] puede apuntar a una dirección interna (ej:
+// http://169.254.169.254/, http://localhost:6379/...)
 $respuesta = file_get_contents($_GET['url']);
 ?>
 ```
 
 Todo código que construye una URL/host de destino a partir de una entrada influenciada, incluso indirectamente, por el usuario (ver [Realizar llamadas HTTP de forma nativa](/?c=langages-de-programmation&s=php&p=http)) es candidato a una auditoría SSRF. **Protección:** validar el host objetivo contra una lista blanca explícita en lugar de confiar en una URL arbitraria proporcionada por el cliente.
-
-## Resumen
-
-| Riesgo | Defensa principal |
-|---|---|
-| Dato mal formado (email, número...) | `filter_input()` |
-| Inyección de HTML/JS (XSS) | `htmlspecialchars()` |
-| Inyección SQL | Consultas preparadas (PDO) |
-| Contraseña en texto plano | `password_hash()` / `password_verify()` |
-| CSRF | Token CSRF en sesión, verificado vía `hash_equals()` |
-| MITM / DNS spoofing | Verificación de certificado SSL (`verify_peer`/`verify_peer_name`) |
-| Sniffing | HTTPS sistemático |
-| Session hijacking | Cookie `httponly`/`secure`, identificador de sesión de alta entropía |
-| Brute force | Limitación del número de intentos (*rate limiting*) |
-| SSRF | Lista blanca de hosts/URLs autorizados |
-
-> **Nota:** ninguna de estas protecciones sustituye a HTTPS, que cifra los datos intercambiados entre el navegador y el servidor.
 
 ---
 
@@ -253,7 +237,7 @@ Todo código que construye una URL/host de destino a partir de una entrada influ
 
 | | |
 |---|---|
-| **Para recordar** | Todo dato de usuario es poco fiable por defecto. Las principales fallas de aplicación (XSS, inyección SQL, CSRF) se neutralizan con mecanismos dedicados (`htmlspecialchars`, consultas preparadas, token CSRF): otros ataques apuntan a la red o la infraestructura, fuera del código de aplicación solo. |
-| **Herramientas utilizables** | `filter_input()`, `htmlspecialchars()`, PDO (consultas preparadas), `password_hash`/`password_verify`, `hash_equals()`. |
+| **Para recordar** | Todo dato de usuario es poco fiable por defecto. Las principales fallas de aplicación (XSS, inyección SQL, CSRF) se neutralizan con mecanismos dedicados (`htmlspecialchars`, consultas preparadas, token CSRF); otros ataques apuntan a la red o la infraestructura (MITM, DNS spoofing, sniffing, session hijacking, brute force, SSRF), fuera del código de aplicación solo. Ninguna de estas protecciones sustituye a HTTPS, que cifra los datos intercambiados entre el navegador y el servidor. |
+| **Herramientas utilizables** | `filter_input()`, `htmlspecialchars()`, PDO (consultas preparadas), `password_hash`/`password_verify`, `hash_equals()`, verificación de certificado SSL/TLS (`verify_peer`), cookies `httponly`/`secure`, limitación del número de intentos (*rate limiting*), lista blanca de hosts para SSRF. |
 | **Trampas a evitar** | Comparar dos hashes con `==` (falla *magic hash*); concatenar un dato de usuario directamente en una consulta SQL. |
 | **Buenas prácticas** | Validar/escapar siempre un dato de usuario según su uso (visualización, SQL, comparación); HTTPS sistemático, sin excepción para un dato considerado "no tan sensible". |

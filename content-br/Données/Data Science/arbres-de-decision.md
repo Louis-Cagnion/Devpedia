@@ -49,15 +49,18 @@ A árvore e essa divisão em retângulos são **o mesmo objeto** visto de duas f
 ```python
 from sklearn.tree import DecisionTreeClassifier
 
-# X : [hip-hop (0/1), energética (0/1), tarde da noite (0/1)] ; y : playlist Esporte (1) ou não (0)
+# X : [hip-hop (0/1), energética (0/1), tarde da noite (0/1)] ; y : playlist Esporte (1) ou não
+# (0)
 X = [[1, 1, 0], [1, 1, 1], [0, 1, 0], [1, 0, 0], [0, 0, 1]]
 y = [1, 0, 0, 0, 0]
 
-modelo = DecisionTreeClassifier(max_depth=3)   # max_depth : limita o número de perguntas em cascata
+# max_depth : limita o número de perguntas em cascata
+modelo = DecisionTreeClassifier(max_depth=3)
 modelo.fit(X, y)
 
 modelo.predict([[1, 1, 0]])           # [1] -> classificado como "Esporte"
-modelo.feature_importances_            # importância relativa de cada característica nas escolhas da árvore
+# importância relativa de cada característica nas escolhas da árvore
+modelo.feature_importances_
 ```
 
 ## Como a árvore escolhe suas perguntas

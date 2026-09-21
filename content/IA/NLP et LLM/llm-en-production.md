@@ -57,7 +57,8 @@ Temperature haute (ex. 1.5) -> aplatit l'ecart, les alternatives redeviennent co
 reponse = client.chat.completions.create(
     model="...",
     messages=[...],
-    temperature=0.2,  # resserre le tirage : reponses stables, peu de variation d'un appel a l'autre
+    # resserre le tirage : reponses stables, peu de variation d'un appel a l'autre
+    temperature=0.2,
 )
 ```
 

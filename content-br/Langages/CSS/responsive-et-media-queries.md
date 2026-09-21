@@ -10,10 +10,11 @@ O **responsive design** consiste em projetar uma página que se adapta a qualque
 
 ```css
 div {
-    width: 300px;       /* fixo, nao se adapta a NADA */
+    width: 300px;       /* fixo, não se adapta a NADA */
     width: 50%;         /* relativo ao pai */
     font-size: 1.5rem;  /* relativo ao tamanho de fonte raiz (<html>), independente do pai */
-    font-size: 1.5em;   /* relativo ao tamanho de fonte do PAI direto (pode se acumular em cascata) */
+    /* relativo ao tamanho de fonte do PAI direto (pode se acumular em cascata) */
+    font-size: 1.5em;
     width: 50vw;        /* relativo a largura da janela (viewport width) */
     height: 100vh;      /* relativo a altura da janela (viewport height) */
 }
@@ -24,7 +25,7 @@ div {
 ## As media queries
 
 ```css
-/* Estilo padrao, pensado "mobile first" */
+/* Estilo padrão, pensado "mobile first" */
 .container {
     flex-direction: column;
 }
@@ -36,7 +37,7 @@ div {
     }
 }
 
-/* Se aplica APENAS se a largura da tela for de no maximo 767px */
+/* Se aplica APENAS se a largura da tela for de no máximo 767px */
 @media (max-width: 767px) {
     nav { display: none; }
 }
@@ -71,9 +72,10 @@ div {
 
 ```css
 @media (orientation: portrait) { }           /* tela mais alta que larga */
-@media (prefers-color-scheme: dark) { }      /* o usuario ativou o modo escuro no nivel do sistema */
-@media (prefers-reduced-motion: reduce) { }  /* o usuario pediu para reduzir as animacoes */
-@media print { }                             /* estilos aplicados apenas na impressao */
+/* o usuário ativou o modo escuro no nível do sistema */
+@media (prefers-color-scheme: dark) { }
+@media (prefers-reduced-motion: reduce) { }  /* o usuário pediu para reduzir as animações */
+@media print { }                             /* estilos aplicados apenas na impressão */
 ```
 
 `prefers-reduced-motion` responde a uma preferência de acessibilidade ajustada no nível do sistema operacional (usuário sensível a movimento, migrâneas, distúrbios vestibulares), não no nível do site:
@@ -83,7 +85,7 @@ div {
     * {
         animation-duration: 0.001ms !important;
         transition-duration: 0.001ms !important;
-        /* deliberadamente NAO "animation: none" -- veja a armadilha abaixo */
+        /* deliberadamente NÃO "animation: none" -- veja a armadilha abaixo */
     }
 }
 ```
@@ -97,12 +99,12 @@ div {
 Uma media query sempre mede a largura da **janela** inteira, o que pode ser enganoso para um componente que ocupa apenas parte da tela (um cartão em uma coluna da grade, ao lado de uma barra lateral): a janela pode estar larga enquanto o espaço realmente disponível para esse componente específico é estreito. Uma **container query** resolve exatamente esse caso medindo, não a janela, mas o contêiner direto do elemento:
 
 ```css
-/* 1. Marcar um ancestral como "conteiner consultavel" */
+/* 1. Marcar um ancestral como "contêiner consultável" */
 .carte-conteneur {
-    container-type: inline-size;  /* apenas a largura do conteiner e acompanhada */
+    container-type: inline-size;  /* apenas a largura do contêiner é acompanhada */
 }
 
-/* 2. A regra @container reage a LARGURA DESSE CONTEINER, nao a da janela */
+/* 2. A regra @container reage a LARGURA DESSE Contêiner, não a da janela */
 @container (max-width: 860px) {
     .carte { flex-direction: column; }
 }

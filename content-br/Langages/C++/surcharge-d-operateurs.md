@@ -43,7 +43,7 @@ public:
 
 Ponto p1(1, 2);
 Ponto p2(1, 2);
-std::cout << (p1 == p2);   // true -> sem sobrecarga, compararia os ENDERECOS, nao o conteudo
+std::cout << (p1 == p2);   // true -> sem sobrecarga, compararia os ENDERECOS, não o conteúdo
 ```
 
 > **Nota:** sem sobrecarga de `==`, comparar dois objetos com `==` compara por padrão seu **endereço de memória** (como comparar dois ponteiros), nunca seu conteúdo: uma fonte de erro frequente para quem espera uma comparação "por valor" automática.
@@ -63,7 +63,7 @@ std::ostream &operator<<(std::ostream &os, const Ponto &p) {
 }
 
 Ponto p(3, 4);
-std::cout << p;   // (3, 4) -> sem essa sobrecarga: erro de compilacao, << nao conhece Ponto
+std::cout << p;   // (3, 4) -> sem essa sobrecarga: erro de compilação, << não conhece Ponto
 ```
 
 > **Nota:** essa sobrecarga é escrita fora da classe (uma função livre, não um método), pois o objeto à esquerda de `<<` é o fluxo (`std::ostream`), não o `Ponto`; `p << std::cout` não faria sentido, mas `std::cout << p` precisa funcionar.
@@ -71,7 +71,7 @@ std::cout << p;   // (3, 4) -> sem essa sobrecarga: erro de compilacao, << nao c
 ## O que não fazer: sobrecarregar sem respeitar o sentido esperado
 
 ```cpp
-// A EVITAR: "+" que nao faz uma adicao no sentido intuitivo do termo
+// A EVITAR: "+" que não faz uma adição no sentido intuitivo do termo
 Vetor2D operator+(const Vetor2D &outro) const {
     return Vetor2D(x * outro.x, y * outro.y);   // enganoso: "+" que multiplica!
 }

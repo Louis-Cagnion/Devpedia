@@ -20,22 +20,69 @@ Um programa C dispõe de duas zonas de memória principais para seus dados:
 ```c
 void exemplo(void)
 {
-    int x = 5;                     // na stack, liberado automaticamente ao fim da funcao
-    int *p = malloc(sizeof(int));  // no heap, permanece alocado ate free(p)
+    int x = 5;                     // na stack, liberado automaticamente ao fim da função
+    int *p = malloc(sizeof(int));  // no heap, permanece alocado até free(p)
     *p = 5;
     free(p);
 }
 ```
+
+## Arrays de tamanho variável (VLA)
+
+Um VLA (*Variable-Length Array*, array de tamanho variável, [C99](https://en.wikipedia.org/wiki/C99)) é um array declarado como uma variável local comum (`int tab[n];`), mas cujo tamanho `n` é uma expressão conhecida somente em tempo de execução, não uma constante fixada na compilação. Diferente de `malloc()` (veja mais abaixo), ele fica na stack: sem `free()` necessário, sua memória é liberada automaticamente ao final do bloco que o contém.
+
+```c
+void exemplo(int n)
+{
+    int tab[n]; // tamanho decidido no momento da chamada, não na compilação
+
+    for (int i = 0; i < n; i++)
+        tab[i] = i;
+} // tab desaparece aqui, como qualquer variável local -- nenhum free() necessário
+```
+
+### Armadilha 1: a ordem dos parâmetros
+
+Quando um VLA é um parâmetro de função, seu tamanho (`n`) deve ser declarado **antes** dele na lista de parâmetros:
+
+```c
+void construir(int n, int tab[n]); // correto: n já existe quando tab é declarado
+void construir(int tab[n], int n); // erro de compilação: n desconhecido neste ponto
+```
+
+O compilador lê os parâmetros da esquerda para a direita: no momento em que precisa calcular o tamanho de `tab`, `n` já deve ter sido visto.
+
+### Armadilha 2: `T (*)[n]` não é `T **`
+
+Um VLA de duas dimensões passado como parâmetro, como `uint16_t mask[n][n]`, **não** se converte em um simples ponteiro para ponteiro (`uint16_t **`). Ele se converte em um ponteiro para um array de `n` elementos: `uint16_t (*)[n]`.
+
+| | `T (*)[n]` (VLA como parâmetro) | `T **` (array de ponteiros) |
+|---|---|---|
+| Memória | Um único bloco contíguo de `n * n` elementos | `n` blocos separados, cada um alocado independentemente |
+| Declaração | `void f(int n, T tab[n][n])` | `void f(T **tab)` |
+| Acesso `tab[i][j]` | Cálculo de deslocamento dentro do bloco único | Desreferenciar `tab[i]`, depois acessar dentro do seu próprio bloco |
+
+Confundir os dois tipos gera um erro de compilação explícito (`conflicting types`, ou `makes pointer from integer without a cast`): o compilador recusa passar um `T **` onde um `T (*)[n]` é esperado, e vice-versa.
+
+### Outros limites a conhecer
+
+| Limite | Detalhe |
+|---|---|
+| Sem verificação de falha | Diferente de `malloc()` (veja mais abaixo), um VLA grande demais não retorna `NULL`: causa um estouro de pilha, comportamento indefinido, sem aviso |
+| Tamanho fixo após a declaração | Diferente de `realloc()` (veja mais abaixo), um VLA não pode ser redimensionado depois de declarado |
+| Disponibilidade | Tornada opcional pelo [C11](https://en.wikipedia.org/wiki/C11_(C_standard_revision)): um compilador estritamente conforme pode se recusar a suportá-los (verificar a macro `__STDC_NO_VLA__`) |
+
+Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs), cuja compreensão é pré-requisito para este capítulo.
 
 ## Alocar memória dinamicamente
 
 `malloc()` reserva um bloco de memória bruto no heap, cujo tamanho é expresso em bytes:
 
 ```c
-int *array = malloc(5 * sizeof(int)); // reserva o espaco para 5 inteiros
+int *array = malloc(5 * sizeof(int)); // reserva o espaço para 5 inteiros
 
 if (array == NULL) {
-    // malloc falhou (memoria insuficiente) -> array vale NULL, sempre verificar
+    // malloc falhou (memória insuficiente) -> array vale NULL, sempre verificar
     return;
 }
 
@@ -54,15 +101,15 @@ int *array = calloc(5, sizeof(int)); // 5 inteiros, todos inicializados em 0
 
 ```c
 int *array = malloc(3 * sizeof(int));
-// ... precisa-se de mais espaco ...
+// ... precisa-se de mais espaço ...
 int *novoArray = realloc(array, 6 * sizeof(int));
 
 if (novoArray == NULL) {
-    // realloc falhou: o bloco antigo "array" ainda e valido, nao perde-lo
+    // realloc falhou: o bloco antigo "array" ainda é válido, não perde-lo
     free(array);
     return;
 }
-array = novoArray; // o bloco pode ter sido deslocado para outro lugar na memoria
+array = novoArray; // o bloco pode ter sido deslocado para outro lugar na memória
 ```
 
 `realloc()` preserva o conteúdo existente (truncado se o novo tamanho for menor), mas pode deslocar o bloco na memória se necessário: é por isso que nunca se reatribui `array` diretamente antes de verificar que `realloc()` não retornou `NULL`.
@@ -75,8 +122,8 @@ Cada `malloc()`/`calloc()`/`realloc()` bem-sucedido deve corresponder a exatamen
 int *p = malloc(sizeof(int));
 *p = 42;
 free(p);
-// p ainda contem o endereco antigo ("dangling pointer"): nao deve mais ser usado
-p = NULL; // boa pratica: impede um uso acidental apos a liberacao
+// p ainda contém o endereço antigo ("dangling pointer"): não deve mais ser usado
+p = NULL; // boa prática: impede um uso acidental após a liberação
 ```
 
 ## Os quatro bugs de memória clássicos
@@ -102,7 +149,7 @@ Ao contrário dos três bugs anteriores (que corrompem a memória do próprio pr
 
 ```c
 char buffer[16];
-strcpy(buffer, entrada_usuario); // NENHUMA verificacao do tamanho de entrada_usuario
+strcpy(buffer, entrada_usuario); // NENHUMA verificação do tamanho de entrada_usuário
 ```
 
 Se `entrada_usuario` ultrapassar 16 bytes, `strcpy()` continua escrevendo além dos limites de `buffer`, na memória que segue imediatamente na pilha, que pode conter outras variáveis locais, ou o **endereço de retorno** da função atual (o local onde o programa deve retomar sua execução após o `return`). Um atacante que controla precisamente o conteúdo escrito pode, no pior caso, substituir esse endereço de retorno pelo endereço de sua escolha, desviando o fluxo de execução do programa para um código sob seu controle (*stack smashing*).
@@ -114,9 +161,11 @@ Se `entrada_usuario` ultrapassar 16 bytes, `strcpy()` continua escrevendo além 
 ```c
 strcpy(buffer, entrada);                       // perigoso: nenhum limite
 strncpy(buffer, entrada, sizeof(buffer) - 1);  // limitado ao tamanho real do buffer
-buffer[sizeof(buffer) - 1] = '\0';             // strncpy nao garante a terminacao se a origem for muito longa
+// strncpy não garante a terminação se a origem for muito longa
+buffer[sizeof(buffer) - 1] = '\0';
 
-fgets(buffer, sizeof(buffer), stdin);        // leitura limitada ja na captura, em vez de corrigir depois
+// leitura limitada já na captura, em vez de corrigir depois
+fgets(buffer, sizeof(buffer), stdin);
 ```
 
 | Função arriscada | Alternativa limitada |
@@ -133,11 +182,12 @@ fgets(buffer, sizeof(buffer), stdin);        // leitura limitada ja na captura, 
 De origem BSD (nao e padrao C, mas disponivel em macOS/\*BSD, e facil de reimplementar, como faz a biblioteca `libft` com `ft_strlcpy`/`ft_strlcat`), essas funções corrigem o ponto fraco de `strncpy`/`strcat`: detectar um truncamento.
 
 ```c
-size_t necessario = strlcpy(buffer, entrada, sizeof(buffer));  // SEMPRE termina com '\0', ao contrario de strncpy
+// SEMPRE termina com '\0', ao contrário de strncpy
+size_t necessario = strlcpy(buffer, entrada, sizeof(buffer));
 
 if (necessario >= sizeof(buffer))
 {
-    // entrada foi truncada: necessario e o tamanho que a copia completa teria
+    // entrada foi truncada: necessário é o tamanho que a cópia completa teria
 }
 ```
 
@@ -149,8 +199,8 @@ if (necessario >= sizeof(buffer))
 
 ```c
 sizeof(int);       // geralmente 4
-sizeof(char);      // sempre 1, por definicao do padrao C
-sizeof(int) * 10;  // tamanho necessario para 10 inteiros -> a passar para malloc()
+sizeof(char);      // sempre 1, por definição do padrão C
+sizeof(int) * 10;  // tamanho necessário para 10 inteiros -> a passar para malloc()
 ```
 
 Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs), cuja compreensão é um pré-requisito para este capítulo.
@@ -161,7 +211,7 @@ Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs), cuja
 
 | | |
 |---|---|
-| **Para lembrar** | O C deixa ao desenvolvedor a responsabilidade completa da memória dinâmica (heap): `malloc`/`calloc`/`realloc` para alocar, `free` para liberar; a stack (variáveis locais) é gerenciada automaticamente. |
-| **Ferramentas utilizáveis** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind para detectar vazamentos e acessos inválidos. |
-| **Armadilhas a evitar** | Vazamento de memória (nunca um `free`), use-after-free, double free, estouro de buffer, este último podendo ser explorado como falha de segurança. |
+| **Para lembrar** | O C deixa ao desenvolvedor a responsabilidade completa da memória dinâmica (heap): `malloc`/`calloc`/`realloc` para alocar, `free` para liberar; a stack (variáveis locais, VLA incluídos) é gerenciada automaticamente. |
+| **Ferramentas utilizáveis** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) para um array de tamanho dinâmico sem `free()`, Valgrind para detectar vazamentos e acessos inválidos. |
+| **Armadilhas a evitar** | Vazamento de memória (nunca um `free`), use-after-free, double free, estouro de buffer, estouro de pilha em um VLA grande demais (sem detecção possível, diferente de `malloc`), confundir `T (*)[n]` (VLA como parâmetro) com `T **`. |
 | **Boas práticas** | Sempre verificar se um `malloc`/`realloc` não retornou `NULL`; colocar um ponteiro em `NULL` logo após seu `free()`; preferir `fgets`/`strncpy`/`snprintf` às funções sem limite (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar um truncamento pelo valor de retorno. |

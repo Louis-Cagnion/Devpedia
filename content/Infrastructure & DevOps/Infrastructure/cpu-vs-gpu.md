@@ -52,11 +52,26 @@ Le CPU et le GPU ont chacun leur propre mémoire : faire calculer une donnée pa
 >
 > **Bonne pratique :** réserver le GPU aux calculs réellement parallélisables (la même opération simple, répétée sur un grand nombre de données indépendantes) et laisser le reste au CPU.
 
+## CUDA : le logiciel qui permet d'exploiter concrètement un GPU
+
+Savoir qu'un GPU peut paralléliser un calcul ne suffit pas à l'exploiter : il faut un moyen de lui envoyer du travail. **CUDA** est la plateforme logicielle et le modèle de programmation de NVIDIA qui rend cela possible sur ses GPU.
+
+Le CPU prépare les données, les transfère vers le GPU, lance des fonctions appelées **kernels**, puis récupère le résultat. Un kernel n'est jamais exécuté une seule fois : des milliers de threads du GPU l'exécutent en parallèle, chacun sur une donnée différente :
+
+```text
+CPU  : prepare les donnees --> transfere vers le GPU --> lance un kernel --> recupere resultat
+GPU  : des milliers de threads executent CE MEME kernel, chacun sur sa propre donnee
+```
+
+Au-dessus de CUDA, des bibliothèques toutes faites évitent de réécrire ces kernels à la main : `cuBLAS` pour le calcul matriciel, `cuDNN` pour les opérations de deep learning, `NCCL` pour faire communiquer plusieurs GPU entre eux. Un framework comme [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch) s'appuie sur ces bibliothèques en coulisses : envoyer un tenseur "sur le GPU" y déclenche justement ce mécanisme CPU/kernel/threads, sans jamais l'exposer directement.
+
+> **Note :** l'avantage de NVIDIA ne tient pas qu'à la puissance brute de ses puces. Des années de bibliothèques et d'habitudes de développement se sont construites autour de CUDA : concurrencer NVIDIA suppose donc de concurrencer tout cet écosystème logiciel, pas seulement de produire une puce plus rapide.
+
 ## Ce qu'il faut retenir
 
 | | |
 |---|---|
-| **À retenir** | Un CPU a peu de cœurs polyvalents et rapides, adaptés aux tâches séquentielles et aux embranchements. Un GPU a des milliers de cœurs simples, adaptés à répéter la même opération sur des données indépendantes : le cas du calcul vectoriel/matriciel derrière un réseau de neurones. |
-| **Outils utilisables** | Les bibliothèques de deep learning ([PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch), [TensorFlow](https://www.tensorflow.org)) gèrent le transfert des données vers le GPU et la parallélisation du calcul automatiquement. |
+| **À retenir** | Un CPU a peu de cœurs polyvalents et rapides, adaptés aux tâches séquentielles et aux embranchements. Un GPU a des milliers de cœurs simples, adaptés à répéter la même opération sur des données indépendantes : le cas du calcul vectoriel/matriciel derrière un réseau de neurones. CUDA est la plateforme NVIDIA qui permet d'envoyer concrètement du travail à un GPU (kernels exécutés en parallèle par des milliers de threads). |
+| **Outils utilisables** | Les bibliothèques de deep learning ([PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch), [TensorFlow](https://www.tensorflow.org)) gèrent le transfert des données vers le GPU et la parallélisation du calcul automatiquement, via CUDA et des bibliothèques comme `cuBLAS`/`cuDNN`/`NCCL`. |
 | **Pièges à éviter** | Transférer des données entre CPU et GPU trop souvent ou par trop petites quantités. Attendre une accélération d'un GPU sur un calcul intrinsèquement séquentiel. |
 | **Bonnes pratiques** | Regrouper les transferts CPU/GPU en un minimum d'opérations volumineuses. Réserver le GPU aux calculs réellement parallélisables. |

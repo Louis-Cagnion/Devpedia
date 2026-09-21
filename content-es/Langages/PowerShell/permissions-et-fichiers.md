@@ -26,7 +26,11 @@ Cada línea de acceso asocia una **identidad** (usuario o grupo) con un **derech
 
 ```powershell
 $acl = Get-Acl archivo.txt
-$regla = New-Object System.Security.AccessControl.FileSystemAccessRule("DESKTOP\juan", "ReadAndExecute", "Allow")
+$regla = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    "DESKTOP\juan",
+    "ReadAndExecute",
+    "Allow"
+)
 $acl.SetAccessRule($regla)
 Set-Acl archivo.txt $acl
 ```
@@ -51,7 +55,8 @@ New-Item -ItemType File -Path archivo.txt        # crea un archivo vacío
 Copy-Item origen.txt destino.txt                 # copia un archivo
 Copy-Item -Recurse carpeta_origen carpeta_destino # copia recursiva, necesaria para una carpeta
 Move-Item viejo.txt nuevo.txt                    # mueve O renombra, como mv en Bash
-Remove-Item archivo.txt                          # elimina un archivo (va a la papelera por defecto en el explorador, pero no aquí)
+# elimina un archivo (va a la papelera por defecto en el explorador, pero no aquí)
+Remove-Item archivo.txt
 Remove-Item -Recurse carpeta                     # elimina una carpeta y todo su contenido
 ```
 
@@ -60,10 +65,15 @@ Remove-Item -Recurse carpeta                     # elimina una carpeta y todo su
 ## `Get-ChildItem -Recurse`: buscar archivos (equivalente de `find`)
 
 ```powershell
-Get-ChildItem -Path . -Filter "*.txt" -Recurse                                                       # todos los archivos .txt, recursivamente
-Get-ChildItem -Path C:\logs -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }  # modificados recientemente
-Get-ChildItem -Recurse -Directory -Filter "node_modules"                                             # todas las carpetas llamadas "node_modules"
-Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item                                                 # encuentra Y elimina en una sola cadena
+# todos los archivos .txt, recursivamente
+Get-ChildItem -Path . -Filter "*.txt" -Recurse
+# modificados recientemente
+Get-ChildItem -Path C:\logs -Recurse |
+    Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }
+# todas las carpetas llamadas "node_modules"
+Get-ChildItem -Recurse -Directory -Filter "node_modules"
+# encuentra Y elimina en una sola cadena
+Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item
 ```
 
 Ver también [Procesamiento de texto y objetos](/?c=shells&s=powershell&p=traitement-de-texte) (`Select-String`, `-replace`, `ConvertFrom-Json`) para ir más lejos en la explotación del contenido de estos archivos.

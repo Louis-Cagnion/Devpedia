@@ -41,7 +41,8 @@ ax.plot(x, y)              # curva (línea continua)
 ax.scatter(x, y)            # nube de puntos
 ax.bar(categories, valores)  # diagrama de barras
 ax.hist(datos, bins=20)     # histograma (distribución de una variable)
-ax.boxplot(datos)            # diagrama de caja y bigotes (mediana, cuartiles, valores extremos)
+# diagrama de caja y bigotes (mediana, cuartiles, valores extremos)
+ax.boxplot(datos)
 ```
 
 ## Maquetar un gráfico
@@ -53,7 +54,8 @@ ax.set_xlabel("Mois")
 ax.set_ylabel("Ventes (€)")
 ax.set_title("Évolution des ventes")
 ax.legend()             # muestra la leyenda (a partir de los «label=» proporcionados)
-ax.grid(True)             # Añade una tabla, que suele resultar útil para leer valores precisos.
+# Añade una tabla, que suele resultar útil para leer valores precisos.
+ax.grid(True)
 ```
 
 ## Varios gráficos en una misma figura

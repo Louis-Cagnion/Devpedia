@@ -17,7 +17,7 @@ Um [arquivo de código](/?c=bases-de-l-informatique&p=code-programmes-et-fichier
 **O realce de sintaxe** consiste em exibir cada tipo de elemento do código em uma cor diferente, para que sua estrutura se veja de imediato, sem nem precisar ler cada palavra. Você vê um exemplo concreto nesta própria página: cada bloco de código do Devpedia é colorido assim.
 
 ```python
-# Isto e um comentario           -> uma cor
+# Isto e um comentário           -> uma cor
 nome = "Joao"                     # "Joao" e uma string -> outra cor
 ```
 

@@ -9,8 +9,10 @@ Ce chapitre couvre le cycle de travail Git le plus courant : initialiser un dép
 ## Créer ou récupérer un dépôt
 
 ```bash
-git init                                  # transforme le dossier courant en dépôt Git (vide, aucun historique)
-git clone https://exemple.com/projet.git  # récupère un dépôt existant, avec tout son historique
+# transforme le dossier courant en dépôt Git (vide, aucun historique)
+git init
+# récupère un dépôt existant, avec tout son historique
+git clone https://exemple.com/projet.git
 ```
 
 ## Voir l'état du dossier de travail
@@ -26,7 +28,8 @@ Affiche quels fichiers sont modifiés, lesquels sont dans la zone de staging, et
 ```bash
 git add fichier.txt  # ajoute un fichier précis
 git add dossier/     # ajoute tout un dossier
-git add .            # ajoute tout ce qui a changé dans le dossier courant et ses sous-dossiers
+# ajoute tout ce qui a changé dans le dossier courant et ses sous-dossiers
+git add .
 git add -p           # mode interactif : choisir précisément quels blocs de lignes ajouter
 ```
 
@@ -36,7 +39,9 @@ git add -p           # mode interactif : choisir précisément quels blocs de li
 
 ```bash
 git commit -m "Corrige le calcul de la remise"
-git commit -am "Message"   # raccourci : ajoute automatiquement les fichiers déjà suivis ET modifiés, sans "git add" préalable
+# raccourci : ajoute automatiquement les fichiers déjà suivis ET modifiés,
+# sans "git add" préalable
+git commit -am "Message"
 ```
 
 > **Note :** `-a` (dans `-am`) n'ajoute **que** les fichiers déjà suivis par Git : un fichier tout nouveau, jamais ajouté auparavant, doit toujours passer par un `git add` explicite au moins une fois.
@@ -66,13 +71,17 @@ C'est cette ligne vide, et elle seule, qui indique à un outil comme [GitHub](/?
 `git commit -m "message"` avec un seul `-m` ne produit qu'un titre, sans description. Trois façons d'obtenir les deux :
 
 ```bash
-# 1. Sans -m : ouvre l'éditeur configuré (vim, nano...), où taper titre, ligne vide, puis description
+# 1. Sans -m : ouvre l'éditeur configuré (vim, nano...), où taper titre,
+#    ligne vide, puis description
 git commit
 
-# 2. Plusieurs -m : chacun devient un paragraphe séparé par une ligne vide, sans ouvrir d'éditeur
-git commit -m "Corrige le calcul de la remise" -m "Le pourcentage n'était appliqué qu'au premier article, pas au total."
+# 2. Plusieurs -m : chacun devient un paragraphe séparé par une ligne vide,
+#    sans ouvrir d'éditeur
+git commit -m "Corrige le calcul de la remise" \
+    -m "Le pourcentage n'était appliqué qu'au premier article, pas au total."
 
-# 3. Une chaîne multi-lignes passée à un seul -m (utile pour scripter un commit, ou depuis un outil qui génère le message)
+# 3. Une chaîne multi-lignes passée à un seul -m (utile pour scripter un
+#    commit, ou depuis un outil qui génère le message)
 git commit -m "$(cat <<'EOF'
 Corrige le calcul de la remise
 
@@ -92,7 +101,8 @@ EOF
 ```bash
 git log                          # historique complet, du plus récent au plus ancien
 git log --oneline                # une ligne par commit, plus lisible pour un survol rapide
-git log --oneline --graph --all  # visualise aussi les branches et leurs points de divergence/fusion
+# visualise aussi les branches et leurs points de divergence/fusion
+git log --oneline --graph --all
 git log -p fichier.txt           # historique détaillé (avec diff) d'un fichier précis
 ```
 
@@ -107,7 +117,8 @@ git diff commit1 commit2  # différences entre deux commits précis
 ## Voir le détail d'un commit
 
 ```bash
-git show a3f9c1d   # affiche le message, l'auteur, la date et le diff complet de ce commit précis
+# affiche le message, l'auteur, la date et le diff complet de ce commit précis
+git show a3f9c1d
 ```
 
 ---

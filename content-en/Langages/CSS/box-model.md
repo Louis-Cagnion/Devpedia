@@ -45,7 +45,8 @@ div {
     padding: 20px;
     border: 2px solid black;
 }
-/* Width ACTUALLY occupied on screen: 300 + 20+20 (padding) + 2+2 (border) = 344px, NOT 300px! */
+/* Width ACTUALLY occupied on screen: 300 + 20+20 (padding) + 2+2 (border) = 344px, NOT
+   300px! */
 ```
 
 > **Note:** By default (`box-sizing: content-box`), `width` defines only the size of the **content**: `padding` and `border` are added on top of that, making the box that’s actually displayed larger than the declared value. This is a very common cause of layouts that “overflow” unexpectedly.

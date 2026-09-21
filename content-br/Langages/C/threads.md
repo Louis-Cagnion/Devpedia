@@ -26,7 +26,8 @@ int main(void)
     pthread_t thread;
     int valor = 42;
 
-    pthread_create(&thread, NULL, tarefa, &valor);  // lanca a thread, executa "tarefa" em paralelo
+    // lanca a thread, executa "tarefa" em paralelo
+    pthread_create(&thread, NULL, tarefa, &valor);
     pthread_join(thread, NULL);                     // espera essa thread terminar
 
     return 0;
@@ -48,7 +49,7 @@ int contador = 0; // compartilhado por todas as threads
 void *incrementar(void *argumento)
 {
     for (int i = 0; i < 1000000; i++) {
-        contador++; // PERIGO: varias threads modificam a mesma variavel ao mesmo tempo
+        contador++; // PERIGO: várias threads modificam a mesma variável ao mesmo tempo
     }
     return NULL;
 }
@@ -129,12 +130,12 @@ void *calcularFaixa(void *argumento)
         pthread_mutex_lock(&trava_frame);
         while (!proximo_frame_pronto) {
             pthread_mutex_unlock(&trava_frame);
-            usleep(1); // espera ativa: veja Medir o tempo e esperar com precisao
+            usleep(1); // espera ativa: veja Medir o tempo e esperar com precisão
             pthread_mutex_lock(&trava_frame);
         }
         pthread_mutex_unlock(&trava_frame);
 
-        // ... calcular a faixa de colunas atribuida a esta thread ...
+        // ... calcular a faixa de colunas atribuída a esta thread ...
     }
 }
 ```

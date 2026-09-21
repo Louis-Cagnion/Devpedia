@@ -16,11 +16,13 @@ Una función variádica siempre tiene al menos un parámetro fijo, seguido de `.
 int suma(int cantidad, ...)
 {
     va_list argumentos;
-    va_start(argumentos, cantidad); // "cantidad" es el último parámetro fijo, justo antes de los "..."
+    // "cantidad" es el último parámetro fijo, justo antes de los "..."
+    va_start(argumentos, cantidad);
 
     int total = 0;
     for (int i = 0; i < cantidad; i++) {
-        total += va_arg(argumentos, int); // recupera el siguiente argumento, tratándolo como un int
+        // recupera el siguiente argumento, tratándolo como un int
+        total += va_arg(argumentos, int);
     }
 
     va_end(argumentos);
@@ -46,7 +48,8 @@ suma(3, 10, 20, 30); // 60 -> cantidad = 3, se suman los 3 argumentos siguientes
 `printf` no dispone de **ningún medio nativo** para saber cuántos argumentos variables se han proporcionado: es la propia cadena de formato la que sirve de guía, contando el número de `%` que contiene.
 
 ```c
-printf("%d %d %d\n", 1, 2, 3); // la cadena anuncia 3 valores -> printf lee 3 argumentos variádicos
+// la cadena anuncia 3 valores -> printf lee 3 argumentos variádicos
+printf("%d %d %d\n", 1, 2, 3);
 ```
 
 > **Nota:** por eso, un número incorrecto de `%` en relación con los argumentos reales (o al revés) no provoca **ningún error de compilación**: solo un comportamiento indefinido en tiempo de ejecución (lectura de datos que no son argumentos reales). Es una fuente clásica de fallos de seguridad ("vulnerabilidad de cadena de formato") cuando una cadena de formato procede directamente de una entrada de usuario no controlada.
@@ -60,15 +63,20 @@ Cada `%` introduce una sintaxis precisa que hay que volver a analizar carácter 
 ```
 
 ```c
-printf("%-10d|\n", 42);     // "42        |" -> '-': justificado a la IZQUIERDA (por defecto: a la derecha)
+// "42        |" -> '-': justificado a la IZQUIERDA (por defecto: a la derecha)
+printf("%-10d|\n", 42);
 printf("%010d\n", 42);      // "0000000042"  -> '0': rellena con ceros en vez de espacios
 printf("%#x\n", 255);       // "0xff"        -> '#': forma alternativa (prefijo 0x/0X para x/X)
-printf("%+d\n", 42);        // "+42"         -> '+': fuerza a mostrar el signo, incluso si es positivo
+// "+42"         -> '+': fuerza a mostrar el signo, incluso si es positivo
+printf("%+d\n", 42);
 
-printf("%10d\n", 42);       // "        42" -> ancho MÍNIMO: se rellena con espacios si hace falta
-printf("%.3d\n", 5);        // "005"        -> precisión sobre un entero: número mínimo de dígitos
+// "        42" -> ancho MÍNIMO: se rellena con espacios si hace falta
+printf("%10d\n", 42);
+// "005"        -> precisión sobre un entero: número mínimo de dígitos
+printf("%.3d\n", 5);
 
-printf("%*d\n", 10, 42);    // equivalente a "%10d" -> '*': el ancho se lee desde los argumentos, no está escrito a mano
+// equivalente a "%10d" -> '*': el ancho se lee desde los argumentos, no está escrito a mano
+printf("%*d\n", 10, 42);
 ```
 
 | Elemento | Función |

@@ -20,10 +20,11 @@ int main(void)
 
     while ((ligne = readline("mon_shell$ ")) != NULL) {
         if (*ligne) {
-            add_history(ligne);   // adiciona essa linha ao historico (seta para cima a recupera)
+            // adiciona essa linha ao histórico (seta para cima a recupera)
+            add_history(ligne);
         }
 
-        printf("Voce digitou : %s\n", ligne);
+        printf("Você digitou : %s\n", ligne);
         free(ligne);   // readline() aloca a linha: deve ser liberada manualmente
     }
 
@@ -45,12 +46,12 @@ int main(void)
 
 struct termios ancien, nouveau;
 
-tcgetattr(STDIN_FILENO, &ancien);   // salva a configuracao atual do terminal
+tcgetattr(STDIN_FILENO, &ancien);   // salva a configuração atual do terminal
 nouveau = ancien;
-nouveau.c_lflag &= ~(ICANON | ECHO);   // desativa o modo canonico E a exibicao automatica
+nouveau.c_lflag &= ~(ICANON | ECHO);   // desativa o modo canônico E a exibição automática
 tcsetattr(STDIN_FILENO, TCSANOW, &nouveau);   // aplica o novo modo
 
-// ... leitura tecla por tecla, sem esperar Enter, sem eco automatico ...
+// ... leitura tecla por tecla, sem esperar Enter, sem eco automático ...
 
 tcsetattr(STDIN_FILENO, TCSANOW, &ancien);   // restaura o modo original antes de sair
 ```

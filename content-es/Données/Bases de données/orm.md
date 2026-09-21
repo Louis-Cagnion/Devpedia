@@ -59,7 +59,7 @@ Un ORM como Prisma genera tipos a partir del esquema de la base: un error tipogr
 
 ```javascript
 prisma.usuario.create({ data: { emial: "alice@ejemplo.com" } });
-// Error de compilacion inmediato: "emial" no existe en este modelo
+// Error de compilación inmediato: "emial" no existe en este modelo
 ```
 
 Una consulta SQL escrita a mano en una cadena de caracteres no ofrece ninguna de estas garantías: el mismo error tipográfico solo se detectaría ahí en la ejecución, si es que se detecta.

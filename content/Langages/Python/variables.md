@@ -104,8 +104,10 @@ Les f-strings (préfixe `f` avant les guillemets) sont la méthode moderne recom
 
 ```python
 texte = ""
-print(f"Reçu : {texte!r}")   # Reçu : '' -> repr() : montre les guillemets, donc la chaîne vide se voit
-print(f"Reçu : {texte}")     # Reçu :    -> insertion normale : rien à voir, illisible dans un message de debug
+# Reçu : '' -> repr() : montre les guillemets, donc la chaîne vide se voit
+print(f"Reçu : {texte!r}")
+# Reçu :    -> insertion normale : rien à voir, illisible dans un message de debug
+print(f"Reçu : {texte}")
 ```
 
 `!r` appelle `repr(x)` avant l'insertion (équivalent à `f"{repr(x)}"`) : utile dans un message d'erreur pour distinguer `""` (chaîne vide) de `" "` (espace), ou plus généralement pour voir la valeur exacte reçue plutôt que son affichage "propre". `!s` (`str(x)`, le comportement par défaut) et `!a` (`ascii(x)`, échappe les caractères non-ASCII) existent aussi, plus rarement utiles.
@@ -139,7 +141,8 @@ mots = ["Python", "est", "lisible"]
 ```python
 texte = "ligne1\nligne2\r\nligne3"
 
-texte.splitlines()  # ["ligne1", "ligne2", "ligne3"]     -> reconnaît \n ET \r\n, aucun \n dans le résultat
+# ["ligne1", "ligne2", "ligne3"]     -> reconnaît \n ET \r\n, aucun \n dans le résultat
+texte.splitlines()
 texte.split("\n")   # ["ligne1", "ligne2", "ligne3\r"]   -> "\r" traîne, resté collé à "ligne3"
 ```
 

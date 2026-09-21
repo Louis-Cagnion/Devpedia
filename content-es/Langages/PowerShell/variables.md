@@ -11,9 +11,11 @@ Contrariamente a [Bash](/?c=shells&s=bash&p=bash), donde todo se manipula como t
 ## Declarar y leer una variable
 
 ```powershell
-$nombre = "Juan"               # sin regla estricta sobre los espacios alrededor del '=', a diferencia de Bash
+# sin regla estricta sobre los espacios alrededor del '=', a diferencia de Bash
+$nombre = "Juan"
 Write-Output $nombre           # Juan
-Write-Output "Hola $nombre !"  # Hola Juan ! -> interpolación directa en una cadena de comillas dobles
+# Hola Juan ! -> interpolación directa en una cadena de comillas dobles
+Write-Output "Hola $nombre !"
 ```
 
 > **Nota:** `$nombre` solo (sin `Write-Output`) también muestra su valor en la consola: PowerShell muestra automáticamente el resultado de toda expresión que no esté explícitamente asignada o suprimida, un comportamiento cercano a un REPL.
@@ -24,7 +26,8 @@ Write-Output "Hola $nombre !"  # Hola Juan ! -> interpolación directa en una ca
 $nombre = "Juan"
 
 Write-Output "Hola $nombre"  # Hola Juan -> las comillas dobles interpretan las variables
-Write-Output 'Hola $nombre'  # Hola $nombre -> las comillas simples desactivan toda interpretacion
+# Hola $nombre -> las comillas simples desactivan toda interpretación
+Write-Output 'Hola $nombre'
 ```
 
 Para insertar una propiedad o el resultado de una expresión (no solo una variable simple), hay que rodearla con `$(...)` dentro de las comillas dobles:
@@ -60,7 +63,7 @@ $b = 3
 
 Write-Output ($a + $b)  # 8
 Write-Output ($a * $b)  # 15
-Write-Output ($a / $b)  # 1.66666666666667 -> division real, no entera como en Bash
+Write-Output ($a / $b)  # 1.66666666666667 -> división real, no entera como en Bash
 ```
 
 ## Variables automáticas
@@ -88,7 +91,8 @@ Para modificar explícitamente una variable de un contexto englobante (el equiva
 $total = 0
 
 function Incrementar {
-    $script:total = $script:total + 1   # modifica explícitamente la variable del script llamador
+    # modifica explícitamente la variable del script llamador
+    $script:total = $script:total + 1
 }
 
 Incrementar

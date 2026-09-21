@@ -9,9 +9,11 @@ order: 6
 ## Guardar las modificaciones
 
 ```bash
-git stash                                          # guarda todas las modificaciones seguidas, deja el directorio "limpio"
-git stash push -m "en curso: formulario de contacto"  # con un mensaje, para ubicarse mas tarde
-git stash -u                                       # incluye tambien los archivos no seguidos (nuevos, nunca añadidos)
+# guarda todas las modificaciones seguidas, deja el directorio "limpio"
+git stash
+git stash push -m "en curso: formulario de contacto"  # con un mensaje, para ubicarse más tarde
+# incluye también los archivos no seguidos (nuevos, nunca añadidos)
+git stash -u
 ```
 
 Tras un `git stash`, `git status` ya no muestra ninguna modificación, como si se acabara de commitear, salvo que nada aparece en el historial (`git log`): las modificaciones se almacenan aparte, en una pila.
@@ -21,11 +23,11 @@ Tras un `git stash`, `git status` ya no muestra ninguna modificación, como si s
 ```bash
 git stash list
 # stash@{0}: en curso: formulario de contacto
-# stash@{1}: WIP on main: a3f9c1d Corrige el calculo del descuento
+# stash@{1}: WIP on main: a3f9c1d Corrige el cálculo del descuento
 
-git stash apply            # reaplica el stash mas reciente, SIN retirarlo de la pila
+git stash apply            # reaplica el stash más reciente, SIN retirarlo de la pila
 git stash apply stash@{1}  # reaplica un stash concreto
-git stash pop               # reaplica el stash mas reciente, Y lo retira de la pila
+git stash pop               # reaplica el stash más reciente, Y lo retira de la pila
 ```
 
 > **Nota:** `apply` mantiene el stash en la pila tras reaplicarlo (útil para aplicarlo en varias ramas sucesivamente), mientras que `pop` lo retira: la elección depende de si se tiene la certeza de no necesitarlo más en otro lugar.

@@ -44,7 +44,8 @@ static int cuadrado(int x)   // enlace INTERNO: invisible fuera de utilidades.c
     return x * x;
 }
 
-int cubo(int x)   // enlace externo (por defecto): declarable en utilidades.h, llamable desde otro lado
+// enlace externo (por defecto): declarable en utilidades.h, llamable desde otro lado
+int cubo(int x)
 {
     return x * cuadrado(x);
 }
@@ -59,7 +60,7 @@ char *get_next_line(int fd)
 {
     static char *linea_guardada;   // se conserva entre llamadas, nunca se recrea
 
-    // ... usa y actualiza linea_guardada ...
+    // ... usa y actualiza línea_guardada ...
     return (linea);
 }
 ```

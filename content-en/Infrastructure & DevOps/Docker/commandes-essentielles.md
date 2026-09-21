@@ -7,7 +7,9 @@ order: 3
 ## Build and Run
 
 ```bash
-docker build -t mon-app:1.0 .     # Builds an image named "my-app" with tag "1.0" from the Dockerfile in the current directory (.)
+# Builds an image named "my-app" with tag "1.0" from the Dockerfile in the current directory
+# (.)
+docker build -t mon-app:1.0 .
 docker run mon-app:1.0             # Launch a container from this image
 ```
 
@@ -48,7 +50,9 @@ Useful for inspecting the status of a container that is already running (files, 
 ## Shut Down and Clean Up
 
 ```bash
-docker stop serveur       # Sends SIGTERM, allowing the container to shut down properly (see [signal table](/?c=shells&s=bash&p=gestion-des-processus), Bash section)
+# Sends SIGTERM, allowing the container to shut down properly (see [signal
+# table](/?c=shells&s=bash&p=gestion-des-processus), Bash section)
+docker stop serveur
 docker kill serveur        # sends SIGKILL, causing an immediate and unconditional shutdown
 docker rm serveur          # Removes a stopped container
 docker rmi mon-app:1.0     # removes an image

@@ -109,7 +109,9 @@ def counter():
     total = 0
 
     def increment():
-        nonlocal total   # Without this, "total += 1" would create a new LOCAL variable inside increment(), instead of modifying the enclosing one
+        # Without this, "total += 1" would create a new LOCAL variable inside increment(),
+        # instead of modifying the enclosing one
+        nonlocal total
         total += 1
         return total
 
@@ -120,7 +122,7 @@ count()   # 1
 count()   # 2 -> "total" was indeed preserved between calls
 ```
 
-See also the chapter on decorators, which is directly based on this closure mechanism.
+See also [Decorators](/?c=langages-de-programmation&s=python&p=decorateurs), which is directly based on this closure mechanism.
 
 ---
 

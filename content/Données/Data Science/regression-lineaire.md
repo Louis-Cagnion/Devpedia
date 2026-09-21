@@ -54,7 +54,8 @@ X = [[2], [5], [9], [14], [20]]
 y = [12, 20, 30, 42, 58]
 
 modele = LinearRegression()
-modele.fit(X, y)          # trouve le biais et le(s) poids qui minimisent l'erreur (voir plus bas)
+# trouve le biais et le(s) poids qui minimisent l'erreur (voir plus bas)
+modele.fit(X, y)
 
 modele.intercept_          # 7.6  -> le biais
 modele.coef_                # [2.52] -> un poids par colonne de X

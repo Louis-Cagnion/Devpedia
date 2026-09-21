@@ -17,11 +17,11 @@ Le NPS repose sur une seule question, posée après une interaction avec un serv
 | 9 ou 10 | Promoteurs | Oui | Oui (positivement) |
 
 ```javascript
-function calculerNps(notes) {   // notes : tableau d'entiers de 0 a 10, une note par repondant
+function calculerNps(notes) {   // notes : tableau d'entiers de 0 à 10, une note par répondant
     const total = notes.length;
     const detracteurs = notes.filter(note => note <= 6).length;
     const promoteurs = notes.filter(note => note >= 9).length;
-    // les neutres (7-8) comptent dans "total", mais jamais au numerateur
+    // les neutres (7-8) comptent dans "total", mais jamais au numérateur
     return ((promoteurs - detracteurs) / total) * 100;
 }
 ```

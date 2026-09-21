@@ -46,7 +46,7 @@ char *buscar_ou_mostrar_erro(char *chave)
     if (resultado != NULL) {
         return resultado;
     }
-    return printf("Erro: chave nao encontrada\n"), NULL;
+    return printf("Erro: chave não encontrada\n"), NULL;
 }
 ```
 

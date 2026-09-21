@@ -129,18 +129,22 @@ private function scheduleBackgroundRefresh(string $file): void
     $lock = $file . '.refreshing';
 
     if (is_file($lock) && (time() - (int) @filemtime($lock)) < 600) {
-        return;                        // a refresh is already running, no need to start another
+        // a refresh is already running, no need to start another
+        return;
     }
 
-    $handle = @fopen($lock, 'x');      // 'x': fails if the file already exists (atomic creation)
+    // 'x': fails if the file already exists (atomic creation)
+    $handle = @fopen($lock, 'x');
     if ($handle === false) return;     // another worker already won the race
     fclose($handle);
 
-    ignore_user_abort(true);           // runs to completion even if the client has already left
+    // runs to completion even if the client has already left
+    ignore_user_abort(true);
 
     register_shutdown_function(function () use ($file, $lock) {
         if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();  // the client gets its response here, the connection closes
+            // the client gets its response here, the connection closes
+            fastcgi_finish_request();
         }
         try {
             $this->refreshNow($file);

@@ -26,10 +26,12 @@ La corrección consiste en trasladar el bucle **al lado donde están los datos**
 
 ```python
 # 1 ida y vuelta, sea cual sea el numero de anuncios
-tarjetas = pagina.evaluar("""() => Array.from(document.querySelectorAll('article')).map(tarjeta => ({
+tarjetas = pagina.evaluar(
+    """() => Array.from(document.querySelectorAll('article')).map(tarjeta => ({
     href: tarjeta.querySelector('a')?.getAttribute('href'),
     texto: tarjeta.innerText,
-}))""")
+}))"""
+)
 
 for tarjeta in tarjetas:                      # procesamiento local, gratuito
     analizar(tarjeta["href"], tarjeta["texto"])
@@ -44,7 +46,7 @@ Este patrón tiene nombre en el mundo de las bases de datos: el **problema N+1**
 ```php
 $clientes = $bd->query("SELECT id, nombre FROM clientes")->fetchAll();
 foreach ($clientes as $cliente) {
-    // 1 consulta SQL por cliente: ahi esta el "+N"
+    // 1 consulta SQL por cliente: ahí esta el "+N"
     $pedidos = $bd->query("SELECT * FROM pedidos WHERE cliente_id = {$cliente['id']}");
 }
 ```

@@ -29,8 +29,10 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ## Ejecutar un script
 
 ```powershell
-.\script.ps1                 # el ".\" es necesario incluso si la carpeta actual contiene el script
-powershell -File script.ps1  # alternativa: lanzar explícitamente el intérprete sobre el archivo
+# el ".\" es necesario incluso si la carpeta actual contiene el script
+.\script.ps1
+# alternativa: lanzar explícitamente el intérprete sobre el archivo
+powershell -File script.ps1
 ```
 
 > **Nota:** contrariamente a Bash, escribir simplemente `script.ps1` sin prefijo de ruta nunca funciona, aunque el script sea ejecutable: PowerShell nunca busca en la carpeta actual por defecto, incluso si está presente en `$env:PATH`, para evitar que un archivo malicioso de la carpeta actual se ejecute por error en lugar de un comando del sistema con el mismo nombre.

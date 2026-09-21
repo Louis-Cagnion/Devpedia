@@ -18,7 +18,7 @@ Permite recuperar **e** validar/filtrar ao mesmo tempo um dado vindo de `$_GET`,
     $idade = filter_input(INPUT_GET, 'idade', FILTER_VALIDATE_INT);
 
     if ($email === false) {
-        echo "Email invalido.";
+        echo "Email inválido.";
     }
 ?>
 ```
@@ -30,8 +30,8 @@ Alguns filtros comuns:
 ```php
 <?php
     FILTER_VALIDATE_EMAIL;   // verifica um formato de email
-    FILTER_VALIDATE_INT;     // verifica um numero inteiro
-    FILTER_VALIDATE_FLOAT;   // verifica um numero decimal
+    FILTER_VALIDATE_INT;     // verifica um número inteiro
+    FILTER_VALIDATE_FLOAT;   // verifica um número decimal
     FILTER_VALIDATE_URL;     // verifica uma URL
     FILTER_SANITIZE_STRING;  // limpa uma string (obsoleto desde o PHP 8.1)
 ?>
@@ -46,7 +46,7 @@ Se você exibir um dado do usuário na página (ex: um comentário, um apelido),
     $comentario = "<script>alert('hackeado');</script>";
 
     echo htmlspecialchars($comentario);
-    // exibe o texto tal como esta, sem executar o script
+    // exibe o texto tal como está, sem executar o script
 ?>
 ```
 
@@ -60,10 +60,10 @@ Se você inserir diretamente um dado do usuário em uma consulta SQL, um visitan
 
 ```php
 <?php
-    // ❌ Perigoso: o dado e inserido diretamente na consulta
+    // ❌ Perigoso: o dado é inserido diretamente na consulta
     $consulta = "SELECT * FROM users WHERE email = '" . $_POST['email'] . "'";
 
-    // ✅ Seguro: o dado passa por um espaco reservado, nunca interpretado como SQL
+    // ✅ Seguro: o dado passa por um espaço reservado, nunca interpretado como SQL
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
     $stmt->execute(['email' => $_POST['email']]);
 ?>
@@ -78,7 +78,7 @@ Uma senha **nunca** deve ser armazenada em texto claro em um banco de dados. PHP
     // Hashea a senha
     $user['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Salva o hash no banco de dados (nao a senha em texto claro)
+    // Salva o hash no banco de dados (não a senha em texto claro)
     $stmt = $pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :password)");
     $stmt->execute([
         'email' => $_POST['email'],
@@ -92,7 +92,7 @@ Uma senha **nunca** deve ser armazenada em texto claro em um banco de dados. PHP
 
     // Compara a senha informada com o hash recuperado do banco
     if (password_verify($_POST['password'], $user['password'])) {
-        echo "Conexao bem-sucedida.";
+        echo "Conexão bem-sucedida.";
     } else {
         echo "Senha incorreta.";
     }
@@ -156,7 +156,7 @@ Se a vítima estiver conectada ao seu banco no mesmo navegador, essa requisiçã
 <?php
 session_start();
 
-// na geracao do formulario
+// na geração do formulário
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -169,13 +169,13 @@ if (empty($_SESSION['csrf_token'])) {
 
 ```php
 <?php
-// no recebimento do formulario
+// no recebimento do formulário
 session_start();
 
 $tokenRecebido = $_POST['csrf_token'] ?? '';
 if (!hash_equals($_SESSION['csrf_token'] ?? '', $tokenRecebido)) {
     http_response_code(403);
-    exit('Requisicao recusada (token CSRF invalido).');
+    exit('Requisição recusada (token CSRF inválido).');
 }
 // processamento normal...
 ?>
@@ -223,29 +223,13 @@ Classificada A10 no [OWASP Top 10](/?c=cybersecurite&p=owasp-top-10). Forçar um
 
 ```php
 <?php
-// perigoso se $_GET['url'] puder visar um endereco interno (ex: http://169.254.169.254/, http://localhost:6379/...)
+// perigoso se $_GET['url'] puder visar um endereço interno (ex: http://169.254.169.254/,
+// http://localhost:6379/...)
 $resposta = file_get_contents($_GET['url']);
 ?>
 ```
 
 Todo código que constrói uma URL/host de destino a partir de uma entrada influenciada, mesmo indiretamente, pelo usuário (veja [Fazer chamadas HTTP nativamente](/?c=langages-de-programmation&s=php&p=http)) é um candidato à auditoria SSRF. **Proteção:** validar o host alvo contra uma lista branca explícita em vez de confiar em uma URL arbitrária fornecida pelo cliente.
-
-## Resumo
-
-| Risco | Defesa principal |
-|---|---|
-| Dado malformado (email, número...) | `filter_input()` |
-| Injeção de HTML/JS (XSS) | `htmlspecialchars()` |
-| Injeção SQL | Consultas preparadas (PDO) |
-| Senha em texto claro | `password_hash()` / `password_verify()` |
-| CSRF | Token CSRF em sessão, verificado via `hash_equals()` |
-| MITM / DNS spoofing | Verificação de certificado SSL (`verify_peer`/`verify_peer_name`) |
-| Sniffing | HTTPS sistemático |
-| Session hijacking | Cookie `httponly`/`secure`, identificador de sessão com alta entropia |
-| Brute force | Limitação do número de tentativas (*rate limiting*) |
-| SSRF | Lista branca dos hosts/URLs permitidos |
-
-> **Nota:** nenhuma dessas proteções substitui o HTTPS, que criptografa os dados trocados entre o navegador e o servidor.
 
 ---
 
@@ -253,7 +237,7 @@ Todo código que constrói uma URL/host de destino a partir de uma entrada influ
 
 | | |
 |---|---|
-| **Para lembrar** | Todo dado do usuário é não confiável por padrão. As principais falhas aplicativas (XSS, injeção SQL, CSRF) são neutralizadas por mecanismos dedicados (`htmlspecialchars`, consultas preparadas, token CSRF): outros ataques visam a rede ou a infraestrutura, fora do código aplicativo sozinho. |
-| **Ferramentas utilizáveis** | `filter_input()`, `htmlspecialchars()`, PDO (consultas preparadas), `password_hash`/`password_verify`, `hash_equals()`. |
+| **Para lembrar** | Todo dado do usuário é não confiável por padrão. As principais falhas aplicativas (XSS, injeção SQL, CSRF) são neutralizadas por mecanismos dedicados (`htmlspecialchars`, consultas preparadas, token CSRF); outros ataques visam a rede ou a infraestrutura (MITM, DNS spoofing, sniffing, session hijacking, brute force, SSRF), fora do código aplicativo sozinho. Nenhuma dessas proteções substitui o HTTPS, que criptografa os dados trocados entre o navegador e o servidor. |
+| **Ferramentas utilizáveis** | `filter_input()`, `htmlspecialchars()`, PDO (consultas preparadas), `password_hash`/`password_verify`, `hash_equals()`, verificação de certificado SSL/TLS (`verify_peer`), cookies `httponly`/`secure`, limitação do número de tentativas (*rate limiting*), lista branca de hosts para SSRF. |
 | **Armadilhas a evitar** | Comparar dois hashes com `==` (falha *magic hash*); concatenar um dado do usuário diretamente em uma consulta SQL. |
 | **Boas práticas** | Sempre validar/escapar um dado do usuário conforme seu uso (exibição, SQL, comparação); HTTPS sistemático, sem exceção para um dado considerado "não tão sensível". |

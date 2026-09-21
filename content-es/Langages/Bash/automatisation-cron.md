@@ -32,7 +32,8 @@ Cada línea sigue un formato de 5 campos de tiempo, seguidos del comando a ejecu
 0 3 * * *          /home/usuario/scripts/backup.sh        # todos los días a las 3:00
 */15 * * * *       /home/usuario/scripts/verificar-espacio.sh  # cada 15 minutos
 0 9 * * 1          /home/usuario/scripts/informe-semanal.sh    # todos los lunes a las 9:00
-0 0 1 * *          /home/usuario/scripts/purgar-logs.sh        # el día 1 de cada mes a medianoche
+# el día 1 de cada mes a medianoche
+0 0 1 * *          /home/usuario/scripts/purgar-logs.sh
 ```
 
 Un `*` significa "en cada valor posible de este campo"; `*/15` en el campo de los minutos significa "cada 15 minutos" (0, 15, 30, 45).
@@ -109,12 +110,16 @@ El archivo `.service` describe el comando a ejecutar:
 
 ```ini
 [Unit]
-Description=Copia de seguridad nocturna de documentos   # texto mostrado en los registros/el estado
+# texto mostrado en los registros/el estado
+Description=Copia de seguridad nocturna de documentos
 
 [Service]
-Type=oneshot                                        # se ejecuta una vez y luego se detiene (no un servicio que sigue corriendo)
-WorkingDirectory=/home/usuario/scripts              # directorio de trabajo antes de lanzar el comando
-ExecStart=/usr/bin/python3 backup.py                # ruta absoluta, misma trampa del entorno mínimo que cron
+# se ejecuta una vez y luego se detiene (no un servicio que sigue corriendo)
+Type=oneshot
+# directorio de trabajo antes de lanzar el comando
+WorkingDirectory=/home/usuario/scripts
+# ruta absoluta, misma trampa del entorno mínimo que cron
+ExecStart=/usr/bin/python3 backup.py
 ```
 
 El archivo `.timer` describe cuándo activar el servicio del mismo nombre:
@@ -125,10 +130,12 @@ Description=Planifica backup.service todos los días
 
 [Timer]
 OnCalendar=daily                                    # equivalente de @daily en cron
-Persistent=true                                     # recupera la ejecución perdida si la máquina estaba apagada (ver más abajo)
+# recupera la ejecución perdida si la máquina estaba apagada (ver más abajo)
+Persistent=true
 
 [Install]
-WantedBy=timers.target                              # necesario para que "enable" active realmente el timer
+# necesario para que "enable" active realmente el timer
+WantedBy=timers.target
 ```
 
 Ambos archivos van en `/etc/systemd/system/` (alcance del sistema, requiere permisos de root) o en `~/.config/systemd/user/` (alcance del usuario, ver más abajo). Una vez colocados:
@@ -137,7 +144,8 @@ Ambos archivos van en `/etc/systemd/system/` (alcance del sistema, requiere perm
 systemctl daemon-reload              # relee los archivos de unidad tras crear/modificar uno
 systemctl enable --now backup.timer  # activa el timer al arrancar Y lo inicia de inmediato
 systemctl list-timers                # lista los timers activos y su próxima ejecución
-journalctl -u backup.service         # consulta los registros de este servicio (reemplaza la redirección manual a un archivo de log)
+# consulta los registros de este servicio (reemplaza la redirección manual a un archivo de log)
+journalctl -u backup.service
 ```
 
 ### `Persistent=true`: la recuperación no es automática
@@ -156,7 +164,8 @@ Un timer colocado en `/etc/systemd/system/` corre independientemente de cualquie
 Este último punto importa para la recuperación: un timer `--user` con `Persistent=true` solo puede recuperar una ejecución perdida en el siguiente inicio de sesión, no en el simple arranque de la máquina, si nadie se conecta enseguida. [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permite levantar este límite para un usuario dado:
 
 ```bash
-loginctl enable-linger usuario   # la instancia systemd --user de "usuario" arranca desde el boot, sesión abierta o no
+# la instancia systemd --user de "usuario" arranca desde el boot, sesión abierta o no
+loginctl enable-linger usuario
 ```
 
 ### ¿`cron` o `systemd timer`?

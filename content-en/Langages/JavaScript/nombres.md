@@ -111,17 +111,6 @@ Number("");         // 0     -> classic pitfall: an empty string becomes 0
 
 `toLocaleString` handles thousands separators and the decimal point on its own: no need to reconstruct them by hand.
 
-## Summary
-
-| Pitfall | Reflex |
-|---|---|
-| A single `number` type (float) | `Math.trunc()` for integer division |
-| `0.1 + 0.2 !== 0.3` | Compare via a margin of error |
-| Monetary amounts | Work in cents |
-| Identifiers > 2⁵³ | Carry them as a string, or use `BigInt` |
-| `NaN !== NaN` | `Number.isNaN()`, never `isNaN()` |
-| `Number("")` equals `0` | Validate before converting |
-
 ---
 
 ## 📋 Summary
@@ -130,5 +119,5 @@ Number("");         // 0     -> classic pitfall: an empty string becomes 0
 |---|---|
 | **Key takeaways** | JavaScript has only one numeric type (`number`, IEEE 754 float): no native integer/decimal distinction. `BigInt` lifts the exact-large-integer limit (2⁵³ − 1). |
 | **Tools you can use** | `Math.trunc`, `Number.isNaN`, `Number.isSafeInteger`, `toFixed`/`toLocaleString` for display. |
-| **Pitfalls to avoid** | Comparing two floats with `===`; using global `isNaN()` (converts before testing) rather than `Number.isNaN()`. |
-| **Best practices** | Work in cents for monetary amounts; carry a large identifier as a string rather than as a `number`. |
+| **Pitfalls to avoid** | Comparing two floats with `===`; using global `isNaN()` (converts before testing) rather than `Number.isNaN()`; `Number("")` equals `0`, always validate before converting. |
+| **Best practices** | Work in cents for monetary amounts; carry a large identifier as a string or as a `BigInt` rather than as a `number`. |

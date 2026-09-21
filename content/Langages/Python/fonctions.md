@@ -28,7 +28,8 @@ saluer("Jean", "Salut")  # "Salut Jean"
 > **Piège classique : ne jamais utiliser un objet mutable (liste, dict) comme valeur par défaut.** La valeur par défaut n'est évaluée **qu'une seule fois**, à la définition de la fonction, pas à chaque appel :
 
 ```python
-def ajouter_a_liste(element, liste=[]):  # DANGER : cette liste est PARTAGÉE entre tous les appels
+# DANGER : cette liste est PARTAGÉE entre tous les appels
+def ajouter_a_liste(element, liste=[]):
     liste.append(element)
     return liste
 
@@ -49,12 +50,14 @@ def ajouter_a_liste(element, liste=None):
 ## `*args` et `**kwargs` : un nombre variable d'arguments
 
 ```python
-def somme(*nombres):          # *args : regroupe les arguments positionnels en excès dans un tuple
+# *args : regroupe les arguments positionnels en excès dans un tuple
+def somme(*nombres):
     return sum(nombres)
 
 somme(1, 2, 3, 4)   # 10
 
-def afficher_infos(**options):  # **kwargs : regroupe les arguments nommés en excès dans un dict
+# **kwargs : regroupe les arguments nommés en excès dans un dict
+def afficher_infos(**options):
     for cle, valeur in options.items():
         print(f"{cle} : {valeur}")
 
@@ -109,7 +112,8 @@ def compteur():
     total = 0
 
     def incrementer():
-        nonlocal total   # sans ceci, "total += 1" créerait une nouvelle variable LOCALE à incrementer()
+        # sans ceci, "total += 1" créerait une nouvelle variable LOCALE à incrementer()
+        nonlocal total
         total += 1
         return total
 

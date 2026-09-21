@@ -12,7 +12,7 @@ Un modèle ne traite jamais une phrase entière d'un bloc : le texte est d'abord
 
 ```text
 "Les chats dorment" -> ["Les", "chats", "dorment"]          -> tokenisation par mot
-"Les chats dorment" -> ["Les", "chat", "s", "dor", "ment"]   -> tokenisation en sous-mots (plus courant)
+"Les chats dorment" -> ["Les", "chat", "s", "dor", "ment"]   -> tokenisation en sous-mots
 ```
 
 La tokenisation par mot entier pose un problème de vocabulaire : chaque mot possible (y compris les variantes de conjugaison, les mots rares, les noms propres...) nécessiterait sa propre entrée, un vocabulaire potentiellement infini. La tokenisation en **sous-mots** (ex. l'algorithme [*Byte-Pair Encoding*](https://fr.wikipedia.org/wiki/Codage_par_paires_d%27octets)) découpe les mots rares en fragments plus courants, gardant un vocabulaire de taille fixe et gérable (typiquement quelques dizaines de milliers d'entrées) tout en pouvant représenter n'importe quel mot, même jamais vu tel quel à l'entraînement.

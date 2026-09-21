@@ -43,7 +43,7 @@ git rebase --abort
 ## El rebase interactivo: reescribir el historial local
 
 ```bash
-git rebase -i HEAD~3   # abre un editor para los ultimos 3 commits
+git rebase -i HEAD~3   # abre un editor para los últimos 3 commits
 ```
 
 ```text
@@ -73,9 +73,11 @@ git reset --soft <commit-anterior-al-mas-antiguo-a-reformular>
 git reset            # Desapila todo (la carpeta de trabajo conserva el estado final)
 
 # para cada commit a recrear en su orden original:
-git show <hash-antiguo-del-commit>:ruta/archivo.py > ruta/archivo.py  # restaura ESTE archivo a su estado en ese commit
+# restaura ESTE archivo a su estado en ese commit
+git show <hash-antiguo-del-commit>:ruta/archivo.py > ruta/archivo.py
 git add ruta/archivo.py ...
-git commit -F mensaje-corregido.txt   # nunca -m para un mensaje multilínea con tildes: véase más abajo
+# nunca -m para un mensaje multilínea con tildes: véase más abajo
+git commit -F mensaje-corregido.txt
 ```
 
 `git show <hash>:<ruta>` extrae el contenido de un archivo tal como estaba en un commit concreto, lo que permite reconstruir el estado intermedio de cada commit antes de recommitearlo, incluso cuando un mismo archivo cambió en varios de los commits a reformular.

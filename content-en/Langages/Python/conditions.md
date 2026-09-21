@@ -55,10 +55,12 @@ else:
 ```python
 status = "active"
 result = status and "found"    # "found" -> status is truthy, and returns its SECOND operand
-result = "" and "found"        # ""      -> "" is falsy, and stops and returns its FIRST operand
+# ""      -> "" is falsy, and stops and returns its FIRST operand
+result = "" and "found"
 
 nickname = ""
-display_name = nickname or "Anonymous"  # "Anonymous" -> or returns the first truthy operand encountered
+# "Anonymous" -> or returns the first truthy operand encountered
+display_name = nickname or "Anonymous"
 ```
 
 `and`/`or` never recompute a `True`/`False`: they return one of their two operands, without evaluating the other beyond what's necessary (**short-circuit evaluation**). `a and b` returns `a` if `a` is falsy (without even evaluating `b`), otherwise `b`; `a or b` returns `a` if `a` is truthy, otherwise `b`. This idiom allows a conditional call (`connected and disconnect()`, only calls `disconnect()` if `connected` is true) or a fallback value (`name = nickname or "Anonymous"`).

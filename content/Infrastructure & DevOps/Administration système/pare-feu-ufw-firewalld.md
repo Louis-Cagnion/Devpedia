@@ -29,7 +29,8 @@ C'est une application directe du principe de moindre privilège (déjà vu appli
 
 ```bash
 ufw default deny incoming   # refuse tout le trafic entrant par défaut
-ufw allow 2222/tcp          # autorise uniquement le port SSH (ici redéfini, voir le chapitre précédent)
+# autorise uniquement le port SSH (ici redéfini, voir le chapitre précédent)
+ufw allow 2222/tcp
 ufw enable                  # active le pare-feu avec ces règles
 ufw status                  # liste les règles actives
 ```
@@ -40,9 +41,11 @@ ufw status                  # liste les règles actives
 
 ```bash
 firewall-cmd --set-default-zone=public
-firewall-cmd --zone=public --add-port=2222/tcp --permanent  # autorise SSH dans la zone "public"
+# autorise SSH dans la zone "public"
+firewall-cmd --zone=public --add-port=2222/tcp --permanent
 firewall-cmd --reload                                        # applique les règles permanentes
-firewall-cmd --list-all                                       # liste les règles de la zone active
+# liste les règles de la zone active
+firewall-cmd --list-all
 ```
 
 ## Comparer les deux

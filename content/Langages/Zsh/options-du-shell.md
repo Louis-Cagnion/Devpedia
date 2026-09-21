@@ -22,9 +22,12 @@ setopt            # liste toutes les options actuellement actives
 ```bash
 setopt AUTO_CD           # taper un nom de dossier seul (sans "cd") y déplace directement
 setopt EXTENDED_GLOB     # active le globbing étendu (voir Expansion et jokers avancés)
-setopt SHARE_HISTORY     # partage l'historique de commandes en temps réel entre tous les terminaux ouverts
-setopt HIST_IGNORE_DUPS  # n'enregistre pas une commande identique à la précédente dans l'historique
-setopt CORRECT           # propose une correction si une commande tapée n'existe pas ("did you mean...")
+# partage l'historique de commandes en temps réel entre tous les terminaux ouverts
+setopt SHARE_HISTORY
+# n'enregistre pas une commande identique à la précédente dans l'historique
+setopt HIST_IGNORE_DUPS
+# propose une correction si une commande tapée n'existe pas ("did you mean...")
+setopt CORRECT
 ```
 
 | Option | Effet |

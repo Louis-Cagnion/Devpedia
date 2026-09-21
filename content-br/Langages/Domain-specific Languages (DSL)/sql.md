@@ -60,7 +60,7 @@ Obter ao mesmo tempo o total global e o detalhe por cidade normalmente exigiria 
 SELECT cidade, COUNT(*) AS nb_clientes
 FROM clientes
 GROUP BY GROUPING SETS ((cidade), ());
--- (cidade) : uma linha por cidade distinta, como um GROUP BY classico
+-- (cidade) : uma linha por cidade distinta, como um GROUP BY clássico
 -- ()       : uma linha de total global, cidade exibida como NULL
 ```
 
@@ -91,13 +91,14 @@ Equivalente declarativo de emparelhar duas coleções por uma chave compartilhad
 ```sql
 SELECT c.nome, v.data_compra
 FROM clientes c
-JOIN vendas v ON v.cliente_id = c.id; -- INNER JOIN: as linhas sem correspondencia desaparecem
+JOIN vendas v ON v.cliente_id = c.id; -- INNER JOIN: as linhas sem correspondência desaparecem
 ```
 
 ```sql
 SELECT c.nome, v.data_compra
 FROM clientes c
-LEFT JOIN vendas v ON v.cliente_id = c.id; -- mantem TODAS as linhas da esquerda, NULL se nao houver correspondencia
+-- mantém TODAS as linhas da esquerda, NULL se não houver correspondência
+LEFT JOIN vendas v ON v.cliente_id = c.id;
 ```
 
 - `c`/`v` são aliases de tabela, indispensáveis assim que duas tabelas compartilham um nome de coluna (`c.nome` vs uma eventual `v.nome`, sem ambiguidade).
@@ -118,7 +119,7 @@ FROM clientes c
 OUTER APPLY (
     SELECT TOP 1 v.data_compra
     FROM vendas v
-    WHERE v.cliente_id = c.id       -- referencia c, a linha atual: impossivel em um ON de JOIN
+    WHERE v.cliente_id = c.id       -- referência c, a linha atual: impossível em um ON de JOIN
     ORDER BY v.data_compra DESC
 ) AS ultima;
 ```
@@ -143,7 +144,8 @@ CREATE TABLE vendas (
     id           INT IDENTITY PRIMARY KEY,
     cliente_id   INT NOT NULL,
     data_compra  DATE NOT NULL,
-    FOREIGN KEY (cliente_id) REFERENCES clientes(id)  -- toda venda deve apontar para um cliente existente
+    -- toda venda deve apontar para um cliente existente
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
 ```
 
@@ -201,7 +203,7 @@ $pdo = new PDO('mysql:host=localhost;dbname=loja', 'usuario', 'senha');
 $stmt = $pdo->prepare('SELECT * FROM clientes WHERE cidade = :cidade');
 $stmt->execute([':cidade' => 'Lyon']);
 
-$linha  = $stmt->fetch(\PDO::FETCH_ASSOC);     // uma unica linha, array associativo
+$linha  = $stmt->fetch(\PDO::FETCH_ASSOC);     // uma única linha, array associativo
 $todas  = $stmt->fetchAll(\PDO::FETCH_ASSOC);  // todas as linhas
 ?>
 ```
@@ -264,15 +266,17 @@ import pyodbc
 conexao = pyodbc.connect(
     "DRIVER={ODBC Driver 18 for SQL Server};"
     "SERVER=meu_servidor;DATABASE=loja;UID=usuario;PWD=senha"
-)  # abre a conexao com o banco de dados
+)  # abre a conexão com o banco de dados
 
 cursor = conexao.cursor()
-cursor.execute("SELECT * FROM clientes WHERE cidade = ?", "Lyon")  # ? = espaco reservado, valor passado a parte
+# ? = espaço reservado, valor passado a parte
+cursor.execute("SELECT * FROM clientes WHERE cidade = ?", "Lyon")
 
-uma_linha = cursor.fetchone()  # uma unica linha
+uma_linha = cursor.fetchone()  # uma única linha
 todas     = cursor.fetchall()  # todas as linhas
 
-conexao.commit()  # confirma as escritas (INSERT/UPDATE/DELETE); desnecessario apos um simples SELECT
+# confirma as escritas (INSERT/UPDATE/DELETE); desnecessário após um simples SELECT
+conexao.commit()
 ```
 
 Mesmo ciclo que o PDO: `connect()` (abrir a conexão) → `cursor()` → `execute()` (com `?` como espaço reservado, valor passado à parte, nunca concatenado) → `fetchone()`/`fetchall()`. `executemany()` repete a mesma consulta para uma lista de conjuntos de valores (inserção em massa), mais rápido que um laço de `execute()` um por um.
@@ -317,9 +321,9 @@ O texto SQL gerado nunca contém o valor real, apenas o nome literal do placehol
 Além da injeção SQL (que protege o *como* se consulta o banco), uma boa prática de segurança trata do *quem*: a conta usada por uma aplicação para se conectar ao banco nunca deveria ter mais direitos do que ela realmente precisa.
 
 ```sql
--- em vez de dar todos os direitos a uma unica conta aplicativa:
+-- em vez de dar todos os direitos a uma única conta aplicativa:
 GRANT SELECT, INSERT, UPDATE ON loja.pedidos TO 'app_loja'@'%';
--- sem DROP, DELETE, nem acesso as outras tabelas/bancos, se a aplicacao nunca precisar deles
+-- sem DROP, DELETE, nem acesso às outras tabelas/bancos, se a aplicação nunca precisar deles
 ```
 
 Concretamente, uma conta aplicativa comprometida (via uma falha no código, um vazamento de credenciais...) só pode causar danos na medida de seus próprios direitos: uma conta limitada a `SELECT`/`INSERT`/`UPDATE` em uma única tabela não permite a um atacante apagar um banco de dados inteiro, mesmo que consiga executar consultas arbitrárias. É uma proteção **complementar** às consultas preparadas, não um substituto: ela limita os danos *se* uma injeção acontecer mesmo assim (bug não detectado, consulta dinâmica mal construída...), em vez de impedir a própria injeção.
@@ -329,7 +333,8 @@ Concretamente, uma conta aplicativa comprometida (via uma falha no código, um v
 Um `UPDATE` clássico sobrescreve o valor anterior para sempre:
 
 ```sql
-UPDATE clientes SET cidade = 'Paris' WHERE id = 1;  -- a cidade anterior 'Lyon' e perdida definitivamente
+-- a cidade anterior 'Lyon' é perdida definitivamente
+UPDATE clientes SET cidade = 'Paris' WHERE id = 1;
 ```
 
 O padrão **SCD2** (*[Slowly Changing Dimension](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-2/) tipo 2*) evita essa perda: em vez de sobrescrever uma linha, fecha-se a versão atual e insere-se uma nova, mantendo as duas.
@@ -341,11 +346,11 @@ O padrão **SCD2** (*[Slowly Changing Dimension](https://www.kimballgroup.com/da
 | `is_current` | Verdadeiro apenas para a versão atual dessa linha |
 
 ```sql
--- 1. fechar a versao atual
+-- 1. fechar a versão atual
 UPDATE clientes SET valid_to = GETDATE(), is_current = 0
 WHERE id_cliente = 1 AND is_current = 1;
 
--- 2. inserir a nova versao
+-- 2. inserir a nova versão
 INSERT INTO clientes (id_cliente, nome, cidade, valid_from, valid_to, is_current)
 VALUES (1, 'Dupont', 'Paris', GETDATE(), NULL, 1);
 ```

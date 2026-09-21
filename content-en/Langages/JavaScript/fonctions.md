@@ -36,9 +36,12 @@ Here, `addition` is a variable like any other: it only exists starting from the 
 ## Arrow functions
 
 ```javascript
-const addition = (a, b) => a + b;              // a single expression: implicit return, no "return"
-const carre = x => x * x;                        // optional parentheses with a single parameter
-const saluer = () => { console.log("Bonjour"); }  // multi-line body: curly braces + explicit "return" required
+// a single expression: implicit return, no "return"
+const addition = (a, b) => a + b;
+// optional parentheses with a single parameter
+const carre = x => x * x;
+// multi-line body: curly braces + explicit "return" required
+const saluer = () => { console.log("Bonjour"); }
 ```
 
 ### The Real Difference: `this`
@@ -50,13 +53,15 @@ const object = {
 
     afficherClassique: function () {
         this.values.forEach(function (v) {
-            console.log(this.name, v);   // "this" here is undefined (or the global object): NOT "object"!
+            // "this" here is undefined (or the global object): NOT "object"!
+            console.log(this.name, v);
         });
     },
 
     afficherFlechee: function () {
         this.values.forEach((v) => {
-            console.log(this.name, v);   // "this" uses the same value as afficherFlechee -> works
+            // "this" uses the same value as afficherFlechee -> works
+            console.log(this.name, v);
         });
     },
 };
@@ -67,11 +72,13 @@ const object = {
 ## Default settings, rest, and spread
 
 ```javascript
-function saluer(name, message = "Bonjour") {   // default value if the argument is omitted or undefined
+// default value if the argument is omitted or undefined
+function saluer(name, message = "Bonjour") {
     return `${message} ${name}`;
 }
 
-function somme(...numbers) {                    // "rest": groups the remaining arguments into an array
+// "rest": groups the remaining arguments into an array
+function somme(...numbers) {
     return numbers.reduce((total, n) => total + n, 0);
 }
 somme(1, 2, 3, 4);   // 10

@@ -118,10 +118,12 @@ public function obtenerCatalogo(): array
     $caducado = $this->leerCache(ignorarTtl: true);
     if ($caducado !== null) {
         $this->planificarActualizacionEnSegundoPlano($this->archivoCache);
-        return $caducado;                   // responde con el valor caducado mientras se recalcula
+        // responde con el valor caducado mientras se recalcula
+        return $caducado;
     }
 
-    return $this->actualizarAhora($this->archivoCache);   // primera llamada: no hay más remedio que esperar
+    // primera llamada: no hay más remedio que esperar
+    return $this->actualizarAhora($this->archivoCache);
 }
 
 private function planificarActualizacionEnSegundoPlano(string $archivo): void
@@ -129,23 +131,28 @@ private function planificarActualizacionEnSegundoPlano(string $archivo): void
     $bloqueo = $archivo . '.en_curso';
 
     if (is_file($bloqueo) && (time() - (int) @filemtime($bloqueo)) < 600) {
-        return;                          // ya hay una actualización en curso, no hace falta otra
+        // ya hay una actualización en curso, no hace falta otra
+        return;
     }
 
-    $identificador = @fopen($bloqueo, 'x');   // 'x': falla si el archivo ya existe (creación atómica)
+    // 'x': falla si el archivo ya existe (creación atómica)
+    $identificador = @fopen($bloqueo, 'x');
     if ($identificador === false) return;     // otro worker ya ganó la carrera
     fclose($identificador);
 
-    ignore_user_abort(true);             // llega hasta el final aunque el cliente ya se haya ido
+    // llega hasta el final aunque el cliente ya se haya ido
+    ignore_user_abort(true);
 
     register_shutdown_function(function () use ($archivo, $bloqueo) {
         if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();    // el cliente recibe aquí su respuesta, la conexión se cierra
+            // el cliente recibe aquí su respuesta, la conexión se cierra
+            fastcgi_finish_request();
         }
         try {
             $this->actualizarAhora($archivo);
         } finally {
-            @unlink($bloqueo);           // siempre se libera, incluso si el cálculo lanzó una excepción
+            // siempre se libera, incluso si el cálculo lanzó una excepción
+            @unlink($bloqueo);
         }
     });
 }

@@ -25,15 +25,16 @@ Um programa que constrói um comando de sistema montando texto, e depois o trans
 import subprocess
 
 # PERIGOSO: shell=True executa a string tal qual, como se fosse digitada no terminal
-nome_arquivo = "foto.jpg; rm -rf /"  # fornecido pelo usuario
-subprocess.run(f"convert {nome_arquivo} saida.png", shell=True)
-# O comando realmente executado sao DOIS comandos separados por ";":
-# convert foto.jpg saida.png   E   rm -rf /
+nome_arquivo = "foto.jpg; rm -rf /"  # fornecido pelo usuário
+subprocess.run(f"convert {nome_arquivo} saída.png", shell=True)
+# O comando realmente executado são DOIS comandos separados por ";":
+# convert foto.jpg saída.png   E   rm -rf /
 
 # SEGURO: cada argumento continua sendo um dado separado, nunca interpretado como shell
 subprocess.run(["convert", nome_arquivo, "saida.png"])
-# O nome_arquivo inteiro (incluindo o "; rm -rf /") e passado como UM UNICO argumento a convert,
-# que falhara de forma limpa (arquivo nao encontrado) em vez de executar qualquer coisa
+# O nome_arquivo inteiro (incluindo o "; rm -rf /") e passado como UM Único argumento a
+# convert,
+# que falhara de forma limpa (arquivo não encontrado) em vez de executar qualquer coisa
 ```
 
 O reflexo é o mesmo de uma consulta SQL preparada: nunca deixar um dado externo fazer parte do próprio texto do comando, sempre passá-lo separadamente, como um argumento distinto.
@@ -46,7 +47,7 @@ Um motor de templates transforma um texto contendo espaços reservados (`{{ nome
 
 ```text
 Template normal, valor inserido em um espaco reservado previsto:
-  "Ola {{ nome_usuario }}"  +  nome_usuario = "Louis"
+  "Ola {{ nome_usuário }}"  +  nome_usuario = "Louis"
   -> "Ola Louis"                                       (sem risco)
 
 Template vulneravel, dado do usuario inserido NA estrutura do template:
@@ -82,11 +83,11 @@ Se o analisador XML resolve essa entidade (vai realmente ler `/etc/passwd`) ante
 ```python
 import pickle
 
-# PERIGOSO: pickle.loads() pode executar codigo arbitrario contido no dado,
-# se ele vier de uma fonte nao confiavel (upload, parametro, mensagem recebida)
+# PERIGOSO: pickle.loads() pode executar código arbitrario contido no dado,
+# se ele vier de uma fonte não confiável (upload, parametro, mensagem recebida)
 objeto = pickle.loads(dado_recebido_do_exterior)
 
-# SEGURO: um formato de serializacao que representa APENAS valores (nunca codigo)
+# SEGURO: um formato de serialização que representa APENAS valores (nunca código)
 import json
 objeto = json.loads(dado_recebido_do_exterior)
 ```

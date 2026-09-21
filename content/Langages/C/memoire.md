@@ -20,12 +20,60 @@ Un programme C dispose de deux zones mémoire principales pour ses données :
 ```c
 void exemple(void)
 {
-    int x = 5;                     // sur la stack, libéré automatiquement à la fin de la fonction
+    // sur la stack, libéré automatiquement à la fin de la fonction
+    int x = 5;
     int *p = malloc(sizeof(int));  // sur le heap, reste alloué jusqu'à free(p)
     *p = 5;
     free(p);
 }
 ```
+
+## Les tableaux à taille variable (VLA)
+
+Un VLA (*Variable-Length Array*, tableau à taille variable, [C99](https://en.wikipedia.org/wiki/C99)) est un tableau déclaré comme une variable locale classique (`int tab[n];`), mais dont la taille `n` est une expression connue seulement à l'exécution, pas une constante fixée à la compilation. Contrairement à `malloc()` vu plus bas, il reste sur la stack : pas de `free()` à faire, sa mémoire est libérée automatiquement à la fin du bloc qui le contient.
+
+```c
+void exemple(int n)
+{
+    int tab[n]; // taille décidée au moment de l'appel, pas à la compilation
+
+    for (int i = 0; i < n; i++)
+        tab[i] = i;
+} // tab disparaît ici, comme toute variable locale -- aucun free() nécessaire
+```
+
+### Piège n°1 : l'ordre des paramètres
+
+Quand un VLA est un paramètre de fonction, sa taille (`n`) doit être déclarée **avant** lui dans la liste des paramètres :
+
+```c
+void construire(int n, int tab[n]); // correct : n existe déjà quand tab est déclaré
+void construire(int tab[n], int n); // erreur de compilation : n inconnu à cet endroit
+```
+
+Le compilateur lit les paramètres de gauche à droite : au moment où il doit calculer la taille de `tab`, `n` doit déjà avoir été vu.
+
+### Piège n°2 : `T (*)[n]` n'est pas `T **`
+
+Un VLA à deux dimensions passé en paramètre, comme `uint16_t mask[n][n]`, ne se convertit **pas** en un simple pointeur vers un pointeur (`uint16_t **`). Il se convertit en pointeur vers un tableau de `n` éléments : `uint16_t (*)[n]`.
+
+| | `T (*)[n]` (VLA en paramètre) | `T **` (tableau de pointeurs) |
+|---|---|---|
+| Mémoire | Un seul bloc contigu de `n * n` éléments | `n` blocs séparés, chacun alloué indépendamment |
+| Déclaration | `void f(int n, T tab[n][n])` | `void f(T **tab)` |
+| Accès `tab[i][j]` | Calcul d'offset dans le bloc unique | Déréférencement de `tab[i]`, puis accès dans son propre bloc |
+
+Confondre les deux types donne une erreur de compilation explicite (`conflicting types`, ou `makes pointer from integer without a cast`) : le compilateur refuse de passer un `T **` là où un `T (*)[n]` est attendu, et inversement.
+
+### Autres limites à connaître
+
+| Limite | Détail |
+|---|---|
+| Pas de vérification d'échec | Contrairement à `malloc()` (voir plus bas), un VLA trop grand ne renvoie pas `NULL` : il provoque un débordement de pile, comportement indéfini, sans avertissement |
+| Taille figée après déclaration | Contrairement à `realloc()` (voir plus bas), un VLA ne peut pas être agrandi une fois déclaré |
+| Disponibilité | Rendue optionnelle par [C11](https://en.wikipedia.org/wiki/C11_(C_standard_revision)) : un compilateur strictement conforme peut refuser de les supporter (macro `__STDC_NO_VLA__` à vérifier) |
+
+Voir aussi [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs), dont la compréhension est un prérequis à celui-ci.
 
 ## Allouer de la mémoire dynamiquement
 
@@ -114,9 +162,11 @@ Si `entree_utilisateur` dépasse 16 octets, `strcpy()` continue d'écrire au-del
 ```c
 strcpy(buffer, entree);                       // dangereux : aucune limite
 strncpy(buffer, entree, sizeof(buffer) - 1);  // borné à la taille réelle du buffer
-buffer[sizeof(buffer) - 1] = '\0';            // strncpy ne garantit pas la terminaison si la source est trop longue
+// strncpy ne garantit pas la terminaison si la source est trop longue
+buffer[sizeof(buffer) - 1] = '\0';
 
-fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, plutôt que de corriger après coup
+// lecture bornée dès la saisie, plutôt que de corriger après coup
+fgets(buffer, sizeof(buffer), stdin);
 ```
 
 | Fonction risquée | Alternative bornée |
@@ -133,7 +183,8 @@ fgets(buffer, sizeof(buffer), stdin);        // lecture bornée dès la saisie, 
 D'origine BSD (pas standard C, mais disponible sur macOS/\*BSD, et facilement réimplémentable soi-même, comme le fait la bibliothèque `libft` avec `ft_strlcpy`/`ft_strlcat`), ces fonctions corrigent le point faible de `strncpy`/`strcat` : détecter une troncature.
 
 ```c
-size_t taille_reelle = strlcpy(buffer, entree, sizeof(buffer));  // termine TOUJOURS par '\0', contrairement à strncpy
+// termine TOUJOURS par '\0', contrairement à strncpy
+size_t taille_reelle = strlcpy(buffer, entree, sizeof(buffer));
 
 if (taille_reelle >= sizeof(buffer))
 {
@@ -161,7 +212,7 @@ Voir aussi [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs), dont 
 
 | | |
 |---|---|
-| **À retenir** | Le C laisse au développeur la responsabilité complète de la mémoire dynamique (heap) : `malloc`/`calloc`/`realloc` pour allouer, `free` pour libérer ; la stack (variables locales) est gérée automatiquement. |
-| **Outils utilisables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind pour détecter fuites et accès invalides. |
-| **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon, ce dernier pouvant être exploité comme faille de sécurité. |
+| **À retenir** | Le C laisse au développeur la responsabilité complète de la mémoire dynamique (heap) : `malloc`/`calloc`/`realloc` pour allouer, `free` pour libérer ; la stack (variables locales, VLA compris) est gérée automatiquement. |
+| **Outils utilisables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) pour un tableau de taille dynamique sans `free()`, Valgrind pour détecter fuites et accès invalides. |
+| **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon, débordement de pile sur un VLA trop grand (aucune détection possible, contrairement à `malloc`), confusion entre `T (*)[n]` (VLA en paramètre) et `T **`. |
 | **Bonnes pratiques** | Toujours vérifier qu'un `malloc`/`realloc` n'a pas renvoyé `NULL` ; mettre un pointeur à `NULL` juste après son `free()` ; préférer `fgets`/`strncpy`/`snprintf` aux fonctions non bornées (`gets`/`strcpy`/`sprintf`) ; `strlcpy`/`strlcat` pour détecter une troncature via leur valeur de retour. |

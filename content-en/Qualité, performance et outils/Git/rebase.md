@@ -73,7 +73,8 @@ git reset --soft <commit-before-the-oldest-to-reword>
 git reset            # Unstages everything (the working directory keeps the final state)
 
 # For each commit to recreate, in its original order:
-git show <old-hash-of-the-commit>:path/file.py > path/file.py  # Restores THIS file to its state at that commit
+# Restores THIS file to its state at that commit
+git show <old-hash-of-the-commit>:path/file.py > path/file.py
 git add path/file.py ...
 git commit -F fixed-message.txt   # Never -m for a multi-line message with accents: see below
 ```

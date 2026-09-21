@@ -23,7 +23,7 @@ Cada arquivo e cada processo recebe um **rótulo** (*label*, ex.: `httpd_sys_con
 
 ```bash
 getenforce          # exibe o modo atual
-setenforce 1         # ativa o modo "enforcing" (bloqueia as violacoes)
+setenforce 1         # ativa o modo "enforcing" (bloqueia as violações)
 ```
 
 | Modo | Efeito |

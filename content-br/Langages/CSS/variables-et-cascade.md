@@ -24,7 +24,8 @@ Este capítulo cobre dois mecanismos transversais do CSS: as **variáveis person
 
 ```css
 .botao {
-    background-color: var(--cor-primaria, blue);   /* "blue": valor de reserva se a variavel nao existir */
+    /* "blue": valor de reserva se a variável não existir */
+    background-color: var(--cor-primaria, blue);
 }
 ```
 
@@ -37,7 +38,8 @@ Este capítulo cobre dois mecanismos transversais do CSS: as **variáveis person
 }
 
 .cartao.compacto {
-    --margem-interna: 8px;   /* redefine a variavel APENAS para os elementos com essa classe adicional */
+    /* redefine a variável APENAS para os elementos com essa classe adicional */
+    --margem-interna: 8px;
 }
 ```
 
@@ -48,7 +50,8 @@ Este capítulo cobre dois mecanismos transversais do CSS: as **variáveis person
 ```css
 .botao-perigo:hover {
     background-color: color-mix(in srgb, var(--cor-perigo) 85%, black);
-    /* mistura 85% de --cor-perigo com preto: uma versao levemente escurecida, ao passar o mouse */
+    /* mistura 85% de --cor-perigo com preto: uma versão levemente escurecida, ao passar o
+       mouse */
 }
 ```
 
@@ -67,10 +70,11 @@ A escrita acima (`setProperty`) tem seu inverso, a **leitura**: útil para que u
 
 ```javascript
 const corPrimaria = getComputedStyle(document.documentElement)
-    .getPropertyValue("--couleur-primaire")   // "#3366cc" (string bruta, com os espacos originais)
+    // "#3366cc" (string bruta, com os espaços originais)
+    .getPropertyValue("--couleur-primaire")
     .trim();
 
-console.log(corPrimaria || "#000000");        // valor de reserva se a variavel nao existir
+console.log(corPrimaria || "#000000");        // valor de reserva se a variável não existir
 ```
 
 `getComputedStyle(elemento)` retorna o estilo **final** aplicado a esse elemento depois que a cascata é resolvida (veja a seção seguinte), como um objeto consultável via `getPropertyValue()`. Diferente de `var(--nome, reserva)` em CSS, `getPropertyValue()` não tem valor de reserva integrado: retorna uma string vazia se a variável não existir, a tratar por conta própria (`|| "#000000"` acima).
@@ -105,7 +109,7 @@ O seletor mais específico vence, independentemente da ordem de escrita no arqui
 
 ```css
 .botao { color: blue; }
-.botao { color: red; }   /* VENCE: mesma especificidade, mas escrita por ultimo */
+.botao { color: red; }   /* VENCE: mesma especificidade, mas escrita por último */
 ```
 
 Com especificidade estritamente igual, a regra declarada **por último** no arquivo (ou no último arquivo carregado) prevalece.
@@ -114,8 +118,9 @@ Com especificidade estritamente igual, a regra declarada **por último** no arqu
 
 ```css
 body {
-    color: #333;        /* HERDADO: todos os descendentes (p, span, li...) assumem essa cor de texto */
-    border: 1px solid;  /* NAO herdado: cada elemento tem sua propria borda, ou nenhuma */
+    /* HERDADO: todos os descendentes (p, span, li...) assumem essa cor de texto */
+    color: #333;
+    border: 1px solid;  /* NÃO herdado: cada elemento tem sua própria borda, ou nenhuma */
 }
 ```
 

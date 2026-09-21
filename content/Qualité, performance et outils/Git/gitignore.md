@@ -10,11 +10,16 @@ order: 3
 
 ```text
 # Commentaire
-*.log              # ignore tous les fichiers se terminant par .log, où qu'ils soient
-node_modules/       # ignore ce dossier entier, à la racine ou ailleurs
-/build              # le '/' en préfixe restreint à la racine du dépôt uniquement
-.env                # ignore ce fichier précis
-!important.log      # exception : NE PAS ignorer ce fichier précis, malgré la règle *.log au-dessus
+# ignore tous les fichiers se terminant par .log, où qu'ils soient
+*.log
+# ignore ce dossier entier, à la racine ou ailleurs
+node_modules/
+# le '/' en préfixe restreint à la racine du dépôt uniquement
+/build
+# ignore ce fichier précis
+.env
+# exception : NE PAS ignorer ce fichier précis, malgré la règle *.log au-dessus
+!important.log
 ```
 
 | Motif | Signification |

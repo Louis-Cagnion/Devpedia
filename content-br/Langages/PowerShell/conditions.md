@@ -12,9 +12,9 @@ Ao contrário do [Bash](/?c=shells&s=bash&p=bash), onde uma condição passa pel
 $idade = 18
 
 if ($idade -ge 18) {
-    Write-Output "Voce e maior de idade."
+    Write-Output "Você e maior de idade."
 } else {
-    Write-Output "Voce e menor de idade."
+    Write-Output "Você e menor de idade."
 }
 ```
 
@@ -70,7 +70,7 @@ if (Test-Path "config.txt" -PathType Leaf) {
 }
 
 if (Test-Path "C:\var\www" -PathType Container) {
-    Write-Output "O diretorio existe"
+    Write-Output "O diretório existe"
 }
 ```
 
@@ -80,7 +80,7 @@ if (Test-Path "C:\var\www" -PathType Container) {
 
 ```powershell
 if ((Test-Path "config.txt") -and (Get-Item "config.txt").Length -gt 0) {
-    Write-Output "O arquivo existe e nao esta vazio"
+    Write-Output "O arquivo existe e não esta vazio"
 }
 ```
 

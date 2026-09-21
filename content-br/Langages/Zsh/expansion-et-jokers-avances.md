@@ -18,7 +18,7 @@ Sem essa opção (veja [O sistema de opções](/?c=shells&s=zsh&p=options-du-she
 
 ```bash
 ls **/*.txt
-# todos os arquivos .txt, em qualquer profundidade abaixo do diretorio atual
+# todos os arquivos .txt, em qualquer profundidade abaixo do diretório atual
 ```
 
 > **Nota:** em Bash, esse comportamento recursivo exige `shopt -s globstar` (opção equivalente, mas ausente por padrão e específica do Bash 4+); em zsh, `**` funciona assim que `EXTENDED_GLOB` (ou mesmo sem, `**` sozinho já está ativo por padrão na maioria das configurações recentes) está ativo, sem ajuste adicional.
@@ -27,7 +27,7 @@ ls **/*.txt
 
 ```bash
 ls *.^txt
-# todos os arquivos, EXCETO os que terminam em .txt (Bash nao tem equivalente direto)
+# todos os arquivos, EXCETO os que terminam em .txt (Bash não tem equivalente direto)
 ```
 
 ## Os qualificadores de glob: filtrar por tipo ou metadado
@@ -35,11 +35,12 @@ ls *.^txt
 Entre parênteses depois de um padrão, um **qualificador** filtra os resultados sem precisar de um comando separado como `find`:
 
 ```bash
-ls *(.)          # apenas arquivos regulares (nao diretorios, nao links)
-ls *(/)          # apenas diretorios
-ls *(*)          # apenas arquivos executaveis
-ls *(.om[1])     # o arquivo regular modificado mais recentemente (ordenado por data, pega o 1o)
-ls *.log(.Lm-7)  # arquivos .log com mais de 7 dias de modificacao
+ls *(.)          # apenas arquivos regulares (não diretórios, não links)
+ls *(/)          # apenas diretórios
+ls *(*)          # apenas arquivos executáveis
+# o arquivo regular modificado mais recentemente (ordenado por data, pega o 1o)
+ls *(.om[1])
+ls *.log(.Lm-7)  # arquivos .log com mais de 7 dias de modificação
 ```
 
 | Qualificador | Filtra por... |

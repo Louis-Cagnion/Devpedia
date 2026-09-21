@@ -31,7 +31,8 @@ for (int n : numeros) {  // recorrido simple, como un for-each
 #include <list>
 
 std::list<int> lista = {1, 2, 3};
-lista.push_front(0);   // inserción al principio en tiempo constante -> std::vector sería O(n) aquí
+// inserción al principio en tiempo constante -> std::vector sería O(n) aquí
+lista.push_front(0);
 ```
 
 A diferencia de `std::vector`, insertar en medio o al principio de una `std::list` no requiere desplazar los demás elementos (véase [las listas encadenadas](/?c=langages-de-programmation&s=c&p=listes-chainees)), a cambio de un acceso por índice imposible en tiempo constante (`lista[2]` no existe, hay que recorrerla).
@@ -46,9 +47,11 @@ edades["Juan"] = 25;
 edades["Maria"] = 30;
 
 edades["Juan"];                       // 25
-edades.find("Ana") != edades.end();  // comprueba la existencia de una clave (no hay operador "in" directo en C++)
+// comprueba la existencia de una clave (no hay operador "in" directo en C++)
+edades.find("Ana") != edades.end();
 
-for (const auto &[nombre, edad] : edades) {  // recorrido: los pares SIEMPRE están ordenados por clave
+// recorrido: los pares SIEMPRE están ordenados por clave
+for (const auto &[nombre, edad] : edades) {
     std::cout << nombre << " : " << edad << "\n";
 }
 ```
@@ -71,7 +74,7 @@ Si la clave exacta no existe, `lower_bound` devuelve entonces la primera clave e
 ```cpp
 auto it = tasas.lower_bound(25);
 if (it != tasas.begin()) {
-    --it;   // it ahora apunta a 20, la ultima clave estrictamente menor que 25
+    --it;   // it ahora apunta a 20, la última clave estrictamente menor que 25
 }
 ```
 

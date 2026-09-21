@@ -19,7 +19,8 @@ public:
             throw std::runtime_error("Impossible d'ouvrir : " + chemin); // voir Les exceptions
         }
     }
-    ~GestionnaireFichier() { fichier.close(); }   // appelé automatiquement, même en cas d'exception !
+    // appelé automatiquement, même en cas d'exception !
+    ~GestionnaireFichier() { fichier.close(); }
 private:
     std::ifstream fichier;
 };
@@ -39,7 +40,8 @@ int *p = new int(42);  // alloue ET initialise en une seule opération
 delete p;              // libère
 
 int *tableau = new int[10];  // alloue un tableau dynamique
-delete[] tableau;            // "[]" obligatoire pour libérer un tableau, sinon comportement indéfini
+// "[]" obligatoire pour libérer un tableau, sinon comportement indéfini
+delete[] tableau;
 ```
 
 `new`/`delete` remplacent `malloc`/`free` mais souffrent exactement des mêmes risques (oubli de `delete`, double `delete`, *use-after-free*, voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire) en [C](/?c=langages-de-programmation&s=c&p=c)) : c'est pour ça qu'en C++ moderne, on les utilise rarement **directement**.
@@ -78,16 +80,6 @@ std::shared_ptr<int> p2 = p1;   // OK, copie autorisée : p1 ET p2 partagent la 
 Chaque `shared_ptr` incrémente un compteur de références partagé ; la ressource n'est libérée automatiquement que lorsque ce compteur retombe à zéro.
 
 > **Note :** `shared_ptr` a un coût (le compteur de références, mis à jour de façon **thread-safe** : sans risque de [race condition](/?c=langages-de-programmation&s=c&p=threads) si plusieurs threads le modifient en même temps) supérieur à `unique_ptr` : à réserver aux cas où une ressource a réellement plusieurs propriétaires légitimes, pas par défaut.
-
-## Résumé
-
-| | `new`/`delete` brut | `unique_ptr` | `shared_ptr` |
-|---|---|---|---|
-| Libération automatique | Non | Oui | Oui |
-| Nombre de propriétaires | N/A | Un seul | Plusieurs |
-| Coût | Minimal | Quasi nul (pas de surcoût à l'exécution) | Comptage de références (léger surcoût) |
-
-> **Best practice C++ moderne :** ne jamais utiliser `new`/`delete` directement dans du code applicatif ; préférer systématiquement `unique_ptr` (par défaut) ou `shared_ptr` (si le partage est réellement nécessaire), pour bénéficier de RAII sans y penser à chaque fois.
 
 ---
 

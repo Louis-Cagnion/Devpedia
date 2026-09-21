@@ -73,9 +73,11 @@ git reset --soft <commit-antes-do-mais-antigo-a-reformular>
 git reset            # desempilha tudo (a pasta de trabalho mantém o estado final)
 
 # para cada commit a recriar na ordem original:
-git show <hash-antigo-do-commit>:caminho/arquivo.py > caminho/arquivo.py  # restaura ESSE arquivo ao seu estado nesse commit
+# restaura ESSE arquivo ao seu estado nesse commit
+git show <hash-antigo-do-commit>:caminho/arquivo.py > caminho/arquivo.py
 git add caminho/arquivo.py ...
-git commit -F mensagem-corrigida.txt   # nunca -m para uma mensagem multilinha com acentos: veja mais abaixo
+# nunca -m para uma mensagem multilinha com acentos: veja mais abaixo
+git commit -F mensagem-corrigida.txt
 ```
 
 `git show <hash>:<caminho>` extrai o conteúdo de um arquivo tal como ele estava em um commit específico, o que permite reconstruir o estado intermediário de cada commit antes de recommitá-lo, mesmo quando um mesmo arquivo mudou em vários dos commits a reformular.
@@ -87,7 +89,7 @@ Esse método não muda nem o conteúdo nem a ordem dos commits, apenas suas mens
 ## A regra de ouro: nunca rebasear um histórico já compartilhado
 
 ```bash
-# EVITAR se outras pessoas ja obtiveram esses commits:
+# EVITAR se outras pessoas já obtiveram esses commits:
 git rebase main
 git push --force
 ```

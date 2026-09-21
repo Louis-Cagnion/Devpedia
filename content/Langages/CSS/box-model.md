@@ -45,7 +45,8 @@ div {
     padding: 20px;
     border: 2px solid black;
 }
-/* Largeur RÉELLEMENT occupée à l'écran : 300 + 20+20 (padding) + 2+2 (border) = 344px, PAS 300px ! */
+/* Largeur RÉELLEMENT occupée à l'écran : 300 + 20+20 (padding) + 2+2 (border) = 344px, PAS
+   300px ! */
 ```
 
 > **Note :** par défaut (`box-sizing: content-box`), `width` ne définit que la taille du **contenu** : `padding` et `border` s'ajoutent par-dessus, agrandissant la boîte réellement affichée au-delà de la valeur déclarée. C'est une source très fréquente de mises en page qui "débordent" de façon inattendue.
@@ -62,7 +63,8 @@ div {
     padding: 20px;
     border: 2px solid black;
 }
-/* Largeur réelle : exactement 300px -> padding et border sont maintenant INCLUS dans cette valeur */
+/* Largeur réelle : exactement 300px -> padding et border sont maintenant INCLUS dans cette
+   valeur */
 ```
 
 `border-box` fait que `width`/`height` désignent la taille **totale** de la boîte (bordure comprise), le `padding` "grignotant" l'espace du contenu plutôt que de s'ajouter par-dessus, un comportement bien plus prévisible, devenu la convention de facto dans la quasi-totalité des projets modernes (souvent appliqué globalement avec `* { box-sizing: border-box; }`).

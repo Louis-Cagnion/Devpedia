@@ -10,14 +10,15 @@ Boa parte do poder do [terminal Unix](/?c=shells&s=bash&p=scripts-et-shebang) ve
 
 ```bash
 grep "erro" arquivo.log              # exibe as linhas contendo "erro"
-grep -i "erro" arquivo.log           # insensivel a maiusculas/minusculas (-i)
-grep -v "erro" arquivo.log           # inverte: exibe as linhas que NAO contem "erro"
-grep -r "TODO" .                     # busca recursiva em todos os arquivos de um diretorio
-grep -n "erro" arquivo.log           # exibe tambem o numero da linha
-grep -c "erro" arquivo.log           # conta o numero de linhas correspondentes, sem exibi-las
-grep -E "erro|warning" arquivo.log   # -E ativa as regex estendidas (cf. capitulo sobre regex)
-grep -l "TODO" *.md                  # exibe apenas os NOMES dos arquivos que contem o padrao
-grep -q "TODO" *.md                  # nao exibe nada: serve apenas para testar a presenca (veja abaixo)
+grep -i "erro" arquivo.log           # insensível a maiúsculas/minúsculas (-i)
+grep -v "erro" arquivo.log           # inverte: exibe as linhas que NÃO contêm "erro"
+grep -r "TODO" .                     # busca recursiva em todos os arquivos de um diretório
+grep -n "erro" arquivo.log           # exibe também o número da linha
+grep -c "erro" arquivo.log           # conta o número de linhas correspondentes, sem exibi-las
+grep -E "erro|warning" arquivo.log   # -E ativa as regex estendidas (cf. capítulo sobre regex)
+grep -l "TODO" *.md                  # exibe apenas os NOMES dos arquivos que contêm o padrão
+# não exibe nada: serve apenas para testar a presença (veja abaixo)
+grep -q "TODO" *.md
 ```
 
 Como muitas ferramentas Unix, essas flags são iniciais de palavras em inglês em vez de letras arbitrárias: `-i` = *ignore case*, `-v` = *invert*, `-r` = *recursive*, `-n` = *line number*, `-c` = *count*, `-E` = *extended (regex)*, `-l` = *files with matches (list)*, `-q` = *quiet*. Uma vez conhecidas essas palavras, lembrar a flag se torna natural: esse princípio se repete na maioria dos comandos deste capítulo e do seguinte.
@@ -29,8 +30,8 @@ As flags se combinam, às vezes com interações a conhecer: `grep -rln "padrao"
 `grep` usa por padrão as regex **básicas** (BRE), nas quais a alternância precisa ser escapada. Com `-E` (regex estendidas), ela se escreve naturalmente:
 
 ```bash
-grep "erro\|warning" arquivo.log     # BRE: a alternancia se escreve \|
-grep -E "erro|warning" arquivo.log   # ERE: mais legivel, a preferir
+grep "erro\|warning" arquivo.log     # BRE: a alternância se escreve \|
+grep -E "erro|warning" arquivo.log   # ERE: mais legível, a preferir
 ```
 
 Um `|` não escapado sem `-E` é buscado **literalmente**: `grep "a|b"` busca a string `a|b`, e portanto não encontra nada na maioria das vezes, sem erro nem aviso. É uma armadilha clássica. Veja o capítulo [A regex](/?c=domain-specific-languages-dsl&p=regex) para a diferença BRE/ERE.
@@ -48,8 +49,8 @@ Um `|` não escapado sem `-E` é buscado **literalmente**: `grep "a|b"` busca a 
 É isso que permite encadeá-lo com `&&` ou `||` (veja [Redirecionamentos e pipes](/?c=shells&s=bash&p=redirections-et-pipes)):
 
 ```bash
-grep -rl "padrao" *.md || echo "ausente"  # mensagem de reserva se nada e encontrado
-grep -q "padrao" f.txt && processar f.txt # so processa o arquivo se ele contem o padrao
+grep -rl "padrao" *.md || echo "ausente"  # mensagem de reserva se nada é encontrado
+grep -q "padrao" f.txt && processar f.txt # só processa o arquivo se ele contém o padrão
 ```
 
 Com `-q`, `grep` para na primeira correspondência e não exibe nada: é a forma a privilegiar quando só o resultado do teste importa, principalmente em arquivos grandes.
@@ -65,23 +66,26 @@ Com `-q`, `grep` para na primeira correspondência e não exibe nada: é a forma
 Um comando `sed` se decompõe em duas partes: um **endereço** opcional (quais linhas afetar) e um **comando** a aplicar a elas.
 
 ```bash
-sed 's/antigo/novo/' arquivo.txt     # sem endereco -> o comando se aplica a TODAS as linhas
-sed '3s/antigo/novo/' arquivo.txt    # endereco "3" -> apenas a linha 3
-sed '2,4s/antigo/novo/' arquivo.txt  # endereco "2,4" -> apenas as linhas 2 a 4
+sed 's/antigo/novo/' arquivo.txt     # sem endereço -> o comando se aplica a TODAS as linhas
+sed '3s/antigo/novo/' arquivo.txt    # endereço "3" -> apenas a linha 3
+sed '2,4s/antigo/novo/' arquivo.txt  # endereço "2,4" -> apenas as linhas 2 a 4
 ```
 
 O comando mais usado é `s/padrao/substituicao/` (o "s" de *substitute*): ele busca `padrao` (uma [regex](/?c=domain-specific-languages-dsl&p=regex)) e o substitui por `substituicao`. Por padrão, `sed` só substitui a **primeira** ocorrência encontrada em cada linha, daí a flag `g` para tratar também as seguintes:
 
 ```bash
-sed 's/antigo/novo/' arquivo.txt      # substitui a 1a ocorrencia por linha, exibe o resultado
-sed 's/antigo/novo/g' arquivo.txt     # 'g' (global): substitui TODAS as ocorrencias de cada linha
-sed -i 's/antigo/novo/g' arquivo.txt  # -i: modifica o arquivo diretamente (in place), sem exibir nada
+sed 's/antigo/novo/' arquivo.txt      # substitui a 1a ocorrência por linha, exibe o resultado
+# 'g' (global): substitui TODAS as ocorrências de cada linha
+sed 's/antigo/novo/g' arquivo.txt
+# -i: modifica o arquivo diretamente (in place), sem exibir nada
+sed -i 's/antigo/novo/g' arquivo.txt
 ```
 
 O outro comando comum é `p` (*print*), que exibe explicitamente uma linha; combinado com `-n` (que desativa a exibição automática de cada linha processada), ele permite exibir apenas certas linhas em vez do arquivo inteiro:
 
 ```bash
-sed -n '2,4p' arquivo.txt   # -n: nao exibe NADA por padrao ; '2,4p': exibe explicitamente as linhas 2 a 4
+# -n: não exibe NADA por padrão ; '2,4p': exibe explicitamente as linhas 2 a 4
+sed -n '2,4p' arquivo.txt
 ```
 
 > **Nota:** sem `-n`, `sed '2,4p'` exibiria cada linha do arquivo uma vez (comportamento padrão), e as linhas 2 a 4 uma segunda vez (por causa do `p`): `-n` e `p` funcionam quase sempre em par.
@@ -100,7 +104,7 @@ awk -F ',' '{ print $2 }' dados.csv    # -F ',' : muda o separador de campo para
 `$0` designa a linha inteira, `$NF` o **último** campo da linha (`NF` = *Number of Fields*):
 
 ```bash
-awk '{ print $NF }' arquivo.txt   # exibe a ultima palavra de cada linha
+awk '{ print $NF }' arquivo.txt   # exibe a última palavra de cada linha
 ```
 
 ## `cut`: extrair colunas de forma simples
@@ -108,18 +112,19 @@ awk '{ print $NF }' arquivo.txt   # exibe a ultima palavra de cada linha
 Mais limitado que o `awk`, mas suficiente para casos simples:
 
 ```bash
-cut -d ',' -f 2 dados.csv    # -d: separador, -f: numero do campo a extrair
+cut -d ',' -f 2 dados.csv    # -d: separador, -f: número do campo a extrair
 cut -c 1-5 arquivo.txt       # extrai os caracteres 1 a 5 de cada linha
 ```
 
 ## `sort` e `uniq`: ordenar e deduplicar
 
 ```bash
-sort arquivo.txt            # ordenacao alfabetica
-sort -n numeros.txt         # ordenacao numerica (indispensavel para numeros, senao ordena como texto)
-sort -r arquivo.txt         # ordenacao decrescente
+sort arquivo.txt            # ordenação alfabetica
+# ordenação numérica (indispensável para números, senão ordena como texto)
+sort -n numeros.txt
+sort -r arquivo.txt         # ordenação decrescente
 sort arquivo.txt | uniq     # remove as linhas duplicadas CONSECUTIVAS apenas
-sort arquivo.txt | uniq -c  # conta as ocorrencias de cada linha
+sort arquivo.txt | uniq -c  # conta as ocorrências de cada linha
 ```
 
 > **Nota:** `uniq` só detecta duplicatas **adjacentes**: por isso quase sempre se combina com `sort` antes, que agrupa as linhas idênticas juntas.
@@ -127,20 +132,20 @@ sort arquivo.txt | uniq -c  # conta as ocorrencias de cada linha
 ## `wc`: contar
 
 ```bash
-wc -l arquivo.txt  # numero de linhas
-wc -w arquivo.txt  # numero de palavras
-wc -c arquivo.txt  # numero de bytes
+wc -l arquivo.txt  # número de linhas
+wc -w arquivo.txt  # número de palavras
+wc -c arquivo.txt  # número de bytes
 ```
 
 ## Combinar essas ferramentas
 
 ```bash
 grep "404" access.log | awk '{ print $1 }' | sort | uniq -c | sort -rn
-# 1) mantem as linhas de erro 404
-# 2) extrai o endereco IP (1o campo)
-# 3) ordena para agrupar os IPs identicos
-# 4) conta as ocorrencias de cada IP
-# 5) ordena por numero de ocorrencias decrescente -> os IPs mais frequentes primeiro
+# 1) mantém as linhas de erro 404
+# 2) extrai o endereço IP (1o campo)
+# 3) ordena para agrupar os IPs idênticos
+# 4) conta as ocorrências de cada IP
+# 5) ordena por número de ocorrências decrescente -> os IPs mais frequentes primeiro
 ```
 
 ---

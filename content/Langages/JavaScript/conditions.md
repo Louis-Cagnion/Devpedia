@@ -58,10 +58,12 @@ const statut = age >= 18 ? "majeur" : "mineur";
 
 ```javascript
 const pseudo = utilisateur.pseudo ?? "Invité";
-// "??" ne retombe sur la valeur par défaut QUE si la valeur est null/undefined (pas 0, "", false)
+// "??" ne retombe sur la valeur par défaut QUE si la valeur est null/undefined (pas 0, "",
+// false)
 
 const ville = utilisateur?.adresse?.ville ?? "Inconnue";
-// "?." : si "utilisateur" ou "adresse" est null/undefined, s'arrête immédiatement et renvoie undefined
+// "?." : si "utilisateur" ou "adresse" est null/undefined, s'arrête immédiatement et renvoie
+// undefined
 // -> évite un TypeError "Cannot read properties of undefined" en cascade
 ```
 

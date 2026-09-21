@@ -31,7 +31,8 @@ def levenshtein_distance(a, b):
     for i in range(1, len(a) + 1):
         for j in range(1, len(b) + 1):
             if a[i - 1] == b[j - 1]:
-                table[i][j] = table[i - 1][j - 1]              # identical characters, nothing to do
+                # identical characters, nothing to do
+                table[i][j] = table[i - 1][j - 1]
             else:
                 table[i][j] = 1 + min(
                     table[i - 1][j],      # deletion
@@ -49,7 +50,8 @@ A raw distance of 5 doesn't carry the same weight on a 6-letter word as on a 200
 def cer(recognized_text, actual_text):
     return levenshtein_distance(recognized_text, actual_text) / len(actual_text)
 
-cer("Ihe cats are sleeping", "The cats are sleeping")  # 1 / 22 ~= 0.045 -> 4.5% of characters wrong
+# 1 / 22 ~= 0.045 -> 4.5% of characters wrong
+cer("Ihe cats are sleeping", "The cats are sleeping")
 ```
 
 A CER of 0 means perfect recognition; a CER of 0.05 (5%) means that, on average, 5 characters out of 100 are misrecognized.
@@ -60,7 +62,8 @@ A CER of 0 means perfect recognition; a CER of 0.05 (5%) means that, on average,
 
 ```python
 def wer(recognized_text, actual_text):
-    return levenshtein_distance(recognized_text.split(), actual_text.split()) / len(actual_text.split())
+    distance = levenshtein_distance(recognized_text.split(), actual_text.split())
+    return distance / len(actual_text.split())
 ```
 
 | | CER | WER |

@@ -10,7 +10,7 @@ Uma **tag** é um ponteiro para um commit específico, como uma branch, mas ao c
 
 ```bash
 git tag v1.0.0                                  # tag "leve": simples ponteiro, sem metadados
-git tag -a v1.0.0 -m "Primeira versao estavel"  # tag "anotada": com autor, data e mensagem
+git tag -a v1.0.0 -m "Primeira versão estável"  # tag "anotada": com autor, data e mensagem
 ```
 
 > **Nota:** uma tag anotada (`-a`) geralmente é preferível para uma versão realmente publicada: ela é registrada como um objeto Git completo (com sua própria mensagem e autor), ao contrário da tag leve, que é apenas um simples alias para um hash de commit.
@@ -19,14 +19,15 @@ git tag -a v1.0.0 -m "Primeira versao estavel"  # tag "anotada": com autor, data
 
 ```bash
 git tag            # lista todas as tags
-git tag -l "v1.*"  # filtra por padrao
+git tag -l "v1.*"  # filtra por padrão
 git show v1.0.0    # exibe os detalhes da tag (e o commit associado)
 ```
 
 ## Marcar um commit passado
 
 ```bash
-git tag -a v0.9.0 a3f9c1d -m "Versao beta"   # marca um commit especifico, nao necessariamente o mais recente
+# marca um commit específico, não necessariamente o mais recente
+git tag -a v0.9.0 a3f9c1d -m "Versão beta"
 ```
 
 ## Enviar tags para um remote
@@ -34,7 +35,7 @@ git tag -a v0.9.0 a3f9c1d -m "Versao beta"   # marca um commit especifico, nao n
 As tags **não** são enviadas automaticamente por um `git push` comum:
 
 ```bash
-git push origin v1.0.0  # envia uma tag especifica
+git push origin v1.0.0  # envia uma tag específica
 git push origin --tags  # envia todas as tags locais de uma vez
 ```
 
@@ -42,7 +43,7 @@ git push origin --tags  # envia todas as tags locais de uma vez
 
 ```bash
 git tag -d v1.0.0                # remove localmente
-git push origin --delete v1.0.0  # remove tambem do lado do remote
+git push origin --delete v1.0.0  # remove também do lado do remote
 ```
 
 ## Voltar a uma versão marcada por tag

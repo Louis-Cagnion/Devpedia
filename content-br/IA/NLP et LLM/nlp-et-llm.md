@@ -12,7 +12,7 @@ Um modelo nunca processa uma frase inteira de uma vez: o texto é primeiro divid
 
 ```text
 "Os gatos dormem" -> ["Os", "gatos", "dormem"]           -> tokenização por palavra
-"Os gatos dormem" -> ["Os", "gat", "os", "dor", "mem"]    -> tokenização em subpalavras (mais comum)
+"Os gatos dormem" -> ["Os", "gat", "os", "dor", "mem"]    -> tokenização em subpalavras
 ```
 
 A tokenização por palavra inteira gera um problema de vocabulário: cada palavra possível (incluindo variantes de conjugação, palavras raras, nomes próprios...) exigiria sua própria entrada, um vocabulário potencialmente infinito. A tokenização em **subpalavras** (ex. o algoritmo [*Byte-Pair Encoding*](https://en.wikipedia.org/wiki/Byte_pair_encoding)) divide as palavras raras em fragmentos mais comuns, mantendo um vocabulário de tamanho fixo e gerenciável (tipicamente algumas dezenas de milhares de entradas) e ainda conseguindo representar qualquer palavra, mesmo nunca vista assim no treinamento.

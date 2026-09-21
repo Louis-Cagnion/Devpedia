@@ -26,7 +26,11 @@ Each access line maps an **identity** (user or group) to a **right** (`FullContr
 
 ```powershell
 $acl = Get-Acl file.txt
-$rule = New-Object System.Security.AccessControl.FileSystemAccessRule("DESKTOP\john", "ReadAndExecute", "Allow")
+$rule = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    "DESKTOP\john",
+    "ReadAndExecute",
+    "Allow"
+)
 $acl.SetAccessRule($rule)
 Set-Acl file.txt $acl
 ```
@@ -51,8 +55,10 @@ New-Item -ItemType File -Path file.txt               # creates an empty file
 Copy-Item source.txt destination.txt                  # copies a file
 Copy-Item -Recurse source_folder dest_folder           # recursive copy, needed for a folder
 Move-Item old.txt new.txt                              # moves OR renames, like mv in Bash
-Remove-Item file.txt                                     # deletes a file (goes to the recycle bin by default in Explorer, but not here)
-Remove-Item -Recurse folder                               # deletes a folder and all its content
+# deletes a file (goes to the recycle bin by default in Explorer, but not here)
+Remove-Item file.txt
+# deletes a folder and all its content
+Remove-Item -Recurse folder
 ```
 
 > **Note:** like `rm -rf` in Bash, `Remove-Item -Recurse -Force` is irreversible from the command line (unlike a deletion via Windows Explorer, which goes through the recycle bin): a mistargeted path can delete far more than intended, with no confirmation or recourse.
@@ -60,10 +66,15 @@ Remove-Item -Recurse folder                               # deletes a folder and
 ## `Get-ChildItem -Recurse`: searching for files (the equivalent of `find`)
 
 ```powershell
-Get-ChildItem -Path . -Filter "*.txt" -Recurse                          # every .txt file, recursively
-Get-ChildItem -Path C:\logs -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }  # recently modified
-Get-ChildItem -Recurse -Directory -Filter "node_modules"                  # every folder named "node_modules"
-Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item                       # finds AND deletes in a single chain
+# every .txt file, recursively
+Get-ChildItem -Path . -Filter "*.txt" -Recurse
+# recently modified
+Get-ChildItem -Path C:\logs -Recurse |
+    Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }
+# every folder named "node_modules"
+Get-ChildItem -Recurse -Directory -Filter "node_modules"
+# finds AND deletes in a single chain
+Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item
 ```
 
 See also [Text and Object Processing](/?c=shells&s=powershell&p=traitement-de-texte) (`Select-String`, `-replace`, `ConvertFrom-Json`) to go further in working with these files' content.

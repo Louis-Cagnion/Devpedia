@@ -9,7 +9,7 @@ order: 2
 ## Activar y desactivar una opción
 
 ```bash
-setopt AUTO_CD    # activa una opcion
+setopt AUTO_CD    # activa una opción
 unsetopt AUTO_CD  # la desactiva
 
 setopt            # lista todas las opciones actualmente activas
@@ -20,11 +20,14 @@ setopt            # lista todas las opciones actualmente activas
 ## Algunas opciones útiles en el día a día
 
 ```bash
-setopt AUTO_CD           # escribir un nombre de carpeta solo (sin "cd") entra directamente en ella
+# escribir un nombre de carpeta solo (sin "cd") entra directamente en ella
+setopt AUTO_CD
 setopt EXTENDED_GLOB     # activa el globbing extendido (ver Expansión y comodines avanzados)
-setopt SHARE_HISTORY     # comparte el historial de comandos en tiempo real entre todos los terminales abiertos
+# comparte el historial de comandos en tiempo real entre todos los terminales abiertos
+setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS  # no registra un comando identico al anterior en el historial
-setopt CORRECT           # propone una correccion si un comando escrito no existe ("did you mean...")
+# propone una corrección si un comando escrito no existe ("did you mean...")
+setopt CORRECT
 ```
 
 | Opción | Efecto |

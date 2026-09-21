@@ -60,8 +60,10 @@ from torchvision import transforms
 
 augmentation = transforms.Compose([
     transforms.RandomRotation(degrees=5),                    # leger desalignement du scan
-    transforms.ColorJitter(brightness=0.2, contrast=0.2),    # variation d'éclairage/qualité de scan
-    transforms.GaussianBlur(kernel_size=3),                  # leger flou (photo plutot que scanner)
+    # variation d'éclairage/qualité de scan
+    transforms.ColorJitter(brightness=0.2, contrast=0.2),
+    # leger flou (photo plutot que scanner)
+    transforms.GaussianBlur(kernel_size=3),
 ])
 ```
 

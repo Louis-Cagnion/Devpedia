@@ -28,12 +28,14 @@ import pymupdf
 with pymupdf.open("documento.pdf") as documento:
     for numero_pagina, pagina in enumerate(documento, start=1):
         for bloco in pagina.get_text("dict")["blocks"]:
-            if bloco["type"] != 0:      # 0 = bloco de texto ; 1 = bloco de imagem, ignorado aqui
+            # 0 = bloco de texto ; 1 = bloco de imagem, ignorado aqui
+            if bloco["type"] != 0:
                 continue
             spans = [span for linha in bloco["lines"] for span in linha["spans"]]
             texto = "".join(span["text"] for span in spans).strip()
             if not texto:
-                continue                 # bloco vazio (espaçamento, linha em branco): nada a guardar
+                # bloco vazio (espaçamento, linha em branco): nada a guardar
+                continue
             print(numero_pagina, bloco["bbox"], texto)
 ```
 
@@ -53,7 +55,8 @@ Identificar uma tabela em uma página sem recorrer ao [OCR estruturado](/?c=trai
 with pymupdf.open("documento.pdf") as documento:
     pagina = documento[0]
     for tabela in pagina.find_tables():
-        linhas = tabela.extract()   # lista de linhas, cada linha = lista de celulas (str ou None)
+        # lista de linhas, cada linha = lista de celulas (str ou None)
+        linhas = tabela.extract()
         print(tabela.bbox, len(linhas), "linhas")
 ```
 
@@ -89,9 +92,13 @@ O `img2table` não é sistematicamente melhor que o `find_tables()`: rodar uma a
 
 ```python
 def corrigir_tabelas_subcontadas(caminho_pdf, tabelas_nativas):
-    paginas_suspeitas = {t.page for t in tabelas_nativas if parece_estruturalmente_suspeita(t.celulas)}
+    paginas_suspeitas = {
+        t.page
+        for t in tabelas_nativas
+        if parece_estruturalmente_suspeita(t.celulas)
+    }
     if not paginas_suspeitas:
-        return tabelas_nativas   # nada a corrigir: nenhum custo de img2table pago a toa
+        return tabelas_nativas   # nada a corrigir: nenhum custo de img2table pago à toa
 
     candidatos_por_pagina = Img2TablePDF(
         src=caminho_pdf, pages=[p - 1 for p in paginas_suspeitas], pdf_text_extraction=True
@@ -105,7 +112,7 @@ def corrigir_tabelas_subcontadas(caminho_pdf, tabelas_nativas):
         if candidatos and melhor > contar_colunas(tabela_nativa.celulas):
             resultado.extend(candidatos)   # img2table faz melhor: preferido
         else:
-            resultado.append(tabela_nativa)   # find_tables() ja bastava
+            resultado.append(tabela_nativa)   # find_tables() já bastava
     return resultado
 ```
 
@@ -138,7 +145,14 @@ A renderização produzida por `get_pixmap` precisa então ser convertida em um 
 ```python
 import numpy as np
 
-imagem = np.frombuffer(pixmap.samples, dtype=np.uint8).reshape(pixmap.height, pixmap.width, pixmap.n)
+imagem = np.frombuffer(
+    pixmap.samples,
+    dtype=np.uint8,
+).reshape(
+    pixmap.height,
+    pixmap.width,
+    pixmap.n,
+)
 ```
 
 `pixmap.samples` é uma sequência bruta de bytes (os pixels, um após o outro); `reshape` a reorganiza em um [array NumPy](/?c=data-science&p=numpy) de 3 dimensões (altura, largura, canais de cor), o formato esperado pela quase totalidade das bibliotecas de visão computacional.

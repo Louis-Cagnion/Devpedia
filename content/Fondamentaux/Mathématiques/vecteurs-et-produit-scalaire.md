@@ -127,7 +127,16 @@ double aire(double ax, double ay, double bx, double by, double cx, double cy)
     return fabs((bx - ax) * (cy - ay) - (cx - ax) * (by - ay)) / 2.0;
 }
 
-int pointDansTriangle(double px, double py, double ax, double ay, double bx, double by, double cx, double cy)
+int pointDansTriangle(
+    double px,
+    double py,
+    double ax,
+    double ay,
+    double bx,
+    double by,
+    double cx,
+    double cy
+)
 {
     double aireTotale = aire(ax, ay, bx, by, cx, cy);
     double aireSous1 = aire(px, py, ax, ay, bx, by);

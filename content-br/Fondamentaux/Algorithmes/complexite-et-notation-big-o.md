@@ -17,7 +17,7 @@ A **notação Big-O** (escrita `O(...)`) descreve como o custo de um algoritmo e
 ```c
 void exibirPrimeiraVez(int array[], int tamanho)
 {
-    printf("%d\n", array[0]); // sempre 1 unica operacao, seja qual for "tamanho"
+    printf("%d\n", array[0]); // sempre 1 única operação, seja qual for "tamanho"
 }
 ```
 
@@ -25,7 +25,7 @@ void exibirPrimeiraVez(int array[], int tamanho)
 void exibirTudo(int array[], int tamanho)
 {
     for (int i = 0; i < tamanho; i++) {
-        printf("%d\n", array[i]); // 1 operacao por elemento -> "tamanho" operacoes no total
+        printf("%d\n", array[i]); // 1 operação por elemento -> "tamanho" operações no total
     }
 }
 ```

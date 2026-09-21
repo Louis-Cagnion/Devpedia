@@ -20,11 +20,12 @@ int main(void)
 
     while ((ligne = readline("mi_shell$ ")) != NULL) {
         if (*ligne) {
-            add_history(ligne);   // agrega esta linea al historial (flecha arriba la encuentra)
+            // agrega esta línea al historial (flecha arriba la encuentra)
+            add_history(ligne);
         }
 
         printf("Ha escrito: %s\n", ligne);
-        free(ligne);   // readline() reserva la linea: hay que liberarla uno mismo
+        free(ligne);   // readline() reserva la línea: hay que liberarla uno mismo
     }
 
     return 0;
@@ -45,9 +46,10 @@ int main(void)
 
 struct termios ancien, nouveau;
 
-tcgetattr(STDIN_FILENO, &ancien);   // guarda la configuracion actual del terminal
+tcgetattr(STDIN_FILENO, &ancien);   // guarda la configuración actual del terminal
 nouveau = ancien;
-nouveau.c_lflag &= ~(ICANON | ECHO);   // desactiva el modo canonico Y la visualizacion automatica
+// desactiva el modo canonico Y la visualización automatica
+nouveau.c_lflag &= ~(ICANON | ECHO);
 tcsetattr(STDIN_FILENO, TCSANOW, &nouveau);   // aplica el nuevo modo
 
 // ... lectura tecla por tecla, sin esperar a Entrar, sin eco automatico ...

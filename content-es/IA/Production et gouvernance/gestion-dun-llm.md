@@ -47,7 +47,7 @@ El no determinismo de un LLM (ver [LLM en producción](/?c=ia&s=nlp-llm&p=llm-en
 Una caché clásica asocia una respuesta a una **clave exacta**: la misma clave devuelve la misma respuesta, una clave ligeramente distinta (una reformulación) falla la caché y desencadena una nueva llamada, aunque la pregunta planteada fuera en realidad la misma. Una **caché semántica** resuelve este problema comparando las preguntas por **similitud de significado** en lugar de por igualdad de texto, con la misma técnica de búsqueda por embedding que la del [RAG](/?c=ia&s=nlp-llm&p=rag):
 
 ```text
-Pregunta 1: "¿Cuál es el precio de la suscripcion Pro?"
+Pregunta 1: "¿Cuál es el precio de la suscripción Pro?"
              -> llamada LLM, respuesta guardada en cache junto con su embedding
 
 Pregunta 2: "¿Cuanto cuesta el plan Pro?"

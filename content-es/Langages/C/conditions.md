@@ -74,7 +74,8 @@ switch (dia) {
 switch (dia) {
     case 6:
     case 7:
-        printf("Fin de semana\n"); // sin break entre 6 y 7: los dos casos comparten este código
+        // sin break entre 6 y 7: los dos casos comparten este código
+        printf("Fin de semana\n");
         break;
     default:
         printf("Día laborable\n");

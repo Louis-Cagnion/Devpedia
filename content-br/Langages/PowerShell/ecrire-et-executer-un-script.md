@@ -13,7 +13,7 @@ Um script PowerShell é um arquivo de texto com a extensão `.ps1`, contendo uma
 O Windows não usa shebang como o Unix (a extensão `.ps1` já basta para identificar o arquivo), mas o PowerShell bloqueia por padrão a execução de scripts, por razões de segurança:
 
 ```powershell
-Get-ExecutionPolicy   # exibe a politica atual, frequentemente "Restricted" por padrao
+Get-ExecutionPolicy   # exibe a politica atual, frequentemente "Restricted" por padrão
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
 
@@ -29,8 +29,9 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ## Executar um script
 
 ```powershell
-.\script.ps1                 # o ".\" e necessario mesmo se o diretorio atual contem o script
-powershell -File script.ps1  # alternativa: lancar explicitamente o interpretador sobre o arquivo
+.\script.ps1                 # o ".\" é necessário mesmo se o diretório atual contém o script
+# alternativa: lancar explicitamente o interpretador sobre o arquivo
+powershell -File script.ps1
 ```
 
 > **Nota:** ao contrário do Bash, digitar simplesmente `script.ps1` sem prefixo de caminho nunca funciona, mesmo que o script seja executável: o PowerShell nunca procura no diretório atual por padrão, mesmo se ele estiver presente em `$env:PATH`, para evitar que um arquivo malicioso do diretório atual seja executado por engano no lugar de um comando do sistema de mesmo nome.
@@ -44,12 +45,12 @@ param(
     [int]$Idade
 )
 
-Write-Output "Ola $Nome, voce tem $Idade anos"
+Write-Output "Ola $Nome, você tem $Idade anos"
 ```
 
 ```powershell
 .\script.ps1 -Nome "Joao" -Idade 25
-# Ola Joao, voce tem 25 anos
+# Ola Joao, você tem 25 anos
 ```
 
 Ao contrário do Bash (`$1`, `$2`, posicionais e sem nome), um script PowerShell declara seus parâmetros com `param()`, cada um tipado e nomeado: a ordem da chamada então importa bem menos, e `-Nome "Joao"` continua legível mesmo com muitos argumentos.
@@ -58,7 +59,7 @@ Os argumentos não declarados em `param()` continuam mesmo assim acessíveis via
 
 ```powershell
 # script.ps1
-Write-Output "Numero de argumentos: $($args.Count)"
+Write-Output "Número de argumentos: $($args.Count)"
 Write-Output "Primeiro argumento: $($args[0])"
 ```
 
@@ -66,7 +67,7 @@ Write-Output "Primeiro argumento: $($args[0])"
 
 ```powershell
 if (-not (Test-Path "config.txt")) {
-    Write-Error "Arquivo de configuracao ausente"
+    Write-Error "Arquivo de configuração ausente"
     exit 1
 }
 
@@ -90,7 +91,7 @@ Por padrão, um erro não fatal (o da maioria das cmdlets) não interrompe o scr
 ```powershell
 $ErrorActionPreference = "Stop"   # equivalente a "set -e": todo erro se torna bloqueante
 
-Set-Location "C:\diretorio\inexistente"   # se esse diretorio nao existe, o script para aqui
+Set-Location "C:\diretorio\inexistente"   # se esse diretório não existe, o script para aqui
 Write-Output "Esta linha nunca executa se Set-Location falhou"
 ```
 

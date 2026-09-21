@@ -17,7 +17,8 @@ const observateur = new IntersectionObserver((entrees) => {
     if (entrees[0].isIntersecting) {   // la sentinelle vient d'entrer dans la zone visible
         chargerPageSuivante();
     }
-}, { rootMargin: '200px' });           // declenche 200px AVANT que la sentinelle soit reellement visible
+// declenche 200px AVANT que la sentinelle soit reellement visible
+}, { rootMargin: '200px' });
 
 observateur.observe(sentinelle);
 ```
@@ -53,7 +54,8 @@ const tableau = document.querySelector('.tableau-large');
 
 const observateur = new ResizeObserver((entrees) => {
     const largeur = entrees[0].contentRect.width;
-    tableau.classList.toggle('mode-resserre', largeur < 600);   // bascule dès que l'espace manque
+    // bascule dès que l'espace manque
+    tableau.classList.toggle('mode-resserre', largeur < 600);
 });
 
 observateur.observe(tableau);

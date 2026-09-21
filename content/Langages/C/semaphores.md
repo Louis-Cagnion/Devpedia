@@ -16,7 +16,8 @@ Un **sémaphore** est un compteur protégé, partagé entre threads ou entre pro
 
 sem_t semaphore;
 
-sem_init(&semaphore, 0, 3); // compteur initial à 3 (0 = partagé entre threads du même processus)
+// compteur initial à 3 (0 = partagé entre threads du même processus)
+sem_init(&semaphore, 0, 3);
 
 sem_wait(&semaphore); // décrémente ; bloque si déjà à 0
 // ... section qui ne doit pas dépasser 3 accès simultanés ...
@@ -38,7 +39,8 @@ sem_wait(fourchettes); // prend une fourchette (bloque si les 5 sont déjà pris
 sem_post(fourchettes); // rend la fourchette
 
 sem_close(fourchettes);     // libère le descripteur local à ce processus
-sem_unlink("/fourchettes"); // détruit l'objet nommé du système (une seule fois, en fin de programme)
+// détruit l'objet nommé du système (une seule fois, en fin de programme)
+sem_unlink("/fourchettes");
 ```
 
 | Fonction | Rôle |

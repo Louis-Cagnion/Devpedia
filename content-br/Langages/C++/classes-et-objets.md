@@ -12,7 +12,8 @@ Uma **classe** C++ reúne o que uma [`struct` C](/?c=langages-de-programmation&s
 class Veiculo {
 public:
     // const& : evita copiar as strings recebidas (veja As referências)
-    Veiculo(const std::string &marca, const std::string &modelo) : marca(marca), modelo(modelo) {}
+    Veiculo(const std::string &marca, const std::string &modelo)
+        : marca(marca), modelo(modelo) {}
 
     std::string descricao() const {
         return marca + " " + modelo;
@@ -36,10 +37,10 @@ std::cout << v.descricao();   // "Peugeot 308"
 ## O construtor, em duas escritas
 
 ```cpp
-// Lista de inicializacao (preferida): inicializa diretamente, sem passar por uma atribuicao
+// Lista de inicialização (preferida): inicializa diretamente, sem passar por uma atribuição
 Veiculo(std::string marca, std::string modelo) : marca(marca), modelo(modelo) {}
 
-// Equivalente com atribuicao no corpo (funciona, mas menos idiomatico)
+// Equivalente com atribuição no corpo (funciona, mas menos idiomatico)
 Veiculo(std::string marca, std::string modelo) {
     this->marca = marca;
     this->modelo = modelo;
@@ -77,14 +78,14 @@ class Array {
 public:
     Array(int tamanho) : tamanho(tamanho), dados(new int[tamanho]) {}
 
-    // Construtor de copia: constroi um NOVO objeto a partir de outro ja existente
+    // Construtor de copia: constroi um NOVO objeto a partir de outro já existente
     Array(const Array &outro) : tamanho(outro.tamanho), dados(new int[outro.tamanho]) {
         for (int i = 0; i < tamanho; i++) dados[i] = outro.dados[i];
     }
 
-    // Operador de atribuicao por copia: copia DENTRO de um objeto ja construido
+    // Operador de atribuição por copia: copia DENTRO de um objeto já construido
     Array &operator=(const Array &outro) {
-        if (this != &outro) {   // protecao contra a autoatribuicao (a = a)
+        if (this != &outro) {   // proteção contra a autoatribuição (a = a)
             delete[] dados;
             tamanho = outro.tamanho;
             dados = new int[tamanho];
@@ -110,7 +111,8 @@ Sem construtor de cópia nem operador de atribuição explícitos, C++ gera vers
 ## Métodos `const`
 
 ```cpp
-std::string descricao() const {   // "const" aqui: garante que este metodo NAO modifica o objeto
+// "const" aqui: garante que este método NÃO modifica o objeto
+std::string descricao() const {
     return marca + " " + modelo;
 }
 ```
@@ -123,10 +125,10 @@ Marcar um método `const` documenta e faz o compilador respeitar que ele não mo
 class Contador {
 public:
     Contador() { totalCriados++; }
-    static int totalCriados;   // compartilhado por TODAS as instancias, nao um por objeto
+    static int totalCriados;   // compartilhado por TODAS as instâncias, não um por objeto
 };
 
-int Contador::totalCriados = 0;   // definicao obrigatoria fora da classe
+int Contador::totalCriados = 0;   // definição obrigatória fora da classe
 ```
 
 Veja também [Herança e polimorfismo](/?c=langages-de-programmation&s=cpp&p=heritage-et-polymorphisme) e [A sobrecarga de operadores](/?c=langages-de-programmation&s=cpp&p=surcharge-d-operateurs), para estender o comportamento de uma classe além de simples métodos nomeados.

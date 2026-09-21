@@ -31,7 +31,8 @@ Un modelo que «se aprenda de memoria» los datos de entrenamiento (en lugar de 
 from sklearn.model_selection import train_test_split
 
 X_entrainement, X_test, y_entrainement, y_test = train_test_split(X, y, test_size=0.2)
-# El 80 % se utiliza para entrenar el modelo; el 20 % restante se reserva y no se utiliza nunca durante el entrenamiento.
+# El 80 % se utiliza para entrenar el modelo; el 20 % restante se reserva y no se utiliza nunca
+# durante el entrenamiento.
 ```
 
 A continuación, el modelo **solo** se evalúa con `X_test` / `y_test`, nunca con los datos que se han utilizado para entrenarlo.
@@ -67,14 +68,16 @@ X_validacion, X_test, y_validacion, y_test = train_test_split(X_temp, y_temp, te
 Independientemente del algoritmo elegido, scikit-learn ofrece siempre la misma interfaz:
 
 ```python
-from sklearn.linear_model import LogisticRegression   # Clasificación: «y» es categórica («sí»/«no»)
+# Clasificación: «y» es categórica («sí»/«no»)
+from sklearn.linear_model import LogisticRegression
 
 modelo = LogisticRegression()
 modelo.fit(X_entrainement, y_entrainement)   # «aprende» a partir de los datos de entrenamiento
 
 predictions = modelo.predict(X_test)           # aplica lo aprendido a nuevos datos
 
-modelo.score(X_test, y_test)                    # evalúa la calidad de las predicciones en la prueba
+# evalúa la calidad de las predicciones en la prueba
+modelo.score(X_test, y_test)
 ```
 
 - `fit(X, y)` : ajusta los parámetros internos del modelo para que se adapte lo mejor posible a los datos proporcionados.
@@ -91,8 +94,11 @@ Con pocos datos, reservar un 40 % para validación+prueba (véase más arriba) r
 from sklearn.model_selection import cross_val_score
 
 scores = cross_val_score(LogisticRegression(), X_entrainement, y_entrainement, cv=5)
-# divide X_entrainement en 5 bloques ("folds"); entrena 5 veces, usando cada bloque como validación por turnos
-scores.mean()   # media de las 5 puntuaciones -> estimación más fiable que una sola división entrenamiento/validación
+# divide X_entrainement en 5 bloques ("folds"); entrena 5 veces, usando cada bloque como
+# validación por turnos
+# media de las 5 puntuaciones -> estimación más fiable que una sola división
+# entrenamiento/validación
+scores.mean()
 ```
 
 Así, cada ejemplo sirve tanto para el entrenamiento (4 veces de cada 5) como para la validación (1 vez de cada 5), sin tocar nunca `X_test`: la media de las 5 puntuaciones suaviza el efecto de una división especialmente favorable o desfavorable que una sola partición podría producir por azar.
@@ -143,7 +149,8 @@ precision_score(y_test, predictions)
 recall_score(y_test, predictions)
 f1_score(y_test, predictions)
 
-print(classification_report(y_test, predictions))   # precisión, exhaustividad y F1 a la vez, por clase
+# precisión, exhaustividad y F1 a la vez, por clase
+print(classification_report(y_test, predictions))
 ```
 
 > **Nota:** la exactitud es engañosa en clases desequilibradas: un detector de fraude que siempre responde "no" alcanza un 99 % de exactitud si el 1 % de las transacciones son fraudulentas, aunque resulte inútil (exhaustividad del 0 %). Precisión y exhaustividad casi siempre se evalúan juntas: mejorar una suele ir en detrimento de la otra (mover el umbral de decisión hacia "positivo" aumenta la exhaustividad pero reduce la precisión, y viceversa); el F1-score resume este compromiso en una sola cifra, útil para comparar modelos sin arbitrar manualmente entre ambas cada vez. La especificidad completa el panorama por el lado negativo: útil cuando un falso positivo sale caro (p. ej.: una prueba médica innecesaria), mientras que la exhaustividad se centra en el coste de un falso negativo (p. ej.: una enfermedad no detectada).

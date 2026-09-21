@@ -38,7 +38,8 @@ Entre parenthèses après un motif, un **qualificatif** filtre les résultats sa
 ls *(.)          # uniquement les fichiers réguliers (pas les dossiers, pas les liens)
 ls *(/)          # uniquement les dossiers
 ls *(*)          # uniquement les fichiers exécutables
-ls *(.om[1])     # le fichier régulier le plus récemment modifié (tri par date, on prend le 1er)
+# le fichier régulier le plus récemment modifié (tri par date, on prend le 1er)
+ls *(.om[1])
 ls *.log(.Lm-7)  # fichiers .log de plus de 7 jours de modification
 ```
 

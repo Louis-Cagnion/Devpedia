@@ -36,7 +36,8 @@ Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) 
     display: flex;
     justify-content: flex-start;     /* par défaut : regroupés au début */
     /* justify-content: center;        -> centrés */
-    /* justify-content: space-between;  -> espace égal ENTRE les éléments, rien sur les bords */
+    /* justify-content: space-between;  -> espace égal ENTRE les éléments, rien sur les
+       bords */
     /* justify-content: space-around;    -> espace égal AUTOUR de chaque élément */
 }
 ```
@@ -46,7 +47,8 @@ Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) 
 ```css
 .conteneur {
     display: flex;
-    align-items: stretch;       /* par défaut : étire les éléments sur toute la hauteur disponible */
+    /* par défaut : étire les éléments sur toute la hauteur disponible */
+    align-items: stretch;
     /* align-items: center;       -> centre verticalement (si flex-direction: row) */
     /* align-items: flex-start;     -> aligne en haut */
     /* align-items: flex-end;        -> aligne en bas */
@@ -67,7 +69,8 @@ Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) 
 
 ```css
 .element {
-    flex-grow: 1;       /* peut grandir pour occuper l'espace restant (1 = part égale entre éléments) */
+    /* peut grandir pour occuper l'espace restant (1 = part égale entre éléments) */
+    flex-grow: 1;
     flex-shrink: 1;     /* peut rétrécir si l'espace manque (par défaut) */
     flex-basis: 200px;  /* taille de départ, avant application de grow/shrink */
     order: 2;           /* change l'ordre d'affichage SANS toucher au HTML */
@@ -77,7 +80,8 @@ Tout Flexbox raisonne en termes d'**axe principal** (celui de `flex-direction`) 
 > **Note (accessibilité) :** `order` ne change que l'ordre **visuel** : l'ordre de tabulation au clavier et celui lu par un lecteur d'écran restent ceux du [HTML](/?c=langages-de-balisage&s=html&p=html). Un décalage entre les deux peut désorienter un utilisateur au clavier ou avec un lecteur d'écran ; à réserver aux réordonnancements purement décoratifs, jamais pour réparer un ordre de contenu qui n'a pas de sens dans le [HTML](/?c=langages-de-balisage&s=html&p=html) lui-même.
 
 ```css
-.colonne-principale { flex-grow: 2; }   /* occupe deux fois plus d'espace que .colonne-laterale */
+/* occupe deux fois plus d'espace que .colonne-laterale */
+.colonne-principale { flex-grow: 2; }
 .colonne-laterale { flex-grow: 1; }
 ```
 

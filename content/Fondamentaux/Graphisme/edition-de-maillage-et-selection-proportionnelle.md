@@ -28,7 +28,8 @@ La **sélection proportionnelle** (notion popularisée par l'outil de modélisat
 float distance = distance_3d(sommet_voisin.position, sommet_selectionne.position);
 
 if (distance < rayon_influence) {
-    float facteur = 1.0f - (distance / rayon_influence);   // 1.0 au centre, 0.0 au bord du rayon
+    // 1.0 au centre, 0.0 au bord du rayon
+    float facteur = 1.0f - (distance / rayon_influence);
     sommet_voisin.position += deplacement * facteur;
 }
 ```

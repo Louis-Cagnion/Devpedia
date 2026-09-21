@@ -9,10 +9,12 @@ Git ofrece varios comandos para retroceder, a distintos niveles: deshacer una mo
 ## Deshacer modificaciones no commiteadas
 
 ```bash
-git checkout -- archivo.txt  # restaura un archivo a su ultimo estado commiteado, sobrescribe las modificaciones locales
+# restaura un archivo a su último estado commiteado, sobrescribe las modificaciones locales
+git checkout -- archivo.txt
 git restore archivo.txt      # equivalente moderno del comando anterior
 
-git restore --staged archivo.txt  # retira un archivo del staging, SIN tocar sus modificaciones en el directorio de trabajo
+# retira un archivo del staging, SIN tocar sus modificaciones en el directorio de trabajo
+git restore --staged archivo.txt
 ```
 
 > **Nota:** `git checkout -- archivo.txt` y `git restore archivo.txt` son **irreversibles**: las modificaciones no commiteadas se pierden definitivamente, a diferencia de un commit, que siempre se puede recuperar (véase `git reflog` más abajo).
@@ -20,9 +22,13 @@ git restore --staged archivo.txt  # retira un archivo del staging, SIN tocar sus
 ## `git reset`: retroceder la rama actual
 
 ```bash
-git reset --soft HEAD~1   # anula el ultimo commit, pero mantiene todo en staging (listo para volver a commitear)
-git reset --mixed HEAD~1  # anula el ultimo commit Y el staging, mantiene las modificaciones en el directorio de trabajo (por defecto)
-git reset --hard HEAD~1   # anula el ultimo commit, el staging, Y las modificaciones mismas -> perdida definitiva
+# anula el último commit, pero mantiene todo en staging (listo para volver a commitear)
+git reset --soft HEAD~1
+# anula el último commit Y el staging, mantiene las modificaciones en el directorio de trabajo
+# (por defecto)
+git reset --mixed HEAD~1
+# anula el último commit, el staging, Y las modificaciones mismas -> perdida definitiva
+git reset --hard HEAD~1
 ```
 
 | Opción | Commit anulado | Staging | Directorio de trabajo |
@@ -48,11 +54,12 @@ Incluso tras un `reset --hard` o una manipulación fallida, Git en realidad cons
 ```bash
 git reflog
 # a3f9c1d HEAD@{0}: reset: moving to HEAD~1
-# e4f5g6h HEAD@{1}: commit: Corrige el calculo del descuento
+# e4f5g6h HEAD@{1}: commit: Corrige el cálculo del descuento
 ```
 
 ```bash
-git checkout e4f5g6h             # recupera el estado de un commit "perdido" encontrado via reflog
+# recupera el estado de un commit "perdido" encontrado via reflog
+git checkout e4f5g6h
 git branch recuperacion e4f5g6h  # o crea directamente una rama a partir de ese commit
 ```
 

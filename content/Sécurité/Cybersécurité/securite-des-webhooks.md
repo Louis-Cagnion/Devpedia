@@ -12,9 +12,9 @@ Un **webhook** est l'inverse d'un appel d'API classique : au lieu que votre appl
 Service tiers (paiement) -----> POST https://votre-site.example/webhooks/paiement
                                  { "commande_id": 42, "statut": "paye" }
 
-Attaquant (a devine ou trouve l'URL) -----> POST https://votre-site.example/webhooks/paiement
+Attaquant (a deviné ou trouvé l'URL) -----> POST https://votre-site.example/webhooks/paiement
                                              { "commande_id": 42, "statut": "paye" }
-                                             (FAUSSE notification, commande jamais reellement payee)
+                                             (FAUSSE notification, commande jamais réellement payée)
 ```
 
 Sans vérification, le code qui reçoit ce webhook ne peut pas distinguer les deux requêtes : les deux arrivent avec la même forme, sur la même URL.
@@ -41,8 +41,8 @@ $corps_recu = file_get_contents('php://input');
 $signature_recue = $_SERVER['HTTP_X_SIGNATURE'];
 $signature_calculee = hash_hmac('sha256', $corps_recu, $secret_partage);
 
-// hash_equals() (deja vu en cryptographie appliquee) : comparaison a temps constant,
-// jamais == / === sur une signature, pour eviter une attaque par mesure de temps
+// hash_equals() (déjà vu en cryptographie appliquée) : comparaison à temps constant,
+// jamais == / === sur une signature, pour éviter une attaque par mesure de temps
 if (!hash_equals($signature_calculee, $signature_recue)) {
     http_response_code(401);
     exit;

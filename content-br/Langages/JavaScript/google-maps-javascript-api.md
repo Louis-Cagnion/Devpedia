@@ -11,7 +11,7 @@ Exibir um mapa interativo em uma página web (marcadores, um mapa base navegáve
 Um mapa completo do Google Maps usa várias sub-bibliotecas independentes (`maps` para o mapa em si, `marker` para os marcadores...), cada uma inútil enquanto não for realmente usada. Em vez de carregar todas de uma vez ao carregar a página, o Google fornece um pequeno script de inicialização (*bootstrap loader*): ele só carrega o script real da API na primeira chamada a `google.maps.importLibrary()`, e armazena em cache as chamadas seguintes.
 
 ```javascript
-// Carrega apenas as sub-bibliotecas pedidas, na 1a vez que sao necessarias
+// Carrega apenas as sub-bibliotecas pedidas, na 1a vez que são necessarias
 const { Map } = await google.maps.importLibrary('maps');
 const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
 ```
@@ -49,7 +49,7 @@ function dispersarColocalizados(pontos) {
     grupos.forEach(grupo => {
         if (grupo.length <= 1) return;
         const n = grupo.length;
-        // Correcao de longitude conforme a latitude (senao os circulos se esticam norte-sul)
+        // Correção de longitude conforme a latitude (senão os circulos se esticam norte-sul)
         const escalaLongitude = 1 / Math.max(0.1, Math.cos(grupo[0].lat * Math.PI / 180));
         grupo.forEach((ponto, i) => {
             const angulo = (2 * Math.PI * i) / n - Math.PI / 2;
@@ -73,12 +73,12 @@ A API do Google Maps oferece dois caminhos de renderização para um marcador, c
 | Pré-requisito | Nenhum | Um identificador de estilo de mapa (*Map ID*) configurado no Google Cloud |
 
 ```javascript
-// AdvancedMarkerElement: conteudo HTML livre
+// AdvancedMarkerElement: conteúdo HTML livre
 const el = document.createElement('div');
 el.className = 'meu-marcador-animado';
 new AdvancedMarkerElement({ map, position, content: el });
 
-// google.maps.Marker (legado): renderizacao SVG fixa, sem pre-requisito de configuracao
+// google.maps.Marker (legado): renderização SVG fixa, sem pré-requisito de configuração
 new google.maps.Marker({ map, position, icon: meuIconeSvg });
 ```
 

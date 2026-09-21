@@ -31,6 +31,24 @@ Navigateur pilote (Playwright/Selenium/Puppeteer) :
 | Fingerprinting du pilote automatique | Certaines pages détectent la présence d'un navigateur automatisé (propriétés JavaScript spécifiques à Playwright/Selenium) pour adapter leur comportement : afficher un contenu différent, ou déclencher une défense anti-bot ciblée |
 | Injection dans les données extraites | Si le script fait ensuite confiance au texte extrait de la page (un titre, un prix) sans le traiter comme une donnée externe non fiable, un contenu piégé peut se propager plus loin dans le système qui reçoit ce résultat (voir le principe déjà posé dans [Les grandes familles de failles](/?c=securite&s=cybersecurite&p=types-de-failles)) |
 
+## Le signal concret que les anti-bots lisent : `navigator.webdriver`
+
+Le protocole WebDriver, utilisé par Playwright, Selenium et les outils similaires pour piloter un navigateur, expose par défaut une propriété JavaScript lisible par n'importe quelle page :
+
+```javascript
+navigator.webdriver   // true si pilote via WebDriver, false/undefined sinon
+```
+
+N'importe quel script de la page, donc n'importe quel système anti-bot, peut lire cette propriété pour distinguer un visiteur humain d'un script, sans avoir besoin d'analyser un comportement plus subtil. La contre-mesure consiste à redéfinir cette propriété avant tout autre script de la page :
+
+```javascript
+Object.defineProperty(navigator, "webdriver", { get: () => undefined });
+```
+
+Injectée au tout début du chargement de chaque page (`context.add_init_script(...)` chez Playwright), cette redéfinition masque le signal le plus direct, sans rien changer au reste du comportement du navigateur.
+
+> **Piège :** masquer `navigator.webdriver` ne rend pas un navigateur piloté indétectable pour autant : les systèmes anti-bot avancés combinent des dizaines de signaux (cadence des clics, résolution d'écran, polices installées...), pas seulement cette propriété. La traiter comme la seule à corriger donne un faux sentiment de sécurité.
+
 ## La distinction clé : "scraper des données" contre "exécuter une page"
 
 Le réflexe défensif central tient en une phrase : un script d'automatisation n'a besoin que d'une petite partie de ce qu'un navigateur complet sait faire (charger une page, lire son contenu, cliquer des éléments prévus). Tout le reste (téléchargements, popups, permissions système, accès au presse-papier) doit être explicitement RESTREINT, jamais laissé aux réglages par défaut pensés pour un usage humain interactif.
@@ -52,7 +70,7 @@ Le réflexe défensif central tient en une phrase : un script d'automatisation n
 
 | | |
 |---|---|
-| **À retenir** | Un navigateur piloté par un script (Playwright/Selenium/Puppeteer) exécute réellement les pages visitées, avec toutes les capacités d'un navigateur normal : une page malveillante peut tenter un téléchargement auto-déclenché, détourner le presse-papier, perturber le script via une popup, ou détecter l'automatisation elle-même. |
-| **Outils utilisables** | Interception des dialogues natifs (`page.on("dialog")`) ; désactivation des téléchargements ou dossier isolé dédié ; refus des permissions navigateur par défaut. |
-| **Pièges à éviter** | Laisser les réglages par défaut d'un navigateur pensé pour un usage humain sur un pilote automatique. Faire confiance à une donnée extraite d'une page non maîtrisée sans la traiter comme externe. |
+| **À retenir** | Un navigateur piloté par un script (Playwright/Selenium/Puppeteer) exécute réellement les pages visitées, avec toutes les capacités d'un navigateur normal : une page malveillante peut tenter un téléchargement auto-déclenché, détourner le presse-papier, perturber le script via une popup, ou détecter l'automatisation elle-même via `navigator.webdriver`. |
+| **Outils utilisables** | Interception des dialogues natifs (`page.on("dialog")`) ; désactivation des téléchargements ou dossier isolé dédié ; refus des permissions navigateur par défaut ; masquage de `navigator.webdriver` via `context.add_init_script(...)`. |
+| **Pièges à éviter** | Laisser les réglages par défaut d'un navigateur pensé pour un usage humain sur un pilote automatique. Faire confiance à une donnée extraite d'une page non maîtrisée sans la traiter comme externe. Croire qu'un navigateur piloté devient indétectable une fois `navigator.webdriver` masqué. |
 | **Bonnes pratiques** | Restreindre explicitement le navigateur piloté au minimum nécessaire à la tâche. Intercepter systématiquement tout dialogue/téléchargement inattendu. Échapper toute donnée extraite avant réutilisation, comme n'importe quelle autre donnée externe. |

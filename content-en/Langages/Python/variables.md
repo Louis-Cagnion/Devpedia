@@ -104,8 +104,10 @@ F-strings (with the prefix `f` before the quotation marks) are the recommended m
 
 ```python
 text = ""
-print(f"Received: {text!r}")   # Received: '' -> repr(): shows the quotes, so the empty string is visible
-print(f"Received: {text}")     # Received:    -> normal insertion: nothing to see, unreadable in a debug message
+# Received: '' -> repr(): shows the quotes, so the empty string is visible
+print(f"Received: {text!r}")
+# Received:    -> normal insertion: nothing to see, unreadable in a debug message
+print(f"Received: {text}")
 ```
 
 `!r` calls `repr(x)` before insertion (equivalent to `f"{repr(x)}"`): useful in an error message to distinguish `""` (empty string) from `" "` (space), or more generally to see the exact value received rather than its "clean" display. `!s` (`str(x)`, the default behavior) and `!a` (`ascii(x)`, escapes non-ASCII characters) also exist, more rarely useful.
@@ -139,7 +141,8 @@ words = ["Python", "is", "readable"]
 ```python
 text = "line1\nline2\r\nline3"
 
-text.splitlines()  # ["line1", "line2", "line3"]     -> recognizes both \n AND \r\n, no \n left in the result
+# ["line1", "line2", "line3"]     -> recognizes both \n AND \r\n, no \n left in the result
+text.splitlines()
 text.split("\n")   # ["line1", "line2", "line3\r"]    -> "\r" lingers, stuck to "line3"
 ```
 

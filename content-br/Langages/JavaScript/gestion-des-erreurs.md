@@ -10,7 +10,7 @@ JavaScript sinaliza um erro lançando uma **exceção** (`throw`), interceptáve
 
 ```javascript
 try {
-    const resultado = JSON.parse("{ invalido");
+    const resultado = JSON.parse("{ inválido");
 } catch (erro) {
     console.log("Erro de parsing:", erro.message);
 } finally {
@@ -24,7 +24,7 @@ try {
 function calcularIdade(anoNascimento) {
     const anoAtual = new Date().getFullYear();
     if (anoNascimento > anoAtual) {
-        throw new Error("O ano de nascimento nao pode estar no futuro");
+        throw new Error("O ano de nascimento não pode estar no futuro");
     }
     return anoAtual - anoNascimento;
 }

@@ -70,7 +70,8 @@ register_shutdown_function(function () {
     error_log('Script terminé à ' . date('H:i:s'));
 });
 
-echo 'Bonjour';   // le message de log ne s'affiche qu'après cette ligne, à la toute fin du script
+// le message de log ne s'affiche qu'après cette ligne, à la toute fin du script
+echo 'Bonjour';
 ```
 
 > **Note :** un rappel enregistré ainsi ne reçoit aucun paramètre automatiquement ; pour lui transmettre des données du contexte environnant, on utilise une fonction anonyme avec `use (...)`, comme dans l'exemple plus haut.
@@ -118,10 +119,12 @@ public function getCatalogue(): array
     $perime = $this->lireCache(ignorerTtl: true);
     if ($perime !== null) {
         $this->planifierRafraichissementEnFond($this->fichierCache);
-        return $perime;                   // répond avec la valeur périmée en attendant le calcul
+        // répond avec la valeur périmée en attendant le calcul
+        return $perime;
     }
 
-    return $this->rafraichirMaintenant($this->fichierCache);   // tout premier appel : pas d'autre choix qu'attendre
+    // tout premier appel : pas d'autre choix qu'attendre
+    return $this->rafraichirMaintenant($this->fichierCache);
 }
 
 private function planifierRafraichissementEnFond(string $fichier): void
@@ -129,10 +132,12 @@ private function planifierRafraichissementEnFond(string $fichier): void
     $verrou = $fichier . '.en_cours';
 
     if (is_file($verrou) && (time() - (int) @filemtime($verrou)) < 600) {
-        return;                        // un rafraîchissement tourne déjà, inutile d'en relancer un
+        // un rafraîchissement tourne déjà, inutile d'en relancer un
+        return;
     }
 
-    $poignee = @fopen($verrou, 'x');   // 'x' : échoue si le fichier existe déjà (création atomique)
+    // 'x' : échoue si le fichier existe déjà (création atomique)
+    $poignee = @fopen($verrou, 'x');
     if ($poignee === false) return;    // un autre worker a gagné la course entre-temps
     fclose($poignee);
 
@@ -140,12 +145,14 @@ private function planifierRafraichissementEnFond(string $fichier): void
 
     register_shutdown_function(function () use ($fichier, $verrou) {
         if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();  // le client reçoit sa réponse ici, la connexion se ferme
+            // le client reçoit sa réponse ici, la connexion se ferme
+            fastcgi_finish_request();
         }
         try {
             $this->rafraichirMaintenant($fichier);
         } finally {
-            @unlink($verrou);          // toujours libéré, même si le calcul a levé une exception
+            // toujours libéré, même si le calcul a levé une exception
+            @unlink($verrou);
         }
     });
 }

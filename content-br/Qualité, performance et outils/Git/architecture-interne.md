@@ -16,7 +16,7 @@ conteudo -> SHA-1(conteudo) -> chave de armazenamento
 
 ```bash
 echo "Ola" | git hash-object --stdin
-# c6b7f... -> sempre o mesmo hash para o mesmo conteudo, nao importa onde/quando
+# c6b7f... -> sempre o mesmo hash para o mesmo conteúdo, não importa onde/quando
 ```
 
 > **Nota:** uma **função de hash** (aqui SHA-1) transforma uma entrada de tamanho qualquer em um número de tamanho fixo, de forma determinística (mesma entrada → sempre o mesmo resultado) e bem distribuída (dois conteúdos, mesmo muito parecidos, produzem resultados bem diferentes: é isso que torna uma colisão acidental extremamente improvável). Veja [As tabelas de hash](/?c=langages-de-programmation&s=c&p=tables-de-hachage) para esse mecanismo aplicado a uma estrutura de dados concreta.
@@ -60,7 +60,7 @@ Uma branch **não é literalmente nada mais** do que um arquivo contendo um hash
 
 ```bash
 cat .git/HEAD
-# ref: refs/heads/main   -> HEAD nao contem um hash, mas o CAMINHO para a ref atual
+# ref: refs/heads/main   -> HEAD não contém um hash, mas o CAMINHO para a ref atual
 ```
 
 `HEAD` é um ponteiro para um ponteiro: trocar de branch (`git checkout outra-branch`) só modifica uma única linha em `.git/HEAD`, que passa a referenciar outro arquivo de `refs/heads/`. Em modo *detached HEAD* (veja [As tags](/?c=git&p=tags)), `.git/HEAD` contém diretamente um hash de commit, sem passar por uma ref nomeada.
@@ -79,7 +79,7 @@ Os comandos do dia a dia (`add`, `commit`, `merge`...) são a **porcelana**: uma
 
 ```bash
 echo "conteudo" | git hash-object -w --stdin  # cria um blob, exibe seu hash
-git cat-file -p a3f9c1d                       # exibe o conteudo descomprimido de um objeto
+git cat-file -p a3f9c1d                       # exibe o conteúdo descomprimido de um objeto
 git cat-file -t a3f9c1d                       # exibe seu tipo (blob/tree/commit/tag)
 git write-tree                                # constroi um objeto tree a partir do index atual
 git commit-tree a3f9c1d -m "mensagem"         # cria manualmente um objeto commit
@@ -93,7 +93,8 @@ Um `git commit` "normal" não é, por baixo dos panos, nada mais do que um encad
 Um `rebase` ou um `commit --amend` só reescrevem os commits **depois** do ponto modificado. Às vezes é preciso ir mais longe: retirar um arquivo (segredo, binário grande...) de **cada** commit onde ele existiu, do primeiríssimo ao último: um simples `rm` + novo commit não basta, já que o arquivo continua legível nos commits anteriores.
 
 ```bash
-git filter-branch --index-filter "git rm --cached --ignore-unmatch secreto.pem" --prune-empty -- --all
+git filter-branch --index-filter "git rm --cached --ignore-unmatch secreto.pem" \
+    --prune-empty -- --all
 ```
 
 `--index-filter` reaplica esse comando no index de **cada** commit do histórico (em todas as refs, via `--all`), reconstrói um novo tree sem o arquivo, e depois um novo commit, o que, pela mecânica vista acima (o hash de um commit depende do de seu pai), muda o hash de **todos** os commits a partir do primeiro afetado.
@@ -114,9 +115,12 @@ Depois de uma reescrita de histórico (ou um simples `reset --hard`), os commits
 Um objeto só é realmente removido do repositório local quando nada mais o retém:
 
 ```bash
-git reflog expire --expire=now --all  # esvazia imediatamente o reflog de todas as refs (em vez de esperar a expiracao padrao)
-git gc --prune=now                    # remove qualquer objeto que se tornou inacessivel ("unreachable")
-git fsck --unreachable                # lista os objetos ainda presentes mas nao referenciados por nenhuma branch/tag/reflog
+# esvazia imediatamente o reflog de todas as refs (em vez de esperar a expiração padrão)
+git reflog expire --expire=now --all
+# remove qualquer objeto que se tornou inacessível ("unreachable")
+git gc --prune=now
+# lista os objetos ainda presentes mas não referenciados por nenhuma branch/tag/reflog
+git fsck --unreachable
 ```
 
 > **Nota:** essa limpeza diz respeito apenas ao repositório **local**. Um repositório remoto ([GitHub](/?c=git&p=github-et-plateformes), GitLab...) aplica seu próprio `gc` conforme seu próprio calendário: depois de um `push --force` que remove um arquivo sensível do histórico, o commit antigo pode continuar acessível do lado do servidor via seu hash exato (uma requisição direcionada, não uma navegação normal) até que o servidor faça sua própria limpeza. Para uma garantia de remoção imediata do lado do servidor, apenas o suporte da plataforma pode agir.

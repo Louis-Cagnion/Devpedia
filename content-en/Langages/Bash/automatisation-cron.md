@@ -112,9 +112,12 @@ The `.service` file describes the command to run:
 Description=Nightly document backup                # text shown in logs/status
 
 [Service]
-Type=oneshot                                        # runs once then stops (not a service that keeps running)
-WorkingDirectory=/home/user/scripts                 # working directory before launching the command
-ExecStart=/usr/bin/python3 backup.py                # absolute path, same minimal-environment pitfall as cron
+# runs once then stops (not a service that keeps running)
+Type=oneshot
+# working directory before launching the command
+WorkingDirectory=/home/user/scripts
+# absolute path, same minimal-environment pitfall as cron
+ExecStart=/usr/bin/python3 backup.py
 ```
 
 The `.timer` file describes when to trigger the service of the same name:
@@ -125,10 +128,12 @@ Description=Schedules backup.service every day
 
 [Timer]
 OnCalendar=daily                                    # equivalent of @daily in cron
-Persistent=true                                     # catches up a missed run if the machine was off (see below)
+# catches up a missed run if the machine was off (see below)
+Persistent=true
 
 [Install]
-WantedBy=timers.target                              # needed for "enable" to actually activate the timer
+# needed for "enable" to actually activate the timer
+WantedBy=timers.target
 ```
 
 Both files go in `/etc/systemd/system/` (system scope, requires root) or in `~/.config/systemd/user/` (user scope, see below). Once in place:
@@ -137,7 +142,8 @@ Both files go in `/etc/systemd/system/` (system scope, requires root) or in `~/.
 systemctl daemon-reload              # reloads unit files after creating/editing one
 systemctl enable --now backup.timer  # enables the timer at boot AND starts it right away
 systemctl list-timers                # lists active timers and their next run
-journalctl -u backup.service         # reads this service's logs (replaces a manual redirect to a log file)
+# reads this service's logs (replaces a manual redirect to a log file)
+journalctl -u backup.service
 ```
 
 ### `Persistent=true`: catching up isn't automatic
@@ -156,7 +162,8 @@ A timer placed in `/etc/systemd/system/` runs independently of any open session,
 This last point matters for catching up: a `--user` timer with `Persistent=true` can only catch up a missed run at the next login, not at the machine's mere startup, if no one logs in right away. [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) lifts this limit for a given user:
 
 ```bash
-loginctl enable-linger user   # "user"'s systemd --user instance starts at boot, session open or not
+# "user"'s systemd --user instance starts at boot, session open or not
+loginctl enable-linger user
 ```
 
 ### `cron` or `systemd timer`?

@@ -25,13 +25,13 @@ class Usuario {              <->  TABLE usuarios (
 ```
 
 ```javascript
-// Com um ORM (exemplo Prisma): um objeto, nao uma query SQL escrita a mao
+// Com um ORM (exemplo Prisma): um objeto, não uma query SQL escrita a mão
 const usuario = await prisma.usuario.create({
   data: { email: "alice@exemplo.com" }
 });
 
 // O SQL gerado pelo ORM, nunca escrito diretamente:
-// INSERT INTO usuarios (email) VALUES ('alice@exemplo.com');
+// INSERT INTO usuários (email) VALUES ('alice@exemplo.com');
 ```
 
 O [CRUD](/?c=ia&s=production-et-gouvernance&p=gouvernance-des-donnees) básico (criar, ler, modificar, excluir) é gerado automaticamente para cada tabela declarada, sem escrever você mesmo a menor consulta para esses casos simples.
@@ -59,7 +59,7 @@ Um ORM como o Prisma gera tipos a partir do esquema do banco: um erro de digita�
 
 ```javascript
 prisma.usuario.create({ data: { emial: "alice@exemplo.com" } });
-// Erro de compilacao imediato: "emial" nao existe nesse modelo
+// Erro de compilação imediato: "emial" não existe nesse modelo
 ```
 
 Uma query SQL escrita à mão em uma string de caracteres não oferece nenhuma dessas garantias: o mesmo erro de digitação só seria detectado ali na execução, se for.
@@ -73,7 +73,7 @@ const usuarios = await prisma.usuario.findMany(); // 1 query
 
 for (const u of usuarios) {
   const pedidos = await prisma.pedido.findMany({ where: { id_usuario: u.id } });
-  // 1 query adicional POR usuario: N usuarios -> N+1 queries no total
+  // 1 query adicional POR usuário: N usuários -> N+1 queries no total
 }
 ```
 
@@ -82,7 +82,7 @@ for (const u of usuarios) {
 > **Boa prática:** pré-carregar as relações necessárias em uma única consulta (`include`/`with`/`eager loading` conforme o ORM), antes do loop, em vez de deixar o ORM disparar uma nova a cada iteração.
 
 ```javascript
-// 1 unica query, com join, em vez de N+1
+// 1 única query, com join, em vez de N+1
 const usuarios = await prisma.usuario.findMany({ include: { pedidos: true } });
 ```
 

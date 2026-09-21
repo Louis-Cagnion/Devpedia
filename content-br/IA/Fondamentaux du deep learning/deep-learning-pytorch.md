@@ -27,7 +27,8 @@ Um tensor PyTorch pode viver na CPU ou em uma GPU (`x.to("cuda")`), que executa 
 ## `autograd`: a diferenciação automática
 
 ```python
-x = torch.tensor(3.0, requires_grad=True)   # "acompanhe as operações em x para poder derivar depois"
+# "acompanhe as operações em x para poder derivar depois"
+x = torch.tensor(3.0, requires_grad=True)
 
 y = x ** 2 + 2 * x
 
@@ -46,7 +47,8 @@ import torch.nn as nn
 class RedeSimples(nn.Module):
     def __init__(self):
         super().__init__()
-        self.camada1 = nn.Linear(10, 32)   # camada totalmente conectada: 10 entradas -> 32 saídas
+        # camada totalmente conectada: 10 entradas -> 32 saídas
+        self.camada1 = nn.Linear(10, 32)
         self.ativacao = nn.ReLU()
         self.camada2 = nn.Linear(32, 1)     # 32 entradas -> 1 saída
 
@@ -74,10 +76,12 @@ funcao_perda = nn.MSELoss()                         # erro quadrático médio
 otimizador = optim.SGD(modelo.parameters(), lr=0.01)  # descida do gradiente estocástica
 
 for epoca in range(100):
-    predicoes = modelo(X_treinamento)                       # equivale a modelo.forward(X_treinamento)
+    # equivale a modelo.forward(X_treinamento)
+    predicoes = modelo(X_treinamento)
     perda = funcao_perda(predicoes, y_treinamento)
 
-    otimizador.zero_grad()  # zera os gradientes (senão eles se somam de uma iteração para outra)
+    # zera os gradientes (senão eles se somam de uma iteração para outra)
+    otimizador.zero_grad()
     perda.backward()        # calcula os gradientes (retropropagação automática)
     otimizador.step()       # ajusta os pesos de acordo com os gradientes calculados
 
@@ -95,7 +99,8 @@ Esse loop é a estrutura quase universal de todo treinamento PyTorch: prever, me
 
 ```python
 modelo.eval()          # desativa comportamentos específicos do treinamento (ex.: dropout)
-with torch.no_grad():  # desativa o rastreamento de gradientes: mais rápido, inútil fora do treinamento
+# desativa o rastreamento de gradientes: mais rápido, inútil fora do treinamento
+with torch.no_grad():
     predicoes = modelo(X_test)
 
 modelo.train()   # reativa o modo treinamento para o que vem depois

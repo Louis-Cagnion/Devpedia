@@ -7,8 +7,10 @@ order: 3
 ## Construir e iniciar
 
 ```bash
-docker build -t meu-app:1.0 .  # constroi uma imagem chamada "meu-app", tag "1.0", a partir do Dockerfile do diretorio atual (.)
-docker run meu-app:1.0         # inicia um conteiner a partir dessa imagem
+# constroi uma imagem chamada "meu-app", tag "1.0", a partir do Dockerfile do diretório atual
+# (.)
+docker build -t meu-app:1.0 .
+docker run meu-app:1.0         # inicia um contêiner a partir dessa imagem
 ```
 
 Opções comuns de `docker run`:
@@ -29,9 +31,9 @@ docker run -d --name servidor -p 8080:80 meu-app:1.0
 ## Observar o que está rodando
 
 ```bash
-docker ps               # conteineres em execucao
-docker ps -a            # todos os conteineres, incluindo os parados
-docker logs servidor    # saida padrao/erro do conteiner "servidor"
+docker ps               # contêineres em execução
+docker ps -a            # todos os contêineres, incluindo os parados
+docker logs servidor    # saída padrão/erro do contêiner "servidor"
 docker logs -f servidor # acompanha os logs em tempo real (equivalente a `tail -f`)
 ```
 
@@ -40,7 +42,7 @@ Um contêiner é, do ponto de vista do sistema hospedeiro, apenas mais um proces
 ## Entrar em um contêiner em execução
 
 ```bash
-docker exec -it servidor sh    # abre um shell interativo dentro do conteiner "servidor"
+docker exec -it servidor sh    # abre um shell interativo dentro do contêiner "servidor"
 ```
 
 Útil para inspecionar o estado de um contêiner que já está rodando (arquivos, variáveis de ambiente, processos internos) sem precisar reiniciá-lo.
@@ -48,16 +50,18 @@ docker exec -it servidor sh    # abre um shell interativo dentro do conteiner "s
 ## Parar e limpar
 
 ```bash
-docker stop servidor    # envia SIGTERM, deixa o conteiner parar de forma limpa (cf. tabela de sinais, topico Bash)
+# envia SIGTERM, deixa o contêiner parar de forma limpa (cf. tabela de sinais, topico Bash)
+docker stop servidor
 docker kill servidor    # envia SIGKILL, parada imediata e incondicional
-docker rm servidor      # remove um conteiner parado
+docker rm servidor      # remove um contêiner parado
 docker rmi meu-app:1.0  # remove uma imagem
 ```
 
 > **Nota:** `docker stop` seguido de `docker kill` reproduz exatamente a mesma hierarquia SIGTERM → SIGKILL vista no capítulo sobre gerenciamento de processos: o Docker não reinventa um mecanismo de parada, ele pilota o do sistema hospedeiro.
 
 ```bash
-docker system prune        # remove conteineres parados, imagens nao usadas, caches de build nao usados
+# remove contêineres parados, imagens não usadas, caches de build não usados
+docker system prune
 ```
 
 ---

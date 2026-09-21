@@ -23,8 +23,8 @@ CREATE INDEX idx_hecho_ventas_producto ON hecho_ventas (id_producto);
 ```
 
 ```text
-Tabla con índice sobre id_producto: la base consulta el índice, encuentra directamente la ubicación
-de las 3 filas donde id_producto = 42, sin leer las otras 999 997.
+Tabla con índice sobre id_producto: la base consulta el índice, encuentra directamente
+la ubicación de las 3 filas donde id_producto = 42, sin leer las otras 999 997.
 ```
 
 ## El compromiso: lectura más rápida, escritura más lenta

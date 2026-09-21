@@ -30,7 +30,8 @@ person.get("phone", "unknown")  # "unknown" -> default value if missing
 cache = {}
 cache[("site_a", 42)] = "shop A"  # a TUPLE as key: works, a tuple is immutable so hashable
 
-cache[["site_a", 42]] = "shop A"  # TypeError: unhashable type: 'list' -> a list is mutable, never hashable
+# TypeError: unhashable type: 'list' -> a list is mutable, never hashable
+cache[["site_a", 42]] = "shop A"
 ```
 
 A dictionary key must be **hashable** (a fixed number, computed once and for all, that lets it be located instantly in the underlying hash table): it must therefore be **immutable** (`str`, a number, `tuple`), never `list`/`dict`, which can change content afterward and would invalidate that number. A `tuple` of several values commonly serves as a **composite key**: `(site, id)` distinguishes two entries that would share the same `id` on two different sites, something neither value alone could do.

@@ -9,8 +9,10 @@ Este capítulo cobre o ciclo de trabalho do Git mais comum: iniciar um repositó
 ## Criar ou recuperar um repositório
 
 ```bash
-git init                                  # transforma o diretorio atual em um repositorio Git (vazio, sem historico)
-git clone https://exemplo.com/projeto.git # recupera um repositorio existente, com todo seu historico
+# transforma o diretório atual em um repositorio Git (vazio, sem histórico)
+git init
+# recupera um repositorio existente, com todo seu histórico
+git clone https://exemplo.com/projeto.git
 ```
 
 ## Ver o estado do diretório de trabalho
@@ -24,9 +26,9 @@ Exibe quais arquivos estão modificados, quais estão na área de staging, e qua
 ## Adicionar modificações ao staging
 
 ```bash
-git add arquivo.txt  # adiciona um arquivo especifico
-git add diretorio/   # adiciona um diretorio inteiro
-git add .            # adiciona tudo que mudou no diretorio atual e seus subdiretorios
+git add arquivo.txt  # adiciona um arquivo específico
+git add diretorio/   # adiciona um diretório inteiro
+git add .            # adiciona tudo que mudou no diretório atual e seus subdiretorios
 git add -p           # modo interativo: escolher precisamente quais blocos de linhas adicionar
 ```
 
@@ -35,8 +37,10 @@ git add -p           # modo interativo: escolher precisamente quais blocos de li
 ## Criar um commit
 
 ```bash
-git commit -m "Corrige o calculo do desconto"
-git commit -am "Mensagem"   # atalho: adiciona automaticamente os arquivos ja rastreados E modificados, sem "git add" previo
+git commit -m "Corrige o cálculo do desconto"
+# atalho: adiciona automaticamente os arquivos já rastreados E modificados, sem "git add"
+# previo
+git commit -am "Mensagem"
 ```
 
 > **Nota:** `-a` (em `-am`) só adiciona os arquivos já rastreados pelo Git: um arquivo totalmente novo, nunca adicionado antes, sempre precisa passar por um `git add` explícito pelo menos uma vez.
@@ -66,13 +70,16 @@ em vez do total: um bug introduzido no ultimo refactor de
 `git commit -m "mensagem"` com um único `-m` só produz um título, sem descrição. Três formas de obter os dois:
 
 ```bash
-# 1. Sem -m: abre o editor configurado (vim, nano...), onde se digita titulo, linha vazia, e depois descricao
+# 1. Sem -m: abre o editor configurado (vim, nano...), onde se digita titulo, linha vazia, e
+# depois descrição
 git commit
 
-# 2. Varios -m: cada um se torna um paragrafo separado por uma linha vazia, sem abrir editor
-git commit -m "Corrige o calculo do desconto" -m "O percentual so era aplicado ao primeiro item, nao ao total."
+# 2. Vários -m: cada um se torna um parágrafo separado por uma linha vazia, sem abrir editor
+git commit -m "Corrige o cálculo do desconto" \
+    -m "O percentual só era aplicado ao primeiro item, não ao total."
 
-# 3. Uma string multilinha passada a um unico -m (util para automatizar um commit, ou a partir de uma ferramenta que gera a mensagem)
+# 3. Uma string multilinha passada a um único -m (útil para automatizar um commit, ou a partir
+# de uma ferramenta que gera a mensagem)
 git commit -m "$(cat <<'EOF'
 Corrige o calculo do desconto
 
@@ -90,24 +97,26 @@ EOF
 ## Consultar o histórico
 
 ```bash
-git log                          # historico completo, do mais recente ao mais antigo
-git log --oneline                # uma linha por commit, mais legivel para uma visao rapida
-git log --oneline --graph --all  # visualiza tambem as branches e seus pontos de divergencia/mesclagem
-git log -p arquivo.txt           # historico detalhado (com diff) de um arquivo especifico
+git log                          # histórico completo, do mais recente ao mais antigo
+git log --oneline                # uma linha por commit, mais legível para uma visão rápida
+# visualiza também as branches e seus pontos de divergência/mesclagem
+git log --oneline --graph --all
+git log -p arquivo.txt           # histórico detalhado (com diff) de um arquivo específico
 ```
 
 ## Ver as diferenças
 
 ```bash
-git diff                  # diferencas ainda nao adicionadas ao staging
-git diff --staged         # diferencas ja adicionadas ao staging, ainda nao commitadas
-git diff commit1 commit2  # diferencas entre dois commits especificos
+git diff                  # diferenças ainda não adicionadas ao staging
+git diff --staged         # diferenças já adicionadas ao staging, ainda não commitadas
+git diff commit1 commit2  # diferenças entre dois commits específicos
 ```
 
 ## Ver o detalhe de um commit
 
 ```bash
-git show a3f9c1d   # exibe a mensagem, o autor, a data e o diff completo desse commit especifico
+# exibe a mensagem, o autor, a data e o diff completo desse commit específico
+git show a3f9c1d
 ```
 
 ---

@@ -20,10 +20,10 @@ O [Bash](/?c=shells&s=bash&p=bash) carrega, dependendo do caso, `~/.bashrc`, `~/
 ## Onde colocar o quê
 
 ```bash
-# ~/.zshenv : variaveis necessarias mesmo em um script nao interativo
+# ~/.zshenv : variáveis necessarias mesmo em um script não interativo
 export EDITOR="vim"
 
-# ~/.zshrc : tudo que so faz sentido em modo interativo
+# ~/.zshrc : tudo que só faz sentido em modo interativo
 alias ll="ls -la"
 export PROMPT='%n@%m %~ %# '
 ```

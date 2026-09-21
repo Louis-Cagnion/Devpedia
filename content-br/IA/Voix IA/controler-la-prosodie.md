@@ -15,7 +15,7 @@ Um modelo que produz um áudio inteligível não basta: o mesmo texto pode ser l
 | **Energia** | O volume, e sua evolução ao longo de uma frase | Uma sílaba acentuada também é mais forte |
 
 ```text
-"Voce vem?"            vs        "Voce vem."
+"Você vem?"            vs        "Você vem."
        ↗                                ↘
    altura que sobe             altura que desce
    no final da frase           no final da frase
@@ -47,8 +47,8 @@ A [Web Speech API](/?c=ia&s=voix-ia&p=synthese-classique-vs-deep-learning) do na
 
 ```javascript
 const enunciado = new SpeechSynthesisUtterance("Ola pessoal");
-enunciado.pitch = 1.2;   // altura: 0 (grave) a 2 (aguda), 1 por padrao
-enunciado.rate = 0.9;    // duracao/velocidade: 0.1 (lento) a 10 (rapido), 1 por padrao
+enunciado.pitch = 1.2;   // altura: 0 (grave) a 2 (aguda), 1 por padrão
+enunciado.rate = 0.9;    // duração/velocidade: 0.1 (lento) a 10 (rápido), 1 por padrão
 enunciado.volume = 1.0;  // energia/volume: 0 (silencioso) a 1 (alto)
 ```
 

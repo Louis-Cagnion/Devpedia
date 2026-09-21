@@ -127,7 +127,16 @@ double area(double ax, double ay, double bx, double by, double cx, double cy)
     return fabs((bx - ax) * (cy - ay) - (cx - ax) * (by - ay)) / 2.0;
 }
 
-int pontoNoTriangulo(double px, double py, double ax, double ay, double bx, double by, double cx, double cy)
+int pontoNoTriangulo(
+    double px,
+    double py,
+    double ax,
+    double ay,
+    double bx,
+    double by,
+    double cx,
+    double cy
+)
 {
     double areaTotal = area(ax, ay, bx, by, cx, cy);
     double areaSub1 = area(px, py, ax, ay, bx, by);

@@ -21,7 +21,8 @@ Comme pour [un arbre binaire](/?c=langages-de-programmation&s=c&p=arbres-binaire
 ## Créer et chaîner des maillons
 
 ```c
-Maillon *premier = malloc(sizeof(Maillon));   // à vérifier contre NULL en pratique (voir La gestion de la mémoire)
+// à vérifier contre NULL en pratique (voir La gestion de la mémoire)
+Maillon *premier = malloc(sizeof(Maillon));
 premier->valeur = 10;
 
 Maillon *second = malloc(sizeof(Maillon));

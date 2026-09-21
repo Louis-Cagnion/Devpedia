@@ -9,10 +9,10 @@ Este capítulo já pressupõe conhecido o que é um [terminal](/?c=bases-de-l-in
 ## Se locomover: `cd` e `pwd`
 
 ```bash
-pwd            # exibe o diretorio atual (Print Working Directory)
+pwd            # exibe o diretório atual (Print Working Directory)
 cd Documentos  # move para o subdiretorio "Documentos"
-cd ..          # sobe um nivel
-cd -           # volta para o diretorio anterior
+cd ..          # sobe um nível
+cd -           # volta para o diretório anterior
 ```
 
 > **Armadilha:** `cd` sem argumento não "não faz nada": ele leva diretamente ao diretório pessoal (`$HOME`), o que surpreende quem esperava permanecer no lugar.
@@ -22,9 +22,9 @@ cd -           # volta para o diretorio anterior
 ## Listar um diretório: `ls`
 
 ```bash
-ls     # lista o conteudo do diretorio atual
+ls     # lista o conteúdo do diretório atual
 ls -a  # inclui os arquivos ocultos (cujo nome comeca com um ponto)
-ls -l  # exibe os detalhes (permissoes, tamanho, data) em vez de so os nomes
+ls -l  # exibe os detalhes (permissões, tamanho, data) em vez de só os nomes
 ```
 
 | Opção | Efeito |
@@ -40,7 +40,7 @@ ls -l  # exibe os detalhes (permissoes, tamanho, data) em vez de so os nomes
 ## Ler o conteúdo de um arquivo: `cat`
 
 ```bash
-cat arquivo.txt   # exibe todo o conteudo do arquivo no terminal
+cat arquivo.txt   # exibe todo o conteúdo do arquivo no terminal
 ```
 
 > **Nota:** para um arquivo longo demais para caber em uma tela, veja o capítulo sobre processamento de texto (`less`, `head`, `tail`); `cat` exibe tudo de uma vez, sem paginação.
@@ -76,15 +76,15 @@ ls --help  # resumo mais curto, direto no terminal
 Isso fica concreto assim que um mesmo nome existe em **várias** seções ao mesmo tempo: `printf` é ao mesmo tempo um comando de terminal (seção 1) e uma função da linguagem C (seção 3, cf. [capítulo C dedicado](/?c=langages-de-programmation&s=c&p=fonctions-variadiques)), e são duas páginas de manual completamente diferentes:
 
 ```bash
-man printf    # sem especificar, abre a secao mais baixa encontrada: aqui, a 1 (comando)
-man 3 printf  # forca a abertura da secao 3: a funcao C, nao o comando
+man printf    # sem especificar, abre a seção mais baixa encontrada: aqui, a 1 (comando)
+man 3 printf  # força a abertura da seção 3: a função C, não o comando
 ```
 
 Para saber em quais seções um nome existe antes de escolher:
 
 ```bash
-man -f printf  # lista todas as secoes onde "printf" tem uma pagina de manual
-whatis printf  # equivalente, com uma descricao de uma linha para cada uma
+man -f printf  # lista todas as seções onde "printf" tem uma página de manual
+whatis printf  # equivalente, com uma descrição de uma linha para cada uma
 ```
 
 ### Armadilha: `man cd` não funciona como esperado
@@ -97,8 +97,10 @@ man cd
 `cd` não é um programa separado no disco: é um **comando interno** (*builtin*), executado diretamente pelo próprio Bash em vez de lançado como um processo à parte (veja [Executar um comando: builtin vs externo](/?c=shells&s=bash&p=architecture-dun-shell) para o porquê de `cd` precisar obrigatoriamente funcionar assim). `man` procura uma página dedicada a um executável: não há nenhuma para um builtin. O comando certo nesse caso é `help`:
 
 ```bash
-help cd   # documentacao do builtin cd, fornecida pelo proprio Bash
-man bash  # alternativa: todos os builtins tambem estao documentados ali, na secao "SHELL BUILTIN COMMANDS"
+help cd   # documentação do builtin cd, fornecida pelo próprio Bash
+# alternativa: todos os builtins também estão documentados ali, na seção "SHELL BUILTIN
+# COMMANDS"
+man bash
 ```
 
 ---

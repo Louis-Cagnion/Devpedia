@@ -77,7 +77,7 @@ Em Python:
 
 ```python
 import math
-math.isclose(0.1 + 0.2, 0.3)     # True -> gerencia a tolerancia para voce
+math.isclose(0.1 + 0.2, 0.3)     # True -> gerência a tolerância para você
 ```
 
 Em JavaScript:
@@ -146,24 +146,13 @@ A base é comum; as linguagens diferem apenas na embalagem:
 
 Lembre-se principalmente de que essas diferenças não mudam nada no fundo: é o hardware que decide, e ele decide igual para todo mundo.
 
-## Resumo
-
-| A reter | Por quê |
-|---|---|
-| `0.1 + 0.2 != 0.3` em todas as linguagens | Codificação binária, não um bug da linguagem |
-| Nunca comparar dois floats com `==` | Dois cálculos equivalentes dão bits diferentes |
-| Comparar via um epsilon adequado ao domínio | A precisão é relativa à ordem de grandeza |
-| Valores monetários em inteiros ou `DECIMAL` | Nenhuma aproximação tolerável com dinheiro |
-| Inteiros exatos até 2⁵³ em precisão dupla | A mantissa tem 52 bits |
-| `NaN != NaN` | Um valor inválido não é igual a nada, incluindo ele mesmo |
-
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **O que reter** | Um float (norma IEEE 754) armazena uma aproximação, não um valor exato: `0.1 + 0.2 != 0.3` em todas as linguagens, sem exceção. A precisão é relativa: quanto maior um número, maior o intervalo entre dois floats consecutivos. |
+| **O que reter** | Um float (norma IEEE 754) armazena uma aproximação, não um valor exato: `0.1 + 0.2 != 0.3` em todas as linguagens, sem exceção. A precisão é relativa: quanto maior um número, maior o intervalo entre dois floats consecutivos. Os inteiros permanecem exatos até 2⁵³ em precisão dupla (52 bits de mantissa); além disso, inteiros vizinhos se tornam indistinguíveis. |
 | **Ferramentas úteis** | Comparação por epsilon (`math.isclose`, `fabs(a-b) < epsilon`), tipos `DECIMAL` para valores exatos. Ponto fixo para um resultado reprodutível bit a bit sem FPU. |
-| **Armadilhas a evitar** | Comparar dois floats com `==`; armazenar um valor monetário em float em vez de inteiros (centavos) ou `DECIMAL`. |
+| **Armadilhas a evitar** | Comparar dois floats com `==` (incluindo `NaN`, que não é igual a nada, nem a si mesmo); armazenar um valor monetário em float em vez de inteiros (centavos) ou `DECIMAL`. |
 | **Boas práticas** | Escolher um epsilon adequado à ordem de grandeza manipulada, nunca o epsilon de máquina por padrão para valores grandes. |

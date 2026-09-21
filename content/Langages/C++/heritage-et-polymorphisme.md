@@ -39,8 +39,10 @@ std::cout << a->parler();   // affiche "..." -> PAS "Rex aboie" !
 class Animal {
 public:
     Animal(std::string nom) : nom(nom) {}
-    virtual std::string parler() const { return "..."; }  // "virtual" active la LIAISON DYNAMIQUE
-    virtual ~Animal() {}                                  // destructeur virtuel : voir note ci-dessous
+    // "virtual" active la LIAISON DYNAMIQUE
+    virtual std::string parler() const { return "..."; }
+    // destructeur virtuel : voir note ci-dessous
+    virtual ~Animal() {}
 protected:
     std::string nom;
 };
@@ -48,7 +50,8 @@ protected:
 class Chien : public Animal {
 public:
     Chien(std::string nom) : Animal(nom) {}
-    std::string parler() const override { return nom + " aboie"; }   // "override" : vérifié par le compilateur
+    // "override" : vérifié par le compilateur
+    std::string parler() const override { return nom + " aboie"; }
 };
 
 Animal *a = new Chien("Rex");
@@ -99,7 +102,8 @@ Une ambiguïté résiduelle sur un nom hérité (deux méthodes de même nom ven
 ```cpp
 class FormeGeometrique {
 public:
-    virtual double aire() const = 0;   // "= 0" : fonction PUREMENT virtuelle, aucune implémentation ici
+    // "= 0" : fonction PUREMENT virtuelle, aucune implémentation ici
+    virtual double aire() const = 0;
     virtual ~FormeGeometrique() {}
 };
 
@@ -112,7 +116,8 @@ private:
 };
 
 FormeGeometrique *forme = new Cercle(5);                // OK
-FormeGeometrique *impossible = new FormeGeometrique();  // ERREUR : classe abstraite, non instanciable
+// ERREUR : classe abstraite, non instanciable
+FormeGeometrique *impossible = new FormeGeometrique();
 ```
 
 Une classe contenant au moins une méthode purement virtuelle (`= 0`) devient **abstraite** : elle ne peut jamais être instanciée directement, seulement héritée : elle définit un contrat ("toute forme géométrique doit savoir calculer son aire") que chaque classe fille doit implémenter.
@@ -123,7 +128,8 @@ Le constructeur de copie de C++ n'est jamais virtuel (il n'existe d'ailleurs pas
 
 ```cpp
 FormeGeometrique *forme = new Cercle(5);
-FormeGeometrique *copie = new FormeGeometrique(*forme);   // NE copie que la partie FormeGeometrique !
+// NE copie que la partie FormeGeometrique !
+FormeGeometrique *copie = new FormeGeometrique(*forme);
 ```
 
 `new FormeGeometrique(*forme)` construit un objet du type déclaré du pointeur (`FormeGeometrique`), jamais du type réel pointé (`Cercle`) : tout ce qui est spécifique à `Cercle` (ici, le rayon) est perdu, une conséquence directe de la liaison statique (voir "Le problème sans `virtual`" plus haut), appliquée cette fois à la construction plutôt qu'à un appel de méthode.
@@ -140,7 +146,8 @@ public:
 class Cercle : public FormeGeometrique {
 public:
     Cercle(double rayon) : rayon(rayon) {}
-    Cercle *clone() const override { return new Cercle(*this); }   // construit un Cercle, pas un FormeGeometrique
+    // construit un Cercle, pas un FormeGeometrique
+    Cercle *clone() const override { return new Cercle(*this); }
 private:
     double rayon;
 };

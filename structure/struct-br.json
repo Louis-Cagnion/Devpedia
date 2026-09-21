@@ -74,6 +74,14 @@
             {
               "id": "algorithme-glouton",
               "label": "O algoritmo guloso (Greedy algorithm)"
+            },
+            {
+              "id": "swap-remove",
+              "label": "O swap-remove: remover um elemento em O(1)"
+            },
+            {
+              "id": "backtracking-et-satisfaction-de-contraintes",
+              "label": "O backtracking e a satisfação de restrições (CSP)"
             }
           ]
         },
@@ -930,6 +938,10 @@
             {
               "id": "heap-des-runtimes-manages",
               "label": "O heap de um runtime gerenciado"
+            },
+            {
+              "id": "recouvrement-de-latence",
+              "label": "Sobrepor a latência com um pool em rodízio"
             }
           ]
         },
@@ -993,6 +1005,10 @@
             {
               "id": "architecture-interne",
               "label": "A arquitetura interna do Git"
+            },
+            {
+              "id": "worktree",
+              "label": "O worktree: várias branches abertas ao mesmo tempo"
             }
           ]
         }
@@ -1296,6 +1312,29 @@
             {
               "id": "conteneurs-manages-ecs-et-fargate",
               "label": "Contêineres gerenciados na nuvem: ECS e Fargate"
+            }
+          ]
+        },
+        {
+          "id": "kubernetes",
+          "label": "Kubernetes",
+          "folder": "Kubernetes",
+          "chapters": [
+            {
+              "id": "concepts-de-base",
+              "label": "Os conceitos básicos"
+            },
+            {
+              "id": "services-et-ingress",
+              "label": "Service e Ingress: rotear o tráfego para os pods"
+            },
+            {
+              "id": "configmaps-et-secrets",
+              "label": "ConfigMaps e Secrets: tirar a configuração da imagem"
+            },
+            {
+              "id": "autoscaling-et-rolling-updates",
+              "label": "Autoscaling e rolling updates"
             }
           ]
         },
@@ -1657,6 +1696,10 @@
             {
               "id": "deep-learning-pytorch",
               "label": "Deep learning com PyTorch"
+            },
+            {
+              "id": "distillation-de-modeles",
+              "label": "A destilação de modelos"
             }
           ]
         },

@@ -35,7 +35,7 @@ Avec ce système de pièces (1, 2, 5, 10, 20, 50), ce choix glouton donne toujou
 | Algorithme de Dijkstra (plus court chemin) | Toujours étendre vers le sommet non visité le plus proche |
 | Codage de Huffman (compression) | Toujours regrouper les deux symboles les moins fréquents |
 
-Un algorithme glouton est en général rapide et simple à implémenter (une seule passe, aucun retour en arrière) ; à opposer à un algorithme qui explore plusieurs possibilités avant de choisir (programmation dynamique, `backtracking`), plus coûteux mais qui garantit l'optimalité dans des cas où le glouton échoue.
+Un algorithme glouton est en général rapide et simple à implémenter (une seule passe, aucun retour en arrière) ; à opposer à un algorithme qui explore plusieurs possibilités avant de choisir ([programmation dynamique](https://fr.wikipedia.org/wiki/Programmation_dynamique), [backtracking](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes)), plus coûteux mais qui garantit l'optimalité dans des cas où le glouton échoue.
 
 ---
 

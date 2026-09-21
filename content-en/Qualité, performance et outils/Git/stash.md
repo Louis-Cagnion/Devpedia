@@ -10,7 +10,8 @@ order: 6
 
 ```bash
 git stash                          # Saves all tracked changes and restores the "clean" folder
-git stash push -m "In progress: contact form"  # with a note, so you can find your way back later
+# with a note, so you can find your way back later
+git stash push -m "In progress: contact form"
 git stash -u                        # Also includes untracked files (new, never added)
 ```
 

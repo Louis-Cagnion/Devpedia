@@ -11,7 +11,7 @@ Em um programa que dialoga com o exterior (rede, navegador, disco), a maior part
 O reflexo mais comum é colocar uma pausa "longa o suficiente para funcionar":
 
 ```python
-pagina.clicar("Proxima pagina")
+pagina.clicar("Próxima página")
 time.sleep(2)              # esperamos que 2s bastem
 ler_os_resultados()
 ```
@@ -29,7 +29,7 @@ A formulação correta é: *esperar que o resultado esteja lá*, com um teto de 
 
 ```python
 def esperar_ate(condicao, timeout_s=5, intervalo_ms=150):
-    """Espera que condicao() seja verdadeira. Retorna False se o prazo for excedido."""
+    """Espera que condição() seja verdadeira. Retorna False se o prazo for excedido."""
     for _ in range(int(timeout_s * 1000 / intervalo_ms)):
         if condicao():
             return True
@@ -41,10 +41,10 @@ No uso:
 
 ```python
 numero_antes = contar_resultados()
-pagina.clicar("Proxima pagina")
+pagina.clicar("Próxima página")
 
 if not esperar_ate(lambda: contar_resultados() > numero_antes):
-    raise RuntimeError("A proxima pagina nunca carregou")
+    raise RuntimeError("A próxima página nunca carregou")
 ```
 
 Retoma-se assim que o conteúdo está pronto (portanto em 300 ms quando a página é rápida) enquanto se permanece correto quando ela é lenta. O teto deixa de servir como tempo de espera, e passa a servir como detecção de falha.
@@ -63,7 +63,7 @@ Duas defesas se combinam:
 def fechar_banner(pagina, sites_ja_tratados):
     site = dominio_de(pagina.url)
     if site in sites_ja_tratados:
-        return                      # ja resolvido: nao se perde 2s reverificando
+        return                      # já resolvido: não se perde 2s reverificando
     sites_ja_tratados.add(site)
     ...
 ```

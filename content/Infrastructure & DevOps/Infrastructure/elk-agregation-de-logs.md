@@ -53,7 +53,13 @@ Les deux restent complémentaires plutôt que concurrents : une métrique alerte
 Un log écrit comme une simple phrase libre (`"Erreur lors du traitement de la commande 1234"`) reste difficile à filtrer précisément une fois des millions de lignes accumulées. Un log **structuré**, le plus souvent en JSON, sépare chaque information dans son propre champ :
 
 ```json
-{"timestamp": "2026-08-20T14:03:27Z", "niveau": "error", "service": "commandes", "id_commande": 1234, "message": "Echec du paiement"}
+{
+    "timestamp": "2026-08-20T14:03:27Z",
+    "niveau": "error",
+    "service": "commandes",
+    "id_commande": 1234,
+    "message": "Échec du paiement"
+}
 ```
 
 > **Piège :** journaliser en texte libre non structuré, puis découvrir en production qu'il est impossible de filtrer précisément par service, niveau de gravité ou identifiant sans recourir à des expressions régulières fragiles sur le texte du message.

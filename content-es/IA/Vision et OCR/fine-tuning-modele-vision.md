@@ -39,11 +39,11 @@ Una vez cargado el modelo preentrenado, existen varias estrategias, según la ca
 **Congelar** una capa significa excluirla del cálculo de gradiente: sus pesos permanecen fijados en su valor preentrenado, la retropropagación nunca los modifica.
 
 ```python
-# Cargar un modelo preentrenado y congelar su "backbone" (las capas de extraccion de patrones)
+# Cargar un modelo preentrenado y congelar su "backbone" (las capas de extracción de patrones)
 for parametro in modelo.backbone.parameters():
-    parametro.requires_grad = False   # excluido del calculo de gradiente, ver autograd
+    parametro.requires_grad = False   # excluido del cálculo de gradiente, ver autograd
 
-# Solo la nueva capa de salida, anadida para este caso de negocio, sigue siendo entrenable
+# Solo la nueva capa de salida, añadida para este caso de negocio, sigue siendo entrenable
 modelo.cabeza_de_salida = nn.Linear(tamano_features, numero_categorias_negocio)
 ```
 
@@ -59,9 +59,12 @@ Con pocos ejemplos disponibles, la **aumentación de datos** (*data augmentation
 from torchvision import transforms
 
 aumentacion = transforms.Compose([
-    transforms.RandomRotation(degrees=5),                    # ligero desalineamiento del escaneo
-    transforms.ColorJitter(brightness=0.2, contrast=0.2),    # variacion de iluminacion/calidad de escaneo
-    transforms.GaussianBlur(kernel_size=3),                  # ligero desenfoque (foto en lugar de escaner)
+    # ligero desalineamiento del escaneo
+    transforms.RandomRotation(degrees=5),
+    # variación de iluminación/calidad de escaneo
+    transforms.ColorJitter(brightness=0.2, contrast=0.2),
+    # ligero desenfoque (foto en lugar de escaner)
+    transforms.GaussianBlur(kernel_size=3),
 ])
 ```
 

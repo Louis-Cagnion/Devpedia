@@ -18,8 +18,11 @@ class EstadoDeAvance:
         self.ruta = Path(f"{ruta}.parcial")
         self.resultados = []
         if reanudacion and self.ruta.exists():
-            self.resultados = [json.loads(linea) for linea
-                              in self.ruta.read_text(encoding="utf-8").splitlines() if linea.strip()]
+            self.resultados = [
+                json.loads(linea)
+                for linea in self.ruta.read_text(encoding="utf-8").splitlines()
+                if linea.strip()
+            ]
         else:
             self.ruta.unlink(missing_ok=True)
         self.hechos = {clave(r) for r in self.resultados}
@@ -67,7 +70,8 @@ $lector->open('catalogo.xml');
 
 while ($lector->read()) {
     if ($lector->nodeType === XMLReader::ELEMENT && $lector->name === 'producto') {
-        $producto = new SimpleXMLElement($lector->readOuterXML());   // un solo <producto> en memoria a la vez
+        // un solo <producto> en memoria a la vez
+        $producto = new SimpleXMLElement($lector->readOuterXML());
         procesar($producto);
     }
 }
@@ -89,10 +93,12 @@ Un procesamiento de 20 minutos sin visualización es indistinguible de un progra
 
 ```python
 def tiempo_restante(inicio, hechos, total):
-    if hechos < 2:                      # aun no hay ritmo medible
+    if hechos < 2:                      # aún no hay ritmo medible
         return ""
     restante = (time.monotonic() - inicio) / hechos * (total - hechos)
-    return f" ~{int(restante)}s restantes" if restante < 90 else f" ~{round(restante / 60)} min restantes"
+    if restante < 90:
+        return f" ~{int(restante)}s restantes"
+    return f" ~{round(restante / 60)} min restantes"
 ```
 
 Use `time.monotonic()` y no `time.time()`: el segundo puede retroceder (sincronización de reloj, cambio de hora) y producir duraciones negativas.

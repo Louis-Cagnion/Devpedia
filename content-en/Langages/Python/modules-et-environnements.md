@@ -37,7 +37,8 @@ def addition(a, b):
     return a + b
 
 if __name__ == "__main__":
-    print("Quick test:", addition(2, 3))   # runs ONLY if you run "python calculations.py" directly
+    # runs ONLY if you run "python calculations.py" directly
+    print("Quick test:", addition(2, 3))
 ```
 
 > **Note:** This safeguard allows a file to serve both as a reusable module (imported without executing anything unexpected) and as a standalone script (that can be tested directly), without these two uses interfering with each other.

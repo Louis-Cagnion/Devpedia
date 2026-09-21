@@ -33,7 +33,8 @@ from sklearn.svm import SVC
 modele = SVC(kernel="linear")
 modele.fit(X_entrainement, y_entrainement)
 
-modele.support_vectors_    # les seuls exemples qui déterminent la frontière (souvent une poignée, sur des centaines)
+# les seuls exemples qui déterminent la frontière (souvent une poignée, sur des centaines)
+modele.support_vectors_
 ```
 
 ## Le *kernel trick* : quand une droite ne suffit pas
@@ -43,7 +44,8 @@ Si les deux catégories ne sont pas séparables par une ligne droite, un SVM à 
 ```python
 modele_courbe = SVC(kernel="rbf")   # noyau RBF : autorise une frontière courbe
 modele_courbe.fit(X_entrainement, y_entrainement)
-# peut atteindre 100% là où kernel="linear" plafonnait à 60%, sur un problème non linéairement séparable
+# peut atteindre 100% là où kernel="linear" plafonnait à 60%, sur un problème non linéairement
+# séparable
 ```
 
 Techniquement, le noyau évite de calculer explicitement les coordonnées dans cet espace transformé (potentiellement de très grande dimension) : il calcule directement, par une formule mathématique, à quel point deux points seraient "proches" une fois transformés, ce qui suffit à l'algorithme sans jamais construire l'espace transformé lui-même.
@@ -56,7 +58,8 @@ Un SVM mesure des **distances** entre points pour trouver la marge maximale : un
 from sklearn.preprocessing import StandardScaler
 
 scaler = StandardScaler()
-X_mis_a_echelle = scaler.fit_transform(X_entrainement)   # centre et réduit chaque colonne (moyenne 0, écart-type 1)
+# centre et réduit chaque colonne (moyenne 0, écart-type 1)
+X_mis_a_echelle = scaler.fit_transform(X_entrainement)
 ```
 
 ---

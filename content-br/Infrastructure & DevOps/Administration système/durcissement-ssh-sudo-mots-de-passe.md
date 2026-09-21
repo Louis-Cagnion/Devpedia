@@ -33,11 +33,15 @@ O **PAM** (*Pluggable Authentication Modules*) é o sistema Linux que gerencia a
 O `sudo` permite que um usuário autorizado execute um comando com os privilégios de `root`, sem compartilhar a senha do `root` propriamente dita. Seu arquivo de configuração (`/etc/sudoers`, a ser editado via `visudo`) aceita várias configurações de endurecimento:
 
 ```text
-Defaults passwd_tries=3                          # 3 tentativas de senha no maximo
+# 3 tentativas de senha no maximo
+Defaults passwd_tries=3
 Defaults badpass_message="Senha incorreta, tentativa recusada."
-Defaults logfile="/var/log/sudo/sudo.log"        # registra cada comando sudo
-Defaults log_input, log_output                    # registra tambem o que e digitado/exibido
-Defaults use_pty                                  # executa o comando em um pseudo-terminal dedicado
+# registra cada comando sudo
+Defaults logfile="/var/log/sudo/sudo.log"
+# registra tambem o que e digitado/exibido
+Defaults log_input, log_output
+# executa o comando em um pseudo-terminal dedicado
+Defaults use_pty
 Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 ```
 

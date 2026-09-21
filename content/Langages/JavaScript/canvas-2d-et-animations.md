@@ -10,7 +10,7 @@ L'élément [HTML](/?c=langages&s=html&p=html) `<canvas>` expose une zone de des
 
 ```javascript
 const canvas = document.querySelector('canvas');
-const ctx = canvas.getContext('2d');   // "2d" : dessin 2D classique (par opposition a "webgl")
+const ctx = canvas.getContext('2d');   // "2d" : dessin 2D classique (par opposition à "webgl")
 
 ctx.fillStyle = 'rgba(2,96,231,0.5)';
 ctx.fillRect(10, 10, 100, 50);         // rectangle plein : x, y, largeur, hauteur
@@ -22,12 +22,15 @@ Un pixel CSS (la taille affichée) ne correspond pas toujours à un pixel physiq
 
 ```javascript
 function redimensionner() {
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);   // plafonne a 2 : au-dela, cout inutile
+    // plafonne à 2 : au-delà, coût inutile
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
 
-    canvas.width  = Math.floor(rect.width  * ratio);   // resolution REELLE du canvas (pixels physiques)
+    // résolution RÉELLE du canvas (pixels physiques)
+    canvas.width  = Math.floor(rect.width  * ratio);
     canvas.height = Math.floor(rect.height * ratio);
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);         // pour dessiner ensuite en coordonnees CSS
+    // pour dessiner ensuite en coordonnées CSS
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 }
 ```
 
@@ -43,7 +46,7 @@ function redimensionner() {
 
 ```javascript
 function frame(maintenant) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);   // efface l'image precedente
+    ctx.clearRect(0, 0, canvas.width, canvas.height);   // efface l'image précédente
     dessinerLaScene(maintenant);
     requestAnimationFrame(frame);                        // reprogramme le prochain appel
 }
@@ -63,7 +66,7 @@ let x = positionInitiale;
 
 function frame() {
     const cible = calculerNouvelleCible();
-    x += (cible - x) * 0.04;   // avance de 4% de la distance restante a chaque image
+    x += (cible - x) * 0.04;   // avance de 4% de la distance restante à chaque image
     dessinerA(x);
     requestAnimationFrame(frame);
 }
@@ -81,7 +84,7 @@ function frame() {
 Un canvas 2D sert aussi, de façon détournée, à mesurer précisément la largeur qu'occuperait un texte avec une police donnée, **sans jamais dessiner ni afficher ce canvas** :
 
 ```javascript
-const ctxMesure = document.createElement('canvas').getContext('2d');   // jamais ajoute au DOM
+const ctxMesure = document.createElement('canvas').getContext('2d');   // jamais ajouté au DOM
 
 function largeurTexte(texte, taillePolice = 11) {
     ctxMesure.font = `${taillePolice}px sans-serif`;

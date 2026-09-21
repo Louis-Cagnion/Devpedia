@@ -12,14 +12,17 @@ Un programa Python puede tanto lanzar OTRO programa (`subprocess`) como modifica
 import subprocess
 
 resultado = subprocess.run(["ls", "-la"], capture_output=True, text=True)  # BLOQUEANTE
-print(resultado.returncode)                                               # 0 = éxito, otro valor = fallo
-print(resultado.stdout)                                                   # lo que el programa mostró
+# 0 = éxito, otro valor = fallo
+print(resultado.returncode)
+# lo que el programa mostró
+print(resultado.stdout)
 ```
 
 `subprocess.run()` espera a que termine el proceso lanzado antes de continuar.
 
 ```python
-proceso = subprocess.Popen(["ls", "-la"])  # NO BLOQUEANTE: devuelve INMEDIATAMENTE, el proceso corre en paralelo
+# NO BLOQUEANTE: devuelve INMEDIATAMENTE, el proceso corre en paralelo
+proceso = subprocess.Popen(["ls", "-la"])
 # ... hacer otra cosa mientras "proceso" se ejecuta ...
 proceso.wait()  # espera explícitamente a que termine, si hace falta
 proceso.poll()  # None si sigue en curso, si no el código de retorno
@@ -34,9 +37,12 @@ proceso.poll()  # None si sigue en curso, si no el código de retorno
 ```python
 import sys
 
-sys.executable  # "/usr/bin/python3.12" o "C:\...\python.exe" -> ruta ABSOLUTA del intérprete que ejecuta ESTE código
+# "/usr/bin/python3.12" o "C:\...\python.exe" -> ruta ABSOLUTA del intérprete que ejecuta ESTE
+# código
+sys.executable
 
-subprocess.run([sys.executable, "otro_script.py"])  # relanza un script con el MISMO intérprete/entorno
+# relanza un script con el MISMO intérprete/entorno
+subprocess.run([sys.executable, "otro_script.py"])
 ```
 
 > **Buena práctica:** usar `sys.executable` en lugar de un simple `"python"` fijo para relanzar un script Python: `"python"` podría apuntar a una instalación completamente distinta (versión equivocada, [entorno virtual](/?c=langages-de-programmation&s=python&p=modules-et-environnements) equivocado) según la máquina.
@@ -60,9 +66,10 @@ class FlujoDoble:  # duplica cada escritura hacia dos destinos
         self.archivo_log.flush()
 
 log = open("ejecucion.log", "a", encoding="utf-8")
-sys.stderr = FlujoDoble(sys.stderr, log)  # reemplaza el objeto del módulo por el doble, sin tocar el resto del código
+# reemplaza el objeto del módulo por el doble, sin tocar el resto del código
+sys.stderr = FlujoDoble(sys.stderr, log)
 
-print("Error", file=sys.stderr)  # se muestra en pantalla Y se escribe en ejecucion.log
+print("Error", file=sys.stderr)  # se muestra en pantalla Y se escribe en ejecución.log
 ```
 
 `sys.stdout`/`sys.stderr` son simples objetos, reemplazables como cualquier otra variable de módulo: asignarles un objeto que exponga `.write()`/`.flush()` intercepta silenciosamente todo lo que ya se escribe en otra parte con `print(..., file=sys.stderr)`. El nombre **Tee** viene del comando Unix `tee` (ya visto en [Bash](/?c=shells&s=bash&p=redirections-et-pipes)/[PowerShell](/?c=shells&s=powershell&p=powershell)), que duplica un flujo hacia varios destinos a la vez.

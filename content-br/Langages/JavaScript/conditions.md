@@ -12,24 +12,24 @@ JavaScript usa `if`/`else if`/`else` e `switch`, com uma particularidade importa
 const idade = 20;
 
 if (idade >= 18) {
-    console.log("Voce e maior de idade.");
+    console.log("Você e maior de idade.");
 } else if (idade >= 13) {
-    console.log("Voce e adolescente.");
+    console.log("Você e adolescente.");
 } else {
-    console.log("Voce e crianca.");
+    console.log("Você e crianca.");
 }
 ```
 
 ## `==` vs `===`: ainda mais crítico que em [PHP](/?c=langages-de-programmation&s=php&p=php)
 
 ```javascript
-0 == "0"           // true  -> convertido em numero antes da comparacao
+0 == "0"           // true  -> convertido em número antes da comparação
 0 == ""            // true  -> "" convertida em 0
 null == undefined  // true -> caso especial
 "" == false        // true
 1 == "1"           // true
 
-0 === "0"    // false -> tipos diferentes, nenhuma conversao
+0 === "0"    // false -> tipos diferentes, nenhuma conversão
 ```
 
 > **Nota:** essas conversões implícitas de `==` são uma fonte lendária de bugs em JavaScript; `===`/`!==` (igualdade estrita, tipo E valor) devem ser a escolha padrão, exatamente como em [PHP](/?c=langages-de-programmation&s=php&p=conditions).
@@ -42,7 +42,7 @@ if ("") {}         // falsy
 if (null) {}       // falsy
 if (undefined) {}  // falsy
 if (NaN) {}        // falsy
-if ([]) {}         // TRUTHY! (ao contrario de PHP, onde um array vazio e falsy)
+if ([]) {}         // TRUTHY! (ao contrário de PHP, onde um array vazio é falsy)
 if ({}) {}         // TRUTHY!
 ```
 
@@ -58,10 +58,10 @@ const status = idade >= 18 ? "maior de idade" : "menor de idade";
 
 ```javascript
 const apelido = usuario.apelido ?? "Convidado";
-// "??" so recorre ao valor padrao SE o valor for null/undefined (nao 0, "", false)
+// "??" só recorre ao valor padrão SE o valor for null/undefined (não 0, "", false)
 
 const cidade = usuario?.endereco?.cidade ?? "Desconhecida";
-// "?." : se "usuario" ou "endereco" for null/undefined, para imediatamente e retorna undefined
+// "?." : se "usuário" ou "endereço" for null/undefined, para imediatamente e retorna undefined
 // -> evita um TypeError "Cannot read properties of undefined" em cascata
 ```
 
@@ -78,7 +78,7 @@ switch (dia) {
         break;
     case 2:
     case 3:
-        console.log("Inicio de semana");  // sem break entre 2 e 3: caso compartilhado
+        console.log("Início de semana");  // sem break entre 2 e 3: caso compartilhado
         break;
     default:
         console.log("Outro dia");

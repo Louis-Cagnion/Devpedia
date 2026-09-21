@@ -13,7 +13,8 @@ frutas = ["manzana", "platano", "cereza"]
 
 frutas[0]     # "manzana"
 frutas[-1]    # "cereza" -> índice negativo: cuenta desde el final
-frutas[0:2]   # ["manzana", "platano"] -> slicing: elementos del índice 0 (incluido) al 2 (excluido)
+# ["manzana", "platano"] -> slicing: elementos del índice 0 (incluido) al 2 (excluido)
+frutas[0:2]
 frutas[::-1]  # ["cereza", "platano", "manzana"] -> invierte la lista (paso -1)
 
 frutas.append("kiwi")       # añade al final
@@ -31,8 +32,10 @@ len(frutas)                  # número de elementos
 `[x] * n` construye una nueva lista de tamaño `n`, cada posición contiene `x`:
 
 ```python
-zeros = [0] * 5           # [0, 0, 0, 0, 0] -> preasignación práctica para un tamaño conocido de antemano
-letras = ["a", "b"] * 3   # ["a", "b", "a", "b", "a", "b"] -> repite la SECUENCIA entera, no cada elemento
+# [0, 0, 0, 0, 0] -> preasignación práctica para un tamaño conocido de antemano
+zeros = [0] * 5
+# ["a", "b", "a", "b", "a", "b"] -> repite la SECUENCIA entera, no cada elemento
+letras = ["a", "b"] * 3
 ```
 
 > **Trampa:** `[[]] * n` NO crea `n` listas independientes, sino `n` referencias a **la misma** lista vacía: modificar una modifica entonces las `n` a la vez.
@@ -48,8 +51,10 @@ print(cuadricula)   # [['x'], ['x'], ['x']] -> las 3 sublistas SON el mismo obje
 ### `.append()` vs `.extend()`
 
 ```python
-frutas.append("kiwi")               # ya visto: añade UN SOLO elemento (incluso si es una lista, anidada tal cual)
-frutas.extend(["kiwi", "mango"])    # añade CADA elemento del iterable dado, uno por uno, al final
+# ya visto: añade UN SOLO elemento (incluso si es una lista, anidada tal cual)
+frutas.append("kiwi")
+# añade CADA elemento del iterable dado, uno por uno, al final
+frutas.extend(["kiwi", "mango"])
 
 frutas.append(["a", "b"])  # [..., ["a", "b"]] -> UN elemento, anidado
 frutas.extend(["a", "b"])  # [..., "a", "b"]   -> DOS elementos, aplanados
@@ -96,7 +101,8 @@ a = [1, 2]
 b = [3, 4]
 
 [a, b]       # [[1, 2], [3, 4]] -> anida las dos listas como 2 elementos
-[*a, *b]     # [1, 2, 3, 4]     -> desempaqueta cada elemento de forma plana, equivalente a a + b
+# [1, 2, 3, 4]     -> desempaqueta cada elemento de forma plana, equivalente a a + b
+[*a, *b]
 [*a, 0, *b]  # [1, 2, 0, 3, 4]  -> se mezcla libremente con otros elementos
 ```
 
@@ -115,7 +121,9 @@ notas.sort()   # ordena EN EL SITIO, no devuelve nada (None), notas se modifica
 
 ```python
 runs = ["2026-08-14_101530", "2026-08-06_090000", "2026-08-14_090000"]
-sorted(runs)  # ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> orden cronológico, "gratis"
+# ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> orden cronológico,
+# "gratis"
+sorted(runs)
 ```
 
 > **Trampa:** este orden lexicográfico solo funciona si todos los elementos comparados tienen la misma longitud (ej. siempre `AAAA-MM-DD`): `"9"` se clasifica DESPUÉS de `"10"` en un orden lexicográfico (`"9" > "1"` carácter por carácter), a diferencia de un orden numérico.

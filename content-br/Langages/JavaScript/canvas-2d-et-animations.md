@@ -10,7 +10,7 @@ O elemento [HTML](/?c=langages&s=html&p=html) `<canvas>` expõe uma área de des
 
 ```javascript
 const canvas = document.querySelector('canvas');
-const ctx = canvas.getContext('2d');   // "2d": desenho 2D classico (em oposicao a "webgl")
+const ctx = canvas.getContext('2d');   // "2d": desenho 2D clássico (em oposição a "webgl")
 
 ctx.fillStyle = 'rgba(2,96,231,0.5)';
 ctx.fillRect(10, 10, 100, 50);         // retangulo preenchido: x, y, largura, altura
@@ -22,12 +22,15 @@ Um pixel CSS (o tamanho exibido) nem sempre corresponde a um pixel físico da te
 
 ```javascript
 function redimensionar() {
-    const proporcao = Math.min(window.devicePixelRatio || 1, 2);   // limite em 2: alem disso, custo desnecessario
+    // limite em 2: alem disso, custo desnecessário
+    const proporcao = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
 
-    canvas.width  = Math.floor(rect.width  * proporcao);   // resolucao REAL do canvas (pixels fisicos)
+    // resolução REAL do canvas (pixels fisicos)
+    canvas.width  = Math.floor(rect.width  * proporcao);
     canvas.height = Math.floor(rect.height * proporcao);
-    ctx.setTransform(proporcao, 0, 0, proporcao, 0, 0);      // para desenhar depois em coordenadas CSS
+    // para desenhar depois em coordenadas CSS
+    ctx.setTransform(proporcao, 0, 0, proporcao, 0, 0);
 }
 ```
 
@@ -45,7 +48,7 @@ function redimensionar() {
 function frame(agora) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);   // apaga a imagem anterior
     desenharCena(agora);
-    requestAnimationFrame(frame);                         // reagenda a proxima chamada
+    requestAnimationFrame(frame);                         // reagenda a próxima chamada
 }
 requestAnimationFrame(frame);
 ```
@@ -63,7 +66,7 @@ let x = posicaoInicial;
 
 function frame() {
     const alvo = calcularNovoAlvo();
-    x += (alvo - x) * 0.04;   // avanca 4% da distancia restante a cada quadro
+    x += (alvo - x) * 0.04;   // avança 4% da distância restante a cada quadro
     desenharEm(x);
     requestAnimationFrame(frame);
 }
@@ -81,7 +84,8 @@ A cada quadro, a posição nunca pula direto para o alvo: ela avança apenas uma
 Um canvas 2D também serve, de forma indireta, para medir com precisão a largura que um texto ocuparia com uma determinada fonte, **sem nunca desenhar nem exibir esse canvas**:
 
 ```javascript
-const ctxMedida = document.createElement('canvas').getContext('2d');   // nunca adicionado ao DOM
+// nunca adicionado ao DOM
+const ctxMedida = document.createElement('canvas').getContext('2d');
 
 function larguraTexto(texto, tamanhoFonte = 11) {
     ctxMedida.font = `${tamanhoFonte}px sans-serif`;

@@ -77,7 +77,8 @@ This pattern is often used as a simple configuration or data file, without the n
 ```php
 <?php
 // in /app/pages/home.php
-require __DIR__ . '/../config.php'; // always correct, regardless of where the script is run from
+// always correct, regardless of where the script is run from
+require __DIR__ . '/../config.php';
 ?>
 ```
 

@@ -6,6 +6,19 @@
     padding: 1.5rem 1.25rem calc(var(--floating-bar-height, 0px) + 1.5rem);
 }
 
+/* Without this, moving the caret near the end of a page can auto-scroll it exactly behind
+   .readerFloatingBar: that bar is fixed, so scrolling alone (the padding above) doesn't stop
+   the browser from placing the caret at a screen position it covers. */
+html {
+    scroll-padding-bottom: calc(var(--floating-bar-height, 0px) + 1rem);
+}
+
+/* Caret-navigable body (contenteditable, edits blocked in router.js): the blinking caret is
+   already the position indicator, so the browser's default focus ring would be redundant. */
+.pageBody:focus {
+    outline: none;
+}
+
 /* isolation: isolate gives body its own stacking context so the negative z-index ::before
    below stays scoped to it (above body's own background, below body's actual children) --
    without it, a plain <body> has no stacking context of its own, so a negative z-index child

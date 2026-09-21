@@ -47,7 +47,7 @@ La mayoría de las llamadas al sistema indican un fallo devolviendo `-1` (o `NUL
 int fd = open("archivo_inexistente.txt", O_RDONLY);
 
 if (fd == -1) {
-    printf("Error: %s\n", strerror(errno)); // traduce el codigo errno a un mensaje legible
+    printf("Error: %s\n", strerror(errno)); // traduce el código errno a un mensaje legible
 }
 ```
 
@@ -64,7 +64,8 @@ Cada proceso arranca con tres descriptores ya abiertos:
 | `2` | `STDERR_FILENO` | Salida de error |
 
 ```c
-int fd = open("archivo.txt", O_RDONLY); // devuelve por ej. 3: el siguiente espacio libre de ESTE proceso
+// devuelve por ej. 3: el siguiente espacio libre de ESTE proceso
+int fd = open("archivo.txt", O_RDONLY);
 read(fd, buffer, tamano);
 close(fd);
 ```
@@ -78,9 +79,10 @@ open(ruta, O_RDONLY);                            // solo lectura
 open(ruta, O_WRONLY);                            // solo escritura
 open(ruta, O_RDWR);                              // lectura Y escritura
 
-open(ruta, O_WRONLY | O_CREAT, 0644);            // crea el archivo si aun no existe
-open(ruta, O_WRONLY | O_CREAT | O_TRUNC, 0644);  // + vacia el archivo si ya existia
-open(ruta, O_WRONLY | O_CREAT | O_APPEND, 0644); // + escribe siempre al FINAL, sin sobrescribir
+open(ruta, O_WRONLY | O_CREAT, 0644);            // crea el archivo si aún no existe
+open(ruta, O_WRONLY | O_CREAT | O_TRUNC, 0644);  // + vacía el archivo si ya existia
+// + escribe siempre al FINAL, sin sobrescribir
+open(ruta, O_WRONLY | O_CREAT | O_APPEND, 0644);
 ```
 
 | Flag | Efecto |
@@ -100,8 +102,10 @@ Estos flags se combinan con `|` (OR a nivel de bits, ver [Los operadores a nivel
 
 ```c
 int fd = open("salida.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-dup2(fd, STDOUT_FILENO); // a partir de ahora, escribir en "stdout" (1) escribe en realidad en "salida.txt"
-close(fd); // el original puede cerrarse: el destino (1) sigue siendo valido, apuntando al mismo recurso
+// a partir de ahora, escribir en "stdout" (1) escribe en realidad en "salida.txt"
+dup2(fd, STDOUT_FILENO);
+// el original puede cerrarse: el destino (1) sigue siendo válido, apuntando al mismo recurso
+close(fd);
 ```
 
 Es exactamente este mecanismo el que usa el capítulo sobre la arquitectura de un shell para implementar tanto las redirecciones (`>`, `<`) como las tuberías (`|`): en ambos casos, se hace que un descriptor estándar (`0`, `1`, `2`) apunte a un recurso diferente justo antes de ejecutar el programa de destino.

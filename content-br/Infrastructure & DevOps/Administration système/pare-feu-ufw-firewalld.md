@@ -28,8 +28,9 @@ Essa é uma aplicação direta do princípio do menor privilégio (já visto apl
 O **UFW** (*Uncomplicated Firewall*) é a ferramenta padrão no Debian/Ubuntu; ele simplifica a configuração do firewall do kernel Linux sem exigir manipular diretamente as regras de baixo nível:
 
 ```bash
-ufw default deny incoming   # recusa todo o trafego de entrada por padrao
-ufw allow 2222/tcp          # permite apenas a porta SSH (aqui redefinida, veja o capitulo anterior)
+ufw default deny incoming   # recusa todo o trafego de entrada por padrão
+# permite apenas a porta SSH (aqui redefinida, veja o capítulo anterior)
+ufw allow 2222/tcp
 ufw enable                  # ativa o firewall com essas regras
 ufw status                  # lista as regras ativas
 ```

@@ -49,7 +49,8 @@ y = [0, 0, 0, 1, 1, 1]
 modelo = LogisticRegression()
 modelo.fit(X, y)
 
-modelo.predict([[17]])         # [1] -> classificado como "vai cancelar" (probabilidade > limiar)
+# [1] -> classificado como "vai cancelar" (probabilidade > limiar)
+modelo.predict([[17]])
 modelo.predict_proba([[17]])   # [[0.18, 0.82]] -> [probabilidade de 0, probabilidade de 1]
 ```
 

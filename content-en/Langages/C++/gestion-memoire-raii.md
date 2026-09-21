@@ -4,7 +4,7 @@ order: 7
 
 # RAII and Smart Pointers
 
-In [C](/?c=langages-de-programmation&s=c&p=c) (see the chapter on memory management), every `malloc()` must be followed by a manual `free()`: forget it just once, and you get a memory leak; call it twice, and you get a crash. **RAII** (*Resource Acquisition Is Initialization*) is the central principle of C++ for eliminating this entire class of bugs, relying on a mechanism we’ve already seen: the destructor (see the chapter on classes and objects).
+In [C](/?c=langages-de-programmation&s=c&p=c) (see [Memory Management](/?c=langages-de-programmation&s=c&p=memoire)), every `malloc()` must be followed by a manual `free()`: forget it just once, and you get a memory leak; call it twice, and you get a crash. **RAII** (*Resource Acquisition Is Initialization*) is the central principle of C++ for eliminating this entire class of bugs, relying on a mechanism we’ve already seen: the destructor (see [Classes and Objects](/?c=langages-de-programmation&s=cpp&p=classes-et-objets)).
 
 ## The RAII Principle
 
@@ -16,10 +16,12 @@ public:
     GestionnaireFichier(const std::string &path) {
         file.open(path);
         if (!file.is_open()) {
-            throw std::runtime_error("Impossible d'ouvrir : " + path); // cf. chapitre sur les exceptions
+            // cf. chapitre sur les exceptions
+            throw std::runtime_error("Impossible d'ouvrir : " + path);
         }
     }
-    ~GestionnaireFichier() { file.close(); }   // called automatically, even if an exception occurs!
+    // called automatically, even if an exception occurs!
+    ~GestionnaireFichier() { file.close(); }
 private:
     std::ifstream file;
 };
@@ -39,7 +41,8 @@ int *p = new int(42);   // allocates AND initializes in a single operation
 delete p;                 // releases
 
 int *array = new int[10];   // allocates a dynamic array
-delete[] array;               // "[]" is required to free an array; otherwise, behavior is undefined
+// "[]" is required to free an array; otherwise, behavior is undefined
+delete[] array;
 ```
 
 `new` / `delete` replace `malloc` / `free` but are subject to exactly the same risks (forgetting `delete`, duplicate `delete`, *use-after-free*; see Chapter C on memory), which is why, in modern C++, they are rarely used **directly**.
@@ -78,16 +81,6 @@ std::shared_ptr<int> p2 = p1;   // OK, copying allowed: p1 AND p2 share the same
 Each `shared_ptr` increments a shared reference counter; the resource is released automatically only when this counter reaches zero.
 
 > **Note:** `shared_ptr` has a higher cost (the reference counter, which is updated in a thread-safe manner) than `unique_ptr`: it should be reserved for cases where a resource actually has multiple legitimate owners, not used by default.
-
-## Abstract
-
-| | `new` / `delete` brut | `unique_ptr` | `shared_ptr` |
-|---|---|---|---|
-| Automatic release | No | Yes | Yes |
-| Number of owners | N/A | One | Several |
-| Cost | Minimal | Virtually zero (no additional cost at runtime) | Reference counting (slight additional cost) |
-
-> **Modern C++ best practice:** Never use `new` or `delete` directly in application code: always use `unique_ptr` (by default) or `shared_ptr` (if sharing is truly necessary) instead, to take advantage of RAII without having to think about it every time.
 
 ---
 

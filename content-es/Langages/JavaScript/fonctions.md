@@ -19,7 +19,8 @@ sumar(2, 3);   // 5
 Una **declaración** de función es *hoisted* (adelantada): se puede usar incluso **antes** de su línea de definición en el archivo, a diferencia de una expresión de función.
 
 ```javascript
-console.log(sumar(2, 3));  // funciona, aunque esté escrito antes de la declaración de más abajo
+// funciona, aunque esté escrito antes de la declaración de más abajo
+console.log(sumar(2, 3));
 function sumar(a, b) { return a + b; }
 ```
 
@@ -36,9 +37,11 @@ Aquí, `sumar` es una variable como cualquier otra: solo existe a partir de la l
 ## Funciones con flecha (*arrow functions*)
 
 ```javascript
-const sumar = (a, b) => a + b;                  // una sola expresión: retorno implícito, sin "return"
+// una sola expresión: retorno implícito, sin "return"
+const sumar = (a, b) => a + b;
 const cuadrado = x => x * x;                     // paréntesis opcionales con un solo parámetro
-const saludar = () => { console.log("Hola"); }   // cuerpo multilínea: llaves + "return" explícito requerido
+// cuerpo multilínea: llaves + "return" explícito requerido
+const saludar = () => { console.log("Hola"); }
 ```
 
 ### La verdadera diferencia: `this`
@@ -50,7 +53,8 @@ const objeto = {
 
     mostrarClasica: function () {
         this.valores.forEach(function (v) {
-            console.log(this.nombre, v);   // "this" aquí es undefined (o el objeto global): ¡NO es "objeto"!
+            // "this" aquí es undefined (o el objeto global): ¡NO es "objeto"!
+            console.log(this.nombre, v);
         });
     },
 
@@ -67,11 +71,13 @@ const objeto = {
 ## Parámetros por defecto, rest y spread
 
 ```javascript
-function saludar(nombre, mensaje = "Hola") {   // valor por defecto si se omite el argumento o es undefined
+// valor por defecto si se omite el argumento o es undefined
+function saludar(nombre, mensaje = "Hola") {
     return `${mensaje} ${nombre}`;
 }
 
-function suma(...numeros) {                    // "rest": agrupa los argumentos sobrantes en un array
+// "rest": agrupa los argumentos sobrantes en un array
+function suma(...numeros) {
     return numeros.reduce((total, n) => total + n, 0);
 }
 suma(1, 2, 3, 4);   // 10
@@ -109,7 +115,7 @@ Una **IIFE** (*Immediately Invoked Function Expression*) es una función declara
 
     function svg(nombre) { /* ... */ }   // igual
 
-    global.MiBiblioteca = { svg };   // el UNICO punto accesible desde fuera
+    global.MiBiblioteca = { svg };   // el Único punto accesible desde fuera
 })(window);
 ```
 

@@ -46,7 +46,8 @@ somme(3, 10, 20, 30); // 60 -> number = 3, the next 3 arguments are added togeth
 `printf` has no **built-in way** of knowing how many variable arguments were provided: the format string itself serves as a guide, by counting the number of `%` it contains.
 
 ```c
-printf("%d %d %d\n", 1, 2, 3); // the string announces 3 values -> printf reads 3 variadic arguments
+// the string announces 3 values -> printf reads 3 variadic arguments
+printf("%d %d %d\n", 1, 2, 3);
 ```
 
 > **Note:** This is why an incorrect number of `%` compared to the actual arguments (or vice versa) does not cause **a compilation error**: only undefined behavior at runtime (reading data that is not actual arguments). This is a classic source of security vulnerabilities (“format string vulnerabilities”) when a format string comes directly from unchecked user input.
@@ -63,12 +64,15 @@ Every `%` introduces a precise syntax that must be reparsed character by charact
 printf("%-10d|\n", 42);     // "42        |" -> '-': LEFT-justified (default: right)
 printf("%010d\n", 42);      // "0000000042"  -> '0': pads with zeros instead of spaces
 printf("%#x\n", 255);       // "0xff"        -> '#': alternate form (0x/0X prefix for x/X)
-printf("%+d\n", 42);        // "+42"         -> '+': forces the sign to be shown, even when positive
+// "+42"         -> '+': forces the sign to be shown, even when positive
+printf("%+d\n", 42);
 
 printf("%10d\n", 42);       // "        42" -> MINIMUM width: padded with spaces if needed
-printf("%.3d\n", 5);        // "005"        -> precision on an integer: minimum number of digits
+// "005"        -> precision on an integer: minimum number of digits
+printf("%.3d\n", 5);
 
-printf("%*d\n", 10, 42);    // equivalent to "%10d" -> '*': the width is read from the arguments, not hardcoded
+// equivalent to "%10d" -> '*': the width is read from the arguments, not hardcoded
+printf("%*d\n", 10, 42);
 ```
 
 | Element | Role |

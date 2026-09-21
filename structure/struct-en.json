@@ -74,6 +74,14 @@
             {
               "id": "algorithme-glouton",
               "label": "Greedy Algorithms"
+            },
+            {
+              "id": "swap-remove",
+              "label": "Swap-Remove: Removing an Element in O(1)"
+            },
+            {
+              "id": "backtracking-et-satisfaction-de-contraintes",
+              "label": "Backtracking and Constraint Satisfaction (CSP)"
             }
           ]
         },
@@ -914,6 +922,10 @@
             {
               "id": "heap-des-runtimes-manages",
               "label": "A Managed Runtime's Heap"
+            },
+            {
+              "id": "recouvrement-de-latence",
+              "label": "Overlapping Latency with a Round-Robin Pool"
             }
           ]
         },
@@ -977,6 +989,10 @@
             {
               "id": "architecture-interne",
               "label": "The Internal Architecture of Git"
+            },
+            {
+              "id": "worktree",
+              "label": "The Worktree: Several Branches Open at Once"
             }
           ]
         }
@@ -1280,6 +1296,29 @@
             {
               "id": "conteneurs-manages-ecs-et-fargate",
               "label": "Managed containers in the cloud: ECS and Fargate"
+            }
+          ]
+        },
+        {
+          "id": "kubernetes",
+          "label": "Kubernetes",
+          "folder": "Kubernetes",
+          "chapters": [
+            {
+              "id": "concepts-de-base",
+              "label": "The Basic Concepts"
+            },
+            {
+              "id": "services-et-ingress",
+              "label": "Service and Ingress: Routing Traffic to Pods"
+            },
+            {
+              "id": "configmaps-et-secrets",
+              "label": "ConfigMaps and Secrets: Taking Config out of the Image"
+            },
+            {
+              "id": "autoscaling-et-rolling-updates",
+              "label": "Autoscaling and Rolling Updates"
             }
           ]
         },
@@ -1641,6 +1680,10 @@
             {
               "id": "deep-learning-pytorch",
               "label": "Deep Learning with PyTorch"
+            },
+            {
+              "id": "distillation-de-modeles",
+              "label": "Model Distillation"
             }
           ]
         },

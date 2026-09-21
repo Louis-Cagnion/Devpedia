@@ -39,7 +39,7 @@ No *inserir(No *raiz, int valor)
     if (raiz == NULL) {
         No *novo = malloc(sizeof(No));
         if (novo == NULL) {
-            return NULL; // veja O gerenciamento de memoria: sempre verificar malloc
+            return NULL; // veja O gerenciamento de memória: sempre verificar malloc
         }
         novo->valor = valor;
         novo->esquerda = NULL;
@@ -52,7 +52,7 @@ No *inserir(No *raiz, int valor)
     } else if (valor > raiz->valor) {
         raiz->direita = inserir(raiz->direita, valor);
     }
-    // valor == raiz->valor: ja presente, nao faz nada
+    // valor == raiz->valor: já presente, não faz nada
 
     return raiz;
 }
@@ -67,7 +67,7 @@ No *inserir(No *raiz, int valor)
 No *buscar(No *raiz, int valor)
 {
     if (raiz == NULL || raiz->valor == valor) {
-        return raiz; // encontrado, ou NULL se a arvore estiver vazia/esgotada
+        return raiz; // encontrado, ou NULL se a árvore estiver vazia/esgotada
     }
 
     if (valor < raiz->valor) {

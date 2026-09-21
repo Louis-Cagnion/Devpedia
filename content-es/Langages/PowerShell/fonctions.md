@@ -15,7 +15,8 @@ function Saludar {
 }
 
 Saludar -Nombre "Juan"  # Hola Juan !
-Saludar "Juan"          # también funciona: PowerShell acepta un argumento posicional si se omite el nombre
+# también funciona: PowerShell acepta un argumento posicional si se omite el nombre
+Saludar "Juan"
 ```
 
 > **Convención de nombrado:** las cmdlets y funciones de PowerShell siguen la forma `Verbo-Nombre` (`Get-ChildItem`, `Saludar` aquí de forma simplificada); un conjunto de verbos estándar (`Get`, `Set`, `New`, `Remove`...) incluso se impone por convención para las cmdlets oficiales, para que un mismo verbo se comporte de forma predecible de un comando a otro.

@@ -10,7 +10,7 @@ A propriedade `position` muda fundamentalmente a forma como um elemento é coloc
 
 ```css
 div {
-    position: static;   /* valor padrao: segue o fluxo normal do documento */
+    position: static;   /* valor padrão: segue o fluxo normal do documento */
 }
 ```
 
@@ -21,7 +21,7 @@ Um elemento `static` ignora totalmente `top`/`left`/`right`/`bottom`: essas prop
 ```css
 div {
     position: relative;
-    top: 10px;   /* deslocado 10px para BAIXO em relacao a sua posicao normal */
+    top: 10px;   /* deslocado 10px para BAIXO em relação a sua posição normal */
     left: 20px;  /* deslocado 20px para a DIREITA */
 }
 ```
@@ -32,7 +32,7 @@ div {
 
 ```css
 .container {
-    position: relative;   /* torna-se o ponto de referencia */
+    position: relative;   /* torna-se o ponto de referência */
 }
 .badge {
     position: absolute;
@@ -78,7 +78,8 @@ Um elemento `sticky` (ou `fixed`) semitransparente permanece por cima de um cont
     position: sticky;
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.7);   /* semitransparente */
-    backdrop-filter: blur(8px);                     /* desfoca o que rola POR TRAS, nao o rodape em si */
+    /* desfoca o que rola POR TRAS, não o rodape em si */
+    backdrop-filter: blur(8px);
 }
 ```
 

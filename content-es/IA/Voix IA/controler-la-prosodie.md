@@ -48,7 +48,7 @@ La [Web Speech API](/?c=ia&s=voix-ia&p=synthese-classique-vs-deep-learning) del 
 ```javascript
 const enunciado = new SpeechSynthesisUtterance("Hola a todos");
 enunciado.pitch = 1.2;   // tono: 0 (grave) a 2 (agudo), 1 por defecto
-enunciado.rate = 0.9;    // duracion/velocidad: 0.1 (lento) a 10 (rapido), 1 por defecto
+enunciado.rate = 0.9;    // duración/velocidad: 0.1 (lento) a 10 (rapido), 1 por defecto
 enunciado.volume = 1.0;  // energia/volumen: 0 (silencioso) a 1 (fuerte)
 ```
 

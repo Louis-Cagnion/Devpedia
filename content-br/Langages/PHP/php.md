@@ -8,7 +8,7 @@ Uma [linguagem de programação](/?c=bases-de-l-informatique&p=code-programmes-e
 
 ```php
 <?php
-$nome = "Devpedia";      // uma variavel, veja o capitulo dedicado
+$nome = "Devpedia";      // uma variável, veja o capítulo dedicado
 echo "Ola, $nome";       // exibe: Ola, Devpedia
 ```
 

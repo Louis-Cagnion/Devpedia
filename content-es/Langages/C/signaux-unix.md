@@ -31,18 +31,19 @@ volatile sig_atomic_t recu = 0;
 
 void handler(int sig)
 {
-    recu = 1;   // el handler casi no hace nada: ver "handler minimo" mas abajo
+    recu = 1;   // el handler casi no hace nada: ver "handler minimo" más abajo
 }
 
 int main(void)
 {
-    signal(SIGINT, handler);   // Ctrl-C ya no detiene el programa, llama a handler() en su lugar
+    // Ctrl-C ya no detiene el programa, llama a handler() en su lugar
+    signal(SIGINT, handler);
 
     while (!recu) {
-        pause();   // espera una senal sin consumir CPU
+        pause();   // espera una señal sin consumir CPU
     }
 
-    printf("Senal recibida, parada limpia.\n");
+    printf("Señal recibida, parada limpia.\n");
     return 0;
 }
 ```
@@ -61,7 +62,7 @@ kill(pid_recepteur, bit ? SIGUSR2 : SIGUSR1);
 void handler(int sig)
 {
     bit_recu = (sig == SIGUSR2) ? 1 : 0;
-    // acumular este bit en un byte en construccion...
+    // acumular este bit en un byte en construcción...
 }
 ```
 

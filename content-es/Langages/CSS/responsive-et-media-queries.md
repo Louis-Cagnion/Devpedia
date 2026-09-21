@@ -12,8 +12,10 @@ El **diseño adaptativo** consiste en diseñar una página que se adapte a cualq
 div {
     width: 300px;       /* fijo, no se adapta a NADA */
     width: 50%;         /* relativo al padre */
-    font-size: 1.5rem;  /* relativo al tamaño de fuente raíz (<html>), independiente del padre */
-    font-size: 1.5em;   /* relativo al tamaño de fuente del PADRE directo (puede acumularse en cascada) */
+    /* relativo al tamaño de fuente raíz (<html>), independiente del padre */
+    font-size: 1.5rem;
+    /* relativo al tamaño de fuente del PADRE directo (puede acumularse en cascada) */
+    font-size: 1.5em;
     width: 50vw;        /* relativo al ancho de la ventana (viewport width) */
     height: 100vh;      /* relativo a la altura de la ventana (viewport height) */
 }
@@ -71,7 +73,8 @@ div {
 
 ```css
 @media (orientation: portrait) { }           /* pantalla más alta que ancha */
-@media (prefers-color-scheme: dark) { }      /* el usuario activó el modo oscuro a nivel del sistema */
+/* el usuario activó el modo oscuro a nivel del sistema */
+@media (prefers-color-scheme: dark) { }
 @media (prefers-reduced-motion: reduce) { }  /* el usuario ha pedido reducir las animaciones */
 @media print { }                             /* estilos aplicados únicamente al imprimir */
 ```
@@ -83,7 +86,7 @@ div {
     * {
         animation-duration: 0.001ms !important;
         transition-duration: 0.001ms !important;
-        /* deliberadamente NO "animation: none" -- vease la trampa abajo */
+        /* deliberadamente NO "animation: none" -- véase la trampa abajo */
     }
 }
 ```

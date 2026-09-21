@@ -34,7 +34,8 @@ The `<label>`'s `for` attribute must match the field's `id`: clicking the label 
 
 ```html
 <input type="text" name="name">
-<input type="email" name="email">          <!-- basic email format validation by the browser -->
+<!-- basic email format validation by the browser -->
+<input type="email" name="email">
 <input type="password" name="password">   <!-- masks the input -->
 <input type="number" name="age" min="0" max="120">
 <input type="date" name="birthdate">
@@ -80,7 +81,8 @@ The `<label>`'s `for` attribute must match the field's `id`: clicking the label 
 ```html
 <button type="submit">Send</button>              <!-- submits the form -->
 <button type="reset">Reset</button>               <!-- clears all fields -->
-<button type="button">Does nothing on its own</button>  <!-- useful for behavior handled in JavaScript -->
+<!-- useful for behavior handled in JavaScript -->
+<button type="button">Does nothing on its own</button>
 ```
 
 ---

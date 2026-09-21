@@ -9,18 +9,18 @@ Ao contrário do [Bash](/?c=shells&s=bash&p=bash), onde `cd`, `ls` ou `cp` são 
 ## Se locomover: `Set-Location` e `Get-Location`
 
 ```powershell
-Get-Location                # exibe o diretorio atual, equivalente a "pwd"
-Set-Location C:\Users\Joao  # move para esse diretorio, equivalente a "cd"
-Set-Location ..             # sobe um nivel
-Set-Location -              # volta para o diretorio anterior
+Get-Location                # exibe o diretório atual, equivalente a "pwd"
+Set-Location C:\Users\Joao  # move para esse diretório, equivalente a "cd"
+Set-Location ..             # sobe um nível
+Set-Location -              # volta para o diretório anterior
 ```
 
 ## Listar um diretório: `Get-ChildItem`
 
 ```powershell
-Get-ChildItem                # lista o conteudo do diretorio atual
-Get-ChildItem -Force         # inclui os arquivos e diretorios ocultos
-Get-ChildItem -Path C:\logs  # lista um diretorio especifico sem mover para ele
+Get-ChildItem                # lista o conteúdo do diretório atual
+Get-ChildItem -Force         # inclui os arquivos e diretórios ocultos
+Get-ChildItem -Path C:\logs  # lista um diretório específico sem mover para ele
 ```
 
 > **Nota:** `Get-ChildItem` também faz o trabalho de `find` assim que se adiciona `-Recurse`: veja o capítulo sobre permissões para esse uso, assim como para criar, copiar, mover e remover arquivos/diretórios.
@@ -30,7 +30,8 @@ Get-ChildItem -Path C:\logs  # lista um diretorio especifico sem mover para ele
 ```powershell
 Get-Content arquivo.txt          # exibe todo o arquivo, equivalente a "cat"
 Get-Content arquivo.txt -Tail 5  # as 5 ultimas linhas, equivalente a "tail"
-Get-Content arquivo.txt -Wait    # continua exibindo as linhas adicionadas ao arquivo, equivalente a "tail -f"
+# continua exibindo as linhas adicionadas ao arquivo, equivalente a "tail -f"
+Get-Content arquivo.txt -Wait
 ```
 
 Veja o capítulo sobre processamento de texto para ir mais longe (busca, substituição, ordenação sobre o conteúdo lido por `Get-Content`).
@@ -57,9 +58,9 @@ O PowerShell fornece por padrão aliases para essas cmdlets, para permanecer com
 O nome de uma cmdlet nem sempre basta para adivinhar seus parâmetros: `Get-Help` evita precisar buscar online:
 
 ```powershell
-Get-Help Get-ChildItem            # sintaxe e descricao geral
+Get-Help Get-ChildItem            # sintaxe e descrição geral
 Get-Help Get-ChildItem -Examples  # apenas exemplos de uso
-Get-Help Get-ChildItem -Full      # descricao completa, todos os parametros
+Get-Help Get-ChildItem -Full      # descrição completa, todos os parametros
 ```
 
 > **Nota:** na primeira execução, `Get-Help` pode pedir para rodar `Update-Help` (baixa a documentação atualizada); sem rede disponível, uma versão mínima já instalada continua utilizável.

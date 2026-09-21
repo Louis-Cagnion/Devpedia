@@ -11,7 +11,7 @@ Un **degradado** (*gradient*) es una transición progresiva entre varios colores
 ```css
 .barra {
     background: linear-gradient(to right, #4a90d9, #d94a90);
-    /* progresa en linea recta, de izquierda a derecha */
+    /* progresa en línea recta, de izquierda a derecha */
 }
 ```
 
@@ -25,7 +25,7 @@ Un **degradado** (*gradient*) es una transición progresiva entre varios colores
 ```css
 .halo {
     background: radial-gradient(circle, #ffffff, #000000);
-    /* progresa desde el centro hacia el exterior, en circulos concentricos */
+    /* progresa desde el centro hacia el exterior, en círculos concentricos */
 }
 ```
 

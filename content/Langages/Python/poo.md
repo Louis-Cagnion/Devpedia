@@ -44,9 +44,12 @@ print(c1.id, c2.id)          # 1 2 -> propre à chacun
 ```python
 u = Vehicule("Peugeot", "308")
 
-u.marque                          # "Peugeot" -> le nom de l'attribut doit être connu au moment d'écrire le code
-getattr(u, "marque")              # "Peugeot" -> le même, mais le nom vient d'une CHAÎNE, résolue à l'exécution
-getattr(u, "couleur", None)       # None      -> valeur de repli si l'attribut n'existe pas (comme dict.get())
+# "Peugeot" -> le nom de l'attribut doit être connu au moment d'écrire le code
+u.marque
+# "Peugeot" -> le même, mais le nom vient d'une CHAÎNE, résolue à l'exécution
+getattr(u, "marque")
+# None      -> valeur de repli si l'attribut n'existe pas (comme dict.get())
+getattr(u, "couleur", None)
 ```
 
 `getattr(objet, nom, defaut)` permet d'appliquer le même traitement à une LISTE de noms d'attributs, calculée au moment de l'exécution (ex. une variable de boucle), sans écrire un `if`/`elif` par attribut :
@@ -136,7 +139,8 @@ class Distance:
     def __add__(self, autre):     # appelé quand Distance est l'opérande de GAUCHE : d + 5
         if isinstance(autre, (int, float)):
             return Distance(self.metres + autre)
-        return NotImplemented     # "je ne sais pas traiter ce type" -> Python retente une autre méthode
+        # "je ne sais pas traiter ce type" -> Python retente une autre méthode
+        return NotImplemented
 
     def __radd__(self, autre):    # appelé quand Distance est l'opérande de DROITE : 5 + d
         return self.__add__(autre)

@@ -16,10 +16,10 @@ const obj1 = { nome: 'Joao', idade: 25 };
 const obj2 = new Object();
 obj2.nome = 'Joao';
 
-// um valor pode ser de qualquer tipo, incluindo uma funcao ou outro objeto
+// um valor pode ser de qualquer tipo, incluindo uma função ou outro objeto
 const obj3 = {
     nome: 'Joao',
-    endereco: { cidade: 'Sao Paulo', cep: '01000000' },
+    endereco: { cidade: 'São Paulo', cep: '01000000' },
     dizerOla: function () { console.log('ola'); }
 };
 ```
@@ -34,7 +34,7 @@ const obj = { nome: 'Joao', idade: 25 };
 obj.nome;     // 'Joao'
 obj['nome'];  // 'Joao', equivalente a obj.nome
 
-obj.cidade = 'Sao Paulo';  // adiciona uma propriedade
+obj.cidade = 'São Paulo';  // adiciona uma propriedade
 obj.idade = 26;            // modifica uma propriedade
 
 delete obj.idade;                // remove uma propriedade
@@ -61,10 +61,11 @@ Object.values(obj);   // ['Joao', 25]
 Object.entries(obj);  // [['nome', 'Joao'], ['idade', 25]]
 
 const copia = Object.assign({}, obj);                          // copia de obj
-const mesclado = Object.assign({}, obj, { cidade: 'Sao Paulo' }); // { nome: 'Joao', idade: 25, cidade: 'Sao Paulo' }
+// { nome: 'Joao', idade: 25, cidade: 'São Paulo' }
+const mesclado = Object.assign({}, obj, { cidade: 'São Paulo' });
 
 Object.freeze(obj);
-obj.idade = 30;                  // nao tem nenhum efeito, obj.idade continua 25
+obj.idade = 30;                  // não tem nenhum efeito, obj.idade continua 25
 
 Object.fromEntries([['nome', 'Joao'], ['idade', 25]]); // { nome: 'Joao', idade: 25 }
 ```
@@ -74,10 +75,11 @@ Object.fromEntries([['nome', 'Joao'], ['idade', 25]]); // { nome: 'Joao', idade:
 ```javascript
 const obj = { nome: 'Joao', idade: 25 };
 
-obj.hasOwnProperty('nome');      // true -> chave presente no proprio objeto
+obj.hasOwnProperty('nome');      // true -> chave presente no próprio objeto
 obj.hasOwnProperty('desconhecido');  // false
 
-'nome' in obj;                      // true -> tambem testa as propriedades herdadas, ao contrario de hasOwnProperty
+// true -> também testa as propriedades herdadas, ao contrário de hasOwnProperty
+'nome' in obj;
 ```
 
 `hasOwnProperty` é um protótipo disponível diretamente em um objeto; `in` também verifica a existência de uma chave, mas incluindo as propriedades herdadas.
@@ -90,14 +92,16 @@ O **destructuring** permite extrair diretamente certas propriedades de um objeto
 const obj = { nome: 'Joao', idade: 25 };
 const { nome, idade } = obj;   // nome = 'Joao', idade = 25
 
-const { nome: apelido } = obj; // renomeia a variavel durante o destructuring -> apelido = 'Joao'
+// renomeia a variável durante o destructuring -> apelido = 'Joao'
+const { nome: apelido } = obj;
 ```
 
 O **spread** (`...`) permite "desdobrar" um objeto, o que é útil para copiá-lo ou mesclar vários entre si.
 
 ```javascript
 const copia = { ...obj };                      // copia independente de obj
-const mesclado = { ...obj, cidade: 'Sao Paulo' }; // { nome: 'Joao', idade: 25, cidade: 'Sao Paulo' }
+// { nome: 'Joao', idade: 25, cidade: 'São Paulo' }
+const mesclado = { ...obj, cidade: 'São Paulo' };
 ```
 
 > **Armadilha:** `{ ...obj }` e `Object.assign({}, obj)` fazem apenas uma cópia **superficial** (*shallow copy*): se uma propriedade for ela mesma um objeto ou array, a cópia e o original continuam compartilhando a **mesma** referência a esse objeto aninhado: modificá-lo a partir de um o modifica também a partir do outro.

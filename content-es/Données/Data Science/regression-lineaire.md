@@ -54,7 +54,8 @@ X = [[2], [5], [9], [14], [20]]
 y = [12, 20, 30, 42, 58]
 
 modelo = LinearRegression()
-modelo.fit(X, y)          # encuentra el sesgo y el/los peso(s) que minimizan el error (ver más abajo)
+# encuentra el sesgo y el/los peso(s) que minimizan el error (ver más abajo)
+modelo.fit(X, y)
 
 modelo.intercept_          # 7.6  -> el sesgo
 modelo.coef_                # [2.52] -> un peso por columna de X

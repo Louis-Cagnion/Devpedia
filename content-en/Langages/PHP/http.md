@@ -21,7 +21,8 @@ curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $jsonBody,
     CURLOPT_HTTPHEADER     => ['Content-Type: application/json'], // required for a JSON body
-    CURLOPT_RETURNTRANSFER => true, // Return the response as a string, rather than displaying it directly
+    // Return the response as a string, rather than displaying it directly
+    CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT        => 10,
 ]);
 
@@ -61,7 +62,8 @@ $options = [
     ],
 ];
 $context = stream_context_create($options);
-$response = file_get_contents($url, false, $context); // false if the operation fails; same behavior as `curl_exec`
+// false if the operation fails; same behavior as `curl_exec`
+$response = file_get_contents($url, false, $context);
 ?>
 ```
 
@@ -79,7 +81,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 ?>
 ```
 
-`json_decode()` on an invalid string returns `null`, but a **valid** JSON string containing the literal `"null"` also decodes to `null`. A simple `if ($data === null)` would therefore not distinguish between "invalid JSON" and "JSON that actually was `null`". Hence `json_last_error()`: a separate function that returns whether the last conversion actually failed, regardless of the value obtained, the same logic as `isset()` / `empty()` when dealing with an array key (see the chapter on variables): never rely on an ambiguous value when a dedicated mechanism exists to resolve the ambiguity.
+`json_decode()` on an invalid string returns `null`, but a **valid** JSON string containing the literal `"null"` also decodes to `null`. A simple `if ($data === null)` would therefore not distinguish between "invalid JSON" and "JSON that actually was `null`". Hence `json_last_error()`: a separate function that returns whether the last conversion actually failed, regardless of the value obtained, the same logic as `isset()` / `empty()` when dealing with an array key (see [Variables](/?c=langages-de-programmation&s=php&p=variables)): never rely on an ambiguous value when a dedicated mechanism exists to resolve the ambiguity.
 
 `json_encode()` / `json_decode(..., true)` are the PHP equivalents of `JSON.stringify()` / `JSON.parse()` in JavaScript (`true` requires an associative array rather than a `stdClass` object).
 
@@ -92,7 +94,8 @@ A stream context's `ssl` block (see the example above) controls two **independen
 $options = [
     'ssl' => [
         'verify_peer'      => false,  // is the certificate signed by a recognized authority?
-        'verify_peer_name' => false,  // does the certificate's name match the domain being called?
+        // does the certificate's name match the domain being called?
+        'verify_peer_name' => false,
     ],
 ];
 ?>

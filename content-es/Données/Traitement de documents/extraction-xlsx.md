@@ -12,7 +12,7 @@ Un archivo **.xlsx** (libro de Excel) no es una simple cuadrícula de valores: c
 import openpyxl
 
 libro = openpyxl.load_workbook("informe.xlsx")
-hoja = libro.active   # la hoja activa por defecto, la ultima abierta en Excel
+hoja = libro.active   # la hoja activa por defecto, la última abierta en Excel
 
 for fila in hoja.iter_rows(min_row=2, values_only=True):
     print(fila)   # devuelve la CADENA DE FORMULA ("=A1+B1"), no el resultado calculado
@@ -23,7 +23,7 @@ libro = openpyxl.load_workbook("informe.xlsx", data_only=True)
 hoja = libro.active
 
 for fila in hoja.iter_rows(min_row=2, values_only=True):
-    print(fila)   # ahora devuelve el VALOR EN CACHE, no la formula
+    print(fila)   # ahora devuelve el VALOR EN Caché, no la formula
 ```
 
 | | Sin `data_only` (por defecto) | Con `data_only=True` |

@@ -30,13 +30,14 @@ int main(void)
 
     struct sockaddr_in endereco;
     endereco.sin_family = AF_INET;
-    endereco.sin_addr.s_addr = INADDR_ANY;   // aceita conexoes em todas as interfaces
-    endereco.sin_port = htons(8080);         // porta 8080, convertida na ordem esperada pela rede
+    endereco.sin_addr.s_addr = INADDR_ANY;   // aceita conexões em todas as interfaces
+    // porta 8080, convertida na ordem esperada pela rede
+    endereco.sin_port = htons(8080);
 
     bind(servidor, (struct sockaddr *)&endereco, sizeof(endereco));
-    listen(servidor, 10); // 10 = numero de conexoes em espera permitidas antes de recusar
+    listen(servidor, 10); // 10 = número de conexões em espera permitidas antes de recusar
 
-    int cliente = accept(servidor, NULL, NULL); // bloqueia aqui ate uma conexao
+    int cliente = accept(servidor, NULL, NULL); // bloqueia aqui até uma conexão
 
     char buffer[1024];
     read(cliente, buffer, sizeof(buffer));
@@ -74,7 +75,7 @@ Em vez de bloquear em uma única socket, um servidor pode pedir ao sistema: "me 
 ```text
       +-------------------------------------+
       |  select()/poll()/epoll_wait()       |
-      |  "quais sockets estao prontas?"     |
+      |  "quais sockets estão prontas?"     |
       +-------------------------------------+
              |            |            |
         socket A     socket B     socket C
@@ -96,7 +97,7 @@ Essa abordagem é a base de um **loop de eventos** (*event loop*): um único loo
 Uma chamada `read()` em um socket não retorna necessariamente uma requisição HTTP completa: a rede pode dividi-la em vários pacotes, entregues ao programa em várias chamadas `read()` sucessivas. O programa precisa então **acumular** os fragmentos recebidos em um buffer, e determinar por si mesmo quando a requisição está completa.
 
 ```text
-read() #1: "GET /pagina HTTP/1.1\r\nHost: exe"
+read() #1: "GET /página HTTP/1.1\r\nHost: exe"
 read() #2: "mplo.com\r\n\r\n"
 -> acumula os dois em um buffer, ate detectar o fim dos cabecalhos
 ```

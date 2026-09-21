@@ -10,14 +10,14 @@ Uma **função** é um bloco de código reutilizável, que tem um nome, e que po
 
 ```php
 <?php
-    //funcao classica
+    //função clássica
     function adicao($a, $b) {
         return $a + $b;
     }
 
     echo adicao(2, 3); // exibe 5
 
-    //funcao de seta
+    //função de seta
     $dobro = fn($n) => $n * 2;
 
     echo $dobro(5); // exibe 10
@@ -54,7 +54,7 @@ function calcularDesconto(float $preco, int $porcentagem): float
 }
 
 calcularDesconto(100, 10);     // OK -> 90.0
-calcularDesconto("cem", 10);   // TypeError: "cem" nao e um float
+calcularDesconto("cem", 10);   // TypeError: "cem" não é um float
 ?>
 ```
 
@@ -96,14 +96,14 @@ PHP fornece uma enorme quantidade de funções nativas já prontas para uso, cla
 ```php
 <?php
     strlen("Hello");                 // 5 -> comprimento da string
-    strtoupper("Hello");             // "HELLO" -> coloca em maiusculas
-    strtolower("Hello");             // "hello" -> coloca em minusculas
+    strtoupper("Hello");             // "HELLO" -> coloca em maiúsculas
+    strtolower("Hello");             // "hello" -> coloca em minúsculas
     str_replace("a", "o", "Hello");  // "Hello" -> substitui uma substring
-    trim("  Hello  ");               // "Hello" -> remove os espacos no inicio/fim
+    trim("  Hello  ");               // "Hello" -> remove os espaços no início/fim
     substr("Hello", 1, 3);           // "ell" -> extrai uma parte da string
     explode(",", "a,b,c");           // ["a", "b", "c"] -> divide uma string em array
     implode(",", ["a", "b"]);        // "a,b" -> junta um array em uma string
-    str_contains("Hello", "ell");    // true -> verifica se uma string contem outra
+    str_contains("Hello", "ell");    // true -> verifica se uma string contém outra
 ?>
 ```
 
@@ -111,15 +111,16 @@ PHP fornece uma enorme quantidade de funções nativas já prontas para uso, cla
 
 ```php
 <?php
-    count([1, 2, 3]);                      // 3 -> numero de elementos
-    $arr[] = "valor";                      // adiciona um elemento ao final (preferido a array_push() para um unico elemento)
-    array_pop($arr);                       // remove e retorna o ultimo elemento
+    count([1, 2, 3]);                      // 3 -> número de elementos
+    // adiciona um elemento ao final (preferido a array_push() para um único elemento)
+    $arr[] = "valor";
+    array_pop($arr);                       // remove e retorna o último elemento
     array_merge($arr1, $arr2);             // mescla dois arrays
-    in_array("maca", $frutas);             // true/false -> verifica a presenca de um valor
-    array_search("maca", $frutas);         // retorna a chave/indice encontrado
+    in_array("maca", $frutas);             // true/false -> verifica a presença de um valor
+    array_search("maca", $frutas);         // retorna a chave/índice encontrado
     sort($arr);                            // ordena um array (valores)
-    array_map(fn($n) => $n * 2, $arr);     // aplica uma funcao a cada elemento
-    array_filter($arr, fn($n) => $n > 0);  // filtra os elementos segundo uma condicao
+    array_map(fn($n) => $n * 2, $arr);     // aplica uma função a cada elemento
+    array_filter($arr, fn($n) => $n > 0);  // filtra os elementos segundo uma condição
 ?>
 ```
 ## Funções para arrays associativos
@@ -134,7 +135,8 @@ PHP fornece uma enorme quantidade de funções nativas já prontas para uso, cla
     unset($pessoa["idade"]);            // remove uma chave (e seu valor) do array
     ksort($pessoa);                    // ordena o array pelas chaves
     asort($pessoa);                    // ordena o array pelos valores (mantendo as chaves)
-    array_combine(["a", "b"], [1, 2]);   // ["a" => 1, "b" => 2] -> cria um array associativo a partir de 2 arrays
+    // ["a" => 1, "b" => 2] -> cria um array associativo a partir de 2 arrays
+    array_combine(["a", "b"], [1, 2]);
     array_flip($pessoa);               // inverte chaves e valores
 ?>
 ```
@@ -156,9 +158,9 @@ exemplo:
 <?php
     abs(-5);          // 5 -> valor absoluto
     round(3.456, 2);  // 3.46 -> arredonda
-    rand(1, 10);      // gera um numero aleatorio entre 1 e 10
-    max(1, 5, 3);     // 5 -> valor maximo
-    min(1, 5, 3);     // 1 -> valor minimo
+    rand(1, 10);      // gera um número aleatorio entre 1 e 10
+    max(1, 5, 3);     // 5 -> valor máximo
+    min(1, 5, 3);     // 1 -> valor mínimo
 ?>
 ```
 
@@ -170,8 +172,8 @@ exemplo:
     is_int($var);     // true/false
     is_array($var);   // true/false
     is_null($var);    // true/false
-    empty($var);      // true se vazio, null, ou nao definido
-    isset($var);      // true se a variavel existe e nao e null
+    empty($var);      // true se vazio, null, ou não definido
+    isset($var);      // true se a variável existe e não é null
 ?>
 ```
 

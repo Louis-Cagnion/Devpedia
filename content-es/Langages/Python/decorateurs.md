@@ -49,7 +49,7 @@ def cronometrar(funcion):
         inicio = time.time()
         resultado = funcion(*args, **kwargs)
         duracion = time.time() - inicio
-        print(f"{funcion.__name__} tardó {duracion:.4f}s")
+        print(f"{función.__name__} tardó {duración:.4f}s")
         return resultado
     return envoltura
 
@@ -58,7 +58,7 @@ def calculo_largo():
     total = sum(x ** 2 for x in range(1000000))
     return total
 
-calculo_largo()   # calculo_largo tardó 0.0834s
+calculo_largo()   # cálculo_largo tardó 0.0834s
 ```
 
 ## Preservar los metadatos con `functools.wraps`
@@ -84,7 +84,7 @@ def calculo_largo():
     total = sum(x ** 2 for x in range(1000000))
     return total
 
-print(calculo_largo.__name__)   # "calculo_largo" -> corregido
+print(calculo_largo.__name__)   # "cálculo_largo" -> corregido
 ```
 
 > **Nota:** redefinir `cronometrar` no cambia nada retroactivamente en una función ya decorada por su antigua versión: `calculo_largo` debe ser redecorada aquí para que `@wraps` se aplique realmente.

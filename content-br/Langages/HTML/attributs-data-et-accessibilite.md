@@ -18,7 +18,8 @@ Este capítulo cobre duas famílias de atributos transversais, utilizáveis em q
 const cartao = document.querySelector("div");
 cartao.dataset.id;        // "42"
 cartao.dataset.role;      // "cartao-produto"
-cartao.dataset.emEstoque; // "true" -> "data-em-estoque" vira "emEstoque" em camelCase do lado JS
+// "true" -> "data-em-estoque" vira "emEstoque" em camelCase do lado JS
+cartao.dataset.emEstoque;
 ```
 
 `data-*` permite anexar um dado a um elemento HTML, recuperável em [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) via `.dataset`: um jeito padrão de fazer uma informação circular do HTML para o JavaScript, sem precisar de variáveis globais ou requisições adicionais.

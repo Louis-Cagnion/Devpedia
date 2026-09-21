@@ -33,11 +33,15 @@ Un système installé avec ses réglages par défaut reste vulnérable à des at
 `sudo` permet à un utilisateur autorisé d'exécuter une commande avec les privilèges de `root`, sans partager le mot de passe `root` lui-même. Son fichier de configuration (`/etc/sudoers`, à éditer via `visudo`) accepte plusieurs réglages de durcissement :
 
 ```text
-Defaults passwd_tries=3                          # 3 tentatives de mot de passe maximum
+# 3 tentatives de mot de passe maximum
+Defaults passwd_tries=3
 Defaults badpass_message="Mot de passe incorrect, tentative refusée."
-Defaults logfile="/var/log/sudo/sudo.log"        # journalise chaque commande sudo
-Defaults log_input, log_output                    # journalise aussi ce qui est tapé/affiché
-Defaults use_pty                                  # exécute la commande dans un pseudo-terminal dédié
+# journalise chaque commande sudo
+Defaults logfile="/var/log/sudo/sudo.log"
+# journalise aussi ce qui est tapé/affiché
+Defaults log_input, log_output
+# exécute la commande dans un pseudo-terminal dédié
+Defaults use_pty
 Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 ```
 

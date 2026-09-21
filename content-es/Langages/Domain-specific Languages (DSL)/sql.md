@@ -97,7 +97,8 @@ JOIN ventas v ON v.cliente_id = c.id; -- INNER JOIN: las filas sin correspondenc
 ```sql
 SELECT c.nombre, v.fecha_compra
 FROM clientes c
-LEFT JOIN ventas v ON v.cliente_id = c.id; -- conserva TODAS las filas de la izquierda, NULL si no hay correspondencia
+-- conserva TODAS las filas de la izquierda, NULL si no hay correspondencia
+LEFT JOIN ventas v ON v.cliente_id = c.id;
 ```
 
 - `c`/`v` son alias de tabla, imprescindibles en cuanto dos tablas comparten el nombre de una columna (`c.nombre` frente a un posible `v.nombre`, sin ambigüedad).
@@ -143,7 +144,8 @@ CREATE TABLE ventas (
     id           INT IDENTITY PRIMARY KEY,
     cliente_id   INT NOT NULL,
     fecha_compra DATE NOT NULL,
-    FOREIGN KEY (cliente_id) REFERENCES clientes(id)  -- toda venta debe apuntar a un cliente existente
+    -- toda venta debe apuntar a un cliente existente
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
 ```
 
@@ -218,7 +220,7 @@ PDO solo permite parametrizar valores individuales, nunca un array entero en un 
 <?php
 function consultaConIn(PDO $pdo, string $sql, string $prefijo, array $valores): PDOStatement
 {
-    // Genera un marcador de posicion con nombre por valor: prefijo_0, prefijo_1...
+    // Genera un marcador de posición con nombre por valor: prefijo_0, prefijo_1...
     $marcadores = [];
     $params = [];
     foreach (array_values($valores) as $i => $valor) {
@@ -267,12 +269,14 @@ conexion = pyodbc.connect(
 )  # abre la conexión con la base de datos
 
 cursor = conexion.cursor()
-cursor.execute("SELECT * FROM clientes WHERE ciudad = ?", "Lyon")  # ? = marcador de posición, valor pasado aparte
+# ? = marcador de posición, valor pasado aparte
+cursor.execute("SELECT * FROM clientes WHERE ciudad = ?", "Lyon")
 
 una_fila = cursor.fetchone()  # una sola fila
 todas    = cursor.fetchall()  # todas las filas
 
-conexion.commit()  # confirma las escrituras (INSERT/UPDATE/DELETE); innecesario tras un simple SELECT
+# confirma las escrituras (INSERT/UPDATE/DELETE); innecesario tras un simple SELECT
+conexion.commit()
 ```
 
 Mismo ciclo que PDO: `connect()` (abrir la conexión) → `cursor()` → `execute()` (con `?` como marcador de posición, valor pasado aparte, nunca concatenado) → `fetchone()`/`fetchall()`. `executemany()` repite una misma consulta para una lista de conjuntos de valores (inserción masiva), más rápido que un bucle de `execute()` uno por uno.
@@ -293,7 +297,8 @@ Los marcadores de posición con nombre (`:ciudad`) lo impiden estructuralmente: 
 ```php
 <?php
 // Construir dinámicamente una cláusula WHERE sigue siendo seguro,
-// mientras solo se concatenen los NOMBRES de los marcadores de posición, nunca los valores en sí:
+// mientras solo se concatenen los NOMBRES de los marcadores de posición, nunca los valores en
+// sí:
 function construirY(array $criterios): array
 {
     $clausulas = [];
@@ -319,7 +324,8 @@ Más allá de la inyección SQL (que protege el *cómo* se consulta la base de d
 ```sql
 -- en lugar de dar todos los permisos a una sola cuenta de aplicación:
 GRANT SELECT, INSERT, UPDATE ON tienda.pedidos TO 'app_tienda'@'%';
--- sin DROP, sin DELETE, ni acceso a otras tablas/bases de datos, si la aplicación nunca los necesita
+-- sin DROP, sin DELETE, ni acceso a otras tablas/bases de datos, si la aplicación nunca los
+-- necesita
 ```
 
 En concreto, una cuenta de aplicación comprometida (mediante un fallo en el código, una fuga de credenciales...) solo puede causar daños a la medida de sus propios permisos: una cuenta limitada a `SELECT`/`INSERT`/`UPDATE` sobre una única tabla no permite a un atacante borrar toda una base de datos, aunque logre ejecutar consultas arbitrarias. Es una protección **complementaria** a las consultas preparadas, no un sustituto: limita los daños *si* de todas formas se produce una inyección (bug no detectado, consulta dinámica mal construida...), en lugar de impedir la inyección en sí.
@@ -329,7 +335,8 @@ En concreto, una cuenta de aplicación comprometida (mediante un fallo en el có
 Un `UPDATE` clásico sobrescribe el valor anterior para siempre:
 
 ```sql
-UPDATE clientes SET ciudad = 'Paris' WHERE id = 1;  -- la ciudad anterior 'Lyon' se pierde definitivamente
+-- la ciudad anterior 'Lyon' se pierde definitivamente
+UPDATE clientes SET ciudad = 'Paris' WHERE id = 1;
 ```
 
 El patrón **SCD2** (*[Slowly Changing Dimension](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-2/) tipo 2*) evita esta pérdida: en lugar de sobrescribir una fila, se cierra la versión actual y se inserta una nueva, conservando ambas.

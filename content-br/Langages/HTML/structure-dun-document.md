@@ -45,7 +45,7 @@ Todo documento HTML se apoia em um esqueleto mínimo, praticamente idêntico de 
 Algumas tags não têm conteúdo e se fecham sozinhas, sem uma tag de fechamento separada:
 
 ```html
-<img src="foto.jpg" alt="Descricao da foto">
+<img src="foto.jpg" alt="Descrição da foto">
 <br>
 <input type="text">
 ```
@@ -56,7 +56,7 @@ Algumas tags não têm conteúdo e se fecham sozinhas, sem uma tag de fechamento
 <!-- Correto: fechamento na ordem inversa da abertura -->
 <p>Texto em <strong>negrito <em>e italico</em></strong>.</p>
 
-<!-- Incorreto: sobreposicao das tags -->
+<!-- Incorreto: sobreposição das tags -->
 <p>Texto em <strong>negrito <em>e italico</strong></em>.</p>
 ```
 
@@ -65,7 +65,7 @@ Uma tag aberta por último deve ser fechada primeiro: uma sobreposição, embora
 ## Os comentários
 
 ```html
-<!-- Este comentario nunca e exibido na pagina -->
+<!-- Este comentário nunca é exibido na página -->
 ```
 
 Veja também [A semântica do HTML5](/?c=langages-de-balisage&s=html&p=semantique-html5), que detalha a organização típica do conteúdo dentro de `<body>`.

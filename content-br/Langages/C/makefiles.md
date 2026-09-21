@@ -55,6 +55,9 @@ main.o: main.c calculos.h
 | `-Wall -Wextra` | Ativa a maioria dos avisos úteis do compilador |
 | `-g` | Adiciona as informações de depuração (necessárias para `gdb`/Valgrind) |
 | `-o nome` | Nomeia o arquivo de saída |
+| `-O2` | Ativa [o nível de otimização](/?c=langages-de-programmation&s=c&p=compilation) recomendado em produção |
+
+> **Armadilha:** `-O2`/`-O3` em `CFLAGS` pode fazer aparecer um aviso ausente em `-O0` (veja [Os níveis de otimização](/?c=langages-de-programmation&s=c&p=compilation)): testar o `make` com as `CFLAGS` realmente usadas em produção, não apenas com uma configuração de depuração (`-O0 -g`).
 
 ## Alvos fictícios (`.PHONY`)
 
@@ -104,7 +107,7 @@ programa: main.o
 Vincular uma biblioteca externa (ex. [GLFW](https://www.glfw.org) para abrir uma janela OpenGL) costuma exigir vários `-I` e `-l` (nome da biblioteca para o linker) diferentes conforme a máquina e sua distribuição. `pkg-config` evita ter que adivinhá-los na mão: cada biblioteca instala um pequeno arquivo `.pc` que descreve seus próprios flags, e `pkg-config` os lê sob demanda.
 
 ```bash
-pkg-config --cflags glfw3        # -I/usr/include            (flags de compilacao)
+pkg-config --cflags glfw3        # -I/usr/include            (flags de compilação)
 pkg-config --cflags --libs glfw3 # adiciona -lglfw -lm ...    (+ flags do linker)
 ```
 
@@ -137,7 +140,7 @@ Para aplicar esse comportamento a **todo** o arquivo sem prefixar cada linha ind
 MAKEFLAGS += -s
 
 compilar:
-	echo "Compilando..."   # ja silencioso gracas ao MAKEFLAGS; o @ fica redundante aqui
+	echo "Compilando..."   # já silencioso graças ao MAKEFLAGS; o @ fica redundante aqui
 	gcc main.c -o programa
 ```
 

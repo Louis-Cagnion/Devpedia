@@ -27,7 +27,7 @@ let j = 0;
 do {
     console.log(j);
     j++;
-} while (j < 5);   // executa pelo menos uma vez, condicao testada depois
+} while (j < 5);   // executa pelo menos uma vez, condição testada depois
 ```
 
 ## `for...of`: percorrer os valores de um iterável
@@ -39,7 +39,7 @@ for (const fruta of frutas) {
     console.log(fruta);
 }
 
-for (const caractere of "abc") {   // funciona tambem em uma string
+for (const caractere of "abc") {   // funciona também em uma string
     console.log(caractere);
 }
 ```
@@ -73,10 +73,13 @@ Em JavaScript moderno, transformar ou filtrar um array passa mais frequentemente
 ```javascript
 const numeros = [1, 2, 3, 4, 5];
 
-numeros.forEach(n => console.log(n));                  // executa uma funcao para cada elemento
-const dobros = numeros.map(n => n * 2);                // [2, 4, 6, 8, 10] -> transforma cada elemento
-const pares = numeros.filter(n => n % 2 === 0);        // [2, 4] -> mantem apenas o que corresponde
-const soma = numeros.reduce((acc, n) => acc + n, 0);   // 15 -> reduz todo o array a um unico valor
+numeros.forEach(n => console.log(n));                  // executa uma função para cada elemento
+// [2, 4, 6, 8, 10] -> transforma cada elemento
+const dobros = numeros.map(n => n * 2);
+// [2, 4] -> mantém apenas o que corresponde
+const pares = numeros.filter(n => n % 2 === 0);
+// 15 -> reduz todo o array a um único valor
+const soma = numeros.reduce((acc, n) => acc + n, 0);
 ```
 
 > **Nota:** `reduce()` é o mais versátil mas o menos imediatamente legível: `acc` (o acumulador) parte do valor inicial fornecido no segundo argumento (`0` aqui), e se atualiza a cada elemento conforme a função fornecida.

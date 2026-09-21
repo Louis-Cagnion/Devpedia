@@ -33,7 +33,7 @@ dados = pd.read_csv("clientes.csv")
 dados.head()      # 5 primeiras linhas
 dados.info()      # tipos de colunas, valores ausentes, memória usada
 dados.describe()  # estatísticas (média, desvio padrão, min/max) das colunas numéricas
-dados.shape       # (numero_de_linhas, numero_de_colunas)
+dados.shape       # (número_de_linhas, número_de_colunas)
 dados.columns     # lista dos nomes de colunas
 ```
 

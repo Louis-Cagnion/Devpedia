@@ -28,7 +28,7 @@ Un WAF se intercala entre el cliente y la aplicación, casi siempre como un reve
 ```text
 # Regla simplificada, en el espiritu del CRS: bloquear un patron de inyeccion SQL clasico
 SecRule ARGS "@detectSQLi" \
-    "id:942100,deny,status:403,msg:'Intento de inyeccion SQL detectado'"
+    "id:942100,deny,status:403,msg:'Intento de inyección SQL detectado'"
 ```
 
 | Elemento de la regla | Función |

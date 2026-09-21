@@ -15,7 +15,8 @@ function Saluer {
 }
 
 Saluer -Nom "Jean"  # Bonjour Jean !
-Saluer "Jean"       # fonctionne aussi : PowerShell accepte un argument positionnel si le nom est omis
+# fonctionne aussi : PowerShell accepte un argument positionnel si le nom est omis
+Saluer "Jean"
 ```
 
 > **Convention de nommage :** les cmdlets et fonctions PowerShell suivent la casse `Verb-Nom` (`Get-ChildItem`, `Saluer` ici en simplifié) ; un ensemble de verbes standard (`Get`, `Set`, `New`, `Remove`...) est même imposé par convention pour les cmdlets officielles, afin qu'un même verbe se comporte de façon prévisible d'une commande à l'autre.

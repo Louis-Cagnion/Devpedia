@@ -39,10 +39,10 @@ $lecteur->open('catalogue.xml');
 
 while ($lecteur->read()) {
     if ($lecteur->nodeType === XMLReader::ELEMENT && $lecteur->localName === 'annonce') {
-        $noeud = $lecteur->expand();       // developpe CET element en un mini-DOM local
+        $noeud = $lecteur->expand();       // développe CET élément en un mini-DOM local
         $doc   = new DOMDocument();
         $doc->appendChild($doc->importNode($noeud, true));
-        // ... extraire les donnees de $doc, puis passer a l'annonce suivante
+        // ... extraire les données de $doc, puis passer à l'annonce suivante
     }
 }
 $lecteur->close();

@@ -79,7 +79,8 @@ Quand une exception est levée, C++ "déroule la pile" (*stack unwinding*) : cha
 ```cpp
 void fonctionSure() noexcept {
     // le compilateur peut optimiser en sachant qu'aucune exception ne sortira d'ici
-    // si une exception s'échappe malgré tout, le programme s'arrête immédiatement (std::terminate)
+    // si une exception s'échappe malgré tout, le programme s'arrête immédiatement
+    // (std::terminate)
 }
 ```
 

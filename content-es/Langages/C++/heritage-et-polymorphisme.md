@@ -19,7 +19,8 @@ protected:
 
 class Perro : public Animal {
 public:
-    Perro(std::string nombre) : Animal(nombre) {}   // llama explícitamente al constructor padre
+    // llama explícitamente al constructor padre
+    Perro(std::string nombre) : Animal(nombre) {}
     std::string hablar() const { return nombre + " ladra"; }
 };
 ```
@@ -39,8 +40,10 @@ std::cout << a->hablar();   // muestra "..." -> ¡NO "Rex ladra"!
 class Animal {
 public:
     Animal(std::string nombre) : nombre(nombre) {}
-    virtual std::string hablar() const { return "..."; }  // "virtual" activa el ENLACE DINÁMICO
-    virtual ~Animal() {}                                  // destructor virtual: véase la nota más abajo
+    // "virtual" activa el ENLACE DINÁMICO
+    virtual std::string hablar() const { return "..."; }
+    // destructor virtual: véase la nota más abajo
+    virtual ~Animal() {}
 protected:
     std::string nombre;
 };
@@ -48,11 +51,13 @@ protected:
 class Perro : public Animal {
 public:
     Perro(std::string nombre) : Animal(nombre) {}
-    std::string hablar() const override { return nombre + " ladra"; }   // "override": comprobado por el compilador
+    // "override": comprobado por el compilador
+    std::string hablar() const override { return nombre + " ladra"; }
 };
 
 Animal *a = new Perro("Rex");
-std::cout << a->hablar();   // "Rex ladra" -> se llama a la versión CORRECTA, gracias a "virtual"
+// "Rex ladra" -> se llama a la versión CORRECTA, gracias a "virtual"
+std::cout << a->hablar();
 delete a;
 ```
 
@@ -99,7 +104,8 @@ Una ambigüedad residual sobre un nombre heredado (dos métodos con el mismo nom
 ```cpp
 class FormaGeometrica {
 public:
-    virtual double area() const = 0;   // "= 0": función PURAMENTE virtual, sin implementación aquí
+    // "= 0": función PURAMENTE virtual, sin implementación aquí
+    virtual double area() const = 0;
     virtual ~FormaGeometrica() {}
 };
 
@@ -112,7 +118,8 @@ private:
 };
 
 FormaGeometrica *forma = new Circulo(5);                // OK
-FormaGeometrica *imposible = new FormaGeometrica();      // ERROR: clase abstracta, no instanciable
+// ERROR: clase abstracta, no instanciable
+FormaGeometrica *imposible = new FormaGeometrica();
 ```
 
 Una clase que contiene al menos un método puramente virtual (`= 0`) se convierte en **abstracta**: nunca puede instanciarse directamente, solo heredarse; define un contrato ("toda forma geométrica debe saber calcular su área") que cada clase hija debe implementar.
@@ -140,13 +147,14 @@ public:
 class Circulo : public FormaGeometrica {
 public:
     Circulo(double radio) : radio(radio) {}
-    Circulo *clonar() const override { return new Circulo(*this); }   // construye un Circulo, no una FormaGeometrica
+    // construye un Círculo, no una FormaGeometrica
+    Circulo *clonar() const override { return new Circulo(*this); }
 private:
     double radio;
 };
 
 FormaGeometrica *forma = new Circulo(5);
-FormaGeometrica *copia = forma->clonar();   // copia un VERDADERO Circulo, radio incluido
+FormaGeometrica *copia = forma->clonar();   // copia un VERDADERO Círculo, radio incluido
 ```
 
 El código llamador se limita a llamar a `forma->clonar()` sin conocer nunca el tipo concreto: es `virtual` quien garantiza que se ejecute la versión correcta de `clonar()`, exactamente igual que para cualquier otro método polimórfico.

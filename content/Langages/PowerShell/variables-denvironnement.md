@@ -15,7 +15,8 @@ Write-Output $env:NOM  # Jean
 
 ```powershell
 # sous_script.ps1
-Write-Output $env:NOM    # affiche "Jean" si NOM a été défini par le processus appelant, vide sinon
+# affiche "Jean" si NOM a été défini par le processus appelant, vide sinon
+Write-Output $env:NOM
 ```
 
 > **Note :** comme pour `export` en [Bash](/?c=shells&s=bash&p=bash), la transmission ne fonctionne que du parent vers l'enfant : un sous-script qui modifie `$env:NOM` ne répercute jamais ce changement vers le script qui l'a lancé, chaque processus ayant sa propre copie de l'environnement.
@@ -23,7 +24,8 @@ Write-Output $env:NOM    # affiche "Jean" si NOM a été défini par le processu
 ## Variables d'environnement courantes
 
 ```powershell
-$env:PATH          # liste des dossiers où PowerShell cherche les exécutables (séparés par ";" sous Windows)
+# liste des dossiers où PowerShell cherche les exécutables (séparés par ";" sous Windows)
+$env:PATH
 $env:USERPROFILE   # dossier personnel de l'utilisateur courant (équivalent de $HOME)
 $env:USERNAME      # nom de l'utilisateur courant
 $env:COMPUTERNAME  # nom de la machine

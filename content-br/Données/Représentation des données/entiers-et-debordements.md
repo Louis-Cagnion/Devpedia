@@ -62,14 +62,14 @@ O bit de peso alto age então como um indicador de sinal: `0` para positivo, `1`
 O que acontece quando um resultado não cabe mais no número de bits alocados? Os bits excedentes são **perdidos**, e o valor "dá a volta".
 
 ```c
-unsigned char x = 255;  // 1111 1111, o maximo
+unsigned char x = 255;  // 1111 1111, o máximo
 x = x + 1;              // 0000 0000 -> 0 !
 ```
 
 É o comportamento chamado *wraparound*: volta-se ao início, como um odômetro de carro. Para um inteiro **com sinal**, o efeito é mais surpreendente:
 
 ```c
-signed char y = 127;  // 0111 1111, o maximo
+signed char y = 127;  // 0111 1111, o máximo
 y = y + 1;            // 1000 0000 -> -128 !
 ```
 
@@ -126,17 +126,6 @@ O custo é nítido em comparação a uma multiplicação nativa: multiplicar *n*
 ## Manipular os bits diretamente
 
 O corolário dessa representação binária é que se pode agir sobre os próprios bits: máscaras, deslocamentos, flags. É o assunto do capítulo [Os operadores binários](/?c=langages-de-programmation&s=c&p=operateurs-binaires) em C.
-
-## Resumo
-
-| A reter | |
-|---|---|
-| *n* bits | 2ⁿ valores; máximo sem sinal = 2ⁿ − 1 |
-| Negativos | Complemento de dois: inverter os bits, somar 1 |
-| Faixa com sinal assimétrica | O zero é contado do lado positivo |
-| Overflow | Os bits excedentes são perdidos, o valor dá a volta |
-| Em C, com sinal que dá overflow | Comportamento **indefinido**: usar sem sinal |
-| Precisão arbitrária | Representar o número como string de dígitos e multiplicar como à mão, para superar qualquer tamanho nativo |
 
 ---
 

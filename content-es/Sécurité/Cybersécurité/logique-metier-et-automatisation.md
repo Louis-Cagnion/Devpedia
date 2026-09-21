@@ -14,9 +14,9 @@ Un endpoint que actualiza un objeto aceptando directamente TODOS los campos reci
 // PELIGROSO: acepta todos los campos recibidos, incluidos los que un formulario
 // legitimo nunca expondria
 $usuario->update($_POST);
-// Si el cliente añade discretamente "role=admin" a su peticion de edicion de perfil,
+// Si el cliente añade discretamente "role=admin" a su petición de edición de perfil,
 // y la tabla "usuarios" tiene efectivamente una columna "role"...
-// ese campo se actualiza como cualquier otro, sin distincion
+// ese campo se actualiza como cualquier otro, sin distinción
 
 // SEGURO: lista blanca explicita de los campos que ESTE endpoint puede modificar
 $campos_permitidos = ['nombre', 'email', 'bio'];

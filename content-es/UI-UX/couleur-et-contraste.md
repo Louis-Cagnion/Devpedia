@@ -60,11 +60,12 @@ El **WCAG** (*Web Content Accessibility Guidelines*) es un conjunto de reglas de
 ## Nunca codificar una información solo mediante el color
 
 ```text
-❌ Malo: en un formulario, un campo con error tiene borde rojo, un campo valido borde verde:
-   es la UNICA diferencia entre ambos.
+❌ Malo: en un formulario, un campo con error tiene borde rojo, un campo válido borde
+   verde: es la ÚNICA diferencia entre ambos.
 
 ✅ Bueno: el campo con error tiene borde rojo, Y muestra un icono ⚠, Y un mensaje de texto
-   ("Formato de email invalido"): tres indicios, dos de los cuales no dependen de la percepcion del color.
+   ("Formato de email inválido"): tres indicios, dos de los cuales no dependen de la
+   percepción del color.
 ```
 
 > **Trampa:** distinguir dos estados únicamente por el color (rojo/verde en particular). Alrededor del 8 % de los hombres (una proporción menor entre las mujeres) tiene alguna forma de daltonismo y no percibe esa diferencia.

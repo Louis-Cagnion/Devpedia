@@ -46,7 +46,8 @@ Flexbox always reasons in terms of a **main axis** (the one set by `flex-directi
 ```css
 .conteneur {
     display: flex;
-    align-items: stretch;     /* default: stretches elements across the full available height */
+    /* default: stretches elements across the full available height */
+    align-items: stretch;
     /* align-items: center;     -> centers vertically (if flex-direction: row) */
     /* align-items: flex-start; -> aligns to the top */
     /* align-items: flex-end;   -> aligns to the bottom */
@@ -67,7 +68,8 @@ Flexbox always reasons in terms of a **main axis** (the one set by `flex-directi
 
 ```css
 .element {
-    flex-grow: 1;       /* can grow to fill the remaining space (1 = equal share between elements) */
+    /* can grow to fill the remaining space (1 = equal share between elements) */
+    flex-grow: 1;
     flex-shrink: 1;     /* can shrink if space is tight (default) */
     flex-basis: 200px;  /* starting size, before grow/shrink is applied */
     order: 2;           /* changes the display order WITHOUT touching the HTML */

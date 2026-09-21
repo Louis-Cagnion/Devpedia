@@ -42,7 +42,8 @@ if ("fichier1.txt" -like "fichier?.txt") {
 
 ```powershell
 Get-ChildItem *.xyz
-# si aucun fichier .xyz n'existe, la commande ne renvoie rien -> pas d'erreur silencieuse comme en Bash
+# si aucun fichier .xyz n'existe, la commande ne renvoie rien -> pas d'erreur silencieuse comme
+# en Bash
 ```
 
 > **Note :** c'est une différence importante avec [Bash](/?c=shells&s=bash&p=bash), où `echo *.xyz` affiche littéralement le texte `*.xyz` si rien ne correspond ; PowerShell, lui, résout toujours le motif en une vraie liste (éventuellement vide), jamais en la chaîne brute du motif non résolu.
@@ -76,7 +77,8 @@ Set-Location ~\projets  # équivalent à Set-Location $HOME\projets
 
 ```powershell
 Write-Output *.txt    # PowerShell tente de résoudre le motif selon le contexte de la commande
-Write-Output '*.txt'  # affiche littéralement *.txt -> les guillemets simples désactivent l'interprétation
+# affiche littéralement *.txt -> les guillemets simples désactivent l'interprétation
+Write-Output '*.txt'
 ```
 
 > **Note :** contrairement à [Bash](/?c=shells&s=bash&p=bash) où `*` est développé par le shell lui-même avant même que la commande ne le reçoive, en PowerShell c'est chaque cmdlet qui décide d'interpréter ou non un wildcard reçu en argument : `Write-Output *.txt` n'affiche donc que le texte `*.txt`, alors que `Get-ChildItem *.txt` le résout bien en liste de fichiers.

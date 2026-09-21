@@ -15,7 +15,8 @@ nombre: str = "Juan"
 def suma(a: int, b: int) -> int:
     return a + b
 
-suma("dos", "tres")   # NINGÚN error al lanzarlo: Python ejecuta igualmente, sin comprobar los tipos
+# NINGÚN error al lanzarlo: Python ejecuta igualmente, sin comprobar los tipos
+suma("dos", "tres")
 ```
 
 > **Nota:** a diferencia de PHP donde `function f(int $x): int` lanza un `TypeError` si se pasa algo que no sea un entero, las anotaciones Python son pura documentación para un humano (o una herramienta externa): el intérprete no las hace respetar en ningún momento.
@@ -83,7 +84,8 @@ Una **forward reference** es una anotación de tipo escrita entre comillas, que 
 class Nodo:
     def __init__(self, valor: int, siguiente: "Nodo | None" = None):
         self.valor = valor
-        self.siguiente = siguiente   # "Nodo" todavía no existe mientras su propia definición no termina
+        # "Nodo" todavía no existe mientras su propia definición no termina
+        self.siguiente = siguiente
 ```
 
 > **Trampa:** sin las comillas (`siguiente: Nodo | None`), Python lanza un `NameError` inmediato al leer el archivo: las anotaciones de una función se evalúan tan pronto como se define, no solo las lee una herramienta externa como `mypy`. Las comillas la convierten en simple texto, resuelto solo cuando una herramienta lo necesita.

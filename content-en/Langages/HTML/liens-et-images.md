@@ -27,7 +27,9 @@ Links (`<a>`) and images (`<img>`) are two fundamental tags of the web: one conn
 ### Relative vs. absolute links
 
 ```html
-<a href="https://example.com/page">Absolute: always the same destination, regardless of the site</a>
+<a href="https://example.com/page">
+    Absolute: always the same destination, regardless of the site
+</a>
 <a href="/page">Root-relative: depends on the current domain</a>
 <a href="page">Relative to the current folder: depends on the current URL</a>
 ```

@@ -20,7 +20,8 @@ echo "Otra vez" >> archivo.txt  # añade al final de archivo.txt, sin sobrescrib
 ## Redirigir la entrada desde un archivo
 
 ```bash
-sort < lista.txt   # lee lista.txt como entrada estándar de "sort", en lugar de esperar entrada de teclado
+# lee lista.txt como entrada estándar de "sort", en lugar de esperar entrada de teclado
+sort < lista.txt
 ```
 
 ## Redirigir la salida de error
@@ -30,7 +31,8 @@ Los flujos están numerados: `0` = entrada estándar, `1` = salida estándar, `2
 ```bash
 comando_que_falla 2> errores.log        # solo la salida de error va a errores.log
 comando 1> salida.log 2> errores.log    # separa salida normal y errores en dos archivos
-comando > todo.log 2>&1                 # redirige stdout a todo.log, LUEGO stderr hacia donde va stdout
+# redirige stdout a todo.log, LUEGO stderr hacia donde va stdout
+comando > todo.log 2>&1
 comando &> todo.log                     # atajo Bash equivalente a "> todo.log 2>&1"
 ```
 

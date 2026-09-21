@@ -34,8 +34,8 @@ int trouves = sscanf("25/12/2026", "%d/%d/%d", &jour, &mois, &annee);
 int jour, mois, annee;
 int trouves = sscanf("25-12", "%d/%d/%d", &jour, &mois, &annee);
 
-// trouves vale 0: o primeiro "/" esperado nao corresponde ao "-" real,
-// o parsing para antes mesmo de ler "jour" -> jour permanece NAO INICIALIZADO
+// trouves vale 0: o primeiro "/" esperado não corresponde ao "-" real,
+// o parsing para antes mesmo de ler "jour" -> jour permanece NÃO INICIALIZADO
 ```
 
 > **Armadilha:** ignorar o valor de retorno de `sscanf` e usar diretamente as variáveis que deveriam ter sido preenchidas. Se o formato não corresponder inteiramente à string de origem, algumas variáveis **nunca são escritas**: lê-las depois lê um valor não inicializado, um comportamento indefinido que pode funcionar "por sorte" em teste e falhar silenciosamente em outro lugar.
@@ -48,7 +48,8 @@ Ao contrário de `%d`/`%f`, que sempre escrevem um tamanho fixo, `%s` copia uma 
 
 ```c
 char nom[16];
-sscanf(entree_utilisateur, "%s", nom);   // se entree_utilisateur tiver mais de 15 caracteres: estouro de buffer
+// se entree_utilisateur tiver mais de 15 caracteres: estouro de buffer
+sscanf(entree_utilisateur, "%s", nom);
 ```
 
 > **Armadilha:** a mesma classe de vulnerabilidade já encontrada com as strings de formato de `printf` (veja o capítulo sobre as [funções variádicas](/?c=langages-de-programmation&s=c&p=fonctions-variadiques)): uma entrada não controlada que ultrapassa o tamanho do buffer escreve fora da memória alocada para ele.

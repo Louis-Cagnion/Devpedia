@@ -9,7 +9,7 @@ Antes do HTML5, a estruturação de uma página baseava-se quase exclusivamente 
 ## `<div>` genérico vs. etiquetas semânticas
 
 ```html
-<!-- Antes do HTML5: nada diz o que e cada secao, exceto o nome da classe -->
+<!-- Antes do HTML5: nada diz o que é cada seção, exceto o nome da classe -->
 <div class="header">...</div>
 <div class="nav">...</div>
 <div class="main-content">...</div>
@@ -17,7 +17,7 @@ Antes do HTML5, a estruturação de uma página baseava-se quase exclusivamente 
 ```
 
 ```html
-<!-- HTML5: o sentido e transmitido pela propria etiqueta -->
+<!-- HTML5: o sentido é transmitido pela própria etiqueta -->
 <header>...</header>
 <nav>...</nav>
 <main>...</main>

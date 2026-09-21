@@ -45,7 +45,8 @@ git status
 If the solution proves too complex or if you'd rather start from scratch:
 
 ```bash
-git merge --abort     # Cancels a merge in progress and restores the system to its state prior to the attempt.
+# Cancels a merge in progress and restores the system to its state prior to the attempt.
+git merge --abort
 git rebase --abort    # Cancel a rebase in progress
 ```
 

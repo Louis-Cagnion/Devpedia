@@ -33,7 +33,8 @@ from sklearn.svm import SVC
 model = SVC(kernel="linear")
 model.fit(X_train, y_train)
 
-model.support_vectors_    # the only examples that determine the boundary (often a handful, out of hundreds)
+# the only examples that determine the boundary (often a handful, out of hundreds)
+model.support_vectors_
 ```
 
 ## The *kernel trick*: when a line isn't enough
@@ -56,7 +57,8 @@ An SVM measures **distances** between points to find the maximum margin: a chara
 from sklearn.preprocessing import StandardScaler
 
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X_train)   # centers and scales each column (mean 0, standard deviation 1)
+# centers and scales each column (mean 0, standard deviation 1)
+X_scaled = scaler.fit_transform(X_train)
 ```
 
 ---

@@ -27,16 +27,16 @@ print(v.descricao())   # "Peugeot 308"
 
 ```python
 class Contador:
-    total_criados = 0   # atributo de CLASSE: compartilhado por todas as instancias
+    total_criados = 0   # atributo de CLASSE: compartilhado por todas as instâncias
 
     def __init__(self):
         Contador.total_criados += 1
-        self.id = Contador.total_criados   # atributo DE INSTANCIA: proprio de cada objeto
+        self.id = Contador.total_criados   # atributo DE INSTÂNCIA: próprio de cada objeto
 
 c1 = Contador()
 c2 = Contador()
 print(Contador.total_criados)  # 2 -> compartilhado
-print(c1.id, c2.id)            # 1 2 -> proprio de cada um
+print(c1.id, c2.id)            # 1 2 -> próprio de cada um
 ```
 
 ## Ler um atributo pelo seu nome: `getattr()`
@@ -44,9 +44,12 @@ print(c1.id, c2.id)            # 1 2 -> proprio de cada um
 ```python
 u = Veiculo("Peugeot", "308")
 
-u.marca                            # "Peugeot" -> o nome do atributo deve ser conhecido ao escrever o codigo
-getattr(u, "marca")                # "Peugeot" -> o mesmo, mas o nome vem de uma STRING, resolvida em execucao
-getattr(u, "cor", None)            # None      -> valor de reserva se o atributo nao existir (como dict.get())
+# "Peugeot" -> o nome do atributo deve ser conhecido ao escrever o código
+u.marca
+# "Peugeot" -> o mesmo, mas o nome vem de uma STRING, resolvida em execução
+getattr(u, "marca")
+# None      -> valor de reserva se o atributo não existir (como dict.get())
+getattr(u, "cor", None)
 ```
 
 `getattr(objeto, nome, padrao)` permite aplicar o mesmo tratamento a uma LISTA de nomes de atributos, calculada em tempo de execução (ex.: uma variável de loop), sem escrever um `if`/`elif` por atributo:
@@ -99,7 +102,7 @@ class Ponto:
         self.x = x
         self.y = y
 
-    def __repr__(self):           # chamado por repr(obj) e a exibicao no console/debugador
+    def __repr__(self):           # chamado por repr(obj) e a exibição no console/debugador
         return f"Ponto({self.x}, {self.y})"
 
     def __str__(self):             # chamado por print(obj) e str(obj)
@@ -113,8 +116,8 @@ class Ponto:
 
 p1 = Ponto(1, 2)
 p2 = Ponto(3, 4)
-print(p1 + p2)            # (4, 6) -> gracas a __add__
-print(p1 == Ponto(1, 2))  # True -> gracas a __eq__
+print(p1 + p2)            # (4, 6) -> graças a __add__
+print(p1 == Ponto(1, 2))  # True -> graças a __eq__
 ```
 
 | Método especial | Disparado por |
@@ -133,17 +136,18 @@ class Distancia:
     def __init__(self, metros):
         self.metros = metros
 
-    def __add__(self, outro):     # chamado quando Distancia e o operando ESQUERDO: d + 5
+    def __add__(self, outro):     # chamado quando Distância é o operando ESQUERDO: d + 5
         if isinstance(outro, (int, float)):
             return Distancia(self.metros + outro)
-        return NotImplemented     # "nao sei tratar esse tipo" -> Python tenta outro metodo
+        return NotImplemented     # "não sei tratar esse tipo" -> Python tenta outro método
 
-    def __radd__(self, outro):    # chamado quando Distancia e o operando DIREITO: 5 + d
+    def __radd__(self, outro):    # chamado quando Distância é o operando DIREITO: 5 + d
         return self.__add__(outro)
 
 d = Distancia(100)
-d + 5  # Distancia(105) -> via __add__
-5 + d  # Distancia(105) -> via __radd__, porque int.__add__(5, d) falha e retorna NotImplemented
+d + 5  # Distância(105) -> via __add__
+# Distância(105) -> via __radd__, porque int.__add__(5, d) falha e retorna NotImplemented
+5 + d
 ```
 
 Quando `esquerda + direita` é avaliado, Python primeiro tenta `esquerda.__add__(direita)`. Se esse método não existir ou retornar **`NotImplemented`** (um valor especial, que não deve ser confundido com a exceção `NotImplementedError`), Python então tenta o método **refletido** do objeto da direita: `direita.__radd__(esquerda)`. Cada método especial tem seu equivalente refletido (`__radd__`, `__rsub__`, `__rtruediv__`...): é esse mecanismo que permite por exemplo a `pathlib.Path` (veja [Manipular arquivos e pastas](/?c=langages-de-programmation&s=python&p=manipuler-des-fichiers-et-dossiers)) definir `__rtruediv__`, para que `"pasta" / caminho` funcione mesmo com uma simples string à esquerda.
@@ -160,7 +164,7 @@ class Circulo:
         return 3.14159 * self.raio ** 2
 
 c = Circulo(5)
-print(c.area)   # 78.53975 -> acessado como um atributo, NAO como c.area()
+print(c.area)   # 78.53975 -> acessado como um atributo, NÃO como c.área()
 ```
 
 `@property` transforma um método em atributo de leitura, recalculado a cada acesso, útil para expor um valor derivado sem exigir que o chamador saiba que é na verdade um cálculo.

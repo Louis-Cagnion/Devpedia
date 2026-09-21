@@ -52,11 +52,26 @@ The CPU and GPU each have their own memory: having the GPU compute on a piece of
 >
 > **Best practice:** reserve the GPU for computations that are genuinely parallelizable (the same simple operation, repeated over a large number of independent pieces of data) and leave the rest to the CPU.
 
+## CUDA: the software that lets you actually harness a GPU
+
+Knowing a GPU can parallelize a computation isn't enough to use it: you need a way to send it work. **CUDA** is NVIDIA's software platform and programming model that makes this possible on its GPUs.
+
+The CPU prepares the data, transfers it to the GPU, launches functions called **kernels**, then retrieves the result. A kernel is never run just once: thousands of GPU threads run it in parallel, each on a different piece of data:
+
+```text
+CPU  : prepares data --> transfers to the GPU --> launches a kernel --> retrieves result
+GPU  : thousands of threads run this SAME kernel, each on its own piece of data
+```
+
+On top of CUDA, ready-made libraries avoid having to write these kernels by hand: `cuBLAS` for matrix computation, `cuDNN` for deep learning operations, `NCCL` for making multiple GPUs communicate with each other. A framework like [PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch) relies on these libraries behind the scenes: sending a tensor "to the GPU" triggers exactly this CPU/kernel/threads mechanism, without ever exposing it directly.
+
+> **Note:** NVIDIA's edge isn't just about raw chip power. Years of libraries and developer habits have been built around CUDA: competing with NVIDIA therefore means competing with that entire software ecosystem, not just producing a faster chip.
+
 ## Key takeaways
 
 | | |
 |---|---|
-| **Key takeaways** | A CPU has few, fast, versatile cores, suited to sequential tasks and branching. A GPU has thousands of simple cores, suited to repeating the same operation on independent data: the case for the vector/matrix computation behind a neural network. |
-| **Tools you can use** | Deep learning libraries ([PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch), [TensorFlow](https://www.tensorflow.org)) handle transferring data to the GPU and parallelizing computation automatically. |
+| **Key takeaways** | A CPU has few, fast, versatile cores, suited to sequential tasks and branching. A GPU has thousands of simple cores, suited to repeating the same operation on independent data: the case for the vector/matrix computation behind a neural network. CUDA is NVIDIA's platform that lets you actually send work to a GPU (kernels run in parallel by thousands of threads). |
+| **Tools you can use** | Deep learning libraries ([PyTorch](/?c=ia&s=fondamentaux-du-deep-learning&p=deep-learning-pytorch), [TensorFlow](https://www.tensorflow.org)) handle transferring data to the GPU and parallelizing computation automatically, via CUDA and libraries like `cuBLAS`/`cuDNN`/`NCCL`. |
 | **Pitfalls to avoid** | Transferring data between CPU and GPU too often or in too small amounts. Expecting a speedup from a GPU on an inherently sequential computation. |
 | **Best practices** | Batch CPU/GPU transfers into as few large operations as possible. Reserve the GPU for computations that are genuinely parallelizable. |

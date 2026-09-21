@@ -6,7 +6,7 @@ order: 13
 
 PowerShell relies on the same underlying mechanism as [Bash](/?c=shells&s=bash&p=bash) (a loop that reads, interprets, and executes), but it doesn't run directly on the operating system as a plain native executable: it's an environment built on the [**.NET Runtime**](https://learn.microsoft.com/en-us/dotnet/), which explains both its typed objects (see [Variables](/?c=shells&s=powershell&p=variables) and [Redirections and Pipes](/?c=shells&s=powershell&p=redirections-et-pipes)) and some of its performance differences from Bash.
 
-> **Prerequisite:** this chapter assumes you know what a process is (`fork`/`exec`): see the chapter on a shell's architecture (Bash section), which details this mechanism on the Unix side; the concepts show up here too, just implemented differently on Windows.
+> **Prerequisite:** this chapter assumes you know what a process is (`fork`/`exec`): see [this same chapter for Bash](/?c=shells&s=bash&p=bash), which details this mechanism on the Unix side; the concepts show up here too, just implemented differently on Windows.
 
 ## The main loop (REPL)
 
@@ -41,7 +41,8 @@ For an executable like `notepad.exe`, PowerShell delegates creating a new proces
 ```text
 CreateProcess("notepad.exe", arguments, ...)
 // the new process starts in parallel
-// PowerShell waits for it to finish (or continues, if launched in the background) depending on context
+// PowerShell waits for it to finish (or continues, if launched in the background)
+// depending on context
 ```
 
 ## The object pipeline: what `|` actually carries

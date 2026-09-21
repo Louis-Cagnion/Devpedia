@@ -35,7 +35,8 @@ p1 = Point(1, 2)
 p2 = Point(1, 2)
 
 print(p1)        # Point(x=1, y=2)  -> __repr__ generated automatically
-print(p1 == p2)  # True             -> __eq__ generated automatically, field-by-field comparison
+# True             -> __eq__ generated automatically, field-by-field comparison
+print(p1 == p2)
 ```
 
 Each line `x: int` declares both a field **and** its type: `@dataclass` reads these annotations to automatically build `__init__(self, x, y)`, in the order the fields are declared.
@@ -89,7 +90,8 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Cart:
-    items: list = []   # ValueError raised at class definition: mutable list forbidden as a direct default
+    # ValueError raised at class definition: mutable list forbidden as a direct default
+    items: list = []
 
 @dataclass
 class Cart:
@@ -124,7 +126,8 @@ class Person:
 p = Person(name="John", address=Address(city="Paris", zip_code="75000"))
 
 asdict(p)              # {"name": "John", "address": {"city": "Paris", "zip_code": "75000"}}
-json.dumps(asdict(p))  # direct serialization: asdict() has already reduced everything to simple types
+# direct serialization: asdict() has already reduced everything to simple types
+json.dumps(asdict(p))
 ```
 
 > **Pitfall:** calling `json.dumps()` directly on a dataclass instance, without going through `asdict()` first: `TypeError: Object of type Person is not JSON serializable`. `json.dumps()` can only encode simple types, never an arbitrary Python object.

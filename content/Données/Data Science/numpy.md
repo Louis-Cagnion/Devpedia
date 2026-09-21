@@ -77,7 +77,8 @@ a = np.array([1, 2, 3])
 b = np.array([4, 5, 6])
 
 a + b         # [5, 7, 9] -> addition élément par élément
-a * b         # [4, 10, 18] -> multiplication élément par élément (PAS un produit matriciel)
+# [4, 10, 18] -> multiplication élément par élément (PAS un produit matriciel)
+a * b
 a @ b         # 32 -> produit scalaire (1*4 + 2*5 + 3*6)
 np.dot(a, b)  # 32 -> équivalent explicite de "@"
 

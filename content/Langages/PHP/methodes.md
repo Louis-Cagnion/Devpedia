@@ -112,7 +112,8 @@ PHP fournit énormément de fonctions natives déjà prêtes à l'emploi, class�
 ```php
 <?php
     count([1, 2, 3]);                      // 3 -> nombre d'éléments
-    $tab[] = "valeur";                     // ajoute un élément à la fin (préféré à array_push() pour un seul élément)
+    // ajoute un élément à la fin (préféré à array_push() pour un seul élément)
+    $tab[] = "valeur";
     array_pop($tab);                       // retire et renvoie le dernier élément
     array_merge($tab1, $tab2);             // fusionne deux tableaux
     in_array("pomme", $fruits);            // true/false -> vérifie la présence d'une valeur
@@ -133,8 +134,10 @@ PHP fournit énormément de fonctions natives déjà prêtes à l'emploi, class�
     array_key_exists("nom", $personne);  // true/false -> vérifie qu'une clé existe
     unset($personne["age"]);             // retire une clé (et sa valeur) du tableau
     ksort($personne);                    // trie le tableau selon les clés
-    asort($personne);                    // trie le tableau selon les valeurs (en gardant les clés)
-    array_combine(["a", "b"], [1, 2]);   // ["a" => 1, "b" => 2] -> crée un tableau associatif à partir de 2 tableaux
+    // trie le tableau selon les valeurs (en gardant les clés)
+    asort($personne);
+    // ["a" => 1, "b" => 2] -> crée un tableau associatif à partir de 2 tableaux
+    array_combine(["a", "b"], [1, 2]);
     array_flip($personne);               // inverse clés et valeurs
 ?>
 ```

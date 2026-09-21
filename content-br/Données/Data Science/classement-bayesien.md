@@ -34,9 +34,9 @@ nota_ajustada = (R x v + m x C) / (v + m)
 def nota_ajustada(R, v, C, m):
     return (R * v + m * C) / (v + m)
 
-# Ficha A: 5.0 sobre 2 avaliacoes, contra uma media global de 4.2, limite de confianca m=50
-nota_ajustada(R=5.0, v=2,   C=4.2, m=50)   # ~4.23: bem perto da referencia global
-nota_ajustada(R=4.8, v=500, C=4.2, m=50)   # ~4.71: bem perto da media bruta
+# Ficha A: 5.0 sobre 2 avaliações, contra uma média global de 4.2, limite de confiança m=50
+nota_ajustada(R=5.0, v=2,   C=4.2, m=50)   # ~4.23: bem perto da referência global
+nota_ajustada(R=4.8, v=500, C=4.2, m=50)   # ~4.71: bem perto da média bruta
 ```
 
 - Quando `v` é **grande** em relação a `m` (ficha B): a fórmula tende para a média bruta `R`, o volume de avaliações já basta para confiar nela.

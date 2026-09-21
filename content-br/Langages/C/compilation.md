@@ -54,6 +54,30 @@ gcc -c arquivo2.c -o arquivo2.o
 gcc arquivo1.o arquivo2.o -o programa
 ```
 
+## Os níveis de otimização (`-O0` a `-O3`, `-Os`)
+
+Uma vez que o programa compila, `gcc`/[Clang](https://clang.llvm.org) podem reescrever o código de máquina produzido na etapa 2 para torná-lo mais rápido, sem mudar seu comportamento observável. Esse ajuste é feito com a opção `-O`:
+
+| Nível | Efeito |
+|---|---|
+| `-O0` | Sem otimização (comportamento padrão): compilação rápida, código de máquina que segue o código-fonte passo a passo -- o mais fácil de acompanhar em um depurador |
+| `-O1` | Otimizações básicas, ganho modesto, compilação ainda rápida |
+| `-O2` | Nível recomendado em produção: inlining, eliminação de código morto, desenrolamento de laços (veja abaixo), sem disparar o tamanho do binário |
+| `-O3` | Leva `-O2` mais longe (vetorização agressiva, inlining mais amplo): ganho às vezes marginal dependendo do programa, binário maior, compilação mais longa |
+| `-Os` | Otimiza o tamanho do binário em vez da velocidade (útil em ambientes embarcados, com espaço em disco limitado) |
+
+Três técnicas comuns explicam o ganho:
+
+- **Inlining**: o corpo de uma função pequena é copiado diretamente em cada lugar onde é chamada, evitando o custo de uma chamada real (salvar contexto, salto, retorno).
+- **Eliminação de código morto**: qualquer cálculo cujo resultado nunca é usado é removido do binário final.
+- **Desenrolamento de laços** (*loop unrolling*): o corpo de um laço é duplicado várias vezes para reduzir o número de iterações (e, portanto, de verificações de condição), ao custo de um binário maior.
+
+```bash
+gcc -O2 main.c -o programme
+```
+
+> **Armadilha:** o inlining pode fazer aparecer um aviso invisível em `-O0`. Exemplo: uma função que retorna `-1` em caso de erro, cujo resultado é depois usado para calcular um tamanho passado a `malloc()`. Em `-O0`, o compilador vê duas funções separadas e não consegue relacionar os dois valores. Uma vez inlinada por `-O2`, ele vê o cálculo completo de uma vez e pode detectar que `malloc()` receberia um tamanho negativo (portanto gigantesco ao ser convertido para `size_t`) -- sinalizado por `-Walloc-size-larger-than=` (incluído em `-Wall -Wextra`, veja [Os Makefiles](/?c=langages-de-programmation&s=c&p=makefiles)), que se torna um erro bloqueante se `-Werror` estiver ativo. Um código sem avisos em `-O0` pode, portanto, falhar ao compilar em `-O2`: sempre testar a compilação no nível de otimização realmente usado em produção, não apenas em `-O0`.
+
 ## Erros de compilação vs erros de ligação
 
 Saber em qual etapa um erro ocorre ajuda a diagnosticá-lo:
@@ -70,7 +94,7 @@ Saber em qual etapa um erro ocorre ajuda a diagnosticá-lo:
 
 | | |
 |---|---|
-| **Para lembrar** | Um programa C passa por 4 etapas antes da execução: preprocessador → compilação (assembly) → montagem (código de máquina, `.o`) → ligação (executável final). |
-| **Ferramentas utilizáveis** | `gcc -E`/`-S`/`-c` para observar cada etapa separadamente. |
-| **Armadilhas a evitar** | Confundir um erro de compilação (sintaxe) com um erro de ligação (`undefined reference`, função nunca ligada): a mensagem indica a etapa envolvida. |
-| **Boas práticas** | Compilar cada arquivo `.c` em `.o` separadamente em um projeto com vários arquivos, para ligar apenas o que mudou em vez de recompilar tudo. |
+| **Para lembrar** | Um programa C passa por 4 etapas antes da execução: preprocessador → compilação (assembly) → montagem (código de máquina, `.o`) → ligação (executável final). O nível de otimização (`-O0` a `-O3`, `-Os`) é ajustado na etapa de compilação. |
+| **Ferramentas utilizáveis** | `gcc -E`/`-S`/`-c` para observar cada etapa separadamente; `-O0` a `-O3`/`-Os` para ajustar o nível de otimização. |
+| **Armadilhas a evitar** | Confundir um erro de compilação (sintaxe) com um erro de ligação (`undefined reference`, função nunca ligada): a mensagem indica a etapa envolvida. Um aviso invisível em `-O0` (oculto por duas funções não inlinadas) pode aparecer, ou até bloquear a compilação com `-Werror`, já a partir de `-O2`. |
+| **Boas práticas** | Compilar cada arquivo `.c` em `.o` separadamente em um projeto com vários arquivos, para ligar apenas o que mudou em vez de recompilar tudo. Testar a compilação no nível de otimização realmente usado em produção, não apenas em `-O0`. |

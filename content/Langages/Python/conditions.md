@@ -54,11 +54,14 @@ else:
 
 ```python
 resume = "actif"
-resultat = resume and "trouvé"    # "trouvé" -> resume est truthy, and renvoie SA DEUXIÈME opérande
-resultat = "" and "trouvé"        # ""       -> "" est falsy, and s'arrête et renvoie SA PREMIÈRE opérande
+# "trouvé" -> resume est truthy, and renvoie SA DEUXIÈME opérande
+resultat = resume and "trouvé"
+# ""       -> "" est falsy, and s'arrête et renvoie SA PREMIÈRE opérande
+resultat = "" and "trouvé"
 
 surnom = ""
-nom_affiche = surnom or "Anonyme"  # "Anonyme" -> or renvoie la première opérande truthy rencontrée
+# "Anonyme" -> or renvoie la première opérande truthy rencontrée
+nom_affiche = surnom or "Anonyme"
 ```
 
 `and`/`or` ne recalculent jamais un `True`/`False` : ils renvoient l'une de leurs deux opérandes, sans évaluer l'autre au-delà du nécessaire (**évaluation en court-circuit**). `a and b` renvoie `a` si `a` est falsy (sans même évaluer `b`), sinon `b` ; `a or b` renvoie `a` si `a` est truthy, sinon `b`. Cet idiome permet un appel conditionnel (`connecte and deconnecter()`, n'appelle `deconnecter()` que si `connecte` est vrai) ou une valeur de repli (`nom = surnom or "Anonyme"`).

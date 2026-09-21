@@ -29,7 +29,8 @@ Si 4 des 5 voisins les plus proches sont "science-fiction", le nouveau film est 
 from sklearn.neighbors import KNeighborsClassifier
 
 modele = KNeighborsClassifier(n_neighbors=5)   # k = 5
-modele.fit(X_entrainement, y_entrainement)     # ne calcule rien : stocke simplement les données
+# ne calcule rien : stocke simplement les données
+modele.fit(X_entrainement, y_entrainement)
 
 modele.predict([[nouveau_film]])                # calcule les distances MAINTENANT, à la volée
 ```

@@ -21,22 +21,23 @@ Texto real:          "Os gatos dormem"
 
 ```python
 def distancia_levenshtein(a, b):
-    # tabela[i][j] = distancia entre os i primeiros caracteres de a e os j primeiros de b
+    # tabela[i][j] = distância entre os i primeiros caracteres de a e os j primeiros de b
     tabela = [[0] * (len(b) + 1) for _ in range(len(a) + 1)]
     for i in range(len(a) + 1):
-        tabela[i][0] = i   # transformar a[:i] em "" custa i remocoes
+        tabela[i][0] = i   # transformar a[:i] em "" custa i remoções
     for j in range(len(b) + 1):
-        tabela[0][j] = j   # transformar "" em b[:j] custa j insercoes
+        tabela[0][j] = j   # transformar "" em b[:j] custa j inserções
 
     for i in range(1, len(a) + 1):
         for j in range(1, len(b) + 1):
             if a[i - 1] == b[j - 1]:
-                tabela[i][j] = tabela[i - 1][j - 1]              # caracteres identicos, nada a fazer
+                # caracteres idênticos, nada a fazer
+                tabela[i][j] = tabela[i - 1][j - 1]
             else:
                 tabela[i][j] = 1 + min(
-                    tabela[i - 1][j],      # remocao
-                    tabela[i][j - 1],      # insercao
-                    tabela[i - 1][j - 1],  # substituicao
+                    tabela[i - 1][j],      # remoção
+                    tabela[i][j - 1],      # inserção
+                    tabela[i - 1][j - 1],  # substituição
                 )
     return tabela[len(a)][len(b)]
 ```
@@ -60,7 +61,8 @@ O **WER** aplica o mesmo cálculo (distância de edição, relacionada ao compri
 
 ```python
 def wer(texto_reconhecido, texto_real):
-    return distancia_levenshtein(texto_reconhecido.split(), texto_real.split()) / len(texto_real.split())
+    distancia = distancia_levenshtein(texto_reconhecido.split(), texto_real.split())
+    return distancia / len(texto_real.split())
 ```
 
 | | CER | WER |
@@ -80,7 +82,7 @@ Em um documento estruturado (uma nota fiscal, um formulário), um CER ou WER cal
 ```text
 Nota fiscal com CER global de 2% (excelente na aparencia):
 
-  Endereco do cliente : "Rua da Paz, 12, 0l310-000 Sao Paulo"  <- erro em 1 caractere do CEP (l ao inves de 1)
+  Endereco do cliente : "Rua da Paz, 12, 0l310-000 São Paulo"  <- erro em 1 caractere do CEP (l ao inves de 1)
   Valor total          : "R$ 1.250,00"                          <- perfeitamente reconhecido
 
   O CER global (2%) afoga o erro no CEP (um campo critico para a entrega)

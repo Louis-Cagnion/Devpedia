@@ -31,12 +31,13 @@ def distancia_levenshtein(a, b):
     for i in range(1, len(a) + 1):
         for j in range(1, len(b) + 1):
             if a[i - 1] == b[j - 1]:
-                tabla[i][j] = tabla[i - 1][j - 1]              # caracteres identicos, nada que hacer
+                # caracteres identicos, nada que hacer
+                tabla[i][j] = tabla[i - 1][j - 1]
             else:
                 tabla[i][j] = 1 + min(
-                    tabla[i - 1][j],      # eliminacion
-                    tabla[i][j - 1],      # insercion
-                    tabla[i - 1][j - 1],  # sustitucion
+                    tabla[i - 1][j],      # eliminación
+                    tabla[i][j - 1],      # inserción
+                    tabla[i - 1][j - 1],  # sustitución
                 )
     return tabla[len(a)][len(b)]
 ```
@@ -60,7 +61,8 @@ El **WER** aplica el mismo cálculo (distancia de edición, relacionada con la l
 
 ```python
 def wer(texto_reconocido, texto_real):
-    return distancia_levenshtein(texto_reconocido.split(), texto_real.split()) / len(texto_real.split())
+    distancia = distancia_levenshtein(texto_reconocido.split(), texto_real.split())
+    return distancia / len(texto_real.split())
 ```
 
 | | CER | WER |

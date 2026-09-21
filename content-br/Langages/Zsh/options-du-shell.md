@@ -9,10 +9,10 @@ O [Bash](/?c=shells&s=bash&p=bash) ativa comportamentos opcionais caso a caso (`
 ## Ativar e desativar uma opção
 
 ```bash
-setopt AUTO_CD    # ativa uma opcao
+setopt AUTO_CD    # ativa uma opção
 unsetopt AUTO_CD  # desativa
 
-setopt            # lista todas as opcoes atualmente ativas
+setopt            # lista todas as opções atualmente ativas
 ```
 
 > **Nota:** os nomes de opções não diferenciam maiúsculas/minúsculas nem underscores: `AUTO_CD`, `autocd` e `auto_cd` designam a mesma opção. A convenção `MAIUSCULAS_COM_UNDERSCORES` é a mais legível e a mais comum nos `.zshrc` encontrados online.
@@ -20,11 +20,13 @@ setopt            # lista todas as opcoes atualmente ativas
 ## Algumas opções úteis no dia a dia
 
 ```bash
-setopt AUTO_CD           # digitar um nome de diretorio sozinho (sem "cd") ja move para ele
-setopt EXTENDED_GLOB     # ativa o globbing estendido (veja Expansao e coringas avancados)
-setopt SHARE_HISTORY     # compartilha o historico de comandos em tempo real entre todos os terminais abertos
-setopt HIST_IGNORE_DUPS  # nao registra um comando identico ao anterior no historico
-setopt CORRECT           # sugere uma correcao se um comando digitado nao existe ("did you mean...")
+setopt AUTO_CD           # digitar um nome de diretório sozinho (sem "cd") já move para ele
+setopt EXTENDED_GLOB     # ativa o globbing estendido (veja Expansão e coringas avancados)
+# compartilha o histórico de comandos em tempo real entre todos os terminais abertos
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS  # não registra um comando idêntico ao anterior no histórico
+# sugere uma correção se um comando digitado não existe ("did you mean...")
+setopt CORRECT
 ```
 
 | Opção | Efeito |

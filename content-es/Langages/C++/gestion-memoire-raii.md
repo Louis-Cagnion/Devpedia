@@ -16,10 +16,12 @@ public:
     GestorArchivo(const std::string &ruta) {
         archivo.open(ruta);
         if (!archivo.is_open()) {
-            throw std::runtime_error("No se pudo abrir: " + ruta); // véase el capítulo sobre excepciones
+            // véase el capítulo sobre excepciones
+            throw std::runtime_error("No se pudo abrir: " + ruta);
         }
     }
-    ~GestorArchivo() { archivo.close(); }   // se ejecuta automáticamente, ¡incluso en caso de excepción!
+    // se ejecuta automáticamente, ¡incluso en caso de excepción!
+    ~GestorArchivo() { archivo.close(); }
 private:
     std::ifstream archivo;
 };
@@ -39,7 +41,8 @@ int *p = new int(42);  // asigna E inicializa en una sola operación
 delete p;              // libera
 
 int *matriz = new int[10];  // asigna un array dinámico
-delete[] matriz;            // "[]" obligatorio para liberar un array, si no, comportamiento indefinido
+// "[]" obligatorio para liberar un array, si no, comportamiento indefinido
+delete[] matriz;
 ```
 
 `new`/`delete` sustituyen a `malloc`/`free`, pero presentan exactamente los mismos riesgos (olvido de `delete`, doble `delete`, *use-after-free*, véase [La gestión de la memoria](/?c=langages-de-programmation&s=c&p=memoire) en C): por eso, en C++ moderno, rara vez se usan **directamente**.
@@ -63,7 +66,8 @@ Un `unique_ptr` solo puede tener un **único** propietario: copiarlo está prohi
 
 ```cpp
 std::unique_ptr<int> p1 = std::make_unique<int>(42);
-std::unique_ptr<int> p2 = std::move(p1);   // p2 pasa a ser el propietario, p1 pasa a ser nullptr
+// p2 pasa a ser el propietario, p1 pasa a ser nullptr
+std::unique_ptr<int> p2 = std::move(p1);
 ```
 
 ### `shared_ptr`: propiedad compartida, con recuento de referencias
@@ -78,16 +82,6 @@ std::shared_ptr<int> p2 = p1;   // OK, copia permitida: p1 Y p2 comparten el mis
 Cada `shared_ptr` incrementa un contador de referencias compartido; el recurso solo se libera automáticamente cuando dicho contador llega a cero.
 
 > **Nota:** `shared_ptr` tiene un coste (el contador de referencias, actualizado de forma **thread-safe**: sin riesgo de [race condition](/?c=langages-de-programmation&s=c&p=threads) si varios hilos lo modifican a la vez) superior al de `unique_ptr`: hay que reservarlo para los casos en los que un recurso tenga realmente varios propietarios legítimos, no por defecto.
-
-## Resumen
-
-| | `new`/`delete` puro | `unique_ptr` | `shared_ptr` |
-|---|---|---|---|
-| Liberación automática | No | Sí | Sí |
-| Número de propietarios | N/D | Uno solo | Varios |
-| Coste | Mínimo | Prácticamente nulo (sin sobrecoste en la ejecución) | Recuento de referencias (ligero sobrecoste) |
-
-> **Buena práctica en C++ moderno:** nunca uses `new`/`delete` directamente en el código de la aplicación; prefiere siempre `unique_ptr` (por defecto) o `shared_ptr` (si realmente es necesario compartir), para beneficiarte de RAII sin tener que pensar en ello cada vez.
 
 ---
 

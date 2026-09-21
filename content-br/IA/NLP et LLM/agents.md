@@ -52,7 +52,7 @@ O parâmetro `cidade` do exemplo anterior só assume valores de um conjunto limi
 ```json
 {
   "name": "executar_bash",
-  "description": "Executa um comando shell e retorna sua saida padrao",
+  "description": "Executa um comando shell e retorna sua saída padrão",
   "parameters": {
     "comando": { "type": "string", "description": "O comando a executar" }
   }

@@ -53,7 +53,10 @@ Um hook recebe dados estruturados ([JSON](/?c=infrastructure-devops&s=infrastruc
 { "tool_name": "delete_file", "tool_input": { "path": "config/prod.yaml" } }
 
 // Saída possível do hook: bloqueia a ação e explica o motivo
-{ "decision": "block", "reason": "Exclusão de um arquivo de configuração sem confirmação explícita" }
+{
+    "decision": "block",
+    "reason": "Exclusão de um arquivo de configuração sem confirmação explícita"
+}
 ```
 
 | Decisão possível | Efeito |

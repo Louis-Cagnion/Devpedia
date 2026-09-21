@@ -216,7 +216,8 @@ The login token seen above is an **opaque** secret (random, meaningless), verifi
 <?php
 function createToken(string $data, string $secret): string
 {
-    $encoded = base64_encode($data);                  // encoded, NOT encrypted: readable if decoded
+    // encoded, NOT encrypted: readable if decoded
+    $encoded = base64_encode($data);
     $signature = hash_hmac('sha256', $encoded, $secret);
     return $encoded . '.' . $signature;
 }

@@ -12,7 +12,7 @@ Una **variable** es una caja etiquetada que contiene un valor, consultable o mod
 nombre = "Juan" → crea una caja llamada "nombre", guarda ahí el valor "Juan"
 edad = 25       → crea una caja llamada "edad", guarda ahí el valor 25
 mostrar nombre  → va a leer la caja "nombre", muestra "Juan"
-edad = 26       → reemplaza el contenido de la caja "edad" por 26: el valor cambia, la caja sigue siendo la misma
+edad = 26       → reemplaza el contenido de "edad": el valor cambia, la caja sigue igual
 ```
 
 > **Analogía:** una taquilla etiquetada en un vestuario: se puede cambiar lo que contiene sin cambiar nunca la etiqueta pegada en ella.

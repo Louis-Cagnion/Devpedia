@@ -28,7 +28,8 @@ np.array([1, 2, 3])              # a partir de una lista de Python
 np.zeros((3, 4))                    # tabla de 3x4 celdas llena de ceros
 np.ones((2, 2))                      # tabla de 2x2 llena de unos
 np.arange(0, 10, 2)                   # [0, 2, 4, 6, 8] -> equivalente en NumPy de range()
-np.linspace(0, 1, 5)                   # [0, 0,25, 0,5, 0,75, 1,0] -> 5 valores espaciados uniformemente
+# [0, 0,25, 0,5, 0,75, 1,0] -> 5 valores espaciados uniformemente
+np.linspace(0, 1, 5)
 np.random.rand(3, 3)                    # tabla de 3x3 con valores aleatorios entre 0 y 1
 ```
 

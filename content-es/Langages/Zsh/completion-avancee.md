@@ -21,7 +21,7 @@ Estas dos líneas, colocadas en `~/.zshrc` (ver [Los archivos de inicio](/?c=she
 
 ```bash
 git checkout <Tab>  # propone las ramas locales, no los archivos de la carpeta
-kill -9 <Tab>       # propone los PID de procesos en ejecucion, con su nombre
+kill -9 <Tab>       # propone los PID de procesos en ejecución, con su nombre
 ssh <Tab>           # propone los hosts conocidos (~/.ssh/config, ~/.ssh/known_hosts)
 ```
 

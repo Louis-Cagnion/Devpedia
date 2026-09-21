@@ -12,11 +12,11 @@ Python usa `if`/`elif`/`else`, sem nenhuma chave: é a própria **indentação**
 idade = 20
 
 if idade >= 18:
-    print("Voce e maior de idade.")
+    print("Você e maior de idade.")
 elif idade >= 13:
-    print("Voce e adolescente.")
+    print("Você e adolescente.")
 else:
-    print("Voce e crianca.")
+    print("Você e crianca.")
 ```
 
 > **Nota:** `elif` (contração de "else if") é a única palavra-chave para encadear condições; `else if` em duas palavras não existe em Python. A indentação coerente é **obrigatória**: um bloco mal indentado provoca um `IndentationError`, não apenas um aviso.
@@ -26,11 +26,11 @@ else:
 Além de `True`/`False`, Python considera automaticamente certos valores como falsos em um contexto booleano (`if`, `while`...):
 
 ```python
-if []:      # False -> uma lista vazia e "falsy"
-if "":      # False -> uma string vazia e "falsy"
-if 0:       # False -> zero e "falsy"
+if []:      # False -> uma lista vazia é "falsy"
+if "":      # False -> uma string vazia é "falsy"
+if 0:       # False -> zero é "falsy"
 if None:    # False
-if [1, 2]:  # True -> uma lista nao vazia e "truthy"
+if [1, 2]:  # True -> uma lista não vazia é "truthy"
 ```
 
 | Valor | Truthy / Falsy |
@@ -44,21 +44,24 @@ if [1, 2]:  # True -> uma lista nao vazia e "truthy"
 ```python
 usuarios = []
 
-if usuarios:                # preferido a "if len(usuarios) > 0:"
-    print("Ha usuarios")
+if usuarios:                # preferido a "if len(usuários) > 0:"
+    print("Há usuários")
 else:
-    print("Nenhum usuario")
+    print("Nenhum usuário")
 ```
 
 ## `and`/`or` retornam um valor, não apenas um booleano
 
 ```python
 status = "ativo"
-resultado = status and "encontrado"    # "encontrado" -> status e truthy, and retorna seu SEGUNDO operando
-resultado = "" and "encontrado"        # ""           -> "" e falsy, and para e retorna seu PRIMEIRO operando
+# "encontrado" -> status é truthy, and retorna seu SEGUNDO operando
+resultado = status and "encontrado"
+# ""           -> "" é falsy, and para e retorna seu PRIMEIRO operando
+resultado = "" and "encontrado"
 
 apelido = ""
-nome_exibido = apelido or "Anonimo"    # "Anonimo" -> or retorna o primeiro operando truthy encontrado
+# "Anonimo" -> or retorna o primeiro operando truthy encontrado
+nome_exibido = apelido or "Anonimo"
 ```
 
 `and`/`or` nunca recalculam um `True`/`False`: eles retornam um dos seus dois operandos, sem avaliar o outro além do necessário (**avaliação em curto-circuito**). `a and b` retorna `a` se `a` for falsy (sem sequer avaliar `b`), senão `b`; `a or b` retorna `a` se `a` for truthy, senão `b`. Esse idioma permite uma chamada condicional (`conectado and desconectar()`, só chama `desconectar()` se `conectado` for verdadeiro) ou um valor de reserva (`nome = apelido or "Anonimo"`).
@@ -79,11 +82,11 @@ Ao contrário de PHP/C/JS (`condicao ? valor_se_verdadeiro : valor_se_falso`), P
 Permite atribuir uma variável **e** usá-la na mesma expressão, principalmente em uma condição:
 
 ```python
-# sem o operador morsa: a linha "resultado" e calculada duas vezes
+# sem o operador morsa: a linha "resultado" é calculada duas vezes
 if calcular_resultado() > 10:
     print(calcular_resultado())
 
-# com o operador morsa: calculada uma unica vez, E utilizavel depois
+# com o operador morsa: calculada uma única vez, E utilizável depois
 if (resultado := calcular_resultado()) > 10:
     print(resultado)
 ```

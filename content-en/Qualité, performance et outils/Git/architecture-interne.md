@@ -60,7 +60,8 @@ A branch is **literally nothing more than** a file containing a commit hash. `gi
 
 ```bash
 cat .git/HEAD
-# ref: refs/heads/main   -> HEAD does not contain a hash, but rather the PATH to the current ref
+# ref: refs/heads/main   -> HEAD does not contain a hash, but rather the PATH to the current
+# ref
 ```
 
 `HEAD` is a pointer to a pointer: `git checkout autre-branche` only changes a single line in `.git/HEAD`, which now references a different file at `refs/heads/`. In *detached HEAD* mode (see [Tags](/?c=git&p=tags)), `.git/HEAD` directly contains a commit hash, without going through a named ref.
@@ -93,7 +94,8 @@ Under the hood, a “normal” `git commit` is nothing more than a sequence of `
 A `rebase` or `commit --amend` only rewrites the commits **after** the modified point. Sometimes you need to go further: remove a file (a secret file, a large binary, etc.) from **every** commit where it existed, from the very first to the last: a simple `rm` followed by a new commit isn’t enough, since the file remains readable in the previous commits.
 
 ```bash
-git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" --prune-empty -- --all
+git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" \
+    --prune-empty -- --all
 ```
 
 `--index-filter` replays this command against the index of **every** commit in the history (across all refs, via `--all`), rebuilds a new tree without the file, then a new commit, which, due to the mechanism described above (a commit’s hash depends on its parent’s hash), changes the hash of **all** commits starting from the first one affected.
@@ -114,9 +116,13 @@ After a history rewrite (or a simple `reset --hard`), the old commits are no lon
 An object is only truly removed from the local repository when nothing is holding it back:
 
 ```bash
-git reflog expire --expire=now --all  # immediately clears the reflog of all refs (instead of waiting for the default expiration time)
-git gc --prune=now                    # removes any object that has become inaccessible ("unreachable")
-git fsck --unreachable                # lists objects that are still present but not referenced by any branch, tag, or reflog
+# immediately clears the reflog of all refs (instead of waiting for the default expiration
+# time)
+git reflog expire --expire=now --all
+# removes any object that has become inaccessible ("unreachable")
+git gc --prune=now
+# lists objects that are still present but not referenced by any branch, tag, or reflog
+git fsck --unreachable
 ```
 
 > **Note:** This cleanup applies only to the **local** repository. A remote repository ([GitHub](/?c=git&p=github-et-plateformes), GitLab, etc.) follows its own `gc` according to its own schedule: after a `push --force` that removes a sensitive file from the history, the old commit may remain accessible on the server via its exact hash (a targeted request, not normal browsing) until the server performs its own cleanup. To ensure immediate deletion on the server side, only the platform’s support team can take action.

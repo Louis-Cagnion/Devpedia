@@ -35,7 +35,7 @@ Com esse sistema de moedas (1, 2, 5, 10, 20, 50), essa escolha gulosa sempre dá
 | Algoritmo de Dijkstra (caminho mais curto) | Sempre estender ao vértice não visitado mais próximo |
 | Codificação de Huffman (compressão) | Sempre agrupar os dois símbolos menos frequentes |
 
-Um algoritmo guloso costuma ser rápido e simples de implementar (uma única passada, sem retroceder); ao contrário de um algoritmo que explora várias possibilidades antes de escolher (programação dinâmica, `backtracking`), mais custoso mas que garante a otimalidade em casos onde o guloso falha.
+Um algoritmo guloso costuma ser rápido e simples de implementar (uma única passada, sem retroceder); ao contrário de um algoritmo que explora várias possibilidades antes de escolher ([programação dinâmica](https://pt.wikipedia.org/wiki/Programa%C3%A7%C3%A3o_din%C3%A2mica), [backtracking](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes)), mais custoso mas que garante a otimalidade em casos onde o guloso falha.
 
 ---
 

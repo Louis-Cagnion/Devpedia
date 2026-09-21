@@ -29,7 +29,8 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ## Exécuter un script
 
 ```powershell
-.\script.ps1                 # le ".\" est nécessaire même si le dossier courant contient le script
+# le ".\" est nécessaire même si le dossier courant contient le script
+.\script.ps1
 powershell -File script.ps1  # alternative : lancer explicitement l'interpréteur sur le fichier
 ```
 

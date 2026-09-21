@@ -42,7 +42,9 @@ spl_autoload_register(function (string $classe): void {
 
     foreach ($namespaces as $prefixe => $dossierBase) {
         if (str_starts_with($classe, $prefixe)) {
-            $path = $dossierBase . str_replace('\\', '/', substr($classe, strlen($prefixe))) . '.php';
+            $path = $dossierBase
+                . str_replace('\\', '/', substr($classe, strlen($prefixe)))
+                . '.php';
             if (file_exists($path)) {
                 require $path;
             }

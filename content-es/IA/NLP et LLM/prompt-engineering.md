@@ -254,7 +254,7 @@ Objetivos: [...]  |  Restricciones: [...]  |  Recursos disponibles: """[...]"""
 
 [2. Diseño]
 Encuadre validado: """[salida de la etapa 1]"""
--> División en subtareas, dependencias entre ellas, arquitectura general. Siempre sin programar.
+-> División en subtareas, dependencias entre ellas, arquitectura general, sin programar.
 
 [3. Plan de implementación]
 Diseño validado: """[salida de la etapa 2]"""

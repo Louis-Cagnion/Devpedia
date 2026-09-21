@@ -9,10 +9,12 @@ Git propose plusieurs commandes pour revenir en arrière, à des niveaux différ
 ## Annuler des modifications non commitées
 
 ```bash
-git checkout -- fichier.txt  # restaure un fichier à son dernier état commité, écrase les modifications locales
+# restaure un fichier à son dernier état commité, écrase les modifications locales
+git checkout -- fichier.txt
 git restore fichier.txt      # équivalent moderne de la commande ci-dessus
 
-git restore --staged fichier.txt  # retire un fichier du staging, SANS toucher à ses modifications dans le dossier de travail
+# retire un fichier du staging, SANS toucher à ses modifications dans le dossier de travail
+git restore --staged fichier.txt
 ```
 
 > **Note :** `git checkout -- fichier.txt` et `git restore fichier.txt` sont **irréversibles** : les modifications non commitées sont perdues définitivement, contrairement à un commit qu'on peut toujours retrouver (cf. `git reflog` plus bas).
@@ -20,9 +22,13 @@ git restore --staged fichier.txt  # retire un fichier du staging, SANS toucher �
 ## `git reset` : déplacer la branche courante en arrière
 
 ```bash
-git reset --soft HEAD~1   # annule le dernier commit, mais garde tout en staging (prêt à recommiter)
-git reset --mixed HEAD~1  # annule le dernier commit ET le staging, garde les modifications dans le dossier de travail (par défaut)
-git reset --hard HEAD~1   # annule le dernier commit, le staging, ET les modifications elles-mêmes -> perte définitive
+# annule le dernier commit, mais garde tout en staging (prêt à recommiter)
+git reset --soft HEAD~1
+# annule le dernier commit ET le staging, garde les modifications dans le dossier de travail
+# (par défaut)
+git reset --mixed HEAD~1
+# annule le dernier commit, le staging, ET les modifications elles-mêmes -> perte définitive
+git reset --hard HEAD~1
 ```
 
 | Option | Commit annulé | Staging | Dossier de travail |

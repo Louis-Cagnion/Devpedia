@@ -7,7 +7,9 @@ order: 3
 ## Construir y lanzar
 
 ```bash
-docker build -t mi-app:1.0 .  # construye una imagen llamada "mi-app", tag "1.0", desde el Dockerfile de la carpeta actual (.)
+# construye una imagen llamada "mi-app", tag "1.0", desde el Dockerfile de la carpeta actual
+# (.)
+docker build -t mi-app:1.0 .
 docker run mi-app:1.0         # lanza un contenedor a partir de esta imagen
 ```
 
@@ -29,9 +31,9 @@ docker run -d --name servidor -p 8080:80 mi-app:1.0
 ## Observar lo que corre
 
 ```bash
-docker ps               # contenedores en ejecucion
+docker ps               # contenedores en ejecución
 docker ps -a             # todos los contenedores, incluidos los detenidos
-docker logs servidor    # salida estandar/error del contenedor "servidor"
+docker logs servidor    # salida estándar/error del contenedor "servidor"
 docker logs -f servidor # sigue los logs en directo (equivalente a `tail -f`)
 ```
 
@@ -48,8 +50,10 @@ docker exec -it servidor sh    # abre un shell interactivo dentro del contenedor
 ## Detener y limpiar
 
 ```bash
-docker stop servidor    # envia SIGTERM, deja que el contenedor se detenga limpiamente (cf. [tabla de señales](/?c=shells&s=bash&p=gestion-des-processus), sección Bash)
-docker kill servidor    # envia SIGKILL, parada inmediata e incondicional
+# envía SIGTERM, deja que el contenedor se detenga limpiamente (cf. [tabla de
+# señales](/?c=shells&s=bash&p=gestion-des-processus), sección Bash)
+docker stop servidor
+docker kill servidor    # envía SIGKILL, parada inmediata e incondicional
 docker rm servidor      # elimina un contenedor detenido
 docker rmi mi-app:1.0   # elimina una imagen
 ```
@@ -57,7 +61,8 @@ docker rmi mi-app:1.0   # elimina una imagen
 > **Nota:** `docker stop` y luego `docker kill` reproducen exactamente la misma jerarquía SIGTERM → SIGKILL vista en el capítulo sobre la gestión de procesos: Docker no reinventa un mecanismo de parada, pilota el del sistema host.
 
 ```bash
-docker system prune        # elimina contenedores detenidos, imagenes no usadas, cachés de build sin usar
+# elimina contenedores detenidos, imagenes no usadas, cachés de build sin usar
+docker system prune
 ```
 
 ---

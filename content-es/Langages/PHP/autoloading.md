@@ -42,7 +42,9 @@ spl_autoload_register(function (string $clase): void {
 
     foreach ($namespaces as $prefijo => $carpetaBase) {
         if (str_starts_with($clase, $prefijo)) {
-            $ruta = $carpetaBase . str_replace('\\', '/', substr($clase, strlen($prefijo))) . '.php';
+            $ruta = $carpetaBase
+                . str_replace('\\', '/', substr($clase, strlen($prefijo)))
+                . '.php';
             if (file_exists($ruta)) {
                 require $ruta;
             }

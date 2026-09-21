@@ -36,6 +36,13 @@ if (note >= 16) {
 
 > **Note :** contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php), il n'existe pas de syntaxe alternative avec `:`/`endif` en C : les accolades `{ }` sont la seule écriture disponible (facultatives seulement si le bloc ne contient qu'une seule instruction, mais fortement déconseillé de les omettre : source classique de bugs si une ligne est ajoutée par erreur sans les accolades).
 
+> **Piège classique :** un point-virgule juste après la parenthèse fermante d'un `if` compte comme une instruction à part entière (une instruction vide). Le `if` s'applique alors à cette instruction vide et se termine immédiatement ; la ligne suivante s'exécute **inconditionnellement**, quelle que soit la condition, même si l'indentation suggère le contraire :
+> ```c
+> if (age >= 18);
+>     printf("Majeur\n"); // s'affiche toujours, peu importe age
+> ```
+> Compiler avec `-Wall` (voir [Makefiles](/?c=langages-de-programmation&s=c&p=makefiles)) permet de repérer ce piège avant l'exécution : GCC signale ce point-virgule superflu via l'avertissement `-Wempty-body`.
+
 ## L'opérateur ternaire
 
 ```c
@@ -92,5 +99,5 @@ switch (jour) {
 |---|---|
 | **À retenir** | `if`/`else`/`else if` exécutent un bloc selon une condition ; toute valeur non nulle est vraie en C. `switch` compare une même variable entière à plusieurs valeurs. |
 | **Outils utilisables** | L'opérateur ternaire `? :` pour une affectation conditionnelle courte. |
-| **Pièges à éviter** | Oublier `break;` dans un `case` : l'exécution continue dans le `case` suivant (*fall-through*), même sans correspondre à sa condition. |
-| **Bonnes pratiques** | Toujours accolader un bloc `if`, même à une seule instruction : évite un bug si une ligne est ajoutée par la suite sans les accolades. |
+| **Pièges à éviter** | Oublier `break;` dans un `case` : l'exécution continue dans le `case` suivant (*fall-through*), même sans correspondre à sa condition. Un point-virgule superflu juste après un `if (...)` : la ligne suivante s'exécute alors inconditionnellement. |
+| **Bonnes pratiques** | Toujours accolader un bloc `if`, même à une seule instruction : évite un bug si une ligne est ajoutée par la suite sans les accolades. Compiler avec `-Wall` pour repérer un point-virgule superflu après un `if` (`-Wempty-body`). |

@@ -35,7 +35,8 @@ p1 = Point(1, 2)
 p2 = Point(1, 2)
 
 print(p1)        # Point(x=1, y=2)  -> __repr__ généré automatiquement
-print(p1 == p2)  # True             -> __eq__ généré automatiquement, comparaison champ par champ
+# True             -> __eq__ généré automatiquement, comparaison champ par champ
+print(p1 == p2)
 ```
 
 Chaque ligne `x: int` déclare à la fois un champ **et** son type : `@dataclass` lit ces annotations pour construire `__init__(self, x, y)` automatiquement, dans l'ordre où les champs sont déclarés.
@@ -89,11 +90,14 @@ from dataclasses import dataclass, field
 
 @dataclass
 class Panier:
-    articles: list = []   # ValueError levée à la définition de la classe : liste mutable interdite comme défaut direct
+    # ValueError levée à la définition de la classe : liste mutable interdite comme défaut
+    # direct
+    articles: list = []
 
 @dataclass
 class Panier:
-    articles: list = field(default_factory=list)   # correct : une NOUVELLE liste à chaque instance
+    # correct : une NOUVELLE liste à chaque instance
+    articles: list = field(default_factory=list)
 
 p1 = Panier()
 p2 = Panier()
@@ -124,7 +128,8 @@ class Personne:
 p = Personne(nom="Jean", adresse=Adresse(ville="Paris", code_postal="75000"))
 
 asdict(p)   # {"nom": "Jean", "adresse": {"ville": "Paris", "code_postal": "75000"}}
-json.dumps(asdict(p))   # sérialisation directe : asdict() a déjà tout réduit à des types simples
+# sérialisation directe : asdict() a déjà tout réduit à des types simples
+json.dumps(asdict(p))
 ```
 
 > **Piège :** appeler `json.dumps()` directement sur une instance de dataclass, sans passer par `asdict()` au préalable : `TypeError: Object of type Personne is not JSON serializable`. `json.dumps()` ne sait encoder que des types simples, jamais un objet Python quelconque.

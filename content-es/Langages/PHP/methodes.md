@@ -112,7 +112,8 @@ PHP ofrece una enorme cantidad de funciones nativas ya listas para usar, clasifi
 ```php
 <?php
     count([1, 2, 3]);                      // 3 -> número de elementos
-    $tab[] = "valor";                      // añade un elemento al final (preferido a array_push() para un solo elemento)
+    // añade un elemento al final (preferido a array_push() para un solo elemento)
+    $tab[] = "valor";
     array_pop($tab);                       // retira y devuelve el último elemento
     array_merge($tab1, $tab2);             // fusiona dos arrays
     in_array("manzana", $frutas);          // true/false -> comprueba la presencia de un valor
@@ -133,8 +134,10 @@ PHP ofrece una enorme cantidad de funciones nativas ya listas para usar, clasifi
     array_key_exists("nombre", $persona);    // true/false -> comprueba que una clave existe
     unset($persona["edad"]);                 // retira una clave (y su valor) del array
     ksort($persona);                         // ordena el array según las claves
-    asort($persona);                         // ordena el array según los valores (conservando las claves)
-    array_combine(["a", "b"], [1, 2]);       // ["a" => 1, "b" => 2] -> crea un array asociativo a partir de 2 arrays
+    // ordena el array según los valores (conservando las claves)
+    asort($persona);
+    // ["a" => 1, "b" => 2] -> crea un array asociativo a partir de 2 arrays
+    array_combine(["a", "b"], [1, 2]);
     array_flip($persona);                    // invierte claves y valores
 ?>
 ```

@@ -22,12 +22,15 @@ Un píxel CSS (el tamaño mostrado) no siempre corresponde a un píxel físico d
 
 ```javascript
 function redimensionar() {
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);   // tope en 2: mas alla, coste innecesario
+    // tope en 2: más alla, coste innecesario
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
     const rect = canvas.getBoundingClientRect();
 
-    canvas.width  = Math.floor(rect.width  * ratio);   // resolucion REAL del canvas (pixeles fisicos)
+    // resolución REAL del canvas (pixeles fisicos)
+    canvas.width  = Math.floor(rect.width  * ratio);
     canvas.height = Math.floor(rect.height * ratio);
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);          // para dibujar despues en coordenadas CSS
+    // para dibujar después en coordenadas CSS
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
 }
 ```
 
@@ -81,7 +84,7 @@ En cada fotograma, la posición nunca salta directamente al objetivo: solo avanz
 Un canvas 2D también sirve, de forma indirecta, para medir con precisión el ancho que ocuparía un texto con una fuente dada, **sin dibujar ni mostrar nunca ese canvas**:
 
 ```javascript
-const ctxMedida = document.createElement('canvas').getContext('2d');   // nunca anadido al DOM
+const ctxMedida = document.createElement('canvas').getContext('2d');   // nunca añadido al DOM
 
 function anchoTexto(texto, tamanoFuente = 11) {
     ctxMedida.font = `${tamanoFuente}px sans-serif`;

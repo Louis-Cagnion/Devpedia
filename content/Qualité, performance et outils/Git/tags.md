@@ -9,7 +9,8 @@ Un **tag** est un pointeur vers un commit précis, comme une branche, mais contr
 ## Créer un tag
 
 ```bash
-git tag v1.0.0                                  # tag "léger" : simple pointeur, sans métadonnées
+# tag "léger" : simple pointeur, sans métadonnées
+git tag v1.0.0
 git tag -a v1.0.0 -m "Première version stable"  # tag "annoté" : avec auteur, date et message
 ```
 
@@ -26,7 +27,8 @@ git show v1.0.0    # affiche les détails du tag (et le commit associé)
 ## Tagger un commit passé
 
 ```bash
-git tag -a v0.9.0 a3f9c1d -m "Version bêta"   # tag un commit précis, pas forcément le plus récent
+# tag un commit précis, pas forcément le plus récent
+git tag -a v0.9.0 a3f9c1d -m "Version bêta"
 ```
 
 ## Pousser des tags vers un remote

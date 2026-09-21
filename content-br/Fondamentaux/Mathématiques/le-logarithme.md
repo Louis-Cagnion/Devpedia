@@ -11,7 +11,7 @@ Este capítulo apresenta o logaritmo, uma noção retomada mais adiante para med
 Elevar um número a uma potência (`b^y`) equivale a multiplicar `b` por ele mesmo `y` vezes: `10^3 = 10 × 10 × 10 = 1000`. O **logaritmo** faz a pergunta inversa: a que potência é preciso elevar uma base dada para obter um número dado?
 
 ```text
-10^2 = 100   ->  log10(100) = 2   ("e preciso elevar 10 a potencia 2 para obter 100")
+10^2 = 100   ->  log10(100) = 2   ("e preciso elevar 10 a potência 2 para obter 100")
 10^3 = 1000  ->  log10(1000) = 3
 10^0 = 1     ->  log10(1) = 0
 ```

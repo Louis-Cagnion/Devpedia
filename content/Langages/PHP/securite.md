@@ -223,29 +223,13 @@ Classée A10 dans l'[OWASP Top 10](/?c=cybersecurite&p=owasp-top-10). Forcer un 
 
 ```php
 <?php
-// dangereux si $_GET['url'] peut cibler une adresse interne (ex: http://169.254.169.254/, http://localhost:6379/...)
+// dangereux si $_GET['url'] peut cibler une adresse interne (ex: http://169.254.169.254/,
+// http://localhost:6379/...)
 $reponse = file_get_contents($_GET['url']);
 ?>
 ```
 
 Tout code qui construit une URL/hôte de destination à partir d'une entrée influencée, même indirectement, par l'utilisateur (voir [Faire des appels HTTP en natif](/?c=langages-de-programmation&s=php&p=http)) est un candidat à l'audit SSRF. **Protection :** valider l'hôte cible contre une liste blanche explicite plutôt que de faire confiance à une URL arbitraire fournie par le client.
-
-## Résumé
-
-| Risque | Défense principale |
-|---|---|
-| Donnée mal formée (email, nombre...) | `filter_input()` |
-| Injection de [HTML](/?c=langages-de-balisage&s=html&p=html)/JS (XSS) | `htmlspecialchars()` |
-| Injection [SQL](/?c=domain-specific-languages-dsl&p=sql) | Requêtes préparées (PDO) |
-| Mot de passe en clair | `password_hash()` / `password_verify()` |
-| CSRF | Jeton CSRF en session, vérifié via `hash_equals()` |
-| MITM / DNS spoofing | Vérification de certificat SSL (`verify_peer`/`verify_peer_name`) |
-| Sniffing | HTTPS systématique |
-| Session hijacking | Cookie `httponly`/`secure`, identifiant de session à forte entropie |
-| Brute force | Limitation du nombre de tentatives (*rate limiting*) |
-| SSRF | Liste blanche des hôtes/URLs autorisés |
-
-> **Note :** aucune de ces protections ne remplace HTTPS, qui chiffre les données échangées entre le navigateur et le serveur.
 
 ---
 
@@ -253,7 +237,7 @@ Tout code qui construit une URL/hôte de destination à partir d'une entrée inf
 
 | | |
 |---|---|
-| **À retenir** | Toute donnée utilisateur est non fiable par défaut. Les principales failles applicatives (XSS, injection [SQL](/?c=domain-specific-languages-dsl&p=sql), CSRF) se neutralisent par des mécanismes dédiés (`htmlspecialchars`, requêtes préparées, jeton CSRF) : d'autres attaques visent le réseau ou l'infrastructure, hors du code applicatif seul. |
-| **Outils utilisables** | `filter_input()`, `htmlspecialchars()`, PDO (requêtes préparées), `password_hash`/`password_verify`, `hash_equals()`. |
+| **À retenir** | Toute donnée utilisateur est non fiable par défaut. Les principales failles applicatives (XSS, injection [SQL](/?c=domain-specific-languages-dsl&p=sql), CSRF) se neutralisent par des mécanismes dédiés (`htmlspecialchars`, requêtes préparées, jeton CSRF) : d'autres attaques visent le réseau ou l'infrastructure (MITM, DNS spoofing, sniffing, session hijacking, brute force, SSRF), hors du code applicatif seul. Aucune de ces protections ne remplace HTTPS, qui chiffre les données échangées entre le navigateur et le serveur. |
+| **Outils utilisables** | `filter_input()`, `htmlspecialchars()`, PDO (requêtes préparées), `password_hash`/`password_verify`, `hash_equals()`, vérification de certificat SSL/TLS (`verify_peer`), cookies `httponly`/`secure`, limitation du nombre de tentatives (*rate limiting*), liste blanche d'hôtes pour SSRF. |
 | **Pièges à éviter** | Comparer deux hash avec `==` (faille *magic hash*) ; concaténer une donnée utilisateur directement dans une requête [SQL](/?c=domain-specific-languages-dsl&p=sql). |
 | **Bonnes pratiques** | Toujours valider/échapper une donnée utilisateur selon son usage (affichage, [SQL](/?c=domain-specific-languages-dsl&p=sql), comparaison) ; HTTPS systématique, sans exception pour une donnée jugée "pas si sensible". |

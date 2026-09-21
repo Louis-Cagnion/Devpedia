@@ -10,7 +10,7 @@ Uma **referência** é um apelido: outro nome para uma variável já existente, 
 
 ```cpp
 int idade = 25;
-int &refIdade = idade;   // refIdade e OUTRO NOME para idade, nao uma copia
+int &refIdade = idade;   // refIdade é OUTRO NOME para idade, não uma cópia
 
 refIdade = 30;
 std::cout << idade;      // 30 -> modificar refIdade modifica diretamente idade
@@ -22,7 +22,7 @@ std::cout << idade;      // 30 -> modificar refIdade modifica diretamente idade
 
 ```cpp
 void incrementar(int &numero) {
-    numero++;   // nao precisa desreferenciar com *, ao contrario de um ponteiro em C
+    numero++;   // não precisa desreferenciar com *, ao contrário de um ponteiro em C
 }
 
 int x = 5;
@@ -46,7 +46,7 @@ A referência evita a sintaxe `*`/`&` na chamada e dentro da função, obtendo e
 Passar um objeto grande por valor (uma cópia completa) a cada chamada de função custa tempo e memória. Passar por referência evita a cópia, mas permite que a função modifique o original; `const &` combina as duas vantagens:
 
 ```cpp
-void exibir(const std::string &texto) {   // sem copia, E texto nao pode ser modificado aqui
+void exibir(const std::string &texto) {   // sem copia, E texto não pode ser modificado aqui
     std::cout << texto;
 }
 ```

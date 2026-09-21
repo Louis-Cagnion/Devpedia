@@ -7,7 +7,7 @@ order: 1
 O capítulo sobre [APIs e HTTP](/?c=infrastructure&p=api-et-http) apresenta como um cliente envia uma requisição e recebe uma resposta. O que ele ainda não conta: HTTP é um protocolo **sem estado** (*stateless*), cada requisição é tratada independentemente das anteriores, como se o servidor tivesse uma amnésia total entre duas requisições. Sem um mecanismo adicional, um site precisaria pedir de novo o usuário e a senha a cada nova página acessada.
 
 ```text
-Requisicao 1 : POST /login (email + senha)  -> o servidor verifica, responde "conexao bem-sucedida"
+Requisicao 1 : POST /login (email + senha)  -> o servidor verifica, responde "conexão bem-sucedida"
 Requisicao 2 : GET /perfil                   -> o servidor nao sabe NADA da requisicao 1 :
                                                  para ele, e um visitante anonimo
 ```

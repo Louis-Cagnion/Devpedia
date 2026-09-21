@@ -14,7 +14,7 @@ Un fichier `.env` (variables d'environnement, souvent des secrets) ou une sauveg
 https://site.example/index.php    -> la page normale du site
 https://site.example/.env          -> si le fichier est dans le dossier public : TOUT LE CONTENU,
                                        secrets compris, s'affiche tel quel dans le navigateur
-https://site.example/backup.sql    -> un dump de base de donnees entier, si oublie au meme endroit
+https://site.example/backup.sql    -> un dump de base de données entier, si oublié au même endroit
 ```
 
 Ce risque ne vient jamais d'une faille applicative (aucun code n'est exploité) : c'est une simple erreur de placement de fichier, combinée à l'absence de restriction du serveur web sur ce type d'extension.

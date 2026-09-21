@@ -89,7 +89,7 @@ try {
 } catch (RequeteEchoueeException $e) {
     echo "Requête échouée : " . $e->getMessage();
 } finally {
-    fermerConnexion($connexion);  // toujours executee : succes, echec, ou re-throw
+    fermerConnexion($connexion);  // toujours exécutée : succès, échec, ou re-throw
 }
 ```
 
@@ -111,7 +111,8 @@ class StockInsuffisantException extends Exception
         private int $quantiteDisponible
     ) {
         parent::__construct(
-            "Stock insuffisant pour {$produit} : {$quantiteDemandee} demandés, {$quantiteDisponible} disponibles"
+            "Stock insuffisant pour {$produit} : {$quantiteDemandee} demandés, "
+            . "{$quantiteDisponible} disponibles"
         );
     }
 

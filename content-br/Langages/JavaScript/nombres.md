@@ -15,9 +15,9 @@ typeof 42;    // "number"
 typeof 42.5;  // "number"
 typeof NaN;   // "number"
 
-42 === 42.0;       // true : nenhuma distincao
-5 / 2;             // 2.5 -> sem divisao inteira implicita
-Math.trunc(5 / 2)  // 2   -> e preciso pedir explicitamente
+42 === 42.0;       // true : nenhuma distinção
+5 / 2;             // 2.5 -> sem divisão inteira implícita
+Math.trunc(5 / 2)  // 2   -> é preciso pedir explicitamente
 ```
 
 A ausência de divisão inteira nativa é uma armadilha frequente para quem vem de C ou [Python](/?c=langages-de-programmation&s=python&p=python) (`5 // 2`).
@@ -35,7 +35,7 @@ O JavaScript fornece `Number.EPSILON` (≈ `2,22e-16`), que é a diferença entr
 
 ```js
 Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON;          // true
-Math.abs(1e9 + 0.1 - (1e9 + 0.2)) < Number.EPSILON;  // false, mesmo com uma diferenca minima
+Math.abs(1e9 + 0.1 - (1e9 + 0.2)) < Number.EPSILON;  // false, mesmo com uma diferença mínima
 ```
 
 Para valores monetários, a boa prática continua sendo trabalhar em **centavos**, com inteiros.
@@ -46,7 +46,7 @@ Como a mantissa de um double tem 52 bits, os inteiros só são exatos até 2⁵�
 
 ```js
 Number.MAX_SAFE_INTEGER;                // 9007199254740991
-9007199254740992 === 9007199254740993;  // true! indistinguiveis
+9007199254740992 === 9007199254740993;  // true! indistinguíveis
 Number.isSafeInteger(2 ** 53);          // false
 ```
 
@@ -64,9 +64,9 @@ Desde o ES2020, `BigInt` remove esse limite. Se escreve com um `n` no final:
 Duas restrições a conhecer:
 
 ```js
-1n + 1;         // TypeError : nao se mistura BigInt e number
-1n + BigInt(1)  // 2n : conversao explicita obrigatoria
-5n / 2n;        // 2n : divisao inteira, a parte decimal e truncada
+1n + 1;         // TypeError : não se mistura BigInt e number
+1n + BigInt(1)  // 2n : conversão explícita obrigatória
+5n / 2n;        // 2n : divisão inteira, a parte decimal é truncada
 ```
 
 `BigInt` serve para grandes identificadores e criptografia, não para cálculos decimais: só lida com inteiros.
@@ -74,15 +74,15 @@ Duas restrições a conhecer:
 ## `NaN` e os infinitos
 
 ```js
-1 / 0;            // Infinity  (e nao um erro)
+1 / 0;            // Infinity  (e não um erro)
 -1 / 0;           // -Infinity
 0 / 0;            // NaN
 parseInt("abc");  // NaN
 
-NaN === NaN;         // false : NaN nao e igual a nada, nem a ele mesmo
+NaN === NaN;         // false : NaN não é igual a nada, nem a ele mesmo
 Number.isNaN(NaN);   // true  -> a forma correta de testar
-isNaN("abc");        // true  -> ATENCAO: converte antes, entao engana
-Number.isNaN("abc")  // false -> "abc" nao e NaN, e uma string
+isNaN("abc");        // true  -> ATENÇÃO: converte antes, então engana
+Number.isNaN("abc")  // false -> "abc" não é NaN, é uma string
 ```
 
 Prefira sistematicamente `Number.isNaN()` à antiga função global `isNaN()`, que converte seu argumento antes de testar e produz falsos positivos.
@@ -92,9 +92,9 @@ Prefira sistematicamente `Number.isNaN()` à antiga função global `isNaN()`, q
 ```js
 Number("42");        // 42
 Number("42px");      // NaN   -> estrito: tudo ou nada
-parseInt("42px");    // 42    -> tolerante: para no primeiro caractere invalido
+parseInt("42px");    // 42    -> tolerante: para no primeiro caractere inválido
 parseFloat("3.9m");  // 3.9
-Number("");          // 0     -> armadilha classica: a string vazia vira 0
+Number("");          // 0     -> armadilha clássica: a string vazia vira 0
 ```
 
 `parseInt` aceita um segundo argumento, a base, que é prudente sempre especificar: `parseInt("08", 10)`.
@@ -102,7 +102,7 @@ Number("");          // 0     -> armadilha classica: a string vazia vira 0
 ## Formatar para exibição
 
 ```js
-(1234.5678).toFixed(2);          // "1234.57" -> retorna uma STRING, nao um numero
+(1234.5678).toFixed(2);          // "1234.57" -> retorna uma STRING, não um número
 (0.000001234).toExponential(2);  // "1.23e-6"
 
 (1234567.891).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -110,17 +110,6 @@ Number("");          // 0     -> armadilha classica: a string vazia vira 0
 ```
 
 `toLocaleString` cuida sozinho dos separadores de milhar e da vírgula decimal: dispensa reconstruí-los na mão.
-
-## Resumo
-
-| Armadilha | Reflexo |
-|---|---|
-| Um único tipo `number` (float) | `Math.trunc()` para uma divisão inteira |
-| `0.1 + 0.2 !== 0.3` | Comparar via uma margem de erro |
-| Valores monetários | Trabalhar em centavos |
-| Identificadores > 2⁵³ | Transportá-los como string, ou usar `BigInt` |
-| `NaN !== NaN` | `Number.isNaN()`, nunca `isNaN()` |
-| `Number("")` vale `0` | Validar antes de converter |
 
 ---
 
@@ -130,5 +119,5 @@ Number("");          // 0     -> armadilha classica: a string vazia vira 0
 |---|---|
 | **Para lembrar** | O JavaScript tem apenas um tipo numérico (`number`, float IEEE 754): sem distinção nativa inteiro/decimal. `BigInt` remove o limite dos grandes inteiros exatos (2⁵³ − 1). |
 | **Ferramentas utilizáveis** | `Math.trunc`, `Number.isNaN`, `Number.isSafeInteger`, `toFixed`/`toLocaleString` para exibição. |
-| **Armadilhas a evitar** | Comparar dois floats com `===`; usar o `isNaN()` global (converte antes de testar) em vez de `Number.isNaN()`. |
-| **Boas práticas** | Trabalhar em centavos para valores monetários; transportar um identificador grande como string em vez de `number`. |
+| **Armadilhas a evitar** | Comparar dois floats com `===`; usar o `isNaN()` global (converte antes de testar) em vez de `Number.isNaN()`; `Number("")` vale `0`, sempre validar antes de converter. |
+| **Boas práticas** | Trabalhar em centavos para valores monetários; transportar um identificador grande como string ou como `BigInt` em vez de `number`. |

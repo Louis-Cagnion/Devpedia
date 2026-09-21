@@ -20,12 +20,15 @@ $ch = curl_init($url);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $cuerpoJson,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],  // indispensable para un cuerpo JSON
-    CURLOPT_RETURNTRANSFER => true,                                // devolver la respuesta como string, en lugar de mostrarla directamente
+    // indispensable para un cuerpo JSON
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+    // devolver la respuesta como string, en lugar de mostrarla directamente
+    CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT        => 10,
 ]);
 
-$respuesta  = curl_exec($ch);        // false en caso de fallo de red (estilo de error "a la C")
+// false en caso de fallo de red (estilo de error "a la C")
+$respuesta  = curl_exec($ch);
 $codigoHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 ?>
@@ -61,7 +64,8 @@ $options = [
     ],
 ];
 $contexto  = stream_context_create($options);
-$respuesta = file_get_contents($url, false, $contexto); // false en caso de fallo, mismo estilo que curl_exec
+// false en caso de fallo, mismo estilo que curl_exec
+$respuesta = file_get_contents($url, false, $contexto);
 ?>
 ```
 
@@ -91,8 +95,10 @@ El bloque `ssl` de un contexto de flujo (cf. ejemplo más arriba) controla dos v
 <?php
 $options = [
     'ssl' => [
-        'verify_peer'      => false,  // ¿el certificado está firmado por una autoridad reconocida?
-        'verify_peer_name' => false,  // ¿el nombre del certificado corresponde al dominio llamado?
+        // ¿el certificado está firmado por una autoridad reconocida?
+        'verify_peer'      => false,
+        // ¿el nombre del certificado corresponde al dominio llamado?
+        'verify_peer_name' => false,
     ],
 ];
 ?>
@@ -116,7 +122,8 @@ $contexto = stream_context_create($options);
 
 $respuesta = file_get_contents($url, false, $contexto);
 // con ignore_errors: $respuesta contiene el cuerpo incluso para un 404/500
-// sin ignore_errors:  $respuesta vale false para un 404/500, aunque el servidor haya respondido
+// sin ignore_errors:  $respuesta vale false para un 404/500, aunque el servidor haya
+// respondido
 ```
 
 Consecuencia directa sobre una conversión "valor de retorno → excepción" como la vista más arriba (`if ($respuesta === false) { throw ... }`): con `ignore_errors => true`, esta prueba ya no se dispara **en absoluto** para un error HTTP (4xx/5xx): solo para un fallo de comunicación más radical (servidor inalcanzable, DNS que no resuelve, timeout de red, un caso donde PHP no recibe nada, ni siquiera cabeceras).

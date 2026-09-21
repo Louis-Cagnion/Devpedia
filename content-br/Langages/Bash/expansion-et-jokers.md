@@ -10,9 +10,10 @@ Antes de executar um comando, o Bash substitui certos padrões que ele contém p
 
 ```bash
 ls *.txt             # todos os arquivos que terminam em .txt
-ls arquivo?.txt      # arquivo1.txt, arquivoA.txt... ('?' = exatamente 1 caractere, qualquer um)
+# arquivo1.txt, arquivoA.txt... ('?' = exatamente 1 caractere, qualquer um)
+ls arquivo?.txt
 ls arquivo[123].txt  # arquivo1.txt, arquivo2.txt ou arquivo3.txt apenas
-ls arquivo[a-z].txt  # uma unica letra minuscula nessa posicao
+ls arquivo[a-z].txt  # uma única letra minúscula nessa posição
 ```
 
 | Padrão | Significa |
@@ -29,7 +30,7 @@ ls arquivo[a-z].txt  # uma unica letra minuscula nessa posicao
 
 ```bash
 echo *.xyz
-# se nenhum arquivo .xyz existe, o Bash exibe literalmente "*.xyz" (o padrao nao e substituido)
+# se nenhum arquivo .xyz existe, o Bash exibe literalmente "*.xyz" (o padrão não é substituído)
 ```
 
 Isso é uma fonte clássica de bugs: um script que supõe que `*.xyz` sempre designa uma lista de arquivos reais pode receber o texto bruto `*.xyz` como único "nome de arquivo" se o diretório não contiver nada assim.
@@ -43,7 +44,7 @@ echo arquivo{1,2,3}.txt
 # arquivo1.txt arquivo2.txt arquivo3.txt
 
 mkdir -p projeto/{src,tests,docs}
-# cria os tres diretorios em um unico comando
+# cria os três diretórios em um único comando
 
 echo {1..5}
 # 1 2 3 4 5
@@ -66,7 +67,7 @@ cd ~/projetos # equivalente a cd $HOME/projetos
 ```bash
 echo *.txt    # substituido pela lista real dos arquivos .txt
 echo "*.txt"  # exibe literalmente *.txt -> as aspas duplas desativam o globbing
-echo '*.txt'  # mesmo resultado, aspas simples ainda mais estritas (tambem desativam $variavel)
+echo '*.txt'  # mesmo resultado, aspas simples ainda mais estritas (também desativam $variável)
 ```
 
 Veja também [As variáveis](/?c=shells&s=bash&p=variables) para a distinção aspas simples/duplas em relação à interpretação de `$variavel`.

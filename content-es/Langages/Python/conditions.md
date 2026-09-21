@@ -54,11 +54,14 @@ else:
 
 ```python
 estado = "activo"
-resultado = estado and "encontrado"    # "encontrado" -> estado es truthy, and devuelve su SEGUNDO operando
-resultado = "" and "encontrado"        # ""           -> "" es falsy, and se detiene y devuelve su PRIMER operando
+# "encontrado" -> estado es truthy, and devuelve su SEGUNDO operando
+resultado = estado and "encontrado"
+# ""           -> "" es falsy, and se detiene y devuelve su PRIMER operando
+resultado = "" and "encontrado"
 
 apodo = ""
-nombre_mostrado = apodo or "Anónimo"   # "Anónimo" -> or devuelve el primer operando truthy encontrado
+# "Anónimo" -> or devuelve el primer operando truthy encontrado
+nombre_mostrado = apodo or "Anónimo"
 ```
 
 `and`/`or` nunca recalculan un `True`/`False`: devuelven uno de sus dos operandos, sin evaluar el otro más allá de lo necesario (**evaluación en cortocircuito**). `a and b` devuelve `a` si `a` es falsy (sin siquiera evaluar `b`), si no `b`; `a or b` devuelve `a` si `a` es truthy, si no `b`. Este idioma permite una llamada condicional (`conectado and desconectar()`, solo llama a `desconectar()` si `conectado` es verdadero) o un valor de respaldo (`nombre = apodo or "Anónimo"`).

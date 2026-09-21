@@ -19,7 +19,7 @@ adicao(2, 3);   // 5
 Uma **declaração** de função sofre *hoisting* (é içada): ela é utilizável mesmo **antes** de sua linha de definição no arquivo, ao contrário de uma expressão de função.
 
 ```javascript
-console.log(adicao(2, 3));  // funciona, mesmo escrito antes da declaracao mais abaixo
+console.log(adicao(2, 3));  // funciona, mesmo escrito antes da declaração mais abaixo
 function adicao(a, b) { return a + b; }
 ```
 
@@ -36,9 +36,12 @@ Aqui, `adicao` é uma variável como qualquer outra: ela só existe a partir da 
 ## Funções de seta (*arrow functions*)
 
 ```javascript
-const adicao = (a, b) => a + b;                   // uma unica expressao: retorno implicito, sem "return"
-const quadrado = x => x * x;                      // parenteses opcionais com um unico parametro
-const saudar = () => { console.log("Ola"); }      // corpo multi-linha: chaves + "return" explicito exigido
+// uma única expressão: retorno implícito, sem "return"
+const adicao = (a, b) => a + b;
+// parenteses opcionais com um único parametro
+const quadrado = x => x * x;
+// corpo multi-linha: chaves + "return" explícito exigido
+const saudar = () => { console.log("Ola"); }
 ```
 
 ### A verdadeira diferença: `this`
@@ -50,7 +53,8 @@ const objeto = {
 
     exibirClassico: function () {
         this.valores.forEach(function (v) {
-            console.log(this.nome, v);   // "this" aqui e undefined (ou o objeto global): NAO "objeto"!
+            // "this" aqui é undefined (ou o objeto global): NÃO "objeto"!
+            console.log(this.nome, v);
         });
     },
 
@@ -67,11 +71,13 @@ const objeto = {
 ## Parâmetros padrão, rest e spread
 
 ```javascript
-function saudar(nome, mensagem = "Ola") {   // valor padrao se o argumento for omitido/undefined
+// valor padrão se o argumento for omitido/undefined
+function saudar(nome, mensagem = "Ola") {
     return `${mensagem} ${nome}`;
 }
 
-function soma(...numeros) {                   // "rest": agrupa os argumentos excedentes em um array
+// "rest": agrupa os argumentos excedentes em um array
+function soma(...numeros) {
     return numeros.reduce((total, n) => total + n, 0);
 }
 soma(1, 2, 3, 4);   // 10
@@ -95,7 +101,7 @@ function contador() {
 
 const contar = contador();
 contar();  // 1
-contar();  // 2 -> "total" persistiu entre as chamadas, proprio a ESSA instancia de contador()
+contar();  // 2 -> "total" persistiu entre as chamadas, próprio a ESSA instância de contador()
 ```
 
 ## O padrão IIFE: uma função imediatamente invocada para isolar variáveis
@@ -104,12 +110,12 @@ Uma **IIFE** (*Immediately Invoked Function Expression*) é uma função declara
 
 ```javascript
 (function (global) {
-    const CATEGORIAS = [];   // permanece privada, invisivel do resto da pagina
+    const CATEGORIAS = [];   // permanece privada, invisível do resto da página
     const ICONES = {};       // idem
 
     function svg(nome) { /* ... */ }   // idem
 
-    global.MinhaBiblioteca = { svg };   // o UNICO ponto acessivel de fora
+    global.MinhaBiblioteca = { svg };   // o Único ponto acessível de fora
 })(window);
 ```
 

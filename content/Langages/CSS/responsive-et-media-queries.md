@@ -12,8 +12,10 @@ Le **responsive design** consiste à concevoir une page qui s'adapte à n'import
 div {
     width: 300px;       /* fixe, ne s'adapte à RIEN */
     width: 50%;         /* relatif au parent */
-    font-size: 1.5rem;  /* relatif à la taille de police racine (<html>), indépendant du parent */
-    font-size: 1.5em;   /* relatif à la taille de police du PARENT direct (peut s'accumuler en cascade) */
+    /* relatif à la taille de police racine (<html>), indépendant du parent */
+    font-size: 1.5rem;
+    /* relatif à la taille de police du PARENT direct (peut s'accumuler en cascade) */
+    font-size: 1.5em;
     width: 50vw;        /* relatif à la largeur de la fenêtre (viewport width) */
     height: 100vh;      /* relatif à la hauteur de la fenêtre (viewport height) */
 }
@@ -71,8 +73,10 @@ div {
 
 ```css
 @media (orientation: portrait) { }           /* écran plus haut que large */
-@media (prefers-color-scheme: dark) { }      /* l'utilisateur a activé le mode sombre au niveau système */
-@media (prefers-reduced-motion: reduce) { }  /* l'utilisateur a demandé de réduire les animations */
+/* l'utilisateur a activé le mode sombre au niveau système */
+@media (prefers-color-scheme: dark) { }
+/* l'utilisateur a demandé de réduire les animations */
+@media (prefers-reduced-motion: reduce) { }
 @media print { }                             /* styles appliqués uniquement à l'impression */
 ```
 

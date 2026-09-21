@@ -41,15 +41,16 @@ Contrairement à une bibliothèque système classique, GLAD ne s'installe pas vi
 Dessiner directement à l'écran, pixel par pixel, expose un problème : si l'écran se rafraîchit pendant que l'image est à moitié dessinée, l'utilisateur voit un instant une image incohérente (*tearing*). Le **double buffering** évite ça en dessinant toujours dans un tampon invisible, échangé avec le tampon affiché seulement une fois l'image complète :
 
 ```text
-Tampon avant (affiché a l'ecran)     Tampon arriere (en cours de dessin)
+Tampon avant (affiché à l'écran)     Tampon arrière (en cours de dessin)
         |                                      |
         |         glfwSwapBuffers()            |
-        +------------- echange ---------------->
-        (le tampon arriere devient le tampon avant, d'un coup)
+        +------------- échange ---------------->
+        (le tampon arrière devient le tampon avant, d'un coup)
 ```
 
 ```c
-glfwSwapBuffers(fenetre);   // echange les deux tampons, jamais un dessin pixel par pixel direct a l'ecran
+// échange les deux tampons, jamais un dessin pixel par pixel direct à l'écran
+glfwSwapBuffers(fenetre);
 ```
 
 ## La boucle de rendu
@@ -58,10 +59,13 @@ Comme la boucle d'événements du chapitre précédent, une boucle de rendu Open
 
 ```c
 while (!glfwWindowShouldClose(fenetre)) {
-    glfwPollEvents();                              // 1. recuperer les evenements (clavier, souris...)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // 2. effacer l'image precedente
-    dessinerLaScene();                             // 3. dessiner la nouvelle image (tampon arriere)
-    glfwSwapBuffers(fenetre);                       // 4. l'afficher d'un coup (double buffering)
+    // 1. récupérer les événements (clavier, souris...)
+    glfwPollEvents();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // 2. effacer l'image précédente
+    // 3. dessiner la nouvelle image (tampon arrière)
+    dessinerLaScene();
+    // 4. l'afficher d'un coup (double buffering)
+    glfwSwapBuffers(fenetre);
 }
 ```
 

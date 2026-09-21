@@ -12,14 +12,17 @@ A Python program can just as well launch ANOTHER program (`subprocess`) as chang
 import subprocess
 
 result = subprocess.run(["ls", "-la"], capture_output=True, text=True)  # BLOCKING
-print(result.returncode)                                                # 0 = success, any other value = failure
-print(result.stdout)                                                    # what the program printed
+# 0 = success, any other value = failure
+print(result.returncode)
+# what the program printed
+print(result.stdout)
 ```
 
 `subprocess.run()` waits for the launched process to finish before continuing.
 
 ```python
-process = subprocess.Popen(["ls", "-la"])  # NON-BLOCKING: returns IMMEDIATELY, the process runs alongside
+# NON-BLOCKING: returns IMMEDIATELY, the process runs alongside
+process = subprocess.Popen(["ls", "-la"])
 # ... do something else while "process" is running ...
 process.wait()  # explicitly wait for it to finish, if needed
 process.poll()  # None if still running, otherwise the return code
@@ -34,9 +37,12 @@ process.poll()  # None if still running, otherwise the return code
 ```python
 import sys
 
-sys.executable  # "/usr/bin/python3.12" or "C:\...\python.exe" -> ABSOLUTE path of the interpreter running THIS code
+# "/usr/bin/python3.12" or "C:\...\python.exe" -> ABSOLUTE path of the interpreter running THIS
+# code
+sys.executable
 
-subprocess.run([sys.executable, "other_script.py"])  # relaunches a script with the SAME interpreter/environment
+# relaunches a script with the SAME interpreter/environment
+subprocess.run([sys.executable, "other_script.py"])
 ```
 
 > **Best practice:** use `sys.executable` rather than a plain hardcoded `"python"` to relaunch a Python script: `"python"` could point to a completely different install (wrong version, wrong [virtual environment](/?c=langages-de-programmation&s=python&p=modules-et-environnements)) depending on the machine.
@@ -60,7 +66,8 @@ class DualStream:  # duplicates every write to two destinations
         self.log_file.flush()
 
 log = open("execution.log", "a", encoding="utf-8")
-sys.stderr = DualStream(sys.stderr, log)  # replaces the module object with the dual one, without touching the rest of the code
+# replaces the module object with the dual one, without touching the rest of the code
+sys.stderr = DualStream(sys.stderr, log)
 
 print("Error", file=sys.stderr)  # shows on screen AND is written to execution.log
 ```

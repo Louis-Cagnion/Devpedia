@@ -55,6 +55,9 @@ main.o: main.c calculos.h
 | `-Wall -Wextra` | Activa la mayoría de las advertencias útiles del compilador |
 | `-g` | Añade la información de depuración (necesaria para `gdb`/Valgrind) |
 | `-o nombre` | Nombra el archivo de salida |
+| `-O2` | Activa [el nivel de optimización](/?c=langages-de-programmation&s=c&p=compilation) recomendado en producción |
+
+> **Trampa:** `-O2`/`-O3` en `CFLAGS` puede hacer aparecer un aviso ausente en `-O0` (véase [Los niveles de optimización](/?c=langages-de-programmation&s=c&p=compilation)): probar `make` con las `CFLAGS` realmente usadas en producción, no solo con una configuración de depuración (`-O0 -g`).
 
 ## Objetivos ficticios (`.PHONY`)
 
@@ -137,7 +140,7 @@ Para aplicar este comportamiento a **todo** el archivo sin anteponer cada línea
 MAKEFLAGS += -s
 
 compilar:
-	echo "Compilando..."   # ya silencioso gracias a MAKEFLAGS; el @ es redundante aqui
+	echo "Compilando..."   # ya silencioso gracias a MAKEFLAGS; el @ es redundante aquí
 	gcc main.c -o programa
 ```
 

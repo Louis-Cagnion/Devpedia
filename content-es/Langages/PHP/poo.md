@@ -54,7 +54,7 @@ class Calculos
     }
 }
 
-echo Calculos::media([12, 15, 9]); // sin "new Calculos()"
+echo Calculos::media([12, 15, 9]); // sin "new Cálculos()"
 ?>
 ```
 
@@ -180,7 +180,8 @@ class ServicioNotificacion
 
     public function __construct(?Mailer $mailer = null, ?Logger $logger = null)
     {
-        $this->mailer = $mailer ?? new SmtpMailer();  // valor por defecto si no se proporciona nada
+        // valor por defecto si no se proporciona nada
+        $this->mailer = $mailer ?? new SmtpMailer();
         $this->logger = $logger ?? new FileLogger();
     }
 }

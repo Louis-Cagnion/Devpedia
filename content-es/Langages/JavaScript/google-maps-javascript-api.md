@@ -49,7 +49,7 @@ function dispersarColocalizados(puntos) {
     grupos.forEach(grupo => {
         if (grupo.length <= 1) return;
         const n = grupo.length;
-        // Correccion de longitud segun la latitud (si no, los circulos se estiran norte-sur)
+        // Corrección de longitud según la latitud (si no, los círculos se estiran norte-sur)
         const escalaLongitud = 1 / Math.max(0.1, Math.cos(grupo[0].lat * Math.PI / 180));
         grupo.forEach((punto, i) => {
             const angulo = (2 * Math.PI * i) / n - Math.PI / 2;
@@ -78,7 +78,7 @@ const el = document.createElement('div');
 el.className = 'mi-marcador-animado';
 new AdvancedMarkerElement({ map, position, content: el });
 
-// google.maps.Marker (legacy): renderizado SVG fijo, sin requisito de configuracion
+// google.maps.Marker (legacy): renderizado SVG fijo, sin requisito de configuración
 new google.maps.Marker({ map, position, icon: miIconoSvg });
 ```
 

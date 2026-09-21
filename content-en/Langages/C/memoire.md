@@ -27,6 +27,53 @@ void exemple(void)
 }
 ```
 
+## Variable-Length Arrays (VLA)
+
+A VLA (Variable-Length Array, [C99](https://en.wikipedia.org/wiki/C99)) is an array declared like an ordinary local variable (`int tab[n];`), but whose size `n` is an expression only known at runtime, not a compile-time constant. Unlike `malloc()` (see below), it stays on the stack: no `free()` needed, its memory is released automatically at the end of the block that contains it.
+
+```c
+void example(int n)
+{
+    int tab[n]; // size decided at call time, not at compilation
+
+    for (int i = 0; i < n; i++)
+        tab[i] = i;
+} // tab disappears here, like any local variable -- no free() needed
+```
+
+### Pitfall 1: parameter order
+
+When a VLA is a function parameter, its size (`n`) must be declared **before** it in the parameter list:
+
+```c
+void build(int n, int tab[n]); // correct: n already exists when tab is declared
+void build(int tab[n], int n); // compile error: n is unknown at this point
+```
+
+The compiler reads parameters left to right: by the time it needs to compute `tab`'s size, `n` must already have been seen.
+
+### Pitfall 2: `T (*)[n]` is not `T **`
+
+A two-dimensional VLA passed as a parameter, like `uint16_t mask[n][n]`, does **not** convert to a plain pointer to a pointer (`uint16_t **`). It converts to a pointer to an array of `n` elements: `uint16_t (*)[n]`.
+
+| | `T (*)[n]` (VLA parameter) | `T **` (array of pointers) |
+|---|---|---|
+| Memory | One contiguous block of `n * n` elements | `n` separate blocks, each allocated independently |
+| Declaration | `void f(int n, T tab[n][n])` | `void f(T **tab)` |
+| Access `tab[i][j]` | Offset computed within the single block | Dereference `tab[i]`, then access within its own block |
+
+Mixing up the two types gives an explicit compile error (`conflicting types`, or `makes pointer from integer without a cast`): the compiler refuses to pass a `T **` where a `T (*)[n]` is expected, and vice versa.
+
+### Other limitations to know
+
+| Limitation | Detail |
+|---|---|
+| No failure check | Unlike `malloc()` (see below), an oversized VLA doesn't return `NULL`: it causes a stack overflow, undefined behavior, without warning |
+| Fixed size after declaration | Unlike `realloc()` (see below), a VLA can't be resized once declared |
+| Availability | Made optional by [C11](https://en.wikipedia.org/wiki/C11_(C_standard_revision)): a strictly conforming compiler may refuse to support them (check the `__STDC_NO_VLA__` macro) |
+
+See also [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs); understanding that chapter is a prerequisite for this one.
+
 ## Allocating Memory Dynamically
 
 `malloc()` allocates a block of raw memory on the heap, the size of which is expressed in bytes:
@@ -113,9 +160,11 @@ If `user_input` exceeds 16 bytes, `strcpy()` keeps writing past `buffer`'s bound
 ```c
 strcpy(buffer, input);                       // dangerous: no limit at all
 strncpy(buffer, input, sizeof(buffer) - 1);  // bounded to the buffer's actual size
-buffer[sizeof(buffer) - 1] = '\0';           // strncpy doesn't guarantee termination if the source is too long
+// strncpy doesn't guarantee termination if the source is too long
+buffer[sizeof(buffer) - 1] = '\0';
 
-fgets(buffer, sizeof(buffer), stdin);        // bounded reading right from input, rather than fixing it up afterward
+// bounded reading right from input, rather than fixing it up afterward
+fgets(buffer, sizeof(buffer), stdin);
 ```
 
 | Risky function | Bounded alternative |
@@ -132,7 +181,8 @@ fgets(buffer, sizeof(buffer), stdin);        // bounded reading right from input
 Originally from BSD (not standard C, but available on macOS/\*BSD, and easy to reimplement yourself, as the `libft` library does with `ft_strlcpy`/`ft_strlcat`), these functions fix `strncpy`/`strcat`'s weak spot: detecting truncation.
 
 ```c
-size_t needed = strlcpy(buffer, input, sizeof(buffer));  // ALWAYS null-terminates, unlike strncpy
+// ALWAYS null-terminates, unlike strncpy
+size_t needed = strlcpy(buffer, input, sizeof(buffer));
 
 if (needed >= sizeof(buffer))
 {
@@ -152,7 +202,7 @@ sizeof(char);      // always 1, by definition of the C standard
 sizeof(int) * 10;  // size needed for 10 integers -> pass this to malloc()
 ```
 
-See also the chapter on pointers; understanding that chapter is a prerequisite for this one.
+See also [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs); understanding that chapter is a prerequisite for this one.
 
 ---
 
@@ -160,7 +210,7 @@ See also the chapter on pointers; understanding that chapter is a prerequisite f
 
 | | |
 |---|---|
-| **Key takeaways** | C leaves the developer with full responsibility for dynamic memory (the heap): `malloc`/`calloc`/`realloc` to allocate, `free` to release; the stack (local variables) is managed automatically. |
-| **Tools you can use** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind to detect leaks and invalid accesses. |
-| **Pitfalls to avoid** | Memory leak (never calling `free`), use-after-free, double free, buffer overflow, the latter of which can be exploited as a security flaw. |
+| **Key takeaways** | C leaves the developer with full responsibility for dynamic memory (the heap): `malloc`/`calloc`/`realloc` to allocate, `free` to release; the stack (local variables, VLAs included) is managed automatically. |
+| **Tools you can use** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLAs (`int tab[n]`) for a dynamically-sized array with no `free()`, Valgrind to detect leaks and invalid accesses. |
+| **Pitfalls to avoid** | Memory leak (never calling `free`), use-after-free, double free, buffer overflow, stack overflow on an oversized VLA (no detection possible, unlike `malloc`), mixing up `T (*)[n]` (VLA parameter) with `T **`. |
 | **Best practices** | Always check that a `malloc`/`realloc` didn't return `NULL`; set a pointer to `NULL` right after its `free()`; prefer `fgets`/`strncpy`/`snprintf` over unbounded functions (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` to detect truncation via their return value. |

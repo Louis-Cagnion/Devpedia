@@ -14,15 +14,15 @@ Por padrão, um comando executa em **primeiro plano**: o terminal espera ele ter
 
 ```bash
 processamento_longo.sh &   # o '&' final lanca o comando em SEGUNDO PLANO
-echo "O terminal fica disponivel imediatamente"
+echo "O terminal fica disponível imediatamente"
 ```
 
 ## Gerenciar tarefas em segundo plano (`jobs`, `fg`, `bg`)
 
 ```bash
 processamento_longo.sh &
-jobs   # lista as tarefas em segundo plano da sessao atual
-fg %1  # traz a tarefa numero 1 para o primeiro plano
+jobs   # lista as tarefas em segundo plano da sessão atual
+fg %1  # traz a tarefa número 1 para o primeiro plano
 # Ctrl+Z suspende uma tarefa em primeiro plano (sem para-la)
 bg %1          # relanca em segundo plano uma tarefa suspensa por Ctrl+Z
 ```
@@ -32,9 +32,10 @@ bg %1          # relanca em segundo plano uma tarefa suspensa por Ctrl+Z
 ## Ver os processos em execução (`ps`, `top`)
 
 ```bash
-ps aux             # lista todos os processos do sistema, com usuario, CPU, memoria...
+ps aux             # lista todos os processos do sistema, com usuário, CPU, memória...
 ps aux | grep php  # filtra para ver apenas os processos relacionados a "php"
-top                # visao interativa, atualizada ao vivo, ordenada por consumo de CPU por padrao
+# visão interativa, atualizada ao vivo, ordenada por consumo de CPU por padrão
+top
 ```
 
 ## Encerrar um processo (`kill`)
@@ -43,7 +44,7 @@ top                # visao interativa, atualizada ao vivo, ordenada por consumo 
 
 ```bash
 kill 1234     # envia SIGTERM (15): pede educadamente ao processo para terminar de forma limpa
-kill -9 1234  # envia SIGKILL (9): forca a parada imediata, sem deixar o processo reagir
+kill -9 1234  # envia SIGKILL (9): força a parada imediata, sem deixar o processo reagir
 ```
 
 | Sinal | Número | Efeito |
@@ -73,14 +74,15 @@ Um processo lançado em segundo plano com `&` ainda recebe um sinal de parada se
 ```bash
 nohup processamento_longo.sh &
 # o processo continua mesmo depois do fechamento do terminal
-# sua saida padrao e redirecionada por padrao para um arquivo nohup.out
+# sua saída padrão é redirecionada por padrão para um arquivo nohup.out
 ```
 
 ## Encontrar o PID de um processo pelo nome
 
 ```bash
-pgrep -f "processamento_longo.sh"  # exibe o(s) PID correspondente(s) ao padrao dado
-pkill -f "processamento_longo.sh"  # encontra E encerra em um unico comando (envia SIGTERM por padrao)
+pgrep -f "processamento_longo.sh"  # exibe o(s) PID correspondente(s) ao padrão dado
+# encontra E encerra em um único comando (envia SIGTERM por padrão)
+pkill -f "processamento_longo.sh"
 ```
 
 > **`kill` vs `pkill`**: `kill` precisa de um **PID** já conhecido (`kill 1234`): é o único jeito de enviar um sinal a um processo preciso sem errar o alvo. `pkill` evita precisar procurar esse PID manualmente: ele envia o sinal a todo processo cujo nome (ou linha de comando completa com `-f`) corresponde ao padrão dado, o que equivale a encadear `pgrep` e depois `kill` em cada PID encontrado. O risco de `pkill` é então atingir mais processos do que o previsto se o padrão for amplo demais (ex. `pkill -f script.sh` em uma máquina onde vários scripts contêm "script.sh" no nome).

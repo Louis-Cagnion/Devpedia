@@ -12,9 +12,9 @@ Un **secret** est une information qui donne un accès si elle est connue : mot d
 // Dangereux : le secret est ecrit directement dans le code source
 cle_api = "sk_live_51H8xJ2eZvKYlo2C..."
 
-// Ce code, une fois commite dans Git, expose ce secret :
-// - a quiconque a acces au depot (y compris un depot prive, si son acces fuit un jour)
-// - definitivement dans l'historique, meme si la ligne est supprimee plus tard
+// Ce code, une fois commité dans Git, expose ce secret :
+// - à quiconque a accès au dépôt (y compris un dépôt privé, si son accès fuit un jour)
+// - définitivement dans l'historique, même si la ligne est supprimée plus tard
 //   (voir Annuler des changements et naviguer dans l'historique)
 ```
 

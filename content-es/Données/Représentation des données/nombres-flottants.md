@@ -146,24 +146,13 @@ La base es común; los lenguajes solo difieren en el envoltorio:
 
 Recuerda sobre todo que estas diferencias no cambian nada de fondo: es el hardware el que decide, y decide igual para todo el mundo.
 
-## Resumen
-
-| A recordar | Por qué |
-|---|---|
-| `0.1 + 0.2 != 0.3` en todos los lenguajes | Codificación binaria, no un bug del lenguaje |
-| Nunca comparar dos flotantes con `==` | Dos cálculos equivalentes dan bits diferentes |
-| Comparar vía un epsilon adaptado al dominio | La precisión es relativa al orden de magnitud |
-| Importes monetarios en enteros o `DECIMAL` | Ninguna aproximación tolerable con dinero |
-| Enteros exactos hasta 2⁵³ en precisión doble | La mantisa tiene 52 bits |
-| `NaN != NaN` | Un valor inválido no es igual a nada, ni a sí mismo |
-
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Un flotante (norma IEEE 754) almacena una aproximación, no un valor exacto: `0.1 + 0.2 != 0.3` en todos los lenguajes, sin excepción. La precisión es relativa: cuanto más grande es un número, mayor es la brecha entre dos flotantes consecutivos. |
+| **Para recordar** | Un flotante (norma IEEE 754) almacena una aproximación, no un valor exacto: `0.1 + 0.2 != 0.3` en todos los lenguajes, sin excepción. La precisión es relativa: cuanto más grande es un número, mayor es la brecha entre dos flotantes consecutivos. Los enteros siguen siendo exactos hasta 2⁵³ en precisión doble (52 bits de mantisa); más allá, enteros vecinos se vuelven indistinguibles. |
 | **Herramientas utilizables** | Comparación por epsilon (`math.isclose`, `fabs(a-b) < epsilon`), tipos `DECIMAL` para importes exactos. La coma fija para un resultado reproducible bit a bit sin FPU. |
-| **Trampas a evitar** | Comparar dos flotantes con `==`; almacenar un importe monetario en flotante en lugar de en enteros (céntimos) o `DECIMAL`. |
+| **Trampas a evitar** | Comparar dos flotantes con `==` (incluido `NaN`, que no es igual a nada, ni a sí mismo); almacenar un importe monetario en flotante en lugar de en enteros (céntimos) o `DECIMAL`. |
 | **Buenas prácticas** | Elegir un epsilon adaptado al orden de magnitud manejado, nunca el epsilon de máquina por defecto para valores grandes. |

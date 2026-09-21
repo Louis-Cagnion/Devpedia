@@ -31,7 +31,8 @@ for i in range(2, 10, 2):  # from 2 to 10 (excluded), in increments of 2 -> 2, 4
 for fruit in reversed(fruits):            # cherry, banana, apple -> VALUES in reverse
     print(fruit)
 
-for i in range(len(fruits) - 1, -1, -1):  # 2, 1, 0               -> INDICES in decreasing order
+# 2, 1, 0               -> INDICES in decreasing order
+for i in range(len(fruits) - 1, -1, -1):
     print(fruits[i])
 ```
 

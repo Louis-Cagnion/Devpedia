@@ -147,7 +147,7 @@ void aoMoverMouse(int x, int y)
     } else if (x >= largura_tela - 10) {
         mlx_mouse_move(janela, 11, y);
     }
-    // ... usar x - ultimo_x para girar a camera ...
+    // ... usar x - último_x para girar a camera ...
 }
 ```
 

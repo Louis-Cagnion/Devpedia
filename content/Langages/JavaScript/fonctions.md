@@ -36,9 +36,12 @@ Ici, `addition` est une variable comme une autre : elle n'existe qu'à partir de
 ## Fonctions fléchées (*arrow functions*)
 
 ```javascript
-const addition = (a, b) => a + b;                 // une seule expression : retour implicite, pas de "return"
-const carre = x => x * x;                         // parenthèses optionnelles avec un seul paramètre
-const saluer = () => { console.log("Bonjour"); }  // corps multi-lignes : accolades + "return" explicite requis
+// une seule expression : retour implicite, pas de "return"
+const addition = (a, b) => a + b;
+// parenthèses optionnelles avec un seul paramètre
+const carre = x => x * x;
+// corps multi-lignes : accolades + "return" explicite requis
+const saluer = () => { console.log("Bonjour"); }
 ```
 
 ### La vraie différence : `this`
@@ -50,13 +53,15 @@ const objet = {
 
     afficherClassique: function () {
         this.valeurs.forEach(function (v) {
-            console.log(this.nom, v);   // "this" ici est undefined (ou l'objet global) : PAS "objet" !
+            // "this" ici est undefined (ou l'objet global) : PAS "objet" !
+            console.log(this.nom, v);
         });
     },
 
     afficherFlechee: function () {
         this.valeurs.forEach((v) => {
-            console.log(this.nom, v);   // "this" reprend celui de afficherFlechee -> fonctionne
+            // "this" reprend celui de afficherFlechee -> fonctionne
+            console.log(this.nom, v);
         });
     },
 };
@@ -67,11 +72,13 @@ const objet = {
 ## Paramètres par défaut, rest et spread
 
 ```javascript
-function saluer(nom, message = "Bonjour") {   // valeur par défaut si l'argument est omis/undefined
+// valeur par défaut si l'argument est omis/undefined
+function saluer(nom, message = "Bonjour") {
     return `${message} ${nom}`;
 }
 
-function somme(...nombres) {                    // "rest" : regroupe les arguments en excès dans un tableau
+// "rest" : regroupe les arguments en excès dans un tableau
+function somme(...nombres) {
     return nombres.reduce((total, n) => total + n, 0);
 }
 somme(1, 2, 3, 4);   // 10
@@ -104,12 +111,12 @@ Une **IIFE** (*Immediately Invoked Function Expression*) est une fonction décla
 
 ```javascript
 (function (global) {
-    const CATEGORIES = [];   // reste privee, invisible depuis le reste de la page
+    const CATEGORIES = [];   // reste privée, invisible depuis le reste de la page
     const ICONS = {};        // idem
 
     function svg(nom) { /* ... */ }   // idem
 
-    global.MaBibliotheque = { svg };   // SEUL point accessible depuis l'exterieur
+    global.MaBibliotheque = { svg };   // SEUL point accessible depuis l'extérieur
 })(window);
 ```
 

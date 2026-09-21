@@ -146,24 +146,13 @@ Le socle est commun ; les langages diffèrent seulement sur l'emballage :
 
 Retenez surtout que ces différences ne changent rien au fond : c'est le matériel qui décide, et il décide pareil pour tout le monde.
 
-## Résumé
-
-| À retenir | Pourquoi |
-|---|---|
-| `0.1 + 0.2 != 0.3` dans tous les langages | Encodage binaire, pas un bug du langage |
-| Ne jamais comparer deux flottants avec `==` | Deux calculs équivalents donnent des bits différents |
-| Comparer via un epsilon adapté au domaine | La précision est relative à l'ordre de grandeur |
-| Montants monétaires en entiers ou `DECIMAL` | Aucune approximation tolérable sur de l'argent |
-| Entiers exacts jusqu'à 2⁵³ en double précision | La mantisse fait 52 bits |
-| `NaN != NaN` | Une valeur invalide n'égale rien, y compris elle-même |
-
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Un flottant (norme IEEE 754) stocke une approximation, pas une valeur exacte : `0.1 + 0.2 != 0.3` dans tous les langages, sans exception. La précision est relative : plus un nombre est grand, plus l'écart entre deux flottants consécutifs grandit. |
+| **À retenir** | Un flottant (norme IEEE 754) stocke une approximation, pas une valeur exacte : `0.1 + 0.2 != 0.3` dans tous les langages, sans exception. La précision est relative : plus un nombre est grand, plus l'écart entre deux flottants consécutifs grandit. Les entiers restent exacts jusqu'à 2⁵³ en double précision (52 bits de mantisse) ; au-delà, des entiers voisins deviennent indiscernables. |
 | **Outils utilisables** | Comparaison par epsilon (`math.isclose`, `fabs(a-b) < epsilon`), types `DECIMAL` pour des montants exacts. La virgule fixe pour un résultat reproductible bit à bit sans FPU. |
-| **Pièges à éviter** | Comparer deux flottants avec `==` ; stocker un montant monétaire en flottant plutôt qu'en entiers (centimes) ou `DECIMAL`. |
+| **Pièges à éviter** | Comparer deux flottants avec `==` (y compris `NaN`, qui n'égale jamais rien, pas même lui-même) ; stocker un montant monétaire en flottant plutôt qu'en entiers (centimes) ou `DECIMAL`. |
 | **Bonnes pratiques** | Choisir un epsilon adapté à l'ordre de grandeur manipulé, jamais l'epsilon machine par défaut pour de grandes valeurs. |

@@ -74,14 +74,16 @@ In modern JavaScript, transforming or filtering an array is more often done usin
 const numbers = [1, 2, 3, 4, 5];
 
 numbers.forEach(n => console.log(n));            // executes a function for each element
-const doubles = numbers.map(n => n * 2);           // [2, 4, 6, 8, 10] -> transforms each element
+// [2, 4, 6, 8, 10] -> transforms each element
+const doubles = numbers.map(n => n * 2);
 const pairs = numbers.filter(n => n % 2 === 0);      // [2, 4] -> keeps only what matches
-const somme = numbers.reduce((acc, n) => acc + n, 0); // 15 -> reduces the entire array to a single value
+// 15 -> reduces the entire array to a single value
+const somme = numbers.reduce((acc, n) => acc + n, 0);
 ```
 
 > **Note:** `reduce()` is the most versatile but the least immediately readable: `acc` (the accumulator) starts with the initial value provided as the second argument (`0` in this case) and is updated for each element according to the provided function.
 
-See also the chapter on functions for the syntax of arrow functions (`=>`) used here.
+See also [Functions](/?c=langages-de-programmation&s=javascript&p=fonctions) for the syntax of arrow functions (`=>`) used here.
 
 ---
 

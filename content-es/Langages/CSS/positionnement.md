@@ -78,7 +78,8 @@ Un elemento `sticky` (o `fixed`) semitransparente permanece por encima de un con
     position: sticky;
     bottom: 0;
     background-color: rgba(255, 255, 255, 0.7);   /* semitransparente */
-    backdrop-filter: blur(8px);                     /* difumina lo que se desplaza DETRAS, no el pie mismo */
+    /* difumina lo que se desplaza DETRAS, no el pie mismo */
+    backdrop-filter: blur(8px);
 }
 ```
 

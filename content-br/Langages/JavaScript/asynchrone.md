@@ -10,7 +10,8 @@ JavaScript executa em uma **única thread** (ao contrário das [threads](/?c=lan
 
 ```javascript
 console.log("1");
-setTimeout(() => console.log("2"), 0);   // mesmo com 0ms, executa DEPOIS do resto do codigo sincrono
+// mesmo com 0ms, executa DEPOIS do resto do código sincrono
+setTimeout(() => console.log("2"), 0);
 console.log("3");
 
 // Exibe: 1, 3, 2
@@ -65,9 +66,9 @@ Promise.all([
     fetch("/api/usuarios"),
     fetch("/api/produtos"),
 ]).then(([respostaUsuarios, respostaProdutos]) => {
-    console.log("As duas requisicoes terminaram");
+    console.log("As duas requisições terminaram");
 }).catch(erro => {
-    console.log("Pelo menos uma das duas requisicoes falhou:", erro);
+    console.log("Pelo menos uma das duas requisições falhou:", erro);
 });
 ```
 
@@ -77,7 +78,8 @@ Promise.all([
 
 ```javascript
 async function carregarUsuario(id) {
-    const resposta = await fetch(`/api/usuarios/${id}`);   // "espera" a Promise, sem bloquear a thread
+    // "espera" a Promise, sem bloquear a thread
+    const resposta = await fetch(`/api/usuarios/${id}`);
     const dados = await resposta.json();
     return dados;
 }
@@ -87,7 +89,7 @@ async function carregarUsuario(id) {
 - `await` só pode ser usado dentro de uma função `async`: ele "pausa" essa função (sem bloquear o resto do programa) até que a Promise seja resolvida ou rejeitada.
 
 ```javascript
-// Equivalente estritamente identico, mas bem mais legivel que com .then() aninhados:
+// Equivalente estritamente idêntico, mas bem mais legível que com .then() aninhados:
 async function carregarTudo() {
     const conteudoA = await lerArquivoPromise("a.txt");
     const conteudoB = await lerArquivoPromise("b.txt");

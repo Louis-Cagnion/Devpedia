@@ -12,7 +12,7 @@ O caso mais direto: uma função custosa, chamada várias vezes com os mesmos ar
 
 ```python
 def nota_de_credito(cliente_id):
-    # consulta pesada: agrega o historico, calcula um score
+    # consulta pesada: agrega o histórico, calcula um score
     return calcular_score(recuperar_historico(cliente_id))
 
 # chamada 3 vezes para o mesmo cliente no mesmo processamento
@@ -41,13 +41,13 @@ A **memoização** guarda em memória o resultado para uma entrada dada e o reut
 O mesmo princípio se aplica na escala de um processamento inteiro, não apenas de uma chamada de função. Se apenas uma parte dos dados mudou desde a última passagem, reprocessar tudo equivale a refazer todo o trabalho já validado só para modificar um fragmento.
 
 ```python
-# a cada execucao: reprocessa as 50.000 linhas do arquivo
+# a cada execução: reprocessa as 50.000 linhas do arquivo
 for linha in todo_o_arquivo:
     resultados.append(processar(linha))
 ```
 
 ```python
-# so reprocessa o que chegou desde a ultima passagem
+# só reprocessa o que chegou desde a última passagem
 ultimo_marcador = ler_marca_de_progresso()
 novas_linhas = [l for l in todo_o_arquivo if l.timestamp > ultimo_marcador]
 
@@ -64,7 +64,7 @@ O custo do processamento passa a ser proporcional ao que **mudou**, não ao tama
 Um jogo 2D que gerencia ele mesmo sua memória de exibição (um array de pixels ou de tiles em memória, sem delegar a uma engine de renderização que já otimiza isso) ilustra bem o princípio na escala de uma imagem inteira.
 
 ```python
-# a cada tick: redesenha toda a imagem, mesmo se so um personagem se moveu
+# a cada tick: redesenha toda a imagem, mesmo se só um personagem se moveu
 def desenhar_frame(tela, cena):
     for x in range(tela.largura):
         for y in range(tela.altura):
@@ -74,7 +74,7 @@ def desenhar_frame(tela, cena):
 Se um tick só move um personagem em alguns pixels, o resto do cenário é idêntico pixel a pixel ao frame anterior: recalculá-lo não muda nada no resultado, apenas no tempo gasto para obtê-lo.
 
 ```python
-# so redesenha os retangulos marcados como "sujos" (modificados desde o ultimo tick)
+# só redesenha os retangulos marcados como "sujos" (modificados desde o último tick)
 def desenhar_frame(tela, cena, zonas_modificadas):
     for zona in zonas_modificadas:
         for x, y in zona.pixels():
@@ -89,7 +89,7 @@ Um scraper de anúncios classificados comparava dois anúncios para saber se des
 
 ```python
 def sao_potencialmente_duplicados(anuncio_a, anuncio_b):
-    # tudo ja esta disponivel nos cartoes da pagina de resultados
+    # tudo já está disponível nos cartões da página de resultados
     return (
         anuncio_a.marca == anuncio_b.marca
         and anuncio_a.modelo == anuncio_b.modelo
@@ -98,7 +98,7 @@ def sao_potencialmente_duplicados(anuncio_a, anuncio_b):
 
 def sao_duplicados(anuncio_a, anuncio_b):
     if not sao_potencialmente_duplicados(anuncio_a, anuncio_b):
-        return False    # ja decidido: marca ou modelo diferente, ou preco muito distante
+        return False    # já decidido: marca ou modelo diferente, ou preco muito distante
     detalhe_a = abrir_pagina_anuncio(anuncio_a)
     detalhe_b = abrir_pagina_anuncio(anuncio_b)
     return comparar_especificacoes(detalhe_a, detalhe_b)
@@ -119,13 +119,13 @@ with open("cache.json", "w") as f:
 ```
 
 ```python
-# Escrita atomica: escrever em um arquivo temporario, depois renomea-lo
+# Escrita atômica: escrever em um arquivo temporário, depois renomea-lo
 import os
 
 caminho_tmp = "cache.json.tmp"
 with open(caminho_tmp, "w") as f:
     json.dump(resultado, f)
-os.replace(caminho_tmp, "cache.json")   # rename(): atomico no nivel do sistema de arquivos
+os.replace(caminho_tmp, "cache.json")   # rename(): atômico no nível do sistema de arquivos
 ```
 
 `os.replace()` (como `rename()` na maioria das linguagens) é **atômico** no nível do sistema de arquivos: a qualquer momento, `cache.json` aponta para a versão antiga completa ou para a nova versão completa, nunca para um estado intermediário. Nenhum leitor concorrente pode então jamais ver um arquivo pela metade, ao contrário de uma escrita direta interrompida no meio do caminho.
@@ -157,12 +157,13 @@ trava_recalculo = threading.Lock()
 def valor_com_cache(chave):
     entrada = cache.get(chave)
     if entrada is None:
-        return recalcular_e_guardar(chave)   # primeira chamada: nao ha escolha a nao ser esperar
+        # primeira chamada: não há escolha a não ser esperar
+        return recalcular_e_guardar(chave)
 
     if entrada.esta_vencida() and trava_recalculo.acquire(blocking=False):
         threading.Thread(target=lambda: recalcular_e_guardar(chave, trava_recalculo)).start()
 
-    return entrada.valor   # responde imediatamente, vencido ou nao
+    return entrada.valor   # responde imediatamente, vencido ou não
 ```
 
 A trava anti-concorrência (`trava_recalculo`) evita que um recálculo custoso seja disparado N vezes em paralelo enquanto já está em andamento para a mesma chave: só a primeira thread a adquiri-la dispara de fato o recálculo, as outras continuam servindo o valor vencido enquanto isso.
@@ -179,10 +180,11 @@ Por padrão, um servidor PHP mantém na memória tudo o que um script produz com
 
 ```php
 <?php
-ini_set('output_buffering', 'off');   // desativa o armazenamento em buffer da saida
-ini_set('implicit_flush', true);      // forca o envio imediato apos cada echo
+ini_set('output_buffering', 'off');   // desativa o armazenamento em buffer da saída
+ini_set('implicit_flush', true);      // força o envio imediato após cada echo
 while (ob_get_level() > 0) {
-    ob_end_flush();                   // tambem esvazia qualquer buffer ja aberto pelo proprio PHP
+    // também esvazia qualquer buffer já aberto pelo próprio PHP
+    ob_end_flush();
 }
 
 foreach ($linhasAImportar as $linha) {

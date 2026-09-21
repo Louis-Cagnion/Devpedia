@@ -74,7 +74,8 @@ void inserer(TableHachage *table, const char *cle, int valeur)
 
     Entree *nouvelle = malloc(sizeof(Entree));
     if (nouvelle == NULL) {
-        return; // échec d'allocation (voir La gestion de la mémoire) : on renonce à l'insertion
+        // échec d'allocation (voir La gestion de la mémoire) : on renonce à l'insertion
+        return;
     }
     nouvelle->cle = strdup(cle);
     nouvelle->valeur = valeur;

@@ -104,12 +104,15 @@ Eventos recibidos en orden:              Cuadrícula reconstruida:
 En la fila 1, el único evento recibido es `<td>C</td>`: nada, en ese evento aislado, dice en qué columna debe caer `C`. Hace falta que el código recuerde, desde la fila anterior, que la columna 0 todavía está "tomada" por la celda `A` durante una vuelta más:
 
 ```python
-columnas_ocupadas = {}  # {índice de columna: número de filas restantes ocupadas por una fusión}
+# {índice de columna: número de filas restantes ocupadas por una fusión}
+columnas_ocupadas = {}
 
 def colocar_celda(columna_inicio, rowspan, columnas_ocupadas):
     columna = columna_inicio
-    while columnas_ocupadas.get(columna, 0) > 0:  # esta columna todavía está tomada por una fusión anterior
-        columna += 1                              # -> desplazar hacia la primera columna realmente libre
+    # esta columna todavía está tomada por una fusión anterior
+    while columnas_ocupadas.get(columna, 0) > 0:
+        # -> desplazar hacia la primera columna realmente libre
+        columna += 1
     if rowspan > 1:
         columnas_ocupadas[columna] = rowspan
     return columna

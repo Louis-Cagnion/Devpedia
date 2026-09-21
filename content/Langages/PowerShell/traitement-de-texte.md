@@ -9,12 +9,18 @@ Là où [Bash](/?c=shells&s=bash&p=bash) s'appuie sur des [outils texte spécial
 ## `Select-String` : rechercher du texte (équivalent de `grep`)
 
 ```powershell
-Select-String "erreur" fichier.log                   # affiche les lignes contenant "erreur"
-Select-String -CaseSensitive "Erreur" fichier.log    # sensible à la casse (l'inverse du défaut)
-Select-String -NotMatch "erreur" fichier.log         # inverse : lignes qui NE contiennent PAS "erreur"
-Select-String "TODO" -Path .\* -Recurse              # recherche récursive dans tous les fichiers d'un dossier
-Select-String "erreur" fichier.log | Measure-Object  # compte les lignes correspondantes
-Select-String -Pattern "erreur|warning" fichier.log  # motif = une vraie regex .NET par défaut
+# affiche les lignes contenant "erreur"
+Select-String "erreur" fichier.log
+# sensible à la casse (l'inverse du défaut)
+Select-String -CaseSensitive "Erreur" fichier.log
+# inverse : lignes qui NE contiennent PAS "erreur"
+Select-String -NotMatch "erreur" fichier.log
+# recherche récursive dans tous les fichiers d'un dossier
+Select-String "TODO" -Path .\* -Recurse
+# compte les lignes correspondantes
+Select-String "erreur" fichier.log | Measure-Object
+# motif = une vraie regex .NET par défaut
+Select-String -Pattern "erreur|warning" fichier.log
 ```
 
 > **Note :** contrairement à `grep` où `-E` doit être ajouté pour activer les regex étendues, `Select-String` interprète son motif comme une regex **par défaut** : utiliser `-SimpleMatch` pour revenir à une recherche de texte littéral, l'inverse de la convention [Bash](/?c=shells&s=bash&p=bash).
@@ -28,8 +34,10 @@ Select-String "erreur" fichier.log | Select-Object LineNumber, Line
 ## `-replace` : rechercher et remplacer (équivalent de `sed`)
 
 ```powershell
-(Get-Content fichier.txt) -replace "ancien", "nouveau"                            # remplace toutes les occurrences par ligne
-(Get-Content fichier.txt) -replace "ancien", "nouveau" | Set-Content fichier.txt  # modifie le fichier
+# remplace toutes les occurrences par ligne
+(Get-Content fichier.txt) -replace "ancien", "nouveau"
+# modifie le fichier
+(Get-Content fichier.txt) -replace "ancien", "nouveau" | Set-Content fichier.txt
 ```
 
 > **Note :** `-replace` remplace **toutes** les occurrences par défaut (l'inverse de `sed 's///'`  sans `g`, qui ne remplace que la première) : pas de drapeau équivalent au `g` de `sed` à ajouter, ce comportement est celui par défaut.
@@ -45,7 +53,8 @@ Pour ne traiter que certaines lignes (équivalent d'une adresse `sed '2,4s///'`)
 Là où `awk` découpe manuellement une ligne en champs (`$1`, `$2`...), PowerShell convertit directement un format structuré en objets typés :
 
 ```powershell
-Import-Csv donnees.csv | Select-Object Nom, Age    # colonnes accessibles par leur nom, pas par position
+# colonnes accessibles par leur nom, pas par position
+Import-Csv donnees.csv | Select-Object Nom, Age
 Get-Content donnees.json | ConvertFrom-Json | Select-Object -ExpandProperty utilisateur
 ```
 
@@ -58,11 +67,16 @@ Pour un texte non structuré proche de l'usage d'`awk` (découpage par espaces),
 ## `Sort-Object` et `Get-Unique`/`-Unique` : trier et dédupliquer
 
 ```powershell
-Get-Content fichier.txt | Sort-Object                                   # tri alphabétique
-Get-Content nombres.txt | Sort-Object { [int]$_ }                       # tri numérique explicite
-Get-Content fichier.txt | Sort-Object -Descending                       # tri décroissant
-Get-Content fichier.txt | Sort-Object -Unique                           # trie ET déduplique en une seule étape
-Get-Content fichier.txt | Group-Object | Sort-Object Count -Descending  # compte les occurrences
+# tri alphabétique
+Get-Content fichier.txt | Sort-Object
+# tri numérique explicite
+Get-Content nombres.txt | Sort-Object { [int]$_ }
+# tri décroissant
+Get-Content fichier.txt | Sort-Object -Descending
+# trie ET déduplique en une seule étape
+Get-Content fichier.txt | Sort-Object -Unique
+# compte les occurrences
+Get-Content fichier.txt | Group-Object | Sort-Object Count -Descending
 ```
 
 > **Note :** contrairement à `uniq` en [Bash](/?c=shells&s=bash&p=bash) (qui ne détecte que des doublons **adjacents**, d'où l'obligation de trier avant), `Sort-Object -Unique` et `Group-Object` fonctionnent sur l'ensemble de la collection, peu importe l'ordre initial : pas besoin de trier au préalable pour dédupliquer correctement.

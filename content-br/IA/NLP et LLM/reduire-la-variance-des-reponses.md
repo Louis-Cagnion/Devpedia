@@ -23,7 +23,7 @@ def votar_maioria(prompt, n=5, temperatura=0.7):
         for _ in range(n)
     ]
     mais_frequente, numero_de_votos = Counter(respostas).most_common(1)[0]
-    return mais_frequente, numero_de_votos / n  # resposta escolhida + score de confianca
+    return mais_frequente, numero_de_votos / n  # resposta escolhida + score de confiança
 ```
 
 A razão `numero_de_votos / n` serve como score de confiança: 5 respostas idênticas em 5 inspiram mais confiança que 3 em 5, mesmo que o voto majoritário escolha a resposta vencedora nos dois casos.

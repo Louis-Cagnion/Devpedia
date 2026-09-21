@@ -15,7 +15,8 @@ Write-Output $env:NOMBRE  # Juan
 
 ```powershell
 # subscript.ps1
-Write-Output $env:NOMBRE    # muestra "Juan" si NOMBRE fue definida por el proceso llamador, vacío si no
+# muestra "Juan" si NOMBRE fue definida por el proceso llamador, vacío si no
+Write-Output $env:NOMBRE
 ```
 
 > **Nota:** como con `export` en Bash, la transmisión solo funciona del padre hacia el hijo: un subscript que modifica `$env:NOMBRE` nunca repercute ese cambio hacia el script que lo lanzó, cada proceso tiene su propia copia del entorno.
@@ -23,7 +24,8 @@ Write-Output $env:NOMBRE    # muestra "Juan" si NOMBRE fue definida por el proce
 ## Variables de entorno comunes
 
 ```powershell
-$env:PATH          # lista de carpetas donde PowerShell busca los ejecutables (separadas por ";" en Windows)
+# lista de carpetas donde PowerShell busca los ejecutables (separadas por ";" en Windows)
+$env:PATH
 $env:USERPROFILE   # carpeta personal del usuario actual (equivalente de $HOME)
 $env:USERNAME      # nombre del usuario actual
 $env:COMPUTERNAME  # nombre de la máquina

@@ -52,7 +52,7 @@ elif site == "vivacar":
 elif site == "zoomcar":
     scraper = scrape_zoomcar
 
-# Despues: un diccionario hace de tabla de dispatch
+# Después: un diccionario hace de tabla de dispatch
 SITE_SCRAPERS = {
     "leboncoin": scrape_leboncoin,
     "lacentrale": scrape_lacentrale,

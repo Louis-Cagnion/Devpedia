@@ -20,12 +20,15 @@ $ch = curl_init($url);
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_POSTFIELDS     => $corpoJson,
-    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],  // indispensavel para um corpo JSON
-    CURLOPT_RETURNTRANSFER => true,                                // retornar a resposta como string, em vez de exibi-la diretamente
+    // indispensável para um corpo JSON
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+    // retornar a resposta como string, em vez de exibi-la diretamente
+    CURLOPT_RETURNTRANSFER => true,
     CURLOPT_TIMEOUT        => 10,
 ]);
 
-$resposta = curl_exec($ch);        // false em caso de falha de rede (estilo de erro "a moda C")
+// false em caso de falha de rede (estilo de erro "a moda C")
+$resposta = curl_exec($ch);
 $codigoHttp = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 ?>
@@ -61,7 +64,8 @@ $opcoes = [
     ],
 ];
 $contexto = stream_context_create($opcoes);
-$resposta = file_get_contents($url, false, $contexto); // false em caso de falha, mesmo estilo que curl_exec
+// false em caso de falha, mesmo estilo que curl_exec
+$resposta = file_get_contents($url, false, $contexto);
 ?>
 ```
 
@@ -74,7 +78,7 @@ $resposta = file_get_contents($url, false, $contexto); // false em caso de falha
 $dados = json_decode($resposta, true);
 
 if (json_last_error() !== JSON_ERROR_NONE) {
-    throw new \RuntimeException('Resposta JSON invalida');
+    throw new \RuntimeException('Resposta JSON inválida');
 }
 ?>
 ```
@@ -91,7 +95,8 @@ O bloco `ssl` de um contexto de fluxo (cf. exemplo acima) controla duas verifica
 <?php
 $opcoes = [
     'ssl' => [
-        'verify_peer'      => false,  // o certificado e assinado por uma autoridade reconhecida?
+        // o certificado é assinado por uma autoridade reconhecida?
+        'verify_peer'      => false,
         'verify_peer_name' => false,  // o nome do certificado corresponde ao dominio chamado?
     ],
 ];
@@ -115,8 +120,9 @@ $opcoes = ['http' => ['ignore_errors' => true]];
 $contexto = stream_context_create($opcoes);
 
 $resposta = file_get_contents($url, false, $contexto);
-// com ignore_errors: $resposta contem o corpo mesmo para um 404/500
-// sem ignore_errors : $resposta vale false para um 404/500, mesmo que o servidor tenha respondido
+// com ignore_errors: $resposta contém o corpo mesmo para um 404/500
+// sem ignore_errors : $resposta vale false para um 404/500, mesmo que o servidor tenha
+// respondido
 ```
 
 Consequência direta em uma conversão "valor de retorno → exceção" como a vista acima (`if ($resposta === false) { throw ... }`): com `ignore_errors => true`, esse teste não é mais acionado **de forma alguma** para um erro HTTP (4xx/5xx): apenas para uma falha de comunicação mais radical (servidor inacessível, DNS não resolve, timeout de rede, um caso em que PHP não recebe nada, nem mesmo cabeçalhos).

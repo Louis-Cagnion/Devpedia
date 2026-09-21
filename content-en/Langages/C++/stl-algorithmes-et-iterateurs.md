@@ -4,7 +4,7 @@ order: 9
 
 # STL: Iterators, Algorithms, and Lambdas
 
-An **iterator** is an abstraction that allows you to iterate over any STL container (see the dedicated chapter) in the same way, whether it is a `vector` (contiguous array) or a `list` (linked list): the iteration code remains the same, even if the underlying structure is radically different.
+An **iterator** is an abstraction that allows you to iterate over any [STL container](/?c=langages-de-programmation&s=cpp&p=stl-conteneurs) in the same way, whether it is a `vector` (contiguous array) or a `list` (linked list): the iteration code remains the same, even if the underlying structure is radically different.
 
 ## The Principle of the Iterator
 
@@ -13,7 +13,9 @@ std::vector<int> numbers = {1, 2, 3};
 
 std::vector<int>::iterator it = numbers.begin();
 while (it != numbers.end()) {
-    std::cout << *it << " ";   // "*it" dereferences the iterator, just like a pointer (see the relevant chapter, under the C section)
+    // "*it" dereferences the iterator, just like a pointer (see the relevant chapter, under
+    // the C section)
+    std::cout << *it << " ";
     ++it;
 }
 ```
@@ -64,7 +66,8 @@ std::cout << carre(5);   // 25
 
 ```cpp
 int seuil = 3;
-auto estAuDessusDuSeuil = [seuil](int x) { return x > seuil; };   // "threshold" capture by value
+// "threshold" capture by value
+auto estAuDessusDuSeuil = [seuil](int x) { return x > seuil; };
 
 int compte = std::count_if(numbers.begin(), numbers.end(), estAuDessusDuSeuil);
 ```

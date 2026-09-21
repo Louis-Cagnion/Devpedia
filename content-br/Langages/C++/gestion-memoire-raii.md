@@ -16,10 +16,11 @@ public:
     GerenciadorArquivo(const std::string &caminho) {
         arquivo.open(caminho);
         if (!arquivo.is_open()) {
-            throw std::runtime_error("Impossivel abrir: " + caminho); // veja As excecoes
+            throw std::runtime_error("Impossível abrir: " + caminho); // veja As exceções
         }
     }
-    ~GerenciadorArquivo() { arquivo.close(); }   // chamado automaticamente, mesmo em caso de excecao!
+    // chamado automaticamente, mesmo em caso de exceção!
+    ~GerenciadorArquivo() { arquivo.close(); }
 private:
     std::ifstream arquivo;
 };
@@ -27,7 +28,7 @@ private:
 void processarArquivo() {
     GerenciadorArquivo ga("dados.txt");
     // ... usar ga ...
-}   // <- aqui, ~GerenciadorArquivo() executa automaticamente: o arquivo e fechado, garantido
+}   // <- aqui, ~GerenciadorArquivo() executa automaticamente: o arquivo é fechado, garantido
 ```
 
 > **Nota:** ao contrário de um simples `close()` chamado manualmente ao fim da função, RAII garante a liberação mesmo se uma exceção interromper a função no meio: o destrutor executa durante o "desenrolar da pilha" (*stack unwinding*) causado pela exceção, onde uma chamada manual seria simplesmente pulada.
@@ -35,11 +36,12 @@ void processarArquivo() {
 ## `new`/`delete`: a versão C++ de `malloc`/`free`
 
 ```cpp
-int *p = new int(42);  // aloca E inicializa em uma unica operacao
+int *p = new int(42);  // aloca E inicializa em uma única operação
 delete p;              // libera
 
 int *array = new int[10];  // aloca um array dinamico
-delete[] array;             // "[]" obrigatorio para liberar um array, senao comportamento indefinido
+// "[]" obrigatório para liberar um array, senão comportamento indefinido
+delete[] array;
 ```
 
 `new`/`delete` substituem `malloc`/`free`, mas sofrem exatamente os mesmos riscos (esquecimento de `delete`, `delete` duplo, *use-after-free*, veja [O gerenciamento de memória](/?c=langages-de-programmation&s=c&p=memoire) em C): é por isso que em C++ moderno, eles raramente são usados **diretamente**.
@@ -54,9 +56,9 @@ Um ponteiro inteligente aplica RAII à própria gestão de memória: ele **é** 
 #include <memory>
 
 std::unique_ptr<int> p = std::make_unique<int>(42);
-std::cout << *p;   // 42 -> desreferencia como um ponteiro bruto
+std::cout << *p;   // 42 -> desreferência como um ponteiro bruto
 
-// NAO precisa de delete: quando p sai de escopo, a memoria e liberada automaticamente
+// NÃO precisa de delete: quando p sai de escopo, a memória é liberada automaticamente
 ```
 
 Um `unique_ptr` só pode ter um **único** proprietário; copiá-lo é proibido (erro de compilação), apenas o deslocamento (`std::move`) é possível, o que transfere a propriedade de um `unique_ptr` para outro:
@@ -72,22 +74,12 @@ std::unique_ptr<int> p2 = std::move(p1);   // p2 se torna proprietario, p1 se to
 std::shared_ptr<int> p1 = std::make_shared<int>(42);
 std::shared_ptr<int> p2 = p1;   // OK, copia permitida: p1 E p2 compartilham o mesmo recurso
 
-// a memoria so e liberada quando o ULTIMO shared_ptr que a referencia e destruido
+// a memória só é liberada quando o último shared_ptr que a referência é destruído
 ```
 
 Cada `shared_ptr` incrementa um contador de referências compartilhado; o recurso só é liberado automaticamente quando esse contador chega a zero.
 
 > **Nota:** `shared_ptr` tem um custo (o contador de referências, atualizado de forma **thread-safe**: sem risco de [race condition](/?c=langages-de-programmation&s=c&p=threads) se várias threads o modificarem ao mesmo tempo) superior ao `unique_ptr`: reservado para os casos em que um recurso realmente tem vários proprietários legítimos, não por padrão.
-
-## Resumo
-
-| | `new`/`delete` bruto | `unique_ptr` | `shared_ptr` |
-|---|---|---|---|
-| Liberação automática | Não | Sim | Sim |
-| Número de proprietários | N/A | Apenas um | Vários |
-| Custo | Mínimo | Quase nulo (sem sobrecusto na execução) | Contagem de referências (leve sobrecusto) |
-
-> **Boa prática de C++ moderno:** nunca usar `new`/`delete` diretamente em código aplicativo; preferir sistematicamente `unique_ptr` (por padrão) ou `shared_ptr` (se o compartilhamento for realmente necessário), para se beneficiar de RAII sem precisar pensar nisso a cada vez.
 
 ---
 

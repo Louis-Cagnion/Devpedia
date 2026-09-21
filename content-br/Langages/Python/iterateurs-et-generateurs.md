@@ -17,7 +17,7 @@ while True:
         elemento = next(iterador)  # chama iterador.__next__()
     except StopIteration:
         break
-    # ... corpo do laco com "elemento" ...
+    # ... corpo do laço com "elemento" ...
 ```
 
 Um objeto é **iterável** se implementa `__iter__()` (retorna um iterador). Um **iterador** implementa `__next__()` (retorna o elemento seguinte, ou lança `StopIteration` quando não há mais nenhum).
@@ -64,11 +64,11 @@ for numero in contador(5):
 
 ```python
 def quadrados_lista(n):
-    return [x ** 2 for x in range(n)]   # calcula e armazena TUDO na memoria, de uma vez
+    return [x ** 2 for x in range(n)]   # calcula e armazena TUDO na memória, de uma vez
 
 def quadrados_gerador(n):
     for x in range(n):
-        yield x ** 2                     # calcula UM UNICO elemento por vez, sob demanda
+        yield x ** 2                     # calcula UM Único elemento por vez, sob demanda
 ```
 
 Para `n = 10_000_000`, `quadrados_lista()` aloca uma lista de 10 milhões de elementos na memória **antes** de começar a usá-los. `quadrados_gerador()` produz apenas um elemento por vez, consumido e depois esquecido: a memória usada permanece constante, seja qual for o tamanho de `n`.
@@ -81,7 +81,7 @@ Equivalente de uma compreensão de lista, mas preguiçosa: substituir os colchet
 
 ```python
 quadrados = (x ** 2 for x in range(10))       # gerador, nada foi calculado ainda
-lista_quadrados = [x ** 2 for x in range(10)]  # lista, tudo e calculado imediatamente
+lista_quadrados = [x ** 2 for x in range(10)]  # lista, tudo é calculado imediatamente
 
 sum(x ** 2 for x in range(1000000))    # calcula a soma SEM nunca armazenar os 1M de valores
 ```
@@ -96,9 +96,9 @@ iterador = iter([1, 2, 3])
 next(iterador)              # 1
 next(iterador)              # 2
 next(iterador)              # 3
-next(iterador)              # StopIteration: nao ha mais nada a produzir
+next(iterador)              # StopIteration: não há mais nada a produzir
 
-next(iterador, "esgotado")  # "esgotado" -> forma de dois argumentos: sem excecao se esgotado
+next(iterador, "esgotado")  # "esgotado" -> forma de dois argumentos: sem exceção se esgotado
 ```
 
 `next(iterable, padrao)` retorna `padrao` em vez de lançar `StopIteration` quando o iterador não tem mais nada a produzir. Combinado com uma expressão geradora filtrada, isso dá uma forma concisa de obter o primeiro elemento que atende a uma condição, com um valor de reserva caso nenhum atenda:
@@ -110,7 +110,7 @@ primeiro_par = next((x for x in numeros if x % 2 == 0), None)
 # 8 -> primeiro elemento par encontrado
 
 primeiro_negativo = next((x for x in numeros if x < 0), None)
-# None -> nenhum elemento corresponde, o valor de reserva e retornado
+# None -> nenhum elemento corresponde, o valor de reserva é retornado
 ```
 
 > **Boa prática:** preferir `next((x for x in colecao if condicao), padrao)` a um laço `for` manual com `break`, ou a `[x for x in colecao if condicao][0]` (que constrói toda a lista filtrada antes de manter apenas o primeiro elemento, e lança um `IndexError` se estiver vazia em vez de retornar um valor de reserva).
@@ -125,14 +125,15 @@ Um gerador às vezes dá a impressão de "fazer duas coisas ao mesmo tempo" (o c
 def tarefas():
     print("Iniciando")
     yield "A"
-    print("Retomando apos A")
+    print("Retomando após A")
     yield "B"
 
 t = tarefas()
 print("Antes do primeiro next")
-print(next(t))     # "Iniciando" e exibido AQUI, no momento da chamada, nao antes, nao em segundo plano
+# "Iniciando" é exibido AQUI, no momento da chamada, não antes, não em segundo plano
+print(next(t))
 print("Antes do segundo next")
-print(next(t))     # "Retomando apos A" e exibido AQUI, nunca antes
+print(next(t))     # "Retomando após A" é exibido AQUI, nunca antes
 ```
 
 A ordem de exibição é **inteiramente determinística** e reproduzível a cada execução, ao contrário de duas threads independentes, cuja ordem de execução relativa não é previsível sem sincronização explícita (mutex, `pthread_join`...). É por isso que se fala em **corrotina** em vez de paralelismo para descrever `yield`: a função "coopera" com seu chamador devolvendo-lhe explicitamente o controle a cada `yield`, em vez de ser interrompida à força por um escalonador como faria uma thread.

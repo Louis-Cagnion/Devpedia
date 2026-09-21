@@ -13,7 +13,7 @@ As condições permitem executar um bloco de código apenas se uma expressão fo
     $idade = 18;
 
     if ($idade >= 18) {
-        echo "Voce e maior de idade.";
+        echo "Você e maior de idade.";
     }
 ?>
 ```
@@ -30,13 +30,13 @@ PHP oferece dois operadores de igualdade, e a escolha entre os dois não é cosm
 ```php
 <?php
     $a = "10";
-    $b = "1e1";   // notacao cientifica: vale 10
+    $b = "1e1";   // notação científica: vale 10
     $c = 10;
 
-    var_dump($a == $b);   // true  -> as duas strings sao numericas: 10 == 10
-    var_dump($a === $b);  // false -> mesmo tipo (string) mas conteudo literal diferente
+    var_dump($a == $b);   // true  -> as duas strings são numéricas: 10 == 10
+    var_dump($a === $b);  // false -> mesmo tipo (string) mas conteúdo literal diferente
     var_dump($a == $c);   // true  -> "10" convertida em inteiro
-    var_dump($a === $c);  // false -> string e int sao tipos diferentes
+    var_dump($a === $c);  // false -> string e int são tipos diferentes
 ?>
 ```
 
@@ -57,9 +57,9 @@ O bloco `else` permite executar código quando a condição do `if` é falsa:
     $idade = 16;
 
     if ($idade >= 18) {
-        echo "Voce e maior de idade.";
+        echo "Você e maior de idade.";
     } else {
-        echo "Voce e menor de idade.";
+        echo "Você e menor de idade.";
     }
 ?>
 ```
@@ -73,9 +73,9 @@ Para testar várias condições em sequência, usa-se `elseif`:
     $nota = 12;
 
     if ($nota >= 16) {
-        echo "Mencao Otimo";
+        echo "Menção Otimo";
     } elseif ($nota >= 14) {
-        echo "Mencao Bom";
+        echo "Menção Bom";
     } elseif ($nota >= 10) {
         echo "Aprovado";
     } else {

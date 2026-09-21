@@ -12,14 +12,14 @@ Essa natureza particular dá às estruturas de linguagem algumas liberdades de e
 
 ```php
 <?php
-    // Os parenteses sao opcionais
+    // Os parenteses são opcionais
     include "boasvindas.php";
     include("boasvindas.php"); // equivalente
 
-    // echo pode receber varios valores separados por virgulas
+    // echo pode receber vários valores separados por virgulas
     echo "Ola ", $nome, "!";
 
-    // print sempre retorna 1, e portanto pode ser usado em uma expressao
+    // print sempre retorna 1, e portanto pode ser usado em uma expressão
     $resultado = print "Hello"; // exibe "Hello", depois $resultado = 1
 ?>
 ```
@@ -32,8 +32,8 @@ As estruturas de linguagem são tratadas pelo PHP no momento da análise do cód
 
 ```php
 <?php
-    $f = strlen;  // ❌ nao funciona assim para funcoes, exceto via string/callable
-    $f = "echo";  // ❌ impossivel chamar echo assim, nao e uma funcao
+    $f = strlen;  // ❌ não funciona assim para funções, exceto via string/callable
+    $f = "echo";  // ❌ impossível chamar echo assim, não é uma função
 ?>
 ```
 

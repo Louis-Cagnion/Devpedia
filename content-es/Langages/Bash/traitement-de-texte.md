@@ -14,10 +14,14 @@ grep -i "error" archivo.log          # insensible a mayúsculas/minúsculas (-i)
 grep -v "error" archivo.log          # inverso: muestra las líneas que NO contienen "error"
 grep -r "TODO" .                     # búsqueda recursiva en todos los archivos de una carpeta
 grep -n "error" archivo.log          # también muestra el número de línea
-grep -c "error" archivo.log          # cuenta el número de líneas correspondientes, sin mostrarlas
-grep -E "error|warning" archivo.log  # -E activa las regex extendidas (cf. capítulo sobre regex)
-grep -l "TODO" *.md                  # muestra solo los NOMBRES de los archivos que contienen el patrón
-grep -q "TODO" *.md                  # no muestra nada: sirve únicamente para probar la presencia (ver más abajo)
+# cuenta el número de líneas correspondientes, sin mostrarlas
+grep -c "error" archivo.log
+# -E activa las regex extendidas (cf. capítulo sobre regex)
+grep -E "error|warning" archivo.log
+# muestra solo los NOMBRES de los archivos que contienen el patrón
+grep -l "TODO" *.md
+# no muestra nada: sirve únicamente para probar la presencia (ver más abajo)
+grep -q "TODO" *.md
 ```
 
 Como muchos comandos Unix, estas banderas son iniciales de palabras en inglés más que letras arbitrarias: `-i` = *ignore case*, `-v` = *invert*, `-r` = *recursive*, `-n` = *line number*, `-c` = *count*, `-E` = *extended (regex)*, `-l` = *files with matches (list)*, `-q` = *quiet*. Una vez conocidas estas palabras, recordar la bandera se vuelve natural: este principio se repite en la mayoría de los comandos de este capítulo y del siguiente.
@@ -65,7 +69,8 @@ Con `-q`, `grep` se detiene en la primera coincidencia y no muestra nada: es la 
 Un comando `sed` se descompone en dos partes: una **dirección** opcional (qué líneas afectar) y un **comando** a aplicarles.
 
 ```bash
-sed 's/antiguo/nuevo/' archivo.txt     # sin dirección -> el comando se aplica a TODAS las líneas
+# sin dirección -> el comando se aplica a TODAS las líneas
+sed 's/antiguo/nuevo/' archivo.txt
 sed '3s/antiguo/nuevo/' archivo.txt    # dirección "3" -> solo la línea 3
 sed '2,4s/antiguo/nuevo/' archivo.txt  # dirección "2,4" -> únicamente las líneas 2 a 4
 ```
@@ -73,15 +78,19 @@ sed '2,4s/antiguo/nuevo/' archivo.txt  # dirección "2,4" -> únicamente las lí
 El comando más usado es `s/patron/reemplazo/` (la "s" de *substitute*): busca `patron` (una [regex](/?c=domain-specific-languages-dsl&p=regex)) y lo reemplaza por `reemplazo`. Por defecto, `sed` solo reemplaza la **primera** aparición encontrada en cada línea, de ahí la bandera `g` para tratar también las siguientes:
 
 ```bash
-sed 's/antiguo/nuevo/' archivo.txt      # reemplaza la 1ª aparición por línea, muestra el resultado
-sed 's/antiguo/nuevo/g' archivo.txt     # 'g' (global): reemplaza TODAS las apariciones de cada línea
-sed -i 's/antiguo/nuevo/g' archivo.txt  # -i: modifica el archivo directamente (in place), sin mostrar nada
+# reemplaza la 1ª aparición por línea, muestra el resultado
+sed 's/antiguo/nuevo/' archivo.txt
+# 'g' (global): reemplaza TODAS las apariciones de cada línea
+sed 's/antiguo/nuevo/g' archivo.txt
+# -i: modifica el archivo directamente (in place), sin mostrar nada
+sed -i 's/antiguo/nuevo/g' archivo.txt
 ```
 
 El otro comando frecuente es `p` (*print*), que muestra explícitamente una línea; combinado con `-n` (que desactiva la visualización automática de cada línea procesada), permite mostrar solo ciertas líneas en lugar de todo el archivo:
 
 ```bash
-sed -n '2,4p' archivo.txt   # -n: no muestra NADA por defecto; '2,4p': muestra explícitamente las líneas 2 a 4
+# -n: no muestra NADA por defecto; '2,4p': muestra explícitamente las líneas 2 a 4
+sed -n '2,4p' archivo.txt
 ```
 
 > **Nota:** sin `-n`, `sed '2,4p'` mostraría cada línea del archivo una vez (comportamiento por defecto), y las líneas 2 a 4 una segunda vez (a causa del `p`): `-n` y `p` funcionan casi siempre en pareja.
@@ -116,7 +125,8 @@ cut -c 1-5 archivo.txt       # extrae los caracteres 1 a 5 de cada línea
 
 ```bash
 sort archivo.txt            # orden alfabético
-sort -n numeros.txt         # orden numérico (indispensable para números, si no orden por cadena)
+# orden numérico (indispensable para números, si no orden por cadena)
+sort -n numeros.txt
 sort -r archivo.txt         # orden descendente
 sort archivo.txt | uniq     # elimina las líneas duplicadas CONSECUTIVAS solamente
 sort archivo.txt | uniq -c  # cuenta las apariciones de cada línea

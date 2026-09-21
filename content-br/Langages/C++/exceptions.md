@@ -11,7 +11,7 @@ C++ propõe um mecanismo de erros estruturado (`try`/`catch`/`throw`), uma alter
 ```cpp
 double dividir(double a, double b) {
     if (b == 0) {
-        throw std::runtime_error("Divisao por zero");
+        throw std::runtime_error("Divisão por zero");
     }
     return a / b;
 }
@@ -28,11 +28,11 @@ try {
 ```cpp
 #include <stdexcept>
 
-std::exception          // classe base de todas as excecoes padrao
-  ├── std::logic_error  // erro detectavel antes da execucao (ex: argumento invalido)
+std::exception          // classe base de todas as exceções padrão
+  ├── std::logic_error  // erro detectável antes da execução (ex: argumento inválido)
   │     ├── std::invalid_argument
   │     └── std::out_of_range
-  └── std::runtime_error       // erro detectavel apenas na execucao
+  └── std::runtime_error       // erro detectável apenas na execução
         ├── std::overflow_error
         └── std::underflow_error
 ```
@@ -58,7 +58,7 @@ try {
     sacar(100, 150);
 } catch (const SaldoInsuficienteException &e) {
     std::cout << e.what() << "\n";
-} catch (const std::exception &e) {   // rede de seguranca para qualquer outra excecao padrao
+} catch (const std::exception &e) {   // rede de segurança para qualquer outra exceção padrão
     std::cout << "Erro inesperado: " << e.what() << "\n";
 }
 ```
@@ -69,7 +69,7 @@ try {
 void processar() {
     GerenciadorArquivo ga("dados.txt");   // veja RAII e os ponteiros inteligentes
     throw std::runtime_error("Erro durante o processamento");
-}   // mesmo aqui, ~GerenciadorArquivo() executa ANTES que a excecao suba mais alto
+}   // mesmo aqui, ~GerenciadorArquivo() executa ANTES que a exceção suba mais alto
 ```
 
 Quando uma exceção é lançada, C++ "desenrola a pilha" (*stack unwinding*): cada objeto local ainda vivo tem seu destrutor chamado, na ordem inversa de sua criação, antes que a exceção continue subindo: é isso que garante que um recurso gerenciado por [RAII](/?c=langages-de-programmation&s=cpp&p=gestion-memoire-raii) é sempre liberado corretamente, mesmo em caso de erro imprevisto.
@@ -78,8 +78,8 @@ Quando uma exceção é lançada, C++ "desenrola a pilha" (*stack unwinding*): c
 
 ```cpp
 void funcaoSegura() noexcept {
-    // o compilador pode otimizar sabendo que nenhuma excecao sairia daqui
-    // se uma excecao escapar mesmo assim, o programa para imediatamente (std::terminate)
+    // o compilador pode otimizar sabendo que nenhuma exceção sairia daqui
+    // se uma exceção escapar mesmo assim, o programa para imediatamente (std::terminate)
 }
 ```
 

@@ -112,9 +112,12 @@ Le fichier `.service` décrit la commande à exécuter :
 Description=Sauvegarde nocturne des documents      # texte affiché dans les journaux/le statut
 
 [Service]
-Type=oneshot                                        # s'exécute une fois puis s'arrête (pas un service qui tourne en continu)
-WorkingDirectory=/home/user/scripts                 # dossier de travail avant de lancer la commande
-ExecStart=/usr/bin/python3 sauvegarde.py            # chemin absolu, même piège d'environnement minimal que cron
+# s'exécute une fois puis s'arrête (pas un service qui tourne en continu)
+Type=oneshot
+# dossier de travail avant de lancer la commande
+WorkingDirectory=/home/user/scripts
+# chemin absolu, même piège d'environnement minimal que cron
+ExecStart=/usr/bin/python3 sauvegarde.py
 ```
 
 Le fichier `.timer` décrit quand déclencher le service du même nom :
@@ -124,20 +127,28 @@ Le fichier `.timer` décrit quand déclencher le service du même nom :
 Description=Planifie sauvegarde.service tous les jours
 
 [Timer]
-OnCalendar=daily                                    # équivalent de @daily en cron
-Persistent=true                                     # rattrape l'exécution manquée si la machine était éteinte (voir plus bas)
+# équivalent de @daily en cron
+OnCalendar=daily
+# rattrape l'exécution manquée si la machine était éteinte (voir plus bas)
+Persistent=true
 
 [Install]
-WantedBy=timers.target                              # nécessaire pour que "enable" active bien le timer
+# nécessaire pour que "enable" active bien le timer
+WantedBy=timers.target
 ```
 
 Les deux fichiers vont dans `/etc/systemd/system/` (portée système, nécessite les droits root) ou dans `~/.config/systemd/user/` (portée utilisateur, voir plus bas). Une fois en place :
 
 ```bash
-systemctl daemon-reload              # relit les fichiers d'unité après une création/modification
-systemctl enable --now sauvegarde.timer   # active le timer au démarrage ET le démarre immédiatement
-systemctl list-timers                # liste les timers actifs et leur prochaine exécution
-journalctl -u sauvegarde.service     # consulte les journaux de ce service (remplace la redirection manuelle vers un fichier de log)
+# relit les fichiers d'unité après une création/modification
+systemctl daemon-reload
+# active le timer au démarrage ET le démarre immédiatement
+systemctl enable --now sauvegarde.timer
+# liste les timers actifs et leur prochaine exécution
+systemctl list-timers
+# consulte les journaux de ce service (remplace la redirection manuelle
+# vers un fichier de log)
+journalctl -u sauvegarde.service
 ```
 
 ### `Persistent=true` : le rattrapage n'est pas automatique
@@ -156,7 +167,8 @@ Un timer placé dans `/etc/systemd/system/` tourne indépendamment de toute sess
 Cette dernière limite compte pour le rattrapage : un timer `--user` avec `Persistent=true` ne peut rattraper une exécution manquée qu'à la prochaine ouverture de session, pas au simple démarrage de la machine, si personne ne s'y connecte tout de suite. [`loginctl`](https://www.freedesktop.org/software/systemd/man/loginctl.html) permet de lever cette limite pour un utilisateur donné :
 
 ```bash
-loginctl enable-linger user   # l'instance systemd --user de "user" démarre dès le boot, session ouverte ou non
+# l'instance systemd --user de "user" démarre dès le boot, session ouverte ou non
+loginctl enable-linger user
 ```
 
 ### `cron` ou `systemd timer` ?

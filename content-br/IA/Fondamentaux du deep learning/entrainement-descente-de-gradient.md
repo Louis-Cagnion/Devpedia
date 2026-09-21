@@ -77,8 +77,10 @@ Sentido da retropropagação:           Entrada <- Camada 1 <- Camada 2 <- Saíd
 ## Épocas, lotes e descida do gradiente estocástica
 
 ```python
-for epoca in range(numero_epocas):                     # uma "época" = uma passagem completa por TODOS os dados
-    for lote in dados_em_lotes(dados, tamanho_lote=32):  # um "lote"/batch = um pequeno subconjunto
+# uma "época" = uma passagem completa por TODOS os dados
+for epoca in range(numero_epocas):
+    # um "lote"/batch = um pequeno subconjunto
+    for lote in dados_em_lotes(dados, tamanho_lote=32):
         predicoes = modelo.forward(lote)
         perda = calcular_perda(predicoes, valores_reais)
         gradientes = retropropagar(perda)

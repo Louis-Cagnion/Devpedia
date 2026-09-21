@@ -17,7 +17,8 @@ const observer = new IntersectionObserver((entries) => {
     if (entries[0].isIntersecting) {   // the sentinel just entered the visible area
         loadNextPage();
     }
-}, { rootMargin: '200px' });           // triggers 200px BEFORE the sentinel is actually visible
+// triggers 200px BEFORE the sentinel is actually visible
+}, { rootMargin: '200px' });
 
 observer.observe(sentinel);
 ```
@@ -53,7 +54,8 @@ const table = document.querySelector('.wide-table');
 
 const observer = new ResizeObserver((entries) => {
     const width = entries[0].contentRect.width;
-    table.classList.toggle('compact-mode', width < 600);   // switches as soon as space runs short
+    // switches as soon as space runs short
+    table.classList.toggle('compact-mode', width < 600);
 });
 
 observer.observe(table);

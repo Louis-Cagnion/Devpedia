@@ -14,7 +14,7 @@ Em C, todo valor **não nulo** é considerado verdadeiro; apenas o valor `0` é 
 int idade = 18;
 
 if (idade >= 18) {
-    printf("Voce e maior de idade.\n");
+    printf("Você e maior de idade.\n");
 }
 ```
 
@@ -24,9 +24,9 @@ if (idade >= 18) {
 int nota = 12;
 
 if (nota >= 16) {
-    printf("Mencao Otimo\n");
+    printf("Menção Otimo\n");
 } else if (nota >= 14) {
-    printf("Mencao Bom\n");
+    printf("Menção Bom\n");
 } else if (nota >= 10) {
     printf("Aprovado\n");
 } else {
@@ -74,7 +74,8 @@ switch (dia) {
 switch (dia) {
     case 6:
     case 7:
-        printf("Fim de semana\n"); // sem break entre 6 e 7: os dois casos compartilham esse codigo
+        // sem break entre 6 e 7: os dois casos compartilham esse código
+        printf("Fim de semana\n");
         break;
     default:
         printf("Dia de semana\n");

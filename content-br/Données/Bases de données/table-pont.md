@@ -37,7 +37,7 @@ CREATE TABLE dim_promocao (
 
 CREATE TABLE ponte_vendas_promocoes (
     id_venda     INT,   -- chave estrangeira -> fato_vendas
-    id_promocao  INT    -- chave estrangeira -> dim_promocao
+    id_promocao  INT    -- chave estrangeira -> dim_promoção
 );
 ```
 
@@ -56,7 +56,8 @@ id_venda | id_promocao
 Fazer um `JOIN` ingênuo entre `fato_vendas` e `ponte_vendas_promocoes` produz uma linha por associação, não uma linha por venda. Uma venda de R$100 com duas promoções aparece duas vezes no resultado: somá-la diretamente dobra o valor.
 
 ```sql
--- armadilha: essa consulta conta a venda 1 duas vezes (uma por promocao), logo R$200 em vez de R$100
+-- armadilha: essa consulta conta a venda 1 duas vezes (uma por promoção), logo R$200 em vez de
+-- R$100
 SELECT SUM(f.valor)
 FROM fato_vendas f
 JOIN ponte_vendas_promocoes p ON p.id_venda = f.id_venda;
@@ -70,10 +71,12 @@ JOIN ponte_vendas_promocoes p ON p.id_venda = f.id_venda;
 CREATE TABLE ponte_vendas_promocoes (
     id_venda     INT,
     id_promocao  INT,
-    peso         DECIMAL(4, 2)   -- parte do valor atribuida a essa promocao (soma = 1 por venda)
+    -- parte do valor atribuída a essa promoção (soma = 1 por venda)
+    peso         DECIMAL(4, 2)
 );
 
--- com a ponderacao, a soma volta a ficar correta: R$100 divididos em R$50 + R$50, nao R$100 + R$100
+-- com a ponderação, a soma volta a ficar correta: R$100 divididos em R$50 + R$50, não R$100 +
+-- R$100
 SELECT SUM(f.valor * p.peso)
 FROM fato_vendas f
 JOIN ponte_vendas_promocoes p ON p.id_venda = f.id_venda;

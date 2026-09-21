@@ -15,7 +15,8 @@ nom: str = "Jean"
 def addition(a: int, b: int) -> int:
     return a + b
 
-addition("deux", "trois")   # AUCUNE erreur au lancement : Python exécute quand même, sans vérifier les types
+# AUCUNE erreur au lancement : Python exécute quand même, sans vérifier les types
+addition("deux", "trois")
 ```
 
 > **Note :** contrairement à [PHP](/?c=langages-de-programmation&s=php&p=php) où `function f(int $x): int` lève un `TypeError` si on passe autre chose qu'un entier, les annotations Python sont de la pure documentation pour un humain (ou un outil externe) : l'interpréteur ne les fait respecter à aucun moment.
@@ -83,7 +84,8 @@ Une **forward reference** est une annotation de type écrite entre guillemets, q
 class Noeud:
     def __init__(self, valeur: int, suivant: "Noeud | None" = None):
         self.valeur = valeur
-        self.suivant = suivant   # "Noeud" n'existe pas encore tant que sa propre définition n'est pas terminée
+        # "Noeud" n'existe pas encore tant que sa propre définition n'est pas terminée
+        self.suivant = suivant
 ```
 
 > **Piège :** sans les guillemets (`suivant: Noeud | None`), Python lève une `NameError` immédiate à la lecture du fichier : une annotation de fonction est évaluée dès la définition de celle-ci, pas seulement lue par un outil externe comme `mypy`. Les guillemets la transforment en simple texte, résolu seulement quand un outil en a besoin.

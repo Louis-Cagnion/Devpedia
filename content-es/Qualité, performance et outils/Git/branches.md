@@ -9,7 +9,8 @@ Una **rama** es simplemente un puntero móvil hacia un commit: permite hacer evo
 ## Crear y cambiar de rama
 
 ```bash
-git branch                            # lista las ramas existentes, la actual esta marcada con un *
+# lista las ramas existentes, la actual esta marcada con un *
+git branch
 git branch nueva-funcionalidad        # crea una nueva rama, sin cambiar a ella
 git checkout nueva-funcionalidad      # cambia a esta rama
 git checkout -b nueva-funcionalidad   # atajo: crea Y cambia en un solo comando
@@ -65,7 +66,7 @@ Despues: main:     A -- B -- E ------- F (merge commit, dos padres)
 
 ```bash
 git branch -d feature  # elimina, solo si la rama ya fue fusionada (seguridad)
-git branch -D feature  # fuerza la eliminacion, aunque nunca haya sido fusionada
+git branch -D feature  # fuerza la eliminación, aunque nunca haya sido fusionada
 ```
 
 > **Nota:** `git branch -D` en una rama nunca fusionada puede hacer perder el acceso a commits que ya no existen en ningún otro lugar. Generalmente siguen siendo recuperables por un tiempo vía `git reflog` (véase [Deshacer cambios y navegar por el historial](/?c=git&p=annuler-et-historique)), pero es mejor verificar con `git log feature` (o una fusión/`git branch -d`) antes de forzar la eliminación.

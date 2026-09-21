@@ -44,7 +44,8 @@ donnees["age"]           # une seule colonne -> une Series
 donnees[["nom", "age"]]  # plusieurs colonnes -> un DataFrame
 
 donnees.loc[0]         # ligne d'INDEX 0 (l'index affiché à gauche du tableau)
-donnees.iloc[0]        # ligne de POSITION 0 (toujours la première, même si l'index a été modifié)
+# ligne de POSITION 0 (toujours la première, même si l'index a été modifié)
+donnees.iloc[0]
 donnees.loc[0, "nom"]  # valeur précise : ligne 0, colonne "nom"
 ```
 
@@ -57,7 +58,8 @@ donnees[donnees["age"] > 25]
 # ne garde que les lignes où la condition est vraie -> équivalent d'un "WHERE" en SQL
 
 donnees[(donnees["age"] > 20) & (donnees["ville"] == "Lyon")]
-# combiner plusieurs conditions : & (et), | (ou) -- PAS "and"/"or", réservés aux booléens simples
+# combiner plusieurs conditions : & (et), | (ou) -- PAS "and"/"or", réservés aux booléens
+# simples
 ```
 
 ## `groupby` : agréger par catégorie
@@ -91,7 +93,8 @@ pd.merge(commandes, clients, left_on="client_id", right_on="id")
 ## Ajouter/modifier une colonne
 
 ```python
-donnees["age_dans_10_ans"] = donnees["age"] + 10   # nouvelle colonne, calculée à partir d'une autre
+# nouvelle colonne, calculée à partir d'une autre
+donnees["age_dans_10_ans"] = donnees["age"] + 10
 
 donnees["categorie"] = donnees["age"].apply(lambda age: "jeune" if age < 30 else "senior")
 # apply() : exécute une fonction sur chaque valeur de la colonne

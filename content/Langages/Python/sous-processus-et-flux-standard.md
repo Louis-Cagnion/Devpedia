@@ -12,14 +12,17 @@ Un programme Python peut aussi bien lancer un AUTRE programme (`subprocess`) que
 import subprocess
 
 resultat = subprocess.run(["ls", "-la"], capture_output=True, text=True)  # BLOQUANT
-print(resultat.returncode)                                                # 0 = succès, autre valeur = échec
-print(resultat.stdout)                                                    # ce que le programme a affiché
+# 0 = succès, autre valeur = échec
+print(resultat.returncode)
+# ce que le programme a affiché
+print(resultat.stdout)
 ```
 
 `subprocess.run()` attend la fin du processus lancé avant de continuer.
 
 ```python
-processus = subprocess.Popen(["ls", "-la"])  # NON BLOQUANT : renvoie IMMÉDIATEMENT, le processus tourne à côté
+# NON BLOQUANT : renvoie IMMÉDIATEMENT, le processus tourne à côté
+processus = subprocess.Popen(["ls", "-la"])
 # ... faire autre chose pendant que "processus" s'exécute ...
 processus.wait()  # attend explicitement la fin, si besoin
 processus.poll()  # None si toujours en cours, sinon le code de retour
@@ -34,9 +37,12 @@ processus.poll()  # None si toujours en cours, sinon le code de retour
 ```python
 import sys
 
-sys.executable  # "/usr/bin/python3.12" ou "C:\...\python.exe" -> chemin ABSOLU de l'interpréteur qui exécute CE code
+# "/usr/bin/python3.12" ou "C:\...\python.exe" -> chemin ABSOLU de l'interpréteur qui exécute
+# CE code
+sys.executable
 
-subprocess.run([sys.executable, "autre_script.py"])  # relance un script avec le MÊME interpréteur/environnement
+# relance un script avec le MÊME interpréteur/environnement
+subprocess.run([sys.executable, "autre_script.py"])
 ```
 
 > **Bonne pratique :** utiliser `sys.executable` plutôt qu'un simple `"python"` codé en dur pour relancer un script Python : `"python"` pourrait pointer vers une toute autre installation (mauvaise version, mauvais [environnement virtuel](/?c=langages-de-programmation&s=python&p=modules-et-environnements)) selon la machine.
@@ -60,7 +66,8 @@ class FluxDouble:  # duplique chaque écriture vers deux destinations
         self.fichier_log.flush()
 
 log = open("execution.log", "a", encoding="utf-8")
-sys.stderr = FluxDouble(sys.stderr, log)  # remplace l'objet module par le double, sans toucher au reste du code
+# remplace l'objet module par le double, sans toucher au reste du code
+sys.stderr = FluxDouble(sys.stderr, log)
 
 print("Erreur", file=sys.stderr)  # s'affiche à l'écran ET s'écrit dans execution.log
 ```

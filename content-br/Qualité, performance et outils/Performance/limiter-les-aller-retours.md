@@ -25,11 +25,13 @@ Sobre 100 elementos, isso dá 300 trocas. A 30 ms por ida-e-volta, chega-se a 9 
 A correção consiste em mover o laço **para o lado onde estão os dados**, e fazer apenas uma única troca:
 
 ```python
-# 1 ida-e-volta, seja qual for o numero de anuncios
-cartoes = pagina.avaliar("""() => Array.from(document.querySelectorAll('article')).map(cartao => ({
+# 1 ida-e-volta, seja qual for o número de anuncios
+cartoes = pagina.avaliar(
+    """() => Array.from(document.querySelectorAll('article')).map(cartao => ({
     href: cartao.querySelector('a')?.getAttribute('href'),
     texto: cartao.innerText,
-}))""")
+}))"""
+)
 
 for cartao in cartoes:                      # processamento local, gratuito
     analisar(cartao["href"], cartao["texto"])

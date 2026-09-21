@@ -16,7 +16,8 @@ A **semaphore** is a protected counter, shared between threads or between proces
 
 sem_t semaphore;
 
-sem_init(&semaphore, 0, 3); // initial count of 3 (0 = shared between threads of the same process)
+// initial count of 3 (0 = shared between threads of the same process)
+sem_init(&semaphore, 0, 3);
 
 sem_wait(&semaphore); // decrements; blocks if already at 0
 // ... section that must not exceed 3 simultaneous accesses ...

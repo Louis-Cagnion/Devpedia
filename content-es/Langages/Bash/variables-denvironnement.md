@@ -10,7 +10,8 @@ Una variable de entorno es una variable transmitida automáticamente a los proce
 
 ```bash
 NOMBRE="Juan"  # variable de shell clásica: visible únicamente en este script/esta sesión
-export NOMBRE  # a partir de ahora, transmitida a los procesos hijos (otros scripts, comandos...)
+# a partir de ahora, transmitida a los procesos hijos (otros scripts, comandos...)
+export NOMBRE
 
 export EMAIL="juan@ejemplo.com"  # declaración y export en una sola línea
 ```

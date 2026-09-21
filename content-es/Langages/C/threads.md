@@ -70,7 +70,7 @@ void *incrementar(void *argumento)
 {
     for (int i = 0; i < 1000000; i++) {
         pthread_mutex_lock(&candado);
-        contador++;                    // un solo hilo a la vez puede ejecutar esta linea
+        contador++;                    // un solo hilo a la vez puede ejecutar esta línea
         pthread_mutex_unlock(&candado);
     }
     return NULL;

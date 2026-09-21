@@ -61,7 +61,7 @@ fallos = [nombre for nombre, proc in workers if proc.wait() != 0]
 resultados = fusionar(workers)
 
 if not resultados:
-    raise SystemExit("Ningun resultado recuperado: no se produjo nada.")
+    raise SystemExit("Ningún resultado recuperado: no se produjo nada.")
 if len(resultados) < esperado:
     advertir(f"{len(resultados)} resultados de {esperado} esperados")
 ```

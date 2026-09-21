@@ -26,7 +26,11 @@ Cada linha de acesso associa uma **identidade** (usuário ou grupo) a um **direi
 
 ```powershell
 $acl = Get-Acl arquivo.txt
-$regra = New-Object System.Security.AccessControl.FileSystemAccessRule("DESKTOP\joao", "ReadAndExecute", "Allow")
+$regra = New-Object System.Security.AccessControl.FileSystemAccessRule(
+    "DESKTOP\joao",
+    "ReadAndExecute",
+    "Allow"
+)
 $acl.SetAccessRule($regra)
 Set-Acl arquivo.txt $acl
 ```
@@ -38,21 +42,23 @@ Set-Acl arquivo.txt $acl
 Mais próximo em espírito de `chmod`/`chown`, `icacls` continua muito usado na prática por sua concisão:
 
 ```powershell
-icacls arquivo.txt /grant "joao:(R,W)"  # concede leitura+escrita ao usuario joao
-icacls arquivo.txt /remove "joao"       # remove todos os direitos explicitos de joao
+icacls arquivo.txt /grant "joao:(R,W)"  # concede leitura+escrita ao usuário joao
+icacls arquivo.txt /remove "joao"       # remove todos os direitos explícitos de joao
 ```
 
 ## Comandos básicos sobre arquivos
 
 ```powershell
-New-Item -ItemType Directory -Path diretorio       # cria um diretorio
-New-Item -ItemType Directory -Path a\b\c -Force    # cria toda a arvore de uma vez
+New-Item -ItemType Directory -Path diretorio       # cria um diretório
+New-Item -ItemType Directory -Path a\b\c -Force    # cria toda a árvore de uma vez
 New-Item -ItemType File -Path arquivo.txt          # cria um arquivo vazio
 Copy-Item origem.txt destino.txt                    # copia um arquivo
-Copy-Item -Recurse diretorio_origem diretorio_dest  # copia recursiva, necessaria para um diretorio
+# copia recursiva, necessária para um diretório
+Copy-Item -Recurse diretorio_origem diretorio_dest
 Move-Item antigo.txt novo.txt                       # move OU renomeia, como mv no Bash
-Remove-Item arquivo.txt                             # remove um arquivo (vai para a lixeira por padrao no explorador, mas nao aqui)
-Remove-Item -Recurse diretorio                      # remove um diretorio e todo seu conteudo
+# remove um arquivo (vai para a lixeira por padrão no explorador, mas não aqui)
+Remove-Item arquivo.txt
+Remove-Item -Recurse diretorio                      # remove um diretório e todo seu conteúdo
 ```
 
 > **Nota:** como `rm -rf` no Bash, `Remove-Item -Recurse -Force` é irreversível na linha de comando (ao contrário de uma exclusão via o explorador do Windows, que passa pela lixeira): um alvo mal direcionado pode excluir muito mais do que o previsto, sem confirmação nem recurso.
@@ -60,10 +66,15 @@ Remove-Item -Recurse diretorio                      # remove um diretorio e todo
 ## `Get-ChildItem -Recurse`: buscar arquivos (equivalente de `find`)
 
 ```powershell
-Get-ChildItem -Path . -Filter "*.txt" -Recurse                                                       # todos os arquivos .txt, recursivamente
-Get-ChildItem -Path C:\logs -Recurse | Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }  # modificados recentemente
-Get-ChildItem -Recurse -Directory -Filter "node_modules"                                             # todos os diretorios chamados "node_modules"
-Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item                                                 # encontra E exclui em uma unica cadeia
+# todos os arquivos .txt, recursivamente
+Get-ChildItem -Path . -Filter "*.txt" -Recurse
+# modificados recentemente
+Get-ChildItem -Path C:\logs -Recurse |
+    Where-Object { $_.LastWriteTime -gt (Get-Date).AddDays(-7) }
+# todos os diretórios chamados "node_modules"
+Get-ChildItem -Recurse -Directory -Filter "node_modules"
+# encontra E exclui em uma única cadeia
+Get-ChildItem -Recurse -Filter "*.tmp" | Remove-Item
 ```
 
 Veja também [Processamento de texto e objetos](/?c=shells&s=powershell&p=traitement-de-texte) (`Select-String`, `-replace`, `ConvertFrom-Json`) para ir mais longe na exploração do conteúdo desses arquivos.

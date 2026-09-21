@@ -74,11 +74,13 @@ void insertar(TablaHash *tabla, const char *clave, int valor)
 
     Entrada *nueva = malloc(sizeof(Entrada));
     if (nueva == NULL) {
-        return; // fallo de asignación (véase La gestión de la memoria): se renuncia a la inserción
+        // fallo de asignación (véase La gestión de la memoria): se renuncia a la inserción
+        return;
     }
     nueva->clave = strdup(clave);
     nueva->valor = valor;
-    nueva->siguiente = tabla->casillas[indice]; // inserción al principio de la lista de esa casilla
+    // inserción al principio de la lista de esa casilla
+    nueva->siguiente = tabla->casillas[indice];
     tabla->casillas[indice] = nueva;
 }
 ```

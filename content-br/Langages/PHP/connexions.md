@@ -90,7 +90,7 @@ PHP faz a ligação entre o visitante e seus dados graças a um identificador de
 
 ```php
 <?php
-    session_start(); // deve ser chamada antes de qualquer exibicao HTML, como setcookie()
+    session_start(); // deve ser chamada antes de qualquer exibição HTML, como setcookie()
 ?>
 ```
 
@@ -112,7 +112,7 @@ PHP faz a ligação entre o visitante e seus dados graças a um identificador de
     session_start();
 
     if (isset($_SESSION["user_id"])) {
-        echo "Conectado como usuario n." . $_SESSION["user_id"];
+        echo "Conectado como usuário n." . $_SESSION["user_id"];
     }
 ?>
 ```
@@ -126,7 +126,7 @@ PHP faz a ligação entre o visitante e seus dados graças a um identificador de
     session_start();
 
     unset($_SESSION["user_id"]);  // remove apenas esse dado
-    session_destroy();            // destroi toda a sessao (ex: ao desconectar)
+    session_destroy();            // destroi toda a sessão (ex: ao desconectar)
 ?>
 ```
 
@@ -148,9 +148,9 @@ O princípio:
     $token = bin2hex(random_bytes(32)); // token aleatorio (64 caracteres hexadecimais)
     $tokenHash = hash('sha256', $token);
 
-    // armazena-se $tokenHash no banco, ligado ao usuario (ex: coluna "remember_token")
+    // armazena-se $tokenHash no banco, ligado ao usuário (ex: coluna "remember_token")
 
-    // envia-se $token (nao hasheado) em um cookie seguro, de longa duracao
+    // envia-se $token (não hasheado) em um cookie seguro, de longa duração
     setcookie("remember_token", $token, time() + 60 * 60 * 24 * 30, "/", "", true, true);
 ?>
 ```
@@ -166,13 +166,13 @@ A cada visita, se a sessão estiver vazia mas o cookie `remember_token` existir,
     if (!isset($_SESSION["user_id"]) && isset($_COOKIE["remember_token"])) {
         $tokenHash = hash('sha256', $_COOKIE["remember_token"]);
 
-        // busca-se no banco um usuario cujo remember_token corresponda
+        // busca-se no banco um usuário cujo remember_token corresponda
         $stmt = $pdo->prepare("SELECT * FROM users WHERE remember_token = :token");
         $stmt->execute(['token' => $tokenHash]);
         $user = $stmt->fetch();
 
         if ($user) {
-            $_SESSION["user_id"] = $user["id"]; // reconecta o usuario
+            $_SESSION["user_id"] = $user["id"]; // reconecta o usuário
         }
     }
 ?>
@@ -216,7 +216,8 @@ O token de conexão visto acima é um segredo **opaco** (aleatório, sem signifi
 <?php
 function criarToken(string $dado, string $segredo): string
 {
-    $codificado = base64_encode($dado);                 // codificado, NAO cifrado: legivel se decodificado
+    // codificado, NÃO cifrado: legível se decodificado
+    $codificado = base64_encode($dado);
     $assinatura = hash_hmac('sha256', $codificado, $segredo);
     return $codificado . '.' . $assinatura;
 }
@@ -227,7 +228,7 @@ function verificarToken(string $token, string $segredo): ?string
     $esperado = hash_hmac('sha256', $codificado, $segredo);
 
     if (!hash_equals($esperado, $assinatura)) {
-        return null; // assinatura invalida -> dado rejeitado, mesmo que parecesse correto
+        return null; // assinatura inválida -> dado rejeitado, mesmo que parecesse correto
     }
     return base64_decode($codificado);
 }

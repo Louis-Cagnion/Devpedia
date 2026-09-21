@@ -127,16 +127,38 @@ window.addEventListener("popstate", () => {
 });
 
 /**
- * @brief Intercepts a plain click on an in-content cross-chapter link so it navigates through
- * the SPA router instead of triggering a full page reload. A click carrying a modifier key or a
+ * @brief Opens an external link the same way a native click would (respecting `target`/`rel`),
+ * via a throwaway anchor outside `.pageBody`: needed because a plain click no longer triggers a
+ * link's own default action once it sits inside a `contenteditable` ancestor (cf. pageBody, set
+ * up so its text stays caret-navigable character by character, links included).
+ *
+ * @param {HTMLAnchorElement} link
+ */
+function activateExternalLink(link) {
+    const proxy = createTag("a", {}, {href: link.href, target: link.target, rel: link.rel});
+    document.body.append(proxy);
+    proxy.click();
+    proxy.remove();
+}
+
+/**
+ * @brief Intercepts a plain click on any in-content link so it still activates despite
+ * `.pageBody` being `contenteditable` (cf. activateExternalLink): an in-content cross-chapter
+ * link (`.contentLink`) navigates through the SPA router instead of triggering a full page
+ * reload, anything else opens like a native click would. A click carrying a modifier key or a
  * non-primary button is left alone so "open in a new tab" still works.
  *
  * @param {HTMLElement} pageDiv
  */
 function attachContentLinkHandler(pageDiv) {
     pageDiv.addEventListener("click", (e) => {
-        const link = e.target.closest("a.contentLink");
+        const link = e.target.closest("a");
         if (!link || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (!link.classList.contains("contentLink")) {
+            e.preventDefault();
+            activateExternalLink(link);
+            return;
+        }
         const target = parseNavParams(link.href);
         if (!target || !navigateToTarget(target)) return;
         e.preventDefault();
@@ -507,6 +529,22 @@ function appendBottomChapterNav(pageDiv, pageId, previousChapter, nextChapter) {
 }
 
 /**
+ * @brief Makes a rendered markdown body navigable with a text caret (click to place it, arrow
+ * keys to move it, character by character through links too) like in a text editor, while
+ * forbidding any actual edit. `beforeinput` covers every content-changing path in one place
+ * (typing, IME, paste, cut, drag-move, delete), so no per-key handling is needed. Links keep
+ * activating on a plain click via attachContentLinkHandler(), since a contenteditable ancestor
+ * otherwise suppresses their own native click behavior.
+ *
+ * @param {HTMLElement} bodyDiv
+ */
+function makeBodyCaretNavigable(bodyDiv) {
+    bodyDiv.contentEditable = "true";
+    bodyDiv.spellcheck = false;
+    bodyDiv.addEventListener("beforeinput", (e) => e.preventDefault());
+}
+
+/**
  * @brief Renders a markdown page's full content (notice, breadcrumb, nav, body, chapter nav)
  * into a new page div and builds its reading plan.
  *
@@ -531,7 +569,10 @@ function generatePageContent(textInfos, pageId, withReturnButton, previousChapte
         pageDiv.append(breadcrumb);
     if (withReturnButton || previousChapter || nextChapter)
         createAppendPageNav(pageDiv, pageId, withReturnButton, previousChapter, nextChapter);
-    const outline = parseAppendText(pageDiv, pageId, text);
+    const bodyDiv = createTag("div", {class: "pageBody"});
+    pageDiv.append(bodyDiv);
+    const outline = parseAppendText(bodyDiv, pageId, text);
+    makeBodyCaretNavigable(bodyDiv);
     if (titleOverride) {
         const titleEl = pageDiv.querySelector(".pageTitle");
         if (titleEl)

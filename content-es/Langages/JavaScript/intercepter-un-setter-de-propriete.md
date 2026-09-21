@@ -27,7 +27,7 @@ Codigo existente, en cualquier parte del proyecto:
 `Object.defineProperty()` permite reemplazar el getter y/o el setter de una propiedad existente por una función personalizada. Aquí, solo el setter necesita interceptarse; el getter nativo se conserva tal cual:
 
 ```javascript
-// Recupera el getter/setter nativos ANTES de reemplazarlos, para poder llamarlos despues
+// Recupera el getter/setter nativos ANTES de reemplazarlos, para poder llamarlos después
 const propiedadNativa = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
 
 Object.defineProperty(miSelect, 'value', {
@@ -36,7 +36,7 @@ Object.defineProperty(miSelect, 'value', {
     },
     set(nuevoValor) {
         propiedadNativa.set.call(miSelect, nuevoValor);   // escribe realmente el valor
-        sincronizarVisualizacion();                         // + dispara la sincronizacion
+        sincronizarVisualizacion();                         // + dispara la sincronización
     },
     configurable: true,
 });

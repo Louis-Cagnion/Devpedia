@@ -257,7 +257,7 @@ Objectives: [...]  |  Constraints: [...]  |  Available resources: """[...]"""
 
 [2. Design]
 Validated framing: """[output of step 1]"""
--> Breakdown into sub-tasks, dependencies between them, overall architecture. Still with no coding.
+-> Breakdown into sub-tasks, dependencies between them, overall architecture, no coding.
 
 [3. Implementation plan]
 Validated design: """[output of step 2]"""

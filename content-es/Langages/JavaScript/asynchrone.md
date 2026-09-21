@@ -10,7 +10,8 @@ JavaScript se ejecuta en un **único hilo** (a diferencia de los [hilos](/?c=lan
 
 ```javascript
 console.log("1");
-setTimeout(() => console.log("2"), 0);   // incluso con 0 ms, se ejecuta DESPUÉS del resto del código síncrono
+// incluso con 0 ms, se ejecuta DESPUÉS del resto del código síncrono
+setTimeout(() => console.log("2"), 0);
 console.log("3");
 
 // Muestra: 1, 3, 2
@@ -77,7 +78,8 @@ Promise.all([
 
 ```javascript
 async function cargarUsuario(id) {
-    const respuesta = await fetch(`/api/usuarios/${id}`);   // "espera" la Promise, sin bloquear el hilo
+    // "espera" la Promise, sin bloquear el hilo
+    const respuesta = await fetch(`/api/usuarios/${id}`);
     const datos = await respuesta.json();
     return datos;
 }

@@ -18,7 +18,8 @@ This chapter covers two families of cross-cutting attributes, usable on almost a
 const carte = document.querySelector("div");
 carte.dataset.id;       // "42"
 carte.dataset.role;     // "carte-produit"
-carte.dataset.enStock;  // "true" -> "data-en-stock" becomes "enStock" in camelCase on the JS side
+// "true" -> "data-en-stock" becomes "enStock" in camelCase on the JS side
+carte.dataset.enStock;
 ```
 
 `data-*` lets you attach data to an HTML element, retrievable in [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript) via `.dataset`: a standard way to pass information from HTML to JavaScript, with no need for global variables or extra requests.

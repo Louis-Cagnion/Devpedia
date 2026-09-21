@@ -12,10 +12,10 @@ Um arquivo **.xlsx** (planilha Excel) não é uma simples grade de valores: cada
 import openpyxl
 
 pasta = openpyxl.load_workbook("relatorio.xlsx")
-planilha = pasta.active   # a planilha ativa por padrao, a ultima aberta no Excel
+planilha = pasta.active   # a planilha ativa por padrão, a última aberta no Excel
 
 for linha in planilha.iter_rows(min_row=2, values_only=True):
-    print(linha)   # retorna a STRING DA FORMULA ("=A1+B1"), nao o resultado calculado
+    print(linha)   # retorna a STRING DA FORMULA ("=A1+B1"), não o resultado calculado
 ```
 
 ```python
@@ -23,7 +23,7 @@ pasta = openpyxl.load_workbook("relatorio.xlsx", data_only=True)
 planilha = pasta.active
 
 for linha in planilha.iter_rows(min_row=2, values_only=True):
-    print(linha)   # agora retorna o VALOR EM CACHE, nao a formula
+    print(linha)   # agora retorna o VALOR EM CACHE, não a formula
 ```
 
 | | Sem `data_only` (padrão) | Com `data_only=True` |
@@ -40,7 +40,7 @@ for linha in planilha.iter_rows(min_row=2, values_only=True):
 ```python
 pasta = openpyxl.load_workbook("relatorio.xlsx", data_only=True)
 print(pasta.sheetnames)              # lista dos nomes de planilha da pasta de trabalho
-planilha = pasta["Vendas 2025"]      # acessar uma planilha especifica pelo nome
+planilha = pasta["Vendas 2025"]      # acessar uma planilha específica pelo nome
 ```
 
 Uma pasta de trabalho pode conter várias planilhas (tantas abas quanto no Excel); `pasta.active` retorna apenas a que estava aberta por último no salvamento, não necessariamente a primeira nem a desejada.

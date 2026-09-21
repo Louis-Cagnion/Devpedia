@@ -17,7 +17,7 @@ Entrepôt de données (schema-on-write) :
   fichier source --> vérifié contre le schéma --> rejeté ou inséré dans une table typée
 
 Data lake (schema-on-read) :
-  fichier source --> stocké tel quel, sans vérification --> structure décidée au moment de la lecture
+  fichier source --> stocké tel quel, sans vérification --> structure décidée à la lecture
 ```
 
 ## Vue d'ensemble

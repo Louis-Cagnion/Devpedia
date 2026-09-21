@@ -42,14 +42,14 @@ Vu dans le chapitre précédent, une donnée sur le [tas](/?c=securite&s=securit
 Certaines fonctions (comme `printf` en C) acceptent une **chaîne de format**, qui décrit comment afficher les valeurs qui suivent (`%d` pour un entier, `%s` pour une chaîne...). Un **format string bug** survient quand une donnée fournie par l'utilisateur est directement utilisée comme chaîne de format, au lieu d'être un simple argument à afficher :
 
 ```text
-// Code vulnerable : la donnee utilisateur EST la chaine de format
+// Code vulnérable : la donnée utilisateur EST la chaîne de format
 printf(entree_utilisateur);
 
 // Si entree_utilisateur vaut "%x %x %x %x", printf lit 4 valeurs
-// sur la pile la ou aucun argument n'a ete fourni : il affiche du
-// contenu memoire arbitraire, potentiellement sensible.
+// sur la pile là où aucun argument n'a été fourni : il affiche du
+// contenu mémoire arbitraire, potentiellement sensible.
 
-// Code correct : la donnee utilisateur est un ARGUMENT, jamais le format
+// Code correct : la donnée utilisateur est un ARGUMENT, jamais le format
 printf("%s", entree_utilisateur);
 ```
 

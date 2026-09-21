@@ -18,7 +18,8 @@ PowerShell reuses the same ideas as [Bash](/?c=shells&s=bash&p=bash) (redirectin
 ## Redirecting input from a file
 
 ```powershell
-Get-Content list.txt | Sort-Object   # PowerShell has no direct "<" operator: you go through a cmdlet
+# PowerShell has no direct "<" operator: you go through a cmdlet
+Get-Content list.txt | Sort-Object
 ```
 
 > **Note:** unlike Bash (`sort < list.txt`), PowerShell has no true standard input redirection: the convention is to produce the file's content via a cmdlet (`Get-Content`) then send it into the pipeline.
@@ -30,7 +31,8 @@ The streams are numbered differently from Bash: `1` = standard output, `2` = err
 ```powershell
 Failing-Command 2> errors.log         # only standard error goes into errors.log
 Command 1> output.log 2> errors.log     # separates normal output and errors into two files
-Command *> all.log                       # PowerShell shortcut: redirects ALL streams to all.log
+# PowerShell shortcut: redirects ALL streams to all.log
+Command *> all.log
 ```
 
 > **Note:** `*>` has no direct Bash equivalent (which only has `&>` for stdout+stderr); PowerShell can group up to six distinct streams into a single redirection.
@@ -48,7 +50,8 @@ Noisy-Command > $null 2>&1   # discards all normal output AND all errors
 ```powershell
 Get-ChildItem | Where-Object { $_.Extension -eq ".txt" }     # filters by property, not by text
 Select-String "404" access.log | Measure-Object | Select-Object -ExpandProperty Count
-Get-Process | Sort-Object CPU -Descending | Select-Object -First 5     # the 5 heaviest processes
+# the 5 heaviest processes
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 5
 ```
 
 > **Note:** `Where-Object { $_.Extension -eq ".txt" }` filters on an actual property of the file object, whereas Bash's `grep ".txt"` only searches for the text ".txt" anywhere in the line: a file named `report.txt.bak` would match `grep` but not the more precise `-eq ".txt"`.

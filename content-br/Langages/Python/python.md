@@ -7,7 +7,7 @@ order: 4
 Uma [linguagem de programação](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) é um conjunto de regras que permite escrever instruções que um computador pode executar. Python é uma delas, conhecida por sua sintaxe deliberadamente próxima da linguagem natural.
 
 ```python
-nome = "Devpedia"          # uma variavel, veja o capitulo dedicado
+nome = "Devpedia"          # uma variável, veja o capítulo dedicado
 print(f"Ola, {nome}")      # exibe: Ola, Devpedia
 ```
 

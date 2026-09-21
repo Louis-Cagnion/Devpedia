@@ -13,7 +13,7 @@ El [primer capítulo](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers)
 ```text
 saldo = 100
 retirar = 150
-saldo = saldo - retirar  → saldo se convierte en -50: nada verificó que hubiera suficiente dinero
+saldo = saldo - retirar  → saldo pasa a -50: nunca se verificó que hubiera fondos suficientes
 mostrar saldo            → muestra -50
 ```
 

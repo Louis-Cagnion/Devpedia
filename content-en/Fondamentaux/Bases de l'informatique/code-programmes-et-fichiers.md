@@ -39,7 +39,7 @@ Devpedia provides in-depth coverage of several programming languages, each in it
 
 > **Pitfall:** Do not try to run the pseudocode above as-is in an actual programming language: it will not work, as it is only a simplified illustration, not actual syntax.
 >
-> **Best practice:** Always verify the exact syntax required by the chosen language (see the dedicated chapter) before writing code intended to be actually executed.
+> **Best practice:** Always verify the exact syntax required by the [chosen language](/?c=langages) before writing code intended to be actually executed.
 
 ## The file: where the code is stored
 

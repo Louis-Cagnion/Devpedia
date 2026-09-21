@@ -33,7 +33,7 @@ struct Exemplo {
     char  c;  // 1 byte
 };
 
-sizeof(struct Exemplo)   // 12, e nao 6 !
+sizeof(struct Exemplo)   // 12, e não 6 !
 ```
 
 O que o compilador realmente faz:
@@ -89,7 +89,7 @@ int   *pi = &x;
 char  *pc = (char *)&x;
 
 *pi  // 65      -> le 4 bytes, interpreta-os como um inteiro
-*pc  // 'A'     -> le 1 byte no MESMO endereco, interpreta-o como um caractere
+*pc  // 'A'     -> le 1 byte no MESMO endereço, interpreta-o como um caractere
 ```
 
 É também por isso que `ponteiro + 1` avança `sizeof(tipo)` bytes e não 1: a aritmética de ponteiros conta em elementos, não em bytes. Veja o capítulo [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs).
@@ -100,17 +100,6 @@ char  *pc = (char *)&x;
 
 - uma lista Python de 1.000 inteiros ocupa muito mais que 4.000 bytes, porque cada inteiro é um **objeto** com seu próprio cabeçalho;
 - é exatamente por essa razão que o NumPy existe: um array NumPy armazena valores brutos contíguos, alinhados, sem cabeçalho por elemento: daí ganhos de velocidade de uma ordem de grandeza em cálculo numérico (veja [NumPy](/?c=data-science&p=numpy)).
-
-## Resumo
-
-| Noção | A reter |
-|---|---|
-| Unidade de endereçamento | O byte; um único bit não é endereçável |
-| Alinhamento | Um valor de *n* bytes se coloca em um endereço múltiplo de *n* |
-| Padding | Uma struct ≥ soma de seus campos; a ordem de declaração conta |
-| `sizeof` | Sempre medir, nunca calcular manualmente |
-| Endianness | Ordem dos bytes; a rede impõe o big-endian |
-| Escrever memória bruta | Evitar: serializar em um formato definido |
 
 ---
 

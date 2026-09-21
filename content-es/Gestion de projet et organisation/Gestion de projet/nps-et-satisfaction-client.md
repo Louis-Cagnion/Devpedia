@@ -17,7 +17,8 @@ El NPS se basa en una sola pregunta, planteada tras una interacción con un serv
 | 9 o 10 | Promotores | Sí | Sí (positivamente) |
 
 ```javascript
-function calcularNps(puntuaciones) {   // puntuaciones: array de enteros de 0 a 10, uno por encuestado
+// puntuaciones: array de enteros de 0 a 10, uno por encuestado
+function calcularNps(puntuaciones) {
     const total = puntuaciones.length;
     const detractores = puntuaciones.filter(p => p <= 6).length;
     const promotores = puntuaciones.filter(p => p >= 9).length;

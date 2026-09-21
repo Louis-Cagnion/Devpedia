@@ -28,7 +28,8 @@ La **selección proporcional** (noción popularizada por la herramienta de model
 float distancia = distancia_3d(vertice_vecino.posicion, vertice_seleccionado.posicion);
 
 if (distancia < radio_influencia) {
-    float factor = 1.0f - (distancia / radio_influencia);   // 1.0 en el centro, 0.0 en el borde del radio
+    // 1.0 en el centro, 0.0 en el borde del radio
+    float factor = 1.0f - (distancia / radio_influencia);
     vertice_vecino.posicion += desplazamiento * factor;
 }
 ```

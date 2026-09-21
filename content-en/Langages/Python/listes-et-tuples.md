@@ -13,8 +13,10 @@ fruits = ["apple", "banana", "cherry"]
 
 fruits[0]      # "apple"
 fruits[-1]     # "cherry" -> negative index: counts from the end
-fruits[0:2]    # ["apple", "banana"] -> slicing: elements from index 0 (inclusive) to 2 (exclusive)
-fruits[::-1]   # ["cherry", "banana", "apple"] -> reverses the list (step by step, starting from -1)
+# ["apple", "banana"] -> slicing: elements from index 0 (inclusive) to 2 (exclusive)
+fruits[0:2]
+# ["cherry", "banana", "apple"] -> reverses the list (step by step, starting from -1)
+fruits[::-1]
 
 fruits.append("kiwi")       # add at the end
 fruits.insert(0, "mango")   # insert at a specific index
@@ -31,8 +33,10 @@ len(fruits)                 # number of items
 `[x] * n` builds a new list of size `n`, each slot holding `x`:
 
 ```python
-zeros = [0] * 5           # [0, 0, 0, 0, 0] -> handy preallocation for a size known ahead of time
-letters = ["a", "b"] * 3  # ["a", "b", "a", "b", "a", "b"] -> repeats the whole SEQUENCE, not each element
+# [0, 0, 0, 0, 0] -> handy preallocation for a size known ahead of time
+zeros = [0] * 5
+# ["a", "b", "a", "b", "a", "b"] -> repeats the whole SEQUENCE, not each element
+letters = ["a", "b"] * 3
 ```
 
 > **Pitfall:** `[[]] * n` does NOT create `n` independent lists, but `n` references to **the same** empty list: modifying one modifies all `n` at once.
@@ -48,8 +52,10 @@ print(grid)   # [['x'], ['x'], ['x']] -> the 3 sub-lists ARE the same object, no
 ### `.append()` vs `.extend()`
 
 ```python
-fruits.append("kiwi")             # already seen: adds A SINGLE element (even if it's a list, nested as-is)
-fruits.extend(["kiwi", "mango"])  # adds EACH element of the given iterable, one by one, at the end
+# already seen: adds A SINGLE element (even if it's a list, nested as-is)
+fruits.append("kiwi")
+# adds EACH element of the given iterable, one by one, at the end
+fruits.extend(["kiwi", "mango"])
 
 fruits.append(["a", "b"])  # [..., ["a", "b"]] -> ONE element, nested
 fruits.extend(["a", "b"])  # [..., "a", "b"]   -> TWO elements, flattened
@@ -115,7 +121,9 @@ grades.sort()   # sorts IN PLACE, returns nothing (None), grades is modified
 
 ```python
 runs = ["2026-08-14_101530", "2026-08-06_090000", "2026-08-14_090000"]
-sorted(runs)  # ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> chronological order, "for free"
+# ["2026-08-06_090000", "2026-08-14_090000", "2026-08-14_101530"] -> chronological order, "for
+# free"
+sorted(runs)
 ```
 
 > **Pitfall:** this lexicographic sort only works if all compared elements have the same length (e.g. always `YYYY-MM-DD`): `"9"` ranks AFTER `"10"` in a lexicographic sort (`"9" > "1"` character by character), unlike a numeric sort.

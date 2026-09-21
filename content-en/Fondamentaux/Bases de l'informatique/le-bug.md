@@ -13,7 +13,7 @@ The [first chapter](/?c=bases-de-l-informatique&p=code-programmes-et-fichiers) m
 ```text
 balance = 100
 retirer = 150
-balance = balance - retirer  → balance becomes -50: nothing checked whether there was enough money
+balance = balance - retirer  → balance becomes -50: nothing checked for sufficient funds
 display balance              → displays -50
 ```
 

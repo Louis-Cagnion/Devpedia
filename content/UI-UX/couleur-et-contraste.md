@@ -60,11 +60,12 @@ Le **WCAG** (*Web Content Accessibility Guidelines*) est un ensemble de règles 
 ## Ne jamais coder une information uniquement par la couleur
 
 ```text
-❌ Mauvais : dans un formulaire, un champ en erreur est bordé de rouge, un champ valide de vert :
-   c'est la SEULE différence entre les deux.
+❌ Mauvais : dans un formulaire, un champ en erreur est bordé de rouge, un champ valide de
+   vert : c'est la SEULE différence entre les deux.
 
 ✅ Bon : le champ en erreur est bordé de rouge, ET affiche une icône ⚠, ET un message texte
-   ("Format d'email invalide") : trois indices, dont deux ne dépendent pas de la perception des couleurs.
+   ("Format d'email invalide") : trois indices, dont deux ne dépendent pas de la perception
+   des couleurs.
 ```
 
 > **Piège :** distinguer deux états uniquement par la couleur (rouge/vert en particulier). Environ 8 % des hommes (une proportion plus faible chez les femmes) ont une forme de daltonisme et ne perçoivent pas cette différence.

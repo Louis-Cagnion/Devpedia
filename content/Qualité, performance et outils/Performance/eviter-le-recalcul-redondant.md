@@ -47,14 +47,16 @@ for ligne in tout_le_fichier:
 ```
 
 ```python
-# on ne retraite que ce qui est arrive depuis le dernier passage
+# on ne retraite que ce qui est arrivé depuis le dernier passage
 dernier_horodatage = lire_marque_de_progression()
 nouvelles_lignes = [l for l in tout_le_fichier if l.horodatage > dernier_horodatage]
 
 for ligne in nouvelles_lignes:
     resultats.append(traiter(ligne))
 
-ecrire_marque_de_progression(nouvelles_lignes[-1].horodatage if nouvelles_lignes else dernier_horodatage)
+ecrire_marque_de_progression(
+    nouvelles_lignes[-1].horodatage if nouvelles_lignes else dernier_horodatage,
+)
 ```
 
 Le coût du traitement devient proportionnel à ce qui a **changé**, pas à la taille totale des données : un gain qui s'accentue à mesure que le volume déjà traité grandit par rapport au volume réellement nouveau.
@@ -157,7 +159,8 @@ verrou_recalcul = threading.Lock()
 def valeur_avec_cache(cle):
     entree = cache.get(cle)
     if entree is None:
-        return recalculer_et_stocker(cle)   # tout premier appel : pas d'autre choix que d'attendre
+        # tout premier appel : pas d'autre choix que d'attendre
+        return recalculer_et_stocker(cle)
 
     if entree.est_perimee() and verrou_recalcul.acquire(blocking=False):
         threading.Thread(target=lambda: recalculer_et_stocker(cle, verrou_recalcul)).start()
@@ -179,10 +182,10 @@ Par défaut, un serveur PHP garde en mémoire tout ce qu'un script produit avec 
 
 ```php
 <?php
-ini_set('output_buffering', 'off');   // desactive la mise en memoire de la sortie
-ini_set('implicit_flush', true);      // force l'envoi immediat apres chaque echo
+ini_set('output_buffering', 'off');   // désactive la mise en mémoire de la sortie
+ini_set('implicit_flush', true);      // force l'envoi immédiat après chaque echo
 while (ob_get_level() > 0) {
-    ob_end_flush();                   // vide aussi tout tampon deja ouvert par PHP lui-meme
+    ob_end_flush();                   // vide aussi tout tampon déjà ouvert par PHP lui-même
 }
 
 foreach ($lignesAImporter as $ligne) {

@@ -93,7 +93,8 @@ Un `git commit` "normal" n'est, sous le capot, rien de plus qu'un enchaînement 
 Un `rebase` ou un `commit --amend` ne réécrivent que les commits **après** le point modifié. Parfois il faut aller plus loin : retirer un fichier (secret, gros binaire...) de **chaque** commit où il a existé, du tout premier au dernier : un simple `rm` + nouveau commit ne suffit pas, puisque le fichier reste lisible dans les commits précédents.
 
 ```bash
-git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" --prune-empty -- --all
+git filter-branch --index-filter "git rm --cached --ignore-unmatch secret.pem" \
+    --prune-empty -- --all
 ```
 
 `--index-filter` rejoue cette commande sur l'index de **chaque** commit de l'historique (sur toutes les refs, via `--all`), reconstruit un nouveau tree sans le fichier, puis un nouveau commit, ce qui, par la mécanique vue plus haut (le hash d'un commit dépend de celui de son parent), change le hash de **tous** les commits à partir du premier concerné.
@@ -114,9 +115,11 @@ Après une réécriture d'historique (ou un simple `reset --hard`), les anciens 
 Un objet n'est réellement supprimé du dépôt local que lorsque plus rien ne le retient :
 
 ```bash
-git reflog expire --expire=now --all  # vide immédiatement le reflog de toutes les refs (au lieu d'attendre l'expiration par défaut)
+# vide immédiatement le reflog de toutes les refs (au lieu d'attendre l'expiration par défaut)
+git reflog expire --expire=now --all
 git gc --prune=now                    # supprime tout objet devenu inaccessible ("unreachable")
-git fsck --unreachable                # liste les objets encore présents mais non référencés par aucune branche/tag/reflog
+# liste les objets encore présents mais non référencés par aucune branche/tag/reflog
+git fsck --unreachable
 ```
 
 > **Note :** ce nettoyage ne concerne que le dépôt **local**. Un dépôt distant ([GitHub](/?c=git&p=github-et-plateformes), GitLab...) applique son propre `gc` selon son propre calendrier : après un `push --force` qui retire un fichier sensible de l'historique, l'ancien commit peut rester accessible côté serveur via son hash exact (une requête ciblée, pas une navigation normale) jusqu'à ce que le serveur fasse son propre nettoyage. Pour une garantie de suppression immédiate côté serveur, seul le support de la plateforme peut agir.

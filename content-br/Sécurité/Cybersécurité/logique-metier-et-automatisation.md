@@ -11,14 +11,14 @@ Os capítulos anteriores cobrem falhas TÉCNICAS (um dado mal validado, um acess
 Um endpoint que atualiza um objeto aceitando diretamente TODOS os campos recebidos na requisição (em vez de uma lista explícita de campos permitidos) deixa o cliente enviar um campo que ele nunca deveria poder modificar por conta própria.
 
 ```php
-// PERIGOSO: aceita todos os campos recebidos, incluindo os que um formulario
+// PERIGOSO: aceita todos os campos recebidos, incluindo os que um formulário
 // legitimo nunca exporia
 $usuario->update($_POST);
-// Se o cliente adicionar discretamente "role=admin" a sua requisicao de edicao de perfil,
-// e a tabela "usuarios" tiver de fato uma coluna "role"...
-// esse campo e atualizado como qualquer outro, sem distincao
+// Se o cliente adicionar discretamente "role=admin" a sua requisição de edição de perfil,
+// e a tabela "usuários" tiver de fato uma coluna "role"...
+// esse campo é atualizado como qualquer outro, sem distinção
 
-// SEGURO: lista branca explicita dos campos que ESTE endpoint pode modificar
+// SEGURO: lista branca explícita dos campos que ESTE endpoint pode modificar
 $campos_permitidos = ['nome', 'email', 'bio'];
 $dados = array_intersect_key($_POST, array_flip($campos_permitidos));
 $usuario->update($dados);

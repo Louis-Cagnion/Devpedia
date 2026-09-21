@@ -36,7 +36,8 @@ Todo Flexbox razona en términos de **eje principal** (el de `flex-direction`) y
     display: flex;
     justify-content: flex-start;     /* por defecto: agrupados al inicio */
     /* justify-content: center;        -> centrados */
-    /* justify-content: space-between;  -> espacio igual ENTRE los elementos, nada en los bordes */
+    /* justify-content: space-between;  -> espacio igual ENTRE los elementos, nada en los
+       bordes */
     /* justify-content: space-around;    -> espacio igual ALREDEDOR de cada elemento */
 }
 ```
@@ -46,7 +47,8 @@ Todo Flexbox razona en términos de **eje principal** (el de `flex-direction`) y
 ```css
 .contenedor {
     display: flex;
-    align-items: stretch;       /* por defecto: estira los elementos hasta toda la altura disponible */
+    /* por defecto: estira los elementos hasta toda la altura disponible */
+    align-items: stretch;
     /* align-items: center;       -> centra verticalmente (si flex-direction: row) */
     /* align-items: flex-start;     -> alinea arriba */
     /* align-items: flex-end;        -> alinea abajo */
@@ -67,7 +69,8 @@ Todo Flexbox razona en términos de **eje principal** (el de `flex-direction`) y
 
 ```css
 .elemento {
-    flex-grow: 1;       /* puede crecer para ocupar el espacio restante (1 = parte igual entre elementos) */
+    /* puede crecer para ocupar el espacio restante (1 = parte igual entre elementos) */
+    flex-grow: 1;
     flex-shrink: 1;     /* puede encogerse si falta espacio (por defecto) */
     flex-basis: 200px;  /* tamaño inicial, antes de aplicar grow/shrink */
     order: 2;           /* cambia el orden de visualización SIN tocar el HTML */
@@ -86,7 +89,8 @@ Todo Flexbox razona en términos de **eje principal** (el de `flex-direction`) y
 ```css
 .contenedor {
     display: flex;
-    flex-wrap: nowrap;   /* por defecto: todo cabe en una sola línea, se encoge si hace falta */
+    /* por defecto: todo cabe en una sola línea, se encoge si hace falta */
+    flex-wrap: nowrap;
     /* flex-wrap: wrap;     -> pasa a la línea siguiente si falta espacio */
 }
 ```

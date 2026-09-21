@@ -29,7 +29,8 @@ This is a direct application of the principle of least privilege (already seen a
 
 ```bash
 ufw default deny incoming   # deny all incoming traffic by default
-ufw allow 2222/tcp          # allow only the SSH port (redefined here, see the previous chapter)
+# allow only the SSH port (redefined here, see the previous chapter)
+ufw allow 2222/tcp
 ufw enable                  # enable the firewall with these rules
 ufw status                  # list the active rules
 ```

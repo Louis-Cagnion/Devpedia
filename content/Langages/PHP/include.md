@@ -77,7 +77,8 @@ Ce pattern sert souvent de fichier de config/données simple, sans avoir besoin 
 ```php
 <?php
 // dans /app/pages/accueil.php
-require __DIR__ . '/../config.php'; // toujours correct, quel que soit l'endroit d'où le script est lancé
+// toujours correct, quel que soit l'endroit d'où le script est lancé
+require __DIR__ . '/../config.php';
 ?>
 ```
 

@@ -22,7 +22,8 @@ A diferencia de [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensado par
 ```css
 .conteneur {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;   /* 3 columnas: la 2ª ocupa el doble de espacio que las otras 2 */
+    /* 3 columnas: la 2ª ocupa el doble de espacio que las otras 2 */
+    grid-template-columns: 1fr 2fr 1fr;
 }
 ```
 
@@ -31,7 +32,8 @@ A diferencia de [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensado par
 ```css
 .conteneur {
     display: grid;
-    grid-template-columns: 250px 1fr;   /* columna lateral fija, columna principal que ocupa el resto */
+    /* columna lateral fija, columna principal que ocupa el resto */
+    grid-template-columns: 250px 1fr;
 }
 ```
 
@@ -60,7 +62,8 @@ A diferencia de [Flexbox](/?c=langages-de-balisage&s=css&p=flexbox), pensado par
 
 ```css
 .element {
-    grid-column: 1 / 3;  /* se extiende de la línea de cuadrícula 1 a la línea 3 -> ocupa 2 columnas */
+    /* se extiende de la línea de cuadrícula 1 a la línea 3 -> ocupa 2 columnas */
+    grid-column: 1 / 3;
     grid-row: 2 / 4;     /* se extiende 2 filas verticalmente */
 }
 ```

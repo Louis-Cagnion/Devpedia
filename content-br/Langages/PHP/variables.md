@@ -14,7 +14,7 @@ Para declarar uma variável em PHP, é preciso colocar um `$` antes do nome de s
     // Inteiro (int)
     $num = 2;
 
-    // Numero de ponto flutuante (float)
+    // Número de ponto flutuante (float)
     $pi = 3.14;
 
     // String (string)
@@ -51,22 +51,22 @@ Em seguida, para comparar ou manipular suas variáveis entre si, você precisar�
     $resultado = 0;
 
     // *** operadores ***
-    //adicao
+    //adição
     $resultado = $num1 + $num2;
     $num1 += $num2;
-    //subtracao
+    //subtração
     $resultado = $num1 - $num2;
     $num1 -= $num2;
-    //multiplicacao
+    //multiplicação
     $resultado = $num1 * $num2;
     $num1 *= $num2;
-    //potencia
+    //potência
     $resultado = $num1 ** $num2;
     $num1 **= $num2;
-    //divisao
+    //divisão
     $resultado = $num1 / $num2;
     $num1 /= $num2;
-    //modulo
+    //módulo
     $resultado = $num1 % $num2;
     $num1 %= $num2;
     //+1
@@ -87,15 +87,15 @@ Em seguida, para comparar ou manipular suas variáveis entre si, você precisar�
     //negar
     $resultado = !true;
 
-    // *** operadores de comparacao ***
+    // *** operadores de comparação ***
     //iguais
     $resultado = $num1 == $num2;
-    //identicos
+    //idênticos
     $resultado = $num1 === $num2;
     //diferente
     $resultado = $num1 != $num2;
     $resultado = $num1 <> $num2;
-    //nao identicos
+    //não idênticos
     $resultado = $num1 !== $num2;
     //menor
     $resultado = $num1 < $num2;
@@ -117,10 +117,10 @@ Se você quiser concatenar strings, tem 2 métodos:
     $str1 = "Hello";
     $str2 = "world";
 
-    echo "O tema do dia e: {$str1} {$str2}";
-    echo 'O tema do dia e: ' . $str1 . ' ' . $str2;
+    echo "O tema do dia é: {$str1} {$str2}";
+    echo 'O tema do dia é: ' . $str1 . ' ' . $str2;
 
-    //os dois resultados dao "O tema do dia e: Hello world".
+    //os dois resultados dão "O tema do dia é: Hello world".
 ?>
 ```
 
@@ -165,7 +165,7 @@ define('TAXA_IMPOSTO', 0.20);
 
 function precoComImposto(float $precoSemImposto): float
 {
-    return $precoSemImposto * (1 + TAXA_IMPOSTO); // visivel aqui sem importar nada
+    return $precoSemImposto * (1 + TAXA_IMPOSTO); // visível aqui sem importar nada
 }
 ?>
 ```
@@ -191,7 +191,7 @@ echo $pessoa["idade"]; // Warning: Undefined array key "idade"
 if (!empty($pessoa["idade"])) {
     echo $pessoa["idade"];
 }
-// equivalente a: a chave existe E seu valor nao e vazio, nem null, nem false, nem 0...
+// equivalente a: a chave existe E seu valor não é vazio, nem null, nem false, nem 0...
 ?>
 ```
 

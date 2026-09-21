@@ -11,9 +11,11 @@ Ao contrário do [Bash](/?c=shells&s=bash&p=bash), onde tudo é manipulado como 
 ## Declarar e ler uma variável
 
 ```powershell
-$nome = "Joao"                # nenhuma regra estrita sobre espacos ao redor do '=', ao contrario do Bash
+# nenhuma regra estrita sobre espaços ao redor do '=', ao contrário do Bash
+$nome = "Joao"
 Write-Output $nome            # Joao
-Write-Output "Ola $nome !"    # Ola Joao ! -> interpolacao direta em uma string com aspas duplas
+# Ola Joao ! -> interpolação direta em uma string com aspas duplas
+Write-Output "Ola $nome !"
 ```
 
 > **Nota:** `$nome` sozinho (sem `Write-Output`) também exibe seu valor no console: o PowerShell exibe automaticamente o resultado de toda expressão que não é explicitamente atribuída ou suprimida, um comportamento próximo de um REPL.
@@ -23,8 +25,8 @@ Write-Output "Ola $nome !"    # Ola Joao ! -> interpolacao direta em uma string 
 ```powershell
 $nome = "Joao"
 
-Write-Output "Ola $nome"  # Ola Joao -> as aspas duplas interpretam as variaveis
-Write-Output 'Ola $nome'  # Ola $nome -> as aspas simples desativam qualquer interpretacao
+Write-Output "Ola $nome"  # Ola Joao -> as aspas duplas interpretam as variáveis
+Write-Output 'Ola $nome'  # Ola $nome -> as aspas simples desativam qualquer interpretação
 ```
 
 Para inserir uma propriedade ou o resultado de uma expressão (não apenas uma variável simples), é preciso envolvê-la com `$(...)` dentro das aspas duplas:
@@ -60,7 +62,7 @@ $b = 3
 
 Write-Output ($a + $b)  # 8
 Write-Output ($a * $b)  # 15
-Write-Output ($a / $b)  # 1.66666666666667 -> divisao real, nao inteira como no Bash
+Write-Output ($a / $b)  # 1.66666666666667 -> divisão real, não inteira como no Bash
 ```
 
 ## Variáveis automáticas
@@ -73,13 +75,13 @@ Por padrão, uma variável declarada em uma função continua local a essa funç
 
 ```powershell
 function Contar {
-    $total = 0   # local a Contar por padrao
+    $total = 0   # local a Contar por padrão
     $total = $total + 1
     Write-Output $total
 }
 
 Contar
-Write-Output $total   # vazio: $total nao existe fora da funcao
+Write-Output $total   # vazio: $total não existe fora da função
 ```
 
 Para modificar explicitamente uma variável de um contexto envolvente (o equivalente inverso de um `local` do Bash), prefixa-se seu nome com um escopo:
@@ -88,7 +90,7 @@ Para modificar explicitamente uma variável de um contexto envolvente (o equival
 $total = 0
 
 function Incrementar {
-    $script:total = $script:total + 1   # modifica explicitamente a variavel do script chamador
+    $script:total = $script:total + 1   # modifica explicitamente a variável do script chamador
 }
 
 Incrementar

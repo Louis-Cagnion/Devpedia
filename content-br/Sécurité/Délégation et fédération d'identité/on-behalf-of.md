@@ -13,7 +13,7 @@ A solução mais simples, mas a menos segura, consiste em dar ao serviço A uma 
 ```text
 Usuario -> Servico A -> Servico B
 (identidade      (conta de       (recebe uma requisicao da
- perdida          servico,        "conta de servico do Servico A",
+ perdida          servico,        "conta de serviço do Serviço A",
  no caminho)      direitos amplos) nao do usuario)
 ```
 

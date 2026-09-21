@@ -51,7 +51,7 @@ De `<h1>` (o mais importante) a `<h6>` (o menos importante). Uma página deveria
 
 ```html
 <br>       <!-- quebra de linha, dentro de um mesmo bloco de texto -->
-<hr>       <!-- linha horizontal, separacao tematica entre duas secoes -->
+<hr>       <!-- linha horizontal, separação tematica entre duas seções -->
 ```
 
 > **Nota:** `<br>` não deve ser usado para criar espaçamento visual entre dois parágrafos: esse é o papel do CSS (`margin`, veja [O modelo de caixa](/?c=langages-de-balisage&s=css&p=box-model)). Um uso repetido de `<br><br>` para "fazer espaço" é um sinal de que se está usando HTML para apresentação, quando essa não é sua responsabilidade.

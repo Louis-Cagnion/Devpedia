@@ -18,7 +18,7 @@ spl_autoload_register(function (string $classe) {
 });
 
 $obj = new MinhaClasse(); // PHP chama automaticamente o resolvedor com "MinhaClasse"
-// -> nenhum require manual necessario em outro lugar do projeto
+// -> nenhum require manual necessário em outro lugar do projeto
 ?>
 ```
 
@@ -42,7 +42,9 @@ spl_autoload_register(function (string $classe): void {
 
     foreach ($namespaces as $prefixo => $pastaBase) {
         if (str_starts_with($classe, $prefixo)) {
-            $caminho = $pastaBase . str_replace('\\', '/', substr($classe, strlen($prefixo))) . '.php';
+            $caminho = $pastaBase
+                . str_replace('\\', '/', substr($classe, strlen($prefixo)))
+                . '.php';
             if (file_exists($caminho)) {
                 require $caminho;
             }

@@ -12,7 +12,7 @@ Um computador mede o tempo internamente como um simples número de segundos deco
 from datetime import datetime
 
 agora = datetime.now()
-print(agora)  # 2026-09-01 14:32:07.123456 -> um objeto datetime, nao uma simples string
+print(agora)  # 2026-09-01 14:32:07.123456 -> um objeto datetime, não uma simples string
 
 agora.year, agora.month, agora.day      # (2026, 9, 1)
 agora.hour, agora.minute, agora.second  # (14, 32, 7)
@@ -23,7 +23,8 @@ datetime(2026, 1, 1)  # constroi uma data precisa em vez de "agora"
 ## Formatar como string: `.strftime()`
 
 ```python
-agora.strftime("%Y-%m-%d_%H%M%S")  # "2026-09-01_143207" -> formato compacto, usavel em um nome de arquivo
+# "2026-09-01_143207" -> formato compacto, usável em um nome de arquivo
+agora.strftime("%Y-%m-%d_%H%M%S")
 agora.strftime("%d/%m/%Y")         # "01/09/2026"        -> formato europeu comum
 ```
 
@@ -39,7 +40,8 @@ agora.strftime("%d/%m/%Y")         # "01/09/2026"        -> formato europeu comu
 ## Analisar uma string como data: `.strptime()`
 
 ```python
-datetime.strptime("2026-09-01_143207", "%Y-%m-%d_%H%M%S")  # operacao INVERSA de strftime, mesma tabela de codigos
+# operação INVERSA de strftime, mesma tabela de codigos
+datetime.strptime("2026-09-01_143207", "%Y-%m-%d_%H%M%S")
 ```
 
 > **Armadilha:** o formato passado a `strptime()` deve corresponder EXATAMENTE à string recebida (mesmos separadores, mesma ordem); um formato que não corresponde levanta um `ValueError`, não um resultado aproximado.
@@ -54,7 +56,7 @@ from datetime import date
 hoje = date(2026, 9, 15)
 
 hoje.isoformat()                    # "2026-09-15" -> formato fixo AAAA-MM-DD
-date.fromisoformat("2026-09-15")    # date(2026, 9, 15) -> a operacao inversa
+date.fromisoformat("2026-09-15")    # date(2026, 9, 15) -> a operação inversa
 ```
 
 Ao contrário de `strftime()`/`strptime()`, `isoformat()`/`fromisoformat()` não exigem nenhum código de formato (`%Y`, `%m`...): o formato é sempre o mesmo (AAAA-MM-DD), o que os torna mais simples para esse caso específico, mas inutilizáveis assim que um formato diferente é necessário.
@@ -66,8 +68,9 @@ Ao contrário de `strftime()`/`strptime()`, `isoformat()`/`fromisoformat()` não
 ```python
 import time
 
-time.time()      # 1798819927.123456 -> numero BRUTO de segundos desde 1 de janeiro de 1970 (epoch Unix)
-datetime.now()   # 2026-09-01 14:32:07.123456 -> objeto com ano/mes/dia... ja decompostos
+# 1798819927.123456 -> número BRUTO de segundos desde 1 de janeiro de 1970 (epoch Unix)
+time.time()
+datetime.now()   # 2026-09-01 14:32:07.123456 -> objeto com ano/mês/dia... já decompostos
 ```
 
 `time.time()` serve para medir uma DURAÇÃO (diferença entre duas chamadas); `datetime` serve assim que é preciso exibir, comparar ou decompor uma data/hora legível. Veja também [`sorted()` em strings](/?c=langages-de-programmation&s=python&p=listes-et-tuples) para ordenar timestamps escritos no formato `%Y-%m-%d...` sem passar por `datetime` de forma alguma.

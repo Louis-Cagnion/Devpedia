@@ -107,7 +107,8 @@ console.log(compte.#solde);  // SyntaxError : #solde n'est pas accessible ici
 ## Ce qui se cache derrière `class` : le prototype
 
 ```javascript
-console.log(typeof Vehicule);                     // "function" -> une classe EST une fonction spéciale
+// "function" -> une classe EST une fonction spéciale
+console.log(typeof Vehicule);
 console.log(v.__proto__ === Vehicule.prototype);  // true
 ```
 

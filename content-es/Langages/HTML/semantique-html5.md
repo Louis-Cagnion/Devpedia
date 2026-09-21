@@ -50,7 +50,9 @@ Antes de HTML5, estructurar una página se basaba casi exclusivamente en `<div>`
         </article>
 
         <aside>
-            <p>Contenido complementario, relacionado pero secundario (ej: enlaces relacionados)</p>
+            <p>
+            Contenido complementario, relacionado pero secundario (ej: enlaces relacionados)
+            </p>
         </aside>
     </main>
 

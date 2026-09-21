@@ -61,7 +61,8 @@ Object.values(obj);   // ['Jean', 25]
 Object.entries(obj);  // [['nom', 'Jean'], ['age', 25]]
 
 const copie = Object.assign({}, obj);                       // copie de obj
-const fusion = Object.assign({}, obj, { ville: 'Paris' });  // { nom: 'Jean', age: 25, ville: 'Paris' }
+// { nom: 'Jean', age: 25, ville: 'Paris' }
+const fusion = Object.assign({}, obj, { ville: 'Paris' });
 
 Object.freeze(obj);
 obj.age = 30;                    // n'a aucun effet, obj.age reste 25
@@ -77,7 +78,8 @@ const obj = { nom: 'Jean', age: 25 };
 obj.hasOwnProperty('nom');      // true -> clé présente sur l'objet lui-même
 obj.hasOwnProperty('inconnu');  // false
 
-'nom' in obj;                      // true -> teste aussi les propriétés héritées, contrairement à hasOwnProperty
+// true -> teste aussi les propriétés héritées, contrairement à hasOwnProperty
+'nom' in obj;
 ```
 
 `hasOwnProperty` est un prototype disponible directement sur un objet ; `in` vérifie aussi l'existence d'une clé, mais en incluant les propriétés héritées.

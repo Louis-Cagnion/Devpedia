@@ -49,7 +49,8 @@ Front buffer (shown on screen)       Back buffer (being drawn)
 ```
 
 ```c
-glfwSwapBuffers(window);   // swaps the two buffers, never a direct pixel-by-pixel draw to the screen
+// swaps the two buffers, never a direct pixel-by-pixel draw to the screen
+glfwSwapBuffers(window);
 ```
 
 ## The render loop
@@ -61,7 +62,8 @@ while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();                              // 1. collect events (keyboard, mouse...)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // 2. clear the previous image
     drawScene();                                   // 3. draw the new image (back buffer)
-    glfwSwapBuffers(window);                        // 4. show it all at once (double buffering)
+    // 4. show it all at once (double buffering)
+    glfwSwapBuffers(window);
 }
 ```
 

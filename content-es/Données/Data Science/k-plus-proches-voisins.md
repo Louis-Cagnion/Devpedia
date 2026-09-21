@@ -29,9 +29,11 @@ Si 4 de los 5 vecinos más cercanos son "ciencia ficción", la nueva película s
 from sklearn.neighbors import KNeighborsClassifier
 
 modelo = KNeighborsClassifier(n_neighbors=5)   # k = 5
-modelo.fit(X_entrenamiento, y_entrenamiento)   # no calcula nada: simplemente almacena los datos
+# no calcula nada: simplemente almacena los datos
+modelo.fit(X_entrenamiento, y_entrenamiento)
 
-modelo.predict([[pelicula_nueva]])                # calcula las distancias AHORA, sobre la marcha
+# calcula las distancias AHORA, sobre la marcha
+modelo.predict([[pelicula_nueva]])
 ```
 
 ## La trampa de rendimiento: todo el trabajo llega en la predicción

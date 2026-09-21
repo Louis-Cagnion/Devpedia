@@ -45,7 +45,7 @@ Os bits que saem da largura do tipo são **perdidos**; não é um erro, não há
 
 ```c
 unsigned char y = 200;  // 1100 1000
-y << 1                  // 1001 0000 = 144, e nao 400: um bit caiu
+y << 1                  // 1001 0000 = 144, e não 400: um bit caiu
 ```
 
 **Duas armadilhas a conhecer:**
@@ -82,10 +82,10 @@ As permissões de arquivo Unix seguem a mesma lógica em base 8: `0644` codifica
 ## Idiomas comuns
 
 ```c
-// Paridade: o bit menos significativo vale 1 para um numero impar
+// Paridade: o bit menos significativo vale 1 para um número impar
 if (n & 1) { /* n e impar */ }
 
-// Potencia de 2: apenas um bit em 1, entao n & (n-1) == 0
+// Potência de 2: apenas um bit em 1, então n & (n-1) == 0
 int e_potencia_de_2(unsigned int n) {
     return n != 0 && (n & (n - 1)) == 0;
 }
@@ -94,13 +94,13 @@ int e_potencia_de_2(unsigned int n) {
 int contar_bits(unsigned int n) {
     int total = 0;
     while (n) {
-        n &= n - 1;      // apaga o bit em 1 mais a direita
+        n &= n - 1;      // apaga o bit em 1 mais à direita
         total++;
     }
     return total;
 }
 
-// Trocar dois inteiros sem variavel temporaria (curiosidade, nao usar)
+// Trocar dois inteiros sem variável temporária (curiosidade, não usar)
 a ^= b; b ^= a; a ^= b;
 ```
 

@@ -64,7 +64,8 @@ Chaque processus démarre avec trois descripteurs déjà ouverts :
 | `2` | `STDERR_FILENO` | Sortie d'erreur |
 
 ```c
-int fd = open("fichier.txt", O_RDONLY); // renvoie par ex. 3 : le prochain emplacement libre de CE processus
+// renvoie par ex. 3 : le prochain emplacement libre de CE processus
+int fd = open("fichier.txt", O_RDONLY);
 read(fd, tampon, taille);
 close(fd);
 ```
@@ -100,8 +101,10 @@ Ces drapeaux se combinent avec `|` (OU binaire, voir [Les opérateurs binaires](
 
 ```c
 int fd = open("sortie.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-dup2(fd, STDOUT_FILENO);  // désormais, écrire sur "stdout" (1) écrit en réalité dans "sortie.txt"
-close(fd);                // l'original peut être fermé : la cible (1) reste valide, pointant vers la même ressource
+// désormais, écrire sur "stdout" (1) écrit en réalité dans "sortie.txt"
+dup2(fd, STDOUT_FILENO);
+// l'original peut être fermé : la cible (1) reste valide, pointant vers la même ressource
+close(fd);
 ```
 
 C'est exactement ce mécanisme que le chapitre sur l'architecture d'un shell utilise pour implémenter aussi bien les redirections (`>`, `<`) que les pipes (`|`) : dans les deux cas, on fait pointer un descripteur standard (`0`, `1`, `2`) vers une ressource différente juste avant d'exécuter le programme cible.

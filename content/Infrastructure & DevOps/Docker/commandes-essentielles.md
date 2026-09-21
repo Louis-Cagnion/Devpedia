@@ -7,7 +7,8 @@ order: 3
 ## Construire et lancer
 
 ```bash
-docker build -t mon-app:1.0 .  # construit une image nommée "mon-app", tag "1.0", depuis le Dockerfile du dossier courant (.)
+# construit une image nommée "mon-app", tag "1.0", depuis le Dockerfile du dossier courant (.)
+docker build -t mon-app:1.0 .
 docker run mon-app:1.0         # lance un conteneur à partir de cette image
 ```
 
@@ -48,7 +49,9 @@ Utile pour inspecter l'état d'un conteneur qui tourne déjà (fichiers, variabl
 ## Arrêter et nettoyer
 
 ```bash
-docker stop serveur     # envoie SIGTERM, laisse le conteneur s'arrêter proprement (cf. [tableau des signaux](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash)
+# envoie SIGTERM, laisse le conteneur s'arrêter proprement (cf. [tableau des
+# signaux](/?c=shells&s=bash&p=gestion-des-processus), rubrique Bash)
+docker stop serveur
 docker kill serveur     # envoie SIGKILL, arrêt immédiat et inconditionnel
 docker rm serveur       # supprime un conteneur arrêté
 docker rmi mon-app:1.0  # supprime une image
@@ -57,7 +60,8 @@ docker rmi mon-app:1.0  # supprime une image
 > **Note :** `docker stop` puis `docker kill` reproduisent exactement la même hiérarchie SIGTERM → SIGKILL vue au chapitre sur la gestion des processus : Docker ne réinvente pas un mécanisme d'arrêt, il pilote celui du système hôte.
 
 ```bash
-docker system prune        # supprime conteneurs arrêtés, images non utilisées, caches de build inutilisés
+# supprime conteneurs arrêtés, images non utilisées, caches de build inutilisés
+docker system prune
 ```
 
 ---

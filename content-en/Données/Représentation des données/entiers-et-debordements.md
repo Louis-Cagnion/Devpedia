@@ -127,17 +127,6 @@ The cost is clear compared to a native multiplication: multiplying *n* by *m* di
 
 The corollary of this binary representation is that you can act on the bits themselves: masks, shifts, flags. That's the subject of C's [Bitwise Operators](/?c=langages-de-programmation&s=c&p=operateurs-binaires) chapter.
 
-## Summary
-
-| Key point | |
-|---|---|
-| *n* bits | 2ⁿ values; unsigned max = 2ⁿ − 1 |
-| Negatives | Two's complement: invert the bits, add 1 |
-| Asymmetric signed range | Zero is counted on the positive side |
-| Overflow | The extra bits are lost, the value wraps around |
-| In C, signed overflow | **Undefined** behavior: use unsigned |
-| Arbitrary precision | Represent the number as a string of digits and multiply by hand, to go past any native size |
-
 ---
 
 ## 📋 Summary

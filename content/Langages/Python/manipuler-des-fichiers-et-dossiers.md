@@ -11,8 +11,9 @@ order: 15
 ```python
 from pathlib import Path
 
-dossier = Path("rapports") / "2026" / "aout.txt"  # "/" construit le chemin, PORTABLE (\ sous Windows, / ailleurs)
-print(dossier)                                    # rapports/2026/aout.txt
+# "/" construit le chemin, PORTABLE (\ sous Windows, / ailleurs)
+dossier = Path("rapports") / "2026" / "aout.txt"
+print(dossier)  # rapports/2026/aout.txt
 
 dossier.exists()   # True/False -> le fichier/dossier existe-t-il réellement sur le disque ?
 dossier.is_file()  # True/False
@@ -28,10 +29,14 @@ dossier.is_dir()   # True/False
 ```python
 dossier = Path("rapports") / "2026"
 
-dossier.mkdir()                              # FileNotFoundError si "rapports" n'existe pas encore (le parent)
-dossier.mkdir(parents=True)                  # crée aussi les parents manquants -> plus de FileNotFoundError
-dossier.mkdir(exist_ok=True)                 # FileExistsError si le dossier existe déjà (sans parents=True)
-dossier.mkdir(parents=True, exist_ok=True)   # les deux combinés : ne râle JAMAIS, crée ce qui manque
+# FileNotFoundError si "rapports" n'existe pas encore (le parent)
+dossier.mkdir()
+# crée aussi les parents manquants -> plus de FileNotFoundError
+dossier.mkdir(parents=True)
+# FileExistsError si le dossier existe déjà (sans parents=True)
+dossier.mkdir(exist_ok=True)
+# les deux combinés : ne râle JAMAIS, crée ce qui manque
+dossier.mkdir(parents=True, exist_ok=True)
 ```
 
 `parents=True, exist_ok=True` est le pattern idiomatique « créer le dossier si besoin » : il remplace un `if not dossier.exists(): dossier.mkdir()` explicite par une seule ligne qui ne plante jamais, que le dossier existe déjà ou non. Usage courant : créer le dossier parent d'un fichier juste avant de l'ouvrir en écriture.
@@ -39,7 +44,8 @@ dossier.mkdir(parents=True, exist_ok=True)   # les deux combinés : ne râle JAM
 ```python
 chemin_fichier = Path("rapports") / "2026" / "aout.txt"
 
-chemin_fichier.parent.mkdir(parents=True, exist_ok=True)   # crée "rapports/2026" avant d'écrire le fichier
+# crée "rapports/2026" avant d'écrire le fichier
+chemin_fichier.parent.mkdir(parents=True, exist_ok=True)
 with chemin_fichier.open("w", encoding="utf-8") as f:
     f.write("terminé")
 ```
@@ -73,9 +79,12 @@ rapport.name    # "rapport.txt" -> nom complet du fichier
 rapport.stem    # "rapport"     -> nom SANS l'extension
 rapport.suffix  # ".txt"        -> l'extension, avec le point
 
-rapport.with_name("brouillon.txt")                             # Path("brouillon.txt") -> remplace le nom entier
-rapport.with_suffix(".csv")                                    # Path("rapport.csv")   -> remplace juste l'extension
-rapport.with_name(f"{rapport.stem}.peugeot{rapport.suffix}")   # Path("rapport.peugeot.txt") -> insère un mot au milieu
+# Path("brouillon.txt") -> remplace le nom entier
+rapport.with_name("brouillon.txt")
+# Path("rapport.csv") -> remplace juste l'extension
+rapport.with_suffix(".csv")
+# Path("rapport.peugeot.txt") -> insère un mot au milieu
+rapport.with_name(f"{rapport.stem}.peugeot{rapport.suffix}")
 ```
 
 > **Piège :** `.with_name()` remplace le DERNIER segment du chemin (le nom de fichier), contrairement à `/` qui en AJOUTE un nouveau : `Path("a/b") / "c"` donne `a/b/c`, `Path("a/b").with_name("c")` donne `a/c`.
@@ -83,8 +92,10 @@ rapport.with_name(f"{rapport.stem}.peugeot{rapport.suffix}")   # Path("rapport.p
 ## Supprimer un fichier : `.unlink()`
 
 ```python
-chemin_fichier.unlink()                 # FileNotFoundError si le fichier n'existe déjà plus
-chemin_fichier.unlink(missing_ok=True)  # ne râle jamais, même si le fichier est déjà absent
+# FileNotFoundError si le fichier n'existe déjà plus
+chemin_fichier.unlink()
+# ne râle jamais, même si le fichier est déjà absent
+chemin_fichier.unlink(missing_ok=True)
 ```
 
 `.unlink()` supprime un FICHIER, jamais un dossier (voir `.rmdir()`/`shutil.rmtree()` plus bas pour ça). `missing_ok=True` évite une `FileNotFoundError` si le fichier a déjà été supprimé : même logique « idempotent, ne râle jamais si l'état visé est déjà atteint » que `exist_ok=True` sur `.mkdir()`.
@@ -92,11 +103,14 @@ chemin_fichier.unlink(missing_ok=True)  # ne râle jamais, même si le fichier e
 ## Supprimer un dossier non vide : `shutil.rmtree()`
 
 ```python
-dossier.rmdir()  # OSError si le dossier n'est pas vide -> pathlib refuse volontairement de supprimer du contenu
+# OSError si le dossier n'est pas vide -> pathlib refuse volontairement de supprimer du contenu
+dossier.rmdir()
 
 import shutil
-shutil.rmtree(dossier)                      # supprime le dossier ET tout son contenu, récursivement
-shutil.rmtree(dossier, ignore_errors=True)  # n'importe quelle erreur (fichier verrouillé...) est ignorée, en silence
+# supprime le dossier ET tout son contenu, récursivement
+shutil.rmtree(dossier)
+# n'importe quelle erreur (fichier verrouillé...) est ignorée, en silence
+shutil.rmtree(dossier, ignore_errors=True)
 ```
 
 `shutil` (« *shell utilities* », module standard) fournit des opérations de fichiers de plus haut niveau que `pathlib`. `shutil.rmtree()` équivaut à `rm -rf` en [Bash](/?c=shells&s=bash&p=redirections-et-pipes) ou `Remove-Item -Recurse` en [PowerShell](/?c=shells&s=powershell&p=powershell) ; `shutil.copy()`/`shutil.move()` couvrent la copie et le déplacement.
@@ -111,14 +125,16 @@ import csv
 with open("contacts.csv", newline="", encoding="utf-8") as f:
     lecteur = csv.reader(f, delimiter=",")
     for ligne in lecteur:
-        print(ligne)  # ["Jean", "Dupont", "25"] -> une simple LISTE, par position
+        # ["Jean", "Dupont", "25"] -> une simple LISTE, par position
+        print(ligne)
 ```
 
 ```python
 with open("contacts.csv", newline="", encoding="utf-8") as f:
     lecteur = csv.DictReader(f, delimiter=",")  # utilise la première ligne comme en-têtes
     for ligne in lecteur:
-        print(ligne)             # {"prenom": "Jean", "nom": "Dupont", "age": "25"} -> un DICT, par nom de colonne
+        # {"prenom": "Jean", "nom": "Dupont", "age": "25"} -> un DICT, par nom de colonne
+        print(ligne)
         print(ligne["prenom"])   # "Jean" -> accès par nom, plus lisible que par index
 ```
 
@@ -135,8 +151,10 @@ import json
 
 utilisateur = {"nom": "Léa", "notes": [15, 12, 18]}   # un dict Python "normal"
 
-texte = json.dumps(utilisateur, ensure_ascii=False)   # '{"nom": "Léa", "notes": [15, 12, 18]}' -> texte JSON
-objet = json.loads(texte)                             # objet Python, redécodé depuis le texte (== utilisateur)
+# '{"nom": "Léa", "notes": [15, 12, 18]}' -> texte JSON
+texte = json.dumps(utilisateur, ensure_ascii=False)
+# objet Python, redécodé depuis le texte (== utilisateur)
+objet = json.loads(texte)
 ```
 
 | Fonction | Entrée | Sortie |
@@ -154,7 +172,8 @@ Un fichier JSON classique contient un seul objet ou tableau racine : ajouter une
 
 ```python
 with open("etats.jsonl", "a", encoding="utf-8") as f:
-    f.write(json.dumps({"id": 1, "status": "ok"}, ensure_ascii=False) + "\n")   # AJOUTE une ligne, sans toucher au reste du fichier
+    # AJOUTE une ligne, sans toucher au reste du fichier
+    f.write(json.dumps({"id": 1, "status": "ok"}, ensure_ascii=False) + "\n")
 ```
 
 ```python
@@ -164,13 +183,33 @@ with open("etats.jsonl", encoding="utf-8") as f:
         print(entree["id"])
 ```
 
+### Ne relire que ce qui a été ajouté depuis la dernière lecture : `.seek()`/`.tell()`
+
+Un fichier de log grossit pendant qu'un autre processus l'alimente en continu. Le relire en entier à intervalle régulier pour n'en extraire que les nouvelles lignes gaspille du temps sur un fichier qui devient volumineux ; retenir la position déjà lue permet de ne relire que ce qui a été écrit depuis.
+
+```python
+position = 0
+
+def lire_les_nouvelles_lignes(chemin):
+    global position
+    with open(chemin, encoding="utf-8") as f:
+        f.seek(position)              # reprend là où la lecture précédente s'est arrêtée
+        nouvelles_lignes = f.readlines()
+        position = f.tell()           # mémorise la position atteinte, pour le prochain appel
+    return nouvelles_lignes
+```
+
+`.tell()` renvoie la position actuelle du curseur de lecture (en octets depuis le début du fichier) ; `.seek(position)` y replace le curseur avant de lire. En retenant `position` entre deux appels, chaque passage ne relit que les octets écrits depuis le précédent, jamais le fichier entier.
+
+> **Note :** c'est le mécanisme sous-jacent de `tail -f` en [Bash](/?c=shells&s=bash&p=redirections-et-pipes) ou `Get-Content -Wait` en [PowerShell](/?c=shells&s=powershell&p=powershell) : ces commandes suivent elles-mêmes un fichier qui grossit en ne relisant que son contenu ajouté, jamais depuis le début.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | `pathlib.Path` représente un chemin comme un objet manipulable (`/` pour construire, `.stem`/`.suffix`/`.with_name()` pour décomposer, `.open()` équivalent à `open()`, `.mkdir()` pour créer un dossier). `shutil.rmtree()` supprime un dossier non vide, ce que `Path.rmdir()` refuse. `csv.DictReader` lit un CSV en dicts nommés par en-tête, `csv.reader` en listes positionnelles. `json.dumps`/`loads` convertissent objet Python et texte JSON dans les deux sens ; le format JSON Lines (une ligne = un objet) permet d'ajouter des entrées sans réécrire tout le fichier. |
-| **Outils utilisables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`/`.unlink()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`. |
-| **Pièges à éviter** | `.with_name()` remplace le dernier segment du chemin là où `/` en ajoute un nouveau. `.mkdir()` sans `exist_ok=True` plante si le dossier existe déjà. `.write_text()`/`.read_text()` sur un gros fichier qui devrait être traité ligne par ligne. `shutil.rmtree(ignore_errors=True)` rend un échec silencieux. Oublier `newline=""` avec `csv` peut casser des valeurs multi-lignes entre guillemets. Oublier `ensure_ascii=False` rend les accents illisibles dans le JSON produit (sans casser `json.loads()`). |
-| **Bonnes pratiques** | Utiliser `dossier.mkdir(parents=True, exist_ok=True)` (ou `chemin_fichier.parent.mkdir(...)`) plutôt qu'un `if not dossier.exists(): ...` avant d'écrire un fichier. Vérifier `dossier.exists()` après un `rmtree(ignore_errors=True)` plutôt que de supposer le succès. Préférer `DictReader`/`DictWriter` à un accès par index dès qu'un CSV a des en-têtes. Utiliser le JSON Lines pour un fichier d'état qui grossit au fil de l'exécution, un fichier JSON classique pour un objet figé. |
+| **À retenir** | `pathlib.Path` représente un chemin comme un objet manipulable (`/` pour construire, `.stem`/`.suffix`/`.with_name()` pour décomposer, `.open()` équivalent à `open()`, `.mkdir()` pour créer un dossier). `shutil.rmtree()` supprime un dossier non vide, ce que `Path.rmdir()` refuse. `csv.DictReader` lit un CSV en dicts nommés par en-tête, `csv.reader` en listes positionnelles. `json.dumps`/`loads` convertissent objet Python et texte JSON dans les deux sens ; le format JSON Lines (une ligne = un objet) permet d'ajouter des entrées sans réécrire tout le fichier. `.seek()`/`.tell()` permettent de ne relire que ce qu'un fichier qui grossit a reçu depuis la dernière lecture. |
+| **Outils utilisables** | `Path()`, `.exists()`/`.is_file()`/`.is_dir()`/`.open()`/`.mkdir()`/`.unlink()`, `.write_text()`/`.read_text()`, `.with_name()`/`.with_suffix()`, `shutil.rmtree()`/`.copy()`/`.move()`, `csv.reader`/`DictReader`/`writer`/`DictWriter`, `json.dumps`/`loads`/`dump`/`load`, `.seek()`/`.tell()`. |
+| **Pièges à éviter** | `.with_name()` remplace le dernier segment du chemin là où `/` en ajoute un nouveau. `.mkdir()` sans `exist_ok=True` plante si le dossier existe déjà. `.write_text()`/`.read_text()` sur un gros fichier qui devrait être traité ligne par ligne. `shutil.rmtree(ignore_errors=True)` rend un échec silencieux. Oublier `newline=""` avec `csv` peut casser des valeurs multi-lignes entre guillemets. Oublier `ensure_ascii=False` rend les accents illisibles dans le JSON produit (sans casser `json.loads()`). Relire un fichier de log entier à chaque passage au lieu de retenir la position déjà lue. |
+| **Bonnes pratiques** | Utiliser `dossier.mkdir(parents=True, exist_ok=True)` (ou `chemin_fichier.parent.mkdir(...)`) plutôt qu'un `if not dossier.exists(): ...` avant d'écrire un fichier. Vérifier `dossier.exists()` après un `rmtree(ignore_errors=True)` plutôt que de supposer le succès. Préférer `DictReader`/`DictWriter` à un accès par index dès qu'un CSV a des en-têtes. Utiliser le JSON Lines pour un fichier d'état qui grossit au fil de l'exécution, un fichier JSON classique pour un objet figé. Mémoriser la position (`.tell()`) après chaque lecture d'un fichier qui grossit, pour y repositionner le curseur (`.seek()`) au passage suivant. |

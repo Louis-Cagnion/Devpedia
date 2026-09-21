@@ -27,16 +27,21 @@ Receive-Job $job  # récupère la sortie produite par le job
 ## Voir les processus en cours (`Get-Process`)
 
 ```powershell
-Get-Process                                                         # liste tous les processus, avec CPU, mémoire, PID...
-Get-Process | Where-Object { $_.Name -like "*chrome*" }             # filtre par nom, équivalent de "ps aux | grep"
-Get-Process | Sort-Object CPU -Descending | Select-Object -First 5  # les 5 processus les plus gourmands en CPU
+# liste tous les processus, avec CPU, mémoire, PID...
+Get-Process
+# filtre par nom, équivalent de "ps aux | grep"
+Get-Process | Where-Object { $_.Name -like "*chrome*" }
+# les 5 processus les plus gourmands en CPU
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 5
 ```
 
 ## Terminer un processus (`Stop-Process`)
 
 ```powershell
-Stop-Process -Id 1234         # demande l'arrêt du processus (équivalent le plus proche de SIGTERM)
-Stop-Process -Id 1234 -Force  # arrêt forcé, sans attendre une fermeture propre (équivalent de SIGKILL)
+# demande l'arrêt du processus (équivalent le plus proche de SIGTERM)
+Stop-Process -Id 1234
+# arrêt forcé, sans attendre une fermeture propre (équivalent de SIGKILL)
+Stop-Process -Id 1234 -Force
 Stop-Process -Name "notepad"  # cible par nom plutôt que par PID
 ```
 

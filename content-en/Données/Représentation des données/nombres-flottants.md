@@ -146,24 +146,13 @@ The foundation is common; languages only differ in the packaging:
 
 Above all, remember that these differences change nothing about the fundamentals: the hardware decides, and it decides the same way for everyone.
 
-## Summary
-
-| Key point | Why |
-|---|---|
-| `0.1 + 0.2 != 0.3` in every language | Binary encoding, not a language bug |
-| Never compare two floats with `==` | Two equivalent computations give different bits |
-| Compare via an epsilon suited to the domain | Precision is relative to the order of magnitude |
-| Monetary amounts as integers or `DECIMAL` | No approximation is tolerable for money |
-| Exact integers up to 2⁵³ in double precision | The mantissa is 52 bits |
-| `NaN != NaN` | An invalid value equals nothing, including itself |
-
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | A float (IEEE 754 standard) stores an approximation, not an exact value: `0.1 + 0.2 != 0.3` in every language, with no exception. Precision is relative: the larger a number is, the bigger the gap between two consecutive floats. |
+| **Key takeaways** | A float (IEEE 754 standard) stores an approximation, not an exact value: `0.1 + 0.2 != 0.3` in every language, with no exception. Precision is relative: the larger a number is, the bigger the gap between two consecutive floats. Integers stay exact up to 2⁵³ in double precision (52 mantissa bits); beyond that, neighboring integers become indistinguishable. |
 | **Tools you can use** | Epsilon-based comparison (`math.isclose`, `fabs(a-b) < epsilon`), `DECIMAL` types for exact amounts. Fixed-point for a bit-for-bit reproducible result with no FPU. |
-| **Pitfalls to avoid** | Comparing two floats with `==`; storing a monetary amount as a float rather than as integers (cents) or `DECIMAL`. |
+| **Pitfalls to avoid** | Comparing two floats with `==` (including `NaN`, which equals nothing, not even itself); storing a monetary amount as a float rather than as integers (cents) or `DECIMAL`. |
 | **Best practices** | Choose an epsilon suited to the order of magnitude being handled, never the default machine epsilon for large values. |

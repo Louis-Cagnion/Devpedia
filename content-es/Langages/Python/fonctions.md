@@ -28,7 +28,8 @@ saludar("Juan", "Ey")     # "Ey Juan"
 > **Trampa clásica: nunca usar un objeto mutable (lista, dict) como valor por defecto.** El valor por defecto se evalúa **una sola vez**, al definir la función, no en cada llamada:
 
 ```python
-def agregar_a_lista(elemento, lista=[]):  # PELIGRO: esta lista está COMPARTIDA entre todas las llamadas
+# PELIGRO: esta lista está COMPARTIDA entre todas las llamadas
+def agregar_a_lista(elemento, lista=[]):
     lista.append(elemento)
     return lista
 
@@ -49,12 +50,14 @@ def agregar_a_lista(elemento, lista=None):
 ## `*args` y `**kwargs`: un número variable de argumentos
 
 ```python
-def suma_variable(*numeros):     # *args: agrupa los argumentos posicionales en exceso en una tupla
+# *args: agrupa los argumentos posicionales en exceso en una tupla
+def suma_variable(*numeros):
     return sum(numeros)
 
 suma_variable(1, 2, 3, 4)   # 10
 
-def mostrar_info(**opciones):  # **kwargs: agrupa los argumentos con nombre en exceso en un dict
+# **kwargs: agrupa los argumentos con nombre en exceso en un dict
+def mostrar_info(**opciones):
     for clave, valor in opciones.items():
         print(f"{clave}: {valor}")
 
@@ -109,7 +112,8 @@ def contador():
     total = 0
 
     def incrementar():
-        nonlocal total   # sin esto, "total += 1" crearía una nueva variable LOCAL a incrementar()
+        # sin esto, "total += 1" crearía una nueva variable LOCAL a incrementar()
+        nonlocal total
         total += 1
         return total
 

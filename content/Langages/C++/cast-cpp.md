@@ -14,7 +14,8 @@ Le cast à la C effectue **silencieusement** n'importe quelle conversion demand�
 int entier = 65;
 char lettre = (char)entier;          // conversion numérique anodine
 const char *texte = "salut";
-char *modifiable = (char *)texte;    // retire un "const" : bien plus risqué, mais syntaxe identique
+// retire un "const" : bien plus risqué, mais syntaxe identique
+char *modifiable = (char *)texte;
 ```
 
 Les quatre cast C++ rendent cette distinction explicite, et surtout **recherchable** : `grep -r "reinterpret_cast"` trouve immédiatement tous les endroits à risque d'un projet, ce qu'un cast à la C ne permet pas.
@@ -36,7 +37,8 @@ Base *base = static_cast<Base *>(&derivee); // upcast : toujours valide
 Descendre (*downcast*) d'une classe de base vers une classe dérivée est risqué : le pointeur de base peut, en réalité, pointer vers n'importe quelle classe dérivée de la hiérarchie, pas forcément celle visée. `dynamic_cast` vérifie ce point **à l'exécution**, grâce au [RTTI](https://en.cppreference.com/w/cpp/language/rtti) (*Run-Time Type Information*, les informations de type conservées par les classes polymorphes) :
 
 ```cpp
-Base *base = obtenirUnObjet(); // renvoie un pointeur vers un type dérivé inconnu à la compilation
+// renvoie un pointeur vers un type dérivé inconnu à la compilation
+Base *base = obtenirUnObjet();
 
 Derivee *derivee = dynamic_cast<Derivee *>(base);
 if (derivee != nullptr) {
@@ -58,7 +60,8 @@ if (derivee != nullptr) {
 `const_cast` est le seul des quatre à ne **jamais** changer le type sous-jacent ni la représentation binaire de la valeur : il ajoute ou retire uniquement la qualification `const`.
 
 ```cpp
-void ancienneAPI(char *chaine); // fonction externe qui ne modifie jamais "chaine", mais ne le déclare pas
+// fonction externe qui ne modifie jamais "chaine", mais ne le déclare pas
+void ancienneAPI(char *chaine);
 
 void appeler(const char *texte)
 {
@@ -76,7 +79,8 @@ void appeler(const char *texte)
 int valeur = 42;
 int *pointeurInt = &valeur;
 
-uintptr_t adresseBrute = reinterpret_cast<uintptr_t>(pointeurInt); // le pointeur, vu comme un simple entier
+// le pointeur, vu comme un simple entier
+uintptr_t adresseBrute = reinterpret_cast<uintptr_t>(pointeurInt);
 ```
 
 Réservé aux cas bas niveau (manipulation de pointeurs bruts, interface avec du matériel, sérialisation binaire) : une utilisation en dehors de ce contexte est presque toujours le signe d'un problème de conception ailleurs.
