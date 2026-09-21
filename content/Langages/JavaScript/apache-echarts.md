@@ -33,7 +33,7 @@ const option = {
 chart.setOption(option);   // applique la configuration : le graphique se dessine
 ```
 
-> **Bonne pratique :** un `option` reste un objet JavaScript ordinaire, généré dynamiquement à partir des données réelles (une réponse d'API, un calcul) plutôt que recopié en dur : construire ses clés (`xAxis.data`, `series[].data`) depuis les données à afficher, jamais l'inverse.
+> **Bonne pratique :** un `option` reste un objet JavaScript ordinaire, généré dynamiquement à partir des données réelles (une réponse d'[API](/?c=infrastructure&p=api-et-http), un calcul) plutôt que recopié en dur : construire ses clés (`xAxis.data`, `series[].data`) depuis les données à afficher, jamais l'inverse.
 
 ## Mettre à jour les données sans tout redessiner : `setOption()`
 
@@ -59,7 +59,7 @@ window.addEventListener('resize', () => chart.resize());
 
 ## Libérer la mémoire quand le graphique disparaît : `dispose()`
 
-Dans une [application monopage (SPA)](/?c=langages&s=javascript&p=ssr-vs-csr#csr-le-serveur-envoie-une-coquille-vide), un composant de graphique est créé puis détruit à chaque navigation. Retirer la `<div>` du DOM ne suffit pas à libérer le graphique : `echarts.init()` a enregistré son propre gestionnaire de redimensionnement et alloué des ressources de rendu, qui restent actives tant que `chart.dispose()` n'a pas été appelé explicitement.
+Dans une [application monopage (SPA)](/?c=langages&s=javascript&p=ssr-vs-csr#csr-le-serveur-envoie-une-coquille-vide), un composant de graphique est créé puis détruit à chaque navigation. Retirer la `<div>` du [DOM](/?c=langages&s=javascript&p=dom-et-evenements) ne suffit pas à libérer le graphique : `echarts.init()` a enregistré son propre gestionnaire de redimensionnement et alloué des ressources de rendu, qui restent actives tant que `chart.dispose()` n'a pas été appelé explicitement.
 
 ```javascript
 chart.dispose();   // a appeler avant de retirer le conteneur du DOM

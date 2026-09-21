@@ -33,7 +33,7 @@ const option = {
 chart.setOption(option);   // applies the configuration: the chart draws itself
 ```
 
-> **Best practice:** an `option` stays an ordinary JavaScript object, built dynamically from the real data (an API response, a computation) rather than hardcoded: build its keys (`xAxis.data`, `series[].data`) from the data to display, never the other way around.
+> **Best practice:** an `option` stays an ordinary JavaScript object, built dynamically from the real data (an [API](/?c=infrastructure&p=api-et-http) response, a computation) rather than hardcoded: build its keys (`xAxis.data`, `series[].data`) from the data to display, never the other way around.
 
 ## Updating data without redrawing everything: `setOption()`
 
@@ -59,7 +59,7 @@ window.addEventListener('resize', () => chart.resize());
 
 ## Freeing memory when the chart disappears: `dispose()`
 
-In a [single-page application (SPA)](/?c=langages&s=javascript&p=ssr-vs-csr#csr-the-server-sends-an-empty-shell), a chart component is created and destroyed on every navigation. Removing the `<div>` from the DOM isn't enough to free the chart: `echarts.init()` registered its own resize handler and allocated rendering resources, which stay active until `chart.dispose()` has been explicitly called.
+In a [single-page application (SPA)](/?c=langages&s=javascript&p=ssr-vs-csr#csr-the-server-sends-an-empty-shell), a chart component is created and destroyed on every navigation. Removing the `<div>` from the [DOM](/?c=langages&s=javascript&p=dom-et-evenements) isn't enough to free the chart: `echarts.init()` registered its own resize handler and allocated rendering resources, which stay active until `chart.dispose()` has been explicitly called.
 
 ```javascript
 chart.dispose();   // call before removing the container from the DOM
