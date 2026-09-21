@@ -90,6 +90,30 @@ if (!$utilisateurConnecte) {
 ?>
 ```
 
+## Avec un micro-framework : Slim et PSR-7
+
+Le pattern manuel ci-dessus (tableau "route → fichier", superglobales lues directement) peut être remplacé par un micro-framework comme [Slim](https://www.slimframework.com/), qui fournit un vrai routeur (comparable à Express) et normalise la requête/réponse via **PSR-7** :
+
+```php
+<?php
+$app->get('/contact', function (
+    Psr\Http\Message\ServerRequestInterface $requete,
+    Psr\Http\Message\ResponseInterface $reponse
+) {
+    $reponse->getBody()->write('Page contact');
+    return $reponse;
+});
+?>
+```
+
+**PSR-7** (*PHP Standards Recommendation* n°7) est un standard PHP-FIG : il définit `ServerRequestInterface` et `ResponseInterface`, une représentation **objet et immuable** d'une requête/réponse HTTP, à la place des superglobales (`$_SERVER`, `$_POST`...) et de `echo`/`header()`. N'importe quel framework qui implémente ce standard (Slim ici, mais aussi Mezzio, ou un middleware indépendant du framework) peut échanger ces objets, contrairement aux superglobales, propres à chaque projet.
+
+| | Front controller manuel | Micro-framework (Slim + PSR-7) |
+|---|---|---|
+| Requête | Superglobales (`$_SERVER`, `$_GET`...) | Objet `ServerRequestInterface`, immuable |
+| Réponse | `echo`, `header()` | Objet `ResponseInterface`, retourné par le handler |
+| Portabilité entre frameworks | Aucune (code propre au projet) | Interopérable (tout framework PSR-7) |
+
 ---
 
 ## 📋 Récapitulatif
@@ -97,6 +121,6 @@ if (!$utilisateurConnecte) {
 | | |
 |---|---|
 | **À retenir** | Sans framework, un front controller unique reçoit toutes les requêtes et dispatch via une table "route → fichier". Par défaut, tout fichier physique sous la racine web est accessible : l'inverse d'un routeur JS où rien n'existe sans déclaration explicite. |
-| **Outils utilisables** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` pour un serveur de développement. |
+| **Outils utilisables** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` pour un serveur de développement ; un micro-framework PSR-7 (Slim...) pour un vrai routeur et des objets requête/réponse immuables. |
 | **Pièges à éviter** | Tester l'existence d'un fichier avant de vérifier les dossiers bloqués (ordre inversé = protection contournée) ; rediriger sans `exit` juste après. |
 | **Bonnes pratiques** | Bloquer explicitement tout dossier sensible avant de servir un fichier physique ; toujours `exit` immédiatement après un `header('Location: ...')`. |

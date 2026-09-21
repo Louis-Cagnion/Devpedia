@@ -90,6 +90,30 @@ if (!$usuarioConectado) {
 ?>
 ```
 
+## Con un micro-framework: Slim y PSR-7
+
+El patrón manual anterior (array "ruta → archivo", superglobales leídas directamente) puede reemplazarse por un micro-framework como [Slim](https://www.slimframework.com/), que ofrece un enrutador real (comparable a Express) y normaliza la petición/respuesta vía **PSR-7**:
+
+```php
+<?php
+$app->get('/contacto', function (
+    Psr\Http\Message\ServerRequestInterface $peticion,
+    Psr\Http\Message\ResponseInterface $respuesta
+) {
+    $respuesta->getBody()->write('Página de contacto');
+    return $respuesta;
+});
+?>
+```
+
+**PSR-7** (*PHP Standards Recommendation* n.º 7) es un estándar de PHP-FIG: define `ServerRequestInterface` y `ResponseInterface`, una representación **de objetos e inmutable** de una petición/respuesta HTTP, en lugar de las superglobales (`$_SERVER`, `$_POST`...) y de `echo`/`header()`. Cualquier framework que implemente este estándar (Slim aquí, pero también Mezzio, o un middleware independiente del framework) puede intercambiar estos objetos, a diferencia de las superglobales, propias de cada proyecto.
+
+| | Front controller manual | Micro-framework (Slim + PSR-7) |
+|---|---|---|
+| Petición | Superglobales (`$_SERVER`, `$_GET`...) | Objeto `ServerRequestInterface`, inmutable |
+| Respuesta | `echo`, `header()` | Objeto `ResponseInterface`, devuelto por el handler |
+| Portabilidad entre frameworks | Ninguna (código propio del proyecto) | Interoperable (cualquier framework PSR-7) |
+
 ---
 
 ## 📋 Resumen
@@ -97,6 +121,6 @@ if (!$usuarioConectado) {
 | | |
 |---|---|
 | **Para recordar** | Sin framework, un front controller único recibe todas las peticiones y hace dispatch vía una tabla "ruta → archivo". Por defecto, todo archivo físico bajo la raíz web es accesible: lo contrario de un enrutador JS donde nada existe sin declaración explícita. |
-| **Herramientas utilizables** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` para un servidor de desarrollo. |
+| **Herramientas utilizables** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` para un servidor de desarrollo; un micro-framework PSR-7 (Slim...) para un enrutador real y objetos petición/respuesta inmutables. |
 | **Trampas a evitar** | Comprobar la existencia de un archivo antes de verificar las carpetas bloqueadas (orden invertido = protección eludida); redirigir sin `exit` justo después. |
 | **Buenas prácticas** | Bloquear explícitamente toda carpeta sensible antes de servir un archivo físico; hacer siempre `exit` inmediatamente después de un `header('Location: ...')`. |

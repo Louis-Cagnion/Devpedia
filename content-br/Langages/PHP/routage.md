@@ -90,6 +90,30 @@ if (!$usuarioConectado) {
 ?>
 ```
 
+## Com um micro-framework: Slim e PSR-7
+
+O padrão manual acima (array "rota → arquivo", superglobais lidas diretamente) pode ser substituído por um micro-framework como [Slim](https://www.slimframework.com/), que fornece um roteador de verdade (comparável ao Express) e normaliza a requisição/resposta via **PSR-7**:
+
+```php
+<?php
+$app->get('/contato', function (
+    Psr\Http\Message\ServerRequestInterface $requisicao,
+    Psr\Http\Message\ResponseInterface $resposta
+) {
+    $resposta->getBody()->write('Página de contato');
+    return $resposta;
+});
+?>
+```
+
+**PSR-7** (*PHP Standards Recommendation* nº 7) é um padrão do PHP-FIG: define `ServerRequestInterface` e `ResponseInterface`, uma representação **em objetos e imutável** de uma requisição/resposta HTTP, no lugar das superglobais (`$_SERVER`, `$_POST`...) e de `echo`/`header()`. Qualquer framework que implemente esse padrão (Slim aqui, mas também Mezzio, ou um middleware independente do framework) pode trocar esses objetos, ao contrário das superglobais, próprias de cada projeto.
+
+| | Front controller manual | Micro-framework (Slim + PSR-7) |
+|---|---|---|
+| Requisição | Superglobais (`$_SERVER`, `$_GET`...) | Objeto `ServerRequestInterface`, imutável |
+| Resposta | `echo`, `header()` | Objeto `ResponseInterface`, retornado pelo handler |
+| Portabilidade entre frameworks | Nenhuma (código próprio do projeto) | Interoperável (qualquer framework PSR-7) |
+
 ---
 
 ## 📋 Recapitulando
@@ -97,6 +121,6 @@ if (!$usuarioConectado) {
 | | |
 |---|---|
 | **Para lembrar** | Sem framework, um front controller único recebe todas as requisições e faz o dispatch via uma tabela "rota → arquivo". Por padrão, todo arquivo físico sob a raiz web é acessível: o inverso de um roteador JS onde nada existe sem declaração explícita. |
-| **Ferramentas utilizáveis** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` para um servidor de desenvolvimento. |
+| **Ferramentas utilizáveis** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` para um servidor de desenvolvimento; um micro-framework PSR-7 (Slim...) para um roteador de verdade e objetos requisição/resposta imutáveis. |
 | **Armadilhas a evitar** | Testar a existência de um arquivo antes de verificar as pastas bloqueadas (ordem invertida = proteção contornada); redirecionar sem `exit` logo depois. |
 | **Boas práticas** | Bloquear explicitamente toda pasta sensível antes de servir um arquivo físico; sempre `exit` imediatamente após um `header('Location: ...')`. |

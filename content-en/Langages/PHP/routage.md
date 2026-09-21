@@ -90,6 +90,30 @@ if (!$loggedIn) {
 ?>
 ```
 
+## With a micro-framework: Slim and PSR-7
+
+The manual pattern above ("route → file" array, superglobals read directly) can be replaced with a micro-framework like [Slim](https://www.slimframework.com/), which provides a real router (comparable to Express) and normalizes the request/response via **PSR-7**:
+
+```php
+<?php
+$app->get('/contact', function (
+    Psr\Http\Message\ServerRequestInterface $request,
+    Psr\Http\Message\ResponseInterface $response
+) {
+    $response->getBody()->write('Contact page');
+    return $response;
+});
+?>
+```
+
+**PSR-7** (*PHP Standards Recommendation* No. 7) is a PHP-FIG standard: it defines `ServerRequestInterface` and `ResponseInterface`, an **object-based, immutable** representation of an HTTP request/response, instead of the superglobals (`$_SERVER`, `$_POST`...) and `echo`/`header()`. Any framework that implements this standard (Slim here, but also Mezzio, or a framework-independent middleware) can exchange these objects, unlike superglobals, which are specific to each project.
+
+| | Manual front controller | Micro-framework (Slim + PSR-7) |
+|---|---|---|
+| Request | Superglobals (`$_SERVER`, `$_GET`...) | `ServerRequestInterface` object, immutable |
+| Response | `echo`, `header()` | `ResponseInterface` object, returned by the handler |
+| Portability across frameworks | None (project-specific code) | Interoperable (any PSR-7 framework) |
+
 ---
 
 ## 📋 Summary
@@ -97,6 +121,6 @@ if (!$loggedIn) {
 | | |
 |---|---|
 | **Key takeaways** | Without a framework, a single front controller receives every request and dispatches via a "route → file" table. By default, every physical file under the web root is accessible: the opposite of a JS router, where nothing exists without explicit declaration. |
-| **Tools you can use** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` for a development server. |
+| **Tools you can use** | `parse_url()`, `$_SERVER['REQUEST_URI']`, `php -S` for a development server; a PSR-7 micro-framework (Slim...) for a real router and immutable request/response objects. |
 | **Pitfalls to avoid** | Checking whether a file exists before checking blocked folders (reversed order = bypassed protection); redirecting without `exit` right afterward. |
 | **Best practices** | Explicitly block every sensitive folder before serving a physical file; always `exit` immediately after a `header('Location: ...')`. |
