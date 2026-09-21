@@ -35,7 +35,7 @@ Con este sistema de monedas (1, 2, 5, 10, 20, 50), esta elección voraz siempre 
 | Algoritmo de Dijkstra (camino más corto) | Extender siempre hacia el vértice no visitado más cercano |
 | Codificación de Huffman (compresión) | Agrupar siempre los dos símbolos menos frecuentes |
 
-Un algoritmo voraz suele ser rápido y sencillo de implementar (una sola pasada, sin vuelta atrás); a diferencia de un algoritmo que explora varias posibilidades antes de elegir (programación dinámica, `backtracking`), más costoso pero que garantiza la optimalidad en casos donde el voraz falla.
+Un algoritmo voraz suele ser rápido y sencillo de implementar (una sola pasada, sin vuelta atrás); a diferencia de un algoritmo que explora varias posibilidades antes de elegir ([programación dinámica](https://es.wikipedia.org/wiki/Programaci%C3%B3n_din%C3%A1mica), [backtracking](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes)), más costoso pero que garantiza la optimalidad en casos donde el voraz falla.
 
 ---
 

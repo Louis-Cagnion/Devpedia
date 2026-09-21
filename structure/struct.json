@@ -74,6 +74,14 @@
             {
               "id": "algorithme-glouton",
               "label": "L'algorithme glouton (Greedy algorithm)"
+            },
+            {
+              "id": "swap-remove",
+              "label": "Le swap-remove : retirer un élément en O(1)"
+            },
+            {
+              "id": "backtracking-et-satisfaction-de-contraintes",
+              "label": "Le backtracking et la satisfaction de contraintes (CSP)"
             }
           ]
         },

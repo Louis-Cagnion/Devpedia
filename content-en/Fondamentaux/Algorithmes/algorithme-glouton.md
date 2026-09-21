@@ -35,7 +35,7 @@ With this coin system (1, 2, 5, 10, 20, 50), this greedy choice always gives the
 | Dijkstra's algorithm (shortest path) | Always extend toward the closest unvisited vertex |
 | Huffman coding (compression) | Always merge the two least frequent symbols |
 
-A greedy algorithm is generally fast and simple to implement (a single pass, no backtracking); as opposed to an algorithm that explores several possibilities before choosing (dynamic programming, backtracking), which is more costly but guarantees optimality in cases where greedy fails.
+A greedy algorithm is generally fast and simple to implement (a single pass, no backtracking); as opposed to an algorithm that explores several possibilities before choosing ([dynamic programming](https://en.wikipedia.org/wiki/Dynamic_programming), [backtracking](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes)), which is more costly but guarantees optimality in cases where greedy fails.
 
 ---
 

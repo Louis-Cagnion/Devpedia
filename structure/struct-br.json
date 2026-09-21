@@ -74,6 +74,14 @@
             {
               "id": "algorithme-glouton",
               "label": "O algoritmo guloso (Greedy algorithm)"
+            },
+            {
+              "id": "swap-remove",
+              "label": "O swap-remove: remover um elemento em O(1)"
+            },
+            {
+              "id": "backtracking-et-satisfaction-de-contraintes",
+              "label": "O backtracking e a satisfação de restrições (CSP)"
             }
           ]
         },
