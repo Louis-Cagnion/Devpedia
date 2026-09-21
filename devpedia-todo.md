@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : plus rien d'auto-exécutable pour l'instant. Reste un test navigateur en attente de Louis (point 3).
+> Prochaine tâche : régénérer l'audio BR de `Langages/PHP/php-fpm` (point 4). Reste aussi un test navigateur en attente de Louis (point 3).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -8,9 +8,5 @@
 Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il s'affiche normalement sur desktop (`css/content.css`, `.page::before`). Deux hypothèses déjà invalidées par le retest de Louis (détail dans `journal-de-bord.md`) : `@supports` autour de `color-mix()`, puis son remplacement complet par `rgba()` + triplets RGB précalculés -- toujours gris dans les deux cas. Plus aucune fonction CSS exotique ne subsiste dans `.page::before` (uniquement `var()`, `rgba()`, `radial-gradient()`, `inset: 0`).
 - Reste à Louis : sur la page d'un chapitre (iPhone), bouton "aA" de la barre d'adresse Safari → "Demander la version pour ordinateur", et dire si le fond s'affiche correctement dans ce mode. Si ça ne suffit pas à trancher, étape suivante : inspecteur Safari distant (Mac connecté à l'iPhone).
 
-## 4. Notions repérées en fin d'auto-review du module `nps_qualite` (Backoffice-TC)
-Issu de la fin du parcours (backend PHP/Slim, CSS, calculette) après la partie déjà traitée (Apache ECharts, `Element.closest()`, déjà commitées). 4 notions absentes :
-- **`inputmode` (attribut HTML)** : `private/nps_qualite/calculette.html` (ex. `inputmode="numeric"`, `inputmode="decimal"`) - contrôle le type de clavier virtuel affiché sur mobile, distinct de `type="number"` (qui ne force qu'une validation/incrémentation, pas le clavier). Absent de tout chapitre HTML/formulaires.
-- **`novalidate` (attribut de `<form>`)** : même fichier, tous les formulaires de la calculette - désactive la validation HTML5 native du navigateur (messages/UI natifs sur `min`/`max`/`required`...) quand un formulaire n'a pas de vraie soumission serveur et gère sa propre validation en JS (ici : recalcul live à chaque `input`, jamais de `submit`). Absent de Devpedia.
-- **`readonly` vs `disabled` sur un champ de formulaire** : `calculette.html` (champs "Total", ex. `nps-total`) utilise `readonly`, jamais `disabled`, pour un champ calculé automatiquement - différence non triviale : un champ `readonly` reste focusable/sélectionnable/copiable et sa valeur est quand même soumise avec le formulaire, contrairement à `disabled` (ignoré du tout, y compris à la soumission). Absent de Devpedia.
-- **PSR-7 (`ServerRequestInterface`/`ResponseInterface`) et le framework micro Slim** : `src/Modules/nps_qualite/Controllers/NpsController.php` type-hinte ses paramètres de méthode avec ces deux interfaces (`Psr\Http\Message\...`) - standard PHP-FIG définissant une représentation objet immuable d'une requête/réponse HTTP, implémenté par plusieurs frameworks (Slim ici, mais aussi Mezzio...), pas propre à un seul. Absent de `content/Langages/PHP/routage.md` et `http.md` (aucune mention de Slim, PSR, ni middleware).
+## 4. Régénérer l'audio BR de `Langages/PHP/php-fpm`
+Seul chapitre encore affecté par le bug `_` (fix dans `js/reader-pronunciation.js`/`js/reader.js`) à ne pas avoir été régénéré : `node scripts/generate-audio.mjs "Langages\PHP\php-fpm" --lang=br`.
