@@ -17,7 +17,9 @@ from piper import PiperVoice
 def main():
     model_path, config_path, output_dir = sys.argv[1], sys.argv[2], sys.argv[3]
     voice = PiperVoice.load(model_path, config_path)
-    entries = json.loads(sys.stdin.read())
+    # sys.stdin.read() follows the console/locale codepage (cp1252 here), corrupting bytes
+    # outside its table (e.g. curly quotes) into lone surrogates -- decode raw bytes as UTF-8.
+    entries = json.loads(sys.stdin.buffer.read().decode("utf-8"))
 
     for entry in entries:
         wav_path = f"{output_dir}/{entry['index']}.wav"
