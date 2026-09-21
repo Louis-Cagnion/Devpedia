@@ -335,6 +335,9 @@ function collectLeafSegments(leaf, lang, context, pageId, entries) {
             const code = codeNode.textContent.trim();
             if (!code) return;
             const spoken = speakableCode(code, context, lang);
+            // A bare `_` rewrites to nothing (IDENTIFIER_UNDERSCORE_PATTERN): skip rather than queue an
+            // empty utterance, which crashed pre-generation (piper_batch.py's wave.Error, 21/09/2026).
+            if (spoken !== code && !HAS_SPOKEN_CONTENT.test(spoken)) return;
             /* needsEnglishVoice() checked before the "untouched" fold-into-buffer case below: inline
                code now defaults to the English voice (Louis, 30/08/2026), so plenty of English code
                that speakableCode() leaves byte-for-byte unchanged (bare command names, real syntax

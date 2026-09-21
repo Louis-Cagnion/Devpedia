@@ -220,6 +220,12 @@ const FABS_CALL_PATTERN = /fabs\(([^)]*)\)/g;
 const BARE_DASH_PATTERN = /^--?$/;
 const BARE_DASH_SPEECH = { "-": "dash", "--": "dash dash" };
 
+/* A code span that's just underscore(s) (Python's "_"/"__" privacy-by-convention prefix, cited
+   bare) otherwise falls straight into IDENTIFIER_UNDERSCORE_PATTERN below and reads as nothing --
+   crashed pre-generation on an empty utterance (piper_batch.py's wave.Error, 21/09/2026). */
+const BARE_UNDERSCORE_PATTERN = /^_+$/;
+const BARE_UNDERSCORE_SPEECH = "underscore";
+
 /* snake_case/CONSTANT_CASE identifiers read their underscore as a word ("AUTO_CD" -> "auto
    souligné C D") -- pure noise, replaced with a space so each part reads as its own word
    (Louis, 2026-08-16, listening to a table of Zsh option names). */
@@ -258,6 +264,7 @@ const KEYWORD_RESPELLING_PATTERN = new RegExp(`\\b(${Object.keys(KEYWORD_RESPELL
  */
 function englishRewrite(text, context) {
     if (BARE_DASH_PATTERN.test(text)) return BARE_DASH_SPEECH[text];
+    if (BARE_UNDERSCORE_PATTERN.test(text)) return BARE_UNDERSCORE_SPEECH;
     const { table, pattern } = getOperatorTable(context);
     return text
         .replace(FABS_CALL_PATTERN, (_, args) => `FABS of ${args}`)
