@@ -54,6 +54,30 @@ gcc -c fichier2.c -o fichier2.o
 gcc fichier1.o fichier2.o -o programme
 ```
 
+## Les niveaux d'optimisation (`-O0` à `-O3`, `-Os`)
+
+Une fois le programme compilable, `gcc`/[Clang](https://clang.llvm.org) peuvent réécrire le code machine produit à l'étape 2 pour le rendre plus rapide, sans changer son comportement observable. Ce réglage se fait avec l'option `-O` :
+
+| Niveau | Effet |
+|---|---|
+| `-O0` | Aucune optimisation (comportement par défaut) : compilation rapide, code machine qui suit le source pas à pas -- le plus simple à suivre dans un débogueur |
+| `-O1` | Optimisations basiques, gain modeste, temps de compilation encore court |
+| `-O2` | Niveau recommandé en production : inlining, élimination de code mort, déroulement de boucles (voir ci-dessous), sans faire exploser la taille du binaire |
+| `-O3` | Pousse `-O2` plus loin (vectorisation agressive, inlining plus large) : gain parfois marginal selon le programme, binaire plus gros, compilation plus longue |
+| `-Os` | Optimise la taille du binaire plutôt que la vitesse (utile en environnement embarqué, espace disque limité) |
+
+Trois techniques courantes expliquent le gain :
+
+- **Inlining** : le corps d'une petite fonction est recopié directement à chaque endroit où elle est appelée, ce qui évite le coût d'un appel de fonction (sauvegarde de contexte, saut, retour).
+- **Élimination de code mort** : tout calcul dont le résultat n'est jamais utilisé est retiré du binaire final.
+- **Déroulement de boucles** (*loop unrolling*) : le corps d'une boucle est dupliqué plusieurs fois pour réduire le nombre de tours de boucle (et donc de tests de condition), au prix d'un binaire plus gros.
+
+```bash
+gcc -O2 main.c -o programme
+```
+
+> **Piège :** l'inlining peut faire apparaître un avertissement invisible à `-O0`. Exemple : une fonction qui renvoie `-1` en cas d'erreur, dont le résultat sert ensuite à calculer une taille passée à `malloc()`. À `-O0`, le compilateur voit deux fonctions séparées et ne peut pas relier les deux valeurs. Une fois inlinée par `-O2`, il voit le calcul complet d'un coup et peut détecter qu'un `malloc()` recevrait une taille négative (donc gigantesque une fois convertie en `size_t`) -- averti par `-Walloc-size-larger-than=` (inclus dans `-Wall -Wextra`, voir [Les Makefiles](/?c=langages-de-programmation&s=c&p=makefiles)), qui devient une erreur bloquante si `-Werror` est actif. Un code sans avertissement à `-O0` peut donc échouer à compiler dès `-O2` : toujours tester la compilation au niveau d'optimisation réellement utilisé en production, pas seulement `-O0`.
+
 ## Erreurs de compilation vs erreurs d'édition de liens
 
 Savoir à quelle étape une erreur survient aide à la diagnostiquer :
@@ -70,7 +94,7 @@ Savoir à quelle étape une erreur survient aide à la diagnostiquer :
 
 | | |
 |---|---|
-| **À retenir** | Un programme C passe par 4 étapes avant l'exécution : préprocesseur → compilation (assembleur) → assemblage (code machine, `.o`) → édition de liens (exécutable final). |
-| **Outils utilisables** | `gcc -E`/`-S`/`-c` pour observer chaque étape séparément. |
-| **Pièges à éviter** | Confondre une erreur de compilation (syntaxe) avec une erreur d'édition de liens (`undefined reference`, fonction jamais liée) : le message indique l'étape concernée. |
-| **Bonnes pratiques** | Compiler chaque fichier `.c` en `.o` séparément sur un projet à plusieurs fichiers, pour ne relier que ce qui a changé plutôt que tout recompiler. |
+| **À retenir** | Un programme C passe par 4 étapes avant l'exécution : préprocesseur → compilation (assembleur) → assemblage (code machine, `.o`) → édition de liens (exécutable final). Le niveau d'optimisation (`-O0` à `-O3`, `-Os`) se règle à l'étape de compilation. |
+| **Outils utilisables** | `gcc -E`/`-S`/`-c` pour observer chaque étape séparément ; `-O0` à `-O3`/`-Os` pour régler le niveau d'optimisation. |
+| **Pièges à éviter** | Confondre une erreur de compilation (syntaxe) avec une erreur d'édition de liens (`undefined reference`, fonction jamais liée) : le message indique l'étape concernée. Un avertissement invisible à `-O0` (masqué par deux fonctions non inlinées) peut apparaître, voire bloquer la compilation avec `-Werror`, dès `-O2`. |
+| **Bonnes pratiques** | Compiler chaque fichier `.c` en `.o` séparément sur un projet à plusieurs fichiers, pour ne relier que ce qui a changé plutôt que tout recompiler. Tester la compilation au niveau d'optimisation réellement utilisé en production, pas seulement `-O0`. |

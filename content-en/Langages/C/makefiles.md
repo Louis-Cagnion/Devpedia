@@ -55,6 +55,9 @@ main.o: main.c calculs.h
 | `-Wall -Wextra` | Enables most useful compiler warnings |
 | `-g` | Adds debugging information (required for `gdb` /Valgrind) |
 | `-o name` | Name the output file |
+| `-O2` | Enables the [optimization level](/?c=langages-de-programmation&s=c&p=compilation) recommended for production |
+
+> **Pitfall:** `-O2`/`-O3` in `CFLAGS` can surface a warning absent at `-O0` (see [Optimization Levels](/?c=langages-de-programmation&s=c&p=compilation)): test `make` with the `CFLAGS` actually used in production, not just a debug configuration (`-O0 -g`).
 
 ## Phony Targets (`.PHONY`)
 

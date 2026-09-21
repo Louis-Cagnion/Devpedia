@@ -55,6 +55,9 @@ main.o: main.c calculs.h
 | `-Wall -Wextra` | Active la majorité des avertissements utiles du compilateur |
 | `-g` | Ajoute les informations de débogage (nécessaires pour `gdb`/Valgrind) |
 | `-o nom` | Nomme le fichier de sortie |
+| `-O2` | Active [l'optimisation](/?c=langages-de-programmation&s=c&p=compilation) recommandée en production |
+
+> **Piège :** `-O2`/`-O3` dans `CFLAGS` peut faire apparaître un avertissement absent à `-O0` (voir [Les niveaux d'optimisation](/?c=langages-de-programmation&s=c&p=compilation)) : tester `make` avec les `CFLAGS` réellement utilisées en production, pas seulement en configuration de débogage (`-O0 -g`).
 
 ## Cibles factices (`.PHONY`)
 
