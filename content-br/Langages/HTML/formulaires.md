@@ -49,6 +49,37 @@ O atributo `for` do `<label>` precisa corresponder ao `id` do campo: clicar no l
 
 > **Nota:** dois botões de rádio compartilhando o mesmo `name` formam um **grupo**: apenas um pode ser selecionado por vez entre eles, ao contrário das caixas de seleção (`checkbox`), independentes umas das outras mesmo com o mesmo `name`.
 
+## `inputmode`: o teclado virtual no celular
+
+```html
+<input type="text" inputmode="numeric" name="cep">
+<input type="text" inputmode="decimal" name="preco">
+```
+
+`inputmode` controla qual teclado virtual aparece no celular (numérico, decimal, email...), sem mudar nada na validação: é diferente de `type="number"`, que além disso força uma validação/incremento numérico do lado do navegador. `inputmode="numeric"` em um `type="text"` dá um teclado numérico mantendo um campo de texto comum, útil para um CEP (que nunca deve ser tratado como número: um zero à esquerda não pode desaparecer).
+
+| Valor | Teclado exibido |
+|---|---|
+| `numeric` | Apenas dígitos |
+| `decimal` | Dígitos + separador decimal |
+| `email` | Teclado com `@` |
+| `tel` | Teclado de telefone |
+| `url` | Teclado com `/` e `.` |
+
+## `readonly` versus `disabled`
+
+```html
+<input type="text" name="total" value="42" readonly>
+<input type="text" name="total" value="42" disabled>
+```
+
+| | `readonly` | `disabled` |
+|---|---|---|
+| Editável pelo usuário | Não | Não |
+| Focalizável / selecionável | Sim | Não |
+| Valor enviado na submissão | Sim | **Não** (ignorado) |
+| Caso de uso típico | Um campo calculado automaticamente (ex. um total) que ainda precisa ser enviado | Um campo temporariamente inativo, cujo valor não deve contar |
+
 ## `<textarea>` e `<select>`
 
 ```html
@@ -76,6 +107,8 @@ O atributo `for` do `<label>` precisa corresponder ao `id` do campo: clicar no l
 
 > **Nota (segurança):** essa validação acontece **do lado do navegador**, antes mesmo do envio; ela melhora a experiência do usuário (retorno imediato), mas **nunca** substitui uma validação do lado do servidor (veja [A segurança](/?c=langages-de-programmation&s=php&p=securite)). Um usuário mal-intencionado pode contornar inteiramente o navegador (requisição HTTP direta): todo dado recebido do lado do servidor precisa ser revalidado, sem exceção.
 
+> **Nota:** o atributo `novalidate` em `<form>` desativa inteiramente a validação HTML5 nativa (mensagens nativas em `required`, `min`/`max`...). Útil quando o formulário não tem uma submissão real ao servidor e gerencia sua própria validação em JavaScript (ex. um recálculo ao vivo a cada `input`), para substituir as mensagens nativas por uma interface personalizada.
+
 ## Submissão e método
 
 ```html
@@ -93,5 +126,5 @@ O atributo `for` do `<label>` precisa corresponder ao `id` do campo: clicar no l
 |---|---|
 | **Para lembrar** | Um formulário coleta dados do usuário e os envia via `GET` (URL) ou `POST` (corpo da requisição). `name` (não `id`) identifica cada campo do lado do servidor; `<label>` é indispensável para a acessibilidade. |
 | **Ferramentas utilizáveis** | Atributos de validação do navegador (`required`, `minlength`/`maxlength`, `min`/`max`, `pattern`); tipos de campo (`email`, `password`, `number`, `date`...). |
-| **Armadilhas a evitar** | Confiar apenas na validação do lado do navegador: um usuário mal-intencionado pode contorná-la inteiramente; um campo sem `<label>` associado. |
-| **Boas práticas** | Sempre revalidar do lado do servidor todo dado recebido, sem exceção; usar um token CSRF em todo formulário que modifica dados. |
+| **Armadilhas a evitar** | Confiar apenas na validação do lado do navegador: um usuário mal-intencionado pode contorná-la inteiramente; um campo sem `<label>` associado; usar `disabled` em um campo calculado que precisa ser enviado (seu valor é ignorado) em vez de `readonly`. |
+| **Boas práticas** | Sempre revalidar do lado do servidor todo dado recebido, sem exceção; usar um token CSRF em todo formulário que modifica dados; `inputmode` para adaptar o teclado virtual do celular sem mudar a validação. |

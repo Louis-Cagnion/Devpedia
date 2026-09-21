@@ -49,6 +49,37 @@ L'attribut `for` du `<label>` doit correspondre à l'`id` du champ : cliquer sur
 
 > **Note :** deux boutons radio partageant le même `name` forment un **groupe** : un seul peut être sélectionné à la fois parmi eux, contrairement aux cases à cocher (`checkbox`), indépendantes les unes des autres même avec le même `name`.
 
+## `inputmode` : le clavier virtuel sur mobile
+
+```html
+<input type="text" inputmode="numeric" name="code-postal">
+<input type="text" inputmode="decimal" name="prix">
+```
+
+`inputmode` contrôle le type de clavier virtuel affiché sur mobile (numérique, décimal, email...), sans rien changer à la validation : c'est distinct de `type="number"`, qui force en plus une validation/incrémentation numérique côté navigateur. `inputmode="numeric"` sur un `type="text"` donne un clavier numérique tout en gardant un champ texte classique, utile pour un code postal (qui ne doit jamais être traité comme un nombre : un zéro en tête ne doit pas disparaître).
+
+| Valeur | Clavier affiché |
+|---|---|
+| `numeric` | Chiffres seuls |
+| `decimal` | Chiffres + séparateur décimal |
+| `email` | Clavier avec `@` |
+| `tel` | Clavier téléphone |
+| `url` | Clavier avec `/` et `.` |
+
+## `readonly` vs `disabled`
+
+```html
+<input type="text" name="total" value="42" readonly>
+<input type="text" name="total" value="42" disabled>
+```
+
+| | `readonly` | `disabled` |
+|---|---|---|
+| Modifiable par l'utilisateur | Non | Non |
+| Focusable / sélectionnable | Oui | Non |
+| Valeur envoyée à la soumission | Oui | **Non** (ignoré) |
+| Cas d'usage typique | Champ calculé automatiquement (ex. un total), qui doit quand même être soumis | Champ temporairement inactif, dont la valeur ne doit pas compter |
+
 ## `<textarea>` et `<select>`
 
 ```html
@@ -76,6 +107,8 @@ L'attribut `for` du `<label>` doit correspondre à l'`id` du champ : cliquer sur
 
 > **Note (sécurité) :** cette validation se produit **côté navigateur**, avant même l'envoi ; elle améliore l'expérience utilisateur (retour immédiat), mais ne remplace **jamais** une validation côté serveur (voir [La sécurité](/?c=langages-de-programmation&s=php&p=securite)). Un utilisateur malveillant peut contourner entièrement le navigateur (requête HTTP directe) : toute donnée reçue côté serveur doit être revalidée, sans exception.
 
+> **Note :** l'attribut `novalidate` sur `<form>` désactive entièrement la validation HTML5 native (messages natifs sur `required`, `min`/`max`...). Utile quand le formulaire n'a pas de vraie soumission serveur et gère sa propre validation en JavaScript (ex. un recalcul en direct à chaque `input`), pour remplacer les messages natifs par une UI personnalisée.
+
 ## Soumission et méthode
 
 ```html
@@ -93,5 +126,5 @@ L'attribut `for` du `<label>` doit correspondre à l'`id` du champ : cliquer sur
 |---|---|
 | **À retenir** | Un formulaire collecte des données utilisateur et les envoie via `GET` (URL) ou `POST` (corps de requête). `name` (pas `id`) identifie chaque champ côté serveur ; `<label>` est indispensable à l'accessibilité. |
 | **Outils utilisables** | Attributs de validation navigateur (`required`, `minlength`/`maxlength`, `min`/`max`, `pattern`) ; types de champ (`email`, `password`, `number`, `date`...). |
-| **Pièges à éviter** | Se fier uniquement à la validation côté navigateur : un utilisateur malveillant peut l'entièrement contourner ; un champ sans `<label>` associé. |
-| **Bonnes pratiques** | Toujours revalider côté serveur toute donnée reçue, sans exception ; utiliser un jeton CSRF sur tout formulaire qui modifie des données. |
+| **Pièges à éviter** | Se fier uniquement à la validation côté navigateur : un utilisateur malveillant peut l'entièrement contourner ; un champ sans `<label>` associé ; utiliser `disabled` sur un champ calculé qui doit être soumis (sa valeur est alors ignorée) au lieu de `readonly`. |
+| **Bonnes pratiques** | Toujours revalider côté serveur toute donnée reçue, sans exception ; utiliser un jeton CSRF sur tout formulaire qui modifie des données ; `inputmode` pour adapter le clavier virtuel mobile sans changer la validation. |

@@ -49,6 +49,37 @@ The `<label>`'s `for` attribute must match the field's `id`: clicking the label 
 
 > **Note:** two radio buttons sharing the same `name` form a **group**: only one of them can be selected at a time, unlike checkboxes, which are independent of each other even with the same `name`.
 
+## `inputmode`: the virtual keyboard on mobile
+
+```html
+<input type="text" inputmode="numeric" name="zip-code">
+<input type="text" inputmode="decimal" name="price">
+```
+
+`inputmode` controls which virtual keyboard is shown on mobile (numeric, decimal, email...), without changing validation at all: this is distinct from `type="number"`, which additionally forces browser-side numeric validation/incrementing. `inputmode="numeric"` on a `type="text"` field gives a numeric keyboard while keeping a plain text field, useful for a zip code (which should never be treated as a number: a leading zero must not disappear).
+
+| Value | Keyboard shown |
+|---|---|
+| `numeric` | Digits only |
+| `decimal` | Digits + decimal separator |
+| `email` | Keyboard with `@` |
+| `tel` | Phone keyboard |
+| `url` | Keyboard with `/` and `.` |
+
+## `readonly` vs `disabled`
+
+```html
+<input type="text" name="total" value="42" readonly>
+<input type="text" name="total" value="42" disabled>
+```
+
+| | `readonly` | `disabled` |
+|---|---|---|
+| Editable by the user | No | No |
+| Focusable / selectable | Yes | No |
+| Value sent on submission | Yes | **No** (ignored) |
+| Typical use case | An automatically computed field (e.g. a total) that must still be submitted | A temporarily inactive field, whose value shouldn't count |
+
 ## `<textarea>` and `<select>`
 
 ```html
@@ -76,6 +107,8 @@ The `<label>`'s `for` attribute must match the field's `id`: clicking the label 
 
 > **Note (security):** this validation happens **browser-side**, before the data is even sent; it improves the user experience (immediate feedback), but **never** replaces server-side validation (see [Security](/?c=langages-de-programmation&s=php&p=securite)). A malicious user can bypass the browser entirely (direct HTTP request): any data received server-side must be revalidated, without exception.
 
+> **Note:** the `novalidate` attribute on `<form>` entirely disables native HTML5 validation (native messages on `required`, `min`/`max`...). Useful when the form has no real server submission and handles its own validation in JavaScript (e.g. a live recalculation on every `input`), to replace the native messages with a custom UI.
+
 ## Submission and method
 
 ```html
@@ -93,5 +126,5 @@ The `<label>`'s `for` attribute must match the field's `id`: clicking the label 
 |---|---|
 | **Key Points** | A form collects user data and sends it via `GET` (URL) or `POST` (request body). `name` (not `id`) identifies each field server-side; `<label>` is essential for accessibility. |
 | **Available Tools** | Browser validation attributes (`required`, `minlength`/`maxlength`, `min`/`max`, `pattern`); field types (`email`, `password`, `number`, `date`...). |
-| **Pitfalls to Avoid** | Relying solely on browser-side validation: a malicious user can bypass it entirely; a field with no associated `<label>`. |
-| **Best Practices** | Always revalidate every piece of received data server-side, without exception; use a CSRF token on any form that modifies data. |
+| **Pitfalls to Avoid** | Relying solely on browser-side validation: a malicious user can bypass it entirely; a field with no associated `<label>`; using `disabled` on a computed field that must be submitted (its value is then ignored) instead of `readonly`. |
+| **Best Practices** | Always revalidate every piece of received data server-side, without exception; use a CSRF token on any form that modifies data; `inputmode` to adapt the mobile virtual keyboard without changing validation. |
