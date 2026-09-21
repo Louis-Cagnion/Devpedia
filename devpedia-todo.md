@@ -49,3 +49,6 @@ Issu de l'auto-review du dépôt `Scraping_infomediaires_pipeline` (mode `/revie
 
 ## 7. Lignes de code entre 96 et anciennement 100 caractères, pas encore repassées au seuil de 95 (abaissé le 16/09/2026)
 Repéré dans `dom-et-evenements.md` (les 4 langues, ex. lignes `querySelector`/`innerHTML` déjà présentes avant le point 5). Probablement répandu dans tout `content*/`, écrit avant l'abaissement du seuil. À chiffrer (script de comptage par fichier) puis corriger par lot.
+
+## 8. Bibliothèque de graphiques Apache ECharts absente de Devpedia
+Repéré en revoyant `Backoffice-TC` (module `nps_qualite`, mode `/review` interactif) : `public/js/modules/nps_qualite/index.js` (`renderEvolutionChart()`) initialise un graphique via `echarts.init()`/`setOption()` (bibliothèque vendorisée en `public/js/vendor/echarts.min.js`) pour tracer l'évolution trimestrielle d'un score. Aucun chapitre ne nomme Apache ECharts (bibliothèque de graphiques JS, alternative à Chart.js/D3 : configuration déclarative par un unique objet `option` — `series`, `xAxis`/`yAxis`, `tooltip`, `grid` — plutôt que du code impératif dessinant chaque élément). Usage courant au-delà de ce projet : tout dashboard ayant besoin de graphiques configurables sans écrire de rendu bas niveau.
