@@ -853,6 +853,10 @@
             {
               "id": "streams",
               "label": "Streams: processar um fluxo de dados sem carregá-lo todo na memória"
+            },
+            {
+              "id": "apache-echarts",
+              "label": "A biblioteca de gráficos Apache ECharts"
             }
           ]
         }

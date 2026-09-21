@@ -806,6 +806,10 @@
             {
               "id": "streams",
               "label": "Streams: processing a data flow without loading it all into memory"
+            },
+            {
+              "id": "apache-echarts",
+              "label": "The Apache ECharts charting library"
             }
           ]
         },

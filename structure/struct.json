@@ -554,6 +554,10 @@
             {
               "id": "streams",
               "label": "Les streams : traiter un flux de données sans tout charger en mémoire"
+            },
+            {
+              "id": "apache-echarts",
+              "label": "La bibliothèque de graphiques Apache ECharts"
             }
           ]
         },
