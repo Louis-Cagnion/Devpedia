@@ -27,6 +27,53 @@ void exemplo(void)
 }
 ```
 
+## Arrays de tamanho variável (VLA)
+
+Um VLA (*Variable-Length Array*, array de tamanho variável, [C99](https://en.wikipedia.org/wiki/C99)) é um array declarado como uma variável local comum (`int tab[n];`), mas cujo tamanho `n` é uma expressão conhecida somente em tempo de execução, não uma constante fixada na compilação. Diferente de `malloc()` (veja mais abaixo), ele fica na stack: sem `free()` necessário, sua memória é liberada automaticamente ao final do bloco que o contém.
+
+```c
+void exemplo(int n)
+{
+    int tab[n]; // tamanho decidido no momento da chamada, não na compilação
+
+    for (int i = 0; i < n; i++)
+        tab[i] = i;
+} // tab desaparece aqui, como qualquer variável local -- nenhum free() necessário
+```
+
+### Armadilha 1: a ordem dos parâmetros
+
+Quando um VLA é um parâmetro de função, seu tamanho (`n`) deve ser declarado **antes** dele na lista de parâmetros:
+
+```c
+void construir(int n, int tab[n]); // correto: n já existe quando tab é declarado
+void construir(int tab[n], int n); // erro de compilação: n desconhecido neste ponto
+```
+
+O compilador lê os parâmetros da esquerda para a direita: no momento em que precisa calcular o tamanho de `tab`, `n` já deve ter sido visto.
+
+### Armadilha 2: `T (*)[n]` não é `T **`
+
+Um VLA de duas dimensões passado como parâmetro, como `uint16_t mask[n][n]`, **não** se converte em um simples ponteiro para ponteiro (`uint16_t **`). Ele se converte em um ponteiro para um array de `n` elementos: `uint16_t (*)[n]`.
+
+| | `T (*)[n]` (VLA como parâmetro) | `T **` (array de ponteiros) |
+|---|---|---|
+| Memória | Um único bloco contíguo de `n * n` elementos | `n` blocos separados, cada um alocado independentemente |
+| Declaração | `void f(int n, T tab[n][n])` | `void f(T **tab)` |
+| Acesso `tab[i][j]` | Cálculo de deslocamento dentro do bloco único | Desreferenciar `tab[i]`, depois acessar dentro do seu próprio bloco |
+
+Confundir os dois tipos gera um erro de compilação explícito (`conflicting types`, ou `makes pointer from integer without a cast`): o compilador recusa passar um `T **` onde um `T (*)[n]` é esperado, e vice-versa.
+
+### Outros limites a conhecer
+
+| Limite | Detalhe |
+|---|---|
+| Sem verificação de falha | Diferente de `malloc()` (veja mais abaixo), um VLA grande demais não retorna `NULL`: causa um estouro de pilha, comportamento indefinido, sem aviso |
+| Tamanho fixo após a declaração | Diferente de `realloc()` (veja mais abaixo), um VLA não pode ser redimensionado depois de declarado |
+| Disponibilidade | Tornada opcional pelo [C11](https://en.wikipedia.org/wiki/C11_(C_standard_revision)): um compilador estritamente conforme pode se recusar a suportá-los (verificar a macro `__STDC_NO_VLA__`) |
+
+Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs), cuja compreensão é pré-requisito para este capítulo.
+
 ## Alocar memória dinamicamente
 
 `malloc()` reserva um bloco de memória bruto no heap, cujo tamanho é expresso em bytes:
@@ -164,7 +211,7 @@ Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs), cuja
 
 | | |
 |---|---|
-| **Para lembrar** | O C deixa ao desenvolvedor a responsabilidade completa da memória dinâmica (heap): `malloc`/`calloc`/`realloc` para alocar, `free` para liberar; a stack (variáveis locais) é gerenciada automaticamente. |
-| **Ferramentas utilizáveis** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, Valgrind para detectar vazamentos e acessos inválidos. |
-| **Armadilhas a evitar** | Vazamento de memória (nunca um `free`), use-after-free, double free, estouro de buffer, este último podendo ser explorado como falha de segurança. |
+| **Para lembrar** | O C deixa ao desenvolvedor a responsabilidade completa da memória dinâmica (heap): `malloc`/`calloc`/`realloc` para alocar, `free` para liberar; a stack (variáveis locais, VLA incluídos) é gerenciada automaticamente. |
+| **Ferramentas utilizáveis** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) para um array de tamanho dinâmico sem `free()`, Valgrind para detectar vazamentos e acessos inválidos. |
+| **Armadilhas a evitar** | Vazamento de memória (nunca um `free`), use-after-free, double free, estouro de buffer, estouro de pilha em um VLA grande demais (sem detecção possível, diferente de `malloc`), confundir `T (*)[n]` (VLA como parâmetro) com `T **`. |
 | **Boas práticas** | Sempre verificar se um `malloc`/`realloc` não retornou `NULL`; colocar um ponteiro em `NULL` logo após seu `free()`; preferir `fgets`/`strncpy`/`snprintf` às funções sem limite (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar um truncamento pelo valor de retorno. |
