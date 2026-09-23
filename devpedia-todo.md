@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : plus rien d'auto-exécutable pour l'instant. Reste un test navigateur en attente de Louis (point 3).
+> Prochaine tâche : finaliser la section IA > Modèles de décision structurée (point 38 : vérification factuelle des 7 chapitres restants, puis traductions EN/ES/BR), et traiter les points 36/37 (notions nps_qualite). Reste par ailleurs un test navigateur en attente de Louis (point 3).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -23,3 +23,12 @@ Issu de la construction de `projects/nps_qualite/src/{silver,gold}/` (auto-revie
 - **Table de faits unique par UNION de plusieurs flux, avec colonne discriminante** : `projects/nps_qualite/src/silver/run_silver.py:51-52` (concatène les lignes VN et APV, marquées `type_flux`) -- pattern déjà vu ailleurs dans ce même dépôt (`gold_transaction`, colonne `_source_type`, cf. `projects/gold_transaction/README.md`) pour unifier plusieurs sources dans une seule table de consommation plutôt que des tables séparées par source, à condition qu'elles partagent le même grain. Absent de `content/Données/Bases de données/modeles-en-etoile.md` (qui couvre la table de faits et la table pont, mais pas cette technique d'union avec discriminant).
 - **Requête SQL Server inter-bases sur la même instance (notation à 3 segments `[Base].[schéma].[table]`)** : `projects/nps_qualite/sql/steps/01_load_score_nps.sql:36` -- une requête connectée à `PP_DWH_GOLD` peut lire directement `PP_DWH_SILVER.nps_qualite.scores_historique` sans `linked server` ni connexion séparée, tant que les deux bases sont sur le même serveur/instance et que le login a les droits sur les deux. Absent de Devpedia (aucune mention de requête inter-bases).
 - **`ISNULL()` pour un remplissage idempotent "seulement si actuellement NULL"** : `projects/nps_qualite/src/staging/load.py:169` (`BACKFILL_HISTORIQUE_SQL`, `SET siret = ISNULL(siret, ?)`) -- motif de rattrapage de données : ne modifie une colonne que si elle est encore vide, sans jamais écraser une valeur déjà présente (contrairement à un `UPDATE ... SET siret = ?` classique). Rejouable sans risque à volonté (idempotent). Équivalent standard SQL : `COALESCE(siret, ?)`. Absent de `content/Langages/Domain-specific Languages (DSL)/sql.md`.
+
+
+## 38. Finaliser la section IA > Modèles de décision structurée (TypeSafe AI / Jev)
+12 chapitres FR déjà écrits dans `content/IA/Modèles de décision structurée/` (`struct.json` et `content/IA/description.md` à jour). 4 fichiers déjà vérifiés contre https://docs.typesafe.ai (llms.txt, /primitives/choice, /primitives/score, /primitives/noul, /confidence, /introduction/quickstart) et corrigés (chiffres non documentés retirés, une erreur de calcul) : `system-one-vs-llm.md`, `primitives-choice-score-noul.md`, `etat-et-questions-paralleles.md`, `confiance-calibree.md`, `sdk-et-api.md`. Reste à faire :
+- Vérifier factuellement contre la doc les 7 fichiers restants : `patterns-de-composition.md`, `methodologie-system-one.md`, `entrainement-rlcd.md`, `limites-et-pieges-jev.md`, `recettes-classification-et-routage.md`, `recettes-extraction-et-structuration.md`, `recettes-fiabilite-et-verification.md`.
+- Traduire les 12 chapitres + la description de la sous-partie en EN/ES/BR.
+- Générer l'audio des 4 langues une fois toutes les traductions faites (une seule passe, sur demande de Louis).
+
+Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https://docs.typesafe.ai/introduction
