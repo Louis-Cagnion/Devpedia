@@ -56,10 +56,10 @@ Attraper l'exception commune (`TypeSafeError`) suffit à couvrir tous les cas ; 
 
 ## Réessayer automatiquement, mais pas n'importe comment
 
-Le SDK réessaie automatiquement certaines erreurs, jamais toutes : une erreur 400 (requête mal formée) ne devient jamais valide en la répétant telle quelle, alors qu'une erreur 429 (trop de requêtes) ou 503 (serveur temporairement indisponible) peut réussir à la prochaine tentative.
+Le SDK réessaie automatiquement certaines erreurs, jamais toutes : une erreur 400 (requête mal formée) ne devient jamais valide en la répétant telle quelle, alors qu'une erreur 429 (trop de requêtes) ou 503 (serveur temporairement indisponible) peut réussir à la prochaine tentative. La documentation officielle ne publie pas de valeurs par défaut précises pour cette politique ; l'exemple ci-dessous illustre les paramètres configurables, pas des valeurs imposées :
 
 ```python
-# max_retries    : nombre de tentatives supplementaires apres l'appel initial
+# max_retries     : nombre de tentatives supplementaires apres l'appel initial
 # backoff_initial : delai avant le premier reessai
 # backoff_max     : plafond du delai, meme apres plusieurs echecs
 # jitter          : variation aleatoire ajoutee au delai, pour eviter que
@@ -79,17 +79,19 @@ Quand le serveur fournit un en-tête `Retry-After`, le client l'utilise en prior
 >
 > **Bonne pratique :** ne réessayer que les erreurs réellement transitoires (réseau, surcharge temporaire, limite de débit), avec un délai croissant et une part d'aléa (jitter), en respectant l'en-tête `Retry-After` du serveur quand il est fourni.
 
-## Un modèle, deux alias, une tarification à l'entrée seulement
+## Désigner le modèle : alias stable ou version figée
 
-Le modèle Jev illustre une tarification spécifique à cette famille de modèles : facturé uniquement sur les tokens d'**entrée** (le texte de l'état et des questions), jamais sur la sortie, cohérent avec le fait que la sortie est toujours une structure typée courte, jamais un texte généré au poids variable.
+Le modèle Jev illustre une tarification spécifique à cette famille de modèles : facturé uniquement sur les tokens d'**entrée** (le texte de l'état et des questions), environ 0,042 $/million de tokens selon l'annonce du fournisseur, jamais sur la sortie, cohérent avec le fait que la sortie est toujours une structure typée courte, jamais un texte généré au poids variable.
 
 | | Valeur |
 |---|---|
-| Alias stable | `jev-latest` |
-| Alias de prévisualisation | `jev-preview` |
-| Contexte maximal | 64 000 tokens (dont 32 000 pour l'état + la question la plus longue) |
-| Débit maximal | 250 000 tokens/seconde, 1 200 requêtes/minute |
+| Alias par défaut | `jev-latest` (pointe toujours vers la dernière version) |
+| Version figée (exemple) | `jev-1.13.0` (ne change jamais de comportement) |
 | Entrées acceptées | Texte uniquement (chaîne, objet ou tableau JSON) |
+
+> **Piège :** figer `jev-latest` en production sans surveillance. Un alias qui pointe vers "la dernière version" peut changer de comportement sans prévenir lors d'une mise à jour du fournisseur.
+>
+> **Bonne pratique :** épingler une version précise (`jev-1.13.0`) pour un système en production dont le comportement doit rester stable, et ne passer à `jev-latest` que dans un environnement de test où un changement de comportement est acceptable à tout moment.
 
 ## Ce qu'il faut retenir
 

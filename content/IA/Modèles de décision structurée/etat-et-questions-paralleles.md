@@ -57,11 +57,11 @@ Comme les questions s'évaluent en parallèle contre le même état, ajouter des
 reponse = client.system_one(
     state=ticket,
     questions={
-        "categorie":              Choice(instructions="Categorie du ticket ?", criteria=CATEGORIES),
-        "severite_bug":            Score(instructions="Severite si c'est un bug ?", criteria=NIVEAUX),
-        "etapes_reproductibles":    Noul(instructions="Des etapes de reproduction sont-elles donnees ?"),
-        "remboursement_demande":    Noul(instructions="Un remboursement est-il demande ?"),
-        "frustration":             Score(instructions="Niveau de frustration exprime ?", criteria=NIVEAUX_FRUSTRATION),
+        "categorie": Choice(instructions="Categorie du ticket ?", criteria=CATEGORIES),
+        "severite_bug": Score(instructions="Severite si c'est un bug ?", criteria=NIVEAUX),
+        "etapes_reproductibles": Noul(instructions="Des etapes de reproduction sont-elles donnees ?"),
+        "remboursement_demande": Noul(instructions="Un remboursement est-il demande ?"),
+        "frustration": Score(instructions="Niveau de frustration exprime ?", criteria=NIVEAUX_FRUSTRATION),
     },
 )
 
