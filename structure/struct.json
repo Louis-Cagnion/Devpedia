@@ -1895,6 +1895,61 @@
               "label": "L'IA de jeu par imitation : apprendre d'un joueur humain"
             }
           ]
+        },
+        {
+          "id": "modeles-de-decision-structuree",
+          "label": "Modèles de décision structurée",
+          "folder": "Modèles de décision structurée",
+          "chapters": [
+            {
+              "id": "system-one-vs-llm",
+              "label": "Les modèles de décision structurée : une alternative aux LLM génératifs"
+            },
+            {
+              "id": "primitives-choice-score-noul",
+              "label": "Les trois primitives de question : Choice, Score et Noul"
+            },
+            {
+              "id": "etat-et-questions-paralleles",
+              "label": "L'état et le fan-out spéculatif : poser toutes les questions d'un coup"
+            },
+            {
+              "id": "confiance-calibree",
+              "label": "La confiance calibrée : agir, hésiter ou escalader"
+            },
+            {
+              "id": "patterns-de-composition",
+              "label": "Composer des décisions : scoring composite et routage d'intention"
+            },
+            {
+              "id": "methodologie-system-one",
+              "label": "Construire avec un modèle de décision structurée : la méthode en six étapes"
+            },
+            {
+              "id": "entrainement-rlcd",
+              "label": "RLHF, RLVR, RLCD : entraîner un modèle à autre chose qu'à bien écrire"
+            },
+            {
+              "id": "limites-et-pieges-jev",
+              "label": "Les limites documentées d'un modèle de décision structurée"
+            },
+            {
+              "id": "recettes-extraction-et-structuration",
+              "label": "Recettes : extraire et restructurer du texte libre"
+            },
+            {
+              "id": "recettes-classification-et-routage",
+              "label": "Recettes : classer et router à grande échelle"
+            },
+            {
+              "id": "recettes-fiabilite-et-verification",
+              "label": "Recettes : vérifier, filtrer et fiabiliser"
+            },
+            {
+              "id": "sdk-et-api",
+              "label": "Appeler le modèle : API, SDK, erreurs typées et réessais"
+            }
+          ]
         }
       ]
     },
