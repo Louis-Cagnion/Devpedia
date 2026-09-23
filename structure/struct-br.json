@@ -1895,6 +1895,61 @@
               "label": "IA de jogo por imitação: aprender com um jogador humano"
             }
           ]
+        },
+        {
+          "id": "modeles-de-decision-structuree",
+          "label": "Modelos de decisão estruturada",
+          "folder": "Modèles de décision structurée",
+          "chapters": [
+            {
+              "id": "system-one-vs-llm",
+              "label": "Os modelos de decisão estruturada: uma alternativa aos LLMs generativos"
+            },
+            {
+              "id": "primitives-choice-score-noul",
+              "label": "As três primitivas de pergunta: Choice, Score e Noul"
+            },
+            {
+              "id": "etat-et-questions-paralleles",
+              "label": "O estado e o fan-out especulativo: fazer todas as perguntas de uma vez"
+            },
+            {
+              "id": "confiance-calibree",
+              "label": "A confiança calibrada: agir, hesitar ou escalar"
+            },
+            {
+              "id": "patterns-de-composition",
+              "label": "Compor decisões: pontuação composta e roteamento de intenção"
+            },
+            {
+              "id": "methodologie-system-one",
+              "label": "Construir com um modelo de decisão estruturada: o método em sete etapas"
+            },
+            {
+              "id": "entrainement-rlcd",
+              "label": "RLHF, RLVR, RLCD: treinar um modelo para algo além de escrever bem"
+            },
+            {
+              "id": "limites-et-pieges-jev",
+              "label": "Os limites documentados de um modelo de decisão estruturada"
+            },
+            {
+              "id": "recettes-extraction-et-structuration",
+              "label": "Receitas: extrair e reestruturar texto livre"
+            },
+            {
+              "id": "recettes-classification-et-routage",
+              "label": "Receitas: classificar e rotear em grande escala"
+            },
+            {
+              "id": "recettes-fiabilite-et-verification",
+              "label": "Receitas: verificar, filtrar e tornar confiável"
+            },
+            {
+              "id": "sdk-et-api",
+              "label": "Chamar o modelo: API, SDK, erros tipados e novas tentativas"
+            }
+          ]
         }
       ]
     },
