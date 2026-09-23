@@ -1879,6 +1879,61 @@
               "label": "Game AI by imitation: learning from a human player"
             }
           ]
+        },
+        {
+          "id": "modeles-de-decision-structuree",
+          "label": "Structured Decision Models",
+          "folder": "Modèles de décision structurée",
+          "chapters": [
+            {
+              "id": "system-one-vs-llm",
+              "label": "Structured Decision Models: An Alternative to Generative LLMs"
+            },
+            {
+              "id": "primitives-choice-score-noul",
+              "label": "The Three Question Primitives: Choice, Score, and Noul"
+            },
+            {
+              "id": "etat-et-questions-paralleles",
+              "label": "State and Speculative Fan-Out: Asking All the Questions at Once"
+            },
+            {
+              "id": "confiance-calibree",
+              "label": "Calibrated Confidence: Act, Hesitate, or Escalate"
+            },
+            {
+              "id": "patterns-de-composition",
+              "label": "Composing Decisions: Composite Scoring and Intent Routing"
+            },
+            {
+              "id": "methodologie-system-one",
+              "label": "Building with a Structured Decision Model: The Seven-Step Method"
+            },
+            {
+              "id": "entrainement-rlcd",
+              "label": "RLHF, RLVR, RLCD: Training a Model for Something Other Than Good Writing"
+            },
+            {
+              "id": "limites-et-pieges-jev",
+              "label": "The Documented Limits of a Structured Decision Model"
+            },
+            {
+              "id": "recettes-extraction-et-structuration",
+              "label": "Recipes: Extracting and Restructuring Free Text"
+            },
+            {
+              "id": "recettes-classification-et-routage",
+              "label": "Recipes: Classifying and Routing at Scale"
+            },
+            {
+              "id": "recettes-fiabilite-et-verification",
+              "label": "Recipes: Verifying, Filtering, and Improving Reliability"
+            },
+            {
+              "id": "sdk-et-api",
+              "label": "Calling the Model: API, SDK, Typed Errors, and Retries"
+            }
+          ]
         }
       ]
     },
