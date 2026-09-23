@@ -72,13 +72,50 @@ steps:
 >
 > **Bonne pratique :** stocker les secrets dans un **groupe de variables** (*variable group*) ou une bibliothèque Azure DevOps dédiée, puis les référencer dans le YAML par leur nom (`$(motDePasse)`) : le fichier versionné ne contient alors jamais la valeur elle-même.
 
+## Autoriser un pipeline à utiliser une ressource pour la première fois : "Permit"
+
+Un pipeline qui référence dans son YAML un groupe de variables ou un Environment jamais encore utilisé par CE pipeline ne démarre pas automatiquement au premier `Run` : Azure DevOps affiche un bandeau *"This pipeline needs permission to access N resource(s)"* avec un bouton **Permit** par ressource concernée.
+
+```text
+Run pipeline
+  -> "This pipeline needs permission to access 1 resource(s)"
+  -> bouton Permit (case a cocher : "pour ce run et les runs futurs")
+```
+
+Distinct de la question "qui peut lire/écrire le groupe de variables" (déjà une bonne pratique de sécurité des secrets) : Permit est une liste blanche pipeline <-> ressource, à accorder une fois. Le bouton Permit lui-même n'apparaît que pour un administrateur de la ressource référencée : un autre utilisateur ne voit aucun bouton du tout, sans message d'erreur explicite qui l'indiquerait.
+
+> **Piège :** interpréter l'absence du bouton Permit comme un bug plutôt que comme un manque de droits d'administration sur la ressource référencée (groupe de variables, Environment).
+>
+> **Bonne pratique :** cocher "pour ce run et les runs futurs" au premier Permit d'un pipeline stable, pour ne pas avoir à ré-autoriser à chaque nouveau run.
+
+## Les Environments Azure DevOps : une ressource distincte, avec checks d'approbation
+
+Un `environment: OnPrem-Prod` déclaré dans un `deployment job` est une ressource de premier ordre, distincte d'un groupe de variables, qui peut porter des **checks** : par exemple un approbateur nommé, avec un délai avant que le stage ne continue.
+
+```yaml
+jobs:
+  - deployment: DeployProd
+    environment: OnPrem-Prod
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - script: ./deploy.sh
+```
+
+Un Environment non autorisé bloque le run avec le même bandeau "Permission needed" qu'un groupe de variables non autorisé ; mais un Environment protégé par un check d'approbation bloque différemment : le run attend la validation manuelle de l'approbateur désigné, jusqu'à expiration d'un délai configuré.
+
+> **Piège :** confondre le blocage "Permit" (autorisation d'accès, à accorder une fois) et le blocage par un check d'approbation (validation humaine à chaque déploiement) : les deux affichent un run en attente, mais la résolution est différente.
+>
+> **Bonne pratique :** réserver un check d'approbation aux Environments à fort enjeu (production), pas à un Environment de test qui n'a besoin que d'un Permit initial.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Un pipeline Azure s'organise en stages, contenant des jobs, contenant des steps exécutés dans l'ordre. `trigger` définit quand il se lance, `pool` sur quelle machine, `steps`/`task` les actions à exécuter. |
-| **Outils utilisables** | Les tasks officielles (`PublishBuildArtifacts@1` et bien d'autres) pour des actions courantes, sans réécrire leur logique à la main. |
-| **Pièges à éviter** | Omettre `trigger` et laisser un comportement implicite décider quand le pipeline se lance. Écrire un secret en clair dans le fichier YAML versionné. |
-| **Bonnes pratiques** | Déclarer `trigger` explicitement. Stocker les secrets dans un groupe de variables dédié et les référencer par leur nom, jamais en clair. |
+| **À retenir** | Un pipeline Azure s'organise en stages, contenant des jobs, contenant des steps exécutés dans l'ordre. `trigger` définit quand il se lance, `pool` sur quelle machine, `steps`/`task` les actions à exécuter. Un groupe de variables ou un Environment jamais utilisé par un pipeline donné exige un Permit explicite (accessible seulement à un administrateur de la ressource) ; un Environment peut en plus porter un check d'approbation humaine. |
+| **Outils utilisables** | Les tasks officielles (`PublishBuildArtifacts@1` et bien d'autres) pour des actions courantes, sans réécrire leur logique à la main. Les Environments pour porter des checks d'approbation sur un déploiement sensible. |
+| **Pièges à éviter** | Omettre `trigger` et laisser un comportement implicite décider quand le pipeline se lance. Écrire un secret en clair dans le fichier YAML versionné. Confondre un blocage Permit (autorisation d'accès) avec un blocage par check d'approbation (validation humaine à chaque déploiement). |
+| **Bonnes pratiques** | Déclarer `trigger` explicitement. Stocker les secrets dans un groupe de variables dédié et les référencer par leur nom, jamais en clair. Cocher "pour ce run et les runs futurs" au premier Permit d'un pipeline stable. Réserver les checks d'approbation aux Environments à fort enjeu. |

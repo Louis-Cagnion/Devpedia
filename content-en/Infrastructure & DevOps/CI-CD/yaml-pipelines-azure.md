@@ -72,13 +72,50 @@ steps:
 >
 > **Best practice:** store secrets in a **variable group** or a dedicated Azure DevOps library, then reference them in the YAML by name (`$(password)`): the versioned file then never contains the value itself.
 
+## Authorizing a pipeline to use a resource for the first time: "Permit"
+
+A pipeline that references a variable group or an Environment in its YAML that this specific pipeline has never used before doesn't start automatically on the first `Run`: Azure DevOps shows a banner *"This pipeline needs permission to access N resource(s)"* with a **Permit** button per resource involved.
+
+```text
+Run pipeline
+  -> "This pipeline needs permission to access 1 resource(s)"
+  -> Permit button (checkbox: "for this run and future runs")
+```
+
+Distinct from the question of who can read/write the variable group (already a secrets security best practice): Permit is a pipeline-to-resource allowlist, granted once. The Permit button itself only appears for an administrator of the referenced resource: another user sees no button at all, with no explicit error message to indicate why.
+
+> **Pitfall:** interpreting the absence of the Permit button as a bug rather than as a lack of admin rights on the referenced resource (variable group, Environment).
+>
+> **Best practice:** check "for this run and future runs" on the first Permit of a stable pipeline, to avoid re-authorizing on every new run.
+
+## Azure DevOps Environments: a distinct resource, with approval checks
+
+An `environment: OnPrem-Prod` declared in a `deployment job` is a first-class resource, distinct from a variable group, which can carry **checks**: for example a named approver, with a delay before the stage continues.
+
+```yaml
+jobs:
+  - deployment: DeployProd
+    environment: OnPrem-Prod
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - script: ./deploy.sh
+```
+
+An unauthorized Environment blocks the run with the same "Permission needed" banner as an unauthorized variable group; but an Environment protected by an approval check blocks differently: the run waits for the designated approver's manual sign-off, until a configured timeout expires.
+
+> **Pitfall:** confusing a "Permit" block (access authorization, granted once) with a block from an approval check (human validation on every deployment): both show a pending run, but the resolution differs.
+>
+> **Best practice:** reserve approval checks for high-stakes Environments (production), not a test Environment that only needs an initial Permit.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key Points** | An Azure pipeline is organized into stages, containing jobs, containing steps run in order. `trigger` defines when it runs, `pool` on which machine, `steps`/`task` the actions to run. |
-| **Available Tools** | Official tasks (`PublishBuildArtifacts@1` and many others) for common actions, without rewriting their logic by hand. |
-| **Pitfalls to Avoid** | Omitting `trigger` and letting an implicit behavior decide when the pipeline runs. Writing a secret in plain text in the versioned YAML file. |
-| **Best Practices** | Declare `trigger` explicitly. Store secrets in a dedicated variable group and reference them by name, never in plain text. |
+| **Key Points** | An Azure pipeline is organized into stages, containing jobs, containing steps run in order. `trigger` defines when it runs, `pool` on which machine, `steps`/`task` the actions to run. A variable group or an Environment never used by a given pipeline requires an explicit Permit (only available to an administrator of the resource); an Environment can also carry a human approval check. |
+| **Available Tools** | Official tasks (`PublishBuildArtifacts@1` and many others) for common actions, without rewriting their logic by hand. Environments to carry approval checks on a sensitive deployment. |
+| **Pitfalls to Avoid** | Omitting `trigger` and letting an implicit behavior decide when the pipeline runs. Writing a secret in plain text in the versioned YAML file. Confusing a Permit block (access authorization) with a block from an approval check (human validation on every deployment). |
+| **Best Practices** | Declare `trigger` explicitly. Store secrets in a dedicated variable group and reference them by name, never in plain text. Check "for this run and future runs" on the first Permit of a stable pipeline. Reserve approval checks for high-stakes Environments. |

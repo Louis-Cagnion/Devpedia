@@ -65,6 +65,44 @@ WHERE d.annee = 2025
 GROUP BY p.categorie;
 ```
 
+## Une table de faits unique par union de plusieurs flux, avec colonne discriminante
+
+Plusieurs flux de données hétérogènes (par exemple deux processus métier distincts qui produisent chacun des événements mesurables) peuvent alimenter une seule table de faits plutôt que des tables séparées par flux, à condition de partager le même grain (le même niveau de détail par ligne) : les lignes de chaque flux sont concaténées (`UNION`), marquées par une colonne discriminante qui indique leur origine.
+
+```sql
+SELECT id_produit, id_client, id_date, montant, quantite, 'vente_directe' AS type_flux
+FROM fait_ventes_directes
+UNION ALL
+SELECT id_produit, id_client, id_date, montant, quantite, 'vente_en_ligne' AS type_flux
+FROM fait_ventes_en_ligne;
+```
+
+> **Piège :** unifier deux flux qui ne partagent pas réellement le même grain (ex : un flux au niveau de la commande, l'autre au niveau de la ligne de commande) : la colonne discriminante ne répare pas un grain incohérent, elle indique seulement l'origine d'une ligne.
+>
+> **Bonne pratique :** préférer cette union à des tables séparées par flux dès qu'une requête d'analyse a besoin de consommer plusieurs flux ensemble (ex : le total toutes ventes confondues) : une seule table à interroger plutôt qu'un `UNION` à refaire à chaque requête.
+
+## Format large (wide) contre format long (long/tidy)
+
+Deux façons de représenter plusieurs mesures pour une même observation. Le **format large** donne une colonne par mesure ; le **format long** donne une ligne par mesure, avec un couple `(libellé, valeur)` qui identifie de quelle mesure il s'agit.
+
+```text
+Format large (une colonne par mesure)
+| id_produit | ventes_janvier | ventes_fevrier | ventes_mars |
+|------------|-----------------|-----------------|-------------|
+| 1          | 120             | 95              | 140         |
+
+Format long (une ligne par mesure)
+| id_produit | mois     | ventes |
+|------------|----------|--------|
+| 1          | janvier  | 120    |
+| 1          | fevrier  | 95     |
+| 1          | mars     | 140    |
+```
+
+Le format large facilite la lecture humaine directe (une ligne = toutes les mesures d'un coup) mais multiplie les colonnes vides (`NULL`) dès qu'une observation n'a pas toutes les mesures. Le format long reste compact quel que soit le nombre de mesures, au prix d'un `GROUP BY`/pivot pour revenir à une vue par colonne. Notion connue en analyse de données sous le nom de données "tidy" ; convertible dans les deux sens (`melt`/`pivot` en pandas, `PIVOT`/`UNPIVOT` en SQL Server).
+
+> **Bonne pratique :** stocker en format long dès que le nombre ou la nature des mesures varie d'une observation à l'autre (évite les colonnes toujours `NULL`) ; ne pivoter vers le format large qu'au moment de la restitution finale (tableau, export), pas dans le stockage.
+
 ## Le compromis : dénormalisation volontaire
 
 Une base OLTP évite de répéter une même information dans plusieurs lignes (la **normalisation**) : chaque fait est écrit une seule fois, pour éviter les incohérences si on doit le corriger. Une dimension fait le choix inverse : elle **dénormalise** volontairement, en répétant par exemple la catégorie du produit sur chaque ligne de `dim_produit` plutôt que de la stocker dans une table `dim_categorie` séparée.
@@ -105,7 +143,7 @@ Le **modèle en flocon** (*snowflake schema*) pousse la normalisation un cran pl
 
 | | |
 |---|---|
-| **À retenir** | Le modèle en étoile organise un entrepôt de données autour d'une table de faits (les mesures) reliée à des tables de dimension (les axes d'analyse), à l'opposé d'une base OLTP normalisée. |
-| **Outils utilisables** | `JOIN` et `GROUP BY` en [SQL](/?c=domain-specific-languages-dsl&p=sql) pour interroger une table de faits selon une ou plusieurs dimensions. |
-| **Pièges à éviter** | Juger une dimension dénormalisée avec des réflexes de base OLTP ; utiliser une clé naturelle (susceptible de changer) comme clé de dimension. |
-| **Bonnes pratiques** | Générer une clé de substitution propre à l'entrepôt pour chaque dimension ; garder le modèle en étoile par défaut, ne passer en flocon que si un besoin concret le justifie. |
+| **À retenir** | Le modèle en étoile organise un entrepôt de données autour d'une table de faits (les mesures) reliée à des tables de dimension (les axes d'analyse), à l'opposé d'une base OLTP normalisée. Plusieurs flux de même grain peuvent alimenter une seule table de faits via `UNION` et une colonne discriminante. Les mesures se stockent en format long (une ligne par mesure) ou large (une colonne par mesure), le long restant compact quand le nombre de mesures varie. |
+| **Outils utilisables** | `JOIN` et `GROUP BY` en [SQL](/?c=domain-specific-languages-dsl&p=sql) pour interroger une table de faits selon une ou plusieurs dimensions ; `UNION ALL` + colonne discriminante pour unifier plusieurs flux ; `melt`/`pivot` (pandas) ou `PIVOT`/`UNPIVOT` (SQL Server) pour convertir entre format long et format large. |
+| **Pièges à éviter** | Juger une dimension dénormalisée avec des réflexes de base OLTP ; utiliser une clé naturelle (susceptible de changer) comme clé de dimension ; unifier par `UNION` deux flux qui ne partagent pas le même grain. |
+| **Bonnes pratiques** | Générer une clé de substitution propre à l'entrepôt pour chaque dimension ; garder le modèle en étoile par défaut, ne passer en flocon que si un besoin concret le justifie ; stocker en format long dès que les mesures varient d'une observation à l'autre, pivoter en large seulement à la restitution. |
