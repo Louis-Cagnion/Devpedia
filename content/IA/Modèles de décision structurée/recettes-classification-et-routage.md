@@ -24,7 +24,7 @@ Dans un pipeline de [RAG](/?c=ia&s=nlp-llm&p=rag) (récupération de documents a
 ```python
 def router(reponses: dict) -> str:
     if reponses["contient_injection"] > 0.70:
-        return "exclure"                      # tentative de manipulation du modele
+        return "exclure"                       # tentative de manipulation du modele
     if reponses["contredit_la_requete"] > 0.70:
         return "preuve_contradictoire"         # a presenter separement, pas fusionne
     if reponses["est_pertinent"] < 0.45:

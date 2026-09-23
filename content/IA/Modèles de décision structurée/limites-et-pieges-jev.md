@@ -9,13 +9,13 @@ Le chapitre [Les modèles de décision structurée](/?c=ia&s=modeles-de-decision
 | # | Mode de défaillance | Ce que ça signifie concrètement |
 |---|---|---|
 | 1 | Lecture littérale | Répond à ce que la question dit mot pour mot, sans inférer une condition implicite qu'un humain déduirait du contexte |
-| 2 | Calculs mathématiques | Ne compte pas de façon fiable (caractères, occurrences dans une longue liste) : ce n'est pas une calculatrice |
-| 3 | Représentations numériques | Juge mal des valeurs numériques proches entre elles (ex : deux couleurs RGB voisines) ; préfère une description en mots ("rouge vif") à un nombre brut |
-| 4 | Dates et horaires | Comparaisons temporelles peu fiables, surtout avec des formats mixtes ou des expressions relatives ("la semaine prochaine") |
-| 5 | Indirection complexe | Une double négation ou un raisonnement à plusieurs niveaux d'indirection fait chuter la précision |
-| 6 | États volumineux | Un état contenant des détails inutiles à la question posée distrait le modèle et dégrade la réponse |
-| 7 | Contenu adversarial | Des instructions injectées dans le contenu évalué, ou un contenu formulé pour tromper, peuvent influencer la réponse (voir la [prompt injection](/?c=ia&s=nlp-llm&p=prompt-injection), un risque de même nature déjà couvert pour les LLM génératifs) |
-| 8 | Instructions contradictoires | Des critères et des instructions qui demandent des choses différentes créent de la confusion plutôt qu'un arbitrage cohérent |
+| 2 | Calculs et nombres | Ne compte pas de façon fiable (caractères, occurrences dans une longue liste) : ce n'est pas une calculatrice. Juge aussi mal des valeurs numériques proches entre elles (ex : deux couleurs RGB voisines) ; préfère une description en mots ("rouge vif") à un nombre brut |
+| 3 | Dates et horaires | Lit une date comme du texte, pas comme une quantité ordonnée : comparaisons temporelles peu fiables, surtout avec des formats mixtes ou des expressions relatives ("la semaine prochaine") |
+| 4 | Indirection complexe | Une double négation ou un raisonnement à plusieurs niveaux d'indirection fait chuter la précision |
+| 5 | États volumineux | Un état contenant des détails inutiles à la question posée distrait le modèle et dégrade la réponse |
+| 6 | Contenu adversarial | Des instructions injectées dans le contenu évalué, ou un contenu formulé pour tromper, peuvent influencer la réponse (voir la [prompt injection](/?c=ia&s=nlp-llm&p=prompt-injection), un risque de même nature déjà couvert pour les LLM génératifs) |
+| 7 | Instructions contradictoires | Des critères et des instructions qui demandent des choses différentes créent de la confusion plutôt qu'un arbitrage cohérent |
+| 8 | Invariants logiques non garantis | Deux formulations censées être équivalentes en toute rigueur (ex : la probabilité d'un Noul et 1 moins la probabilité de sa négation) ne donnent pas forcément le même résultat : ne pas compter sur une identité logique supposée, formuler chaque question pour qu'elle dise directement ce qu'on veut savoir |
 | 9 | Génération de texte | Le modèle n'est pas entraîné pour rédiger du texte libre (voir le [chapitre sur l'entraînement](/?c=ia&s=modeles-de-decision-structuree&p=entrainement-rlcd#rlcd-optimiser-pour-une-probabilite-fiable-pas-pour-un-texte)) : le lui demander est à la fois lent et peu fiable |
 
 ## Le fil conducteur : bon sens rapide, pas raisonnement construit
@@ -30,7 +30,7 @@ Ces neuf limites ne sont pas des bugs isolés mais la conséquence directe de ce
 
 | | |
 |---|---|
-| **À retenir** | Un modèle de décision structurée comme Jev échoue de façon documentée sur neuf types de tâches (lecture littérale, calcul, valeurs numériques proches, dates relatives, indirection complexe, états volumineux, contenu adversarial, instructions contradictoires, génération de texte), toutes liées à son entraînement pour un jugement rapide plutôt qu'un raisonnement construit. |
+| **À retenir** | Un modèle de décision structurée comme Jev échoue de façon documentée sur neuf types de tâches (lecture littérale, calculs et nombres, dates relatives, indirection complexe, états volumineux, contenu adversarial, instructions contradictoires, invariants logiques non garantis, génération de texte), toutes liées à son entraînement pour un jugement rapide plutôt qu'un raisonnement construit. |
 | **Outils utilisables** | Aucun outil correctif direct : la parade est architecturale (déplacer le calcul exact en code). |
 | **Pièges à éviter** | Confier au modèle un calcul exact, une comparaison de dates relatives, ou un raisonnement à plusieurs niveaux d'indirection. |
 | **Bonnes pratiques** | Isoler en code tout ce qui relève d'un calcul vérifiable, ne réserver le modèle qu'au jugement réellement contextuel qui reste une fois ce calcul extrait. |

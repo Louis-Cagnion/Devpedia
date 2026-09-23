@@ -39,9 +39,9 @@ Pour localiser la réponse à une question dans un document de plusieurs centain
 Une demande en langage naturel ("trace la corrélation glissante entre NVDA et SPY sur le dernier mois") se convertit en appel de fonction typé, où chaque paramètre n'accepte qu'un ensemble fermé de valeurs :
 
 ```text
-"compare nvda amd et msft sur les trois derniers mois"
-   -> compare_rendements(symboles=['NVDA','AMD','MSFT'], fenetre='3mo')
-      confiance : 0.94
+"trace la correlation glissante entre nvda et spy sur le dernier mois"
+   -> rolling_correlation(symbol='NVDA', benchmark='SPY', window='1mo')
+      confiance : 0.91
 ```
 
 La confiance rapportée est celle du jugement **le moins certain** de la chaîne (pas une moyenne ni un produit de probabilités) : un seul paramètre mal identifié suffit à abaisser la confiance globale de l'appel.
