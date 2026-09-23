@@ -23,7 +23,7 @@ Pour une question à trois options, la documentation du fournisseur donne une fo
 # confiance approchee pour 3 options, a partir de la plus forte probabilite
 plus_forte_probabilite = 0.95
 confiance = (3 * plus_forte_probabilite - 1) / 2
-# -> (3*0.95 - 1) / 2 = 1.175 (plafonne a 1.0 en pratique)
+# -> (3*0.95 - 1) / 2 = 0.925
 ```
 
 Une distribution parfaitement plate (chaque option à égalité) donne une confiance proche de 0 ; une distribution qui concentre tout son poids sur une seule option donne une confiance proche de 1.
