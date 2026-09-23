@@ -131,6 +131,18 @@ OUTER APPLY (
 
 > **Note:** this same need (referencing the current row from a joined subquery) is called `LATERAL JOIN` on PostgreSQL -- an equivalent concept, different syntax depending on the engine.
 
+## Cross-database queries on the same instance
+
+A connection opened on one database can directly read a table from another database, as long as both sit on the same server/instance and the login has rights on both: just prefix the table name with the database and schema, using the three-segment notation `Database.schema.table`.
+
+```sql
+-- connected to PP_DWH_GOLD, still reads PP_DWH_SILVER with no linked server or separate connection
+SELECT *
+FROM PP_DWH_SILVER.dbo.scores_historique;
+```
+
+> **Pitfall:** confusing this case (same instance, just another database) with access to a remote server, which does require a `linked server` or a separate connection: the three-segment notation only works on the same instance.
+
 ## `CREATE TABLE`: creating a table (DDL)
 
 ```sql
@@ -191,6 +203,17 @@ SELECT AVG(remise) FROM ventes;
 > **Pitfall:** storing `-1` instead of `NULL` for "no discount" skews `AVG(remise)`, which would then count `-1` as a real numeric value instead of ignoring it.
 >
 > **Best practice:** reserve `NULL` for "unknown/not entered"; only use a sentinel value if its business meaning is documented, and never mix the two for the same column.
+
+### `ISNULL()`: filling a column only if it's still empty
+
+`SET column = value` always overwrites the column, even if it already held valid data. `ISNULL(column, value)` (standard SQL equivalent: `COALESCE(column, value)`) only returns `value` if `column` is currently `NULL`, and the column itself otherwise: a data backfill that never touches a row that's already correctly filled in.
+
+```sql
+-- only changes siret for rows where it's still NULL; safe to rerun
+UPDATE clients SET siret = ISNULL(siret, '12345678900010') WHERE id = 1;
+```
+
+> **Best practice:** this pattern is idempotent (safe to replay any number of times): useful for a backfill script that can be rerun after a partial data load, without ever overwriting a value that's already present.
 
 ## Controlling SQL from PHP with PDO
 
@@ -280,6 +303,41 @@ connection.commit()  # commits writes (INSERT/UPDATE/DELETE); unnecessary after 
 
 Same cycle as PDO: `connect()` (open the connection) → `cursor()` → `execute()` (with `?` as the placeholder, value passed separately, never concatenated) → `fetchone()`/`fetchall()`. `executemany()` repeats the same query for a list of value sets (bulk insert), faster than looping over `execute()` one at a time.
 
+### Integrated Windows authentication: a failure message can hide two different causes
+
+With `Trusted_Connection=yes` in the connection string, no login or password is supplied: Windows negotiates the identity behind the scenes (Kerberos if a domain controller is reachable, otherwise falling back to NTLM), and the SQL server receives an already-authenticated identity.
+
+```python
+connection = pyodbc.connect(
+    "DRIVER={ODBC Driver 18 for SQL Server};"
+    "SERVER=my_server;DATABASE=boutique;Trusted_Connection=yes"
+)
+```
+
+> **Pitfall:** a `Login failed for user 'DOMAIN\user'` message does NOT necessarily mean Kerberos/NTLM failed. The Windows identity may well have been negotiated successfully (authentication), but the SQL server then found no login mapped to that account on THIS specific instance (authorization): two distinct causes, the exact same error message.
+>
+> **Best practice:** before chasing a network/Kerberos issue, check that a login actually exists for that Windows account on the target instance (e.g. by confirming that the same account, from the same machine, connects fine to another instance).
+
+## `sqlcmd`: running a SQL script from the command line, with variables (SQL Server)
+
+`sqlcmd` runs a `.sql` file directly from the command line, without going through a host language. The `-v` option defines a **script variable**, substituted into the SQL text before execution via `$(NAME)`:
+
+```bash
+sqlcmd -S my_server -v DBNAME=PP_DWH_STAGING -i script.sql
+```
+
+```sql
+-- script.sql
+USE [$(DBNAME)];
+
+IF '$(DBNAME)' = '' OR '$(DBNAME)' = '$' + '(DBNAME)'
+    RAISERROR('The DBNAME variable must be supplied via -v', 16, 1);
+```
+
+The guard's second test (`'$' + '(DBNAME)'`) catches the case where `$(DBNAME)` wasn't even substituted and appears as-is in the executed text (script run without `-v`, or with a misspelled variable name). `:setvar NAME value` does the same thing directly inside the script, rather than on the command line.
+
+> **Best practice:** parameterize the same `.sql` script for several environments (staging/production) via `-v`, rather than duplicating it or generating it dynamically from a host language.
+
 ## SQL Injection: Why You Should Never Concatenate an External Value
 
 ```php
@@ -328,6 +386,22 @@ GRANT SELECT, INSERT, UPDATE ON boutique.commandes TO 'app_boutique'@'%';
 
 In practice, a compromised application account (due to a code vulnerability, a credential leak, etc.) can only cause damage commensurate with its own permissions: an account limited to `SELECT` / `INSERT` / `UPDATE` on a single table does not allow an attacker to delete an entire database, even if they manage to execute arbitrary queries. This is a **complementary** safeguard to prepared statements, not a substitute: it limits the damage *if* an injection does occur (undetected bug, poorly constructed dynamic query, etc.), rather than preventing the injection itself.
 
+## `MERGE`: an UPSERT in a single query (SQL Server)
+
+A `SELECT` followed by a conditional `UPDATE`/`INSERT` to sync a target table from a source requires two queries and a decision in code (or T-SQL) between them. `MERGE` does both in one atomic statement: it compares a source (`USING`) to the target on a key (`ON`), and runs `WHEN MATCHED THEN UPDATE` or `WHEN NOT MATCHED THEN INSERT` depending on the case.
+
+```sql
+MERGE clients AS target
+USING (SELECT 1 AS client_id, 'Dupont' AS name, 'Marseille' AS city) AS source
+ON target.id = source.client_id
+WHEN MATCHED THEN
+    UPDATE SET target.name = source.name, target.city = source.city
+WHEN NOT MATCHED THEN
+    INSERT (id, name, city) VALUES (source.client_id, source.name, source.city);
+```
+
+> **Best practice:** generate the `MERGE` text from a simple `(column, type)` list in code rather than hand-writing each `UPDATE SET`/`INSERT`: adding a column to the schema then only needs an entry in that list, never touching the SQL template.
+
 ## SCD2: keeping a table's change history
 
 A plain `UPDATE` overwrites the old value for good:
@@ -370,7 +444,7 @@ VALUES (1, 'Dupont', 'Paris', GETDATE(), NULL, 1);
 
 | | |
 |---|---|
-| **Key Points** | SQL queries (DML) and defines the structure (DDL) of tables (fixed columns, rows = records). `JOIN` joins two tables based on a common column; `INNER JOIN` removes rows with no matches, `LEFT JOIN` keeps them; `APPLY` combines a join with a function/subquery call parameterized by row. `GROUP BY`/`GROUPING SETS` summarize by group, with or without an overall total in the same query. `NULL` = unknown value, never to be confused with a sentinel value. |
-| **Tools available** | `SELECT` / `WHERE`, aggregate functions (`COUNT` / `SUM` / `AVG`), `GROUP BY`/`GROUPING SETS`/`GROUPING()`, `JOIN` / `LEFT JOIN`/`OUTER APPLY`/`CROSS APPLY`, `CREATE TABLE` / `ALTER TABLE`, indexes, prepared queries via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php), including a variable-length `IN (...)` via generated placeholders) or `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 for historizing changes. |
-| **Pitfalls to Avoid** | Concatenating an external value directly into an SQL query (SQL injection), including inside an `IN (...)`; using `INNER JOIN` when you want to keep rows with no match; reordering columns via `ALTER TABLE` (impossible, the table must be recreated); confusing `NULL` with a sentinel value, including the total-row `NULL` from `GROUPING SETS`. |
-| **Best Practices** | Always use a `prepare` ( / `execute`) for an external value, including one placeholder per value inside an `IN (...)`; limit the application account's permissions to only what is strictly necessary (principle of least privilege); a technical key (`IDENTITY`) rather than a wide natural key for indexing; `GROUPING()` to tell a total row apart from a real `NULL` value. |
+| **Key Points** | SQL queries (DML) and defines the structure (DDL) of tables (fixed columns, rows = records). `JOIN` joins two tables based on a common column; `INNER JOIN` removes rows with no matches, `LEFT JOIN` keeps them; `APPLY` combines a join with a function/subquery call parameterized by row. `GROUP BY`/`GROUPING SETS` summarize by group, with or without an overall total in the same query. `NULL` = unknown value, never to be confused with a sentinel value. `MERGE` does in one query what a `SELECT` then `UPDATE`/`INSERT` would do in two. |
+| **Tools available** | `SELECT` / `WHERE`, aggregate functions (`COUNT` / `SUM` / `AVG`), `GROUP BY`/`GROUPING SETS`/`GROUPING()`, `JOIN` / `LEFT JOIN`/`OUTER APPLY`/`CROSS APPLY`, three-segment notation for a cross-database query on the same instance, `MERGE` for an UPSERT, `ISNULL()`/`COALESCE()` for an idempotent backfill, `CREATE TABLE` / `ALTER TABLE`, indexes, prepared queries via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php), including a variable-length `IN (...)` via generated placeholders) or `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), `sqlcmd` for a parameterized command-line script, SCD2 for historizing changes. |
+| **Pitfalls to Avoid** | Concatenating an external value directly into an SQL query (SQL injection), including inside an `IN (...)`; using `INNER JOIN` when you want to keep rows with no match; reordering columns via `ALTER TABLE` (impossible, the table must be recreated); confusing `NULL` with a sentinel value, including the total-row `NULL` from `GROUPING SETS`; reading a login failure on an integrated Windows connection as necessarily a Kerberos/NTLM failure, when authentication may have succeeded with no login existing on the instance. |
+| **Best Practices** | Always use a `prepare` ( / `execute`) for an external value, including one placeholder per value inside an `IN (...)`; limit the application account's permissions to only what is strictly necessary (principle of least privilege); a technical key (`IDENTITY`) rather than a wide natural key for indexing; `GROUPING()` to tell a total row apart from a real `NULL` value; `ISNULL(column, value)` rather than a plain `UPDATE` for a safely rerunnable backfill. |

@@ -72,13 +72,50 @@ steps:
 >
 > **Boa prática:** armazenar os segredos em um **grupo de variáveis** (*variable group*) ou uma biblioteca dedicada do Azure DevOps, e depois referenciá-los no YAML pelo nome (`$(minhaSenha)`): o arquivo versionado nunca contém o valor em si.
 
+## Autorizar um pipeline a usar um recurso pela primeira vez: "Permit"
+
+Um pipeline que referencia em seu YAML um grupo de variáveis ou um Environment nunca antes usado por ESSE pipeline não inicia automaticamente no primeiro `Run`: o Azure DevOps exibe um banner *"This pipeline needs permission to access N resource(s)"* com um botão **Permit** por recurso envolvido.
+
+```text
+Run pipeline
+  -> "This pipeline needs permission to access 1 resource(s)"
+  -> botao Permit (caixa: "for this run and future runs")
+```
+
+Distinto da questão "quem pode ler/escrever o grupo de variáveis" (já uma boa prática de segurança de segredos): Permit é uma lista de permissões pipeline-recurso, concedida uma vez. O botão Permit em si só aparece para um administrador do recurso referenciado: outro usuário não vê botão algum, sem mensagem de erro explícita que indique o motivo.
+
+> **Armadilha:** interpretar a ausência do botão Permit como um bug em vez de como uma falta de direitos administrativos sobre o recurso referenciado (grupo de variáveis, Environment).
+>
+> **Boa prática:** marcar "for this run and future runs" no primeiro Permit de um pipeline estável, para não precisar reautorizar a cada novo run.
+
+## Os Environments do Azure DevOps: um recurso distinto, com checks de aprovação
+
+Um `environment: OnPrem-Prod` declarado em um `deployment job` é um recurso de primeira classe, distinto de um grupo de variáveis, que pode carregar **checks**: por exemplo um aprovador nomeado, com um prazo antes que o stage continue.
+
+```yaml
+jobs:
+  - deployment: DeployProd
+    environment: OnPrem-Prod
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - script: ./deploy.sh
+```
+
+Um Environment não autorizado bloqueia o run com o mesmo banner "Permission needed" de um grupo de variáveis não autorizado; mas um Environment protegido por um check de aprovação bloqueia de forma diferente: o run espera a validação manual do aprovador designado, até expirar um prazo configurado.
+
+> **Armadilha:** confundir o bloqueio por "Permit" (autorização de acesso, concedida uma vez) com o bloqueio por um check de aprovação (validação humana a cada implantação): ambos mostram um run pendente, mas a resolução é diferente.
+>
+> **Boa prática:** reservar os checks de aprovação para os Environments de alto risco (produção), não para um Environment de teste que só precisa de um Permit inicial.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | Um pipeline Azure se organiza em stages, contendo jobs, contendo steps executados em ordem. `trigger` define quando ele é disparado, `pool` em qual máquina, `steps`/`task` as ações a executar. |
-| **Ferramentas utilizáveis** | As tasks oficiais (`PublishBuildArtifacts@1` e muitas outras) para ações comuns, sem reescrever sua lógica na mão. |
-| **Armadilhas a evitar** | Omitir o `trigger` e deixar um comportamento implícito decidir quando o pipeline é disparado. Escrever um segredo em texto puro no arquivo YAML versionado. |
-| **Boas práticas** | Declarar o `trigger` explicitamente. Armazenar os segredos em um grupo de variáveis dedicado e referenciá-los pelo nome, nunca em texto puro. |
+| **Para lembrar** | Um pipeline Azure se organiza em stages, contendo jobs, contendo steps executados em ordem. `trigger` define quando ele é disparado, `pool` em qual máquina, `steps`/`task` as ações a executar. Um grupo de variáveis ou um Environment nunca usado por um pipeline exige um Permit explícito (disponível apenas para um administrador do recurso); um Environment também pode carregar um check de aprovação humana. |
+| **Ferramentas utilizáveis** | As tasks oficiais (`PublishBuildArtifacts@1` e muitas outras) para ações comuns, sem reescrever sua lógica na mão. Os Environments para carregar checks de aprovação em uma implantação sensível. |
+| **Armadilhas a evitar** | Omitir o `trigger` e deixar um comportamento implícito decidir quando o pipeline é disparado. Escrever um segredo em texto puro no arquivo YAML versionado. Confundir um bloqueio Permit (autorização de acesso) com um bloqueio por check de aprovação (validação humana a cada implantação). |
+| **Boas práticas** | Declarar o `trigger` explicitamente. Armazenar os segredos em um grupo de variáveis dedicado e referenciá-los pelo nome, nunca em texto puro. Marcar "for this run and future runs" no primeiro Permit de um pipeline estável. Reservar os checks de aprovação para os Environments de alto risco. |

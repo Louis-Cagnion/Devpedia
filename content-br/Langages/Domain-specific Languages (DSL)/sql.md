@@ -131,6 +131,18 @@ OUTER APPLY (
 
 > **Nota:** essa mesma necessidade (referenciar a linha atual a partir de uma subconsulta unida) se chama `LATERAL JOIN` no PostgreSQL -- conceito equivalente, sintaxe diferente conforme o motor.
 
+## Consulta entre bancos de dados na mesma instância
+
+Uma conexão aberta em um banco de dados pode ler diretamente uma tabela de outro banco, desde que ambos estejam no mesmo servidor/instância e o login tenha direitos sobre os dois: basta prefixar o nome da tabela com o banco e o schema, com a notação de três segmentos `Banco.schema.tabela`.
+
+```sql
+-- conectado a PP_DWH_GOLD, ainda assim le PP_DWH_SILVER sem linked server nem conexao separada
+SELECT *
+FROM PP_DWH_SILVER.dbo.scores_historico;
+```
+
+> **Armadilha:** confundir esse caso (mesma instância, apenas outro banco) com um acesso a um servidor remoto, que exige um `linked server` ou uma conexão separada: a notação de três segmentos só funciona na mesma instância.
+
 ## `CREATE TABLE`: criar uma tabela (DDL)
 
 ```sql
@@ -191,6 +203,17 @@ SELECT AVG(desconto) FROM vendas;
 > **Armadilha:** guardar `-1` em vez de `NULL` para "sem desconto" distorce `AVG(desconto)`, que passaria a contar `-1` como um valor numérico real em vez de ignorá-lo.
 >
 > **Boa prática:** reservar `NULL` para "valor desconhecido/não informado"; usar um valor sentinela apenas se seu significado de negócio estiver documentado, e nunca misturar os dois na mesma coluna.
+
+### `ISNULL()`: preencher uma coluna apenas se ela ainda estiver vazia
+
+`SET coluna = valor` sempre sobrescreve a coluna, mesmo que ela já contivesse um dado válido. `ISNULL(coluna, valor)` (equivalente padrão SQL: `COALESCE(coluna, valor)`) só retorna `valor` se `coluna` estiver atualmente `NULL`, e a própria coluna caso contrário: um resgate de dados que nunca toca em uma linha já corretamente preenchida.
+
+```sql
+-- so modifica siret nas linhas onde ainda esta NULL; sem risco ao reexecutar
+UPDATE clientes SET siret = ISNULL(siret, '12345678900010') WHERE id = 1;
+```
+
+> **Boa prática:** esse padrão é idempotente (pode ser reexecutado sem risco quantas vezes for preciso): útil para um script de resgate que pode ser relançado após uma carga parcial de dados, sem nunca sobrescrever um valor já presente.
 
 ## Controlar o SQL a partir do PHP com PDO
 
@@ -281,6 +304,41 @@ conexao.commit()
 
 Mesmo ciclo que o PDO: `connect()` (abrir a conexão) → `cursor()` → `execute()` (com `?` como espaço reservado, valor passado à parte, nunca concatenado) → `fetchone()`/`fetchall()`. `executemany()` repete a mesma consulta para uma lista de conjuntos de valores (inserção em massa), mais rápido que um laço de `execute()` um por um.
 
+### Autenticação Windows integrada: uma mensagem de falha pode esconder duas causas diferentes
+
+Com `Trusted_Connection=yes` na string de conexão, nenhum login ou senha é fornecido: o Windows negocia a identidade nos bastidores (Kerberos se um controlador de domínio estiver acessível, senão recuando para NTLM), e o servidor SQL recebe uma identidade já autenticada.
+
+```python
+conexao = pyodbc.connect(
+    "DRIVER={ODBC Driver 18 for SQL Server};"
+    "SERVER=meu_servidor;DATABASE=loja;Trusted_Connection=yes"
+)
+```
+
+> **Armadilha:** uma mensagem `Login failed for user 'DOMINIO\usuario'` NÃO significa necessariamente que o Kerberos/NTLM falhou. A identidade Windows pode muito bem ter sido negociada com sucesso (autenticação), mas o servidor SQL não encontrou depois nenhum login mapeado para essa conta NESSA instância específica (autorização): duas causas distintas, exatamente a mesma mensagem de erro.
+>
+> **Boa prática:** antes de procurar um problema de rede/Kerberos, verificar se existe de fato um login para essa conta Windows na instância visada (ex: confirmando que a mesma conta, a partir da mesma máquina, se conecta sem problema a outra instância).
+
+## `sqlcmd`: executar um script SQL na linha de comando, com variáveis (SQL Server)
+
+`sqlcmd` executa um arquivo `.sql` diretamente na linha de comando, sem passar por uma linguagem hospedeira. A opção `-v` define uma **variável de script**, substituída no texto SQL antes da execução via `$(NOME)`:
+
+```bash
+sqlcmd -S meu_servidor -v DBNAME=PP_DWH_STAGING -i script.sql
+```
+
+```sql
+-- script.sql
+USE [$(DBNAME)];
+
+IF '$(DBNAME)' = '' OR '$(DBNAME)' = '$' + '(DBNAME)'
+    RAISERROR('A variavel DBNAME deve ser fornecida via -v', 16, 1);
+```
+
+O segundo teste da guarda (`'$' + '(DBNAME)'`) captura o caso em que `$(DBNAME)` nem sequer foi substituída e aparece tal como está no texto executado (script lançado sem `-v`, ou com um nome de variável escrito errado). `:setvar NOME valor` faz a mesma coisa diretamente dentro do script, em vez de na linha de comando.
+
+> **Boa prática:** parametrizar um mesmo script `.sql` para vários ambientes (homologação/produção) via `-v`, em vez de duplicá-lo ou gerá-lo dinamicamente a partir de uma linguagem hospedeira.
+
 ## Injeção SQL: por que nunca concatenar um valor externo
 
 ```php
@@ -328,6 +386,22 @@ GRANT SELECT, INSERT, UPDATE ON loja.pedidos TO 'app_loja'@'%';
 
 Concretamente, uma conta aplicativa comprometida (via uma falha no código, um vazamento de credenciais...) só pode causar danos na medida de seus próprios direitos: uma conta limitada a `SELECT`/`INSERT`/`UPDATE` em uma única tabela não permite a um atacante apagar um banco de dados inteiro, mesmo que consiga executar consultas arbitrárias. É uma proteção **complementar** às consultas preparadas, não um substituto: ela limita os danos *se* uma injeção acontecer mesmo assim (bug não detectado, consulta dinâmica mal construída...), em vez de impedir a própria injeção.
 
+## `MERGE`: um UPSERT em uma única consulta (SQL Server)
+
+Um `SELECT` seguido de um `UPDATE`/`INSERT` condicional para sincronizar uma tabela destino a partir de uma origem exige duas consultas e uma decisão em código (ou em T-SQL) entre elas. `MERGE` faz as duas coisas em uma única instrução atômica: compara uma origem (`USING`) com o destino sobre uma chave (`ON`), e executa `WHEN MATCHED THEN UPDATE` ou `WHEN NOT MATCHED THEN INSERT` conforme o caso.
+
+```sql
+MERGE clientes AS destino
+USING (SELECT 1 AS id_cliente, 'Dupont' AS nome, 'Marselha' AS cidade) AS origem
+ON destino.id = origem.id_cliente
+WHEN MATCHED THEN
+    UPDATE SET destino.nome = origem.nome, destino.cidade = origem.cidade
+WHEN NOT MATCHED THEN
+    INSERT (id, nome, cidade) VALUES (origem.id_cliente, origem.nome, origem.cidade);
+```
+
+> **Boa prática:** gerar o texto do `MERGE` a partir de uma simples lista `(coluna, tipo)` em código em vez de escrever à mão cada `UPDATE SET`/`INSERT`: adicionar uma coluna ao esquema então só exige uma entrada nessa lista, nunca retocar o modelo SQL.
+
 ## SCD2: preservar o histórico de mudanças de uma tabela
 
 Um `UPDATE` clássico sobrescreve o valor anterior para sempre:
@@ -371,7 +445,7 @@ VALUES (1, 'Dupont', 'Paris', GETDATE(), NULL, 1);
 
 | | |
 |---|---|
-| **Para lembrar** | SQL consulta (DML) e define a estrutura (DDL) de tabelas (colunas fixas, linhas = registros). `JOIN` combina duas tabelas por uma coluna comum; `INNER JOIN` elimina as linhas sem correspondência, `LEFT JOIN` as mantém; `APPLY` combina uma junção com uma chamada de função/subconsulta parametrizada por linha. `GROUP BY`/`GROUPING SETS` resumem por grupo, com ou sem total global na mesma consulta. `NULL` = valor desconhecido, nunca confundir com um valor sentinela. |
-| **Ferramentas utilizáveis** | `SELECT`/`WHERE`, funções de agregação (`COUNT`/`SUM`/`AVG`), `GROUP BY`/`GROUPING SETS`/`GROUPING()`, `JOIN`/`LEFT JOIN`/`OUTER APPLY`/`CROSS APPLY`, `CREATE TABLE`/`ALTER TABLE`, índices, consultas preparadas via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php), incluindo um `IN (...)` de tamanho variável via placeholders gerados) ou `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), SCD2 para preservar o histórico de mudanças. |
-| **Armadilhas a evitar** | Concatenar um valor externo diretamente em uma consulta SQL (injeção SQL), inclusive dentro de um `IN (...)`; usar `INNER JOIN` quando se quer manter as linhas sem correspondência; reordenar colunas com `ALTER TABLE` (impossível, é preciso recriar a tabela); confundir `NULL` com um valor sentinela, inclusive o `NULL` de total de um `GROUPING SETS`. |
-| **Boas práticas** | Sempre passar por uma consulta preparada (`prepare`/`execute`) para um valor externo, inclusive um placeholder por valor dentro de um `IN (...)`; limitar os direitos da conta aplicativa ao estritamente necessário (princípio do menor privilégio); chave técnica (`IDENTITY`) em vez de chave natural larga para indexação; `GROUPING()` para distinguir uma linha de total de um valor `NULL` real. |
+| **Para lembrar** | SQL consulta (DML) e define a estrutura (DDL) de tabelas (colunas fixas, linhas = registros). `JOIN` combina duas tabelas por uma coluna comum; `INNER JOIN` elimina as linhas sem correspondência, `LEFT JOIN` as mantém; `APPLY` combina uma junção com uma chamada de função/subconsulta parametrizada por linha. `GROUP BY`/`GROUPING SETS` resumem por grupo, com ou sem total global na mesma consulta. `NULL` = valor desconhecido, nunca confundir com um valor sentinela. `MERGE` faz em uma consulta o que um `SELECT` e depois `UPDATE`/`INSERT` fariam em duas. |
+| **Ferramentas utilizáveis** | `SELECT`/`WHERE`, funções de agregação (`COUNT`/`SUM`/`AVG`), `GROUP BY`/`GROUPING SETS`/`GROUPING()`, `JOIN`/`LEFT JOIN`/`OUTER APPLY`/`CROSS APPLY`, notação de três segmentos para uma consulta entre bancos na mesma instância, `MERGE` para um UPSERT, `ISNULL()`/`COALESCE()` para um resgate idempotente, `CREATE TABLE`/`ALTER TABLE`, índices, consultas preparadas via PDO ([PHP](/?c=langages-de-programmation&s=php&p=php), incluindo um `IN (...)` de tamanho variável via placeholders gerados) ou `pyodbc` ([Python](/?c=langages-de-programmation&s=python&p=python)), `sqlcmd` para um script parametrizado na linha de comando, SCD2 para preservar o histórico de mudanças. |
+| **Armadilhas a evitar** | Concatenar um valor externo diretamente em uma consulta SQL (injeção SQL), inclusive dentro de um `IN (...)`; usar `INNER JOIN` quando se quer manter as linhas sem correspondência; reordenar colunas com `ALTER TABLE` (impossível, é preciso recriar a tabela); confundir `NULL` com um valor sentinela, inclusive o `NULL` de total de um `GROUPING SETS`; interpretar uma falha de login em uma conexão Windows integrada como necessariamente uma falha Kerberos/NTLM, quando a autenticação pode ter tido sucesso sem existir um login na instância. |
+| **Boas práticas** | Sempre passar por uma consulta preparada (`prepare`/`execute`) para um valor externo, inclusive um placeholder por valor dentro de um `IN (...)`; limitar os direitos da conta aplicativa ao estritamente necessário (princípio do menor privilégio); chave técnica (`IDENTITY`) em vez de chave natural larga para indexação; `GROUPING()` para distinguir uma linha de total de um valor `NULL` real; `ISNULL(coluna, valor)` em vez de um `UPDATE` direto para um resgate reexecutável sem risco. |

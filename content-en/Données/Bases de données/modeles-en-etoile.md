@@ -65,6 +65,44 @@ WHERE d.year = 2025
 GROUP BY p.category;
 ```
 
+## A single fact table by union of several flows, with a discriminant column
+
+Several heterogeneous data flows (for example two distinct business processes that each produce measurable events) can feed a single fact table instead of separate tables per flow, as long as they share the same grain (the same level of detail per row): rows from each flow are concatenated (`UNION`), tagged with a discriminant column that indicates their origin.
+
+```sql
+SELECT product_id, customer_id, date_id, amount, quantity, 'direct_sale' AS flow_type
+FROM direct_sales_fact
+UNION ALL
+SELECT product_id, customer_id, date_id, amount, quantity, 'online_sale' AS flow_type
+FROM online_sales_fact;
+```
+
+> **Pitfall:** unifying two flows that don't genuinely share the same grain (e.g. one flow at order level, the other at order-line level): the discriminant column doesn't fix an inconsistent grain, it only marks a row's origin.
+>
+> **Best practice:** prefer this union over separate tables per flow as soon as an analytical query needs to consume several flows together (e.g. the total across all sales combined): a single table to query rather than a `UNION` to redo on every query.
+
+## Wide format vs. long (long/tidy) format
+
+Two ways to represent several measures for the same observation. The **wide format** gives one column per measure; the **long format** gives one row per measure, with a `(label, value)` pair that identifies which measure it is.
+
+```text
+Wide format (one column per measure)
+| product_id | january_sales | february_sales | march_sales |
+|------------|-----------------|------------------|-------------|
+| 1          | 120             | 95               | 140         |
+
+Long format (one row per measure)
+| product_id | month     | sales |
+|------------|-----------|-------|
+| 1          | january   | 120   |
+| 1          | february  | 95    |
+| 1          | march     | 140   |
+```
+
+The wide format makes direct human reading easier (one row = all measures at once) but multiplies empty columns (`NULL`) as soon as an observation doesn't have every measure. The long format stays compact regardless of how many measures there are, at the cost of a `GROUP BY`/pivot to get back to a per-column view. Known in data analysis as "tidy" data; convertible both ways (`melt`/`pivot` in pandas, `PIVOT`/`UNPIVOT` in SQL Server).
+
+> **Best practice:** store in long format as soon as the number or nature of measures varies from one observation to another (avoids always-`NULL` columns); only pivot to wide format at final delivery time (a table, an export), not in storage.
+
 ## The trade-off: deliberate denormalization
 
 An OLTP database avoids repeating the same information across multiple rows (**normalization**): each fact is written exactly once, to avoid inconsistencies if it needs correcting. A dimension makes the opposite choice: it **denormalizes** on purpose, for example repeating the product's category on every row of `product_dim` rather than storing it in a separate `category_dim` table.
@@ -105,7 +143,7 @@ The **snowflake schema** pushes normalization one step further, inside the dimen
 
 | | |
 |---|---|
-| **Key Points** | The star schema organizes a data warehouse around a fact table (the measures) connected to dimension tables (the analysis axes), the opposite of a normalized OLTP database. |
-| **Available Tools** | `JOIN` and `GROUP BY` in SQL to query a fact table along one or more dimensions. |
-| **Pitfalls to Avoid** | Judging a denormalized dimension with OLTP instincts; using a natural key (which may change) as a dimension key. |
-| **Best Practices** | Generate a surrogate key specific to the warehouse for each dimension; keep the star schema by default, only move to snowflake if a concrete need justifies it. |
+| **Key Points** | The star schema organizes a data warehouse around a fact table (the measures) connected to dimension tables (the analysis axes), the opposite of a normalized OLTP database. Several flows of the same grain can feed a single fact table via `UNION` and a discriminant column. Measures are stored in long format (one row per measure) or wide format (one column per measure), long staying compact when the number of measures varies. |
+| **Available Tools** | `JOIN` and `GROUP BY` in SQL to query a fact table along one or more dimensions; `UNION ALL` + discriminant column to unify several flows; `melt`/`pivot` (pandas) or `PIVOT`/`UNPIVOT` (SQL Server) to convert between long and wide format. |
+| **Pitfalls to Avoid** | Judging a denormalized dimension with OLTP instincts; using a natural key (which may change) as a dimension key; unifying two flows with `UNION` that don't share the same grain. |
+| **Best Practices** | Generate a surrogate key specific to the warehouse for each dimension; keep the star schema by default, only move to snowflake if a concrete need justifies it; store in long format as soon as measures vary from one observation to another, pivot to wide only at delivery time. |

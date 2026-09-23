@@ -100,6 +100,16 @@ os.environ.pop("NOVA_VAR", None)  # remove sem erro se já estiver ausente (ao c
 
 > **Armadilha:** modificar `os.environ` só muda o processo Python atual, e os processos filhos lançados **depois** (via [subprocess](/?c=langages-de-programmation&s=python&p=sous-processus-et-flux-standard)), que herdam uma cópia do ambiente no momento de sua criação -- nunca a shell que lançou o script, nem o resto do sistema. Fechar o script e reabrir um terminal nunca mostrará, portanto, uma variável adicionada via `os.environ[...] = ...`.
 
+> **Armadilha:** o padrão de `os.environ.get(chave, padrao)` só se aplica se a chave estiver ausente, nunca se seu valor for uma string vazia. Uma variável declarada por engano com um valor vazio (ex. na configuração de uma ferramenta externa, um segredo faltando) continua presente para `os.environ.get`, que então retorna `""`, não o valor padrão:
+>
+> ```python
+> os.environ["LIMIAR"] = ""
+> os.environ.get("LIMIAR", "50")  # -> "", NAO "50": a chave existe, mesmo vazia
+> int(os.environ.get("LIMIAR", "50"))  # ValueError: invalid literal for int() with base 10: ''
+> ```
+>
+> **Boa prática:** diante de uma variável que pode ser declarada vazia em vez de ausente, usar `os.environ.get(chave) or padrao` (o operador `or` recorre a `padrao` para qualquer valor "falso" em Python, incluindo uma string vazia), não `os.environ.get(chave, padrao)` sozinho.
+
 ## Organizar um projeto em pacote
 
 ```text
@@ -181,5 +191,5 @@ import meu_pacote
 |---|---|
 | **Para lembrar** | `import` carrega um módulo; `if __name__ == "__main__":` distingue execução direta e importação. `pip` instala bibliotecas, um ambiente virtual isola as dependências de um projeto -- não confundir com `os.environ`, que dá acesso às variáveis de ambiente do sistema. `pyproject.toml` descreve o projeto em si, além das versões fixadas apenas por `requirements.txt`. |
 | **Ferramentas utilizáveis** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `os.environ` (leitura/escrita/remoção como um dict), `__init__.py` para um pacote clássico, `pyproject.toml` e `pip install -e .` para o packaging moderno. |
-| **Armadilhas a evitar** | Instalar bibliotecas globalmente em vez de em um ambiente virtual: conflitos de versão entre projetos. Esquecer `find_namespace_packages` para um projeto sem `__init__.py`, o que faz as pastas serem ignoradas silenciosamente na instalação. Achar que modificar `os.environ` afeta a shell pai ou o sistema: afeta apenas o processo atual e seus futuros filhos. |
+| **Armadilhas a evitar** | Instalar bibliotecas globalmente em vez de em um ambiente virtual: conflitos de versão entre projetos. Esquecer `find_namespace_packages` para um projeto sem `__init__.py`, o que faz as pastas serem ignoradas silenciosamente na instalação. Achar que modificar `os.environ` afeta a shell pai ou o sistema: afeta apenas o processo atual e seus futuros filhos. Achar que `os.environ.get(chave, padrao)` recorre a `padrao` para um valor vazio: isso só é verdade se a chave estiver ausente. |
 | **Boas práticas** | Sempre trabalhar em um ambiente virtual por projeto; versionar `requirements.txt`, nunca `.venv/`. Usar `pip install -e .` no desenvolvimento ativo de uma biblioteca. |

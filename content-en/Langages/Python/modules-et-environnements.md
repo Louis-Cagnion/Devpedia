@@ -100,6 +100,16 @@ os.environ.pop("NEW_VAR", None)  # removes it with no error if already absent (u
 
 > **Pitfall:** modifying `os.environ` only changes the current Python process, and child processes launched **afterward** (via [subprocess](/?c=langages-de-programmation&s=python&p=sous-processus-et-flux-standard)), which inherit a copy of the environment at the time they're created -- never the shell that launched the script, nor the rest of the system. Closing the script and reopening a terminal will therefore never show a variable added via `os.environ[...] = ...`.
 
+> **Pitfall:** `os.environ.get(key, default)`'s default only applies if the key is absent, never if its value is an empty string. A variable mistakenly declared with an empty value (e.g. in an external tool's configuration, a missing secret) is still present for `os.environ.get`, which then returns `""`, not the default value:
+>
+> ```python
+> os.environ["THRESHOLD"] = ""
+> os.environ.get("THRESHOLD", "50")  # -> "", NOT "50": the key exists, even if empty
+> int(os.environ.get("THRESHOLD", "50"))  # ValueError: invalid literal for int() with base 10: ''
+> ```
+>
+> **Best practice:** for a variable that could be declared empty rather than absent, use `os.environ.get(key) or default` (the `or` operator falls back to `default` for any "falsy" value in Python, including an empty string), not `os.environ.get(key, default)` alone.
+
 ## Organizing a Project into a Package
 
 ```text
@@ -181,5 +191,5 @@ import my_package
 |---|---|
 | **Key takeaways** | `import` loads a module; `if __name__ == "__main__":` distinguishes direct execution from import. `pip` installs libraries, a virtual environment isolates a project's dependencies -- not to be confused with `os.environ`, which gives access to the system's environment variables. `pyproject.toml` describes the project itself, beyond just the versions frozen by `requirements.txt`. |
 | **Tools you can use** | `pip install`/`freeze`, `requirements.txt`, `python -m venv`, `os.environ` (reading/writing/deleting like a dict), `__init__.py` for a classic package, `pyproject.toml` and `pip install -e .` for modern packaging. |
-| **Pitfalls to avoid** | Installing libraries globally rather than in a virtual environment: version conflicts between projects. Forgetting `find_namespace_packages` for a project without `__init__.py`, which causes those folders to be silently ignored during installation. Believing that modifying `os.environ` affects the parent shell or the system: it only affects the current process and its future children. |
+| **Pitfalls to avoid** | Installing libraries globally rather than in a virtual environment: version conflicts between projects. Forgetting `find_namespace_packages` for a project without `__init__.py`, which causes those folders to be silently ignored during installation. Believing that modifying `os.environ` affects the parent shell or the system: it only affects the current process and its future children. Believing `os.environ.get(key, default)` falls back to `default` for an empty value: that's only true if the key is absent. |
 | **Best practices** | Always work in a virtual environment per project; version `requirements.txt`, never `.venv/`. Use `pip install -e .` during active development of a library. |

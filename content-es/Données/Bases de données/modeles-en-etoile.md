@@ -65,6 +65,44 @@ WHERE d.anio = 2025
 GROUP BY p.categoria;
 ```
 
+## Una tabla de hechos única por unión de varios flujos, con columna discriminante
+
+Varios flujos de datos heterogéneos (por ejemplo dos procesos de negocio distintos que producen cada uno eventos medibles) pueden alimentar una única tabla de hechos en lugar de tablas separadas por flujo, siempre que compartan el mismo grano (el mismo nivel de detalle por fila): las filas de cada flujo se concatenan (`UNION`), marcadas con una columna discriminante que indica su origen.
+
+```sql
+SELECT id_producto, id_cliente, id_fecha, importe, cantidad, 'venta_directa' AS tipo_flujo
+FROM hecho_ventas_directas
+UNION ALL
+SELECT id_producto, id_cliente, id_fecha, importe, cantidad, 'venta_en_linea' AS tipo_flujo
+FROM hecho_ventas_en_linea;
+```
+
+> **Trampa:** unificar dos flujos que no comparten realmente el mismo grano (ej: un flujo a nivel de pedido, el otro a nivel de línea de pedido): la columna discriminante no repara un grano incoherente, solo indica el origen de una fila.
+>
+> **Buena práctica:** preferir esta unión a tablas separadas por flujo en cuanto una consulta de análisis necesite consumir varios flujos juntos (ej: el total de todas las ventas combinadas): una sola tabla que consultar en lugar de un `UNION` que rehacer en cada consulta.
+
+## Formato ancho (wide) frente a formato largo (long/tidy)
+
+Dos formas de representar varias medidas para una misma observación. El **formato ancho** da una columna por medida; el **formato largo** da una fila por medida, con un par `(etiqueta, valor)` que identifica de qué medida se trata.
+
+```text
+Formato ancho (una columna por medida)
+| id_producto | ventas_enero | ventas_febrero | ventas_marzo |
+|-------------|--------------|-----------------|--------------|
+| 1           | 120          | 95              | 140          |
+
+Formato largo (una fila por medida)
+| id_producto | mes      | ventas |
+|-------------|----------|--------|
+| 1           | enero    | 120    |
+| 1           | febrero  | 95     |
+| 1           | marzo    | 140    |
+```
+
+El formato ancho facilita la lectura humana directa (una fila = todas las medidas de golpe) pero multiplica las columnas vacías (`NULL`) en cuanto una observación no tiene todas las medidas. El formato largo permanece compacto sea cual sea el número de medidas, a costa de un `GROUP BY`/pivot para volver a una vista por columna. Noción conocida en análisis de datos como datos "tidy"; convertible en ambos sentidos (`melt`/`pivot` en pandas, `PIVOT`/`UNPIVOT` en SQL Server).
+
+> **Buena práctica:** almacenar en formato largo en cuanto el número o la naturaleza de las medidas varíe de una observación a otra (evita columnas siempre `NULL`); pivotar hacia el formato ancho solo en el momento de la presentación final (tabla, exportación), no en el almacenamiento.
+
 ## El compromiso: desnormalización deliberada
 
 Una base OLTP evita repetir una misma información en varias filas (la **normalización**): cada hecho se escribe una sola vez, para evitar incoherencias si hay que corregirlo. Una dimensión hace la elección contraria: **desnormaliza** deliberadamente, repitiendo por ejemplo la categoría del producto en cada fila de `dim_producto` en lugar de almacenarla en una tabla `dim_categoria` separada.
@@ -105,7 +143,7 @@ El **modelo en copo de nieve** (*snowflake schema*) empuja la normalización un 
 
 | | |
 |---|---|
-| **Para recordar** | El modelo en estrella organiza un almacén de datos alrededor de una tabla de hechos (las medidas) vinculada a tablas de dimensión (los ejes de análisis), en las antípodas de una base OLTP normalizada. |
-| **Herramientas utilizables** | `JOIN` y `GROUP BY` en SQL para consultar una tabla de hechos según una o varias dimensiones. |
-| **Trampas a evitar** | Juzgar una dimensión desnormalizada con reflejos de base OLTP; usar una clave natural (susceptible de cambiar) como clave de dimensión. |
-| **Buenas prácticas** | Generar una clave sustituta propia del almacén para cada dimensión; mantener el modelo en estrella por defecto, pasar a copo de nieve solo si una necesidad concreta lo justifica. |
+| **Para recordar** | El modelo en estrella organiza un almacén de datos alrededor de una tabla de hechos (las medidas) vinculada a tablas de dimensión (los ejes de análisis), en las antípodas de una base OLTP normalizada. Varios flujos del mismo grano pueden alimentar una única tabla de hechos mediante `UNION` y una columna discriminante. Las medidas se almacenan en formato largo (una fila por medida) o ancho (una columna por medida), permaneciendo el largo compacto cuando el número de medidas varía. |
+| **Herramientas utilizables** | `JOIN` y `GROUP BY` en SQL para consultar una tabla de hechos según una o varias dimensiones; `UNION ALL` + columna discriminante para unificar varios flujos; `melt`/`pivot` (pandas) o `PIVOT`/`UNPIVOT` (SQL Server) para convertir entre formato largo y ancho. |
+| **Trampas a evitar** | Juzgar una dimensión desnormalizada con reflejos de base OLTP; usar una clave natural (susceptible de cambiar) como clave de dimensión; unificar mediante `UNION` dos flujos que no comparten el mismo grano. |
+| **Buenas prácticas** | Generar una clave sustituta propia del almacén para cada dimensión; mantener el modelo en estrella por defecto, pasar a copo de nieve solo si una necesidad concreta lo justifica; almacenar en formato largo en cuanto las medidas varíen de una observación a otra, pivotar a ancho solo en la presentación. |
