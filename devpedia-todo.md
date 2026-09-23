@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : finaliser la section IA > Modèles de décision structurée (point 38 : vérification factuelle des 7 chapitres restants, puis traductions EN/ES/BR), et traiter les points 36/37 (notions nps_qualite). Reste par ailleurs un test navigateur en attente de Louis (point 3).
+> Prochaine tâche : finaliser la section IA > Modèles de décision structurée (point 38 : traductions EN/ES/BR des 12 chapitres + description), et traiter les points 36/37 (notions nps_qualite). Reste par ailleurs un test navigateur en attente de Louis (point 3).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -26,8 +26,7 @@ Issu de la construction de `projects/nps_qualite/src/{silver,gold}/` (auto-revie
 
 
 ## 38. Finaliser la section IA > Modèles de décision structurée (TypeSafe AI / Jev)
-12 chapitres FR déjà écrits dans `content/IA/Modèles de décision structurée/` (`struct.json` et `content/IA/description.md` à jour). 4 fichiers déjà vérifiés contre https://docs.typesafe.ai (llms.txt, /primitives/choice, /primitives/score, /primitives/noul, /confidence, /introduction/quickstart) et corrigés (chiffres non documentés retirés, une erreur de calcul) : `system-one-vs-llm.md`, `primitives-choice-score-noul.md`, `etat-et-questions-paralleles.md`, `confiance-calibree.md`, `sdk-et-api.md`. Reste à faire :
-- Vérifier factuellement contre la doc les 7 fichiers restants : `patterns-de-composition.md`, `methodologie-system-one.md`, `entrainement-rlcd.md`, `limites-et-pieges-jev.md`, `recettes-classification-et-routage.md`, `recettes-extraction-et-structuration.md`, `recettes-fiabilite-et-verification.md`.
+12 chapitres FR écrits et vérifiés factuellement contre https://docs.typesafe.ai dans `content/IA/Modèles de décision structurée/` (`struct.json` et `content/IA/description.md` à jour). Reste à faire :
 - Traduire les 12 chapitres + la description de la sous-partie en EN/ES/BR.
 - Générer l'audio des 4 langues une fois toutes les traductions faites (une seule passe, sur demande de Louis).
 

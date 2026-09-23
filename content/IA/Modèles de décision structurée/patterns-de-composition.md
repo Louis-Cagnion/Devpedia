@@ -30,7 +30,7 @@ Exemple : évaluer un CV selon plusieurs axes, avec des poids qui changent selon
 def score_candidat(reponses, poids: dict[str, float]) -> float:
     total = 0.0
     for dimension, poids_dimension in poids.items():
-        score_brut     = reponses[dimension].score          # ex : 3 sur une echelle 0-4
+        score_brut     = reponses[dimension].score            # ex : 3 sur une echelle 0-4
         niveau_maximal = len(reponses[dimension].legend) - 1  # 4
         score_normalise = score_brut / niveau_maximal
         total += poids_dimension * score_normalise
