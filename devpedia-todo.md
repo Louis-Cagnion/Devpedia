@@ -82,3 +82,64 @@ Repéré en revoyant le solveur Skyscraper du rush01 (un backtracking déjà pro
 - **Stratégie de découpage « développer le plus large d'abord »** : à chaque étape, développer le sous-problème dont le point de décision le moins déterminé (variable/ligne la moins contrainte du CSP, cf. MRV déjà couvert) a le PLUS d'options restantes — fait grossir le nombre total de sous-problèmes plus vite qu'un découpage arbitraire, pour atteindre la cible en moins d'étapes.
 - **Isolation complète de l'état = condition du "sans synchronisation"** : chaque sous-problème doit être une copie totalement indépendante de l'état de recherche (aucun pointeur partagé avec un autre sous-problème ni avec l'état d'origine), sans quoi deux threads modifieraient la même mémoire. Complète la mise en garde déjà donnée dans `threads.md` sur la mémoire partagée entre threads : l'EPS est une des façons d'éviter ce risque, plutôt que de le gérer avec des verrous pendant le calcul.
 - Source : *Embarrassingly Parallel Search*, Régin, Rezgui, Malapert, JAIR 2016 (https://jair.org/index.php/jair/article/view/11031).
+
+## 14. Solveurs SAT et CDCL (rush01 Piscine 42, `research/cdcl.c`)
+Repéré en poussant le solveur Skyscraper du rush01 au-delà du backtracking : un solveur SAT maison résout des grilles 32×32 en 0,6 s, là où backtracking + propagation plafonnait à 10×10. `backtracking-et-satisfaction-de-contraintes.md` couvre backtracking, MRV et AC-3, mais rien sur SAT : 0 résultat pour « CNF », « DIMACS », « CDCL », « propagation unitaire », « VSIDS », « Luby », « LBD », « MiniSat », « kissat » dans tout `content/`. Rubrique pressentie : Fondamentaux > Algorithmes (nouveau fichier, ex. `solveurs-sat-et-cdcl.md`), cross-référencé depuis `backtracking-et-satisfaction-de-contraintes.md`.
+- **Problème SAT et forme normale conjonctive (CNF)** : variables booléennes, littéraux (x ou ¬x), clauses (OU de littéraux), formule = ET de clauses ; format texte DIMACS (`p cnf <variables> <clauses>`, une clause par ligne terminée par `0`) lu par tous les solveurs. NP-complet en théorie, mais résolu en pratique sur des centaines de milliers de variables.
+- **Propagation unitaire, niveaux de décision et trace** (*trail*) : une clause dont tous les littéraux sauf un sont faux force le dernier ; chaque choix libre ouvre un niveau ; la trace garde l'ordre des affectations et la clause qui a forcé chacune (sa raison).
+- **CDCL (*Conflict-Driven Clause Learning*)** : sur un conflit, remonter le graphe d'implication jusqu'au premier point d'implication unique (1UIP) pour apprendre une clause, puis retour arrière non chronologique (*backjumping*) jusqu'au niveau où elle devient unitaire ; minimisation récursive de la clause (MiniSat). Différence clé avec le backtracking : chaque échec produit une règle réutilisée partout ailleurs dans la recherche.
+- **Deux littéraux surveillés** (*two watched literals*) avec littéral bloqueur, et listes d'implications dédiées aux clauses binaires : une clause n'est réveillée que lorsqu'un de ses deux littéraux surveillés devient faux, et rien n'est à défaire au retour arrière.
+- **Heuristique VSIDS et sauvegarde de phase** : activité par variable augmentée à chaque conflit où elle apparaît, décroissance exponentielle obtenue en augmentant l'incrément (remise à l'échelle avant débordement), tas binaire pour extraire la plus active ; on réessaie la dernière valeur prise par la variable (*phase saving*).
+- **Redémarrages et nettoyage des clauses apprises** : suite de Luby (1, 1, 2, 1, 1, 2, 4… × une unité de conflits) vs redémarrages Glucose (moyennes mobiles du LBD) ; LBD (*Literal Block Distance*, nombre de niveaux distincts dans une clause) comme mesure de qualité, suppression périodique de la moitié des clauses apprises à LBD élevé. Mesuré sur ce projet : Glucose 2× plus lent, et sans aucun redémarrage un cas monte à 39 s.
+- **Distributions de temps à queue lourde** (*heavy-tailed*) : pourquoi un solveur combinatoire a quelques instances catastrophiques (un seed à 55 s pour une médiane de 1,2 s) et pourquoi redémarrages et randomisation les coupent.
+- **Solveurs de référence** : MiniSat, Glucose, kissat (Armin Biere). Constat mesuré : sur des instances faciles mais volumineuses, le préprocessing de kissat par défaut coûte plus qu'il ne rapporte (`--plain` 3× plus rapide).
+- Sources : Marques-Silva & Sakallah, GRASP (1996) ; Moskewicz et al., Chaff (2001) ; Eén & Sörensson, MiniSat (2003) ; Audemard & Simon, Glucose (2009) ; *Handbook of Satisfiability*, 2e éd. (2021).
+
+## 15. Encoder un problème combinatoire en SAT (rush01, `research/cdcl.c`)
+0 résultat pour « encodage par ordre », « at-most-one », « compteur séquentiel », « contrainte redondante » dans `content/`. Rubrique pressentie : même chapitre que le point 14, ou un chapitre voisin `encodages-sat.md`.
+- **Encodage direct vs encodage par ordre** : une variable par couple (case, valeur) vs une variable par « case ≥ v », reliées par des clauses de canal (*channeling*). Ici, l'encodage par ordre partagé par les 4 directions de vue a divisé le temps par 13 (grille 16×16 : 0,42 → 0,03 s).
+- **Contraintes « au moins un » / « au plus un »** (ALO/AMO) : encodage par paires (n(n-1)/2 clauses binaires, propagation maximale) vs encodages compacts en O(n) (ordre, échelle) ; compromis taille/force de propagation mesuré ici (le compact était 50 % plus lent).
+- **Contraintes de cardinalité** : compteur séquentiel (Sinz, 2005) pour « exactement k parmi n », alternative totalizer.
+- **Clauses redondantes (implicites)** : ajouter des faits déductibles pour aider la propagation. Ici, les règles de bord du Skyscraper en clauses unitaires ont donné ×2,4, et « le maximum d'un préfixe de i+1 cases distinctes vaut au moins i+1 » a été ajouté gratuitement.
+
+## 16. Combinatoire des permutations : records et nombres de Stirling de première espèce (rush01, `research/lines2`, `research/gen_test.c`)
+0 résultat pour « Stirling », « coefficient binomial », « factorielle » (le chapitre Big O ne cite pas O(n!)). Rubrique pressentie : Fondamentaux > Mathématiques (nouveau chapitre), avec un renvoi depuis `complexite-et-notation-big-o.md`.
+- **Record d'une permutation** (nouveau maximum en lisant de gauche à droite) = tour visible au Skyscraper.
+- **Nombres de Stirling non signés de première espèce** c(n, k) = nombre de permutations de n éléments ayant k records (ou k cycles) ; récurrence c(n, k) = c(n-1, k-1) + (n-1)·c(n-1, k). Avec a visibles à gauche et b à droite : C(a+b-2, a-1)·c(n-1, a+b-2) (raisonnement par la position du maximum). Usage ici : allouer la liste exacte des candidats en une seule passe.
+- **Coefficient binomial** C(n, k) et son calcul entier incrémental (r = r·(n-k+i)/i, division toujours exacte).
+- **Explosion factorielle** : 11! = 40 M, et 8,7 milliards de candidats pour une grille 13×13 : pourquoi matérialiser toutes les permutations devient impossible.
+- **Choisir un ordre de construction qui rend les contraintes vérifiables tôt** : placer les valeurs de la plus grande à la plus petite rend les visibilités gauche ET droite exactes à chaque étape (élagage des deux côtés), ×5-6 face au remplissage de gauche à droite.
+
+## 17. Carrés latins, isotopie et tirage uniforme par chaîne de Markov (rush01, `research/gen_random_latin.py`)
+0 résultat pour « carré latin », « Markov », « Jacobson » dans `content/`. Rubrique pressentie : Fondamentaux > Mathématiques (ou compléter `les-probabilites-de-base.md`).
+- **Carré latin** (chaque symbole une fois par ligne et par colonne) et **isotopie** (permuter lignes, colonnes et symboles) : le générateur de tests du rush ne produit que des isotopes du carré cyclique, une famille très restreinte, d'où un biais de benchmark possible.
+- **Chaîne de Markov** (l'état suivant ne dépend que de l'état courant) et **MCMC** : échantillonner un objet combinatoire impossible à tirer directement de façon uniforme.
+- **Chaîne de Jacobson-Matthews (1996)** : mouvements ±1 sur le cube d'incidence (ligne, colonne, symbole), passage temporaire par des carrés « impropres » (une case à -1) ; converge vers un carré latin uniforme.
+
+## 18. C bas niveau et parallélisme (rush01, `research/cdcl.c`, `research/lines2`)
+Compléments aux chapitres C existants : 0 résultat pour « memcpy », « memset », « __thread », « thread-local », « compare-and-swap », « __builtin_ctz », « arène », « file de priorité », « clock_gettime », « -march », « -pthread ». Rubriques pressenties : Langages > C (`memoire.md`, `threads.md`, `operateurs-binaires.md`, `mesure-du-temps.md`, `compilation.md`) et Fondamentaux > Algorithmes pour la file de priorité.
+- **`memcpy`/`memset`** : copie et remplissage d'octets ; `memcpy` comme façon sûre de réinterpréter les bits d'un `float` dans un `uint32_t` (*type punning* sans comportement indéfini).
+- **Stockage local au thread** (`__thread`, `_Thread_local` en C11) : chaque thread a sa propre copie d'une variable globale (ici le contexte du comparateur de `qsort`, qui ne reçoit aucun paramètre utilisateur).
+- **Opérations atomiques et compare-and-swap** (`__atomic_compare_exchange_n`, `<stdatomic.h>`) : désigner un seul « gagnant » parmi plusieurs threads sans mutex ; pourquoi `volatile` ne suffit pas entre threads (il ne sert qu'aux signaux et au matériel). `threads.md` ne couvre que le mutex.
+- **Builtins de bits** (`__builtin_ctz`, `__builtin_popcount`) et parcours des bits à 1 d'un masque (`q = __builtin_ctz(m); m &= m - 1;`), en complément de l'algorithme de Kernighan déjà présent dans `operateurs-binaires.md`.
+- **Allocation en arène** : toutes les clauses rangées dans un grand tableau contigu, référencées par indice (moins d'allocations, meilleure localité ; la compaction après suppression est à gérer soi-même).
+- **Tas binaire indexé** (file de priorité avec table des positions, pour remonter un élément dont la priorité augmente).
+- **`clock_gettime(CLOCK_MONOTONIC)`** : horloge monotone pour mesurer une durée, insensible aux changements de l'heure système, vs `gettimeofday()` déjà couvert.
+- **Options `-march=native`** (instructions du processeur hôte, binaire non portable) **et `-pthread`** : absentes de `compilation.md` et `makefiles.md`.
+
+## 19. Mesurer une performance : profileurs natifs et pièges de benchmark (rush01, `research/bench.py`, `research/ab.py`)
+Complète `mesurer-avant-d-optimiser.md` (profilage par phases, bruit et mesures multiples déjà couverts) : 0 résultat pour « gprof », « perf_event », « bande passante mémoire », « memory-bound », « portfolio ». Rubrique pressentie : Qualité, performance et outils > Performance.
+- **Profileurs natifs Linux** : `gprof` (compilation avec `-pg`, profil plat par fonction, moins fiable avec l'inlining) et `perf` (échantillonnage matériel, refusé à un simple utilisateur si `/proc/sys/kernel/perf_event_paranoid` vaut 3 ou 4).
+- **Comparer aussi sur des compteurs de travail déterministes** (propagations, conflits, nœuds explorés) et pas seulement sur le temps : ±15 % mesurés entre deux exécutions identiques sur portable (fréquence CPU, température).
+- **Programme limité par la bande passante mémoire** (*memory-bound*) : ajouter des threads peut le ralentir (8 threads : 577 → 893 ms), contrairement à un calcul limité par le CPU ; lien avec `cache-cpu-et-simd.md` et la contention déjà décrite dans `parallelisme.md`.
+- **Portfolio parallèle** : lancer plusieurs recherches différentes en parallèle et garder la première qui aboutit ; efficace contre les queues lourdes, inutile si la mémoire est le goulot.
+- **Biais du jeu de test** : valider aussi sur des instances d'une autre origine (cf. point 17) avant de conclure qu'un gain est général.
+
+## 20. Python : lancer et chronométrer des programmes externes en parallèle (rush01, `research/bench.py`)
+`sous-processus-et-flux-standard.md` couvre `subprocess.run` et `capture_output`, `parallelisme.md` couvre `multiprocessing.Pool` ; 0 résultat pour « TimeoutExpired », « ThreadPoolExecutor », « concurrent.futures ». Rubrique pressentie : Langages > Python.
+- **`subprocess.run(..., timeout=...)` et `subprocess.TimeoutExpired`** : arrêter un programme qui dépasse son budget de temps.
+- **`concurrent.futures.ThreadPoolExecutor`** : des threads suffisent quand le vrai travail tourne dans des processus externes (le GIL ne gêne pas) ; `executor.map` conserve l'ordre des résultats.
+
+## 21. Granularité du branchement dans un CSP (rush01, `research/lines2/src/s_backtracking_lines.c`)
+`backtracking-et-satisfaction-de-contraintes.md` présente MRV (*first-fail*) mais pas le choix de ce sur quoi on branche. Rubrique pressentie : compléter ce même chapitre.
+- **Brancher sur une variable à petit domaine (une case, au plus n valeurs) plutôt que sur une contrainte entière (une ligne, des milliers de permutations candidates)** : chaque échec élimine d'un coup toute une famille de candidats au lieu d'un seul. Mesuré : le pire seed passe de 55 s à 0,14 s de recherche.
