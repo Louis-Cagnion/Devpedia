@@ -65,6 +65,32 @@ Un componente (usuario, servicio, proceso) solo debe disponer de los permisos es
 
 El beneficio va más allá de la prevención: si un componente resulta comprometido de todos modos, el daño queda limitado a lo que sus permisos restringidos permiten, en lugar de extenderse a todo el sistema.
 
+## El radio de impacto (*blast radius*)
+
+El **radio de impacto** designa todo lo que un atacante puede alcanzar una vez comprometido un componente. El mínimo privilegio lo reduce para cada componente, a condición de que dos componentes no compartan un punto común que anule su separación.
+
+Separar dos tratamientos dentro de una herramienta (dos pools o dos agentes distintos en una herramienta de despliegue, dos carpetas, dos cuentas de aplicación) no los aísla si se ejecutan en la misma máquina: un secreto guardado en esa máquina (archivo de configuración, variable de entorno, contraseña de [inicio de sesión automático](/?c=infrastructure-devops&s=administration-systeme&p=windows-services-sessions-et-droits)) expone todo lo que aloja.
+
+```text
+Una sola máquina para A y B            Una máquina por tratamiento
++------------------------------+       +---------------+  +---------------+
+| tratamiento A  tratamiento B |       | tratamiento A |  | tratamiento B |
+| secreto A      secreto B     |       | secreto A     |  | secreto B     |
++------------------------------+       +---------------+  +---------------+
+A comprometido: A y B expuestos        A comprometido: B intacto
+```
+
+| Medida | Efecto | ¿Elimina la exposición común? |
+|---|---|---|
+| Cuenta sin permisos de administración | Limita lo que el atacante puede leer o modificar en la máquina | No |
+| [Rotación de secretos](/?c=securite&s=cybersecurite&p=gestion-des-secrets) | Acorta el tiempo durante el que un secreto robado sigue siendo utilizable | No |
+| Acceso restringido a la máquina (red, conexión) | Hace más difícil comprometerla | No |
+| Una máquina dedicada por tratamiento | Un secreto robado solo abre ese tratamiento | Sí |
+
+> **Error común:** presentar un tratamiento sensible como «aislado» porque tiene su propio pool o su propia cuenta, cuando comparte la máquina de otro.
+>
+> **Buena práctica:** para cada secreto guardado en una máquina, preguntarse «si esta máquina se ve comprometida, ¿qué más abre este secreto?»; reservar una máquina dedicada a los tratamientos sensibles y, cuando no sea posible, documentar el riesgo residual en lugar de callarlo.
+
 ## La defensa en profundidad (*defense in depth*)
 
 Ninguna protección es infalible: la defensa en profundidad consiste en apilar varias capas de protección independientes, para que un solo fallo nunca baste para comprometer todo el sistema.
@@ -117,7 +143,7 @@ Este reflejo coincide con la robustez general esperada de cualquier código: un 
 
 | | |
 |---|---|
-| **Para recordar** | Cuatro principios reducen la mayoría de los fallos: pensar la seguridad desde el diseño, validar toda entrada externa con una lista blanca, aplicar el mínimo privilegio, apilar varias capas de defensa independientes. |
+| **Para recordar** | Cuatro principios reducen la mayoría de los fallos: pensar la seguridad desde el diseño, validar toda entrada externa con una lista blanca, aplicar el mínimo privilegio, apilar varias capas de defensa independientes. El radio de impacto de un componente comprometido se extiende a todo lo que comparte su máquina: solo una máquina dedicada aísla de verdad. |
 | **Herramientas utilizables** | `filter_input()` ([PHP](/?c=langages&s=php&p=php)) y equivalentes en otros lenguajes para la validación por lista blanca; cuentas de aplicación dedicadas con permisos restringidos para la base de datos. |
 | **Errores a evitar** | Validar un dato solo en el lado del cliente; usar una lista negra en lugar de una lista blanca; conceder acceso por defecto ante un error inesperado (*fail open*). |
-| **Buenas prácticas** | Revalidar siempre en el servidor; restringir cada componente a lo estrictamente necesario; denegar el acceso por defecto ante la duda (*fail closed*). |
+| **Buenas prácticas** | Revalidar siempre en el servidor; restringir cada componente a lo estrictamente necesario; denegar el acceso por defecto ante la duda (*fail closed*); reservar una máquina dedicada a los tratamientos sensibles. |

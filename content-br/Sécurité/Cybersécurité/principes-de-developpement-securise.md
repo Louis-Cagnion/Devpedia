@@ -65,6 +65,32 @@ Um componente (usuário, serviço, processo) deve ter apenas os direitos estrita
 
 O benefício vai além da prevenção: se um componente for comprometido mesmo assim, o dano fica limitado ao que seus direitos restritos permitem, em vez de se espalhar por todo o sistema.
 
+## O raio de impacto (*blast radius*)
+
+O **raio de impacto** designa tudo o que um atacante consegue alcançar depois de comprometer um componente. O menor privilégio o reduz para cada componente, desde que dois componentes não compartilhem um ponto em comum que anule a separação entre eles.
+
+Separar dois processamentos dentro de uma ferramenta (dois pools ou dois agentes distintos em uma ferramenta de implantação, duas pastas, duas contas de aplicação) não os isola se eles rodam na mesma máquina: um segredo guardado nessa máquina (arquivo de configuração, variável de ambiente, senha de [login automático](/?c=infrastructure-devops&s=administration-systeme&p=windows-services-sessions-et-droits)) expõe tudo o que ela hospeda.
+
+```text
+Uma só máquina para A e B              Uma máquina por processamento
++----------------------------------+   +-----------------+  +-----------------+
+| processamento A  processamento B |   | processamento A |  | processamento B |
+| segredo A        segredo B       |   | segredo A       |  | segredo B       |
++----------------------------------+   +-----------------+  +-----------------+
+A comprometido: A e B expostos         A comprometido: B intacto
+```
+
+| Medida | Efeito | Elimina a exposição em comum? |
+|---|---|---|
+| Conta sem permissões de administração | Limita o que o atacante pode ler ou alterar na máquina | Não |
+| [Rotação de segredos](/?c=securite&s=cybersecurite&p=gestion-des-secrets) | Encurta o tempo durante o qual um segredo roubado continua utilizável | Não |
+| Acesso restrito à máquina (rede, login) | Torna o comprometimento mais difícil | Não |
+| Uma máquina dedicada por processamento | Um segredo roubado só abre esse processamento | Sim |
+
+> **Armadilha:** apresentar um processamento sensível como "isolado" porque ele tem seu próprio pool ou sua própria conta, quando divide a máquina com outro.
+>
+> **Boa prática:** para cada segredo guardado em uma máquina, perguntar-se "se esta máquina for comprometida, o que mais este segredo abre?"; reservar uma máquina dedicada aos processamentos sensíveis e, quando for impossível, documentar o risco residual em vez de escondê-lo.
+
 ## Defesa em profundidade (*defense in depth*)
 
 Nenhuma proteção é infalível: a defesa em profundidade consiste em empilhar várias camadas de proteção independentes, para que uma única falha nunca seja suficiente para comprometer todo o sistema.
@@ -117,7 +143,7 @@ Esse reflexo se alinha com a robustez geral esperada de qualquer código: um err
 
 | | |
 |---|---|
-| **Para lembrar** | Quatro princípios reduzem a maioria das falhas: pensar a segurança desde a concepção, validar toda entrada externa com uma lista branca, aplicar o menor privilégio, empilhar várias camadas de defesa independentes. |
+| **Para lembrar** | Quatro princípios reduzem a maioria das falhas: pensar a segurança desde a concepção, validar toda entrada externa com uma lista branca, aplicar o menor privilégio, empilhar várias camadas de defesa independentes. O raio de impacto de um componente comprometido se estende a tudo o que divide a máquina com ele: só uma máquina dedicada isola de verdade. |
 | **Ferramentas utilizáveis** | `filter_input()` ([PHP](/?c=langages&s=php&p=php)) e equivalentes em outras linguagens para validação por lista branca; contas de aplicação dedicadas com direitos restritos para o banco de dados. |
 | **Armadilhas a evitar** | Validar um dado apenas no lado do cliente; usar uma lista negra em vez de uma lista branca; conceder acesso por padrão diante de um erro inesperado (*fail open*). |
-| **Boas práticas** | Revalidar sempre no servidor; restringir cada componente ao estritamente necessário; negar o acesso por padrão em caso de dúvida (*fail closed*). |
+| **Boas práticas** | Revalidar sempre no servidor; restringir cada componente ao estritamente necessário; negar o acesso por padrão em caso de dúvida (*fail closed*); reservar uma máquina dedicada aos processamentos sensíveis. |

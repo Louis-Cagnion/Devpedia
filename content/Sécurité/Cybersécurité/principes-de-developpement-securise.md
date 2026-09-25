@@ -65,6 +65,32 @@ Un composant (utilisateur, service, processus) ne doit disposer que des droits s
 
 L'intérêt dépasse la seule prévention : si un composant est malgré tout compromis, ses dégâts restent bornés à ce que ses droits limités permettent, plutôt que de s'étendre à tout le système.
 
+## Le rayon d'impact (*blast radius*)
+
+Le **rayon d'impact** désigne tout ce qu'un attaquant peut atteindre une fois un composant compromis. Le moindre privilège le réduit pour chaque composant, à condition que deux composants ne partagent pas un point commun qui annule leur séparation.
+
+Séparer deux traitements dans un outil (deux pools ou deux agents distincts dans un outil de déploiement, deux dossiers, deux comptes applicatifs) ne les isole pas s'ils tournent sur la même machine : un secret stocké sur cette machine (fichier de configuration, variable d'environnement, mot de passe d'[ouverture automatique de session](/?c=infrastructure-devops&s=administration-systeme&p=windows-services-sessions-et-droits)) expose tout ce qu'elle héberge.
+
+```text
+Une seule machine pour A et B          Une machine par traitement
++------------------------------+       +--------------+  +--------------+
+| traitement A    traitement B |       | traitement A |  | traitement B |
+| secret A        secret B     |       | secret A     |  | secret B     |
++------------------------------+       +--------------+  +--------------+
+A compromis : A et B exposés           A compromis : B intact
+```
+
+| Mesure | Effet | Supprime l'exposition commune ? |
+|---|---|---|
+| Compte sans droits d'administration | Limite ce que l'attaquant peut lire ou modifier sur la machine | Non |
+| [Rotation des secrets](/?c=securite&s=cybersecurite&p=gestion-des-secrets) | Raccourcit la durée pendant laquelle un secret volé reste utilisable | Non |
+| Accès à la machine restreint (réseau, connexion) | Rend la compromission plus difficile | Non |
+| Une machine dédiée par traitement | Un secret volé n'ouvre que ce traitement | Oui |
+
+> **Piège :** présenter un traitement sensible comme « isolé » parce qu'il a son propre pool ou son propre compte, alors qu'il partage la machine d'un autre.
+>
+> **Bonne pratique :** pour chaque secret stocké sur une machine, se demander « si cette machine est compromise, qu'est-ce que ce secret ouvre d'autre ? » ; réserver une machine dédiée aux traitements sensibles et, quand c'est impossible, documenter le risque résiduel plutôt que le taire.
+
 ## La défense en profondeur (*defense in depth*)
 
 Aucune protection n'est infaillible : la défense en profondeur consiste à empiler plusieurs couches de protection indépendantes, pour qu'une seule défaillance ne suffise jamais à compromettre tout le système.
@@ -121,7 +147,7 @@ Ce réflexe rejoint la robustesse générale attendue de tout code : une erreur 
 
 | | |
 |---|---|
-| **À retenir** | Quatre principes réduisent la majorité des failles : penser la sécurité dès la conception, valider toute entrée externe par liste blanche, appliquer le moindre privilège, empiler plusieurs couches de défense indépendantes. |
+| **À retenir** | Quatre principes réduisent la majorité des failles : penser la sécurité dès la conception, valider toute entrée externe par liste blanche, appliquer le moindre privilège, empiler plusieurs couches de défense indépendantes. Le rayon d'impact d'un composant compromis s'étend à tout ce qui partage sa machine : seule une machine dédiée isole vraiment. |
 | **Outils utilisables** | `filter_input()` ([PHP](/?c=langages&s=php&p=php)) et équivalents dans d'autres langages pour la validation par liste blanche ; comptes applicatifs dédiés à droits restreints pour la base de données. |
 | **Pièges à éviter** | Valider une donnée uniquement côté client ; utiliser une liste noire plutôt qu'une liste blanche ; autoriser un accès par défaut en cas d'erreur inattendue (*fail open*). |
-| **Bonnes pratiques** | Revalider systématiquement côté serveur ; restreindre chaque composant au strict nécessaire ; refuser l'accès par défaut en cas de doute (*fail closed*). |
+| **Bonnes pratiques** | Revalider systématiquement côté serveur ; restreindre chaque composant au strict nécessaire ; refuser l'accès par défaut en cas de doute (*fail closed*) ; réserver une machine dédiée aux traitements sensibles. |
