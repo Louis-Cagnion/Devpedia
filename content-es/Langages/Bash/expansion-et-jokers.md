@@ -73,6 +73,39 @@ echo '*.txt'
 
 Ver también [Las variables](/?c=shells&s=bash&p=variables) para la distinción comillas simples/dobles respecto a la interpretación de `$variable`.
 
+## La barra invertida `\`: un carácter de escape
+
+Fuera de las comillas, la barra invertida `\` quita su significado especial al carácter que la sigue: `\*` designa un asterisco de verdad, `\ ` un espacio de verdad en un nombre de archivo. Bash consume entonces la propia barra invertida, que desaparece del comando ([Escape Character](https://www.gnu.org/software/bash/manual/html_node/Escape-Character.html)).
+
+Es una trampa habitual con **Git Bash**, el Bash instalado en Windows con [Git for Windows](https://gitforwindows.org/): las rutas de Windows usan precisamente `\` como separador de carpetas.
+
+```bash
+# abre en VS Code una carpeta inexistente: Bash recibió C:Usersjuanproyecto
+code C:\Users\juan\proyecto
+# comillas dobles: las barras invertidas delante de una letra se conservan
+code "C:\Users\juan\proyecto"
+# comillas simples: todo se conserva tal cual
+code 'C:\Users\juan\proyecto'
+# barras normales: aceptadas por la mayoría de los programas de Windows
+code C:/Users/juan/proyecto
+```
+
+El comando `code` abre el editor VS Code desde el terminal (ver [el editor de código](/?c=fondamentaux&s=bases-de-l-informatique&p=editeur-de-code-et-ide)).
+
+| Escritura | Lo que recibe el programa |
+|---|---|
+| `C:\Users\juan\proyecto` (sin comillas) | `C:Usersjuanproyecto` |
+| `"C:\Users\juan\proyecto"` | `C:\Users\juan\proyecto` |
+| `'C:\Users\juan\proyecto'` | `C:\Users\juan\proyecto` |
+| `"\\servidor\compartido"` (recurso de red) | `\servidor\compartido`: una barra invertida perdida |
+| `'\\servidor\compartido'` | `\\servidor\compartido` |
+
+Entre comillas dobles, la barra invertida conserva un significado especial delante de `\`, `$`, `` ` `` y `"` ([Double Quotes](https://www.gnu.org/software/bash/manual/html_node/Double-Quotes.html)): por eso la doble barra invertida de un recurso de red de Windows (`\\servidor`) pierde allí uno de sus dos caracteres.
+
+> **Trampa:** pegar en Git Bash sin comillas una ruta copiada del explorador de Windows: el error no menciona las barras invertidas que faltan, solo una carpeta que no se encuentra o, peor, otra carpeta distinta de la prevista.
+>
+> **Buena práctica:** rodear una ruta de Windows con comillas simples, o sustituir sus `\` por `/`.
+
 ---
 
 ## 📋 Resumen
@@ -81,5 +114,5 @@ Ver también [Las variables](/?c=shells&s=bash&p=variables) para la distinción 
 |---|---|
 | **Para recordar** | Antes de ejecutar un comando, Bash sustituye variables, patrones de archivos (globbing) y expansiones de llaves: un paso invisible pero sistemático. El globbing depende de los archivos realmente presentes; la expansión de llaves nunca depende de ellos. |
 | **Herramientas utilizables** | `*`/`?`/`[abc]` (globbing), `{1,2,3}`/`{1..5}` (llaves), `~` (tilde). |
-| **Trampas a evitar** | Un patrón de globbing que no coincide con ningún archivo se transmite literalmente al comando, sin error ni aviso. |
-| **Buenas prácticas** | Rodear de comillas dobles toda variable que pueda contener un espacio o un carácter especial, para desactivar la división en palabras y el globbing no deseados. |
+| **Trampas a evitar** | Un patrón de globbing que no coincide con ningún archivo se transmite literalmente al comando, sin error ni aviso. Una ruta de Windows sin comillas pierde todas sus `\`. |
+| **Buenas prácticas** | Rodear de comillas dobles toda variable que pueda contener un espacio o un carácter especial, para desactivar la división en palabras y el globbing no deseados. Rodear una ruta de Windows con comillas simples, o usar `/`. |
