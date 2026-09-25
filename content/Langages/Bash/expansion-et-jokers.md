@@ -74,6 +74,39 @@ echo '*.txt'
 
 Voir aussi [Les variables](/?c=shells&s=bash&p=variables) pour la distinction guillemets simples/doubles vis-à-vis de l'interprétation de `$variable`.
 
+## L'antislash `\` : un caractère d'échappement
+
+Hors guillemets, l'antislash `\` retire son sens spécial au caractère qui le suit : `\*` désigne une vraie étoile, `\ ` un vrai espace dans un nom de fichier. Bash consomme alors l'antislash lui-même, qui disparaît de la commande ([Escape Character](https://www.gnu.org/software/bash/manual/html_node/Escape-Character.html)).
+
+C'est un piège courant avec **Git Bash**, le Bash installé sous Windows avec [Git for Windows](https://gitforwindows.org/) : les chemins Windows utilisent justement `\` comme séparateur de dossiers.
+
+```bash
+# ouvre dans VS Code un dossier inexistant : Bash a reçu C:Userslouisprojet
+code C:\Users\louis\projet
+# guillemets doubles : les antislashs devant une lettre sont conservés
+code "C:\Users\louis\projet"
+# guillemets simples : tout est conservé tel quel
+code 'C:\Users\louis\projet'
+# barres obliques : acceptées par la plupart des programmes Windows
+code C:/Users/louis/projet
+```
+
+La commande `code` ouvre l'éditeur VS Code depuis le terminal (voir [l'éditeur de code](/?c=fondamentaux&s=bases-de-l-informatique&p=editeur-de-code-et-ide)).
+
+| Écriture | Ce que reçoit le programme |
+|---|---|
+| `C:\Users\louis\projet` (sans guillemets) | `C:Userslouisprojet` |
+| `"C:\Users\louis\projet"` | `C:\Users\louis\projet` |
+| `'C:\Users\louis\projet'` | `C:\Users\louis\projet` |
+| `"\\serveur\partage"` (partage réseau) | `\serveur\partage` : un antislash perdu |
+| `'\\serveur\partage'` | `\\serveur\partage` |
+
+Entre guillemets doubles, l'antislash garde un sens spécial devant `\`, `$`, `` ` `` et `"` ([Double Quotes](https://www.gnu.org/software/bash/manual/html_node/Double-Quotes.html)) : c'est pourquoi le double antislash d'un partage réseau Windows (`\\serveur`) y perd un de ses deux caractères.
+
+> **Piège :** copier-coller un chemin depuis l'explorateur Windows dans Git Bash sans guillemets : l'erreur ne signale pas les antislashs manquants, seulement un dossier introuvable ou, pire, un autre dossier que prévu.
+>
+> **Bonne pratique :** entourer un chemin Windows de guillemets simples, ou remplacer ses `\` par des `/`.
+
 ---
 
 ## 📋 Récapitulatif
@@ -82,5 +115,5 @@ Voir aussi [Les variables](/?c=shells&s=bash&p=variables) pour la distinction gu
 |---|---|
 | **À retenir** | Avant d'exécuter une commande, Bash remplace variables, motifs de fichiers (globbing) et expansions d'accolades : une étape invisible mais systématique. Le globbing dépend des fichiers réellement présents ; l'expansion d'accolades n'en dépend jamais. |
 | **Outils utilisables** | `*`/`?`/`[abc]` (globbing), `{1,2,3}`/`{1..5}` (accolades), `~` (tilde). |
-| **Pièges à éviter** | Un motif de globbing qui ne correspond à aucun fichier est transmis littéralement à la commande, sans erreur ni avertissement. |
-| **Bonnes pratiques** | Entourer de guillemets doubles toute variable susceptible de contenir un espace ou un caractère spécial, pour désactiver le découpage en mots et le globbing non désirés. |
+| **Pièges à éviter** | Un motif de globbing qui ne correspond à aucun fichier est transmis littéralement à la commande, sans erreur ni avertissement. Un chemin Windows sans guillemets perd tous ses `\`. |
+| **Bonnes pratiques** | Entourer de guillemets doubles toute variable susceptible de contenir un espace ou un caractère spécial, pour désactiver le découpage en mots et le globbing non désirés. Entourer un chemin Windows de guillemets simples, ou utiliser des `/`. |

@@ -71,6 +71,39 @@ echo '*.txt'     # same result, single quotes are even stricter (also disable $v
 
 See also [Variables](/?c=shells&s=bash&p=variables) for the single/double quote distinction regarding `$variable` interpretation.
 
+## The Backslash `\`: an Escape Character
+
+Outside quotes, the backslash `\` removes the special meaning of the character that follows it: `\*` means a real star, `\ ` a real space in a file name. Bash then consumes the backslash itself, which disappears from the command ([Escape Character](https://www.gnu.org/software/bash/manual/html_node/Escape-Character.html)).
+
+This is a common trap with **Git Bash**, the Bash installed on Windows with [Git for Windows](https://gitforwindows.org/): Windows paths precisely use `\` as the folder separator.
+
+```bash
+# opens a nonexistent folder in VS Code: Bash received C:Usersjohnproject
+code C:\Users\john\project
+# double quotes: backslashes in front of a letter are kept
+code "C:\Users\john\project"
+# single quotes: everything is kept as is
+code 'C:\Users\john\project'
+# forward slashes: accepted by most Windows programs
+code C:/Users/john/project
+```
+
+The `code` command opens the VS Code editor from the terminal (see [the code editor](/?c=fondamentaux&s=bases-de-l-informatique&p=editeur-de-code-et-ide)).
+
+| Written as | What the program receives |
+|---|---|
+| `C:\Users\john\project` (no quotes) | `C:Usersjohnproject` |
+| `"C:\Users\john\project"` | `C:\Users\john\project` |
+| `'C:\Users\john\project'` | `C:\Users\john\project` |
+| `"\\server\share"` (network share) | `\server\share`: one backslash lost |
+| `'\\server\share'` | `\\server\share` |
+
+Inside double quotes, the backslash keeps a special meaning in front of `\`, `$`, `` ` `` and `"` ([Double Quotes](https://www.gnu.org/software/bash/manual/html_node/Double-Quotes.html)): this is why the double backslash of a Windows network share (`\\server`) loses one of its two characters there.
+
+> **Pitfall:** pasting a path copied from Windows Explorer into Git Bash without quotes: the error does not mention the missing backslashes, only a folder that cannot be found or, worse, a different folder than intended.
+>
+> **Best practice:** wrap a Windows path in single quotes, or replace its `\` with `/`.
+
 ---
 
 ## 📋 Summary
@@ -79,5 +112,5 @@ See also [Variables](/?c=shells&s=bash&p=variables) for the single/double quote 
 |---|---|
 | **Key takeaways** | Before running a command, Bash replaces variables, file patterns (globbing), and brace expansions, an invisible but systematic step. Globbing depends on the files actually present; brace expansion never does. |
 | **Tools you can use** | `*`/`?`/`[abc]` (globbing), `{1,2,3}`/`{1..5}` (braces), `~` (tilde). |
-| **Pitfalls to avoid** | A globbing pattern that matches no file is passed to the command literally, with no error or warning. |
-| **Best practices** | Wrap in double quotes any variable that might contain a space or special character, to disable unwanted word splitting and globbing. |
+| **Pitfalls to avoid** | A globbing pattern that matches no file is passed to the command literally, with no error or warning. A Windows path without quotes loses all its `\`. |
+| **Best practices** | Wrap in double quotes any variable that might contain a space or special character, to disable unwanted word splitting and globbing. Wrap a Windows path in single quotes, or use `/`. |

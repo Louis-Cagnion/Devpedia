@@ -72,6 +72,39 @@ echo '*.txt'  # mesmo resultado, aspas simples ainda mais estritas (também desa
 
 Veja também [As variáveis](/?c=shells&s=bash&p=variables) para a distinção aspas simples/duplas em relação à interpretação de `$variavel`.
 
+## A barra invertida `\`: um caractere de escape
+
+Fora das aspas, a barra invertida `\` tira o sentido especial do caractere que vem depois dela: `\*` designa um asterisco de verdade, `\ ` um espaço de verdade em um nome de arquivo. O Bash consome então a própria barra invertida, que desaparece do comando ([Escape Character](https://www.gnu.org/software/bash/manual/html_node/Escape-Character.html)).
+
+É uma armadilha comum com o **Git Bash**, o Bash instalado no Windows com o [Git for Windows](https://gitforwindows.org/): os caminhos do Windows usam justamente `\` como separador de pastas.
+
+```bash
+# abre no VS Code uma pasta inexistente: o Bash recebeu C:Usersjoaoprojeto
+code C:\Users\joao\projeto
+# aspas duplas: as barras invertidas antes de uma letra são mantidas
+code "C:\Users\joao\projeto"
+# aspas simples: tudo é mantido como está
+code 'C:\Users\joao\projeto'
+# barras normais: aceitas pela maioria dos programas do Windows
+code C:/Users/joao/projeto
+```
+
+O comando `code` abre o editor VS Code a partir do terminal (veja [o editor de código](/?c=fondamentaux&s=bases-de-l-informatique&p=editeur-de-code-et-ide)).
+
+| Escrita | O que o programa recebe |
+|---|---|
+| `C:\Users\joao\projeto` (sem aspas) | `C:Usersjoaoprojeto` |
+| `"C:\Users\joao\projeto"` | `C:\Users\joao\projeto` |
+| `'C:\Users\joao\projeto'` | `C:\Users\joao\projeto` |
+| `"\\servidor\compartilhamento"` (compartilhamento de rede) | `\servidor\compartilhamento`: uma barra invertida perdida |
+| `'\\servidor\compartilhamento'` | `\\servidor\compartilhamento` |
+
+Entre aspas duplas, a barra invertida mantém um sentido especial antes de `\`, `$`, `` ` `` e `"` ([Double Quotes](https://www.gnu.org/software/bash/manual/html_node/Double-Quotes.html)): é por isso que a barra invertida dupla de um compartilhamento de rede do Windows (`\\servidor`) perde ali um de seus dois caracteres.
+
+> **Armadilha:** colar no Git Bash, sem aspas, um caminho copiado do Explorador do Windows: o erro não menciona as barras invertidas que faltam, só uma pasta que não é encontrada ou, pior, uma pasta diferente da prevista.
+>
+> **Boa prática:** cercar um caminho do Windows com aspas simples, ou trocar suas `\` por `/`.
+
 ---
 
 ## 📋 Recapitulando
@@ -80,5 +113,5 @@ Veja também [As variáveis](/?c=shells&s=bash&p=variables) para a distinção a
 |---|---|
 | **Para lembrar** | Antes de executar um comando, o Bash substitui variáveis, padrões de arquivo (globbing) e expansões de chaves: uma etapa invisível mas sistemática. O globbing depende dos arquivos realmente presentes; a expansão de chaves nunca depende disso. |
 | **Ferramentas utilizáveis** | `*`/`?`/`[abc]` (globbing), `{1,2,3}`/`{1..5}` (chaves), `~` (til). |
-| **Armadilhas a evitar** | Um padrão de globbing que não corresponde a nenhum arquivo é transmitido literalmente ao comando, sem erro nem aviso. |
-| **Boas práticas** | Cercar com aspas duplas toda variável suscetível de conter um espaço ou um caractere especial, para desativar a divisão em palavras e o globbing indesejados. |
+| **Armadilhas a evitar** | Um padrão de globbing que não corresponde a nenhum arquivo é transmitido literalmente ao comando, sem erro nem aviso. Um caminho do Windows sem aspas perde todas as suas `\`. |
+| **Boas práticas** | Cercar com aspas duplas toda variável suscetível de conter um espaço ou um caractere especial, para desativar a divisão em palavras e o globbing indesejados. Cercar um caminho do Windows com aspas simples, ou usar `/`. |
