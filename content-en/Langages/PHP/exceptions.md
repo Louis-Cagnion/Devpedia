@@ -56,6 +56,33 @@ try {
 >
 > **Best practice:** only catch `Throwable` when the code genuinely needs to react to any possible error (a global entry point that logs everything before crashing cleanly, for example); everywhere else in the code, target the specific exception type actually expected, so a programming error that deserves to be seen and fixed is never masked.
 
+### `ValueError`: the Right Type, but a Rejected Value
+
+Since PHP 8.0, many built-in functions throw a **`ValueError`** when an argument has the right type but a value they do not accept ([ValueError](https://www.php.net/manual/en/class.valueerror.php)). This is a third situation, distinct from the two other argument-related `Error`s:
+
+| `Error` | When | Example |
+|---|---|---|
+| `TypeError` | Argument of the wrong type | `strlen([])`: an array instead of a string |
+| `ArgumentCountError` | Wrong number of arguments | `strlen()` |
+| `ValueError` | Right type, value outside what the function accepts | `array_rand($array, 4)` on an array of 3 elements |
+
+```php
+<?php
+$colors = ["red", "green", "blue"];
+try {
+    // asks for 4 random keys from an array that only has 3
+    $keys = array_rand($colors, 4);
+} catch (Exception $e) {
+    echo "never reached";  // ValueError is not an Exception
+} catch (ValueError $e) {
+    echo $e->getMessage(); // Argument #2 ($num) must be between 1 and ...
+}
+```
+
+> **Pitfall:** calling `array_rand($list, DRAW_COUNT)` with a configuration constant and a list loaded from outside (file, database). The day the list becomes shorter than the constant, or empty, the call throws a `ValueError` that a `catch (Exception $e)` lets through.
+>
+> **Best practice:** check the actual size before the call: handle an empty list separately, then draw `min(DRAW_COUNT, count($list))` elements.
+
 ## Multiple `catch` blocks: most specific to most general
 
 A `try` can be followed by several `catch` blocks, each targeting a different type; PHP runs the **first** one whose type matches, in the order they're written:
@@ -162,7 +189,7 @@ See also [Object-Oriented Programming](/?c=langages-de-programmation&s=php&p=poo
 
 | | |
 |---|---|
-| **Key takeaways** | `throw` interrupts the normal flow; `try`/`catch` catches an exception by type, `finally` always runs. `Exception` (business errors) and `Error` (programming errors) are two distinct branches of `Throwable`. A custom exception extends `Exception`; `previous` chains a new exception to its original cause. |
+| **Key takeaways** | `throw` interrupts the normal flow; `try`/`catch` catches an exception by type, `finally` always runs. `Exception` (business errors) and `Error` (programming errors) are two distinct branches of `Throwable`; `ValueError` signals an argument of the right type but with a rejected value. A custom exception extends `Exception`; `previous` chains a new exception to its original cause. |
 | **Tools you can use** | `try`/`catch`/`finally`/`throw`, `getMessage()`/`getCode()`/`getPrevious()`, `extends Exception` for a clean business error type. |
-| **Pitfalls to avoid** | A `throw` never caught by any `try`/`catch`. `catch (Exception $e)` thinking it also catches `Error`. A general `catch` placed before a specific one. Releasing a resource only at the end of `try` without `finally`. Re-throwing an exception without passing `previous`. |
+| **Pitfalls to avoid** | A `throw` never caught by any `try`/`catch`. `catch (Exception $e)` thinking it also catches `Error`. Passing `array_rand()` a count larger than the array, or an empty array (`ValueError`). A general `catch` placed before a specific one. Releasing a resource only at the end of `try` without `finally`. Re-throwing an exception without passing `previous`. |
 | **Best practices** | Catch where the program can actually react. Only use `Throwable` for a global entry point. Order `catch` blocks from most specific to most general. Always release a resource in a `finally`. Create a custom exception as soon as a caller must react differently depending on the error type. Always chain via `previous` when re-throwing. |
