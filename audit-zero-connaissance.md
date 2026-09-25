@@ -2,7 +2,7 @@
 
 Suivi de travail (pas destiné au public) pour la réécriture de Devpedia niveau zéro-connaissance. Contient uniquement les écarts **encore ouverts** détectés en relisant un chapitre contre la checklist de `plan-zero-connaissance.md` (section "Méthode") : jargon non défini, notion présupposée sans lien, plateforme/produit externe nommé sans être enseigné ni introduit (ex : GitHub), tableau/schéma manquant là où un paragraphe suffirait moins bien, redite au lieu d'un lien, récapitulatif final absent ou mal formaté.
 
-Processus : après avoir retravaillé un lot de chapitres, les relire contre cette checklist, noter les écarts trouvés ci-dessous, les corriger, puis relire à nouveau — jusqu'à ce que la section de la tâche en cours soit vide. Une tâche ne disparaît de ce fichier qu'une fois entièrement propre.
+Processus : après avoir retravaillé un lot de chapitres, les relire contre cette checklist, noter les écarts trouvés ci-dessous, les corriger, puis relire à nouveau, jusqu'à ce que la section de la tâche en cours soit vide. Une tâche ne disparaît de ce fichier qu'une fois entièrement propre.
 
 ## Rien en cours
 
@@ -13,4 +13,4 @@ Le réaudit zéro-connaissance sur l'ensemble du site (23/23 groupes, catégorie
 - `C/variables.md` enrichi (encadrés piège/bonne pratique par section, lien vers `pointeurs.md`).
 - 2 bugs structurels de récap mal placé (`C++/exceptions.md`, `JavaScript/html-elements.md`) déjà corrigés au passage.
 
-(Avant cette reprise : les 19 tâches du plan de réécriture zéro-connaissance initial étaient terminées — tableau récapitulatif standard et renvois en vrais liens Markdown sur tous les chapitres. Le bug camelCase est corrigé : fichiers renommés en kebab-case le 2026-08-07, lien réel restauré dans `include.md`.)
+(Avant cette reprise : les 19 tâches du plan de réécriture zéro-connaissance initial étaient terminées : tableau récapitulatif standard et renvois en vrais liens Markdown sur tous les chapitres. Le bug camelCase est corrigé : fichiers renommés en kebab-case le 2026-08-07, lien réel restauré dans `include.md`.)
