@@ -887,6 +887,10 @@
             {
               "id": "conventions-de-documentation",
               "label": "Convenciones de documentación del código por lenguaje"
+            },
+            {
+              "id": "robustesse-traitement-par-lots",
+              "label": "Robustez de un tratamiento por lotes"
             }
           ]
         },

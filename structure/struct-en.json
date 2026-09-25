@@ -887,6 +887,10 @@
             {
               "id": "conventions-de-documentation",
               "label": "Code Documentation Conventions by Language"
+            },
+            {
+              "id": "robustesse-traitement-par-lots",
+              "label": "Robustness of a Batch Job"
             }
           ]
         },
