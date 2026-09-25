@@ -65,6 +65,32 @@ A component (user, service, process) should only hold the rights strictly requir
 
 The benefit goes beyond prevention alone: if a component is compromised anyway, the damage stays bounded to what its limited rights allow, instead of spreading to the whole system.
 
+## Blast Radius
+
+The **blast radius** is everything an attacker can reach once a component is compromised. Least privilege shrinks it for each component, provided that two components do not share something that cancels their separation.
+
+Separating two jobs inside a tool (two distinct pools or agents in a deployment tool, two folders, two application accounts) does not isolate them if they run on the same machine: a secret stored on that machine (configuration file, environment variable, [automatic logon](/?c=infrastructure-devops&s=administration-systeme&p=windows-services-sessions-et-droits) password) exposes everything it hosts.
+
+```text
+One machine for A and B                One machine per job
++------------------------------+       +--------------+  +--------------+
+| job A           job B        |       | job A        |  | job B        |
+| secret A        secret B     |       | secret A     |  | secret B     |
++------------------------------+       +--------------+  +--------------+
+A compromised: A and B exposed         A compromised: B intact
+```
+
+| Measure | Effect | Removes the shared exposure? |
+|---|---|---|
+| Account without administrative rights | Limits what the attacker can read or change on the machine | No |
+| [Secret rotation](/?c=securite&s=cybersecurite&p=gestion-des-secrets) | Shortens how long a stolen secret stays usable | No |
+| Restricted access to the machine (network, logon) | Makes compromise harder | No |
+| One dedicated machine per job | A stolen secret only opens that job | Yes |
+
+> **Pitfall:** presenting a sensitive job as "isolated" because it has its own pool or its own account, while it shares another job's machine.
+>
+> **Best practice:** for every secret stored on a machine, ask "if this machine is compromised, what else does this secret open?"; keep a dedicated machine for sensitive jobs and, when that is impossible, document the residual risk instead of hiding it.
+
 ## Defense in depth
 
 No protection is foolproof: defense in depth means stacking several independent layers of protection, so that a single failure is never enough to compromise the whole system.
@@ -117,7 +143,7 @@ This mirrors the general robustness expected of any code: an error should fail e
 
 | | |
 |---|---|
-| **Key takeaway** | Four principles cut down most flaws: designing for security from the start, validating every external input with an allowlist, applying least privilege, and stacking several independent layers of defense. |
+| **Key takeaway** | Four principles cut down most flaws: designing for security from the start, validating every external input with an allowlist, applying least privilege, and stacking several independent layers of defense. The blast radius of a compromised component extends to everything sharing its machine: only a dedicated machine truly isolates. |
 | **Tools you can use** | `filter_input()` ([PHP](/?c=langages&s=php&p=php)) and equivalents in other languages for allowlist validation; dedicated application accounts with restricted rights for the database. |
 | **Pitfalls to avoid** | Validating data only client-side; using a denylist instead of an allowlist; granting access by default on an unexpected error (*fail open*). |
-| **Best practices** | Always re-validate server-side; restrict every component to the strict minimum it needs; deny access by default when in doubt (*fail closed*). |
+| **Best practices** | Always re-validate server-side; restrict every component to the strict minimum it needs; deny access by default when in doubt (*fail closed*); keep a dedicated machine for sensitive jobs. |
