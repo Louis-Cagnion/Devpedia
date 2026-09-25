@@ -38,7 +38,7 @@ steps:
 ```
 
 - `trigger`: when the pipeline runs automatically (here, on every push to `main`).
-- `pool`: which machine (provided by Microsoft, or your own) runs the pipeline.
+- `pool`: in which group of agents (the programs that run the jobs, on a machine provided by Microsoft or your own) the pipeline runs; a pool is a list of agents, not a machine: it can group agents from several machines, and a machine can host agents from several pools.
 - `steps`: the list of steps, run in order. `script` runs a raw command; `displayName` is just the name shown in the run logs.
 
 > **Pitfall:** forgetting `trigger`. Without it, the default behavior depends on the project's configuration (triggered on any branch, or a pipeline that never runs on its own): better to state it explicitly than to guess what the absence of this field will do.
@@ -109,13 +109,69 @@ An unauthorized Environment blocks the run with the same "Permission needed" ban
 >
 > **Best practice:** reserve approval checks for high-stakes Environments (production), not a test Environment that only needs an initial Permit.
 
+## Pipeline Parameters: Choosing at Launch
+
+A pipeline started by hand can ask the person starting it to make choices: this is the role of the `parameters` block, placed at the top of the file ([Runtime parameters](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters)). Azure DevOps then shows a form before the run starts.
+
+```yaml
+parameters:
+  - name: mode            # name used in the file
+    displayName: Run mode # label shown in the form
+    type: string
+    default: normal       # value if nobody changes anything
+    values:               # offered choices (drop-down list)
+      - normal
+      - unblock
+
+steps:
+  - script: python robot.py
+    displayName: Start the robot
+  - ${{ if eq(parameters.mode, 'unblock') }}:
+      - script: python robot.py --visible-window
+        displayName: Restart with a visible window
+```
+
+The line `${{ if eq(parameters.mode, 'unblock') }}:` is a **template expression** ([Template expressions](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/template-expressions)): it is evaluated when the file is **compiled**, that is when Azure DevOps turns the YAML into a list of jobs, before any step runs. If the condition is false, the step simply does not exist in the run.
+
+| Syntax | Evaluated | Knows |
+|---|---|---|
+| `${{ parameters.mode }}` | At compile time, before execution | Parameters and values fixed in the file |
+| `$(variableName)` | When the step runs | Also variables computed during the run |
+
+> **Pitfall:** using `${{ }}` with a variable computed during the run: at compile time it does not exist yet, and the expression evaluates to an empty string.
+>
+> **Best practice:** restrict a text parameter to a `values` list, so that a typo at launch is impossible instead of silently flowing into the condition.
+
+## Blocking Check or Non-Blocking Alert
+
+A step that ends with an [exit code](/?c=langages&s=c&p=exit-et-codes-de-retour) other than `0` makes its job fail: the run turns red and the following stages do not run. That is the right behavior for a **blocking check** (failing tests, impossible deployment).
+
+To report a problem without stopping everything, a script can print **logging commands**, special lines that Azure DevOps interprets instead of just displaying them ([Logging commands](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/logging-commands)):
+
+```powershell
+# shows a yellow warning in the run summary, without failing
+Write-Host "##vso[task.logissue type=warning]3 pages could not be read"
+# ends the step as "succeeded with issues": the run turns orange
+Write-Host "##vso[task.complete result=SucceededWithIssues;]"
+```
+
+| Situation | Mechanism | Run result |
+|---|---|---|
+| Problem that must stop everything | Non-zero exit code | Red, following stages canceled |
+| Problem worth reporting, not serious | `task.logissue type=warning` | Green, with a visible warning |
+| Partial result to keep an eye on | `task.complete result=SucceededWithIssues` | Orange ("partially succeeded") |
+
+> **Pitfall:** failing the whole pipeline for a minor incident (a few unreadable pages): real critical alerts then drown among usual failures that nobody looks at anymore.
+>
+> **Best practice:** keep failure for situations that require immediate action, and distinguish in messages between "legitimately empty result" and "read failure".
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key Points** | An Azure pipeline is organized into stages, containing jobs, containing steps run in order. `trigger` defines when it runs, `pool` on which machine, `steps`/`task` the actions to run. A variable group or an Environment never used by a given pipeline requires an explicit Permit (only available to an administrator of the resource); an Environment can also carry a human approval check. |
-| **Available Tools** | Official tasks (`PublishBuildArtifacts@1` and many others) for common actions, without rewriting their logic by hand. Environments to carry approval checks on a sensitive deployment. |
-| **Pitfalls to Avoid** | Omitting `trigger` and letting an implicit behavior decide when the pipeline runs. Writing a secret in plain text in the versioned YAML file. Confusing a Permit block (access authorization) with a block from an approval check (human validation on every deployment). |
-| **Best Practices** | Declare `trigger` explicitly. Store secrets in a dedicated variable group and reference them by name, never in plain text. Check "for this run and future runs" on the first Permit of a stable pipeline. Reserve approval checks for high-stakes Environments. |
+| **Key Points** | An Azure pipeline is organized into stages, containing jobs, containing steps run in order. `trigger` defines when it runs, `pool` in which group of agents, `steps`/`task` the actions to run. `parameters` offers choices at launch, evaluated at compile time by `${{ }}`. A variable group or an Environment never used by a given pipeline requires an explicit Permit (only available to an administrator of the resource); an Environment can also carry a human approval check. |
+| **Available Tools** | Official tasks (`PublishBuildArtifacts@1` and many others) for common actions, without rewriting their logic by hand. Environments to carry approval checks on a sensitive deployment. Logging commands (`##vso[task.logissue]`, `##vso[task.complete]`) for a non-blocking alert. |
+| **Pitfalls to Avoid** | Omitting `trigger` and letting an implicit behavior decide when the pipeline runs. Writing a secret in plain text in the versioned YAML file. Confusing a Permit block (access authorization) with a block from an approval check (human validation on every deployment). Using `${{ }}` with a variable computed during the run. Failing the whole pipeline for a minor incident. |
+| **Best Practices** | Declare `trigger` explicitly. Store secrets in a dedicated variable group and reference them by name, never in plain text. Check "for this run and future runs" on the first Permit of a stable pipeline. Reserve approval checks for high-stakes Environments. Restrict a text parameter to a `values` list. Keep pipeline failure for situations that require immediate action. |

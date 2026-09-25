@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 4 à 28 dans l'ordre (rédaction autonome demandée par Louis le 26/09), audio du point 2bis au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 7 à 28 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 2bis au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -18,6 +18,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 ## 2bis. Audio à générer (4 langues) pour les chapitres ajoutés ou modifiés
 `node scripts/generate-audio.mjs <chemin>` pour chacun, puis retirer la ligne :
 - `Infrastructure & DevOps/Administration système/windows-services-sessions-et-droits` (nouveau) et `administration-systeme` (présentation du sujet modifiée).
+- `Infrastructure & DevOps/CI-CD/yaml-pipelines-azure` (paramètres de pipeline, alerte non bloquante, nuance sur le pool).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -25,12 +26,9 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **`tscon %sessionname% /dest:console`** : rend la session à la console au lieu de la verrouiller ; demande en général une élévation (lien avec l'UAC du point 3).
 - **Shadowing RDP** (`query session /server:<machine>`, `mstsc /v:<machine> /shadow:<id> /control /noConsentPrompt`) : observer et piloter la session d'un autre compte depuis la sienne, sans la déplacer ni connaître son mot de passe ; prérequis : GPO « Définir des règles pour le contrôle à distance des sessions utilisateur des services Bureau à distance », droit de contrôle à distance accordé aux opérateurs, ouvertures réseau. Tableau comparatif connexion classique + tscon vs shadowing.
 
-## 5. Azure DevOps : agents auto-hébergés, pools et paramètres de pipeline (projet scraping_infomediaires)
-À compléter dans Infrastructure & DevOps > CI-CD (`yaml-pipelines-azure.md` ou nouveau chapitre).
+## 5. Azure DevOps : agents auto-hébergés (projet scraping_infomediaires)
+À compléter dans Infrastructure & DevOps > CI-CD (nouveau chapitre) ; rédaction interrompue le 26/09, à écrire par Louis.
 - **Agent auto-hébergé : mode service vs mode interactif** (`config.cmd --unattended --runAsAutoLogon --windowsLogonAccount … --windowsLogonPassword …`, `--overwriteAutoLogon`), plusieurs agents sur une même machine dans des dossiers séparés, rôle du PAT (déjà défini côté GitHub) uniquement à l'enregistrement.
-- **Pool d'agents ≠ machine** : un pool est une liste d'agents dans Azure DevOps (une machine peut héberger des agents de plusieurs pools, un pool peut regrouper plusieurs machines) ; pool dédié pour qu'un seul pipeline atterrisse sur un agent. À nuancer dans l'existant : `yaml-pipelines-azure.md` l. 41 décrit `pool` comme « quelle machine […] exécute le pipeline ».
-- **Paramètres de pipeline** (`parameters:` avec `values`/`default`, choisis au lancement manuel, et expressions `${{ if eq(parameters.mode, 'deblocage') }}` évaluées à la compilation du YAML) : aucun `parameters:` Azure dans `content/` (seule occurrence : OpenAPI).
-- **Contrôle bloquant vs alerte non bloquante** dans un pipeline : un stage qui échoue (code de sortie 1) vs un avertissement qui laisse le pipeline vert ou orange (ex. `##vso[task.logissue type=warning]`, `SucceededWithIssues`) ; cas concret : pages non lues à signaler sans les confondre avec un statut critique.
 
 ## 6. Navigateur automatisé : headless, captcha, profil persistant, débogage à distance (projet scraping_infomediaires)
 À ajouter dans Sécurité > Sécurité offensive (`attaques-navigateur-automatise.md` couvre déjà Playwright, `navigator.webdriver` et le fingerprinting, mais ni « headless », ni « captcha », ni le profil persistant : 0 résultat).

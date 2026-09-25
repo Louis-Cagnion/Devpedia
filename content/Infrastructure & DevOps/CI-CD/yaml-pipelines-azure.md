@@ -38,7 +38,7 @@ steps:
 ```
 
 - `trigger` : quand le pipeline se lance automatiquement (ici, à chaque push sur `main`).
-- `pool` : quelle machine (fournie par Microsoft, ou la vôtre) exécute le pipeline.
+- `pool` : dans quel groupe d'agents (les programmes qui exécutent les jobs, sur une machine fournie par Microsoft ou la vôtre) le pipeline s'exécute ; un pool est une liste d'agents, pas une machine : il peut regrouper des agents de plusieurs machines, et une machine peut héberger des agents de plusieurs pools.
 - `steps` : la liste des étapes, exécutées dans l'ordre. `script` lance une commande brute ; `displayName` est juste le nom affiché dans les journaux d'exécution.
 
 > **Piège :** oublier `trigger`. Sans lui, le comportement par défaut dépend de la configuration du projet (déclenchement sur toute branche, ou pipeline qui ne se lance jamais tout seul) : autant le préciser explicitement plutôt que de deviner ce que fera l'absence de ce champ.
@@ -109,13 +109,69 @@ Un Environment non autorisé bloque le run avec le même bandeau "Permission nee
 >
 > **Bonne pratique :** réserver un check d'approbation aux Environments à fort enjeu (production), pas à un Environment de test qui n'a besoin que d'un Permit initial.
 
+## Les paramètres de pipeline : choisir au lancement
+
+Un pipeline lancé à la main peut demander des choix à la personne qui le lance : c'est le rôle du bloc `parameters`, placé en tête du fichier ([Runtime parameters](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/runtime-parameters)). Azure DevOps affiche alors un formulaire avant le lancement.
+
+```yaml
+parameters:
+  - name: mode                    # nom utilisé dans le fichier
+    displayName: Mode d'exécution # libellé affiché dans le formulaire
+    type: string
+    default: normal               # valeur si personne ne change rien
+    values:                       # choix proposés (liste déroulante)
+      - normal
+      - deblocage
+
+steps:
+  - script: python robot.py
+    displayName: Lancer le robot
+  - ${{ if eq(parameters.mode, 'deblocage') }}:
+      - script: python robot.py --fenetre-visible
+        displayName: Relancer avec fenêtre visible
+```
+
+La ligne `${{ if eq(parameters.mode, 'deblocage') }}:` est une **expression de modèle** ([Template expressions](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/template-expressions)) : elle est évaluée à la **compilation** du fichier, c'est-à-dire au moment où Azure DevOps transforme le YAML en liste de jobs, avant que le moindre step ne s'exécute. Si la condition est fausse, le step n'existe tout simplement pas dans le run.
+
+| Syntaxe | Évaluée | Connaît |
+|---|---|---|
+| `${{ parameters.mode }}` | À la compilation, avant l'exécution | Les paramètres et les valeurs fixées dans le fichier |
+| `$(nomVariable)` | Au moment où le step s'exécute | Aussi les variables calculées pendant le run |
+
+> **Piège :** utiliser `${{ }}` avec une variable calculée pendant le run : à la compilation, elle n'existe pas encore, et l'expression vaut une chaîne vide.
+>
+> **Bonne pratique :** restreindre un paramètre texte à une liste `values`, pour qu'une faute de frappe au lancement soit impossible plutôt que de passer silencieusement dans la condition.
+
+## Contrôle bloquant ou alerte non bloquante
+
+Un step qui se termine avec un [code de sortie](/?c=langages&s=c&p=exit-et-codes-de-retour) différent de `0` fait échouer son job : le run devient rouge et les stages suivants ne s'exécutent pas. C'est le bon comportement pour un **contrôle bloquant** (tests qui échouent, déploiement impossible).
+
+Pour signaler un problème sans tout arrêter, un script peut écrire des **commandes de journalisation** (*logging commands*), des lignes spéciales qu'Azure DevOps interprète au lieu de simplement les afficher ([Logging commands](https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/logging-commands)) :
+
+```powershell
+# affiche un avertissement jaune dans le résumé du run, sans échec
+Write-Host "##vso[task.logissue type=warning]3 pages n'ont pas pu être lues"
+# termine le step en "réussi avec des problèmes" : le run devient orange
+Write-Host "##vso[task.complete result=SucceededWithIssues;]"
+```
+
+| Situation | Mécanisme | Résultat du run |
+|---|---|---|
+| Problème qui doit tout arrêter | Code de sortie non nul | Rouge, stages suivants annulés |
+| Problème à signaler, sans gravité | `task.logissue type=warning` | Vert, avec un avertissement visible |
+| Résultat partiel à surveiller | `task.complete result=SucceededWithIssues` | Orange (« partiellement réussi ») |
+
+> **Piège :** faire échouer tout le pipeline pour un incident mineur (quelques pages illisibles) : les vraies alertes critiques se noient alors dans des échecs habituels que plus personne ne regarde.
+>
+> **Bonne pratique :** réserver l'échec aux situations qui exigent une action immédiate, et distinguer dans les messages « résultat vide légitime » et « échec de lecture ».
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Un pipeline Azure s'organise en stages, contenant des jobs, contenant des steps exécutés dans l'ordre. `trigger` définit quand il se lance, `pool` sur quelle machine, `steps`/`task` les actions à exécuter. Un groupe de variables ou un Environment jamais utilisé par un pipeline donné exige un Permit explicite (accessible seulement à un administrateur de la ressource) ; un Environment peut en plus porter un check d'approbation humaine. |
-| **Outils utilisables** | Les tasks officielles (`PublishBuildArtifacts@1` et bien d'autres) pour des actions courantes, sans réécrire leur logique à la main. Les Environments pour porter des checks d'approbation sur un déploiement sensible. |
-| **Pièges à éviter** | Omettre `trigger` et laisser un comportement implicite décider quand le pipeline se lance. Écrire un secret en clair dans le fichier YAML versionné. Confondre un blocage Permit (autorisation d'accès) avec un blocage par check d'approbation (validation humaine à chaque déploiement). |
-| **Bonnes pratiques** | Déclarer `trigger` explicitement. Stocker les secrets dans un groupe de variables dédié et les référencer par leur nom, jamais en clair. Cocher "pour ce run et les runs futurs" au premier Permit d'un pipeline stable. Réserver les checks d'approbation aux Environments à fort enjeu. |
+| **À retenir** | Un pipeline Azure s'organise en stages, contenant des jobs, contenant des steps exécutés dans l'ordre. `trigger` définit quand il se lance, `pool` dans quel groupe d'agents, `steps`/`task` les actions à exécuter. `parameters` propose des choix au lancement, évalués à la compilation par `${{ }}`. Un groupe de variables ou un Environment jamais utilisé par un pipeline donné exige un Permit explicite (accessible seulement à un administrateur de la ressource) ; un Environment peut en plus porter un check d'approbation humaine. |
+| **Outils utilisables** | Les tasks officielles (`PublishBuildArtifacts@1` et bien d'autres) pour des actions courantes, sans réécrire leur logique à la main. Les Environments pour porter des checks d'approbation sur un déploiement sensible. Les commandes de journalisation (`##vso[task.logissue]`, `##vso[task.complete]`) pour une alerte non bloquante. |
+| **Pièges à éviter** | Omettre `trigger` et laisser un comportement implicite décider quand le pipeline se lance. Écrire un secret en clair dans le fichier YAML versionné. Confondre un blocage Permit (autorisation d'accès) avec un blocage par check d'approbation (validation humaine à chaque déploiement). Utiliser `${{ }}` avec une variable calculée pendant le run. Faire échouer tout le pipeline pour un incident mineur. |
+| **Bonnes pratiques** | Déclarer `trigger` explicitement. Stocker les secrets dans un groupe de variables dédié et les référencer par leur nom, jamais en clair. Cocher "pour ce run et les runs futurs" au premier Permit d'un pipeline stable. Réserver les checks d'approbation aux Environments à fort enjeu. Restreindre un paramètre texte à une liste `values`. Réserver l'échec du pipeline aux situations qui exigent une action immédiate. |
