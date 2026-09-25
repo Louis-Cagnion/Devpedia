@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Structures traduites : ne jamais les régénérer avec `buildStruct` (2026-09-26)
+
+Régénérer `struct-en/es/br.json` avec `buildStruct()` de `scripts/generate-struct.js` dégrade ces fichiers : le libellé d'une sous-section redevient le nom de dossier français, et une sous-section dont le fichier principal traduit ne porte pas le titre du dossier (« Modèles de décision structurée ») voit ce fichier listé comme un chapitre, avec des sous-sections déplacées. Les structures traduites se complètent donc à la main : insérer le nouveau chapitre à la même position qu'en français, puis valider les liens avec `validateInternalLinks()`.
+
 ## Convention confirmée : le README.md racine reste en anglais (2026-09-19)
 
 Louis a confirmé explicitement que l'anglais est un choix délibéré pour `README.md`, pas un oubli (règle "Langue du README" de `/best-practice`, français par défaut sauf convention établie). Seuls les titres de catégories principales du README ont par ailleurs été traduits FR→EN ce même jour pour rester cohérents avec le reste du document.
