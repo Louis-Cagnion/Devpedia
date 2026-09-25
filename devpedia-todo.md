@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 11 à 28 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 2bis au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 12 à 28 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 2bis au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -23,6 +23,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Sécurité/Cybersécurité/principes-de-developpement-securise` (section rayon d'impact).
 - `Langages/Bash/expansion-et-jokers` (section antislash et chemins Windows).
 - `Langages/PHP/poo` (section héritage) et `Langages/PHP/http` (section `json_encode()` sur `INF`/`NAN`).
+- `Langages/PHP/exceptions` (sous-section `ValueError`).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -41,11 +42,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 11. `ValueError` PHP (branche `Error`, argument de type correct mais de valeur invalide), cas de `array_rand()` (crash-test projet poc-borne-git)
-`exceptions.md` couvre déjà la distinction `Exception`/`Error` sous `Throwable` et cite `TypeError`/`ArgumentCountError`/`DivisionByZeroError` comme exemples d'`Error`, mais jamais `ValueError` : 0 résultat pour « ValueError » dans tout `content/Langages/PHP/`.
-- **`ValueError`** : depuis PHP 8.0, de nombreuses fonctions internes lèvent un `ValueError` (et non un `TypeError`) quand un argument a le bon type mais une valeur hors du domaine accepté ; il se distingue d'un type incorrect (`TypeError`) ou d'un nombre d'arguments incorrect (`ArgumentCountError`), les trois étant des `Error`, donc jamais capturés par un `catch (Exception $e)`.
-- **Cas concret : `array_rand(array $array, int $num = 1)`** lève un `ValueError` si `$num` dépasse `count($array)` (ex. demander 4 clés aléatoires dans un tableau qui n'en contient que 3) : piège latent quand `$num` est une constante de config et `$array` une donnée externe (fichier, base) dont la taille peut varier.
 
 ## 12. Closure PHP avec capture par référence (`use (&$var)`) et `flock()` sur un fichier ouvert (crash-test projet poc-borne-git)
 `methodes.md` couvre les fonctions fléchées (`fn($n) => ...`, capture implicite par valeur uniquement) mais 0 résultat pour `Closure`/`use (&` dans tout `content/Langages/PHP/` : la capture par référence d'une closure classique (`function`, pas `fn`) n'existe nulle part. `flock` n'apparaît que côté CLI Bash (`automatisation-cron.md`, verrouillage d'un script cron) : la variante PHP (`flock()` sur un handle `fopen()`) est absente.

@@ -56,6 +56,33 @@ try {
 >
 > **Boa prática:** interceptar `Throwable` apenas quando o código realmente precisa reagir a qualquer erro possível (um ponto de entrada global que registra tudo em log antes de travar corretamente, por exemplo); no resto do código, direcionar o tipo de exceção realmente esperado, para nunca mascarar um erro de programação que mereceria ser visto e corrigido.
 
+### `ValueError`: o tipo certo, mas um valor recusado
+
+Desde o PHP 8.0, muitas funções internas lançam um **`ValueError`** quando um argumento tem o tipo certo, mas um valor que elas não aceitam ([ValueError](https://www.php.net/manual/en/class.valueerror.php)). É uma terceira situação, distinta dos outros dois `Error` ligados aos argumentos:
+
+| `Error` | Quando | Exemplo |
+|---|---|---|
+| `TypeError` | Argumento do tipo errado | `strlen([])`: um array em vez de uma string |
+| `ArgumentCountError` | Número errado de argumentos | `strlen()` |
+| `ValueError` | Tipo certo, valor fora do que a função aceita | `array_rand($tabela, 4)` sobre um array de 3 elementos |
+
+```php
+<?php
+$cores = ["vermelho", "verde", "azul"];
+try {
+    // pede 4 chaves sorteadas de um array que só tem 3
+    $chaves = array_rand($cores, 4);
+} catch (Exception $e) {
+    echo "nunca alcançado";  // ValueError não é uma Exception
+} catch (ValueError $e) {
+    echo $e->getMessage();   // Argument #2 ($num) must be between 1 and ...
+}
+```
+
+> **Armadilha:** chamar `array_rand($lista, NUMERO_SORTEIOS)` com uma constante de configuração e uma lista carregada de fora (arquivo, banco de dados). No dia em que a lista fica mais curta que a constante, ou vazia, a chamada lança um `ValueError` que um `catch (Exception $e)` deixa escapar.
+>
+> **Boa prática:** verificar o tamanho real antes da chamada: tratar à parte uma lista vazia e depois sortear `min(NUMERO_SORTEIOS, count($lista))` elementos.
+
 ## Vários `catch`: do mais preciso ao mais geral
 
 Um `try` pode ser seguido de vários blocos `catch`, cada um visando um tipo diferente; PHP executa o **primeiro** cujo tipo corresponde, na ordem em que são escritos:
@@ -164,7 +191,7 @@ Veja também [A programação orientada a objetos](/?c=langages-de-programmation
 
 | | |
 |---|---|
-| **Para lembrar** | `throw` interrompe o fluxo normal; `try`/`catch` intercepta uma exceção por tipo, `finally` é executado em todos os casos. `Exception` (erros de negócio) e `Error` (erros de programação) são dois ramos distintos de `Throwable`. Uma exceção personalizada estende `Exception`; `previous` encadeia uma nova exceção à sua causa de origem. |
+| **Para lembrar** | `throw` interrompe o fluxo normal; `try`/`catch` intercepta uma exceção por tipo, `finally` é executado em todos os casos. `Exception` (erros de negócio) e `Error` (erros de programação) são dois ramos distintos de `Throwable`; `ValueError` sinaliza um argumento do tipo certo, mas com um valor recusado. Uma exceção personalizada estende `Exception`; `previous` encadeia uma nova exceção à sua causa de origem. |
 | **Ferramentas utilizáveis** | `try`/`catch`/`finally`/`throw`, `getMessage()`/`getCode()`/`getPrevious()`, `extends Exception` para um tipo de erro de negócio próprio. |
-| **Armadilhas a evitar** | Um `throw` nunca interceptado por nenhum `try`/`catch`. `catch (Exception $e)` pensando interceptar também os `Error`. Um `catch` geral colocado antes de um `catch` específico. Liberar um recurso apenas ao final do `try` sem `finally`. Relançar uma exceção sem transmitir `previous`. |
+| **Armadilhas a evitar** | Um `throw` nunca interceptado por nenhum `try`/`catch`. `catch (Exception $e)` pensando interceptar também os `Error`. Passar a `array_rand()` um número maior que o array, ou um array vazio (`ValueError`). Um `catch` geral colocado antes de um `catch` específico. Liberar um recurso apenas ao final do `try` sem `finally`. Relançar uma exceção sem transmitir `previous`. |
 | **Boas práticas** | Interceptar onde o programa pode realmente reagir. Usar `Throwable` apenas para um ponto de entrada global. Ordenar os `catch` do mais específico ao mais geral. Sempre liberar um recurso em um `finally`. Criar uma exceção personalizada assim que um chamador precisar reagir diferentemente conforme o tipo de erro. Sempre encadear via `previous` ao relançar. |

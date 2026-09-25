@@ -56,6 +56,33 @@ try {
 >
 > **Bonne pratique :** intercepter `Throwable` uniquement quand le code doit vraiment réagir à n'importe quelle erreur possible (un point d'entrée global qui journalise tout avant de planter proprement, par exemple) ; dans le reste du code, cibler le type d'exception réellement attendu, pour ne jamais masquer une erreur de programmation qui mériterait d'être vue et corrigée.
 
+### `ValueError` : le bon type, mais une valeur refusée
+
+Depuis PHP 8.0, beaucoup de fonctions internes lèvent un **`ValueError`** quand un argument a le bon type mais une valeur qu'elles n'acceptent pas ([ValueError](https://www.php.net/manual/en/class.valueerror.php)). C'est une troisième situation, distincte des deux autres `Error` liées aux arguments :
+
+| `Error` | Quand | Exemple |
+|---|---|---|
+| `TypeError` | Argument du mauvais type | `strlen([])` : un tableau au lieu d'une chaîne |
+| `ArgumentCountError` | Mauvais nombre d'arguments | `strlen()` |
+| `ValueError` | Bon type, valeur hors de ce que la fonction accepte | `array_rand($tableau, 4)` sur un tableau de 3 éléments |
+
+```php
+<?php
+$couleurs = ["rouge", "vert", "bleu"];
+try {
+    // demande 4 clés tirées au hasard dans un tableau qui n'en a que 3
+    $cles = array_rand($couleurs, 4);
+} catch (Exception $e) {
+    echo "jamais atteint";  // ValueError n'est pas une Exception
+} catch (ValueError $e) {
+    echo $e->getMessage();  // Argument #2 ($num) must be between 1 and ...
+}
+```
+
+> **Piège :** appeler `array_rand($liste, NOMBRE_TIRAGES)` avec une constante de configuration et une liste chargée depuis l'extérieur (fichier, base de données). Le jour où la liste devient plus courte que la constante, ou vide, l'appel lève un `ValueError` qu'un `catch (Exception $e)` laisse filer.
+>
+> **Bonne pratique :** vérifier la taille réelle avant l'appel : traiter à part une liste vide, puis tirer `min(NOMBRE_TIRAGES, count($liste))` éléments.
+
 ## Plusieurs `catch` : du plus précis au plus général
 
 Un `try` peut être suivi de plusieurs blocs `catch`, chacun ciblant un type différent ; PHP exécute le **premier** dont le type correspond, dans l'ordre où ils sont écrits :
@@ -162,7 +189,7 @@ Voir aussi [La programmation orientée objet](/?c=langages-de-programmation&s=ph
 
 | | |
 |---|---|
-| **À retenir** | `throw` interrompt le déroulement normal ; `try`/`catch` intercepte une exception par type, `finally` s'exécute dans tous les cas. `Exception` (erreurs métier) et `Error` (erreurs de programmation) sont deux branches distinctes de `Throwable`. Une exception personnalisée étend `Exception` ; `previous` chaîne une nouvelle exception à sa cause d'origine. |
+| **À retenir** | `throw` interrompt le déroulement normal ; `try`/`catch` intercepte une exception par type, `finally` s'exécute dans tous les cas. `Exception` (erreurs métier) et `Error` (erreurs de programmation) sont deux branches distinctes de `Throwable` ; `ValueError` signale un argument du bon type mais d'une valeur refusée. Une exception personnalisée étend `Exception` ; `previous` chaîne une nouvelle exception à sa cause d'origine. |
 | **Outils utilisables** | `try`/`catch`/`finally`/`throw`, `getMessage()`/`getCode()`/`getPrevious()`, `extends Exception` pour un type d'erreur métier propre. |
-| **Pièges à éviter** | Un `throw` jamais intercepté par aucun `try`/`catch`. `catch (Exception $e)` en pensant intercepter aussi les `Error`. Un `catch` général placé avant un `catch` spécifique. Libérer une ressource seulement en fin de `try` sans `finally`. Relancer une exception sans transmettre `previous`. |
+| **Pièges à éviter** | Un `throw` jamais intercepté par aucun `try`/`catch`. `catch (Exception $e)` en pensant intercepter aussi les `Error`. Passer à `array_rand()` un nombre plus grand que le tableau, ou un tableau vide (`ValueError`). Un `catch` général placé avant un `catch` spécifique. Libérer une ressource seulement en fin de `try` sans `finally`. Relancer une exception sans transmettre `previous`. |
 | **Bonnes pratiques** | Intercepter là où le programme peut réellement réagir. N'utiliser `Throwable` que pour un point d'entrée global. Ordonner les `catch` du plus spécifique au plus général. Toujours libérer une ressource dans un `finally`. Créer une exception personnalisée dès qu'un appelant doit réagir différemment selon le type d'erreur. Toujours chaîner via `previous` en relançant. |
