@@ -87,6 +87,46 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
 `json_encode()` / `json_decode(..., true)` son el equivalente PHP de `JSON.stringify()` / `JSON.parse()` en JavaScript (el `true` pide un array asociativo, en lugar de un objeto `stdClass`).
 
+## `json_encode()`: un fallo silencioso con `INF` y `NAN`
+
+`json_encode()` devuelve `false` en lugar de una cadena cuando un valor no tiene equivalente en JSON. Es el caso de `INF` (el infinito) y de `NAN` (*Not a Number*), dos valores especiales de los [números de coma flotante](/?c=donnees&s=representation-des-donnees&p=nombres-flottants). Ninguna excepción, ningún aviso: solo `json_last_error_msg()` indica lo que ha pasado ([json_encode](https://www.php.net/manual/en/function.json-encode.php)).
+
+```php
+<?php
+// is_numeric("1e400") vale true, pero la conversión supera el mayor flotante: INF
+$precio = (float) "1e400";
+$json = json_encode(["precio" => $precio]);
+var_dump($json);            // bool(false)
+echo json_last_error_msg(); // "Inf and NaN cannot be JSON encoded"
+?>
+```
+
+La trampa continúa si ese `false` se transmite sin comprobarlo. Por defecto, PHP convierte un valor al tipo que espera un parámetro: pasado a un parámetro `?string`, `false` se convierte en la cadena vacía `""`.
+
+```php
+<?php
+function enviar(?string $cuerpo): void
+{
+    // envía $cuerpo como cuerpo de una petición HTTP
+}
+
+// false se convierte en "": la petición sale vacía, sin ningún error
+enviar($json);
+?>
+```
+
+| Ajuste | Lo que pasa cuando `json_encode()` falla |
+|---|---|
+| Ninguno (por defecto) | Devuelve `false`, convertido en silencio en `""` más adelante |
+| Opción `JSON_THROW_ON_ERROR` | Lanza una `JsonException` con el mensaje de error |
+| `declare(strict_types=1);` al principio del archivo | Pasar `false` a un parámetro `?string` lanza un `TypeError` |
+
+`declare(strict_types=1);`, colocado en la primera línea de un archivo, desactiva esas conversiones automáticas para las llamadas a funciones hechas desde ese archivo ([Strict typing](https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.strict)).
+
+> **Trampa:** aceptar como numérico cualquier valor validado por `is_numeric()`: `"1e400"` pasa esa prueba y luego se convierte en `INF` al pasarlo a flotante.
+>
+> **Buena práctica:** llamar a `json_encode()` con `JSON_THROW_ON_ERROR` para que un fallo interrumpa el tratamiento en lugar de producir un valor vacío.
+
 ## `verify_peer` / `verify_peer_name`: verificar el certificado del servidor remoto
 
 El bloque `ssl` de un contexto de flujo (cf. ejemplo más arriba) controla dos verificaciones **independientes**, no lo mismo dos veces:
@@ -137,6 +177,6 @@ Consecuencia directa sobre una conversión "valor de retorno → excepción" com
 | | |
 |---|---|
 | **Para recordar** | PHP hace peticiones HTTP salientes de forma nativa vía cURL o los flujos (streams), sin biblioteca de terceros. Ambos devuelven `false` en caso de fallo de red, estilo de error "a la C" en lugar de una excepción. |
-| **Herramientas utilizables** | `curl_init`/`curl_setopt_array`/`curl_exec`, `stream_context_create`/`file_get_contents`, `json_encode`/`json_decode`, `json_last_error()`. |
-| **Trampas a evitar** | Desactivar `verify_peer`/`verify_peer_name` en producción (abre la puerta a un MITM); confundir un `json_decode()` que devuelve `null` por fallo con un JSON válido que contiene literalmente `null`. |
-| **Buenas prácticas** | Convertir un retorno "a la C" (`false`) en excepción en un único lugar del código; comprobar `json_last_error()` en lugar de probar directamente el valor decodificado. |
+| **Herramientas utilizables** | `curl_init`/`curl_setopt_array`/`curl_exec`, `stream_context_create`/`file_get_contents`, `json_encode`/`json_decode`, `json_last_error()`, `JSON_THROW_ON_ERROR`. |
+| **Trampas a evitar** | Desactivar `verify_peer`/`verify_peer_name` en producción (abre la puerta a un MITM); confundir un `json_decode()` que devuelve `null` por fallo con un JSON válido que contiene literalmente `null`; dejar pasar el `false` de un `json_encode()` fallido (`INF`, `NAN`), convertido después en cadena vacía. |
+| **Buenas prácticas** | Convertir un retorno "a la C" (`false`) en excepción en un único lugar del código; comprobar `json_last_error()` en lugar de probar directamente el valor decodificado; llamar a `json_encode()` con `JSON_THROW_ON_ERROR`. |

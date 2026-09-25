@@ -85,6 +85,46 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
 `json_encode()` / `json_decode(..., true)` are the PHP equivalents of `JSON.stringify()` / `JSON.parse()` in JavaScript (`true` requires an associative array rather than a `stdClass` object).
 
+## `json_encode()`: a Silent Failure on `INF` and `NAN`
+
+`json_encode()` returns `false` instead of a string when a value has no JSON equivalent. This is the case for `INF` (infinity) and `NAN` (*Not a Number*), two special [floating-point](/?c=donnees&s=representation-des-donnees&p=nombres-flottants) values. No exception, no warning: only `json_last_error_msg()` tells what happened ([json_encode](https://www.php.net/manual/en/function.json-encode.php)).
+
+```php
+<?php
+// is_numeric("1e400") is true, but the conversion exceeds the largest float: INF
+$price = (float) "1e400";
+$json = json_encode(["price" => $price]);
+var_dump($json);            // bool(false)
+echo json_last_error_msg(); // "Inf and NaN cannot be JSON encoded"
+?>
+```
+
+The trap goes on if this `false` is passed along unchecked. By default, PHP converts a value to the type a parameter expects: passed to a `?string` parameter, `false` becomes the empty string `""`.
+
+```php
+<?php
+function send(?string $body): void
+{
+    // sends $body as the body of an HTTP request
+}
+
+// false becomes "": the request goes out empty, without any error
+send($json);
+?>
+```
+
+| Setting | What happens when `json_encode()` fails |
+|---|---|
+| None (default) | Returns `false`, silently converted to `""` further on |
+| `JSON_THROW_ON_ERROR` option | Throws a `JsonException` carrying the error message |
+| `declare(strict_types=1);` at the top of the file | Passing `false` to a `?string` parameter throws a `TypeError` |
+
+`declare(strict_types=1);`, placed on the first line of a file, disables these automatic conversions for function calls made from that file ([Strict typing](https://www.php.net/manual/en/language.types.declarations.php#language.types.declarations.strict)).
+
+> **Pitfall:** accepting as numeric any value validated by `is_numeric()`: `"1e400"` passes this test, then becomes `INF` once converted to a float.
+>
+> **Best practice:** call `json_encode()` with `JSON_THROW_ON_ERROR` so that a failure stops processing instead of producing an empty value.
+
 ## `verify_peer` / `verify_peer_name`: verifying the remote server's certificate
 
 A stream context's `ssl` block (see the example above) controls two **independent** checks, not the same thing twice:
@@ -133,6 +173,6 @@ A direct consequence for a "return value → exception" conversion like the one 
 | | |
 |---|---|
 | **Key takeaways** | PHP makes outbound HTTP requests natively via cURL or streams, with no third-party library. Both return `false` on a network failure, a "C-style" error rather than an exception. |
-| **Tools you can use** | `curl_init`/`curl_setopt_array`/`curl_exec`, `stream_context_create`/`file_get_contents`, `json_encode`/`json_decode`, `json_last_error()`. |
-| **Pitfalls to avoid** | Disabling `verify_peer`/`verify_peer_name` in production (opens the door to a MITM); confusing a `json_decode()` that returns `null` due to failure with valid JSON literally containing `null`. |
-| **Best practices** | Convert a "C-style" return value (`false`) into an exception in a single place in the code; check `json_last_error()` rather than testing the decoded value directly. |
+| **Tools you can use** | `curl_init`/`curl_setopt_array`/`curl_exec`, `stream_context_create`/`file_get_contents`, `json_encode`/`json_decode`, `json_last_error()`, `JSON_THROW_ON_ERROR`. |
+| **Pitfalls to avoid** | Disabling `verify_peer`/`verify_peer_name` in production (opens the door to a MITM); confusing a `json_decode()` that returns `null` due to failure with valid JSON literally containing `null`; letting through the `false` of a failed `json_encode()` (`INF`, `NAN`), later converted to an empty string. |
+| **Best practices** | Convert a "C-style" return value (`false`) into an exception in a single place in the code; check `json_last_error()` rather than testing the decoded value directly; call `json_encode()` with `JSON_THROW_ON_ERROR`. |
