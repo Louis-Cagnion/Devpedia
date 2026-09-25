@@ -1393,6 +1393,10 @@
             {
               "id": "supervision-systeme",
               "label": "Ler o estado do sistema"
+            },
+            {
+              "id": "windows-services-sessions-et-droits",
+              "label": "Windows: serviços, sessões e permissões"
             }
           ]
         },

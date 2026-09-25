@@ -77,7 +77,7 @@
             },
             {
               "id": "swap-remove",
-              "label": "Le swap-remove : retirer un élément en O(1)"
+              "label": "Le swap-remove : retirer un élément d'un tableau en O(1)"
             },
             {
               "id": "backtracking-et-satisfaction-de-contraintes",
@@ -1377,6 +1377,10 @@
             {
               "id": "supervision-systeme",
               "label": "Lire l'état du système"
+            },
+            {
+              "id": "windows-services-sessions-et-droits",
+              "label": "Windows : services, sessions et droits"
             }
           ]
         },
