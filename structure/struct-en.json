@@ -1377,6 +1377,10 @@
             {
               "id": "supervision-systeme",
               "label": "Reading System State"
+            },
+            {
+              "id": "windows-services-sessions-et-droits",
+              "label": "Windows: Services, Sessions and Rights"
             }
           ]
         },

@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 3 à 9 (notions repérées pendant la préparation de l'agent Azure DevOps interactif du projet scraping_infomediaires), rédaction sur confirmation de Louis. Reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 4 à 28 dans l'ordre (rédaction autonome demandée par Louis le 26/09), audio du point 2bis au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -15,14 +15,9 @@ Reste gris uni sur iPhone (Safari), y compris en navigation privée, alors qu'il
 
 Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https://docs.typesafe.ai/introduction
 
-## 3. Windows : services, sessions et droits (projet scraping_infomediaires)
-Notions rencontrées en préparant un agent Azure DevOps capable d'afficher Chrome ; aucune n'existe encore dans `content/` (recherche : « service Windows », « Session 0 », « autologon », « LSA », « UAC », « GPO », « Active Directory » : 0 résultat). Rubrique pressentie : Infrastructure & DevOps > Administration système (ou Systèmes d'exploitation).
-- **Service Windows et isolation de la Session 0** : un service démarre avec la machine sans utilisateur connecté et tourne dans la Session 0, dont le bureau existe en mémoire mais n'est relié à aucun écran (ni console ni bureau à distance) ; une fenêtre y est bien créée et dessinée, mais invisible. Outil de visualisation (Interactive Services Detection) supprimé depuis Windows 10 1803.
-- **Sessions Windows : console, session interactive, verrouillage** : une session = un bureau et ses fenêtres ; la console = l'écran « principal » de la machine ; verrouiller une session laisse tourner les programmes mais peut suspendre leur affichage.
-- **Ouverture automatique de session (autologon)** et **stockage de son mot de passe dans les secrets LSA** (*Local Security Authority*) : ce qu'elle permet (session rouverte seule à chaque redémarrage), son coût de sécurité (mot de passe extractible par un administrateur de la machine, session ouverte en permanence).
-- **UAC (*User Account Control*) et droits attachés à chaque processus** : les droits ne sont pas portés par la session mais par le jeton d'accès de chaque programme ; « Exécuter en tant qu'administrateur » lance un seul processus avec les droits d'un administrateur qui saisit ses identifiants, sans en donner au compte connecté (analogie : le responsable qui tape son code sur la caisse pour une seule opération).
-- **Compte de service Windows, compte local vs compte du domaine (Active Directory)** : un compte dédié à une application ; le mot de passe volé d'un compte du domaine peut servir sur d'autres machines, celui d'un compte local non. Distinct du « compte de service » OAuth déjà couvert dans Sécurité > Délégation et fédération d'identité.
-- **GPO (*Group Policy Object*, stratégie de groupe)** : réglage défini une fois par les administrateurs et appliqué automatiquement à des machines ou des comptes (ex. verrouillage de l'écran après 10 minutes, exception pour un compte de service).
+## 2bis. Audio à générer (4 langues) pour les chapitres ajoutés ou modifiés
+`node scripts/generate-audio.mjs <chemin>` pour chacun, puis retirer la ligne :
+- `Infrastructure & DevOps/Administration système/windows-services-sessions-et-droits` (nouveau) et `administration-systeme` (présentation du sujet modifiée).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
