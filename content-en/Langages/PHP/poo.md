@@ -122,6 +122,74 @@ Repository::trouver(1);
 
 > **Note:** `Classe::methode()` (with `::`) looks like `Classe->methode()` but is never used with an instance: it is the near-exact equivalent of a namespace plus a static method in [C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
+## Inheritance: `extends`, Overriding and `parent::`
+
+A class can **inherit** from another one with `extends`: the child class gets all the properties and methods of its parent class, and can add new ones or **override** them (write its own version of a method already present in the parent). Inheritance expresses an "is a" relationship: a car *is a* vehicle. PHP allows only one parent class ([Object Inheritance](https://www.php.net/manual/en/language.oop5.inheritance.php)).
+
+```php
+<?php
+class Vehicle
+{
+    protected int $wheels;
+    protected string $engine = "petrol";
+
+    public function __construct(int $wheels)
+    {
+        $this->wheels = $wheels;
+    }
+
+    public function describe(): string
+    {
+        return "{$this->wheels} wheels, {$this->engine} engine";
+    }
+}
+
+class Car extends Vehicle
+{
+    public function __construct()
+    {
+        // calls the parent class's constructor
+        parent::__construct(4);
+    }
+
+    // overrides describe() while reusing the parent's version
+    public function describe(): string
+    {
+        return "Car: " . parent::describe();
+    }
+}
+
+echo (new Car())->describe(); // "Car: 4 wheels, petrol engine"
+?>
+```
+
+`parent::` refers to the parent class: `parent::describe()` calls its version of the method, even when the child has overridden it. Without this call, the parent's constructor does not run when the child declares its own.
+
+Visibility decides who can access a member, including from a child class:
+
+| Visibility | From the class itself | From a child class | From outside |
+|---|---|---|---|
+| `public` | Yes | Yes | Yes |
+| `protected` | Yes | Yes | No |
+| `private` | Yes | No | No |
+
+A child class that redeclares an inherited property or method can keep its visibility or **widen** it (`protected` to `public`), never **restrict** it (`protected` to `private`). PHP then rejects the class as soon as it is loaded, with a fatal error that no `try`/`catch` can intercept:
+
+```php
+<?php
+class Car extends Vehicle
+{
+    // Fatal error: Access level to Car::$engine must be protected
+    // (as in class Vehicle) or weaker
+    private string $engine = "diesel";
+}
+?>
+```
+
+> **Pitfall:** redeclaring an inherited property in a child class to change its value, making it `private` out of habit. Every page that loads this class crashes, whatever the environment.
+>
+> **Best practice:** to change the value of an inherited property, redeclare it with the same visibility, or assign it in the child's constructor; to reuse the parent's behavior, call `parent::` rather than copying its code.
+
 ## Traits: sharing code without inheritance
 
 A **trait** groups reusable methods, imported into a class via `use TraitName;` (the same `use` keyword as for a [namespace](#namespaces-and-use), but a different role: here you're importing code, not just a name shortcut). It's neither inheritance (only one parent class possible in PHP) nor an interface (a trait provides an implementation, not just a contract of methods to honor).
@@ -202,7 +270,7 @@ Nullable parameters with a `??` fallback (see [The most useful functions and met
 
 | | |
 |---|---|
-| **Key takeaways** | A class groups together properties and methods; `new` creates an instance of it. A namespace prevents name collisions between modules. A trait shares code between classes without going through inheritance. Dependency injection receives the objects a class needs as parameters rather than creating them itself. |
-| **Tools you can use** | `__construct`, typed properties, `static` methods, local `static` variable (value kept between calls), `namespace`/`use`, traits (`trait`/`use`). |
-| **Pitfalls to avoid** | Creating a class's dependencies directly (`new`) rather than receiving them as parameters: makes the class hard to test in isolation. Confusing a trait with inheritance: it creates no "is a" relationship between types. Confusing `static` on a method (no instance needed) with `static` on a local variable (value kept between calls): same keyword, two different effects. |
-| **Best practices** | Type properties so they define a true contract; inject dependencies rather than hard-coding their instantiation, to make testing easier; split an overly large class into traits by responsibility, without changing its public API. |
+| **Key takeaways** | A class groups together properties and methods; `new` creates an instance of it. A namespace prevents name collisions between modules. `extends` creates an "is a" relationship: the child inherits from the parent, can override its methods and call their original version with `parent::`. A trait shares code between classes without going through inheritance. Dependency injection receives the objects a class needs as parameters rather than creating them itself. |
+| **Tools you can use** | `__construct`, typed properties, `static` methods, local `static` variable (value kept between calls), `namespace`/`use`, traits (`trait`/`use`), `extends`/`parent::`, `protected` visibility. |
+| **Pitfalls to avoid** | Creating a class's dependencies directly (`new`) rather than receiving them as parameters: makes the class hard to test in isolation. Confusing a trait with inheritance: it creates no "is a" relationship between types. Confusing `static` on a method (no instance needed) with `static` on a local variable (value kept between calls): same keyword, two different effects. Restricting in a child class the visibility of an inherited member: fatal error at load time. |
+| **Best practices** | Type properties so they define a true contract; inject dependencies rather than hard-coding their instantiation, to make testing easier; split an overly large class into traits by responsibility, without changing its public API; call `parent::` rather than copying the parent class's code. |

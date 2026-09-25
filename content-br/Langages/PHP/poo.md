@@ -122,6 +122,74 @@ Repository::encontrar(1);
 
 > **Nota:** `Classe::metodo()` (com `::`) se parece com `Classe->metodo()` mas nunca é usado com uma instância: é o equivalente quase direto de um namespace + método estático em [C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
+## A herança: `extends`, redefinição e `parent::`
+
+Uma classe pode **herdar** de outra com `extends`: a classe filha recebe todas as propriedades e métodos da sua classe mãe, e pode acrescentar outros ou **redefini-los** (escrever sua própria versão de um método já presente na mãe). A herança expressa uma relação "é um": um carro *é um* veículo. O PHP só permite uma classe mãe ([Object Inheritance](https://www.php.net/manual/en/language.oop5.inheritance.php)).
+
+```php
+<?php
+class Veiculo
+{
+    protected int $rodas;
+    protected string $motor = "gasolina";
+
+    public function __construct(int $rodas)
+    {
+        $this->rodas = $rodas;
+    }
+
+    public function descrever(): string
+    {
+        return "{$this->rodas} rodas, motor a {$this->motor}";
+    }
+}
+
+class Carro extends Veiculo
+{
+    public function __construct()
+    {
+        // chama o construtor da classe mãe
+        parent::__construct(4);
+    }
+
+    // redefine descrever() reaproveitando a versão da mãe
+    public function descrever(): string
+    {
+        return "Carro: " . parent::descrever();
+    }
+}
+
+echo (new Carro())->descrever(); // "Carro: 4 rodas, motor a gasolina"
+?>
+```
+
+`parent::` designa a classe mãe: `parent::descrever()` chama a versão dela do método, mesmo quando a filha a redefiniu. Sem essa chamada, o construtor da mãe não é executado quando a filha declara o seu.
+
+A visibilidade decide quem pode acessar um membro, inclusive a partir de uma classe filha:
+
+| Visibilidade | Dentro da própria classe | Em uma classe filha | Fora da classe |
+|---|---|---|---|
+| `public` | Sim | Sim | Sim |
+| `protected` | Sim | Sim | Não |
+| `private` | Sim | Não | Não |
+
+Uma classe filha que redeclara uma propriedade ou um método herdado pode manter a visibilidade ou **ampliá-la** (`protected` para `public`), nunca **restringi-la** (`protected` para `private`). O PHP rejeita então a classe assim que ela é carregada, com um erro fatal que nenhum `try`/`catch` consegue interceptar:
+
+```php
+<?php
+class Carro extends Veiculo
+{
+    // Fatal error: Access level to Carro::$motor must be protected
+    // (as in class Veiculo) or weaker
+    private string $motor = "diesel";
+}
+?>
+```
+
+> **Armadilha:** redeclarar em uma classe filha uma propriedade herdada para mudar seu valor, passando-a para `private` por hábito. Toda página que carrega essa classe falha, qualquer que seja o ambiente.
+>
+> **Boa prática:** para mudar o valor de uma propriedade herdada, redeclará-la com a mesma visibilidade, ou atribuí-la no construtor da filha; para reaproveitar o comportamento da mãe, chamar `parent::` em vez de copiar o código dela.
+
 ## Os traits: compartilhar código sem herança
 
 Um **trait** reúne métodos reutilizáveis, importados em uma classe via `use NomeDoTrait;` (a mesma palavra-chave `use` do [namespace](#namespaces-e-use), mas com papel diferente: aqui se importa código, não apenas um atalho de nome). Não é herança (apenas uma classe mãe possível em PHP), nem uma interface (um trait fornece uma implementação, não apenas um contrato de métodos a cumprir).
@@ -202,7 +270,7 @@ Os parâmetros anuláveis com um fallback `??` (veja [As funções e métodos ma
 
 | | |
 |---|---|
-| **Para lembrar** | Uma classe reúne propriedades e métodos; `new` cria uma instância dela. Um namespace evita colisões de nomes entre módulos. Um trait compartilha código entre classes sem passar pela herança. A injeção de dependências recebe os objetos necessários como parâmetro em vez de criá-los ele mesmo. |
-| **Ferramentas utilizáveis** | `__construct`, propriedades tipadas, métodos `static`, variável local `static` (valor mantido entre chamadas), `namespace`/`use`, traits (`trait`/`use`). |
-| **Armadilhas a evitar** | Criar diretamente (`new`) as dependências de uma classe em vez de recebê-las como parâmetro: torna a classe difícil de testar isoladamente. Confundir um trait com herança: ele não cria nenhuma relação "é um" entre tipos. Confundir `static` em um método (não exige instância) com `static` em uma variável local (valor mantido entre chamadas): mesma palavra-chave, dois efeitos diferentes. |
-| **Boas práticas** | Tipar as propriedades para que definam um contrato real; injetar as dependências em vez de instanciá-las diretamente, para facilitar os testes; dividir uma classe grande demais em traits por responsabilidade, sem mudar sua API pública. |
+| **Para lembrar** | Uma classe reúne propriedades e métodos; `new` cria uma instância dela. Um namespace evita colisões de nomes entre módulos. `extends` cria uma relação "é um": a filha herda da mãe, pode redefinir seus métodos e chamar a versão original deles com `parent::`. Um trait compartilha código entre classes sem passar pela herança. A injeção de dependências recebe os objetos necessários como parâmetro em vez de criá-los ele mesmo. |
+| **Ferramentas utilizáveis** | `__construct`, propriedades tipadas, métodos `static`, variável local `static` (valor mantido entre chamadas), `namespace`/`use`, traits (`trait`/`use`), `extends`/`parent::`, visibilidade `protected`. |
+| **Armadilhas a evitar** | Criar diretamente (`new`) as dependências de uma classe em vez de recebê-las como parâmetro: torna a classe difícil de testar isoladamente. Confundir um trait com herança: ele não cria nenhuma relação "é um" entre tipos. Confundir `static` em um método (não exige instância) com `static` em uma variável local (valor mantido entre chamadas): mesma palavra-chave, dois efeitos diferentes. Restringir em uma classe filha a visibilidade de um membro herdado: erro fatal no carregamento. |
+| **Boas práticas** | Tipar as propriedades para que definam um contrato real; injetar as dependências em vez de instanciá-las diretamente, para facilitar os testes; dividir uma classe grande demais em traits por responsabilidade, sem mudar sua API pública; chamar `parent::` em vez de copiar o código da classe mãe. |

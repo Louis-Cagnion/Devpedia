@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 10 à 28 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 2bis au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 11 à 28 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 2bis au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -22,6 +22,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Qualité, performance et outils/Qualité et architecture du code/robustesse-traitement-par-lots` (nouveau) et `qualite-et-architecture-du-code` (présentation du sujet modifiée).
 - `Sécurité/Cybersécurité/principes-de-developpement-securise` (section rayon d'impact).
 - `Langages/Bash/expansion-et-jokers` (section antislash et chemins Windows).
+- `Langages/PHP/poo` (section héritage) et `Langages/PHP/http` (section `json_encode()` sur `INF`/`NAN`).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -40,12 +41,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 10. Héritage de classes en PHP et échec silencieux de `json_encode()` (crash-test projet poc-borne-git)
-Notions rencontrées en auditant un projet PHP (application multi-apps concession automobile). `poo.md` couvre classes/propriétés typées/traits/DI mais aucune section sur `extends` pour une classe ordinaire (seule occurrence du mot dans tout `content/Langages/PHP/` : `exceptions.md`, limitée aux exceptions personnalisées) : 0 résultat pour héritage de classe générique. `http.md` couvre déjà l'ambiguïté du `null` de `json_decode()` mais rien sur l'échec de `json_encode()` : 0 résultat pour « cannot be JSON encoded » / le comportement sur `INF`/`NAN`.
-- **Héritage de classes (`extends`), `parent::`, et surcharge de méthode** : une classe fille hérite des propriétés/méthodes de sa classe mère et peut redéfinir une méthode (l'appel `parent::methode()` reste possible depuis la redéfinition) ; notion absente de `poo.md`, qui n'aborde `extends` que côté exceptions.
-- **Restriction de visibilité interdite sur une propriété héritée** : PHP refuse qu'une classe fille redéclare `protected` en `private` (ou `public` en `protected`) sur une propriété/méthode héritée : seul un élargissement de visibilité est permis, jamais une restriction. Erreur immédiate, non catchable, dès le chargement de la classe (`Fatal error: Access level to Sous\Classe::$x must be protected (as in class Classe) or weaker`) : rencontré en conditions réelles sur une classe de log applicatif dont la propriété `$db` avait été redéclarée `private` alors que la classe mère la déclare `protected`, cassant 100% des écritures pour cette seule classe fille, en toute circonstance (indépendant de l'environnement).
-- **`json_encode()` : échec silencieux sur une valeur non représentable en JSON** : `INF`/`NAN`/`-INF` (obtenus par exemple via un cast `(float)` sur une chaîne numérique extrême comme `"1e400"`, que `is_numeric()` accepte pourtant) font retourner `false` à `json_encode()` (`json_last_error()` = *"Inf and NaN cannot be JSON encoded"*), sans exception ni avertissement bloquant. Rencontré en conditions réelles : ce `false` non vérifié, ensuite passé à une fonction dont le paramètre est typé `?string` (sans `declare(strict_types=1)`), se retrouve silencieusement coercé en chaîne vide `""` : un corps de requête réseau entier disparaît sans qu'aucune erreur ne soit levée nulle part dans la chaîne d'appel.
 
 ## 11. `ValueError` PHP (branche `Error`, argument de type correct mais de valeur invalide), cas de `array_rand()` (crash-test projet poc-borne-git)
 `exceptions.md` couvre déjà la distinction `Exception`/`Error` sous `Throwable` et cite `TypeError`/`ArgumentCountError`/`DivisionByZeroError` comme exemples d'`Error`, mais jamais `ValueError` : 0 résultat pour « ValueError » dans tout `content/Langages/PHP/`.

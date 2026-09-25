@@ -122,6 +122,74 @@ Repository::trouver(1);
 
 > **Note :** `Classe::methode()` (avec `::`) ressemble à `Classe->methode()` mais ne s'utilise jamais avec une instance : c'est l'équivalent quasi direct d'un namespace + méthode statique en [C++](/?c=langages-de-programmation&s=cpp&p=cpp).
 
+## L'héritage : `extends`, redéfinition et `parent::`
+
+Une classe peut **hériter** d'une autre avec `extends` : la classe fille récupère toutes les propriétés et méthodes de sa classe mère, et peut en ajouter ou en **redéfinir** (écrire sa propre version d'une méthode déjà présente dans la mère). L'héritage exprime une relation « est un » : une voiture *est un* véhicule. PHP n'autorise qu'une seule classe mère ([Object Inheritance](https://www.php.net/manual/en/language.oop5.inheritance.php)).
+
+```php
+<?php
+class Vehicule
+{
+    protected int $roues;
+    protected string $moteur = "essence";
+
+    public function __construct(int $roues)
+    {
+        $this->roues = $roues;
+    }
+
+    public function decrire(): string
+    {
+        return "{$this->roues} roues, moteur {$this->moteur}";
+    }
+}
+
+class Voiture extends Vehicule
+{
+    public function __construct()
+    {
+        // appelle le constructeur de la classe mère
+        parent::__construct(4);
+    }
+
+    // redéfinit decrire() en réutilisant la version de la mère
+    public function decrire(): string
+    {
+        return "Voiture : " . parent::decrire();
+    }
+}
+
+echo (new Voiture())->decrire(); // "Voiture : 4 roues, moteur essence"
+?>
+```
+
+`parent::` désigne la classe mère : `parent::decrire()` appelle sa version de la méthode, même quand la fille l'a redéfinie. Sans cet appel, le constructeur de la mère ne s'exécute pas quand la fille déclare le sien.
+
+La visibilité décide qui peut accéder à un membre, y compris depuis une classe fille :
+
+| Visibilité | Depuis la classe elle-même | Depuis une classe fille | Depuis l'extérieur |
+|---|---|---|---|
+| `public` | Oui | Oui | Oui |
+| `protected` | Oui | Oui | Non |
+| `private` | Oui | Non | Non |
+
+Une classe fille qui redéclare une propriété ou une méthode héritée peut garder sa visibilité ou l'**élargir** (`protected` vers `public`), jamais la **restreindre** (`protected` vers `private`). PHP refuse alors la classe dès son chargement, par une erreur fatale qu'aucun `try`/`catch` ne peut intercepter :
+
+```php
+<?php
+class Voiture extends Vehicule
+{
+    // Fatal error: Access level to Voiture::$moteur must be protected
+    // (as in class Vehicule) or weaker
+    private string $moteur = "diesel";
+}
+?>
+```
+
+> **Piège :** redéclarer dans une classe fille une propriété héritée pour lui changer sa valeur, en la passant en `private` par habitude. Toute page qui charge cette classe plante, quel que soit l'environnement.
+>
+> **Bonne pratique :** pour changer la valeur d'une propriété héritée, la redéclarer avec la même visibilité, ou l'affecter dans le constructeur de la fille ; pour réutiliser le comportement de la mère, appeler `parent::` plutôt que recopier son code.
+
 ## Les traits : partager du code sans héritage
 
 Un **trait** regroupe des méthodes réutilisables, importées dans une classe via `use NomDuTrait;` (même mot-clé `use` que pour un [namespace](#namespaces-et-use), mais un rôle différent : ici, on importe du code, pas juste un raccourci de nom). Ce n'est ni de l'héritage (une seule classe mère possible en PHP), ni une interface (un trait fournit une implémentation, pas seulement un contrat de méthodes à respecter).
@@ -202,7 +270,7 @@ Les paramètres nullables avec un repli `??` (voir [Les fonctions et méthodes l
 
 | | |
 |---|---|
-| **À retenir** | Une classe regroupe propriétés et méthodes ; `new` en crée une instance. Un namespace évite les collisions de noms entre modules. Un trait partage du code entre classes sans passer par l'héritage. L'injection de dépendances reçoit les objets nécessaires en paramètre plutôt que de les créer soi-même. |
-| **Outils utilisables** | `__construct`, propriétés typées, méthodes `static`, variable locale `static` (valeur mémorisée entre appels), `namespace`/`use`, traits (`trait`/`use`). |
-| **Pièges à éviter** | Créer directement (`new`) les dépendances d'une classe plutôt que de les recevoir en paramètre : rend la classe difficile à tester isolément. Confondre un trait avec l'héritage : il ne crée aucune relation "est un" entre types. Confondre `static` sur une méthode (pas d'instance requise) et `static` sur une variable locale (valeur mémorisée entre appels) : même mot-clé, deux effets différents. |
-| **Bonnes pratiques** | Typer les propriétés pour qu'elles définissent un vrai contrat ; injecter les dépendances plutôt que de les instancier en dur, pour faciliter les tests ; scinder une classe trop volumineuse en traits par responsabilité, sans changer son API publique. |
+| **À retenir** | Une classe regroupe propriétés et méthodes ; `new` en crée une instance. Un namespace évite les collisions de noms entre modules. `extends` crée une relation « est un » : la fille hérite de la mère, peut redéfinir ses méthodes et appeler leur version d'origine avec `parent::`. Un trait partage du code entre classes sans passer par l'héritage. L'injection de dépendances reçoit les objets nécessaires en paramètre plutôt que de les créer soi-même. |
+| **Outils utilisables** | `__construct`, propriétés typées, méthodes `static`, variable locale `static` (valeur mémorisée entre appels), `namespace`/`use`, traits (`trait`/`use`), `extends`/`parent::`, visibilité `protected`. |
+| **Pièges à éviter** | Créer directement (`new`) les dépendances d'une classe plutôt que de les recevoir en paramètre : rend la classe difficile à tester isolément. Confondre un trait avec l'héritage : il ne crée aucune relation "est un" entre types. Confondre `static` sur une méthode (pas d'instance requise) et `static` sur une variable locale (valeur mémorisée entre appels) : même mot-clé, deux effets différents. Restreindre dans une classe fille la visibilité d'un membre hérité : erreur fatale au chargement. |
+| **Bonnes pratiques** | Typer les propriétés pour qu'elles définissent un vrai contrat ; injecter les dépendances plutôt que de les instancier en dur, pour faciliter les tests ; scinder une classe trop volumineuse en traits par responsabilité, sans changer son API publique ; appeler `parent::` plutôt que recopier le code de la classe mère. |
