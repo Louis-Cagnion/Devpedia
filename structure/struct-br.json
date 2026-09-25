@@ -903,6 +903,10 @@
             {
               "id": "conventions-de-documentation",
               "label": "Convenções de documentação do código por linguagem"
+            },
+            {
+              "id": "robustesse-traitement-par-lots",
+              "label": "Robustez de um processamento em lote"
             }
           ]
         },
