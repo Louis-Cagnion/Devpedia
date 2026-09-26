@@ -1577,6 +1577,10 @@
               "label": "SSRF: Bypassing the Allowlist"
             },
             {
+              "id": "upload-de-fichiers",
+              "label": "File Uploads: Validation, Zip Slip, CSV Injection"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "Fingerprinting: recognizing a device without storing anything on it"
             },

