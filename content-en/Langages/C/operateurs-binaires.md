@@ -106,6 +106,37 @@ a ^= b; b ^= a; a ^= b;
 
 The first two are genuinely useful in practice (bit counting is [Kernighan's algorithm](https://en.wikipedia.org/wiki/Hamming_weight#Language_support)). The last one illustrates a property of XOR (`x ^ x == 0`, `x ^ 0 == x`) but should be avoided in real code: it's unreadable, slower than a temporary variable on a modern processor, and **wrong if both variables are the same one** (`a` and `a` would both end up 0).
 
+## Walking Through the 1 Bits: Compiler Built-in Functions
+
+GCC and Clang provide **built-in functions** (*builtins*) that often translate into a single processor instruction:
+
+| Function | Returns | Example with `x = 0b101100` |
+|---|---|---|
+| `__builtin_popcount(x)` | The number of 1 bits | 3 |
+| `__builtin_ctz(x)` | The number of trailing zeros, hence the position of the rightmost 1 bit | 2 |
+| `__builtin_clz(x)` | The number of leading zeros on 32 bits | 26 |
+
+Common idiom: a mask where each bit says whether a value is still possible, and a loop that visits **only** the 1 bits (its cost depends on the number of possible values, not on the word size):
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    unsigned int possible = 0x2C;            // 0b101100: values 2, 3 and 5 still possible
+    printf("%d possible values\n", __builtin_popcount(possible));   // 3
+    unsigned int m = possible;
+    while (m) {
+        int v = __builtin_ctz(m);            // position of the rightmost 1 bit
+        printf("value %d\n", v);             // 2, then 3, then 5
+        m &= m - 1;                          // clears that bit (Kernighan's trick)
+    }
+    return 0;
+}
+```
+
+> **Pitfall:** `__builtin_ctz(0)` and `__builtin_clz(0)` have an **undefined** result: always check that the mask is not zero first. For an `unsigned long long`, use the variants suffixed with `ll` (`__builtin_ctzll`, `__builtin_popcountll`). These functions are specific to GCC and Clang; C23 standardizes the same operations in `<stdbit.h>` (`stdc_count_ones`, `stdc_trailing_zeros`).
+
 ## `n & 1` rather than `n % 2`?
 
 Historically, `n & 1` was faster than `n % 2`, and `n << 1` faster than `n * 2`. **This is no longer a valid argument**: any modern compiler makes these substitutions itself when they're correct.
@@ -131,6 +162,6 @@ So write whatever expresses your intent: `n % 2 == 0` if you're talking about pa
 | | |
 |---|---|
 | **Key takeaways** | Bitwise operators (`&`, `\|`, `^`, `~`, `<<`, `>>`) work bit by bit, used for flags, permissions, and masks. Don't confuse them with `&&`/`\|\|` (logical). |
-| **Tools you can use** | Masks (`\|=` sets, `&= ~` clears, `^=` toggles, `&` tests a bit). |
+| **Tools you can use** | Masks (`\|=` sets, `&= ~` clears, `^=` toggles, `&` tests a bit); `__builtin_popcount`, `__builtin_ctz` and the `m &= m - 1` loop to walk through the 1 bits. |
 | **Pitfalls to avoid** | Shifting by a number of bits ≥ the type's width (undefined behavior); using `>>` on a negative signed value (implementation-defined). |
 | **Best practices** | Reserve bitwise operations for unsigned types; write `n % 2`/`n * 2` rather than `n & 1`/`n << 1` for readability; a modern compiler already optimizes the equivalence. |
