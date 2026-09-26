@@ -40,6 +40,41 @@ void attentePrecise(long dureeMs)
 
 Ce pattern d'**attente active** (*busy-wait*) recalcule le temps réellement écoulé à chaque itération plutôt que de faire confiance à un seul `usleep()` de la durée totale : la légère imprécision de chaque `usleep(1000)` individuel est corrigée par la boucle elle-même, qui ne s'arrête que lorsque le temps voulu est réellement atteint.
 
+## Mesurer une durée : `clock_gettime(CLOCK_MONOTONIC)`
+
+`gettimeofday()` lit l'**heure de l'horloge murale**, qui peut sauter : réglage manuel, correction automatique par le réseau (NTP). Une durée calculée à cheval sur un tel saut est fausse, voire négative. Pour **mesurer une durée**, on utilise une horloge **monotone** : elle ne recule jamais, mais son point de départ est arbitraire (souvent le démarrage de la machine), elle ne donne donc pas la date.
+
+| Horloge (`clock_gettime`) | Mesure | À utiliser pour |
+|---|---|---|
+| `CLOCK_REALTIME` | L'heure réelle, comme `gettimeofday()` ; peut sauter | Dater un événement |
+| `CLOCK_MONOTONIC` | Le temps écoulé, sans jamais reculer | Chronométrer une opération |
+| `CLOCK_PROCESS_CPUTIME_ID` | Le temps de calcul consommé par le processus (hors attente) | Savoir si un programme calcule ou attend |
+
+```c
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
+
+double secondes(clockid_t horloge)
+{
+    struct timespec t;
+    clock_gettime(horloge, &t);                  // secondes + nanosecondes
+    return t.tv_sec + t.tv_nsec * 1e-9;
+}
+
+int main(void)
+{
+    double debut = secondes(CLOCK_MONOTONIC);
+    double cpu = secondes(CLOCK_PROCESS_CPUTIME_ID);
+    usleep(200000);                              // attend 0,2 s sans calculer
+    printf("écoulé : %.3f s\n", secondes(CLOCK_MONOTONIC) - debut);           // 0.200 s
+    printf("processeur : %.3f s\n", secondes(CLOCK_PROCESS_CPUTIME_ID) - cpu); // 0.000 s
+    return 0;
+}
+```
+
+L'écart entre les deux mesures montre que le programme a attendu au lieu de calculer : c'est souvent la première question à se poser face à un programme lent.
+
 ---
 
 ## 📋 Récapitulatif
@@ -47,6 +82,6 @@ Ce pattern d'**attente active** (*busy-wait*) recalcule le temps réellement éc
 | | |
 |---|---|
 | **À retenir** | `gettimeofday()` lit l'heure actuelle (secondes + microsecondes depuis l'epoch Unix) ; `usleep()` met en pause, mais sa durée réelle peut légèrement dépasser la valeur demandée. |
-| **Outils utilisables** | Combiner `tv_sec`/`tv_usec` en une seule valeur en millisecondes pour dater ou comparer des instants. |
+| **Outils utilisables** | Combiner `tv_sec`/`tv_usec` en une seule valeur en millisecondes pour dater ou comparer des instants ; `clock_gettime(CLOCK_MONOTONIC)` pour chronométrer une durée. |
 | **Pièges à éviter** | Faire confiance à un seul `usleep()` long pour un minutage précis : son imprécision s'accumule. |
 | **Bonnes pratiques** | Boucler sur de petits `usleep()` en recomparant le temps réellement écoulé à la durée voulue, pour une attente précise malgré l'imprécision individuelle de chaque `usleep()`. |

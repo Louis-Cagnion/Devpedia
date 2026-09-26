@@ -40,6 +40,41 @@ void esperaPrecisa(long duracaoMs)
 
 Esse padrão de **espera ativa** (*busy-wait*) recalcula o tempo realmente decorrido a cada iteração em vez de confiar em um único `usleep()` da duração total: a leve imprecisão de cada `usleep(1000)` individual é corrigida pelo próprio laço, que só para quando o tempo desejado é realmente atingido.
 
+## Medir uma duração: `clock_gettime(CLOCK_MONOTONIC)`
+
+`gettimeofday()` lê a **hora do relógio de parede**, que pode saltar: ajuste manual, correção automática pela rede (NTP). Uma duração calculada atravessando um salto desses fica errada, até negativa. Para **medir uma duração**, usa-se um relógio **monotônico**: ele nunca volta atrás, mas o seu ponto de partida é arbitrário (muitas vezes a inicialização da máquina), então ele não dá a data.
+
+| Relógio (`clock_gettime`) | Mede | Usar para |
+|---|---|---|
+| `CLOCK_REALTIME` | A hora real, como `gettimeofday()`; pode saltar | Datar um evento |
+| `CLOCK_MONOTONIC` | O tempo decorrido, sem nunca voltar atrás | Cronometrar uma operação |
+| `CLOCK_PROCESS_CPUTIME_ID` | O tempo de cálculo consumido pelo processo (sem as esperas) | Saber se um programa calcula ou espera |
+
+```c
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
+
+double segundos(clockid_t relogio)
+{
+    struct timespec t;
+    clock_gettime(relogio, &t);                  // segundos + nanossegundos
+    return t.tv_sec + t.tv_nsec * 1e-9;
+}
+
+int main(void)
+{
+    double inicio = segundos(CLOCK_MONOTONIC);
+    double cpu = segundos(CLOCK_PROCESS_CPUTIME_ID);
+    usleep(200000);                              // espera 0,2 s sem calcular
+    printf("decorrido: %.3f s\n", segundos(CLOCK_MONOTONIC) - inicio);        // 0.200 s
+    printf("processador: %.3f s\n", segundos(CLOCK_PROCESS_CPUTIME_ID) - cpu); // 0.000 s
+    return 0;
+}
+```
+
+A diferença entre as duas medidas mostra que o programa esperou em vez de calcular: costuma ser a primeira pergunta a fazer diante de um programa lento.
+
 ---
 
 ## 📋 Recapitulando
@@ -47,6 +82,6 @@ Esse padrão de **espera ativa** (*busy-wait*) recalcula o tempo realmente decor
 | | |
 |---|---|
 | **Para lembrar** | `gettimeofday()` lê a hora atual (segundos + microssegundos desde o epoch Unix); `usleep()` pausa, mas sua duração real pode ultrapassar ligeiramente o valor pedido. |
-| **Ferramentas utilizáveis** | Combinar `tv_sec`/`tv_usec` em um único valor em milissegundos para datar ou comparar instantes. |
+| **Ferramentas utilizáveis** | Combinar `tv_sec`/`tv_usec` em um único valor em milissegundos para datar ou comparar instantes; `clock_gettime(CLOCK_MONOTONIC)` para cronometrar uma duração. |
 | **Armadilhas a evitar** | Confiar em um único `usleep()` longo para uma cronometragem precisa: sua imprecisão se acumula. |
 | **Boas práticas** | Iterar sobre pequenos `usleep()` reavaliando o tempo realmente decorrido em relação à duração desejada, para uma espera precisa apesar da imprecisão individual de cada `usleep()`. |
