@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 17 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 17 à 24 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -40,6 +40,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/Python/sous-processus-et-flux-standard` (section `timeout` et `ThreadPoolExecutor`).
 - `Fondamentaux/Algorithmes/backtracking-et-satisfaction-de-contraintes` (section sur quoi brancher).
 - `Langages/PHP/routage` (notes `parse_url()` qui renvoie `null` et point final CWE-42).
+- `Sécurité/Cybersécurité/failles-de-navigateur` (`Referrer-Policy`, CWE-598 et `autocomplete`) : en français seulement, le chapitre n'existant pas encore dans les autres langues (point 24).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -61,8 +62,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 
 ## 17. Deuxième run crash-test : chemins Windows, en-têtes HTTP, autofill navigateur, ordre validation/destruction (crash-test projet poc-borne-git)
 Notions du second run de crash-test (bugs #23-30), absentes des chapitres existants malgré des sujets voisins déjà couverts.
-- **En-tête `Referrer-Policy` et CWE-598 (donnée sensible en query string)** : à ajouter dans `failles-de-navigateur.md`, dans le tableau des en-têtes de sécurité existant (aux côtés de `Content-Security-Policy`/`X-Frame-Options`, 0 résultat pour « Referrer-Policy »). Par défaut, un navigateur inclut l'URL complète de la page courante (query string comprise) dans l'en-tête `Referer` envoyé à tout lien externe ou ressource tierce chargée sur cette page (police, image, script). Si un token/identifiant sensible transite en query string (`?t=jeton`), il fuit ainsi vers n'importe quel domaine tiers référencé sur la page. Parade : `Referrer-Policy: strict-origin-when-cross-origin` (ou plus strict), qui tronque ou supprime le `Referer` envoyé hors du propre domaine.
-- **`autocomplete="off"` sur des champs PII, appareil partagé (kiosk/borne)** : à ajouter dans `failles-de-navigateur.md` (0 résultat pour « autocomplete »). Un champ de formulaire HTML mémorisé par le navigateur (`autocomplete` actif par défaut sur des types reconnus comme `name`/`tel`/`email`) est re-suggéré à la prochaine saisie sur le même navigateur : anodin sur un poste personnel, mais sur un appareil partagé par plusieurs utilisateurs successifs (borne, tablette en libre accès), cela fait fuiter les coordonnées d'un client vers l'écran du suivant. Parade : `autocomplete="off"` explicitement sur tout champ collectant une donnée personnelle dans ce contexte d'appareil partagé.
 - **Opération destructive avant validation de son remplacement** : notion générale de fiabilité (pas un mécanisme de langage précis), pressentie pour `logique-metier-et-automatisation.md` ou une nouvelle entrée dans les fondamentaux Sécurité (0 résultat pour cette formulation ni équivalent proche). Motif à risque : un traitement qui supprime/remplace un état existant (ex. vider un index de recherche avant de le repeupler) sans avoir d'abord validé que la nouvelle donnée est exploitable : un remplacement raté ou vide écrase alors un état valide par un état cassé ou vide, avec un message de succès trompeur si l'échec de validation n'est pas distingué d'un résultat légitimement vide. Bonne pratique : valider intégralement la nouvelle donnée AVANT toute opération destructive sur l'ancienne (jamais l'inverse), et distinguer explicitement « résultat vide légitime » de « échec de validation ».
 
 ## 18. Pourquoi un problème « exponentiel » se résout quand même : NP-complétude, pire cas vs cas typique (rush01, exploration performance)
@@ -112,3 +111,6 @@ Complète `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` : 0 résultat pour « 
 - **Côté fils** : `prctl(PR_SET_PDEATHSIG, SIGKILL)` (Linux) demande au noyau de le tuer à la mort du parent ; vérifier ensuite `getppid()` couvre le cas où le parent est mort avant l'appel.
 - **Côté lanceur** : démarrer le programme dans son propre groupe de processus (`setsid`, `start_new_session=True` en Python) et tuer tout le groupe au dépassement (`os.killpg(pid, SIGKILL)`), au lieu du seul processus lancé.
 - **Piège du nom de processus** : un programme qui se relance via `execv("/proc/self/exe", ...)` s'appelle ensuite `exe` dans `ps`/`pgrep` ; un orphelin a ainsi été pris pour une application de l'utilisateur. Relancer par le chemin réel (`readlink("/proc/self/exe")`).
+
+## 24. Traduire les 4 chapitres de Sécurité > Cybersécurité restés en français
+`failles-de-navigateur`, `securite-des-webhooks`, `ssrf-en-detail` et `upload-de-fichiers` (ajoutés le 16/09) n'existent qu'en français et ne sont pas déclarés dans `structure/struct-en.json`, `struct-es.json` et `struct-br.json` : les traduire en en/es/br, puis les déclarer (à la main, sans `buildStruct`, cf. journal de bord).
