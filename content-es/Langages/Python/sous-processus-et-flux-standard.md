@@ -76,6 +76,52 @@ print("Error", file=sys.stderr)  # se muestra en pantalla Y se escribe en ejecuc
 
 > **Trampa:** reemplazar `sys.stderr` cambia su comportamiento para TODO el programa, incluido código de terceros que escribe en él; restaurar el objeto original (`sys.stderr = flujo_doble.original`) al final del programa evita un efecto secundario persistente si el script se importa después como módulo en otro sitio.
 
+## Lanzar varios programas en paralelo, con un presupuesto de tiempo
+
+Para cronometrar un programa externo en muchos casos (un banco de medidas), vuelven dos necesidades: **detener** un caso que supera su presupuesto, y **lanzar varios a la vez**.
+
+| Necesidad | Herramienta |
+|---|---|
+| Detener un programa demasiado largo | `subprocess.run(..., timeout=segundos)`: pasado ese tiempo, el programa se mata y se lanza la excepción `subprocess.TimeoutExpired` |
+| Lanzar varios programas a la vez | `concurrent.futures.ThreadPoolExecutor`: un grupo de hilos que ejecutan cada uno una función |
+| Cronometrar | `time.perf_counter()`, un reloj que nunca retrocede |
+
+Aquí bastan **hilos**, aunque Python solo ejecuta un hilo de código Python a la vez (el [GIL](https://docs.python.org/3/glossary.html#term-global-interpreter-lock), cerrojo global del intérprete): mientras el programa externo se ejecuta, el hilo solo espera, y la espera no ocupa el GIL. Para un cálculo hecho en el propio Python, harían falta procesos (ver [El paralelismo](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).
+
+```python
+import subprocess
+import time
+from concurrent.futures import ThreadPoolExecutor
+
+def lanzar(duracion):
+    """Lanza `sleep duracion` con 1 s de presupuesto; devuelve (duración, tiempo, estado)."""
+    inicio = time.perf_counter()
+    try:
+        subprocess.run(["sleep", str(duracion)], timeout=1, check=True)
+        estado = "OK"
+    except subprocess.TimeoutExpired:
+        estado = "DEMASIADO LARGO"           # sleep se mató al cabo de un segundo
+    return duracion, time.perf_counter() - inicio, estado
+
+inicio = time.perf_counter()
+with ThreadPoolExecutor(max_workers=4) as pool:
+    for duracion, tiempo, estado in pool.map(lanzar, [0.5, 2, 0.2, 0.8]):
+        print(f"sleep {duracion}: {tiempo:.1f} s {estado}")
+print(f"total: {time.perf_counter() - inicio:.1f} s")
+```
+
+Salida medida: los cuatro comandos se ejecutan a la vez, el total vale 1,0 s y `pool.map` devuelve los resultados **en el orden de las entradas**, sea cual sea el orden en que terminan los comandos:
+
+```
+sleep 0.5: 0.5 s OK
+sleep 2: 1.0 s DEMASIADO LARGO
+sleep 0.2: 0.2 s OK
+sleep 0.8: 0.8 s OK
+total: 1.0 s
+```
+
+> **Trampa:** si se supera el tiempo, `subprocess.run` solo mata el programa lanzado, **no los procesos que ese programa creó a su vez**. Para un programa que lanza subprocesos, hay que agruparlos (`start_new_session=True` con `subprocess.Popen`) y matar todo el grupo (`os.killpg`).
+
 ---
 
 ## 📋 Resumen
@@ -83,6 +129,6 @@ print("Error", file=sys.stderr)  # se muestra en pantalla Y se escribe en ejecuc
 | | |
 |---|---|
 | **Para recordar** | `subprocess.run()` lanza un proceso externo y espera a que termine; `subprocess.Popen()` lo lanza sin esperar, para paralelismo. `sys.executable` da la ruta del intérprete en curso. `sys.stdout`/`sys.stderr` son objetos reemplazables, lo que permite duplicar una salida (patrón Tee). |
-| **Herramientas utilizables** | `subprocess.run()`/`Popen()`, `.wait()`/`.poll()`/`.returncode`, `sys.executable`, una clase `write()`/`flush()` asignada a `sys.stdout`/`sys.stderr`. |
+| **Herramientas utilizables** | `subprocess.run()`/`Popen()`, `.wait()`/`.poll()`/`.returncode`, `sys.executable`, una clase `write()`/`flush()` asignada a `sys.stdout`/`sys.stderr`; `timeout` y `subprocess.TimeoutExpired`; `ThreadPoolExecutor` para lanzar varios programas a la vez. |
 | **Trampas a evitar** | Un `Popen()` nunca esperado puede dejar procesos zombis. Reemplazar `sys.stderr` sin restaurarlo afecta a todo el código ejecutado después en el mismo programa. |
 | **Buenas prácticas** | Usar `sys.executable` en lugar de `"python"` fijo para relanzar un script. Restaurar `sys.stderr`/`sys.stdout` originales al final del programa tras un Tee. |
