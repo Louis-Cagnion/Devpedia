@@ -78,6 +78,34 @@ gcc -O2 main.c -o programme
 
 > **Armadilha:** o inlining pode fazer aparecer um aviso invisível em `-O0`. Exemplo: uma função que retorna `-1` em caso de erro, cujo resultado é depois usado para calcular um tamanho passado a `malloc()`. Em `-O0`, o compilador vê duas funções separadas e não consegue relacionar os dois valores. Uma vez inlinada por `-O2`, ele vê o cálculo completo de uma vez e pode detectar que `malloc()` receberia um tamanho negativo (portanto gigantesco ao ser convertido para `size_t`) -- sinalizado por `-Walloc-size-larger-than=` (incluído em `-Wall -Wextra`, veja [Os Makefiles](/?c=langages-de-programmation&s=c&p=makefiles)), que se torna um erro bloqueante se `-Werror` estiver ativo. Um código sem avisos em `-O0` pode, portanto, falhar ao compilar em `-O2`: sempre testar a compilação no nível de otimização realmente usado em produção, não apenas em `-O0`.
 
+## Mirar no processador (`-march=native`) e compilar com threads (`-pthread`)
+
+Por padrão, o compilador produz um programa que roda em **todos** os processadores da mesma família, inclusive os mais antigos: ele se proíbe as instruções recentes. `-march=native` o autoriza a usar todas as instruções do processador **da máquina que compila**.
+
+```bash
+gcc -O2 -march=native -c contar.c    # contar.c: return __builtin_popcount(x);
+```
+
+| Compilação | Código produzido para `__builtin_popcount(x)` (verificado com `objdump -d`) |
+|---|---|
+| `gcc -O2` | Uma chamada a uma função auxiliar que conta os bits em várias etapas |
+| `gcc -O2 -march=native` | Uma única instrução do processador, `popcnt` |
+
+> **Armadilha:** um programa compilado com `-march=native` pode parar com o erro `Illegal instruction` em uma máquina com processador mais antigo. Reservar para programas que rodam na máquina onde são compilados (cálculo, medições), nunca para um executável distribuído.
+
+Para um programa que usa [threads](/?c=langages&s=c&p=threads), passa-se `-pthread` **na compilação e na ligação**:
+
+```bash
+gcc -Wall -pthread -o programa programa.c
+```
+
+| Opção | Efeito |
+|---|---|
+| `-pthread` | Define os ajustes de que as threads precisam (a macro `_REENTRANT`) **e** acrescenta a biblioteca de threads na ligação |
+| `-lpthread` | Só acrescenta a biblioteca, sem os ajustes de compilação |
+
+Desde a versão 2.34 da biblioteca C do Linux (glibc), as funções de threads fazem parte da própria biblioteca C: um programa muitas vezes é ligado mesmo sem opção. `-pthread` continua sendo a forma portável de compilar, válida também em sistemas mais antigos.
+
 ## Erros de compilação vs erros de ligação
 
 Saber em qual etapa um erro ocorre ajuda a diagnosticá-lo:
@@ -95,6 +123,6 @@ Saber em qual etapa um erro ocorre ajuda a diagnosticá-lo:
 | | |
 |---|---|
 | **Para lembrar** | Um programa C passa por 4 etapas antes da execução: preprocessador → compilação (assembly) → montagem (código de máquina, `.o`) → ligação (executável final). O nível de otimização (`-O0` a `-O3`, `-Os`) é ajustado na etapa de compilação. |
-| **Ferramentas utilizáveis** | `gcc -E`/`-S`/`-c` para observar cada etapa separadamente; `-O0` a `-O3`/`-Os` para ajustar o nível de otimização. |
+| **Ferramentas utilizáveis** | `gcc -E`/`-S`/`-c` para observar cada etapa separadamente; `-O0` a `-O3`/`-Os` para ajustar o nível de otimização; `-march=native` para o processador da máquina; `-pthread` para um programa com threads. |
 | **Armadilhas a evitar** | Confundir um erro de compilação (sintaxe) com um erro de ligação (`undefined reference`, função nunca ligada): a mensagem indica a etapa envolvida. Um aviso invisível em `-O0` (oculto por duas funções não inlinadas) pode aparecer, ou até bloquear a compilação com `-Werror`, já a partir de `-O2`. |
 | **Boas práticas** | Compilar cada arquivo `.c` em `.o` separadamente em um projeto com vários arquivos, para ligar apenas o que mudou em vez de recompilar tudo. Testar a compilação no nível de otimização realmente usado em produção, não apenas em `-O0`. |
