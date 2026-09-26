@@ -81,7 +81,7 @@ Se essa redução esvaziar completamente o domínio de uma variável (nenhum val
 
 > **Boa prática:** combinar os três -- propagação para eliminar ramos impossíveis cedo, MRV para apostar primeiro na variável mais propensa a falhar rápido, backtracking para explorar o resto -- em vez de depender de um único mecanismo.
 
-> **Nota:** para explorar vários ramos ao mesmo tempo em vários núcleos, ver [Paralelizar uma busca: dividir em subproblemas independentes](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes).
+> **Nota:** para ir mais longe, ver [Paralelizar uma busca: dividir em subproblemas independentes](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes) (explorar vários ramos ao mesmo tempo em vários núcleos) e [Os solucionadores SAT e o algoritmo CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) (aprender com cada fracasso em vez de só voltar atrás).
 
 ---
 

@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 9 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 10 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -26,6 +26,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/PHP/exceptions` (sous-section `ValueError`).
 - `Langages/PHP/methodes` (sections fonctions anonymes, `use`, `callable` et `flock()`, plus deux titres et un exemple en anglais).
 - `Fondamentaux/Algorithmes/recherche-parallele-par-sous-problemes` (nouveau), plus les renvois ajoutés à `backtracking-et-satisfaction-de-contraintes` et `Qualité, performance et outils/Performance/parallelisme`.
+- `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` (nouveau), et le renvoi fusionné de `backtracking-et-satisfaction-de-contraintes`.
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -45,20 +46,8 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
 
-## 9. Solveurs SAT et CDCL (rush01 Piscine 42, `research/cdcl.c`)
-Repéré en poussant le solveur Skyscraper du rush01 au-delà du backtracking : un solveur SAT maison résout des grilles 32×32 en 0,6 s, là où backtracking + propagation plafonnait à 10×10. `backtracking-et-satisfaction-de-contraintes.md` couvre backtracking, MRV et AC-3, mais rien sur SAT : 0 résultat pour « CNF », « DIMACS », « CDCL », « propagation unitaire », « VSIDS », « Luby », « LBD », « MiniSat », « kissat » dans tout `content/`. Rubrique pressentie : Fondamentaux > Algorithmes (nouveau fichier, ex. `solveurs-sat-et-cdcl.md`), cross-référencé depuis `backtracking-et-satisfaction-de-contraintes.md`.
-- **Problème SAT et forme normale conjonctive (CNF)** : variables booléennes, littéraux (x ou ¬x), clauses (OU de littéraux), formule = ET de clauses ; format texte DIMACS (`p cnf <variables> <clauses>`, une clause par ligne terminée par `0`) lu par tous les solveurs. NP-complet en théorie, mais résolu en pratique sur des centaines de milliers de variables.
-- **Propagation unitaire, niveaux de décision et trace** (*trail*) : une clause dont tous les littéraux sauf un sont faux force le dernier ; chaque choix libre ouvre un niveau ; la trace garde l'ordre des affectations et la clause qui a forcé chacune (sa raison).
-- **CDCL (*Conflict-Driven Clause Learning*)** : sur un conflit, remonter le graphe d'implication jusqu'au premier point d'implication unique (1UIP) pour apprendre une clause, puis retour arrière non chronologique (*backjumping*) jusqu'au niveau où elle devient unitaire ; minimisation récursive de la clause (MiniSat). Différence clé avec le backtracking : chaque échec produit une règle réutilisée partout ailleurs dans la recherche.
-- **Deux littéraux surveillés** (*two watched literals*) avec littéral bloqueur, et listes d'implications dédiées aux clauses binaires : une clause n'est réveillée que lorsqu'un de ses deux littéraux surveillés devient faux, et rien n'est à défaire au retour arrière.
-- **Heuristique VSIDS et sauvegarde de phase** : activité par variable augmentée à chaque conflit où elle apparaît, décroissance exponentielle obtenue en augmentant l'incrément (remise à l'échelle avant débordement), tas binaire pour extraire la plus active ; on réessaie la dernière valeur prise par la variable (*phase saving*).
-- **Redémarrages et nettoyage des clauses apprises** : suite de Luby (1, 1, 2, 1, 1, 2, 4… × une unité de conflits) vs redémarrages Glucose (moyennes mobiles du LBD) ; LBD (*Literal Block Distance*, nombre de niveaux distincts dans une clause) comme mesure de qualité, suppression périodique de la moitié des clauses apprises à LBD élevé. Mesuré sur ce projet : Glucose 2× plus lent, et sans aucun redémarrage un cas monte à 39 s.
-- **Distributions de temps à queue lourde** (*heavy-tailed*) : pourquoi un solveur combinatoire a quelques instances catastrophiques (un seed à 55 s pour une médiane de 1,2 s) et pourquoi redémarrages et randomisation les coupent.
-- **Solveurs de référence** : MiniSat, Glucose, kissat (Armin Biere). Constat mesuré : sur des instances faciles mais volumineuses, le préprocessing de kissat par défaut coûte plus qu'il ne rapporte (`--plain` 3× plus rapide).
-- Sources : Marques-Silva & Sakallah, GRASP (1996) ; Moskewicz et al., Chaff (2001) ; Eén & Sörensson, MiniSat (2003) ; Audemard & Simon, Glucose (2009) ; *Handbook of Satisfiability*, 2e éd. (2021).
-
 ## 10. Encoder un problème combinatoire en SAT (rush01, `research/cdcl.c`)
-0 résultat pour « encodage par ordre », « at-most-one », « compteur séquentiel », « contrainte redondante » dans `content/`. Rubrique pressentie : même chapitre que le point 9, ou un chapitre voisin `encodages-sat.md`.
+0 résultat pour « encodage par ordre », « at-most-one », « compteur séquentiel », « contrainte redondante » dans `content/`. Rubrique pressentie : `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl`, ou un chapitre voisin `encodages-sat.md`.
 - **Encodage direct vs encodage par ordre** : une variable par couple (case, valeur) vs une variable par « case ≥ v », reliées par des clauses de canal (*channeling*). Ici, l'encodage par ordre partagé par les 4 directions de vue a divisé le temps par 13 (grille 16×16 : 0,42 → 0,03 s).
 - **Contraintes « au moins un » / « au plus un »** (ALO/AMO) : encodage par paires (n(n-1)/2 clauses binaires, propagation maximale) vs encodages compacts en O(n) (ordre, échelle) ; compromis taille/force de propagation mesuré ici (le compact était 50 % plus lent).
 - **Contraintes de cardinalité** : compteur séquentiel (Sinz, 2005) pour « exactement k parmi n », alternative totalizer.
@@ -122,7 +111,7 @@ Question de Louis à l'origine : comment un solveur dépasse une recherche qu'on
 - **Théorème des mariages de Hall (1935) et rectangles latins** : k lignes complètes d'un carré latin se complètent toujours en carré entier (M. Hall 1945), alors que des trous éparpillés peuvent ne plus avoir de solution. C'est le blocage observé : 56 cases indécises réparties sur 7 lignes, à 99,8 % des variables affectées, pendant plus d'une minute.
 
 ## 19. Randomisation contre les queues lourdes : ce qui marche et ce qui casse (rush01, `research/cdcl.c`)
-Complète la puce « distributions à queue lourde » du point 9 par la méthode et les mesures : 0 résultat pour « random_var », « redémarrages aléatoires ». Rubrique pressentie : même chapitre que le point 9.
+Complète la section « Les queues lourdes » de `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` par la méthode et les mesures : 0 résultat pour « random_var », « redémarrages aléatoires ». Rubrique pressentie : `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl`.
 - **Décisions aléatoires** (`random_var_freq` de MiniSat) : à n=72, 3 % de décisions tirées au hasard résolvent les 4 seeds qui bloquaient au-delà de 90 s, mais sur les 100 seeds, 8 autres bloquent à leur tour (4 sans randomisation). Un même seed passe ou bloque selon la graine : la queue lourde tient à la trajectoire, pas à l'instance, et la randomisation seule la déplace sans la réduire.
 - **Biais de sélection dans l'évaluation d'une heuristique** (régression vers la moyenne) : tester une variante sur les seuls cas difficiles de la configuration de référence la favorise mécaniquement, puisque ces cas ont été retenus pour leur malchance avec la référence ; toujours revalider sur l'ensemble complet. Vécu ici : 8 seeds choisis, tout résolu ; 100 seeds, deux fois plus de dépassements.
 - **Diversifier sans détruire l'apprentissage** : bruit sur les activités à chaque redémarrage ou retour aux phases initiales font bloquer même les seeds faciles ; la diversification doit porter sur quelques décisions, pas effacer ce que le solveur a appris.
@@ -148,7 +137,7 @@ Complète `cache-cpu-et-simd.md` (ligne de cache, contiguïté) : 0 résultat po
 - **Piège de gprof** : le temps d'une fonction intégrée par le compilateur (*inlining*) peut être crédité à une autre (`now()` à 11 % au lieu de `cancel_until`) ; vérifier dans le graphe d'appels (`gprof -q`).
 
 ## 22. Heuristiques et mécanismes avancés d'un solveur CDCL (rush01, `research/cdcl.c`)
-Complète le point 9 : 0 résultat pour « VMTF », « move-to-front », « retour arrière chronologique », « simplification à la racine ». Rubrique pressentie : même chapitre que le point 9.
+Complète `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` : 0 résultat pour « VMTF », « move-to-front », « retour arrière chronologique », « simplification à la racine ». Rubrique pressentie : `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl`.
 - **Branchement restreint** (*restricted branching*) : ne décider que certaines variables (ici « case ≥ v ») et laisser les autres découler de la propagation ; a supprimé la queue lourde à n=56-64 (7,9 s de moyenne au lieu de 27 s avec un seed au-delà de 90 s).
 - **VMTF** (*Variable Move-To-Front*, Ryan 2004, mode « focused » de kissat et CaDiCaL) : file doublement chaînée avec horodatages, les variables du dernier conflit passent en tête ; alternative à VSIDS sans tas binaire.
 - **Retour arrière chronologique** (Nadel & Ryvchin, SAT 2018) et **réutilisation de la trace** (van der Tak, Ramos & Heule 2011) : éviter de refaire des dizaines de décisions après un saut ; tous deux pires ici, testés via kissat.

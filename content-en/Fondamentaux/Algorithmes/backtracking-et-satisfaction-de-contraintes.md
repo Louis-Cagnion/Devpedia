@@ -81,7 +81,7 @@ If this reduction empties a variable's domain completely (no value remains possi
 
 > **Best practice:** combine all three -- propagation to eliminate impossible branches early, MRV to guess first on the variable most likely to fail fast, backtracking to explore the rest -- rather than relying on a single mechanism.
 
-> **Note:** to explore several branches at the same time on several cores, see [Parallelizing a Search: Splitting into Independent Subproblems](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes).
+> **Note:** to go further, see [Parallelizing a Search: Splitting into Independent Subproblems](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes) (exploring several branches at the same time on several cores) and [SAT Solvers and the CDCL Algorithm](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) (learning from each failure instead of only going back).
 
 ---
 
