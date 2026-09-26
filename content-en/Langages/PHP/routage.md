@@ -34,6 +34,8 @@ Key difference from a JS router (Express): each route points to a **file path**,
 - `$_SERVER['REQUEST_URI']` contains the path **and** query string glued together (`/contact?ref=pub`). `parse_url(..., PHP_URL_PATH)` extracts only the path, discarding the query string.
 - `trim(..., '/')` strips the leading/trailing `/` so that `'contact'` matches the key in the `$routes` array (with no leading slash).
 
+> **Pitfall:** on a malformed URI, for example `//path` (double slash at the start), `parse_url(..., PHP_URL_PATH)` returns `null` instead of a string. `trim(null, '/')` then triggers a `Deprecated` warning since PHP 8.1 (checked with PHP 8.3), which will become an error in a future version. Fix: convert explicitly, `trim((string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/')`, which gives an empty string.
+
 ## The "filesystem = URLs" model
 
 On a classic PHP server (with no special configuration), **any file physically present under the web root is accessible via its URL path**: a `.php` file gets executed there, a static file is served as-is. This is the opposite of Express/[Node](https://nodejs.org), where a route only exists if explicitly declared: in "old-school" PHP, **everything is accessible by default, except what's explicitly blocked**.
@@ -76,6 +78,8 @@ return true;
 > **Note:** the order of the blocks matters. If the `is_file()` check were placed **before** the blocks, a request for a sensitive but physically present file (e.g. `/data/config.php`) would pass this check with `true` and return `false`, letting the built-in server **execute** that file directly, without going through the protections.
 
 > **Note (security):** `$uri` comes directly from the request (`$_SERVER['REQUEST_URI']`): without normalization, a value containing directory traversal (`/../../etc/passwd`) could make `is_file(__DIR__ . $uri)` escape the web root. In practice, the real path must be resolved (e.g. `realpath()`) and checked to still be inside `__DIR__` before serving it, rather than trusting `$uri` as-is.
+
+> **Note (security):** on Windows, a dot or a space at the end of a file name is ignored (`secrets.php.` and `secrets.php` refer to the same file, see [Microsoft's documentation](https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file)). A check that compares the raw string (list of forbidden extensions, blocked name) is therefore bypassed by a single dot added at the end of the URL: this is weakness [CWE-42](https://cwe.mitre.org/data/definitions/42.html). Always compare **after** resolving the real path (`realpath()`), or after an explicit `rtrim($path, '. ')`.
 
 ## Redirecting and stopping execution
 
