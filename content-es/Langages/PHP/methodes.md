@@ -153,7 +153,8 @@ function aplicar(callable $accion, int $n): int {
 echo aplicar(fn($n) => $n * 2, 4);            // muestra 8
 echo aplicar('abs', -3);                      // muestra 3 (valor absoluto)
 aplicar('funcion_inexistente', 1);            // TypeError: esta cadena no es invocable
-aplicar(fn($a, $b) => $a + $b, 1);            // ArgumentCountError, lanzada DENTRO de aplicar()
+// ArgumentCountError, lanzada DENTRO de aplicar()
+aplicar(fn($a, $b) => $a + $b, 1);
 ?>
 ```
 
@@ -189,7 +190,8 @@ El patrón completo, que combina `flock()` y las funciones anónimas de la secci
 // Abre el archivo, lo bloquea, deja que $modificar cambie los datos y luego los reescribe.
 function conStoreCompartido(string $ruta, callable $modificar): void
 {
-    $archivo = fopen($ruta, 'c+');             // lectura/escritura, creado si no existe, nunca vaciado
+    // lectura/escritura, creado si no existe, nunca vaciado
+    $archivo = fopen($ruta, 'c+');
     flock($archivo, LOCK_EX);                  // espera su turno
     $contenido = stream_get_contents($archivo); // lee todo el archivo
     $datos = $contenido === '' ? [] : json_decode($contenido, true);
@@ -197,7 +199,8 @@ function conStoreCompartido(string $ruta, callable $modificar): void
     ftruncate($archivo, 0);                    // vacía el archivo...
     rewind($archivo);                          // ...vuelve al principio...
     fwrite($archivo, json_encode($datos));     // ...y escribe la nueva versión
-    fflush($archivo);                          // todo queda escrito ANTES de liberar el bloqueo
+    // todo queda escrito ANTES de liberar el bloqueo
+    fflush($archivo);
     flock($archivo, LOCK_UN);                  // la petición siguiente puede pasar
     fclose($archivo);
 }

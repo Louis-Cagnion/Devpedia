@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 10 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 11 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -27,6 +27,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/PHP/methodes` (sections fonctions anonymes, `use`, `callable` et `flock()`, plus deux titres et un exemple en anglais).
 - `Fondamentaux/Algorithmes/recherche-parallele-par-sous-problemes` (nouveau), plus les renvois ajoutés à `backtracking-et-satisfaction-de-contraintes` et `Qualité, performance et outils/Performance/parallelisme`.
 - `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` (nouveau), et le renvoi fusionné de `backtracking-et-satisfaction-de-contraintes`.
+- `Fondamentaux/Algorithmes/encodages-sat` (nouveau).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -45,13 +46,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 10. Encoder un problème combinatoire en SAT (rush01, `research/cdcl.c`)
-0 résultat pour « encodage par ordre », « at-most-one », « compteur séquentiel », « contrainte redondante » dans `content/`. Rubrique pressentie : `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl`, ou un chapitre voisin `encodages-sat.md`.
-- **Encodage direct vs encodage par ordre** : une variable par couple (case, valeur) vs une variable par « case ≥ v », reliées par des clauses de canal (*channeling*). Ici, l'encodage par ordre partagé par les 4 directions de vue a divisé le temps par 13 (grille 16×16 : 0,42 → 0,03 s).
-- **Contraintes « au moins un » / « au plus un »** (ALO/AMO) : encodage par paires (n(n-1)/2 clauses binaires, propagation maximale) vs encodages compacts en O(n) (ordre, échelle) ; compromis taille/force de propagation mesuré ici (le compact était 50 % plus lent).
-- **Contraintes de cardinalité** : compteur séquentiel (Sinz, 2005) pour « exactement k parmi n », alternative totalizer.
-- **Clauses redondantes (implicites)** : ajouter des faits déductibles pour aider la propagation. Ici, les règles de bord du Skyscraper en clauses unitaires ont donné ×2,4, et « le maximum d'un préfixe de i+1 cases distinctes vaut au moins i+1 » a été ajouté gratuitement.
 
 ## 11. Combinatoire des permutations : records et nombres de Stirling de première espèce (rush01, `research/lines2`, `research/gen_test.c`)
 0 résultat pour « Stirling », « coefficient binomial », « factorielle » (le chapitre Big O ne cite pas O(n!)). Rubrique pressentie : Fondamentaux > Mathématiques (nouveau chapitre), avec un renvoi depuis `complexite-et-notation-big-o.md`.
@@ -120,7 +114,7 @@ Complète la section « Les queues lourdes » de `Fondamentaux/Algorithmes/solve
 - **Rendements décroissants d'un portfolio** : au-delà de 4 à 6 processus, la bande passante mémoire partagée ralentit chacun plus que la diversité ne rapporte (8 processus plus lents que 6). Le partage de clauses apprises entre processus (ManySAT, Hamadi, Jabbour & Sais 2009) n'aide que si les clauses apprises sont courtes : ici, 2 à 7 unitaires par résolution, sans intérêt.
 
 ## 20. Contraintes implicites, variables auxiliaires et propagateurs dans un solveur SAT (rush01, `research/cdcl.c`)
-0 résultat pour « Tseitin », « variables auxiliaires », « propagateur », « lazy clause », « test différentiel ». Rubrique pressentie : chapitre du point 10 (encodages), et Qualité > Tests pour le test différentiel.
+0 résultat pour « Tseitin », « variables auxiliaires », « propagateur », « lazy clause », « test différentiel ». Rubrique pressentie : `Fondamentaux/Algorithmes/encodages-sat`, et Qualité > Tests pour le test différentiel.
 - **Variables auxiliaires définitionnelles** (transformation de Tseitin, 1968) : nommer une sous-formule par une variable (ici « maximum du préfixe ≥ v », « tour i visible ») pour garder un encodage de taille polynomiale ; 68 % des variables de l'encodage n=72.
 - **Clauses implicites** : ne pas stocker les clauses à structure régulière mais les retrouver par calcul d'indices au moment de propager ; la raison d'une déduction se code sur 32 bits (famille de clause + variable d'ancrage) et se reconstruit à l'analyse du conflit. Mesuré : ×1,5 en vitesse, mémoire 674 → 263 Mo à n=72.
 - **Propagateurs et génération paresseuse de clauses** (*Lazy Clause Generation*, Ohrimenko, Stuckey & Codish 2009) : une contrainte globale propagée par du code dédié, qui ne produit sa clause d'explication que lorsque l'analyse de conflit la demande ; base des solveurs hybrides (Chuffed, OR-Tools CP-SAT).

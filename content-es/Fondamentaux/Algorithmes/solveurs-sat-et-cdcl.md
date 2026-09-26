@@ -4,7 +4,7 @@ order: 8
 
 # Los solucionadores SAT y el algoritmo CDCL
 
-Un **solucionador SAT** es un programa genérico que responde a una sola pregunta: «¿se puede dar un valor verdadero/falso a cada variable de modo que se respeten todas estas reglas?». Se traduce en él el propio problema (puzle, planificación, verificación de circuitos...) y se deja buscar al solucionador. Se apoya en el [backtracking](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes), pero **aprende de cada fracaso**: es el algoritmo **CDCL**.
+Un **solucionador SAT** es un programa genérico que responde a una sola pregunta: «¿se puede dar un valor verdadero/falso a cada variable de modo que se respeten todas estas reglas?». Se traduce en él el propio problema (puzle, planificación, verificación de circuitos...: ver [Codificar un problema en SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)) y se deja buscar al solucionador. Se apoya en el [backtracking](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes), pero **aprende de cada fracaso**: es el algoritmo **CDCL**.
 
 Ejemplo medido en un solucionador del puzle *Skyscraper*: el backtracking con propagación se estancaba en cuadrículas de 11 × 11, mientras que un solucionador CDCL escrito para la ocasión resuelve cuadrículas de 32 × 32 en menos de un segundo.
 

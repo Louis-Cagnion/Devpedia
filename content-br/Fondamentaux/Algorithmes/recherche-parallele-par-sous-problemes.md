@@ -80,7 +80,8 @@ t_estado *copiar_estado(const t_estado *src)
     copia->n = src->n;                                   // um inteiro é copiado como está
     copia->valores = malloc(src->n * sizeof(int));       // NOVO array, não o de src
     memcpy(copia->valores, src->valores, src->n * sizeof(int)); // recopia o seu conteúdo
-    return copia;                                        // nenhum ponteiro compartilhado com src
+    // nenhum ponteiro compartilhado com src
+    return copia;
 }
 ```
 

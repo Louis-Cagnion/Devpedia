@@ -153,7 +153,8 @@ function aplicar(callable $acao, int $n): int {
 echo aplicar(fn($n) => $n * 2, 4);            // exibe 8
 echo aplicar('abs', -3);                      // exibe 3 (valor absoluto)
 aplicar('funcao_inexistente', 1);             // TypeError: essa string não é chamável
-aplicar(fn($a, $b) => $a + $b, 1);            // ArgumentCountError, lançada DENTRO de aplicar()
+// ArgumentCountError, lançada DENTRO de aplicar()
+aplicar(fn($a, $b) => $a + $b, 1);
 ?>
 ```
 
@@ -189,7 +190,8 @@ O padrão completo, que combina `flock()` com as funções anônimas da seção 
 // Abre o arquivo, trava, deixa $modificar alterar os dados e depois os reescreve.
 function comStoreCompartilhado(string $caminho, callable $modificar): void
 {
-    $arquivo = fopen($caminho, 'c+');          // leitura/escrita, criado se não existir, nunca esvaziado
+    // leitura/escrita, criado se não existir, nunca esvaziado
+    $arquivo = fopen($caminho, 'c+');
     flock($arquivo, LOCK_EX);                  // espera a sua vez
     $conteudo = stream_get_contents($arquivo); // lê o arquivo inteiro
     $dados = $conteudo === '' ? [] : json_decode($conteudo, true);
