@@ -117,6 +117,60 @@ Um **reinício** desfaz todas as decisões e recomeça do nível 0, **mantendo**
 
 As cláusulas aprendidas se acumulam: metade delas é apagada regularmente, mantendo as melhores segundo o seu **LBD** (*Literal Block Distance*): o número de níveis diferentes entre os seus literais. Uma cláusula de LBD 2 liga apenas duas decisões: ela vai ser útil com frequência.
 
+## Heurísticas avançadas: medir antes de adotar
+
+Os solucionadores de ponta acrescentam dezenas de mecanismos aos vistos acima. O efeito deles depende do problema: um mecanismo que vence as competições SAT pode deixar mais lenta uma codificação específica. Estes são os testados no solucionador Skyscraper, com o efeito medido.
+
+### Decidir só sobre algumas variáveis: a ramificação restrita
+
+A [codificação por ordem](/?c=fondamentaux&s=algorithmes&p=encodages-sat#codificacao-direta-ou-codificacao-por-ordem) do Skyscraper tem duas famílias de variáveis por casa, `x` ("a casa vale v") e `y` ("a casa vale pelo menos v"), mais variáveis auxiliares para a visibilidade. A **ramificação restrita** (*restricted branching*) só deixa o solucionador **decidir** sobre as `y`: todas as outras variáveis são fixadas pela propagação. É a versão SAT da escolha da [variável sobre a qual ramificar](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes#sobre-o-que-ramificar-uma-variavel-pequena-em-vez-de-uma-restricao-inteira).
+
+| Decisões permitidas | Grades 56 × 56 (5 grades) |
+|---|---|
+| Sobre todas as variáveis | 1 grade em 5 acima de 90 s |
+| Só sobre as `y` | 7,9 s em média, pior caso 10 s |
+| Sobre as `x` e as `y` | 4 vezes mais lento do que só sobre as `y` |
+
+### VMTF: o último conflito na frente da fila
+
+O **VMTF** (*Variable Move-To-Front*, [Ryan, 2004](https://summit.sfu.ca/_flysystem/fedora/sfu_migrate/2725/b35038871.pdf)) substitui as atividades do VSIDS por uma **fila**: uma [lista duplamente encadeada](/?c=langages&s=c&p=listes-chainees) de todas as variáveis. Depois de cada conflito, as variáveis que participaram dele passam **para a frente**, marcadas com um **carimbo de tempo** (um contador que aumenta a cada deslocamento, para saber rápido qual se moveu mais recentemente). Para decidir, o solucionador pega a primeira variável livre a partir da frente.
+
+```
+frente                                  fim
+ x7 <-> x2 <-> x9 <-> x4 <-> x1          antes do conflito
+ x1 <-> x4 <-> x7 <-> x2 <-> x9          depois de um conflito envolvendo x4 e x1
+```
+
+| | VSIDS | VMTF |
+|---|---|---|
+| O que é lembrado | Uma atividade por variável, que se desgasta com o tempo | A ordem dos últimos conflitos |
+| Encontrar a variável a decidir | [Heap binário](/?c=fondamentaux&s=algorithmes&p=file-de-priorite-et-tas-binaire): tempo logarítmico | Percurso a partir da frente, retomado onde tinha parado |
+| Atualização depois de um conflito | Aumentar atividades, reordenar o heap | Mover para a frente: tempo constante |
+| Medido (grade 48 × 48, um único processo) | 1,47 s | 1,31 s |
+
+O VMTF é o modo "focado" dos solucionadores [kissat](https://github.com/arminbiere/kissat) e CaDiCaL. Em um portfólio de processos, são quase sempre as cópias VMTF que vencem (veja a seção sobre as caudas pesadas, mais abaixo).
+
+### O que atrapalhou aqui
+
+| Mecanismo | Ideia | Referência | Medido aqui |
+|---|---|---|---|
+| Retrocesso cronológico | Depois de um conflito, subir um único nível em vez de saltar longe, para não refazer dezenas de decisões (aqui, de 66 a 93 níveis saltados em média) | Nadel e Ryvchin, [*Chronological Backtracking*](https://doi.org/10.1007/978-3-319-94144-8_7) (2018) | Mais lento (testado com o kissat) |
+| Reutilização da trilha | No reinício, manter as decisões que o solucionador tomaria de novo de qualquer forma | van der Tak, Ramos e Heule, [*Reusing the Assignment Trail in CDCL Solvers*](https://doi.org/10.3233/sat190082) (2011) | Nula com VMTF (nada reutilizável), neutra a pior com VSIDS |
+| Fases-alvo e *rephasing* | Guardar a melhor atribuição parcial encontrada e voltar a ela regularmente | [kissat](https://github.com/arminbiere/kissat) (Biere, 2020) | Grades 56 × 56: de 6,8 s para 25 s em média, uma grade acima de 90 s |
+| *Shrinking* | Encurtar ainda mais as cláusulas aprendidas, depois da minimização | [kissat](https://github.com/arminbiere/kissat) | +15% de tempo |
+
+### Simplificar na raiz
+
+Uma atribuição do nível 0 nunca é desfeita: uma cláusula que contém um literal verdadeiro no nível 0 fica satisfeita para sempre, e mantê-la só serve para relê-la. A **simplificação na raiz** (função `simplify` do [MiniSat](http://minisat.se/)) remove essas cláusulas, assim como as implicações em direção a um literal já verdadeiro.
+
+| Cláusula | No nível 0, `a` é verdadeiro | Depois da simplificação |
+|---|---|---|
+| `(a ∨ b)` | Satisfeita para sempre | Removida |
+| `(¬a ∨ c)` | A propagação força `c` no nível 0: satisfeita também | Removida |
+| `(b ∨ d)` | Nem `b` nem `d` foi fixado ainda | Mantida |
+
+Medido junto com outros dois ajustes do mesmo tipo: alguns por cento de tempo ganhos, com contadores de trabalho idênticos.
+
 ## As caudas pesadas: algumas instâncias catastróficas
 
 Entre grades do mesmo tamanho, a maioria é resolvida rápido, mas algumas levam 100 vezes mais tempo: o tempo de resolução segue uma distribuição de **cauda pesada** (*heavy-tailed*). Medido no solucionador Skyscraper com grades 72 × 72, em 100 grades:
@@ -182,7 +236,7 @@ Diversificar também as heurísticas de decisão, não só as sementes aleatóri
 | Portfólio | Tempo médio (5 grades 96 × 96) |
 |---|---|
 | 4 × VSIDS | 67 s |
-| 1 × VSIDS + 3 × VMTF (*Variable Move-To-Front*: as variáveis do último conflito vão para o início de uma fila, em vez de uma pontuação de atividade como VSIDS; [Ryan 2004](https://summit.sfu.ca/_flysystem/fedora/sfu_migrate/2725/b35038871.pdf)) | 32 s |
+| 1 × VSIDS + 3 × VMTF (veja acima) | 32 s |
 
 Os processos VMTF ganham de forma muito regular, entre 25.000 e 30.000 conflitos. Graças a esse portfólio heterogêneo, a fronteira de um minuto passa da grade 72 × 72 (com ainda 4 % de travamentos) para cerca de 100 × 100.
 
@@ -207,6 +261,6 @@ Fontes: Marques-Silva e Sakallah, *GRASP* (1996); Moskewicz et al., *Chaff* (200
 | | |
 |---|---|
 | **Para lembrar** | Um solucionador SAT procura valores verdadeiro/falso que satisfaçam uma fórmula em CNF (cláusulas OU ligadas por E). O CDCL acrescenta ao backtracking a análise de cada conflito: uma cláusula aprendida e um retrocesso direto ao nível útil. |
-| **Ferramentas utilizáveis** | Formato DIMACS; solucionadores MiniSat, Glucose, kissat; propagação unitária com dois literais vigiados; VSIDS e salvamento de fase; reinícios de Luby; ordenação das cláusulas aprendidas por LBD. |
-| **Armadilhas a evitar** | Suprimir os reinícios (instâncias travadas); manter todas as cláusulas aprendidas (memória e propagação mais lentas); supor que as configurações padrão de um solucionador servem para qualquer problema. |
+| **Ferramentas utilizáveis** | Formato DIMACS; solucionadores MiniSat, Glucose, kissat; propagação unitária com dois literais vigiados; VSIDS e salvamento de fase; reinícios de Luby; ordenação das cláusulas aprendidas por LBD; ramificação restrita, VMTF, simplificação na raiz. |
+| **Armadilhas a evitar** | Suprimir os reinícios (instâncias travadas); manter todas as cláusulas aprendidas (memória e propagação mais lentas); supor que as configurações padrão de um solucionador servem para qualquer problema; adotar um mecanismo de um solucionador de ponta (fases-alvo, retrocesso cronológico) sem medi-lo no próprio problema. |
 | **Boas práticas** | Começar com um solucionador existente em um arquivo DIMACS antes de escrever o seu; medir em muitas instâncias, não em uma só, por causa das caudas pesadas. |
