@@ -68,13 +68,48 @@ Property-based testing doesn't replace classic tests, it complements them, espec
 >
 > **Best practice:** reserve property-based testing for behaviors that genuinely obey a simple rule to state; keep classic tests for, say, business logic rich in special cases.
 
+## A neighboring case: differential testing
+
+When rewriting an existing algorithm (a faster implementation, a change of data structure...), there isn't always a simple general property to state. **Differential testing** instead directly compares the two implementations on many generated inputs: the old one acts as the reference, and any disagreement between the two results flags a bug in the rewrite.
+
+Real example from the Skyscraper SAT solver (see [Encoding a Problem into SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)): when moving from enumerated implicit clauses to clauses recovered by computation, the rewrite was validated on two levels: the exact set of removed clauses compared against the old enumerated set, then agreement on "solution found / no solution" between the two versions across 700 grids.
+
+```python
+def old_sort(xs):
+    """Old implementation: selection sort (correct but slow)."""
+    xs = list(xs)
+    for i in range(len(xs)):
+        m = i
+        for j in range(i + 1, len(xs)):
+            if xs[j] < xs[m]:
+                m = j
+        xs[i], xs[m] = xs[m], xs[i]
+    return xs
+
+def new_sort(xs):
+    """Rewrite to validate: Python's native sort (Timsort)."""
+    return sorted(xs)
+```
+
+Run on 500 random lists (lengths 0 to 20, values -50 to 50), comparing `old_sort(xs) != new_sort(xs)` on each draw: real output `0 desaccord(s) sur 500 entrees generees` (0 disagreement(s) out of 500 generated inputs).
+
+| Property-based testing | Differential testing |
+|---|---|
+| Compares the result to a **hand-stated general property** | Compares the result to **another implementation** (the old version) |
+| Useful even without a previous version to compare against | Specifically serves to validate a rewrite |
+| Requires stating a rule true for any valid input | Only requires the old implementation to remain available as a reference |
+
+> **Pitfall:** differential testing does not catch a bug present in both implementations: they would agree, wrongly. It validates a rewrite against the existing code, not the existing code against the specification.
+>
+> **Best practice:** generate many inputs, including edge cases (empty list, repeated values, extreme sizes); combine with a test against the specification when one exists.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **To remember** | Property-based testing describes a property valid for any input, rather than checking hand-picked examples; a tool automatically generates hundreds of inputs trying to disprove it, and shrinks any counter-example found toward the simplest possible case. |
-| **Usable tools** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, the field's original tool). |
-| **Pitfalls to avoid** | Forcing a property onto a behavior with no simple general rule. |
-| **Best practices** | Reserve property-based testing for behaviors with a clear general rule (mathematical functions, sorting, parsers); keep classic tests for business logic rich in special cases. |
+| **To remember** | Property-based testing describes a property valid for any input, rather than checking hand-picked examples; a tool automatically generates hundreds of inputs trying to disprove it, and shrinks any counter-example found toward the simplest possible case. Differential testing, a neighboring case, instead compares the result of a rewrite to that of the old implementation on many generated inputs. |
+| **Usable tools** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, the field's original tool); differential testing: no dedicated tool required, a comparison script is enough. |
+| **Pitfalls to avoid** | Forcing a property onto a behavior with no simple general rule; believing that agreement between two implementations in differential testing proves the absence of a bug shared by both. |
+| **Best practices** | Reserve property-based testing for behaviors with a clear general rule (mathematical functions, sorting, parsers); keep classic tests for business logic rich in special cases; in differential testing, also generate edge cases and combine with a test against the specification when one exists. |
