@@ -106,6 +106,69 @@ It doesn't matter which thread arrives first or in what logical order the two lo
 
 > **Best practice:** as soon as a function needs to lock several mutexes at once, define a single ordering rule and stick to it everywhere in the program, rather than locking in whatever order the locks happen to be mentioned locally in the code.
 
+## Without a Mutex: Atomic Operations
+
+`counter++` happens in three steps (read, add 1, write): two threads can read the same old value, and an increment is lost. An **atomic operation** is executed by the processor in **a single indivisible step**: no other thread can slip in halfway. C11 provides them in `<stdatomic.h>`.
+
+The most useful one is **compare-and-swap** (CAS): "if the variable still holds the expected value, replace it with the new one; otherwise touch nothing and tell me". It makes it possible, for example, to designate **a single winner** among several threads, without a mutex:
+
+```c
+#include <pthread.h>
+#include <stdatomic.h>
+#include <stdio.h>
+
+atomic_int winner = -1;                  // -1: nobody has won yet
+atomic_int counter = 0;
+
+void *work(void *arg)
+{
+    int me = *(int *)arg;
+    int expected = -1;
+    for (int i = 0; i < 100000; i++)
+        atomic_fetch_add(&counter, 1);   // +1 in a single indivisible step
+    // "if winner still holds -1, put my number in it": only one thread can succeed
+    if (atomic_compare_exchange_strong(&winner, &expected, me))
+        printf("thread %d: I won\n", me);
+    return NULL;
+}
+```
+
+Run on 8 threads (compiled with `-pthread`), this function always prints a single winner, and `counter` is exactly 800,000 at the end.
+
+| Tool | Guarantees | Use it for |
+|---|---|---|
+| Mutex | Only one section of code at a time, as long as needed | Modifying several pieces of data together |
+| Atomic operation (`atomic_fetch_add`, CAS) | A single simple, indivisible operation, without waiting | A counter, a flag, designating a winner |
+| `volatile` | Only that the variable is re-read from memory at each access | [Signals](/?c=langages&s=c&p=signaux-unix) and hardware registers, **never** synchronization between threads |
+
+> **Pitfall:** `volatile` does **not** make an operation atomic and imposes no order between the accesses of two threads: a `volatile int` incremented by several threads loses updates just like an ordinary `int`. Between threads, you need an `atomic_*` type or a mutex.
+
+## One Global Variable per Thread: `_Thread_local`
+
+A variable declared `_Thread_local` (C11; `__thread` with GCC) exists as **one copy per thread**: each thread reads and writes its own, without touching the others'.
+
+Typical case: the sorting function `qsort()` calls a comparator that only receives the two elements to compare, with no extra parameter. If it needs a context (here, an array of weights), that context has to go through a global variable, and two threads sorting at the same time would overwrite it:
+
+```c
+#include <stdlib.h>
+
+_Thread_local const int *g_weights;      // one copy per thread
+
+int compare(const void *a, const void *b)
+{
+    int x = *(const int *)a, y = *(const int *)b;
+    return g_weights[x] - g_weights[y];  // sorts indices by their weight
+}
+
+void sort_indices(int *indices, int n, const int *weights)
+{
+    g_weights = weights;                 // only affects the calling thread's copy
+    qsort(indices, n, sizeof(int), compare);
+}
+```
+
+Checked with two threads sorting at the same time, 100,000 times each, one by increasing weights and the other by decreasing weights: each one always gets its own order.
+
 ## Splitting a Render Across Threads: Dividing the Screen into Bands
 
 A concrete use case of compute-bound parallelism (unlike parallelism that mostly waits on a network or a disk): splitting a [raycasting render](/?c=fondamentaux&s=graphisme&p=rendu-3d-bas-niveau-et-fenetrage) across several threads, each computing a **vertical band** of the screen rather than a generic task pool:
@@ -162,6 +225,6 @@ This pattern (splitting a heavy computation across persistent threads, each on a
 | | |
 |---|---|
 | **Key takeaways** | A thread shares memory with the other threads of the same program (unlike a process spawned by `fork()`), is lighter, but exposes shared data to *race conditions*. |
-| **Tools you can use** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. Split a heavy computation (a render) into fixed bands across persistent threads; `pthread_cond_t` rather than a busy-wait to synchronize them. |
-| **Pitfalls to avoid** | Modifying a shared variable without protection (*race condition*); forgetting to unlock a mutex (*deadlock* if another thread waits indefinitely); locking several mutexes in a different order depending on the thread. |
+| **Tools you can use** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`; `<stdatomic.h>` (`atomic_fetch_add`, compare-and-swap); `_Thread_local` for a per-thread global. Split a heavy computation (a render) into fixed bands across persistent threads; `pthread_cond_t` rather than a busy-wait to synchronize them. |
+| **Pitfalls to avoid** | Modifying a shared variable without protection (*race condition*); forgetting to unlock a mutex (*deadlock* if another thread waits indefinitely); locking several mutexes in a different order depending on the thread; relying on `volatile` to synchronize threads. |
 | **Best practices** | Protect any data shared between threads with a mutex, even for an operation that looks simple (`counter++` is not atomic). Always lock several mutexes in the same order (e.g. by memory address) to avoid any deadlock. |

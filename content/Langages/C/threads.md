@@ -106,6 +106,69 @@ Peu importe quel thread arrive en premier ni dans quel ordre logique les deux ve
 
 > **Bonne pratique :** dès qu'une fonction doit verrouiller plusieurs mutex à la fois, définir une règle d'ordre unique et s'y tenir partout dans le programme, plutôt que de verrouiller dans l'ordre où les verrous sont mentionnés localement dans le code.
 
+## Sans mutex : les opérations atomiques
+
+`compteur++` se fait en trois étapes (lire, ajouter 1, écrire) : deux threads peuvent lire la même ancienne valeur, et une incrémentation se perd. Une **opération atomique** est exécutée par le processeur en **une seule étape indivisible** : aucun autre thread ne peut s'intercaler au milieu. Le C11 les fournit dans `<stdatomic.h>`.
+
+L'opération la plus utile est le **compare-and-swap** (CAS, « comparer puis échanger ») : « si la variable vaut encore la valeur attendue, remplace-la par la nouvelle, sinon ne touche à rien et dis-le-moi ». Elle permet par exemple de désigner **un seul gagnant** parmi plusieurs threads, sans mutex :
+
+```c
+#include <pthread.h>
+#include <stdatomic.h>
+#include <stdio.h>
+
+atomic_int gagnant = -1;                 // -1 : personne n'a encore gagné
+atomic_int compteur = 0;
+
+void *travailler(void *arg)
+{
+    int moi = *(int *)arg;
+    int attendu = -1;
+    for (int i = 0; i < 100000; i++)
+        atomic_fetch_add(&compteur, 1);  // +1 en une seule étape indivisible
+    // « si gagnant vaut encore -1, mets-y mon numéro » : un seul thread peut réussir
+    if (atomic_compare_exchange_strong(&gagnant, &attendu, moi))
+        printf("thread %d : j'ai gagné\n", moi);
+    return NULL;
+}
+```
+
+Lancée sur 8 threads (compilation avec `-pthread`), cette fonction affiche toujours un seul gagnant, et `compteur` vaut exactement 800 000 à la fin.
+
+| Outil | Garantit | À utiliser pour |
+|---|---|---|
+| Mutex | Une seule section de code à la fois, aussi longue que nécessaire | Modifier plusieurs données ensemble |
+| Opération atomique (`atomic_fetch_add`, CAS) | Une seule opération simple, indivisible, sans attente | Un compteur, un drapeau, désigner un gagnant |
+| `volatile` | Seulement que la variable est relue en mémoire à chaque accès | Les [signaux](/?c=langages&s=c&p=signaux-unix) et les registres matériels, **jamais** la synchronisation entre threads |
+
+> **Piège :** `volatile` ne rend **pas** une opération atomique et n'impose aucun ordre entre les accès de deux threads : un `volatile int` incrémenté par plusieurs threads perd des mises à jour comme un `int` ordinaire. Entre threads, il faut un type `atomic_*` ou un mutex.
+
+## Une variable globale par thread : `_Thread_local`
+
+Une variable déclarée `_Thread_local` (C11 ; `__thread` avec GCC) existe en **une copie par thread** : chaque thread lit et écrit la sienne, sans toucher à celle des autres.
+
+Cas typique : la fonction de tri `qsort()` appelle un comparateur qui ne reçoit que les deux éléments à comparer, sans aucun paramètre supplémentaire. S'il a besoin d'un contexte (ici, un tableau de poids), ce contexte doit passer par une variable globale, et deux threads qui trient en même temps se l'écraseraient :
+
+```c
+#include <stdlib.h>
+
+_Thread_local const int *g_poids;        // une copie par thread
+
+int comparer(const void *a, const void *b)
+{
+    int x = *(const int *)a, y = *(const int *)b;
+    return g_poids[x] - g_poids[y];      // trie des indices selon leur poids
+}
+
+void trier_indices(int *indices, int n, const int *poids)
+{
+    g_poids = poids;                     // n'affecte que la copie du thread appelant
+    qsort(indices, n, sizeof(int), comparer);
+}
+```
+
+Vérifié avec deux threads qui trient en même temps, 100 000 fois chacun, l'un par poids croissants et l'autre par poids décroissants : chacun obtient toujours son propre ordre.
+
 ## Répartir un rendu entre threads : découper l'écran en bandes
 
 Un cas d'usage concret de parallélisme borné par le calcul (contrairement à un parallélisme qui attend surtout un réseau ou un disque) : répartir le [rendu par raycasting](/?c=fondamentaux&s=graphisme&p=rendu-3d-bas-niveau-et-fenetrage) entre plusieurs threads, chacun calculant une **bande verticale** de l'écran plutôt qu'un pool de tâches génériques :
@@ -162,6 +225,6 @@ Ce pattern (répartir un calcul lourd entre threads persistants, chacun sur sa p
 | | |
 |---|---|
 | **À retenir** | Un thread partage la mémoire avec les autres threads du même programme (contrairement à un processus issu de `fork()`), plus léger, mais expose à des *race conditions* sur les données partagées. |
-| **Outils utilisables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. Répartir un calcul lourd (un rendu) en bandes fixes entre threads persistants ; `pthread_cond_t` plutôt qu'une attente active pour les synchroniser. |
-| **Pièges à éviter** | Modifier une variable partagée sans protection (*race condition*) ; oublier de déverrouiller un mutex (*deadlock* si un autre thread attend indéfiniment) ; verrouiller plusieurs mutex dans un ordre différent selon le thread. |
+| **Outils utilisables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock` ; `<stdatomic.h>` (`atomic_fetch_add`, compare-and-swap) ; `_Thread_local` pour une globale propre à chaque thread. Répartir un calcul lourd (un rendu) en bandes fixes entre threads persistants ; `pthread_cond_t` plutôt qu'une attente active pour les synchroniser. |
+| **Pièges à éviter** | Modifier une variable partagée sans protection (*race condition*) ; oublier de déverrouiller un mutex (*deadlock* si un autre thread attend indéfiniment) ; verrouiller plusieurs mutex dans un ordre différent selon le thread ; compter sur `volatile` pour synchroniser des threads. |
 | **Bonnes pratiques** | Protéger toute donnée partagée entre threads par un mutex, y compris pour une opération qui paraît simple (`compteur++` n'est pas atomique). Verrouiller plusieurs mutex toujours dans le même ordre (ex. par adresse mémoire) pour éviter tout deadlock. |

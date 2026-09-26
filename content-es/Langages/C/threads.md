@@ -105,6 +105,69 @@ No importa qué hilo llegue primero ni en qué orden lógico le sean útiles los
 
 > **Buena práctica:** en cuanto una función deba bloquear varios mutex a la vez, definir una única regla de orden y respetarla en todo el programa, en lugar de bloquear en el orden en que los candados aparecen mencionados localmente en el código.
 
+## Sin mutex: las operaciones atómicas
+
+`contador++` se hace en tres pasos (leer, sumar 1, escribir): dos hilos pueden leer el mismo valor antiguo y se pierde un incremento. Una **operación atómica** la ejecuta el procesador en **un solo paso indivisible**: ningún otro hilo puede intercalarse a mitad. C11 las proporciona en `<stdatomic.h>`.
+
+La más útil es el **compare-and-swap** (CAS, «comparar y luego intercambiar»): «si la variable aún vale el valor esperado, sustitúyelo por el nuevo; si no, no toques nada y avísame». Permite, por ejemplo, designar **un solo ganador** entre varios hilos, sin mutex:
+
+```c
+#include <pthread.h>
+#include <stdatomic.h>
+#include <stdio.h>
+
+atomic_int ganador = -1;                 // -1: nadie ha ganado todavía
+atomic_int contador = 0;
+
+void *trabajar(void *arg)
+{
+    int yo = *(int *)arg;
+    int esperado = -1;
+    for (int i = 0; i < 100000; i++)
+        atomic_fetch_add(&contador, 1);  // +1 en un solo paso indivisible
+    // «si ganador aún vale -1, pon mi número»: solo un hilo puede conseguirlo
+    if (atomic_compare_exchange_strong(&ganador, &esperado, yo))
+        printf("hilo %d: he ganado\n", yo);
+    return NULL;
+}
+```
+
+Lanzada en 8 hilos (compilación con `-pthread`), esta función muestra siempre un solo ganador, y `contador` vale exactamente 800 000 al final.
+
+| Herramienta | Garantiza | Para usar en |
+|---|---|---|
+| Mutex | Una sola sección de código a la vez, tan larga como haga falta | Modificar varios datos juntos |
+| Operación atómica (`atomic_fetch_add`, CAS) | Una sola operación sencilla, indivisible, sin espera | Un contador, una bandera, designar un ganador |
+| `volatile` | Solo que la variable se vuelve a leer en memoria en cada acceso | Las [señales](/?c=langages&s=c&p=signaux-unix) y los registros de hardware, **nunca** la sincronización entre hilos |
+
+> **Trampa:** `volatile` **no** hace atómica una operación ni impone ningún orden entre los accesos de dos hilos: un `volatile int` incrementado por varios hilos pierde actualizaciones igual que un `int` normal. Entre hilos, hace falta un tipo `atomic_*` o un mutex.
+
+## Una variable global por hilo: `_Thread_local`
+
+Una variable declarada `_Thread_local` (C11; `__thread` con GCC) existe en **una copia por hilo**: cada hilo lee y escribe la suya, sin tocar la de los demás.
+
+Caso típico: la función de ordenación `qsort()` llama a un comparador que solo recibe los dos elementos que comparar, sin ningún parámetro adicional. Si necesita un contexto (aquí, un array de pesos), ese contexto tiene que pasar por una variable global, y dos hilos que ordenan a la vez se lo pisarían:
+
+```c
+#include <stdlib.h>
+
+_Thread_local const int *g_pesos;        // una copia por hilo
+
+int comparar(const void *a, const void *b)
+{
+    int x = *(const int *)a, y = *(const int *)b;
+    return g_pesos[x] - g_pesos[y];      // ordena índices según su peso
+}
+
+void ordenar_indices(int *indices, int n, const int *pesos)
+{
+    g_pesos = pesos;                     // solo afecta a la copia del hilo que llama
+    qsort(indices, n, sizeof(int), comparar);
+}
+```
+
+Comprobado con dos hilos que ordenan a la vez, 100 000 veces cada uno, uno por pesos crecientes y el otro por pesos decrecientes: cada uno obtiene siempre su propio orden.
+
 ## Repartir un renderizado entre hilos: dividir la pantalla en bandas
 
 Un caso concreto de paralelismo limitado por el cálculo (a diferencia de un paralelismo que sobre todo espera una red o un disco): repartir un [renderizado por raycasting](/?c=fondamentaux&s=graphisme&p=rendu-3d-bas-niveau-et-fenetrage) entre varios hilos, cada uno calculando una **banda vertical** de la pantalla en lugar de un pool de tareas genéricas:
@@ -161,6 +224,6 @@ Este patrón (repartir un cálculo pesado entre hilos persistentes, cada uno sob
 | | |
 |---|---|
 | **Para recordar** | Un hilo comparte la memoria con los demás hilos del mismo programa (a diferencia de un proceso surgido de `fork()`), es más ligero, pero expone a *race conditions* sobre los datos compartidos. |
-| **Herramientas utilizables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`. Repartir un cálculo pesado (un renderizado) en bandas fijas entre hilos persistentes; `pthread_cond_t` en lugar de una espera activa para sincronizarlos. |
-| **Trampas a evitar** | Modificar una variable compartida sin protección (*race condition*); olvidar desbloquear un mutex (*deadlock* si otro hilo espera indefinidamente); bloquear varios mutex en un orden distinto según el hilo. |
+| **Herramientas utilizables** | `pthread_create`/`pthread_join`, `pthread_mutex_t`/`lock`/`unlock`; `<stdatomic.h>` (`atomic_fetch_add`, compare-and-swap); `_Thread_local` para una global propia de cada hilo. Repartir un cálculo pesado (un renderizado) en bandas fijas entre hilos persistentes; `pthread_cond_t` en lugar de una espera activa para sincronizarlos. |
+| **Trampas a evitar** | Modificar una variable compartida sin protección (*race condition*); olvidar desbloquear un mutex (*deadlock* si otro hilo espera indefinidamente); bloquear varios mutex en un orden distinto según el hilo; contar con `volatile` para sincronizar hilos. |
 | **Buenas prácticas** | Proteger todo dato compartido entre hilos con un mutex, incluso para una operación que parece simple (`contador++` no es atómica). Bloquear varios mutex siempre en el mismo orden (ej. por dirección de memoria) para evitar cualquier deadlock. |
