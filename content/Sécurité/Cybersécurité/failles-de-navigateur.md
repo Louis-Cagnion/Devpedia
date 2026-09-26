@@ -17,10 +17,10 @@ Page de l'attaquant (ce que voit la victime) :
   │      [ Cliquez ici ]    │
   └─────────────────────────┘
 
-Realite superposee (invisible) :
+Réalité superposée (invisible) :
   ┌─────────────────────────┐
-  │  iframe de votre site   │   <- ce qui recoit VRAIMENT le clic
-  │  [Confirmer virement]   │      (bouton sensible, positionne pile
+  │  iframe de votre site   │   <- ce qui reçoit VRAIMENT le clic
+  │  [Confirmer virement]   │      (bouton sensible, positionné pile
   └─────────────────────────┘       sous le faux bouton visible)
 ```
 
@@ -34,12 +34,12 @@ Realite superposee (invisible) :
 Un paramètre de redirection (`?next=`, `?redirect=`, souvent utilisé pour "revenir à la page demandée après connexion") qui accepte n'importe quelle URL externe transforme votre propre domaine, normalement digne de confiance, en tremplin vers un site de phishing.
 
 ```text
-Lien envoye par l'attaquant, avec le VRAI domaine du site de confiance :
+Lien envoyé par l'attaquant, avec le VRAI domaine du site de confiance :
   https://site-de-confiance.example/login?next=https://site-pirate.example/faux-formulaire
 
 La victime voit "site-de-confiance.example" dans son navigateur (rassurant),
-clique, se connecte normalement... puis est redirigee vers le site pirate
-juste apres, sur un domaine qu'elle ne regarde plus a ce moment-la
+clique, se connecte normalement... puis est redirigée vers le site pirate
+juste après, sur un domaine qu'elle ne regarde plus à ce moment-là
 ```
 
 > **Piège :** valider le paramètre de redirection en vérifiant seulement qu'il RESSEMBLE à une URL (présence de `http`), sans vérifier son domaine.
@@ -51,10 +51,10 @@ juste apres, sur un domaine qu'elle ne regarde plus a ce moment-la
 Un lien `target="_blank"` (ouverture dans un nouvel onglet) donne par défaut à la page ouverte un accès à `window.opener`, une référence vers l'onglet d'ORIGINE. Une page malveillante ouverte ainsi peut alors rediriger silencieusement cet onglet d'origine (resté ouvert derrière, hors du champ de vision immédiat de la victime) vers une fausse page de connexion.
 
 ```javascript
-// Dans la page ouverte en target="_blank", sans defense du site d'origine :
+// Dans la page ouverte en target="_blank", sans défense du site d'origine :
 window.opener.location = "https://site-pirate.example/fausse-page-login";
-// L'onglet D'ORIGINE (celui que la victime croit toujours etre le vrai site)
-// se retrouve redirige, sans que la victime n'ait rien cliqué dedans
+// L'onglet D'ORIGINE (celui que la victime croit toujours être le vrai site)
+// se retrouve redirigé, sans que la victime n'ait rien cliqué dedans
 ```
 
 > **Piège :** utiliser `target="_blank"` sur un lien vers un contenu externe (généré par un utilisateur, ou vers un site tiers) sans restreindre cet accès.
