@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 14 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 15 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -36,6 +36,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/compilation` (section `-march=native` et `-pthread`).
 - `Langages/C/memoire` (sections arène et `memcpy`/`memset`, et en anglais le tableau des quatre bugs mémoire).
 - `Fondamentaux/Algorithmes/file-de-priorite-et-tas-binaire` (nouveau).
+- `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (profileurs natifs, compteurs déterministes, programmes limités par la mémoire, portfolio et biais du jeu de test).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -54,14 +55,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 14. Mesurer une performance : profileurs natifs et pièges de benchmark (rush01, `research/bench.py`, `research/ab.py`)
-Complète `mesurer-avant-d-optimiser.md` (profilage par phases, bruit et mesures multiples déjà couverts) : 0 résultat pour « gprof », « perf_event », « bande passante mémoire », « memory-bound », « portfolio ». Rubrique pressentie : Qualité, performance et outils > Performance.
-- **Profileurs natifs Linux** : `gprof` (compilation avec `-pg`, profil plat par fonction, moins fiable avec l'inlining) et `perf` (échantillonnage matériel, refusé à un simple utilisateur si `/proc/sys/kernel/perf_event_paranoid` vaut 3 ou 4).
-- **Comparer aussi sur des compteurs de travail déterministes** (propagations, conflits, nœuds explorés) et pas seulement sur le temps : ±15 % mesurés entre deux exécutions identiques sur portable (fréquence CPU, température).
-- **Programme limité par la bande passante mémoire** (*memory-bound*) : ajouter des threads peut le ralentir (8 threads : 577 → 893 ms), contrairement à un calcul limité par le CPU ; lien avec `cache-cpu-et-simd.md` et la contention déjà décrite dans `parallelisme.md`.
-- **Portfolio parallèle** : lancer plusieurs recherches différentes en parallèle et garder la première qui aboutit ; efficace contre les queues lourdes, inutile si la mémoire est le goulot.
-- **Biais du jeu de test** : valider aussi sur des instances d'une autre origine (cf. `Fondamentaux/Mathématiques/carres-latins-et-tirage-uniforme`) avant de conclure qu'un gain est général.
 
 ## 15. Python : lancer et chronométrer des programmes externes en parallèle (rush01, `research/bench.py`)
 `sous-processus-et-flux-standard.md` couvre `subprocess.run` et `capture_output`, `parallelisme.md` couvre `multiprocessing.Pool` ; 0 résultat pour « TimeoutExpired », « ThreadPoolExecutor », « concurrent.futures ». Rubrique pressentie : Langages > Python.
