@@ -57,7 +57,7 @@ En un solucionador SAT (ver [Los solucionadores SAT y el algoritmo CDCL](/?c=fon
 | Optimización | Efecto sobre las instrucciones | Efecto sobre el tiempo |
 |---|---|---|
 | Búsqueda circular del reemplazante ([Gent 2013](https://www.jair.org/index.php/jair/article/view/10839)) | Divide por 2,5 el número de literales recorridos | Ningún cambio |
-| Eliminar un acceso aleatorio a memoria por propagación | Cambia poco el número de instrucciones | −21 % |
+| Eliminar un acceso aleatorio a memoria por propagación (ver «Filtro por bitmap» más abajo) | Cambia poco el número de instrucciones | −21 % |
 
 La primera optimización reduce el trabajo medido en instrucciones, pero ese trabajo ya estaba en caché: menos instrucciones para el mismo número de accesos a memoria ya baratos no cambia nada. La segunda elimina un acceso que fallaba la caché en cada propagación: un acceso aleatorio menos pesa más que miles de instrucciones menos que, esas sí, ya eran baratas.
 
@@ -91,9 +91,9 @@ Consultar el bitmap antes de la cabecera evitó el 91 % de las lecturas en el ar
 
 ## Escribir solo lo que se volverá a leer
 
-Escribir cuesta tanto como leer: es la misma línea de caché que cargar, y luego devolver a memoria si es desalojada antes de la próxima lectura. Actualizar un dato que nadie volverá a leer es un acceso a memoria pagado para nada.
+Escribir no es gratis: para modificar un dato, el procesador carga primero su línea de caché, igual que para una lectura, y luego tendrá que devolverla a memoria cuando sea desalojada de la caché. Actualizar un dato que nadie volverá a leer es pagar esos accesos para nada.
 
-En un solucionador SAT (ver [Los solucionadores SAT y el algoritmo CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)), dos estructuras auxiliares, la **fase** registrada de una variable y su posición en el **montículo** de prioridades, solo sirven para las variables aún **decidibles** (las que quedan por elegir). Actualizarlas también para las variables ya fijadas por la propagación escribe en líneas de caché que nadie volverá a leer en mucho tiempo. Restringir ambas actualizaciones a las variables decidibles elimina esas escrituras inútiles.
+En un solucionador SAT (ver [Los solucionadores SAT y el algoritmo CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)), dos estructuras auxiliares, la **fase** registrada de una variable y su posición en el **montículo** de prioridades (ver [la cola de prioridad](/?c=fondamentaux&s=algorithmes&p=file-de-priorite-et-tas-binaire)), solo sirven a las variables **decidibles**: aquellas sobre las que el solucionador tiene derecho a tomar una decisión (en el solucionador Skyscraper, solo una parte de las variables; las demás siempre se deducen por propagación). Actualizarlas también para las demás variables escribe en líneas de caché que nadie leerá nunca. Restringir ambas actualizaciones a las variables decidibles suprime esas escrituras; junto con otros retoques del mismo tipo, la ganancia medida es de un pequeño porcentaje, con contadores de trabajo idénticos.
 
 > El principio se conecta con el filtro por bitmap anterior: en ambos casos, la pregunta planteada antes de actuar es «¿se volverá a leer este dato?», no solo «¿es correcto este cálculo?».
 
