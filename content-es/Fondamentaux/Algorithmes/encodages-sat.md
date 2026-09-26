@@ -96,12 +96,32 @@ Cada regla se convierte en **cláusulas unitarias** (un solo literal, por ejempl
 Una restricción como «la casilla i es visible» se despliega en una fórmula larga (depende de todas las casillas anteriores). Copiarla cada vez que se usa haría explotar el tamaño de la codificación. La **[transformación de Tseitin](https://doi.org/10.1007/978-3-642-81955-1_28)** (1968) evita esto: se inventa una nueva variable que **nombra** la subfórmula, con cláusulas que la obligan a valer lo mismo que ella. Estas variables no existían en el enunciado del problema: son **definicionales**, añadidas solo para acortar la codificación.
 
 ```python
+from itertools import product
+
+
 def clausulas_tseitin_y(p, a, b):
-    """p <-> (a y b): 3 cláusulas que definen p, codificación de Tseitin."""
-    return [[-p, a], [-p, b], [p, -a, -b]]  # p verdadera si y solo si a y b verdaderas
+    """Cláusulas que imponen p <-> (a y b); -x significa «no x»."""
+    return [[-p, a], [-p, b], [p, -a, -b]]          # p ⇒ a, p ⇒ b, (a y b) ⇒ p
+
+
+def satisfecha(clausula, valores):
+    """Verdadero si al menos un literal de la cláusula es verdadero."""
+    return any(valores[abs(lit)] == (lit > 0) for lit in clausula)
+
+
+acuerdos = 0
+for a, b, p in product((False, True), repeat=3):    # las 8 combinaciones posibles
+    valores = {1: a, 2: b, 3: p}                      # variables: a = 1, b = 2, p = 3
+    clausulas_ok = all(satisfecha(c, valores) for c in clausulas_tseitin_y(3, 1, 2))
+    acuerdos += clausulas_ok == (p == (a and b))      # ¿de acuerdo con la definición de p?
+print(f"{acuerdos}/8 combinaciones de acuerdo")
 ```
 
-Comprobado por fuerza bruta sobre las 8 combinaciones de a, b, p: las 3 cláusulas aceptan exactamente los casos donde `p == (a y b)`, salida real `8/8 líneas de acuerdo entre las cláusulas y p == (a y b)`. En el solucionador Skyscraper, dos subfórmulas se nombran así: «altura máxima vista entre las i primeras casillas de una fila» y «la casilla i es visible». Sin estas dos familias de variables auxiliares, cada restricción de visibilidad volvería a ser una fórmula de tamaño proporcional al número de casillas anteriores, en lugar de un puñado de cláusulas ligadas a una variable compartida: en n = 72, estas variables definicionales representan el 68 % del total de variables de la codificación.
+```
+8/8 combinaciones de acuerdo
+```
+
+Las 3 cláusulas aceptan exactamente las combinaciones en las que p vale «a y b»: p es de verdad un nombre para esta subfórmula. En el solucionador Skyscraper, dos subfórmulas se nombran así: «altura máxima vista entre las i primeras casillas de una fila» y «la casilla i es visible». Sin estas dos familias de variables auxiliares, cada restricción de visibilidad volvería a ser una fórmula de tamaño proporcional al número de casillas anteriores, en lugar de un puñado de cláusulas ligadas a una variable compartida: en una cuadrícula de 72 × 72, estas variables definicionales representan el 68 % del total de variables de la codificación.
 
 ## Cláusulas implícitas: recuperadas por cálculo en lugar de almacenadas
 
@@ -109,7 +129,7 @@ Algunas familias de cláusulas tienen una **estructura regular**: sus literales 
 
 Esto complica un punto concreto: cuando el solucionador deduce que una variable es verdadera, debe recordar **por qué** (la cláusula que la forzó), para reconstruir ese razonamiento más tarde durante el análisis del conflicto. Si la cláusula no está almacenada, esa razón también debe codificarse de forma compacta: en 32 bits, unos pocos bits de mayor peso designan la **familia** de cláusula implicada, y los bits restantes llevan el número de una **variable de anclaje**, a partir de la cual toda la cláusula se recalcula.
 
-| Enfoque | Qué se almacena | Memoria en n = 72 | Velocidad |
+| Enfoque | Qué se almacena | Memoria (cuadrícula de 72 × 72) | Velocidad (cuadrícula de 48 × 48) |
 |---|---|---|---|
 | Cláusulas enumeradas | Cada literal de cada cláusula regular | 674 MB | referencia |
 | Cláusulas implícitas (familia + anclaje) | Un código de 32 bits por razón, la cláusula se recalcula | 263 MB | 1,5 veces más rápida |

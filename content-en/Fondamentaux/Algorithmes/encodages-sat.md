@@ -96,12 +96,32 @@ Each rule becomes **unit clauses** (a single literal, for example "cell 1 is not
 A constraint like "cell i is visible" unfolds into a long formula (it depends on every cell that comes before it). Copying it out every time it is used would make the encoding explode in size. The **[Tseitin transformation](https://doi.org/10.1007/978-3-642-81955-1_28)** (1968) avoids this: a new variable is invented to **name** the subformula, with clauses that force it to equal whatever it names. These variables did not exist in the problem statement: they are **definitional**, added only to shorten the encoding.
 
 ```python
+from itertools import product
+
+
 def tseitin_and_clauses(p, a, b):
-    """p <-> (a and b): 3 clauses defining p, the Tseitin encoding."""
-    return [[-p, a], [-p, b], [p, -a, -b]]  # p true iff a and b are true
+    """Clauses forcing p <-> (a and b); -x means "not x"."""
+    return [[-p, a], [-p, b], [p, -a, -b]]          # p ⇒ a, p ⇒ b, (a and b) ⇒ p
+
+
+def satisfied(clause, values):
+    """True if at least one literal of the clause is true."""
+    return any(values[abs(lit)] == (lit > 0) for lit in clause)
+
+
+matches = 0
+for a, b, p in product((False, True), repeat=3):    # the 8 possible combinations
+    values = {1: a, 2: b, 3: p}                       # variables: a = 1, b = 2, p = 3
+    clauses_ok = all(satisfied(c, values) for c in tseitin_and_clauses(3, 1, 2))
+    matches += clauses_ok == (p == (a and b))         # agrees with the definition of p?
+print(f"{matches}/8 combinations agree")
 ```
 
-Checked by brute force over the 8 combinations of a, b, p: the 3 clauses accept exactly the cases where `p == (a and b)`, real output `8/8 lines matching between the clauses and p == (a and b)`. In the Skyscraper solver, two subformulas are named this way: "tallest height seen among the first i cells of a row" and "cell i is visible". Without these two families of auxiliary variables, each visibility constraint would go back to being a formula whose size is proportional to the number of cells before it, instead of a handful of clauses tied to a shared variable: at n = 72, these definitional variables make up 68% of the encoding's total variables.
+```
+8/8 combinations agree
+```
+
+The 3 clauses accept exactly the combinations where p equals "a and b": p really is a name for this subformula. In the Skyscraper solver, two subformulas are named this way: "tallest height seen among the first i cells of a row" and "cell i is visible". Without these two families of auxiliary variables, each visibility constraint would go back to being a formula whose size is proportional to the number of cells before it, instead of a handful of clauses tied to a shared variable: on a 72 × 72 grid, these definitional variables make up 68% of the encoding's total variables.
 
 ## Implicit Clauses: Recovered by Computation Rather than Stored
 
@@ -109,7 +129,7 @@ Some clause families have a **regular structure**: their literals follow from an
 
 This complicates one specific point: when the solver deduces that a variable is true, it must remember **why** (the clause that forced it), in order to reconstruct that reasoning later during conflict analysis. If the clause is not stored, this reason must also be encoded compactly: on 32 bits, a few high-order bits name the **family** of clause involved, and the remaining bits carry the number of an **anchor variable**, from which the whole clause can be recomputed.
 
-| Approach | What is stored | Memory at n = 72 | Speed |
+| Approach | What is stored | Memory (72 × 72 grid) | Speed (48 × 48 grid) |
 |---|---|---|---|
 | Enumerated clauses | Every literal of every regular clause | 674 MB | baseline |
 | Implicit clauses (family + anchor) | A 32-bit code per reason, clause recomputed | 263 MB | 1.5 times faster |

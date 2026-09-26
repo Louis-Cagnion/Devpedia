@@ -55,7 +55,7 @@ Mais compacto não quer dizer mais rápido: no solucionador Skyscraper, a codifi
 
 ```python
 def no_maximo_k_contador(xs, k, proxima_var):
-    """Cláusulas "no máximo k verdadeiras entre xs", e o próximo número de variável livre."""
+    """Cláusulas "no máximo k verdadeiras entre xs" e a próxima variável livre."""
     n = len(xs)
     # s[i][j]: pelo menos j+1 verdadeiras entre x1..x(i+1)
     s = [[proxima_var + i * k + j for j in range(k)] for i in range(n)]
@@ -96,12 +96,32 @@ Cada regra vira **cláusulas unitárias** (um único literal, por exemplo "a cas
 Uma restrição como "a casa i é visível" se desdobra em uma fórmula longa (ela depende de todas as casas anteriores). Copiá-la a cada vez que é usada faria o tamanho da codificação explodir. A **[transformação de Tseitin](https://doi.org/10.1007/978-3-642-81955-1_28)** (1968) evita isso: inventa-se uma nova variável que **nomeia** a subfórmula, com cláusulas que a obrigam a valer o mesmo que ela nomeia. Essas variáveis não existiam no enunciado do problema: são **definicionais**, acrescentadas apenas para encurtar a codificação.
 
 ```python
+from itertools import product
+
+
 def clausulas_tseitin_e(p, a, b):
-    """p <-> (a e b): 3 cláusulas que definem p, codificação de Tseitin."""
-    return [[-p, a], [-p, b], [p, -a, -b]]  # p verdadeira se e somente se a e b verdadeiras
+    """Cláusulas que impõem p <-> (a e b); -x significa "não x"."""
+    return [[-p, a], [-p, b], [p, -a, -b]]          # p ⇒ a, p ⇒ b, (a e b) ⇒ p
+
+
+def satisfeita(clausula, valores):
+    """Verdadeiro se pelo menos um literal da cláusula for verdadeiro."""
+    return any(valores[abs(lit)] == (lit > 0) for lit in clausula)
+
+
+acordos = 0
+for a, b, p in product((False, True), repeat=3):    # as 8 combinações possíveis
+    valores = {1: a, 2: b, 3: p}                      # variáveis: a = 1, b = 2, p = 3
+    clausulas_ok = all(satisfeita(c, valores) for c in clausulas_tseitin_e(3, 1, 2))
+    acordos += clausulas_ok == (p == (a and b))       # de acordo com a definição de p?
+print(f"{acordos}/8 combinações de acordo")
 ```
 
-Verificado por força bruta nas 8 combinações de a, b, p: as 3 cláusulas aceitam exatamente os casos em que `p == (a e b)`, saída real `8/8 linhas de acordo entre as cláusulas e p == (a e b)`. No solucionador Skyscraper, duas subfórmulas são nomeadas assim: "altura máxima vista entre as i primeiras casas de uma linha" e "a casa i é visível". Sem essas duas famílias de variáveis auxiliares, cada restrição de visibilidade voltaria a ser uma fórmula de tamanho proporcional ao número de casas anteriores a ela, em vez de um punhado de cláusulas ligadas a uma variável compartilhada: em n = 72, essas variáveis definicionais representam 68% do total de variáveis da codificação.
+```
+8/8 combinações de acordo
+```
+
+As 3 cláusulas aceitam exatamente as combinações em que p vale "a e b": p é de fato um nome para essa subfórmula. No solucionador Skyscraper, duas subfórmulas são nomeadas assim: "altura máxima vista entre as i primeiras casas de uma linha" e "a casa i é visível". Sem essas duas famílias de variáveis auxiliares, cada restrição de visibilidade voltaria a ser uma fórmula de tamanho proporcional ao número de casas anteriores a ela, em vez de um punhado de cláusulas ligadas a uma variável compartilhada: em uma grade 72 × 72, essas variáveis definicionais representam 68% do total de variáveis da codificação.
 
 ## Cláusulas implícitas: recuperadas por cálculo em vez de armazenadas
 
@@ -109,7 +129,7 @@ Algumas famílias de cláusulas têm uma **estrutura regular**: seus literais se
 
 Isso complica um ponto específico: quando o solucionador deduz que uma variável é verdadeira, ele precisa lembrar **por quê** (a cláusula que a forçou), para reconstruir esse raciocínio mais tarde durante a análise do conflito. Se a cláusula não está armazenada, essa razão também precisa ser codificada de forma compacta: em 32 bits, alguns bits mais significativos designam a **família** de cláusula envolvida, e os bits restantes carregam o número de uma **variável de ancoragem**, a partir da qual toda a cláusula se recalcula.
 
-| Abordagem | O que é armazenado | Memória em n = 72 | Velocidade |
+| Abordagem | O que é armazenado | Memória (grade 72 × 72) | Velocidade (grade 48 × 48) |
 |---|---|---|---|
 | Cláusulas enumeradas | Cada literal de cada cláusula regular | 674 MB | referência |
 | Cláusulas implícitas (família + ancoragem) | Um código de 32 bits por razão, a cláusula é recalculada | 263 MB | 1,5 vezes mais rápida |
