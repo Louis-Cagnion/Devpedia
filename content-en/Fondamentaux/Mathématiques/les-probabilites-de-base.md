@@ -73,6 +73,8 @@ The most likely outcome (rain, here) isn't the only possible one: just the one w
 >
 > **Best practice:** reason about the whole distribution rather than just its most likely outcome, whenever less likely outcomes carry significant consequences if they happen anyway.
 
+> **Note:** to draw uniformly at random objects that are hard to build directly, see [Latin Squares and Uniform Sampling with a Markov Chain](/?c=fondamentaux&s=mathematiques&p=carres-latins-et-tirage-uniforme).
+
 ## Key takeaways
 
 | | |

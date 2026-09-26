@@ -73,6 +73,8 @@ O resultado mais provável (aqui, a chuva) não é o único possível: apenas aq
 >
 > **Boa prática:** raciocinar sobre a distribuição inteira em vez de apenas seu resultado mais provável, sempre que os resultados menos prováveis tiverem consequências importantes caso ocorram mesmo assim.
 
+> **Nota:** para sortear de forma uniforme objetos difíceis de construir diretamente, ver [Quadrados latinos e sorteio uniforme com uma cadeia de Markov](/?c=fondamentaux&s=mathematiques&p=carres-latins-et-tirage-uniforme).
+
 ## O que reter
 
 | | |
