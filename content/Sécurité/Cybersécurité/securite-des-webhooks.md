@@ -14,7 +14,7 @@ Service tiers (paiement) -----> POST https://votre-site.example/webhooks/paiemen
 
 Attaquant (a deviné ou trouvé l'URL) -----> POST https://votre-site.example/webhooks/paiement
                                              { "commande_id": 42, "statut": "paye" }
-                                             (FAUSSE notification, commande jamais réellement payée)
+                                             (FAUSSE notification : commande jamais payée)
 ```
 
 Sans vérification, le code qui reçoit ce webhook ne peut pas distinguer les deux requêtes : les deux arrivent avec la même forme, sur la même URL.
@@ -24,21 +24,22 @@ Sans vérification, le code qui reçoit ce webhook ne peut pas distinguer les de
 [HMAC](/?c=securite&s=cybersecurite&p=cryptographie-appliquee) (signature symétrique par secret partagé) est le mécanisme standard pour authentifier un webhook : le service tiers et votre application partagent un secret à l'avance (fourni lors de la configuration du webhook), et chaque requête envoyée est accompagnée d'une signature calculée avec ce secret.
 
 ```text
-Service tiers (connait le secret partage)
-  1. Calcule signature = HMAC(corps_de_la_requete, secret)
-  2. Envoie la requete avec un en-tete : X-Signature: <signature>
+Service tiers (connaît le secret partagé)
+  1. Calcule signature = HMAC(corps_de_la_requête, secret)
+  2. Envoie la requête avec un en-tête : X-Signature: <signature>
 
-Votre application (connait le meme secret)
-  3. Recalcule sa PROPRE signature a partir du corps recu + du secret
-  4. Compare sa signature a celle recue dans l'en-tete X-Signature
-  5. Si differentes -> requete rejetee (pas vraiment envoyee par le service tiers,
-     ou corps modifie en chemin)
+Votre application (connaît le même secret)
+  3. Recalcule sa PROPRE signature à partir du corps reçu + du secret
+  4. Compare sa signature à celle reçue dans l'en-tête X-Signature
+  5. Si différentes -> requête rejetée (pas vraiment envoyée par le service tiers,
+     ou corps modifié en chemin)
 ```
 
 ```php
-// Verification cote application (PHP), au moment de recevoir le webhook
+// Vérification côté application (PHP), au moment de recevoir le webhook
 $corps_recu = file_get_contents('php://input');
-$signature_recue = $_SERVER['HTTP_X_SIGNATURE'];
+// en-tête absent : chaîne vide, que hash_equals() rejette
+$signature_recue = $_SERVER['HTTP_X_SIGNATURE'] ?? '';
 $signature_calculee = hash_hmac('sha256', $corps_recu, $secret_partage);
 
 // hash_equals() (déjà vu en cryptographie appliquée) : comparaison à temps constant,
@@ -58,12 +59,12 @@ if (!hash_equals($signature_calculee, $signature_recue)) {
 Une signature valide garantit que la requête vient bien du service tiers et n'a pas été modifiée, mais ne garantit rien sur le MOMENT où elle est reçue. Un attaquant qui intercepte une requête webhook légitime (réseau non chiffré, log exposé, service tiers lui-même compromis) peut la renvoyer telle quelle plus tard : la signature reste valide, puisque le contenu n'a pas changé.
 
 ```text
-1. Attaquant capture une requete webhook legitime deja envoyee et validee
-   ("commande 42 payee", signature valide)
-2. Des jours plus tard, l'attaquant renvoie EXACTEMENT la meme requete
-3. La signature est toujours valide (meme corps, meme secret)
-   -> si l'application ne verifie que la signature, elle retraite
-      l'evenement "commande 42 payee" une seconde fois
+1. L'attaquant capture une requête webhook légitime déjà envoyée et validée
+   ("commande 42 payée", signature valide)
+2. Des jours plus tard, l'attaquant renvoie EXACTEMENT la même requête
+3. La signature est toujours valide (même corps, même secret)
+   -> si l'application ne vérifie que la signature, elle retraite
+      l'événement "commande 42 payée" une seconde fois
 ```
 
 | Défense contre le rejeu | Principe |
