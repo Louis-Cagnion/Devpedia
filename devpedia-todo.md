@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 22 à 24 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 23 et 24 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -25,7 +25,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/PHP/exceptions` (sous-section `ValueError`).
 - `Langages/PHP/methodes` (sections fonctions anonymes, `use`, `callable` et `flock()`, plus deux titres et un exemple en anglais).
 - `Fondamentaux/Algorithmes/recherche-parallele-par-sous-problemes` (nouveau), plus les renvois ajoutés à `backtracking-et-satisfaction-de-contraintes` et `Qualité, performance et outils/Performance/parallelisme`.
-- `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` (nouveau, sous-sections des queues lourdes comprises), et le renvoi fusionné de `backtracking-et-satisfaction-de-contraintes`.
+- `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` (nouveau, sections heuristiques avancées et queues lourdes comprises), et le renvoi fusionné de `backtracking-et-satisfaction-de-contraintes`.
 - `Fondamentaux/Algorithmes/encodages-sat` (nouveau, sections Tseitin, clauses implicites et propagateurs comprises).
 - `Fondamentaux/Mathématiques/combinatoire-des-permutations` (nouveau), et la ligne `O(n!)` et le renvoi vers les problèmes NP-complets ajoutés à `Fondamentaux/Algorithmes/complexite-et-notation-big-o`.
 - `Fondamentaux/Mathématiques/carres-latins-et-tirage-uniforme` (nouveau), et le renvoi ajouté à `les-probabilites-de-base`.
@@ -62,14 +62,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 22. Heuristiques et mécanismes avancés d'un solveur CDCL (rush01, `research/cdcl.c`)
-Complète `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` : VMTF n'y est défini qu'en une phrase (tableau du portfolio hétérogène) ; 0 résultat pour « move-to-front », « retour arrière chronologique », « simplification à la racine ». Rubrique pressentie : `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl`.
-- **Branchement restreint** (*restricted branching*) : ne décider que certaines variables (ici « case ≥ v ») et laisser les autres découler de la propagation ; a supprimé la queue lourde à n=56-64 (7,9 s de moyenne au lieu de 27 s avec un seed au-delà de 90 s).
-- **VMTF** (*Variable Move-To-Front*, Ryan 2004, mode « focused » de kissat et CaDiCaL) : file doublement chaînée avec horodatages, les variables du dernier conflit passent en tête ; alternative à VSIDS sans tas binaire.
-- **Retour arrière chronologique** (Nadel & Ryvchin, SAT 2018) et **réutilisation de la trace** (van der Tak, Ramos & Heule 2011) : éviter de refaire des dizaines de décisions après un saut ; tous deux pires ici, testés via kissat.
-- **Phases cibles, rephasing et shrinking** (kissat, Biere 2020) : testés, pires sur cet encodage.
-- **Simplification à la racine** : retirer les clauses déjà satisfaites au niveau 0 (MiniSat `simplify`) ; 22 % des implications binaires mortes à n=72.
 
 ## 23. Processus orphelins : tuer un programme ne tue pas ses fils (rush01, `research/cdcl.c`, `research/bench.py`)
 `processus.md` couvre `fork`/`waitpid`/zombies et `architecture-dun-shell.md` définit le groupe de processus (`setpgid`), mais 0 résultat pour « PDEATHSIG », « prctl », « killpg », « start_new_session », et « orphelin » n'apparaît que pour des lignes SQL. Rubrique pressentie : Langages > C > `processus.md`, renvoi depuis `sous-processus-et-flux-standard.md` (Python).
