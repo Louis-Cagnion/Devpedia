@@ -82,6 +82,53 @@ A **profiler** shows in which functions a program spends its time. Two classic t
 
 The same program compiled with `-O1` gives an empty profile ("no time accumulated") and a single call to `slow`: the compiler moved the call out of the loop. When `perf` is blocked, `valgrind --tool=callgrind` works without special rights (see [Valgrind](/?c=langages&s=c&p=memoire)), at the cost of a much slower run (it simulates every instruction).
 
+### Pitfall: time credited to the wrong function
+
+With optimization (`-O2`), the compiler can **inline** a function into its caller (it copies its body in place of the call) or create a **specialized copy** of it under another name. `gprof` then credits its time to another function. Test program:
+
+```c
+#include <stdio.h>
+
+#ifdef NO_INLINING
+# define INLINABLE __attribute__((noinline))         /* forbids inlining */
+#else
+# define INLINABLE
+#endif
+
+static INLINABLE double slow_sum(long n)
+{
+    double s = 0;
+
+    for (long i = 1; i <= n; i++)
+        s += 1.0 / (double)i;                        /* the real work is here */
+    return s;
+}
+
+int main(void)
+{
+    double total = 0;
+
+    for (int k = 0; k < 20; k++)
+        total += slow_sum(20000000);                 /* 20 calls to the slow function */
+    printf("%.3f\n", total);
+    return 0;
+}
+```
+
+| Build (`cc -O2 -pg`) | What `gprof -b -p` shows | What really happened |
+|---|---|---|
+| As is | 100% of the time in `main` | `slow_sum` was inlined into `main`: it no longer exists as a function |
+| With `-DNO_INLINING` | 100% in `frame_dummy`, a single call | GCC created a copy `slow_sum.constprop.0` (with the constant argument baked in), which `gprof` does not show: it credits the function placed just before it in memory, a program startup routine. And the call, which has no side effects, is made only once instead of 20 times |
+
+`nm -n program` (the program's symbols sorted by address) shows the real culprit, right after it:
+
+```
+0000000000001240 t frame_dummy
+0000000000001250 t slow_sum.constprop.0
+```
+
+The call graph (`gprof -q`) fixes nothing: it reuses the same names. `valgrind --tool=callgrind` does name the copy (99.7% of instructions in `slow_sum.constprop.0`). Seen on a SAT solver: `gprof` credited 11% of the time to `now()`, a small clock-reading function, when it actually belonged to `cancel_until`.
+
 ## Comparing on Work Counters, Not Only on Time
 
 Two identical runs of the same program can differ by **±15%** on a laptop (processor frequency, temperature). A 5% gain measured with a stopwatch is then invisible in the noise. When the program can count its **work** (nodes explored, conflicts, propagations), these counters are **deterministic**: identical from one run to the next.
@@ -111,5 +158,5 @@ Two other lessons from the same project:
 |---|---|
 | **Key takeaways** | Never optimize without measuring first: intuition about "what's slow" generally targets code that looks complicated, not code that actually costs the most. |
 | **Tools you can use** | A classic profiler (per function: `gprof`, `perf`, `valgrind --tool=callgrind`), manual per-phase instrumentation when the program spends its time waiting; deterministic work counters to compare two versions. |
-| **Pitfalls to avoid** | Trusting a single measurement: noise (network, cache, machine load) can exceed the actual effect of an optimization. |
+| **Pitfalls to avoid** | Trusting a single measurement: noise (network, cache, machine load) can exceed the actual effect of an optimization; trusting an unexpected function name in a `gprof` profile of an optimized program (check with `nm -n` or callgrind). |
 | **Best practices** | Always remeasure after an optimization (both time AND result accuracy); take several measurements to tell a real gain from noise. |

@@ -97,13 +97,80 @@ Em um solucionador SAT (ver [Os solucionadores SAT e o algoritmo CDCL](/?c=fonda
 
 > O princípio se conecta com o filtro por bitmap acima: nos dois casos, a pergunta feita antes de agir é «esse dado será relido?», não só «esse cálculo está correto?».
 
+## A TLB e as páginas enormes
+
+Um programa não manipula diretamente os endereços da memória física: ele usa **endereços virtuais**, que o processador traduz a cada acesso, **página** por página (um bloco de 4 KB por padrão no Linux). As traduções recentes ficam guardadas em um pequeno cache dedicado, a **TLB** (*Translation Lookaside Buffer*). Quando uma tradução não está lá, o processador precisa procurá-la nas tabelas de páginas, na memória: um acesso a mais, antes mesmo de ler o dado.
+
+| Tamanho de página | Memória coberta por uma TLB de 1.000 entradas (ordem de grandeza comum) |
+|---|---|
+| 4 KB (padrão) | 4 MB |
+| 2 MB (página enorme) | 2 GB |
+
+Um programa que lê ao acaso em centenas de MB (como o array de 147 MB do filtro por bitmap acima) erra a TLB em quase todo acesso com páginas de 4 KB. Com **páginas enormes** de 2 MB, a mesma TLB cobre toda essa memória.
+
+No Linux, as **páginas enormes transparentes** (*Transparent Huge Pages*, THP) são configuradas em `/sys/kernel/mm/transparent_hugepage/enabled` ([documentação do kernel](https://docs.kernel.org/admin-guide/mm/transhuge.html)):
+
+| Modo | Comportamento |
+|---|---|
+| `always` | Páginas enormes sempre que possível |
+| `madvise` | Só para as áreas que o programa pede com [`madvise(https://man7.org/linux/man-pages/man2/madvise.2.html_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (modo da máquina usada aqui, com Ubuntu) |
+| `never` | Nunca |
+
+Exemplo em C (veja [a memória em C](/?c=langages&s=c&p=memoire) para a alocação e o `memset`), que conta a memória realmente servida em páginas enormes:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+
+#define TAMANHO (64UL << 20)                         /* 64 MB */
+
+static long paginas_enormes_kb(void)
+{
+    FILE *f = fopen("/proc/self/smaps_rollup", "r"); /* balanço de memória do processo */
+    char linha[256];
+    long kb = -1;
+
+    while (f && fgets(linha, sizeof linha, f))
+        if (sscanf(linha, "AnonHugePages: %ld kB", &kb) == 1)
+            break;                                   /* memória servida em páginas de 2 MB */
+    if (f)
+        fclose(f);
+    return kb;
+}
+
+int main(int argc, char **argv)
+{
+    int pedir = argc > 1 && strcmp(argv[1], "madvise") == 0;
+    char *t = aligned_alloc(2UL << 20, TAMANHO);     /* início alinhado em 2 MB */
+
+    if (!t)
+        return 1;
+    if (pedir && madvise(t, TAMANHO, MADV_HUGEPAGE) != 0)
+        perror("madvise");                           /* pede páginas enormes */
+    memset(t, 1, TAMANHO);                           /* escrever aloca de fato as páginas */
+    printf("%s: %ld KB em páginas enormes\n", pedir ? "com madvise" : "sem madvise",
+           paginas_enormes_kb());
+    free(t);
+    return 0;
+}
+```
+
+```
+sem madvise: 0 KB em páginas enormes
+com madvise: 65536 KB em páginas enormes
+```
+
+Sem mexer no código, a biblioteca C padrão do Linux (glibc 2.35 ou mais recente) pode fazer o mesmo pedido para todas as alocações de `malloc`: `https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html_TUNABLES=glibc.malloc.hugetlb=1 ./programa` ([anúncio da glibc 2.35](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Medido em um solucionador SAT que lê ao acaso em várias centenas de MB: −5% de tempo em um processo sozinho, com o mesmo cálculo, e cerca de −2%, dentro do ruído, com 4 cópias em paralelo. O ganho depende da dispersão dos acessos: um programa que percorre sua memória em ordem já aproveita o cache e ganha pouco.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | Um acesso à RAM custa ~50× mais do que um acesso ao cache L1. Dados contíguos e de tipo uniforme (array tipado) se beneficiam do cache e do SIMD; dados dispersos (lista encadeada, objetos espalhados) recarregam uma linha de cache a cada acesso. O número de acessos aleatórios à memória prevê o tempo bem melhor do que o número de instruções. |
-| **Ferramentas utilizáveis** | Um array tipado e contíguo (NumPy `ndarray`) em vez de uma coleção de objetos espalhados para cálculo intensivo; um bitmap como filtro barato antes de um acesso aleatório custoso. |
+| **Para lembrar** | Um acesso à RAM custa ~50× mais do que um acesso ao cache L1. Dados contíguos e de tipo uniforme (array tipado) se beneficiam do cache e do SIMD; dados dispersos (lista encadeada, objetos espalhados) recarregam uma linha de cache a cada acesso. O número de acessos aleatórios à memória prevê o tempo bem melhor do que o número de instruções. Além de alguns MB lidos ao acaso, a tradução de endereços (TLB) também custa: as páginas enormes de 2 MB a reduzem. |
+| **Ferramentas utilizáveis** | Um array tipado e contíguo (NumPy `ndarray`) em vez de uma coleção de objetos espalhados para cálculo intensivo; um bitmap como filtro barato antes de um acesso aleatório custoso; `madvise(MADV_HUGEPAGE)` ou `GLIBC_TUNABLES=glibc.malloc.hugetlb=1` para obter páginas enormes. |
 | **Armadilhas a evitar** | Um array NumPy em `dtype=object`: continua contíguo em aparência, mas perde todo o benefício do cache/SIMD (ponteiros para objetos dispersos). |
 | **Boas práticas** | Preferir um array tipado e contíguo assim que o volume de cálculo justificar o esforço; percorrer os dados na ordem de sua disposição em memória; guardar junto (AoS) os campos lidos e escritos juntos, separar (SoA) os percorridos um a um em muitos elementos; atualizar apenas os dados ainda úteis. |

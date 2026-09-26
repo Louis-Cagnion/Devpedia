@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 21 à 24 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 22 à 24 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -35,7 +35,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/compilation` (section `-march=native` et `-pthread`).
 - `Langages/C/memoire` (sections arène et `memcpy`/`memset`, et en anglais le tableau des quatre bugs mémoire).
 - `Fondamentaux/Algorithmes/file-de-priorite-et-tas-binaire` (nouveau).
-- `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (profileurs natifs, compteurs déterministes, programmes limités par la mémoire, portfolio et biais du jeu de test).
+- `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (profileurs natifs, piège de gprof sur les fonctions intégrées ou copiées, compteurs déterministes, programmes limités par la mémoire, portfolio et biais du jeu de test).
 - `Langages/Python/sous-processus-et-flux-standard` (section `timeout` et `ThreadPoolExecutor`).
 - `Fondamentaux/Algorithmes/backtracking-et-satisfaction-de-contraintes` (section sur quoi brancher).
 - `Langages/PHP/routage` (notes `parse_url()` qui renvoie `null` et point final CWE-42).
@@ -43,7 +43,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Qualité, performance et outils/Qualité et architecture du code/robustesse-traitement-par-lots` (section valider avant de détruire).
 - `Fondamentaux/Algorithmes/problemes-np-complets` (nouveau).
 - `Tests/property-based-testing` (section test différentiel).
-- `Qualité, performance et outils/Performance/cache-cpu-et-simd` (sections accès aléatoires, AoS/SoA, filtre par bitmap, écritures inutiles).
+- `Qualité, performance et outils/Performance/cache-cpu-et-simd` (sections accès aléatoires, AoS/SoA, filtre par bitmap, écritures inutiles, TLB et pages géantes).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -62,10 +62,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 21. Optimiser un programme limité par la latence mémoire (rush01, `research/cdcl.c`)
-- **TLB et pages géantes** : la TLB met en cache la traduction adresse virtuelle → physique ; avec des pages de 4 Ko, des accès aléatoires sur des centaines de Mo la débordent sans cesse. Pages géantes transparentes de 2 Mo (THP, modes `always`/`madvise`/`never` dans `/sys/kernel/mm/transparent_hugepage/enabled`), demandées par `madvise(MADV_HUGEPAGE)` ou `GLIBC_TUNABLES=glibc.malloc.hugetlb=1` : −5 % ici en processus seul, gain qui dépend de la dispersion des accès. 0 résultat pour « TLB », « madvise », « pages géantes ». À ajouter à `cache-cpu-et-simd.md` (4 langues) ; lien stable vérifié : https://docs.kernel.org/admin-guide/mm/transhuge.html.
-- **Piège de gprof** : le temps d'une fonction intégrée par le compilateur (*inlining*) peut être crédité à une autre (`now()` à 11 % au lieu de `cancel_until`) ; vérifier dans le graphe d'appels (`gprof -q`). À ajouter à `mesurer-avant-d-optimiser.md` (4 langues), dont la ligne `gprof` couvre déjà la perte de précision à l'optimisation : n'ajouter que le report du temps sur une autre fonction.
 
 ## 22. Heuristiques et mécanismes avancés d'un solveur CDCL (rush01, `research/cdcl.c`)
 Complète `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` : VMTF n'y est défini qu'en une phrase (tableau du portfolio hétérogène) ; 0 résultat pour « move-to-front », « retour arrière chronologique », « simplification à la racine ». Rubrique pressentie : `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl`.

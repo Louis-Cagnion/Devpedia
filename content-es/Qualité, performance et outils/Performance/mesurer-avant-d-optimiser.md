@@ -82,6 +82,53 @@ Resultado de `gprof` en un programa que llama 200 veces a una función `lenta` y
 
 El mismo programa compilado con `-O1` da un perfil vacío («no time accumulated») y una sola llamada a `lenta`: el compilador sacó la llamada del bucle. Cuando `perf` está bloqueado, `valgrind --tool=callgrind` funciona sin permisos especiales (ver [Valgrind](/?c=langages&s=c&p=memoire)), a costa de una ejecución mucho más lenta (simula cada instrucción).
 
+### Trampa: tiempo atribuido a la función equivocada
+
+Con la optimización (`-O2`), el compilador puede **integrar** una función en la que la llama (*inlining*: copia su cuerpo en lugar de la llamada) o crear una **copia especializada** con otro nombre. `gprof` atribuye entonces su tiempo a otra función. Programa de prueba:
+
+```c
+#include <stdio.h>
+
+#ifdef SIN_INTEGRACION
+# define INTEGRABLE __attribute__((noinline))        /* prohíbe la integración */
+#else
+# define INTEGRABLE
+#endif
+
+static INTEGRABLE double suma_lenta(long n)
+{
+    double s = 0;
+
+    for (long i = 1; i <= n; i++)
+        s += 1.0 / (double)i;                        /* el trabajo real está aquí */
+    return s;
+}
+
+int main(void)
+{
+    double total = 0;
+
+    for (int k = 0; k < 20; k++)
+        total += suma_lenta(20000000);               /* 20 llamadas a la función lenta */
+    printf("%.3f\n", total);
+    return 0;
+}
+```
+
+| Compilación (`cc -O2 -pg`) | Lo que muestra `gprof -b -p` | Lo que pasó realmente |
+|---|---|---|
+| Tal cual | 100 % del tiempo en `main` | `suma_lenta` se integró en `main`: ya no existe como función |
+| Con `-DSIN_INTEGRACION` | 100 % en `frame_dummy`, una sola llamada | GCC creó una copia `suma_lenta.constprop.0` (con el argumento constante copiado dentro), que `gprof` no muestra: atribuye el tiempo a la función situada justo antes en memoria, una rutina de arranque del programa. Y la llamada, sin efectos secundarios, solo se hace una vez en lugar de 20 |
+
+`nm -n programa` (los símbolos del programa ordenados por dirección) muestra al verdadero culpable, justo después:
+
+```
+0000000000001240 t frame_dummy
+0000000000001250 t suma_lenta.constprop.0
+```
+
+El grafo de llamadas (`gprof -q`) no corrige nada: reutiliza los mismos nombres. `valgrind --tool=callgrind` sí nombra la copia (99,7 % de las instrucciones en `suma_lenta.constprop.0`). Vivido en un solucionador SAT: `gprof` atribuía el 11 % del tiempo a `now()`, una pequeña función que lee el reloj, cuando en realidad correspondía a `cancel_until`.
+
 ## Comparar con contadores de trabajo, no solo con el tiempo
 
 Dos ejecuciones idénticas de un mismo programa pueden diferir en **±15 %** en un portátil (frecuencia del procesador, temperatura). Una ganancia del 5 % medida con cronómetro es entonces invisible en el ruido. Cuando el programa puede contar su **trabajo** (nodos explorados, conflictos, propagaciones), esos contadores son **deterministas**: idénticos de una ejecución a otra.
@@ -111,5 +158,5 @@ Otras dos lecciones del mismo proyecto:
 |---|---|
 | **Para recordar** | Nunca optimizar sin haber medido: la intuición sobre "qué es lento" suele apuntar al código que parece complicado, no al que realmente cuesta caro. |
 | **Herramientas utilizables** | Un profiler clásico (por función: `gprof`, `perf`, `valgrind --tool=callgrind`), una instrumentación manual por fase cuando el programa pasa su tiempo esperando; contadores de trabajo deterministas para comparar dos versiones. |
-| **Trampas a evitar** | Fiarse de una medición única: el ruido (red, caché, carga de la máquina) puede superar el efecto real de una optimización. |
+| **Trampas a evitar** | Fiarse de una medición única: el ruido (red, caché, carga de la máquina) puede superar el efecto real de una optimización; fiarse de un nombre de función inesperado en un perfil de `gprof` de un programa optimizado (comprobar con `nm -n` o callgrind). |
 | **Buenas prácticas** | Siempre volver a medir tras una optimización (tiempo Y exactitud del resultado); tomar varias mediciones para distinguir una ganancia real del ruido. |
