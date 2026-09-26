@@ -83,8 +83,26 @@ Plusieurs en-têtes de réponse HTTP, absents par défaut, indiquent expliciteme
 | `Content-Security-Policy: frame-ancestors` | Le clickjacking (vu plus haut) |
 | `X-Content-Type-Options: nosniff` | Le navigateur devine (*sniffe*) parfois le type d'un fichier servi plutôt que de faire confiance au `Content-Type` déclaré ; un fichier uploadé par un utilisateur et deviné comme HTML/JS exécutable au lieu du type inoffensif déclaré peut alors s'exécuter |
 | `Strict-Transport-Security` | Le navigateur force toute connexion future vers ce domaine en HTTPS, même si un lien pointe explicitement vers du HTTP |
+| `Referrer-Policy: strict-origin-when-cross-origin` (ou `no-referrer`) | La fuite de l'adresse de la page dans l'en-tête `Referer` envoyé aux autres sites : avec cette valeur, un autre site ne reçoit que le nom de domaine, jamais le chemin ni les paramètres |
 
 > **Bonne pratique :** poser ces en-têtes au niveau du serveur web ou du framework pour l'ensemble du site, plutôt qu'au cas par cas sur chaque route.
+
+> **Piège :** même avec cette politique (appliquée par défaut par les navigateurs récents, mais pas par les anciens), une donnée sensible placée dans l'adresse (`?email=...`, `?token=...`) reste visible dans l'historique du navigateur, les journaux du serveur et le `Referer` envoyé aux ressources du même site : c'est la faiblesse [CWE-598](https://cwe.mitre.org/data/definitions/598.html). Une donnée sensible s'envoie dans le corps d'une requête `POST`, jamais dans l'URL.
+
+## Formulaires sur un appareil partagé : `autocomplete="off"`
+
+Un navigateur mémorise ce qu'on tape dans les champs d'un formulaire et le propose à nouveau à la saisie suivante (nom, téléphone, e-mail...). Sur un poste personnel, c'est pratique ; sur un **appareil partagé** (borne en libre-service, kiosque, poste d'accueil), l'utilisateur suivant voit les données personnelles du précédent.
+
+```html
+<input type="email" name="email" autocomplete="off">   <!-- aucune suggestion mémorisée -->
+```
+
+| Situation | Réglage |
+|---|---|
+| Poste personnel | Laisser l'autocomplétion : elle aide l'utilisateur |
+| Borne ou appareil partagé | `autocomplete="off"` sur chaque champ de données personnelles, et effacer les données du navigateur entre deux sessions (le plus sûr : un profil de navigation privée relancé à chaque utilisateur) |
+
+> **Piège :** les navigateurs peuvent ignorer `autocomplete="off"` sur les champs de connexion (identifiant, mot de passe), pour laisser fonctionner leur gestionnaire de mots de passe. Sur une borne, ne jamais compter sur ce seul attribut.
 
 ## Stockage client d'un token : `localStorage` contre cookie `HttpOnly`
 
@@ -108,6 +126,6 @@ Plusieurs en-têtes de réponse HTTP, absents par défaut, indiquent expliciteme
 | | |
 |---|---|
 | **À retenir** | Plusieurs attaques exploitent des comportements par défaut du navigateur plutôt qu'une faille de code : affichage en iframe non restreint (clickjacking), redirection vers un domaine externe non vérifié (open redirect), accès à `window.opener` depuis un `target="_blank"` (reverse tabnabbing), traitement incohérent d'un paramètre dupliqué (HPP), en-têtes de sécurité absents, ou choix du stockage client d'un token. |
-| **Outils utilisables** | `Content-Security-Policy: frame-ancestors`, `X-Content-Type-Options: nosniff`, `Strict-Transport-Security`, `rel="noopener noreferrer"`. |
+| **Outils utilisables** | `Content-Security-Policy: frame-ancestors`, `X-Content-Type-Options: nosniff`, `Strict-Transport-Security`, `Referrer-Policy`, `rel="noopener noreferrer"`, `autocomplete="off"` sur un appareil partagé. |
 | **Pièges à éviter** | Ne pas restreindre l'affichage en iframe. Accepter une URL complète arbitraire comme cible de redirection. `target="_blank"` sans `rel="noopener noreferrer"`. Présumer qu'un paramètre HTTP n'apparaît qu'une fois. Stocker un token sensible en `localStorage` sans en mesurer le risque XSS. |
 | **Bonnes pratiques** | Poser les en-têtes de sécurité pertinents pour tout le site. N'accepter qu'un chemin relatif interne pour une redirection post-connexion. Systématiser `rel="noopener noreferrer"`. Vérifier la convention du framework face à un paramètre dupliqué. Préférer un cookie `HttpOnly` pour un token sensible. |
