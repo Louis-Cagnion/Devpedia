@@ -91,13 +91,40 @@ Exemplo: as **regras de borda** do Skyscraper. Com a dica k na borda de uma linh
 
 Cada regra vira **cláusulas unitárias** (um único literal, por exemplo "a casa 1 não vale 3"), verdadeiras antes de qualquer busca. Medido no solucionador Skyscraper: 2,4 vezes mais rápido (grade 13 × 13: 0,30 → 0,13 s). Outro fato redundante acrescentado sem custo: o prédio mais alto entre as i primeiras casas de uma linha mede pelo menos i, já que todas têm alturas diferentes.
 
+## Nomear uma subfórmula: variáveis auxiliares definicionais
+
+Uma restrição como "a casa i é visível" se desdobra em uma fórmula longa (ela depende de todas as casas anteriores). Copiá-la a cada vez que é usada faria o tamanho da codificação explodir. A **[transformação de Tseitin](https://doi.org/10.1007/978-3-642-81955-1_28)** (1968) evita isso: inventa-se uma nova variável que **nomeia** a subfórmula, com cláusulas que a obrigam a valer o mesmo que ela nomeia. Essas variáveis não existiam no enunciado do problema: são **definicionais**, acrescentadas apenas para encurtar a codificação.
+
+```python
+def clausulas_tseitin_e(p, a, b):
+    """p <-> (a e b): 3 cláusulas que definem p, codificação de Tseitin."""
+    return [[-p, a], [-p, b], [p, -a, -b]]  # p verdadeira se e somente se a e b verdadeiras
+```
+
+Verificado por força bruta nas 8 combinações de a, b, p: as 3 cláusulas aceitam exatamente os casos em que `p == (a e b)`, saída real `8/8 linhas de acordo entre as cláusulas e p == (a e b)`. No solucionador Skyscraper, duas subfórmulas são nomeadas assim: "altura máxima vista entre as i primeiras casas de uma linha" e "a casa i é visível". Sem essas duas famílias de variáveis auxiliares, cada restrição de visibilidade voltaria a ser uma fórmula de tamanho proporcional ao número de casas anteriores a ela, em vez de um punhado de cláusulas ligadas a uma variável compartilhada: em n = 72, essas variáveis definicionais representam 68% do total de variáveis da codificação.
+
+## Cláusulas implícitas: recuperadas por cálculo em vez de armazenadas
+
+Algumas famílias de cláusulas têm uma **estrutura regular**: seus literais se deduzem de um índice (número da casa, altura, posição na linha) por uma fórmula simples. Armazená-las uma a uma desperdiça memória com uma informação que poderia ser recalculada. Por isso uma **cláusula implícita** nunca é escrita em um vetor: ela é reconstruída no momento em que o solucionador precisa dela, por cálculo de índices.
+
+Isso complica um ponto específico: quando o solucionador deduz que uma variável é verdadeira, ele precisa lembrar **por quê** (a cláusula que a forçou), para reconstruir esse raciocínio mais tarde durante a análise do conflito. Se a cláusula não está armazenada, essa razão também precisa ser codificada de forma compacta: em 32 bits, alguns bits mais significativos designam a **família** de cláusula envolvida, e os bits restantes carregam o número de uma **variável de ancoragem**, a partir da qual toda a cláusula se recalcula.
+
+| Abordagem | O que é armazenado | Memória em n = 72 | Velocidade |
+|---|---|---|---|
+| Cláusulas enumeradas | Cada literal de cada cláusula regular | 674 MB | referência |
+| Cláusulas implícitas (família + ancoragem) | Um código de 32 bits por razão, a cláusula é recalculada | 263 MB | 1,5 vezes mais rápida |
+
+## Propagadores e geração preguiçosa de cláusulas
+
+Um **propagador** é código dedicado a uma restrição global (por exemplo "todas essas variáveis assumem valores diferentes"): em vez de traduzir a restrição em cláusulas de antemão, o solucionador executa diretamente o algoritmo que sabe deduzir suas consequências. O propagador só produz uma **cláusula de explicação** (por que tal variável foi forçada) quando a [análise do conflito](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) precisa dela: a tradução em cláusulas acontece então sob demanda em vez de de uma vez só no início, daí o nome **[geração preguiçosa de cláusulas](https://doi.org/10.1007/s10601-008-9064-x)** (*Lazy Clause Generation*, Ohrimenko, Stuckey e Codish, 2009). As cláusulas implícitas da seção anterior são uma forma simples disso, escrita à mão para uma única restrição; a geração preguiçosa de cláusulas generaliza a ideia para qualquer restrição global por meio de um propagador. É o princípio dos solucionadores híbridos que combinam SAT e programação por restrições, como o [Chuffed](https://github.com/chuffed/chuffed) ou o solucionador CP-SAT do [OR-Tools](https://github.com/google/or-tools).
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | Um mesmo problema pode ser codificado de várias formas corretas, com diferenças de velocidade de um fator de 10 ou mais. A codificação por ordem ("pelo menos v") serve para comparações; "no máximo um" e as contagens têm, cada um, várias codificações. |
-| **Ferramentas utilizáveis** | Codificação direta e por ordem, cláusulas de canal; "no máximo um" por pares ou compacto; contador sequencial e totalizer para as cardinalidades; cláusulas redundantes (unitárias quando possível). |
-| **Armadilhas a evitar** | Escolher a codificação mais compacta sem medir (propagação mais lenta); recalcular em cada restrição uma informação que uma variável compartilhada poderia carregar. |
-| **Boas práticas** | Verificar uma codificação por força bruta em tamanhos pequenos; acrescentar as deduções fáceis como cláusulas unitárias; comparar as codificações em muitas instâncias. |
+| **Para lembrar** | Um mesmo problema pode ser codificado de várias formas corretas, com diferenças de velocidade de um fator de 10 ou mais. A codificação por ordem ("pelo menos v") serve para comparações; "no máximo um" e as contagens têm, cada um, várias codificações. Uma variável auxiliar pode nomear uma subfórmula (Tseitin); uma cláusula de estrutura regular pode ficar implícita (recuperada por cálculo); um propagador pode adiar a tradução em cláusulas até que uma explicação seja pedida (geração preguiçosa de cláusulas). |
+| **Ferramentas utilizáveis** | Codificação direta e por ordem, cláusulas de canal; "no máximo um" por pares ou compacto; contador sequencial e totalizer para as cardinalidades; cláusulas redundantes (unitárias quando possível); variáveis auxiliares definicionais; cláusulas implícitas (razão codificada como família + ancoragem); propagadores e geração preguiçosa de cláusulas. |
+| **Armadilhas a evitar** | Escolher a codificação mais compacta sem medir (propagação mais lenta); recalcular em cada restrição uma informação que uma variável compartilhada poderia carregar; armazenar uma cláusula de estrutura regular em vez de recalculá-la. |
+| **Boas práticas** | Verificar uma codificação por força bruta em tamanhos pequenos; acrescentar as deduções fáceis como cláusulas unitárias; comparar as codificações em muitas instâncias; reservar as cláusulas implícitas e os propagadores a famílias realmente regulares, medidas antes e depois. |
