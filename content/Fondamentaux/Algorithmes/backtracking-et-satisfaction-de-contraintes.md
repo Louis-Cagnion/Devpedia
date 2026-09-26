@@ -81,7 +81,7 @@ Si cette réduction vide complètement le domaine d'une variable (aucune valeur 
 
 > **Bonne pratique :** combiner les trois -- propagation pour éliminer les branches impossibles tôt, MRV pour deviner en premier sur la variable la plus susceptible d'échouer vite, backtracking pour explorer le reste -- plutôt que de choisir un seul mécanisme.
 
-> **Note :** pour explorer plusieurs branches en même temps sur plusieurs cœurs, voir [Paralléliser une recherche : découper en sous-problèmes indépendants](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes).
+> **Note :** pour aller plus loin, voir [Paralléliser une recherche : découper en sous-problèmes indépendants](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes) (explorer plusieurs branches en même temps sur plusieurs cœurs) et [Les solveurs SAT et l'algorithme CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) (apprendre de chaque échec au lieu de seulement revenir en arrière).
 
 ---
 

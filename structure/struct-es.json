@@ -86,6 +86,10 @@
             {
               "id": "recherche-parallele-par-sous-problemes",
               "label": "Paralelizar una búsqueda: dividir en subproblemas independientes (EPS)"
+            },
+            {
+              "id": "solveurs-sat-et-cdcl",
+              "label": "Los solucionadores SAT y el algoritmo CDCL"
             }
           ]
         },
