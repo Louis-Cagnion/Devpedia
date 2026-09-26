@@ -126,6 +126,48 @@ free(p);
 p = NULL; // boa prática: impede um uso acidental após a liberação
 ```
 
+## Muitos objetos pequenos: a alocação em arena
+
+Chamar `malloc()` para cada um de milhões de objetos pequenos custa caro: cada chamada leva tempo, e os objetos acabam espalhados na memória. Uma **arena** guarda todos esses objetos **em sequência em um único array grande**, que cresce dobrando com `realloc()`, e cada objeto é designado pela sua **posição** nesse array.
+
+```c
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int    *dados;                           // um único array grande para tudo
+    size_t  tamanho;                         // casas usadas
+    size_t  capacidade;                      // casas reservadas
+} t_arena;
+
+// Guarda n inteiros em sequência na arena; devolve a posição deles, ou (size_t)-1 se falhar
+size_t arena_adicionar(t_arena *a, const int *valores, size_t n)
+{
+    size_t capacidade = a->capacidade ? a->capacidade : 1024;
+    while (a->tamanho + n > capacidade)
+        capacidade *= 2;                     // dobrar: poucos realloc no total
+    if (capacidade != a->capacidade) {
+        int *novo = realloc(a->dados, capacidade * sizeof(int));
+        if (!novo)
+            return (size_t)-1;               // falha: a arena fica intacta
+        a->dados = novo;
+        a->capacidade = capacidade;
+    }
+    memcpy(a->dados + a->tamanho, valores, n * sizeof(int));
+    a->tamanho += n;
+    return a->tamanho - n;                   // uma posição, não um ponteiro
+}
+```
+
+| | Um `malloc()` por objeto | Arena |
+|---|---|---|
+| Número de alocações | Uma por objeto | Um punhado (o array dobra de tamanho) |
+| Localização na memória | Espalhada | Contígua: o processador lê os objetos vizinhos de uma vez |
+| Liberação | Um `free()` por objeto | Um único `free()` para tudo |
+| Remover um objeto | `free()` | Deixa um buraco: é preciso **compactar** por conta própria (deslocar tudo) |
+
+> **Armadilha:** guarda-se uma **posição** e não um ponteiro, porque `realloc()` pode mover o array inteiro para outro lugar da memória: um ponteiro para o local antigo ficaria inválido (ver [Redimensionar um bloco](#redimensionar-um-bloco-realloc)), enquanto uma posição continua certa.
+
 ## Os quatro bugs de memória clássicos
 
 | Bug | Causa | Consequência |
@@ -205,6 +247,39 @@ sizeof(int) * 10;  // tamanho necessário para 10 inteiros -> a passar para mall
 
 Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs), cuja compreensão é um pré-requisito para este capítulo.
 
+## Copiar e preencher bytes: `memcpy()` e `memset()`
+
+Essas duas funções de `<string.h>` trabalham com **bytes brutos**, sem conhecer o tipo dos dados:
+
+```c
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    int tab[5];
+    memset(tab, 0, sizeof tab);              // põe os 20 bytes em 0: 5 inteiros em 0
+    int copia[5];
+    memcpy(copia, tab, sizeof tab);          // copia os 20 bytes de tab para copia
+    memset(tab, 1, sizeof tab);              // armadilha: cada BYTE vale 1
+    printf("%d\n", tab[0]);                  // 16843009 (0x01010101), não 1
+
+    float f = 1.0f;
+    uint32_t bits;
+    memcpy(&bits, &f, sizeof bits);          // lê os 4 bytes do float como estão
+    printf("%08X\n", bits);                  // 3F800000: a codificação de 1.0 na memória
+    return 0;
+}
+```
+
+| Função | Papel | Armadilha |
+|---|---|---|
+| `memset(p, v, n)` | Põe cada um dos n bytes no valor `v` | `v` preenche **bytes**, não inteiros: só 0 (e -1) dão o mesmo valor em um `int` |
+| `memcpy(dst, src, n)` | Copia n bytes de `src` para `dst` | Áreas que se sobrepõem: comportamento indefinido, usar `memmove()` |
+
+O último uso, ler os bits de um `float` como um inteiro (*type punning*), tem uma versão tentadora mas **proibida**: `*(uint32_t *)&f`. Acessar um objeto por um ponteiro de outro tipo viola a regra de **aliasing estrito** do C (comportamento indefinido, que o otimizador pode explorar). `memcpy()` é a forma segura, e o compilador a substitui por um simples movimento de 4 bytes.
+
 ---
 
 ## 📋 Recapitulando
@@ -212,6 +287,6 @@ Veja também [Os ponteiros](/?c=langages-de-programmation&s=c&p=pointeurs), cuja
 | | |
 |---|---|
 | **Para lembrar** | O C deixa ao desenvolvedor a responsabilidade completa da memória dinâmica (heap): `malloc`/`calloc`/`realloc` para alocar, `free` para liberar; a stack (variáveis locais, VLA incluídos) é gerenciada automaticamente. |
-| **Ferramentas utilizáveis** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) para um array de tamanho dinâmico sem `free()`, Valgrind para detectar vazamentos e acessos inválidos. |
+| **Ferramentas utilizáveis** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) para um array de tamanho dinâmico sem `free()`, Valgrind para detectar vazamentos e acessos inválidos; `memcpy`/`memset` para copiar ou preencher bytes; uma arena para muitíssimos objetos pequenos. |
 | **Armadilhas a evitar** | Vazamento de memória (nunca um `free`), use-after-free, double free, estouro de buffer, estouro de pilha em um VLA grande demais (sem detecção possível, diferente de `malloc`), confundir `T (*)[n]` (VLA como parâmetro) com `T **`. |
 | **Boas práticas** | Sempre verificar se um `malloc`/`realloc` não retornou `NULL`; colocar um ponteiro em `NULL` logo após seu `free()`; preferir `fgets`/`strncpy`/`snprintf` às funções sem limite (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` para detectar um truncamento pelo valor de retorno. |

@@ -126,18 +126,61 @@ free(p);
 p = NULL; // bonne pratique : empêche une utilisation accidentelle après libération
 ```
 
-## The Three Classic Memory Bugs
+## Many Small Objects: Arena Allocation
+
+Calling `malloc()` for each of millions of small objects is costly: each call takes time, and the objects end up scattered in memory. An **arena** stores all these objects **one after another in a single large array**, grown by doubling with `realloc()`, and each object is designated by its **position** in that array.
+
+```c
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int    *data;                            // a single large array for everything
+    size_t  size;                            // cells used
+    size_t  capacity;                        // cells reserved
+} t_arena;
+
+// Stores n integers one after another in the arena; returns their position, or (size_t)-1
+size_t arena_add(t_arena *a, const int *values, size_t n)
+{
+    size_t capacity = a->capacity ? a->capacity : 1024;
+    while (a->size + n > capacity)
+        capacity *= 2;                       // doubling: few reallocs overall
+    if (capacity != a->capacity) {
+        int *grown = realloc(a->data, capacity * sizeof(int));
+        if (!grown)
+            return (size_t)-1;               // failure: the arena stays intact
+        a->data = grown;
+        a->capacity = capacity;
+    }
+    memcpy(a->data + a->size, values, n * sizeof(int));
+    a->size += n;
+    return a->size - n;                      // a position, not a pointer
+}
+```
+
+| | One `malloc()` per object | Arena |
+|---|---|---|
+| Number of allocations | One per object | A handful (the array doubles in size) |
+| Location in memory | Scattered | Contiguous: the processor reads neighboring objects in one go |
+| Freeing | One `free()` per object | A single `free()` for everything |
+| Removing an object | `free()` | Leaves a hole: you must **compact** yourself (shift everything) |
+
+> **Pitfall:** keep a **position**, not a pointer, because `realloc()` can move the whole array elsewhere in memory: a pointer to the old location would become invalid (see [Resizing a block](#resizing-a-block-realloc)), whereas a position stays correct.
+
+## The Four Classic Memory Bugs
 
 | Bug | Cause | Consequence |
 |---|---|---|
 | **Memory leak** | A block of *memory* `malloc` is never `free()` | The amount of memory used by the program increases but never decreases |
 | **Use-after-free** | The program dereferences a pointer after it has been "`free()`" | Undefined behavior: corrupted data, crash, or worse, it silently "works" |
 | **Double free** | `free()` called twice on the same pointer | Memory manager corruption, often resulting in a delayed crash that is difficult to trace |
+| **Buffer overflow** | Writing beyond the size actually allocated for a buffer | Corruption of adjacent memory, and an open door to arbitrary code execution (see below) |
 
 ```c
 int *p = malloc(sizeof(int));
 free(p);
-free(p); // double free : comportement indéfini
+free(p); // double free: undefined behavior
 ```
 
 > **Note:** These bugs do not always cause an immediate, visible crash, which is what makes them difficult to detect. A tool like [**Valgrind**](https://valgrind.org) (`valgrind ./my_program`) runs the program and reports memory leaks and invalid accesses in detail, along with the line of code responsible.
@@ -204,6 +247,39 @@ sizeof(int) * 10;  // size needed for 10 integers -> pass this to malloc()
 
 See also [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs); understanding that chapter is a prerequisite for this one.
 
+## Copying and Filling Bytes: `memcpy()` and `memset()`
+
+These two functions from `<string.h>` work on **raw bytes**, without knowing the type of the data:
+
+```c
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    int arr[5];
+    memset(arr, 0, sizeof arr);              // sets the 20 bytes to 0: 5 integers at 0
+    int copy[5];
+    memcpy(copy, arr, sizeof arr);           // copies the 20 bytes of arr into copy
+    memset(arr, 1, sizeof arr);              // pitfall: each BYTE is 1
+    printf("%d\n", arr[0]);                  // 16843009 (0x01010101), not 1
+
+    float f = 1.0f;
+    uint32_t bits;
+    memcpy(&bits, &f, sizeof bits);          // reads the 4 bytes of the float as they are
+    printf("%08X\n", bits);                  // 3F800000: how 1.0 is encoded in memory
+    return 0;
+}
+```
+
+| Function | Role | Pitfall |
+|---|---|---|
+| `memset(p, v, n)` | Sets each of the n bytes to the value `v` | `v` fills **bytes**, not integers: only 0 (and -1) give the same value in an `int` |
+| `memcpy(dst, src, n)` | Copies n bytes from `src` to `dst` | Overlapping areas: undefined behavior, use `memmove()` |
+
+The last use, reading the bits of a `float` as an integer (*type punning*), has a tempting but **forbidden** version: `*(uint32_t *)&f`. Accessing an object through a pointer of another type breaks C's **strict aliasing** rule (undefined behavior, which the optimizer can exploit). `memcpy()` is the safe way, and the compiler replaces it with a simple 4-byte move.
+
 ---
 
 ## 📋 Summary
@@ -211,6 +287,6 @@ See also [Pointers](/?c=langages-de-programmation&s=c&p=pointeurs); understandin
 | | |
 |---|---|
 | **Key takeaways** | C leaves the developer with full responsibility for dynamic memory (the heap): `malloc`/`calloc`/`realloc` to allocate, `free` to release; the stack (local variables, VLAs included) is managed automatically. |
-| **Tools you can use** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLAs (`int tab[n]`) for a dynamically-sized array with no `free()`, Valgrind to detect leaks and invalid accesses. |
+| **Tools you can use** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLAs (`int tab[n]`) for a dynamically-sized array with no `free()`, Valgrind to detect leaks and invalid accesses; `memcpy`/`memset` to copy or fill bytes; an arena for very many small objects. |
 | **Pitfalls to avoid** | Memory leak (never calling `free`), use-after-free, double free, buffer overflow, stack overflow on an oversized VLA (no detection possible, unlike `malloc`), mixing up `T (*)[n]` (VLA parameter) with `T **`. |
 | **Best practices** | Always check that a `malloc`/`realloc` didn't return `NULL`; set a pointer to `NULL` right after its `free()`; prefer `fgets`/`strncpy`/`snprintf` over unbounded functions (`gets`/`strcpy`/`sprintf`); `strlcpy`/`strlcat` to detect truncation via their return value. |
