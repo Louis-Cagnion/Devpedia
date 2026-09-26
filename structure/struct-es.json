@@ -94,6 +94,10 @@
             {
               "id": "encodages-sat",
               "label": "Codificar un problema en SAT"
+            },
+            {
+              "id": "file-de-priorite-et-tas-binaire",
+              "label": "La cola de prioridad y el montículo binario"
             }
           ]
         },

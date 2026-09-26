@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 13 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 14 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -35,6 +35,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/mesure-du-temps` (section `clock_gettime(CLOCK_MONOTONIC)`).
 - `Langages/C/compilation` (section `-march=native` et `-pthread`).
 - `Langages/C/memoire` (sections arène et `memcpy`/`memset`, et en anglais le tableau des quatre bugs mémoire).
+- `Fondamentaux/Algorithmes/file-de-priorite-et-tas-binaire` (nouveau).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -53,10 +54,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 13. C bas niveau et parallélisme (rush01, `research/cdcl.c`, `research/lines2`)
-0 résultat pour « file de priorité » dans `content/`. Rubrique pressentie : Fondamentaux > Algorithmes.
-- **Tas binaire indexé** (file de priorité avec table des positions, pour remonter un élément dont la priorité augmente).
 
 ## 14. Mesurer une performance : profileurs natifs et pièges de benchmark (rush01, `research/bench.py`, `research/ab.py`)
 Complète `mesurer-avant-d-optimiser.md` (profilage par phases, bruit et mesures multiples déjà couverts) : 0 résultat pour « gprof », « perf_event », « bande passante mémoire », « memory-bound », « portfolio ». Rubrique pressentie : Qualité, performance et outils > Performance.

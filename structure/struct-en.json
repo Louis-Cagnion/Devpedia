@@ -94,6 +94,10 @@
             {
               "id": "encodages-sat",
               "label": "Encoding a Problem into SAT"
+            },
+            {
+              "id": "file-de-priorite-et-tas-binaire",
+              "label": "The Priority Queue and the Binary Heap"
             }
           ]
         },

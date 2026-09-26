@@ -94,6 +94,10 @@
             {
               "id": "encodages-sat",
               "label": "Codificar um problema em SAT"
+            },
+            {
+              "id": "file-de-priorite-et-tas-binaire",
+              "label": "A fila de prioridade e o heap binário"
             }
           ]
         },
