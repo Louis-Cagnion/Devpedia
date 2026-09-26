@@ -302,6 +302,57 @@
           ]
         },
         {
+          "id": "cpp",
+          "label": "C++",
+          "folder": "C++",
+          "chapters": [
+            {
+              "id": "references",
+              "label": "As referências"
+            },
+            {
+              "id": "espaces-de-noms",
+              "label": "Os espaços de nomes (namespaces)"
+            },
+            {
+              "id": "classes-et-objets",
+              "label": "As classes e objetos"
+            },
+            {
+              "id": "heritage-et-polymorphisme",
+              "label": "Herança e polimorfismo"
+            },
+            {
+              "id": "surcharge-d-operateurs",
+              "label": "A sobrecarga de operadores"
+            },
+            {
+              "id": "exceptions",
+              "label": "As exceções"
+            },
+            {
+              "id": "gestion-memoire-raii",
+              "label": "RAII e os ponteiros inteligentes"
+            },
+            {
+              "id": "stl-conteneurs",
+              "label": "A STL: os contêineres"
+            },
+            {
+              "id": "stl-algorithmes-et-iterateurs",
+              "label": "A STL: iteradores, algoritmos e lambdas"
+            },
+            {
+              "id": "templates",
+              "label": "Os templates (programação genérica)"
+            },
+            {
+              "id": "cast-cpp",
+              "label": "Os casts em C++"
+            }
+          ]
+        },
+        {
           "id": "php",
           "label": "PHP",
           "folder": "PHP",
@@ -422,10 +473,6 @@
               "label": "As dataclasses"
             },
             {
-              "id": "jupyter-notebooks",
-              "label": "Os notebooks Jupyter"
-            },
-            {
               "id": "modules-et-environnements",
               "label": "Módulos, pip e ambientes virtuais"
             },
@@ -438,10 +485,6 @@
               "label": "Manipular arquivos e pastas com `pathlib`"
             },
             {
-              "id": "pandas",
-              "label": "pandas: manipulação de dados tabulares"
-            },
-            {
               "id": "dates-et-heures",
               "label": "O módulo `datetime`"
             },
@@ -452,10 +495,97 @@
             {
               "id": "regex-en-python",
               "label": "Regex em Python: o módulo `re`"
+            }
+          ]
+        },
+        {
+          "id": "javascript",
+          "label": "JavaScript",
+          "folder": "JavaScript",
+          "chapters": [
+            {
+              "id": "conditions",
+              "label": "As condições"
             },
             {
-              "id": "deep-learning-pytorch",
-              "label": "Deep learning com PyTorch"
+              "id": "boucles",
+              "label": "Os laços"
+            },
+            {
+              "id": "fonctions",
+              "label": "As funções"
+            },
+            {
+              "id": "strings",
+              "label": "As strings"
+            },
+            {
+              "id": "tableaux",
+              "label": "Os arrays"
+            },
+            {
+              "id": "nombres",
+              "label": "Os números"
+            },
+            {
+              "id": "objets",
+              "label": "Os objetos"
+            },
+            {
+              "id": "poo",
+              "label": "As classes e a programação orientada a objetos"
+            },
+            {
+              "id": "regex",
+              "label": "As regex"
+            },
+            {
+              "id": "gestion-des-erreurs",
+              "label": "O tratamento de erros"
+            },
+            {
+              "id": "html-elements",
+              "label": "Os HTMLElements"
+            },
+            {
+              "id": "dom-et-evenements",
+              "label": "O DOM e o gerenciamento de eventos"
+            },
+            {
+              "id": "asynchrone",
+              "label": "A programação assíncrona (callbacks, Promises, async/await)"
+            },
+            {
+              "id": "ssr-vs-csr",
+              "label": "SSR vs CSR: onde o HTML é construído?"
+            },
+            {
+              "id": "web-speech-api",
+              "label": "A Web Speech API: reconhecimento e síntese de voz no navegador"
+            },
+            {
+              "id": "observateurs-et-limitation-de-frequence",
+              "label": "Observadores do navegador e limitação de frequência"
+            },
+            {
+              "id": "intercepter-un-setter-de-propriete",
+              "label": "Interceptar um setter de propriedade nativa: `Object.defineProperty`"
+            },
+            {
+              "id": "google-maps-javascript-api",
+              "label": "A API JavaScript do Google Maps"
+            },
+            {
+              "id": "canvas-2d-et-animations",
+              "label": "Canvas 2D e animações"
+            },
+            {
+              "id": "streams",
+              "label": "Streams: processar um fluxo de dados sem carregá-lo todo na memória"
+            },
+            {
+              "id": "apache-echarts",
+              "label": "A biblioteca de gráficos Apache ECharts"
             }
           ]
         },
@@ -741,152 +871,6 @@
           "label": "XML",
           "folder": "XML",
           "chapters": []
-        },
-        {
-          "id": "cpp",
-          "label": "C++",
-          "folder": "C++",
-          "chapters": [
-            {
-              "id": "references",
-              "label": "As referências"
-            },
-            {
-              "id": "espaces-de-noms",
-              "label": "Os espaços de nomes (namespaces)"
-            },
-            {
-              "id": "classes-et-objets",
-              "label": "As classes e objetos"
-            },
-            {
-              "id": "heritage-et-polymorphisme",
-              "label": "Herança e polimorfismo"
-            },
-            {
-              "id": "surcharge-d-operateurs",
-              "label": "A sobrecarga de operadores"
-            },
-            {
-              "id": "exceptions",
-              "label": "As exceções"
-            },
-            {
-              "id": "gestion-memoire-raii",
-              "label": "RAII e os ponteiros inteligentes"
-            },
-            {
-              "id": "stl-conteneurs",
-              "label": "A STL: os contêineres"
-            },
-            {
-              "id": "stl-algorithmes-et-iterateurs",
-              "label": "A STL: iteradores, algoritmos e lambdas"
-            },
-            {
-              "id": "templates",
-              "label": "Os templates (programação genérica)"
-            },
-            {
-              "id": "cast-cpp",
-              "label": "Os casts em C++"
-            }
-          ]
-        },
-        {
-          "id": "javascript",
-          "label": "JavaScript",
-          "folder": "JavaScript",
-          "chapters": [
-            {
-              "id": "conditions",
-              "label": "As condições"
-            },
-            {
-              "id": "boucles",
-              "label": "Os laços"
-            },
-            {
-              "id": "fonctions",
-              "label": "As funções"
-            },
-            {
-              "id": "strings",
-              "label": "As strings"
-            },
-            {
-              "id": "tableaux",
-              "label": "Os arrays"
-            },
-            {
-              "id": "nombres",
-              "label": "Os números"
-            },
-            {
-              "id": "objets",
-              "label": "Os objetos"
-            },
-            {
-              "id": "poo",
-              "label": "As classes e a programação orientada a objetos"
-            },
-            {
-              "id": "regex",
-              "label": "As regex"
-            },
-            {
-              "id": "HTMLElements",
-              "label": "Os elementos HTML"
-            },
-            {
-              "id": "gestion-des-erreurs",
-              "label": "O tratamento de erros"
-            },
-            {
-              "id": "html-elements",
-              "label": "Os HTMLElements"
-            },
-            {
-              "id": "dom-et-evenements",
-              "label": "O DOM e o gerenciamento de eventos"
-            },
-            {
-              "id": "asynchrone",
-              "label": "A programação assíncrona (callbacks, Promises, async/await)"
-            },
-            {
-              "id": "ssr-vs-csr",
-              "label": "SSR vs CSR: onde o HTML é construído?"
-            },
-            {
-              "id": "web-speech-api",
-              "label": "A Web Speech API: reconhecimento e síntese de voz no navegador"
-            },
-            {
-              "id": "observateurs-et-limitation-de-frequence",
-              "label": "Observadores do navegador e limitação de frequência"
-            },
-            {
-              "id": "intercepter-un-setter-de-propriete",
-              "label": "Interceptar um setter de propriedade nativa: `Object.defineProperty`"
-            },
-            {
-              "id": "google-maps-javascript-api",
-              "label": "A API JavaScript do Google Maps"
-            },
-            {
-              "id": "canvas-2d-et-animations",
-              "label": "Canvas 2D e animações"
-            },
-            {
-              "id": "streams",
-              "label": "Streams: processar um fluxo de dados sem carregá-lo todo na memória"
-            },
-            {
-              "id": "apache-echarts",
-              "label": "A biblioteca de gráficos Apache ECharts"
-            }
-          ]
         }
       ]
     },
@@ -1545,12 +1529,12 @@
               "label": "Gestão de segredos"
             },
             {
-              "id": "cryptographie-appliquee",
-              "label": "Criptografia aplicada para desenvolvedores"
-            },
-            {
               "id": "secrets-oublies-en-production",
               "label": "Segredos esquecidos em produção"
+            },
+            {
+              "id": "cryptographie-appliquee",
+              "label": "Criptografia aplicada para desenvolvedores"
             },
             {
               "id": "securite-des-webhooks",
@@ -1565,24 +1549,8 @@
               "label": "Segurança de APIs web"
             },
             {
-              "id": "waf-pare-feu-applicatif",
-              "label": "O WAF: filtrar o tráfego antes que ele alcance a aplicação"
-            },
-            {
-              "id": "hashicorp-vault",
-              "label": "HashiCorp Vault: além do arquivo .env"
-            },
-            {
               "id": "injections-au-dela-du-sql",
               "label": "As injeções além do SQL"
-            },
-            {
-              "id": "tests-et-audit-de-securite",
-              "label": "Testes e auditoria de segurança"
-            },
-            {
-              "id": "owasp-top-10",
-              "label": "O OWASP Top 10: a referência padrão da indústria"
             },
             {
               "id": "xss-en-detail",
@@ -1601,16 +1569,32 @@
               "label": "Falhas do lado do navegador"
             },
             {
-              "id": "fingerprinting-navigateur-et-appareil",
-              "label": "O fingerprinting: reconhecer um aparelho sem armazenar nada nele"
-            },
-            {
               "id": "logique-metier-et-automatisation",
               "label": "Lógica de negócio e contornos automatizados"
             },
             {
               "id": "surcharge-et-deni-de-service-applicatif",
               "label": "Sobrecarga e negação de serviço em nível de aplicação"
+            },
+            {
+              "id": "waf-pare-feu-applicatif",
+              "label": "O WAF: filtrar o tráfego antes que ele alcance a aplicação"
+            },
+            {
+              "id": "hashicorp-vault",
+              "label": "HashiCorp Vault: além do arquivo .env"
+            },
+            {
+              "id": "tests-et-audit-de-securite",
+              "label": "Testes e auditoria de segurança"
+            },
+            {
+              "id": "owasp-top-10",
+              "label": "O OWASP Top 10: a referência padrão da indústria"
+            },
+            {
+              "id": "fingerprinting-navigateur-et-appareil",
+              "label": "O fingerprinting: reconhecer um aparelho sem armazenar nada nele"
             }
           ]
         },

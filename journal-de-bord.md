@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Structures traduites alignées sur le français (2026-09-26)
+
+Complétées à la main (cf. entrée sur `buildStruct` plus bas), les structures en/es/br avaient dérivé : ordre différent dans Cybersécurité (3 langues), Mathématiques (en) et les sous-sections de Langages (en, br), et en portugais 4 chapitres restés aux emplacements d'avant la fusion des catégories du 22/08 (`Langages/Python/{pandas,jupyter-notebooks,deep-learning-pytorch}`, `Langages/JavaScript/HTMLElements`), versions plus anciennes que les canoniques et affichées en double. Contrôle à refaire après toute retouche manuelle : pour chaque catégorie et sous-section, la liste des identifiants traduits doit être égale à celle de `struct.json`, et chaque fichier de `content-xx/` doit avoir son équivalent au même chemin dans `content/`.
+
 ## Rédaction par 3 agents en parallèle : ce que la relecture a dû corriger (2026-09-26)
 
 Points 19 à 21 confiés à 3 agents Sonnet (un worktree chacun, sur demande de Louis), fusionnés par cherry-pick après relecture. Écarts trouvés, à vérifier d'office sur tout travail délégué : sorties annoncées « réelles » sans le code qui les produit ; une sortie de script française sans accents recopiée telle quelle dans les 4 langues, alors que la convention est de traduire identifiants et chaînes affichées puis de réexécuter chaque version ; un chiffre mal lu dans le récap source (« 2 à 7 littéraux » pour « 2 à 7 clauses unitaires ») ; une définition fausse (« variables décidables »). Liens : `langages-de-programmation` n'est qu'un ancien identifiant redirigé par `js/legacy-category-redirects.js` (le validateur l'accepte) ; un nouveau lien vise `langages`. Le plan zéro-connaissance exclut les sous-agents : cette session est une dérogation explicite de Louis, pas un changement de règle.
