@@ -34,6 +34,8 @@ Diferencia clave con un enrutador JS (Express): cada ruta apunta a una **ruta de
 - `$_SERVER['REQUEST_URI']` contiene la ruta **y** la query string pegadas (`/contacto?ref=pub`). `parse_url(..., PHP_URL_PATH)` extrae únicamente la ruta, descartando la query string.
 - `trim(..., '/')` retira las `/` de inicio/final, para que `'contacto'` corresponda a la clave del array `$routes` (sin barra inicial).
 
+> **Trampa:** con una URI malformada, por ejemplo `//ruta` (doble barra al principio), `parse_url(..., PHP_URL_PATH)` devuelve `null` en lugar de una cadena. `trim(null, '/')` provoca entonces un aviso `Deprecated` desde PHP 8.1 (comprobado con PHP 8.3), que se convertirá en un error en una versión futura. Solución: convertir explícitamente, `trim((string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/')`, que da una cadena vacía.
+
 ## El modelo "filesystem = URLs"
 
 En un servidor PHP clásico (sin configuración particular), **todo archivo físicamente presente bajo la raíz web es accesible vía su ruta en URL**: un `.php` se ejecuta ahí, un archivo estático se sirve tal cual. Es lo contrario de Express/[Node](https://nodejs.org), donde una ruta solo existe si se declara explícitamente: en PHP "a la antigua", **todo es accesible por defecto, salvo lo que se bloquee explícitamente**.
@@ -76,6 +78,8 @@ return true;
 > **Nota:** el orden de los bloques importa. Si la prueba `is_file()` se colocara **antes** de los bloqueos, una petición sobre un archivo sensible pero físicamente presente (ej. `/data/config.php`) pasaría esta prueba con `true` y devolvería `false`, dejando que el servidor integrado **ejecute** ese archivo directamente, sin pasar por las protecciones.
 
 > **Nota (seguridad):** `$uri` viene directamente de la petición (`$_SERVER['REQUEST_URI']`): sin normalización, un valor que contenga subidas de directorio (`/../../etc/passwd`) podría hacer que `is_file(__DIR__ . $uri)` escape de la raíz web. En la práctica, hay que resolver la ruta real (ej. `realpath()`) y comprobar que permanece dentro de `__DIR__` antes de servirla, en lugar de confiar en `$uri` tal cual.
+
+> **Nota (seguridad):** en Windows, un punto o un espacio al final de un nombre de archivo se ignora (`secrets.php.` y `secrets.php` designan el mismo archivo, ver la [documentación de Microsoft](https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file)). Un control que compara la cadena en bruto (lista de extensiones prohibidas, nombre bloqueado) se elude así con un simple punto añadido al final de la URL: es la debilidad [CWE-42](https://cwe.mitre.org/data/definitions/42.html). Comparar siempre **después** de resolver la ruta real (`realpath()`), o tras un `rtrim($ruta, '. ')` explícito.
 
 ## Redirigir y detener la ejecución
 
