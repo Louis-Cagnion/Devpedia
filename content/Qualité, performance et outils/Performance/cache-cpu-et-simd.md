@@ -63,6 +63,19 @@ La première optimisation réduit le travail mesuré en instructions, mais ce tr
 
 > Ceci rejoint [Comparer sur des compteurs de travail, pas seulement sur le temps](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparer-sur-des-compteurs-de-travail-pas-seulement-sur-le-temps) : le compteur pertinent pour prédire un gain de performance mémoire n'est pas le nombre d'instructions, mais le nombre d'accès mémoire hors cache.
 
+## Tableau de structures vs structure de tableaux (AoS/SoA)
+
+Quand un algorithme lit et écrit ensemble deux champs d'une même donnée à chaque étape (par exemple la raison et le niveau de décision d'une variable dans un solveur SAT), les ranger dans deux tableaux séparés (**structure de tableaux**, *Structure of Arrays*, SoA) coûte deux lignes de cache par accès : une par tableau. Les ranger côte à côte dans une seule structure, elle-même rangée dans un seul tableau (**tableau de structures**, *Array of Structures*, AoS), les fait tenir dans une seule ligne de cache si la structure est assez petite.
+
+| Disposition | Ce qui est proche en mémoire | Lignes de cache touchées par accès |
+|---|---|---|
+| Structure de tableaux (SoA) | Tous les `raison[i]` ensemble, tous les `niveau[i]` ensemble, séparément | 2 |
+| Tableau de structures (AoS) | `raison[i]` et `niveau[i]` côte à côte pour chaque i | 1 |
+
+Sur ce solveur, regrouper la raison et le niveau d'une variable dans une seule structure a donné −7 %. La règle n'est pas « AoS est toujours meilleur que SoA » : la structure de tableaux reste préférable dès qu'un algorithme parcourt un seul champ à la fois sur beaucoup d'éléments (cas typique du calcul vectoriel vu plus haut dans ce chapitre). La règle est « ranger ensemble ce qui est lu et écrit ensemble ».
+
+> Voir aussi [AoS and SoA (Wikipédia, en anglais)](https://en.wikipedia.org/wiki/AoS_and_SoA) et [L'organisation des données en mémoire](/?c=representation-des-donnees&p=organisation-en-memoire) pour l'alignement et le padding d'une structure.
+
 ---
 
 ## 📋 Récapitulatif
@@ -72,4 +85,4 @@ La première optimisation réduit le travail mesuré en instructions, mais ce tr
 | **À retenir** | Un accès RAM coûte ~50× plus qu'un accès cache L1. Des données contiguës et de type uniforme (tableau typé) profitent du cache et du SIMD ; des données dispersées (liste chaînée, objets épars) rechargent une ligne de cache à chaque accès. Le nombre d'accès mémoire aléatoires prédit le temps bien mieux que le nombre d'instructions. |
 | **Outils utilisables** | Un tableau typé contigu (NumPy `ndarray`) plutôt qu'une collection d'objets épars pour du calcul intensif. |
 | **Pièges à éviter** | Un tableau NumPy en `dtype=object` : reste contigu en apparence, mais perd tout le bénéfice du cache/SIMD (pointeurs vers des objets dispersés). |
-| **Bonnes pratiques** | Préférer un tableau typé et contigu dès que le volume de calcul justifie l'effort ; parcourir les données dans l'ordre de leur disposition mémoire. |
+| **Bonnes pratiques** | Préférer un tableau typé et contigu dès que le volume de calcul justifie l'effort ; parcourir les données dans l'ordre de leur disposition mémoire ; ranger ensemble (AoS) les champs lus et écrits ensemble, séparer (SoA) ceux parcourus un par un sur beaucoup d'éléments. |

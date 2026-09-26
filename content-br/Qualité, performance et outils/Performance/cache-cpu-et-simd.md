@@ -63,6 +63,19 @@ A primeira otimização reduz o trabalho medido em instruções, mas esse trabal
 
 > Isso se conecta com [Comparar em contadores de trabalho, não só no tempo](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparar-em-contadores-de-trabalho-nao-so-no-tempo): o contador que prevê um ganho em um programa limitado pela memória não é o número de instruções, mas o número de acessos à memória fora do cache.
 
+## Array de estruturas vs estrutura de arrays (AoS/SoA)
+
+Quando um algoritmo lê e escreve juntos dois campos de um mesmo dado a cada etapa (por exemplo a razão e o nível de decisão de uma variável em um solucionador SAT), guardá-los em dois arrays separados (**estrutura de arrays**, *Structure of Arrays*, SoA) custa duas linhas de cache por acesso: uma por array. Guardá-los lado a lado em uma única estrutura, guardada por sua vez em um único array (**array de estruturas**, *Array of Structures*, AoS), faz com que caibam em uma única linha de cache se a estrutura for pequena o suficiente.
+
+| Disposição | O que fica próximo na memória | Linhas de cache tocadas por acesso |
+|---|---|---|
+| Estrutura de arrays (SoA) | Todos os `razao[i]` juntos, todos os `nivel[i]` juntos, separadamente | 2 |
+| Array de estruturas (AoS) | `razao[i]` e `nivel[i]` lado a lado para cada i | 1 |
+
+Nesse solucionador, agrupar a razão e o nível de uma variável em uma única estrutura deu −7%. A regra não é «AoS é sempre melhor que SoA»: a estrutura de arrays continua preferível sempre que um algoritmo percorre um único campo de cada vez em muitos elementos (o caso típico do cálculo vetorial visto antes neste capítulo). A regra é «guardar junto o que é lido e escrito junto».
+
+> Ver também [AoS and SoA (Wikipédia, em inglês)](https://en.wikipedia.org/wiki/AoS_and_SoA) e [A organização dos dados em memória](/?c=representation-des-donnees&p=organisation-en-memoire) para o alinhamento e o padding de uma estrutura.
+
 ---
 
 ## 📋 Recapitulando
@@ -72,4 +85,4 @@ A primeira otimização reduz o trabalho medido em instruções, mas esse trabal
 | **Para lembrar** | Um acesso à RAM custa ~50× mais do que um acesso ao cache L1. Dados contíguos e de tipo uniforme (array tipado) se beneficiam do cache e do SIMD; dados dispersos (lista encadeada, objetos espalhados) recarregam uma linha de cache a cada acesso. O número de acessos aleatórios à memória prevê o tempo bem melhor do que o número de instruções. |
 | **Ferramentas utilizáveis** | Um array tipado e contíguo (NumPy `ndarray`) em vez de uma coleção de objetos espalhados para cálculo intensivo. |
 | **Armadilhas a evitar** | Um array NumPy em `dtype=object`: continua contíguo em aparência, mas perde todo o benefício do cache/SIMD (ponteiros para objetos dispersos). |
-| **Boas práticas** | Preferir um array tipado e contíguo assim que o volume de cálculo justificar o esforço; percorrer os dados na ordem de sua disposição em memória. |
+| **Boas práticas** | Preferir um array tipado e contíguo assim que o volume de cálculo justificar o esforço; percorrer os dados na ordem de sua disposição em memória; guardar junto (AoS) os campos lidos e escritos juntos, separar (SoA) os percorridos um a um em muitos elementos. |

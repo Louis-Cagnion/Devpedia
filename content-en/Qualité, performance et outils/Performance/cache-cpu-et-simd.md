@@ -63,6 +63,19 @@ The first optimization reduces the work measured in instructions, but that work 
 
 > This connects to [Comparing on Work Counters, Not Only on Time](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparing-on-work-counters-not-only-on-time): the counter that predicts a memory-bound speedup is not the instruction count, but the number of out-of-cache memory accesses.
 
+## Array of Structures vs Structure of Arrays (AoS/SoA)
+
+When an algorithm reads and writes two fields of the same piece of data together at every step (for example the reason and decision level of a variable in a SAT solver), storing them in two separate arrays (**Structure of Arrays**, SoA) costs two cache lines per access: one per array. Storing them side by side in a single structure, itself stored in a single array (**Array of Structures**, AoS), makes them fit in a single cache line if the structure is small enough.
+
+| Layout | What sits close in memory | Cache lines touched per access |
+|---|---|---|
+| Structure of Arrays (SoA) | All `reason[i]` together, all `level[i]` together, separately | 2 |
+| Array of Structures (AoS) | `reason[i]` and `level[i]` side by side for each i | 1 |
+
+On this solver, grouping a variable's reason and level into a single structure gave -7%. The rule isn't "AoS is always better than SoA": Structure of Arrays stays preferable whenever an algorithm walks a single field at a time across many elements (the typical vectorized-computation case seen earlier in this chapter). The rule is "store together what is read and written together".
+
+> See also [AoS and SoA (Wikipedia)](https://en.wikipedia.org/wiki/AoS_and_SoA) and [Memory Layout](/?c=representation-des-donnees&p=organisation-en-memoire) for a structure's alignment and padding.
+
 ---
 
 ## 📋 Summary
@@ -72,4 +85,4 @@ The first optimization reduces the work measured in instructions, but that work 
 | **Key takeaways** | A RAM access costs ~50× more than an L1 cache access. Contiguous, uniformly typed data (a typed array) benefits from cache and SIMD; scattered data (a linked list, spread-out objects) reloads a cache line on every access. The number of random memory accesses predicts time far better than the number of instructions. |
 | **Tools you can use** | A contiguous typed array (NumPy `ndarray`) rather than a collection of scattered objects for intensive computation. |
 | **Pitfalls to avoid** | A NumPy array in `dtype=object`: stays contiguous in appearance, but loses all the cache/SIMD benefit (pointers to scattered objects). |
-| **Best practices** | Prefer a typed, contiguous array as soon as the volume of computation justifies the effort; traverse data in the order it's laid out in memory. |
+| **Best practices** | Prefer a typed, contiguous array as soon as the volume of computation justifies the effort; traverse data in the order it's laid out in memory; store together (AoS) fields read and written together, separate (SoA) fields walked one at a time across many elements. |
