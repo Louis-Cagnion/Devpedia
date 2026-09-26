@@ -1553,6 +1553,10 @@
               "label": "Segredos esquecidos em produção"
             },
             {
+              "id": "securite-des-webhooks",
+              "label": "Segurança dos webhooks"
+            },
+            {
               "id": "securite-des-dependances",
               "label": "Segurança das dependências e da cadeia de suprimentos"
             },

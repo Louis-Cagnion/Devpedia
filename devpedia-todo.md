@@ -44,6 +44,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Fondamentaux/Algorithmes/problemes-np-complets` (nouveau).
 - `Tests/property-based-testing` (section test différentiel).
 - `Sécurité/Cybersécurité/ssrf-en-detail` (traduit en en/es/br ; bloc d'exemple français réaccentué).
+- `Sécurité/Cybersécurité/securite-des-webhooks` (traduit en en/es/br ; version française réaccentuée, repli `?? ''` sur l'en-tête de signature).
 - `Langages/C/processus` (section processus orphelins, récapitulatif corrigé ; en anglais, titre de la section `wait()` corrigé).
 - `Qualité, performance et outils/Performance/cache-cpu-et-simd` (sections accès aléatoires, AoS/SoA, filtre par bitmap, écritures inutiles, TLB et pages géantes).
 
@@ -66,5 +67,5 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
 
 ## 24. Traduire les 4 chapitres de Sécurité > Cybersécurité restés en français
-`failles-de-navigateur`, `securite-des-webhooks` et `upload-de-fichiers` (ajoutés le 16/09) n'existent qu'en français et ne sont pas déclarés dans `structure/struct-en.json`, `struct-es.json` et `struct-br.json` : les traduire en en/es/br, puis les déclarer (à la main, sans `buildStruct`, cf. journal de bord).
+`failles-de-navigateur` et `upload-de-fichiers` (ajoutés le 16/09) n'existent qu'en français et ne sont pas déclarés dans `structure/struct-en.json`, `struct-es.json` et `struct-br.json` : les traduire en en/es/br, puis les déclarer (à la main, sans `buildStruct`, cf. journal de bord).
 - Aligner aussi l'ordre des chapitres de Cybersécurité des 3 structures traduites sur celui de `struct.json`, qui diffère aujourd'hui (à confirmer avec Louis : change l'ordre de navigation des versions traduites).
