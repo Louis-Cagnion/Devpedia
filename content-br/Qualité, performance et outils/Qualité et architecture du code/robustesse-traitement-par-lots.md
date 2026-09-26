@@ -129,6 +129,28 @@ def contar(pagina):
 
 > **Boa prática:** contar separadamente os elementos vazios e as falhas no relatório final, e só disparar um alerta bloqueante para o que realmente exige (veja [controle bloqueante ou alerta não bloqueante](/?c=infrastructure-devops&s=ci-cd&p=yaml-pipelines-azure) em um pipeline).
 
+## Validar a substituição antes de destruir o antigo
+
+Um processamento que **substitui** um estado existente (reconstruir um índice de busca, regenerar um arquivo de cache) deve validar o dado novo **antes** de mexer no antigo. Na ordem inversa, uma substituição que falha troca um estado válido por um estado vazio ou quebrado, muitas vezes com uma mensagem de sucesso enganosa.
+
+| Ordem | Se a leitura falhar |
+|---|---|
+| Esvaziar o índice e depois preenchê-lo | O índice fica vazio: as buscas não encontram mais nada, e nada sinaliza a falha |
+| Ler e validar, depois substituir | O índice antigo continua no lugar, e a falha é sinalizada |
+
+```python
+def substituir_indice(indice, ler):
+    """Substitui o conteúdo de indice por ler(); não destrói nada se a leitura falhar."""
+    novo = ler()                      # None: falha de leitura; []: resultado vazio legítimo
+    if novo is None:
+        return "falha: índice mantido"
+    indice.clear()                    # destruição DEPOIS da validação, nunca antes
+    indice.extend(novo)
+    return f"{len(novo)} documento(s)"
+```
+
+O teste `novo is None` só funciona se a leitura distinguir bem uma falha de um resultado vazio (ver [a seção anterior](#distinguir-resultado-vazio-e-falha-de-leitura)). Para um arquivo, a mesma ideia dá a escrita atômica vista acima: escrever a nova versão ao lado e depois renomeá-la no lugar da antiga.
+
 ---
 
 ## 📋 Recapitulando
@@ -138,4 +160,4 @@ def contar(pagina):
 | **Para lembrar** | Um ponto de controle permite retomar um processamento interrompido; um disjuntor para de chamar um recurso fora do ar; um status explícito distingue um resultado vazio de uma falha de leitura. |
 | **Ferramentas utilizáveis** | Um arquivo de estado JSON escrito por meio de um arquivo temporário e `os.replace`; um contador de falhas consecutivas por recurso; uma dataclass com um campo `status`. |
 | **Armadilhas a evitar** | Escrever o arquivo de estado diretamente; marcar um elemento como feito antes de salvar seu resultado; tentar de novo indefinidamente um recurso fora do ar; contar uma falha de leitura como "0". |
-| **Boas práticas** | Um processamento idempotente por elemento; sinalizar cada recurso cortado no relatório; contar separadamente vazios e falhas. |
+| **Boas práticas** | Um processamento idempotente por elemento; sinalizar cada recurso cortado no relatório; contar separadamente vazios e falhas; validar um dado novo antes de destruir o que ele substitui. |
