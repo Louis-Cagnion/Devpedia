@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 15 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 16 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -37,6 +37,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/memoire` (sections arène et `memcpy`/`memset`, et en anglais le tableau des quatre bugs mémoire).
 - `Fondamentaux/Algorithmes/file-de-priorite-et-tas-binaire` (nouveau).
 - `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (profileurs natifs, compteurs déterministes, programmes limités par la mémoire, portfolio et biais du jeu de test).
+- `Langages/Python/sous-processus-et-flux-standard` (section `timeout` et `ThreadPoolExecutor`).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -55,11 +56,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 15. Python : lancer et chronométrer des programmes externes en parallèle (rush01, `research/bench.py`)
-`sous-processus-et-flux-standard.md` couvre `subprocess.run` et `capture_output`, `parallelisme.md` couvre `multiprocessing.Pool` ; 0 résultat pour « TimeoutExpired », « ThreadPoolExecutor », « concurrent.futures ». Rubrique pressentie : Langages > Python.
-- **`subprocess.run(..., timeout=...)` et `subprocess.TimeoutExpired`** : arrêter un programme qui dépasse son budget de temps.
-- **`concurrent.futures.ThreadPoolExecutor`** : des threads suffisent quand le vrai travail tourne dans des processus externes (le GIL ne gêne pas) ; `executor.map` conserve l'ordre des résultats.
 
 ## 16. Granularité du branchement dans un CSP (rush01, `research/lines2/src/s_backtracking_lines.c`)
 `backtracking-et-satisfaction-de-contraintes.md` présente MRV (*first-fail*) mais pas le choix de ce sur quoi on branche. Rubrique pressentie : compléter ce même chapitre.
