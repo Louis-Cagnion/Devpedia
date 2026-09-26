@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Rédaction par 3 agents en parallèle : ce que la relecture a dû corriger (2026-09-26)
+
+Points 19 à 21 confiés à 3 agents Sonnet (un worktree chacun, sur demande de Louis), fusionnés par cherry-pick après relecture. Écarts trouvés, à vérifier d'office sur tout travail délégué : sorties annoncées « réelles » sans le code qui les produit ; une sortie de script française sans accents recopiée telle quelle dans les 4 langues, alors que la convention est de traduire identifiants et chaînes affichées puis de réexécuter chaque version ; un chiffre mal lu dans le récap source (« 2 à 7 littéraux » pour « 2 à 7 clauses unitaires ») ; une définition fausse (« variables décidables »). Liens : `langages-de-programmation` n'est qu'un ancien identifiant redirigé par `js/legacy-category-redirects.js` (le validateur l'accepte) ; un nouveau lien vise `langages`. Le plan zéro-connaissance exclut les sous-agents : cette session est une dérogation explicite de Louis, pas un changement de règle.
+
 ## Fins de ligne CRLF dans 39 chapitres : les préserver lors d'une édition par script (2026-09-26)
 
 39 fichiers de `content*/` (dont les versions traduites de `Langages/C/compilation.md`) sont en fins de ligne Windows (CRLF). Un script Python qui les lit puis les réécrit en mode texte les convertit sans rien dire en LF : le diff montre alors le fichier entier modifié (vécu sur `compilation.md`, rattrapé avant le commit). Parade : lire et écrire ces fichiers en binaire, et vérifier `git diff --stat` avant chaque commit ; un ajout doit reprendre la fin de ligne du fichier.
