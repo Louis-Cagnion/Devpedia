@@ -1585,6 +1585,10 @@
               "label": "XSS: reflected, stored e DOM-based"
             },
             {
+              "id": "ssrf-en-detail",
+              "label": "SSRF: contornar a lista branca"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "O fingerprinting: reconhecer um aparelho sem armazenar nada nele"
             },

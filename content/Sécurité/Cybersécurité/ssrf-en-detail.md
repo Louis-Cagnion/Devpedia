@@ -14,15 +14,15 @@ Une validation qui vérifie seulement l'URL de DÉPART fournie par l'utilisateur
 1. Liste blanche autorisée : uniquement "images.example.com"
 
 2. Attaquant fournit : http://images.example.com/redirige-vers-cible
-   -> passe la validation : l'hote de depart EST bien images.example.com
+   -> passe la validation : l'hôte de départ EST bien images.example.com
 
-3. Le serveur suit la requete... qui repond en realite par une redirection HTTP :
+3. Le serveur suit la requête... qui répond en réalité par une redirection HTTP :
    HTTP/1.1 302 Found
    Location: http://169.254.169.254/latest/meta-data/
 
-4. Si le code qui effectue la requete SUIT automatiquement cette redirection
-   (comportement par defaut de la plupart des bibliotheques HTTP), il atteint
-   la vraie cible interne, jamais revalidee contre la liste blanche
+4. Si le code qui effectue la requête SUIT automatiquement cette redirection
+   (comportement par défaut de la plupart des bibliothèques HTTP), il atteint
+   la vraie cible interne, jamais revalidée contre la liste blanche
 ```
 
 | | |
@@ -35,7 +35,7 @@ Une validation qui vérifie seulement l'URL de DÉPART fournie par l'utilisateur
 Un outil qui transforme du HTML en PDF (facture téléchargeable, export de rapport) est, techniquement, un mini-navigateur : il charge et affiche des ressources comme le ferait Chrome ou Firefox, y compris des images ou des `iframe` référencées par une URL. Si le contenu HTML à transformer intègre une donnée utilisateur non filtrée, cette fonctionnalité devient candidate au même risque SSRF qu'un appel HTTP explicite.
 
 ```html
-<!-- Contenu inséré par l'utilisateur dans un champ censé n'afficher qu'une image de profil -->
+<!-- Saisi par l'utilisateur dans un champ prévu pour une image de profil -->
 <img src="http://169.254.169.254/latest/meta-data/iam/security-credentials/">
 <!-- ou, selon le moteur de rendu utilisé, un chemin de fichier LOCAL au lieu d'une URL -->
 <img src="file:///etc/passwd">
