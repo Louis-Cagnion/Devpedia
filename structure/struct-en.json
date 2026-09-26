@@ -98,6 +98,10 @@
             {
               "id": "file-de-priorite-et-tas-binaire",
               "label": "The Priority Queue and the Binary Heap"
+            },
+            {
+              "id": "problemes-np-complets",
+              "label": "NP-Complete Problems: Why an \"Exponential\" Problem Still Gets Solved"
             }
           ]
         },

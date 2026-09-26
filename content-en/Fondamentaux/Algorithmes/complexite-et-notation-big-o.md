@@ -58,7 +58,7 @@ Time
   +----------------------------------------> n (input size)
 ```
 
-> **Note:** by default, Big-O describes the **worst case** (e.g. searching for an element that isn't in an unsorted array forces a full scan). It's sometimes broken down into best case, average case, and worst case, but Big-O alone, with no qualifier, always refers to the worst case.
+> **Note:** by default, Big-O describes the **worst case** (e.g. searching for an element that isn't in an unsorted array forces a full scan). It's sometimes broken down into best case, average case, and worst case, but Big-O alone, with no qualifier, always refers to the worst case. A catastrophic worst case does not prevent most real cases from being solved quickly: see [NP-complete problems](/?c=fondamentaux&s=algorithmes&p=problemes-np-complets).
 
 ## Time complexity vs. memory complexity
 
