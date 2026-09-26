@@ -1569,6 +1569,10 @@
               "label": "XSS: Reflected, Stored, and DOM-Based"
             },
             {
+              "id": "ssrf-en-detail",
+              "label": "SSRF: Bypassing the Allowlist"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "Fingerprinting: recognizing a device without storing anything on it"
             },
