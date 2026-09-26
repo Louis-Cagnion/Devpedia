@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 11 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 12 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -28,6 +28,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Fondamentaux/Algorithmes/recherche-parallele-par-sous-problemes` (nouveau), plus les renvois ajoutés à `backtracking-et-satisfaction-de-contraintes` et `Qualité, performance et outils/Performance/parallelisme`.
 - `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` (nouveau), et le renvoi fusionné de `backtracking-et-satisfaction-de-contraintes`.
 - `Fondamentaux/Algorithmes/encodages-sat` (nouveau).
+- `Fondamentaux/Mathématiques/combinatoire-des-permutations` (nouveau), et la ligne `O(n!)` ajoutée à `Fondamentaux/Algorithmes/complexite-et-notation-big-o`.
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -46,14 +47,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 11. Combinatoire des permutations : records et nombres de Stirling de première espèce (rush01, `research/lines2`, `research/gen_test.c`)
-0 résultat pour « Stirling », « coefficient binomial », « factorielle » (le chapitre Big O ne cite pas O(n!)). Rubrique pressentie : Fondamentaux > Mathématiques (nouveau chapitre), avec un renvoi depuis `complexite-et-notation-big-o.md`.
-- **Record d'une permutation** (nouveau maximum en lisant de gauche à droite) = tour visible au Skyscraper.
-- **Nombres de Stirling non signés de première espèce** c(n, k) = nombre de permutations de n éléments ayant k records (ou k cycles) ; récurrence c(n, k) = c(n-1, k-1) + (n-1)·c(n-1, k). Avec a visibles à gauche et b à droite : C(a+b-2, a-1)·c(n-1, a+b-2) (raisonnement par la position du maximum). Usage ici : allouer la liste exacte des candidats en une seule passe.
-- **Coefficient binomial** C(n, k) et son calcul entier incrémental (r = r·(n-k+i)/i, division toujours exacte).
-- **Explosion factorielle** : 11! = 40 M, et 8,7 milliards de candidats pour une grille 13×13 : pourquoi matérialiser toutes les permutations devient impossible.
-- **Choisir un ordre de construction qui rend les contraintes vérifiables tôt** : placer les valeurs de la plus grande à la plus petite rend les visibilités gauche ET droite exactes à chaque étape (élagage des deux côtés), ×5-6 face au remplissage de gauche à droite.
 
 ## 12. Carrés latins, isotopie et tirage uniforme par chaîne de Markov (rush01, `research/gen_random_latin.py`)
 0 résultat pour « carré latin », « Markov », « Jacobson » dans `content/`. Rubrique pressentie : Fondamentaux > Mathématiques (ou compléter `les-probabilites-de-base.md`).

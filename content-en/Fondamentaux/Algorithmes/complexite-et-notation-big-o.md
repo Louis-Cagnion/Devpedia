@@ -42,6 +42,7 @@ The first example is **O(1)** (constant time: always a single operation). The se
 | `O(n log n)` | Quasi-linear | A [merge sort](/?c=algorithmes&p=tri-par-comparaison) | ~20,000,000 operations |
 | `O(n²)` | Quadratic | Comparing every element to every other one (nested double loop) | 1,000,000,000,000 operations |
 | `O(2ⁿ)` | Exponential | Testing every possible combination of a set | Astronomical, already for n = 40 |
+| `O(n!)` | Factorial | Trying every possible order of n elements (see [Counting Permutations](/?c=fondamentaux&s=mathematiques&p=combinatoire-des-permutations)) | Astronomical from n = 15 (over 1,000 billion) |
 
 ```text
 Time
@@ -74,6 +75,6 @@ The same notation applies to the **memory** an algorithm uses, not just its runn
 | | |
 |---|---|
 | **Key takeaways** | Big-O notation describes how an algorithm's cost evolves with the size of its input, in the worst case, independently of the machine used. |
-| **Tools you can use** | The table of complexity classes (`O(1)`, `O(log n)`, `O(n)`, `O(n log n)`, `O(n²)`, `O(2ⁿ)`) to quickly classify an algorithm. |
+| **Tools you can use** | The table of complexity classes (`O(1)`, `O(log n)`, `O(n)`, `O(n log n)`, `O(n²)`, `O(2ⁿ)`, `O(n!)`) to quickly classify an algorithm. |
 | **Pitfalls to avoid** | Confusing the sum and the product of nested operations' complexities; only measuring in seconds without accounting for the large-scale trend. |
 | **Best practices** | Evaluate time complexity AND memory complexity separately; fix bad complexity before optimizing at the hardware level. |

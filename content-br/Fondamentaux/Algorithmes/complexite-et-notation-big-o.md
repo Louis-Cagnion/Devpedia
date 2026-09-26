@@ -42,6 +42,7 @@ O primeiro exemplo é **O(1)** (tempo constante: sempre uma única operação). 
 | `O(n log n)` | Quase linear | Uma [ordenação por mesclagem](/?c=algorithmes&p=tri-par-comparaison) | ~20.000.000 de operações |
 | `O(n²)` | Quadrática | Comparar cada elemento com todos os outros (laço duplo aninhado) | 1.000.000.000.000 de operações |
 | `O(2ⁿ)` | Exponencial | Testar todas as combinações possíveis de um conjunto | Astronômico, já para n = 40 |
+| `O(n!)` | Fatorial | Testar todas as ordens possíveis de n elementos (ver [Contar permutações](/?c=fondamentaux&s=mathematiques&p=combinatoire-des-permutations)) | Astronômico a partir de n = 15 (mais de 1 trilhão) |
 
 ```text
 Tempo
@@ -74,6 +75,6 @@ A mesma notação se aplica à **memória** usada por um algoritmo, não apenas 
 | | |
 |---|---|
 | **Para lembrar** | A notação Big-O descreve como o custo de um algoritmo evolui com o tamanho de seus dados, no pior caso, independentemente da máquina usada. |
-| **Ferramentas utilizáveis** | A tabela das classes de complexidade (`O(1)`, `O(log n)`, `O(n)`, `O(n log n)`, `O(n²)`, `O(2ⁿ)`) para classificar rapidamente um algoritmo. |
+| **Ferramentas utilizáveis** | A tabela das classes de complexidade (`O(1)`, `O(log n)`, `O(n)`, `O(n log n)`, `O(n²)`, `O(2ⁿ)`, `O(n!)`) para classificar rapidamente um algoritmo. |
 | **Armadilhas a evitar** | Confundir a soma e o produto das complexidades de operações aninhadas; medir apenas em segundos sem considerar a tendência em larga escala. |
 | **Boas práticas** | Avaliar a complexidade em tempo E em memória separadamente; corrigir uma complexidade ruim antes de otimizar no nível de hardware. |
