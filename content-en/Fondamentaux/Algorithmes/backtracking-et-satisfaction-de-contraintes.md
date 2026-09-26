@@ -81,6 +81,17 @@ If this reduction empties a variable's domain completely (no value remains possi
 
 > **Best practice:** combine all three -- propagation to eliminate impossible branches early, MRV to guess first on the variable most likely to fail fast, backtracking to explore the rest -- rather than relying on a single mechanism.
 
+## What to Branch On: a Small Variable Rather Than a Whole Constraint
+
+MRV says **which** variable to handle first, but you must first choose **what counts as a variable**. In the *Skyscraper* puzzle (an n × n grid of heights 1 to n, each once per row and per column, with visibility clues on the edge), you can branch in two ways:
+
+| Branching | A decision tries | A failure eliminates |
+|---|---|---|
+| On a whole **row** | One permutation among those compatible with its clues (thousands on 10 × 10) | That single permutation |
+| On a **cell** | One value among at most n | Every permutation that puts this value in this cell, at once |
+
+Measured on a Skyscraper solver, with the same propagation: the hardest 10 × 10 grid went from 55 s of search when branching on rows to 0.14 s when branching on cells. A small domain makes each failure far more informative.
+
 > **Note:** to go further, see [Parallelizing a Search: Splitting into Independent Subproblems](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes) (exploring several branches at the same time on several cores) and [SAT Solvers and the CDCL Algorithm](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) (learning from each failure instead of only going back).
 
 ---
@@ -92,4 +103,4 @@ If this reduction empties a variable's domain completely (no value remains possi
 | **Key takeaways** | A CSP looks for one value per variable without violating any constraint. Backtracking tries a value, recurses, and undoes it if it fails further down. MRV picks the most constrained variable first. Constraint propagation (AC-3) shrinks domains and detects a contradiction before even trying. |
 | **Tools you can use** | Recursion for exploration; swap-remove to undo a removed candidate with no copy. |
 | **Pitfalls to avoid** | Exploring variables in an arbitrary order instead of with MRV, which discovers failures later than necessary. |
-| **Best practices** | Combine backtracking, MRV, and constraint propagation instead of a single isolated mechanism; prune a branch as soon as a contradiction is detectable (fail-fast), without exploring further. |
+| **Best practices** | Combine backtracking, MRV, and constraint propagation instead of a single isolated mechanism; prune a branch as soon as a contradiction is detectable (fail-fast), without exploring further; branch on small-domain variables rather than on whole constraints. |

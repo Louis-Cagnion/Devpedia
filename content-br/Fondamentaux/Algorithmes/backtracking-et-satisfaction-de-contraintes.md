@@ -81,6 +81,17 @@ Se essa redução esvaziar completamente o domínio de uma variável (nenhum val
 
 > **Boa prática:** combinar os três -- propagação para eliminar ramos impossíveis cedo, MRV para apostar primeiro na variável mais propensa a falhar rápido, backtracking para explorar o resto -- em vez de depender de um único mecanismo.
 
+## Sobre o que ramificar: uma variável pequena em vez de uma restrição inteira
+
+O MRV diz **qual** variável tratar primeiro, mas antes é preciso escolher **o que conta como variável**. No quebra-cabeça *Skyscraper* (uma grade n × n de alturas 1 a n, cada uma uma vez por linha e por coluna, com dicas de visibilidade na borda), dá para ramificar de duas formas:
+
+| Ramificação | Uma decisão testa | Um fracasso elimina |
+|---|---|---|
+| Sobre uma **linha** inteira | Uma permutação entre as compatíveis com as dicas (milhares em 10 × 10) | Só essa permutação |
+| Sobre uma **casa** | Um valor entre no máximo n | Todas as permutações que põem esse valor nessa casa, de uma vez |
+
+Medido em um solucionador de Skyscraper, com a mesma propagação: a grade 10 × 10 mais difícil passava de 55 s de busca ramificando por linha para 0,14 s ramificando por casa. Um domínio pequeno torna cada fracasso muito mais instrutivo.
+
 > **Nota:** para ir mais longe, ver [Paralelizar uma busca: dividir em subproblemas independentes](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes) (explorar vários ramos ao mesmo tempo em vários núcleos) e [Os solucionadores SAT e o algoritmo CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) (aprender com cada fracasso em vez de só voltar atrás).
 
 ---
@@ -92,4 +103,4 @@ Se essa redução esvaziar completamente o domínio de uma variável (nenhum val
 | **Para lembrar** | Um CSP busca um valor por variável sem violar nenhuma restrição. O backtracking tenta um valor, recorre, e o desfaz se falhar mais adiante. MRV escolhe primeiro a variável mais restrita. A propagação de restrições (AC-3) reduz os domínios e detecta uma contradição antes mesmo de tentar. |
 | **Ferramentas utilizáveis** | Recursão para a exploração; swap-remove para desfazer um candidato removido sem copiar. |
 | **Armadilhas a evitar** | Explorar as variáveis em uma ordem arbitrária em vez de com MRV, o que descobre as falhas mais tarde do que o necessário. |
-| **Boas práticas** | Combinar backtracking, MRV e propagação de restrições em vez de um único mecanismo isolado; cortar um ramo assim que uma contradição for detectável (fail-fast), sem explorar mais além. |
+| **Boas práticas** | Combinar backtracking, MRV e propagação de restrições em vez de um único mecanismo isolado; cortar um ramo assim que uma contradição for detectável (fail-fast), sem explorar mais além; ramificar sobre variáveis de domínio pequeno em vez de restrições inteiras. |

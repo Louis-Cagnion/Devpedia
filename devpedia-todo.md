@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 16 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 17 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -38,6 +38,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Fondamentaux/Algorithmes/file-de-priorite-et-tas-binaire` (nouveau).
 - `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (profileurs natifs, compteurs déterministes, programmes limités par la mémoire, portfolio et biais du jeu de test).
 - `Langages/Python/sous-processus-et-flux-standard` (section `timeout` et `ThreadPoolExecutor`).
+- `Fondamentaux/Algorithmes/backtracking-et-satisfaction-de-contraintes` (section sur quoi brancher).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -56,10 +57,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 16. Granularité du branchement dans un CSP (rush01, `research/lines2/src/s_backtracking_lines.c`)
-`backtracking-et-satisfaction-de-contraintes.md` présente MRV (*first-fail*) mais pas le choix de ce sur quoi on branche. Rubrique pressentie : compléter ce même chapitre.
-- **Brancher sur une variable à petit domaine (une case, au plus n valeurs) plutôt que sur une contrainte entière (une ligne, des milliers de permutations candidates)** : chaque échec élimine d'un coup toute une famille de candidats au lieu d'un seul. Mesuré : le pire seed passe de 55 s à 0,14 s de recherche.
 
 ## 17. Deuxième run crash-test : chemins Windows, en-têtes HTTP, autofill navigateur, ordre validation/destruction (crash-test projet poc-borne-git)
 Notions du second run de crash-test (bugs #23-30), absentes des chapitres existants malgré des sujets voisins déjà couverts.

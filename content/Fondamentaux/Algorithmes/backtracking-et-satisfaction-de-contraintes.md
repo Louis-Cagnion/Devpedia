@@ -81,6 +81,17 @@ Si cette réduction vide complètement le domaine d'une variable (aucune valeur 
 
 > **Bonne pratique :** combiner les trois -- propagation pour éliminer les branches impossibles tôt, MRV pour deviner en premier sur la variable la plus susceptible d'échouer vite, backtracking pour explorer le reste -- plutôt que de choisir un seul mécanisme.
 
+## Sur quoi brancher : une petite variable plutôt qu'une contrainte entière
+
+MRV dit **quelle** variable traiter en premier, mais il faut d'abord choisir **ce qu'on appelle une variable**. Dans le puzzle *Skyscraper* (une grille n × n de hauteurs 1 à n, chacune une fois par ligne et par colonne, avec des indices de visibilité au bord), on peut brancher de deux façons :
+
+| Branchement | Une décision essaie | Un échec élimine |
+|---|---|---|
+| Sur une **ligne** entière | Une permutation parmi celles compatibles avec ses indices (des milliers en 10 × 10) | Cette seule permutation |
+| Sur une **case** | Une valeur parmi au plus n | Toutes les permutations qui mettent cette valeur dans cette case, d'un coup |
+
+Mesuré sur un solveur Skyscraper, avec la même propagation : la grille 10 × 10 la plus difficile passait de 55 s de recherche en branchant par ligne à 0,14 s en branchant par case. Un petit domaine rend chaque échec beaucoup plus instructif.
+
 > **Note :** pour aller plus loin, voir [Paralléliser une recherche : découper en sous-problèmes indépendants](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes) (explorer plusieurs branches en même temps sur plusieurs cœurs) et [Les solveurs SAT et l'algorithme CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) (apprendre de chaque échec au lieu de seulement revenir en arrière).
 
 ---
@@ -92,4 +103,4 @@ Si cette réduction vide complètement le domaine d'une variable (aucune valeur 
 | **À retenir** | Un CSP cherche une valeur par variable sans violer de contrainte. Le backtracking essaie une valeur, récurse, et annule si ça échoue plus loin. MRV choisit en premier la variable la plus contrainte. La propagation de contraintes (AC-3) réduit les domaines et détecte une contradiction avant même d'essayer. |
 | **Outils utilisables** | Récursion pour l'exploration ; swap-remove pour annuler un retrait de candidat sans copie. |
 | **Pièges à éviter** | Explorer les variables dans un ordre arbitraire plutôt qu'avec MRV, ce qui découvre les échecs plus tard que nécessaire. |
-| **Bonnes pratiques** | Combiner backtracking, MRV et propagation de contraintes plutôt qu'un seul mécanisme isolé ; couper une branche dès qu'une contradiction est détectable (fail-fast), sans attendre d'aller plus loin. |
+| **Bonnes pratiques** | Combiner backtracking, MRV et propagation de contraintes plutôt qu'un seul mécanisme isolé ; couper une branche dès qu'une contradiction est détectable (fail-fast), sans attendre d'aller plus loin ; brancher sur des variables à petit domaine plutôt que sur des contraintes entières. |
