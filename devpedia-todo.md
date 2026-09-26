@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : générer l'audio du point 3 (4 langues). En attente de Louis : ordre des structures traduites (point 24), test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2) ; points 4, 5 et 6 à écrire par Louis.
+> Prochaine tâche : générer l'audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2) ; points 4, 5 et 6 à écrire par Louis.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -66,6 +66,3 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 24. Ordre des chapitres de Sécurité > Cybersécurité dans les structures traduites
-- Aligner l'ordre des chapitres de Cybersécurité de `struct-en.json`, `struct-es.json` et `struct-br.json` sur celui de `struct.json`, qui diffère aujourd'hui (à confirmer avec Louis : change l'ordre de navigation des versions traduites).

@@ -119,12 +119,12 @@
               "label": "Vectors and the Dot Product"
             },
             {
-              "id": "le-logarithme",
-              "label": "The Logarithm"
-            },
-            {
               "id": "matrices-et-produit-matriciel",
               "label": "Matrices and Matrix Multiplication"
+            },
+            {
+              "id": "le-logarithme",
+              "label": "The Logarithm"
             },
             {
               "id": "les-probabilites-de-base",
@@ -499,6 +499,97 @@
           ]
         },
         {
+          "id": "javascript",
+          "label": "JavaScript",
+          "folder": "JavaScript",
+          "chapters": [
+            {
+              "id": "conditions",
+              "label": "Conditions"
+            },
+            {
+              "id": "boucles",
+              "label": "Loops"
+            },
+            {
+              "id": "fonctions",
+              "label": "Functions"
+            },
+            {
+              "id": "strings",
+              "label": "Strings"
+            },
+            {
+              "id": "tableaux",
+              "label": "Arrays"
+            },
+            {
+              "id": "nombres",
+              "label": "Numbers"
+            },
+            {
+              "id": "objets",
+              "label": "Objects"
+            },
+            {
+              "id": "poo",
+              "label": "Classes and Object-Oriented Programming"
+            },
+            {
+              "id": "regex",
+              "label": "Regex"
+            },
+            {
+              "id": "gestion-des-erreurs",
+              "label": "Error Handling"
+            },
+            {
+              "id": "html-elements",
+              "label": "HTMLElements"
+            },
+            {
+              "id": "dom-et-evenements",
+              "label": "The DOM and Event Handling"
+            },
+            {
+              "id": "asynchrone",
+              "label": "Asynchronous Programming (Callbacks, Promises, async/await)"
+            },
+            {
+              "id": "ssr-vs-csr",
+              "label": "SSR vs CSR: Where Is the HTML Built?"
+            },
+            {
+              "id": "web-speech-api",
+              "label": "The Web Speech API: Speech Recognition and Synthesis in the Browser"
+            },
+            {
+              "id": "observateurs-et-limitation-de-frequence",
+              "label": "Browser observers and rate limiting"
+            },
+            {
+              "id": "intercepter-un-setter-de-propriete",
+              "label": "Intercepting a native property setter: `Object.defineProperty`"
+            },
+            {
+              "id": "google-maps-javascript-api",
+              "label": "The Google Maps JavaScript API"
+            },
+            {
+              "id": "canvas-2d-et-animations",
+              "label": "Canvas 2D and animations"
+            },
+            {
+              "id": "streams",
+              "label": "Streams: processing a data flow without loading it all into memory"
+            },
+            {
+              "id": "apache-echarts",
+              "label": "The Apache ECharts charting library"
+            }
+          ]
+        },
+        {
           "id": "ocaml",
           "label": "OCaml",
           "folder": "OCaml",
@@ -663,6 +754,37 @@
           ]
         },
         {
+          "id": "zsh",
+          "label": "Zsh",
+          "folder": "Zsh",
+          "chapters": [
+            {
+              "id": "fichiers-de-demarrage",
+              "label": "Startup Files"
+            },
+            {
+              "id": "options-du-shell",
+              "label": "The Options System (`setopt`)"
+            },
+            {
+              "id": "expansion-et-jokers-avances",
+              "label": "Advanced Expansion and Wildcards"
+            },
+            {
+              "id": "completion-avancee",
+              "label": "Advanced Completion"
+            },
+            {
+              "id": "prompt-et-themes",
+              "label": "Customizing the Prompt"
+            },
+            {
+              "id": "oh-my-zsh",
+              "label": "Oh My Zsh"
+            }
+          ]
+        },
+        {
           "id": "powershell",
           "label": "PowerShell",
           "folder": "PowerShell",
@@ -749,128 +871,6 @@
           "label": "XML",
           "folder": "XML",
           "chapters": []
-        },
-        {
-          "id": "javascript",
-          "label": "JavaScript",
-          "folder": "JavaScript",
-          "chapters": [
-            {
-              "id": "conditions",
-              "label": "Conditions"
-            },
-            {
-              "id": "boucles",
-              "label": "Loops"
-            },
-            {
-              "id": "fonctions",
-              "label": "Functions"
-            },
-            {
-              "id": "strings",
-              "label": "Strings"
-            },
-            {
-              "id": "tableaux",
-              "label": "Arrays"
-            },
-            {
-              "id": "nombres",
-              "label": "Numbers"
-            },
-            {
-              "id": "objets",
-              "label": "Objects"
-            },
-            {
-              "id": "poo",
-              "label": "Classes and Object-Oriented Programming"
-            },
-            {
-              "id": "regex",
-              "label": "Regex"
-            },
-            {
-              "id": "gestion-des-erreurs",
-              "label": "Error Handling"
-            },
-            {
-              "id": "html-elements",
-              "label": "HTMLElements"
-            },
-            {
-              "id": "dom-et-evenements",
-              "label": "The DOM and Event Handling"
-            },
-            {
-              "id": "asynchrone",
-              "label": "Asynchronous Programming (Callbacks, Promises, async/await)"
-            },
-            {
-              "id": "ssr-vs-csr",
-              "label": "SSR vs CSR: Where Is the HTML Built?"
-            },
-            {
-              "id": "web-speech-api",
-              "label": "The Web Speech API: Speech Recognition and Synthesis in the Browser"
-            },
-            {
-              "id": "observateurs-et-limitation-de-frequence",
-              "label": "Browser observers and rate limiting"
-            },
-            {
-              "id": "intercepter-un-setter-de-propriete",
-              "label": "Intercepting a native property setter: `Object.defineProperty`"
-            },
-            {
-              "id": "google-maps-javascript-api",
-              "label": "The Google Maps JavaScript API"
-            },
-            {
-              "id": "canvas-2d-et-animations",
-              "label": "Canvas 2D and animations"
-            },
-            {
-              "id": "streams",
-              "label": "Streams: processing a data flow without loading it all into memory"
-            },
-            {
-              "id": "apache-echarts",
-              "label": "The Apache ECharts charting library"
-            }
-          ]
-        },
-        {
-          "id": "zsh",
-          "label": "Zsh",
-          "folder": "Zsh",
-          "chapters": [
-            {
-              "id": "fichiers-de-demarrage",
-              "label": "Startup Files"
-            },
-            {
-              "id": "options-du-shell",
-              "label": "The Options System (`setopt`)"
-            },
-            {
-              "id": "expansion-et-jokers-avances",
-              "label": "Advanced Expansion and Wildcards"
-            },
-            {
-              "id": "completion-avancee",
-              "label": "Advanced Completion"
-            },
-            {
-              "id": "prompt-et-themes",
-              "label": "Customizing the Prompt"
-            },
-            {
-              "id": "oh-my-zsh",
-              "label": "Oh My Zsh"
-            }
-          ]
         }
       ]
     },
@@ -1529,12 +1529,12 @@
               "label": "Secrets Management"
             },
             {
-              "id": "cryptographie-appliquee",
-              "label": "Applied Cryptography for Developers"
-            },
-            {
               "id": "secrets-oublies-en-production",
               "label": "Secrets Forgotten in Production"
+            },
+            {
+              "id": "cryptographie-appliquee",
+              "label": "Applied Cryptography for Developers"
             },
             {
               "id": "securite-des-webhooks",
@@ -1549,24 +1549,8 @@
               "label": "Web API Security"
             },
             {
-              "id": "waf-pare-feu-applicatif",
-              "label": "The WAF: Filtering Traffic Before It Reaches the Application"
-            },
-            {
-              "id": "hashicorp-vault",
-              "label": "HashiCorp Vault: beyond the .env file"
-            },
-            {
               "id": "injections-au-dela-du-sql",
               "label": "Injection Beyond SQL"
-            },
-            {
-              "id": "tests-et-audit-de-securite",
-              "label": "Security Testing and Auditing"
-            },
-            {
-              "id": "owasp-top-10",
-              "label": "The OWASP Top 10: the industry-standard reference"
             },
             {
               "id": "xss-en-detail",
@@ -1585,16 +1569,32 @@
               "label": "Browser-Side Vulnerabilities"
             },
             {
-              "id": "fingerprinting-navigateur-et-appareil",
-              "label": "Fingerprinting: recognizing a device without storing anything on it"
-            },
-            {
               "id": "logique-metier-et-automatisation",
               "label": "Business Logic and Automated Workarounds"
             },
             {
               "id": "surcharge-et-deni-de-service-applicatif",
               "label": "Overload and Application-Level Denial of Service"
+            },
+            {
+              "id": "waf-pare-feu-applicatif",
+              "label": "The WAF: Filtering Traffic Before It Reaches the Application"
+            },
+            {
+              "id": "hashicorp-vault",
+              "label": "HashiCorp Vault: beyond the .env file"
+            },
+            {
+              "id": "tests-et-audit-de-securite",
+              "label": "Security Testing and Auditing"
+            },
+            {
+              "id": "owasp-top-10",
+              "label": "The OWASP Top 10: the industry-standard reference"
+            },
+            {
+              "id": "fingerprinting-navigateur-et-appareil",
+              "label": "Fingerprinting: recognizing a device without storing anything on it"
             }
           ]
         },
