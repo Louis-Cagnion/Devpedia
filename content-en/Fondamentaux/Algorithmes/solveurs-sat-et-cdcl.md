@@ -4,7 +4,7 @@ order: 8
 
 # SAT Solvers and the CDCL Algorithm
 
-A **SAT solver** is a generic program that answers a single question: "can each variable be given a true/false value so that all these rules are respected?". You translate your problem into it (puzzle, schedule, circuit verification...), then let the solver search. It builds on [backtracking](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes), but **learns from every failure**: that is the **CDCL** algorithm.
+A **SAT solver** is a generic program that answers a single question: "can each variable be given a true/false value so that all these rules are respected?". You translate your problem into it (puzzle, schedule, circuit verification...: see [Encoding a Problem into SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)), then let the solver search. It builds on [backtracking](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes), but **learns from every failure**: that is the **CDCL** algorithm.
 
 Example measured on a *Skyscraper* puzzle solver: backtracking with propagation topped out at 11 × 11 grids, while a CDCL solver written for the occasion solves 32 × 32 grids in under a second.
 

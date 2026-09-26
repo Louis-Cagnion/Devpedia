@@ -90,6 +90,10 @@
             {
               "id": "solveurs-sat-et-cdcl",
               "label": "Los solucionadores SAT y el algoritmo CDCL"
+            },
+            {
+              "id": "encodages-sat",
+              "label": "Codificar un problema en SAT"
             }
           ]
         },

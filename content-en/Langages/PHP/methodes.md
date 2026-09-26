@@ -197,7 +197,8 @@ function withSharedStore(string $path, callable $modify): void
     ftruncate($file, 0);                       // empties the file...
     rewind($file);                             // ...goes back to the start...
     fwrite($file, json_encode($data));         // ...and writes the new version
-    fflush($file);                             // everything is written BEFORE releasing the lock
+    // everything is written BEFORE releasing the lock
+    fflush($file);
     flock($file, LOCK_UN);                     // the next request can go ahead
     fclose($file);
 }

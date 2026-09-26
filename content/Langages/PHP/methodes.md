@@ -204,7 +204,8 @@ function avecStorePartage(string $chemin, callable $modifier): void
 
 $avant = null;
 avecStorePartage('store.json', function (array &$d) use (&$avant) {
-    $avant = $d['visites'] ?? 0;               // use (&$avant) : la valeur ressort de la fonction
+    // use (&$avant) : la valeur ressort de la fonction
+    $avant = $d['visites'] ?? 0;
     $d['visites'] = $avant + 1;                // &$d : la modification est gardée et réécrite
 });
 echo $avant;                                   // nombre de visites avant celle-ci
