@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Fins de ligne CRLF dans 39 chapitres : les préserver lors d'une édition par script (2026-09-26)
+
+39 fichiers de `content*/` (dont les versions traduites de `Langages/C/compilation.md`) sont en fins de ligne Windows (CRLF). Un script Python qui les lit puis les réécrit en mode texte les convertit sans rien dire en LF : le diff montre alors le fichier entier modifié (vécu sur `compilation.md`, rattrapé avant le commit). Parade : lire et écrire ces fichiers en binaire, et vérifier `git diff --stat` avant chaque commit ; un ajout doit reprendre la fin de ligne du fichier.
+
 ## Structures traduites : ne jamais les régénérer avec `buildStruct` (2026-09-26)
 
 Régénérer `struct-en/es/br.json` avec `buildStruct()` de `scripts/generate-struct.js` dégrade ces fichiers : le libellé d'une sous-section redevient le nom de dossier français, et une sous-section dont le fichier principal traduit ne porte pas le titre du dossier (« Modèles de décision structurée ») voit ce fichier listé comme un chapitre, avec des sous-sections déplacées. Les structures traduites se complètent donc à la main : insérer le nouveau chapitre à la même position qu'en français, puis valider les liens avec `validateInternalLinks()`.
