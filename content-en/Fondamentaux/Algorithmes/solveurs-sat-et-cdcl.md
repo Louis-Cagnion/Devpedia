@@ -128,6 +128,66 @@ Among grids of the same size, most are solved quickly, but a few take 100 times 
 
 Restarts and controlled randomness are precisely what gets the search out of these bad trajectories.
 
+### Randomness Moves the Tail, It Does Not Shrink It
+
+A random decision means picking a random variable instead of the most active one, with a small fixed probability (MiniSat's `random_var_freq` parameter, [MiniSat](http://minisat.se/)). Measured on the Skyscraper solver on a 72 × 72 grid, over 100 grids:
+
+| Configuration | Grids over 90 s |
+|---|---|
+| No randomization | 4 |
+| With 3% random decisions | 8, but not the same 4 grids |
+
+The 4 grids that got stuck without randomization now get solved, but 8 other ones get stuck instead: the same grid passes or stalls depending on the random draw. The heavy tail comes from the search trajectory, not from the instance's intrinsic difficulty; adding randomness moves it, it does not shrink it.
+
+### The Evaluation Trap: Selection Bias and Regression to the Mean
+
+Testing a new heuristic only on the grids that stalled the reference configuration favors it mechanically: those grids were picked precisely for their bad luck with the reference, and a different configuration has statistically less reason to suffer the same bad luck. This trap has a name in statistics: [regression to the mean](https://en.wikipedia.org/wiki/Regression_toward_the_mean) (a sample picked for an extreme result moves back toward the average when measured again, even with no real change).
+
+| Test set | Measured result |
+|---|---|
+| 8 hard grids, picked among those that stalled the reference | All solved: the variant looks excellent |
+| 100 grids, the full set | Twice as many timeouts over 90 s as before |
+
+Good practice: always revalidate a heuristic on the full set of instances, never only on the subset that motivated the change.
+
+### Diversifying Without Destroying What Was Learned
+
+Two ways of diversifying break what the solver has learned: adding noise to VSIDS activities on every restart, or going back to the initial phases instead of keeping phase saving (see above). Both make even the easy grids stall, though they needed no diversification at all. Diversification should touch a few one-off decisions (like `random_var_freq`), never what the solver has already learned (activities, clauses, phases).
+
+### Portfolios of Independent Trajectories: the p^k Law
+
+Another remedy: run several trajectories in parallel with different seeds, and keep the result of the first process to finish (process portfolio, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), originally measured on completing Latin squares). If each run stalls independently with probability *p*, *k* runs all stall together with probability *p^k*: the risk drops very fast as the number of processes grows. With p = 7/100 (measured here):
+
+```python
+# p: probability that ONE run exceeds 90 s (measured: 7 grids out of 100)
+p = 7 / 100
+for k in range(1, 5):
+    # probability that all k processes exceed 90 s (independent)
+    print(f"k={k} processes: p^k = {p ** k:.6f}")
+```
+
+```
+k=1 processes: p^k = 0.070000
+k=2 processes: p^k = 0.004900
+k=3 processes: p^k = 0.000343
+k=4 processes: p^k = 0.000024
+```
+
+Measured on a 72 × 72 grid over 100 grids: 4 processes ([`fork`](/?c=langages-de-programmation&s=c&p=processus), the first process's result read through a [pipe](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs), and `poll`, which waits on several pipes at once) go from 7 timeouts over 90 s to none, with a 9.6 s average and a 16.8 s worst case. Compare this to a single process that periodically resets itself completely, which removes only 3 out of 7: a single trajectory stays a single trajectory no matter how many restarts it gets, while truly independent processes follow the *p^k* law.
+
+### Heterogeneous Portfolios and Diminishing Returns
+
+Diversifying the decision heuristics too, not just the random seeds, strengthens the portfolio further. Measured on a 96 × 96 grid, over 4 processes:
+
+| Portfolio | Average time (5 grids, 96 × 96) |
+|---|---|
+| 4 × VSIDS | 67 s |
+| 1 × VSIDS + 3 × VMTF (*Variable Move-To-Front*: the variables from the last conflict move to the front of a list, instead of an activity score like VSIDS; [Ryan 2004](https://summit.sfu.ca/_flysystem/fedora/sfu_migrate/2725/b35038871.pdf)) | 32 s |
+
+The VMTF processes win very consistently, between 25,000 and 30,000 conflicts. Thanks to this heterogeneous portfolio, the one-minute frontier moves from the 72 × 72 grid (with still 4% of stalls) to about 100 × 100.
+
+Past 4 to 6 processes, the gains slow down and then reverse: the shared memory bandwidth between processes ends up costing more than the added diversity brings (8 processes slower than 6). Sharing learned clauses between processes (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) only helps if the learned clauses are short: here, a full solve learns only 2 to 7 unit clauses and 11 to 34 binary clauses (56 × 56 grid); the other learned clauses are long, not worth sharing.
+
 ## Reference Solvers
 
 | Solver | Contribution | Link |
