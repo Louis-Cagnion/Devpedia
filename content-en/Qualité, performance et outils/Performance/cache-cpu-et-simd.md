@@ -48,13 +48,28 @@ A NumPy array created with heterogeneous types (e.g. a mix of integers and strin
 
 Memory contiguity is necessary to benefit from cache and SIMD, but **not sufficient**: elements also need to be of uniform size and type, so the processor can process them as a block without re-checking each one individually.
 
+## Counting Random Memory Accesses, Not Instructions
+
+The number of instructions executed is a poor predictor of real time: as the cache hierarchy above shows, what costs is the number of **random** memory accesses (the ones that miss cache), not the number of operations.
+
+On a SAT solver (see [SAT Solvers and the CDCL Algorithm](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)):
+
+| Optimization | Effect on instructions | Effect on time |
+|---|---|---|
+| Circular search for the replacement literal ([Gent 2013](https://www.jair.org/index.php/jair/article/view/10839)) | Divides the number of scanned literals by 2.5 | No change |
+| Removing one random memory access per propagation | Barely changes the instruction count | -21% |
+
+The first optimization reduces the work measured in instructions, but that work was already in cache: fewer instructions for the same number of already-cheap memory accesses changes nothing. The second removes an access that missed cache on every propagation: one fewer random access outweighs thousands fewer instructions that were already cheap.
+
+> This connects to [Comparing on Work Counters, Not Only on Time](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparing-on-work-counters-not-only-on-time): the counter that predicts a memory-bound speedup is not the instruction count, but the number of out-of-cache memory accesses.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | A RAM access costs ~50× more than an L1 cache access. Contiguous, uniformly typed data (a typed array) benefits from cache and SIMD; scattered data (a linked list, spread-out objects) reloads a cache line on every access. |
+| **Key takeaways** | A RAM access costs ~50× more than an L1 cache access. Contiguous, uniformly typed data (a typed array) benefits from cache and SIMD; scattered data (a linked list, spread-out objects) reloads a cache line on every access. The number of random memory accesses predicts time far better than the number of instructions. |
 | **Tools you can use** | A contiguous typed array (NumPy `ndarray`) rather than a collection of scattered objects for intensive computation. |
 | **Pitfalls to avoid** | A NumPy array in `dtype=object`: stays contiguous in appearance, but loses all the cache/SIMD benefit (pointers to scattered objects). |
 | **Best practices** | Prefer a typed, contiguous array as soon as the volume of computation justifies the effort; traverse data in the order it's laid out in memory. |

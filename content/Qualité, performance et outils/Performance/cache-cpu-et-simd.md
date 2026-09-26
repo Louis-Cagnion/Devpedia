@@ -48,13 +48,28 @@ Un tableau NumPy créé avec des types hétérogènes (ex. un mélange d'entiers
 
 La contiguïté de la mémoire est nécessaire pour profiter du cache et de SIMD, mais **pas suffisante** : il faut aussi que les éléments soient de taille et de type uniformes, pour que le processeur puisse les traiter en bloc sans revérifier chacun individuellement.
 
+## Compter les accès mémoire aléatoires, pas les instructions
+
+Le nombre d'instructions exécutées est un mauvais indicateur du temps réel : d'après la hiérarchie de cache ci-dessus, ce qui coûte, c'est le nombre d'accès mémoire **aléatoires** (ceux qui manquent le cache), pas le nombre d'opérations.
+
+Sur un solveur SAT (voir [Solveurs SAT et CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)) :
+
+| Optimisation | Effet sur les instructions | Effet sur le temps |
+|---|---|---|
+| Recherche circulaire du remplaçant ([Gent 2013](https://www.jair.org/index.php/jair/article/view/10839)) | Divise par 2,5 le nombre de littéraux parcourus | Aucun changement |
+| Supprimer un accès mémoire aléatoire par propagation | Change peu le nombre d'instructions | −21 % |
+
+La première optimisation réduit le travail mesuré en instructions, mais ce travail restait déjà dans le cache : moins d'instructions pour le même nombre d'accès mémoire déjà bon marché ne change rien. La seconde supprime un accès qui manquait le cache à chaque propagation : un seul accès aléatoire en moins pèse plus que des milliers d'instructions en moins qui, elles, étaient déjà bon marché.
+
+> Ceci rejoint [Comparer sur des compteurs de travail, pas seulement sur le temps](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparer-sur-des-compteurs-de-travail-pas-seulement-sur-le-temps) : le compteur pertinent pour prédire un gain de performance mémoire n'est pas le nombre d'instructions, mais le nombre d'accès mémoire hors cache.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Un accès RAM coûte ~50× plus qu'un accès cache L1. Des données contiguës et de type uniforme (tableau typé) profitent du cache et du SIMD ; des données dispersées (liste chaînée, objets épars) rechargent une ligne de cache à chaque accès. |
+| **À retenir** | Un accès RAM coûte ~50× plus qu'un accès cache L1. Des données contiguës et de type uniforme (tableau typé) profitent du cache et du SIMD ; des données dispersées (liste chaînée, objets épars) rechargent une ligne de cache à chaque accès. Le nombre d'accès mémoire aléatoires prédit le temps bien mieux que le nombre d'instructions. |
 | **Outils utilisables** | Un tableau typé contigu (NumPy `ndarray`) plutôt qu'une collection d'objets épars pour du calcul intensif. |
 | **Pièges à éviter** | Un tableau NumPy en `dtype=object` : reste contigu en apparence, mais perd tout le bénéfice du cache/SIMD (pointeurs vers des objets dispersés). |
 | **Bonnes pratiques** | Préférer un tableau typé et contigu dès que le volume de calcul justifie l'effort ; parcourir les données dans l'ordre de leur disposition mémoire. |

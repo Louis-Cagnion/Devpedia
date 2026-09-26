@@ -48,13 +48,28 @@ Um array NumPy criado com tipos heterogêneos (ex. uma mistura de inteiros e str
 
 A contiguidade da memória é necessária para aproveitar o cache e o SIMD, mas **não suficiente**: também é preciso que os elementos tenham tamanho e tipo uniformes, para que o processador possa processá-los em bloco sem reverificar cada um individualmente.
 
+## Contar os acessos aleatórios à memória, não as instruções
+
+O número de instruções executadas é um mau indicador do tempo real: de acordo com a hierarquia de cache acima, o que custa é o número de acessos **aleatórios** à memória (os que erram o cache), não o número de operações.
+
+Em um solucionador SAT (ver [Os solucionadores SAT e o algoritmo CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)):
+
+| Otimização | Efeito nas instruções | Efeito no tempo |
+|---|---|---|
+| Busca circular do substituto ([Gent 2013](https://www.jair.org/index.php/jair/article/view/10839)) | Divide por 2,5 o número de literais percorridos | Nenhuma mudança |
+| Remover um acesso aleatório à memória por propagação | Muda pouco o número de instruções | −21% |
+
+A primeira otimização reduz o trabalho medido em instruções, mas esse trabalho já estava no cache: menos instruções para o mesmo número de acessos à memória já baratos não muda nada. A segunda remove um acesso que errava o cache a cada propagação: um acesso aleatório a menos pesa mais do que milhares de instruções a menos que, essas sim, já eram baratas.
+
+> Isso se conecta com [Comparar em contadores de trabalho, não só no tempo](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparar-em-contadores-de-trabalho-nao-so-no-tempo): o contador que prevê um ganho em um programa limitado pela memória não é o número de instruções, mas o número de acessos à memória fora do cache.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | Um acesso à RAM custa ~50× mais do que um acesso ao cache L1. Dados contíguos e de tipo uniforme (array tipado) se beneficiam do cache e do SIMD; dados dispersos (lista encadeada, objetos espalhados) recarregam uma linha de cache a cada acesso. |
+| **Para lembrar** | Um acesso à RAM custa ~50× mais do que um acesso ao cache L1. Dados contíguos e de tipo uniforme (array tipado) se beneficiam do cache e do SIMD; dados dispersos (lista encadeada, objetos espalhados) recarregam uma linha de cache a cada acesso. O número de acessos aleatórios à memória prevê o tempo bem melhor do que o número de instruções. |
 | **Ferramentas utilizáveis** | Um array tipado e contíguo (NumPy `ndarray`) em vez de uma coleção de objetos espalhados para cálculo intensivo. |
 | **Armadilhas a evitar** | Um array NumPy em `dtype=object`: continua contíguo em aparência, mas perde todo o benefício do cache/SIMD (ponteiros para objetos dispersos). |
 | **Boas práticas** | Preferir um array tipado e contíguo assim que o volume de cálculo justificar o esforço; percorrer os dados na ordem de sua disposição em memória. |
