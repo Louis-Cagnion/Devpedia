@@ -98,6 +98,10 @@
             {
               "id": "file-de-priorite-et-tas-binaire",
               "label": "A fila de prioridade e o heap binário"
+            },
+            {
+              "id": "problemes-np-complets",
+              "label": "Os problemas NP-completos: por que um problema \"exponencial\" é resolvido mesmo assim"
             }
           ]
         },

@@ -98,6 +98,10 @@
             {
               "id": "file-de-priorite-et-tas-binaire",
               "label": "La file de priorité et le tas binaire"
+            },
+            {
+              "id": "problemes-np-complets",
+              "label": "Les problèmes NP-complets : pourquoi un problème « exponentiel » se résout quand même"
             }
           ]
         },

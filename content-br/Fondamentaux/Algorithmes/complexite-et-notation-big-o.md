@@ -58,7 +58,7 @@ Tempo
   +----------------------------------------> n (tamanho dos dados)
 ```
 
-> **Nota:** o Big-O descreve o **pior caso** por padrão (ex.: procurar um elemento ausente em um array não ordenado obriga a percorrer tudo). Às vezes se distingue o melhor caso (*best case*), o caso médio (*average case*) e o pior caso (*worst case*), mas o Big-O sozinho, sem especificação, sempre designa o pior caso.
+> **Nota:** o Big-O descreve o **pior caso** por padrão (ex.: procurar um elemento ausente em um array não ordenado obriga a percorrer tudo). Às vezes se distingue o melhor caso (*best case*), o caso médio (*average case*) e o pior caso (*worst case*), mas o Big-O sozinho, sem especificação, sempre designa o pior caso. Um pior caso catastrófico não impede de resolver rápido a maioria dos casos reais: veja [os problemas NP-completos](/?c=fondamentaux&s=algorithmes&p=problemes-np-complets).
 
 ## Complexidade em tempo vs complexidade em memória
 

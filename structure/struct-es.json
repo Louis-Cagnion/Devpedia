@@ -98,6 +98,10 @@
             {
               "id": "file-de-priorite-et-tas-binaire",
               "label": "La cola de prioridad y el montículo binario"
+            },
+            {
+              "id": "problemes-np-complets",
+              "label": "Los problemas NP-completos: por qué un problema «exponencial» se resuelve de todos modos"
             }
           ]
         },
