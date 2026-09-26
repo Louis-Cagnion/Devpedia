@@ -73,6 +73,8 @@ El resultado más probable (aquí, la lluvia) no es el único posible: solo aque
 >
 > **Buena práctica:** razonar sobre la distribución completa en lugar de solo su resultado más probable, en cuanto los resultados menos probables tengan consecuencias importantes si ocurren de todos modos.
 
+> **Nota:** para sacar al azar de forma uniforme objetos difíciles de construir directamente, ver [Cuadrados latinos y muestreo uniforme con una cadena de Markov](/?c=fondamentaux&s=mathematiques&p=carres-latins-et-tirage-uniforme).
+
 ## Lo que hay que recordar
 
 | | |

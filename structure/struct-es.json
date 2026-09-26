@@ -133,6 +133,10 @@
             {
               "id": "combinatoire-des-permutations",
               "label": "Contar permutaciones: factorial, coeficiente binomial y números de Stirling"
+            },
+            {
+              "id": "carres-latins-et-tirage-uniforme",
+              "label": "Cuadrados latinos y muestreo uniforme con una cadena de Markov"
             }
           ]
         },

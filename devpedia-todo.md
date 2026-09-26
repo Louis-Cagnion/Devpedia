@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 12 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 13 à 23 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -29,6 +29,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Fondamentaux/Algorithmes/solveurs-sat-et-cdcl` (nouveau), et le renvoi fusionné de `backtracking-et-satisfaction-de-contraintes`.
 - `Fondamentaux/Algorithmes/encodages-sat` (nouveau).
 - `Fondamentaux/Mathématiques/combinatoire-des-permutations` (nouveau), et la ligne `O(n!)` ajoutée à `Fondamentaux/Algorithmes/complexite-et-notation-big-o`.
+- `Fondamentaux/Mathématiques/carres-latins-et-tirage-uniforme` (nouveau), et le renvoi ajouté à `les-probabilites-de-base`.
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -48,12 +49,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
 
-## 12. Carrés latins, isotopie et tirage uniforme par chaîne de Markov (rush01, `research/gen_random_latin.py`)
-0 résultat pour « carré latin », « Markov », « Jacobson » dans `content/`. Rubrique pressentie : Fondamentaux > Mathématiques (ou compléter `les-probabilites-de-base.md`).
-- **Carré latin** (chaque symbole une fois par ligne et par colonne) et **isotopie** (permuter lignes, colonnes et symboles) : le générateur de tests du rush ne produit que des isotopes du carré cyclique, une famille très restreinte, d'où un biais de benchmark possible.
-- **Chaîne de Markov** (l'état suivant ne dépend que de l'état courant) et **MCMC** : échantillonner un objet combinatoire impossible à tirer directement de façon uniforme.
-- **Chaîne de Jacobson-Matthews (1996)** : mouvements ±1 sur le cube d'incidence (ligne, colonne, symbole), passage temporaire par des carrés « impropres » (une case à -1) ; converge vers un carré latin uniforme.
-
 ## 13. C bas niveau et parallélisme (rush01, `research/cdcl.c`, `research/lines2`)
 Compléments aux chapitres C existants : 0 résultat pour « memcpy », « memset », « __thread », « thread-local », « compare-and-swap », « __builtin_ctz », « arène », « file de priorité », « clock_gettime », « -march », « -pthread ». Rubriques pressenties : Langages > C (`memoire.md`, `threads.md`, `operateurs-binaires.md`, `mesure-du-temps.md`, `compilation.md`) et Fondamentaux > Algorithmes pour la file de priorité.
 - **`memcpy`/`memset`** : copie et remplissage d'octets ; `memcpy` comme façon sûre de réinterpréter les bits d'un `float` dans un `uint32_t` (*type punning* sans comportement indéfini).
@@ -71,7 +66,7 @@ Complète `mesurer-avant-d-optimiser.md` (profilage par phases, bruit et mesures
 - **Comparer aussi sur des compteurs de travail déterministes** (propagations, conflits, nœuds explorés) et pas seulement sur le temps : ±15 % mesurés entre deux exécutions identiques sur portable (fréquence CPU, température).
 - **Programme limité par la bande passante mémoire** (*memory-bound*) : ajouter des threads peut le ralentir (8 threads : 577 → 893 ms), contrairement à un calcul limité par le CPU ; lien avec `cache-cpu-et-simd.md` et la contention déjà décrite dans `parallelisme.md`.
 - **Portfolio parallèle** : lancer plusieurs recherches différentes en parallèle et garder la première qui aboutit ; efficace contre les queues lourdes, inutile si la mémoire est le goulot.
-- **Biais du jeu de test** : valider aussi sur des instances d'une autre origine (cf. point 12) avant de conclure qu'un gain est général.
+- **Biais du jeu de test** : valider aussi sur des instances d'une autre origine (cf. `Fondamentaux/Mathématiques/carres-latins-et-tirage-uniforme`) avant de conclure qu'un gain est général.
 
 ## 15. Python : lancer et chronométrer des programmes externes en parallèle (rush01, `research/bench.py`)
 `sous-processus-et-flux-standard.md` couvre `subprocess.run` et `capture_output`, `parallelisme.md` couvre `multiprocessing.Pool` ; 0 résultat pour « TimeoutExpired », « ThreadPoolExecutor », « concurrent.futures ». Rubrique pressentie : Langages > Python.

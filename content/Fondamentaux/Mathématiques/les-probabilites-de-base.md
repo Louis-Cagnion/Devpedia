@@ -73,6 +73,8 @@ Le résultat le plus probable (ici, la pluie) n'est pas le seul possible : juste
 >
 > **Bonne pratique :** raisonner sur la distribution entière plutôt que sur son seul résultat le plus probable, dès que les résultats moins probables ont des conséquences importantes s'ils se produisent quand même.
 
+> **Note :** pour tirer au hasard de façon uniforme des objets difficiles à construire directement, voir [Carrés latins et tirage uniforme par chaîne de Markov](/?c=fondamentaux&s=mathematiques&p=carres-latins-et-tirage-uniforme).
+
 ## Ce qu'il faut retenir
 
 | | |
