@@ -1593,6 +1593,10 @@
               "label": "SSRF: contornar a lista branca"
             },
             {
+              "id": "upload-de-fichiers",
+              "label": "Upload de arquivos: validação, Zip Slip, CSV Injection"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "O fingerprinting: reconhecer um aparelho sem armazenar nada nele"
             },
