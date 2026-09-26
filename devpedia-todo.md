@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : point 24, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : générer l'audio du point 3 (4 langues). En attente de Louis : ordre des structures traduites (point 24), test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2) ; points 4, 5 et 6 à écrire par Louis.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -39,7 +39,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/Python/sous-processus-et-flux-standard` (section `timeout` et `ThreadPoolExecutor`, renvoi vers les processus orphelins).
 - `Fondamentaux/Algorithmes/backtracking-et-satisfaction-de-contraintes` (section sur quoi brancher).
 - `Langages/PHP/routage` (notes `parse_url()` qui renvoie `null` et point final CWE-42).
-- `Sécurité/Cybersécurité/failles-de-navigateur` (`Referrer-Policy`, CWE-598 et `autocomplete`) : en français seulement, le chapitre n'existant pas encore dans les autres langues (point 24).
+- `Sécurité/Cybersécurité/failles-de-navigateur` (`Referrer-Policy`, CWE-598 et `autocomplete` en français ; chapitre entier traduit en en/es/br, blocs d'exemple français réaccentués).
 - `Qualité, performance et outils/Qualité et architecture du code/robustesse-traitement-par-lots` (section valider avant de détruire).
 - `Fondamentaux/Algorithmes/problemes-np-complets` (nouveau).
 - `Tests/property-based-testing` (section test différentiel).
@@ -67,6 +67,5 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
 
-## 24. Traduire le dernier chapitre de Sécurité > Cybersécurité resté en français
-`failles-de-navigateur` (ajouté le 16/09) n'existe qu'en français et n'est pas déclaré dans `structure/struct-en.json`, `struct-es.json` et `struct-br.json` : le traduire en en/es/br, puis le déclarer (à la main, sans `buildStruct`, cf. journal de bord).
-- Aligner aussi l'ordre des chapitres de Cybersécurité des 3 structures traduites sur celui de `struct.json`, qui diffère aujourd'hui (à confirmer avec Louis : change l'ordre de navigation des versions traduites).
+## 24. Ordre des chapitres de Sécurité > Cybersécurité dans les structures traduites
+- Aligner l'ordre des chapitres de Cybersécurité de `struct-en.json`, `struct-es.json` et `struct-br.json` sur celui de `struct.json`, qui diffère aujourd'hui (à confirmer avec Louis : change l'ordre de navigation des versions traduites).

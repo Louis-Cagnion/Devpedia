@@ -1581,6 +1581,10 @@
               "label": "File Uploads: Validation, Zip Slip, CSV Injection"
             },
             {
+              "id": "failles-de-navigateur",
+              "label": "Browser-Side Vulnerabilities"
+            },
+            {
               "id": "fingerprinting-navigateur-et-appareil",
               "label": "Fingerprinting: recognizing a device without storing anything on it"
             },
