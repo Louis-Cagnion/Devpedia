@@ -89,6 +89,14 @@ Checking the bitmap before the header avoided 91% of the reads into the 147 MB a
 
 > General principle: filter with a small structure that fits in cache, before paying for a random access into a structure too big to fit. See also [bit array (Wikipedia)](https://en.wikipedia.org/wiki/Bit_array).
 
+## Only Write What Will Be Read Again
+
+Writing costs as much as reading: it's the same cache line to load, then to send back to memory if evicted before the next read. Updating data nobody will read again is a memory access paid for nothing.
+
+In a SAT solver (see [SAT Solvers and the CDCL Algorithm](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)), two auxiliary structures, a variable's recorded **phase** and its position in the priority **heap**, are only useful for variables still **decidable** (still left to choose). Updating them for variables already fixed by propagation too writes into cache lines nobody will read again for a long time. Restricting both updates to decidable variables only removes these useless writes.
+
+> This connects to the bitmap filter above: in both cases, the question asked before acting is "will this data be read again?", not just "is this computation correct?".
+
 ---
 
 ## 📋 Summary
@@ -98,4 +106,4 @@ Checking the bitmap before the header avoided 91% of the reads into the 147 MB a
 | **Key takeaways** | A RAM access costs ~50× more than an L1 cache access. Contiguous, uniformly typed data (a typed array) benefits from cache and SIMD; scattered data (a linked list, spread-out objects) reloads a cache line on every access. The number of random memory accesses predicts time far better than the number of instructions. |
 | **Tools you can use** | A contiguous typed array (NumPy `ndarray`) rather than a collection of scattered objects for intensive computation; a bitmap as a cheap filter before an expensive random access. |
 | **Pitfalls to avoid** | A NumPy array in `dtype=object`: stays contiguous in appearance, but loses all the cache/SIMD benefit (pointers to scattered objects). |
-| **Best practices** | Prefer a typed, contiguous array as soon as the volume of computation justifies the effort; traverse data in the order it's laid out in memory; store together (AoS) fields read and written together, separate (SoA) fields walked one at a time across many elements. |
+| **Best practices** | Prefer a typed, contiguous array as soon as the volume of computation justifies the effort; traverse data in the order it's laid out in memory; store together (AoS) fields read and written together, separate (SoA) fields walked one at a time across many elements; only update data that's still useful. |

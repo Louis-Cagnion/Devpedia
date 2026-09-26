@@ -89,6 +89,14 @@ Consultar el bitmap antes de la cabecera evitó el 91 % de las lecturas en el ar
 
 > Principio general: filtrar con una estructura pequeña que quepa en caché, antes de pagar un acceso aleatorio en una estructura demasiado grande para caber. Ver también [bit array (Wikipedia, en inglés)](https://en.wikipedia.org/wiki/Bit_array).
 
+## Escribir solo lo que se volverá a leer
+
+Escribir cuesta tanto como leer: es la misma línea de caché que cargar, y luego devolver a memoria si es desalojada antes de la próxima lectura. Actualizar un dato que nadie volverá a leer es un acceso a memoria pagado para nada.
+
+En un solucionador SAT (ver [Los solucionadores SAT y el algoritmo CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)), dos estructuras auxiliares, la **fase** registrada de una variable y su posición en el **montículo** de prioridades, solo sirven para las variables aún **decidibles** (las que quedan por elegir). Actualizarlas también para las variables ya fijadas por la propagación escribe en líneas de caché que nadie volverá a leer en mucho tiempo. Restringir ambas actualizaciones a las variables decidibles elimina esas escrituras inútiles.
+
+> El principio se conecta con el filtro por bitmap anterior: en ambos casos, la pregunta planteada antes de actuar es «¿se volverá a leer este dato?», no solo «¿es correcto este cálculo?».
+
 ---
 
 ## 📋 Resumen
@@ -98,4 +106,4 @@ Consultar el bitmap antes de la cabecera evitó el 91 % de las lecturas en el ar
 | **Para recordar** | Un acceso a RAM cuesta ~50× más que un acceso a caché L1. Los datos contiguos y de tipo uniforme (array tipado) se benefician de la caché y de SIMD; los datos dispersos (lista enlazada, objetos esparcidos) recargan una línea de caché en cada acceso. El número de accesos aleatorios a memoria predice el tiempo mucho mejor que el número de instrucciones. |
 | **Herramientas utilizables** | Un array tipado y contiguo (NumPy `ndarray`) en lugar de una colección de objetos dispersos para cálculo intensivo; un bitmap como filtro barato antes de un acceso aleatorio costoso. |
 | **Trampas a evitar** | Un array NumPy en `dtype=object`: sigue siendo contiguo en apariencia, pero pierde todo el beneficio de la caché/SIMD (punteros hacia objetos dispersos). |
-| **Buenas prácticas** | Preferir un array tipado y contiguo en cuanto el volumen de cálculo lo justifique; recorrer los datos en el orden de su disposición en memoria; guardar juntos (AoS) los campos leídos y escritos juntos, separar (SoA) los recorridos uno a uno sobre muchos elementos. |
+| **Buenas prácticas** | Preferir un array tipado y contiguo en cuanto el volumen de cálculo lo justifique; recorrer los datos en el orden de su disposición en memoria; guardar juntos (AoS) los campos leídos y escritos juntos, separar (SoA) los recorridos uno a uno sobre muchos elementos; actualizar solo los datos que siguen siendo útiles. |

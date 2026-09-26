@@ -89,6 +89,14 @@ Consulter le bitmap avant l'en-tête a évité 91 % des lectures dans le tableau
 
 > Le principe général : filtrer avec une structure petite qui tient en cache, avant de payer un accès aléatoire dans une structure trop grosse pour y tenir. Voir aussi [bit array (Wikipédia, en anglais)](https://en.wikipedia.org/wiki/Bit_array).
 
+## N'écrire que ce qui sera relu
+
+Écrire coûte aussi cher que lire : c'est la même ligne de cache à charger, puis à renvoyer en mémoire si elle est évincée avant la prochaine lecture. Mettre à jour une donnée que personne ne relira est un accès mémoire payé pour rien.
+
+Dans un solveur SAT (voir [Solveurs SAT et CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)), deux structures auxiliaires, la **phase** enregistrée d'une variable et sa position dans le **tas** des priorités, ne servent que pour les variables encore **décidables** (celles qu'il reste à choisir). Les mettre à jour aussi pour les variables déjà fixées par la propagation écrit dans des lignes de cache que plus personne ne relira avant longtemps. Restreindre ces deux mises à jour aux seules variables décidables retire ces écritures inutiles.
+
+> Le principe rejoint celui du filtre par bitmap ci-dessus : dans les deux cas, la question posée avant d'agir est « cette donnée sera-t-elle relue ? », pas seulement « ce calcul est-il correct ? ».
+
 ---
 
 ## 📋 Récapitulatif
@@ -98,4 +106,4 @@ Consulter le bitmap avant l'en-tête a évité 91 % des lectures dans le tableau
 | **À retenir** | Un accès RAM coûte ~50× plus qu'un accès cache L1. Des données contiguës et de type uniforme (tableau typé) profitent du cache et du SIMD ; des données dispersées (liste chaînée, objets épars) rechargent une ligne de cache à chaque accès. Le nombre d'accès mémoire aléatoires prédit le temps bien mieux que le nombre d'instructions. |
 | **Outils utilisables** | Un tableau typé contigu (NumPy `ndarray`) plutôt qu'une collection d'objets épars pour du calcul intensif ; un bitmap comme filtre bon marché avant un accès aléatoire coûteux. |
 | **Pièges à éviter** | Un tableau NumPy en `dtype=object` : reste contigu en apparence, mais perd tout le bénéfice du cache/SIMD (pointeurs vers des objets dispersés). |
-| **Bonnes pratiques** | Préférer un tableau typé et contigu dès que le volume de calcul justifie l'effort ; parcourir les données dans l'ordre de leur disposition mémoire ; ranger ensemble (AoS) les champs lus et écrits ensemble, séparer (SoA) ceux parcourus un par un sur beaucoup d'éléments. |
+| **Bonnes pratiques** | Préférer un tableau typé et contigu dès que le volume de calcul justifie l'effort ; parcourir les données dans l'ordre de leur disposition mémoire ; ranger ensemble (AoS) les champs lus et écrits ensemble, séparer (SoA) ceux parcourus un par un sur beaucoup d'éléments ; ne mettre à jour que les données encore utiles. |
