@@ -40,6 +40,41 @@ void preciseWait(long durationMs)
 
 This **busy-wait** pattern recomputes the actually elapsed time on every iteration rather than trusting a single `usleep()` for the whole duration: the slight imprecision of each individual `usleep(1000)` is corrected by the loop itself, which only stops once the desired time has actually been reached.
 
+## Measuring a Duration: `clock_gettime(CLOCK_MONOTONIC)`
+
+`gettimeofday()` reads the **wall-clock time**, which can jump: manual adjustment, automatic correction over the network (NTP). A duration computed across such a jump is wrong, or even negative. To **measure a duration**, use a **monotonic** clock: it never goes backwards, but its starting point is arbitrary (often the machine's boot), so it does not give the date.
+
+| Clock (`clock_gettime`) | Measures | Use it to |
+|---|---|---|
+| `CLOCK_REALTIME` | The real time, like `gettimeofday()`; can jump | Timestamp an event |
+| `CLOCK_MONOTONIC` | Elapsed time, never going backwards | Time an operation |
+| `CLOCK_PROCESS_CPUTIME_ID` | The computing time consumed by the process (excluding waiting) | Know whether a program computes or waits |
+
+```c
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
+
+double seconds(clockid_t clock)
+{
+    struct timespec t;
+    clock_gettime(clock, &t);                    // seconds + nanoseconds
+    return t.tv_sec + t.tv_nsec * 1e-9;
+}
+
+int main(void)
+{
+    double start = seconds(CLOCK_MONOTONIC);
+    double cpu = seconds(CLOCK_PROCESS_CPUTIME_ID);
+    usleep(200000);                              // waits 0.2 s without computing
+    printf("elapsed: %.3f s\n", seconds(CLOCK_MONOTONIC) - start);            // 0.200 s
+    printf("processor: %.3f s\n", seconds(CLOCK_PROCESS_CPUTIME_ID) - cpu);   // 0.000 s
+    return 0;
+}
+```
+
+The gap between the two measurements shows that the program waited instead of computing: this is often the first question to ask about a slow program.
+
 ---
 
 ## 📋 Summary
@@ -47,6 +82,6 @@ This **busy-wait** pattern recomputes the actually elapsed time on every iterati
 | | |
 |---|---|
 | **Key takeaways** | `gettimeofday()` reads the current time (seconds + microseconds since the Unix epoch); `usleep()` pauses, but its actual duration can slightly exceed the requested value. |
-| **Tools you can use** | Combining `tv_sec`/`tv_usec` into a single millisecond value to timestamp or compare points in time. |
+| **Tools you can use** | Combining `tv_sec`/`tv_usec` into a single millisecond value to timestamp or compare points in time; `clock_gettime(CLOCK_MONOTONIC)` to time a duration. |
 | **Pitfalls to avoid** | Trusting a single long `usleep()` for precise timing: its imprecision accumulates. |
 | **Best practices** | Loop over small `usleep()` calls, rechecking the actually elapsed time against the desired duration, for precise waiting despite each `usleep()`'s individual imprecision. |
