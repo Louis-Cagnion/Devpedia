@@ -19,7 +19,7 @@ Exemplo medido em um solucionador do quebra-cabeça *Skyscraper*: o backtracking
 
 O símbolo `∨` se lê "ou", `∧` se lê "e". Uma cláusula como `(¬a ∨ b)` expressa uma regra "se... então": ela só é falsa se `a` for verdadeiro e `b` falso.
 
-O problema SAT é **NP-completo**: nenhum algoritmo conhecido o resolve rapidamente em todos os casos (ver [A complexidade](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o)). Na prática, porém, os solucionadores modernos tratam fórmulas com milhões de cláusulas, porque os problemas reais são muito estruturados.
+O problema SAT é **NP-completo**: nenhum algoritmo conhecido o resolve rapidamente em todos os casos (ver [Os problemas NP-completos](/?c=fondamentaux&s=algorithmes&p=problemes-np-complets)). Na prática, porém, os solucionadores modernos tratam fórmulas com milhões de cláusulas, porque os problemas reais são muito estruturados.
 
 ## O formato DIMACS: a língua comum dos solucionadores
 
@@ -113,7 +113,7 @@ Um **reinício** desfaz todas as decisões e recomeça do nível 0, **mantendo**
 |---|---|---|
 | **Sequência de Luby** | Depois de 1, 1, 2, 1, 1, 2, 4, 1, 1, 2... vezes uma unidade de conflitos (aqui 300) | A escolhida |
 | Glucose | Quando a qualidade recente das cláusulas aprendidas piora | 2 vezes mais lenta |
-| Nenhum reinício | Nunca | Todas as seeds testadas em grade 56 × 56 passam de 90 s |
+| Nenhum reinício | Nunca | Todas as grades 56 × 56 testadas passam de 90 s |
 
 As cláusulas aprendidas se acumulam: metade delas é apagada regularmente, mantendo as melhores segundo o seu **LBD** (*Literal Block Distance*): o número de níveis diferentes entre os seus literais. Uma cláusula de LBD 2 liga apenas duas decisões: ela vai ser útil com frequência.
 
@@ -173,7 +173,7 @@ k=3 processos: p^k = 0.000343
 k=4 processos: p^k = 0.000024
 ```
 
-Medido em grade 72 × 72 sobre 100 grades: 4 processos ([`fork`](/?c=langages-de-programmation&s=c&p=processus), resultado do primeiro processo recebido por um [pipe](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) e `poll`, que espera vários pipes ao mesmo tempo) passam de 7 casos acima de 90 s para nenhum, com média de 9,6 s e pior caso de 16,8 s. Em comparação, um único processo com reinício periódico completo remove apenas 3 dos 7: uma única trajetória continua sendo uma única trajetória, não importa quantos reinícios tenha, enquanto processos realmente independentes seguem a lei *p^k*.
+Medido em grade 72 × 72 sobre 100 grades: 4 processos ([`fork`](/?c=langages&s=c&p=processus), resultado do primeiro processo recebido por um [pipe](/?c=langages&s=c&p=appels-systeme-et-descripteurs) e `poll`, que espera vários pipes ao mesmo tempo) passam de 7 casos acima de 90 s para nenhum, com média de 9,6 s e pior caso de 16,8 s. Em comparação, um único processo com reinício periódico completo remove apenas 3 dos 7: uma única trajetória continua sendo uma única trajetória, não importa quantos reinícios tenha, enquanto processos realmente independentes seguem a lei *p^k*.
 
 ### Portfólio heterogêneo e retornos decrescentes
 
