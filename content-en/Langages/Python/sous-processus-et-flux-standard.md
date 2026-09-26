@@ -120,7 +120,7 @@ sleep 0.8: 0.8 s OK
 total: 1.0 s
 ```
 
-> **Pitfall:** when the timeout expires, `subprocess.run` only kills the program it started, **not the processes that program created itself**. For a program that starts subprocesses, you must group them (`start_new_session=True` with `subprocess.Popen`) and kill the whole group (`os.killpg`).
+> **Pitfall:** when the timeout expires, `subprocess.run` only kills the program it started, **not the processes that program created itself**. For a program that starts subprocesses, you must group them (`start_new_session=True` with `subprocess.Popen`) and kill the whole group (`os.killpg`). On the C side, see [orphan processes](/?c=langages&s=c&p=processus#when-the-parent-dies-before-its-children-orphan-processes).
 
 ---
 

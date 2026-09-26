@@ -120,7 +120,7 @@ sleep 0.8 : 0.8 s OK
 total : 1.0 s
 ```
 
-> **Piège :** en cas de dépassement, `subprocess.run` ne tue que le programme lancé, **pas les processus que ce programme a lui-même créés**. Pour un programme qui lance des sous-processus, il faut les regrouper (`start_new_session=True` avec `subprocess.Popen`) et tuer tout le groupe (`os.killpg`).
+> **Piège :** en cas de dépassement, `subprocess.run` ne tue que le programme lancé, **pas les processus que ce programme a lui-même créés**. Pour un programme qui lance des sous-processus, il faut les regrouper (`start_new_session=True` avec `subprocess.Popen`) et tuer tout le groupe (`os.killpg`). Côté C, voir [les processus orphelins](/?c=langages&s=c&p=processus#quand-le-parent-meurt-avant-ses-enfants-les-processus-orphelins).
 
 ---
 

@@ -97,13 +97,69 @@ int main(void)
 
 Veja também [As threads](/?c=langages-de-programmation&s=c&p=threads), uma alternativa mais leve ao `fork()` quando as tarefas precisam compartilhar a mesma memória.
 
+## Quando o pai morre antes dos filhos: os processos órfãos
+
+Um **processo órfão** é um filho cujo pai terminou antes dele. Ao contrário de um zumbi, ele **continua rodando**: o sistema lhe dá um novo pai (o primeiro processo do sistema, `init`, ou um processo de serviço designado para isso, como o `systemd`), que o recolherá quando ele terminar. Matar um programa, portanto, **não** mata os filhos que ele criou com `fork()`.
+
+Caso real: um script de medição parava, depois de 90 s, um programa que calculava com 4 filhos; os 4 filhos ainda rodavam 30 minutos depois, ocupavam o processador e falseavam todas as medições seguintes.
+
+| Lado | Meio | Efeito |
+|---|---|---|
+| Filho | [`prctl(PR_SET_PDEATHSIG, SIGKILL)`](https://man7.org/linux/man-pages/man2/prctl.2.html), só no Linux | O kernel envia o [sinal](/?c=langages&s=c&p=signaux-unix) `SIGKILL` ao filho assim que o pai morre |
+| Lançador | Iniciar o programa no seu próprio **grupo de processos** (`setsid()`, veja [o controle de tarefas de um shell](/?c=langages&s=bash&p=architecture-dun-shell#o-controle-de-tarefas-jobs-ctrl-z-fg-bg)) e depois matar o grupo inteiro: `kill(-grupo, SIGKILL)` | O programa e todos os seus descendentes recebem o sinal; em Python, veja [o orçamento de tempo do `subprocess`](/?c=langages&s=python&p=sous-processus-et-flux-standard#executar-varios-programas-em-paralelo-com-orcamento-de-tempo) |
+
+Dois filhos, um protegido por `PR_SET_PDEATHSIG` e o outro não; o pai termina depois de um segundo sem esperá-los. Saída de `./orfaos; sleep 3` (o `sleep` dá aos filhos tempo para escrever):
+
+```c
+#include <signal.h>
+#include <stdio.h>
+#include <sys/prctl.h>
+#include <unistd.h>
+
+static void filho(int protegido, pid_t pai)
+{
+    if (protegido) {
+        prctl(PR_SET_PDEATHSIG, SIGKILL);            /* morto quando o pai morrer */
+        if (getppid() != pai)                        /* pai morto antes da chamada? */
+            _exit(0);
+    }
+    sleep(2);                                        /* o pai morre enquanto isso */
+    printf("filho %s: ainda vivo, pai %s\n",
+           protegido ? "protegido" : "não protegido",
+           getppid() == pai ? "inalterado" : "substituído");
+    fflush(stdout);                                  /* _exit não esvazia os buffers */
+    _exit(0);
+}
+
+int main(void)
+{
+    pid_t pai = getpid();
+
+    for (int protegido = 0; protegido <= 1; protegido++)
+        if (fork() == 0)
+            filho(protegido, pai);                   /* o filho nunca volta aqui */
+    sleep(1);
+    printf("pai: termino sem esperar meus filhos\n");
+    return 0;
+}
+```
+
+```
+pai: termino sem esperar meus filhos
+filho não protegido: ainda vivo, pai substituído
+```
+
+O filho protegido foi morto quando o pai morreu e não escreve nada; o outro continua rodando, ligado a um novo pai. O teste `getppid() != pai` cobre o caso em que o pai morre entre `fork()` e `prctl()`: sem ele, o filho nunca seria avisado.
+
+> **Armadilha:** um programa que se relança com `execv("/proc/self/exe", ...)` (o caminho especial do seu próprio executável, veja [a família `exec`](/?c=langages&s=c&p=processus#substituir-o-programa-em-execucao-a-familia-exec)) aparece depois com o nome `exe` no `ps` ou no `pgrep`. Caso real: um órfão renomeado assim foi primeiro confundido com um aplicativo do usuário. Relance pelo caminho real, obtido com `readlink("/proc/self/exe", ...)`.
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | `fork()` duplica o processo atual (dois processos continuam após a chamada); `exec*()` substitui o programa do processo atual; `wait()`/`waitpid()` esperam que um filho termine. |
-| **Ferramentas utilizáveis** | `fork()`, `execlp()`/`execve()`, `wait()`/`waitpid()`, `WIFEXITED`/`WEXITSTATUS`. |
-| **Armadilhas a evitar** | Nunca deixar de chamar `wait()` em um filho terminado: ele permanece "zumbi" na tabela de processos até que o pai o recolha ou termine ele mesmo. |
+| **Para lembrar** | `fork()` duplica o processo atual (dois processos continuam após a chamada); `exec*()` substitui o programa do processo atual; `wait()`/`waitpid()` esperam que um filho termine. Um filho cujo pai morre se torna órfão e continua rodando. |
+| **Ferramentas utilizáveis** | `fork()`, `execlp()`/`execve()`, `wait()`/`waitpid()`, `WIFEXITED`/`WEXITSTATUS`; `prctl(PR_SET_PDEATHSIG, SIGKILL)`, `setsid()` e `kill(-grupo, SIGKILL)` contra os órfãos. |
+| **Armadilhas a evitar** | Nunca deixar de chamar `wait()` em um filho terminado: ele permanece "zumbi" na tabela de processos até que o pai o recolha ou termine ele mesmo; achar que matar um programa também mata os filhos dele. |
 | **Boas práticas** | Sempre verificar o valor de retorno de `fork()` (`< 0` = falha) antes de ramificar entre o caso pai/filho. |

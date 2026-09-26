@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 23 et 24 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : point 24, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -36,13 +36,14 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/memoire` (sections arène et `memcpy`/`memset`, et en anglais le tableau des quatre bugs mémoire).
 - `Fondamentaux/Algorithmes/file-de-priorite-et-tas-binaire` (nouveau).
 - `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` (profileurs natifs, piège de gprof sur les fonctions intégrées ou copiées, compteurs déterministes, programmes limités par la mémoire, portfolio et biais du jeu de test).
-- `Langages/Python/sous-processus-et-flux-standard` (section `timeout` et `ThreadPoolExecutor`).
+- `Langages/Python/sous-processus-et-flux-standard` (section `timeout` et `ThreadPoolExecutor`, renvoi vers les processus orphelins).
 - `Fondamentaux/Algorithmes/backtracking-et-satisfaction-de-contraintes` (section sur quoi brancher).
 - `Langages/PHP/routage` (notes `parse_url()` qui renvoie `null` et point final CWE-42).
 - `Sécurité/Cybersécurité/failles-de-navigateur` (`Referrer-Policy`, CWE-598 et `autocomplete`) : en français seulement, le chapitre n'existant pas encore dans les autres langues (point 24).
 - `Qualité, performance et outils/Qualité et architecture du code/robustesse-traitement-par-lots` (section valider avant de détruire).
 - `Fondamentaux/Algorithmes/problemes-np-complets` (nouveau).
 - `Tests/property-based-testing` (section test différentiel).
+- `Langages/C/processus` (section processus orphelins, récapitulatif corrigé ; en anglais, titre de la section `wait()` corrigé).
 - `Qualité, performance et outils/Performance/cache-cpu-et-simd` (sections accès aléatoires, AoS/SoA, filtre par bitmap, écritures inutiles, TLB et pages géantes).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
@@ -62,13 +63,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 23. Processus orphelins : tuer un programme ne tue pas ses fils (rush01, `research/cdcl.c`, `research/bench.py`)
-`processus.md` couvre `fork`/`waitpid`/zombies et `architecture-dun-shell.md` définit le groupe de processus (`setpgid`), mais 0 résultat pour « PDEATHSIG », « prctl », « killpg », « start_new_session », et « orphelin » n'apparaît que pour des lignes SQL. Rubrique pressentie : Langages > C > `processus.md`, renvoi depuis `sous-processus-et-flux-standard.md` (Python).
-- **Orphelin** : un fils dont le parent meurt continue de tourner, réadopté par `init`/`systemd`. Vécu : un délai de 90 s tuait le parent d'un portfolio, ses 4 fils tournaient encore 30 minutes, chargeaient la machine et faussaient toutes les mesures suivantes.
-- **Côté fils** : `prctl(PR_SET_PDEATHSIG, SIGKILL)` (Linux) demande au noyau de le tuer à la mort du parent ; vérifier ensuite `getppid()` couvre le cas où le parent est mort avant l'appel.
-- **Côté lanceur** : démarrer le programme dans son propre groupe de processus (`setsid`, `start_new_session=True` en Python) et tuer tout le groupe au dépassement (`os.killpg(pid, SIGKILL)`), au lieu du seul processus lancé.
-- **Piège du nom de processus** : un programme qui se relance via `execv("/proc/self/exe", ...)` s'appelle ensuite `exe` dans `ps`/`pgrep` ; un orphelin a ainsi été pris pour une application de l'utilisateur. Relancer par le chemin réel (`readlink("/proc/self/exe")`).
 
 ## 24. Traduire les 4 chapitres de Sécurité > Cybersécurité restés en français
 `failles-de-navigateur`, `securite-des-webhooks`, `ssrf-en-detail` et `upload-de-fichiers` (ajoutés le 16/09) n'existent qu'en français et ne sont pas déclarés dans `structure/struct-en.json`, `struct-es.json` et `struct-br.json` : les traduire en en/es/br, puis les déclarer (à la main, sans `buildStruct`, cf. journal de bord).
