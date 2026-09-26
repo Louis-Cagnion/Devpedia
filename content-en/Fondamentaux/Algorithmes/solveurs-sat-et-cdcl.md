@@ -19,7 +19,7 @@ Example measured on a *Skyscraper* puzzle solver: backtracking with propagation 
 
 The symbol `∨` reads "or", `∧` reads "and". A clause like `(¬a ∨ b)` expresses an "if... then" rule: it is only false if `a` is true and `b` false.
 
-The SAT problem is **NP-complete**: no known algorithm solves it quickly in every case (see [Complexity](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o)). In practice, though, modern solvers handle formulas with millions of clauses, because real problems are highly structured.
+The SAT problem is **NP-complete**: no known algorithm solves it quickly in every case (see [NP-Complete Problems](/?c=fondamentaux&s=algorithmes&p=problemes-np-complets)). In practice, though, modern solvers handle formulas with millions of clauses, because real problems are highly structured.
 
 ## The DIMACS Format: the Common Language of Solvers
 
@@ -113,7 +113,7 @@ A **restart** undoes every decision and starts again from level 0, **keeping** t
 |---|---|---|
 | **Luby sequence** | After 1, 1, 2, 1, 1, 2, 4, 1, 1, 2... times a unit of conflicts (here 300) | Kept |
 | Glucose | When the recent quality of learned clauses drops | 2 times slower |
-| No restart | Never | Every seed tested on 56 × 56 grids exceeds 90 s |
+| No restart | Never | Every 56 × 56 grid tested exceeds 90 s |
 
 Learned clauses pile up: half of them are regularly deleted, keeping the best according to their **LBD** (*Literal Block Distance*): the number of different levels among their literals. A clause with LBD 2 links only two decisions: it will be useful often.
 
@@ -173,7 +173,7 @@ k=3 processes: p^k = 0.000343
 k=4 processes: p^k = 0.000024
 ```
 
-Measured on a 72 × 72 grid over 100 grids: 4 processes ([`fork`](/?c=langages-de-programmation&s=c&p=processus), the first process's result read through a [pipe](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs), and `poll`, which waits on several pipes at once) go from 7 timeouts over 90 s to none, with a 9.6 s average and a 16.8 s worst case. Compare this to a single process that periodically resets itself completely, which removes only 3 out of 7: a single trajectory stays a single trajectory no matter how many restarts it gets, while truly independent processes follow the *p^k* law.
+Measured on a 72 × 72 grid over 100 grids: 4 processes ([`fork`](/?c=langages&s=c&p=processus), the first process's result read through a [pipe](/?c=langages&s=c&p=appels-systeme-et-descripteurs), and `poll`, which waits on several pipes at once) go from 7 timeouts over 90 s to none, with a 9.6 s average and a 16.8 s worst case. Compare this to a single process that periodically resets itself completely, which removes only 3 out of 7: a single trajectory stays a single trajectory no matter how many restarts it gets, while truly independent processes follow the *p^k* law.
 
 ### Heterogeneous Portfolios and Diminishing Returns
 

@@ -19,7 +19,7 @@ Exemple mesuré sur un solveur de puzzle *Skyscraper* : le backtracking avec pro
 
 Le symbole `∨` se lit « ou », `∧` se lit « et ». Une clause comme `(¬a ∨ b)` exprime une règle « si... alors » : elle n'est fausse que si `a` est vrai et `b` faux.
 
-Le problème SAT est **NP-complet** : aucun algorithme connu ne le résout rapidement dans tous les cas (voir [La complexité](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o)). En pratique pourtant, les solveurs modernes traitent des formules de millions de clauses, parce que les problèmes réels sont très structurés.
+Le problème SAT est **NP-complet** : aucun algorithme connu ne le résout rapidement dans tous les cas (voir [Les problèmes NP-complets](/?c=fondamentaux&s=algorithmes&p=problemes-np-complets)). En pratique pourtant, les solveurs modernes traitent des formules de millions de clauses, parce que les problèmes réels sont très structurés.
 
 ## Le format DIMACS : la langue commune des solveurs
 
@@ -113,7 +113,7 @@ Un **redémarrage** annule toutes les décisions et repart du niveau 0, **en gar
 |---|---|---|
 | **Suite de Luby** | Après 1, 1, 2, 1, 1, 2, 4, 1, 1, 2... fois une unité de conflits (ici 300) | Retenue |
 | Glucose | Quand la qualité récente des clauses apprises se dégrade | 2 fois plus lente |
-| Aucun redémarrage | Jamais | Tous les seeds testés en grille 56 × 56 dépassent 90 s |
+| Aucun redémarrage | Jamais | Toutes les grilles 56 × 56 testées dépassent 90 s |
 
 Les clauses apprises s'accumulent : on en supprime régulièrement la moitié, en gardant les meilleures selon leur **LBD** (*Literal Block Distance*) : le nombre de niveaux différents parmi leurs littéraux. Une clause de LBD 2 relie deux décisions seulement : elle resservira souvent.
 
@@ -173,7 +173,7 @@ k=3 processus : p^k = 0.000343
 k=4 processus : p^k = 0.000024
 ```
 
-Mesuré en grille 72 × 72 sur 100 grilles : 4 processus ([`fork`](/?c=langages-de-programmation&s=c&p=processus), résultat du premier processus reçu par un [tube](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) et `poll`, qui attend plusieurs tubes à la fois) passent de 7 dépassements de 90 s à aucun, avec une moyenne de 9,6 s et un pire cas de 16,8 s. À comparer avec une seule réinitialisation complète périodique, dans un seul processus, qui n'en retire que 3 sur 7 : une seule trajectoire reste une seule trajectoire, quel que soit le nombre de redémarrages, alors que des processus réellement indépendants suivent la loi *p^k*.
+Mesuré en grille 72 × 72 sur 100 grilles : 4 processus ([`fork`](/?c=langages&s=c&p=processus), résultat du premier processus reçu par un [tube](/?c=langages&s=c&p=appels-systeme-et-descripteurs) et `poll`, qui attend plusieurs tubes à la fois) passent de 7 dépassements de 90 s à aucun, avec une moyenne de 9,6 s et un pire cas de 16,8 s. À comparer avec une seule réinitialisation complète périodique, dans un seul processus, qui n'en retire que 3 sur 7 : une seule trajectoire reste une seule trajectoire, quel que soit le nombre de redémarrages, alors que des processus réellement indépendants suivent la loi *p^k*.
 
 ### Portfolio hétérogène et rendements décroissants
 

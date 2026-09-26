@@ -19,7 +19,7 @@ Ejemplo medido en un solucionador del puzle *Skyscraper*: el backtracking con pr
 
 El símbolo `∨` se lee «o», `∧` se lee «y». Una cláusula como `(¬a ∨ b)` expresa una regla «si... entonces»: solo es falsa si `a` es verdadero y `b` falso.
 
-El problema SAT es **NP-completo**: ningún algoritmo conocido lo resuelve rápido en todos los casos (ver [La complejidad](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o)). Sin embargo, en la práctica los solucionadores modernos tratan fórmulas de millones de cláusulas, porque los problemas reales están muy estructurados.
+El problema SAT es **NP-completo**: ningún algoritmo conocido lo resuelve rápido en todos los casos (ver [Los problemas NP-completos](/?c=fondamentaux&s=algorithmes&p=problemes-np-complets)). Sin embargo, en la práctica los solucionadores modernos tratan fórmulas de millones de cláusulas, porque los problemas reales están muy estructurados.
 
 ## El formato DIMACS: el idioma común de los solucionadores
 
@@ -113,7 +113,7 @@ Un **reinicio** anula todas las decisiones y vuelve a empezar desde el nivel 0, 
 |---|---|---|
 | **Secuencia de Luby** | Tras 1, 1, 2, 1, 1, 2, 4, 1, 1, 2... veces una unidad de conflictos (aquí 300) | La que se conservó |
 | Glucose | Cuando la calidad reciente de las cláusulas aprendidas empeora | 2 veces más lenta |
-| Ningún reinicio | Nunca | Todas las semillas probadas en cuadrícula de 56 × 56 superan los 90 s |
+| Ningún reinicio | Nunca | Todas las cuadrículas de 56 × 56 probadas superan los 90 s |
 
 Las cláusulas aprendidas se acumulan: se elimina regularmente la mitad, conservando las mejores según su **LBD** (*Literal Block Distance*): el número de niveles distintos entre sus literales. Una cláusula de LBD 2 solo relaciona dos decisiones: se volverá a usar a menudo.
 
@@ -173,7 +173,7 @@ k=3 procesos: p^k = 0.000343
 k=4 procesos: p^k = 0.000024
 ```
 
-Medido en cuadrícula 72 × 72 sobre 100 cuadrículas: 4 procesos ([`fork`](/?c=langages-de-programmation&s=c&p=processus), el resultado del primer proceso recibido por una [tubería](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) y `poll`, que espera varias tuberías a la vez) pasan de 7 casos por encima de 90 s a ninguno, con una media de 9,6 s y un peor caso de 16,8 s. En comparación, un solo proceso con reinicio periódico completo solo elimina 3 de los 7: una sola trayectoria sigue siendo una sola trayectoria sin importar cuántos reinicios tenga, mientras que procesos realmente independientes siguen la ley *p^k*.
+Medido en cuadrícula 72 × 72 sobre 100 cuadrículas: 4 procesos ([`fork`](/?c=langages&s=c&p=processus), el resultado del primer proceso recibido por una [tubería](/?c=langages&s=c&p=appels-systeme-et-descripteurs) y `poll`, que espera varias tuberías a la vez) pasan de 7 casos por encima de 90 s a ninguno, con una media de 9,6 s y un peor caso de 16,8 s. En comparación, un solo proceso con reinicio periódico completo solo elimina 3 de los 7: una sola trayectoria sigue siendo una sola trayectoria sin importar cuántos reinicios tenga, mientras que procesos realmente independientes siguen la ley *p^k*.
 
 ### Portafolio heterogéneo y rendimientos decrecientes
 
