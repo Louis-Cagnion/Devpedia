@@ -84,6 +84,8 @@ In Python, `multiprocessing.Pool` can start each worker in two different ways, w
 
 When the constraint is a quota, the solution isn't always to go faster. Splitting the work into batches spread across the day exposes far less than one big run all at once, for the same result, and requires no parallelization at all. If latency doesn't matter (an overnight job, a periodic report), it's the safest choice.
 
+> **Note:** this chapter mostly deals with tasks limited by an external resource (network, quotas). For a computation limited by the processor, such as a combinatorial search, see [Parallelizing a Search: Splitting into Independent Subproblems](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes).
+
 ---
 
 ## 📋 Summary

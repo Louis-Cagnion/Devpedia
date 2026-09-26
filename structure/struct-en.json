@@ -82,6 +82,10 @@
             {
               "id": "backtracking-et-satisfaction-de-contraintes",
               "label": "Backtracking and Constraint Satisfaction (CSP)"
+            },
+            {
+              "id": "recherche-parallele-par-sous-problemes",
+              "label": "Parallelizing a Search: Splitting into Independent Subproblems (EPS)"
             }
           ]
         },

@@ -84,6 +84,8 @@ En [Python](/?c=langages&s=python&p=python), `multiprocessing.Pool` peut démarr
 
 Quand la contrainte est un quota, la solution n'est pas toujours d'aller plus vite. Découper le travail en lots répartis sur la journée expose beaucoup moins qu'un gros traitement d'un seul coup, pour un résultat identique, et ne demande aucune parallélisation. Si la latence n'a pas d'importance (un traitement nocturne, un rapport périodique), c'est le choix le plus sûr.
 
+> **Note :** ce chapitre traite surtout des tâches limitées par une ressource externe (réseau, quotas). Pour un calcul limité par le processeur, comme une recherche combinatoire, voir [Paralléliser une recherche : découper en sous-problèmes indépendants](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes).
+
 ---
 
 ## 📋 Récapitulatif

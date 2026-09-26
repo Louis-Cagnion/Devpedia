@@ -84,6 +84,8 @@ En Python, `multiprocessing.Pool` puede iniciar cada worker de dos formas difere
 
 Cuando la restricción es una cuota, la solución no siempre es ir más rápido. Dividir el trabajo en lotes repartidos a lo largo del día expone mucho menos que un gran procesamiento de una sola vez, para un resultado idéntico, y no requiere ninguna paralelización. Si la latencia no importa (un procesamiento nocturno, un informe periódico), es la opción más segura.
 
+> **Nota:** este capítulo trata sobre todo de tareas limitadas por un recurso externo (red, cuotas). Para un cálculo limitado por el procesador, como una búsqueda combinatoria, ver [Paralelizar una búsqueda: dividir en subproblemas independientes](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes).
+
 ---
 
 ## 📋 Resumen

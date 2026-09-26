@@ -81,6 +81,8 @@ Si esta reducción vacía por completo el dominio de una variable (no queda ning
 
 > **Buena práctica:** combinar los tres -- propagación para eliminar ramas imposibles pronto, MRV para adivinar primero sobre la variable más propensa a fallar rápido, backtracking para explorar el resto -- en lugar de apoyarse en un único mecanismo.
 
+> **Nota:** para explorar varias ramas al mismo tiempo en varios núcleos, ver [Paralelizar una búsqueda: dividir en subproblemas independientes](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes).
+
 ---
 
 ## 📋 Resumen

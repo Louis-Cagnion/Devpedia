@@ -84,6 +84,8 @@ Em Python, `multiprocessing.Pool` pode iniciar cada worker de duas formas difere
 
 Quando a restrição é uma cota, a solução nem sempre é ir mais rápido. Dividir o trabalho em lotes distribuídos ao longo do dia expõe muito menos do que um grande processamento de uma vez só, para um resultado idêntico, e não exige nenhuma paralelização. Se a latência não importa (um processamento noturno, um relatório periódico), é a escolha mais segura.
 
+> **Nota:** este capítulo trata sobretudo de tarefas limitadas por um recurso externo (rede, cotas). Para um cálculo limitado pelo processador, como uma busca combinatória, ver [Paralelizar uma busca: dividir em subproblemas independentes](/?c=fondamentaux&s=algorithmes&p=recherche-parallele-par-sous-problemes).
+
 ---
 
 ## 📋 Recapitulando
