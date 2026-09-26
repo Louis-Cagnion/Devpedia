@@ -94,6 +94,10 @@
             {
               "id": "encodages-sat",
               "label": "Encoder un problème en SAT"
+            },
+            {
+              "id": "file-de-priorite-et-tas-binaire",
+              "label": "La file de priorité et le tas binaire"
             }
           ]
         },
