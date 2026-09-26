@@ -68,13 +68,48 @@ Le property-based testing ne remplace pas les tests classiques, il les complète
 >
 > **Bonne pratique :** réserver le property-based testing aux comportements qui obéissent réellement à une règle générale simple à énoncer ; garder des tests classiques par exemple pour la logique métier riche en cas particuliers.
 
+## Un cas voisin : le test différentiel
+
+Quand on réécrit un algorithme existant (implémentation plus rapide, changement de structure de données...), on n'a pas toujours de propriété générale simple à formuler. Le **test différentiel** compare alors directement les deux implémentations sur beaucoup d'entrées générées : l'ancienne sert de référence, et tout désaccord entre les deux résultats signale un bug dans la réécriture.
+
+Exemple vécu sur le solveur SAT Skyscraper (voir [Encoder un problème en SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)) : en passant des clauses implicites énumérées à retrouvées par calcul, la réécriture a été validée à deux niveaux : l'ensemble exact des clauses retirées comparé à l'ancien ensemble énuméré, puis l'accord « solution trouvée / pas de solution » entre les deux versions sur 700 grilles.
+
+```python
+def tri_ancien(xs):
+    """Ancienne implémentation : tri par sélection (correcte mais lente)."""
+    xs = list(xs)
+    for i in range(len(xs)):
+        m = i
+        for j in range(i + 1, len(xs)):
+            if xs[j] < xs[m]:
+                m = j
+        xs[i], xs[m] = xs[m], xs[i]
+    return xs
+
+def tri_nouveau(xs):
+    """Réécriture à valider : tri natif de Python (Timsort)."""
+    return sorted(xs)
+```
+
+Exécuté sur 500 listes aléatoires (longueurs de 0 à 20, valeurs de -50 à 50), en comparant `tri_ancien(xs) != tri_nouveau(xs)` à chaque tirage : sortie réelle `0 desaccord(s) sur 500 entrees generees`.
+
+| Property-based testing | Test différentiel |
+|---|---|
+| Compare le résultat à une **propriété générale** énoncée à la main | Compare le résultat à une **autre implémentation** (l'ancienne version) |
+| Utile même sans version précédente à comparer | Sert spécifiquement à valider une réécriture |
+| Demande de formuler une règle vraie pour toute entrée valide | Demande seulement que l'ancienne implémentation reste disponible comme référence |
+
+> **Piège :** le test différentiel ne détecte pas un bug présent dans les deux implémentations : elles seraient d'accord, à tort. Il valide une réécriture par rapport à l'existant, pas l'existant par rapport à la spécification.
+>
+> **Bonne pratique :** générer beaucoup d'entrées, en incluant des cas limites (liste vide, valeurs répétées, tailles extrêmes) ; combiner avec un test contre la spécification quand elle existe.
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Le property-based testing décrit une propriété valable pour n'importe quelle entrée, plutôt que de vérifier des exemples choisis à la main ; un outil génère automatiquement des centaines d'entrées pour tenter de la contredire, et réduit (shrinking) tout contre-exemple trouvé vers le cas le plus simple possible. |
-| **Outils utilisables** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, l'outil historique du domaine). |
-| **Pièges à éviter** | Forcer une propriété sur un comportement qui n'a pas de règle générale simple. |
-| **Bonnes pratiques** | Réserver le property-based testing aux comportements avec une règle générale claire (fonctions mathématiques, tri, parseurs) ; garder des tests classiques pour la logique métier riche en cas particuliers. |
+| **À retenir** | Le property-based testing décrit une propriété valable pour n'importe quelle entrée, plutôt que de vérifier des exemples choisis à la main ; un outil génère automatiquement des centaines d'entrées pour tenter de la contredire, et réduit (shrinking) tout contre-exemple trouvé vers le cas le plus simple possible. Le test différentiel, un cas voisin, compare plutôt le résultat d'une réécriture à celui de l'ancienne implémentation sur beaucoup d'entrées générées. |
+| **Outils utilisables** | fast-check (JavaScript), Hypothesis (Python), QuickCheck (Haskell, l'outil historique du domaine) ; test différentiel : aucun outil dédié requis, un script de comparaison suffit. |
+| **Pièges à éviter** | Forcer une propriété sur un comportement qui n'a pas de règle générale simple ; croire qu'un accord entre deux implémentations en test différentiel prouve l'absence de bug partagé par les deux. |
+| **Bonnes pratiques** | Réserver le property-based testing aux comportements avec une règle générale claire (fonctions mathématiques, tri, parseurs) ; garder des tests classiques pour la logique métier riche en cas particuliers ; en test différentiel, générer aussi des cas limites et combiner avec un test contre la spécification quand elle existe. |
