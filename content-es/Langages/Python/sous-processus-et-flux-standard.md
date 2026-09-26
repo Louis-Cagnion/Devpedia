@@ -120,7 +120,7 @@ sleep 0.8: 0.8 s OK
 total: 1.0 s
 ```
 
-> **Trampa:** si se supera el tiempo, `subprocess.run` solo mata el programa lanzado, **no los procesos que ese programa creó a su vez**. Para un programa que lanza subprocesos, hay que agruparlos (`start_new_session=True` con `subprocess.Popen`) y matar todo el grupo (`os.killpg`).
+> **Trampa:** si se supera el tiempo, `subprocess.run` solo mata el programa lanzado, **no los procesos que ese programa creó a su vez**. Para un programa que lanza subprocesos, hay que agruparlos (`start_new_session=True` con `subprocess.Popen`) y matar todo el grupo (`os.killpg`). Del lado de C, ver [los procesos huérfanos](/?c=langages&s=c&p=processus#cuando-el-padre-muere-antes-que-sus-hijos-los-procesos-huerfanos).
 
 ---
 

@@ -120,7 +120,7 @@ sleep 0.8: 0.8 s OK
 total: 1.0 s
 ```
 
-> **Armadilha:** quando o tempo estoura, `subprocess.run` só encerra o programa executado, **não os processos que esse programa criou**. Para um programa que cria subprocessos, é preciso agrupá-los (`start_new_session=True` com `subprocess.Popen`) e encerrar o grupo inteiro (`os.killpg`).
+> **Armadilha:** quando o tempo estoura, `subprocess.run` só encerra o programa executado, **não os processos que esse programa criou**. Para um programa que cria subprocessos, é preciso agrupá-los (`start_new_session=True` com `subprocess.Popen`) e encerrar o grupo inteiro (`os.killpg`). Do lado do C, veja [os processos órfãos](/?c=langages&s=c&p=processus#quando-o-pai-morre-antes-dos-filhos-os-processos-orfaos).
 
 ---
 

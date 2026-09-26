@@ -62,7 +62,7 @@ int main(void)
 
 > **Note:** If `execlp()` succeeds, it never "returns": the child process's code is completely overwritten, so the next line is only reached if `execlp()` itself fails.
 
-## Waiting for the Birth of a Child: `wait()` / `waitpid()`
+## Waiting for a Child to Finish: `wait()` / `waitpid()`
 
 Without synchronization, the parent continues to run independently of the child. `wait()` blocks the parent until one of its children finishes:
 
@@ -97,13 +97,69 @@ int main(void)
 
 See also [Threads](/?c=langages-de-programmation&s=c&p=threads), a lighter-weight alternative to `fork()` when tasks need to share the same memory.
 
+## When the Parent Dies Before Its Children: Orphan Processes
+
+An **orphan process** is a child whose parent terminated before it. Unlike a zombie, it **keeps running**: the system gives it a new parent (the system's first process, `init`, or a service process designated for this, such as `systemd`), which will reclaim it when it ends. Killing a program therefore does **not** kill the children it created with `fork()`.
+
+Real case: a measurement script stopped, after 90 s, a program that computed with 4 children; the 4 children were still running 30 minutes later, keeping the processor busy and skewing every following measurement.
+
+| Side | Means | Effect |
+|---|---|---|
+| Child | [`prctl(PR_SET_PDEATHSIG, SIGKILL)`](https://man7.org/linux/man-pages/man2/prctl.2.html), Linux only | The kernel sends the `SIGKILL` [signal](/?c=langages&s=c&p=signaux-unix) to the child as soon as its parent dies |
+| Launcher | Start the program in its own **process group** (`setsid()`, see [a shell's job control](/?c=langages&s=bash&p=architecture-dun-shell#job-control-ctrl-z-fg-bg)), then kill the whole group: `kill(-group, SIGKILL)` | The program and all its descendants receive the signal; in Python, see [the `subprocess` time budget](/?c=langages&s=python&p=sous-processus-et-flux-standard#running-several-programs-in-parallel-with-a-time-budget) |
+
+Two children, one protected by `PR_SET_PDEATHSIG`, the other not; the parent exits after one second without waiting for them. Output of `./orphans; sleep 3` (the `sleep` gives the children time to write):
+
+```c
+#include <signal.h>
+#include <stdio.h>
+#include <sys/prctl.h>
+#include <unistd.h>
+
+static void child(int protected, pid_t parent)
+{
+    if (protected) {
+        prctl(PR_SET_PDEATHSIG, SIGKILL);            /* killed when the parent dies */
+        if (getppid() != parent)                     /* parent dead before the call? */
+            _exit(0);
+    }
+    sleep(2);                                        /* the parent dies meanwhile */
+    printf("%s child: still alive, parent %s\n",
+           protected ? "protected" : "unprotected",
+           getppid() == parent ? "unchanged" : "replaced");
+    fflush(stdout);                                  /* _exit does not flush buffers */
+    _exit(0);
+}
+
+int main(void)
+{
+    pid_t parent = getpid();
+
+    for (int protected = 0; protected <= 1; protected++)
+        if (fork() == 0)
+            child(protected, parent);                /* the child never comes back here */
+    sleep(1);
+    printf("parent: exiting without waiting for my children\n");
+    return 0;
+}
+```
+
+```
+parent: exiting without waiting for my children
+unprotected child: still alive, parent replaced
+```
+
+The protected child was killed when the parent died and writes nothing; the other one keeps running, attached to a new parent. The `getppid() != parent` test covers the case where the parent dies between `fork()` and `prctl()`: the child would otherwise never be notified.
+
+> **Pitfall:** a program that relaunches itself with `execv("/proc/self/exe", ...)` (the special path of its own executable, see [the `exec` family](/?c=langages&s=c&p=processus#replace-the-currently-running-program-the-exec-family)) then shows up under the name `exe` in `ps` or `pgrep`. Real case: an orphan renamed this way was first mistaken for one of the user's applications. Relaunch through the real path, obtained with `readlink("/proc/self/exe", ...)`.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | `fork()` duplicates the current process (two processes continue after the call); `exec*()` replaces the current process's program; `wait()`/`waitpid()` wait for a child to terminate. |
-| **Tools you can use** | `fork()`, `execlp()`/`execve()`, `wait()`/`waitpid()`, `WIFEXITED`/`WEXITSTATUS`. |
-| **Pitfalls to avoid** | Never skip calling `wait()` on a terminated child: it stays "zombie" in the process table until the parent reclaims it or terminates itself. |
+| **Key takeaways** | `fork()` duplicates the current process (two processes continue after the call); `exec*()` replaces the current process's program; `wait()`/`waitpid()` wait for a child to terminate. A child whose parent dies becomes an orphan and keeps running. |
+| **Tools you can use** | `fork()`, `execlp()`/`execve()`, `wait()`/`waitpid()`, `WIFEXITED`/`WEXITSTATUS`; `prctl(PR_SET_PDEATHSIG, SIGKILL)`, `setsid()` and `kill(-group, SIGKILL)` against orphans. |
+| **Pitfalls to avoid** | Never skip calling `wait()` on a terminated child: it stays "zombie" in the process table until the parent reclaims it or terminates itself; believing that killing a program also kills its children. |
 | **Best practices** | Always check the return value of `fork()` (`< 0` = failure) before branching into the parent/child case. |
