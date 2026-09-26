@@ -57,7 +57,7 @@ On a SAT solver (see [SAT Solvers and the CDCL Algorithm](/?c=fondamentaux&s=alg
 | Optimization | Effect on instructions | Effect on time |
 |---|---|---|
 | Circular search for the replacement literal ([Gent 2013](https://www.jair.org/index.php/jair/article/view/10839)) | Divides the number of scanned literals by 2.5 | No change |
-| Removing one random memory access per propagation | Barely changes the instruction count | -21% |
+| Removing one random memory access per propagation (see "Bitmap Filter" below) | Barely changes the instruction count | -21% |
 
 The first optimization reduces the work measured in instructions, but that work was already in cache: fewer instructions for the same number of already-cheap memory accesses changes nothing. The second removes an access that missed cache on every propagation: one fewer random access outweighs thousands fewer instructions that were already cheap.
 
@@ -91,9 +91,9 @@ Checking the bitmap before the header avoided 91% of the reads into the 147 MB a
 
 ## Only Write What Will Be Read Again
 
-Writing costs as much as reading: it's the same cache line to load, then to send back to memory if evicted before the next read. Updating data nobody will read again is a memory access paid for nothing.
+Writing is not free: to modify data, the processor first loads its cache line, just as for a read, then will have to send it back to memory when it is evicted from the cache. Updating data nobody will read again means paying for these accesses for nothing.
 
-In a SAT solver (see [SAT Solvers and the CDCL Algorithm](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)), two auxiliary structures, a variable's recorded **phase** and its position in the priority **heap**, are only useful for variables still **decidable** (still left to choose). Updating them for variables already fixed by propagation too writes into cache lines nobody will read again for a long time. Restricting both updates to decidable variables only removes these useless writes.
+In a SAT solver (see [SAT Solvers and the CDCL Algorithm](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)), two auxiliary structures, a variable's recorded **phase** and its position in the priority **heap** (see [the priority queue](/?c=fondamentaux&s=algorithmes&p=file-de-priorite-et-tas-binaire)), only serve **decidable** variables: those on which the solver is allowed to make a decision (in the Skyscraper solver, only some of the variables; the others are always deduced by propagation). Updating them for the other variables too writes into cache lines nobody will ever read. Restricting both updates to decidable variables removes these writes; together with other tweaks of the same kind, the measured gain is a few percent, with identical work counters.
 
 > This connects to the bitmap filter above: in both cases, the question asked before acting is "will this data be read again?", not just "is this computation correct?".
 

@@ -57,7 +57,7 @@ Sur un solveur SAT (voir [Solveurs SAT et CDCL](/?c=fondamentaux&s=algorithmes&p
 | Optimisation | Effet sur les instructions | Effet sur le temps |
 |---|---|---|
 | Recherche circulaire du remplaçant ([Gent 2013](https://www.jair.org/index.php/jair/article/view/10839)) | Divise par 2,5 le nombre de littéraux parcourus | Aucun changement |
-| Supprimer un accès mémoire aléatoire par propagation | Change peu le nombre d'instructions | −21 % |
+| Supprimer un accès mémoire aléatoire par propagation (voir « Filtre par bitmap » plus bas) | Change peu le nombre d'instructions | −21 % |
 
 La première optimisation réduit le travail mesuré en instructions, mais ce travail restait déjà dans le cache : moins d'instructions pour le même nombre d'accès mémoire déjà bon marché ne change rien. La seconde supprime un accès qui manquait le cache à chaque propagation : un seul accès aléatoire en moins pèse plus que des milliers d'instructions en moins qui, elles, étaient déjà bon marché.
 
@@ -91,9 +91,9 @@ Consulter le bitmap avant l'en-tête a évité 91 % des lectures dans le tableau
 
 ## N'écrire que ce qui sera relu
 
-Écrire coûte aussi cher que lire : c'est la même ligne de cache à charger, puis à renvoyer en mémoire si elle est évincée avant la prochaine lecture. Mettre à jour une donnée que personne ne relira est un accès mémoire payé pour rien.
+Écrire n'est pas gratuit : pour modifier une donnée, le processeur charge d'abord sa ligne de cache, comme pour une lecture, puis devra la renvoyer en mémoire quand elle sera évincée du cache. Mettre à jour une donnée que personne ne relira, c'est payer ces accès pour rien.
 
-Dans un solveur SAT (voir [Solveurs SAT et CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)), deux structures auxiliaires, la **phase** enregistrée d'une variable et sa position dans le **tas** des priorités, ne servent que pour les variables encore **décidables** (celles qu'il reste à choisir). Les mettre à jour aussi pour les variables déjà fixées par la propagation écrit dans des lignes de cache que plus personne ne relira avant longtemps. Restreindre ces deux mises à jour aux seules variables décidables retire ces écritures inutiles.
+Dans un solveur SAT (voir [Solveurs SAT et CDCL](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl)), deux structures auxiliaires, la **phase** enregistrée d'une variable et sa position dans le **tas** des priorités (voir [la file de priorité](/?c=fondamentaux&s=algorithmes&p=file-de-priorite-et-tas-binaire)), ne servent qu'aux variables **décidables** : celles sur lesquelles le solveur a le droit de prendre une décision (dans le solveur Skyscraper, une partie seulement des variables ; les autres sont toujours déduites par propagation). Les mettre à jour aussi pour les autres variables écrit dans des lignes de cache que personne ne relira jamais. Restreindre ces deux mises à jour aux variables décidables supprime ces écritures ; avec d'autres retouches du même type, le gain mesuré est de quelques pour cent, à compteurs de travail identiques.
 
 > Le principe rejoint celui du filtre par bitmap ci-dessus : dans les deux cas, la question posée avant d'agir est « cette donnée sera-t-elle relue ? », pas seulement « ce calcul est-il correct ? ».
 
