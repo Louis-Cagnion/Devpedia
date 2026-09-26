@@ -129,6 +129,28 @@ def compter(page):
 
 > **Bonne pratique :** compter séparément les éléments vides et les échecs dans le rapport final, et ne déclencher une alerte bloquante que pour ce qui l'exige vraiment (voir [contrôle bloquant ou alerte non bloquante](/?c=infrastructure-devops&s=ci-cd&p=yaml-pipelines-azure) dans un pipeline).
 
+## Valider le remplacement avant de détruire l'ancien
+
+Un traitement qui **remplace** un état existant (reconstruire un index de recherche, régénérer un fichier de cache) doit valider la nouvelle donnée **avant** de toucher à l'ancienne. Dans l'ordre inverse, un remplacement raté remplace un état valide par un état vide ou cassé, souvent avec un message de succès trompeur.
+
+| Ordre | Si la lecture échoue |
+|---|---|
+| Vider l'index, puis le remplir | L'index est vide : les recherches ne trouvent plus rien, et rien ne signale la panne |
+| Lire et valider, puis remplacer | L'ancien index reste en place, et l'échec est signalé |
+
+```python
+def remplacer_index(index, lire):
+    """Remplace le contenu de index par lire() ; ne détruit rien si la lecture échoue."""
+    nouveau = lire()                  # None : échec de lecture ; [] : résultat vide légitime
+    if nouveau is None:
+        return "échec : index conservé"
+    index.clear()                     # destruction APRÈS la validation, jamais avant
+    index.extend(nouveau)
+    return f"{len(nouveau)} document(s)"
+```
+
+Le test `nouveau is None` ne marche que si la lecture distingue bien un échec d'un résultat vide (voir [la section précédente](#distinguer-resultat-vide-et-echec-de-lecture)). Pour un fichier, la même idée donne l'écriture atomique vue plus haut : écrire la nouvelle version à côté, puis la renommer à la place de l'ancienne.
+
 ---
 
 ## 📋 Récapitulatif
@@ -138,4 +160,4 @@ def compter(page):
 | **À retenir** | Un point de contrôle permet de reprendre un traitement interrompu ; un disjoncteur arrête d'appeler une ressource en panne ; un statut explicite distingue un résultat vide d'un échec de lecture. |
 | **Outils utilisables** | Un fichier d'état JSON écrit via un fichier temporaire et `os.replace` ; un compteur d'échecs consécutifs par ressource ; une dataclass avec un champ `statut`. |
 | **Pièges à éviter** | Écrire le fichier d'état directement ; marquer un élément comme fait avant d'avoir sauvegardé son résultat ; réessayer indéfiniment une ressource en panne ; compter un échec de lecture comme « 0 ». |
-| **Bonnes pratiques** | Un traitement idempotent par élément ; signaler chaque ressource coupée dans le rapport ; compter séparément vides et échecs. |
+| **Bonnes pratiques** | Un traitement idempotent par élément ; signaler chaque ressource coupée dans le rapport ; compter séparément vides et échecs ; valider une nouvelle donnée avant de détruire celle qu'elle remplace. |

@@ -129,6 +129,28 @@ def count(page):
 
 > **Best practice:** count empty items and failures separately in the final report, and only raise a blocking alert for what truly requires it (see [blocking check or non-blocking alert](/?c=infrastructure-devops&s=ci-cd&p=yaml-pipelines-azure) in a pipeline).
 
+## Validating the Replacement Before Destroying the Old One
+
+A process that **replaces** an existing state (rebuilding a search index, regenerating a cache file) must validate the new data **before** touching the old one. In the reverse order, a failed replacement swaps a valid state for an empty or broken one, often with a misleading success message.
+
+| Order | If reading fails |
+|---|---|
+| Empty the index, then fill it | The index is empty: searches no longer find anything, and nothing reports the failure |
+| Read and validate, then replace | The old index stays in place, and the failure is reported |
+
+```python
+def replace_index(index, read):
+    """Replaces the content of index with read(); destroys nothing if reading fails."""
+    new = read()                      # None: read failure; []: legitimate empty result
+    if new is None:
+        return "failure: index kept"
+    index.clear()                     # destruction AFTER validation, never before
+    index.extend(new)
+    return f"{len(new)} document(s)"
+```
+
+The `new is None` test only works if reading really tells a failure apart from an empty result (see [the previous section](#telling-empty-result-apart-from-read-failure)). For a file, the same idea gives the atomic write seen above: write the new version next to it, then rename it over the old one.
+
 ---
 
 ## 📋 Summary
@@ -138,4 +160,4 @@ def count(page):
 | **Key takeaways** | A checkpoint lets an interrupted job resume; a circuit breaker stops calling a failing resource; an explicit status tells an empty result apart from a read failure. |
 | **Tools you can use** | A JSON state file written through a temporary file and `os.replace`; a counter of consecutive failures per resource; a dataclass with a `status` field. |
 | **Pitfalls to avoid** | Writing the state file directly; marking an item as done before saving its result; retrying a failing resource forever; counting a read failure as "0". |
-| **Best practices** | Idempotent processing per item; reporting every cut-off resource; counting empty items and failures separately. |
+| **Best practices** | Idempotent processing per item; reporting every cut-off resource; counting empty items and failures separately; validating new data before destroying the data it replaces. |

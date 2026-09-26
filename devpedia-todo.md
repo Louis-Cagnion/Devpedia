@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : points 17 à 24 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : points 18 à 24 dans l'ordre, rédaction autonome demandée par Louis le 26/09 (points 4, 5 et 6 laissés à Louis), audio du point 3 au fil de l'eau ; reste aussi un test navigateur en attente de Louis (point 1) et l'audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -41,6 +41,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Fondamentaux/Algorithmes/backtracking-et-satisfaction-de-contraintes` (section sur quoi brancher).
 - `Langages/PHP/routage` (notes `parse_url()` qui renvoie `null` et point final CWE-42).
 - `Sécurité/Cybersécurité/failles-de-navigateur` (`Referrer-Policy`, CWE-598 et `autocomplete`) : en français seulement, le chapitre n'existant pas encore dans les autres langues (point 24).
+- `Qualité, performance et outils/Qualité et architecture du code/robustesse-traitement-par-lots` (section valider avant de détruire).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -59,10 +60,6 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
-
-## 17. Deuxième run crash-test : chemins Windows, en-têtes HTTP, autofill navigateur, ordre validation/destruction (crash-test projet poc-borne-git)
-Notions du second run de crash-test (bugs #23-30), absentes des chapitres existants malgré des sujets voisins déjà couverts.
-- **Opération destructive avant validation de son remplacement** : notion générale de fiabilité (pas un mécanisme de langage précis), pressentie pour `logique-metier-et-automatisation.md` ou une nouvelle entrée dans les fondamentaux Sécurité (0 résultat pour cette formulation ni équivalent proche). Motif à risque : un traitement qui supprime/remplace un état existant (ex. vider un index de recherche avant de le repeupler) sans avoir d'abord validé que la nouvelle donnée est exploitable : un remplacement raté ou vide écrase alors un état valide par un état cassé ou vide, avec un message de succès trompeur si l'échec de validation n'est pas distingué d'un résultat légitimement vide. Bonne pratique : valider intégralement la nouvelle donnée AVANT toute opération destructive sur l'ancienne (jamais l'inverse), et distinguer explicitement « résultat vide légitime » de « échec de validation ».
 
 ## 18. Pourquoi un problème « exponentiel » se résout quand même : NP-complétude, pire cas vs cas typique (rush01, exploration performance)
 Question de Louis à l'origine : comment un solveur dépasse une recherche qu'on croyait bloquée par la factorielle des possibilités. `complexite-et-notation-big-o.md` ne cite le pire cas et le cas moyen qu'en une note ; 0 résultat pour « NP-complet », « NP-difficile », « transition de phase », « quasigroup ». Rubrique pressentie : Fondamentaux > Algorithmes (nouveau chapitre `problemes-np-complets.md`, renvoi depuis le chapitre Big O).
