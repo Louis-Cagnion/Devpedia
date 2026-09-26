@@ -31,6 +31,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Fondamentaux/Mathématiques/combinatoire-des-permutations` (nouveau), et la ligne `O(n!)` ajoutée à `Fondamentaux/Algorithmes/complexite-et-notation-big-o`.
 - `Fondamentaux/Mathématiques/carres-latins-et-tirage-uniforme` (nouveau), et le renvoi ajouté à `les-probabilites-de-base`.
 - `Langages/C/threads` (sections opérations atomiques et `_Thread_local`).
+- `Langages/C/operateurs-binaires` (section fonctions intégrées `__builtin_popcount`/`__builtin_ctz`).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -51,9 +52,8 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
 
 ## 13. C bas niveau et parallélisme (rush01, `research/cdcl.c`, `research/lines2`)
-Compléments aux chapitres C existants : 0 résultat pour « memcpy », « memset », « __builtin_ctz », « arène », « file de priorité », « clock_gettime », « -march », « -pthread ». Rubriques pressenties : Langages > C (`memoire.md`, `operateurs-binaires.md`, `mesure-du-temps.md`, `compilation.md`) et Fondamentaux > Algorithmes pour la file de priorité.
+Compléments aux chapitres C existants : 0 résultat pour « memcpy », « memset », « arène », « file de priorité », « clock_gettime », « -march », « -pthread ». Rubriques pressenties : Langages > C (`memoire.md`, `mesure-du-temps.md`, `compilation.md`) et Fondamentaux > Algorithmes pour la file de priorité.
 - **`memcpy`/`memset`** : copie et remplissage d'octets ; `memcpy` comme façon sûre de réinterpréter les bits d'un `float` dans un `uint32_t` (*type punning* sans comportement indéfini).
-- **Builtins de bits** (`__builtin_ctz`, `__builtin_popcount`) et parcours des bits à 1 d'un masque (`q = __builtin_ctz(m); m &= m - 1;`), en complément de l'algorithme de Kernighan déjà présent dans `operateurs-binaires.md`.
 - **Allocation en arène** : toutes les clauses rangées dans un grand tableau contigu, référencées par indice (moins d'allocations, meilleure localité ; la compaction après suppression est à gérer soi-même).
 - **Tas binaire indexé** (file de priorité avec table des positions, pour remonter un élément dont la priorité augmente).
 - **`clock_gettime(CLOCK_MONOTONIC)`** : horloge monotone pour mesurer une durée, insensible aux changements de l'heure système, vs `gettimeofday()` déjà couvert.

@@ -106,6 +106,37 @@ a ^= b; b ^= a; a ^= b;
 
 Os dois primeiros são úteis na prática (a contagem de bits é o [algoritmo de Kernighan](https://en.wikipedia.org/wiki/Hamming_weight#Language_support)). O último ilustra uma propriedade do XOR (`x ^ x == 0`, `x ^ 0 == x`) mas deve ser evitado em código real: é ilegível, mais lento que uma variável temporária em um processador moderno, e **errado se as duas variáveis forem a mesma** (`a` e `a` virariam 0).
 
+## Percorrer os bits 1: as funções embutidas do compilador
+
+O GCC e o Clang oferecem **funções embutidas** (*builtins*) que muitas vezes viram uma única instrução do processador:
+
+| Função | Devolve | Exemplo com `x = 0b101100` |
+|---|---|---|
+| `__builtin_popcount(x)` | O número de bits 1 | 3 |
+| `__builtin_ctz(x)` | O número de zeros à direita (*count trailing zeros*), ou seja, a posição do bit 1 mais à direita | 2 |
+| `__builtin_clz(x)` | O número de zeros à esquerda (*count leading zeros*) em 32 bits | 26 |
+
+Idioma comum: uma máscara em que cada bit diz se um valor ainda é possível, e um laço que visita **apenas** os bits 1 (o custo depende do número de valores possíveis, não do tamanho da palavra):
+
+```c
+#include <stdio.h>
+
+int main(void)
+{
+    unsigned int possiveis = 0x2C;           // 0b101100: valores 2, 3 e 5 ainda possíveis
+    printf("%d valores possíveis\n", __builtin_popcount(possiveis));  // 3
+    unsigned int m = possiveis;
+    while (m) {
+        int v = __builtin_ctz(m);            // posição do bit 1 mais à direita
+        printf("valor %d\n", v);             // 2, depois 3, depois 5
+        m &= m - 1;                          // apaga esse bit (truque de Kernighan)
+    }
+    return 0;
+}
+```
+
+> **Armadilha:** `__builtin_ctz(0)` e `__builtin_clz(0)` têm resultado **indefinido**: sempre verificar antes que a máscara não é nula. Para um `unsigned long long`, usar as variantes com o sufixo `ll` (`__builtin_ctzll`, `__builtin_popcountll`). Essas funções são específicas do GCC e do Clang; o C23 padroniza as mesmas operações em `<stdbit.h>` (`stdc_count_ones`, `stdc_trailing_zeros`).
+
 ## `n & 1` em vez de `n % 2`?
 
 Historicamente, `n & 1` era mais rápido que `n % 2`, e `n << 1` mais rápido que `n * 2`. **Isso não é mais um argumento válido**: qualquer compilador moderno faz essas substituições sozinho quando são corretas.
@@ -131,6 +162,6 @@ Escreva então o que expressa sua intenção: `n % 2 == 0` se você fala de pari
 | | |
 |---|---|
 | **Para lembrar** | Os operadores binários (`&`, `\|`, `^`, `~`, `<<`, `>>`) trabalham bit a bit, usados para flags, permissões e máscaras. Não confundir com `&&`/`\|\|` (lógicos). |
-| **Ferramentas utilizáveis** | Máscaras (`\|=` ativa, `&= ~` desativa, `^=` alterna, `&` testa um bit). |
+| **Ferramentas utilizáveis** | Máscaras (`\|=` ativa, `&= ~` desativa, `^=` alterna, `&` testa um bit); `__builtin_popcount`, `__builtin_ctz` e o laço `m &= m - 1` para percorrer os bits 1. |
 | **Armadilhas a evitar** | Deslocar por um número de bits ≥ a largura do tipo (comportamento indefinido); usar `>>` em um assinado negativo (depende da implementação). |
 | **Boas práticas** | Reservar as operações binárias aos tipos sem sinal; escrever `n % 2`/`n * 2` em vez de `n & 1`/`n << 1` pela legibilidade: um compilador moderno já otimiza a equivalência. |
