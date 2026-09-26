@@ -128,6 +128,66 @@ Sur des grilles de même taille, la plupart se résolvent vite, mais quelques-un
 
 Redémarrages et hasard contrôlé servent justement à sortir de ces mauvaises trajectoires.
 
+### Le hasard déplace la queue, il ne la réduit pas
+
+Une décision aléatoire consiste à tirer une variable au hasard au lieu de la plus active, avec une petite probabilité fixée (paramètre `random_var_freq` de [MiniSat](http://minisat.se/)). Mesuré sur le solveur Skyscraper en grille 72 × 72, sur 100 grilles :
+
+| Configuration | Grilles au-delà de 90 s |
+|---|---|
+| Sans randomisation | 4 |
+| Avec 3 % de décisions aléatoires | 8, mais pas les 4 mêmes grilles |
+
+Les 4 grilles qui bloquaient sans randomisation se résolvent avec elle, mais 8 autres bloquent à leur tour : une même grille passe ou bloque selon le tirage aléatoire. La queue lourde tient à la trajectoire parcourue, pas à la difficulté intrinsèque de l'instance ; ajouter du hasard la déplace, il ne la réduit pas.
+
+### Le piège d'évaluation : biais de sélection et régression vers la moyenne
+
+Tester une nouvelle heuristique seulement sur les grilles qui bloquaient la configuration de référence la favorise mécaniquement : ces grilles ont été retenues pour leur malchance avec la référence, une configuration différente a statistiquement moins de raisons de subir la même malchance. Ce piège porte un nom en statistiques : la [régression vers la moyenne](https://fr.wikipedia.org/wiki/R%C3%A9gression_vers_la_moyenne) (un échantillon choisi pour un résultat extrême se rapproche de la moyenne quand on le remesure, même sans aucun changement réel).
+
+| Ensemble de test | Résultat mesuré |
+|---|---|
+| 8 grilles difficiles, choisies parmi celles qui bloquaient la référence | Toutes résolues : la variante paraît excellente |
+| 100 grilles, l'ensemble complet | Deux fois plus de dépassements de 90 s qu'avant |
+
+Bonne pratique : toujours revalider une heuristique sur l'ensemble complet des instances, jamais seulement sur le sous-ensemble qui a motivé le changement.
+
+### Diversifier sans détruire l'apprentissage
+
+Deux façons de diversifier cassent ce que le solveur a appris : ajouter du bruit sur les activités VSIDS à chaque redémarrage, ou revenir aux phases initiales au lieu de garder la sauvegarde de phase (voir plus haut). Les deux font bloquer même les grilles faciles, qui n'avaient pourtant besoin d'aucune diversification. La diversification doit porter sur quelques décisions ponctuelles (comme `random_var_freq`), jamais sur ce que le solveur a déjà appris (activités, clauses, phases).
+
+### Portfolio de trajectoires indépendantes : la loi de p^k
+
+Autre remède : lancer plusieurs trajectoires en parallèle avec des graines différentes et garder le résultat du premier processus qui termine (portfolio de processus, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), mesuré à l'origine sur la complétion de carrés latins). Si chaque exécution bloque indépendamment avec une probabilité *p*, *k* exécutions bloquent toutes ensemble avec une probabilité *p^k* : le risque chute très vite avec le nombre de processus. Avec p = 7/100 (mesuré ici) :
+
+```python
+# p : probabilité qu'UNE exécution dépasse 90 s (mesurée : 7 grilles sur 100)
+p = 7 / 100
+for k in range(1, 5):
+    # probabilité que les k processus dépassent TOUS 90 s (indépendants)
+    print(f"k={k} processus : p^k = {p ** k:.6f}")
+```
+
+```
+k=1 processus : p^k = 0.070000
+k=2 processus : p^k = 0.004900
+k=3 processus : p^k = 0.000343
+k=4 processus : p^k = 0.000024
+```
+
+Mesuré en grille 72 × 72 sur 100 grilles : 4 processus ([`fork`](/?c=langages-de-programmation&s=c&p=processus), résultat du premier processus reçu par un [tube](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) et `poll`, qui attend plusieurs tubes à la fois) passent de 7 dépassements de 90 s à aucun, avec une moyenne de 9,6 s et un pire cas de 16,8 s. À comparer avec une seule réinitialisation complète périodique, dans un seul processus, qui n'en retire que 3 sur 7 : une seule trajectoire reste une seule trajectoire, quel que soit le nombre de redémarrages, alors que des processus réellement indépendants suivent la loi *p^k*.
+
+### Portfolio hétérogène et rendements décroissants
+
+Diversifier aussi les heuristiques de décision, pas seulement les graines aléatoires, renforce encore le portfolio. Mesuré en grille 96 × 96, sur 4 processus :
+
+| Portfolio | Temps moyen (5 grilles 96 × 96) |
+|---|---|
+| 4 × VSIDS | 67 s |
+| 1 × VSIDS + 3 × VMTF (*Variable Move-To-Front* : les variables du dernier conflit passent en tête d'une file, au lieu d'un score d'activité comme VSIDS ; [Ryan 2004](https://summit.sfu.ca/_flysystem/fedora/sfu_migrate/2725/b35038871.pdf)) | 32 s |
+
+Les processus VMTF gagnent de façon très régulière, entre 25 000 et 30 000 conflits. Grâce à ce portfolio hétérogène, la frontière d'une minute de calcul passe de la grille 72 × 72 (avec encore 4 % de blocages) à environ 100 × 100.
+
+Au-delà de 4 à 6 processus, les gains ralentissent puis s'inversent : la bande passante mémoire partagée entre processus finit par coûter plus qu'elle ne rapporte en diversité (8 processus plus lents que 6). Le partage des clauses apprises entre processus (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) n'aide que si les clauses apprises sont courtes : ici, une résolution complète n'apprend que 2 à 7 clauses unitaires et 11 à 34 clauses binaires (grille 56 × 56) ; les autres clauses apprises sont longues, sans intérêt à les partager.
+
 ## Les solveurs de référence
 
 | Solveur | Apport | Lien |

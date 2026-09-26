@@ -128,6 +128,66 @@ Entre cuadrículas del mismo tamaño, la mayoría se resuelve rápido, pero unas
 
 Los reinicios y el azar controlado sirven precisamente para salir de estas malas trayectorias.
 
+### El azar desplaza la cola, no la reduce
+
+Una decisión aleatoria consiste en elegir una variable al azar en vez de la más activa, con una pequeña probabilidad fija (parámetro `random_var_freq` de [MiniSat](http://minisat.se/)). Medido en el solucionador Skyscraper en cuadrícula 72 × 72, sobre 100 cuadrículas:
+
+| Configuración | Cuadrículas por encima de 90 s |
+|---|---|
+| Sin randomización | 4 |
+| Con 3 % de decisiones aleatorias | 8, pero no las mismas 4 cuadrículas |
+
+Las 4 cuadrículas que se bloqueaban sin randomización se resuelven con ella, pero otras 8 se bloquean a su vez: una misma cuadrícula pasa o se bloquea según la tirada aleatoria. La cola pesada depende de la trayectoria recorrida, no de la dificultad intrínseca de la instancia; añadir azar la desplaza, no la reduce.
+
+### La trampa de evaluación: sesgo de selección y regresión a la media
+
+Probar una nueva heurística solo en las cuadrículas que bloqueaban la configuración de referencia la favorece mecánicamente: esas cuadrículas se eligieron precisamente por su mala suerte con la referencia, y una configuración distinta tiene estadísticamente menos motivos de sufrir la misma mala suerte. Esta trampa tiene nombre en estadística: la [regresión a la media](https://es.wikipedia.org/wiki/Regresi%C3%B3n_a_la_media) (una muestra elegida por un resultado extremo se acerca a la media al volver a medirla, incluso sin ningún cambio real).
+
+| Conjunto de prueba | Resultado medido |
+|---|---|
+| 8 cuadrículas difíciles, elegidas entre las que bloqueaban la referencia | Todas resueltas: la variante parece excelente |
+| 100 cuadrículas, el conjunto completo | El doble de casos por encima de 90 s que antes |
+
+Buena práctica: revalidar siempre una heurística sobre el conjunto completo de instancias, nunca solo sobre el subconjunto que motivó el cambio.
+
+### Diversificar sin destruir lo aprendido
+
+Dos formas de diversificar rompen lo que el solucionador ha aprendido: añadir ruido a las actividades VSIDS en cada reinicio, o volver a las fases iniciales en vez de conservar el guardado de fase (ver más arriba). Ambas hacen que se bloqueen incluso las cuadrículas fáciles, que no necesitaban ninguna diversificación. La diversificación debe recaer sobre unas pocas decisiones puntuales (como `random_var_freq`), nunca sobre lo que el solucionador ya ha aprendido (actividades, cláusulas, fases).
+
+### Portafolio de trayectorias independientes: la ley de p^k
+
+Otro remedio: lanzar varias trayectorias en paralelo con semillas distintas y quedarse con el resultado del primer proceso que termina (portafolio de procesos, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), medido originalmente sobre la compleción de cuadrados latinos). Si cada ejecución se bloquea de forma independiente con una probabilidad *p*, *k* ejecuciones se bloquean todas juntas con una probabilidad *p^k*: el riesgo cae muy rápido con el número de procesos. Con p = 7/100 (medido aquí):
+
+```python
+# p: probabilidad de que UNA ejecución supere 90 s (medido: 7 de 100 cuadrículas)
+p = 7 / 100
+for k in range(1, 5):
+    # probabilidad de que los k procesos superen TODOS 90 s (independientes)
+    print(f"k={k} procesos: p^k = {p ** k:.6f}")
+```
+
+```
+k=1 procesos: p^k = 0.070000
+k=2 procesos: p^k = 0.004900
+k=3 procesos: p^k = 0.000343
+k=4 procesos: p^k = 0.000024
+```
+
+Medido en cuadrícula 72 × 72 sobre 100 cuadrículas: 4 procesos ([`fork`](/?c=langages-de-programmation&s=c&p=processus), el resultado del primer proceso recibido por una [tubería](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) y `poll`, que espera varias tuberías a la vez) pasan de 7 casos por encima de 90 s a ninguno, con una media de 9,6 s y un peor caso de 16,8 s. En comparación, un solo proceso con reinicio periódico completo solo elimina 3 de los 7: una sola trayectoria sigue siendo una sola trayectoria sin importar cuántos reinicios tenga, mientras que procesos realmente independientes siguen la ley *p^k*.
+
+### Portafolio heterogéneo y rendimientos decrecientes
+
+Diversificar también las heurísticas de decisión, no solo las semillas aleatorias, refuerza aún más el portafolio. Medido en cuadrícula 96 × 96, con 4 procesos:
+
+| Portafolio | Tiempo medio (5 cuadrículas 96 × 96) |
+|---|---|
+| 4 × VSIDS | 67 s |
+| 1 × VSIDS + 3 × VMTF (*Variable Move-To-Front*: las variables del último conflicto pasan al frente de una lista, en vez de una puntuación de actividad como VSIDS; [Ryan 2004](https://summit.sfu.ca/_flysystem/fedora/sfu_migrate/2725/b35038871.pdf)) | 32 s |
+
+Los procesos VMTF ganan de forma muy regular, entre 25 000 y 30 000 conflictos. Gracias a este portafolio heterogéneo, la frontera de un minuto pasa de la cuadrícula 72 × 72 (con todavía un 4 % de bloqueos) a alrededor de 100 × 100.
+
+Más allá de 4 a 6 procesos, las ganancias se frenan y luego se invierten: el ancho de banda de memoria compartida entre procesos acaba costando más de lo que aporta la diversidad (8 procesos más lentos que 6). Compartir cláusulas aprendidas entre procesos (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) solo ayuda si las cláusulas aprendidas son cortas: aquí, una resolución completa solo aprende de 2 a 7 cláusulas unitarias y de 11 a 34 cláusulas binarias (cuadrícula 56 × 56); las demás cláusulas aprendidas son largas, sin interés en compartirlas.
+
 ## Los solucionadores de referencia
 
 | Solucionador | Aportación | Enlace |

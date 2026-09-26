@@ -128,6 +128,66 @@ Entre grades do mesmo tamanho, a maioria é resolvida rápido, mas algumas levam
 
 Os reinícios e o acaso controlado servem justamente para sair dessas trajetórias ruins.
 
+### O acaso desloca a cauda, não a reduz
+
+Uma decisão aleatória consiste em escolher uma variável ao acaso em vez da mais ativa, com uma pequena probabilidade fixa (parâmetro `random_var_freq` do [MiniSat](http://minisat.se/)). Medido no solucionador Skyscraper em grade 72 × 72, em 100 grades:
+
+| Configuração | Grades acima de 90 s |
+|---|---|
+| Sem randomização | 4 |
+| Com 3 % de decisões aleatórias | 8, mas não as mesmas 4 grades |
+
+As 4 grades que travavam sem randomização passam a ser resolvidas com ela, mas outras 8 travam por sua vez: uma mesma grade passa ou trava conforme o sorteio. A cauda pesada depende da trajetória percorrida, não da dificuldade intrínseca da instância; acrescentar acaso a desloca, não a reduz.
+
+### A armadilha de avaliação: viés de seleção e regressão à média
+
+Testar uma nova heurística apenas nas grades que travavam a configuração de referência a favorece mecanicamente: essas grades foram escolhidas justamente por seu azar com a referência, e uma configuração diferente tem estatisticamente menos motivos de sofrer o mesmo azar. Essa armadilha tem nome em estatística: a [regressão à média](https://pt.wikipedia.org/wiki/Regress%C3%A3o_%C3%A0_m%C3%A9dia) (uma amostra escolhida por um resultado extremo se aproxima da média ao ser medida de novo, mesmo sem nenhuma mudança real).
+
+| Conjunto de teste | Resultado medido |
+|---|---|
+| 8 grades difíceis, escolhidas entre as que travavam a referência | Todas resolvidas: a variante parece excelente |
+| 100 grades, o conjunto completo | O dobro de casos acima de 90 s que antes |
+
+Boa prática: revalidar sempre uma heurística sobre o conjunto completo de instâncias, nunca apenas sobre o subconjunto que motivou a mudança.
+
+### Diversificar sem destruir o que foi aprendido
+
+Duas formas de diversificar quebram o que o solucionador aprendeu: acrescentar ruído nas atividades VSIDS a cada reinício, ou voltar às fases iniciais em vez de manter a fase salva (ver acima). Ambas fazem travar até as grades fáceis, que não precisavam de nenhuma diversificação. A diversificação deve incidir sobre poucas decisões pontuais (como `random_var_freq`), nunca sobre o que o solucionador já aprendeu (atividades, cláusulas, fases).
+
+### Portfólio de trajetórias independentes: a lei de p^k
+
+Outro remédio: rodar várias trajetórias em paralelo com sementes diferentes e ficar com o resultado do primeiro processo que termina (portfólio de processos, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), medido originalmente na conclusão de quadrados latinos). Se cada execução trava de forma independente com probabilidade *p*, *k* execuções travam todas juntas com probabilidade *p^k*: o risco cai muito rápido com o número de processos. Com p = 7/100 (medido aqui):
+
+```python
+# p: probabilidade de UMA execução ultrapassar 90 s (medido: 7 em 100 grades)
+p = 7 / 100
+for k in range(1, 5):
+    # probabilidade de os k processos ultrapassarem TODOS 90 s (independentes)
+    print(f"k={k} processos: p^k = {p ** k:.6f}")
+```
+
+```
+k=1 processos: p^k = 0.070000
+k=2 processos: p^k = 0.004900
+k=3 processos: p^k = 0.000343
+k=4 processos: p^k = 0.000024
+```
+
+Medido em grade 72 × 72 sobre 100 grades: 4 processos ([`fork`](/?c=langages-de-programmation&s=c&p=processus), resultado do primeiro processo recebido por um [pipe](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs) e `poll`, que espera vários pipes ao mesmo tempo) passam de 7 casos acima de 90 s para nenhum, com média de 9,6 s e pior caso de 16,8 s. Em comparação, um único processo com reinício periódico completo remove apenas 3 dos 7: uma única trajetória continua sendo uma única trajetória, não importa quantos reinícios tenha, enquanto processos realmente independentes seguem a lei *p^k*.
+
+### Portfólio heterogêneo e retornos decrescentes
+
+Diversificar também as heurísticas de decisão, não só as sementes aleatórias, reforça ainda mais o portfólio. Medido em grade 96 × 96, com 4 processos:
+
+| Portfólio | Tempo médio (5 grades 96 × 96) |
+|---|---|
+| 4 × VSIDS | 67 s |
+| 1 × VSIDS + 3 × VMTF (*Variable Move-To-Front*: as variáveis do último conflito vão para o início de uma fila, em vez de uma pontuação de atividade como VSIDS; [Ryan 2004](https://summit.sfu.ca/_flysystem/fedora/sfu_migrate/2725/b35038871.pdf)) | 32 s |
+
+Os processos VMTF ganham de forma muito regular, entre 25.000 e 30.000 conflitos. Graças a esse portfólio heterogêneo, a fronteira de um minuto passa da grade 72 × 72 (com ainda 4 % de travamentos) para cerca de 100 × 100.
+
+Além de 4 a 6 processos, os ganhos desaceleram e depois se invertem: a largura de banda de memória compartilhada entre processos acaba custando mais do que a diversidade traz (8 processos mais lentos que 6). Compartilhar cláusulas aprendidas entre processos (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) só ajuda se as cláusulas aprendidas forem curtas: aqui, uma resolução completa aprende apenas de 2 a 7 cláusulas unitárias e de 11 a 34 cláusulas binárias (grade 56 × 56); as demais cláusulas aprendidas são longas, sem interesse em compartilhá-las.
+
 ## Os solucionadores de referência
 
 | Solucionador | Contribuição | Link |
