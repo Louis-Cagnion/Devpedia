@@ -82,6 +82,53 @@ Résultat de `gprof` sur un programme qui appelle 200 fois une fonction `lent` e
 
 Le même programme compilé avec `-O1` donne un profil vide (« no time accumulated ») et un seul appel à `lent` : le compilateur a sorti l'appel de la boucle. Quand `perf` est bloqué, `valgrind --tool=callgrind` fonctionne sans droits particuliers (voir [Valgrind](/?c=langages&s=c&p=memoire)), au prix d'une exécution beaucoup plus lente (il simule chaque instruction).
 
+### Piège : du temps attribué à la mauvaise fonction
+
+Avec l'optimisation (`-O2`), le compilateur peut **intégrer** une fonction dans celle qui l'appelle (*inlining* : il recopie son corps à la place de l'appel) ou en créer une **copie spécialisée** sous un autre nom. `gprof` attribue alors son temps à une autre fonction. Programme de test :
+
+```c
+#include <stdio.h>
+
+#ifdef SANS_INTEGRATION
+# define INTEGRABLE __attribute__((noinline))        /* interdit l'intégration */
+#else
+# define INTEGRABLE
+#endif
+
+static INTEGRABLE double somme_lente(long n)
+{
+    double s = 0;
+
+    for (long i = 1; i <= n; i++)
+        s += 1.0 / (double)i;                        /* le vrai travail est ici */
+    return s;
+}
+
+int main(void)
+{
+    double total = 0;
+
+    for (int k = 0; k < 20; k++)
+        total += somme_lente(20000000);              /* 20 appels de la fonction lente */
+    printf("%.3f\n", total);
+    return 0;
+}
+```
+
+| Compilation (`cc -O2 -pg`) | Ce qu'affiche `gprof -b -p` | Ce qui s'est vraiment passé |
+|---|---|---|
+| Telle quelle | 100 % du temps dans `main` | `somme_lente` a été intégrée dans `main` : elle n'existe plus comme fonction |
+| Avec `-DSANS_INTEGRATION` | 100 % dans `frame_dummy`, 1 seul appel | GCC a créé une copie `somme_lente.constprop.0` (avec l'argument constant recopié dedans), que `gprof` n'affiche pas : il crédite la fonction placée juste avant en mémoire, une routine de démarrage du programme. Et l'appel, sans effet de bord, n'est plus fait qu'une fois au lieu de 20 |
+
+`nm -n programme` (les symboles du programme triés par adresse) montre le vrai coupable, juste après :
+
+```
+0000000000001240 t frame_dummy
+0000000000001250 t somme_lente.constprop.0
+```
+
+Le graphe d'appels (`gprof -q`) ne corrige rien : il reprend les mêmes noms. `valgrind --tool=callgrind` nomme bien la copie (99,7 % des instructions dans `somme_lente.constprop.0`). Vécu sur un solveur SAT : `gprof` attribuait 11 % du temps à `now()`, une petite fonction de lecture de l'horloge, alors qu'il revenait à `cancel_until`.
+
 ## Comparer sur des compteurs de travail, pas seulement sur le temps
 
 Deux exécutions identiques d'un même programme peuvent différer de **±15 %** sur un ordinateur portable (fréquence du processeur, température). Un gain de 5 % mesuré au chronomètre est alors invisible dans le bruit. Quand le programme peut compter son **travail** (nœuds explorés, conflits, propagations), ces compteurs sont **déterministes** : identiques d'une exécution à l'autre.
@@ -111,5 +158,5 @@ Deux autres leçons du même projet :
 |---|---|
 | **À retenir** | Ne jamais optimiser sans avoir mesuré : l'intuition sur "ce qui est lent" cible en général le code qui semble compliqué, pas celui qui coûte réellement cher. |
 | **Outils utilisables** | Un profileur classique (par fonction : `gprof`, `perf`, `valgrind --tool=callgrind`), une instrumentation manuelle par phase quand le programme passe son temps à attendre ; des compteurs de travail déterministes pour comparer deux versions. |
-| **Pièges à éviter** | Se fier à une mesure unique : le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation. |
+| **Pièges à éviter** | Se fier à une mesure unique : le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation ; croire un nom de fonction inattendu dans un profil `gprof` d'un programme optimisé (vérifier avec `nm -n` ou callgrind). |
 | **Bonnes pratiques** | Toujours re-mesurer après une optimisation (temps ET exactitude du résultat) ; prendre plusieurs mesures pour distinguer un vrai gain du bruit. |

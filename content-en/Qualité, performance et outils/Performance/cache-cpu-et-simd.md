@@ -97,13 +97,80 @@ In a SAT solver (see [SAT Solvers and the CDCL Algorithm](/?c=fondamentaux&s=alg
 
 > This connects to the bitmap filter above: in both cases, the question asked before acting is "will this data be read again?", not just "is this computation correct?".
 
+## The TLB and Huge Pages
+
+A program does not handle physical memory addresses directly: it uses **virtual addresses**, which the processor translates on every access, **page** by page (a 4 KB block by default on Linux). Recent translations are kept in a small dedicated cache, the **TLB** (*Translation Lookaside Buffer*). When a translation is missing, the processor has to look it up in the page tables, in memory: one more access, before even reading the data.
+
+| Page size | Memory covered by a 1,000-entry TLB (a common order of magnitude) |
+|---|---|
+| 4 KB (default) | 4 MB |
+| 2 MB (huge page) | 2 GB |
+
+A program that reads at random across hundreds of MB (like the 147 MB array of the bitmap filter above) misses the TLB on almost every access with 4 KB pages. With 2 MB **huge pages**, the same TLB covers all that memory.
+
+On Linux, **transparent huge pages** (THP) are configured in `/sys/kernel/mm/transparent_hugepage/enabled` ([kernel documentation](https://docs.kernel.org/admin-guide/mm/transhuge.html)):
+
+| Mode | Behavior |
+|---|---|
+| `always` | Huge pages wherever possible |
+| `madvise` | Only for the areas the program requests with [`madvise(https://man7.org/linux/man-pages/man2/madvise.2.html_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (the mode of the machine used here, on Ubuntu) |
+| `never` | Never |
+
+Example in C (see [memory in C](/?c=langages&s=c&p=memoire) for allocation and `memset`), which counts the memory actually served in huge pages:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
+
+#define SIZE (64UL << 20)                            /* 64 MB */
+
+static long huge_pages_kb(void)
+{
+    FILE *f = fopen("/proc/self/smaps_rollup", "r"); /* memory summary of the process */
+    char line[256];
+    long kb = -1;
+
+    while (f && fgets(line, sizeof line, f))
+        if (sscanf(line, "AnonHugePages: %ld kB", &kb) == 1)
+            break;                                   /* memory served in 2 MB pages */
+    if (f)
+        fclose(f);
+    return kb;
+}
+
+int main(int argc, char **argv)
+{
+    int requested = argc > 1 && strcmp(argv[1], "madvise") == 0;
+    char *t = aligned_alloc(2UL << 20, SIZE);        /* start aligned on 2 MB */
+
+    if (!t)
+        return 1;
+    if (requested && madvise(t, SIZE, MADV_HUGEPAGE) != 0)
+        perror("madvise");                           /* ask for huge pages */
+    memset(t, 1, SIZE);                              /* writing really allocates the pages */
+    printf("%s: %ld kB in huge pages\n", requested ? "with madvise" : "without madvise",
+           huge_pages_kb());
+    free(t);
+    return 0;
+}
+```
+
+```
+without madvise: 0 kB in huge pages
+with madvise: 65536 kB in huge pages
+```
+
+Without touching the code, Linux's standard C library (glibc 2.35 and later) can make the same request for every `malloc` allocation: `https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html_TUNABLES=glibc.malloc.hugetlb=1 ./program` ([glibc 2.35 announcement](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Measured on a SAT solver that reads at random across several hundred MB: −5% of time as a single process, for the same computation, and about −2%, within the noise, with 4 copies running in parallel. The gain depends on how scattered the accesses are: a program that walks its memory in order already benefits from the cache and gains little.
+
 ---
 
 ## 📋 Summary
 
 | | |
 |---|---|
-| **Key takeaways** | A RAM access costs ~50× more than an L1 cache access. Contiguous, uniformly typed data (a typed array) benefits from cache and SIMD; scattered data (a linked list, spread-out objects) reloads a cache line on every access. The number of random memory accesses predicts time far better than the number of instructions. |
-| **Tools you can use** | A contiguous typed array (NumPy `ndarray`) rather than a collection of scattered objects for intensive computation; a bitmap as a cheap filter before an expensive random access. |
+| **Key takeaways** | A RAM access costs ~50× more than an L1 cache access. Contiguous, uniformly typed data (a typed array) benefits from cache and SIMD; scattered data (a linked list, spread-out objects) reloads a cache line on every access. The number of random memory accesses predicts time far better than the number of instructions. Beyond a few MB read at random, address translation (TLB) costs too: 2 MB huge pages reduce it. |
+| **Tools you can use** | A contiguous typed array (NumPy `ndarray`) rather than a collection of scattered objects for intensive computation; a bitmap as a cheap filter before an expensive random access; `madvise(MADV_HUGEPAGE)` or `GLIBC_TUNABLES=glibc.malloc.hugetlb=1` to get huge pages. |
 | **Pitfalls to avoid** | A NumPy array in `dtype=object`: stays contiguous in appearance, but loses all the cache/SIMD benefit (pointers to scattered objects). |
 | **Best practices** | Prefer a typed, contiguous array as soon as the volume of computation justifies the effort; traverse data in the order it's laid out in memory; store together (AoS) fields read and written together, separate (SoA) fields walked one at a time across many elements; only update data that's still useful. |
