@@ -129,6 +129,10 @@
             {
               "id": "approximation-par-serie-de-taylor",
               "label": "La aproximación por serie de Taylor"
+            },
+            {
+              "id": "combinatoire-des-permutations",
+              "label": "Contar permutaciones: factorial, coeficiente binomial y números de Stirling"
             }
           ]
         },

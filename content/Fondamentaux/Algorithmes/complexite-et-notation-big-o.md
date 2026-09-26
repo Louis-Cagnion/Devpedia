@@ -43,6 +43,7 @@ Le premier exemple est en **O(1)** (temps constant : toujours une seule opérati
 | `O(n log n)` | Quasi-linéaire | Un [tri par fusion](/?c=algorithmes&p=tri-par-comparaison) | ~20 000 000 opérations |
 | `O(n²)` | Quadratique | Comparer chaque élément à tous les autres (double boucle imbriquée) | 1 000 000 000 000 opérations |
 | `O(2ⁿ)` | Exponentielle | Tester toutes les combinaisons possibles d'un ensemble | Astronomique, déjà pour n = 40 |
+| `O(n!)` | Factorielle | Essayer tous les ordres possibles de n éléments (voir [Compter les permutations](/?c=fondamentaux&s=mathematiques&p=combinatoire-des-permutations)) | Astronomique dès n = 15 (plus de 1 000 milliards) |
 
 ```text
 Temps
@@ -75,6 +76,6 @@ La même notation s'applique à la **mémoire** utilisée par un algorithme, pas
 | | |
 |---|---|
 | **À retenir** | La notation Big-O décrit comment le coût d'un algorithme évolue avec la taille de ses données, dans le pire des cas, indépendamment de la machine utilisée. |
-| **Outils utilisables** | Le tableau des classes de complexité (`O(1)`, `O(log n)`, `O(n)`, `O(n log n)`, `O(n²)`, `O(2ⁿ)`) pour classer rapidement un algorithme. |
+| **Outils utilisables** | Le tableau des classes de complexité (`O(1)`, `O(log n)`, `O(n)`, `O(n log n)`, `O(n²)`, `O(2ⁿ)`, `O(n!)`) pour classer rapidement un algorithme. |
 | **Pièges à éviter** | Confondre la somme et le produit des complexités d'opérations imbriquées ; ne mesurer qu'en secondes sans tenir compte de la tendance à grande échelle. |
 | **Bonnes pratiques** | Évaluer la complexité en temps ET en mémoire séparément ; corriger une mauvaise complexité avant d'optimiser au niveau matériel. |
