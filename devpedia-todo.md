@@ -34,6 +34,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/operateurs-binaires` (section fonctions intégrées `__builtin_popcount`/`__builtin_ctz`).
 - `Langages/C/mesure-du-temps` (section `clock_gettime(CLOCK_MONOTONIC)`).
 - `Langages/C/compilation` (section `-march=native` et `-pthread`).
+- `Langages/C/memoire` (sections arène et `memcpy`/`memset`, et en anglais le tableau des quatre bugs mémoire).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -54,9 +55,7 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
 
 ## 13. C bas niveau et parallélisme (rush01, `research/cdcl.c`, `research/lines2`)
-Compléments aux chapitres C existants : 0 résultat pour « memcpy », « memset », « arène », « file de priorité ». Rubriques pressenties : Langages > C (`memoire.md`) et Fondamentaux > Algorithmes pour la file de priorité.
-- **`memcpy`/`memset`** : copie et remplissage d'octets ; `memcpy` comme façon sûre de réinterpréter les bits d'un `float` dans un `uint32_t` (*type punning* sans comportement indéfini).
-- **Allocation en arène** : toutes les clauses rangées dans un grand tableau contigu, référencées par indice (moins d'allocations, meilleure localité ; la compaction après suppression est à gérer soi-même).
+0 résultat pour « file de priorité » dans `content/`. Rubrique pressentie : Fondamentaux > Algorithmes.
 - **Tas binaire indexé** (file de priorité avec table des positions, pour remonter un élément dont la priorité augmente).
 
 ## 14. Mesurer une performance : profileurs natifs et pièges de benchmark (rush01, `research/bench.py`, `research/ab.py`)

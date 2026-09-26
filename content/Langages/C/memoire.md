@@ -127,6 +127,48 @@ free(p);
 p = NULL; // bonne pratique : empêche une utilisation accidentelle après libération
 ```
 
+## Beaucoup de petits objets : l'allocation en arène
+
+Appeler `malloc()` pour chacun de millions de petits objets coûte cher : chaque appel prend du temps, et les objets finissent éparpillés en mémoire. Une **arène** range tous ces objets **à la suite dans un seul grand tableau**, agrandi par doublement avec `realloc()`, et chaque objet est désigné par sa **position** dans ce tableau.
+
+```c
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int    *donnees;                         // un seul grand tableau pour tout
+    size_t  taille;                          // cases utilisées
+    size_t  capacite;                        // cases réservées
+} t_arene;
+
+// Range n entiers à la suite dans l'arène ; renvoie leur position, ou (size_t)-1 si échec
+size_t arene_ajouter(t_arene *a, const int *valeurs, size_t n)
+{
+    size_t capacite = a->capacite ? a->capacite : 1024;
+    while (a->taille + n > capacite)
+        capacite *= 2;                       // doubler : peu de realloc au total
+    if (capacite != a->capacite) {
+        int *nouveau = realloc(a->donnees, capacite * sizeof(int));
+        if (!nouveau)
+            return (size_t)-1;               // échec : l'arène reste intacte
+        a->donnees = nouveau;
+        a->capacite = capacite;
+    }
+    memcpy(a->donnees + a->taille, valeurs, n * sizeof(int));
+    a->taille += n;
+    return a->taille - n;                    // une position, pas un pointeur
+}
+```
+
+| | Un `malloc()` par objet | Arène |
+|---|---|---|
+| Nombre d'allocations | Une par objet | Une poignée (le tableau double de taille) |
+| Emplacement en mémoire | Éparpillé | Contigu : le processeur lit les objets voisins d'un coup |
+| Libération | Un `free()` par objet | Un seul `free()` pour tout |
+| Supprimer un objet | `free()` | Laisse un trou : il faut **compacter** soi-même (tout décaler) |
+
+> **Piège :** on garde une **position** et non un pointeur, parce que `realloc()` peut déplacer tout le tableau ailleurs en mémoire : un pointeur vers l'ancien emplacement deviendrait invalide (voir [Redimensionner un bloc](#redimensionner-un-bloc-realloc)), alors qu'une position reste juste.
+
 ## Les quatre bugs mémoire classiques
 
 | Bug | Cause | Conséquence |
@@ -206,6 +248,39 @@ sizeof(int) * 10;  // taille nécessaire pour 10 entiers -> à passer à malloc(
 
 Voir aussi [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs), dont la compréhension est un prérequis à celui-ci.
 
+## Copier et remplir des octets : `memcpy()` et `memset()`
+
+Ces deux fonctions de `<string.h>` travaillent sur des **octets bruts**, sans connaître le type des données :
+
+```c
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+int main(void)
+{
+    int tab[5];
+    memset(tab, 0, sizeof tab);              // met les 20 octets à 0 : 5 entiers à 0
+    int copie[5];
+    memcpy(copie, tab, sizeof tab);          // copie les 20 octets de tab dans copie
+    memset(tab, 1, sizeof tab);              // piège : chaque OCTET vaut 1
+    printf("%d\n", tab[0]);                  // 16843009 (0x01010101), pas 1
+
+    float f = 1.0f;
+    uint32_t bits;
+    memcpy(&bits, &f, sizeof bits);          // lit les 4 octets du float tels quels
+    printf("%08X\n", bits);                  // 3F800000 : l'encodage de 1.0 en mémoire
+    return 0;
+}
+```
+
+| Fonction | Rôle | Piège |
+|---|---|---|
+| `memset(p, v, n)` | Met chacun des n octets à la valeur `v` | `v` remplit des **octets**, pas des entiers : seuls 0 (et -1) donnent la même valeur dans un `int` |
+| `memcpy(dst, src, n)` | Copie n octets de `src` vers `dst` | Zones qui se chevauchent : comportement indéfini, utiliser `memmove()` |
+
+Le dernier usage, lire les bits d'un `float` comme un entier (*type punning*), a une version tentante mais **interdite** : `*(uint32_t *)&f`. Accéder à un objet par un pointeur d'un autre type viole la règle d'**aliasing strict** du C (comportement indéfini, que l'optimiseur peut exploiter). `memcpy()` est la façon sûre, et le compilateur la remplace par un simple déplacement de 4 octets.
+
 ---
 
 ## 📋 Récapitulatif
@@ -213,6 +288,6 @@ Voir aussi [Les pointeurs](/?c=langages-de-programmation&s=c&p=pointeurs), dont 
 | | |
 |---|---|
 | **À retenir** | Le C laisse au développeur la responsabilité complète de la mémoire dynamique (heap) : `malloc`/`calloc`/`realloc` pour allouer, `free` pour libérer ; la stack (variables locales, VLA compris) est gérée automatiquement. |
-| **Outils utilisables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) pour un tableau de taille dynamique sans `free()`, Valgrind pour détecter fuites et accès invalides. |
+| **Outils utilisables** | `malloc`/`calloc`/`realloc`/`free`, `sizeof`, VLA (`int tab[n]`) pour un tableau de taille dynamique sans `free()`, Valgrind pour détecter fuites et accès invalides ; `memcpy`/`memset` pour copier ou remplir des octets ; une arène pour de très nombreux petits objets. |
 | **Pièges à éviter** | Fuite mémoire (jamais de `free`), use-after-free, double free, débordement de tampon, débordement de pile sur un VLA trop grand (aucune détection possible, contrairement à `malloc`), confusion entre `T (*)[n]` (VLA en paramètre) et `T **`. |
 | **Bonnes pratiques** | Toujours vérifier qu'un `malloc`/`realloc` n'a pas renvoyé `NULL` ; mettre un pointeur à `NULL` juste après son `free()` ; préférer `fgets`/`strncpy`/`snprintf` aux fonctions non bornées (`gets`/`strcpy`/`sprintf`) ; `strlcpy`/`strlcat` pour détecter une troncature via leur valeur de retour. |
