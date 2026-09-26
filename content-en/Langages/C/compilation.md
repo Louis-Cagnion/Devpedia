@@ -78,6 +78,34 @@ gcc -O2 main.c -o programme
 
 > **Pitfall:** inlining can surface a warning invisible at `-O0`. Example: a function that returns `-1` on error, whose result is later used to compute a size passed to `malloc()`. At `-O0`, the compiler sees two separate functions and can't connect the two values. Once inlined by `-O2`, it sees the whole computation at once and can detect that `malloc()` would receive a negative size (hence gigantic once converted to `size_t`) -- flagged by `-Walloc-size-larger-than=` (included in `-Wall -Wextra`, see [Makefiles](/?c=langages-de-programmation&s=c&p=makefiles)), which becomes a hard error if `-Werror` is active. Code with no warning at `-O0` can therefore fail to compile at `-O2`: always test compilation at the optimization level actually used in production, not just `-O0`.
 
+## Targeting the Processor (`-march=native`) and Compiling with Threads (`-pthread`)
+
+By default, the compiler produces a program that runs on **every** processor of the same family, including the oldest: it forbids itself recent instructions. `-march=native` allows it to use every instruction of the processor **of the machine that compiles**.
+
+```bash
+gcc -O2 -march=native -c count.c    # count.c: return __builtin_popcount(x);
+```
+
+| Compilation | Code produced for `__builtin_popcount(x)` (checked with `objdump -d`) |
+|---|---|
+| `gcc -O2` | A call to a helper function that counts the bits in several steps |
+| `gcc -O2 -march=native` | A single processor instruction, `popcnt` |
+
+> **Pitfall:** a program compiled with `-march=native` can stop with the error `Illegal instruction` on a machine with an older processor. Keep it for programs that run on the machine where they are compiled (computation, measurements), never for a distributed executable.
+
+For a program that uses [threads](/?c=langages&s=c&p=threads), pass `-pthread` **at compilation and at linking**:
+
+```bash
+gcc -Wall -pthread -o program program.c
+```
+
+| Option | Effect |
+|---|---|
+| `-pthread` | Defines the settings threads need (the `_REENTRANT` macro) **and** adds the thread library at linking |
+| `-lpthread` | Only adds the library, without the compilation settings |
+
+Since version 2.34 of Linux's C library (glibc), the thread functions are part of the C library itself: a program often links even without any option. `-pthread` remains the portable way to compile, also valid on older systems.
+
 ## Compilation Errors vs. Linking Errors
 
 Knowing at which stage an error occurs helps diagnose it:
@@ -95,6 +123,6 @@ Knowing at which stage an error occurs helps diagnose it:
 | | |
 |---|---|
 | **Key Points** | A C program goes through 4 steps before execution: preprocessor → compilation (assembly) → assembly (machine code, `.o`) → linking (final executable). The optimization level (`-O0` to `-O3`, `-Os`) is set at the compilation step. |
-| **Available Tools** | `gcc -E`/`-S`/`-c` to observe each step separately; `-O0` to `-O3`/`-Os` to set the optimization level. |
+| **Available Tools** | `gcc -E`/`-S`/`-c` to observe each step separately; `-O0` to `-O3`/`-Os` to set the optimization level; `-march=native` for the machine's processor; `-pthread` for a threaded program. |
 | **Pitfalls to Avoid** | Confusing a compilation error (syntax) with a linking error (`undefined reference`, function never linked): the message indicates the affected step. A warning invisible at `-O0` (hidden by two non-inlined functions) can appear, or even block compilation with `-Werror`, as early as `-O2`. |
 | **Best Practices** | Compile each `.c` file into `.o` separately on a multi-file project, so only what changed needs relinking rather than recompiling everything. Test compilation at the optimization level actually used in production, not just `-O0`. |

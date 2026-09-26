@@ -33,6 +33,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/threads` (sections opérations atomiques et `_Thread_local`).
 - `Langages/C/operateurs-binaires` (section fonctions intégrées `__builtin_popcount`/`__builtin_ctz`).
 - `Langages/C/mesure-du-temps` (section `clock_gettime(CLOCK_MONOTONIC)`).
+- `Langages/C/compilation` (section `-march=native` et `-pthread`).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -53,11 +54,10 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
 
 ## 13. C bas niveau et parallélisme (rush01, `research/cdcl.c`, `research/lines2`)
-Compléments aux chapitres C existants : 0 résultat pour « memcpy », « memset », « arène », « file de priorité », « -march », « -pthread ». Rubriques pressenties : Langages > C (`memoire.md`, `compilation.md`) et Fondamentaux > Algorithmes pour la file de priorité.
+Compléments aux chapitres C existants : 0 résultat pour « memcpy », « memset », « arène », « file de priorité ». Rubriques pressenties : Langages > C (`memoire.md`) et Fondamentaux > Algorithmes pour la file de priorité.
 - **`memcpy`/`memset`** : copie et remplissage d'octets ; `memcpy` comme façon sûre de réinterpréter les bits d'un `float` dans un `uint32_t` (*type punning* sans comportement indéfini).
 - **Allocation en arène** : toutes les clauses rangées dans un grand tableau contigu, référencées par indice (moins d'allocations, meilleure localité ; la compaction après suppression est à gérer soi-même).
 - **Tas binaire indexé** (file de priorité avec table des positions, pour remonter un élément dont la priorité augmente).
-- **Options `-march=native`** (instructions du processeur hôte, binaire non portable) **et `-pthread`** : absentes de `compilation.md` et `makefiles.md`.
 
 ## 14. Mesurer une performance : profileurs natifs et pièges de benchmark (rush01, `research/bench.py`, `research/ab.py`)
 Complète `mesurer-avant-d-optimiser.md` (profilage par phases, bruit et mesures multiples déjà couverts) : 0 résultat pour « gprof », « perf_event », « bande passante mémoire », « memory-bound », « portfolio ». Rubrique pressentie : Qualité, performance et outils > Performance.
