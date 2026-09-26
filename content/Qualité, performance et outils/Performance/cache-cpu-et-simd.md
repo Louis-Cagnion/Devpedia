@@ -76,6 +76,19 @@ Sur ce solveur, regrouper la raison et le niveau d'une variable dans une seule s
 
 > Voir aussi [AoS and SoA (Wikipédia, en anglais)](https://en.wikipedia.org/wiki/AoS_and_SoA) et [L'organisation des données en mémoire](/?c=representation-des-donnees&p=organisation-en-memoire) pour l'alignement et le padding d'une structure.
 
+## Filtre par bitmap
+
+Un **bitmap** (ou *bitset*, tableau de bits) utilise un seul bit par élément au lieu d'un octet ou plus : 8 éléments tiennent dans un seul octet. Il sert ici de filtre : avant de charger un en-tête coûteux dans un tableau de 147 Mo (bien plus gros que n'importe quel cache), un bit dit s'il y a quelque chose à lire à cet endroit.
+
+| Structure consultée | Taille | Résultat |
+|---|---|---|
+| Bitmap (1 bit par élément) | 575 Ko, tient dans le cache L2 | Accès bon marché, quasiment toujours en cache |
+| Tableau des en-têtes complets | 147 Mo | Accès mémoire aléatoire coûteux (hors cache) |
+
+Consulter le bitmap avant l'en-tête a évité 91 % des lectures dans le tableau de 147 Mo : la plupart des accès aléatoires coûteux sont remplacés par un accès bon marché dans une structure qui reste en cache.
+
+> Le principe général : filtrer avec une structure petite qui tient en cache, avant de payer un accès aléatoire dans une structure trop grosse pour y tenir. Voir aussi [bit array (Wikipédia, en anglais)](https://en.wikipedia.org/wiki/Bit_array).
+
 ---
 
 ## 📋 Récapitulatif
@@ -83,6 +96,6 @@ Sur ce solveur, regrouper la raison et le niveau d'une variable dans une seule s
 | | |
 |---|---|
 | **À retenir** | Un accès RAM coûte ~50× plus qu'un accès cache L1. Des données contiguës et de type uniforme (tableau typé) profitent du cache et du SIMD ; des données dispersées (liste chaînée, objets épars) rechargent une ligne de cache à chaque accès. Le nombre d'accès mémoire aléatoires prédit le temps bien mieux que le nombre d'instructions. |
-| **Outils utilisables** | Un tableau typé contigu (NumPy `ndarray`) plutôt qu'une collection d'objets épars pour du calcul intensif. |
+| **Outils utilisables** | Un tableau typé contigu (NumPy `ndarray`) plutôt qu'une collection d'objets épars pour du calcul intensif ; un bitmap comme filtre bon marché avant un accès aléatoire coûteux. |
 | **Pièges à éviter** | Un tableau NumPy en `dtype=object` : reste contigu en apparence, mais perd tout le bénéfice du cache/SIMD (pointeurs vers des objets dispersés). |
 | **Bonnes pratiques** | Préférer un tableau typé et contigu dès que le volume de calcul justifie l'effort ; parcourir les données dans l'ordre de leur disposition mémoire ; ranger ensemble (AoS) les champs lus et écrits ensemble, séparer (SoA) ceux parcourus un par un sur beaucoup d'éléments. |

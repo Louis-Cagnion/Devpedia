@@ -76,6 +76,19 @@ On this solver, grouping a variable's reason and level into a single structure g
 
 > See also [AoS and SoA (Wikipedia)](https://en.wikipedia.org/wiki/AoS_and_SoA) and [Memory Layout](/?c=representation-des-donnees&p=organisation-en-memoire) for a structure's alignment and padding.
 
+## Bitmap Filter
+
+A **bitmap** (or *bitset*, bit array) uses a single bit per element instead of a byte or more: 8 elements fit in a single byte. Here it acts as a filter: before loading an expensive header from a 147 MB array (far bigger than any cache), one bit says whether there's anything to read there.
+
+| Structure consulted | Size | Result |
+|---|---|---|
+| Bitmap (1 bit per element) | 575 KB, fits in L2 cache | Cheap access, almost always in cache |
+| Full header array | 147 MB | Expensive random memory access (out of cache) |
+
+Checking the bitmap before the header avoided 91% of the reads into the 147 MB array: most expensive random accesses are replaced with a cheap access into a structure that stays in cache.
+
+> General principle: filter with a small structure that fits in cache, before paying for a random access into a structure too big to fit. See also [bit array (Wikipedia)](https://en.wikipedia.org/wiki/Bit_array).
+
 ---
 
 ## 📋 Summary
@@ -83,6 +96,6 @@ On this solver, grouping a variable's reason and level into a single structure g
 | | |
 |---|---|
 | **Key takeaways** | A RAM access costs ~50× more than an L1 cache access. Contiguous, uniformly typed data (a typed array) benefits from cache and SIMD; scattered data (a linked list, spread-out objects) reloads a cache line on every access. The number of random memory accesses predicts time far better than the number of instructions. |
-| **Tools you can use** | A contiguous typed array (NumPy `ndarray`) rather than a collection of scattered objects for intensive computation. |
+| **Tools you can use** | A contiguous typed array (NumPy `ndarray`) rather than a collection of scattered objects for intensive computation; a bitmap as a cheap filter before an expensive random access. |
 | **Pitfalls to avoid** | A NumPy array in `dtype=object`: stays contiguous in appearance, but loses all the cache/SIMD benefit (pointers to scattered objects). |
 | **Best practices** | Prefer a typed, contiguous array as soon as the volume of computation justifies the effort; traverse data in the order it's laid out in memory; store together (AoS) fields read and written together, separate (SoA) fields walked one at a time across many elements. |

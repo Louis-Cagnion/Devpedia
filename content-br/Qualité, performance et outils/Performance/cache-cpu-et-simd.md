@@ -76,6 +76,19 @@ Nesse solucionador, agrupar a razão e o nível de uma variável em uma única e
 
 > Ver também [AoS and SoA (Wikipédia, em inglês)](https://en.wikipedia.org/wiki/AoS_and_SoA) e [A organização dos dados em memória](/?c=representation-des-donnees&p=organisation-en-memoire) para o alinhamento e o padding de uma estrutura.
 
+## Filtro por bitmap
+
+Um **bitmap** (ou *bitset*, array de bits) usa um único bit por elemento em vez de um byte ou mais: 8 elementos cabem em um único byte. Aqui ele serve de filtro: antes de carregar um cabeçalho custoso de um array de 147 MB (bem maior do que qualquer cache), um bit diz se há algo para ler naquele lugar.
+
+| Estrutura consultada | Tamanho | Resultado |
+|---|---|---|
+| Bitmap (1 bit por elemento) | 575 KB, cabe no cache L2 | Acesso barato, quase sempre em cache |
+| Array completo de cabeçalhos | 147 MB | Acesso aleatório à memória custoso (fora do cache) |
+
+Consultar o bitmap antes do cabeçalho evitou 91 % das leituras no array de 147 MB: a maioria dos acessos aleatórios custosos é substituída por um acesso barato em uma estrutura que permanece em cache.
+
+> Princípio geral: filtrar com uma estrutura pequena que caiba em cache, antes de pagar um acesso aleatório em uma estrutura grande demais para caber. Ver também [bit array (Wikipédia, em inglês)](https://en.wikipedia.org/wiki/Bit_array).
+
 ---
 
 ## 📋 Recapitulando
@@ -83,6 +96,6 @@ Nesse solucionador, agrupar a razão e o nível de uma variável em uma única e
 | | |
 |---|---|
 | **Para lembrar** | Um acesso à RAM custa ~50× mais do que um acesso ao cache L1. Dados contíguos e de tipo uniforme (array tipado) se beneficiam do cache e do SIMD; dados dispersos (lista encadeada, objetos espalhados) recarregam uma linha de cache a cada acesso. O número de acessos aleatórios à memória prevê o tempo bem melhor do que o número de instruções. |
-| **Ferramentas utilizáveis** | Um array tipado e contíguo (NumPy `ndarray`) em vez de uma coleção de objetos espalhados para cálculo intensivo. |
+| **Ferramentas utilizáveis** | Um array tipado e contíguo (NumPy `ndarray`) em vez de uma coleção de objetos espalhados para cálculo intensivo; um bitmap como filtro barato antes de um acesso aleatório custoso. |
 | **Armadilhas a evitar** | Um array NumPy em `dtype=object`: continua contíguo em aparência, mas perde todo o benefício do cache/SIMD (ponteiros para objetos dispersos). |
 | **Boas práticas** | Preferir um array tipado e contíguo assim que o volume de cálculo justificar o esforço; percorrer os dados na ordem de sua disposição em memória; guardar junto (AoS) os campos lidos e escritos juntos, separar (SoA) os percorridos um a um em muitos elementos. |
