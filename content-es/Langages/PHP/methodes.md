@@ -76,6 +76,157 @@ function encontrarUsuario(int $id): ?array
 
 > **Nota:** `?array` es una declaración de contrato, no una simple costumbre de escritura: es el equivalente en PHP de [`std::optional<T>`](https://en.cppreference.com/w/cpp/utility/optional) en [C++](/?c=langages-de-programmation&s=cpp&p=cpp) moderno o de [`Optional[T]`](/?c=langages-de-programmation&s=python&p=typage-avec-annotations) en [Python](/?c=langages-de-programmation&s=python&p=python): la función puede devolver ese tipo concreto, O `null`, nada más.
 
+## Funciones anónimas: capturar una variable con `use`
+
+Una **función anónima** (también llamada *closure*) es una función sin nombre: se guarda en una variable o se pasa directamente a otra función. **No** ve las variables del código que la rodea. Para usar una, hay que listarla en `use (...)`, de una de estas dos formas:
+
+| Escritura | Lo que recibe la función | Si la función la modifica... |
+|---|---|---|
+| `function () use ($x)` | una **copia** de `$x`, hecha en el momento en que se crea la función | solo cambia la copia |
+| `function () use (&$x)` | la variable `$x` **en sí** (una *referencia*) | `$x` cambia también fuera |
+| `fn() => ...` (función flecha, ver más arriba) | una copia automática de cada variable usada | imposible: una sola expresión, ninguna instrucción |
+
+Analogía: `use ($x)` entrega una fotocopia de un documento (se puede garabatear encima, el original queda intacto); `use (&$x)` presta el original.
+
+```php
+<?php
+$contador = 0;
+
+$porValor = function () use ($contador) {       // recibe una copia de $contador (0)
+    $contador++;                                 // incrementa solo la copia
+    return $contador;                            // devuelve la copia: 1
+};
+
+$porReferencia = function () use (&$contador) { // recibe la verdadera variable $contador
+    $contador++;                                 // incrementa el original
+    return $contador;
+};
+
+echo $porValor(), " ", $contador, "\n";       // muestra "1 0": el original no se movió
+echo $porReferencia(), " ", $contador, "\n";  // muestra "1 1"
+echo $porReferencia(), " ", $contador, "\n";  // muestra "2 2"
+?>
+```
+
+**Trampa: la copia se hace al crear la función, no al llamarla.**
+
+```php
+<?php
+$x = 10;
+$leer = function () use ($x) { return $x; };  // copia de $x hecha AQUÍ, vale 10
+$x = 99;                                      // demasiado tarde: la copia no sigue
+echo $leer();                                 // muestra 10, no 99
+?>
+```
+
+El mismo `&` sirve también para un **parámetro**: sin él, una función recibe una copia de lo que se le pasa (incluso un array); con él, modifica directamente la variable de quien llama.
+
+```php
+<?php
+function agregarUno(array &$tab): void {  // &: la función recibe el array de quien llama
+    $tab[] = 1;                           // agrega un elemento a ESE array
+}
+
+$lista = [];
+agregarUno($lista);
+echo count($lista);                       // muestra 1 (sin el &, mostraría 0)
+?>
+```
+
+### El tipo `callable`: aceptar «algo que se puede llamar»
+
+Un parámetro tipado `callable` acepta cualquier valor que PHP sepa llamar como una función:
+
+| Valor pasado | Ejemplo |
+|---|---|
+| Función anónima o flecha | `fn($n) => $n * 2` |
+| Nombre de una función, como cadena | `'abs'` |
+| Método estático de una clase | `['Calculadora', 'doble']` |
+| Método de un objeto | `[$calculadora, 'triple']` |
+
+```php
+<?php
+function aplicar(callable $accion, int $n): int {
+    return $accion($n);                       // llama a lo que recibió, con $n
+}
+
+echo aplicar(fn($n) => $n * 2, 4);            // muestra 8
+echo aplicar('abs', -3);                      // muestra 3 (valor absoluto)
+aplicar('funcion_inexistente', 1);            // TypeError: esta cadena no es invocable
+aplicar(fn($a, $b) => $a + $b, 1);            // ArgumentCountError, lanzada DENTRO de aplicar()
+?>
+```
+
+> **Nota:** PHP solo comprueba que el valor sea invocable cuando entra en `aplicar()`. **No** comprueba cuántos parámetros espera ni sus tipos: una función que quiere dos solo falla cuando `aplicar()` la llama con uno (ver [Las excepciones](/?c=langages&s=php&p=exceptions) para `TypeError` y `ArgumentCountError`).
+
+Un uso habitual: una función que prepara algo, deja que una función recibida como parámetro haga su trabajo y luego termina limpiamente. La sección siguiente da un ejemplo completo.
+
+## Bloquear un archivo compartido entre peticiones: `flock()`
+
+Un servidor PHP atiende varias peticiones **al mismo tiempo**, cada una en su propio proceso (ver [PHP-FPM](/?c=langages&s=php&p=php-fpm)). Si dos peticiones leen y luego reescriben el mismo archivo (por ejemplo un pequeño archivo JSON que sirve de mini base de datos), una puede borrar el cambio de la otra:
+
+```
+Petición A                         Petición B
+lee visitas = 5
+                                   lee visitas = 5
+escribe visitas = 6
+                                   escribe visitas = 6   <- la visita de A se pierde
+```
+
+Es el mismo problema que entre dos threads que comparten una variable (ver [Memoria compartida](/?c=langages&s=c&p=threads#memoria-compartida-una-ventaja-y-un-peligro)). La solución: **un bloqueo**. `flock()` pone un bloqueo sobre un archivo ya abierto con `fopen()`, y solo una petición a la vez puede tenerlo.
+
+| Llamada | Efecto |
+|---|---|
+| `flock($archivo, LOCK_EX)` | bloqueo **exclusivo**: espera a que nadie más tenga el bloqueo y luego lo toma |
+| `flock($archivo, LOCK_SH)` | bloqueo **compartido**: varios lectores a la vez, pero ningún bloqueo exclusivo mientras tanto |
+| `flock($archivo, LOCK_EX \| LOCK_NB)` | como `LOCK_EX`, pero no espera: devuelve `false` si el bloqueo ya está tomado |
+| `flock($archivo, LOCK_UN)` | libera el bloqueo |
+
+El patrón completo, que combina `flock()` y las funciones anónimas de la sección anterior:
+
+```php
+<?php
+// Abre el archivo, lo bloquea, deja que $modificar cambie los datos y luego los reescribe.
+function conStoreCompartido(string $ruta, callable $modificar): void
+{
+    $archivo = fopen($ruta, 'c+');             // lectura/escritura, creado si no existe, nunca vaciado
+    flock($archivo, LOCK_EX);                  // espera su turno
+    $contenido = stream_get_contents($archivo); // lee todo el archivo
+    $datos = $contenido === '' ? [] : json_decode($contenido, true);
+    $modificar($datos);                        // la función recibida modifica $datos
+    ftruncate($archivo, 0);                    // vacía el archivo...
+    rewind($archivo);                          // ...vuelve al principio...
+    fwrite($archivo, json_encode($datos));     // ...y escribe la nueva versión
+    fflush($archivo);                          // todo queda escrito ANTES de liberar el bloqueo
+    flock($archivo, LOCK_UN);                  // la petición siguiente puede pasar
+    fclose($archivo);
+}
+
+$antes = null;
+conStoreCompartido('store.json', function (array &$d) use (&$antes) {
+    $antes = $d['visitas'] ?? 0;               // use (&$antes): el valor sale de la función
+    $d['visitas'] = $antes + 1;                // &$d: el cambio se conserva y se reescribe
+});
+echo $antes;                                   // número de visitas antes de esta
+?>
+```
+
+Resultado medido con PHP 8.3: 4 procesos lanzados al mismo tiempo, que añaden cada uno 300 visitas al mismo archivo:
+
+| Versión | Visitas contadas al final (esperado: 1 200) |
+|---|---|
+| Sin `flock()` | 16 |
+| Con `flock()` | 1 200 |
+
+Dos sutilezas:
+
+| Trampa | Por qué |
+|---|---|
+| Abrir con `'w'` en lugar de `'c+'` | `'w'` vacía el archivo **en cuanto se abre**, o sea antes de tener el bloqueo: otra petición puede leer un archivo vacío mientras tanto. |
+| Creer que el bloqueo protege contra todo | `flock()` es un bloqueo **consultivo** (*advisory lock*): solo bloquea el código que también llama a `flock()` sobre ese archivo. Un `file_put_contents()` sin bloqueo escribe igualmente. |
+
+> **Nota:** el mismo mecanismo existe en línea de comandos para impedir que dos ejecuciones de un mismo script se solapen (ver [Evitar ejecuciones concurrentes con `flock`](/?c=langages&s=bash&p=automatisation-cron#evitar-ejecuciones-concurrentes-con-flock)). Para muchas escrituras simultáneas, una verdadera base de datos sigue siendo más adecuada que un archivo bloqueado: cada petición espera su turno, lo que ralentiza todo en cuanto sube el tráfico.
+
 ## Suprimir un warning esperado con `@`
 
 Muchas funciones nativas de PHP devuelven `false` en caso de fallo en lugar de lanzar una excepción (un estilo cercano al de [C](/?c=langages-de-programmation&s=c&p=c), donde `fopen()` devuelve un puntero nulo y establece `errno`). Cuando ese fallo ya está previsto y gestionado por el resto del código, el operador `@` colocado delante de la llamada suprime el warning que PHP emitiría en otro caso:
@@ -186,7 +337,7 @@ Ej.:
 
 | | |
 |---|---|
-| **Para recordar** | Una función es un bloque de código reutilizable; un método es una función definida dentro de una clase, invocada vía `->`/`::`. PHP comprueba los tipos anotados en tiempo de ejecución, no en compilación. |
-| **Herramientas utilizables** | Funciones nativas sobre cadenas, arrays, arrays asociativos, matemáticas, comprobación de tipo; `?Tipo` para un tipo anulable. |
-| **Trampas a evitar** | Usar `@` para ocultar sistemáticamente los warnings: hay que reservarlo para fallos realmente previstos y comprobados justo después. |
-| **Buenas prácticas** | Tipar los parámetros y el retorno de una función en cuanto sea posible; usar `$tab[] = valor` en lugar de `array_push()` para un solo elemento. |
+| **Para recordar** | Una función es un bloque de código reutilizable; un método es una función definida dentro de una clase, invocada vía `->`/`::`. PHP comprueba los tipos anotados en tiempo de ejecución, no en compilación. Una función anónima solo ve las variables listadas en `use`: una copia con `use ($x)`, la variable original con `use (&$x)`. |
+| **Herramientas utilizables** | Funciones nativas sobre cadenas, arrays, arrays asociativos, matemáticas, comprobación de tipo; `?Tipo` para un tipo anulable; `use`, `&` y `callable` para las funciones anónimas; `fopen(..., 'c+')` y `flock()` para un archivo compartido. |
+| **Trampas a evitar** | Usar `@` para ocultar sistemáticamente los warnings: hay que reservarlo para fallos realmente previstos y comprobados justo después. Creer que `use ($x)` sigue los cambios de `$x` (la copia se hace al crear la función). Abrir un archivo compartido con `'w'`, que lo vacía antes incluso de tener el bloqueo. |
+| **Buenas prácticas** | Tipar los parámetros y el retorno de una función en cuanto sea posible; usar `$tab[] = valor` en lugar de `array_push()` para un solo elemento; bloquear (`LOCK_EX`) todo archivo leído y luego reescrito por varias peticiones, y llamar a `fflush()` antes de liberar el bloqueo. |
