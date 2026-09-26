@@ -72,26 +72,42 @@ Le property-based testing ne remplace pas les tests classiques, il les complète
 
 Quand on réécrit un algorithme existant (implémentation plus rapide, changement de structure de données...), on n'a pas toujours de propriété générale simple à formuler. Le **test différentiel** compare alors directement les deux implémentations sur beaucoup d'entrées générées : l'ancienne sert de référence, et tout désaccord entre les deux résultats signale un bug dans la réécriture.
 
-Exemple vécu sur le solveur SAT Skyscraper (voir [Encoder un problème en SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)) : en passant des clauses implicites énumérées à retrouvées par calcul, la réécriture a été validée à deux niveaux : l'ensemble exact des clauses retirées comparé à l'ancien ensemble énuméré, puis l'accord « solution trouvée / pas de solution » entre les deux versions sur 700 grilles.
+Exemple vécu sur le solveur Skyscraper (voir [Encoder un problème en SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)) : en passant de clauses énumérées à des clauses implicites retrouvées par calcul, la réécriture a été validée à deux niveaux : l'ensemble exact des clauses retirées comparé à l'ancien ensemble énuméré, puis l'accord « solution trouvée / pas de solution » entre les deux versions sur 700 grilles.
 
 ```python
+import random
+
+
 def tri_ancien(xs):
     """Ancienne implémentation : tri par sélection (correcte mais lente)."""
-    xs = list(xs)
+    xs = list(xs)                                    # copie : l'entrée reste intacte
     for i in range(len(xs)):
-        m = i
+        m = i                                        # position du plus petit restant
         for j in range(i + 1, len(xs)):
             if xs[j] < xs[m]:
                 m = j
-        xs[i], xs[m] = xs[m], xs[i]
+        xs[i], xs[m] = xs[m], xs[i]                  # le placer en position i
     return xs
 
+
 def tri_nouveau(xs):
-    """Réécriture à valider : tri natif de Python (Timsort)."""
+    """Réécriture à valider : tri natif de Python."""
     return sorted(xs)
+
+
+rng = random.Random(0)                               # graine fixe : résultat reproductible
+desaccords = 0
+for _ in range(500):                                 # 500 entrées générées
+    taille = rng.randint(0, 20)                      # longueur de 0 à 20
+    xs = [rng.randint(-50, 50) for _ in range(taille)]   # valeurs de -50 à 50
+    if tri_ancien(xs) != tri_nouveau(xs):            # les deux versions doivent s'accorder
+        desaccords += 1
+print(f"{desaccords} désaccord(s) sur 500 entrées générées")
 ```
 
-Exécuté sur 500 listes aléatoires (longueurs de 0 à 20, valeurs de -50 à 50), en comparant `tri_ancien(xs) != tri_nouveau(xs)` à chaque tirage : sortie réelle `0 desaccord(s) sur 500 entrees generees`.
+```
+0 désaccord(s) sur 500 entrées générées
+```
 
 | Property-based testing | Test différentiel |
 |---|---|

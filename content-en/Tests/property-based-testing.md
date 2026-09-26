@@ -72,26 +72,42 @@ Property-based testing doesn't replace classic tests, it complements them, espec
 
 When rewriting an existing algorithm (a faster implementation, a change of data structure...), there isn't always a simple general property to state. **Differential testing** instead directly compares the two implementations on many generated inputs: the old one acts as the reference, and any disagreement between the two results flags a bug in the rewrite.
 
-Real example from the Skyscraper SAT solver (see [Encoding a Problem into SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)): when moving from enumerated implicit clauses to clauses recovered by computation, the rewrite was validated on two levels: the exact set of removed clauses compared against the old enumerated set, then agreement on "solution found / no solution" between the two versions across 700 grids.
+Real example from the Skyscraper solver (see [Encoding a Problem into SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)): when moving from enumerated clauses to implicit clauses recovered by computation, the rewrite was validated on two levels: the exact set of removed clauses compared against the old enumerated set, then agreement on "solution found / no solution" between the two versions across 700 grids.
 
 ```python
+import random
+
+
 def old_sort(xs):
     """Old implementation: selection sort (correct but slow)."""
-    xs = list(xs)
+    xs = list(xs)                                    # copy: the input stays untouched
     for i in range(len(xs)):
-        m = i
+        m = i                                        # position of the smallest remaining
         for j in range(i + 1, len(xs)):
             if xs[j] < xs[m]:
                 m = j
-        xs[i], xs[m] = xs[m], xs[i]
+        xs[i], xs[m] = xs[m], xs[i]                  # put it at position i
     return xs
 
+
 def new_sort(xs):
-    """Rewrite to validate: Python's native sort (Timsort)."""
+    """Rewrite to validate: Python's built-in sort."""
     return sorted(xs)
+
+
+rng = random.Random(0)                               # fixed seed: reproducible result
+disagreements = 0
+for _ in range(500):                                 # 500 generated inputs
+    size = rng.randint(0, 20)                        # length from 0 to 20
+    xs = [rng.randint(-50, 50) for _ in range(size)]     # values from -50 to 50
+    if old_sort(xs) != new_sort(xs):                 # both versions must agree
+        disagreements += 1
+print(f"{disagreements} disagreement(s) out of 500 generated inputs")
 ```
 
-Run on 500 random lists (lengths 0 to 20, values -50 to 50), comparing `old_sort(xs) != new_sort(xs)` on each draw: real output `0 desaccord(s) sur 500 entrees generees` (0 disagreement(s) out of 500 generated inputs).
+```
+0 disagreement(s) out of 500 generated inputs
+```
 
 | Property-based testing | Differential testing |
 |---|---|

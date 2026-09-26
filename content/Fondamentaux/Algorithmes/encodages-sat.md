@@ -93,15 +93,35 @@ Chaque règle devient des **clauses unitaires** (un seul littéral, par exemple 
 
 ## Nommer une sous-formule : variables auxiliaires définitionnelles
 
-Une contrainte comme « la case i est visible » se réécrit en une longue formule (elle dépend de toutes les cases situées avant). La recopier telle quelle à chaque fois où elle sert ferait exploser la taille de l'encodage. La **[transformation de Tseitin](https://doi.org/10.1007/978-3-642-81955-1_28)** (1968) évite cela : on invente une nouvelle variable qui **porte le nom** de la sous-formule, avec des clauses qui la forcent à valoir la même chose que ce qu'elle nomme. Ces variables n'existaient pas dans l'énoncé du problème : elles sont **définitionnelles**, ajoutées uniquement pour raccourcir l'encodage.
+Une contrainte comme « la case i est visible » se réécrit en une longue formule (elle dépend de toutes les cases situées avant). La recopier telle quelle chaque fois qu'elle sert ferait exploser la taille de l'encodage. La **[transformation de Tseitin](https://doi.org/10.1007/978-3-642-81955-1_28)** (1968) évite cela : on invente une nouvelle variable qui **porte le nom** de la sous-formule, avec des clauses qui la forcent à valoir la même chose que ce qu'elle nomme. Ces variables n'existaient pas dans l'énoncé du problème : elles sont **définitionnelles**, ajoutées uniquement pour raccourcir l'encodage.
 
 ```python
+from itertools import product
+
+
 def clauses_tseitin_et(p, a, b):
-    """p <-> (a et b) : 3 clauses qui définissent p, encodage de Tseitin."""
-    return [[-p, a], [-p, b], [p, -a, -b]]  # p vraie ssi a et b vraies
+    """Clauses qui imposent p <-> (a et b) ; -x signifie « non x »."""
+    return [[-p, a], [-p, b], [p, -a, -b]]          # p ⇒ a, p ⇒ b, (a et b) ⇒ p
+
+
+def satisfaite(clause, valeurs):
+    """Vrai si au moins un littéral de la clause est vrai."""
+    return any(valeurs[abs(lit)] == (lit > 0) for lit in clause)
+
+
+accords = 0
+for a, b, p in product((False, True), repeat=3):    # les 8 combinaisons possibles
+    valeurs = {1: a, 2: b, 3: p}                      # variables : a = 1, b = 2, p = 3
+    clauses_ok = all(satisfaite(c, valeurs) for c in clauses_tseitin_et(3, 1, 2))
+    accords += clauses_ok == (p == (a and b))         # d'accord avec la définition de p ?
+print(f"{accords}/8 combinaisons d'accord")
 ```
 
-Vérifié par force brute sur les 8 combinaisons de a, b, p : les 3 clauses acceptent exactement les cas où `p == (a et b)`, sortie réelle `8/8 lignes d'accord entre les clauses et p == (a et b)`. Dans le solveur Skyscraper, deux sous-formules sont nommées ainsi : « maximum des hauteurs vues parmi les i premières cases d'une ligne » et « la case i est visible ». Sans ces deux familles de variables auxiliaires, chaque contrainte de visibilité redeviendrait une formule de taille proportionnelle au nombre de cases avant elle, au lieu d'une poignée de clauses reliées à une variable partagée : à n = 72, ces variables définitionnelles représentent 68 % du total des variables de l'encodage.
+```
+8/8 combinaisons d'accord
+```
+
+Les 3 clauses acceptent exactement les combinaisons où p vaut « a et b » : p est bien un nom pour cette sous-formule. Dans le solveur Skyscraper, deux sous-formules sont nommées ainsi : « maximum des hauteurs vues parmi les i premières cases d'une ligne » et « la case i est visible ». Sans ces deux familles de variables auxiliaires, chaque contrainte de visibilité redeviendrait une formule de taille proportionnelle au nombre de cases avant elle, au lieu d'une poignée de clauses reliées à une variable partagée : en grille 72 × 72, ces variables définitionnelles représentent 68 % du total des variables de l'encodage.
 
 ## Clauses implicites : retrouvées par calcul plutôt que stockées
 
@@ -109,7 +129,7 @@ Certaines familles de clauses ont une **structure régulière** : leurs littéra
 
 Cela complique un point précis : quand le solveur déduit qu'une variable est vraie, il doit retenir **pourquoi** (la clause qui l'a forcée), pour reconstruire ce raisonnement plus tard pendant l'analyse du conflit. Si la clause n'est pas stockée, cette raison doit elle aussi se coder de façon compacte : sur 32 bits, quelques bits de poids fort désignent la **famille** de clause concernée et les bits restants portent le numéro d'une **variable d'ancrage**, à partir de laquelle toute la clause se recalcule.
 
-| Approche | Ce qui est stocké | Mémoire à n = 72 | Vitesse |
+| Approche | Ce qui est stocké | Mémoire (grille 72 × 72) | Vitesse (grille 48 × 48) |
 |---|---|---|---|
 | Clauses énumérées | Chaque littéral de chaque clause régulière | 674 Mo | référence |
 | Clauses implicites (famille + ancrage) | Un code sur 32 bits par raison, la clause se recalcule | 263 Mo | 1,5 fois plus rapide |

@@ -72,26 +72,42 @@ O property-based testing não substitui os testes clássicos, ele os complementa
 
 Ao reescrever um algoritmo existente (implementação mais rápida, mudança de estrutura de dados...), nem sempre há uma propriedade geral simples a formular. O **teste diferencial** compara então diretamente as duas implementações em muitas entradas geradas: a antiga serve de referência, e qualquer desacordo entre os dois resultados sinaliza um bug na reescrita.
 
-Exemplo real do solucionador SAT Skyscraper (veja [Codificar um problema em SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)): ao passar de cláusulas implícitas enumeradas para recuperadas por cálculo, a reescrita foi validada em dois níveis: o conjunto exato de cláusulas removidas comparado ao antigo conjunto enumerado, e depois o acordo "solução encontrada / sem solução" entre as duas versões em 700 grades.
+Exemplo real do solucionador Skyscraper (veja [Codificar um problema em SAT](/?c=fondamentaux&s=algorithmes&p=encodages-sat)): ao passar de cláusulas enumeradas para cláusulas implícitas recuperadas por cálculo, a reescrita foi validada em dois níveis: o conjunto exato de cláusulas removidas comparado ao antigo conjunto enumerado, e depois o acordo "solução encontrada / sem solução" entre as duas versões em 700 grades.
 
 ```python
+import random
+
+
 def ordenar_antigo(xs):
-    """Implementação antiga: ordenação por seleção (correta, porém lenta)."""
-    xs = list(xs)
+    """Implementação antiga: ordenação por seleção (correta mas lenta)."""
+    xs = list(xs)                                    # cópia: a entrada fica intacta
     for i in range(len(xs)):
-        m = i
+        m = i                                        # posição do menor restante
         for j in range(i + 1, len(xs)):
             if xs[j] < xs[m]:
                 m = j
-        xs[i], xs[m] = xs[m], xs[i]
+        xs[i], xs[m] = xs[m], xs[i]                  # colocá-lo na posição i
     return xs
 
+
 def ordenar_novo(xs):
-    """Reescrita a validar: ordenação nativa do Python (Timsort)."""
+    """Reescrita a validar: ordenação nativa do Python."""
     return sorted(xs)
+
+
+rng = random.Random(0)                               # semente fixa: resultado reprodutível
+desacordos = 0
+for _ in range(500):                                 # 500 entradas geradas
+    tamanho = rng.randint(0, 20)                     # tamanho de 0 a 20
+    xs = [rng.randint(-50, 50) for _ in range(tamanho)]  # valores de -50 a 50
+    if ordenar_antigo(xs) != ordenar_novo(xs):       # as duas versões devem concordar
+        desacordos += 1
+print(f"{desacordos} desacordo(s) em 500 entradas geradas")
 ```
 
-Executado em 500 listas aleatórias (tamanhos de 0 a 20, valores de -50 a 50), comparando `ordenar_antigo(xs) != ordenar_novo(xs)` a cada sorteio: saída real `0 desaccord(s) sur 500 entrees generees` (0 desacordo(s) em 500 entradas geradas).
+```
+0 desacordo(s) em 500 entradas geradas
+```
 
 | Property-based testing | Teste diferencial |
 |---|---|
