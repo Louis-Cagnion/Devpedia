@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 7 (notions de la recherche rush01 du 27/09), un chapitre à la fois avec validation de Louis. Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2) ; points 4, 5 et 6 à écrire par Louis.
+> Prochaine tâche : finir le chapitre en cours du point 7 (`mesurer-avant-d-optimiser` : `cachegrind`, `__rdtsc`, tours alternés, comparaison des compteurs), puis les points 4, 5 et 6, puis la suite du point 7, un chapitre à la fois avec validation de Louis. Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -49,6 +49,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/processus` (section processus orphelins, récapitulatif corrigé ; en anglais, titre de la section `wait()` corrigé).
 - `Qualité, performance et outils/Performance/cache-cpu-et-simd` (sections accès aléatoires, AoS/SoA, filtre par bitmap, écritures inutiles, TLB et pages géantes).
 - `Langages/C/compilation` (sections unité de compilation, `static inline` et `-flto`, optimisation guidée par profil, canari de pile `-fstack-protector`).
+- `Langages/C/makefiles` (sections règles génériques, options sans recompilation et dossier d'objets par jeu d'options, chaîne PGO, `make -q` ; exemple `-I` corrigé).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -57,7 +58,7 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Shadowing RDP** (`query session /server:<machine>`, `mstsc /v:<machine> /shadow:<id> /control /noConsentPrompt`) : observer et piloter la session d'un autre compte depuis la sienne, sans la déplacer ni connaître son mot de passe ; prérequis : GPO « Définir des règles pour le contrôle à distance des sessions utilisateur des services Bureau à distance », droit de contrôle à distance accordé aux opérateurs, ouvertures réseau. Tableau comparatif connexion classique + tscon vs shadowing.
 
 ## 5. Azure DevOps : agents auto-hébergés (projet scraping_infomediaires)
-À compléter dans Infrastructure & DevOps > CI-CD (nouveau chapitre) ; rédaction interrompue le 26/09, à écrire par Louis.
+À compléter dans Infrastructure & DevOps > CI-CD (nouveau chapitre).
 - **Agent auto-hébergé : mode service vs mode interactif** (`config.cmd --unattended --runAsAutoLogon --windowsLogonAccount … --windowsLogonPassword …`, `--overwriteAutoLogon`), plusieurs agents sur une même machine dans des dossiers séparés, rôle du PAT (déjà défini côté GitHub) uniquement à l'enregistrement.
 
 ## 6. Navigateur automatisé : headless, captcha, profil persistant, débogage à distance (projet scraping_infomediaires)
@@ -69,8 +70,7 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
 
 ## 7. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois, validé par Louis)
-Source : `rushs/rush01/RECAP-27-09.md` et `rushs/rush01/research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne CRLF des traductions à préserver), exemples exécutés, liens validés par `validateInternalLinks`, ligne d'audio au point 3.
-- `Langages/C/makefiles` : `make` ne recompile pas un `.o` dont seules les options ont changé (d'où un dossier d'objets par jeu d'options, par exemple nommé d'après une somme de contrôle de `CFLAGS`, et une édition de liens toujours refaite) ; `make -q` pour savoir si une reconstruction est due ; cible qui enchaîne les trois étapes de la PGO avec les mêmes noms de fichiers `.o`.
+Source : `rushs/rush01/RECAP-27-09.md` et `rushs/rush01/research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne d'origine de chaque fichier à préserver : certains sont en CRLF, y compris en français), exemples exécutés, liens validés par `validateInternalLinks`, ligne d'audio au point 3.
 - `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` : `cachegrind` (cache simulé pour un seul processus, `cg_annotate` ; piège : annotations ligne à ligne décalées si les sources changent après le profil) ; instrumentation par compteur de cycles (`__rdtsc`) ; mesures A/B en tours alternés contre la dérive de la machine ; deux binaires comparés sur leurs compteurs et leurs résultats avant toute mesure de temps.
 - `Qualité, performance et outils/Performance` (chapitre à choisir) : division par multiplication par un inverse précalculé (exacte pour un diviseur jusqu'à 128 et un dividende sous 2^25, preuve courte) ; gain mesuré faible (−0,5 %) car le processeur masque la latence : mesurer avant de conclure.
 - `Qualité, performance et outils/Performance/eviter-le-recalcul-redondant` : calcul incrémental qui garde exactement le même résultat (reprendre le couplage du test précédent, repli sur le calcul complet pour produire le résultat canonique, −6,2 % mesuré) ; ne parcourir que les éléments marqués dans une bitmap (−2 %).

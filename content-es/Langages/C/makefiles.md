@@ -4,7 +4,7 @@ order: 12
 
 # Los Makefiles
 
-Un **Makefile** automatiza la compilación de un proyecto en C con varios archivos: en lugar de volver a escribir manualmente cada comando [`gcc`](https://gcc.gnu.org) (véase [El proceso de compilación](/?c=langages-de-programmation&s=c&p=compilation)), se describen una vez las reglas de construcción, y la herramienta `make` las ejecuta, recompilando únicamente lo que realmente ha cambiado desde la última vez.
+Un **Makefile** automatiza la compilación de un proyecto en C con varios archivos: en lugar de volver a escribir manualmente cada comando [`gcc`](https://gcc.gnu.org) (véase [El proceso de compilación](/?c=langages-de-programmation&s=c&p=compilation)), se describen una vez las reglas de construcción, y la herramienta [`make`](https://www.gnu.org/software/make/manual/make.html) las ejecuta, recompilando únicamente lo que realmente ha cambiado desde la última vez.
 
 ## Anatomía de una regla
 
@@ -53,7 +53,7 @@ main.o: main.c calculos.h
 | Opción `gcc` habitual | Función |
 |---|---|
 | `-Wall -Wextra` | Activa la mayoría de las advertencias útiles del compilador |
-| `-g` | Añade la información de depuración (necesaria para `gdb`/Valgrind) |
+| `-g` | Añade la información de depuración (necesaria para [`gdb`](https://sourceware.org/gdb/) y [Valgrind](/?c=langages&s=c&p=memoire#los-cuatro-errores-de-memoria-clasicos)) |
 | `-o nombre` | Nombra el archivo de salida |
 | `-O2` | Activa [el nivel de optimización](/?c=langages-de-programmation&s=c&p=compilation) recomendado en producción |
 
@@ -94,11 +94,11 @@ clean:
 ## Incluir las cabeceras de una biblioteca: `-I`
 
 ```makefile
-programa: main.o
-	$(CC) main.o -I includes -I libft/includes -o programa
+main.o: main.c
+	$(CC) $(CFLAGS) -I includes -I libft/includes -c main.c -o main.o
 ```
 
-`-I` añade una carpeta a la lista donde el compilador busca un archivo `#include "..."` o `#include <...>` (véase [Las cabeceras](/?c=langages&s=c&p=headers)): indispensable en cuanto un proyecto guarda sus `.h` en otro sitio distinto de la carpeta actual, o depende de una biblioteca externa.
+`-I` añade una carpeta a la lista donde el compilador busca un archivo `#include "..."` o `#include <...>` (véase [Las cabeceras](/?c=langages&s=c&p=headers)). Sirve por tanto al compilar un `.c` (`-c`), nunca en el enlazado, que ya no lee ninguna cabecera: indispensable en cuanto un proyecto guarda sus `.h` en otro sitio distinto de la carpeta actual, o depende de una biblioteca externa.
 
 > **Trampa:** apuntar `-I` al nivel de carpeta equivocado (ej. `-I includes` cuando los archivos están en `includes/subcarpeta`). El compilador falla entonces con un mensaje de "archivo no encontrado", aunque el archivo exista realmente en algún lugar del proyecto.
 
@@ -146,13 +146,191 @@ compilar:
 
 > **Nota:** los dos mecanismos se solapan sin entrar en conflicto. `MAKEFLAGS += -s` evita olvidar un `@` en una línea nueva añadida más tarde; `@` línea por línea permite en cambio mantener ciertas líneas deliberadamente visibles (un mensaje de error que se quiere ver incluso en modo silencioso, por ejemplo). Combinar ambos, como haría un proyecto cauteloso, es redundante pero inofensivo.
 
+## Una regla para todos los archivos: `%`, `$@`, `$<`, `$^`
+
+Escribir una regla por cada archivo `.c` (como en [Encadenar reglas](#encadenar-reglas)) se vuelve largo enseguida. Una **regla de patrón** (*pattern rule*) las sustituye todas: el `%` representa «cualquier nombre», el mismo a ambos lados de la regla.
+
+```makefile
+CC = gcc
+CFLAGS = -Wall -Wextra -O2
+# la lista de fuentes, escrita una sola vez
+SRCS = main.c calculos.c
+# la misma lista, cada .c sustituido por .o: main.o calculos.o
+OBJS = $(SRCS:%.c=%.o)
+
+# $@ vale programa, $^ vale main.o calculos.o
+programa: $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+# vale para cada .o: main.o a partir de main.c, calculos.o a partir de calculos.c
+%.o: %.c calculos.h
+	$(CC) $(CFLAGS) -c $< -o $@
+```
+
+`$@`, `$<` y `$^` son **variables automáticas**: `make` las rellena él mismo, regla por regla, en el momento de ejecutar el comando.
+
+| Variable | Contiene | Para `main.o` en la regla `%.o: %.c calculos.h` |
+|---|---|---|
+| `$@` | El objetivo que se está construyendo | `main.o` |
+| `$<` | La **primera** dependencia | `main.c` |
+| `$^` | **Todas** las dependencias, sin duplicados | `main.c calculos.h` |
+
+`$(SRCS:%.c=%.o)` es una **referencia de sustitución**: copia la lista `SRCS` sustituyendo, en cada palabra, el patrón a la izquierda del `=` por el de la derecha.
+
+```text
+$ make
+gcc -Wall -Wextra -O2 -c main.c -o main.o
+gcc -Wall -Wextra -O2 -c calculos.c -o calculos.o
+gcc -Wall -Wextra -O2 -o programa main.o calculos.o
+```
+
+> **Trampa:** `$^` en lugar de `$<` en la regla `%.o` pasa también `calculos.h` a `gcc` (`gcc -c main.c calculos.h -o main.o`), que se niega: `cannot specify '-o' with '-c', '-S' or '-E' with multiple files`. Para compilar un `.c`, siempre `$<`.
+
+## Cambiar de opciones no recompila nada
+
+Una variable del Makefile puede sustituirse al lanzarlo, solo para esa ejecución: `make CFLAGS="-O0 -g"` construye con esas opciones, sin modificar el archivo. Pero `make` decide qué reconstruir comparando únicamente **fechas de modificación**: las opciones de compilación no intervienen en su decisión.
+
+```bash
+make                    # compila main.o, calculos.o y programa con -O2
+make CFLAGS="-O0 -g"    # make: 'programa' is up to date.  (no se recompila nada)
+```
+
+| Situación | Resultado |
+|---|---|
+| `make CFLAGS="-O0 -g"` justo después de `make` | Nada cambia: el programa sigue en `-O2`, sin información de depuración |
+| Un solo `.c` modificado entre las dos ejecuciones | Programa **mezclado**: ese archivo compilado con las nuevas opciones, los demás con las antiguas |
+
+| Solución | Principio | Coste |
+|---|---|---|
+| `make clean` antes de cada cambio de opciones | Ya no queda ningún `.o`: todo se recompila | Recompilación completa en cada cambio; un olvido pasa desapercibido |
+| Una carpeta de objetos por juego de opciones | Cada juego de opciones tiene sus propios `.o`: volver a opciones ya usadas no recompila nada | Una carpeta más por juego de opciones probado |
+
+```makefile
+CC = gcc
+CFLAGS = -Wall -Wextra -O2
+# obj/ seguido de un número calculado a partir del texto de CFLAGS
+OBJDIR = obj/$(shell printf '%s' '$(CFLAGS)' | cksum | cut -d' ' -f1)
+SRCS = main.c calculos.c
+# obj/<número>/main.o obj/<número>/calculos.o
+OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
+
+# FORCE: el enlazado se rehace en cada llamada (véase más abajo)
+programa: $(OBJS) FORCE
+	$(CC) $(CFLAGS) -o $@ $(OBJS)
+
+# mkdir -p crea la carpeta si falta, sin error si ya existe
+$(OBJDIR)/%.o: %.c calculos.h
+	@mkdir -p $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# elimina de una vez las carpetas de objetos de todos los juegos de opciones
+clean:
+	rm -rf obj programa
+
+FORCE:
+.PHONY: clean FORCE
+```
+
+El nombre de la carpeta viene de un comando [shell](/?c=langages&s=bash&p=bash), ejecutado por `$(shell ...)` (véase [`pkg-config`](#encontrar-los-flags-de-compilacion-de-una-biblioteca-pkg-config)), cuyos tres pasos están unidos por [pipes](/?c=langages&s=bash&p=redirections-et-pipes#los-pipes-encadenar-comandos):
+
+| Paso | Función | Salida para `-Wall -Wextra -O2` |
+|---|---|---|
+| [`printf '%s' '...'`](https://man7.org/linux/man-pages/man1/printf.1.html) | Escribe el texto de las opciones, sin salto de línea | `-Wall -Wextra -O2` |
+| [`cksum`](https://man7.org/linux/man-pages/man1/cksum.1.html) | Calcula una **suma de verificación**: un número que resume el texto (como una [función de hash](/?c=langages&s=c&p=tables-de-hachage#la-funcion-de-hash)), distinto en cuanto cambia un carácter | `364582449 17` (la suma, luego el número de bytes) |
+| [`cut -d' ' -f1`](/?c=langages&s=bash&p=traitement-de-texte#cut-extraer-columnas-de-forma-sencilla) | Conserva el primer campo | `364582449` |
+
+**Por qué el [enlazado](/?c=langages&s=c&p=compilation#4-el-enlazado-linking) se rehace siempre.** Un objetivo que depende de `FORCE` (un objetivo sin dependencias ni comandos, que no corresponde a ningún archivo) se reconstruye en cada llamada. Sin él:
+
+| Paso | Comando | Lo que ocurre sin `FORCE` |
+|---|---|---|
+| 1 | `make` | `obj/364582449/*.o` compilados, `programa` enlazado en `-O2` |
+| 2 | `make CFLAGS="-O0 -g"` | `obj/1873556349/*.o` compilados, `programa` enlazado en `-O0`, por tanto más reciente que `obj/364582449/*.o` |
+| 3 | `make` | `programa` es más reciente que `obj/364582449/*.o`: «actualizado», se queda en `-O0` |
+
+Con `FORCE`, el paso 3 vuelve a enlazar los objetos de `obj/364582449/`, sin recompilar nada: el enlazado solo tarda un instante.
+
+> **Trampa:** `$^` en lugar de `$(OBJS)` en el comando de enlazado contiene también `FORCE`: el enlazador busca entonces un archivo con ese nombre y se detiene (`cannot find FORCE: No such file or directory`).
+
+> **Trampa:** un comentario escrito al final de una línea de variable (`OBJDIR = obj/...   # objetos`) deja en el valor los espacios que lo preceden: `$(OBJDIR)/%.o` se convierte en `obj/364582449   /%.o`, es decir, dos objetivos distintos. `make` se detiene entonces con `mixed implicit and normal rules` y `No rule to make target '%.c'`, mensajes que no señalan el comentario. Escribir los comentarios de variables en su propia línea, encima.
+
+## Encadenar los tres pasos de la PGO en un objetivo
+
+La [optimización guiada por perfil](/?c=langages&s=c&p=compilation#la-optimizacion-guiada-por-perfil-pgo) (PGO) compila el programa tres veces seguidas: versión instrumentada, ejecución de entrenamiento, versión optimizada. Un objetivo del Makefile puede encadenar los tres, volviendo a lanzar `make` sobre un objetivo de compilación ordinario (`enlazar`) con otras opciones.
+
+```makefile
+CC = gcc
+CFLAGS = -Wall -Wextra -O2
+NOMBRE = programa
+OBJDIR = obj/$(shell printf '%s' '$(CFLAGS)' | cksum | cut -d' ' -f1)
+SRCS = main.c calculos.c
+OBJS = $(SRCS:%.c=$(OBJDIR)/%.o)
+# carpeta de los perfiles (archivos .gcda)
+PGO_DIR = pgo
+# entradas de entrenamiento, distintas de las de las mediciones de velocidad
+PGO_ENTRADAS = prueba1.txt prueba2.txt
+
+# objetivo por defecto: los tres pasos, rehechos solo si cambia una fuente o el Makefile
+$(NOMBRE): $(SRCS) calculos.h Makefile
+	rm -rf $(PGO_DIR) obj/pgo
+	$(MAKE) enlazar NOMBRE=instrumentado OBJDIR=obj/pgo \
+		CFLAGS="$(CFLAGS) -fprofile-generate=$(PGO_DIR)"
+	for f in $(PGO_ENTRADAS); do ./instrumentado $$f > /dev/null || exit 1; done
+	rm -f instrumentado obj/pgo/*.o
+	$(MAKE) enlazar NOMBRE=$(NOMBRE) OBJDIR=obj/pgo \
+		CFLAGS="$(CFLAGS) -fprofile-use=$(PGO_DIR)"
+
+# compilación directa, sin PGO (pruebas, depuración), siempre enlazada como con FORCE
+enlazar: $(OBJS)
+	$(CC) $(CFLAGS) -o $(NOMBRE) $(OBJS)
+
+$(OBJDIR)/%.o: %.c calculos.h
+	@mkdir -p $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -rf obj $(PGO_DIR) instrumentado $(NOMBRE)
+
+.PHONY: enlazar clean
+```
+
+| Detalle | Por qué |
+|---|---|
+| [`$(MAKE)`](https://www.gnu.org/software/make/manual/html_node/MAKE-Variable.html) en lugar de `make` | Vuelve a lanzar exactamente el mismo programa `make`, señalándolo como una llamada recursiva: sus opciones (`-j`, `-n`...) se transmiten correctamente al sub-`make` |
+| `NOMBRE=... OBJDIR=... CFLAGS=...` después de `enlazar` | Sustituyen, solo para esa llamada, los valores escritos en el Makefile (sección anterior) |
+| Mismo `OBJDIR=obj/pgo` en los pasos 1 y 3 | El perfil de cada `.o` lleva el nombre de ese `.o`: con otra carpeta en el paso 3, el perfil no se encuentra, y `gcc` solo lo indica con una [advertencia](/?c=langages&s=c&p=compilation#la-optimizacion-guiada-por-perfil-pgo) |
+| `rm -f ... obj/pgo/*.o` antes del paso 3 | Los `.o` instrumentados son más recientes que las fuentes: sin este `rm`, `make` no recompila nada, enlaza los objetos del paso 1 sin la biblioteca que registra los recuentos, y falla (`undefined reference to '__gcov_merge_add'`) |
+| `\` al final de una línea | Cada línea de comando se ejecuta en su propio shell; `\` une dos líneas en un solo comando |
+| `$$f` | En un comando, `$` pertenece a `make`; `$$` transmite un `$` al shell, para la variable del [bucle `for`](/?c=langages&s=bash&p=boucles#el-bucle-for-recorrido-de-lista) |
+| `\|\| exit 1` | Lo detiene todo en el primer entrenamiento que falle: sin él, el bucle solo devuelve el [código de salida](/?c=langages&s=bash&p=scripts-et-shebang#codigos-de-salida-exit) de su última vuelta, y un fallo anterior pasaría desapercibido |
+| Dependencias `$(SRCS) calculos.h Makefile` | Los tres pasos solo se rehacen si cambia el código o el Makefile |
+
+## Saber si hace falta reconstruir: `make -q`
+
+Con `-q` (*question*), `make` no ejecuta ningún comando: solo responde con su [código de salida](/?c=langages&s=bash&p=scripts-et-shebang#codigos-de-salida-exit).
+
+| Opción | ¿Ejecuta los comandos? | Lo que aporta |
+|---|---|---|
+| `make -n` | No | Muestra los comandos que se ejecutarían |
+| `make -q` | No | Código de salida `0` si todo está actualizado, `1` si hace falta reconstruir, `2` en caso de error |
+
+Útil en un script, para avisar antes de una reconstrucción larga (los tres pasos de la PGO tardan unos 24 segundos en el solucionador SAT citado en [la compilación](/?c=langages&s=c&p=compilation#la-optimizacion-guiada-por-perfil-pgo)):
+
+```bash
+if ! make -q; then                         # 1 o 2: hay algo que hacer
+    echo "Reconstrucción (unos 25 s)..."   # avisa antes de la espera
+fi
+make -s || exit 1                          # construye si hace falta, en silencio
+```
+
+> **Trampa:** un objetivo `.PHONY`, o que depende de `FORCE`, nunca está «actualizado»: `make -q enlazar` responde siempre `1`. Hacer la pregunta sobre un objetivo que sea un archivo real, construido solo cuando cambian sus dependencias (aquí `programa`, el objetivo PGO).
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Un Makefile describe reglas (`objetivo: dependencias` + comando) que `make` ejecuta, reconstruyendo únicamente lo que realmente ha cambiado. Una receta corta también puede escribirse en la propia línea del objetivo, tras un `;`. |
-| **Herramientas utilizables** | Variables (`CC`, `CFLAGS`), objetivos ficticios (`.PHONY`), `-I` para las cabeceras, `pkg-config` para los flags de una biblioteca, `@`/`MAKEFLAGS += -s` para el modo silencioso. |
-| **Trampas a evitar** | Sangrar un comando con espacios en lugar de una tabulación; apuntar `-I` al nivel de carpeta equivocado; confundir el nombre `pkg-config` de una biblioteca con el nombre de su paquete del sistema. |
-| **Buenas prácticas** | Declarar `.PHONY` para todo objetivo que no produzca un archivo real (`clean`, `test`...), para evitar un conflicto con un archivo del mismo nombre; pasar por `pkg-config` en lugar de adivinar `-I`/`-l` a mano para una biblioteca externa. |
+| **Para recordar** | Un Makefile describe reglas (`objetivo: dependencias` + comando) que `make` ejecuta, reconstruyendo únicamente lo que realmente ha cambiado. Una receta corta también puede escribirse en la propia línea del objetivo, tras un `;`. `make` solo compara fechas: cambiar las opciones de compilación no recompila nada. |
+| **Herramientas utilizables** | Variables (`CC`, `CFLAGS`), objetivos ficticios (`.PHONY`), `-I` para las cabeceras, `pkg-config` para los flags de una biblioteca, `@`/`MAKEFLAGS += -s` para el modo silencioso.; reglas de patrón (`%`, `$@`, `$<`, `$^`); `make VARIABLE=valor`; `$(MAKE)` para encadenar pasos (PGO); `make -n` y `make -q`. |
+| **Trampas a evitar** | Sangrar un comando con espacios en lugar de una tabulación; apuntar `-I` al nivel de carpeta equivocado; confundir el nombre `pkg-config` de una biblioteca con el nombre de su paquete del sistema.; `$^` para compilar un `.c`; un comentario al final de una línea de variable; creer que se ha aplicado un nuevo `CFLAGS`. |
+| **Buenas prácticas** | Declarar `.PHONY` para todo objetivo que no produzca un archivo real (`clean`, `test`...), para evitar un conflicto con un archivo del mismo nombre; pasar por `pkg-config` en lugar de adivinar `-I`/`-l` a mano para una biblioteca externa.; una carpeta de objetos por juego de opciones, con un enlazado que siempre se rehace; `\|\| exit 1` en un bucle de comando. |
