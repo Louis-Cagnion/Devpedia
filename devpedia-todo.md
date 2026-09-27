@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger les points 4, 5 et 6, puis la suite du point 7, un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger les points 5 et 6, puis la suite du point 7, un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -49,13 +49,8 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/processus` (section processus orphelins, récapitulatif corrigé ; en anglais, titre de la section `wait()` corrigé).
 - `Qualité, performance et outils/Performance/cache-cpu-et-simd` (sections accès aléatoires, AoS/SoA, filtre par bitmap, écritures inutiles, TLB et pages géantes).
 - `Langages/C/compilation` (sections unité de compilation, `static inline` et `-flto`, optimisation guidée par profil, canari de pile `-fstack-protector`).
+- `Infrastructure & DevOps/Administration système/acces-a-distance-windows` (nouveau) et `windows-services-sessions-et-droits` (renvoi vers ce chapitre).
 - `Langages/C/makefiles` (sections règles génériques, options sans recompilation et dossier d'objets par jeu d'options, chaîne PGO, `make -q` ; exemple `-I` corrigé).
-
-## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
-Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
-- **RDP (*Remote Desktop Protocol*)** et l'application Connexion Bureau à distance (`mstsc`) : se connecter avec un compte « prend » sa session, qui quitte l'écran principal ; fermer la fenêtre la verrouille.
-- **`tscon %sessionname% /dest:console`** : rend la session à la console au lieu de la verrouiller ; demande en général une élévation (lien avec l'UAC, déjà couverte dans le chapitre `windows-services-sessions-et-droits`).
-- **Shadowing RDP** (`query session /server:<machine>`, `mstsc /v:<machine> /shadow:<id> /control /noConsentPrompt`) : observer et piloter la session d'un autre compte depuis la sienne, sans la déplacer ni connaître son mot de passe ; prérequis : GPO « Définir des règles pour le contrôle à distance des sessions utilisateur des services Bureau à distance », droit de contrôle à distance accordé aux opérateurs, ouvertures réseau. Tableau comparatif connexion classique + tscon vs shadowing.
 
 ## 5. Azure DevOps : agents auto-hébergés (projet scraping_infomediaires)
 À compléter dans Infrastructure & DevOps > CI-CD (nouveau chapitre).

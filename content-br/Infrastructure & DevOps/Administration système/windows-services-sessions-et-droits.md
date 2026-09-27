@@ -38,6 +38,8 @@ query session
 | `ID` | Número da sessão |
 | `STATE` | `Active` (em uso), `Disc` (desconectada, mas ainda aberta) |
 
+Conectar-se remotamente a uma máquina desloca uma sessão de uma tela para outra, com consequências para os programas que precisam de uma janela visível: veja [o acesso remoto ao Windows](/?c=infrastructure-devops&s=administration-systeme&p=acces-a-distance-windows).
+
 ## Os serviços do Windows e o isolamento da Sessão 0
 
 Um **serviço** é um programa que o próprio Windows inicia, muitas vezes assim que a máquina liga, sem esperar que um usuário se conecte (um antivírus, um servidor web, um agente de implantação). Documentação: [Services](https://learn.microsoft.com/en-us/windows/win32/services/services).

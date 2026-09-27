@@ -1413,6 +1413,10 @@
             {
               "id": "windows-services-sessions-et-droits",
               "label": "Windows : services, sessions et droits"
+            },
+            {
+              "id": "acces-a-distance-windows",
+              "label": "Windows : accès à distance (RDP, tscon, shadowing)"
             }
           ]
         },
