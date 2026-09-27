@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : Louis valide les trois sections ajoutées le 27/09 à `Langages/C/compilation` (inlining entre fichiers et `-flto`, optimisation guidée par profil, canari de pile ; commit local non poussé) ; ensuite pousser, puis rédiger le point 7 un chapitre à la fois. Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2) ; points 4, 5 et 6 à écrire par Louis.
+> Prochaine tâche : rédiger le point 7 (notions de la recherche rush01 du 27/09), un chapitre à la fois avec validation de Louis. Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2) ; points 4, 5 et 6 à écrire par Louis.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
