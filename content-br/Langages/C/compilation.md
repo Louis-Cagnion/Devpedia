@@ -106,6 +106,130 @@ gcc -Wall -pthread -o programa programa.c
 
 Desde a versão 2.34 da biblioteca C do Linux (glibc), as funções de threads fazem parte da própria biblioteca C: um programa muitas vezes é ligado mesmo sem opção. `-pthread` continua sendo a forma portável de compilar, válida também em sistemas mais antigos.
 
+## Vários arquivos e inlining: unidade de tradução, `static inline`, `-flto`
+
+Uma **unidade de tradução** é um arquivo `.c` tal como a etapa 2 o vê: seu próprio código, mais tudo o que seus `#include` copiaram para ele na etapa 1. O compilador trata **uma única unidade por vez**: ele nunca vê o conteúdo dos outros `.c` do projeto.
+
+Consequência direta para o [inlining](#os-niveis-de-otimizacao-o0-a-o3-os): o compilador só pode copiar o corpo de uma função se o vê. Uma função definida em outro `.c` continua sendo uma chamada de verdade, mesmo em `-O3`.
+
+```c
+/* quadrado.h */
+int quadrado(int x);                    // só a declaração: o corpo está em outro lugar
+
+/* quadrado.c */
+#include "quadrado.h"
+int quadrado(int x) { return x * x; }   // a definição, em outra unidade
+
+/* main.c */
+#include <stdio.h>
+#include "quadrado.h"
+int main(void) {
+    long soma = 0;
+    for (int i = 0; i < 1000; i++)
+        soma += quadrado(i);            // main.c só vê a declaração
+    printf("%ld\n", soma);              // exibe 332833500
+    return 0;
+}
+```
+
+Três maneiras de obter o inlining apesar da divisão em arquivos, verificadas com [`objdump -d`](https://sourceware.org/binutils/docs/binutils/objdump.html) no executável final:
+
+| Forma de compilar | `call quadrado` em `main`? | Princípio |
+|---|---|---|
+| `quadrado.c` e `main.c` compilados separadamente (`-O2`) | Sim | Cada unidade é otimizada sozinha: a chamada permanece |
+| `static inline int quadrado(int x) { return x * x; }` escrito em `quadrado.h` | Não | O corpo é copiado em cada unidade que inclui o [arquivo de cabeçalho](/?c=langages&s=c&p=headers) |
+| `-flto` na compilação **e** na ligação | Não | *Link-Time Optimization*: os `.o` guardam uma forma intermediária do código, e a ligação otimiza o programa inteiro de uma vez |
+| `-flto` esquecido só para `main.c` | Sim | Uma unidade compilada sem `-flto` só contém código de máquina: nada a reotimizar |
+
+```bash
+gcc -O2 -flto -c main.c -o main.o           # -flto ao compilar CADA arquivo
+gcc -O2 -flto -c quadrado.c -o quadrado.o
+gcc -O2 -flto main.o quadrado.o -o prog     # ... e ao ligar
+```
+
+| Método | Vantagem | Desvantagem |
+|---|---|---|
+| Tudo em um único `.c` | Nenhuma opção a lembrar | Arquivo longo, difícil de ler |
+| `static inline` em um arquivo de cabeçalho | Funciona com qualquer compilação | Reservado a funções pequenas; uma cópia por unidade que a usa |
+| `-flto` | Inlining entre todos os arquivos, sem mudar o código | Ligação mais lenta; esquecê-lo em um único arquivo passa despercebido |
+
+> **Armadilha:** uma função comum (sem `static`) definida em um arquivo de cabeçalho incluído por dois `.c` provoca o erro `multiple definition of 'quadrado'` na ligação: cada unidade contém uma cópia pública. E `inline` sozinho, sem `static`, segue em C regras sutis (é preciso também uma definição não `inline` em um único `.c`): `static inline` é a forma segura.
+
+**O que isso muda na prática.** O [solucionador SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) do projeto de onde vêm estas medições passou de um único arquivo de 1 424 linhas para 7 arquivos `.c`. As funções chamadas a cada passo do cálculo (centenas de milhões de vezes por grade) ficaram todas na mesma unidade, ou viraram `static inline` nos arquivos de cabeçalho. Resultado: nenhuma lentidão (até 2,7 % mais rápido), e `-flto` não trouxe nada a mais (+0,9 %). Dividir um programa não custa nada, desde que se mantenha junto o que se chama com muita frequência: [medir](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser) antes e depois da divisão.
+
+## A otimização guiada por perfil (PGO)
+
+Na compilação, o `gcc` não sabe quais ramos de um `if` serão tomados com mais frequência: ele adivinha. A **otimização guiada por perfil** (*Profile-Guided Optimization*, PGO) substitui esse palpite por contagens reais, medidas em uma execução de teste, para organizar melhor o código: os caminhos frequentes em um só bloco, os caminhos raros deixados de lado.
+
+```text
+ramo.c --[gcc -fprofile-generate]--> ramo (instrumentado, conta suas passagens)
+ramo   --[execução de treino]--> ramo.gcda (o perfil: as contagens)
+ramo.c + ramo.gcda --[gcc -fprofile-use]--> ramo (otimizado a partir das contagens)
+```
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+int main(int argc, char **argv) {
+    int n = argc > 1 ? atoi(argv[1]) : 1000, pequenos = 0, grandes = 0;
+    for (int i = 0; i < n; i++) {
+        if (i % 100 == 0) grandes++;    // ramo raro: 1 vez em 100
+        else pequenos++;                // ramo frequente
+    }
+    printf("%d pequenos, %d grandes\n", pequenos, grandes);
+    return 0;
+}
+```
+
+```bash
+gcc -O2 -fprofile-generate ramo.c -o ramo   # 1. versão instrumentada
+./ramo 1000000                              # 2. treino: escreve ramo.gcda ao sair
+gcc -O2 -fprofile-use ramo.c -o ramo        # 3. recompilação a partir do perfil
+```
+
+As opções estão descritas na [documentação do GCC](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html). No solucionador SAT citado acima, a PGO ganhou 3,4 %, com exatamente o mesmo trabalho realizado (mesmos contadores de cálculo): um ganho modesto, mas gratuito depois de automatizado em um [Makefile](/?c=langages&s=c&p=makefiles).
+
+| Armadilha | O que acontece | Solução |
+|---|---|---|
+| Nome de saída diferente entre as etapas 1 e 3 (`-o ramo_instr`, depois `-o ramo`) | O perfil se chama `ramo_instr-ramo.gcda`, a etapa 3 procura `ramo.gcda`: um simples **aviso** `profile count data file not found`, e o programa é compilado **sem** PGO | Mesmo nome de saída (ou mesmos arquivos `.o`) nas duas etapas, e verificar a ausência desse aviso |
+| Fontes modificadas depois do treino | Erro `coverage-mismatch`: o perfil não corresponde mais ao código | Refazer as três etapas a cada modificação |
+| Programa encerrado por `_exit()`, morto por um sinal, ou processo filho que sai por `_exit()` | Nenhum `.gcda` escrito: o perfil é gravado pela saída normal ([`exit()` ou `return` em `main`](/?c=langages&s=c&p=exit-et-codes-de-retour)), que `_exit()` pula | Treinar com uma execução que termine normalmente (no solucionador: em um único processo, sem os [processos filhos](/?c=langages&s=c&p=processus) do modo paralelo) |
+| Treinar com os mesmos dados da medição de velocidade | O programa é otimizado para o próprio teste: ganho superestimado | Treinar com entradas diferentes das usadas na medição |
+
+## O canário de pilha (`-fstack-protector`)
+
+Um [estouro de buffer](/?c=securite&s=securite-offensive&p=corruption-memoire#o-buffer-overflow-escrever-alem-do-espaco-reservado) na pilha pode sobrescrever o endereço para o qual a função deve voltar. O **canário** é um valor secreto que o compilador coloca entre os arrays locais e esse endereço, e verifica logo antes de voltar: se mudou, o programa para na hora (o nome vem dos canários que os mineiros levavam para detectar o gás antes que fosse tarde demais).
+
+```c
+#include <stdio.h>
+__attribute__((noinline)) static void copiar(const char *texto) {
+    char buffer[8];                     // 8 bytes reservados na pilha
+    for (int i = 0; texto[i]; i++)      // cópia sem verificar o tamanho
+        buffer[i] = texto[i];
+    printf("copiado: %.8s\n", buffer);
+}
+int main(int argc, char **argv) {
+    copiar(argc > 1 ? argv[1] : "curto");
+    return 0;
+}
+```
+
+Com um argumento de 40 caracteres (o buffer só comporta 8):
+
+| Compilação | Saída | Código de saída |
+|---|---|---|
+| `gcc -O2` (padrão do Ubuntu e do Debian: `-fstack-protector-strong`) | `copiado: AAAAAAAA` e depois `*** stack smashing detected ***: terminated` | 134: parada voluntária ([sinal](/?c=langages&s=c&p=signaux-unix#os-sinais-comuns) `SIGABRT`, 128 + 6) |
+| `gcc -O2 -fno-stack-protector` | `copiado: AAAAAAAA` e depois uma falha | 139: falha de segmentação (`SIGSEGV`, 128 + 11), mais tarde e de forma menos clara |
+
+O custo: três instruções em cada função que tem um array local (`objdump -d` mostra a leitura do valor secreto, `mov %fs:0x28`, sua comparação na volta e a chamada a `__stack_chk_fail`). No solucionador SAT, `-fno-stack-protector` ganhou cerca de 1 %.
+
+> **Armadilha:** com `strcpy()` no lugar do laço, a mensagem passa a ser `*** buffer overflow detected ***`, mesmo com `-fno-stack-protector`. É **outra** proteção do Ubuntu, [`_FORTIFY_SOURCE`](https://man7.org/linux/man-pages/man7/feature_test_macros.7.html), que em `-O2` troca as funções de cópia conhecidas por versões verificadas. Retirar o canário não retira, portanto, todas as proteções, e uma cópia escrita à mão só é coberta pelo canário.
+
+| Situação | Canário |
+|---|---|
+| Programa que lê dados externos (arquivos recebidos, rede, entrada de um usuário) | Mantê-lo, sempre |
+| Programa de cálculo com entradas já validadas, em que cada ponto percentual conta | Retirá-lo é aceitável, **depois** de medir o ganho |
+
 ## Erros de compilação vs erros de ligação
 
 Saber em qual etapa um erro ocorre ajuda a diagnosticá-lo:
@@ -122,7 +246,7 @@ Saber em qual etapa um erro ocorre ajuda a diagnosticá-lo:
 
 | | |
 |---|---|
-| **Para lembrar** | Um programa C passa por 4 etapas antes da execução: preprocessador → compilação (assembly) → montagem (código de máquina, `.o`) → ligação (executável final). O nível de otimização (`-O0` a `-O3`, `-Os`) é ajustado na etapa de compilação. |
-| **Ferramentas utilizáveis** | `gcc -E`/`-S`/`-c` para observar cada etapa separadamente; `-O0` a `-O3`/`-Os` para ajustar o nível de otimização; `-march=native` para o processador da máquina; `-pthread` para um programa com threads. |
-| **Armadilhas a evitar** | Confundir um erro de compilação (sintaxe) com um erro de ligação (`undefined reference`, função nunca ligada): a mensagem indica a etapa envolvida. Um aviso invisível em `-O0` (oculto por duas funções não inlinadas) pode aparecer, ou até bloquear a compilação com `-Werror`, já a partir de `-O2`. |
-| **Boas práticas** | Compilar cada arquivo `.c` em `.o` separadamente em um projeto com vários arquivos, para ligar apenas o que mudou em vez de recompilar tudo. Testar a compilação no nível de otimização realmente usado em produção, não apenas em `-O0`. |
+| **Para lembrar** | Um programa C passa por 4 etapas antes da execução: preprocessador → compilação (assembly) → montagem (código de máquina, `.o`) → ligação (executável final). O nível de otimização (`-O0` a `-O3`, `-Os`) é ajustado na etapa de compilação. O compilador só vê uma unidade de tradução por vez: sem `static inline` nem `-flto`, uma função de outro `.c` nunca é inlinada. A PGO otimiza a partir de uma execução de teste; o canário de pilha para um programa cujo buffer local transbordou. |
+| **Ferramentas utilizáveis** | `gcc -E`/`-S`/`-c` para observar cada etapa separadamente; `-O0` a `-O3`/`-Os` para ajustar o nível de otimização; `-march=native` para o processador da máquina; `-pthread` para um programa com threads; `static inline` e `-flto` para o inlining entre arquivos; `-fprofile-generate`/`-fprofile-use` para a PGO; `objdump -d` para verificar o código gerado. |
+| **Armadilhas a evitar** | Confundir um erro de compilação (sintaxe) com um erro de ligação (`undefined reference`, função nunca ligada): a mensagem indica a etapa envolvida. Um aviso invisível em `-O0` (oculto por duas funções não inlinadas) pode aparecer, ou até bloquear a compilação com `-Werror`, já a partir de `-O2`. Esquecer `-flto` em um único arquivo, ou mudar o nome de saída entre as duas etapas da PGO: a otimização desaparece sem nenhum erro. Retirar o canário de um programa que lê dados externos. |
+| **Boas práticas** | Compilar cada arquivo `.c` em `.o` separadamente em um projeto com vários arquivos, para ligar apenas o que mudou em vez de recompilar tudo. Testar a compilação no nível de otimização realmente usado em produção, não apenas em `-O0`. Manter em uma mesma unidade (ou em `static inline`) as funções chamadas com muita frequência, e medir antes e depois de qualquer divisão ou mudança de opção. |
