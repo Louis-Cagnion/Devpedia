@@ -129,6 +129,137 @@ int main(void)
 
 El grafo de llamadas (`gprof -q`) no corrige nada: reutiliza los mismos nombres. `valgrind --tool=callgrind` sí nombra la copia (99,7 % de las instrucciones en `suma_lenta.constprop.0`). Vivido en un solucionador SAT: `gprof` atribuía el 11 % del tiempo a `now()`, una pequeña función que lee el reloj, cuando en realidad correspondía a `cancel_until`.
 
+## Dónde falla la caché del programa: `cachegrind`
+
+Un profiler dice **dónde** se va el tiempo, no **por qué**. Cuando la memoria es la causa (véase [La jerarquía de caché](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd#la-jerarquia-de-cache)), [`cachegrind`](https://valgrind.org/docs/manual/cg-manual.html), una herramienta de Valgrind, ejecuta el programa en un procesador **simulado** y cuenta, por función y por línea, las lecturas de datos y los **fallos de caché** (*cache misses*: un dato ausente de la caché, que hay que ir a buscar más lejos).
+
+Programa de prueba: la misma tabla recorrida en dos órdenes distintos.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#define N 4096                                   /* tabla de 4096 x 4096 enteros: 64 MB */
+
+/* noinline: mantiene dos funciones distintas en el perfil (véase la trampa anterior) */
+__attribute__((noinline)) static long suma_filas(const int *t)
+{
+    long s = 0;
+
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            s += t[i * N + j];                   /* casillas vecinas en memoria */
+    return s;
+}
+
+__attribute__((noinline)) static long suma_columnas(const int *t)
+{
+    long s = 0;
+
+    for (int j = 0; j < N; j++)
+        for (int i = 0; i < N; i++)
+            s += t[i * N + j];                   /* salto de N enteros en cada acceso */
+    return s;
+}
+
+int main(void)
+{
+    int *t = malloc(sizeof(int) * N * N);
+
+    for (long k = 0; k < (long)N * N; k++)
+        t[k] = 1;
+    printf("%ld %ld\n", suma_filas(t), suma_columnas(t));
+    free(t);
+    return 0;
+}
+```
+
+```bash
+gcc -O2 -g recorrido.c -o recorrido                      # -g: números de línea en el informe
+valgrind --tool=cachegrind --cache-sim=yes ./recorrido   # escribe cachegrind.out.<número>
+cg_annotate cachegrind.out.<número>                      # informe por función, luego por línea
+```
+
+| Función | Lecturas (`Dr`) | Fallos de la caché L1 (`D1mr`) | Fallos del último nivel, a buscar en RAM (`DLmr`) | Tiempo real, sin Valgrind |
+|---|---|---|---|---|
+| `suma_filas` | 4,2 M | 1,0 M | 1,0 M | 3,8 ms |
+| `suma_columnas` | 16,8 M | 16,8 M | 16,8 M | 105 ms |
+
+`suma_filas` lee 4 enteros por instrucción (el compilador agrupó las lecturas) y solo falla la caché una vez por [línea de caché](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd#lineas-de-cache-la-memoria-contigua-es-gratis) de 64 bytes, es decir 16 enteros. `suma_columnas` salta 16 KB en cada lectura: cada una falla la caché, y la función es 28 veces más lenta para el mismo cálculo.
+
+| Trampa | Lo que ocurre | Solución |
+|---|---|---|
+| Olvidar `--cache-sim=yes` | Desde Valgrind 3.21, la simulación de la caché está desactivada por defecto: el informe solo cuenta las instrucciones (`Ir`), que no muestran la diferencia (84 M para `suma_columnas` frente a 46 M, para un tiempo 28 veces mayor) | Pasar siempre `--cache-sim=yes` |
+| Fuentes modificadas después del perfil | `cg_annotate` relee las fuentes actuales: avisa (`Annotations may not be correct`) pero muestra igualmente los recuentos, desplazados tantas líneas como se hayan añadido o quitado | Rehacer el perfil tras cualquier modificación |
+| Caché simulada para un solo programa, sin la precarga del procesador | El reparto de la caché L3 entre programas simultáneos no aparece; el procesador real adivina y carga por adelantado las lecturas hechas en orden, lo que la simulación ignora: los fallos de `suma_filas` cuestan allí mucho menos de lo que su número deja pensar | Tratar los recuentos como un orden de magnitud, confirmado por una medición real |
+
+Vivido en el solucionador SAT: `cachegrind` mostró que el 61 % de los fallos de caché en escritura venían de una sola tabla (el nivel y la razón de cada variable, reescritos en cada asignación), una pista que ningún perfil por función daba.
+
+## Cronometrar una parte de un bucle: el contador de ciclos
+
+`clock_gettime` ([Medir una duración](/?c=langages&s=c&p=mesure-du-temps#medir-una-duracion-clock-gettime-clock-monotonic)) cronometra bien una operación entera. Para conocer la **parte** de unas pocas líneas ejecutadas millones de veces, hace falta una medición más ligera: el **contador de marca de tiempo** del procesador (*Time Stamp Counter*, TSC), que avanza a frecuencia fija y se lee en una sola instrucción, `rdtsc`, disponible en C con el nombre [`__rdtsc()`](https://gcc.gnu.org/onlinedocs/gcc/x86-Built-in-Functions.html).
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <x86intrin.h>                           /* __rdtsc, _mm_lfence (solo x86) */
+#define N (1 << 24)                              /* 16 M enteros: 64 MB, más que la caché */
+
+#ifdef BARRERA
+/* espera el final de las instrucciones anteriores antes de leer el contador */
+# define CYCLES() (_mm_lfence(), __rdtsc())
+#else
+# define CYCLES() __rdtsc()
+#endif
+
+int main(int argc, char **argv)
+{
+    int vacio = argc > 1 && argv[1][0] == 'v';    /* ./porcion vacio: parte B sin trabajo */
+    int *t = malloc(sizeof(int) * N);
+    unsigned long long en_b = 0, x = 1;
+    long s = 0;
+
+    for (int k = 0; k < N; k++)
+        t[k] = k;
+    unsigned long long inicio = CYCLES();
+    for (int k = 0; k < N; k++) {
+        s += t[k];                               /* parte A: lectura en orden */
+        unsigned long long t0 = CYCLES();
+        if (!vacio) {
+            x = x * 6364136223846793005ULL + 1;  /* parte B: una casilla al azar */
+            s += t[x >> 40];
+        }
+        en_b += CYCLES() - t0;
+    }
+    unsigned long long total = CYCLES() - inicio;
+    printf("suma %ld: parte de B %.0f %%, %.0f ciclos por paso por B\n",
+           s, 100.0 * en_b / total, (double)en_b / N);
+    free(t);
+    return 0;
+}
+```
+
+```bash
+gcc -O2 porcion.c -o porcion                  # lectura simple del contador
+gcc -O2 -DBARRERA porcion.c -o porcion_b      # una barrera antes de cada lectura
+./porcion ; ./porcion vacio ; ./porcion_b ; ./porcion_b vacio
+```
+
+| Lectura del contador | Parte B real | Parte B vacía |
+|---|---|---|
+| `__rdtsc()` solo | 22 % del tiempo, 26 ciclos por paso | 50 %, 25 ciclos |
+| `_mm_lfence()` y luego `__rdtsc()` | 87 %, 318 ciclos | 49 %, 46 ciclos |
+
+Sin barrera, la parte B parece no costar nada más que una parte vacía. El procesador ejecuta en efecto las instrucciones **fuera de orden**: lanza las siguientes sin esperar al final de las anteriores, y `rdtsc` lee el contador antes de que termine la lectura en RAM de la parte B. Ese coste se paga **después** de la medición, en la parte A. `_mm_lfence()`, una **barrera**, espera al final de las instrucciones anteriores: la parte B cuesta entonces 318 − 46 ≈ 270 ciclos, el orden de magnitud de un acceso a RAM dado por [la jerarquía de caché](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd#la-jerarquia-de-cache).
+
+| Trampa | Solución |
+|---|---|
+| Leer el contador sin barrera: un trabajo lanzado en la parte medida se paga después de ella | `_mm_lfence()` antes de cada lectura del contador |
+| La propia medición tiene un coste (de 25 a 46 ciclos por paso aquí): una parte muy corta parece más cara de lo que es | Medir también una parte vacía, y restar su coste |
+| El contador avanza a frecuencia fija, no al ritmo real del núcleo, que varía con la carga y la temperatura | Razonar en partes de un total medido del mismo modo, no en ciclos absolutos |
+| `__rdtsc()` solo existe en los procesadores x86 (Intel, AMD) | `clock_gettime(CLOCK_MONOTONIC)` en los demás procesadores |
+
+Vivido en el solucionador SAT: esta instrumentación situó una prueba añadida a la búsqueda en torno al 7 % del tiempo, es decir, la ganancia máxima que podía aportar una versión más rápida de esa prueba; la versión reescrita ganó un 6,2 %.
+
 ## Comparar con contadores de trabajo, no solo con el tiempo
 
 Dos ejecuciones idénticas de un mismo programa pueden diferir en **±15 %** en un portátil (frecuencia del procesador, temperatura). Una ganancia del 5 % medida con cronómetro es entonces invisible en el ruido. Cuando el programa puede contar su **trabajo** (nodos explorados, conflictos, propagaciones), esos contadores son **deterministas**: idénticos de una ejecución a otra.
@@ -138,6 +269,62 @@ Dos ejecuciones idénticas de un mismo programa pueden diferir en **±15 %** en 
 | Contadores idénticos, tiempo más corto | El cambio acelera el mismo trabajo: ganancia de velocidad pura |
 | Contadores más bajos | El cambio reduce el propio trabajo (mejor búsqueda) |
 | Contadores distintos, tiempo dentro del ruido | Nada concluyente: medir en más instancias |
+
+## Comprobar que dos versiones hacen el mismo trabajo, antes de cronometrarlas
+
+Una optimización **con trabajo idéntico** (reescribir código para que vaya más rápido, sin cambiar nada de lo que calcula) se comprueba **antes** de cualquier medición de tiempo. Si las dos versiones no hacen exactamente el mismo trabajo, la diferencia de tiempo mezcla velocidad y trabajo, y puede ocultar un bug (véase [Medir también después](#medir-tambien-despues)).
+
+| Etapa | Lo que comprueba |
+|---|---|
+| 1. Mismos resultados y mismos contadores, en muchas entradas variadas | El cambio no modifica el trabajo |
+| 2. Solo después, la medición del tiempo (en rondas alternas, sección siguiente) | El mismo trabajo va más rápido |
+
+Para automatizar la etapa 1, el programa escribe lo que es determinista (resultado, contadores) en la salida estándar, y lo que varía de una ejecución a otra (el tiempo) en la [salida de error](/?c=langages&s=bash&p=redirections-et-pipes#redirigir-la-salida-de-error). Un script compara entonces las dos versiones entrada por entrada:
+
+```bash
+ok=0; total=0
+for tamano in 8 16 24 32 40; do
+    for semilla in 1 2 3; do                               # semilla: fija el azar
+        ./antiguo "$tamano" "$semilla" > a.txt 2> /dev/null  # resultado y contadores solos
+        ./nuevo "$tamano" "$semilla" > b.txt 2> /dev/null
+        total=$((total + 1))
+        if cmp -s a.txt b.txt; then                        # cmp -s: código 0 si idénticos
+            ok=$((ok + 1))
+        else
+            echo "diferencia: tamaño $tamano, semilla $semilla"
+        fi
+    done
+done
+echo "$ok/$total idénticos"
+```
+
+[`cmp`](https://man7.org/linux/man-pages/man1/cmp.1.html) compara dos archivos byte a byte; `-s` lo vuelve silencioso, solo cuenta su [código de salida](/?c=langages&s=bash&p=scripts-et-shebang#codigos-de-salida-exit). `$((...))` hace un [cálculo](/?c=langages&s=bash&p=variables#aritmetica) en Bash.
+
+Vivido en el solucionador SAT: cada optimización de velocidad pasa primero 49 comprobaciones de este tipo (8 ajustes, cuadrículas de 8 a 40 casillas de lado), y la medición del tiempo solo empieza con 49 de 49.
+
+## Medir en rondas alternas
+
+Incluso con trabajo idéntico, el tiempo sigue por medir, y la máquina **deriva** durante la medición: temperatura, frecuencia del procesador, otro programa lanzado entretanto. Medir todas las ejecuciones de A y luego todas las de B atribuye esa deriva a la diferencia entre A y B (véase también [La trampa de la medición única](#la-trampa-de-la-medicion-unica)).
+
+| Orden de las mediciones | Si la máquina se ralentiza por el camino |
+|---|---|
+| A, A, A, luego B, B, B | B parece más lento que A, sin tener nada que ver |
+| A, B, luego A, B (rondas alternas) | La deriva afecta a A y a B por igual, y la diferencia entre dos rondas de una misma versión muestra el ruido |
+
+Ejemplo real en el solucionador SAT: 3 cuadrículas, tiempo medio por cuadrícula, una versión de referencia y tres variantes cuyos contadores ya se habían comprobado idénticos (sección anterior), máquina en reposo (ninguna compilación ni otro cálculo durante la medición).
+
+| Versión | Ronda 1 | Ronda 2 | Diferencia con la referencia de la misma ronda |
+|---|---|---|---|
+| Referencia | 33,8 s | 32,6 s | (base de comparación) |
+| Variante a | 33,0 s | 31,4 s | −2,4 % y luego −3,9 % |
+| Variante b2 | 33,5 s | 32,1 s | −1,1 % y luego −1,6 % |
+| Variante b1 | 33,0 s | 32,7 s | −2,6 % y luego +0,2 % |
+
+| Constatación | Conclusión |
+|---|---|
+| La referencia gana un 3,6 % entre sus dos rondas, sin ningún cambio | Comparar la variante a de la ronda 2 con la referencia de la ronda 1 daría −7,3 %, el doble de su ganancia real |
+| a y b2 ganan en las dos rondas | Ganancias conservadas |
+| b1 cambia de signo de una ronda a otra | Nada concluyente: la diferencia está dentro del ruido |
 
 ## Más hilos, más lento: los programas limitados por la memoria
 
@@ -156,7 +343,7 @@ Otras dos lecciones del mismo proyecto:
 
 | | |
 |---|---|
-| **Para recordar** | Nunca optimizar sin haber medido: la intuición sobre "qué es lento" suele apuntar al código que parece complicado, no al que realmente cuesta caro. |
-| **Herramientas utilizables** | Un profiler clásico (por función: `gprof`, `perf`, `valgrind --tool=callgrind`), una instrumentación manual por fase cuando el programa pasa su tiempo esperando; contadores de trabajo deterministas para comparar dos versiones. |
-| **Trampas a evitar** | Fiarse de una medición única: el ruido (red, caché, carga de la máquina) puede superar el efecto real de una optimización; fiarse de un nombre de función inesperado en un perfil de `gprof` de un programa optimizado (comprobar con `nm -n` o callgrind). |
-| **Buenas prácticas** | Siempre volver a medir tras una optimización (tiempo Y exactitud del resultado); tomar varias mediciones para distinguir una ganancia real del ruido. |
+| **Para recordar** | Nunca optimizar sin haber medido: la intuición sobre "qué es lento" suele apuntar al código que parece complicado, no al que realmente cuesta caro. Dos versiones se comparan primero por sus resultados y contadores, y solo después por el tiempo, en rondas alternas. |
+| **Herramientas utilizables** | Un profiler clásico (por función: `gprof`, `perf`, `valgrind --tool=callgrind`), una instrumentación manual por fase cuando el programa pasa su tiempo esperando; contadores de trabajo deterministas para comparar dos versiones; `cachegrind` (`--cache-sim=yes`) para los fallos de caché; `__rdtsc()` precedido de `_mm_lfence()` para la parte de un fragmento de bucle; `cmp -s` para comparar dos salidas. |
+| **Trampas a evitar** | Fiarse de una medición única: el ruido (red, caché, carga de la máquina) puede superar el efecto real de una optimización; fiarse de un nombre de función inesperado en un perfil de `gprof` de un programa optimizado (comprobar con `nm -n` o callgrind); `cachegrind` sin `--cache-sim=yes`, o sobre fuentes modificadas desde el perfil; leer el contador de ciclos sin barrera; medir A y luego B en bloque en una máquina que deriva. |
+| **Buenas prácticas** | Siempre volver a medir tras una optimización (tiempo Y exactitud del resultado); tomar varias mediciones para distinguir una ganancia real del ruido; comprobar que dos versiones hacen el mismo trabajo antes de cronometrarlas; medir en rondas alternas, con la máquina en reposo. |

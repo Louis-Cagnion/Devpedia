@@ -30,7 +30,7 @@ import time
 timings = []
 
 def chronometrer(module, nom):
-    """Remplace module.nom par une version qui enregistre son temps d'execution."""
+    """Remplace module.nom par une version qui enregistre son temps d'exécution."""
     original = getattr(module, nom)
 
     def enveloppe(*args, **kwargs):
@@ -129,6 +129,137 @@ int main(void)
 
 Le graphe d'appels (`gprof -q`) ne corrige rien : il reprend les mêmes noms. `valgrind --tool=callgrind` nomme bien la copie (99,7 % des instructions dans `somme_lente.constprop.0`). Vécu sur un solveur SAT : `gprof` attribuait 11 % du temps à `now()`, une petite fonction de lecture de l'horloge, alors qu'il revenait à `cancel_until`.
 
+## Où le programme rate le cache : `cachegrind`
+
+Un profileur dit **où** part le temps, pas **pourquoi**. Quand la mémoire est en cause (voir [La hiérarchie de cache](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd#la-hierarchie-de-cache)), [`cachegrind`](https://valgrind.org/docs/manual/cg-manual.html), un outil de Valgrind, exécute le programme sur un processeur **simulé** et compte, par fonction et par ligne, les lectures de données et les **défauts de cache** (*cache misses* : une donnée absente du cache, qu'il faut aller chercher plus loin).
+
+Programme d'essai : le même tableau parcouru dans deux ordres différents.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#define N 4096                                   /* tableau de 4096 x 4096 entiers : 64 Mo */
+
+/* noinline : garde deux fonctions distinctes dans le profil (voir le piège plus haut) */
+__attribute__((noinline)) static long somme_lignes(const int *t)
+{
+    long s = 0;
+
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            s += t[i * N + j];                   /* cases voisines en mémoire */
+    return s;
+}
+
+__attribute__((noinline)) static long somme_colonnes(const int *t)
+{
+    long s = 0;
+
+    for (int j = 0; j < N; j++)
+        for (int i = 0; i < N; i++)
+            s += t[i * N + j];                   /* saut de N entiers à chaque accès */
+    return s;
+}
+
+int main(void)
+{
+    int *t = malloc(sizeof(int) * N * N);
+
+    for (long k = 0; k < (long)N * N; k++)
+        t[k] = 1;
+    printf("%ld %ld\n", somme_lignes(t), somme_colonnes(t));
+    free(t);
+    return 0;
+}
+```
+
+```bash
+gcc -O2 -g parcours.c -o parcours                      # -g : numéros de ligne dans le rapport
+valgrind --tool=cachegrind --cache-sim=yes ./parcours  # écrit cachegrind.out.<numéro>
+cg_annotate cachegrind.out.<numéro>                    # rapport par fonction, puis par ligne
+```
+
+| Fonction | Lectures (`Dr`) | Défauts du cache L1 (`D1mr`) | Défauts du dernier niveau, à chercher en RAM (`DLmr`) | Temps réel, sans Valgrind |
+|---|---|---|---|---|
+| `somme_lignes` | 4,2 M | 1,0 M | 1,0 M | 3,8 ms |
+| `somme_colonnes` | 16,8 M | 16,8 M | 16,8 M | 105 ms |
+
+`somme_lignes` lit 4 entiers par instruction (le compilateur a regroupé les lectures) et ne rate le cache qu'une fois par [ligne de cache](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd#lignes-de-cache-la-memoire-contigue-est-gratuite) de 64 octets, soit 16 entiers. `somme_colonnes` saute 16 Ko à chaque lecture : chacune rate le cache, et la fonction est 28 fois plus lente pour le même calcul.
+
+| Piège | Ce qui se passe | Parade |
+|---|---|---|
+| Oublier `--cache-sim=yes` | Depuis Valgrind 3.21, la simulation du cache est désactivée par défaut : le rapport ne compte que les instructions (`Ir`), qui ne montrent pas l'écart (84 M pour `somme_colonnes` contre 46 M, pour un temps 28 fois plus long) | Toujours passer `--cache-sim=yes` |
+| Sources modifiées après le profil | `cg_annotate` relit les sources actuelles : il avertit (`Annotations may not be correct`) mais affiche quand même les comptes, décalés d'autant de lignes qu'on en a ajouté ou retiré | Refaire le profil après toute modification |
+| Cache simulé pour un seul programme, sans le préchargement du processeur | Le partage du cache L3 entre programmes simultanés n'apparaît pas ; le processeur réel devine et charge d'avance les lectures faites dans l'ordre, ce que la simulation ignore : les défauts de `somme_lignes` y coûtent bien moins que leur nombre ne le laisse penser | Traiter les comptes comme un ordre de grandeur, confirmé par une mesure réelle |
+
+Vécu sur le solveur SAT : `cachegrind` a montré que 61 % des défauts de cache en écriture venaient d'un seul tableau (le niveau et la raison de chaque variable, réécrits à chaque affectation), une piste qu'aucun profil par fonction ne donnait.
+
+## Chronométrer une portion de boucle : le compteur de cycles
+
+`clock_gettime` ([Mesurer une durée](/?c=langages&s=c&p=mesure-du-temps#mesurer-une-duree-clock-gettime-clock-monotonic)) chronomètre bien une opération entière. Pour connaître la **part** de quelques lignes exécutées des millions de fois, il faut une mesure plus légère : le **compteur d'horodatage** du processeur (*Time Stamp Counter*, TSC), qui avance à fréquence fixe et se lit en une seule instruction, `rdtsc`, disponible en C sous le nom [`__rdtsc()`](https://gcc.gnu.org/onlinedocs/gcc/x86-Built-in-Functions.html).
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <x86intrin.h>                           /* __rdtsc, _mm_lfence (x86 seulement) */
+#define N (1 << 24)                              /* 16 M entiers : 64 Mo, plus que le cache */
+
+#ifdef BARRIERE
+/* attend la fin des instructions précédentes avant de lire le compteur */
+# define CYCLES() (_mm_lfence(), __rdtsc())
+#else
+# define CYCLES() __rdtsc()
+#endif
+
+int main(int argc, char **argv)
+{
+    int vide = argc > 1 && argv[1][0] == 'v';     /* ./portion vide : partie B sans travail */
+    int *t = malloc(sizeof(int) * N);
+    unsigned long long dans_b = 0, x = 1;
+    long s = 0;
+
+    for (int k = 0; k < N; k++)
+        t[k] = k;
+    unsigned long long debut = CYCLES();
+    for (int k = 0; k < N; k++) {
+        s += t[k];                               /* partie A : lecture dans l'ordre */
+        unsigned long long t0 = CYCLES();
+        if (!vide) {
+            x = x * 6364136223846793005ULL + 1;  /* partie B : une case tirée au hasard */
+            s += t[x >> 40];
+        }
+        dans_b += CYCLES() - t0;
+    }
+    unsigned long long total = CYCLES() - debut;
+    printf("somme %ld : part de B %.0f %%, %.0f cycles par passage dans B\n",
+           s, 100.0 * dans_b / total, (double)dans_b / N);
+    free(t);
+    return 0;
+}
+```
+
+```bash
+gcc -O2 portion.c -o portion                  # lecture simple du compteur
+gcc -O2 -DBARRIERE portion.c -o portion_b     # une barrière avant chaque lecture
+./portion ; ./portion vide ; ./portion_b ; ./portion_b vide
+```
+
+| Lecture du compteur | Partie B réelle | Partie B vide |
+|---|---|---|
+| `__rdtsc()` seul | 22 % du temps, 26 cycles par passage | 50 %, 25 cycles |
+| `_mm_lfence()` puis `__rdtsc()` | 87 %, 318 cycles | 49 %, 46 cycles |
+
+Sans barrière, la partie B semble ne rien coûter de plus qu'une partie vide. Le processeur exécute en effet les instructions **dans le désordre** : il lance les suivantes sans attendre la fin des précédentes, et `rdtsc` lit le compteur avant que la lecture en RAM de la partie B soit terminée. Ce coût est payé **après** la mesure, dans la partie A. `_mm_lfence()`, une **barrière**, attend la fin des instructions précédentes : la partie B coûte alors 318 − 46 ≈ 270 cycles, l'ordre de grandeur d'un accès en RAM donné par [la hiérarchie de cache](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd#la-hierarchie-de-cache).
+
+| Piège | Parade |
+|---|---|
+| Lire le compteur sans barrière : un travail lancé dans la portion mesurée est payé après elle | `_mm_lfence()` avant chaque lecture du compteur |
+| La mesure elle-même coûte (25 à 46 cycles par passage ici) : une portion très courte paraît plus chère qu'elle n'est | Mesurer aussi une portion vide, et retrancher son coût |
+| Le compteur avance à fréquence fixe, pas au rythme réel du cœur, qui varie avec la charge et la température | Raisonner en parts d'un total mesuré de la même façon, pas en cycles absolus |
+| `__rdtsc()` n'existe que sur les processeurs x86 (Intel, AMD) | `clock_gettime(CLOCK_MONOTONIC)` sur les autres processeurs |
+
+Vécu sur le solveur SAT : cette instrumentation a situé un test ajouté à la recherche à environ 7 % du temps, soit le gain maximal qu'une version plus rapide de ce test pouvait apporter ; la version réécrite a gagné 6,2 %.
+
 ## Comparer sur des compteurs de travail, pas seulement sur le temps
 
 Deux exécutions identiques d'un même programme peuvent différer de **±15 %** sur un ordinateur portable (fréquence du processeur, température). Un gain de 5 % mesuré au chronomètre est alors invisible dans le bruit. Quand le programme peut compter son **travail** (nœuds explorés, conflits, propagations), ces compteurs sont **déterministes** : identiques d'une exécution à l'autre.
@@ -138,6 +269,62 @@ Deux exécutions identiques d'un même programme peuvent différer de **±15 %**
 | Compteurs identiques, temps plus court | Le changement accélère le même travail : gain de vitesse pur |
 | Compteurs plus bas | Le changement réduit le travail lui-même (meilleure recherche) |
 | Compteurs différents, temps dans le bruit | Rien de concluant : mesurer sur plus d'instances |
+
+## Vérifier que deux versions font le même travail, avant de les chronométrer
+
+Une optimisation **à travail identique** (réécrire du code pour qu'il aille plus vite, sans rien changer à ce qu'il calcule) se vérifie **avant** toute mesure de temps. Si les deux versions ne font pas exactement le même travail, l'écart de temps mélange vitesse et travail, et peut cacher un bug (voir [Mesurer aussi après](#mesurer-aussi-apres)).
+
+| Étape | Ce qu'elle vérifie |
+|---|---|
+| 1. Mêmes résultats et mêmes compteurs, sur beaucoup d'entrées variées | Le changement ne modifie pas le travail |
+| 2. Seulement ensuite, la mesure du temps (en tours alternés, section suivante) | Le même travail va plus vite |
+
+Pour automatiser l'étape 1, le programme écrit ce qui est déterministe (résultat, compteurs) sur la sortie standard, et ce qui varie d'une exécution à l'autre (le temps) sur la [sortie d'erreur](/?c=langages&s=bash&p=redirections-et-pipes#rediriger-la-sortie-d-erreur). Un script compare alors les deux versions entrée par entrée :
+
+```bash
+ok=0; total=0
+for taille in 8 16 24 32 40; do
+    for graine in 1 2 3; do                                # graine : fixe le hasard
+        ./ancien "$taille" "$graine" > a.txt 2> /dev/null  # résultat et compteurs seuls
+        ./nouveau "$taille" "$graine" > b.txt 2> /dev/null
+        total=$((total + 1))
+        if cmp -s a.txt b.txt; then                        # cmp -s : code 0 si identiques
+            ok=$((ok + 1))
+        else
+            echo "différence : taille $taille, graine $graine"
+        fi
+    done
+done
+echo "$ok/$total identiques"
+```
+
+[`cmp`](https://man7.org/linux/man-pages/man1/cmp.1.html) compare deux fichiers octet par octet ; `-s` le rend silencieux, seul son [code de sortie](/?c=langages&s=bash&p=scripts-et-shebang#codes-de-sortie-exit) compte. `$((...))` fait un [calcul](/?c=langages&s=bash&p=variables#arithmetique) en Bash.
+
+Vécu sur le solveur SAT : chaque optimisation de vitesse passe d'abord 49 vérifications de ce type (8 réglages, grilles de 8 à 40 cases de côté), et la mesure du temps ne commence qu'à 49 sur 49.
+
+## Mesurer en tours alternés
+
+Même à travail identique, le temps reste à mesurer, et la machine **dérive** pendant la mesure : température, fréquence du processeur, autre programme lancé entre-temps. Mesurer toutes les exécutions de A, puis toutes celles de B, attribue cette dérive à la différence entre A et B (voir aussi [Le piège de la mesure unique](#le-piege-de-la-mesure-unique)).
+
+| Ordre des mesures | Si la machine ralentit en cours de route |
+|---|---|
+| A, A, A, puis B, B, B | B paraît plus lent que A, sans y être pour rien |
+| A, B, puis A, B (tours alternés) | La dérive touche A et B à parts égales, et l'écart entre deux tours d'une même version montre le bruit |
+
+Exemple réel sur le solveur SAT : 3 grilles, temps moyen par grille, une version de référence et trois variantes dont les compteurs étaient déjà vérifiés identiques (section précédente), machine au repos (aucune compilation ni autre calcul pendant la mesure).
+
+| Version | Tour 1 | Tour 2 | Écart à la référence du même tour |
+|---|---|---|---|
+| Référence | 33,8 s | 32,6 s | (base de comparaison) |
+| Variante a | 33,0 s | 31,4 s | −2,4 % puis −3,9 % |
+| Variante b2 | 33,5 s | 32,1 s | −1,1 % puis −1,6 % |
+| Variante b1 | 33,0 s | 32,7 s | −2,6 % puis +0,2 % |
+
+| Constat | Conclusion |
+|---|---|
+| La référence gagne 3,6 % entre ses deux tours, sans aucun changement | Comparer la variante a du tour 2 à la référence du tour 1 donnerait −7,3 %, deux fois son vrai gain |
+| a et b2 gagnent dans les deux tours | Gains retenus |
+| b1 change de signe d'un tour à l'autre | Rien de concluant : l'écart est dans le bruit |
 
 ## Plus de threads, plus lent : les programmes limités par la mémoire
 
@@ -156,7 +343,7 @@ Deux autres leçons du même projet :
 
 | | |
 |---|---|
-| **À retenir** | Ne jamais optimiser sans avoir mesuré : l'intuition sur "ce qui est lent" cible en général le code qui semble compliqué, pas celui qui coûte réellement cher. |
-| **Outils utilisables** | Un profileur classique (par fonction : `gprof`, `perf`, `valgrind --tool=callgrind`), une instrumentation manuelle par phase quand le programme passe son temps à attendre ; des compteurs de travail déterministes pour comparer deux versions. |
-| **Pièges à éviter** | Se fier à une mesure unique : le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation ; croire un nom de fonction inattendu dans un profil `gprof` d'un programme optimisé (vérifier avec `nm -n` ou callgrind). |
-| **Bonnes pratiques** | Toujours re-mesurer après une optimisation (temps ET exactitude du résultat) ; prendre plusieurs mesures pour distinguer un vrai gain du bruit. |
+| **À retenir** | Ne jamais optimiser sans avoir mesuré : l'intuition sur "ce qui est lent" cible en général le code qui semble compliqué, pas celui qui coûte réellement cher. Deux versions se comparent d'abord sur leurs résultats et leurs compteurs, puis seulement sur le temps, en tours alternés. |
+| **Outils utilisables** | Un profileur classique (par fonction : `gprof`, `perf`, `valgrind --tool=callgrind`), une instrumentation manuelle par phase quand le programme passe son temps à attendre ; des compteurs de travail déterministes pour comparer deux versions ; `cachegrind` (`--cache-sim=yes`) pour les défauts de cache ; `__rdtsc()` précédé de `_mm_lfence()` pour la part d'une portion de boucle ; `cmp -s` pour comparer deux sorties. |
+| **Pièges à éviter** | Se fier à une mesure unique : le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation ; croire un nom de fonction inattendu dans un profil `gprof` d'un programme optimisé (vérifier avec `nm -n` ou callgrind) ; `cachegrind` sans `--cache-sim=yes`, ou sur des sources modifiées depuis le profil ; lire le compteur de cycles sans barrière ; mesurer A puis B en bloc sur une machine qui dérive. |
+| **Bonnes pratiques** | Toujours re-mesurer après une optimisation (temps ET exactitude du résultat) ; prendre plusieurs mesures pour distinguer un vrai gain du bruit ; vérifier que deux versions font le même travail avant de les chronométrer ; mesurer en tours alternés, machine au repos. |

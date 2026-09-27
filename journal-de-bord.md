@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre Mesurer avant d'optimiser complété depuis la recherche rush01 (2026-09-27)
+
+Quatre sections ajoutées (`cachegrind`, compteur de cycles, même travail avant chronométrage, tours alternés), avec des chiffres mesurés sur la machine au repos. Surprise de l'essai `__rdtsc()` : sans `_mm_lfence()`, une lecture en RAM dans la portion mesurée n'y coûte que 26 cycles (autant qu'une portion vide), son coût étant payé après la mesure ; avec la barrière, 318 cycles. Le tableau des tours alternés reprend les vraies mesures A/B du solveur du même soir. Dans les traductions, les identifiants des exemples sont traduits comme ceux de l'exemple `gprof` existant, et chaque version est recompilée et exécutée.
+
 ## Chapitre C Makefiles complété depuis la recherche rush01 (2026-09-27)
 
 Quatre sections ajoutées (règles génériques, options sans recompilation, chaîne PGO, `make -q`), chaque piège reproduit dans un dossier d'essai avec `LC_ALL=C` avant d'en citer le message. Trois intuitions de rédaction démenties par l'essai : `$^` avec `FORCE` échoue dans l'éditeur de liens (`cannot find FORCE`), un commentaire en bout de ligne de variable arrête `make` sur un message trompeur (`mixed implicit and normal rules`) au lieu de compiler au mauvais endroit, et l'étape 3 de la PGO sans `rm` des `.o` échoue à l'édition de liens (`__gcov_merge_add`) au lieu de relier les objets instrumentés. L'exemple `-I` existant (4 langues) plaçait l'option sur l'édition de liens, où elle n'a aucun effet. Piège d'outillage : le chapitre français est en CRLF comme la traduction anglaise ; `pathlib.read_text`/`write_text` convertissent silencieusement en LF (diff de 158 lignes détecté par `git diff --stat`), d'où `open(..., newline="")` pour tout script qui réécrit un chapitre.
