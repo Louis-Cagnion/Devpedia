@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre Windows : accès à distance (2026-09-27)
+
+Point 4 du todo (projet scraping_infomediaires) rédigé en nouveau chapitre d'Administration système, après celui des sessions. Les commandes Windows (`mstsc`, `tscon`, `query session`) n'ont pas pu être exécutées sur la machine de rédaction (Linux) : chaque syntaxe et chaque prérequis vient de la documentation Microsoft Learn, dont le fichier de commandes `tscon` de la page Azure DevOps sur les tests d'interface. La page de l'ancienne commande `shadow` (2008) affirme que la console ne peut pas être observée ; elle ne vaut plus pour `mstsc /shadow` (2012 R2 et après) et n'est citée que pour la règle des droits. Les libellés de la stratégie de groupe restent en anglais dans les versions espagnole et portugaise, faute de source pour leur traduction officielle ; le bloc `bat` est passé en `text`, `highlight.js` ne connaissant pas ce langage sur le site.
+
 ## Chapitre Mesurer avant d'optimiser complété depuis la recherche rush01 (2026-09-27)
 
 Quatre sections ajoutées (`cachegrind`, compteur de cycles, même travail avant chronométrage, tours alternés), avec des chiffres mesurés sur la machine au repos. Surprise de l'essai `__rdtsc()` : sans `_mm_lfence()`, une lecture en RAM dans la portion mesurée n'y coûte que 26 cycles (autant qu'une portion vide), son coût étant payé après la mesure ; avec la barrière, 318 cycles. Le tableau des tours alternés reprend les vraies mesures A/B du solveur du même soir. Dans les traductions, les identifiants des exemples sont traduits comme ceux de l'exemple `gprof` existant, et chaque version est recompilée et exécutée.

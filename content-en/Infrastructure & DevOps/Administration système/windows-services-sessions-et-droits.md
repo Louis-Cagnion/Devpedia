@@ -38,6 +38,8 @@ query session
 | `ID` | Session number |
 | `STATE` | `Active` (in use), `Disc` (disconnected but still open) |
 
+Connecting to a machine remotely moves a session from one screen to another, with consequences for programs that need a visible window: see [remote access to Windows](/?c=infrastructure-devops&s=administration-systeme&p=acces-a-distance-windows).
+
 ## Windows Services and Session 0 Isolation
 
 A **service** is a program that Windows starts by itself, often as soon as the machine boots, without waiting for a user to log in (an antivirus, a web server, a deployment agent). Documentation: [Services](https://learn.microsoft.com/en-us/windows/win32/services/services).

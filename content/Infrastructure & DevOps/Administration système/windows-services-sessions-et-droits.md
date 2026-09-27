@@ -38,6 +38,8 @@ query session
 | `ID` | Numéro de la session |
 | `STATE` | `Active` (utilisée), `Disc` (déconnectée mais toujours ouverte) |
 
+Se connecter à distance à une machine déplace une session d'un écran à l'autre, avec des conséquences pour les programmes qui ont besoin d'une fenêtre visible : voir [l'accès à distance à Windows](/?c=infrastructure-devops&s=administration-systeme&p=acces-a-distance-windows).
+
 ## Les services Windows et l'isolation de la Session 0
 
 Un **service** est un programme que Windows démarre lui-même, souvent dès l'allumage de la machine, sans attendre qu'un utilisateur se connecte (un antivirus, un serveur web, un agent de déploiement). Documentation : [Services](https://learn.microsoft.com/en-us/windows/win32/services/services).
