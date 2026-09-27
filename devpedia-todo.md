@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : générer l'audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2) ; points 4, 5 et 6 à écrire par Louis.
+> Prochaine tâche : Louis valide les trois sections ajoutées le 27/09 à `Langages/C/compilation` (inlining entre fichiers et `-flto`, optimisation guidée par profil, canari de pile ; commit local non poussé) ; ensuite pousser, puis rédiger le point 7 un chapitre à la fois. Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2) ; points 4, 5 et 6 à écrire par Louis.
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois avec validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -48,6 +48,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Sécurité/Cybersécurité/securite-des-webhooks` (traduit en en/es/br ; version française réaccentuée, repli `?? ''` sur l'en-tête de signature).
 - `Langages/C/processus` (section processus orphelins, récapitulatif corrigé ; en anglais, titre de la section `wait()` corrigé).
 - `Qualité, performance et outils/Performance/cache-cpu-et-simd` (sections accès aléatoires, AoS/SoA, filtre par bitmap, écritures inutiles, TLB et pages géantes).
+- `Langages/C/compilation` (sections unité de compilation, `static inline` et `-flto`, optimisation guidée par profil, canari de pile `-fstack-protector`).
 
 ## 4. Accès à distance Windows : RDP, tscon, shadowing (projet scraping_infomediaires)
 Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 résultat ; les 2 occurrences de « RDP » sont sans rapport). Rubrique pressentie : Infrastructure & DevOps > Administration système.
@@ -66,3 +67,12 @@ Absents de `content/` (« bureau à distance », « tscon », « shadow » : 0 r
 - **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
 - **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
 - **Tunnel SSH / redirection de port** (`ssh -L`) : atteindre un port distant limité à `localhost` sans l'ouvrir au réseau (rubrique Réseaux ; 0 résultat pour « tunnel SSH » / « redirection de port »).
+
+## 7. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois, validé par Louis)
+Source : `rushs/rush01/RECAP-27-09.md` et `rushs/rush01/research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne CRLF des traductions à préserver), exemples exécutés, liens validés par `validateInternalLinks`, ligne d'audio au point 3.
+- `Langages/C/makefiles` : `make` ne recompile pas un `.o` dont seules les options ont changé (d'où un dossier d'objets par jeu d'options, par exemple nommé d'après une somme de contrôle de `CFLAGS`, et une édition de liens toujours refaite) ; `make -q` pour savoir si une reconstruction est due ; cible qui enchaîne les trois étapes de la PGO avec les mêmes noms de fichiers `.o`.
+- `Qualité, performance et outils/Performance/mesurer-avant-d-optimiser` : `cachegrind` (cache simulé pour un seul processus, `cg_annotate` ; piège : annotations ligne à ligne décalées si les sources changent après le profil) ; instrumentation par compteur de cycles (`__rdtsc`) ; mesures A/B en tours alternés contre la dérive de la machine ; deux binaires comparés sur leurs compteurs et leurs résultats avant toute mesure de temps.
+- `Qualité, performance et outils/Performance` (chapitre à choisir) : division par multiplication par un inverse précalculé (exacte pour un diviseur jusqu'à 128 et un dividende sous 2^25, preuve courte) ; gain mesuré faible (−0,5 %) car le processeur masque la latence : mesurer avant de conclure.
+- `Qualité, performance et outils/Performance/eviter-le-recalcul-redondant` : calcul incrémental qui garde exactement le même résultat (reprendre le couplage du test précédent, repli sur le calcul complet pour produire le résultat canonique, −6,2 % mesuré) ; ne parcourir que les éléments marqués dans une bitmap (−2 %).
+- `Fondamentaux/Algorithmes` (nouveau chapitre) : couplage biparti, théorème de Hall, algorithme de Kuhn (chemins augmentants), application à la contrainte « toutes différentes » d'une ligne de carré latin ; renvoi depuis `encodages-sat` (propagateurs).
+- `Langages/Bash` (et Zsh) : fichier temporaire `mktemp` supprimé par `trap` sur `EXIT`, `INT` et `TERM` ; `timeout --foreground` (sans lui, Ctrl-C n'atteint pas la commande, isolée dans son propre groupe de processus) ; tampon de sortie de 4 Ko vers un tube et mélange stdout/stderr par `2>&1` qui coupe une ligne en deux ; `read -k` de zsh et touches fléchées (Échap suivi d'autres octets) ; bloc de commentaire `: <<'COMMENT'`.
