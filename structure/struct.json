@@ -962,6 +962,10 @@
             {
               "id": "recouvrement-de-latence",
               "label": "Recouvrir la latence avec un pool tournant"
+            },
+            {
+              "id": "division-par-multiplication",
+              "label": "Remplacer une division par une multiplication"
             }
           ]
         },

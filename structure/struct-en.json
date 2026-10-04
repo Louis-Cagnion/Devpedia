@@ -962,6 +962,10 @@
             {
               "id": "recouvrement-de-latence",
               "label": "Overlapping Latency with a Round-Robin Pool"
+            },
+            {
+              "id": "division-par-multiplication",
+              "label": "Replacing a Division with a Multiplication"
             }
           ]
         },

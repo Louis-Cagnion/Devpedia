@@ -962,6 +962,10 @@
             {
               "id": "recouvrement-de-latence",
               "label": "Sobrepor a latência com um pool em rodízio"
+            },
+            {
+              "id": "division-par-multiplication",
+              "label": "Substituir uma divisão por uma multiplicação"
             }
           ]
         },

@@ -51,6 +51,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/compilation` (sections unité de compilation, `static inline` et `-flto`, optimisation guidée par profil, canari de pile `-fstack-protector`).
 - `Infrastructure & DevOps/Administration système/acces-a-distance-windows` (nouveau) et `windows-services-sessions-et-droits` (renvoi vers ce chapitre).
 - `Langages/C/makefiles` (sections règles génériques, options sans recompilation et dossier d'objets par jeu d'options, chaîne PGO, `make -q` ; exemple `-I` corrigé).
+- `Langages/C/operateurs-binaires` (renvoi vers `division-par-multiplication`).
 
 ## 5. Azure DevOps : agents auto-hébergés (projet scraping_infomediaires)
 À compléter dans Infrastructure & DevOps > CI-CD (nouveau chapitre).
@@ -66,7 +67,6 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 
 ## 7. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois)
 Source : `rushs/rush01/RECAP-27-09.md` et `rushs/rush01/research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne d'origine de chaque fichier à préserver : certains sont en CRLF, y compris en français), exemples exécutés, liens validés par `validateInternalLinks`, puis audio des 4 langues généré avant de passer au chapitre suivant (consigne du 04/10 : pas de ligne d'audio au point 3 pour ces chapitres).
-- `Qualité, performance et outils/Performance` (chapitre à choisir) : division par multiplication par un inverse précalculé (exacte pour un diviseur jusqu'à 128 et un dividende sous 2^25, preuve courte) ; gain mesuré faible (−0,5 %) car le processeur masque la latence : mesurer avant de conclure.
 - `Qualité, performance et outils/Performance/eviter-le-recalcul-redondant` : calcul incrémental qui garde exactement le même résultat (reprendre le couplage du test précédent, repli sur le calcul complet pour produire le résultat canonique, −6,2 % mesuré) ; ne parcourir que les éléments marqués dans une bitmap (−2 %).
 - `Fondamentaux/Algorithmes` (nouveau chapitre) : couplage biparti, théorème de Hall, algorithme de Kuhn (chemins augmentants), application à la contrainte « toutes différentes » d'une ligne de carré latin ; renvoi depuis `encodages-sat` (propagateurs).
 - Même chapitre (suite, **filtrage de Régin**) : retirer d'un domaine toute valeur qui n'appartient à aucun couplage parfait (graphe orienté des couplages, composantes fortement connexes par l'algorithme de Tarjan, arêtes libres, couplées et alternées) ; test de Hall lancé au point fixe de la propagation (explication d'un conflit par l'ensemble de Hall) et limité aux lignes presque remplies (au plus 16 ou 32 cases libres : masques de 64 bits) ; explications des retraits empilées à part plutôt qu'apprises comme clauses (les apprendre bloquait la recherche) ; mesures : n=104, 9 → 3 dépassements avec Hall à 16 cases, aucun avec 32 ; n=108 validé avec Régin (49,3 s) ; `HALL=48` et `64` dégradent la recherche.

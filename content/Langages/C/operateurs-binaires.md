@@ -53,6 +53,8 @@ y << 1                  // 1001 0000 = 144, et non 400 : un bit est tombé
 - Décaler d'un nombre supérieur ou égal à la largeur du type est un **comportement indéfini** (`x << 32` sur un `int` 32 bits) : le résultat n'est pas garanti, même s'il "semble marcher".
 - `>>` sur un entier **signé négatif** dépend de l'implémentation (le bit de signe peut être propagé ou non). Pour manipuler des bits, utilisez systématiquement des types **non signés** (`unsigned int`, `uint32_t`).
 
+Décaler à droite sert aussi à **jeter** les bits de poids faible : c'est le principe d'une [division remplacée par une multiplication](/?c=qualite-performance-et-outils&s=performance&p=division-par-multiplication).
+
 ## Les masques : la vraie utilité au quotidien
 
 Un **masque** est une valeur dont on se sert pour cibler des bits précis. Les quatre opérations de base :

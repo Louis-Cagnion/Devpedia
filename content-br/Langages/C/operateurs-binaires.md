@@ -53,6 +53,8 @@ y << 1                  // 1001 0000 = 144, e não 400: um bit caiu
 - Deslocar por um número maior ou igual à largura do tipo é um **comportamento indefinido** (`x << 32` em um `int` de 32 bits): o resultado não é garantido, mesmo que "pareça funcionar".
 - `>>` em um inteiro **assinado negativo** depende da implementação (o bit de sinal pode ser propagado ou não). Para manipular bits, use sistematicamente tipos **sem sinal** (`unsigned int`, `uint32_t`).
 
+Deslocar para a direita serve também para **descartar** os bits de menor peso: é o princípio de [substituir uma divisão por uma multiplicação](/?c=qualite-performance-et-outils&s=performance&p=division-par-multiplication).
+
 ## As máscaras: a real utilidade no dia a dia
 
 Uma **máscara** é um valor usado para atingir bits precisos. As quatro operações básicas:
