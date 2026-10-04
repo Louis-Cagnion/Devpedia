@@ -2,6 +2,14 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre « Remplacer une division par une multiplication » (2026-10-04)
+
+Premier chapitre du point 7 rédigé avec l'audio des quatre langues généré avant le suivant. Trois constats à garder :
+
+- La borne du solveur (`q <= 128`, `d < 2^25`) est **suffisante**, pas nécessaire : la preuve demande seulement `d × e < 2^32` (`e` = erreur d'arrondi de l'inverse), et le premier dividende faux est juste au-dessus de `2^32 / e` (q = 3 : 2 147 483 648 ; q = 127 : 38 693 470). Vérifié sur les 4 294 967 296 paires de la zone garantie en 5,7 s, 0 fausse.
+- `gcc` remplace déjà `d / 108` par une multiplication, même en `-O0` : la technique ne sert que pour un diviseur connu à l'exécution. Micro-test ×2 (chaîne dépendante) à ×3,4 (divisions indépendantes), mais −0,5 % dans le solveur : le chapitre insiste sur cet écart plutôt que sur le gain isolé.
+- Le `>> 32` n'est licite que parce que le produit est en `uint64_t` : décaler d'un entier de 32 bits de sa largeur est un comportement indéfini (voir `operateurs-binaires`). Piège de rédaction : `validateInternalLinks` ne contrôle pas les ancres `#...`, et dans une traduction l'ancre est le slug du titre **traduit** (`#shifts`, `#los-desplazamientos`) ; elles ont été vérifiées à part. Les chronométrages varient de 0,01 ns d'une exécution à l'autre (1,29 ou 1,30 ns) : le tableau du chapitre arrondit à 1,3 ns, les blocs de sortie montrent chaque exécution réelle.
+
 ## Relecture indépendante des chapitres de la recherche rush01 (2026-10-04)
 
 Un agent relecteur a repris les 7 chapitres et les sections issus de la recherche : exemples rejoués, chiffres recoupés avec `RECAP-04-10.md` et `BILAN-RECHERCHE.md`. Deux pièges à retenir :

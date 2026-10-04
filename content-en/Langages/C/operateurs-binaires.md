@@ -53,6 +53,8 @@ y << 1                  // 1001 0000 = 144, not 400: a bit fell off
 - Shifting by a number greater than or equal to the type's width is **undefined behavior** (`x << 32` on a 32-bit `int`): the result isn't guaranteed, even if it "seems to work".
 - `>>` on a **negative signed** integer is implementation-defined (the sign bit may or may not be propagated). To manipulate bits, systematically use **unsigned** types (`unsigned int`, `uint32_t`).
 
+Shifting right is also used to **throw away** the low-order bits: this is the principle behind [replacing a division with a multiplication](/?c=qualite-performance-et-outils&s=performance&p=division-par-multiplication).
+
 ## Masks: the real everyday usefulness
 
 A **mask** is a value used to target specific bits. The four basic operations:

@@ -962,6 +962,10 @@
             {
               "id": "recouvrement-de-latence",
               "label": "Solapar la latencia con un pool en tiovivo"
+            },
+            {
+              "id": "division-par-multiplication",
+              "label": "Sustituir una división por una multiplicación"
             }
           ]
         },

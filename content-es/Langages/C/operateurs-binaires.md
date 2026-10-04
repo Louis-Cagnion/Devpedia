@@ -53,6 +53,8 @@ y << 1                  // 1001 0000 = 144, y no 400: se perdió un bit
 - Desplazar un número de posiciones mayor o igual al ancho del tipo es un **comportamiento indefinido** (`x << 32` sobre un `int` de 32 bits): el resultado no está garantizado, aunque "parezca funcionar".
 - `>>` sobre un entero **con signo negativo** depende de la implementación (el bit de signo puede propagarse o no). Para manipular bits, usa siempre tipos **sin signo** (`unsigned int`, `uint32_t`).
 
+Desplazar a la derecha sirve también para **descartar** los bits de menor peso: es el principio de [sustituir una división por una multiplicación](/?c=qualite-performance-et-outils&s=performance&p=division-par-multiplication).
+
 ## Las máscaras: la verdadera utilidad del día a día
 
 Una **máscara** es un valor que se usa para apuntar a bits precisos. Las cuatro operaciones básicas:
