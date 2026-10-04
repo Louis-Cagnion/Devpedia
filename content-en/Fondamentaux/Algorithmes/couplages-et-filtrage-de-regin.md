@@ -59,6 +59,8 @@ Cells are placed one by one. When the wanted value is already taken, we do not g
 
 Each domain is a **bit mask** (bit `v` is 1 if value `v` is possible; see [masks](/?c=langages&s=c&p=operateurs-binaires#masks-the-real-everyday-usefulness)): a `uint64_t` is enough for 64 values, and "take the smallest possible value" is a single instruction (`__builtin_ctzll`, see [walking through the 1 bits](/?c=langages&s=c&p=operateurs-binaires#walking-through-the-1-bits-compiler-built-in-functions)).
 
+The code of this chapter goes into a header file named `matching.h`, which the following examples include.
+
 ```c
 /* Cell / value matching, Hall test and Régin filtering.
    domain[i]: mask of cell i, bit v is 1 if value v is still possible.
@@ -111,7 +113,7 @@ The program below replays the example from the previous table, cell by cell:
 
 ```c
 #include <stdio.h>
-#include "couplage.h"
+#include "matching.h"
 
 /* mask of the given values (from 1 to 5); 0 means "no value" */
 static uint64_t M(int a, int b, int c, int d)
@@ -323,7 +325,7 @@ static inline int filter(int n, uint64_t *domain, const int *holder)
 
 ```c
 #include <stdio.h>
-#include "couplage.h"
+#include "matching.h"
 
 static uint64_t M(int a, int b, int c, int d)
 {
@@ -435,7 +437,7 @@ Such subtle reasoning is easy to get wrong: one forgotten line and a useful valu
 ```c
 #include <stdio.h>
 #include <stdlib.h>
-#include "couplage.h"
+#include "matching.h"
 
 /* Reference: tries all the permutations, and notes for each cell
    the values it takes in at least one perfect matching. */

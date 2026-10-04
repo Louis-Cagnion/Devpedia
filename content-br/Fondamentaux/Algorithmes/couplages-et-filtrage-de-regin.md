@@ -59,6 +59,8 @@ As casas são colocadas uma a uma. Quando o valor desejado já está ocupado, n�
 
 Cada domínio é uma **máscara de bits** (o bit `v` vale 1 se o valor `v` é possível; veja [as máscaras](/?c=langages&s=c&p=operateurs-binaires#as-mascaras-a-real-utilidade-no-dia-a-dia)): um `uint64_t` basta para 64 valores, e «pegar o menor valor possível» é uma única instrução (`__builtin_ctzll`, veja [percorrer os bits 1](/?c=langages&s=c&p=operateurs-binaires#percorrer-os-bits-1-as-funcoes-embutidas-do-compilador)).
 
+O código deste capítulo fica em um arquivo de cabeçalho chamado `emparelhamento.h`, que os exemplos seguintes incluem.
+
 ```c
 /* Emparelhamento casas / valores, teste de Hall e filtragem de Régin.
    dominio[i]: máscara da casa i, o bit v vale 1 se o valor v ainda é possível.
@@ -111,7 +113,7 @@ O programa a seguir reproduz o exemplo da tabela anterior, casa por casa:
 
 ```c
 #include <stdio.h>
-#include "couplage.h"
+#include "emparelhamento.h"
 
 /* máscara dos valores dados (de 1 a 5); 0 significa «nenhum valor» */
 static uint64_t M(int a, int b, int c, int d)
@@ -323,7 +325,7 @@ static inline int filtrar(int n, uint64_t *dominio, const int *detentor)
 
 ```c
 #include <stdio.h>
-#include "couplage.h"
+#include "emparelhamento.h"
 
 static uint64_t M(int a, int b, int c, int d)
 {
@@ -435,7 +437,7 @@ Um raciocínio tão sutil erra com facilidade: uma linha esquecida e um valor ú
 ```c
 #include <stdio.h>
 #include <stdlib.h>
-#include "couplage.h"
+#include "emparelhamento.h"
 
 /* Referência: tenta todas as permutações e anota para cada casa
    os valores que ela assume em pelo menos um emparelhamento perfeito. */
