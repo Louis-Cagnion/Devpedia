@@ -192,7 +192,7 @@ cg_annotate cachegrind.out.<number>                      # report per function, 
 | Sources modified after the profile | `cg_annotate` rereads the current sources: it warns (`Annotations may not be correct`) but still shows the counts, shifted by as many lines as were added or removed | Redo the profile after any change |
 | Cache simulated for a single program, without the processor's prefetching | Sharing of the L3 cache between programs running at the same time doesn't show; the real processor guesses and loads in-order reads in advance, which the simulation ignores: `sum_rows`'s misses cost far less there than their number suggests | Treat the counts as an order of magnitude, confirmed by a real measurement |
 
-Lived on the SAT solver: `cachegrind` showed that 61% of the write cache misses came from a single array (each variable's level and reason, rewritten at every assignment), a lead that no per-function profile gave.
+Lived on the SAT solver: `cachegrind` showed that 61% of the write cache misses came from a single array (each variable's level and reason, rewritten at every assignment), a lead that no per-function profile gave. Yet prefetching this array ahead of time gained nothing (+0.4% and +1.0% over two measurements): the processor already absorbs these write misses in its write buffer, and a cache miss only costs something if it makes the processor wait.
 
 ## Timing a Part of a Loop: the Cycle Counter
 
@@ -300,7 +300,7 @@ echo "$ok/$total identical"
 
 [`cmp`](https://man7.org/linux/man-pages/man1/cmp.1.html) compares two files byte by byte; `-s` makes it silent, only its [exit code](/?c=langages&s=bash&p=scripts-et-shebang#exit-codes-exit) counts. `$((...))` does [arithmetic](/?c=langages&s=bash&p=variables#arithmetic) in Bash.
 
-Lived on the SAT solver: every speed optimization first passes 49 checks of this kind (8 settings, grids from 8 to 40 cells per side), and time measurement only starts at 49 out of 49.
+Lived on the SAT solver: every speed optimization first passes 49 checks of this kind (8 settings in a single process on grids from 8 to 40 cells per side, plus the parallel mode and a self-test), and time measurement only starts at 49 out of 49.
 
 ## Measuring in Alternating Rounds
 

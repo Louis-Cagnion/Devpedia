@@ -113,7 +113,7 @@ Sous Linux, les **pages géantes transparentes** (*Transparent Huge Pages*, THP)
 | Mode | Comportement |
 |---|---|
 | `always` | Pages géantes partout où c'est possible |
-| `madvise` | Seulement pour les zones que le programme demande avec [`madvise(https://man7.org/linux/man-pages/man2/madvise.2.html_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (mode de la machine utilisée ici, sous Ubuntu) |
+| `madvise` | Seulement pour les zones que le programme demande avec [`madvise(MADV_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (mode de la machine utilisée ici, sous Ubuntu) |
 | `never` | Jamais |
 
 Exemple en C (voir [la mémoire en C](/?c=langages&s=c&p=memoire) pour l'allocation et `memset`), qui compte la mémoire réellement servie en pages géantes :
@@ -162,7 +162,7 @@ sans madvise : 0 Ko en pages géantes
 avec madvise : 65536 Ko en pages géantes
 ```
 
-Sans toucher au code, la bibliothèque C standard de Linux (glibc 2.35 et plus récente) peut faire la même demande pour toutes les allocations de `malloc` : `https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html_TUNABLES=glibc.malloc.hugetlb=1 ./programme` ([annonce de glibc 2.35](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Mesuré sur un solveur SAT qui lit au hasard dans plusieurs centaines de Mo : −5 % de temps en processus seul, à calcul identique, et environ −2 %, dans le bruit, avec 4 copies en parallèle. Le gain dépend de la dispersion des accès : un programme qui parcourt sa mémoire dans l'ordre profite déjà du cache et gagne peu.
+Sans toucher au code, la bibliothèque C standard de Linux (glibc 2.35 et plus récente) peut faire la même demande pour toutes les allocations de `malloc` : `GLIBC_TUNABLES=glibc.malloc.hugetlb=1 ./programme` ([annonce de glibc 2.35](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Mesuré sur un solveur SAT qui lit au hasard dans plusieurs centaines de Mo : −5 % de temps en processus seul, à calcul identique, et environ −2 %, dans le bruit, avec 4 copies en parallèle. Le gain dépend de la dispersion des accès : un programme qui parcourt sa mémoire dans l'ordre profite déjà du cache et gagne peu.
 
 ---
 

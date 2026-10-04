@@ -1,5 +1,5 @@
 ---
-order: 10
+order: 4
 ---
 
 # A fila de prioridade e o heap binário
@@ -37,10 +37,18 @@ Cada subida ou descida percorre no máximo a altura da árvore, ou seja, log₂(
 Alguns algoritmos aumentam a prioridade de um elemento **que já está no heap**: por exemplo a heurística VSIDS dos [solucionadores SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl), que aumenta a atividade de uma variável a cada conflito. É preciso então saber **onde** esse elemento está no array, sem procurá-lo casa por casa. Um **heap indexado** mantém uma tabela `pos[x]`: a casa onde está o elemento x, atualizada a cada movimento.
 
 ```c
+#define N 1000                               // número máximo de elementos
+
 double prioridade[N];                        // prioridade[x]: prioridade do elemento x
 int    heap[N];                              // os elementos, guardados em heap
 int    pos[N];                               // pos[x]: casa de x no heap, ou -1
 int    tamanho = 0;
+
+void inicializar(void)                       // no início, nenhum elemento no heap
+{
+    for (int x = 0; x < N; x++)
+        pos[x] = -1;
+}
 
 static void colocar(int i, int x) { heap[i] = x; pos[x] = i; }
 

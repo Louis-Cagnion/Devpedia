@@ -159,6 +159,8 @@ size_t arena_add(t_arena *a, const int *values, size_t n)
 }
 ```
 
+The [`memcpy()`](#copying-and-filling-bytes-memcpy-and-memset) function copies the `n` integers into the arena in a single block.
+
 | | One `malloc()` per object | Arena |
 |---|---|---|
 | Number of allocations | One per object | A handful (the array doubles in size) |

@@ -1,5 +1,5 @@
 ---
-order: 10
+order: 4
 ---
 
 # La file de priorité et le tas binaire
@@ -37,10 +37,18 @@ Chaque remontée ou descente parcourt au plus la hauteur de l'arbre, soit log₂
 Certains algorithmes augmentent la priorité d'un élément **déjà dans le tas** : par exemple l'heuristique VSIDS des [solveurs SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl), qui augmente l'activité d'une variable à chaque conflit. Il faut alors savoir **où** se trouve cet élément dans le tableau, sans le chercher case par case. Un **tas indexé** tient une table `pos[x]` : la case où se trouve l'élément x, mise à jour à chaque déplacement.
 
 ```c
+#define N 1000                               // nombre maximal d'éléments
+
 double priorite[N];                          // priorite[x] : priorité de l'élément x
 int    tas[N];                               // les éléments, rangés en tas
 int    pos[N];                               // pos[x] : case de x dans tas, ou -1
 int    taille = 0;
+
+void initialiser(void)                       // au départ, aucun élément dans le tas
+{
+    for (int x = 0; x < N; x++)
+        pos[x] = -1;
+}
 
 static void placer(int i, int x) { tas[i] = x; pos[x] = i; }
 

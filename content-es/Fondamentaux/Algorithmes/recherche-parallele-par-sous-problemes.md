@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 8
 ---
 
 # Paralelizar una búsqueda: dividir en subproblemas independientes (EPS)
@@ -41,9 +41,9 @@ Ejemplo con cifras, 4 workers:
  1. Dividir                  2. Repartir                   3. Resolver
  (un solo worker)            (cola compartida)             (cada uno por su lado)
 
- raíz                        [sp1][sp2][sp3]...[sp240]     worker 1: sp1, sp5, sp9...
-   -> desarrollar el      ->        |    |    |       ->   worker 2: sp2, sp6...
-      árbol hasta 240               v    v    v            worker 3: sp3, sp7...
+ raíz                        [sp1][sp2][sp3]...[sp240]     worker 1: sp1, luego el siguiente
+   -> desarrollar el      ->        |    |    |       ->   worker 2: sp2, luego el siguiente
+      árbol hasta 240               v    v    v            worker 3: sp3, luego el siguiente
       subproblemas                tomar el siguiente       (backtracking normal)
 ```
 
@@ -69,6 +69,9 @@ Para alcanzar el objetivo en pocas etapas, se divide siempre el subproblema que 
 Cada subproblema debe poseer **su propia copia** de todos sus datos: una *copia profunda*. Una copia que conservara un puntero hacia los datos de otro subproblema (una *copia superficial*) volvería a poner a dos workers sobre la misma memoria.
 
 ```c
+#include <stdlib.h>
+#include <string.h>
+
 typedef struct {
     int  n;          // número de variables
     int *valores;    // valores[i] = valor elegido para la variable i, o -1
@@ -77,8 +80,14 @@ typedef struct {
 t_estado *copiar_estado(const t_estado *src)
 {
     t_estado *copia = malloc(sizeof(t_estado));          // nueva estructura
+    if (!copia)
+        return NULL;                                     // sin memoria: no se copia nada
     copia->n = src->n;                                   // un entero se copia tal cual
     copia->valores = malloc(src->n * sizeof(int));       // NUEVO array, no el de src
+    if (!copia->valores) {
+        free(copia);                                     // no dejar nada detrás
+        return NULL;
+    }
     memcpy(copia->valores, src->valores, src->n * sizeof(int)); // se recopia su contenido
     return copia;                                        // ningún puntero compartido con src
 }
@@ -88,7 +97,7 @@ Escribir `copia->valores = src->valores;` en lugar de las dos líneas `malloc`/`
 
 ## Cuando la EPS no gana nada: un caso medido
 
-La EPS se probó en un solucionador del puzle *Skyscraper* (backtracking con MRV y propagación, en C, 8 hilos) y luego se retiró:
+La EPS se probó en un solucionador del puzle *Skyscraper* (backtracking con MRV y propagación, en C, 8 hilos, subproblemas repartidos de antemano entre los hilos en lugar de tomados de una cola) y luego se retiró:
 
 | Cuadrícula | Secuencial | EPS (240 subproblemas) |
 |---|---|---|

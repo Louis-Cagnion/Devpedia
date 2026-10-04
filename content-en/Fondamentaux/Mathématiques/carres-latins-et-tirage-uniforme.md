@@ -61,11 +61,11 @@ A **Markov chain** is a sequence of states where the next state is drawn at rand
 
 If the chain runs for a long time, the frequency of each state settles (here, 2 sunny days out of 3), whatever the starting point: this is the **stationary distribution**.
 
-The idea of **MCMC** (*Markov Chain Monte Carlo*): to draw at random an object that is hard to build directly, you design a random walk between these objects whose stationary distribution is **uniform**. After enough steps, the current state is an (almost) uniform draw.
+The idea of **MCMC** (*[Markov Chain Monte Carlo](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo)*): to draw at random an object that is hard to build directly, you design a random walk between these objects whose stationary distribution is **uniform**. After enough steps, the current state is an (almost) uniform draw.
 
 ## The Jacobson-Matthews Chain
 
-Jacobson and Matthews (1996) built such a chain for Latin squares. A square is seen as a **cube** of n × n × n cells `m[row][column][symbol]`, which is 1 if cell (row, column) contains that symbol, 0 otherwise.
+[Jacobson and Matthews (1996)](https://doi.org/10.1002/%28SICI%291520-6610%281996%294%3A6%3C405%3A%3AAID-JCD3%3E3.0.CO%3B2-J) built such a chain for Latin squares. A square is seen as a **cube** of n × n × n cells `m[row][column][symbol]`, which is 1 if cell (row, column) contains that symbol, 0 otherwise.
 
 | Step | What happens |
 |---|---|
@@ -99,7 +99,7 @@ Measured over 5,760 draws of 4 × 4 squares (each square should come out about 1
 | Keep going until the first proper square (64, 256 or 1,024 steps) | 8% | 24 times |
 | Run a full new block if the square is improper (64 steps) | 25.5% | 21 times |
 
-The bias does not shrink when the number of steps grows: it comes from **where** the result is read, not from a lack of mixing. The right check is to compare the frequencies obtained with the expected ones on a small size where everything can be counted.
+The bias does not shrink when the number of steps grows: it comes from **where** the result is read, not from a lack of mixing. The right check is to compare the frequencies obtained with the expected ones on a small size where everything can be counted. Restarting has a cost: the chain lands on a proper square only about once in n + 1 reads, so a 104 × 104 draw took 80 minutes in Python, against about 17 seconds once rewritten in C.
 
 ---
 

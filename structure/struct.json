@@ -72,6 +72,10 @@
               "label": "Pile et file : LIFO et FIFO"
             },
             {
+              "id": "file-de-priorite-et-tas-binaire",
+              "label": "La file de priorité et le tas binaire"
+            },
+            {
               "id": "algorithme-glouton",
               "label": "L'algorithme glouton (Greedy algorithm)"
             },
@@ -94,10 +98,6 @@
             {
               "id": "encodages-sat",
               "label": "Encoder un problème en SAT"
-            },
-            {
-              "id": "file-de-priorite-et-tas-binaire",
-              "label": "La file de priorité et le tas binaire"
             },
             {
               "id": "problemes-np-complets",

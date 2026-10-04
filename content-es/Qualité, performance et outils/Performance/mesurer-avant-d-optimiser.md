@@ -192,7 +192,7 @@ cg_annotate cachegrind.out.<número>                      # informe por función
 | Fuentes modificadas después del perfil | `cg_annotate` relee las fuentes actuales: avisa (`Annotations may not be correct`) pero muestra igualmente los recuentos, desplazados tantas líneas como se hayan añadido o quitado | Rehacer el perfil tras cualquier modificación |
 | Caché simulada para un solo programa, sin la precarga del procesador | El reparto de la caché L3 entre programas simultáneos no aparece; el procesador real adivina y carga por adelantado las lecturas hechas en orden, lo que la simulación ignora: los fallos de `suma_filas` cuestan allí mucho menos de lo que su número deja pensar | Tratar los recuentos como un orden de magnitud, confirmado por una medición real |
 
-Vivido en el solucionador SAT: `cachegrind` mostró que el 61 % de los fallos de caché en escritura venían de una sola tabla (el nivel y la razón de cada variable, reescritos en cada asignación), una pista que ningún perfil por función daba.
+Vivido en el solucionador SAT: `cachegrind` mostró que el 61 % de los fallos de caché en escritura venían de una sola tabla (el nivel y la razón de cada variable, reescritos en cada asignación), una pista que ningún perfil por función daba. Sin embargo, precargar esta tabla por adelantado no ganó nada (+0,4 % y +1,0 % en dos mediciones): el procesador ya absorbe esas escrituras fallidas en su búfer de escritura, y un fallo de caché solo cuesta si hace esperar al procesador.
 
 ## Cronometrar una parte de un bucle: el contador de ciclos
 
@@ -300,7 +300,7 @@ echo "$ok/$total idénticos"
 
 [`cmp`](https://man7.org/linux/man-pages/man1/cmp.1.html) compara dos archivos byte a byte; `-s` lo vuelve silencioso, solo cuenta su [código de salida](/?c=langages&s=bash&p=scripts-et-shebang#codigos-de-salida-exit). `$((...))` hace un [cálculo](/?c=langages&s=bash&p=variables#aritmetica) en Bash.
 
-Vivido en el solucionador SAT: cada optimización de velocidad pasa primero 49 comprobaciones de este tipo (8 ajustes, cuadrículas de 8 a 40 casillas de lado), y la medición del tiempo solo empieza con 49 de 49.
+Vivido en el solucionador SAT: cada optimización de velocidad pasa primero 49 comprobaciones de este tipo (8 ajustes en un solo proceso sobre cuadrículas de 8 a 40 casillas de lado, más el modo paralelo y una autoprueba), y la medición del tiempo solo empieza con 49 de 49.
 
 ## Medir en rondas alternas
 

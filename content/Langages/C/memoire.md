@@ -160,6 +160,8 @@ size_t arene_ajouter(t_arene *a, const int *valeurs, size_t n)
 }
 ```
 
+La fonction [`memcpy()`](#copier-et-remplir-des-octets-memcpy-et-memset) recopie les `n` entiers d'un seul bloc dans l'arène.
+
 | | Un `malloc()` par objet | Arène |
 |---|---|---|
 | Nombre d'allocations | Une par objet | Une poignée (le tableau double de taille) |

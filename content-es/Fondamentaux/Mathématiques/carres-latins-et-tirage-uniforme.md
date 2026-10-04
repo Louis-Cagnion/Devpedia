@@ -61,11 +61,11 @@ Una **cadena de Markov** es una sucesión de estados en la que el estado siguien
 
 Si la cadena funciona mucho tiempo, la frecuencia de cada estado se estabiliza (aquí, 2 días de sol de cada 3), sea cual sea el punto de partida: es la **distribución estacionaria**.
 
-La idea del **MCMC** (*Markov Chain Monte Carlo*): para sacar al azar un objeto difícil de construir directamente, se inventa un paseo aleatorio entre estos objetos cuya distribución estacionaria sea **uniforme**. Tras suficientes pasos, el estado actual es un sorteo (casi) uniforme.
+La idea del **MCMC** (*[Markov Chain Monte Carlo](https://es.wikipedia.org/wiki/M%C3%A9todos_de_Montecarlo_basados_en_cadenas_de_Markov)*): para sacar al azar un objeto difícil de construir directamente, se inventa un paseo aleatorio entre estos objetos cuya distribución estacionaria sea **uniforme**. Tras suficientes pasos, el estado actual es un sorteo (casi) uniforme.
 
 ## La cadena de Jacobson-Matthews
 
-Jacobson y Matthews (1996) construyeron una cadena así para los cuadrados latinos. Un cuadrado se ve como un **cubo** de n × n × n casillas `m[fila][columna][símbolo]`, que vale 1 si la casilla (fila, columna) contiene ese símbolo, y 0 si no.
+[Jacobson y Matthews (1996)](https://doi.org/10.1002/%28SICI%291520-6610%281996%294%3A6%3C405%3A%3AAID-JCD3%3E3.0.CO%3B2-J) construyeron una cadena así para los cuadrados latinos. Un cuadrado se ve como un **cubo** de n × n × n casillas `m[fila][columna][símbolo]`, que vale 1 si la casilla (fila, columna) contiene ese símbolo, y 0 si no.
 
 | Etapa | Lo que ocurre |
 |---|---|
@@ -99,7 +99,7 @@ Medido sobre 5 760 sorteos de cuadrados 4 × 4 (cada cuadrado debería salir una
 | Seguir hasta el primer cuadrado propio (64, 256 o 1 024 pasos) | 8 % | 24 veces |
 | Volver a lanzar un bloque completo si el cuadrado es impropio (64 pasos) | 25,5 % | 21 veces |
 
-El sesgo no disminuye al aumentar el número de pasos: viene del **lugar** donde se lee el resultado, no de una falta de mezcla. La comprobación correcta consiste en comparar las frecuencias obtenidas con las esperadas en un tamaño pequeño donde todo se puede contar.
+El sesgo no disminuye al aumentar el número de pasos: viene del **lugar** donde se lee el resultado, no de una falta de mezcla. La comprobación correcta consiste en comparar las frecuencias obtenidas con las esperadas en un tamaño pequeño donde todo se puede contar. Relanzar tiene un coste: la cadena solo cae en un cuadrado propio aproximadamente una vez de cada n + 1 lecturas, de modo que un sorteo de 104 × 104 tardaba 80 minutos en Python, frente a unos 17 segundos una vez reescrito en C.
 
 ---
 

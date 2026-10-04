@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 8
 ---
 
 # Parallelizing a Search: Splitting into Independent Subproblems (EPS)
@@ -41,9 +41,9 @@ Worked example, 4 workers:
  1. Split                    2. Distribute                 3. Solve
  (a single worker)           (shared queue)                (each on its own)
 
- root                        [sp1][sp2][sp3]...[sp240]     worker 1: sp1, sp5, sp9...
-   -> expand the tree     ->        |    |    |       ->   worker 2: sp2, sp6...
-      until 240                     v    v    v            worker 3: sp3, sp7...
+ root                        [sp1][sp2][sp3]...[sp240]     worker 1: sp1, then the next
+   -> expand the tree     ->        |    |    |       ->   worker 2: sp2, then the next
+      until 240                     v    v    v            worker 3: sp3, then the next
       subproblems                 take the next one        (ordinary backtracking)
 ```
 
@@ -69,6 +69,9 @@ To reach the target in few steps, always split the subproblem that will produce 
 Each subproblem must own **its own copy** of all its data: a *deep copy*. A copy that kept a pointer to another subproblem's data (a *shallow copy*) would put two workers back on the same memory.
 
 ```c
+#include <stdlib.h>
+#include <string.h>
+
 typedef struct {
     int  n;          // number of variables
     int *values;     // values[i] = value chosen for variable i, or -1
@@ -77,8 +80,14 @@ typedef struct {
 t_state *copy_state(const t_state *src)
 {
     t_state *copy = malloc(sizeof(t_state));             // new structure
+    if (!copy)
+        return NULL;                                     // out of memory: nothing is copied
     copy->n = src->n;                                    // an integer is copied as is
     copy->values = malloc(src->n * sizeof(int));         // NEW array, not the one of src
+    if (!copy->values) {
+        free(copy);                                      // leave nothing behind
+        return NULL;
+    }
     memcpy(copy->values, src->values, src->n * sizeof(int)); // copy its content
     return copy;                                         // no pointer shared with src
 }
@@ -88,7 +97,7 @@ Writing `copy->values = src->values;` instead of the two `malloc`/`memcpy` lines
 
 ## When EPS Gains Nothing: a Measured Case
 
-EPS was tried on a *Skyscraper* puzzle solver (backtracking with MRV and propagation, in C, 8 threads), then removed:
+EPS was tried on a *Skyscraper* puzzle solver (backtracking with MRV and propagation, in C, 8 threads, subproblems split between the threads in advance instead of taken from a queue), then removed:
 
 | Grid | Sequential | EPS (240 subproblems) |
 |---|---|---|

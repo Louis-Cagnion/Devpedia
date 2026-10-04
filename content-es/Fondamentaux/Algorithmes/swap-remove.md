@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # El swap-remove: eliminar un elemento en O(1)

@@ -1,5 +1,5 @@
 ---
-order: 6
+order: 7
 ---
 
 # O backtracking e a satisfação de restrições (CSP)

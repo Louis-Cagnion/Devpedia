@@ -157,7 +157,8 @@ _Thread_local const int *g_poids;        // une copie par thread
 int comparer(const void *a, const void *b)
 {
     int x = *(const int *)a, y = *(const int *)b;
-    return g_poids[x] - g_poids[y];      // trie des indices selon leur poids
+    // trie des indices selon leur poids, sans soustraction (qui pourrait déborder)
+    return (g_poids[x] > g_poids[y]) - (g_poids[x] < g_poids[y]);
 }
 
 void trier_indices(int *indices, int n, const int *poids)

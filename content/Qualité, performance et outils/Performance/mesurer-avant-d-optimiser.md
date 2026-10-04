@@ -192,7 +192,7 @@ cg_annotate cachegrind.out.<numéro>                    # rapport par fonction, 
 | Sources modifiées après le profil | `cg_annotate` relit les sources actuelles : il avertit (`Annotations may not be correct`) mais affiche quand même les comptes, décalés d'autant de lignes qu'on en a ajouté ou retiré | Refaire le profil après toute modification |
 | Cache simulé pour un seul programme, sans le préchargement du processeur | Le partage du cache L3 entre programmes simultanés n'apparaît pas ; le processeur réel devine et charge d'avance les lectures faites dans l'ordre, ce que la simulation ignore : les défauts de `somme_lignes` y coûtent bien moins que leur nombre ne le laisse penser | Traiter les comptes comme un ordre de grandeur, confirmé par une mesure réelle |
 
-Vécu sur le solveur SAT : `cachegrind` a montré que 61 % des défauts de cache en écriture venaient d'un seul tableau (le niveau et la raison de chaque variable, réécrits à chaque affectation), une piste qu'aucun profil par fonction ne donnait.
+Vécu sur le solveur SAT : `cachegrind` a montré que 61 % des défauts de cache en écriture venaient d'un seul tableau (le niveau et la raison de chaque variable, réécrits à chaque affectation), une piste qu'aucun profil par fonction ne donnait. Précharger ce tableau à l'avance n'a pourtant rien gagné (+0,4 % et +1,0 % en deux mesures) : le processeur absorbe déjà ces écritures ratées dans son tampon d'écriture, et un défaut de cache ne coûte que s'il fait attendre le processeur.
 
 ## Chronométrer une portion de boucle : le compteur de cycles
 
@@ -300,7 +300,7 @@ echo "$ok/$total identiques"
 
 [`cmp`](https://man7.org/linux/man-pages/man1/cmp.1.html) compare deux fichiers octet par octet ; `-s` le rend silencieux, seul son [code de sortie](/?c=langages&s=bash&p=scripts-et-shebang#codes-de-sortie-exit) compte. `$((...))` fait un [calcul](/?c=langages&s=bash&p=variables#arithmetique) en Bash.
 
-Vécu sur le solveur SAT : chaque optimisation de vitesse passe d'abord 49 vérifications de ce type (8 réglages, grilles de 8 à 40 cases de côté), et la mesure du temps ne commence qu'à 49 sur 49.
+Vécu sur le solveur SAT : chaque optimisation de vitesse passe d'abord 49 vérifications de ce type (8 réglages en processus seul sur des grilles de 8 à 40 cases de côté, plus le mode parallèle et un auto-test), et la mesure du temps ne commence qu'à 49 sur 49.
 
 ## Mesurer en tours alternés
 

@@ -61,11 +61,11 @@ Uma **cadeia de Markov** é uma sequência de estados em que o estado seguinte �
 
 Deixando a cadeia rodar por muito tempo, a frequência de cada estado se estabiliza (aqui, 2 dias de sol em cada 3), qualquer que seja o ponto de partida: é a **distribuição estacionária**.
 
-A ideia do **MCMC** (*Markov Chain Monte Carlo*): para sortear um objeto difícil de construir diretamente, inventa-se um passeio aleatório entre esses objetos cuja distribuição estacionária seja **uniforme**. Depois de passos suficientes, o estado atual é um sorteio (quase) uniforme.
+A ideia do **MCMC** (*[Markov Chain Monte Carlo](https://pt.wikipedia.org/wiki/Monte_Carlo_via_Cadeias_de_Markov)*): para sortear um objeto difícil de construir diretamente, inventa-se um passeio aleatório entre esses objetos cuja distribuição estacionária seja **uniforme**. Depois de passos suficientes, o estado atual é um sorteio (quase) uniforme.
 
 ## A cadeia de Jacobson-Matthews
 
-Jacobson e Matthews (1996) construíram uma cadeia assim para os quadrados latinos. Um quadrado é visto como um **cubo** de n × n × n casas `m[linha][coluna][símbolo]`, que vale 1 se a casa (linha, coluna) contém esse símbolo, e 0 caso contrário.
+[Jacobson e Matthews (1996)](https://doi.org/10.1002/%28SICI%291520-6610%281996%294%3A6%3C405%3A%3AAID-JCD3%3E3.0.CO%3B2-J) construíram uma cadeia assim para os quadrados latinos. Um quadrado é visto como um **cubo** de n × n × n casas `m[linha][coluna][símbolo]`, que vale 1 se a casa (linha, coluna) contém esse símbolo, e 0 caso contrário.
 
 | Etapa | O que acontece |
 |---|---|
@@ -99,7 +99,7 @@ Medido em 5.760 sorteios de quadrados 4 × 4 (cada quadrado deveria sair cerca d
 | Continuar até o primeiro quadrado próprio (64, 256 ou 1.024 passos) | 8% | 24 vezes |
 | Relançar um bloco completo se o quadrado for impróprio (64 passos) | 25,5% | 21 vezes |
 
-O viés não diminui quando o número de passos aumenta: ele vem do **lugar** onde o resultado é lido, não de uma falta de mistura. A verificação certa consiste em comparar as frequências obtidas com as esperadas em um tamanho pequeno em que tudo pode ser contado.
+O viés não diminui quando o número de passos aumenta: ele vem do **lugar** onde o resultado é lido, não de uma falta de mistura. A verificação certa consiste em comparar as frequências obtidas com as esperadas em um tamanho pequeno em que tudo pode ser contado. Relançar tem um custo: a cadeia só cai em um quadrado próprio cerca de uma vez a cada n + 1 leituras, de modo que um sorteio de 104 × 104 levava 80 minutos em Python, contra cerca de 17 segundos depois de reescrito em C.
 
 ---
 

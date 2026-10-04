@@ -2,6 +2,15 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Relecture indépendante des chapitres de la recherche rush01 (2026-10-04)
+
+Un agent relecteur a repris les 7 chapitres et les sections issus de la recherche : exemples rejoués, chiffres recoupés avec `RECAP-04-10.md` et `BILAN-RECHERCHE.md`. Deux pièges à retenir :
+
+- Des URL avaient remplacé `MADV` et `GLIBC` à l'intérieur de `madvise(MADV_HUGEPAGE)` et de `GLIBC_TUNABLES=...` dans `cache-cpu-et-simd` (4 langues, depuis le 26/09), sans doute par un remplacement de texte trop large au moment d'ajouter les liens. Après un tel remplacement, relire les blocs et le code en ligne touchés.
+- `operateurs-binaires.md` (fr, en) était passé de CRLF à LF au commit 7ecee37c. Un fichier lu en mode texte par Python perd ses CRLF (fins de ligne universelles) quand on le réécrit, et `core.autocrlf=input` ne protège que les fichiers déjà en CRLF dans l'index. Rétabli par `git -c core.autocrlf=false add` ; lire et écrire en binaire (`open(p, "rb")`) évite le piège.
+
+Le tas binaire passe avant les solveurs SAT dans Algorithmes, puisque VSIDS s'en sert (règle 1 du plan zéro-connaissance).
+
 ## Chapitre Windows : accès à distance (2026-09-27)
 
 Point 4 du todo (projet scraping_infomediaires) rédigé en nouveau chapitre d'Administration système, après celui des sessions. Les commandes Windows (`mstsc`, `tscon`, `query session`) n'ont pas pu être exécutées sur la machine de rédaction (Linux) : chaque syntaxe et chaque prérequis vient de la documentation Microsoft Learn, dont le fichier de commandes `tscon` de la page Azure DevOps sur les tests d'interface. La page de l'ancienne commande `shadow` (2008) affirme que la console ne peut pas être observée ; elle ne vaut plus pour `mstsc /shadow` (2012 R2 et après) et n'est citée que pour la règle des droits. Les libellés de la stratégie de groupe restent en anglais dans les versions espagnole et portugaise, faute de source pour leur traduction officielle ; le bloc `bat` est passé en `text`, `highlight.js` ne connaissant pas ce langage sur le site.

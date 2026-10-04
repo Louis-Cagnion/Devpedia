@@ -113,7 +113,7 @@ En Linux, las **páginas enormes transparentes** (*Transparent Huge Pages*, THP)
 | Modo | Comportamiento |
 |---|---|
 | `always` | Páginas enormes siempre que sea posible |
-| `madvise` | Solo para las zonas que el programa pide con [`madvise(https://man7.org/linux/man-pages/man2/madvise.2.html_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (modo de la máquina usada aquí, con Ubuntu) |
+| `madvise` | Solo para las zonas que el programa pide con [`madvise(MADV_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (modo de la máquina usada aquí, con Ubuntu) |
 | `never` | Nunca |
 
 Ejemplo en C (ver [la memoria en C](/?c=langages&s=c&p=memoire) para la asignación y `memset`), que cuenta la memoria realmente servida en páginas enormes:
@@ -162,7 +162,7 @@ sin madvise: 0 KB en páginas enormes
 con madvise: 65536 KB en páginas enormes
 ```
 
-Sin tocar el código, la biblioteca C estándar de Linux (glibc 2.35 y posteriores) puede hacer la misma petición para todas las asignaciones de `malloc`: `https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html_TUNABLES=glibc.malloc.hugetlb=1 ./programa` ([anuncio de glibc 2.35](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Medido en un solucionador SAT que lee al azar en varios cientos de MB: −5 % de tiempo en un solo proceso, con el mismo cálculo, y alrededor de −2 %, dentro del ruido, con 4 copias en paralelo. La ganancia depende de lo dispersos que estén los accesos: un programa que recorre su memoria en orden ya aprovecha la caché y gana poco.
+Sin tocar el código, la biblioteca C estándar de Linux (glibc 2.35 y posteriores) puede hacer la misma petición para todas las asignaciones de `malloc`: `GLIBC_TUNABLES=glibc.malloc.hugetlb=1 ./programa` ([anuncio de glibc 2.35](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Medido en un solucionador SAT que lee al azar en varios cientos de MB: −5 % de tiempo en un solo proceso, con el mismo cálculo, y alrededor de −2 %, dentro del ruido, con 4 copias en paralelo. La ganancia depende de lo dispersos que estén los accesos: un programa que recorre su memoria en orden ya aprovecha la caché y gana poco.
 
 ---
 

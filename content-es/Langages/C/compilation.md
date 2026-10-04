@@ -155,7 +155,7 @@ gcc -O2 -flto main.o cuadrado.o -o prog     # ... y al enlazar
 
 > **Trampa:** una función ordinaria (sin `static`) definida en un archivo de cabecera incluido por dos `.c` provoca el error `multiple definition of 'cuadrado'` en el enlazado: cada unidad contiene una copia pública. E `inline` solo, sin `static`, sigue en C reglas sutiles (hace falta además una definición no `inline` en un único `.c`): `static inline` es la forma segura.
 
-**Lo que cambia en la práctica.** El [solucionador SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) del proyecto del que proceden estas mediciones pasó de un único archivo de 1 424 líneas a 7 archivos `.c`. Las funciones llamadas en cada paso del cálculo (cientos de millones de veces por cuadrícula) se quedaron todas en la misma unidad, o pasaron a `static inline` en los archivos de cabecera. Resultado: ninguna ralentización (incluso un 2,7 % más rápido), y `-flto` no aportó nada más (+0,9 %). Dividir un programa no cuesta nada, siempre que se mantenga junto lo que se llama muy a menudo: [medir](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser) antes y después de la división.
+**Lo que cambia en la práctica.** El [solucionador SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) del proyecto del que proceden estas mediciones pasó de un único archivo de 1 424 líneas a 7 archivos `.c`. Las funciones llamadas en cada paso del cálculo (cientos de millones de veces por cuadrícula) se quedaron todas en la misma unidad, o pasaron a `static inline` en los archivos de cabecera. Resultado: ninguna ralentización (incluso un 2,7 % más rápido), y `-flto` no aportó nada más (+0,9 % respecto al archivo único, e incluso un 3,8 % más lento que la división sola). Dividir un programa no cuesta nada, siempre que se mantenga junto lo que se llama muy a menudo: [medir](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser) antes y después de la división.
 
 ## La optimización guiada por perfil (PGO)
 
@@ -218,10 +218,10 @@ Con un argumento de 40 caracteres (el búfer solo admite 8):
 
 | Compilación | Salida | Código de salida |
 |---|---|---|
-| `gcc -O2` (ajuste por defecto de Ubuntu y Debian: `-fstack-protector-strong`) | `copiado: AAAAAAAA` y después `*** stack smashing detected ***: terminated` | 134: parada voluntaria ([señal](/?c=langages&s=c&p=signaux-unix#las-senales-comunes) `SIGABRT`, 128 + 6) |
+| `gcc -O2` (ajuste por defecto del GCC de Ubuntu: `-fstack-protector-strong`) | `copiado: AAAAAAAA` y después `*** stack smashing detected ***: terminated` | 134: parada voluntaria ([señal](/?c=langages&s=c&p=signaux-unix#las-senales-comunes) `SIGABRT`, 128 + 6) |
 | `gcc -O2 -fno-stack-protector` | `copiado: AAAAAAAA` y después un fallo | 139: violación de segmento (`SIGSEGV`, 128 + 11), más tarde y de forma menos clara |
 
-El coste: tres instrucciones en cada función que tiene un array local (`objdump -d` muestra la lectura del valor secreto, `mov %fs:0x28`, su comparación al volver y la llamada a `__stack_chk_fail`). En el solucionador SAT, `-fno-stack-protector` ganó alrededor de un 1 %.
+El coste: unas pocas instrucciones en cada función que tiene un array local (`objdump -d` muestra la lectura del valor secreto, `mov %fs:0x28`, su comparación al volver y la llamada a `__stack_chk_fail`). En el solucionador SAT, `-fno-stack-protector` ganó alrededor de un 1 %.
 
 > **Trampa:** con `strcpy()` en lugar del bucle, el mensaje pasa a ser `*** buffer overflow detected ***`, incluso con `-fno-stack-protector`. Es **otra** protección de Ubuntu, [`_FORTIFY_SOURCE`](https://man7.org/linux/man-pages/man7/feature_test_macros.7.html), que en `-O2` sustituye las funciones de copia conocidas por versiones comprobadas. Quitar el canario no quita por tanto todas las protecciones, y una copia escrita a mano solo la cubre el canario.
 

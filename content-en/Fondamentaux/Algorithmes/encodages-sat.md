@@ -1,5 +1,5 @@
 ---
-order: 9
+order: 10
 ---
 
 # Encoding a Problem into SAT
@@ -26,7 +26,7 @@ Why it helps here: visibility is a matter of **comparisons** ("is this building 
 | Encoding of visibility | 16 × 16 grid |
 |---|---|
 | Direct | 0.42 s |
-| Order, shared by the 4 directions | 0.03 s (13 times faster) |
+| Order, shared by the 4 directions | 0.03 s (about 14 times faster) |
 
 ## "At Least One" and "At Most One"
 
@@ -51,7 +51,7 @@ More compact does not mean faster: on the Skyscraper solver, the compact encodin
 
 ## Counting: the Sequential Counter
 
-"Exactly k visible buildings" is a **cardinality constraint**: exactly k true variables among n. The **sequential counter** (Sinz, 2005) adds auxiliary variables `s[i][j]` = "among the first i variables, at least j are true", like a counter moved forward cell after cell:
+"Exactly k visible buildings" is a **cardinality constraint**: exactly k true variables among n. The **sequential counter** ([Sinz, 2005](https://doi.org/10.1007/11564751_73)) adds auxiliary variables `s[i][j]` = "among the first i variables, at least j are true", like a counter moved forward cell after cell:
 
 ```python
 def at_most_k_counter(xs, k, next_var):
@@ -75,7 +75,7 @@ def at_most_k_counter(xs, k, next_var):
     return clauses, next_var + n * k
 ```
 
-Checked by brute force on 5 variables with k = 2: the 21 clauses produced (with 10 auxiliary variables) accept exactly the combinations where at most 2 variables are true. For "exactly k", you add the other direction ("at least k"). A well-known alternative is the **totalizer** (Bailleux and Boufkhad, 2003), which counts through a tree of small counters instead of a chain.
+Checked by brute force on 5 variables with k = 2: the 21 clauses produced (with 10 auxiliary variables) accept exactly the combinations where at most 2 variables are true. For "exactly k", you add the other direction ("at least k"). A well-known alternative is the **totalizer** ([Bailleux and Boufkhad, 2003](https://doi.org/10.1007/978-3-540-45193-8_8)), which counts through a tree of small counters instead of a chain.
 
 ## Adding Redundant Clauses
 
@@ -136,7 +136,7 @@ This complicates one specific point: when the solver deduces that a variable is 
 
 ## Propagators and Lazy Clause Generation
 
-A **propagator** is dedicated code for a global constraint (for example "all these variables take different values"): instead of translating the constraint into clauses ahead of time, the solver directly runs the algorithm that knows how to derive consequences from it. The propagator only produces an **explanation clause** (why some variable was forced) when [conflict analysis](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) actually needs one: translation into clauses therefore happens on demand rather than all at once upfront, hence the name **[lazy clause generation](https://doi.org/10.1007/s10601-008-9064-x)** (Ohrimenko, Stuckey and Codish, 2009). The implicit clauses from the previous section are a simple form of this, hand-written for a single constraint; lazy clause generation generalizes the idea to any global constraint through a propagator. This is the principle behind hybrid solvers that combine SAT and constraint programming, such as [Chuffed](https://github.com/chuffed/chuffed) or [OR-Tools](https://github.com/google/or-tools)'s CP-SAT solver.
+A **propagator** is dedicated code for a global constraint (for example "all these variables take different values"): instead of translating the constraint into clauses ahead of time, the solver directly runs the algorithm that knows how to derive consequences from it. The propagator only produces an **explanation clause** (why some variable was forced) when [conflict analysis](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) actually needs one: translation into clauses therefore happens on demand rather than all at once upfront, hence the name **[lazy clause generation](https://doi.org/10.1007/s10601-008-9064-x)** (Ohrimenko, Stuckey and Codish, 2009). The implicit clauses from the previous section are a simple form of this, hand-written for a single constraint; lazy clause generation generalizes the idea to any global constraint through a propagator. This is the principle behind hybrid solvers that combine SAT and [constraint programming](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes), such as [Chuffed](https://github.com/chuffed/chuffed) or [OR-Tools](https://github.com/google/or-tools)'s CP-SAT solver.
 
 ---
 

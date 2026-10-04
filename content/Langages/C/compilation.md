@@ -155,7 +155,7 @@ gcc -O2 -flto main.o carre.o -o prog  # ... et à l'édition de liens
 
 > **Piège :** une fonction ordinaire (sans `static`) définie dans un en-tête inclus par deux `.c` provoque l'erreur `multiple definition of 'carre'` à l'édition de liens : chaque unité en contient une copie publique. Et `inline` seul, sans `static`, suit en C des règles subtiles (il faut en plus une définition non-`inline` dans un seul `.c`) : `static inline` est la forme sûre.
 
-**Ce que ça change en pratique.** Le [solveur SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) du projet d'où viennent ces mesures est passé d'un fichier unique de 1 424 lignes à 7 fichiers `.c`. Les fonctions appelées à chaque étape de calcul (des centaines de millions de fois par grille) sont toutes restées dans la même unité, ou en `static inline` dans les en-têtes. Résultat : aucun ralentissement (même 2,7 % plus rapide), et `-flto` n'a rien apporté de plus (+0,9 %). Découper un programme n'a donc pas de coût, à condition de garder ensemble ce qui s'appelle très souvent : [mesurer](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser) avant et après le découpage.
+**Ce que ça change en pratique.** Le [solveur SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) du projet d'où viennent ces mesures est passé d'un fichier unique de 1 424 lignes à 7 fichiers `.c`. Les fonctions appelées à chaque étape de calcul (des centaines de millions de fois par grille) sont toutes restées dans la même unité, ou en `static inline` dans les en-têtes. Résultat : aucun ralentissement (même 2,7 % plus rapide), et `-flto` n'a rien apporté de plus (+0,9 % par rapport au fichier unique, et même 3,8 % plus lent que le découpage seul). Découper un programme n'a donc pas de coût, à condition de garder ensemble ce qui s'appelle très souvent : [mesurer](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser) avant et après le découpage.
 
 ## L'optimisation guidée par profil (PGO)
 
@@ -218,10 +218,10 @@ Avec un argument de 40 caractères (le tampon n'en contient que 8) :
 
 | Compilation | Affichage | Code de sortie |
 |---|---|---|
-| `gcc -O2` (réglage par défaut d'Ubuntu et Debian : `-fstack-protector-strong`) | `copié : AAAAAAAA` puis `*** stack smashing detected ***: terminated` | 134 : arrêt volontaire ([signal](/?c=langages&s=c&p=signaux-unix#les-signaux-courants) `SIGABRT`, 128 + 6) |
+| `gcc -O2` (réglage par défaut du GCC d'Ubuntu : `-fstack-protector-strong`) | `copié : AAAAAAAA` puis `*** stack smashing detected ***: terminated` | 134 : arrêt volontaire ([signal](/?c=langages&s=c&p=signaux-unix#les-signaux-courants) `SIGABRT`, 128 + 6) |
 | `gcc -O2 -fno-stack-protector` | `copié : AAAAAAAA` puis plantage | 139 : erreur de segmentation (`SIGSEGV`, 128 + 11), plus tard et moins clairement |
 
-Le coût : trois instructions dans chaque fonction qui a un tableau local (`objdump -d` montre la lecture de la valeur secrète, `mov %fs:0x28`, sa comparaison au retour, et l'appel à `__stack_chk_fail`). Sur le solveur SAT, `-fno-stack-protector` a gagné environ 1 %.
+Le coût : quelques instructions dans chaque fonction qui a un tableau local (`objdump -d` montre la lecture de la valeur secrète, `mov %fs:0x28`, sa comparaison au retour, et l'appel à `__stack_chk_fail`). Sur le solveur SAT, `-fno-stack-protector` a gagné environ 1 %.
 
 > **Piège :** avec `strcpy()` à la place de la boucle, le message devient `*** buffer overflow detected ***`, même avec `-fno-stack-protector`. C'est une **autre** protection d'Ubuntu, [`_FORTIFY_SOURCE`](https://man7.org/linux/man-pages/man7/feature_test_macros.7.html), qui remplace à `-O2` les fonctions de copie connues par des versions vérifiées. Retirer le canari ne retire donc pas toutes les protections, et une copie écrite à la main n'est couverte que par le canari.
 

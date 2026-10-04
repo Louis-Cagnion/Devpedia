@@ -1,5 +1,5 @@
 ---
-order: 8
+order: 9
 ---
 
 # SAT Solvers and the CDCL Algorithm
@@ -73,7 +73,7 @@ A plain backtracking would go back to the previous level and try `a = false`. **
 
 You stop as soon as **a single** literal from the conflict level remains: this is the **first unique implication point** (*1UIP*). The resulting clause, `(¬a)`, is **learned**: added to the formula, it says "`a` can never be true".
 
-The solver then goes back to the highest level remaining in the learned clause, here level 0: it also undoes the decision `x = true`, which had nothing to do with the conflict. This is **non-chronological backtracking** (*backjumping*). Then `(¬a)` immediately forces `a = false`.
+The solver then goes back to the highest level among the other literals of the learned clause (its second-highest level, or 0 if it has a single literal), here level 0: it also undoes the decision `x = true`, which had nothing to do with the conflict. This is **non-chronological backtracking** (*backjumping*). Then `(¬a)` immediately forces `a = false`.
 
 | | Backtracking | CDCL |
 |---|---|---|
@@ -81,7 +81,7 @@ The solver then goes back to the highest level remaining in the learned clause, 
 | Memory of failures | None: the same dead end can be revisited elsewhere | Each learned clause prunes every branch where the same cause would occur again |
 | Going back | One level at a time | Straight to the right level, skipping unrelated decisions |
 
-Real solvers then **minimize** the learned clause, removing literals already implied by the others (a technique introduced by MiniSat).
+Real solvers then **minimize** the learned clause, removing literals already implied by the others (a technique introduced by [MiniSat](http://minisat.se/)).
 
 ## Two Watched Literals: Propagating Without Rereading Everything
 
@@ -101,8 +101,8 @@ As long as neither watched literal is false, the clause can neither force anythi
 | Mechanism | Principle | Why |
 |---|---|---|
 | **VSIDS** (*Variable State Independent Decaying Sum*) | Each variable has an **activity**, increased when it takes part in a conflict, which then "wears off" over time. The solver always decides on the most active one. | Focuses the search on the hard part of the problem, the one producing conflicts right now. |
-| Decay through the increment | Instead of decreasing all activities at each conflict, the value added to later ones is **increased** (×1.05 per conflict), and everything is rescaled before exceeding the capacity of a floating-point number. | Same effect, at a constant cost per conflict. |
-| Binary heap | A structure that gives the most active variable in logarithmic time. | Avoids scanning every variable at each decision. |
+| Decay through the increment | Instead of decreasing all activities at each conflict, the value added to later ones is **increased** (×1.05 per conflict), and everything is rescaled before exceeding the capacity of a [floating-point number](/?c=donnees&s=representation-des-donnees&p=nombres-flottants). | Same effect, at a constant cost per conflict. |
+| [Binary heap](/?c=fondamentaux&s=algorithmes&p=file-de-priorite-et-tas-binaire) | A structure that gives the most active variable in logarithmic time. | Avoids scanning every variable at each decision. |
 | **Phase saving** | A variable takes back the last value it had before being undone. | After going back, the solver quickly rebuilds the parts that were already consistent. |
 
 ## Restarting and Forgetting: Luby and LBD
@@ -115,7 +115,7 @@ A **restart** undoes every decision and starts again from level 0, **keeping** t
 | Glucose | When the recent quality of learned clauses drops | 2 times slower |
 | No restart | Never | Every 56 × 56 grid tested exceeds 90 s |
 
-Learned clauses pile up: half of them are regularly deleted, keeping the best according to their **LBD** (*Literal Block Distance*): the number of different levels among their literals. A clause with LBD 2 links only two decisions: it will be useful often.
+Learned clauses pile up: half of them are regularly deleted, keeping the best according to their **LBD** (*Literal Block Distance*): the number of different levels among their literals. A clause with LBD 2 involves only two decision levels: it will be useful often.
 
 ## Advanced Heuristics: Measure Before Adopting
 
@@ -148,7 +148,7 @@ front                                   back
 | Update after a conflict | Increase activities, reorder the heap | Move to the front: constant time |
 | Measured (48 × 48 grid, single process) | 1.47 s | 1.31 s |
 
-VMTF is the "focused" mode of the [kissat](https://github.com/arminbiere/kissat) and CaDiCaL solvers. In a process portfolio, the VMTF copies are almost always the ones that win (see the section on heavy tails below).
+VMTF is the "focused" mode of the [kissat](https://github.com/arminbiere/kissat) and [CaDiCaL](https://github.com/arminbiere/cadical) solvers. In a process portfolio (several copies of the solver run in parallel on the same problem, and the first one to finish wins), the VMTF copies are almost always the ones that win (see the section on heavy tails below).
 
 ### What Hurt Here
 
@@ -169,15 +169,15 @@ An assignment at level 0 is never undone: a clause containing a literal that is 
 | `(¬a ∨ c)` | Propagation forces `c` at level 0: satisfied too | Removed |
 | `(b ∨ d)` | Neither `b` nor `d` is set yet | Kept |
 
-Measured together with two other tweaks of the same kind: a few percent of time saved, with identical work counters.
+Measured together with two other tweaks of the same kind: a few percent of time saved, with identical [work counters](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparing-on-work-counters-not-only-on-time).
 
 ## Heavy Tails: a Few Catastrophic Instances
 
-Among grids of the same size, most are solved quickly, but a few take 100 times longer: their solving time follows a **heavy-tailed** distribution. Measured on the Skyscraper solver with 72 × 72 grids, over 100 grids:
+Among grids of the same size, most are solved quickly, but a few take more than 6 times the median time, or never finish: their solving time follows a **heavy-tailed** distribution. Measured on the Skyscraper solver with 72 × 72 grids, over 100 grids:
 
 | Version | Median time | Grids over 90 s |
 |---|---|---|
-| A single solver | 13.4 s | 7 |
+| A single solver (3 runs at the same time on the machine) | 13.4 s | 7 |
 | 4 copies of the solver started in parallel, each with a different share of randomness; the first one to find wins | 9.3 s | 0 |
 
 Restarts and controlled randomness are precisely what gets the search out of these bad trajectories.
@@ -188,7 +188,7 @@ A random decision means picking a random variable instead of the most active one
 
 | Configuration | Grids over 90 s |
 |---|---|
-| No randomization | 4 |
+| No randomization (reference version, alone on the machine) | 4 |
 | With 3% random decisions | 8, but not the same 4 grids |
 
 The 4 grids that got stuck without randomization now get solved, but 8 other ones get stuck instead: the same grid passes or stalls depending on the random draw. The heavy tail comes from the search trajectory, not from the instance's intrinsic difficulty; adding randomness moves it, it does not shrink it.
@@ -210,7 +210,7 @@ Two ways of diversifying break what the solver has learned: adding noise to VSID
 
 ### Portfolios of Independent Trajectories: the p^k Law
 
-Another remedy: run several trajectories in parallel with different seeds, and keep the result of the first process to finish (process portfolio, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), originally measured on completing Latin squares). If each run stalls independently with probability *p*, *k* runs all stall together with probability *p^k*: the risk drops very fast as the number of processes grows. With p = 7/100 (measured here):
+Another remedy: run several trajectories in parallel with different seeds (the number that initializes each process's randomness), and keep the result of the first process to finish (process portfolio, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), originally measured on completing Latin squares). If each run stalls independently with probability *p*, *k* runs all stall together with probability *p^k*: the risk drops very fast as the number of processes grows. With p = 7/100 (measured here):
 
 ```python
 # p: probability that ONE run exceeds 90 s (measured: 7 grids out of 100)
@@ -238,9 +238,9 @@ Diversifying the decision heuristics too, not just the random seeds, strengthens
 | 4 × VSIDS | 67 s |
 | 1 × VSIDS + 3 × VMTF (see above) | 32 s |
 
-The VMTF processes win very consistently, between 25,000 and 30,000 conflicts. Thanks to this heterogeneous portfolio, the one-minute frontier moves from the 72 × 72 grid (with still 4% of stalls) to about 100 × 100.
+The VMTF processes win very consistently, between 25,000 and 30,000 conflicts. The portfolio of 4 VSIDS copies already placed the one-minute frontier between the 88 × 88 and 96 × 96 grids; the heterogeneous portfolio brings it to 100 × 100 (45.3 s on average over 100 grids, only one beyond 90 s).
 
-Past 4 to 6 processes, the gains slow down and then reverse: the shared memory bandwidth between processes ends up costing more than the added diversity brings (8 processes slower than 6). Sharing learned clauses between processes (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) only helps if the learned clauses are short: here, a full solve learns only 2 to 7 unit clauses and 11 to 34 binary clauses (56 × 56 grid); the other learned clauses are long, not worth sharing.
+Past 4 to 6 processes, the gains slow down and then reverse: the memory bandwidth (the data rate between memory and processor) shared between processes ends up costing more than the added diversity brings (8 processes slower than 6). Sharing learned clauses between processes (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) only helps if the learned clauses are short: here, a full solve learns only 2 to 7 unit clauses and 11 to 34 binary clauses (56 × 56 grid); the other learned clauses are long, not worth sharing.
 
 ## Reference Solvers
 
@@ -250,7 +250,7 @@ Past 4 to 6 processes, the gains slow down and then reverse: the shared memory b
 | Glucose (Audemard and Simon, 2009) | LBD measure and the matching restarts | [github.com/audemard/glucose](https://github.com/audemard/glucose) |
 | kissat (Armin Biere) | Among the best in current SAT competitions | [github.com/arminbiere/kissat](https://github.com/arminbiere/kissat) |
 
-Measured on the puzzle's encoding (48 × 48 grid, 8 million clauses): kissat's default configuration exceeds the budget, because its preliminary simplifications cost more than they bring on this large but easy problem; with the `--plain` option, which disables them, it solves in 2.2 s.
+Measured on the puzzle's encoding (48 × 48 grid, 8 million clauses): kissat's default configuration exceeds the 90 s budget, because its preliminary simplifications cost more than they bring on this large but easy problem; with the `--plain` option, which disables them, it solves in 2.2 s.
 
 Sources: Marques-Silva and Sakallah, *GRASP* (1996); Moskewicz et al., *Chaff* (2001); Eén and Sörensson, *An Extensible SAT-solver* (MiniSat, 2003); Audemard and Simon, *Predicting Learnt Clauses Quality in Modern SAT Solvers* (Glucose, 2009); *Handbook of Satisfiability*, 2nd edition (2021).
 

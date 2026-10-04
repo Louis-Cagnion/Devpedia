@@ -317,7 +317,7 @@ Useful in a script, to warn before a long rebuild (the three PGO steps take abou
 
 ```bash
 if ! make -q; then                     # 1 or 2: there is something to do
-    echo "Rebuilding (about 25 s)..."  # warns before the wait
+    echo "Rebuilding (about 24 s)..."  # warns before the wait
 fi
 make -s || exit 1                      # builds if needed, silently
 ```

@@ -157,7 +157,8 @@ _Thread_local const int *g_weights;      // one copy per thread
 int compare(const void *a, const void *b)
 {
     int x = *(const int *)a, y = *(const int *)b;
-    return g_weights[x] - g_weights[y];  // sorts indices by their weight
+    // sorts indices by their weight, without a subtraction (which could overflow)
+    return (g_weights[x] > g_weights[y]) - (g_weights[x] < g_weights[y]);
 }
 
 void sort_indices(int *indices, int n, const int *weights)

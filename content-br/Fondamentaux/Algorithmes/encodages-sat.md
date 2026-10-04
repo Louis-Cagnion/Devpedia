@@ -1,5 +1,5 @@
 ---
-order: 9
+order: 10
 ---
 
 # Codificar um problema em SAT
@@ -26,7 +26,7 @@ Por que isso ajuda aqui: a visibilidade é uma questão de **comparações** ("e
 | Codificação da visibilidade | Grade 16 × 16 |
 |---|---|
 | Direta | 0,42 s |
-| Por ordem, compartilhada pelas 4 direções | 0,03 s (13 vezes mais rápida) |
+| Por ordem, compartilhada pelas 4 direções | 0,03 s (cerca de 14 vezes mais rápida) |
 
 ## "Pelo menos um" e "no máximo um"
 
@@ -51,7 +51,7 @@ Mais compacto não quer dizer mais rápido: no solucionador Skyscraper, a codifi
 
 ## Contar: o contador sequencial
 
-"Exatamente k prédios visíveis" é uma **restrição de cardinalidade**: exatamente k variáveis verdadeiras entre n. O **contador sequencial** (Sinz, 2005) acrescenta variáveis auxiliares `s[i][j]` = "entre as i primeiras variáveis, pelo menos j são verdadeiras", como um contador que avança casa após casa:
+"Exatamente k prédios visíveis" é uma **restrição de cardinalidade**: exatamente k variáveis verdadeiras entre n. O **contador sequencial** ([Sinz, 2005](https://doi.org/10.1007/11564751_73)) acrescenta variáveis auxiliares `s[i][j]` = "entre as i primeiras variáveis, pelo menos j são verdadeiras", como um contador que avança casa após casa:
 
 ```python
 def no_maximo_k_contador(xs, k, proxima_var):
@@ -75,7 +75,7 @@ def no_maximo_k_contador(xs, k, proxima_var):
     return clauses, proxima_var + n * k
 ```
 
-Verificado por força bruta com 5 variáveis e k = 2: as 21 cláusulas produzidas (com 10 variáveis auxiliares) aceitam exatamente as combinações em que no máximo 2 variáveis são verdadeiras. Para "exatamente k", acrescenta-se o outro sentido ("pelo menos k"). Uma alternativa conhecida é o **totalizer** (Bailleux e Boufkhad, 2003), que conta por uma árvore de pequenos contadores em vez de uma cadeia.
+Verificado por força bruta com 5 variáveis e k = 2: as 21 cláusulas produzidas (com 10 variáveis auxiliares) aceitam exatamente as combinações em que no máximo 2 variáveis são verdadeiras. Para "exatamente k", acrescenta-se o outro sentido ("pelo menos k"). Uma alternativa conhecida é o **totalizer** ([Bailleux e Boufkhad, 2003](https://doi.org/10.1007/978-3-540-45193-8_8)), que conta por uma árvore de pequenos contadores em vez de uma cadeia.
 
 ## Acrescentar cláusulas redundantes
 
@@ -136,7 +136,7 @@ Isso complica um ponto específico: quando o solucionador deduz que uma variáve
 
 ## Propagadores e geração preguiçosa de cláusulas
 
-Um **propagador** é código dedicado a uma restrição global (por exemplo "todas essas variáveis assumem valores diferentes"): em vez de traduzir a restrição em cláusulas de antemão, o solucionador executa diretamente o algoritmo que sabe deduzir suas consequências. O propagador só produz uma **cláusula de explicação** (por que tal variável foi forçada) quando a [análise do conflito](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) precisa dela: a tradução em cláusulas acontece então sob demanda em vez de de uma vez só no início, daí o nome **[geração preguiçosa de cláusulas](https://doi.org/10.1007/s10601-008-9064-x)** (*Lazy Clause Generation*, Ohrimenko, Stuckey e Codish, 2009). As cláusulas implícitas da seção anterior são uma forma simples disso, escrita à mão para uma única restrição; a geração preguiçosa de cláusulas generaliza a ideia para qualquer restrição global por meio de um propagador. É o princípio dos solucionadores híbridos que combinam SAT e programação por restrições, como o [Chuffed](https://github.com/chuffed/chuffed) ou o solucionador CP-SAT do [OR-Tools](https://github.com/google/or-tools).
+Um **propagador** é código dedicado a uma restrição global (por exemplo "todas essas variáveis assumem valores diferentes"): em vez de traduzir a restrição em cláusulas de antemão, o solucionador executa diretamente o algoritmo que sabe deduzir suas consequências. O propagador só produz uma **cláusula de explicação** (por que tal variável foi forçada) quando a [análise do conflito](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) precisa dela: a tradução em cláusulas acontece então sob demanda em vez de de uma vez só no início, daí o nome **[geração preguiçosa de cláusulas](https://doi.org/10.1007/s10601-008-9064-x)** (*Lazy Clause Generation*, Ohrimenko, Stuckey e Codish, 2009). As cláusulas implícitas da seção anterior são uma forma simples disso, escrita à mão para uma única restrição; a geração preguiçosa de cláusulas generaliza a ideia para qualquer restrição global por meio de um propagador. É o princípio dos solucionadores híbridos que combinam SAT e [programação por restrições](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes), como o [Chuffed](https://github.com/chuffed/chuffed) ou o solucionador CP-SAT do [OR-Tools](https://github.com/google/or-tools).
 
 ---
 
