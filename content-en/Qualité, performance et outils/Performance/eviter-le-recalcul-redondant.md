@@ -108,6 +108,271 @@ As soon as the "light" comparison (the fields already present on the results car
 
 > Not to be confused with a **network latency** optimization. What's being avoided here is redundant CPU/logic work (recomputing an already-known answer), not an I/O delay. Deliberate pauses between requests (rate limiting, courtesy toward a remote server) or waiting for an interface animation don't fall under this principle: they remain necessary even when no recomputation is at stake, and removing them risks getting blocked, not just being slow. This is exactly the distinction drawn at the end of [Waiting Without Wasting Time](/?c=performance&p=attentes-et-temps-morts): a protective delay isn't waste to eliminate.
 
+## Reusing the previous result: incremental computation with an identical result
+
+[Recomputing only what changed](#recomputing-only-what-changed) deals with **data** that arrives in small pieces. The same principle applies to an **algorithm** called millions of times on an input that has barely moved between two calls: instead of starting from scratch, it starts from the **previous result**.
+
+Example from the Skyscraper solver. Its Hall test looks, for a nearly filled row, for a [matching between the free cells and the missing values](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin#finding-a-matching-the-augmenting-path-kuhn-s-algorithm). Between two tests of the same row, only a few values have been removed: almost all the pairs of the previous matching are still valid. The function below keeps them and starts an augmenting-path search only for the cells left without a value. It uses the `matching.h` file from the chapter on [matchings](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin).
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include "matching.h"
+
+static long searches, values_visited;           /* work counters */
+
+/* Matches the cells starting from holder: the pairs that are still valid are kept,
+   only the cells left without a value look for an augmenting path. */
+static int match_from(int n, const uint64_t *domain, int *holder, uint64_t *fail_set)
+{
+    uint64_t kept = 0;                          /* cells whose pair is kept */
+    uint64_t seen;
+
+    for (int v = 0; v < 64; v++) {
+        int i = holder[v];
+
+        if (i >= 0 && (domain[i] >> v & 1) && !(kept >> i & 1))
+            kept |= 1ull << i;                  /* pair still valid */
+        else
+            holder[v] = -1;                     /* stale pair: the value is freed */
+    }
+    for (int i = 0; i < n; i++) {
+        if (kept >> i & 1)
+            continue;
+        seen = 0;
+        searches++;
+        int ok = augment(i, domain, holder, &seen);
+
+        values_visited += __builtin_popcountll(seen);
+        if (!ok) {
+            *fail_set = seen;                   /* the Hall set of this failure */
+            return i;
+        }
+    }
+    return -1;
+}
+
+int main(void)
+{
+    enum { N = 32, EPISODES = 2000 };
+    long steps = 0, mismatches = 0, work[2][2] = {{0}};
+    long conflicts = 0, other_cell = 0, other_set = 0;
+
+    srand(7);
+    for (int ep = 0; ep < EPISODES; ep++) {
+        uint64_t dom[N];
+        int prev[64], fresh[64];
+        uint64_t hall_a, hall_b, ignored;
+
+        for (int i = 0; i < N; i++) {           /* random domains, 10% of the values */
+            dom[i] = 1ull << i;                 /* value i is possible at the start */
+            for (int v = 0; v < N; v++)
+                if (rand() % 100 < 10)
+                    dom[i] |= 1ull << v;
+        }
+        for (int v = 0; v < 64; v++)
+            prev[v] = -1;
+        match_from(N, dom, prev, &ignored);     /* starting matching */
+        for (int step = 0; step < 1000; step++) {  /* one cell loses a value at each step */
+            int i = rand() % N, v = rand() % N;
+            long r0, w0;
+            int a, b;
+
+            if (!(dom[i] >> v & 1) || (dom[i] & (dom[i] - 1)) == 0)
+                continue;                       /* value absent, or the cell's last one */
+            dom[i] &= ~(1ull << v);
+            steps++;
+            for (int k = 0; k < 64; k++)
+                fresh[k] = -1;                  /* A: full computation, reusing nothing */
+            r0 = searches; w0 = values_visited;
+            a = match_from(N, dom, fresh, &hall_a);
+            work[0][0] += searches - r0; work[0][1] += values_visited - w0;
+            r0 = searches; w0 = values_visited;
+            b = match_from(N, dom, prev, &hall_b);       /* B: previous matching reused */
+            work[1][0] += searches - r0; work[1][1] += values_visited - w0;
+            if ((a < 0) != (b < 0))
+                mismatches++;                   /* same verdict expected from both */
+            if (b >= 0) {                       /* conflict: the episode stops */
+                conflicts++;
+                other_cell += a != b;           /* the cell left without a value differs */
+                other_set += hall_a != hall_b;
+                break;
+            }
+        }
+    }
+    printf("%ld value removals, %ld verdict mismatches\n", steps, mismatches);
+    printf("full computation: %ld searches, %ld values visited\n",
+           work[0][0], work[0][1]);
+    printf("matching reused: %ld searches, %ld values visited\n",
+           work[1][0], work[1][1]);
+    printf("%ld conflicts: %ld with another cell, no value,\n", conflicts, other_cell);
+    printf("%ld with another set of values reached\n", other_set);
+    return mismatches != 0;
+}
+```
+
+The program removes values one by one from random domains, and each time redoes the computation in two ways: **A** from scratch, **B** reusing the previous matching.
+
+```
+49549 value removals, 0 verdict mismatches
+full computation: 1581056 searches, 9423329 values visited
+matching reused: 12710 searches, 207078 values visited
+2000 conflicts: 1725 with another cell, no value,
+0 with another set of values reached
+```
+
+| Counter (49,549 value removals) | Full computation (A) | Matching reused (B) |
+|---|---|---|
+| Augmenting-path searches started | 1,581,056 | 12,710 |
+| Values visited during these searches | 9,423,329 | 207,078 |
+| Verdict mismatches (a matching exists or not) | 0 | 0 |
+
+Reuse makes 124 times fewer searches, for exactly the same answers. Three precautions make this safe:
+
+| Precaution | Why | In the example |
+|---|---|---|
+| The starting point must still be valid | A stale pair would distort the result | Pairs whose value was removed are deleted before starting again |
+| The verdict must be the same from any starting point | Otherwise the optimization changes the answer | Kuhn's algorithm is exact from any valid matching: 0 mismatches over 49,549 cases |
+| What depends on the starting point must not leak | An explanation or an output that changes alters the rest of the program | On a conflict, fall back to the full computation (see below) |
+
+The last point shows in the last line of the output. Out of the 2,000 conflicts, **1,725** leave a different cell without a value depending on the starting point, even though the set of values reached is the same in all 2,000. Yet the [conflict explanation](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin#when-no-matching-exists-the-hall-set) is built from that cell and from the holders of the values reached: it therefore depends on the starting matching. The solver then redoes the original full computation, **only when there is a conflict**: the explanation is that of the version without reuse, the search follows exactly the same path, and the counters (decisions, conflicts, propagations) stay identical over the 49 checks of the protocol. An optimization with an identical search can be measured cleanly: only the time changes (see [comparing on work counters](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparing-on-work-counters-not-only-on-time)).
+
+> A counter divided by 124 does not give a program 124 times faster. The Hall test accounted for **7.4%** of the search time (cycle-counter profile, 104 × 104 grid: 4.7% for building the graph, 2.5% for the matching): the maximum possible gain was therefore about 7%. Measured: **6.2%** (33.9 s against 31.8 s at 96 × 96). Profiling first tells how far it is worth going.
+
+## Only revisiting what is marked: walking through a bitmap
+
+The [bitmap filter](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd#bitmap-filter) avoids reading an element when a bit says there is nothing in it. The same bitmap is also used to **enumerate** only the elements that have something, without visiting the others.
+
+Example from the same solver: at each cleanup of the learned clauses, the deleted clauses must be removed from every watch list. The solver has 13.6 million lists (one per literal), almost all empty. One bit per list says whether it may contain something. The program below compares a scan of all the lists with a scan of the 1 bits only: `bits &= bits - 1` clears the lowest bit of the word, `__builtin_ctzll` gives the position of the bit to process (see [walking through the 1 bits](/?c=langages&s=c&p=operateurs-binaires#walking-through-the-1-bits-compiler-built-in-functions)).
+
+```c
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define N 13600000u                 /* number of lists, like the solver's literals */
+
+typedef struct {
+    int *d;                         /* the entries of the list */
+    int n, cap;
+    char spare[16];                 /* room for a second list: 32 bytes per header */
+} list;
+
+static list *lists;
+static uint64_t *mark;              /* bit i: list i may be non-empty */
+static long reads;                  /* work counter: list headers read */
+
+/* Counts the "dead" entries (odd ones), standing for deleted clauses */
+static long count_all(void)
+{
+    long dead = 0;
+
+    for (unsigned i = 0; i < N; i++) {              /* all the lists, empty ones included */
+        reads++;
+        for (int k = 0; k < lists[i].n; k++)
+            dead += lists[i].d[k] & 1;
+    }
+    return dead;
+}
+
+static long count_marked(void)
+{
+    long dead = 0;
+
+    for (unsigned word = 0; word < N / 64 + 1; word++)
+        for (uint64_t bits = mark[word]; bits; bits &= bits - 1) {      /* bits set to 1 */
+            unsigned i = word * 64 + __builtin_ctzll(bits);
+
+            reads++;
+            for (int k = 0; k < lists[i].n; k++)
+                dead += lists[i].d[k] & 1;
+        }
+    return dead;
+}
+
+static double now(void)
+{
+    struct timespec t;
+
+    clock_gettime(CLOCK_MONOTONIC, &t);
+    return t.tv_sec + t.tv_nsec * 1e-9;
+}
+
+int main(int argc, char **argv)
+{
+    unsigned per_mille = argc > 1 ? (unsigned)atoi(argv[1]) : 90;     /* non-empty lists */
+    int *pool = malloc(sizeof(int) * N * 3);
+    uint64_t state = 88172645463325252ull;
+    long expected, found = 0, taken = 0, forgotten = 0, reads_marked = 0;
+    double best[2] = { 1e9, 1e9 };
+
+    lists = calloc(N, sizeof(list));
+    mark = calloc(N / 64 + 1, sizeof(uint64_t));
+    if (!pool || !lists || !mark)
+        return 1;
+    for (unsigned i = 0; i < N; i++) {
+        state ^= state << 13;                       /* xorshift: a pseudo-random draw */
+        state ^= state >> 7;
+        state ^= state << 17;
+        if (state % 1000 < per_mille) {             /* non-empty list, with 1 to 3 entries */
+            lists[i].n = 1 + (int)(state / 1000 % 3);
+            lists[i].d = pool + taken;
+            for (int k = 0; k < lists[i].n; k++)
+                pool[taken++] = (int)(state >> (8 * k + 8));
+            mark[i / 64] |= 1ull << (i % 64);       /* invariant: non-empty implies marked */
+        }
+    }
+    expected = count_all();
+    for (int round = 0; round < 5; round++) {       /* 5 alternating rounds, the best counts */
+        double t0 = now();
+        double elapsed;
+
+        found = count_all();
+        elapsed = now() - t0;
+        best[0] = elapsed < best[0] ? elapsed : best[0];
+        t0 = now();
+        reads = 0;
+        found = count_marked();
+        elapsed = now() - t0;
+        best[1] = elapsed < best[1] ? elapsed : best[1];
+        reads_marked = reads;
+    }
+    printf("%.1f %% of lists are non-empty\n", per_mille / 10.0);
+    printf("all the lists:    %5.1f ms, %ld headers read\n", best[0] * 1e3, (long)N);
+    printf("marked lists:     %5.1f ms, %ld headers read, same result: %s\n",
+           best[1] * 1e3, reads_marked, found == expected ? "yes" : "NO");
+    for (unsigned i = 0; i < N; i += 1000)          /* bug: forgets 1 mark in 1000 */
+        if (lists[i].n && (mark[i / 64] >> (i % 64) & 1)) {
+            mark[i / 64] &= ~(1ull << (i % 64));
+            forgotten++;
+        }
+    printf("with %ld forgotten marks: %ld dead entries instead of %ld\n",
+           forgotten, count_marked(), expected);
+    return 0;
+}
+```
+
+```
+1.0 % of lists are non-empty
+all the lists:     14.2 ms, 13600000 headers read
+marked lists:       3.7 ms, 135940 headers read, same result: yes
+with 129 forgotten marks: 135683 dead entries instead of 135817
+```
+
+The same measurement for several proportions of non-empty lists (best of 5 alternating rounds, machine at rest):
+
+| Non-empty lists | All the lists | Marked lists | Ratio |
+|---|---|---|---|
+| 0.1% | 7.6 ms | 0.6 ms | ×13 |
+| 1% | 14.2 ms | 3.8 ms | ×3.7 |
+| 9% | 22.4 ms | 25.1 ms | ×0.9 |
+| 30% | 44.2 ms | 31.4 ms | ×1.4 |
+
+The gain is not guaranteed: it depends on the proportion of elements that have work to do. At 9%, going from one marked list to the next is a random access in a 435 MB array, as costly as reading all the lists in one sweep; a continuous read is partly helped by the processor's prefetching (probable explanation, not isolated here). In the solver, the bitmap is thus used in two places: propagation skips empty lists (91% of propagations meet one: 2.0 s against 1.58 s at 48 × 48, same counters), and the purge visits only marked lists (33.9 s against 35.1 s at 96 × 96, 3.3% less, identical search).
+
+> **Pitfall:** the bitmap is a **contract**. A 0 bit must guarantee that the element is empty; a 1 bit guarantees nothing (it is reset to 0 later). Forgetting to mark an element produces no error: the last line of the output shows that 129 forgotten marks make 134 of the 135,817 dead entries go missing, with no message at all. Check any optimization of this kind by comparing with the full scan on small cases.
+
 ## Atomic writes: never a half-written read
 
 An in-memory memoized cache (previous section) disappears when the process stops; a **file-based cache** survives a restart, but introduces a new risk: a concurrent reader can open the cache file **while it's still being written**.
@@ -206,8 +471,10 @@ Every `echo` followed by `flush()` is sent to the browser immediately, without w
 | Periodic processing over largely stable data | Reprocesses everything on every pass | Only reprocesses what changed since the progress marker |
 | Rendering a game frame | Redraws the entire screen on every tick | Only redraws zones marked as changed |
 | Comparing two records | Systematically opens the expensive detail | Stops as soon as light data has already decided |
+| Repeated computation on an input that changes little | Starts from scratch on every call | Reuses the previous result, falling back to the full computation if the result must stay identical |
+| Loop over millions of elements, almost none with work to do | Visits every element | Visits only the elements marked in a bitmap |
 
-In all four cases, the gain doesn't come from a computation made faster, but from a computation **that never happened**, because nothing could have changed its result.
+In the first four cases, the gain doesn't come from a computation made faster, but from a computation **that never happened**, because nothing could have changed its result. In the last two, the computation does happen, but it only covers what changed (the previous result reused) or what is marked (the bitmap).
 
 ---
 
@@ -215,7 +482,7 @@ In all four cases, the gain doesn't come from a computation made faster, but fro
 
 | | |
 |---|---|
-| **Key takeaways** | Never recompute a result that nothing could have changed since it was last computed: memoization, incremental reprocessing, or dirty rectangles all apply the same idea at different scales. A file cache adds two techniques: atomic writes (never a half-written read) and stale-while-revalidate (answer fast, recompute behind the scenes). When the computation is unavoidable (nothing to cache), progressive HTTP streaming is the only way left to improve perceived wait time. |
-| **Tools you can use** | An in-memory cache per input (memoization), a progress marker to only reprocess what's new, a "light" comparison before an expensive check, `rename()`/`os.replace()` for an atomic write, an anti-concurrency lock for a background recomputation, `flush()`/`ob_end_flush()` for progressive HTTP streaming. |
-| **Pitfalls to avoid** | Memoizing without identifying what would invalidate the result: a cache that's never invalidated becomes a source of stale data. Writing directly to a cache file read by other processes. Applying stale-while-revalidate without an anti-concurrency lock. Streaming an HTTP response without checking that no intermediate proxy puts its own buffer back in place. |
-| **Best practices** | Always define the invalidation condition before memoizing; distinguish avoidable recomputation (this principle) from a deliberate protective pause (to keep); write a cache file through a renamed temporary file; only make the user wait on the very first call with no cache; stream the HTTP response as soon as a long, unavoidable computation produces results progressively. |
+| **Key takeaways** | Never recompute a result that nothing could have changed since it was last computed: memoization, incremental reprocessing, or dirty rectangles all apply the same idea at different scales. A file cache adds two techniques: atomic writes (never a half-written read) and stale-while-revalidate (answer fast, recompute behind the scenes). When the computation is unavoidable (nothing to cache), progressive HTTP streaming is the only way left to improve perceived wait time. Two variants for heavy computations: reusing the previous result (incremental computation, falling back to the full computation when the result must stay identical) and visiting only the elements marked in a bitmap. |
+| **Tools you can use** | An in-memory cache per input (memoization), a progress marker to only reprocess what's new, a "light" comparison before an expensive check, `rename()`/`os.replace()` for an atomic write, an anti-concurrency lock for a background recomputation, `flush()`/`ob_end_flush()` for progressive HTTP streaming. A work counter to check that two versions give the same verdicts, `__builtin_ctzll` to walk through the 1 bits. |
+| **Pitfalls to avoid** | Memoizing without identifying what would invalidate the result: a cache that's never invalidated becomes a source of stale data. Writing directly to a cache file read by other processes. Applying stale-while-revalidate without an anti-concurrency lock. Streaming an HTTP response without checking that no intermediate proxy puts its own buffer back in place. Reusing a stale starting point; letting what depends on the starting point leak; forgetting a mark in a bitmap (no error, lost results). |
+| **Best practices** | Always define the invalidation condition before memoizing; distinguish avoidable recomputation (this principle) from a deliberate protective pause (to keep); write a cache file through a renamed temporary file; only make the user wait on the very first call with no cache; stream the HTTP response as soon as a long, unavoidable computation produces results progressively. Profile first: the function's share of the total time bounds the gain; check that an incremental or filtered version gives the same answers as the full computation. |
