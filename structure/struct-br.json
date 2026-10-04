@@ -102,6 +102,10 @@
             {
               "id": "problemes-np-complets",
               "label": "Os problemas NP-completos: por que um problema \"exponencial\" é resolvido mesmo assim"
+            },
+            {
+              "id": "couplages-et-filtrage-de-regin",
+              "label": "Emparelhamentos, teste de Hall e filtragem de Régin"
             }
           ]
         },
