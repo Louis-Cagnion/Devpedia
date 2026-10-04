@@ -65,7 +65,7 @@ kill -9 1234
 trap 'echo "Clean shutdown"; rm -f file.tmp' SIGTERM
 ```
 
-An uncatchable signal like `SIGKILL` completely ignores `trap`, which is exactly why it remains the last resort mentioned above.
+An uncatchable signal like `SIGKILL` completely ignores `trap`, which is exactly why it remains the last resort mentioned above. To clean up temporary files reliably (the `EXIT` pseudo-signal, the difference between bash and zsh, `timeout`), see [A Script That Cleans Up and Stops Properly](/?c=langages&s=bash&p=fichiers-temporaires-trap-et-timeout).
 
 ## Detaching a process from the terminal (`nohup`)
 
