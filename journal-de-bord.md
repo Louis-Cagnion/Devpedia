@@ -2,6 +2,10 @@
 
 Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
 
+## Chapitre « Couplages, test de Hall et filtrage de Régin » (2026-10-04)
+
+Les chiffres viennent de `RECAP-04-10.md` et `BILAN-RECHERCHE.md` (le `RECAP-27-09.md` cité par le todo n'existe plus). Le code du chapitre (Kuhn, ensemble de Hall, Tarjan, filtrage) est une version lisible de `research/solver/hall.c`, validée contre une énumération exhaustive de toutes les permutations sur 300 000 domaines aléatoires (2 à 8 cases) : existence du couplage, ensemble de Hall (203 500 sur 203 500) et filtrage (le domaine final est exactement l'ensemble des valeurs d'au moins un couplage complet) sans aucun désaccord. Dans les traductions, « couplage » devient *matching* / *emparejamiento* / *emparelhamento* (et « complet » devient *perfect* / *perfecto* / *perfeito*, le terme usuel) ; les anciens chapitres traduisent « case » par *cell* / *casilla* / *casa*, repris ici.
+
 ## Chapitre « Remplacer une division par une multiplication » (2026-10-04)
 
 Premier chapitre du point 7 rédigé avec l'audio des quatre langues généré avant le suivant. Trois constats à garder :

@@ -224,7 +224,7 @@ linha 4     .      .      .      .
 
 No entanto, cada casa vazia tem pelo menos um valor possível, e cada linha e cada coluna, **sozinha**, pode ser completada (verificado por programa). A contradição só aparece ao combinar duas linhas e duas colunas.
 
-É o bloqueio observado no solucionador Skyscraper: algumas execuções chegam a 99,8 % das variáveis fixadas e depois ficam travadas por mais de um minuto em 56 casas espalhadas em 7 linhas. Acrescentar ao solucionador um teste de Hall nas linhas e colunas quase cheias (no máximo 16 casas livres) detecta esses becos sem saída mais cedo: medido em grades 104 × 104 sobre as mesmas 18 execuções (9 grades, 2 ajustes do acaso cada uma), 15 terminam dentro do orçamento fixado com esse teste, contra 8 sem ele.
+É o bloqueio observado no solucionador Skyscraper: algumas execuções chegam a 99,8 % das variáveis fixadas e depois ficam travadas por mais de um minuto em 56 casas espalhadas em 7 linhas. Acrescentar ao solucionador um teste de Hall nas linhas e colunas quase cheias (no máximo 16 casas livres) detecta esses becos sem saída mais cedo: medido em grades 104 × 104 sobre as mesmas 18 execuções (9 grades, 2 ajustes do acaso cada uma), 15 terminam dentro do orçamento fixado com esse teste, contra 8 sem ele. O funcionamento desse teste e a filtragem de Régin, que vai além, são detalhados em [Emparelhamentos, teste de Hall e filtragem de Régin](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin).
 
 ---
 

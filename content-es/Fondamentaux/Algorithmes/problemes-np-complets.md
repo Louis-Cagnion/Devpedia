@@ -224,7 +224,7 @@ fila 4     .      .      .      .
 
 Sin embargo, cada casilla vacía tiene al menos un valor posible, y cada fila y cada columna, **por separado**, puede completarse (verificado por programa). La contradicción solo aparece al combinar dos filas y dos columnas.
 
-Es el bloqueo observado en el solucionador Skyscraper: algunas ejecuciones llegan al 99,8 % de las variables fijadas y luego se quedan bloqueadas más de un minuto en 56 casillas dispersas en 7 filas. Añadir al solucionador una prueba de Hall en las filas y columnas casi llenas (como mucho 16 casillas libres) detecta antes estos callejones sin salida: medido en cuadrículas de 104 × 104 sobre las mismas 18 ejecuciones (9 cuadrículas, 2 ajustes del azar cada una), 15 terminan dentro del presupuesto fijado con esta prueba, frente a 8 sin ella.
+Es el bloqueo observado en el solucionador Skyscraper: algunas ejecuciones llegan al 99,8 % de las variables fijadas y luego se quedan bloqueadas más de un minuto en 56 casillas dispersas en 7 filas. Añadir al solucionador una prueba de Hall en las filas y columnas casi llenas (como mucho 16 casillas libres) detecta antes estos callejones sin salida: medido en cuadrículas de 104 × 104 sobre las mismas 18 ejecuciones (9 cuadrículas, 2 ajustes del azar cada una), 15 terminan dentro del presupuesto fijado con esta prueba, frente a 8 sin ella. El funcionamiento de esta prueba y el filtrado de Régin, que va más lejos, se detallan en [Emparejamientos, prueba de Hall y filtrado de Régin](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin).
 
 ---
 

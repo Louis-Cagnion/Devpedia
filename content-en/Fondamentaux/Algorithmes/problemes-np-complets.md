@@ -224,7 +224,7 @@ row 4     .      .      .      .
 
 Yet every empty cell has at least one possible value, and every row and every column, taken **alone**, can be completed (checked by a program). The contradiction only appears when two rows and two columns are combined.
 
-This is the blockage observed on the Skyscraper solver: some runs reach 99.8% of variables fixed, then stay stuck for more than a minute on 56 cells scattered across 7 rows. Adding to the solver a Hall test on nearly full rows and columns (at most 16 free cells) detects these dead ends earlier: measured on 104 × 104 grids over the same 18 runs (9 grids, 2 randomness settings each), 15 finish within the set budget with this test, against 8 without.
+This is the blockage observed on the Skyscraper solver: some runs reach 99.8% of variables fixed, then stay stuck for more than a minute on 56 cells scattered across 7 rows. Adding to the solver a Hall test on nearly full rows and columns (at most 16 free cells) detects these dead ends earlier: measured on 104 × 104 grids over the same 18 runs (9 grids, 2 randomness settings each), 15 finish within the set budget with this test, against 8 without. How this test works, and Régin filtering, which goes further, are detailed in [Matchings, the Hall Test and Régin Filtering](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin).
 
 ---
 

@@ -224,7 +224,7 @@ ligne 4    .      .      .      .
 
 Pourtant, chaque case vide a au moins une valeur possible, et chaque ligne et chaque colonne, prise **seule**, peut être complétée (vérifié par programme). La contradiction n'apparaît qu'en combinant deux lignes et deux colonnes.
 
-C'est le blocage observé sur le solveur Skyscraper : certaines exécutions arrivent à 99,8 % des variables fixées, puis restent bloquées plus d'une minute sur 56 cases éparpillées dans 7 lignes. Ajouter au solveur un test de Hall sur les lignes et colonnes presque pleines (au plus 16 cases libres) détecte ces impasses plus tôt : mesuré en grille 104 × 104 sur les mêmes 18 exécutions (9 grilles, 2 réglages du hasard chacune), 15 aboutissent dans le budget fixé avec ce test, contre 8 sans.
+C'est le blocage observé sur le solveur Skyscraper : certaines exécutions arrivent à 99,8 % des variables fixées, puis restent bloquées plus d'une minute sur 56 cases éparpillées dans 7 lignes. Ajouter au solveur un test de Hall sur les lignes et colonnes presque pleines (au plus 16 cases libres) détecte ces impasses plus tôt : mesuré en grille 104 × 104 sur les mêmes 18 exécutions (9 grilles, 2 réglages du hasard chacune), 15 aboutissent dans le budget fixé avec ce test, contre 8 sans. Le fonctionnement de ce test et le filtrage de Régin, qui va plus loin, sont détaillés dans [Couplages, test de Hall et filtrage de Régin](/?c=fondamentaux&s=algorithmes&p=couplages-et-filtrage-de-regin).
 
 ---
 
