@@ -59,6 +59,8 @@ On place les cases une par une. Quand la valeur voulue est déjà prise, on ne r
 
 Chaque domaine est un **masque de bits** (le bit `v` vaut 1 si la valeur `v` est possible ; voir [les masques](/?c=langages&s=c&p=operateurs-binaires#les-masques-la-vraie-utilite-au-quotidien)) : un `uint64_t` suffit pour 64 valeurs, et « prendre la plus petite valeur possible » est une instruction (`__builtin_ctzll`, voir [parcourir les bits à 1](/?c=langages&s=c&p=operateurs-binaires#parcourir-les-bits-a-1-les-fonctions-integrees-du-compilateur)).
 
+Le code de ce chapitre se range dans un fichier d'en-tête nommé `couplage.h`, que les exemples suivants incluent.
+
 ```c
 /* Couplage cases / valeurs, test de Hall et filtrage de Régin.
    domaine[i] : masque de la case i, le bit v vaut 1 si la valeur v est encore possible.

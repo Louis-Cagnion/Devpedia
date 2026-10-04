@@ -59,6 +59,8 @@ Se colocan las casillas una a una. Cuando el valor deseado ya está ocupado, no 
 
 Cada dominio es una **máscara de bits** (el bit `v` vale 1 si el valor `v` es posible; véanse [las máscaras](/?c=langages&s=c&p=operateurs-binaires#las-mascaras-la-verdadera-utilidad-del-dia-a-dia)): un `uint64_t` basta para 64 valores, y «tomar el menor valor posible» es una sola instrucción (`__builtin_ctzll`, véase [recorrer los bits a 1](/?c=langages&s=c&p=operateurs-binaires#recorrer-los-bits-a-1-las-funciones-integradas-del-compilador)).
 
+El código de este capítulo se guarda en un archivo de cabecera llamado `emparejamiento.h`, que los ejemplos siguientes incluyen.
+
 ```c
 /* Emparejamiento casillas / valores, prueba de Hall y filtrado de Régin.
    dominio[i]: máscara de la casilla i, el bit v vale 1 si el valor v sigue siendo posible.
@@ -111,7 +113,7 @@ El programa siguiente reproduce el ejemplo de la tabla anterior, casilla por cas
 
 ```c
 #include <stdio.h>
-#include "couplage.h"
+#include "emparejamiento.h"
 
 /* máscara de los valores dados (de 1 a 5); 0 significa «ningún valor» */
 static uint64_t M(int a, int b, int c, int d)
@@ -323,7 +325,7 @@ static inline int filtrar(int n, uint64_t *dominio, const int *poseedor)
 
 ```c
 #include <stdio.h>
-#include "couplage.h"
+#include "emparejamiento.h"
 
 static uint64_t M(int a, int b, int c, int d)
 {
@@ -435,7 +437,7 @@ Un razonamiento tan sutil se equivoca con facilidad: una línea olvidada y un va
 ```c
 #include <stdio.h>
 #include <stdlib.h>
-#include "couplage.h"
+#include "emparejamiento.h"
 
 /* Referencia: prueba todas las permutaciones y anota para cada casilla
    los valores que toma en al menos un emparejamiento perfecto. */
