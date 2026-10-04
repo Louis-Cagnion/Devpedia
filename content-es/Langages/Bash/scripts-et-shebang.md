@@ -173,6 +173,51 @@ comando_que_falla | grep "patron"
 
 Ver también el capítulo sobre gestión de procesos para lo que ocurre tras lanzar un script en segundo plano.
 
+## Comentar varias líneas: `: <<'COMMENT'`
+
+Bash no tiene comentarios de varias líneas: cada línea debe empezar por `#`. Un truco habitual consiste en usar `:`, un comando que **no hace nada** y siempre tiene éxito, y darle un bloque de texto mediante un [here-document](/?c=langages&s=bash&p=architecture-dun-shell#el-here-document-delim-redirigir-un-bloque-de-texto-sin-archivo) (`<<'COMMENT'`): el comando ignora ese texto. El script siguiente (`comentario.sh`) prueba tres variantes en una carpeta de ensayo (los mensajes de error del shell dependen del idioma del sistema; aquí, en inglés):
+
+```bash
+#!/bin/bash
+ensayo=$(mktemp -d)                  # carpeta de ensayo: ahí se ve lo que se crea
+cd "$ensayo"
+
+: <<'COMMENT'
+Bloque protegido por comillas: nada se expande ni se ejecuta.
+$(touch creado-por-bloque-protegido) `touch tambien-creado-por-bloque-protegido` $HOME
+COMMENT
+
+: <<COMMENT
+Bloque no protegido: las sustituciones se ejecutan.
+$(touch creado-por-bloque-no-protegido)
+COMMENT
+
+echo "archivos creados: $(ls)"
+
+# Trampa: una línea COMMENT demasiado pronto cierra el bloque, el resto se ejecuta como código
+: <<'COMMENT'
+Comienzo de una nota.
+COMMENT
+Esta línea debía formar parte de la nota.
+COMMENT
+
+cd / && rm -rf "$ensayo"
+```
+
+```
+archivos creados: creado-por-bloque-no-protegido
+./comentario.sh: line 21: Esta: command not found
+./comentario.sh: line 22: COMMENT: command not found
+```
+
+| Forma | Efecto |
+|---|---|
+| `: <<'COMMENT'` (delimitador entre comillas) | El bloque ni se expande ni se ejecuta: `$(...)`, los acentos graves y `$HOME` siguen siendo texto. No se crea ningún archivo |
+| `: <<COMMENT` (sin comillas) | Las sustituciones del bloque **se ejecutan**: `touch` creó `creado-por-bloque-no-protegido` |
+| Una línea `COMMENT` colocada demasiado pronto | **Cierra** el bloque: las líneas siguientes se ejecutan como código (los dos mensajes «command not found») |
+
+> **Trampa:** sin las comillas alrededor del delimitador, un comentario que contenga `$(...)` o acentos graves ejecuta comandos. El delimitador debe además estar solo en su línea y no aparecer en ningún otro lugar del bloque. El mismo script funciona en bash y en zsh (verificado). Para unas pocas líneas, un `#` delante de cada una es más sencillo y seguro; el bloque sirve sobre todo para documentar un script al principio del archivo.
+
 ---
 
 ## 📋 Resumen
@@ -180,6 +225,6 @@ Ver también el capítulo sobre gestión de procesos para lo que ocurre tras lan
 | | |
 |---|---|
 | **Para recordar** | El shebang indica al sistema qué intérprete ejecuta el script. `chmod +x` + `./script.sh` o `bash script.sh` lo lanza. `$1`, `$@`, `$#`... dan acceso a sus argumentos. Cada script termina con un código de salida (`0` = éxito), consultable vía `$?`. |
-| **Herramientas utilizables** | `set -euo pipefail` al principio del script para detenerse ante el primer error en lugar de continuar sobre un estado incoherente. |
-| **Trampas a evitar** | Confundir `$@` y `$*` una vez entre comillas (ver más arriba). Escribir `#!/bin/sh` y luego usar una extensión Bash (arrays, `[[ ]]`...): el script falla en cualquier sistema donde `/bin/sh` no sea `bash`. |
+| **Herramientas utilizables** | `set -euo pipefail` al principio del script para detenerse ante el primer error en lugar de continuar sobre un estado incoherente. Un bloque `: <<'COMMENT'` para comentar varias líneas. |
+| **Trampas a evitar** | Confundir `$@` y `$*` una vez entre comillas (ver más arriba). Escribir `#!/bin/sh` y luego usar una extensión Bash (arrays, `[[ ]]`...): el script falla en cualquier sistema donde `/bin/sh` no sea `bash`. Un bloque de comentario cuyo delimitador no está entre comillas ejecuta su contenido. |
 | **Buenas prácticas** | Comprobar siempre `$?` (o usar `&&`/`\|\|`) tras un comando cuyo fallo deba cambiar el comportamiento del script, en lugar de suponer que tuvo éxito. |

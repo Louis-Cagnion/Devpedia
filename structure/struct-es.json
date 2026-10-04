@@ -789,6 +789,10 @@
             {
               "id": "oh-my-zsh",
               "label": "Oh My Zsh"
+            },
+            {
+              "id": "lire-une-touche-au-clavier",
+              "label": "Leer una tecla del teclado en zsh: `read -k`, Escape y flechas"
             }
           ]
         },
