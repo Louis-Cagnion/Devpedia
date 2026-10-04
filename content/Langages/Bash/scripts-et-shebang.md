@@ -174,6 +174,51 @@ commande_qui_echoue | grep "motif"
 
 Voir aussi le chapitre sur la gestion des processus pour ce qui se passe après le lancement d'un script en arrière-plan.
 
+## Commenter plusieurs lignes : `: <<'COMMENT'`
+
+Bash n'a pas de commentaire sur plusieurs lignes : chaque ligne doit commencer par `#`. Une astuce courante consiste à utiliser `:`, une commande qui **ne fait rien** et réussit toujours, et à lui donner un bloc de texte par un [here-document](/?c=langages&s=bash&p=architecture-dun-shell#le-here-document-delim-rediriger-un-bloc-de-texte-sans-fichier) (`<<'COMMENT'`) : la commande ignore ce texte. Le script suivant (`commentaire.sh`) essaie trois variantes dans un dossier d'essai :
+
+```bash
+#!/bin/bash
+essai=$(mktemp -d)                  # dossier d'essai : on y regarde ce qui est créé
+cd "$essai"
+
+: <<'COMMENT'
+Bloc protégé par des apostrophes : rien n'est développé ni exécuté.
+$(touch cree-par-bloc-protege) `touch cree-aussi-par-bloc-protege` $HOME
+COMMENT
+
+: <<COMMENT
+Bloc non protégé : les substitutions sont exécutées.
+$(touch cree-par-bloc-non-protege)
+COMMENT
+
+echo "fichiers créés : $(ls)"
+
+# Piège : une ligne COMMENT trop tôt ferme le bloc, la suite est exécutée comme du code
+: <<'COMMENT'
+Début d'une note.
+COMMENT
+Cette ligne devait faire partie de la note.
+COMMENT
+
+cd / && rm -rf "$essai"
+```
+
+```
+fichiers créés : cree-par-bloc-non-protege
+./commentaire.sh: ligne 21: Cette : commande introuvable
+./commentaire.sh: ligne 22: COMMENT : commande introuvable
+```
+
+| Écriture | Effet |
+|---|---|
+| `: <<'COMMENT'` (délimiteur entre apostrophes) | Le bloc n'est ni développé ni exécuté : `$(...)`, les accents graves et `$HOME` restent du texte. Aucun fichier n'est créé |
+| `: <<COMMENT` (sans apostrophes) | Les substitutions du bloc **sont exécutées** : `touch` a bien créé `cree-par-bloc-non-protege` |
+| Une ligne `COMMENT` placée trop tôt | Elle **ferme** le bloc : les lignes suivantes sont exécutées comme du code (les deux messages « commande introuvable ») |
+
+> **Piège :** sans les apostrophes autour du délimiteur, un commentaire qui contient `$(...)` ou des accents graves exécute des commandes. Le délimiteur doit aussi être seul sur sa ligne et ne figurer nulle part ailleurs dans le bloc. Le même script fonctionne en bash et en zsh (vérifié). Pour quelques lignes, un `#` devant chacune reste plus simple et plus sûr ; le bloc sert surtout à documenter un script en tête de fichier.
+
 ---
 
 ## 📋 Récapitulatif
@@ -181,6 +226,6 @@ Voir aussi le chapitre sur la gestion des processus pour ce qui se passe après 
 | | |
 |---|---|
 | **À retenir** | Le shebang indique au système quel interpréteur exécute le script. `chmod +x` + `./script.sh` ou `bash script.sh` le lance. `$1`, `$@`, `$#`... donnent accès à ses arguments. Chaque script se termine avec un code de sortie (`0` = succès), consultable via `$?`. |
-| **Outils utilisables** | `set -euo pipefail` en tête de script pour arrêter à la première erreur plutôt que de continuer sur un état incohérent. |
-| **Pièges à éviter** | Confondre `$@` et `$*` une fois quotés (voir plus haut). Écrire `#!/bin/sh` puis utiliser une extension Bash (tableaux, `[[ ]]`...) : le script échoue sur tout système où `/bin/sh` n'est pas `bash`. |
+| **Outils utilisables** | `set -euo pipefail` en tête de script pour arrêter à la première erreur plutôt que de continuer sur un état incohérent. Un bloc `: <<'COMMENT'` pour commenter plusieurs lignes. |
+| **Pièges à éviter** | Confondre `$@` et `$*` une fois quotés (voir plus haut). Écrire `#!/bin/sh` puis utiliser une extension Bash (tableaux, `[[ ]]`...) : le script échoue sur tout système où `/bin/sh` n'est pas `bash`. Un bloc de commentaire dont le délimiteur n'est pas entre apostrophes exécute son contenu. |
 | **Bonnes pratiques** | Toujours vérifier `$?` (ou utiliser `&&`/`\|\|`) après une commande dont l'échec doit changer le comportement du script, plutôt que de supposer qu'elle a réussi. |

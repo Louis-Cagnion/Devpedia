@@ -172,6 +172,51 @@ failing_command | grep "pattern"
 
 See also the chapter on process management for what happens after launching a script in the background.
 
+## Commenting several lines: `: <<'COMMENT'`
+
+Bash has no multi-line comment: every line must start with `#`. A common trick is to use `:`, a command that **does nothing** and always succeeds, and to give it a block of text through a [here-document](/?c=langages&s=bash&p=architecture-dun-shell#here-documents-delim-redirecting-a-block-of-text-with-no-file) (`<<'COMMENT'`): the command ignores that text. The following script (`comment.sh`) tries three variants in a trial folder:
+
+```bash
+#!/bin/bash
+trial=$(mktemp -d)                  # trial folder: we look there at what gets created
+cd "$trial"
+
+: <<'COMMENT'
+Block protected by quotes: nothing is expanded or run.
+$(touch created-by-quoted-block) `touch also-created-by-quoted-block` $HOME
+COMMENT
+
+: <<COMMENT
+Unprotected block: the substitutions are run.
+$(touch created-by-unquoted-block)
+COMMENT
+
+echo "files created: $(ls)"
+
+# Pitfall: a COMMENT line too early closes the block, the rest is run as code
+: <<'COMMENT'
+Start of a note.
+COMMENT
+This line was meant to be part of the note.
+COMMENT
+
+cd / && rm -rf "$trial"
+```
+
+```
+files created: created-by-unquoted-block
+./comment.sh: line 21: This: command not found
+./comment.sh: line 22: COMMENT: command not found
+```
+
+| Form | Effect |
+|---|---|
+| `: <<'COMMENT'` (delimiter in quotes) | The block is neither expanded nor run: `$(...)`, backticks and `$HOME` stay text. No file is created |
+| `: <<COMMENT` (no quotes) | The block's substitutions **are run**: `touch` did create `created-by-unquoted-block` |
+| A `COMMENT` line placed too early | It **closes** the block: the following lines are run as code (the two "command not found" messages) |
+
+> **Pitfall:** without the quotes around the delimiter, a comment containing `$(...)` or backticks runs commands. The delimiter must also be alone on its line and appear nowhere else in the block. The same script works in bash and zsh (verified). For a few lines, a `#` in front of each is simpler and safer; the block mostly serves to document a script at the top of the file.
+
 ---
 
 ## 📋 Summary
@@ -179,6 +224,6 @@ See also the chapter on process management for what happens after launching a sc
 | | |
 |---|---|
 | **Key takeaways** | The shebang tells the system which interpreter runs the script. `chmod +x` + `./script.sh` or `bash script.sh` launches it. `$1`, `$@`, `$#`... give access to its arguments. Every script ends with an exit code (`0` = success), readable via `$?`. |
-| **Tools you can use** | `set -euo pipefail` at the top of a script to stop on the first error rather than continuing on an inconsistent state. |
-| **Pitfalls to avoid** | Confusing `$@` and `$*` once quoted (see above). Writing `#!/bin/sh` then using a Bash extension (arrays, `[[ ]]`...): the script fails on any system where `/bin/sh` isn't `bash`. |
+| **Tools you can use** | `set -euo pipefail` at the top of a script to stop on the first error rather than continuing on an inconsistent state. A `: <<'COMMENT'` block to comment several lines. |
+| **Pitfalls to avoid** | Confusing `$@` and `$*` once quoted (see above). Writing `#!/bin/sh` then using a Bash extension (arrays, `[[ ]]`...): the script fails on any system where `/bin/sh` isn't `bash`. A comment block whose delimiter is not in quotes runs its content. |
 | **Best practices** | Always check `$?` (or use `&&`/`\|\|`) after a command whose failure should change the script's behavior, rather than assuming it succeeded. |
