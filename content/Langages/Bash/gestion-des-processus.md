@@ -65,7 +65,7 @@ kill -9 1234  # envoie SIGKILL (9) : force l'arrêt immédiat, sans laisser le p
 trap 'echo "Arrêt propre"; rm -f fichier.tmp' SIGTERM
 ```
 
-Un signal non interceptable comme `SIGKILL` ignore totalement `trap` : c'est justement pour ça qu'il reste le dernier recours vu plus haut.
+Un signal non interceptable comme `SIGKILL` ignore totalement `trap` : c'est justement pour ça qu'il reste le dernier recours vu plus haut. Pour nettoyer des fichiers temporaires de façon fiable (pseudo-signal `EXIT`, différence entre bash et zsh, `timeout`), voir [Un script qui nettoie et s'arrête proprement](/?c=langages&s=bash&p=fichiers-temporaires-trap-et-timeout).
 
 ## Détacher un processus du terminal (`nohup`)
 

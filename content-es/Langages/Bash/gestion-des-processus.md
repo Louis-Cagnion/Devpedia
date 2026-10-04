@@ -65,7 +65,7 @@ kill -9 1234  # envía SIGKILL (9): fuerza la parada inmediata, sin dejar reacci
 trap 'echo "Parada limpia"; rm -f archivo.tmp' SIGTERM
 ```
 
-Una señal no interceptable como `SIGKILL` ignora totalmente `trap`: es justamente por eso que sigue siendo el último recurso visto más arriba.
+Una señal no interceptable como `SIGKILL` ignora totalmente `trap`: es justamente por eso que sigue siendo el último recurso visto más arriba. Para limpiar archivos temporales de forma fiable (pseudoseñal `EXIT`, diferencia entre bash y zsh, `timeout`), véase [Un script que limpia y se detiene como es debido](/?c=langages&s=bash&p=fichiers-temporaires-trap-et-timeout).
 
 ## Separar un proceso de la terminal (`nohup`)
 

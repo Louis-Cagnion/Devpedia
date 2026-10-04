@@ -754,6 +754,10 @@
             {
               "id": "automatisation-cron",
               "label": "Automatizar tarefas com cron"
+            },
+            {
+              "id": "fichiers-temporaires-trap-et-timeout",
+              "label": "Um script que limpa e para como deve: `mktemp`, `trap` e `timeout`"
             }
           ]
         },
