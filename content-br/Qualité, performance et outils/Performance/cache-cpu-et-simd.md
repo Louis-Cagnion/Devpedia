@@ -113,7 +113,7 @@ No Linux, as **páginas enormes transparentes** (*Transparent Huge Pages*, THP) 
 | Modo | Comportamento |
 |---|---|
 | `always` | Páginas enormes sempre que possível |
-| `madvise` | Só para as áreas que o programa pede com [`madvise(https://man7.org/linux/man-pages/man2/madvise.2.html_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (modo da máquina usada aqui, com Ubuntu) |
+| `madvise` | Só para as áreas que o programa pede com [`madvise(MADV_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (modo da máquina usada aqui, com Ubuntu) |
 | `never` | Nunca |
 
 Exemplo em C (veja [a memória em C](/?c=langages&s=c&p=memoire) para a alocação e o `memset`), que conta a memória realmente servida em páginas enormes:
@@ -162,7 +162,7 @@ sem madvise: 0 KB em páginas enormes
 com madvise: 65536 KB em páginas enormes
 ```
 
-Sem mexer no código, a biblioteca C padrão do Linux (glibc 2.35 ou mais recente) pode fazer o mesmo pedido para todas as alocações de `malloc`: `https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html_TUNABLES=glibc.malloc.hugetlb=1 ./programa` ([anúncio da glibc 2.35](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Medido em um solucionador SAT que lê ao acaso em várias centenas de MB: −5% de tempo em um processo sozinho, com o mesmo cálculo, e cerca de −2%, dentro do ruído, com 4 cópias em paralelo. O ganho depende da dispersão dos acessos: um programa que percorre sua memória em ordem já aproveita o cache e ganha pouco.
+Sem mexer no código, a biblioteca C padrão do Linux (glibc 2.35 ou mais recente) pode fazer o mesmo pedido para todas as alocações de `malloc`: `GLIBC_TUNABLES=glibc.malloc.hugetlb=1 ./programa` ([anúncio da glibc 2.35](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Medido em um solucionador SAT que lê ao acaso em várias centenas de MB: −5% de tempo em um processo sozinho, com o mesmo cálculo, e cerca de −2%, dentro do ruído, com 4 cópias em paralelo. O ganho depende da dispersão dos acessos: um programa que percorre sua memória em ordem já aproveita o cache e ganha pouco.
 
 ---
 

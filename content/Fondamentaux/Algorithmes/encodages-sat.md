@@ -1,5 +1,5 @@
 ---
-order: 9
+order: 10
 ---
 
 # Encoder un problème en SAT
@@ -26,7 +26,7 @@ Pourquoi c'est utile ici : la visibilité est une affaire de **comparaisons** (�
 | Encodage de la visibilité | Grille 16 × 16 |
 |---|---|
 | Direct | 0,42 s |
-| Par ordre, partagé par les 4 directions | 0,03 s (13 fois plus rapide) |
+| Par ordre, partagé par les 4 directions | 0,03 s (environ 14 fois plus rapide) |
 
 ## « Au moins un » et « au plus un »
 
@@ -51,7 +51,7 @@ Plus compact ne veut pas dire plus rapide : sur le solveur Skyscraper, l'encodag
 
 ## Compter : le compteur séquentiel
 
-« Exactement k immeubles visibles » est une **contrainte de cardinalité** : exactement k variables vraies parmi n. Le **compteur séquentiel** (Sinz, 2005) ajoute des variables auxiliaires `s[i][j]` = « parmi les i premières variables, au moins j sont vraies », comme un compteur qu'on fait avancer case après case :
+« Exactement k immeubles visibles » est une **contrainte de cardinalité** : exactement k variables vraies parmi n. Le **compteur séquentiel** ([Sinz, 2005](https://doi.org/10.1007/11564751_73)) ajoute des variables auxiliaires `s[i][j]` = « parmi les i premières variables, au moins j sont vraies », comme un compteur qu'on fait avancer case après case :
 
 ```python
 def au_plus_k_compteur(xs, k, prochaine_var):
@@ -75,7 +75,7 @@ def au_plus_k_compteur(xs, k, prochaine_var):
     return clauses, prochaine_var + n * k
 ```
 
-Vérifié par force brute sur 5 variables et k = 2 : les 21 clauses produites (avec 10 variables auxiliaires) acceptent exactement les combinaisons où au plus 2 variables sont vraies. Pour « exactement k », on ajoute l'autre sens (« au moins k »). Une alternative connue est le **totalizer** (Bailleux et Boufkhad, 2003), qui compte par un arbre de petits compteurs au lieu d'une chaîne.
+Vérifié par force brute sur 5 variables et k = 2 : les 21 clauses produites (avec 10 variables auxiliaires) acceptent exactement les combinaisons où au plus 2 variables sont vraies. Pour « exactement k », on ajoute l'autre sens (« au moins k »). Une alternative connue est le **totalizer** ([Bailleux et Boufkhad, 2003](https://doi.org/10.1007/978-3-540-45193-8_8)), qui compte par un arbre de petits compteurs au lieu d'une chaîne.
 
 ## Ajouter des clauses redondantes
 
@@ -136,7 +136,7 @@ Cela complique un point précis : quand le solveur déduit qu'une variable est v
 
 ## Propagateurs et génération paresseuse de clauses
 
-Un **propagateur** est du code dédié à une contrainte globale (par exemple « toutes ces variables prennent des valeurs différentes ») : au lieu de traduire la contrainte en clauses à l'avance, le solveur exécute directement l'algorithme qui sait en déduire des conséquences. Le propagateur ne produit une **clause d'explication** (pourquoi telle variable a été forcée) que si l'[analyse du conflit](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) en a besoin : la traduction en clauses se fait donc à la demande plutôt que d'un coup au départ, d'où le nom de **génération paresseuse de clauses** (*[Lazy Clause Generation](https://doi.org/10.1007/s10601-008-9064-x)*, Ohrimenko, Stuckey et Codish, 2009). Les clauses implicites de la section précédente en sont une forme simple, écrite à la main pour une seule contrainte ; la génération paresseuse de clauses généralise l'idée à n'importe quelle contrainte globale via un propagateur. C'est le principe des solveurs hybrides qui combinent SAT et programmation par contraintes, comme [Chuffed](https://github.com/chuffed/chuffed) ou le solveur CP-SAT d'[OR-Tools](https://github.com/google/or-tools).
+Un **propagateur** est du code dédié à une contrainte globale (par exemple « toutes ces variables prennent des valeurs différentes ») : au lieu de traduire la contrainte en clauses à l'avance, le solveur exécute directement l'algorithme qui sait en déduire des conséquences. Le propagateur ne produit une **clause d'explication** (pourquoi telle variable a été forcée) que si l'[analyse du conflit](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) en a besoin : la traduction en clauses se fait donc à la demande plutôt que d'un coup au départ, d'où le nom de **génération paresseuse de clauses** (*[Lazy Clause Generation](https://doi.org/10.1007/s10601-008-9064-x)*, Ohrimenko, Stuckey et Codish, 2009). Les clauses implicites de la section précédente en sont une forme simple, écrite à la main pour une seule contrainte ; la génération paresseuse de clauses généralise l'idée à n'importe quelle contrainte globale via un propagateur. C'est le principe des solveurs hybrides qui combinent SAT et [programmation par contraintes](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes), comme [Chuffed](https://github.com/chuffed/chuffed) ou le solveur CP-SAT d'[OR-Tools](https://github.com/google/or-tools).
 
 ---
 

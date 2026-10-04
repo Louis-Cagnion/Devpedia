@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Swap-Remove: Removing an Element in O(1)

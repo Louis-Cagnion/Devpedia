@@ -21,9 +21,9 @@ Les opérateurs binaires (ou "bit à bit") travaillent directement sur la repré
 unsigned char a = 12;  // 0000 1100
 unsigned char b = 10;  // 0000 1010
 
-a & b  // 0000 1000 = 8   -> bits presents dans les deux
-a | b  // 0000 1110 = 14  -> bits presents dans l'un ou l'autre
-a ^ b  // 0000 0110 = 6   -> bits presents dans un seul des deux
+a & b  // 0000 1000 = 8   -> bits présents dans les deux
+a | b  // 0000 1110 = 14  -> bits présents dans l'un ou l'autre
+a ^ b  // 0000 0110 = 6   -> bits présents dans un seul des deux
 ~a     // 1111 0011 = 243 (sur unsigned char)
 ```
 
@@ -45,7 +45,7 @@ Les bits qui sortent de la largeur du type sont **perdus** ; ce n'est pas une er
 
 ```c
 unsigned char y = 200;  // 1100 1000
-y << 1                  // 1001 0000 = 144, et non 400 : un bit est tombe
+y << 1                  // 1001 0000 = 144, et non 400 : un bit est tombé
 ```
 
 **Deux pièges à connaître :**
@@ -69,7 +69,7 @@ options |= DRAPEAU_ECRITURE;
 
 if (options & DRAPEAU_ECRITURE) { ... }     // TESTER   un bit
 
-options &= ~DRAPEAU_ECRITURE;  // DESACTIVER un bit
+options &= ~DRAPEAU_ECRITURE;  // DÉSACTIVER un bit
 options ^= DRAPEAU_AJOUT;      // BASCULER un bit
 ```
 
@@ -82,19 +82,19 @@ Les permissions de fichiers Unix suivent la même logique en base 8 : `0644` cod
 ## Idiomes courants
 
 ```c
-// Parite : le bit de poids faible vaut 1 pour un nombre impair
+// Parité : le bit de poids faible vaut 1 pour un nombre impair
 if (n & 1) { /* n est impair */ }
 
-// Puissance de 2 : une seule fois le bit a 1, donc n & (n-1) == 0
+// Puissance de 2 : une seule fois le bit à 1, donc n & (n-1) == 0
 int est_puissance_de_2(unsigned int n) {
     return n != 0 && (n & (n - 1)) == 0;
 }
 
-// Compter les bits a 1 (algorithme de Kernighan)
+// Compter les bits à 1 (algorithme de Kernighan)
 int compter_bits(unsigned int n) {
     int total = 0;
     while (n) {
-        n &= n - 1;      // efface le bit a 1 le plus a droite
+        n &= n - 1;      // efface le bit à 1 le plus à droite
         total++;
     }
     return total;

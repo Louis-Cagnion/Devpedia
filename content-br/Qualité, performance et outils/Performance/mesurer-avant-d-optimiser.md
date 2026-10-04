@@ -192,7 +192,7 @@ cg_annotate cachegrind.out.<número>                    # relatório por funçã
 | Fontes modificadas depois do perfil | O `cg_annotate` relê as fontes atuais: ele avisa (`Annotations may not be correct`), mas mostra mesmo assim as contagens, deslocadas de tantas linhas quantas foram adicionadas ou removidas | Refazer o perfil após qualquer modificação |
 | Cache simulado para um único programa, sem a pré-busca do processador | O compartilhamento do cache L3 entre programas simultâneos não aparece; o processador real adivinha e carrega antecipadamente as leituras feitas em ordem, o que a simulação ignora: as falhas de `soma_linhas` custam ali bem menos do que o número delas faz pensar | Tratar as contagens como uma ordem de grandeza, confirmada por uma medição real |
 
-Vivido no solucionador SAT: o `cachegrind` mostrou que 61% das falhas de cache na escrita vinham de uma única tabela (o nível e a razão de cada variável, reescritos a cada atribuição), uma pista que nenhum perfil por função dava.
+Vivido no solucionador SAT: o `cachegrind` mostrou que 61% das falhas de cache na escrita vinham de uma única tabela (o nível e a razão de cada variável, reescritos a cada atribuição), uma pista que nenhum perfil por função dava. Mesmo assim, pré-carregar essa tabela com antecedência não ganhou nada (+0,4 % e +1,0 % em duas medições): o processador já absorve essas escritas falhas no seu buffer de escrita, e uma falha de cache só custa se fizer o processador esperar.
 
 ## Cronometrar uma parte de um laço: o contador de ciclos
 
@@ -300,7 +300,7 @@ echo "$ok/$total idênticos"
 
 [`cmp`](https://man7.org/linux/man-pages/man1/cmp.1.html) compara dois arquivos byte a byte; `-s` o deixa silencioso, só o [código de saída](/?c=langages&s=bash&p=scripts-et-shebang#codigos-de-saida-exit) conta. `$((...))` faz um [cálculo](/?c=langages&s=bash&p=variables#aritmetica) em Bash.
 
-Vivido no solucionador SAT: cada otimização de velocidade passa primeiro por 49 verificações desse tipo (8 ajustes, grades de 8 a 40 células de lado), e a medição do tempo só começa com 49 de 49.
+Vivido no solucionador SAT: cada otimização de velocidade passa primeiro por 49 verificações desse tipo (8 ajustes em um único processo em grades de 8 a 40 células de lado, mais o modo paralelo e um autoteste), e a medição do tempo só começa com 49 de 49.
 
 ## Medir em rodadas alternadas
 

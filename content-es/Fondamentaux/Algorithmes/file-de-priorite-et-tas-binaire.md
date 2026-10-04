@@ -1,5 +1,5 @@
 ---
-order: 10
+order: 4
 ---
 
 # La cola de prioridad y el montículo binario
@@ -37,10 +37,18 @@ Cada subida o bajada recorre como mucho la altura del árbol, es decir, log₂(n
 Algunos algoritmos aumentan la prioridad de un elemento **que ya está en el montículo**: por ejemplo la heurística VSIDS de los [solucionadores SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl), que aumenta la actividad de una variable en cada conflicto. Hay que saber entonces **dónde** está ese elemento en el array, sin buscarlo casilla por casilla. Un **montículo indexado** mantiene una tabla `pos[x]`: la casilla donde está el elemento x, actualizada en cada movimiento.
 
 ```c
+#define N 1000                               // número máximo de elementos
+
 double prioridad[N];                         // prioridad[x]: prioridad del elemento x
 int    monticulo[N];                         // los elementos, guardados en montículo
 int    pos[N];                               // pos[x]: casilla de x en monticulo, o -1
 int    tamano = 0;
+
+void inicializar(void)                       // al principio, ningún elemento en el montículo
+{
+    for (int x = 0; x < N; x++)
+        pos[x] = -1;
+}
 
 static void colocar(int i, int x) { monticulo[i] = x; pos[x] = i; }
 

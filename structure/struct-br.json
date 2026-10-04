@@ -72,6 +72,10 @@
               "label": "Pilha e fila: LIFO e FIFO"
             },
             {
+              "id": "file-de-priorite-et-tas-binaire",
+              "label": "A fila de prioridade e o heap binário"
+            },
+            {
               "id": "algorithme-glouton",
               "label": "O algoritmo guloso (Greedy algorithm)"
             },
@@ -94,10 +98,6 @@
             {
               "id": "encodages-sat",
               "label": "Codificar um problema em SAT"
-            },
-            {
-              "id": "file-de-priorite-et-tas-binaire",
-              "label": "A fila de prioridade e o heap binário"
             },
             {
               "id": "problemes-np-complets",

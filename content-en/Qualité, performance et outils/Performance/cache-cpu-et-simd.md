@@ -113,7 +113,7 @@ On Linux, **transparent huge pages** (THP) are configured in `/sys/kernel/mm/tra
 | Mode | Behavior |
 |---|---|
 | `always` | Huge pages wherever possible |
-| `madvise` | Only for the areas the program requests with [`madvise(https://man7.org/linux/man-pages/man2/madvise.2.html_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (the mode of the machine used here, on Ubuntu) |
+| `madvise` | Only for the areas the program requests with [`madvise(MADV_HUGEPAGE)`](https://man7.org/linux/man-pages/man2/madvise.2.html) (the mode of the machine used here, on Ubuntu) |
 | `never` | Never |
 
 Example in C (see [memory in C](/?c=langages&s=c&p=memoire) for allocation and `memset`), which counts the memory actually served in huge pages:
@@ -162,7 +162,7 @@ without madvise: 0 kB in huge pages
 with madvise: 65536 kB in huge pages
 ```
 
-Without touching the code, Linux's standard C library (glibc 2.35 and later) can make the same request for every `malloc` allocation: `https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html_TUNABLES=glibc.malloc.hugetlb=1 ./program` ([glibc 2.35 announcement](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Measured on a SAT solver that reads at random across several hundred MB: −5% of time as a single process, for the same computation, and about −2%, within the noise, with 4 copies running in parallel. The gain depends on how scattered the accesses are: a program that walks its memory in order already benefits from the cache and gains little.
+Without touching the code, Linux's standard C library (glibc 2.35 and later) can make the same request for every `malloc` allocation: `GLIBC_TUNABLES=glibc.malloc.hugetlb=1 ./program` ([glibc 2.35 announcement](https://lists.gnu.org/archive/html/info-gnu/2022-02/msg00002.html)). Measured on a SAT solver that reads at random across several hundred MB: −5% of time as a single process, for the same computation, and about −2%, within the noise, with 4 copies running in parallel. The gain depends on how scattered the accesses are: a program that walks its memory in order already benefits from the cache and gains little.
 
 ---
 

@@ -155,7 +155,7 @@ gcc -O2 -flto main.o square.o -o prog   # ... and when linking
 
 > **Pitfall:** an ordinary function (without `static`) defined in a header included by two `.c` files causes the `multiple definition of 'square'` error at linking: each unit contains a public copy. And `inline` alone, without `static`, follows subtle rules in C (you also need a non-`inline` definition in exactly one `.c`): `static inline` is the safe form.
 
-**What it changes in practice.** The [SAT solver](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) of the project these measurements come from went from a single 1,424-line file to 7 `.c` files. The functions called at every computation step (hundreds of millions of times per grid) all stayed in the same unit, or became `static inline` in the headers. Result: no slowdown (even 2.7% faster), and `-flto` brought nothing more (+0.9%). Splitting a program therefore costs nothing, provided what calls itself very often stays together: [measure](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser) before and after the split.
+**What it changes in practice.** The [SAT solver](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) of the project these measurements come from went from a single 1,424-line file to 7 `.c` files. The functions called at every computation step (hundreds of millions of times per grid) all stayed in the same unit, or became `static inline` in the headers. Result: no slowdown (even 2.7% faster), and `-flto` brought nothing more (+0.9% compared with the single file, and even 3.8% slower than the split alone). Splitting a program therefore costs nothing, provided what calls itself very often stays together: [measure](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser) before and after the split.
 
 ## Profile-Guided Optimization (PGO)
 
@@ -218,10 +218,10 @@ With a 40-character argument (the buffer only holds 8):
 
 | Compilation | Output | Exit code |
 |---|---|---|
-| `gcc -O2` (Ubuntu and Debian default: `-fstack-protector-strong`) | `copied: AAAAAAAA` then `*** stack smashing detected ***: terminated` | 134: deliberate stop ([signal](/?c=langages&s=c&p=signaux-unix#common-signals) `SIGABRT`, 128 + 6) |
+| `gcc -O2` (default of Ubuntu's GCC: `-fstack-protector-strong`) | `copied: AAAAAAAA` then `*** stack smashing detected ***: terminated` | 134: deliberate stop ([signal](/?c=langages&s=c&p=signaux-unix#common-signals) `SIGABRT`, 128 + 6) |
 | `gcc -O2 -fno-stack-protector` | `copied: AAAAAAAA` then a crash | 139: segmentation fault (`SIGSEGV`, 128 + 11), later and less clearly |
 
-The cost: three instructions in every function that has a local array (`objdump -d` shows the read of the secret value, `mov %fs:0x28`, its comparison on return, and the call to `__stack_chk_fail`). On the SAT solver, `-fno-stack-protector` gained about 1%.
+The cost: a few instructions in every function that has a local array (`objdump -d` shows the read of the secret value, `mov %fs:0x28`, its comparison on return, and the call to `__stack_chk_fail`). On the SAT solver, `-fno-stack-protector` gained about 1%.
 
 > **Pitfall:** with `strcpy()` instead of the loop, the message becomes `*** buffer overflow detected ***`, even with `-fno-stack-protector`. That is **another** Ubuntu protection, [`_FORTIFY_SOURCE`](https://man7.org/linux/man-pages/man7/feature_test_macros.7.html), which at `-O2` replaces the well-known copy functions with checked versions. Removing the canary therefore does not remove every protection, and a hand-written copy is covered by the canary alone.
 

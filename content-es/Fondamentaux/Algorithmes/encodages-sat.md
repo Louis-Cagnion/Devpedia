@@ -1,5 +1,5 @@
 ---
-order: 9
+order: 10
 ---
 
 # Codificar un problema en SAT
@@ -26,7 +26,7 @@ Por qué es útil aquí: la visibilidad es una cuestión de **comparaciones** (�
 | Codificación de la visibilidad | Cuadrícula de 16 × 16 |
 |---|---|
 | Directa | 0,42 s |
-| Por orden, compartida por las 4 direcciones | 0,03 s (13 veces más rápida) |
+| Por orden, compartida por las 4 direcciones | 0,03 s (unas 14 veces más rápida) |
 
 ## «Al menos uno» y «como máximo uno»
 
@@ -51,7 +51,7 @@ Más compacto no significa más rápido: en el solucionador Skyscraper, la codif
 
 ## Contar: el contador secuencial
 
-«Exactamente k edificios visibles» es una **restricción de cardinalidad**: exactamente k variables verdaderas entre n. El **contador secuencial** (Sinz, 2005) añade variables auxiliares `s[i][j]` = «entre las i primeras variables, al menos j son verdaderas», como un contador que se hace avanzar casilla tras casilla:
+«Exactamente k edificios visibles» es una **restricción de cardinalidad**: exactamente k variables verdaderas entre n. El **contador secuencial** ([Sinz, 2005](https://doi.org/10.1007/11564751_73)) añade variables auxiliares `s[i][j]` = «entre las i primeras variables, al menos j son verdaderas», como un contador que se hace avanzar casilla tras casilla:
 
 ```python
 def como_maximo_k_contador(xs, k, siguiente_var):
@@ -75,7 +75,7 @@ def como_maximo_k_contador(xs, k, siguiente_var):
     return clauses, siguiente_var + n * k
 ```
 
-Comprobado por fuerza bruta con 5 variables y k = 2: las 21 cláusulas producidas (con 10 variables auxiliares) aceptan exactamente las combinaciones en las que como máximo 2 variables son verdaderas. Para «exactamente k», se añade el otro sentido («al menos k»). Una alternativa conocida es el **totalizer** (Bailleux y Boufkhad, 2003), que cuenta mediante un árbol de pequeños contadores en lugar de una cadena.
+Comprobado por fuerza bruta con 5 variables y k = 2: las 21 cláusulas producidas (con 10 variables auxiliares) aceptan exactamente las combinaciones en las que como máximo 2 variables son verdaderas. Para «exactamente k», se añade el otro sentido («al menos k»). Una alternativa conocida es el **totalizer** ([Bailleux y Boufkhad, 2003](https://doi.org/10.1007/978-3-540-45193-8_8)), que cuenta mediante un árbol de pequeños contadores en lugar de una cadena.
 
 ## Añadir cláusulas redundantes
 
@@ -136,7 +136,7 @@ Esto complica un punto concreto: cuando el solucionador deduce que una variable 
 
 ## Propagadores y generación perezosa de cláusulas
 
-Un **propagador** es código dedicado a una restricción global (por ejemplo «todas estas variables toman valores distintos»): en lugar de traducir la restricción en cláusulas de antemano, el solucionador ejecuta directamente el algoritmo que sabe deducir sus consecuencias. El propagador solo produce una **cláusula de explicación** (por qué se forzó tal variable) cuando el [análisis del conflicto](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) la necesita: la traducción a cláusulas se hace entonces bajo demanda en lugar de toda de una vez al principio, de ahí el nombre de **[generación perezosa de cláusulas](https://doi.org/10.1007/s10601-008-9064-x)** (*Lazy Clause Generation*, Ohrimenko, Stuckey y Codish, 2009). Las cláusulas implícitas de la sección anterior son una forma simple de esto, escrita a mano para una sola restricción; la generación perezosa de cláusulas generaliza la idea a cualquier restricción global mediante un propagador. Es el principio de los solucionadores híbridos que combinan SAT y programación por restricciones, como [Chuffed](https://github.com/chuffed/chuffed) o el solucionador CP-SAT de [OR-Tools](https://github.com/google/or-tools).
+Un **propagador** es código dedicado a una restricción global (por ejemplo «todas estas variables toman valores distintos»): en lugar de traducir la restricción en cláusulas de antemano, el solucionador ejecuta directamente el algoritmo que sabe deducir sus consecuencias. El propagador solo produce una **cláusula de explicación** (por qué se forzó tal variable) cuando el [análisis del conflicto](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) la necesita: la traducción a cláusulas se hace entonces bajo demanda en lugar de toda de una vez al principio, de ahí el nombre de **[generación perezosa de cláusulas](https://doi.org/10.1007/s10601-008-9064-x)** (*Lazy Clause Generation*, Ohrimenko, Stuckey y Codish, 2009). Las cláusulas implícitas de la sección anterior son una forma simple de esto, escrita a mano para una sola restricción; la generación perezosa de cláusulas generaliza la idea a cualquier restricción global mediante un propagador. Es el principio de los solucionadores híbridos que combinan SAT y [programación por restricciones](/?c=fondamentaux&s=algorithmes&p=backtracking-et-satisfaction-de-contraintes), como [Chuffed](https://github.com/chuffed/chuffed) o el solucionador CP-SAT de [OR-Tools](https://github.com/google/or-tools).
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-order: 8
+order: 9
 ---
 
 # Os solucionadores SAT e o algoritmo CDCL
@@ -73,7 +73,7 @@ Um backtracking simples voltaria ao nível anterior e tentaria `a = falso`. O **
 
 Para-se assim que resta **um único** literal do nível do conflito: é o **primeiro ponto de implicação único** (*1UIP*). A cláusula obtida, `(¬a)`, é **aprendida**: adicionada à fórmula, ela diz "`a` nunca pode ser verdadeiro".
 
-O solucionador volta então ao nível mais alto que resta na cláusula aprendida, aqui o nível 0: ele desfaz também a decisão `x = verdadeiro`, que não tinha nada a ver com o conflito. É o **retrocesso não cronológico** (*backjumping*). Em seguida, `(¬a)` força imediatamente `a = falso`.
+O solucionador volta então ao nível mais alto entre os outros literais da cláusula aprendida (o seu segundo nível mais alto, ou 0 se ela tem um único literal), aqui o nível 0: ele desfaz também a decisão `x = verdadeiro`, que não tinha nada a ver com o conflito. É o **retrocesso não cronológico** (*backjumping*). Em seguida, `(¬a)` força imediatamente `a = falso`.
 
 | | Backtracking | CDCL |
 |---|---|---|
@@ -81,7 +81,7 @@ O solucionador volta então ao nível mais alto que resta na cláusula aprendida
 | Memória dos fracassos | Nenhuma: o mesmo beco sem saída pode ser revisitado em outro lugar | Cada cláusula aprendida poda todos os ramos onde a mesma causa se repetiria |
 | Retrocesso | Um nível de cada vez | Direto para o nível certo, pulando as decisões sem relação |
 
-Os solucionadores reais depois **minimizam** a cláusula aprendida, retirando os literais já implicados pelos outros (técnica introduzida pelo MiniSat).
+Os solucionadores reais depois **minimizam** a cláusula aprendida, retirando os literais já implicados pelos outros (técnica introduzida pelo [MiniSat](http://minisat.se/)).
 
 ## Dois literais vigiados: propagar sem reler tudo
 
@@ -101,8 +101,8 @@ Enquanto nenhum dos dois literais vigiados for falso, a cláusula não pode for�
 | Mecanismo | Princípio | Por quê |
 |---|---|---|
 | **VSIDS** (*Variable State Independent Decaying Sum*) | Cada variável tem uma **atividade**, aumentada quando participa de um conflito e que depois "se desgasta" com o tempo. Decide-se sempre pela mais ativa. | Concentra a busca na parte difícil do problema, a que está produzindo conflitos agora. |
-| Decaimento pelo incremento | Em vez de diminuir todas as atividades a cada conflito, **aumenta-se** o valor somado às seguintes (×1,05 por conflito), e tudo é reescalado antes de ultrapassar a capacidade de um número de ponto flutuante. | Mesmo efeito, com custo constante por conflito. |
-| Heap binário | Estrutura que dá a variável mais ativa em tempo logarítmico. | Evita percorrer todas as variáveis a cada decisão. |
+| Decaimento pelo incremento | Em vez de diminuir todas as atividades a cada conflito, **aumenta-se** o valor somado às seguintes (×1,05 por conflito), e tudo é reescalado antes de ultrapassar a capacidade de um [número de ponto flutuante](/?c=donnees&s=representation-des-donnees&p=nombres-flottants). | Mesmo efeito, com custo constante por conflito. |
+| [Heap binário](/?c=fondamentaux&s=algorithmes&p=file-de-priorite-et-tas-binaire) | Estrutura que dá a variável mais ativa em tempo logarítmico. | Evita percorrer todas as variáveis a cada decisão. |
 | **Salvamento de fase** (*phase saving*) | Uma variável retoma o último valor que tinha antes de ser desfeita. | Depois de um retrocesso, o solucionador reconstrói rápido as partes que já eram coerentes. |
 
 ## Reiniciar e esquecer: Luby e LBD
@@ -115,7 +115,7 @@ Um **reinício** desfaz todas as decisões e recomeça do nível 0, **mantendo**
 | Glucose | Quando a qualidade recente das cláusulas aprendidas piora | 2 vezes mais lenta |
 | Nenhum reinício | Nunca | Todas as grades 56 × 56 testadas passam de 90 s |
 
-As cláusulas aprendidas se acumulam: metade delas é apagada regularmente, mantendo as melhores segundo o seu **LBD** (*Literal Block Distance*): o número de níveis diferentes entre os seus literais. Uma cláusula de LBD 2 liga apenas duas decisões: ela vai ser útil com frequência.
+As cláusulas aprendidas se acumulam: metade delas é apagada regularmente, mantendo as melhores segundo o seu **LBD** (*Literal Block Distance*): o número de níveis diferentes entre os seus literais. Uma cláusula de LBD 2 envolve apenas dois níveis de decisão: ela vai ser útil com frequência.
 
 ## Heurísticas avançadas: medir antes de adotar
 
@@ -148,7 +148,7 @@ frente                                  fim
 | Atualização depois de um conflito | Aumentar atividades, reordenar o heap | Mover para a frente: tempo constante |
 | Medido (grade 48 × 48, um único processo) | 1,47 s | 1,31 s |
 
-O VMTF é o modo "focado" dos solucionadores [kissat](https://github.com/arminbiere/kissat) e CaDiCaL. Em um portfólio de processos, são quase sempre as cópias VMTF que vencem (veja a seção sobre as caudas pesadas, mais abaixo).
+O VMTF é o modo "focado" dos solucionadores [kissat](https://github.com/arminbiere/kissat) e [CaDiCaL](https://github.com/arminbiere/cadical). Em um portfólio de processos (várias cópias do solucionador rodando em paralelo sobre o mesmo problema; vence a primeira que termina), são quase sempre as cópias VMTF que vencem (veja a seção sobre as caudas pesadas, mais abaixo).
 
 ### O que atrapalhou aqui
 
@@ -169,15 +169,15 @@ Uma atribuição do nível 0 nunca é desfeita: uma cláusula que contém um lit
 | `(¬a ∨ c)` | A propagação força `c` no nível 0: satisfeita também | Removida |
 | `(b ∨ d)` | Nem `b` nem `d` foi fixado ainda | Mantida |
 
-Medido junto com outros dois ajustes do mesmo tipo: alguns por cento de tempo ganhos, com contadores de trabalho idênticos.
+Medido junto com outros dois ajustes do mesmo tipo: alguns por cento de tempo ganhos, com [contadores de trabalho](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparar-em-contadores-de-trabalho-nao-so-no-tempo) idênticos.
 
 ## As caudas pesadas: algumas instâncias catastróficas
 
-Entre grades do mesmo tamanho, a maioria é resolvida rápido, mas algumas levam 100 vezes mais tempo: o tempo de resolução segue uma distribuição de **cauda pesada** (*heavy-tailed*). Medido no solucionador Skyscraper com grades 72 × 72, em 100 grades:
+Entre grades do mesmo tamanho, a maioria é resolvida rápido, mas algumas levam mais de 6 vezes o tempo mediano, ou não terminam: o tempo de resolução segue uma distribuição de **cauda pesada** (*heavy-tailed*). Medido no solucionador Skyscraper com grades 72 × 72, em 100 grades:
 
 | Versão | Tempo mediano | Grades acima de 90 s |
 |---|---|---|
-| Um único solucionador | 13,4 s | 7 |
+| Um único solucionador (3 execuções simultâneas na máquina) | 13,4 s | 7 |
 | 4 cópias do solucionador iniciadas em paralelo, cada uma com uma parte de acaso diferente; a primeira que encontra vence | 9,3 s | 0 |
 
 Os reinícios e o acaso controlado servem justamente para sair dessas trajetórias ruins.
@@ -188,7 +188,7 @@ Uma decisão aleatória consiste em escolher uma variável ao acaso em vez da ma
 
 | Configuração | Grades acima de 90 s |
 |---|---|
-| Sem randomização | 4 |
+| Sem randomização (versão de referência, sozinha na máquina) | 4 |
 | Com 3 % de decisões aleatórias | 8, mas não as mesmas 4 grades |
 
 As 4 grades que travavam sem randomização passam a ser resolvidas com ela, mas outras 8 travam por sua vez: uma mesma grade passa ou trava conforme o sorteio. A cauda pesada depende da trajetória percorrida, não da dificuldade intrínseca da instância; acrescentar acaso a desloca, não a reduz.
@@ -210,7 +210,7 @@ Duas formas de diversificar quebram o que o solucionador aprendeu: acrescentar r
 
 ### Portfólio de trajetórias independentes: a lei de p^k
 
-Outro remédio: rodar várias trajetórias em paralelo com sementes diferentes e ficar com o resultado do primeiro processo que termina (portfólio de processos, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), medido originalmente na conclusão de quadrados latinos). Se cada execução trava de forma independente com probabilidade *p*, *k* execuções travam todas juntas com probabilidade *p^k*: o risco cai muito rápido com o número de processos. Com p = 7/100 (medido aqui):
+Outro remédio: rodar várias trajetórias em paralelo com sementes diferentes (o número que inicializa o acaso de cada processo) e ficar com o resultado do primeiro processo que termina (portfólio de processos, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), medido originalmente na conclusão de quadrados latinos). Se cada execução trava de forma independente com probabilidade *p*, *k* execuções travam todas juntas com probabilidade *p^k*: o risco cai muito rápido com o número de processos. Com p = 7/100 (medido aqui):
 
 ```python
 # p: probabilidade de UMA execução ultrapassar 90 s (medido: 7 em 100 grades)
@@ -238,9 +238,9 @@ Diversificar também as heurísticas de decisão, não só as sementes aleatóri
 | 4 × VSIDS | 67 s |
 | 1 × VSIDS + 3 × VMTF (veja acima) | 32 s |
 
-Os processos VMTF ganham de forma muito regular, entre 25.000 e 30.000 conflitos. Graças a esse portfólio heterogêneo, a fronteira de um minuto passa da grade 72 × 72 (com ainda 4 % de travamentos) para cerca de 100 × 100.
+Os processos VMTF ganham de forma muito regular, entre 25.000 e 30.000 conflitos. O portfólio de 4 cópias VSIDS já situava a fronteira de um minuto entre as grades 88 × 88 e 96 × 96; o portfólio heterogêneo a leva a 100 × 100 (45,3 s de média em 100 grades, só uma além de 90 s).
 
-Além de 4 a 6 processos, os ganhos desaceleram e depois se invertem: a largura de banda de memória compartilhada entre processos acaba custando mais do que a diversidade traz (8 processos mais lentos que 6). Compartilhar cláusulas aprendidas entre processos (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) só ajuda se as cláusulas aprendidas forem curtas: aqui, uma resolução completa aprende apenas de 2 a 7 cláusulas unitárias e de 11 a 34 cláusulas binárias (grade 56 × 56); as demais cláusulas aprendidas são longas, sem interesse em compartilhá-las.
+Além de 4 a 6 processos, os ganhos desaceleram e depois se invertem: a largura de banda de memória (a vazão de dados entre a memória e o processador) compartilhada entre processos acaba custando mais do que a diversidade traz (8 processos mais lentos que 6). Compartilhar cláusulas aprendidas entre processos (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) só ajuda se as cláusulas aprendidas forem curtas: aqui, uma resolução completa aprende apenas de 2 a 7 cláusulas unitárias e de 11 a 34 cláusulas binárias (grade 56 × 56); as demais cláusulas aprendidas são longas, sem interesse em compartilhá-las.
 
 ## Os solucionadores de referência
 
@@ -250,7 +250,7 @@ Além de 4 a 6 processos, os ganhos desaceleram e depois se invertem: a largura 
 | Glucose (Audemard e Simon, 2009) | Medida LBD e os reinícios associados | [github.com/audemard/glucose](https://github.com/audemard/glucose) |
 | kissat (Armin Biere) | Entre os melhores das competições SAT atuais | [github.com/arminbiere/kissat](https://github.com/arminbiere/kissat) |
 
-Medido na codificação do quebra-cabeça (grade 48 × 48, 8 milhões de cláusulas): a configuração padrão do kissat estoura o orçamento, porque as suas simplificações prévias custam mais do que rendem nesse problema volumoso mas fácil; com a opção `--plain`, que as desativa, ele resolve em 2,2 s.
+Medido na codificação do quebra-cabeça (grade 48 × 48, 8 milhões de cláusulas): a configuração padrão do kissat estoura o orçamento de 90 s, porque as suas simplificações prévias custam mais do que rendem nesse problema volumoso mas fácil; com a opção `--plain`, que as desativa, ele resolve em 2,2 s.
 
 Fontes: Marques-Silva e Sakallah, *GRASP* (1996); Moskewicz et al., *Chaff* (2001); Eén e Sörensson, *An Extensible SAT-solver* (MiniSat, 2003); Audemard e Simon, *Predicting Learnt Clauses Quality in Modern SAT Solvers* (Glucose, 2009); *Handbook of Satisfiability*, 2ª edição (2021).
 

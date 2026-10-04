@@ -61,11 +61,11 @@ Une **chaîne de Markov** est une suite d'états où l'état suivant est tiré a
 
 En laissant tourner la chaîne longtemps, la fréquence de chaque état se stabilise (ici, 2 jours de soleil sur 3), quel que soit le point de départ : c'est la **distribution stationnaire**.
 
-L'idée du **MCMC** (*Markov Chain Monte Carlo*) : pour tirer au hasard un objet difficile à construire directement, on invente une marche aléatoire entre ces objets dont la distribution stationnaire est **uniforme**. Après assez de pas, l'état courant est un tirage (presque) uniforme.
+L'idée du **MCMC** (*[Markov Chain Monte Carlo](https://fr.wikipedia.org/wiki/M%C3%A9thode_de_Monte-Carlo_par_cha%C3%AEnes_de_Markov)*) : pour tirer au hasard un objet difficile à construire directement, on invente une marche aléatoire entre ces objets dont la distribution stationnaire est **uniforme**. Après assez de pas, l'état courant est un tirage (presque) uniforme.
 
 ## La chaîne de Jacobson-Matthews
 
-Jacobson et Matthews (1996) ont construit une telle chaîne pour les carrés latins. Un carré est vu comme un **cube** de n × n × n cases `m[ligne][colonne][symbole]`, qui vaut 1 si la case (ligne, colonne) contient ce symbole, 0 sinon.
+[Jacobson et Matthews (1996)](https://doi.org/10.1002/%28SICI%291520-6610%281996%294%3A6%3C405%3A%3AAID-JCD3%3E3.0.CO%3B2-J) ont construit une telle chaîne pour les carrés latins. Un carré est vu comme un **cube** de n × n × n cases `m[ligne][colonne][symbole]`, qui vaut 1 si la case (ligne, colonne) contient ce symbole, 0 sinon.
 
 | Étape | Ce qui se passe |
 |---|---|
@@ -99,7 +99,7 @@ Mesuré sur 5 760 tirages de carrés 4 × 4 (chaque carré devrait sortir enviro
 | Continuer jusqu'au premier carré propre (64, 256 ou 1 024 pas) | 8 % | 24 fois |
 | Relancer un bloc complet si le carré est impropre (64 pas) | 25,5 % | 21 fois |
 
-Le biais ne diminue pas quand on augmente le nombre de pas : il vient de **l'endroit** où l'on lit le résultat, pas d'un manque de mélange. La bonne vérification consiste à comparer les fréquences obtenues aux fréquences attendues sur une petite taille où tout est dénombrable.
+Le biais ne diminue pas quand on augmente le nombre de pas : il vient de **l'endroit** où l'on lit le résultat, pas d'un manque de mélange. La bonne vérification consiste à comparer les fréquences obtenues aux fréquences attendues sur une petite taille où tout est dénombrable. La relance a un coût : la chaîne ne tombe sur un carré propre qu'environ une fois sur n + 1, si bien qu'un tirage 104 × 104 demandait 80 minutes en Python, contre environ 17 secondes une fois réécrit en C.
 
 ---
 

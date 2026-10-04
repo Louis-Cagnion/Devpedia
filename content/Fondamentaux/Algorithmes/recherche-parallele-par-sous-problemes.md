@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 8
 ---
 
 # Paralléliser une recherche : découper en sous-problèmes indépendants (EPS)
@@ -41,9 +41,9 @@ Exemple chiffré, 4 workers :
  1. Découper                 2. Distribuer                 3. Résoudre
  (un seul worker)            (file partagée)               (chacun de son côté)
 
- racine                      [sp1][sp2][sp3]...[sp240]     worker 1 : sp1, sp5, sp9...
-   -> développer l'arbre  ->        |    |    |       ->   worker 2 : sp2, sp6...
-      jusqu'à 240 sous-             v    v    v            worker 3 : sp3, sp7...
+ racine                      [sp1][sp2][sp3]...[sp240]     worker 1 : sp1, puis le suivant
+   -> développer l'arbre  ->        |    |    |       ->   worker 2 : sp2, puis le suivant
+      jusqu'à 240 sous-             v    v    v            worker 3 : sp3, puis le suivant
       problèmes                  prendre le suivant        (backtracking ordinaire)
 ```
 
@@ -69,6 +69,9 @@ Pour atteindre la cible en peu d'étapes, on découpe à chaque fois le sous-pro
 Chaque sous-problème doit posséder **sa propre copie** de toutes ses données : une *copie profonde*. Une copie qui garderait un pointeur vers les données d'un autre sous-problème (une *copie superficielle*) ferait retomber deux workers sur la même mémoire.
 
 ```c
+#include <stdlib.h>
+#include <string.h>
+
 typedef struct {
     int  n;          // nombre de variables
     int *valeurs;    // valeurs[i] = valeur choisie pour la variable i, ou -1
@@ -77,8 +80,14 @@ typedef struct {
 t_etat *copier_etat(const t_etat *src)
 {
     t_etat *copie = malloc(sizeof(t_etat));              // nouvelle structure
+    if (!copie)
+        return NULL;                                     // plus de mémoire : rien n'est copié
     copie->n = src->n;                                   // un entier se copie tel quel
     copie->valeurs = malloc(src->n * sizeof(int));       // NOUVEAU tableau, pas celui de src
+    if (!copie->valeurs) {
+        free(copie);                                     // ne rien laisser derrière soi
+        return NULL;
+    }
     memcpy(copie->valeurs, src->valeurs, src->n * sizeof(int)); // on recopie son contenu
     return copie;                                        // aucun pointeur partagé avec src
 }
@@ -88,7 +97,7 @@ t_etat *copier_etat(const t_etat *src)
 
 ## Quand l'EPS ne fait rien gagner : un cas mesuré
 
-L'EPS a été essayé sur un solveur de puzzle *Skyscraper* (backtracking avec MRV et propagation, en C, 8 threads), puis retiré :
+L'EPS a été essayé sur un solveur de puzzle *Skyscraper* (backtracking avec MRV et propagation, en C, 8 threads, sous-problèmes répartis à l'avance entre les threads plutôt que pris dans une file), puis retiré :
 
 | Grille | Séquentiel | EPS (240 sous-problèmes) |
 |---|---|---|

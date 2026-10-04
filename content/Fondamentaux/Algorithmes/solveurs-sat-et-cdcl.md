@@ -1,5 +1,5 @@
 ---
-order: 8
+order: 9
 ---
 
 # Les solveurs SAT et l'algorithme CDCL
@@ -73,7 +73,7 @@ Un simple backtracking reviendrait au niveau précédent et essaierait `a = faux
 
 On s'arrête dès qu'il ne reste qu'**un seul** littéral du niveau du conflit : c'est le **premier point d'implication unique** (*1UIP*). La clause obtenue, `(¬a)`, est **apprise** : ajoutée à la formule, elle dit « `a` ne peut jamais être vrai ».
 
-Le solveur revient alors au plus haut niveau qui reste dans la clause apprise, ici le niveau 0 : il annule aussi la décision `x = vrai`, qui n'avait rien à voir avec le conflit. C'est le **retour arrière non chronologique** (*backjumping*). Puis `(¬a)` force immédiatement `a = faux`.
+Le solveur revient alors au plus haut niveau parmi les autres littéraux de la clause apprise (son deuxième plus haut niveau, ou 0 si elle n'a qu'un littéral), ici le niveau 0 : il annule aussi la décision `x = vrai`, qui n'avait rien à voir avec le conflit. C'est le **retour arrière non chronologique** (*backjumping*). Puis `(¬a)` force immédiatement `a = faux`.
 
 | | Backtracking | CDCL |
 |---|---|---|
@@ -81,7 +81,7 @@ Le solveur revient alors au plus haut niveau qui reste dans la clause apprise, i
 | Mémoire des échecs | Aucune : la même impasse peut être revisitée ailleurs | Chaque clause apprise élague toutes les branches où la même cause se reproduirait |
 | Retour arrière | Un niveau à la fois | Directement au bon niveau, en sautant les décisions sans rapport |
 
-Les solveurs réels **minimisent** ensuite la clause apprise, en retirant les littéraux déjà impliqués par les autres (technique introduite par MiniSat).
+Les solveurs réels **minimisent** ensuite la clause apprise, en retirant les littéraux déjà impliqués par les autres (technique introduite par [MiniSat](http://minisat.se/)).
 
 ## Deux littéraux surveillés : propager sans tout relire
 
@@ -101,8 +101,8 @@ Tant qu'aucun des deux littéraux surveillés n'est faux, la clause ne peut ni f
 | Mécanisme | Principe | Pourquoi |
 |---|---|---|
 | **VSIDS** (*Variable State Independent Decaying Sum*) | Chaque variable a une **activité**, augmentée quand elle participe à un conflit, puis qui « s'use » avec le temps. On décide toujours sur la plus active. | Concentre la recherche sur la partie difficile du problème, celle qui produit des conflits en ce moment. |
-| Décroissance par l'incrément | Au lieu de diminuer toutes les activités à chaque conflit, on **augmente** la valeur ajoutée aux suivants (×1,05 par conflit), et on remet tout à l'échelle avant de dépasser la capacité d'un nombre flottant. | Même effet, pour un coût constant par conflit. |
-| Tas binaire | Structure qui donne la variable la plus active en temps logarithmique. | Évite de parcourir toutes les variables à chaque décision. |
+| Décroissance par l'incrément | Au lieu de diminuer toutes les activités à chaque conflit, on **augmente** la valeur ajoutée aux suivants (×1,05 par conflit), et on remet tout à l'échelle avant de dépasser la capacité d'un [nombre flottant](/?c=donnees&s=representation-des-donnees&p=nombres-flottants). | Même effet, pour un coût constant par conflit. |
+| [Tas binaire](/?c=fondamentaux&s=algorithmes&p=file-de-priorite-et-tas-binaire) | Structure qui donne la variable la plus active en temps logarithmique. | Évite de parcourir toutes les variables à chaque décision. |
 | **Sauvegarde de phase** (*phase saving*) | Une variable reprend la dernière valeur qu'elle avait avant d'être annulée. | Après un retour arrière, le solveur reconstruit vite les parties déjà cohérentes. |
 
 ## Redémarrer et oublier : Luby et LBD
@@ -115,7 +115,7 @@ Un **redémarrage** annule toutes les décisions et repart du niveau 0, **en gar
 | Glucose | Quand la qualité récente des clauses apprises se dégrade | 2 fois plus lente |
 | Aucun redémarrage | Jamais | Toutes les grilles 56 × 56 testées dépassent 90 s |
 
-Les clauses apprises s'accumulent : on en supprime régulièrement la moitié, en gardant les meilleures selon leur **LBD** (*Literal Block Distance*) : le nombre de niveaux différents parmi leurs littéraux. Une clause de LBD 2 relie deux décisions seulement : elle resservira souvent.
+Les clauses apprises s'accumulent : on en supprime régulièrement la moitié, en gardant les meilleures selon leur **LBD** (*Literal Block Distance*) : le nombre de niveaux différents parmi leurs littéraux. Une clause de LBD 2 ne fait intervenir que deux niveaux de décision : elle resservira souvent.
 
 ## Heuristiques avancées : mesurer avant d'adopter
 
@@ -148,7 +148,7 @@ tête                                    fin
 | Mise à jour après un conflit | Augmenter des activités, réordonner le tas | Déplacer en tête : temps constant |
 | Mesuré (grille 48 × 48, un seul processus) | 1,47 s | 1,31 s |
 
-VMTF est le mode « focalisé » des solveurs [kissat](https://github.com/arminbiere/kissat) et CaDiCaL. Dans un portfolio de processus, ce sont presque toujours les copies VMTF qui gagnent (voir la section sur les queues lourdes, plus bas).
+VMTF est le mode « focalisé » des solveurs [kissat](https://github.com/arminbiere/kissat) et [CaDiCaL](https://github.com/arminbiere/cadical). Dans un portfolio de processus (plusieurs copies du solveur lancées en parallèle sur le même problème, la première qui termine l'emporte), ce sont presque toujours les copies VMTF qui gagnent (voir la section sur les queues lourdes, plus bas).
 
 ### Ce qui a nui ici
 
@@ -169,15 +169,15 @@ Une affectation du niveau 0 n'est jamais annulée : une clause qui contient un l
 | `(¬a ∨ c)` | La propagation force `c` au niveau 0 : satisfaite aussi | Supprimée |
 | `(b ∨ d)` | Ni `b` ni `d` n'est encore fixé | Gardée |
 
-Mesuré avec deux autres retouches du même type : quelques pour cent de temps gagnés, à compteurs de travail identiques.
+Mesuré avec deux autres retouches du même type : quelques pour cent de temps gagnés, à [compteurs de travail](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparer-sur-des-compteurs-de-travail-pas-seulement-sur-le-temps) identiques.
 
 ## Les queues lourdes : quelques instances catastrophiques
 
-Sur des grilles de même taille, la plupart se résolvent vite, mais quelques-unes prennent 100 fois plus de temps : leur temps de résolution suit une distribution **à queue lourde** (*heavy-tailed*). Mesuré sur le solveur Skyscraper en grille 72 × 72, sur 100 grilles :
+Sur des grilles de même taille, la plupart se résolvent vite, mais quelques-unes prennent plus de 6 fois le temps médian, voire n'aboutissent pas : leur temps de résolution suit une distribution **à queue lourde** (*heavy-tailed*). Mesuré sur le solveur Skyscraper en grille 72 × 72, sur 100 grilles :
 
 | Version | Temps médian | Grilles au-delà de 90 s |
 |---|---|---|
-| Un seul solveur | 13,4 s | 7 |
+| Un seul solveur (3 exécutions simultanées sur la machine) | 13,4 s | 7 |
 | 4 copies du solveur lancées en parallèle, chacune avec une part de hasard différente ; la première qui trouve gagne | 9,3 s | 0 |
 
 Redémarrages et hasard contrôlé servent justement à sortir de ces mauvaises trajectoires.
@@ -188,7 +188,7 @@ Une décision aléatoire consiste à tirer une variable au hasard au lieu de la 
 
 | Configuration | Grilles au-delà de 90 s |
 |---|---|
-| Sans randomisation | 4 |
+| Sans randomisation (version de référence, seule sur la machine) | 4 |
 | Avec 3 % de décisions aléatoires | 8, mais pas les 4 mêmes grilles |
 
 Les 4 grilles qui bloquaient sans randomisation se résolvent avec elle, mais 8 autres bloquent à leur tour : une même grille passe ou bloque selon le tirage aléatoire. La queue lourde tient à la trajectoire parcourue, pas à la difficulté intrinsèque de l'instance ; ajouter du hasard la déplace, il ne la réduit pas.
@@ -210,7 +210,7 @@ Deux façons de diversifier cassent ce que le solveur a appris : ajouter du brui
 
 ### Portfolio de trajectoires indépendantes : la loi de p^k
 
-Autre remède : lancer plusieurs trajectoires en parallèle avec des graines différentes et garder le résultat du premier processus qui termine (portfolio de processus, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), mesuré à l'origine sur la complétion de carrés latins). Si chaque exécution bloque indépendamment avec une probabilité *p*, *k* exécutions bloquent toutes ensemble avec une probabilité *p^k* : le risque chute très vite avec le nombre de processus. Avec p = 7/100 (mesuré ici) :
+Autre remède : lancer plusieurs trajectoires en parallèle avec des graines différentes (le nombre qui initialise le hasard de chaque processus) et garder le résultat du premier processus qui termine (portfolio de processus, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), mesuré à l'origine sur la complétion de carrés latins). Si chaque exécution bloque indépendamment avec une probabilité *p*, *k* exécutions bloquent toutes ensemble avec une probabilité *p^k* : le risque chute très vite avec le nombre de processus. Avec p = 7/100 (mesuré ici) :
 
 ```python
 # p : probabilité qu'UNE exécution dépasse 90 s (mesurée : 7 grilles sur 100)
@@ -238,9 +238,9 @@ Diversifier aussi les heuristiques de décision, pas seulement les graines aléa
 | 4 × VSIDS | 67 s |
 | 1 × VSIDS + 3 × VMTF (voir plus haut) | 32 s |
 
-Les processus VMTF gagnent de façon très régulière, entre 25 000 et 30 000 conflits. Grâce à ce portfolio hétérogène, la frontière d'une minute de calcul passe de la grille 72 × 72 (avec encore 4 % de blocages) à environ 100 × 100.
+Les processus VMTF gagnent de façon très régulière, entre 25 000 et 30 000 conflits. Le portfolio de 4 copies VSIDS plaçait déjà la frontière d'une minute de calcul entre les grilles 88 × 88 et 96 × 96 ; le portfolio hétérogène l'amène à 100 × 100 (45,3 s de moyenne sur 100 grilles, une seule au-delà de 90 s).
 
-Au-delà de 4 à 6 processus, les gains ralentissent puis s'inversent : la bande passante mémoire partagée entre processus finit par coûter plus qu'elle ne rapporte en diversité (8 processus plus lents que 6). Le partage des clauses apprises entre processus (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) n'aide que si les clauses apprises sont courtes : ici, une résolution complète n'apprend que 2 à 7 clauses unitaires et 11 à 34 clauses binaires (grille 56 × 56) ; les autres clauses apprises sont longues, sans intérêt à les partager.
+Au-delà de 4 à 6 processus, les gains ralentissent puis s'inversent : la bande passante mémoire (le débit de données entre la mémoire et le processeur) partagée entre processus finit par coûter plus qu'elle ne rapporte en diversité (8 processus plus lents que 6). Le partage des clauses apprises entre processus (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) n'aide que si les clauses apprises sont courtes : ici, une résolution complète n'apprend que 2 à 7 clauses unitaires et 11 à 34 clauses binaires (grille 56 × 56) ; les autres clauses apprises sont longues, sans intérêt à les partager.
 
 ## Les solveurs de référence
 
@@ -250,7 +250,7 @@ Au-delà de 4 à 6 processus, les gains ralentissent puis s'inversent : la bande
 | Glucose (Audemard et Simon, 2009) | Mesure LBD et redémarrages associés | [github.com/audemard/glucose](https://github.com/audemard/glucose) |
 | kissat (Armin Biere) | Parmi les meilleurs des compétitions SAT actuelles | [github.com/arminbiere/kissat](https://github.com/arminbiere/kissat) |
 
-Mesuré sur l'encodage du puzzle (grille 48 × 48, 8 millions de clauses) : la configuration par défaut de kissat dépasse le budget, parce que ses simplifications préalables coûtent plus qu'elles ne rapportent sur ce problème volumineux mais facile ; avec l'option `--plain`, qui les désactive, il résout en 2,2 s.
+Mesuré sur l'encodage du puzzle (grille 48 × 48, 8 millions de clauses) : la configuration par défaut de kissat dépasse le budget de 90 s, parce que ses simplifications préalables coûtent plus qu'elles ne rapportent sur ce problème volumineux mais facile ; avec l'option `--plain`, qui les désactive, il résout en 2,2 s.
 
 Sources : Marques-Silva et Sakallah, *GRASP* (1996) ; Moskewicz et al., *Chaff* (2001) ; Eén et Sörensson, *An Extensible SAT-solver* (MiniSat, 2003) ; Audemard et Simon, *Predicting Learnt Clauses Quality in Modern SAT Solvers* (Glucose, 2009) ; *Handbook of Satisfiability*, 2ᵉ édition (2021).
 

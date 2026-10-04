@@ -155,7 +155,7 @@ gcc -O2 -flto main.o quadrado.o -o prog     # ... e ao ligar
 
 > **Armadilha:** uma função comum (sem `static`) definida em um arquivo de cabeçalho incluído por dois `.c` provoca o erro `multiple definition of 'quadrado'` na ligação: cada unidade contém uma cópia pública. E `inline` sozinho, sem `static`, segue em C regras sutis (é preciso também uma definição não `inline` em um único `.c`): `static inline` é a forma segura.
 
-**O que isso muda na prática.** O [solucionador SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) do projeto de onde vêm estas medições passou de um único arquivo de 1 424 linhas para 7 arquivos `.c`. As funções chamadas a cada passo do cálculo (centenas de milhões de vezes por grade) ficaram todas na mesma unidade, ou viraram `static inline` nos arquivos de cabeçalho. Resultado: nenhuma lentidão (até 2,7 % mais rápido), e `-flto` não trouxe nada a mais (+0,9 %). Dividir um programa não custa nada, desde que se mantenha junto o que se chama com muita frequência: [medir](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser) antes e depois da divisão.
+**O que isso muda na prática.** O [solucionador SAT](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl) do projeto de onde vêm estas medições passou de um único arquivo de 1 424 linhas para 7 arquivos `.c`. As funções chamadas a cada passo do cálculo (centenas de milhões de vezes por grade) ficaram todas na mesma unidade, ou viraram `static inline` nos arquivos de cabeçalho. Resultado: nenhuma lentidão (até 2,7 % mais rápido), e `-flto` não trouxe nada a mais (+0,9 % em relação ao arquivo único, e até 3,8 % mais lento que a divisão sozinha). Dividir um programa não custa nada, desde que se mantenha junto o que se chama com muita frequência: [medir](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser) antes e depois da divisão.
 
 ## A otimização guiada por perfil (PGO)
 
@@ -218,10 +218,10 @@ Com um argumento de 40 caracteres (o buffer só comporta 8):
 
 | Compilação | Saída | Código de saída |
 |---|---|---|
-| `gcc -O2` (padrão do Ubuntu e do Debian: `-fstack-protector-strong`) | `copiado: AAAAAAAA` e depois `*** stack smashing detected ***: terminated` | 134: parada voluntária ([sinal](/?c=langages&s=c&p=signaux-unix#os-sinais-comuns) `SIGABRT`, 128 + 6) |
+| `gcc -O2` (padrão do GCC do Ubuntu: `-fstack-protector-strong`) | `copiado: AAAAAAAA` e depois `*** stack smashing detected ***: terminated` | 134: parada voluntária ([sinal](/?c=langages&s=c&p=signaux-unix#os-sinais-comuns) `SIGABRT`, 128 + 6) |
 | `gcc -O2 -fno-stack-protector` | `copiado: AAAAAAAA` e depois uma falha | 139: falha de segmentação (`SIGSEGV`, 128 + 11), mais tarde e de forma menos clara |
 
-O custo: três instruções em cada função que tem um array local (`objdump -d` mostra a leitura do valor secreto, `mov %fs:0x28`, sua comparação na volta e a chamada a `__stack_chk_fail`). No solucionador SAT, `-fno-stack-protector` ganhou cerca de 1 %.
+O custo: algumas instruções em cada função que tem um array local (`objdump -d` mostra a leitura do valor secreto, `mov %fs:0x28`, sua comparação na volta e a chamada a `__stack_chk_fail`). No solucionador SAT, `-fno-stack-protector` ganhou cerca de 1 %.
 
 > **Armadilha:** com `strcpy()` no lugar do laço, a mensagem passa a ser `*** buffer overflow detected ***`, mesmo com `-fno-stack-protector`. É **outra** proteção do Ubuntu, [`_FORTIFY_SOURCE`](https://man7.org/linux/man-pages/man7/feature_test_macros.7.html), que em `-O2` troca as funções de cópia conhecidas por versões verificadas. Retirar o canário não retira, portanto, todas as proteções, e uma cópia escrita à mão só é coberta pelo canário.
 

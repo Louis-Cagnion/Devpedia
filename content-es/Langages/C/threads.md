@@ -156,7 +156,8 @@ _Thread_local const int *g_pesos;        // una copia por hilo
 int comparar(const void *a, const void *b)
 {
     int x = *(const int *)a, y = *(const int *)b;
-    return g_pesos[x] - g_pesos[y];      // ordena índices según su peso
+    // ordena índices según su peso, sin resta (que podría desbordarse)
+    return (g_pesos[x] > g_pesos[y]) - (g_pesos[x] < g_pesos[y]);
 }
 
 void ordenar_indices(int *indices, int n, const int *pesos)

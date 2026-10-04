@@ -1,5 +1,5 @@
 ---
-order: 8
+order: 9
 ---
 
 # Los solucionadores SAT y el algoritmo CDCL
@@ -73,7 +73,7 @@ Un backtracking simple volvería al nivel anterior y probaría `a = falso`. El *
 
 Se para en cuanto solo queda **un único** literal del nivel del conflicto: es el **primer punto de implicación único** (*1UIP*). La cláusula obtenida, `(¬a)`, se **aprende**: añadida a la fórmula, dice «`a` nunca puede ser verdadero».
 
-El solucionador vuelve entonces al nivel más alto que queda en la cláusula aprendida, aquí el nivel 0: anula también la decisión `x = verdadero`, que no tenía nada que ver con el conflicto. Es el **retroceso no cronológico** (*backjumping*). Después `(¬a)` fuerza inmediatamente `a = falso`.
+El solucionador vuelve entonces al nivel más alto entre los demás literales de la cláusula aprendida (su segundo nivel más alto, o 0 si solo tiene un literal), aquí el nivel 0: anula también la decisión `x = verdadero`, que no tenía nada que ver con el conflicto. Es el **retroceso no cronológico** (*backjumping*). Después `(¬a)` fuerza inmediatamente `a = falso`.
 
 | | Backtracking | CDCL |
 |---|---|---|
@@ -81,7 +81,7 @@ El solucionador vuelve entonces al nivel más alto que queda en la cláusula apr
 | Memoria de los fracasos | Ninguna: el mismo callejón sin salida puede volver a visitarse en otro sitio | Cada cláusula aprendida poda todas las ramas donde se repetiría la misma causa |
 | Retroceso | Un nivel cada vez | Directamente al nivel correcto, saltando las decisiones sin relación |
 
-Los solucionadores reales **minimizan** después la cláusula aprendida, quitando los literales ya implicados por los demás (técnica introducida por MiniSat).
+Los solucionadores reales **minimizan** después la cláusula aprendida, quitando los literales ya implicados por los demás (técnica introducida por [MiniSat](http://minisat.se/)).
 
 ## Dos literales vigilados: propagar sin releerlo todo
 
@@ -101,8 +101,8 @@ Mientras ninguno de los dos literales vigilados sea falso, la cláusula no puede
 | Mecanismo | Principio | Por qué |
 |---|---|---|
 | **VSIDS** (*Variable State Independent Decaying Sum*) | Cada variable tiene una **actividad**, que aumenta cuando participa en un conflicto y luego «se desgasta» con el tiempo. Se decide siempre sobre la más activa. | Concentra la búsqueda en la parte difícil del problema, la que produce conflictos en este momento. |
-| Decaimiento mediante el incremento | En lugar de disminuir todas las actividades en cada conflicto, se **aumenta** el valor sumado a las siguientes (×1,05 por conflicto) y se reescala todo antes de superar la capacidad de un número de coma flotante. | Mismo efecto, con un coste constante por conflicto. |
-| Montículo binario | Estructura que da la variable más activa en tiempo logarítmico. | Evita recorrer todas las variables en cada decisión. |
+| Decaimiento mediante el incremento | En lugar de disminuir todas las actividades en cada conflicto, se **aumenta** el valor sumado a las siguientes (×1,05 por conflicto) y se reescala todo antes de superar la capacidad de un [número de coma flotante](/?c=donnees&s=representation-des-donnees&p=nombres-flottants). | Mismo efecto, con un coste constante por conflicto. |
+| [Montículo binario](/?c=fondamentaux&s=algorithmes&p=file-de-priorite-et-tas-binaire) | Estructura que da la variable más activa en tiempo logarítmico. | Evita recorrer todas las variables en cada decisión. |
 | **Guardado de fase** (*phase saving*) | Una variable retoma el último valor que tenía antes de ser anulada. | Tras un retroceso, el solucionador reconstruye rápido las partes ya coherentes. |
 
 ## Reiniciar y olvidar: Luby y LBD
@@ -115,7 +115,7 @@ Un **reinicio** anula todas las decisiones y vuelve a empezar desde el nivel 0, 
 | Glucose | Cuando la calidad reciente de las cláusulas aprendidas empeora | 2 veces más lenta |
 | Ningún reinicio | Nunca | Todas las cuadrículas de 56 × 56 probadas superan los 90 s |
 
-Las cláusulas aprendidas se acumulan: se elimina regularmente la mitad, conservando las mejores según su **LBD** (*Literal Block Distance*): el número de niveles distintos entre sus literales. Una cláusula de LBD 2 solo relaciona dos decisiones: se volverá a usar a menudo.
+Las cláusulas aprendidas se acumulan: se elimina regularmente la mitad, conservando las mejores según su **LBD** (*Literal Block Distance*): el número de niveles distintos entre sus literales. Una cláusula de LBD 2 solo involucra dos niveles de decisión: se volverá a usar a menudo.
 
 ## Heurísticas avanzadas: medir antes de adoptar
 
@@ -148,7 +148,7 @@ frente                                  final
 | Actualización tras un conflicto | Aumentar actividades, reordenar el montículo | Mover al frente: tiempo constante |
 | Medido (cuadrícula de 48 × 48, un solo proceso) | 1,47 s | 1,31 s |
 
-VMTF es el modo «enfocado» de los solucionadores [kissat](https://github.com/arminbiere/kissat) y CaDiCaL. En un portafolio de procesos, casi siempre ganan las copias VMTF (ver la sección sobre las colas pesadas, más abajo).
+VMTF es el modo «enfocado» de los solucionadores [kissat](https://github.com/arminbiere/kissat) y [CaDiCaL](https://github.com/arminbiere/cadical). En un portafolio de procesos (varias copias del solucionador lanzadas en paralelo sobre el mismo problema; gana la primera que termina), casi siempre ganan las copias VMTF (ver la sección sobre las colas pesadas, más abajo).
 
 ### Lo que perjudicó aquí
 
@@ -169,15 +169,15 @@ Una asignación del nivel 0 nunca se deshace: una cláusula que contiene un lite
 | `(¬a ∨ c)` | La propagación fuerza `c` en el nivel 0: satisfecha también | Eliminada |
 | `(b ∨ d)` | Ni `b` ni `d` están fijados todavía | Conservada |
 
-Medido junto con otros dos retoques del mismo tipo: un pequeño porcentaje de tiempo ganado, con contadores de trabajo idénticos.
+Medido junto con otros dos retoques del mismo tipo: un pequeño porcentaje de tiempo ganado, con [contadores de trabajo](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser#comparar-con-contadores-de-trabajo-no-solo-con-el-tiempo) idénticos.
 
 ## Las colas pesadas: unas pocas instancias catastróficas
 
-Entre cuadrículas del mismo tamaño, la mayoría se resuelve rápido, pero unas pocas tardan 100 veces más: su tiempo de resolución sigue una distribución de **cola pesada** (*heavy-tailed*). Medido en el solucionador Skyscraper con cuadrículas de 72 × 72, sobre 100 cuadrículas:
+Entre cuadrículas del mismo tamaño, la mayoría se resuelve rápido, pero unas pocas tardan más de 6 veces el tiempo mediano, o no terminan: su tiempo de resolución sigue una distribución de **cola pesada** (*heavy-tailed*). Medido en el solucionador Skyscraper con cuadrículas de 72 × 72, sobre 100 cuadrículas:
 
 | Versión | Tiempo mediano | Cuadrículas por encima de 90 s |
 |---|---|---|
-| Un solo solucionador | 13,4 s | 7 |
+| Un solo solucionador (3 ejecuciones simultáneas en la máquina) | 13,4 s | 7 |
 | 4 copias del solucionador lanzadas en paralelo, cada una con una parte de azar distinta; gana la primera que encuentra | 9,3 s | 0 |
 
 Los reinicios y el azar controlado sirven precisamente para salir de estas malas trayectorias.
@@ -188,7 +188,7 @@ Una decisión aleatoria consiste en elegir una variable al azar en vez de la má
 
 | Configuración | Cuadrículas por encima de 90 s |
 |---|---|
-| Sin randomización | 4 |
+| Sin randomización (versión de referencia, sola en la máquina) | 4 |
 | Con 3 % de decisiones aleatorias | 8, pero no las mismas 4 cuadrículas |
 
 Las 4 cuadrículas que se bloqueaban sin randomización se resuelven con ella, pero otras 8 se bloquean a su vez: una misma cuadrícula pasa o se bloquea según la tirada aleatoria. La cola pesada depende de la trayectoria recorrida, no de la dificultad intrínseca de la instancia; añadir azar la desplaza, no la reduce.
@@ -210,7 +210,7 @@ Dos formas de diversificar rompen lo que el solucionador ha aprendido: añadir r
 
 ### Portafolio de trayectorias independientes: la ley de p^k
 
-Otro remedio: lanzar varias trayectorias en paralelo con semillas distintas y quedarse con el resultado del primer proceso que termina (portafolio de procesos, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), medido originalmente sobre la compleción de cuadrados latinos). Si cada ejecución se bloquea de forma independiente con una probabilidad *p*, *k* ejecuciones se bloquean todas juntas con una probabilidad *p^k*: el riesgo cae muy rápido con el número de procesos. Con p = 7/100 (medido aquí):
+Otro remedio: lanzar varias trayectorias en paralelo con semillas distintas (el número que inicializa el azar de cada proceso) y quedarse con el resultado del primer proceso que termina (portafolio de procesos, [Gomes, Selman & Kautz, *Boosting Combinatorial Search Through Randomization*, AAAI 1998](https://www.cs.cornell.edu/selman/papers/pdf/98.aaai.boost.pdf), medido originalmente sobre la compleción de cuadrados latinos). Si cada ejecución se bloquea de forma independiente con una probabilidad *p*, *k* ejecuciones se bloquean todas juntas con una probabilidad *p^k*: el riesgo cae muy rápido con el número de procesos. Con p = 7/100 (medido aquí):
 
 ```python
 # p: probabilidad de que UNA ejecución supere 90 s (medido: 7 de 100 cuadrículas)
@@ -238,9 +238,9 @@ Diversificar también las heurísticas de decisión, no solo las semillas aleato
 | 4 × VSIDS | 67 s |
 | 1 × VSIDS + 3 × VMTF (ver más arriba) | 32 s |
 
-Los procesos VMTF ganan de forma muy regular, entre 25 000 y 30 000 conflictos. Gracias a este portafolio heterogéneo, la frontera de un minuto pasa de la cuadrícula 72 × 72 (con todavía un 4 % de bloqueos) a alrededor de 100 × 100.
+Los procesos VMTF ganan de forma muy regular, entre 25 000 y 30 000 conflictos. El portafolio de 4 copias VSIDS ya situaba la frontera de un minuto entre las cuadrículas de 88 × 88 y 96 × 96; el portafolio heterogéneo la lleva a 100 × 100 (45,3 s de media sobre 100 cuadrículas, solo una más allá de 90 s).
 
-Más allá de 4 a 6 procesos, las ganancias se frenan y luego se invierten: el ancho de banda de memoria compartida entre procesos acaba costando más de lo que aporta la diversidad (8 procesos más lentos que 6). Compartir cláusulas aprendidas entre procesos (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) solo ayuda si las cláusulas aprendidas son cortas: aquí, una resolución completa solo aprende de 2 a 7 cláusulas unitarias y de 11 a 34 cláusulas binarias (cuadrícula 56 × 56); las demás cláusulas aprendidas son largas, sin interés en compartirlas.
+Más allá de 4 a 6 procesos, las ganancias se frenan y luego se invierten: el ancho de banda de memoria (el caudal de datos entre la memoria y el procesador) compartido entre procesos acaba costando más de lo que aporta la diversidad (8 procesos más lentos que 6). Compartir cláusulas aprendidas entre procesos (ManySAT, [Hamadi, Jabbour & Sais, 2009](http://www.cril.univ-artois.fr/~jabbour/manysat.htm)) solo ayuda si las cláusulas aprendidas son cortas: aquí, una resolución completa solo aprende de 2 a 7 cláusulas unitarias y de 11 a 34 cláusulas binarias (cuadrícula 56 × 56); las demás cláusulas aprendidas son largas, sin interés en compartirlas.
 
 ## Los solucionadores de referencia
 
@@ -250,7 +250,7 @@ Más allá de 4 a 6 procesos, las ganancias se frenan y luego se invierten: el a
 | Glucose (Audemard y Simon, 2009) | Medida LBD y los reinicios asociados | [github.com/audemard/glucose](https://github.com/audemard/glucose) |
 | kissat (Armin Biere) | Entre los mejores de las competiciones SAT actuales | [github.com/arminbiere/kissat](https://github.com/arminbiere/kissat) |
 
-Medido sobre la codificación del puzle (cuadrícula de 48 × 48, 8 millones de cláusulas): la configuración por defecto de kissat supera el presupuesto, porque sus simplificaciones previas cuestan más de lo que aportan en este problema voluminoso pero fácil; con la opción `--plain`, que las desactiva, resuelve en 2,2 s.
+Medido sobre la codificación del puzle (cuadrícula de 48 × 48, 8 millones de cláusulas): la configuración por defecto de kissat supera el presupuesto de 90 s, porque sus simplificaciones previas cuestan más de lo que aportan en este problema voluminoso pero fácil; con la opción `--plain`, que las desactiva, resuelve en 2,2 s.
 
 Fuentes: Marques-Silva y Sakallah, *GRASP* (1996); Moskewicz et al., *Chaff* (2001); Eén y Sörensson, *An Extensible SAT-solver* (MiniSat, 2003); Audemard y Simon, *Predicting Learnt Clauses Quality in Modern SAT Solvers* (Glucose, 2009); *Handbook of Satisfiability*, 2.ª edición (2021).
 

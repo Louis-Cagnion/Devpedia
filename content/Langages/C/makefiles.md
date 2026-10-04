@@ -317,7 +317,7 @@ Utile dans un script, pour prévenir avant une reconstruction longue (les trois 
 
 ```bash
 if ! make -q; then                           # 1 ou 2 : il y a quelque chose à faire
-    echo "Reconstruction (environ 25 s)..."  # prévient avant l'attente
+    echo "Reconstruction (environ 24 s)..."  # prévient avant l'attente
 fi
 make -s || exit 1                            # construit si besoin, en silence
 ```

@@ -1,5 +1,5 @@
 ---
-order: 5
+order: 6
 ---
 
 # Le swap-remove : retirer un élément d'un tableau en O(1)

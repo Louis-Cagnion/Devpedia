@@ -317,7 +317,7 @@ Com `-q` (*question*), o `make` não executa nenhum comando: ele só responde pe
 
 ```bash
 if ! make -q; then                         # 1 ou 2: há algo a fazer
-    echo "Reconstrução (cerca de 25 s)..." # avisa antes da espera
+    echo "Reconstrução (cerca de 24 s)..." # avisa antes da espera
 fi
 make -s || exit 1                          # constrói se preciso, em silêncio
 ```

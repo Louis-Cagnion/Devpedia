@@ -1,5 +1,5 @@
 ---
-order: 10
+order: 4
 ---
 
 # The Priority Queue and the Binary Heap
@@ -37,10 +37,18 @@ Each rise or sink covers at most the height of the tree, that is log₂(n) steps
 Some algorithms raise the priority of an element **already in the heap**: for example the VSIDS heuristic of [SAT solvers](/?c=fondamentaux&s=algorithmes&p=solveurs-sat-et-cdcl), which increases a variable's activity at each conflict. You then need to know **where** that element is in the array, without searching cell by cell. An **indexed heap** keeps a table `pos[x]`: the cell where element x is, updated at every move.
 
 ```c
+#define N 1000                               // maximum number of elements
+
 double priority[N];                          // priority[x]: priority of element x
 int    heap[N];                              // the elements, stored as a heap
 int    pos[N];                               // pos[x]: cell of x in heap, or -1
 int    size = 0;
+
+void initialize(void)                        // at the start, no element is in the heap
+{
+    for (int x = 0; x < N; x++)
+        pos[x] = -1;
+}
 
 static void put(int i, int x) { heap[i] = x; pos[x] = i; }
 

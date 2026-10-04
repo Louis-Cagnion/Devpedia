@@ -159,6 +159,8 @@ size_t arena_adicionar(t_arena *a, const int *valores, size_t n)
 }
 ```
 
+A função [`memcpy()`](#copiar-e-preencher-bytes-memcpy-e-memset) copia os `n` inteiros de uma só vez na arena.
+
 | | Um `malloc()` por objeto | Arena |
 |---|---|---|
 | Número de alocações | Uma por objeto | Um punhado (o array dobra de tamanho) |
