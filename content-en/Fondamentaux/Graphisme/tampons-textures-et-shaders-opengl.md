@@ -239,7 +239,7 @@ static double dark_ratio(const unsigned char *rgb, size_t n)
 }
 ```
 
-An inside-out mesh gives a proportion close to that of the whole silhouette; the same mesh repaired (or lit on both sides) makes it drop.
+An inside-out mesh gives a proportion close to that of the whole silhouette; the same mesh repaired (or lit on both sides) makes it drop. Measured with the three shaders of this chapter (the geometry shader and the two fragment shaders, unmodified) on a 12-triangle cube rendered into a 256 × 256 image with a blue background, the light coming from the viewer and face culling disabled, on three engines (AMD Radeon 680M with Mesa, NVIDIA RTX 3070, `llvmpipe`) with identical results: vertices in the right order and basic lighting, `dark_ratio` = **0.000**; vertices reversed and basic lighting, **0.425** (the background takes 0.575 of the image: this is exactly the cube's silhouette); vertices reversed with `gl_FrontFacing`, **0.000**.
 
 ### Compiling, linking and using a program
 

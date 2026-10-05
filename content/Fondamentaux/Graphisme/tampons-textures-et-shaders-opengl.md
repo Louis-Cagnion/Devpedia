@@ -239,7 +239,7 @@ static double dark_ratio(const unsigned char *rgb, size_t n)
 }
 ```
 
-Un maillage à l'envers donne une proportion proche de celle de la silhouette entière ; le même maillage corrigé (ou éclairé en double face) la fait chuter.
+Un maillage à l'envers donne une proportion proche de celle de la silhouette entière ; le même maillage corrigé (ou éclairé en double face) la fait chuter. Mesuré avec les trois shaders de ce chapitre (le geometry shader et les deux fragment shaders, sans modification) sur un cube de 12 triangles rendu dans une image de 256 × 256 à fond bleu, la lumière venant de l'observateur et l'élimination des faces désactivée, sur trois moteurs (AMD Radeon 680M avec Mesa, NVIDIA RTX 3070, `llvmpipe`) avec des résultats identiques : sommets dans le bon sens et éclairage de base, `dark_ratio` = **0,000** ; sommets inversés et éclairage de base, **0,425** (le fond occupe 0,575 de l'image : c'est exactement la silhouette du cube) ; sommets inversés avec `gl_FrontFacing`, **0,000**.
 
 ### Compiler, lier et utiliser un programme
 

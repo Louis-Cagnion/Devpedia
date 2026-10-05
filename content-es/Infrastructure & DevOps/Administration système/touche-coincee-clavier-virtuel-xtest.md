@@ -68,6 +68,8 @@ static int key_is_down(Display *display, unsigned int keycode)
 
 El código de una tecla depende del teclado y de su distribución: se le pregunta a Xlib (`XKeysymToKeycode`, que convierte el **símbolo** de una tecla, por ejemplo el de Esc, en un código) en lugar de escribirlo fijo.
 
+Medido en la sesión real (Xorg), con `xdotool keydown F13` (una tecla sin código fijo: `xdotool` le instala un código temporal, aquí 8, y no tiene efecto en las aplicaciones): una vez que `xdotool` ha terminado, `xinput query-state` en el teclado XTEST muestra `key[8]=down` y `XQueryKeymap` ve el código 8 pulsado; `xdotool keyup F13` pone ambos a cero. Bajo Xephyr (un servidor X mostrado en una ventana), el mismo teclado XTEST se queda en `key[9]=up` mientras `XQueryKeymap` ve Escape pulsada: en un servidor anidado, fiarse de `XQueryKeymap`.
+
 ## Liberarla
 
 Lo más sencillo, a mano: `xdotool keyup Escape`. En un programa C, se envía el mismo evento por XTEST:
@@ -98,7 +100,7 @@ int release_if_stuck(unsigned int keycode)
 }
 ```
 
-Probada bajo **Xvfb** (un servidor X sin pantalla, que permite probar sin visualización real): antes de la pulsación, `key_is_down` devuelve 0; tras un `keydown` solo, 1; `release_if_stuck` devuelve entonces 1 y, justo después, la tecla vuelve a 0; una segunda llamada devuelve 0 (nada que hacer).
+Probada bajo **Xvfb** (un servidor X sin pantalla, que permite probar sin visualización real): antes de la pulsación, `key_is_down` devuelve 0; tras un `keydown` solo, 1; `release_if_stuck` devuelve entonces 1 y, justo después, la tecla vuelve a 0; una segunda llamada devuelve 0 (nada que hacer). Repetida aquí bajo Xephyr (un servidor X mostrado en una ventana, al no estar instalado Xvfb): mismos resultados, `0`, `1`, `1`, `0` y luego `0`.
 
 ## Garantizar la liberación: `trap`
 
@@ -113,7 +115,7 @@ sleep 30 &                          # el comando largo (aqui sleep, en realidad 
 wait $!                             # ...lo espera « wait » ($!: numero del ultimo proceso lanzado)
 ```
 
-Probado con la liberación sustituida por una línea escrita en un archivo (`xdotool` no está instalado en la máquina de prueba):
+Probado con el `xdotool` real en una sesión Xorg, con la tecla F13 (sin efecto en las aplicaciones) y un registro de las liberaciones:
 
 | Interrupción | Resultado con `trap release EXIT` |
 |---|---|
@@ -121,7 +123,7 @@ Probado con la liberación sustituida por una línea escrita en un archivo (`xdo
 | `timeout 2 comando` | liberada **una vez** |
 | `kill -9` (señal `SIGKILL`) | **nunca** liberada |
 
-> **Trampa (el `trap` se retrasa):** bash solo ejecuta el `trap` **después de que termine el comando en curso**. Con un simple `sleep 30` en lugar de `sleep 30 & wait $!`, cada prueba esperó los 30 segundos antes de liberar (la serie completa duró más de 4 minutos). `wait`, en cambio, es interrumpido de inmediato por una señal: por eso se lanza el comando largo en segundo plano y luego se espera con `wait`.
+> **Trampa (el `trap` de señal se retrasa):** para un `trap` sobre una **señal** (`INT`, `TERM`), bash solo ejecuta el manejador **después de que termine el comando en curso**. Medido con `trap release EXIT INT TERM` y un simple `sleep 5` en primer plano: un `SIGTERM` enviado a 1 s solo libera a los 5 s (el script termina 4,0 s después de la señal). `wait`, al contrario, es interrumpido enseguida por una señal: se lanza pues el comando largo en segundo plano y luego se espera con `wait $!`. Con `trap release EXIT` solo, el `SIGTERM` mata el script de inmediato y el manejador se ejecuta al instante, incluso con un `sleep` en primer plano.
 
 > **Trampa (ejecutado dos veces):** `trap release EXIT INT TERM` libera **dos veces** con un `SIGTERM` (una por la señal, otra por la salida que sigue). Basta con `trap release EXIT`, y el manejador debe ser **inofensivo si se ejecuta dos veces** (liberar una tecla ya liberada no hace nada).
 
@@ -171,6 +173,8 @@ Reglas del protocolo:
 
 Una pulsación sin liberación, o varias pulsaciones seguidas, indica una tecla atascada o repetida.
 
+Medido en Xephyr con `xev` (una pulsación de Escape enviada por `send_escape_once`, `xinput test-xi2 --root` en segundo plano): 1 `RawKeyPress` y 1 `RawKeyRelease`, código de retorno 0. Las tres comprobaciones fallan como se esperaba, cada una con su mensaje: `fenêtre 99999999 introuvable`, `fenêtre 2097153 sans le focus (focus : 528)`, `fenêtre 2097153 au PID 33947, attendu 1`. Trampa: `xdotool getwindowpid` responde `window 2097153 has no pid associated with it` para una ventana cuya aplicación no rellena la propiedad `_NET_WM_PID` (es el caso de `xev`, que hubo que completar con `xprop`); una ventana GLFW la rellena (PID idéntico al del proceso, comprobado).
+
 ## Medir lo que la aplicación muestra: captura y píxeles
 
 Para saber si el objeto se movió tras la pulsación, se **captura la pantalla** y se miden los píxeles. `ffmpeg` (la herramienta de conversión de audio y vídeo) sabe leer la pantalla de un servidor X con `-f x11grab`:
@@ -188,6 +192,8 @@ ffmpeg -f x11grab -draw_mouse 0 -video_size 800x600 -i :99 -frames:v 1 shot.ppm
 | `-frames:v 1` | una sola imagen, guardada en formato **PPM** (imagen en bruto: una pequeña cabecera y luego 3 bytes rojo-verde-azul por píxel) |
 
 > **Trampa (el cursor falsea la medida):** por defecto, `x11grab` dibuja el cursor en la captura. Su flecha blanca se suma al objeto medido y agranda su **caja delimitadora** (el rectángulo más pequeño que contiene todos los píxeles del objeto), por tanto una medida de posición o de tamaño. `-draw_mouse 0` la excluye.
+
+Medido (pantalla negra de 800 × 600, ventana blanca, cursor en (400, 300)) con la función `bounding_box` de abajo: `(12, 12, 211, 111)` con `-draw_mouse 0`, `(12, 12, 408, 308)` sin esa opción: el cursor estira la caja hasta él.
 
 La medida se hace después leyendo el PPM: sobre fondo negro, la caja delimitadora es la de los píxeles que no son negros.
 

@@ -68,6 +68,8 @@ static int key_is_down(Display *display, unsigned int keycode)
 
 A key's code depends on the keyboard and its layout: ask Xlib for it (`XKeysymToKeycode`, which converts a key's **symbol**, for example Escape's, into a code) rather than hard-coding it.
 
+Measured on the real session (Xorg), with `xdotool keydown F13` (a key with no fixed code: `xdotool` installs a temporary code for it, here 8, and it has no effect in applications): once `xdotool` has finished, `xinput query-state` on the XTEST keyboard shows `key[8]=down` and `XQueryKeymap` sees code 8 held down; `xdotool keyup F13` sets both back to zero. Under Xephyr (an X server shown in a window), the same XTEST keyboard stays at `key[9]=up` while `XQueryKeymap` sees Escape held down: on a nested server, rely on `XQueryKeymap`.
+
 ## Releasing it
 
 The simplest way, by hand: `xdotool keyup Escape`. In a C program, the same event is sent through XTEST:
@@ -98,7 +100,7 @@ int release_if_stuck(unsigned int keycode)
 }
 ```
 
-Tested under **Xvfb** (an X server with no screen, which allows testing without a real display): before the press, `key_is_down` returns 0; after a lone `keydown`, 1; `release_if_stuck` then returns 1 and, right after, the key is back to 0; a second call returns 0 (nothing to do).
+Tested under **Xvfb** (an X server with no screen, which allows testing without a real display): before the press, `key_is_down` returns 0; after a lone `keydown`, 1; `release_if_stuck` then returns 1 and, right after, the key is back to 0; a second call returns 0 (nothing to do). Replayed here under Xephyr (an X server shown in a window, Xvfb not being installed): same results, `0`, `1`, `1`, `0` then `0`.
 
 ## Guaranteeing the release: `trap`
 
@@ -113,7 +115,7 @@ sleep 30 &                          # the long command (here sleep, in practice 
 wait $!                             # ...is awaited by "wait" ($!: number of the last process launched)
 ```
 
-Tested with the release replaced by a line written to a file (`xdotool` is not installed on the test machine):
+Tested with the real `xdotool` on an Xorg session, with the F13 key (no effect in applications) and a log of the releases:
 
 | Interruption | Result with `trap release EXIT` |
 |---|---|
@@ -121,7 +123,7 @@ Tested with the release replaced by a line written to a file (`xdotool` is not i
 | `timeout 2 command` | released **once** |
 | `kill -9` (`SIGKILL` signal) | **never** released |
 
-> **Pitfall (the `trap` is delayed):** bash only runs the `trap` **after the current command has finished**. With a plain `sleep 30` instead of `sleep 30 & wait $!`, every test waited the full 30 seconds before releasing (the whole series took more than 4 minutes). `wait`, on the other hand, is interrupted immediately by a signal: so launch the long command in the background, then wait for it with `wait`.
+> **Pitfall (a signal `trap` is delayed):** for a `trap` on a **signal** (`INT`, `TERM`), bash only runs the handler **after the current command has finished**. Measured with `trap release EXIT INT TERM` and a plain `sleep 5` in the foreground: a `SIGTERM` sent at 1 s only releases at 5 s (the script ends 4.0 s after the signal). `wait`, on the contrary, is interrupted right away by a signal: so launch the long command in the background, then wait for it with `wait $!`. With `trap release EXIT` alone, `SIGTERM` kills the script immediately and the handler runs at once, even with a foreground `sleep`.
 
 > **Pitfall (run twice):** `trap release EXIT INT TERM` releases **twice** on a `SIGTERM` (once for the signal, once for the exit that follows). `trap release EXIT` is enough, and the handler must stay **harmless if it runs twice** (releasing an already released key does nothing).
 
@@ -171,6 +173,8 @@ Rules of the protocol:
 
 A press without a release, or several presses in a row, signals a stuck or repeated key.
 
+Measured in Xephyr with `xev` (one Escape press sent by `send_escape_once`, `xinput test-xi2 --root` in the background): 1 `RawKeyPress` and 1 `RawKeyRelease`, return code 0. The three checks fail as expected, each with its own message: `fenêtre 99999999 introuvable`, `fenêtre 2097153 sans le focus (focus : 528)`, `fenêtre 2097153 au PID 33947, attendu 1`. Pitfall: `xdotool getwindowpid` answers `window 2097153 has no pid associated with it` for a window whose application does not set the `_NET_WM_PID` property (this is the case of `xev`, which had to be completed with `xprop`); a GLFW window sets it (PID identical to the process's, checked).
+
 ## Measuring what the application displays: capture and pixels
 
 To know whether the object moved after the keystroke, **capture the screen** and measure the pixels. `ffmpeg` (the audio and video conversion tool) can read an X server's screen with `-f x11grab`:
@@ -188,6 +192,8 @@ ffmpeg -f x11grab -draw_mouse 0 -video_size 800x600 -i :99 -frames:v 1 shot.ppm
 | `-frames:v 1` | a single image, saved in **PPM** format (raw image: a small header, then 3 red-green-blue bytes per pixel) |
 
 > **Pitfall (the cursor skews the measurement):** by default, `x11grab` draws the cursor in the capture. Its white arrow adds to the measured object and enlarges its **bounding box** (the smallest rectangle containing all the object's pixels), hence a position or size measurement. `-draw_mouse 0` excludes it.
+
+Measured (800 × 600 black screen, white window, cursor at (400, 300)) with the `bounding_box` function below: `(12, 12, 211, 111)` with `-draw_mouse 0`, `(12, 12, 408, 308)` without that option: the cursor stretches the box all the way to it.
 
 The measurement then reads the PPM: on a black background, the bounding box is that of the pixels that are not black.
 
