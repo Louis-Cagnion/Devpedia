@@ -113,6 +113,212 @@ It nonetheless remains common on Windows, where some tools (including [Excel](ht
 - **UTF-16**: 2 or 4 bytes per character. Used internally by Java, C#, [JavaScript](/?c=langages-de-programmation&s=javascript&p=javascript), and Windows. Characters outside the basic plane (emoji) occupy two 16-bit units there, called a *surrogate pair*, which is why, in JavaScript, `"😀".length` returns **2**.
 - **UTF-32**: 4 bytes per character, fixed size. Simple to index, but wastes a lot of space; rarely used for storage.
 
+## A BOM in a File Read by a Program: Two Silent Failures
+
+A C program that [reads a text file line by line](/?c=langages&s=c&p=lecture-de-fichiers) (with `fgets`) assumes two things: that a character fits in a byte, and that the text starts with its first visible character. A [BOM](#the-bom) breaks one or the other, **without producing any error**. Each encoding has its own, written with its own bytes:
+
+| Encoding | BOM bytes | Note |
+|---|---|---|
+| UTF-8 | `EF BB BF` | Optional; 3 bytes at the start, then the text |
+| UTF-16 little-endian | `FF FE` | The low-order byte of each unit first (see [memory layout](/?c=donnees&s=representation-des-donnees&p=organisation-en-memoire)) |
+| UTF-16 big-endian | `FE FF` | The high-order byte first |
+| UTF-32 little-endian | `FF FE 00 00` | Starts like UTF-16 little-endian |
+| UTF-32 big-endian | `00 00 FE FF` | |
+
+Six files holding the same two lines (`title My text` and `size 12`) in the different encodings, with the [`file`](https://man7.org/linux/man-pages/man1/file.1.html) command to identify them and [`iconv`](https://man7.org/linux/man-pages/man1/iconv.1.html) to convert from one encoding to another:
+
+```bash
+printf 'title My text\nsize 12\n' > utf8.txt                          # UTF-8 without BOM
+printf '\xef\xbb\xbftitle My text\nsize 12\n' > utf8bom.txt           # UTF-8 with BOM
+iconv -f UTF-8 -t UTF-16LE utf8.txt > body16.bin                         # UTF-16 little-endian, without BOM
+printf '\xff\xfe' | cat - body16.bin > utf16.txt                         # we put the FF FE BOM in front
+iconv -f UTF-8 -t UTF-16BE utf8.txt > body16be.bin
+printf '\xfe\xff' | cat - body16be.bin > utf16be.txt
+iconv -f UTF-8 -t UTF-32LE utf8.txt > body32le.bin
+printf '\xff\xfe\x00\x00' | cat - body32le.bin > utf32le.txt
+iconv -f UTF-8 -t UTF-32BE utf8.txt > body32be.bin
+printf '\x00\x00\xfe\xff' | cat - body32be.bin > utf32be.txt
+iconv -f UTF-16 -t UTF-8 utf16.txt > utf16_converted.txt                   # back to UTF-8: the BOM disappears
+file utf8.txt utf8bom.txt utf16.txt utf16be.txt utf32le.txt utf32be.txt utf16_converted.txt
+```
+
+```
+utf8.txt:            ASCII text
+utf8bom.txt:         Unicode text, UTF-8 (with BOM) text
+utf16.txt:           Unicode text, UTF-16, little-endian text
+utf16be.txt:         Unicode text, UTF-16, big-endian text
+utf32le.txt:         Unicode text, UTF-32, little-endian
+utf32be.txt:         Unicode text, UTF-32, big-endian
+utf16_converted.txt: ASCII text
+```
+
+The bytes of `utf8bom.txt` (three extra bytes) and of `utf16.txt` (each letter followed by a `00` byte), with [`xxd`](https://manpages.debian.org/xxd), which displays a file in hexadecimal:
+
+```bash
+xxd utf8bom.txt | head -1
+xxd utf16.txt | head -2
+```
+
+```
+00000000: efbb bf74 6974 6c65 204d 7920 7465 7874  ...title My text
+00000000: fffe 7400 6900 7400 6c00 6500 2000 4d00  ..t.i.t.l.e. .M.
+00000010: 7900 2000 7400 6500 7800 7400 0a00 7300  y. .t.e.x.t...s.
+```
+
+### A naive reader and a reader that looks at the start of the file
+
+The program reads **directives** (a line `word value`: here `title` followed by a text, `size` followed by a number). The naive reader compares each line with the expected word and **silently ignores** any unknown line; the safe reader first reads the first four bytes (`skip_bom`), skips a UTF-8 BOM, explicitly refuses UTF-16 or UTF-32, and reports unknown lines.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Reads a file of "title text" and "size number" directives, ignoring the BOM. */
+static void	parse_naive(const char *path)
+{
+	FILE	*f = fopen(path, "r");
+	char	line[128], title[64] = "(missing)";
+	int		size = -1, ignored = 0;
+
+	if (!f)
+		return ;
+	while (fgets(line, sizeof line, f))
+	{
+		line[strcspn(line, "\n")] = '\0';
+		if (strncmp(line, "title ", 6) == 0)
+			snprintf(title, sizeof title, "%s", line + 6);
+		else if (strncmp(line, "size ", 5) == 0)
+			size = atoi(line + 5);
+		else
+			ignored++;                              /* unknown directive: ignored silently */
+	}
+	fclose(f);
+	printf("naive %-12s : title=%s, size=%d, ignored lines=%d\n", path, title, size, ignored);
+}
+
+/* Reads the first 4 bytes: skips a UTF-8 BOM, refuses UTF-16 and UTF-32. Returns 0 or -1. */
+static int	skip_bom(FILE *f, const char *path)
+{
+	unsigned char	b[4] = {0};
+	size_t			n = fread(b, 1, 4, f);
+
+	if (n >= 4 && b[0] == 0xFF && b[1] == 0xFE && b[2] == 0 && b[3] == 0)
+		return (fprintf(stderr, "%s : UTF-32 (BOM FF FE 00 00) not supported\n", path), -1);
+	if (n >= 4 && b[0] == 0 && b[1] == 0 && b[2] == 0xFE && b[3] == 0xFF)
+		return (fprintf(stderr, "%s : UTF-32 (BOM 00 00 FE FF) not supported\n", path), -1);
+	if (n >= 2 && b[0] == 0xFF && b[1] == 0xFE)
+		return (fprintf(stderr, "%s : UTF-16 (BOM FF FE) not supported\n", path), -1);
+	if (n >= 2 && b[0] == 0xFE && b[1] == 0xFF)
+		return (fprintf(stderr, "%s : UTF-16 (BOM FE FF) not supported\n", path), -1);
+	if (n >= 3 && b[0] == 0xEF && b[1] == 0xBB && b[2] == 0xBF)
+		return (fseek(f, 3, SEEK_SET), 0);          /* UTF-8 BOM: resume right after it */
+	return (fseek(f, 0, SEEK_SET), 0);              /* no BOM: resume at the start */
+}
+
+/* Same reading, but the BOM is handled and an unknown directive is reported. */
+static void	parse_safe(const char *path)
+{
+	FILE	*f = fopen(path, "rb");
+	char	line[128], title[64] = "(missing)";
+	int		size = -1, line_no = 0, unknown = 0;
+
+	if (!f || skip_bom(f, path) != 0)
+		return ((void)(f && fclose(f)));
+	while (fgets(line, sizeof line, f))
+	{
+		line_no++;
+		line[strcspn(line, "\n")] = '\0';
+		if (strncmp(line, "title ", 6) == 0)
+			snprintf(title, sizeof title, "%s", line + 6);
+		else if (strncmp(line, "size ", 5) == 0)
+			size = atoi(line + 5);
+		else
+			unknown += fprintf(stderr, "%s:%d : unknown directive\n", path, line_no) > 0;
+	}
+	fclose(f);
+	printf("safe  %-12s : title=%s, size=%d, unknown directives=%d\n", path, title, size, unknown);
+}
+
+int	main(int argc, char **argv)
+{
+	setvbuf(stdout, NULL, _IONBF, 0);               /* messages and results in order */
+	for (int i = 1; i < argc; i++)
+		parse_naive(argv[i]);
+	for (int i = 1; i < argc; i++)
+		parse_safe(argv[i]);
+	return (0);
+}
+```
+
+```bash
+gcc -Wall -Wextra -g -fsanitize=address,undefined directives.c -o directives
+./directives utf8.txt utf8bom.txt utf16.txt utf16be.txt utf32le.txt utf32be.txt utf16_converted.txt
+```
+
+```
+naive utf8.txt     : title=My text, size=12, ignored lines=0
+naive utf8bom.txt  : title=(missing), size=12, ignored lines=1
+naive utf16.txt    : title=(missing), size=-1, ignored lines=3
+naive utf16be.txt  : title=(missing), size=-1, ignored lines=2
+naive utf32le.txt  : title=(missing), size=-1, ignored lines=3
+naive utf32be.txt  : title=(missing), size=-1, ignored lines=2
+naive utf16_converted.txt : title=My text, size=12, ignored lines=0
+safe  utf8.txt     : title=My text, size=12, unknown directives=0
+safe  utf8bom.txt  : title=My text, size=12, unknown directives=0
+utf16.txt : UTF-16 (BOM FF FE) not supported
+utf16be.txt : UTF-16 (BOM FE FF) not supported
+utf32le.txt : UTF-32 (BOM FF FE 00 00) not supported
+utf32be.txt : UTF-32 (BOM 00 00 FE FF) not supported
+safe  utf16_converted.txt : title=My text, size=12, unknown directives=0
+```
+
+**First case: the UTF-8 BOM glued to the first directive.** The file `utf8bom.txt` looks like `utf8.txt` on screen, but its first line starts with the bytes `EF BB BF`: it is `\xEF\xBB\xBFtitle My text`, which is not `title `; the naive reader puts it among the unknown lines, **the first directive vanishes** and nothing says so (`title=(missing)`, one ignored line). The rest of the file is read normally, which makes the defect hard to trace back to its cause.
+
+**Second case: UTF-16 and NUL bytes.** A character string in C ends with a byte of value 0, the **NUL** (`'\0'`); `strlen` and most text functions stop at the first one. In UTF-16 (and UTF-32), an ASCII letter is followed by one or three NUL bytes: `t` is written `74 00`. Measured on the first line of `utf16.txt`:
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int	main(void)
+{
+	FILE	*f = fopen("utf16.txt", "rb");
+	char	line[128];
+	long	start = ftell(f);                       /* position before the read */
+
+	fgets(line, sizeof line, f);                    /* reads up to the first 0x0A byte */
+	printf("bytes read: %ld, strlen: %zu\n", ftell(f) - start, strlen(line));
+	printf("first bytes: %02x %02x %02x %02x\n", (unsigned char)line[0],
+		(unsigned char)line[1], (unsigned char)line[2], (unsigned char)line[3]);
+	fclose(f);
+	return (0);
+}
+```
+
+```
+bytes read: 29, strlen: 3
+first bytes: ff fe 74 00
+```
+
+`fgets` read 29 bytes (up to the first `0A` byte, a line feed: in UTF-16 it is written `0A 00`, so its `00` opens the next line), but `strlen` sees only 3: `FF`, `FE`, `74`, then the NUL stops everything. Each line is seen as a single character preceded by the BOM: **no directive matches**, the naive reader fills nothing (`title=(missing), size=-1`, 3 ignored lines) and reports nothing.
+
+The safe reader does not try to guess: it reads the BOM, and **explicitly refuses** the encoding (`utf16.txt : UTF-16 (BOM FF FE) not supported`), giving the byte that betrayed it. The conversion is done elsewhere, with `iconv -f UTF-16 -t UTF-8`: the converted file is read normally (`utf16_converted.txt`).
+
+| File | Naive reader | Safe reader |
+|---|---|---|
+| UTF-8 without BOM | correct | correct |
+| UTF-8 with BOM | **title lost**, no error | correct (BOM skipped) |
+| UTF-16 (LE or BE) | **everything ignored**, no error | named refusal |
+| UTF-32 (LE or BE) | **everything ignored**, no error | named refusal |
+| UTF-16 converted to UTF-8 | correct | correct |
+
+> **Pitfall:** an editor that saves "as UTF-8" sometimes adds a BOM, which `cat` or a plain `diff` do not show. A file that looks identical on screen may start with three invisible bytes. The `file` command (or `xxd | head -1`) reveals it.
+>
+> **Pitfall:** testing the UTF-32 little-endian BOM (`FF FE 00 00`) **after** the UTF-16 one (`FF FE`): both start with the same bytes, the shorter would always win. In `skip_bom`, the four-byte test comes first.
+>
+> **Best practice:** read the first bytes before parsing a text file that comes from outside, skip a UTF-8 BOM, explicitly refuse the other encodings (with the BOM found in the message), and report an unknown directive rather than ignoring it silently.
+
 ## Stripping accents from text: Unicode normalization (NFKD)
 
 Comparing or searching text while ignoring accents (grouping "café" and "cafe" as the same entry, for instance) requires separating each accented letter from its accent. The standard `unicodedata` module provides this decomposition without reinventing a lookup table:
@@ -148,5 +354,5 @@ NFKD is one of the 4 standard Unicode normalization forms:
 |---|---|
 | **Key takeaways** | An encoding maps each character to a number (Unicode: the catalog) then to bytes (UTF-8: the format). UTF-8 is ASCII-compatible and encodes a character in 1 to 4 bytes, so a character isn't necessarily a byte. Unicode normalization (NFC/NFD/NFKC/NFKD) recomposes or decomposes an accented character, notably to compare or search text while ignoring accents. |
 | **Tools you can use** | `<meta charset="utf-8">`, `utf8mb4` for MySQL, a dedicated library for counting graphemes, `unicodedata.normalize()`/`unicodedata.combining()` to normalize text or strip its accents. |
-| **Pitfalls to avoid** | Reading a UTF-8 file with the wrong encoding declared (mojibake, `Ã©`); splitting a string at an exact byte offset without accounting for multi-byte characters; comparing two visually identical texts composed differently in memory without normalizing them first. |
-| **Best practices** | Declare the right encoding at every layer (file, HTTP, database) rather than "fixing" characters that are already corrupted. Normalize two texts into the same Unicode form before comparing or searching them. |
+| **Pitfalls to avoid** | Reading a UTF-8 file with the wrong encoding declared (mojibake, `Ã©`); splitting a string at an exact byte offset without accounting for multi-byte characters; comparing two visually identical texts composed differently in memory without normalizing them first; parsing a file that starts with a BOM without handling it (directive lost in UTF-8, all the text ignored in UTF-16). |
+| **Best practices** | Declare the right encoding at every layer (file, HTTP, database) rather than "fixing" characters that are already corrupted. Normalize two texts into the same Unicode form before comparing or searching them. Read the first bytes of a file that comes from outside to spot a BOM, and report an unsupported encoding instead of ignoring it. |
