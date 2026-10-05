@@ -302,6 +302,10 @@
             {
               "id": "mesure-du-temps",
               "label": "Mesurer le temps et attendre précisément"
+            },
+            {
+              "id": "convertir-un-texte-en-nombre",
+              "label": "Convertir un texte en nombre sans le piège de `atoi`"
             }
           ]
         },
