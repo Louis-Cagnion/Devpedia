@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 8
 ---
 
 # Escape-Time Fractals: Mandelbrot and Julia

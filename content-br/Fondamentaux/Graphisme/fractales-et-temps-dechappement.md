@@ -1,5 +1,5 @@
 ---
-order: 7
+order: 8
 ---
 
 # Fractais por tempo de escape: Mandelbrot e Julia

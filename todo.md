@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4 en commençant par le nouveau chapitre « Matrices et caméra » (Fondamentaux/Graphisme, à placer juste après `tampons-textures-et-shaders-opengl` : décaler les `order` des chapitres suivants dans les 4 langues), un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger le point 4 en commençant par la section **delta time** de `glfw-glad-et-boucle-de-rendu` (Fondamentaux/Graphisme, puis les autres items dans l'ordre), un item à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -65,12 +65,12 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/operateur-virgule` (section ordre d'évaluation des arguments non spécifié, points de séquence).
 - `Fondamentaux/Graphisme/wavefront-obj-et-modele-de-phong` (sections lire un `.obj` avec tolérance, fins de ligne et BOM, PPM P6, méthode de Newell, ear clipping robuste).
 - `Fondamentaux/Graphisme/tampons-textures-et-shaders-opengl` (nouveau).
+- `Fondamentaux/Graphisme/matrices-et-camera` (nouveau).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Fondamentaux > Graphisme** (chapitres existants : `wavefront-obj-et-modele-de-phong`, `glfw-glad-et-boucle-de-rendu`, `effets-de-rendu-et-interaction-3d`, `edition-de-maillage-et-selection-proportionnelle`)
-- Nouveau chapitre « Matrices et caméra » : model/view/projection, `lookat`, perspective et plans near/far, rotation accumulée, **formule de Rodrigues** (rotation autour d'un axe quelconque), extraction angle/axe d'une matrice de rotation et cas dégénéré à 180°, cadrage automatique par boîte englobante.
 - `glfw-glad-et-boucle-de-rendu` : **delta time** et vitesse indépendante du FPS (bug trouvé : pas de temps mis à jour toutes les 0,01 s, tout allait 1,5× trop vite à 144 FPS), `glfwSwapInterval`/vsync.
 - `effets-de-rendu-et-interaction-3d` (aberration chromatique, animation procédurale, picking : déjà là) : **dispersion chromatique** par indice de réfraction par canal, reflet de **Fresnel**, nuage intérieur par **ray-marching**, objets transparents (opaques d'abord puis cristal en deux passes dos/face, `GL_SRC_ALPHA`), `glCullFace`, ordre d'enroulement (face noire si inversé) ; **ressort amorti** (raideur, amortissement, pas de temps borné) et `tanh` pour borner une déformation ; **placage triplanaire** (texture sans UV, mélange par normale, motif « brique »).
 
