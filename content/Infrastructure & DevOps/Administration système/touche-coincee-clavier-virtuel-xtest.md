@@ -171,6 +171,60 @@ Règles du protocole :
 
 Un appui sans relâchement, ou plusieurs appuis de suite, signale une touche coincée ou répétée.
 
+## Mesurer ce que l'application affiche : capture et pixels
+
+Pour savoir si l'objet a bougé après la frappe, on **capture l'écran** et on mesure les pixels. `ffmpeg` (l'outil de conversion audio et vidéo) sait lire l'écran d'un serveur X avec `-f x11grab` :
+
+```bash
+ffmpeg -f x11grab -draw_mouse 0 -video_size 800x600 -i :99 -frames:v 1 shot.ppm
+```
+
+| Option | Rôle |
+|---|---|
+| `-f x11grab` | lit l'écran du serveur X au lieu d'un fichier |
+| `-draw_mouse 0` | **ne dessine pas le curseur de la souris** dans l'image |
+| `-video_size 800x600` | taille de la zone capturée, en pixels |
+| `-i :99` | serveur X à lire (valeur de `DISPLAY`) |
+| `-frames:v 1` | une seule image, enregistrée au format **PPM** (image brute : un petit en-tête, puis 3 octets rouge-vert-bleu par pixel) |
+
+> **Piège (le curseur fausse la mesure) :** par défaut, `x11grab` dessine le curseur dans la capture. Sa flèche blanche s'ajoute à l'objet mesuré et agrandit sa **boîte englobante** (le plus petit rectangle qui contient tous les pixels de l'objet), donc une mesure de position ou de taille. `-draw_mouse 0` l'exclut.
+
+La mesure se fait ensuite en lisant le PPM : sur fond noir, la boîte englobante est celle des pixels qui ne sont pas noirs.
+
+```python
+import re
+import sys
+
+
+def read_ppm(path):
+    """Renvoie (largeur, hauteur, octets RVB) d'un PPM binaire P6 à 255 niveaux."""
+    with open(path, "rb") as file:
+        data = file.read()
+    header = re.match(rb"P6\s+(\d+)\s+(\d+)\s+255\s", data)   # en-tête : P6, largeur, hauteur, 255
+    if not header:
+        sys.exit(f"{path} : PPM binaire P6 à 255 niveaux attendu")
+    width, height = int(header.group(1)), int(header.group(2))
+    pixels = data[header.end():]
+    if len(pixels) != width * height * 3:
+        sys.exit(f"{path} : {len(pixels)} octets de pixels, {width * height * 3} attendus")
+    return width, height, pixels
+
+
+def bounding_box(path):
+    """Renvoie (x_min, y_min, x_max, y_max) des pixels non noirs, None si tout est noir."""
+    width, height, pixels = read_ppm(path)
+    xs, ys = [], []
+    for index in range(0, len(pixels), 3):
+        if pixels[index:index + 3] != b"\x00\x00\x00":    # un pixel = 3 octets
+            xs.append((index // 3) % width)               # colonne du pixel
+            ys.append((index // 3) // width)              # ligne du pixel
+    return (min(xs), min(ys), max(xs), max(ys)) if xs else None
+```
+
+Testé sur des images synthétiques : un rectangle blanc de 3 × 2 pixels donne `(3, 2, 5, 3)`, une image toute noire `None`, un fichier tronqué ou d'un autre format un message qui nomme le fichier. L'en-tête est lu par une expression régulière plutôt qu'en découpant le fichier sur les espaces : un premier pixel dont l'octet vaut 10 (retour à la ligne) serait sinon avalé comme un séparateur.
+
+Si l'application **pulse** (un [shader](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl), programme exécuté par la carte graphique, dont la luminosité varie avec le temps), comparer deux captures **après normalisation de la luminosité** (diviser chaque capture par sa propre luminosité moyenne), sinon deux rendus identiques paraissent différents.
+
 ## Sur d'autres machines
 
 | Situation | Comportement |
