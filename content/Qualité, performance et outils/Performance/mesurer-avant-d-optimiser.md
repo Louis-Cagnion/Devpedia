@@ -328,6 +328,90 @@ Exemple réel sur le solveur SAT : 3 grilles, temps moyen par grille, une versio
 
 Pour conclure à partir de plusieurs grilles plutôt que d'une seule (appariement, test du signe, comparaisons multiples), voir [Comparer deux réglages](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages).
 
+## Un gain de micro-banc n'est pas un gain du programme : l'exemple de la division
+
+Une division entière est une des instructions les plus lentes d'un processeur : sa **latence** (le temps avant que le résultat soit disponible) se compte en dizaines de cycles, contre quelques cycles pour une multiplication. Quand le diviseur change d'une fois à l'autre mais ne prend que peu de valeurs, on peut remplacer la division par une multiplication par un **inverse précalculé** (voir [Éviter le recalcul redondant](/?c=qualite-performance-et-outils&s=performance&p=eviter-le-recalcul-redondant)).
+
+```c
+#include <stdint.h>
+
+#define DMAX 128                // plus grand diviseur utilisé
+#define XBITS 25                // les dividendes restent sous 2^XBITS
+static uint64_t inv[DMAX + 1];  // inv[d] = plafond de 2^32 / d
+
+void init_inverses(void)
+{
+    for (uint64_t d = 1; d <= DMAX; d++)
+        inv[d] = ((1ULL << 32) + d - 1) / d;
+}
+
+// Quotient entier de x par d, pour 1 <= d <= DMAX et x < 2^XBITS
+static inline uint32_t diviser(uint32_t x, uint32_t d)
+{
+    return (uint32_t)(((uint64_t)x * inv[d]) >> 32);
+}
+```
+
+**Pourquoi le résultat est exact.** Notons `e = inv[d] × d − 2³²` : comme `inv[d]` est arrondi vers le haut, `0 ≤ e < d`. Alors `x × inv[d] / 2³² = x/d + x × e / (d × 2³²)`. Tant que `x × e < 2³²` (ici `x < 2²⁵` et `e < d ≤ 128 = 2⁷`), le terme ajouté est inférieur à `1/d`. Or la partie fractionnaire de `x/d` vaut au plus `(d − 1)/d` : la somme reste sous l'entier suivant, et la troncature donne bien le quotient. Vérifié ici par énumération complète : 128 diviseurs × 2²⁵ dividendes, soit 2³² cas, 0 erreur.
+
+**Combien ça gagne, selon l'endroit où l'on mesure.** Même calcul de somme avec la division (A) et avec l'inverse (B), sur un Intel Core Ultra 5 228V (sous WSL, Ubuntu 24.04), gcc 13.3 en `-O2`, médiane de 7 tours alternés, mêmes sommes vérifiées :
+
+| Situation mesurée | A : division | B : inverse | Gain de B |
+|---|---|---|---|
+| 4 M divisions indépendantes | 8,6 ms | 2,3 ms | −73 % |
+| Chaîne où chaque division attend la précédente | 22,4 ms | 8,9 ms | −61 % |
+| 32 M accès aléatoires dans un tableau de 128 Mo, une division par accès | 506 ms | 381 ms | −25 % |
+
+Le gain fond à mesure que la division pèse moins dans le temps total : le processeur exécute en désordre et **masque** la latence de la division derrière d'autres instructions ou l'attente de la mémoire. Dans un vrai programme (le solveur de puzzle de la recherche rush01, où la division n'est qu'une opération parmi bien d'autres), le même remplacement n'a gagné que 0,5 % du temps total.
+
+> **Piège :** conclure d'un micro-banc (−73 %) qu'un programme entier ira plus vite. Seule la mesure du **programme réel** dit ce que vaut l'optimisation, avec les [tours alternés](#mesurer-en-tours-alternes) ci-dessus.
+>
+> **Bonne pratique :** avant de remplacer une division, mesurer la part qu'elle occupe dans le profil du programme ; si elle est faible, laisser le code simple.
+
+> **Piège :** l'inverse en virgule flottante (`1.0 / d`) ne convient pas : `49 × (1.0 / 49)` vaut `0,9999999999999999`, et la troncature donne 0 au lieu de 1. Une valeur hors du domaine annoncé (`x ≥ 2²⁵`, `d > 128`, `d = 0`) donne en plus un résultat faux **sans aucune erreur**.
+>
+> **Bonne pratique :** rester en entiers avec un inverse arrondi vers le haut, vérifier l'exactitude par énumération sur tout le domaine, et protéger l'entrée par une assertion. Pour un diviseur **constant** à la compilation, inutile : le compilateur fait déjà ce remplacement (gcc produit un `imul` pour `x / 7` et un `div` pour `x / d`).
+
+## Mesurer la complexité : doubler la taille, sur le build normal
+
+Pour savoir comment le temps croît avec la quantité de données (la **complexité**), on **double la taille** de l'entrée et on compare les temps :
+
+| Temps après doublement | Croissance | Nom |
+|---|---|---|
+| × 2 | proportionnelle à la taille | linéaire |
+| × 4 | proportionnelle au **carré** de la taille | quadratique |
+
+Un programme quadratique est souvent invisible sur de petites données et s'effondre sur de grandes. Exemple : ajouter `n` entiers un par un en agrandissant le tableau d'**une case** à chaque fois avec [`realloc`](/?c=langages&s=c&p=memoire#redimensionner-un-bloc-realloc) (qui peut recopier tout le tableau vers un nouvel emplacement) :
+
+```c
+for (long i = 0; i < n; i++)
+{
+	int *bigger = realloc(tab, (size_t)(i + 1) * sizeof *tab);   /* un seul entier de plus */
+
+	if (!bigger)
+	{
+		free(tab);
+		fprintf(stderr, "realloc a échoué à i = %ld\n", i);
+		return 1;
+	}
+	tab = bigger;
+	tab[i] = (int)i;
+}
+```
+
+Mesuré (`gcc -O2`, durée de la seule boucle) :
+
+| Build | n | Durée |
+|---|---|---|
+| normal (`-O2`) | 400 000 / 800 000 / 1 600 000 | 0,002 s / 0,004 s / 0,006 s (≈ × 2 par doublement) |
+| `-fsanitize=address` (ASan) | 6 250 / 12 500 / 25 000 | 0,094 s / 0,335 s / 1,166 s (≈ × 3,6 par doublement) |
+
+**ASan** (*AddressSanitizer*) est une option de compilation qui surveille chaque accès à la mémoire pour détecter les débordements et les usages après libération. Pour cela, son `realloc` **alloue toujours un nouveau bloc et recopie tout**, alors que celui de la glibc agrandit en général sur place : le même programme est **linéaire** en build normal et **quadratique** sous ASan. À `n = 50 000`, le build ASan a même dépassé 2 Gio de mémoire (les anciens blocs restent retenus un temps avant d'être réutilisés) et a été arrêté par `ASAN_OPTIONS=hard_rss_limit_mb=2000`.
+
+> **Piège (une mesure faite sous un outil d'instrumentation) :** les temps d'un build sanitizer, d'un `valgrind` ou d'un profileur ne disent rien de la vitesse réelle, ni de sa complexité : l'outil change lui-même l'algorithme (ici, de linéaire à quadratique). Mesurer la complexité **sur le build normal** (`-O2`, sans instrumentation) ; garder les sanitizers pour la **correction** (voir [Valgrind](/?c=langages&s=c&p=memoire)). Un temps qui devient énorme uniquement sous un outil est un fait de l'outil avant d'être un bug du programme.
+
+La parade au tableau agrandi d'une case est le **doublement de capacité** : on multiplie la capacité par un facteur constant (par exemple 2) seulement quand le tableau est plein ; les recopies deviennent rares et l'ajout reste linéaire sous tous les builds.
+
 ## Plus de threads, plus lent : les programmes limités par la mémoire
 
 Un programme peut être limité par le **calcul** (*CPU-bound*) ou par les **accès à la mémoire** (*memory-bound*, voir [Le cache CPU](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). Dans le second cas, les threads se disputent la même bande passante mémoire : en ajouter peut **ralentir** l'ensemble. Mesuré sur un solveur de puzzle : 577 ms avec un thread, 893 ms avec 8 threads (voir aussi [Le parallélisme](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).
@@ -345,7 +429,7 @@ Deux autres leçons du même projet :
 
 | | |
 |---|---|
-| **À retenir** | Ne jamais optimiser sans avoir mesuré : l'intuition sur "ce qui est lent" cible en général le code qui semble compliqué, pas celui qui coûte réellement cher. Deux versions se comparent d'abord sur leurs résultats et leurs compteurs, puis seulement sur le temps, en tours alternés. |
+| **À retenir** | Ne jamais optimiser sans avoir mesuré : l'intuition sur "ce qui est lent" cible en général le code qui semble compliqué, pas celui qui coûte réellement cher. Deux versions se comparent d'abord sur leurs résultats et leurs compteurs, puis seulement sur le temps, en tours alternés. Un gain mesuré sur un micro-banc ne vaut pas pour le programme entier : le processeur masque la latence d'une instruction lente (division) derrière le reste du travail. |
 | **Outils utilisables** | Un profileur classique (par fonction : `gprof`, `perf`, `valgrind --tool=callgrind`), une instrumentation manuelle par phase quand le programme passe son temps à attendre ; des compteurs de travail déterministes pour comparer deux versions ; `cachegrind` (`--cache-sim=yes`) pour les défauts de cache ; `__rdtsc()` précédé de `_mm_lfence()` pour la part d'une portion de boucle ; `cmp -s` pour comparer deux sorties. |
-| **Pièges à éviter** | Se fier à une mesure unique : le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation ; croire un nom de fonction inattendu dans un profil `gprof` d'un programme optimisé (vérifier avec `nm -n` ou callgrind) ; `cachegrind` sans `--cache-sim=yes`, ou sur des sources modifiées depuis le profil ; lire le compteur de cycles sans barrière ; mesurer A puis B en bloc sur une machine qui dérive. |
-| **Bonnes pratiques** | Toujours re-mesurer après une optimisation (temps ET exactitude du résultat) ; prendre plusieurs mesures pour distinguer un vrai gain du bruit ; vérifier que deux versions font le même travail avant de les chronométrer ; mesurer en tours alternés, machine au repos. |
+| **Pièges à éviter** | Se fier à une mesure unique : le bruit (réseau, cache, charge machine) peut dépasser l'effet réel d'une optimisation ; croire un nom de fonction inattendu dans un profil `gprof` d'un programme optimisé (vérifier avec `nm -n` ou callgrind) ; `cachegrind` sans `--cache-sim=yes`, ou sur des sources modifiées depuis le profil ; lire le compteur de cycles sans barrière ; mesurer A puis B en bloc sur une machine qui dérive ; conclure d'un micro-banc (−73 %) qu'un programme entier gagnera autant (0,5 % mesuré) ; juger une complexité sur un build sanitizer ou valgrind ; un inverse en virgule flottante, ou une entrée hors du domaine vérifié. |
+| **Bonnes pratiques** | Toujours re-mesurer après une optimisation (temps ET exactitude du résultat) ; prendre plusieurs mesures pour distinguer un vrai gain du bruit ; vérifier que deux versions font le même travail avant de les chronométrer ; mesurer en tours alternés, machine au repos ; mesurer la complexité en doublant la taille (× 4 de temps = quadratique) sur le build normal ; chiffrer la part d'une instruction dans le profil avant de la remplacer, et vérifier un remplacement exact par énumération sur tout son domaine. |

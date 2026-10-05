@@ -49,6 +49,89 @@ Injectée au tout début du chargement de chaque page (`context.add_init_script(
 
 > **Piège :** masquer `navigator.webdriver` ne rend pas un navigateur piloté indétectable pour autant : les systèmes anti-bot avancés combinent des dizaines de signaux (cadence des clics, résolution d'écran, polices installées...), pas seulement cette propriété. La traiter comme la seule à corriger donne un faux sentiment de sécurité.
 
+## Mode headless ou fenêtre réelle
+
+Un navigateur **headless** (« sans tête ») s'exécute sans afficher de fenêtre : c'est le mode le plus courant pour un script, car il ne demande ni écran ni session ouverte. Mais un navigateur sans fenêtre ne se présente pas exactement comme un navigateur normal : certaines versions annoncent « HeadlessChrome » dans leur identifiant (*User-Agent*) ou n'exposent pas les mêmes fonctionnalités. Les systèmes anti-bot s'en servent pour décider d'afficher une vérification supplémentaire (voir [le fingerprinting](/?c=securite&s=cybersecurite&p=fingerprinting-navigateur-et-appareil)).
+
+| | Headless | Fenêtre réelle |
+|---|---|---|
+| Ressources | Légères | Plus lourdes (une fenêtre à dessiner) |
+| Besoin d'une session ouverte | Non | Oui (voir [les sessions Windows](/?c=infrastructure-devops&s=administration-systeme&p=windows-services-sessions-et-droits)) |
+| Empreinte | Parfois reconnaissable | Celle d'un navigateur ordinaire |
+| Intervention humaine possible (valider une vérification) | Non | Oui |
+
+Une alternative courante : lancer une **vraie fenêtre, mais la placer hors de l'écran visible** (`--window-position=-32000,-32000`), pour garder l'empreinte d'un navigateur normal sans gêner la personne qui utilise la machine. La taille de la page se règle à part, par le **viewport** (la zone d'affichage que la page croit avoir) : elle est imposée par le script et ne dépend pas de la résolution de l'écran, qui ne compte que pour un humain qui regarderait la fenêtre.
+
+```python
+navigateur = p.chromium.launch(
+    headless=False,                            # vraie fenêtre, pas de mode headless
+    args=["--window-position=-32000,-32000"],  # fenêtre placée hors de l'écran visible
+)
+page = navigateur.new_page(viewport={"width": 1280, "height": 1000})
+```
+
+> **Piège :** changer de mode (fenêtre réelle en développement, headless en production) sans retester : la page peut se comporter différemment (vérification qui apparaît, mise en page qui change), et le script n'a été validé que dans l'autre mode.
+>
+> **Bonne pratique :** tester dans le mode réellement utilisé en production, et fixer le `viewport` pour que la mise en page ne dépende pas de l'écran de la machine.
+
+## Les captchas : une vérification faite pour arrêter les robots
+
+Un **captcha** (*Completely Automated Public Turing test to tell Computers and Humans Apart*) est un test que la page demande de réussir avant de continuer : reconnaître des images, cocher une case. Il est conçu pour être facile pour un humain et difficile pour un programme, et les versions récentes jugent aussi le comportement et l'empreinte du navigateur plutôt que seulement le test affiché.
+
+Un robot qui tombe sur un captcha ne doit donc pas chercher à le franchir. Le schéma courant est de **laisser un humain le résoudre** dans une fenêtre réelle, puis de réutiliser le résultat : une fois la vérification réussie, le site pose un cookie de validation (par exemple `cf_clearance` chez Cloudflare) que le navigateur renvoie ensuite à chaque requête, sans nouveau test, tant qu'il est valable.
+
+> **Piège :** croire qu'un cookie de validation est universel. Il est souvent lié au navigateur (identifiant, empreinte) et à l'adresse IP qui l'a obtenu : un robot qui reprend le même cookie avec une autre empreinte (par exemple en passant de la fenêtre réelle au mode headless) est de nouveau bloqué.
+>
+> **Bonne pratique :** prévoir un état « intervention humaine requise » (notification, fenêtre visible) plutôt que de boucler en silence ; ne pas contourner un captcha par un service tiers sans vérifier que les conditions d'utilisation du site le permettent.
+
+## Le profil de navigateur persistant
+
+Par défaut, un navigateur piloté démarre avec un profil vierge, détruit à la fermeture : aucun cookie ne survit d'un lancement à l'autre. Un **profil persistant** est un dossier qui conserve cookies, stockage local et cache. Avec Playwright, on le demande par `launch_persistent_context` ([documentation](https://playwright.dev/python/docs/api/class-browsertype#browser-type-launch-persistent-context)) :
+
+```python
+contexte = p.chromium.launch_persistent_context(
+    user_data_dir=r"C:\robot\profil",  # cookies, stockage local et cache conservés ici
+    headless=False,                    # même mode à chaque lancement
+    viewport={"width": 1280, "height": 1000},
+)
+```
+
+Le cookie de validation obtenu après un captcha reste alors dans ce dossier, et les lancements suivants ne revoient plus la vérification.
+
+| Point d'attention | Pourquoi |
+|---|---|
+| Un seul navigateur à la fois par profil | Le dossier est verrouillé tant qu'un navigateur l'utilise ; un second lancement échoue |
+| Le chemin dépend du compte qui exécute | Un chemin relatif au dossier de l'utilisateur ne désigne pas le même dossier pour un autre compte (compte de service, planificateur) : le robot repart d'un profil vide et revoit le captcha |
+| Le contenu est sensible | Le profil contient des sessions ouvertes : qui copie le dossier peut se connecter à leur place |
+
+> **Piège :** commiter le dossier du profil dans [Git](/?c=git&p=git), ou le laisser lisible par tous les comptes de la machine.
+>
+> **Bonne pratique :** indiquer le chemin du profil en absolu (ou dans une variable d'environnement), l'exclure du dépôt (`.gitignore`) et en réserver l'accès au compte qui exécute le robot.
+
+## Le débogage à distance de Chrome
+
+Chrome peut ouvrir un port de **débogage à distance** (`--remote-debugging-port=9222`) : un outil, ou un script, s'y connecte en parlant le **Chrome DevTools Protocol** (CDP), le protocole qu'utilisent aussi les outils de développement du navigateur ([documentation](https://chromedevtools.github.io/devtools-protocol/)). Cela permet de voir et de piloter une page d'un Chrome sans bureau (un serveur, une machine à distance).
+
+```powershell
+chrome.exe --remote-debugging-port=9222 --user-data-dir=C:\robot\profil-debug
+```
+
+| Usage | Comment |
+|---|---|
+| Vérifier que le port répond | `curl http://localhost:9222/json/version` (renvoie la version et l'adresse du canal de pilotage) |
+| Voir la page dans un autre Chrome | Ouvrir `chrome://inspect`, ajouter `localhost:9222` aux cibles : la page apparaît, avec ses outils de développement |
+| Piloter avec Playwright | `p.chromium.connect_over_cdp("http://localhost:9222")` |
+
+Ce port ne demande **aucune authentification** : quiconque s'y connecte contrôle le navigateur, y compris les sessions ouvertes dans son profil (il peut lire les cookies, naviguer, exécuter du JavaScript dans une page connectée).
+
+> **Piège :** exposer ce port au réseau. Chrome n'y écoute par défaut que sur `127.0.0.1` (invisible du réseau, voir [les tunnels SSH](/?c=infrastructure-devops&s=reseaux&p=tunnel-ssh-et-redirection-de-port)) ; changer l'adresse d'écoute ou ouvrir le port dans le pare-feu donne le contrôle du navigateur à n'importe qui l'atteint.
+>
+> **Bonne pratique :** laisser le port sur `127.0.0.1` et, pour y accéder depuis un autre poste, passer par un tunnel SSH (`ssh -N -L 9222:localhost:9222 …`).
+
+> **Piège :** depuis Chrome 136, l'option `--remote-debugging-port` n'est plus prise en compte quand le profil est celui par défaut de Chrome : un dossier non standard utilise une autre clé de chiffrement, ce qui protège les données du profil habituel d'un programme malveillant ([annonce](https://developer.chrome.com/blog/remote-debugging-port)). Sans `--user-data-dir`, le port ne répond pas.
+>
+> **Bonne pratique :** toujours donner un `--user-data-dir` dédié au robot, distinct du profil personnel.
+
 ## La distinction clé : "scraper des données" contre "exécuter une page"
 
 Le réflexe défensif central tient en une phrase : un script d'automatisation n'a besoin que d'une petite partie de ce qu'un navigateur complet sait faire (charger une page, lire son contenu, cliquer des éléments prévus). Tout le reste (téléchargements, popups, permissions système, accès au presse-papier) doit être explicitement RESTREINT, jamais laissé aux réglages par défaut pensés pour un usage humain interactif.
@@ -70,7 +153,7 @@ Le réflexe défensif central tient en une phrase : un script d'automatisation n
 
 | | |
 |---|---|
-| **À retenir** | Un navigateur piloté par un script (Playwright/Selenium/Puppeteer) exécute réellement les pages visitées, avec toutes les capacités d'un navigateur normal : une page malveillante peut tenter un téléchargement auto-déclenché, détourner le presse-papier, perturber le script via une popup, ou détecter l'automatisation elle-même via `navigator.webdriver`. |
-| **Outils utilisables** | Interception des dialogues natifs (`page.on("dialog")`) ; désactivation des téléchargements ou dossier isolé dédié ; refus des permissions navigateur par défaut ; masquage de `navigator.webdriver` via `context.add_init_script(...)`. |
-| **Pièges à éviter** | Laisser les réglages par défaut d'un navigateur pensé pour un usage humain sur un pilote automatique. Faire confiance à une donnée extraite d'une page non maîtrisée sans la traiter comme externe. Croire qu'un navigateur piloté devient indétectable une fois `navigator.webdriver` masqué. |
-| **Bonnes pratiques** | Restreindre explicitement le navigateur piloté au minimum nécessaire à la tâche. Intercepter systématiquement tout dialogue/téléchargement inattendu. Échapper toute donnée extraite avant réutilisation, comme n'importe quelle autre donnée externe. |
+| **À retenir** | Un navigateur piloté par un script (Playwright/Selenium/Puppeteer) exécute réellement les pages visitées, avec toutes les capacités d'un navigateur normal : une page malveillante peut tenter un téléchargement auto-déclenché, détourner le presse-papier, perturber le script via une popup, ou détecter l'automatisation elle-même via `navigator.webdriver`. Le mode headless a une empreinte parfois reconnaissable ; un captcha se lève par un humain dans une fenêtre réelle, et le déblocage se réutilise grâce à un profil persistant ; le port de débogage à distance de Chrome n'a aucune authentification. |
+| **Outils utilisables** | Interception des dialogues natifs (`page.on("dialog")`) ; désactivation des téléchargements ou dossier isolé dédié ; refus des permissions navigateur par défaut ; masquage de `navigator.webdriver` via `context.add_init_script(...)` ; fenêtre réelle placée hors écran et `viewport` fixé ; `launch_persistent_context` pour garder un profil ; `--remote-debugging-port` et `chrome://inspect` pour observer un Chrome sans bureau. |
+| **Pièges à éviter** | Laisser les réglages par défaut d'un navigateur pensé pour un usage humain sur un pilote automatique. Faire confiance à une donnée extraite d'une page non maîtrisée sans la traiter comme externe. Croire qu'un navigateur piloté devient indétectable une fois `navigator.webdriver` masqué. Valider dans un mode (fenêtre réelle) et exécuter dans un autre (headless). Croire qu'un cookie de validation de captcha vaut pour une autre empreinte. Un profil de navigateur versionné, lisible de tous ou désigné par un chemin qui change selon le compte. Un port de débogage exposé au réseau. |
+| **Bonnes pratiques** | Restreindre explicitement le navigateur piloté au minimum nécessaire à la tâche. Intercepter systématiquement tout dialogue/téléchargement inattendu. Échapper toute donnée extraite avant réutilisation, comme n'importe quelle autre donnée externe. Tester dans le mode de production et fixer le `viewport`. Prévoir un état « intervention humaine requise » devant un captcha. Profil en chemin absolu, hors dépôt, réservé au compte du robot. Port de débogage sur `127.0.0.1` seulement, accessible à distance par un tunnel SSH, avec un `--user-data-dir` dédié. |

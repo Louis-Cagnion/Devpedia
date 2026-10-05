@@ -110,6 +110,10 @@
             {
               "id": "couplages-et-filtrage-de-regin",
               "label": "Emparelhamentos, teste de Hall e filtragem de Régin"
+            },
+            {
+              "id": "couplage-biparti-et-theoreme-de-hall",
+              "label": "Emparelhamento bipartido, teorema de Hall e algoritmo de Kuhn"
             }
           ]
         },
@@ -306,6 +310,10 @@
             {
               "id": "mesure-du-temps",
               "label": "Medir o tempo e esperar com precisão"
+            },
+            {
+              "id": "convertir-un-texte-en-nombre",
+              "label": "Converter um texto em número sem a armadilha do `atoi`"
             }
           ]
         },
@@ -1406,6 +1414,10 @@
             {
               "id": "agents-azure-pipelines-auto-heberges",
               "label": "Os agentes auto-hospedados do Azure Pipelines"
+            },
+            {
+              "id": "agents-auto-heberges-azure",
+              "label": "Os agentes do Azure DevOps auto-hospedados"
             }
           ]
         },
@@ -1464,6 +1476,10 @@
             {
               "id": "protocoles-pair-a-pair",
               "label": "Os protocolos ponto a ponto (P2P)"
+            },
+            {
+              "id": "tunnel-ssh-et-redirection-de-port",
+              "label": "Túnel SSH e redirecionamento de portas"
             }
           ]
         },

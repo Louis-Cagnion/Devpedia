@@ -217,6 +217,8 @@ files created: created-by-unquoted-block
 
 > **Pitfall:** without the quotes around the delimiter, a comment containing `$(...)` or backticks runs commands. The delimiter must also be alone on its line and appear nowhere else in the block. The same script works in bash and zsh (verified). For a few lines, a `#` in front of each is simpler and safer; the block mostly serves to document a script at the top of the file.
 
+> **Pitfall:** writing the end word with spaces in front (`  COMMENT`): it is no longer recognized, and the block extends to the end of the file, **the whole rest of the script is swallowed**. Measured: Bash only prints a warning (`here-document … delimited by end-of-file`) and zsh prints nothing; both end with code 0.
+
 ---
 
 ## 📋 Summary
@@ -225,5 +227,5 @@ files created: created-by-unquoted-block
 |---|---|
 | **Key takeaways** | The shebang tells the system which interpreter runs the script. `chmod +x` + `./script.sh` or `bash script.sh` launches it. `$1`, `$@`, `$#`... give access to its arguments. Every script ends with an exit code (`0` = success), readable via `$?`. |
 | **Tools you can use** | `set -euo pipefail` at the top of a script to stop on the first error rather than continuing on an inconsistent state. A `: <<'COMMENT'` block to comment several lines. |
-| **Pitfalls to avoid** | Confusing `$@` and `$*` once quoted (see above). Writing `#!/bin/sh` then using a Bash extension (arrays, `[[ ]]`...): the script fails on any system where `/bin/sh` isn't `bash`. A comment block whose delimiter is not in quotes runs its content. |
-| **Best practices** | Always check `$?` (or use `&&`/`\|\|`) after a command whose failure should change the script's behavior, rather than assuming it succeeded. |
+| **Pitfalls to avoid** | Confusing `$@` and `$*` once quoted (see above). Writing `#!/bin/sh` then using a Bash extension (arrays, `[[ ]]`...): the script fails on any system where `/bin/sh` isn't `bash`. A block comment `: <<COMMENT` without apostrophes (it executes its content) or whose end word is indented (it swallows the rest of the script). |
+| **Best practices** | Always check `$?` (or use `&&`/`\|\|`) after a command whose failure should change the script's behavior, rather than assuming it succeeded. Reserve `: <<'COMMENT'` for temporarily disabling code, and comment the rest line by line with `#`. |

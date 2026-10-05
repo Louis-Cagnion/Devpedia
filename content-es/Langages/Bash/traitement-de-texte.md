@@ -142,6 +142,28 @@ wc -w archivo.txt  # número de palabras
 wc -c archivo.txt  # número de bytes
 ```
 
+## Números decimales y locale: la trampa de la coma
+
+El **locale** (configuración regional) es el ajuste de idioma y región de la sesión: la variable `LC_ALL` lo fija para todo, `LC_NUMERIC` solo para los números (`LC_ALL`, si está definida, prevalece sobre `LC_NUMERIC`). Con un locale francés (`fr_FR.UTF-8`), el separador decimal es la **coma**. Las herramientas que respetan el locale escriben entonces `3,14` y ya no aceptan `3.14`; el mismo script da un resultado distinto según la máquina.
+
+| Comando | `LC_ALL=C` | `LC_ALL=fr_FR.UTF-8` |
+|---|---|---|
+| `printf '%.2f\n' 3.14159` (`printf` de Bash) | `3.14` | error `invalid number`, luego muestra `3,00` |
+| `printf '%.2f\n' 3,14159` | error `invalid number`, luego `3.00` | `3,14` |
+| `awk --use-lc-numeric 'BEGIN{printf "%.2f\n", 3.14159}'` (`gawk`) | `3.14` | `3,14` |
+| `awk --use-lc-numeric '{print $2 + 1}' <<< 'a 3.5'` | `4.5` | `4` (lee `3`, ignora `.5`, sin error) |
+
+Medido con Bash 5 y `gawk` 5.4. `gawk` ignora el locale por defecto (escribe `3.14` incluso en `fr_FR`): la opción `--use-lc-numeric` le hace respetarlo. Otras versiones de `awk` lo respetan sin opción: compruébelo en la suya.
+
+Consecuencia: un valor escrito con coma en un archivo (`0,500`) es rechazado o truncado por cualquier lector que espere un punto (JSON, CSV anglosajón, `strtod` en el locale `C`), y un cálculo sobre un número con punto puede detenerse en el punto sin ningún mensaje.
+
+```bash
+# fija el locale solo para este comando: números escritos y leídos con punto
+LC_ALL=C awk '{ s += $2 } END { printf "%.2f\n", s }' mediciones.txt
+```
+
+> **Trampa:** exportar `LC_NUMERIC=C` no sirve de nada si `LC_ALL` está definida más arriba (medido: `LC_NUMERIC=C LC_ALL=fr_FR.UTF-8 printf '%.2f\n' 3.14159` sigue fallando). **Buena práctica:** en todo script que produzca o lea números para otro programa, poner `LC_ALL=C` delante del comando afectado en lugar de depender del locale de la máquina.
+
 ## Combinar estas herramientas
 
 ```bash

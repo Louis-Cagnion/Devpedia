@@ -134,6 +134,28 @@ wc -w file.txt    # number of words
 wc -c file.txt    # number of bytes
 ```
 
+## Decimal numbers and locale: the comma trap
+
+The **locale** is the language and region setting of the session: the `LC_ALL` variable sets it for everything, `LC_NUMERIC` for numbers only (`LC_ALL`, if defined, wins over `LC_NUMERIC`). With a French locale (`fr_FR.UTF-8`), the decimal separator is the **comma**. Tools that respect the locale then write `3,14` and no longer accept `3.14`; the same script gives a different result depending on the machine.
+
+| Command | `LC_ALL=C` | `LC_ALL=fr_FR.UTF-8` |
+|---|---|---|
+| `printf '%.2f\n' 3.14159` (Bash's `printf`) | `3.14` | `invalid number` error, then prints `3,00` |
+| `printf '%.2f\n' 3,14159` | `invalid number` error, then `3.00` | `3,14` |
+| `awk --use-lc-numeric 'BEGIN{printf "%.2f\n", 3.14159}'` (`gawk`) | `3.14` | `3,14` |
+| `awk --use-lc-numeric '{print $2 + 1}' <<< 'a 3.5'` | `4.5` | `4` (reads `3`, ignores `.5`, no error) |
+
+Measured with Bash 5 and `gawk` 5.4. `gawk` ignores the locale by default (it writes `3.14` even in `fr_FR`): the `--use-lc-numeric` option makes it respect it. Other `awk` versions respect it without an option: check yours.
+
+Consequence: a value written with a comma in a file (`0,500`) is refused or truncated by any reader that expects a point (JSON, English-style CSV, `strtod` in the `C` locale), and a calculation on a number with a point can stop at the point with no message.
+
+```bash
+# sets the locale for this command only: numbers written and read with a point
+LC_ALL=C awk '{ s += $2 } END { printf "%.2f\n", s }' measures.txt
+```
+
+> **Pitfall:** exporting `LC_NUMERIC=C` is useless if `LC_ALL` is defined higher up (measured: `LC_NUMERIC=C LC_ALL=fr_FR.UTF-8 printf '%.2f\n' 3.14159` still fails). **Good practice:** in any script that produces or reads numbers for another program, put `LC_ALL=C` in front of the command concerned rather than depending on the machine's locale.
+
 ## Combining these tools
 
 ```bash

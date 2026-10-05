@@ -1,6 +1,14 @@
 # Journal de bord — Devpedia
 
-Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`devpedia-todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
+Suivi de progression du projet (pas destiné au public) : le pourquoi, les pièges, les décisions non évidentes. Le todo (`todo.md`) garde les points restants ; `git log` garde le détail mécanique de ce qui a été fait. Ce qui a été traité et commité n'apparaît pas ici comme une reformulation du commit : seul ce que Git seul ne montre pas mérite une entrée.
+
+## Navigateur automatisé et tunnel SSH (2026-10-05)
+
+`attaques-navigateur-automatise` gagne quatre sections (headless, captchas, profil persistant, débogage à distance) et un chapitre `tunnel-ssh-et-redirection-de-port` vient dans Réseaux (le port de débogage de Chrome n'est joignable à distance que par ce tunnel). Fait vérifié en ligne : depuis Chrome 136, `--remote-debugging-port` n'est plus pris en compte sur le profil par défaut, un `--user-data-dir` dédié est obligatoire. Aucun exemple rejoué : pas de serveur SSH ni de profil Chrome distant sous la main.
+
+## Chapitre CI-CD : agents Azure DevOps auto-hébergés (2026-10-05)
+
+`agents-auto-heberges-azure` (order 5, 4 langues) vient de la doc Microsoft « Deploy an Azure Pipelines agent on Windows » (options `config.cmd`, PAT utilisé seulement à l'enregistrement, variables `VSTS_AGENT_INPUT_*`, un dossier par agent), relue en ligne le jour même : aucune commande n'a pu être exécutée ici (pas d'organisation Azure DevOps), le chapitre ne contient donc aucun exemple rejoué. Piège de méthode : régénérer `struct-en/es/br.json` par `buildStruct` réordonne tout (342 lignes de diff, ordre des sections Sécurité perdu) puisque ces fichiers sont alignés à la main sur le français ; l'entrée du nouveau chapitre s'y ajoute à la main, comme pour `struct.json`.
 
 ## Chapitre « Les agents Azure Pipelines auto-hébergés » (2026-10-05)
 
@@ -247,7 +255,7 @@ Deux bugs d'infrastructure découverts en régénérant l'audio, sans rapport av
 - **`scripts/generate-audio.mjs`** codait en dur le chemin Piper en layout Unix (`.venv-piper/bin/python`), jamais testé depuis un Node Windows natif avant ce jour. Corrigé par une sélection de chemin selon `process.platform`.
 - **18 dossiers de contenu vides orphelins** traînaient depuis une fusion de catégories antérieure et se faisaient reprendre par `generate-struct.js` comme fausses catégories racine. Supprimés.
 
-Décisions de rangement prises pour 13 notions candidates encore ouvertes, question par question avec Louis ; détail dans `devpedia-todo.md`.
+Décisions de rangement prises pour 13 notions candidates encore ouvertes, question par question avec Louis ; détail dans `todo.md`.
 
 ## Vérification avant coupure d'une semaine : tirets cadratins résiduels (2026-09-04)
 
@@ -255,7 +263,7 @@ Vérification de routine avant une absence de Louis. 33 fichiers avec un tiret c
 
 ## Connecter une appli PHP locale à SQL Server, hors Devpedia (2026-09-04)
 
-Session sur un autre projet (`Backoffice-TC`, Slim 4 + SQL Server), matière candidate à un futur chapitre Devpedia sur l'environnement de dev local pour une appli PHP connectée à une base externe. Détail dans `devpedia-todo.md`.
+Session sur un autre projet (`Backoffice-TC`, Slim 4 + SQL Server), matière candidate à un futur chapitre Devpedia sur l'environnement de dev local pour une appli PHP connectée à une base externe. Détail dans `todo.md`.
 
 - **`php -S localhost:PORT` sur Windows** : le serveur se bind parfois uniquement en IPv6, invisible pour un hostname résolu en IPv4 via hosts. Correctif : binder explicitement sur `127.0.0.1:PORT`.
 - **Extensions PHP manquantes silencieusement bloquantes** : `composer install` échoue extension par extension plutôt que de tout lister d'un coup.

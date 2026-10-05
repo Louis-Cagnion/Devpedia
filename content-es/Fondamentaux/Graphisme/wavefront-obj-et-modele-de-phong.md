@@ -150,13 +150,329 @@ Las 4 caras anteriores comparten todas el vértice `5` y el mismo grupo de suavi
 > ```
 > Reiniciar un contador de vértices en cada `o` rompe silenciosamente la indexación de todas las caras en cuanto un archivo contiene más de un objeto.
 
+## Leer un `.obj` con tolerancia
+
+Los archivos `.obj` vienen de programas distintos, que no siguen todos la misma variante del formato. Un analizador (*parser*) robusto **acepta con amplitud** (toda variante que tenga sentido) y **rechaza con un mensaje preciso** (archivo, línea, valor erróneo) todo lo demás, en lugar de fallar o de seguir en silencio con datos falsos.
+
+| Variante encontrada | Qué hacer |
+|---|---|
+| `v x y z w` (4 valores, `w` es un peso, 1.0 si falta) | Leer `w` y luego ignorarlo |
+| `v x y z r g b` (6 valores, color por vértice, extensión de algunos exportadores) | Conservar los 3 primeros, ignorar o guardar el color |
+| `vt u`, `vt u v`, `vt u v w` (1 a 3 valores) | `v` vale 0 si falta, `w` no sirve para una imagen 2D |
+| Directiva desconocida (`l`, `p`, `cstype`...), línea vacía, comentario `#` | Ignorar la línea, sin error |
+| Menos valores de los previstos, texto en lugar de un número, `1e999` | Rechazar, nombrando el archivo, la línea y el valor recibido |
+
+```c
+/* Lee 3, 4 o 6 números de una línea «v»; devuelve cuántos leyó, -1 si es inválida. */
+static int parse_vertex(const char *s, double out[6])
+{
+	int n = 0;
+	char *end;
+
+	while (n < 6)
+	{
+		errno = 0;
+		out[n] = strtod(s, &end);        /* lee un número y avanza hasta su final */
+		if (end == s)                    /* nada legible: fin de los números */
+			break;
+		if (errno || !isfinite(out[n]))  /* 1e999, inf o nan: rechazado */
+			return -1;
+		s = end;
+		n++;
+	}
+	while (*s == ' ' || *s == '\t' || *s == '\r')  /* blancos de final de línea */
+		s++;
+	return (*s == '\0' && (n == 3 || n == 4 || n == 6)) ? n : -1;
+}
+```
+
+Probada con `"1 2 3"` (3), `"1 2 3 1.0"` (4) y `"1 2 3 0.5 0.5 0.5"` (6): válidas. `"1 2"`, `"1 2 x"`, `"1e999 0 0"` y `"1 2 3 4 5"` devuelven -1. Se prefiere `strtod` a `atof`, que devuelve 0 con cualquier texto sin avisar de nada (véase [convertir un texto en número](/?c=langages-de-programmation&s=c&p=convertir-un-texte-en-nombre)).
+
+### Finales de línea y BOM
+
+| Caso | Qué contiene | Consecuencia si no se trata |
+|---|---|---|
+| LF (`\n`) | Final de línea Unix | Ninguna |
+| CRLF (`\r\n`) | Final de línea Windows | Un `\r` queda pegado al final de la línea, es decir, dentro del último valor leído |
+| CR (`\r`) solo | Final de línea de los Mac muy antiguos | `fgets` solo corta en `\n`: todo el archivo se convierte en una sola línea |
+| BOM UTF-8 (bytes `EF BB BF` al inicio del archivo) | Marca de codificación, véase [codificación de textos](/?c=donnees&s=representation-des-donnees&p=encodage-des-textes) | Se pega a la primera directiva: `\xEF\xBB\xBFv` no es `v`, la línea se toma por una directiva desconocida, **el primer vértice desaparece sin error** y todos los índices de las caras se desplazan una unidad |
+
+> **Buena práctica:** leer el archivo entero en memoria, saltar un posible BOM y cortar en los tres finales de línea (`\r\n`, `\r` y `\n`) en lugar de llamar a `fgets`: el mismo código trata entonces archivos de cualquier sistema.
+
+## El formato PPM P6: una textura sin biblioteca
+
+El [`map_Kd` del `.mtl`](#el-archivo-de-imagen-referenciado-por-el-mtl) designa una imagen. El **PPM** (*Portable PixMap*, [especificación](https://netpbm.sourceforge.net/doc/ppm.html)) es el formato de imagen más sencillo de leer a mano: una pequeña cabecera de texto, seguida de los píxeles en **binario** (bytes en bruto, que un editor de texto no muestra de forma legible). Su variante **P6** guarda tres canales (rojo, verde, azul) por píxel.
+
+```text
+P6                  <- número mágico: identifica el formato
+# un comentario     <- opcional: # hasta el final de la línea, se ignora
+640 480             <- ancho y alto, en píxeles
+255                 <- maxval: valor máximo de un canal
+<bytes binarios>    <- ancho x alto x 3 canales, fila a fila, de arriba abajo
+```
+
+| `maxval` | Bytes por canal | Para volver a 0 a 255 |
+|---|---|---|
+| 1 a 255 | 1 | `valor x 255 / maxval` |
+| 256 a 65535 | 2, byte más significativo primero | `valor x 255 / maxval` (misma fórmula, valor de 16 bits) |
+
+```c
+/* Lee un entero de la cabecera PPM saltando blancos y comentarios; -1 si falta. */
+static long read_header_int(FILE *f)
+{
+	int c;
+
+	while ((c = fgetc(f)) != EOF)
+	{
+		if (c == '#')                    /* comentario: ignorado hasta el final de la línea */
+			while ((c = fgetc(f)) != EOF && c != '\n' && c != '\r')
+				;
+		else if (!isspace(c))
+			break;
+	}
+	if (!isdigit(c))
+		return -1;
+	long n = 0;
+	for (; isdigit(c); c = fgetc(f))     /* el blanco que termina el número se consume */
+	{
+		n = n * 10 + (c - '0');
+		if (n > 1000000)                 /* dimensión absurda: rechazada */
+			return -1;
+	}
+	return n;
+}
+```
+
+La función principal llama tres veces a `read_header_int` (ancho, alto, `maxval`):
+
+```c
+/* Devuelve ancho x alto x 3 bytes (0 a 255), o NULL con un mensaje en stderr. */
+unsigned char *read_ppm(const char *path, int *w, int *h)
+{
+	FILE *f = fopen(path, "rb");                 /* «b»: modo binario, indispensable en Windows */
+	if (!f)
+		return fprintf(stderr, "%s: %s\n", path, strerror(errno)), NULL;
+	if (fgetc(f) != 'P' || fgetc(f) != '6')
+		return fprintf(stderr, "%s: no es un PPM P6\n", path), fclose(f), NULL;
+	long width = read_header_int(f);             /* salta blancos y comentarios, -1 si falta */
+	long height = read_header_int(f);
+	long maxval = read_header_int(f);            /* consume el único blanco que sigue */
+	if (width < 1 || height < 1 || maxval < 1 || maxval > 65535)
+		return fprintf(stderr, "%s: cabecera inválida\n", path), fclose(f), NULL;
+	size_t bytes = maxval < 256 ? 1 : 2;
+	size_t count = (size_t)width * (size_t)height * 3;
+	unsigned char *raw = malloc(count * bytes);
+	unsigned char *out = malloc(count);
+	if (!raw || !out || fread(raw, bytes, count, f) != count)
+	{                                            /* truncado, o memoria insuficiente */
+		fprintf(stderr, "%s: datos truncados o memoria insuficiente\n", path);
+		return free(raw), free(out), fclose(f), NULL;
+	}
+	for (size_t i = 0; i < count; i++)
+	{
+		long v = bytes == 1 ? raw[i] : (raw[2 * i] << 8) | raw[2 * i + 1];
+		out[i] = (unsigned char)((v * 255 + maxval / 2) / maxval);  /* redondeo al más cercano */
+	}
+	free(raw);
+	fclose(f);
+	*w = (int)width;
+	*h = (int)height;
+	return out;
+}
+```
+
+Compilada con `-Wall -Wextra -pedantic` sin ninguna advertencia y probada con cuatro archivos: un PPM de 8 bits con comentario y un PPM de 16 bits dan ambos el píxel rojo `255 0 0`; un archivo cuyos datos se acaban demasiado pronto, un archivo `P5` (niveles de gris) y un archivo inexistente se rechazan, cada uno con su propio mensaje.
+
+| Trampa | Por qué | Remedio |
+|---|---|---|
+| Saltar todos los blancos tras `maxval` | Un byte de píxel puede valer `0x20` o `0x0A` (un blanco): se tomaría por un espacio | Consumir **un solo** blanco y leer los datos tal cual |
+| Archivo convertido a CRLF | Cada `\n` binario se vuelve `\r\n`: los datos crecen y se desplazan | Detectar el tamaño incoherente y rechazar |
+| Archivo truncado | `fread` devuelve menos de lo previsto | Comparar la cuenta leída con la esperada |
+| `ancho x alto x 3` enorme | El producto desborda o pide gigabytes | Acotar cada dimensión, calcular en `size_t` |
+| Fila de abajo primero | El PPM guarda la primera fila **arriba**, OpenGL espera la primera fila **abajo** | Voltear la imagen verticalmente o invertir `v` |
+
+## La normal de un polígono: el método de Newell
+
+La prueba de orientación del ear clipping necesita la normal de la cara. El cálculo ingenuo (producto vectorial de las dos primeras aristas) falla de dos maneras: si los tres primeros vértices están alineados, el producto es el vector nulo; si la primera esquina es entrante (ángulo interior superior a 180 grados), la normal obtenida está invertida, así que todo el resto de la prueba es erróneo.
+
+El **método de Newell** suma una contribución por arista, sobre **todo** el contorno, de modo que ningún vértice está privilegiado:
+
+```text
+para cada arista (a -> b) del polígono:
+    nx += (a.y - b.y) * (a.z + b.z)
+    ny += (a.z - b.z) * (a.x + b.x)
+    nz += (a.x - b.x) * (a.y + b.y)
+normal = (nx, ny, nz) / longitud         <- su longitud vale 2 veces el área del polígono
+```
+
+```c
+/* Normal unitaria de un polígono (método de Newell); -1 si la superficie es nula. */
+static int newell_normal(const double (*p)[3], int n, double out[3])
+{
+	double nx = 0, ny = 0, nz = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		const double *a = p[i];
+		const double *b = p[(i + 1) % n];      /* el último vértice se une al primero */
+		nx += (a[1] - b[1]) * (a[2] + b[2]);
+		ny += (a[2] - b[2]) * (a[0] + b[0]);
+		nz += (a[0] - b[0]) * (a[1] + b[1]);
+	}
+	double len = sqrt(nx * nx + ny * ny + nz * nz);
+	if (len == 0)                              /* vértices alineados o coincidentes */
+		return -1;
+	out[0] = nx / len;
+	out[1] = ny / len;
+	out[2] = nz / len;
+	return 0;
+}
+```
+
+Probado con un polígono en L cóncavo cuyos tres primeros vértices están alineados (`(0,0) (1,0) (2,0) (2,1) (1,1) (1,2)`, en el plano z = 0): el cálculo ingenuo da el vector nulo, Newell da `0 0 1`. Con solo tres vértices alineados devuelve -1: una cara de superficie nula se rechaza con su propio mensaje, no tiene normal. Para el producto vectorial, véase [Vectores y producto escalar](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire).
+
+## Hacer robusto el ear clipping
+
+El algoritmo descrito arriba es exacto con números exactos; los números de coma flotante (véase [representación de los flotantes](/?c=donnees&s=representation-des-donnees&p=nombres-flottants)) obligan a tres precauciones:
+
+| Precaución | Por qué |
+|---|---|
+| Hacer los predicados (orientación, mismo lado) en `double`, aunque los vértices se guarden en `float` | Cerca de cero, un `float` cambia el signo del producto vectorial: se rechaza una oreja válida, se acepta una inválida |
+| Comparar con una tolerancia **relativa** (`abs(producto) <= epsilon x longitud1 x longitud2`), nunca con una constante absoluta | Una constante absoluta depende de la unidad del modelo (un objeto de 0,001 o de 1000 unidades) |
+| Tratar aparte el vértice **alineado** con sus vecinos o situado **sobre una arista** del triángulo candidato | Ni dentro ni fuera: la prueba estricta lo acepta o lo rechaza al capricho del redondeo |
+
+El corte se hace entonces en **dos pasadas**: una pasada estricta (una oreja debe ser estrictamente convexa y no contener ningún vértice interior ni vértice en su borde); si no encuentra ninguna oreja cuando quedan más de 3 vértices, una segunda pasada tolera los vértices situados exactamente en el borde. Si también falla, se rechaza la cara (degenerada o que se corta a sí misma) con un mensaje que nombra el archivo y la línea, en lugar de entrar en un bucle sin fin.
+
+## Acelerar el ear clipping: examinar solo los vértices reflejos
+
+La prueba «ningún vértice atrapado» recorre todos los vértices restantes, para cada oreja candidata, y cada recorte exige buscar una nueva: al menos `n x n` operaciones ([complejidad cuadrática](/?c=fondamentaux&s=algorithmes&p=complexite-et-notation-big-o)). Bastan dos términos para hacerlo mejor. El **giro** en un vértice `b` entre sus vecinos `a` y `c` es el producto escalar de la normal de la cara con el producto vectorial de `a->b` y `a->c` (véase [Vectores y producto escalar](/?c=fondamentaux&s=mathematiques&p=vecteurs-et-produit-scalaire)): su signo indica hacia qué lado gira el contorno.
+
+| Término | Significado | Signo del giro |
+|---|---|---|
+| Vértice **convexo** | El contorno gira en el sentido de la normal: ángulo interior inferior a 180 grados | `> 0` |
+| Vértice **reflejo** (*reflex*) | El contorno gira en sentido contrario: ángulo interior superior a 180 grados, es una entrante | `<= 0` (un giro nulo, vértice alineado con sus vecinos, se clasifica aquí por precaución) |
+
+En el polígono en L de la sección anterior, el vértice `(1,1)` es reflejo, `(1,0)` está alineado con sus vecinos (giro nulo) y los otros cuatro son convexos. Un polígono convexo no tiene ningún vértice reflejo.
+
+### Por qué bastan los reflejos
+
+**Si un vértice está dentro del triángulo de una oreja candidata, entonces un vértice reflejo también lo está.** Razonamiento: los dos lados del triángulo que tocan la punta `v` son aristas del polígono, que el contorno no puede cruzar (se cortaría a sí mismo). Un contorno que entra en el triángulo solo tiene la base `[prev, next]` para entrar y para salir. La zona comprendida entre este desvío y la punta `v` está bordeada únicamente por aristas del polígono, así que está dentro del polígono. El punto del desvío más cercano a `v` (`Q` abajo) tiene el interior del lado de `v` y forma un pico hacia él: su ángulo interior supera los 180 grados.
+
+```text
+            v           contorno que entra por la base, sube hasta Q y vuelve a bajar
+           / \          Q: vértice del desvío más cercano a v
+          /   \         el interior del polígono está del lado de v: Q es reflejo
+         /  Q  \
+        /  / \  \
+   prev ----------- next
+```
+
+Consecuencia: la prueba del mismo lado solo se hace contra la lista de reflejos, que está vacía en un polígono convexo (ninguna prueba de punto).
+
+### Mantener al día la lista de reflejos
+
+| Momento | Qué ocurre | Coste |
+|---|---|---|
+| Al inicio | Una pasada: todo vértice con giro `<= 0` entra en el arreglo `reflex[]` | `n` |
+| Tras recortar una oreja | Solo los dos vecinos de la punta recortada cambian de ángulo, y solo puede disminuir (un triángulo sale del polígono): un reflejo puede pasar a convexo, un convexo **nunca** vuelve a ser reflejo | 2 comprobaciones |
+| Salida de la lista | [swap-remove](/?c=fondamentaux&s=algorithmes&p=swap-remove): el vértice es sustituido por el último. Cada nodo memoriza su posición `reflex_pos` en el arreglo para encontrarla sin recorrerlo | O(1) |
+
+```c
+typedef struct { int prev, next, reflex_pos; } Node;    /* reflex_pos: -1 si es convexo */
+
+typedef struct
+{
+	const double (*p)[3];      /* posiciones de los vértices */
+	double normal[3];          /* normal de la cara (método de Newell) */
+	Node *node;                /* lista doblemente enlazada circular */
+	int *reflex;               /* índices de los vértices reflejos */
+	int n_reflex;
+}	Ctx;
+
+/* Giro en b entre a y c: > 0 convexo, < 0 reflejo, 0 alineado. */
+static double turn(const double *a, const double *b, const double *c, const double nrm[3])
+{
+	double u[3] = {b[0] - a[0], b[1] - a[1], b[2] - a[2]};
+	double v[3] = {c[0] - a[0], c[1] - a[1], c[2] - a[2]};
+
+	return (u[1] * v[2] - u[2] * v[1]) * nrm[0]      /* producto vectorial u x v, */
+		+ (u[2] * v[0] - u[0] * v[2]) * nrm[1]       /* luego producto escalar */
+		+ (u[0] * v[1] - u[1] * v[0]) * nrm[2];      /* con la normal */
+}
+
+/* Prueba de los tres lados: q está en el triángulo (a, b, d), borde incluido. */
+static int in_triangle(const Ctx *c, int a, int b, int d, int q)
+{
+	return turn(c->p[a], c->p[b], c->p[q], c->normal) >= 0
+		&& turn(c->p[b], c->p[d], c->p[q], c->normal) >= 0
+		&& turn(c->p[d], c->p[a], c->p[q], c->normal) >= 0;
+}
+
+static int is_reflex(const Ctx *c, int i)
+{
+	const Node *nd = &c->node[i];
+
+	return turn(c->p[nd->prev], c->p[i], c->p[nd->next], c->normal) <= 0;
+}
+
+static int is_ear(const Ctx *c, int i)
+{
+	int a = c->node[i].prev;
+	int d = c->node[i].next;
+
+	if (is_reflex(c, i))
+		return 0;
+	for (int k = 0; k < c->n_reflex; k++)      /* solo los reflejos */
+	{
+		int q = c->reflex[k];
+		if (q != a && q != d && in_triangle(c, a, i, d, q))
+			return 0;
+	}
+	return 1;
+}
+
+static void reflex_remove(Ctx *c, int i)
+{
+	int pos = c->node[i].reflex_pos;
+	int last = c->reflex[--c->n_reflex];
+
+	c->reflex[pos] = last;                     /* el último ocupa su lugar */
+	c->node[last].reflex_pos = pos;            /* y anota su nueva posición */
+	c->node[i].reflex_pos = -1;
+}
+
+/* Tras un recorte: un vecino reflejo que pasó a convexo sale de la lista. */
+static void refresh(Ctx *c, int i)
+{
+	if (c->node[i].reflex_pos >= 0 && !is_reflex(c, i))
+		reflex_remove(c, i);
+}
+```
+
+`in_triangle` es la prueba del mismo lado de la sección «Comprobar que ningún vértice queda atrapado en la oreja»; el bucle de corte llama a `refresh` sobre `prev` y `next` tras cada oreja recortada.
+
+### Qué cambia, medido
+
+12000 vértices, `-O2`, una sola ejecución, mismo resultado (11998 triángulos, es decir `n - 2`) con las dos pruebas:
+
+| Polígono | Vértices reflejos | Prueba contra todos los vértices | Prueba contra los reflejos |
+|---|---|---|---|
+| Círculo (convexo) | 0 | 0,38 s | 0,0002 s |
+| Estrella (un vértice de cada dos entrante) | 6000 | 0,28 s | 0,06 s |
+
+El coste residual es del orden de `n x r` (`r`: número de reflejos): una forma muy recortada sigue siendo cuadrática, solo baja la constante. La ganancia es máxima en polígonos poco cóncavos, que son la inmensa mayoría de las caras de un `.obj`.
+
+> **Trampa: el ruido de redondeo.** En un polígono grande casi plano en cada vértice, un error de cálculo puede hacer pasar vértices convexos a la lista de reflejos: esta se hincha y el coste vuelve a `n x n`. Calcular el giro en `double` (véase [Hacer robusto el ear clipping](/?c=fondamentaux&s=graphisme&p=wavefront-obj-et-modele-de-phong#hacer-robusto-el-ear-clipping)) limita este riesgo. En caso de duda, **clasificar siempre el vértice como reflejo** (`<= 0`, no `< 0`): un reflejo de más solo cuesta tiempo, uno olvidado haría aceptar una oreja que atrapa un vértice.
+
+> **Buena práctica:** validar la optimización comparando, sobre los mismos polígonos, el número de triángulos (`n - 2`) y la suma de sus áreas entre la prueba antigua (todos los vértices) y la nueva (solo reflejos), antes de tirar la antigua. Véase también [medir antes de optimizar](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser).
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **A recordar** | Un `.obj` enumera instrucciones línea a línea (`v`, `vt`, `vn`, `f`, `s`...), con índices de vértices que empiezan en 1. Las caras pueden tener más de 3 vértices y deben triangularse para que la tarjeta gráfica las dibuje; el ear clipping gestiona también las caras cóncavas gracias a una prueba de orientación Y una prueba de "mismo lado" por vértice restante. Una cara combina en general un índice por lista y por esquina (`v/vt/vn`), porque `v` y `vt` son dos listas independientes no alineadas -- necesario para representar una costura UV. El `.mtl` asociado describe la apariencia mediante los 4 parámetros del modelo de Phong (ambiental, difuso, especular, brillo) y puede referenciar un archivo de imagen (`map_Kd`) como textura. `s` controla el suavizado de las normales, con independencia de la geometría. |
-| **Herramientas utilizables** | El modelo de Phong (`Ka`/`Kd`/`Ks`/`Ns`) para interpretar un `.mtl`. `map_Kd` para vincular un `.mtl` a un archivo de imagen de textura. Los grupos de suavizado (`s`) para elegir entre renderizado plano y renderizado suavizado. La fórmula `n - 2` para comprobar el número de triángulos producidos por cualquier triangulación. |
-| **Trampas a evitar** | Índices de vértices basados en 1 en lugar de en 0. Caras con número variable de vértices sin triangular. La triangulación en abanico produce un resultado incorrecto en una cara cóncava, y una prueba de orientación sola (sin prueba de "mismo lado") puede validar erróneamente una oreja que atrapa otro vértice. Indexar una coordenada de textura solo por vértice (en lugar de por par vértice/textura) falla silenciosamente en una costura UV. Un `.mtl` de material único no proporciona un color por subparte. `s`/`usemtl` son directivas de estado que hay que seguir durante todo el parseo, no atributos presentes en cada línea `f`. `o` nunca afecta a la numeración de los vértices, que sigue siendo global al archivo incluso con varios objetos. |
-| **Buenas prácticas** | Separar la lectura bruta del archivo y la triangulación en dos funciones distintas, cada una con responsabilidad única. Reutilizar la misma primitiva geométrica (producto vectorial + producto escalar con la normal) para la prueba de orientación y la prueba de "mismo lado", en lugar de duplicarla. Comprobar una triangulación con la fórmula `n - 2` antes de dar por correcto el recorte. Duplicar un vértice por cada par único `(v, vt[, vn])` en lugar de por posición sola, para gestionar las costuras UV. Conservar el estado actual (material, grupo de suavizado) en variables actualizadas a medida que avanza el parseo, y asociarlo a cada cara leída. |
+| **A recordar** | Un `.obj` enumera instrucciones línea a línea (`v`, `vt`, `vn`, `f`, `s`...), con índices de vértices que empiezan en 1. Las caras pueden tener más de 3 vértices y deben triangularse para que la tarjeta gráfica las dibuje; el ear clipping gestiona también las caras cóncavas gracias a una prueba de orientación Y una prueba de "mismo lado" por vértice restante. Una cara combina en general un índice por lista y por esquina (`v/vt/vn`), porque `v` y `vt` son dos listas independientes no alineadas -- necesario para representar una costura UV. El `.mtl` asociado describe la apariencia mediante los 4 parámetros del modelo de Phong (ambiental, difuso, especular, brillo) y puede referenciar un archivo de imagen (`map_Kd`) como textura. `s` controla el suavizado de las normales, con independencia de la geometría. Un analizador acepta con amplitud (`v` con 3, 4 o 6 valores, directivas desconocidas ignoradas, LF, CRLF o CR, BOM) y rechaza el resto con un mensaje preciso. El PPM P6 es una cabecera de texto seguida de píxeles binarios (`maxval` en 1 o 2 bytes). La normal de un polígono se calcula con el método de Newell, sobre todo su contorno. |
+| **Herramientas utilizables** | El modelo de Phong (`Ka`/`Kd`/`Ks`/`Ns`) para interpretar un `.mtl`. `map_Kd` para vincular un `.mtl` a un archivo de imagen de textura. Los grupos de suavizado (`s`) para elegir entre renderizado plano y renderizado suavizado. La fórmula `n - 2` para comprobar el número de triángulos producidos por cualquier triangulación. `strtod` para leer los números, el método de Newell para la normal, predicados en `double` para el ear clipping. |
+| **Trampas a evitar** | Índices de vértices basados en 1 en lugar de en 0. Caras con número variable de vértices sin triangular. La triangulación en abanico produce un resultado incorrecto en una cara cóncava, y una prueba de orientación sola (sin prueba de "mismo lado") puede validar erróneamente una oreja que atrapa otro vértice. Indexar una coordenada de textura solo por vértice (en lugar de por par vértice/textura) falla silenciosamente en una costura UV. Un `.mtl` de material único no proporciona un color por subparte. `s`/`usemtl` son directivas de estado que hay que seguir durante todo el parseo, no atributos presentes en cada línea `f`. `o` nunca afecta a la numeración de los vértices, que sigue siendo global al archivo incluso con varios objetos. Un BOM pegado a la primera directiva (primer vértice perdido en silencio), un `\r` residual de un archivo CRLF, `fgets` ante un CR solo. Saltar todos los blancos tras el `maxval` de un PPM, no comprobar el tamaño de los datos, olvidar que su primera fila está arriba mientras OpenGL espera la de abajo. Calcular la normal solo con las dos primeras aristas. Usar una tolerancia absoluta en una prueba geométrica. |
+| **Buenas prácticas** | Separar la lectura bruta del archivo y la triangulación en dos funciones distintas, cada una con responsabilidad única. Reutilizar la misma primitiva geométrica (producto vectorial + producto escalar con la normal) para la prueba de orientación y la prueba de "mismo lado", en lugar de duplicarla. Comprobar una triangulación con la fórmula `n - 2` antes de dar por correcto el recorte. Duplicar un vértice por cada par único `(v, vt[, vn])` en lugar de por posición sola, para gestionar las costuras UV. Conservar el estado actual (material, grupo de suavizado) en variables actualizadas a medida que avanza el parseo, y asociarlo a cada cara leída. Leer el archivo entero y cortarlo en los tres finales de línea tras saltar el BOM. Rechazar una entrada inválida nombrando el archivo, la línea y el valor. Calcular los predicados geométricos en `double` con una tolerancia relativa, en dos pasadas, y rechazar la cara si no existe ninguna oreja. |

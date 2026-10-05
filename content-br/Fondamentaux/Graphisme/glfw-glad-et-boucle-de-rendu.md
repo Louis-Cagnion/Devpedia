@@ -71,13 +71,344 @@ while (!glfwWindowShouldClose(janela)) {
 
 > **Armadilha:** esquecer `glClear()` antes de redesenhar. Sem apagar, cada nova imagem se sobrepõe às anteriores em vez de substituí-las, deixando um rastro visual.
 
+## O delta time: uma velocidade independente da máquina
+
+Uma volta do loop de renderização produz uma imagem (um *frame*). O número de imagens por segundo, os **FPS** (*frames per second*), depende da máquina: 30 em um computador modesto, 144 em uma tela rápida. Se o objeto avança uma distância fixa a cada volta do loop, sua velocidade real acompanha então os FPS:
+
+```c
+posicao += 0.1;   // 0,1 unidade (a medida de comprimento da cena) por imagem: a velocidade depende do número de imagens
+```
+
+| FPS da máquina | Imagens em 1 segundo | Distância percorrida em 1 segundo |
+|---|---|---|
+| 30 | 30 | 30 × 0,1 = 3 unidades |
+| 60 | 60 | 60 × 0,1 = 6 unidades |
+| 144 | 144 | 144 × 0,1 = 14,4 unidades |
+
+O **delta time** é o tempo decorrido entre a imagem anterior e a imagem atual, em segundos (por exemplo 0,0069 s a 144 FPS). Multiplicar cada deslocamento por essa duração torna a velocidade independente dos FPS: a velocidade é expressa em unidades **por segundo**, e cada imagem só avança a fração de segundo que durou.
+
+```c
+double ultimo_instante = glfwGetTime();   // double = número decimal; aqui, segundos decorridos desde a inicialização do GLFW
+double velocidade = 5.0;                  // 5 unidades por segundo, seja qual for a máquina
+
+while (!glfwWindowShouldClose(janela)) {
+    double agora = glfwGetTime();                // instante desta imagem
+    double delta = agora - ultimo_instante;      // duração da imagem anterior, em segundos
+    ultimo_instante = agora;                     // memoriza para a próxima volta
+
+    posicao += velocidade * delta;               // 144 FPS: 5 × 0,0069; 30 FPS: 5 × 0,033
+    // ... eventos, limpeza, desenho, glfwSwapBuffers() como acima
+}
+```
+
+> **Armadilha:** atualizar o delta time apenas em intervalos regulares (por exemplo «somente se 0,01 s se passaram»). Entre duas atualizações, o valor desatualizado é aplicado a cada imagem: a 144 FPS (uma imagem dura 0,0069 s, menos que esse limite), o deslocamento é somado com mais frequência do que o tempo passa e tudo vai rápido demais (cerca de 1,5 vez em um caso encontrado). O delta time é recalculado a **cada** imagem.
+>
+> **Armadilha:** depois de uma pausa (janela arrastada, programa suspenso), o primeiro delta pode valer vários segundos e lançar o objeto muito longe de uma só vez. Limita-se então o valor, por exemplo `if (delta > 0.1) delta = 0.1;`.
+
+### Um único cronômetro por uso
+
+Um **cronômetro** designa aqui uma variável que memoriza um instante (como `ultimo_instante` acima). Quando um mesmo cronômetro serve a **dois usos** (medir a duração de uma imagem **e** espaçar as etapas de um fade, isto é, uma transição gradual de opacidade), um dos dois está errado. O caso típico:
+
+```c
+double now = glfwGetTime();
+
+if (now - prev_time >= FADE_STEP)   /* limitador do fade: uma etapa a cada FADE_STEP */
+{
+	frame_time = now - prev_time;   /* desde a ultima ETAPA, nao a ultima imagem */
+	prev_time = now;
+	alpha += 0.05;                  /* alpha: opacidade de 0 (transparente) a 1 (opaco) */
+}
+position += speed * frame_time;     /* usado a CADA imagem, atualizado a cada ETAPA */
+```
+
+Aqui `FADE_STEP` vale 0,016 s. `frame_time` só é atualizado a cada etapa do fade, mas é usado a cada imagem: quanto mais imagens a máquina produz entre duas etapas, mais o movimento é multiplicado. Medido numa simulação de um segundo, velocidade de 5 unidades por segundo (a distância correta é, portanto, 5):
+
+| FPS | Distância com um cronômetro compartilhado | Com um cronômetro por uso |
+|---|---|---|
+| 30 ou 60 | 5,0 | 5,0 |
+| 144 | 14,8 (3 vezes demais) | 5,0 |
+| 1.000 | 79,0 (16 vezes demais) | 5,0 |
+| 2.500 | 199,7 (**40 vezes** demais) | 5,0 |
+
+Numa tela de 60 Hz com vsync, o defeito não aparece (uma imagem dura mais que o passo do fade): ele surge numa tela rápida ou sem vsync. A correção se resume em três regras:
+
+| Regra | O que muda |
+|---|---|
+| **Um cronômetro por uso** | A duração da imagem é recalculada a cada imagem; nada mais mexe nela |
+| **Limitar** essa duração (`MAX_FRAME_TIME`, p. ex. 0,1 s) | Uma pausa não arremessa mais o objeto longe (veja a armadilha anterior) |
+| **Expressar um fade pela sua duração**, não por um número de etapas | `alpha = decorrido / FADE_DURATION` (0,5 s aqui), ou seja, o mesmo tempo em qualquer máquina; o limitador deixa de ser necessário |
+
+```c
+double now = glfwGetTime();
+double frame_time = now - last_frame;     /* duracao da imagem, recalculada a cada volta */
+
+last_frame = now;
+if (frame_time > MAX_FRAME_TIME)          /* depois de uma pausa */
+	frame_time = MAX_FRAME_TIME;
+position += speed * frame_time;
+fade_elapsed += frame_time;               /* o fade acumula tempo real */
+alpha = fminf(fade_elapsed / FADE_DURATION, 1.0f);   /* fminf: limita a 1 */
+```
+
+> **Armadilha (medir numa única cadência):** um movimento mantido (tecla pressionada, rotação contínua) que parece certo a 60 FPS pode estar errado em outra cadência. Medi-lo em **várias cadências**: com vsync e depois sem. Sem vsync, o Mesa é ajustado pela [variável de ambiente](/?c=shells&s=bash&p=variables-denvironnement) `vblank_mode=0` e o driver da NVIDIA por `__GL_SYNC_TO_VBLANK=0` (`vblank_mode=0 ./programa`). O ângulo ou a distância percorridos após um segundo devem ser os mesmos em todos os casos.
+
+## A sincronização vertical (vsync)
+
+A tela se atualiza a uma frequência fixa, expressa em hertz (Hz, atualizações por segundo): 60 Hz, 144 Hz... Sem nenhuma regra, o loop de renderização roda o mais rápido possível, muito além do que a tela consegue mostrar: imagens são desperdiçadas, a placa de vídeo esquenta, e a troca de buffers pode cair no meio de uma atualização (*tearing*, visto acima). A **sincronização vertical** (*vsync*) faz `glfwSwapBuffers()` esperar até a próxima atualização da tela:
+
+```c
+glfwMakeContextCurrent(janela);   // o contexto já deve estar ativo
+glfwSwapInterval(1);              // 1 = esperar 1 atualização por troca (vsync); 0 = não esperar
+```
+
+| Ajuste | FPS obtidos | Efeito |
+|---|---|---|
+| `glfwSwapInterval(1)` | iguais à frequência da tela (60 em uma tela de 60 Hz) | sem tearing, placa de vídeo poupada |
+| `glfwSwapInterval(0)` | tão altos quanto a máquina permitir | tearing possível, útil para medir o desempenho |
+
+> **Boa prática:** nunca contar com o vsync para regular a velocidade. O driver gráfico (o software que faz o sistema conversar com a placa de vídeo) ou o usuário podem forçá-lo a ficar desligado, e os FPS mudam de uma tela para outra: só o delta time garante a mesma velocidade em todo lugar. O vsync regula a exibição, o delta time regula o movimento.
+
+## Os limites da placa de vídeo e `glGetError`
+
+Cada placa de vídeo tem seus **limites**: tamanho máximo de uma textura, tamanho máximo da **área de desenho** (o *viewport*, o retângulo da janela onde o OpenGL escreve os pixels)... Eles mudam de uma máquina para outra: um programa que funciona na máquina do autor pode falhar na de outra pessoa, sem que o código tenha mudado. Eles são **lidos** em vez de supostos, com `glGetIntegerv(constante, &valor)` (a função que lê um inteiro do estado do OpenGL; `GLint` é o tipo inteiro do OpenGL, de 32 bits em todas as máquinas).
+
+| Constante | O que fornece | Se for ultrapassada |
+|---|---|---|
+| `GL_MAX_TEXTURE_SIZE` | lado máximo, em pixels, de uma [textura](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl#as-texturas-uma-imagem-colada-na-superficie) | o envio da imagem é recusado, a textura fica inutilizável (lida como preta) |
+| `GL_MAX_VIEWPORT_DIMS` | **dois** inteiros: largura e altura máximas da área de desenho | a especificação não garante nada: desenho truncado conforme o driver |
+
+```c
+/* Verdadeiro se uma imagem width x height cabe numa textura desta placa; mensagem se não. */
+static int texture_fits(int width, int height)
+{
+	GLint max_size = 0;
+
+	if (width <= 0 || height <= 0)                 /* dimensões degeneradas: causa à parte */
+	{
+		fprintf(stderr, "imagem de %d x %d: dimensoes nulas ou negativas\n", width, height);
+		return 0;
+	}
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_size); /* um inteiro; contexto ativo obrigatório */
+	if (width > max_size || height > max_size)
+	{
+		fprintf(stderr, "imagem %d x %d grande demais: esta placa aceita no maximo %d por lado\n",
+			width, height, max_size);
+		return 0;
+	}
+	return 1;
+}
+
+GLint max_viewport[2] = {0, 0};
+glGetIntegerv(GL_MAX_VIEWPORT_DIMS, max_viewport); /* aqui dois valores: um vetor de 2 inteiros */
+```
+
+> **Armadilha:** `glGetIntegerv`, como toda função OpenGL, só funciona **depois de** [`glfwMakeContextCurrent()` e do carregamento do GLAD](#carregar-as-funcoes-opengl-modernas-glad): antes, o ponteiro da função é nulo e o programa trava.
+
+**O OpenGL quase nunca sinaliza um erro por um valor de retorno.** Uma chamada recusada (tamanho grande demais, estado errado) não trava e não mostra nada: ela levanta um **indicador de erro** interno, que o programa lê com `glGetError()`. Essa função devolve um código e zera o indicador; `GL_NO_ERROR` (0) significa «nada pendente».
+
+| Código | Significado habitual |
+|---|---|
+| `GL_INVALID_ENUM` | constante desconhecida passada a uma função |
+| `GL_INVALID_VALUE` | valor numérico fora da faixa (tamanho grande demais, negativo) |
+| `GL_INVALID_OPERATION` | chamada não permitida no estado atual (ordem errada, objeto não ligado) |
+| `GL_OUT_OF_MEMORY` | a placa (ou o driver) ficou sem memória |
+| `GL_INVALID_FRAMEBUFFER_OPERATION` | desenho para um buffer de imagem incompleto |
+
+Os erros **se acumulam** e `glGetError()` devolve **um por chamada**: repete-se até esvaziar, senão o erro lido vem de uma chamada anterior e não da última.
+
+```c
+/* Nome legível de um código de erro do OpenGL. */
+static const char *gl_error_name(GLenum err)
+{
+	switch (err)
+	{
+	case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
+	case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
+	case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
+	case GL_OUT_OF_MEMORY: return "GL_OUT_OF_MEMORY";
+	case GL_INVALID_FRAMEBUFFER_OPERATION: return "GL_INVALID_FRAMEBUFFER_OPERATION";
+	default: return "codigo desconhecido";
+	}
+}
+
+/* Lê e mostra todos os erros pendentes, com a etapa `where`; devolve quantos. */
+static int check_gl_errors(const char *where)
+{
+	int count = 0;
+	GLenum err;
+
+	while ((err = glGetError()) != GL_NO_ERROR)   /* cada leitura retira um erro da pilha */
+	{
+		fprintf(stderr, "OpenGL: %s durante '%s'\n", gl_error_name(err), where);
+		count++;
+	}
+	return count;
+}
+```
+
+Uso: `check_gl_errors("glTexImage2D");` logo depois da chamada suspeita, para nomear a etapa defeituosa (um `check_gl_errors("antes")` colocado antes esvazia o conteúdo antigo).
+
+> **Armadilha:** num laço de renderização, um mesmo problema se repetiria a **cada imagem** (60 mensagens por segundo que afogam todo o resto). Sinalizar cada causa **uma única vez** (lista limitada dos códigos já mostrados), ou controlar só na inicialização e em modo de depuração.
+
+### Consultar o driver gráfico e a tela
+
+O **driver** (o software do fabricante que faz o OpenGL conversar com a placa) sabe dizer quem é e o que aceita. `glGetString` devolve um texto, `glGetIntegerv` um inteiro:
+
+| Consulta | O que fornece |
+|---|---|
+| `glGetString(GL_VENDOR)` | o fabricante do driver |
+| `glGetString(GL_RENDERER)` | o nome da placa (e muitas vezes do driver) |
+| `glGetString(GL_VERSION)` | a versão do OpenGL fornecida, seguida do driver |
+| `glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, ...)` | o número máximo de atributos por vértice (posição, normal...) |
+| `glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, ...)` | o máximo do `max_vertices` de um [geometry shader](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl#os-shaders-os-programas-da-placa-de-video) |
+| `glGetIntegerv(GL_MAX_ELEMENTS_INDICES, ...)` | uma **sugestão** (número de índices recomendado por chamada de desenho), nunca um limite: ultrapassá-la não produz erro algum, apenas um desenho possivelmente mais lento |
+
+```c
+/* Mostra fabricante, placa e versão do OpenGL; devolve 0, ou -1 se o driver não responde. */
+static int print_gl_info(void)
+{
+	const char *vendor = (const char *)glGetString(GL_VENDOR);      /* GLubyte * convertido em texto */
+	const char *renderer = (const char *)glGetString(GL_RENDERER);
+	const char *version = (const char *)glGetString(GL_VERSION);
+
+	if (!vendor || !renderer || !version)          /* NULL: sem contexto ativo, ou constante recusada */
+	{
+		fprintf(stderr, "glGetString devolveu NULL: sem contexto ativo, ou constante recusada\n");
+		return -1;
+	}
+	printf("Fabricante: %s\nPlaca: %s\nOpenGL: %s\n", vendor, renderer, version);
+	return 0;
+}
+```
+
+**A memória da placa não tem consulta padrão.** Só as **extensões** (funções opcionais, próprias de um fabricante, que o driver pode ou não fornecer) a informam: `GL_NVX_gpu_memory_info` na NVIDIA, `GL_ATI_meminfo` na AMD. `glfwExtensionSupported("GL_NVX_gpu_memory_info")` diz se o driver a possui. Sem ela, o único sinal de falta de memória é `GL_OUT_OF_MEMORY`, a ser lido com `glGetError()` (veja acima).
+
+**A tela se pergunta ao GLFW**, não ao OpenGL: uma janela maior que a tela fica em parte fora da vista do usuário.
+
+```c
+/* Verdadeiro (1) se uma janela width x height cabe na tela principal, 0 se não, -1 se a tela é desconhecida. */
+static int window_fits_screen(int width, int height)
+{
+	GLFWmonitor *monitor = glfwGetPrimaryMonitor();   /* NULL: nenhuma tela detectada */
+	const GLFWvidmode *mode = monitor ? glfwGetVideoMode(monitor) : NULL;   /* NULL em caso de falha */
+
+	if (!mode)
+	{
+		fprintf(stderr, "tela principal nao encontrada: tamanho da janela nao verificado\n");
+		return -1;
+	}
+	if (width > mode->width || height > mode->height)   /* mode->width e ->height: tamanho da tela */
+	{
+		fprintf(stderr, "janela %d x %d maior que a tela (%d x %d)\n",
+			width, height, mode->width, mode->height);
+		return 0;
+	}
+	return 1;
+}
+```
+
+> **Armadilha:** `glfwGetVideoMode` dá o tamanho em **coordenadas de tela**, que diferem dos pixels numa tela de alta densidade (HiDPI, por exemplo uma tela que mostra 2 pixels por unidade); `glfwGetFramebufferSize` dá o tamanho da janela em pixels. Com várias telas, `glfwGetPrimaryMonitor` designa apenas a tela principal: a janela pode abrir em outra.
+
+---
+
+## Como o OpenGL conhece a máquina: do programa ao hardware
+
+O OpenGL não é um programa: é uma **especificação**, um documento (mantido pelo consórcio [Khronos](https://www.khronos.org/opengl/)) que descreve cada função, seus parâmetros e seu comportamento. Nenhum código acompanha esse documento: cada fabricante escreve o seu no seu **driver** (o software que traduz as chamadas do OpenGL em ordens que a sua placa entende). Daí o `glGetString(GL_VENDOR)` (veja acima), e um mesmo programa que se comporta de forma diferente de uma máquina para outra.
+
+No Linux, uma chamada como `glClear` atravessa estas camadas:
+
+```
+O programa                   chama glClear, glDrawArrays...
+      │  GLAD e glfwGetProcAddress encontram o endereço de cada função
+      ▼
+Biblioteca de acesso         libGL.so.1 (GLVND): escolhe qual driver usar
+      ▼
+Driver OpenGL                Mesa (AMD, Intel) ou o driver proprietário da NVIDIA
+      ▼
+Kernel do Linux              driver do kernel (amdgpu, i915, nvidia...) via DRM
+      ▼
+Hardware                     a placa, conectada ao barramento PCI
+```
+
+| Camada | Papel |
+|---|---|
+| **Biblioteca de acesso** (`libGL`) | Ponto de entrada único. O **[GLVND](https://github.com/NVIDIA/libglvnd)** (*GL Vendor-Neutral Dispatch*, « despachante neutro ») permite que vários drivers convivam e escolhe o que corresponde à placa em uso. |
+| **Driver OpenGL** | Executa de fato as funções. O **[Mesa](https://www.mesa3d.org/)** é o driver livre (`radeonsi` para AMD, `iris` para Intel, `llvmpipe` para desenhar com o processador quando não há placa); a NVIDIA fornece o seu próprio driver proprietário. |
+| **Driver do kernel** | O [kernel](/?c=langages-de-programmation&s=c&p=appels-systeme-et-descripteurs#espaco-de-usuario-vs-espaco-de-kernel) (o núcleo do sistema, o único autorizado a falar com o hardware) tem um driver por família de placas. O **[DRM](https://docs.kernel.org/gpu/drm-uapi.html)** (*Direct Rendering Manager*) é o subsistema que permite que vários programas compartilhem a placa; ele é exposto por arquivos em `/dev/dri`. |
+| **Hardware** | A placa de vídeo, conectada ao barramento **PCI** (o circuito que liga a placa-mãe às suas placas de expansão). |
+
+Cada camada pode ser observada a partir de um [terminal](/?c=fondamentaux&s=bases-de-l-informatique&p=le-terminal) (`grep` mantém apenas as linhas que contêm um padrão; o `|` envia a saída do comando da esquerda para o da direita: veja os [redirecionamentos e pipes](/?c=shells&s=bash&p=redirections-et-pipes)):
+
+```bash
+lspci | grep -iE "vga|3d"              # lspci lista os dispositivos PCI: a(s) placa(s) de vídeo
+ls /dev/dri                            # arquivos do DRM: card0 (a placa), renderD128 (cálculo sem tela)
+lsmod | grep -E "amdgpu|i915|nouveau|nvidia"   # lsmod lista os drivers carregados no kernel
+glxinfo -B | grep -i renderer          # glxinfo (pacote mesa-utils): o driver OpenGL realmente em uso
+```
+
+O `GL_RENDERER` empilha, aliás, várias dessas camadas em um único texto. Forma típica sob o Mesa, que se apoia no [LLVM](https://llvm.org/) (valores de exemplo):
+
+```
+AMD Radeon RX 6600 (radeonsi, navi23, LLVM 15.0.6, DRM 3.54, 6.1.0-18-amd64)
+ │                  │        │       │               │        └ versão do kernel
+ │                  │        │       │               └ versão do DRM
+ │                  │        │       └ LLVM: biblioteca que compila os shaders para a placa
+ │                  │        └ chip da placa
+ │                  └ driver Mesa
+ └ nome da placa
+```
+
+### Quando não há placa: `llvmpipe`
+
+Numa [máquina virtual](/?c=infrastructure-devops&s=administration-systeme&p=virtualisation-et-choix-dos), num [contêiner](/?c=infrastructure-devops&s=docker&p=concepts-de-base), no [WSL](https://learn.microsoft.com/pt-br/windows/wsl/) sem driver gráfico ou numa sessão remota, o Mesa recorre ao `llvmpipe`: o processador desenha no lugar da placa. O programa funciona, mas devagar, e o `GL_RENDERER` começa por `llvmpipe`. Dá para forçá-lo a fim de simular uma máquina sem placa, por meio de uma **variável de ambiente** (um ajuste com nome que o shell transmite aos programas que ele inicia, veja as [variáveis de ambiente](/?c=shells&s=bash&p=variables-denvironnement)):
+
+```bash
+LIBGL_ALWAYS_SOFTWARE=1 ./programa     # a variável vale apenas para esta execução
+```
+
+### Várias placas de vídeo
+
+Um notebook costuma ter uma placa **integrada** (dentro do processador, econômica) e uma placa **dedicada** (potente). Por padrão o sistema escolhe a primeira; a outra é designada por variável de ambiente, durante uma única execução:
+
+| Driver | Executar na placa dedicada |
+|---|---|
+| Mesa (AMD, Intel) | `DRI_PRIME=1 ./programa` |
+| NVIDIA proprietário | `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ./programa` |
+
+As duas placas não têm os mesmos limites (`GL_MAX_TEXTURE_SIZE`...) nem a mesma versão do OpenGL: o que o programa lê na inicialização depende da placa que criou o contexto.
+
+### E no Windows e no macOS?
+
+| Sistema | Quem fornece o OpenGL |
+|---|---|
+| **Linux** | As camadas acima (GLVND, Mesa ou driver NVIDIA, kernel). |
+| **Windows** | O `opengl32.dll` redireciona para o driver do fabricante, instalado com os drivers da placa. Sem ele, o Windows recorre a uma versão por software limitada ao OpenGL 1.1. |
+| **macOS** | O próprio sistema fornece o OpenGL, congelado na versão 4.1 e abandonado pela Apple. |
+
+> **Armadilha:** um driver ausente ou antigo demais nem sempre provoca uma falha: `glfwCreateWindow` devolve `NULL`, ou `gladLoadGLLoader` falha, ou a versão lida é inferior à esperada. Convém mostrar a causa real do GLFW em vez de uma mensagem genérica:
+
+```c
+GLFWwindow *window = glfwCreateWindow(800, 600, "scop", NULL, NULL);
+
+if (!window)                                /* driver ausente, antigo, ou versao pedida nao fornecida */
+{
+	const char *description = NULL;         /* texto do GLFW que explica a falha */
+
+	glfwGetError(&description);             /* le o ultimo erro do GLFW (description pode ficar NULL) */
+	fprintf(stderr, "nao foi possivel criar a janela: %s\n", description ? description : "causa desconhecida");
+	return -1;
+}
+```
+
+Boa prática: testar nas duas placas de um notebook, e com `LIBGL_ALWAYS_SOFTWARE=1`, antes de dizer que o programa « funciona em qualquer lugar ».
+
 ---
 
 ## 📋 Recapitulando
 
 | | |
 |---|---|
-| **Para lembrar** | O GLFW cria a janela e seu contexto OpenGL; o GLAD então carrega as funções OpenGL modernas via `glfwGetProcAddress()`. O double buffering (`glfwSwapBuffers()`) evita que uma imagem desenhada pela metade seja exibida. Um loop de renderização repete: eventos, limpeza, desenho, troca de buffers. |
-| **Ferramentas utilizáveis** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`. |
-| **Armadilhas a evitar** | Chamar o GLAD antes de `glfwMakeContextCurrent()`. Apontar `-I` para o nível de pasta errado para os headers gerados pelo GLAD. Esquecer `glClear()` antes de redesenhar. |
-| **Boas práticas** | Vendorar um arquivo gerado de uma vez por todas (como o do GLAD) em vez de depender dele a cada build; reservar essa prática a arquivos que não mudam com regularidade. |
+| **Para lembrar** | O GLFW cria a janela e seu contexto OpenGL; o GLAD então carrega as funções OpenGL modernas via `glfwGetProcAddress()`. O double buffering (`glfwSwapBuffers()`) evita que uma imagem desenhada pela metade seja exibida. Um loop de renderização repete: eventos, limpeza, desenho, troca de buffers. O delta time (duração da imagem anterior, via `glfwGetTime()`) torna as velocidades independentes dos FPS; o vsync (`glfwSwapInterval(1)`) ajusta a exibição à tela. Os limites da placa (tamanho de textura, de área de desenho) mudam de uma máquina para outra: eles são lidos; o OpenGL só sinaliza um erro por um indicador lido com `glGetError()`. `glGetString` identifica o driver; a memória da placa não tem consulta padrão (extensões); o tamanho da tela se pergunta ao GLFW. O OpenGL é apenas uma especificação: o código vem do driver do fabricante (Mesa ou NVIDIA no Linux), que fala com o kernel (DRM) e depois com a placa; sem placa, o `llvmpipe` desenha com o processador; com várias placas, uma variável de ambiente escolhe a placa. Um cronômetro por uso: a duração de uma imagem é recalculada a cada imagem, um fade se expressa pela sua duração. |
+| **Ferramentas utilizáveis** | `glfwCreateWindow`/`glfwMakeContextCurrent`, `gladLoadGLLoader`, `glfwSwapBuffers`/`glfwPollEvents`/`glfwWindowShouldClose`, `glClear`, `glfwGetTime`, `glfwSwapInterval`, `glGetIntegerv` (`GL_MAX_TEXTURE_SIZE`, `GL_MAX_VIEWPORT_DIMS`), `glGetError`, `glGetString`, `glfwGetPrimaryMonitor`/`glfwGetVideoMode`, `glfwExtensionSupported`, `glfwGetError`, `lspci`, `lsmod`, `glxinfo -B`, `LIBGL_ALWAYS_SOFTWARE`, `DRI_PRIME`. |
+| **Armadilhas a evitar** | Chamar o GLAD antes de `glfwMakeContextCurrent()`. Apontar `-I` para o nível de pasta errado para os headers gerados pelo GLAD. Esquecer `glClear()` antes de redesenhar. Mover um objeto uma distância fixa por imagem. Atualizar o delta time apenas em intervalos regulares. Deixar um delta gigante depois de uma pausa. Supor um limite da placa em vez de lê-lo, chamar `glGetIntegerv` sem contexto ativo, ler um único erro em vez de esvaziar a pilha, repetir a mesma mensagem a cada imagem. Mostrar o resultado de `glGetString` sem testar `NULL`, tomar `GL_MAX_ELEMENTS_INDICES` por um limite, abrir uma janela maior que a tela, confundir coordenadas de tela e pixels numa tela HiDPI. Concluir que o programa funciona em qualquer lugar após testar uma única placa, ou não mostrar a causa de uma falha de `glfwCreateWindow`. Um mesmo cronômetro para a duração da imagem e o limitador de um fade (movimento até 40 vezes mais rápido sem vsync), um fade expresso em número de etapas. |
+| **Boas práticas** | Vendorar um arquivo gerado de uma vez por todas (como o do GLAD) em vez de depender dele a cada build; reservar essa prática a arquivos que não mudam com regularidade. Expressar as velocidades em unidades por segundo, recalcular o delta time a cada imagem e limitá-lo; nunca se apoiar no vsync para regular a velocidade. Comparar uma imagem com o limite da placa antes de enviá-la, com uma mensagem que nomeie a imagem, suas dimensões e o limite. Repetir `glGetError()` até `GL_NO_ERROR` e nomear a etapa controlada. Registrar fabricante, placa e versão na inicialização para reconhecer a máquina de um relatório de bug; verificar o tamanho de janela pedido contra o da tela. Testar em cada placa de um notebook e com `LIBGL_ALWAYS_SOFTWARE=1`. Medir um movimento mantido em várias cadências, com e sem vsync. |

@@ -83,6 +83,78 @@ def draw_frame(screen, scene, changed_zones):
 
 This is the **dirty rectangle** logic: the scene itself flags which zones have changed since the last render, and only those are redrawn. On a scene that's 90% static, this cuts the cost of each frame down to a fraction of a full render, for a visually identical result.
 
+## Repair the previous result instead of recomputing everything
+
+A solver repeats the same test hundreds of thousands of times, on data that barely changes from one test to the next. Example: the "all different" constraint is tested with a [bipartite matching](/?c=fondamentaux&s=algorithmes&p=couplage-biparti-et-theoreme-de-hall) after each removal of a possible value. Redoing the matching from scratch starts all the work over although a single edge has disappeared.
+
+The idea is to **keep the previous matching** and only repair what the change broke:
+
+| The removed edge | What we do |
+|---|---|
+| Was not in the matching | Nothing: the matching remains valid |
+| Was in the matching | A single cell loses its value: a single path search to place it again |
+
+```c
+// Removes value v from cell c, then repairs the matching instead of redoing it
+int after_removal(int c, int v)
+{
+    dom[c][v] = 0;
+    if (owner[v] == c) {         // the removed edge was used by the matching
+        owner[v] = -1;
+        value_of[c] = -1;
+        memset(seen, 0, sizeof seen);
+        find(c);                 // a single cell to place again
+    }
+    for (int k = 0; k < N; k++)  // a cell without a value: no complete matching any more
+        if (value_of[k] < 0)
+            return 0;
+    return 1;
+}
+```
+
+`value_of[c]` remembers each cell's value (the `find()` of the matching chapter updates it together with `owner`). When the removed value is put back, the cells left without a value try again: without that, the kept matching would stay too small forever.
+
+Measured on 200,000 successive removals, 40 cells, 40 values, each cell accepting 12 % of the values:
+
+| | Recompute everything | Repair |
+|---|---|---|
+| Cells examined by the searches | 61,566,318 | 832,601 (74 times fewer) |
+| Time | about 1 s | a few tens of ms |
+| Answers "complete matching?" | 198,112 yes | 198,112 yes, **identical test by test** (0 differences) |
+
+**Same answer, not necessarily the same matching.** Several complete matchings exist: the repaired matching differs from the one a full computation gives in 1,972 cases out of 1,973 compared. The yes/no answer is the same; but if the rest of the program depends on the matching itself (an explanation, an order, a result to reproduce identically from one run to the next), you **fall back on the full computation** to produce that canonical result, and keep the repaired version for all the tests that only need the answer. In the rush01 research solver, this combination cut the total time by 6.2 %.
+
+> **Pitfall:** repairing a state that is no longer valid. The invariant "the current matching is valid for the current data" must be restored after **every** kind of change (removal, putting back, a search backtracking): a forgotten case gives a wrong answer, with no error.
+>
+> **Best practice:** keep the full computation as a reference in a test, and compare answers test by test (here 0 differences out of 200,000) before measuring time.
+
+## Only Visit the Marked Elements: the Bitmap
+
+When only a small part of the elements has changed and they have been marked (like the "dirty rectangles" above), going through a one-byte-per-element flag array costs one read per element, marked or not. A **bitmap** stores one flag per bit: a 64-bit word holds 64 of them (see [the bitmap filter](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)), and `__builtin_ctzll` directly gives the position of the next bit set to 1 ([built-in functions](/?c=langages&s=c&p=operateurs-binaires)). Empty words cost a single read.
+
+```c
+for (uint32_t w = 0; w < N / 64; w++)
+    for (uint64_t m = bitmap[w]; m; m &= m - 1)  // bits left in the word
+        process(w * 64 + __builtin_ctzll(m));    // index of the lowest bit set to 1
+```
+
+`m &= m - 1` clears the lowest bit set to 1: the loop stops when the word is empty, and `__builtin_ctzll` is never called on 0 (its result would be undefined).
+
+Measured on 1 M elements, 200 passes, median of 7 alternating rounds, same sums checked (Intel Core Ultra 5 228V under WSL, gcc 13.3 at `-O2`):
+
+| Share of marked elements | Byte array | Bitmap | Difference |
+|---|---|---|---|
+| 0.1 % | 84 ms | 2.9 ms | −97 % |
+| 1 % | 63 ms | 16 ms | −74 % |
+| 10 % | 67 ms | 44 ms | −35 % |
+| 50 % | 68 ms | 130 ms | **+91 %** |
+
+The gain depends on the **density** of the marks: at half marked, the bitmap is almost twice as slow, because each mark costs more than a byte read sequentially. In the rush01 research solver, this traversal only gained 2 % of the total time: only the real program tells what the optimization is worth (see [Measure Before Optimizing](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser)).
+
+> **Pitfall:** adopting the bitmap because it is more compact or faster in the sparse case, without measuring the real density of the program's marks.
+>
+> **Best practice:** measure the share of marked elements in the real program before choosing; the bitmap is worth it for rare marks.
+
 ## An example from a scraper: don't reconfirm what's already proven
 
 A classifieds scraper compared two listings to tell whether they described the same vehicle (a duplicate) or two different vehicles. The full check opened each listing's detail page to compare a dozen characteristics (mileage, options, service history): a non-trivial network call and render time.

@@ -110,6 +110,10 @@
             {
               "id": "couplages-et-filtrage-de-regin",
               "label": "Couplages, test de Hall et filtrage de Régin"
+            },
+            {
+              "id": "couplage-biparti-et-theoreme-de-hall",
+              "label": "Couplage biparti, théorème de Hall et algorithme de Kuhn"
             }
           ]
         },
@@ -172,6 +176,14 @@
             {
               "id": "glfw-glad-et-boucle-de-rendu",
               "label": "Ouvrir une fenêtre OpenGL moderne : GLFW, GLAD et la boucle de rendu"
+            },
+            {
+              "id": "tampons-textures-et-shaders-opengl",
+              "label": "Tampons, textures et shaders OpenGL"
+            },
+            {
+              "id": "matrices-et-camera",
+              "label": "Matrices et caméra"
             },
             {
               "id": "effets-de-rendu-et-interaction-3d",
@@ -306,6 +318,10 @@
             {
               "id": "mesure-du-temps",
               "label": "Mesurer le temps et attendre précisément"
+            },
+            {
+              "id": "convertir-un-texte-en-nombre",
+              "label": "Convertir un texte en nombre sans le piège de `atoi`"
             }
           ]
         },
@@ -935,6 +951,10 @@
             {
               "id": "robustesse-traitement-par-lots",
               "label": "Robustesse d'un traitement par lots"
+            },
+            {
+              "id": "inondation-de-logs",
+              "label": "L'inondation de logs : signaler chaque cause une seule fois"
             }
           ]
         },
@@ -1406,6 +1426,10 @@
             {
               "id": "agents-azure-pipelines-auto-heberges",
               "label": "Les agents Azure Pipelines auto-hébergés"
+            },
+            {
+              "id": "agents-auto-heberges-azure",
+              "label": "Les agents Azure DevOps auto-hébergés"
             }
           ]
         },
@@ -1445,6 +1469,14 @@
             {
               "id": "acces-a-distance-windows",
               "label": "Windows : accès à distance (RDP, tscon, shadowing)"
+            },
+            {
+              "id": "garde-fous-de-ressources",
+              "label": "Limiter les ressources d'un programme"
+            },
+            {
+              "id": "touche-coincee-clavier-virtuel-xtest",
+              "label": "Touche coincée : le clavier virtuel XTEST et `xdotool`"
             }
           ]
         },
@@ -1464,6 +1496,10 @@
             {
               "id": "protocoles-pair-a-pair",
               "label": "Les protocoles pair-à-pair (P2P)"
+            },
+            {
+              "id": "tunnel-ssh-et-redirection-de-port",
+              "label": "Tunnel SSH et redirection de port"
             }
           ]
         },

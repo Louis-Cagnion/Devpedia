@@ -113,13 +113,201 @@ C'est exactement ce mécanisme que le chapitre sur l'architecture d'un shell uti
 
 Quand [`fork()`](/?c=langages-de-programmation&s=c&p=processus) crée un processus enfant, celui-ci reçoit une **copie** de la table des descripteurs de son parent : les mêmes numéros, pointant vers les mêmes ressources ouvertes. C'est précisément ce qui permet à un shell de faire un `dup2()` sur un descripteur de pipe **dans l'enfant**, juste avant l'appel à `execve()` : le nouveau programme hérite de ce descripteur déjà repointé, sans rien savoir du mécanisme qui l'a mis en place.
 
+## Fichiers spéciaux : quand `open()` ne tombe pas sur un fichier ordinaire
+
+Sous Unix (Linux, macOS), `open()` accepte tout ce qui a un chemin, pas seulement les fichiers de données stockés sur le disque (les fichiers **ordinaires**). Le type de ce qu'on a réellement ouvert se lit avec `fstat()`, qui remplit une structure `struct stat` décrivant le descripteur (type, taille, permissions) :
+
+| Type | Test sur `info.st_mode` | Exemple | Comportement de `read()` |
+|---|---|---|---|
+| Fichier ordinaire | `S_ISREG` | `notes.txt` | Lit le contenu, puis `0` à la fin |
+| Dossier | `S_ISDIR` | `/tmp` | Échoue (`EISDIR`) |
+| Périphérique « caractère » | `S_ISCHR` | `/dev/zero` : fournit des octets nuls **sans fin** | Ne renvoie jamais `0` : la lecture ne se termine pas |
+| Tube nommé (FIFO) | `S_ISFIFO` | `canal` créé par `mkfifo` | Attend qu'un autre processus écrive |
+
+### Le tube nommé (FIFO)
+
+Un [pipe](/?c=shells&s=bash&p=architecture-dun-shell) anonyme (le `|` du shell, ou `pipe()` ci-dessus) n'a pas de nom : il n'existe que pour les processus qui l'ont hérité par `fork()`. Un **tube nommé** (*named pipe*, ou **FIFO**, de *First In, First Out*, « premier entré, premier sorti » : l'ordre d'une [file](/?c=fondamentaux&s=algorithmes&p=pile-et-file)) est le même mécanisme avec un nom dans l'arborescence, donc utilisable par deux programmes qui ne sont pas parents. Les octets écrits d'un côté ressortent dans le même ordre de l'autre, sans jamais être stockés sur le disque.
+
+```bash
+mkfifo canal              # crée le tube nommé "canal" (la fonction C du même nom fait pareil)
+ls -l canal               # le premier caractère est "p" (pipe) : prw-r--r-- ...
+echo "bonjour" > canal &  # écrivain lancé en arrière-plan (&) : il attend qu'un lecteur arrive
+cat canal                 # lecteur : affiche "bonjour" ; les deux côtés se débloquent
+```
+
+> **Note :** un FIFO ne se crée pas sur n'importe quel disque. Sous WSL (Linux dans Windows), le dossier `/mnt/c` échoue ; utiliser un dossier du système Linux, comme `/tmp`.
+
+### Le piège : l'ouverture bloque
+
+Par défaut, `open()` sur un FIFO est **bloquant** : le programme est mis en pause par le noyau jusqu'à ce qu'un événement se produise (voir [le blocage et l'E/S non bloquante](/?c=infrastructure-devops&s=reseaux&p=sockets-et-io-non-bloquante)). Ouvrir en lecture attend qu'un écrivain ouvre l'autre bout, et inversement. Un programme qui croit recevoir un fichier ordinaire reste donc figé sans aucun message si on lui passe un FIFO. Même effet avec `/dev/zero` : une lecture « jusqu'à la fin du fichier » ne s'arrête jamais et remplit la mémoire.
+
+| Ce qu'on passe au programme | `open()` simple | Résultat |
+|---|---|---|
+| `notes.txt` | Rend la main aussitôt | Lecture normale |
+| `canal` (FIFO sans écrivain) | **Bloque pour toujours** | Programme figé |
+| `/dev/zero` | Rend la main | La lecture ne finit jamais, mémoire saturée |
+| `/tmp` (dossier) | Rend la main | `read()` échoue plus tard, loin de la vraie cause |
+
+### La parade : ouvrir sans bloquer, vérifier le type, puis passer à `FILE *`
+
+L'option `O_NONBLOCK` demande à `open()` de rendre la main tout de suite au lieu d'attendre. On vérifie ensuite le type avec `fstat()`, et `fdopen()` convertit le descripteur validé en `FILE *`, l'objet des fonctions de [lecture de fichiers](/?c=langages-de-programmation&s=c&p=lecture-de-fichiers) (`fgets`, `fread`...) :
+
+```c
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+FILE *open_regular_file(const char *path)
+{
+    struct stat info;                                  // reçoit le type, la taille, les droits
+    int         fd;
+    FILE       *file;
+
+    fd = open(path, O_RDONLY | O_NONBLOCK);            // ne bloque jamais, même sur un FIFO
+    if (fd == -1) {
+        fprintf(stderr, "%s : %s\n", path, strerror(errno));   // cause réelle
+        return (NULL);
+    }
+    if (fstat(fd, &info) == -1) {                      // interroge le descripteur déjà ouvert
+        fprintf(stderr, "%s : %s\n", path, strerror(errno));
+        close(fd);
+        return (NULL);
+    }
+    if (!S_ISREG(info.st_mode)) {                      // FIFO, /dev/zero, dossier : refusé
+        fprintf(stderr, "%s : pas un fichier ordinaire\n", path);
+        close(fd);                                   // libérer le descripteur sur chaque échec
+        return (NULL);
+    }
+    file = fdopen(fd, "r");                            // le FILE * devient propriétaire de fd
+    if (file == NULL) {
+        fprintf(stderr, "%s : %s\n", path, strerror(errno));
+        close(fd);
+    }
+    return (file);                                     // à fermer avec fclose(), pas close()
+}
+```
+
+Résultat vérifié avec un petit `main` qui appelle cette fonction sur chaque argument de la ligne de commande (un fichier ordinaire, un FIFO, `/dev/zero`, un dossier et un chemin absent) :
+
+```text
+reg.txt : ouvert
+canal : pas un fichier ordinaire
+/dev/zero : pas un fichier ordinaire
+. : pas un fichier ordinaire
+absent : No such file or directory
+```
+
+Deux détails comptent. D'abord, on appelle `fstat()` sur le **descripteur** et non `stat()` sur le chemin : entre les deux appels, quelqu'un pourrait remplacer le fichier par un FIFO, alors que le descripteur désigne toujours ce qu'on a vraiment ouvert. Ensuite, chaque cause d'échec a son propre message (fichier absent, mauvais type, échec de `fdopen()`), pour que l'utilisateur sache quoi corriger.
+
+## Retrouver l'emplacement de son propre exécutable
+
+Un programme livré avec des fichiers à lui (par exemple les [shaders](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl), les petits programmes d'une application graphique, rangés dans un dossier `shaders/` à côté de l'exécutable) doit les retrouver où qu'on le lance. Écrire `fopen("shaders/basic.vert", "r")` ne marche que si on lance le programme **depuis son propre dossier**, car un chemin sans `/` initial est relatif au **répertoire courant** (le dossier dans lequel se trouve le terminal au moment du lancement, voir [`cd` dans l'architecture d'un shell](/?c=shells&s=bash&p=architecture-dun-shell)) et non à l'exécutable.
+
+```text
+~/projet/
+├── scop              <- l'exécutable
+└── shaders/basic.vert
+
+cd ~/projet && ./scop     ->  "shaders/basic.vert" trouvé
+cd ~ && projet/scop       ->  "shaders/basic.vert" cherché dans ~/shaders : introuvable
+```
+
+### Pourquoi `argv[0]` ne suffit pas
+
+[`argv[0]`](/?c=langages-de-programmation&s=c&p=argc-et-argv) contient le nom **tel que l'utilisateur l'a tapé**, pas un chemin vérifié :
+
+| Lancement | `argv[0]` | Problème |
+|---|---|---|
+| `./scop` | `./scop` | Relatif au répertoire courant, utilisable tant qu'il ne change pas |
+| `scop` (trouvé via la variable [`PATH`](/?c=shells&s=bash&p=variables-denvironnement)) | `scop` | Aucun dossier dans la valeur : impossible de savoir où il est |
+| `lien` (lien symbolique vers `scop`) | `lien` | Désigne le lien, pas le dossier réel de l'exécutable |
+| Lancé par `execve()` avec un `argv[0]` quelconque | n'importe quoi | Le programme appelant choisit librement cette valeur |
+
+### La solution Linux : `/proc/self/exe`
+
+Sous Linux, `/proc` est un dossier **virtuel** : aucun de ses fichiers n'est sur le disque, le noyau les fabrique à la lecture pour décrire les processus en cours. `/proc/self` désigne toujours le processus qui l'ouvre, et `/proc/self/exe` est un **lien symbolique** (un fichier spécial qui ne contient qu'un chemin vers un autre fichier, comme un raccourci) que le noyau fait pointer vers l'exécutable réel du processus, déjà débarrassé des `./`, des `..` et des autres liens. L'appel système `readlink()` lit le chemin contenu dans un lien symbolique :
+
+```c
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+// Écrit dans dir le dossier de l'exécutable. Renvoie 0, ou -1 (message déjà affiché).
+int get_exe_dir(char *dir, size_t size)
+{
+    ssize_t len;                                           // entier signé : nombre d'octets, ou -1
+    char   *slash;
+
+    len = readlink("/proc/self/exe", dir, size - 1);      // copie le chemin, sans '\0' final
+    if (len == -1) {
+        fprintf(stderr, "/proc/self/exe : %s\n", strerror(errno));   // /proc absent ?
+        return (-1);
+    }
+    if ((size_t)len == size - 1) {                         // tampon plein : chemin peut-être coupé
+        fprintf(stderr, "chemin de l'exécutable trop long pour %zu octets\n", size);
+        return (-1);
+    }
+    dir[len] = '\0';                                       // readlink() ne termine jamais la chaîne
+    slash = strrchr(dir, '/');                             // dernier '/' : sépare dossier et nom
+    if (slash == dir)                                      // exécutable à la racine : "/scop"
+        slash++;                                           // garder le "/" lui-même
+    *slash = '\0';                                         // coupe le nom du fichier
+    return (0);
+}
+```
+
+Le **tampon** (*buffer*) est la zone mémoire réservée pour recevoir le résultat, ici le tableau `dir`, dont `size` donne la taille en octets (voir [le tampon à doublement](/?c=langages-de-programmation&s=c&p=memoire)). On utilise la fonction pour construire le chemin d'un fichier livré avec le programme :
+
+```c
+char dir[4096];                                            // 4096 : longueur maximale d'un chemin sous Linux
+char path[4200];                                           // assez grand pour dir + "/shaders/basic.vert"
+
+if (get_exe_dir(dir, sizeof dir) == -1)                    // sizeof dir : taille du tableau, 4096 octets
+    return (1);
+// snprintf() écrit dans path en s'arrêtant à sizeof path octets, donc sans déborder
+snprintf(path, sizeof path, "%s/shaders/basic.vert", dir);
+```
+
+Résultat vérifié sous Linux avec un petit `main` qui affiche `argv[0]` et le dossier trouvé, lancé de quatre façons :
+
+```text
+(lancé depuis /)        /tmp/exetest/where  ->  dossier = /tmp/exetest
+(via un lien /tmp/lien) argv[0] = /tmp/lien ->  dossier = /tmp/exetest
+(via PATH)              argv[0] = where     ->  dossier = /tmp/exetest
+(sans /proc)            /proc/self/exe : No such file or directory
+```
+
+Seul le dernier cas échoue, avec un message qui nomme la cause réelle : on sait quoi corriger au lieu de voir `fopen()` échouer plus loin sur un chemin inventé.
+
+### Les pièges
+
+| Piège | Pourquoi | Parade |
+|---|---|---|
+| Oublier le `'\0'` après `readlink()` | Elle copie les caractères du chemin sans terminer la chaîne : la suite du tampon est lue comme du texte | Poser `dir[len] = '\0'` soi-même |
+| Passer `sizeof dir` à `readlink()` au lieu de `sizeof dir - 1` | Aucune place ne reste pour le `'\0'` | Réserver un octet |
+| Chemin plus long que le tampon | `readlink()` **tronque en silence** et renvoie la taille du tampon | Refuser un résultat qui remplit tout le tampon |
+| Exécutable supprimé pendant l'exécution | Linux ajoute ` (deleted)` à la fin du chemin lu | Rare ; vérifier que le fichier existe avant de l'utiliser |
+| `/proc` absent (système minimal, certains conteneurs ou environnements isolés) | Le lien n'existe pas | Message explicite, ou chemin donné par l'utilisateur (variable d'environnement, option) |
+| Autre système que Linux | `/proc/self/exe` est propre à Linux | Voir le tableau ci-dessous |
+
+| Système | Moyen de retrouver son exécutable |
+|---|---|
+| Linux | `readlink("/proc/self/exe", ...)` |
+| macOS | `_NSGetExecutablePath()` (déclarée dans `<mach-o/dyld.h>`) |
+| Windows | `GetModuleFileNameA()` |
+| FreeBSD | `sysctl` avec `KERN_PROC_PATHNAME` |
+
 ---
 
 ## 📋 Récapitulatif
 
 | | |
 |---|---|
-| **À retenir** | Un appel système demande au noyau d'agir à la place du programme (fichiers, processus, réseau) : un changement contrôlé d'espace utilisateur vers l'espace noyau. Un descripteur de fichier est un simple entier, indice d'une table par processus. |
-| **Outils utilisables** | `open`/`close`/`read`/`write`, drapeaux `O_CREAT`/`O_TRUNC`/`O_APPEND` de `open()`, `dup2`, `errno`/`strerror` pour diagnostiquer un échec. |
-| **Pièges à éviter** | Confondre une fonction de bibliothèque (`printf`) avec un appel système réel (`write`) : la première encapsule le second. |
-| **Bonnes pratiques** | Toujours vérifier la valeur de retour d'un appel système (`-1` ou `NULL`) et consulter `errno`/`strerror()` pour diagnostiquer un échec. |
+| **À retenir** | Un appel système demande au noyau d'agir à la place du programme (fichiers, processus, réseau) : un changement contrôlé d'espace utilisateur vers l'espace noyau. Un descripteur de fichier est un simple entier, indice d'une table par processus. Un chemin n'est pas toujours un fichier ordinaire : FIFO, périphérique et dossier s'ouvrent aussi. Pour retrouver ses fichiers livrés, partir de l'emplacement réel de l'exécutable (`/proc/self/exe` sous Linux), jamais du répertoire courant ni de `argv[0]`. |
+| **Outils utilisables** | `open`/`close`/`read`/`write`, drapeaux `O_CREAT`/`O_TRUNC`/`O_APPEND`/`O_NONBLOCK` de `open()`, `dup2`, `errno`/`strerror` pour diagnostiquer un échec, `mkfifo`, `fstat` + `S_ISREG`, `fdopen`, `readlink`. |
+| **Pièges à éviter** | Confondre une fonction de bibliothèque (`printf`) avec un appel système réel (`write`) : la première encapsule le second. Ouvrir sans vérifier un chemin donné par l'utilisateur : un FIFO fige le programme, `/dev/zero` sature la mémoire. Utiliser le résultat de `readlink()` sans y poser le `'\0'` final. |
+| **Bonnes pratiques** | Toujours vérifier la valeur de retour d'un appel système (`-1` ou `NULL`) et consulter `errno`/`strerror()` pour diagnostiquer un échec. Ouvrir avec `O_NONBLOCK`, vérifier avec `fstat()` + `S_ISREG()`, puis `fdopen()`. |

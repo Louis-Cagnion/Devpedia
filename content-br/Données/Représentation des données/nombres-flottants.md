@@ -88,6 +88,74 @@ Math.abs(a - b) < 0.0001;
 
 **Qual epsilon escolher?** Depende do domínio, não da linguagem. Para preços em centavos, `0.001` basta. Não use sistematicamente o "epsilon de máquina" (o menor intervalo representável em torno de 1, `2,22e-16` em precisão dupla): ele é correto para valores próximos de 1, mas **muito estrito** para valores grandes, onde o intervalo natural entre dois floats já o supera amplamente.
 
+## Absorção e cancelamento: quando um cálculo perde seus dígitos
+
+A distância entre dois floats consecutivos cresce com o valor (veja acima). Um resultado exato que cai entre dois floats é **arredondado** para o mais próximo: somar um número pequeno a um grande pode portanto não mudar **nada**, é a **absorção**.
+
+| Tipo | Primeiro inteiro que deixa de existir | Somar 1 é sempre perdido a partir de |
+|---|---|---|
+| `float` | 2²⁴ + 1 = 16 777 217 | 2²⁵ = 33 554 432 |
+| `double` | 2⁵³ + 1 = 9 007 199 254 740 993 | 2⁵⁴ = 18 014 398 509 481 984 |
+
+Resultados medidos em C (`float`, 32 bits):
+
+```c
+float big = 16777216.0f;      /* 2^24 */
+big + 1.0f == big;            /* verdadeiro: 16 777 217 não existe, arredondado para 16 777 216 */
+big + 2.0f == big;            /* falso: 16 777 218 existe */
+
+float sum = 16777216.0f;
+for (int i = 0; i < 1000; i++)
+	sum += 1.0f;              /* cada +1 é perdido: sum continua valendo 16 777 216, não 16 778 216 */
+```
+
+O remédio é **somar primeiro os valores pequenos entre si**: 1000 somas de `1.0f` dão exatamente 1000, e depois `16777216.0f + 1000.0f` vale 16 778 216 (um número par, representável nessa escala). Passar para `double` só empurra o limite.
+
+O **cancelamento** é a armadilha inversa: subtrair dois números grandes e próximos destrói os dígitos confiáveis. Aqui o erro já é cometido na conversão; a subtração o torna visível:
+
+```c
+float distance = 100000000.0f;    /* 10^8 */
+float radius = 99999999.0f;       /* armazenado como 100 000 000: a distância entre dois float é 8 nesse tamanho */
+float near = distance - radius;   /* 0.0 em vez de 1.0 */
+```
+
+Um `near` igual a 0 onde o cálculo seguinte exige um número estritamente positivo (divisão, plano de projeção) produz um resultado infinito ou absurdo, sem nenhuma mensagem de erro. É preciso verificar o resultado de uma subtração cujos dois termos são próximos, ou calcular em `double`.
+
+**Comparar com uma margem relativa.** Uma constante absoluta (`0.0001`) depende da unidade dos valores: grande demais para objetos de 0,001, pequena demais para valores de 10⁸ (onde a distância natural é 8). Compara-se portanto com uma fração do maior dos dois valores:
+
+```c
+/* Verdadeiro se a e b diferem no máximo pela fração rel do maior dos dois (valor absoluto). */
+static int close_enough(double a, double b, double rel)
+{
+	return fabs(a - b) <= rel * fmax(fabs(a), fabs(b));   /* fabs: valor absoluto; fmax: o maior dos dois */
+}
+```
+
+Para comparar com 0 exatamente, essa fórmula não serve (a margem fica nula): é preciso acrescentar um piso absoluto escolhido conforme a unidade do domínio.
+
+**`NaN` e o infinito atravessam as comparações sem erro.** Uma comparação com `NaN` é sempre falsa (veja [valores especiais](#valores-especiais)), e o infinito é maior que tudo:
+
+| Expressão | `NaN` | `+inf` (infinito positivo) |
+|---|---|---|
+| `x < 0` | falso | falso |
+| `x > 10` | falso | verdadeiro |
+| `x > 0` | falso | verdadeiro |
+| `x == x` | falso | verdadeiro |
+
+O controle habitual «recusar se fora da faixa» deixa portanto passar `NaN` (as duas condições são falsas). Escreve-se o controle **no sentido da aceitação**: aceitar somente o que é finito e está na faixa.
+
+```c
+/* Verdadeiro se x é um número finito em [min, max]; falso para NaN, +inf e -inf. */
+static int in_range(double x, double min, double max)
+{
+	return isfinite(x) && x >= min && x <= max;   /* isfinite: falso para NaN e para o infinito */
+}
+```
+
+`inf - inf` dá `NaN`: um único valor infinito produz depois `NaN` em todo o resto do cálculo.
+
+> **Armadilha:** nenhum desses casos produz erro ou travamento: o cálculo continua com um valor errado. Verificar as entradas numéricas assim que chegam (`isfinite`, faixa do domínio) em vez de supor valores saudáveis.
+
 ## O caso do dinheiro: não usar floats
 
 Para valores monetários, a resposta certa não é ajustar o epsilon, mas **mudar de representação**: contar em centavos, com inteiros.
@@ -152,7 +220,7 @@ Lembre-se principalmente de que essas diferenças não mudam nada no fundo: é o
 
 | | |
 |---|---|
-| **O que reter** | Um float (norma IEEE 754) armazena uma aproximação, não um valor exato: `0.1 + 0.2 != 0.3` em todas as linguagens, sem exceção. A precisão é relativa: quanto maior um número, maior o intervalo entre dois floats consecutivos. Os inteiros permanecem exatos até 2⁵³ em precisão dupla (52 bits de mantissa); além disso, inteiros vizinhos se tornam indistinguíveis. |
+| **O que reter** | Um float (norma IEEE 754) armazena uma aproximação, não um valor exato: `0.1 + 0.2 != 0.3` em todas as linguagens, sem exceção. A precisão é relativa: quanto maior um número, maior o intervalo entre dois floats consecutivos. Os inteiros permanecem exatos até 2⁵³ em precisão dupla (52 bits de mantissa); além disso, inteiros vizinhos se tornam indistinguíveis; em `float`, a partir de 2²⁴. Um número pequeno somado a um grande pode ser absorvido, e uma subtração de números grandes e próximos pode dar 0. |
 | **Ferramentas úteis** | Comparação por epsilon (`math.isclose`, `fabs(a-b) < epsilon`), tipos `DECIMAL` para valores exatos. Ponto fixo para um resultado reprodutível bit a bit sem FPU. |
-| **Armadilhas a evitar** | Comparar dois floats com `==` (incluindo `NaN`, que não é igual a nada, nem a si mesmo); armazenar um valor monetário em float em vez de inteiros (centavos) ou `DECIMAL`. |
-| **Boas práticas** | Escolher um epsilon adequado à ordem de grandeza manipulada, nunca o epsilon de máquina por padrão para valores grandes. |
+| **Armadilhas a evitar** | Comparar dois floats com `==` (incluindo `NaN`, que não é igual a nada, nem a si mesmo); armazenar um valor monetário em float em vez de inteiros (centavos) ou `DECIMAL`. Controlar uma entrada com «recusar se fora da faixa»: `NaN` passa, e o infinito passa um teste `x > 0`. Somar um a um termos pequenos a um total grande. |
+| **Boas práticas** | Escolher um epsilon adequado à ordem de grandeza manipulada, nunca o epsilon de máquina por padrão para valores grandes. Comparar com uma margem relativa em vez de uma constante absoluta. Somar os valores pequenos entre si antes de acrescentá-los ao total grande. Aceitar uma entrada somente se `isfinite(x)` e dentro da faixa do domínio. |

@@ -83,6 +83,78 @@ def desenhar_frame(tela, cena, zonas_modificadas):
 
 É a lógica do **dirty rectangle** (retângulo sujo): a própria cena sinaliza quais zonas mudaram desde a última renderização, e só essas são redesenhadas. Em um cenário 90% estático, isso reduz o custo de cada frame a uma fração do de uma renderização completa, para um resultado visualmente idêntico.
 
+## Reparar o resultado anterior em vez de recalcular tudo
+
+Um solucionador repete o mesmo teste centenas de milhares de vezes, sobre dados que mal mudam de um teste para o seguinte. Exemplo: a restrição "todas diferentes" é testada por um [emparelhamento bipartido](/?c=fondamentaux&s=algorithmes&p=couplage-biparti-et-theoreme-de-hall) após cada retirada de um valor possível. Refazer o emparelhamento do zero recomeça todo o trabalho embora uma única aresta tenha desaparecido.
+
+A ideia é **guardar o emparelhamento anterior** e reparar apenas o que a mudança quebrou:
+
+| A aresta retirada | O que se faz |
+|---|---|
+| Não estava no emparelhamento | Nada: o emparelhamento continua válido |
+| Estava no emparelhamento | Uma única célula perde seu valor: uma única busca de caminho para recolocá-la |
+
+```c
+// Retira o valor v da célula c e depois repara o emparelhamento em vez de refazê-lo
+int apos_retirada(int c, int v)
+{
+    dom[c][v] = 0;
+    if (dono[v] == c) {          // a aresta retirada servia ao emparelhamento
+        dono[v] = -1;
+        valor_de[c] = -1;
+        memset(vista, 0, sizeof vista);
+        encontrar(c);            // uma única célula a recolocar
+    }
+    for (int k = 0; k < N; k++)  // uma célula sem valor: não há mais emparelhamento completo
+        if (valor_de[k] < 0)
+            return 0;
+    return 1;
+}
+```
+
+`valor_de[c]` memoriza o valor de cada célula (o `encontrar()` do capítulo sobre o emparelhamento o atualiza ao mesmo tempo que `dono`). Quando o valor retirado é recolocado, as células que ficaram sem valor tentam de novo: sem isso, o emparelhamento guardado ficaria pequeno demais para sempre.
+
+Medido em 200 000 retiradas sucessivas, 40 células, 40 valores, cada célula aceitando 12 % dos valores:
+
+| | Recalcular tudo | Reparar |
+|---|---|---|
+| Células examinadas pelas buscas | 61 566 318 | 832 601 (74 vezes menos) |
+| Tempo | cerca de 1 s | algumas dezenas de ms |
+| Respostas "emparelhamento completo?" | 198 112 sim | 198 112 sim, **idênticas teste a teste** (0 diferença) |
+
+**Mesma resposta, não necessariamente o mesmo emparelhamento.** Existem vários emparelhamentos completos: o emparelhamento reparado difere do que um cálculo completo dá em 1 972 casos de 1 973 comparados. A resposta sim/não é a mesma; mas se o resto do programa depende do próprio emparelhamento (uma explicação, uma ordem, um resultado a reproduzir de forma idêntica de uma execução para outra), **volta-se ao cálculo completo** para produzir esse resultado canônico, e mantém-se a versão reparada para todos os testes que só precisam da resposta. No solucionador da pesquisa rush01, essa combinação reduziu o tempo total em 6,2 %.
+
+> **Armadilha:** reparar um estado que não é mais válido. O invariante "o emparelhamento atual é válido para os dados atuais" deve ser restabelecido após **cada** tipo de mudança (retirada, recolocação, volta atrás de uma busca): um caso esquecido dá uma resposta errada, sem erro.
+>
+> **Boa prática:** manter o cálculo completo como referência em um teste e comparar as respostas teste a teste (aqui 0 diferença em 200 000) antes de medir o tempo.
+
+## Percorrer apenas os elementos marcados: o bitmap
+
+Quando só uma pequena parte dos elementos mudou e eles foram marcados (como os "retângulos sujos" acima), percorrer um array de indicadores de um byte por elemento custa uma leitura por elemento, marcado ou não. Um **bitmap** guarda um indicador por bit: uma palavra de 64 bits contém 64 (veja [o filtro por bitmap](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)), e `__builtin_ctzll` dá diretamente a posição do próximo bit em 1 ([funções embutidas](/?c=langages&s=c&p=operateurs-binaires)). Palavras vazias custam uma única leitura.
+
+```c
+for (uint32_t w = 0; w < N / 64; w++)
+    for (uint64_t m = bitmap[w]; m; m &= m - 1)  // bits restantes da palavra
+        processar(w * 64 + __builtin_ctzll(m));  // índice do bit em 1 mais baixo
+```
+
+`m &= m - 1` apaga o bit em 1 mais baixo: o laço para quando a palavra fica vazia, e `__builtin_ctzll` nunca é chamado com 0 (seu resultado seria indefinido).
+
+Medido em 1 M de elementos, 200 percursos, mediana de 7 rodadas alternadas, mesmas somas verificadas (Intel Core Ultra 5 228V sob WSL, gcc 13.3 em `-O2`):
+
+| Proporção de elementos marcados | Array de bytes | Bitmap | Diferença |
+|---|---|---|---|
+| 0,1 % | 84 ms | 2,9 ms | −97 % |
+| 1 % | 63 ms | 16 ms | −74 % |
+| 10 % | 67 ms | 44 ms | −35 % |
+| 50 % | 68 ms | 130 ms | **+91 %** |
+
+O ganho depende da **densidade** das marcas: com metade marcada, o bitmap é quase duas vezes mais lento, pois cada marca custa mais do que um byte lido em sequência. No solucionador da pesquisa rush01, esse percurso só ganhou 2 % do tempo total: só o programa real diz quanto vale a otimização (veja [Medir antes de otimizar](/?c=qualite-performance-et-outils&s=performance&p=mesurer-avant-d-optimiser)).
+
+> **Armadilha:** adotar o bitmap porque é mais compacto ou mais rápido no caso esparso, sem medir a densidade real das marcas do programa.
+>
+> **Boa prática:** medir a proporção de elementos marcados no programa real antes de escolher; o bitmap vale para marcas raras.
+
 ## Um exemplo tirado de um scraper: não confirmar o que já está provado
 
 Um scraper de anúncios classificados comparava dois anúncios para saber se descreviam o mesmo veículo (duplicata) ou dois veículos diferentes. A verificação completa abria a página detalhada de cada anúncio para comparar cerca de dez características (quilometragem, opcionais, histórico de manutenção): uma chamada de rede e um tempo de renderização não desprezíveis.
