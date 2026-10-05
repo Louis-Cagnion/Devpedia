@@ -283,6 +283,63 @@ _Static_assert(NEAR_PLANE > 0.0f && NEAR_PLANE < FAR_PLANE, "plans near/far inco
 
 > **Piège :** `_Static_assert` ne peut pas tester une valeur lue à l'exécution (argument de fonction, variable, entrée de l'utilisateur) : pour celles-là, un `if` avec un message d'erreur reste nécessaire.
 
+## Quand un `snprintf` peut tronquer : `-Wformat-truncation`
+
+`snprintf(tampon, taille, format, ...)` n'écrit jamais plus de `taille` octets : il ne déborde pas, mais il **tronque en silence** si le résultat est plus long. Le compilateur sait souvent le prédire : l'avertissement `-Wformat-truncation` (niveau 1, inclus dans `-Wall`) se déclenche quand il prouve que le résultat **peut** dépasser le tampon. Il connaît la longueur maximale d'un `%s` quand une **précision** la borne : `%.200s` écrit au plus 200 caractères.
+
+```c
+#include <stdio.h>
+
+int main(int argc, char **argv)
+{
+	char path[64];                                  /* 64 octets, '\0' compris */
+
+	if (argc < 3)
+		return 1;
+	snprintf(path, sizeof path, "%.200s/shaders/%.200s", argv[1], argv[2]);
+	puts(path);
+	return 0;
+}
+```
+
+```text
+$ gcc -Wall -c main.c
+main.c:9:38: warning: '%.200s' directive output may be truncated writing up to 200 bytes into a region of size 64 [-Wformat-truncation=]
+note: '__builtin___snprintf_chk' output between 10 and 410 bytes into a destination of size 64
+```
+
+Avec deux arguments de 100 caractères, le programme ne garde que 63 caractères du chemin (le 64e octet est le `\0` final) : sans l'avertissement, rien ne le signale, et le programme ouvre ensuite un fichier qui n'est pas celui demandé. L'avertissement chiffre le pire cas : `200 + 9 + 200` caractères plus le `\0`, soit 410 octets pour un tampon de 64.
+
+**Dimensionner le tampon pour le pire cas, pas pour le cas courant.** La taille se calcule en additionnant les maxima de chaque champ (chacun borné par sa précision), le texte fixe, et 1 pour le `\0` :
+
+| Morceau du format | Octets au plus |
+|---|---|
+| `%.200s` (dossier) | 200 |
+| `/shaders/` (texte fixe) | 9 |
+| `%.200s` (nom) | 200 |
+| `\0` final | 1 |
+| **Total** | **410** |
+
+```c
+#define DIR_MAX 200
+#define NAME_MAX_LEN 200
+
+/* taille du pire cas : 200 + 9 + 200 + '\0' */
+char path[DIR_MAX + sizeof "/shaders/" + NAME_MAX_LEN];
+
+snprintf(path, sizeof path, "%.*s/shaders/%.*s", DIR_MAX, argv[1], NAME_MAX_LEN, argv[2]);
+```
+
+`sizeof "/shaders/"` vaut 10 : il compte déjà le `\0`. Les constantes nommées servent à la fois au tampon et aux précisions (`%.*s` prend la précision en argument), donc elles ne peuvent plus se désynchroniser. Le même programme ne produit alors plus aucun avertissement.
+
+| À ne pas faire | Pourquoi |
+|---|---|
+| Ajouter `-Wno-format-truncation` pour faire taire l'avertissement | La troncature reste : seul le signal disparaît |
+| Agrandir le tampon « au hasard » (`char path[256]`) | Rien ne prouve que 256 suffit : refaire la somme des maxima |
+| Ignorer la valeur renvoyée par `snprintf` | Elle donne la longueur qui aurait été écrite : `n >= sizeof path` signifie tronqué |
+
+Quand les longueurs ne sont pas bornées à la compilation (chemin lu depuis l'extérieur), l'avertissement ne peut rien prouver : tester le retour (`n < 0 || (size_t)n >= sizeof path`) et refuser avec un message qui nomme la valeur trop longue. Le niveau 2 (`-Wformat-truncation=2`, voir la [documentation de GCC](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html)) pousse l'analyse aux cas où la longueur est inconnue ; il est plus bavard. Pour `snprintf` en lui-même, voir [La gestion de la mémoire](/?c=langages-de-programmation&s=c&p=memoire).
+
 ## Erreurs de compilation vs erreurs d'édition de liens
 
 Savoir à quelle étape une erreur survient aide à la diagnostiquer :
