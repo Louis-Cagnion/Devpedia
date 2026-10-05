@@ -1,6 +1,6 @@
 # TODO : Devpedia
 
-> Prochaine tâche : rédiger le point 4, puis la suite du point 5, un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
+> Prochaine tâche : rédiger la suite du point 4, puis le point 5, un chapitre à la fois, sans attendre de validation (récapitulatif relu après coup par Louis). Après : audio du point 3 (4 langues). En attente de Louis : test navigateur (point 1), audio de la section IA > Modèles de décision structurée (point 2).
 
 **Règle générale pour tout contenu rédigé à partir de cette todo** : suivre le plan zéro-connaissance défini dans `plan-zero-connaissance.md` (niveau débutant absolu, aucun jargon/outil/plateforme nommé sans définition ni lien, tableaux/schémas/blocs de code privilégiés au texte narratif, un chapitre à la fois, sans attente de validation, ordre logique des sous-sections). Non répété tâche par tâche ci-dessous ; conformité trackée dans `audit-zero-connaissance.md`.
 
@@ -53,22 +53,16 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Langages/C/makefiles` (sections règles génériques, options sans recompilation et dossier d'objets par jeu d'options, chaîne PGO, `make -q` ; exemple `-I` corrigé).
 - `Infrastructure & DevOps/CI-CD/agents-auto-heberges-azure` (nouveau).
 - `Infrastructure & DevOps/Réseaux/tunnel-ssh-et-redirection-de-port` (nouveau).
+- `Sécurité/Sécurité offensive/attaques-navigateur-automatise` (sections headless ou fenêtre réelle, captchas, profil persistant, débogage à distance de Chrome).
 
-## 4. Navigateur automatisé : headless, captcha, profil persistant, débogage à distance (projet scraping_infomediaires)
-À ajouter dans Sécurité > Sécurité offensive (`attaques-navigateur-automatise.md` couvre déjà Playwright, `navigator.webdriver` et le fingerprinting, mais ni « headless », ni « captcha », ni le profil persistant : 0 résultat).
-- **Mode headless vs fenêtre réelle** : empreinte différente, plus de vérifications anti-robot ; alternative « fenêtre réelle placée hors écran » (`--window-position=-32000,-32000`) ; zone d'affichage imposée (`viewport` Playwright, ex. 1280 × 1000) indépendante de la résolution de l'écran, qui ne compte que pour l'humain qui regarde la fenêtre.
-- **Captcha** : ce que c'est, pourquoi un robot ne le passe pas, levée manuelle par un humain puis réutilisation du déblocage.
-- **Profil de navigateur persistant** (`launch_persistent_context(user_data_dir=…)`) : cookies de vérification réutilisés d'un lancement à l'autre ; un déblocage obtenu avec une fenêtre peut ne plus valoir si le navigateur repasse en headless (empreinte différente) ; le chemin du profil dépend du compte qui exécute.
-- **Débogage à distance de Chrome** (`--remote-debugging-port`, `chrome://inspect`, *Chrome DevTools Protocol*) : voir et piloter une page d'un Chrome sans bureau ; risque (contrôle total du navigateur, à n'exposer que sur `localhost`).
-
-## 5. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois)
+## 4. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois)
 Source : `rushs/rush01/RECAP-27-09.md` et `rushs/rush01/research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne d'origine de chaque fichier à préserver : certains sont en CRLF, y compris en français), exemples exécutés, liens validés par `validateInternalLinks`, ligne d'audio au point 3.
 - `Qualité, performance et outils/Performance` (chapitre à choisir) : division par multiplication par un inverse précalculé (exacte pour un diviseur jusqu'à 128 et un dividende sous 2^25, preuve courte) ; gain mesuré faible (−0,5 %) car le processeur masque la latence : mesurer avant de conclure.
 - `Qualité, performance et outils/Performance/eviter-le-recalcul-redondant` : calcul incrémental qui garde exactement le même résultat (reprendre le couplage du test précédent, repli sur le calcul complet pour produire le résultat canonique, −6,2 % mesuré) ; ne parcourir que les éléments marqués dans une bitmap (−2 %).
 - `Fondamentaux/Algorithmes` (nouveau chapitre) : couplage biparti, théorème de Hall, algorithme de Kuhn (chemins augmentants), application à la contrainte « toutes différentes » d'une ligne de carré latin ; renvoi depuis `encodages-sat` (propagateurs).
 - `Langages/Bash` (et Zsh) : fichier temporaire `mktemp` supprimé par `trap` sur `EXIT`, `INT` et `TERM` ; `timeout --foreground` (sans lui, Ctrl-C n'atteint pas la commande, isolée dans son propre groupe de processus) ; tampon de sortie de 4 Ko vers un tube et mélange stdout/stderr par `2>&1` qui coupe une ligne en deux ; `read -k` de zsh et touches fléchées (Échap suivi d'autres octets) ; bloc de commentaire `: <<'COMMENT'`.
 
-## 6. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
+## 5. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
 
 **Fondamentaux > Graphisme** (chapitres existants : `wavefront-obj-et-modele-de-phong`, `glfw-glad-et-boucle-de-rendu`, `effets-de-rendu-et-interaction-3d`, `edition-de-maillage-et-selection-proportionnelle`)
