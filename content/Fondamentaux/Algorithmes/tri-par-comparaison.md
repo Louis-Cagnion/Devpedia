@@ -91,7 +91,7 @@ Le **tri fusion-insertion** (*Ford-Johnson merge-insertion sort*) pousse plus lo
 | Tri fusion | O(n log n) | O(n log n) | O(n) | Oui |
 | Tri rapide (*quicksort*) | O(n²) | O(n log n) | O(log n) | Non |
 
-Un tri est dit **stable** quand deux éléments considérés égaux par la comparaison conservent leur ordre relatif d'origine après le tri (important si on trie, par exemple, une liste déjà triée par nom, cette fois par âge : deux personnes du même âge doivent rester dans leur ordre alphabétique).
+Un tri est dit **stable** quand deux éléments considérés égaux par la comparaison conservent leur ordre relatif d'origine après le tri (important si on trie, par exemple, une liste déjà triée par nom, cette fois par âge : deux personnes du même âge doivent rester dans leur ordre alphabétique). Le tri `qsort` du langage C ne le garantit pas : voir [la stabilité d'un tri et le départage des égalités](/?c=fondamentaux&s=algorithmes&p=stabilite-du-tri-et-bruit-reproductible).
 
 > **Piège :** croire qu'un tri par comparaison peut descendre sous **O(n log n)** dans le cas général : c'est une limite théorique démontrée (impossible de faire mieux en ne comparant que des paires d'éléments), pas une simple question d'optimisation d'implémentation.
 >

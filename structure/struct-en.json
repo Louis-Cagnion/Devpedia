@@ -68,6 +68,10 @@
               "label": "Comparison Sorting"
             },
             {
+              "id": "stabilite-du-tri-et-bruit-reproductible",
+              "label": "Sort Stability, Ties and Reproducible Noise (xorshift)"
+            },
+            {
               "id": "pile-et-file",
               "label": "Stack and Queue: LIFO and FIFO"
             },

@@ -68,6 +68,10 @@
               "label": "Le tri par comparaison"
             },
             {
+              "id": "stabilite-du-tri-et-bruit-reproductible",
+              "label": "La stabilité d'un tri, les égalités et le bruit reproductible (xorshift)"
+            },
+            {
               "id": "pile-et-file",
               "label": "Pile et file : LIFO et FIFO"
             },

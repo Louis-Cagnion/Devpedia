@@ -91,7 +91,7 @@ A **ordenação por mesclagem-inserção** (*Ford-Johnson merge-insertion sort*)
 | Ordenação por mesclagem | O(n log n) | O(n log n) | O(n) | Sim |
 | Ordenação rápida (*quicksort*) | O(n²) | O(n log n) | O(log n) | Não |
 
-Uma ordenação é dita **estável** quando dois elementos considerados iguais pela comparação mantêm sua ordem relativa original após a ordenação (importante se, por exemplo, uma lista já ordenada por nome for ordenada de novo, desta vez por idade: duas pessoas da mesma idade devem permanecer em sua ordem alfabética).
+Uma ordenação é dita **estável** quando dois elementos considerados iguais pela comparação mantêm sua ordem relativa original após a ordenação (importante se, por exemplo, uma lista já ordenada por nome for ordenada de novo, desta vez por idade: duas pessoas da mesma idade devem permanecer em sua ordem alfabética). A função `qsort` do C não garante isso: veja [a estabilidade de uma ordenação e o desempate](/?c=fondamentaux&s=algorithmes&p=stabilite-du-tri-et-bruit-reproductible).
 
 > **Armadilha:** achar que uma ordenação por comparação pode ficar abaixo de **O(n log n)** no caso geral: isso é um limite teórico demonstrado (impossível fazer melhor comparando apenas pares de elementos), não uma simples questão de otimização de implementação.
 >
