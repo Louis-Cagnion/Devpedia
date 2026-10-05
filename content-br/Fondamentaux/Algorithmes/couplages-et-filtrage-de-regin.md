@@ -419,7 +419,7 @@ A filtragem só se aplica às linhas e colunas com no máximo 16 casas livres (o
 | Propagações médias | 187 milhões | 97 milhões |
 | Custo de uma propagação | 107 ns | 91 ns |
 
-(As médias contam uma falha como o orçamento inteiro.) 11 grades só são resolvidas com a filtragem, uma única apenas sem ela: uma diferença tão clara tem cerca de 3 chances em 1.000 de ocorrer por acaso. Com um limite de 24 casas livres, 17 grades de 20 são resolvidas (contra 20 de 20 com 16): filtrar mais linhas custa mais do que rende.
+(As médias contam uma falha como o orçamento inteiro.) 12 grades só são resolvidas com a filtragem, uma única apenas sem ela: uma diferença tão clara tem cerca de 3 chances em 1.000 de ocorrer por acaso (teste do sinal bilateral). Essas 40 grades incluem as 20 que serviram para escolher esse limiar; só com as outras 20, o resultado é de 8 contra 1 (veja [comparar dois ajustes](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages)). Com um limite de 24 casas livres, 17 grades de 20 são resolvidas (contra 20 de 20 com 16): filtrar mais linhas custa mais do que rende.
 
 Com 108 × 108, nas 100 grades (4 cópias em paralelo):
 

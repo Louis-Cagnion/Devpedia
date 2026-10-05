@@ -326,6 +326,8 @@ Exemple réel sur le solveur SAT : 3 grilles, temps moyen par grille, une versio
 | a et b2 gagnent dans les deux tours | Gains retenus |
 | b1 change de signe d'un tour à l'autre | Rien de concluant : l'écart est dans le bruit |
 
+Pour conclure à partir de plusieurs grilles plutôt que d'une seule (appariement, test du signe, comparaisons multiples), voir [Comparer deux réglages](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages).
+
 ## Plus de threads, plus lent : les programmes limités par la mémoire
 
 Un programme peut être limité par le **calcul** (*CPU-bound*) ou par les **accès à la mémoire** (*memory-bound*, voir [Le cache CPU](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). Dans le second cas, les threads se disputent la même bande passante mémoire : en ajouter peut **ralentir** l'ensemble. Mesuré sur un solveur de puzzle : 577 ms avec un thread, 893 ms avec 8 threads (voir aussi [Le parallélisme](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).

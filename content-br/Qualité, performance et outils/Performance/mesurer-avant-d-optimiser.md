@@ -326,6 +326,8 @@ Exemplo real no solucionador SAT: 3 grades, tempo médio por grade, uma versão 
 | a e b2 ganham nas duas rodadas | Ganhos mantidos |
 | b1 muda de sinal de uma rodada para outra | Nada conclusivo: a diferença está dentro do ruído |
 
+Para concluir a partir de várias grades e não de uma só (pareamento, teste do sinal, comparações múltiplas), veja [Comparar dois ajustes](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages).
+
 ## Mais threads, mais lento: os programas limitados pela memória
 
 Um programa pode ser limitado pelo **cálculo** (*CPU-bound*) ou pelos **acessos à memória** (*memory-bound*, ver [O cache da CPU](/?c=qualite-performance-et-outils&s=performance&p=cache-cpu-et-simd)). No segundo caso, as threads disputam a mesma largura de banda de memória: acrescentar mais pode **deixar tudo mais lento**. Medido em um solucionador de quebra-cabeça: 577 ms com uma thread, 893 ms com 8 threads (ver também [O paralelismo](/?c=qualite-performance-et-outils&s=performance&p=parallelisme)).

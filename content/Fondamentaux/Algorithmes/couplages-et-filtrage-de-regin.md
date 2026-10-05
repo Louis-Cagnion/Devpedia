@@ -419,7 +419,7 @@ Le filtrage ne s'applique qu'aux lignes et colonnes d'au plus 16 cases libres (l
 | Propagations moyennes | 187 millions | 97 millions |
 | Coût d'une propagation | 107 ns | 91 ns |
 
-(Les moyennes comptent un échec comme le budget entier.) 11 grilles ne sont résolues qu'avec le filtrage, une seule seulement sans lui : un écart aussi net a environ 3 chances sur 1 000 d'arriver par hasard. Avec un seuil de 24 cases libres, 17 grilles sur 20 sont résolues (contre 20 sur 20 à 16) : filtrer plus de lignes coûte plus qu'il ne rapporte.
+(Les moyennes comptent un échec comme le budget entier.) 12 grilles ne sont résolues qu'avec le filtrage, une seule seulement sans lui : un écart aussi net a environ 3 chances sur 1 000 d'arriver par hasard (test du signe bilatéral). Ces 40 grilles comprennent les 20 qui ont servi à choisir ce seuil ; sur les 20 autres seules, le résultat est de 8 contre 1 (voir [comparer deux réglages](/?c=qualite-performance-et-outils&s=performance&p=comparer-deux-reglages)). Avec un seuil de 24 cases libres, 17 grilles sur 20 sont résolues (contre 20 sur 20 à 16) : filtrer plus de lignes coûte plus qu'il ne rapporte.
 
 À 108 × 108, sur les 100 grilles (4 copies en parallèle) :
 
