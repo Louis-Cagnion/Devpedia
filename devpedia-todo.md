@@ -56,10 +56,11 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Sécurité/Sécurité offensive/attaques-navigateur-automatise` (sections headless ou fenêtre réelle, captchas, profil persistant, débogage à distance de Chrome).
 - `Fondamentaux/Algorithmes/couplage-biparti-et-theoreme-de-hall` (nouveau), et le renvoi ajouté à `encodages-sat` (section propagateurs).
 - `Qualité, performance et outils/Performance/eviter-le-recalcul-redondant` (sections réparer le résultat précédent et parcours par bitmap).
+- `Langages/Bash/gestion-des-processus` (sections `mktemp` et `trap`, `timeout` et Ctrl-C).
 
 ## 4. Notions de la recherche rush01 du 27/09 à rédiger (un chapitre à la fois)
 Source : `rushs/rush01/RECAP-27-09.md` et `rushs/rush01/research/` du dépôt 42Piscine_100_percent (mesures, code et pièges vérifiés). Chaque ajout : français, puis en/es/br (fins de ligne d'origine de chaque fichier à préserver : certains sont en CRLF, y compris en français), exemples exécutés, liens validés par `validateInternalLinks`, ligne d'audio au point 3.
-- `Langages/Bash` (et Zsh) : fichier temporaire `mktemp` supprimé par `trap` sur `EXIT`, `INT` et `TERM` ; `timeout --foreground` (sans lui, Ctrl-C n'atteint pas la commande, isolée dans son propre groupe de processus) ; tampon de sortie de 4 Ko vers un tube et mélange stdout/stderr par `2>&1` qui coupe une ligne en deux ; `read -k` de zsh et touches fléchées (Échap suivi d'autres octets) ; bloc de commentaire `: <<'COMMENT'`.
+- `Langages/Bash` (et Zsh) : tampon de sortie de 4 Ko vers un tube et mélange stdout/stderr par `2>&1` qui coupe une ligne en deux ; `read -k` de zsh et touches fléchées (Échap suivi d'autres octets) ; bloc de commentaire `: <<'COMMENT'`.
 
 ## 5. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
