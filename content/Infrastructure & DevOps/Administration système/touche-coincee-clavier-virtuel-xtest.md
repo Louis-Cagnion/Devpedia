@@ -68,6 +68,8 @@ static int key_is_down(Display *display, unsigned int keycode)
 
 Le code d'une touche dépend du clavier et de sa disposition : on le demande à Xlib (`XKeysymToKeycode`, qui convertit le **symbole** d'une touche, par exemple celui d'Échap, en code) plutôt que de l'écrire en dur.
 
+Mesuré sur la session réelle (Xorg), avec `xdotool keydown F13` (une touche sans code fixe : `xdotool` lui installe un code temporaire, ici 8, et elle est sans effet dans les applications) : une fois `xdotool` terminé, `xinput query-state` sur le clavier XTEST affiche `key[8]=down` et `XQueryKeymap` voit le code 8 enfoncé ; `xdotool keyup F13` remet les deux à zéro. Sous Xephyr (un serveur X affiché dans une fenêtre), le même clavier XTEST reste à `key[9]=up` alors que `XQueryKeymap` voit Échap enfoncée : sur un serveur imbriqué, se fier à `XQueryKeymap`.
+
 ## La relâcher
 
 Le plus simple, à la main : `xdotool keyup Escape`. Dans un programme C, on envoie le même événement par XTEST :
@@ -98,7 +100,7 @@ int release_if_stuck(unsigned int keycode)
 }
 ```
 
-Testée sous **Xvfb** (un serveur X sans écran, qui permet de tester sans affichage réel) : avant l'appui, `key_is_down` renvoie 0 ; après un `keydown` seul, 1 ; `release_if_stuck` renvoie alors 1 et, juste après, la touche est de nouveau à 0 ; un second appel renvoie 0 (rien à faire).
+Testée sous **Xvfb** (un serveur X sans écran, qui permet de tester sans affichage réel) : avant l'appui, `key_is_down` renvoie 0 ; après un `keydown` seul, 1 ; `release_if_stuck` renvoie alors 1 et, juste après, la touche est de nouveau à 0 ; un second appel renvoie 0 (rien à faire). Rejouée ici sous Xephyr (un serveur X affiché dans une fenêtre, Xvfb n'étant pas installé) : mêmes résultats, `0`, `1`, `1`, `0` puis `0`.
 
 ## Garantir le relâchement : `trap`
 
@@ -113,7 +115,7 @@ sleep 30 &                          # la commande longue (ici sleep, en vrai l'a
 wait $!                             # ...est attendue par « wait » ($! : numéro du dernier processus lancé)
 ```
 
-Testé avec un relâchement remplacé par une ligne écrite dans un fichier (`xdotool` n'est pas installé sur la machine de test) :
+Testé avec le vrai `xdotool` sur une session Xorg, avec la touche F13 (sans effet dans les applications) et un journal des relâchements :
 
 | Interruption | Résultat avec `trap release EXIT` |
 |---|---|
@@ -121,7 +123,7 @@ Testé avec un relâchement remplacé par une ligne écrite dans un fichier (`xd
 | `timeout 2 commande` | relâché **une fois** |
 | `kill -9` (signal `SIGKILL`) | **jamais** relâché |
 
-> **Piège (le `trap` est retardé) :** bash n'exécute le `trap` qu'**après la fin de la commande en cours**. Avec un simple `sleep 30` à la place de `sleep 30 & wait $!`, chaque test a attendu les 30 secondes avant de relâcher (la série complète a duré plus de 4 minutes). `wait` est au contraire interrompu tout de suite par un signal : on lance donc la commande longue en arrière-plan, puis on l'attend avec `wait`.
+> **Piège (le `trap` de signal est retardé) :** pour un `trap` sur un **signal** (`INT`, `TERM`), bash n'exécute le gestionnaire qu'**après la fin de la commande en cours**. Mesuré avec `trap release EXIT INT TERM` et un simple `sleep 5` au premier plan : un `SIGTERM` envoyé à 1 s ne relâche qu'à 5 s (le script se termine 4,0 s après le signal). `wait` est au contraire interrompu tout de suite par un signal : on lance donc la commande longue en arrière-plan, puis on l'attend avec `wait $!`. Avec `trap release EXIT` seul, le `SIGTERM` tue le script immédiatement et le gestionnaire s'exécute aussitôt, même avec un `sleep` au premier plan.
 
 > **Piège (exécuté deux fois) :** `trap release EXIT INT TERM` relâche **deux fois** sur un `SIGTERM` (une pour le signal, une pour la sortie qui suit). `trap release EXIT` suffit, et le gestionnaire doit rester **sans danger s'il tourne deux fois** (relâcher une touche déjà relâchée ne fait rien).
 
@@ -171,6 +173,8 @@ Règles du protocole :
 
 Un appui sans relâchement, ou plusieurs appuis de suite, signale une touche coincée ou répétée.
 
+Mesuré dans Xephyr avec `xev` (une frappe d'Échap envoyée par `send_escape_once`, `xinput test-xi2 --root` en arrière-plan) : 1 `RawKeyPress` et 1 `RawKeyRelease`, code de retour 0. Les trois vérifications échouent comme prévu, chacune avec son message : `fenêtre 99999999 introuvable`, `fenêtre 2097153 sans le focus (focus : 528)`, `fenêtre 2097153 au PID 33947, attendu 1`. Piège : `xdotool getwindowpid` répond `window 2097153 has no pid associated with it` pour une fenêtre dont l'application ne renseigne pas la propriété `_NET_WM_PID` (c'est le cas de `xev`, qu'il a fallu compléter avec `xprop`) ; une fenêtre GLFW la renseigne (PID identique à celui du processus, vérifié).
+
 ## Mesurer ce que l'application affiche : capture et pixels
 
 Pour savoir si l'objet a bougé après la frappe, on **capture l'écran** et on mesure les pixels. `ffmpeg` (l'outil de conversion audio et vidéo) sait lire l'écran d'un serveur X avec `-f x11grab` :
@@ -188,6 +192,8 @@ ffmpeg -f x11grab -draw_mouse 0 -video_size 800x600 -i :99 -frames:v 1 shot.ppm
 | `-frames:v 1` | une seule image, enregistrée au format **PPM** (image brute : un petit en-tête, puis 3 octets rouge-vert-bleu par pixel) |
 
 > **Piège (le curseur fausse la mesure) :** par défaut, `x11grab` dessine le curseur dans la capture. Sa flèche blanche s'ajoute à l'objet mesuré et agrandit sa **boîte englobante** (le plus petit rectangle qui contient tous les pixels de l'objet), donc une mesure de position ou de taille. `-draw_mouse 0` l'exclut.
+
+Mesuré (écran noir de 800 × 600, fenêtre blanche, curseur en (400, 300)) avec la fonction `bounding_box` ci-dessous : `(12, 12, 211, 111)` avec `-draw_mouse 0`, `(12, 12, 408, 308)` sans cette option : le curseur étire la boîte jusqu'à lui.
 
 La mesure se fait ensuite en lisant le PPM : sur fond noir, la boîte englobante est celle des pixels qui ne sont pas noirs.
 

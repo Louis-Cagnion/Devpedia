@@ -130,7 +130,7 @@ Ici `FADE_STEP` vaut 0,016 s. `frame_time` ne se rafraîchit qu'à chaque étape
 | 1 000 | 79,0 (16 fois trop) | 5,0 |
 | 2 500 | 199,7 (**40 fois** trop) | 5,0 |
 
-Sur un écran à 60 Hz avec vsync, le défaut ne se voit pas (une image dure plus que le pas du fondu) : il apparaît sur un écran rapide ou sans vsync. Le correctif tient en trois règles :
+Sur un écran à 60 Hz avec vsync, le défaut ne se voit pas (une image dure plus que le pas du fondu) : il apparaît sur un écran rapide ou sans vsync. Le correctif tient en trois règles : Mesuré sur une vraie boucle GLFW (écran à 144 Hz, déplacement de 5 unités par seconde pendant 1 s) : avec vsync (147 images) le chronomètre partagé donne **14,70** ; sans vsync (18 037 images) **1 434,21**, soit 287 fois trop ; avec un chronomètre par usage, 4,98 à 5,00 dans tous les cas.
 
 | Règle | Ce que ça change |
 |---|---|
@@ -150,7 +150,7 @@ fade_elapsed += frame_time;               /* le fondu cumule du temps réel */
 alpha = fminf(fade_elapsed / FADE_DURATION, 1.0f);   /* fminf : plafonne à 1 */
 ```
 
-> **Piège (mesurer à une seule cadence) :** un mouvement maintenu (touche enfoncée, rotation continue) qui paraît juste à 60 FPS peut être faux à une autre cadence. Le mesurer à **plusieurs cadences** : avec vsync, puis sans. Sans vsync, Mesa se règle par la [variable d'environnement](/?c=shells&s=bash&p=variables-denvironnement) `vblank_mode=0` et le pilote NVIDIA par `__GL_SYNC_TO_VBLANK=0` (`vblank_mode=0 ./programme`). L'angle ou la distance parcourus après une seconde doivent être les mêmes dans tous les cas.
+> **Piège (mesurer à une seule cadence) :** un mouvement maintenu (touche enfoncée, rotation continue) qui paraît juste à 60 FPS peut être faux à une autre cadence. Le mesurer à **plusieurs cadences** : avec vsync, puis sans. Sans vsync, Mesa se règle par la [variable d'environnement](/?c=shells&s=bash&p=variables-denvironnement) `vblank_mode=0` et le pilote NVIDIA par `__GL_SYNC_TO_VBLANK=0` (`vblank_mode=0 ./programme`). L'angle ou la distance parcourus après une seconde doivent être les mêmes dans tous les cas. Mesuré sur un portable à deux cartes : `vblank_mode=0` désactive bien le vsync de Mesa (17 447 images en 1 s au lieu de 147), mais `__GL_SYNC_TO_VBLANK=0` n'a eu **aucun effet** quand le rendu est délégué à la carte NVIDIA (`__NV_PRIME_RENDER_OFFLOAD=1` : 169 images au lieu de 147) ; `glfwSwapInterval(0)` dans le programme, lui, marche partout (7 556 images avec NVIDIA, 17 244 avec Mesa). Autre limite de l'égalité des distances : une image plus longue que `MAX_FRAME_TIME` est plafonnée, donc le temps en trop est perdu (un arrêt d'environ 0,3 s au démarrage du pilote NVIDIA a donné 3,81 au lieu de 5).
 
 ## La synchronisation verticale (vsync)
 
@@ -341,7 +341,7 @@ Chaque couche s'observe depuis un [terminal](/?c=fondamentaux&s=bases-de-l-infor
 
 ```bash
 lspci | grep -iE "vga|3d"              # lspci liste les périphériques PCI : la ou les cartes graphiques
-ls /dev/dri                            # fichiers du DRM : card0 (la carte), renderD128 (calcul sans écran)
+ls /dev/dri                            # fichiers du DRM : cardN (une par carte), renderDN (calcul sans écran)
 lsmod | grep -E "amdgpu|i915|nouveau|nvidia"   # lsmod liste les pilotes chargés dans le noyau
 glxinfo -B | grep -i renderer          # glxinfo (paquet mesa-utils) : le pilote OpenGL réellement en service
 ```
@@ -377,6 +377,17 @@ Un portable a souvent une carte **intégrée** (dans le processeur, économe) et
 
 Les deux cartes n'ont ni les mêmes limites (`GL_MAX_TEXTURE_SIZE`...) ni la même version d'OpenGL : ce que le programme lit au démarrage dépend de la carte qui a créé le contexte.
 
+Mesuré sur un portable à deux cartes (AMD intégrée, NVIDIA dédiée), avec un programme qui demande un contexte OpenGL 3.3 « core » et lit `GL_RENDERER`, `GL_VERSION` et `GL_MAX_TEXTURE_SIZE` :
+
+| Lancement | `GL_RENDERER` | `GL_VERSION` | `GL_MAX_TEXTURE_SIZE` |
+|---|---|---|---|
+| par défaut | `AMD Radeon 680M (radeonsi, rembrandt, LLVM 20.1.2, DRM 3.64, 7.0.0-34-generic)` | `4.6 (Core Profile) Mesa 25.2.8` | 16384 |
+| `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia` | `NVIDIA GeForce RTX 3070 Laptop GPU/PCIe/SSE2` | `3.3.0 NVIDIA 595.91.07` | 32768 |
+| `LIBGL_ALWAYS_SOFTWARE=1` | `llvmpipe (LLVM 20.1.2, 256 bits)` | `4.5 (Core Profile) Mesa 25.2.8` | 16384 |
+| `DRI_PRIME=1` | `llvmpipe (LLVM 20.1.2, 256 bits)` | `4.5 (Core Profile) Mesa 25.2.8` | 16384 |
+
+La carte change bien tout ce que le programme lit, version comprise (NVIDIA renvoie la version demandée, Mesa la plus haute qu'il fournit). La dernière ligne est un piège : `DRI_PRIME=1` suppose que la carte dédiée utilise aussi un pilote Mesa. Ici elle est NVIDIA propriétaire : Mesa n'arrive pas à charger `nvidia-drm` (messages `glx: failed to create dri3 screen` et `failed to load driver: nvidia-drm`) et **retombe sur `llvmpipe`** sans s'arrêter. Vérifier `GL_RENDERER` plutôt que de croire que la carte dédiée est utilisée.
+
 ### Et sur Windows et macOS ?
 
 | Système | Qui fournit OpenGL |
@@ -399,6 +410,8 @@ if (!window)                                /* pilote absent, trop ancien, ou ve
 	return -1;
 }
 ```
+
+Mesuré en demandant OpenGL 9.9 (une version qui n'existe pas) sous X11 : `fenetre impossible : GLX: Failed to create context: BadMatch (invalid parameter attributes)`.
 
 Bonne pratique : tester sur les deux cartes d'un portable, et avec `LIBGL_ALWAYS_SOFTWARE=1`, avant de dire que le programme « marche partout ».
 

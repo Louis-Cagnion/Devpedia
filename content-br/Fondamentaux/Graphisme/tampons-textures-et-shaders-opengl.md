@@ -239,7 +239,7 @@ static double dark_ratio(const unsigned char *rgb, size_t n)
 }
 ```
 
-Uma malha do avesso dá uma proporção próxima da de toda a silhueta; a mesma malha corrigida (ou iluminada nas duas faces) a faz cair.
+Uma malha do avesso dá uma proporção próxima da de toda a silhueta; a mesma malha corrigida (ou iluminada nas duas faces) a faz cair. Medido com os três shaders deste capítulo (o geometry shader e os dois fragment shaders, sem modificação) em um cubo de 12 triângulos renderizado em uma imagem de 256 × 256 com fundo azul, com a luz vinda do observador e a eliminação de faces desativada, em três motores (AMD Radeon 680M com Mesa, NVIDIA RTX 3070, `llvmpipe`) com resultados idênticos: vértices no sentido certo e iluminação básica, `dark_ratio` = **0,000**; vértices invertidos e iluminação básica, **0,425** (o fundo ocupa 0,575 da imagem: é exatamente a silhueta do cubo); vértices invertidos com `gl_FrontFacing`, **0,000**.
 
 ### Compilar, ligar e usar um programa
 

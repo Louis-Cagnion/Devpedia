@@ -239,7 +239,7 @@ static double dark_ratio(const unsigned char *rgb, size_t n)
 }
 ```
 
-Una malla del revés da una proporción cercana a la de toda la silueta; la misma malla corregida (o iluminada por las dos caras) la hace caer.
+Una malla del revés da una proporción cercana a la de toda la silueta; la misma malla corregida (o iluminada por las dos caras) la hace caer. Medido con los tres shaders de este capítulo (el geometry shader y los dos fragment shaders, sin modificar) en un cubo de 12 triángulos renderizado en una imagen de 256 × 256 con fondo azul, con la luz procedente del observador y la eliminación de caras desactivada, en tres motores (AMD Radeon 680M con Mesa, NVIDIA RTX 3070, `llvmpipe`) con resultados idénticos: vértices en el sentido correcto e iluminación básica, `dark_ratio` = **0,000**; vértices invertidos e iluminación básica, **0,425** (el fondo ocupa 0,575 de la imagen: es exactamente la silueta del cubo); vértices invertidos con `gl_FrontFacing`, **0,000**.
 
 ### Compilar, enlazar y usar un programa
 

@@ -128,7 +128,7 @@ Here `FADE_STEP` is 0.016 s. `frame_time` is only refreshed at each fade step, b
 | 1,000 | 79.0 (16 times too much) | 5.0 |
 | 2,500 | 199.7 (**40 times** too much) | 5.0 |
 
-On a 60 Hz screen with vsync, the defect is invisible (a frame lasts longer than the fade step): it appears on a fast screen or without vsync. The fix comes down to three rules:
+On a 60 Hz screen with vsync, the defect is invisible (a frame lasts longer than the fade step): it appears on a fast screen or without vsync. The fix comes down to three rules: Measured on a real GLFW loop (144 Hz screen, a movement of 5 units per second for 1 s): with vsync (147 frames) the shared timer gives **14.70**; without vsync (18,037 frames) **1,434.21**, 287 times too much; with one timer per use, 4.98 to 5.00 in every case.
 
 | Rule | What it changes |
 |---|---|
@@ -148,7 +148,7 @@ fade_elapsed += frame_time;               /* the fade accumulates real time */
 alpha = fminf(fade_elapsed / FADE_DURATION, 1.0f);   /* fminf: caps at 1 */
 ```
 
-> **Pitfall (measuring at a single rate):** a sustained movement (held key, continuous rotation) that looks right at 60 FPS can be wrong at another rate. Measure it at **several rates**: with vsync, then without. Without vsync, Mesa is set with the [environment variable](/?c=shells&s=bash&p=variables-denvironnement) `vblank_mode=0` and the NVIDIA driver with `__GL_SYNC_TO_VBLANK=0` (`vblank_mode=0 ./program`). The angle or distance covered after one second must be the same in every case.
+> **Pitfall (measuring at a single rate):** a sustained movement (held key, continuous rotation) that looks right at 60 FPS can be wrong at another rate. Measure it at **several rates**: with vsync, then without. Without vsync, Mesa is set with the [environment variable](/?c=shells&s=bash&p=variables-denvironnement) `vblank_mode=0` and the NVIDIA driver with `__GL_SYNC_TO_VBLANK=0` (`vblank_mode=0 ./program`). The angle or distance covered after one second must be the same in every case. Measured on a laptop with two cards: `vblank_mode=0` does disable Mesa's vsync (17,447 frames in 1 s instead of 147), but `__GL_SYNC_TO_VBLANK=0` had **no effect** when rendering is offloaded to the NVIDIA card (`__NV_PRIME_RENDER_OFFLOAD=1`: 169 frames instead of 147); `glfwSwapInterval(0)` in the program works everywhere (7,556 frames with NVIDIA, 17,244 with Mesa). Another limit to the equality of distances: a frame longer than `MAX_FRAME_TIME` is capped, so the extra time is lost (a stall of about 0.3 s when the NVIDIA driver started gave 3.81 instead of 5).
 
 ## Vertical synchronization (vsync)
 
@@ -339,7 +339,7 @@ Each layer can be observed from a [terminal](/?c=fondamentaux&s=bases-de-l-infor
 
 ```bash
 lspci | grep -iE "vga|3d"              # lspci lists the PCI devices: the graphics card(s)
-ls /dev/dri                            # DRM files: card0 (the card), renderD128 (computing without a screen)
+ls /dev/dri                            # DRM files: cardN (one per card), renderDN (computing without a screen)
 lsmod | grep -E "amdgpu|i915|nouveau|nvidia"   # lsmod lists the drivers loaded in the kernel
 glxinfo -B | grep -i renderer          # glxinfo (mesa-utils package): the OpenGL driver actually in use
 ```
@@ -375,6 +375,17 @@ A laptop often has an **integrated** card (inside the processor, power-efficient
 
 The two cards have neither the same limits (`GL_MAX_TEXTURE_SIZE`...) nor the same OpenGL version: what the program reads at startup depends on the card that created the context.
 
+Measured on a laptop with two cards (integrated AMD, dedicated NVIDIA), with a program that asks for an OpenGL 3.3 "core" context and reads `GL_RENDERER`, `GL_VERSION` and `GL_MAX_TEXTURE_SIZE`:
+
+| Launch | `GL_RENDERER` | `GL_VERSION` | `GL_MAX_TEXTURE_SIZE` |
+|---|---|---|---|
+| default | `AMD Radeon 680M (radeonsi, rembrandt, LLVM 20.1.2, DRM 3.64, 7.0.0-34-generic)` | `4.6 (Core Profile) Mesa 25.2.8` | 16384 |
+| `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia` | `NVIDIA GeForce RTX 3070 Laptop GPU/PCIe/SSE2` | `3.3.0 NVIDIA 595.91.07` | 32768 |
+| `LIBGL_ALWAYS_SOFTWARE=1` | `llvmpipe (LLVM 20.1.2, 256 bits)` | `4.5 (Core Profile) Mesa 25.2.8` | 16384 |
+| `DRI_PRIME=1` | `llvmpipe (LLVM 20.1.2, 256 bits)` | `4.5 (Core Profile) Mesa 25.2.8` | 16384 |
+
+The card changes everything the program reads, version included (NVIDIA returns the requested version, Mesa the highest it provides). The last line is a trap: `DRI_PRIME=1` assumes the dedicated card also uses a Mesa driver. Here it is proprietary NVIDIA: Mesa cannot load `nvidia-drm` (messages `glx: failed to create dri3 screen` and `failed to load driver: nvidia-drm`) and **falls back to `llvmpipe`** without stopping. Check `GL_RENDERER` rather than believing the dedicated card is in use.
+
 ### And on Windows and macOS?
 
 | System | Who provides OpenGL |
@@ -397,6 +408,8 @@ if (!window)                                /* driver missing, too old, or reque
 	return -1;
 }
 ```
+
+Measured by asking for OpenGL 9.9 (a version that does not exist) under X11: `fenetre impossible : GLX: Failed to create context: BadMatch (invalid parameter attributes)`.
 
 Best practice: test on both cards of a laptop, and with `LIBGL_ALWAYS_SOFTWARE=1`, before saying the program "works everywhere".
 
