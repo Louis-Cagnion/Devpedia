@@ -1445,6 +1445,10 @@
             {
               "id": "garde-fous-de-ressources",
               "label": "Limiter les ressources d'un programme"
+            },
+            {
+              "id": "touche-coincee-clavier-virtuel-xtest",
+              "label": "Touche coincée : le clavier virtuel XTEST et `xdotool`"
             }
           ]
         },
