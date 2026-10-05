@@ -68,6 +68,7 @@ Sources : https://typesafe.ai/blog/introducing-system-one-models-and-jev, https:
 - `Fondamentaux/Graphisme/matrices-et-camera` (nouveau).
 - `Fondamentaux/Graphisme/glfw-glad-et-boucle-de-rendu` (sections delta time et vsync).
 - `Fondamentaux/Graphisme/effets-de-rendu-et-interaction-3d` (sections reflet de Fresnel, ray-marching, objet transparent, ressort amorti, `tanh`, placage triplanaire).
+- `Infrastructure & DevOps/Administration système/garde-fous-de-ressources` (nouveau) et `administration-systeme` (présentation du sujet modifiée).
 
 ## 4. Notions du projet scop et de sa revue crash-test (01/10/2026, à rédiger, un chapitre à la fois)
 Source : toute la session (projet scop en C/OpenGL, revue crash-test, corrections vérifiées par exécution). Recherche faite dans `content/` : ce qui existe déjà est indiqué, le reste a 0 résultat. Ajouts à faire au fil des items de correction (les notions des items 11 à 20 s'ajouteront ici).
@@ -105,6 +106,3 @@ Source : toute la session (projet scop en C/OpenGL, revue crash-test, correction
 - `Qualité et architecture du code` : un **message d'erreur propre à chaque cause** (jamais `error("")` vide ni `exit(1)` nu, jamais un message partagé entre causes) ; échouer sans fuite sur chaque chemin ; ne jamais annoncer « corrigé » sans test réel.
 - `Qualité, performance et outils/Performance` : mesurer la complexité par doublement de la taille (×2 de données = ×4 de temps → quadratique) avant de chercher la cause.
 - Piloter une application graphique en test : `xdotool` (fenêtre ciblée par PID), capture `ffmpeg -f x11grab`, mesure de pixels d'une capture ; piège d'un outil de test qui capture le curseur de la souris.
-
-**Infrastructure & DevOps > Administration système** (ou Bash)
-- **Garde-fous de ressources** pour des tests lourds : `nice` / `ionice`, `systemd-run --user --scope -p MemoryMax=… -p MemorySwapMax=0 -p CPUQuota=… -p RuntimeMaxSec=…` (process tué proprement au plafond, code 137), cgroups v2 ; pourquoi un test mémoire sans plafond peut figer une machine (swap).

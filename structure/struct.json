@@ -1437,6 +1437,10 @@
             {
               "id": "acces-a-distance-windows",
               "label": "Windows : accès à distance (RDP, tscon, shadowing)"
+            },
+            {
+              "id": "garde-fous-de-ressources",
+              "label": "Limiter les ressources d'un programme"
             }
           ]
         },
