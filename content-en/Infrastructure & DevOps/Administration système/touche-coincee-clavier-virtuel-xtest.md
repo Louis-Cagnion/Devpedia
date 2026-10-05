@@ -171,6 +171,60 @@ Rules of the protocol:
 
 A press without a release, or several presses in a row, signals a stuck or repeated key.
 
+## Measuring what the application displays: capture and pixels
+
+To know whether the object moved after the keystroke, **capture the screen** and measure the pixels. `ffmpeg` (the audio and video conversion tool) can read an X server's screen with `-f x11grab`:
+
+```bash
+ffmpeg -f x11grab -draw_mouse 0 -video_size 800x600 -i :99 -frames:v 1 shot.ppm
+```
+
+| Option | Role |
+|---|---|
+| `-f x11grab` | reads the X server's screen instead of a file |
+| `-draw_mouse 0` | **does not draw the mouse cursor** in the image |
+| `-video_size 800x600` | size of the captured area, in pixels |
+| `-i :99` | X server to read (value of `DISPLAY`) |
+| `-frames:v 1` | a single image, saved in **PPM** format (raw image: a small header, then 3 red-green-blue bytes per pixel) |
+
+> **Pitfall (the cursor skews the measurement):** by default, `x11grab` draws the cursor in the capture. Its white arrow adds to the measured object and enlarges its **bounding box** (the smallest rectangle containing all the object's pixels), hence a position or size measurement. `-draw_mouse 0` excludes it.
+
+The measurement then reads the PPM: on a black background, the bounding box is that of the pixels that are not black.
+
+```python
+import re
+import sys
+
+
+def read_ppm(path):
+    """Returns (width, height, RGB bytes) of a binary P6 PPM with 255 levels."""
+    with open(path, "rb") as file:
+        data = file.read()
+    header = re.match(rb"P6\s+(\d+)\s+(\d+)\s+255\s", data)   # header: P6, width, height, 255
+    if not header:
+        sys.exit(f"{path}: binary P6 PPM with 255 levels expected")
+    width, height = int(header.group(1)), int(header.group(2))
+    pixels = data[header.end():]
+    if len(pixels) != width * height * 3:
+        sys.exit(f"{path}: {len(pixels)} pixel bytes, {width * height * 3} expected")
+    return width, height, pixels
+
+
+def bounding_box(path):
+    """Returns (x_min, y_min, x_max, y_max) of the non-black pixels, None if all black."""
+    width, height, pixels = read_ppm(path)
+    xs, ys = [], []
+    for index in range(0, len(pixels), 3):
+        if pixels[index:index + 3] != b"\x00\x00\x00":    # one pixel = 3 bytes
+            xs.append((index // 3) % width)               # pixel column
+            ys.append((index // 3) // width)              # pixel row
+    return (min(xs), min(ys), max(xs), max(ys)) if xs else None
+```
+
+Tested on synthetic images: a white 3 × 2 pixel rectangle gives `(3, 2, 5, 3)`, an all-black image `None`, a truncated file or one of another format a message naming the file. The header is read with a regular expression rather than by splitting the file on spaces: a first pixel whose byte is 10 (line feed) would otherwise be swallowed as a separator.
+
+If the application **pulses** (a [shader](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl), a program run by the graphics card, whose brightness varies with time), compare two captures **after normalizing the brightness** (divide each capture by its own mean brightness), otherwise two identical renderings look different.
+
 ## On other machines
 
 | Situation | Behavior |

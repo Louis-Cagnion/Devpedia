@@ -171,6 +171,60 @@ Reglas del protocolo:
 
 Una pulsación sin liberación, o varias pulsaciones seguidas, indica una tecla atascada o repetida.
 
+## Medir lo que la aplicación muestra: captura y píxeles
+
+Para saber si el objeto se movió tras la pulsación, se **captura la pantalla** y se miden los píxeles. `ffmpeg` (la herramienta de conversión de audio y vídeo) sabe leer la pantalla de un servidor X con `-f x11grab`:
+
+```bash
+ffmpeg -f x11grab -draw_mouse 0 -video_size 800x600 -i :99 -frames:v 1 shot.ppm
+```
+
+| Opción | Función |
+|---|---|
+| `-f x11grab` | lee la pantalla del servidor X en lugar de un archivo |
+| `-draw_mouse 0` | **no dibuja el cursor del ratón** en la imagen |
+| `-video_size 800x600` | tamaño de la zona capturada, en píxeles |
+| `-i :99` | servidor X que se lee (valor de `DISPLAY`) |
+| `-frames:v 1` | una sola imagen, guardada en formato **PPM** (imagen en bruto: una pequeña cabecera y luego 3 bytes rojo-verde-azul por píxel) |
+
+> **Trampa (el cursor falsea la medida):** por defecto, `x11grab` dibuja el cursor en la captura. Su flecha blanca se suma al objeto medido y agranda su **caja delimitadora** (el rectángulo más pequeño que contiene todos los píxeles del objeto), por tanto una medida de posición o de tamaño. `-draw_mouse 0` la excluye.
+
+La medida se hace después leyendo el PPM: sobre fondo negro, la caja delimitadora es la de los píxeles que no son negros.
+
+```python
+import re
+import sys
+
+
+def read_ppm(path):
+    """Devuelve (ancho, alto, bytes RGB) de un PPM binario P6 de 255 niveles."""
+    with open(path, "rb") as file:
+        data = file.read()
+    header = re.match(rb"P6\s+(\d+)\s+(\d+)\s+255\s", data)   # cabecera: P6, ancho, alto, 255
+    if not header:
+        sys.exit(f"{path}: se esperaba un PPM binario P6 de 255 niveles")
+    width, height = int(header.group(1)), int(header.group(2))
+    pixels = data[header.end():]
+    if len(pixels) != width * height * 3:
+        sys.exit(f"{path}: {len(pixels)} bytes de píxeles, se esperaban {width * height * 3}")
+    return width, height, pixels
+
+
+def bounding_box(path):
+    """Devuelve (x_min, y_min, x_max, y_max) de los píxeles no negros, None si todo es negro."""
+    width, height, pixels = read_ppm(path)
+    xs, ys = [], []
+    for index in range(0, len(pixels), 3):
+        if pixels[index:index + 3] != b"\x00\x00\x00":    # un píxel = 3 bytes
+            xs.append((index // 3) % width)               # columna del píxel
+            ys.append((index // 3) // width)              # fila del píxel
+    return (min(xs), min(ys), max(xs), max(ys)) if xs else None
+```
+
+Probado con imágenes sintéticas: un rectángulo blanco de 3 × 2 píxeles da `(3, 2, 5, 3)`, una imagen toda negra `None`, un archivo truncado o de otro formato un mensaje que nombra el archivo. La cabecera se lee con una expresión regular y no dividiendo el archivo por espacios: un primer píxel cuyo byte vale 10 (salto de línea) sería si no absorbido como separador.
+
+Si la aplicación **pulsa** (un [shader](/?c=fondamentaux&s=graphisme&p=tampons-textures-et-shaders-opengl), programa ejecutado por la tarjeta gráfica, cuyo brillo varía con el tiempo), se comparan dos capturas **tras normalizar el brillo** (dividir cada captura por su propio brillo medio); si no, dos renderizados idénticos parecen distintos.
+
 ## En otras máquinas
 
 | Situación | Comportamiento |
