@@ -114,13 +114,102 @@ Es exactamente este mecanismo el que usa el capítulo sobre la arquitectura de u
 
 Cuando [`fork()`](/?c=langages-de-programmation&s=c&p=processus) crea un proceso hijo, este recibe una **copia** de la tabla de descriptores de su padre: los mismos números, apuntando a los mismos recursos abiertos. Esto es precisamente lo que permite a un shell hacer un `dup2()` sobre un descriptor de tubería **en el hijo**, justo antes de la llamada a `execve()`: el nuevo programa hereda ese descriptor ya redirigido, sin saber nada del mecanismo que lo puso en marcha.
 
+## Archivos especiales: cuando `open()` no encuentra un archivo ordinario
+
+En Unix (Linux, macOS), `open()` acepta todo lo que tiene una ruta, no solo los archivos de datos almacenados en el disco (los archivos **ordinarios**). El tipo de lo que se ha abierto realmente se lee con `fstat()`, que rellena una estructura `struct stat` que describe el descriptor (tipo, tamaño, permisos):
+
+| Tipo | Prueba sobre `info.st_mode` | Ejemplo | Comportamiento de `read()` |
+|---|---|---|---|
+| Archivo ordinario | `S_ISREG` | `notes.txt` | Lee el contenido y luego `0` al final |
+| Directorio | `S_ISDIR` | `/tmp` | Falla (`EISDIR`) |
+| Dispositivo de «caracteres» | `S_ISCHR` | `/dev/zero`: entrega bytes nulos **sin fin** | Nunca devuelve `0`: la lectura no termina |
+| Tubería con nombre (FIFO) | `S_ISFIFO` | `canal` creado con `mkfifo` | Espera a que otro proceso escriba |
+
+### La tubería con nombre (FIFO)
+
+Una [tubería](/?c=shells&s=bash&p=architecture-dun-shell) anónima (el `|` del shell, o `pipe()` más arriba) no tiene nombre: solo existe para los procesos que la han heredado por `fork()`. Una **tubería con nombre** (*named pipe*, o **FIFO**, de *First In, First Out*, «primero en entrar, primero en salir»: el orden de una [cola](/?c=fondamentaux&s=algorithmes&p=pile-et-file)) es el mismo mecanismo con un nombre en el árbol de archivos, por lo que dos programas sin parentesco pueden usarla. Los bytes escritos por un lado salen en el mismo orden por el otro, sin almacenarse nunca en el disco.
+
+```bash
+mkfifo canal              # crea la tubería con nombre "canal" (la función C del mismo nombre hace lo mismo)
+ls -l canal               # el primer carácter es "p" (pipe): prw-r--r-- ...
+echo "bonjour" > canal &  # escritor lanzado en segundo plano (&): espera a que llegue un lector
+cat canal                 # lector: muestra "bonjour"; ambos lados se desbloquean
+```
+
+> **Nota:** un FIFO no se puede crear en cualquier disco. En WSL (Linux dentro de Windows), la carpeta `/mnt/c` falla; hay que usar una carpeta del sistema Linux, como `/tmp`.
+
+### La trampa: la apertura se bloquea
+
+Por defecto, `open()` sobre un FIFO es **bloqueante**: el núcleo detiene el programa hasta que ocurre un evento (véase [el bloqueo y la E/S no bloqueante](/?c=infrastructure-devops&s=reseaux&p=sockets-et-io-non-bloquante)). Abrir para lectura espera a que un escritor abra el otro extremo, y viceversa. Un programa que cree recibir un archivo ordinario se queda, por tanto, congelado sin ningún mensaje si se le pasa un FIFO. Mismo efecto con `/dev/zero`: una lectura «hasta el final del archivo» no se detiene nunca y llena la memoria.
+
+| Lo que se pasa al programa | `open()` simple | Resultado |
+|---|---|---|
+| `notes.txt` | Devuelve el control enseguida | Lectura normal |
+| `canal` (FIFO sin escritor) | **Se bloquea para siempre** | Programa congelado |
+| `/dev/zero` | Devuelve el control | La lectura no termina, memoria saturada |
+| `/tmp` (directorio) | Devuelve el control | `read()` falla más tarde, lejos de la causa real |
+
+### El remedio: abrir sin bloquear, comprobar el tipo y pasar a `FILE *`
+
+La opción `O_NONBLOCK` pide a `open()` que devuelva el control enseguida en lugar de esperar. Después se comprueba el tipo con `fstat()`, y `fdopen()` convierte el descriptor validado en un `FILE *`, el objeto de las funciones de [lectura de archivos](/?c=langages-de-programmation&s=c&p=lecture-de-fichiers) (`fgets`, `fread`...):
+
+```c
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+FILE *open_regular_file(const char *path)
+{
+    struct stat info;                                  // recibe tipo, tamaño, permisos
+    int         fd;
+    FILE       *file;
+
+    fd = open(path, O_RDONLY | O_NONBLOCK);            // nunca bloquea, ni siquiera en un FIFO
+    if (fd == -1) {
+        fprintf(stderr, "%s : %s\n", path, strerror(errno));   // la causa real
+        return (NULL);
+    }
+    if (fstat(fd, &info) == -1) {                      // consulta el descriptor ya abierto
+        fprintf(stderr, "%s : %s\n", path, strerror(errno));
+        close(fd);
+        return (NULL);
+    }
+    if (!S_ISREG(info.st_mode)) {                     // FIFO, /dev/zero, directorio: rechazado
+        fprintf(stderr, "%s : no es un archivo ordinario\n", path);
+        close(fd);                                     // liberar el descriptor en cada fallo
+        return (NULL);
+    }
+    file = fdopen(fd, "r");                            // el FILE * pasa a ser dueño de fd
+    if (file == NULL) {
+        fprintf(stderr, "%s : %s\n", path, strerror(errno));
+        close(fd);
+    }
+    return (file);                                     // cerrar con fclose(), no con close()
+}
+```
+
+Resultado comprobado con un pequeño `main` que llama a esta función con cada argumento de la línea de comandos (un archivo ordinario, un FIFO, `/dev/zero`, un directorio y una ruta inexistente):
+
+```text
+reg.txt : abierto
+canal : no es un archivo ordinario
+/dev/zero : no es un archivo ordinario
+. : no es un archivo ordinario
+absent : No such file or directory
+```
+
+Dos detalles importan. Primero, se llama a `fstat()` sobre el **descriptor** y no a `stat()` sobre la ruta: entre las dos llamadas, alguien podría sustituir el archivo por un FIFO, mientras que el descriptor sigue designando lo que realmente se abrió. Segundo, cada causa de fallo tiene su propio mensaje (archivo inexistente, tipo incorrecto, fallo de `fdopen()`), para que el usuario sepa qué corregir.
+
 ---
 
 ## 📋 Resumen
 
 | | |
 |---|---|
-| **Para recordar** | Una llamada al sistema solicita al núcleo que actúe en lugar del programa (archivos, procesos, red): un cambio controlado del espacio de usuario al espacio del núcleo. Un descriptor de archivo es un simple entero, índice de una tabla por proceso. |
-| **Herramientas utilizables** | `open`/`close`/`read`/`write`, flags `O_CREAT`/`O_TRUNC`/`O_APPEND` de `open()`, `dup2`, `errno`/`strerror` para diagnosticar un fallo. |
-| **Trampas a evitar** | Confundir una función de biblioteca (`printf`) con una llamada al sistema real (`write`): la primera encapsula la segunda. |
-| **Buenas prácticas** | Comprobar siempre el valor de retorno de una llamada al sistema (`-1` o `NULL`) y consultar `errno`/`strerror()` para diagnosticar un fallo. |
+| **Para recordar** | Una llamada al sistema solicita al núcleo que actúe en lugar del programa (archivos, procesos, red): un cambio controlado del espacio de usuario al espacio del núcleo. Un descriptor de archivo es un simple entero, índice de una tabla por proceso. Una ruta no es siempre un archivo ordinario: también se abren FIFO, dispositivos y directorios. |
+| **Herramientas utilizables** | `open`/`close`/`read`/`write`, flags `O_CREAT`/`O_TRUNC`/`O_APPEND`/`O_NONBLOCK` de `open()`, `dup2`, `errno`/`strerror` para diagnosticar un fallo, `mkfifo`, `fstat` + `S_ISREG`, `fdopen`. |
+| **Trampas a evitar** | Confundir una función de biblioteca (`printf`) con una llamada al sistema real (`write`): la primera encapsula la segunda. Abrir sin comprobar una ruta dada por el usuario: un FIFO congela el programa, `/dev/zero` satura la memoria. |
+| **Buenas prácticas** | Comprobar siempre el valor de retorno de una llamada al sistema (`-1` o `NULL`) y consultar `errno`/`strerror()` para diagnosticar un fallo. Abrir con `O_NONBLOCK`, comprobar con `fstat()` + `S_ISREG()` y después `fdopen()`. |
