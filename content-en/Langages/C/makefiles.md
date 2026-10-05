@@ -253,6 +253,157 @@ With `FORCE`, step 3 links the objects of `obj/364582449/` again, recompiling no
 
 > **Pitfall:** a comment written at the end of a variable line (`OBJDIR = obj/...   # objects`) leaves the spaces before it in the value: `$(OBJDIR)/%.o` becomes `obj/364582449   /%.o`, i.e. two separate targets. `make` then stops on `mixed implicit and normal rules` and `No rule to make target '%.c'`, messages that don't point at the comment. Write variable comments on their own line, above.
 
+## Modified Headers: Automatic Dependencies (`-MMD -MP`)
+
+The rules above name `calculs.h` by hand. A header missing from the list, or included by another header, is invisible to `make`: the `.o` is not recompiled and the program keeps the old code. Measured example, with `#define FACTEUR 1` in `calculs.h` and a `%.o: %.c` rule without any header:
+
+```text
+$ make                      # FACTEUR is 1
+$ ./programme
+9
+$ sed -i 's/FACTEUR 1/FACTEUR 2/' calculs.h
+$ make
+make: 'programme' is up to date.
+$ ./programme
+9                           # should print 36: nothing was recompiled
+```
+
+`gcc` can list the headers it reads by itself. With `-MMD`, it writes next to each `.o` a `.d` file (*dependencies*) during the usual compilation, leaving out system headers (`<stdio.h>`...):
+
+```text
+$ cat main.d
+main.o: main.c calculs.h
+calculs.h:
+```
+
+The first line is a complete `make` rule. The second comes from `-MP`: an **empty** rule for each header. The remaining step is to load these files with `include`:
+
+```makefile
+CC = gcc
+CFLAGS = -Wall -Wextra -O2 -MMD -MP
+SRCS = main.c calculs.c
+OBJS = $(SRCS:%.c=%.o)
+
+programme: $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# loads the .d files; the dash ignores a missing file (first build, before any .d)
+-include $(OBJS:.o=.d)
+```
+
+| Element | Role | Without it |
+|---|---|---|
+| `-MMD` | `gcc` writes `main.d`: the list of headers actually included | modifying a header recompiles nothing |
+| `-MP` | an empty rule per header | a renamed or deleted header stops `make` (see below) |
+| `-include` | loads the `.d` files without an error if they are missing | `make` stops at the first build (`No rule to make target 'a.d'`), before any `.d` exists |
+
+Same header change (`FACTEUR` set to 3) with these rules: both `.c` files are recompiled and the program prints `81`. If a header is then renamed, the old `.d` files still mention it. Without `-MP`, `make` stops:
+
+```text
+make: *** No rule to make target 'calculs.h', needed by 'main.o'.  Stop.
+```
+
+With `-MP`, the empty rule makes `make` believe the header exists: it recompiles the `.c`, and it is the compiler that reports the real error or finds the `#include` lines up to date.
+
+**Another hidden dependency: the Makefile itself.** Changing an option **inside** the Makefile recompiles nothing either, since `make` only compares file dates. Measured with `CFLAGS = -DOPT=1` changed to `-DOPT=2`: without `Makefile` among the dependencies (`programme: a.c`), `make` answers "up to date" and the program still prints `opt=1`; with `programme: a.c Makefile`, it recompiles and prints `opt=2`. The source file stays **first**: `$<` designates the first dependency. Downside: touching the Makefile recompiles everything.
+
+## Order-Only Dependency: Run Before, Without Forcing a Rebuild
+
+A rule can split its dependencies into two groups with a vertical bar: `target: normal dependencies | order-only dependencies`. `make` builds the order-only dependencies first if they are missing, but **their date never enters the decision** to rebuild the target.
+
+**First case: the object folder.** A folder is a target like any other, but its date changes every time a file is created in it. Placed among the normal dependencies, it makes the `.o` files "out of date" right after they are created. Measured with `obj/a.o` and `obj/b.o`, called three times in a row:
+
+| Call | Folder as a normal dependency | Folder after the bar `\|` |
+|---|---|---|
+| 1 | creates `obj/`, compiles `a.o` and `b.o` | creates `obj/`, compiles `a.o` and `b.o` |
+| 2 | recompiles `a.o` | `Nothing to be done` |
+| 3 | recompiles `b.o` | `Nothing to be done` |
+
+```makefile
+OBJDIR = obj
+OBJS = $(OBJDIR)/a.o $(OBJDIR)/b.o
+
+all: $(OBJS)
+
+# after the bar: the folder must exist before compilation, its date is ignored
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
+	gcc -c $< -o $@
+
+$(OBJDIR):
+	mkdir -p $@
+```
+
+In the recipe, `$^` only contains the normal dependencies (`a.c`): order-only dependencies are in another automatic variable, `$|` (here `obj`). A `$^` passed to the compiler therefore never carries the folder (unlike `FORCE`, seen above, which is a normal dependency).
+
+**Second case: a phony target (`.PHONY`) to run before, without forcing a rebuild.** A `.PHONY` target placed among the **normal** dependencies is always considered to be redone, so the target that depends on it is too. Measured with a `verif` target that prints a message and a `programme` linked from `a.o` and `b.o`:
+
+| Call | `programme: a.o b.o verif` | `programme: a.o b.o \| verif` |
+|---|---|---|
+| 1 | compiles, `verif`, links | compiles, `verif`, links |
+| 2 | `verif`, **links again** | `verif` only |
+
+After the bar, `verif` runs on every call (useful for a preliminary check), without forcing linking.
+
+## Testing for a Tool or a Library
+
+A Makefile that assumes a tool is installed fails further on, with a message that does not name the cause. We test first, and stop with a precise message.
+
+**A tool: `command -v`.** The command `command -v name` prints the tool's path if it exists and prints nothing otherwise (exit code other than 0). It is specified by the POSIX standard, unlike `which`, a separate program. `$(error text)` stops `make` with that text:
+
+```makefile
+# $(shell ...) returns the command's output: empty if the tool does not exist
+ifeq ($(shell command -v pkg-config),)
+$(error pkg-config not found: install it before running make)
+endif
+```
+
+```text
+Makefile:2: *** pkg-config not found: install it before running make.  Stop.
+```
+
+**A library: a compile test.** `pkg-config` (see above) may be missing, or may not know a library installed by hand, and its `.pc` file does not prove that compilation will succeed. The most reliable test does what the program will do: compile a minimal program that includes the header and links the library.
+
+```bash
+printf '#include <math.h>\nint main(void){return sqrt(4.0)>0;}\n' | gcc -x c - -lm -o /dev/null
+```
+
+| Piece | Role |
+|---|---|
+| `printf '...'` | writes a small C program (`\n` = line break) |
+| `\|` | sends it to `gcc` through its standard input |
+| `-x c -` | `-x c` says the text is C (standard input has no `.c` extension); `-` means "read standard input" |
+| `-lm` | links the library being tested |
+| `-o /dev/null` | throws away the produced executable: only the exit code matters (`0` = header found **and** library linked) |
+
+**The `#` pitfall in a Makefile.** In a variable definition or a dependency line, `#` starts a comment: the line `INCL := printf '#include <math.h>\n'` is cut at `#` and the variable is only `printf '` (measured). `\#` gives a literal `#` in an ordinary definition. But **inside `$(shell ...)`, `make` does not remove the backslash**: the shell receives `\#include`, and `gcc` answers `stray '\' in program` (measured). Two workarounds: a `HASH := \#` variable inserted with `$(HASH)`, or `printf`'s octal code `\043`.
+
+```makefile
+CC = gcc
+# a variable that holds only the # character
+HASH := \#
+TEST_MATH = printf '$(HASH)include <math.h>\nint main(void){return sqrt(4.0)>0;}\n' | $(CC) -x c - -lm -o /dev/null 2>/dev/null && echo yes
+# "yes" if the test succeeds, empty otherwise
+HAVE_MATH := $(shell $(TEST_MATH))
+
+ifeq ($(HAVE_MATH),)
+$(error compile test of math.h and -lm impossible: header or library missing)
+endif
+```
+
+Results measured with this scheme on four tests:
+
+| Test | Value obtained |
+|---|---|
+| `#include <math.h>` and `-lm` | `yes` |
+| `#include <inexistant.h>` | empty |
+| `-lbibliotheque_absente` | empty |
+| `\043include <math.h>` (octal, without `HASH`) | `yes` |
+
+> **Pitfall:** `2>/dev/null` hides the compiler's messages, and therefore the real cause of the failure. To diagnose, rerun the test command by hand, without this redirection.
+
 ## Chaining the Three PGO Steps in One Target
 
 [Profile-guided optimization](/?c=langages&s=c&p=compilation#profile-guided-optimization-pgo) (PGO) compiles the program three times in a row: instrumented version, training run, optimized version. A Makefile target can chain all three, by running `make` again on an ordinary compilation target (`link`) with other options.
@@ -331,6 +482,6 @@ make -s || exit 1                      # builds if needed, silently
 | | |
 |---|---|
 | **Key takeaways** | A Makefile describes rules (`target: dependencies` + command) that `make` executes, rebuilding only what has actually changed. A short recipe can also sit on the target's own line, after a `;`. `make` only compares dates: changing the compilation options recompiles nothing. |
-| **Tools you can use** | Variables (`CC`, `CFLAGS`), phony targets (`.PHONY`), `-I` for headers, `pkg-config` for a library's flags, `@`/`MAKEFLAGS += -s` for silent mode.; pattern rules (`%`, `$@`, `$<`, `$^`); `make VARIABLE=value`; `$(MAKE)` to chain steps (PGO); `make -n` and `make -q`. |
-| **Pitfalls to avoid** | Indenting a command with spaces instead of a tab; pointing `-I` at the wrong folder level; confusing a library's `pkg-config` name with its system package name.; `$^` to compile a `.c`; a comment at the end of a variable line; believing a new `CFLAGS` was applied. |
-| **Best practices** | Declare `.PHONY` for any target that doesn't produce an actual file (`clean`, `test`...), to avoid a conflict with a file of the same name; go through `pkg-config` rather than guessing `-I`/`-l` by hand for a third-party library.; one object folder per set of options, with linking always redone; `\|\| exit 1` in a command loop. |
+| **Tools you can use** | Variables (`CC`, `CFLAGS`), phony targets (`.PHONY`), `-I` for headers, `pkg-config` for a library's flags, `@`/`MAKEFLAGS += -s` for silent mode.; pattern rules (`%`, `$@`, `$<`, `$^`); `make VARIABLE=value`; `$(MAKE)` to chain steps (PGO); `make -n` and `make -q`; `-MMD -MP` with `-include` for headers; order-only dependency (`target: normal \| order`); `command -v`, `$(error ...)` and a compile test (`gcc -x c -`) to check a tool or a library. |
+| **Pitfalls to avoid** | Indenting a command with spaces instead of a tab; pointing `-I` at the wrong folder level; confusing a library's `pkg-config` name with its system package name.; `$^` to compile a `.c`; a comment at the end of a variable line; believing a new `CFLAGS` was applied; listing headers by hand (one omission leaves an out-of-date program); putting a folder or a `.PHONY` target among the normal dependencies (rebuild on every call); writing `\#` inside a `$(shell ...)`; hiding a compile test's errors without being able to reread them. |
+| **Best practices** | Declare `.PHONY` for any target that doesn't produce an actual file (`clean`, `test`...), to avoid a conflict with a file of the same name; go through `pkg-config` rather than guessing `-I`/`-l` by hand for a third-party library.; one object folder per set of options, with linking always redone; `\|\| exit 1` in a command loop. Let `gcc` produce the header dependencies (`-MMD -MP`) and put the `Makefile` among an object's dependencies; create an object folder through an order-only dependency; test a tool before using it and stop with a message that names it. |
