@@ -40,6 +40,31 @@ echo 'Ola $nome'  # Ola $nome -> as aspas simples desativam qualquer interpreta�
 >
 > **Boa prática:** cercar sistematicamente uma variável com aspas duplas no uso (`"$nome"`), exceto necessidade precisa do contrário. Única exceção comum: dentro de um contexto numérico explícito (`[ $i -lt 5 ]`, `$(( i + 1 ))`), o Bash não faz nenhuma divisão em palavras sobre o valor: as aspas ali são então inúteis, o que explica por que os capítulos sobre condições e laços não as usam nesses casos específicos.
 
+## Uma variável sem aspas no zsh: `${=var}`
+
+A divisão em palavras de uma variável sem aspas é uma particularidade do Bash (e do `sh`). O **zsh** (o shell padrão do macOS) não divide: o valor continua sendo uma única palavra. Um script escrito para um se comporta portanto de outro jeito no outro, sem nenhum erro.
+
+```bash
+sz="1920 1080"
+set -- $sz        # substitui os argumentos posicionais ($1, $2...) pelo resultado
+echo "$#"         # $#: número de argumentos posicionais
+set -- ${=sz}     # zsh: o = pede explicitamente a divisão em palavras
+```
+
+| Comando | Bash | zsh |
+|---|---|---|
+| `set -- $sz` e depois `echo "$#"` | 2 (`1920` e `1080`) | **1** (`1920 1080`) |
+| `set -- "$sz"` e depois `echo "$#"` | 1 | 1 |
+| `set -- ${=sz}` e depois `echo "$#"` | (sintaxe própria do zsh) | 2 |
+| `f="a b.txt"; for x in $f; do echo "[$x]"; done` | `[a]` e depois `[b.txt]` | `[a b.txt]` |
+
+| Para obter... | No zsh |
+|---|---|
+| A divisão do Bash, uma vez | `${=var}` (ou `$=var`) |
+| A divisão do Bash em toda a sessão | `setopt SH_WORD_SPLIT` (medido: `set -- $sz` dá então 2) |
+
+> **Armadilha:** um script copiado do Bash para o zsh (ou o contrário) sem mudanças pode rodar sem erro e errar: um laço `for x in $lista` trata um único item em vez de vários. **Boa prática:** manter `"$var"` com aspas, que se comporta igual em todo lugar, e declarar o shell esperado com um [shebang](/?c=shells&s=bash&p=scripts-et-shebang) (`#!/bin/bash`). Detalhes do zsh: [documentação oficial das expansões](https://zsh.sourceforge.io/Doc/Release/Expansion.html).
+
 ## Substituição de comando
 
 Executa um comando e substitui a expressão por sua saída:

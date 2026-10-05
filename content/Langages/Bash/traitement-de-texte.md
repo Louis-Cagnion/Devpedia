@@ -150,6 +150,28 @@ wc -w fichier.txt  # nombre de mots
 wc -c fichier.txt  # nombre d'octets
 ```
 
+## Nombres décimaux et locale : le piège de la virgule
+
+La **locale** (*locale*) est le réglage de langue et de région de la session : la variable `LC_ALL` la fixe pour tout, `LC_NUMERIC` pour les seuls nombres (`LC_ALL`, si elle est définie, l'emporte sur `LC_NUMERIC`). Avec une locale française (`fr_FR.UTF-8`), le séparateur décimal est la **virgule**. Les outils qui respectent la locale écrivent alors `3,14` et n'acceptent plus `3.14` ; le même script donne un autre résultat selon la machine.
+
+| Commande | `LC_ALL=C` | `LC_ALL=fr_FR.UTF-8` |
+|---|---|---|
+| `printf '%.2f\n' 3.14159` (`printf` de Bash) | `3.14` | erreur `invalid number`, puis affiche `3,00` |
+| `printf '%.2f\n' 3,14159` | erreur `invalid number`, puis `3.00` | `3,14` |
+| `awk --use-lc-numeric 'BEGIN{printf "%.2f\n", 3.14159}'` (`gawk`) | `3.14` | `3,14` |
+| `awk --use-lc-numeric '{print $2 + 1}' <<< 'a 3.5'` | `4.5` | `4` (lit `3`, ignore `.5`, sans erreur) |
+
+Mesuré avec Bash 5 et `gawk` 5.4. `gawk` ignore la locale par défaut (il écrit `3.14` même en `fr_FR`) : l'option `--use-lc-numeric` la lui fait respecter. D'autres versions d'`awk` la respectent sans option : à vérifier sur la vôtre.
+
+Conséquence : une valeur écrite avec une virgule dans un fichier (`0,500`) est refusée ou tronquée par tout lecteur qui attend un point (JSON, CSV anglo-saxon, `strtod` dans la locale `C`), et un calcul sur un nombre à point peut s'arrêter au point sans message.
+
+```bash
+# fixe la locale pour cette seule commande : nombres écrits et lus avec un point
+LC_ALL=C awk '{ s += $2 } END { printf "%.2f\n", s }' mesures.txt
+```
+
+> **Piège :** exporter `LC_NUMERIC=C` ne sert à rien si `LC_ALL` est défini plus haut (mesuré : `LC_NUMERIC=C LC_ALL=fr_FR.UTF-8 printf '%.2f\n' 3.14159` échoue encore). **Bonne pratique :** dans tout script qui produit ou lit des nombres pour un autre programme, fixer `LC_ALL=C` devant la commande concernée plutôt que de dépendre de la locale de la machine.
+
 ## Combiner ces outils
 
 ```bash

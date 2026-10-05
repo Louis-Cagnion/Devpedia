@@ -40,6 +40,31 @@ echo 'Hello $name'   # Hello $name -> single quotes disable all interpretation
 >
 > **Best practice:** systematically wrap a variable in double quotes when using it (`"$name"`), unless there's a specific need not to. The one common exception: inside an explicit numeric context (`[ $i -lt 5 ]`, `$(( i + 1 ))`), Bash does no word splitting on the value at all: quotes are therefore unnecessary there, which is why the chapters on conditions and loops don't use them in those specific cases.
 
+## An unquoted variable in zsh: `${=var}`
+
+Word splitting of an unquoted variable is a particularity of Bash (and `sh`). **zsh** (the default shell on macOS) does not split: the value stays a single word. A script written for one therefore behaves differently in the other, with no error at all.
+
+```bash
+sz="1920 1080"
+set -- $sz        # replaces the positional arguments ($1, $2...) with the result
+echo "$#"         # $#: number of positional arguments
+set -- ${=sz}     # zsh: the = explicitly asks for word splitting
+```
+
+| Command | Bash | zsh |
+|---|---|---|
+| `set -- $sz` then `echo "$#"` | 2 (`1920` and `1080`) | **1** (`1920 1080`) |
+| `set -- "$sz"` then `echo "$#"` | 1 | 1 |
+| `set -- ${=sz}` then `echo "$#"` | (zsh-specific syntax) | 2 |
+| `f="a b.txt"; for x in $f; do echo "[$x]"; done` | `[a]` then `[b.txt]` | `[a b.txt]` |
+
+| To get... | In zsh |
+|---|---|
+| Bash's splitting, once | `${=var}` (or `$=var`) |
+| Bash's splitting everywhere in the session | `setopt SH_WORD_SPLIT` (measured: `set -- $sz` then gives 2) |
+
+> **Pitfall:** a script copied from Bash to zsh (or the reverse) unchanged can run without error and still get it wrong: a `for x in $list` loop handles one item instead of several. **Good practice:** keep `"$var"` with quotes, which behaves the same everywhere, and declare the expected shell with a [shebang](/?c=shells&s=bash&p=scripts-et-shebang) (`#!/bin/bash`). zsh details: [official documentation on expansions](https://zsh.sourceforge.io/Doc/Release/Expansion.html).
+
 ## Command substitution
 
 Runs a command and replaces the expression with its output:
