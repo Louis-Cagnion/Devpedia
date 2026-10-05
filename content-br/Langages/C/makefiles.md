@@ -253,6 +253,157 @@ Com `FORCE`, a etapa 3 liga de novo os objetos de `obj/364582449/`, sem recompil
 
 > **Armadilha:** um comentário escrito no fim de uma linha de variável (`OBJDIR = obj/...   # objetos`) deixa no valor os espaços que o precedem: `$(OBJDIR)/%.o` vira `obj/364582449   /%.o`, ou seja, dois alvos distintos. O `make` para então com `mixed implicit and normal rules` e `No rule to make target '%.c'`, mensagens que não apontam para o comentário. Escrever os comentários de variáveis na própria linha, acima.
 
+## Os cabeçalhos modificados: dependências automáticas (`-MMD -MP`)
+
+As regras acima citam `calculs.h` à mão. Um cabeçalho esquecido na lista, ou incluído por outro cabeçalho, é invisível para o `make`: o `.o` não é recompilado e o programa mantém o código antigo. Exemplo medido, com `#define FACTEUR 1` em `calculs.h` e uma regra `%.o: %.c` sem nenhum cabeçalho:
+
+```text
+$ make                      # FACTEUR vale 1
+$ ./programme
+9
+$ sed -i 's/FACTEUR 1/FACTEUR 2/' calculs.h
+$ make
+make: 'programme' is up to date.
+$ ./programme
+9                           # deveria mostrar 36: nada foi recompilado
+```
+
+O `gcc` sabe listar sozinho os cabeçalhos que lê. Com `-MMD`, ele escreve ao lado de cada `.o` um arquivo `.d` (*dependências*) durante a compilação habitual, sem os cabeçalhos do sistema (`<stdio.h>`...):
+
+```text
+$ cat main.d
+main.o: main.c calculs.h
+calculs.h:
+```
+
+A primeira linha é uma regra `make` completa. A segunda vem de `-MP`: uma regra **vazia** por cabeçalho. Falta carregar esses arquivos com `include`:
+
+```makefile
+CC = gcc
+CFLAGS = -Wall -Wextra -O2 -MMD -MP
+SRCS = main.c calculs.c
+OBJS = $(SRCS:%.c=%.o)
+
+programme: $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# carrega os .d; o traço ignora um arquivo ausente (primeiro build, antes de qualquer .d)
+-include $(OBJS:.o=.d)
+```
+
+| Elemento | Papel | Sem ele |
+|---|---|---|
+| `-MMD` | o `gcc` escreve `main.d`: a lista de cabeçalhos realmente incluídos | modificar um cabeçalho não recompila nada |
+| `-MP` | uma regra vazia por cabeçalho | um cabeçalho renomeado ou apagado interrompe o `make` (veja abaixo) |
+| `-include` | carrega os `.d` sem erro se faltarem | o `make` para no primeiro build (`No rule to make target 'a.d'`), antes de existir qualquer `.d` |
+
+A mesma mudança de cabeçalho (`FACTEUR` em 3) com essas regras: os dois `.c` são recompilados e o programa mostra `81`. Se um cabeçalho for depois renomeado, os antigos `.d` ainda o citam. Sem `-MP`, o `make` para:
+
+```text
+make: *** No rule to make target 'calculs.h', needed by 'main.o'.  Stop.
+```
+
+Com `-MP`, a regra vazia faz o `make` acreditar que o cabeçalho existe: ele recompila o `.c`, e é o compilador que aponta o erro real ou constata que os `#include` estão em dia.
+
+**Outra dependência oculta: o próprio Makefile.** Mudar uma opção **dentro** do Makefile também não recompila nada, pois o `make` só compara datas de arquivos. Medido com `CFLAGS = -DOPT=1` mudado para `-DOPT=2`: sem `Makefile` entre as dependências (`programme: a.c`), o `make` responde «up to date» e o programa continua mostrando `opt=1`; com `programme: a.c Makefile`, ele recompila e mostra `opt=2`. O arquivo-fonte continua **em primeiro lugar**: `$<` designa a primeira dependência. Contrapartida: mexer no Makefile recompila tudo.
+
+## Dependência de ordem: executar antes, sem forçar a reconstrução
+
+Uma regra pode separar suas dependências em dois grupos com uma barra vertical: `alvo: dependências normais | dependências de ordem`. O `make` constrói primeiro as dependências de ordem (*order-only*) se faltarem, mas **a data delas nunca entra na decisão** de reconstruir o alvo.
+
+**Primeiro caso: a pasta de objetos.** Uma pasta é um alvo como outro qualquer, mas sua data muda toda vez que um arquivo é criado nela. Colocada entre as dependências normais, ela deixa os `.o` «desatualizados» logo depois de criados. Medido com `obj/a.o` e `obj/b.o`, chamados três vezes seguidas:
+
+| Chamada | Pasta como dependência normal | Pasta depois da barra `\|` |
+|---|---|---|
+| 1 | cria `obj/`, compila `a.o` e `b.o` | cria `obj/`, compila `a.o` e `b.o` |
+| 2 | recompila `a.o` | `Nothing to be done` |
+| 3 | recompila `b.o` | `Nothing to be done` |
+
+```makefile
+OBJDIR = obj
+OBJS = $(OBJDIR)/a.o $(OBJDIR)/b.o
+
+all: $(OBJS)
+
+# depois da barra: a pasta deve existir antes de compilar, sua data é ignorada
+$(OBJDIR)/%.o: %.c | $(OBJDIR)
+	gcc -c $< -o $@
+
+$(OBJDIR):
+	mkdir -p $@
+```
+
+Na receita, `$^` contém apenas as dependências normais (`a.c`): as dependências de ordem ficam em outra variável automática, `$|` (aqui `obj`). Um `$^` passado ao compilador nunca carrega portanto a pasta (ao contrário de `FORCE`, visto acima, que é uma dependência normal).
+
+**Segundo caso: um alvo fictício (`.PHONY`) a executar antes, sem forçar a reconstrução.** Um alvo `.PHONY` colocado entre as dependências **normais** é sempre considerado a refazer, e portanto o alvo que depende dele também. Medido com um alvo `verif` que mostra uma mensagem e um `programme` ligado a partir de `a.o` e `b.o`:
+
+| Chamada | `programme: a.o b.o verif` | `programme: a.o b.o \| verif` |
+|---|---|---|
+| 1 | compila, `verif`, liga | compila, `verif`, liga |
+| 2 | `verif`, **liga de novo** | somente `verif` |
+
+Depois da barra, `verif` executa a cada chamada (útil para um controle prévio), sem forçar a ligação.
+
+## Testar a presença de uma ferramenta ou de uma biblioteca
+
+Um Makefile que supõe uma ferramenta instalada falha mais adiante, com uma mensagem que não nomeia a causa. Testa-se primeiro, e para-se com uma mensagem precisa.
+
+**Uma ferramenta: `command -v`.** O comando `command -v nome` mostra o caminho da ferramenta se ela existe e não mostra nada caso contrário (código de saída diferente de 0). Ele é previsto pela norma POSIX, ao contrário de `which`, um programa à parte. `$(error texto)` interrompe o `make` com esse texto:
+
+```makefile
+# $(shell ...) devolve a saída do comando: vazia se a ferramenta não existe
+ifeq ($(shell command -v pkg-config),)
+$(error pkg-config nao encontrado: instale-o antes de rodar make)
+endif
+```
+
+```text
+Makefile:2: *** pkg-config nao encontrado: instale-o antes de rodar make.  Stop.
+```
+
+**Uma biblioteca: um teste de compilação.** O `pkg-config` (veja acima) pode faltar, ou não conhecer uma biblioteca instalada à mão, e seu `.pc` não prova que a compilação vai dar certo. O teste mais confiável faz o que o programa fará: compilar um programa mínimo que inclui o cabeçalho e liga a biblioteca.
+
+```bash
+printf '#include <math.h>\nint main(void){return sqrt(4.0)>0;}\n' | gcc -x c - -lm -o /dev/null
+```
+
+| Peça | Papel |
+|---|---|
+| `printf '...'` | escreve um pequeno programa C (`\n` = quebra de linha) |
+| `\|` | envia-o ao `gcc` pela entrada padrão |
+| `-x c -` | `-x c` diz que o texto é C (a entrada padrão não tem extensão `.c`); `-` significa «ler a entrada padrão» |
+| `-lm` | liga a biblioteca testada |
+| `-o /dev/null` | descarta o executável produzido: só conta o código de saída (`0` = cabeçalho encontrado **e** biblioteca ligada) |
+
+**A armadilha do `#` em um Makefile.** Em uma definição de variável ou em uma linha de dependências, `#` começa um comentário: a linha `INCL := printf '#include <math.h>\n'` é cortada em `#` e a variável só vale `printf '` (medido). `\#` dá um `#` literal em uma definição comum. Mas **dentro de `$(shell ...)`, o `make` não retira a barra invertida**: o shell recebe `\#include`, e o `gcc` responde `stray '\' in program` (medido). Dois remédios: uma variável `HASH := \#` inserida com `$(HASH)`, ou o código octal `\043` do `printf`.
+
+```makefile
+CC = gcc
+# uma variável que contém somente o caractere #
+HASH := \#
+TEST_MATH = printf '$(HASH)include <math.h>\nint main(void){return sqrt(4.0)>0;}\n' | $(CC) -x c - -lm -o /dev/null 2>/dev/null && echo sim
+# "sim" se o teste der certo, vazio caso contrário
+HAVE_MATH := $(shell $(TEST_MATH))
+
+ifeq ($(HAVE_MATH),)
+$(error teste de compilacao de math.h e -lm impossivel: cabecalho ou biblioteca ausente)
+endif
+```
+
+Resultados medidos com este esquema em quatro testes:
+
+| Teste | Valor obtido |
+|---|---|
+| `#include <math.h>` e `-lm` | `sim` |
+| `#include <inexistant.h>` | vazio |
+| `-lbibliotheque_absente` | vazio |
+| `\043include <math.h>` (octal, sem `HASH`) | `sim` |
+
+> **Armadilha:** `2>/dev/null` esconde as mensagens do compilador, e portanto a causa real da falha. Para diagnosticar, rodar de novo à mão o comando do teste, sem esse redirecionamento.
+
 ## Encadear as três etapas da PGO em um alvo
 
 A [otimização guiada por perfil](/?c=langages&s=c&p=compilation#a-otimizacao-guiada-por-perfil-pgo) (PGO) compila o programa três vezes seguidas: versão instrumentada, execução de treino, versão otimizada. Um alvo do Makefile pode encadear as três, relançando o `make` sobre um alvo de compilação comum (`ligar`) com outras opções.
@@ -331,6 +482,6 @@ make -s || exit 1                          # constrói se preciso, em silêncio
 | | |
 |---|---|
 | **Para lembrar** | Um Makefile descreve regras (`alvo: dependências` + comando) que `make` executa, reconstruindo apenas o que realmente mudou. Uma receita curta também pode ficar na própria linha do alvo, depois de um `;`. O `make` só compara datas: mudar as opções de compilação não recompila nada. |
-| **Ferramentas utilizáveis** | Variáveis (`CC`, `CFLAGS`), alvos fictícios (`.PHONY`), `-I` para os cabeçalhos, `pkg-config` para os flags de uma biblioteca, `@`/`MAKEFLAGS += -s` para o modo silencioso.; regras de padrão (`%`, `$@`, `$<`, `$^`); `make VARIÁVEL=valor`; `$(MAKE)` para encadear etapas (PGO); `make -n` e `make -q`. |
-| **Armadilhas a evitar** | Indentar um comando com espaços em vez de uma tabulação; apontar `-I` para o nível de pasta errado; confundir o nome `pkg-config` de uma biblioteca com o nome do seu pacote do sistema.; `$^` para compilar um `.c`; um comentário no fim de uma linha de variável; achar que um novo `CFLAGS` foi aplicado. |
-| **Boas práticas** | Declarar `.PHONY` para todo alvo que não produz um arquivo real (`clean`, `test`...), para evitar um conflito com um arquivo de mesmo nome; passar por `pkg-config` em vez de adivinhar `-I`/`-l` na mão para uma biblioteca de terceiros.; uma pasta de objetos por conjunto de opções, com a ligação sempre refeita; `\|\| exit 1` em um laço de comando. |
+| **Ferramentas utilizáveis** | Variáveis (`CC`, `CFLAGS`), alvos fictícios (`.PHONY`), `-I` para os cabeçalhos, `pkg-config` para os flags de uma biblioteca, `@`/`MAKEFLAGS += -s` para o modo silencioso.; regras de padrão (`%`, `$@`, `$<`, `$^`); `make VARIÁVEL=valor`; `$(MAKE)` para encadear etapas (PGO); `make -n` e `make -q`; `-MMD -MP` com `-include` para os cabeçalhos; dependência de ordem (`alvo: normais \| ordem`); `command -v`, `$(error ...)` e um teste de compilação (`gcc -x c -`) para verificar uma ferramenta ou uma biblioteca. |
+| **Armadilhas a evitar** | Indentar um comando com espaços em vez de uma tabulação; apontar `-I` para o nível de pasta errado; confundir o nome `pkg-config` de uma biblioteca com o nome do seu pacote do sistema.; `$^` para compilar um `.c`; um comentário no fim de uma linha de variável; achar que um novo `CFLAGS` foi aplicado; listar os cabeçalhos à mão (um esquecimento deixa um programa desatualizado); pôr uma pasta ou um alvo `.PHONY` entre as dependências normais (reconstrução a cada chamada); escrever `\#` dentro de um `$(shell ...)`; esconder os erros de um teste de compilação sem poder relê-los. |
+| **Boas práticas** | Declarar `.PHONY` para todo alvo que não produz um arquivo real (`clean`, `test`...), para evitar um conflito com um arquivo de mesmo nome; passar por `pkg-config` em vez de adivinhar `-I`/`-l` na mão para uma biblioteca de terceiros.; uma pasta de objetos por conjunto de opções, com a ligação sempre refeita; `\|\| exit 1` em um laço de comando. Deixar o `gcc` produzir as dependências de cabeçalhos (`-MMD -MP`) e pôr o `Makefile` entre as dependências de um objeto; criar uma pasta de objetos por uma dependência de ordem; testar uma ferramenta antes de usá-la e parar com uma mensagem que a nomeie. |
