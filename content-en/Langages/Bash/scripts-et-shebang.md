@@ -172,6 +172,32 @@ failing_command | grep "pattern"
 
 See also the chapter on process management for what happens after launching a script in the background.
 
+## Commenting a Block of Lines: `: <<'COMMENT'`
+
+Bash has no multi-line comment: `#` only applies to the end of the line. A common trick disables a whole block at once: `:` is a built-in command that does nothing (it succeeds, exit code 0), and `<<'COMMENT'` gives it a **here-document** (a block of text read up to a line containing only `COMMENT`) as input, which it ignores.
+
+```bash
+echo "before"
+: <<'COMMENT'
+echo "this is not displayed"
+touch /tmp/will-not-be-created
+COMMENT
+echo "after"
+```
+
+This script prints `before` then `after`, and creates no file. The delimiter must be written **between apostrophes**:
+
+| Delimiter | Inside the block | Measured result (Bash and zsh) |
+|---|---|---|
+| `<<'COMMENT'` | Text taken as is, nothing is interpreted | Nothing is executed |
+| `<<COMMENT` | `$(…)` and `$variable` are expanded | A `$(touch …)` written in the block **was executed** |
+
+> **Pitfall:** forgetting the apostrophes: the "comment" then executes the command substitutions it contains.
+>
+> **Pitfall:** writing the end word with spaces in front (`  COMMENT`): it is no longer recognized, and the block extends to the end of the file, **the whole rest of the script is swallowed**. Measured: Bash only prints a warning (`here-document … delimited by end-of-file`) and zsh prints nothing; both end with code 0.
+>
+> **Best practice:** this technique is for temporarily disabling a large block of code; for a real comment, prefer a `#` at the start of each line (most editors do it with a shortcut), more readable and independent of here-document syntax.
+
 ---
 
 ## 📋 Summary
@@ -180,5 +206,5 @@ See also the chapter on process management for what happens after launching a sc
 |---|---|
 | **Key takeaways** | The shebang tells the system which interpreter runs the script. `chmod +x` + `./script.sh` or `bash script.sh` launches it. `$1`, `$@`, `$#`... give access to its arguments. Every script ends with an exit code (`0` = success), readable via `$?`. |
 | **Tools you can use** | `set -euo pipefail` at the top of a script to stop on the first error rather than continuing on an inconsistent state. |
-| **Pitfalls to avoid** | Confusing `$@` and `$*` once quoted (see above). Writing `#!/bin/sh` then using a Bash extension (arrays, `[[ ]]`...): the script fails on any system where `/bin/sh` isn't `bash`. |
-| **Best practices** | Always check `$?` (or use `&&`/`\|\|`) after a command whose failure should change the script's behavior, rather than assuming it succeeded. |
+| **Pitfalls to avoid** | Confusing `$@` and `$*` once quoted (see above). Writing `#!/bin/sh` then using a Bash extension (arrays, `[[ ]]`...): the script fails on any system where `/bin/sh` isn't `bash`. A block comment `: <<COMMENT` without apostrophes (it executes its content) or whose end word is indented (it swallows the rest of the script). |
+| **Best practices** | Always check `$?` (or use `&&`/`\|\|`) after a command whose failure should change the script's behavior, rather than assuming it succeeded. Reserve `: <<'COMMENT'` for temporarily disabling code, and comment the rest line by line with `#`. |
